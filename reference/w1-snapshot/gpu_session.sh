@@ -1,0 +1,530 @@
+#!/usr/bin/env bash
+# GPU time-share protocol for the shared 24 GB laptop GPU (see CLAUDE.md GPU RULE: at most ONE
+# process may use the GPU at any time). Every GPU-using runner is expected to wrap its work as:
+#
+#   scripts/gpu_session.sh acquire <name>
+#   scripts/gpu_session.sh assert-idle
+#   ... GPU work (e.g. `with-llama-server up` ... queries ... `with-llama-server down`) ...
+#   scripts/gpu_session.sh release <name>
+#
+# The lock is a single well-known file (not per-name), so only one owner can hold the GPU at a time.
+# It is a cooperative (advisory) lock, not a kernel-enforced mutex: it stops well-behaved runners from
+# racing each other, it does not stop a rogue process from touching the GPU directly.
+#
+# POSTMORTEM (2026-07-09, 224-cell wave-1 run, zero cells executed): `acquire`'s pid default is
+# `${GPU_SESSION_OWNER_PID:-$PPID}`. That is only correct when `acquire` is invoked DIRECTLY. If a
+# caller instead runs it inside a command substitution -- `out="$(bash gpu_session.sh acquire NAME)"`
+# (exactly what run_wave1.sh's gpu_acquire_polite did) -- bash forks a TRANSIENT subshell to host the
+# substitution, and `acquire`'s own $PPID resolves to THAT subshell's pid, not the long-lived caller's.
+# The transient subshell exits the instant `acquire` returns, so the very next liveness check (`pid
+# alive`) reports the lock STALE seconds later, even though the real caller (e.g. run_wave1.sh) is
+# still alive and mid-run. Verified empirically: `$$` (unlike `$PPID`) is NOT re-evaluated inside a
+# subshell -- it stays pinned to the outermost/login shell's pid -- so any caller that may be wrapped
+# in a subshell (command substitution, `( ... )`, a pipeline stage) MUST pass its own pid explicitly
+# via `acquire NAME --pid "$$"` rather than rely on the $PPID default. See `check` below for the
+# matching robust liveness query (used by run_baseline.py's assert_gpu_session_held instead of
+# grepping `status` text).
+set -euo pipefail
+
+DATA="${SPEECHRL_DATA_DIR:-$HOME/speechrl-data}"
+LOCKFILE="$DATA/_gpu.lock"
+
+LLAMACPP_DIR="${LLAMACPP_DIR:-$HOME/llama.cpp}"
+LLAMA_BIN="$LLAMACPP_DIR/build/bin/llama-server"
+GGUF_DIR="$DATA/models/qwen3-omni-30b-a3b-instruct-gguf"
+MERALION_DIR="$DATA/models/meralion-2-gguf"
+LLAMA_UP_TIMEOUT="${LLAMA_UP_TIMEOUT:-600}"   # seconds to poll for readiness; measured cold load ~4 min
+
+# ---- qwen3-omni-30b-gguf (legacy env-var names, kept for backward compat -- other scripts in
+# this repo default LLAMA_SERVER to http://127.0.0.1:8091, i.e. THIS model's port) ----
+LLAMA_MODEL="${LLAMA_MODEL:-$GGUF_DIR/Qwen3-Omni-30B-A3B-Instruct-Q8_0.gguf}"
+LLAMA_MMPROJ="${LLAMA_MMPROJ:-$GGUF_DIR/mmproj-Qwen3-Omni-30B-A3B-Instruct-bf16.gguf}"
+LLAMA_HOST="${LLAMA_HOST:-127.0.0.1}"
+LLAMA_PORT="${LLAMA_PORT:-8091}"
+LLAMA_NGL="${LLAMA_NGL:-28}"
+LLAMA_CTX="${LLAMA_CTX:-8192}"
+# -np/--cache-ram (2026-07-10, wave-3 batched-inference task brief item 2): server slot count and
+# KV-cache-reuse RAM budget, EXPLICIT now (previously never passed, so llama-server's own compiled
+# defaults applied implicitly: -np=-1 "auto", --cache-ram=8192 MiB "on"). Defaults below reproduce
+# those exact prior values -- wave-1/wave-2 (sequential, --parallel 1) are UNAFFECTED. Wave-3's
+# batched cells override via run_wave3.sh: LLAMA_NP=4 LLAMA_CTX=16384 (owner-approved smoke verdict:
+# mtmd-compatible, 0/24 greedy flips vs sequential, VRAM ~20.9GB, 1.75x wall-clock at K=4 no-cache).
+# --cache-ram is left at its default (still ON) per that same smoke -- greedy determinism is
+# unaffected and repeated-prefix cache wins are free, so there is no reason to disable it here.
+LLAMA_NP="${LLAMA_NP:--1}"
+LLAMA_CACHE_RAM="${LLAMA_CACHE_RAM:-8192}"
+LLAMA_PIDFILE="$DATA/_llama_server.pid"
+LLAMA_LOGFILE="$DATA/_llama_server.log"
+
+# ---- meralion-2-gguf (own port/pidfile/logfile so it can run alongside -- never simultaneously
+# with, GPU RULE is still one-at-a-time -- the qwen3 config above) ----
+MERALION_MODEL="${MERALION_MODEL:-$MERALION_DIR/meralion-3b-decoder-q8_0.gguf}"
+MERALION_MMPROJ="${MERALION_MMPROJ:-$MERALION_DIR/meralion-3b-mmproj-f16.gguf}"
+MERALION_HOST="${MERALION_HOST:-127.0.0.1}"
+MERALION_PORT="${MERALION_PORT:-8197}"
+MERALION_NGL="${MERALION_NGL:-99}"          # MERaLiON-2-3B is small enough to fit fully on-GPU
+MERALION_CTX="${MERALION_CTX:-8192}"
+# -np/--cache-ram overrides for meralion-2-gguf -- same 2026-07-10 wave-3 rationale as LLAMA_NP/
+# LLAMA_CACHE_RAM above; defaults reproduce the prior (never-explicitly-passed) behavior. Wave-3's
+# frozen cell list is qwen3-omni-30b-gguf only (see wave3_cells.py), so these stay at their
+# unchanged defaults in practice today, but are wired symmetrically for a future meralion wave.
+MERALION_NP="${MERALION_NP:--1}"
+MERALION_CACHE_RAM="${MERALION_CACHE_RAM:-8192}"
+MERALION_PIDFILE="$DATA/_llama_server_meralion.pid"
+MERALION_LOGFILE="$DATA/_llama_server_meralion.log"
+
+# ---- qwen3-omni-30b-gguf EMBEDDING-mode overlay (step-2 dual-mode serve, wiki/2026-07-10-step2
+# -grid-draft.md §5 item ⑤ "30B embedding server 模式与生成模式的 gpu_session 分时排程") -- SAME
+# GGUF+mmproj as the generate-mode config above, different llama-server flags/port/pidfile/logfile
+# so an embedding-mode resident server is a separate process from the generate-mode one (never
+# simultaneously with it in practice -- GPU RULE is still one-at-a-time; see `serve <key> up
+# --mode` / `window` below). Embedding-mode batch-builds are meant to slot into marathon GAPS, not
+# run alongside a live generate-mode server.
+LLAMA_EMBED_PORT="${LLAMA_EMBED_PORT:-8198}"
+LLAMA_EMBED_PIDFILE="$DATA/_llama_server_qwen3_embed.pid"
+LLAMA_EMBED_LOGFILE="$DATA/_llama_server_qwen3_embed.log"
+
+usage() {
+  cat <<EOF
+Usage: $(basename "$0") <command> [args]
+
+Commands:
+  acquire <name> [--pid P]  Take the exclusive GPU lock as <name>. Fails loudly (exit 1) if the
+                             lock is already held by a name whose pid is still alive. The pid
+                             recorded as the lock owner's liveness token is, in priority order:
+                             (1) --pid P if given, (2) \$GPU_SESSION_OWNER_PID if set, (3) \$PPID.
+                             ALWAYS pass --pid "\$\$" explicitly if you might invoke this from
+                             inside a subshell (command substitution, a pipeline stage, etc.) --
+                             \$PPID there is the transient subshell, not your real long-lived pid
+                             (see POSTMORTEM comment at the top of this file).
+  release <name>            Release the GPU lock. Refuses (exit 1) to release a lock held by a
+                             different, still-alive owner.
+  status                     Print current lock state (free / held / stale) and exit 0.
+  check <name>               Exit 0 iff the lock is HELD (owner's recorded pid alive), else exit 1
+                             with a diagnostic on stderr. Does NOT require the owner to equal
+                             <name> (advisory lock, any legitimate holder counts) -- only prints a
+                             NOTE to stderr if the names differ. This is the robust primitive
+                             run_baseline.py's assert_gpu_session_held uses instead of parsing
+                             \`status\` output.
+  assert-idle                Exit 0 iff \`nvidia-smi\` reports 0 compute processes; otherwise print
+                             the offending process list on stderr and exit 1.
+  with-llama-server up       Start the resident Qwen3-Omni-30B llama-server (GGUF via llama.cpp),
+                             writing a pidfile. No-op (exit 0) if already running. Back-compat
+                             alias for \`serve qwen3-omni-30b-gguf up\` (same model/port/pidfile).
+  with-llama-server down     Stop it via the pidfile: graceful SIGTERM, wait, SIGKILL if it does
+                             not exit within 30s. Alias for \`serve qwen3-omni-30b-gguf down\`.
+  serve <model-key> up [--mode generate|embedding]
+                             Start the resident llama-server for <model-key> (own port + pidfile +
+                             logfile per key/mode, see MODEL KEYS below). No-op if already running.
+                             \`--mode\` defaults to \`generate\` (unchanged prior behavior).
+                             \`--mode embedding\` is currently wired for qwen3-omni-30b-gguf ONLY
+                             (same GGUF+mmproj, extra \`--embedding --pooling last\` flags, its own
+                             port/pidfile/logfile -- see LLAMA_EMBED_* below); passing it for any
+                             other model-key dies with a clear error. Multiple DIFFERENT
+                             model-keys/modes may have pidfiles at once (e.g. left over from a
+                             previous session) but the GPU RULE (CLAUDE.md: at most ONE process may
+                             use the GPU) means only one should be launched at a time in practice --
+                             this script does not enforce that beyond the gpu_session lock itself,
+                             so always \`acquire\` first and \`down\` before switching (or use
+                             \`window\` below, which does this for you).
+  serve <model-key> down [--mode generate|embedding]
+                             Stop it via its pidfile (same SIGTERM/wait/SIGKILL semantics as above;
+                             \`--mode\` must match how it was started, so the right pidfile is used).
+  window <owner> <model-key> [--mode generate|embedding] -- <command...>
+                             Queue-friendly helper: acquire the GPU lock as <owner>, \`serve
+                             <model-key> up\` (mode as given), run <command...> to completion
+                             (inheriting this shell's environment), \`serve <model-key> down\`, then
+                             release the lock -- always tearing the server + lock down even if
+                             <command...> fails, and exiting with *its* exit code. Meant so an
+                             embedding batch-build can slot into a gap between wave-1 marathon
+                             cells without any caller hand-managing acquire/serve/release/down
+                             itself. All argument validation (missing owner/model-key/\`--\`/command,
+                             an invalid --mode) happens BEFORE touching the lock or spawning
+                             anything.
+
+MODEL KEYS (for \`serve\`/\`window\`):
+  qwen3-omni-30b-gguf   Qwen3-Omni-30B-A3B-Instruct Q8_0 GGUF. generate mode: port 8091, -ngl 28
+                        (see LLAMA_* below). embedding mode: SAME gguf+mmproj, port 8198 (see
+                        LLAMA_EMBED_* below), extra \`--embedding --pooling last\` flags, own
+                        pidfile/logfile so it never collides with a resident generate-mode server.
+  meralion-2-gguf       MERaLiON-2-3B GGUF (decoder q8_0 + mmproj f16), port 8197, -ngl 99
+                        (see MERALION_* below). generate mode only (embedding mode dies with a
+                        clear "not wired" error). Emits a "<Speaker1>: " turn-prefix in its
+                        replies -- callers must strip it before scoring (see run_baseline.py's
+                        gen_llamacpp).
+
+Env overrides:
+  SPEECHRL_DATA_DIR          data root (default \$HOME/speechrl-data); lock/pidfile/log live under it.
+  GPU_SESSION_OWNER_PID       pid recorded as the lock owner (default: \$PPID, i.e. the caller's shell).
+  LLAMACPP_DIR                 llama.cpp checkout (default \$HOME/llama.cpp), shared llama-server binary
+                                for every model key.
+  LLAMA_MODEL / LLAMA_MMPROJ / LLAMA_HOST / LLAMA_PORT / LLAMA_NGL / LLAMA_CTX / LLAMA_UP_TIMEOUT
+                                qwen3-omni-30b-gguf generate-mode launch overrides (defaults match
+                                wiki/Inference-Engine-Choice.md).
+  LLAMA_NP / LLAMA_CACHE_RAM    qwen3-omni-30b-gguf -np (server slot count, default -1 auto) /
+                                --cache-ram (KV-cache-reuse budget MiB, default 8192) overrides.
+                                2026-07-10 wave-3 batched inference sets LLAMA_NP=4 LLAMA_CTX=16384
+                                (see run_wave3.sh) -- defaults reproduce the prior implicit
+                                llama-server behavior for every wave-1/wave-2 (sequential) caller.
+  LLAMA_EMBED_PORT / LLAMA_EMBED_PIDFILE / LLAMA_EMBED_LOGFILE
+                                qwen3-omni-30b-gguf embedding-mode overrides (model/mmproj/ngl/ctx
+                                are shared with generate mode via LLAMA_MODEL/LLAMA_MMPROJ/etc.).
+  MERALION_MODEL / MERALION_MMPROJ / MERALION_HOST / MERALION_PORT / MERALION_NGL / MERALION_CTX
+                                meralion-2-gguf launch overrides (LLAMA_UP_TIMEOUT is shared).
+  MERALION_NP / MERALION_CACHE_RAM
+                                meralion-2-gguf -np / --cache-ram overrides (same defaults/rationale
+                                as LLAMA_NP/LLAMA_CACHE_RAM above; unused by wave-3's frozen cell
+                                list today, wired symmetrically for a future meralion wave).
+EOF
+}
+
+die() { echo "ERROR: $*" >&2; exit 1; }
+
+# pid_alive PID -> true iff PID is a plausible positive integer AND that process exists.
+pid_alive() {
+  case "${1:-}" in
+    ''|*[!0-9]*) return 1 ;;
+  esac
+  kill -0 "$1" 2>/dev/null
+}
+
+# lock_field KEY -> value of KEY=... in $LOCKFILE (empty if absent/no lock file).
+lock_field() {
+  [ -f "$LOCKFILE" ] || return 0
+  sed -n "s/^$1=//p" "$LOCKFILE" | head -n1
+}
+
+cmd_acquire() {
+  local name="${1:?Usage: gpu_session.sh acquire <name> [--pid <pid>]}"
+  shift
+  local explicit_pid=""
+  while [ $# -gt 0 ]; do
+    case "$1" in
+      --pid) explicit_pid="${2:?--pid requires a value}"; shift 2 ;;
+      *) die "cmd_acquire: unknown arg '$1' (usage: acquire <name> [--pid <pid>])" ;;
+    esac
+  done
+  # Priority: explicit --pid > $GPU_SESSION_OWNER_PID > $PPID. See the POSTMORTEM comment at the
+  # top of this file -- $PPID is WRONG whenever the caller runs `acquire` inside a subshell (e.g.
+  # command substitution); such callers must pass --pid "$$" explicitly.
+  local owner_pid="${explicit_pid:-${GPU_SESSION_OWNER_PID:-$PPID}}"
+  mkdir -p "$DATA"
+
+  if [ -e "$LOCKFILE" ]; then
+    local h_owner h_pid h_ts
+    h_owner="$(lock_field owner)"; h_pid="$(lock_field pid)"; h_ts="$(lock_field ts)"
+    if pid_alive "$h_pid"; then
+      echo "ERROR: GPU lock already held by '$h_owner' (pid $h_pid, since $h_ts)." >&2
+      echo "       Refusing to acquire for '$name'. If you are certain the holder is gone," >&2
+      echo "       verify with 'ps -p $h_pid' and remove $LOCKFILE by hand." >&2
+      exit 1
+    fi
+    echo "WARN: stale GPU lock (owner='$h_owner' pid=$h_pid is dead) - reclaiming for '$name'." >&2
+    rm -f "$LOCKFILE"
+  fi
+
+  # Atomic claim: `set -o noclobber` makes `: > file` fail (EEXIST) if a concurrent acquire won the
+  # race between our check above and here. Only the winner proceeds to write real lock content.
+  if ! ( set -o noclobber; : > "$LOCKFILE" ) 2>/dev/null; then
+    die "lock file appeared concurrently (lost the race to acquire) - another process just took it for '$name'."
+  fi
+  {
+    printf 'owner=%s\n' "$name"
+    printf 'pid=%s\n' "$owner_pid"
+    printf 'ts=%s\n' "$(date -u +%FT%TZ)"
+    printf 'host=%s\n' "$(hostname)"
+  } > "$LOCKFILE"
+  echo "acquired GPU lock: owner=$name pid=$owner_pid ts=$(lock_field ts)"
+}
+
+cmd_release() {
+  local name="${1:?Usage: gpu_session.sh release <name>}"
+  if [ ! -f "$LOCKFILE" ]; then
+    echo "no GPU lock held (nothing to release for '$name')"
+    return 0
+  fi
+  local h_owner h_pid
+  h_owner="$(lock_field owner)"; h_pid="$(lock_field pid)"
+  if [ "$h_owner" != "$name" ] && pid_alive "$h_pid"; then
+    echo "ERROR: GPU lock is held by '$h_owner' (pid $h_pid, alive), not '$name'." >&2
+    echo "       Refusing to release someone else's live lock." >&2
+    exit 1
+  fi
+  rm -f "$LOCKFILE"
+  echo "released GPU lock (was owner=$h_owner pid=$h_pid)"
+}
+
+cmd_status() {
+  if [ ! -f "$LOCKFILE" ]; then
+    echo "GPU lock: FREE ($LOCKFILE does not exist)"
+    return 0
+  fi
+  local h_owner h_pid h_ts h_host
+  h_owner="$(lock_field owner)"; h_pid="$(lock_field pid)"; h_ts="$(lock_field ts)"; h_host="$(lock_field host)"
+  if pid_alive "$h_pid"; then
+    echo "GPU lock: HELD by owner='$h_owner' pid=$h_pid host=$h_host since=$h_ts (pid alive)"
+  else
+    echo "GPU lock: STALE owner='$h_owner' pid=$h_pid host=$h_host since=$h_ts (pid NOT alive; next acquire reclaims)"
+  fi
+}
+
+cmd_check() {
+  local name="${1:?Usage: gpu_session.sh check <name>}"
+  if [ ! -f "$LOCKFILE" ]; then
+    echo "GPU lock: NOT HELD (no lock file) -- checked for '$name'" >&2
+    return 1
+  fi
+  local h_owner h_pid h_ts
+  h_owner="$(lock_field owner)"; h_pid="$(lock_field pid)"; h_ts="$(lock_field ts)"
+  if ! pid_alive "$h_pid"; then
+    echo "GPU lock: STALE (owner='$h_owner' pid=$h_pid dead since=$h_ts) -- checked for '$name'" >&2
+    return 1
+  fi
+  if [ "$h_owner" != "$name" ]; then
+    echo "NOTE: GPU lock held by a different owner ('$h_owner' pid=$h_pid, alive) than checked" >&2
+    echo "      name '$name' -- still counts as HELD (advisory lock, identity is informational)." >&2
+  fi
+  echo "GPU lock: HELD by owner='$h_owner' pid=$h_pid since=$h_ts (checked for '$name')"
+  return 0
+}
+
+cmd_assert_idle() {
+  command -v nvidia-smi >/dev/null 2>&1 || die "nvidia-smi not found on PATH"
+  local procs
+  procs="$(nvidia-smi --query-compute-apps=pid,process_name,used_memory --format=csv,noheader 2>/dev/null || true)"
+  if [ -n "$procs" ]; then
+    echo "ERROR: GPU not idle - compute processes present:" >&2
+    echo "$procs" >&2
+    exit 1
+  fi
+  echo "GPU idle: 0 compute processes"
+}
+
+# _model_cfg <model-key> [mode] -- sets the M_* globals (label/model/mmproj/host/port/ngl/ctx/
+# pidfile/logfile/timeout/extra-flags) for a known model key + mode. One place to add a new GGUF
+# backbone or mode (extend the case). mode defaults to "generate" (unchanged prior behavior for
+# every existing caller that never passes one).
+_model_cfg() {
+  local key="${1:?_model_cfg: missing model-key}"
+  local mode="${2:-generate}"
+  case "$mode" in
+    generate|embedding) ;;
+    *) die "_model_cfg: unknown mode '$mode' for model-key '$key' (expected 'generate' or 'embedding')" ;;
+  esac
+  M_EXTRA_FLAGS=""   # always assigned (set -u) -- overridden below only for qwen3 embedding mode
+  case "$key" in
+    qwen3-omni-30b-gguf)
+      M_MODEL="$LLAMA_MODEL"; M_MMPROJ="$LLAMA_MMPROJ"
+      M_HOST="$LLAMA_HOST"
+      M_NGL="$LLAMA_NGL"; M_CTX="$LLAMA_CTX"
+      M_NP="$LLAMA_NP"; M_CACHE_RAM="$LLAMA_CACHE_RAM"
+      if [ "$mode" = "embedding" ]; then
+        M_LABEL="Qwen3-Omni-30B (embedding mode)"
+        M_PORT="$LLAMA_EMBED_PORT"
+        M_PIDFILE="$LLAMA_EMBED_PIDFILE"; M_LOGFILE="$LLAMA_EMBED_LOGFILE"
+        M_EXTRA_FLAGS="--embedding --pooling last"
+      else
+        M_LABEL="Qwen3-Omni-30B"
+        M_PORT="$LLAMA_PORT"
+        M_PIDFILE="$LLAMA_PIDFILE"; M_LOGFILE="$LLAMA_LOGFILE"
+      fi
+      ;;
+    meralion-2-gguf)
+      [ "$mode" = "generate" ] || die "_model_cfg: mode='$mode' is not wired for meralion-2-gguf" \
+        "(embedding mode is qwen3-omni-30b-gguf only for now -- see gpu_session.sh's dual-mode note)"
+      M_LABEL="MERaLiON-2"
+      M_MODEL="$MERALION_MODEL"; M_MMPROJ="$MERALION_MMPROJ"
+      M_HOST="$MERALION_HOST"; M_PORT="$MERALION_PORT"
+      M_NGL="$MERALION_NGL"; M_CTX="$MERALION_CTX"
+      M_NP="$MERALION_NP"; M_CACHE_RAM="$MERALION_CACHE_RAM"
+      M_PIDFILE="$MERALION_PIDFILE"; M_LOGFILE="$MERALION_LOGFILE"
+      ;;
+    *) die "unknown model-key '$key' (known: qwen3-omni-30b-gguf, meralion-2-gguf)" ;;
+  esac
+  M_UP_TIMEOUT="$LLAMA_UP_TIMEOUT"
+}
+
+# serve_up <model-key> [mode] -- generic resident-llama-server launcher, parameterized via
+# _model_cfg. Replaces the old qwen3-only llama_up() (identical polling/pidfile semantics, just
+# not hardcoded to one model) so a second GGUF backbone (meralion-2-gguf) or a second MODE
+# (qwen3's embedding overlay) does not need a copy-pasted twin.
+serve_up() {
+  local key="${1:?Usage: gpu_session.sh serve <model-key> up}"
+  local mode="${2:-generate}"
+  _model_cfg "$key" "$mode"
+  if [ -f "$M_PIDFILE" ]; then
+    local p; p="$(cat "$M_PIDFILE")"
+    if pid_alive "$p"; then
+      echo "llama-server ($M_LABEL) already running (pid $p, pidfile $M_PIDFILE) - not starting a second one."
+      return 0
+    fi
+    echo "WARN: stale $M_LABEL pidfile (pid $p is dead) - cleaning up." >&2
+    rm -f "$M_PIDFILE"
+  fi
+  [ -x "$LLAMA_BIN" ] || die "llama-server binary not found/executable: $LLAMA_BIN"
+  [ -f "$M_MODEL" ] || die "model GGUF not found: $M_MODEL"
+  [ -f "$M_MMPROJ" ] || die "mmproj GGUF not found: $M_MMPROJ"
+  mkdir -p "$DATA"
+
+  echo "starting resident llama-server: $M_LABEL, -ngl $M_NGL -c $M_CTX -np $M_NP --cache-ram $M_CACHE_RAM, $M_HOST:$M_PORT" \
+       "${M_EXTRA_FLAGS:+(extra flags: $M_EXTRA_FLAGS)} ..."
+  # Exact flag shape per scripts/repro_asr_best_of_n_llamacpp.py:16-20 / wiki/Inference-Engine-Choice.md.
+  # $M_EXTRA_FLAGS is intentionally unquoted -- it is either empty (generate mode, vanishes under
+  # word-splitting, no stray arg) or a fixed, space-separated flag string ("--embedding --pooling
+  # last" for qwen3 embedding mode) that must split into separate argv words.
+  # -np/--cache-ram (2026-07-10, wave-3 batched-inference task brief item 2): now ALWAYS explicit
+  # (see M_NP/M_CACHE_RAM in _model_cfg) -- default -1/8192 reproduce the previously-implicit
+  # llama-server compiled defaults exactly, so wave-1/wave-2 (sequential) behavior is unchanged;
+  # run_wave3.sh overrides via LLAMA_NP=4 LLAMA_CTX=16384 for its batched (--parallel 4) cells.
+  LD_LIBRARY_PATH="$LLAMACPP_DIR/build/bin${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" \
+    "$LLAMA_BIN" \
+      -m "$M_MODEL" \
+      --mmproj "$M_MMPROJ" \
+      -ngl "$M_NGL" -c "$M_CTX" -np "$M_NP" --cache-ram "$M_CACHE_RAM" \
+      --host "$M_HOST" --port "$M_PORT" --no-warmup $M_EXTRA_FLAGS \
+      >"$M_LOGFILE" 2>&1 &
+  local newpid=$!
+  echo "$newpid" > "$M_PIDFILE"
+  echo "launched llama-server ($M_LABEL) pid=$newpid log=$M_LOGFILE pidfile=$M_PIDFILE"
+
+  echo "polling http://$M_HOST:$M_PORT/health for readiness (timeout ${M_UP_TIMEOUT}s) ..."
+  local waited=0
+  while [ "$waited" -lt "$M_UP_TIMEOUT" ]; do
+    if ! pid_alive "$newpid"; then
+      rm -f "$M_PIDFILE"
+      die "llama-server ($M_LABEL) exited during startup - see $M_LOGFILE"
+    fi
+    if command -v curl >/dev/null 2>&1 && curl -sf "http://$M_HOST:$M_PORT/health" >/dev/null 2>&1; then
+      echo "llama-server ($M_LABEL) ready (pid=$newpid) after ${waited}s"
+      return 0
+    fi
+    sleep 5
+    waited=$((waited + 5))
+  done
+  echo "WARN: ($M_LABEL) not confirmed ready after ${M_UP_TIMEOUT}s (pid=$newpid still running - may still be loading; check $M_LOGFILE)" >&2
+}
+
+# serve_down <model-key> [mode] -- generic counterpart to serve_up (identical SIGTERM/wait/SIGKILL
+# semantics as the old llama_down()). mode MUST match how it was started -- it selects the pidfile
+# (generate vs. embedding overlay have different pidfiles for qwen3-omni-30b-gguf).
+serve_down() {
+  local key="${1:?Usage: gpu_session.sh serve <model-key> down}"
+  local mode="${2:-generate}"
+  _model_cfg "$key" "$mode"
+  if [ ! -f "$M_PIDFILE" ]; then
+    echo "no $M_LABEL pidfile ($M_PIDFILE) - nothing to stop"
+    return 0
+  fi
+  local p; p="$(cat "$M_PIDFILE")"
+  if ! pid_alive "$p"; then
+    echo "WARN: pidfile pid $p not alive - removing stale pidfile." >&2
+    rm -f "$M_PIDFILE"
+    return 0
+  fi
+  echo "stopping llama-server ($M_LABEL) pid=$p (SIGTERM) ..."
+  kill -TERM "$p" 2>/dev/null || true
+  local waited=0
+  while pid_alive "$p" && [ "$waited" -lt 30 ]; do
+    sleep 1
+    waited=$((waited + 1))
+  done
+  if pid_alive "$p"; then
+    echo "WARN: pid $p still alive after 30s SIGTERM wait - sending SIGKILL." >&2
+    kill -KILL "$p" 2>/dev/null || true
+    sleep 1
+  fi
+  rm -f "$M_PIDFILE"
+  echo "llama-server ($M_LABEL) stopped"
+}
+
+cmd_serve() {
+  local usage_msg="Usage: gpu_session.sh serve <model-key> <up|down> [--mode generate|embedding]"
+  local key="${1:?$usage_msg}"
+  local action="${2:?$usage_msg}"
+  shift 2
+  local mode="generate"
+  while [ $# -gt 0 ]; do
+    case "$1" in
+      --mode) mode="${2:?--mode requires a value}"; shift 2 ;;
+      *) echo "$usage_msg" >&2; exit 2 ;;
+    esac
+  done
+  case "$mode" in
+    generate|embedding) ;;
+    *) die "cmd_serve: --mode must be 'generate' or 'embedding' (got '$mode')" ;;
+  esac
+  case "$action" in
+    up) serve_up "$key" "$mode" ;;
+    down) serve_down "$key" "$mode" ;;
+    *) echo "$usage_msg" >&2; exit 2 ;;
+  esac
+}
+
+# with-llama-server up/down -- back-compat alias for `serve qwen3-omni-30b-gguf <up|down>` (same
+# model/port/pidfile as before this generalization; every existing caller keeps working unchanged).
+cmd_with_llama_server() {
+  case "${1:-}" in
+    up) serve_up qwen3-omni-30b-gguf ;;
+    down) serve_down qwen3-omni-30b-gguf ;;
+    *) echo "Usage: gpu_session.sh with-llama-server <up|down>" >&2; exit 2 ;;
+  esac
+}
+
+# window <owner> <model-key> [--mode generate|embedding] -- <command...> -- queue-friendly
+# acquire+serve-up+run+serve-down+release helper (see usage()'s longer description). ALL argument
+# validation happens before cmd_acquire/serve_up are ever called, so a malformed invocation never
+# touches the GPU lock or spawns a server.
+cmd_window() {
+  local usage_msg="Usage: gpu_session.sh window <owner> <model-key> [--mode generate|embedding] -- <command...>"
+  local owner="${1:?$usage_msg}"
+  shift
+  local model_key="${1:?$usage_msg}"
+  shift
+  local mode="generate"
+  local saw_dashdash=0
+  while [ $# -gt 0 ]; do
+    case "$1" in
+      --mode) mode="${2:?--mode requires a value}"; shift 2 ;;
+      --) saw_dashdash=1; shift; break ;;
+      *) die "cmd_window: unexpected arg '$1' before '--' ($usage_msg)" ;;
+    esac
+  done
+  [ "$saw_dashdash" -eq 1 ] || die "cmd_window: missing '--' separator before the command ($usage_msg)"
+  case "$mode" in
+    generate|embedding) ;;
+    *) die "cmd_window: --mode must be 'generate' or 'embedding' (got '$mode')" ;;
+  esac
+  [ $# -gt 0 ] || die "cmd_window: no command given after '--' ($usage_msg)"
+
+  echo "[window] acquiring GPU lock as '$owner' ..."
+  cmd_acquire "$owner" --pid "$$"
+  echo "[window] serving '$model_key' (mode=$mode) ..."
+  serve_up "$model_key" "$mode"
+  echo "[window] running: $*"
+  local rc=0
+  "$@" || rc=$?
+  echo "[window] command exited $rc; stopping '$model_key' (mode=$mode) ..."
+  serve_down "$model_key" "$mode"
+  echo "[window] releasing GPU lock '$owner' ..."
+  cmd_release "$owner"
+  exit "$rc"
+}
+
+main() {
+  local cmd="${1:-help}"
+  if [ $# -gt 0 ]; then shift; fi
+  case "$cmd" in
+    acquire) cmd_acquire "$@" ;;
+    release) cmd_release "$@" ;;
+    status) cmd_status ;;
+    check) cmd_check "$@" ;;
+    assert-idle) cmd_assert_idle ;;
+    with-llama-server) cmd_with_llama_server "$@" ;;
+    serve) cmd_serve "$@" ;;
+    window) cmd_window "$@" ;;
+    help|-h|--help) usage ;;
+    *) echo "Unknown command: $cmd" >&2; usage >&2; exit 2 ;;
+  esac
+}
+
+main "$@"

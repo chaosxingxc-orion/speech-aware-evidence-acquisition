@@ -28,3 +28,4 @@ the copy-and-verify protocol. If never adopted, this directory is deletable.
 
 | baselines/repro_asr_best_of_n_v2.py | scripts/repro_asr_best_of_n_v2.py (W1 @ `28d8f0d`; llama-server best-of-N with the proven livelock fix bundle) |
 | baselines/repro_asr_best_of_n_llamacpp.py | scripts/repro_asr_best_of_n_llamacpp.py (W1 @ `f9d111a`; original genuine best-of-N runner) |
+| gpu_session.sh | scripts/gpu_session.sh (W1 @ `7ed41f62`; GPU serving-session harness with LLAMA_CACHE_RAM knob) |
