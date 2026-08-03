@@ -25,3 +25,6 @@ the copy-and-verify protocol. If never adopted, this directory is deletable.
 | knowledge/kb_retrieve.py | scripts/knowledge/kb_retrieve.py |
 | knowledge/kb_schema.py | scripts/knowledge/kb_schema.py |
 | knowledge/corpus_lock.py | scripts/knowledge/corpus_lock.py |
+
+| baselines/repro_asr_best_of_n_v2.py | scripts/repro_asr_best_of_n_v2.py (W1 @ `28d8f0d`; llama-server best-of-N with the proven livelock fix bundle) |
+| baselines/repro_asr_best_of_n_llamacpp.py | scripts/repro_asr_best_of_n_llamacpp.py (W1 @ `f9d111a`; original genuine best-of-N runner) |
