@@ -1,0 +1,42 @@
+name: ci
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.12"
+
+      - name: Sync locked environment
+        run: uv sync --frozen
+
+      - name: Build distributions
+        run: uv run python -m build
+        env:
+          UV_NO_SYNC: "1"
+
+      - name: Run tests (fails on zero collected tests)
+        run: uv run pytest -q
+
+  clean-clone-reproduction:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.12"
+      - name: Pre-R0 entrypoints must refuse
+        run: |
+          set +e
+          bash scripts/reproduce.sh; r1=$?
+          bash scripts/evaluate.sh; r2=$?
+          test "$r1" -eq 2 && test "$r2" -eq 2

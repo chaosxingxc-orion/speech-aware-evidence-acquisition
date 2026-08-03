@@ -1,0 +1,9 @@
+# Frozen-core identity by lock key only. Bytes, revisions and per-file hashes live in the
+# umbrella docs/datasets.lock.json and SPEECHRL_DATA_DIR; they never enter this repository.
+lock_key: qwen3-omni-30b-a3b-instruct-gguf
+role: frozen-core
+serving:
+  engine: llama-server
+  resident: true
+  ngl: 28
+runtime_receipt_required: true  # fail-closed: no model call without the E0 runtime receipt

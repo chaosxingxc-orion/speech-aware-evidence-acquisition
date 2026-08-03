@@ -1,0 +1,12 @@
+# E0: model-free data closure. No frozen-core call is authorized while this stage is open.
+experiment_namespace: AAEA-E
+stage: E0
+model_touch: false
+deliverables:
+  d1_identity: OPEN     # carrier/lock identity alignment receipts
+  d2_leakage: OPEN      # leakage negative controls
+  d3_scoring: OPEN      # scoring stack freeze
+  d4_trace: OPEN        # ten-sample end-to-end trace (model-free)
+gate:
+  e0_receipt: docs/receipts/e0-closure.json        # consumed by contracts.FrozenCoreGate
+  runtime_receipt: docs/receipts/runtime.json      # llama.cpp build commit + per-file GGUF sha256

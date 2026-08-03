@@ -1,0 +1,8 @@
+# Carrier identity by lock key only; canonical revision/hash authority is the umbrella
+# docs/datasets.lock.json. Loaders resolve bytes under SPEECHRL_DATA_DIR, never from Git.
+lock_key: earnings21-original
+role: carrier
+splits:
+  policy: discovery-confirmatory-disjoint  # v20 carrier-family contract, derivation seed 20260803
+boundary:
+  gold_at_runtime: forbidden  # enforced by contracts.assert_information_boundary

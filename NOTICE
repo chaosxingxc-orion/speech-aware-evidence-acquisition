@@ -1,0 +1,12 @@
+NOTICE — provenance of bundled reference material
+
+reference/w1-snapshot/ (thirteen files) is a verbatim quarantined snapshot rescued on 2026-08-03
+from the program's own retired W1 work repository
+(https://github.com/chaosxingxc-orion/speech-mllm-training-free-rl.git; local checkout retired,
+remote retained as a cold backup). All thirteen files were authored inside the research program;
+no third-party code is included. Per-file source commits and SHA-256 hashes:
+reference/w1-snapshot/SNAPSHOT.md and SHA256SUMS.
+
+The snapshot is QUARANTINED_REFERENCE_NOT_EXECUTABLE: it is not part of the installed package,
+is never imported by production code, and is covered by the repository LICENSE (all rights
+reserved, private stage).

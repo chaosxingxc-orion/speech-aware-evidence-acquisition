@@ -7,6 +7,20 @@ name = "audio-aware-evidence-acquisition"
 version = "0.0.1"
 description = "Training-free, reward-guided audio-aware evidence acquisition over a frozen speech/omni core (API-only)."
 requires-python = ">=3.12"
+license = { file = "LICENSE" }
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8",
+    "build>=1.2",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8",
+    "build>=1.2",
+]
 
 [tool.setuptools.packages.find]
 where = ["src"]

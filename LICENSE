@@ -1,0 +1,13 @@
+Copyright (c) 2026 the exploring-l4-intelligence research program owner.
+All rights reserved.
+
+Private-stage license policy (Stage-2A, recorded 2026-08-03): this repository is a private
+research codebase. No license is granted to use, copy, modify, distribute, or create derivative
+works of any part of it outside the exploring-l4-intelligence research program. Contributions made
+inside the program are governed by the program's owner execution contract.
+
+A public license, if any, is decided by the owner at the first publication transaction and will
+replace this file by a dated commit. Until then, all rights are reserved.
+
+Third-party code: none is vendored in this repository; see NOTICE for the provenance of the
+quarantined program-internal reference snapshot.

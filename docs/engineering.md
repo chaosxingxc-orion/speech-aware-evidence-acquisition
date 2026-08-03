@@ -29,5 +29,14 @@ readiness-qualified closest-prior smoke/reproduction attempt; go/narrow/repair/s
 
 ## Licensing
 
-No LICENSE file yet: private repository during Stage-2A; license is decided at first publication
-transaction (owner decision).
+Private-stage policy recorded in `LICENSE` (2026-08-03): all rights reserved while the repository
+is private; a public license, if any, is an owner decision at the first publication transaction.
+`NOTICE` records the provenance of the quarantined `reference/w1-snapshot/` files (program-internal
+W1 authorship; no third-party code vendored).
+
+## Quality gate
+
+`pytest` must collect at least one test and pass (CI treats pytest exit code 5 — no tests
+collected — as failure). The model-free contract tests under `tests/contract/` are the E0
+engineering floor: information boundary, OBS/SUPPLY trace separation, exposure schema,
+frozen-core entry gate, snapshot quarantine, governance alignment and pre-R0 entrypoint refusal.
