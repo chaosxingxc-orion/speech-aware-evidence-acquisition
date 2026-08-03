@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.venv/
+
+# Never commit data, weights, audio or raw traces (SPEECHRL_DATA_DIR owns bytes)
+data/
+datasets/
+checkpoints/
+outputs/
+runs/
+logs/
+mlruns/
+mlartifacts/
+*.pt
+*.pth
+*.safetensors
+*.bin
+*.gguf
+*.wav
+*.mp3
+*.flac
+*.npy
+*.npz
+*.parquet
+*.arrow
+*.tar
+*.tar.gz
+*.zip
+*.log
+
+# Re-include source data module (code, not datasets)
+!src/audio_aware_evidence_acquisition/data/
+!src/audio_aware_evidence_acquisition/data/**
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
