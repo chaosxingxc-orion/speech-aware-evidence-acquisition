@@ -33,6 +33,11 @@ docs/           engineering.md, migration-manifest.md, exposure-ledger.md
 
 ```bash
 # WSL2 Ubuntu-24.04, ~/.venvs/speechrl (Python 3.12)
-uv pip install -e ../../common -e .
+uv pip install -e ".[dev]"
 pytest
 ```
+
+This repository currently has **no dependency on `speechrl_common`** (nothing in `src/` imports
+it). If a module is ever consumed, it enters via the pin policy in
+`docs/migration-manifest.md`: exact umbrella commit pin + `uv.lock`; `../../common` editable
+installs are a local development override only.

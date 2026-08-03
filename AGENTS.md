@@ -37,7 +37,8 @@ sha256）。每次模型/工具触达记 `docs/exposure-ledger.md`。
 ## 环境
 
 - 计算在 WSL2 `Ubuntu-24.04`（默认 `Ubuntu` 是 WSL1 无 GPU）；Python 3.12 在
-  `~/.venvs/speechrl`。安装：`uv pip install -e ../../common -e .`。
+  `~/.venvs/speechrl`。安装：`uv pip install -e ".[dev]"`（本仓目前不依赖 `speechrl_common`；
+  若将来消费，走 `docs/migration-manifest.md` 的精确 commit pin 政策，`../../common` 仅限本地开发覆盖）。
 - 推理：llama.cpp llama-server 常驻（GGUF `-ngl 28`，30B 于 24 GB）。
 - 测试：`pytest`；复现入口：`bash scripts/reproduce.sh`（R0 交付后生效）。
 
