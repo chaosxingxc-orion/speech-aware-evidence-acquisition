@@ -1,0 +1,23 @@
+{
+  "gguf_files": [
+    {
+      "bytes": 32484494336,
+      "path": "models/qwen3-omni-30b-a3b-instruct-gguf/Qwen3-Omni-30B-A3B-Instruct-Q8_0.gguf",
+      "sha256": "8a50e5a7d29ae6a28fea9ca45e3bb0a142e76ec07e6787a7703cd498eb08ffaa"
+    },
+    {
+      "bytes": 2207465568,
+      "path": "models/qwen3-omni-30b-a3b-instruct-gguf/mmproj-Qwen3-Omni-30B-A3B-Instruct-bf16.gguf",
+      "sha256": "f0dfe825fb692d426362b1ac79678fc08daa4758f7151526cad110515f122883"
+    }
+  ],
+  "llama_cpp": {
+    "binary_bytes": 17920,
+    "binary_path": "llama.cpp/build/bin/llama-server",
+    "binary_sha256": "6071c2c1d4b28a1c61c355e0d0ac66eaa0aa31c8a4ed6457acae2360c3a7bdb8",
+    "build_commit": "fdbd6abee20e408de21e90ca77a24cd50a6ea073"
+  },
+  "model_lock_key": "qwen3-omni-30b-a3b-instruct-gguf",
+  "schema": "saea-runtime-receipt-v1",
+  "study": "speech-aware-evidence-acquisition"
+}

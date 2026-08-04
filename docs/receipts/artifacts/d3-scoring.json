@@ -1,0 +1,127 @@
+{
+  "artifact_kind": "saea-e0-d3-scoring-v1",
+  "freeze_rule": "Any edit to a frozen source changes its SHA-256, invalidates this artifact hash inside e0-closure.json and re-closes the model gate; a new scoring version requires a new dated artifact, never an in-place edit.",
+  "frozen_sources_sha256": {
+    "src/speech_aware_evidence_acquisition/scoring/__init__.py": "a77d5e700ce5442e2ed806a23aec20cdcdbd0ea3f03c2805aee51b91ec942cfd",
+    "src/speech_aware_evidence_acquisition/scoring/entity.py": "9631aa0dc4964c38e1c4c6f499f09e605fe9eb79bac87511f01728071dd0c1cd",
+    "src/speech_aware_evidence_acquisition/scoring/normalize.py": "0a2b06b566f99048567b9232bc9719cb7aaa612f41cf727258dda4a5f3f032ac",
+    "src/speech_aware_evidence_acquisition/scoring/qa.py": "78a28f34592c831cb26928bc03773b7fc0d65c21e4917c95b9819b0ec0667a83",
+    "src/speech_aware_evidence_acquisition/scoring/transitions.py": "6d603e4ab37324e299072318f750b489ab673f1b73f30a026220968bc02aad0a",
+    "src/speech_aware_evidence_acquisition/scoring/wer.py": "a629ad4f23fa46dac7d1168f93ace8b0da7b301cbd99956acc2c7c22e18a01a5"
+  },
+  "generated": "2026-08-04",
+  "golden_vectors": {
+    "all_matched": true,
+    "executed": 8,
+    "vectors": [
+      {
+        "case": "normalize/entity-rich",
+        "expected": "the cfo mr o'brien said ebitda up 12",
+        "input": "The CFO, Mr. O’Brien — said: ‘EBITDA up 12%’",
+        "observed": "the cfo mr o'brien said ebitda up 12"
+      },
+      {
+        "case": "normalize/tokens",
+        "expected": [
+          "semi",
+          "annual",
+          "results"
+        ],
+        "input": "Semi-annual  results…",
+        "observed": [
+          "semi",
+          "annual",
+          "results"
+        ]
+      },
+      {
+        "case": "wer/sub+ins",
+        "expected": {
+          "deletions": 0,
+          "hits": 3,
+          "insertions": 1,
+          "ref_hit_mask": [
+            true,
+            false,
+            true,
+            true
+          ],
+          "substitutions": 1,
+          "wer": 0.5
+        },
+        "observed": {
+          "deletions": 0,
+          "hits": 3,
+          "insertions": 1,
+          "ref_hit_mask": [
+            true,
+            false,
+            true,
+            true
+          ],
+          "substitutions": 1,
+          "wer": 0.5
+        }
+      },
+      {
+        "case": "wer/empty-empty",
+        "expected": {
+          "errors": 0,
+          "wer": 0.0
+        },
+        "observed": {
+          "errors": 0,
+          "wer": 0.0
+        }
+      },
+      {
+        "case": "entity/multiset",
+        "expected": {
+          "f1": 0.666666666667,
+          "precision": 0.666666666667,
+          "recall": 0.666666666667,
+          "true_positives": 2
+        },
+        "observed": {
+          "f1": 0.666666666667,
+          "precision": 0.666666666667,
+          "recall": 0.666666666667,
+          "true_positives": 2
+        }
+      },
+      {
+        "case": "qa/exact-match",
+        "expected": true,
+        "observed": true
+      },
+      {
+        "case": "qa/token-f1",
+        "expected": 0.857142857143,
+        "observed": 0.857142857143
+      },
+      {
+        "case": "transitions/token-level",
+        "expected": {
+          "correct_to_correct": 2,
+          "correct_to_wrong": 1,
+          "wrong_to_correct": 1,
+          "wrong_to_wrong": 0
+        },
+        "observed": {
+          "correct_to_correct": 2,
+          "correct_to_wrong": 1,
+          "wrong_to_correct": 1,
+          "wrong_to_wrong": 0
+        }
+      }
+    ]
+  },
+  "scoring_stack_version": "saea-scoring-v1",
+  "semantics": {
+    "entity": "multiset precision/recall/F1 over normalized entity strings",
+    "normalization": "NFKC + casefold; apostrophe variants -> ASCII; dashes and non-alphanumerics -> space; only intra-word apostrophes survive; whitespace collapsed; no number expansion (v1)",
+    "qa": "SQuAD-style best-over-answers exact match and token F1",
+    "transitions": "correct-to-wrong / wrong-to-correct at token level (ASR, via hit masks) and item level (QA/entity, via boolean flags)",
+    "wer": "unit-cost Levenshtein over normalized tokens; deterministic backtrace preference match/substitution > deletion > insertion; per-reference-token hit mask is the transition substrate"
+  }
+}

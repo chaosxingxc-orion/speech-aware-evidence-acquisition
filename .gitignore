@@ -36,8 +36,9 @@ mlartifacts/
 *.log
 
 # Re-include source data module (code, not datasets)
-!src/audio_aware_evidence_acquisition/data/
-!src/audio_aware_evidence_acquisition/data/**
+!src/speech_aware_evidence_acquisition/data/
+!src/speech_aware_evidence_acquisition/data/**
+src/speech_aware_evidence_acquisition/data/__pycache__/
 
 # OS / editor
 .DS_Store

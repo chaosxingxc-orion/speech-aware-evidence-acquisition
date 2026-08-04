@@ -46,6 +46,21 @@ is private; a public license, if any, is an owner decision at the first publicat
 `NOTICE` records the provenance of the quarantined `reference/w1-snapshot/` files (program-internal
 W1 authorship; no third-party code vendored).
 
+## E0 closure state (2026-08-04)
+
+E0 D1–D4 are CLOSED and machine-bound: `docs/receipts/e0-closure.json` binds the four
+deliverable artifacts under `docs/receipts/artifacts/` (identity, leakage negative
+controls, scoring freeze, ten-sample four-axis trace) by re-measured SHA-256; the
+runtime receipt `docs/receipts/runtime.json` pins the llama.cpp build commit, the
+re-hashed `llama-server` binary and the per-file GGUF SHA-256 against the umbrella
+lock. Generators (model-free, stdlib-only):
+`python -m speech_aware_evidence_acquisition.e0.generate d1|d2|d3|d4|close|runtime|verify`
+(`verify` is a gate dry run against the real `contracts.FrozenCoreGate`; it touches no
+model). The D4 sample selection is the upstream-curated Earnings22 `subset10` (dev
+carrier); the closure event is registered in `docs/exposure-ledger.md`
+(`SAEA-E0-CLOSURE-2026-08-04`, model-free, consumed=no). Editing any frozen scoring
+source or receipt artifact breaks its recorded hash and re-closes the model gate.
+
 ## Quality gate
 
 `pytest` must collect at least one test and pass (CI treats pytest exit code 5 — no tests

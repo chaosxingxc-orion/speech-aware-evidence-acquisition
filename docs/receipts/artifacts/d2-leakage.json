@@ -1,0 +1,322 @@
+{
+  "artifact_kind": "saea-e0-d2-leakage-v1",
+  "dependency_surface": {
+    "note": "No dataset/audio library can pull excluded assets into the E0 dependency graph.",
+    "project_dependencies": []
+  },
+  "enforcement_points": [
+    "contracts.assert_information_boundary (runtime payload choke point)",
+    "contracts.TraceRecord.validate (axis namespace separation)",
+    "data.loader.SampleRef.runtime_view (loader-side boundary check)",
+    "tests/contract (CI-enforced, fails closed)"
+  ],
+  "forbidden_runtime_fields": [
+    "answer_key",
+    "future_turn",
+    "future_turns",
+    "gold",
+    "gold_answer",
+    "gold_label",
+    "gold_transcript",
+    "reference",
+    "reference_answer",
+    "reference_transcript",
+    "test_annotation",
+    "test_label"
+  ],
+  "general_audio_exclusion": {
+    "configured_lock_keys": [
+      "conec",
+      "earnings21-original",
+      "earnings22-original",
+      "qwen3-omni-30b-a3b-instruct-gguf"
+    ],
+    "excluded_lock_keys": [
+      "fsd50k",
+      "audioset-metadata-features",
+      "esc-50"
+    ],
+    "excluded_lock_keys_source": "configs/experiment/e0-model-free-closure.yaml",
+    "note": "Excluded general-audio assets are named only by the experiment config and this receipt; package code never references them.",
+    "package_source_mentions": [],
+    "umbrella_lock_profiles": {
+      "audioset-metadata-features": [
+        "retained-cross-domain"
+      ],
+      "esc-50": [
+        "retained-cross-domain"
+      ],
+      "fsd50k": [
+        "retained-cross-domain"
+      ]
+    }
+  },
+  "generated": "2026-08-04",
+  "negative_controls": {
+    "boundary_injections": {
+      "all_rejected": true,
+      "executed": 36,
+      "results": [
+        {
+          "field": "answer_key",
+          "rejected": true,
+          "shape": "top_level"
+        },
+        {
+          "field": "answer_key",
+          "rejected": true,
+          "shape": "nested"
+        },
+        {
+          "field": "answer_key",
+          "rejected": true,
+          "shape": "list_nested"
+        },
+        {
+          "field": "future_turn",
+          "rejected": true,
+          "shape": "top_level"
+        },
+        {
+          "field": "future_turn",
+          "rejected": true,
+          "shape": "nested"
+        },
+        {
+          "field": "future_turn",
+          "rejected": true,
+          "shape": "list_nested"
+        },
+        {
+          "field": "future_turns",
+          "rejected": true,
+          "shape": "top_level"
+        },
+        {
+          "field": "future_turns",
+          "rejected": true,
+          "shape": "nested"
+        },
+        {
+          "field": "future_turns",
+          "rejected": true,
+          "shape": "list_nested"
+        },
+        {
+          "field": "gold",
+          "rejected": true,
+          "shape": "top_level"
+        },
+        {
+          "field": "gold",
+          "rejected": true,
+          "shape": "nested"
+        },
+        {
+          "field": "gold",
+          "rejected": true,
+          "shape": "list_nested"
+        },
+        {
+          "field": "gold_answer",
+          "rejected": true,
+          "shape": "top_level"
+        },
+        {
+          "field": "gold_answer",
+          "rejected": true,
+          "shape": "nested"
+        },
+        {
+          "field": "gold_answer",
+          "rejected": true,
+          "shape": "list_nested"
+        },
+        {
+          "field": "gold_label",
+          "rejected": true,
+          "shape": "top_level"
+        },
+        {
+          "field": "gold_label",
+          "rejected": true,
+          "shape": "nested"
+        },
+        {
+          "field": "gold_label",
+          "rejected": true,
+          "shape": "list_nested"
+        },
+        {
+          "field": "gold_transcript",
+          "rejected": true,
+          "shape": "top_level"
+        },
+        {
+          "field": "gold_transcript",
+          "rejected": true,
+          "shape": "nested"
+        },
+        {
+          "field": "gold_transcript",
+          "rejected": true,
+          "shape": "list_nested"
+        },
+        {
+          "field": "reference",
+          "rejected": true,
+          "shape": "top_level"
+        },
+        {
+          "field": "reference",
+          "rejected": true,
+          "shape": "nested"
+        },
+        {
+          "field": "reference",
+          "rejected": true,
+          "shape": "list_nested"
+        },
+        {
+          "field": "reference_answer",
+          "rejected": true,
+          "shape": "top_level"
+        },
+        {
+          "field": "reference_answer",
+          "rejected": true,
+          "shape": "nested"
+        },
+        {
+          "field": "reference_answer",
+          "rejected": true,
+          "shape": "list_nested"
+        },
+        {
+          "field": "reference_transcript",
+          "rejected": true,
+          "shape": "top_level"
+        },
+        {
+          "field": "reference_transcript",
+          "rejected": true,
+          "shape": "nested"
+        },
+        {
+          "field": "reference_transcript",
+          "rejected": true,
+          "shape": "list_nested"
+        },
+        {
+          "field": "test_annotation",
+          "rejected": true,
+          "shape": "top_level"
+        },
+        {
+          "field": "test_annotation",
+          "rejected": true,
+          "shape": "nested"
+        },
+        {
+          "field": "test_annotation",
+          "rejected": true,
+          "shape": "list_nested"
+        },
+        {
+          "field": "test_label",
+          "rejected": true,
+          "shape": "top_level"
+        },
+        {
+          "field": "test_label",
+          "rejected": true,
+          "shape": "nested"
+        },
+        {
+          "field": "test_label",
+          "rejected": true,
+          "shape": "list_nested"
+        }
+      ],
+      "shapes_per_field": [
+        "top_level",
+        "nested",
+        "list_nested"
+      ]
+    },
+    "trace_axis_smuggling": {
+      "all_rejected": true,
+      "executed": 4,
+      "results": [
+        {
+          "channel": "OBS",
+          "rejected": true
+        },
+        {
+          "channel": "ORG",
+          "rejected": true
+        },
+        {
+          "channel": "SUPPLY",
+          "rejected": true
+        },
+        {
+          "channel": "USE",
+          "rejected": true
+        }
+      ]
+    }
+  },
+  "runtime_visible_fields_by_arm": {
+    "bare-core": {
+      "clean_payload_accepted": true,
+      "visible_fields": [
+        "request_id",
+        "carrier_lock_key",
+        "sample_id",
+        "speech_ref",
+        "media_relpath",
+        "audio_seconds",
+        "sample_rate_hz",
+        "task_instruction",
+        "history",
+        "decoding_params"
+      ]
+    },
+    "fixed-legal-context": {
+      "clean_payload_accepted": true,
+      "visible_fields": [
+        "request_id",
+        "carrier_lock_key",
+        "sample_id",
+        "speech_ref",
+        "media_relpath",
+        "audio_seconds",
+        "sample_rate_hz",
+        "task_instruction",
+        "history",
+        "decoding_params",
+        "supplied_evidence",
+        "evidence_provenance"
+      ]
+    },
+    "fixed-retrieval": {
+      "clean_payload_accepted": true,
+      "visible_fields": [
+        "request_id",
+        "carrier_lock_key",
+        "sample_id",
+        "speech_ref",
+        "media_relpath",
+        "audio_seconds",
+        "sample_rate_hz",
+        "task_instruction",
+        "history",
+        "decoding_params",
+        "retrieval_query",
+        "retrieved_evidence",
+        "evidence_provenance"
+      ]
+    }
+  }
+}

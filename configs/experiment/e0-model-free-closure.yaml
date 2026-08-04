@@ -8,10 +8,12 @@ excluded_lock_keys:
   - audioset-metadata-features
   - esc-50
 deliverables:
-  d1_identity: OPEN     # carrier/lock identity alignment receipts
-  d2_leakage: OPEN      # leakage negative controls
-  d3_scoring: OPEN      # scoring stack freeze
-  d4_trace: OPEN        # ten-sample end-to-end trace (model-free)
+  # closed 2026-08-04; artifact truth lives in docs/receipts/e0-closure.json,
+  # verified (not trusted) by contracts.FrozenCoreGate against re-measured bytes
+  d1_identity: CLOSED   # carrier/lock identity alignment receipts
+  d2_leakage: CLOSED    # leakage negative controls
+  d3_scoring: CLOSED    # scoring stack freeze
+  d4_trace: CLOSED      # ten-sample end-to-end trace (model-free)
 gate:
   # consumed by contracts.FrozenCoreGate -- receipts are verified, not trusted:
   # schemas saea-e0-closure-receipt-v1 / saea-runtime-receipt-v1; D1-D4 bind artifact

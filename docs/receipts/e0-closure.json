@@ -1,0 +1,26 @@
+{
+  "deliverables": {
+    "d1_identity": {
+      "artifact": "artifacts/d1-identity.json",
+      "sha256": "790f5dc08241912aed92cc4d75794ef2446a3fa40499d79abc586863e207f334",
+      "status": "CLOSED"
+    },
+    "d2_leakage": {
+      "artifact": "artifacts/d2-leakage.json",
+      "sha256": "ff52269484bcc8168bd52b32ebebeda862a9d1c6a05185371152e6ef6d651568",
+      "status": "CLOSED"
+    },
+    "d3_scoring": {
+      "artifact": "artifacts/d3-scoring.json",
+      "sha256": "887d15c61cd3f1e86a3a065fae1e2c3f46c884140b31a12a0222da3f512c3fef",
+      "status": "CLOSED"
+    },
+    "d4_trace": {
+      "artifact": "artifacts/d4-trace.json",
+      "sha256": "e41ead5180f1ba42b4721d9361cb78bc89b7a8b6e67f778ec1c9d0126041dc7f",
+      "status": "CLOSED"
+    }
+  },
+  "schema": "saea-e0-closure-receipt-v1",
+  "study": "speech-aware-evidence-acquisition"
+}
