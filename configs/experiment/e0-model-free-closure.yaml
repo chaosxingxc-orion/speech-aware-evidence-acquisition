@@ -15,12 +15,15 @@ deliverables:
   d3_scoring: CLOSED    # scoring stack freeze
   d4_trace: CLOSED      # ten-sample end-to-end trace (model-free)
 gate:
-  # consumed by contracts.FrozenCoreGate -- receipts are verified, not trusted:
-  # schemas saea-e0-closure-receipt-v1 / saea-runtime-receipt-v1; D1-D4 bind artifact
-  # hashes; model files re-hashed from data_root against the frozen lock entry
-  # (key/subdir/count/total bytes); build commit backed by the on-disk binary.
+  # Human-readable mirror; the receipts are authoritative and the binding lives in
+  # code: contracts.FrozenCoreGate (canonical construction: FrozenCoreGate.for_study_repo;
+  # dry-run: python -m speech_aware_evidence_acquisition.e0.generate verify).
+  # Schemas saea-e0-closure-receipt-v1 / saea-runtime-receipt-v2; D1-D4 bind artifact
+  # hashes; D3 scoring sources re-hashed against the live tree; GGUF files AND the
+  # full llama.cpp build/bin runtime set re-hashed; reported build hash must prefix
+  # the receipt commit.
   e0_receipt: docs/receipts/e0-closure.json
   runtime_receipt: docs/receipts/runtime.json
-  data_root: SPEECHRL_DATA_DIR                     # controlled asset root (env)
+  data_root_env: SPEECHRL_DATA_DIR                 # env var NAME holding the asset root
   lock: ../../docs/datasets.lock.json              # umbrella lock (adjacent-checkout layout)
-  runtime_root: WSL ext4 llama.cpp build root      # resolved per machine at receipt time
+  runtime_root_resolution: per-machine             # passed via --runtime-root at receipt time

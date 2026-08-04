@@ -11,6 +11,7 @@ and this module is the choke point that keeps them out of runtime payloads.
 from __future__ import annotations
 
 import csv
+import math
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Mapping
@@ -63,8 +64,13 @@ def _metadata_rows(path: Path, id_column: str) -> dict[str, Mapping[str, str]]:
             if reader.fieldnames is None or id_column not in reader.fieldnames:
                 raise LoaderError(f"metadata {path} lacks id column {id_column!r}")
             rows: dict[str, Mapping[str, str]] = {}
-            for row in reader:
-                sample_id = str(row[id_column]).strip()
+            for row_number, row in enumerate(reader, start=2):
+                raw = row[id_column]
+                if raw is None:
+                    raise LoaderError(
+                        f"metadata {path}: malformed row {row_number} (missing {id_column!r})"
+                    )
+                sample_id = str(raw).strip()
                 if not sample_id or sample_id in rows:
                     raise LoaderError(f"metadata {path}: blank or duplicate id {sample_id!r}")
                 rows[sample_id] = row
@@ -78,10 +84,12 @@ def _metadata_rows(path: Path, id_column: str) -> dict[str, Mapping[str, str]]:
 def _float_field(row: Mapping[str, str], column: str, context: str) -> float:
     try:
         value = float(str(row[column]).strip())
-    except (KeyError, ValueError) as error:
+    except (KeyError, TypeError, ValueError) as error:
         raise LoaderError(f"{context}: bad numeric column {column!r}: {error}") from error
-    if value <= 0:
-        raise LoaderError(f"{context}: column {column!r} must be positive, got {value}")
+    if not math.isfinite(value) or value <= 0:
+        raise LoaderError(
+            f"{context}: column {column!r} must be a finite positive number, got {value}"
+        )
     return value
 
 
@@ -127,7 +135,9 @@ def earnings22_subset10_ids(lock: Mapping[str, object], root: Path) -> list[str]
     ids = sorted(
         path.name[: -len(".mp3")]
         for path in subset_dir.iterdir()
-        if path.name.endswith(".mp3")
+        # is_file() follows symlinks, so a dangling subset symlink fails closed here
+        # with the count error instead of silently shrinking the selection.
+        if path.name.endswith(".mp3") and path.is_file()
     )
     if len(ids) != 10:
         raise LoaderError(f"earnings22 subset10 must name exactly 10 calls, got {len(ids)}")

@@ -49,6 +49,10 @@
       "layers": {
         "e21_contexts": {
           "count": 44,
+          "excluded_non_layer_files": [
+            "participant_names",
+            "pdfs"
+          ],
           "ids_sha256": "81236a165bc5a7bea24b7a9e04ce7a7a4dcfd74a04ee2ae08e7686e3abeb51d6",
           "manifest": [
             {

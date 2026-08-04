@@ -35,10 +35,9 @@ mlartifacts/
 *.zip
 *.log
 
-# Re-include source data module (code, not datasets)
+# Re-include source data module (code only, never bytes: *.py, not **)
 !src/speech_aware_evidence_acquisition/data/
-!src/speech_aware_evidence_acquisition/data/**
-src/speech_aware_evidence_acquisition/data/__pycache__/
+!src/speech_aware_evidence_acquisition/data/*.py
 
 # OS / editor
 .DS_Store

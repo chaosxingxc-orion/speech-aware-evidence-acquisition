@@ -92,7 +92,12 @@ def _dir_layer(name: str, directory: Path, strip: tuple[str, ...]) -> Layer:
     files: dict[str, FileFact] = {}
     extras: list[str] = []
     for entry in sorted(directory.iterdir()):
-        if not entry.is_file() or entry.name.startswith("."):
+        if not entry.is_file():
+            # Subdirectory or dangling symlink: not a layer file, but visible.
+            extras.append(entry.name)
+            continue
+        if entry.name.startswith("."):
+            extras.append(entry.name)
             continue
         matched = next((suffix for suffix in strip if entry.name.endswith(suffix)), None)
         if matched is None:
@@ -119,7 +124,15 @@ def _csv_layer(name: str, path: Path, id_column: str) -> Layer:
                 raise IdentityError(
                     f"layer {name!r}: column {id_column!r} not in {reader.fieldnames}"
                 )
-            ids = [str(row[id_column]).strip() for row in reader]
+            ids = []
+            for row_number, row in enumerate(reader, start=2):
+                raw = row[id_column]
+                if raw is None:
+                    raise IdentityError(
+                        f"layer {name!r}: malformed row {row_number} in {path} "
+                        f"(missing {id_column!r} value)"
+                    )
+                ids.append(str(raw).strip())
     except (OSError, UnicodeError, csv.Error) as error:
         raise IdentityError(f"layer {name!r}: cannot read {path}: {error}") from error
     if not ids or any(not value for value in ids):
@@ -141,8 +154,10 @@ def relation(left: Layer, right: Layer) -> dict[str, object]:
         kind = "left_subset_of_right"
     elif not right_only:
         kind = "right_subset_of_left"
-    else:
+    elif left_set & right_set:
         kind = "overlap"
+    else:
+        kind = "disjoint"
     return {
         "left": left.name,
         "right": right.name,
@@ -186,10 +201,10 @@ def earnings21_layers(root: Path) -> dict[str, Layer]:
             "nlp_references", root / "transcripts" / "nlp_references", (".nlp",)
         ),
         "wer_tags": _dir_layer(
-            "wer_tags", root / "transcripts" / "wer_tags", (".wer_tag.json", ".json")
+            "wer_tags", root / "transcripts" / "wer_tags", (".wer_tag.json",)
         ),
         "normalizations": _dir_layer(
-            "normalizations", root / "transcripts" / "normalizations", (".norm.json", ".json")
+            "normalizations", root / "transcripts" / "normalizations", (".norm.json",)
         ),
     }
 
@@ -230,7 +245,7 @@ def conec_layers(root: Path) -> dict[str, Layer]:
             "e21_timestamps", e21 / "transcripts" / "timestamps", (".nlp",)
         ),
         "e21_wer_tags": _dir_layer(
-            "e21_wer_tags", e21 / "transcripts" / "wer_tags", (".wer_tag.json", ".json")
+            "e21_wer_tags", e21 / "transcripts" / "wer_tags", (".wer_tag.json",)
         ),
     }
 

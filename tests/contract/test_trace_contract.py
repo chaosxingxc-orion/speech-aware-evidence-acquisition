@@ -2,7 +2,11 @@
 
 import pytest
 
-from speech_aware_evidence_acquisition.contracts import TraceContractError, TraceRecord
+from speech_aware_evidence_acquisition.contracts import (
+    BoundaryViolation,
+    TraceContractError,
+    TraceRecord,
+)
 
 
 def test_research_axis_namespaces_are_disjoint():
@@ -34,10 +38,10 @@ def test_all_touch_channels_serialize_deterministically_and_hash(channel):
 def test_unknown_channel_and_unserializable_payload_fail_closed():
     with pytest.raises(TraceContractError):
         TraceRecord("SIDE_CHANNEL", "r", {}).validate()
-    with pytest.raises((TraceContractError, Exception)):
+    with pytest.raises(BoundaryViolation):
         TraceRecord("TOOL", "r", {"handle": object()}).serialize()
 
 
 def test_trace_payload_cannot_carry_gold():
-    with pytest.raises(Exception):
+    with pytest.raises(BoundaryViolation):
         TraceRecord("MODEL_REQUEST", "r", {"prompt": "x", "gold": "leak"}).serialize()

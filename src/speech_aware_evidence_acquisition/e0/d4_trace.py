@@ -26,21 +26,25 @@ from ..data.loader import (
     materialize,
 )
 from ..data.lock import asset_dir, load_lock
-from .artifacts import today
+from .artifacts import ArtifactError, today
 
 
 def _conec_e22_context_counts(lock: Mapping[str, object], root: Path) -> dict[str, int]:
-    """Per-sample count of ConEC Earnings22 context PDFs (names only, never content)."""
+    """Per-sample count of ConEC Earnings22 context PDFs (names only, never content).
+
+    Fail-closed: a missing pdfs directory is a materialization defect, not
+    "no context" — receipting zeros for it would be a false statement."""
 
     pdf_dir = asset_dir(lock, "conec", root) / "earnings22" / "contexts" / "pdfs"
+    if not pdf_dir.is_dir():
+        raise ArtifactError(f"conec earnings22 context pdfs directory missing: {pdf_dir}")
     counts: dict[str, int] = {}
-    if pdf_dir.is_dir():
-        for entry in sorted(pdf_dir.iterdir()):
-            if not entry.is_file() or not entry.name.endswith(".pdf"):
-                continue
-            stem = entry.name[: -len(".pdf")]
-            sample_id = stem.split("_", 1)[0]
-            counts[sample_id] = counts.get(sample_id, 0) + 1
+    for entry in sorted(pdf_dir.iterdir()):
+        if not entry.is_file() or not entry.name.endswith(".pdf"):
+            continue
+        stem = entry.name[: -len(".pdf")]
+        sample_id = stem.split("_", 1)[0]
+        counts[sample_id] = counts.get(sample_id, 0) + 1
     return counts
 
 
@@ -101,18 +105,21 @@ def _trace_records(
             },
         ),
     ]
-    serialized = []
+    receipted = []
     for record in records:
         record.validate()
-        serialized.append(
+        # Receipt metadata only: payload key names + content hash. The serialized
+        # record itself is a trace and traces are never committed (study boundary);
+        # the hash is reproducible because generation is deterministic.
+        receipted.append(
             {
                 "channel": record.channel,
                 "record_id": record.record_id,
-                "serialized": record.serialize(),
+                "payload_keys": sorted(record.payload),
                 "content_sha256": record.content_hash(),
             }
         )
-    return serialized
+    return receipted
 
 
 def build_d4(lock_path: Path, data_root: Path) -> dict[str, object]:

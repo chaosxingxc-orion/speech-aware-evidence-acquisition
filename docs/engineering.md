@@ -7,15 +7,23 @@ umbrella wiki.
 
 - Frozen core: Qwen3-Omni-30B, llama.cpp llama-server resident (`-ngl 28`), GGUF Q8_0 + bf16
   mmproj. Asset identity: umbrella `docs/datasets.lock.json` key `qwen3-omni-30b-a3b-instruct-gguf`.
-- Before the first model call, an E0 runtime receipt must pin the llama.cpp build commit and
-  per-file GGUF sha256 (fail-closed; see the execution contract). Receipts are **verified, not
-  trusted** (`contracts.FrozenCoreGate`, G0 closure 2026-08-04): versioned schemas
-  (`saea-e0-closure-receipt-v1`, `saea-runtime-receipt-v1`) with study identity; D1–D4 each bind an
-  artifact file whose SHA-256 is recomputed; model files resolve only as canonical relative paths
-  under `SPEECHRL_DATA_DIR` inside the lock's `local_subdir`, with file count and total bytes bound
-  to the umbrella `datasets.lock.json` entry and every file re-hashed; the build commit must be a
-  full 40-hex commit backed by the re-hashed llama-server binary under the declared runtime root;
-  absolute paths, traversal, duplicates and extra files are refused.
+- Before the first model call, an E0 runtime receipt must pin the llama.cpp build and per-file
+  GGUF sha256 (fail-closed; see the execution contract). Receipts are **verified, not trusted**
+  (`contracts.FrozenCoreGate`, G0 closure 2026-08-04, hardened after round-1 adversarial review):
+  versioned schemas (`saea-e0-closure-receipt-v1`, `saea-runtime-receipt-v2`) with study identity;
+  D1–D4 each bind an artifact file whose SHA-256 is recomputed, and the D3 artifact's frozen
+  scoring-source hashes are re-measured against the live tree (an unlisted scoring module refuses);
+  model files resolve only as canonical relative paths under `SPEECHRL_DATA_DIR` inside the lock's
+  `local_subdir`, with file count and total bytes bound to the umbrella `datasets.lock.json` entry
+  and every file re-hashed; `llama-server` is a ~18 KB launcher, so the receipt binds **every
+  regular file in `build/bin`** (inference/audio `.so` libraries included) as an exact set, the
+  40-hex build commit must be prefix-matched by the binary's self-reported build hash
+  (`llama-server --version` at receipt time), and a dirty tree or stale build is refused at
+  generation; absolute paths, traversal, duplicates and extra files are refused. The exposure row a
+  plan cites is cross-checked field by field (profile, split role, split identity hash,
+  consumed=no, registered budgets ≥ planned). Gate verification is instantaneous: the process that
+  opens the gate must be the process that starts llama-server, immediately afterward — results are
+  never cached or shared. Canonical binding: `FrozenCoreGate.for_study_repo`.
 - Compute: WSL2 Ubuntu-24.04, RTX 5090 (sm_120), `~/.venvs/speechrl` Python 3.12.
 
 ## Carriers
@@ -51,15 +59,21 @@ W1 authorship; no third-party code vendored).
 E0 D1–D4 are CLOSED and machine-bound: `docs/receipts/e0-closure.json` binds the four
 deliverable artifacts under `docs/receipts/artifacts/` (identity, leakage negative
 controls, scoring freeze, ten-sample four-axis trace) by re-measured SHA-256; the
-runtime receipt `docs/receipts/runtime.json` pins the llama.cpp build commit, the
-re-hashed `llama-server` binary and the per-file GGUF SHA-256 against the umbrella
-lock. Generators (model-free, stdlib-only):
+runtime receipt `docs/receipts/runtime.json` (v2) pins the llama.cpp build commit,
+its self-reported build hash, the launcher **and every runtime library in
+`build/bin`**, plus the per-file GGUF SHA-256 against the umbrella lock. Generators
+(model-free, stdlib-only):
 `python -m speech_aware_evidence_acquisition.e0.generate d1|d2|d3|d4|close|runtime|verify`
 (`verify` is a gate dry run against the real `contracts.FrozenCoreGate`; it touches no
-model). The D4 sample selection is the upstream-curated Earnings22 `subset10` (dev
-carrier); the closure event is registered in `docs/exposure-ledger.md`
-(`SAEA-E0-CLOSURE-2026-08-04`, model-free, consumed=no). Editing any frozen scoring
-source or receipt artifact breaks its recorded hash and re-closes the model gate.
+model and authorizes nothing). The D4 sample selection is the upstream-curated
+Earnings22 `subset10` (dev carrier); D4 receipts carry trace payload key names and
+content hashes only — serialized traces are never committed. The closure event is
+registered in `docs/exposure-ledger.md` (`SAEA-E0-CLOSURE-2026-08-04`, model-free,
+consumed=no). Enforcement is machine-checked from both directions: the gate re-hashes
+the frozen scoring sources and the runtime set at every touch attempt, and
+`tests/contract/test_real_receipts.py` re-verifies the committed receipts (closure
+chain, scoring freeze, runtime coherence) in CI on every push. Scoring is frozen for
+per-segment units; whole-call alignment is out of scope for `saea-scoring-v1`.
 
 ## Quality gate
 

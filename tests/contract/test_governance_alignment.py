@@ -137,7 +137,7 @@ def test_dataset_and_model_configs_reference_lock_keys_only():
     referenced = []
     for config in sorted(config_root.rglob("*.yaml")):
         text = config.read_text(encoding="utf-8")
-        match = re.search(r"^lock_key:\s*(\S+)", text, flags=re.MULTILINE)
+        match = re.search(r"^\s*lock_key:\s*(\S+)", text, flags=re.MULTILINE)
         if "dataset" in config.parts or "model" in config.parts:
             assert re.search(r"sha256:\s*\S", text) is None, (
                 f"{config}: asset hashes live in the umbrella lock, not study configs"
@@ -160,7 +160,9 @@ def test_general_audio_assets_cannot_enter_executable_surface():
     configured_lock_keys = set()
     for path in sorted((REPO_ROOT / "configs").rglob("*.yaml")):
         configured_lock_keys.update(
-            re.findall(r"^lock_key:\s*(\S+)", path.read_text(encoding="utf-8"), re.MULTILINE)
+            re.findall(
+                r"^\s*lock_key:\s*(\S+)", path.read_text(encoding="utf-8"), re.MULTILINE
+            )
         )
     assert not forbidden.intersection(configured_lock_keys), (
         "general-audio assets may be named as exclusions but must not be configured as lock_key inputs"

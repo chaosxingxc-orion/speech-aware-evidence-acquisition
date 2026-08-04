@@ -13,6 +13,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from ..contracts import SCORING_PACKAGE_RELPATH
 from ..scoring import (
     SCORING_STACK_VERSION,
     align,
@@ -26,14 +27,21 @@ from ..scoring import (
 from .artifacts import REPO_ROOT, ArtifactError, sha256_file, today
 
 
-SCORING_SOURCES = (
-    "src/speech_aware_evidence_acquisition/scoring/__init__.py",
-    "src/speech_aware_evidence_acquisition/scoring/normalize.py",
-    "src/speech_aware_evidence_acquisition/scoring/wer.py",
-    "src/speech_aware_evidence_acquisition/scoring/entity.py",
-    "src/speech_aware_evidence_acquisition/scoring/qa.py",
-    "src/speech_aware_evidence_acquisition/scoring/transitions.py",
-)
+def scoring_sources(repo_root: Path) -> list[str]:
+    """Every ``*.py`` in the scoring package, enumerated live — a new module can
+    never be invisible to the freeze (the gate enforces the same coverage)."""
+
+    scoring_dir = repo_root / SCORING_PACKAGE_RELPATH
+    if not scoring_dir.is_dir():
+        raise ArtifactError(f"scoring package directory missing: {scoring_dir}")
+    sources = sorted(
+        f"{SCORING_PACKAGE_RELPATH}/{path.name}"
+        for path in scoring_dir.iterdir()
+        if path.is_file() and path.name.endswith(".py")
+    )
+    if not sources:
+        raise ArtifactError(f"no scoring sources found under {scoring_dir}")
+    return sources
 
 
 def _round(value: float) -> float:
@@ -155,7 +163,7 @@ def _golden_vectors() -> list[dict[str, object]]:
 
 def build_d3(repo_root: Path = REPO_ROOT) -> dict[str, object]:
     sources: dict[str, str] = {}
-    for relpath in SCORING_SOURCES:
+    for relpath in scoring_sources(repo_root):
         path = repo_root / relpath
         if not path.is_file():
             raise ArtifactError(f"frozen scoring source missing: {relpath}")
@@ -191,6 +199,16 @@ def build_d3(repo_root: Path = REPO_ROOT) -> dict[str, object]:
                 "correct-to-wrong / wrong-to-correct at token level (ASR, via hit "
                 "masks) and item level (QA/entity, via boolean flags)"
             ),
+            "known_limits_v1": (
+                "casefold expands Turkish dotted I (U+0130) into 'i'+combining dot, "
+                "which rule 5 then splits ('İstanbul' -> 'i stanbul'), and strips "
+                "combining marks from precomposed Greek; both apply symmetrically to "
+                "reference and hypothesis. Entity PRF is corpus-level multiset "
+                "counting: an item with no expected and no predicted entities "
+                "contributes nothing (f1 of an all-empty comparison is 0.0, never "
+                "used per-item). WER alignment is O(len(ref)*len(hyp)) and is frozen "
+                "for per-segment scoring, not whole-call alignment."
+            ),
         },
         "golden_vectors": {
             "executed": len(vectors),
@@ -198,8 +216,11 @@ def build_d3(repo_root: Path = REPO_ROOT) -> dict[str, object]:
             "vectors": vectors,
         },
         "freeze_rule": (
-            "Any edit to a frozen source changes its SHA-256, invalidates this "
-            "artifact hash inside e0-closure.json and re-closes the model gate; a new "
-            "scoring version requires a new dated artifact, never an in-place edit."
+            "Machine-enforced: contracts.FrozenCoreGate re-hashes every source listed "
+            "in frozen_sources_sha256 against the live tree at each model-touch "
+            "attempt and refuses any scoring-package module this mapping does not "
+            "name. Editing a frozen source therefore re-closes the gate at the next "
+            "touch; a new scoring version requires regenerating this artifact and "
+            "e0-closure.json, never an in-place edit."
         ),
     }

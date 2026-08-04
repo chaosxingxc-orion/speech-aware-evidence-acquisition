@@ -20,7 +20,6 @@ No model is started or called by any subcommand.
 from __future__ import annotations
 
 import argparse
-import json
 import sys
 import tempfile
 from pathlib import Path
@@ -36,6 +35,7 @@ from .artifacts import (
     ARTIFACTS_SUBDIR,
     DEFAULT_RECEIPTS_DIR,
     DELIVERABLE_ARTIFACTS,
+    REPO_ROOT,
     ArtifactError,
     sha256_file,
     write_json_artifact,
@@ -84,13 +84,22 @@ def _runtime(receipts_dir: Path, lock_path: Path, root: Path, runtime_root: Path
 
 
 def _verify(receipts_dir: Path, lock_path: Path, root: Path, runtime_root: Path) -> None:
+    """Gate dry run. NOT an authorization and NOT a template for a real run.
+
+    A real model run must construct its gate via ``FrozenCoreGate.for_study_repo``
+    (which pins the committed ``docs/exposure-ledger.md``) and pre-register its row
+    there before any byte is read. The synthetic temp-file ledger below exists only
+    so the dry run can exercise the full verification path without fabricating a
+    row in the real ledger; nothing it proves survives the ``with`` block.
+    """
+
     e0_receipt = receipts_dir / "e0-closure.json"
     runtime_receipt = receipts_dir / "runtime.json"
     for path in (e0_receipt, runtime_receipt):
         if not path.is_file():
             raise ArtifactError(f"receipt missing for verification: {path}")
 
-    run_id = "SAEA-E0-GATE-DRYRUN"
+    run_id = "SAEA-E0-GATE-DRYRUN-NOT-A-RUN"
     header = (
         "| date | run/experiment id | execution profile | scope | model/tool "
         "| speech carrier + split | split role | split identity hash | consumed "
@@ -100,7 +109,7 @@ def _verify(receipts_dir: Path, lock_path: Path, root: Path, runtime_root: Path)
     row = (
         f"| dry-run | {run_id} | baseline-reproduction | gate dry run | none "
         f"| {CORE_CARRIER_LOCK_KEYS[0]} dev | dev | {sha256_file(e0_receipt)} | no "
-        "| 0 | 0 | dry run only | none | synthetic row, temp file, no model touch |\n"
+        "| 1 | 1 | dry run only | none | synthetic row, temp file, no model touch |\n"
     )
     with tempfile.TemporaryDirectory() as tmp:
         ledger = Path(tmp) / "exposure-ledger-dryrun.md"
@@ -112,6 +121,7 @@ def _verify(receipts_dir: Path, lock_path: Path, root: Path, runtime_root: Path)
             lock_path=lock_path,
             runtime_root=runtime_root,
             exposure_ledger=ledger,
+            source_root=REPO_ROOT,
         )
         plan = ExecutionPlan(
             run_id=run_id,
@@ -126,8 +136,9 @@ def _verify(receipts_dir: Path, lock_path: Path, root: Path, runtime_root: Path)
         )
         gate.assert_model_touch_allowed(plan)
     print(
-        "GATE OPEN (dry run): E0 closure and runtime receipts verified true against "
-        "disk bytes and the umbrella lock. No model was touched."
+        "GATE OPEN (dry run): E0 closure, scoring freeze, runtime set and receipts "
+        "verified true against disk bytes and the umbrella lock at this instant. "
+        "No model was touched, and this dry run authorizes nothing."
     )
 
 
@@ -143,17 +154,24 @@ def main(argv: list[str] | None = None) -> int:
     arguments = parser.parse_args(argv)
 
     receipts_dir = arguments.receipts_dir.resolve()
-    lock_path = (arguments.lock or umbrella_lock_path()).resolve()
+
+    def lock_path() -> Path:
+        # Resolved lazily: d3/close never read the lock and must work standalone.
+        return (arguments.lock or umbrella_lock_path()).resolve()
 
     try:
         if arguments.command == "d1":
-            _write_deliverable(receipts_dir, "d1-identity.json", build_d1(lock_path, data_root()))
+            _write_deliverable(
+                receipts_dir, "d1-identity.json", build_d1(lock_path(), data_root())
+            )
         elif arguments.command == "d2":
-            _write_deliverable(receipts_dir, "d2-leakage.json", build_d2(lock_path))
+            _write_deliverable(receipts_dir, "d2-leakage.json", build_d2(lock_path()))
         elif arguments.command == "d3":
             _write_deliverable(receipts_dir, "d3-scoring.json", build_d3())
         elif arguments.command == "d4":
-            _write_deliverable(receipts_dir, "d4-trace.json", build_d4(lock_path, data_root()))
+            _write_deliverable(
+                receipts_dir, "d4-trace.json", build_d4(lock_path(), data_root())
+            )
         elif arguments.command == "close":
             _close(receipts_dir)
         elif arguments.command in ("runtime", "verify"):
@@ -161,9 +179,9 @@ def main(argv: list[str] | None = None) -> int:
                 raise ArtifactError(f"--runtime-root is required for {arguments.command}")
             runtime_root = arguments.runtime_root.expanduser().resolve()
             if arguments.command == "runtime":
-                _runtime(receipts_dir, lock_path, data_root(), runtime_root)
+                _runtime(receipts_dir, lock_path(), data_root(), runtime_root)
             else:
-                _verify(receipts_dir, lock_path, data_root(), runtime_root)
+                _verify(receipts_dir, lock_path(), data_root(), runtime_root)
     except Exception as error:
         print(f"E0 generation failed closed: {error}", file=sys.stderr)
         return 1

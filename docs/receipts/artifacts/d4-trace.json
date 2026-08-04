@@ -23,32 +23,57 @@
         {
           "channel": "OBS",
           "content_sha256": "1b76adde25fb5e10d4a1e30c65507bcfe197a982727648976c04edf959a06070",
-          "record_id": "SAEA-E0-D4/4453225/OBS",
-          "serialized": "{\"channel\":\"OBS\",\"payload\":{\"obs_audio_seconds\":4307.0,\"obs_decoded\":false,\"obs_media_relpath\":\"datasets/earnings21-22/earnings22/media/4453225.mp3\",\"obs_sample_rate_hz\":16000,\"obs_speech_ref\":\"earnings22-original/4453225\"},\"record_id\":\"SAEA-E0-D4/4453225/OBS\"}"
+          "payload_keys": [
+            "obs_audio_seconds",
+            "obs_decoded",
+            "obs_media_relpath",
+            "obs_sample_rate_hz",
+            "obs_speech_ref"
+          ],
+          "record_id": "SAEA-E0-D4/4453225/OBS"
         },
         {
           "channel": "ORG",
           "content_sha256": "d9459120f9b881fee6fff1b83222ceefb2e106cf85c50619314ccf32f41e0ba9",
-          "record_id": "SAEA-E0-D4/4453225/ORG",
-          "serialized": "{\"channel\":\"ORG\",\"payload\":{\"org_carrier_lock_key\":\"earnings22-original\",\"org_content_read\":false,\"org_context_available\":false,\"org_context_files\":0,\"org_context_source\":\"conec/earnings22/contexts/pdfs\"},\"record_id\":\"SAEA-E0-D4/4453225/ORG\"}"
+          "payload_keys": [
+            "org_carrier_lock_key",
+            "org_content_read",
+            "org_context_available",
+            "org_context_files",
+            "org_context_source"
+          ],
+          "record_id": "SAEA-E0-D4/4453225/ORG"
         },
         {
           "channel": "SUPPLY",
           "content_sha256": "ef9a8984f248e92a5ad285b06d7bad6a4b5c19e64578e7972d787531b43eb6cf",
-          "record_id": "SAEA-E0-D4/4453225/SUPPLY",
-          "serialized": "{\"channel\":\"SUPPLY\",\"payload\":{\"supply_evidence_bytes\":0,\"supply_evidence_items\":0,\"supply_policy\":\"none:e0-model-free-closure\"},\"record_id\":\"SAEA-E0-D4/4453225/SUPPLY\"}"
+          "payload_keys": [
+            "supply_evidence_bytes",
+            "supply_evidence_items",
+            "supply_policy"
+          ],
+          "record_id": "SAEA-E0-D4/4453225/SUPPLY"
         },
         {
           "channel": "USE",
           "content_sha256": "005d341cc0919674b38ea0bf5c0ba3a01f7002844c8c6ae6a92ff8b72a7e3462",
-          "record_id": "SAEA-E0-D4/4453225/USE",
-          "serialized": "{\"channel\":\"USE\",\"payload\":{\"use_admitted_items\":0,\"use_final_answer_authority\":\"frozen-core\",\"use_policy\":\"none:e0-model-free-closure\"},\"record_id\":\"SAEA-E0-D4/4453225/USE\"}"
+          "payload_keys": [
+            "use_admitted_items",
+            "use_final_answer_authority",
+            "use_policy"
+          ],
+          "record_id": "SAEA-E0-D4/4453225/USE"
         },
         {
           "channel": "COST",
           "content_sha256": "8a372b6bf0ff0b117660505872914c07c5329da92cecd096c0d32b71b7adb82f",
-          "record_id": "SAEA-E0-D4/4453225/COST",
-          "serialized": "{\"channel\":\"COST\",\"payload\":{\"evidence_bytes_supplied\":0,\"model_calls\":0,\"speech_audio_seconds_decoded\":0,\"tool_calls\":0},\"record_id\":\"SAEA-E0-D4/4453225/COST\"}"
+          "payload_keys": [
+            "evidence_bytes_supplied",
+            "model_calls",
+            "speech_audio_seconds_decoded",
+            "tool_calls"
+          ],
+          "record_id": "SAEA-E0-D4/4453225/COST"
         }
       ]
     },
@@ -72,32 +97,57 @@
         {
           "channel": "OBS",
           "content_sha256": "bccd4d587ba5128d064f65feb8a7067ffd694cae0e91567768b6a66a7430f1c0",
-          "record_id": "SAEA-E0-D4/4469088/OBS",
-          "serialized": "{\"channel\":\"OBS\",\"payload\":{\"obs_audio_seconds\":4634.0,\"obs_decoded\":false,\"obs_media_relpath\":\"datasets/earnings21-22/earnings22/media/4469088.mp3\",\"obs_sample_rate_hz\":44100,\"obs_speech_ref\":\"earnings22-original/4469088\"},\"record_id\":\"SAEA-E0-D4/4469088/OBS\"}"
+          "payload_keys": [
+            "obs_audio_seconds",
+            "obs_decoded",
+            "obs_media_relpath",
+            "obs_sample_rate_hz",
+            "obs_speech_ref"
+          ],
+          "record_id": "SAEA-E0-D4/4469088/OBS"
         },
         {
           "channel": "ORG",
           "content_sha256": "c8b87dadb21454fb7bc98851a17d514d23b724f28e8222383a254e26abbe879b",
-          "record_id": "SAEA-E0-D4/4469088/ORG",
-          "serialized": "{\"channel\":\"ORG\",\"payload\":{\"org_carrier_lock_key\":\"earnings22-original\",\"org_content_read\":false,\"org_context_available\":false,\"org_context_files\":0,\"org_context_source\":\"conec/earnings22/contexts/pdfs\"},\"record_id\":\"SAEA-E0-D4/4469088/ORG\"}"
+          "payload_keys": [
+            "org_carrier_lock_key",
+            "org_content_read",
+            "org_context_available",
+            "org_context_files",
+            "org_context_source"
+          ],
+          "record_id": "SAEA-E0-D4/4469088/ORG"
         },
         {
           "channel": "SUPPLY",
           "content_sha256": "16f20a58d3fa0fe9cbd0f3dbf0e50348c81ffb3e04074513a1712635435c5091",
-          "record_id": "SAEA-E0-D4/4469088/SUPPLY",
-          "serialized": "{\"channel\":\"SUPPLY\",\"payload\":{\"supply_evidence_bytes\":0,\"supply_evidence_items\":0,\"supply_policy\":\"none:e0-model-free-closure\"},\"record_id\":\"SAEA-E0-D4/4469088/SUPPLY\"}"
+          "payload_keys": [
+            "supply_evidence_bytes",
+            "supply_evidence_items",
+            "supply_policy"
+          ],
+          "record_id": "SAEA-E0-D4/4469088/SUPPLY"
         },
         {
           "channel": "USE",
           "content_sha256": "4b68f3985fac3a572c0ce8589177cdfe9457c95b1311a65950e674574bd3046b",
-          "record_id": "SAEA-E0-D4/4469088/USE",
-          "serialized": "{\"channel\":\"USE\",\"payload\":{\"use_admitted_items\":0,\"use_final_answer_authority\":\"frozen-core\",\"use_policy\":\"none:e0-model-free-closure\"},\"record_id\":\"SAEA-E0-D4/4469088/USE\"}"
+          "payload_keys": [
+            "use_admitted_items",
+            "use_final_answer_authority",
+            "use_policy"
+          ],
+          "record_id": "SAEA-E0-D4/4469088/USE"
         },
         {
           "channel": "COST",
           "content_sha256": "fe1a9fbea0b4ddf3cb465eb6e2c8c20fc90b98af6a6aaeb158f7ad4f5a4614ad",
-          "record_id": "SAEA-E0-D4/4469088/COST",
-          "serialized": "{\"channel\":\"COST\",\"payload\":{\"evidence_bytes_supplied\":0,\"model_calls\":0,\"speech_audio_seconds_decoded\":0,\"tool_calls\":0},\"record_id\":\"SAEA-E0-D4/4469088/COST\"}"
+          "payload_keys": [
+            "evidence_bytes_supplied",
+            "model_calls",
+            "speech_audio_seconds_decoded",
+            "tool_calls"
+          ],
+          "record_id": "SAEA-E0-D4/4469088/COST"
         }
       ]
     },
@@ -121,32 +171,57 @@
         {
           "channel": "OBS",
           "content_sha256": "f2312f9d47e774f91c19e02f1afaabfa7b8ee3e2b24a394c903c70fa1815c42c",
-          "record_id": "SAEA-E0-D4/4470684/OBS",
-          "serialized": "{\"channel\":\"OBS\",\"payload\":{\"obs_audio_seconds\":4696.0,\"obs_decoded\":false,\"obs_media_relpath\":\"datasets/earnings21-22/earnings22/media/4470684.mp3\",\"obs_sample_rate_hz\":24000,\"obs_speech_ref\":\"earnings22-original/4470684\"},\"record_id\":\"SAEA-E0-D4/4470684/OBS\"}"
+          "payload_keys": [
+            "obs_audio_seconds",
+            "obs_decoded",
+            "obs_media_relpath",
+            "obs_sample_rate_hz",
+            "obs_speech_ref"
+          ],
+          "record_id": "SAEA-E0-D4/4470684/OBS"
         },
         {
           "channel": "ORG",
           "content_sha256": "d29394c913089fb4e4ef5c80c182a57b4fd4cbfb1f47f4ebf1f542cb49134692",
-          "record_id": "SAEA-E0-D4/4470684/ORG",
-          "serialized": "{\"channel\":\"ORG\",\"payload\":{\"org_carrier_lock_key\":\"earnings22-original\",\"org_content_read\":false,\"org_context_available\":false,\"org_context_files\":0,\"org_context_source\":\"conec/earnings22/contexts/pdfs\"},\"record_id\":\"SAEA-E0-D4/4470684/ORG\"}"
+          "payload_keys": [
+            "org_carrier_lock_key",
+            "org_content_read",
+            "org_context_available",
+            "org_context_files",
+            "org_context_source"
+          ],
+          "record_id": "SAEA-E0-D4/4470684/ORG"
         },
         {
           "channel": "SUPPLY",
           "content_sha256": "535d2b26136e809c13606d1ca46f1c6eaab1ce98920ab2278756d282bb24ea5f",
-          "record_id": "SAEA-E0-D4/4470684/SUPPLY",
-          "serialized": "{\"channel\":\"SUPPLY\",\"payload\":{\"supply_evidence_bytes\":0,\"supply_evidence_items\":0,\"supply_policy\":\"none:e0-model-free-closure\"},\"record_id\":\"SAEA-E0-D4/4470684/SUPPLY\"}"
+          "payload_keys": [
+            "supply_evidence_bytes",
+            "supply_evidence_items",
+            "supply_policy"
+          ],
+          "record_id": "SAEA-E0-D4/4470684/SUPPLY"
         },
         {
           "channel": "USE",
           "content_sha256": "7224f18a0ba5620fc52191f7333ac872a835834f9105449ad9783ad7390bd7cf",
-          "record_id": "SAEA-E0-D4/4470684/USE",
-          "serialized": "{\"channel\":\"USE\",\"payload\":{\"use_admitted_items\":0,\"use_final_answer_authority\":\"frozen-core\",\"use_policy\":\"none:e0-model-free-closure\"},\"record_id\":\"SAEA-E0-D4/4470684/USE\"}"
+          "payload_keys": [
+            "use_admitted_items",
+            "use_final_answer_authority",
+            "use_policy"
+          ],
+          "record_id": "SAEA-E0-D4/4470684/USE"
         },
         {
           "channel": "COST",
           "content_sha256": "e16803b9228982607cfe3744dd75a66c7c623cdb28f841c791d2796936679dae",
-          "record_id": "SAEA-E0-D4/4470684/COST",
-          "serialized": "{\"channel\":\"COST\",\"payload\":{\"evidence_bytes_supplied\":0,\"model_calls\":0,\"speech_audio_seconds_decoded\":0,\"tool_calls\":0},\"record_id\":\"SAEA-E0-D4/4470684/COST\"}"
+          "payload_keys": [
+            "evidence_bytes_supplied",
+            "model_calls",
+            "speech_audio_seconds_decoded",
+            "tool_calls"
+          ],
+          "record_id": "SAEA-E0-D4/4470684/COST"
         }
       ]
     },
@@ -170,32 +245,57 @@
         {
           "channel": "OBS",
           "content_sha256": "9288d76d9a03363da0979bf1c9bb3f82e3a5d0056e45a596170b369ac7bb79e7",
-          "record_id": "SAEA-E0-D4/4474506/OBS",
-          "serialized": "{\"channel\":\"OBS\",\"payload\":{\"obs_audio_seconds\":3975.0,\"obs_decoded\":false,\"obs_media_relpath\":\"datasets/earnings21-22/earnings22/media/4474506.mp3\",\"obs_sample_rate_hz\":24000,\"obs_speech_ref\":\"earnings22-original/4474506\"},\"record_id\":\"SAEA-E0-D4/4474506/OBS\"}"
+          "payload_keys": [
+            "obs_audio_seconds",
+            "obs_decoded",
+            "obs_media_relpath",
+            "obs_sample_rate_hz",
+            "obs_speech_ref"
+          ],
+          "record_id": "SAEA-E0-D4/4474506/OBS"
         },
         {
           "channel": "ORG",
           "content_sha256": "90874aca7faa1c55451d8c0da85ace795fca91439bd8d6d8454b0f811b58584c",
-          "record_id": "SAEA-E0-D4/4474506/ORG",
-          "serialized": "{\"channel\":\"ORG\",\"payload\":{\"org_carrier_lock_key\":\"earnings22-original\",\"org_content_read\":false,\"org_context_available\":false,\"org_context_files\":0,\"org_context_source\":\"conec/earnings22/contexts/pdfs\"},\"record_id\":\"SAEA-E0-D4/4474506/ORG\"}"
+          "payload_keys": [
+            "org_carrier_lock_key",
+            "org_content_read",
+            "org_context_available",
+            "org_context_files",
+            "org_context_source"
+          ],
+          "record_id": "SAEA-E0-D4/4474506/ORG"
         },
         {
           "channel": "SUPPLY",
           "content_sha256": "09f8cac4b91b20d8102475d2cd279758e73ad18fdf451ec86c131d18a673af24",
-          "record_id": "SAEA-E0-D4/4474506/SUPPLY",
-          "serialized": "{\"channel\":\"SUPPLY\",\"payload\":{\"supply_evidence_bytes\":0,\"supply_evidence_items\":0,\"supply_policy\":\"none:e0-model-free-closure\"},\"record_id\":\"SAEA-E0-D4/4474506/SUPPLY\"}"
+          "payload_keys": [
+            "supply_evidence_bytes",
+            "supply_evidence_items",
+            "supply_policy"
+          ],
+          "record_id": "SAEA-E0-D4/4474506/SUPPLY"
         },
         {
           "channel": "USE",
           "content_sha256": "3453e07b9f328f2230da2539f6293d023f23cf5c36877e7e55e37c0aec849c95",
-          "record_id": "SAEA-E0-D4/4474506/USE",
-          "serialized": "{\"channel\":\"USE\",\"payload\":{\"use_admitted_items\":0,\"use_final_answer_authority\":\"frozen-core\",\"use_policy\":\"none:e0-model-free-closure\"},\"record_id\":\"SAEA-E0-D4/4474506/USE\"}"
+          "payload_keys": [
+            "use_admitted_items",
+            "use_final_answer_authority",
+            "use_policy"
+          ],
+          "record_id": "SAEA-E0-D4/4474506/USE"
         },
         {
           "channel": "COST",
           "content_sha256": "4b4422b7f76e11dac6865d3b5b2c5afb8d7cb15dadcb4789af7d46ecf43b7758",
-          "record_id": "SAEA-E0-D4/4474506/COST",
-          "serialized": "{\"channel\":\"COST\",\"payload\":{\"evidence_bytes_supplied\":0,\"model_calls\":0,\"speech_audio_seconds_decoded\":0,\"tool_calls\":0},\"record_id\":\"SAEA-E0-D4/4474506/COST\"}"
+          "payload_keys": [
+            "evidence_bytes_supplied",
+            "model_calls",
+            "speech_audio_seconds_decoded",
+            "tool_calls"
+          ],
+          "record_id": "SAEA-E0-D4/4474506/COST"
         }
       ]
     },
@@ -219,32 +319,57 @@
         {
           "channel": "OBS",
           "content_sha256": "e17ac4b68a2fcf9ddeff2938bc9c4301b5048b0637a63b2fb601dc108440d261",
-          "record_id": "SAEA-E0-D4/4479944/OBS",
-          "serialized": "{\"channel\":\"OBS\",\"payload\":{\"obs_audio_seconds\":3892.0,\"obs_decoded\":false,\"obs_media_relpath\":\"datasets/earnings21-22/earnings22/media/4479944.mp3\",\"obs_sample_rate_hz\":44100,\"obs_speech_ref\":\"earnings22-original/4479944\"},\"record_id\":\"SAEA-E0-D4/4479944/OBS\"}"
+          "payload_keys": [
+            "obs_audio_seconds",
+            "obs_decoded",
+            "obs_media_relpath",
+            "obs_sample_rate_hz",
+            "obs_speech_ref"
+          ],
+          "record_id": "SAEA-E0-D4/4479944/OBS"
         },
         {
           "channel": "ORG",
           "content_sha256": "eced65c09ffc8d188f156213d49d8ffa665eb51792dfee861770b281441957fe",
-          "record_id": "SAEA-E0-D4/4479944/ORG",
-          "serialized": "{\"channel\":\"ORG\",\"payload\":{\"org_carrier_lock_key\":\"earnings22-original\",\"org_content_read\":false,\"org_context_available\":false,\"org_context_files\":0,\"org_context_source\":\"conec/earnings22/contexts/pdfs\"},\"record_id\":\"SAEA-E0-D4/4479944/ORG\"}"
+          "payload_keys": [
+            "org_carrier_lock_key",
+            "org_content_read",
+            "org_context_available",
+            "org_context_files",
+            "org_context_source"
+          ],
+          "record_id": "SAEA-E0-D4/4479944/ORG"
         },
         {
           "channel": "SUPPLY",
           "content_sha256": "014f43a333ea4c7024e7bd3861a2f23d7295bb01304b3c4073a4d90986cb9f38",
-          "record_id": "SAEA-E0-D4/4479944/SUPPLY",
-          "serialized": "{\"channel\":\"SUPPLY\",\"payload\":{\"supply_evidence_bytes\":0,\"supply_evidence_items\":0,\"supply_policy\":\"none:e0-model-free-closure\"},\"record_id\":\"SAEA-E0-D4/4479944/SUPPLY\"}"
+          "payload_keys": [
+            "supply_evidence_bytes",
+            "supply_evidence_items",
+            "supply_policy"
+          ],
+          "record_id": "SAEA-E0-D4/4479944/SUPPLY"
         },
         {
           "channel": "USE",
           "content_sha256": "b60317af39329d44e9523df101904589eed3b83bcf4f9964ad837568eeaaac83",
-          "record_id": "SAEA-E0-D4/4479944/USE",
-          "serialized": "{\"channel\":\"USE\",\"payload\":{\"use_admitted_items\":0,\"use_final_answer_authority\":\"frozen-core\",\"use_policy\":\"none:e0-model-free-closure\"},\"record_id\":\"SAEA-E0-D4/4479944/USE\"}"
+          "payload_keys": [
+            "use_admitted_items",
+            "use_final_answer_authority",
+            "use_policy"
+          ],
+          "record_id": "SAEA-E0-D4/4479944/USE"
         },
         {
           "channel": "COST",
           "content_sha256": "c6678480b2f586b6cd89d2babc44b40deb9216c99f884c1c7a1d57a5845b52e4",
-          "record_id": "SAEA-E0-D4/4479944/COST",
-          "serialized": "{\"channel\":\"COST\",\"payload\":{\"evidence_bytes_supplied\":0,\"model_calls\":0,\"speech_audio_seconds_decoded\":0,\"tool_calls\":0},\"record_id\":\"SAEA-E0-D4/4479944/COST\"}"
+          "payload_keys": [
+            "evidence_bytes_supplied",
+            "model_calls",
+            "speech_audio_seconds_decoded",
+            "tool_calls"
+          ],
+          "record_id": "SAEA-E0-D4/4479944/COST"
         }
       ]
     },
@@ -268,32 +393,57 @@
         {
           "channel": "OBS",
           "content_sha256": "328fff9cc1d9ad2cd661292dfe6122191692447a9f3066a0932651a7a97650cf",
-          "record_id": "SAEA-E0-D4/4481952/OBS",
-          "serialized": "{\"channel\":\"OBS\",\"payload\":{\"obs_audio_seconds\":3710.0,\"obs_decoded\":false,\"obs_media_relpath\":\"datasets/earnings21-22/earnings22/media/4481952.mp3\",\"obs_sample_rate_hz\":24000,\"obs_speech_ref\":\"earnings22-original/4481952\"},\"record_id\":\"SAEA-E0-D4/4481952/OBS\"}"
+          "payload_keys": [
+            "obs_audio_seconds",
+            "obs_decoded",
+            "obs_media_relpath",
+            "obs_sample_rate_hz",
+            "obs_speech_ref"
+          ],
+          "record_id": "SAEA-E0-D4/4481952/OBS"
         },
         {
           "channel": "ORG",
           "content_sha256": "90633fb084b986399ab60aefa169d16dffb680dbaef85094a427d108b5e3eda1",
-          "record_id": "SAEA-E0-D4/4481952/ORG",
-          "serialized": "{\"channel\":\"ORG\",\"payload\":{\"org_carrier_lock_key\":\"earnings22-original\",\"org_content_read\":false,\"org_context_available\":true,\"org_context_files\":3,\"org_context_source\":\"conec/earnings22/contexts/pdfs\"},\"record_id\":\"SAEA-E0-D4/4481952/ORG\"}"
+          "payload_keys": [
+            "org_carrier_lock_key",
+            "org_content_read",
+            "org_context_available",
+            "org_context_files",
+            "org_context_source"
+          ],
+          "record_id": "SAEA-E0-D4/4481952/ORG"
         },
         {
           "channel": "SUPPLY",
           "content_sha256": "53bc98643f76009822940da7adfe81be64d3af70b0cb6c837501f2c8dd19fa77",
-          "record_id": "SAEA-E0-D4/4481952/SUPPLY",
-          "serialized": "{\"channel\":\"SUPPLY\",\"payload\":{\"supply_evidence_bytes\":0,\"supply_evidence_items\":0,\"supply_policy\":\"none:e0-model-free-closure\"},\"record_id\":\"SAEA-E0-D4/4481952/SUPPLY\"}"
+          "payload_keys": [
+            "supply_evidence_bytes",
+            "supply_evidence_items",
+            "supply_policy"
+          ],
+          "record_id": "SAEA-E0-D4/4481952/SUPPLY"
         },
         {
           "channel": "USE",
           "content_sha256": "cd2d5184ea9f10e7ae20c64083c68ea9eca6658dda249c86e57a04fc03dc418b",
-          "record_id": "SAEA-E0-D4/4481952/USE",
-          "serialized": "{\"channel\":\"USE\",\"payload\":{\"use_admitted_items\":0,\"use_final_answer_authority\":\"frozen-core\",\"use_policy\":\"none:e0-model-free-closure\"},\"record_id\":\"SAEA-E0-D4/4481952/USE\"}"
+          "payload_keys": [
+            "use_admitted_items",
+            "use_final_answer_authority",
+            "use_policy"
+          ],
+          "record_id": "SAEA-E0-D4/4481952/USE"
         },
         {
           "channel": "COST",
           "content_sha256": "f77d50c6b2e8d2cb1668e081bba763ea5b673d326b4967097b7ffa8db60318fb",
-          "record_id": "SAEA-E0-D4/4481952/COST",
-          "serialized": "{\"channel\":\"COST\",\"payload\":{\"evidence_bytes_supplied\":0,\"model_calls\":0,\"speech_audio_seconds_decoded\":0,\"tool_calls\":0},\"record_id\":\"SAEA-E0-D4/4481952/COST\"}"
+          "payload_keys": [
+            "evidence_bytes_supplied",
+            "model_calls",
+            "speech_audio_seconds_decoded",
+            "tool_calls"
+          ],
+          "record_id": "SAEA-E0-D4/4481952/COST"
         }
       ]
     },
@@ -317,32 +467,57 @@
         {
           "channel": "OBS",
           "content_sha256": "de0aecdb4a1b9ee474dd1654e120474ef8d4c8320fd9da47c8f229cc32bf08f8",
-          "record_id": "SAEA-E0-D4/4482383/OBS",
-          "serialized": "{\"channel\":\"OBS\",\"payload\":{\"obs_audio_seconds\":3472.0,\"obs_decoded\":false,\"obs_media_relpath\":\"datasets/earnings21-22/earnings22/media/4482383.mp3\",\"obs_sample_rate_hz\":24000,\"obs_speech_ref\":\"earnings22-original/4482383\"},\"record_id\":\"SAEA-E0-D4/4482383/OBS\"}"
+          "payload_keys": [
+            "obs_audio_seconds",
+            "obs_decoded",
+            "obs_media_relpath",
+            "obs_sample_rate_hz",
+            "obs_speech_ref"
+          ],
+          "record_id": "SAEA-E0-D4/4482383/OBS"
         },
         {
           "channel": "ORG",
           "content_sha256": "20f354690b6cd485a9feb7f4b82ba5db64d899e7e02909258304cc115828de74",
-          "record_id": "SAEA-E0-D4/4482383/ORG",
-          "serialized": "{\"channel\":\"ORG\",\"payload\":{\"org_carrier_lock_key\":\"earnings22-original\",\"org_content_read\":false,\"org_context_available\":true,\"org_context_files\":1,\"org_context_source\":\"conec/earnings22/contexts/pdfs\"},\"record_id\":\"SAEA-E0-D4/4482383/ORG\"}"
+          "payload_keys": [
+            "org_carrier_lock_key",
+            "org_content_read",
+            "org_context_available",
+            "org_context_files",
+            "org_context_source"
+          ],
+          "record_id": "SAEA-E0-D4/4482383/ORG"
         },
         {
           "channel": "SUPPLY",
           "content_sha256": "2d4b5aee1efe1eb13b8107be93ce55ec38cb15b04db0b8e717133007e742f2b1",
-          "record_id": "SAEA-E0-D4/4482383/SUPPLY",
-          "serialized": "{\"channel\":\"SUPPLY\",\"payload\":{\"supply_evidence_bytes\":0,\"supply_evidence_items\":0,\"supply_policy\":\"none:e0-model-free-closure\"},\"record_id\":\"SAEA-E0-D4/4482383/SUPPLY\"}"
+          "payload_keys": [
+            "supply_evidence_bytes",
+            "supply_evidence_items",
+            "supply_policy"
+          ],
+          "record_id": "SAEA-E0-D4/4482383/SUPPLY"
         },
         {
           "channel": "USE",
           "content_sha256": "6df4a3f98453e25b219b9dcfcd0e94e47d68ee9811c87461e8581b1887d82901",
-          "record_id": "SAEA-E0-D4/4482383/USE",
-          "serialized": "{\"channel\":\"USE\",\"payload\":{\"use_admitted_items\":0,\"use_final_answer_authority\":\"frozen-core\",\"use_policy\":\"none:e0-model-free-closure\"},\"record_id\":\"SAEA-E0-D4/4482383/USE\"}"
+          "payload_keys": [
+            "use_admitted_items",
+            "use_final_answer_authority",
+            "use_policy"
+          ],
+          "record_id": "SAEA-E0-D4/4482383/USE"
         },
         {
           "channel": "COST",
           "content_sha256": "a02e774e7a5a33c43a36bacff922c0d99818675cab5bd255560f9ef4084a7ebc",
-          "record_id": "SAEA-E0-D4/4482383/COST",
-          "serialized": "{\"channel\":\"COST\",\"payload\":{\"evidence_bytes_supplied\":0,\"model_calls\":0,\"speech_audio_seconds_decoded\":0,\"tool_calls\":0},\"record_id\":\"SAEA-E0-D4/4482383/COST\"}"
+          "payload_keys": [
+            "evidence_bytes_supplied",
+            "model_calls",
+            "speech_audio_seconds_decoded",
+            "tool_calls"
+          ],
+          "record_id": "SAEA-E0-D4/4482383/COST"
         }
       ]
     },
@@ -366,32 +541,57 @@
         {
           "channel": "OBS",
           "content_sha256": "8f658a5cbaf223e6036ebf8c21e456ecaa8e73e32362115a0f00cf63146c141a",
-          "record_id": "SAEA-E0-D4/4482613/OBS",
-          "serialized": "{\"channel\":\"OBS\",\"payload\":{\"obs_audio_seconds\":4022.0,\"obs_decoded\":false,\"obs_media_relpath\":\"datasets/earnings21-22/earnings22/media/4482613.mp3\",\"obs_sample_rate_hz\":22050,\"obs_speech_ref\":\"earnings22-original/4482613\"},\"record_id\":\"SAEA-E0-D4/4482613/OBS\"}"
+          "payload_keys": [
+            "obs_audio_seconds",
+            "obs_decoded",
+            "obs_media_relpath",
+            "obs_sample_rate_hz",
+            "obs_speech_ref"
+          ],
+          "record_id": "SAEA-E0-D4/4482613/OBS"
         },
         {
           "channel": "ORG",
           "content_sha256": "49883772803dd33b39a0f1274d226f1493d522dc1402b1714916958e23fc4ebb",
-          "record_id": "SAEA-E0-D4/4482613/ORG",
-          "serialized": "{\"channel\":\"ORG\",\"payload\":{\"org_carrier_lock_key\":\"earnings22-original\",\"org_content_read\":false,\"org_context_available\":false,\"org_context_files\":0,\"org_context_source\":\"conec/earnings22/contexts/pdfs\"},\"record_id\":\"SAEA-E0-D4/4482613/ORG\"}"
+          "payload_keys": [
+            "org_carrier_lock_key",
+            "org_content_read",
+            "org_context_available",
+            "org_context_files",
+            "org_context_source"
+          ],
+          "record_id": "SAEA-E0-D4/4482613/ORG"
         },
         {
           "channel": "SUPPLY",
           "content_sha256": "6eaec668b6f2408b3163781cd7325c9dc2b63071d84ca5b698b92f8f16bfa8dc",
-          "record_id": "SAEA-E0-D4/4482613/SUPPLY",
-          "serialized": "{\"channel\":\"SUPPLY\",\"payload\":{\"supply_evidence_bytes\":0,\"supply_evidence_items\":0,\"supply_policy\":\"none:e0-model-free-closure\"},\"record_id\":\"SAEA-E0-D4/4482613/SUPPLY\"}"
+          "payload_keys": [
+            "supply_evidence_bytes",
+            "supply_evidence_items",
+            "supply_policy"
+          ],
+          "record_id": "SAEA-E0-D4/4482613/SUPPLY"
         },
         {
           "channel": "USE",
           "content_sha256": "32a509afe384deafcb3f69709daee35ff684260e9185138ee99090f4d8257f95",
-          "record_id": "SAEA-E0-D4/4482613/USE",
-          "serialized": "{\"channel\":\"USE\",\"payload\":{\"use_admitted_items\":0,\"use_final_answer_authority\":\"frozen-core\",\"use_policy\":\"none:e0-model-free-closure\"},\"record_id\":\"SAEA-E0-D4/4482613/USE\"}"
+          "payload_keys": [
+            "use_admitted_items",
+            "use_final_answer_authority",
+            "use_policy"
+          ],
+          "record_id": "SAEA-E0-D4/4482613/USE"
         },
         {
           "channel": "COST",
           "content_sha256": "788c83d0b9feabca87f26eeb8a16b0ed296c856939659e3c412f50bc3bf6a939",
-          "record_id": "SAEA-E0-D4/4482613/COST",
-          "serialized": "{\"channel\":\"COST\",\"payload\":{\"evidence_bytes_supplied\":0,\"model_calls\":0,\"speech_audio_seconds_decoded\":0,\"tool_calls\":0},\"record_id\":\"SAEA-E0-D4/4482613/COST\"}"
+          "payload_keys": [
+            "evidence_bytes_supplied",
+            "model_calls",
+            "speech_audio_seconds_decoded",
+            "tool_calls"
+          ],
+          "record_id": "SAEA-E0-D4/4482613/COST"
         }
       ]
     },
@@ -415,32 +615,57 @@
         {
           "channel": "OBS",
           "content_sha256": "52f65c03cb69a98805fe3a0edfee6e11180a54953c12eefe35714d6a1e63d8a3",
-          "record_id": "SAEA-E0-D4/4483937/OBS",
-          "serialized": "{\"channel\":\"OBS\",\"payload\":{\"obs_audio_seconds\":3654.0,\"obs_decoded\":false,\"obs_media_relpath\":\"datasets/earnings21-22/earnings22/media/4483937.mp3\",\"obs_sample_rate_hz\":24000,\"obs_speech_ref\":\"earnings22-original/4483937\"},\"record_id\":\"SAEA-E0-D4/4483937/OBS\"}"
+          "payload_keys": [
+            "obs_audio_seconds",
+            "obs_decoded",
+            "obs_media_relpath",
+            "obs_sample_rate_hz",
+            "obs_speech_ref"
+          ],
+          "record_id": "SAEA-E0-D4/4483937/OBS"
         },
         {
           "channel": "ORG",
           "content_sha256": "ba48172a3e1dc090ffbe9bc3a5d6f652b9893ac3bb9120cc8b2669a874fb1a4c",
-          "record_id": "SAEA-E0-D4/4483937/ORG",
-          "serialized": "{\"channel\":\"ORG\",\"payload\":{\"org_carrier_lock_key\":\"earnings22-original\",\"org_content_read\":false,\"org_context_available\":false,\"org_context_files\":0,\"org_context_source\":\"conec/earnings22/contexts/pdfs\"},\"record_id\":\"SAEA-E0-D4/4483937/ORG\"}"
+          "payload_keys": [
+            "org_carrier_lock_key",
+            "org_content_read",
+            "org_context_available",
+            "org_context_files",
+            "org_context_source"
+          ],
+          "record_id": "SAEA-E0-D4/4483937/ORG"
         },
         {
           "channel": "SUPPLY",
           "content_sha256": "bd6f94c1487d01d0c8f3c0cc99887edcae5ba760daea1ad8e88accba4eeee57a",
-          "record_id": "SAEA-E0-D4/4483937/SUPPLY",
-          "serialized": "{\"channel\":\"SUPPLY\",\"payload\":{\"supply_evidence_bytes\":0,\"supply_evidence_items\":0,\"supply_policy\":\"none:e0-model-free-closure\"},\"record_id\":\"SAEA-E0-D4/4483937/SUPPLY\"}"
+          "payload_keys": [
+            "supply_evidence_bytes",
+            "supply_evidence_items",
+            "supply_policy"
+          ],
+          "record_id": "SAEA-E0-D4/4483937/SUPPLY"
         },
         {
           "channel": "USE",
           "content_sha256": "8764e4cac729471945a8881c42d20c7280d13e6aa02ad87e4fa8a33d03a85af3",
-          "record_id": "SAEA-E0-D4/4483937/USE",
-          "serialized": "{\"channel\":\"USE\",\"payload\":{\"use_admitted_items\":0,\"use_final_answer_authority\":\"frozen-core\",\"use_policy\":\"none:e0-model-free-closure\"},\"record_id\":\"SAEA-E0-D4/4483937/USE\"}"
+          "payload_keys": [
+            "use_admitted_items",
+            "use_final_answer_authority",
+            "use_policy"
+          ],
+          "record_id": "SAEA-E0-D4/4483937/USE"
         },
         {
           "channel": "COST",
           "content_sha256": "a14db26f1193014167e9ae7f64ffc9a802447e8bb4d7fef4716e377988e82270",
-          "record_id": "SAEA-E0-D4/4483937/COST",
-          "serialized": "{\"channel\":\"COST\",\"payload\":{\"evidence_bytes_supplied\":0,\"model_calls\":0,\"speech_audio_seconds_decoded\":0,\"tool_calls\":0},\"record_id\":\"SAEA-E0-D4/4483937/COST\"}"
+          "payload_keys": [
+            "evidence_bytes_supplied",
+            "model_calls",
+            "speech_audio_seconds_decoded",
+            "tool_calls"
+          ],
+          "record_id": "SAEA-E0-D4/4483937/COST"
         }
       ]
     },
@@ -464,32 +689,57 @@
         {
           "channel": "OBS",
           "content_sha256": "0c707bb0ac4dc0f1e9b8ebd85fc2bb663aff8faee0f2a6a3dbdc6626e45a90b5",
-          "record_id": "SAEA-E0-D4/4485192/OBS",
-          "serialized": "{\"channel\":\"OBS\",\"payload\":{\"obs_audio_seconds\":3692.0,\"obs_decoded\":false,\"obs_media_relpath\":\"datasets/earnings21-22/earnings22/media/4485192.mp3\",\"obs_sample_rate_hz\":24000,\"obs_speech_ref\":\"earnings22-original/4485192\"},\"record_id\":\"SAEA-E0-D4/4485192/OBS\"}"
+          "payload_keys": [
+            "obs_audio_seconds",
+            "obs_decoded",
+            "obs_media_relpath",
+            "obs_sample_rate_hz",
+            "obs_speech_ref"
+          ],
+          "record_id": "SAEA-E0-D4/4485192/OBS"
         },
         {
           "channel": "ORG",
           "content_sha256": "cceed70b523690f3ef5ad53a2ddfcce4dfc71a1fcfc8faee462a0e8910931ded",
-          "record_id": "SAEA-E0-D4/4485192/ORG",
-          "serialized": "{\"channel\":\"ORG\",\"payload\":{\"org_carrier_lock_key\":\"earnings22-original\",\"org_content_read\":false,\"org_context_available\":false,\"org_context_files\":0,\"org_context_source\":\"conec/earnings22/contexts/pdfs\"},\"record_id\":\"SAEA-E0-D4/4485192/ORG\"}"
+          "payload_keys": [
+            "org_carrier_lock_key",
+            "org_content_read",
+            "org_context_available",
+            "org_context_files",
+            "org_context_source"
+          ],
+          "record_id": "SAEA-E0-D4/4485192/ORG"
         },
         {
           "channel": "SUPPLY",
           "content_sha256": "a6dacfbd9b5eff2f468de531e2ed0dfa1c4fc44a1572ffbbbd9117062782bf43",
-          "record_id": "SAEA-E0-D4/4485192/SUPPLY",
-          "serialized": "{\"channel\":\"SUPPLY\",\"payload\":{\"supply_evidence_bytes\":0,\"supply_evidence_items\":0,\"supply_policy\":\"none:e0-model-free-closure\"},\"record_id\":\"SAEA-E0-D4/4485192/SUPPLY\"}"
+          "payload_keys": [
+            "supply_evidence_bytes",
+            "supply_evidence_items",
+            "supply_policy"
+          ],
+          "record_id": "SAEA-E0-D4/4485192/SUPPLY"
         },
         {
           "channel": "USE",
           "content_sha256": "6106aa613daec6fa8aa8d1de9bad2be26dd1ae9851810d68e388cf601a506ce9",
-          "record_id": "SAEA-E0-D4/4485192/USE",
-          "serialized": "{\"channel\":\"USE\",\"payload\":{\"use_admitted_items\":0,\"use_final_answer_authority\":\"frozen-core\",\"use_policy\":\"none:e0-model-free-closure\"},\"record_id\":\"SAEA-E0-D4/4485192/USE\"}"
+          "payload_keys": [
+            "use_admitted_items",
+            "use_final_answer_authority",
+            "use_policy"
+          ],
+          "record_id": "SAEA-E0-D4/4485192/USE"
         },
         {
           "channel": "COST",
           "content_sha256": "ed9ef5975b0277dc240b9d5efaed579a34623cc71bebfccca06d6e0f15fabdf7",
-          "record_id": "SAEA-E0-D4/4485192/COST",
-          "serialized": "{\"channel\":\"COST\",\"payload\":{\"evidence_bytes_supplied\":0,\"model_calls\":0,\"speech_audio_seconds_decoded\":0,\"tool_calls\":0},\"record_id\":\"SAEA-E0-D4/4485192/COST\"}"
+          "payload_keys": [
+            "evidence_bytes_supplied",
+            "model_calls",
+            "speech_audio_seconds_decoded",
+            "tool_calls"
+          ],
+          "record_id": "SAEA-E0-D4/4485192/COST"
         }
       ]
     }

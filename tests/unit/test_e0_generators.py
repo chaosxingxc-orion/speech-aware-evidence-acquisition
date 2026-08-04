@@ -2,6 +2,7 @@
 
 import hashlib
 import json
+import os
 import shutil
 import subprocess
 from pathlib import Path
@@ -16,6 +17,8 @@ from speech_aware_evidence_acquisition.contracts import (
 )
 from speech_aware_evidence_acquisition.e0.artifacts import (
     ARTIFACTS_SUBDIR,
+    REPO_ROOT,
+    sha256_file,
     write_json_artifact,
 )
 from speech_aware_evidence_acquisition.e0.d1_identity import build_d1
@@ -94,8 +97,15 @@ class TestD3:
         artifact = build_d3()
         assert artifact["golden_vectors"]["all_matched"] is True
         assert artifact["golden_vectors"]["executed"] >= 8
-        for relpath, digest in artifact["frozen_sources_sha256"].items():
-            assert len(digest) == 64, relpath
+        frozen = artifact["frozen_sources_sha256"]
+        scoring_dir = REPO_ROOT / "src" / "speech_aware_evidence_acquisition" / "scoring"
+        actual_sources = {
+            f"src/speech_aware_evidence_acquisition/scoring/{path.name}"
+            for path in scoring_dir.glob("*.py")
+        }
+        assert set(frozen) == actual_sources, "freeze must cover the whole scoring package"
+        for relpath, digest in frozen.items():
+            assert digest == sha256_file(REPO_ROOT / relpath), relpath
 
 
 class TestD4:
@@ -112,13 +122,15 @@ class TestD4:
             "COST",
         }
         for record in first["trace_records"]:
-            payload = json.loads(record["serialized"])
-            assert record["content_sha256"] == _sha(record["serialized"].encode("utf-8"))
-            assert payload["record_id"].startswith("SAEA-E0-D4/")
+            # Receipt carries metadata only: no serialized trace content is embedded.
+            assert set(record) == {"channel", "record_id", "payload_keys", "content_sha256"}
+            assert record["record_id"].startswith("SAEA-E0-D4/")
+            assert len(record["content_sha256"]) == 64
         assert artifact["validations"]["model_calls"] == 0
         assert first["provenance"]["media_sha256"]
         org = next(r for r in first["trace_records"] if r["channel"] == "ORG")
-        assert json.loads(org["serialized"])["payload"]["org_context_files"] == 2
+        assert "org_context_files" in org["payload_keys"]
+        assert all(key.startswith("org_") for key in org["payload_keys"])
 
 
 class TestCloseAndGate:
@@ -158,12 +170,15 @@ class TestCloseAndGate:
         binary = runtime_root / "llama.cpp" / "build" / "bin" / "llama-server"
         binary.parent.mkdir(parents=True)
         binary.write_bytes(b"fake-llama-server")
+        library = binary.parent / "libfake.so"
+        library.write_bytes(b"fake-inference-library")
         runtime = {
-            "schema": "saea-runtime-receipt-v1",
+            "schema": "saea-runtime-receipt-v2",
             "study": "speech-aware-evidence-acquisition",
             "model_lock_key": MODEL_LOCK_KEY,
             "llama_cpp": {
                 "build_commit": "a" * 40,
+                "reported_build": "version: 1 (aaaaaaa)",
                 "binary_path": "llama.cpp/build/bin/llama-server",
                 "binary_bytes": binary.stat().st_size,
                 "binary_sha256": _sha(b"fake-llama-server"),
@@ -179,6 +194,13 @@ class TestCloseAndGate:
                     "bytes": len(gguf),
                     "sha256": _sha(gguf),
                 },
+            ],
+            "runtime_libraries": [
+                {
+                    "path": "llama.cpp/build/bin/libfake.so",
+                    "bytes": library.stat().st_size,
+                    "sha256": _sha(b"fake-inference-library"),
+                }
             ],
         }
         return runtime_root, binary, runtime
@@ -196,7 +218,7 @@ class TestCloseAndGate:
             "| calls | speech audio seconds | inherited exposure | artifacts | notes |\n"
             "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|\n"
             "| 2026-08-04 | RUN-1 | baseline-reproduction | s | m | c dev | dev "
-            f"| {'a' * 64} | no | 1 | 1 | none | none | test |\n",
+            f"| {'a' * 64} | no | 1 | 60 | none | none | test |\n",
             encoding="utf-8",
         )
         gate = FrozenCoreGate(
@@ -206,6 +228,8 @@ class TestCloseAndGate:
             lock_path=synthetic_world.lock_path,
             runtime_root=runtime_root,
             exposure_ledger=ledger,
+            # The generated D3 artifact froze the real repo's scoring sources.
+            source_root=REPO_ROOT,
         )
         plan = ExecutionPlan(
             run_id="RUN-1",
@@ -229,31 +253,39 @@ class TestCloseAndGate:
             gate.assert_model_touch_allowed(plan)
 
 
-@pytest.mark.skipif(shutil.which("git") is None, reason="git required")
+@pytest.mark.skipif(
+    os.name == "nt" or shutil.which("git") is None,
+    reason="POSIX git checkout with an executable fake llama-server required",
+)
 class TestRuntimeReceiptGenerator:
     def _llama_checkout(self, tmp_path: Path) -> Path:
         runtime_root = tmp_path / "runtime"
         llama = runtime_root / "llama.cpp"
+        llama.mkdir(parents=True)
+        # Real llama.cpp ignores its build tree, which is what lets the built
+        # binary postdate the clean commit.
+        (llama / ".gitignore").write_text("build/\n", encoding="utf-8")
+        subprocess.run(["git", "init", "-q", str(llama)], check=True)
+        subprocess.run(["git", "-C", str(llama), "add", "-A"], check=True)
+        subprocess.run(
+            [
+                "git", "-C", str(llama),
+                "-c", "user.email=t@example.invalid", "-c", "user.name=t",
+                "commit", "-q", "-m", "build",
+            ],
+            check=True,
+        )
+        commit = subprocess.run(
+            ["git", "-C", str(llama), "rev-parse", "HEAD"],
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.strip()
         binary = llama / "build" / "bin" / "llama-server"
         binary.parent.mkdir(parents=True)
-        binary.write_bytes(b"fake-llama-server-binary")
-        subprocess.run(["git", "init", "-q", str(llama)], check=True)
-        env_args = [
-            "git",
-            "-C",
-            str(llama),
-            "-c",
-            "user.email=t@example.invalid",
-            "-c",
-            "user.name=t",
-            "commit",
-            "--allow-empty",
-            "-q",
-            "-m",
-            "build",
-        ]
-        subprocess.run(["git", "-C", str(llama), "add", "-A"], check=True)
-        subprocess.run(env_args, check=True)
+        binary.write_text(f"#!/bin/sh\necho 'version: 1 ({commit[:7]})'\n", encoding="utf-8")
+        binary.chmod(0o755)
+        (binary.parent / "libfake-impl.so").write_bytes(b"fake-inference-library")
         return runtime_root
 
     def _with_models(self, synthetic_world) -> None:
@@ -272,15 +304,31 @@ class TestRuntimeReceiptGenerator:
         ]
         synthetic_world.lock_path.write_text(json.dumps(lock), encoding="utf-8")
 
-    def test_receipt_binds_commit_files_and_bytes(self, synthetic_world, tmp_path):
+    def test_receipt_binds_commit_files_libraries_and_bytes(self, synthetic_world, tmp_path):
         runtime_root = self._llama_checkout(tmp_path)
         self._with_models(synthetic_world)
         receipt = build_runtime_receipt(
             synthetic_world.lock_path, synthetic_world.data_root, runtime_root
         )
-        assert len(receipt["llama_cpp"]["build_commit"]) == 40
+        commit = receipt["llama_cpp"]["build_commit"]
+        assert len(commit) == 40
+        assert commit[:7] in receipt["llama_cpp"]["reported_build"]
         assert len(receipt["gguf_files"]) == 2
         assert sum(entry["bytes"] for entry in receipt["gguf_files"]) == 16
+        assert [entry["path"] for entry in receipt["runtime_libraries"]] == [
+            "llama.cpp/build/bin/libfake-impl.so"
+        ]
+
+    def test_stale_build_from_other_commit_refused(self, synthetic_world, tmp_path):
+        runtime_root = self._llama_checkout(tmp_path)
+        self._with_models(synthetic_world)
+        binary = runtime_root / "llama.cpp" / "build" / "bin" / "llama-server"
+        binary.write_text("#!/bin/sh\necho 'version: 1 (0123abc)'\n", encoding="utf-8")
+        binary.chmod(0o755)
+        with pytest.raises(ArtifactError, match="stale or foreign build"):
+            build_runtime_receipt(
+                synthetic_world.lock_path, synthetic_world.data_root, runtime_root
+            )
 
     def test_dirty_tree_refused(self, synthetic_world, tmp_path):
         runtime_root = self._llama_checkout(tmp_path)

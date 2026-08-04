@@ -61,7 +61,9 @@ _DRIVE_PREFIX = re.compile(r"^[A-Za-z]:")
 STUDY_SLUG = "speech-aware-evidence-acquisition"
 MODEL_LOCK_KEY = "qwen3-omni-30b-a3b-instruct-gguf"
 E0_RECEIPT_SCHEMA = "saea-e0-closure-receipt-v1"
-RUNTIME_RECEIPT_SCHEMA = "saea-runtime-receipt-v1"
+RUNTIME_RECEIPT_SCHEMA = "saea-runtime-receipt-v2"
+SCORING_PACKAGE_RELPATH = "src/speech_aware_evidence_acquisition/scoring"
+_REPORTED_BUILD = re.compile(r"\(([0-9a-f]{7,40})\)")
 
 ALLOWED_EXECUTION_PROFILES = (
     "model-free-check",
@@ -361,16 +363,24 @@ class FrozenCoreGate:
     and are **true**, not merely well-formed:
 
     - the E0 closure receipt binds every D1-D4 deliverable to an artifact file whose
-      recomputed SHA-256 matches the receipt;
+      recomputed SHA-256 matches the receipt; the D3 artifact's frozen scoring-source
+      hashes are additionally re-measured against the live tree under ``source_root``,
+      and the scoring package may contain no source file the freeze does not name;
     - the runtime receipt binds the frozen model lock key from the umbrella
       ``docs/datasets.lock.json`` to canonical relative paths under the controlled
-      asset root; the gate re-reads every declared GGUF file and the llama.cpp build
-      binary and recomputes size and SHA-256 itself;
+      asset root; the gate re-reads every declared GGUF file, the llama.cpp launcher
+      binary AND every runtime library in the launcher's directory (exact set — an
+      unlisted or missing file refuses) and recomputes size and SHA-256 itself;
+    - the pre-registered exposure row must agree with the ``ExecutionPlan`` field by
+      field (profile, split role, split identity hash, consumed=no, planned budgets);
     - absolute paths, drive letters, ``..`` traversal, path escapes, duplicates and
       extra/missing model files are all refused.
 
     Any missing file, malformed JSON, schema/identity mismatch, lock mismatch or byte
-    drift refuses the touch.
+    drift refuses the touch. Verification is instantaneous: it proves the bytes at
+    measurement time. The process that opens the gate must be the process that starts
+    llama-server, immediately afterward — a gate result must never be cached, shared
+    across processes, or separated from the launch it authorizes.
     """
 
     e0_receipt: Path
@@ -379,8 +389,32 @@ class FrozenCoreGate:
     lock_path: Path
     runtime_root: Path
     exposure_ledger: Path
+    source_root: Path
 
     E0_DELIVERABLES = ("d1_identity", "d2_leakage", "d3_scoring", "d4_trace")
+
+    @classmethod
+    def for_study_repo(
+        cls, repo_root: Path, data_root: Path, runtime_root: Path
+    ) -> "FrozenCoreGate":
+        """The canonical production binding — the only gate a real run may use.
+
+        Pins the committed receipts, the study exposure ledger and the umbrella lock
+        of the registered adjacent-checkout layout. Constructing a gate against any
+        other ledger (a copy, a temp file, a synthetic row) does not authorize
+        anything: pre-registration means a row in ``docs/exposure-ledger.md``.
+        """
+
+        root = Path(repo_root)
+        return cls(
+            e0_receipt=root / "docs" / "receipts" / "e0-closure.json",
+            runtime_receipt=root / "docs" / "receipts" / "runtime.json",
+            data_root=Path(data_root),
+            lock_path=root.parent.parent / "docs" / "datasets.lock.json",
+            runtime_root=Path(runtime_root),
+            exposure_ledger=root / "docs" / "exposure-ledger.md",
+            source_root=root,
+        )
 
     def _load(self, path: Path, label: str) -> Mapping[str, object]:
         try:
@@ -413,6 +447,7 @@ class FrozenCoreGate:
                 f"E0 receipt deliverables must be exactly {self.E0_DELIVERABLES}"
             )
         artifacts_root = Path(self.e0_receipt).parent
+        artifact_paths: dict[str, Path] = {}
         for name in self.E0_DELIVERABLES:
             entry = deliverables[name]
             if not isinstance(entry, Mapping) or set(entry) != {"status", "artifact", "sha256"}:
@@ -433,6 +468,50 @@ class FrozenCoreGate:
                     f"E0 deliverable {name} artifact hash drift: receipt {recorded[:12]}..., "
                     f"actual {actual[:12]}...; model touch refused"
                 )
+            artifact_paths[name] = artifact
+        self._validate_scoring_freeze(artifact_paths["d3_scoring"])
+
+    def _validate_scoring_freeze(self, d3_artifact: Path) -> None:
+        """The D3 freeze is enforced, not asserted: re-hash every frozen scoring
+        source against the live tree and refuse any unlisted scoring module.
+
+        Without this, editing ``scoring/*.py`` after closure would leave every
+        receipt hash intact — the artifact records hashes of code that would no
+        longer be the code doing the scoring."""
+
+        document = self._load(d3_artifact, "D3 scoring artifact")
+        frozen = document.get("frozen_sources_sha256")
+        if not isinstance(frozen, Mapping) or not frozen:
+            raise GateClosed(
+                "D3 scoring artifact lacks a non-empty frozen_sources_sha256 mapping; "
+                "an unfrozen scoring stack cannot open the model gate"
+            )
+        for relpath, recorded in frozen.items():
+            if not isinstance(recorded, str) or _SHA256.fullmatch(recorded) is None:
+                raise GateClosed(f"frozen scoring source {relpath!r} lacks a valid sha256")
+            relative = _safe_relative_path(relpath, f"frozen scoring source {relpath!r}")
+            source = _resolve_under(self.source_root, relative, f"frozen scoring source {relpath!r}")
+            _, actual = _measure_file(source, f"frozen scoring source {relpath!r}")
+            if actual != recorded:
+                raise GateClosed(
+                    f"scoring freeze drift: {relpath} is {actual[:12]}... on disk but the "
+                    f"D3 receipt froze {recorded[:12]}...; model touch refused"
+                )
+        scoring_dir = Path(self.source_root) / SCORING_PACKAGE_RELPATH
+        if not scoring_dir.is_dir():
+            raise GateClosed(f"scoring package directory missing: {scoring_dir}")
+        actual_sources = {
+            f"{SCORING_PACKAGE_RELPATH}/{entry.name}"
+            for entry in scoring_dir.iterdir()
+            if entry.is_file() and entry.name.endswith(".py")
+        }
+        declared = set(frozen)
+        unlisted = sorted(actual_sources - declared)
+        if unlisted:
+            raise GateClosed(
+                f"scoring package contains source files the D3 freeze does not name: "
+                f"{unlisted}; model touch refused"
+            )
 
     def _lock_model_entry(self) -> Mapping[str, object]:
         lock = self._load(self.lock_path, "datasets lock")
@@ -464,7 +543,14 @@ class FrozenCoreGate:
     def _validate_runtime(self) -> None:
         runtime = self._load(self.runtime_receipt, "runtime receipt")
         self._require_schema(runtime, RUNTIME_RECEIPT_SCHEMA, "runtime receipt")
-        expected_keys = {"schema", "study", "model_lock_key", "llama_cpp", "gguf_files"}
+        expected_keys = {
+            "schema",
+            "study",
+            "model_lock_key",
+            "llama_cpp",
+            "gguf_files",
+            "runtime_libraries",
+        }
         if set(runtime) != expected_keys:
             raise GateClosed(f"runtime receipt must have exact keys {sorted(expected_keys)}")
         if runtime["model_lock_key"] != MODEL_LOCK_KEY:
@@ -529,18 +615,27 @@ class FrozenCoreGate:
         build = runtime["llama_cpp"]
         if not isinstance(build, Mapping) or set(build) != {
             "build_commit",
+            "reported_build",
             "binary_path",
             "binary_bytes",
             "binary_sha256",
         }:
             raise GateClosed(
                 "runtime receipt llama_cpp must have exact "
-                "build_commit/binary_path/binary_bytes/binary_sha256"
+                "build_commit/reported_build/binary_path/binary_bytes/binary_sha256"
             )
         commit = build["build_commit"]
         if not isinstance(commit, str) or _FULL_COMMIT.fullmatch(commit) is None:
             raise GateClosed(
                 "llama_cpp.build_commit must be a full 40-hex commit backed by the build binary"
+            )
+        reported = build["reported_build"]
+        reported_match = _REPORTED_BUILD.search(reported) if isinstance(reported, str) else None
+        if reported_match is None or not commit.startswith(reported_match.group(1)):
+            raise GateClosed(
+                "llama_cpp.reported_build must carry the binary's self-reported build hash "
+                "(from `llama-server --version` at receipt time) and it must prefix-match "
+                f"build_commit; got {reported!r} vs {commit[:12]}..."
             )
         recorded_bytes = build["binary_bytes"]
         recorded_sha = build["binary_sha256"]
@@ -560,6 +655,64 @@ class FrozenCoreGate:
                 "llama_cpp build binary drift: the receipt's build_commit is not backed by "
                 "the on-disk binary bytes; model touch refused"
             )
+        self._validate_runtime_libraries(runtime, relative)
+
+    def _validate_runtime_libraries(self, runtime: Mapping[str, object], binary_rel: str) -> None:
+        """The launcher is ~18 KB of stub; the inference code lives in the shared
+        libraries next to it. Bind the launcher's whole directory as an exact set:
+        every runtime file re-hashed, no unlisted file tolerated — a rebuilt
+        ``libllama*.so`` or ``libggml-cuda.so`` re-closes the gate."""
+
+        libraries = runtime["runtime_libraries"]
+        if not isinstance(libraries, list) or not libraries:
+            raise GateClosed("runtime receipt lacks a non-empty runtime_libraries list")
+        bin_dir_rel = binary_rel.rsplit("/", 1)[0]
+        seen: set[str] = set()
+        for index, entry in enumerate(libraries):
+            label = f"runtime receipt runtime_libraries[{index}]"
+            if not isinstance(entry, Mapping) or set(entry) != {"path", "bytes", "sha256"}:
+                raise GateClosed(f"{label} must have exact path/bytes/sha256")
+            relative = _safe_relative_path(entry["path"], f"{label}.path")
+            if relative in seen or relative == binary_rel:
+                raise GateClosed(f"{label} duplicates runtime file {relative!r}")
+            seen.add(relative)
+            if relative.rsplit("/", 1)[0] != bin_dir_rel:
+                raise GateClosed(
+                    f"{label}.path {relative!r} is outside the launcher directory {bin_dir_rel!r}"
+                )
+            recorded_bytes = entry["bytes"]
+            recorded_sha = entry["sha256"]
+            if (
+                isinstance(recorded_bytes, bool)
+                or not isinstance(recorded_bytes, int)
+                or recorded_bytes <= 0
+                or not isinstance(recorded_sha, str)
+                or _SHA256.fullmatch(recorded_sha) is None
+            ):
+                raise GateClosed(f"{label} lacks valid bytes/sha256")
+            resolved = _resolve_under(self.runtime_root, relative, f"{label}.path")
+            actual_bytes, actual_sha = _measure_file(resolved, f"{label}.path")
+            if actual_bytes != recorded_bytes or actual_sha != recorded_sha:
+                raise GateClosed(
+                    f"{label} drift: runtime library {relative!r} does not match the "
+                    "receipt; model touch refused"
+                )
+        bin_dir = Path(self.runtime_root) / bin_dir_rel
+        try:
+            actual_files = {
+                f"{bin_dir_rel}/{entry.name}"
+                for entry in bin_dir.iterdir()
+                if entry.is_file()
+            }
+        except OSError as error:
+            raise GateClosed(f"cannot enumerate runtime directory {bin_dir}: {error}") from error
+        declared = seen | {binary_rel}
+        if actual_files != declared:
+            raise GateClosed(
+                "runtime directory drift: on-disk files "
+                f"{sorted(actual_files ^ declared)} are unlisted or missing versus the "
+                "receipt; model touch refused"
+            )
 
     def _lock_asset_names(self) -> set[str]:
         lock = self._load(self.lock_path, "datasets lock")
@@ -574,7 +727,14 @@ class FrozenCoreGate:
             raise GateClosed("datasets lock yields no named assets")
         return names
 
-    def _require_exposure_preregistration(self, run_id: str) -> None:
+    def _require_exposure_preregistration(self, plan: "ExecutionPlan") -> None:
+        """The pre-registered row is cross-checked field by field against the plan.
+
+        A run id string alone proves nothing: the row must have been written with
+        the same profile, split role, split identity hash and budgets the plan now
+        claims, and must still read ``consumed = no``. Only the first ledger table
+        is parsed — a later table cannot inject rows into the contract columns."""
+
         try:
             text = Path(self.exposure_ledger).read_text(encoding="utf-8")
         except (OSError, UnicodeError) as error:
@@ -586,6 +746,8 @@ class FrozenCoreGate:
         for line in text.splitlines():
             stripped = line.strip()
             if not (stripped.startswith("|") and stripped.endswith("|")):
+                if header is not None:
+                    break
                 continue
             cells = [cell.strip() for cell in stripped[1:-1].split("|")]
             if header is None:
@@ -600,14 +762,58 @@ class FrozenCoreGate:
             raise GateClosed(
                 f"exposure ledger lacks a table header with a {_EXPOSURE_RUN_COLUMN!r} column"
             )
-        column = header.index(_EXPOSURE_RUN_COLUMN)
-        for cells in rows:
-            if column < len(cells) and cells[column] == run_id:
-                return
-        raise GateClosed(
-            f"model touch refused: run {run_id!r} has no pre-registered exposure row in "
-            f"{self.exposure_ledger} (rows are written before results are read)"
-        )
+
+        def cell(cells: list[str], column_name: str) -> str:
+            if column_name not in header:
+                raise GateClosed(f"exposure ledger header lacks column {column_name!r}")
+            index = header.index(column_name)
+            if index >= len(cells):
+                raise GateClosed(f"exposure row for {plan.run_id!r} lacks column {column_name!r}")
+            return cells[index]
+
+        matched = [
+            cells for cells in rows if cell(cells, _EXPOSURE_RUN_COLUMN) == plan.run_id
+        ]
+        if not matched:
+            raise GateClosed(
+                f"model touch refused: run {plan.run_id!r} has no pre-registered exposure "
+                f"row in {self.exposure_ledger} (rows are written before results are read)"
+            )
+        if len(matched) > 1:
+            raise GateClosed(f"run {plan.run_id!r} is pre-registered more than once")
+        row = matched[0]
+        for column_name, expected in (
+            ("execution profile", plan.execution_profile),
+            ("split role", plan.split_role),
+            ("split identity hash", plan.split_identity_hash),
+        ):
+            actual = cell(row, column_name)
+            if actual != expected:
+                raise GateClosed(
+                    f"exposure row disagrees with the execution plan on {column_name!r}: "
+                    f"row {actual!r} vs plan {expected!r}; model touch refused"
+                )
+        if cell(row, "consumed").lower() != "no":
+            raise GateClosed(
+                f"exposure row for {plan.run_id!r} is already consumed; a consumed run "
+                "cannot be re-executed"
+            )
+        for column_name, planned in (
+            ("calls", plan.planned_model_calls),
+            ("speech audio seconds", plan.planned_speech_audio_seconds),
+        ):
+            raw = cell(row, column_name)
+            try:
+                registered = int(raw)
+            except ValueError as error:
+                raise GateClosed(
+                    f"exposure row column {column_name!r} must be an integer, got {raw!r}"
+                ) from error
+            if registered < planned:
+                raise GateClosed(
+                    f"execution plan claims {planned} {column_name} but only {registered} "
+                    "were pre-registered; model touch refused"
+                )
 
     def assert_model_touch_allowed(self, plan: ExecutionPlan) -> None:
         """Refuse the touch unless a validated Stage-2 ``ExecutionPlan`` authorizes it
@@ -627,7 +833,7 @@ class FrozenCoreGate:
                 f"execution profile {plan.execution_profile!r} does not authorize a model "
                 f"touch; model-facing Stage-2 profiles are {sorted(MODEL_TOUCH_PROFILES)}"
             )
-        self._require_exposure_preregistration(plan.run_id)
+        self._require_exposure_preregistration(plan)
         if plan.carrier_lock_key not in self._lock_asset_names():
             raise GateClosed(
                 f"carrier lock key {plan.carrier_lock_key!r} is not in the umbrella "

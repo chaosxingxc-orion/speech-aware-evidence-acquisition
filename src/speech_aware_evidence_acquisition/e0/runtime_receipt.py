@@ -1,15 +1,19 @@
-"""Runtime receipt generator: llama.cpp build commit + per-file GGUF SHA-256.
+"""Runtime receipt generator (v2): llama.cpp build + full runtime set + GGUF hashes.
 
-Model-free by construction: it hashes bytes and reads Git metadata; it never starts
-llama-server and never loads the model. The generator pre-checks everything the
-gate will re-verify (file count and total bytes against the umbrella lock, clean
-build tree, on-disk binary) so a bad receipt fails at generation time, not at the
-first model touch. ``contracts.FrozenCoreGate`` remains the enforcement point —
+Model-free by construction: it hashes bytes, reads Git metadata and asks the
+launcher for its compiled-in version string (``llama-server --version`` — no model
+file is passed or loaded). The launcher itself is a ~18 KB stub; the inference and
+audio front-end code lives in the shared libraries next to it, so the receipt binds
+**every regular file in the launcher's directory** and the gate re-verifies that
+exact set. The binary's self-reported build hash must match ``git rev-parse HEAD``
+of the clean tree — a stale build left over from an older commit is refused at
+generation time. ``contracts.FrozenCoreGate`` remains the enforcement point —
 receipts are verified there, never trusted.
 """
 
 from __future__ import annotations
 
+import re
 import subprocess
 from pathlib import Path
 
@@ -30,6 +34,31 @@ def _git(runtime_dir: Path, *args: str) -> str:
             f"git {' '.join(args)} failed in {runtime_dir}: {completed.stderr.strip()}"
         )
     return completed.stdout.strip()
+
+
+_REPORTED_BUILD = re.compile(r"\(([0-9a-f]{7,40})\)")
+
+
+def _reported_build_line(binary: Path) -> str:
+    """First version line the launcher reports about itself (no model is loaded)."""
+
+    try:
+        completed = subprocess.run(
+            [str(binary), "--version"],
+            check=False,
+            capture_output=True,
+            text=True,
+            timeout=30,
+        )
+    except (OSError, subprocess.TimeoutExpired) as error:
+        raise ArtifactError(f"cannot execute {binary} --version: {error}") from error
+    output = (completed.stdout + "\n" + completed.stderr).strip()
+    for line in output.splitlines():
+        if _REPORTED_BUILD.search(line):
+            return line.strip()
+    raise ArtifactError(
+        f"cannot parse a build hash from `{binary} --version` output: {output[:200]!r}"
+    )
 
 
 def build_runtime_receipt(
@@ -87,15 +116,44 @@ def build_runtime_receipt(
     if not binary.is_file():
         raise ArtifactError(f"llama-server binary missing: {binary}")
 
+    reported = _reported_build_line(binary)
+    reported_hash = _REPORTED_BUILD.search(reported).group(1)
+    if not commit.startswith(reported_hash):
+        raise ArtifactError(
+            f"stale or foreign build: the binary reports build {reported_hash!r} but the "
+            f"clean tree is at {commit!r}; rebuild from the checked-out commit first"
+        )
+
+    binary_rel = f"{llama_dir_name}/{binary_relpath}"
+    bin_dir = binary.parent
+    library_entries = []
+    for path in sorted(bin_dir.iterdir()):
+        if not path.is_file() or path.name == binary.name:
+            continue
+        library_entries.append(
+            {
+                "path": f"{binary_rel.rsplit('/', 1)[0]}/{path.name}",
+                "bytes": path.stat().st_size,
+                "sha256": sha256_file(path),
+            }
+        )
+    if not library_entries:
+        raise ArtifactError(
+            f"no runtime libraries found next to {binary}; a lone launcher stub cannot "
+            "be the inference runtime"
+        )
+
     return {
         "schema": RUNTIME_RECEIPT_SCHEMA,
         "study": STUDY_SLUG,
         "model_lock_key": MODEL_LOCK_KEY,
         "llama_cpp": {
             "build_commit": commit,
-            "binary_path": f"{llama_dir_name}/{binary_relpath}",
+            "reported_build": reported,
+            "binary_path": binary_rel,
             "binary_bytes": binary.stat().st_size,
             "binary_sha256": sha256_file(binary),
         },
         "gguf_files": gguf_entries,
+        "runtime_libraries": library_entries,
     }

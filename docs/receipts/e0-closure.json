@@ -2,7 +2,7 @@
   "deliverables": {
     "d1_identity": {
       "artifact": "artifacts/d1-identity.json",
-      "sha256": "790f5dc08241912aed92cc4d75794ef2446a3fa40499d79abc586863e207f334",
+      "sha256": "e827508b70d12d97546fa33eefcc2dde979648b61ae2dcfe84a47965ad422a67",
       "status": "CLOSED"
     },
     "d2_leakage": {
@@ -12,12 +12,12 @@
     },
     "d3_scoring": {
       "artifact": "artifacts/d3-scoring.json",
-      "sha256": "887d15c61cd3f1e86a3a065fae1e2c3f46c884140b31a12a0222da3f512c3fef",
+      "sha256": "9ea7e671f51f0c64e985bcfef1d5ad73f7f178369d9e628aa004f95b771069ff",
       "status": "CLOSED"
     },
     "d4_trace": {
       "artifact": "artifacts/d4-trace.json",
-      "sha256": "e41ead5180f1ba42b4721d9361cb78bc89b7a8b6e67f778ec1c9d0126041dc7f",
+      "sha256": "23ee3ee44cba548d96dc59a2a159752f1cb364f094187246772a611674c469dc",
       "status": "CLOSED"
     }
   },

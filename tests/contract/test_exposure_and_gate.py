@@ -92,7 +92,10 @@ class GateFixture:
     GGUF_1 = b"GGUF-fake-model-shard-one" * 64
     GGUF_2 = b"GGUF-fake-mmproj" * 32
     BINARY = b"ELF-fake-llama-server" * 16
+    LIBRARY = b"ELF-fake-libllama-impl" * 32
     ARTIFACT = b'{"receipt": "closed"}\n'
+    SCORING_SOURCE = b"def score():\n    return 0\n"
+    SCORING_REL = "src/speech_aware_evidence_acquisition/scoring/wer.py"
     RUN_ID = "SAEA-E-000-smoke"
     CARRIER = "earnings21-original"
 
@@ -100,6 +103,7 @@ class GateFixture:
         self.receipts = tmp_path / "receipts"
         self.data_root = tmp_path / "data"
         self.runtime_root = tmp_path / "runtime"
+        self.source_root = tmp_path
         self.lock_path = tmp_path / "datasets.lock.json"
         model_dir = self.data_root / self.SUBDIR
         model_dir.mkdir(parents=True)
@@ -108,15 +112,25 @@ class GateFixture:
         binary = self.runtime_root / "llama.cpp" / "build" / "bin" / "llama-server"
         binary.parent.mkdir(parents=True)
         binary.write_bytes(self.BINARY)
+        (binary.parent / "libfake-impl.so").write_bytes(self.LIBRARY)
+
+        self.scoring_dir = tmp_path / "src" / "speech_aware_evidence_acquisition" / "scoring"
+        self.scoring_dir.mkdir(parents=True)
+        (self.scoring_dir / "wer.py").write_bytes(self.SCORING_SOURCE)
+        self.d3_artifact = json.dumps(
+            {"frozen_sources_sha256": {self.SCORING_REL: _sha(self.SCORING_SOURCE)}}
+        ).encode("utf-8")
+
         (self.receipts / "e0").mkdir(parents=True)
         self.deliverables = {}
         for name in FrozenCoreGate.E0_DELIVERABLES:
+            content = self.d3_artifact if name == "d3_scoring" else self.ARTIFACT
             artifact = self.receipts / "e0" / f"{name}.json"
-            artifact.write_bytes(self.ARTIFACT)
+            artifact.write_bytes(content)
             self.deliverables[name] = {
                 "status": "CLOSED",
                 "artifact": f"e0/{name}.json",
-                "sha256": _sha(self.ARTIFACT),
+                "sha256": _sha(content),
             }
         self.lock = {
             "models": [
@@ -131,15 +145,10 @@ class GateFixture:
             "datasets": [{"name": self.CARRIER}],
         }
         self.exposure_ledger = tmp_path / "exposure-ledger.md"
-        self.exposure_ledger.write_text(
-            "| date | run/experiment id | execution profile | scope | model/tool "
-            "| speech carrier + split | split role | split identity hash | consumed "
-            "| calls | speech audio seconds | inherited exposure | artifacts | notes |\n"
-            "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|\n"
+        self.write_ledger_rows(
             f"| 2026-08-04 | {self.RUN_ID} | baseline-reproduction | earnings21 dev slice "
             f"| qwen3-omni | {self.CARRIER} dev | dev | {'a' * 64} | no "
-            "| 10 | 600 | W1 probes on other carriers only | mlflow://pending | pre-registered |\n",
-            encoding="utf-8",
+            "| 10 | 600 | W1 probes on other carriers only | mlflow://pending | pre-registered |\n"
         )
         self.e0 = {
             "schema": E0_RECEIPT_SCHEMA,
@@ -152,6 +161,7 @@ class GateFixture:
             "model_lock_key": MODEL_LOCK_KEY,
             "llama_cpp": {
                 "build_commit": "d" * 40,
+                "reported_build": "version: 9999 (ddddddd)",
                 "binary_path": "llama.cpp/build/bin/llama-server",
                 "binary_bytes": len(self.BINARY),
                 "binary_sha256": _sha(self.BINARY),
@@ -168,7 +178,23 @@ class GateFixture:
                     "sha256": _sha(self.GGUF_2),
                 },
             ],
+            "runtime_libraries": [
+                {
+                    "path": "llama.cpp/build/bin/libfake-impl.so",
+                    "bytes": len(self.LIBRARY),
+                    "sha256": _sha(self.LIBRARY),
+                }
+            ],
         }
+
+    def write_ledger_rows(self, rows: str) -> None:
+        self.exposure_ledger.write_text(
+            "| date | run/experiment id | execution profile | scope | model/tool "
+            "| speech carrier + split | split role | split identity hash | consumed "
+            "| calls | speech audio seconds | inherited exposure | artifacts | notes |\n"
+            "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|\n" + rows,
+            encoding="utf-8",
+        )
 
     def gate(self) -> FrozenCoreGate:
         (self.receipts / "e0-closure.json").write_text(json.dumps(self.e0), encoding="utf-8")
@@ -181,6 +207,7 @@ class GateFixture:
             lock_path=self.lock_path,
             runtime_root=self.runtime_root,
             exposure_ledger=self.exposure_ledger,
+            source_root=self.source_root,
         )
 
     def plan(self, **overrides: object) -> ExecutionPlan:
@@ -216,6 +243,7 @@ def test_gate_refuses_when_receipts_are_missing(tmp_path, world):
         world.lock_path,
         world.runtime_root,
         world.exposure_ledger,
+        world.source_root,
     )
     world.lock_path.write_text(json.dumps(world.lock), encoding="utf-8")
     with pytest.raises(GateClosed, match="missing or unreadable"):
@@ -379,6 +407,96 @@ def test_gate_refuses_run_without_preregistered_exposure_row(world):
         world.gate().assert_model_touch_allowed(
             world.plan(run_id="SAEA-E-999-unregistered")
         )
+
+
+def test_gate_refuses_scoring_source_drift(world):
+    (world.scoring_dir / "wer.py").write_bytes(b"def score():\n    return 1  # tampered\n")
+    with pytest.raises(GateClosed, match="scoring freeze drift"):
+        world.gate().assert_model_touch_allowed(world.plan())
+
+
+def test_gate_refuses_unlisted_scoring_module(world):
+    (world.scoring_dir / "wer_v2.py").write_bytes(b"def score2():\n    return 2\n")
+    with pytest.raises(GateClosed, match="does not name"):
+        world.gate().assert_model_touch_allowed(world.plan())
+
+
+def test_gate_refuses_missing_scoring_freeze_mapping(world):
+    artifact = world.receipts / "e0" / "d3_scoring.json"
+    artifact.write_bytes(world.ARTIFACT)
+    world.deliverables["d3_scoring"]["sha256"] = _sha(world.ARTIFACT)
+    with pytest.raises(GateClosed, match="frozen_sources_sha256"):
+        world.gate().assert_model_touch_allowed(world.plan())
+
+
+def test_gate_refuses_runtime_library_drift_and_unlisted_files(world):
+    lib = world.runtime_root / "llama.cpp" / "build" / "bin" / "libfake-impl.so"
+    lib.write_bytes(b"rebuilt-from-patched-source")
+    with pytest.raises(GateClosed, match="drift"):
+        world.gate().assert_model_touch_allowed(world.plan())
+
+    lib.write_bytes(world.LIBRARY)
+    stray = world.runtime_root / "llama.cpp" / "build" / "bin" / "libextra-plugin.so"
+    stray.write_bytes(b"unlisted plugin")
+    with pytest.raises(GateClosed, match="runtime directory drift"):
+        world.gate().assert_model_touch_allowed(world.plan())
+
+
+def test_gate_refuses_reported_build_mismatch(world):
+    world.runtime["llama_cpp"]["reported_build"] = "version: 9999 (abcdef1)"
+    with pytest.raises(GateClosed, match="prefix-match"):
+        world.gate().assert_model_touch_allowed(world.plan())
+
+
+def test_gate_refuses_ledger_row_disagreeing_with_plan(world):
+    with pytest.raises(GateClosed, match="disagrees with the execution plan"):
+        world.gate().assert_model_touch_allowed(world.plan(split_identity_hash="b" * 64))
+    with pytest.raises(GateClosed, match="disagrees with the execution plan"):
+        world.gate().assert_model_touch_allowed(world.plan(split_role="discovery"))
+
+
+def test_gate_refuses_budget_exceeding_registration(world):
+    with pytest.raises(GateClosed, match="pre-registered"):
+        world.gate().assert_model_touch_allowed(world.plan(planned_model_calls=2999))
+
+
+def test_gate_refuses_consumed_row(world):
+    world.write_ledger_rows(
+        f"| 2026-08-04 | {world.RUN_ID} | baseline-reproduction | s | m "
+        f"| {world.CARRIER} dev | dev | {'a' * 64} | yes "
+        "| 10 | 600 | none | none | consumed |\n"
+    )
+    with pytest.raises(GateClosed, match="already consumed"):
+        world.gate().assert_model_touch_allowed(world.plan())
+
+
+def test_gate_refuses_duplicate_registration(world):
+    row = (
+        f"| 2026-08-04 | {world.RUN_ID} | baseline-reproduction | s | m "
+        f"| {world.CARRIER} dev | dev | {'a' * 64} | no "
+        "| 10 | 600 | none | none | dup |\n"
+    )
+    world.write_ledger_rows(row + row)
+    with pytest.raises(GateClosed, match="more than once"):
+        world.gate().assert_model_touch_allowed(world.plan())
+
+
+def test_gate_ignores_rows_in_a_second_table(world):
+    injected = (
+        "\nsome prose after the first table\n\n"
+        "| date | run/experiment id | execution profile | scope | model/tool "
+        "| speech carrier + split | split role | split identity hash | consumed "
+        "| calls | speech audio seconds | inherited exposure | artifacts | notes |\n"
+        "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|\n"
+        f"| 2026-08-04 | SAEA-E-777-injected | baseline-reproduction | s | m "
+        f"| {world.CARRIER} dev | dev | {'a' * 64} | no "
+        "| 10 | 600 | none | none | injected |\n"
+    )
+    world.exposure_ledger.write_text(
+        world.exposure_ledger.read_text(encoding="utf-8") + injected, encoding="utf-8"
+    )
+    with pytest.raises(GateClosed, match="pre-registered exposure row"):
+        world.gate().assert_model_touch_allowed(world.plan(run_id="SAEA-E-777-injected"))
 
 
 def test_gate_refuses_unknown_carrier_lock_key(world):

@@ -79,6 +79,7 @@ def test_model_touch_refuses_out_of_scope_plans_before_reading_any_receipt(tmp_p
         lock_path=tmp_path / "missing-lock.json",
         runtime_root=tmp_path,
         exposure_ledger=tmp_path / "missing-ledger.md",
+        source_root=tmp_path,
     )
     # Scope refusal must precede receipt/ledger validation: with a forbidden profile
     # the error is ExecutionScopeError, not GateClosed-about-missing-files.

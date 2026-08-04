@@ -76,6 +76,11 @@ def build_d1(lock_path: Path, data_root: Path) -> dict[str, object]:
     for name in ("file_metadata", "nlp_references", "force_aligned_nlp_references"):
         require_equal(e22_identity, e22[name])
     require_subset(e22["subset10_media"], e22_identity)
+    if len(e22["subset10_media"].ids) != 10:
+        raise IdentityError(
+            "earnings22 subset10 must resolve exactly 10 calls, got "
+            f"{len(e22['subset10_media'].ids)} (dangling symlinks are not layer files)"
+        )
 
     for layer in conec.values():
         require_equal(e21_identity, layer)

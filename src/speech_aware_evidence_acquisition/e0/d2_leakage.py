@@ -167,7 +167,7 @@ def _general_audio_exclusion(lock_path: Path, repo_root: Path) -> dict[str, obje
     for config in sorted((repo_root / "configs").rglob("*.yaml")):
         configured.update(
             re.findall(
-                r"^lock_key:\s*(\S+)", config.read_text(encoding="utf-8"), re.MULTILINE
+                r"^\s*lock_key:\s*(\S+)", config.read_text(encoding="utf-8"), re.MULTILINE
             )
         )
     offending = sorted(set(excluded) & configured)

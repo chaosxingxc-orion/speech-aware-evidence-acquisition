@@ -1,6 +1,6 @@
 {
   "artifact_kind": "saea-e0-d3-scoring-v1",
-  "freeze_rule": "Any edit to a frozen source changes its SHA-256, invalidates this artifact hash inside e0-closure.json and re-closes the model gate; a new scoring version requires a new dated artifact, never an in-place edit.",
+  "freeze_rule": "Machine-enforced: contracts.FrozenCoreGate re-hashes every source listed in frozen_sources_sha256 against the live tree at each model-touch attempt and refuses any scoring-package module this mapping does not name. Editing a frozen source therefore re-closes the gate at the next touch; a new scoring version requires regenerating this artifact and e0-closure.json, never an in-place edit.",
   "frozen_sources_sha256": {
     "src/speech_aware_evidence_acquisition/scoring/__init__.py": "a77d5e700ce5442e2ed806a23aec20cdcdbd0ea3f03c2805aee51b91ec942cfd",
     "src/speech_aware_evidence_acquisition/scoring/entity.py": "9631aa0dc4964c38e1c4c6f499f09e605fe9eb79bac87511f01728071dd0c1cd",
@@ -119,6 +119,7 @@
   "scoring_stack_version": "saea-scoring-v1",
   "semantics": {
     "entity": "multiset precision/recall/F1 over normalized entity strings",
+    "known_limits_v1": "casefold expands Turkish dotted I (U+0130) into 'i'+combining dot, which rule 5 then splits ('İstanbul' -> 'i stanbul'), and strips combining marks from precomposed Greek; both apply symmetrically to reference and hypothesis. Entity PRF is corpus-level multiset counting: an item with no expected and no predicted entities contributes nothing (f1 of an all-empty comparison is 0.0, never used per-item). WER alignment is O(len(ref)*len(hyp)) and is frozen for per-segment scoring, not whole-call alignment.",
     "normalization": "NFKC + casefold; apostrophe variants -> ASCII; dashes and non-alphanumerics -> space; only intra-word apostrophes survive; whitespace collapsed; no number expansion (v1)",
     "qa": "SQuAD-style best-over-answers exact match and token F1",
     "transitions": "correct-to-wrong / wrong-to-correct at token level (ASR, via hit masks) and item level (QA/entity, via boolean flags)",
