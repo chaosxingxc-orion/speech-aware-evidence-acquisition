@@ -513,16 +513,18 @@ class FrozenCoreGate:
         actual_sources: set[str] = set()
         for entry in sorted(scoring_dir.rglob("*")):
             rel_parts = entry.relative_to(scoring_dir).parts
+            # Symlink refusal must precede the __pycache__ skip: a symlinked
+            # directory NAMED __pycache__ would otherwise slip through by name.
+            if entry.is_dir() and entry.is_symlink():
+                raise GateClosed(
+                    "scoring package contains a symlinked directory "
+                    f"{'/'.join(rel_parts)!r}; rglob does not descend through it, "
+                    "so its contents would be importable yet invisible to the "
+                    "freeze — refused"
+                )
             if "__pycache__" in rel_parts:
                 continue
             if entry.is_dir():
-                if entry.is_symlink():
-                    raise GateClosed(
-                        "scoring package contains a symlinked directory "
-                        f"{'/'.join(rel_parts)!r}; rglob does not descend through it, "
-                        "so its contents would be importable yet invisible to the "
-                        "freeze — refused"
-                    )
                 continue
             if entry.is_file() and entry.name.endswith(".py"):
                 actual_sources.add(f"{SCORING_PACKAGE_RELPATH}/{'/'.join(rel_parts)}")

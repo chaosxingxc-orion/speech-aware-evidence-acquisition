@@ -549,6 +549,20 @@ def test_gate_refuses_symlinked_directory_in_scoring_package(world, tmp_path):
         world.gate().assert_model_touch_allowed(world.plan())
 
 
+def test_gate_refuses_symlinked_pycache_directory_in_scoring_package(world, tmp_path):
+    """The __pycache__ name skip must not shadow the symlink refusal."""
+
+    outside = tmp_path / "planted_bytecode"
+    outside.mkdir()
+    (outside / "wer.cpython-312.pyc").write_bytes(b"forged bytecode")
+    try:
+        (world.scoring_dir / "__pycache__").symlink_to(outside, target_is_directory=True)
+    except (OSError, NotImplementedError):
+        pytest.skip("symlink creation not permitted on this platform")
+    with pytest.raises(GateClosed, match="symlinked directory"):
+        world.gate().assert_model_touch_allowed(world.plan())
+
+
 def test_gate_refuses_nan_and_negative_budget_cells(world):
     world.write_ledger_rows(
         f"| 2026-08-04 | {world.RUN_ID} | baseline-reproduction | s | m "
