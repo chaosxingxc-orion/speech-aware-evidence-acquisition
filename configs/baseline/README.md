@@ -1,7 +1,7 @@
 # Baseline configurations
 
 The mandatory baseline set is frozen in the owner execution contract (umbrella
-`wiki/experiments/audio-aware-evidence-acquisition/2026-08-03-owner-go-and-execution-contract.md`):
+`wiki/experiments/speech-aware-evidence-acquisition/2026-08-04-owner-speech-domain-scope-and-identity-contract.md`):
 ConEC context line (first reproduction target), RECOVER 1-Best ladder (mandatory contrast arm),
 Siskos entity-resolution line, FlexCTC/TurboBias NeMo biasing group.
 

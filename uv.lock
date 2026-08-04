@@ -3,7 +3,7 @@ revision = 3
 requires-python = ">=3.12"
 
 [[package]]
-name = "audio-aware-evidence-acquisition"
+name = "speech-aware-evidence-acquisition"
 version = "0.0.1"
 source = { editable = "." }
 

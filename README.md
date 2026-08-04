@@ -1,29 +1,33 @@
-# audio-aware-evidence-acquisition
+# speech-aware-evidence-acquisition
 
-Reward-guided, training-free audio-aware evidence acquisition over a frozen speech/omni core
-(API-only). An external control plane decides between audio re-resolution (OBS) and external
-evidence supply (SUPPLY), and controls admission/ordering/use of evidence, without modifying model
-parameters or adding a second answering LLM.
+Reward-guided, training-free evidence acquisition for speech-domain tasks over a frozen,
+speech-capable omni core (API-only). The external control plane separates four interventions:
+speech observation (`OBS`), knowledge organization (`ORG`), evidence supply (`SUPPLY`) and evidence
+use/control (`USE`). It modifies no model parameter and adds no second answering LLM.
+
+This is a **speech-only** study. WAV/MP3 files may carry speech signals, but environmental/general
+audio classification and QA are outside scope. FSD50K, AudioSet and ESC-50 remain governed local
+assets in the umbrella lock and are never loaded by this repository.
 
 - Governance, experiment ledger and data identity live in the umbrella repository
-  (`exploring-l4-intelligence`): see `wiki/experiments/audio-aware-evidence-acquisition/README.md`
-  and `docs/datasets.lock.json` there.
-- Execution authority: owner GO and execution contract, 2026-08-03 (see umbrella
-  `wiki/experiments/audio-aware-evidence-acquisition/2026-08-03-owner-go-and-execution-contract.md`).
-- Stage-1C source provenance: candidate R2 of campaign `system-first-stage1c-v2` (provenance only;
-  not an engineering identity).
+  (`exploring-l4-intelligence`): see
+  `wiki/experiments/speech-aware-evidence-acquisition/README.md` and `docs/datasets.lock.json`.
+- Current execution authority: owner speech-domain scope and identity contract, 2026-08-04
+  (`wiki/experiments/speech-aware-evidence-acquisition/2026-08-04-owner-speech-domain-scope-and-identity-contract.md`).
+- Stage-1C source provenance: candidate R2 of campaign `system-first-stage1c-v2` (audit provenance
+  only, never an engineering identity).
 
 ## Layout
 
 ```text
-src/audio_aware_evidence_acquisition/
-  data/         lock-key based carrier loaders; no dataset bytes
+src/speech_aware_evidence_acquisition/
+  data/         lock-key based speech-carrier loaders; no dataset bytes
   models/       frozen-core API adapter (llama.cpp llama-server)
-  evidence/     evidence schema, provenance, OBS/SUPPLY separation, admission
-  scoring/      registered metrics and scorer adapters
-  tracing/      request/tool/response/cost trace
+  evidence/     ORG/SUPPLY/USE schema, provenance and admission
+  scoring/      registered task, entity, evidence and cost metrics
+  tracing/      OBS/ORG/SUPPLY/USE plus request/tool/response/cost trace
   experiments/  experiment composition, not raw outputs
-configs/        model / dataset / baseline / experiment composition
+configs/        model / speech dataset / baseline / experiment composition
 scripts/        reproduce.sh, evaluate.sh
 tests/          unit / integration / contract
 docs/           engineering.md, migration-manifest.md, exposure-ledger.md
@@ -37,7 +41,6 @@ uv pip install -e ".[dev]"
 pytest
 ```
 
-This repository currently has **no dependency on `speechrl_common`** (nothing in `src/` imports
-it). If a module is ever consumed, it enters via the pin policy in
-`docs/migration-manifest.md`: exact umbrella commit pin + `uv.lock`; `../../common` editable
-installs are a local development override only.
+This repository currently has no dependency on `speechrl_common`. If shared code is later consumed,
+it enters through `docs/migration-manifest.md`: exact umbrella commit pin plus `uv.lock`;
+`../../common` editable installs are a local development override only.

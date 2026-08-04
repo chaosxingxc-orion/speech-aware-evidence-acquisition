@@ -44,7 +44,9 @@ dependency on `speechrl_common` while `src/` does not import it. On first real c
 
 Explicitly not migrating: W1's 27 probe-era dataset loaders, baselines wave/cell one-shot scripts,
 the full KB build pipeline, and any `_repro` history. Earnings21/Earnings22/ConEC loaders are new
-code in this repository.
+code in this repository. General-audio loaders or experiment paths found inside the quarantined W1
+snapshot (including AudioSet/FSD/ESC-family work) are outside the speech-only domain and cannot be
+promoted by an adoption row in this study.
 
 ## Adopted rows
 

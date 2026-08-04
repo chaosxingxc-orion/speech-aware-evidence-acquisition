@@ -7,7 +7,7 @@ Inherited exposure: program-level prior exposure (W1 probe campaigns on other ca
 Earnings21/Earnings22/ConEC model exposure inherited as of 2026-08-03). The carriers' only
 processing so far is model-free acquisition/verification (D0).
 
-| date | run/experiment id | model/tool | carrier + split | calls | audio seconds | artifacts | notes |
+| date | run/experiment id | model/tool | speech carrier + split | calls | speech audio seconds | artifacts | notes |
 |---|---|---|---|---|---|---|---|
 
 (no rows yet — first model touch requires E0 closure + runtime receipt per the execution contract)

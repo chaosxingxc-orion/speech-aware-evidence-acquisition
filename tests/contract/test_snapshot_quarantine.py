@@ -4,7 +4,7 @@ import re
 import sys
 from pathlib import Path
 
-import audio_aware_evidence_acquisition
+import speech_aware_evidence_acquisition
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 SRC_ROOT = REPO_ROOT / "src"
@@ -12,7 +12,7 @@ SNAPSHOT = REPO_ROOT / "reference" / "w1-snapshot"
 
 
 def test_package_resolves_from_src_not_reference():
-    package_file = Path(audio_aware_evidence_acquisition.__file__).resolve()
+    package_file = Path(speech_aware_evidence_acquisition.__file__).resolve()
     assert SRC_ROOT.resolve() in package_file.parents
     assert SNAPSHOT.resolve() not in package_file.parents
 

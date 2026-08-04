@@ -3,9 +3,9 @@ requires = ["setuptools>=69"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "audio-aware-evidence-acquisition"
+name = "speech-aware-evidence-acquisition"
 version = "0.0.1"
-description = "Training-free, reward-guided audio-aware evidence acquisition over a frozen speech/omni core (API-only)."
+description = "Training-free, reward-guided evidence acquisition for speech-domain tasks over a frozen omni core (API-only)."
 requires-python = ">=3.12"
 license = { file = "LICENSE" }
 dependencies = []

@@ -1,8 +1,8 @@
 """Fail-closed E0 engineering contracts.
 
 Model-free contracts frozen by the owner execution contract
-(``AAEA-OWNER-GO-EXECUTION-CONTRACT-2026-08-03``): the runtime information boundary,
-OBS/SUPPLY trace separation, exposure-claim schema, and the frozen-core entry gate.
+(``SAEA-OWNER-SPEECH-SCOPE-AND-IDENTITY-2026-08-04``): the runtime information boundary,
+OBS/ORG/SUPPLY/USE trace separation, exposure-claim schema, and the frozen-core entry gate.
 Everything here is standard-library only so the contracts are testable before any ML
 stack is installed and before any model is touched.
 """
@@ -34,8 +34,22 @@ FORBIDDEN_RUNTIME_FIELDS = frozenset(
     }
 )
 
-TRACE_CHANNELS = ("OBS", "SUPPLY", "MODEL_REQUEST", "MODEL_RESPONSE", "TOOL", "COST")
-_CHANNEL_PREFIX = {"OBS": "obs_", "SUPPLY": "supply_"}
+TRACE_CHANNELS = (
+    "OBS",
+    "ORG",
+    "SUPPLY",
+    "USE",
+    "MODEL_REQUEST",
+    "MODEL_RESPONSE",
+    "TOOL",
+    "COST",
+)
+_CHANNEL_PREFIX = {
+    "OBS": "obs_",
+    "ORG": "org_",
+    "SUPPLY": "supply_",
+    "USE": "use_",
+}
 _DATE = re.compile(r"\d{4}-\d{2}-\d{2}\Z")
 _BUILD_COMMIT = re.compile(r"[0-9a-f]{7,40}\Z")
 _SHA256 = re.compile(r"[0-9a-f]{64}\Z")
@@ -82,7 +96,7 @@ def assert_information_boundary(payload: object, _path: str = "$") -> None:
 
 @dataclass(frozen=True)
 class TraceRecord:
-    """One versioned trace event; payload keys are namespaced per channel."""
+    """One versioned trace event; research-axis payload keys are namespaced per channel."""
 
     channel: str
     record_id: str
@@ -96,17 +110,20 @@ class TraceRecord:
         if not isinstance(self.payload, Mapping):
             raise TraceContractError("payload must be a mapping")
         prefix = _CHANNEL_PREFIX.get(self.channel)
+        axis_prefixes = tuple(_CHANNEL_PREFIX.values())
         for key in self.payload:
             if not isinstance(key, str):
                 raise TraceContractError(f"non-string payload key {key!r}")
             if prefix is not None and not key.startswith(prefix):
                 raise TraceContractError(
                     f"{self.channel} payload key {key!r} must start with {prefix!r} "
-                    "(OBS and SUPPLY namespaces are disjoint by contract)"
+                    "(OBS, ORG, SUPPLY and USE namespaces are disjoint by contract)"
                 )
-            other = "supply_" if prefix == "obs_" else "obs_"
-            if prefix is not None and key.startswith(other):
-                raise TraceContractError(f"{self.channel} payload smuggles {other}* field {key!r}")
+            other_prefixes = tuple(candidate for candidate in axis_prefixes if candidate != prefix)
+            if prefix is not None and key.startswith(other_prefixes):
+                raise TraceContractError(
+                    f"{self.channel} payload smuggles another research-axis field {key!r}"
+                )
         assert_information_boundary(dict(self.payload))
         return self
 

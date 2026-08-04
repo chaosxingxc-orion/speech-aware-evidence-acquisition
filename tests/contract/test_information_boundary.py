@@ -2,16 +2,16 @@
 
 import pytest
 
-from audio_aware_evidence_acquisition.contracts import (
+from speech_aware_evidence_acquisition.contracts import (
     BoundaryViolation,
     assert_information_boundary,
 )
 
 
 CLEAN_REQUEST = {
-    "request_id": "AAEA-E-000-smoke",
-    "audio_ref": "earnings21-original/dev/0001",
-    "visible_fields": ["audio_ref", "task_instruction"],
+    "request_id": "SAEA-E-000-smoke",
+    "speech_ref": "earnings21-original/dev/0001",
+    "visible_fields": ["speech_ref", "task_instruction"],
     "task_instruction": "transcribe the segment",
     "history": [{"turn": 1, "role": "user", "content": "..."}],
 }

@@ -1,20 +1,24 @@
-"""Contract 4: OBS/SUPPLY separation; request/response/tool/cost records serialize and hash."""
+"""Contract 4: OBS/ORG/SUPPLY/USE separation; touch records serialize and hash."""
 
 import pytest
 
-from audio_aware_evidence_acquisition.contracts import TraceContractError, TraceRecord
+from speech_aware_evidence_acquisition.contracts import TraceContractError, TraceRecord
 
 
-def test_obs_and_supply_namespaces_are_disjoint():
+def test_research_axis_namespaces_are_disjoint():
     TraceRecord("OBS", "r1", {"obs_segment": "0001", "obs_pass": 2}).validate()
-    TraceRecord("SUPPLY", "r2", {"supply_query": "acme revenue", "supply_source": "web"}).validate()
+    TraceRecord("ORG", "r2", {"org_granularity": "entity", "org_index_revision": "abc"}).validate()
+    TraceRecord("SUPPLY", "r3", {"supply_query": "acme revenue", "supply_source": "web"}).validate()
+    TraceRecord("USE", "r4", {"use_action": "admit", "use_stop": False}).validate()
 
     with pytest.raises(TraceContractError):
-        TraceRecord("OBS", "r3", {"supply_query": "smuggled"}).validate()
+        TraceRecord("OBS", "r5", {"supply_query": "smuggled"}).validate()
     with pytest.raises(TraceContractError):
-        TraceRecord("SUPPLY", "r4", {"obs_segment": "smuggled"}).validate()
+        TraceRecord("SUPPLY", "r6", {"org_index_revision": "smuggled"}).validate()
     with pytest.raises(TraceContractError):
-        TraceRecord("OBS", "r5", {"unprefixed": 1}).validate()
+        TraceRecord("USE", "r7", {"obs_segment": "smuggled"}).validate()
+    with pytest.raises(TraceContractError):
+        TraceRecord("OBS", "r8", {"unprefixed": 1}).validate()
 
 
 @pytest.mark.parametrize("channel", ["MODEL_REQUEST", "MODEL_RESPONSE", "TOOL", "COST"])

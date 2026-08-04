@@ -13,17 +13,22 @@ umbrella wiki.
 
 ## Carriers
 
-Lock keys `earnings21-original`, `earnings22-original`, `conec` (profile `r2-core`). Bytes live
+Lock keys `earnings21-original`, `earnings22-original`, `conec` (profile `speech-aware-core`). Bytes live
 under `SPEECHRL_DATA_DIR`; loaders reference lock keys and materialized local paths, never bundle
 bytes. D0 closure receipt: umbrella
-`docs/checks/audio-aware-evidence-acquisition/2026-08-02-acquisition/`.
+`docs/checks/speech-aware-evidence-acquisition/2026-08-02-acquisition/`.
+
+Secondary speech carriers are `slue-sqa-5`, `contextasr-bench` and `ami-meeting-corpus` (profile
+`speech-aware-secondary`); none is a core-start gate. `fsd50k`, `audioset-metadata-features` and
+`esc-50` are retained cross-domain assets in the umbrella lock and are forbidden in this study's
+source, configs and tests.
 
 ## First deliverable (R0 slice, two weeks)
 
 Per the Stage-2A entry contract: package skeleton + deterministic config composition + tests;
 locked loaders and scorer adapters for one discovery and one confirmatory carrier; frozen-core
-adapter with request/response/cost tracing; evidence schema (provenance, OBS/SUPPLY separation,
-admission, final use); MLflow/artifact linkage through the umbrella experiment index; three
+adapter with request/response/cost tracing; evidence schema (provenance and separate
+OBS/ORG/SUPPLY/USE channels); MLflow/artifact linkage through the umbrella experiment index; three
 engineering controls (bare core, canonical context form, simple fixed retrieval path); one
 readiness-qualified closest-prior smoke/reproduction attempt; go/narrow/repair/stop memo.
 
@@ -38,5 +43,5 @@ W1 authorship; no third-party code vendored).
 
 `pytest` must collect at least one test and pass (CI treats pytest exit code 5 — no tests
 collected — as failure). The model-free contract tests under `tests/contract/` are the E0
-engineering floor: information boundary, OBS/SUPPLY trace separation, exposure schema,
+engineering floor: information boundary, OBS/ORG/SUPPLY/USE trace separation, exposure schema,
 frozen-core entry gate, snapshot quarantine, governance alignment and pre-R0 entrypoint refusal.

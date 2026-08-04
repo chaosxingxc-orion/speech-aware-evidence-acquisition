@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-from audio_aware_evidence_acquisition.contracts import (
+from speech_aware_evidence_acquisition.contracts import (
     ExposureSchemaError,
     FrozenCoreGate,
     GateClosed,
@@ -18,7 +18,7 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 VALID_CLAIM = {
     "scope": "earnings21-original dev slice, D0 acquisition only",
     "date": "2026-08-03",
-    "counts": {"model_calls": 0, "audio_seconds": 0},
+    "counts": {"model_calls": 0, "speech_audio_seconds": 0},
     "inherited": "W1 probe campaigns on other carriers; zero model exposure on the three carriers",
 }
 
@@ -47,7 +47,13 @@ def test_malformed_exposure_claims_fail(mutation):
 
 def test_exposure_ledger_file_exists_with_required_columns():
     ledger = (REPO_ROOT / "docs" / "exposure-ledger.md").read_text(encoding="utf-8")
-    for column in ("date", "run/experiment id", "model/tool", "calls", "audio seconds"):
+    for column in (
+        "date",
+        "run/experiment id",
+        "model/tool",
+        "calls",
+        "speech audio seconds",
+    ):
         assert column in ledger
 
 

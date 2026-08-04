@@ -1,7 +1,12 @@
 # E0: model-free data closure. No frozen-core call is authorized while this stage is open.
-experiment_namespace: AAEA-E
+experiment_namespace: SAEA-E
+domain: speech-only
 stage: E0
 model_touch: false
+excluded_lock_keys:
+  - fsd50k
+  - audioset-metadata-features
+  - esc-50
 deliverables:
   d1_identity: OPEN     # carrier/lock identity alignment receipts
   d2_leakage: OPEN      # leakage negative controls

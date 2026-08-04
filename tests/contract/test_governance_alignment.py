@@ -14,7 +14,7 @@ from pathlib import Path
 import pytest
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-SLUG = "audio-aware-evidence-acquisition"
+SLUG = "speech-aware-evidence-acquisition"
 UMBRELLA = REPO_ROOT.parent.parent
 UMBRELLA_PRESENT = (UMBRELLA / "wiki" / "Experiment-Assets.md").is_file()
 
@@ -65,7 +65,7 @@ def test_experiment_index_frontmatter_matches_this_study():
     frontmatter = re.match(r"\A---\r?\n(.*?)\r?\n---", index, flags=re.DOTALL)
     assert frontmatter is not None
     assert f'study_slug: "{SLUG}"' in frontmatter.group(1)
-    assert 'experiment_id_namespace: "AAEA-E' in frontmatter.group(1)
+    assert 'experiment_id_namespace: "SAEA-E' in frontmatter.group(1)
 
 
 @requires_umbrella
@@ -132,3 +132,21 @@ def test_dataset_and_model_configs_reference_lock_keys_only():
     for key in ("earnings21-original", "earnings22-original", "conec"):
         assert key in referenced, f"carrier config for {key} is missing"
     assert "qwen3-omni-30b-a3b-instruct-gguf" in referenced
+
+
+def test_general_audio_assets_cannot_enter_executable_surface():
+    forbidden = {"fsd50k", "audioset-metadata-features", "esc-50"}
+    source_text = "\n".join(
+        path.read_text(encoding="utf-8")
+        for path in sorted((REPO_ROOT / "src").rglob("*.py"))
+    ).lower()
+    assert not any(name in source_text for name in forbidden)
+
+    configured_lock_keys = set()
+    for path in sorted((REPO_ROOT / "configs").rglob("*.yaml")):
+        configured_lock_keys.update(
+            re.findall(r"^lock_key:\s*(\S+)", path.read_text(encoding="utf-8"), re.MULTILINE)
+        )
+    assert not forbidden.intersection(configured_lock_keys), (
+        "general-audio assets may be named as exclusions but must not be configured as lock_key inputs"
+    )
