@@ -103,13 +103,14 @@ def _verify(receipts_dir: Path, lock_path: Path, root: Path, runtime_root: Path)
     header = (
         "| date | run/experiment id | execution profile | scope | model/tool "
         "| speech carrier + split | split role | split identity hash | consumed "
-        "| calls | speech audio seconds | inherited exposure | artifacts | notes |\n"
-        "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|\n"
+        "| calls | speech audio seconds | gpu hours | inherited exposure "
+        "| artifacts | notes |\n"
+        "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|\n"
     )
     row = (
         f"| dry-run | {run_id} | baseline-reproduction | gate dry run | none "
         f"| {CORE_CARRIER_LOCK_KEYS[0]} dev | dev | {sha256_file(e0_receipt)} | no "
-        "| 1 | 1 | dry run only | none | synthetic row, temp file, no model touch |\n"
+        "| 1 | 1 | 0.01 | dry run only | none | synthetic row, temp file, no model touch |\n"
     )
     with tempfile.TemporaryDirectory() as tmp:
         ledger = Path(tmp) / "exposure-ledger-dryrun.md"

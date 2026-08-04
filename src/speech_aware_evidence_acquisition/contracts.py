@@ -190,8 +190,16 @@ class ExecutionPlan:
                 raise ExecutionScopeError(f"execution plan {label} must be a 64-hex SHA-256")
         for field_name, cap in FIRST_SLICE_CAPS.items():
             value = getattr(self, field_name)
-            if isinstance(value, bool) or not isinstance(value, (int, float)) or value <= 0:
-                raise ExecutionScopeError(f"execution plan {field_name} must be a positive number")
+            integral = field_name in ("planned_model_calls", "planned_speech_audio_seconds")
+            if (
+                isinstance(value, bool)
+                or not isinstance(value, int if integral else (int, float))
+                or value <= 0
+            ):
+                raise ExecutionScopeError(
+                    f"execution plan {field_name} must be a positive "
+                    f"{'integer' if integral else 'number'}"
+                )
             if value > cap:
                 raise ExecutionScopeError(
                     f"execution plan {field_name}={value} exceeds the frozen first-slice "
@@ -500,11 +508,21 @@ class FrozenCoreGate:
         scoring_dir = Path(self.source_root) / SCORING_PACKAGE_RELPATH
         if not scoring_dir.is_dir():
             raise GateClosed(f"scoring package directory missing: {scoring_dir}")
-        actual_sources = {
-            f"{SCORING_PACKAGE_RELPATH}/{entry.name}"
-            for entry in scoring_dir.iterdir()
-            if entry.is_file() and entry.name.endswith(".py")
-        }
+        actual_sources: set[str] = set()
+        for entry in sorted(scoring_dir.rglob("*")):
+            rel_parts = entry.relative_to(scoring_dir).parts
+            if "__pycache__" in rel_parts:
+                continue
+            if entry.is_dir():
+                continue
+            if entry.is_file() and entry.name.endswith(".py"):
+                actual_sources.add(f"{SCORING_PACKAGE_RELPATH}/{'/'.join(rel_parts)}")
+                continue
+            raise GateClosed(
+                "scoring package contains a non-source entry "
+                f"{'/'.join(rel_parts)!r} (data file or dangling symlink); the freeze "
+                "covers Python sources only, so nothing else may live there"
+            )
         declared = set(frozen)
         unlisted = sorted(actual_sources - declared)
         if unlisted:
@@ -698,12 +716,17 @@ class FrozenCoreGate:
                     "receipt; model touch refused"
                 )
         bin_dir = Path(self.runtime_root) / bin_dir_rel
+        actual_files: set[str] = set()
         try:
-            actual_files = {
-                f"{bin_dir_rel}/{entry.name}"
-                for entry in bin_dir.iterdir()
-                if entry.is_file()
-            }
+            for entry in bin_dir.iterdir():
+                if entry.is_file():
+                    actual_files.add(f"{bin_dir_rel}/{entry.name}")
+                else:
+                    raise GateClosed(
+                        f"runtime directory contains a non-file entry {entry.name!r} "
+                        "(subdirectory or dangling symlink); the exact-set contract "
+                        "covers regular files only, so nothing else may live there"
+                    )
         except OSError as error:
             raise GateClosed(f"cannot enumerate runtime directory {bin_dir}: {error}") from error
         declared = seen | {binary_rel}
@@ -798,21 +821,50 @@ class FrozenCoreGate:
                 f"exposure row for {plan.run_id!r} is already consumed; a consumed run "
                 "cannot be re-executed"
             )
-        for column_name, planned in (
-            ("calls", plan.planned_model_calls),
-            ("speech audio seconds", plan.planned_speech_audio_seconds),
+        for column_name, planned, parse in (
+            ("calls", plan.planned_model_calls, int),
+            ("speech audio seconds", plan.planned_speech_audio_seconds, int),
+            ("gpu hours", plan.planned_gpu_hours, float),
         ):
             raw = cell(row, column_name)
             try:
-                registered = int(raw)
+                registered = parse(raw)
             except ValueError as error:
                 raise GateClosed(
-                    f"exposure row column {column_name!r} must be an integer, got {raw!r}"
+                    f"exposure row column {column_name!r} must be a number, got {raw!r}"
                 ) from error
             if registered < planned:
                 raise GateClosed(
                     f"execution plan claims {planned} {column_name} but only {registered} "
                     "were pre-registered; model touch refused"
+                )
+
+        # The first-slice caps are SLICE totals (consolidated contract §6), not
+        # per-run allowances: sum every registered row — consumed or not — and
+        # refuse when the campaign total would exceed the frozen budget. N
+        # individually-bounded runs cannot smuggle a paper-scale campaign.
+        for column_name, cap_field, parse in (
+            ("calls", "planned_model_calls", int),
+            ("speech audio seconds", "planned_speech_audio_seconds", int),
+            ("gpu hours", "planned_gpu_hours", float),
+        ):
+            cap = FIRST_SLICE_CAPS[cap_field]
+            total = 0.0
+            for cells in rows:
+                raw = cell(cells, column_name)
+                try:
+                    total += parse(raw)
+                except ValueError as error:
+                    raise GateClosed(
+                        f"exposure ledger column {column_name!r} holds a non-numeric "
+                        f"value {raw!r}; every registered row counts against the slice "
+                        "budget and must parse"
+                    ) from error
+            if total > cap:
+                raise GateClosed(
+                    f"registered {column_name} across the slice total {total}, exceeding "
+                    f"the frozen first-slice cap {cap}; a new run requires a new owner "
+                    "slice decision, not another row"
                 )
 
     def assert_model_touch_allowed(self, plan: ExecutionPlan) -> None:
@@ -822,12 +874,13 @@ class FrozenCoreGate:
         first; then the run must be pre-registered in the exposure ledger and its
         carrier must exist in the umbrella lock."""
 
-        if not isinstance(plan, ExecutionPlan):
+        if type(plan) is not ExecutionPlan:
             raise ExecutionScopeError(
-                "a model touch requires a structured ExecutionPlan; bare profile "
-                "strings were retired by 续93 (semantic scope gate)"
+                "a model touch requires a structured ExecutionPlan (the exact contract "
+                "type — subclasses could override validate); bare profile strings were "
+                "retired by 续93 (semantic scope gate)"
             )
-        plan.validate()
+        ExecutionPlan.validate(plan)
         if plan.execution_profile not in MODEL_TOUCH_PROFILES:
             raise ExecutionScopeError(
                 f"execution profile {plan.execution_profile!r} does not authorize a model "

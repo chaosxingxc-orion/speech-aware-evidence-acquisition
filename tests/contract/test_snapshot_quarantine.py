@@ -1,5 +1,6 @@
 """Contract 6: the W1 snapshot stays quarantined -- never imported, never on sys.path."""
 
+import hashlib
 import re
 import sys
 from pathlib import Path
@@ -39,14 +40,18 @@ def test_snapshot_is_not_importable_as_a_package():
 
 
 def test_snapshot_files_match_the_registered_manifest():
-    listed = set()
+    listed = {}
     for line in (SNAPSHOT / "SHA256SUMS").read_text(encoding="utf-8").splitlines():
         if line.strip():
-            listed.add(line.split("*", 1)[1].strip())
+            digest, name = line.split("*", 1)
+            listed[name.strip()] = digest.strip().lower()
     on_disk = {
         str(path.relative_to(SNAPSHOT)).replace("\\", "/")
         for path in SNAPSHOT.rglob("*")
         if path.is_file() and path.name not in {"SHA256SUMS", "SNAPSHOT.md"}
     }
-    assert on_disk == listed, "snapshot payload drifted from SHA256SUMS"
+    assert on_disk == set(listed), "snapshot payload drifted from SHA256SUMS"
     assert len(listed) == 13, "the rescued snapshot is exactly thirteen files"
+    for name, recorded in listed.items():
+        actual = hashlib.sha256((SNAPSHOT / name).read_bytes()).hexdigest()
+        assert actual == recorded, f"quarantined file content drifted: {name}"

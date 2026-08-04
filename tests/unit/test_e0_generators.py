@@ -215,10 +215,11 @@ class TestCloseAndGate:
         ledger.write_text(
             "| date | run/experiment id | execution profile | scope | model/tool "
             "| speech carrier + split | split role | split identity hash | consumed "
-            "| calls | speech audio seconds | inherited exposure | artifacts | notes |\n"
-            "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|\n"
+            "| calls | speech audio seconds | gpu hours | inherited exposure "
+            "| artifacts | notes |\n"
+            "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|\n"
             "| 2026-08-04 | RUN-1 | baseline-reproduction | s | m | c dev | dev "
-            f"| {'a' * 64} | no | 1 | 60 | none | none | test |\n",
+            f"| {'a' * 64} | no | 1 | 60 | 0.1 | none | none | test |\n",
             encoding="utf-8",
         )
         gate = FrozenCoreGate(

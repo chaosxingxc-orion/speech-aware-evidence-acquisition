@@ -128,7 +128,13 @@ def build_runtime_receipt(
     bin_dir = binary.parent
     library_entries = []
     for path in sorted(bin_dir.iterdir()):
-        if not path.is_file() or path.name == binary.name:
+        if not path.is_file():
+            raise ArtifactError(
+                f"runtime directory {bin_dir} contains a non-file entry {path.name!r} "
+                "(subdirectory or dangling symlink); the exact-set receipt covers "
+                "regular files only, so nothing else may live there"
+            )
+        if path.name == binary.name:
             continue
         library_entries.append(
             {

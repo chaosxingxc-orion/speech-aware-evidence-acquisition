@@ -28,17 +28,25 @@ from .artifacts import REPO_ROOT, ArtifactError, sha256_file, today
 
 
 def scoring_sources(repo_root: Path) -> list[str]:
-    """Every ``*.py`` in the scoring package, enumerated live — a new module can
-    never be invisible to the freeze (the gate enforces the same coverage)."""
+    """Every ``*.py`` in the scoring package, enumerated recursively — a module can
+    never hide from the freeze in a subdirectory, and a non-source file fails
+    closed here exactly as it does at the gate."""
 
     scoring_dir = repo_root / SCORING_PACKAGE_RELPATH
     if not scoring_dir.is_dir():
         raise ArtifactError(f"scoring package directory missing: {scoring_dir}")
-    sources = sorted(
-        f"{SCORING_PACKAGE_RELPATH}/{path.name}"
-        for path in scoring_dir.iterdir()
-        if path.is_file() and path.name.endswith(".py")
-    )
+    sources: list[str] = []
+    for path in sorted(scoring_dir.rglob("*")):
+        rel_parts = path.relative_to(scoring_dir).parts
+        if "__pycache__" in rel_parts or path.is_dir():
+            continue
+        if path.is_file() and path.name.endswith(".py"):
+            sources.append(f"{SCORING_PACKAGE_RELPATH}/{'/'.join(rel_parts)}")
+            continue
+        raise ArtifactError(
+            f"scoring package contains a non-source entry {'/'.join(rel_parts)!r}; "
+            "only Python sources may live there (gate enforces the same rule)"
+        )
     if not sources:
         raise ArtifactError(f"no scoring sources found under {scoring_dir}")
     return sources

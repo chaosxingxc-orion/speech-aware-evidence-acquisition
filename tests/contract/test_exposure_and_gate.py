@@ -76,6 +76,7 @@ def test_exposure_ledger_header_carries_contract_columns():
         "consumed",
         "calls",
         "speech audio seconds",
+        "gpu hours",
         "inherited exposure",
     ):
         assert column in header, f"exposure ledger header lacks column {column!r}"
@@ -148,7 +149,8 @@ class GateFixture:
         self.write_ledger_rows(
             f"| 2026-08-04 | {self.RUN_ID} | baseline-reproduction | earnings21 dev slice "
             f"| qwen3-omni | {self.CARRIER} dev | dev | {'a' * 64} | no "
-            "| 10 | 600 | W1 probes on other carriers only | mlflow://pending | pre-registered |\n"
+            "| 10 | 600 | 1.0 | W1 probes on other carriers only | mlflow://pending "
+            "| pre-registered |\n"
         )
         self.e0 = {
             "schema": E0_RECEIPT_SCHEMA,
@@ -191,8 +193,9 @@ class GateFixture:
         self.exposure_ledger.write_text(
             "| date | run/experiment id | execution profile | scope | model/tool "
             "| speech carrier + split | split role | split identity hash | consumed "
-            "| calls | speech audio seconds | inherited exposure | artifacts | notes |\n"
-            "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|\n" + rows,
+            "| calls | speech audio seconds | gpu hours | inherited exposure "
+            "| artifacts | notes |\n"
+            "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|\n" + rows,
             encoding="utf-8",
         )
 
@@ -464,7 +467,7 @@ def test_gate_refuses_consumed_row(world):
     world.write_ledger_rows(
         f"| 2026-08-04 | {world.RUN_ID} | baseline-reproduction | s | m "
         f"| {world.CARRIER} dev | dev | {'a' * 64} | yes "
-        "| 10 | 600 | none | none | consumed |\n"
+        "| 10 | 600 | 1.0 | none | none | consumed |\n"
     )
     with pytest.raises(GateClosed, match="already consumed"):
         world.gate().assert_model_touch_allowed(world.plan())
@@ -474,10 +477,63 @@ def test_gate_refuses_duplicate_registration(world):
     row = (
         f"| 2026-08-04 | {world.RUN_ID} | baseline-reproduction | s | m "
         f"| {world.CARRIER} dev | dev | {'a' * 64} | no "
-        "| 10 | 600 | none | none | dup |\n"
+        "| 10 | 600 | 1.0 | none | none | dup |\n"
     )
     world.write_ledger_rows(row + row)
     with pytest.raises(GateClosed, match="more than once"):
+        world.gate().assert_model_touch_allowed(world.plan())
+
+
+def test_gate_refuses_profile_and_seconds_disagreement(world):
+    with pytest.raises(GateClosed, match="disagrees with the execution plan"):
+        world.gate().assert_model_touch_allowed(
+            world.plan(execution_profile="bounded-discovery-probe")
+        )
+    with pytest.raises(GateClosed, match="pre-registered"):
+        world.gate().assert_model_touch_allowed(
+            world.plan(planned_speech_audio_seconds=700)
+        )
+    with pytest.raises(GateClosed, match="pre-registered"):
+        world.gate().assert_model_touch_allowed(world.plan(planned_gpu_hours=2.0))
+
+
+def test_gate_refuses_cumulative_slice_budget_exhaustion(world):
+    """N individually-bounded runs cannot sum past the frozen slice caps."""
+
+    other = (
+        "| 2026-08-04 | SAEA-E-001-prior | baseline-reproduction | s | m "
+        f"| {world.CARRIER} dev | dev | {'c' * 64} | no "
+        "| 2995 | 600 | 1.0 | none | none | prior run |\n"
+    )
+    mine = (
+        f"| 2026-08-04 | {world.RUN_ID} | baseline-reproduction | s | m "
+        f"| {world.CARRIER} dev | dev | {'a' * 64} | no "
+        "| 10 | 600 | 1.0 | none | none | this run |\n"
+    )
+    world.write_ledger_rows(other + mine)
+    with pytest.raises(GateClosed, match="first-slice cap"):
+        world.gate().assert_model_touch_allowed(world.plan())
+
+
+def test_gate_refuses_scoring_module_hidden_in_a_subdirectory(world):
+    nested = world.scoring_dir / "helpers"
+    nested.mkdir()
+    (nested / "extra.py").write_bytes(b"def helper():\n    return 3\n")
+    with pytest.raises(GateClosed, match="does not name"):
+        world.gate().assert_model_touch_allowed(world.plan())
+
+
+def test_gate_refuses_non_source_file_in_scoring_package(world):
+    (world.scoring_dir / "table.json").write_bytes(b"{}")
+    with pytest.raises(GateClosed, match="non-source entry"):
+        world.gate().assert_model_touch_allowed(world.plan())
+
+
+def test_gate_refuses_subdirectory_in_runtime_bin(world):
+    plugins = world.runtime_root / "llama.cpp" / "build" / "bin" / "plugins"
+    plugins.mkdir()
+    (plugins / "evil.so").write_bytes(b"plugin")
+    with pytest.raises(GateClosed, match="non-file entry"):
         world.gate().assert_model_touch_allowed(world.plan())
 
 

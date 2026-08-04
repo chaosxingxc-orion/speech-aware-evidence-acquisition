@@ -19,11 +19,20 @@ umbrella wiki.
   regular file in `build/bin`** (inference/audio `.so` libraries included) as an exact set, the
   40-hex build commit must be prefix-matched by the binary's self-reported build hash
   (`llama-server --version` at receipt time), and a dirty tree or stale build is refused at
-  generation; absolute paths, traversal, duplicates and extra files are refused. The exposure row a
+  generation; absolute paths, traversal, duplicates, extra files and non-file entries (subdirs,
+  dangling symlinks) are refused in both the scoring package and `build/bin`. The exposure row a
   plan cites is cross-checked field by field (profile, split role, split identity hash,
-  consumed=no, registered budgets ≥ planned). Gate verification is instantaneous: the process that
-  opens the gate must be the process that starts llama-server, immediately afterward — results are
-  never cached or shared. Canonical binding: `FrozenCoreGate.for_study_repo`.
+  consumed=no, registered calls/audio-seconds/GPU-hours ≥ planned), and the first-slice caps are
+  enforced as **slice totals**: the gate sums every registered row and refuses a plan that would
+  push the campaign over ≤3000 calls / ≤72000 audio seconds / ≤40 GPU-hours. Gate verification is
+  instantaneous: the process that opens the gate must be the process that starts llama-server,
+  immediately afterward — results are never cached or shared. The freeze binds source bytes, not
+  compiled bytecode: the R0 runner must run with `PYTHONDONTWRITEBYTECODE=1` and purge
+  `scoring/__pycache__` before opening the gate (a locally planted `.pyc` is outside what a
+  same-machine gate can self-verify). The R0 frozen-core adapter must enforce the per-arm
+  visible-field **allowlists** frozen in the D2 artifact as its request choke point — the
+  boundary blocklist alone is necessary, not sufficient. Canonical binding:
+  `FrozenCoreGate.for_study_repo`.
 - Compute: WSL2 Ubuntu-24.04, RTX 5090 (sm_120), `~/.venvs/speechrl` Python 3.12.
 
 ## Carriers
