@@ -38,7 +38,15 @@ def scoring_sources(repo_root: Path) -> list[str]:
     sources: list[str] = []
     for path in sorted(scoring_dir.rglob("*")):
         rel_parts = path.relative_to(scoring_dir).parts
-        if "__pycache__" in rel_parts or path.is_dir():
+        if "__pycache__" in rel_parts:
+            continue
+        if path.is_dir():
+            if path.is_symlink():
+                raise ArtifactError(
+                    f"scoring package contains a symlinked directory "
+                    f"{'/'.join(rel_parts)!r}; its contents would be importable yet "
+                    "invisible to the freeze (gate refuses the same)"
+                )
             continue
         if path.is_file() and path.name.endswith(".py"):
             sources.append(f"{SCORING_PACKAGE_RELPATH}/{'/'.join(rel_parts)}")

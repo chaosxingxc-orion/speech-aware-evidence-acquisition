@@ -15,10 +15,12 @@ Field semantics (consolidated contract §6/§7; umbrella 续92/续93):
 - `inherited exposure` — scoped statement of prior exposure carried into this touch;
   monotonically non-decreasing across rows.
 - `calls` / `speech audio seconds` / `gpu hours` — the registered budget ceiling for this
-  run. The first-slice caps are **slice totals** (consolidated contract §6):
-  `contracts.FrozenCoreGate` sums these columns across every row and refuses any plan
-  that would push the campaign total over ≤3000 calls / ≤72000 speech audio seconds /
-  ≤40 GPU-hours, in addition to the per-row `registered ≥ planned` cross-check.
+  run; every cell must be a **finite non-negative number** (the gate refuses NaN or
+  negative cells outright — they would corrupt the arithmetic). The first-slice caps are
+  **slice totals** (consolidated contract §6): `contracts.FrozenCoreGate` sums these
+  columns across every row and refuses any plan that would push the campaign total over
+  ≤3000 calls / ≤72000 speech audio seconds / ≤40 GPU-hours, in addition to the per-row
+  `registered ≥ planned` cross-check.
 
 Inherited exposure baseline: program-level prior exposure (W1 probe campaigns on other carriers; no
 Earnings21/Earnings22/ConEC model exposure inherited as of 2026-08-03). The carriers' only

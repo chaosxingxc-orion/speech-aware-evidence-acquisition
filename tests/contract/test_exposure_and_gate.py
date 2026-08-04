@@ -537,6 +537,42 @@ def test_gate_refuses_subdirectory_in_runtime_bin(world):
         world.gate().assert_model_touch_allowed(world.plan())
 
 
+def test_gate_refuses_symlinked_directory_in_scoring_package(world, tmp_path):
+    outside = tmp_path / "outside_pkg"
+    outside.mkdir()
+    (outside / "evil.py").write_bytes(b"def evil():\n    return 1\n")
+    try:
+        (world.scoring_dir / "vendor").symlink_to(outside, target_is_directory=True)
+    except (OSError, NotImplementedError):
+        pytest.skip("symlink creation not permitted on this platform")
+    with pytest.raises(GateClosed, match="symlinked directory"):
+        world.gate().assert_model_touch_allowed(world.plan())
+
+
+def test_gate_refuses_nan_and_negative_budget_cells(world):
+    world.write_ledger_rows(
+        f"| 2026-08-04 | {world.RUN_ID} | baseline-reproduction | s | m "
+        f"| {world.CARRIER} dev | dev | {'a' * 64} | no "
+        "| 10 | 600 | nan | none | none | nan-cell |\n"
+    )
+    with pytest.raises(GateClosed, match="finite non-negative"):
+        world.gate().assert_model_touch_allowed(world.plan())
+
+    decoy = (
+        "| 2026-08-04 | SAEA-E-002-decoy | baseline-reproduction | s | m "
+        f"| {world.CARRIER} dev | dev | {'c' * 64} | no "
+        "| -1000000 | 600 | 1.0 | none | none | negative offset |\n"
+    )
+    mine = (
+        f"| 2026-08-04 | {world.RUN_ID} | baseline-reproduction | s | m "
+        f"| {world.CARRIER} dev | dev | {'a' * 64} | no "
+        "| 10 | 600 | 1.0 | none | none | this run |\n"
+    )
+    world.write_ledger_rows(decoy + mine)
+    with pytest.raises(GateClosed, match="finite non-negative"):
+        world.gate().assert_model_touch_allowed(world.plan())
+
+
 def test_gate_ignores_rows_in_a_second_table(world):
     injected = (
         "\nsome prose after the first table\n\n"

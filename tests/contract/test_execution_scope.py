@@ -88,3 +88,44 @@ def test_model_touch_refuses_out_of_scope_plans_before_reading_any_receipt(tmp_p
     # A model-free profile is legal for the repo but never authorizes a model touch.
     with pytest.raises(ExecutionScopeError):
         gate.assert_model_touch_allowed(_plan(execution_profile="model-free-check"))
+
+
+def test_gate_refuses_execution_plan_subclasses(tmp_path):
+    class NeuteredPlan(ExecutionPlan):
+        def validate(self):  # a subclass could no-op every check
+            return self
+
+    gate = FrozenCoreGate(
+        e0_receipt=tmp_path / "missing-e0.json",
+        runtime_receipt=tmp_path / "missing-runtime.json",
+        data_root=tmp_path,
+        lock_path=tmp_path / "missing-lock.json",
+        runtime_root=tmp_path,
+        exposure_ledger=tmp_path / "missing-ledger.md",
+        source_root=tmp_path,
+    )
+    plan = NeuteredPlan(
+        run_id="SAEA-E-000-smoke",
+        execution_profile="baseline-reproduction",
+        carrier_lock_key="earnings21-original",
+        split_role="dev",
+        split_identity_hash="a" * 64,
+        planned_model_calls=999999,
+        planned_gpu_hours=1.0,
+        planned_speech_audio_seconds=600,
+        protocol_hash="b" * 64,
+    )
+    with pytest.raises(ExecutionScopeError, match="exact contract type"):
+        gate.assert_model_touch_allowed(plan)
+
+
+def test_plan_budget_fields_must_be_finite_and_integral():
+    with pytest.raises(ExecutionScopeError, match="finite positive integer"):
+        _plan(planned_model_calls=10.5).validate()
+    with pytest.raises(ExecutionScopeError, match="finite positive integer"):
+        _plan(planned_speech_audio_seconds=600.0).validate()
+    with pytest.raises(ExecutionScopeError, match="finite positive number"):
+        _plan(planned_gpu_hours=float("nan")).validate()
+    with pytest.raises(ExecutionScopeError, match="finite positive number"):
+        _plan(planned_gpu_hours=float("inf")).validate()
+    _plan(planned_gpu_hours=1.5).validate()

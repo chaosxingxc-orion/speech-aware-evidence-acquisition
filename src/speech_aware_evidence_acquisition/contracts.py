@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 import re
 from dataclasses import dataclass
 from pathlib import Path
@@ -194,10 +195,11 @@ class ExecutionPlan:
             if (
                 isinstance(value, bool)
                 or not isinstance(value, int if integral else (int, float))
+                or not math.isfinite(value)
                 or value <= 0
             ):
                 raise ExecutionScopeError(
-                    f"execution plan {field_name} must be a positive "
+                    f"execution plan {field_name} must be a finite positive "
                     f"{'integer' if integral else 'number'}"
                 )
             if value > cap:
@@ -514,6 +516,13 @@ class FrozenCoreGate:
             if "__pycache__" in rel_parts:
                 continue
             if entry.is_dir():
+                if entry.is_symlink():
+                    raise GateClosed(
+                        "scoring package contains a symlinked directory "
+                        f"{'/'.join(rel_parts)!r}; rglob does not descend through it, "
+                        "so its contents would be importable yet invisible to the "
+                        "freeze — refused"
+                    )
                 continue
             if entry.is_file() and entry.name.endswith(".py"):
                 actual_sources.add(f"{SCORING_PACKAGE_RELPATH}/{'/'.join(rel_parts)}")
@@ -833,6 +842,12 @@ class FrozenCoreGate:
                 raise GateClosed(
                     f"exposure row column {column_name!r} must be a number, got {raw!r}"
                 ) from error
+            if not math.isfinite(registered) or registered < 0:
+                raise GateClosed(
+                    f"exposure row column {column_name!r} must be a finite non-negative "
+                    f"number, got {raw!r}; NaN or negative cells would disable the "
+                    "budget arithmetic"
+                )
             if registered < planned:
                 raise GateClosed(
                     f"execution plan claims {planned} {column_name} but only {registered} "
@@ -853,13 +868,20 @@ class FrozenCoreGate:
             for cells in rows:
                 raw = cell(cells, column_name)
                 try:
-                    total += parse(raw)
+                    registered = parse(raw)
                 except ValueError as error:
                     raise GateClosed(
                         f"exposure ledger column {column_name!r} holds a non-numeric "
                         f"value {raw!r}; every registered row counts against the slice "
                         "budget and must parse"
                     ) from error
+                if not math.isfinite(registered) or registered < 0:
+                    raise GateClosed(
+                        f"exposure ledger column {column_name!r} holds {raw!r}; slice "
+                        "accounting requires finite non-negative registrations — a NaN "
+                        "or negative row would silently re-open spent budget"
+                    )
+                total += registered
             if total > cap:
                 raise GateClosed(
                     f"registered {column_name} across the slice total {total}, exceeding "

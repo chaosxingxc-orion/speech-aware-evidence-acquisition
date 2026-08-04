@@ -19,10 +19,13 @@ umbrella wiki.
   regular file in `build/bin`** (inference/audio `.so` libraries included) as an exact set, the
   40-hex build commit must be prefix-matched by the binary's self-reported build hash
   (`llama-server --version` at receipt time), and a dirty tree or stale build is refused at
-  generation; absolute paths, traversal, duplicates, extra files and non-file entries (subdirs,
-  dangling symlinks) are refused in both the scoring package and `build/bin`. The exposure row a
-  plan cites is cross-checked field by field (profile, split role, split identity hash,
-  consumed=no, registered calls/audio-seconds/GPU-hours ≥ planned), and the first-slice caps are
+  generation; absolute paths, traversal, duplicates and extra files are refused. In `build/bin`
+  any non-file entry (subdirectory, symlink that is not a regular file) is refused; in the scoring
+  package, nested sources must be named by the freeze, and non-source files, dangling symlinks and
+  symlinked directories are refused (plain subdirectories are legal only because every `.py`
+  inside them must be frozen). The exposure row a plan cites is cross-checked field by field
+  (profile, split role, split identity hash, consumed=no, registered calls/audio-seconds/GPU-hours
+  ≥ planned; every budget cell must be a finite non-negative number), and the first-slice caps are
   enforced as **slice totals**: the gate sums every registered row and refuses a plan that would
   push the campaign over ≤3000 calls / ≤72000 audio seconds / ≤40 GPU-hours. Gate verification is
   instantaneous: the process that opens the gate must be the process that starts llama-server,
