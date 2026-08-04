@@ -16,10 +16,13 @@
 
 ## 授权与序列
 
-当前合同：伞仓
-`wiki/experiments/speech-aware-evidence-acquisition/2026-08-04-owner-speech-domain-scope-and-identity-contract.md`；
+本仓是 **Stage‑2 study 载体**（伞仓 Decision-Log 续91/续92）：终点是一个或多个合格 paper
+candidate，不是完成论文。当前唯一自包含有效合同：伞仓
+`wiki/experiments/speech-aware-evidence-acquisition/2026-08-04-owner-consolidated-execution-contract.md`；
 入场序列：伞仓
 `docs/superpowers/specs/2026-08-02-speech-aware-evidence-acquisition-stage2a-entry.md`。
+执行 profile 只接受 `model-free-check` / `baseline-reproduction` / `bounded-discovery-probe`
+（`contracts.assert_execution_scope`，fail-closed）。
 首次模型触达前必须关闭 E0 D1–D4，并落 llama.cpp build commit + GGUF 逐文件 SHA-256 runtime
 receipt。每次模型/工具触达在读结果前记 `docs/exposure-ledger.md`。
 
@@ -43,6 +46,10 @@ receipt。每次模型/工具触达在读结果前记 `docs/exposure-ledger.md`�
 
 ## 禁止
 
+- **paper-scale 工作**：`paper-scale-confirmatory` profile、production-scale 方法实现、大规模
+  confirmatory campaign、最终优越性/泛化结论、manuscript/submission/publication——这些属
+  Stage‑3，须经 `OWNER_GO_AND_PAPER_EXECUTION_CONTRACT` 晋级到 `papers/<slug>` 独立仓，本仓
+  永不接受（机器强制：`contracts.assert_execution_scope`）；
 - 越过首切片预算（≤3000 冻结核调用 / ≤40 GPU-hours / ≤20 小时 speech audio / 付费 API=0）；
 - 提交数据、权重、speech files 或 raw trace；绕过 migration manifest 搬运代码；
 - 把 R2 等候选编号写进包名、MLflow namespace 或正式 experiment ID；

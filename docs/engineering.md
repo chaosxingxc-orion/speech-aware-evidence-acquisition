@@ -51,4 +51,11 @@ W1 authorship; no third-party code vendored).
 `pytest` must collect at least one test and pass (CI treats pytest exit code 5 — no tests
 collected — as failure). The model-free contract tests under `tests/contract/` are the E0
 engineering floor: information boundary, OBS/ORG/SUPPLY/USE trace separation, exposure schema,
-frozen-core entry gate, snapshot quarantine, governance alignment and pre-R0 entrypoint refusal.
+frozen-core entry gate, execution-scope guard, snapshot quarantine, governance alignment and
+pre-R0 entrypoint refusal.
+
+Execution scope (consolidated contract §6/§7): every model touch must declare a profile;
+`FrozenCoreGate.assert_model_touch_allowed(execution_profile)` accepts only
+`baseline-reproduction` and `bounded-discovery-probe` (after receipt verification), and
+`contracts.assert_execution_scope` refuses `paper-scale-confirmatory` and every unknown profile
+before any receipt is read. Stage-3 work runs only in a separately admitted paper repository.

@@ -60,6 +60,21 @@ def test_registry_binds_this_repository():
 
 
 @requires_umbrella
+def test_effective_contract_carries_stage3_paper_gate():
+    registry = json.loads(
+        (UMBRELLA / "studies" / "registry.json").read_text(encoding="utf-8")
+    )
+    entry = next(item for item in registry["studies"] if item["slug"] == SLUG)
+    contract = (UMBRELLA / entry["decision_record"]).read_text(encoding="utf-8")
+    assert "OWNER_GO_AND_PAPER_EXECUTION_CONTRACT" in contract, (
+        "the pinned effective contract must carry the Stage-3 paper-gate stop line"
+    )
+    assert "paper-scale-confirmatory" in contract, (
+        "the pinned effective contract must freeze the execution-scope profile boundary"
+    )
+
+
+@requires_umbrella
 def test_experiment_index_frontmatter_matches_this_study():
     index = (UMBRELLA / "wiki" / "experiments" / SLUG / "README.md").read_text(encoding="utf-8")
     frontmatter = re.match(r"\A---\r?\n(.*?)\r?\n---", index, flags=re.DOTALL)

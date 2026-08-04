@@ -60,6 +60,15 @@ MODEL_LOCK_KEY = "qwen3-omni-30b-a3b-instruct-gguf"
 E0_RECEIPT_SCHEMA = "saea-e0-closure-receipt-v1"
 RUNTIME_RECEIPT_SCHEMA = "saea-runtime-receipt-v1"
 
+ALLOWED_EXECUTION_PROFILES = (
+    "model-free-check",
+    "baseline-reproduction",
+    "bounded-discovery-probe",
+)
+MODEL_TOUCH_PROFILES = frozenset({"baseline-reproduction", "bounded-discovery-probe"})
+PAPER_GATE_TOKEN = "OWNER_GO_AND_PAPER_EXECUTION_CONTRACT"
+_PAPER_SCALE_MARKERS = ("paper", "confirmatory", "production")
+
 
 class BoundaryViolation(ValueError):
     """A payload tries to move gold/reference/test/future information across the runtime boundary."""
@@ -75,6 +84,37 @@ class ExposureSchemaError(ValueError):
 
 class GateClosed(RuntimeError):
     """The frozen-core entry gate refuses: E0 closure or the runtime receipt is missing/invalid."""
+
+
+class ExecutionScopeError(RuntimeError):
+    """The requested execution profile is outside this study repository's Stage-2 authority."""
+
+
+def assert_execution_scope(profile: object) -> str:
+    """Fail-closed Stage-2 execution-scope guard (consolidated contract §6/§7, 续91/续92).
+
+    This study repository accepts exactly the profiles in ``ALLOWED_EXECUTION_PROFILES``.
+    ``paper-scale-confirmatory`` — and any other paper/confirmatory/production-scale
+    profile — is never accepted here: Stage-3 work requires promotion to an independent
+    ``papers/<slug>`` repository under ``OWNER_GO_AND_PAPER_EXECUTION_CONTRACT``. Unknown
+    or forged profile strings are refused rather than normalized.
+    """
+
+    if not isinstance(profile, str) or not profile.strip():
+        raise ExecutionScopeError("execution profile must be a non-empty string")
+    if profile in ALLOWED_EXECUTION_PROFILES:
+        return profile
+    lowered = profile.lower()
+    if any(marker in lowered for marker in _PAPER_SCALE_MARKERS):
+        raise ExecutionScopeError(
+            f"execution profile {profile!r} is paper-scale: this Stage-2 study repository "
+            f"never runs it; Stage-3 requires {PAPER_GATE_TOKEN} and an independent "
+            "papers/<slug> repository (Decision-Log 续91/续92)"
+        )
+    raise ExecutionScopeError(
+        f"unknown execution profile {profile!r}; allowed Stage-2 profiles are "
+        f"{ALLOWED_EXECUTION_PROFILES} (fail-closed)"
+    )
 
 
 def assert_information_boundary(payload: object, _path: str = "$") -> None:
@@ -439,6 +479,16 @@ class FrozenCoreGate:
                 "the on-disk binary bytes; model touch refused"
             )
 
-    def assert_model_touch_allowed(self) -> None:
+    def assert_model_touch_allowed(self, execution_profile: str) -> None:
+        """Refuse the touch unless the profile is a Stage-2 model-facing profile AND
+        both receipts verify. The scope check runs first, so a paper-scale request
+        is refused before any receipt is even read."""
+
+        profile = assert_execution_scope(execution_profile)
+        if profile not in MODEL_TOUCH_PROFILES:
+            raise ExecutionScopeError(
+                f"execution profile {profile!r} does not authorize a model touch; "
+                f"model-facing Stage-2 profiles are {sorted(MODEL_TOUCH_PROFILES)}"
+            )
         self._validate_e0()
         self._validate_runtime()

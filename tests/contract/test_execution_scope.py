@@ -1,0 +1,71 @@
+"""Contract: the Stage-2 execution-scope guard is fail-closed (consolidated contract §6/§7).
+
+This repository is a Stage-2 study carrier (umbrella Decision-Log 续91/续92). It accepts
+exactly three execution profiles; ``paper-scale-confirmatory`` — and any forged variant —
+is refused before any receipt or model asset is read.
+"""
+
+import pytest
+
+from speech_aware_evidence_acquisition.contracts import (
+    ALLOWED_EXECUTION_PROFILES,
+    ExecutionScopeError,
+    FrozenCoreGate,
+    assert_execution_scope,
+)
+
+
+@pytest.mark.parametrize("profile", ALLOWED_EXECUTION_PROFILES)
+def test_stage2_profiles_are_accepted(profile):
+    assert assert_execution_scope(profile) == profile
+
+
+@pytest.mark.parametrize(
+    "profile",
+    [
+        "paper-scale-confirmatory",
+        "Paper-Scale-Confirmatory",
+        "confirmatory",
+        "large-scale-confirmatory-campaign",
+        "production-scale",
+        "paper",
+    ],
+)
+def test_paper_scale_profiles_are_always_refused_with_the_gate_token(profile):
+    with pytest.raises(ExecutionScopeError, match="OWNER_GO_AND_PAPER_EXECUTION_CONTRACT"):
+        assert_execution_scope(profile)
+
+
+@pytest.mark.parametrize(
+    "profile",
+    [
+        "",
+        "   ",
+        None,
+        7,
+        "baseline_reproduction",
+        "bounded-discovery-probe ",
+        "BASELINE-REPRODUCTION",
+        "stage2",
+    ],
+)
+def test_unknown_or_forged_profiles_fail_closed(profile):
+    with pytest.raises(ExecutionScopeError):
+        assert_execution_scope(profile)
+
+
+def test_model_touch_refuses_out_of_scope_profiles_before_reading_any_receipt(tmp_path):
+    gate = FrozenCoreGate(
+        e0_receipt=tmp_path / "missing-e0.json",
+        runtime_receipt=tmp_path / "missing-runtime.json",
+        data_root=tmp_path,
+        lock_path=tmp_path / "missing-lock.json",
+        runtime_root=tmp_path,
+    )
+    # Scope refusal must precede receipt validation: with a forbidden profile the
+    # error is ExecutionScopeError, not GateClosed-about-missing-receipts.
+    with pytest.raises(ExecutionScopeError):
+        gate.assert_model_touch_allowed("paper-scale-confirmatory")
+    # A model-free profile is legal for the repo but never authorizes a model touch.
+    with pytest.raises(ExecutionScopeError):
+        gate.assert_model_touch_allowed("model-free-check")
