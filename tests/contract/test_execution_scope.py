@@ -9,10 +9,27 @@ import pytest
 
 from speech_aware_evidence_acquisition.contracts import (
     ALLOWED_EXECUTION_PROFILES,
+    ExecutionPlan,
     ExecutionScopeError,
     FrozenCoreGate,
     assert_execution_scope,
 )
+
+
+def _plan(**overrides: object) -> ExecutionPlan:
+    base: dict = dict(
+        run_id="SAEA-E-000-smoke",
+        execution_profile="baseline-reproduction",
+        carrier_lock_key="earnings21-original",
+        split_role="dev",
+        split_identity_hash="a" * 64,
+        planned_model_calls=10,
+        planned_gpu_hours=1.0,
+        planned_speech_audio_seconds=600,
+        protocol_hash="b" * 64,
+    )
+    base.update(overrides)
+    return ExecutionPlan(**base)
 
 
 @pytest.mark.parametrize("profile", ALLOWED_EXECUTION_PROFILES)
@@ -54,18 +71,19 @@ def test_unknown_or_forged_profiles_fail_closed(profile):
         assert_execution_scope(profile)
 
 
-def test_model_touch_refuses_out_of_scope_profiles_before_reading_any_receipt(tmp_path):
+def test_model_touch_refuses_out_of_scope_plans_before_reading_any_receipt(tmp_path):
     gate = FrozenCoreGate(
         e0_receipt=tmp_path / "missing-e0.json",
         runtime_receipt=tmp_path / "missing-runtime.json",
         data_root=tmp_path,
         lock_path=tmp_path / "missing-lock.json",
         runtime_root=tmp_path,
+        exposure_ledger=tmp_path / "missing-ledger.md",
     )
-    # Scope refusal must precede receipt validation: with a forbidden profile the
-    # error is ExecutionScopeError, not GateClosed-about-missing-receipts.
+    # Scope refusal must precede receipt/ledger validation: with a forbidden profile
+    # the error is ExecutionScopeError, not GateClosed-about-missing-files.
     with pytest.raises(ExecutionScopeError):
-        gate.assert_model_touch_allowed("paper-scale-confirmatory")
+        gate.assert_model_touch_allowed(_plan(execution_profile="paper-scale-confirmatory"))
     # A model-free profile is legal for the repo but never authorizes a model touch.
     with pytest.raises(ExecutionScopeError):
-        gate.assert_model_touch_allowed("model-free-check")
+        gate.assert_model_touch_allowed(_plan(execution_profile="model-free-check"))

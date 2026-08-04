@@ -1,10 +1,13 @@
 """Fail-closed E0 engineering contracts.
 
-Model-free contracts frozen by the owner execution contract
-(``SAEA-OWNER-SPEECH-SCOPE-AND-IDENTITY-2026-08-04``): the runtime information boundary,
-OBS/ORG/SUPPLY/USE trace separation, exposure-claim schema, and the frozen-core entry gate.
-Everything here is standard-library only so the contracts are testable before any ML
-stack is installed and before any model is touched.
+Model-free contracts frozen by the current owner execution authority
+(``SAEA-OWNER-CONSOLIDATED-EXECUTION-CONTRACT-2026-08-04``; the earlier
+``SAEA-OWNER-SPEECH-SCOPE-AND-IDENTITY-2026-08-04`` is an inherited source record, not the
+current contract): the runtime information boundary, OBS/ORG/SUPPLY/USE trace separation,
+exposure-claim schema, the Stage-2 execution-scope guard with its structured
+``ExecutionPlan``, and the frozen-core entry gate. Everything here is standard-library only
+so the contracts are testable before any ML stack is installed and before any model is
+touched.
 """
 
 from __future__ import annotations
@@ -69,6 +72,15 @@ MODEL_TOUCH_PROFILES = frozenset({"baseline-reproduction", "bounded-discovery-pr
 PAPER_GATE_TOKEN = "OWNER_GO_AND_PAPER_EXECUTION_CONTRACT"
 _PAPER_SCALE_MARKERS = ("paper", "confirmatory", "production")
 
+EXECUTION_PLAN_SCHEMA = "saea-execution-plan-v1"
+STAGE2_SPLIT_ROLES = frozenset({"discovery", "dev"})
+FIRST_SLICE_CAPS = {
+    "planned_model_calls": 3000,
+    "planned_gpu_hours": 40.0,
+    "planned_speech_audio_seconds": 72000,
+}
+_EXPOSURE_RUN_COLUMN = "run/experiment id"
+
 
 class BoundaryViolation(ValueError):
     """A payload tries to move gold/reference/test/future information across the runtime boundary."""
@@ -115,6 +127,75 @@ def assert_execution_scope(profile: object) -> str:
         f"unknown execution profile {profile!r}; allowed Stage-2 profiles are "
         f"{ALLOWED_EXECUTION_PROFILES} (fail-closed)"
     )
+
+
+@dataclass(frozen=True)
+class ExecutionPlan:
+    """Structured, contract-bound plan for one model-facing run (v1, umbrella 续93).
+
+    Every field is a value the consolidated execution contract already freezes
+    (profiles, Stage-2 split roles, first-slice budget caps, hash disciplines); the
+    schema is therefore not speculative design and may be extended at R0 only via a
+    dated owner decision. A profile label alone never authorizes a run: the gate
+    validates this plan before reading any receipt, so a paper-scale run cannot be
+    smuggled in under an allowed profile name.
+    """
+
+    run_id: str
+    execution_profile: str
+    carrier_lock_key: str
+    split_role: str
+    split_identity_hash: str
+    planned_model_calls: int
+    planned_gpu_hours: float
+    planned_speech_audio_seconds: int
+    protocol_hash: str
+    schema: str = EXECUTION_PLAN_SCHEMA
+    study: str = STUDY_SLUG
+
+    def validate(self) -> "ExecutionPlan":
+        if self.schema != EXECUTION_PLAN_SCHEMA:
+            raise ExecutionScopeError(
+                f"execution plan schema must be {EXECUTION_PLAN_SCHEMA!r}, got {self.schema!r}"
+            )
+        if self.study != STUDY_SLUG:
+            raise ExecutionScopeError(
+                f"execution plan study identity must be {STUDY_SLUG!r}, got {self.study!r}"
+            )
+        if not isinstance(self.run_id, str) or not self.run_id.strip():
+            raise ExecutionScopeError("execution plan run_id must be a non-empty string")
+        assert_execution_scope(self.execution_profile)
+        if not isinstance(self.carrier_lock_key, str) or not self.carrier_lock_key.strip():
+            raise ExecutionScopeError("execution plan carrier_lock_key must be a non-empty string")
+        if not isinstance(self.split_role, str) or not self.split_role.strip():
+            raise ExecutionScopeError("execution plan split_role must be a non-empty string")
+        if self.split_role == "confirmatory":
+            raise ExecutionScopeError(
+                "confirmatory execution is not a Stage-2 authority: reading confirmatory "
+                f"results requires {PAPER_GATE_TOKEN} (independent paper repository) or a "
+                "dated owner allowance; relabeling the profile does not change this"
+            )
+        if self.split_role not in STAGE2_SPLIT_ROLES:
+            raise ExecutionScopeError(
+                f"unknown split role {self.split_role!r}; Stage-2 roles are "
+                f"{sorted(STAGE2_SPLIT_ROLES)} (fail-closed)"
+            )
+        for label, value in (
+            ("split_identity_hash", self.split_identity_hash),
+            ("protocol_hash", self.protocol_hash),
+        ):
+            if not isinstance(value, str) or _SHA256.fullmatch(value) is None:
+                raise ExecutionScopeError(f"execution plan {label} must be a 64-hex SHA-256")
+        for field_name, cap in FIRST_SLICE_CAPS.items():
+            value = getattr(self, field_name)
+            if isinstance(value, bool) or not isinstance(value, (int, float)) or value <= 0:
+                raise ExecutionScopeError(f"execution plan {field_name} must be a positive number")
+            if value > cap:
+                raise ExecutionScopeError(
+                    f"execution plan {field_name}={value} exceeds the frozen first-slice "
+                    f"cap {cap}; a larger run is paper-scale regardless of its profile label"
+                )
+        return self
 
 
 def assert_information_boundary(payload: object, _path: str = "$") -> None:
@@ -297,6 +378,7 @@ class FrozenCoreGate:
     data_root: Path
     lock_path: Path
     runtime_root: Path
+    exposure_ledger: Path
 
     E0_DELIVERABLES = ("d1_identity", "d2_leakage", "d3_scoring", "d4_trace")
 
@@ -479,16 +561,77 @@ class FrozenCoreGate:
                 "the on-disk binary bytes; model touch refused"
             )
 
-    def assert_model_touch_allowed(self, execution_profile: str) -> None:
-        """Refuse the touch unless the profile is a Stage-2 model-facing profile AND
-        both receipts verify. The scope check runs first, so a paper-scale request
-        is refused before any receipt is even read."""
+    def _lock_asset_names(self) -> set[str]:
+        lock = self._load(self.lock_path, "datasets lock")
+        names = {
+            item["name"]
+            for value in lock.values()
+            if isinstance(value, list)
+            for item in value
+            if isinstance(item, Mapping) and isinstance(item.get("name"), str)
+        }
+        if not names:
+            raise GateClosed("datasets lock yields no named assets")
+        return names
 
-        profile = assert_execution_scope(execution_profile)
-        if profile not in MODEL_TOUCH_PROFILES:
+    def _require_exposure_preregistration(self, run_id: str) -> None:
+        try:
+            text = Path(self.exposure_ledger).read_text(encoding="utf-8")
+        except (OSError, UnicodeError) as error:
+            raise GateClosed(
+                f"exposure ledger missing or unreadable ({self.exposure_ledger}): {error}"
+            ) from error
+        header: list[str] | None = None
+        rows: list[list[str]] = []
+        for line in text.splitlines():
+            stripped = line.strip()
+            if not (stripped.startswith("|") and stripped.endswith("|")):
+                continue
+            cells = [cell.strip() for cell in stripped[1:-1].split("|")]
+            if header is None:
+                lowered = [cell.lower() for cell in cells]
+                if _EXPOSURE_RUN_COLUMN in lowered:
+                    header = lowered
+                continue
+            if all(not cell.strip("-: ") for cell in cells):
+                continue
+            rows.append(cells)
+        if header is None:
+            raise GateClosed(
+                f"exposure ledger lacks a table header with a {_EXPOSURE_RUN_COLUMN!r} column"
+            )
+        column = header.index(_EXPOSURE_RUN_COLUMN)
+        for cells in rows:
+            if column < len(cells) and cells[column] == run_id:
+                return
+        raise GateClosed(
+            f"model touch refused: run {run_id!r} has no pre-registered exposure row in "
+            f"{self.exposure_ledger} (rows are written before results are read)"
+        )
+
+    def assert_model_touch_allowed(self, plan: ExecutionPlan) -> None:
+        """Refuse the touch unless a validated Stage-2 ``ExecutionPlan`` authorizes it
+        AND both receipts verify. Plan/scope validation runs before any receipt or
+        ledger byte is read, so a paper-scale request — however labeled — is refused
+        first; then the run must be pre-registered in the exposure ledger and its
+        carrier must exist in the umbrella lock."""
+
+        if not isinstance(plan, ExecutionPlan):
             raise ExecutionScopeError(
-                f"execution profile {profile!r} does not authorize a model touch; "
-                f"model-facing Stage-2 profiles are {sorted(MODEL_TOUCH_PROFILES)}"
+                "a model touch requires a structured ExecutionPlan; bare profile "
+                "strings were retired by 续93 (semantic scope gate)"
+            )
+        plan.validate()
+        if plan.execution_profile not in MODEL_TOUCH_PROFILES:
+            raise ExecutionScopeError(
+                f"execution profile {plan.execution_profile!r} does not authorize a model "
+                f"touch; model-facing Stage-2 profiles are {sorted(MODEL_TOUCH_PROFILES)}"
+            )
+        self._require_exposure_preregistration(plan.run_id)
+        if plan.carrier_lock_key not in self._lock_asset_names():
+            raise GateClosed(
+                f"carrier lock key {plan.carrier_lock_key!r} is not in the umbrella "
+                "datasets lock"
             )
         self._validate_e0()
         self._validate_runtime()

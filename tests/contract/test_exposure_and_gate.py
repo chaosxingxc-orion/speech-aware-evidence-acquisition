@@ -12,6 +12,8 @@ from speech_aware_evidence_acquisition.contracts import (
     MODEL_LOCK_KEY,
     RUNTIME_RECEIPT_SCHEMA,
     STUDY_SLUG,
+    ExecutionPlan,
+    ExecutionScopeError,
     ExposureSchemaError,
     FrozenCoreGate,
     GateClosed,
@@ -51,16 +53,32 @@ def test_malformed_exposure_claims_fail(mutation):
         validate_exposure_claim(claim)
 
 
-def test_exposure_ledger_file_exists_with_required_columns():
+def test_exposure_ledger_header_carries_contract_columns():
+    """Parse the real table header — prose mentions of a column name do not count."""
+
     ledger = (REPO_ROOT / "docs" / "exposure-ledger.md").read_text(encoding="utf-8")
+    header = None
+    for line in ledger.splitlines():
+        stripped = line.strip()
+        if stripped.startswith("|") and "run/experiment id" in stripped.lower():
+            header = [cell.strip().lower() for cell in stripped.strip("|").split("|")]
+            break
+    assert header is not None, "exposure ledger must have a markdown table header row"
     for column in (
         "date",
         "run/experiment id",
+        "execution profile",
+        "scope",
         "model/tool",
+        "speech carrier + split",
+        "split role",
+        "split identity hash",
+        "consumed",
         "calls",
         "speech audio seconds",
+        "inherited exposure",
     ):
-        assert column in ledger
+        assert column in header, f"exposure ledger header lacks column {column!r}"
 
 
 def _sha(raw: bytes) -> str:
@@ -75,6 +93,8 @@ class GateFixture:
     GGUF_2 = b"GGUF-fake-mmproj" * 32
     BINARY = b"ELF-fake-llama-server" * 16
     ARTIFACT = b'{"receipt": "closed"}\n'
+    RUN_ID = "SAEA-E-000-smoke"
+    CARRIER = "earnings21-original"
 
     def __init__(self, tmp_path: Path) -> None:
         self.receipts = tmp_path / "receipts"
@@ -107,8 +127,20 @@ class GateFixture:
                     "size_bytes": len(self.GGUF_1) + len(self.GGUF_2),
                     "note": "extra lock fields are tolerated",
                 }
-            ]
+            ],
+            "datasets": [{"name": self.CARRIER}],
         }
+        self.exposure_ledger = tmp_path / "exposure-ledger.md"
+        self.exposure_ledger.write_text(
+            "| date | run/experiment id | execution profile | scope | model/tool "
+            "| speech carrier + split | split role | split identity hash | consumed "
+            "| calls | speech audio seconds | inherited exposure | artifacts | notes |\n"
+            "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|\n"
+            f"| 2026-08-04 | {self.RUN_ID} | baseline-reproduction | earnings21 dev slice "
+            f"| qwen3-omni | {self.CARRIER} dev | dev | {'a' * 64} | no "
+            "| 10 | 600 | W1 probes on other carriers only | mlflow://pending | pre-registered |\n",
+            encoding="utf-8",
+        )
         self.e0 = {
             "schema": E0_RECEIPT_SCHEMA,
             "study": STUDY_SLUG,
@@ -148,7 +180,23 @@ class GateFixture:
             data_root=self.data_root,
             lock_path=self.lock_path,
             runtime_root=self.runtime_root,
+            exposure_ledger=self.exposure_ledger,
         )
+
+    def plan(self, **overrides: object) -> ExecutionPlan:
+        base: dict = dict(
+            run_id=self.RUN_ID,
+            execution_profile="baseline-reproduction",
+            carrier_lock_key=self.CARRIER,
+            split_role="dev",
+            split_identity_hash="a" * 64,
+            planned_model_calls=10,
+            planned_gpu_hours=1.0,
+            planned_speech_audio_seconds=600,
+            protocol_hash="b" * 64,
+        )
+        base.update(overrides)
+        return ExecutionPlan(**base)
 
 
 @pytest.fixture()
@@ -157,7 +205,7 @@ def world(tmp_path):
 
 
 def test_fully_valid_receipts_open_the_gate(world):
-    world.gate().assert_model_touch_allowed("baseline-reproduction")
+    world.gate().assert_model_touch_allowed(world.plan())
 
 
 def test_gate_refuses_when_receipts_are_missing(tmp_path, world):
@@ -167,33 +215,34 @@ def test_gate_refuses_when_receipts_are_missing(tmp_path, world):
         world.data_root,
         world.lock_path,
         world.runtime_root,
+        world.exposure_ledger,
     )
     world.lock_path.write_text(json.dumps(world.lock), encoding="utf-8")
     with pytest.raises(GateClosed, match="missing or unreadable"):
-        gate.assert_model_touch_allowed("baseline-reproduction")
+        gate.assert_model_touch_allowed(world.plan())
 
 
 def test_gate_refuses_nonexistent_model_file(world):
     world.runtime["gguf_files"][1]["path"] = f"{world.SUBDIR}/definitely-does-not-exist.gguf"
     with pytest.raises(GateClosed, match="does not exist"):
-        world.gate().assert_model_touch_allowed("baseline-reproduction")
+        world.gate().assert_model_touch_allowed(world.plan())
 
 
 def test_gate_refuses_fabricated_hash_and_size(world):
     world.runtime["gguf_files"][0]["sha256"] = "0" * 64
     with pytest.raises(GateClosed, match="SHA-256 drift"):
-        world.gate().assert_model_touch_allowed("baseline-reproduction")
+        world.gate().assert_model_touch_allowed(world.plan())
 
     world.runtime["gguf_files"][0]["sha256"] = _sha(world.GGUF_1)
     world.runtime["gguf_files"][0]["bytes"] = 12345
     with pytest.raises(GateClosed, match="size drift"):
-        world.gate().assert_model_touch_allowed("baseline-reproduction")
+        world.gate().assert_model_touch_allowed(world.plan())
 
 
 def test_gate_refuses_model_byte_drift_on_disk(world):
     (world.data_root / world.SUBDIR / "model-q8_0.gguf").write_bytes(b"tampered")
     with pytest.raises(GateClosed, match="drift"):
-        world.gate().assert_model_touch_allowed("baseline-reproduction")
+        world.gate().assert_model_touch_allowed(world.plan())
 
 
 @pytest.mark.parametrize(
@@ -208,13 +257,13 @@ def test_gate_refuses_model_byte_drift_on_disk(world):
 def test_gate_refuses_absolute_and_traversal_paths(world, bad_path):
     world.runtime["gguf_files"][1]["path"] = bad_path
     with pytest.raises(GateClosed):
-        world.gate().assert_model_touch_allowed("baseline-reproduction")
+        world.gate().assert_model_touch_allowed(world.plan())
 
 
 def test_gate_refuses_duplicate_and_extra_model_files(world):
     world.runtime["gguf_files"][1] = dict(world.runtime["gguf_files"][0])
     with pytest.raises(GateClosed, match="duplicates"):
-        world.gate().assert_model_touch_allowed("baseline-reproduction")
+        world.gate().assert_model_touch_allowed(world.plan())
 
     world.runtime["gguf_files"] = [
         world.runtime["gguf_files"][0],
@@ -230,18 +279,18 @@ def test_gate_refuses_duplicate_and_extra_model_files(world):
         },
     ]
     with pytest.raises(GateClosed, match="extra or missing"):
-        world.gate().assert_model_touch_allowed("baseline-reproduction")
+        world.gate().assert_model_touch_allowed(world.plan())
 
 
 def test_gate_refuses_lock_key_mismatch_and_missing_lock_entry(world):
     world.runtime["model_lock_key"] = "some-other-model"
     with pytest.raises(GateClosed, match="does not match"):
-        world.gate().assert_model_touch_allowed("baseline-reproduction")
+        world.gate().assert_model_touch_allowed(world.plan())
 
     world.runtime["model_lock_key"] = MODEL_LOCK_KEY
     world.lock["models"][0]["name"] = "renamed-away"
     with pytest.raises(GateClosed, match="not found in datasets lock"):
-        world.gate().assert_model_touch_allowed("baseline-reproduction")
+        world.gate().assert_model_touch_allowed(world.plan())
 
 
 def test_gate_refuses_path_outside_lock_subdir(world):
@@ -250,54 +299,93 @@ def test_gate_refuses_path_outside_lock_subdir(world):
     (stray / "model.gguf").write_bytes(world.GGUF_1)
     world.runtime["gguf_files"][0]["path"] = "models/other/model.gguf"
     with pytest.raises(GateClosed, match="canonical subdir"):
-        world.gate().assert_model_touch_allowed("baseline-reproduction")
+        world.gate().assert_model_touch_allowed(world.plan())
 
 
 def test_gate_refuses_unbacked_build_commit(world):
     world.runtime["llama_cpp"]["build_commit"] = "abc123"
     with pytest.raises(GateClosed, match="full 40-hex"):
-        world.gate().assert_model_touch_allowed("baseline-reproduction")
+        world.gate().assert_model_touch_allowed(world.plan())
 
     world.runtime["llama_cpp"]["build_commit"] = "d" * 40
     world.runtime["llama_cpp"]["binary_sha256"] = "e" * 64
     with pytest.raises(GateClosed, match="binary drift"):
-        world.gate().assert_model_touch_allowed("baseline-reproduction")
+        world.gate().assert_model_touch_allowed(world.plan())
 
     world.runtime["llama_cpp"]["binary_sha256"] = _sha(world.BINARY)
     world.runtime["llama_cpp"]["binary_path"] = "llama.cpp/missing/llama-server"
     with pytest.raises(GateClosed, match="does not exist"):
-        world.gate().assert_model_touch_allowed("baseline-reproduction")
+        world.gate().assert_model_touch_allowed(world.plan())
 
 
 def test_gate_refuses_e0_artifact_hash_drift(world):
     world.deliverables["d2_leakage"]["sha256"] = "f" * 64
     with pytest.raises(GateClosed, match="artifact hash drift"):
-        world.gate().assert_model_touch_allowed("baseline-reproduction")
+        world.gate().assert_model_touch_allowed(world.plan())
 
 
 def test_gate_refuses_open_deliverable_and_missing_artifact(world):
     world.deliverables["d3_scoring"]["status"] = "OPEN"
     with pytest.raises(GateClosed, match="d3_scoring"):
-        world.gate().assert_model_touch_allowed("baseline-reproduction")
+        world.gate().assert_model_touch_allowed(world.plan())
 
     world.deliverables["d3_scoring"]["status"] = "CLOSED"
     (world.receipts / "e0" / "d4_trace.json").unlink()
     with pytest.raises(GateClosed, match="d4_trace"):
-        world.gate().assert_model_touch_allowed("baseline-reproduction")
+        world.gate().assert_model_touch_allowed(world.plan())
 
 
 def test_gate_refuses_schema_or_identity_mismatch(world):
     world.e0["schema"] = "some-other-schema"
     with pytest.raises(GateClosed, match="schema mismatch"):
-        world.gate().assert_model_touch_allowed("baseline-reproduction")
+        world.gate().assert_model_touch_allowed(world.plan())
 
     world.e0["schema"] = E0_RECEIPT_SCHEMA
     world.runtime["study"] = "another-study"
     with pytest.raises(GateClosed, match="study identity mismatch"):
-        world.gate().assert_model_touch_allowed("baseline-reproduction")
+        world.gate().assert_model_touch_allowed(world.plan())
 
 
 def test_gate_refuses_lock_total_size_mismatch(world):
     world.lock["models"][0]["size_bytes"] += 1
     with pytest.raises(GateClosed, match="total"):
+        world.gate().assert_model_touch_allowed(world.plan())
+
+
+def test_gate_refuses_confirmatory_split_even_with_allowed_profile(world):
+    with pytest.raises(ExecutionScopeError, match="confirmatory"):
+        world.gate().assert_model_touch_allowed(world.plan(split_role="confirmatory"))
+
+
+def test_gate_refuses_over_budget_plans_regardless_of_label(world):
+    for overrides in (
+        {"planned_model_calls": 3001},
+        {"planned_gpu_hours": 40.5},
+        {"planned_speech_audio_seconds": 72001},
+    ):
+        with pytest.raises(ExecutionScopeError, match="cap"):
+            world.gate().assert_model_touch_allowed(world.plan(**overrides))
+
+
+def test_gate_refuses_missing_or_malformed_hashes(world):
+    with pytest.raises(ExecutionScopeError, match="split_identity_hash"):
+        world.gate().assert_model_touch_allowed(world.plan(split_identity_hash="short"))
+    with pytest.raises(ExecutionScopeError, match="protocol_hash"):
+        world.gate().assert_model_touch_allowed(world.plan(protocol_hash=""))
+
+
+def test_gate_refuses_run_without_preregistered_exposure_row(world):
+    with pytest.raises(GateClosed, match="pre-registered exposure row"):
+        world.gate().assert_model_touch_allowed(
+            world.plan(run_id="SAEA-E-999-unregistered")
+        )
+
+
+def test_gate_refuses_unknown_carrier_lock_key(world):
+    with pytest.raises(GateClosed, match="datasets lock"):
+        world.gate().assert_model_touch_allowed(world.plan(carrier_lock_key="not-in-lock"))
+
+
+def test_bare_profile_strings_are_no_longer_accepted(world):
+    with pytest.raises(ExecutionScopeError, match="ExecutionPlan"):
         world.gate().assert_model_touch_allowed("baseline-reproduction")

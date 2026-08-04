@@ -22,7 +22,9 @@ candidate，不是完成论文。当前唯一自包含有效合同：伞仓
 入场序列：伞仓
 `docs/superpowers/specs/2026-08-02-speech-aware-evidence-acquisition-stage2a-entry.md`。
 执行 profile 只接受 `model-free-check` / `baseline-reproduction` / `bounded-discovery-probe`
-（`contracts.assert_execution_scope`，fail-closed）。
+（`contracts.assert_execution_scope`，fail-closed）；模型触达必须携带结构化
+`contracts.ExecutionPlan`（split 角色/split identity hash/预算帽/protocol hash/exposure 预登记
+绑定），confirmatory split 与超预算计划一律拒绝。
 首次模型触达前必须关闭 E0 D1–D4，并落 llama.cpp build commit + GGUF 逐文件 SHA-256 runtime
 receipt。每次模型/工具触达在读结果前记 `docs/exposure-ledger.md`。
 

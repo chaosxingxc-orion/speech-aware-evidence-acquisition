@@ -54,8 +54,12 @@ engineering floor: information boundary, OBS/ORG/SUPPLY/USE trace separation, ex
 frozen-core entry gate, execution-scope guard, snapshot quarantine, governance alignment and
 pre-R0 entrypoint refusal.
 
-Execution scope (consolidated contract §6/§7): every model touch must declare a profile;
-`FrozenCoreGate.assert_model_touch_allowed(execution_profile)` accepts only
-`baseline-reproduction` and `bounded-discovery-probe` (after receipt verification), and
-`contracts.assert_execution_scope` refuses `paper-scale-confirmatory` and every unknown profile
-before any receipt is read. Stage-3 work runs only in a separately admitted paper repository.
+Execution scope (consolidated contract §6/§7; umbrella 续93): every model touch must present a
+structured `contracts.ExecutionPlan` — profile, carrier lock key, split role (`discovery`/`dev`
+only), split identity hash, planned calls/GPU-hours/audio-seconds within the frozen first-slice
+caps, and protocol hash. `FrozenCoreGate.assert_model_touch_allowed(plan)` validates the plan
+before reading any byte, then requires the run to be pre-registered in `docs/exposure-ledger.md`
+and the carrier to exist in the umbrella lock, then verifies both receipts. Bare profile strings,
+`confirmatory` splits, over-cap plans and unregistered runs all fail closed — a paper-scale run
+cannot be smuggled in under an allowed profile label. Stage-3 work runs only in a separately
+admitted paper repository.
