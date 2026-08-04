@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=69"]
+requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -7,7 +7,8 @@ name = "speech-aware-evidence-acquisition"
 version = "0.0.1"
 description = "Training-free, reward-guided evidence acquisition for speech-domain tasks over a frozen omni core (API-only)."
 requires-python = ">=3.12"
-license = { file = "LICENSE" }
+license = "LicenseRef-Proprietary"
+license-files = ["LICENSE"]
 dependencies = []
 
 [project.optional-dependencies]
