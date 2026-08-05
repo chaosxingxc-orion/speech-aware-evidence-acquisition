@@ -1,4 +1,4 @@
-"""Contract 7: reproduce/evaluate refuse to run before the R0 slice is delivered."""
+"""Contract 7 (R0 form): entrypoints are model-free and fail closed on misuse."""
 
 import os
 import shutil
@@ -11,17 +11,32 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 
 pytestmark = pytest.mark.skipif(
     os.name == "nt" or shutil.which("bash") is None,
-    reason="entrypoint rejection behavior is exercised in the POSIX runtime environment",
+    reason="entrypoint behavior is exercised in the POSIX runtime environment",
 )
 
 
 @pytest.mark.parametrize("script", ["reproduce.sh", "evaluate.sh"])
-def test_pre_r0_entrypoints_reject_with_exit_2(script):
+def test_help_is_model_free_and_exits_zero(script):
     completed = subprocess.run(
-        ["bash", str(REPO_ROOT / "scripts" / script)],
-        check=False,
-        capture_output=True,
-        text=True,
+        ["bash", str(REPO_ROOT / "scripts" / script), "--help"],
+        check=False, capture_output=True, text=True,
     )
-    assert completed.returncode == 2, f"{script} must refuse (exit 2) before R0 delivery"
-    assert "not delivered" in completed.stderr
+    assert completed.returncode == 0
+    assert "model-free" in completed.stdout
+
+
+def test_evaluate_without_outputs_refuses_with_exit_2():
+    completed = subprocess.run(
+        ["bash", str(REPO_ROOT / "scripts" / "evaluate.sh")],
+        check=False, capture_output=True, text=True,
+    )
+    assert completed.returncode == 2
+    assert "usage" in completed.stderr.lower()
+
+
+@pytest.mark.parametrize("script", ["reproduce.sh", "evaluate.sh"])
+def test_entrypoints_contain_no_model_touch_path(script):
+    text = (REPO_ROOT / "scripts" / script).read_text(encoding="utf-8")
+    assert "llama-server" not in text
+    assert "chat/completions" not in text
+    assert "driver run" not in text
