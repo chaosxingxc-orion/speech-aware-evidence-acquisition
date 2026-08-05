@@ -8,7 +8,7 @@ import subprocess
 
 import speech_aware_evidence_acquisition.core  # noqa: F401 (populate registries)
 from speech_aware_evidence_acquisition.contracts import ExecutionPlan
-from speech_aware_evidence_acquisition.core.attempts import AttemptError, AttemptStore
+from speech_aware_evidence_acquisition.core.attempts import AttemptStore
 from speech_aware_evidence_acquisition.core.base import CoreError, RunResult
 from speech_aware_evidence_acquisition.core.bundle import verify_bundle
 from speech_aware_evidence_acquisition.core.config import ComposedConfig, compose, protocol_hash
