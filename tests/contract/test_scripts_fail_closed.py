@@ -40,3 +40,8 @@ def test_entrypoints_contain_no_model_touch_path(script):
     assert "llama-server" not in text
     assert "chat/completions" not in text
     assert "driver run" not in text
+
+
+def test_reproduce_forwards_a_runtime_root_to_the_verify_gate():
+    text = (REPO_ROOT / "scripts" / "reproduce.sh").read_text(encoding="utf-8")
+    assert "--runtime-root" in text

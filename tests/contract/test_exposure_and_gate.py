@@ -10,8 +10,6 @@ import hashlib
 from speech_aware_evidence_acquisition.contracts import (
     E0_RECEIPT_SCHEMA,
     MODEL_LOCK_KEY,
-    RUNTIME_RECEIPT_SCHEMA,
-    STUDY_SLUG,
     ExecutionPlan,
     ExecutionScopeError,
     ExposureSchemaError,

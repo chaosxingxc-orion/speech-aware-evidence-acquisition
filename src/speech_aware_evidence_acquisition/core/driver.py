@@ -33,7 +33,7 @@ from .model import FrozenCoreAdapter
 from .tracing import TraceSink
 
 
-def load_split(repo_root: Path, split_name: str) -> tuple[set[str], str]:
+def load_split(repo_root: Path, split_name: str) -> tuple[set[str], str, str]:
     receipt_path = Path(repo_root) / "docs" / "receipts" / SPLITS_RECEIPT_NAME
     if not receipt_path.is_file():
         raise CoreError(f"splits receipt missing: {receipt_path} (freeze splits first)")
@@ -45,7 +45,7 @@ def load_split(repo_root: Path, split_name: str) -> tuple[set[str], str]:
             f"unknown split {split_name!r}; frozen splits: {sorted(document['splits'])}"
         ) from None
     ids = {prefixed.split("/", 1)[1] for prefixed in split["ids"]}
-    return ids, split["identity_hash"]
+    return ids, split["identity_hash"], split["split_role"]
 
 
 def run_experiment(
@@ -60,11 +60,16 @@ def run_experiment(
 ) -> RunResult:
     values = composed.values
     arm = str(values["arm"])
-    sample_ids, split_hash = load_split(repo_root, str(values["split_name"]))
+    sample_ids, split_hash, receipt_split_role = load_split(repo_root, str(values["split_name"]))
     if plan.split_identity_hash != split_hash:
         raise CoreError(
             "plan split identity hash does not match the frozen splits receipt "
             f"for split {values['split_name']!r}"
+        )
+    if plan.split_role != receipt_split_role:
+        raise CoreError(
+            f"plan split role {plan.split_role!r} does not match the frozen splits "
+            f"receipt split role {receipt_split_role!r} for split {values['split_name']!r}"
         )
     loader = CARRIERS.resolve(str(values["carrier_lock_key"]))
     samples = [s for s in loader(lock, root) if s.sample_id in sample_ids]

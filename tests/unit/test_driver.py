@@ -67,8 +67,9 @@ def _frozen_world(synthetic_world, tmp_path):
 
 def test_run_experiment_end_to_end(synthetic_world, tmp_path):
     lock, repo_root = _frozen_world(synthetic_world, tmp_path)
-    ids, split_hash = load_split(repo_root, "discovery")
+    ids, split_hash, split_role = load_split(repo_root, "discovery")
     assert len(ids) == 3
+    assert split_role == "discovery"
     result = run_experiment(
         composed=_composed(),
         plan=_plan(split_hash),
@@ -105,11 +106,57 @@ def test_run_experiment_refuses_wrong_split_hash(synthetic_world, tmp_path):
         )
 
 
+def test_run_experiment_refuses_receipt_dev_role_mismatch(synthetic_world, tmp_path):
+    """A plan labeled 'discovery' must not be able to run against the dev split."""
+
+    lock, repo_root = _frozen_world(synthetic_world, tmp_path)
+    _, dev_hash, dev_role = load_split(repo_root, "dev")
+    assert dev_role == "dev"
+    with pytest.raises(CoreError, match="split role"):
+        run_experiment(
+            composed=_composed(
+                carrier_lock_key="earnings22-original",
+                split_name="dev",
+            ),
+            plan=_plan(dev_hash, split_role="discovery"),
+            gate=_OpenGate(),
+            lock=lock,
+            root=synthetic_world.data_root,
+            run_dir=tmp_path / "run",
+            transport=_transport,
+            repo_root=repo_root,
+        )
+
+
+def test_run_experiment_refuses_confirmatory_split_under_a_dev_labeled_plan(
+    synthetic_world, tmp_path
+):
+    """A confirmatory split can never run, even mislabeled as a 'dev' plan."""
+
+    lock, repo_root = _frozen_world(synthetic_world, tmp_path)
+    _, confirmatory_hash, confirmatory_role = load_split(repo_root, "confirmatory")
+    assert confirmatory_role == "confirmatory"
+    with pytest.raises(CoreError, match="split role"):
+        run_experiment(
+            composed=_composed(
+                carrier_lock_key="earnings22-original",
+                split_name="confirmatory",
+            ),
+            plan=_plan(confirmatory_hash, split_role="dev"),
+            gate=_OpenGate(),
+            lock=lock,
+            root=synthetic_world.data_root,
+            run_dir=tmp_path / "run",
+            transport=_transport,
+            repo_root=repo_root,
+        )
+
+
 def test_run_experiment_supplies_evidence_with_org_and_supply_traces(
     synthetic_world, tmp_path
 ):
     lock, repo_root = _frozen_world(synthetic_world, tmp_path)
-    _, split_hash = load_split(repo_root, "discovery")
+    _, split_hash, _ = load_split(repo_root, "discovery")
     result = run_experiment(
         composed=_composed(arm="fixed-legal-context", evidence_source="conec-contexts"),
         plan=_plan(split_hash),

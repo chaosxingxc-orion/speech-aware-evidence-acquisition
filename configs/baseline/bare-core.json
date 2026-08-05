@@ -3,6 +3,5 @@
   "policy": "fixed",
   "evidence_source": "none",
   "evidence_mismatch": false,
-  "scorers": ["asr-wer"],
   "task_instruction": "Transcribe the speech verbatim. Output only the transcript text."
 }
