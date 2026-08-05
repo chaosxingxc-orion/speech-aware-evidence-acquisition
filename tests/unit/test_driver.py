@@ -6,6 +6,7 @@ import pytest
 
 import speech_aware_evidence_acquisition.core  # noqa: F401 (populate registries)
 from speech_aware_evidence_acquisition.contracts import ExecutionPlan
+from speech_aware_evidence_acquisition.core.attempts import AttemptStore
 from speech_aware_evidence_acquisition.core.base import CoreError, RunResult
 from speech_aware_evidence_acquisition.core.config import ComposedConfig, protocol_hash
 from speech_aware_evidence_acquisition.core.driver import load_split, run_experiment
@@ -49,6 +50,7 @@ def _plan(split_hash, **overrides):
         planned_gpu_hours=1.0,
         planned_speech_audio_seconds=1000,
         protocol_hash="b" * 64,
+        attempt_id="attempt-0001",
     )
     base.update(overrides)
     return ExecutionPlan(**base)
@@ -94,6 +96,43 @@ def test_run_experiment_end_to_end(synthetic_world, tmp_path):
     )["records"]
     assert any(record_id.endswith("/obs") for record_id in manifest)
     assert any(record_id.endswith("/use") for record_id in manifest)
+
+
+def test_run_experiment_persists_attempt_usage_matching_the_run_cost(synthetic_world, tmp_path):
+    """R0 repair T4, probe 6: a legitimate first attempt end to end through
+    run_experiment still works, AND its durable attempt file (not just the
+    in-process RunResult.cost) carries exactly what was spent."""
+
+    lock, repo_root = _frozen_world(synthetic_world, tmp_path)
+    ids, split_hash, split_role = load_split(repo_root, "discovery", lock, synthetic_world.data_root)
+    composed = _composed()
+    plan = _plan(
+        split_hash,
+        attempt_id="attempt-e2e",
+        protocol_hash=protocol_hash(composed.config_hash, composed.values["arm"], split_hash),
+    )
+    result = run_experiment(
+        composed=composed,
+        plan=plan,
+        gate=_OpenGate(),
+        lock=lock,
+        root=synthetic_world.data_root,
+        run_dir=tmp_path / "run",
+        transport=_transport,
+        repo_root=repo_root,
+    )
+    store = AttemptStore(synthetic_world.data_root / "attempts")
+    calls, audio = store.prior_actual_usage(plan.run_id)
+    assert calls == result.cost["calls_used"] == len(ids)
+    assert audio == result.cost["audio_seconds_used"]
+    attempt_path = synthetic_world.data_root / "attempts" / plan.run_id / "attempt-e2e.json"
+    assert attempt_path.is_file()
+    import json as _json
+
+    document = _json.loads(attempt_path.read_text(encoding="utf-8"))
+    # Finalization (RESERVED/OPENED -> FINALIZED/ABORTED) is T6, out of scope
+    # here: a successful run leaves the attempt OPENED, not silently dropped.
+    assert document["state"] == "OPENED"
 
 
 def test_run_experiment_refuses_wrong_split_hash(synthetic_world, tmp_path):

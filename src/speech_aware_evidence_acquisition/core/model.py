@@ -23,6 +23,7 @@ from typing import Callable, Mapping
 
 from ..contracts import ExecutionPlan, assert_information_boundary
 from ..e0.d2_leakage import ARM_VISIBLE_FIELDS
+from .attempts import AttemptError, AttemptStore
 from .base import TRANSPORTS, CoreError, PayloadBindingContext
 from .tracing import TraceSink
 
@@ -176,12 +177,41 @@ class FrozenCoreAdapter:
                 f"carrier_lock_key {plan.carrier_lock_key!r}"
             )
         gate.assert_model_touch_allowed(plan)
+        # One-time attempt accounting (R0 repair T4, invariant I6). This is the
+        # ONLY model request path (module docstring), so it is the correct place
+        # to bind "a model touch is about to become possible" to "a durable,
+        # one-time attempt token was reserved" -- regardless of which `gate`
+        # object (real or a test double) was handed in. See the task report for
+        # why this lives here rather than inside FrozenCoreGate.
+        attempt_id = plan.attempt_id
+        if not isinstance(attempt_id, str) or not attempt_id.strip():
+            raise FrozenCoreError(
+                "execution plan attempt_id must be a non-empty string; a plan "
+                "without a valid attempt_id can never authorize a model touch "
+                "(R0 repair T4, invariant I6)"
+            )
+        attempts_root = Path(binding.data_root) / "attempts"
+        store = AttemptStore(attempts_root)
+        try:
+            prior_calls, prior_audio_seconds = store.prior_actual_usage(plan.run_id)
+            handle = store.open_attempt(
+                plan.run_id,
+                attempt_id,
+                carrier_lock_key=plan.carrier_lock_key,
+                reserved_calls=plan.planned_model_calls,
+                reserved_audio_seconds=plan.planned_speech_audio_seconds,
+            )
+        except AttemptError as error:
+            raise FrozenCoreError(f"attempt accounting refused: {error}") from error
         self._plan = plan
         self._arm = arm
         self._allowlist = frozenset(ARM_VISIBLE_FIELDS[arm])
         self._transport = transport
         self._sink = sink
         self._binding = binding
+        self._attempt_handle = handle
+        self._prior_calls = prior_calls
+        self._prior_audio_seconds = prior_audio_seconds
         self._calls_used = 0
         self._audio_seconds_used = 0.0
         self._latency_total = 0.0
@@ -216,18 +246,29 @@ class FrozenCoreAdapter:
         ):
             raise FrozenCoreError("payload audio_seconds must be a finite positive number")
         self._enforce_payload_binding(payload, audio_seconds)
-        if self._calls_used + 1 > self._plan.planned_model_calls:
+        # Row-level budget check (R0 repair T4, invariant I6): the ceiling is the
+        # SAME plan.planned_* value regardless of which attempt is spending it, so
+        # actual usage already persisted by OTHER (e.g. crashed) attempts on this
+        # same run_id counts against it too -- not just what this attempt has used
+        # so far. self._prior_calls/self._prior_audio_seconds is 0 for a run_id's
+        # first-ever attempt, so this is a strict generalization of the old
+        # single-attempt-only check, not a behavior change for a fresh run.
+        if self._prior_calls + self._calls_used + 1 > self._plan.planned_model_calls:
             raise FrozenCoreError(
                 f"call budget exhausted: plan {self._plan.run_id} allows "
-                f"{self._plan.planned_model_calls} calls"
+                f"{self._plan.planned_model_calls} calls "
+                f"({self._prior_calls} already spent by prior attempts on this run, "
+                f"{self._calls_used} by this attempt)"
             )
         if (
-            self._audio_seconds_used + float(audio_seconds)
+            self._prior_audio_seconds + self._audio_seconds_used + float(audio_seconds)
             > self._plan.planned_speech_audio_seconds
         ):
             raise FrozenCoreError(
                 f"audio budget exhausted: plan {self._plan.run_id} allows "
-                f"{self._plan.planned_speech_audio_seconds} speech audio seconds"
+                f"{self._plan.planned_speech_audio_seconds} speech audio seconds "
+                f"({self._prior_audio_seconds} already spent by prior attempts on this "
+                f"run, {self._audio_seconds_used} by this attempt)"
             )
         request_id = str(payload["request_id"])
         request_bytes = _canonical(payload)
@@ -241,7 +282,14 @@ class FrozenCoreAdapter:
         # passed and the request is about to leave the process — a transport
         # that raises (or returns a malformed response) after being invoked
         # must not be under-reported as free; a sent request is a consumed
-        # request regardless of what comes back.
+        # request regardless of what comes back. R0 repair T4 (I6): the durable
+        # attempt-file write happens BEFORE the transport call, not after --
+        # a process crash between this line and the transport call must still
+        # leave the spend on disk, not only in memory that dies with it.
+        try:
+            self._attempt_handle.record_usage(calls=1, audio_seconds=float(audio_seconds))
+        except AttemptError as error:
+            raise FrozenCoreError(f"attempt accounting refused: {error}") from error
         self._calls_used += 1
         self._audio_seconds_used += float(audio_seconds)
         started = time.monotonic()

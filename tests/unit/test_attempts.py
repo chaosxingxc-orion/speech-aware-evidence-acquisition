@@ -1,0 +1,202 @@
+"""Unit coverage of the durable attempt store itself (R0 repair T4, invariant I6).
+
+See tests/unit/test_frozen_core_adapter.py and tests/contract/test_attempt_accounting.py
+for the behaviors this store exists to enforce, exercised through FrozenCoreAdapter and
+the real gate respectively.
+"""
+
+import json
+
+import pytest
+
+from speech_aware_evidence_acquisition.core.attempts import (
+    ATTEMPT_SCHEMA,
+    STATE_OPENED,
+    AttemptError,
+    AttemptStore,
+    validate_id,
+)
+
+
+@pytest.mark.parametrize(
+    "value",
+    ["run-1", "RUN_1", "a", "a.b-c_d", "9start-with-digit"],
+)
+def test_validate_id_accepts_well_formed_ids(value):
+    assert validate_id(value, "label") == value
+
+
+@pytest.mark.parametrize(
+    "value",
+    ["", "   ", None, 7, True, "has space", "has/slash", "has\\backslash", "../escape", ".dot-start", "-dash-start"],
+)
+def test_validate_id_rejects_malformed_ids(value):
+    with pytest.raises(AttemptError):
+        validate_id(value, "label")
+
+
+def test_open_attempt_writes_a_schema_versioned_opened_document(tmp_path):
+    store = AttemptStore(tmp_path / "attempts")
+    handle = store.open_attempt(
+        "run-1", "attempt-1",
+        carrier_lock_key="earnings21-original",
+        reserved_calls=5,
+        reserved_audio_seconds=600.0,
+    )
+    document = json.loads(handle.path.read_text(encoding="utf-8"))
+    assert document["schema"] == ATTEMPT_SCHEMA
+    assert document["state"] == STATE_OPENED
+    assert document["reserved"] == {"calls": 5, "audio_seconds": 600.0}
+    assert document["actual"] == {"calls": 0, "audio_seconds": 0.0}
+    assert handle.state() == STATE_OPENED
+    assert handle.actual_totals() == (0, 0.0)
+
+
+def test_open_attempt_second_call_same_run_and_attempt_id_is_refused(tmp_path):
+    """Campaign probe P4 at the store's own atomic-creation boundary."""
+
+    store = AttemptStore(tmp_path / "attempts")
+    store.open_attempt(
+        "run-1", "attempt-1",
+        carrier_lock_key="earnings21-original",
+        reserved_calls=5,
+        reserved_audio_seconds=600.0,
+    )
+    with pytest.raises(AttemptError, match="already reserved or opened"):
+        store.open_attempt(
+            "run-1", "attempt-1",
+            carrier_lock_key="earnings21-original",
+            reserved_calls=5,
+            reserved_audio_seconds=600.0,
+        )
+
+
+def test_open_attempt_different_attempt_id_same_run_succeeds(tmp_path):
+    store = AttemptStore(tmp_path / "attempts")
+    store.open_attempt(
+        "run-1", "attempt-1",
+        carrier_lock_key="earnings21-original", reserved_calls=1, reserved_audio_seconds=1.0,
+    )
+    handle2 = store.open_attempt(
+        "run-1", "attempt-2",
+        carrier_lock_key="earnings21-original", reserved_calls=1, reserved_audio_seconds=1.0,
+    )
+    assert handle2.attempt_id == "attempt-2"
+
+
+@pytest.mark.parametrize(
+    "kwargs",
+    [
+        dict(reserved_calls=0, reserved_audio_seconds=1.0),
+        dict(reserved_calls=-1, reserved_audio_seconds=1.0),
+        dict(reserved_calls=1.5, reserved_audio_seconds=1.0),
+        dict(reserved_calls=1, reserved_audio_seconds=0.0),
+        dict(reserved_calls=1, reserved_audio_seconds=float("nan")),
+        dict(reserved_calls=1, reserved_audio_seconds=float("inf")),
+    ],
+)
+def test_open_attempt_rejects_non_positive_or_non_finite_reservations(tmp_path, kwargs):
+    store = AttemptStore(tmp_path / "attempts")
+    with pytest.raises(AttemptError):
+        store.open_attempt(
+            "run-1", "attempt-1", carrier_lock_key="earnings21-original", **kwargs
+        )
+
+
+def test_open_attempt_rejects_blank_carrier_lock_key(tmp_path):
+    store = AttemptStore(tmp_path / "attempts")
+    with pytest.raises(AttemptError, match="carrier_lock_key"):
+        store.open_attempt(
+            "run-1", "attempt-1", carrier_lock_key="", reserved_calls=1, reserved_audio_seconds=1.0
+        )
+
+
+def test_record_usage_accumulates_and_persists(tmp_path):
+    store = AttemptStore(tmp_path / "attempts")
+    handle = store.open_attempt(
+        "run-1", "attempt-1",
+        carrier_lock_key="earnings21-original", reserved_calls=5, reserved_audio_seconds=500.0,
+    )
+    assert handle.record_usage(calls=1, audio_seconds=100.0) == (1, 100.0)
+    assert handle.record_usage(calls=1, audio_seconds=50.5) == (2, 150.5)
+    assert handle.actual_totals() == (2, 150.5)
+    # A fresh handle over the same file reads back exactly what was persisted --
+    # the file, not any in-process field, is the source of truth.
+    from speech_aware_evidence_acquisition.core.attempts import AttemptHandle
+
+    reread = AttemptHandle(path=handle.path, run_id="run-1", attempt_id="attempt-1")
+    assert reread.actual_totals() == (2, 150.5)
+
+
+def test_record_usage_refuses_when_not_opened(tmp_path):
+    store = AttemptStore(tmp_path / "attempts")
+    handle = store.open_attempt(
+        "run-1", "attempt-1",
+        carrier_lock_key="earnings21-original", reserved_calls=5, reserved_audio_seconds=500.0,
+    )
+    document = json.loads(handle.path.read_text(encoding="utf-8"))
+    document["state"] = "FINALIZED"
+    handle.path.write_text(json.dumps(document), encoding="utf-8")
+    with pytest.raises(AttemptError, match="not OPENED"):
+        handle.record_usage(calls=1, audio_seconds=1.0)
+
+
+@pytest.mark.parametrize(
+    "kwargs",
+    [dict(calls=0, audio_seconds=1.0), dict(calls=-1, audio_seconds=1.0), dict(calls=1, audio_seconds=0.0)],
+)
+def test_record_usage_rejects_non_positive_values(tmp_path, kwargs):
+    store = AttemptStore(tmp_path / "attempts")
+    handle = store.open_attempt(
+        "run-1", "attempt-1",
+        carrier_lock_key="earnings21-original", reserved_calls=5, reserved_audio_seconds=500.0,
+    )
+    with pytest.raises(AttemptError):
+        handle.record_usage(**kwargs)
+
+
+def test_prior_actual_usage_returns_zero_when_run_dir_missing(tmp_path):
+    store = AttemptStore(tmp_path / "attempts")
+    assert store.prior_actual_usage("never-opened") == (0, 0.0)
+
+
+def test_prior_actual_usage_sums_across_multiple_attempts_for_the_same_run(tmp_path):
+    store = AttemptStore(tmp_path / "attempts")
+    h1 = store.open_attempt(
+        "run-1", "attempt-1", carrier_lock_key="c", reserved_calls=5, reserved_audio_seconds=500.0
+    )
+    h1.record_usage(calls=2, audio_seconds=40.0)
+    h2 = store.open_attempt(
+        "run-1", "attempt-2", carrier_lock_key="c", reserved_calls=5, reserved_audio_seconds=500.0
+    )
+    h2.record_usage(calls=3, audio_seconds=60.0)
+    assert store.prior_actual_usage("run-1") == (5, 100.0)
+
+
+def test_prior_actual_usage_excludes_the_named_attempt_id(tmp_path):
+    store = AttemptStore(tmp_path / "attempts")
+    h1 = store.open_attempt(
+        "run-1", "attempt-1", carrier_lock_key="c", reserved_calls=5, reserved_audio_seconds=500.0
+    )
+    h1.record_usage(calls=2, audio_seconds=40.0)
+    h2 = store.open_attempt(
+        "run-1", "attempt-2", carrier_lock_key="c", reserved_calls=5, reserved_audio_seconds=500.0
+    )
+    h2.record_usage(calls=3, audio_seconds=60.0)
+    assert store.prior_actual_usage("run-1", exclude_attempt_id="attempt-2") == (2, 40.0)
+
+
+def test_all_actual_usage_sums_across_multiple_runs(tmp_path):
+    store = AttemptStore(tmp_path / "attempts")
+    store.open_attempt(
+        "run-1", "attempt-1", carrier_lock_key="c", reserved_calls=5, reserved_audio_seconds=500.0
+    ).record_usage(calls=1, audio_seconds=10.0)
+    store.open_attempt(
+        "run-2", "attempt-1", carrier_lock_key="c", reserved_calls=5, reserved_audio_seconds=500.0
+    ).record_usage(calls=4, audio_seconds=40.0)
+    assert store.all_actual_usage() == (5, 50.0)
+
+
+def test_all_actual_usage_returns_zero_when_store_root_missing(tmp_path):
+    store = AttemptStore(tmp_path / "does-not-exist")
+    assert store.all_actual_usage() == (0, 0.0)

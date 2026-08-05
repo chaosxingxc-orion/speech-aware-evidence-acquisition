@@ -102,6 +102,7 @@ def test_fixed_policy_runs_one_request_and_admits(tmp_path):
         planned_gpu_hours=1.0,
         planned_speech_audio_seconds=1000,
         protocol_hash="b" * 64,
+        attempt_id="attempt-0001",
     )
     data_root = tmp_path / "data"
     media = data_root / _REF.media_relpath

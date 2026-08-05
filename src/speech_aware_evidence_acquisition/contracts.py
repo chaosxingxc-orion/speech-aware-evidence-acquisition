@@ -20,6 +20,16 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Mapping
 
+# NOTE: core.attempts is imported lazily (function-local, see
+# _require_exposure_preregistration) rather than at module scope. core/__init__.py
+# eagerly imports core.model, which imports THIS module (contracts.py) for
+# ExecutionPlan -- a module-level `from .core.attempts import ...` here would make
+# importing contracts.py first trigger core/__init__.py, which would try to import
+# core.model, which would try to import contracts.py while it is still mid-load
+# (ExecutionPlan not yet defined): a circular import. A local import deferred until
+# the method actually runs sidesteps this: by then contracts.py has always already
+# finished loading.
+
 
 FORBIDDEN_RUNTIME_FIELDS = frozenset(
     {
@@ -227,6 +237,13 @@ class ExecutionPlan:
     planned_gpu_hours: float
     planned_speech_audio_seconds: int
     protocol_hash: str
+    # Optional, defaulted (R0 repair T4, invariant I6): a mandatory-with-no-default
+    # field here would turn e0/generate.py's frozen dry-run ExecutionPlan construction
+    # into a hard TypeError unrelated to any gate check (e0/ is frozen and never
+    # constructs a real attempt_id). Refusal for a missing/malformed attempt_id
+    # happens explicitly where a model touch actually becomes possible --
+    # FrozenCoreAdapter construction, the one true model request path -- not here.
+    attempt_id: str | None = None
     schema: str = EXECUTION_PLAN_SCHEMA
     study: str = STUDY_SLUG
 
@@ -1011,6 +1028,21 @@ class FrozenCoreGate:
         # per-run allowances: sum every registered row — consumed or not — and
         # refuse when the campaign total would exceed the frozen budget. N
         # individually-bounded runs cannot smuggle a paper-scale campaign.
+        #
+        # R0 repair T4 (I6): registration alone is advisory -- what a row *claims*
+        # it will spend, written before any request happens. Actual attempt usage
+        # persisted under <data_root>/attempts/ (core.attempts.AttemptStore) is what
+        # was genuinely spent. Take the conservative (larger) of the two per column
+        # so a ledger edited to understate registration after real usage already
+        # accrued -- or any other registered/actual drift -- cannot silently reopen
+        # spent slice budget. Imported locally: see the module-level NOTE on why
+        # core.attempts is never imported at this module's top level.
+        from .core.attempts import AttemptStore
+
+        actual_calls, actual_audio = AttemptStore(
+            Path(self.data_root) / "attempts"
+        ).all_actual_usage()
+        actual_by_column = {"calls": actual_calls, "speech audio seconds": actual_audio}
         for column_name, cap_field, parse in (
             ("calls", "planned_model_calls", int),
             ("speech audio seconds", "planned_speech_audio_seconds", int),
@@ -1035,11 +1067,12 @@ class FrozenCoreGate:
                         "or negative row would silently re-open spent budget"
                     )
                 total += registered
+            total = max(total, actual_by_column.get(column_name, 0.0))
             if total > cap:
                 raise GateClosed(
-                    f"registered {column_name} across the slice total {total}, exceeding "
-                    f"the frozen first-slice cap {cap}; a new run requires a new owner "
-                    "slice decision, not another row"
+                    f"registered/actual {column_name} across the slice total {total}, "
+                    f"exceeding the frozen first-slice cap {cap}; a new run requires a "
+                    "new owner slice decision, not another row"
                 )
 
     def assert_model_touch_allowed(self, plan: ExecutionPlan) -> None:

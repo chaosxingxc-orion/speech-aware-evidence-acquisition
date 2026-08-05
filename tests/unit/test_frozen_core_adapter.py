@@ -12,6 +12,7 @@ from speech_aware_evidence_acquisition.contracts import (
     ExecutionPlan,
 )
 from speech_aware_evidence_acquisition.e0.d2_leakage import ARM_VISIBLE_FIELDS
+from speech_aware_evidence_acquisition.core.attempts import AttemptStore
 from speech_aware_evidence_acquisition.core.base import CoreError, PayloadBindingContext
 from speech_aware_evidence_acquisition.core.model import FrozenCoreAdapter, FrozenCoreError
 from speech_aware_evidence_acquisition.core.tracing import TraceSink
@@ -36,6 +37,7 @@ def _plan(**overrides):
         planned_gpu_hours=0.5,
         planned_speech_audio_seconds=250,
         protocol_hash="b" * 64,
+        attempt_id="attempt-0001",
     )
     base.update(overrides)
     return ExecutionPlan(**base)
@@ -502,3 +504,172 @@ def test_media_relpath_colon_in_segment_refused(tmp_path):
                 media_relpath="datasets/earnings21-22/earnings22/media/5000001.mp3:hidden"
             )
         )
+
+
+# ---------------------------------------------------------------------------
+# R0 repair T4, invariant I6: one-time attempt accounting. The contract-level
+# campaign probe (P4, real gate, two live adapters) lives in
+# tests/contract/test_attempt_accounting.py; these unit tests isolate the
+# same behaviors from real-gate/receipt overhead using the stub gate already
+# used throughout this file.
+# ---------------------------------------------------------------------------
+
+
+def test_adapter_construction_opens_a_durable_attempt_file(tmp_path):
+    adapter, _ = _adapter(tmp_path)
+    store = AttemptStore(adapter._binding.data_root / "attempts")
+    calls, audio = store.prior_actual_usage(adapter._plan.run_id)
+    assert (calls, audio) == (0, 0.0)
+    path = adapter._binding.data_root / "attempts" / "SAEA-E-000-adapter" / "attempt-0001.json"
+    assert path.is_file()
+
+
+def test_plan_without_attempt_id_is_refused(tmp_path):
+    sink = TraceSink(tmp_path / "run", "SAEA-E-000-noattempt")
+    with pytest.raises(FrozenCoreError, match="attempt_id"):
+        FrozenCoreAdapter(
+            gate=_OpenGate(),
+            plan=_plan(run_id="SAEA-E-000-noattempt", attempt_id=None),
+            arm="bare-core",
+            transport=_fake_transport,
+            sink=sink,
+            binding=_binding(tmp_path),
+        )
+
+
+@pytest.mark.parametrize(
+    "bad_attempt_id",
+    ["", "   ", "has space", "has/slash", "../escape", ".leading-dot", 7, True],
+)
+def test_plan_with_malformed_attempt_id_is_refused(tmp_path, bad_attempt_id):
+    sink = TraceSink(tmp_path / "run", "SAEA-E-000-badattempt")
+    with pytest.raises(FrozenCoreError, match="attempt"):
+        FrozenCoreAdapter(
+            gate=_OpenGate(),
+            plan=_plan(run_id="SAEA-E-000-badattempt", attempt_id=bad_attempt_id),
+            arm="bare-core",
+            transport=_fake_transport,
+            sink=sink,
+            binding=_binding(tmp_path),
+        )
+
+
+def test_second_adapter_over_the_identical_attempt_is_refused(tmp_path):
+    """P4 at the adapter layer: the same (run_id, attempt_id) -- here carried by
+    literally the same plan object -- must never open twice. This is the exact
+    reproduced defect: two FrozenCoreAdapters over the same plan."""
+
+    plan = _plan(run_id="SAEA-E-000-dup", attempt_id="attempt-dup")
+    binding = _binding(tmp_path)
+    FrozenCoreAdapter(
+        gate=_OpenGate(),
+        plan=plan,
+        arm="bare-core",
+        transport=_fake_transport,
+        sink=TraceSink(tmp_path / "run1", plan.run_id),
+        binding=binding,
+    )
+    with pytest.raises(FrozenCoreError, match="attempt"):
+        FrozenCoreAdapter(
+            gate=_OpenGate(),
+            plan=plan,
+            arm="bare-core",
+            transport=_fake_transport,
+            sink=TraceSink(tmp_path / "run2", plan.run_id),
+            binding=binding,
+        )
+
+
+def test_usage_is_persisted_before_transport_even_when_transport_raises(tmp_path):
+    """Belt-and-suspenders with test_metering_counts_before_transport_even_when_
+    transport_raises: this asserts the DURABLE file, not just the in-process
+    counters, carries the spend a crash right after this point would lose from
+    memory."""
+
+    def _raising_transport(request_bytes):
+        raise RuntimeError("transport exploded")
+
+    plan = _plan(run_id="SAEA-E-000-crashmeter", attempt_id="attempt-crashmeter")
+    binding = _binding(tmp_path)
+    adapter = FrozenCoreAdapter(
+        gate=_OpenGate(),
+        plan=plan,
+        arm="bare-core",
+        transport=_raising_transport,
+        sink=TraceSink(tmp_path / "run", plan.run_id),
+        binding=binding,
+    )
+    with pytest.raises(RuntimeError, match="transport exploded"):
+        adapter.request(_payload())
+    store = AttemptStore(binding.data_root / "attempts")
+    calls, audio = store.prior_actual_usage(plan.run_id, exclude_attempt_id=None)
+    assert (calls, audio) == (1, 100.0)
+
+
+def test_crashed_attempts_actual_usage_counts_against_a_fresh_attempts_row_budget(tmp_path):
+    """A crashed attempt (state stuck OPENED, never finalized -- finalization is
+    T6, out of scope here) still counts: a fresh attempt on the same run_id must
+    not get to spend the row's full budget again from zero."""
+
+    binding = _binding(tmp_path)
+    plan1 = _plan(
+        run_id="SAEA-E-000-crashbudget",
+        attempt_id="attempt-1",
+        planned_model_calls=2,
+        planned_speech_audio_seconds=250,
+    )
+    adapter1 = FrozenCoreAdapter(
+        gate=_OpenGate(), plan=plan1, arm="bare-core", transport=_fake_transport,
+        sink=TraceSink(tmp_path / "run1", plan1.run_id), binding=binding,
+    )
+    adapter1.request(_payload(request_id="req-1"))
+    # adapter1 "crashes" here: never finalized, its state stays OPENED on disk.
+
+    plan2 = _plan(
+        run_id="SAEA-E-000-crashbudget",
+        attempt_id="attempt-2",
+        planned_model_calls=2,
+        planned_speech_audio_seconds=250,
+    )
+    adapter2 = FrozenCoreAdapter(
+        gate=_OpenGate(), plan=plan2, arm="bare-core", transport=_fake_transport,
+        sink=TraceSink(tmp_path / "run2", plan2.run_id), binding=binding,
+    )
+    # The crashed attempt already spent 1 of the row's 2 calls; the retry gets
+    # exactly the remaining 1 call, then is refused at the request that would
+    # cross the row's total budget.
+    adapter2.request(_payload(request_id="req-1"))
+    with pytest.raises(FrozenCoreError, match="call budget"):
+        adapter2.request(_payload(request_id="req-2"))
+    # The refused request must never have been persisted as spent.
+    store = AttemptStore(binding.data_root / "attempts")
+    calls, _ = store.prior_actual_usage(plan2.run_id)
+    assert calls == 2
+
+
+def test_crashed_attempts_audio_usage_counts_against_a_fresh_attempts_row_budget(tmp_path):
+    binding = _binding(tmp_path)
+    plan1 = _plan(
+        run_id="SAEA-E-000-crashaudio",
+        attempt_id="attempt-1",
+        planned_model_calls=5,
+        planned_speech_audio_seconds=150,
+    )
+    adapter1 = FrozenCoreAdapter(
+        gate=_OpenGate(), plan=plan1, arm="bare-core", transport=_fake_transport,
+        sink=TraceSink(tmp_path / "run1", plan1.run_id), binding=binding,
+    )
+    adapter1.request(_payload(request_id="req-1", audio_seconds=100.0))
+
+    plan2 = _plan(
+        run_id="SAEA-E-000-crashaudio",
+        attempt_id="attempt-2",
+        planned_model_calls=5,
+        planned_speech_audio_seconds=150,
+    )
+    adapter2 = FrozenCoreAdapter(
+        gate=_OpenGate(), plan=plan2, arm="bare-core", transport=_fake_transport,
+        sink=TraceSink(tmp_path / "run2", plan2.run_id), binding=binding,
+    )
+    with pytest.raises(FrozenCoreError, match="audio budget"):
+        adapter2.request(_payload(request_id="req-1", audio_seconds=100.0))

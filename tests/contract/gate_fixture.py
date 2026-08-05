@@ -172,6 +172,7 @@ class GateFixture:
             planned_gpu_hours=1.0,
             planned_speech_audio_seconds=600,
             protocol_hash="b" * 64,
+            attempt_id="attempt-0001",
         )
         base.update(overrides)
         return ExecutionPlan(**base)
