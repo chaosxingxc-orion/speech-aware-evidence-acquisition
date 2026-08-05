@@ -95,9 +95,10 @@ from ..contracts import (
 )
 from ..e0.artifacts import REPO_ROOT, sha256_file, write_json_artifact
 from .attempts import AttemptError, AttemptHandle, AttemptStore
-from .attempts import STATE_FINALIZED, STATE_OPENED
+from .attempts import STATE_ABORTED, STATE_FINALIZED, STATE_OPENED
 from .base import RunResult
 from .config import ComposedConfig
+from .resources import NOT_AVAILABLE
 from .scorers import score_bundle
 from .split_receipt import VerifiedSplit
 from .tracking import ledger_row_for_bundle, log_bundle
@@ -261,6 +262,76 @@ def _artifact_meta(path: Path) -> dict[str, str]:
     return {"path": str(Path(path).resolve()), "sha256": sha256_file(path)}
 
 
+# ---------------------------------------------------------------------------
+# R0 repair T7 (I8): an ABORTED manifest's best-effort cost block. Unlike the
+# COMPLETED path (whose cost block is exactly `core.driver.run_experiment`'s
+# already-fully-measured `RunResult.cost`), a run that failed never returns a
+# RunResult at all -- its in-memory FrozenCoreAdapter/resource-sampler state
+# is gone once the exception has propagated out of run_experiment. Everything
+# genuinely computable here comes straight from the durable attempts store
+# (never from memory that no longer exists), which is exactly why this task's
+# "failed-attempt cost must not be silently omitted" requirement is met even
+# for the run that never succeeded: `calls_used`/`audio_seconds_used` is THIS
+# attempt's own durably recorded spend before it failed; `failed_attempt_*`
+# folds in sibling attempts under the same run_id that are ALSO ABORTED.
+# Every other field -- latency/tokens/tool_calls/cpu/gpu/evidence/setup --
+# genuinely cannot be recovered post-hoc, so each is recorded as the literal
+# NOT_AVAILABLE with a shared reason, per this task's deviation discipline:
+# never a silent omission.
+# ---------------------------------------------------------------------------
+
+_ABORTED_COST_UNAVAILABLE_REASON = (
+    "this attempt ended ABORTED before core.driver.run_experiment finished "
+    "computing its own cost aggregate (a RunResult, and the in-memory "
+    "adapter/resource-sampler state behind it, is only ever produced on "
+    "success); only durable attempt-store usage -- calls_used/"
+    "audio_seconds_used for this attempt, and failed_attempt_calls/"
+    "failed_attempt_audio_seconds for prior sibling ABORTED attempts on the "
+    "same run_id -- is recoverable post-hoc"
+)
+
+
+def _best_effort_cost_for_aborted_attempt(
+    data_root: Path, run_id: str, attempt_id: str
+) -> dict[str, object]:
+    """Never raises: a read failure here must not break ``build_manifest``'s
+    "always write a manifest" guarantee (T6) for the ABORTED path it exists
+    to serve."""
+
+    own_calls = 0
+    own_audio_seconds = 0.0
+    failed_calls = 0
+    failed_audio_seconds = 0.0
+    try:
+        store = AttemptStore(Path(data_root) / "attempts")
+        handle = store.handle(run_id, attempt_id)
+        if handle.path.is_file():
+            own_calls, own_audio_seconds = handle.actual_totals()
+        failed_calls, failed_audio_seconds = store.actual_usage_in_states(
+            run_id, frozenset({STATE_ABORTED}), exclude_attempt_id=attempt_id
+        )
+    except (AttemptError, OSError, ValueError):
+        pass
+    return {
+        "calls_used": own_calls,
+        "audio_seconds_used": own_audio_seconds,
+        "latency_seconds_total": NOT_AVAILABLE,
+        "prompt_tokens_total": NOT_AVAILABLE,
+        "completion_tokens_total": NOT_AVAILABLE,
+        "tool_calls": NOT_AVAILABLE,
+        "cpu_seconds": NOT_AVAILABLE,
+        "gate_setup_seconds": NOT_AVAILABLE,
+        "supplied_evidence_bytes": NOT_AVAILABLE,
+        "admitted_evidence_bytes": NOT_AVAILABLE,
+        "gpu_seconds": NOT_AVAILABLE,
+        "peak_vram_mib": NOT_AVAILABLE,
+        "gpu_sampling_reason": _ABORTED_COST_UNAVAILABLE_REASON,
+        "cost_unavailable_reason": _ABORTED_COST_UNAVAILABLE_REASON,
+        "failed_attempt_calls": failed_calls,
+        "failed_attempt_audio_seconds": failed_audio_seconds,
+    }
+
+
 def _manifest_document(
     *,
     repo_root: Path,
@@ -317,6 +388,10 @@ def _manifest_document(
         raw_trace_path = run_dir / f"{run_id}.trace.jsonl"
         if raw_trace_path.is_file():
             raw_trace_meta = _artifact_meta(raw_trace_path)
+        # R0 repair T7 (I8): an ABORTED manifest must not carry cost=None --
+        # that would silently omit any failed-attempt cost this attempt (or a
+        # prior sibling attempt on the same run_id) genuinely incurred.
+        cost = _best_effort_cost_for_aborted_attempt(data_root, run_id, attempt_id)
 
     session_meta = None
     if session_receipt_path is not None:

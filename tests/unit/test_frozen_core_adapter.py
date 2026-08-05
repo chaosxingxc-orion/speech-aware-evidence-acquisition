@@ -680,6 +680,37 @@ def test_crashed_attempts_actual_usage_counts_against_a_fresh_attempts_row_budge
     assert calls == 2
 
 
+# ---------------------------------------------------------------------------
+# R0 repair T7, invariant I8: tool_calls counter. Zero today (no registered
+# policy is tool-using), but wired through the same choke point every other
+# cost figure flows through -- ``cost_summary()`` -- so a future tool-using
+# policy has a path to increment it without inventing a new one.
+# ---------------------------------------------------------------------------
+
+
+def test_cost_summary_reports_zero_tool_calls_by_default(tmp_path):
+    adapter, _ = _adapter(tmp_path)
+    assert adapter.cost_summary()["tool_calls"] == 0
+
+
+def test_record_tool_call_increments_the_cost_summary_counter(tmp_path):
+    adapter, _ = _adapter(tmp_path)
+    adapter.record_tool_call()
+    adapter.record_tool_call(count=2)
+    assert adapter.cost_summary()["tool_calls"] == 3
+    # Independent of, not entangled with, request-based metering.
+    adapter.request(_payload())
+    assert adapter.cost_summary()["tool_calls"] == 3
+    assert adapter.cost_summary()["calls_used"] == 1
+
+
+@pytest.mark.parametrize("bad_count", [0, -1, -5, "1", 1.5, True])
+def test_record_tool_call_refuses_a_non_positive_or_non_integer_count(tmp_path, bad_count):
+    adapter, _ = _adapter(tmp_path)
+    with pytest.raises(FrozenCoreError, match="record_tool_call"):
+        adapter.record_tool_call(bad_count)
+
+
 def test_crashed_attempts_audio_usage_counts_against_a_fresh_attempts_row_budget(tmp_path):
     binding = _binding(tmp_path)
     plan1 = _plan(

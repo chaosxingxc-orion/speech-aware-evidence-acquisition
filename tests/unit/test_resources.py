@@ -1,0 +1,264 @@
+"""Injectable GPU/CPU resource sampling seam (R0 repair T7, invariant I8).
+
+Every test here injects a fake ``runner``/binary lookup -- none ever spawns a
+real ``nvidia-smi`` process, per the task brief's "tests inject fakes, never
+call nvidia-smi" requirement.
+"""
+
+from __future__ import annotations
+
+import time
+
+import pytest
+
+from speech_aware_evidence_acquisition.core.resources import (
+    NOT_AVAILABLE,
+    NullSampler,
+    NvidiaSmiSampler,
+    cpu_seconds_snapshot,
+    resolve_resource_sampler,
+)
+
+
+# ---------------------------------------------------------------------------
+# NullSampler.
+# ---------------------------------------------------------------------------
+
+
+def test_null_sampler_reports_not_available_with_its_reason():
+    sampler = NullSampler("nvidia-smi not found on PATH")
+    summary = sampler.summary()
+    assert summary["gpu_seconds"] == NOT_AVAILABLE
+    assert summary["peak_vram_mib"] == NOT_AVAILABLE
+    assert summary["gpu_sampling_reason"] == "nvidia-smi not found on PATH"
+
+
+def test_null_sampler_start_stop_are_safe_no_ops():
+    sampler = NullSampler("no sampler configured")
+    sampler.start()
+    sampler.start()
+    sampler.stop()
+    sampler.stop()
+    assert sampler.summary()["gpu_seconds"] == NOT_AVAILABLE
+
+
+def test_null_sampler_refuses_a_blank_reason():
+    with pytest.raises(ValueError):
+        NullSampler("")
+    with pytest.raises(ValueError):
+        NullSampler("   ")
+
+
+# ---------------------------------------------------------------------------
+# NvidiaSmiSampler: happy path, injected runner.
+# ---------------------------------------------------------------------------
+
+
+def _fixed_runner(lines):
+    """A runner that returns each of ``lines`` in turn, then repeats the last."""
+
+    calls = {"n": 0}
+
+    def runner(binary, timeout_seconds):
+        index = min(calls["n"], len(lines) - 1)
+        calls["n"] += 1
+        return lines[index]
+
+    runner.calls = calls
+    return runner
+
+
+def test_nvidia_smi_sampler_records_peak_vram_from_the_first_synchronous_poll():
+    runner = _fixed_runner(["50, 1000"])
+    sampler = NvidiaSmiSampler(interval_seconds=10.0, runner=runner)
+    sampler.start()
+    try:
+        summary = sampler.summary()
+        assert summary["peak_vram_mib"] == 1000.0
+        assert summary["gpu_sampling_reason"] is None
+        # The very first sample spans no prior interval -- 0 gpu_seconds
+        # contributed by construction, not a bug.
+        assert summary["gpu_seconds"] == 0.0
+    finally:
+        sampler.stop()
+
+
+def test_nvidia_smi_sampler_accumulates_utilization_weighted_gpu_seconds_over_polls():
+    # Tight interval so the background thread accumulates a few real polls
+    # quickly; utilization is pinned at 100% so gpu_seconds tracks wall time.
+    runner = _fixed_runner(["100, 500", "100, 2000", "100, 1500"])
+    sampler = NvidiaSmiSampler(interval_seconds=0.02, runner=runner)
+    sampler.start()
+    try:
+        time.sleep(0.12)
+    finally:
+        sampler.stop()
+    summary = sampler.summary()
+    assert summary["gpu_sampling_reason"] is None
+    assert summary["gpu_seconds"] > 0.0
+    # peak_vram_mib is the MAX across every sample taken (2000, from the
+    # second canned line), never the latest or the first.
+    assert summary["peak_vram_mib"] == 2000.0
+
+
+def test_nvidia_smi_sampler_peak_vram_is_a_max_not_a_last_value():
+    runner = _fixed_runner(["10, 4000", "10, 1000"])
+    sampler = NvidiaSmiSampler(interval_seconds=0.02, runner=runner)
+    sampler.start()
+    try:
+        time.sleep(0.08)
+    finally:
+        sampler.stop()
+    assert sampler.summary()["peak_vram_mib"] == 4000.0
+
+
+# ---------------------------------------------------------------------------
+# NvidiaSmiSampler: fail-safe degradation to NOT_AVAILABLE, never a crash.
+# ---------------------------------------------------------------------------
+
+
+def test_nvidia_smi_sampler_degrades_to_not_available_when_runner_raises_immediately():
+    def _raising_runner(binary, timeout_seconds):
+        raise FileNotFoundError("nvidia-smi: command not found")
+
+    sampler = NvidiaSmiSampler(interval_seconds=1.0, runner=_raising_runner)
+    sampler.start()  # must not raise
+    sampler.stop()  # must not raise
+    summary = sampler.summary()
+    assert summary["gpu_seconds"] == NOT_AVAILABLE
+    assert summary["peak_vram_mib"] == NOT_AVAILABLE
+    assert "nvidia-smi" in summary["gpu_sampling_reason"] or "command not found" in summary["gpu_sampling_reason"]
+
+
+def test_nvidia_smi_sampler_degrades_to_not_available_on_malformed_output():
+    def _garbage_runner(binary, timeout_seconds):
+        return "not,a,valid,csv,line,at,all,too,many,fields"
+
+    sampler = NvidiaSmiSampler(interval_seconds=1.0, runner=_garbage_runner)
+    sampler.start()
+    sampler.stop()
+    summary = sampler.summary()
+    assert summary["gpu_seconds"] == NOT_AVAILABLE
+    assert summary["peak_vram_mib"] == NOT_AVAILABLE
+    assert summary["gpu_sampling_reason"]
+
+
+def test_nvidia_smi_sampler_degrades_to_not_available_on_empty_output():
+    def _empty_runner(binary, timeout_seconds):
+        return ""
+
+    sampler = NvidiaSmiSampler(interval_seconds=1.0, runner=_empty_runner)
+    sampler.start()
+    sampler.stop()
+    summary = sampler.summary()
+    assert summary["gpu_seconds"] == NOT_AVAILABLE
+    assert summary["peak_vram_mib"] == NOT_AVAILABLE
+
+
+def test_nvidia_smi_sampler_becomes_not_available_after_a_mid_run_failure():
+    """Available on the first poll, then the runner starts failing -- the
+    background thread must degrade the WHOLE sampler to NOT_AVAILABLE, not
+    silently keep reporting the stale last-good numbers."""
+
+    calls = {"n": 0}
+
+    def runner(binary, timeout_seconds):
+        calls["n"] += 1
+        if calls["n"] == 1:
+            return "20, 800"
+        raise RuntimeError("nvidia-smi vanished mid-run")
+
+    sampler = NvidiaSmiSampler(interval_seconds=0.02, runner=runner)
+    sampler.start()
+    try:
+        time.sleep(0.1)
+    finally:
+        sampler.stop()
+    summary = sampler.summary()
+    assert summary["gpu_seconds"] == NOT_AVAILABLE
+    assert summary["peak_vram_mib"] == NOT_AVAILABLE
+    assert "vanished" in summary["gpu_sampling_reason"]
+
+
+def test_nvidia_smi_sampler_never_polled_reports_not_available():
+    """summary() called without ever calling start() -- samples_taken == 0."""
+
+    sampler = NvidiaSmiSampler(interval_seconds=1.0, runner=_fixed_runner(["0, 0"]))
+    summary = sampler.summary()
+    assert summary["gpu_seconds"] == NOT_AVAILABLE
+    assert summary["peak_vram_mib"] == NOT_AVAILABLE
+
+
+def test_nvidia_smi_sampler_start_is_idempotent():
+    runner = _fixed_runner(["10, 100"])
+    sampler = NvidiaSmiSampler(interval_seconds=1.0, runner=runner)
+    sampler.start()
+    sampler.start()  # second call must not spin up a second thread / re-raise
+    try:
+        assert runner.calls["n"] == 1
+    finally:
+        sampler.stop()
+
+
+def test_nvidia_smi_sampler_stop_is_idempotent():
+    sampler = NvidiaSmiSampler(interval_seconds=1.0, runner=_fixed_runner(["10, 100"]))
+    sampler.start()
+    sampler.stop()
+    sampler.stop()  # must not raise
+
+
+@pytest.mark.parametrize("bad_interval", [0, -1, -0.5])
+def test_nvidia_smi_sampler_refuses_a_non_positive_interval(bad_interval):
+    with pytest.raises(ValueError):
+        NvidiaSmiSampler(interval_seconds=bad_interval)
+
+
+# ---------------------------------------------------------------------------
+# resolve_resource_sampler: factory, never touches nvidia-smi in a test.
+# ---------------------------------------------------------------------------
+
+
+def test_resolve_resource_sampler_returns_null_sampler_when_binary_absent(monkeypatch):
+    import speech_aware_evidence_acquisition.core.resources as resources_module
+
+    monkeypatch.setattr(resources_module.shutil, "which", lambda binary: None)
+    sampler = resolve_resource_sampler(binary="definitely-not-a-real-binary")
+    assert isinstance(sampler, NullSampler)
+    summary = sampler.summary()
+    assert summary["gpu_seconds"] == NOT_AVAILABLE
+    assert "PATH" in summary["gpu_sampling_reason"]
+
+
+def test_resolve_resource_sampler_returns_real_sampler_when_binary_present(monkeypatch):
+    import speech_aware_evidence_acquisition.core.resources as resources_module
+
+    monkeypatch.setattr(
+        resources_module.shutil, "which", lambda binary: f"/usr/bin/{binary}"
+    )
+    sampler = resolve_resource_sampler(binary="nvidia-smi")
+    assert isinstance(sampler, NvidiaSmiSampler)
+    # Deliberately never call start()/stop() here: this test proves the
+    # FACTORY's binary-discovery branch, not the sampler's own polling
+    # behavior (covered above with an injected runner) -- calling start()
+    # on this instance would shell out to the real, injected-only-by-name
+    # "nvidia-smi" and violate "never call nvidia-smi in tests".
+
+
+# ---------------------------------------------------------------------------
+# cpu_seconds_snapshot: standard-library os.times() wrapper.
+# ---------------------------------------------------------------------------
+
+
+def test_cpu_seconds_snapshot_returns_a_non_negative_float():
+    value = cpu_seconds_snapshot()
+    assert isinstance(value, float)
+    assert value >= 0.0
+
+
+def test_cpu_seconds_snapshot_is_monotonic_non_decreasing_across_real_work():
+    start = cpu_seconds_snapshot()
+    total = 0
+    for i in range(200_000):
+        total += i * i
+    end = cpu_seconds_snapshot()
+    assert end >= start

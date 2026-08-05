@@ -62,15 +62,66 @@ so a later task can implement `core.scorers` adapters against a frozen contract,
 to `earnings21-original` first; or (b) accept that entity/QA scoring is out of scope for R0 and
 defer it to R1 or later, recorded as a deviation rather than silently absent.
 
-## 2. GPU/CPU/peak-VRAM cost accounting (design spec §6.2, I8)
+## 2. GPU/CPU/peak-VRAM cost accounting (design spec §6.2, I8) — engineering closed by T7
 
-Restated here for visibility, not newly raised by T8: `core.model.FrozenCoreAdapter.cost_summary()`
-reports `calls_used`, `audio_seconds_used`, `latency_seconds_total`, `prompt_tokens_total`,
-`completion_tokens_total` — no measured GPU-hours, CPU-hours, or peak VRAM. The design spec commits
-to *measured sampling*, not deferral, but notes that if sampling is unavailable on this machine the
-owner must accept a deviation. T8 adds a `cost` scorer over exactly this block (see
-`core/scorers.py::score_cost_outputs`) but does not change what the adapter measures — that remains
-open per the design spec, not resolved by this task.
+T8 (above) restated this as open. R0 repair T7 (`core/resources.py`, `core/model.py`,
+`core/driver.py`, `core/bundle.py`) closes it by *measured sampling*, per the design spec's
+commitment, not by deferral:
+
+- **GPU-seconds / peak VRAM MiB:** `core.resources.NvidiaSmiSampler` polls
+  `nvidia-smi --query-gpu=utilization.gpu,memory.used --format=csv,noheader,nounits` on a background
+  thread (fixed interval, default 1s) from `core.driver.run_experiment`, accumulating a
+  utilization-weighted GPU-seconds figure and the peak reported VRAM. `core.driver._cli_run` (the
+  live-run CLI entry point) is the ONLY call site that resolves a real sampler
+  (`core.resources.resolve_resource_sampler`); every other caller — library code, every test — gets
+  `run_experiment`'s own no-op `NullSampler` default, so no test can be surprised into shelling out to
+  a real GPU tool. **Deviation, machine-conditional, not a design gap:** on any machine where
+  `nvidia-smi` is not on `PATH` (or fails at poll time), the run's cost block carries the literal
+  `NOT_AVAILABLE` for `gpu_seconds`/`peak_vram_mib` plus a `gpu_sampling_reason` string — this is the
+  owner-accepted fallback the design spec anticipated (§6.2), not a silent omission; no further owner
+  action is required per run, only awareness that a GPU-less or `nvidia-smi`-less environment degrades
+  automatically rather than failing the run.
+- **CPU-seconds:** `core.resources.cpu_seconds_snapshot` (`os.times()`, process + children,
+  user + system) sampled at the start and end of `run_experiment`; always measured, never
+  NOT_AVAILABLE (`os.times()` is stdlib and cross-platform, including Windows, where the children
+  fields simply read 0.0 — a platform fact, not a sampling failure).
+- **Evidence volume:** `supplied_evidence_bytes` / `admitted_evidence_bytes`, aggregated in
+  `run_experiment` from the same per-sample `supply_content_bytes` figure already computed for the
+  SUPPLY trace record; "admitted" narrows to samples the policy actually admitted
+  (`SampleOutcome.admitted`) — R0's only policy (`FixedPolicy`) always admits, so the two totals
+  coincide today; the split exists for a future rejecting policy (e.g. X3).
+- **Tool calls:** `FrozenCoreAdapter.record_tool_call()` / `cost_summary()["tool_calls"]` — zero
+  today (no registered tool-using policy), wired through the adapter every `SampleContext` already
+  carries so a future policy increments the existing choke point rather than inventing a new one.
+- **Gate/setup latency:** `gate_setup_seconds`, wall-clock time in `run_experiment` from function
+  entry through split/carrier/evidence resolution and `FrozenCoreAdapter` construction (gate check +
+  attempt reservation included), before the per-sample request loop starts.
+- **Failed-attempt cost:** `failed_attempt_calls` / `failed_attempt_audio_seconds`, summed via
+  `core.attempts.AttemptStore.actual_usage_in_states` over sibling attempts under the same `run_id`
+  that are (as of manifest time) `ABORTED`, excluding the reporting attempt's own spend. Present on
+  BOTH a successful run's `RunResult.cost` and a failed run's own best-effort `core.bundle`-built
+  ABORTED-manifest cost block (`core.bundle._best_effort_cost_for_aborted_attempt`) — an ABORTED
+  manifest never carries `cost=None` after T7; fields that genuinely cannot be recovered post-hoc
+  (latency/tokens/tool_calls/cpu/gpu/evidence/gate_setup — the in-memory adapter/sampler state a
+  failed `run_experiment` call never returns) are the literal `NOT_AVAILABLE` with a shared
+  `cost_unavailable_reason` string, never a silent omission.
+
+**Manifest schema decision:** `RUN_MANIFEST_SCHEMA` stays `saea-run-manifest-v1` (no version bump).
+`core.bundle.verify_bundle` performs no fixed-key-set check on the `cost` block (only
+`core.scorers.score_cost_outputs` requires it be a non-empty dict, itself with no key-set check
+either), so a manifest built before T7 (the old 5-field cost shape) still verifies and still scores
+end to end — proved by `tests/unit/test_bundle.py::test_verify_bundle_accepts_a_pre_t7_five_field_cost_shape`.
+
+This item's original ask was two-part: (a) implement measured sampling rather than deferring it, and
+(b) if sampling is genuinely unavailable on a given machine, the owner must accept that as a
+deviation rather than the implementer silently deciding it. Part (a) is now delivered exactly as
+design spec §6.2 already specified. Part (b) is satisfied structurally, not by a fresh ad-hoc
+decision here: every NOT_AVAILABLE occurrence is machine-conditional (missing/failing `nvidia-smi`
+on whichever machine runs a given attempt), self-documenting (a `gpu_sampling_reason` /
+`cost_unavailable_reason` string travels with every occurrence, in the run manifest itself), and
+falls back automatically rather than failing the run — the exact shape §6.2 pre-authorized. No NEW
+owner decision is required beyond that pre-authorization; this record stays here as the audit trail
+of it being fulfilled, not as a still-open question blocking anything.
 
 ## 3. R0.3 `SAEA-E-001` execution authorization
 

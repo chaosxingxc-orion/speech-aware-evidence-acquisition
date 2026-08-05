@@ -10,6 +10,7 @@ from speech_aware_evidence_acquisition.core.attempts import AttemptStore
 from speech_aware_evidence_acquisition.core.base import CoreError, RunResult
 from speech_aware_evidence_acquisition.core.config import ComposedConfig, protocol_hash
 from speech_aware_evidence_acquisition.core.driver import load_split, run_experiment
+from speech_aware_evidence_acquisition.core.resources import NOT_AVAILABLE
 from speech_aware_evidence_acquisition.data.lock import load_lock
 from speech_aware_evidence_acquisition.data.splits import discovery_split, freeze_splits
 from speech_aware_evidence_acquisition.e0.artifacts import REPO_ROOT
@@ -479,3 +480,182 @@ def test_run_experiment_mismatched_evidence_config_rotates_supply(synthetic_worl
     for index, sample_id in enumerate(ordered):
         expected_donor = ordered[(index + 1) % len(ordered)]
         assert supply_by_sample[sample_id] == [f"conec/{expected_donor}"]
+
+
+# ---------------------------------------------------------------------------
+# R0 repair T7, invariant I8: cost accounting completion. The run aggregate
+# (``RunResult.cost``) must add GPU/VRAM (via an injectable sampler,
+# NOT_AVAILABLE + reason when no sampler is supplied), CPU seconds, gate/setup
+# latency, supplied/admitted evidence bytes and failed-attempt cost -- on top
+# of the pre-existing calls/audio/latency/tokens fields.
+# ---------------------------------------------------------------------------
+
+
+class _FakeSampler:
+    """A model-free, thread-free test double for
+    ``speech_aware_evidence_acquisition.core.resources.ResourceSampler`` --
+    never shells out to a real ``nvidia-smi``."""
+
+    def __init__(self, gpu_seconds=12.5, peak_vram_mib=4096.0):
+        self.start_calls = 0
+        self.stop_calls = 0
+        self._gpu_seconds = gpu_seconds
+        self._peak_vram_mib = peak_vram_mib
+
+    def start(self):
+        self.start_calls += 1
+
+    def stop(self):
+        self.stop_calls += 1
+
+    def summary(self):
+        return {
+            "gpu_seconds": self._gpu_seconds,
+            "peak_vram_mib": self._peak_vram_mib,
+            "gpu_sampling_reason": None,
+        }
+
+
+def test_run_experiment_cost_includes_injected_sampler_readings(synthetic_world, tmp_path):
+    lock, repo_root = _frozen_world(synthetic_world, tmp_path)
+    _, split_hash, _ = load_split(repo_root, "discovery", lock, synthetic_world.data_root)
+    composed = _composed()
+    plan = _plan(
+        split_hash,
+        protocol_hash=protocol_hash(composed.config_hash, composed.values["arm"], split_hash),
+    )
+    sampler = _FakeSampler(gpu_seconds=7.25, peak_vram_mib=8192.0)
+    result = run_experiment(
+        composed=composed,
+        plan=plan,
+        gate=_OpenGate(),
+        lock=lock,
+        root=synthetic_world.data_root,
+        run_dir=tmp_path / "run-cost-sampler",
+        transport=_transport,
+        repo_root=repo_root,
+        resource_sampler=sampler,
+    )
+    assert sampler.start_calls == 1
+    assert sampler.stop_calls == 1
+    cost = result.cost
+    assert cost["gpu_seconds"] == 7.25
+    assert cost["peak_vram_mib"] == 8192.0
+    assert cost["gpu_sampling_reason"] is None
+    assert cost["cost_unavailable_reason"] is None
+    assert isinstance(cost["cpu_seconds"], float) and cost["cpu_seconds"] >= 0.0
+    assert isinstance(cost["gate_setup_seconds"], float) and cost["gate_setup_seconds"] >= 0.0
+    assert cost["tool_calls"] == 0
+    # bare-core arm: no evidence at all.
+    assert cost["supplied_evidence_bytes"] == 0
+    assert cost["admitted_evidence_bytes"] == 0
+    assert cost["failed_attempt_calls"] == 0
+    assert cost["failed_attempt_audio_seconds"] == 0.0
+
+
+def test_run_experiment_without_a_resource_sampler_reports_gpu_not_available(
+    synthetic_world, tmp_path
+):
+    lock, repo_root = _frozen_world(synthetic_world, tmp_path)
+    _, split_hash, _ = load_split(repo_root, "discovery", lock, synthetic_world.data_root)
+    composed = _composed()
+    plan = _plan(
+        split_hash,
+        protocol_hash=protocol_hash(composed.config_hash, composed.values["arm"], split_hash),
+    )
+    result = run_experiment(
+        composed=composed,
+        plan=plan,
+        gate=_OpenGate(),
+        lock=lock,
+        root=synthetic_world.data_root,
+        run_dir=tmp_path / "run-cost-no-sampler",
+        transport=_transport,
+        repo_root=repo_root,
+        # resource_sampler omitted entirely -- must never shell out to a real
+        # nvidia-smi; must instead be an explicit, reasoned NOT_AVAILABLE.
+    )
+    cost = result.cost
+    assert cost["gpu_seconds"] == NOT_AVAILABLE
+    assert cost["peak_vram_mib"] == NOT_AVAILABLE
+    assert isinstance(cost["gpu_sampling_reason"], str) and cost["gpu_sampling_reason"].strip()
+    # Every OTHER T7 field is still genuinely measured -- the sampler gap
+    # never degrades the fields that do not depend on it.
+    assert cost["cost_unavailable_reason"] is None
+    assert isinstance(cost["cpu_seconds"], float)
+    assert isinstance(cost["gate_setup_seconds"], float)
+
+
+def test_run_experiment_aggregates_supplied_and_admitted_evidence_bytes(synthetic_world, tmp_path):
+    lock, repo_root = _frozen_world(synthetic_world, tmp_path)
+    _, split_hash, _ = load_split(repo_root, "discovery", lock, synthetic_world.data_root)
+    composed = _composed(**_baseline_fragment("fixed-legal-context"))
+    plan = _plan(
+        split_hash,
+        protocol_hash=protocol_hash(composed.config_hash, composed.values["arm"], split_hash),
+    )
+    run_dir = tmp_path / "run-cost-evidence"
+    result = run_experiment(
+        composed=composed,
+        plan=plan,
+        gate=_OpenGate(),
+        lock=lock,
+        root=synthetic_world.data_root,
+        run_dir=run_dir,
+        transport=_transport,
+        repo_root=repo_root,
+    )
+    supply_by_sample = _supply_evidence_ids_by_sample(run_dir, plan.run_id, result.outputs_path)
+    assert supply_by_sample  # every discovery sample carries its own conec context
+    expected_bytes = 3 * len(supply_by_sample)  # each synthetic context is the 3-byte string "ctx"
+    assert result.cost["supplied_evidence_bytes"] == expected_bytes
+    # FixedPolicy always admits (R0's only registered policy) -- supplied and
+    # admitted coincide today; the two fields exist as SEPARATE counters for
+    # a future rejecting policy (e.g. X3), not merged into one.
+    assert result.cost["admitted_evidence_bytes"] == expected_bytes
+
+
+def test_run_experiment_reports_failed_attempt_cost_from_a_prior_aborted_sibling(
+    synthetic_world, tmp_path
+):
+    """A prior attempt on the SAME run_id crashed (state stuck ABORTED) after
+    spending real calls/audio; a fresh, successful attempt's own cost block
+    must surface that wasted spend under failed_attempt_calls/
+    failed_attempt_audio_seconds -- never silently drop it, and never fold it
+    into this attempt's OWN calls_used/audio_seconds_used."""
+
+    lock, repo_root = _frozen_world(synthetic_world, tmp_path)
+    ids, split_hash, _ = load_split(repo_root, "discovery", lock, synthetic_world.data_root)
+    composed = _composed()
+    run_id = "SAEA-E-000-failedcost"
+
+    store = AttemptStore(synthetic_world.data_root / "attempts")
+    prior_handle = store.open_attempt(
+        run_id, "attempt-prior",
+        carrier_lock_key="earnings21-original", reserved_calls=5, reserved_audio_seconds=500.0,
+    )
+    prior_handle.record_usage(calls=2, audio_seconds=50.0)
+    prior_handle.mark_aborted("simulated crash before this test's fresh attempt")
+
+    plan = _plan(
+        split_hash, run_id=run_id, attempt_id="attempt-fresh",
+        protocol_hash=protocol_hash(composed.config_hash, composed.values["arm"], split_hash),
+    )
+    result = run_experiment(
+        composed=composed,
+        plan=plan,
+        gate=_OpenGate(),
+        lock=lock,
+        root=synthetic_world.data_root,
+        run_dir=tmp_path / "run-failed-cost",
+        transport=_transport,
+        repo_root=repo_root,
+    )
+    assert result.cost["failed_attempt_calls"] == 2
+    assert result.cost["failed_attempt_audio_seconds"] == 50.0
+    # This attempt's own spend is reported separately, un-mixed with the
+    # sibling's failed spend.
+    assert result.cost["calls_used"] == len(ids)
+    calls, audio = store.prior_actual_usage(run_id, exclude_attempt_id="attempt-prior")
+    assert calls == result.cost["calls_used"]
+    assert audio == result.cost["audio_seconds_used"]

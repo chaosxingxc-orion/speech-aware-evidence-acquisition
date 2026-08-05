@@ -316,6 +316,43 @@ class AttemptStore:
             total_audio += float(actual.get("audio_seconds", 0.0))
         return total_calls, total_audio
 
+    def actual_usage_in_states(
+        self,
+        run_id: str,
+        states: frozenset[str],
+        *,
+        exclude_attempt_id: str | None = None,
+    ) -> tuple[int, float]:
+        """Sum persisted actual usage from attempt files under ``run_id``
+        whose CURRENT state is in ``states`` (R0 repair T7, invariant I8:
+        failed-attempt cost). Distinct from :meth:`prior_actual_usage`, which
+        sums every state unconditionally for budget enforcement (I6) -- this
+        narrows to specific states for cost reporting, e.g.
+        ``{STATE_ABORTED}`` to answer "how much did prior failed attempts on
+        this run cost, on top of what the caller's own attempt spent"."""
+
+        validate_id(run_id, "run_id")
+        run_dir = self._run_dir(run_id)
+        if not run_dir.is_dir():
+            return 0, 0.0
+        total_calls = 0
+        total_audio = 0.0
+        for entry in sorted(run_dir.glob("*.json")):
+            if exclude_attempt_id is not None and entry.name == f"{exclude_attempt_id}.json":
+                continue
+            try:
+                document = json.loads(entry.read_text(encoding="utf-8"))
+            except (OSError, UnicodeError, json.JSONDecodeError) as error:
+                raise AttemptError(f"cannot read prior attempt state {entry}: {error}") from error
+            if not isinstance(document, dict) or document.get("state") not in states:
+                continue
+            actual = document.get("actual")
+            if not isinstance(actual, Mapping):
+                raise AttemptError(f"attempt state {entry} lacks a usable actual mapping")
+            total_calls += int(actual.get("calls", 0))
+            total_audio += float(actual.get("audio_seconds", 0.0))
+        return total_calls, total_audio
+
     def all_actual_usage(self) -> tuple[int, float]:
         """Sum persisted actual usage across every run_id under this store --
         the global counterpart to :meth:`prior_actual_usage`, used by the

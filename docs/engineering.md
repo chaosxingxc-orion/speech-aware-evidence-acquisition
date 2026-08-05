@@ -248,6 +248,48 @@ memo. See `docs/owner-decisions-pending.md` for the full record of what was insp
 remains open — do not read the *absence* of an entity/QA scorer as an oversight; it is a deferred,
 explicitly recorded scope item.
 
+## R0 repair T7 — cost accounting completion (invariant I8)
+
+`core.model.FrozenCoreAdapter.cost_summary()` previously reported only calls / audio seconds /
+latency / prompt+completion tokens. The run aggregate (`RunResult.cost`, threaded unchanged into
+the T6 run manifest's `cost` block) now also carries: `gpu_seconds` / `peak_vram_mib` (via the
+injectable `core.resources.ResourceSampler` seam — `NvidiaSmiSampler` polls `nvidia-smi
+--query-gpu=utilization.gpu,memory.used --format=csv,noheader,nounits` on a background thread,
+`NullSampler` and any sampling failure record the literal `NOT_AVAILABLE` plus a
+`gpu_sampling_reason`); `cpu_seconds` (`os.times()`, process + children, always measured);
+`gate_setup_seconds` (wall time from `run_experiment` entry through `FrozenCoreAdapter`
+construction, i.e. split/carrier/evidence resolution + gate check + attempt reservation, before the
+per-sample request loop); `supplied_evidence_bytes` / `admitted_evidence_bytes` (aggregated from the
+same per-sample `supply_content_bytes` figure already computed for the SUPPLY trace record;
+"admitted" narrows to `SampleOutcome.admitted` samples); `tool_calls`
+(`FrozenCoreAdapter.record_tool_call()`, zero today — no registered policy is tool-using, but wired
+through the adapter's existing metering choke point for a future one); and `failed_attempt_calls` /
+`failed_attempt_audio_seconds` (`core.attempts.AttemptStore.actual_usage_in_states`, sibling attempts
+under the same `run_id` that are ABORTED, excluding the reporting attempt's own spend).
+
+**Test hygiene:** `core.driver.run_experiment`/`run_experiment_bundled` default `resource_sampler` to
+a no-op `NullSampler` — `core.driver._cli_run` (the live-run CLI entry point) is the ONLY call site
+that resolves a real sampler (`core.resources.resolve_resource_sampler`), so no library caller or
+test can be surprised into shelling out to a real `nvidia-smi`; every unit test injects a fake
+sampler or accepts the default NOT_AVAILABLE.
+
+**ABORTED manifests never carry `cost=None` after T7 either:** `core.bundle
+._best_effort_cost_for_aborted_attempt` reads the failed attempt's own durable usage (and any prior
+sibling ABORTED attempts' usage) straight from `core.attempts.AttemptStore` — the only state that
+survives a `run_experiment` exception, since its in-memory adapter/sampler state does not. Every
+field that genuinely cannot be recovered post-hoc (latency/tokens/tool_calls/cpu/gpu/evidence/
+gate_setup) is the literal `NOT_AVAILABLE` with a shared `cost_unavailable_reason`, never a silent
+omission.
+
+**Manifest schema decision:** `RUN_MANIFEST_SCHEMA` stays `saea-run-manifest-v1` — no version bump.
+`core.bundle.verify_bundle` performs no fixed-key-set check on the `cost` block (nor does
+`core.scorers.score_cost_outputs`, which only requires a non-empty dict), so a manifest built before
+T7 (the old 5-field cost shape) still verifies and still scores end to end.
+
+See `docs/owner-decisions-pending.md` §2 for the full record (what is measured, what degrades to
+NOT_AVAILABLE and why, and why no further owner decision is required beyond design spec §6.2's
+existing pre-authorization).
+
 **Accepted scope boundary of I7 (state plainly, do not over-trust):** the
 bundle chain is a *consistency* check over files on disk, not an
 *authenticity* check that a response ever genuinely crossed the frozen-core

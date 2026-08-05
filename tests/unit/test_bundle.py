@@ -63,6 +63,7 @@ from speech_aware_evidence_acquisition.core.bundle import (
     finalize_bundle,
     verify_bundle,
 )
+from speech_aware_evidence_acquisition.core.base import CoreError
 from speech_aware_evidence_acquisition.core.config import ComposedConfig, protocol_hash
 from speech_aware_evidence_acquisition.core.driver import (
     load_split,
@@ -996,6 +997,151 @@ def test_run_experiment_bundled_aborted_manifest_write_failure_never_masks_the_o
     # ORIGINAL exception propagates," not "a manifest always exists when the
     # manifest-writer itself cannot write anything."
     assert not (run_dir / f"{plan.run_id}.run-manifest.json").exists()
+
+
+# ===========================================================================
+# R0 repair T7, invariant I8: cost accounting completion. An ABORTED manifest
+# must never carry cost=None (silently omitting failed-attempt cost); a
+# manifest built before T7 (the old 5-field cost shape) must still verify --
+# the schema decision this task made instead of bumping RUN_MANIFEST_SCHEMA.
+# ===========================================================================
+
+
+def test_build_manifest_aborted_status_includes_a_best_effort_cost_block(
+    synthetic_world, bundled_repo, tmp_path
+):
+    """An ABORTED manifest must never carry cost=None -- that would silently
+    omit whatever this (now-failed) attempt genuinely spent before it failed,
+    which contradicts I8's "no silent omission" requirement just as much as
+    omitting the field from a successful run would."""
+
+    lock, repo_root = bundled_repo
+    ids, split_hash, split_role = load_split(repo_root, "discovery", lock, synthetic_world.data_root)
+    composed = _composed()
+    plan = _plan(
+        split_hash, run_id="SAEA-E-000-abortcost", attempt_id="attempt-abortcost",
+        protocol_hash=protocol_hash(composed.config_hash, composed.values["arm"], split_hash),
+    )
+    with pytest.raises(RuntimeError, match="transport exploded"):
+        run_experiment_bundled(
+            composed, plan, _OpenGate(), lock, synthetic_world.data_root,
+            tmp_path / "run-abortcost", _failing_transport, repo_root=repo_root,
+        )
+    manifest_path = tmp_path / "run-abortcost" / f"{plan.run_id}.run-manifest.json"
+    manifest = _read_manifest(manifest_path)
+    assert manifest["status"] == STATUS_ABORTED
+    cost = manifest["cost"]
+    assert cost is not None
+    # FrozenCoreAdapter.request persists attempt usage BEFORE invoking the
+    # transport (R0 repair T4, I6) -- the first (and only, since it always
+    # raises) sample's spend is durably recorded even though the run failed.
+    assert cost["calls_used"] == 1
+    assert cost["audio_seconds_used"] > 0.0
+    # No sibling ABORTED attempt exists yet on this run_id.
+    assert cost["failed_attempt_calls"] == 0
+    assert cost["failed_attempt_audio_seconds"] == 0.0
+    for key in (
+        "latency_seconds_total", "prompt_tokens_total", "completion_tokens_total",
+        "tool_calls", "cpu_seconds", "gate_setup_seconds",
+        "supplied_evidence_bytes", "admitted_evidence_bytes",
+        "gpu_seconds", "peak_vram_mib",
+    ):
+        assert cost[key] == "NOT_AVAILABLE", key
+    assert cost["gpu_sampling_reason"]
+    assert cost["cost_unavailable_reason"]
+
+
+def test_build_manifest_aborted_status_folds_in_failed_attempt_cost_from_a_prior_sibling(
+    synthetic_world, bundled_repo, tmp_path
+):
+    lock, repo_root = bundled_repo
+    ids, split_hash, split_role = load_split(repo_root, "discovery", lock, synthetic_world.data_root)
+    composed = _composed()
+    run_id = "SAEA-E-000-abortcost-sibling"
+
+    store = AttemptStore(synthetic_world.data_root / "attempts")
+    prior_handle = store.open_attempt(
+        run_id, "attempt-prior",
+        carrier_lock_key="earnings21-original", reserved_calls=5, reserved_audio_seconds=500.0,
+    )
+    prior_handle.record_usage(calls=2, audio_seconds=50.0)
+    prior_handle.mark_aborted("simulated earlier crash")
+
+    plan = _plan(
+        split_hash, run_id=run_id, attempt_id="attempt-fresh-fails",
+        protocol_hash=protocol_hash(composed.config_hash, composed.values["arm"], split_hash),
+    )
+    with pytest.raises(RuntimeError, match="transport exploded"):
+        run_experiment_bundled(
+            composed, plan, _OpenGate(), lock, synthetic_world.data_root,
+            tmp_path / "run-abortcost-sibling", _failing_transport, repo_root=repo_root,
+        )
+    manifest_path = tmp_path / "run-abortcost-sibling" / f"{plan.run_id}.run-manifest.json"
+    cost = _read_manifest(manifest_path)["cost"]
+    assert cost["failed_attempt_calls"] == 2
+    assert cost["failed_attempt_audio_seconds"] == 50.0
+    # This attempt's own spend is reported separately, unmixed with the
+    # sibling's failed spend.
+    assert cost["calls_used"] == 1
+
+
+def test_build_manifest_aborted_status_never_opened_attempt_reports_zero_cost_not_none(
+    synthetic_world, bundled_repo, tmp_path
+):
+    """A failure BEFORE FrozenCoreAdapter ever constructs (e.g. a
+    protocol-hash mismatch) leaves no attempt file at all -- the best-effort
+    cost block must degrade to zeros, never raise, and still be present
+    (never None)."""
+
+    lock, repo_root = bundled_repo
+    ids, split_hash, split_role = load_split(repo_root, "discovery", lock, synthetic_world.data_root)
+    composed = _composed()
+    plan = _plan(
+        split_hash, run_id="SAEA-E-000-neveropened", attempt_id="attempt-neveropened",
+        protocol_hash="0" * 64,  # deliberately wrong -> CoreError before the adapter is built
+    )
+    with pytest.raises(CoreError, match="protocol hash"):
+        run_experiment_bundled(
+            composed, plan, _OpenGate(), lock, synthetic_world.data_root,
+            tmp_path / "run-neveropened", _transport, repo_root=repo_root,
+        )
+    manifest_path = tmp_path / "run-neveropened" / f"{plan.run_id}.run-manifest.json"
+    cost = _read_manifest(manifest_path)["cost"]
+    assert cost is not None
+    assert cost["calls_used"] == 0
+    assert cost["audio_seconds_used"] == 0.0
+    assert cost["failed_attempt_calls"] == 0
+
+
+def test_verify_bundle_accepts_a_pre_t7_five_field_cost_shape(synthetic_world, bundled_repo, tmp_path):
+    """R0 repair T7 schema decision: ``RUN_MANIFEST_SCHEMA`` stays
+    ``saea-run-manifest-v1`` -- no version bump. ``verify_bundle`` performs
+    no fixed-key-set check on the ``cost`` block (only ``core.scorers.
+    score_cost_outputs`` requires it be a non-empty dict, with no key-set
+    check either), so a manifest carrying the OLD, pre-T7 5-field cost shape
+    (``calls_used``/``audio_seconds_used``/``latency_seconds_total``/
+    ``prompt_tokens_total``/``completion_tokens_total`` only) still verifies
+    and still scores end to end."""
+
+    manifest_path, composed, plan, lock = _run_completed(synthetic_world, bundled_repo, tmp_path)
+    manifest = _read_manifest(manifest_path)
+    manifest["cost"] = {
+        "calls_used": 3,
+        "audio_seconds_used": 301.5,
+        "latency_seconds_total": 0.02,
+        "prompt_tokens_total": 9,
+        "completion_tokens_total": 0,
+    }
+    write_json_artifact(manifest_path, manifest)
+
+    bundle = verify_bundle(manifest_path)
+    assert isinstance(bundle, VerifiedBundle)
+
+    from speech_aware_evidence_acquisition.core.scorers import score_cost_outputs
+
+    result = score_cost_outputs(bundle.outputs_path, lock, synthetic_world.data_root)
+    assert result["aggregate"]["calls_used"] == 3
+    assert result["aggregate"]["audio_seconds_used"] == 301.5
 
 
 def test_verify_bundle_refuses_a_completed_manifest_carrying_an_unavailable_commit_marker(

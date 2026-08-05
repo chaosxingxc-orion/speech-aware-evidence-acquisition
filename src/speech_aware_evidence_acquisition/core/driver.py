@@ -11,12 +11,14 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+import time
 from pathlib import Path
 from typing import Callable, Mapping
 
 from ..contracts import ExecutionPlan
 from ..data.lock import asset_dir
 from ..e0.artifacts import REPO_ROOT
+from .attempts import STATE_ABORTED, AttemptStore
 from .base import (
     CARRIERS,
     EVIDENCE_SOURCES,
@@ -40,6 +42,7 @@ from .bundle import (
 from .config import ComposedConfig, compose, protocol_hash
 from .evidence import rotated_mismatch
 from .model import FrozenCoreAdapter
+from .resources import NullSampler, ResourceSampler, cpu_seconds_snapshot, resolve_resource_sampler
 from .scorers import score_bundle
 from .split_receipt import load_verified_split
 from .tracing import TraceSink
@@ -56,6 +59,15 @@ def load_split(
     return set(verified.ids), verified.identity_hash, verified.split_role
 
 
+_NO_SAMPLER_PROVIDED_REASON = (
+    "no resource sampler was provided to core.driver.run_experiment; only the "
+    "live CLI run path (core.driver._cli_run) supplies "
+    "core.resources.resolve_resource_sampler() -- every other caller, "
+    "including every test, gets an explicit NOT_AVAILABLE record here rather "
+    "than a default that could silently shell out to nvidia-smi"
+)
+
+
 def run_experiment(
     composed: ComposedConfig,
     plan: ExecutionPlan,
@@ -65,140 +77,209 @@ def run_experiment(
     run_dir: Path,
     transport: Callable[[bytes], bytes],
     repo_root: Path = REPO_ROOT,
+    *,
+    resource_sampler: ResourceSampler | None = None,
 ) -> RunResult:
-    values = composed.values
-    arm = str(values["arm"])
-    verified_split = load_verified_split(repo_root, str(values["split_name"]), lock, root)
-    sample_ids = set(verified_split.ids)
-    split_hash = verified_split.identity_hash
-    receipt_split_role = verified_split.split_role
-    if plan.split_identity_hash != split_hash:
-        raise CoreError(
-            "plan split identity hash does not match the frozen splits receipt "
-            f"for split {values['split_name']!r}"
-        )
-    if plan.split_role != receipt_split_role:
-        raise CoreError(
-            f"plan split role {plan.split_role!r} does not match the frozen splits "
-            f"receipt split role {receipt_split_role!r} for split {values['split_name']!r}"
-        )
-    if str(values["carrier_lock_key"]) != plan.carrier_lock_key:
-        raise CoreError(
-            f"plan carrier_lock_key {plan.carrier_lock_key!r} does not match the "
-            f"composed config carrier {values['carrier_lock_key']!r}"
-        )
-    expected_protocol = protocol_hash(composed.config_hash, arm, split_hash)
-    if plan.protocol_hash != expected_protocol:
-        raise CoreError(
-            f"plan protocol hash {plan.protocol_hash!r} does not match the composed "
-            f"config/arm/split protocol hash {expected_protocol!r}"
-        )
-    loader = CARRIERS.resolve(str(values["carrier_lock_key"]))
-    samples = [s for s in loader(lock, root) if s.sample_id in sample_ids]
-    if {s.sample_id for s in samples} != sample_ids:
-        raise CoreError("split ids missing from the carrier's loaded samples")
-    source = EVIDENCE_SOURCES.resolve(str(values.get("evidence_source", "none")))
-    evidence_by_sample = {
-        s.sample_id: source(lock, root, s.sample_id) for s in samples
-    }
-    if values.get("evidence_mismatch", False):
-        evidence_by_sample = rotated_mismatch(evidence_by_sample)
-    policy = POLICIES.resolve(str(values["policy"]))
-    sink = TraceSink(run_dir, plan.run_id)
-    # Payload<->plan<->split binding context (R0 repair T3, I3/I4): built here,
-    # from exactly the verified split ids and the same loader's SampleRef
-    # facts already used above to validate the carrier's loaded samples --
-    # never from anything a payload later claims about itself.
-    carrier_root = asset_dir(lock, str(values["carrier_lock_key"]), root)
-    binding = PayloadBindingContext(
-        carrier_lock_key=str(values["carrier_lock_key"]),
-        allowed_sample_ids=frozenset(sample_ids),
-        sample_facts={s.sample_id: (s.audio_seconds, s.sample_rate_hz) for s in samples},
-        data_root=Path(root),
-        carrier_root=carrier_root,
+    # R0 repair T7 (I8): the run-level cost window opens here, before ANY
+    # setup work (split/carrier/evidence resolution, gate check, attempt
+    # reservation) -- gpu_seconds/cpu_seconds below cover the whole run, not
+    # merely the per-sample request loop. See core/resources.py for why the
+    # default here is a no-op NullSampler rather than an implicit real one.
+    sampler: ResourceSampler = (
+        resource_sampler if resource_sampler is not None else NullSampler(_NO_SAMPLER_PROVIDED_REASON)
     )
-    adapter = FrozenCoreAdapter(
-        gate=gate, plan=plan, arm=arm, transport=transport, sink=sink, binding=binding
-    )
-    outputs_path = Path(run_dir) / f"{plan.run_id}.outputs.jsonl"
+    cpu_start = cpu_seconds_snapshot()
+    setup_started = time.monotonic()
+    sampler.start()
     try:
-        outputs_handle = outputs_path.open("x", encoding="utf-8", newline="\n")
-    except FileExistsError as error:
-        raise CoreError(
-            f"outputs file already exists: {outputs_path}; a re-run must use a "
-            "fresh attempt directory, not overwrite a prior attempt's outputs"
-        ) from error
-    with outputs_handle as outputs:
-        for index, sample in enumerate(sorted(samples, key=lambda s: s.sample_id), start=1):
-            request_id_base = f"req-{index:04d}"
-            view = sample.runtime_view()
-            sink.emit(
-                "OBS",
-                f"{request_id_base}/obs",
-                {
-                    "obs_speech_ref": view["speech_ref"],
-                    "obs_audio_seconds": view["audio_seconds"],
-                },
+        values = composed.values
+        arm = str(values["arm"])
+        verified_split = load_verified_split(repo_root, str(values["split_name"]), lock, root)
+        sample_ids = set(verified_split.ids)
+        split_hash = verified_split.identity_hash
+        receipt_split_role = verified_split.split_role
+        if plan.split_identity_hash != split_hash:
+            raise CoreError(
+                "plan split identity hash does not match the frozen splits receipt "
+                f"for split {values['split_name']!r}"
             )
-            evidence = evidence_by_sample.get(sample.sample_id, [])
-            if evidence:
+        if plan.split_role != receipt_split_role:
+            raise CoreError(
+                f"plan split role {plan.split_role!r} does not match the frozen splits "
+                f"receipt split role {receipt_split_role!r} for split {values['split_name']!r}"
+            )
+        if str(values["carrier_lock_key"]) != plan.carrier_lock_key:
+            raise CoreError(
+                f"plan carrier_lock_key {plan.carrier_lock_key!r} does not match the "
+                f"composed config carrier {values['carrier_lock_key']!r}"
+            )
+        expected_protocol = protocol_hash(composed.config_hash, arm, split_hash)
+        if plan.protocol_hash != expected_protocol:
+            raise CoreError(
+                f"plan protocol hash {plan.protocol_hash!r} does not match the composed "
+                f"config/arm/split protocol hash {expected_protocol!r}"
+            )
+        loader = CARRIERS.resolve(str(values["carrier_lock_key"]))
+        samples = [s for s in loader(lock, root) if s.sample_id in sample_ids]
+        if {s.sample_id for s in samples} != sample_ids:
+            raise CoreError("split ids missing from the carrier's loaded samples")
+        source = EVIDENCE_SOURCES.resolve(str(values.get("evidence_source", "none")))
+        evidence_by_sample = {
+            s.sample_id: source(lock, root, s.sample_id) for s in samples
+        }
+        if values.get("evidence_mismatch", False):
+            evidence_by_sample = rotated_mismatch(evidence_by_sample)
+        policy = POLICIES.resolve(str(values["policy"]))
+        sink = TraceSink(run_dir, plan.run_id)
+        # Payload<->plan<->split binding context (R0 repair T3, I3/I4): built here,
+        # from exactly the verified split ids and the same loader's SampleRef
+        # facts already used above to validate the carrier's loaded samples --
+        # never from anything a payload later claims about itself.
+        carrier_root = asset_dir(lock, str(values["carrier_lock_key"]), root)
+        binding = PayloadBindingContext(
+            carrier_lock_key=str(values["carrier_lock_key"]),
+            allowed_sample_ids=frozenset(sample_ids),
+            sample_facts={s.sample_id: (s.audio_seconds, s.sample_rate_hz) for s in samples},
+            data_root=Path(root),
+            carrier_root=carrier_root,
+        )
+        adapter = FrozenCoreAdapter(
+            gate=gate, plan=plan, arm=arm, transport=transport, sink=sink, binding=binding
+        )
+        # R0 repair T7 (I8): "setup" ends here -- split/carrier/evidence
+        # resolution plus the gate check and attempt reservation the adapter's
+        # own construction just performed. Everything from here down is the
+        # per-sample request loop.
+        gate_setup_seconds = time.monotonic() - setup_started
+        outputs_path = Path(run_dir) / f"{plan.run_id}.outputs.jsonl"
+        try:
+            outputs_handle = outputs_path.open("x", encoding="utf-8", newline="\n")
+        except FileExistsError as error:
+            raise CoreError(
+                f"outputs file already exists: {outputs_path}; a re-run must use a "
+                "fresh attempt directory, not overwrite a prior attempt's outputs"
+            ) from error
+        # R0 repair T7 (I8): evidence volume. `supply_content_bytes` was
+        # already computed per sample for the SUPPLY trace record below --
+        # this aggregates exactly that figure, never a parallel computation.
+        # "admitted" bytes narrows to samples whose SampleOutcome.admitted the
+        # policy actually set True (today's only policy, FixedPolicy, always
+        # admits, so the two totals coincide in R0 -- the split exists for a
+        # future rejecting policy, e.g. X3).
+        supplied_evidence_bytes = 0
+        admitted_evidence_bytes = 0
+        with outputs_handle as outputs:
+            for index, sample in enumerate(sorted(samples, key=lambda s: s.sample_id), start=1):
+                request_id_base = f"req-{index:04d}"
+                view = sample.runtime_view()
                 sink.emit(
-                    "ORG",
-                    f"{request_id_base}/org",
+                    "OBS",
+                    f"{request_id_base}/obs",
                     {
-                        "org_evidence_count": len(evidence),
-                        "org_source_lock_keys": sorted(
-                            {item.provenance["lock_key"] for item in evidence}
-                        ),
+                        "obs_speech_ref": view["speech_ref"],
+                        "obs_audio_seconds": view["audio_seconds"],
                     },
                 )
-                sink.emit(
-                    "SUPPLY",
-                    f"{request_id_base}/supply",
-                    {
-                        "supply_evidence_ids": [item.evidence_id for item in evidence],
-                        "supply_content_bytes": sum(
-                            len(item.content.encode("utf-8")) for item in evidence
-                        ),
-                    },
+                evidence = evidence_by_sample.get(sample.sample_id, [])
+                sample_evidence_bytes = 0
+                if evidence:
+                    sample_evidence_bytes = sum(
+                        len(item.content.encode("utf-8")) for item in evidence
+                    )
+                    supplied_evidence_bytes += sample_evidence_bytes
+                    sink.emit(
+                        "ORG",
+                        f"{request_id_base}/org",
+                        {
+                            "org_evidence_count": len(evidence),
+                            "org_source_lock_keys": sorted(
+                                {item.provenance["lock_key"] for item in evidence}
+                            ),
+                        },
+                    )
+                    sink.emit(
+                        "SUPPLY",
+                        f"{request_id_base}/supply",
+                        {
+                            "supply_evidence_ids": [item.evidence_id for item in evidence],
+                            "supply_content_bytes": sample_evidence_bytes,
+                        },
+                    )
+                ctx = SampleContext(
+                    sample=sample,
+                    evidence=evidence,
+                    adapter=adapter,
+                    sink=sink,
+                    arm=arm,
+                    task_instruction=str(values["task_instruction"]),
+                    decoding_params=dict(values.get("decoding_params", {})),
+                    request_id_base=request_id_base,
+                    retrieval_query=values.get("retrieval_query"),
                 )
-            ctx = SampleContext(
-                sample=sample,
-                evidence=evidence,
-                adapter=adapter,
-                sink=sink,
-                arm=arm,
-                task_instruction=str(values["task_instruction"]),
-                decoding_params=dict(values.get("decoding_params", {})),
-                request_id_base=request_id_base,
-                retrieval_query=values.get("retrieval_query"),
-            )
-            outcome = policy.run_sample(ctx)
-            outputs.write(
-                json.dumps(
-                    {
-                        "request_id": request_id_base,
-                        "sample_id": outcome.sample_id,
-                        "carrier_lock_key": sample.carrier_lock_key,
-                        "arm": arm,
-                        "text": outcome.text,
-                        "admitted": outcome.admitted,
-                        "request_sha256": outcome.request_sha256,
-                        "response_sha256": outcome.response_sha256,
-                        "response_text_sha256": outcome.response_text_sha256,
-                    },
-                    ensure_ascii=False,
-                    sort_keys=True,
+                outcome = policy.run_sample(ctx)
+                if evidence and outcome.admitted:
+                    admitted_evidence_bytes += sample_evidence_bytes
+                outputs.write(
+                    json.dumps(
+                        {
+                            "request_id": request_id_base,
+                            "sample_id": outcome.sample_id,
+                            "carrier_lock_key": sample.carrier_lock_key,
+                            "arm": arm,
+                            "text": outcome.text,
+                            "admitted": outcome.admitted,
+                            "request_sha256": outcome.request_sha256,
+                            "response_sha256": outcome.response_sha256,
+                            "response_text_sha256": outcome.response_text_sha256,
+                        },
+                        ensure_ascii=False,
+                        sort_keys=True,
+                    )
+                    + "\n"
                 )
-                + "\n"
-            )
-    manifest_hash = sink.close()
+        manifest_hash = sink.close()
+    finally:
+        sampler.stop()
+    resource_summary = dict(sampler.summary())
+    cpu_seconds = cpu_seconds_snapshot() - cpu_start
+    # R0 repair T7 (I8): failed-attempt cost. Sibling attempts under this SAME
+    # run_id that are (as of manifest time) ABORTED -- e.g. a crashed attempt
+    # this run_id's caller retried under a fresh attempt_id -- spent real
+    # calls/audio the FIRST-SLICE budget already counts (core.attempts.
+    # AttemptStore.prior_actual_usage folds every state in), but a reader of
+    # this successful attempt's OWN cost block previously had no way to see
+    # that extra, wasted spend. `exclude_attempt_id` keeps this run's own
+    # attempt (never itself ABORTED on this success path) out of the sum.
+    failed_attempt_calls, failed_attempt_audio_seconds = AttemptStore(
+        Path(root) / "attempts"
+    ).actual_usage_in_states(
+        plan.run_id, frozenset({STATE_ABORTED}), exclude_attempt_id=plan.attempt_id
+    )
+    cost = dict(adapter.cost_summary())
+    cost.update(
+        {
+            "cpu_seconds": cpu_seconds,
+            "gate_setup_seconds": gate_setup_seconds,
+            "supplied_evidence_bytes": supplied_evidence_bytes,
+            "admitted_evidence_bytes": admitted_evidence_bytes,
+            "failed_attempt_calls": failed_attempt_calls,
+            "failed_attempt_audio_seconds": failed_attempt_audio_seconds,
+            # Every field above this line is genuinely measured whenever this
+            # function returns a RunResult at all (I8: nothing here is a
+            # silent omission) -- unlike gpu_seconds/peak_vram_mib, which
+            # `resource_summary` may legitimately report as NOT_AVAILABLE
+            # (with `gpu_sampling_reason`) when no sampler -- or no working
+            # nvidia-smi -- was available.
+            "cost_unavailable_reason": None,
+        }
+    )
+    cost.update(resource_summary)
     return RunResult(
         run_id=plan.run_id,
         arm=arm,
         outputs_path=outputs_path,
         trace_manifest_hash=manifest_hash,
-        cost=adapter.cost_summary(),
+        cost=cost,
     )
 
 
@@ -213,6 +294,7 @@ def run_experiment_bundled(
     *,
     repo_root: Path = REPO_ROOT,
     session_receipt_path: Path | None = None,
+    resource_sampler: ResourceSampler | None = None,
 ) -> Path:
     """R0 repair T6 (I7): run one attempt and ALWAYS produce a run manifest --
     the audit trail, not a raised exception alone, is the record of what
@@ -276,7 +358,8 @@ def run_experiment_bundled(
     require_clean_study_repo(repo_root)
     try:
         result = run_experiment(
-            composed, plan, gate, lock, root, run_dir, transport, repo_root=repo_root
+            composed, plan, gate, lock, root, run_dir, transport, repo_root=repo_root,
+            resource_sampler=resource_sampler,
         )
     except Exception as error:
         abort_attempt_if_opened(root, plan.run_id, plan.attempt_id, reason=str(error))
@@ -451,9 +534,15 @@ def _cli_run(args: argparse.Namespace) -> int:
     # or lose -- run_experiment_bundled marks the attempt ABORTED and still
     # writes it on failure, then re-raises (a CLI traceback on a genuine
     # run failure is expected; the manifest survives it either way).
+    # R0 repair T7 (I8): this is the ONE call site that resolves a real
+    # resource sampler -- every other caller of run_experiment/
+    # run_experiment_bundled (library code, every test) gets that function's
+    # own NullSampler default instead, so a real nvidia-smi is only ever
+    # touched by an actual live run through this CLI.
     manifest_path = run_experiment_bundled(
         composed, plan, gate, lock, root, Path(args.run_dir), transport,
         session_receipt_path=Path(args.session_receipt),
+        resource_sampler=resolve_resource_sampler(),
     )
     print(json.dumps({"run_id": plan.run_id, "manifest": str(manifest_path)}, indent=2))
     return 0

@@ -252,6 +252,12 @@ class FrozenCoreAdapter:
         self._latency_total = 0.0
         self._prompt_tokens = 0
         self._completion_tokens = 0
+        # R0 repair T7 (I8): zero today (no registered policy is tool-using),
+        # but wired through the SAME metering choke point every other
+        # per-request cost figure already flows through -- see
+        # record_tool_call below -- so a future tool-using policy (X-series)
+        # never has to invent a parallel accounting path.
+        self._tool_calls = 0
 
     def request(self, payload: Mapping[str, object]) -> CoreResponse:
         keys = set(payload)
@@ -435,6 +441,23 @@ class FrozenCoreAdapter:
             strict=True,
         )
 
+    def record_tool_call(self, count: int = 1) -> None:
+        """Increment the run's tool-call counter (R0 repair T7, invariant I8).
+
+        Zero today: R0 registers no tool-using policy (X-series work). This
+        exists now so that when one arrives it increments the SAME choke
+        point every other cost figure already flows through
+        (``cost_summary`` below) via the adapter every ``core.base.
+        SampleContext`` already carries (``ctx.adapter.record_tool_call()``),
+        rather than inventing a new, parallel accounting path.
+        """
+
+        if isinstance(count, bool) or not isinstance(count, int) or count <= 0:
+            raise FrozenCoreError(
+                f"record_tool_call count must be a positive integer, got {count!r}"
+            )
+        self._tool_calls += count
+
     def cost_summary(self) -> dict[str, object]:
         return {
             "calls_used": self._calls_used,
@@ -442,6 +465,7 @@ class FrozenCoreAdapter:
             "latency_seconds_total": self._latency_total,
             "prompt_tokens_total": self._prompt_tokens,
             "completion_tokens_total": self._completion_tokens,
+            "tool_calls": self._tool_calls,
         }
 
 
