@@ -486,6 +486,47 @@ if os.name == "nt":  # pragma: sys-platform
     _PROCESS_QUERY_LIMITED_INFORMATION = 0x1000
     _STILL_ACTIVE = 259
 
+    # T5 fix-2 (socket-ownership binding): GetExtendedTcpTable with
+    # TCP_TABLE_OWNER_PID_LISTENER maps every listening TCP port to its
+    # owning pid in one syscall-ish call -- the Windows equivalent of
+    # parsing /proc/net/tcp + scanning /proc/<pid>/fd on POSIX.
+    _iphlpapi = ctypes.windll.iphlpapi
+    _iphlpapi.GetExtendedTcpTable.argtypes = [
+        ctypes.c_void_p,
+        ctypes.POINTER(_wintypes.DWORD),
+        _wintypes.BOOL,
+        _wintypes.ULONG,
+        ctypes.c_int,
+        _wintypes.ULONG,
+    ]
+    _iphlpapi.GetExtendedTcpTable.restype = _wintypes.DWORD
+    _AF_INET = 2
+    _AF_INET6 = 23
+    _TCP_TABLE_OWNER_PID_LISTENER = 3
+    _ERROR_INSUFFICIENT_BUFFER = 122
+
+    class _MibTcpRowOwnerPid(ctypes.Structure):
+        _fields_ = [
+            ("dwState", ctypes.c_ulong),
+            ("dwLocalAddr", ctypes.c_ulong),
+            ("dwLocalPort", ctypes.c_ulong),
+            ("dwRemoteAddr", ctypes.c_ulong),
+            ("dwRemotePort", ctypes.c_ulong),
+            ("dwOwningPid", ctypes.c_ulong),
+        ]
+
+    class _MibTcp6RowOwnerPid(ctypes.Structure):
+        _fields_ = [
+            ("ucLocalAddr", ctypes.c_ubyte * 16),
+            ("dwLocalScopeId", ctypes.c_ulong),
+            ("dwLocalPort", ctypes.c_ulong),
+            ("ucRemoteAddr", ctypes.c_ubyte * 16),
+            ("dwRemoteScopeId", ctypes.c_ulong),
+            ("dwRemotePort", ctypes.c_ulong),
+            ("dwState", ctypes.c_ulong),
+            ("dwOwningPid", ctypes.c_ulong),
+        ]
+
 
 def _pid_alive(pid: int) -> bool:
     if os.name == "nt":  # pragma: sys-platform
@@ -593,15 +634,198 @@ def _verify_pid_runs_pinned_binary(
         )
 
 
+# ---------------------------------------------------------------------------
+# Socket-ownership binding (T5 fix-2): binary/PID identity alone does not
+# prove the session's process is the one LISTENING on (host, port) --
+# session.host/port/argv are self-declared receipt fields, and
+# _verify_pid_runs_pinned_binary only proves "this pid runs the pinned
+# binary somewhere", not "this pid owns THIS listening socket". A forged
+# receipt can name a second, genuinely live, genuinely pinned-binary
+# process that simply is not bound to the target port at all. This
+# resolves the REAL kernel-level owner of the listening socket on `port`
+# and requires it to equal `pid`, independent of anything the receipt or
+# the transport's own base_url claims.
+# ---------------------------------------------------------------------------
+
+_SOCKET_FD_PATTERN = re.compile(r"socket:\[(\d+)\]\Z")
+_PROC_NET_TCP_LISTEN_STATE = "0A"
+
+
+def _listen_inodes_for_port(path: Path, port: int) -> set[int]:
+    """Parse a ``/proc/net/tcp``- or ``/proc/net/tcp6``-shaped file for
+    LISTEN-state socket inodes bound to ``port``. A missing file (e.g. IPv6
+    disabled) yields an empty set -- a legitimate system configuration, not
+    a failure; any OTHER read failure fails closed (:class:`SessionError`),
+    never silently yielding an empty (falsely permissive-looking) set."""
+
+    try:
+        text = path.read_text(encoding="utf-8")
+    except FileNotFoundError:
+        return set()
+    except OSError as error:
+        raise SessionError(
+            f"cannot read {path} to determine socket ownership: {error}; refused "
+            "(I5: socket ownership must be provable)"
+        ) from error
+    inodes: set[int] = set()
+    for line in text.splitlines()[1:]:
+        fields = line.split()
+        if len(fields) < 10:
+            continue
+        local_address, state, inode_field = fields[1], fields[3], fields[9]
+        if state != _PROC_NET_TCP_LISTEN_STATE:
+            continue
+        try:
+            _, hex_port = local_address.split(":")
+            local_port = int(hex_port, 16)
+            inode = int(inode_field)
+        except ValueError:
+            continue
+        if local_port == port:
+            inodes.add(inode)
+    return inodes
+
+
+def _pid_owns_any_inode(pid: int, inodes: set[int]) -> bool:
+    """Scan ``/proc/<pid>/fd/*`` for a ``socket:[<inode>]`` symlink target
+    matching one of ``inodes``. Fails closed if the fd directory cannot be
+    enumerated at all (a process whose fds this process cannot read can
+    never prove it owns anything -- refuse, do not assume innocence)."""
+
+    fd_dir = Path(f"/proc/{pid}/fd")
+    try:
+        entries = list(fd_dir.iterdir())
+    except OSError as error:
+        raise SessionError(
+            f"cannot enumerate open file descriptors for pid {pid} ({fd_dir}): "
+            f"{error}; refused (I5: socket ownership must be provable)"
+        ) from error
+    for entry in entries:
+        try:
+            target = os.readlink(entry)
+        except OSError:
+            continue  # fd raced away between listdir and readlink -- not fatal
+        match = _SOCKET_FD_PATTERN.match(target)
+        if match and int(match.group(1)) in inodes:
+            return True
+    return False
+
+
+def _posix_verify_pid_owns_listening_socket(pid: int, port: int) -> None:
+    inodes: set[int] = set()
+    for relpath in ("/proc/net/tcp", "/proc/net/tcp6"):
+        inodes |= _listen_inodes_for_port(Path(relpath), port)
+    if not inodes:
+        raise SessionError(
+            f"no LISTEN socket found for port {port} in /proc/net/tcp(6); refused "
+            "(I5: socket ownership must be provable)"
+        )
+    if not _pid_owns_any_inode(pid, inodes):
+        raise SessionError(
+            f"pid {pid} does not own the listening socket on port {port}; refused "
+            "(I5: PID/binary identity alone does not prove the session's process "
+            "is the one actually listening on this endpoint)"
+        )
+
+
+def _windows_tcp_table_owners(address_family: int, row_type: type) -> dict[int, int]:
+    """port -> owning pid, for one address family's LISTENER-only TCP table
+    (``GetExtendedTcpTable`` with ``TCP_TABLE_OWNER_PID_LISTENER`` -- the
+    table already contains listening sockets only, no state filtering
+    needed). Retries a bounded number of times on the standard
+    grow-between-calls race (first call learns the required size, second
+    call can still return ``ERROR_INSUFFICIENT_BUFFER`` if the table grew
+    in between)."""
+
+    size = _wintypes.DWORD(0)
+    for _attempt in range(4):
+        probe = _iphlpapi.GetExtendedTcpTable(
+            None, ctypes.byref(size), False, address_family, _TCP_TABLE_OWNER_PID_LISTENER, 0
+        )
+        if probe == 0:
+            return {}
+        if probe != _ERROR_INSUFFICIENT_BUFFER:
+            raise SessionError(
+                f"GetExtendedTcpTable size query failed (error {probe}); refused "
+                "(I5: socket ownership must be provable)"
+            )
+        buffer = ctypes.create_string_buffer(size.value)
+        result = _iphlpapi.GetExtendedTcpTable(
+            buffer, ctypes.byref(size), False, address_family, _TCP_TABLE_OWNER_PID_LISTENER, 0
+        )
+        if result == 0:
+            num_entries = ctypes.c_ulong.from_buffer(buffer, 0).value
+            row_size = ctypes.sizeof(row_type)
+            offset = ctypes.sizeof(ctypes.c_ulong)
+            owners: dict[int, int] = {}
+            for index in range(num_entries):
+                row = row_type.from_buffer(buffer, offset + index * row_size)
+                local_port = socket.ntohs(row.dwLocalPort & 0xFFFF)
+                owners[local_port] = row.dwOwningPid
+            return owners
+        if result == _ERROR_INSUFFICIENT_BUFFER:
+            continue
+        raise SessionError(
+            f"GetExtendedTcpTable failed (error {result}); refused (I5: socket "
+            "ownership must be provable)"
+        )
+    raise SessionError(
+        "GetExtendedTcpTable did not stabilize after repeated retries; refused "
+        "(I5: socket ownership must be provable)"
+    )
+
+
+def _windows_verify_pid_owns_listening_socket(pid: int, port: int) -> None:
+    owners: dict[int, int] = {}
+    owners.update(_windows_tcp_table_owners(_AF_INET, _MibTcpRowOwnerPid))
+    owners.update(_windows_tcp_table_owners(_AF_INET6, _MibTcp6RowOwnerPid))
+    owner_pid = owners.get(port)
+    if owner_pid is None:
+        raise SessionError(
+            f"no LISTEN socket found for port {port}; refused (I5: socket "
+            "ownership must be provable)"
+        )
+    if owner_pid != pid:
+        raise SessionError(
+            f"port {port} is owned by pid {owner_pid}, not the session's pid "
+            f"{pid}; refused (I5: PID/binary identity alone does not prove the "
+            "session's process is the one actually listening on this endpoint)"
+        )
+
+
+def _verify_pid_owns_listening_socket(pid: int, host: str, port: int) -> None:
+    """Dispatch to the platform-specific socket-ownership check.
+
+    ``host`` is accepted for API symmetry with the rest of I5's checks and
+    documents intent, but is deliberately NOT used to filter by local
+    address: ``require_loopback`` already restricts every session's ``host``
+    to the fixed, tiny loopback set (``127.0.0.1``/``::1``/``localhost``),
+    so the port-plus-pid-ownership binding this function enforces already
+    closes the exploit (a process not bound to the claimed port at all, or
+    bound to it under a different pid) without needing address-level
+    matching too.
+    """
+
+    if os.name == "nt":  # pragma: sys-platform
+        _windows_verify_pid_owns_listening_socket(pid, port)
+    else:
+        _posix_verify_pid_owns_listening_socket(pid, port)
+
+
 def assert_session_alive(
     session: SessionReceipt, runtime_receipt: Mapping[str, object], runtime_root: Path
 ) -> None:
-    """The full I5 liveness+identity re-check: declared-value agreement with
-    the runtime receipt, PID liveness RIGHT NOW, and -- the fix for the
-    reviewer-demonstrated CRITICAL gap -- that the pid is actually running
-    the pinned binary's executable image, not merely SOME live process that
-    happens to share a number with a forged receipt. Every check re-touches
-    ground truth; nothing here is ever cached across calls.
+    """The full I5 liveness+identity+socket-ownership re-check: declared-value
+    agreement with the runtime receipt, PID liveness RIGHT NOW, that the pid
+    is actually running the pinned binary's executable image (T5 fix-1, not
+    merely SOME live process that happens to share a number with a forged
+    receipt), and -- T5 fix-2, closing a materially equivalent gap an
+    independent re-review demonstrated live on both platforms -- that the
+    pid actually OWNS the kernel-level listening socket on ``session.host``/
+    ``session.port``, not merely that it happens to be a live, pinned-binary
+    process somewhere (a forged receipt can name a genuine SECOND instance
+    of the pinned binary that isn't bound to the target port at all). Every
+    check re-touches ground truth; nothing here is ever cached across calls.
 
     This is the ONE place the full check is implemented; it is called from
     THREE independent enforcement sites (``attach_session``,
@@ -614,7 +838,7 @@ def assert_session_alive(
     caught by the adapter's); the underlying verification CODE is shared,
     unlike I3/I4's payload/media-confinement checks, which T3 deliberately
     reimplemented twice. Full reimplementation is not appropriate here:
-    binary/PID/process-image identity is inherently specific to a
+    binary/PID/process-image/socket identity is inherently specific to a
     subprocess-backed HTTP transport, not a generic concept every
     ``Callable[[bytes], bytes]`` transport shares the way a payload's
     ``media_relpath`` is."""
@@ -626,6 +850,7 @@ def assert_session_alive(
             "refused (I5)"
         )
     _verify_pid_runs_pinned_binary(session.pid, runtime_root, runtime_receipt)
+    _verify_pid_owns_listening_socket(session.pid, session.host, session.port)
 
 
 # ---------------------------------------------------------------------------

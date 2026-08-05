@@ -40,8 +40,15 @@ from speech_aware_evidence_acquisition.core.session import (
 # the whole module (session-attestation edge cases have their own dedicated
 # coverage in tests/unit/test_session.py; these tests only need construction
 # to succeed at all).
+#
+# R0 repair T5 fix-2 (materially equivalent gap a re-review demonstrated:
+# PID/binary identity alone does not prove the pid OWNS the listening socket
+# on the claimed port): the shared process must also genuinely bind and
+# LISTEN on 127.0.0.1:8080 -- the literal base_url every test in this file
+# already hardcodes -- for real, not merely sleep.
 
 _BINARY_PATH = "llama.cpp/build/bin/llama-server"
+_LIVE_PORT = 8080
 _MODEL_FILES = (
     ModelFileRef(path="models/qwen3-omni/model.gguf", sha256="a" * 64),
     ModelFileRef(path="models/qwen3-omni/mmproj.gguf", sha256="b" * 64),
@@ -52,6 +59,9 @@ _live: dict[str, object] = {}
 
 @pytest.fixture(scope="module", autouse=True)
 def _spawn_live_matching_process(tmp_path_factory):
+    import socket
+    import time
+
     base = tmp_path_factory.mktemp("session-world")
     runtime_root = base / "runtime"
     binary = runtime_root / "llama.cpp" / "build" / "bin" / "llama-server"
@@ -61,11 +71,31 @@ def _spawn_live_matching_process(tmp_path_factory):
         binary.chmod(0o755)
     _live["runtime_root"] = runtime_root
     _live["binary_sha256"] = hashlib.sha256(binary.read_bytes()).hexdigest()
+    listener_code = (
+        "import socket, time\n"
+        "s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)\n"
+        "s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)\n"
+        f"s.bind(('127.0.0.1', {_LIVE_PORT}))\n"
+        "s.listen(1)\n"
+        "time.sleep(300)\n"
+    )
     process = subprocess.Popen(
-        [str(binary), "-c", "import time; time.sleep(300)"],
+        [str(binary), "-c", listener_code],
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
     )
+    deadline = time.monotonic() + 30.0  # first-exec AV-scan latency on a fresh copy, under load
+    last_error = None
+    while time.monotonic() < deadline:
+        try:
+            with socket.create_connection(("127.0.0.1", _LIVE_PORT), timeout=0.5):
+                break
+        except OSError as error:
+            last_error = error
+            time.sleep(0.05)
+    else:
+        process.kill()
+        raise AssertionError(f"nothing ever listened on 127.0.0.1:{_LIVE_PORT}: {last_error}")
     _live["pid"] = process.pid
     yield
     process.terminate()

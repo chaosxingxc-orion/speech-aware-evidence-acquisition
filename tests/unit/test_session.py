@@ -6,27 +6,32 @@ POSTs to whatever ``base_url`` the config names. Nothing binds the RESPONDING
 PROCESS to those hashed artifacts. These probes exercise the fix: a
 ``SessionReceipt`` binding binary/model identity, pid, argv, host and port,
 obtained ONLY via ``start_session`` (spawns and observes) or ``attach_session``
-(re-verifies an on-disk receipt against the runtime receipt, a live pid, AND
--- T5 fix-1, closing a CRITICAL gap an independent reviewer demonstrated
-end-to-end -- the pid's ACTUAL OS-reported executable image) -- and re-checked
-independently by ``LlamaServerTransport`` at construction AND on every single
-send (T5 fix-2), plus a complementary call site inside ``FrozenCoreAdapter``
-(T5 fix-3).
+(re-verifies an on-disk receipt against the runtime receipt, a live pid,
+process IMAGE identity, AND -- T5 fix-2, closing a materially equivalent gap
+an independent re-review demonstrated live on both Windows and WSL2 -- kernel-
+level SOCKET OWNERSHIP of ``(host, port)``) -- and re-checked independently by
+``LlamaServerTransport`` at construction AND on every single send, plus a
+complementary call site inside ``FrozenCoreAdapter`` (T5 fix-3).
 
 NO MODEL TOUCH: every spawn in this file launches either a FAKE POSIX
 shell-script "binary" (``TestStartSessionSpawn``, the same pattern
 ``tests/unit/test_e0_generators.py`` already uses for `llama-server
 --version`) or a plain COPY of the current Python interpreter, invoked with
-``-c "..."`` (the process-identity tests below) -- never the real
-llama-server, never a real model file.
+``-c "..."`` (the process-identity/socket-ownership tests below, some of
+which additionally bind a REAL localhost TCP socket in the spawned child --
+still never the real llama-server, never a real model file, never any
+network I/O beyond localhost loopback plumbing internal to the test).
 """
 
 import hashlib
 import json
 import os
 import shutil
+import socket
 import subprocess
 import sys
+import time
+from pathlib import Path
 
 import pytest
 
@@ -182,6 +187,48 @@ def _terminate(process):
     except subprocess.TimeoutExpired:
         process.kill()
         process.wait(timeout=5)
+
+
+def _listener_code(port: int) -> str:
+    """A tiny real TCP listener, run inside a spawned child via ``-c`` --
+    binds and LISTENs on ``127.0.0.1:<port>`` for real (localhost only, no
+    external network reachability), then idles. T5 fix-2: socket-ownership
+    verification needs a genuinely bound, kernel-visible listening socket to
+    exercise at all -- a sleeping process alone (the T5 fix-1 pattern) is not
+    enough."""
+
+    return (
+        "import socket, time\n"
+        "s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)\n"
+        "s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)\n"
+        f"s.bind(('127.0.0.1', {port}))\n"
+        "s.listen(1)\n"
+        "time.sleep(90)\n"
+    )
+
+
+def _spawn_listening_process(binary, port: int):
+    """Spawn ``binary`` (any real executable -- the pinned copy OR an
+    unrelated one, per test) running ``_listener_code``, and block until the
+    socket is genuinely accepting connections before returning (removes the
+    spawn/bind race)."""
+
+    process = subprocess.Popen(
+        [str(binary), "-c", _listener_code(port)],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+    deadline = time.monotonic() + 30.0  # first-exec AV-scan latency on a fresh copy, under load
+    last_error: OSError | None = None
+    while time.monotonic() < deadline:
+        try:
+            with socket.create_connection(("127.0.0.1", port), timeout=0.5):
+                return process
+        except OSError as error:
+            last_error = error
+            time.sleep(0.05)
+    _terminate(process)
+    raise AssertionError(f"nothing ever listened on 127.0.0.1:{port}: {last_error}")
 
 
 def _matching_session(runtime_receipt, **overrides):
@@ -349,16 +396,17 @@ def test_transport_refuses_session_host_mismatch_with_base_url(tmp_path):
 
 
 def test_transport_accepts_a_valid_matching_session_and_sends(tmp_path):
-    """Probe 7 (transport half): a legitimate, REALLY-alive-and-matching
-    session is accepted, and an actual send still works exactly as before
-    T5."""
+    """Probe 7 (transport half) / T5 fix-2 probe 3 (legitimate ACCEPT): a
+    session naming a process that is BOTH the pinned binary AND genuinely
+    listening on the claimed port is accepted, and an actual send still
+    works exactly as before T5."""
 
     runtime_root, binary, runtime_receipt = _live_runtime_world(tmp_path)
-    process = _spawn_matching_process(binary)
+    process = _spawn_listening_process(binary, 18190)
     try:
-        session = _matching_session(runtime_receipt, host="127.0.0.1", port=8080, pid=process.pid)
+        session = _matching_session(runtime_receipt, host="127.0.0.1", port=18190, pid=process.pid)
         transport = LlamaServerTransport(
-            "http://127.0.0.1:8080",
+            "http://127.0.0.1:18190",
             tmp_path,
             session,
             runtime_receipt,
@@ -419,6 +467,133 @@ def test_transport_refuses_alive_but_unrelated_pid(tmp_path):
 
 
 # ---------------------------------------------------------------------------
+# T5 fix-2: socket-ownership binding. A materially equivalent, still-open
+# gap in the SAME invariant an independent re-review demonstrated live on
+# BOTH Windows and WSL2: _verify_pid_runs_pinned_binary proves "the process
+# at this pid runs the pinned binary", but nothing bound that pid to the
+# SOCKET the transport actually talks to -- session.host/port/argv are
+# self-declared receipt fields. The re-reviewer spawned a SECOND genuine
+# instance of the pinned binary (not listening on the target port at all),
+# forged a SessionReceipt naming that pid with port=8080, and construction
+# SUCCEEDED. Standing regressions below (probes 1/2 from that finding);
+# probe 3 (legitimate ACCEPT) is exercised by
+# test_transport_accepts_a_valid_matching_session_and_sends and
+# test_attach_succeeds_for_a_live_matching_session above, both of which now
+# spawn a process that REALLY binds the claimed port; probe 4 (undeterminable
+# ownership) is the last test in this section.
+# ---------------------------------------------------------------------------
+
+
+def test_attach_refuses_pinned_binary_process_not_listening_on_claimed_port(tmp_path):
+    """T5 fix-2 probe 1 -- THE re-reviewer's exact exploit: a SECOND genuine,
+    live instance of the pinned binary (so the T5 fix-1 identity check ALONE
+    would accept it) that is NOT listening on the claimed port at all. Must
+    fail before this fix, pass (refuse) after it."""
+
+    runtime_root, binary, runtime_receipt = _live_runtime_world(tmp_path)
+    idle_process = _spawn_matching_process(binary)  # alive, pinned binary, binds nothing
+    try:
+        forged = _matching_session(
+            runtime_receipt, host="127.0.0.1", port=18193, pid=idle_process.pid
+        )
+        receipt_path = tmp_path / "forged-session.json"
+        write_session_receipt(receipt_path, forged)
+        with pytest.raises(SessionError, match="no LISTEN socket found"):
+            attach_session(receipt_path, runtime_receipt=runtime_receipt, runtime_root=runtime_root)
+    finally:
+        _terminate(idle_process)
+
+
+def test_transport_refuses_pinned_binary_process_not_listening_on_claimed_port(tmp_path):
+    """Same exploit, transport-construction layer."""
+
+    runtime_root, binary, runtime_receipt = _live_runtime_world(tmp_path)
+    idle_process = _spawn_matching_process(binary)
+    try:
+        forged = _matching_session(
+            runtime_receipt, host="127.0.0.1", port=18194, pid=idle_process.pid
+        )
+        with pytest.raises(SessionError, match="no LISTEN socket found"):
+            LlamaServerTransport(
+                "http://127.0.0.1:18194", tmp_path, forged, runtime_receipt, runtime_root,
+                post=lambda u, b: b"",
+            )
+    finally:
+        _terminate(idle_process)
+
+
+def test_attach_refuses_listener_that_is_not_the_pinned_binary(tmp_path):
+    """T5 fix-2 probe 2: a process IS genuinely listening on the claimed
+    port, but it is NOT the pinned binary (a different real executable, the
+    interpreter's own un-copied path). The EXISTING T5 fix-1 identity check
+    must fire -- proving the two checks compose, neither alone sufficient."""
+
+    runtime_root, _binary, runtime_receipt = _live_runtime_world(tmp_path)
+    impostor = _spawn_listening_process(Path(sys.executable), 18195)
+    try:
+        forged = _matching_session(
+            runtime_receipt, host="127.0.0.1", port=18195, pid=impostor.pid
+        )
+        receipt_path = tmp_path / "forged-session.json"
+        write_session_receipt(receipt_path, forged)
+        with pytest.raises(SessionError, match="is running"):
+            attach_session(receipt_path, runtime_receipt=runtime_receipt, runtime_root=runtime_root)
+    finally:
+        _terminate(impostor)
+
+
+def test_transport_refuses_listener_that_is_not_the_pinned_binary(tmp_path):
+    """Same composition proof, transport-construction layer."""
+
+    runtime_root, _binary, runtime_receipt = _live_runtime_world(tmp_path)
+    impostor = _spawn_listening_process(Path(sys.executable), 18196)
+    try:
+        forged = _matching_session(
+            runtime_receipt, host="127.0.0.1", port=18196, pid=impostor.pid
+        )
+        with pytest.raises(SessionError, match="is running"):
+            LlamaServerTransport(
+                "http://127.0.0.1:18196", tmp_path, forged, runtime_receipt, runtime_root,
+                post=lambda u, b: b"",
+            )
+    finally:
+        _terminate(impostor)
+
+
+def test_socket_ownership_undeterminable_fails_closed(tmp_path, monkeypatch):
+    """T5 fix-2 probe 4: if socket ownership cannot be determined AT ALL
+    (simulating a ``/proc/net/tcp`` read failure on POSIX, or a failed
+    ``GetExtendedTcpTable`` lookup on Windows), the touch is refused --
+    never silently treated as 'unknown, so allow'. (The OTHER undeterminable
+    shape -- the lookup mechanism working fine but finding no entry at all --
+    is exactly probe 1 above, already a standing regression via the real,
+    unmocked code path.)"""
+
+    from speech_aware_evidence_acquisition.core import session as session_module
+
+    runtime_root, binary, runtime_receipt = _live_runtime_world(tmp_path)
+    process = _spawn_listening_process(binary, 18197)
+    try:
+        session = _matching_session(runtime_receipt, host="127.0.0.1", port=18197, pid=process.pid)
+
+        def _boom(*_args, **_kwargs):
+            raise SessionError("simulated socket-ownership lookup failure")
+
+        if os.name == "nt":
+            monkeypatch.setattr(session_module, "_windows_tcp_table_owners", _boom)
+        else:
+            monkeypatch.setattr(session_module, "_listen_inodes_for_port", _boom)
+
+        with pytest.raises(SessionError, match="simulated socket-ownership lookup failure"):
+            LlamaServerTransport(
+                "http://127.0.0.1:18197", tmp_path, session, runtime_receipt, runtime_root,
+                post=lambda u, b: b"",
+            )
+    finally:
+        _terminate(process)
+
+
+# ---------------------------------------------------------------------------
 # IMPORTANT fix-2: the process dying MID-RUN must be caught on the NEXT
 # send, not only at construction.
 # ---------------------------------------------------------------------------
@@ -426,11 +601,11 @@ def test_transport_refuses_alive_but_unrelated_pid(tmp_path):
 
 def test_transport_send_refuses_after_process_dies_mid_run(tmp_path):
     runtime_root, binary, runtime_receipt = _live_runtime_world(tmp_path)
-    process = _spawn_matching_process(binary)
+    process = _spawn_listening_process(binary, 18191)
     try:
-        session = _matching_session(runtime_receipt, host="127.0.0.1", port=8080, pid=process.pid)
+        session = _matching_session(runtime_receipt, host="127.0.0.1", port=18191, pid=process.pid)
         transport = LlamaServerTransport(
-            "http://127.0.0.1:8080",
+            "http://127.0.0.1:18191",
             tmp_path,
             session,
             runtime_receipt,
@@ -506,13 +681,15 @@ def test_attach_succeeds_for_a_live_matching_session(tmp_path):
     ``pid=os.getpid()`` (the test's own interpreter), which is exactly why
     the CRITICAL gap (attach_session trusting declared values + bare
     liveness) went uncaught. attach_session now ALSO requires the pid to be
-    ACTUALLY RUNNING the pinned binary image -- proven here with a REAL
-    spawned process running a genuine copy of that exact binary file."""
+    ACTUALLY RUNNING the pinned binary image AND to genuinely own the
+    listening socket on the claimed port (T5 fix-2) -- proven here with a
+    REAL spawned process running a genuine copy of that exact binary file,
+    really bound to the claimed port."""
 
     runtime_root, binary, runtime_receipt = _live_runtime_world(tmp_path)
-    process = _spawn_matching_process(binary)
+    process = _spawn_listening_process(binary, 18192)
     try:
-        session = _matching_session(runtime_receipt, pid=process.pid)
+        session = _matching_session(runtime_receipt, host="127.0.0.1", port=18192, pid=process.pid)
         receipt_path = tmp_path / "session.json"
         write_session_receipt(receipt_path, session)
         attached = attach_session(
