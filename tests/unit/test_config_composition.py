@@ -78,6 +78,10 @@ def test_repo_fragments_compose():
     assert composed.values["policy"] == "fixed"
     assert composed.values["transport"] == "llama-server"
     assert composed.values["model_lock_key"] == "qwen3-omni-30b-a3b-instruct-gguf"
+    # T8 fix (IMPORTANT 2): a real composed config must carry a non-empty
+    # `scorers` list -- otherwise core.bundle.build_manifest bakes in [] and
+    # core.scorers.score_bundle refuses every real run outright.
+    assert composed.values["scorers"] == ["asr-wer", "cost"]
 
 
 # ---------------------------------------------------------------------------
@@ -85,6 +89,18 @@ def test_repo_fragments_compose():
 # mismatched-evidence negative control compose (disjoint keys) with the real
 # existing model/dataset/experiment fragments -- the P1-3 gap was that only
 # bare-core.json existed as a runnable named config.
+#
+# T8 fix (IMPORTANT 1): compose() alone proves only "disjoint keys", never
+# "this pairing can actually complete a run" -- evidence_source:
+# "conec-contexts" only has data for earnings21-original samples
+# (core/evidence.py::_conec_contexts hardcodes an earnings21/ relpath), so
+# pairing an evidence-bearing baseline with the earnings22-dev-subset10
+# dataset fragment composes cleanly but cannot run (see
+# tests/unit/test_driver.py's *_real_four_fragment_composition tests, which
+# use configs/dataset/earnings21-discovery.json instead and prove the run
+# itself completes). The parametrized compose-only test below is kept
+# against earnings22-dev-subset10 deliberately, to make that gap-between-
+# compose-and-run explicit and regression-tested, not to imply runnability.
 # ---------------------------------------------------------------------------
 
 
@@ -96,9 +112,14 @@ def test_repo_fragments_compose():
         ("mismatched-evidence", "fixed-legal-context", False),
     ],
 )
-def test_repo_engineering_control_fragments_compose(
+def test_repo_engineering_control_fragments_compose_disjoint_keys_only(
     baseline_name, expected_arm, expects_retrieval_query
 ):
+    """Compose-only: proves disjoint keys and expected values. Does NOT prove
+    the composition can complete a run -- see the module docstring above and
+    tests/unit/test_driver.py for the real-run proof with the correct
+    (earnings21-original-carrier) dataset fragment."""
+
     from speech_aware_evidence_acquisition.e0.artifacts import REPO_ROOT
 
     composed = compose(
@@ -107,6 +128,7 @@ def test_repo_engineering_control_fragments_compose(
     assert composed.values["arm"] == expected_arm
     assert composed.values["policy"] == "fixed"
     assert composed.values["evidence_source"] == "conec-contexts"
+    assert composed.values["scorers"] == ["asr-wer", "cost"]
     assert isinstance(composed.values["task_instruction"], str) and composed.values[
         "task_instruction"
     ]
@@ -118,13 +140,41 @@ def test_repo_engineering_control_fragments_compose(
     assert composed.values["model_lock_key"] == "qwen3-omni-30b-a3b-instruct-gguf"
 
 
+@pytest.mark.parametrize(
+    "baseline_name, expected_arm",
+    [
+        ("fixed-legal-context", "fixed-legal-context"),
+        ("fixed-retrieval", "fixed-retrieval"),
+        ("mismatched-evidence", "fixed-legal-context"),
+    ],
+)
+def test_repo_engineering_control_fragments_compose_with_the_carrier_their_evidence_needs(
+    baseline_name, expected_arm
+):
+    """The CORRECT real pairing: configs/dataset/earnings21-discovery.json
+    names carrier_lock_key earnings21-original, which is what
+    evidence_source: conec-contexts actually has data for. See
+    tests/unit/test_driver.py for the same pairing driven through a real
+    run_experiment call."""
+
+    from speech_aware_evidence_acquisition.e0.artifacts import REPO_ROOT
+
+    composed = compose(
+        REPO_ROOT, "qwen3-omni-llamacpp", "earnings21-discovery", baseline_name, "r0-smoke"
+    )
+    assert composed.values["arm"] == expected_arm
+    assert composed.values["carrier_lock_key"] == "earnings21-original"
+    assert composed.values["split_name"] == "discovery"
+    assert composed.values["scorers"] == ["asr-wer", "cost"]
+
+
 def test_mismatched_evidence_config_sets_the_mismatch_flag():
     from speech_aware_evidence_acquisition.e0.artifacts import REPO_ROOT
 
     composed = compose(
         REPO_ROOT,
         "qwen3-omni-llamacpp",
-        "earnings22-dev-subset10",
+        "earnings21-discovery",
         "mismatched-evidence",
         "r0-smoke",
     )
@@ -135,7 +185,6 @@ def test_mismatched_evidence_config_sets_the_mismatch_flag():
 def test_non_mismatch_engineering_controls_do_not_set_the_mismatch_flag(baseline_name):
     from speech_aware_evidence_acquisition.e0.artifacts import REPO_ROOT
 
-    composed = compose(
-        REPO_ROOT, "qwen3-omni-llamacpp", "earnings22-dev-subset10", baseline_name, "r0-smoke"
-    )
+    dataset = "earnings22-dev-subset10" if baseline_name == "bare-core" else "earnings21-discovery"
+    composed = compose(REPO_ROOT, "qwen3-omni-llamacpp", dataset, baseline_name, "r0-smoke")
     assert composed.values["evidence_mismatch"] is False

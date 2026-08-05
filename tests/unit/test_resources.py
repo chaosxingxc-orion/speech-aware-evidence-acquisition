@@ -213,6 +213,72 @@ def test_nvidia_smi_sampler_refuses_a_non_positive_interval(bad_interval):
         NvidiaSmiSampler(interval_seconds=bad_interval)
 
 
+@pytest.mark.parametrize("bad_device_index", [-1, -5, "0", 1.5, True])
+def test_nvidia_smi_sampler_refuses_a_negative_or_non_integer_device_index(bad_device_index):
+    with pytest.raises(ValueError):
+        NvidiaSmiSampler(device_index=bad_device_index)
+
+
+# ---------------------------------------------------------------------------
+# device_index: the DEFAULT runner pins which GPU is queried (T7 fix, MINOR
+# 2). An injected TEST runner is unaffected -- pinning only changes the
+# subprocess command line the default runner builds.
+# ---------------------------------------------------------------------------
+
+
+def test_default_runner_pins_the_configured_device_index(monkeypatch):
+    import speech_aware_evidence_acquisition.core.resources as resources_module
+
+    captured = {}
+
+    class _FakeCompleted:
+        stdout = "10, 500"
+
+    def fake_run(cmd, **kwargs):
+        captured["cmd"] = cmd
+        return _FakeCompleted()
+
+    monkeypatch.setattr(resources_module.subprocess, "run", fake_run)
+    sampler = NvidiaSmiSampler(interval_seconds=1.0, device_index=2)
+    sampler.start()
+    try:
+        assert "--id=2" in captured["cmd"]
+    finally:
+        sampler.stop()
+
+
+def test_default_runner_defaults_to_device_index_zero(monkeypatch):
+    import speech_aware_evidence_acquisition.core.resources as resources_module
+
+    captured = {}
+
+    class _FakeCompleted:
+        stdout = "10, 500"
+
+    def fake_run(cmd, **kwargs):
+        captured["cmd"] = cmd
+        return _FakeCompleted()
+
+    monkeypatch.setattr(resources_module.subprocess, "run", fake_run)
+    sampler = NvidiaSmiSampler(interval_seconds=1.0)
+    sampler.start()
+    try:
+        assert "--id=0" in captured["cmd"]
+    finally:
+        sampler.stop()
+
+
+def test_resolve_resource_sampler_passes_device_index_through(monkeypatch):
+    import speech_aware_evidence_acquisition.core.resources as resources_module
+
+    monkeypatch.setattr(
+        resources_module.shutil, "which", lambda binary: f"/usr/bin/{binary}"
+    )
+    sampler = resolve_resource_sampler(binary="nvidia-smi", device_index=3)
+    assert isinstance(sampler, NvidiaSmiSampler)
+    assert sampler._device_index == 3  # never started -- no real nvidia-smi touched
+
+
 # ---------------------------------------------------------------------------
 # resolve_resource_sampler: factory, never touches nvidia-smi in a test.
 # ---------------------------------------------------------------------------

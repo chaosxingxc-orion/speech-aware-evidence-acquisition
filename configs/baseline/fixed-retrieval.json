@@ -3,6 +3,7 @@
   "policy": "fixed",
   "evidence_source": "conec-contexts",
   "evidence_mismatch": false,
+  "scorers": ["asr-wer", "cost"],
   "retrieval_query": "earnings call context: company names, products, people and figures likely spoken in this transcript",
   "task_instruction": "Using the retrieved context as background only, transcribe the speech verbatim. Output only the transcript text."
 }

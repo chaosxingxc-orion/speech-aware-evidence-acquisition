@@ -18,7 +18,7 @@ from typing import Callable, Mapping
 from ..contracts import ExecutionPlan
 from ..data.lock import asset_dir
 from ..e0.artifacts import REPO_ROOT
-from .attempts import STATE_ABORTED, AttemptStore
+from .attempts import STATE_ABORTED, AttemptError, AttemptStore
 from .base import (
     CARRIERS,
     EVIDENCE_SOURCES,
@@ -42,7 +42,13 @@ from .bundle import (
 from .config import ComposedConfig, compose, protocol_hash
 from .evidence import rotated_mismatch
 from .model import FrozenCoreAdapter
-from .resources import NullSampler, ResourceSampler, cpu_seconds_snapshot, resolve_resource_sampler
+from .resources import (
+    NOT_AVAILABLE,
+    NullSampler,
+    ResourceSampler,
+    cpu_seconds_snapshot,
+    resolve_resource_sampler,
+)
 from .scorers import score_bundle
 from .split_receipt import load_verified_split
 from .tracing import TraceSink
@@ -250,11 +256,33 @@ def run_experiment(
     # this successful attempt's OWN cost block previously had no way to see
     # that extra, wasted spend. `exclude_attempt_id` keeps this run's own
     # attempt (never itself ABORTED on this success path) out of the sum.
-    failed_attempt_calls, failed_attempt_audio_seconds = AttemptStore(
-        Path(root) / "attempts"
-    ).actual_usage_in_states(
-        plan.run_id, frozenset({STATE_ABORTED}), exclude_attempt_id=plan.attempt_id
-    )
+    #
+    # T7 fix (reviewer-flagged IMPORTANT): this read happens AFTER the run has
+    # already fully succeeded -- every model call made, outputs/trace already
+    # durable on disk. It must therefore be best-effort, mirroring
+    # core.bundle._best_effort_cost_for_aborted_attempt's identical read:
+    # a corrupted or unreadable SIBLING attempt file (someone else's crash,
+    # not this run's) must never raise here and turn a genuinely successful,
+    # budget-spent run into a false ABORTED manifest via
+    # run_experiment_bundled's `except Exception`. On failure this specific
+    # pair degrades to NOT_AVAILABLE + a reason -- every OTHER cost field
+    # (this run's own calls/audio/latency/tokens/gpu/cpu/evidence/tool_calls)
+    # stays fully measured and the run still completes.
+    try:
+        failed_attempt_calls, failed_attempt_audio_seconds = AttemptStore(
+            Path(root) / "attempts"
+        ).actual_usage_in_states(
+            plan.run_id, frozenset({STATE_ABORTED}), exclude_attempt_id=plan.attempt_id
+        )
+        failed_attempt_cost_reason = None
+    except (AttemptError, OSError, ValueError) as error:
+        failed_attempt_calls = NOT_AVAILABLE
+        failed_attempt_audio_seconds = NOT_AVAILABLE
+        failed_attempt_cost_reason = (
+            "could not read sibling ABORTED attempts' usage for run_id "
+            f"{plan.run_id!r} from the durable attempts store: {error}; this "
+            "run itself succeeded and every other cost field is unaffected"
+        )
     cost = dict(adapter.cost_summary())
     cost.update(
         {
@@ -264,12 +292,16 @@ def run_experiment(
             "admitted_evidence_bytes": admitted_evidence_bytes,
             "failed_attempt_calls": failed_attempt_calls,
             "failed_attempt_audio_seconds": failed_attempt_audio_seconds,
+            "failed_attempt_cost_reason": failed_attempt_cost_reason,
             # Every field above this line is genuinely measured whenever this
             # function returns a RunResult at all (I8: nothing here is a
             # silent omission) -- unlike gpu_seconds/peak_vram_mib, which
             # `resource_summary` may legitimately report as NOT_AVAILABLE
             # (with `gpu_sampling_reason`) when no sampler -- or no working
-            # nvidia-smi -- was available.
+            # nvidia-smi -- was available, and unlike failed_attempt_calls/
+            # failed_attempt_audio_seconds just above, which may legitimately
+            # report NOT_AVAILABLE (with failed_attempt_cost_reason) when a
+            # SIBLING attempt file could not be read.
             "cost_unavailable_reason": None,
         }
     )

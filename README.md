@@ -48,6 +48,7 @@ src/speech_aware_evidence_acquisition/
                   bundle.py     atomic run bundle + finalizer (verify -> score ->
                                  re-verify -> upload -> ledger row -> FINALIZED)
                   driver.py     single experiment driver + CLI (`saea-driver`)
+                  resources.py  injectable GPU/CPU cost-sampling seam (I8)
                   tracking.py   lazy MLflow linkage + umbrella ledger-row renderer
                   config.py     deterministic four-fragment JSON config composer
                   split_receipt.py  split-identity receipt binding

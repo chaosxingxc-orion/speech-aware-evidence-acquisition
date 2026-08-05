@@ -3,5 +3,6 @@
   "policy": "fixed",
   "evidence_source": "conec-contexts",
   "evidence_mismatch": true,
+  "scorers": ["asr-wer", "cost"],
   "task_instruction": "Using the supplied context as background only, transcribe the speech verbatim. Output only the transcript text. (Negative control: the SUPPLY channel carries another sample's evidence, via the deterministic rotation decorator -- never this sample's own context -- so any measured gain from 'supplied context' that survives this rotation is not attributable to genuine content relevance.)"
 }

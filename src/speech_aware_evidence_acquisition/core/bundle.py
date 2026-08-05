@@ -329,6 +329,14 @@ def _best_effort_cost_for_aborted_attempt(
         "cost_unavailable_reason": _ABORTED_COST_UNAVAILABLE_REASON,
         "failed_attempt_calls": failed_calls,
         "failed_attempt_audio_seconds": failed_audio_seconds,
+        # T7 fix: key-shape parity with core.driver.run_experiment's cost
+        # dict (which can report failed_attempt_calls/audio_seconds as
+        # NOT_AVAILABLE with this reason when a sibling attempt file is
+        # unreadable). This function's own try/except above already
+        # collapses ANY read failure (own attempt OR siblings) to 0/0.0
+        # rather than distinguishing -- unchanged here -- so this stays None;
+        # the key exists so both cost-dict shapes carry the same field set.
+        "failed_attempt_cost_reason": None,
     }
 
 

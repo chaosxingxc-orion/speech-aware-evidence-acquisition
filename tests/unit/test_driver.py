@@ -4,13 +4,21 @@ import json
 
 import pytest
 
+import subprocess
+
 import speech_aware_evidence_acquisition.core  # noqa: F401 (populate registries)
 from speech_aware_evidence_acquisition.contracts import ExecutionPlan
-from speech_aware_evidence_acquisition.core.attempts import AttemptStore
+from speech_aware_evidence_acquisition.core.attempts import AttemptError, AttemptStore
 from speech_aware_evidence_acquisition.core.base import CoreError, RunResult
-from speech_aware_evidence_acquisition.core.config import ComposedConfig, protocol_hash
-from speech_aware_evidence_acquisition.core.driver import load_split, run_experiment
+from speech_aware_evidence_acquisition.core.bundle import verify_bundle
+from speech_aware_evidence_acquisition.core.config import ComposedConfig, compose, protocol_hash
+from speech_aware_evidence_acquisition.core.driver import (
+    load_split,
+    run_experiment,
+    run_experiment_bundled,
+)
 from speech_aware_evidence_acquisition.core.resources import NOT_AVAILABLE
+from speech_aware_evidence_acquisition.core.scorers import score_bundle
 from speech_aware_evidence_acquisition.data.lock import load_lock
 from speech_aware_evidence_acquisition.data.splits import discovery_split, freeze_splits
 from speech_aware_evidence_acquisition.e0.artifacts import REPO_ROOT
@@ -480,6 +488,134 @@ def test_run_experiment_mismatched_evidence_config_rotates_supply(synthetic_worl
     for index, sample_id in enumerate(ordered):
         expected_donor = ordered[(index + 1) % len(ordered)]
         assert supply_by_sample[sample_id] == [f"conec/{expected_donor}"]
+
+
+# ---------------------------------------------------------------------------
+# R0 repair T8 fix round (review IMPORTANT 1): compose() alone proves only
+# "disjoint keys", never "this pairing can actually complete a run" --
+# evidence_source: "conec-contexts" only has data for earnings21-original
+# samples, but the only PRE-EXISTING dataset fragment was
+# earnings22-dev-subset10 (carrier earnings22-original), so a real run over
+# the real 4-fragment composition of an evidence-bearing baseline used to
+# raise EvidenceError for essentially every sample -- masked because
+# test_run_experiment_*_config_end_to_end above go through _composed(), whose
+# defaults hardcode carrier earnings21-original regardless of what any
+# baseline fragment says. These tests instead call core.config.compose()
+# directly against the REAL committed fragments -- model, the NEW
+# configs/dataset/earnings21-discovery.json (carrier_lock_key
+# earnings21-original, split_name discovery -- the frozen splits receipt
+# names exactly that pairing), the baseline under test, and r0-smoke -- with
+# no _composed() defaults and no hardcoded overrides, then drive the result
+# through run_experiment with the fake transport. Chosen fix: a new dataset
+# fragment, not a carrier-aware evidence_source (the alternative the review
+# offered) -- core.driver.run_experiment's evidence-source call site
+# (`source(lock, root, s.sample_id)`) does not pass a carrier through, and
+# core/driver.py is owned by another agent this session; adding a dataset
+# fragment needed no change to any file outside this task's own scope.
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    "baseline_name, expected_arm",
+    [
+        ("fixed-legal-context", "fixed-legal-context"),
+        ("fixed-retrieval", "fixed-retrieval"),
+        ("mismatched-evidence", "fixed-legal-context"),
+    ],
+)
+def test_run_experiment_real_four_fragment_composition_for_evidence_bearing_baselines(
+    synthetic_world, tmp_path, baseline_name, expected_arm
+):
+    lock, repo_root = _frozen_world(synthetic_world, tmp_path)
+    _, split_hash, _ = load_split(repo_root, "discovery", lock, synthetic_world.data_root)
+    composed = compose(
+        REPO_ROOT, "qwen3-omni-llamacpp", "earnings21-discovery", baseline_name, "r0-smoke"
+    )
+    assert composed.values["carrier_lock_key"] == "earnings21-original"
+    assert composed.values["split_name"] == "discovery"
+    plan = _plan(
+        split_hash,
+        protocol_hash=protocol_hash(composed.config_hash, composed.values["arm"], split_hash),
+    )
+    run_dir = tmp_path / f"run-real-{baseline_name}"
+    result = run_experiment(
+        composed=composed,
+        plan=plan,
+        gate=_OpenGate(),
+        lock=lock,
+        root=synthetic_world.data_root,
+        run_dir=run_dir,
+        transport=_transport,
+        repo_root=repo_root,
+    )
+    assert result.arm == expected_arm
+    lines = result.outputs_path.read_text(encoding="utf-8").splitlines()
+    assert len(lines) == 3
+    manifest = json.loads(
+        (run_dir / f"{plan.run_id}.trace-manifest.json").read_text("utf-8")
+    )["records"]
+    assert any(record_id.endswith("/org") for record_id in manifest)
+    assert any(record_id.endswith("/supply") for record_id in manifest)
+
+
+# ---------------------------------------------------------------------------
+# R0 repair T8 fix round (review IMPORTANT 2): no config fragment anywhere
+# set "scorers", so core.bundle.build_manifest baked composed.values.get(
+# "scorers", []) -> [] into every real manifest, and core.scorers.score_bundle
+# then refused every real run with "no configured scorers to run" -- asr-wer
+# and cost were unreachable outside tests whose _composed() helper hardcoded
+# scorers by hand. bare-core.json/fixed-legal-context.json/fixed-retrieval.
+# json/mismatched-evidence.json now all set "scorers": ["asr-wer", "cost"];
+# this test proves a REAL composed config's manifest carries that non-empty
+# list AND that score_bundle genuinely runs both scorers end to end.
+# ---------------------------------------------------------------------------
+
+
+def _git(repo_root, *args):
+    subprocess.run(["git", *args], cwd=repo_root, check=True, capture_output=True, text=True)
+
+
+def _git_init_commit(repo_root):
+    _git(repo_root, "init", "-q")
+    _git(repo_root, "config", "user.email", "test@example.com")
+    _git(repo_root, "config", "user.name", "Test")
+    _git(repo_root, "add", "-A")
+    _git(repo_root, "commit", "-q", "-m", "test snapshot")
+
+
+def test_real_composed_config_manifest_scorers_are_reachable_end_to_end(synthetic_world, tmp_path):
+    for sample_id in ("4000001", "4000002", "4000003"):
+        nlp = synthetic_world.e21 / "transcripts" / "nlp_references" / f"{sample_id}.nlp"
+        nlp.write_text(f"token|tags\nhello-{sample_id}|\nworld|\n", encoding="utf-8")
+    lock = load_lock(synthetic_world.lock_path)
+    repo_root = tmp_path / "repo"
+    receipts = repo_root / "docs" / "receipts"
+    freeze_splits(lock, synthetic_world.data_root, receipts)
+    _git_init_commit(repo_root)
+    _, split_hash, _ = load_split(repo_root, "discovery", lock, synthetic_world.data_root)
+    # bare-core has no evidence constraint (evidence_source: "none"), so it
+    # composes and runs equally well against either real dataset fragment;
+    # earnings21-discovery.json is used here purely because it matches the
+    # synthetic world's already-frozen "discovery" split above -- no
+    # test-only override of a compose() result, a genuinely real composition.
+    composed = compose(
+        REPO_ROOT, "qwen3-omni-llamacpp", "earnings21-discovery", "bare-core", "r0-smoke"
+    )
+    assert composed.values["scorers"] == ["asr-wer", "cost"]
+    plan = _plan(
+        split_hash,
+        protocol_hash=protocol_hash(composed.config_hash, composed.values["arm"], split_hash),
+    )
+    manifest_path = run_experiment_bundled(
+        composed, plan, _OpenGate(), lock, synthetic_world.data_root,
+        tmp_path / "run-real-scorers", _transport, repo_root=repo_root,
+    )
+    bundle = verify_bundle(manifest_path)
+    assert bundle.manifest["scorers"] == ["asr-wer", "cost"]
+    results = score_bundle(bundle, lock, synthetic_world.data_root)
+    assert set(results) == {"asr-wer", "cost"}
+    assert results["asr-wer"]["aggregate"]["samples"] == 3
+    assert results["cost"]["aggregate"]["calls_used"] == 3
 
 
 # ---------------------------------------------------------------------------

@@ -52,7 +52,7 @@ import pytest
 
 import speech_aware_evidence_acquisition.core  # noqa: F401 (populate registries)
 from speech_aware_evidence_acquisition.contracts import ExecutionPlan
-from speech_aware_evidence_acquisition.core.attempts import AttemptHandle, AttemptStore
+from speech_aware_evidence_acquisition.core.attempts import AttemptError, AttemptHandle, AttemptStore
 from speech_aware_evidence_acquisition.core.bundle import (
     STATUS_ABORTED,
     STATUS_COMPLETED,
@@ -1111,6 +1111,56 @@ def test_build_manifest_aborted_status_never_opened_attempt_reports_zero_cost_no
     assert cost["calls_used"] == 0
     assert cost["audio_seconds_used"] == 0.0
     assert cost["failed_attempt_calls"] == 0
+
+
+def test_run_experiment_bundled_completes_despite_a_corrupted_sibling_attempt_file(
+    synthetic_world, bundled_repo, tmp_path, monkeypatch
+):
+    """T7 fix (reviewer-flagged IMPORTANT): the exact false-failure scenario.
+    Before the fix, an unreadable sibling ABORTED attempt file for the same
+    run_id raised AttemptError out of run_experiment's (then-unguarded)
+    failed-attempt-cost lookup; run_experiment_bundled's `except Exception`
+    then marked this genuinely successful, budget-spent run ABORTED. The run
+    must now COMPLETE, with only failed_attempt_calls/audio_seconds degraded
+    to NOT_AVAILABLE.
+
+    Simulated via monkeypatching ``AttemptStore.actual_usage_in_states``
+    (see the matching unit-level test in ``tests/unit/test_driver.py`` for
+    why a literal corrupted sibling file on disk cannot isolate this
+    specific call site: it would ALSO break the pre-existing, unrelated,
+    by-design-strict I6 budget check inside ``FrozenCoreAdapter.__init__``
+    before the run ever got this far)."""
+
+    lock, repo_root = bundled_repo
+    ids, split_hash, split_role = load_split(repo_root, "discovery", lock, synthetic_world.data_root)
+    composed = _composed()
+    run_id = "SAEA-E-000-corruptsibling-bundle"
+
+    def _raising_actual_usage_in_states(self, run_id, states, *, exclude_attempt_id=None):
+        raise AttemptError(
+            f"cannot read prior attempt state {run_id}/attempt-corrupt.json: "
+            "Expecting property name enclosed in double quotes (simulated corruption)"
+        )
+
+    monkeypatch.setattr(AttemptStore, "actual_usage_in_states", _raising_actual_usage_in_states)
+
+    plan = _plan(
+        split_hash, run_id=run_id, attempt_id="attempt-fresh",
+        protocol_hash=protocol_hash(composed.config_hash, composed.values["arm"], split_hash),
+    )
+    manifest_path = run_experiment_bundled(
+        composed, plan, _OpenGate(), lock, synthetic_world.data_root,
+        tmp_path / "run-corruptsibling-bundle", _transport, repo_root=repo_root,
+    )
+    manifest = _read_manifest(manifest_path)
+    assert manifest["status"] == STATUS_COMPLETED
+    cost = manifest["cost"]
+    assert cost["failed_attempt_calls"] == "NOT_AVAILABLE"
+    assert cost["failed_attempt_audio_seconds"] == "NOT_AVAILABLE"
+    assert cost["failed_attempt_cost_reason"]
+    assert cost["calls_used"] == len(ids)
+    store = AttemptStore(synthetic_world.data_root / "attempts")
+    assert store.handle(run_id, "attempt-fresh").state() == "OPENED"
 
 
 def test_verify_bundle_accepts_a_pre_t7_five_field_cost_shape(synthetic_world, bundled_repo, tmp_path):

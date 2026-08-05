@@ -106,6 +106,14 @@ commitment, not by deferral:
   failed `run_experiment` call never returns) are the literal `NOT_AVAILABLE` with a shared
   `cost_unavailable_reason` string, never a silent omission.
 
+**Two disclosed, bounded approximations in the GPU sampler (T7 fix round, not new deviations requiring
+disposition — documented for completeness):** (1) `gpu_seconds` undercounts by at most one polling
+interval (default 1.0s) since the final partial span before `stop()` is never recorded — negligible
+against a first-slice budget measured in GPU-*hours* (≤40h); (2) `gpu_seconds`/`peak_vram_mib` are
+`nvidia-smi`'s DEVICE-wide totals, not this run's process-scoped share; `device_index` (default `0`)
+pins which device is queried but does not add per-process attribution — correct for this study's
+documented single-GPU dev box. See `core/resources.py`'s module docstring for the full rationale.
+
 **Manifest schema decision:** `RUN_MANIFEST_SCHEMA` stays `saea-run-manifest-v1` (no version bump).
 `core.bundle.verify_bundle` performs no fixed-key-set check on the `cost` block (only
 `core.scorers.score_cost_outputs` requires it be a non-empty dict, itself with no key-set check

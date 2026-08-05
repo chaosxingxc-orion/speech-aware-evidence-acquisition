@@ -197,6 +197,21 @@ def test_cost_scorer_refuses_missing_sibling_manifest(tmp_path):
         SCORERS.resolve("cost")(outputs_path, {}, tmp_path)
 
 
+def test_cost_scorer_refuses_malformed_manifest_json(tmp_path):
+    """MINOR (review): score_cost_outputs's malformed-JSON branch was
+    implemented but untested -- a sibling manifest file that exists but is
+    not valid JSON must fail closed with a clear message, not a bare
+    json.JSONDecodeError leaking out of the scorer."""
+
+    run_id = "SAEA-E-000-badjson"
+    outputs_path = tmp_path / f"{run_id}.outputs.jsonl"
+    outputs_path.write_text("", encoding="utf-8")
+    manifest_path = tmp_path / f"{run_id}.run-manifest.json"
+    manifest_path.write_text("{not valid json", encoding="utf-8")
+    with pytest.raises(ScoringPhaseError, match="not valid JSON"):
+        SCORERS.resolve("cost")(outputs_path, {}, tmp_path)
+
+
 def test_cost_scorer_refuses_wrong_manifest_schema(tmp_path):
     run_id = "SAEA-E-000-badschema"
     outputs_path = tmp_path / f"{run_id}.outputs.jsonl"

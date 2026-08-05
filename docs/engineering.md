@@ -273,6 +273,29 @@ that resolves a real sampler (`core.resources.resolve_resource_sampler`), so no 
 test can be surprised into shelling out to a real `nvidia-smi`; every unit test injects a fake
 sampler or accepts the default NOT_AVAILABLE.
 
+**`failed_attempt_calls`/`failed_attempt_audio_seconds` is itself best-effort (T7 fix, reviewer-flagged
+IMPORTANT):** this lookup runs AFTER a run has already fully succeeded (every model call made,
+outputs/trace already durable). A corrupted or unreadable SIBLING attempt file for the same `run_id`
+(someone else's crash, not this run's) must never raise and — via `run_experiment_bundled`'s
+`except Exception` — silently convert a genuinely successful, budget-spent run into a false ABORTED
+manifest. On a read failure only this pair degrades to `NOT_AVAILABLE` with a
+`failed_attempt_cost_reason`; every other cost field, including this run's own spend, is unaffected.
+Mirrors `core.bundle._best_effort_cost_for_aborted_attempt`'s identical read, which already wrapped
+this the same way for the ABORTED path.
+
+**Two disclosed, bounded approximations in `NvidiaSmiSampler` (T7 fix, reviewer-flagged MINOR, see
+`core/resources.py` module docstring for the full rationale):**
+
+1. `gpu_seconds` undercounts by at most one `interval_seconds` (default 1.0s): the final partial span
+   between the last recorded poll and `stop()` is never recorded. Negligible against a first-slice
+   budget measured in GPU-*hours* (≤40h) — chosen over polling once more inside `stop()` for
+   simplicity and one fewer shutdown-path failure mode.
+2. `gpu_seconds`/`peak_vram_mib` are `nvidia-smi`'s DEVICE-wide totals (every process on that GPU),
+   not this run's share alone; `device_index` (default `0`, also `resolve_resource_sampler`'s default)
+   pins WHICH device is queried (`--id=<device_index>`) but does not add per-process attribution.
+   Correct for this study's documented single-GPU dev box; a shared/multi-tenant GPU host would need
+   real per-process attribution this module does not attempt.
+
 **ABORTED manifests never carry `cost=None` after T7 either:** `core.bundle
 ._best_effort_cost_for_aborted_attempt` reads the failed attempt's own durable usage (and any prior
 sibling ABORTED attempts' usage) straight from `core.attempts.AttemptStore` — the only state that
