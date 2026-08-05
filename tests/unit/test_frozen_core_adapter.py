@@ -142,3 +142,51 @@ def test_audio_budget_exhaustion_fails_closed(tmp_path):
 def test_unknown_arm_refused(tmp_path):
     with pytest.raises(FrozenCoreError, match="arm"):
         _adapter(tmp_path, arm="oracle-arm")
+
+
+def test_audio_seconds_nan_refused(tmp_path):
+    adapter, _ = _adapter(tmp_path)
+    with pytest.raises(FrozenCoreError, match="finite positive number"):
+        adapter.request(_payload(audio_seconds=float("nan")))
+
+
+def test_audio_seconds_infinite_refused(tmp_path):
+    adapter, _ = _adapter(tmp_path)
+    with pytest.raises(FrozenCoreError, match="finite positive number"):
+        adapter.request(_payload(audio_seconds=float("inf")))
+
+
+def test_audio_seconds_bool_refused(tmp_path):
+    adapter, _ = _adapter(tmp_path)
+    with pytest.raises(FrozenCoreError, match="finite positive number"):
+        adapter.request(_payload(audio_seconds=True))
+
+
+def test_audio_seconds_valid_float_still_accepted(tmp_path):
+    adapter, _ = _adapter(tmp_path)
+    response = adapter.request(_payload(audio_seconds=100.0))
+    assert response.text == "hello world"
+    assert adapter.cost_summary()["audio_seconds_used"] == 100.0
+
+
+def test_metering_counts_before_transport_even_when_transport_raises(tmp_path):
+    calls = []
+
+    def _raising_transport(request_bytes):
+        calls.append(request_bytes)
+        raise RuntimeError("transport exploded")
+
+    sink = TraceSink(tmp_path / "run", "SAEA-E-000-meter")
+    adapter = FrozenCoreAdapter(
+        gate=_OpenGate(),
+        plan=_plan(),
+        arm="bare-core",
+        transport=_raising_transport,
+        sink=sink,
+    )
+    with pytest.raises(RuntimeError, match="transport exploded"):
+        adapter.request(_payload())
+    assert len(calls) == 1
+    summary = adapter.cost_summary()
+    assert summary["calls_used"] == 1
+    assert summary["audio_seconds_used"] == 100.0

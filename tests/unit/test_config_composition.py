@@ -48,6 +48,18 @@ def test_missing_fragment_fails_closed(tmp_path):
         compose(tmp_path, "m", "d", "b", "absent")
 
 
+def test_fragment_name_path_traversal_refused(tmp_path):
+    _write_fragments(tmp_path)
+    with pytest.raises(ConfigError, match="fragment name"):
+        compose(tmp_path, "../../../outside", "d", "b", "e")
+
+
+def test_fragment_name_traversal_in_any_kind_refused(tmp_path):
+    _write_fragments(tmp_path)
+    with pytest.raises(ConfigError, match="fragment name"):
+        compose(tmp_path, "m", "d", "b", "../../../outside")
+
+
 def test_protocol_hash_binds_scoring_version():
     first = protocol_hash("a" * 64, "bare-core", "b" * 64)
     assert len(first) == 64

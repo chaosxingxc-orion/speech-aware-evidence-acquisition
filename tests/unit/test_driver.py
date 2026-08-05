@@ -201,6 +201,34 @@ def test_run_experiment_refuses_wrong_protocol_hash(synthetic_world, tmp_path):
         )
 
 
+def test_run_experiment_refuses_preexisting_outputs_file(synthetic_world, tmp_path):
+    """A fresh sink dir (no trace files) but a manually pre-existing outputs
+    file must still fail closed — the driver's own "x"-mode open, not just
+    the sink's pre-existence check, is the belt-and-suspenders guard."""
+
+    lock, repo_root = _frozen_world(synthetic_world, tmp_path)
+    _, split_hash, _ = load_split(repo_root, "discovery")
+    composed = _composed()
+    plan = _plan(
+        split_hash,
+        protocol_hash=protocol_hash(composed.config_hash, composed.values["arm"], split_hash),
+    )
+    run_dir = tmp_path / "run3"
+    run_dir.mkdir(parents=True)
+    (run_dir / f"{plan.run_id}.outputs.jsonl").write_text("stale\n", encoding="utf-8")
+    with pytest.raises(CoreError, match="exists"):
+        run_experiment(
+            composed=composed,
+            plan=plan,
+            gate=_OpenGate(),
+            lock=lock,
+            root=synthetic_world.data_root,
+            run_dir=run_dir,
+            transport=_transport,
+            repo_root=repo_root,
+        )
+
+
 def test_run_experiment_refuses_wrong_carrier_lock_key(synthetic_world, tmp_path):
     lock, repo_root = _frozen_world(synthetic_world, tmp_path)
     _, split_hash, _ = load_split(repo_root, "discovery")

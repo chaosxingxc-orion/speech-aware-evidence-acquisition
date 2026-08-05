@@ -51,3 +51,28 @@ def test_close_writes_manifest_and_freezes(tmp_path):
     assert document["records"] == sink.manifest()
     with pytest.raises(TraceSinkError, match="closed"):
         sink.emit("OBS", "s2/obs", {"obs_x": 2})
+
+
+def test_construction_refused_when_trace_file_already_exists(tmp_path):
+    sink = TraceSink(tmp_path / "run", "SAEA-E-000-test")
+    sink.emit("OBS", "s1/obs", {"obs_x": 1})
+    with pytest.raises(TraceSinkError, match="exists"):
+        TraceSink(tmp_path / "run", "SAEA-E-000-test")
+
+
+def test_construction_refused_when_manifest_already_exists(tmp_path):
+    sink = TraceSink(tmp_path / "run", "SAEA-E-000-closed")
+    sink.emit("OBS", "s1/obs", {"obs_x": 1})
+    sink.close()
+    with pytest.raises(TraceSinkError, match="exists"):
+        TraceSink(tmp_path / "run", "SAEA-E-000-closed")
+
+
+def test_run_id_windows_drive_relative_path_refused(tmp_path):
+    with pytest.raises(TraceSinkError, match="invalid run id"):
+        TraceSink(tmp_path / "run", "D:evil")
+
+
+def test_run_id_with_hyphens_and_digits_still_accepted(tmp_path):
+    sink = TraceSink(tmp_path / "run", "SAEA-E-000-test")
+    assert sink.run_id == "SAEA-E-000-test"

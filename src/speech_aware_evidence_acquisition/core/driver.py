@@ -98,7 +98,14 @@ def run_experiment(
         gate=gate, plan=plan, arm=arm, transport=transport, sink=sink
     )
     outputs_path = Path(run_dir) / f"{plan.run_id}.outputs.jsonl"
-    with outputs_path.open("w", encoding="utf-8", newline="\n") as outputs:
+    try:
+        outputs_handle = outputs_path.open("x", encoding="utf-8", newline="\n")
+    except FileExistsError as error:
+        raise CoreError(
+            f"outputs file already exists: {outputs_path}; a re-run must use a "
+            "fresh attempt directory, not overwrite a prior attempt's outputs"
+        ) from error
+    with outputs_handle as outputs:
         for index, sample in enumerate(sorted(samples, key=lambda s: s.sample_id), start=1):
             request_id_base = f"req-{index:04d}"
             view = sample.runtime_view()

@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Mapping
@@ -17,6 +18,7 @@ from typing import Mapping
 from ..scoring import SCORING_STACK_VERSION
 
 _KINDS = ("model", "dataset", "baseline", "experiment")
+_FRAGMENT_NAME_PATTERN = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]*")
 
 
 class ConfigError(RuntimeError):
@@ -42,7 +44,10 @@ def compose(
     merged: dict[str, object] = {}
     origins: dict[str, str] = {}
     for kind in _KINDS:
-        path = Path(repo_root) / "configs" / kind / f"{names[kind]}.json"
+        name = names[kind]
+        if not isinstance(name, str) or not _FRAGMENT_NAME_PATTERN.fullmatch(name):
+            raise ConfigError(f"invalid config fragment name for {kind}: {name!r}")
+        path = Path(repo_root) / "configs" / kind / f"{name}.json"
         if not path.is_file():
             raise ConfigError(f"missing config fragment: {path}")
         try:

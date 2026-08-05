@@ -31,6 +31,18 @@ def test_ledger_row_renders_and_validates():
         ledger_row(bad)
 
 
+def test_ledger_row_refuses_newline_in_cell():
+    cells = {column: f"v{i}" for i, column in enumerate(LEDGER_COLUMNS)}
+    bad_newline = dict(cells)
+    bad_newline["deviations"] = "line one\nline two"
+    with pytest.raises(ValueError, match="newline"):
+        ledger_row(bad_newline)
+    bad_cr = dict(cells)
+    bad_cr["deviations"] = "line one\rline two"
+    with pytest.raises(ValueError, match="newline"):
+        ledger_row(bad_cr)
+
+
 def test_log_run_requires_mlflow(monkeypatch):
     # sys.modules["mlflow"] = None makes `import mlflow` raise ImportError even
     # when mlflow IS installed in this environment.

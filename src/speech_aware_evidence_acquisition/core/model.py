@@ -13,6 +13,7 @@ from __future__ import annotations
 import base64
 import hashlib
 import json
+import math
 import time
 import urllib.request
 from dataclasses import dataclass
@@ -109,8 +110,13 @@ class FrozenCoreAdapter:
                 )
         assert_information_boundary(dict(payload))
         audio_seconds = payload["audio_seconds"]
-        if not isinstance(audio_seconds, (int, float)) or audio_seconds <= 0:
-            raise FrozenCoreError("payload audio_seconds must be a positive number")
+        if (
+            isinstance(audio_seconds, bool)
+            or not isinstance(audio_seconds, (int, float))
+            or not math.isfinite(audio_seconds)
+            or audio_seconds <= 0
+        ):
+            raise FrozenCoreError("payload audio_seconds must be a finite positive number")
         if self._calls_used + 1 > self._plan.planned_model_calls:
             raise FrozenCoreError(
                 f"call budget exhausted: plan {self._plan.run_id} allows "
@@ -132,6 +138,13 @@ class FrozenCoreAdapter:
             f"{request_id}/request",
             {"arm": self._arm, "payload": dict(payload), "payload_sha256": request_sha256},
         )
+        # Metering counts the attempt as soon as the budget checks above have
+        # passed and the request is about to leave the process — a transport
+        # that raises (or returns a malformed response) after being invoked
+        # must not be under-reported as free; a sent request is a consumed
+        # request regardless of what comes back.
+        self._calls_used += 1
+        self._audio_seconds_used += float(audio_seconds)
         started = time.monotonic()
         response_bytes = self._transport(request_bytes)
         latency = time.monotonic() - started
@@ -149,8 +162,6 @@ class FrozenCoreAdapter:
             f"{request_id}/response",
             {"response_sha256": response_sha256, "text": text, "usage": usage},
         )
-        self._calls_used += 1
-        self._audio_seconds_used += float(audio_seconds)
         self._latency_total += latency
         self._prompt_tokens += usage.get("prompt_tokens", 0)
         self._completion_tokens += usage.get("completion_tokens", 0)

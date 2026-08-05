@@ -2,11 +2,14 @@
 
 from __future__ import annotations
 
+import re
 from pathlib import Path
 from typing import Mapping
 
 from ..contracts import TraceRecord
 from ..e0.artifacts import REPO_ROOT, write_json_artifact
+
+_RUN_ID_PATTERN = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]*")
 
 
 class TraceSinkError(RuntimeError):
@@ -22,12 +25,19 @@ class TraceSink:
                 f"trace run directory {resolved} is inside the repository; raw "
                 "traces are never committed (study contract) — use SPEECHRL_DATA_DIR"
             )
-        if not run_id or "/" in run_id or "\\" in run_id:
+        if not _RUN_ID_PATTERN.fullmatch(run_id or ""):
             raise TraceSinkError(f"invalid run id {run_id!r}")
         run_dir.mkdir(parents=True, exist_ok=True)
         self._run_dir = run_dir
         self._run_id = run_id
         self._path = run_dir / f"{run_id}.trace.jsonl"
+        manifest_path = run_dir / f"{run_id}.trace-manifest.json"
+        if self._path.exists() or manifest_path.exists():
+            raise TraceSinkError(
+                f"trace file already exists for run id {run_id!r} in {run_dir}; "
+                "a re-run must use a fresh attempt directory, not overwrite a prior "
+                "attempt's trace"
+            )
         self._hashes: dict[str, str] = {}
         self._closed = False
 

@@ -43,6 +43,8 @@ def ledger_row(cells: Mapping[str, str]) -> str:
     for column, value in cells.items():
         if "|" in value:
             raise ValueError(f"ledger cell {column!r} contains a pipe character")
+        if "\n" in value or "\r" in value:
+            raise ValueError(f"ledger cell {column!r} contains a newline character")
     return "| " + " | ".join(cells[column] for column in LEDGER_COLUMNS) + " |"
 
 
