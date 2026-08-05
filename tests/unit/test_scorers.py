@@ -147,6 +147,98 @@ def test_score_bundle_refuses_when_no_scorers_are_configured(tmp_path, synthetic
         score_bundle(bundle, lock, synthetic_world.data_root)
 
 
+# ---------------------------------------------------------------------------
+# `cost` scorer (R0 repair T8, scorer seam): reads the SIBLING run manifest's
+# `cost` block (same run_dir, same run_id stem as outputs_path -- the naming
+# convention `core.bundle.build_manifest` already uses), never a parallel
+# accounting path.
+# ---------------------------------------------------------------------------
+
+
+def _write_manifest(tmp_path, run_id, cost, schema=None):
+    from speech_aware_evidence_acquisition.core.bundle import RUN_MANIFEST_SCHEMA
+
+    manifest_path = tmp_path / f"{run_id}.run-manifest.json"
+    document = {"schema": schema or RUN_MANIFEST_SCHEMA, "cost": cost}
+    manifest_path.write_text(json.dumps(document), encoding="utf-8")
+    return manifest_path
+
+
+def test_cost_scorer_is_registered():
+    assert "cost" in SCORERS.names()
+
+
+def test_cost_scorer_reads_the_sibling_run_manifest(tmp_path):
+    run_id = "SAEA-E-000-cost"
+    outputs_path = tmp_path / f"{run_id}.outputs.jsonl"
+    outputs_path.write_text("", encoding="utf-8")
+    cost = {
+        "calls_used": 3,
+        "audio_seconds_used": 12.5,
+        "latency_seconds_total": 1.2,
+        "prompt_tokens_total": 30,
+        "completion_tokens_total": 9,
+    }
+    _write_manifest(tmp_path, run_id, cost)
+    result = SCORERS.resolve("cost")(outputs_path, {}, tmp_path)
+    assert result == {"per_sample": [], "aggregate": cost}
+
+
+def test_cost_scorer_refuses_outputs_path_with_wrong_suffix(tmp_path):
+    bad_path = tmp_path / "not-an-outputs-file.jsonl"
+    with pytest.raises(ScoringPhaseError, match="outputs artifact named"):
+        SCORERS.resolve("cost")(bad_path, {}, tmp_path)
+
+
+def test_cost_scorer_refuses_missing_sibling_manifest(tmp_path):
+    outputs_path = tmp_path / "SAEA-E-000-missing.outputs.jsonl"
+    outputs_path.write_text("", encoding="utf-8")
+    with pytest.raises(ScoringPhaseError, match="sibling run manifest"):
+        SCORERS.resolve("cost")(outputs_path, {}, tmp_path)
+
+
+def test_cost_scorer_refuses_wrong_manifest_schema(tmp_path):
+    run_id = "SAEA-E-000-badschema"
+    outputs_path = tmp_path / f"{run_id}.outputs.jsonl"
+    outputs_path.write_text("", encoding="utf-8")
+    _write_manifest(tmp_path, run_id, {"calls_used": 1}, schema="not-the-real-schema")
+    with pytest.raises(ScoringPhaseError, match="schema"):
+        SCORERS.resolve("cost")(outputs_path, {}, tmp_path)
+
+
+def test_cost_scorer_refuses_manifest_with_no_cost_block(tmp_path):
+    run_id = "SAEA-E-000-nocost"
+    outputs_path = tmp_path / f"{run_id}.outputs.jsonl"
+    outputs_path.write_text("", encoding="utf-8")
+    _write_manifest(tmp_path, run_id, None)
+    with pytest.raises(ScoringPhaseError, match="no cost block"):
+        SCORERS.resolve("cost")(outputs_path, {}, tmp_path)
+
+
+def test_score_bundle_runs_the_cost_scorer_over_a_genuine_bundle(tmp_path, synthetic_world):
+    outputs = _outputs_path(tmp_path, synthetic_world)  # tmp_path / "x.outputs.jsonl"
+    cost = {
+        "calls_used": 1,
+        "audio_seconds_used": 2.0,
+        "latency_seconds_total": 0.5,
+        "prompt_tokens_total": 3,
+        "completion_tokens_total": 4,
+    }
+    _write_manifest(tmp_path, "x", cost)
+    lock = load_lock(synthetic_world.lock_path)
+    bundle = VerifiedBundle(
+        manifest_path=tmp_path / "fake.run-manifest.json",
+        manifest={"scorers": ["cost"]},
+        outputs_path=outputs,
+        outputs_rows=(),
+        trace_records={},
+        split_ids=frozenset({"4000001"}),
+        attempt_state="OPENED",
+    )
+    results = score_bundle(bundle, lock, synthetic_world.data_root)
+    assert results == {"cost": {"per_sample": [], "aggregate": cost}}
+
+
 def test_score_bundle_refuses_when_outputs_path_is_missing(tmp_path, synthetic_world):
     lock = load_lock(synthetic_world.lock_path)
     bundle = VerifiedBundle(

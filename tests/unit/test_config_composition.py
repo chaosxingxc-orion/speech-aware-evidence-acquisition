@@ -78,3 +78,64 @@ def test_repo_fragments_compose():
     assert composed.values["policy"] == "fixed"
     assert composed.values["transport"] == "llama-server"
     assert composed.values["model_lock_key"] == "qwen3-omni-30b-a3b-instruct-gguf"
+
+
+# ---------------------------------------------------------------------------
+# R0 repair T8: the three formal engineering-control configs + the
+# mismatched-evidence negative control compose (disjoint keys) with the real
+# existing model/dataset/experiment fragments -- the P1-3 gap was that only
+# bare-core.json existed as a runnable named config.
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    "baseline_name, expected_arm, expects_retrieval_query",
+    [
+        ("fixed-legal-context", "fixed-legal-context", False),
+        ("fixed-retrieval", "fixed-retrieval", True),
+        ("mismatched-evidence", "fixed-legal-context", False),
+    ],
+)
+def test_repo_engineering_control_fragments_compose(
+    baseline_name, expected_arm, expects_retrieval_query
+):
+    from speech_aware_evidence_acquisition.e0.artifacts import REPO_ROOT
+
+    composed = compose(
+        REPO_ROOT, "qwen3-omni-llamacpp", "earnings22-dev-subset10", baseline_name, "r0-smoke"
+    )
+    assert composed.values["arm"] == expected_arm
+    assert composed.values["policy"] == "fixed"
+    assert composed.values["evidence_source"] == "conec-contexts"
+    assert isinstance(composed.values["task_instruction"], str) and composed.values[
+        "task_instruction"
+    ]
+    assert ("retrieval_query" in composed.values) == expects_retrieval_query
+    # No key collision (compose() itself would raise ConfigError otherwise);
+    # every fragment's own identity keys are still present and un-shadowed.
+    assert composed.values["experiment_id"] == "SAEA-E-001"
+    assert composed.values["carrier_lock_key"] == "earnings22-original"
+    assert composed.values["model_lock_key"] == "qwen3-omni-30b-a3b-instruct-gguf"
+
+
+def test_mismatched_evidence_config_sets_the_mismatch_flag():
+    from speech_aware_evidence_acquisition.e0.artifacts import REPO_ROOT
+
+    composed = compose(
+        REPO_ROOT,
+        "qwen3-omni-llamacpp",
+        "earnings22-dev-subset10",
+        "mismatched-evidence",
+        "r0-smoke",
+    )
+    assert composed.values["evidence_mismatch"] is True
+
+
+@pytest.mark.parametrize("baseline_name", ["bare-core", "fixed-legal-context", "fixed-retrieval"])
+def test_non_mismatch_engineering_controls_do_not_set_the_mismatch_flag(baseline_name):
+    from speech_aware_evidence_acquisition.e0.artifacts import REPO_ROOT
+
+    composed = compose(
+        REPO_ROOT, "qwen3-omni-llamacpp", "earnings22-dev-subset10", baseline_name, "r0-smoke"
+    )
+    assert composed.values["evidence_mismatch"] is False

@@ -3,6 +3,18 @@
 This is the ONLY module allowed to import data.references (AST contract
 test). It runs strictly after the runtime phase, on recorded outputs — never
 inside a request loop.
+
+Registered SCORERS (R0 repair T8): ``asr-wer`` (WER against the carrier's
+frozen ``.nlp`` reference layer) and ``cost`` (the run manifest's cost
+block). ``scoring/entity.py`` and ``scoring/qa.py`` are frozen, hash-pinned
+functions but have NO registered adapter here: the reference-layer format an
+entity/QA adapter would need to consume (the Earnings21 ``wer_tags`` sidecar
+JSON + the ``.nlp`` file's own ``wer_tags`` column, which is Python-repr list
+syntax, not JSON, and encodes multi-token entity spans by shared entity ID)
+was never pinned by an owner-approved readiness memo, and no spoken-QA
+carrier has any reference layer wired into ``data/identity.py`` at all. See
+``docs/owner-decisions-pending.md`` for what was inspected and what remains
+open; do not add a guessed adapter here.
 """
 
 from __future__ import annotations
@@ -92,6 +104,85 @@ def transition_report(
 
 
 SCORERS.register("asr-wer", score_asr_outputs)
+
+
+# ---------------------------------------------------------------------------
+# Cost scorer (R0 repair T8, scorer seam): the ONLY scorer that reads the run
+# manifest's cost block instead of the outputs JSONL. `score_bundle` calls
+# every registered scorer through the SAME uniform signature
+# `scorer(outputs_path, lock, root)` -- no special-cased wiring was added for
+# "cost" here, deliberately (the anti-fragmentation contract in `core.base`:
+# a new component registers, it never grows new driver/score_bundle wiring).
+# Instead this scorer reads the ACTUAL T6 run-manifest.json that already
+# lives beside `outputs_path` (same run_dir, same run_id stem -- the exact
+# naming convention `core.bundle.build_manifest`/`_manifest_document` already
+# use) and returns its `cost` block. This is "read the manifest and
+# integrate", not a parallel accounting path: no cost number here is computed
+# independently of `core.model.FrozenCoreAdapter.cost_summary()`, which is
+# the one true place cost is metered (see `core/model.py`).
+# ---------------------------------------------------------------------------
+
+_OUTPUTS_SUFFIX = ".outputs.jsonl"
+_MANIFEST_SUFFIX = ".run-manifest.json"
+
+
+def _manifest_path_for_outputs(outputs_path: Path) -> Path:
+    outputs_path = Path(outputs_path)
+    name = outputs_path.name
+    if not name.endswith(_OUTPUTS_SUFFIX):
+        raise ScoringPhaseError(
+            f"cost scorer requires an outputs artifact named '<run_id>{_OUTPUTS_SUFFIX}', "
+            f"got {name!r} -- it cannot locate that run's manifest without the shared "
+            "run_id stem core.bundle.build_manifest already uses"
+        )
+    run_id = name[: -len(_OUTPUTS_SUFFIX)]
+    manifest_path = outputs_path.parent / f"{run_id}{_MANIFEST_SUFFIX}"
+    if not manifest_path.is_file():
+        raise ScoringPhaseError(
+            f"cost scorer requires a sibling run manifest at {manifest_path} (same run_dir, "
+            f"same run_id as {outputs_path}); none found -- cost is recorded only in the run "
+            "manifest, never in outputs.jsonl itself"
+        )
+    return manifest_path
+
+
+def score_cost_outputs(
+    outputs_path: Path, lock: Mapping[str, object], root: Path
+) -> dict[str, object]:
+    """Cost scorer: no per-sample breakdown exists (cost is metered per attempt,
+    not per sample -- see ``core.model.FrozenCoreAdapter.cost_summary``), so
+    ``per_sample`` is always empty and every field lives in ``aggregate``."""
+
+    # Deferred import (not at module top level): `core.bundle` imports THIS
+    # module at its own top level (to call `score_bundle` from
+    # `finalize_bundle`); importing `core.bundle` back at this module's top
+    # level would be a circular import -- same reasoning as `score_bundle`'s
+    # own deferred `VerifiedBundle` import below.
+    from .bundle import RUN_MANIFEST_SCHEMA
+
+    manifest_path = _manifest_path_for_outputs(Path(outputs_path))
+    try:
+        raw = manifest_path.read_text(encoding="utf-8")
+    except (OSError, UnicodeError) as error:
+        raise ScoringPhaseError(f"cannot read run manifest {manifest_path}: {error}") from error
+    try:
+        document = json.loads(raw)
+    except json.JSONDecodeError as error:
+        raise ScoringPhaseError(f"run manifest {manifest_path} is not valid JSON: {error}") from error
+    if not isinstance(document, dict) or document.get("schema") != RUN_MANIFEST_SCHEMA:
+        raise ScoringPhaseError(
+            f"run manifest {manifest_path} does not carry schema {RUN_MANIFEST_SCHEMA!r}"
+        )
+    cost = document.get("cost")
+    if not isinstance(cost, dict) or not cost:
+        raise ScoringPhaseError(
+            f"run manifest {manifest_path} carries no cost block to score (an ABORTED attempt "
+            "before any request was sent, or a manifest older than the T8 cost scorer)"
+        )
+    return {"per_sample": [], "aggregate": dict(cost)}
+
+
+SCORERS.register("cost", score_cost_outputs)
 
 
 def score_bundle(bundle: object, lock: Mapping[str, object], root: Path) -> dict[str, object]:

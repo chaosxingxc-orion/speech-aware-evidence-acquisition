@@ -12,6 +12,7 @@ from speech_aware_evidence_acquisition.core.config import ComposedConfig, protoc
 from speech_aware_evidence_acquisition.core.driver import load_split, run_experiment
 from speech_aware_evidence_acquisition.data.lock import load_lock
 from speech_aware_evidence_acquisition.data.splits import discovery_split, freeze_splits
+from speech_aware_evidence_acquisition.e0.artifacts import REPO_ROOT
 
 
 class _OpenGate:
@@ -288,3 +289,193 @@ def test_run_experiment_refuses_wrong_carrier_lock_key(synthetic_world, tmp_path
             transport=_transport,
             repo_root=repo_root,
         )
+
+
+# ---------------------------------------------------------------------------
+# R0 repair T8: the formal `configs/baseline/*.json` engineering-control
+# fragments -- loaded from the ACTUAL committed files, not retyped by hand --
+# each drive a real synthetic end-to-end run through run_experiment. This is
+# the P1-3 gap: previously only bare-core.json was a runnable named config,
+# and fixed-legal-context/fixed-retrieval/mismatched-evidence were only
+# exercised by ad-hoc inline dicts or unit-level payload-builder tests.
+# ---------------------------------------------------------------------------
+
+
+def _baseline_fragment(name):
+    path = REPO_ROOT / "configs" / "baseline" / f"{name}.json"
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _raw_trace_records(run_dir, run_id):
+    path = run_dir / f"{run_id}.trace.jsonl"
+    return [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line]
+
+
+def _sample_id_by_request_id(outputs_path):
+    rows = [
+        json.loads(line)
+        for line in outputs_path.read_text(encoding="utf-8").splitlines()
+        if line
+    ]
+    return {row["request_id"]: row["sample_id"] for row in rows}
+
+
+def _supply_evidence_ids_by_sample(run_dir, run_id, outputs_path):
+    sample_id_by_request = _sample_id_by_request_id(outputs_path)
+    by_sample: dict[str, list[str]] = {}
+    for record in _raw_trace_records(run_dir, run_id):
+        if record["channel"] != "SUPPLY":
+            continue
+        request_id = record["record_id"].removesuffix("/supply")
+        sample_id = sample_id_by_request[request_id]
+        by_sample[sample_id] = record["payload"]["supply_evidence_ids"]
+    return by_sample
+
+
+def test_run_experiment_bare_core_config_has_no_org_or_supply_records(synthetic_world, tmp_path):
+    """Contrast case (brief requirement): the same real config file mechanism
+    used for the three evidence-bearing controls below, but for bare-core --
+    proving ORG/SUPPLY are genuinely ABSENT, not merely unchecked."""
+
+    lock, repo_root = _frozen_world(synthetic_world, tmp_path)
+    _, split_hash, _ = load_split(repo_root, "discovery", lock, synthetic_world.data_root)
+    composed = _composed(**_baseline_fragment("bare-core"))
+    plan = _plan(
+        split_hash,
+        protocol_hash=protocol_hash(composed.config_hash, composed.values["arm"], split_hash),
+    )
+    run_dir = tmp_path / "run-bare-core"
+    result = run_experiment(
+        composed=composed,
+        plan=plan,
+        gate=_OpenGate(),
+        lock=lock,
+        root=synthetic_world.data_root,
+        run_dir=run_dir,
+        transport=_transport,
+        repo_root=repo_root,
+    )
+    assert result.arm == "bare-core"
+    lines = result.outputs_path.read_text(encoding="utf-8").splitlines()
+    assert len(lines) == 3
+    manifest = json.loads(
+        (run_dir / f"{plan.run_id}.trace-manifest.json").read_text("utf-8")
+    )["records"]
+    assert any(record_id.endswith("/obs") for record_id in manifest)
+    assert any(record_id.endswith("/use") for record_id in manifest)
+    assert not any(record_id.endswith("/org") for record_id in manifest)
+    assert not any(record_id.endswith("/supply") for record_id in manifest)
+
+
+def test_run_experiment_fixed_legal_context_config_end_to_end(synthetic_world, tmp_path):
+    lock, repo_root = _frozen_world(synthetic_world, tmp_path)
+    _, split_hash, _ = load_split(repo_root, "discovery", lock, synthetic_world.data_root)
+    composed = _composed(**_baseline_fragment("fixed-legal-context"))
+    plan = _plan(
+        split_hash,
+        protocol_hash=protocol_hash(composed.config_hash, composed.values["arm"], split_hash),
+    )
+    run_dir = tmp_path / "run-fixed-legal-context"
+    result = run_experiment(
+        composed=composed,
+        plan=plan,
+        gate=_OpenGate(),
+        lock=lock,
+        root=synthetic_world.data_root,
+        run_dir=run_dir,
+        transport=_transport,
+        repo_root=repo_root,
+    )
+    assert result.arm == "fixed-legal-context"
+    lines = result.outputs_path.read_text(encoding="utf-8").splitlines()
+    assert len(lines) == 3
+    manifest = json.loads(
+        (run_dir / f"{plan.run_id}.trace-manifest.json").read_text("utf-8")
+    )["records"]
+    assert any(record_id.endswith("/obs") for record_id in manifest)
+    assert any(record_id.endswith("/org") for record_id in manifest)
+    assert any(record_id.endswith("/supply") for record_id in manifest)
+    assert any(record_id.endswith("/use") for record_id in manifest)
+    # Not a mismatch config: every sample's own evidence is supplied.
+    supply_by_sample = _supply_evidence_ids_by_sample(run_dir, plan.run_id, result.outputs_path)
+    assert supply_by_sample
+    for sample_id, evidence_ids in supply_by_sample.items():
+        assert evidence_ids == [f"conec/{sample_id}"]
+
+
+def test_run_experiment_fixed_retrieval_config_end_to_end(synthetic_world, tmp_path):
+    """The fixed-retrieval arm needs a retrieval_query: the config supplies
+    one as a top-level composed value (``values.get("retrieval_query")`` in
+    core.driver.run_experiment), which flows into SampleContext.retrieval_query
+    and then into core.policies.build_arm_payload's ``retrieval_query``
+    argument -- the same field the D2 freeze names for this arm."""
+
+    lock, repo_root = _frozen_world(synthetic_world, tmp_path)
+    _, split_hash, _ = load_split(repo_root, "discovery", lock, synthetic_world.data_root)
+    fragment = _baseline_fragment("fixed-retrieval")
+    assert fragment["retrieval_query"].strip()
+    composed = _composed(**fragment)
+    plan = _plan(
+        split_hash,
+        protocol_hash=protocol_hash(composed.config_hash, composed.values["arm"], split_hash),
+    )
+    run_dir = tmp_path / "run-fixed-retrieval"
+    result = run_experiment(
+        composed=composed,
+        plan=plan,
+        gate=_OpenGate(),
+        lock=lock,
+        root=synthetic_world.data_root,
+        run_dir=run_dir,
+        transport=_transport,
+        repo_root=repo_root,
+    )
+    assert result.arm == "fixed-retrieval"
+    lines = result.outputs_path.read_text(encoding="utf-8").splitlines()
+    assert len(lines) == 3
+    manifest = json.loads(
+        (run_dir / f"{plan.run_id}.trace-manifest.json").read_text("utf-8")
+    )["records"]
+    assert any(record_id.endswith("/org") for record_id in manifest)
+    assert any(record_id.endswith("/supply") for record_id in manifest)
+
+
+def test_run_experiment_mismatched_evidence_config_rotates_supply(synthetic_world, tmp_path):
+    """The mismatched-evidence config sets evidence_mismatch: true; the SUPPLY
+    channel must carry another sample's evidence, never the sample's own."""
+
+    lock, repo_root = _frozen_world(synthetic_world, tmp_path)
+    _, split_hash, _ = load_split(repo_root, "discovery", lock, synthetic_world.data_root)
+    fragment = _baseline_fragment("mismatched-evidence")
+    assert fragment["evidence_mismatch"] is True
+    composed = _composed(**fragment)
+    plan = _plan(
+        split_hash,
+        protocol_hash=protocol_hash(composed.config_hash, composed.values["arm"], split_hash),
+    )
+    run_dir = tmp_path / "run-mismatched-evidence"
+    result = run_experiment(
+        composed=composed,
+        plan=plan,
+        gate=_OpenGate(),
+        lock=lock,
+        root=synthetic_world.data_root,
+        run_dir=run_dir,
+        transport=_transport,
+        repo_root=repo_root,
+    )
+    assert result.arm == "fixed-legal-context"
+    manifest = json.loads(
+        (run_dir / f"{plan.run_id}.trace-manifest.json").read_text("utf-8")
+    )["records"]
+    assert any(record_id.endswith("/org") for record_id in manifest)
+    assert any(record_id.endswith("/supply") for record_id in manifest)
+    # rotated_mismatch is a full derangement (each sample gets the NEXT sorted
+    # sample's evidence): with 3 discovery samples, every single one must
+    # receive evidence that is NOT its own -- never merely "some of them".
+    supply_by_sample = _supply_evidence_ids_by_sample(run_dir, plan.run_id, result.outputs_path)
+    assert len(supply_by_sample) == 3
+    ordered = sorted(supply_by_sample)
+    for index, sample_id in enumerate(ordered):
+        expected_donor = ordered[(index + 1) % len(ordered)]
+        assert supply_by_sample[sample_id] == [f"conec/{expected_donor}"]

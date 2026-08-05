@@ -206,6 +206,34 @@ it prints a loud warning and tags its result `"verified": false` — it exists
 for ad-hoc/exploratory scoring only and must never be treated as an audit
 record.
 
+## R0 repair T8 — formal control configs + scorer seam
+
+Three named engineering controls from the owner contract (bare core, fixed legal context, fixed
+retrieval) plus the random/mismatched-evidence negative control are now runnable named configs
+under `configs/baseline/`: `bare-core.json` (pre-existing), `fixed-legal-context.json`,
+`fixed-retrieval.json`, `mismatched-evidence.json` (`evidence_mismatch: true`, layered on
+`fixed-legal-context`). Each composes (disjoint keys) with the real `configs/{model,dataset,
+experiment}/*.json` fragments and, loaded from the committed file (not retyped by hand), drives a
+synthetic end-to-end `core.driver.run_experiment` call — see
+`tests/unit/test_config_composition.py` and `tests/unit/test_driver.py`. `fixed-retrieval` wires
+its `retrieval_query` as a top-level composed value (a baseline-fragment key, mirroring
+`task_instruction`); `core.driver.run_experiment` reads it via `values.get("retrieval_query")` into
+`SampleContext.retrieval_query`, which `core.policies.build_arm_payload` requires non-empty for
+that arm. Both evidence-bearing configs use `evidence_source: "conec-contexts"`, which is
+`earnings21-original`-scoped in R0 (`core/evidence.py::_conec_contexts` reads a fixed
+`earnings21/contexts/<sample_id>.txt` relpath regardless of which carrier a run names).
+
+**`SCORERS` registry (`core/scorers.py`), current and complete:** `asr-wer` (WER against the
+carrier's frozen `.nlp` reference layer) and `cost` (T8: reads the **sibling run manifest's**
+`cost` block — same `run_dir`, same `run_id` stem as `outputs_path`, the exact naming convention
+`core.bundle.build_manifest` already uses — never a parallel accounting path; fails closed if no
+such manifest exists or it carries no `cost` block). `scoring/entity.py` and `scoring/qa.py` remain
+frozen, hash-pinned functions with **no** registered adapter: the reference-layer format they would
+need (Earnings21 `wer_tags`, a spoken-QA carrier) was never pinned by an owner-approved readiness
+memo. See `docs/owner-decisions-pending.md` for the full record of what was inspected and what
+remains open — do not read the *absence* of an entity/QA scorer as an oversight; it is a deferred,
+explicitly recorded scope item.
+
 **Accepted scope boundary of I7 (state plainly, do not over-trust):** the
 bundle chain is a *consistency* check over files on disk, not an
 *authenticity* check that a response ever genuinely crossed the frozen-core
