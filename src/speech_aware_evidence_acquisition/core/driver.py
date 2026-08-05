@@ -16,7 +16,6 @@ from typing import Callable, Mapping
 
 from ..contracts import ExecutionPlan
 from ..e0.artifacts import REPO_ROOT
-from ..data.splits import SPLITS_RECEIPT_NAME
 from .base import (
     CARRIERS,
     EVIDENCE_SOURCES,
@@ -30,22 +29,19 @@ from .base import (
 from .config import ComposedConfig, compose, protocol_hash
 from .evidence import rotated_mismatch
 from .model import FrozenCoreAdapter
+from .split_receipt import load_verified_split
 from .tracing import TraceSink
 
 
-def load_split(repo_root: Path, split_name: str) -> tuple[set[str], str, str]:
-    receipt_path = Path(repo_root) / "docs" / "receipts" / SPLITS_RECEIPT_NAME
-    if not receipt_path.is_file():
-        raise CoreError(f"splits receipt missing: {receipt_path} (freeze splits first)")
-    document = json.loads(receipt_path.read_text(encoding="utf-8"))
-    try:
-        split = document["splits"][split_name]
-    except KeyError:
-        raise CoreError(
-            f"unknown split {split_name!r}; frozen splits: {sorted(document['splits'])}"
-        ) from None
-    ids = {prefixed.split("/", 1)[1] for prefixed in split["ids"]}
-    return ids, split["identity_hash"], split["split_role"]
+def load_split(
+    repo_root: Path, split_name: str, lock: Mapping[str, object], root: Path
+) -> tuple[set[str], str, str]:
+    """Thin wrapper: strictly parsed AND live-recomputed split (delegates to
+    :func:`core.split_receipt.load_verified_split`; see that module for the
+    trust boundary this closes)."""
+
+    verified = load_verified_split(repo_root, split_name, lock, root)
+    return set(verified.ids), verified.identity_hash, verified.split_role
 
 
 def run_experiment(
@@ -60,7 +56,10 @@ def run_experiment(
 ) -> RunResult:
     values = composed.values
     arm = str(values["arm"])
-    sample_ids, split_hash, receipt_split_role = load_split(repo_root, str(values["split_name"]))
+    verified_split = load_verified_split(repo_root, str(values["split_name"]), lock, root)
+    sample_ids = set(verified_split.ids)
+    split_hash = verified_split.identity_hash
+    receipt_split_role = verified_split.split_role
     if plan.split_identity_hash != split_hash:
         raise CoreError(
             "plan split identity hash does not match the frozen splits receipt "

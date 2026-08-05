@@ -67,7 +67,7 @@ def _frozen_world(synthetic_world, tmp_path):
 
 def test_run_experiment_end_to_end(synthetic_world, tmp_path):
     lock, repo_root = _frozen_world(synthetic_world, tmp_path)
-    ids, split_hash, split_role = load_split(repo_root, "discovery")
+    ids, split_hash, split_role = load_split(repo_root, "discovery", lock, synthetic_world.data_root)
     assert len(ids) == 3
     assert split_role == "discovery"
     composed = _composed()
@@ -115,7 +115,7 @@ def test_run_experiment_refuses_receipt_dev_role_mismatch(synthetic_world, tmp_p
     """A plan labeled 'discovery' must not be able to run against the dev split."""
 
     lock, repo_root = _frozen_world(synthetic_world, tmp_path)
-    _, dev_hash, dev_role = load_split(repo_root, "dev")
+    _, dev_hash, dev_role = load_split(repo_root, "dev", lock, synthetic_world.data_root)
     assert dev_role == "dev"
     with pytest.raises(CoreError, match="split role"):
         run_experiment(
@@ -139,7 +139,7 @@ def test_run_experiment_refuses_confirmatory_split_under_a_dev_labeled_plan(
     """A confirmatory split can never run, even mislabeled as a 'dev' plan."""
 
     lock, repo_root = _frozen_world(synthetic_world, tmp_path)
-    _, confirmatory_hash, confirmatory_role = load_split(repo_root, "confirmatory")
+    _, confirmatory_hash, confirmatory_role = load_split(repo_root, "confirmatory", lock, synthetic_world.data_root)
     assert confirmatory_role == "confirmatory"
     with pytest.raises(CoreError, match="split role"):
         run_experiment(
@@ -161,7 +161,7 @@ def test_run_experiment_supplies_evidence_with_org_and_supply_traces(
     synthetic_world, tmp_path
 ):
     lock, repo_root = _frozen_world(synthetic_world, tmp_path)
-    _, split_hash, _ = load_split(repo_root, "discovery")
+    _, split_hash, _ = load_split(repo_root, "discovery", lock, synthetic_world.data_root)
     composed = _composed(arm="fixed-legal-context", evidence_source="conec-contexts")
     plan = _plan(
         split_hash,
@@ -187,7 +187,7 @@ def test_run_experiment_supplies_evidence_with_org_and_supply_traces(
 
 def test_run_experiment_refuses_wrong_protocol_hash(synthetic_world, tmp_path):
     lock, repo_root = _frozen_world(synthetic_world, tmp_path)
-    _, split_hash, _ = load_split(repo_root, "discovery")
+    _, split_hash, _ = load_split(repo_root, "discovery", lock, synthetic_world.data_root)
     with pytest.raises(CoreError, match="protocol hash"):
         run_experiment(
             composed=_composed(),
@@ -207,7 +207,7 @@ def test_run_experiment_refuses_preexisting_outputs_file(synthetic_world, tmp_pa
     the sink's pre-existence check, is the belt-and-suspenders guard."""
 
     lock, repo_root = _frozen_world(synthetic_world, tmp_path)
-    _, split_hash, _ = load_split(repo_root, "discovery")
+    _, split_hash, _ = load_split(repo_root, "discovery", lock, synthetic_world.data_root)
     composed = _composed()
     plan = _plan(
         split_hash,
@@ -231,7 +231,7 @@ def test_run_experiment_refuses_preexisting_outputs_file(synthetic_world, tmp_pa
 
 def test_run_experiment_refuses_wrong_carrier_lock_key(synthetic_world, tmp_path):
     lock, repo_root = _frozen_world(synthetic_world, tmp_path)
-    _, split_hash, _ = load_split(repo_root, "discovery")
+    _, split_hash, _ = load_split(repo_root, "discovery", lock, synthetic_world.data_root)
     composed = _composed()
     plan = _plan(
         split_hash,

@@ -21,6 +21,7 @@ from .base import (
 from .config import ComposedConfig, ConfigError, compose, protocol_hash
 from .driver import load_split, run_experiment
 from .model import CoreResponse, FrozenCoreAdapter, FrozenCoreError, LlamaServerTransport
+from .split_receipt import SplitReceiptError, VerifiedSplit, load_verified_split
 from .tracing import TraceSink, TraceSinkError
 from .tracking import LEDGER_COLUMNS, MlflowUnavailable, ledger_row, log_run
 
@@ -29,6 +30,7 @@ __all__ = [
     "LEDGER_COLUMNS", "ComposedConfig", "ConfigError", "CoreError", "CoreResponse",
     "EvidenceError", "EvidenceItem", "FrozenCoreAdapter", "FrozenCoreError",
     "LlamaServerTransport", "MlflowUnavailable", "RunResult", "SampleContext",
-    "SampleOutcome", "TraceSink", "TraceSinkError", "compose", "ledger_row",
-    "load_split", "log_run", "protocol_hash", "run_experiment",
+    "SampleOutcome", "SplitReceiptError", "TraceSink", "TraceSinkError",
+    "VerifiedSplit", "compose", "ledger_row", "load_split", "load_verified_split",
+    "log_run", "protocol_hash", "run_experiment",
 ]
