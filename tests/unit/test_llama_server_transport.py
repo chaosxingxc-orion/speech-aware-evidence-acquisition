@@ -8,7 +8,9 @@ import base64
 import hashlib
 import json
 import os
+import shutil
 import subprocess
+import sys
 
 import pytest
 
@@ -29,18 +31,54 @@ from speech_aware_evidence_acquisition.core.session import (
 # itself (see tests/unit/test_session.py for that) -- so every call site here
 # goes through this one canonical, always-matching (session, runtime_receipt)
 # pair via the ``_transport`` helper below, unless a test overrides them.
+#
+# R0 repair T5 fix-1 (reviewer-flagged CRITICAL gap): construction (and every
+# send) now verifies the session's pid is ACTUALLY RUNNING the pinned binary
+# image, not merely alive -- so the fake session below must be backed by a
+# REAL process whose OS-reported executable image is genuinely the pinned
+# binary file. A real copy of THIS interpreter, spawned once and shared for
+# the whole module (session-attestation edge cases have their own dedicated
+# coverage in tests/unit/test_session.py; these tests only need construction
+# to succeed at all).
 
 _BINARY_PATH = "llama.cpp/build/bin/llama-server"
-_BINARY_SHA256 = "c" * 64
 _MODEL_FILES = (
     ModelFileRef(path="models/qwen3-omni/model.gguf", sha256="a" * 64),
     ModelFileRef(path="models/qwen3-omni/mmproj.gguf", sha256="b" * 64),
 )
 
+_live: dict[str, object] = {}
+
+
+@pytest.fixture(scope="module", autouse=True)
+def _spawn_live_matching_process(tmp_path_factory):
+    base = tmp_path_factory.mktemp("session-world")
+    runtime_root = base / "runtime"
+    binary = runtime_root / "llama.cpp" / "build" / "bin" / "llama-server"
+    binary.parent.mkdir(parents=True)
+    shutil.copy(sys.executable, binary)
+    if os.name != "nt":
+        binary.chmod(0o755)
+    _live["runtime_root"] = runtime_root
+    _live["binary_sha256"] = hashlib.sha256(binary.read_bytes()).hexdigest()
+    process = subprocess.Popen(
+        [str(binary), "-c", "import time; time.sleep(300)"],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+    _live["pid"] = process.pid
+    yield
+    process.terminate()
+    try:
+        process.wait(timeout=5)
+    except subprocess.TimeoutExpired:
+        process.kill()
+        process.wait(timeout=5)
+
 
 def _fake_runtime_receipt():
     return {
-        "llama_cpp": {"binary_path": _BINARY_PATH, "binary_sha256": _BINARY_SHA256},
+        "llama_cpp": {"binary_path": _BINARY_PATH, "binary_sha256": _live["binary_sha256"]},
         "gguf_files": [{"path": f.path, "sha256": f.sha256} for f in _MODEL_FILES],
     }
 
@@ -51,9 +89,9 @@ def _fake_session(*, host="127.0.0.1", port=8080):
         study=STUDY_SLUG,
         session_id="test-session",
         binary_path=_BINARY_PATH,
-        binary_sha256=_BINARY_SHA256,
+        binary_sha256=_live["binary_sha256"],
         argv=(_BINARY_PATH, "--host", host, "--port", str(port)),
-        pid=os.getpid(),
+        pid=_live["pid"],
         host=host,
         port=port,
         model_files=_MODEL_FILES,
@@ -62,12 +100,15 @@ def _fake_session(*, host="127.0.0.1", port=8080):
     )
 
 
-def _transport(base_url, data_root, *, post, session=None, runtime_receipt=None, **kwargs):
+def _transport(
+    base_url, data_root, *, post, session=None, runtime_receipt=None, runtime_root=None, **kwargs
+):
     return LlamaServerTransport(
         base_url,
         data_root,
         session if session is not None else _fake_session(),
         runtime_receipt if runtime_receipt is not None else _fake_runtime_receipt(),
+        runtime_root if runtime_root is not None else _live["runtime_root"],
         post=post,
         **kwargs,
     )

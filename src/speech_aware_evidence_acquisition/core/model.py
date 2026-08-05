@@ -25,7 +25,7 @@ from ..contracts import ExecutionPlan, assert_information_boundary
 from ..e0.d2_leakage import ARM_VISIBLE_FIELDS
 from .attempts import AttemptError, AttemptStore
 from .base import TRANSPORTS, CoreError, PayloadBindingContext
-from .session import SessionError, SessionReceipt, require_loopback, verify_against_runtime_receipt
+from .session import SessionError, SessionReceipt, assert_session_alive, require_loopback
 from .tracing import TraceSink
 
 
@@ -189,6 +189,28 @@ class FrozenCoreAdapter:
                 f"carrier_lock_key {plan.carrier_lock_key!r}"
             )
         gate.assert_model_touch_allowed(plan)
+        # R0 repair T5 fix-3 (I5, reviewer-flagged): a second, adapter-level
+        # enforcement call site for session liveness+identity, BEFORE any
+        # attempt slot below is consumed. Duck-typed rather than a new
+        # required constructor parameter: binary/PID/process-image identity
+        # is inherently specific to a subprocess-backed HTTP transport (the
+        # only registered transport with any notion of it at all), not a
+        # generic concept every Callable[[bytes], bytes] transport shares
+        # the way payload/media confinement (I3/I4) is -- so this does not
+        # force every bare-callable test transport in the repo to grow a
+        # session. A transport lacking assert_session_alive() is completely
+        # unaffected; ``core.model.LlamaServerTransport`` -- the one real
+        # transport -- has one, and calling it here is a genuinely
+        # independent second enforcement site (catches, e.g., a future
+        # refactor that accidentally drops the transport's own per-call
+        # re-check) even though the underlying verification code
+        # (``core.session.assert_session_alive``) is shared, not
+        # reimplemented twice the way I3/I4's rails are.
+        session_check: Callable[[], None] | None = getattr(
+            transport, "assert_session_alive", None
+        )
+        if session_check is not None:
+            session_check()
         # One-time attempt accounting (R0 repair T4, invariant I6). This is the
         # ONLY model request path (module docstring), so it is the correct place
         # to bind "a model touch is about to become possible" to "a durable,
@@ -219,6 +241,7 @@ class FrozenCoreAdapter:
         self._arm = arm
         self._allowlist = frozenset(ARM_VISIBLE_FIELDS[arm])
         self._transport = transport
+        self._session_check = session_check
         self._sink = sink
         self._binding = binding
         self._attempt_handle = handle
@@ -282,6 +305,13 @@ class FrozenCoreAdapter:
                 f"({self._prior_audio_seconds} already spent by prior attempts on this "
                 f"run, {self._audio_seconds_used} by this attempt)"
             )
+        # R0 repair T5 fix-3 (I5): re-verify RIGHT BEFORE this specific
+        # request's trace/budget side effects, not merely once at
+        # construction -- a transport instance is reused for an entire run
+        # (up to 3000 calls / 20h audio), so a session valid at construction
+        # time proves nothing about who is listening ten calls later.
+        if self._session_check is not None:
+            self._session_check()
         request_id = str(payload["request_id"])
         request_bytes = _canonical(payload)
         request_sha256 = hashlib.sha256(request_bytes).hexdigest()
@@ -433,24 +463,22 @@ class LlamaServerTransport:
         data_root: Path,
         session: SessionReceipt,
         runtime_receipt: Mapping[str, object],
+        runtime_root: Path,
         timeout_seconds: float = 300.0,
         post: Callable[[str, bytes], bytes] | None = None,
     ) -> None:
         # R0 repair T5 (I5): there is no "no session" transport, mirroring the
         # T3 fail-closed constructor discipline for PayloadBindingContext --
         # a caller can never construct a transport that could ever be asked
-        # to send without first proving WHO is going to answer. ``session``
-        # is re-verified against the runtime receipt HERE (not merely
-        # trusted from whatever produced it) and its host/port must be the
-        # exact endpoint this transport will talk to -- a session receipt is
-        # only ever a proof about ONE specific loopback endpoint, never a
-        # blanket credential.
+        # to send without first proving WHO is going to answer. Its host/port
+        # must be the exact endpoint this transport will talk to -- a session
+        # receipt is only ever a proof about ONE specific loopback endpoint,
+        # never a blanket credential.
         if not isinstance(session, SessionReceipt):
             raise SessionError(
                 "LlamaServerTransport requires a core.session.SessionReceipt; got "
                 f"{type(session).__name__} (no session receipt -> no send, I5)"
             )
-        verify_against_runtime_receipt(session, runtime_receipt)
         loopback_host, loopback_port = require_loopback(base_url)
         if (loopback_host, loopback_port) != (session.host, session.port):
             raise SessionError(
@@ -463,8 +491,39 @@ class LlamaServerTransport:
         self._data_root = Path(data_root)
         self._post = post or _default_post(timeout_seconds)
         self._session = session
+        self._runtime_receipt = runtime_receipt
+        self._runtime_root = Path(runtime_root)
+        # R0 repair T5 fix-1/fix-2 (I5, reviewer-flagged CRITICAL gap): full
+        # liveness+PROCESS-IDENTITY re-verification, not merely a declared-
+        # value comparison -- at construction AND (see __call__) on every
+        # single send. A transport instance answers an entire run (up to
+        # 3000 calls / 20h audio); a session proven valid once at
+        # construction time proves nothing about who is listening later.
+        self._assert_session_still_valid()
+
+    def _assert_session_still_valid(self) -> None:
+        assert_session_alive(self._session, self._runtime_receipt, self._runtime_root)
+
+    def assert_session_alive(self) -> None:
+        """Public re-verification entry point (R0 repair T5 fix-3): lets a
+        holder of this transport (``core.model.FrozenCoreAdapter``)
+        independently trigger the SAME liveness+identity check this class
+        runs on every ``__call__`` -- a second enforcement call site, not an
+        independently reimplemented rail (see ``core.session.
+        assert_session_alive``'s docstring for why full reimplementation is
+        not appropriate for a transport-specific concept like process
+        identity)."""
+
+        self._assert_session_still_valid()
 
     def __call__(self, request_bytes: bytes) -> bytes:
+        # R0 repair T5 fix-2 (IMPORTANT, reviewer-flagged): re-verify on the
+        # send path itself, every time -- not merely once at construction.
+        # Cheap (a few KB re-hash of the launcher stub plus one process-image
+        # lookup, never the multi-GB GGUF files), so there is no reason to
+        # skip it on the hot path; a process that died or was replaced since
+        # the last send is caught HERE, before this request does anything.
+        self._assert_session_still_valid()
         payload: Mapping[str, object] = json.loads(request_bytes.decode("utf-8"))
         # I4, independent second rail: refuse absolute/backslash/traversal
         # media_relpath and anything resolving outside self._data_root on the
@@ -525,12 +584,14 @@ def _llama_server_factory(
     *,
     session: SessionReceipt,
     runtime_receipt: Mapping[str, object],
+    runtime_root: Path,
 ):
     return LlamaServerTransport(
         str(values["base_url"]),
         data_root,
         session,
         runtime_receipt,
+        runtime_root,
         float(values.get("timeout_seconds", 300.0)),
     )
 

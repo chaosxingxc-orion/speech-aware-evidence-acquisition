@@ -6,25 +6,33 @@ POSTs to whatever ``base_url`` the config names. Nothing binds the RESPONDING
 PROCESS to those hashed artifacts. These probes exercise the fix: a
 ``SessionReceipt`` binding binary/model identity, pid, argv, host and port,
 obtained ONLY via ``start_session`` (spawns and observes) or ``attach_session``
-(re-verifies an on-disk receipt against the runtime receipt, a live pid, and a
-loopback host) -- and enforced a second, independent time by
-``LlamaServerTransport`` itself at construction.
+(re-verifies an on-disk receipt against the runtime receipt, a live pid, AND
+-- T5 fix-1, closing a CRITICAL gap an independent reviewer demonstrated
+end-to-end -- the pid's ACTUAL OS-reported executable image) -- and re-checked
+independently by ``LlamaServerTransport`` at construction AND on every single
+send (T5 fix-2), plus a complementary call site inside ``FrozenCoreAdapter``
+(T5 fix-3).
 
-NO MODEL TOUCH: every spawn test below launches a FAKE POSIX shell-script
-"binary" (the same pattern ``tests/unit/test_e0_generators.py`` already uses
-for ``llama-server --version``), never the real llama-server.
+NO MODEL TOUCH: every spawn in this file launches either a FAKE POSIX
+shell-script "binary" (``TestStartSessionSpawn``, the same pattern
+``tests/unit/test_e0_generators.py`` already uses for `llama-server
+--version`) or a plain COPY of the current Python interpreter, invoked with
+``-c "..."`` (the process-identity tests below) -- never the real
+llama-server, never a real model file.
 """
 
 import hashlib
 import json
 import os
+import shutil
 import subprocess
 import sys
 
 import pytest
 
-from speech_aware_evidence_acquisition.contracts import STUDY_SLUG
-from speech_aware_evidence_acquisition.core.model import LlamaServerTransport
+from speech_aware_evidence_acquisition.contracts import STUDY_SLUG, ExecutionPlan
+from speech_aware_evidence_acquisition.core.base import PayloadBindingContext
+from speech_aware_evidence_acquisition.core.model import FrozenCoreAdapter, LlamaServerTransport
 from speech_aware_evidence_acquisition.core.session import (
     SESSION_RECEIPT_SCHEMA,
     ModelFileRef,
@@ -37,6 +45,7 @@ from speech_aware_evidence_acquisition.core.session import (
     verify_against_runtime_receipt,
     write_session_receipt,
 )
+from speech_aware_evidence_acquisition.core.tracing import TraceSink
 
 
 def _sha(raw: bytes) -> str:
@@ -80,7 +89,12 @@ def _canned_response():
 
 def _runtime_world(tmp_path):
     """A tiny model/runtime file world plus a matching runtime receipt dict
-    (no real network, no real model -- fake bytes, like gate_fixture.py)."""
+    (no real network, no real model -- fake bytes, like gate_fixture.py).
+    The 'binary' here is NOT a real executable -- fine for every test that
+    is refused BEFORE reaching the process-identity check (declared-value
+    mismatches, loopback/host-port mismatches), but NOT usable for a test
+    that must actually reach ``_verify_pid_runs_pinned_binary`` -- those use
+    ``_live_runtime_world`` below instead."""
 
     runtime_root = tmp_path / "runtime"
     data_root = tmp_path / "data"
@@ -119,6 +133,55 @@ def _runtime_world(tmp_path):
         ],
     }
     return runtime_root, data_root, binary, runtime_receipt
+
+
+def _live_runtime_world(tmp_path):
+    """Like ``_runtime_world``, but the pinned binary is a REAL executable
+    (a byte-for-byte copy of the CURRENTLY RUNNING interpreter) so process-
+    IDENTITY checks (T5 fix-1) can be genuinely exercised: a real process
+    spawned from this exact file legitimately matches it; any OTHER live
+    process (e.g. this test's own interpreter, or a forger's chosen pid)
+    legitimately does not. No model bytes, no network -- copying/spawning
+    the test's own interpreter is the same idea as
+    ``tests/unit/test_e0_generators.py``'s fake ``llama-server --version``
+    shell script, just for a check that needs a REAL OS-reported image
+    rather than merely an executable-and-exiting one (a shebang script's
+    reported image is its INTERPRETER, e.g. ``/bin/sh``, not the script
+    itself, so it cannot exercise this specific check)."""
+
+    runtime_root = tmp_path / "runtime"
+    binary = runtime_root / "llama.cpp" / "build" / "bin" / "llama-server"
+    binary.parent.mkdir(parents=True)
+    shutil.copy(sys.executable, binary)
+    if os.name != "nt":
+        binary.chmod(0o755)
+    binary_sha256 = _sha(binary.read_bytes())
+    model_files = _model_files()
+    runtime_receipt = {
+        "llama_cpp": {
+            "binary_path": "llama.cpp/build/bin/llama-server",
+            "binary_sha256": binary_sha256,
+        },
+        "gguf_files": [{"path": f.path, "sha256": f.sha256} for f in model_files],
+    }
+    return runtime_root, binary, runtime_receipt
+
+
+def _spawn_matching_process(binary):
+    return subprocess.Popen(
+        [str(binary), "-c", "import time; time.sleep(60)"],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+
+
+def _terminate(process):
+    process.terminate()
+    try:
+        process.wait(timeout=5)
+    except subprocess.TimeoutExpired:
+        process.kill()
+        process.wait(timeout=5)
 
 
 def _matching_session(runtime_receipt, **overrides):
@@ -188,7 +251,8 @@ def test_read_session_receipt_refuses_missing_file(tmp_path):
 
 
 # ---------------------------------------------------------------------------
-# verify_against_runtime_receipt -- probe 3 (binary hash mismatch refused).
+# verify_against_runtime_receipt -- probe 3 (declared-value mismatch refused).
+# Pure declared-value comparison: no pid/process involved at all.
 # ---------------------------------------------------------------------------
 
 
@@ -216,6 +280,9 @@ def test_verify_against_runtime_receipt_refuses_model_file_mismatch(tmp_path):
 
 # ---------------------------------------------------------------------------
 # LlamaServerTransport -- probes 1, 2, 3, 6, 7 at the send choke point.
+# These declared-value/loopback probes are refused BEFORE the process-
+# identity check is ever reached, so a placeholder (non-existent, non-real)
+# runtime_root is fine for them -- it is never resolved.
 # ---------------------------------------------------------------------------
 
 
@@ -224,7 +291,9 @@ def test_transport_refuses_without_a_session_receipt(tmp_path):
     __call__/send is even possible (construction itself fails closed)."""
 
     with pytest.raises(SessionError, match="session"):
-        LlamaServerTransport("http://127.0.0.1:8080", tmp_path, None, {}, post=lambda u, b: b"")
+        LlamaServerTransport(
+            "http://127.0.0.1:8080", tmp_path, None, {}, tmp_path, post=lambda u, b: b""
+        )
 
 
 def test_transport_refuses_non_loopback_base_url(tmp_path):
@@ -234,7 +303,8 @@ def test_transport_refuses_non_loopback_base_url(tmp_path):
     session = _matching_session(runtime_receipt, host="127.0.0.1", port=8080)
     with pytest.raises(SessionError, match="loopback"):
         LlamaServerTransport(
-            "http://10.0.0.5:8080", tmp_path, session, runtime_receipt, post=lambda u, b: b""
+            "http://10.0.0.5:8080", tmp_path, session, runtime_receipt, tmp_path,
+            post=lambda u, b: b"",
         )
 
 
@@ -246,7 +316,8 @@ def test_transport_refuses_session_with_binary_hash_mismatch(tmp_path):
     session = _matching_session(runtime_receipt, binary_sha256="0" * 64)
     with pytest.raises(SessionError, match="binary identity"):
         LlamaServerTransport(
-            "http://127.0.0.1:8080", tmp_path, session, runtime_receipt, post=lambda u, b: b""
+            "http://127.0.0.1:8080", tmp_path, session, runtime_receipt, tmp_path,
+            post=lambda u, b: b"",
         )
 
 
@@ -259,7 +330,8 @@ def test_transport_refuses_session_port_mismatch_with_base_url(tmp_path):
     session = _matching_session(runtime_receipt, host="127.0.0.1", port=9090)
     with pytest.raises(SessionError, match="does not match"):
         LlamaServerTransport(
-            "http://127.0.0.1:8080", tmp_path, session, runtime_receipt, post=lambda u, b: b""
+            "http://127.0.0.1:8080", tmp_path, session, runtime_receipt, tmp_path,
+            post=lambda u, b: b"",
         )
 
 
@@ -271,50 +343,138 @@ def test_transport_refuses_session_host_mismatch_with_base_url(tmp_path):
     session = _matching_session(runtime_receipt, host="localhost", port=8080)
     with pytest.raises(SessionError, match="does not match"):
         LlamaServerTransport(
-            "http://127.0.0.1:8080", tmp_path, session, runtime_receipt, post=lambda u, b: b""
+            "http://127.0.0.1:8080", tmp_path, session, runtime_receipt, tmp_path,
+            post=lambda u, b: b"",
         )
 
 
 def test_transport_accepts_a_valid_matching_session_and_sends(tmp_path):
-    """Probe 7 (transport half): a legitimate session accepted, and an actual
-    send still works exactly as before T5."""
+    """Probe 7 (transport half): a legitimate, REALLY-alive-and-matching
+    session is accepted, and an actual send still works exactly as before
+    T5."""
 
-    _, _, _, runtime_receipt = _runtime_world(tmp_path)
-    session = _matching_session(runtime_receipt, host="127.0.0.1", port=8080)
-    transport = LlamaServerTransport(
-        "http://127.0.0.1:8080",
-        tmp_path,
-        session,
-        runtime_receipt,
-        post=lambda u, b: _canned_response(),
-    )
-    media = tmp_path / "media" / "5000001.mp3"
-    media.parent.mkdir(parents=True, exist_ok=True)
-    media.write_bytes(b"fake-mp3-bytes")
-    payload = {
-        "request_id": "req-1",
-        "carrier_lock_key": "earnings22-original",
-        "sample_id": "5000001",
-        "speech_ref": "earnings22-original/5000001",
-        "media_relpath": "media/5000001.mp3",
-        "audio_seconds": 10.0,
-        "sample_rate_hz": 16000,
-        "task_instruction": "Transcribe the speech verbatim.",
-        "history": [],
-        "decoding_params": {"temperature": 0, "seed": 20260803},
-    }
-    raw = transport(json.dumps(payload).encode())
-    assert json.loads(raw)["text"] == "hello world"
+    runtime_root, binary, runtime_receipt = _live_runtime_world(tmp_path)
+    process = _spawn_matching_process(binary)
+    try:
+        session = _matching_session(runtime_receipt, host="127.0.0.1", port=8080, pid=process.pid)
+        transport = LlamaServerTransport(
+            "http://127.0.0.1:8080",
+            tmp_path,
+            session,
+            runtime_receipt,
+            runtime_root,
+            post=lambda u, b: _canned_response(),
+        )
+        media = tmp_path / "media" / "5000001.mp3"
+        media.parent.mkdir(parents=True, exist_ok=True)
+        media.write_bytes(b"fake-mp3-bytes")
+        payload = {
+            "request_id": "req-1",
+            "carrier_lock_key": "earnings22-original",
+            "sample_id": "5000001",
+            "speech_ref": "earnings22-original/5000001",
+            "media_relpath": "media/5000001.mp3",
+            "audio_seconds": 10.0,
+            "sample_rate_hz": 16000,
+            "task_instruction": "Transcribe the speech verbatim.",
+            "history": [],
+            "decoding_params": {"temperature": 0, "seed": 20260803},
+        }
+        raw = transport(json.dumps(payload).encode())
+        assert json.loads(raw)["text"] == "hello world"
+    finally:
+        _terminate(process)
 
 
 # ---------------------------------------------------------------------------
-# attach_session -- probes 3, 4.
+# CRITICAL, reviewer-demonstrated exploit: a forged SessionReceipt with the
+# CORRECT, PUBLIC binary_path/binary_sha256/model_files (copied verbatim from
+# the committed runtime receipt) but naming an unrelated LIVE pid (here: this
+# very test process). Before the fix, attach_session and LlamaServerTransport
+# construction both only checked declared-value agreement plus bare
+# liveness -- both trivially satisfied by such a forgery -- and returned/
+# accepted the receipt as genuine, letting an "answered-by-imposter" request
+# round-trip successfully. Standing regressions, exercised at BOTH
+# independent enforcement layers.
+# ---------------------------------------------------------------------------
+
+
+def test_attach_refuses_alive_but_unrelated_pid(tmp_path):
+    runtime_root, _binary, runtime_receipt = _live_runtime_world(tmp_path)
+    forged = _matching_session(runtime_receipt, pid=os.getpid())
+    receipt_path = tmp_path / "forged-session.json"
+    write_session_receipt(receipt_path, forged)
+    with pytest.raises(SessionError, match="is running"):
+        attach_session(receipt_path, runtime_receipt=runtime_receipt, runtime_root=runtime_root)
+
+
+def test_transport_refuses_alive_but_unrelated_pid(tmp_path):
+    runtime_root, _binary, runtime_receipt = _live_runtime_world(tmp_path)
+    forged = _matching_session(runtime_receipt, pid=os.getpid())
+    with pytest.raises(SessionError, match="is running"):
+        LlamaServerTransport(
+            "http://127.0.0.1:8080", tmp_path, forged, runtime_receipt, runtime_root,
+            post=lambda u, b: b"",
+        )
+
+
+# ---------------------------------------------------------------------------
+# IMPORTANT fix-2: the process dying MID-RUN must be caught on the NEXT
+# send, not only at construction.
+# ---------------------------------------------------------------------------
+
+
+def test_transport_send_refuses_after_process_dies_mid_run(tmp_path):
+    runtime_root, binary, runtime_receipt = _live_runtime_world(tmp_path)
+    process = _spawn_matching_process(binary)
+    try:
+        session = _matching_session(runtime_receipt, host="127.0.0.1", port=8080, pid=process.pid)
+        transport = LlamaServerTransport(
+            "http://127.0.0.1:8080",
+            tmp_path,
+            session,
+            runtime_receipt,
+            runtime_root,
+            post=lambda u, b: _canned_response(),
+        )
+        media = tmp_path / "media" / "5000001.mp3"
+        media.parent.mkdir(parents=True, exist_ok=True)
+        media.write_bytes(b"fake-mp3-bytes")
+        payload = {
+            "request_id": "req-1",
+            "carrier_lock_key": "earnings22-original",
+            "sample_id": "5000001",
+            "speech_ref": "earnings22-original/5000001",
+            "media_relpath": "media/5000001.mp3",
+            "audio_seconds": 10.0,
+            "sample_rate_hz": 16000,
+            "task_instruction": "Transcribe the speech verbatim.",
+            "history": [],
+            "decoding_params": {"temperature": 0, "seed": 20260803},
+        }
+        raw = transport(json.dumps(payload).encode())
+        assert json.loads(raw)["text"] == "hello world"
+
+        process.terminate()
+        process.wait(timeout=5)
+        with pytest.raises(SessionError, match="not a live process"):
+            transport(json.dumps(payload).encode())
+    finally:
+        if process.poll() is None:
+            process.kill()
+            process.wait(timeout=5)
+
+
+# ---------------------------------------------------------------------------
+# attach_session -- probes 3, 4 (declared-value / dead-pid; refused before
+# the process-identity check is reached, so the placeholder runtime_root is
+# fine).
 # ---------------------------------------------------------------------------
 
 
 def test_attach_refuses_missing_receipt_file(tmp_path):
     with pytest.raises(SessionError, match="cannot read"):
-        attach_session(tmp_path / "does-not-exist.json", runtime_receipt={})
+        attach_session(tmp_path / "does-not-exist.json", runtime_receipt={}, runtime_root=tmp_path)
 
 
 def test_attach_refuses_binary_hash_mismatch(tmp_path):
@@ -325,7 +485,7 @@ def test_attach_refuses_binary_hash_mismatch(tmp_path):
     receipt_path = tmp_path / "session.json"
     write_session_receipt(receipt_path, session)
     with pytest.raises(SessionError, match="binary identity"):
-        attach_session(receipt_path, runtime_receipt=runtime_receipt)
+        attach_session(receipt_path, runtime_receipt=runtime_receipt, runtime_root=tmp_path)
 
 
 def test_attach_refuses_dead_pid(tmp_path):
@@ -338,20 +498,172 @@ def test_attach_refuses_dead_pid(tmp_path):
     receipt_path = tmp_path / "session.json"
     write_session_receipt(receipt_path, session)
     with pytest.raises(SessionError, match="not a live process"):
-        attach_session(receipt_path, runtime_receipt=runtime_receipt)
+        attach_session(receipt_path, runtime_receipt=runtime_receipt, runtime_root=tmp_path)
 
 
 def test_attach_succeeds_for_a_live_matching_session(tmp_path):
-    _, _, _, runtime_receipt = _runtime_world(tmp_path)
-    session = _matching_session(runtime_receipt, pid=os.getpid())
-    receipt_path = tmp_path / "session.json"
-    write_session_receipt(receipt_path, session)
-    attached = attach_session(receipt_path, runtime_receipt=runtime_receipt)
-    assert attached == session
+    """Fixed per reviewer feedback: the ORIGINAL version of this test used
+    ``pid=os.getpid()`` (the test's own interpreter), which is exactly why
+    the CRITICAL gap (attach_session trusting declared values + bare
+    liveness) went uncaught. attach_session now ALSO requires the pid to be
+    ACTUALLY RUNNING the pinned binary image -- proven here with a REAL
+    spawned process running a genuine copy of that exact binary file."""
+
+    runtime_root, binary, runtime_receipt = _live_runtime_world(tmp_path)
+    process = _spawn_matching_process(binary)
+    try:
+        session = _matching_session(runtime_receipt, pid=process.pid)
+        receipt_path = tmp_path / "session.json"
+        write_session_receipt(receipt_path, session)
+        attached = attach_session(
+            receipt_path, runtime_receipt=runtime_receipt, runtime_root=runtime_root
+        )
+        assert attached == session
+    finally:
+        _terminate(process)
+
+
+# ---------------------------------------------------------------------------
+# IMPORTANT fix-3: FrozenCoreAdapter's complementary session-liveness check.
+# ---------------------------------------------------------------------------
+
+
+class _RecordingSessionTransport:
+    """Duck-typed stand-in exposing assert_session_alive(), the SAME
+    protocol LlamaServerTransport exposes -- proves FrozenCoreAdapter really
+    calls it (construction + before every request) and never invokes the
+    underlying transport when it raises, without needing a real llama-server
+    or even a real subprocess."""
+
+    def __init__(self) -> None:
+        self.session_checks = 0
+        self.calls = 0
+        self.should_fail = False
+
+    def assert_session_alive(self) -> None:
+        self.session_checks += 1
+        if self.should_fail:
+            raise SessionError("forced session failure for the test")
+
+    def __call__(self, request_bytes: bytes) -> bytes:
+        self.calls += 1
+        return _canned_response_as_core_response()
+
+
+def _canned_response_as_core_response() -> bytes:
+    return json.dumps(
+        {"text": "hello world", "usage": {"prompt_tokens": 1, "completion_tokens": 1}}
+    ).encode()
+
+
+class _OpenGate:
+    def assert_model_touch_allowed(self, plan):
+        pass
+
+
+def _adapter_world(tmp_path):
+    media = tmp_path / "media" / "5000001.mp3"
+    media.parent.mkdir(parents=True, exist_ok=True)
+    media.write_bytes(b"fake-mp3-bytes")
+    binding = PayloadBindingContext(
+        carrier_lock_key="earnings22-original",
+        allowed_sample_ids=frozenset({"5000001"}),
+        sample_facts={"5000001": (100.0, 16000)},
+        data_root=tmp_path,
+        carrier_root=tmp_path,
+    )
+    plan = ExecutionPlan(
+        run_id="SAEA-E-000-session-adapter",
+        execution_profile="bounded-discovery-probe",
+        carrier_lock_key="earnings22-original",
+        split_role="dev",
+        split_identity_hash="a" * 64,
+        planned_model_calls=5,
+        planned_gpu_hours=0.5,
+        planned_speech_audio_seconds=500,
+        protocol_hash="b" * 64,
+        attempt_id="attempt-session-check",
+    )
+    payload = {
+        "request_id": "req-1",
+        "carrier_lock_key": "earnings22-original",
+        "sample_id": "5000001",
+        "speech_ref": "earnings22-original/5000001",
+        "media_relpath": "media/5000001.mp3",
+        "audio_seconds": 100.0,
+        "sample_rate_hz": 16000,
+        "task_instruction": "Transcribe.",
+        "history": [],
+        "decoding_params": {"temperature": 0, "seed": 20260803},
+    }
+    return binding, plan, payload
+
+
+def test_adapter_checks_transport_session_at_construction(tmp_path):
+    binding, plan, _payload = _adapter_world(tmp_path)
+    transport = _RecordingSessionTransport()
+    FrozenCoreAdapter(
+        gate=_OpenGate(), plan=plan, arm="bare-core", transport=transport,
+        sink=TraceSink(tmp_path / "run", plan.run_id), binding=binding,
+    )
+    assert transport.session_checks == 1
+
+
+def test_adapter_rechecks_transport_session_before_every_request(tmp_path):
+    binding, plan, payload = _adapter_world(tmp_path)
+    transport = _RecordingSessionTransport()
+    adapter = FrozenCoreAdapter(
+        gate=_OpenGate(), plan=plan, arm="bare-core", transport=transport,
+        sink=TraceSink(tmp_path / "run", plan.run_id), binding=binding,
+    )
+    assert transport.session_checks == 1
+    adapter.request(payload)
+    assert transport.session_checks == 2
+    assert transport.calls == 1
+
+
+def test_adapter_never_sends_when_the_session_check_fails(tmp_path):
+    """A failing session check must refuse the request WITHOUT ever reaching
+    the underlying transport -- no partial or leaked send."""
+
+    binding, plan, payload = _adapter_world(tmp_path)
+    transport = _RecordingSessionTransport()
+    adapter = FrozenCoreAdapter(
+        gate=_OpenGate(), plan=plan, arm="bare-core", transport=transport,
+        sink=TraceSink(tmp_path / "run", plan.run_id), binding=binding,
+    )
+    transport.should_fail = True
+    with pytest.raises(SessionError, match="forced session failure"):
+        adapter.request(payload)
+    assert transport.calls == 0
+
+
+def test_adapter_with_a_bare_callable_transport_is_unaffected(tmp_path):
+    """A transport with no assert_session_alive() attribute at all (every
+    fake/bare-callable transport used elsewhere in this repo's own tests)
+    must behave EXACTLY as before T5 -- the duck-typed check is strictly
+    additive, never mandatory for a transport that never claimed to have
+    one."""
+
+    binding, plan, payload = _adapter_world(tmp_path)
+
+    def bare_transport(request_bytes: bytes) -> bytes:
+        return _canned_response_as_core_response()
+
+    adapter = FrozenCoreAdapter(
+        gate=_OpenGate(), plan=plan, arm="bare-core", transport=bare_transport,
+        sink=TraceSink(tmp_path / "run", plan.run_id), binding=binding,
+    )
+    response = adapter.request(payload)
+    assert response.text == "hello world"
 
 
 # ---------------------------------------------------------------------------
 # start_session -- real spawn, POSIX-only, FAKE binary (never llama-server).
+# start_session itself is unchanged by this fix (it directly hash-verifies
+# then immediately Popen()s the exact same path -- no separate PID-identity
+# gap to close there the way attach_session/LlamaServerTransport had), so
+# these probes are unchanged.
 # ---------------------------------------------------------------------------
 
 

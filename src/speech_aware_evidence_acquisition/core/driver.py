@@ -286,19 +286,27 @@ def _cli_run(args: argparse.Namespace) -> int:
     root = data_root()
     composed = compose(REPO_ROOT, args.model, args.dataset, args.baseline, args.experiment)
     plan = ExecutionPlan(**json.loads(Path(args.plan).read_text(encoding="utf-8")))
-    gate = FrozenCoreGate.for_study_repo(REPO_ROOT, root, Path(args.runtime_root))
+    runtime_root = Path(args.runtime_root)
+    gate = FrozenCoreGate.for_study_repo(REPO_ROOT, root, runtime_root)
     # R0 repair T5 (I5): the runtime receipt is the SAME committed file the
     # gate itself re-hashes. attach_session binds this run to a session
-    # receipt whose binary/model identity, live pid and loopback host it
+    # receipt whose binary/model identity, live pid, PROCESS IMAGE identity
+    # (T5 fix-1 -- pid liveness alone proves nothing) and loopback host it
     # independently re-verifies against that file -- a resident server
     # started out of band is only usable if it can PROVE it is the
     # receipt-pinned process, never merely because its base_url matches the
     # config.
     runtime_receipt = load_runtime_receipt(REPO_ROOT / "docs" / "receipts" / "runtime.json")
-    session = attach_session(Path(args.session_receipt), runtime_receipt=runtime_receipt)
+    session = attach_session(
+        Path(args.session_receipt), runtime_receipt=runtime_receipt, runtime_root=runtime_root
+    )
     transport_factory = TRANSPORTS.resolve(str(composed.values["transport"]))
     transport = transport_factory(
-        composed.values, root, session=session, runtime_receipt=runtime_receipt
+        composed.values,
+        root,
+        session=session,
+        runtime_receipt=runtime_receipt,
+        runtime_root=runtime_root,
     )
     # R0 repair T6 (I7): every real run always produces a run manifest, win
     # or lose -- run_experiment_bundled marks the attempt ABORTED and still

@@ -479,6 +479,10 @@ if os.name == "nt":  # pragma: sys-platform
     _kernel32.GetExitCodeProcess.restype = _wintypes.BOOL
     _kernel32.CloseHandle.argtypes = [_wintypes.HANDLE]
     _kernel32.CloseHandle.restype = _wintypes.BOOL
+    _kernel32.QueryFullProcessImageNameW.argtypes = [
+        _wintypes.HANDLE, _wintypes.DWORD, _wintypes.LPWSTR, ctypes.POINTER(_wintypes.DWORD)
+    ]
+    _kernel32.QueryFullProcessImageNameW.restype = _wintypes.BOOL
     _PROCESS_QUERY_LIMITED_INFORMATION = 0x1000
     _STILL_ACTIVE = 259
 
@@ -505,6 +509,123 @@ def _pid_alive(pid: int) -> bool:
     except OSError:
         return False
     return True
+
+
+def _process_image_path(pid: int) -> Path:
+    """Resolve the ACTUAL executable image the OS loaded for a running
+    process -- the fact ``_pid_alive`` cannot tell you. Liveness alone proves
+    nothing: ANY live process (this very pytest interpreter included)
+    satisfies ``_pid_alive``, which is exactly the gap a forged
+    ``SessionReceipt`` (correct binary_path/binary_sha256/model_files copied
+    verbatim from the PUBLIC runtime receipt, but naming an unrelated live
+    pid) exploits. Fails closed (:class:`SessionError`) if the image cannot
+    be determined at all -- permissions, a raced-away pid, or a deleted-on-
+    disk image are all refusals, never silent passes."""
+
+    if os.name == "nt":  # pragma: sys-platform
+        handle = _kernel32.OpenProcess(_PROCESS_QUERY_LIMITED_INFORMATION, False, pid)
+        if not handle:
+            raise SessionError(
+                f"cannot open pid {pid} to resolve its executable image; refused (I5)"
+            )
+        try:
+            buffer = ctypes.create_unicode_buffer(32768)
+            size = _wintypes.DWORD(len(buffer))
+            if not _kernel32.QueryFullProcessImageNameW(handle, 0, buffer, ctypes.byref(size)):
+                raise SessionError(
+                    f"cannot resolve executable image for pid {pid}; refused (I5)"
+                )
+            return Path(buffer.value)
+        finally:
+            _kernel32.CloseHandle(handle)
+    exe_link = Path(f"/proc/{pid}/exe")
+    try:
+        target = os.readlink(exe_link)
+    except OSError as error:
+        raise SessionError(
+            f"cannot resolve executable image for pid {pid} via {exe_link}: {error}; "
+            "refused (I5: liveness alone proves nothing)"
+        ) from error
+    if target.endswith(" (deleted)"):
+        raise SessionError(
+            f"pid {pid}'s executable image {target!r} was deleted from disk after "
+            "exec; cannot prove identity against a file that no longer exists there"
+        )
+    return Path(target)
+
+
+def _verify_pid_runs_pinned_binary(
+    pid: int, runtime_root: Path, runtime_receipt: Mapping[str, object]
+) -> None:
+    """I5's actual substance for a PID-based claim (the reviewer-demonstrated
+    gap this closes): resolve the OS-reported executable image backing
+    ``pid`` RIGHT NOW and require it to be literally the pinned binary file
+    -- re-hashed for certainty, not merely path-equal -- rather than trusting
+    that a live pid plus a self-reported ``binary_path`` string means
+    anything at all. A forged ``SessionReceipt`` can copy the correct
+    ``binary_path``/``binary_sha256`` verbatim from the (public, committed)
+    runtime receipt and name ANY live pid; only this check catches that."""
+
+    pinned_relpath, pinned_sha = _pinned_binary(runtime_receipt)
+    expected = _resolve_under(
+        runtime_root, pinned_relpath, "runtime llama_cpp.binary_path", must_exist=True
+    )
+    image = _process_image_path(pid)
+    try:
+        image_resolved = image.resolve(strict=True)
+    except OSError as error:
+        raise SessionError(
+            f"pid {pid}'s executable image {image} could not be resolved: {error}; "
+            "refused (I5: process identity must be provable)"
+        ) from error
+    if image_resolved != expected:
+        raise SessionError(
+            f"pid {pid} is running {image_resolved}, not the pinned binary {expected}; "
+            "refused (I5: PID liveness alone proves nothing -- a session receipt "
+            "naming an unrelated live process must be rejected)"
+        )
+    actual_sha = _sha256_file(image_resolved)
+    if actual_sha != pinned_sha:
+        raise SessionError(
+            f"pid {pid}'s executable image {image_resolved} hashes to "
+            f"{actual_sha[:12]}... but the runtime receipt pins {pinned_sha[:12]}...; "
+            "refused (I5)"
+        )
+
+
+def assert_session_alive(
+    session: SessionReceipt, runtime_receipt: Mapping[str, object], runtime_root: Path
+) -> None:
+    """The full I5 liveness+identity re-check: declared-value agreement with
+    the runtime receipt, PID liveness RIGHT NOW, and -- the fix for the
+    reviewer-demonstrated CRITICAL gap -- that the pid is actually running
+    the pinned binary's executable image, not merely SOME live process that
+    happens to share a number with a forged receipt. Every check re-touches
+    ground truth; nothing here is ever cached across calls.
+
+    This is the ONE place the full check is implemented; it is called from
+    THREE independent enforcement sites (``attach_session``,
+    ``core.model.LlamaServerTransport`` at construction AND every send, and
+    -- as a complementary adapter-level call, R0 repair T5 fix-3 --
+    ``core.model.FrozenCoreAdapter`` before every request when its transport
+    exposes an ``assert_session_alive()`` method). The sites are independent
+    (each can catch a failure the others miss, e.g. a future refactor that
+    accidentally drops the transport's own per-call check would still be
+    caught by the adapter's); the underlying verification CODE is shared,
+    unlike I3/I4's payload/media-confinement checks, which T3 deliberately
+    reimplemented twice. Full reimplementation is not appropriate here:
+    binary/PID/process-image identity is inherently specific to a
+    subprocess-backed HTTP transport, not a generic concept every
+    ``Callable[[bytes], bytes]`` transport shares the way a payload's
+    ``media_relpath`` is."""
+
+    verify_against_runtime_receipt(session, runtime_receipt)
+    if not _pid_alive(session.pid):
+        raise SessionError(
+            f"session {session.session_id!r} pid {session.pid} is not a live process; "
+            "refused (I5)"
+        )
+    _verify_pid_runs_pinned_binary(session.pid, runtime_root, runtime_receipt)
 
 
 # ---------------------------------------------------------------------------
@@ -627,22 +748,25 @@ def start_session(
     return receipt
 
 
-def attach_session(receipt_path: Path, *, runtime_receipt: Mapping[str, object]) -> SessionReceipt:
+def attach_session(
+    receipt_path: Path, *, runtime_receipt: Mapping[str, object], runtime_root: Path
+) -> SessionReceipt:
     """Bind to an already-resident server via an on-disk session receipt.
 
-    Valid ONLY if: the receipt exists and is well-formed; its binary AND
-    model-file identity match the runtime receipt's pinned set (I5); its pid
-    names a process that is alive RIGHT NOW; and its host is loopback.
-    Anything else fails closed -- there is no other way to obtain a
-    ``SessionReceipt`` for a server this process did not itself spawn.
+    Valid ONLY if: the receipt exists and is well-formed; its host is
+    loopback; and (:func:`assert_session_alive`) its declared binary/model
+    identity matches the runtime receipt's pinned set, its pid names a
+    process that is alive RIGHT NOW, AND -- the fix for the CRITICAL gap an
+    independent reviewer demonstrated end-to-end (a from-scratch forged
+    ``SessionReceipt`` copying the correct, PUBLIC binary_path/binary_sha256
+    but naming the reviewer's own live, unrelated pid previously passed
+    every check this function ran) -- that pid's ACTUAL OS-reported
+    executable image is literally the pinned binary file. Anything else
+    fails closed: there is no other way to obtain a ``SessionReceipt`` for a
+    server this process did not itself spawn.
     """
 
     receipt = read_session_receipt(receipt_path)
-    verify_against_runtime_receipt(receipt, runtime_receipt)
-    if not _pid_alive(receipt.pid):
-        raise SessionError(
-            f"session {receipt.session_id!r} pid {receipt.pid} is not a live process; "
-            "attach refused (I5)"
-        )
     require_loopback(f"http://{_bracketed(receipt.host)}:{receipt.port}")
+    assert_session_alive(receipt, runtime_receipt, runtime_root)
     return receipt
