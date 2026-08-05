@@ -22,12 +22,13 @@ from .config import ComposedConfig, ConfigError, compose, protocol_hash
 from .driver import load_split, run_experiment
 from .model import CoreResponse, FrozenCoreAdapter, FrozenCoreError, LlamaServerTransport
 from .tracing import TraceSink, TraceSinkError
+from .tracking import LEDGER_COLUMNS, MlflowUnavailable, ledger_row, log_run
 
 __all__ = [
     "CARRIERS", "EVIDENCE_SOURCES", "POLICIES", "SCORERS", "TRANSPORTS",
-    "ComposedConfig", "ConfigError", "CoreError", "CoreResponse",
+    "LEDGER_COLUMNS", "ComposedConfig", "ConfigError", "CoreError", "CoreResponse",
     "EvidenceError", "EvidenceItem", "FrozenCoreAdapter", "FrozenCoreError",
-    "LlamaServerTransport", "RunResult", "SampleContext", "SampleOutcome",
-    "TraceSink", "TraceSinkError", "compose", "load_split", "protocol_hash",
-    "run_experiment",
+    "LlamaServerTransport", "MlflowUnavailable", "RunResult", "SampleContext",
+    "SampleOutcome", "TraceSink", "TraceSinkError", "compose", "ledger_row",
+    "load_split", "log_run", "protocol_hash", "run_experiment",
 ]

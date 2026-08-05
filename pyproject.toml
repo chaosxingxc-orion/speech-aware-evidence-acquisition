@@ -16,6 +16,7 @@ dev = [
     "pytest>=8",
     "build>=1.2",
 ]
+tracking = ["mlflow>=2.14"]
 
 [dependency-groups]
 dev = [
