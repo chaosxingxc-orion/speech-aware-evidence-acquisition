@@ -25,6 +25,32 @@ class ConfigError(RuntimeError):
     """A config fragment is missing, unreadable, or collides with another."""
 
 
+def _reject_duplicate_keys(fragment_path: Path):
+    """``object_pairs_hook`` factory (M-5 fix): a human reading a JSON
+    fragment top-to-bottom sees the FIRST value for a repeated key, but
+    ``json.loads``'s default dict-building silently keeps the LAST -- the
+    two readers of the same fragment (a person, and this composer) would
+    disagree about what the fragment means. Raising here, at parse time,
+    turns that silent last-write-wins behavior into a fail-closed
+    :class:`ConfigError` naming both the offending key and the fragment
+    file, before the duplicate can ever reach ``compose``'s own (unrelated)
+    cross-fragment collision check below."""
+
+    def hook(pairs: list[tuple[str, object]]) -> dict[str, object]:
+        seen: dict[str, object] = {}
+        for key, value in pairs:
+            if key in seen:
+                raise ConfigError(
+                    f"config fragment {fragment_path} has a duplicate key {key!r}; "
+                    "a human reading it top-to-bottom sees the FIRST value but JSON "
+                    "parsing would otherwise silently keep the LAST -- refused"
+                )
+            seen[key] = value
+        return seen
+
+    return hook
+
+
 @dataclass(frozen=True)
 class ComposedConfig:
     values: Mapping[str, object]
@@ -51,8 +77,16 @@ def compose(
         if not path.is_file():
             raise ConfigError(f"missing config fragment: {path}")
         try:
-            fragment = json.loads(path.read_text(encoding="utf-8"))
-        except (OSError, UnicodeError, json.JSONDecodeError) as error:
+            text = path.read_text(encoding="utf-8")
+        except (OSError, UnicodeError) as error:
+            raise ConfigError(f"cannot read config fragment {path}: {error}") from error
+        try:
+            # M-5 fix: object_pairs_hook rejects a duplicate top-level key
+            # before json.loads ever builds the (last-value-wins) dict --
+            # ConfigError raised inside the hook propagates straight out of
+            # json.loads uncaught below, since it is not a json.JSONDecodeError.
+            fragment = json.loads(text, object_pairs_hook=_reject_duplicate_keys(path))
+        except json.JSONDecodeError as error:
             raise ConfigError(f"cannot read config fragment {path}: {error}") from error
         if not isinstance(fragment, dict):
             raise ConfigError(f"config fragment {path} must be a JSON object")

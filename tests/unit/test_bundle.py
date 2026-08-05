@@ -1209,3 +1209,177 @@ def test_verify_bundle_refuses_a_completed_manifest_carrying_an_unavailable_comm
     write_json_artifact(manifest_path, manifest)
     with pytest.raises(BundleError, match=UNAVAILABLE_COMMIT_PREFIX):
         verify_bundle(manifest_path)
+
+
+# ===========================================================================
+# External-threat-model review, finding I-1: verify_bundle never re-derived
+# the manifest's OWN identity block (split.identity_hash, the plan block,
+# protocol_hash) -- it treated split["ids"] and the plan dict as truth.
+# Required probes (task brief), each proved ACCEPT -> REJECT (or, for the
+# legitimate flow, REJECT-everywhere-else -> ACCEPT end to end):
+#
+# 1. the exact PoC: a legitimate COMPLETED dev bundle relabelled to the two
+#    CONFIRMATORY sample ids, both hashes left at their dev values.
+# 2. plan.execution_profile mutated to paper-scale-confirmatory.
+# 3. plan.split_role mutated to confirmatory.
+# 4. planned_model_calls inflated to 999999.
+# 5. cost.calls_used zeroed (contradicts the verified outputs row count).
+# 6. a legitimate bundle still verifies AND finalizes end to end.
+# ===========================================================================
+
+
+def test_verify_bundle_refuses_the_exact_i1_dev_to_confirmatory_relabel_poc(
+    synthetic_world, bundled_repo, tmp_path
+):
+    """I-1 exact PoC: a legitimate COMPLETED dev-split bundle (10 real dev
+    sample ids, earnings22-original) is relabelled to the two CONFIRMATORY
+    sample ids (E22_IDS[10:12] in tests/unit/conftest.py -- disjoint from the
+    dev subset10) while split.identity_hash AND protocol_hash are left
+    UNTOUCHED at their original dev values. Before I-1, verify_bundle treated
+    split["ids"] as truth and never re-derived split.identity_hash from it,
+    so this passed verify_bundle, finalize_bundle, scoring, and FINALIZED the
+    attempt outright. Must now REJECT -- and REJECT specifically on the
+    split identity re-derivation, before outputs/trace are ever inspected."""
+
+    lock, repo_root = bundled_repo
+    ids, split_hash, split_role = load_split(repo_root, "dev", lock, synthetic_world.data_root)
+    assert split_role == "dev"
+    composed = _composed(carrier_lock_key="earnings22-original", split_name="dev")
+    plan = _plan(
+        split_hash, run_id="SAEA-E-000-i1poc", attempt_id="attempt-i1poc",
+        carrier_lock_key="earnings22-original", split_role="dev",
+        # The dev split carries 10 samples at 1200 audio seconds each (see
+        # tests/unit/conftest.py's E22 metadata fixture) -- well over the
+        # default _plan() helper's 1000-second discovery-sized budget.
+        planned_speech_audio_seconds=20000,
+        protocol_hash=protocol_hash(composed.config_hash, composed.values["arm"], split_hash),
+    )
+    manifest_path = run_experiment_bundled(
+        composed, plan, _OpenGate(), lock, synthetic_world.data_root,
+        tmp_path / "run-i1poc", _transport, repo_root=repo_root,
+    )
+    manifest = _read_manifest(manifest_path)
+    assert manifest["status"] == STATUS_COMPLETED
+    assert manifest["split"]["role"] == "dev"
+    assert len(manifest["split"]["ids"]) == 10
+    # The two CONFIRMATORY sample ids -- E22_IDS[10:12] -- relabelled in,
+    # split.identity_hash and protocol_hash deliberately left at their
+    # original dev values, exactly the reviewed attack.
+    manifest["split"]["ids"] = ["50000010", "50000011"]
+    manifest["split"]["count"] = 2
+    write_json_artifact(manifest_path, manifest)
+    with pytest.raises(BundleError, match="split.identity_hash"):
+        verify_bundle(manifest_path)
+    with pytest.raises(BundleError, match="split.identity_hash"):
+        finalize_bundle(manifest_path, lock, synthetic_world.data_root)
+
+
+def test_verify_bundle_refuses_plan_execution_profile_mutated_to_paper_scale_confirmatory(
+    synthetic_world, bundled_repo, tmp_path
+):
+    manifest_path, composed, plan, lock = _run_completed(synthetic_world, bundled_repo, tmp_path)
+    manifest = _read_manifest(manifest_path)
+    manifest["plan"]["execution_profile"] = "paper-scale-confirmatory"
+    write_json_artifact(manifest_path, manifest)
+    with pytest.raises(BundleError, match="paper-scale"):
+        verify_bundle(manifest_path)
+
+
+def test_verify_bundle_refuses_plan_split_role_mutated_to_confirmatory(
+    synthetic_world, bundled_repo, tmp_path
+):
+    manifest_path, composed, plan, lock = _run_completed(synthetic_world, bundled_repo, tmp_path)
+    manifest = _read_manifest(manifest_path)
+    manifest["plan"]["split_role"] = "confirmatory"
+    write_json_artifact(manifest_path, manifest)
+    with pytest.raises(BundleError, match="confirmatory"):
+        verify_bundle(manifest_path)
+
+
+def test_verify_bundle_refuses_planned_model_calls_inflated_past_the_first_slice_cap(
+    synthetic_world, bundled_repo, tmp_path
+):
+    manifest_path, composed, plan, lock = _run_completed(synthetic_world, bundled_repo, tmp_path)
+    manifest = _read_manifest(manifest_path)
+    manifest["plan"]["planned_model_calls"] = 999999
+    write_json_artifact(manifest_path, manifest)
+    with pytest.raises(BundleError, match="exceeds the frozen first-slice cap"):
+        verify_bundle(manifest_path)
+
+
+def test_verify_bundle_refuses_cost_calls_used_zeroed_against_the_verified_outputs_count(
+    synthetic_world, bundled_repo, tmp_path
+):
+    """cost.calls_used is derivable, for a COMPLETED bundle with verified
+    outputs rows, as a lower bound: core.model.FrozenCoreAdapter.request
+    durably records a call before any outputs row can exist. Zeroing it
+    contradicts that derivable bound."""
+
+    manifest_path, composed, plan, lock = _run_completed(synthetic_world, bundled_repo, tmp_path)
+    manifest = _read_manifest(manifest_path)
+    assert manifest["cost"]["calls_used"] == 3
+    manifest["cost"]["calls_used"] = 0
+    write_json_artifact(manifest_path, manifest)
+    with pytest.raises(BundleError, match="less than"):
+        verify_bundle(manifest_path)
+
+
+def test_verify_bundle_and_finalize_still_accept_a_legitimate_bundle_after_i1(
+    synthetic_world, bundled_repo, tmp_path
+):
+    """Required probe 6: none of the I-1 hardening above may reject a
+    genuinely legitimate bundle -- verify AND finalize must still both
+    succeed end to end."""
+
+    manifest_path, composed, plan, lock = _run_completed(
+        synthetic_world, bundled_repo, tmp_path, run_id="SAEA-E-000-i1legit",
+        attempt_id="attempt-i1legit",
+    )
+    bundle = verify_bundle(manifest_path)
+    assert isinstance(bundle, VerifiedBundle)
+    result = finalize_bundle(
+        manifest_path, lock, synthetic_world.data_root, ledger_cells=_HUMAN_LEDGER_CELLS
+    )
+    assert result.attempt_state == "FINALIZED"
+
+
+# ---------------------------------------------------------------------------
+# Direct unit coverage of the new re-derivation logic itself (not just the
+# ExecutionPlan.validate()-transitive refusals above).
+# ---------------------------------------------------------------------------
+
+
+def test_verify_bundle_refuses_a_split_count_that_disagrees_with_len_ids(
+    synthetic_world, bundled_repo, tmp_path
+):
+    manifest_path, composed, plan, lock = _run_completed(synthetic_world, bundled_repo, tmp_path)
+    manifest = _read_manifest(manifest_path)
+    manifest["split"]["count"] = manifest["split"]["count"] + 1
+    write_json_artifact(manifest_path, manifest)
+    with pytest.raises(BundleError, match="split.count"):
+        verify_bundle(manifest_path)
+
+
+def test_verify_bundle_refuses_a_config_hash_edited_without_recomputing_protocol_hash(
+    synthetic_world, bundled_repo, tmp_path
+):
+    """config.config_hash is not covered by any outer artifact-hash check
+    (it is not an {path, sha256} artifact entry) -- protocol_hash
+    re-derivation is what catches a manifest whose config_hash was edited
+    without a matching protocol_hash update."""
+
+    manifest_path, composed, plan, lock = _run_completed(synthetic_world, bundled_repo, tmp_path)
+    manifest = _read_manifest(manifest_path)
+    manifest["config"]["config_hash"] = "f" * 64
+    write_json_artifact(manifest_path, manifest)
+    with pytest.raises(BundleError, match="protocol_hash"):
+        verify_bundle(manifest_path)
+
+
+def test_verify_bundle_refuses_a_plan_attempt_id_mismatch(synthetic_world, bundled_repo, tmp_path):
+    manifest_path, composed, plan, lock = _run_completed(synthetic_world, bundled_repo, tmp_path)
+    manifest = _read_manifest(manifest_path)
+    manifest["plan"]["attempt_id"] = "some-other-attempt-id"
+    write_json_artifact(manifest_path, manifest)
+    with pytest.raises(BundleError, match="attempt_id"):
+        verify_bundle(manifest_path)

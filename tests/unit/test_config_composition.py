@@ -42,6 +42,31 @@ def test_key_collision_fails_closed(tmp_path):
         compose(tmp_path, "m", "d", "b", "e")
 
 
+# ---------------------------------------------------------------------------
+# M-5 (external-threat-model review): a fragment with a duplicate top-level
+# key silently took the LAST value under json.loads's default parsing --
+# a human reading the fragment top-to-bottom sees the FIRST value, so the
+# two readers disagree about what the fragment means. Fixed via an
+# object_pairs_hook that raises at parse time, before compose()'s own
+# (unrelated) cross-fragment collision check ever runs.
+# ---------------------------------------------------------------------------
+
+
+def test_duplicate_key_within_a_single_fragment_fails_closed(tmp_path):
+    _write_fragments(tmp_path)
+    path = tmp_path / "configs" / "baseline" / "b.json"
+    # Hand-write raw JSON text with a duplicate "policy" key -- a dict
+    # literal in Python cannot express this, so json.dumps() can't produce
+    # it either; the attack is a hand-edited (or generated) JSON file.
+    path.write_text(
+        '{"arm": "bare-core", "policy": "fixed", "task_instruction": "t", '
+        '"policy": "sneaky-second-value"}',
+        encoding="utf-8",
+    )
+    with pytest.raises(ConfigError, match="duplicate key 'policy'"):
+        compose(tmp_path, "m", "d", "b", "e")
+
+
 def test_missing_fragment_fails_closed(tmp_path):
     _write_fragments(tmp_path)
     with pytest.raises(ConfigError, match="missing"):

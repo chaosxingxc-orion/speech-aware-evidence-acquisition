@@ -144,10 +144,21 @@ def ledger_row_for_bundle(
     agrees byte-for-byte with the verified value, and refused
     (``ValueError``) otherwise: a caller cannot talk a finalized row into a
     study commit, config hash, protocol hash, split identity hash, or
-    artifact-hash summary the bundle did not actually verify. Every other
-    column (the human/judgment ones) is taken from ``cells`` as given; the
-    merged mapping must still carry exactly :data:`LEDGER_COLUMNS`
-    (``ledger_row`` enforces that) or this raises too.
+    artifact-hash summary the bundle did not actually verify. As of R0
+    repair I-1, "did not actually verify" is no longer aspirational for the
+    protocol hash and split identity hash cells specifically: before I-1,
+    ``core.bundle.verify_bundle`` copied ``manifest.protocol_hash`` and
+    ``manifest.split.identity_hash`` straight through unchecked, so this
+    docstring's guarantee did not actually hold for those two cells -- a
+    hand-tampered manifest's self-asserted values would have been
+    "verified" in name only. ``verify_bundle`` now independently RE-DERIVES
+    both (the split identity hash from ``split.ids``, the protocol hash from
+    ``config.config_hash``/``arm``/that re-derived split hash) before this
+    function is ever reachable, so the guarantee below is now genuinely
+    enforced, not merely asserted. Every other column (the human/judgment
+    ones) is taken from ``cells`` as given; the merged mapping must still
+    carry exactly :data:`LEDGER_COLUMNS` (``ledger_row`` enforces that) or
+    this raises too.
     """
 
     derived = bundle_ledger_cells(bundle)
