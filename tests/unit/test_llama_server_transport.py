@@ -7,6 +7,7 @@ own inputs, without relying on the adapter having already checked it."""
 import base64
 import json
 import os
+import subprocess
 
 import pytest
 
@@ -213,5 +214,72 @@ def test_media_relpath_symlink_escape_refused_at_transport(tmp_path):
         "http://127.0.0.1:8080", data_root, post=lambda u, b: _canned_response()
     )
     payload = _boundary_payload(data_root, media_relpath="media_link/leaked.mp3")
+    with pytest.raises(FrozenCoreError, match="media_relpath"):
+        transport(json.dumps(payload).encode())
+
+
+@pytest.mark.skipif(os.name != "nt", reason="Windows junction probe")
+def test_media_relpath_windows_junction_escape_refused_at_transport(tmp_path):
+    """Windows-native equivalent of the POSIX symlink-escape probe above: a
+    junction (``mklink /J``, no elevation required) is a reparse point
+    ``Path.resolve()`` follows exactly like a symlink. If junction creation
+    itself fails in this environment, the test skips with that reason rather
+    than passing vacuously."""
+
+    data_root = tmp_path / "data"
+    data_root.mkdir()
+    outside = tmp_path / "outside"
+    outside.mkdir()
+    (outside / "leaked.mp3").write_bytes(b"leaked-bytes")
+    link = data_root / "media_link"
+    result = subprocess.run(
+        ["cmd", "/c", "mklink", "/J", str(link), str(outside)],
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode != 0 or not link.exists():
+        pytest.skip(
+            "Windows junction creation failed in this environment "
+            f"(rc={result.returncode}): {result.stderr or result.stdout}"
+        )
+
+    transport = LlamaServerTransport(
+        "http://127.0.0.1:8080", data_root, post=lambda u, b: _canned_response()
+    )
+    payload = _boundary_payload(data_root, media_relpath="media_link/leaked.mp3")
+    with pytest.raises(FrozenCoreError, match="escapes"):
+        transport(json.dumps(payload).encode())
+
+
+# ---------------------------------------------------------------------------
+# I4 defense in depth: per-segment Windows-only looseness (trailing dot/space,
+# NTFS alternate-data-stream colon) -- see test_frozen_core_adapter.py's
+# mirror tests for the rationale.
+# ---------------------------------------------------------------------------
+
+
+def test_media_relpath_trailing_dot_segment_refused_at_transport(tmp_path):
+    transport = LlamaServerTransport(
+        "http://127.0.0.1:8080", tmp_path, post=lambda u, b: _canned_response()
+    )
+    payload = _boundary_payload(tmp_path, media_relpath="media/5000001.mp3.")
+    with pytest.raises(FrozenCoreError, match="media_relpath"):
+        transport(json.dumps(payload).encode())
+
+
+def test_media_relpath_trailing_space_segment_refused_at_transport(tmp_path):
+    transport = LlamaServerTransport(
+        "http://127.0.0.1:8080", tmp_path, post=lambda u, b: _canned_response()
+    )
+    payload = _boundary_payload(tmp_path, media_relpath="media/5000001.mp3 ")
+    with pytest.raises(FrozenCoreError, match="media_relpath"):
+        transport(json.dumps(payload).encode())
+
+
+def test_media_relpath_colon_in_segment_refused_at_transport(tmp_path):
+    transport = LlamaServerTransport(
+        "http://127.0.0.1:8080", tmp_path, post=lambda u, b: _canned_response()
+    )
+    payload = _boundary_payload(tmp_path, media_relpath="media/5000001.mp3:hidden")
     with pytest.raises(FrozenCoreError, match="media_relpath"):
         transport(json.dumps(payload).encode())

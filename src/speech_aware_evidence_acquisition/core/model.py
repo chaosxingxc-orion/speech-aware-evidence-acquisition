@@ -44,7 +44,13 @@ def _normalized_relative_path(value: object, label: str) -> str:
     drive-letter, backslash, leading '/', or any '.'/'..' segment. Purely
     syntactic -- touches no filesystem -- so a forged value never reaches
     ``Path.__truediv__`` (whose join silently discards the left side for an
-    absolute right side, the reproduced transport defect)."""
+    absolute right side, the reproduced transport defect).
+
+    Also refuses per-segment Windows-only looseness that would still let a
+    forged relpath land on a legitimate file even though it is not, by
+    itself, an escape: a trailing dot/space (Windows silently strips both
+    from a path component, e.g. ``"5000001.mp3."`` -> ``"5000001.mp3"``) and
+    a colon inside a segment (NTFS alternate-data-stream syntax)."""
 
     if not isinstance(value, str) or not value:
         raise FrozenCoreError(f"{label} must be a non-empty string")
@@ -57,6 +63,17 @@ def _normalized_relative_path(value: object, label: str) -> str:
     parts = value.split("/")
     if any(part in ("", ".", "..") for part in parts):
         raise FrozenCoreError(f"{label} contains an empty or traversal segment: {value!r}")
+    for part in parts:
+        if part.rstrip(". ") != part:
+            raise FrozenCoreError(
+                f"{label} segment {part!r} has a trailing dot or space (Windows "
+                f"silently strips these, so it would not name a normalized path): {value!r}"
+            )
+        if ":" in part:
+            raise FrozenCoreError(
+                f"{label} segment {part!r} contains ':' (NTFS alternate-data-stream "
+                f"syntax): {value!r}"
+            )
     return value
 
 

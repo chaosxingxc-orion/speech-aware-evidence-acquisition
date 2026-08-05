@@ -3,6 +3,7 @@ payload<->plan<->split value binding (I3) and media confinement (I4)."""
 
 import json
 import os
+import subprocess
 
 import pytest
 
@@ -426,5 +427,78 @@ def test_media_relpath_missing_file_refused(tmp_path):
         adapter.request(
             _payload(
                 media_relpath="datasets/earnings21-22/earnings22/media/absent.mp3"
+            )
+        )
+
+
+@pytest.mark.skipif(os.name != "nt", reason="Windows junction probe")
+def test_media_relpath_windows_junction_escape_from_carrier_root_refused(tmp_path):
+    """Windows-native equivalent of the POSIX symlink-escape probe above: a
+    junction (``mklink /J``, no elevation required) is a reparse point
+    ``Path.resolve()`` follows exactly like a symlink. If junction creation
+    itself fails in this environment (e.g. permissions), the test skips with
+    that reason rather than passing vacuously."""
+
+    data_root = tmp_path / "data"
+    carrier_root = data_root / "datasets" / "earnings21-22" / "earnings22"
+    carrier_root.mkdir(parents=True)
+    outside = tmp_path / "outside"
+    outside.mkdir()
+    (outside / "leaked.mp3").write_bytes(b"leaked-bytes")
+    link = carrier_root / "media_link"
+    result = subprocess.run(
+        ["cmd", "/c", "mklink", "/J", str(link), str(outside)],
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode != 0 or not link.exists():
+        pytest.skip(
+            "Windows junction creation failed in this environment "
+            f"(rc={result.returncode}): {result.stderr or result.stdout}"
+        )
+    binding = PayloadBindingContext(
+        carrier_lock_key="earnings22-original",
+        allowed_sample_ids=frozenset({"5000001"}),
+        sample_facts={"5000001": (100.0, 16000)},
+        data_root=data_root,
+        carrier_root=carrier_root,
+    )
+    adapter, _ = _adapter(tmp_path, binding=binding)
+    with pytest.raises(FrozenCoreError, match="escapes"):
+        adapter.request(
+            _payload(media_relpath="datasets/earnings21-22/earnings22/media_link/leaked.mp3")
+        )
+
+
+# ---------------------------------------------------------------------------
+# I4 defense in depth: per-segment Windows-only looseness that is not itself
+# an escape but would let a forged relpath silently land on a legitimate
+# file (Windows strips trailing dots/spaces from a path component; a colon
+# inside a segment is NTFS alternate-data-stream syntax).
+# ---------------------------------------------------------------------------
+
+
+def test_media_relpath_trailing_dot_segment_refused(tmp_path):
+    adapter, _ = _adapter(tmp_path)
+    with pytest.raises(FrozenCoreError, match="media_relpath"):
+        adapter.request(
+            _payload(media_relpath="datasets/earnings21-22/earnings22/media/5000001.mp3.")
+        )
+
+
+def test_media_relpath_trailing_space_segment_refused(tmp_path):
+    adapter, _ = _adapter(tmp_path)
+    with pytest.raises(FrozenCoreError, match="media_relpath"):
+        adapter.request(
+            _payload(media_relpath="datasets/earnings21-22/earnings22/media/5000001.mp3 ")
+        )
+
+
+def test_media_relpath_colon_in_segment_refused(tmp_path):
+    adapter, _ = _adapter(tmp_path)
+    with pytest.raises(FrozenCoreError, match="media_relpath"):
+        adapter.request(
+            _payload(
+                media_relpath="datasets/earnings21-22/earnings22/media/5000001.mp3:hidden"
             )
         )
