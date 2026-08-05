@@ -161,6 +161,20 @@ already-covered contract: with `SPEECHRL_DATA_DIR` unset it fails closed with ex
 `evaluate.sh` no-args case only; exit 1 for `reproduce.sh` with no args is not a
 refusal-on-misuse case and is intentionally not asserted by CI).
 
+**Lint scope (`lint` job), stated plainly, not as "clean":** the gate runs
+`ruff check src` only, not the whole active tree. Repo-wide, `ruff check .` (with
+the quarantined `reference/w1-snapshot/` excluded and its 12 findings therefore
+never counted here) currently reports **8 findings, confined entirely to
+`tests/`** — trivial `F401`/`F811` unused-import/redefinition cases in
+`test_exposure_and_gate.py`, `test_real_receipts.py`, `test_attempts.py`,
+`test_bundle.py`, `test_driver.py` and `test_frozen_core_adapter.py`. `src/` is
+clean under the same command (`ruff check src` → 0 findings). The gate is
+deliberately scoped to `src/` rather than fixed to 0-over-everything because
+`tests/` was, and at the time of writing still is, actively being edited by
+concurrently-landing repair tasks that own those specific files; folding
+`tests/` into the `lint` job is a follow-up for whichever task next closes out
+those files, not silently dropped.
+
 **Coverage: `NOT_CONFIGURED`. Type-checking: `NOT_CONFIGURED`.** Neither is wired
 into `pyproject.toml`, the dev dependency group, or CI; this is stated explicitly
 per I9 rather than implied by an absence of failures.
@@ -252,8 +266,11 @@ model.
 `pytest` must collect at least one test and pass (CI treats pytest exit code 5 — no tests
 collected — as failure). The model-free contract tests under `tests/contract/` are the E0
 engineering floor: information boundary, OBS/ORG/SUPPLY/USE trace separation, exposure schema,
-frozen-core entry gate, execution-scope guard, snapshot quarantine, governance alignment and
-pre-R0 entrypoint refusal.
+frozen-core entry gate, execution-scope guard, snapshot quarantine, governance alignment and the
+current, R0-form entrypoint contract (not the retired pre-R0 "always refuses" behavior):
+`reproduce.sh --help` / `evaluate.sh --help` are model-free and exit 0, `evaluate.sh` with no
+arguments refuses with exit 2, neither entrypoint contains a model-touch code path, and
+`reproduce.sh` forwards a runtime root to the verify gate (`tests/contract/test_scripts_fail_closed.py`).
 
 Execution scope (consolidated contract §6/§7; umbrella 续93): every model touch must present a
 structured `contracts.ExecutionPlan` — profile, carrier lock key, split role (`discovery`/`dev`

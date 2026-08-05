@@ -27,6 +27,12 @@ assets in the umbrella lock and are never loaded by this repository.
 
 ```text
 src/speech_aware_evidence_acquisition/
+  contracts.py  fail-closed E0 engineering contracts: information boundary,
+                OBS/ORG/SUPPLY/USE trace separation, exposure-claim schema,
+                Stage-2 execution-scope guard + ExecutionPlan, carrier/
+                general-audio denylist, frozen-core entry gate
+                (FrozenCoreGate) -- load-bearing, referenced throughout
+                docs/engineering.md
   core/         ONE foundation package (owner direction 2026-08-05):
                   base.py       Registry mechanism (CARRIERS, EVIDENCE_SOURCES,
                                  TRANSPORTS, POLICIES, SCORERS seams) + core errors
@@ -46,6 +52,11 @@ src/speech_aware_evidence_acquisition/
                   config.py     deterministic four-fragment JSON config composer
                   split_receipt.py  split-identity receipt binding
   data/         lock-key based speech-carrier loaders and splits; no dataset bytes
+                  identity.py     cross-layer sample/segment identity (E0 D1)
+                  lock.py         umbrella-lock resolution: the only live
+                                   authority for asset identity
+                  loader.py       deterministic, boundary-safe carrier sample
+                                   loading (never reads transcript/context content)
                   splits.py       frozen discovery/dev/confirmatory partitions
                   references.py   scoring-side reference reader (only
                                    core/scorers.py may import it; AST-enforced)
