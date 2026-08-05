@@ -1,0 +1,5 @@
+{
+  "experiment_id": "SAEA-E-001",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "R0 wiring and measurement-integrity smoke on the dev subset10; no superiority claim"
+}
