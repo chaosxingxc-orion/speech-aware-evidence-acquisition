@@ -463,14 +463,16 @@ def test_gate_ignores_rows_in_a_second_table(world):
 
 
 def test_gate_refuses_unknown_carrier_lock_key(world):
-    # The exposure row must itself name the claimed carrier, or the row/plan
-    # carrier-binding check (I2) would refuse first for an unrelated reason.
+    # An unregistered carrier can never be the exposure row's unambiguous named
+    # carrier (I2 binding requires the row to name a *known* dataset lock key),
+    # so this now refuses at the carrier row/plan binding step rather than at
+    # later carrier-scope resolution.
     world.write_ledger_rows(
         f"| 2026-08-04 | {world.RUN_ID} | baseline-reproduction | s | m "
         "| not-in-lock dev | dev | " + "a" * 64 + " | no "
         "| 10 | 600 | 1.0 | none | none | unknown carrier |\n"
     )
-    with pytest.raises(GateClosed, match="datasets lock"):
+    with pytest.raises(GateClosed, match="known carrier lock key"):
         world.gate().assert_model_touch_allowed(world.plan(carrier_lock_key="not-in-lock"))
 
 

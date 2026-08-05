@@ -64,11 +64,75 @@ def test_p1_exposure_names_earnings21_but_plan_carrier_is_general_audio(world):
 
     The fixture's default ledger row already carries ``earnings21-original dev`` in the
     carrier column (``world.CARRIER``); a plan claiming the general-audio carrier
-    ``fsd50k`` must still be refused even though the row was pre-registered."""
+    ``fsd50k`` must still be refused even though the row was pre-registered. (This
+    variant is refused at the row/plan carrier-binding step, since the row never
+    names fsd50k at all -- see the next test for the denylist step itself.)"""
 
     _add_lock_dataset(world, "fsd50k", profiles=["retained-cross-domain"])
     with pytest.raises(GateClosed):
         world.gate().assert_model_touch_allowed(world.plan(carrier_lock_key="fsd50k"))
+
+
+def test_p1_denylist_path_is_pinned_when_row_also_names_general_audio_carrier(world):
+    """Standing regression for the denylist check itself (not just row binding).
+
+    Here the exposure row is made to legitimately name ``fsd50k`` too, so the
+    carrier-binding step passes and the touch reaches carrier *resolution*. The
+    general-audio denylist inside ``_resolve_carrier_dataset_entry`` must still
+    refuse it. Without this variant, a future refactor could silently delete the
+    denylist check and P1 would keep passing via row-binding mismatch alone."""
+
+    _add_lock_dataset(world, "fsd50k", profiles=["retained-cross-domain"])
+    plan = _row(world, carrier_cell="fsd50k dev", carrier_lock_key="fsd50k")
+    with pytest.raises(GateClosed, match="general-audio"):
+        world.gate().assert_model_touch_allowed(plan)
+
+
+def test_ambiguous_two_carrier_cell_is_refused(world):
+    """A row naming two known carriers cannot authorize either one.
+
+    Closes the unanchored-substring bypass: under the old
+    ``plan.carrier_lock_key in carrier_cell`` check, a single pre-registered row
+    naming both carriers would have satisfied the check for either carrier
+    identity, letting one budget row be claimed twice under different carriers
+    without a fresh pre-registration."""
+
+    _add_lock_dataset(world, "earnings22-original", profiles=["speech-aware-core"])
+    plan = _row(
+        world,
+        carrier_cell="earnings21-original + earnings22-original, dev",
+        carrier_lock_key="earnings21-original",
+    )
+    with pytest.raises(GateClosed, match="exactly one known carrier lock key"):
+        world.gate().assert_model_touch_allowed(plan)
+
+
+def test_substring_prefix_carrier_name_does_not_falsely_match(world):
+    """A carrier name that is a textual prefix of another carrier's name must not
+    be accepted by an unanchored substring test (e.g. "earnings2" must not match
+    inside "earnings22-original")."""
+
+    _add_lock_dataset(world, "earnings2", profiles=["speech-aware-core"])
+    _add_lock_dataset(world, "earnings22-original", profiles=["speech-aware-core"])
+    plan = _row(world, carrier_cell="earnings22-original dev", carrier_lock_key="earnings2")
+    with pytest.raises(GateClosed):
+        world.gate().assert_model_touch_allowed(plan)
+
+
+def test_resolve_carrier_dataset_entry_directly_refuses_model_and_unknown_keys(world):
+    """Direct coverage of ``_resolve_carrier_dataset_entry``'s own refusal for a
+    model key or an unregistered key. Through the full
+    ``assert_model_touch_allowed`` path this branch is now only reachable when
+    the exposure row itself names a *known dataset* carrier that still isn't the
+    plan's carrier (row-binding refuses model/unknown keys first, since they can
+    never be the row's unambiguous named carrier); this test keeps the branch
+    itself exercised directly."""
+
+    gate = world.gate()
+    with pytest.raises(GateClosed, match="not a dataset entry"):
+        gate._resolve_carrier_dataset_entry(MODEL_LOCK_KEY)
+    with pytest.raises(GateClosed, match="not a dataset entry"):
+        gate._resolve_carrier_dataset_entry("totally-unregistered-key")
 
 
 def test_plan_carrier_that_is_a_lock_model_entry_is_refused(world):

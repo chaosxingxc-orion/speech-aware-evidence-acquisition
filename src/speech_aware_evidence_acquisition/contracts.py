@@ -84,6 +84,14 @@ FIRST_SLICE_CAPS = {
 }
 _EXPOSURE_RUN_COLUMN = "run/experiment id"
 _EXPOSURE_CARRIER_COLUMN = "speech carrier + split"
+# Tokenizes the free-text "speech carrier + split" cell (e.g. "earnings21-original
+# + earnings22-original + conec, identity layers; e22 subset10 (dev)") so a plan's
+# carrier can be matched exactly against a known lock key rather than by
+# unanchored substring -- an unanchored `plan.carrier_lock_key in cell_text` check
+# lets one row that happens to name two carriers authorize either identity, and
+# lets a carrier name that is a prefix of another (e.g. "earnings2" as a substring
+# of "earnings22-original") falsely match.
+_CARRIER_CELL_TOKEN_SPLIT = re.compile(r"[\s,;+()]+")
 
 # The study's excluded-carrier config is the single source of truth for which
 # umbrella-lock entries are explicitly out of research scope (human speech and its
@@ -951,11 +959,24 @@ class FrozenCoreGate:
                     f"row {actual!r} vs plan {expected!r}; model touch refused"
                 )
         carrier_cell = cell(row, _EXPOSURE_CARRIER_COLUMN)
-        if plan.carrier_lock_key not in carrier_cell:
+        known_carrier_keys = set(self._lock_dataset_entries())
+        carrier_tokens = [
+            token for token in _CARRIER_CELL_TOKEN_SPLIT.split(carrier_cell) if token
+        ]
+        named_carriers = [token for token in carrier_tokens if token in known_carrier_keys]
+        if len(named_carriers) != 1:
             raise GateClosed(
-                f"exposure row column {_EXPOSURE_CARRIER_COLUMN!r} ({carrier_cell!r}) "
-                f"does not name the execution plan's carrier {plan.carrier_lock_key!r}; "
-                "model touch refused (I2: carrier scope and exposure carrier must bind)"
+                f"exposure row column {_EXPOSURE_CARRIER_COLUMN!r} ({carrier_cell!r}) must "
+                "name exactly one known carrier lock key unambiguously; found "
+                f"{named_carriers or 'none'}; model touch refused (I2: ambiguous carrier "
+                "metadata fails closed)"
+            )
+        if named_carriers[0] != plan.carrier_lock_key:
+            raise GateClosed(
+                f"exposure row column {_EXPOSURE_CARRIER_COLUMN!r} names carrier "
+                f"{named_carriers[0]!r}, not the execution plan's carrier "
+                f"{plan.carrier_lock_key!r}; model touch refused (I2: carrier scope and "
+                "exposure carrier must bind)"
             )
         if cell(row, "consumed").lower() != "no":
             raise GateClosed(
