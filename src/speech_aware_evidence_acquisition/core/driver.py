@@ -250,6 +250,22 @@ def run_experiment_bundled(
        ABORTED and a best-effort ABORTED manifest is still attempted --
        never silently leaving a successful, budget-consuming run with NO
        manifest and its attempt stuck OPENED forever.
+
+    IMPORTANT fix (T6 fix-2 round): the sibling gap in the ABOVE-DESCRIBED
+    "on any failure" path (``except Exception as error:`` around
+    ``run_experiment`` itself) is now closed too: that manifest write is
+    wrapped the same way, so a SECOND failure while recording the ABORTED
+    manifest (the reviewed TOCTOU case: the tree was clean at
+    ``require_clean_study_repo`` time but became dirty during a long
+    model-facing ``run_experiment`` call, then the run failed for an
+    unrelated reason) can never mask or replace the run's ORIGINAL failure,
+    and is chained onto it as ``__context__`` instead of silently dropped.
+    Combined with ``core.bundle._resolve_study_commit`` now tolerating a
+    dirty/unreadable repo for an ABORTED manifest specifically (recording
+    ``UNAVAILABLE:<reason>`` as ``study_commit`` rather than raising), the
+    reviewed TOCTOU scenario no longer even reaches the wrapped except branch
+    in practice -- the wrap is the backstop for whatever else could still
+    fail.
     """
 
     verified_split = load_verified_split(repo_root, str(composed.values["split_name"]), lock, root)
@@ -264,25 +280,52 @@ def run_experiment_bundled(
         )
     except Exception as error:
         abort_attempt_if_opened(root, plan.run_id, plan.attempt_id, reason=str(error))
-        build_manifest(
-            repo_root=repo_root,
-            data_root=root,
-            composed=composed,
-            plan=plan,
-            verified_split=verified_split,
-            session_receipt_path=session_receipt_path,
-            run_dir=run_dir,
-            status=STATUS_ABORTED,
-            failure_reason=str(error),
-            result=None,
-        )
+        # IMPORTANT fix (T6 fix-2 round): the ORIGINAL run failure -- `error`
+        # -- must ALWAYS be what propagates from this function, never masked
+        # or replaced by a SECOND failure while trying to record it. Without
+        # this wrapping, a dirty-tree TOCTOU during a long model-facing run
+        # (the tree was clean when require_clean_study_repo ran, but became
+        # dirty before this ABORTED-path manifest write) let build_manifest
+        # raise its own BundleError here, which replaced `error` entirely and
+        # left zero manifest on disk -- contradicting this function's own
+        # "a manifest is still durably written ... either way" contract. With
+        # core.bundle._resolve_study_commit now tolerating a dirty/unreadable
+        # repo for an ABORTED manifest (recording an
+        # UNAVAILABLE:<reason> study_commit instead of raising), this branch
+        # should now rarely trigger at all -- but the wrap stays as the
+        # backstop for whatever OTHER reason a manifest write could still
+        # fail (e.g. a genuinely unwritable run_dir).
+        try:
+            build_manifest(
+                repo_root=repo_root,
+                data_root=root,
+                composed=composed,
+                plan=plan,
+                verified_split=verified_split,
+                session_receipt_path=session_receipt_path,
+                run_dir=run_dir,
+                status=STATUS_ABORTED,
+                failure_reason=str(error),
+                result=None,
+            )
+        except Exception:
+            # Re-raising `error` HERE, while still inside this nested except
+            # block, sets error.__context__ to the manifest-build failure
+            # (visible in tracebacks/logs: "During handling of the above
+            # exception, another exception occurred") WITHOUT changing what
+            # actually propagates -- `error`, unmodified. This is the
+            # deliberate mechanism, not an oversight: it chains the manifest
+            # failure as context rather than silently dropping it OR letting
+            # it replace the original.
+            raise error
         raise
     # CRITICAL fix (T6 fix round), part 2: the run itself succeeded (budget
     # already spent, outputs/trace already durable) -- but building ITS
     # manifest can still fail (a race, an unwritable run_dir, disk pressure).
     # That failure must not leave the attempt OPENED with no manifest at
     # all: force it to ABORTED and try once more, best-effort, to record an
-    # ABORTED manifest before re-raising.
+    # ABORTED manifest before re-raising. Mirrors the same
+    # never-mask-the-original-failure discipline as the except block above.
     try:
         return build_manifest(
             repo_root=repo_root,
@@ -316,8 +359,9 @@ def run_experiment_bundled(
             # Best-effort only: whatever broke the COMPLETED build may break
             # this too (e.g. a truly unwritable run_dir). The attempt is
             # already ABORTED via abort_attempt_if_opened above either way --
-            # that is the one guarantee this branch exists to protect.
-            pass
+            # that is the one guarantee this branch exists to protect. Chain
+            # (not replace) for the same reason as above.
+            raise manifest_error
         raise
 
 

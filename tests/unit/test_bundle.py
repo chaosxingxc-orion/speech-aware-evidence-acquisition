@@ -27,6 +27,18 @@ I3. a run manifest (and a finalize call) may never land inside the study
     repository.
 I4. `saea-driver score --manifest` is the authoritative, verified path;
     `--outputs` is explicitly unverified.
+
+T6 fix-2 round (re-review found finding 2's SIBLING path still open, plus a
+LOW/INFO hedge in the request-record check):
+
+C2b. dirty-tree TOCTOU DURING a failing run (tree clean when
+     require_clean_study_repo ran, dirtied before the ABORTED-path manifest
+     write, run fails for an unrelated reason) -> the original exception
+     still propagates (never masked/replaced) AND an ABORTED manifest still
+     exists, carrying an UNAVAILABLE:<reason> study_commit marker; a
+     COMPLETED manifest can never carry that marker.
+L1.  a non-empty trace missing exactly one outputs row's {request_id}/request
+     record (previously hedged, so a forged request_sha256 passed) -> refused.
 """
 
 import hashlib
@@ -44,6 +56,7 @@ from speech_aware_evidence_acquisition.core.attempts import AttemptHandle, Attem
 from speech_aware_evidence_acquisition.core.bundle import (
     STATUS_ABORTED,
     STATUS_COMPLETED,
+    UNAVAILABLE_COMMIT_PREFIX,
     BundleError,
     VerifiedBundle,
     build_manifest,
@@ -242,19 +255,51 @@ def test_build_manifest_binds_study_commit_config_plan_split_and_artifacts(
     assert manifest["scores"] is None
 
 
-def test_build_manifest_refuses_a_dirty_study_repo(synthetic_world, bundled_repo, tmp_path):
+def test_build_manifest_completed_status_refuses_a_dirty_study_repo(synthetic_world, bundled_repo, tmp_path):
+    """A COMPLETED manifest's strictness is UNCHANGED by the T6 fix-2 round's
+    ABORTED-only tolerance below: a dirty tree still refuses
+    build_manifest(status=COMPLETED) outright."""
+
+    lock, repo_root = bundled_repo
+    ids, split_hash, split_role = load_split(repo_root, "discovery", lock, synthetic_world.data_root)
+    composed = _composed()
+    plan = _plan(split_hash, protocol_hash=protocol_hash(composed.config_hash, composed.values["arm"], split_hash))
+    result = run_experiment(
+        composed, plan, _OpenGate(), lock, synthetic_world.data_root,
+        tmp_path / "run", _transport, repo_root=repo_root,
+    )
+    (repo_root / "uncommitted.txt").write_text("dirty", encoding="utf-8")
+    verified_split = load_verified_split(repo_root, "discovery", lock, synthetic_world.data_root)
+    with pytest.raises(BundleError, match="uncommitted"):
+        build_manifest(
+            repo_root=repo_root, data_root=synthetic_world.data_root, composed=composed,
+            plan=plan, verified_split=verified_split, session_receipt_path=None,
+            run_dir=tmp_path / "run", status=STATUS_COMPLETED, result=result,
+        )
+
+
+def test_build_manifest_aborted_status_tolerates_a_dirty_study_repo(synthetic_world, bundled_repo, tmp_path):
+    """T6 fix-2 round: unlike COMPLETED, an ABORTED manifest tolerates a
+    dirty/unreadable study repo -- it records the UNAVAILABLE:<reason>
+    study_commit marker instead of refusing outright, so a run that already
+    failed for one reason does not ALSO lose its audit record over the tree
+    going dirty."""
+
     lock, repo_root = bundled_repo
     (repo_root / "uncommitted.txt").write_text("dirty", encoding="utf-8")
     ids, split_hash, split_role = load_split(repo_root, "discovery", lock, synthetic_world.data_root)
     composed = _composed()
     plan = _plan(split_hash, protocol_hash=protocol_hash(composed.config_hash, composed.values["arm"], split_hash))
     verified_split = load_verified_split(repo_root, "discovery", lock, synthetic_world.data_root)
-    with pytest.raises(BundleError, match="uncommitted"):
-        build_manifest(
-            repo_root=repo_root, data_root=synthetic_world.data_root, composed=composed,
-            plan=plan, verified_split=verified_split, session_receipt_path=None,
-            run_dir=tmp_path / "run", status=STATUS_ABORTED, failure_reason="dirty-tree probe",
-        )
+    manifest_path = build_manifest(
+        repo_root=repo_root, data_root=synthetic_world.data_root, composed=composed,
+        plan=plan, verified_split=verified_split, session_receipt_path=None,
+        run_dir=tmp_path / "run", status=STATUS_ABORTED, failure_reason="dirty-tree probe",
+    )
+    manifest = _read_manifest(manifest_path)
+    assert manifest["status"] == STATUS_ABORTED
+    assert manifest["study_commit"].startswith(UNAVAILABLE_COMMIT_PREFIX)
+    assert "uncommitted" in manifest["study_commit"]
 
 
 def test_build_manifest_refuses_a_non_git_repo_root(synthetic_world, tmp_path):
@@ -266,11 +311,15 @@ def test_build_manifest_refuses_a_non_git_repo_root(synthetic_world, tmp_path):
     composed = _composed()
     plan = _plan(split_hash, protocol_hash=protocol_hash(composed.config_hash, composed.values["arm"], split_hash))
     verified_split = load_verified_split(repo_root, "discovery", lock, synthetic_world.data_root)
+    result = run_experiment(
+        composed, plan, _OpenGate(), lock, synthetic_world.data_root,
+        tmp_path / "run", _transport, repo_root=repo_root,
+    )
     with pytest.raises(BundleError, match="git status|HEAD"):
         build_manifest(
             repo_root=repo_root, data_root=synthetic_world.data_root, composed=composed,
             plan=plan, verified_split=verified_split, session_receipt_path=None,
-            run_dir=tmp_path / "run", status=STATUS_ABORTED, failure_reason="no-repo probe",
+            run_dir=tmp_path / "run", status=STATUS_COMPLETED, result=result,
         )
 
 
@@ -827,3 +876,140 @@ def test_cli_score_refuses_both_manifest_and_outputs_together(tmp_path):
 def test_cli_score_refuses_neither_manifest_nor_outputs():
     with pytest.raises(SystemExit):
         driver_main(["score"])
+
+
+# ===========================================================================
+# T6 fix-2 round: finding 2's SIBLING path (the ABORTED-on-failure manifest
+# write had no wrapping at all, unlike the success-path fix from the first
+# fix round) + a LOW/INFO hedge in the request-record check.
+# ===========================================================================
+
+
+def test_verify_bundle_refuses_when_trace_is_missing_the_request_record_for_a_row(
+    synthetic_world, bundled_repo, tmp_path
+):
+    """LOW/INFO fix: the request_sha256 cross-check was hedged
+    (`if request_payload is not None and ...`), so deleting the
+    {request_id}/request trace record (and its trace-manifest entry,
+    self-consistently, outer hashes recomputed) let a hand-forged
+    request_sha256 pass silently. Must now REJECT, mirroring the
+    unconditional /response check."""
+
+    manifest_path, composed, plan, lock = _run_completed(synthetic_world, bundled_repo, tmp_path)
+    manifest = _read_manifest(manifest_path)
+    raw_trace_path = Path(manifest["raw_trace"]["path"])
+    trace_manifest_path = Path(manifest["trace_manifest"]["path"])
+
+    target_record_id = "req-0001/request"
+    lines = _read_jsonl_lines(raw_trace_path)
+    kept = [line for line in lines if f'"record_id":"{target_record_id}"' not in line]
+    assert len(kept) == len(lines) - 1, "the target record must have existed exactly once"
+    _write_jsonl_lines(raw_trace_path, kept)
+
+    tm_doc = json.loads(trace_manifest_path.read_text(encoding="utf-8"))
+    del tm_doc["records"][target_record_id]
+    write_json_artifact(trace_manifest_path, tm_doc)
+
+    _rehash_manifest_entry(manifest_path, "raw_trace")
+    _rehash_manifest_entry(manifest_path, "trace_manifest")
+
+    with pytest.raises(BundleError, match="no matching trace record"):
+        verify_bundle(manifest_path)
+
+
+def test_run_experiment_bundled_toctou_dirty_tree_during_a_failing_run_still_records_an_aborted_manifest(
+    synthetic_world, bundled_repo, tmp_path
+):
+    """The reviewer's exact re-attack: the tree is CLEAN when
+    require_clean_study_repo runs, becomes dirty DURING run_experiment (a
+    real TOCTOU window in a long model-facing run -- simulated here via a
+    transport whose side effect is dirtying the repo right before it fails
+    for an unrelated reason), and the run then fails. Before this fix,
+    build_manifest(status=ABORTED) raised its own BundleError over the dirty
+    tree, masking the original failure and leaving zero manifest on disk.
+    Now: the original exception still propagates, AND an ABORTED manifest
+    exists, carrying the UNAVAILABLE:<reason> study_commit marker (root-cause
+    fix: core.bundle._resolve_study_commit tolerates this for ABORTED)."""
+
+    lock, repo_root = bundled_repo
+    ids, split_hash, split_role = load_split(repo_root, "discovery", lock, synthetic_world.data_root)
+    composed = _composed()
+    plan = _plan(
+        split_hash, run_id="SAEA-E-000-toctou", attempt_id="attempt-toctou",
+        protocol_hash=protocol_hash(composed.config_hash, composed.values["arm"], split_hash),
+    )
+
+    def _dirty_then_fail(request_bytes):
+        (repo_root / "toctou-dirty.txt").write_text("dirtied mid-run", encoding="utf-8")
+        raise RuntimeError("model-facing transport exploded for an unrelated reason")
+
+    run_dir = tmp_path / "run-toctou"
+    with pytest.raises(RuntimeError, match="unrelated reason"):
+        run_experiment_bundled(
+            composed, plan, _OpenGate(), lock, synthetic_world.data_root,
+            run_dir, _dirty_then_fail, repo_root=repo_root,
+        )
+    manifest_path = run_dir / f"{plan.run_id}.run-manifest.json"
+    assert manifest_path.is_file(), "an ABORTED manifest must still exist despite the TOCTOU"
+    manifest = _read_manifest(manifest_path)
+    assert manifest["status"] == STATUS_ABORTED
+    assert "unrelated reason" in manifest["failure_reason"]
+    assert manifest["study_commit"].startswith(UNAVAILABLE_COMMIT_PREFIX)
+    store = AttemptStore(synthetic_world.data_root / "attempts")
+    assert store.handle(plan.run_id, plan.attempt_id).state() == "ABORTED"
+
+
+def test_run_experiment_bundled_aborted_manifest_write_failure_never_masks_the_original_exception(
+    synthetic_world, bundled_repo, tmp_path, monkeypatch
+):
+    """Defense in depth beyond the root-cause TOCTOU fix: even if
+    build_manifest fails for some OTHER, unrelated reason on the ABORTED
+    path (simulated here by monkeypatching it to always raise), the
+    ORIGINAL run failure must still be what propagates -- chained
+    (__context__), never replaced or silently dropped."""
+
+    import speech_aware_evidence_acquisition.core.driver as driver_module
+
+    lock, repo_root = bundled_repo
+    ids, split_hash, split_role = load_split(repo_root, "discovery", lock, synthetic_world.data_root)
+    composed = _composed()
+    plan = _plan(
+        split_hash, run_id="SAEA-E-000-maskcheck", attempt_id="attempt-maskcheck",
+        protocol_hash=protocol_hash(composed.config_hash, composed.values["arm"], split_hash),
+    )
+
+    def _always_fail_build_manifest(**kwargs):
+        raise RuntimeError("manifest write exploded too (simulated, unrelated)")
+
+    monkeypatch.setattr(driver_module, "build_manifest", _always_fail_build_manifest)
+    run_dir = tmp_path / "run-maskcheck"
+    with pytest.raises(RuntimeError, match="transport exploded") as excinfo:
+        driver_module.run_experiment_bundled(
+            composed, plan, _OpenGate(), lock, synthetic_world.data_root,
+            run_dir, _failing_transport, repo_root=repo_root,
+        )
+    assert "manifest write exploded too" not in str(excinfo.value)
+    assert excinfo.value.__context__ is not None
+    assert "manifest write exploded too" in str(excinfo.value.__context__)
+    # No manifest could be written at all here (build_manifest itself is
+    # fully broken by the monkeypatch) -- the guarantee under test is "the
+    # ORIGINAL exception propagates," not "a manifest always exists when the
+    # manifest-writer itself cannot write anything."
+    assert not (run_dir / f"{plan.run_id}.run-manifest.json").exists()
+
+
+def test_verify_bundle_refuses_a_completed_manifest_carrying_an_unavailable_commit_marker(
+    synthetic_world, bundled_repo, tmp_path
+):
+    """A COMPLETED manifest may never carry the ABORTED-only
+    UNAVAILABLE:<reason> study_commit marker -- structurally build_manifest
+    never produces this combination, but verify_bundle refuses it
+    independently too (defense in depth against a hand-tampered manifest)."""
+
+    manifest_path, composed, plan, lock = _run_completed(synthetic_world, bundled_repo, tmp_path)
+    manifest = _read_manifest(manifest_path)
+    assert manifest["status"] == STATUS_COMPLETED
+    manifest["study_commit"] = f"{UNAVAILABLE_COMMIT_PREFIX}hand-forged, pretend git was fine"
+    write_json_artifact(manifest_path, manifest)
+    with pytest.raises(BundleError, match=UNAVAILABLE_COMMIT_PREFIX):
+        verify_bundle(manifest_path)

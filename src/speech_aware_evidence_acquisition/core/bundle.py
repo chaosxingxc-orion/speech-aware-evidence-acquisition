@@ -12,14 +12,15 @@ run -> artifacts -> scores -> ledger row.
 
 This module is that transaction. One attempt produces exactly one
 ``run-manifest.json`` (schema ``saea-run-manifest-v1``) binding: the study
-commit (read from git, fail-closed if the tree is dirty or the commit cannot
-be read -- see :func:`_study_commit`), the four config fragment names +
-config_hash, the protocol hash, the FULL :class:`~..contracts.ExecutionPlan`
-(including ``attempt_id``), the exposure run id, the split name/role/
-identity_hash/ids, the session receipt path+sha256 (when the profile touches
-the model), the outputs/raw-trace/trace-manifest/scores path+sha256, the
-actual cost, and a terminal status (``COMPLETED``/``ABORTED``) with a failure
-reason when aborted.
+commit (read from git, fail-closed for a COMPLETED manifest if the tree is
+dirty or the commit cannot be read -- see :func:`_study_commit`; an ABORTED
+manifest tolerates this instead, see :func:`_resolve_study_commit`), the four
+config fragment names + config_hash, the protocol hash, the FULL
+:class:`~..contracts.ExecutionPlan` (including ``attempt_id``), the exposure
+run id, the split name/role/identity_hash/ids, the session receipt
+path+sha256 (when the profile touches the model), the outputs/raw-trace/
+trace-manifest/scores path+sha256, the actual cost, and a terminal status
+(``COMPLETED``/``ABORTED``) with a failure reason when aborted.
 
 :func:`verify_bundle` re-derives every hash from bytes on disk -- never trusts
 the manifest's own numbers -- and cross-checks: every outputs row's
@@ -106,6 +107,14 @@ STATUS_COMPLETED = "COMPLETED"
 STATUS_ABORTED = "ABORTED"
 _VALID_STATUSES = (STATUS_COMPLETED, STATUS_ABORTED)
 
+# T6 fix-2 round: an ABORTED manifest's study_commit sentinel when git itself
+# could not be read (dirty tree, unreadable repo). See _resolve_study_commit
+# and require_clean_study_repo's docstring for why this exists and why it is
+# structurally impossible for a COMPLETED manifest (verify_bundle also
+# refuses to accept one that claims otherwise -- defense in depth against a
+# hand-tampered manifest).
+UNAVAILABLE_COMMIT_PREFIX = "UNAVAILABLE:"
+
 # VerifiedBundle.attempt_state sentinel for "no attempt file exists at all"
 # (a failure before FrozenCoreAdapter ever opened one) -- distinct from every
 # real core.attempts state (RESERVED/OPENED/FINALIZED/ABORTED), but like all
@@ -177,6 +186,45 @@ def require_clean_study_repo(repo_root: Path) -> str:
     exactly as ``_study_commit`` does."""
 
     return _study_commit(Path(repo_root))
+
+
+def _resolve_study_commit(repo_root: Path, status: str) -> str:
+    """Read the study commit for a manifest being built, with a status-aware
+    tolerance (IMPORTANT fix, T6 fix-2 round -- closes the sibling gap
+    CRITICAL 2's fix left open).
+
+    A COMPLETED manifest keeps the ORIGINAL, strict behavior unchanged: if
+    ``_study_commit`` fails, ``build_manifest`` fails, full stop -- a
+    COMPLETED record must always bind a real, clean commit.
+
+    An ABORTED manifest is different in kind: it exists precisely BECAUSE
+    something already went wrong, and the reviewed defect was exactly this --
+    ``run_experiment_bundled``'s own dirty-tree check runs once, BEFORE
+    ``run_experiment`` starts, but a real model-facing run can take long
+    enough for the tree to become dirty DURING it (a genuine TOCTOU window,
+    not a hypothetical one); a run that then fails for an UNRELATED reason
+    must still leave a durable ABORTED record, not silently lose one to a
+    second, unrelated ``BundleError`` about the tree. So an ABORTED manifest
+    tries the strict read first (if the tree genuinely is still clean, the
+    real commit is strictly more useful than a placeholder and is recorded),
+    and only on failure substitutes
+    ``f"{UNAVAILABLE_COMMIT_PREFIX}{reason}"``. An honest "commit unavailable,
+    here is why" marker on a record that already says ABORTED is strictly
+    better than no record at all for that attempt -- but it must never be
+    mistakable for a COMPLETED one, which is why the COMPLETED path above
+    never takes this fallback, and :func:`verify_bundle` separately refuses
+    any manifest that claims ``status == COMPLETED`` while carrying this
+    marker (defense in depth against a hand-tampered manifest, not just a
+    structural guarantee about what ``build_manifest`` itself would ever
+    produce).
+    """
+
+    if status == STATUS_COMPLETED:
+        return _study_commit(Path(repo_root))
+    try:
+        return _study_commit(Path(repo_root))
+    except BundleError as error:
+        return f"{UNAVAILABLE_COMMIT_PREFIX}{error}"
 
 
 # ---------------------------------------------------------------------------
@@ -286,7 +334,7 @@ def _manifest_document(
         "created_at": now().astimezone(timezone.utc).isoformat(),
         "status": status,
         "failure_reason": failure_reason,
-        "study_commit": _study_commit(Path(repo_root)),
+        "study_commit": _resolve_study_commit(Path(repo_root), status),
         "config": {"fragments": dict(composed.fragments), "config_hash": composed.config_hash},
         "protocol_hash": plan.protocol_hash,
         "plan": {
@@ -597,11 +645,20 @@ def _verify_outputs_trace_binding(
                     f"outputs {field} for request {request_id!r} disagrees with the trace "
                     f"record {response_record_id!r}"
                 )
+        # LOW/INFO fix (T6 fix-2 round): this was previously hedged
+        # (`if request_payload is not None and ...`), so deleting the
+        # `{request_id}/request` trace record (and its trace-manifest entry,
+        # self-consistently) let a hand-forged request_sha256 pass -- the
+        # SAME "must exist" discipline the /response check above already
+        # enforces unconditionally, now applied here too.
         request_record_id = f"{request_id}/request"
-        request_payload = trace_records.get(request_record_id)
-        if request_payload is not None and request_payload.get("payload_sha256") != row.get(
-            "request_sha256"
-        ):
+        if request_record_id not in trace_records:
+            raise BundleError(
+                f"outputs request_id {request_id!r} has no matching trace record "
+                f"{request_record_id!r} (I7: every outputs request_id must appear in the trace)"
+            )
+        request_payload = trace_records[request_record_id]
+        if request_payload.get("payload_sha256") != row.get("request_sha256"):
             raise BundleError(
                 f"outputs request_sha256 for request {request_id!r} disagrees with the trace "
                 f"record {request_record_id!r}"
@@ -639,6 +696,20 @@ def verify_bundle(manifest_path: Path) -> VerifiedBundle:
                 raise BundleError(
                     f"run manifest status is COMPLETED but lacks a usable {label} entry"
                 )
+        # T6 fix-2 round: a COMPLETED manifest may never carry the
+        # ABORTED-only "commit unavailable" marker (see
+        # _resolve_study_commit) -- structurally build_manifest never
+        # produces this combination itself, but this is checked here too,
+        # independently, as defense in depth against a hand-tampered
+        # manifest that flips status to COMPLETED while leaving a stale
+        # UNAVAILABLE study_commit behind.
+        study_commit = manifest.get("study_commit")
+        if isinstance(study_commit, str) and study_commit.startswith(UNAVAILABLE_COMMIT_PREFIX):
+            raise BundleError(
+                "run manifest status is COMPLETED but study_commit carries the ABORTED-only "
+                f"{UNAVAILABLE_COMMIT_PREFIX!r} marker; a COMPLETED record must always bind a "
+                "real, clean study commit"
+            )
 
     outputs_raw = _verify_artifact(manifest.get("outputs"), "outputs")
     raw_trace_raw = _verify_artifact(manifest.get("raw_trace"), "raw trace")
