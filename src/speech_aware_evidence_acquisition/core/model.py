@@ -25,6 +25,7 @@ from ..contracts import ExecutionPlan, assert_information_boundary
 from ..e0.d2_leakage import ARM_VISIBLE_FIELDS
 from .attempts import AttemptError, AttemptStore
 from .base import TRANSPORTS, CoreError, PayloadBindingContext
+from .session import SessionError, SessionReceipt, require_loopback, verify_against_runtime_receipt
 from .tracing import TraceSink
 
 
@@ -408,12 +409,38 @@ class LlamaServerTransport:
         self,
         base_url: str,
         data_root: Path,
+        session: SessionReceipt,
+        runtime_receipt: Mapping[str, object],
         timeout_seconds: float = 300.0,
         post: Callable[[str, bytes], bytes] | None = None,
     ) -> None:
+        # R0 repair T5 (I5): there is no "no session" transport, mirroring the
+        # T3 fail-closed constructor discipline for PayloadBindingContext --
+        # a caller can never construct a transport that could ever be asked
+        # to send without first proving WHO is going to answer. ``session``
+        # is re-verified against the runtime receipt HERE (not merely
+        # trusted from whatever produced it) and its host/port must be the
+        # exact endpoint this transport will talk to -- a session receipt is
+        # only ever a proof about ONE specific loopback endpoint, never a
+        # blanket credential.
+        if not isinstance(session, SessionReceipt):
+            raise SessionError(
+                "LlamaServerTransport requires a core.session.SessionReceipt; got "
+                f"{type(session).__name__} (no session receipt -> no send, I5)"
+            )
+        verify_against_runtime_receipt(session, runtime_receipt)
+        loopback_host, loopback_port = require_loopback(base_url)
+        if (loopback_host, loopback_port) != (session.host, session.port):
+            raise SessionError(
+                f"transport base_url host/port {loopback_host}:{loopback_port} does not "
+                f"match the session receipt's host/port {session.host}:{session.port}; "
+                "refused (I5: a session receipt only authorizes the exact endpoint it "
+                "was recorded for)"
+            )
         self._url = base_url.rstrip("/") + "/v1/chat/completions"
         self._data_root = Path(data_root)
         self._post = post or _default_post(timeout_seconds)
+        self._session = session
 
     def __call__(self, request_bytes: bytes) -> bytes:
         payload: Mapping[str, object] = json.loads(request_bytes.decode("utf-8"))
@@ -470,9 +497,19 @@ class LlamaServerTransport:
         return json.dumps({"text": text, "usage": usage}).encode("utf-8")
 
 
-def _llama_server_factory(values: Mapping[str, object], data_root: Path):
+def _llama_server_factory(
+    values: Mapping[str, object],
+    data_root: Path,
+    *,
+    session: SessionReceipt,
+    runtime_receipt: Mapping[str, object],
+):
     return LlamaServerTransport(
-        str(values["base_url"]), data_root, float(values.get("timeout_seconds", 300.0))
+        str(values["base_url"]),
+        data_root,
+        session,
+        runtime_receipt,
+        float(values.get("timeout_seconds", 300.0)),
     )
 
 

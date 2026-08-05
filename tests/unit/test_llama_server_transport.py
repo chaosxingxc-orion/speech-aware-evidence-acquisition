@@ -5,16 +5,72 @@ must refuse an absolute/backslash/traversal/escaping ``media_relpath`` on its
 own inputs, without relying on the adapter having already checked it."""
 
 import base64
+import hashlib
 import json
 import os
 import subprocess
 
 import pytest
 
+from speech_aware_evidence_acquisition.contracts import STUDY_SLUG
 from speech_aware_evidence_acquisition.core.model import (
     FrozenCoreError,
     LlamaServerTransport,
 )
+from speech_aware_evidence_acquisition.core.session import (
+    SESSION_RECEIPT_SCHEMA,
+    ModelFileRef,
+    SessionReceipt,
+)
+
+# R0 repair T5 (I5): every LlamaServerTransport now requires a session receipt
+# that has already been verified against a runtime receipt. These tests are
+# about body-mapping/media-confinement behavior, not session attestation
+# itself (see tests/unit/test_session.py for that) -- so every call site here
+# goes through this one canonical, always-matching (session, runtime_receipt)
+# pair via the ``_transport`` helper below, unless a test overrides them.
+
+_BINARY_PATH = "llama.cpp/build/bin/llama-server"
+_BINARY_SHA256 = "c" * 64
+_MODEL_FILES = (
+    ModelFileRef(path="models/qwen3-omni/model.gguf", sha256="a" * 64),
+    ModelFileRef(path="models/qwen3-omni/mmproj.gguf", sha256="b" * 64),
+)
+
+
+def _fake_runtime_receipt():
+    return {
+        "llama_cpp": {"binary_path": _BINARY_PATH, "binary_sha256": _BINARY_SHA256},
+        "gguf_files": [{"path": f.path, "sha256": f.sha256} for f in _MODEL_FILES],
+    }
+
+
+def _fake_session(*, host="127.0.0.1", port=8080):
+    return SessionReceipt(
+        schema=SESSION_RECEIPT_SCHEMA,
+        study=STUDY_SLUG,
+        session_id="test-session",
+        binary_path=_BINARY_PATH,
+        binary_sha256=_BINARY_SHA256,
+        argv=(_BINARY_PATH, "--host", host, "--port", str(port)),
+        pid=os.getpid(),
+        host=host,
+        port=port,
+        model_files=_MODEL_FILES,
+        started_at="2026-08-05T00:00:00+00:00",
+        startup_stdout_sha256=hashlib.sha256(b"").hexdigest(),
+    )
+
+
+def _transport(base_url, data_root, *, post, session=None, runtime_receipt=None, **kwargs):
+    return LlamaServerTransport(
+        base_url,
+        data_root,
+        session if session is not None else _fake_session(),
+        runtime_receipt if runtime_receipt is not None else _fake_runtime_receipt(),
+        post=post,
+        **kwargs,
+    )
 
 
 def _boundary_payload(tmp_path, **overrides):
@@ -54,7 +110,7 @@ def test_body_mapping_and_response_projection(tmp_path):
         captured["body"] = json.loads(body)
         return _canned_response()
 
-    transport = LlamaServerTransport("http://127.0.0.1:8080", tmp_path, post=fake_post)
+    transport = _transport("http://127.0.0.1:8080", tmp_path, post=fake_post)
     raw = transport(json.dumps(_boundary_payload(tmp_path)).encode())
     result = json.loads(raw)
     assert result == {
@@ -81,7 +137,7 @@ def test_evidence_items_become_text_parts(tmp_path):
         assert parts[1] == {"type": "text", "text": "[evidence ev-1] context text"}
         return _canned_response()
 
-    transport = LlamaServerTransport("http://127.0.0.1:8080", tmp_path, post=fake_post)
+    transport = _transport("http://127.0.0.1:8080", tmp_path, post=fake_post)
     payload = _boundary_payload(
         tmp_path,
         supplied_evidence=[
@@ -93,7 +149,7 @@ def test_evidence_items_become_text_parts(tmp_path):
 
 
 def test_missing_media_fails_closed(tmp_path):
-    transport = LlamaServerTransport(
+    transport = _transport(
         "http://127.0.0.1:8080", tmp_path, post=lambda u, b: _canned_response()
     )
     payload = _boundary_payload(tmp_path, media_relpath="media/absent.mp3")
@@ -106,7 +162,7 @@ def test_decoding_params_cannot_override_constructed_messages(tmp_path):
     must never silently replace the constructed message list (which would drop
     audio while the adapter still meters it as delivered)."""
 
-    transport = LlamaServerTransport(
+    transport = _transport(
         "http://127.0.0.1:8080", tmp_path, post=lambda u, b: _canned_response()
     )
     payload = _boundary_payload(tmp_path, decoding_params={"messages": []})
@@ -121,7 +177,7 @@ def test_malformed_usage_value_raises_frozen_core_error(tmp_path):
             "usage": {"prompt_tokens": "NaN-ish-string", "completion_tokens": 2},
         }
     ).encode()
-    transport = LlamaServerTransport(
+    transport = _transport(
         "http://127.0.0.1:8080", tmp_path, post=lambda u, b: response
     )
     with pytest.raises(FrozenCoreError, match="malformed"):
@@ -156,14 +212,14 @@ def test_absolute_media_relpath_outside_data_root_is_refused_not_read(tmp_path):
 
     data_root = tmp_path / "data"
     data_root.mkdir()
-    transport = LlamaServerTransport("http://127.0.0.1:8080", data_root, post=_canary_post)
+    transport = _transport("http://127.0.0.1:8080", data_root, post=_canary_post)
     payload = _boundary_payload(data_root, media_relpath=str(secret))
     with pytest.raises(FrozenCoreError, match="media_relpath"):
         transport(json.dumps(payload).encode())
 
 
 def test_drive_letter_media_relpath_refused_at_transport(tmp_path):
-    transport = LlamaServerTransport(
+    transport = _transport(
         "http://127.0.0.1:8080", tmp_path, post=lambda u, b: _canned_response()
     )
     payload = _boundary_payload(tmp_path, media_relpath="C:/secret.txt")
@@ -172,7 +228,7 @@ def test_drive_letter_media_relpath_refused_at_transport(tmp_path):
 
 
 def test_backslash_media_relpath_refused_at_transport(tmp_path):
-    transport = LlamaServerTransport(
+    transport = _transport(
         "http://127.0.0.1:8080", tmp_path, post=lambda u, b: _canned_response()
     )
     payload = _boundary_payload(tmp_path, media_relpath="media\\5000001.mp3")
@@ -181,7 +237,7 @@ def test_backslash_media_relpath_refused_at_transport(tmp_path):
 
 
 def test_traversal_media_relpath_refused_at_transport(tmp_path):
-    transport = LlamaServerTransport(
+    transport = _transport(
         "http://127.0.0.1:8080", tmp_path, post=lambda u, b: _canned_response()
     )
     payload = _boundary_payload(tmp_path, media_relpath="../outside/secret.mp3")
@@ -193,7 +249,7 @@ def test_missing_media_still_raises_file_not_found_after_confinement_check(tmp_p
     """The confinement check must not change the existing missing-media
     behavior for a syntactically clean, in-root relative path."""
 
-    transport = LlamaServerTransport(
+    transport = _transport(
         "http://127.0.0.1:8080", tmp_path, post=lambda u, b: _canned_response()
     )
     payload = _boundary_payload(tmp_path, media_relpath="media/absent.mp3")
@@ -210,7 +266,7 @@ def test_media_relpath_symlink_escape_refused_at_transport(tmp_path):
     (outside / "leaked.mp3").write_bytes(b"leaked-bytes")
     (data_root / "media_link").symlink_to(outside, target_is_directory=True)
 
-    transport = LlamaServerTransport(
+    transport = _transport(
         "http://127.0.0.1:8080", data_root, post=lambda u, b: _canned_response()
     )
     payload = _boundary_payload(data_root, media_relpath="media_link/leaked.mp3")
@@ -243,7 +299,7 @@ def test_media_relpath_windows_junction_escape_refused_at_transport(tmp_path):
             f"(rc={result.returncode}): {result.stderr or result.stdout}"
         )
 
-    transport = LlamaServerTransport(
+    transport = _transport(
         "http://127.0.0.1:8080", data_root, post=lambda u, b: _canned_response()
     )
     payload = _boundary_payload(data_root, media_relpath="media_link/leaked.mp3")
@@ -259,7 +315,7 @@ def test_media_relpath_windows_junction_escape_refused_at_transport(tmp_path):
 
 
 def test_media_relpath_trailing_dot_segment_refused_at_transport(tmp_path):
-    transport = LlamaServerTransport(
+    transport = _transport(
         "http://127.0.0.1:8080", tmp_path, post=lambda u, b: _canned_response()
     )
     payload = _boundary_payload(tmp_path, media_relpath="media/5000001.mp3.")
@@ -268,7 +324,7 @@ def test_media_relpath_trailing_dot_segment_refused_at_transport(tmp_path):
 
 
 def test_media_relpath_trailing_space_segment_refused_at_transport(tmp_path):
-    transport = LlamaServerTransport(
+    transport = _transport(
         "http://127.0.0.1:8080", tmp_path, post=lambda u, b: _canned_response()
     )
     payload = _boundary_payload(tmp_path, media_relpath="media/5000001.mp3 ")
@@ -277,7 +333,7 @@ def test_media_relpath_trailing_space_segment_refused_at_transport(tmp_path):
 
 
 def test_media_relpath_colon_in_segment_refused_at_transport(tmp_path):
-    transport = LlamaServerTransport(
+    transport = _transport(
         "http://127.0.0.1:8080", tmp_path, post=lambda u, b: _canned_response()
     )
     payload = _boundary_payload(tmp_path, media_relpath="media/5000001.mp3:hidden")
