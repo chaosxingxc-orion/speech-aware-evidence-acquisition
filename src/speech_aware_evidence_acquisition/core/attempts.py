@@ -144,6 +144,42 @@ class AttemptHandle:
         self._write(document)
         return self
 
+    def mark_finalized(self) -> "AttemptHandle":
+        """OPENED -> FINALIZED (R0 repair T6, invariant I7): the terminal,
+        successful transition a ``core.bundle.finalize_bundle`` call makes only
+        after the whole bundle (outputs/raw trace/trace manifest/scores) has
+        re-verified. Refuses from any other state -- including a second call,
+        which would otherwise silently no-op a double-finalize."""
+
+        document = self._read()
+        if document.get("state") != STATE_OPENED:
+            raise AttemptError(
+                f"attempt {self.run_id}/{self.attempt_id} is not OPENED "
+                f"(found {document.get('state')!r}); cannot transition to FINALIZED"
+            )
+        document["state"] = STATE_FINALIZED
+        self._write(document)
+        return self
+
+    def mark_aborted(self, reason: str) -> "AttemptHandle":
+        """RESERVED/OPENED -> ABORTED (R0 repair T6, invariant I7): records why,
+        so an aborted attempt still leaves an auditable trail rather than a
+        silently dropped file. Refuses from FINALIZED/ABORTED -- a terminal
+        state, once reached, is never overwritten by a later abort call."""
+
+        if not isinstance(reason, str) or not reason.strip():
+            raise AttemptError("mark_aborted reason must be a non-empty string")
+        document = self._read()
+        if document.get("state") not in (STATE_RESERVED, STATE_OPENED):
+            raise AttemptError(
+                f"attempt {self.run_id}/{self.attempt_id} is not RESERVED/OPENED "
+                f"(found {document.get('state')!r}); cannot transition to ABORTED"
+            )
+        document["state"] = STATE_ABORTED
+        document["failure_reason"] = reason
+        self._write(document)
+        return self
+
     def record_usage(self, *, calls: int, audio_seconds: float) -> tuple[int, float]:
         """Persist actual usage. MUST be called before the transport send it
         accounts for -- the whole point of this store is that a crash after
@@ -221,26 +257,37 @@ class AttemptStore:
             "actual": {"calls": 0, "audio_seconds": 0.0},
         }
         raw = json.dumps(document, ensure_ascii=False, sort_keys=True, indent=2).encode("utf-8")
+        # Carried T4-review minor (R0 repair T6): create+write must be atomic.
+        # The old code did `os.open(O_CREAT|O_EXCL)` (making an EMPTY file
+        # visible under `path` immediately) and only then wrote the bytes --
+        # a concurrent reader (another AttemptHandle, or prior_actual_usage's
+        # glob) could observe that empty file in between and raise
+        # JSONDecodeError/AttemptError. The fix stages the FULL content in a
+        # temp file in the same directory (so the final link is same-volume),
+        # flushes+fsyncs it, and only ever makes `path` exist via `os.link`
+        # from that already-fully-written temp file. `os.link` itself is the
+        # atomic, exclusive step (POSIX and NTFS both refuse a link to an
+        # existing destination), so a reader either sees `path` fully
+        # populated or does not see it at all -- never a partial write.
+        tmp = path.with_name(f".{path.name}.reserving-{os.getpid()}-{time.monotonic_ns()}")
         try:
-            fd = os.open(path, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
-        except FileExistsError as error:
-            raise AttemptError(
-                f"attempt {run_id}/{attempt_id} is already reserved or opened at {path}; "
-                "a (run_id, attempt_id) pair is a one-time key -- a retry must mint a "
-                "fresh attempt_id, never reuse this one"
-            ) from error
-        try:
-            with os.fdopen(fd, "wb") as handle:
+            with open(tmp, "wb") as handle:
                 handle.write(raw)
-        except BaseException:
-            # Never leave a half-written RESERVED file behind: that would
-            # permanently block this attempt id in an unrecoverable, silent
-            # half-state instead of a diagnosable "does not exist".
+                handle.flush()
+                os.fsync(handle.fileno())
             try:
-                path.unlink()
+                os.link(tmp, path)
+            except FileExistsError as error:
+                raise AttemptError(
+                    f"attempt {run_id}/{attempt_id} is already reserved or opened at {path}; "
+                    "a (run_id, attempt_id) pair is a one-time key -- a retry must mint a "
+                    "fresh attempt_id, never reuse this one"
+                ) from error
+        finally:
+            try:
+                tmp.unlink()
             except OSError:
                 pass
-            raise
         return AttemptHandle(path=path, run_id=run_id, attempt_id=attempt_id).mark_opened()
 
     def prior_actual_usage(self, run_id: str, *, exclude_attempt_id: str | None = None) -> tuple[int, float]:
@@ -284,3 +331,35 @@ class AttemptStore:
             total_calls += calls
             total_audio += audio
         return total_calls, total_audio
+
+    def handle(self, run_id: str, attempt_id: str) -> AttemptHandle:
+        """A handle over an attempt file this store did NOT necessarily just
+        open -- the caller is responsible for the file existing (R0 repair T6:
+        used by ``core.bundle`` to re-read/transition an attempt's live state
+        from only ``(run_id, attempt_id)``, without holding onto the original
+        ``open_attempt`` return value across a process boundary)."""
+
+        validate_id(run_id, "run_id")
+        validate_id(attempt_id, "attempt_id")
+        path = self._run_dir(run_id) / f"{attempt_id}.json"
+        return AttemptHandle(path=path, run_id=run_id, attempt_id=attempt_id)
+
+    def abort_if_opened(self, run_id: str, attempt_id: str, *, reason: str) -> bool:
+        """Best-effort failure path (R0 repair T6, invariant I7): if this
+        attempt was ever reserved/opened, mark it ABORTED with ``reason`` and
+        return True. If it was never opened at all (a failure before
+        ``FrozenCoreAdapter`` construction ever ran) there is nothing to
+        abort -- returns False, not an error. If it is already FINALIZED or
+        ABORTED, that terminal state is left exactly as it is (also False):
+        a late failure elsewhere must never overwrite an already-settled
+        attempt's outcome."""
+
+        path = self.handle(run_id, attempt_id).path
+        if not path.is_file():
+            return False
+        handle = AttemptHandle(path=path, run_id=run_id, attempt_id=attempt_id)
+        try:
+            handle.mark_aborted(reason)
+        except AttemptError:
+            return False
+        return True

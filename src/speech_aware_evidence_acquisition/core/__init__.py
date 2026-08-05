@@ -18,19 +18,37 @@ from .base import (
     SampleContext,
     SampleOutcome,
 )
+from .bundle import (
+    BundleError,
+    FinalizeResult,
+    VerifiedBundle,
+    build_manifest,
+    finalize_bundle,
+    verify_bundle,
+)
 from .config import ComposedConfig, ConfigError, compose, protocol_hash
-from .driver import load_split, run_experiment
+from .driver import load_split, run_experiment, run_experiment_bundled
 from .model import CoreResponse, FrozenCoreAdapter, FrozenCoreError, LlamaServerTransport
 from .split_receipt import SplitReceiptError, VerifiedSplit, load_verified_split
 from .tracing import TraceSink, TraceSinkError
-from .tracking import LEDGER_COLUMNS, MlflowUnavailable, ledger_row, log_run
+from .tracking import (
+    LEDGER_COLUMNS,
+    MlflowUnavailable,
+    bundle_ledger_cells,
+    ledger_row,
+    ledger_row_for_bundle,
+    log_bundle,
+    log_run,
+)
 
 __all__ = [
     "CARRIERS", "EVIDENCE_SOURCES", "POLICIES", "SCORERS", "TRANSPORTS",
-    "LEDGER_COLUMNS", "ComposedConfig", "ConfigError", "CoreError", "CoreResponse",
-    "EvidenceError", "EvidenceItem", "FrozenCoreAdapter", "FrozenCoreError",
-    "LlamaServerTransport", "MlflowUnavailable", "RunResult", "SampleContext",
-    "SampleOutcome", "SplitReceiptError", "TraceSink", "TraceSinkError",
-    "VerifiedSplit", "compose", "ledger_row", "load_split", "load_verified_split",
-    "log_run", "protocol_hash", "run_experiment",
+    "LEDGER_COLUMNS", "BundleError", "ComposedConfig", "ConfigError", "CoreError",
+    "CoreResponse", "EvidenceError", "EvidenceItem", "FinalizeResult", "FrozenCoreAdapter",
+    "FrozenCoreError", "LlamaServerTransport", "MlflowUnavailable", "RunResult",
+    "SampleContext", "SampleOutcome", "SplitReceiptError", "TraceSink", "TraceSinkError",
+    "VerifiedBundle", "VerifiedSplit", "build_manifest", "bundle_ledger_cells", "compose",
+    "finalize_bundle", "ledger_row", "ledger_row_for_bundle", "load_split",
+    "load_verified_split", "log_bundle", "log_run", "protocol_hash", "run_experiment",
+    "run_experiment_bundled", "verify_bundle",
 ]

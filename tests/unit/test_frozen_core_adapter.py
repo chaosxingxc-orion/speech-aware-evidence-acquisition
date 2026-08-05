@@ -524,6 +524,39 @@ def test_adapter_construction_opens_a_durable_attempt_file(tmp_path):
     assert path.is_file()
 
 
+def test_gate_check_runs_before_attempt_reservation(tmp_path):
+    """R0 repair T6, carried T4-review minor: pins the ordering the
+    conservative-ceiling slice-budget argument depends on -- the gate must be
+    consulted BEFORE a durable attempt file is ever created, so a refused
+    gate leaves no attempt behind to spend budget against later. Proved via
+    the actual filesystem side effect (no attempt file), not merely by
+    reading source order."""
+
+    class _RefusingGate:
+        def assert_model_touch_allowed(self, plan):
+            raise RuntimeError("gate refused")
+
+    plan = _plan(run_id="SAEA-E-000-gateorder", attempt_id="attempt-gateorder")
+    sink = TraceSink(tmp_path / "run", plan.run_id)
+    binding = _binding(tmp_path)
+    with pytest.raises(RuntimeError, match="gate refused"):
+        FrozenCoreAdapter(
+            gate=_RefusingGate(),
+            plan=plan,
+            arm="bare-core",
+            transport=_fake_transport,
+            sink=sink,
+            binding=binding,
+        )
+    attempt_path = binding.data_root / "attempts" / plan.run_id / "attempt-gateorder.json"
+    assert not attempt_path.is_file(), (
+        "a refused gate must never leave an attempt file behind -- the gate "
+        "check must run before any attempt reservation"
+    )
+    store = AttemptStore(binding.data_root / "attempts")
+    assert store.prior_actual_usage(plan.run_id) == (0, 0.0)
+
+
 def test_plan_without_attempt_id_is_refused(tmp_path):
     sink = TraceSink(tmp_path / "run", "SAEA-E-000-noattempt")
     with pytest.raises(FrozenCoreError, match="attempt_id"):

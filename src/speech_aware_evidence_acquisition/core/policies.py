@@ -88,6 +88,10 @@ class FixedPolicy:
             admitted=True,
             request_sha256=response.request_sha256,
             response_sha256=response.response_sha256,
+            # R0 repair T6 (I7): plumbing-only passthrough of the adapter's new
+            # text-hash field (core.model.CoreResponse.response_text_sha256)
+            # into the outputs row -- not itself a policy-behavior change.
+            response_text_sha256=response.response_text_sha256,
         )
 
 

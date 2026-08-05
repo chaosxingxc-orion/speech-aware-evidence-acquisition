@@ -28,6 +28,13 @@ from .base import (
     RunResult,
     SampleContext,
 )
+from .bundle import (
+    STATUS_ABORTED,
+    STATUS_COMPLETED,
+    abort_attempt_if_opened,
+    build_manifest,
+    finalize_bundle,
+)
 from .config import ComposedConfig, compose, protocol_hash
 from .evidence import rotated_mismatch
 from .model import FrozenCoreAdapter
@@ -175,6 +182,7 @@ def run_experiment(
                         "admitted": outcome.admitted,
                         "request_sha256": outcome.request_sha256,
                         "response_sha256": outcome.response_sha256,
+                        "response_text_sha256": outcome.response_text_sha256,
                     },
                     ensure_ascii=False,
                     sort_keys=True,
@@ -188,6 +196,73 @@ def run_experiment(
         outputs_path=outputs_path,
         trace_manifest_hash=manifest_hash,
         cost=adapter.cost_summary(),
+    )
+
+
+def run_experiment_bundled(
+    composed: ComposedConfig,
+    plan: ExecutionPlan,
+    gate: object,
+    lock: Mapping[str, object],
+    root: Path,
+    run_dir: Path,
+    transport: Callable[[bytes], bytes],
+    *,
+    repo_root: Path = REPO_ROOT,
+    session_receipt_path: Path | None = None,
+) -> Path:
+    """R0 repair T6 (I7): run one attempt and ALWAYS produce a run manifest --
+    the audit trail, not a raised exception alone, is the record of what
+    happened.
+
+    On success: ``run_experiment`` runs to completion and this returns the
+    path to a manifest with status COMPLETED, binding every artifact it
+    produced.
+
+    On any failure: the attempt is marked ABORTED on disk (if it was ever
+    opened at all -- ``core.bundle.abort_attempt_if_opened`` is a no-op
+    otherwise) with the failure's own message as the reason, a manifest is
+    still durably written to the SAME deterministic path
+    (``run_dir / f"{plan.run_id}.run-manifest.json"``) with status ABORTED
+    binding whatever partial artifacts genuinely exist, and then the
+    original exception is RE-RAISED (this function does not swallow errors
+    -- callers that need the manifest path after a failure can reconstruct
+    it from ``run_dir``/``plan.run_id``, or use ``core.bundle.verify_bundle``
+    against that path directly). Either way, an ABORTED manifest can never
+    later be finalized as COMPLETED (I7; see ``core.bundle.finalize_bundle``).
+    """
+
+    verified_split = load_verified_split(repo_root, str(composed.values["split_name"]), lock, root)
+    try:
+        result = run_experiment(
+            composed, plan, gate, lock, root, run_dir, transport, repo_root=repo_root
+        )
+    except Exception as error:
+        abort_attempt_if_opened(root, plan.run_id, plan.attempt_id, reason=str(error))
+        build_manifest(
+            repo_root=repo_root,
+            data_root=root,
+            composed=composed,
+            plan=plan,
+            verified_split=verified_split,
+            session_receipt_path=session_receipt_path,
+            run_dir=run_dir,
+            status=STATUS_ABORTED,
+            failure_reason=str(error),
+            result=None,
+        )
+        raise
+    return build_manifest(
+        repo_root=repo_root,
+        data_root=root,
+        composed=composed,
+        plan=plan,
+        verified_split=verified_split,
+        session_receipt_path=session_receipt_path,
+        run_dir=run_dir,
+        status=STATUS_COMPLETED,
+        failure_reason=None,
+        result=result,
     )
 
 
@@ -225,10 +300,47 @@ def _cli_run(args: argparse.Namespace) -> int:
     transport = transport_factory(
         composed.values, root, session=session, runtime_receipt=runtime_receipt
     )
-    result = run_experiment(
-        composed, plan, gate, lock, root, Path(args.run_dir), transport
+    # R0 repair T6 (I7): every real run always produces a run manifest, win
+    # or lose -- run_experiment_bundled marks the attempt ABORTED and still
+    # writes it on failure, then re-raises (a CLI traceback on a genuine
+    # run failure is expected; the manifest survives it either way).
+    manifest_path = run_experiment_bundled(
+        composed, plan, gate, lock, root, Path(args.run_dir), transport,
+        session_receipt_path=Path(args.session_receipt),
     )
-    print(json.dumps({"run_id": result.run_id, "cost": dict(result.cost)}, indent=2))
+    print(json.dumps({"run_id": plan.run_id, "manifest": str(manifest_path)}, indent=2))
+    return 0
+
+
+def _cli_finalize(args: argparse.Namespace) -> int:
+    from ..data.lock import data_root, load_lock, umbrella_lock_path
+
+    lock = load_lock(umbrella_lock_path())
+    root = data_root()
+    ledger_cells = (
+        json.loads(Path(args.ledger_cells).read_text(encoding="utf-8"))
+        if args.ledger_cells
+        else {}
+    )
+    result = finalize_bundle(
+        Path(args.manifest),
+        lock,
+        root,
+        ledger_cells=ledger_cells,
+        tracking_uri=args.tracking_uri,
+    )
+    print(
+        json.dumps(
+            {
+                "scores": str(result.scores_path),
+                "ledger_markdown": str(result.ledger_markdown_path),
+                "ledger_json": str(result.ledger_json_path),
+                "mlflow_run": result.mlflow_run_id,
+                "attempt_state": result.attempt_state,
+            },
+            indent=2,
+        )
+    )
     return 0
 
 
@@ -257,6 +369,28 @@ def main(argv: list[str] | None = None) -> int:
         ),
     )
     run.set_defaults(func=_cli_run)
+    finalize = sub.add_parser(
+        "finalize",
+        help=(
+            "verify a run-manifest bundle, score it, upload it, and mark the "
+            "attempt FINALIZED (R0 repair T6, invariant I7)"
+        ),
+    )
+    finalize.add_argument("--manifest", required=True, help="path to a run-manifest.json")
+    finalize.add_argument(
+        "--ledger-cells",
+        default=None,
+        help=(
+            "path to a JSON object of human-supplied ledger cells (experiment_id, "
+            "date, etc.); refused if any cell contradicts the verified manifest"
+        ),
+    )
+    finalize.add_argument(
+        "--tracking-uri",
+        default=None,
+        help="MLflow tracking URI; omit to skip the (stubbable) MLflow upload entirely",
+    )
+    finalize.set_defaults(func=_cli_finalize)
     args = parser.parse_args(argv)
     return args.func(args)
 

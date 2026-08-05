@@ -66,6 +66,144 @@ class _ActiveRunStub:
         return False
 
 
+def _fake_manifest(**overrides):
+    manifest = {
+        "run_id": "SAEA-E-000-track",
+        "created_at": "2026-08-05T12:00:00+00:00",
+        "study_commit": "a" * 40,
+        "config": {"config_hash": "b" * 64, "fragments": {}},
+        "protocol_hash": "c" * 64,
+        "plan": {
+            "split_role": "discovery",
+            "execution_profile": "bounded-discovery-probe",
+            "carrier_lock_key": "earnings21-original",
+        },
+        "split": {"identity_hash": "d" * 64},
+        "outputs": {"path": "outputs.jsonl", "sha256": "e" * 64},
+        "raw_trace": {"path": "trace.jsonl", "sha256": "f" * 64},
+        "trace_manifest": {"path": "trace-manifest.json", "sha256": "0" * 64},
+        "scores": None,
+        "session_receipt": None,
+        "cost": {"calls_used": 3, "audio_seconds_used": 30.0},
+    }
+    manifest.update(overrides)
+    return manifest
+
+
+def _fake_bundle(manifest_path, **overrides):
+    from speech_aware_evidence_acquisition.core.bundle import VerifiedBundle
+
+    return VerifiedBundle(
+        manifest_path=manifest_path,
+        manifest=_fake_manifest(**overrides),
+        outputs_path=None,
+        outputs_rows=(),
+        trace_records={},
+        split_ids=frozenset(),
+        attempt_state="OPENED",
+    )
+
+
+def test_bundle_ledger_cells_derives_only_the_machine_checkable_columns(tmp_path):
+    from speech_aware_evidence_acquisition.core.tracking import bundle_ledger_cells
+
+    bundle = _fake_bundle(tmp_path / "run" / "x.run-manifest.json")
+    derived = bundle_ledger_cells(bundle)
+    assert derived["study commit"] == "a" * 40
+    assert derived["config hash"] == "b" * 64
+    assert derived["protocol hash"] == "c" * 64
+    assert derived["split role"] == "discovery"
+    assert derived["split identity hash"] == "d" * 64
+    assert derived["consumed"] == "yes"
+    assert derived["date"] == "2026-08-05"
+    assert "outputs=" + "e" * 64 in derived["artifact hashes"]
+    assert "raw_trace=" + "f" * 64 in derived["artifact hashes"]
+    # A human-judgment column must never appear here.
+    assert "decision" not in derived
+    assert "experiment_id" not in derived
+
+
+def test_ledger_row_for_bundle_merges_human_and_derived_cells(tmp_path):
+    from speech_aware_evidence_acquisition.core.tracking import ledger_row_for_bundle
+
+    bundle = _fake_bundle(tmp_path / "run" / "x.run-manifest.json")
+    human = {
+        "experiment_id": "SAEA-E-000", "speech task/carrier": "earnings21 discovery",
+        "changed axes": "none", "shared code revision": "n/a", "model rev": "n/a",
+        "dataset rev": "n/a", "MLflow run": "n/a", "effectiveness": "n/a",
+        "reasonableness": "n/a", "efficiency": "n/a", "deviations": "none", "decision": "test",
+    }
+    row, merged = ledger_row_for_bundle(bundle, human)
+    assert set(merged) == set(LEDGER_COLUMNS)
+    assert merged["study commit"] == "a" * 40
+    assert merged["experiment_id"] == "SAEA-E-000"
+    assert row.count("|") == len(LEDGER_COLUMNS) + 1
+
+
+def test_ledger_row_for_bundle_refuses_a_contradicting_hand_supplied_cell(tmp_path):
+    from speech_aware_evidence_acquisition.core.tracking import ledger_row_for_bundle
+
+    bundle = _fake_bundle(tmp_path / "run" / "x.run-manifest.json")
+    with pytest.raises(ValueError, match="contradict"):
+        ledger_row_for_bundle(bundle, {"protocol hash": "0" * 64})
+
+
+def test_ledger_row_for_bundle_accepts_a_matching_hand_supplied_cell(tmp_path):
+    from speech_aware_evidence_acquisition.core.tracking import ledger_row_for_bundle
+
+    bundle = _fake_bundle(tmp_path / "run" / "x.run-manifest.json")
+    human = {
+        "experiment_id": "SAEA-E-000", "speech task/carrier": "earnings21 discovery",
+        "changed axes": "none", "shared code revision": "n/a", "model rev": "n/a",
+        "dataset rev": "n/a", "MLflow run": "n/a", "effectiveness": "n/a",
+        "reasonableness": "n/a", "efficiency": "n/a", "deviations": "none", "decision": "test",
+    }
+    # Supplying the SAME value the bundle would have derived is not a
+    # contradiction -- only a DIFFERING value refuses.
+    row, merged = ledger_row_for_bundle(bundle, {**human, "protocol hash": "c" * 64})
+    assert merged["protocol hash"] == "c" * 64
+
+
+def test_log_bundle_requires_mlflow(monkeypatch, tmp_path):
+    monkeypatch.setitem(sys.modules, "mlflow", None)
+    from speech_aware_evidence_acquisition.core.tracking import log_bundle
+
+    bundle = _fake_bundle(tmp_path / "run" / "x.run-manifest.json")
+    with pytest.raises(MlflowUnavailable, match="tracking"):
+        log_bundle(bundle, tracking_uri=str(tmp_path / "mlruns"))
+
+
+def test_log_bundle_with_stub_mlflow_uploads_every_manifest_artifact(tmp_path, monkeypatch):
+    calls = {"params": {}, "metrics": {}, "artifacts": []}
+    stub = types.SimpleNamespace(
+        set_tracking_uri=lambda uri: calls.setdefault("uri", uri),
+        set_experiment=lambda name: calls.setdefault("experiment", name),
+        start_run=lambda run_name: _ActiveRunStub(),
+        log_params=lambda params: calls["params"].update(params),
+        log_metrics=lambda metrics: calls["metrics"].update(metrics),
+        log_artifact=lambda path: calls["artifacts"].append(path),
+    )
+    monkeypatch.setitem(sys.modules, "mlflow", stub)
+
+    from speech_aware_evidence_acquisition.core.tracking import log_bundle
+
+    manifest_path = tmp_path / "run" / "SAEA-E-000-track.run-manifest.json"
+    scores = {
+        "outputs": {"path": "outputs.jsonl", "sha256": "e" * 64},
+        "raw_trace": {"path": "trace.jsonl", "sha256": "f" * 64},
+        "trace_manifest": {"path": "trace-manifest.json", "sha256": "0" * 64},
+        "scores": {"path": "scores.json", "sha256": "1" * 64},
+    }
+    bundle = _fake_bundle(manifest_path, **scores)
+    run_id = log_bundle(bundle, tracking_uri=str(tmp_path / "mlruns"))
+    assert run_id == "mlrun-1"
+    assert calls["params"]["config_hash"] == "b" * 64
+    assert calls["metrics"]["calls_used"] == 3
+    # outputs, raw trace, trace manifest, scores, and the manifest itself.
+    assert len(calls["artifacts"]) == 5
+    assert str(manifest_path) in calls["artifacts"]
+
+
 def test_log_run_with_stub_mlflow(tmp_path, monkeypatch):
     calls = {"params": {}, "metrics": {}, "artifacts": []}
     stub = types.SimpleNamespace(

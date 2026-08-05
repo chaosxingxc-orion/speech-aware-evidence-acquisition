@@ -134,6 +134,17 @@ class CoreResponse:
     usage: Mapping[str, int]
     request_sha256: str
     response_sha256: str
+    # R0 repair T6 (I7, run-bundle closure): sha256 of `text` alone. The
+    # adapter only ever hashes the raw transport bytes for `response_sha256`
+    # -- and those bytes are not exactly re-derivable later from `text` plus
+    # `usage` alone (the transport builds them from a server-controlled
+    # `usage` mapping whose key order is not itself pinned anywhere). Minimal
+    # adapter change so the outputs<->response binding IS strictly
+    # re-verifiable after the fact: `core.bundle.verify_bundle` recomputes
+    # this hash from the outputs row's own `text` field and refuses on any
+    # mismatch -- closing the reproduced defect where a row's `text` could be
+    # mutated post-hoc while `response_sha256` stayed stale and unchecked.
+    response_text_sha256: str
     latency_seconds: float
 
 
@@ -305,10 +316,20 @@ class FrozenCoreAdapter:
             raise FrozenCoreError(
                 f"transport returned a malformed response: {error}"
             ) from error
+        if not isinstance(text, str):
+            raise FrozenCoreError(
+                f"transport returned a non-string text field: {type(text).__name__}"
+            )
+        response_text_sha256 = hashlib.sha256(text.encode("utf-8")).hexdigest()
         self._sink.emit(
             "MODEL_RESPONSE",
             f"{request_id}/response",
-            {"response_sha256": response_sha256, "text": text, "usage": usage},
+            {
+                "response_sha256": response_sha256,
+                "response_text_sha256": response_text_sha256,
+                "text": text,
+                "usage": usage,
+            },
         )
         self._latency_total += latency
         self._prompt_tokens += usage.get("prompt_tokens", 0)
@@ -329,6 +350,7 @@ class FrozenCoreAdapter:
             usage=usage,
             request_sha256=request_sha256,
             response_sha256=response_sha256,
+            response_text_sha256=response_text_sha256,
             latency_seconds=latency,
         )
 

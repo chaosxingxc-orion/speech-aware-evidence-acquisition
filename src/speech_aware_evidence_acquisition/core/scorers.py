@@ -92,3 +92,40 @@ def transition_report(
 
 
 SCORERS.register("asr-wer", score_asr_outputs)
+
+
+def score_bundle(bundle: object, lock: Mapping[str, object], root: Path) -> dict[str, object]:
+    """Manifest-entry scoring seam (R0 repair T6, invariant I7): the ONLY way
+    to reach a scorer through this function is with a genuine
+    ``core.bundle.VerifiedBundle`` -- something only ``core.bundle.verify_bundle``
+    can construct, and only after every I7 cross-check (outputs<->split,
+    outputs<->trace, trace-manifest<->raw-trace, every artifact hash) already
+    passed. A bare manifest path, a dict, or any other stand-in is refused
+    before a single scorer runs -- "refuse to score an unverified bundle" is
+    enforced structurally, not by convention.
+
+    Deferred import (not at module top level): ``core.bundle`` imports THIS
+    module at its own top level (to call ``score_bundle`` from
+    ``finalize_bundle``); importing ``core.bundle`` back at this module's top
+    level would be a circular import. By the time this function is actually
+    CALLED, both modules have always already finished loading.
+    """
+
+    from .bundle import VerifiedBundle
+
+    if not isinstance(bundle, VerifiedBundle):
+        raise ScoringPhaseError(
+            "score_bundle requires a core.bundle.VerifiedBundle produced by "
+            f"core.bundle.verify_bundle; got {type(bundle).__name__} (refusing to score "
+            "an unverified bundle)"
+        )
+    if bundle.outputs_path is None:
+        raise ScoringPhaseError("verified bundle carries no outputs artifact to score")
+    scorer_names = bundle.manifest.get("scorers")
+    if not isinstance(scorer_names, list) or not scorer_names:
+        raise ScoringPhaseError("run manifest carries no configured scorers to run")
+    results: dict[str, object] = {}
+    for name in scorer_names:
+        scorer_fn = SCORERS.resolve(str(name))
+        results[str(name)] = scorer_fn(bundle.outputs_path, lock, root)
+    return results

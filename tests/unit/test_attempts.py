@@ -6,13 +6,18 @@ the real gate respectively.
 """
 
 import json
+import os
 
 import pytest
 
 from speech_aware_evidence_acquisition.core.attempts import (
     ATTEMPT_SCHEMA,
+    STATE_ABORTED,
+    STATE_FINALIZED,
     STATE_OPENED,
+    STATE_RESERVED,
     AttemptError,
+    AttemptHandle,
     AttemptStore,
     validate_id,
 )
@@ -200,3 +205,141 @@ def test_all_actual_usage_sums_across_multiple_runs(tmp_path):
 def test_all_actual_usage_returns_zero_when_store_root_missing(tmp_path):
     store = AttemptStore(tmp_path / "does-not-exist")
     assert store.all_actual_usage() == (0, 0.0)
+
+
+# ---------------------------------------------------------------------------
+# R0 repair T6 carried minor (from the T4 review): open_attempt's
+# create+write must be atomic, not O_EXCL-create-then-write-separately -- a
+# concurrent reader could otherwise observe an empty file mid-write and raise
+# JSONDecodeError/AttemptError.
+# ---------------------------------------------------------------------------
+
+
+def test_open_attempt_stages_full_content_before_the_final_path_ever_exists(tmp_path, monkeypatch):
+    """Deterministic proof of atomicity: whatever function makes ``path``
+    visible in the directory (``os.link`` in the current implementation) is
+    called with a source file that ALREADY carries the full, final RESERVED
+    document -- and at the moment it is called, ``path`` does not exist yet.
+    A concurrent reader therefore only ever sees "file not found" or a fully
+    populated, valid document -- never a 0-byte or truncated one."""
+
+    observed: list[bytes] = []
+    real_link = os.link
+
+    def _spy_link(src, dst):
+        assert not os.path.exists(dst), "the final path must not exist before the atomic step"
+        observed.append(open(src, "rb").read())
+        return real_link(src, dst)
+
+    monkeypatch.setattr(os, "link", _spy_link)
+    store = AttemptStore(tmp_path / "attempts")
+    handle = store.open_attempt(
+        "run-1", "attempt-1", carrier_lock_key="c", reserved_calls=5, reserved_audio_seconds=500.0,
+    )
+    assert len(observed) == 1
+    staged = json.loads(observed[0].decode("utf-8"))
+    # Staged content is RESERVED (mark_opened() only runs AFTER the atomic
+    # publish); the final file on disk is OPENED.
+    assert staged["state"] == STATE_RESERVED
+    assert staged["schema"] == ATTEMPT_SCHEMA
+    assert handle.state() == STATE_OPENED
+
+
+def test_open_attempt_leaves_no_temp_file_behind_on_success_or_collision(tmp_path):
+    store = AttemptStore(tmp_path / "attempts")
+    store.open_attempt(
+        "run-1", "attempt-1", carrier_lock_key="c", reserved_calls=1, reserved_audio_seconds=1.0,
+    )
+    with pytest.raises(AttemptError):
+        store.open_attempt(
+            "run-1", "attempt-1", carrier_lock_key="c", reserved_calls=1, reserved_audio_seconds=1.0,
+        )
+    run_dir = tmp_path / "attempts" / "run-1"
+    names = sorted(entry.name for entry in run_dir.iterdir())
+    assert names == ["attempt-1.json"], f"stray temp file(s) left behind: {names}"
+
+
+# ---------------------------------------------------------------------------
+# mark_finalized / mark_aborted (R0 repair T6, invariant I7): the terminal
+# transitions core.bundle.finalize_bundle relies on.
+# ---------------------------------------------------------------------------
+
+
+def test_mark_finalized_transitions_opened_to_finalized(tmp_path):
+    store = AttemptStore(tmp_path / "attempts")
+    handle = store.open_attempt(
+        "run-1", "attempt-1", carrier_lock_key="c", reserved_calls=1, reserved_audio_seconds=1.0,
+    )
+    handle.mark_finalized()
+    assert handle.state() == STATE_FINALIZED
+
+
+def test_mark_finalized_refuses_when_not_opened(tmp_path):
+    store = AttemptStore(tmp_path / "attempts")
+    handle = store.open_attempt(
+        "run-1", "attempt-1", carrier_lock_key="c", reserved_calls=1, reserved_audio_seconds=1.0,
+    )
+    handle.mark_finalized()
+    with pytest.raises(AttemptError, match="not OPENED"):
+        handle.mark_finalized()
+
+
+def test_mark_aborted_transitions_opened_to_aborted_and_records_reason(tmp_path):
+    store = AttemptStore(tmp_path / "attempts")
+    handle = store.open_attempt(
+        "run-1", "attempt-1", carrier_lock_key="c", reserved_calls=1, reserved_audio_seconds=1.0,
+    )
+    handle.mark_aborted("transport exploded")
+    assert handle.state() == STATE_ABORTED
+    document = json.loads(handle.path.read_text(encoding="utf-8"))
+    assert document["failure_reason"] == "transport exploded"
+
+
+def test_mark_aborted_refuses_a_blank_reason(tmp_path):
+    store = AttemptStore(tmp_path / "attempts")
+    handle = store.open_attempt(
+        "run-1", "attempt-1", carrier_lock_key="c", reserved_calls=1, reserved_audio_seconds=1.0,
+    )
+    with pytest.raises(AttemptError, match="reason"):
+        handle.mark_aborted("")
+
+
+def test_mark_aborted_refuses_from_a_terminal_state(tmp_path):
+    store = AttemptStore(tmp_path / "attempts")
+    handle = store.open_attempt(
+        "run-1", "attempt-1", carrier_lock_key="c", reserved_calls=1, reserved_audio_seconds=1.0,
+    )
+    handle.mark_finalized()
+    with pytest.raises(AttemptError, match="RESERVED/OPENED"):
+        handle.mark_aborted("too late")
+
+
+def test_store_abort_if_opened_marks_an_opened_attempt(tmp_path):
+    store = AttemptStore(tmp_path / "attempts")
+    handle = store.open_attempt(
+        "run-1", "attempt-1", carrier_lock_key="c", reserved_calls=1, reserved_audio_seconds=1.0,
+    )
+    assert store.abort_if_opened("run-1", "attempt-1", reason="boom") is True
+    assert handle.state() == STATE_ABORTED
+
+
+def test_store_abort_if_opened_is_a_noop_when_never_opened(tmp_path):
+    store = AttemptStore(tmp_path / "attempts")
+    assert store.abort_if_opened("run-1", "never-opened", reason="boom") is False
+
+
+def test_store_abort_if_opened_is_a_noop_on_an_already_terminal_attempt(tmp_path):
+    store = AttemptStore(tmp_path / "attempts")
+    handle = store.open_attempt(
+        "run-1", "attempt-1", carrier_lock_key="c", reserved_calls=1, reserved_audio_seconds=1.0,
+    )
+    handle.mark_finalized()
+    assert store.abort_if_opened("run-1", "attempt-1", reason="too late") is False
+    assert handle.state() == STATE_FINALIZED
+
+
+def test_store_handle_returns_a_handle_without_requiring_the_file_to_exist(tmp_path):
+    store = AttemptStore(tmp_path / "attempts")
+    handle = store.handle("run-1", "attempt-1")
+    assert handle.path == tmp_path / "attempts" / "run-1" / "attempt-1.json"
+    assert not handle.path.exists()

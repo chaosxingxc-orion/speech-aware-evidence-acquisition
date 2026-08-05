@@ -102,6 +102,15 @@ class SampleOutcome:
     admitted: bool
     request_sha256: str
     response_sha256: str
+    # R0 repair T6 (I7): sha256 of ``text`` alone (UTF-8 bytes), independent of
+    # ``response_sha256``'s raw-transport-bytes hash (whose exact bytes --
+    # dict key order of a server-controlled ``usage`` mapping included -- are
+    # not reproducible from ``text`` alone). This is the field
+    # ``core.bundle.verify_bundle`` recomputes to catch an outputs row whose
+    # ``text`` was mutated after the fact while ``response_sha256`` was left
+    # untouched (see ``core.model.CoreResponse.response_text_sha256`` for
+    # where it is first computed, at the one true model-request choke point).
+    response_text_sha256: str
 
 
 @dataclass(frozen=True)

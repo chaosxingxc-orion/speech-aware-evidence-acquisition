@@ -1,0 +1,537 @@
+"""Atomic run bundle: manifest build + verify + finalize (R0 repair T6, I7).
+
+Required regression probes (task-6 brief), each proved ACCEPT -> REJECT (or,
+for the legitimate flow, REJECT-everywhere-else -> ACCEPT end to end):
+
+1. mutated outputs text with a stale response_text_sha256 -> refused.
+2. outputs sample set != frozen split (missing / extra / duplicate) -> refused.
+3. trace manifest not matching the raw trace -> refused.
+4. any artifact hash mismatch in the manifest -> refused.
+5. finalizing an ABORTED attempt as COMPLETED -> refused (two shapes: a
+   genuinely aborted run, and a COMPLETED manifest whose attempt was
+   independently marked ABORTED afterward -- the durable attempt file, not
+   the manifest's self-reported status, is authoritative).
+6. a hand-supplied ledger cell that contradicts the verified manifest -> refused.
+7. a legitimate synthetic run finalizes end to end and produces a ledger row.
+"""
+
+import hashlib
+import json
+import subprocess
+from pathlib import Path
+
+import pytest
+
+import speech_aware_evidence_acquisition.core  # noqa: F401 (populate registries)
+from speech_aware_evidence_acquisition.contracts import ExecutionPlan
+from speech_aware_evidence_acquisition.core.attempts import AttemptHandle, AttemptStore
+from speech_aware_evidence_acquisition.core.bundle import (
+    STATUS_ABORTED,
+    STATUS_COMPLETED,
+    BundleError,
+    VerifiedBundle,
+    build_manifest,
+    finalize_bundle,
+    verify_bundle,
+)
+from speech_aware_evidence_acquisition.core.config import ComposedConfig, protocol_hash
+from speech_aware_evidence_acquisition.core.driver import (
+    load_split,
+    run_experiment,
+    run_experiment_bundled,
+)
+from speech_aware_evidence_acquisition.core.split_receipt import load_verified_split
+from speech_aware_evidence_acquisition.core.tracking import ledger_row_for_bundle
+from speech_aware_evidence_acquisition.data.lock import load_lock
+from speech_aware_evidence_acquisition.data.splits import freeze_splits
+from speech_aware_evidence_acquisition.e0.artifacts import sha256_file, write_json_artifact
+
+
+class _OpenGate:
+    def assert_model_touch_allowed(self, plan):
+        pass
+
+
+def _transport(request_bytes):
+    return json.dumps({"text": "token tags", "usage": {"prompt_tokens": 3}}).encode()
+
+
+def _failing_transport(request_bytes):
+    raise RuntimeError("transport exploded")
+
+
+def _composed(**overrides):
+    values = {
+        "carrier_lock_key": "earnings21-original",
+        "split_name": "discovery",
+        "arm": "bare-core",
+        "policy": "fixed",
+        "evidence_source": "none",
+        "evidence_mismatch": False,
+        "scorers": ["asr-wer"],
+        "task_instruction": "Transcribe.",
+        "decoding_params": {"temperature": 0, "seed": 20260803},
+        "experiment_id": "SAEA-E-000",
+    }
+    values.update(overrides)
+    return ComposedConfig(
+        values=values, config_hash="d" * 64,
+        fragments={"model": "m", "dataset": "d", "baseline": "b", "experiment": "e"},
+    )
+
+
+def _plan(split_hash, **overrides):
+    base = dict(
+        run_id="SAEA-E-000-bundle",
+        execution_profile="bounded-discovery-probe",
+        carrier_lock_key="earnings21-original",
+        split_role="discovery",
+        split_identity_hash=split_hash,
+        planned_model_calls=10,
+        planned_gpu_hours=1.0,
+        planned_speech_audio_seconds=1000,
+        protocol_hash="b" * 64,
+        attempt_id="attempt-bundle",
+    )
+    base.update(overrides)
+    return ExecutionPlan(**base)
+
+
+def _git(repo_root: Path, *args: str) -> None:
+    subprocess.run(["git", *args], cwd=repo_root, check=True, capture_output=True, text=True)
+
+
+def _git_init_commit(repo_root: Path) -> None:
+    _git(repo_root, "init", "-q")
+    _git(repo_root, "config", "user.email", "test@example.com")
+    _git(repo_root, "config", "user.name", "Test")
+    _git(repo_root, "add", "-A")
+    _git(repo_root, "commit", "-q", "-m", "test snapshot")
+
+
+def _write_real_reference_tokens(synthetic_world) -> None:
+    """conftest.SyntheticWorld's default e21 nlp_references carry only a
+    header row (no token rows) -- fine for tests that never score, but
+    score_asr_outputs (run for real inside finalize_bundle) needs at least
+    one token row per sample. Mirrors conftest.py's own E21_IDS tuple."""
+
+    e21_ids = ("4000001", "4000002", "4000003")
+    for sample_id in e21_ids:
+        nlp = synthetic_world.e21 / "transcripts" / "nlp_references" / f"{sample_id}.nlp"
+        nlp.write_text(f"token|tags\nhello-{sample_id}|\nworld|\n", encoding="utf-8")
+
+
+@pytest.fixture()
+def bundled_repo(synthetic_world, tmp_path):
+    """A study-repo-shaped, ACTUAL git repo (frozen splits receipt + a real
+    commit) distinct from the real study checkout -- ``core.tracing.TraceSink``
+    only refuses the real ``REPO_ROOT`` constant, never this fixture's path,
+    so run artifacts under a sibling ``run_dir`` are unaffected either way."""
+
+    _write_real_reference_tokens(synthetic_world)
+    lock = load_lock(synthetic_world.lock_path)
+    repo_root = tmp_path / "repo"
+    receipts = repo_root / "docs" / "receipts"
+    freeze_splits(lock, synthetic_world.data_root, receipts)
+    _git_init_commit(repo_root)
+    return lock, repo_root
+
+
+def _run_completed(
+    synthetic_world, bundled_repo, tmp_path, *, run_id="SAEA-E-000-bundle",
+    attempt_id="attempt-bundle", transport=_transport, run_dir_name="run",
+):
+    lock, repo_root = bundled_repo
+    ids, split_hash, split_role = load_split(repo_root, "discovery", lock, synthetic_world.data_root)
+    composed = _composed()
+    plan = _plan(
+        split_hash, run_id=run_id, attempt_id=attempt_id,
+        protocol_hash=protocol_hash(composed.config_hash, composed.values["arm"], split_hash),
+    )
+    manifest_path = run_experiment_bundled(
+        composed, plan, _OpenGate(), lock, synthetic_world.data_root,
+        tmp_path / run_dir_name, transport, repo_root=repo_root,
+    )
+    return manifest_path, composed, plan, lock
+
+
+def _read_manifest(manifest_path: Path) -> dict:
+    return json.loads(manifest_path.read_text(encoding="utf-8"))
+
+
+def _read_jsonl_lines(path: Path) -> list[str]:
+    text = path.read_text(encoding="utf-8")
+    lines = text.split("\n")
+    if lines and lines[-1] == "":
+        lines = lines[:-1]
+    return lines
+
+
+def _write_jsonl_lines(path: Path, lines: list[str]) -> None:
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
+
+
+def _rehash_manifest_entry(manifest_path: Path, key: str) -> None:
+    """Simulate an attacker who controls BOTH an artifact file AND their own
+    outer-hash claim about it in the manifest: recompute only ``key``'s
+    sha256 to match the mutated bytes, so tests exercise the DEEPER
+    cross-checks (per-row text hash, trace binding, sample-set membership)
+    rather than merely the outer artifact-hash guard."""
+
+    manifest = _read_manifest(manifest_path)
+    path = Path(manifest[key]["path"])
+    manifest[key]["sha256"] = sha256_file(path)
+    write_json_artifact(manifest_path, manifest)
+
+
+_HUMAN_LEDGER_CELLS = {
+    "experiment_id": "SAEA-E-000",
+    "speech task/carrier": "earnings21-original discovery",
+    "changed axes": "none (T6 probe)",
+    "shared code revision": "n/a",
+    "model rev": "n/a",
+    "dataset rev": "n/a",
+    "MLflow run": "n/a",
+    "effectiveness": "n/a",
+    "reasonableness": "n/a",
+    "efficiency": "n/a",
+    "deviations": "none",
+    "decision": "test",
+}
+
+
+# ---------------------------------------------------------------------------
+# build_manifest / _study_commit.
+# ---------------------------------------------------------------------------
+
+
+def test_build_manifest_binds_study_commit_config_plan_split_and_artifacts(
+    synthetic_world, bundled_repo, tmp_path
+):
+    manifest_path, composed, plan, lock = _run_completed(synthetic_world, bundled_repo, tmp_path)
+    manifest = _read_manifest(manifest_path)
+    assert manifest["schema"] == "saea-run-manifest-v1"
+    assert manifest["status"] == STATUS_COMPLETED
+    assert len(manifest["study_commit"]) == 40
+    assert manifest["config"]["config_hash"] == composed.config_hash
+    assert manifest["config"]["fragments"] == dict(composed.fragments)
+    assert manifest["protocol_hash"] == plan.protocol_hash
+    assert manifest["plan"]["attempt_id"] == plan.attempt_id
+    assert manifest["exposure_run_id"] == plan.run_id
+    assert manifest["split"]["role"] == "discovery"
+    assert len(manifest["split"]["ids"]) == 3
+    assert manifest["outputs"]["sha256"] == sha256_file(Path(manifest["outputs"]["path"]))
+    assert manifest["raw_trace"]["sha256"] == sha256_file(Path(manifest["raw_trace"]["path"]))
+    assert manifest["scores"] is None
+
+
+def test_build_manifest_refuses_a_dirty_study_repo(synthetic_world, bundled_repo, tmp_path):
+    lock, repo_root = bundled_repo
+    (repo_root / "uncommitted.txt").write_text("dirty", encoding="utf-8")
+    ids, split_hash, split_role = load_split(repo_root, "discovery", lock, synthetic_world.data_root)
+    composed = _composed()
+    plan = _plan(split_hash, protocol_hash=protocol_hash(composed.config_hash, composed.values["arm"], split_hash))
+    verified_split = load_verified_split(repo_root, "discovery", lock, synthetic_world.data_root)
+    with pytest.raises(BundleError, match="uncommitted"):
+        build_manifest(
+            repo_root=repo_root, data_root=synthetic_world.data_root, composed=composed,
+            plan=plan, verified_split=verified_split, session_receipt_path=None,
+            run_dir=tmp_path / "run", status=STATUS_ABORTED, failure_reason="dirty-tree probe",
+        )
+
+
+def test_build_manifest_refuses_a_non_git_repo_root(synthetic_world, tmp_path):
+    lock = load_lock(synthetic_world.lock_path)
+    repo_root = tmp_path / "not-a-repo"
+    receipts = repo_root / "docs" / "receipts"
+    freeze_splits(lock, synthetic_world.data_root, receipts)
+    ids, split_hash, split_role = load_split(repo_root, "discovery", lock, synthetic_world.data_root)
+    composed = _composed()
+    plan = _plan(split_hash, protocol_hash=protocol_hash(composed.config_hash, composed.values["arm"], split_hash))
+    verified_split = load_verified_split(repo_root, "discovery", lock, synthetic_world.data_root)
+    with pytest.raises(BundleError, match="git status|HEAD"):
+        build_manifest(
+            repo_root=repo_root, data_root=synthetic_world.data_root, composed=composed,
+            plan=plan, verified_split=verified_split, session_receipt_path=None,
+            run_dir=tmp_path / "run", status=STATUS_ABORTED, failure_reason="no-repo probe",
+        )
+
+
+# ---------------------------------------------------------------------------
+# Required probe 1: mutated outputs text, stale response_text_sha256.
+# ---------------------------------------------------------------------------
+
+
+def test_verify_bundle_accepts_a_legitimate_completed_bundle(synthetic_world, bundled_repo, tmp_path):
+    manifest_path, composed, plan, lock = _run_completed(synthetic_world, bundled_repo, tmp_path)
+    bundle = verify_bundle(manifest_path)
+    assert isinstance(bundle, VerifiedBundle)
+    assert len(bundle.outputs_rows) == 3
+    assert bundle.split_ids == {row["sample_id"] for row in bundle.outputs_rows}
+    assert bundle.attempt_state == "OPENED"
+
+
+def test_verify_bundle_refuses_mutated_text_with_stale_response_text_hash(
+    synthetic_world, bundled_repo, tmp_path
+):
+    manifest_path, composed, plan, lock = _run_completed(synthetic_world, bundled_repo, tmp_path)
+    manifest = _read_manifest(manifest_path)
+    outputs_path = Path(manifest["outputs"]["path"])
+    lines = _read_jsonl_lines(outputs_path)
+    row = json.loads(lines[0])
+    row["text"] = row["text"] + " TAMPERED"
+    # response_sha256 / response_text_sha256 deliberately left stale --
+    # exactly the reproduced defect (task-6 brief): a row whose text was
+    # mutated while keeping its old hash.
+    lines[0] = json.dumps(row, ensure_ascii=False, sort_keys=True)
+    _write_jsonl_lines(outputs_path, lines)
+    # The attacker also "fixes" the manifest's own outer outputs hash, so
+    # this probe exercises the DEEP per-row text<->hash binding, not merely
+    # the outer artifact-hash guard (covered separately below).
+    _rehash_manifest_entry(manifest_path, "outputs")
+    with pytest.raises(BundleError, match="response_text_sha256"):
+        verify_bundle(manifest_path)
+
+
+# ---------------------------------------------------------------------------
+# Required probe 2: outputs sample set != frozen split.
+# ---------------------------------------------------------------------------
+
+
+def test_verify_bundle_refuses_a_missing_sample_id(synthetic_world, bundled_repo, tmp_path):
+    manifest_path, composed, plan, lock = _run_completed(synthetic_world, bundled_repo, tmp_path)
+    manifest = _read_manifest(manifest_path)
+    outputs_path = Path(manifest["outputs"]["path"])
+    lines = _read_jsonl_lines(outputs_path)
+    _write_jsonl_lines(outputs_path, lines[1:])
+    _rehash_manifest_entry(manifest_path, "outputs")
+    with pytest.raises(BundleError, match="missing frozen split ids"):
+        verify_bundle(manifest_path)
+
+
+def test_verify_bundle_refuses_an_extra_sample_id(synthetic_world, bundled_repo, tmp_path):
+    manifest_path, composed, plan, lock = _run_completed(synthetic_world, bundled_repo, tmp_path)
+    manifest = _read_manifest(manifest_path)
+    outputs_path = Path(manifest["outputs"]["path"])
+    lines = _read_jsonl_lines(outputs_path)
+    extra = json.loads(lines[0])
+    extra["sample_id"] = "9999999"
+    extra["request_id"] = "req-9999"
+    lines.append(json.dumps(extra, ensure_ascii=False, sort_keys=True))
+    _write_jsonl_lines(outputs_path, lines)
+    _rehash_manifest_entry(manifest_path, "outputs")
+    with pytest.raises(BundleError, match="outside the frozen split"):
+        verify_bundle(manifest_path)
+
+
+def test_verify_bundle_refuses_a_duplicate_sample_id(synthetic_world, bundled_repo, tmp_path):
+    manifest_path, composed, plan, lock = _run_completed(synthetic_world, bundled_repo, tmp_path)
+    manifest = _read_manifest(manifest_path)
+    outputs_path = Path(manifest["outputs"]["path"])
+    lines = _read_jsonl_lines(outputs_path)
+    lines.append(lines[0])
+    _write_jsonl_lines(outputs_path, lines)
+    _rehash_manifest_entry(manifest_path, "outputs")
+    with pytest.raises(BundleError, match="duplicate sample ids"):
+        verify_bundle(manifest_path)
+
+
+# ---------------------------------------------------------------------------
+# Required probe 3: trace manifest not matching the raw trace.
+# ---------------------------------------------------------------------------
+
+
+def test_verify_bundle_refuses_trace_manifest_disagreeing_with_raw_trace(
+    synthetic_world, bundled_repo, tmp_path
+):
+    manifest_path, composed, plan, lock = _run_completed(synthetic_world, bundled_repo, tmp_path)
+    manifest = _read_manifest(manifest_path)
+    raw_trace_path = Path(manifest["raw_trace"]["path"])
+    lines = _read_jsonl_lines(raw_trace_path)
+    obs_index = next(i for i, line in enumerate(lines) if '"channel":"OBS"' in line)
+    document = json.loads(lines[obs_index])
+    document["payload"]["obs_audio_seconds"] = 999999.0
+    lines[obs_index] = json.dumps(document, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    _write_jsonl_lines(raw_trace_path, lines)
+    # Fix the raw trace's own outer hash (attacker controls the file) but
+    # leave the trace-manifest's per-record hash for this record stale.
+    _rehash_manifest_entry(manifest_path, "raw_trace")
+    with pytest.raises(BundleError, match="trace manifest"):
+        verify_bundle(manifest_path)
+
+
+# ---------------------------------------------------------------------------
+# Required probe 4: any artifact hash mismatch in the manifest.
+# ---------------------------------------------------------------------------
+
+
+def test_verify_bundle_refuses_any_artifact_hash_mismatch(synthetic_world, bundled_repo, tmp_path):
+    manifest_path, composed, plan, lock = _run_completed(synthetic_world, bundled_repo, tmp_path)
+    manifest = _read_manifest(manifest_path)
+    raw_trace_path = Path(manifest["raw_trace"]["path"])
+    # Mutate the artifact WITHOUT recomputing the manifest's recorded hash --
+    # the outer-hash guard alone must catch this.
+    with raw_trace_path.open("a", encoding="utf-8", newline="\n") as handle:
+        handle.write('{"channel":"COST","record_id":"tamper","payload":{"calls":1}}\n')
+    with pytest.raises(BundleError, match="hash mismatch"):
+        verify_bundle(manifest_path)
+
+
+def test_verify_bundle_refuses_a_missing_artifact_file(synthetic_world, bundled_repo, tmp_path):
+    manifest_path, composed, plan, lock = _run_completed(synthetic_world, bundled_repo, tmp_path)
+    manifest = _read_manifest(manifest_path)
+    Path(manifest["outputs"]["path"]).unlink()
+    with pytest.raises(BundleError, match="cannot read"):
+        verify_bundle(manifest_path)
+
+
+# ---------------------------------------------------------------------------
+# Required probe 5: finalizing an ABORTED attempt as COMPLETED.
+# ---------------------------------------------------------------------------
+
+
+def test_finalize_bundle_refuses_a_genuinely_aborted_manifest(synthetic_world, bundled_repo, tmp_path):
+    lock, repo_root = bundled_repo
+    ids, split_hash, split_role = load_split(repo_root, "discovery", lock, synthetic_world.data_root)
+    composed = _composed()
+    plan = _plan(
+        split_hash, run_id="SAEA-E-000-abort", attempt_id="attempt-abort",
+        protocol_hash=protocol_hash(composed.config_hash, composed.values["arm"], split_hash),
+    )
+    with pytest.raises(RuntimeError, match="transport exploded"):
+        run_experiment_bundled(
+            composed, plan, _OpenGate(), lock, synthetic_world.data_root,
+            tmp_path / "run-abort", _failing_transport, repo_root=repo_root,
+        )
+    manifest_path = tmp_path / "run-abort" / f"{plan.run_id}.run-manifest.json"
+    assert manifest_path.is_file()
+    manifest = _read_manifest(manifest_path)
+    assert manifest["status"] == STATUS_ABORTED
+    assert manifest["failure_reason"]
+    store = AttemptStore(synthetic_world.data_root / "attempts")
+    assert store.handle(plan.run_id, plan.attempt_id).state() == "ABORTED"
+    with pytest.raises(BundleError, match="COMPLETED"):
+        finalize_bundle(manifest_path, lock, synthetic_world.data_root)
+
+
+def test_finalize_bundle_refuses_when_attempt_is_aborted_even_if_manifest_still_says_completed(
+    synthetic_world, bundled_repo, tmp_path
+):
+    """The deeper shape of probe 5: the manifest's OWN status field still
+    reads COMPLETED (never hand-edited), but the attempt's durable state was
+    independently marked ABORTED after the fact -- finalize must trust the
+    attempt file, not the manifest's self-report."""
+
+    manifest_path, composed, plan, lock = _run_completed(
+        synthetic_world, bundled_repo, tmp_path, run_id="SAEA-E-000-postabort",
+        attempt_id="attempt-postabort",
+    )
+    manifest = _read_manifest(manifest_path)
+    assert manifest["status"] == STATUS_COMPLETED
+    attempt_meta = manifest["attempt"]
+    AttemptHandle(
+        path=Path(attempt_meta["state_path"]), run_id=attempt_meta["run_id"],
+        attempt_id=attempt_meta["attempt_id"],
+    ).mark_aborted("operator discovered a post-hoc problem")
+    with pytest.raises(BundleError, match="durable state"):
+        finalize_bundle(manifest_path, lock, synthetic_world.data_root)
+
+
+# ---------------------------------------------------------------------------
+# Required probe 6: hand-supplied ledger cell contradicting the manifest.
+# ---------------------------------------------------------------------------
+
+
+def test_ledger_row_for_bundle_refuses_a_contradicting_hand_supplied_cell(
+    synthetic_world, bundled_repo, tmp_path
+):
+    manifest_path, composed, plan, lock = _run_completed(synthetic_world, bundled_repo, tmp_path)
+    bundle = verify_bundle(manifest_path)
+    bad_cells = {**_HUMAN_LEDGER_CELLS, "study commit": "0" * 40}
+    with pytest.raises(ValueError, match="contradict"):
+        ledger_row_for_bundle(bundle, bad_cells)
+
+
+def test_ledger_row_for_bundle_accepts_a_matching_hand_supplied_cell(
+    synthetic_world, bundled_repo, tmp_path
+):
+    manifest_path, composed, plan, lock = _run_completed(synthetic_world, bundled_repo, tmp_path)
+    bundle = verify_bundle(manifest_path)
+    good_cells = {**_HUMAN_LEDGER_CELLS, "study commit": bundle.manifest["study_commit"]}
+    row, merged = ledger_row_for_bundle(bundle, good_cells)
+    assert merged["study commit"] == bundle.manifest["study_commit"]
+    assert merged["consumed"] == "yes"
+    assert row.startswith("|") and row.endswith("|")
+
+
+# ---------------------------------------------------------------------------
+# Required probe 7: a legitimate synthetic run finalizes end to end.
+# ---------------------------------------------------------------------------
+
+
+def test_finalize_bundle_end_to_end_produces_a_ledger_row(synthetic_world, bundled_repo, tmp_path):
+    manifest_path, composed, plan, lock = _run_completed(synthetic_world, bundled_repo, tmp_path)
+    result = finalize_bundle(
+        manifest_path, lock, synthetic_world.data_root, ledger_cells=_HUMAN_LEDGER_CELLS
+    )
+    assert result.scores_path.is_file()
+    assert result.ledger_markdown_path.is_file()
+    assert result.ledger_json_path.is_file()
+    assert result.attempt_state == "FINALIZED"
+    assert result.mlflow_run_id is None
+
+    manifest = _read_manifest(manifest_path)
+    assert manifest["scores"]["sha256"] == sha256_file(Path(manifest["scores"]["path"]))
+    scores = json.loads(Path(manifest["scores"]["path"]).read_text(encoding="utf-8"))
+    assert "asr-wer" in scores
+    assert scores["asr-wer"]["aggregate"]["samples"] == 3
+
+    ledger_cells = json.loads(result.ledger_json_path.read_text(encoding="utf-8"))
+    assert ledger_cells["consumed"] == "yes"
+    assert ledger_cells["experiment_id"] == "SAEA-E-000"
+
+    store = AttemptStore(synthetic_world.data_root / "attempts")
+    assert store.handle(plan.run_id, plan.attempt_id).state() == "FINALIZED"
+
+    # A second finalize on the identical manifest must now refuse -- the
+    # attempt is no longer OPENED.
+    with pytest.raises(BundleError, match="FINALIZED"):
+        finalize_bundle(manifest_path, lock, synthetic_world.data_root, ledger_cells=_HUMAN_LEDGER_CELLS)
+
+
+def test_finalize_bundle_uploads_via_stubbed_mlflow(synthetic_world, bundled_repo, tmp_path, monkeypatch):
+    import sys
+    import types
+
+    manifest_path, composed, plan, lock = _run_completed(
+        synthetic_world, bundled_repo, tmp_path, run_id="SAEA-E-000-mlflow",
+        attempt_id="attempt-mlflow", run_dir_name="run-mlflow",
+    )
+    calls = {"artifacts": []}
+
+    class _ActiveRunStub:
+        def __enter__(self):
+            return types.SimpleNamespace(info=types.SimpleNamespace(run_id="mlrun-bundle-1"))
+
+        def __exit__(self, *exc_info):
+            return False
+
+    stub = types.SimpleNamespace(
+        set_tracking_uri=lambda uri: None,
+        set_experiment=lambda name: None,
+        start_run=lambda run_name: _ActiveRunStub(),
+        log_params=lambda params: None,
+        log_metrics=lambda metrics: None,
+        log_artifact=lambda path: calls["artifacts"].append(path),
+    )
+    monkeypatch.setitem(sys.modules, "mlflow", stub)
+
+    result = finalize_bundle(
+        manifest_path, lock, synthetic_world.data_root,
+        ledger_cells=_HUMAN_LEDGER_CELLS, tracking_uri=str(tmp_path / "mlruns"),
+    )
+    assert result.mlflow_run_id == "mlrun-bundle-1"
+    # outputs, raw trace, trace manifest, scores, manifest itself -- 5 artifacts.
+    assert len(calls["artifacts"]) == 5
+    ledger_cells = json.loads(result.ledger_json_path.read_text(encoding="utf-8"))
+    assert ledger_cells["MLflow run"] == "mlrun-bundle-1"
