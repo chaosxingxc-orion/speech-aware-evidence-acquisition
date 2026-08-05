@@ -36,6 +36,29 @@ def test_asr_wer_scores_against_references(synthetic_world, tmp_path):
     assert scores["per_sample"][0]["ref_hit_mask"] == [True, True]
 
 
+def test_text_containing_unicode_line_separator_round_trips(tmp_path, synthetic_world):
+    """json.dumps(ensure_ascii=False) (the driver's own write style) leaves
+    U+2028/U+2029 raw inside string values; the reader must split records on
+    "\\n" only, not str.splitlines(), or a hit response text containing one of
+    these characters cuts a single valid JSONL row in two."""
+
+    nlp = synthetic_world.e21 / "transcripts" / "nlp_references" / "4000001.nlp"
+    nlp.write_text("token|tags\nhello|\nworld|\n", encoding="utf-8")
+    row = {
+        "sample_id": "4000001", "carrier_lock_key": "earnings21-original",
+        "arm": "bare-core", "request_id": "req-0001",
+        "text": "hello world",
+        "request_sha256": "0" * 64, "response_sha256": "0" * 64,
+    }
+    path = tmp_path / "u2028.outputs.jsonl"
+    path.write_text(
+        json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n", encoding="utf-8"
+    )
+    lock = load_lock(synthetic_world.lock_path)
+    scores = SCORERS.resolve("asr-wer")(path, lock, synthetic_world.data_root)
+    assert scores["aggregate"] == {"mean_wer": 0.0, "samples": 1}
+
+
 def test_empty_outputs_fail_closed(tmp_path, synthetic_world):
     path = tmp_path / "empty.outputs.jsonl"
     path.write_text("", encoding="utf-8")

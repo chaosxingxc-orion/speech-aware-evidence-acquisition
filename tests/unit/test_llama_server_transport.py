@@ -5,7 +5,10 @@ import json
 
 import pytest
 
-from speech_aware_evidence_acquisition.core.model import LlamaServerTransport
+from speech_aware_evidence_acquisition.core.model import (
+    FrozenCoreError,
+    LlamaServerTransport,
+)
 
 
 def _boundary_payload(tmp_path, **overrides):
@@ -90,3 +93,30 @@ def test_missing_media_fails_closed(tmp_path):
     payload = _boundary_payload(tmp_path, media_relpath="media/absent.mp3")
     with pytest.raises(FileNotFoundError):
         transport(json.dumps(payload).encode())
+
+
+def test_decoding_params_cannot_override_constructed_messages(tmp_path):
+    """Defense in depth: even called directly, a decoding_params "messages" key
+    must never silently replace the constructed message list (which would drop
+    audio while the adapter still meters it as delivered)."""
+
+    transport = LlamaServerTransport(
+        "http://127.0.0.1:8080", tmp_path, post=lambda u, b: _canned_response()
+    )
+    payload = _boundary_payload(tmp_path, decoding_params={"messages": []})
+    with pytest.raises(FrozenCoreError, match="messages"):
+        transport(json.dumps(payload).encode())
+
+
+def test_malformed_usage_value_raises_frozen_core_error(tmp_path):
+    response = json.dumps(
+        {
+            "choices": [{"message": {"content": "hello world"}}],
+            "usage": {"prompt_tokens": "NaN-ish-string", "completion_tokens": 2},
+        }
+    ).encode()
+    transport = LlamaServerTransport(
+        "http://127.0.0.1:8080", tmp_path, post=lambda u, b: response
+    )
+    with pytest.raises(FrozenCoreError, match="malformed"):
+        transport(json.dumps(_boundary_payload(tmp_path)).encode())

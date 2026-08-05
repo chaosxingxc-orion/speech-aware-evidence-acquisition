@@ -25,9 +25,15 @@ def score_asr_outputs(
     outputs_path: Path, lock: Mapping[str, object], root: Path
 ) -> dict[str, object]:
     try:
-        lines = Path(outputs_path).read_text(encoding="utf-8").splitlines()
+        text = Path(outputs_path).read_text(encoding="utf-8")
     except (OSError, UnicodeError) as error:
         raise ScoringPhaseError(f"cannot read outputs {outputs_path}: {error}") from error
+    # Split on the record separator only: json.dumps(ensure_ascii=False) leaves
+    # U+2028/U+2029 raw inside string values, and str.splitlines() treats those
+    # as line breaks too, which would cut a single valid JSONL row in two.
+    lines = text.split("\n")
+    if lines and lines[-1] == "":
+        lines = lines[:-1]
     if not lines:
         raise ScoringPhaseError(f"outputs file {outputs_path} is empty")
     per_sample: list[dict[str, object]] = []

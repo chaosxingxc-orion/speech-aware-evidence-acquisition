@@ -29,6 +29,26 @@ class FrozenCoreError(RuntimeError):
     """The adapter refuses: unknown arm, allowlist violation, or exhausted budget."""
 
 
+# The exact set of decoding_params keys the frozen core will ever accept. This is
+# the governance choke point (FrozenCoreAdapter.request): a config-supplied
+# decoding_params mapping can never smuggle a "messages"/"model"/"stream"/... key
+# through to the transport, where it would otherwise silently replace the
+# constructed chat-completions body (dropping audio while the adapter still
+# meters it as delivered).
+ALLOWED_DECODING_KEYS = frozenset(
+    {
+        "temperature",
+        "seed",
+        "top_p",
+        "top_k",
+        "min_p",
+        "max_tokens",
+        "presence_penalty",
+        "frequency_penalty",
+    }
+)
+
+
 @dataclass(frozen=True)
 class CoreResponse:
     text: str
@@ -77,6 +97,16 @@ class FrozenCoreAdapter:
                 f"extra={sorted(keys - self._allowlist)} "
                 f"missing={sorted(self._allowlist - keys)}"
             )
+        if "decoding_params" in self._allowlist:
+            decoding_params = payload["decoding_params"]
+            if not isinstance(decoding_params, Mapping):
+                raise FrozenCoreError("payload decoding_params must be a mapping")
+            disallowed_decoding_keys = set(decoding_params) - ALLOWED_DECODING_KEYS
+            if disallowed_decoding_keys:
+                raise FrozenCoreError(
+                    "payload decoding_params contains disallowed keys: "
+                    f"{sorted(disallowed_decoding_keys)}"
+                )
         assert_information_boundary(dict(payload))
         audio_seconds = payload["audio_seconds"]
         if not isinstance(audio_seconds, (int, float)) or audio_seconds <= 0:
@@ -200,11 +230,21 @@ class LlamaServerTransport:
             ],
         }
         for key, value in dict(payload.get("decoding_params", {})).items():  # type: ignore[arg-type]
+            if key in body:
+                raise FrozenCoreError(
+                    f"decoding_params key {key!r} collides with the constructed "
+                    "request body and would silently override it"
+                )
             body[key] = value
         raw = self._post(self._url, json.dumps(body).encode("utf-8"))
-        parsed = json.loads(raw.decode("utf-8"))
-        text = parsed["choices"][0]["message"]["content"]
-        usage = {str(k): int(v) for k, v in dict(parsed.get("usage", {})).items()}
+        try:
+            parsed = json.loads(raw.decode("utf-8"))
+            text = parsed["choices"][0]["message"]["content"]
+            usage = {str(k): int(v) for k, v in dict(parsed.get("usage", {})).items()}
+        except (KeyError, TypeError, ValueError, IndexError, UnicodeError) as error:
+            raise FrozenCoreError(
+                f"transport returned a malformed response: {error}"
+            ) from error
         return json.dumps({"text": text, "usage": usage}).encode("utf-8")
 
 

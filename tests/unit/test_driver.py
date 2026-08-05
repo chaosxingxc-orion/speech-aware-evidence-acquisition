@@ -7,7 +7,7 @@ import pytest
 import speech_aware_evidence_acquisition.core  # noqa: F401 (populate registries)
 from speech_aware_evidence_acquisition.contracts import ExecutionPlan
 from speech_aware_evidence_acquisition.core.base import CoreError, RunResult
-from speech_aware_evidence_acquisition.core.config import ComposedConfig
+from speech_aware_evidence_acquisition.core.config import ComposedConfig, protocol_hash
 from speech_aware_evidence_acquisition.core.driver import load_split, run_experiment
 from speech_aware_evidence_acquisition.data.lock import load_lock
 from speech_aware_evidence_acquisition.data.splits import discovery_split, freeze_splits
@@ -70,9 +70,14 @@ def test_run_experiment_end_to_end(synthetic_world, tmp_path):
     ids, split_hash, split_role = load_split(repo_root, "discovery")
     assert len(ids) == 3
     assert split_role == "discovery"
+    composed = _composed()
+    plan = _plan(
+        split_hash,
+        protocol_hash=protocol_hash(composed.config_hash, composed.values["arm"], split_hash),
+    )
     result = run_experiment(
-        composed=_composed(),
-        plan=_plan(split_hash),
+        composed=composed,
+        plan=plan,
         gate=_OpenGate(),
         lock=lock,
         root=synthetic_world.data_root,
@@ -157,9 +162,14 @@ def test_run_experiment_supplies_evidence_with_org_and_supply_traces(
 ):
     lock, repo_root = _frozen_world(synthetic_world, tmp_path)
     _, split_hash, _ = load_split(repo_root, "discovery")
+    composed = _composed(arm="fixed-legal-context", evidence_source="conec-contexts")
+    plan = _plan(
+        split_hash,
+        protocol_hash=protocol_hash(composed.config_hash, composed.values["arm"], split_hash),
+    )
     result = run_experiment(
-        composed=_composed(arm="fixed-legal-context", evidence_source="conec-contexts"),
-        plan=_plan(split_hash),
+        composed=composed,
+        plan=plan,
         gate=_OpenGate(),
         lock=lock,
         root=synthetic_world.data_root,
@@ -173,3 +183,41 @@ def test_run_experiment_supplies_evidence_with_org_and_supply_traces(
     assert any(record_id.endswith("/org") for record_id in manifest)
     assert any(record_id.endswith("/supply") for record_id in manifest)
     assert result.arm == "fixed-legal-context"
+
+
+def test_run_experiment_refuses_wrong_protocol_hash(synthetic_world, tmp_path):
+    lock, repo_root = _frozen_world(synthetic_world, tmp_path)
+    _, split_hash, _ = load_split(repo_root, "discovery")
+    with pytest.raises(CoreError, match="protocol hash"):
+        run_experiment(
+            composed=_composed(),
+            plan=_plan(split_hash, protocol_hash="c" * 64),
+            gate=_OpenGate(),
+            lock=lock,
+            root=synthetic_world.data_root,
+            run_dir=tmp_path / "run",
+            transport=_transport,
+            repo_root=repo_root,
+        )
+
+
+def test_run_experiment_refuses_wrong_carrier_lock_key(synthetic_world, tmp_path):
+    lock, repo_root = _frozen_world(synthetic_world, tmp_path)
+    _, split_hash, _ = load_split(repo_root, "discovery")
+    composed = _composed()
+    plan = _plan(
+        split_hash,
+        carrier_lock_key="earnings22-original",
+        protocol_hash=protocol_hash(composed.config_hash, composed.values["arm"], split_hash),
+    )
+    with pytest.raises(CoreError, match="carrier"):
+        run_experiment(
+            composed=composed,
+            plan=plan,
+            gate=_OpenGate(),
+            lock=lock,
+            root=synthetic_world.data_root,
+            run_dir=tmp_path / "run",
+            transport=_transport,
+            repo_root=repo_root,
+        )

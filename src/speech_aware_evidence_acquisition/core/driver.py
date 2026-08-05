@@ -27,7 +27,7 @@ from .base import (
     RunResult,
     SampleContext,
 )
-from .config import ComposedConfig, compose
+from .config import ComposedConfig, compose, protocol_hash
 from .evidence import rotated_mismatch
 from .model import FrozenCoreAdapter
 from .tracing import TraceSink
@@ -70,6 +70,17 @@ def run_experiment(
         raise CoreError(
             f"plan split role {plan.split_role!r} does not match the frozen splits "
             f"receipt split role {receipt_split_role!r} for split {values['split_name']!r}"
+        )
+    if str(values["carrier_lock_key"]) != plan.carrier_lock_key:
+        raise CoreError(
+            f"plan carrier_lock_key {plan.carrier_lock_key!r} does not match the "
+            f"composed config carrier {values['carrier_lock_key']!r}"
+        )
+    expected_protocol = protocol_hash(composed.config_hash, arm, split_hash)
+    if plan.protocol_hash != expected_protocol:
+        raise CoreError(
+            f"plan protocol hash {plan.protocol_hash!r} does not match the composed "
+            f"config/arm/split protocol hash {expected_protocol!r}"
         )
     loader = CARRIERS.resolve(str(values["carrier_lock_key"]))
     samples = [s for s in loader(lock, root) if s.sample_id in sample_ids]

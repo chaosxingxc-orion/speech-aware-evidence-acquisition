@@ -111,6 +111,20 @@ def test_forbidden_field_inside_value_refused(tmp_path):
         adapter.request(_payload(history=[{"reference_transcript": "gold"}]))
 
 
+def test_decoding_params_messages_key_refused(tmp_path):
+    adapter, _ = _adapter(tmp_path)
+    with pytest.raises(FrozenCoreError, match="decoding_params"):
+        adapter.request(
+            _payload(decoding_params={"temperature": 0, "messages": [{"role": "user"}]})
+        )
+
+
+def test_decoding_params_unknown_key_refused(tmp_path):
+    adapter, _ = _adapter(tmp_path)
+    with pytest.raises(FrozenCoreError, match="decoding_params"):
+        adapter.request(_payload(decoding_params={"logit_bias": {"1": 10}}))
+
+
 def test_call_budget_exhaustion_fails_closed(tmp_path):
     adapter, _ = _adapter(tmp_path, plan=_plan(planned_model_calls=1))
     adapter.request(_payload())
