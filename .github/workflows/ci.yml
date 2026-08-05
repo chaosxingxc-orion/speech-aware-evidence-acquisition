@@ -27,16 +27,69 @@ jobs:
       - name: Run tests (fails on zero collected tests)
         run: uv run pytest -q
 
-  clean-clone-reproduction:
+  contracts:
+    # R0 semantics (not pre-R0): the package is installed first, then the
+    # real current behavior of the two entrypoints is asserted -- not the
+    # historical "both refuse with exit 2" behavior, which the scripts no
+    # longer have. reproduce.sh/evaluate.sh --help are model-free and exit
+    # 0; evaluate.sh with no args refuses with exit 2 (reproduce.sh with no
+    # args instead fails closed with exit 1 on a missing SPEECHRL_DATA_DIR,
+    # which is a distinct, already-covered contract -- see
+    # tests/contract/test_scripts_fail_closed.py -- and is intentionally
+    # not asserted here). Finally, the model-free contract-test subset that
+    # needs no private assets and no model touch is run for real.
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v5
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
         with:
           python-version: "3.12"
-      - name: Pre-R0 entrypoints must refuse
+
+      - name: Sync locked environment
+        run: uv sync --frozen
+
+      - name: reproduce.sh --help is model-free and exits 0
+        run: |
+          out="$(uv run bash scripts/reproduce.sh --help)"
+          echo "$out"
+          echo "$out" | grep -qi "model-free"
+
+      - name: evaluate.sh --help is model-free and exits 0
+        run: |
+          out="$(uv run bash scripts/evaluate.sh --help)"
+          echo "$out"
+          echo "$out" | grep -qi "model-free"
+
+      - name: evaluate.sh with no args refuses with exit 2
         run: |
           set +e
-          bash scripts/reproduce.sh; r1=$?
-          bash scripts/evaluate.sh; r2=$?
-          test "$r1" -eq 2 && test "$r2" -eq 2
+          uv run bash scripts/evaluate.sh
+          rc=$?
+          set -e
+          test "$rc" -eq 2
+
+      - name: Model-free contract tests (no private assets, no model touch)
+        run: uv run pytest tests/contract -q
+
+  lint:
+    # Scoped to package source (src/), not tests/: tests/ carries findings
+    # from concurrently in-flight repair tasks not owned by this gate (see
+    # docs/engineering.md, R0 repair T9). The quarantined W1 snapshot under
+    # reference/w1-snapshot/ is excluded repo-wide in pyproject.toml and
+    # must never be reformatted.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.12"
+
+      - name: Sync locked environment
+        run: uv sync --frozen
+
+      - name: ruff check (active source tree)
+        run: uv run ruff check src

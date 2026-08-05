@@ -108,6 +108,86 @@ later without driver changes). Entrypoints `scripts/reproduce.sh` /
 `docs/runbooks/2026-08-05-r0-smoke.md` (owner-visible; requires ExecutionPlan
 + pre-registered exposure row; not executed by the delivery plan).
 
+## R0 repair — trust-boundary components (invariants I1-I9)
+
+The R0 repair campaign (`.superpowers/sdd/r0-repair/`) hardens the boundary between a
+plan and a genuine, provably-scoped model touch. Beyond the run bundle + finalizer
+(I7, detailed below), the campaign closed:
+
+- **I1 verified splits** (`data/splits.py`, `core/split_receipt.py`): the committed
+  splits receipt (`docs/receipts/splits.json`) must strict-parse (exact schema/keys,
+  per-split carrier/role/count/id ordering and prefix agreement, an `identity_hash`
+  recomputed from the ids) and match a **live loader recomputation** bit for bit;
+  any disagreement fails closed.
+- **I2 carrier scope** (`contracts.py` — `ALLOWED_CARRIER_PROFILES`,
+  `general_audio_deny_lock_keys`): a plan's carrier must resolve to a genuine
+  speech-aware profile in the umbrella lock and must not be on the general-audio
+  denylist; the pre-registered exposure row's carrier column is cross-checked
+  against the same plan carrier.
+- **I3/I4 payload and media binding** (`core/model.py`, `core/base.py`
+  `PayloadBindingContext`): the adapter verifies `payload.carrier_lock_key ==
+  plan.carrier_lock_key`, `speech_ref == f"{carrier}/{sample_id}"`, `sample_id` is a
+  member of the frozen split, and `audio_seconds` agrees with the loader. Media
+  paths accept only normalized POSIX-relative form and must resolve inside the
+  carrier's `local_subdir`; absolute paths, drive letters, backslashes, `..` and
+  symlink escapes are refused at both the adapter and transport layers.
+  (module `contracts.py`)
+- **I5 session attestation** (`core/session.py`): every run binds a session receipt
+  to the resident server's binary hash, pid, argv, listening port and model/mmproj
+  paths (plus, as of the T5 fix-2 continuation, live kernel-level socket-ownership
+  verification of the listening port) — no session receipt or an identity mismatch
+  refuses the model touch.
+- **I6 one-time attempt accounting** (`core/attempts.py`): `(run_id, attempt_id)` is
+  a non-reusable primary key; the gate opens atomically/exclusively; actual usage is
+  persisted **before** the send, not lost on failure; a retry requires a fresh
+  attempt; slice caps take the conservative upper bound of "registered" and
+  "actual" usage.
+- **I7 run bundle + finalizer**: see the dedicated subsection immediately below.
+
+**I9 CI truthfulness (this task, T9):** CI now reflects current R0 semantics rather
+than pre-R0 refusal behavior. `.github/workflows/ci.yml` runs three jobs: `test`
+(`uv sync --frozen`, build, `pytest -q`); `contracts` (installs the package, then
+asserts today's real entrypoint behavior — `reproduce.sh --help` /
+`evaluate.sh --help` exit 0 and print "model-free", `evaluate.sh` with no arguments
+exits 2 — and runs the model-free `tests/contract/` subset, which needs no private
+assets and touches no model); `lint` (`ruff check` over `src/`, the quarantined
+`reference/w1-snapshot/` excluded via `pyproject.toml` and never reformatted). Every
+assertion in the `contracts` job was verified locally (WSL2 Ubuntu-24.04) before
+being committed: `reproduce.sh --help`/`evaluate.sh --help` → exit 0, "model-free" in
+stdout; `evaluate.sh` with no args → exit 2; `tests/contract/` → 134 passed. Note
+`reproduce.sh` with **no** arguments (as opposed to `--help`) is a *different*,
+already-covered contract: with `SPEECHRL_DATA_DIR` unset it fails closed with exit
+1 (`tests/contract/test_scripts_fail_closed.py` covers `--help` and the
+`evaluate.sh` no-args case only; exit 1 for `reproduce.sh` with no args is not a
+refusal-on-misuse case and is intentionally not asserted by CI).
+
+**Coverage: `NOT_CONFIGURED`. Type-checking: `NOT_CONFIGURED`.** Neither is wired
+into `pyproject.toml`, the dev dependency group, or CI; this is stated explicitly
+per I9 rather than implied by an absence of failures.
+
+**Config namespace (this task, T9):** `core/config.py`'s four-fragment composer
+(`compose()`) reads only `configs/{model,dataset,baseline,experiment}/<name>.json`
+— JSON is the one live *experiment-composition* namespace; a new experiment is
+JSON config plus at most one newly registered component (see "R0 engineering
+baseline" above). Two other, deliberately distinct things also live under
+`configs/` and are **not** part of that namespace and are **kept, not deleted**:
+- `configs/dataset/{conec,earnings21,earnings22}.yaml` and
+  `configs/model/qwen3-omni-30b-a3b-instruct-gguf.yaml` are legacy-format,
+  non-composer identity sidecars: `core/config.py` never reads them, but
+  `tests/contract/test_governance_alignment.py::test_dataset_and_model_configs_reference_lock_keys_only`
+  requires each to name its `lock_key` (and forbids any `sha256:` field — asset
+  hashes live in the umbrella lock only) as an independent naming-discipline
+  check, and `e0/d2_leakage.py`'s general-audio negative control scans every
+  `configs/**/*.yaml` for `lock_key:` lines. Deleting them breaks that governance
+  test (verified locally: `pytest tests/contract/test_governance_alignment.py -q`
+  fails with `carrier config for earnings21-original is missing` once the files
+  are removed) — they are retained and documented here as legacy/non-composer,
+  not superseded.
+- `configs/experiment/e0-model-free-closure.yaml` is a distinct, **live**,
+  non-composer file: `contracts.general_audio_deny_lock_keys` and
+  `e0/d2_leakage.py` read it directly, by hardcoded relative path, as the single
+  source of truth for the general-audio exclusion denylist. It is not legacy.
+
 ## R0 repair T6 — atomic run bundle + finalizer (invariant I7)
 
 Every attempt produces a `run-manifest.json` (`core.bundle`, schema

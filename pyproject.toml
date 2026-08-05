@@ -15,6 +15,7 @@ dependencies = []
 dev = [
     "pytest>=8",
     "build>=1.2",
+    "ruff>=0.6",
 ]
 tracking = ["mlflow>=2.14"]
 
@@ -22,6 +23,7 @@ tracking = ["mlflow>=2.14"]
 dev = [
     "pytest>=8",
     "build>=1.2",
+    "ruff>=0.6",
 ]
 
 [tool.setuptools.packages.find]
@@ -29,3 +31,26 @@ where = ["src"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+
+[tool.ruff]
+# The quarantined W1 snapshot is frozen, program-internal prior authorship
+# (see reference/w1-snapshot/SNAPSHOT.md, NOTICE) -- it is read-only for this
+# study and must never be reformatted or otherwise edited by this repo's
+# tooling.
+extend-exclude = ["reference/w1-snapshot"]
+
+[tool.ruff.lint]
+# Explicit, not implicit: ruff's own "default" rule set has changed across
+# versions (observed: 0.15.x resolves E4/E7/E9/F only; 0.16.x resolves a much
+# broader set -- UP/I/S/B/ASYNC/YTT and more -- even with zero config). Pin
+# the classic Flake8-equivalent subset (pycodestyle errors + Pyflakes) this
+# R0 repair task actually scoped and fixed, so the lint gate does not
+# silently balloon in scope (or findings) on the next `uv lock` bump.
+select = ["E4", "E7", "E9", "F"]
+
+[tool.ruff.lint.per-file-ignores]
+# `typing.Mapping` is unused in this module. It cannot be fixed by this task:
+# src/speech_aware_evidence_acquisition/e0/** is out of scope for R0 repair
+# (see .superpowers/sdd/r0-repair/task-9-brief.md Global Constraints); the
+# fix is deferred to a task with authority over e0/.
+"src/speech_aware_evidence_acquisition/e0/d2_leakage.py" = ["F401"]

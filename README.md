@@ -27,13 +27,34 @@ assets in the umbrella lock and are never loaded by this repository.
 
 ```text
 src/speech_aware_evidence_acquisition/
-  data/         lock-key based speech-carrier loaders; no dataset bytes
-  models/       frozen-core API adapter (llama.cpp llama-server)
-  evidence/     ORG/SUPPLY/USE schema, provenance and admission
-  scoring/      registered task, entity, evidence and cost metrics
-  tracing/      OBS/ORG/SUPPLY/USE plus request/tool/response/cost trace
-  experiments/  experiment composition, not raw outputs
-configs/        model / speech dataset / baseline / experiment composition
+  core/         ONE foundation package (owner direction 2026-08-05):
+                  base.py       Registry mechanism (CARRIERS, EVIDENCE_SOURCES,
+                                 TRANSPORTS, POLICIES, SCORERS seams) + core errors
+                  model.py      FrozenCoreAdapter: gate-bound request path
+                  session.py    runtime session attestation (process/socket binding)
+                  carriers.py   registered speech-carrier loaders
+                  evidence.py   ORG/SUPPLY/USE schema, provenance and admission
+                  tracing.py    OBS/ORG/SUPPLY/USE trace sink (append-only)
+                  policies.py   arm policies (only `fixed` implemented at R0)
+                  scorers.py    registered scoring adapters (only scoring-side
+                                 reference importer)
+                  attempts.py   one-time attempt accounting / state machine
+                  bundle.py     atomic run bundle + finalizer (verify -> score ->
+                                 re-verify -> upload -> ledger row -> FINALIZED)
+                  driver.py     single experiment driver + CLI (`saea-driver`)
+                  tracking.py   lazy MLflow linkage + umbrella ledger-row renderer
+                  config.py     deterministic four-fragment JSON config composer
+                  split_receipt.py  split-identity receipt binding
+  data/         lock-key based speech-carrier loaders and splits; no dataset bytes
+                  splits.py       frozen discovery/dev/confirmatory partitions
+                  references.py   scoring-side reference reader (only
+                                   core/scorers.py may import it; AST-enforced)
+  scoring/      frozen scoring stack: wer.py, entity.py, qa.py, normalize.py,
+                transitions.py (hash-pinned by the D3 E0 closure receipt)
+  e0/           E0 model-free closure generators (D1-D4 + runtime receipt;
+                CLOSED 2026-08-04, out of scope for further edits this campaign)
+configs/        model / speech dataset / baseline / experiment composition (JSON
+                fragments only, see configs/baseline/README.md)
 scripts/        reproduce.sh, evaluate.sh
 tests/          unit / integration / contract
 docs/           engineering.md, migration-manifest.md, exposure-ledger.md
