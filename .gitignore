@@ -39,6 +39,9 @@ mlartifacts/
 !src/speech_aware_evidence_acquisition/data/
 !src/speech_aware_evidence_acquisition/data/*.py
 
+# SDD controller workspace (session scratch, never part of the record)
+.superpowers/
+
 # OS / editor
 .DS_Store
 Thumbs.db
