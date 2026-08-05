@@ -79,22 +79,33 @@ def _spawn_live_matching_process(tmp_path_factory):
         "s.listen(1)\n"
         "time.sleep(300)\n"
     )
-    process = subprocess.Popen(
-        [str(binary), "-c", listener_code],
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
-    )
-    deadline = time.monotonic() + 30.0  # first-exec AV-scan latency on a fresh copy, under load
+    # Fresh-spawn retry (not just a longer wait): this sandboxed Windows
+    # host occasionally stalls an individual spawned process for tens of
+    # seconds under load; a fresh process recovers more reliably than
+    # waiting longer on a possibly wedged one.
+    process = None
     last_error = None
-    while time.monotonic() < deadline:
-        try:
-            with socket.create_connection(("127.0.0.1", _LIVE_PORT), timeout=0.5):
-                break
-        except OSError as error:
-            last_error = error
-            time.sleep(0.05)
-    else:
+    for _attempt in range(3):
+        process = subprocess.Popen(
+            [str(binary), "-c", listener_code],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+        deadline = time.monotonic() + 15.0
+        connected = False
+        while time.monotonic() < deadline:
+            try:
+                with socket.create_connection(("127.0.0.1", _LIVE_PORT), timeout=0.5):
+                    connected = True
+                    break
+            except OSError as error:
+                last_error = error
+                time.sleep(0.05)
+        if connected:
+            break
         process.kill()
+        process = None
+    if process is None:
         raise AssertionError(f"nothing ever listened on 127.0.0.1:{_LIVE_PORT}: {last_error}")
     _live["pid"] = process.pid
     yield

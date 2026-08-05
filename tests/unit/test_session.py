@@ -189,46 +189,101 @@ def _terminate(process):
         process.wait(timeout=5)
 
 
-def _listener_code(port: int) -> str:
+def _listener_code(port: int, *, address: str = "127.0.0.1", family: str = "AF_INET") -> str:
     """A tiny real TCP listener, run inside a spawned child via ``-c`` --
-    binds and LISTENs on ``127.0.0.1:<port>`` for real (localhost only, no
+    binds and LISTENs on ``(address, port)`` for real (loopback only, no
     external network reachability), then idles. T5 fix-2: socket-ownership
     verification needs a genuinely bound, kernel-visible listening socket to
     exercise at all -- a sleeping process alone (the T5 fix-1 pattern) is not
-    enough."""
+    enough. T5 fix-3: ``address``/``family`` are parametrized so tests can
+    bind IPv4 (``127.0.0.1``/``AF_INET``), IPv6 (``::1``/``AF_INET6``), or a
+    wildcard (``0.0.0.0``/``::``) -- the address-aware fix must distinguish
+    all of these."""
 
     return (
         "import socket, time\n"
-        "s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)\n"
+        f"s = socket.socket(socket.{family}, socket.SOCK_STREAM)\n"
         "s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)\n"
-        f"s.bind(('127.0.0.1', {port}))\n"
+        f"s.bind(({address!r}, {port}))\n"
         "s.listen(1)\n"
         "time.sleep(90)\n"
     )
 
 
-def _spawn_listening_process(binary, port: int):
-    """Spawn ``binary`` (any real executable -- the pinned copy OR an
-    unrelated one, per test) running ``_listener_code``, and block until the
-    socket is genuinely accepting connections before returning (removes the
-    spawn/bind race)."""
+def _wait_until_connectable(process, address: str, port: int, *, timeout_seconds: float = 15.0):
+    """Block until ``(address, port)`` is genuinely accepting connections, or
+    return ``None`` on timeout (caller decides whether to retry with a fresh
+    spawn or give up)."""
 
-    process = subprocess.Popen(
-        [str(binary), "-c", _listener_code(port)],
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
-    )
-    deadline = time.monotonic() + 30.0  # first-exec AV-scan latency on a fresh copy, under load
+    deadline = time.monotonic() + timeout_seconds
     last_error: OSError | None = None
     while time.monotonic() < deadline:
         try:
-            with socket.create_connection(("127.0.0.1", port), timeout=0.5):
+            with socket.create_connection((address, port), timeout=0.5):
                 return process
         except OSError as error:
             last_error = error
             time.sleep(0.05)
-    _terminate(process)
-    raise AssertionError(f"nothing ever listened on 127.0.0.1:{port}: {last_error}")
+    return last_error
+
+
+def _spawn_listening_process(
+    binary, port: int, *, address: str = "127.0.0.1", family: str = "AF_INET", attempts: int = 3
+):
+    """Spawn ``binary`` (any real executable -- the pinned copy OR an
+    unrelated one, per test) running ``_listener_code``, and block until the
+    socket is genuinely accepting connections before returning (removes the
+    spawn/bind race). Retries with a FRESH spawn (not just a longer wait) up
+    to ``attempts`` times -- this sandboxed Windows host occasionally stalls
+    an individual spawned process for tens of seconds under load (observed
+    empirically, not merely first-exec AV-scan latency: it also affects an
+    un-copied, already-resident ``sys.executable`` spawn), and a fresh
+    process is a more reliable recovery than waiting longer on a possibly
+    wedged one."""
+
+    last_error: OSError | str | None = None
+    for _attempt in range(attempts):
+        process = subprocess.Popen(
+            [str(binary), "-c", _listener_code(port, address=address, family=family)],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+        result = _wait_until_connectable(process, address, port)
+        if isinstance(result, subprocess.Popen):
+            return result
+        last_error = result
+        _terminate(process)
+    raise AssertionError(
+        f"nothing ever listened on {address}:{port} after {attempts} spawn attempts: {last_error}"
+    )
+
+
+def _spawn_wildcard_listening_process(
+    binary, port: int, *, family: str = "AF_INET", attempts: int = 3
+):
+    """Spawn a REAL listener bound to the WILDCARD address (``0.0.0.0`` for
+    v4, ``::`` for v6) -- used only by the wildcard-bind design-decision
+    probe (T5 fix-3 probe 5). Same fresh-spawn retry policy as
+    ``_spawn_listening_process``."""
+
+    wildcard = "0.0.0.0" if family == "AF_INET" else "::"
+    probe_address = "127.0.0.1" if family == "AF_INET" else "::1"
+    last_error: OSError | str | None = None
+    for _attempt in range(attempts):
+        process = subprocess.Popen(
+            [str(binary), "-c", _listener_code(port, address=wildcard, family=family)],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+        result = _wait_until_connectable(process, probe_address, port)
+        if isinstance(result, subprocess.Popen):
+            return result
+        last_error = result
+        _terminate(process)
+    raise AssertionError(
+        f"nothing ever listened on {wildcard}:{port} (probed via {probe_address}) after "
+        f"{attempts} spawn attempts: {last_error}"
+    )
 
 
 def _matching_session(runtime_receipt, **overrides):
@@ -582,13 +637,157 @@ def test_socket_ownership_undeterminable_fails_closed(tmp_path, monkeypatch):
         if os.name == "nt":
             monkeypatch.setattr(session_module, "_windows_tcp_table_owners", _boom)
         else:
-            monkeypatch.setattr(session_module, "_listen_inodes_for_port", _boom)
+            monkeypatch.setattr(session_module, "_proc_net_listen_entries", _boom)
 
         with pytest.raises(SessionError, match="simulated socket-ownership lookup failure"):
             LlamaServerTransport(
                 "http://127.0.0.1:18197", tmp_path, session, runtime_receipt, runtime_root,
                 post=lambda u, b: b"",
             )
+    finally:
+        _terminate(process)
+
+
+# ---------------------------------------------------------------------------
+# T5 fix-3 (re-review round 3): a materially equivalent bypass IN the fix-2
+# design itself. _verify_pid_owns_listening_socket accepted `host` but never
+# used it -- POSIX discarded the decoded IP, keeping only the port; Windows
+# read dwLocalAddr/ucLocalAddr into the row structs but never consulted
+# them. The check therefore bound pid to "some LISTEN socket on that port
+# number, in EITHER the v4 or v6 table" -- not to the socket the transport
+# actually connects to. '127.0.0.1' and '::1' are DISTINCT, SIMULTANEOUSLY
+# BINDABLE addresses (the fix-2 docstring's claim that require_loopback's
+# fixed host set made address-filtering unnecessary was WRONG). Live-
+# reproduced PoC: pinned-binary process P listening ONLY on [::1]:PORT,
+# unrelated unverified process Q listening on 127.0.0.1:PORT; a session
+# naming pid=P, host=127.0.0.1, port=PORT passed construction, and a real
+# connect to 127.0.0.1:PORT was answered by Q. Secondary bug, same root
+# cause, Windows-only: merging the v4 and v6 owner tables by port alone let
+# a v6 listener silently overwrite the v4 owner for an identical port
+# number, causing a FALSE REFUSAL of a legitimate v4 session.
+# ---------------------------------------------------------------------------
+
+
+def test_attach_refuses_v6_v4_split_forgery(tmp_path):
+    """T5 fix-3 probe 1 -- THE re-review's exact exploit, live-reproduced
+    end to end on Windows: pinned-binary process P listens ONLY on
+    [::1]:PORT; unrelated, unverified process Q listens on 127.0.0.1:PORT
+    (same port number, different family). A forged session naming pid=P but
+    host=127.0.0.1 must be refused -- P owns no socket at 127.0.0.1:PORT at
+    all; only Q does, and Q is not the pinned binary. Verified below (see
+    the disable/re-enable check in the fix report) to fail before this fix
+    and pass after it."""
+
+    runtime_root, binary, runtime_receipt = _live_runtime_world(tmp_path)
+    port = 18198
+    p_process = _spawn_listening_process(binary, port, address="::1", family="AF_INET6")
+    q_process = _spawn_listening_process(
+        Path(sys.executable), port, address="127.0.0.1", family="AF_INET"
+    )
+    try:
+        forged = _matching_session(runtime_receipt, host="127.0.0.1", port=port, pid=p_process.pid)
+        receipt_path = tmp_path / "forged-session.json"
+        write_session_receipt(receipt_path, forged)
+        with pytest.raises(SessionError, match="does not own the listening socket|is owned by pid"):
+            attach_session(receipt_path, runtime_receipt=runtime_receipt, runtime_root=runtime_root)
+    finally:
+        _terminate(p_process)
+        _terminate(q_process)
+
+
+def test_attach_refuses_v4_v6_reverse_split_forgery(tmp_path):
+    """T5 fix-3 probe 2 -- the reverse split: P listens ONLY on
+    127.0.0.1:PORT; Q listens on [::1]:PORT. A forged session naming pid=P
+    but host=::1 must be refused."""
+
+    runtime_root, binary, runtime_receipt = _live_runtime_world(tmp_path)
+    port = 18199
+    p_process = _spawn_listening_process(binary, port, address="127.0.0.1", family="AF_INET")
+    q_process = _spawn_listening_process(
+        Path(sys.executable), port, address="::1", family="AF_INET6"
+    )
+    try:
+        forged = _matching_session(runtime_receipt, host="::1", port=port, pid=p_process.pid)
+        receipt_path = tmp_path / "forged-session.json"
+        write_session_receipt(receipt_path, forged)
+        with pytest.raises(SessionError, match="does not own the listening socket|is owned by pid"):
+            attach_session(receipt_path, runtime_receipt=runtime_receipt, runtime_root=runtime_root)
+    finally:
+        _terminate(p_process)
+        _terminate(q_process)
+
+
+def test_attach_succeeds_for_v6_only_session(tmp_path):
+    """T5 fix-3 probe 3: a legitimate session with host='::1' -- the pinned
+    binary genuinely, exclusively listening on [::1]:PORT -- must be
+    accepted."""
+
+    runtime_root, binary, runtime_receipt = _live_runtime_world(tmp_path)
+    port = 18200
+    process = _spawn_listening_process(binary, port, address="::1", family="AF_INET6")
+    try:
+        session = _matching_session(runtime_receipt, host="::1", port=port, pid=process.pid)
+        receipt_path = tmp_path / "session.json"
+        write_session_receipt(receipt_path, session)
+        attached = attach_session(
+            receipt_path, runtime_receipt=runtime_receipt, runtime_root=runtime_root
+        )
+        assert attached == session
+    finally:
+        _terminate(process)
+
+
+def test_attach_succeeds_for_v4_session_despite_unrelated_v6_listener_same_port(tmp_path):
+    """T5 fix-3 probe 4, THE SECONDARY bug: a legitimate v4 session must NOT
+    be falsely refused merely because an unrelated process also listens on
+    the SAME port number under IPv6 -- the fix-2 Windows table merge
+    (``owners.update(v4); owners.update(v6)``) let a v6 entry silently
+    overwrite the v4 owner for an identical port, producing exactly this
+    false refusal for a completely legitimate session."""
+
+    runtime_root, binary, runtime_receipt = _live_runtime_world(tmp_path)
+    port = 18201
+    legit_process = _spawn_listening_process(binary, port, address="127.0.0.1", family="AF_INET")
+    unrelated_process = _spawn_listening_process(
+        Path(sys.executable), port, address="::1", family="AF_INET6"
+    )
+    try:
+        session = _matching_session(
+            runtime_receipt, host="127.0.0.1", port=port, pid=legit_process.pid
+        )
+        receipt_path = tmp_path / "session.json"
+        write_session_receipt(receipt_path, session)
+        attached = attach_session(
+            receipt_path, runtime_receipt=runtime_receipt, runtime_root=runtime_root
+        )
+        assert attached == session
+    finally:
+        _terminate(legit_process)
+        _terminate(unrelated_process)
+
+
+def test_attach_refuses_wildcard_bound_listener_for_a_specific_loopback_claim(tmp_path):
+    """T5 fix-3 probe 5 -- the wildcard-bind design decision, ASSERTED
+    EXPLICITLY: a wildcard bind (0.0.0.0) is NEVER treated as satisfying a
+    session's claim of the specific address 127.0.0.1, even though the OS
+    would in fact route a 127.0.0.1 connection to a 0.0.0.0-bound listener
+    in the absence of a more specific competing bind. See
+    ``core.session._posix_verify_pid_owns_listening_socket``'s docstring
+    for the reasoning: exact-address matching is the more conservative of
+    the two choices the re-review explicitly allowed ('prefer refusing a
+    wildcard bind'), and costs nothing for this study's actual usage --
+    llama-server is always invoked with an explicit, specific --host, never
+    a wildcard."""
+
+    runtime_root, binary, runtime_receipt = _live_runtime_world(tmp_path)
+    port = 18202
+    process = _spawn_wildcard_listening_process(binary, port, family="AF_INET")
+    try:
+        session = _matching_session(runtime_receipt, host="127.0.0.1", port=port, pid=process.pid)
+        receipt_path = tmp_path / "session.json"
+        write_session_receipt(receipt_path, session)
+        with pytest.raises(SessionError, match="no LISTEN socket found"):
+            attach_session(receipt_path, runtime_receipt=runtime_receipt, runtime_root=runtime_root)
     finally:
         _terminate(process)
 

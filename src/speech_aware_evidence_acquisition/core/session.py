@@ -52,6 +52,7 @@ import os
 import queue
 import re
 import socket
+import struct
 import subprocess
 import threading
 import time
@@ -635,39 +636,113 @@ def _verify_pid_runs_pinned_binary(
 
 
 # ---------------------------------------------------------------------------
-# Socket-ownership binding (T5 fix-2): binary/PID identity alone does not
-# prove the session's process is the one LISTENING on (host, port) --
-# session.host/port/argv are self-declared receipt fields, and
-# _verify_pid_runs_pinned_binary only proves "this pid runs the pinned
-# binary somewhere", not "this pid owns THIS listening socket". A forged
-# receipt can name a second, genuinely live, genuinely pinned-binary
-# process that simply is not bound to the target port at all. This
-# resolves the REAL kernel-level owner of the listening socket on `port`
-# and requires it to equal `pid`, independent of anything the receipt or
-# the transport's own base_url claims.
+# Socket-ownership binding (T5 fix-2, corrected in fix-3): binary/PID
+# identity alone does not prove the session's process is the one LISTENING
+# on (host, port) -- session.host/port/argv are self-declared receipt
+# fields, and _verify_pid_runs_pinned_binary only proves "this pid runs the
+# pinned binary somewhere", not "this pid owns THIS listening socket". A
+# forged receipt can name a second, genuinely live, genuinely pinned-binary
+# process that simply is not bound to the target port at all.
+#
+# T5 fix-3 (re-review round 3, a materially equivalent bypass IN the fix-2
+# design, live-reproduced end to end on Windows): the fix-2 version keyed
+# every lookup by PORT ALONE, discarding the local address entirely -- the
+# POSIX path parsed ``local_address`` and then threw the IP away; the
+# Windows path defined ``dwLocalAddr``/``ucLocalAddr`` on the row structs
+# and never read them. ``127.0.0.1`` and ``::1`` are DISTINCT,
+# SIMULTANEOUSLY BINDABLE addresses -- a pinned-binary process P can
+# genuinely, verifiably own a LISTEN socket on ``[::1]:PORT`` while a
+# completely different, unverified process Q owns ``127.0.0.1:PORT``; a
+# forged receipt naming P with ``host=127.0.0.1`` passed the port-only
+# check, and a real connection to ``127.0.0.1:PORT`` was answered by Q. The
+# fix-2 docstring's justification ("require_loopback already restricts host
+# to a fixed set") was WRONG: restricting the SET of legal host strings
+# says nothing about which address family a socket is actually bound to.
+# This version is address-aware end to end -- every lookup below is keyed
+# by (address family, literal address, port), never port alone.
 # ---------------------------------------------------------------------------
 
 _SOCKET_FD_PATTERN = re.compile(r"socket:\[(\d+)\]\Z")
 _PROC_NET_TCP_LISTEN_STATE = "0A"
 
 
-def _listen_inodes_for_port(path: Path, port: int) -> set[int]:
-    """Parse a ``/proc/net/tcp``- or ``/proc/net/tcp6``-shaped file for
-    LISTEN-state socket inodes bound to ``port``. A missing file (e.g. IPv6
-    disabled) yields an empty set -- a legitimate system configuration, not
-    a failure; any OTHER read failure fails closed (:class:`SessionError`),
-    never silently yielding an empty (falsely permissive-looking) set."""
+def _decode_proc_net_address(hex_ip: str, family: int) -> str:
+    """Decode a ``/proc/net/tcp``(6) hex ``local_address`` into a literal IP
+    string. IPv4: 4 raw bytes, byte-reversed (the kernel prints the address
+    as one 32-bit word in host -- little-endian on x86/x64 -- byte order).
+    IPv6: 16 raw bytes as four 32-bit words, each word independently
+    byte-reversed but the four words kept in address order (the same
+    per-word quirk, repeated four times) -- the standard, widely-documented
+    ``/proc/net/tcp6`` decoding."""
+
+    raw = bytes.fromhex(hex_ip)
+    if family == socket.AF_INET:
+        return socket.inet_ntop(socket.AF_INET, raw[::-1])
+    words = struct.unpack("<4I", raw)
+    return socket.inet_ntop(socket.AF_INET6, struct.pack(">4I", *words))
+
+
+def _loopback_family_and_address(host: str) -> tuple[int, str]:
+    """Resolve a session's ``host`` (already ``require_loopback``-validated)
+    to the EXACT (address family, literal address) the socket-ownership
+    check must match -- ``127.0.0.1`` and ``::1`` are different,
+    simultaneously bindable endpoints, never interchangeable.
+
+    ``localhost`` is resolved via the same ``getaddrinfo`` mechanism
+    ``require_loopback`` already uses (every resolved address is already
+    proven loopback there); if it resolves to BOTH families -- common on
+    dual-stack systems -- there is no reliable way from user space to know
+    which family whatever HTTP client actually dials (resolver/ordering
+    behavior is platform- and configuration-dependent), so the ambiguity is
+    REFUSED rather than guessed. In practice this is a defensive edge case,
+    not the production shape: ``LlamaServerTransport`` requires
+    ``session.host`` to be the EXACT literal string in ``base_url`` (T5
+    fix-1), and the study's own config pins the literal ``127.0.0.1``
+    (``configs/model/qwen3-omni-llamacpp.json``), so this function only
+    ever sees whatever literal string the transport is actually configured
+    to dial."""
+
+    if host == "127.0.0.1":
+        return socket.AF_INET, "127.0.0.1"
+    if host == "::1":
+        return socket.AF_INET6, "::1"
+    if host.lower() == "localhost":
+        try:
+            infos = socket.getaddrinfo(host, None)
+        except OSError as error:
+            raise SessionError(
+                f"cannot resolve host {host!r} to determine socket ownership: "
+                f"{error}; refused (I5)"
+            ) from error
+        families = {info[0] for info in infos}
+        if socket.AF_INET in families and socket.AF_INET6 in families:
+            raise SessionError(
+                f"host {host!r} resolves to both IPv4 and IPv6 loopback "
+                "addresses; refused (I5: socket ownership must be bound to one "
+                "unambiguous endpoint, not guessed)"
+            )
+        if socket.AF_INET6 in families:
+            return socket.AF_INET6, "::1"
+        return socket.AF_INET, "127.0.0.1"
+    raise SessionError(f"host {host!r} is not a recognized loopback literal; refused (I5)")
+
+
+def _proc_net_listen_entries(path: Path, family: int) -> list[tuple[str, int, int]]:
+    """Parse a ``/proc/net/tcp``(6)-shaped file for LISTEN-state rows,
+    returning ``(address, port, inode)`` for the given ``family``. A
+    missing file (e.g. IPv6 disabled) yields an empty list -- legitimate
+    configuration, not a failure; any OTHER read failure fails closed."""
 
     try:
         text = path.read_text(encoding="utf-8")
     except FileNotFoundError:
-        return set()
+        return []
     except OSError as error:
         raise SessionError(
             f"cannot read {path} to determine socket ownership: {error}; refused "
             "(I5: socket ownership must be provable)"
         ) from error
-    inodes: set[int] = set()
+    entries: list[tuple[str, int, int]] = []
     for line in text.splitlines()[1:]:
         fields = line.split()
         if len(fields) < 10:
@@ -676,14 +751,14 @@ def _listen_inodes_for_port(path: Path, port: int) -> set[int]:
         if state != _PROC_NET_TCP_LISTEN_STATE:
             continue
         try:
-            _, hex_port = local_address.split(":")
-            local_port = int(hex_port, 16)
+            hex_addr, hex_port = local_address.split(":")
+            address = _decode_proc_net_address(hex_addr, family)
+            port = int(hex_port, 16)
             inode = int(inode_field)
-        except ValueError:
+        except (ValueError, OSError):
             continue
-        if local_port == port:
-            inodes.add(inode)
-    return inodes
+        entries.append((address, port, inode))
+    return entries
 
 
 def _pid_owns_any_inode(pid: int, inodes: set[int]) -> bool:
@@ -711,31 +786,52 @@ def _pid_owns_any_inode(pid: int, inodes: set[int]) -> bool:
     return False
 
 
-def _posix_verify_pid_owns_listening_socket(pid: int, port: int) -> None:
-    inodes: set[int] = set()
-    for relpath in ("/proc/net/tcp", "/proc/net/tcp6"):
-        inodes |= _listen_inodes_for_port(Path(relpath), port)
-    if not inodes:
+def _posix_verify_pid_owns_listening_socket(pid: int, host: str, port: int) -> None:
+    family, expected_address = _loopback_family_and_address(host)
+    path = Path("/proc/net/tcp") if family == socket.AF_INET else Path("/proc/net/tcp6")
+    entries = _proc_net_listen_entries(path, family)
+    # DESIGN DECISION (stated explicitly, per re-review round 3): a wildcard
+    # bind (0.0.0.0 / ::) is NEVER treated as owning a specific loopback
+    # address here -- only an EXACT address match counts. Real llama-server
+    # invoked with --host 127.0.0.1 binds exactly that address, never a
+    # wildcard, so this costs nothing for this study's actual usage while
+    # sidestepping entirely the harder question of whether a wildcard bind
+    # could be shadowed by a more specific, unverified listener on the same
+    # port (which a real OS generally refuses to let coexist on the exact
+    # same port without SO_REUSEPORT participation from both sides, but
+    # this function does not try to reason about that at all -- it simply
+    # never accepts a wildcard as proof of a specific address, the more
+    # conservative of the two choices the re-review explicitly allowed).
+    matching_inodes = {
+        inode
+        for address, entry_port, inode in entries
+        if entry_port == port and address == expected_address
+    }
+    if not matching_inodes:
         raise SessionError(
-            f"no LISTEN socket found for port {port} in /proc/net/tcp(6); refused "
-            "(I5: socket ownership must be provable)"
+            f"no LISTEN socket found for {expected_address}:{port} ({path}); "
+            "refused (I5: socket ownership must be provable)"
         )
-    if not _pid_owns_any_inode(pid, inodes):
+    if not _pid_owns_any_inode(pid, matching_inodes):
         raise SessionError(
-            f"pid {pid} does not own the listening socket on port {port}; refused "
-            "(I5: PID/binary identity alone does not prove the session's process "
-            "is the one actually listening on this endpoint)"
+            f"pid {pid} does not own the listening socket on {expected_address}:"
+            f"{port}; refused (I5: PID/binary identity alone does not prove the "
+            "session's process is the one actually listening on this endpoint)"
         )
 
 
-def _windows_tcp_table_owners(address_family: int, row_type: type) -> dict[int, int]:
-    """port -> owning pid, for one address family's LISTENER-only TCP table
-    (``GetExtendedTcpTable`` with ``TCP_TABLE_OWNER_PID_LISTENER`` -- the
-    table already contains listening sockets only, no state filtering
-    needed). Retries a bounded number of times on the standard
-    grow-between-calls race (first call learns the required size, second
-    call can still return ``ERROR_INSUFFICIENT_BUFFER`` if the table grew
-    in between)."""
+def _windows_tcp_table_owners(
+    address_family: int, row_type: type
+) -> dict[tuple[int, str, int], int]:
+    """``(family, address, port) -> owning pid``, for one address family's
+    LISTENER-only TCP table (``GetExtendedTcpTable`` with
+    ``TCP_TABLE_OWNER_PID_LISTENER`` -- the table already contains
+    listening sockets only, no state filtering needed). Keyed by the FULL
+    tuple, never port alone (T5 fix-3: a port-only key let a v6 entry
+    silently overwrite a v4 owner for the same port number, causing a FALSE
+    REFUSAL of a legitimate v4 session whenever an unrelated v6 listener
+    happened to share the port). Retries a bounded number of times on the
+    standard grow-between-calls race."""
 
     size = _wintypes.DWORD(0)
     for _attempt in range(4):
@@ -757,11 +853,17 @@ def _windows_tcp_table_owners(address_family: int, row_type: type) -> dict[int, 
             num_entries = ctypes.c_ulong.from_buffer(buffer, 0).value
             row_size = ctypes.sizeof(row_type)
             offset = ctypes.sizeof(ctypes.c_ulong)
-            owners: dict[int, int] = {}
+            owners: dict[tuple[int, str, int], int] = {}
             for index in range(num_entries):
                 row = row_type.from_buffer(buffer, offset + index * row_size)
                 local_port = socket.ntohs(row.dwLocalPort & 0xFFFF)
-                owners[local_port] = row.dwOwningPid
+                if address_family == _AF_INET:
+                    address = socket.inet_ntoa(
+                        struct.pack("<L", row.dwLocalAddr & 0xFFFFFFFF)
+                    )
+                else:
+                    address = socket.inet_ntop(socket.AF_INET6, bytes(row.ucLocalAddr))
+                owners[(address_family, address, local_port)] = row.dwOwningPid
             return owners
         if result == _ERROR_INSUFFICIENT_BUFFER:
             continue
@@ -775,41 +877,54 @@ def _windows_tcp_table_owners(address_family: int, row_type: type) -> dict[int, 
     )
 
 
-def _windows_verify_pid_owns_listening_socket(pid: int, port: int) -> None:
-    owners: dict[int, int] = {}
-    owners.update(_windows_tcp_table_owners(_AF_INET, _MibTcpRowOwnerPid))
-    owners.update(_windows_tcp_table_owners(_AF_INET6, _MibTcp6RowOwnerPid))
-    owner_pid = owners.get(port)
+def _windows_verify_pid_owns_listening_socket(pid: int, host: str, port: int) -> None:
+    family, expected_address = _loopback_family_and_address(host)
+    row_type = _MibTcpRowOwnerPid if family == _AF_INET else _MibTcp6RowOwnerPid
+    owners = _windows_tcp_table_owners(family, row_type)
+    # Same wildcard design decision as POSIX (see _posix_verify_...): a
+    # 0.0.0.0/:: bind is a distinct address from 127.0.0.1/::1 and is never
+    # treated as satisfying it -- only the exact tuple key matches.
+    owner_pid = owners.get((family, expected_address, port))
     if owner_pid is None:
         raise SessionError(
-            f"no LISTEN socket found for port {port}; refused (I5: socket "
-            "ownership must be provable)"
+            f"no LISTEN socket found for {expected_address}:{port}; refused (I5: "
+            "socket ownership must be provable)"
         )
     if owner_pid != pid:
         raise SessionError(
-            f"port {port} is owned by pid {owner_pid}, not the session's pid "
-            f"{pid}; refused (I5: PID/binary identity alone does not prove the "
-            "session's process is the one actually listening on this endpoint)"
+            f"{expected_address}:{port} is owned by pid {owner_pid}, not the "
+            f"session's pid {pid}; refused (I5: PID/binary identity alone does "
+            "not prove the session's process is the one actually listening on "
+            "this endpoint)"
         )
 
 
 def _verify_pid_owns_listening_socket(pid: int, host: str, port: int) -> None:
-    """Dispatch to the platform-specific socket-ownership check.
+    """Dispatch to the platform-specific, ADDRESS-AWARE socket-ownership
+    check.
 
-    ``host`` is accepted for API symmetry with the rest of I5's checks and
-    documents intent, but is deliberately NOT used to filter by local
-    address: ``require_loopback`` already restricts every session's ``host``
-    to the fixed, tiny loopback set (``127.0.0.1``/``::1``/``localhost``),
-    so the port-plus-pid-ownership binding this function enforces already
-    closes the exploit (a process not bound to the claimed port at all, or
-    bound to it under a different pid) without needing address-level
-    matching too.
+    T5 fix-3 correction, recorded rather than silently deleted: an earlier
+    version of this function's docstring claimed ``host`` did not need to
+    be used because ``require_loopback`` already restricts every session's
+    host to a fixed set -- THAT REASONING WAS WRONG. Restricting the SET of
+    legal host STRINGS says nothing about which ADDRESS FAMILY a socket is
+    actually bound to: ``127.0.0.1`` and ``::1`` are two distinct,
+    simultaneously bindable endpoints. A process can genuinely, verifiably
+    own a LISTEN socket on ``::1:PORT`` while a completely different,
+    unverified process owns ``127.0.0.1:PORT`` on the exact same port
+    number -- checking "is `port` owned by `pid`" without the address let
+    exactly that forgery through, live-reproduced end to end. Every lookup
+    below is keyed by (address family, literal address, port); see
+    :func:`_loopback_family_and_address` for how ``host`` resolves to that
+    family+address (including the explicit ``localhost`` ambiguity
+    refusal), and :func:`_posix_verify_pid_owns_listening_socket`'s
+    docstring for the wildcard-bind design decision.
     """
 
     if os.name == "nt":  # pragma: sys-platform
-        _windows_verify_pid_owns_listening_socket(pid, port)
+        _windows_verify_pid_owns_listening_socket(pid, host, port)
     else:
-        _posix_verify_pid_owns_listening_socket(pid, port)
+        _posix_verify_pid_owns_listening_socket(pid, host, port)
 
 
 def assert_session_alive(
