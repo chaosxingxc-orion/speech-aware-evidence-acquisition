@@ -125,6 +125,38 @@ def load_earnings22(lock: Mapping[str, object], root: Path) -> list[SampleRef]:
     return samples
 
 
+def load_earnings21(lock: Mapping[str, object], root: Path) -> list[SampleRef]:
+    """All Earnings21 samples, sorted by sample id, identity-checked against media."""
+
+    entry = lock_entry(lock, "earnings21-original")
+    carrier_dir = asset_dir(lock, "earnings21-original", root)
+    subdir = str(entry["local_subdir"]).rstrip("/")
+    rows = _metadata_rows(carrier_dir / "earnings21-file-metadata.csv", "file_id")
+    media_dir = carrier_dir / "media"
+    media_ids = {
+        path.name[: -len(".mp3")] for path in media_dir.glob("*.mp3") if path.is_file()
+    }
+    if media_ids != set(rows):
+        raise LoaderError(
+            "earnings21 media/metadata identity drift: "
+            f"media_only={sorted(media_ids - set(rows))[:5]} "
+            f"metadata_only={sorted(set(rows) - media_ids)[:5]}"
+        )
+    samples = []
+    for sample_id in sorted(rows):
+        row = rows[sample_id]
+        samples.append(
+            SampleRef(
+                carrier_lock_key="earnings21-original",
+                sample_id=sample_id,
+                media_relpath=f"{subdir}/media/{sample_id}.mp3",
+                audio_seconds=_float_field(row, "audio_length", sample_id),
+                sample_rate_hz=int(_float_field(row, "sample_rate", sample_id)),
+            )
+        )
+    return samples
+
+
 def earnings22_subset10_ids(lock: Mapping[str, object], root: Path) -> list[str]:
     """The upstream-curated Earnings22 ten-call subset (deterministic, not hand-picked)."""
 

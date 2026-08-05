@@ -63,8 +63,15 @@ class SyntheticWorld:
             )
         _touch(
             self.e21 / "earnings21-file-metadata.csv",
-            "file_id,audio_length,sample_rate\n"
-            + "\n".join(f"{sample_id},100.5,16000" for sample_id in E21_IDS)
+            # Mirrors the real earnings21-file-metadata.csv header exactly (verified
+            # against the materialized asset); loader/identity code reads columns by
+            # name, so the trailing columns are inert placeholders here.
+            "file_id,audio_length,sample_rate,company_name,financial_quarter,sector,"
+            "speaker_switches,unique_speakers,curator_id\n"
+            + "\n".join(
+                f"{sample_id},100.5,16000,Acme Corp,Q1 2020,Technology,10,3,curator-1"
+                for sample_id in E21_IDS
+            )
             + "\n",
         )
 

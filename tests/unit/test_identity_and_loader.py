@@ -103,3 +103,31 @@ class TestLoader:
         media = synthetic_world.data_root / sample.media_relpath
         assert measured.media_bytes == media.stat().st_size
         assert len(measured.media_sha256) == 64
+
+
+def test_load_earnings21_returns_identity_checked_samples(synthetic_world):
+    from speech_aware_evidence_acquisition.data.loader import load_earnings21
+    from speech_aware_evidence_acquisition.data.lock import load_lock
+
+    lock = load_lock(synthetic_world.lock_path)
+    samples = load_earnings21(lock, synthetic_world.data_root)
+    assert [s.sample_id for s in samples] == sorted(s.sample_id for s in samples)
+    assert len(samples) == 3
+    first = samples[0]
+    assert first.carrier_lock_key == "earnings21-original"
+    assert first.media_relpath.endswith(f"media/{first.sample_id}.mp3")
+    assert first.audio_seconds == 100.5
+    assert first.sample_rate_hz == 16000
+    assert first.runtime_view()["speech_ref"] == f"earnings21-original/{first.sample_id}"
+
+
+def test_load_earnings21_fails_closed_on_identity_drift(synthetic_world):
+    import pytest
+
+    from speech_aware_evidence_acquisition.data.loader import LoaderError, load_earnings21
+    from speech_aware_evidence_acquisition.data.lock import load_lock
+
+    (synthetic_world.e21 / "media" / "9999999.mp3").write_text("orphan", encoding="utf-8")
+    lock = load_lock(synthetic_world.lock_path)
+    with pytest.raises(LoaderError, match="identity drift"):
+        load_earnings21(lock, synthetic_world.data_root)
