@@ -235,3 +235,51 @@ def test_probe7_internally_consistent_but_live_recomputation_drift_is_refused(
     # Live recomputation against the real (synthetic) media directory refuses it.
     with pytest.raises(SplitReceiptError, match="discovery"):
         load_verified_split(repo_root, "discovery", lock, root)
+
+
+# ---------------------------------------------------------------------------
+# Probe 8 (coverage fix, T1 review): same-carrier disjointness must be the
+# check that fires, in isolation. `dev` and `confirmatory` both carry
+# earnings22-original ids; an attacker who adds one real confirmatory id into
+# dev (without removing anything, so dev's own count/identity_hash are
+# re-derived and internally correct, and confirmatory is left untouched and
+# already internally correct) produces a document where every per-split
+# structural check passes for BOTH splits — role, carrier prefix, sorted,
+# unique, count==len(ids), identity_hash-recomputed-from-ids all hold. The
+# *only* thing wrong is that the two same-carrier splits now overlap. This
+# isolates the disjointness guard as load-bearing: deleting it would let this
+# exact probe through `verify_receipt_document` with zero errors (verified
+# below by temporarily removing the guard — see the report).
+# ---------------------------------------------------------------------------
+
+
+def test_probe8_same_carrier_overlap_with_all_other_checks_passing_is_refused(
+    synthetic_world, tmp_path
+):
+    lock, root, repo_root, document = _frozen_world(synthetic_world, tmp_path)
+    tampered = copy.deepcopy(document)
+    dev = tampered["splits"]["dev"]
+    confirmatory = tampered["splits"]["confirmatory"]
+
+    borrowed = confirmatory["ids"][0]  # a real, untouched confirmatory id
+    assert borrowed not in dev["ids"]
+
+    # dev gains the id (not a swap: nothing is removed from dev), then dev's
+    # own count/identity_hash are correctly re-derived from its new id set.
+    dev["ids"] = sorted(dev["ids"] + [borrowed])
+    dev["count"] = len(dev["ids"])
+    dev["identity_hash"] = split_identity_hash(dev["ids"])
+    # confirmatory is left completely untouched: still internally correct.
+    _write(repo_root, tampered)
+
+    # Every per-split structural check independently passes for both splits.
+    assert dev["count"] == len(dev["ids"]) == len(set(dev["ids"]))
+    assert dev["identity_hash"] == split_identity_hash(dev["ids"])
+    assert confirmatory["count"] == len(confirmatory["ids"])
+    assert confirmatory["identity_hash"] == split_identity_hash(confirmatory["ids"])
+
+    # verify_receipt_document alone (layer 1, no live loader involved) must
+    # refuse this — the disjointness guard, not live recomputation, is what
+    # catches it.
+    with pytest.raises(SplitReceiptError, match="disjoint"):
+        verify_receipt_document(tampered)
