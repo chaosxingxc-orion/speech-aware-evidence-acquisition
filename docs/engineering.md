@@ -108,6 +108,37 @@ later without driver changes). Entrypoints `scripts/reproduce.sh` /
 `docs/runbooks/2026-08-05-r0-smoke.md` (owner-visible; requires ExecutionPlan
 + pre-registered exposure row; not executed by the delivery plan).
 
+## R0 repair T6 — atomic run bundle + finalizer (invariant I7)
+
+Every attempt produces a `run-manifest.json` (`core.bundle`, schema
+`saea-run-manifest-v1`) binding the study commit, config/protocol/plan/split
+identity, artifact hashes and terminal status. `core.bundle.verify_bundle`
+re-derives every hash from bytes on disk; `core.bundle.finalize_bundle` is the
+only path to a FINALIZED attempt (verify → score → write scores → re-verify →
+stubbable MLflow upload → machine-derived ledger row → mark FINALIZED).
+
+**Scoring authority (`saea-driver score` / `scripts/evaluate.sh`):**
+`--manifest` is the AUTHORITATIVE path — it re-verifies the bundle before
+scoring and is the only mode whose result may be cited as a formal record.
+`--outputs` (and the legacy positional `evaluate.sh <outputs.jsonl>` form)
+scores a raw outputs file directly with **no split/trace/hash verification**;
+it prints a loud warning and tags its result `"verified": false` — it exists
+for ad-hoc/exploratory scoring only and must never be treated as an audit
+record.
+
+**Accepted scope boundary of I7 (state plainly, do not over-trust):** the
+bundle chain is a *consistency* check over files on disk, not an
+*authenticity* check that a response ever genuinely crossed the frozen-core
+boundary. An attacker (or bug) with plain filesystem write access to a run's
+`run_dir` — the same access a legitimate run already needs — can synthesize a
+fully self-consistent bundle from scratch and `finalize_bundle` will accept
+it end to end, because the raw response bytes a `response_sha256` hashes are
+never independently persisted anywhere outside files the same writer
+controls. See the `core/bundle.py` module docstring for the full statement;
+closing this gap (an external, write-once transport log or a signed
+attestation anchor) is out of scope for R0's local, single-machine trust
+model.
+
 ## Quality gate
 
 `pytest` must collect at least one test and pass (CI treats pytest exit code 5 — no tests

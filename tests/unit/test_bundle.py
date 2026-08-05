@@ -13,11 +13,27 @@ for the legitimate flow, REJECT-everywhere-else -> ACCEPT end to end):
    the manifest's self-reported status, is authoritative).
 6. a hand-supplied ledger cell that contradicts the verified manifest -> refused.
 7. a legitimate synthetic run finalizes end to end and produces a ledger row.
+
+T6 fix-round regression probes (independent review PoCs against the
+committed T6 code), each also proved ACCEPT -> REJECT:
+
+C1. forged outputs text covered only by an emptied raw trace + emptied trace
+    manifest (all outer hashes recomputed to match) -> refused; plus a
+    non-empty-trace-missing-one-record variant.
+C2. a dirty study repo is refused BEFORE run_experiment spends any attempt
+    budget; a manifest-build failure after a successful run still forces the
+    attempt to ABORTED (never left OPENED with no manifest at all).
+I3. a run manifest (and a finalize call) may never land inside the study
+    repository.
+I4. `saea-driver score --manifest` is the authoritative, verified path;
+    `--outputs` is explicitly unverified.
 """
 
 import hashlib
 import json
+import shutil
 import subprocess
+import sys
 from pathlib import Path
 
 import pytest
@@ -37,6 +53,7 @@ from speech_aware_evidence_acquisition.core.bundle import (
 from speech_aware_evidence_acquisition.core.config import ComposedConfig, protocol_hash
 from speech_aware_evidence_acquisition.core.driver import (
     load_split,
+    main as driver_main,
     run_experiment,
     run_experiment_bundled,
 )
@@ -44,7 +61,7 @@ from speech_aware_evidence_acquisition.core.split_receipt import load_verified_s
 from speech_aware_evidence_acquisition.core.tracking import ledger_row_for_bundle
 from speech_aware_evidence_acquisition.data.lock import load_lock
 from speech_aware_evidence_acquisition.data.splits import freeze_splits
-from speech_aware_evidence_acquisition.e0.artifacts import sha256_file, write_json_artifact
+from speech_aware_evidence_acquisition.e0.artifacts import REPO_ROOT, sha256_file, write_json_artifact
 
 
 class _OpenGate:
@@ -535,3 +552,278 @@ def test_finalize_bundle_uploads_via_stubbed_mlflow(synthetic_world, bundled_rep
     assert len(calls["artifacts"]) == 5
     ledger_cells = json.loads(result.ledger_json_path.read_text(encoding="utf-8"))
     assert ledger_cells["MLflow run"] == "mlrun-bundle-1"
+
+
+# ===========================================================================
+# T6 fix-round regression probes (independent review, all against the
+# COMMITTED T6 code, all reproduced live before the fix and REJECTed after).
+# ===========================================================================
+
+
+# ---------------------------------------------------------------------------
+# CRITICAL 1: _verify_outputs_trace_binding's "return early when trace_records
+# is empty" no-op let a forged outputs text sail through whenever the trace
+# was also emptied (outer hashes recomputed to match) -- the per-row hash
+# check alone was never enough; nothing was cross-checking against the trace
+# at all once the trace was hollowed out.
+# ---------------------------------------------------------------------------
+
+
+def test_verify_bundle_refuses_forged_text_covered_only_by_an_emptied_trace(
+    synthetic_world, bundled_repo, tmp_path
+):
+    """The exact reviewer PoC: mutate outputs text + response_text_sha256
+    CONSISTENTLY (defeats the per-row hash check on its own), then truncate
+    the raw trace to empty and the trace manifest's records to {}, and
+    recompute all three outer artifact hashes. Before the fix, verify_bundle
+    ACCEPTED this. Must now REJECT."""
+
+    manifest_path, composed, plan, lock = _run_completed(synthetic_world, bundled_repo, tmp_path)
+    manifest = _read_manifest(manifest_path)
+    outputs_path = Path(manifest["outputs"]["path"])
+    lines = _read_jsonl_lines(outputs_path)
+    row = json.loads(lines[0])
+    forged_text = "FORGED " + row["text"]
+    row["text"] = forged_text
+    row["response_text_sha256"] = hashlib.sha256(forged_text.encode("utf-8")).hexdigest()
+    lines[0] = json.dumps(row, ensure_ascii=False, sort_keys=True)
+    _write_jsonl_lines(outputs_path, lines)
+
+    raw_trace_path = Path(manifest["raw_trace"]["path"])
+    trace_manifest_path = Path(manifest["trace_manifest"]["path"])
+    raw_trace_path.write_text("", encoding="utf-8", newline="\n")
+    write_json_artifact(trace_manifest_path, {"run_id": plan.run_id, "records": {}})
+
+    _rehash_manifest_entry(manifest_path, "outputs")
+    _rehash_manifest_entry(manifest_path, "raw_trace")
+    _rehash_manifest_entry(manifest_path, "trace_manifest")
+
+    with pytest.raises(BundleError, match="no matching trace record"):
+        verify_bundle(manifest_path)
+
+
+def test_verify_bundle_refuses_an_emptied_trace_against_nonempty_outputs(
+    synthetic_world, bundled_repo, tmp_path
+):
+    """Named probe (b) from the review: emptied trace + emptied manifest
+    records, outer hashes recomputed, outputs untouched (still non-empty) ->
+    REJECT."""
+
+    manifest_path, composed, plan, lock = _run_completed(synthetic_world, bundled_repo, tmp_path)
+    manifest = _read_manifest(manifest_path)
+    raw_trace_path = Path(manifest["raw_trace"]["path"])
+    trace_manifest_path = Path(manifest["trace_manifest"]["path"])
+    raw_trace_path.write_text("", encoding="utf-8", newline="\n")
+    write_json_artifact(trace_manifest_path, {"run_id": plan.run_id, "records": {}})
+    _rehash_manifest_entry(manifest_path, "raw_trace")
+    _rehash_manifest_entry(manifest_path, "trace_manifest")
+    with pytest.raises(BundleError, match="no matching trace record"):
+        verify_bundle(manifest_path)
+
+
+def test_verify_bundle_refuses_when_trace_is_missing_one_outputs_request_id_record(
+    synthetic_world, bundled_repo, tmp_path
+):
+    """Named probe (a) from the review: an otherwise-valid, non-empty trace
+    that is missing exactly ONE request_id's /response record (raw trace AND
+    trace manifest agree with each other -- both genuinely lack it, outer
+    hashes recomputed) -> REJECT. Isolates the outputs<->trace binding check
+    from the separate trace-manifest<->raw-trace agreement check."""
+
+    manifest_path, composed, plan, lock = _run_completed(synthetic_world, bundled_repo, tmp_path)
+    manifest = _read_manifest(manifest_path)
+    raw_trace_path = Path(manifest["raw_trace"]["path"])
+    trace_manifest_path = Path(manifest["trace_manifest"]["path"])
+
+    target_record_id = "req-0002/response"
+    lines = _read_jsonl_lines(raw_trace_path)
+    kept = [line for line in lines if f'"record_id":"{target_record_id}"' not in line]
+    assert len(kept) == len(lines) - 1, "the target record must have existed exactly once"
+    _write_jsonl_lines(raw_trace_path, kept)
+
+    tm_doc = json.loads(trace_manifest_path.read_text(encoding="utf-8"))
+    del tm_doc["records"][target_record_id]
+    write_json_artifact(trace_manifest_path, tm_doc)
+
+    _rehash_manifest_entry(manifest_path, "raw_trace")
+    _rehash_manifest_entry(manifest_path, "trace_manifest")
+
+    with pytest.raises(BundleError, match="no matching trace record"):
+        verify_bundle(manifest_path)
+
+
+# ---------------------------------------------------------------------------
+# CRITICAL 2: a successful, budget-consuming run must never end with NO
+# manifest and its attempt stuck OPENED forever.
+# ---------------------------------------------------------------------------
+
+
+def test_run_experiment_bundled_refuses_a_dirty_repo_before_spending_any_budget(
+    synthetic_world, bundled_repo, tmp_path
+):
+    lock, repo_root = bundled_repo
+    (repo_root / "uncommitted.txt").write_text("dirty", encoding="utf-8")
+    ids, split_hash, split_role = load_split(repo_root, "discovery", lock, synthetic_world.data_root)
+    composed = _composed()
+    plan = _plan(
+        split_hash, run_id="SAEA-E-000-dirtybudget", attempt_id="attempt-dirtybudget",
+        protocol_hash=protocol_hash(composed.config_hash, composed.values["arm"], split_hash),
+    )
+    with pytest.raises(BundleError, match="uncommitted"):
+        run_experiment_bundled(
+            composed, plan, _OpenGate(), lock, synthetic_world.data_root,
+            tmp_path / "run-dirtybudget", _transport, repo_root=repo_root,
+        )
+    # No budget spent: the attempt was never even opened.
+    store = AttemptStore(synthetic_world.data_root / "attempts")
+    assert store.prior_actual_usage(plan.run_id) == (0, 0.0)
+    assert not (synthetic_world.data_root / "attempts" / plan.run_id).exists()
+    # No model call: no outputs, no manifest, nothing written to run_dir at all.
+    run_dir = tmp_path / "run-dirtybudget"
+    assert not (run_dir / f"{plan.run_id}.outputs.jsonl").exists()
+    assert not (run_dir / f"{plan.run_id}.run-manifest.json").exists()
+
+
+def test_run_experiment_bundled_forces_attempt_aborted_when_manifest_build_fails_after_success(
+    synthetic_world, bundled_repo, tmp_path, monkeypatch
+):
+    """A successful run (budget spent, outputs/trace durable) whose trailing
+    COMPLETED-manifest build itself fails must still end with the attempt
+    ABORTED and a best-effort ABORTED manifest on disk -- never OPENED
+    forever with no manifest at all."""
+
+    import speech_aware_evidence_acquisition.core.driver as driver_module
+
+    lock, repo_root = bundled_repo
+    ids, split_hash, split_role = load_split(repo_root, "discovery", lock, synthetic_world.data_root)
+    composed = _composed()
+    plan = _plan(
+        split_hash, run_id="SAEA-E-000-manifestfail", attempt_id="attempt-manifestfail",
+        protocol_hash=protocol_hash(composed.config_hash, composed.values["arm"], split_hash),
+    )
+
+    real_build_manifest = driver_module.build_manifest
+    calls = {"n": 0}
+
+    def _flaky_build_manifest(**kwargs):
+        calls["n"] += 1
+        if calls["n"] == 1:
+            raise RuntimeError("disk full (simulated)")
+        return real_build_manifest(**kwargs)
+
+    monkeypatch.setattr(driver_module, "build_manifest", _flaky_build_manifest)
+    run_dir = tmp_path / "run-manifestfail"
+    with pytest.raises(RuntimeError, match="disk full"):
+        driver_module.run_experiment_bundled(
+            composed, plan, _OpenGate(), lock, synthetic_world.data_root,
+            run_dir, _transport, repo_root=repo_root,
+        )
+    # The run itself succeeded -- outputs really were written -- but the
+    # attempt must be ABORTED, not left OPENED, and a best-effort ABORTED
+    # manifest must exist.
+    assert (run_dir / f"{plan.run_id}.outputs.jsonl").is_file()
+    store = AttemptStore(synthetic_world.data_root / "attempts")
+    assert store.handle(plan.run_id, plan.attempt_id).state() == "ABORTED"
+    manifest_path = run_dir / f"{plan.run_id}.run-manifest.json"
+    assert manifest_path.is_file()
+    assert _read_manifest(manifest_path)["status"] == STATUS_ABORTED
+
+
+# ---------------------------------------------------------------------------
+# IMPORTANT 3: no bundle artifact may ever be written inside the repository.
+# ---------------------------------------------------------------------------
+
+
+def test_build_manifest_refuses_a_run_dir_inside_the_repository(synthetic_world, bundled_repo):
+    lock, repo_root = bundled_repo
+    ids, split_hash, split_role = load_split(repo_root, "discovery", lock, synthetic_world.data_root)
+    composed = _composed()
+    plan = _plan(split_hash, protocol_hash=protocol_hash(composed.config_hash, composed.values["arm"], split_hash))
+    verified_split = load_verified_split(repo_root, "discovery", lock, synthetic_world.data_root)
+    sneaky_run_dir = REPO_ROOT / "docs" / "sneaky-t6-run-dir-must-not-be-created"
+    try:
+        with pytest.raises(BundleError, match="repository"):
+            build_manifest(
+                repo_root=repo_root, data_root=synthetic_world.data_root, composed=composed,
+                plan=plan, verified_split=verified_split, session_receipt_path=None,
+                run_dir=sneaky_run_dir, status=STATUS_ABORTED,
+                failure_reason="repo-confinement probe",
+            )
+        assert not sneaky_run_dir.exists(), "no artifact may ever be written inside the repository"
+    finally:
+        if sneaky_run_dir.exists():
+            shutil.rmtree(sneaky_run_dir)
+
+
+def test_finalize_bundle_refuses_a_manifest_path_inside_the_repository(tmp_path):
+    fake_manifest_path = REPO_ROOT / "docs" / "sneaky-t6-finalize-manifest-must-not-be-read.json"
+    assert not fake_manifest_path.exists()
+    with pytest.raises(BundleError, match="repository"):
+        finalize_bundle(fake_manifest_path, {}, tmp_path)
+    assert not fake_manifest_path.exists()
+
+
+# ---------------------------------------------------------------------------
+# IMPORTANT 4: saea-driver score --manifest is the authoritative path;
+# --outputs is explicit, unverified, ad-hoc scoring only.
+# ---------------------------------------------------------------------------
+
+
+def test_cli_score_manifest_mode_is_verified_and_authoritative(
+    synthetic_world, bundled_repo, tmp_path, capsys, monkeypatch
+):
+    manifest_path, composed, plan, lock = _run_completed(synthetic_world, bundled_repo, tmp_path)
+    monkeypatch.setenv("SPEECHRL_DATA_DIR", str(synthetic_world.data_root))
+    monkeypatch.setattr(
+        "speech_aware_evidence_acquisition.data.lock.umbrella_lock_path",
+        lambda *a, **k: synthetic_world.lock_path,
+    )
+    exit_code = driver_main(["score", "--manifest", str(manifest_path)])
+    assert exit_code == 0
+    captured = capsys.readouterr()
+    payload = json.loads(captured.out)
+    assert payload["verified"] is True
+    assert payload["scores"]["asr-wer"]["samples"] == 3
+    assert "WARNING" not in captured.err
+
+
+def test_cli_score_raw_outputs_mode_prints_a_loud_unverified_warning(
+    synthetic_world, tmp_path, capsys, monkeypatch
+):
+    nlp = synthetic_world.e21 / "transcripts" / "nlp_references" / "4000001.nlp"
+    nlp.write_text("token|tags\nhello|\nworld|\n", encoding="utf-8")
+    outputs = tmp_path / "raw.outputs.jsonl"
+    outputs.write_text(
+        json.dumps(
+            {
+                "sample_id": "4000001", "carrier_lock_key": "earnings21-original",
+                "arm": "bare-core", "request_id": "req-0001", "text": "hello world",
+                "request_sha256": "0" * 64, "response_sha256": "0" * 64,
+            },
+            sort_keys=True,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    monkeypatch.setenv("SPEECHRL_DATA_DIR", str(synthetic_world.data_root))
+    monkeypatch.setattr(
+        "speech_aware_evidence_acquisition.data.lock.umbrella_lock_path",
+        lambda *a, **k: synthetic_world.lock_path,
+    )
+    exit_code = driver_main(["score", "--outputs", str(outputs)])
+    assert exit_code == 0
+    captured = capsys.readouterr()
+    assert "WARNING" in captured.err
+    assert "NOT an audit record" in captured.err
+    payload = json.loads(captured.out)
+    assert payload["verified"] is False
+
+
+def test_cli_score_refuses_both_manifest_and_outputs_together(tmp_path):
+    with pytest.raises(SystemExit):
+        driver_main(["score", "--manifest", str(tmp_path / "m.json"), "--outputs", str(tmp_path / "o.jsonl")])
+
+
+def test_cli_score_refuses_neither_manifest_nor_outputs():
+    with pytest.raises(SystemExit):
+        driver_main(["score"])

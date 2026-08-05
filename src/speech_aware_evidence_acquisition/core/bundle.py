@@ -43,6 +43,36 @@ manifest -> re-verify -> (stubbable) MLflow upload -> a machine-derived
 ledger row (``core.tracking.ledger_row_for_bundle``, which refuses any
 hand-supplied cell that contradicts the verified manifest) -> mark the
 attempt FINALIZED.
+
+ACCEPTED SCOPE BOUNDARY (state this bluntly; do not let a reader over-trust
+this module): everything above is a CONSISTENCY check over files on disk, not
+an AUTHENTICITY check that those files were ever genuinely produced by the
+frozen model. An attacker (or a bug) with plain filesystem write access to a
+run's ``run_dir`` -- the same access level a legitimate run already needs to
+create outputs/trace files in the first place -- can synthesize a FULLY
+SELF-CONSISTENT bundle from scratch: real split ids, self-matching
+``response_sha256``/``response_text_sha256`` pairs, a raw trace whose records
+hash-agree with a hand-built trace manifest, all outer artifact hashes
+correct. ``finalize_bundle`` accepts such a bundle end to end, because
+``response_sha256`` hashes the raw transport bytes, and those bytes are never
+independently persisted anywhere outside files the same writer controls --
+there is no external, write-once anchor proving a response actually crossed
+the ``LlamaServerTransport``/``SessionReceipt`` boundary (I5) rather than
+being typed into ``outputs.jsonl`` by hand. The external anchors this module
+DOES provide -- a real clean git commit (proves what CODE would have run, not
+that it did), the frozen split's identity hash (proves the CLAIMED sample set
+is legitimate, not that responses were genuinely produced), and the
+``core.attempts`` state-machine transition (a genuine one-time gate only if
+the attacker lacks write access to ``SPEECHRL_DATA_DIR/attempts/`` too, which
+an attacker with run_dir access under the same controlled data root very
+plausibly also has) -- do not close this gap. Closing it would require a
+genuinely separate, append-only/immutable transport log written independently
+of anything the same writer later controls, or a remote/signed attestation
+anchor outside the local filesystem; both are out of scope for R0's local,
+single-machine, single-operator trust model and are not attempted here. I7
+should be read as "the recorded artifacts stayed internally coherent from
+when they were written to when they were finalized," not "these are proven
+genuine model outputs."
 """
 
 from __future__ import annotations
@@ -62,7 +92,7 @@ from ..contracts import (
     TraceContractError,
     TraceRecord,
 )
-from ..e0.artifacts import sha256_file, write_json_artifact
+from ..e0.artifacts import REPO_ROOT, sha256_file, write_json_artifact
 from .attempts import AttemptError, AttemptHandle, AttemptStore
 from .attempts import STATE_FINALIZED, STATE_OPENED
 from .base import RunResult
@@ -131,6 +161,47 @@ def _study_commit(repo_root: Path) -> str:
     if code != 0 or not commit:
         raise BundleError(f"cannot read the study repo's HEAD commit at {repo_root}: {stderr}")
     return commit
+
+
+def require_clean_study_repo(repo_root: Path) -> str:
+    """Public wrapper over :func:`_study_commit` (CRITICAL fix, T6 fix round):
+    ``core.driver.run_experiment_bundled`` calls this BEFORE ``run_experiment``
+    ever spends attempt budget, not only once a manifest is finally built at
+    the end. Without this, a dirty/unreadable study repo let a run execute to
+    completion (outputs written, calls/audio-seconds durably spent) and only
+    THEN discover it could never produce a manifest -- leaving a
+    budget-consuming run with no manifest and its attempt stuck OPENED
+    forever, since the raising `build_manifest` call sat outside the
+    try/except that would otherwise have aborted it. Returns the commit for
+    convenience (unused by the caller today); raises :class:`BundleError`
+    exactly as ``_study_commit`` does."""
+
+    return _study_commit(Path(repo_root))
+
+
+# ---------------------------------------------------------------------------
+# Repo confinement (IMPORTANT fix, T6 fix round): no bundle artifact --
+# manifest, scores, or ledger row -- may ever be written INSIDE the study
+# repository. ``core.tracing.TraceSink`` already refuses an in-repo run_dir
+# for outputs/trace files; the ORIGINAL build_manifest/finalize_bundle never
+# re-checked this independently, so an aborted-run manifest (which does not
+# go through TraceSink at all -- it is written directly by write_json_artifact)
+# could land inside the checkout. Fixed here as an independent rail, mirroring
+# the two-rail discipline T3 established for I3/I4 (adapter AND transport each
+# check media confinement on their own authority, never trusting the other).
+# ---------------------------------------------------------------------------
+
+
+def _refuse_if_inside_repo(path: Path, label: str) -> Path:
+    resolved = Path(path).resolve()
+    if resolved == REPO_ROOT or REPO_ROOT in resolved.parents:
+        raise BundleError(
+            f"{label} {resolved} is inside the study repository ({REPO_ROOT}); run bundle "
+            "artifacts (manifest, scores, ledger rows) are NEVER written into the repository "
+            "(study contract) -- use a run_dir under SPEECHRL_DATA_DIR or another location "
+            "outside the repository checkout"
+        )
+    return resolved
 
 
 # ---------------------------------------------------------------------------
@@ -270,6 +341,13 @@ def build_manifest(
     now: Callable[[], datetime] = lambda: datetime.now(timezone.utc),
 ) -> Path:
     """Build and durably write one attempt's run manifest; return its path."""
+
+    # Repo confinement FIRST (IMPORTANT fix, T6 fix round): the cheapest,
+    # dependency-free check, before touching git or the filesystem for
+    # anything else -- a manifest destined for inside the repository is
+    # refused before any other work happens, on COMPLETED and ABORTED calls
+    # alike (they share this one function).
+    _refuse_if_inside_repo(run_dir, "run manifest run_dir")
 
     document = _manifest_document(
         repo_root=repo_root,
@@ -489,7 +567,20 @@ def _verify_raw_trace(
 def _verify_outputs_trace_binding(
     outputs_rows: tuple[Mapping[str, object], ...], trace_records: Mapping[str, Mapping[str, object]]
 ) -> None:
-    if not outputs_rows or not trace_records:
+    # CRITICAL fix (T6 fix round): the ORIGINAL code also returned early when
+    # trace_records was empty -- "there are no trace records to bind against"
+    # -- which meant an emptied (or never-populated) trace silently defeated
+    # this ENTIRE check for a non-empty outputs file: truncate raw_trace to
+    # nothing, empty trace_manifest's records, recompute those two outer
+    # hashes, and any forged outputs text (with its response_text_sha256
+    # recomputed to match) sailed straight through verify_bundle. There is
+    # no legitimate reason for a COMPLETED, non-empty outputs bundle to have
+    # zero trace records (every sample emits at least an OBS record and a
+    # MODEL_RESPONSE record) -- so an empty/short trace against non-empty
+    # outputs must FAIL, not silently skip. Only truly EMPTY outputs (already
+    # refused earlier as "outputs artifact is empty" whenever an outputs
+    # artifact exists at all) has nothing to bind.
+    if not outputs_rows:
         return
     for row in outputs_rows:
         request_id = row["request_id"]
@@ -636,6 +727,14 @@ def finalize_bundle(
     trusted from the manifest) is OPENED -- the latter is the authoritative
     check: a hand-edited manifest claiming COMPLETED cannot finalize an
     attempt whose actual on-disk state is ABORTED."""
+
+    # Repo confinement (IMPORTANT fix, T6 fix round), checked independently
+    # here too -- defense in depth mirroring build_manifest's own check,
+    # in case a manifest ever reaches this function by some path other than
+    # build_manifest (a hand-placed file, a future caller). Scores and
+    # ledger rows are written under the SAME directory as manifest_path, so
+    # one check here covers all of this function's writes.
+    _refuse_if_inside_repo(Path(manifest_path).parent, "run bundle directory")
 
     bundle = verify_bundle(manifest_path)
     if bundle.manifest.get("status") != STATUS_COMPLETED:

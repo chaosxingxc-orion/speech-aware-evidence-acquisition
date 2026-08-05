@@ -24,6 +24,7 @@ from .bundle import (
     VerifiedBundle,
     build_manifest,
     finalize_bundle,
+    require_clean_study_repo,
     verify_bundle,
 )
 from .config import ComposedConfig, ConfigError, compose, protocol_hash
@@ -49,6 +50,6 @@ __all__ = [
     "SampleContext", "SampleOutcome", "SplitReceiptError", "TraceSink", "TraceSinkError",
     "VerifiedBundle", "VerifiedSplit", "build_manifest", "bundle_ledger_cells", "compose",
     "finalize_bundle", "ledger_row", "ledger_row_for_bundle", "load_split",
-    "load_verified_split", "log_bundle", "log_run", "protocol_hash", "run_experiment",
-    "run_experiment_bundled", "verify_bundle",
+    "load_verified_split", "log_bundle", "log_run", "protocol_hash",
+    "require_clean_study_repo", "run_experiment", "run_experiment_bundled", "verify_bundle",
 ]

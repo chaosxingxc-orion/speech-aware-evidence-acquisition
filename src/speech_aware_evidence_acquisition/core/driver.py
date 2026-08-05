@@ -34,10 +34,13 @@ from .bundle import (
     abort_attempt_if_opened,
     build_manifest,
     finalize_bundle,
+    require_clean_study_repo,
+    verify_bundle,
 )
 from .config import ComposedConfig, compose, protocol_hash
 from .evidence import rotated_mismatch
 from .model import FrozenCoreAdapter
+from .scorers import score_bundle
 from .split_receipt import load_verified_split
 from .tracing import TraceSink
 
@@ -230,9 +233,31 @@ def run_experiment_bundled(
     it from ``run_dir``/``plan.run_id``, or use ``core.bundle.verify_bundle``
     against that path directly). Either way, an ABORTED manifest can never
     later be finalized as COMPLETED (I7; see ``core.bundle.finalize_bundle``).
+
+    CRITICAL fix (T6 fix round): a run that can never produce a valid
+    manifest -- e.g. a dirty/unreadable study repo -- must never be allowed
+    to spend attempt budget first and discover that only afterward. Two
+    guarantees now hold that did not before:
+
+    1. :func:`core.bundle.require_clean_study_repo` runs BEFORE
+       ``run_experiment`` is even called, so a dirty tree refuses with no
+       attempt ever opened and no budget ever spent -- not merely no
+       manifest.
+    2. The trailing (success-path) manifest build is itself wrapped: if IT
+       fails for any reason (the repo went dirty mid-run, the run_dir became
+       unwritable, an artifact vanished between ``run_experiment`` returning
+       and the manifest build reading it), the attempt is force-marked
+       ABORTED and a best-effort ABORTED manifest is still attempted --
+       never silently leaving a successful, budget-consuming run with NO
+       manifest and its attempt stuck OPENED forever.
     """
 
     verified_split = load_verified_split(repo_root, str(composed.values["split_name"]), lock, root)
+    # CRITICAL fix (T6 fix round), part 1: validate the study repo BEFORE any
+    # budget is spent. Previously this check only happened as a side effect
+    # of the trailing build_manifest() call, AFTER run_experiment had already
+    # opened the attempt and metered every request against it.
+    require_clean_study_repo(repo_root)
     try:
         result = run_experiment(
             composed, plan, gate, lock, root, run_dir, transport, repo_root=repo_root
@@ -252,28 +277,98 @@ def run_experiment_bundled(
             result=None,
         )
         raise
-    return build_manifest(
-        repo_root=repo_root,
-        data_root=root,
-        composed=composed,
-        plan=plan,
-        verified_split=verified_split,
-        session_receipt_path=session_receipt_path,
-        run_dir=run_dir,
-        status=STATUS_COMPLETED,
-        failure_reason=None,
-        result=result,
-    )
+    # CRITICAL fix (T6 fix round), part 2: the run itself succeeded (budget
+    # already spent, outputs/trace already durable) -- but building ITS
+    # manifest can still fail (a race, an unwritable run_dir, disk pressure).
+    # That failure must not leave the attempt OPENED with no manifest at
+    # all: force it to ABORTED and try once more, best-effort, to record an
+    # ABORTED manifest before re-raising.
+    try:
+        return build_manifest(
+            repo_root=repo_root,
+            data_root=root,
+            composed=composed,
+            plan=plan,
+            verified_split=verified_split,
+            session_receipt_path=session_receipt_path,
+            run_dir=run_dir,
+            status=STATUS_COMPLETED,
+            failure_reason=None,
+            result=result,
+        )
+    except Exception as manifest_error:
+        reason = f"run succeeded but its COMPLETED manifest could not be built: {manifest_error}"
+        abort_attempt_if_opened(root, plan.run_id, plan.attempt_id, reason=reason)
+        try:
+            build_manifest(
+                repo_root=repo_root,
+                data_root=root,
+                composed=composed,
+                plan=plan,
+                verified_split=verified_split,
+                session_receipt_path=session_receipt_path,
+                run_dir=run_dir,
+                status=STATUS_ABORTED,
+                failure_reason=reason,
+                result=None,
+            )
+        except Exception:
+            # Best-effort only: whatever broke the COMPLETED build may break
+            # this too (e.g. a truly unwritable run_dir). The attempt is
+            # already ABORTED via abort_attempt_if_opened above either way --
+            # that is the one guarantee this branch exists to protect.
+            pass
+        raise
 
 
 def _cli_score(args: argparse.Namespace) -> int:
+    """IMPORTANT fix (T6 fix round, I7): the manifest path is now the
+    AUTHORITATIVE one. ``--manifest`` verifies the bundle
+    (``core.bundle.verify_bundle``) and scores it through
+    ``core.scorers.score_bundle`` -- I7's whole point, that scoring enters
+    only through a verified bundle. ``--outputs`` is KEPT (removing it would
+    break ad-hoc/exploratory scoring of a file that has no manifest yet, a
+    genuinely useful capability) but is now explicit about what it is: no
+    split/trace/hash verification happens at all, so its result is NEVER an
+    audit record -- a loud warning is printed to stderr and the result is
+    tagged ``"verified": false`` on stdout, so nothing downstream can mistake
+    it for an authoritative score by accident."""
+
     from ..data.lock import data_root, load_lock, umbrella_lock_path
 
     lock = load_lock(umbrella_lock_path())
     root = data_root()
+    if args.manifest:
+        bundle = verify_bundle(Path(args.manifest))
+        results = score_bundle(bundle, lock, root)
+        print(
+            json.dumps(
+                {
+                    "manifest": str(Path(args.manifest)),
+                    "verified": True,
+                    "scores": {name: result["aggregate"] for name, result in results.items()},
+                },
+                indent=2,
+                sort_keys=True,
+            )
+        )
+        return 0
+    print(
+        "WARNING: unverified raw-outputs scoring (--outputs, no --manifest). This "
+        "result bypasses split/trace/hash verification (invariant I7) entirely and "
+        "is NOT an audit record -- it must never be cited as a formal R0/R1/2B "
+        "result. Pass --manifest for an authoritative, verified score.",
+        file=sys.stderr,
+    )
     for name in args.scorers.split(","):
         scores = SCORERS.resolve(name.strip())(Path(args.outputs), lock, root)
-        print(json.dumps({name.strip(): scores["aggregate"]}, indent=2, sort_keys=True))
+        print(
+            json.dumps(
+                {"verified": False, "scorer": name.strip(), "aggregate": scores["aggregate"]},
+                indent=2,
+                sort_keys=True,
+            )
+        )
     return 0
 
 
@@ -355,9 +450,30 @@ def _cli_finalize(args: argparse.Namespace) -> int:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="saea-driver")
     sub = parser.add_subparsers(dest="command", required=True)
-    score = sub.add_parser("score", help="model-free scoring of recorded outputs")
-    score.add_argument("--outputs", required=True)
-    score.add_argument("--scorers", default="asr-wer")
+    score = sub.add_parser(
+        "score",
+        help=(
+            "model-free scoring: --manifest is the AUTHORITATIVE, I7-verified path; "
+            "--outputs is UNVERIFIED ad-hoc scoring, never an audit record"
+        ),
+    )
+    score_target = score.add_mutually_exclusive_group(required=True)
+    score_target.add_argument(
+        "--manifest",
+        default=None,
+        help="path to a run-manifest.json; verified and scored via core.bundle/core.scorers (I7)",
+    )
+    score_target.add_argument(
+        "--outputs",
+        default=None,
+        help=(
+            "path to a raw outputs.jsonl; scored with NO split/trace/hash verification "
+            "-- not an audit record"
+        ),
+    )
+    score.add_argument(
+        "--scorers", default="asr-wer", help="comma-separated scorer names (--outputs mode only)"
+    )
     score.set_defaults(func=_cli_score)
     run = sub.add_parser("run", help="gate-enforced live run (requires a plan file)")
     run.add_argument("--model", required=True)
