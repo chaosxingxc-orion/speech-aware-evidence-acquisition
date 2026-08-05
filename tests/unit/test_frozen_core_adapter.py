@@ -711,6 +711,116 @@ def test_record_tool_call_refuses_a_non_positive_or_non_integer_count(tmp_path, 
         adapter.record_tool_call(bad_count)
 
 
+# ---------------------------------------------------------------------------
+# I3 (fresh-usage enforcement): the reproduced defect was `prior_actual_usage`
+# read ONCE at __init__ and compared against for the adapter's entire
+# lifetime. Two attempts on one run_id, BOTH constructed before either
+# recorded any usage, each therefore saw "0 spent elsewhere" forever -- so
+# together they could spend up to 2x the row's budget (demonstrated: 4 calls
+# / 402 audio-seconds against a plan registering 2 calls). These probes
+# construct both adapters FIRST (neither has recorded anything when the
+# other is built) and then drive requests through them, proving the combined
+# spend across both never exceeds the shared plan budget.
+# ---------------------------------------------------------------------------
+
+
+def test_two_overlapping_adapters_built_before_either_records_cannot_together_exceed_the_call_budget(
+    tmp_path,
+):
+    binding = _binding(tmp_path)
+    plan1 = _plan(
+        run_id="SAEA-E-000-overlap-calls",
+        attempt_id="attempt-1",
+        planned_model_calls=2,
+        planned_speech_audio_seconds=1000,
+    )
+    plan2 = _plan(
+        run_id="SAEA-E-000-overlap-calls",
+        attempt_id="attempt-2",
+        planned_model_calls=2,
+        planned_speech_audio_seconds=1000,
+    )
+    # Both constructed before EITHER records any usage -- the exact race a
+    # frozen construction-time snapshot cannot see.
+    adapter1 = FrozenCoreAdapter(
+        gate=_OpenGate(), plan=plan1, arm="bare-core", transport=_fake_transport,
+        sink=TraceSink(tmp_path / "run1", plan1.run_id), binding=binding,
+    )
+    adapter2 = FrozenCoreAdapter(
+        gate=_OpenGate(), plan=plan2, arm="bare-core", transport=_fake_transport,
+        sink=TraceSink(tmp_path / "run2", plan2.run_id), binding=binding,
+    )
+    # Interleaved: adapter1 spends 1, adapter2 spends 1 (now the shared 2-call
+    # row budget is exhausted), then EITHER adapter's next call must refuse.
+    adapter1.request(_payload(request_id="a-1"))
+    adapter2.request(_payload(request_id="b-1"))
+    with pytest.raises(FrozenCoreError, match="call budget"):
+        adapter1.request(_payload(request_id="a-2"))
+    with pytest.raises(FrozenCoreError, match="call budget"):
+        adapter2.request(_payload(request_id="b-2"))
+    store = AttemptStore(binding.data_root / "attempts")
+    calls, _ = store.prior_actual_usage(plan1.run_id)
+    assert calls == 2, "combined actual spend must never exceed the plan's 2-call budget"
+
+
+def test_two_overlapping_adapters_built_before_either_records_cannot_together_exceed_the_audio_budget(
+    tmp_path,
+):
+    binding = _binding(tmp_path)
+    plan1 = _plan(
+        run_id="SAEA-E-000-overlap-audio",
+        attempt_id="attempt-1",
+        planned_model_calls=10,
+        planned_speech_audio_seconds=150,
+    )
+    plan2 = _plan(
+        run_id="SAEA-E-000-overlap-audio",
+        attempt_id="attempt-2",
+        planned_model_calls=10,
+        planned_speech_audio_seconds=150,
+    )
+    adapter1 = FrozenCoreAdapter(
+        gate=_OpenGate(), plan=plan1, arm="bare-core", transport=_fake_transport,
+        sink=TraceSink(tmp_path / "run1", plan1.run_id), binding=binding,
+    )
+    adapter2 = FrozenCoreAdapter(
+        gate=_OpenGate(), plan=plan2, arm="bare-core", transport=_fake_transport,
+        sink=TraceSink(tmp_path / "run2", plan2.run_id), binding=binding,
+    )
+    adapter1.request(_payload(request_id="a-1", audio_seconds=100.0))
+    with pytest.raises(FrozenCoreError, match="audio budget"):
+        adapter2.request(_payload(request_id="b-1", audio_seconds=100.0))
+    store = AttemptStore(binding.data_root / "attempts")
+    _, audio = store.prior_actual_usage(plan1.run_id)
+    assert audio == 100.0, "combined actual spend must never exceed the plan's 150s budget"
+
+
+def test_single_attempt_happy_path_budget_enforcement_is_unchanged(tmp_path):
+    """I3 regression guard: a lone adapter (no sibling attempt ever
+    constructed) must still be refused exactly at the request that would
+    cross its own plan budget -- the fresh-read fix must not change the
+    single-attempt case, only the multi-attempt one."""
+
+    plan = _plan(
+        run_id="SAEA-E-000-solo",
+        attempt_id="attempt-solo",
+        planned_model_calls=2,
+        planned_speech_audio_seconds=250,
+    )
+    binding = _binding(tmp_path)
+    adapter = FrozenCoreAdapter(
+        gate=_OpenGate(), plan=plan, arm="bare-core", transport=_fake_transport,
+        sink=TraceSink(tmp_path / "run", plan.run_id), binding=binding,
+    )
+    adapter.request(_payload(request_id="req-1"))
+    adapter.request(_payload(request_id="req-2"))
+    with pytest.raises(FrozenCoreError, match="call budget"):
+        adapter.request(_payload(request_id="req-3"))
+    store = AttemptStore(binding.data_root / "attempts")
+    calls, _ = store.prior_actual_usage(plan.run_id)
+    assert calls == 2
+
+
 def test_crashed_attempts_audio_usage_counts_against_a_fresh_attempts_row_budget(tmp_path):
     binding = _binding(tmp_path)
     plan1 = _plan(

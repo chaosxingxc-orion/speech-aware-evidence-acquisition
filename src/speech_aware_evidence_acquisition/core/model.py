@@ -227,7 +227,6 @@ class FrozenCoreAdapter:
         attempts_root = Path(binding.data_root) / "attempts"
         store = AttemptStore(attempts_root)
         try:
-            prior_calls, prior_audio_seconds = store.prior_actual_usage(plan.run_id)
             handle = store.open_attempt(
                 plan.run_id,
                 attempt_id,
@@ -244,9 +243,12 @@ class FrozenCoreAdapter:
         self._session_check = session_check
         self._sink = sink
         self._binding = binding
+        # R0 repair r0-repair (I3): NOT a `prior_actual_usage` snapshot frozen
+        # once here at construction -- see the fresh, per-request re-read in
+        # `request()` below for why. The store itself is cheap to hold (it is
+        # just `attempts_root`, already resolved).
+        self._store = store
         self._attempt_handle = handle
-        self._prior_calls = prior_calls
-        self._prior_audio_seconds = prior_audio_seconds
         self._calls_used = 0
         self._audio_seconds_used = 0.0
         self._latency_total = 0.0
@@ -287,28 +289,48 @@ class FrozenCoreAdapter:
         ):
             raise FrozenCoreError("payload audio_seconds must be a finite positive number")
         self._enforce_payload_binding(payload, audio_seconds)
-        # Row-level budget check (R0 repair T4, invariant I6): the ceiling is the
-        # SAME plan.planned_* value regardless of which attempt is spending it, so
-        # actual usage already persisted by OTHER (e.g. crashed) attempts on this
-        # same run_id counts against it too -- not just what this attempt has used
-        # so far. self._prior_calls/self._prior_audio_seconds is 0 for a run_id's
-        # first-ever attempt, so this is a strict generalization of the old
-        # single-attempt-only check, not a behavior change for a fresh run.
-        if self._prior_calls + self._calls_used + 1 > self._plan.planned_model_calls:
+        # Row-level budget check (R0 repair T4/I6, race-hardened R0 repair r0-repair/I3):
+        # the ceiling is the SAME plan.planned_* value regardless of which attempt is
+        # spending it, so actual usage already persisted by OTHER (e.g. crashed, or a
+        # second concurrently-live) attempt on this same run_id counts against it too --
+        # not just what THIS attempt has used so far. The reproduced I3 defect was
+        # reading that other-attempts total ONCE at __init__ and comparing every later
+        # request against that frozen snapshot: two adapters constructed back to back
+        # (both before either had recorded any usage) each saw "0 spent elsewhere" for
+        # their entire lifetime, so together they could spend up to 2x the row's budget.
+        # The fix re-reads sibling usage FRESH on every request, excluding only this
+        # attempt's own file (which self._calls_used/self._audio_seconds_used already
+        # track exactly in-process, since this attempt's file has exactly one writer).
+        # This keeps the check-before-persist order the existing budget-exhaustion tests
+        # depend on ("the refused request must never have been persisted as spent"): the
+        # fresh sibling read happens before this attempt's own record_usage call, so a
+        # request that would cross the budget is refused before anything about it is
+        # durably written -- never sent-but-unrecorded, and never persisted-then-refused.
+        # Race-safety: correct against sequential/interleaved attempts on the same
+        # run_id -- by the time THIS request checks, any sibling attempt's ALREADY
+        # completed record_usage call is visible here, so total spend across all
+        # attempts on a run_id can never exceed the row's planned budget. It does not
+        # (and, without a cross-process lock in core.attempts, cannot) close a true
+        # simultaneous-instant double-read between two OS threads/processes; that
+        # primitive belongs to core.attempts, not this adapter, and is unchanged here.
+        sibling_calls, sibling_audio_seconds = self._store.prior_actual_usage(
+            self._plan.run_id, exclude_attempt_id=self._attempt_handle.attempt_id
+        )
+        if sibling_calls + self._calls_used + 1 > self._plan.planned_model_calls:
             raise FrozenCoreError(
                 f"call budget exhausted: plan {self._plan.run_id} allows "
                 f"{self._plan.planned_model_calls} calls "
-                f"({self._prior_calls} already spent by prior attempts on this run, "
+                f"({sibling_calls} already spent by other attempts on this run, "
                 f"{self._calls_used} by this attempt)"
             )
         if (
-            self._prior_audio_seconds + self._audio_seconds_used + float(audio_seconds)
+            sibling_audio_seconds + self._audio_seconds_used + float(audio_seconds)
             > self._plan.planned_speech_audio_seconds
         ):
             raise FrozenCoreError(
                 f"audio budget exhausted: plan {self._plan.run_id} allows "
                 f"{self._plan.planned_speech_audio_seconds} speech audio seconds "
-                f"({self._prior_audio_seconds} already spent by prior attempts on this "
+                f"({sibling_audio_seconds} already spent by other attempts on this "
                 f"run, {self._audio_seconds_used} by this attempt)"
             )
         # R0 repair T5 fix-3 (I5): re-verify RIGHT BEFORE this specific
@@ -335,11 +357,18 @@ class FrozenCoreAdapter:
         # a process crash between this line and the transport call must still
         # leave the spend on disk, not only in memory that dies with it.
         try:
-            self._attempt_handle.record_usage(calls=1, audio_seconds=float(audio_seconds))
+            new_calls_used, new_audio_seconds_used = self._attempt_handle.record_usage(
+                calls=1, audio_seconds=float(audio_seconds)
+            )
         except AttemptError as error:
             raise FrozenCoreError(f"attempt accounting refused: {error}") from error
-        self._calls_used += 1
-        self._audio_seconds_used += float(audio_seconds)
+        # Adopt record_usage's own authoritative return value (R0 repair r0-repair,
+        # I3) instead of a locally-incremented shadow counter -- this attempt's file
+        # has exactly one writer (this handle), so the two are always numerically
+        # identical, but tracking the return value directly means there is nothing
+        # left to silently drift out of sync with what was actually persisted.
+        self._calls_used = new_calls_used
+        self._audio_seconds_used = new_audio_seconds_used
         started = time.monotonic()
         response_bytes = self._transport(request_bytes)
         latency = time.monotonic() - started

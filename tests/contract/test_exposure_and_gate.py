@@ -444,22 +444,200 @@ def test_gate_refuses_nan_and_negative_budget_cells(world):
         world.gate().assert_model_touch_allowed(world.plan())
 
 
-def test_gate_ignores_rows_in_a_second_table(world):
-    injected = (
-        "\nsome prose after the first table\n\n"
-        "| date | run/experiment id | execution profile | scope | model/tool "
-        "| speech carrier + split | split role | split identity hash | consumed "
-        "| calls | speech audio seconds | inherited exposure | artifacts | notes |\n"
-        "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|\n"
-        f"| 2026-08-04 | SAEA-E-777-injected | baseline-reproduction | s | m "
-        f"| {world.CARRIER} dev | dev | {'a' * 64} | no "
-        "| 10 | 600 | none | none | injected |\n"
+# ---------------------------------------------------------------------------
+# I2 (whole-ledger budget totals) + M4 (row cell-count validation).
+#
+# The reproduced defect: the old ledger parser stopped at the first non-table
+# line found after its header, so a second table -- or even a single stray
+# prose line between two data rows of the SAME table -- silently dropped
+# every row after it from duplicate-run-id detection, the `consumed` check,
+# and the slice-total budget sum. `_LEDGER_HEADER`/`_row`/`_table` build the
+# real 15-column contract shape (matching GateFixture.write_ledger_rows and
+# the committed docs/exposure-ledger.md) so these probes exercise the SAME
+# column set the real ledger uses, not a shorthand approximation.
+# ---------------------------------------------------------------------------
+
+_LEDGER_HEADER = (
+    "| date | run/experiment id | execution profile | scope | model/tool "
+    "| speech carrier + split | split role | split identity hash | consumed "
+    "| calls | speech audio seconds | gpu hours | inherited exposure "
+    "| artifacts | notes |\n"
+)
+_LEDGER_SEP = "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|\n"
+
+
+def _row(
+    world,
+    run_id,
+    *,
+    calls=10,
+    audio=600,
+    gpu=1.0,
+    consumed="no",
+    split_role="dev",
+    split_hash=None,
+    carrier=None,
+    profile="baseline-reproduction",
+    notes="row",
+):
+    split_hash = split_hash or "a" * 64
+    carrier = carrier or f"{world.CARRIER} dev"
+    return (
+        f"| 2026-08-04 | {run_id} | {profile} | s | m | {carrier} | {split_role} "
+        f"| {split_hash} | {consumed} | {calls} | {audio} | {gpu} | none | none | {notes} |\n"
+    )
+
+
+def _table(rows: str) -> str:
+    return _LEDGER_HEADER + _LEDGER_SEP + rows
+
+
+def test_gate_recognizes_rows_registered_in_a_second_table(world):
+    """I2 fix: a run registered ONLY in a second markdown table (after prose)
+    must still be found. Before the fix, the parser stopped at the first
+    non-table line after the FIRST table's header, so this run would never
+    pre-register and the gate would wrongly refuse it as unregistered."""
+
+    second = "\nsome prose after the first table\n\n" + _table(
+        _row(world, "SAEA-E-777-injected")
     )
     world.exposure_ledger.write_text(
-        world.exposure_ledger.read_text(encoding="utf-8") + injected, encoding="utf-8"
+        world.exposure_ledger.read_text(encoding="utf-8") + second, encoding="utf-8"
     )
-    with pytest.raises(GateClosed, match="pre-registered exposure row"):
-        world.gate().assert_model_touch_allowed(world.plan(run_id="SAEA-E-777-injected"))
+    # No longer refused for "no pre-registered exposure row" -- the second
+    # table's row is now recognized and the gate opens.
+    world.gate().assert_model_touch_allowed(world.plan(run_id="SAEA-E-777-injected"))
+
+
+def test_second_table_budget_rows_count_toward_the_slice_cap(world):
+    """I2 probe: demonstrated defect -- a second table holding 2995 calls /
+    71000 audio-seconds / 39 GPU-hours was invisible to the slice-total sum
+    and the gate opened. It must now be counted and refuse."""
+
+    overflow = _table(
+        _row(
+            world,
+            "SAEA-E-778-overflow",
+            calls=2995,
+            audio=71000,
+            gpu=39.0,
+            split_hash="c" * 64,
+        )
+    )
+    world.exposure_ledger.write_text(
+        world.exposure_ledger.read_text(encoding="utf-8") + "\n" + overflow,
+        encoding="utf-8",
+    )
+    with pytest.raises(GateClosed, match="first-slice cap"):
+        world.gate().assert_model_touch_allowed(world.plan())
+
+
+def test_prose_line_between_rows_does_not_drop_rows_below_it(world):
+    """I2 probe: a single prose line inserted BETWEEN two data rows of the
+    SAME table must never drop the row below it from the budget sum."""
+
+    ledger = (
+        _LEDGER_HEADER
+        + _LEDGER_SEP
+        + _row(world, world.RUN_ID)
+        + "\nSome human-readable note inserted between rows.\n\n"
+        + _row(
+            world,
+            "SAEA-E-779-afterprose",
+            calls=2995,
+            audio=71000,
+            gpu=39.0,
+            split_hash="d" * 64,
+        )
+    )
+    world.exposure_ledger.write_text(ledger, encoding="utf-8")
+    with pytest.raises(GateClosed, match="first-slice cap"):
+        world.gate().assert_model_touch_allowed(world.plan())
+
+
+def test_duplicate_run_id_across_two_tables_is_refused(world):
+    """I2 probe: the SAME run id pre-registered in two different tables must
+    still be caught as a duplicate registration, not treated as if the
+    second table's copy never existed."""
+
+    duplicate = _table(_row(world, world.RUN_ID, calls=5, audio=100, gpu=0.5))
+    world.exposure_ledger.write_text(
+        world.exposure_ledger.read_text(encoding="utf-8") + "\n" + duplicate,
+        encoding="utf-8",
+    )
+    with pytest.raises(GateClosed, match="more than once"):
+        world.gate().assert_model_touch_allowed(world.plan())
+
+
+def test_consumed_row_in_a_later_table_for_the_same_run_id_is_refused(world):
+    """I2 probe: a `consumed=yes` row for the same run id, registered in a
+    LATER table, must still refuse the touch -- it must not be invisible
+    just because it lives in a second table."""
+
+    consumed_elsewhere = _table(_row(world, world.RUN_ID, consumed="yes"))
+    world.exposure_ledger.write_text(
+        world.exposure_ledger.read_text(encoding="utf-8") + "\n" + consumed_elsewhere,
+        encoding="utf-8",
+    )
+    # Caught by the (stricter) duplicate-registration check first, since both
+    # rows share a run id -- still refused, which is exactly what the probe
+    # requires.
+    with pytest.raises(GateClosed, match="more than once"):
+        world.gate().assert_model_touch_allowed(world.plan())
+
+
+def test_unrecognized_table_header_sharing_a_contract_column_is_refused(world):
+    """I2 fail-closed: a table whose header does NOT carry the run-id column
+    but DOES reuse another contract column name (here `consumed`) must be
+    refused rather than silently ignored -- it could be a mis-typed or
+    reordered contract table whose rows would otherwise vanish."""
+
+    foreign = "\n| notes | consumed |\n|---|---|\n| decoy | no |\n"
+    world.exposure_ledger.write_text(
+        world.exposure_ledger.read_text(encoding="utf-8") + foreign, encoding="utf-8"
+    )
+    with pytest.raises(GateClosed, match="not the recognized contract header"):
+        world.gate().assert_model_touch_allowed(world.plan())
+
+
+def test_row_with_extra_cell_from_an_unescaped_pipe_is_refused(world):
+    """M4: an unescaped `|` inside a free-text cell (e.g. notes) renders as
+    one cell for a human but splits into two for the parser; the row must be
+    refused rather than positionally misaligned against the header."""
+
+    world.write_ledger_rows(
+        f"| 2026-08-04 | {world.RUN_ID} | baseline-reproduction | s | m "
+        f"| {world.CARRIER} dev | dev | {'a' * 64} | no "
+        "| 10 | 600 | 1.0 | none | none | oops | extra cell |\n"
+    )
+    with pytest.raises(GateClosed, match="cells"):
+        world.gate().assert_model_touch_allowed(world.plan())
+
+
+def test_row_with_missing_cell_is_refused(world):
+    """M4: a row with FEWER cells than its header (a dropped trailing column)
+    must also be refused, not silently zipped against the wrong columns."""
+
+    world.write_ledger_rows(
+        f"| 2026-08-04 | {world.RUN_ID} | baseline-reproduction | s | m "
+        f"| {world.CARRIER} dev | dev | {'a' * 64} | no "
+        "| 10 | 600 | 1.0 | none |\n"
+    )
+    with pytest.raises(GateClosed, match="cells"):
+        world.gate().assert_model_touch_allowed(world.plan())
+
+
+def test_real_exposure_ledger_still_parses_correctly(world):
+    """I2 regression guard: the real committed docs/exposure-ledger.md (one
+    table, a data row, then trailing prose) must still parse to exactly its
+    one real row through the new whole-document parser."""
+
+    from speech_aware_evidence_acquisition.contracts import _parse_ledger_tables
+
+    real_ledger = REPO_ROOT / "docs" / "exposure-ledger.md"
+    rows = _parse_ledger_tables(real_ledger.read_text(encoding="utf-8"))
+    assert len(rows) == 1
+    assert rows[0]["run/experiment id"] == "SAEA-E0-CLOSURE-2026-08-04"
 
 
 def test_gate_refuses_unknown_carrier_lock_key(world):

@@ -94,6 +94,24 @@ FIRST_SLICE_CAPS = {
 }
 _EXPOSURE_RUN_COLUMN = "run/experiment id"
 _EXPOSURE_CARRIER_COLUMN = "speech carrier + split"
+# Every column name `_require_exposure_preregistration` looks up on a matched or
+# summed row. Used (I2) to decide whether an UNRECOGNIZED table header -- one
+# that does not carry `_EXPOSURE_RUN_COLUMN` -- might still be a disguised or
+# malformed contract table (sharing a contract column name) and must therefore
+# be refused rather than silently ignored.
+_ALL_LEDGER_COLUMNS = frozenset(
+    {
+        _EXPOSURE_RUN_COLUMN,
+        _EXPOSURE_CARRIER_COLUMN,
+        "execution profile",
+        "split role",
+        "split identity hash",
+        "consumed",
+        "calls",
+        "speech audio seconds",
+        "gpu hours",
+    }
+)
 # Tokenizes the free-text "speech carrier + split" cell (e.g. "earnings21-original
 # + earnings22-original + conec, identity layers; e22 subset10 (dev)") so a plan's
 # carrier can be matched exactly against a known lock key rather than by
@@ -439,6 +457,107 @@ def _resolve_under(root: Path, relative: str, label: str) -> Path:
     if not candidate.is_file():
         raise GateClosed(f"{label} does not exist as a regular file: {relative!r}")
     return candidate
+
+
+def _split_table_row(line: str) -> tuple[bool, list[str]]:
+    """Recognize a markdown table row and split it into raw (unlowered) cells.
+
+    A "row" is any line whose stripped form starts and ends with ``|`` -- this
+    intentionally matches header, separator and data rows alike; callers tell
+    them apart afterward."""
+
+    stripped = line.strip()
+    if len(stripped) < 2 or not (stripped.startswith("|") and stripped.endswith("|")):
+        return False, []
+    return True, [cell.strip() for cell in stripped[1:-1].split("|")]
+
+
+def _is_separator_row(cells: list[str]) -> bool:
+    """A GFM header-separator row: every cell is only ``-``, ``:`` or space."""
+
+    return bool(cells) and all(not cell.strip("-: ") for cell in cells)
+
+
+def _parse_ledger_tables(text: str) -> list[dict[str, str]]:
+    """Parse EVERY markdown table in ``text``, not just the first (I2).
+
+    The reproduced defect: the old parser walked lines once and stopped at the
+    first non-table line found after its header, so a second table -- or even
+    a single stray prose line between two data rows of the same table -- made
+    every row after it invisible to the budget/duplicate/consumed checks.
+
+    A table row immediately followed by a GFM separator row (dashes/colons
+    only) is unambiguously a header, independent of anything earlier or later
+    in the document -- so a stray prose line elsewhere can never end a table
+    early, and a later plain data row can never be mistaken for a new header.
+    A recognized header (its lowered cells carry ``_EXPOSURE_RUN_COLUMN``)
+    opens a contract table: every following data row -- up to the next header
+    -- is captured as a ``{column_name: cell}`` mapping keyed by THAT table's
+    own header (M4: a row whose cell count disagrees with its governing
+    header is refused outright, never positionally misaligned). A header
+    that is NOT recognized either belongs to a genuinely unrelated table
+    (silently ignored, e.g. a legend/description table) or, if it shares any
+    contract column name or the current contract header's width, is refused
+    fail-closed rather than risking silently dropped budget rows (I2)."""
+
+    lines = text.splitlines()
+    n = len(lines)
+    current_header: list[str] | None = None
+    rows: list[dict[str, str]] = []
+    saw_contract_header = False
+    i = 0
+    while i < n:
+        is_row, cells = _split_table_row(lines[i])
+        if not is_row:
+            i += 1
+            continue
+        if _is_separator_row(cells):
+            # A bare separator with nothing recognized as its header: never
+            # data, never a header by itself -- skip wherever it appears.
+            i += 1
+            continue
+        next_is_row, next_cells = (
+            _split_table_row(lines[i + 1]) if i + 1 < n else (False, [])
+        )
+        if next_is_row and _is_separator_row(next_cells):
+            lowered = [cell.lower() for cell in cells]
+            if len(lowered) != len(set(lowered)):
+                raise GateClosed(
+                    f"exposure ledger table header has duplicate columns: {cells!r}"
+                )
+            if _EXPOSURE_RUN_COLUMN in lowered:
+                current_header = lowered
+                saw_contract_header = True
+            else:
+                overlap = set(lowered) & _ALL_LEDGER_COLUMNS
+                same_width = current_header is not None and len(lowered) == len(current_header)
+                if overlap or same_width:
+                    raise GateClosed(
+                        f"exposure ledger contains a table header {cells!r} that is not "
+                        f"the recognized contract header ({_EXPOSURE_RUN_COLUMN!r} column) "
+                        "but shares contract-shaped columns or width with one; refusing "
+                        "rather than silently ignoring rows that might be contract rows "
+                        "(I2 fail-closed)"
+                    )
+                current_header = None  # a genuinely unrelated table: its rows are ignored
+            i += 2  # consume header + separator row together
+            continue
+        # Not a header (no separator immediately follows): a data row of
+        # whichever contract table is currently active, if any.
+        if current_header is not None:
+            if len(cells) != len(current_header):
+                raise GateClosed(
+                    f"exposure ledger row {cells!r} has {len(cells)} cells but its "
+                    f"table header has {len(current_header)} columns {current_header!r}; "
+                    "refusing rather than guessing column alignment (M4)"
+                )
+            rows.append(dict(zip(current_header, cells)))
+        i += 1
+    if not saw_contract_header:
+        raise GateClosed(
+            f"exposure ledger lacks a table header with a {_EXPOSURE_RUN_COLUMN!r} column"
+        )
+    return rows
 
 
 def _measure_file(path: Path, label: str) -> tuple[int, str]:
@@ -914,8 +1033,11 @@ class FrozenCoreGate:
 
         A run id string alone proves nothing: the row must have been written with
         the same profile, split role, split identity hash and budgets the plan now
-        claims, and must still read ``consumed = no``. Only the first ledger table
-        is parsed — a later table cannot inject rows into the contract columns."""
+        claims, and must still read ``consumed = no``. EVERY markdown table in the
+        ledger whose header carries the contract's run-id column contributes rows
+        (I2) -- a second table, or a stray prose line between two data rows of one
+        table, can never make a registered row invisible to the duplicate/consumed/
+        budget checks below."""
 
         try:
             text = Path(self.exposure_ledger).read_text(encoding="utf-8")
@@ -923,39 +1045,17 @@ class FrozenCoreGate:
             raise GateClosed(
                 f"exposure ledger missing or unreadable ({self.exposure_ledger}): {error}"
             ) from error
-        header: list[str] | None = None
-        rows: list[list[str]] = []
-        for line in text.splitlines():
-            stripped = line.strip()
-            if not (stripped.startswith("|") and stripped.endswith("|")):
-                if header is not None:
-                    break
-                continue
-            cells = [cell.strip() for cell in stripped[1:-1].split("|")]
-            if header is None:
-                lowered = [cell.lower() for cell in cells]
-                if _EXPOSURE_RUN_COLUMN in lowered:
-                    header = lowered
-                continue
-            if all(not cell.strip("-: ") for cell in cells):
-                continue
-            rows.append(cells)
-        if header is None:
-            raise GateClosed(
-                f"exposure ledger lacks a table header with a {_EXPOSURE_RUN_COLUMN!r} column"
-            )
+        rows = _parse_ledger_tables(text)
 
-        def cell(cells: list[str], column_name: str) -> str:
-            if column_name not in header:
-                raise GateClosed(f"exposure ledger header lacks column {column_name!r}")
-            index = header.index(column_name)
-            if index >= len(cells):
-                raise GateClosed(f"exposure row for {plan.run_id!r} lacks column {column_name!r}")
-            return cells[index]
+        def cell(row: Mapping[str, str], column_name: str) -> str:
+            if column_name not in row:
+                raise GateClosed(
+                    f"exposure row lacks column {column_name!r} (its governing table "
+                    "header does not declare it)"
+                )
+            return row[column_name]
 
-        matched = [
-            cells for cells in rows if cell(cells, _EXPOSURE_RUN_COLUMN) == plan.run_id
-        ]
+        matched = [row for row in rows if cell(row, _EXPOSURE_RUN_COLUMN) == plan.run_id]
         if not matched:
             raise GateClosed(
                 f"model touch refused: run {plan.run_id!r} has no pre-registered exposure "
@@ -1050,8 +1150,8 @@ class FrozenCoreGate:
         ):
             cap = FIRST_SLICE_CAPS[cap_field]
             total = 0.0
-            for cells in rows:
-                raw = cell(cells, column_name)
+            for row in rows:
+                raw = cell(row, column_name)
                 try:
                     registered = parse(raw)
                 except ValueError as error:

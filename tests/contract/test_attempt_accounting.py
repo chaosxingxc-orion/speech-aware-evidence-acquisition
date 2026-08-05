@@ -168,6 +168,43 @@ def test_crashed_attempt_actuals_count_toward_a_new_attempts_row_budget(tmp_path
     assert store.prior_actual_usage(plan1.run_id) == (2, 200.0)
 
 
+def test_two_overlapping_adapters_over_the_real_gate_cannot_together_exceed_the_plan_budget(
+    tmp_path, world
+):
+    """I3, real gate: the same overlapping-construction race as
+    tests/unit/test_frozen_core_adapter.py, but through the REAL
+    FrozenCoreGate. Both adapters are constructed (each independently opens
+    the gate, re-reading the ledger and receipts) before either records any
+    usage, then their requests interleave."""
+
+    binding = _binding(world)
+    plan1 = world.plan(attempt_id="attempt-1", planned_model_calls=2, planned_speech_audio_seconds=500)
+    plan2 = world.plan(attempt_id="attempt-2", planned_model_calls=2, planned_speech_audio_seconds=500)
+    adapter1 = FrozenCoreAdapter(
+        gate=world.gate(), plan=plan1, arm="bare-core", transport=_fake_transport,
+        sink=TraceSink(tmp_path / "run1", plan1.run_id), binding=binding,
+    )
+    adapter2 = FrozenCoreAdapter(
+        gate=world.gate(), plan=plan2, arm="bare-core", transport=_fake_transport,
+        sink=TraceSink(tmp_path / "run2", plan2.run_id), binding=binding,
+    )
+    adapter1.request(_payload(request_id="a-1"))
+    adapter2.request(_payload(request_id="b-1"))
+    with pytest.raises(FrozenCoreError, match="call budget"):
+        adapter1.request(_payload(request_id="a-2"))
+    with pytest.raises(FrozenCoreError, match="call budget"):
+        adapter2.request(_payload(request_id="b-2"))
+
+    store = AttemptStore(world.data_root / "attempts")
+    # I3: the gate's own slice-wide cap check (contracts.py) sums
+    # AttemptStore.all_actual_usage() -- the exact same property the finding
+    # calls out ("the gate's slice-wide all_actual_usage() has the same
+    # property"). Prove that total stayed correctly bounded to what the
+    # shared plan actually allowed (2), not inflated to 4 by the race.
+    actual_calls, _ = store.all_actual_usage()
+    assert actual_calls == 2, "the race must never let the slice-wide actual total double-count"
+
+
 def test_slice_cap_uses_actual_persisted_usage_when_larger_than_registered(tmp_path, world):
     """R0 repair T4 design constraint: slice-cap accounting takes the
     conservative maximum of ledger-registered reservations and summed
