@@ -14,6 +14,7 @@ import base64
 import hashlib
 import json
 import math
+import re
 import time
 import urllib.request
 from dataclasses import dataclass
@@ -22,12 +23,70 @@ from typing import Callable, Mapping
 
 from ..contracts import ExecutionPlan, assert_information_boundary
 from ..e0.d2_leakage import ARM_VISIBLE_FIELDS
-from .base import TRANSPORTS
+from .base import TRANSPORTS, CoreError, PayloadBindingContext
 from .tracing import TraceSink
 
 
 class FrozenCoreError(RuntimeError):
-    """The adapter refuses: unknown arm, allowlist violation, or exhausted budget."""
+    """The adapter refuses: unknown arm, allowlist violation, exhausted budget,
+    payload<->plan<->split value mismatch (I3), or media confinement (I4)."""
+
+
+# Shared, pure media-path helpers (R0 repair T3, I4). Deliberately hold no
+# object state: the adapter and the transport each call these with THEIR OWN
+# root(s), so the transport's confinement check never depends on the adapter
+# having run first -- two independent rails, one shared syntax rule.
+_DRIVE_PREFIX = re.compile(r"^[A-Za-z]:")
+
+
+def _normalized_relative_path(value: object, label: str) -> str:
+    """Reject anything that is not a normalized POSIX relative path: absolute,
+    drive-letter, backslash, leading '/', or any '.'/'..' segment. Purely
+    syntactic -- touches no filesystem -- so a forged value never reaches
+    ``Path.__truediv__`` (whose join silently discards the left side for an
+    absolute right side, the reproduced transport defect)."""
+
+    if not isinstance(value, str) or not value:
+        raise FrozenCoreError(f"{label} must be a non-empty string")
+    if "\\" in value:
+        raise FrozenCoreError(f"{label} must not contain a backslash, got {value!r}")
+    if value.startswith("/"):
+        raise FrozenCoreError(f"{label} must be relative, got absolute path {value!r}")
+    if _DRIVE_PREFIX.match(value):
+        raise FrozenCoreError(f"{label} must not carry a drive letter, got {value!r}")
+    parts = value.split("/")
+    if any(part in ("", ".", "..") for part in parts):
+        raise FrozenCoreError(f"{label} contains an empty or traversal segment: {value!r}")
+    return value
+
+
+def _resolve_confined(
+    join_root: Path, relative: str, confine_root: Path, label: str, *, strict: bool
+) -> Path:
+    """Join ``relative`` under ``join_root`` and refuse (``FrozenCoreError``) if
+    the fully resolved path -- following any symlinks -- lands outside
+    ``confine_root`` once both are resolved. ``strict=True`` also requires the
+    final path to exist (used by the adapter, which must prove the loader
+    fact-checked media is what will be sent); ``strict=False`` tolerates a
+    missing leaf so a caller (the transport) can raise its own
+    ``FileNotFoundError`` for that case specifically."""
+
+    try:
+        confine_resolved = Path(confine_root).resolve(strict=True)
+    except OSError as error:
+        raise FrozenCoreError(
+            f"{label}: confinement root {confine_root} is unavailable: {error}"
+        ) from error
+    candidate = Path(join_root) / relative
+    try:
+        resolved = candidate.resolve(strict=strict)
+    except OSError as error:
+        raise FrozenCoreError(f"{label}: cannot resolve {candidate}: {error}") from error
+    if not resolved.is_relative_to(confine_resolved):
+        raise FrozenCoreError(
+            f"{label} escapes its confined root {confine_root}: {relative!r}"
+        )
+    return resolved
 
 
 # The exact set of decoding_params keys the frozen core will ever accept. This is
@@ -73,10 +132,31 @@ class FrozenCoreAdapter:
         arm: str,
         transport: Callable[[bytes], bytes],
         sink: TraceSink,
+        binding: PayloadBindingContext,
     ) -> None:
         if arm not in ARM_VISIBLE_FIELDS:
             raise FrozenCoreError(
                 f"unknown arm {arm!r}; D2-frozen arms are {sorted(ARM_VISIBLE_FIELDS)}"
+            )
+        # Fail-closed constructor discipline (R0 repair T3): a binding context
+        # is a required argument (no default -- omitting it is a TypeError
+        # before this body ever runs) and is itself structurally validated
+        # here. There is no "no checks" adapter: every request() call below
+        # trusts only what this context says was verified for this run.
+        if not isinstance(binding, PayloadBindingContext):
+            raise FrozenCoreError(
+                "FrozenCoreAdapter requires a PayloadBindingContext binding payload "
+                f"values to the verified split and loader facts; got {type(binding).__name__}"
+            )
+        try:
+            binding.validate()
+        except CoreError as error:
+            raise FrozenCoreError(f"invalid payload binding context: {error}") from error
+        if binding.carrier_lock_key != plan.carrier_lock_key:
+            raise FrozenCoreError(
+                "payload binding context carrier_lock_key "
+                f"{binding.carrier_lock_key!r} does not match the execution plan "
+                f"carrier_lock_key {plan.carrier_lock_key!r}"
             )
         gate.assert_model_touch_allowed(plan)
         self._plan = plan
@@ -84,6 +164,7 @@ class FrozenCoreAdapter:
         self._allowlist = frozenset(ARM_VISIBLE_FIELDS[arm])
         self._transport = transport
         self._sink = sink
+        self._binding = binding
         self._calls_used = 0
         self._audio_seconds_used = 0.0
         self._latency_total = 0.0
@@ -117,6 +198,7 @@ class FrozenCoreAdapter:
             or audio_seconds <= 0
         ):
             raise FrozenCoreError("payload audio_seconds must be a finite positive number")
+        self._enforce_payload_binding(payload, audio_seconds)
         if self._calls_used + 1 > self._plan.planned_model_calls:
             raise FrozenCoreError(
                 f"call budget exhausted: plan {self._plan.run_id} allows "
@@ -184,6 +266,57 @@ class FrozenCoreAdapter:
             latency_seconds=latency,
         )
 
+    def _enforce_payload_binding(self, payload: Mapping[str, object], audio_seconds: object) -> None:
+        """I3/I4: the payload's own claimed values must agree with what the
+        driver actually verified for this run (the T1 split + carrier loader
+        facts bound at construction), not merely be well-typed. A payload can
+        name any carrier, sample, path or audio fact it likes; only what
+        ``self._binding`` says was loaded is ever trusted."""
+
+        binding = self._binding
+        carrier_lock_key = payload["carrier_lock_key"]
+        if carrier_lock_key != self._plan.carrier_lock_key:
+            raise FrozenCoreError(
+                f"payload carrier_lock_key {carrier_lock_key!r} does not match the "
+                f"execution plan carrier_lock_key {self._plan.carrier_lock_key!r}"
+            )
+        sample_id = payload["sample_id"]
+        if not isinstance(sample_id, str) or sample_id not in binding.allowed_sample_ids:
+            raise FrozenCoreError(
+                f"payload sample_id {sample_id!r} is not in the verified split bound "
+                "to this run"
+            )
+        expected_speech_ref = f"{self._plan.carrier_lock_key}/{sample_id}"
+        if payload["speech_ref"] != expected_speech_ref:
+            raise FrozenCoreError(
+                f"payload speech_ref {payload['speech_ref']!r} does not match the "
+                f"expected {expected_speech_ref!r} for carrier_lock_key/sample_id"
+            )
+        fact_audio_seconds, fact_sample_rate_hz = binding.sample_facts[sample_id]
+        if float(audio_seconds) != float(fact_audio_seconds):
+            raise FrozenCoreError(
+                f"payload audio_seconds {audio_seconds!r} disagrees with the loader "
+                f"fact {fact_audio_seconds!r} for sample {sample_id!r}"
+            )
+        sample_rate_hz = payload["sample_rate_hz"]
+        if (
+            isinstance(sample_rate_hz, bool)
+            or not isinstance(sample_rate_hz, int)
+            or sample_rate_hz != fact_sample_rate_hz
+        ):
+            raise FrozenCoreError(
+                f"payload sample_rate_hz {sample_rate_hz!r} disagrees with the loader "
+                f"fact {fact_sample_rate_hz!r} for sample {sample_id!r}"
+            )
+        relative = _normalized_relative_path(payload["media_relpath"], "payload media_relpath")
+        _resolve_confined(
+            binding.data_root,
+            relative,
+            binding.carrier_root,
+            "payload media_relpath",
+            strict=True,
+        )
+
     def cost_summary(self) -> dict[str, object]:
         return {
             "calls_used": self._calls_used,
@@ -219,7 +352,20 @@ class LlamaServerTransport:
 
     def __call__(self, request_bytes: bytes) -> bytes:
         payload: Mapping[str, object] = json.loads(request_bytes.decode("utf-8"))
-        media = self._data_root / str(payload["media_relpath"])
+        # I4, independent second rail: refuse absolute/backslash/traversal
+        # media_relpath and anything resolving outside self._data_root on the
+        # transport's OWN authority -- this must hold even if the adapter's
+        # binding-context check were somehow bypassed or absent (the
+        # reproduced defect: `self._data_root / <absolute path>` silently
+        # discards the data root via Path.__truediv__).
+        relative = _normalized_relative_path(payload["media_relpath"], "transport media_relpath")
+        media = _resolve_confined(
+            self._data_root,
+            relative,
+            self._data_root,
+            "transport media_relpath",
+            strict=False,
+        )
         if not media.is_file():
             raise FileNotFoundError(f"media missing for transport: {media}")
         audio_b64 = base64.b64encode(media.read_bytes()).decode("ascii")

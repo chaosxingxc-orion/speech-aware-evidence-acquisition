@@ -88,6 +88,7 @@ class _OpenGate:
 
 def test_fixed_policy_runs_one_request_and_admits(tmp_path):
     from speech_aware_evidence_acquisition.contracts import ExecutionPlan
+    from speech_aware_evidence_acquisition.core.base import PayloadBindingContext
     from speech_aware_evidence_acquisition.core.model import FrozenCoreAdapter
 
     sink = TraceSink(tmp_path / "run", "SAEA-E-000-policy")
@@ -102,12 +103,24 @@ def test_fixed_policy_runs_one_request_and_admits(tmp_path):
         planned_speech_audio_seconds=1000,
         protocol_hash="b" * 64,
     )
+    data_root = tmp_path / "data"
+    media = data_root / _REF.media_relpath
+    media.parent.mkdir(parents=True, exist_ok=True)
+    media.write_bytes(b"fake-mp3-bytes")
+    binding = PayloadBindingContext(
+        carrier_lock_key=_REF.carrier_lock_key,
+        allowed_sample_ids=frozenset({_REF.sample_id}),
+        sample_facts={_REF.sample_id: (_REF.audio_seconds, _REF.sample_rate_hz)},
+        data_root=data_root,
+        carrier_root=data_root / "datasets" / "earnings21-22" / "earnings21",
+    )
     adapter = FrozenCoreAdapter(
         gate=_OpenGate(),
         plan=plan,
         arm="bare-core",
         transport=lambda b: json.dumps({"text": "hi", "usage": {}}).encode(),
         sink=sink,
+        binding=binding,
     )
     ctx = SampleContext(
         sample=_REF, evidence=[], adapter=adapter, sink=sink, arm="bare-core",

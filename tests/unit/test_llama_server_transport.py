@@ -1,7 +1,12 @@
-"""Transport maps boundary payloads to chat-completions bodies without network."""
+"""Transport maps boundary payloads to chat-completions bodies without network.
+
+Also enforces its own INDEPENDENT media-confinement rail (I4): the transport
+must refuse an absolute/backslash/traversal/escaping ``media_relpath`` on its
+own inputs, without relying on the adapter having already checked it."""
 
 import base64
 import json
+import os
 
 import pytest
 
@@ -120,3 +125,93 @@ def test_malformed_usage_value_raises_frozen_core_error(tmp_path):
     )
     with pytest.raises(FrozenCoreError, match="malformed"):
         transport(json.dumps(_boundary_payload(tmp_path)).encode())
+
+
+# ---------------------------------------------------------------------------
+# I4: media confinement, the transport's own INDEPENDENT rail.
+# ---------------------------------------------------------------------------
+
+
+def test_absolute_media_relpath_outside_data_root_is_refused_not_read(tmp_path):
+    """The reproduced defect, verified live: ``Path.__truediv__`` with an
+    absolute right-hand side discards the left side, so
+    ``self._data_root / payload["media_relpath"]`` silently resolved to a
+    temp file OUTSIDE the data root, which was read and base64-sent. A
+    canary transport (``post``) that would fail the test if it ever receives
+    the outside file's bytes proves the fix refuses before any read/send."""
+
+    outside_dir = tmp_path / "outside_data_root"
+    outside_dir.mkdir()
+    secret = outside_dir / "secret.mp3"
+    secret.write_bytes(b"outside-the-data-root-should-never-be-sent")
+
+    def _canary_post(url, body):
+        decoded = json.loads(body)
+        for part in decoded["messages"][1]["content"]:
+            if part.get("type") == "input_audio":
+                sent = base64.b64decode(part["input_audio"]["data"])
+                assert sent != secret.read_bytes(), "outside-root file bytes were sent"
+        return _canned_response()
+
+    data_root = tmp_path / "data"
+    data_root.mkdir()
+    transport = LlamaServerTransport("http://127.0.0.1:8080", data_root, post=_canary_post)
+    payload = _boundary_payload(data_root, media_relpath=str(secret))
+    with pytest.raises(FrozenCoreError, match="media_relpath"):
+        transport(json.dumps(payload).encode())
+
+
+def test_drive_letter_media_relpath_refused_at_transport(tmp_path):
+    transport = LlamaServerTransport(
+        "http://127.0.0.1:8080", tmp_path, post=lambda u, b: _canned_response()
+    )
+    payload = _boundary_payload(tmp_path, media_relpath="C:/secret.txt")
+    with pytest.raises(FrozenCoreError, match="media_relpath"):
+        transport(json.dumps(payload).encode())
+
+
+def test_backslash_media_relpath_refused_at_transport(tmp_path):
+    transport = LlamaServerTransport(
+        "http://127.0.0.1:8080", tmp_path, post=lambda u, b: _canned_response()
+    )
+    payload = _boundary_payload(tmp_path, media_relpath="media\\5000001.mp3")
+    with pytest.raises(FrozenCoreError, match="media_relpath"):
+        transport(json.dumps(payload).encode())
+
+
+def test_traversal_media_relpath_refused_at_transport(tmp_path):
+    transport = LlamaServerTransport(
+        "http://127.0.0.1:8080", tmp_path, post=lambda u, b: _canned_response()
+    )
+    payload = _boundary_payload(tmp_path, media_relpath="../outside/secret.mp3")
+    with pytest.raises(FrozenCoreError, match="media_relpath"):
+        transport(json.dumps(payload).encode())
+
+
+def test_missing_media_still_raises_file_not_found_after_confinement_check(tmp_path):
+    """The confinement check must not change the existing missing-media
+    behavior for a syntactically clean, in-root relative path."""
+
+    transport = LlamaServerTransport(
+        "http://127.0.0.1:8080", tmp_path, post=lambda u, b: _canned_response()
+    )
+    payload = _boundary_payload(tmp_path, media_relpath="media/absent.mp3")
+    with pytest.raises(FileNotFoundError):
+        transport(json.dumps(payload).encode())
+
+
+@pytest.mark.skipif(os.name == "nt", reason="POSIX symlink required")
+def test_media_relpath_symlink_escape_refused_at_transport(tmp_path):
+    data_root = tmp_path / "data"
+    data_root.mkdir()
+    outside = tmp_path / "outside"
+    outside.mkdir()
+    (outside / "leaked.mp3").write_bytes(b"leaked-bytes")
+    (data_root / "media_link").symlink_to(outside, target_is_directory=True)
+
+    transport = LlamaServerTransport(
+        "http://127.0.0.1:8080", data_root, post=lambda u, b: _canned_response()
+    )
+    payload = _boundary_payload(data_root, media_relpath="media_link/leaked.mp3")
+    with pytest.raises(FrozenCoreError, match="media_relpath"):
+        transport(json.dumps(payload).encode())

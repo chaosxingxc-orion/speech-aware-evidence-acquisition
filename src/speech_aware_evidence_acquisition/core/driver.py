@@ -15,6 +15,7 @@ from pathlib import Path
 from typing import Callable, Mapping
 
 from ..contracts import ExecutionPlan
+from ..data.lock import asset_dir
 from ..e0.artifacts import REPO_ROOT
 from .base import (
     CARRIERS,
@@ -23,6 +24,7 @@ from .base import (
     SCORERS,
     TRANSPORTS,
     CoreError,
+    PayloadBindingContext,
     RunResult,
     SampleContext,
 )
@@ -93,8 +95,20 @@ def run_experiment(
         evidence_by_sample = rotated_mismatch(evidence_by_sample)
     policy = POLICIES.resolve(str(values["policy"]))
     sink = TraceSink(run_dir, plan.run_id)
+    # Payload<->plan<->split binding context (R0 repair T3, I3/I4): built here,
+    # from exactly the verified split ids and the same loader's SampleRef
+    # facts already used above to validate the carrier's loaded samples --
+    # never from anything a payload later claims about itself.
+    carrier_root = asset_dir(lock, str(values["carrier_lock_key"]), root)
+    binding = PayloadBindingContext(
+        carrier_lock_key=str(values["carrier_lock_key"]),
+        allowed_sample_ids=frozenset(sample_ids),
+        sample_facts={s.sample_id: (s.audio_seconds, s.sample_rate_hz) for s in samples},
+        data_root=Path(root),
+        carrier_root=carrier_root,
+    )
     adapter = FrozenCoreAdapter(
-        gate=gate, plan=plan, arm=arm, transport=transport, sink=sink
+        gate=gate, plan=plan, arm=arm, transport=transport, sink=sink, binding=binding
     )
     outputs_path = Path(run_dir) / f"{plan.run_id}.outputs.jsonl"
     try:

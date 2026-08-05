@@ -1,6 +1,8 @@
-"""Adapter choke point: allowlist exact-set, boundary, budgets, tracing."""
+"""Adapter choke point: allowlist exact-set, boundary, budgets, tracing,
+payload<->plan<->split value binding (I3) and media confinement (I4)."""
 
 import json
+import os
 
 import pytest
 
@@ -9,6 +11,7 @@ from speech_aware_evidence_acquisition.contracts import (
     ExecutionPlan,
 )
 from speech_aware_evidence_acquisition.e0.d2_leakage import ARM_VISIBLE_FIELDS
+from speech_aware_evidence_acquisition.core.base import CoreError, PayloadBindingContext
 from speech_aware_evidence_acquisition.core.model import FrozenCoreAdapter, FrozenCoreError
 from speech_aware_evidence_acquisition.core.tracing import TraceSink
 
@@ -62,7 +65,36 @@ def _fake_transport(request_bytes):
     ).encode()
 
 
-def _adapter(tmp_path, gate=None, plan=None, arm="bare-core"):
+def _binding(
+    tmp_path,
+    *,
+    carrier_lock_key="earnings22-original",
+    sample_id="5000001",
+    audio_seconds=100.0,
+    sample_rate_hz=16000,
+    media_relpath="datasets/earnings21-22/earnings22/media/5000001.mp3",
+):
+    """A minimal real binding context: one verified sample id + loader fact,
+    with a real media file materialized under a real data root so the
+    adapter's confinement check (which resolves(strict=True)) has real bytes
+    to resolve — exactly what the driver builds from a VerifiedSplit plus the
+    carrier loader's SampleRef list."""
+
+    data_root = tmp_path / "data"
+    media = data_root / media_relpath
+    media.parent.mkdir(parents=True, exist_ok=True)
+    media.write_bytes(b"fake-mp3-bytes")
+    carrier_root = data_root / "datasets" / "earnings21-22" / "earnings22"
+    return PayloadBindingContext(
+        carrier_lock_key=carrier_lock_key,
+        allowed_sample_ids=frozenset({sample_id}),
+        sample_facts={sample_id: (audio_seconds, sample_rate_hz)},
+        data_root=data_root,
+        carrier_root=carrier_root,
+    )
+
+
+def _adapter(tmp_path, gate=None, plan=None, arm="bare-core", binding=None):
     sink = TraceSink(tmp_path / "run", "SAEA-E-000-adapter")
     return FrozenCoreAdapter(
         gate=gate or _OpenGate(),
@@ -70,6 +102,7 @@ def _adapter(tmp_path, gate=None, plan=None, arm="bare-core"):
         arm=arm,
         transport=_fake_transport,
         sink=sink,
+        binding=binding or _binding(tmp_path),
     ), sink
 
 
@@ -183,6 +216,7 @@ def test_metering_counts_before_transport_even_when_transport_raises(tmp_path):
         arm="bare-core",
         transport=_raising_transport,
         sink=sink,
+        binding=_binding(tmp_path),
     )
     with pytest.raises(RuntimeError, match="transport exploded"):
         adapter.request(_payload())
@@ -190,3 +224,207 @@ def test_metering_counts_before_transport_even_when_transport_raises(tmp_path):
     summary = adapter.cost_summary()
     assert summary["calls_used"] == 1
     assert summary["audio_seconds_used"] == 100.0
+
+
+# ---------------------------------------------------------------------------
+# Binding-context construction discipline: no default, structurally checked.
+# ---------------------------------------------------------------------------
+
+
+def test_adapter_construction_without_binding_context_refuses(tmp_path):
+    sink = TraceSink(tmp_path / "run", "SAEA-E-000-nobind")
+    with pytest.raises(TypeError):
+        FrozenCoreAdapter(
+            gate=_OpenGate(),
+            plan=_plan(),
+            arm="bare-core",
+            transport=_fake_transport,
+            sink=sink,
+        )
+
+
+def test_adapter_construction_with_wrong_type_binding_refuses(tmp_path):
+    sink = TraceSink(tmp_path / "run", "SAEA-E-000-badbind")
+    with pytest.raises(FrozenCoreError):
+        FrozenCoreAdapter(
+            gate=_OpenGate(),
+            plan=_plan(),
+            arm="bare-core",
+            transport=_fake_transport,
+            sink=sink,
+            binding={"not": "a binding context"},
+        )
+
+
+def test_adapter_construction_with_malformed_binding_refuses(tmp_path):
+    sink = TraceSink(tmp_path / "run", "SAEA-E-000-malformedbind")
+    binding = _binding(tmp_path)
+    # Drop the only sample fact -> sample_facts no longer covers allowed_sample_ids.
+    tampered = PayloadBindingContext(
+        carrier_lock_key=binding.carrier_lock_key,
+        allowed_sample_ids=binding.allowed_sample_ids,
+        sample_facts={},
+        data_root=binding.data_root,
+        carrier_root=binding.carrier_root,
+    )
+    with pytest.raises(FrozenCoreError):
+        FrozenCoreAdapter(
+            gate=_OpenGate(),
+            plan=_plan(),
+            arm="bare-core",
+            transport=_fake_transport,
+            sink=sink,
+            binding=tampered,
+        )
+
+
+def test_adapter_construction_refuses_binding_carrier_mismatched_with_plan(tmp_path):
+    sink = TraceSink(tmp_path / "run", "SAEA-E-000-carriermismatch")
+    binding = _binding(tmp_path, carrier_lock_key="earnings21-original")
+    with pytest.raises(FrozenCoreError, match="carrier"):
+        FrozenCoreAdapter(
+            gate=_OpenGate(),
+            plan=_plan(carrier_lock_key="earnings22-original"),
+            arm="bare-core",
+            transport=_fake_transport,
+            sink=sink,
+            binding=binding,
+        )
+
+
+# ---------------------------------------------------------------------------
+# I3: payload<->plan<->split value binding.
+# ---------------------------------------------------------------------------
+
+
+def test_payload_carrier_mismatched_with_plan_carrier_refused(tmp_path):
+    """Campaign probe P5: an earnings22 plan must refuse a payload whose
+    carrier_lock_key names a different carrier (the independently reproduced
+    defect used ``fsd50k``)."""
+
+    adapter, _ = _adapter(tmp_path)
+    with pytest.raises(FrozenCoreError, match="carrier_lock_key"):
+        adapter.request(
+            _payload(carrier_lock_key="fsd50k", speech_ref="fsd50k/5000001")
+        )
+
+
+def test_payload_sample_id_not_in_verified_split_refused(tmp_path):
+    adapter, _ = _adapter(tmp_path)
+    with pytest.raises(FrozenCoreError, match="sample_id"):
+        adapter.request(
+            _payload(sample_id="9999999", speech_ref="earnings22-original/9999999")
+        )
+
+
+def test_payload_speech_ref_wrong_prefix_refused(tmp_path):
+    adapter, _ = _adapter(tmp_path)
+    with pytest.raises(FrozenCoreError, match="speech_ref"):
+        adapter.request(_payload(speech_ref="conec/5000001"))
+
+
+def test_payload_speech_ref_mismatched_pair_refused(tmp_path):
+    """Right sample id, but speech_ref names a different sample: mismatched pair."""
+
+    adapter, _ = _adapter(tmp_path)
+    with pytest.raises(FrozenCoreError, match="speech_ref"):
+        adapter.request(_payload(speech_ref="earnings22-original/5000002"))
+
+
+def test_payload_audio_seconds_disagrees_with_loader_fact_refused(tmp_path):
+    adapter, _ = _adapter(tmp_path)
+    with pytest.raises(FrozenCoreError, match="audio_seconds"):
+        adapter.request(_payload(audio_seconds=999.0))
+
+
+def test_payload_sample_rate_hz_disagrees_with_loader_fact_refused(tmp_path):
+    adapter, _ = _adapter(tmp_path)
+    with pytest.raises(FrozenCoreError, match="sample_rate_hz"):
+        adapter.request(_payload(sample_rate_hz=8000))
+
+
+# ---------------------------------------------------------------------------
+# I4: media confinement.
+# ---------------------------------------------------------------------------
+
+
+def test_absolute_media_relpath_refused_at_adapter(tmp_path):
+    """Campaign probe P3, adapter rail."""
+
+    adapter, _ = _adapter(tmp_path)
+    with pytest.raises(FrozenCoreError, match="media_relpath"):
+        adapter.request(_payload(media_relpath="/etc/passwd"))
+
+
+def test_drive_letter_media_relpath_refused(tmp_path):
+    adapter, _ = _adapter(tmp_path)
+    with pytest.raises(FrozenCoreError, match="media_relpath"):
+        adapter.request(_payload(media_relpath="C:/secret.txt"))
+
+
+def test_backslash_media_relpath_refused(tmp_path):
+    adapter, _ = _adapter(tmp_path)
+    with pytest.raises(FrozenCoreError, match="media_relpath"):
+        adapter.request(
+            _payload(media_relpath="datasets\\earnings21-22\\earnings22\\media\\5000001.mp3")
+        )
+
+
+def test_traversal_media_relpath_refused(tmp_path):
+    adapter, _ = _adapter(tmp_path)
+    with pytest.raises(FrozenCoreError, match="media_relpath"):
+        adapter.request(_payload(media_relpath="../../../etc/passwd"))
+
+
+def test_media_relpath_outside_carrier_root_refused_even_without_traversal_syntax(tmp_path):
+    """A syntactically clean relative path that simply names a different
+    carrier's media tree (no ``..``, no absolute prefix) must still be refused:
+    it resolves outside this run's carrier_root."""
+
+    binding = _binding(tmp_path)
+    # Materialize a sibling carrier directory with a real file, so resolution
+    # succeeds but lands outside carrier_root.
+    other = binding.data_root / "datasets" / "earnings21-22" / "earnings21" / "media"
+    other.mkdir(parents=True)
+    (other / "4000001.mp3").write_bytes(b"other-carrier-audio")
+    adapter, _ = _adapter(tmp_path, binding=binding)
+    with pytest.raises(FrozenCoreError, match="media_relpath"):
+        adapter.request(
+            _payload(media_relpath="datasets/earnings21-22/earnings21/media/4000001.mp3")
+        )
+
+
+@pytest.mark.skipif(os.name == "nt", reason="POSIX symlink required")
+def test_media_relpath_symlink_escape_from_carrier_root_refused(tmp_path):
+    """Campaign probe: symlink inside the data root pointing outside must be
+    refused even though the resolved leaf file genuinely exists."""
+
+    data_root = tmp_path / "data"
+    carrier_root = data_root / "datasets" / "earnings21-22" / "earnings22"
+    carrier_root.mkdir(parents=True)
+    outside = tmp_path / "outside"
+    outside.mkdir()
+    (outside / "leaked.mp3").write_bytes(b"leaked-bytes")
+    (carrier_root / "media_link").symlink_to(outside, target_is_directory=True)
+    binding = PayloadBindingContext(
+        carrier_lock_key="earnings22-original",
+        allowed_sample_ids=frozenset({"5000001"}),
+        sample_facts={"5000001": (100.0, 16000)},
+        data_root=data_root,
+        carrier_root=carrier_root,
+    )
+    adapter, _ = _adapter(tmp_path, binding=binding)
+    with pytest.raises(FrozenCoreError, match="media_relpath"):
+        adapter.request(
+            _payload(media_relpath="datasets/earnings21-22/earnings22/media_link/leaked.mp3")
+        )
+
+
+def test_media_relpath_missing_file_refused(tmp_path):
+    adapter, _ = _adapter(tmp_path)
+    with pytest.raises(FrozenCoreError, match="media_relpath"):
+        adapter.request(
+            _payload(
+                media_relpath="datasets/earnings21-22/earnings22/media/absent.mp3"
+            )
+        )
