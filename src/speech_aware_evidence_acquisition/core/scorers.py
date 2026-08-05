@@ -13,6 +13,7 @@ from typing import Mapping
 
 from ..data.references import reference_tokens
 from ..scoring import align, tokens_v1
+from ..scoring.transitions import flag_transitions
 from .base import SCORERS
 
 
@@ -73,19 +74,14 @@ def transition_report(
     for sample_id, base in base_by_id.items():
         base_mask = base["ref_hit_mask"]
         treat_mask = treat_by_id[sample_id]["ref_hit_mask"]
-        if len(base_mask) != len(treat_mask):
-            raise ScoringPhaseError(
-                f"{sample_id}: reference masks differ in length — not the same reference"
-            )
-        for before, after in zip(base_mask, treat_mask):
-            if before and after:
-                totals["correct_to_correct"] += 1
-            elif before and not after:
-                totals["correct_to_wrong"] += 1
-            elif not before and after:
-                totals["wrong_to_correct"] += 1
-            else:
-                totals["wrong_to_wrong"] += 1
+        try:
+            transitions = flag_transitions(base_mask, treat_mask)
+        except ValueError as error:
+            raise ScoringPhaseError(str(error)) from error
+        totals["correct_to_correct"] += transitions.correct_to_correct
+        totals["correct_to_wrong"] += transitions.correct_to_wrong
+        totals["wrong_to_correct"] += transitions.wrong_to_correct
+        totals["wrong_to_wrong"] += transitions.wrong_to_wrong
     return totals
 
 
