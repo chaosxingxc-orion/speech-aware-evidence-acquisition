@@ -218,7 +218,7 @@ class TestCloseAndGate:
             "| calls | speech audio seconds | gpu hours | inherited exposure "
             "| artifacts | notes |\n"
             "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|\n"
-            "| 2026-08-04 | RUN-1 | baseline-reproduction | s | m | c dev | dev "
+            "| 2026-08-04 | RUN-1 | baseline-reproduction | s | m | earnings21-original dev | dev "
             f"| {'a' * 64} | no | 1 | 60 | 0.1 | none | none | test |\n",
             encoding="utf-8",
         )

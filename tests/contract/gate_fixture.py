@@ -47,6 +47,16 @@ class GateFixture:
         binary.write_bytes(self.BINARY)
         (binary.parent / "libfake-impl.so").write_bytes(self.LIBRARY)
 
+        configs_dir = tmp_path / "configs" / "experiment"
+        configs_dir.mkdir(parents=True)
+        (configs_dir / "e0-model-free-closure.yaml").write_text(
+            "excluded_lock_keys:\n"
+            "  - fsd50k\n"
+            "  - audioset-metadata-features\n"
+            "  - esc-50\n",
+            encoding="utf-8",
+        )
+
         self.scoring_dir = tmp_path / "src" / "speech_aware_evidence_acquisition" / "scoring"
         self.scoring_dir.mkdir(parents=True)
         (self.scoring_dir / "wer.py").write_bytes(self.SCORING_SOURCE)
@@ -75,7 +85,13 @@ class GateFixture:
                     "note": "extra lock fields are tolerated",
                 }
             ],
-            "datasets": [{"name": self.CARRIER}],
+            "datasets": [
+                {
+                    "name": self.CARRIER,
+                    "kind": "dataset",
+                    "profiles": ["speech-aware-core"],
+                }
+            ],
         }
         self.exposure_ledger = tmp_path / "exposure-ledger.md"
         self.write_ledger_rows(

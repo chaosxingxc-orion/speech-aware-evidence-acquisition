@@ -83,6 +83,72 @@ FIRST_SLICE_CAPS = {
     "planned_speech_audio_seconds": 72000,
 }
 _EXPOSURE_RUN_COLUMN = "run/experiment id"
+_EXPOSURE_CARRIER_COLUMN = "speech carrier + split"
+
+# The study's excluded-carrier config is the single source of truth for which
+# umbrella-lock entries are explicitly out of research scope (human speech and its
+# linguistic content only: ASR, entities, contextual biasing, spoken QA, meeting
+# speech). ``e0/d2_leakage.py`` already enforces, as a negative control, that no
+# excluded asset name is ever hard-coded in package source -- only read from this
+# config; this gate reads the same file for the same reason, so the two names
+# named in it never drift apart and package source stays free of them (the only
+# permitted occurrences of the excluded names themselves are inside the config
+# file and inside refusal tests).
+_GENERAL_AUDIO_EXCLUSION_CONFIG_RELPATH = "configs/experiment/e0-model-free-closure.yaml"
+_EXCLUDED_LOCK_KEYS_MARKER = "excluded_lock_keys:"
+_EXCLUDED_LOCK_KEY_LINE = re.compile(r"\s+-\s+(\S+)")
+
+
+def general_audio_deny_lock_keys(repo_root: Path) -> frozenset[str]:
+    """Parse the excluded-carrier denylist from the E0 experiment config.
+
+    Mirrors ``e0.d2_leakage.excluded_lock_keys`` (kept independent rather than
+    imported, to avoid a circular import: ``e0.d2_leakage`` already imports from
+    this module). Fail-closed: an unreadable config or an empty list refuses
+    rather than silently allowing every carrier."""
+
+    config = Path(repo_root) / _GENERAL_AUDIO_EXCLUSION_CONFIG_RELPATH
+    try:
+        lines = config.read_text(encoding="utf-8").splitlines()
+    except (OSError, UnicodeError) as error:
+        raise GateClosed(
+            f"cannot read general-audio exclusion config {config}: {error}"
+        ) from error
+    keys: list[str] = []
+    collecting = False
+    for line in lines:
+        stripped = line.split("#", 1)[0].rstrip()
+        if stripped.strip() == _EXCLUDED_LOCK_KEYS_MARKER:
+            collecting = True
+            continue
+        if collecting:
+            match = _EXCLUDED_LOCK_KEY_LINE.fullmatch(stripped)
+            if match:
+                keys.append(match.group(1))
+                continue
+            if stripped.strip():
+                break
+    if not keys:
+        raise GateClosed(f"no excluded_lock_keys parsed from {config}")
+    return frozenset(keys)
+
+
+# The umbrella lock's speech-aware-* profiles (docs/datasets.lock.json `profiles`,
+# 2026-08-04 semantic migration) that may legitimately back a plan carrier: core
+# evaluation carriers, secondary public carriers, entity/rare-word diagnostics and
+# small optional public assets. `speech-aware-annotations` is deliberately excluded:
+# it holds annotation-only entries with no speech audio of their own, so it can
+# never back a model touch. `frozen-baseline`, `local-candidates`,
+# `retained-cross-domain` and `deferred` are non-speech-aware profiles and are
+# never allowed here.
+ALLOWED_CARRIER_PROFILES = frozenset(
+    {
+        "speech-aware-core",
+        "speech-aware-secondary",
+        "speech-aware-diagnostics",
+        "speech-aware-small-public",
+    }
+)
 
 
 class BoundaryViolation(ValueError):
@@ -382,7 +448,10 @@ class FrozenCoreGate:
       binary AND every runtime library in the launcher's directory (exact set — an
       unlisted or missing file refuses) and recomputes size and SHA-256 itself;
     - the pre-registered exposure row must agree with the ``ExecutionPlan`` field by
-      field (profile, split role, split identity hash, consumed=no, planned budgets);
+      field (profile, split role, split identity hash, carrier, consumed=no, planned
+      budgets); the plan's carrier must additionally resolve to a genuine speech
+      dataset entry of this study's scope in the umbrella lock, never a model entry
+      or a general-audio asset;
     - absolute paths, drive letters, ``..`` traversal, path escapes, duplicates and
       extra/missing model files are all refused.
 
@@ -748,18 +817,72 @@ class FrozenCoreGate:
                 "receipt; model touch refused"
             )
 
-    def _lock_asset_names(self) -> set[str]:
+    def _lock_dataset_entries(self) -> dict[str, Mapping[str, object]]:
+        """Every ``kind: dataset`` entry in the umbrella lock, keyed by name.
+
+        Real speech-aware carriers live in ``asset_catalog`` alongside the
+        frozen-baseline ``datasets`` list, local-candidate assets and the
+        general-audio assets explicitly excluded from this study. Model entries
+        live in a disjoint ``models`` list and never appear here — a plan cannot
+        claim a model lock key as its speech carrier."""
+
         lock = self._load(self.lock_path, "datasets lock")
-        names = {
-            item["name"]
-            for value in lock.values()
-            if isinstance(value, list)
-            for item in value
-            if isinstance(item, Mapping) and isinstance(item.get("name"), str)
-        }
-        if not names:
-            raise GateClosed("datasets lock yields no named assets")
-        return names
+        entries: dict[str, Mapping[str, object]] = {}
+        for list_key in ("datasets", "asset_catalog"):
+            value = lock.get(list_key)
+            if not isinstance(value, list):
+                continue
+            for item in value:
+                if (
+                    isinstance(item, Mapping)
+                    and item.get("kind") == "dataset"
+                    and isinstance(item.get("name"), str)
+                ):
+                    entries[item["name"]] = item
+        if not entries:
+            raise GateClosed("datasets lock yields no named dataset entries")
+        return entries
+
+    def _resolve_carrier_dataset_entry(self, carrier_lock_key: str) -> Mapping[str, object]:
+        """Resolve and scope-check a plan's carrier against the umbrella lock (I2).
+
+        A carrier must: (a) exist as a ``kind: dataset`` entry in the umbrella lock
+        — model entries and unknown keys are refused; (b) not be one of the
+        general-audio assets this study explicitly excludes; and (c) carry a
+        non-empty ``profiles`` list intersecting this study's speech-aware scope.
+        A dataset entry with no ``profiles`` field fails closed rather than being
+        assumed in scope: naming a key in the lock never by itself proves it is a
+        speech-domain carrier of this study."""
+
+        entry = self._lock_dataset_entries().get(carrier_lock_key)
+        if entry is None:
+            raise GateClosed(
+                f"carrier lock key {carrier_lock_key!r} is not a dataset entry in "
+                "the umbrella datasets lock (model entries and unknown keys are "
+                "never a valid speech carrier); model touch refused"
+            )
+        if carrier_lock_key in general_audio_deny_lock_keys(self.source_root):
+            raise GateClosed(
+                f"carrier lock key {carrier_lock_key!r} is a general-audio asset "
+                "explicitly excluded from the speech-aware-evidence-acquisition "
+                "study, whose scope is human speech and its linguistic content "
+                "only (ASR, entities, contextual biasing, spoken QA, meeting "
+                "speech); model touch refused"
+            )
+        profiles = entry.get("profiles")
+        if not isinstance(profiles, list) or not profiles:
+            raise GateClosed(
+                f"carrier lock key {carrier_lock_key!r} has no profiles field in "
+                "the umbrella datasets lock; scope cannot be proven so the touch "
+                "is refused (fail-closed)"
+            )
+        if not (set(profiles) & ALLOWED_CARRIER_PROFILES):
+            raise GateClosed(
+                f"carrier lock key {carrier_lock_key!r} profiles {profiles!r} do "
+                "not intersect this study's speech-only scope "
+                f"{sorted(ALLOWED_CARRIER_PROFILES)}; model touch refused"
+            )
+        return entry
 
     def _require_exposure_preregistration(self, plan: "ExecutionPlan") -> None:
         """The pre-registered row is cross-checked field by field against the plan.
@@ -827,6 +950,13 @@ class FrozenCoreGate:
                     f"exposure row disagrees with the execution plan on {column_name!r}: "
                     f"row {actual!r} vs plan {expected!r}; model touch refused"
                 )
+        carrier_cell = cell(row, _EXPOSURE_CARRIER_COLUMN)
+        if plan.carrier_lock_key not in carrier_cell:
+            raise GateClosed(
+                f"exposure row column {_EXPOSURE_CARRIER_COLUMN!r} ({carrier_cell!r}) "
+                f"does not name the execution plan's carrier {plan.carrier_lock_key!r}; "
+                "model touch refused (I2: carrier scope and exposure carrier must bind)"
+            )
         if cell(row, "consumed").lower() != "no":
             raise GateClosed(
                 f"exposure row for {plan.run_id!r} is already consumed; a consumed run "
@@ -895,8 +1025,11 @@ class FrozenCoreGate:
         """Refuse the touch unless a validated Stage-2 ``ExecutionPlan`` authorizes it
         AND both receipts verify. Plan/scope validation runs before any receipt or
         ledger byte is read, so a paper-scale request — however labeled — is refused
-        first; then the run must be pre-registered in the exposure ledger and its
-        carrier must exist in the umbrella lock."""
+        first; then the run must be pre-registered in the exposure ledger (I2: the
+        row's carrier column must name the plan's carrier), and the carrier itself
+        must resolve to a genuine speech-dataset entry of this study's scope in the
+        umbrella lock (never a model entry, never a general-audio asset, never an
+        entry whose scope cannot be proven)."""
 
         if type(plan) is not ExecutionPlan:
             raise ExecutionScopeError(
@@ -911,10 +1044,6 @@ class FrozenCoreGate:
                 f"touch; model-facing Stage-2 profiles are {sorted(MODEL_TOUCH_PROFILES)}"
             )
         self._require_exposure_preregistration(plan)
-        if plan.carrier_lock_key not in self._lock_asset_names():
-            raise GateClosed(
-                f"carrier lock key {plan.carrier_lock_key!r} is not in the umbrella "
-                "datasets lock"
-            )
+        self._resolve_carrier_dataset_entry(plan.carrier_lock_key)
         self._validate_e0()
         self._validate_runtime()

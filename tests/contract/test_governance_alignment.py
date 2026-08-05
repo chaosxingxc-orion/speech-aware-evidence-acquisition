@@ -150,12 +150,31 @@ def test_dataset_and_model_configs_reference_lock_keys_only():
 
 
 def test_general_audio_assets_cannot_enter_executable_surface():
+    """No source file may name a general-audio asset directly.
+
+    The T2 carrier-scope gate (``contracts.general_audio_deny_lock_keys``) reads the
+    excluded-carrier list from ``configs/experiment/e0-model-free-closure.yaml`` at
+    verification time rather than hard-coding it — the same single-source discipline
+    ``e0/d2_leakage.py`` already enforces as a negative control — so package source
+    never needs to mention these names at all. The only permitted occurrences of the
+    three excluded names are inside that config file and inside refusal tests (this
+    scan covers ``src/`` only, so config and test occurrences are outside its scope
+    by construction); this test additionally proves the gate's denylist function
+    resolves to exactly those three names against the real config.
+    """
+
     forbidden = {"fsd50k", "audioset-metadata-features", "esc-50"}
     source_text = "\n".join(
         path.read_text(encoding="utf-8")
         for path in sorted((REPO_ROOT / "src").rglob("*.py"))
     ).lower()
     assert not any(name in source_text for name in forbidden)
+
+    from speech_aware_evidence_acquisition.contracts import general_audio_deny_lock_keys
+
+    assert general_audio_deny_lock_keys(REPO_ROOT) == frozenset(forbidden), (
+        "the config-derived denylist must resolve to exactly the excluded general-audio assets"
+    )
 
     configured_lock_keys = set()
     for path in sorted((REPO_ROOT / "configs").rglob("*.yaml")):

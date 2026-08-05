@@ -108,6 +108,7 @@ class SyntheticWorld:
             "datasets": [
                 {
                     "name": "earnings21-original",
+                    "kind": "dataset",
                     "local_subdir": "datasets/earnings21-22/earnings21",
                     "license": "CC-BY-SA-4.0",
                     "lifecycle": "STAGE2_CORE",
@@ -119,6 +120,7 @@ class SyntheticWorld:
                 },
                 {
                     "name": "earnings22-original",
+                    "kind": "dataset",
                     "local_subdir": "datasets/earnings21-22/earnings22",
                     "license": "CC-BY-SA-4.0",
                     "lifecycle": "STAGE2_CORE",
@@ -130,14 +132,19 @@ class SyntheticWorld:
                 },
                 {
                     "name": "conec",
+                    "kind": "dataset",
                     "local_subdir": "datasets/conec",
                     "license": "paper CC-BY-NC-4.0",
                     "lifecycle": "STAGE2_CORE",
                     "profiles": ["speech-aware-core"],
                 },
-                {"name": "fsd50k", "profiles": ["retained-cross-domain"]},
-                {"name": "audioset-metadata-features", "profiles": ["retained-cross-domain"]},
-                {"name": "esc-50", "profiles": ["retained-cross-domain"]},
+                {"name": "fsd50k", "kind": "dataset", "profiles": ["retained-cross-domain"]},
+                {
+                    "name": "audioset-metadata-features",
+                    "kind": "dataset",
+                    "profiles": ["retained-cross-domain"],
+                },
+                {"name": "esc-50", "kind": "dataset", "profiles": ["retained-cross-domain"]},
             ],
             "models": [],
         }
