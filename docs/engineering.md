@@ -87,6 +87,27 @@ the frozen scoring sources and the runtime set at every touch attempt, and
 chain, scoring freeze, runtime coherence) in CI on every push. Scoring is frozen for
 per-segment units; whole-call alignment is out of scope for `saea-scoring-v1`.
 
+## R0 engineering baseline (delivered 2026-08-05)
+
+Two-layer structure (owner direction 2026-08-05: maximize reuse, no
+fragmentation). Layer 1 — ONE foundation package `core/`: one `Registry`
+mechanism with five seams (CARRIERS, EVIDENCE_SOURCES, TRANSPORTS, POLICIES,
+SCORERS), one gate-bound request path (`FrozenCoreAdapter` — D2 allowlist
+exact-set choke point, per-plan budget metering), one experiment driver
+(`core.driver.run_experiment`), append-only trace sink (repo-refusal), lazy
+MLflow linkage + umbrella ledger-row renderer. Shared data layer:
+`data/splits.py` (frozen partition, receipt `docs/receipts/splits.json`,
+hash convention identical to the E0 ledger row), `data/references.py`
+(scoring-side; only `core/scorers.py` may import it — AST contract test).
+Layer 2 — experiments are configuration: four disjoint JSON fragments
+(`configs/{model,dataset,baseline,experiment}/`); a new experiment is config
+plus at most one newly registered component. Policies compose over the three
+D2-frozen arm shapes; only `fixed` is implemented (X1/X3/X4 policies register
+later without driver changes). Entrypoints `scripts/reproduce.sh` /
+`scripts/evaluate.sh` are functional and model-free. First model touch:
+`docs/runbooks/2026-08-05-r0-smoke.md` (owner-visible; requires ExecutionPlan
++ pre-registered exposure row; not executed by the delivery plan).
+
 ## Quality gate
 
 `pytest` must collect at least one test and pass (CI treats pytest exit code 5 — no tests
