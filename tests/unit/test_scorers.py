@@ -1,18 +1,23 @@
 """Scorer adapters over the frozen stack; transition accounting from hit masks."""
 
+import contextlib
 import json
+import subprocess
+from pathlib import Path
 
 import pytest
 
+from speech_aware_evidence_acquisition.contracts import GateClosed
 from speech_aware_evidence_acquisition.core import scorers  # noqa: F401 (registration)
 from speech_aware_evidence_acquisition.core.base import SCORERS
-from speech_aware_evidence_acquisition.core.bundle import VerifiedBundle
+from speech_aware_evidence_acquisition.core.bundle import BundleError, VerifiedBundle
 from speech_aware_evidence_acquisition.core.scorers import (
     ScoringPhaseError,
     score_bundle,
     transition_report,
 )
 from speech_aware_evidence_acquisition.data.lock import load_lock
+from speech_aware_evidence_acquisition.e0.artifacts import REPO_ROOT
 
 
 def _write_outputs(tmp_path, rows):
@@ -21,6 +26,51 @@ def _write_outputs(tmp_path, rows):
         "".join(json.dumps(row, sort_keys=True) + "\n" for row in rows), encoding="utf-8"
     )
     return path
+
+
+def _git(repo_root: Path, *args: str) -> None:
+    subprocess.run(["git", *args], cwd=repo_root, check=True, capture_output=True, text=True)
+
+
+@pytest.fixture()
+def clean_repo_root(tmp_path):
+    """An isolated, ACTUAL git repo distinct from this checkout's own
+    REPO_ROOT -- used only for score_bundle's clean-study-repo check
+    (core.bundle.require_clean_study_repo), never for the D3/scope check
+    (which is always the real REPO_ROOT -- see
+    core.scorers._assert_scoring_entry_gate's docstring for why). Isolating
+    this check keeps these tests deterministic regardless of this checkout's
+    own ambient git status during concurrent development."""
+
+    repo_root = tmp_path / "clean-repo"
+    repo_root.mkdir()
+    _git(repo_root, "init", "-q")
+    _git(repo_root, "config", "user.email", "test@example.com")
+    _git(repo_root, "config", "user.name", "Test")
+    (repo_root / ".keep").write_text("", encoding="utf-8")
+    _git(repo_root, "add", "-A")
+    _git(repo_root, "commit", "-q", "-m", "init")
+    return repo_root
+
+
+@contextlib.contextmanager
+def _tamper_real_scoring_source():
+    """CRITICAL-fix probes (round-2 external-threat-model review) need to
+    prove score_bundle refuses when a REAL frozen scoring source is edited --
+    the D3 freeze is bound to THIS checkout's actual scoring/ package, not
+    any synthetic stand-in (see _assert_scoring_entry_gate's docstring).
+    Mirrors the established, self-cleaning pattern already used against the
+    real gate in tests/contract/test_real_receipts.py: the file is restored
+    to its EXACT original bytes in `finally`, so this never leaves the
+    checkout modified even if the assertion inside the `with` block fails."""
+
+    path = REPO_ROOT / "src" / "speech_aware_evidence_acquisition" / "scoring" / "wer.py"
+    original = path.read_bytes()
+    try:
+        path.write_bytes(original + b"\n# tampered-by-round2-review-test\n")
+        yield path
+    finally:
+        path.write_bytes(original)
 
 
 def test_asr_wer_scores_against_references(synthetic_world, tmp_path):
@@ -115,28 +165,35 @@ def test_score_bundle_refuses_anything_but_a_verified_bundle(tmp_path, synthetic
         score_bundle(not_a_bundle, lock, synthetic_world.data_root)
 
 
-def test_score_bundle_runs_configured_scorers_over_a_genuine_bundle(tmp_path, synthetic_world):
+_VALID_PLAN_META = {"carrier_lock_key": "earnings21-original"}
+
+
+def test_score_bundle_runs_configured_scorers_over_a_genuine_bundle(
+    tmp_path, synthetic_world, clean_repo_root
+):
     outputs = _outputs_path(tmp_path, synthetic_world)
     lock = load_lock(synthetic_world.lock_path)
     bundle = VerifiedBundle(
         manifest_path=tmp_path / "fake.run-manifest.json",
-        manifest={"scorers": ["asr-wer"]},
+        manifest={"scorers": ["asr-wer"], "plan": _VALID_PLAN_META},
         outputs_path=outputs,
         outputs_rows=(),
         trace_records={},
         split_ids=frozenset({"4000001"}),
         attempt_state="OPENED",
     )
-    results = score_bundle(bundle, lock, synthetic_world.data_root)
+    results = score_bundle(bundle, lock, synthetic_world.data_root, repo_root=clean_repo_root)
     assert results == {"asr-wer": SCORERS.resolve("asr-wer")(outputs, lock, synthetic_world.data_root)}
 
 
-def test_score_bundle_refuses_when_no_scorers_are_configured(tmp_path, synthetic_world):
+def test_score_bundle_refuses_when_no_scorers_are_configured(
+    tmp_path, synthetic_world, clean_repo_root
+):
     outputs = _outputs_path(tmp_path, synthetic_world)
     lock = load_lock(synthetic_world.lock_path)
     bundle = VerifiedBundle(
         manifest_path=tmp_path / "fake.run-manifest.json",
-        manifest={"scorers": []},
+        manifest={"scorers": [], "plan": _VALID_PLAN_META},
         outputs_path=outputs,
         outputs_rows=(),
         trace_records={},
@@ -144,7 +201,73 @@ def test_score_bundle_refuses_when_no_scorers_are_configured(tmp_path, synthetic
         attempt_state="OPENED",
     )
     with pytest.raises(ScoringPhaseError, match="no configured scorers"):
-        score_bundle(bundle, lock, synthetic_world.data_root)
+        score_bundle(bundle, lock, synthetic_world.data_root, repo_root=clean_repo_root)
+
+
+# ---------------------------------------------------------------------------
+# CRITICAL fix (round-2 external-threat-model review): score_bundle now
+# re-verifies the D3 scoring-source freeze, this study's speech-only carrier
+# scope, and a clean study tree BEFORE any scorer runs -- see
+# core.scorers._assert_scoring_entry_gate's docstring. Required probes: edit
+# a frozen scoring source -> refuse; a general-audio carrier -> refuse; a
+# dirty tree -> refuse; an unmodified tree + legitimate bundle (the tests
+# just above) -> still scores.
+# ---------------------------------------------------------------------------
+
+
+def test_score_bundle_refuses_when_a_frozen_scoring_source_is_edited(
+    tmp_path, synthetic_world, clean_repo_root
+):
+    outputs = _outputs_path(tmp_path, synthetic_world)
+    lock = load_lock(synthetic_world.lock_path)
+    bundle = VerifiedBundle(
+        manifest_path=tmp_path / "fake.run-manifest.json",
+        manifest={"scorers": ["asr-wer"], "plan": _VALID_PLAN_META},
+        outputs_path=outputs,
+        outputs_rows=(),
+        trace_records={},
+        split_ids=frozenset({"4000001"}),
+        attempt_state="OPENED",
+    )
+    with _tamper_real_scoring_source():
+        with pytest.raises(GateClosed, match="freeze drift"):
+            score_bundle(bundle, lock, synthetic_world.data_root, repo_root=clean_repo_root)
+
+
+def test_score_bundle_refuses_a_general_audio_carrier(tmp_path, synthetic_world, clean_repo_root):
+    outputs = _outputs_path(tmp_path, synthetic_world)
+    lock = json.loads(Path(synthetic_world.lock_path).read_text(encoding="utf-8"))
+    lock["datasets"].append(
+        {"name": "fsd50k", "kind": "dataset", "profiles": ["retained-cross-domain"]}
+    )
+    bundle = VerifiedBundle(
+        manifest_path=tmp_path / "fake.run-manifest.json",
+        manifest={"scorers": ["asr-wer"], "plan": {"carrier_lock_key": "fsd50k"}},
+        outputs_path=outputs,
+        outputs_rows=(),
+        trace_records={},
+        split_ids=frozenset({"4000001"}),
+        attempt_state="OPENED",
+    )
+    with pytest.raises(GateClosed, match="general-audio"):
+        score_bundle(bundle, lock, synthetic_world.data_root, repo_root=clean_repo_root)
+
+
+def test_score_bundle_refuses_a_dirty_study_repo(tmp_path, synthetic_world, clean_repo_root):
+    outputs = _outputs_path(tmp_path, synthetic_world)
+    lock = load_lock(synthetic_world.lock_path)
+    (clean_repo_root / "uncommitted.txt").write_text("dirty", encoding="utf-8")
+    bundle = VerifiedBundle(
+        manifest_path=tmp_path / "fake.run-manifest.json",
+        manifest={"scorers": ["asr-wer"], "plan": _VALID_PLAN_META},
+        outputs_path=outputs,
+        outputs_rows=(),
+        trace_records={},
+        split_ids=frozenset({"4000001"}),
+        attempt_state="OPENED",
+    )
+    with pytest.raises(BundleError, match="uncommitted"):
+        score_bundle(bundle, lock, synthetic_world.data_root, repo_root=clean_repo_root)
 
 
 # ---------------------------------------------------------------------------
@@ -230,7 +353,9 @@ def test_cost_scorer_refuses_manifest_with_no_cost_block(tmp_path):
         SCORERS.resolve("cost")(outputs_path, {}, tmp_path)
 
 
-def test_score_bundle_runs_the_cost_scorer_over_a_genuine_bundle(tmp_path, synthetic_world):
+def test_score_bundle_runs_the_cost_scorer_over_a_genuine_bundle(
+    tmp_path, synthetic_world, clean_repo_root
+):
     outputs = _outputs_path(tmp_path, synthetic_world)  # tmp_path / "x.outputs.jsonl"
     cost = {
         "calls_used": 1,
@@ -243,14 +368,14 @@ def test_score_bundle_runs_the_cost_scorer_over_a_genuine_bundle(tmp_path, synth
     lock = load_lock(synthetic_world.lock_path)
     bundle = VerifiedBundle(
         manifest_path=tmp_path / "fake.run-manifest.json",
-        manifest={"scorers": ["cost"]},
+        manifest={"scorers": ["cost"], "plan": _VALID_PLAN_META},
         outputs_path=outputs,
         outputs_rows=(),
         trace_records={},
         split_ids=frozenset({"4000001"}),
         attempt_state="OPENED",
     )
-    results = score_bundle(bundle, lock, synthetic_world.data_root)
+    results = score_bundle(bundle, lock, synthetic_world.data_root, repo_root=clean_repo_root)
     assert results == {"cost": {"per_sample": [], "aggregate": cost}}
 
 

@@ -633,7 +633,9 @@ _REQUIRED_OUTPUTS_FIELDS = frozenset(
 )
 
 
-def _verify_outputs(raw: bytes | None, split_ids: frozenset) -> tuple[Mapping[str, object], ...]:
+def _verify_outputs(
+    raw: bytes | None, split_ids: frozenset, carrier_lock_key: str, arm: str
+) -> tuple[Mapping[str, object], ...]:
     if raw is None:
         return ()
     try:
@@ -655,6 +657,37 @@ def _verify_outputs(raw: bytes | None, split_ids: frozenset) -> tuple[Mapping[st
         missing = _REQUIRED_OUTPUTS_FIELDS - set(row)
         if missing:
             raise BundleError(f"outputs line {number} lacks required fields {sorted(missing)}")
+        # IMPORTANT fix (round-2 external-threat-model review): an outputs
+        # row's own carrier_lock_key/arm must BIND to the manifest's
+        # VERIFIED split carrier/arm, never merely be internally present.
+        # Before this, verify_bundle only checked that carrier_lock_key
+        # existed on each row -- core.scorers.score_asr_outputs then resolves
+        # the reference corpus straight from that unverified field.
+        # Demonstrated: a manifest split carrier of earnings21-original with
+        # every outputs row rewritten to carrier_lock_key=earnings22-original
+        # (text and every row hash left untouched, only the outer outputs
+        # artifact hash recomputed) verified successfully and scored a
+        # "totally wrong" hypothesis against the OTHER carrier's references
+        # (mean_wer=0.0) -- an internally inconsistent bundle that
+        # verify_bundle had no check that would ever notice. `arm` is bound
+        # the same way: it is load-bearing for the protocol_hash
+        # re-derivation below, so an outputs row silently disagreeing with
+        # the manifest's own arm must refuse too, not merely be ignored.
+        row_carrier = row["carrier_lock_key"]
+        if row_carrier != carrier_lock_key:
+            raise BundleError(
+                f"outputs row {row.get('sample_id')!r} carrier_lock_key {row_carrier!r} "
+                "does not match the manifest's verified split carrier_lock_key "
+                f"{carrier_lock_key!r} -- an outputs row must bind to the split it claims "
+                "to belong to, never merely carry some carrier value of its own (I7 round-2)"
+            )
+        row_arm = row["arm"]
+        if row_arm != arm:
+            raise BundleError(
+                f"outputs row {row.get('sample_id')!r} arm {row_arm!r} does not match the "
+                f"manifest's own arm {arm!r} -- arm is load-bearing for the protocol-hash "
+                "re-derivation and must bind to the manifest, not merely be present"
+            )
         text_value = row["text"]
         if not isinstance(text_value, str):
             raise BundleError(f"outputs line {number} field 'text' must be a string")
@@ -900,7 +933,16 @@ def verify_bundle(manifest_path: Path) -> VerifiedBundle:
         )
     split_ids = frozenset(raw_ids)
 
-    outputs_rows = _verify_outputs(outputs_raw, split_ids)
+    # I7 round-2 (IMPORTANT fix): the manifest's own 'arm' field is validated
+    # HERE -- moved up from its former position further below, where it fed
+    # only the protocol_hash recompute -- so it, alongside the verified split
+    # carrier, can bind each outputs row before that row is ever accepted.
+    # See _verify_outputs's own comment for exactly what this closes.
+    arm = manifest.get("arm")
+    if not isinstance(arm, str) or not arm.strip():
+        raise BundleError("run manifest lacks a usable 'arm' field (I-1)")
+
+    outputs_rows = _verify_outputs(outputs_raw, split_ids, split_carrier_lock_key, arm)
     trace_records = _verify_raw_trace(raw_trace_raw, trace_manifest_raw)
     _verify_outputs_trace_binding(outputs_rows, trace_records)
 
@@ -956,9 +998,8 @@ def verify_bundle(manifest_path: Path) -> VerifiedBundle:
     # sample set the protocol_hash was never actually minted against: the
     # stale protocol_hash (still describing the ORIGINAL split) disagrees
     # with this recomputation and refuses.
-    arm = manifest.get("arm")
-    if not isinstance(arm, str) or not arm.strip():
-        raise BundleError("run manifest lacks a usable 'arm' field (I-1)")
+    # 'arm' was already extracted and validated above (before _verify_outputs
+    # was called, so it could bind each outputs row too).
     config_meta = manifest.get("config")
     if not isinstance(config_meta, Mapping) or not isinstance(config_meta.get("config_hash"), str):
         raise BundleError("run manifest lacks a usable config.config_hash")
@@ -1071,6 +1112,7 @@ def finalize_bundle(
     lock: Mapping[str, object],
     root: Path,
     *,
+    repo_root: Path = REPO_ROOT,
     ledger_cells: Mapping[str, str] | None = None,
     tracking_uri: str | None = None,
     mlflow_metrics: Mapping[str, float] | None = None,
@@ -1081,7 +1123,16 @@ def finalize_bundle(
     COMPLETED AND the attempt's durable state file (re-read fresh, never
     trusted from the manifest) is OPENED -- the latter is the authoritative
     check: a hand-edited manifest claiming COMPLETED cannot finalize an
-    attempt whose actual on-disk state is ABORTED."""
+    attempt whose actual on-disk state is ABORTED.
+
+    ``repo_root`` (CRITICAL fix, round-2 external-threat-model review) is
+    threaded straight into :func:`core.scorers.score_bundle`, which re-verifies
+    the D3 scoring-source freeze, this study's speech-only carrier scope, and
+    a clean study tree BEFORE any scorer runs or anything is written -- see
+    ``core.scorers._assert_scoring_entry_gate``'s docstring. Default
+    ``REPO_ROOT`` matches every other real-run entry point (e.g.
+    ``run_experiment_bundled``'s own ``repo_root`` parameter); tests may
+    override it to point at an isolated synthetic repo."""
 
     # Repo confinement (IMPORTANT fix, T6 fix round), checked independently
     # here too -- defense in depth mirroring build_manifest's own check,
@@ -1104,7 +1155,7 @@ def finalize_bundle(
             "manifest's self-reported status, is authoritative (I7)"
         )
 
-    scores = score_bundle(bundle, lock, root)
+    scores = score_bundle(bundle, lock, root, repo_root=repo_root)
     run_dir = Path(manifest_path).resolve().parent
     run_id = str(bundle.manifest["run_id"])
     scores_path = run_dir / f"{run_id}.scores.json"

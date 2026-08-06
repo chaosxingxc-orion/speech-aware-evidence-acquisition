@@ -41,6 +41,7 @@ L1.  a non-empty trace missing exactly one outputs row's {request_id}/request
      record (previously hedged, so a forged request_sha256 passed) -> refused.
 """
 
+import contextlib
 import hashlib
 import json
 import shutil
@@ -51,7 +52,7 @@ from pathlib import Path
 import pytest
 
 import speech_aware_evidence_acquisition.core  # noqa: F401 (populate registries)
-from speech_aware_evidence_acquisition.contracts import ExecutionPlan
+from speech_aware_evidence_acquisition.contracts import ExecutionPlan, GateClosed
 from speech_aware_evidence_acquisition.core.attempts import AttemptError, AttemptHandle, AttemptStore
 from speech_aware_evidence_acquisition.core.bundle import (
     STATUS_ABORTED,
@@ -130,6 +131,27 @@ def _plan(split_hash, **overrides):
 
 def _git(repo_root: Path, *args: str) -> None:
     subprocess.run(["git", *args], cwd=repo_root, check=True, capture_output=True, text=True)
+
+
+@contextlib.contextmanager
+def _tamper_real_scoring_source():
+    """CRITICAL-fix probes (round-2 external-threat-model review): prove
+    finalize_bundle/score_bundle/the CLI scoring paths refuse when a REAL
+    frozen scoring source is edited -- the D3 freeze binds THIS checkout's
+    actual scoring/ package (see core.scorers._assert_scoring_entry_gate's
+    docstring), never any synthetic stand-in. Mirrors the established,
+    self-cleaning pattern already used against the real gate in
+    tests/contract/test_real_receipts.py: the file is restored to its EXACT
+    original bytes in `finally`, so this never leaves the checkout modified
+    even if the assertion inside the `with` block fails."""
+
+    path = REPO_ROOT / "src" / "speech_aware_evidence_acquisition" / "scoring" / "wer.py"
+    original = path.read_bytes()
+    try:
+        path.write_bytes(original + b"\n# tampered-by-round2-review-test\n")
+        yield path
+    finally:
+        path.write_bytes(original)
 
 
 def _git_init_commit(repo_root: Path) -> None:
@@ -404,6 +426,59 @@ def test_verify_bundle_refuses_a_duplicate_sample_id(synthetic_world, bundled_re
 
 
 # ---------------------------------------------------------------------------
+# IMPORTANT fix (round-2 external-threat-model review): an outputs row's own
+# carrier_lock_key/arm must BIND to the manifest's verified split
+# carrier/arm, never merely be internally present.
+#
+# Demonstrated PoC: manifest split carrier earnings21-original, outputs rows
+# rewritten to carrier_lock_key=earnings22-original (text and every row hash
+# untouched, only the outer outputs artifact hash re-hashed) -- verify_bundle
+# ACCEPTED this and finalize scored a "totally wrong" hypothesis against the
+# OTHER carrier's references. The bundle is internally inconsistent; this is
+# not the already-disclosed forged-bundle boundary (core.bundle's own
+# ACCEPTED SCOPE BOUNDARY docstring), since nothing here requires forging an
+# external anchor -- only rewriting a field verify_bundle never checked.
+# ---------------------------------------------------------------------------
+
+
+def test_verify_bundle_refuses_an_outputs_row_carrier_that_disagrees_with_the_split(
+    synthetic_world, bundled_repo, tmp_path
+):
+    manifest_path, composed, plan, lock = _run_completed(synthetic_world, bundled_repo, tmp_path)
+    manifest = _read_manifest(manifest_path)
+    assert manifest["split"]["carrier_lock_key"] == "earnings21-original"
+    outputs_path = Path(manifest["outputs"]["path"])
+    lines = _read_jsonl_lines(outputs_path)
+    row = json.loads(lines[0])
+    row["carrier_lock_key"] = "earnings22-original"
+    lines[0] = json.dumps(row, ensure_ascii=False, sort_keys=True)
+    _write_jsonl_lines(outputs_path, lines)
+    _rehash_manifest_entry(manifest_path, "outputs")
+    with pytest.raises(BundleError, match="carrier_lock_key"):
+        verify_bundle(manifest_path)
+
+
+def test_verify_bundle_refuses_an_outputs_row_arm_that_disagrees_with_the_manifest(
+    synthetic_world, bundled_repo, tmp_path
+):
+    """Minor (same review round): arm is load-bearing for the protocol-hash
+    re-derivation and must bind to the manifest's own arm, not merely be
+    present on each row."""
+
+    manifest_path, composed, plan, lock = _run_completed(synthetic_world, bundled_repo, tmp_path)
+    manifest = _read_manifest(manifest_path)
+    outputs_path = Path(manifest["outputs"]["path"])
+    lines = _read_jsonl_lines(outputs_path)
+    row = json.loads(lines[0])
+    row["arm"] = "some-other-arm"
+    lines[0] = json.dumps(row, ensure_ascii=False, sort_keys=True)
+    _write_jsonl_lines(outputs_path, lines)
+    _rehash_manifest_entry(manifest_path, "outputs")
+    with pytest.raises(BundleError, match="arm"):
+        verify_bundle(manifest_path)
+
+
+# ---------------------------------------------------------------------------
 # Required probe 3: trace manifest not matching the raw trace.
 # ---------------------------------------------------------------------------
 
@@ -527,7 +602,10 @@ def test_ledger_row_for_bundle_accepts_a_matching_hand_supplied_cell(
     good_cells = {**_HUMAN_LEDGER_CELLS, "study commit": bundle.manifest["study_commit"]}
     row, merged = ledger_row_for_bundle(bundle, good_cells)
     assert merged["study commit"] == bundle.manifest["study_commit"]
-    assert merged["consumed"] == "yes"
+    # IMPORTANT fix (round-2 external-threat-model review): a dev/discovery
+    # bundle (the only kind Stage-2 can ever produce) must derive "no", not
+    # the old hard-coded "yes".
+    assert merged["consumed"] == "no"
     assert row.startswith("|") and row.endswith("|")
 
 
@@ -537,9 +615,11 @@ def test_ledger_row_for_bundle_accepts_a_matching_hand_supplied_cell(
 
 
 def test_finalize_bundle_end_to_end_produces_a_ledger_row(synthetic_world, bundled_repo, tmp_path):
+    _, repo_root = bundled_repo
     manifest_path, composed, plan, lock = _run_completed(synthetic_world, bundled_repo, tmp_path)
     result = finalize_bundle(
-        manifest_path, lock, synthetic_world.data_root, ledger_cells=_HUMAN_LEDGER_CELLS
+        manifest_path, lock, synthetic_world.data_root, repo_root=repo_root,
+        ledger_cells=_HUMAN_LEDGER_CELLS,
     )
     assert result.scores_path.is_file()
     assert result.ledger_markdown_path.is_file()
@@ -554,7 +634,11 @@ def test_finalize_bundle_end_to_end_produces_a_ledger_row(synthetic_world, bundl
     assert scores["asr-wer"]["aggregate"]["samples"] == 3
 
     ledger_cells = json.loads(result.ledger_json_path.read_text(encoding="utf-8"))
-    assert ledger_cells["consumed"] == "yes"
+    # IMPORTANT fix (round-2 external-threat-model review): `consumed` means
+    # CONFIRMATORY exposure was read, never "this bundle finalized" -- this
+    # is a dev/discovery bundle (the only kind Stage-2 can ever produce), so
+    # it must derive "no", not the old hard-coded "yes".
+    assert ledger_cells["consumed"] == "no"
     assert ledger_cells["experiment_id"] == "SAEA-E-000"
 
     store = AttemptStore(synthetic_world.data_root / "attempts")
@@ -563,13 +647,17 @@ def test_finalize_bundle_end_to_end_produces_a_ledger_row(synthetic_world, bundl
     # A second finalize on the identical manifest must now refuse -- the
     # attempt is no longer OPENED.
     with pytest.raises(BundleError, match="FINALIZED"):
-        finalize_bundle(manifest_path, lock, synthetic_world.data_root, ledger_cells=_HUMAN_LEDGER_CELLS)
+        finalize_bundle(
+            manifest_path, lock, synthetic_world.data_root, repo_root=repo_root,
+            ledger_cells=_HUMAN_LEDGER_CELLS,
+        )
 
 
 def test_finalize_bundle_uploads_via_stubbed_mlflow(synthetic_world, bundled_repo, tmp_path, monkeypatch):
     import sys
     import types
 
+    _, repo_root = bundled_repo
     manifest_path, composed, plan, lock = _run_completed(
         synthetic_world, bundled_repo, tmp_path, run_id="SAEA-E-000-mlflow",
         attempt_id="attempt-mlflow", run_dir_name="run-mlflow",
@@ -594,7 +682,7 @@ def test_finalize_bundle_uploads_via_stubbed_mlflow(synthetic_world, bundled_rep
     monkeypatch.setitem(sys.modules, "mlflow", stub)
 
     result = finalize_bundle(
-        manifest_path, lock, synthetic_world.data_root,
+        manifest_path, lock, synthetic_world.data_root, repo_root=repo_root,
         ledger_cells=_HUMAN_LEDGER_CELLS, tracking_uri=str(tmp_path / "mlruns"),
     )
     assert result.mlflow_run_id == "mlrun-bundle-1"
@@ -877,6 +965,90 @@ def test_cli_score_refuses_both_manifest_and_outputs_together(tmp_path):
 def test_cli_score_refuses_neither_manifest_nor_outputs():
     with pytest.raises(SystemExit):
         driver_main(["score"])
+
+
+# ===========================================================================
+# CRITICAL fix (round-2 external-threat-model review): the D3 scoring-source
+# freeze and this study's speech-only scope controls were reachable ONLY via
+# the model-touch gate (contracts.assert_model_touch_allowed -> the
+# `saea-driver run` process, which computes no scores) -- the processes that
+# DO score (finalize_bundle, score_bundle, `saea-driver score --manifest`,
+# `saea-driver finalize`) constructed no gate at all. Required probes: edit a
+# frozen scoring source -> refuse, at EVERY one of those four entry points; a
+# dirty tree -> refuse; unmodified tree + legitimate bundle -> still
+# finalizes (already covered by the still-passing end-to-end tests above and
+# the CLI-authoritative test below). The general-audio-carrier probe is
+# exercised directly against score_bundle in tests/unit/test_scorers.py
+# (finalize_bundle/both CLI paths inherit it for free, since all three call
+# score_bundle -- not duplicated here).
+# ===========================================================================
+
+
+def test_finalize_bundle_refuses_when_a_frozen_scoring_source_is_edited(
+    synthetic_world, bundled_repo, tmp_path
+):
+    _, repo_root = bundled_repo
+    manifest_path, composed, plan, lock = _run_completed(synthetic_world, bundled_repo, tmp_path)
+    with _tamper_real_scoring_source():
+        with pytest.raises(GateClosed, match="freeze drift"):
+            finalize_bundle(manifest_path, lock, synthetic_world.data_root, repo_root=repo_root)
+    # No lingering write from the refused attempt: it must still be OPENED,
+    # not FINALIZED, and a legitimate finalize must still succeed afterward.
+    store = AttemptStore(synthetic_world.data_root / "attempts")
+    assert store.handle(plan.run_id, plan.attempt_id).state() == "OPENED"
+    result = finalize_bundle(
+        manifest_path, lock, synthetic_world.data_root, repo_root=repo_root,
+        ledger_cells=_HUMAN_LEDGER_CELLS,
+    )
+    assert result.attempt_state == "FINALIZED"
+
+
+def test_finalize_bundle_refuses_a_dirty_study_repo_at_scoring_time(
+    synthetic_world, bundled_repo, tmp_path
+):
+    """The clean-tree requirement applies at SCORING time too, not merely at
+    run time: the D3 freeze covers only scoring/*.py, but score_asr_outputs
+    also imports data.references.reference_tokens, which lives outside that
+    frozen package -- an uncommitted edit there would defeat the freeze
+    check alone, so finalize_bundle must independently refuse a dirty study
+    tree before scoring anything (same rule the run path already enforces
+    before spending any budget)."""
+
+    _, repo_root = bundled_repo
+    manifest_path, composed, plan, lock = _run_completed(synthetic_world, bundled_repo, tmp_path)
+    (repo_root / "uncommitted-at-scoring-time.txt").write_text("dirty", encoding="utf-8")
+    with pytest.raises(BundleError, match="uncommitted"):
+        finalize_bundle(manifest_path, lock, synthetic_world.data_root, repo_root=repo_root)
+
+
+def test_cli_score_manifest_mode_refuses_when_a_frozen_scoring_source_is_edited(
+    synthetic_world, bundled_repo, tmp_path, monkeypatch
+):
+    manifest_path, composed, plan, lock = _run_completed(synthetic_world, bundled_repo, tmp_path)
+    monkeypatch.setenv("SPEECHRL_DATA_DIR", str(synthetic_world.data_root))
+    monkeypatch.setattr(
+        "speech_aware_evidence_acquisition.data.lock.umbrella_lock_path",
+        lambda *a, **k: synthetic_world.lock_path,
+    )
+    with _tamper_real_scoring_source():
+        with pytest.raises(GateClosed, match="freeze drift"):
+            driver_main(["score", "--manifest", str(manifest_path)])
+
+
+def test_cli_finalize_refuses_when_a_frozen_scoring_source_is_edited(
+    synthetic_world, bundled_repo, tmp_path, monkeypatch
+):
+    manifest_path, composed, plan, lock = _run_completed(synthetic_world, bundled_repo, tmp_path)
+    monkeypatch.setenv("SPEECHRL_DATA_DIR", str(synthetic_world.data_root))
+    monkeypatch.setattr(
+        "speech_aware_evidence_acquisition.data.lock.umbrella_lock_path",
+        lambda *a, **k: synthetic_world.lock_path,
+    )
+    with _tamper_real_scoring_source():
+        with pytest.raises(GateClosed, match="freeze drift"):
+            driver_main(["finalize", "--manifest", str(manifest_path)])
+    store = AttemptStore(synthetic_world.data_root / "attempts")
+    assert store.handle(plan.run_id, plan.attempt_id).state() == "OPENED"
 
 
 # ===========================================================================
@@ -1331,6 +1503,7 @@ def test_verify_bundle_and_finalize_still_accept_a_legitimate_bundle_after_i1(
     genuinely legitimate bundle -- verify AND finalize must still both
     succeed end to end."""
 
+    _, repo_root = bundled_repo
     manifest_path, composed, plan, lock = _run_completed(
         synthetic_world, bundled_repo, tmp_path, run_id="SAEA-E-000-i1legit",
         attempt_id="attempt-i1legit",
@@ -1338,7 +1511,8 @@ def test_verify_bundle_and_finalize_still_accept_a_legitimate_bundle_after_i1(
     bundle = verify_bundle(manifest_path)
     assert isinstance(bundle, VerifiedBundle)
     result = finalize_bundle(
-        manifest_path, lock, synthetic_world.data_root, ledger_cells=_HUMAN_LEDGER_CELLS
+        manifest_path, lock, synthetic_world.data_root, repo_root=repo_root,
+        ledger_cells=_HUMAN_LEDGER_CELLS,
     )
     assert result.attempt_state == "FINALIZED"
 

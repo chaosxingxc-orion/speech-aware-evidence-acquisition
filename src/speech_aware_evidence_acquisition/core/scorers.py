@@ -24,6 +24,7 @@ from pathlib import Path
 from typing import Mapping
 
 from ..data.references import reference_tokens
+from ..e0.artifacts import REPO_ROOT
 from ..scoring import align, tokens_v1
 from ..scoring.transitions import flag_transitions
 from .base import SCORERS
@@ -185,7 +186,96 @@ def score_cost_outputs(
 SCORERS.register("cost", score_cost_outputs)
 
 
-def score_bundle(bundle: object, lock: Mapping[str, object], root: Path) -> dict[str, object]:
+def _assert_scoring_entry_gate(
+    bundle: object, lock: Mapping[str, object], repo_root: Path
+) -> None:
+    """CRITICAL fix (round-2 external-threat-model review): re-verify, IN
+    THIS PROCESS, everything a model touch already proves before scoring
+    computes or writes anything.
+
+    Before this fix, ``contracts.FrozenCoreGate._validate_scoring_freeze``
+    was reachable ONLY via ``contracts.assert_model_touch_allowed`` -- the
+    ``saea-driver run`` process, which computes no scores. The processes
+    that DO score (``score_bundle``, and everything that calls it --
+    ``finalize_bundle``, ``saea-driver score --manifest``, ``saea-driver
+    finalize``) constructed no gate at all: with ``align()`` overridden to
+    always report a perfect transcription, the model-touch gate correctly
+    refused ("scoring freeze drift"), but ``finalize_bundle`` on the SAME
+    tree succeeded outright -- a scores artifact was written and the attempt
+    FINALIZED. The same root cause left the speech-only scope controls
+    (``general_audio_deny_lock_keys``, ``ALLOWED_CARRIER_PROFILES``), which
+    also live only inside ``assert_model_touch_allowed``, entirely absent
+    from the path that produces the FORMAL record.
+
+    This reuses -- never duplicates -- ``contracts.FrozenCoreGate``'s own
+    verification logic (``contracts.py`` is concurrently under edit as part
+    of this same review round, so no new hashing/scope logic is added here
+    or there; a future public ``contracts.assert_scoring_freeze``-style
+    function, if one lands, can replace this construction without changing
+    any caller of this function):
+
+    - ``_validate_e0()`` re-verifies the E0 closure receipt's D1-D4 artifact
+      hashes and, as part of D3, re-hashes every frozen scoring source
+      against the live tree and refuses any unlisted module under
+      ``scoring/`` (``FrozenCoreGate._validate_scoring_freeze``).
+    - ``_resolve_carrier_dataset_entry(carrier_lock_key, lock)`` is the SAME
+      speech-only scope check the model-touch gate applies: refuses a
+      general-audio deny-lock-key carrier, or one whose lock profiles do
+      not intersect this study's ``ALLOWED_CARRIER_PROFILES``.
+
+    Both methods only ever read ``self.e0_receipt``/``self.source_root``
+    (always the REAL checkout, ``REPO_ROOT`` -- the same package
+    ``core.scorers`` itself imports ``..scoring`` from; there is exactly one
+    scoring package actually executing, never a caller-supplied stand-in)
+    and the explicit ``lock`` passed in here; the gate's runtime/session-only
+    fields are never read by either method and are filled with an inert
+    placeholder (``FrozenCoreGate.for_study_repo``'s own ``repo_root``
+    argument, reused for all three positions).
+
+    ``repo_root`` additionally gates a plain clean-tree check
+    (``core.bundle.require_clean_study_repo`` -- the SAME rule the run path
+    already enforces before spending any budget). The D3 freeze covers only
+    ``scoring/*.py``: ``score_asr_outputs`` also imports
+    ``data.references.reference_tokens``, which lives OUTSIDE that frozen
+    package, so an uncommitted edit there would defeat the freeze check
+    alone. Unlike the E0/scope check, this DOES take ``repo_root`` as an
+    explicit parameter (default ``REPO_ROOT``, matching
+    ``run_experiment_bundled``'s own convention) so tests can point it at an
+    isolated synthetic repo rather than depending on this checkout's own
+    ambient git status.
+
+    Order matters here: the E0/D3 freeze (and carrier scope) check runs
+    BEFORE the clean-tree check, deliberately -- an uncommitted edit to a
+    tracked ``scoring/*.py`` file is ALSO, unavoidably, a dirty tree (the
+    file lives inside ``repo_root`` too), so checking clean-tree first would
+    surface a generic "uncommitted changes" refusal instead of the specific
+    "scoring freeze drift" one a reviewer probing the freeze itself expects.
+    Reversing the order does not weaken either guarantee: a dirty tree whose
+    only change is OUTSIDE ``scoring/`` (e.g. ``data/references.py``) still
+    reaches and trips the clean-tree check exactly as before.
+    """
+
+    from ..contracts import FrozenCoreGate
+    from .bundle import require_clean_study_repo
+
+    plan_meta = bundle.manifest.get("plan")
+    carrier_lock_key = (
+        plan_meta.get("carrier_lock_key") if isinstance(plan_meta, Mapping) else None
+    )
+    if not isinstance(carrier_lock_key, str) or not carrier_lock_key.strip():
+        raise ScoringPhaseError(
+            "verified bundle carries no usable plan.carrier_lock_key; refusing to score "
+            "an unscoped bundle"
+        )
+    gate = FrozenCoreGate.for_study_repo(REPO_ROOT, REPO_ROOT, REPO_ROOT)
+    gate._validate_e0()
+    gate._resolve_carrier_dataset_entry(carrier_lock_key, lock)
+    require_clean_study_repo(Path(repo_root))
+
+
+def score_bundle(
+    bundle: object, lock: Mapping[str, object], root: Path, *, repo_root: Path = REPO_ROOT
+) -> dict[str, object]:
     """Manifest-entry scoring seam (R0 repair T6, invariant I7): the ONLY way
     to reach a scorer through this function is with a genuine
     ``core.bundle.VerifiedBundle`` -- something only ``core.bundle.verify_bundle``
@@ -194,6 +284,12 @@ def score_bundle(bundle: object, lock: Mapping[str, object], root: Path) -> dict
     passed. A bare manifest path, a dict, or any other stand-in is refused
     before a single scorer runs -- "refuse to score an unverified bundle" is
     enforced structurally, not by convention.
+
+    Before any scorer runs, :func:`_assert_scoring_entry_gate` re-verifies (in
+    THIS process, which never otherwise constructs a
+    ``contracts.FrozenCoreGate``) the D3 scoring-source freeze, this study's
+    speech-only carrier scope, and a clean study tree -- see that function's
+    docstring for the CRITICAL finding this closes.
 
     Deferred import (not at module top level): ``core.bundle`` imports THIS
     module at its own top level (to call ``score_bundle`` from
@@ -212,6 +308,7 @@ def score_bundle(bundle: object, lock: Mapping[str, object], root: Path) -> dict
         )
     if bundle.outputs_path is None:
         raise ScoringPhaseError("verified bundle carries no outputs artifact to score")
+    _assert_scoring_entry_gate(bundle, lock, repo_root)
     scorer_names = bundle.manifest.get("scorers")
     if not isinstance(scorer_names, list) or not scorer_names:
         raise ScoringPhaseError("run manifest carries no configured scorers to run")

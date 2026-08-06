@@ -114,7 +114,11 @@ def test_bundle_ledger_cells_derives_only_the_machine_checkable_columns(tmp_path
     assert derived["protocol hash"] == "c" * 64
     assert derived["split role"] == "discovery"
     assert derived["split identity hash"] == "d" * 64
-    assert derived["consumed"] == "yes"
+    # IMPORTANT fix (round-2 external-threat-model review): `consumed` means
+    # CONFIRMATORY exposure was read, never "this bundle finalized" -- a
+    # dev/discovery split_role (the only kind Stage-2 can ever produce) must
+    # derive "no", not a hard-coded "yes".
+    assert derived["consumed"] == "no"
     assert derived["date"] == "2026-08-05"
     assert "outputs=" + "e" * 64 in derived["artifact hashes"]
     assert "raw_trace=" + "f" * 64 in derived["artifact hashes"]
@@ -146,6 +150,35 @@ def test_ledger_row_for_bundle_refuses_a_contradicting_hand_supplied_cell(tmp_pa
     bundle = _fake_bundle(tmp_path / "run" / "x.run-manifest.json")
     with pytest.raises(ValueError, match="contradict"):
         ledger_row_for_bundle(bundle, {"protocol hash": "0" * 64})
+
+
+# ---------------------------------------------------------------------------
+# IMPORTANT fix (round-2 external-threat-model review): `consumed` is derived
+# from the bundle's own verified split_role, never a hard-coded literal.
+# Probes: a dev bundle -> consumed=no; hand-supplying yes for a dev bundle
+# (the only kind Stage-2 can ever produce -- confirmatory is refused by
+# contracts.ExecutionPlan.validate before a bundle can even verify) ->
+# refused, so the study exposure ledger and the umbrella index row can never
+# contradict each other by construction.
+# ---------------------------------------------------------------------------
+
+
+def test_bundle_ledger_cells_consumed_is_no_for_a_dev_split(tmp_path):
+    from speech_aware_evidence_acquisition.core.tracking import bundle_ledger_cells
+
+    bundle = _fake_bundle(tmp_path / "run" / "x.run-manifest.json", plan={
+        "split_role": "dev", "execution_profile": "bounded-discovery-probe",
+        "carrier_lock_key": "earnings21-original",
+    })
+    assert bundle_ledger_cells(bundle)["consumed"] == "no"
+
+
+def test_ledger_row_for_bundle_refuses_a_hand_supplied_yes_consumed_for_a_dev_bundle(tmp_path):
+    from speech_aware_evidence_acquisition.core.tracking import ledger_row_for_bundle
+
+    bundle = _fake_bundle(tmp_path / "run" / "x.run-manifest.json")
+    with pytest.raises(ValueError, match="contradict"):
+        ledger_row_for_bundle(bundle, {"consumed": "yes"})
 
 
 def test_ledger_row_for_bundle_accepts_a_matching_hand_supplied_cell(tmp_path):

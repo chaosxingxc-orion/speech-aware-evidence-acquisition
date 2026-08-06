@@ -649,7 +649,7 @@ def test_real_composed_config_manifest_scorers_are_reachable_end_to_end(syntheti
     )
     bundle = verify_bundle(manifest_path)
     assert bundle.manifest["scorers"] == ["asr-wer", "cost"]
-    results = score_bundle(bundle, lock, synthetic_world.data_root)
+    results = score_bundle(bundle, lock, synthetic_world.data_root, repo_root=repo_root)
     assert set(results) == {"asr-wer", "cost"}
     assert results["asr-wer"]["aggregate"]["samples"] == 3
     assert results["cost"]["aggregate"]["calls_used"] == 3

@@ -136,26 +136,50 @@ def _artifact_hash_summary(manifest: Mapping[str, object]) -> str:
 def bundle_ledger_cells(bundle: "VerifiedBundle") -> dict[str, str]:
     """The subset of :data:`LEDGER_COLUMNS` strictly derivable from a
     verified run manifest -- study identity/config/protocol/split hashes,
-    the artifact location and every artifact's own hash, ``consumed`` (a
-    manifest only ever reaches this function via ``finalize_bundle``, which
-    is the one path that marks an attempt consumed), and ``date`` (from the
-    manifest's own ``created_at``). Deliberately NOT the full column set:
+    the artifact location and every artifact's own hash, ``consumed`` (see
+    below), and ``date`` (from the manifest's own ``created_at``).
+    Deliberately NOT the full column set:
     ``experiment_id``/``speech task/carrier``/``changed axes``/
     ``shared code revision``/``model rev``/``dataset rev``/``MLflow run``/
     ``effectiveness``/``reasonableness``/``efficiency``/``deviations``/
     ``decision`` are human judgment or external-index facts this module has
     no basis to invent, and stay the caller's responsibility.
+
+    ``consumed`` (IMPORTANT fix, round-2 external-threat-model review): this
+    column means CONFIRMATORY exposure -- ``docs/exposure-ledger.md``: "yes
+    only when confirmatory results were read; irreversible once yes; model-
+    free and discovery/dev rows write no" -- NEVER "this attempt reached
+    finalize_bundle". It was previously hard-coded ``"yes"`` unconditionally,
+    which contradicted that contract for every dev/discovery bundle
+    (demonstrated: a dev bundle finalized with machine cells reading
+    ``consumed=yes``, and supplying the truthful ``no`` by hand was REFUSED
+    as contradicting the "verified" manifest). Derived from the bundle's own
+    verified ``split_role`` instead of a bare literal, so it can never
+    silently drift from what the umbrella exposure-ledger contract actually
+    means: Stage-2 execution cannot even reach a ``confirmatory`` split_role
+    at all (``contracts.ExecutionPlan.validate`` refuses it, and
+    ``verify_bundle`` re-validates the plan block before this function is
+    ever reachable), so this is always ``"no"`` for any bundle this study's
+    code can produce today -- exactly matching what the exposure ledger's
+    own pre-registered row for that run must ALSO already say (pre-
+    registered, before any request, always ``no`` under the same Stage-2
+    guard), so the two audit records can no longer contradict each other by
+    construction. Were a ``confirmatory`` split_role to ever reach this
+    function despite that guard, it would correctly report ``"yes"`` rather
+    than lying ``"no"``.
     """
 
     manifest = bundle.manifest
     created_at = str(manifest.get("created_at") or "")
+    split_role = str(manifest["plan"]["split_role"])
+    consumed = "yes" if split_role == "confirmatory" else "no"
     return {
         "study commit": str(manifest["study_commit"]),
         "config hash": str(manifest["config"]["config_hash"]),
         "protocol hash": str(manifest["protocol_hash"]),
-        "split role": str(manifest["plan"]["split_role"]),
+        "split role": split_role,
         "split identity hash": str(manifest["split"]["identity_hash"]),
-        "consumed": "yes",
+        "consumed": consumed,
         "artifact location": str(Path(bundle.manifest_path).resolve().parent),
         "artifact hashes": _artifact_hash_summary(manifest),
         "date": created_at[:10],
