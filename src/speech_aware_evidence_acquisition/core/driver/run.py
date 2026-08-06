@@ -1,13 +1,17 @@
 """``run_experiment``: config + plan -> gate -> run -> outputs, and ``load_split``.
 
 Split out of the former monolithic ``core/driver.py`` (R0 repair refactor
-stage 1, pure move, no behaviour change).
+stage 1, pure move, no behaviour change). R0 repair refactor stage 2 (part C):
+the split<->plan<->config cross-checks moved to ``split_check.py``'s
+``_verify_split_for_run``, and the post-loop cost assembly moved to
+``cost.py``'s ``_assemble_run_cost`` -- both again purely for file size and
+again pure moves, each taking exactly the inputs it needs and returning
+exactly what ``run_experiment`` folds back in.
 """
 
 from __future__ import annotations
 
 import json
-import math
 import time
 from pathlib import Path
 from typing import Callable, Mapping
@@ -15,7 +19,6 @@ from typing import Callable, Mapping
 from ...contracts import ExecutionPlan
 from ...data.lock import asset_dir
 from ...e0.artifacts import REPO_ROOT
-from ..attempts import STATE_ABORTED, AttemptError, AttemptStore
 from ..base import (
     CARRIERS,
     EVIDENCE_SOURCES,
@@ -25,17 +28,14 @@ from ..base import (
     RunResult,
     SampleContext,
 )
-from ..config import ComposedConfig, protocol_hash
+from ..config import ComposedConfig
 from ..evidence import rotated_mismatch
-from ..resources import (
-    NOT_AVAILABLE,
-    NullSampler,
-    ResourceSampler,
-    cpu_seconds_snapshot,
-)
+from ..resources import NullSampler, ResourceSampler, cpu_seconds_snapshot
 from ..model import FrozenCoreAdapter
 from ..split_receipt import load_verified_split
 from ..tracing import TraceSink
+from .cost import _assemble_run_cost
+from .split_check import _verify_split_for_run
 
 
 def load_split(
@@ -84,58 +84,24 @@ def run_experiment(
     try:
         values = composed.values
         arm = str(values["arm"])
-        verified_split = load_verified_split(repo_root, str(values["split_name"]), lock, root)
+        # R0 repair refactor stage 2 (part C): the split<->plan<->config
+        # cross-checks (M-2, split identity hash/role/carrier, protocol hash)
+        # live in split_check._verify_split_for_run now -- same checks, same
+        # order, same CoreError messages.
+        verified_split = _verify_split_for_run(composed, plan, lock, root, repo_root)
         sample_ids = set(verified_split.ids)
-        split_hash = verified_split.identity_hash
-        receipt_split_role = verified_split.split_role
-        if plan.split_identity_hash != split_hash:
-            raise CoreError(
-                "plan split identity hash does not match the frozen splits receipt "
-                f"for split {values['split_name']!r}"
-            )
-        if plan.split_role != receipt_split_role:
-            raise CoreError(
-                f"plan split role {plan.split_role!r} does not match the frozen splits "
-                f"receipt split role {receipt_split_role!r} for split {values['split_name']!r}"
-            )
-        # M-2 (external-threat-model review): the split RECEIPT's own carrier
-        # must agree with the plan's carrier too, not just its hash/role. Today
-        # this is masked by the two registered carriers (earnings21-original,
-        # earnings22-original) having disjoint id namespaces -- a wrong-carrier
-        # split/plan pairing is indirectly caught a few lines below ("split ids
-        # missing from the carrier's loaded samples") only because the ids
-        # never happen to overlap. That is an accident of today's two loaders,
-        # not a guarantee: `conec` is a `speech-aware-core` lock key keyed on
-        # Earnings21 ids, so a future conec-aware loader sharing that id space
-        # would make the indirect check silently pass on a split verified for
-        # a DIFFERENT carrier than the one the plan/config actually name. This
-        # check is direct and carrier-name-based, so it holds regardless of
-        # whether any two carriers' id spaces happen to overlap.
-        if verified_split.carrier_lock_key != plan.carrier_lock_key:
-            raise CoreError(
-                f"plan carrier_lock_key {plan.carrier_lock_key!r} does not match the "
-                f"frozen splits receipt carrier_lock_key {verified_split.carrier_lock_key!r} "
-                f"for split {values['split_name']!r} (M-2: a split verified for one carrier "
-                "can never authorize a run against another)"
-            )
-        if str(values["carrier_lock_key"]) != plan.carrier_lock_key:
-            raise CoreError(
-                f"plan carrier_lock_key {plan.carrier_lock_key!r} does not match the "
-                f"composed config carrier {values['carrier_lock_key']!r}"
-            )
-        expected_protocol = protocol_hash(composed.config_hash, arm, split_hash)
-        if plan.protocol_hash != expected_protocol:
-            raise CoreError(
-                f"plan protocol hash {plan.protocol_hash!r} does not match the composed "
-                f"config/arm/split protocol hash {expected_protocol!r}"
-            )
         loader = CARRIERS.resolve(str(values["carrier_lock_key"]))
         samples = [s for s in loader(lock, root) if s.sample_id in sample_ids]
         if {s.sample_id for s in samples} != sample_ids:
             raise CoreError("split ids missing from the carrier's loaded samples")
         source = EVIDENCE_SOURCES.resolve(str(values.get("evidence_source", "none")))
+        # R0 repair refactor stage 2 (part B): every evidence source now takes
+        # the sample's own carrier_lock_key explicitly (core.evidence module
+        # docstring) so a carrier-aware source (e.g. conec-contexts) can
+        # resolve its layout via that carrier's own CarrierDescriptor instead
+        # of guessing/hardcoding a single carrier's path.
         evidence_by_sample = {
-            s.sample_id: source(lock, root, s.sample_id) for s in samples
+            s.sample_id: source(lock, root, s.sample_id, s.carrier_lock_key) for s in samples
         }
         if values.get("evidence_mismatch", False):
             evidence_by_sample = rotated_mismatch(evidence_by_sample)
@@ -257,94 +223,21 @@ def run_experiment(
         sampler.stop()
     resource_summary = dict(sampler.summary())
     cpu_seconds = cpu_seconds_snapshot() - cpu_start
-    # Minor (fix-wave2, external-threat-model review round 2): gpu hours was
-    # the only budget dimension with no derived counterpart, even though
-    # gpu_seconds IS measured here, per run. Feed the measured total back
-    # into THIS attempt's own durable record (AttemptStore.record_gpu_seconds)
-    # so it is available to any reader of this run's actual usage --
-    # AttemptStore.all_actual_usage() is no longer read by a slice-wide
-    # budget-cap check (that check was retired by the 2026-08-06 owner
-    # amendment, SAEA-OWNER-AMENDMENT-2026-08-06-BUDGET-CAPS), but durable,
-    # accurate per-run cost accounting stays useful regardless.
-    # Best-effort and never allowed to turn a genuinely successful run into a
-    # false failure: `resource_summary["gpu_seconds"]` legitimately reads the
-    # NOT_AVAILABLE sentinel string (no sampler, or a broken nvidia-smi -- see
-    # core.resources) far more often than a real run ever measures it, and a
-    # durable-file write failure here is exactly the kind of sibling-
-    # bookkeeping failure the failed_attempt_* read just below already
-    # tolerates the same way -- this run's own request loop, outputs and
-    # trace are already durable on disk by this point regardless.
-    measured_gpu_seconds = resource_summary.get("gpu_seconds")
-    if (
-        isinstance(measured_gpu_seconds, (int, float))
-        and not isinstance(measured_gpu_seconds, bool)
-        and math.isfinite(measured_gpu_seconds)
-        and measured_gpu_seconds >= 0
-    ):
-        try:
-            AttemptStore(Path(root) / "attempts").handle(
-                plan.run_id, plan.attempt_id
-            ).record_gpu_seconds(measured_gpu_seconds)
-        except (AttemptError, OSError, ValueError):
-            pass
-    # R0 repair T7 (I8): failed-attempt cost. Sibling attempts under this SAME
-    # run_id that are (as of manifest time) ABORTED -- e.g. a crashed attempt
-    # this run_id's caller retried under a fresh attempt_id -- spent real
-    # calls/audio this run's OWN plan budget already counts (core.attempts.
-    # AttemptStore.prior_actual_usage folds every state in), but a reader of
-    # this successful attempt's OWN cost block previously had no way to see
-    # that extra, wasted spend. `exclude_attempt_id` keeps this run's own
-    # attempt (never itself ABORTED on this success path) out of the sum.
-    #
-    # T7 fix (reviewer-flagged IMPORTANT): this read happens AFTER the run has
-    # already fully succeeded -- every model call made, outputs/trace already
-    # durable on disk. It must therefore be best-effort, mirroring
-    # core.bundle._best_effort_cost_for_aborted_attempt's identical read:
-    # a corrupted or unreadable SIBLING attempt file (someone else's crash,
-    # not this run's) must never raise here and turn a genuinely successful,
-    # budget-spent run into a false ABORTED manifest via
-    # run_experiment_bundled's `except Exception`. On failure this specific
-    # pair degrades to NOT_AVAILABLE + a reason -- every OTHER cost field
-    # (this run's own calls/audio/latency/tokens/gpu/cpu/evidence/tool_calls)
-    # stays fully measured and the run still completes.
-    try:
-        failed_attempt_calls, failed_attempt_audio_seconds = AttemptStore(
-            Path(root) / "attempts"
-        ).actual_usage_in_states(
-            plan.run_id, frozenset({STATE_ABORTED}), exclude_attempt_id=plan.attempt_id
-        )
-        failed_attempt_cost_reason = None
-    except (AttemptError, OSError, ValueError) as error:
-        failed_attempt_calls = NOT_AVAILABLE
-        failed_attempt_audio_seconds = NOT_AVAILABLE
-        failed_attempt_cost_reason = (
-            "could not read sibling ABORTED attempts' usage for run_id "
-            f"{plan.run_id!r} from the durable attempts store: {error}; this "
-            "run itself succeeded and every other cost field is unaffected"
-        )
-    cost = dict(adapter.cost_summary())
-    cost.update(
-        {
-            "cpu_seconds": cpu_seconds,
-            "gate_setup_seconds": gate_setup_seconds,
-            "supplied_evidence_bytes": supplied_evidence_bytes,
-            "admitted_evidence_bytes": admitted_evidence_bytes,
-            "failed_attempt_calls": failed_attempt_calls,
-            "failed_attempt_audio_seconds": failed_attempt_audio_seconds,
-            "failed_attempt_cost_reason": failed_attempt_cost_reason,
-            # Every field above this line is genuinely measured whenever this
-            # function returns a RunResult at all (I8: nothing here is a
-            # silent omission) -- unlike gpu_seconds/peak_vram_mib, which
-            # `resource_summary` may legitimately report as NOT_AVAILABLE
-            # (with `gpu_sampling_reason`) when no sampler -- or no working
-            # nvidia-smi -- was available, and unlike failed_attempt_calls/
-            # failed_attempt_audio_seconds just above, which may legitimately
-            # report NOT_AVAILABLE (with failed_attempt_cost_reason) when a
-            # SIBLING attempt file could not be read.
-            "cost_unavailable_reason": None,
-        }
+    # R0 repair refactor stage 2 (part C): durable GPU-seconds recording,
+    # best-effort sibling-ABORTED-attempt cost folding, and the final cost
+    # dict assembly all live in cost._assemble_run_cost now -- same fields,
+    # same best-effort/never-raise discipline (I8), see that function's own
+    # comments (carried verbatim there).
+    cost = _assemble_run_cost(
+        root=root,
+        plan=plan,
+        adapter=adapter,
+        resource_summary=resource_summary,
+        cpu_seconds=cpu_seconds,
+        gate_setup_seconds=gate_setup_seconds,
+        supplied_evidence_bytes=supplied_evidence_bytes,
+        admitted_evidence_bytes=admitted_evidence_bytes,
     )
-    cost.update(resource_summary)
     return RunResult(
         run_id=plan.run_id,
         arm=arm,

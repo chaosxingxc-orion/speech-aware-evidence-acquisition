@@ -25,13 +25,18 @@ def test_carriers_are_registered_and_load(synthetic_world):
 
 def test_none_source_returns_empty(synthetic_world):
     lock = load_lock(synthetic_world.lock_path)
-    assert EVIDENCE_SOURCES.resolve("none")(lock, synthetic_world.data_root, "x") == []
+    assert (
+        EVIDENCE_SOURCES.resolve("none")(
+            lock, synthetic_world.data_root, "x", "earnings21-original"
+        )
+        == []
+    )
 
 
 def test_conec_source_loads_and_hashes(synthetic_world):
     lock = load_lock(synthetic_world.lock_path)
     items = EVIDENCE_SOURCES.resolve("conec-contexts")(
-        lock, synthetic_world.data_root, "4000001"
+        lock, synthetic_world.data_root, "4000001", "earnings21-original"
     )
     assert len(items) == 1
     assert items[0].content == "ctx"
@@ -43,7 +48,21 @@ def test_conec_source_fails_closed_when_missing(synthetic_world):
     lock = load_lock(synthetic_world.lock_path)
     with pytest.raises(EvidenceError, match="missing"):
         EVIDENCE_SOURCES.resolve("conec-contexts")(
-            lock, synthetic_world.data_root, "0000000"
+            lock, synthetic_world.data_root, "0000000", "earnings21-original"
+        )
+
+
+def test_conec_source_fails_closed_for_a_carrier_with_no_evidence_layer(synthetic_world):
+    """R0 repair refactor stage 2 (part B): earnings22-original's descriptor
+    declares no ConEC evidence layer (its ConEC contexts are per-call PDF
+    packets, a different shape ``_conec_contexts`` never read) -- this must
+    fail closed with a clear message, never silently read earnings21-
+    original's contexts for an earnings22 sample id."""
+
+    lock = load_lock(synthetic_world.lock_path)
+    with pytest.raises(EvidenceError, match="no ConEC evidence layer"):
+        EVIDENCE_SOURCES.resolve("conec-contexts")(
+            lock, synthetic_world.data_root, "5000000", "earnings22-original"
         )
 
 
@@ -67,4 +86,6 @@ def test_rotated_mismatch_is_a_derangement():
 def test_oracle_source_never_enters_runtime(synthetic_world):
     lock = load_lock(synthetic_world.lock_path)
     with pytest.raises(OracleEvidenceError, match="scoring-side"):
-        EVIDENCE_SOURCES.resolve("oracle")(lock, synthetic_world.data_root, "4000001")
+        EVIDENCE_SOURCES.resolve("oracle")(
+            lock, synthetic_world.data_root, "4000001", "earnings21-original"
+        )

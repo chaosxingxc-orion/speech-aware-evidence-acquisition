@@ -1,7 +1,13 @@
 """``FrozenCoreAdapter``: the gate-enforced, one-time-metered model request path.
 
 Split out of the former monolithic ``core/model.py`` (R0 repair refactor
-stage 1, pure move, no behaviour change).
+stage 1, pure move, no behaviour change). R0 repair refactor stage 2 (part C):
+the constructor's gate/media-identity/session/attempt-open lifecycle moved to
+``lifecycle.py``'s own ``_AttemptLifecycleMixin`` (``_open_gate_and_attempt``,
+a pure move, mirroring ``binding.py``'s own mixin), and the per-request value
+types (``CoreResponse``, ``ALLOWED_DECODING_KEYS``, ``_canonical``) moved to
+``request_types.py`` -- both again purely for file size; every name stays
+importable from exactly ``core.model`` (this package's own ``__init__.py``).
 """
 
 from __future__ import annotations
@@ -10,65 +16,20 @@ import hashlib
 import json
 import math
 import time
-from dataclasses import dataclass
-from pathlib import Path
 from typing import Callable, Mapping
 
 from ...contracts import ExecutionPlan, assert_information_boundary
 from ...e0.d2_leakage import ARM_VISIBLE_FIELDS
-from ..attempts import AttemptError, AttemptStore
+from ..attempts import AttemptError
 from ..base import CoreError, PayloadBindingContext
 from ..tracing import TraceSink
 from . import FrozenCoreError
 from .binding import _PayloadBindingMixin
-
-# The exact set of decoding_params keys the frozen core will ever accept. This is
-# the governance choke point (FrozenCoreAdapter.request): a config-supplied
-# decoding_params mapping can never smuggle a "messages"/"model"/"stream"/... key
-# through to the transport, where it would otherwise silently replace the
-# constructed chat-completions body (dropping audio while the adapter still
-# meters it as delivered).
-ALLOWED_DECODING_KEYS = frozenset(
-    {
-        "temperature",
-        "seed",
-        "top_p",
-        "top_k",
-        "min_p",
-        "max_tokens",
-        "presence_penalty",
-        "frequency_penalty",
-    }
-)
+from .lifecycle import _AttemptLifecycleMixin
+from .request_types import ALLOWED_DECODING_KEYS, CoreResponse, _canonical
 
 
-@dataclass(frozen=True)
-class CoreResponse:
-    text: str
-    usage: Mapping[str, int]
-    request_sha256: str
-    response_sha256: str
-    # R0 repair T6 (I7, run-bundle closure): sha256 of `text` alone. The
-    # adapter only ever hashes the raw transport bytes for `response_sha256`
-    # -- and those bytes are not exactly re-derivable later from `text` plus
-    # `usage` alone (the transport builds them from a server-controlled
-    # `usage` mapping whose key order is not itself pinned anywhere). Minimal
-    # adapter change so the outputs<->response binding IS strictly
-    # re-verifiable after the fact: `core.bundle.verify_bundle` recomputes
-    # this hash from the outputs row's own `text` field and refuses on any
-    # mismatch -- closing the reproduced defect where a row's `text` could be
-    # mutated post-hoc while `response_sha256` stayed stale and unchecked.
-    response_text_sha256: str
-    latency_seconds: float
-
-
-def _canonical(payload: Mapping[str, object]) -> bytes:
-    return json.dumps(
-        payload, ensure_ascii=False, sort_keys=True, separators=(",", ":")
-    ).encode("utf-8")
-
-
-class FrozenCoreAdapter(_PayloadBindingMixin):
+class FrozenCoreAdapter(_PayloadBindingMixin, _AttemptLifecycleMixin):
     def __init__(
         self,
         gate: object,
@@ -102,85 +63,15 @@ class FrozenCoreAdapter(_PayloadBindingMixin):
                 f"{binding.carrier_lock_key!r} does not match the execution plan "
                 f"carrier_lock_key {plan.carrier_lock_key!r}"
             )
-        # M-3 (external-threat-model review): the gate returns the umbrella
-        # lock's SHA-256 it read exactly once while checking this touch; carry
-        # it so it lands in cost_summary() -> RunResult.cost -> the run
-        # manifest (core.driver.run_experiment / core.bundle), instead of
-        # "dataset rev" staying a hand-supplied ledger cell. A duck-typed test
-        # gate that returns nothing (most of this module's own unit tests use
-        # one) simply yields None here -- harmless, just an absent hash.
-        lock_sha256 = gate.assert_model_touch_allowed(plan)
-        self._lock_sha256 = lock_sha256 if isinstance(lock_sha256, str) else None
-        # I-4 (external-threat-model review): re-verify THIS run's actual
-        # media -- exactly the samples its verified split can touch, via
-        # `binding.media_relpaths` -- against D1's frozen per-file identity,
-        # as a re-measured FILE, never merely as a receipt's claim. Duck-typed
-        # like the session_check below: the one real gate
-        # (`contracts.FrozenCoreGate`) always implements this; test doubles
-        # isolating unrelated adapter behavior (allowlist/budget/tracing/etc.)
-        # are unaffected if they don't. `binding.media_relpaths` is likewise
-        # optional on `PayloadBindingContext` (empty by default) for the same
-        # reason -- see that field's own docstring -- but the one true
-        # production caller (`core.driver.run_experiment`) always supplies it,
-        # so a real run is never silently exempted from this check.
-        media_identity_check: Callable[[str, Mapping[str, tuple[str, float]]], None] | None = (
-            getattr(gate, "verify_media_identity", None)
+        # R0 repair refactor stage 2 (part C): the gate check, D1 media-
+        # identity re-verification, transport session-liveness check, and the
+        # durable one-time attempt open all live in
+        # `_AttemptLifecycleMixin._open_gate_and_attempt` (lifecycle.py) now
+        # -- same order, same exceptions, see that method's own docstring.
+        lock_sha256, session_check, store, handle = self._open_gate_and_attempt(
+            gate, plan, binding, transport
         )
-        if media_identity_check is not None and binding.media_relpaths:
-            media_identity_check(
-                binding.carrier_lock_key,
-                {
-                    sample_id: (binding.media_relpaths[sample_id], binding.sample_facts[sample_id][0])
-                    for sample_id in binding.allowed_sample_ids
-                },
-            )
-        # R0 repair T5 fix-3 (I5, reviewer-flagged): a second, adapter-level
-        # enforcement call site for session liveness+identity, BEFORE any
-        # attempt slot below is consumed. Duck-typed rather than a new
-        # required constructor parameter: binary/PID/process-image identity
-        # is inherently specific to a subprocess-backed HTTP transport (the
-        # only registered transport with any notion of it at all), not a
-        # generic concept every Callable[[bytes], bytes] transport shares
-        # the way payload/media confinement (I3/I4) is -- so this does not
-        # force every bare-callable test transport in the repo to grow a
-        # session. A transport lacking assert_session_alive() is completely
-        # unaffected; ``core.model.LlamaServerTransport`` -- the one real
-        # transport -- has one, and calling it here is a genuinely
-        # independent second enforcement site (catches, e.g., a future
-        # refactor that accidentally drops the transport's own per-call
-        # re-check) even though the underlying verification code
-        # (``core.session.assert_session_alive``) is shared, not
-        # reimplemented twice the way I3/I4's rails are.
-        session_check: Callable[[], None] | None = getattr(
-            transport, "assert_session_alive", None
-        )
-        if session_check is not None:
-            session_check()
-        # One-time attempt accounting (R0 repair T4, invariant I6). This is the
-        # ONLY model request path (module docstring), so it is the correct place
-        # to bind "a model touch is about to become possible" to "a durable,
-        # one-time attempt token was reserved" -- regardless of which `gate`
-        # object (real or a test double) was handed in. See the task report for
-        # why this lives here rather than inside FrozenCoreGate.
-        attempt_id = plan.attempt_id
-        if not isinstance(attempt_id, str) or not attempt_id.strip():
-            raise FrozenCoreError(
-                "execution plan attempt_id must be a non-empty string; a plan "
-                "without a valid attempt_id can never authorize a model touch "
-                "(R0 repair T4, invariant I6)"
-            )
-        attempts_root = Path(binding.data_root) / "attempts"
-        store = AttemptStore(attempts_root)
-        try:
-            handle = store.open_attempt(
-                plan.run_id,
-                attempt_id,
-                carrier_lock_key=plan.carrier_lock_key,
-                reserved_calls=plan.planned_model_calls,
-                reserved_audio_seconds=plan.planned_speech_audio_seconds,
-            )
-        except AttemptError as error:
-            raise FrozenCoreError(f"attempt accounting refused: {error}") from error
+        self._lock_sha256 = lock_sha256
         self._plan = plan
         self._arm = arm
         self._allowlist = frozenset(ARM_VISIBLE_FIELDS[arm])

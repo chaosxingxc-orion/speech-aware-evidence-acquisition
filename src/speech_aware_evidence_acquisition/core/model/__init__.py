@@ -14,6 +14,12 @@ shared media-path helpers, ``adapter.py`` for ``FrozenCoreAdapter``,
 registration) purely for file size -- every name below was already part of
 this module's public surface and remains importable from exactly
 ``speech_aware_evidence_acquisition.core.model`` as before.
+
+R0 repair refactor stage 2 (part C, pure move, no behaviour change):
+``adapter.py`` itself further split into ``lifecycle.py``
+(``_AttemptLifecycleMixin``) and ``request_types.py`` (``CoreResponse``/
+``ALLOWED_DECODING_KEYS``/``_canonical``) -- same "every name stays
+importable from exactly this package" guarantee.
 """
 
 from __future__ import annotations
@@ -26,12 +32,9 @@ class FrozenCoreError(RuntimeError):
 
 from .paths import _DRIVE_PREFIX, _normalized_relative_path, _resolve_confined  # noqa: E402
 from .binding import _PayloadBindingMixin  # noqa: E402
-from .adapter import (  # noqa: E402
-    ALLOWED_DECODING_KEYS,
-    CoreResponse,
-    FrozenCoreAdapter,
-    _canonical,
-)
+from .request_types import ALLOWED_DECODING_KEYS, CoreResponse, _canonical  # noqa: E402
+from .lifecycle import _AttemptLifecycleMixin  # noqa: E402
+from .adapter import FrozenCoreAdapter  # noqa: E402
 from .transport import (  # noqa: E402
     LlamaServerTransport,
     _default_post,
@@ -44,6 +47,7 @@ __all__ = [
     "FrozenCoreAdapter",
     "FrozenCoreError",
     "LlamaServerTransport",
+    "_AttemptLifecycleMixin",
     "_DRIVE_PREFIX",
     "_PayloadBindingMixin",
     "_canonical",

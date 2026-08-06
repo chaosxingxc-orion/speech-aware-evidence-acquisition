@@ -6,6 +6,14 @@ Everything a loader exposes to the runtime side passes
 :func:`speech_aware_evidence_acquisition.contracts.assert_information_boundary`
 before it is returned — gold and reference layers exist on disk next to the media,
 and this module is the choke point that keeps them out of runtime payloads.
+
+R0 repair refactor stage 2 (part B): ``load_earnings21``/``load_earnings22`` used
+to each hardcode their own media subdir+extension, metadata filename, and metadata
+column names. Both are now thin wrappers over :func:`load_carrier`, a single
+descriptor-driven loader (``data.carriers.CarrierDescriptor``) -- every public name
+below is unchanged, so nothing importing ``load_earnings21``/``load_earnings22``
+(including ``e0/d4_trace.py``, which this module stays behaviour-identical for)
+needs to change.
 """
 
 from __future__ import annotations
@@ -17,6 +25,7 @@ from pathlib import Path
 from typing import Mapping
 
 from ..contracts import assert_information_boundary
+from .carriers import CarrierDescriptor, EARNINGS21_ORIGINAL, EARNINGS22_ORIGINAL
 from .identity import FileFact, hash_file
 from .lock import asset_dir, lock_entry
 
@@ -93,20 +102,29 @@ def _float_field(row: Mapping[str, str], column: str, context: str) -> float:
     return value
 
 
-def load_earnings22(lock: Mapping[str, object], root: Path) -> list[SampleRef]:
-    """All 125 Earnings22 samples, sorted by sample id, identity-checked against media."""
+def load_carrier(descriptor: CarrierDescriptor, lock: Mapping[str, object], root: Path) -> list[SampleRef]:
+    """Every sample for ONE carrier, sorted by sample id, identity-checked against
+    media -- driven entirely by ``descriptor``'s media/metadata layout facts
+    (R0 repair refactor stage 2, part B). ``load_earnings21``/``load_earnings22``
+    are thin wrappers over this; a future carrier needs only its own descriptor
+    (``data.carriers.register_carrier_descriptor``) plus a loader registration
+    (``core.carriers``) to load through the exact same code path."""
 
-    entry = lock_entry(lock, "earnings22-original")
-    carrier_dir = asset_dir(lock, "earnings22-original", root)
+    entry = lock_entry(lock, descriptor.lock_key)
+    carrier_dir = asset_dir(lock, descriptor.lock_key, root)
     subdir = str(entry["local_subdir"]).rstrip("/")
-    rows = _metadata_rows(carrier_dir / "metadata.csv", "File ID")
-    media_dir = carrier_dir / "media"
+    columns = descriptor.metadata_columns
+    rows = _metadata_rows(carrier_dir / descriptor.metadata_filename, columns.id_column)
+    media_dir = carrier_dir / descriptor.media_subdir
+    extension = descriptor.media_extension
     media_ids = {
-        path.name[: -len(".mp3")] for path in media_dir.glob("*.mp3") if path.is_file()
+        path.name[: -len(extension)]
+        for path in media_dir.glob(f"*{extension}")
+        if path.is_file()
     }
     if media_ids != set(rows):
         raise LoaderError(
-            "earnings22 media/metadata identity drift: "
+            f"{descriptor.lock_key} media/metadata identity drift: "
             f"media_only={sorted(media_ids - set(rows))[:5]} "
             f"metadata_only={sorted(set(rows) - media_ids)[:5]}"
         )
@@ -115,46 +133,26 @@ def load_earnings22(lock: Mapping[str, object], root: Path) -> list[SampleRef]:
         row = rows[sample_id]
         samples.append(
             SampleRef(
-                carrier_lock_key="earnings22-original",
+                carrier_lock_key=descriptor.lock_key,
                 sample_id=sample_id,
-                media_relpath=f"{subdir}/media/{sample_id}.mp3",
-                audio_seconds=_float_field(row, "File Length (seconds)", sample_id),
-                sample_rate_hz=int(_float_field(row, "Sampling Rate (Hz)", sample_id)),
+                media_relpath=f"{subdir}/{descriptor.media_subdir}/{sample_id}{extension}",
+                audio_seconds=_float_field(row, columns.duration_column, sample_id),
+                sample_rate_hz=int(_float_field(row, columns.sample_rate_column, sample_id)),
             )
         )
     return samples
+
+
+def load_earnings22(lock: Mapping[str, object], root: Path) -> list[SampleRef]:
+    """All 125 Earnings22 samples, sorted by sample id, identity-checked against media."""
+
+    return load_carrier(EARNINGS22_ORIGINAL, lock, root)
 
 
 def load_earnings21(lock: Mapping[str, object], root: Path) -> list[SampleRef]:
     """All Earnings21 samples, sorted by sample id, identity-checked against media."""
 
-    entry = lock_entry(lock, "earnings21-original")
-    carrier_dir = asset_dir(lock, "earnings21-original", root)
-    subdir = str(entry["local_subdir"]).rstrip("/")
-    rows = _metadata_rows(carrier_dir / "earnings21-file-metadata.csv", "file_id")
-    media_dir = carrier_dir / "media"
-    media_ids = {
-        path.name[: -len(".mp3")] for path in media_dir.glob("*.mp3") if path.is_file()
-    }
-    if media_ids != set(rows):
-        raise LoaderError(
-            "earnings21 media/metadata identity drift: "
-            f"media_only={sorted(media_ids - set(rows))[:5]} "
-            f"metadata_only={sorted(set(rows) - media_ids)[:5]}"
-        )
-    samples = []
-    for sample_id in sorted(rows):
-        row = rows[sample_id]
-        samples.append(
-            SampleRef(
-                carrier_lock_key="earnings21-original",
-                sample_id=sample_id,
-                media_relpath=f"{subdir}/media/{sample_id}.mp3",
-                audio_seconds=_float_field(row, "audio_length", sample_id),
-                sample_rate_hz=int(_float_field(row, "sample_rate", sample_id)),
-            )
-        )
-    return samples
+    return load_carrier(EARNINGS21_ORIGINAL, lock, root)
 
 
 def earnings22_subset10_ids(lock: Mapping[str, object], root: Path) -> list[str]:

@@ -1,222 +1,43 @@
-"""Run-manifest construction: study commit, repo confinement, ``build_manifest``.
+"""Run-manifest construction: repo confinement, ``build_manifest``.
 
 Split out of the former monolithic ``core/bundle.py`` (R0 repair refactor
-stage 1, pure move, no behaviour change).
+stage 1, pure move, no behaviour change). R0 repair refactor stage 2 (part C):
+the git-commit resolution helpers (``_git``/``_study_commit``/
+``require_clean_study_repo``/``_resolve_study_commit``) and the ABORTED-
+manifest best-effort cost block (``_best_effort_cost_for_aborted_attempt``)
+moved to ``git_commit.py``/``aborted_cost.py`` respectively, again purely for
+file size -- both stay importable from exactly ``core.bundle`` (this
+module re-exports ``require_clean_study_repo``, the one name
+``core/bundle/__init__.py`` itself re-exports onward).
 """
 
 from __future__ import annotations
 
 import json
-import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Callable
 
 from ...contracts import STUDY_SLUG, ExecutionPlan
 from ...e0.artifacts import sha256_file, write_json_artifact
-from ..attempts import AttemptError, AttemptStore, STATE_ABORTED
 from ..base import RunResult
 from ..config import ComposedConfig
-from ..resources import NOT_AVAILABLE
 from ..split_receipt import VerifiedSplit
 from . import (
     RUN_MANIFEST_SCHEMA,
     STATUS_ABORTED,
     STATUS_COMPLETED,
-    UNAVAILABLE_COMMIT_PREFIX,
     _VALID_STATUSES,
     BundleError,
     _confine_child_path,
     _refuse_if_inside_repo,
 )
-
-# ---------------------------------------------------------------------------
-# Study commit (build time only -- never re-verified at verify_bundle time,
-# since the study repo legitimately moves commits after a run was recorded).
-# ---------------------------------------------------------------------------
-
-
-def _git(repo_root: Path, *args: str) -> tuple[int, str, str]:
-    completed = subprocess.run(
-        ["git", "-C", str(repo_root), *args],
-        check=False,
-        capture_output=True,
-        text=True,
-    )
-    return completed.returncode, completed.stdout.strip(), completed.stderr.strip()
-
-
-def _study_commit(repo_root: Path) -> str:
-    """Read the study repo's commit, fail-closed.
-
-    Design choice (task-6 brief asks this be stated explicitly): a run
-    manifest binds the EXACT commit the run executed against. If the tree is
-    dirty, "the commit" is a lie -- uncommitted changes could be anything --
-    so we refuse rather than record a commit that does not describe what
-    actually ran. If ``git`` itself is unavailable or the directory is not a
-    repository, we likewise refuse rather than silently omit study_commit
-    (an optional/None field here would make every later manifest field's
-    trustworthiness ambiguous: "was there no repo, or did we just not check?").
-    This mirrors ``e0.runtime_receipt.build_runtime_receipt``'s existing
-    dirty-tree refusal for the llama.cpp build tree -- same discipline,
-    applied to the study tree itself.
-    """
-
-    code, dirty, stderr = _git(repo_root, "status", "--porcelain")
-    if code != 0:
-        raise BundleError(f"cannot read git status for {repo_root}: {stderr}")
-    if dirty:
-        raise BundleError(
-            f"study repo {repo_root} has uncommitted changes; a run manifest must bind "
-            f"the exact commit that produced the run, never a dirty tree:\n{dirty}"
-        )
-    code, commit, stderr = _git(repo_root, "rev-parse", "HEAD")
-    if code != 0 or not commit:
-        raise BundleError(f"cannot read the study repo's HEAD commit at {repo_root}: {stderr}")
-    return commit
-
-
-def require_clean_study_repo(repo_root: Path) -> str:
-    """Public wrapper over :func:`_study_commit` (CRITICAL fix, T6 fix round):
-    ``core.driver.run_experiment_bundled`` calls this BEFORE ``run_experiment``
-    ever spends attempt budget, not only once a manifest is finally built at
-    the end. Without this, a dirty/unreadable study repo let a run execute to
-    completion (outputs written, calls/audio-seconds durably spent) and only
-    THEN discover it could never produce a manifest -- leaving a
-    budget-consuming run with no manifest and its attempt stuck OPENED
-    forever, since the raising `build_manifest` call sat outside the
-    try/except that would otherwise have aborted it. Returns the commit for
-    convenience (unused by the caller today); raises :class:`BundleError`
-    exactly as ``_study_commit`` does."""
-
-    return _study_commit(Path(repo_root))
-
-
-def _resolve_study_commit(repo_root: Path, status: str) -> str:
-    """Read the study commit for a manifest being built, with a status-aware
-    tolerance (IMPORTANT fix, T6 fix-2 round -- closes the sibling gap
-    CRITICAL 2's fix left open).
-
-    A COMPLETED manifest keeps the ORIGINAL, strict behavior unchanged: if
-    ``_study_commit`` fails, ``build_manifest`` fails, full stop -- a
-    COMPLETED record must always bind a real, clean commit.
-
-    An ABORTED manifest is different in kind: it exists precisely BECAUSE
-    something already went wrong, and the reviewed defect was exactly this --
-    ``run_experiment_bundled``'s own dirty-tree check runs once, BEFORE
-    ``run_experiment`` starts, but a real model-facing run can take long
-    enough for the tree to become dirty DURING it (a genuine TOCTOU window,
-    not a hypothetical one); a run that then fails for an UNRELATED reason
-    must still leave a durable ABORTED record, not silently lose one to a
-    second, unrelated ``BundleError`` about the tree. So an ABORTED manifest
-    tries the strict read first (if the tree genuinely is still clean, the
-    real commit is strictly more useful than a placeholder and is recorded),
-    and only on failure substitutes
-    ``f"{UNAVAILABLE_COMMIT_PREFIX}{reason}"``. An honest "commit unavailable,
-    here is why" marker on a record that already says ABORTED is strictly
-    better than no record at all for that attempt -- but it must never be
-    mistakable for a COMPLETED one, which is why the COMPLETED path above
-    never takes this fallback, and :func:`verify_bundle` separately refuses
-    any manifest that claims ``status == COMPLETED`` while carrying this
-    marker (defense in depth against a hand-tampered manifest, not just a
-    structural guarantee about what ``build_manifest`` itself would ever
-    produce).
-    """
-
-    if status == STATUS_COMPLETED:
-        return _study_commit(Path(repo_root))
-    try:
-        return _study_commit(Path(repo_root))
-    except BundleError as error:
-        return f"{UNAVAILABLE_COMMIT_PREFIX}{error}"
+from .aborted_cost import _best_effort_cost_for_aborted_attempt
+from .git_commit import _resolve_study_commit, require_clean_study_repo  # noqa: F401 (re-export)
 
 
 def _artifact_meta(path: Path) -> dict[str, str]:
     return {"path": str(Path(path).resolve()), "sha256": sha256_file(path)}
-
-
-# ---------------------------------------------------------------------------
-# R0 repair T7 (I8): an ABORTED manifest's best-effort cost block. Unlike the
-# COMPLETED path (whose cost block is exactly `core.driver.run_experiment`'s
-# already-fully-measured `RunResult.cost`), a run that failed never returns a
-# RunResult at all -- its in-memory FrozenCoreAdapter/resource-sampler state
-# is gone once the exception has propagated out of run_experiment. Everything
-# genuinely computable here comes straight from the durable attempts store
-# (never from memory that no longer exists), which is exactly why this task's
-# "failed-attempt cost must not be silently omitted" requirement is met even
-# for the run that never succeeded: `calls_used`/`audio_seconds_used` is THIS
-# attempt's own durably recorded spend before it failed; `failed_attempt_*`
-# folds in sibling attempts under the same run_id that are ALSO ABORTED.
-# Every other field -- latency/tokens/tool_calls/cpu/gpu/evidence/setup --
-# genuinely cannot be recovered post-hoc, so each is recorded as the literal
-# NOT_AVAILABLE with a shared reason, per this task's deviation discipline:
-# never a silent omission.
-# ---------------------------------------------------------------------------
-
-_ABORTED_COST_UNAVAILABLE_REASON = (
-    "this attempt ended ABORTED before core.driver.run_experiment finished "
-    "computing its own cost aggregate (a RunResult, and the in-memory "
-    "adapter/resource-sampler state behind it, is only ever produced on "
-    "success); only durable attempt-store usage -- calls_used/"
-    "audio_seconds_used for this attempt, and failed_attempt_calls/"
-    "failed_attempt_audio_seconds for prior sibling ABORTED attempts on the "
-    "same run_id -- is recoverable post-hoc"
-)
-
-
-def _best_effort_cost_for_aborted_attempt(
-    data_root: Path, run_id: str, attempt_id: str
-) -> dict[str, object]:
-    """Never raises: a read failure here must not break ``build_manifest``'s
-    "always write a manifest" guarantee (T6) for the ABORTED path it exists
-    to serve."""
-
-    own_calls = 0
-    own_audio_seconds = 0.0
-    failed_calls = 0
-    failed_audio_seconds = 0.0
-    try:
-        store = AttemptStore(Path(data_root) / "attempts")
-        handle = store.handle(run_id, attempt_id)
-        if handle.path.is_file():
-            own_calls, own_audio_seconds = handle.actual_totals()
-        failed_calls, failed_audio_seconds = store.actual_usage_in_states(
-            run_id, frozenset({STATE_ABORTED}), exclude_attempt_id=attempt_id
-        )
-    except (AttemptError, OSError, ValueError):
-        pass
-    return {
-        "calls_used": own_calls,
-        "audio_seconds_used": own_audio_seconds,
-        "latency_seconds_total": NOT_AVAILABLE,
-        "prompt_tokens_total": NOT_AVAILABLE,
-        "completion_tokens_total": NOT_AVAILABLE,
-        "tool_calls": NOT_AVAILABLE,
-        "cpu_seconds": NOT_AVAILABLE,
-        "gate_setup_seconds": NOT_AVAILABLE,
-        "supplied_evidence_bytes": NOT_AVAILABLE,
-        "admitted_evidence_bytes": NOT_AVAILABLE,
-        "gpu_seconds": NOT_AVAILABLE,
-        "peak_vram_mib": NOT_AVAILABLE,
-        "gpu_sampling_reason": _ABORTED_COST_UNAVAILABLE_REASON,
-        "cost_unavailable_reason": _ABORTED_COST_UNAVAILABLE_REASON,
-        "failed_attempt_calls": failed_calls,
-        "failed_attempt_audio_seconds": failed_audio_seconds,
-        # M-3: key-shape parity with the COMPLETED cost dict (which carries
-        # this whenever a FrozenCoreAdapter was genuinely constructed). An
-        # attempt that ended ABORTED before that ever happened (or before the
-        # gate returned a hash) has no lock hash to report -- None here, not a
-        # missing key, so both cost-dict shapes carry the same field set.
-        "umbrella_lock_sha256": None,
-        # T7 fix: key-shape parity with core.driver.run_experiment's cost
-        # dict (which can report failed_attempt_calls/audio_seconds as
-        # NOT_AVAILABLE with this reason when a sibling attempt file is
-        # unreadable). This function's own try/except above already
-        # collapses ANY read failure (own attempt OR siblings) to 0/0.0
-        # rather than distinguishing -- unchanged here -- so this stays None;
-        # the key exists so both cost-dict shapes carry the same field set.
-        "failed_attempt_cost_reason": None,
-    }
 
 
 def _manifest_document(

@@ -8,6 +8,14 @@ applies to every ``_SESSION_FULL_HASH_DONE`` read/mutation here --
 ``tests/unit`` and ``tests/contract/test_runtime_identity_fastpath.py`` patch
 ``contracts._SESSION_FULL_HASH_DONE`` (by reassignment, via
 ``monkeypatch.setattr``) and expect this method to observe the swap.
+
+R0 repair refactor stage 2 (part C, pure move, no behaviour change): the
+pinned GGUF set's per-file cheap/full identity loop moved to
+``gate_runtime_gguf.py``'s own ``_GgufIdentityMixin`` (``_verify_gguf_files``),
+purely for file size -- ``FrozenCoreGate`` (``gate.py``) composes both mixins
+via multiple inheritance exactly as it already composes four others (that
+module's own docstring: mixins carry only methods, so this changes nothing
+about runtime behaviour).
 """
 
 from __future__ import annotations
@@ -21,23 +29,15 @@ from typing import Mapping
 import speech_aware_evidence_acquisition.contracts as _contracts_pkg
 
 from .errors import GateClosed
+from .gate_runtime_gguf import _GgufIdentityMixin
 from .identifiers import MODEL_LOCK_KEY, RUNTIME_RECEIPT_SCHEMA, _SHA256
-from .receipts import (
-    RUNTIME_IDENTITY_CACHE_FILENAME,
-    _cheap_file_identity,
-    _cheap_identity_matches,
-    _load_identity_cache,
-    _resolve_full_hash_override,
-    _resolve_under,
-    _safe_relative_path,
-    _write_identity_cache,
-)
+from .receipts import _resolve_under, _safe_relative_path
 
 _REPORTED_BUILD = re.compile(r"\(([0-9a-f]{7,40})\)")
 _FULL_COMMIT = re.compile(r"[0-9a-f]{40}\Z")
 
 
-class _RuntimeValidationMixin:
+class _RuntimeValidationMixin(_GgufIdentityMixin):
     """``_validate_runtime`` and its lock/GGUF/build/runtime-library helpers."""
 
     def _load_lock_with_hash(self) -> tuple[Mapping[str, object], str]:
@@ -171,101 +171,13 @@ class _RuntimeValidationMixin:
                 f"runtime receipt declares {len(files)} model files but the lock freezes "
                 f"{lock_entry['files']}; extra or missing model files are refused"
             )
-        # Owner decision 2026-08-06 (item 7): resolve the fast/full policy and the
-        # identity cache BEFORE the per-file loop. ``receipt_sha256`` is the
-        # cache's binding key (item 1c) -- read directly from the receipt's own
-        # bytes, independent of ``self._load``'s already-parsed document, so this
-        # is a genuine re-hash of what is actually on disk, not a re-derivation
-        # from the parsed JSON.
-        try:
-            receipt_sha256 = hashlib.sha256(Path(self.runtime_receipt).read_bytes()).hexdigest()
-        except OSError as error:
-            raise GateClosed(
-                f"runtime receipt: cannot read bytes for identity cache: {error}"
-            ) from error
-        resolved_full_hash = _resolve_full_hash_override(full_hash)
-        do_full = (
-            resolved_full_hash
-            if resolved_full_hash is not None
-            else receipt_sha256 not in _contracts_pkg._SESSION_FULL_HASH_DONE
+        # R0 repair refactor stage 2 (part C): the per-file cheap/full
+        # identity loop over `files` lives in `_GgufIdentityMixin.
+        # _verify_gguf_files` (gate_runtime_gguf.py) now -- see this class's
+        # own module docstring for why the split is behaviour-preserving.
+        self._verify_gguf_files(
+            files, lock_entry, subdir, full_hash=full_hash, diagnostics=diagnostics
         )
-        cache_path = Path(self.data_root) / RUNTIME_IDENTITY_CACHE_FILENAME
-        cached_entries = None if do_full else _load_identity_cache(cache_path, receipt_sha256)
-
-        seen: set[str] = set()
-        total_bytes = 0
-        new_cache_entries: dict[str, dict[str, int]] = {}
-        full_hashed_count = 0
-        for index, entry in enumerate(files):
-            label = f"runtime receipt gguf_files[{index}]"
-            if not isinstance(entry, Mapping) or set(entry) != {"path", "bytes", "sha256"}:
-                raise GateClosed(f"{label} must have exact path/bytes/sha256")
-            relative = _safe_relative_path(entry["path"], f"{label}.path")
-            if relative in seen:
-                raise GateClosed(f"{label} duplicates model file {relative!r}")
-            seen.add(relative)
-            if not relative.startswith(subdir + "/"):
-                raise GateClosed(
-                    f"{label}.path {relative!r} is outside the lock's canonical subdir {subdir!r}"
-                )
-            recorded_bytes = entry["bytes"]
-            recorded_sha = entry["sha256"]
-            if (
-                isinstance(recorded_bytes, bool)
-                or not isinstance(recorded_bytes, int)
-                or recorded_bytes <= 0
-                or not isinstance(recorded_sha, str)
-                or _SHA256.fullmatch(recorded_sha) is None
-            ):
-                raise GateClosed(f"{label} lacks valid bytes/sha256")
-            resolved = _resolve_under(self.data_root, relative, f"{label}.path")
-
-            cheap = _cheap_file_identity(resolved, f"{label}.path")
-            cached_entry = cached_entries.get(relative) if cached_entries is not None else None
-            if cached_entry is not None and _cheap_identity_matches(cheap, cached_entry):
-                # Fast path (items 1/2): size/mtime/file-id match the cache bound
-                # to THIS exact runtime receipt -- skip re-reading the bytes.
-                # STATED LIMITATION (module comment above, owner-decisions-pending
-                # item 7): this defends a wrong/partial/accidentally-replaced
-                # model set, NOT an adversary who edits bytes in place while
-                # preserving size, mtime and OS file identity.
-                actual_bytes = cheap["size"]
-            else:
-                actual_bytes, actual_sha = _contracts_pkg._measure_file(resolved, f"{label}.path")
-                if actual_bytes != recorded_bytes:
-                    raise GateClosed(
-                        f"{label} size drift: receipt {recorded_bytes}, actual {actual_bytes}; "
-                        "model touch refused"
-                    )
-                if actual_sha != recorded_sha:
-                    raise GateClosed(
-                        f"{label} SHA-256 drift: receipt {recorded_sha[:12]}..., "
-                        f"actual {actual_sha[:12]}...; model touch refused"
-                    )
-                full_hashed_count += 1
-            new_cache_entries[relative] = cheap
-            total_bytes += actual_bytes
-        if total_bytes != lock_entry["size_bytes"]:
-            raise GateClosed(
-                f"model files total {total_bytes} bytes but the lock freezes "
-                f"{lock_entry['size_bytes']}; model touch refused"
-            )
-
-        # Persist the cache only after every GGUF file verified successfully --
-        # never cache a partial/failed check. A write failure is swallowed
-        # (best-effort convenience, module docstring); it never fails an already-
-        # successful gate check.
-        _write_identity_cache(cache_path, receipt_sha256, new_cache_entries)
-        if full_hashed_count == len(files):
-            # Every file was just genuinely, fully re-hashed from bytes this
-            # call -- this satisfies the process/session floor (see
-            # ``_SESSION_FULL_HASH_DONE``'s own docstring) regardless of
-            # whether that full pass was explicitly forced or auto-decided.
-            _contracts_pkg._SESSION_FULL_HASH_DONE.add(receipt_sha256)
-        if diagnostics is not None:
-            diagnostics["gguf_files_total"] = len(files)
-            diagnostics["gguf_files_full_hashed"] = full_hashed_count
-            diagnostics["gguf_fast_path_used"] = full_hashed_count == 0
 
         build = runtime["llama_cpp"]
         if not isinstance(build, Mapping) or set(build) != {

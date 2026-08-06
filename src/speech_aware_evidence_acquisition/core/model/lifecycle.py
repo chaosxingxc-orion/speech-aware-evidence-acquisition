@@ -1,0 +1,119 @@
+"""``FrozenCoreAdapter`` mixin: construction-time gate/session/attempt-open lifecycle.
+
+Split out of ``adapter.py`` (R0 repair refactor stage 2, part C, pure move,
+no behaviour change) purely for file size. A plain mixin (method only, no
+``__init__``/fields) combined into ``FrozenCoreAdapter`` via multiple
+inheritance, mirroring ``binding.py``'s own ``_PayloadBindingMixin`` -- this
+changes nothing about the class's runtime behaviour, only which file the
+method's source lives in.
+"""
+
+from __future__ import annotations
+
+from pathlib import Path
+from typing import Callable, Mapping
+
+from ..attempts import AttemptError, AttemptHandle, AttemptStore
+from ..base import PayloadBindingContext
+from . import FrozenCoreError
+
+
+class _AttemptLifecycleMixin:
+    """``_open_gate_and_attempt``: everything ``FrozenCoreAdapter.__init__``
+    needs to check/open BEFORE a request can ever be sent -- the gate itself,
+    D1 media identity, transport session liveness, and the durable one-time
+    attempt reservation (R0 repair T4, invariant I6)."""
+
+    def _open_gate_and_attempt(
+        self,
+        gate: object,
+        plan: object,
+        binding: PayloadBindingContext,
+        transport: Callable[[bytes], bytes],
+    ) -> tuple[str | None, Callable[[], None] | None, AttemptStore, AttemptHandle]:
+        """Returns ``(lock_sha256, session_check, store, handle)`` for the
+        caller to fold into its own instance fields. Raises
+        :class:`FrozenCoreError` on any refusal -- a gate closure, a media
+        identity mismatch, or an attempt-accounting refusal (a duplicate
+        (run_id, attempt_id), most notably)."""
+
+        # M-3 (external-threat-model review): the gate returns the umbrella
+        # lock's SHA-256 it read exactly once while checking this touch; carry
+        # it so it lands in cost_summary() -> RunResult.cost -> the run
+        # manifest (core.driver.run_experiment / core.bundle), instead of
+        # "dataset rev" staying a hand-supplied ledger cell. A duck-typed test
+        # gate that returns nothing (most of this module's own unit tests use
+        # one) simply yields None here -- harmless, just an absent hash.
+        lock_sha256 = gate.assert_model_touch_allowed(plan)
+        resolved_lock_sha256 = lock_sha256 if isinstance(lock_sha256, str) else None
+        # I-4 (external-threat-model review): re-verify THIS run's actual
+        # media -- exactly the samples its verified split can touch, via
+        # `binding.media_relpaths` -- against D1's frozen per-file identity,
+        # as a re-measured FILE, never merely as a receipt's claim. Duck-typed
+        # like the session_check below: the one real gate
+        # (`contracts.FrozenCoreGate`) always implements this; test doubles
+        # isolating unrelated adapter behavior (allowlist/budget/tracing/etc.)
+        # are unaffected if they don't. `binding.media_relpaths` is likewise
+        # optional on `PayloadBindingContext` (empty by default) for the same
+        # reason -- see that field's own docstring -- but the one true
+        # production caller (`core.driver.run_experiment`) always supplies it,
+        # so a real run is never silently exempted from this check.
+        media_identity_check: Callable[[str, Mapping[str, tuple[str, float]]], None] | None = (
+            getattr(gate, "verify_media_identity", None)
+        )
+        if media_identity_check is not None and binding.media_relpaths:
+            media_identity_check(
+                binding.carrier_lock_key,
+                {
+                    sample_id: (binding.media_relpaths[sample_id], binding.sample_facts[sample_id][0])
+                    for sample_id in binding.allowed_sample_ids
+                },
+            )
+        # R0 repair T5 fix-3 (I5, reviewer-flagged): a second, adapter-level
+        # enforcement call site for session liveness+identity, BEFORE any
+        # attempt slot below is consumed. Duck-typed rather than a new
+        # required constructor parameter: binary/PID/process-image identity
+        # is inherently specific to a subprocess-backed HTTP transport (the
+        # only registered transport with any notion of it at all), not a
+        # generic concept every Callable[[bytes], bytes] transport shares
+        # the way payload/media confinement (I3/I4) is -- so this does not
+        # force every bare-callable test transport in the repo to grow a
+        # session. A transport lacking assert_session_alive() is completely
+        # unaffected; ``core.model.LlamaServerTransport`` -- the one real
+        # transport -- has one, and calling it here is a genuinely
+        # independent second enforcement site (catches, e.g., a future
+        # refactor that accidentally drops the transport's own per-call
+        # re-check) even though the underlying verification code
+        # (``core.session.assert_session_alive``) is shared, not
+        # reimplemented twice the way I3/I4's rails are.
+        session_check: Callable[[], None] | None = getattr(
+            transport, "assert_session_alive", None
+        )
+        if session_check is not None:
+            session_check()
+        # One-time attempt accounting (R0 repair T4, invariant I6). This is the
+        # ONLY model request path (module docstring), so it is the correct place
+        # to bind "a model touch is about to become possible" to "a durable,
+        # one-time attempt token was reserved" -- regardless of which `gate`
+        # object (real or a test double) was handed in. See the task report for
+        # why this lives here rather than inside FrozenCoreGate.
+        attempt_id = plan.attempt_id
+        if not isinstance(attempt_id, str) or not attempt_id.strip():
+            raise FrozenCoreError(
+                "execution plan attempt_id must be a non-empty string; a plan "
+                "without a valid attempt_id can never authorize a model touch "
+                "(R0 repair T4, invariant I6)"
+            )
+        attempts_root = Path(binding.data_root) / "attempts"
+        store = AttemptStore(attempts_root)
+        try:
+            handle = store.open_attempt(
+                plan.run_id,
+                attempt_id,
+                carrier_lock_key=plan.carrier_lock_key,
+                reserved_calls=plan.planned_model_calls,
+                reserved_audio_seconds=plan.planned_speech_audio_seconds,
+            )
+        except AttemptError as error:
+            raise FrozenCoreError(f"attempt accounting refused: {error}") from error
+        return resolved_lock_sha256, session_check, store, handle
