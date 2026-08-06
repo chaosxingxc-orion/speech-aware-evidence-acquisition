@@ -20,6 +20,7 @@ from speech_aware_evidence_acquisition.contracts import (
     SCORING_PACKAGE_RELPATH,
     STUDY_SLUG,
     FrozenCoreGate,
+    GateClosed,
 )
 from speech_aware_evidence_acquisition.e0.artifacts import sha256_file
 
@@ -32,8 +33,8 @@ pytestmark = pytest.mark.skipif(
 )
 
 
-def test_e0_closure_chain_verifies_via_the_real_gate():
-    gate = FrozenCoreGate(
+def _real_gate() -> FrozenCoreGate:
+    return FrozenCoreGate(
         e0_receipt=RECEIPTS / "e0-closure.json",
         runtime_receipt=RECEIPTS / "runtime.json",
         data_root=REPO_ROOT,
@@ -42,7 +43,34 @@ def test_e0_closure_chain_verifies_via_the_real_gate():
         exposure_ledger=REPO_ROOT / "docs" / "exposure-ledger.md",
         source_root=REPO_ROOT,
     )
-    gate._validate_e0()
+
+
+def test_e0_closure_chain_verifies_via_the_real_gate():
+    _real_gate()._validate_e0()
+
+
+def test_e0_closure_chain_refuses_a_pycache_entry_in_the_real_scoring_package():
+    """M-1 follow-up (external-threat-model review, controller-flagged): a
+    ``.pyc`` planted in the REAL repository's ``scoring/__pycache__`` must
+    refuse the real gate too -- not just an isolated ``GateFixture`` copy
+    (see ``tests/contract/test_exposure_and_gate.py``'s own M-1 tests for
+    that isolated coverage). Self-cleaning: the planted file/directory is
+    removed in ``finally`` so it can never leak into another test --
+    ``tests/conftest.py``'s session-level purge is a second, independent
+    safety net, not a substitute for this test cleaning up after itself."""
+
+    pycache = REPO_ROOT / SCORING_PACKAGE_RELPATH / "__pycache__"
+    pre_existing = pycache.is_dir()
+    pycache.mkdir(exist_ok=True)
+    planted = pycache / "wer.cpython-999.pyc"
+    planted.write_bytes(b"forged bytecode planted by this test, source hash still matches")
+    try:
+        with pytest.raises(GateClosed, match="__pycache__"):
+            _real_gate()._validate_e0()
+    finally:
+        planted.unlink(missing_ok=True)
+        if not pre_existing and pycache.is_dir() and not any(pycache.iterdir()):
+            pycache.rmdir()
 
 
 def test_d3_freeze_matches_the_working_tree():

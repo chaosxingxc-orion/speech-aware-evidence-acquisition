@@ -33,7 +33,14 @@ umbrella wiki.
   compiled bytecode: the gate itself now refuses (M-1 hardening, external-threat-model review) if
   `scoring/__pycache__` contains any entry, so a locally planted `.pyc` is refused rather than
   silently invisible to the freeze; still run the R0 runner with `PYTHONDONTWRITEBYTECODE=1` so one
-  is never written in the first place. Umbrella-lock identity: the gate reads
+  is never written in the first place. The gate's own real-repo-tree tests
+  (`tests/contract/test_real_receipts.py`, `tests/unit/test_e0_generators.py::TestCloseAndGate`)
+  point `source_root` at this checkout's actual `scoring/`, so the TEST SESSION enforces the same
+  discipline on itself (`tests/conftest.py`, both a module-level `sys.dont_write_bytecode = True` +
+  `scoring/__pycache__` purge at conftest-import time — early enough to precede collection-time
+  imports writing fresh bytecode — and a session-scoped autouse fixture re-asserting both as defense
+  in depth) — a stray `.pyc` left by some earlier, unrelated interpreter can no longer make the
+  suite's own outcome nondeterministic. Umbrella-lock identity: the gate reads
   `docs/datasets.lock.json` exactly once per `assert_model_touch_allowed` call and returns its
   SHA-256, which the adapter carries into the run manifest's cost block (`umbrella_lock_sha256`) for
   the ledger's "dataset rev" cell (M-3). D1 media identity: at model-touch time the adapter asks the
