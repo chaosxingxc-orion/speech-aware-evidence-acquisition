@@ -30,9 +30,18 @@ umbrella wiki.
   push the campaign over ≤3000 calls / ≤72000 audio seconds / ≤40 GPU-hours. Gate verification is
   instantaneous: the process that opens the gate must be the process that starts llama-server,
   immediately afterward — results are never cached or shared. The freeze binds source bytes, not
-  compiled bytecode: the R0 runner must run with `PYTHONDONTWRITEBYTECODE=1` and purge
-  `scoring/__pycache__` before opening the gate (a locally planted `.pyc` is outside what a
-  same-machine gate can self-verify). The R0 frozen-core adapter must enforce the per-arm
+  compiled bytecode: the gate itself now refuses (M-1 hardening, external-threat-model review) if
+  `scoring/__pycache__` contains any entry, so a locally planted `.pyc` is refused rather than
+  silently invisible to the freeze; still run the R0 runner with `PYTHONDONTWRITEBYTECODE=1` so one
+  is never written in the first place. Umbrella-lock identity: the gate reads
+  `docs/datasets.lock.json` exactly once per `assert_model_touch_allowed` call and returns its
+  SHA-256, which the adapter carries into the run manifest's cost block (`umbrella_lock_sha256`) for
+  the ledger's "dataset rev" cell (M-3). D1 media identity: at model-touch time the adapter asks the
+  gate to re-verify exactly the run's split's media against D1's frozen per-file byte/SHA-256 facts,
+  and to sanity-check each sample's loader-reported `audio_seconds` against that same frozen byte
+  size for MP3-bitrate plausibility (I-4; see `contracts.FrozenCoreGate.verify_media_identity` for
+  the documented residue this leaves — a plausibility bound, not an exact duration re-derivation).
+  The R0 frozen-core adapter must enforce the per-arm
   visible-field **allowlists** frozen in the D2 artifact as its request choke point — the
   boundary blocklist alone is necessary, not sufficient. Canonical binding:
   `FrozenCoreGate.for_study_repo`.

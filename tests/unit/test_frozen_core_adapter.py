@@ -115,6 +115,111 @@ def test_gate_is_checked_at_construction(tmp_path):
     assert len(gate.checked_plans) == 1
 
 
+# ---------------------------------------------------------------------------
+# M-3 (external-threat-model review): the umbrella lock hash the gate returns
+# from assert_model_touch_allowed is carried into cost_summary().
+# ---------------------------------------------------------------------------
+
+
+def test_cost_summary_reports_no_lock_hash_when_the_gate_returns_none(tmp_path):
+    """`_OpenGate` (used throughout this file) returns None implicitly -- a
+    test double isolating unrelated adapter behavior should not be forced to
+    fabricate a hash; the field is simply absent (None), not a crash."""
+
+    adapter, _ = _adapter(tmp_path)
+    assert adapter.cost_summary()["umbrella_lock_sha256"] is None
+
+
+def test_cost_summary_carries_the_gates_returned_lock_hash(tmp_path):
+    class _GateReturningLockHash:
+        def assert_model_touch_allowed(self, plan):
+            return "f" * 64
+
+    adapter, _ = _adapter(tmp_path, gate=_GateReturningLockHash())
+    assert adapter.cost_summary()["umbrella_lock_sha256"] == "f" * 64
+
+
+# ---------------------------------------------------------------------------
+# I-4 (external-threat-model review): the adapter asks the gate to re-verify
+# THIS run's media (via binding.media_relpaths) against D1's frozen facts,
+# duck-typed like the session_check below so unrelated test doubles that
+# don't implement `verify_media_identity` are unaffected.
+# ---------------------------------------------------------------------------
+
+
+class _MediaCheckingGate:
+    def __init__(self):
+        self.checked = []
+
+    def assert_model_touch_allowed(self, plan):
+        return None
+
+    def verify_media_identity(self, carrier_lock_key, media_facts):
+        self.checked.append((carrier_lock_key, dict(media_facts)))
+
+
+def _binding_with_media(tmp_path, **overrides):
+    binding = _binding(tmp_path, **overrides)
+    from speech_aware_evidence_acquisition.core.base import PayloadBindingContext
+
+    return PayloadBindingContext(
+        carrier_lock_key=binding.carrier_lock_key,
+        allowed_sample_ids=binding.allowed_sample_ids,
+        sample_facts=binding.sample_facts,
+        data_root=binding.data_root,
+        carrier_root=binding.carrier_root,
+        media_relpaths={
+            sample_id: "datasets/earnings21-22/earnings22/media/5000001.mp3"
+            for sample_id in binding.allowed_sample_ids
+        },
+    )
+
+
+def test_adapter_calls_verify_media_identity_when_the_gate_and_binding_support_it(tmp_path):
+    gate = _MediaCheckingGate()
+    binding = _binding_with_media(tmp_path)
+    _adapter(tmp_path, gate=gate, binding=binding)
+    assert len(gate.checked) == 1
+    carrier_lock_key, media_facts = gate.checked[0]
+    assert carrier_lock_key == binding.carrier_lock_key
+    assert media_facts == {
+        "5000001": ("datasets/earnings21-22/earnings22/media/5000001.mp3", 100.0)
+    }
+
+
+def test_adapter_skips_media_identity_check_when_binding_carries_no_media_relpaths(tmp_path):
+    """A binding built without media_relpaths (the default, empty mapping --
+    e.g. every OTHER pre-existing test in this file) never invokes the check,
+    even against a gate that implements it."""
+
+    gate = _MediaCheckingGate()
+    _adapter(tmp_path, gate=gate, binding=_binding(tmp_path))
+    assert gate.checked == []
+
+
+def test_adapter_construction_propagates_a_media_identity_refusal(tmp_path):
+    from speech_aware_evidence_acquisition.contracts import GateClosed
+
+    class _RefusingMediaGate:
+        def assert_model_touch_allowed(self, plan):
+            return None
+
+        def verify_media_identity(self, carrier_lock_key, media_facts):
+            raise GateClosed("media identity drift (test)")
+
+    binding = _binding_with_media(tmp_path)
+    sink = TraceSink(tmp_path / "run", "SAEA-E-000-mediarefuse")
+    with pytest.raises(GateClosed, match="media identity drift"):
+        FrozenCoreAdapter(
+            gate=_RefusingMediaGate(),
+            plan=_plan(run_id="SAEA-E-000-mediarefuse", attempt_id="attempt-mediarefuse"),
+            arm="bare-core",
+            transport=_fake_transport,
+            sink=sink,
+            binding=binding,
+        )
+
+
 def test_request_round_trip_traces_and_counts(tmp_path):
     adapter, sink = _adapter(tmp_path)
     response = adapter.request(_payload())

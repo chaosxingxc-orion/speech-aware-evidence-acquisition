@@ -735,8 +735,23 @@ class FrozenCoreGate:
                     "so its contents would be importable yet invisible to the "
                     "freeze — refused"
                 )
+            # M-1 (external-threat-model review): a __pycache__ entry is no longer
+            # silently invisible to the freeze. Demonstrated defect: a hand-planted
+            # .pyc whose SOURCE hash still matched the D3 receipt (Python's import
+            # machinery can be made to trust a hash-based .pyc without ever
+            # re-checking it against the .py bytes) made scoring run different code
+            # than the receipt described, with every hash the gate checks staying
+            # green. The freeze covers Python SOURCE only (module docstring above) --
+            # so any bytecode cache under the frozen scoring package, planted or
+            # merely stale, is refused outright rather than skipped.
             if "__pycache__" in rel_parts:
-                continue
+                raise GateClosed(
+                    "scoring package contains a __pycache__ entry "
+                    f"{'/'.join(rel_parts)!r}; the D3 freeze binds source bytes only, "
+                    "so cached/forged bytecode next to frozen sources is refused rather "
+                    "than silently ignored -- purge it (PYTHONDONTWRITEBYTECODE=1 keeps "
+                    "it from reappearing) before opening the gate"
+                )
             if entry.is_dir():
                 continue
             if entry.is_file() and entry.name.endswith(".py"):
@@ -755,8 +770,222 @@ class FrozenCoreGate:
                 f"{unlisted}; model touch refused"
             )
 
-    def _lock_model_entry(self) -> Mapping[str, object]:
-        lock = self._load(self.lock_path, "datasets lock")
+    def _d1_identity_artifact_path(self) -> Path:
+        """Resolve D1's own artifact path THROUGH the E0 closure receipt (never a
+        hardcoded filename) -- the same discipline :meth:`_validate_e0` already
+        uses for every deliverable, applied here for exactly one of them so
+        :meth:`verify_media_identity` can independently load D1's per-sample
+        media facts without depending on ``_validate_e0`` having run first in
+        the same call (it always will in the real ``FrozenCoreGate.
+        for_study_repo`` production path via ``assert_model_touch_allowed``,
+        but this method is a second, independently callable rail — see its own
+        docstring)."""
+
+        e0 = self._load(self.e0_receipt, "E0 closure receipt")
+        deliverables = e0.get("deliverables")
+        if not isinstance(deliverables, Mapping) or "d1_identity" not in deliverables:
+            raise GateClosed("E0 closure receipt lacks a d1_identity deliverable")
+        entry = deliverables["d1_identity"]
+        if not isinstance(entry, Mapping) or "artifact" not in entry:
+            raise GateClosed("E0 closure receipt d1_identity deliverable is malformed")
+        relative = _safe_relative_path(entry["artifact"], "E0 deliverable d1_identity artifact")
+        return _resolve_under(
+            Path(self.e0_receipt).parent, relative, "E0 deliverable d1_identity artifact"
+        )
+
+    # I-4 (external-threat-model review): a documented, generous MP3 bitrate
+    # plausibility band, derived empirically from the two core carriers'
+    # real, D1-frozen media -- observed 16-320 kbps across all 44 earnings21
+    # and all 125 earnings22 samples (bytes from the committed D1 manifest,
+    # seconds from each carrier's own metadata CSV). Widened well past that
+    # observed range on both ends so genuine data never trips it, while still
+    # catching the demonstrated attack by many orders of magnitude: replacing
+    # a CSV's audio_length cell so 4422s of metered audio read as 0.044s
+    # implies ~2.4 GILLION kbps against the file's real (D1-frozen) byte size
+    # -- nowhere close to this band. This is a PLAUSIBILITY bound, not an
+    # exact duration re-derivation (decoding MP3 frames to prove the exact
+    # second count is out of scope here -- see the docstring below and
+    # docs/owner-decisions-pending.md for the residue this leaves).
+    _MIN_PLAUSIBLE_KBPS = 4.0
+    _MAX_PLAUSIBLE_KBPS = 512.0
+
+    def _assert_plausible_audio_seconds(
+        self, sample_id: str, audio_seconds: object, media_bytes: int
+    ) -> None:
+        if (
+            isinstance(audio_seconds, bool)
+            or not isinstance(audio_seconds, (int, float))
+            or not math.isfinite(audio_seconds)
+            or audio_seconds <= 0
+        ):
+            raise GateClosed(
+                f"sample {sample_id!r} audio_seconds must be a finite positive number, "
+                f"got {audio_seconds!r}"
+            )
+        implied_kbps = (media_bytes * 8 / 1000.0) / float(audio_seconds)
+        if not (self._MIN_PLAUSIBLE_KBPS <= implied_kbps <= self._MAX_PLAUSIBLE_KBPS):
+            raise GateClosed(
+                f"sample {sample_id!r}: CSV-derived audio_seconds={audio_seconds!r} implies "
+                f"{implied_kbps:.1f} kbps against the D1-recorded media size ({media_bytes} "
+                f"bytes) -- outside the plausible MP3 bitrate band "
+                f"[{self._MIN_PLAUSIBLE_KBPS}, {self._MAX_PLAUSIBLE_KBPS}] kbps (observed "
+                "16-320 kbps across both core carriers' real media); a metadata CSV cell "
+                "cannot silently inflate or deflate the metered audio budget (I-4); model "
+                "touch refused"
+            )
+
+    def verify_media_identity(
+        self, carrier_lock_key: str, media_facts: Mapping[str, tuple[str, float]]
+    ) -> None:
+        """I-4 (external-threat-model review): verify, AT MODEL-TOUCH TIME, that
+        the media this run is actually about to send is the same bytes D1
+        closed over -- as a re-measured FILE, never merely as a receipt's
+        claim about a file.
+
+        ``media_facts`` maps each sample id the run's VERIFIED SPLIT will touch
+        to ``(media_relpath, audio_seconds)`` -- exactly, and only, the samples
+        this specific run can send (never the whole ~770 MB carrier). Cost was
+        measured, not assumed: re-hashing a full carrier on every gate open was
+        rejected as needlessly slow for what a bounded first-slice run can ever
+        touch (dev/discovery splits here are 10-44 samples, a few hundred MB at
+        most -- seconds, not minutes); re-hashing exactly the run's split scales
+        with what the run can actually touch instead. See
+        docs/owner-decisions-pending.md for the exact measurement and the
+        residue this leaves unclosed.
+
+        Two things are checked per sample, both against D1's OWN frozen
+        per-file facts (``docs/receipts/artifacts/d1-identity.json``, itself
+        already byte-verified against the E0 closure receipt by
+        ``_validate_e0``):
+
+        1. **Byte identity** — the live file's re-measured (size, SHA-256) must
+           equal D1's recorded (size, SHA-256) for that sample id. This closes
+           the demonstrated defect that an ``.mp3``'s bytes could be replaced
+           on disk and the loader/adapter would proceed without complaint: D1
+           recorded the fact once at closure time, but nothing ever compared
+           it to disk again before this.
+        2. **Audio-seconds plausibility** — the CSV-derived ``audio_seconds``
+           the loader reports (which meters the contractual ≤20h audio budget)
+           must imply a plausible MP3 bitrate against that SAME frozen byte
+           size (:meth:`_assert_plausible_audio_seconds`). D1 does not record
+           durations at all (only per-file byte/hash identity and the set of
+           sample ids each metadata CSV names -- never the numeric field
+           values inside it), so an exact re-derivation of "the real duration"
+           is not possible from what D1 already closed over without decoding
+           audio; this is a deliberately-scoped plausibility bound, not an
+           exact one -- stated plainly, not silently narrowed. It still
+           catches the demonstrated attack (4422s edited to 0.044s) by many
+           orders of magnitude of margin.
+
+        ``carrier_lock_key`` of ``conec`` resolves to ``earnings21-original``'s
+        D1 media layer: ConEC carries no media of its own (D1:
+        ``conec.canonical_identity == "earnings21-original media"``).
+        """
+
+        if not isinstance(media_facts, Mapping) or not media_facts:
+            raise GateClosed(
+                "verify_media_identity requires a non-empty sample_id -> "
+                "(media_relpath, audio_seconds) mapping"
+            )
+        identity_carrier = "earnings21-original" if carrier_lock_key == "conec" else carrier_lock_key
+        document = self._load(self._d1_identity_artifact_path(), "D1 identity artifact")
+        carriers = document.get("carriers")
+        carrier_doc = carriers.get(identity_carrier) if isinstance(carriers, Mapping) else None
+        if not isinstance(carrier_doc, Mapping):
+            raise GateClosed(
+                f"D1 identity artifact has no per-sample media identity for carrier "
+                f"{identity_carrier!r} (plan carrier {carrier_lock_key!r}); model touch refused"
+            )
+        layers = carrier_doc.get("layers")
+        media_layer = layers.get("media") if isinstance(layers, Mapping) else None
+        manifest_entries = media_layer.get("manifest") if isinstance(media_layer, Mapping) else None
+        if not isinstance(manifest_entries, list) or not manifest_entries:
+            raise GateClosed(
+                f"D1 identity artifact carrier {identity_carrier!r} lacks a media manifest; "
+                "model touch refused"
+            )
+        recorded: dict[str, tuple[int, str]] = {}
+        for entry in manifest_entries:
+            if not isinstance(entry, Mapping):
+                raise GateClosed("D1 media manifest entry is not an object")
+            sample_id = entry.get("id")
+            rec_bytes = entry.get("bytes")
+            rec_sha = entry.get("sha256")
+            if (
+                not isinstance(sample_id, str)
+                or not sample_id
+                or isinstance(rec_bytes, bool)
+                or not isinstance(rec_bytes, int)
+                or rec_bytes <= 0
+                or not isinstance(rec_sha, str)
+                or _SHA256.fullmatch(rec_sha) is None
+            ):
+                raise GateClosed(f"D1 media manifest entry is malformed: {entry!r}")
+            recorded[sample_id] = (rec_bytes, rec_sha)
+
+        for sample_id, fact in media_facts.items():
+            if (
+                not isinstance(sample_id, str)
+                or not isinstance(fact, tuple)
+                or len(fact) != 2
+            ):
+                raise GateClosed(
+                    f"media_facts[{sample_id!r}] must be a (media_relpath, audio_seconds) pair"
+                )
+            relpath, audio_seconds = fact
+            d1_fact = recorded.get(sample_id)
+            if d1_fact is None:
+                raise GateClosed(
+                    f"sample {sample_id!r} (carrier {carrier_lock_key!r}) has no D1-recorded "
+                    "media identity; a sample outside D1's identity closure can never be "
+                    "sent to the frozen core"
+                )
+            rec_bytes, rec_sha = d1_fact
+            relative = _safe_relative_path(relpath, f"media_facts[{sample_id!r}] media relpath")
+            resolved = _resolve_under(self.data_root, relative, f"media for sample {sample_id!r}")
+            actual_bytes, actual_sha = _measure_file(resolved, f"media for sample {sample_id!r}")
+            if actual_bytes != rec_bytes or actual_sha != rec_sha:
+                raise GateClosed(
+                    f"media identity drift for sample {sample_id!r}: D1 recorded "
+                    f"{rec_bytes} bytes / {rec_sha[:12]}..., the live file is now "
+                    f"{actual_bytes} bytes / {actual_sha[:12]}...; model touch refused (I-4)"
+                )
+            self._assert_plausible_audio_seconds(sample_id, audio_seconds, rec_bytes)
+
+    def _load_lock_with_hash(self) -> tuple[Mapping[str, object], str]:
+        """M-3: read ``docs/datasets.lock.json`` exactly ONCE and derive both the
+        parsed document and its SHA-256 from that single read.
+
+        Before this, one ``assert_model_touch_allowed`` call independently
+        re-read and re-parsed the lock file up to three times (exposure
+        pre-registration, carrier scope resolution, the runtime model-entry
+        lookup) -- each a separate ``open()``/``json.loads`` with no guarantee
+        all three observed the same bytes, and the file's own identity never
+        entered the run manifest or the ledger (a "dataset rev" cell stayed
+        hand-supplied). This reads the bytes once, hashes them, and returns
+        both; callers needing the parsed lock take it as a parameter instead of
+        re-reading. The umbrella lock file itself is deliberately NOT frozen by
+        this: it is an editable, shared, program-level asset (outside this
+        repository), not a study-owned receipt -- the hash is recorded so a
+        downstream reader can tell WHICH revision a run used, not to pin it.
+        """
+
+        path = Path(self.lock_path)
+        try:
+            raw = path.read_bytes()
+        except OSError as error:
+            raise GateClosed(f"datasets lock missing or unreadable ({path}): {error}") from error
+        try:
+            document = json.loads(raw.decode("utf-8"))
+        except (UnicodeError, json.JSONDecodeError) as error:
+            raise GateClosed(f"datasets lock missing or unreadable ({path}): {error}") from error
+        if not isinstance(document, Mapping):
+            raise GateClosed(f"datasets lock must be a JSON object ({path})")
+        return document, hashlib.sha256(raw).hexdigest()
+
+    def _lock_model_entry(self, lock: Mapping[str, object] | None = None) -> Mapping[str, object]:
+        if lock is None:
+            lock, _ = self._load_lock_with_hash()
         models = lock.get("models")
         if not isinstance(models, list):
             raise GateClosed("datasets lock lacks a models list")
@@ -782,7 +1011,7 @@ class FrozenCoreGate:
                 return entry
         raise GateClosed(f"frozen model key {MODEL_LOCK_KEY!r} not found in datasets lock")
 
-    def _validate_runtime(self) -> None:
+    def _validate_runtime(self, lock: Mapping[str, object] | None = None) -> None:
         runtime = self._load(self.runtime_receipt, "runtime receipt")
         self._require_schema(runtime, RUNTIME_RECEIPT_SCHEMA, "runtime receipt")
         expected_keys = {
@@ -800,7 +1029,7 @@ class FrozenCoreGate:
                 f"runtime receipt model_lock_key {runtime['model_lock_key']!r} does not match "
                 f"the frozen key {MODEL_LOCK_KEY!r}"
             )
-        lock_entry = self._lock_model_entry()
+        lock_entry = self._lock_model_entry(lock)
         subdir = str(lock_entry["local_subdir"]).rstrip("/")
 
         files = runtime["gguf_files"]
@@ -961,7 +1190,9 @@ class FrozenCoreGate:
                 "receipt; model touch refused"
             )
 
-    def _lock_dataset_entries(self) -> dict[str, Mapping[str, object]]:
+    def _lock_dataset_entries(
+        self, lock: Mapping[str, object] | None = None
+    ) -> dict[str, Mapping[str, object]]:
         """Every ``kind: dataset`` entry in the umbrella lock, keyed by name.
 
         Real speech-aware carriers live in ``asset_catalog`` alongside the
@@ -970,7 +1201,8 @@ class FrozenCoreGate:
         live in a disjoint ``models`` list and never appear here — a plan cannot
         claim a model lock key as its speech carrier."""
 
-        lock = self._load(self.lock_path, "datasets lock")
+        if lock is None:
+            lock, _ = self._load_lock_with_hash()
         entries: dict[str, Mapping[str, object]] = {}
         for list_key in ("datasets", "asset_catalog"):
             value = lock.get(list_key)
@@ -987,7 +1219,9 @@ class FrozenCoreGate:
             raise GateClosed("datasets lock yields no named dataset entries")
         return entries
 
-    def _resolve_carrier_dataset_entry(self, carrier_lock_key: str) -> Mapping[str, object]:
+    def _resolve_carrier_dataset_entry(
+        self, carrier_lock_key: str, lock: Mapping[str, object] | None = None
+    ) -> Mapping[str, object]:
         """Resolve and scope-check a plan's carrier against the umbrella lock (I2).
 
         A carrier must: (a) exist as a ``kind: dataset`` entry in the umbrella lock
@@ -998,7 +1232,7 @@ class FrozenCoreGate:
         assumed in scope: naming a key in the lock never by itself proves it is a
         speech-domain carrier of this study."""
 
-        entry = self._lock_dataset_entries().get(carrier_lock_key)
+        entry = self._lock_dataset_entries(lock).get(carrier_lock_key)
         if entry is None:
             raise GateClosed(
                 f"carrier lock key {carrier_lock_key!r} is not a dataset entry in "
@@ -1028,7 +1262,9 @@ class FrozenCoreGate:
             )
         return entry
 
-    def _require_exposure_preregistration(self, plan: "ExecutionPlan") -> None:
+    def _require_exposure_preregistration(
+        self, plan: "ExecutionPlan", lock: Mapping[str, object] | None = None
+    ) -> None:
         """The pre-registered row is cross-checked field by field against the plan.
 
         A run id string alone proves nothing: the row must have been written with
@@ -1076,7 +1312,7 @@ class FrozenCoreGate:
                     f"row {actual!r} vs plan {expected!r}; model touch refused"
                 )
         carrier_cell = cell(row, _EXPOSURE_CARRIER_COLUMN)
-        known_carrier_keys = set(self._lock_dataset_entries())
+        known_carrier_keys = set(self._lock_dataset_entries(lock))
         carrier_tokens = [
             token for token in _CARRIER_CELL_TOKEN_SPLIT.split(carrier_cell) if token
         ]
@@ -1175,7 +1411,7 @@ class FrozenCoreGate:
                     "new owner slice decision, not another row"
                 )
 
-    def assert_model_touch_allowed(self, plan: ExecutionPlan) -> None:
+    def assert_model_touch_allowed(self, plan: ExecutionPlan) -> str:
         """Refuse the touch unless a validated Stage-2 ``ExecutionPlan`` authorizes it
         AND both receipts verify. Plan/scope validation runs before any receipt or
         ledger byte is read, so a paper-scale request — however labeled — is refused
@@ -1183,7 +1419,15 @@ class FrozenCoreGate:
         row's carrier column must name the plan's carrier), and the carrier itself
         must resolve to a genuine speech-dataset entry of this study's scope in the
         umbrella lock (never a model entry, never a general-audio asset, never an
-        entry whose scope cannot be proven)."""
+        entry whose scope cannot be proven).
+
+        Returns the umbrella lock's SHA-256 (M-3): the lock is read exactly ONCE
+        here (:meth:`_load_lock_with_hash`) and the same parsed document is
+        threaded into every check below that needs it, rather than each
+        independently re-reading the file — so two reads within one call can
+        never disagree, and the hash is available to bind into the run manifest
+        (see ``core.model.FrozenCoreAdapter``) for the ledger's "dataset rev" cell.
+        """
 
         if type(plan) is not ExecutionPlan:
             raise ExecutionScopeError(
@@ -1197,7 +1441,9 @@ class FrozenCoreGate:
                 f"execution profile {plan.execution_profile!r} does not authorize a model "
                 f"touch; model-facing Stage-2 profiles are {sorted(MODEL_TOUCH_PROFILES)}"
             )
-        self._require_exposure_preregistration(plan)
-        self._resolve_carrier_dataset_entry(plan.carrier_lock_key)
+        lock, lock_sha256 = self._load_lock_with_hash()
+        self._require_exposure_preregistration(plan, lock)
+        self._resolve_carrier_dataset_entry(plan.carrier_lock_key, lock)
         self._validate_e0()
-        self._validate_runtime()
+        self._validate_runtime(lock)
+        return lock_sha256

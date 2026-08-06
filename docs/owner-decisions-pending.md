@@ -135,3 +135,36 @@ of it being fulfilled, not as a still-open question blocking anything.
 
 Restated for visibility (design spec §6.3): R0.3 smoke and R1 do not start before the fresh
 independent re-review passes and the owner has acted on items 1–2 above.
+
+## 4. I-4 media identity: audio-seconds plausibility bound is not an exact re-derivation
+
+**Status:** closed at a documented, bounded level; residue recorded here rather than silently
+narrowed (external-threat-model review, R0 repair round).
+
+**What is now bound.** At model-touch time (`core.model.FrozenCoreAdapter` construction,
+`contracts.FrozenCoreGate.verify_media_identity`), for EXACTLY the samples the run's verified split
+can touch: (a) the live media file's re-measured (size, SHA-256) is checked against D1's own frozen
+per-sample facts (`docs/receipts/artifacts/d1-identity.json`) — a substituted `.mp3` is refused; (b)
+the loader-reported, CSV-derived `audio_seconds` (the figure that meters the contractual ≤20h speech
+budget) must imply a plausible MP3 bitrate against that SAME frozen byte size (4-512 kbps, widened
+past the 16-320 kbps empirically observed across all 44 earnings21 and all 125 earnings22 real
+samples). Full-carrier re-hash (~770 MB) on every gate open was measured and rejected as needlessly
+slow relative to what a bounded first-slice run can ever touch (today's dev/discovery splits: 10-44
+samples); re-hashing exactly the run's split scales with what the run can actually send instead.
+
+**What is NOT bound, and cannot be from what E0 D1 already closed over.** D1 records per-file byte
+size and SHA-256 for media, and the SET of sample ids each metadata CSV names — it never captured the
+metadata CSV's own numeric field VALUES (`audio_length`, `File Length (seconds)`) at closure time, so
+there is no frozen "correct" duration to compare a live CSV cell against exactly. The plausibility
+bound above therefore catches only a GROSS manipulation (any edit implying a bitrate outside
+[4, 512] kbps — the demonstrated attack, 4422s edited to 0.044s, misses this band by roughly six
+orders of magnitude) — a MODEST, precise edit that keeps the implied bitrate inside the band (e.g.
+4422s edited to 3000s) is not detected by this check. Exactly re-deriving true audio duration would
+require decoding the MP3 stream (frame-header parsing or an audio-library dependency), which is out
+of scope for this hardening pass (`contracts.py` is deliberately stdlib-only, module docstring; the
+package declares zero runtime dependencies, `pyproject.toml`).
+
+**Requested disposition:** accept the plausibility bound as R0's closure level (the residue is a
+narrow, bounded, machine-conditional gap — not an unbounded one) and defer exact duration
+re-derivation to whichever future task first needs audio decoding for another reason (e.g. a scorer
+or evidence-source adapter), rather than adding a new dependency solely for this check now.

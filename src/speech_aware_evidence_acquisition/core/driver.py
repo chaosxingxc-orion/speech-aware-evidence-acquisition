@@ -114,6 +114,26 @@ def run_experiment(
                 f"plan split role {plan.split_role!r} does not match the frozen splits "
                 f"receipt split role {receipt_split_role!r} for split {values['split_name']!r}"
             )
+        # M-2 (external-threat-model review): the split RECEIPT's own carrier
+        # must agree with the plan's carrier too, not just its hash/role. Today
+        # this is masked by the two registered carriers (earnings21-original,
+        # earnings22-original) having disjoint id namespaces -- a wrong-carrier
+        # split/plan pairing is indirectly caught a few lines below ("split ids
+        # missing from the carrier's loaded samples") only because the ids
+        # never happen to overlap. That is an accident of today's two loaders,
+        # not a guarantee: `conec` is a `speech-aware-core` lock key keyed on
+        # Earnings21 ids, so a future conec-aware loader sharing that id space
+        # would make the indirect check silently pass on a split verified for
+        # a DIFFERENT carrier than the one the plan/config actually name. This
+        # check is direct and carrier-name-based, so it holds regardless of
+        # whether any two carriers' id spaces happen to overlap.
+        if verified_split.carrier_lock_key != plan.carrier_lock_key:
+            raise CoreError(
+                f"plan carrier_lock_key {plan.carrier_lock_key!r} does not match the "
+                f"frozen splits receipt carrier_lock_key {verified_split.carrier_lock_key!r} "
+                f"for split {values['split_name']!r} (M-2: a split verified for one carrier "
+                "can never authorize a run against another)"
+            )
         if str(values["carrier_lock_key"]) != plan.carrier_lock_key:
             raise CoreError(
                 f"plan carrier_lock_key {plan.carrier_lock_key!r} does not match the "
@@ -146,6 +166,11 @@ def run_experiment(
             carrier_lock_key=str(values["carrier_lock_key"]),
             allowed_sample_ids=frozenset(sample_ids),
             sample_facts={s.sample_id: (s.audio_seconds, s.sample_rate_hz) for s in samples},
+            # I-4: the SAME loader's per-sample media_relpath, so
+            # core.model.FrozenCoreAdapter can ask the gate to re-verify
+            # exactly this run's split against D1's frozen media identity --
+            # never a parallel/independently-derived path string.
+            media_relpaths={s.sample_id: s.media_relpath for s in samples},
             data_root=Path(root),
             carrier_root=carrier_root,
         )

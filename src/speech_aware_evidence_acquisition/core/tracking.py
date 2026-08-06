@@ -39,6 +39,33 @@ def _require_mlflow():
     return mlflow
 
 
+def dataset_rev_from_manifest(manifest: Mapping[str, object]) -> str | None:
+    """M-3: the umbrella lock's SHA-256 the gate read for this run (recorded at
+    ``manifest["cost"]["umbrella_lock_sha256"]`` by ``core.model.
+    FrozenCoreAdapter.cost_summary``), for a caller assembling the "dataset
+    rev" ledger cell.
+
+    Deliberately NOT folded into :func:`bundle_ledger_cells`'s derived/
+    conflict-checked column set: "dataset rev" is documented there as a
+    human-judgment/external-index fact this module has no basis to invent on
+    its own (the umbrella lock is a shared, program-level, editable asset,
+    not a study-owned receipt this study can unilaterally promote to a
+    machine-enforced column without also breaking every existing caller that
+    already hand-supplies this cell). This function exists so the hash is
+    genuinely AVAILABLE to whoever fills that cell in, closing the finding's
+    "stays hand-supplied" complaint without silently changing what
+    ``ledger_row_for_bundle`` accepts or refuses. Returns ``None`` if the
+    manifest carries no cost block or no lock hash (e.g. an ABORTED attempt
+    that never reached a real model touch).
+    """
+
+    cost = manifest.get("cost")
+    if not isinstance(cost, Mapping):
+        return None
+    value = cost.get("umbrella_lock_sha256")
+    return value if isinstance(value, str) else None
+
+
 def ledger_row(cells: Mapping[str, str]) -> str:
     if set(cells) != set(LEDGER_COLUMNS):
         raise ValueError(

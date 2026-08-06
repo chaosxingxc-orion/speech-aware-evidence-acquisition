@@ -140,6 +140,16 @@ class PayloadBindingContext:
     sample_facts: Mapping[str, tuple[float, int]]
     data_root: Path
     carrier_root: Path
+    # I-4 (external-threat-model review): the same carrier loader's per-sample
+    # media_relpath, keyed exactly like sample_facts. Optional/defaulted (not a
+    # constructor-breaking addition) so every pre-existing caller in this
+    # module's own test suite -- unit tests isolating I3 payload-binding or I4
+    # path-confinement behavior, which never touch D1 identity at all -- keeps
+    # working unchanged; the one true production call site
+    # (core.driver.run_experiment) always supplies it, and
+    # core.model.FrozenCoreAdapter only attempts the D1 media-identity check
+    # (gate.verify_media_identity) when it is present and non-empty.
+    media_relpaths: Mapping[str, str] = field(default_factory=dict)
 
     def validate(self) -> "PayloadBindingContext":
         """Structural self-check, no filesystem access: a malformed binding
@@ -191,6 +201,22 @@ class PayloadBindingContext:
             raise CoreError("binding context data_root/carrier_root must be Path objects")
         if not self.carrier_root.is_relative_to(self.data_root):
             raise CoreError("binding context carrier_root must be beneath data_root")
+        if not isinstance(self.media_relpaths, Mapping):
+            raise CoreError("binding context media_relpaths must be a mapping")
+        # I-4: optional (empty is allowed -- see the field's own docstring), but
+        # if ANY entry is supplied it must exactly cover allowed_sample_ids: a
+        # partial media_relpaths mapping would let some samples silently skip
+        # the D1 media-identity check entirely.
+        if self.media_relpaths and set(self.media_relpaths) != set(self.allowed_sample_ids):
+            raise CoreError(
+                "binding context media_relpaths keys must exactly match allowed_sample_ids "
+                "when supplied"
+            )
+        for sample_id, relpath in self.media_relpaths.items():
+            if not isinstance(relpath, str) or not relpath:
+                raise CoreError(
+                    f"binding context media_relpaths[{sample_id!r}] must be a non-empty string"
+                )
         return self
 
 

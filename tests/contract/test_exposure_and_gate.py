@@ -95,6 +95,66 @@ def test_fully_valid_receipts_open_the_gate(world):
     world.gate().assert_model_touch_allowed(world.plan())
 
 
+# ---------------------------------------------------------------------------
+# M-3 (external-threat-model review): the umbrella lock is read exactly once
+# per gate call, and its SHA-256 is returned so a downstream reader (the run
+# manifest / ledger "dataset rev" cell) can bind to WHICH revision a run used.
+# ---------------------------------------------------------------------------
+
+
+def test_gate_returns_the_umbrella_lock_sha256(world):
+    gate = world.gate()
+    expected = _sha(world.lock_path.read_bytes())
+    result = gate.assert_model_touch_allowed(world.plan())
+    assert result == expected
+
+
+def test_gate_reads_the_umbrella_lock_exactly_once_per_call(world, monkeypatch):
+    """Before M-3, one call independently re-read/re-parsed the lock file up to
+    three times (exposure pre-registration, carrier scope resolution, the
+    runtime model-entry lookup). Proved via an actual read-count, not merely
+    by reading source order."""
+
+    import speech_aware_evidence_acquisition.contracts as contracts_mod
+
+    calls: list[int] = []
+    original = contracts_mod.FrozenCoreGate._load_lock_with_hash
+
+    def _counting(self):
+        calls.append(1)
+        return original(self)
+
+    monkeypatch.setattr(contracts_mod.FrozenCoreGate, "_load_lock_with_hash", _counting)
+    gate = world.gate()
+    gate.assert_model_touch_allowed(world.plan())
+    assert calls == [1], "the lock must be read exactly once per assert_model_touch_allowed call"
+
+
+# ---------------------------------------------------------------------------
+# M-1 (external-threat-model review): a __pycache__ entry inside the frozen
+# scoring package is refused explicitly, not silently skipped. Demonstrated
+# defect: a forged .pyc whose SOURCE hash still matched the D3 receipt made
+# scoring run different code than the receipt described.
+# ---------------------------------------------------------------------------
+
+
+def test_gate_refuses_pycache_entry_in_scoring_package(world):
+    pycache = world.scoring_dir / "__pycache__"
+    pycache.mkdir()
+    (pycache / "wer.cpython-312.pyc").write_bytes(b"forged bytecode, source hash still matches")
+    with pytest.raises(GateClosed, match="__pycache__"):
+        world.gate().assert_model_touch_allowed(world.plan())
+
+
+def test_gate_refuses_an_empty_pycache_directory_too(world):
+    """Presence alone is refused, not just a non-empty cache: an empty
+    __pycache__ dir is anomalous residue that could be repopulated."""
+
+    (world.scoring_dir / "__pycache__").mkdir()
+    with pytest.raises(GateClosed, match="__pycache__"):
+        world.gate().assert_model_touch_allowed(world.plan())
+
+
 def test_gate_refuses_when_receipts_are_missing(tmp_path, world):
     gate = FrozenCoreGate(
         tmp_path / "absent-e0.json",

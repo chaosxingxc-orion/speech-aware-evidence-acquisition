@@ -188,7 +188,38 @@ class FrozenCoreAdapter:
                 f"{binding.carrier_lock_key!r} does not match the execution plan "
                 f"carrier_lock_key {plan.carrier_lock_key!r}"
             )
-        gate.assert_model_touch_allowed(plan)
+        # M-3 (external-threat-model review): the gate returns the umbrella
+        # lock's SHA-256 it read exactly once while checking this touch; carry
+        # it so it lands in cost_summary() -> RunResult.cost -> the run
+        # manifest (core.driver.run_experiment / core.bundle), instead of
+        # "dataset rev" staying a hand-supplied ledger cell. A duck-typed test
+        # gate that returns nothing (most of this module's own unit tests use
+        # one) simply yields None here -- harmless, just an absent hash.
+        lock_sha256 = gate.assert_model_touch_allowed(plan)
+        self._lock_sha256 = lock_sha256 if isinstance(lock_sha256, str) else None
+        # I-4 (external-threat-model review): re-verify THIS run's actual
+        # media -- exactly the samples its verified split can touch, via
+        # `binding.media_relpaths` -- against D1's frozen per-file identity,
+        # as a re-measured FILE, never merely as a receipt's claim. Duck-typed
+        # like the session_check below: the one real gate
+        # (`contracts.FrozenCoreGate`) always implements this; test doubles
+        # isolating unrelated adapter behavior (allowlist/budget/tracing/etc.)
+        # are unaffected if they don't. `binding.media_relpaths` is likewise
+        # optional on `PayloadBindingContext` (empty by default) for the same
+        # reason -- see that field's own docstring -- but the one true
+        # production caller (`core.driver.run_experiment`) always supplies it,
+        # so a real run is never silently exempted from this check.
+        media_identity_check: Callable[[str, Mapping[str, tuple[str, float]]], None] | None = (
+            getattr(gate, "verify_media_identity", None)
+        )
+        if media_identity_check is not None and binding.media_relpaths:
+            media_identity_check(
+                binding.carrier_lock_key,
+                {
+                    sample_id: (binding.media_relpaths[sample_id], binding.sample_facts[sample_id][0])
+                    for sample_id in binding.allowed_sample_ids
+                },
+            )
         # R0 repair T5 fix-3 (I5, reviewer-flagged): a second, adapter-level
         # enforcement call site for session liveness+identity, BEFORE any
         # attempt slot below is consumed. Duck-typed rather than a new
@@ -495,6 +526,11 @@ class FrozenCoreAdapter:
             "prompt_tokens_total": self._prompt_tokens,
             "completion_tokens_total": self._completion_tokens,
             "tool_calls": self._tool_calls,
+            # M-3: the umbrella lock's SHA-256, read exactly once by the gate
+            # while checking this touch (contracts.FrozenCoreGate.
+            # assert_model_touch_allowed) -- carried through so it lands in
+            # the run manifest rather than "dataset rev" staying hand-supplied.
+            "umbrella_lock_sha256": self._lock_sha256,
         }
 
 

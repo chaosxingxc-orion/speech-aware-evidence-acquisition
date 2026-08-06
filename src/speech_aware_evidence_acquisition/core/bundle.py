@@ -366,6 +366,12 @@ def _best_effort_cost_for_aborted_attempt(
         "cost_unavailable_reason": _ABORTED_COST_UNAVAILABLE_REASON,
         "failed_attempt_calls": failed_calls,
         "failed_attempt_audio_seconds": failed_audio_seconds,
+        # M-3: key-shape parity with the COMPLETED cost dict (which carries
+        # this whenever a FrozenCoreAdapter was genuinely constructed). An
+        # attempt that ended ABORTED before that ever happened (or before the
+        # gate returned a hash) has no lock hash to report -- None here, not a
+        # missing key, so both cost-dict shapes carry the same field set.
+        "umbrella_lock_sha256": None,
         # T7 fix: key-shape parity with core.driver.run_experiment's cost
         # dict (which can report failed_attempt_calls/audio_seconds as
         # NOT_AVAILABLE with this reason when a sibling attempt file is

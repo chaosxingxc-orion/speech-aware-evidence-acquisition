@@ -278,6 +278,43 @@ def test_run_experiment_refuses_preexisting_outputs_file(synthetic_world, tmp_pa
         )
 
 
+def test_run_experiment_refuses_split_receipt_carrier_mismatched_with_plan(synthetic_world, tmp_path):
+    """M-2 (external-threat-model review): the split RECEIPT's own
+    carrier_lock_key must agree with the plan's, independent of the config's.
+
+    Both the config's and the plan's carrier_lock_key are set to
+    "earnings21-original" here (so the OLDER `values["carrier_lock_key"] !=
+    plan.carrier_lock_key` check would pass) -- only the split RECEIPT loaded
+    for "dev" (whose own carrier is "earnings22-original") disagrees. Without
+    the M-2 check this is masked today only because earnings21-original's and
+    earnings22-original's sample ids never overlap, so the loader's filtered
+    sample set would end up empty and get caught later by a differently
+    worded, indirect check ("split ids missing from the carrier's loaded
+    samples") -- an accident of today's two carriers, not a guarantee."""
+
+    lock, repo_root = _frozen_world(synthetic_world, tmp_path)
+    _, dev_hash, dev_role = load_split(repo_root, "dev", lock, synthetic_world.data_root)
+    assert dev_role == "dev"
+    composed = _composed(carrier_lock_key="earnings21-original", split_name="dev")
+    plan = _plan(
+        dev_hash,
+        carrier_lock_key="earnings21-original",
+        split_role="dev",
+        protocol_hash=protocol_hash(composed.config_hash, composed.values["arm"], dev_hash),
+    )
+    with pytest.raises(CoreError, match="frozen splits receipt carrier_lock_key"):
+        run_experiment(
+            composed=composed,
+            plan=plan,
+            gate=_OpenGate(),
+            lock=lock,
+            root=synthetic_world.data_root,
+            run_dir=tmp_path / "run",
+            transport=_transport,
+            repo_root=repo_root,
+        )
+
+
 def test_run_experiment_refuses_wrong_carrier_lock_key(synthetic_world, tmp_path):
     lock, repo_root = _frozen_world(synthetic_world, tmp_path)
     _, split_hash, _ = load_split(repo_root, "discovery", lock, synthetic_world.data_root)
