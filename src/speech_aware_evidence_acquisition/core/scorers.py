@@ -187,7 +187,7 @@ SCORERS.register("cost", score_cost_outputs)
 
 
 def _assert_scoring_entry_gate(
-    bundle: object, lock: Mapping[str, object], repo_root: Path
+    bundle: object, lock: Mapping[str, object], root: Path, repo_root: Path
 ) -> None:
     """CRITICAL fix (round-2 external-threat-model review): re-verify, IN
     THIS PROCESS, everything a model touch already proves before scoring
@@ -253,9 +253,31 @@ def _assert_scoring_entry_gate(
     Reversing the order does not weaken either guarantee: a dirty tree whose
     only change is OUTSIDE ``scoring/`` (e.g. ``data/references.py``) still
     reaches and trips the clean-tree check exactly as before.
+
+    IMPORTANT 2 (external-threat-model review round 3): between the carrier-
+    scope check and the clean-tree check, when this bundle's configured
+    scorers include ``asr-wer`` (the ONLY scorer that reads
+    ``data.references.reference_tokens``), re-verify the reference (``.nlp``)
+    bytes it is about to read against D1's frozen per-file identity --
+    ``contracts.FrozenCoreGate.verify_reference_identity``, the reference-
+    layer counterpart to the media-side ``verify_media_identity`` I-4 already
+    added. Scoped to exactly ``bundle.split_ids`` (the bundle's own verified
+    split, never the whole corpus). Deliberately on a SEPARATE gate instance
+    bound to ``repo_root`` (the test-overridable parameter, exactly like the
+    clean-tree check just below) rather than the hardcoded ``REPO_ROOT`` the
+    E0/D3/scope gate above uses: unlike the D3 SOURCE-CODE freeze (which can
+    only ever mean anything against the REAL checkout this process actually
+    imported ``scoring/`` from), the D1 reference-IDENTITY receipt is a data
+    fact, not a code-identity fact -- pointing it at an isolated synthetic
+    ``repo_root``/``docs/receipts`` for test isolation is exactly as sound as
+    ``require_clean_study_repo(repo_root)`` already treats its own git-status
+    check, and every real caller's ``repo_root`` defaults to the same
+    ``REPO_ROOT`` regardless (``score_bundle``'s own default, matching
+    ``finalize_bundle``/``run_experiment_bundled``).
     """
 
     from ..contracts import FrozenCoreGate
+    from ..data.references import ReferenceError, reference_file_relpath
     from .bundle import require_clean_study_repo
 
     plan_meta = bundle.manifest.get("plan")
@@ -270,6 +292,28 @@ def _assert_scoring_entry_gate(
     gate = FrozenCoreGate.for_study_repo(REPO_ROOT, REPO_ROOT, REPO_ROOT)
     gate._validate_e0()
     gate._resolve_carrier_dataset_entry(carrier_lock_key, lock)
+
+    scorer_names = bundle.manifest.get("scorers")
+    if isinstance(scorer_names, list) and "asr-wer" in scorer_names:
+        split_ids = getattr(bundle, "split_ids", None)
+        if not split_ids:
+            raise ScoringPhaseError(
+                "verified bundle carries no split_ids to scope the reference-identity "
+                "check to; refusing to score with an unbounded/unknown sample set"
+            )
+        try:
+            reference_facts = {
+                sample_id: reference_file_relpath(lock, carrier_lock_key, sample_id)
+                for sample_id in split_ids
+            }
+        except ReferenceError as error:
+            raise ScoringPhaseError(
+                f"cannot resolve reference file paths for carrier {carrier_lock_key!r}: "
+                f"{error}"
+            ) from error
+        reference_gate = FrozenCoreGate.for_study_repo(Path(repo_root), Path(root), Path(repo_root))
+        reference_gate.verify_reference_identity(carrier_lock_key, reference_facts)
+
     require_clean_study_repo(Path(repo_root))
 
 
@@ -308,7 +352,7 @@ def score_bundle(
         )
     if bundle.outputs_path is None:
         raise ScoringPhaseError("verified bundle carries no outputs artifact to score")
-    _assert_scoring_entry_gate(bundle, lock, repo_root)
+    _assert_scoring_entry_gate(bundle, lock, root, repo_root)
     scorer_names = bundle.manifest.get("scorers")
     if not isinstance(scorer_names, list) or not scorer_names:
         raise ScoringPhaseError("run manifest carries no configured scorers to run")

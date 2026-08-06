@@ -19,7 +19,7 @@ import pytest
 
 from gate_fixture import GateFixture
 
-from speech_aware_evidence_acquisition.contracts import GateClosed
+from speech_aware_evidence_acquisition.contracts import ExecutionScopeError, GateClosed
 from speech_aware_evidence_acquisition.core.attempts import AttemptStore
 from speech_aware_evidence_acquisition.core.base import PayloadBindingContext
 from speech_aware_evidence_acquisition.core.model import FrozenCoreAdapter, FrozenCoreError
@@ -130,8 +130,19 @@ def test_plan_without_attempt_id_is_refused(tmp_path, world):
 
 @pytest.mark.parametrize("bad_attempt_id", ["", "has space", "has/slash", "../escape"])
 def test_plan_with_malformed_attempt_id_is_refused(tmp_path, world, bad_attempt_id):
+    """IMPORTANT 3 fix-wave3 (round-3 external-threat-model review):
+    ``ExecutionPlan.validate()`` now refuses a malformed attempt_id itself
+    (a structural identity-contract violation, ``ExecutionScopeError``) --
+    strictly EARLIER than the previous refusal point deep inside
+    ``FrozenCoreAdapter``'s own ``AttemptStore.open_attempt`` call
+    (``AttemptError`` translated to ``FrozenCoreError``). ``gate.
+    assert_model_touch_allowed(plan)`` is the FIRST thing
+    ``FrozenCoreAdapter.__init__`` does, and it calls ``ExecutionPlan.
+    validate(plan)`` before touching any receipt, so the malformed id is now
+    caught before ANY gate/attempt-store work happens at all."""
+
     plan = world.plan(attempt_id=bad_attempt_id)
-    with pytest.raises(FrozenCoreError, match="attempt"):
+    with pytest.raises(ExecutionScopeError, match="attempt_id"):
         FrozenCoreAdapter(
             gate=world.gate(), plan=plan, arm="bare-core", transport=_fake_transport,
             sink=TraceSink(tmp_path / "run", plan.run_id), binding=_binding(world),

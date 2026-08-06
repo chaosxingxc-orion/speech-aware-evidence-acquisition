@@ -115,6 +115,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 import subprocess
 from dataclasses import dataclass
 from datetime import datetime, timezone
@@ -133,7 +134,7 @@ from ..data.splits import prefixed as _prefixed_ids, split_identity_hash
 from ..e0.artifacts import REPO_ROOT, sha256_file, write_json_artifact
 from .attempts import AttemptError, AttemptHandle, AttemptStore
 from .attempts import STATE_ABORTED, STATE_FINALIZED, STATE_OPENED
-from .base import RunResult
+from .base import SCORERS, RunResult
 from .config import ComposedConfig, protocol_hash as _recompute_protocol_hash
 from .resources import NOT_AVAILABLE
 from .scorers import score_bundle
@@ -152,6 +153,14 @@ _VALID_STATUSES = (STATUS_COMPLETED, STATUS_ABORTED)
 # refuses to accept one that claims otherwise -- defense in depth against a
 # hand-tampered manifest).
 UNAVAILABLE_COMMIT_PREFIX = "UNAVAILABLE:"
+
+# MINOR 2 fix-wave3 (external-threat-model review round 3): shape patterns so
+# verify_bundle can genuinely CHECK, not merely assert, the two hash-shaped
+# manifest cells bundle_ledger_cells/ledger_row_for_bundle treat as
+# machine-derived (docs/owner-decisions-pending.md item 6 records exactly
+# what remains a residue after this).
+_FULL_COMMIT_PATTERN = re.compile(r"[0-9a-f]{40}\Z")
+_SHA256_PATTERN = re.compile(r"[0-9a-f]{64}\Z")
 
 # VerifiedBundle.attempt_state sentinel for "no attempt file exists at all"
 # (a failure before FrozenCoreAdapter ever opened one) -- distinct from every
@@ -288,6 +297,45 @@ def _refuse_if_inside_repo(path: Path, label: str) -> Path:
             "outside the repository checkout"
         )
     return resolved
+
+
+# IMPORTANT 3 (external-threat-model review round 3): every manifest/scores/
+# ledger path this module writes embeds ``run_id`` (plain f-string
+# interpolation) with NOTHING confining the result to stay inside its own run
+# directory. ``contracts.ExecutionPlan.validate`` now refuses a run_id/
+# attempt_id containing a path separator or traversal segment (fix-wave3) --
+# but that refusal is not guaranteed to have run on a PARTICULAR plan object
+# before it reaches this module: ``core.driver.run_experiment_bundled``'s own
+# ABORTED-manifest path calls ``build_manifest`` with the SAME plan whenever
+# ``run_experiment`` fails for ANY reason, including ``core.tracing.
+# TraceSink``'s OWN (unrelated) run_id format check raising FIRST -- before
+# the gate/adapter construction that would otherwise be the first thing to
+# call ``plan.validate()``. Demonstrated: a plan built directly from an
+# operator-supplied JSON file (``core.driver._cli_run``, never itself calling
+# ``.validate()``) with ``run_id="../../VICTIM/pwned"`` reached
+# ``build_manifest`` this way and wrote a manifest OUTSIDE its run directory.
+# This confinement is therefore a second, independent rail -- mirroring this
+# module's own I3/I4 two-rail precedent elsewhere (adapter AND transport each
+# independently check media/payload confinement, never trusting the other)
+# -- that holds regardless of whether ``ExecutionPlan.validate()`` ever ran
+# on the plan that produced ``filename``.
+def _confine_child_path(parent_dir: Path, filename: str, label: str) -> Path:
+    """``parent_dir / filename``, refused (:class:`BundleError`) unless the
+    resolved result is BOTH a direct child of ``parent_dir`` and outside the
+    study repository. ``filename`` is expected to embed a run_id/attempt_id
+    verbatim (e.g. ``f"{run_id}.run-manifest.json"``) -- a value containing
+    ``/``, ``\\``, or a ``..`` segment resolves outside ``parent_dir`` and is
+    refused here rather than silently written wherever it lands."""
+
+    parent_resolved = Path(parent_dir).resolve()
+    resolved = (parent_resolved / filename).resolve()
+    if resolved.parent != parent_resolved:
+        raise BundleError(
+            f"{label} {resolved} would not land directly inside its own run directory "
+            f"{parent_resolved}; refused -- a run_id/attempt_id can never steer an "
+            "artifact path outside where it belongs (IMPORTANT 3 fix-wave3)"
+        )
+    return _refuse_if_inside_repo(resolved, label)
 
 
 # ---------------------------------------------------------------------------
@@ -547,7 +595,9 @@ def build_manifest(
         result=result,
         now=now,
     )
-    manifest_path = Path(run_dir).resolve() / f"{plan.run_id}.run-manifest.json"
+    manifest_path = _confine_child_path(
+        run_dir, f"{plan.run_id}.run-manifest.json", "run manifest path"
+    )
     write_json_artifact(manifest_path, document)
     return manifest_path
 
@@ -894,6 +944,58 @@ def verify_bundle(manifest_path: Path) -> VerifiedBundle:
     status = manifest.get("status")
     if status not in _VALID_STATUSES:
         raise BundleError(f"run manifest status must be one of {_VALID_STATUSES}, got {status!r}")
+
+    # MINOR 2 fix-wave3: study_commit's SHAPE is now genuinely checked, not
+    # merely "is a string" -- previously ANY string (including a hand-typed
+    # placeholder) passed here and was then emitted by bundle_ledger_cells as
+    # a "verified" ledger cell, refusing a human who supplied the truthful
+    # value instead. A well-formed value is either a genuine 40-hex git
+    # commit or the ABORTED-only UNAVAILABLE:<non-empty reason> marker (the
+    # COMPLETED-specific check just below additionally refuses the marker
+    # form for a COMPLETED manifest). This is shape validation, not full
+    # re-derivation: verify_bundle does not re-run `git rev-parse HEAD`
+    # against a live repo (a manifest legitimately outlives the commit it was
+    # built against), so a well-SHAPED but wrong 40-hex value is not caught
+    # here -- see docs/owner-decisions-pending.md item 6 for this residue.
+    study_commit_value = manifest.get("study_commit")
+    if not isinstance(study_commit_value, str) or not (
+        _FULL_COMMIT_PATTERN.fullmatch(study_commit_value)
+        or (
+            study_commit_value.startswith(UNAVAILABLE_COMMIT_PREFIX)
+            and len(study_commit_value) > len(UNAVAILABLE_COMMIT_PREFIX)
+        )
+    ):
+        raise BundleError(
+            f"run manifest study_commit must be a 40-hex git commit or an "
+            f"{UNAVAILABLE_COMMIT_PREFIX!r}-prefixed marker with a non-empty reason, got "
+            f"{study_commit_value!r} (MINOR 2 fix-wave3: this ledger cell is machine-"
+            "checked, not merely asserted)"
+        )
+
+    # MINOR 2 fix-wave3: `scorers` is now bound to something real -- every
+    # registered scorer name (SCORERS.names()), never an arbitrary/garbage
+    # list. This does NOT re-derive the set from the composed config (that
+    # would require repo_root + real config-fragment files verify_bundle has
+    # no access to; see docs/owner-decisions-pending.md item 6 for exactly
+    # what remains unbound: a manifest whose scorers were legitimately
+    # trimmed to omit the task metric, e.g. ["cost"] alone, still verifies).
+    scorer_names_value = manifest.get("scorers")
+    if (
+        not isinstance(scorer_names_value, list)
+        or not scorer_names_value
+        or not all(isinstance(name, str) and name.strip() for name in scorer_names_value)
+    ):
+        raise BundleError(
+            "run manifest scorers must be a non-empty list of non-empty scorer names, got "
+            f"{scorer_names_value!r}"
+        )
+    unregistered_scorers = sorted(set(scorer_names_value) - set(SCORERS.names()))
+    if unregistered_scorers:
+        raise BundleError(
+            f"run manifest scorers names unregistered scorer(s) {unregistered_scorers}; a "
+            "manifest cannot claim a scorer core.scorers never registered (MINOR 2 fix-wave3)"
+        )
+
     if status == STATUS_COMPLETED:
         for label, key in (("outputs", "outputs"), ("raw trace", "raw_trace"), ("trace manifest", "trace_manifest")):
             entry = manifest.get(key)
@@ -1048,9 +1150,23 @@ def verify_bundle(manifest_path: Path) -> VerifiedBundle:
     # with this recomputation and refuses.
     # 'arm' was already extracted and validated above (before _verify_outputs
     # was called, so it could bind each outputs row too).
+    # MINOR 2 fix-wave3: config_hash's SHAPE is now checked (a genuine
+    # 64-hex SHA-256), not merely "is a string" -- any self-consistent-
+    # LOOKING pair (an arbitrary string paired with fragment names that
+    # happen to also be arbitrary) previously passed here outright.
+    # config_hash is NOT re-derived from the named fragments' actual file
+    # contents: doing so needs repo_root plus the real config-fragment
+    # files on disk, which verify_bundle (taking only a manifest path) has
+    # no access to -- see docs/owner-decisions-pending.md item 6 for this
+    # residue, stated plainly rather than silently narrowed.
     config_meta = manifest.get("config")
     if not isinstance(config_meta, Mapping) or not isinstance(config_meta.get("config_hash"), str):
         raise BundleError("run manifest lacks a usable config.config_hash")
+    if _SHA256_PATTERN.fullmatch(config_meta["config_hash"]) is None:
+        raise BundleError(
+            f"run manifest config.config_hash must be a 64-hex SHA-256, got "
+            f"{config_meta['config_hash']!r} (MINOR 2 fix-wave3)"
+        )
     recomputed_protocol_hash = _recompute_protocol_hash(
         config_meta["config_hash"], arm, recomputed_split_identity
     )
@@ -1206,7 +1322,7 @@ def finalize_bundle(
     scores = score_bundle(bundle, lock, root, repo_root=repo_root)
     run_dir = Path(manifest_path).resolve().parent
     run_id = str(bundle.manifest["run_id"])
-    scores_path = run_dir / f"{run_id}.scores.json"
+    scores_path = _confine_child_path(run_dir, f"{run_id}.scores.json", "run scores path")
     write_json_artifact(scores_path, scores)
     _attach_scores(Path(manifest_path), scores_path)
 
@@ -1226,8 +1342,12 @@ def finalize_bundle(
         # placeholder here is necessarily stale, not an intentional override.
         cells["MLflow run"] = mlflow_run_id
     row_markdown, merged_cells = ledger_row_for_bundle(bundle, cells)
-    ledger_markdown_path = run_dir / f"{run_id}.ledger-row.md"
-    ledger_json_path = run_dir / f"{run_id}.ledger-row.json"
+    ledger_markdown_path = _confine_child_path(
+        run_dir, f"{run_id}.ledger-row.md", "ledger markdown path"
+    )
+    ledger_json_path = _confine_child_path(
+        run_dir, f"{run_id}.ledger-row.json", "ledger json path"
+    )
     ledger_markdown_path.write_text(row_markdown + "\n", encoding="utf-8", newline="\n")
     write_json_artifact(ledger_json_path, merged_cells)
 

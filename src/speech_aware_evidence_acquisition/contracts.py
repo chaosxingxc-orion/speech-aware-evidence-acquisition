@@ -70,6 +70,21 @@ _DATE = re.compile(r"\d{4}-\d{2}-\d{2}\Z")
 _FULL_COMMIT = re.compile(r"[0-9a-f]{40}\Z")
 _SHA256 = re.compile(r"[0-9a-f]{64}\Z")
 _DRIVE_PREFIX = re.compile(r"^[A-Za-z]:")
+# IMPORTANT 3 (external-threat-model review round 3): the ONE canonical
+# identifier pattern for every run_id/attempt_id/session_id this study ever
+# embeds verbatim into a filesystem path -- core.attempts (an attempt's
+# directory name + file stem), core.tracing (a trace file's stem),
+# core.session (a session receipt's file stem), and now ExecutionPlan.validate
+# itself. Previously each of those three core modules independently defined
+# its OWN compiled copy of this exact same regex text; none of them was ever
+# consulted by ExecutionPlan.validate, which accepted "any non-empty string"
+# for run_id -- so a run_id containing `/`, `\`, or a `..` traversal segment
+# (rejected by every one of those three copies) sailed straight through plan
+# construction/validation. Defined HERE, at the bottom of the module's
+# dependency graph (contracts.py imports nothing from core/), and imported by
+# every consumer instead of re-copied, so there is exactly one definition of
+# "a safe identifier" a fourth divergent regex could never quietly drift from.
+RUN_ID_PATTERN = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]*")
 
 STUDY_SLUG = "speech-aware-evidence-acquisition"
 MODEL_LOCK_KEY = "qwen3-omni-30b-a3b-instruct-gguf"
@@ -194,6 +209,25 @@ ALLOWED_CARRIER_PROFILES = frozenset(
     }
 )
 
+# IMPORTANT 2 (external-threat-model review round 3): the D1 identity
+# artifact layer key holding per-file (id, bytes, sha256) reference-file
+# identity -- ``FrozenCoreGate.verify_reference_identity`` reads this the
+# same way ``verify_media_identity`` reads the ``media`` layer key.
+_NLP_REFERENCE_D1_LAYER_KEY = "nlp_references"
+# Mirrors ``data.references._NLP_SUBDIR`` exactly (kept independent rather
+# than imported, same reasoning as ``general_audio_deny_lock_keys``'s own
+# docstring: this module stays stdlib-only and never imports ``data.*``) --
+# the only carrier lock keys ``reference_tokens`` can actually read a
+# reference layer for today. ``conec`` is deliberately absent: it has no
+# reference layer of its own that ``reference_tokens`` resolves (its D1
+# identity layer is named ``e21_nlp_references``, a DIFFERENT key with
+# DIFFERENT bytes than earnings21-original's own ``nlp_references`` --
+# scoring conec was never reachable through ``reference_tokens`` and this
+# gate correctly refuses it too rather than silently reusing earnings21's
+# facts for a key that names a distinct file set). See
+# docs/owner-decisions-pending.md item 5.
+_REFERENCE_SCOPED_CARRIER_LOCK_KEYS = frozenset({"earnings21-original", "earnings22-original"})
+
 
 class BoundaryViolation(ValueError):
     """A payload tries to move gold/reference/test/future information across the runtime boundary."""
@@ -282,8 +316,24 @@ class ExecutionPlan:
             raise ExecutionScopeError(
                 f"execution plan study identity must be {STUDY_SLUG!r}, got {self.study!r}"
             )
-        if not isinstance(self.run_id, str) or not self.run_id.strip():
-            raise ExecutionScopeError("execution plan run_id must be a non-empty string")
+        if not isinstance(self.run_id, str) or RUN_ID_PATTERN.fullmatch(self.run_id) is None:
+            raise ExecutionScopeError(
+                f"execution plan run_id must match {RUN_ID_PATTERN.pattern!r} (no path "
+                "separator, no leading dot/dash, non-empty) -- IMPORTANT 3 fix-wave3: a "
+                "run_id is embedded verbatim into filesystem paths downstream (core.attempts, "
+                f"core.tracing, core.bundle); got {self.run_id!r}"
+            )
+        # attempt_id stays optional (see the field's own comment above) but, when
+        # present, must satisfy the SAME identifier discipline as run_id -- it too is
+        # embedded verbatim into a filesystem path (core.attempts.AttemptStore,
+        # core.bundle's attempt.state_path).
+        if self.attempt_id is not None and (
+            not isinstance(self.attempt_id, str) or RUN_ID_PATTERN.fullmatch(self.attempt_id) is None
+        ):
+            raise ExecutionScopeError(
+                f"execution plan attempt_id must be None or match {RUN_ID_PATTERN.pattern!r}, "
+                f"got {self.attempt_id!r}"
+            )
         assert_execution_scope(self.execution_profile)
         if not isinstance(self.carrier_lock_key, str) or not self.carrier_lock_key.strip():
             raise ExecutionScopeError("execution plan carrier_lock_key must be a non-empty string")
@@ -497,9 +547,80 @@ def _is_separator_row(cells: list[str]) -> bool:
 # parsed as a real, binding registration that a human reading the rendered
 # ledger sees NOTHING of; a contract table inside a fenced example block
 # silently exhausted the campaign slice cap.
+#
+# IMPORTANT 1 fix-wave3 (round-3 external-threat-model review): the round-2
+# fix above over-corrected. Its own justification -- "a line containing
+# ``<!--`` is never itself a genuine table row (a real row is exactly
+# ``| ... |``)" -- is FALSE: ``| 2026-08-05 | RUN-OLD | ... | scope amended
+# <!-- see git history --> |`` is a completely genuine, GFM-legal table row
+# that GitHub renders normally, hiding only the comment text inside its last
+# cell. Consuming that WHOLE LINE (as round-2 did, for ANY line containing
+# ``<!--``) made the ENTIRE row -- including its budget-relevant cells:
+# ``calls``, ``consumed``, etc. -- invisible to every check below, even
+# though a human reading the rendered ledger sees the row perfectly clearly.
+# Demonstrated: an honest ledger whose slice total was 3100 calls (correctly
+# REFUSED) was wrongly ACCEPTED once an inline ``<!-- ... -->`` was added
+# inside one row's notes cell; a ``consumed = yes`` row became invisible to
+# the consumed check the same way; and an UNCLOSED ``<!--`` inside a cell
+# silently dropped every row below it for the rest of the document while
+# ``saw_contract_header`` stayed True, so the gate never failed closed at
+# all -- exactly the "silently drop rows" failure mode I2 already exists to
+# prevent, just via a different trigger.
+#
+# The fix distinguishes two shapes precisely:
+#
+# 1. A comment that both OPENS and CLOSES on the SAME line -- the demonstrated
+#    defect's shape -- is stripped from that line's TEXT (see
+#    :func:`_strip_same_line_comments`), leaving every surrounding
+#    character -- including the REST of that same row's other cells --
+#    completely untouched. Row/header recognition then runs on the
+#    comment-stripped text exactly as if the comment had never been there,
+#    so a genuine row is never lost, and a ``consumed``/budget cell hidden
+#    only by an inline comment is read correctly.
+# 2. A comment that OPENS on one line without also closing on it begins a
+#    genuinely multi-line span; every line up to and including the one that
+#    finally closes it is consumed WHOLE, UNCHANGED from the round-2
+#    behavior -- this is what keeps the round-2 "a complete table hidden
+#    inside a comment block" case (its own dedicated header-then-rows-then-
+#    close-marker shape, each on its own line) invisible exactly as before:
+#    that case never involves a genuine, otherwise-recognizable row losing
+#    only its comment tail, so it needs no different treatment.
+#
+# A comment opened this way that NEVER closes before end-of-document is no
+# longer silently equivalent to "everything after it is invisible prose" --
+# it now FAILS CLOSED (:class:`GateClosed`) at the end of parsing, since an
+# unterminated comment could, in principle, be hiding a real row's remainder
+# (or an entire real table) that this parser can never distinguish from
+# intentionally-hidden draft content once the comment never closes.
 _HTML_COMMENT_OPEN = "<!--"
 _HTML_COMMENT_CLOSE = "-->"
 _FENCE = re.compile(r"^(`{3,}|~{3,})")
+
+
+def _strip_same_line_comments(line: str) -> tuple[str, bool]:
+    """Remove every ``<!-- ... -->`` span that both opens AND closes on
+    ``line``, leaving all other characters -- including a row's OTHER cells
+    on either side -- completely untouched; handles more than one such span
+    per line. Returns ``(visible_text, opens_unterminated)`` where
+    ``opens_unterminated`` is True iff, after removing every already-closed
+    same-line span, the text still contains a ``<!--`` with no matching
+    ``-->`` later on this SAME line -- the caller's signal to fall back to
+    the existing whole-line multi-line-comment consumption, unchanged."""
+
+    parts: list[str] = []
+    i = 0
+    n = len(line)
+    while True:
+        open_idx = line.find(_HTML_COMMENT_OPEN, i)
+        if open_idx == -1:
+            parts.append(line[i:])
+            return "".join(parts), False
+        close_idx = line.find(_HTML_COMMENT_CLOSE, open_idx + len(_HTML_COMMENT_OPEN))
+        if close_idx == -1:
+            parts.append(line[i:open_idx])
+            return "".join(parts), True
+        parts.append(line[i:open_idx])
+        i = close_idx + len(_HTML_COMMENT_CLOSE)
 
 
 def _parse_ledger_tables(text: str) -> list[dict[str, str]]:
@@ -525,23 +646,26 @@ def _parse_ledger_tables(text: str) -> list[dict[str, str]]:
     fail-closed rather than risking silently dropped budget rows (I2).
 
     IMPORTANT C (round-2 external-threat-model review): before any row/header
-    recognition, every line is first classified as being inside an HTML
-    comment or a fenced code block; a line in either state is skipped
-    entirely -- never treated as a row, a separator, or a header, and never
-    allowed to close the CURRENTLY open contract table (matching the existing
-    "a stray prose line never drops rows below it" discipline: content the
-    rendered ledger hides is exactly as inert as ordinary prose to the table
-    state machine). Both a whole table hidden inside a comment and one framed
-    by a documentation fence are therefore simply invisible -- IGNORED, never
-    a registration and never a fail-closed refusal on their own: a comment is
-    a legitimate way to keep old/draft content out of the rendered view
-    without deleting it, and content a human reader cannot see can never
-    satisfy this file's whole purpose as the OWNER-VISIBLE pre-registration
-    record either way, so there is nothing gained by refusing outright over
-    silently not treating it as binding. Comment/fence detection is
-    line-level, not character-level: a line containing ``<!--`` is never
-    itself a genuine table row (a real row is exactly ``| ... |``), so
-    consuming the whole line is not a loss."""
+    recognition, every line is first classified as being inside a fenced code
+    block or an HTML comment; a line consumed whole by either state is never
+    treated as a row, a separator, or a header, and never allowed to close
+    the CURRENTLY open contract table (matching the existing "a stray prose
+    line never drops rows below it" discipline: content the rendered ledger
+    hides is exactly as inert as ordinary prose to the table state machine).
+    A whole table hidden inside a comment or framed by a documentation fence
+    is therefore simply invisible -- IGNORED, never a registration and never
+    a fail-closed refusal on their own: a comment is a legitimate way to keep
+    old/draft content out of the rendered view without deleting it, and
+    content a human reader cannot see can never satisfy this file's whole
+    purpose as the OWNER-VISIBLE pre-registration record either way, so there
+    is nothing gained by refusing outright over silently not treating it as
+    binding.
+
+    IMPORTANT 1 fix-wave3 (round-3 external-threat-model review): comment
+    handling is now CELL-TEXT-aware, not merely line-level -- see the module
+    comment above :func:`_strip_same_line_comments` for exactly what changed
+    and why. A comment that never closes before end-of-document fails closed
+    rather than silently discarding every row after it."""
 
     lines = text.splitlines()
     n = len(lines)
@@ -561,12 +685,6 @@ def _parse_ledger_tables(text: str) -> list[dict[str, str]]:
                 in_comment = False
             i += 1
             continue
-        open_idx = line.find(_HTML_COMMENT_OPEN)
-        if open_idx != -1:
-            close_idx = line.find(_HTML_COMMENT_CLOSE, open_idx + len(_HTML_COMMENT_OPEN))
-            in_comment = close_idx == -1  # opened but not also closed on this same line
-            i += 1
-            continue
 
         stripped_for_fence = line.strip()
         if in_fence:
@@ -584,6 +702,19 @@ def _parse_ledger_tables(text: str) -> list[dict[str, str]]:
             in_fence = True
             fence_char = fence_match.group(1)[0]
             fence_len = len(fence_match.group(1))
+            i += 1
+            continue
+
+        # IMPORTANT 1 fix-wave3: strip any comment(s) that both open AND close
+        # on THIS line from its text, leaving every surrounding character --
+        # including the rest of the SAME row's other cells -- untouched, and
+        # continue treating the (possibly modified) line as an ordinary
+        # row/header/data candidate below. A comment that opens here WITHOUT
+        # also closing here is a genuinely multi-line span: fall back to the
+        # existing whole-line consumption, unchanged from round-2.
+        line, opens_unterminated = _strip_same_line_comments(line)
+        if opens_unterminated:
+            in_comment = True
             i += 1
             continue
 
@@ -633,6 +764,23 @@ def _parse_ledger_tables(text: str) -> list[dict[str, str]]:
                 )
             rows.append(dict(zip(current_header, cells)))
         i += 1
+    # IMPORTANT 1 fix-wave3: an HTML comment that opens somewhere in the
+    # document and NEVER closes before end-of-file must fail closed, not
+    # silently behave as "everything after it is invisible prose" -- the
+    # reproduced defect (3 registered rows / 3500 calls silently became 0
+    # rows / 0 calls, with saw_contract_header still True so nothing ever
+    # refused). An unterminated comment could in principle be hiding a real
+    # row's remainder, or an entire real table, that this line-oriented
+    # parser can never distinguish from deliberately-hidden draft content
+    # once the comment never closes -- so it refuses outright instead of
+    # guessing either way.
+    if in_comment:
+        raise GateClosed(
+            "exposure ledger contains an unterminated HTML comment (a `<!--` with no "
+            "matching `-->` before end of file); refusing rather than silently treating "
+            "everything after it as invisible prose -- a genuine row could be hidden "
+            "behind it (fail-closed)"
+        )
     if not saw_contract_header:
         raise GateClosed(
             f"exposure ledger lacks a table header with a {_EXPOSURE_RUN_COLUMN!r} column"
@@ -1159,6 +1307,128 @@ class FrozenCoreGate:
                     f"{actual_bytes} bytes / {actual_sha[:12]}...; model touch refused (I-4)"
                 )
             self._assert_plausible_audio_seconds(sample_id, audio_seconds, rec_bytes)
+
+    def verify_reference_identity(
+        self, carrier_lock_key: str, reference_facts: Mapping[str, str]
+    ) -> None:
+        """IMPORTANT 2 (external-threat-model review round 3): the reference-
+        layer counterpart to :meth:`verify_media_identity`, re-verified AS
+        FILES, never merely trusted as a bare ``read_text()`` claim.
+
+        Every formal WER is ``f(frozen scoring code, hypothesis text,
+        reference bytes)``. Before this, only the first two were pinned: the
+        D3 freeze binds the scoring SOURCE (``_validate_scoring_freeze``),
+        and I7's ``response_text_sha256`` re-derivation binds the hypothesis
+        -- but ``data.references.reference_tokens`` did a bare
+        ``read_text()`` on ``<data_root>/<carrier>/transcripts/
+        nlp_references/<sample_id>.nlp`` with no hash/size check at all,
+        even though D1 already recorded byte size + SHA-256 for every one of
+        these files (the same ``{count, ids_sha256, manifest,
+        manifest_sha256, total_bytes}`` shape :meth:`verify_media_identity`
+        already reads for ``media``, here under the ``nlp_references`` layer
+        key instead). An interrupted asset fetch or a wrong
+        ``SPEECHRL_DATA_DIR`` silently produces the identical symptom as a
+        deliberate substitution: a WER computed against the wrong bytes with
+        every other check green.
+
+        ``reference_facts`` maps each sample id THIS bundle's own verified
+        split touches to its reference file's path, relative to
+        ``self.data_root`` -- computed by the caller (``core.scorers``, via
+        ``data.references.reference_file_relpath``, the SAME relative-path
+        convention ``reference_tokens`` itself resolves) rather than
+        re-derived here: this module stays stdlib-only and never imports
+        ``data.lock``/``data.references`` (module docstring). Scoped to
+        exactly the bundle's own split -- never the whole ~169-file corpus
+        -- mirroring :meth:`verify_media_identity`'s cost discipline (a
+        dev/discovery split here is 10-125 samples).
+
+        A carrier lock key with no D1-recorded reference-layer identity this
+        gate can re-verify fails closed rather than silently skipping the
+        check -- see ``_REFERENCE_SCOPED_CARRIER_LOCK_KEYS`` (mirrors
+        ``data.references._NLP_SUBDIR`` exactly: today, ``earnings21-original``
+        and ``earnings22-original`` only -- ``conec`` has no reference layer
+        ``reference_tokens`` can read at all, so scoring it was never
+        possible and this method correctly refuses it too) and
+        ``docs/owner-decisions-pending.md`` item 5 for the residue this
+        leaves if that set ever needs to grow.
+        """
+
+        if not isinstance(reference_facts, Mapping) or not reference_facts:
+            raise GateClosed(
+                "verify_reference_identity requires a non-empty sample_id -> "
+                "reference_relpath mapping"
+            )
+        if carrier_lock_key not in _REFERENCE_SCOPED_CARRIER_LOCK_KEYS:
+            raise GateClosed(
+                f"carrier lock key {carrier_lock_key!r} has no D1-recorded reference-layer "
+                "identity this gate can re-verify; scoring against an unverified reference "
+                "layer is refused rather than silently trusted (IMPORTANT 2 fail-closed; "
+                "see docs/owner-decisions-pending.md item 5)"
+            )
+        document = self._load(self._d1_identity_artifact_path(), "D1 identity artifact")
+        carriers = document.get("carriers")
+        carrier_doc = carriers.get(carrier_lock_key) if isinstance(carriers, Mapping) else None
+        if not isinstance(carrier_doc, Mapping):
+            raise GateClosed(
+                f"D1 identity artifact has no per-sample identity for carrier "
+                f"{carrier_lock_key!r}; model touch refused"
+            )
+        layers = carrier_doc.get("layers")
+        ref_layer = (
+            layers.get(_NLP_REFERENCE_D1_LAYER_KEY) if isinstance(layers, Mapping) else None
+        )
+        manifest_entries = ref_layer.get("manifest") if isinstance(ref_layer, Mapping) else None
+        if not isinstance(manifest_entries, list) or not manifest_entries:
+            raise GateClosed(
+                f"D1 identity artifact carrier {carrier_lock_key!r} lacks a "
+                f"{_NLP_REFERENCE_D1_LAYER_KEY!r} manifest; model touch refused"
+            )
+        recorded: dict[str, tuple[int, str]] = {}
+        for entry in manifest_entries:
+            if not isinstance(entry, Mapping):
+                raise GateClosed("D1 reference manifest entry is not an object")
+            sample_id = entry.get("id")
+            rec_bytes = entry.get("bytes")
+            rec_sha = entry.get("sha256")
+            if (
+                not isinstance(sample_id, str)
+                or not sample_id
+                or isinstance(rec_bytes, bool)
+                or not isinstance(rec_bytes, int)
+                or rec_bytes <= 0
+                or not isinstance(rec_sha, str)
+                or _SHA256.fullmatch(rec_sha) is None
+            ):
+                raise GateClosed(f"D1 reference manifest entry is malformed: {entry!r}")
+            recorded[sample_id] = (rec_bytes, rec_sha)
+
+        for sample_id, relpath in reference_facts.items():
+            if not isinstance(sample_id, str) or not isinstance(relpath, str):
+                raise GateClosed(
+                    f"reference_facts[{sample_id!r}] must be a string reference relpath"
+                )
+            d1_fact = recorded.get(sample_id)
+            if d1_fact is None:
+                raise GateClosed(
+                    f"sample {sample_id!r} (carrier {carrier_lock_key!r}) has no D1-recorded "
+                    "reference identity; a sample outside D1's identity closure can never be "
+                    "scored against"
+                )
+            rec_bytes, rec_sha = d1_fact
+            relative = _safe_relative_path(relpath, f"reference_facts[{sample_id!r}] relpath")
+            resolved = _resolve_under(
+                self.data_root, relative, f"reference for sample {sample_id!r}"
+            )
+            actual_bytes, actual_sha = _measure_file(
+                resolved, f"reference for sample {sample_id!r}"
+            )
+            if actual_bytes != rec_bytes or actual_sha != rec_sha:
+                raise GateClosed(
+                    f"reference identity drift for sample {sample_id!r}: D1 recorded "
+                    f"{rec_bytes} bytes / {rec_sha[:12]}..., the live file is now "
+                    f"{actual_bytes} bytes / {actual_sha[:12]}...; scoring refused "
+                    "(IMPORTANT 2)"
+                )
 
     def _load_lock_with_hash(self) -> tuple[Mapping[str, object], str]:
         """M-3: read ``docs/datasets.lock.json`` exactly ONCE and derive both the

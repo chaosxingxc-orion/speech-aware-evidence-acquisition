@@ -62,6 +62,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Callable, Mapping, Sequence
 
+from ..contracts import RUN_ID_PATTERN as _ID_PATTERN
 from ..contracts import STUDY_SLUG
 
 SESSION_RECEIPT_SCHEMA = "saea-session-receipt-v1"
@@ -71,9 +72,11 @@ DEFAULT_STARTUP_MAX_BYTES = 65536
 
 _SHA256 = re.compile(r"[0-9a-f]{64}\Z")
 _DRIVE_PREFIX = re.compile(r"^[A-Za-z]:")
-# Same shape as core.attempts._ID_PATTERN: embedded verbatim into a filesystem
-# path (a session receipt's file stem) and echoed into trace/audit text.
-_ID_PATTERN = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]*")
+# IMPORTANT 3 fix-wave3: imported from contracts.RUN_ID_PATTERN rather than a
+# locally-copied regex (see core.attempts's own import for the full
+# no-import-cycle reasoning) -- the same shape core.attempts and core.tracing
+# use for a run/attempt id: embedded verbatim into a filesystem path (a
+# session receipt's file stem) and echoed into trace/audit text.
 
 _LOOPBACK_LITERALS = ("127.0.0.1", "::1")
 

@@ -888,6 +888,77 @@ def test_prose_line_between_rows_still_counts_alongside_comment_and_fence_awaren
         world.gate().assert_model_touch_allowed(world.plan())
 
 
+# ---------------------------------------------------------------------------
+# IMPORTANT 1 fix-wave3 (round-3 external-threat-model review): the round-2
+# fix's own justification -- "a line containing `<!--` is never itself a
+# genuine table row" -- was FALSE. An inline, SAME-LINE HTML comment inside
+# an otherwise perfectly genuine row (e.g. a notes cell reading
+# ``scope amended <!-- see git history -->``) must never make the WHOLE row
+# invisible to the budget/duplicate/consumed checks -- only round-2's own
+# multi-line "whole table hidden inside a comment" shape (covered by
+# test_table_inside_an_html_comment_is_not_a_registration/
+# test_table_inside_an_html_comment_does_not_count_toward_the_slice_cap
+# above, unchanged and still passing) stays invisible.
+# ---------------------------------------------------------------------------
+
+
+def test_inline_same_line_comment_does_not_hide_a_genuine_row(world):
+    """The exact reproduced PoC: RUN-OLD (2500 calls) + this run's own row
+    (600 calls) honestly total 3100 > the 3000 cap and must REFUSE --
+    identically whether or not RUN-OLD's notes cell carries an inline,
+    same-line HTML comment. Before the fix, adding the comment alone flipped
+    this from REFUSED to wrongly ACCEPTED (RUN-OLD's entire row, including
+    its 2500 calls, vanished)."""
+
+    new_row = _row(world, world.RUN_ID, calls=600)
+
+    honest = _table(
+        _row(world, "SAEA-E-900-old", calls=2500, split_hash="3" * 64, notes="row") + new_row
+    )
+    world.exposure_ledger.write_text(honest, encoding="utf-8")
+    with pytest.raises(GateClosed, match="first-slice cap"):
+        world.gate().assert_model_touch_allowed(world.plan())
+
+    commented = _table(
+        _row(
+            world, "SAEA-E-900-old", calls=2500, split_hash="3" * 64,
+            notes="scope amended <!-- see git history -->",
+        )
+        + new_row
+    )
+    world.exposure_ledger.write_text(commented, encoding="utf-8")
+    with pytest.raises(GateClosed, match="first-slice cap"):
+        world.gate().assert_model_touch_allowed(world.plan())
+
+
+def test_inline_comment_hiding_a_consumed_cell_still_refuses_as_consumed(world):
+    """A ``consumed = yes`` row whose cell carries an inline, same-line
+    comment (e.g. ``yes<!-- amended -->``) must still be read as consumed --
+    before the fix, the whole row (and therefore the consumed=yes fact)
+    vanished, defeating the re-execution refusal."""
+
+    commented = _table(_row(world, world.RUN_ID, consumed="yes<!-- amended -->"))
+    world.exposure_ledger.write_text(commented, encoding="utf-8")
+    with pytest.raises(GateClosed, match="already consumed"):
+        world.gate().assert_model_touch_allowed(world.plan())
+
+
+def test_unclosed_comment_inside_a_row_cell_fails_closed(world):
+    """An HTML comment opened inside a row's cell that never closes before
+    end-of-file must FAIL CLOSED, not silently drop every row below it (the
+    reproduced defect: 3 registered rows / 3500 calls silently became 0
+    rows / 0 calls with saw_contract_header still True, so nothing ever
+    refused)."""
+
+    broken = _table(
+        _row(world, world.RUN_ID, notes="oops <!-- never closes")
+        + _row(world, "SAEA-E-901-after-unclosed", calls=999, split_hash="4" * 64)
+    )
+    world.exposure_ledger.write_text(broken, encoding="utf-8")
+    with pytest.raises(GateClosed, match="unterminated HTML comment"):
+        world.gate().assert_model_touch_allowed(world.plan())
+
+
 def test_unrecognized_table_header_sharing_a_contract_column_is_refused(world):
     """I2 fail-closed: a table whose header does NOT carry the run-id column
     but DOES reuse another contract column name (here `consumed`) must be

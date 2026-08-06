@@ -1,6 +1,7 @@
 """Scorer adapters over the frozen stack; transition accounting from hit masks."""
 
 import contextlib
+import hashlib
 import json
 import subprocess
 from pathlib import Path
@@ -158,6 +159,49 @@ def _outputs_path(tmp_path, synthetic_world):
     )
 
 
+def _commit_reference_d1_receipt(repo_root: Path, carrier_lock_key: str, nlp_path: Path) -> None:
+    """IMPORTANT 2 (fix-wave3, external-threat-model review round 3):
+    ``core.scorers._assert_scoring_entry_gate`` now re-verifies the
+    reference (``.nlp``) bytes ``score_asr_outputs`` is about to read
+    against a D1 identity artifact bound to ``repo_root`` (the SAME
+    test-overridable parameter ``require_clean_study_repo`` already uses --
+    see ``_assert_scoring_entry_gate``'s own docstring for why this is sound
+    for a DATA-identity receipt, unlike the D3 SOURCE-CODE freeze). Writes
+    and commits a minimal, genuinely matching one -- computed from
+    ``nlp_path``'s CURRENT bytes, so it can never be out of sync with them --
+    into ``repo_root``'s own ``docs/receipts/``, mirroring
+    ``tests/contract/test_media_identity.py``'s synthetic-D1-artifact
+    pattern for ``verify_media_identity``."""
+
+    raw = nlp_path.read_bytes()
+    sample_id = nlp_path.stem
+    d1_document = {
+        "carriers": {
+            carrier_lock_key: {
+                "layers": {
+                    "nlp_references": {
+                        "manifest": [
+                            {
+                                "id": sample_id,
+                                "bytes": len(raw),
+                                "sha256": hashlib.sha256(raw).hexdigest(),
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    }
+    receipts_dir = repo_root / "docs" / "receipts"
+    artifacts_dir = receipts_dir / "artifacts"
+    artifacts_dir.mkdir(parents=True, exist_ok=True)
+    (artifacts_dir / "d1-identity.json").write_text(json.dumps(d1_document), encoding="utf-8")
+    e0_document = {"deliverables": {"d1_identity": {"artifact": "artifacts/d1-identity.json"}}}
+    (receipts_dir / "e0-closure.json").write_text(json.dumps(e0_document), encoding="utf-8")
+    _git(repo_root, "add", "-A")
+    _git(repo_root, "commit", "-q", "-m", "add reference-identity D1 receipt")
+
+
 @pytest.mark.parametrize("not_a_bundle", ["some/path.jsonl", {"outputs_path": "x"}, None, 7])
 def test_score_bundle_refuses_anything_but_a_verified_bundle(tmp_path, synthetic_world, not_a_bundle):
     lock = load_lock(synthetic_world.lock_path)
@@ -172,6 +216,11 @@ def test_score_bundle_runs_configured_scorers_over_a_genuine_bundle(
     tmp_path, synthetic_world, clean_repo_root
 ):
     outputs = _outputs_path(tmp_path, synthetic_world)
+    _commit_reference_d1_receipt(
+        clean_repo_root,
+        "earnings21-original",
+        synthetic_world.e21 / "transcripts" / "nlp_references" / "4000001.nlp",
+    )
     lock = load_lock(synthetic_world.lock_path)
     bundle = VerifiedBundle(
         manifest_path=tmp_path / "fake.run-manifest.json",
@@ -255,6 +304,11 @@ def test_score_bundle_refuses_a_general_audio_carrier(tmp_path, synthetic_world,
 
 def test_score_bundle_refuses_a_dirty_study_repo(tmp_path, synthetic_world, clean_repo_root):
     outputs = _outputs_path(tmp_path, synthetic_world)
+    _commit_reference_d1_receipt(
+        clean_repo_root,
+        "earnings21-original",
+        synthetic_world.e21 / "transcripts" / "nlp_references" / "4000001.nlp",
+    )
     lock = load_lock(synthetic_world.lock_path)
     (clean_repo_root / "uncommitted.txt").write_text("dirty", encoding="utf-8")
     bundle = VerifiedBundle(

@@ -129,3 +129,55 @@ def test_plan_budget_fields_must_be_finite_and_integral():
     with pytest.raises(ExecutionScopeError, match="finite positive number"):
         _plan(planned_gpu_hours=float("inf")).validate()
     _plan(planned_gpu_hours=1.5).validate()
+
+
+# ---------------------------------------------------------------------------
+# IMPORTANT 3 (external-threat-model review round 3): run_id/attempt_id must
+# match the SAME filesystem-safe identifier pattern every downstream module
+# (core.attempts, core.tracing, core.session, core.bundle) already enforces
+# on its own authority -- before this, ExecutionPlan.validate() accepted ANY
+# non-empty string, including one containing `../`, `/`, `\`, or a leading
+# dot, letting a malicious run_id reach core.bundle.build_manifest (reachable
+# pre-gate via core.driver.run_experiment_bundled's ABORTED-manifest path)
+# and write a manifest OUTSIDE its own run directory.
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    "bad_run_id",
+    [
+        "../../VICTIM/pwned",
+        "../evil",
+        "a/b",
+        "a\\b",
+        "/absolute",
+        ".leadingdot",
+        "-leadingdash",
+        "",
+        "   ",
+    ],
+)
+def test_plan_run_id_rejects_path_shaped_values(bad_run_id):
+    with pytest.raises(ExecutionScopeError, match="run_id"):
+        _plan(run_id=bad_run_id).validate()
+
+
+@pytest.mark.parametrize(
+    "bad_attempt_id",
+    ["../evil", "a/b", "a\\b", "/absolute", ".leadingdot", ""],
+)
+def test_plan_attempt_id_rejects_path_shaped_values_when_present(bad_attempt_id):
+    with pytest.raises(ExecutionScopeError, match="attempt_id"):
+        _plan(attempt_id=bad_attempt_id).validate()
+
+
+def test_plan_attempt_id_none_is_still_legal():
+    """attempt_id stays optional -- a missing attempt_id (e0's frozen dry-run
+    construction) is not itself a validation failure; refusal for a real
+    model touch happens at FrozenCoreAdapter construction instead."""
+
+    _plan(attempt_id=None).validate()
+
+
+def test_plan_legitimate_run_id_and_attempt_id_still_validate():
+    _plan(run_id="SAEA-E-000-smoke", attempt_id="attempt-0001").validate()

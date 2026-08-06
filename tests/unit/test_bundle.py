@@ -60,6 +60,7 @@ from speech_aware_evidence_acquisition.core.bundle import (
     UNAVAILABLE_COMMIT_PREFIX,
     BundleError,
     VerifiedBundle,
+    _confine_child_path,
     build_manifest,
     finalize_bundle,
     verify_bundle,
@@ -162,16 +163,54 @@ def _git_init_commit(repo_root: Path) -> None:
     _git(repo_root, "commit", "-q", "-m", "test snapshot")
 
 
+_E21_SCORED_IDS = ("4000001", "4000002", "4000003")
+
+
 def _write_real_reference_tokens(synthetic_world) -> None:
     """conftest.SyntheticWorld's default e21 nlp_references carry only a
     header row (no token rows) -- fine for tests that never score, but
     score_asr_outputs (run for real inside finalize_bundle) needs at least
     one token row per sample. Mirrors conftest.py's own E21_IDS tuple."""
 
-    e21_ids = ("4000001", "4000002", "4000003")
-    for sample_id in e21_ids:
+    for sample_id in _E21_SCORED_IDS:
         nlp = synthetic_world.e21 / "transcripts" / "nlp_references" / f"{sample_id}.nlp"
         nlp.write_text(f"token|tags\nhello-{sample_id}|\nworld|\n", encoding="utf-8")
+
+
+def _write_reference_d1_receipt(synthetic_world, receipts_dir: Path) -> None:
+    """IMPORTANT 2 (fix-wave3, external-threat-model review round 3):
+    ``core.scorers._assert_scoring_entry_gate`` now re-verifies the reference
+    (``.nlp``) bytes ``score_asr_outputs`` is about to read against a D1
+    identity artifact -- write a minimal, genuinely matching one (computed
+    from the bytes :func:`_write_real_reference_tokens` JUST wrote, so it is
+    never out of sync with them) into THIS fixture's own synthetic repo, the
+    same way ``tests/contract/test_media_identity.py`` builds one for
+    ``verify_media_identity``. Mirrors the real
+    ``docs/receipts/artifacts/d1-identity.json`` shape exactly (``carriers ->
+    layers -> nlp_references -> manifest``), just scoped to only the ids this
+    test fixture's runs ever score."""
+
+    manifest_entries = []
+    for sample_id in _E21_SCORED_IDS:
+        nlp = synthetic_world.e21 / "transcripts" / "nlp_references" / f"{sample_id}.nlp"
+        raw = nlp.read_bytes()
+        manifest_entries.append(
+            {"id": sample_id, "bytes": len(raw), "sha256": hashlib.sha256(raw).hexdigest()}
+        )
+    d1_document = {
+        "carriers": {
+            "earnings21-original": {
+                "layers": {"nlp_references": {"manifest": manifest_entries}}
+            }
+        }
+    }
+    artifacts_dir = receipts_dir / "artifacts"
+    artifacts_dir.mkdir(parents=True, exist_ok=True)
+    (artifacts_dir / "d1-identity.json").write_text(json.dumps(d1_document), encoding="utf-8")
+    e0_document = {
+        "deliverables": {"d1_identity": {"artifact": "artifacts/d1-identity.json"}}
+    }
+    (receipts_dir / "e0-closure.json").write_text(json.dumps(e0_document), encoding="utf-8")
 
 
 @pytest.fixture()
@@ -186,6 +225,7 @@ def bundled_repo(synthetic_world, tmp_path):
     repo_root = tmp_path / "repo"
     receipts = repo_root / "docs" / "receipts"
     freeze_splits(lock, synthetic_world.data_root, receipts)
+    _write_reference_d1_receipt(synthetic_world, receipts)
     _git_init_commit(repo_root)
     return lock, repo_root
 
@@ -954,6 +994,85 @@ def test_finalize_bundle_refuses_a_manifest_path_inside_the_repository(tmp_path)
 
 
 # ---------------------------------------------------------------------------
+# IMPORTANT 3 fix-wave3 (round-3 external-threat-model review): a run_id (or
+# attempt_id) that would steer a manifest/scores/ledger path OUTSIDE its own
+# run directory -- via `/`, `\`, or a `..` traversal segment -- must be
+# refused, even for a plan that was NEVER validated by
+# contracts.ExecutionPlan.validate() (the demonstrated pre-gate reachability:
+# core.driver.run_experiment_bundled's ABORTED-manifest path calls
+# build_manifest with the SAME plan whenever run_experiment fails for ANY
+# reason -- including core.tracing.TraceSink's OWN run_id check raising
+# first, before the gate/adapter would ever validate the plan).
+# ---------------------------------------------------------------------------
+
+
+def test_build_manifest_refuses_a_run_id_that_would_escape_the_run_directory(
+    synthetic_world, bundled_repo, tmp_path
+):
+    """The exact reviewer PoC: a plan constructed directly (bypassing
+    ExecutionPlan.validate() entirely, exactly as an operator-supplied JSON
+    file read by core.driver._cli_run would) with
+    run_id='../../VICTIM/pwned' must never let build_manifest write a
+    manifest outside its own run_dir."""
+
+    lock, repo_root = bundled_repo
+    ids, split_hash, split_role = load_split(repo_root, "discovery", lock, synthetic_world.data_root)
+    composed = _composed()
+    plan = ExecutionPlan(
+        run_id="../../VICTIM/pwned",
+        execution_profile="bounded-discovery-probe",
+        carrier_lock_key="earnings21-original",
+        split_role="discovery",
+        split_identity_hash=split_hash,
+        planned_model_calls=10,
+        planned_gpu_hours=1.0,
+        planned_speech_audio_seconds=1000,
+        protocol_hash=protocol_hash(composed.config_hash, composed.values["arm"], split_hash),
+        attempt_id="attempt-evil",
+    )
+    verified_split = load_verified_split(repo_root, "discovery", lock, synthetic_world.data_root)
+    run_dir = tmp_path / "run-confine"
+    with pytest.raises(BundleError, match="would not land directly inside"):
+        build_manifest(
+            repo_root=repo_root, data_root=synthetic_world.data_root, composed=composed,
+            plan=plan, verified_split=verified_split, session_receipt_path=None,
+            run_dir=run_dir, status=STATUS_ABORTED, failure_reason="path-confinement probe",
+        )
+    # Nothing escaped: the sibling "VICTIM" directory the traversal targeted
+    # was never created.
+    assert not (tmp_path / "VICTIM").exists()
+
+
+def test_build_manifest_still_works_for_a_legitimate_run_id(synthetic_world, bundled_repo, tmp_path):
+    """Regression: the confinement fix must not disturb an ordinary,
+    legitimate run_id -- build_manifest still writes directly inside its own
+    run_dir."""
+
+    manifest_path, composed, plan, lock = _run_completed(synthetic_world, bundled_repo, tmp_path)
+    assert manifest_path.is_file()
+    assert manifest_path.parent == (tmp_path / "run").resolve()
+    assert manifest_path.name == f"{plan.run_id}.run-manifest.json"
+
+
+def test_confine_child_path_refuses_traversal_and_accepts_legitimate_filenames(tmp_path):
+    """Direct unit coverage of the shared confinement helper itself."""
+
+    parent = tmp_path / "run"
+    parent.mkdir()
+    with pytest.raises(BundleError, match="would not land directly inside"):
+        _confine_child_path(parent, "../../VICTIM/pwned.run-manifest.json", "test path")
+    with pytest.raises(BundleError, match="would not land directly inside"):
+        _confine_child_path(parent, "sub/pwned.json", "test path")
+    resolved = _confine_child_path(parent, "SAEA-E-000.run-manifest.json", "test path")
+    assert resolved.parent == parent.resolve()
+
+
+def test_confine_child_path_refuses_landing_inside_the_repo(tmp_path):
+    with pytest.raises(BundleError, match="inside the study repository"):
+        _confine_child_path(REPO_ROOT, "sneaky-confine-probe.run-manifest.json", "test path")
+
+
+# ---------------------------------------------------------------------------
 # IMPORTANT 4: saea-driver score --manifest is the authoritative path;
 # --outputs is explicit, unverified, ad-hoc scoring only.
 # ---------------------------------------------------------------------------
@@ -967,6 +1086,20 @@ def test_cli_score_manifest_mode_is_verified_and_authoritative(
     monkeypatch.setattr(
         "speech_aware_evidence_acquisition.data.lock.umbrella_lock_path",
         lambda *a, **k: synthetic_world.lock_path,
+    )
+    # IMPORTANT 2 (fix-wave3): `_cli_score` (like every real CLI entry point)
+    # never overrides `score_bundle`'s `repo_root` -- it always resolves
+    # against the REAL REPO_ROOT (by design: a CLI's "study repo" is wherever
+    # it is installed, never a caller-supplied stand-in). The REAL D1 receipt
+    # there has no entry for this test's SYNTHETIC sample ids
+    # ("4000001", ...), which were never part of the real corpus at all.
+    # This test's own purpose is verifying CLI manifest-mode authority (I4),
+    # not reference identity (which has its own dedicated coverage in
+    # tests/contract/test_reference_identity.py) -- neutralized here rather
+    # than smuggling fake sample ids into the real, committed D1 receipt.
+    monkeypatch.setattr(
+        "speech_aware_evidence_acquisition.contracts.FrozenCoreGate.verify_reference_identity",
+        lambda self, *a, **k: None,
     )
     exit_code = driver_main(["score", "--manifest", str(manifest_path)])
     assert exit_code == 0
@@ -1609,3 +1742,96 @@ def test_verify_bundle_refuses_a_plan_attempt_id_mismatch(synthetic_world, bundl
     write_json_artifact(manifest_path, manifest)
     with pytest.raises(BundleError, match="attempt_id"):
         verify_bundle(manifest_path)
+
+
+# ---------------------------------------------------------------------------
+# MINOR 2 (external-threat-model review round 3): three "machine-derived"
+# ledger cells (study_commit, config.config_hash, scorers) were previously
+# asserted, not derived -- any self-consistent-LOOKING value passed. These
+# are now genuinely shape-checked (a residue remains -- see
+# docs/owner-decisions-pending.md item 6 -- full re-derivation of
+# config_hash/scorers against the composed config needs repo_root + real
+# config-fragment files verify_bundle has no access to).
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    "bad_commit",
+    ["not-a-commit", "f" * 39, "g" * 40, "", "UNAVAILABLE:", 12345, None],
+)
+def test_verify_bundle_refuses_a_malshaped_study_commit(
+    synthetic_world, bundled_repo, tmp_path, bad_commit
+):
+    manifest_path, composed, plan, lock = _run_completed(synthetic_world, bundled_repo, tmp_path)
+    manifest = _read_manifest(manifest_path)
+    manifest["study_commit"] = bad_commit
+    write_json_artifact(manifest_path, manifest)
+    with pytest.raises(BundleError, match="study_commit"):
+        verify_bundle(manifest_path)
+
+
+def test_verify_bundle_accepts_a_wellshaped_unavailable_study_commit_on_an_aborted_manifest(
+    synthetic_world, bundled_repo, tmp_path
+):
+    """Regression: the genuine ABORTED-only UNAVAILABLE:<reason> marker
+    (build_manifest's own real output shape) must still verify."""
+
+    lock, repo_root = bundled_repo
+    ids, split_hash, split_role = load_split(repo_root, "discovery", lock, synthetic_world.data_root)
+    (repo_root / "dirty-for-shape-probe.txt").write_text("dirty", encoding="utf-8")
+    composed = _composed()
+    plan = _plan(
+        split_hash, run_id="SAEA-E-000-commitshape", attempt_id="attempt-commitshape",
+        protocol_hash=protocol_hash(composed.config_hash, composed.values["arm"], split_hash),
+    )
+    verified_split = load_verified_split(repo_root, "discovery", lock, synthetic_world.data_root)
+    manifest_path = build_manifest(
+        repo_root=repo_root, data_root=synthetic_world.data_root, composed=composed,
+        plan=plan, verified_split=verified_split, session_receipt_path=None,
+        run_dir=tmp_path / "run-commitshape", status=STATUS_ABORTED,
+        failure_reason="dirty-tree shape probe",
+    )
+    manifest = _read_manifest(manifest_path)
+    assert manifest["study_commit"].startswith(UNAVAILABLE_COMMIT_PREFIX)
+    bundle = verify_bundle(manifest_path)
+    assert bundle.manifest["study_commit"] == manifest["study_commit"]
+
+
+@pytest.mark.parametrize("bad_hash", ["not-a-hash", "f" * 63, "g" * 64, "", 12345, None])
+def test_verify_bundle_refuses_a_malshaped_config_hash(
+    synthetic_world, bundled_repo, tmp_path, bad_hash
+):
+    manifest_path, composed, plan, lock = _run_completed(synthetic_world, bundled_repo, tmp_path)
+    manifest = _read_manifest(manifest_path)
+    manifest["config"]["config_hash"] = bad_hash
+    write_json_artifact(manifest_path, manifest)
+    with pytest.raises(BundleError, match="config_hash"):
+        verify_bundle(manifest_path)
+
+
+@pytest.mark.parametrize(
+    "bad_scorers",
+    [[], ["not-a-registered-scorer"], ["asr-wer", ""], "asr-wer", None, ["asr-wer", 7]],
+)
+def test_verify_bundle_refuses_malformed_or_unregistered_scorers(
+    synthetic_world, bundled_repo, tmp_path, bad_scorers
+):
+    manifest_path, composed, plan, lock = _run_completed(synthetic_world, bundled_repo, tmp_path)
+    manifest = _read_manifest(manifest_path)
+    manifest["scorers"] = bad_scorers
+    write_json_artifact(manifest_path, manifest)
+    with pytest.raises(BundleError, match="scorers"):
+        verify_bundle(manifest_path)
+
+
+def test_verify_bundle_accepts_legitimate_study_commit_config_hash_and_scorers(
+    synthetic_world, bundled_repo, tmp_path
+):
+    """Regression: the new shape checks must not disturb an ordinary,
+    legitimate manifest -- verify_bundle still accepts it end to end."""
+
+    manifest_path, composed, plan, lock = _run_completed(synthetic_world, bundled_repo, tmp_path)
+    bundle = verify_bundle(manifest_path)
+    assert bundle.manifest["scorers"] == ["asr-wer"]
+    assert len(bundle.manifest["study_commit"]) == 40
+    assert len(bundle.manifest["config"]["config_hash"]) == 64

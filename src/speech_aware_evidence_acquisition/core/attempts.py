@@ -44,11 +44,25 @@ from __future__ import annotations
 import json
 import math
 import os
-import re
 import time
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Mapping
+
+# IMPORTANT 3 fix-wave3 (external-threat-model review round 3): imported,
+# never re-copied -- the SAME pattern core.tracing and core.session use for a
+# run/attempt/session id (both are embedded verbatim into a filesystem path:
+# a directory name and a file stem respectively, so both are restricted
+# identically -- no empty string, no path separator, no leading dot/dash that
+# a shell or a naive joiner could misparse) and, as of this fix, the SAME
+# pattern ``contracts.ExecutionPlan.validate`` itself now enforces on
+# run_id/attempt_id at plan-construction time. contracts.py sits at the
+# bottom of this package's import graph (stdlib-only, imports nothing from
+# core/ at module level -- see contracts.py's own top-of-file NOTE), so
+# importing FROM it here introduces no cycle: the only cycle contracts.py
+# avoids is the reverse direction (importing core.attempts at ITS module
+# level), which stays a lazy, function-local import there, unchanged.
+from ..contracts import RUN_ID_PATTERN as _ID_PATTERN
 
 ATTEMPT_SCHEMA = "saea-attempt-v1"
 
@@ -56,13 +70,6 @@ STATE_RESERVED = "RESERVED"
 STATE_OPENED = "OPENED"
 STATE_FINALIZED = "FINALIZED"
 STATE_ABORTED = "ABORTED"
-
-# The same safe-filename pattern core.tracing uses for a run id: both values
-# are embedded verbatim into a filesystem path (a directory name and a file
-# stem respectively), so both are restricted identically -- no empty string,
-# no path separator, no leading dot/dash that a shell or a naive joiner could
-# misparse.
-_ID_PATTERN = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]*")
 
 
 class AttemptError(RuntimeError):
@@ -98,6 +105,31 @@ def _non_negative_finite(value: object, label: str) -> float:
     if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value) or value < 0:
         raise AttemptError(f"{label} must be a finite non-negative number, got {value!r}")
     return float(value)
+
+
+def _coerce_actual_field(value: object, kind: type, label: str):
+    """MINOR fix-wave3 (external-threat-model review round 3): coerce a
+    PERSISTED (already-written, therefore untrusted-on-re-read) attempt
+    file's ``actual.*`` field to ``kind`` (``int`` or ``float``), wrapped
+    fail-closed as :class:`AttemptError` -- never a bare ``ValueError``/
+    ``TypeError`` escaping this module's own documented exception contract
+    -- and refuses a negative or non-finite result, which would otherwise
+    silently deflate :meth:`AttemptStore._sum_actual_for_run`'s slice-wide
+    actual-usage total (the conservative-maximum figure the first-slice
+    budget cap is compared against, e.g. in
+    ``contracts.FrozenCoreGate._require_exposure_preregistration``).
+    ``bool`` is rejected even though it is technically ``int`` (matching
+    every other numeric guard in this module, e.g. :func:`_positive_finite`)."""
+
+    if isinstance(value, bool):
+        raise AttemptError(f"{label} must be a {kind.__name__}, got bool {value!r}")
+    try:
+        coerced = kind(value)
+    except (TypeError, ValueError) as error:
+        raise AttemptError(f"{label} must be a {kind.__name__}, got {value!r}: {error}") from error
+    if not math.isfinite(coerced) or coerced < 0:
+        raise AttemptError(f"{label} must be a finite non-negative number, got {value!r}")
+    return coerced
 
 
 @dataclass(frozen=True)
@@ -349,7 +381,21 @@ class AttemptStore:
         usage is durably persisted it was genuinely about to be (or was)
         sent/measured, and a later attempt never un-spends it. An older
         attempt file with no ``gpu_seconds`` key (written before that field
-        existed) reads as ``0.0`` for that field, never an error."""
+        existed) reads as ``0.0`` for that field, never an error.
+
+        MINOR fix-wave3 (external-threat-model review round 3): a JSON-valid
+        attempt file whose ``actual.calls``/``audio_seconds``/``gpu_seconds``
+        is a non-numeric value (e.g. ``"calls": "lots"``) previously raised a
+        bare ``ValueError`` straight out of the unguarded ``int()``/``float()``
+        calls below -- past the ``except AttemptError`` wrapper at every real
+        caller (e.g. ``contracts.FrozenCoreGate._require_exposure_
+        preregistration``), leaking an internal implementation detail as an
+        undocumented exception type instead of this module's own documented
+        ``AttemptError``. Also, a NEGATIVE persisted value (a corrupted or
+        hand-tampered attempt file) previously summed straight through with
+        no check at all, silently deflating the slice-wide actual-usage total
+        the budget cap is compared against. Both are now refused fail-closed,
+        wrapped as ``AttemptError``, via :func:`_coerce_actual_field`."""
 
         validate_id(run_id, "run_id")
         run_dir = self._run_dir(run_id)
@@ -368,9 +414,15 @@ class AttemptStore:
             actual = document.get("actual") if isinstance(document, dict) else None
             if not isinstance(actual, Mapping):
                 raise AttemptError(f"attempt state {entry} lacks a usable actual mapping")
-            total_calls += int(actual.get("calls", 0))
-            total_audio += float(actual.get("audio_seconds", 0.0))
-            total_gpu += float(actual.get("gpu_seconds", 0.0))
+            total_calls += _coerce_actual_field(
+                actual.get("calls", 0), int, f"{entry} actual.calls"
+            )
+            total_audio += _coerce_actual_field(
+                actual.get("audio_seconds", 0.0), float, f"{entry} actual.audio_seconds"
+            )
+            total_gpu += _coerce_actual_field(
+                actual.get("gpu_seconds", 0.0), float, f"{entry} actual.gpu_seconds"
+            )
         return total_calls, total_audio, total_gpu
 
     def prior_actual_usage(self, run_id: str, *, exclude_attempt_id: str | None = None) -> tuple[int, float]:

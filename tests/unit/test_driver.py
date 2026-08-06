@@ -1,5 +1,6 @@
 """End-to-end wiring on the synthetic world with a fake transport."""
 
+import hashlib
 import json
 
 import pytest
@@ -621,13 +622,47 @@ def _git_init_commit(repo_root):
 
 
 def test_real_composed_config_manifest_scorers_are_reachable_end_to_end(synthetic_world, tmp_path):
-    for sample_id in ("4000001", "4000002", "4000003"):
+    sample_ids = ("4000001", "4000002", "4000003")
+    for sample_id in sample_ids:
         nlp = synthetic_world.e21 / "transcripts" / "nlp_references" / f"{sample_id}.nlp"
         nlp.write_text(f"token|tags\nhello-{sample_id}|\nworld|\n", encoding="utf-8")
     lock = load_lock(synthetic_world.lock_path)
     repo_root = tmp_path / "repo"
     receipts = repo_root / "docs" / "receipts"
     freeze_splits(lock, synthetic_world.data_root, receipts)
+    # IMPORTANT 2 (fix-wave3, external-threat-model review round 3):
+    # core.scorers._assert_scoring_entry_gate now re-verifies the reference
+    # (.nlp) bytes score_asr_outputs is about to read, bound to THIS test's
+    # own synthetic repo_root (the SAME test-overridable parameter
+    # require_clean_study_repo already uses) -- write a minimal, genuinely
+    # matching D1 identity artifact, committed alongside the frozen splits
+    # receipt below, so it is never out of sync with the bytes just written.
+    manifest_entries = []
+    for sample_id in sample_ids:
+        raw = (
+            synthetic_world.e21 / "transcripts" / "nlp_references" / f"{sample_id}.nlp"
+        ).read_bytes()
+        manifest_entries.append(
+            {"id": sample_id, "bytes": len(raw), "sha256": hashlib.sha256(raw).hexdigest()}
+        )
+    artifacts_dir = receipts / "artifacts"
+    artifacts_dir.mkdir(parents=True, exist_ok=True)
+    (artifacts_dir / "d1-identity.json").write_text(
+        json.dumps(
+            {
+                "carriers": {
+                    "earnings21-original": {
+                        "layers": {"nlp_references": {"manifest": manifest_entries}}
+                    }
+                }
+            }
+        ),
+        encoding="utf-8",
+    )
+    (receipts / "e0-closure.json").write_text(
+        json.dumps({"deliverables": {"d1_identity": {"artifact": "artifacts/d1-identity.json"}}}),
+        encoding="utf-8",
+    )
     _git_init_commit(repo_root)
     _, split_hash, _ = load_split(repo_root, "discovery", lock, synthetic_world.data_root)
     # bare-core has no evidence constraint (evidence_source: "none"), so it

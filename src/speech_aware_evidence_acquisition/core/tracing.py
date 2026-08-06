@@ -2,14 +2,12 @@
 
 from __future__ import annotations
 
-import re
 from pathlib import Path
 from typing import Mapping
 
+from ..contracts import RUN_ID_PATTERN as _RUN_ID_PATTERN
 from ..contracts import TraceRecord
 from ..e0.artifacts import REPO_ROOT, write_json_artifact
-
-_RUN_ID_PATTERN = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]*")
 
 
 class TraceSinkError(RuntimeError):

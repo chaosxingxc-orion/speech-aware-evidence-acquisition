@@ -168,3 +168,72 @@ package declares zero runtime dependencies, `pyproject.toml`).
 narrow, bounded, machine-conditional gap — not an unbounded one) and defer exact duration
 re-derivation to whichever future task first needs audio decoding for another reason (e.g. a scorer
 or evidence-source adapter), rather than adding a new dependency solely for this check now.
+
+## 5. IMPORTANT 2 (fix-wave3, external-threat-model review round 3): reference-identity carrier coverage
+
+**Status:** closed at a documented, bounded level — `contracts.FrozenCoreGate.verify_reference_identity`
+re-hashes the `.nlp` reference bytes `data.references.reference_tokens` reads, against D1's frozen
+per-file identity, for exactly `_REFERENCE_SCOPED_CARRIER_LOCK_KEYS = {"earnings21-original",
+"earnings22-original"}` — the same two carriers `data.references._NLP_SUBDIR` (and therefore
+`reference_tokens` itself) supports today. Wired into `core.scorers._assert_scoring_entry_gate`,
+scoped to exactly the bundle's own verified split, and runs only when `asr-wer` is among the
+manifest's configured scorers (the only scorer that reads a reference layer at all).
+
+**What is NOT bound, and why.** `conec` carries no reference layer `reference_tokens` can read at
+all (its D1 identity layer is named `e21_nlp_references`, a DIFFERENT key with DIFFERENTLY-hashed
+bytes than earnings21-original's own `nlp_references` — same D1 receipt, distinct file set) — scoring
+conec was never reachable through `reference_tokens` before this fix, and `verify_reference_identity`
+correctly fails closed for it (any carrier outside the scoped set refuses) rather than silently
+reusing earnings21's facts or silently skipping the check. Should a future task register a conec-aware
+scorer adapter that DOES read `e21_nlp_references`, `_REFERENCE_SCOPED_CARRIER_LOCK_KEYS` (contracts.py)
+and `_NLP_SUBDIR` (data/references.py) both need a coordinated update — an owner-level decision, not an
+implementer one, since it changes what this study's formal scoring path is allowed to touch.
+
+**Requested disposition:** accept the current two-carrier scope as R0's closure level; revisit only if
+and when a conec-aware or other-carrier reference adapter is ever registered.
+
+## 6. MINOR 2 (fix-wave3, external-threat-model review round 3): ledger cells bound to shape, not full re-derivation
+
+**Status:** partially closed. `core.bundle.verify_bundle` now genuinely CHECKS three manifest cells
+`core.tracking.bundle_ledger_cells`/`ledger_row_for_bundle` treat as machine-derived (refusing any
+hand-supplied cell that disagrees) — previously all three were asserted, not derived, so any
+self-consistent-LOOKING value passed unconditionally:
+
+- **`study_commit`** — now shape-validated: a genuine 40-hex git commit, or the ABORTED-only
+  `UNAVAILABLE:<non-empty reason>` marker (a COMPLETED manifest may never carry the latter — checked
+  independently, unchanged from the existing T6 fix-2 round behavior).
+- **`config.config_hash`** — now shape-validated: a genuine 64-hex SHA-256.
+- **`scorers`** — now bound to the real `core.base.SCORERS` registry: a non-empty list of non-empty
+  strings, every one of which names a scorer `core.scorers` actually registered.
+
+**What is NOT bound, and why.** None of the three is fully RE-DERIVED from independent ground truth:
+
+- `study_commit` is not re-verified against a live `git rev-parse HEAD` — a manifest legitimately
+  outlives the commit it was built against (the study repo moves on), so `verify_bundle` cannot
+  meaningfully re-run `git` at verify time the way it re-hashes artifact bytes. A well-SHAPED but
+  factually wrong 40-hex value is not caught.
+- `config.config_hash` is not re-derived from the four named config fragments' actual file contents.
+  Genuine re-derivation requires calling `core.config.compose(repo_root, ...)` again, which needs
+  `repo_root` (a parameter `verify_bundle` does not take today — it takes only a manifest path,
+  by design, per its own docstring) AND the real `configs/<kind>/<name>.json` files on disk under
+  that root. This study's own test suite (`tests/unit/test_bundle.py`, ~30 call sites) deliberately
+  builds manifests against SYNTHETIC fragment names ("m"/"d"/"b"/"e") that name no real file on
+  disk — full re-derivation would therefore require either a broad, disproportionate-to-a-Minor-
+  finding test-fixture migration (real config fragment files for every synthetic `repo_root` these
+  tests already use) or giving `verify_bundle` a new `repo_root` parameter with per-call-site
+  opt-in, both deferred here as out of scope for this fix wave.
+- `scorers` is bound to "every named scorer is registered", not to "matches what the composed config
+  actually declared for this arm/experiment" — the same `compose()`/`repo_root` access gap as
+  `config_hash` above. A manifest whose scorers were legitimately (or maliciously) trimmed to omit
+  the task metric (e.g. `["cost"]` alone for a bundle whose real experiment config declared
+  `["asr-wer", "cost"]`) still verifies; only a scorer NAME core.scorers never registered is refused.
+  A blanket "must include asr-wer" rule was deliberately NOT added: `["cost"]`-only bundles are an
+  existing, legitimate, already-tested configuration (T8's cost scorer exists as a standalone metric),
+  so refusing them here would contradict established, accepted behavior rather than close a gap.
+
+**Requested disposition:** accept shape-validation as this fix wave's closure level for all three
+cells (a genuine improvement over "any string passes" — the demonstrated `["cost"]`-only-bundle
+concern is narrowed to "the artifact hashes cell is honestly what was computed," never eliminated
+outright); defer full config-fragment re-derivation to a task that also budgets the test-fixture
+migration it requires, or to a design change that binds config-fragment CONTENT hashes into the
+manifest at build time (so `verify_bundle` could re-derive without filesystem access to `configs/`).

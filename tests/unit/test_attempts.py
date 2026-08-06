@@ -207,6 +207,88 @@ def test_all_actual_usage_returns_zero_when_store_root_missing(tmp_path):
     assert store.all_actual_usage() == (0, 0.0, 0.0)
 
 
+def _write_attempt_file(store: AttemptStore, run_id: str, attempt_id: str, actual: dict) -> None:
+    """Directly write an attempt file (bypassing open_attempt/record_usage's
+    own validation) so a malformed/tampered ``actual`` block can be tested
+    at the READ side, in _sum_actual_for_run itself."""
+
+    run_dir = store.attempts_root / run_id
+    run_dir.mkdir(parents=True, exist_ok=True)
+    document = {
+        "schema": ATTEMPT_SCHEMA,
+        "run_id": run_id,
+        "attempt_id": attempt_id,
+        "carrier_lock_key": "c",
+        "state": STATE_OPENED,
+        "reserved": {"calls": 5, "audio_seconds": 500.0},
+        "actual": actual,
+    }
+    (run_dir / f"{attempt_id}.json").write_text(json.dumps(document), encoding="utf-8")
+
+
+# ---------------------------------------------------------------------------
+# MINOR 1 (external-threat-model review round 3): a JSON-valid attempt file
+# whose actual.calls/audio_seconds/gpu_seconds is non-numeric must never leak
+# a bare ValueError past this module's own documented AttemptError contract
+# (and therefore past every real caller's `except AttemptError` wrapper,
+# e.g. contracts.FrozenCoreGate._require_exposure_preregistration); a
+# negative or non-finite persisted value must never silently deflate the
+# slice-wide actual-usage total the first-slice budget cap is compared
+# against.
+# ---------------------------------------------------------------------------
+
+
+def test_prior_actual_usage_wraps_a_non_numeric_calls_field_as_attempt_error(tmp_path):
+    store = AttemptStore(tmp_path / "attempts")
+    _write_attempt_file(store, "run-1", "attempt-1", {"calls": "lots", "audio_seconds": 10.0})
+    with pytest.raises(AttemptError):
+        store.prior_actual_usage("run-1")
+
+
+def test_all_actual_usage_wraps_a_non_numeric_gpu_seconds_field_as_attempt_error(tmp_path):
+    store = AttemptStore(tmp_path / "attempts")
+    _write_attempt_file(
+        store, "run-1", "attempt-1",
+        {"calls": 1, "audio_seconds": 10.0, "gpu_seconds": "a lot"},
+    )
+    with pytest.raises(AttemptError):
+        store.all_actual_usage()
+
+
+def test_prior_actual_usage_refuses_a_negative_persisted_calls_value(tmp_path):
+    """A corrupted/hand-tampered attempt file with a NEGATIVE calls value
+    must never silently deflate the slice-wide actual-usage total the
+    first-slice budget cap is compared against."""
+
+    store = AttemptStore(tmp_path / "attempts")
+    _write_attempt_file(store, "run-1", "attempt-1", {"calls": -100, "audio_seconds": 10.0})
+    with pytest.raises(AttemptError, match="non-negative"):
+        store.prior_actual_usage("run-1")
+
+
+def test_all_actual_usage_refuses_a_negative_persisted_audio_seconds_value(tmp_path):
+    store = AttemptStore(tmp_path / "attempts")
+    _write_attempt_file(store, "run-1", "attempt-1", {"calls": 1, "audio_seconds": -5.0})
+    with pytest.raises(AttemptError, match="non-negative"):
+        store.all_actual_usage()
+
+
+def test_prior_actual_usage_refuses_a_non_finite_persisted_value(tmp_path):
+    store = AttemptStore(tmp_path / "attempts")
+    _write_attempt_file(store, "run-1", "attempt-1", {"calls": 1, "audio_seconds": float("nan")})
+    with pytest.raises(AttemptError, match="finite"):
+        store.prior_actual_usage("run-1")
+
+
+def test_prior_actual_usage_still_sums_legitimate_values_after_the_fix(tmp_path):
+    """Regression: ordinary, well-formed attempt files (including an older
+    file missing gpu_seconds entirely) still sum correctly."""
+
+    store = AttemptStore(tmp_path / "attempts")
+    _write_attempt_file(store, "run-1", "attempt-1", {"calls": 3, "audio_seconds": 30.0})
+    assert store.prior_actual_usage("run-1") == (3, 30.0)
+
+
 # ---------------------------------------------------------------------------
 # fix-wave2 Minor: gpu hours had no derived counterpart -- record_gpu_seconds
 # is the write path core.driver.run_experiment feeds a whole-run measured
