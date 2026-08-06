@@ -376,3 +376,27 @@ and the carrier to exist in the umbrella lock, then verifies both receipts. Bare
 `confirmatory` splits, over-cap plans and unregistered runs all fail closed — a paper-scale run
 cannot be smuggled in under an allowed profile label. Stage-3 work runs only in a separately
 admitted paper repository.
+
+**`tests/unit/test_session.py`, native-Windows/WSL2 split (deliberate, owner-approved, not a
+coverage reduction):** the I5 process-identity/socket-ownership probes that need a SECOND,
+genuinely spawned "pinned binary" process — a fresh COPY of an executable at a brand-new pytest
+`tmp_path` every run — that also binds a real LISTENING socket are marked POSIX-only
+(`skipif(os.name == "nt", ...)`). On native Windows that exact combination makes Defender Firewall
+prompt for an unrecognized executable image on essentially every run (the allow-rule it creates
+points at that run's `tmp_path`, which no longer exists next run, so the very next run prompts
+again). Those probes already run clean under WSL2, this program's compute authority, and are
+unaffected. Native Windows keeps its coverage of the same underlying Windows API
+(`GetExtendedTcpTable` / `core.session._windows_verify_pid_owns_listening_socket`) via a new
+in-process test class, `TestWindowsSocketOwnershipInProcess`: it binds a real loopback TCP listener
+INSIDE the pytest process itself (v4 and v6) — no new executable image, so no new firewall prompt —
+and asserts ownership is correctly attributed to `os.getpid()`, refused for a different pid, and
+that the T5 fix-3 `(family, address, port)` keying correctly separates IPv4 from IPv6 rather than
+matching by port number alone. One thing this native-Windows in-process substitute does **not**
+cover (still WSL2-only): the fix-3 "secondary bug" scenario where a v4 listener and a v6 listener
+are owned by two genuinely DIFFERENT pids sharing the same port number, proving the Windows
+owner-table merge no longer lets a v6 entry silently overwrite the v4 owner — an in-process test can
+only ever bind both sockets as itself, which cannot distinguish fixed from regressed code there;
+`test_attach_succeeds_for_v4_session_despite_unrelated_v6_listener_same_port` and its two sibling
+split-forgery tests still exercise that end to end under WSL2. Tests that spawn `sys.executable`
+directly (un-copied, a stable path across runs) are unaffected by any of this and keep running on
+native Windows.
