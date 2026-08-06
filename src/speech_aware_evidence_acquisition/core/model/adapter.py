@@ -1,112 +1,26 @@
-"""Frozen-core adapter and transports: the ONLY model request path (R0).
+"""``FrozenCoreAdapter``: the gate-enforced, one-time-metered model request path.
 
-Discipline (docs/engineering.md): the gate is checked in the same process
-that sends requests (no check-then-run-elsewhere TOCTOU gap); the D2 per-arm
-visible-field allowlist is enforced as an exact key set on every request —
-the choke point that makes a leakage a hard error rather than a convention.
-The real llama-server endpoint shape is confirmed at R0 smoke time against
-the receipt-pinned build — tests inject `post` and never open a socket.
+Split out of the former monolithic ``core/model.py`` (R0 repair refactor
+stage 1, pure move, no behaviour change).
 """
 
 from __future__ import annotations
 
-import base64
 import hashlib
 import json
 import math
-import re
 import time
-import urllib.request
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable, Mapping
 
-from ..contracts import ExecutionPlan, assert_information_boundary
-from ..e0.d2_leakage import ARM_VISIBLE_FIELDS
-from .attempts import AttemptError, AttemptStore
-from .base import TRANSPORTS, CoreError, PayloadBindingContext
-from .session import SessionError, SessionReceipt, assert_session_alive, require_loopback
-from .tracing import TraceSink
-
-
-class FrozenCoreError(RuntimeError):
-    """The adapter refuses: unknown arm, allowlist violation, exhausted budget,
-    payload<->plan<->split value mismatch (I3), or media confinement (I4)."""
-
-
-# Shared, pure media-path helpers (R0 repair T3, I4). Deliberately hold no
-# object state: the adapter and the transport each call these with THEIR OWN
-# root(s), so the transport's confinement check never depends on the adapter
-# having run first -- two independent rails, one shared syntax rule.
-_DRIVE_PREFIX = re.compile(r"^[A-Za-z]:")
-
-
-def _normalized_relative_path(value: object, label: str) -> str:
-    """Reject anything that is not a normalized POSIX relative path: absolute,
-    drive-letter, backslash, leading '/', or any '.'/'..' segment. Purely
-    syntactic -- touches no filesystem -- so a forged value never reaches
-    ``Path.__truediv__`` (whose join silently discards the left side for an
-    absolute right side, the reproduced transport defect).
-
-    Also refuses per-segment Windows-only looseness that would still let a
-    forged relpath land on a legitimate file even though it is not, by
-    itself, an escape: a trailing dot/space (Windows silently strips both
-    from a path component, e.g. ``"5000001.mp3."`` -> ``"5000001.mp3"``) and
-    a colon inside a segment (NTFS alternate-data-stream syntax)."""
-
-    if not isinstance(value, str) or not value:
-        raise FrozenCoreError(f"{label} must be a non-empty string")
-    if "\\" in value:
-        raise FrozenCoreError(f"{label} must not contain a backslash, got {value!r}")
-    if value.startswith("/"):
-        raise FrozenCoreError(f"{label} must be relative, got absolute path {value!r}")
-    if _DRIVE_PREFIX.match(value):
-        raise FrozenCoreError(f"{label} must not carry a drive letter, got {value!r}")
-    parts = value.split("/")
-    if any(part in ("", ".", "..") for part in parts):
-        raise FrozenCoreError(f"{label} contains an empty or traversal segment: {value!r}")
-    for part in parts:
-        if part.rstrip(". ") != part:
-            raise FrozenCoreError(
-                f"{label} segment {part!r} has a trailing dot or space (Windows "
-                f"silently strips these, so it would not name a normalized path): {value!r}"
-            )
-        if ":" in part:
-            raise FrozenCoreError(
-                f"{label} segment {part!r} contains ':' (NTFS alternate-data-stream "
-                f"syntax): {value!r}"
-            )
-    return value
-
-
-def _resolve_confined(
-    join_root: Path, relative: str, confine_root: Path, label: str, *, strict: bool
-) -> Path:
-    """Join ``relative`` under ``join_root`` and refuse (``FrozenCoreError``) if
-    the fully resolved path -- following any symlinks -- lands outside
-    ``confine_root`` once both are resolved. ``strict=True`` also requires the
-    final path to exist (used by the adapter, which must prove the loader
-    fact-checked media is what will be sent); ``strict=False`` tolerates a
-    missing leaf so a caller (the transport) can raise its own
-    ``FileNotFoundError`` for that case specifically."""
-
-    try:
-        confine_resolved = Path(confine_root).resolve(strict=True)
-    except OSError as error:
-        raise FrozenCoreError(
-            f"{label}: confinement root {confine_root} is unavailable: {error}"
-        ) from error
-    candidate = Path(join_root) / relative
-    try:
-        resolved = candidate.resolve(strict=strict)
-    except OSError as error:
-        raise FrozenCoreError(f"{label}: cannot resolve {candidate}: {error}") from error
-    if not resolved.is_relative_to(confine_resolved):
-        raise FrozenCoreError(
-            f"{label} escapes its confined root {confine_root}: {relative!r}"
-        )
-    return resolved
-
+from ...contracts import ExecutionPlan, assert_information_boundary
+from ...e0.d2_leakage import ARM_VISIBLE_FIELDS
+from ..attempts import AttemptError, AttemptStore
+from ..base import CoreError, PayloadBindingContext
+from ..tracing import TraceSink
+from . import FrozenCoreError
+from .binding import _PayloadBindingMixin
 
 # The exact set of decoding_params keys the frozen core will ever accept. This is
 # the governance choke point (FrozenCoreAdapter.request): a config-supplied
@@ -154,7 +68,7 @@ def _canonical(payload: Mapping[str, object]) -> bytes:
     ).encode("utf-8")
 
 
-class FrozenCoreAdapter:
+class FrozenCoreAdapter(_PayloadBindingMixin):
     def __init__(
         self,
         gate: object,
@@ -453,94 +367,6 @@ class FrozenCoreAdapter:
             latency_seconds=latency,
         )
 
-    def _enforce_payload_binding(self, payload: Mapping[str, object], audio_seconds: object) -> None:
-        """I3/I4: the payload's own claimed values must agree with what the
-        driver actually verified for this run (the T1 split + carrier loader
-        facts bound at construction), not merely be well-typed. A payload can
-        name any carrier, sample, path or audio fact it likes; only what
-        ``self._binding`` says was loaded is ever trusted."""
-
-        binding = self._binding
-        carrier_lock_key = payload["carrier_lock_key"]
-        if carrier_lock_key != self._plan.carrier_lock_key:
-            raise FrozenCoreError(
-                f"payload carrier_lock_key {carrier_lock_key!r} does not match the "
-                f"execution plan carrier_lock_key {self._plan.carrier_lock_key!r}"
-            )
-        sample_id = payload["sample_id"]
-        if not isinstance(sample_id, str) or sample_id not in binding.allowed_sample_ids:
-            raise FrozenCoreError(
-                f"payload sample_id {sample_id!r} is not in the verified split bound "
-                "to this run"
-            )
-        expected_speech_ref = f"{self._plan.carrier_lock_key}/{sample_id}"
-        if payload["speech_ref"] != expected_speech_ref:
-            raise FrozenCoreError(
-                f"payload speech_ref {payload['speech_ref']!r} does not match the "
-                f"expected {expected_speech_ref!r} for carrier_lock_key/sample_id"
-            )
-        fact_audio_seconds, fact_sample_rate_hz = binding.sample_facts[sample_id]
-        if float(audio_seconds) != float(fact_audio_seconds):
-            raise FrozenCoreError(
-                f"payload audio_seconds {audio_seconds!r} disagrees with the loader "
-                f"fact {fact_audio_seconds!r} for sample {sample_id!r}"
-            )
-        sample_rate_hz = payload["sample_rate_hz"]
-        if (
-            isinstance(sample_rate_hz, bool)
-            or not isinstance(sample_rate_hz, int)
-            or sample_rate_hz != fact_sample_rate_hz
-        ):
-            raise FrozenCoreError(
-                f"payload sample_rate_hz {sample_rate_hz!r} disagrees with the loader "
-                f"fact {fact_sample_rate_hz!r} for sample {sample_id!r}"
-            )
-        relative = _normalized_relative_path(payload["media_relpath"], "payload media_relpath")
-        # IMPORTANT A (round-2 external-threat-model review): confinement alone
-        # only proved the payload's media_relpath stays INSIDE the carrier
-        # root -- it never compared it to what this run's verified split
-        # actually names for THIS sample (``binding.media_relpaths``, the same
-        # per-sample mapping ``core.driver.run_experiment`` builds from the
-        # loader and the gate's ``verify_media_identity`` re-hashes). A
-        # payload could therefore name any OTHER file confined under the same
-        # carrier root -- e.g. a decoy media file -- and it sailed straight
-        # through: the gate re-hashed the BINDING's claimed path, but the
-        # transport read and sent whatever path the payload itself carried.
-        # Demonstrated: a gate verified {'s1': ('carrier/s1.mp3', 10.0)}; a
-        # payload naming media_relpath="carrier/decoy.mp3" was accepted, the
-        # decoy's bytes were sent, and only 10.0s (the BOUND sample's
-        # duration) was metered against this run's own planned audio-seconds
-        # budget regardless of the decoy's real length. Requiring an EXACT
-        # match after
-        # normalization closes this: the only media_relpath a payload for
-        # ``sample_id`` may ever carry is the one the verified split/loader
-        # bound for that exact sample id.
-        if binding.media_relpaths:
-            expected_relpath = binding.media_relpaths.get(sample_id)
-            if expected_relpath is None:
-                raise FrozenCoreError(
-                    f"payload binding has no verified media_relpath for sample "
-                    f"{sample_id!r}; a sample the binding cannot vouch for can never "
-                    "be sent"
-                )
-            if relative != expected_relpath:
-                raise FrozenCoreError(
-                    f"payload media_relpath {relative!r} does not match the verified "
-                    f"split's own media_relpath {expected_relpath!r} for sample "
-                    f"{sample_id!r} -- confinement under the carrier root is necessary "
-                    "but not sufficient; the payload must name EXACTLY the file the "
-                    "binding (and, at the gate, verify_media_identity) vouches for, "
-                    "never merely some other file that happens to live under the same "
-                    "root (I4 exact media-relpath binding)"
-                )
-        _resolve_confined(
-            binding.data_root,
-            relative,
-            binding.carrier_root,
-            "payload media_relpath",
-            strict=True,
-        )
-
     def record_tool_call(self, count: int = 1) -> None:
         """Increment the run's tool-call counter (R0 repair T7, invariant I8).
 
@@ -572,159 +398,3 @@ class FrozenCoreAdapter:
             # the run manifest rather than "dataset rev" staying hand-supplied.
             "umbrella_lock_sha256": self._lock_sha256,
         }
-
-
-def _default_post(timeout_seconds: float) -> Callable[[str, bytes], bytes]:
-    def post(url: str, body: bytes) -> bytes:
-        request = urllib.request.Request(
-            url, data=body, headers={"Content-Type": "application/json"}, method="POST"
-        )
-        with urllib.request.urlopen(request, timeout=timeout_seconds) as response:
-            return response.read()
-
-    return post
-
-
-class LlamaServerTransport:
-    def __init__(
-        self,
-        base_url: str,
-        data_root: Path,
-        session: SessionReceipt,
-        runtime_receipt: Mapping[str, object],
-        runtime_root: Path,
-        timeout_seconds: float = 300.0,
-        post: Callable[[str, bytes], bytes] | None = None,
-    ) -> None:
-        # R0 repair T5 (I5): there is no "no session" transport, mirroring the
-        # T3 fail-closed constructor discipline for PayloadBindingContext --
-        # a caller can never construct a transport that could ever be asked
-        # to send without first proving WHO is going to answer. Its host/port
-        # must be the exact endpoint this transport will talk to -- a session
-        # receipt is only ever a proof about ONE specific loopback endpoint,
-        # never a blanket credential.
-        if not isinstance(session, SessionReceipt):
-            raise SessionError(
-                "LlamaServerTransport requires a core.session.SessionReceipt; got "
-                f"{type(session).__name__} (no session receipt -> no send, I5)"
-            )
-        loopback_host, loopback_port = require_loopback(base_url)
-        if (loopback_host, loopback_port) != (session.host, session.port):
-            raise SessionError(
-                f"transport base_url host/port {loopback_host}:{loopback_port} does not "
-                f"match the session receipt's host/port {session.host}:{session.port}; "
-                "refused (I5: a session receipt only authorizes the exact endpoint it "
-                "was recorded for)"
-            )
-        self._url = base_url.rstrip("/") + "/v1/chat/completions"
-        self._data_root = Path(data_root)
-        self._post = post or _default_post(timeout_seconds)
-        self._session = session
-        self._runtime_receipt = runtime_receipt
-        self._runtime_root = Path(runtime_root)
-        # R0 repair T5 fix-1/fix-2 (I5, reviewer-flagged CRITICAL gap): full
-        # liveness+PROCESS-IDENTITY re-verification, not merely a declared-
-        # value comparison -- at construction AND (see __call__) on every
-        # single send. A transport instance answers an entire run (potentially
-        # many calls / hours of audio, per the plan's own declared budget --
-        # no numeric ceiling since the 2026-08-06 owner amendment retired the
-        # first-slice caps); a session proven valid once at construction time
-        # proves nothing about who is listening later.
-        self._assert_session_still_valid()
-
-    def _assert_session_still_valid(self) -> None:
-        assert_session_alive(self._session, self._runtime_receipt, self._runtime_root)
-
-    def assert_session_alive(self) -> None:
-        """Public re-verification entry point (R0 repair T5 fix-3): lets a
-        holder of this transport (``core.model.FrozenCoreAdapter``)
-        independently trigger the SAME liveness+identity check this class
-        runs on every ``__call__`` -- a second enforcement call site, not an
-        independently reimplemented rail (see ``core.session.
-        assert_session_alive``'s docstring for why full reimplementation is
-        not appropriate for a transport-specific concept like process
-        identity)."""
-
-        self._assert_session_still_valid()
-
-    def __call__(self, request_bytes: bytes) -> bytes:
-        # R0 repair T5 fix-2 (IMPORTANT, reviewer-flagged): re-verify on the
-        # send path itself, every time -- not merely once at construction.
-        # Cheap (a few KB re-hash of the launcher stub plus one process-image
-        # lookup, never the multi-GB GGUF files), so there is no reason to
-        # skip it on the hot path; a process that died or was replaced since
-        # the last send is caught HERE, before this request does anything.
-        self._assert_session_still_valid()
-        payload: Mapping[str, object] = json.loads(request_bytes.decode("utf-8"))
-        # I4, independent second rail: refuse absolute/backslash/traversal
-        # media_relpath and anything resolving outside self._data_root on the
-        # transport's OWN authority -- this must hold even if the adapter's
-        # binding-context check were somehow bypassed or absent (the
-        # reproduced defect: `self._data_root / <absolute path>` silently
-        # discards the data root via Path.__truediv__).
-        relative = _normalized_relative_path(payload["media_relpath"], "transport media_relpath")
-        media = _resolve_confined(
-            self._data_root,
-            relative,
-            self._data_root,
-            "transport media_relpath",
-            strict=False,
-        )
-        if not media.is_file():
-            raise FileNotFoundError(f"media missing for transport: {media}")
-        audio_b64 = base64.b64encode(media.read_bytes()).decode("ascii")
-        content: list[dict[str, object]] = [
-            {
-                "type": "input_audio",
-                "input_audio": {"data": audio_b64, "format": media.suffix.lstrip(".").lower()},
-            }
-        ]
-        for field in ("supplied_evidence", "retrieved_evidence"):
-            for item in payload.get(field, []):  # type: ignore[union-attr]
-                content.append(
-                    {"type": "text", "text": f"[evidence {item['evidence_id']}] {item['content']}"}
-                )
-        body: dict[str, object] = {
-            "messages": [
-                {"role": "system", "content": payload["task_instruction"]},
-                {"role": "user", "content": content},
-            ],
-        }
-        for key, value in dict(payload.get("decoding_params", {})).items():  # type: ignore[arg-type]
-            if key in body:
-                raise FrozenCoreError(
-                    f"decoding_params key {key!r} collides with the constructed "
-                    "request body and would silently override it"
-                )
-            body[key] = value
-        raw = self._post(self._url, json.dumps(body).encode("utf-8"))
-        try:
-            parsed = json.loads(raw.decode("utf-8"))
-            text = parsed["choices"][0]["message"]["content"]
-            usage = {str(k): int(v) for k, v in dict(parsed.get("usage", {})).items()}
-        except (KeyError, TypeError, ValueError, IndexError, UnicodeError) as error:
-            raise FrozenCoreError(
-                f"transport returned a malformed response: {error}"
-            ) from error
-        return json.dumps({"text": text, "usage": usage}).encode("utf-8")
-
-
-def _llama_server_factory(
-    values: Mapping[str, object],
-    data_root: Path,
-    *,
-    session: SessionReceipt,
-    runtime_receipt: Mapping[str, object],
-    runtime_root: Path,
-):
-    return LlamaServerTransport(
-        str(values["base_url"]),
-        data_root,
-        session,
-        runtime_receipt,
-        runtime_root,
-        float(values.get("timeout_seconds", 300.0)),
-    )
-
-
-TRANSPORTS.register("llama-server", _llama_server_factory)
