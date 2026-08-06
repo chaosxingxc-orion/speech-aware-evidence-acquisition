@@ -419,14 +419,28 @@ def test_gate_refuses_confirmatory_split_even_with_allowed_profile(world):
         world.gate().assert_model_touch_allowed(world.plan(split_role="confirmatory"))
 
 
-def test_gate_refuses_over_budget_plans_regardless_of_label(world):
-    for overrides in (
-        {"planned_model_calls": 3001},
-        {"planned_gpu_hours": 40.5},
-        {"planned_speech_audio_seconds": 72001},
-    ):
-        with pytest.raises(ExecutionScopeError, match="cap"):
-            world.gate().assert_model_touch_allowed(world.plan(**overrides))
+def test_gate_accepts_a_plan_with_calls_far_beyond_the_former_first_slice_cap_when_registered(world):
+    """Owner amendment 2026-08-06 (SAEA-OWNER-AMENDMENT-2026-08-06-BUDGET-CAPS)
+    retired the first-slice numeric caps (formerly <=3,000 calls / <=40
+    GPU-hours / <=72,000 speech-audio seconds): a plan and matching ledger row
+    far past those old numbers is now ACCEPTED -- no global ceiling remains --
+    while a plan whose claimed budget still exceeds what its OWN row registers
+    stays refused (per-row self-consistency is unaffected by the amendment)."""
+
+    world.write_ledger_rows(
+        f"| 2026-08-04 | {world.RUN_ID} | baseline-reproduction | s | m "
+        f"| {world.CARRIER} dev | dev | {'a' * 64} | no "
+        "| 999999 | 100000 | 400.0 | none | none | huge but registered |\n"
+    )
+    world.gate().assert_model_touch_allowed(
+        world.plan(
+            planned_model_calls=999999,
+            planned_speech_audio_seconds=100000,
+            planned_gpu_hours=400.0,
+        )
+    )
+    with pytest.raises(GateClosed, match="pre-registered"):
+        world.gate().assert_model_touch_allowed(world.plan(planned_model_calls=1000000))
 
 
 def test_gate_refuses_missing_or_malformed_hashes(world):
@@ -528,24 +542,6 @@ def test_gate_refuses_profile_and_seconds_disagreement(world):
         world.gate().assert_model_touch_allowed(world.plan(planned_gpu_hours=2.0))
 
 
-def test_gate_refuses_cumulative_slice_budget_exhaustion(world):
-    """N individually-bounded runs cannot sum past the frozen slice caps."""
-
-    other = (
-        "| 2026-08-04 | SAEA-E-001-prior | baseline-reproduction | s | m "
-        f"| {world.CARRIER} dev | dev | {'c' * 64} | no "
-        "| 2995 | 600 | 1.0 | none | none | prior run |\n"
-    )
-    mine = (
-        f"| 2026-08-04 | {world.RUN_ID} | baseline-reproduction | s | m "
-        f"| {world.CARRIER} dev | dev | {'a' * 64} | no "
-        "| 10 | 600 | 1.0 | none | none | this run |\n"
-    )
-    world.write_ledger_rows(other + mine)
-    with pytest.raises(GateClosed, match="first-slice cap"):
-        world.gate().assert_model_touch_allowed(world.plan())
-
-
 def test_gate_refuses_scoring_module_hidden_in_a_subdirectory(world):
     nested = world.scoring_dir / "helpers"
     nested.mkdir()
@@ -603,6 +599,15 @@ def test_gate_refuses_nan_and_negative_budget_cells(world):
     with pytest.raises(GateClosed, match="finite non-negative"):
         world.gate().assert_model_touch_allowed(world.plan())
 
+
+def test_gate_ignores_a_malformed_budget_cell_in_an_unrelated_row(world):
+    """Owner amendment 2026-08-06 (SAEA-OWNER-AMENDMENT-2026-08-06-BUDGET-CAPS)
+    retired the slice-wide summation that used to validate EVERY registered
+    row's budget cells -- even an unrelated run's -- to protect its own
+    arithmetic from corruption. Only the matched row (the one THIS plan's
+    run_id pre-registers) is read now: a NaN/negative cell sitting in a
+    DIFFERENT run's row no longer blocks this plan at all."""
+
     decoy = (
         "| 2026-08-04 | SAEA-E-002-decoy | baseline-reproduction | s | m "
         f"| {world.CARRIER} dev | dev | {'c' * 64} | no "
@@ -614,8 +619,7 @@ def test_gate_refuses_nan_and_negative_budget_cells(world):
         "| 10 | 600 | 1.0 | none | none | this run |\n"
     )
     world.write_ledger_rows(decoy + mine)
-    with pytest.raises(GateClosed, match="finite non-negative"):
-        world.gate().assert_model_touch_allowed(world.plan())
+    world.gate().assert_model_touch_allowed(world.plan())
 
 
 # ---------------------------------------------------------------------------
@@ -683,50 +687,22 @@ def test_gate_recognizes_rows_registered_in_a_second_table(world):
     world.gate().assert_model_touch_allowed(world.plan(run_id="SAEA-E-777-injected"))
 
 
-def test_second_table_budget_rows_count_toward_the_slice_cap(world):
-    """I2 probe: demonstrated defect -- a second table holding 2995 calls /
-    71000 audio-seconds / 39 GPU-hours was invisible to the slice-total sum
-    and the gate opened. It must now be counted and refuse."""
-
-    overflow = _table(
-        _row(
-            world,
-            "SAEA-E-778-overflow",
-            calls=2995,
-            audio=71000,
-            gpu=39.0,
-            split_hash="c" * 64,
-        )
-    )
-    world.exposure_ledger.write_text(
-        world.exposure_ledger.read_text(encoding="utf-8") + "\n" + overflow,
-        encoding="utf-8",
-    )
-    with pytest.raises(GateClosed, match="first-slice cap"):
-        world.gate().assert_model_touch_allowed(world.plan())
-
-
-def test_prose_line_between_rows_does_not_drop_rows_below_it(world):
-    """I2 probe: a single prose line inserted BETWEEN two data rows of the
-    SAME table must never drop the row below it from the budget sum."""
+def test_prose_line_between_rows_does_not_drop_the_row_below_it(world):
+    """I2 probe (cap-independent form): a single prose line inserted BETWEEN
+    two data rows of the SAME table must never drop the row below it from
+    pre-registration recognition -- proved here by the second row's own run
+    still opening the gate, not (as before the 2026-08-06 amendment retired
+    the slice-wide cap) by a budget-total refusal."""
 
     ledger = (
         _LEDGER_HEADER
         + _LEDGER_SEP
         + _row(world, world.RUN_ID)
         + "\nSome human-readable note inserted between rows.\n\n"
-        + _row(
-            world,
-            "SAEA-E-779-afterprose",
-            calls=2995,
-            audio=71000,
-            gpu=39.0,
-            split_hash="d" * 64,
-        )
+        + _row(world, "SAEA-E-779-afterprose")
     )
     world.exposure_ledger.write_text(ledger, encoding="utf-8")
-    with pytest.raises(GateClosed, match="first-slice cap"):
-        world.gate().assert_model_touch_allowed(world.plan())
+    world.gate().assert_model_touch_allowed(world.plan(run_id="SAEA-E-779-afterprose"))
 
 
 def test_duplicate_run_id_across_two_tables_is_refused(world):
@@ -783,36 +759,11 @@ def test_table_inside_an_html_comment_is_not_a_registration(world):
         world.gate().assert_model_touch_allowed(world.plan(run_id="SAEA-E-666-hidden"))
 
 
-def test_table_inside_an_html_comment_does_not_count_toward_the_slice_cap(world):
-    """The demonstrated I2-adjacent defect: a complete contract table hidden
-    inside a comment must never be summed into the slice-wide budget total
-    either."""
-
-    hidden = (
-        "\n<!--\n"
-        + _table(
-            _row(
-                world,
-                "SAEA-E-667-hidden-overflow",
-                calls=2995,
-                audio=71000,
-                gpu=39.0,
-                split_hash="e" * 64,
-            )
-        )
-        + "-->\n"
-    )
-    world.exposure_ledger.write_text(
-        world.exposure_ledger.read_text(encoding="utf-8") + hidden, encoding="utf-8"
-    )
-    world.gate().assert_model_touch_allowed(world.plan())
-
-
 def test_table_inside_a_fenced_code_block_is_not_binding(world):
     """A contract-shaped table inside a fenced code block -- the natural way
-    to document the row format -- must never be a registration nor count
-    toward the slice cap (an illustrative example must not silently exhaust
-    the campaign budget)."""
+    to document the row format -- must never be a registration: an
+    illustrative example must not pre-register a run id it never really
+    registered."""
 
     fenced = (
         "\nHere is the row format, illustrated:\n\n```\n"
@@ -834,58 +785,29 @@ def test_table_inside_a_fenced_code_block_is_not_binding(world):
     # Not a registration for that run id...
     with pytest.raises(GateClosed, match="pre-registered exposure row"):
         world.gate().assert_model_touch_allowed(world.plan(run_id="SAEA-E-668-fenced-example"))
-    # ...and not counted toward the slice cap for the REAL registered run either.
+    # ...and the fenced content does not otherwise disturb parsing of the
+    # REAL registered run's own row either.
     world.gate().assert_model_touch_allowed(world.plan())
 
 
-def test_a_real_second_table_after_a_fenced_example_still_counts(world):
+def test_a_real_second_table_after_a_fenced_example_is_still_parsed(world):
     """The I2 fix must not regress: a genuine second table AFTER a fenced
-    illustrative example must still be parsed and its rows still count."""
+    illustrative example must still be parsed and its own row still
+    recognized as a pre-registration."""
 
     combined = (
         "\n```\n"
         + _table(_row(world, "SAEA-E-669-example-only", calls=1, audio=1, gpu=0.01))
         + "```\n\n"
-        + _table(
-            _row(
-                world,
-                "SAEA-E-670-real-second-table",
-                calls=2995,
-                audio=71000,
-                gpu=39.0,
-                split_hash="1" * 64,
-            )
-        )
+        + _table(_row(world, "SAEA-E-670-real-second-table"))
     )
     world.exposure_ledger.write_text(
         world.exposure_ledger.read_text(encoding="utf-8") + combined, encoding="utf-8"
     )
-    with pytest.raises(GateClosed, match="first-slice cap"):
-        world.gate().assert_model_touch_allowed(world.plan())
-
-
-def test_prose_line_between_rows_still_counts_alongside_comment_and_fence_awareness(world):
-    """The existing I2 prose-tolerance behavior must survive alongside the
-    new comment/fence awareness: a stray prose line between two data rows of
-    the SAME table must still never drop the row below it."""
-
-    ledger = (
-        _LEDGER_HEADER
-        + _LEDGER_SEP
-        + _row(world, world.RUN_ID)
-        + "\nSome human-readable note inserted between rows.\n\n"
-        + _row(
-            world,
-            "SAEA-E-671-afterprose-2",
-            calls=2995,
-            audio=71000,
-            gpu=39.0,
-            split_hash="2" * 64,
-        )
-    )
-    world.exposure_ledger.write_text(ledger, encoding="utf-8")
-    with pytest.raises(GateClosed, match="first-slice cap"):
-        world.gate().assert_model_touch_allowed(world.plan())
+    world.gate().assert_model_touch_allowed(world.plan(run_id="SAEA-E-670-real-second-table"))
+    # The fenced illustrative example's own row id was never a registration.
+    with pytest.raises(GateClosed, match="pre-registered exposure row"):
+        world.gate().assert_model_touch_allowed(world.plan(run_id="SAEA-E-669-example-only"))
 
 
 # ---------------------------------------------------------------------------
@@ -894,41 +816,31 @@ def test_prose_line_between_rows_still_counts_alongside_comment_and_fence_awaren
 # genuine table row" -- was FALSE. An inline, SAME-LINE HTML comment inside
 # an otherwise perfectly genuine row (e.g. a notes cell reading
 # ``scope amended <!-- see git history -->``) must never make the WHOLE row
-# invisible to the budget/duplicate/consumed checks -- only round-2's own
-# multi-line "whole table hidden inside a comment" shape (covered by
-# test_table_inside_an_html_comment_is_not_a_registration/
-# test_table_inside_an_html_comment_does_not_count_toward_the_slice_cap
-# above, unchanged and still passing) stays invisible.
+# invisible to the duplicate/consumed/registered-budget checks -- only
+# round-2's own multi-line "whole table hidden inside a comment" shape
+# (covered by test_table_inside_an_html_comment_is_not_a_registration above,
+# unchanged and still passing) stays invisible.
 # ---------------------------------------------------------------------------
 
 
-def test_inline_same_line_comment_does_not_hide_a_genuine_row(world):
-    """The exact reproduced PoC: RUN-OLD (2500 calls) + this run's own row
-    (600 calls) honestly total 3100 > the 3000 cap and must REFUSE --
-    identically whether or not RUN-OLD's notes cell carries an inline,
-    same-line HTML comment. Before the fix, adding the comment alone flipped
-    this from REFUSED to wrongly ACCEPTED (RUN-OLD's entire row, including
-    its 2500 calls, vanished)."""
-
-    new_row = _row(world, world.RUN_ID, calls=600)
-
-    honest = _table(
-        _row(world, "SAEA-E-900-old", calls=2500, split_hash="3" * 64, notes="row") + new_row
-    )
-    world.exposure_ledger.write_text(honest, encoding="utf-8")
-    with pytest.raises(GateClosed, match="first-slice cap"):
-        world.gate().assert_model_touch_allowed(world.plan())
+def test_inline_same_line_comment_in_notes_does_not_corrupt_other_cells(world):
+    """Cap-independent regression guard for the reproduced PoC: an inline,
+    same-line HTML comment inside a row's notes cell must never corrupt or
+    hide that SAME row's OTHER cells. Proved via the calls cell, which must
+    still read as exactly 600 (not vanished, not merged with an adjacent
+    cell) -- a plan claiming 601 is refused as under-registered while a plan
+    claiming exactly 600 is accepted."""
 
     commented = _table(
         _row(
-            world, "SAEA-E-900-old", calls=2500, split_hash="3" * 64,
+            world, world.RUN_ID, calls=600,
             notes="scope amended <!-- see git history -->",
         )
-        + new_row
     )
     world.exposure_ledger.write_text(commented, encoding="utf-8")
-    with pytest.raises(GateClosed, match="first-slice cap"):
-        world.gate().assert_model_touch_allowed(world.plan())
+    world.gate().assert_model_touch_allowed(world.plan(planned_model_calls=600))
+    with pytest.raises(GateClosed, match="pre-registered"):
+        world.gate().assert_model_touch_allowed(world.plan(planned_model_calls=601))
 
 
 def test_inline_comment_hiding_a_consumed_cell_still_refuses_as_consumed(world):

@@ -14,13 +14,16 @@ Field semantics (consolidated contract §6/§7; umbrella 续92/续93):
   model-free and discovery/dev rows write `no`.
 - `inherited exposure` — scoped statement of prior exposure carried into this touch;
   monotonically non-decreasing across rows.
-- `calls` / `speech audio seconds` / `gpu hours` — the registered budget ceiling for this
+- `calls` / `speech audio seconds` / `gpu hours` — the registered budget record for this
   run; every cell must be a **finite non-negative number** (the gate refuses NaN or
-  negative cells outright — they would corrupt the arithmetic). The first-slice caps are
-  **slice totals** (consolidated contract §6): `contracts.FrozenCoreGate` sums these
-  columns across every row and refuses any plan that would push the campaign total over
-  ≤3000 calls / ≤72000 speech audio seconds / ≤40 GPU-hours, in addition to the per-row
-  `registered ≥ planned` cross-check.
+  negative cells outright — they would corrupt the arithmetic). These columns carry no
+  numeric ceiling of their own (the first-slice caps that used to sum them as slice
+  totals — consolidated contract §6 — were retired by the 2026-08-06 owner amendment,
+  `SAEA-OWNER-AMENDMENT-2026-08-06-BUDGET-CAPS`): `contracts.FrozenCoreGate` no longer sums
+  these columns across rows. What it still enforces, per row, is the cross-check that a
+  plan may only claim what its OWN matched row registers: `registered ≥ planned` for each
+  of the three columns, against the plan's own declared `planned_model_calls` /
+  `planned_speech_audio_seconds` / `planned_gpu_hours`.
 
 Inherited exposure baseline: program-level prior exposure (W1 probe campaigns on other carriers; no
 Earnings21/Earnings22/ConEC model exposure inherited as of 2026-08-03). The carriers' only

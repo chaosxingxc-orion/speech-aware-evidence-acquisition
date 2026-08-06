@@ -25,11 +25,13 @@ ever shelling out to a real ``nvidia-smi``:
      never recorded. ``gpu_seconds`` is therefore always <= the true
      utilization-weighted total, by at most ``interval_seconds`` (default
      1.0s). Chosen deliberately over polling once more inside ``stop()``: this
-     is a coarse instrumentation figure for a first-slice budget measured in
-     GPU-*hours* (<=40h, consolidated execution contract), not a precise
-     billing meter, and a bounded ~1-second-per-attempt undercount is
-     negligible against that scale -- simplicity and one fewer failure mode
-     inside shutdown won the tradeoff.
+     is a coarse instrumentation figure measured in GPU-*hours*, not a
+     precise billing meter (no numeric GPU-hours ceiling is enforced since
+     the 2026-08-06 owner amendment, ``SAEA-OWNER-AMENDMENT-2026-08-06-
+     BUDGET-CAPS``, retired the first-slice caps the consolidated execution
+     contract used to state here), and a bounded ~1-second-per-attempt
+     undercount is negligible regardless -- simplicity and one fewer failure
+     mode inside shutdown won the tradeoff.
   2. *Device-wide, not process-scoped, single device.* ``utilization.gpu``/
      ``memory.used`` are ``nvidia-smi``'s DEVICE totals (every process on that
      GPU), not this run's share alone -- there is no per-process attribution

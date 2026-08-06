@@ -44,9 +44,11 @@ via the exact carrier-prefix-then-hash convention ``data.splits`` itself
 uses; ``split.count`` must equal ``len(split.ids)``; the ``plan`` block is
 reconstructed into a genuine :class:`~..contracts.ExecutionPlan` and
 re-validated (transitively refusing a paper-scale ``execution_profile``, a
-``confirmatory`` ``split_role``, or any planned budget over the frozen
-first-slice caps -- a hand-edited plan cannot smuggle these past a naive
-dict read the way it previously could); ``protocol_hash`` is recomputed from
+``confirmatory`` ``split_role``, or a non-finite/non-positive planned budget
+field -- a hand-edited plan cannot smuggle these past a naive dict read the
+way it previously could; a planned budget value alone is no longer capped,
+per the 2026-08-06 owner amendment retiring the first-slice numeric caps);
+``protocol_hash`` is recomputed from
 ``config.config_hash``/``arm``/the freshly-verified split identity hash via
 ``core.config.protocol_hash``, the exact convention
 ``core.driver.run_experiment`` itself checks before ever sending a request;
@@ -1104,9 +1106,12 @@ def verify_bundle(manifest_path: Path) -> VerifiedBundle:
     # ``contracts.assert_execution_scope`` exists to refuse -- including
     # ``paper-scale-confirmatory``), a ``split_role`` of ``confirmatory``,
     # an unknown Stage-2 split role, a malformed schema/study identity, and
-    # any ``planned_model_calls`` / ``planned_gpu_hours`` /
-    # ``planned_speech_audio_seconds`` exceeding the frozen first-slice
-    # caps (e.g. a ``planned_model_calls`` inflated to 999999).
+    # a non-finite/non-positive/non-integral ``planned_model_calls`` /
+    # ``planned_gpu_hours`` / ``planned_speech_audio_seconds``. It no longer
+    # refuses a large planned budget value on its own (e.g. a
+    # ``planned_model_calls`` of 999999) -- the first-slice numeric caps
+    # ``ExecutionPlan.validate()`` used to enforce here were retired by the
+    # 2026-08-06 owner amendment (SAEA-OWNER-AMENDMENT-2026-08-06-BUDGET-CAPS).
     # ------------------------------------------------------------------
     plan_meta = manifest.get("plan")
     if not isinstance(plan_meta, Mapping):

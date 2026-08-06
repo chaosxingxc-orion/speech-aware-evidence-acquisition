@@ -114,10 +114,10 @@ def _coerce_actual_field(value: object, kind: type, label: str):
     fail-closed as :class:`AttemptError` -- never a bare ``ValueError``/
     ``TypeError`` escaping this module's own documented exception contract
     -- and refuses a negative or non-finite result, which would otherwise
-    silently deflate :meth:`AttemptStore._sum_actual_for_run`'s slice-wide
-    actual-usage total (the conservative-maximum figure the first-slice
-    budget cap is compared against, e.g. in
-    ``contracts.FrozenCoreGate._require_exposure_preregistration``).
+    silently deflate :meth:`AttemptStore._sum_actual_for_run`'s summed
+    actual-usage total (read back by :meth:`prior_actual_usage`/
+    :meth:`all_actual_usage` for this module's own accounting correctness,
+    independent of whatever a caller does with the figure).
     ``bool`` is rejected even though it is technically ``int`` (matching
     every other numeric guard in this module, e.g. :func:`_positive_finite`)."""
 
@@ -248,12 +248,15 @@ class AttemptHandle:
 
     def record_gpu_seconds(self, gpu_seconds: float) -> float:
         """Persist measured GPU-seconds for this attempt (fix-wave2 Minor:
-        gpu hours had no derived counterpart -- the slice-cap conservative
-        max at ``contracts.FrozenCoreGate._require_exposure_preregistration``
-        folded durable actual calls/audio into its conservative max but took
-        gpu hours purely from self-declared ledger cells, even though
-        ``gpu_seconds`` IS measured per run
-        (``core.resources.ResourceSampler.summary``)).
+        gpu hours had no derived counterpart -- calls/audio already had a
+        durably persisted actual figure while gpu hours was taken purely
+        from self-declared ledger cells, even though ``gpu_seconds`` IS
+        measured per run (``core.resources.ResourceSampler.summary``)).
+        (The slice-wide budget-cap check this originally fed,
+        ``contracts.FrozenCoreGate._require_exposure_preregistration``, was
+        retired by the 2026-08-06 owner amendment
+        (SAEA-OWNER-AMENDMENT-2026-08-06-BUDGET-CAPS); durable per-run GPU
+        cost accounting stays useful regardless.)
 
         Called by ``core.driver.run_experiment`` AFTER the request loop, once
         the run's own resource sampler has a final measured total -- unlike
@@ -388,14 +391,13 @@ class AttemptStore:
         is a non-numeric value (e.g. ``"calls": "lots"``) previously raised a
         bare ``ValueError`` straight out of the unguarded ``int()``/``float()``
         calls below -- past the ``except AttemptError`` wrapper at every real
-        caller (e.g. ``contracts.FrozenCoreGate._require_exposure_
-        preregistration``), leaking an internal implementation detail as an
-        undocumented exception type instead of this module's own documented
+        caller, leaking an internal implementation detail as an undocumented
+        exception type instead of this module's own documented
         ``AttemptError``. Also, a NEGATIVE persisted value (a corrupted or
         hand-tampered attempt file) previously summed straight through with
-        no check at all, silently deflating the slice-wide actual-usage total
-        the budget cap is compared against. Both are now refused fail-closed,
-        wrapped as ``AttemptError``, via :func:`_coerce_actual_field`."""
+        no check at all, silently deflating the summed actual-usage total.
+        Both are now refused fail-closed, wrapped as ``AttemptError``, via
+        :func:`_coerce_actual_field`."""
 
         validate_id(run_id, "run_id")
         run_dir = self._run_dir(run_id)
@@ -476,11 +478,13 @@ class AttemptStore:
     def all_actual_usage(self) -> tuple[int, float, float]:
         """Sum persisted actual (calls, audio_seconds, gpu_seconds) across
         every run_id under this store -- the global counterpart to
-        :meth:`prior_actual_usage`, used by the slice-cap conservative-
-        maximum check (registered vs. actual). Returns a 3-tuple (fix-wave2
-        Minor: gpu_seconds joined calls/audio_seconds here so the slice cap's
-        conservative max can cover GPU hours too, the one budget dimension
-        that previously had no derived counterpart)."""
+        :meth:`prior_actual_usage`. Returns a 3-tuple (fix-wave2 Minor:
+        gpu_seconds joined calls/audio_seconds here, the one budget dimension
+        that previously had no derived counterpart). Not consumed by
+        ``contracts.FrozenCoreGate`` since the 2026-08-06 owner amendment
+        retired the slice-wide budget-cap check that used to read this figure
+        (SAEA-OWNER-AMENDMENT-2026-08-06-BUDGET-CAPS); kept as a general
+        cross-run actual-usage accounting utility."""
 
         root = Path(self.attempts_root)
         if not root.is_dir():

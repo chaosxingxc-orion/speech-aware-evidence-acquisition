@@ -367,8 +367,11 @@ class FrozenCoreAdapter:
         # R0 repair T5 fix-3 (I5): re-verify RIGHT BEFORE this specific
         # request's trace/budget side effects, not merely once at
         # construction -- a transport instance is reused for an entire run
-        # (up to 3000 calls / 20h audio), so a session valid at construction
-        # time proves nothing about who is listening ten calls later.
+        # (potentially many calls / hours of audio, per the plan's own
+        # declared budget -- no numeric ceiling since the 2026-08-06 owner
+        # amendment retired the first-slice caps), so a session valid at
+        # construction time proves nothing about who is listening ten calls
+        # later.
         if self._session_check is not None:
             self._session_check()
         request_id = str(payload["request_id"])
@@ -506,8 +509,9 @@ class FrozenCoreAdapter:
         # Demonstrated: a gate verified {'s1': ('carrier/s1.mp3', 10.0)}; a
         # payload naming media_relpath="carrier/decoy.mp3" was accepted, the
         # decoy's bytes were sent, and only 10.0s (the BOUND sample's
-        # duration) was metered against the ≤20h audio budget regardless of
-        # the decoy's real length. Requiring an EXACT match after
+        # duration) was metered against this run's own planned audio-seconds
+        # budget regardless of the decoy's real length. Requiring an EXACT
+        # match after
         # normalization closes this: the only media_relpath a payload for
         # ``sample_id`` may ever carry is the one the verified split/loader
         # bound for that exact sample id.
@@ -621,9 +625,11 @@ class LlamaServerTransport:
         # R0 repair T5 fix-1/fix-2 (I5, reviewer-flagged CRITICAL gap): full
         # liveness+PROCESS-IDENTITY re-verification, not merely a declared-
         # value comparison -- at construction AND (see __call__) on every
-        # single send. A transport instance answers an entire run (up to
-        # 3000 calls / 20h audio); a session proven valid once at
-        # construction time proves nothing about who is listening later.
+        # single send. A transport instance answers an entire run (potentially
+        # many calls / hours of audio, per the plan's own declared budget --
+        # no numeric ceiling since the 2026-08-06 owner amendment retired the
+        # first-slice caps); a session proven valid once at construction time
+        # proves nothing about who is listening later.
         self._assert_session_still_valid()
 
     def _assert_session_still_valid(self) -> None:

@@ -768,10 +768,9 @@ def test_run_experiment_feeds_measured_gpu_seconds_back_into_the_durable_attempt
     seconds were fed into the durable per-attempt record (core.attempts) on
     every request, but gpu_seconds, though measured for the whole run
     (RunResult.cost["gpu_seconds"]), was never written back to that durable
-    file, so the gate's slice-cap conservative max
-    (contracts.FrozenCoreGate._require_exposure_preregistration,
-    AttemptStore.all_actual_usage) could never see it. Proves the durable
-    file itself, not merely the in-memory RunResult.cost, now carries it."""
+    file, so a reader of AttemptStore.all_actual_usage() could never see it.
+    Proves the durable file itself, not merely the in-memory RunResult.cost,
+    now carries it."""
 
     lock, repo_root = _frozen_world(synthetic_world, tmp_path)
     _, split_hash, _ = load_split(repo_root, "discovery", lock, synthetic_world.data_root)

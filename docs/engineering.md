@@ -49,9 +49,20 @@ umbrella wiki.
   symlinked directories are refused (plain subdirectories are legal only because every `.py`
   inside them must be frozen). The exposure row a plan cites is cross-checked field by field
   (profile, split role, split identity hash, consumed=no, registered calls/audio-seconds/GPU-hours
-  ≥ planned; every budget cell must be a finite non-negative number), and the first-slice caps are
-  enforced as **slice totals**: the gate sums every registered row and refuses a plan that would
-  push the campaign over ≤3000 calls / ≤72000 audio seconds / ≤40 GPU-hours. The process that opens
+  ≥ planned; every budget cell must be a finite non-negative number). **Budget caps, retired (owner
+  amendment 2026-08-06, `SAEA-OWNER-AMENDMENT-2026-08-06-BUDGET-CAPS`,
+  `wiki/experiments/speech-aware-evidence-acquisition/
+  2026-08-06-owner-amendment-retire-first-slice-budget-caps.md`):** the first-slice numeric ceilings
+  that used to live here (≤3,000 calls / ≤72,000 audio seconds / ≤40 GPU-hours, formerly
+  `contracts.FIRST_SLICE_CAPS`, formerly summed as slice totals across every registered ledger row
+  by `contracts.FrozenCoreGate._require_exposure_preregistration`, and formerly checked per plan by
+  `ExecutionPlan.validate()`) are gone; no numeric ceiling is enforced anymore, machine or otherwise.
+  What the owner amendment explicitly keeps, and what the gate still enforces: paid API = 0 and the
+  Stage-3 stop line; exposure pre-registration (profile/split role/split identity hash/carrier);
+  one-time `(run_id, attempt_id)` attempt semantics; and the per-row/per-plan self-consistency above
+  — a registered row must be ≥ the plan's own declared budget, and `ExecutionPlan.validate()` still
+  requires every budget field to be a finite positive number (integral where applicable), just with
+  no upper bound. Do not reintroduce a cap without a new dated owner amendment. The process that opens
   the gate must be the process that starts llama-server, immediately afterward — the gate's own
   pass/fail DECISION is never cached or shared across processes or separated from the launch it
   authorizes; the GGUF identity cache above is a narrow, internal, per-file performance optimization
@@ -198,8 +209,12 @@ plan and a genuine, provably-scoped model touch. Beyond the run bundle + finaliz
 - **I6 one-time attempt accounting** (`core/attempts.py`): `(run_id, attempt_id)` is
   a non-reusable primary key; the gate opens atomically/exclusively; actual usage is
   persisted **before** the send, not lost on failure; a retry requires a fresh
-  attempt; slice caps take the conservative upper bound of "registered" and
-  "actual" usage.
+  attempt; a run's own `FrozenCoreAdapter` never lets combined sibling-attempt
+  actual usage exceed **its own** plan's declared calls/audio-seconds. (The
+  slice-wide conservative-maximum check that used to compare a ledger-registered
+  total against `AttemptStore.all_actual_usage()` for a global cap was retired by
+  the 2026-08-06 owner amendment; per-row registered ≥ planned, checked at
+  `assert_model_touch_allowed`, is unaffected.)
 - **I7 run bundle + finalizer**: see the dedicated subsection immediately below.
 
 **I9 CI truthfulness (this task, T9):** CI now reflects current R0 semantics rather
@@ -345,9 +360,11 @@ this the same way for the ABORTED path.
 `core/resources.py` module docstring for the full rationale):**
 
 1. `gpu_seconds` undercounts by at most one `interval_seconds` (default 1.0s): the final partial span
-   between the last recorded poll and `stop()` is never recorded. Negligible against a first-slice
-   budget measured in GPU-*hours* (≤40h) — chosen over polling once more inside `stop()` for
-   simplicity and one fewer shutdown-path failure mode.
+   between the last recorded poll and `stop()` is never recorded. This is a coarse instrumentation
+   figure measured in GPU-*hours*, not a precise billing meter — chosen over polling once more inside
+   `stop()` for simplicity and one fewer shutdown-path failure mode. (No numeric GPU-hours ceiling is
+   enforced since the 2026-08-06 owner amendment retired the first-slice caps; this approximation's
+   negligibility no longer rests on any specific hour bound.)
 2. `gpu_seconds`/`peak_vram_mib` are `nvidia-smi`'s DEVICE-wide totals (every process on that GPU),
    not this run's share alone; `device_index` (default `0`, also `resolve_resource_sampler`'s default)
    pins WHICH device is queried (`--id=<device_index>`) but does not add per-process attribution.
@@ -397,12 +414,14 @@ arguments refuses with exit 2, neither entrypoint contains a model-touch code pa
 
 Execution scope (consolidated contract §6/§7; umbrella 续93): every model touch must present a
 structured `contracts.ExecutionPlan` — profile, carrier lock key, split role (`discovery`/`dev`
-only), split identity hash, planned calls/GPU-hours/audio-seconds within the frozen first-slice
-caps, and protocol hash. `FrozenCoreGate.assert_model_touch_allowed(plan)` validates the plan
-before reading any byte, then requires the run to be pre-registered in `docs/exposure-ledger.md`
-and the carrier to exist in the umbrella lock, then verifies both receipts. Bare profile strings,
-`confirmatory` splits, over-cap plans and unregistered runs all fail closed — a paper-scale run
-cannot be smuggled in under an allowed profile label. Stage-3 work runs only in a separately
+only), split identity hash, planned calls/GPU-hours/audio-seconds (each a finite positive number,
+integral where applicable — no numeric ceiling since the 2026-08-06 owner amendment retired the
+first-slice caps), and protocol hash. `FrozenCoreGate.assert_model_touch_allowed(plan)` validates
+the plan before reading any byte, then requires the run to be pre-registered in
+`docs/exposure-ledger.md` with a registered budget ≥ the plan's own declared budget, and the
+carrier to exist in the umbrella lock, then verifies both receipts. Bare profile strings,
+`confirmatory` splits, under-registered plans and unregistered runs all fail closed — a paper-scale
+run cannot be smuggled in under an allowed profile label. Stage-3 work runs only in a separately
 admitted paper repository.
 
 **`tests/unit/test_session.py`, native-Windows/WSL2 split (deliberate, owner-approved, not a

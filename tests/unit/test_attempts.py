@@ -230,11 +230,9 @@ def _write_attempt_file(store: AttemptStore, run_id: str, attempt_id: str, actua
 # MINOR 1 (external-threat-model review round 3): a JSON-valid attempt file
 # whose actual.calls/audio_seconds/gpu_seconds is non-numeric must never leak
 # a bare ValueError past this module's own documented AttemptError contract
-# (and therefore past every real caller's `except AttemptError` wrapper,
-# e.g. contracts.FrozenCoreGate._require_exposure_preregistration); a
+# (and therefore past every real caller's `except AttemptError` wrapper); a
 # negative or non-finite persisted value must never silently deflate the
-# slice-wide actual-usage total the first-slice budget cap is compared
-# against.
+# summed actual-usage total this store reports.
 # ---------------------------------------------------------------------------
 
 
@@ -257,8 +255,8 @@ def test_all_actual_usage_wraps_a_non_numeric_gpu_seconds_field_as_attempt_error
 
 def test_prior_actual_usage_refuses_a_negative_persisted_calls_value(tmp_path):
     """A corrupted/hand-tampered attempt file with a NEGATIVE calls value
-    must never silently deflate the slice-wide actual-usage total the
-    first-slice budget cap is compared against."""
+    must never silently deflate the summed actual-usage total this store
+    reports."""
 
     store = AttemptStore(tmp_path / "attempts")
     _write_attempt_file(store, "run-1", "attempt-1", {"calls": -100, "audio_seconds": 10.0})
@@ -292,8 +290,8 @@ def test_prior_actual_usage_still_sums_legitimate_values_after_the_fix(tmp_path)
 # ---------------------------------------------------------------------------
 # fix-wave2 Minor: gpu hours had no derived counterpart -- record_gpu_seconds
 # is the write path core.driver.run_experiment feeds a whole-run measured
-# total back through; all_actual_usage's 3rd element is what the gate's
-# slice-cap conservative max reads it back through.
+# total back through; all_actual_usage's 3rd element is that durable per-run
+# GPU-seconds figure, summed across runs.
 # ---------------------------------------------------------------------------
 
 

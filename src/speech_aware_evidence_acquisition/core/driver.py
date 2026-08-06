@@ -275,13 +275,14 @@ def run_experiment(
     resource_summary = dict(sampler.summary())
     cpu_seconds = cpu_seconds_snapshot() - cpu_start
     # Minor (fix-wave2, external-threat-model review round 2): gpu hours was
-    # the only budget dimension with no derived counterpart -- the slice-cap
-    # conservative max (contracts.FrozenCoreGate._require_exposure_
-    # preregistration) already folds durable actual calls/audio into its
-    # conservative max, but took gpu hours purely from self-declared ledger
-    # cells even though gpu_seconds IS measured here, per run. Feed the
-    # measured total back into THIS attempt's own durable record so that
-    # conservative max can include it too (AttemptStore.all_actual_usage).
+    # the only budget dimension with no derived counterpart, even though
+    # gpu_seconds IS measured here, per run. Feed the measured total back
+    # into THIS attempt's own durable record (AttemptStore.record_gpu_seconds)
+    # so it is available to any reader of this run's actual usage --
+    # AttemptStore.all_actual_usage() is no longer read by a slice-wide
+    # budget-cap check (that check was retired by the 2026-08-06 owner
+    # amendment, SAEA-OWNER-AMENDMENT-2026-08-06-BUDGET-CAPS), but durable,
+    # accurate per-run cost accounting stays useful regardless.
     # Best-effort and never allowed to turn a genuinely successful run into a
     # false failure: `resource_summary["gpu_seconds"]` legitimately reads the
     # NOT_AVAILABLE sentinel string (no sampler, or a broken nvidia-smi -- see
@@ -306,7 +307,7 @@ def run_experiment(
     # R0 repair T7 (I8): failed-attempt cost. Sibling attempts under this SAME
     # run_id that are (as of manifest time) ABORTED -- e.g. a crashed attempt
     # this run_id's caller retried under a fresh attempt_id -- spent real
-    # calls/audio the FIRST-SLICE budget already counts (core.attempts.
+    # calls/audio this run's OWN plan budget already counts (core.attempts.
     # AttemptStore.prior_actual_usage folds every state in), but a reader of
     # this successful attempt's OWN cost block previously had no way to see
     # that extra, wasted spend. `exclude_attempt_id` keeps this run's own

@@ -207,90 +207,11 @@ def test_two_overlapping_adapters_over_the_real_gate_cannot_together_exceed_the_
         adapter2.request(_payload(request_id="b-2"))
 
     store = AttemptStore(world.data_root / "attempts")
-    # I3: the gate's own slice-wide cap check (contracts.py) sums
-    # AttemptStore.all_actual_usage() -- the exact same property the finding
-    # calls out ("the gate's slice-wide all_actual_usage() has the same
-    # property"). Prove that total stayed correctly bounded to what the
-    # shared plan actually allowed (2), not inflated to 4 by the race.
+    # I3: durable per-attempt usage accounting must stay race-safe regardless
+    # of any slice-wide consumer -- AttemptStore.all_actual_usage() (a general
+    # cross-run accounting utility; no longer read by a slice-wide budget-cap
+    # check, which the 2026-08-06 owner amendment retired) must still report
+    # the total correctly bounded to what the shared plan actually allowed
+    # (2), not inflated to 4 by the race.
     actual_calls, _, _ = store.all_actual_usage()
-    assert actual_calls == 2, "the race must never let the slice-wide actual total double-count"
-
-
-def test_slice_cap_uses_actual_persisted_usage_when_larger_than_registered(tmp_path, world):
-    """R0 repair T4 design constraint: slice-cap accounting takes the
-    conservative maximum of ledger-registered reservations and summed
-    persisted actuals. Here the ledger registers well under the frozen
-    first-slice cap, but actual usage already persisted under a DIFFERENT
-    run_id's attempts (e.g. from an inconsistent/edited ledger) already
-    exceeds it -- the gate must still refuse."""
-
-    other_run_dir = world.data_root / "attempts" / "SAEA-E-999-other"
-    other_run_dir.mkdir(parents=True)
-    (other_run_dir / "attempt-x.json").write_text(
-        json.dumps(
-            {
-                "schema": "saea-attempt-v1",
-                "run_id": "SAEA-E-999-other",
-                "attempt_id": "attempt-x",
-                "carrier_lock_key": world.CARRIER,
-                "state": "OPENED",
-                "reserved": {"calls": 3000, "audio_seconds": 72000.0},
-                "actual": {"calls": 3001, "audio_seconds": 100.0},
-            }
-        ),
-        encoding="utf-8",
-    )
-    with pytest.raises(GateClosed, match="first-slice cap"):
-        world.gate().assert_model_touch_allowed(world.plan())
-
-
-def test_slice_cap_uses_actual_persisted_gpu_seconds_when_larger_than_registered(tmp_path, world):
-    """fix-wave2 Minor: gpu hours previously had no derived counterpart --
-    this is the gpu-hours sibling of the test above. A durably persisted
-    gpu_seconds total (fed back by core.driver.run_experiment via
-    AttemptHandle.record_gpu_seconds) that alone exceeds the frozen 40h cap
-    must refuse the touch even though every ledger row registers well under
-    it."""
-
-    other_run_dir = world.data_root / "attempts" / "SAEA-E-998-gpu-heavy"
-    other_run_dir.mkdir(parents=True)
-    (other_run_dir / "attempt-x.json").write_text(
-        json.dumps(
-            {
-                "schema": "saea-attempt-v1",
-                "run_id": "SAEA-E-998-gpu-heavy",
-                "attempt_id": "attempt-x",
-                "carrier_lock_key": world.CARRIER,
-                "state": "OPENED",
-                "reserved": {"calls": 1, "audio_seconds": 1.0},
-                "actual": {"calls": 1, "audio_seconds": 1.0, "gpu_seconds": 41.0 * 3600.0},
-            }
-        ),
-        encoding="utf-8",
-    )
-    with pytest.raises(GateClosed, match="first-slice cap"):
-        world.gate().assert_model_touch_allowed(world.plan())
-
-
-def test_gate_wraps_a_malformed_attempt_directory_name_as_gate_closed(tmp_path, world):
-    """Minor (fix-wave2): a stray directory under <data_root>/attempts/ whose
-    name is not a valid attempt run_id (this study's own code only ever
-    mints validate_id()-checked run_id directories, but a malformed one could
-    be left behind by manual tampering or an unrelated tool) previously let
-    a bare core.attempts.AttemptError escape assert_model_touch_allowed --
-    an internal implementation detail leaking out of the gate's own
-    exception contract. It must now surface as GateClosed."""
-
-    from speech_aware_evidence_acquisition.core.attempts import AttemptError
-
-    bad_dir = world.data_root / "attempts" / "has space"
-    bad_dir.mkdir(parents=True)
-    with pytest.raises(GateClosed):
-        world.gate().assert_model_touch_allowed(world.plan())
-    # And it must never surface as the raw, un-wrapped AttemptError.
-    try:
-        world.gate().assert_model_touch_allowed(world.plan())
-    except GateClosed:
-        pass
-    except AttemptError:
-        pytest.fail("AttemptError must never escape assert_model_touch_allowed unwrapped")
+    assert actual_calls == 2, "the race must never let the actual-usage total double-count"

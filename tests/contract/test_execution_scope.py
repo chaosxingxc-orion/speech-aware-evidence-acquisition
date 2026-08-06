@@ -131,6 +131,21 @@ def test_plan_budget_fields_must_be_finite_and_integral():
     _plan(planned_gpu_hours=1.5).validate()
 
 
+def test_plan_budget_fields_carry_no_numeric_ceiling_after_the_2026_08_06_amendment():
+    """Owner amendment 2026-08-06 (SAEA-OWNER-AMENDMENT-2026-08-06-BUDGET-CAPS)
+    retired the first-slice numeric caps (formerly <=3,000 calls / <=40 GPU-hours
+    / <=72,000 speech-audio seconds) that ``ExecutionPlan.validate()`` used to
+    enforce. A plan whose budget fields are merely finite/positive/integral now
+    validates regardless of magnitude -- field-shape validation (the test above)
+    is the only thing left to check here."""
+
+    _plan(
+        planned_model_calls=999999,
+        planned_gpu_hours=4000.0,
+        planned_speech_audio_seconds=9_999_999,
+    ).validate()
+
+
 # ---------------------------------------------------------------------------
 # IMPORTANT 3 (external-threat-model review round 3): run_id/attempt_id must
 # match the SAME filesystem-safe identifier pattern every downstream module

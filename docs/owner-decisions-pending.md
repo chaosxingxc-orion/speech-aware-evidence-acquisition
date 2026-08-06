@@ -108,11 +108,14 @@ commitment, not by deferral:
 
 **Two disclosed, bounded approximations in the GPU sampler (T7 fix round, not new deviations requiring
 disposition — documented for completeness):** (1) `gpu_seconds` undercounts by at most one polling
-interval (default 1.0s) since the final partial span before `stop()` is never recorded — negligible
-against a first-slice budget measured in GPU-*hours* (≤40h); (2) `gpu_seconds`/`peak_vram_mib` are
-`nvidia-smi`'s DEVICE-wide totals, not this run's process-scoped share; `device_index` (default `0`)
-pins which device is queried but does not add per-process attribution — correct for this study's
-documented single-GPU dev box. See `core/resources.py`'s module docstring for the full rationale.
+interval (default 1.0s) since the final partial span before `stop()` is never recorded — a coarse
+instrumentation figure measured in GPU-*hours*, not a precise billing meter (no numeric GPU-hours
+ceiling is enforced since the 2026-08-06 owner amendment retired the first-slice caps,
+`SAEA-OWNER-AMENDMENT-2026-08-06-BUDGET-CAPS`; the undercount's negligibility no longer rests on any
+specific hour bound); (2) `gpu_seconds`/`peak_vram_mib` are `nvidia-smi`'s DEVICE-wide totals, not
+this run's process-scoped share; `device_index` (default `0`) pins which device is queried but does
+not add per-process attribution — correct for this study's documented single-GPU dev box. See
+`core/resources.py`'s module docstring for the full rationale.
 
 **Manifest schema decision:** `RUN_MANIFEST_SCHEMA` stays `saea-run-manifest-v1` (no version bump).
 `core.bundle.verify_bundle` performs no fixed-key-set check on the `cost` block (only
@@ -145,8 +148,10 @@ narrowed (external-threat-model review, R0 repair round).
 `contracts.FrozenCoreGate.verify_media_identity`), for EXACTLY the samples the run's verified split
 can touch: (a) the live media file's re-measured (size, SHA-256) is checked against D1's own frozen
 per-sample facts (`docs/receipts/artifacts/d1-identity.json`) — a substituted `.mp3` is refused; (b)
-the loader-reported, CSV-derived `audio_seconds` (the figure that meters the contractual ≤20h speech
-budget) must imply a plausible MP3 bitrate against that SAME frozen byte size (4-512 kbps, widened
+the loader-reported, CSV-derived `audio_seconds` (the figure this run's own plan and its
+pre-registered exposure-ledger row are cross-checked against — no numeric ceiling since the
+2026-08-06 owner amendment, `SAEA-OWNER-AMENDMENT-2026-08-06-BUDGET-CAPS`, retired the first-slice
+caps) must imply a plausible MP3 bitrate against that SAME frozen byte size (4-512 kbps, widened
 past the 16-320 kbps empirically observed across all 44 earnings21 and all 125 earnings22 real
 samples). Full-carrier re-hash (~770 MB) on every gate open was measured and rejected as needlessly
 slow relative to what a bounded first-slice run can ever touch (today's dev/discovery splits: 10-44

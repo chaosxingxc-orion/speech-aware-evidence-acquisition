@@ -136,11 +136,16 @@ _PAPER_SCALE_MARKERS = ("paper", "confirmatory", "production")
 
 EXECUTION_PLAN_SCHEMA = "saea-execution-plan-v1"
 STAGE2_SPLIT_ROLES = frozenset({"discovery", "dev"})
-FIRST_SLICE_CAPS = {
-    "planned_model_calls": 3000,
-    "planned_gpu_hours": 40.0,
-    "planned_speech_audio_seconds": 72000,
-}
+# Owner amendment 2026-08-06 (SAEA-OWNER-AMENDMENT-2026-08-06-BUDGET-CAPS,
+# wiki/experiments/speech-aware-evidence-acquisition/
+# 2026-08-06-owner-amendment-retire-first-slice-budget-caps.md) retired the
+# three numeric first-slice caps that used to live here (`FIRST_SLICE_CAPS`:
+# <=3,000 calls / <=40 GPU-hours / <=72,000 speech-audio seconds) and every
+# check that compared a plan or a ledger total against them. Per-plan field
+# validation (finite/positive/integral) and per-row registered>=planned
+# cross-checks are unaffected and remain enforced below -- only the global
+# numeric ceilings are gone. Do not reintroduce a cap here without a new
+# dated owner amendment (the retired one's own §5).
 _EXPOSURE_RUN_COLUMN = "run/experiment id"
 _EXPOSURE_CARRIER_COLUMN = "speech carrier + split"
 # Every column name `_require_exposure_preregistration` looks up on a matched or
@@ -307,11 +312,16 @@ class ExecutionPlan:
     """Structured, contract-bound plan for one model-facing run (v1, umbrella 续93).
 
     Every field is a value the consolidated execution contract already freezes
-    (profiles, Stage-2 split roles, first-slice budget caps, hash disciplines); the
-    schema is therefore not speculative design and may be extended at R0 only via a
-    dated owner decision. A profile label alone never authorizes a run: the gate
-    validates this plan before reading any receipt, so a paper-scale run cannot be
-    smuggled in under an allowed profile name.
+    (profiles, Stage-2 split roles, hash disciplines); the schema is therefore not
+    speculative design and may be extended at R0 only via a dated owner decision. A
+    profile label alone never authorizes a run: the gate validates this plan before
+    reading any receipt, so a paper-scale run cannot be smuggled in under an allowed
+    profile name. The three planned-budget fields below (calls/GPU-hours/audio
+    seconds) are still validated as finite positive numbers and are still
+    cross-checked against their pre-registered exposure-ledger row
+    (``FrozenCoreGate._require_exposure_preregistration``), but carry no numeric
+    ceiling of their own -- the first-slice caps that used to live here were retired
+    by the 2026-08-06 owner amendment (SAEA-OWNER-AMENDMENT-2026-08-06-BUDGET-CAPS).
     """
 
     run_id: str
@@ -382,7 +392,15 @@ class ExecutionPlan:
         ):
             if not isinstance(value, str) or _SHA256.fullmatch(value) is None:
                 raise ExecutionScopeError(f"execution plan {label} must be a 64-hex SHA-256")
-        for field_name, cap in FIRST_SLICE_CAPS.items():
+        # Owner amendment 2026-08-06: field validation (finite, positive, integral
+        # where applicable) stays; the comparison against a global first-slice cap
+        # that used to run here does not -- see the module-level comment above
+        # this class for the retirement record.
+        for field_name in (
+            "planned_model_calls",
+            "planned_gpu_hours",
+            "planned_speech_audio_seconds",
+        ):
             value = getattr(self, field_name)
             integral = field_name in ("planned_model_calls", "planned_speech_audio_seconds")
             if (
@@ -394,11 +412,6 @@ class ExecutionPlan:
                 raise ExecutionScopeError(
                     f"execution plan {field_name} must be a finite positive "
                     f"{'integer' if integral else 'number'}"
-                )
-            if value > cap:
-                raise ExecutionScopeError(
-                    f"execution plan {field_name}={value} exceeds the frozen first-slice "
-                    f"cap {cap}; a larger run is paper-scale regardless of its profile label"
                 )
         return self
 
@@ -1444,11 +1457,13 @@ class FrozenCoreGate:
            recorded the fact once at closure time, but nothing ever compared
            it to disk again before this.
         2. **Audio-seconds plausibility** — the CSV-derived ``audio_seconds``
-           the loader reports (which meters the contractual ≤20h audio budget)
-           must imply a plausible MP3 bitrate against that SAME frozen byte
-           size (:meth:`_assert_plausible_audio_seconds`). D1 does not record
-           durations at all (only per-file byte/hash identity and the set of
-           sample ids each metadata CSV names -- never the numeric field
+           the loader reports (the figure this run's own plan and its
+           pre-registered exposure-ledger row are cross-checked against -- no
+           numeric ceiling since the 2026-08-06 owner amendment retired the
+           first-slice caps) must imply a plausible MP3 bitrate against that
+           SAME frozen byte size (:meth:`_assert_plausible_audio_seconds`). D1
+           does not record durations at all (only per-file byte/hash identity
+           and the set of sample ids each metadata CSV names -- never the numeric field
            values inside it), so an exact re-derivation of "the real duration"
            is not possible from what D1 already closed over without decoding
            audio; this is a deliberately-scoped plausibility bound, not an
@@ -2156,87 +2171,14 @@ class FrozenCoreGate:
                     f"execution plan claims {planned} {column_name} but only {registered} "
                     "were pre-registered; model touch refused"
                 )
-
-        # The first-slice caps are SLICE totals (consolidated contract §6), not
-        # per-run allowances: sum every registered row — consumed or not — and
-        # refuse when the campaign total would exceed the frozen budget. N
-        # individually-bounded runs cannot smuggle a paper-scale campaign.
-        #
-        # R0 repair T4 (I6): registration alone is advisory -- what a row *claims*
-        # it will spend, written before any request happens. Actual attempt usage
-        # persisted under <data_root>/attempts/ (core.attempts.AttemptStore) is what
-        # was genuinely spent. Take the conservative (larger) of the two per column
-        # so a ledger edited to understate registration after real usage already
-        # accrued -- or any other registered/actual drift -- cannot silently reopen
-        # spent slice budget. Imported locally: see the module-level NOTE on why
-        # core.attempts is never imported at this module's top level.
-        from .core.attempts import AttemptError, AttemptStore
-
-        # Minor (fix-wave2, external-threat-model review round 2): a stray,
-        # malformed-name directory directly under <data_root>/attempts/ (never
-        # created by this study's own code, which only ever mints
-        # validate_id()-checked run_id directories, but plausibly left behind
-        # by manual tampering or an unrelated tool) made AttemptStore.
-        # all_actual_usage's internal validate_id() call raise a bare
-        # AttemptError that escaped assert_model_touch_allowed entirely --
-        # an internal implementation detail leaking out of the gate's own
-        # exception contract (every other refusal here is GateClosed).
-        # Wrapped fail-closed: still refuses the touch, but as the gate's own
-        # documented exception type.
-        try:
-            actual_calls, actual_audio, actual_gpu_seconds = AttemptStore(
-                Path(self.data_root) / "attempts"
-            ).all_actual_usage()
-        except AttemptError as error:
-            raise GateClosed(
-                "cannot compute the slice-wide actual usage total from "
-                f"{Path(self.data_root) / 'attempts'}: {error}; model touch refused"
-            ) from error
-        # Minor (fix-wave2): gpu hours previously had no derived counterpart --
-        # calls/audio_seconds folded durable actual usage into the conservative
-        # max below, but gpu hours was taken purely from self-declared ledger
-        # cells even though gpu_seconds IS measured per run
-        # (core.resources.ResourceSampler.summary, fed back into the durable
-        # attempt record by core.driver.run_experiment via
-        # AttemptHandle.record_gpu_seconds). Converted seconds -> hours here,
-        # the same unit the ledger's "gpu hours" column and
-        # planned_gpu_hours/FIRST_SLICE_CAPS["planned_gpu_hours"] already use.
-        actual_by_column = {
-            "calls": actual_calls,
-            "speech audio seconds": actual_audio,
-            "gpu hours": actual_gpu_seconds / 3600.0,
-        }
-        for column_name, cap_field, parse in (
-            ("calls", "planned_model_calls", int),
-            ("speech audio seconds", "planned_speech_audio_seconds", int),
-            ("gpu hours", "planned_gpu_hours", float),
-        ):
-            cap = FIRST_SLICE_CAPS[cap_field]
-            total = 0.0
-            for row in rows:
-                raw = cell(row, column_name)
-                try:
-                    registered = parse(raw)
-                except ValueError as error:
-                    raise GateClosed(
-                        f"exposure ledger column {column_name!r} holds a non-numeric "
-                        f"value {raw!r}; every registered row counts against the slice "
-                        "budget and must parse"
-                    ) from error
-                if not math.isfinite(registered) or registered < 0:
-                    raise GateClosed(
-                        f"exposure ledger column {column_name!r} holds {raw!r}; slice "
-                        "accounting requires finite non-negative registrations — a NaN "
-                        "or negative row would silently re-open spent budget"
-                    )
-                total += registered
-            total = max(total, actual_by_column.get(column_name, 0.0))
-            if total > cap:
-                raise GateClosed(
-                    f"registered/actual {column_name} across the slice total {total}, "
-                    f"exceeding the frozen first-slice cap {cap}; a new run requires a "
-                    "new owner slice decision, not another row"
-                )
+        # Owner amendment 2026-08-06 (SAEA-OWNER-AMENDMENT-2026-08-06-BUDGET-CAPS):
+        # the slice-wide summation that used to run here -- summing every
+        # registered row plus AttemptStore.all_actual_usage()'s durable actuals and
+        # refusing a campaign total over the frozen first-slice caps -- is retired.
+        # What remains, checked above, is per-row: the matched row's registered
+        # calls/speech-audio-seconds/gpu-hours must each be >= this plan's own
+        # declared values, and the row itself must be unconsumed. See
+        # docs/engineering.md and the amendment record for the full rationale.
 
     def assert_model_touch_allowed(
         self,

@@ -1653,15 +1653,21 @@ def test_verify_bundle_refuses_plan_split_role_mutated_to_confirmatory(
         verify_bundle(manifest_path)
 
 
-def test_verify_bundle_refuses_planned_model_calls_inflated_past_the_first_slice_cap(
+def test_verify_bundle_accepts_planned_model_calls_far_beyond_the_former_first_slice_cap(
     synthetic_world, bundled_repo, tmp_path
 ):
+    """Owner amendment 2026-08-06 (SAEA-OWNER-AMENDMENT-2026-08-06-BUDGET-CAPS)
+    retired the first-slice numeric caps ``ExecutionPlan.validate()`` used to
+    enforce transitively here; a manifest whose plan block declares a huge
+    ``planned_model_calls`` (still a finite positive integer -- field-shape
+    validation stays) no longer fails verify_bundle on that basis alone."""
+
     manifest_path, composed, plan, lock = _run_completed(synthetic_world, bundled_repo, tmp_path)
     manifest = _read_manifest(manifest_path)
     manifest["plan"]["planned_model_calls"] = 999999
     write_json_artifact(manifest_path, manifest)
-    with pytest.raises(BundleError, match="exceeds the frozen first-slice cap"):
-        verify_bundle(manifest_path)
+    bundle = verify_bundle(manifest_path)
+    assert isinstance(bundle, VerifiedBundle)
 
 
 def test_verify_bundle_refuses_cost_calls_used_zeroed_against_the_verified_outputs_count(
