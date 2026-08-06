@@ -528,6 +528,58 @@ def test_verify_bundle_refuses_a_missing_artifact_file(synthetic_world, bundled_
 
 
 # ---------------------------------------------------------------------------
+# Minor hardening (round-2 external-threat-model review): a manifest artifact
+# path must resolve under the manifest's OWN run directory -- before this,
+# only manifest_path's own directory was ever checked against anything (a
+# repo EXCLUSION, not artifact-path confinement), so a manifest could bind
+# ANOTHER run's outputs (or an arbitrary filesystem file) as its own, as long
+# as the attacker also supplied that file's correct hash.
+# ---------------------------------------------------------------------------
+
+
+def test_verify_bundle_refuses_an_outputs_path_outside_its_own_run_directory(
+    synthetic_world, bundled_repo, tmp_path
+):
+    """Two independent, legitimately-produced runs; run A's manifest is then
+    hand-edited (hash recomputed to genuinely match, exactly the attacker
+    model this module's own docstring names) to point its own 'outputs' at
+    run B's outputs.jsonl instead. Must be refused for path confinement, not
+    silently accepted just because the hash happens to be internally
+    consistent."""
+
+    manifest_path_a, _, _, _ = _run_completed(
+        synthetic_world, bundled_repo, tmp_path, run_id="SAEA-E-000-a", attempt_id="attempt-a",
+        run_dir_name="run-a",
+    )
+    manifest_path_b, _, _, _ = _run_completed(
+        synthetic_world, bundled_repo, tmp_path, run_id="SAEA-E-000-b", attempt_id="attempt-b",
+        run_dir_name="run-b",
+    )
+    manifest_b = _read_manifest(manifest_path_b)
+    other_run_outputs_path = Path(manifest_b["outputs"]["path"])
+    other_run_outputs_hash = manifest_b["outputs"]["sha256"]
+
+    manifest_a = _read_manifest(manifest_path_a)
+    manifest_a["outputs"]["path"] = str(other_run_outputs_path)
+    manifest_a["outputs"]["sha256"] = other_run_outputs_hash
+    write_json_artifact(manifest_path_a, manifest_a)
+
+    with pytest.raises(BundleError, match="does not resolve under this bundle's own run directory"):
+        verify_bundle(manifest_path_a)
+
+
+def test_verify_bundle_accepts_a_legitimate_manifest_whose_artifacts_stay_in_its_own_run_dir(
+    synthetic_world, bundled_repo, tmp_path
+):
+    """Positive control for the confinement check above: an untouched,
+    legitimately-produced manifest (every artifact where build_manifest
+    always places it -- inside its own run directory) must still verify."""
+
+    manifest_path, *_ = _run_completed(synthetic_world, bundled_repo, tmp_path)
+    verify_bundle(manifest_path)
+
+
+# ---------------------------------------------------------------------------
 # Required probe 5: finalizing an ABORTED attempt as COMPLETED.
 # ---------------------------------------------------------------------------
 

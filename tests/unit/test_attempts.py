@@ -199,12 +199,90 @@ def test_all_actual_usage_sums_across_multiple_runs(tmp_path):
     store.open_attempt(
         "run-2", "attempt-1", carrier_lock_key="c", reserved_calls=5, reserved_audio_seconds=500.0
     ).record_usage(calls=4, audio_seconds=40.0)
-    assert store.all_actual_usage() == (5, 50.0)
+    assert store.all_actual_usage() == (5, 50.0, 0.0)
 
 
 def test_all_actual_usage_returns_zero_when_store_root_missing(tmp_path):
     store = AttemptStore(tmp_path / "does-not-exist")
-    assert store.all_actual_usage() == (0, 0.0)
+    assert store.all_actual_usage() == (0, 0.0, 0.0)
+
+
+# ---------------------------------------------------------------------------
+# fix-wave2 Minor: gpu hours had no derived counterpart -- record_gpu_seconds
+# is the write path core.driver.run_experiment feeds a whole-run measured
+# total back through; all_actual_usage's 3rd element is what the gate's
+# slice-cap conservative max reads it back through.
+# ---------------------------------------------------------------------------
+
+
+def test_record_gpu_seconds_accumulates_and_persists(tmp_path):
+    store = AttemptStore(tmp_path / "attempts")
+    handle = store.open_attempt(
+        "run-1", "attempt-1", carrier_lock_key="c", reserved_calls=5, reserved_audio_seconds=500.0,
+    )
+    assert handle.record_gpu_seconds(12.5) == 12.5
+    assert handle.record_gpu_seconds(2.5) == 15.0
+    assert handle.actual_gpu_seconds() == 15.0
+
+
+def test_record_gpu_seconds_allows_zero(tmp_path):
+    """Unlike record_usage's calls/audio_seconds (strictly positive per
+    request), a genuinely idle GPU for an entire run legitimately measures
+    0.0 gpu_seconds -- that must not be refused as a non-positive value."""
+
+    store = AttemptStore(tmp_path / "attempts")
+    handle = store.open_attempt(
+        "run-1", "attempt-1", carrier_lock_key="c", reserved_calls=1, reserved_audio_seconds=1.0,
+    )
+    assert handle.record_gpu_seconds(0.0) == 0.0
+
+
+@pytest.mark.parametrize("bad", [-1.0, float("nan"), float("inf")])
+def test_record_gpu_seconds_rejects_negative_or_non_finite(tmp_path, bad):
+    store = AttemptStore(tmp_path / "attempts")
+    handle = store.open_attempt(
+        "run-1", "attempt-1", carrier_lock_key="c", reserved_calls=1, reserved_audio_seconds=1.0,
+    )
+    with pytest.raises(AttemptError):
+        handle.record_gpu_seconds(bad)
+
+
+def test_record_gpu_seconds_refuses_when_not_opened(tmp_path):
+    store = AttemptStore(tmp_path / "attempts")
+    handle = store.open_attempt(
+        "run-1", "attempt-1", carrier_lock_key="c", reserved_calls=1, reserved_audio_seconds=1.0,
+    )
+    handle.mark_finalized()
+    with pytest.raises(AttemptError, match="not OPENED"):
+        handle.record_gpu_seconds(1.0)
+
+
+def test_actual_gpu_seconds_defaults_to_zero_for_an_attempt_file_predating_the_field(tmp_path):
+    """An attempt file written before gpu_seconds existed (no key in
+    'actual') must read back as 0.0, never raise."""
+
+    store = AttemptStore(tmp_path / "attempts")
+    handle = store.open_attempt(
+        "run-1", "attempt-1", carrier_lock_key="c", reserved_calls=1, reserved_audio_seconds=1.0,
+    )
+    document = json.loads(handle.path.read_text(encoding="utf-8"))
+    assert "gpu_seconds" not in document["actual"]
+    assert handle.actual_gpu_seconds() == 0.0
+
+
+def test_all_actual_usage_includes_recorded_gpu_seconds(tmp_path):
+    store = AttemptStore(tmp_path / "attempts")
+    h1 = store.open_attempt(
+        "run-1", "attempt-1", carrier_lock_key="c", reserved_calls=5, reserved_audio_seconds=500.0
+    )
+    h1.record_usage(calls=1, audio_seconds=10.0)
+    h1.record_gpu_seconds(3.0)
+    h2 = store.open_attempt(
+        "run-2", "attempt-1", carrier_lock_key="c", reserved_calls=5, reserved_audio_seconds=500.0
+    )
+    h2.record_usage(calls=4, audio_seconds=40.0)
+    h2.record_gpu_seconds(7.5)
+    assert store.all_actual_usage() == (5, 50.0, 10.5)
 
 
 # ---------------------------------------------------------------------------

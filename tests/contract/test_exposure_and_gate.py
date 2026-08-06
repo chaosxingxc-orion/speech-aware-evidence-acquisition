@@ -155,6 +155,120 @@ def test_gate_refuses_an_empty_pycache_directory_too(world):
         world.gate().assert_model_touch_allowed(world.plan())
 
 
+# ---------------------------------------------------------------------------
+# IMPORTANT B follow-up (round-2 external-threat-model review): the on-disk
+# __pycache__ walk above only sees a cache co-located with the frozen
+# sources. PYTHONPYCACHEPREFIX/sys.pycache_prefix relocates every .pyc
+# (forged or stale) into a mirrored tree that walk never visits.
+# ---------------------------------------------------------------------------
+
+
+def test_gate_refuses_when_pythonpycacheprefix_env_var_is_set(world, monkeypatch, tmp_path):
+    relocated = tmp_path / "relocated-pycache"
+    monkeypatch.setenv("PYTHONPYCACHEPREFIX", str(relocated))
+    with pytest.raises(GateClosed, match="relocated bytecode cache"):
+        world.gate().assert_model_touch_allowed(world.plan())
+
+
+def test_gate_refuses_when_sys_pycache_prefix_is_set(world, monkeypatch, tmp_path):
+    relocated = tmp_path / "relocated-pycache"
+    monkeypatch.setattr("sys.pycache_prefix", str(relocated))
+    with pytest.raises(GateClosed, match="relocated bytecode cache"):
+        world.gate().assert_model_touch_allowed(world.plan())
+
+
+def test_gate_refuses_with_a_stale_forged_pyc_in_a_relocated_prefix_tree(world, monkeypatch, tmp_path):
+    """Reproduces the demonstrated defect end to end: a forged UNCHECKED_HASH
+    .pyc sitting in a PYTHONPYCACHEPREFIX-relocated tree, invisible to the
+    on-disk __pycache__ walk (it isn't under scoring_dir at all), while
+    wer.py's own source hash still matches the D3 freeze. Before this fix
+    the gate opened; now it must refuse solely because the prefix is set --
+    it never needs to find or inspect the forged file itself."""
+
+    relocated = tmp_path / "relocated-pycache"
+    relocated.mkdir(parents=True, exist_ok=True)
+    (relocated / "wer.cpython-312.pyc").write_bytes(b"FORGED-SCORE: UNCHECKED_HASH")
+    monkeypatch.setenv("PYTHONPYCACHEPREFIX", str(relocated))
+    with pytest.raises(GateClosed, match="relocated bytecode cache"):
+        world.gate().assert_model_touch_allowed(world.plan())
+
+
+def test_gate_passes_with_no_relocated_prefix_configured(world, monkeypatch):
+    """Clean-environment control: with neither PYTHONPYCACHEPREFIX nor
+    sys.pycache_prefix set, the new check is a no-op and the gate still
+    opens exactly as before."""
+
+    monkeypatch.delenv("PYTHONPYCACHEPREFIX", raising=False)
+    monkeypatch.setattr("sys.pycache_prefix", None)
+    world.gate().assert_model_touch_allowed(world.plan())
+
+
+def test_gate_refuses_an_already_imported_scoring_module_with_a_cache_outside_its_tree(world):
+    """A module already present in sys.modules, loaded from THIS gate's own
+    scoring_dir, whose __cached__ attribute points outside it (e.g. left
+    over from an earlier PYTHONPYCACHEPREFIX that has since been unset in
+    this same process) must still be refused -- the env-var check alone only
+    catches an ACTIVE relocation, not a stale recorded one."""
+
+    import types
+
+    module_name = "speech_aware_evidence_acquisition.scoring._fixture_probe"
+    module_file = world.scoring_dir / "wer.py"
+    fake_module = types.ModuleType(module_name)
+    fake_module.__file__ = str(module_file)
+    fake_module.__cached__ = str(world.source_root.parent / "elsewhere" / "wer.cpython-312.pyc")
+    import sys as _sys
+
+    _sys.modules[module_name] = fake_module
+    try:
+        with pytest.raises(GateClosed, match="bytecode cache recorded outside"):
+            world.gate().assert_model_touch_allowed(world.plan())
+    finally:
+        del _sys.modules[module_name]
+
+
+def test_gate_refuses_an_already_imported_scoring_module_loaded_from_non_source(world):
+    """A module already present in sys.modules, loaded from THIS gate's own
+    scoring_dir, but whose __file__ does not end in .py (a sourceless
+    bytecode-only import -- the shape a hash-based-forged .pyc with no
+    matching .py would take) must be refused."""
+
+    import types
+
+    module_name = "speech_aware_evidence_acquisition.scoring._fixture_probe_sourceless"
+    fake_module = types.ModuleType(module_name)
+    fake_module.__file__ = str(world.scoring_dir / "wer.cpython-312.pyc")
+    import sys as _sys
+
+    _sys.modules[module_name] = fake_module
+    try:
+        with pytest.raises(GateClosed, match="non-source file"):
+            world.gate().assert_model_touch_allowed(world.plan())
+    finally:
+        del _sys.modules[module_name]
+
+
+def test_gate_ignores_a_scoring_like_module_loaded_from_a_different_tree(world):
+    """A module named under the scoring prefix but loaded from an UNRELATED
+    directory (e.g. a different GateFixture's tmp tree from an earlier test,
+    or the real repo's own scoring package during the same test session)
+    must never be flagged by this gate's own scoring_dir check -- only
+    modules genuinely loaded from THIS gate's checked tree are in scope."""
+
+    import types
+
+    module_name = "speech_aware_evidence_acquisition.scoring._fixture_probe_unrelated"
+    fake_module = types.ModuleType(module_name)
+    fake_module.__file__ = str(world.source_root.parent / "totally-unrelated" / "wer.py")
+    import sys as _sys
+
+    _sys.modules[module_name] = fake_module
+    try:
+        world.gate().assert_model_touch_allowed(world.plan())
+    finally:
+        del _sys.modules[module_name]
+
+
 def test_gate_refuses_when_receipts_are_missing(tmp_path, world):
     gate = FrozenCoreGate(
         tmp_path / "absent-e0.json",
@@ -643,6 +757,134 @@ def test_consumed_row_in_a_later_table_for_the_same_run_id_is_refused(world):
     # rows share a run id -- still refused, which is exactly what the probe
     # requires.
     with pytest.raises(GateClosed, match="more than once"):
+        world.gate().assert_model_touch_allowed(world.plan())
+
+
+# ---------------------------------------------------------------------------
+# IMPORTANT C (round-2 external-threat-model review): the parser must be
+# markdown-context-aware -- a complete contract table inside an HTML comment
+# or a fenced code block must never be a binding registration.
+# ---------------------------------------------------------------------------
+
+
+def test_table_inside_an_html_comment_is_not_a_registration(world):
+    """A run pre-registered ONLY inside an HTML comment must still be
+    refused as unregistered -- a human reading the rendered ledger sees
+    nothing of it, so it can never satisfy the file's owner-visible
+    pre-registration purpose."""
+
+    hidden = (
+        "\n<!--\n" + _table(_row(world, "SAEA-E-666-hidden")) + "-->\n"
+    )
+    world.exposure_ledger.write_text(
+        world.exposure_ledger.read_text(encoding="utf-8") + hidden, encoding="utf-8"
+    )
+    with pytest.raises(GateClosed, match="pre-registered exposure row"):
+        world.gate().assert_model_touch_allowed(world.plan(run_id="SAEA-E-666-hidden"))
+
+
+def test_table_inside_an_html_comment_does_not_count_toward_the_slice_cap(world):
+    """The demonstrated I2-adjacent defect: a complete contract table hidden
+    inside a comment must never be summed into the slice-wide budget total
+    either."""
+
+    hidden = (
+        "\n<!--\n"
+        + _table(
+            _row(
+                world,
+                "SAEA-E-667-hidden-overflow",
+                calls=2995,
+                audio=71000,
+                gpu=39.0,
+                split_hash="e" * 64,
+            )
+        )
+        + "-->\n"
+    )
+    world.exposure_ledger.write_text(
+        world.exposure_ledger.read_text(encoding="utf-8") + hidden, encoding="utf-8"
+    )
+    world.gate().assert_model_touch_allowed(world.plan())
+
+
+def test_table_inside_a_fenced_code_block_is_not_binding(world):
+    """A contract-shaped table inside a fenced code block -- the natural way
+    to document the row format -- must never be a registration nor count
+    toward the slice cap (an illustrative example must not silently exhaust
+    the campaign budget)."""
+
+    fenced = (
+        "\nHere is the row format, illustrated:\n\n```\n"
+        + _table(
+            _row(
+                world,
+                "SAEA-E-668-fenced-example",
+                calls=2995,
+                audio=71000,
+                gpu=39.0,
+                split_hash="f" * 64,
+            )
+        )
+        + "```\n"
+    )
+    world.exposure_ledger.write_text(
+        world.exposure_ledger.read_text(encoding="utf-8") + fenced, encoding="utf-8"
+    )
+    # Not a registration for that run id...
+    with pytest.raises(GateClosed, match="pre-registered exposure row"):
+        world.gate().assert_model_touch_allowed(world.plan(run_id="SAEA-E-668-fenced-example"))
+    # ...and not counted toward the slice cap for the REAL registered run either.
+    world.gate().assert_model_touch_allowed(world.plan())
+
+
+def test_a_real_second_table_after_a_fenced_example_still_counts(world):
+    """The I2 fix must not regress: a genuine second table AFTER a fenced
+    illustrative example must still be parsed and its rows still count."""
+
+    combined = (
+        "\n```\n"
+        + _table(_row(world, "SAEA-E-669-example-only", calls=1, audio=1, gpu=0.01))
+        + "```\n\n"
+        + _table(
+            _row(
+                world,
+                "SAEA-E-670-real-second-table",
+                calls=2995,
+                audio=71000,
+                gpu=39.0,
+                split_hash="1" * 64,
+            )
+        )
+    )
+    world.exposure_ledger.write_text(
+        world.exposure_ledger.read_text(encoding="utf-8") + combined, encoding="utf-8"
+    )
+    with pytest.raises(GateClosed, match="first-slice cap"):
+        world.gate().assert_model_touch_allowed(world.plan())
+
+
+def test_prose_line_between_rows_still_counts_alongside_comment_and_fence_awareness(world):
+    """The existing I2 prose-tolerance behavior must survive alongside the
+    new comment/fence awareness: a stray prose line between two data rows of
+    the SAME table must still never drop the row below it."""
+
+    ledger = (
+        _LEDGER_HEADER
+        + _LEDGER_SEP
+        + _row(world, world.RUN_ID)
+        + "\nSome human-readable note inserted between rows.\n\n"
+        + _row(
+            world,
+            "SAEA-E-671-afterprose-2",
+            calls=2995,
+            audio=71000,
+            gpu=39.0,
+            split_hash="2" * 64,
+        )
+    )
+    world.exposure_ledger.write_text(ledger, encoding="utf-8")
+    with pytest.raises(GateClosed, match="first-slice cap"):
         world.gate().assert_model_touch_allowed(world.plan())
 
 

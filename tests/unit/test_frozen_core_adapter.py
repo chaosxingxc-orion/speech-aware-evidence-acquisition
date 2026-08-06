@@ -502,6 +502,57 @@ def test_media_relpath_outside_carrier_root_refused_even_without_traversal_synta
         )
 
 
+# ---------------------------------------------------------------------------
+# IMPORTANT A (round-2 external-threat-model review): confinement under the
+# carrier root is necessary but was never sufficient. The gate re-hashes
+# ONLY the media_relpath the BINDING names (binding.media_relpaths); before
+# this fix, the payload's own media_relpath was checked only for
+# confinement, never compared to that binding value -- so a payload could
+# name any OTHER file confined under the same carrier root (a "decoy") and
+# it sailed straight through, while the gate's D1 re-hash (and the metered
+# audio_seconds) stayed keyed to the BOUND sample's real facts, not the
+# decoy actually sent.
+# ---------------------------------------------------------------------------
+
+
+def test_decoy_media_relpath_confined_under_the_same_carrier_root_is_refused(tmp_path):
+    """The exact demonstrated defect: a decoy file that is fully confinement-
+    legal (lives under the same carrier_root as the bound sample's real
+    media) but is NOT the file the verified binding names for this
+    sample_id must still be refused."""
+
+    binding = _binding_with_media(tmp_path)
+    decoy = binding.data_root / "datasets" / "earnings21-22" / "earnings22" / "media" / "decoy.mp3"
+    decoy.write_bytes(b"decoy-mp3-bytes-a-completely-different-file")
+    adapter, _ = _adapter(tmp_path, binding=binding)
+    with pytest.raises(FrozenCoreError, match="media_relpath"):
+        adapter.request(
+            _payload(media_relpath="datasets/earnings21-22/earnings22/media/decoy.mp3")
+        )
+
+
+def test_the_legitimate_bound_media_relpath_is_still_accepted(tmp_path):
+    """Positive control: the EXACT media_relpath the binding names for this
+    sample_id is accepted (not merely "some confined path")."""
+
+    binding = _binding_with_media(tmp_path)
+    adapter, _ = _adapter(tmp_path, binding=binding, plan=_plan(planned_model_calls=3))
+    response = adapter.request(_payload())
+    assert response.text == "hello world"
+
+
+def test_multiple_requests_for_one_sample_with_the_correct_media_relpath_still_work(tmp_path):
+    """A policy that sends several requests for the same sample (e.g. a
+    retry) must keep working once the exact-match binding is enforced --
+    the fix must not accidentally make the correct path a one-shot value."""
+
+    binding = _binding_with_media(tmp_path)
+    adapter, _ = _adapter(tmp_path, binding=binding, plan=_plan(planned_model_calls=3))
+    adapter.request(_payload(request_id="req-1"))
+    adapter.request(_payload(request_id="req-2"))
+    assert adapter.cost_summary()["calls_used"] == 2
+
+
 @pytest.mark.skipif(os.name == "nt", reason="POSIX symlink required")
 def test_media_relpath_symlink_escape_from_carrier_root_refused(tmp_path):
     """Campaign probe: symlink inside the data root pointing outside must be

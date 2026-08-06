@@ -726,6 +726,73 @@ def test_run_experiment_cost_includes_injected_sampler_readings(synthetic_world,
     assert cost["failed_attempt_audio_seconds"] == 0.0
 
 
+def test_run_experiment_feeds_measured_gpu_seconds_back_into_the_durable_attempt_record(
+    synthetic_world, tmp_path
+):
+    """fix-wave2 Minor: gpu hours had no derived counterpart -- calls/audio
+    seconds were fed into the durable per-attempt record (core.attempts) on
+    every request, but gpu_seconds, though measured for the whole run
+    (RunResult.cost["gpu_seconds"]), was never written back to that durable
+    file, so the gate's slice-cap conservative max
+    (contracts.FrozenCoreGate._require_exposure_preregistration,
+    AttemptStore.all_actual_usage) could never see it. Proves the durable
+    file itself, not merely the in-memory RunResult.cost, now carries it."""
+
+    lock, repo_root = _frozen_world(synthetic_world, tmp_path)
+    _, split_hash, _ = load_split(repo_root, "discovery", lock, synthetic_world.data_root)
+    composed = _composed()
+    plan = _plan(
+        split_hash,
+        protocol_hash=protocol_hash(composed.config_hash, composed.values["arm"], split_hash),
+    )
+    sampler = _FakeSampler(gpu_seconds=9.75, peak_vram_mib=2048.0)
+    run_experiment(
+        composed=composed,
+        plan=plan,
+        gate=_OpenGate(),
+        lock=lock,
+        root=synthetic_world.data_root,
+        run_dir=tmp_path / "run-cost-sampler-durable",
+        transport=_transport,
+        repo_root=repo_root,
+        resource_sampler=sampler,
+    )
+    store = AttemptStore(synthetic_world.data_root / "attempts")
+    handle = store.handle(plan.run_id, plan.attempt_id)
+    assert handle.actual_gpu_seconds() == 9.75
+    assert store.all_actual_usage()[2] == 9.75
+
+
+def test_run_experiment_without_a_resource_sampler_leaves_gpu_seconds_unrecorded(
+    synthetic_world, tmp_path
+):
+    """The feed-back is best-effort and conditional on a REAL measurement:
+    when no sampler is supplied (NOT_AVAILABLE), the durable attempt record
+    must stay at the field's own zero default, never raise, and never record
+    the NOT_AVAILABLE sentinel string as if it were a number."""
+
+    lock, repo_root = _frozen_world(synthetic_world, tmp_path)
+    _, split_hash, _ = load_split(repo_root, "discovery", lock, synthetic_world.data_root)
+    composed = _composed()
+    plan = _plan(
+        split_hash,
+        protocol_hash=protocol_hash(composed.config_hash, composed.values["arm"], split_hash),
+    )
+    run_experiment(
+        composed=composed,
+        plan=plan,
+        gate=_OpenGate(),
+        lock=lock,
+        root=synthetic_world.data_root,
+        run_dir=tmp_path / "run-cost-no-sampler-durable",
+        transport=_transport,
+        repo_root=repo_root,
+    )
+    store = AttemptStore(synthetic_world.data_root / "attempts")
+    handle = store.handle(plan.run_id, plan.attempt_id)
+    assert handle.actual_gpu_seconds() == 0.0
+
+
 def test_run_experiment_without_a_resource_sampler_reports_gpu_not_available(
     synthetic_world, tmp_path
 ):

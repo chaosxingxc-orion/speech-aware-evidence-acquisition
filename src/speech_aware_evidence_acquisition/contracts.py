@@ -15,7 +15,9 @@ from __future__ import annotations
 import hashlib
 import json
 import math
+import os
 import re
+import sys
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Mapping
@@ -75,6 +77,12 @@ E0_RECEIPT_SCHEMA = "saea-e0-closure-receipt-v1"
 RUNTIME_RECEIPT_SCHEMA = "saea-runtime-receipt-v2"
 SCORING_PACKAGE_RELPATH = "src/speech_aware_evidence_acquisition/scoring"
 _REPORTED_BUILD = re.compile(r"\(([0-9a-f]{7,40})\)")
+# IMPORTANT B follow-up (round-2 external-threat-model review): the module
+# prefix every real scoring submodule imports under, e.g.
+# ``speech_aware_evidence_acquisition.scoring.wer`` -- used to scan
+# ``sys.modules`` for scoring code THIS process has already loaded (see
+# ``FrozenCoreGate._assert_no_relocated_bytecode_cache``).
+_SCORING_MODULE_PREFIX = "speech_aware_evidence_acquisition.scoring"
 
 ALLOWED_EXECUTION_PROFILES = (
     "model-free-check",
@@ -478,6 +486,22 @@ def _is_separator_row(cells: list[str]) -> bool:
     return bool(cells) and all(not cell.strip("-: ") for cell in cells)
 
 
+# IMPORTANT C (round-2 external-threat-model review): the ledger parser must
+# know it is reading MARKDOWN, not merely "any line that looks like a table
+# row". Two GFM constructs make content invisible to a human reading the
+# RENDERED ledger while still being plain text to a naive line-by-line
+# scanner: an HTML comment (``<!-- ... -->``, possibly spanning many lines)
+# and a fenced code block (opened/closed by a line of 3+ backticks or
+# tildes, the natural way to document the row format as an illustrative
+# example). Demonstrated: a complete contract table inside an HTML comment
+# parsed as a real, binding registration that a human reading the rendered
+# ledger sees NOTHING of; a contract table inside a fenced example block
+# silently exhausted the campaign slice cap.
+_HTML_COMMENT_OPEN = "<!--"
+_HTML_COMMENT_CLOSE = "-->"
+_FENCE = re.compile(r"^(`{3,}|~{3,})")
+
+
 def _parse_ledger_tables(text: str) -> list[dict[str, str]]:
     """Parse EVERY markdown table in ``text``, not just the first (I2).
 
@@ -498,16 +522,72 @@ def _parse_ledger_tables(text: str) -> list[dict[str, str]]:
     that is NOT recognized either belongs to a genuinely unrelated table
     (silently ignored, e.g. a legend/description table) or, if it shares any
     contract column name or the current contract header's width, is refused
-    fail-closed rather than risking silently dropped budget rows (I2)."""
+    fail-closed rather than risking silently dropped budget rows (I2).
+
+    IMPORTANT C (round-2 external-threat-model review): before any row/header
+    recognition, every line is first classified as being inside an HTML
+    comment or a fenced code block; a line in either state is skipped
+    entirely -- never treated as a row, a separator, or a header, and never
+    allowed to close the CURRENTLY open contract table (matching the existing
+    "a stray prose line never drops rows below it" discipline: content the
+    rendered ledger hides is exactly as inert as ordinary prose to the table
+    state machine). Both a whole table hidden inside a comment and one framed
+    by a documentation fence are therefore simply invisible -- IGNORED, never
+    a registration and never a fail-closed refusal on their own: a comment is
+    a legitimate way to keep old/draft content out of the rendered view
+    without deleting it, and content a human reader cannot see can never
+    satisfy this file's whole purpose as the OWNER-VISIBLE pre-registration
+    record either way, so there is nothing gained by refusing outright over
+    silently not treating it as binding. Comment/fence detection is
+    line-level, not character-level: a line containing ``<!--`` is never
+    itself a genuine table row (a real row is exactly ``| ... |``), so
+    consuming the whole line is not a loss."""
 
     lines = text.splitlines()
     n = len(lines)
     current_header: list[str] | None = None
     rows: list[dict[str, str]] = []
     saw_contract_header = False
+    in_comment = False
+    in_fence = False
+    fence_char = ""
+    fence_len = 0
     i = 0
     while i < n:
-        is_row, cells = _split_table_row(lines[i])
+        line = lines[i]
+
+        if in_comment:
+            if _HTML_COMMENT_CLOSE in line:
+                in_comment = False
+            i += 1
+            continue
+        open_idx = line.find(_HTML_COMMENT_OPEN)
+        if open_idx != -1:
+            close_idx = line.find(_HTML_COMMENT_CLOSE, open_idx + len(_HTML_COMMENT_OPEN))
+            in_comment = close_idx == -1  # opened but not also closed on this same line
+            i += 1
+            continue
+
+        stripped_for_fence = line.strip()
+        if in_fence:
+            fence_match = _FENCE.match(stripped_for_fence)
+            if (
+                fence_match
+                and fence_match.group(1)[0] == fence_char
+                and len(fence_match.group(1)) >= fence_len
+            ):
+                in_fence = False
+            i += 1
+            continue
+        fence_match = _FENCE.match(stripped_for_fence)
+        if fence_match:
+            in_fence = True
+            fence_char = fence_match.group(1)[0]
+            fence_len = len(fence_match.group(1))
+            i += 1
+            continue
+
+        is_row, cells = _split_table_row(line)
         if not is_row:
             i += 1
             continue
@@ -723,6 +803,7 @@ class FrozenCoreGate:
         scoring_dir = Path(self.source_root) / SCORING_PACKAGE_RELPATH
         if not scoring_dir.is_dir():
             raise GateClosed(f"scoring package directory missing: {scoring_dir}")
+        self._assert_no_relocated_bytecode_cache(scoring_dir)
         actual_sources: set[str] = set()
         for entry in sorted(scoring_dir.rglob("*")):
             rel_parts = entry.relative_to(scoring_dir).parts
@@ -769,6 +850,116 @@ class FrozenCoreGate:
                 f"scoring package contains source files the D3 freeze does not name: "
                 f"{unlisted}; model touch refused"
             )
+
+    def _assert_no_relocated_bytecode_cache(self, scoring_dir: Path) -> None:
+        """IMPORTANT B follow-up (round-2 external-threat-model review).
+
+        The on-disk ``__pycache__`` walk in :meth:`_validate_scoring_freeze`
+        only ever sees a bytecode cache co-located with the frozen scoring
+        sources. ``sys.pycache_prefix`` -- settable via the
+        ``PYTHONPYCACHEPREFIX`` environment variable -- relocates EVERY
+        ``.pyc`` Python would read or write (forged or merely stale) into a
+        mirrored tree elsewhere on disk that walk never visits, so on its own
+        the ``__pycache__`` refusal is not a guarantee against bytecode the
+        interpreter would still execute. Demonstrated: a forged
+        ``UNCHECKED_HASH`` ``.pyc`` placed in the relocated prefix tree
+        executed while ``wer.py``'s source hash still matched the D3 freeze
+        and ``_validate_scoring_freeze`` PASSED. Separately,
+        ``PYTHONDONTWRITEBYTECODE=1`` (the previously prescribed mitigation)
+        stops Python from WRITING a new ``.pyc`` -- it does nothing to stop an
+        ALREADY-planted one from being READ and executed; writing is not
+        reading, and the old runbook wording conflated the two.
+
+        Two checks, stated exactly for what each closes:
+
+        1. Refuse outright if EITHER ``sys.pycache_prefix`` or the
+           ``PYTHONPYCACHEPREFIX`` environment variable is set for this
+           process. Whatever the on-disk walk found, an active relocated-
+           cache configuration means that walk did not see everywhere this
+           interpreter would actually look for (or write) a ``.pyc`` -- so
+           the freeze cannot vouch for what would run. This is the primary,
+           load-bearing check: with no relocation configured, Python only
+           ever reads/writes a ``.pyc`` directly beside its ``.py`` source,
+           exactly the location the walk above already refuses any entry
+           under.
+        2. For every ``speech_aware_evidence_acquisition.scoring[.*]``
+           submodule THIS process has already imported FROM this exact
+           ``scoring_dir`` (``sys.modules``, filtered by ``__file__``
+           resolving inside ``scoring_dir`` -- a module imported from a
+           DIFFERENT ``scoring_dir``, e.g. a synthetic test fixture's own
+           tree, is simply not this gate's concern and is skipped): refuse
+           if its ``__file__`` does not end in ``.py`` (a sourceless/
+           bytecode-only import -- the exact shape a hash-based-forged
+           ``.pyc`` with no matching ``.py`` on disk would take), or if its
+           ``__cached__`` resolves OUTSIDE ``scoring_dir`` (a relocated
+           cache still recorded on the module even if the prefix that
+           produced it has since been unset in THIS process).
+
+        STATED GUARANTEE -- precise, not overstated: with this check
+        passing, (a) THIS process has no active relocated-cache
+        configuration that could make Python read or write a ``.pyc``
+        anywhere other than directly beside its ``.py`` source (where the
+        walk above already refuses any entry), and (b) every scoring
+        submodule THIS process has already imported from ``scoring_dir`` was
+        loaded from a ``.py`` file inside it, with no bytecode cache
+        recorded outside it. It does NOT -- and cannot -- prove that no
+        OTHER process (its own ``PYTHONPYCACHEPREFIX``, running concurrently
+        or having run earlier or later) holds or will hold a forged cache it
+        can execute independently of this gate check, nor does it retroactively
+        validate an import that happens in THIS process AFTER this check
+        runs. The freeze covers Python source bytes read by a clean import
+        of this checked tree; it was never, and is still not, a guarantee
+        about interpreter-wide bytecode-loading configuration beyond that.
+        """
+
+        prefix = sys.pycache_prefix
+        env_prefix = os.environ.get("PYTHONPYCACHEPREFIX")
+        if prefix or env_prefix:
+            raise GateClosed(
+                "a relocated bytecode cache is configured for this process "
+                f"(sys.pycache_prefix={prefix!r}, PYTHONPYCACHEPREFIX={env_prefix!r}); "
+                "this moves every .pyc -- forged or stale -- outside the tree the "
+                "scoring __pycache__ refusal can see, so the freeze cannot vouch for "
+                "what bytecode this process would execute; unset it and retry"
+            )
+        scoring_dir_resolved = Path(scoring_dir).resolve()
+        for name, module in list(sys.modules.items()):
+            if module is None or not (
+                name == _SCORING_MODULE_PREFIX or name.startswith(_SCORING_MODULE_PREFIX + ".")
+            ):
+                continue
+            module_file = getattr(module, "__file__", None)
+            if module_file is None:
+                continue  # a namespace/frozen/builtin entry -- nothing on disk to check
+            try:
+                module_file_resolved = Path(module_file).resolve()
+            except OSError:
+                continue
+            if not module_file_resolved.is_relative_to(scoring_dir_resolved):
+                # Loaded from a DIFFERENT scoring_dir entirely (e.g. a
+                # synthetic test fixture's own tmp tree) -- not this gate's
+                # concern; only modules genuinely loaded from THIS checked
+                # directory are in scope.
+                continue
+            if module_file_resolved.suffix != ".py":
+                raise GateClosed(
+                    f"scoring module {name!r} was loaded from a non-source file "
+                    f"({module_file!r}); this process's import machinery did not use "
+                    "the frozen .py source, so the D3 freeze cannot vouch for what "
+                    "runs -- refused"
+                )
+            cached = getattr(module, "__cached__", None)
+            if cached is not None:
+                try:
+                    cached_resolved = Path(cached).resolve()
+                except OSError:
+                    cached_resolved = Path(cached)
+                if not cached_resolved.is_relative_to(scoring_dir_resolved):
+                    raise GateClosed(
+                        f"scoring module {name!r} has a bytecode cache recorded outside "
+                        f"the checked scoring package ({cached!r}); a relocated cache "
+                        "cannot be vouched for by this freeze -- refused"
+                    )
 
     def _d1_identity_artifact_path(self) -> Path:
         """Resolve D1's own artifact path THROUGH the E0 closure receipt (never a
@@ -841,6 +1032,23 @@ class FrozenCoreGate:
         the media this run is actually about to send is the same bytes D1
         closed over -- as a re-measured FILE, never merely as a receipt's
         claim about a file.
+
+        PRECISE SCOPE (round-2 external-threat-model review, IMPORTANT A):
+        this method only ever re-hashes what ``media_facts`` NAMES -- i.e.
+        what the caller's ``PayloadBindingContext.media_relpaths`` says the
+        verified split bound for each sample id. It was previously possible
+        for the actual outbound payload's own ``media_relpath`` to name a
+        DIFFERENT file than the one this method verified (confined under the
+        same carrier root, but never compared) -- so this docstring's claim
+        that the media "this run is actually about to send" is checked was
+        true only once ``core.model.FrozenCoreAdapter._enforce_payload_
+        binding`` also enforces, as a precondition of ever reaching the
+        transport, that the payload's ``media_relpath`` for a sample EXACTLY
+        equals ``binding.media_relpaths[sample_id]`` -- the same value this
+        method is handed. With that binding in place the two checks compose
+        into the claim above; on its own, re-hashing the binding's claimed
+        path is a check about what the BINDING names, not yet a check on the
+        literal bytes leaving the process.
 
         ``media_facts`` maps each sample id the run's VERIFIED SPLIT will touch
         to ``(media_relpath, audio_seconds)`` -- exactly, and only, the samples
@@ -1373,12 +1581,42 @@ class FrozenCoreGate:
         # accrued -- or any other registered/actual drift -- cannot silently reopen
         # spent slice budget. Imported locally: see the module-level NOTE on why
         # core.attempts is never imported at this module's top level.
-        from .core.attempts import AttemptStore
+        from .core.attempts import AttemptError, AttemptStore
 
-        actual_calls, actual_audio = AttemptStore(
-            Path(self.data_root) / "attempts"
-        ).all_actual_usage()
-        actual_by_column = {"calls": actual_calls, "speech audio seconds": actual_audio}
+        # Minor (fix-wave2, external-threat-model review round 2): a stray,
+        # malformed-name directory directly under <data_root>/attempts/ (never
+        # created by this study's own code, which only ever mints
+        # validate_id()-checked run_id directories, but plausibly left behind
+        # by manual tampering or an unrelated tool) made AttemptStore.
+        # all_actual_usage's internal validate_id() call raise a bare
+        # AttemptError that escaped assert_model_touch_allowed entirely --
+        # an internal implementation detail leaking out of the gate's own
+        # exception contract (every other refusal here is GateClosed).
+        # Wrapped fail-closed: still refuses the touch, but as the gate's own
+        # documented exception type.
+        try:
+            actual_calls, actual_audio, actual_gpu_seconds = AttemptStore(
+                Path(self.data_root) / "attempts"
+            ).all_actual_usage()
+        except AttemptError as error:
+            raise GateClosed(
+                "cannot compute the slice-wide actual usage total from "
+                f"{Path(self.data_root) / 'attempts'}: {error}; model touch refused"
+            ) from error
+        # Minor (fix-wave2): gpu hours previously had no derived counterpart --
+        # calls/audio_seconds folded durable actual usage into the conservative
+        # max below, but gpu hours was taken purely from self-declared ledger
+        # cells even though gpu_seconds IS measured per run
+        # (core.resources.ResourceSampler.summary, fed back into the durable
+        # attempt record by core.driver.run_experiment via
+        # AttemptHandle.record_gpu_seconds). Converted seconds -> hours here,
+        # the same unit the ledger's "gpu hours" column and
+        # planned_gpu_hours/FIRST_SLICE_CAPS["planned_gpu_hours"] already use.
+        actual_by_column = {
+            "calls": actual_calls,
+            "speech audio seconds": actual_audio,
+            "gpu hours": actual_gpu_seconds / 3600.0,
+        }
         for column_name, cap_field, parse in (
             ("calls", "planned_model_calls", int),
             ("speech audio seconds", "planned_speech_audio_seconds", int),

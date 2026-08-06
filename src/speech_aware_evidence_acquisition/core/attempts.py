@@ -89,6 +89,17 @@ def _positive_finite(value: object, label: str) -> float:
     return float(value)
 
 
+def _non_negative_finite(value: object, label: str) -> float:
+    """Like :func:`_positive_finite` but allows ``0.0`` (fix-wave2 Minor: a
+    genuinely idle GPU for an entire run legitimately measures 0.0
+    gpu_seconds -- that is not the same failure as a missing/non-finite/
+    negative measurement)."""
+
+    if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value) or value < 0:
+        raise AttemptError(f"{label} must be a finite non-negative number, got {value!r}")
+    return float(value)
+
+
 @dataclass(frozen=True)
 class AttemptHandle:
     """A live reference to one attempt's durable state file.
@@ -203,6 +214,44 @@ class AttemptHandle:
         self._write(document)
         return new_calls, new_audio
 
+    def record_gpu_seconds(self, gpu_seconds: float) -> float:
+        """Persist measured GPU-seconds for this attempt (fix-wave2 Minor:
+        gpu hours had no derived counterpart -- the slice-cap conservative
+        max at ``contracts.FrozenCoreGate._require_exposure_preregistration``
+        folded durable actual calls/audio into its conservative max but took
+        gpu hours purely from self-declared ledger cells, even though
+        ``gpu_seconds`` IS measured per run
+        (``core.resources.ResourceSampler.summary``)).
+
+        Called by ``core.driver.run_experiment`` AFTER the request loop, once
+        the run's own resource sampler has a final measured total -- unlike
+        ``record_usage`` (per-request, called BEFORE the transport send it
+        accounts for), gpu_seconds is a whole-run figure only available once
+        sampling stops. Same OPENED-only, durable-file discipline as
+        :meth:`record_usage`: an older attempt file with no ``gpu_seconds``
+        key yet (written before this field existed) is read as ``0.0`` and
+        accumulated from there. Returns the new cumulative gpu_seconds."""
+
+        gpu_seconds = _non_negative_finite(gpu_seconds, "record_gpu_seconds gpu_seconds")
+        document = self._read()
+        if document.get("state") != STATE_OPENED:
+            raise AttemptError(
+                f"attempt {self.run_id}/{self.attempt_id} is not OPENED "
+                f"(found {document.get('state')!r}); cannot record gpu usage"
+            )
+        actual = document["actual"]
+        new_gpu_seconds = float(actual.get("gpu_seconds", 0.0)) + gpu_seconds
+        actual["gpu_seconds"] = new_gpu_seconds
+        self._write(document)
+        return new_gpu_seconds
+
+    def actual_gpu_seconds(self) -> float:
+        """Read-only counterpart to :meth:`actual_totals`, for the one field
+        that arrives on a separate write path (see :meth:`record_gpu_seconds`)."""
+
+        actual = self._read()["actual"]
+        return float(actual.get("gpu_seconds", 0.0))
+
 
 @dataclass(frozen=True)
 class AttemptStore:
@@ -290,18 +339,25 @@ class AttemptStore:
                 pass
         return AttemptHandle(path=path, run_id=run_id, attempt_id=attempt_id).mark_opened()
 
-    def prior_actual_usage(self, run_id: str, *, exclude_attempt_id: str | None = None) -> tuple[int, float]:
-        """Sum persisted actual usage from every attempt file already recorded
-        for ``run_id``. Every state counts, including a crashed attempt stuck
-        at OPENED: once usage is durably persisted it was genuinely about to
-        be (or was) sent, and a later attempt never un-spends it."""
+    def _sum_actual_for_run(
+        self, run_id: str, *, exclude_attempt_id: str | None = None
+    ) -> tuple[int, float, float]:
+        """Shared summation core for :meth:`prior_actual_usage` and
+        :meth:`all_actual_usage` (fix-wave2 Minor: refactored to also carry
+        ``gpu_seconds`` -- see :meth:`AttemptHandle.record_gpu_seconds`).
+        Every state counts, including a crashed attempt stuck at OPENED: once
+        usage is durably persisted it was genuinely about to be (or was)
+        sent/measured, and a later attempt never un-spends it. An older
+        attempt file with no ``gpu_seconds`` key (written before that field
+        existed) reads as ``0.0`` for that field, never an error."""
 
         validate_id(run_id, "run_id")
         run_dir = self._run_dir(run_id)
         if not run_dir.is_dir():
-            return 0, 0.0
+            return 0, 0.0, 0.0
         total_calls = 0
         total_audio = 0.0
+        total_gpu = 0.0
         for entry in sorted(run_dir.glob("*.json")):
             if exclude_attempt_id is not None and entry.name == f"{exclude_attempt_id}.json":
                 continue
@@ -314,7 +370,19 @@ class AttemptStore:
                 raise AttemptError(f"attempt state {entry} lacks a usable actual mapping")
             total_calls += int(actual.get("calls", 0))
             total_audio += float(actual.get("audio_seconds", 0.0))
-        return total_calls, total_audio
+            total_gpu += float(actual.get("gpu_seconds", 0.0))
+        return total_calls, total_audio, total_gpu
+
+    def prior_actual_usage(self, run_id: str, *, exclude_attempt_id: str | None = None) -> tuple[int, float]:
+        """Sum persisted actual calls/audio_seconds from every attempt file
+        already recorded for ``run_id`` (calls/audio budget enforcement, I3/
+        I6 -- gpu hours is not part of this per-request check; see
+        :meth:`all_actual_usage` for the slice-wide figure that includes it)."""
+
+        calls, audio, _gpu_seconds = self._sum_actual_for_run(
+            run_id, exclude_attempt_id=exclude_attempt_id
+        )
+        return calls, audio
 
     def actual_usage_in_states(
         self,
@@ -353,21 +421,27 @@ class AttemptStore:
             total_audio += float(actual.get("audio_seconds", 0.0))
         return total_calls, total_audio
 
-    def all_actual_usage(self) -> tuple[int, float]:
-        """Sum persisted actual usage across every run_id under this store --
-        the global counterpart to :meth:`prior_actual_usage`, used by the
-        slice-cap conservative-maximum check (registered vs. actual)."""
+    def all_actual_usage(self) -> tuple[int, float, float]:
+        """Sum persisted actual (calls, audio_seconds, gpu_seconds) across
+        every run_id under this store -- the global counterpart to
+        :meth:`prior_actual_usage`, used by the slice-cap conservative-
+        maximum check (registered vs. actual). Returns a 3-tuple (fix-wave2
+        Minor: gpu_seconds joined calls/audio_seconds here so the slice cap's
+        conservative max can cover GPU hours too, the one budget dimension
+        that previously had no derived counterpart)."""
 
         root = Path(self.attempts_root)
         if not root.is_dir():
-            return 0, 0.0
+            return 0, 0.0, 0.0
         total_calls = 0
         total_audio = 0.0
+        total_gpu = 0.0
         for run_dir in sorted(entry for entry in root.iterdir() if entry.is_dir()):
-            calls, audio = self.prior_actual_usage(run_dir.name)
+            calls, audio, gpu = self._sum_actual_for_run(run_dir.name)
             total_calls += calls
             total_audio += audio
-        return total_calls, total_audio
+            total_gpu += gpu
+        return total_calls, total_audio, total_gpu
 
     def handle(self, run_id: str, attempt_id: str) -> AttemptHandle:
         """A handle over an attempt file this store did NOT necessarily just

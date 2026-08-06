@@ -589,14 +589,49 @@ def _read_bytes(path: Path, label: str) -> bytes:
         raise BundleError(f"cannot read {label} at {path}: {error}") from error
 
 
-def _verify_artifact(meta: object, label: str) -> bytes | None:
+def _verify_artifact(meta: object, label: str, *, confine_to: Path | None = None) -> bytes | None:
+    """Recompute an artifact's hash from bytes on disk.
+
+    ``confine_to`` (Minor hardening, round-2 external-threat-model review):
+    when given, ``meta["path"]`` must resolve strictly inside it -- WITHOUT
+    this, a manifest's artifact ``path`` values were absolute and completely
+    unconfined at verify time; only ``manifest_path``'s OWN directory was
+    ever checked against anything (``_refuse_if_inside_repo``, an EXCLUSION
+    from the study repo, not a positive confinement of referenced artifacts).
+    A manifest could therefore bind another run's outputs.jsonl -- or any
+    other file on the filesystem -- as if it were this run's own, as long as
+    the manifest also carried that file's correct hash. Passed by
+    :func:`verify_bundle` for ``outputs``/``raw_trace``/``trace_manifest``/
+    ``scores`` -- every artifact this module's own ``build_manifest``/
+    ``finalize_bundle`` ALWAYS place directly in the manifest's own run
+    directory -- but deliberately NOT for ``session_receipt``, whose path is
+    supplied by the caller from outside this module (``--session-receipt``)
+    and may legitimately name a session file SHARED across many runs/run
+    directories (one resident server can serve many attempts), never
+    something this module itself writes into a specific run_dir.
+    """
+
     if meta is None:
         return None
     if not isinstance(meta, Mapping) or not isinstance(meta.get("path"), str) or not isinstance(
         meta.get("sha256"), str
     ):
         raise BundleError(f"manifest {label} entry must be a {{path, sha256}} object")
-    raw = _read_bytes(Path(meta["path"]), label)
+    artifact_path = Path(meta["path"])
+    if confine_to is not None:
+        try:
+            resolved = artifact_path.resolve()
+        except OSError as error:
+            raise BundleError(f"cannot resolve {label} path {artifact_path}: {error}") from error
+        if not resolved.is_relative_to(confine_to):
+            raise BundleError(
+                f"manifest {label} path {artifact_path} does not resolve under this "
+                f"bundle's own run directory {confine_to}; an artifact belonging to a "
+                "different run -- or an arbitrary filesystem location -- can never be "
+                "bound into this manifest"
+            )
+        artifact_path = resolved
+    raw = _read_bytes(artifact_path, label)
     actual = hashlib.sha256(raw).hexdigest()
     if actual != meta["sha256"]:
         raise BundleError(
@@ -881,10 +916,23 @@ def verify_bundle(manifest_path: Path) -> VerifiedBundle:
                 "real, clean study commit"
             )
 
-    outputs_raw = _verify_artifact(manifest.get("outputs"), "outputs")
-    raw_trace_raw = _verify_artifact(manifest.get("raw_trace"), "raw trace")
-    trace_manifest_raw = _verify_artifact(manifest.get("trace_manifest"), "trace manifest")
-    _verify_artifact(manifest.get("scores"), "scores")
+    # Minor hardening (round-2 external-threat-model review): every artifact
+    # this module itself ever writes -- outputs/raw_trace/trace_manifest/
+    # scores -- always lands directly in the manifest's own run directory
+    # (see core.driver.run_experiment and finalize_bundle). Confine each to
+    # there at verify time too, not merely at write time, so a manifest
+    # cannot bind another run's outputs (or an arbitrary filesystem path) by
+    # simply naming it with a correct hash. session_receipt is deliberately
+    # excluded -- see _verify_artifact's own docstring for why.
+    run_dir_resolved = manifest_path.resolve().parent
+    outputs_raw = _verify_artifact(manifest.get("outputs"), "outputs", confine_to=run_dir_resolved)
+    raw_trace_raw = _verify_artifact(
+        manifest.get("raw_trace"), "raw trace", confine_to=run_dir_resolved
+    )
+    trace_manifest_raw = _verify_artifact(
+        manifest.get("trace_manifest"), "trace manifest", confine_to=run_dir_resolved
+    )
+    _verify_artifact(manifest.get("scores"), "scores", confine_to=run_dir_resolved)
     _verify_artifact(manifest.get("session_receipt"), "session receipt")
 
     # ------------------------------------------------------------------

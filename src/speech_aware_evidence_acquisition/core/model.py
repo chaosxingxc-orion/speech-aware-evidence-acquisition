@@ -493,6 +493,42 @@ class FrozenCoreAdapter:
                 f"fact {fact_sample_rate_hz!r} for sample {sample_id!r}"
             )
         relative = _normalized_relative_path(payload["media_relpath"], "payload media_relpath")
+        # IMPORTANT A (round-2 external-threat-model review): confinement alone
+        # only proved the payload's media_relpath stays INSIDE the carrier
+        # root -- it never compared it to what this run's verified split
+        # actually names for THIS sample (``binding.media_relpaths``, the same
+        # per-sample mapping ``core.driver.run_experiment`` builds from the
+        # loader and the gate's ``verify_media_identity`` re-hashes). A
+        # payload could therefore name any OTHER file confined under the same
+        # carrier root -- e.g. a decoy media file -- and it sailed straight
+        # through: the gate re-hashed the BINDING's claimed path, but the
+        # transport read and sent whatever path the payload itself carried.
+        # Demonstrated: a gate verified {'s1': ('carrier/s1.mp3', 10.0)}; a
+        # payload naming media_relpath="carrier/decoy.mp3" was accepted, the
+        # decoy's bytes were sent, and only 10.0s (the BOUND sample's
+        # duration) was metered against the ≤20h audio budget regardless of
+        # the decoy's real length. Requiring an EXACT match after
+        # normalization closes this: the only media_relpath a payload for
+        # ``sample_id`` may ever carry is the one the verified split/loader
+        # bound for that exact sample id.
+        if binding.media_relpaths:
+            expected_relpath = binding.media_relpaths.get(sample_id)
+            if expected_relpath is None:
+                raise FrozenCoreError(
+                    f"payload binding has no verified media_relpath for sample "
+                    f"{sample_id!r}; a sample the binding cannot vouch for can never "
+                    "be sent"
+                )
+            if relative != expected_relpath:
+                raise FrozenCoreError(
+                    f"payload media_relpath {relative!r} does not match the verified "
+                    f"split's own media_relpath {expected_relpath!r} for sample "
+                    f"{sample_id!r} -- confinement under the carrier root is necessary "
+                    "but not sufficient; the payload must name EXACTLY the file the "
+                    "binding (and, at the gate, verify_media_identity) vouches for, "
+                    "never merely some other file that happens to live under the same "
+                    "root (I4 exact media-relpath binding)"
+                )
         _resolve_confined(
             binding.data_root,
             relative,

@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import sys
 import time
 from pathlib import Path
@@ -273,6 +274,35 @@ def run_experiment(
         sampler.stop()
     resource_summary = dict(sampler.summary())
     cpu_seconds = cpu_seconds_snapshot() - cpu_start
+    # Minor (fix-wave2, external-threat-model review round 2): gpu hours was
+    # the only budget dimension with no derived counterpart -- the slice-cap
+    # conservative max (contracts.FrozenCoreGate._require_exposure_
+    # preregistration) already folds durable actual calls/audio into its
+    # conservative max, but took gpu hours purely from self-declared ledger
+    # cells even though gpu_seconds IS measured here, per run. Feed the
+    # measured total back into THIS attempt's own durable record so that
+    # conservative max can include it too (AttemptStore.all_actual_usage).
+    # Best-effort and never allowed to turn a genuinely successful run into a
+    # false failure: `resource_summary["gpu_seconds"]` legitimately reads the
+    # NOT_AVAILABLE sentinel string (no sampler, or a broken nvidia-smi -- see
+    # core.resources) far more often than a real run ever measures it, and a
+    # durable-file write failure here is exactly the kind of sibling-
+    # bookkeeping failure the failed_attempt_* read just below already
+    # tolerates the same way -- this run's own request loop, outputs and
+    # trace are already durable on disk by this point regardless.
+    measured_gpu_seconds = resource_summary.get("gpu_seconds")
+    if (
+        isinstance(measured_gpu_seconds, (int, float))
+        and not isinstance(measured_gpu_seconds, bool)
+        and math.isfinite(measured_gpu_seconds)
+        and measured_gpu_seconds >= 0
+    ):
+        try:
+            AttemptStore(Path(root) / "attempts").handle(
+                plan.run_id, plan.attempt_id
+            ).record_gpu_seconds(measured_gpu_seconds)
+        except (AttemptError, OSError, ValueError):
+            pass
     # R0 repair T7 (I8): failed-attempt cost. Sibling attempts under this SAME
     # run_id that are (as of manifest time) ABORTED -- e.g. a crashed attempt
     # this run_id's caller retried under a fresh attempt_id -- spent real

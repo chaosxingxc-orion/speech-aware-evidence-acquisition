@@ -30,10 +30,24 @@ umbrella wiki.
   push the campaign over ≤3000 calls / ≤72000 audio seconds / ≤40 GPU-hours. Gate verification is
   instantaneous: the process that opens the gate must be the process that starts llama-server,
   immediately afterward — results are never cached or shared. The freeze binds source bytes, not
-  compiled bytecode: the gate itself now refuses (M-1 hardening, external-threat-model review) if
-  `scoring/__pycache__` contains any entry, so a locally planted `.pyc` is refused rather than
-  silently invisible to the freeze; still run the R0 runner with `PYTHONDONTWRITEBYTECODE=1` so one
-  is never written in the first place. The gate's own real-repo-tree tests
+  compiled bytecode: the gate itself refuses (M-1 hardening, external-threat-model review) if
+  `scoring/__pycache__` contains any entry, so a locally planted `.pyc` co-located with the frozen
+  sources is refused rather than silently invisible to the freeze. That on-disk walk alone is not a
+  complete guarantee: `sys.pycache_prefix`/`PYTHONPYCACHEPREFIX` relocates every `.pyc` the
+  interpreter would read or write into a mirrored tree the walk never visits, and
+  `PYTHONDONTWRITEBYTECODE=1` only stops a NEW `.pyc` being written — it does nothing to stop an
+  ALREADY-planted one from being read and executed (writing is not reading). The gate therefore also
+  refuses outright, at model-touch time, if either `sys.pycache_prefix` or `PYTHONPYCACHEPREFIX` is
+  set for the checking process, and refuses if any already-imported `speech_aware_evidence_
+  acquisition.scoring` submodule loaded from this checked tree was loaded from a non-`.py` file or
+  carries a `__cached__` location outside it (`FrozenCoreGate._assert_no_relocated_bytecode_cache`).
+  Stated precisely, not overstated: this proves no relocated-cache configuration is active for THIS
+  checking process and that every scoring submodule it has already imported from the checked tree came
+  from source with no cache recorded elsewhere — it does not, and cannot, prove no OTHER process with
+  its own `PYTHONPYCACHEPREFIX` holds a forged cache it could execute independently of this gate check.
+  Still run the R0 runner with `PYTHONDONTWRITEBYTECODE=1` and an unset `PYTHONPYCACHEPREFIX` as
+  defense in depth — but the machine-checked guarantee above is the one actually enforced, not that
+  environment variable alone. The gate's own real-repo-tree tests
   (`tests/contract/test_real_receipts.py`, `tests/unit/test_e0_generators.py::TestCloseAndGate`)
   point `source_root` at this checkout's actual `scoring/`, so the TEST SESSION enforces the same
   discipline on itself (`tests/conftest.py`, both a module-level `sys.dont_write_bytecode = True` +
