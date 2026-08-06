@@ -237,3 +237,53 @@ concern is narrowed to "the artifact hashes cell is honestly what was computed,"
 outright); defer full config-fragment re-derivation to a task that also budgets the test-fixture
 migration it requires, or to a design change that binds config-fragment CONTENT hashes into the
 manifest at build time (so `verify_bundle` could re-derive without filesystem access to `configs/`).
+
+## 7. GGUF cheap-identity fast path (R0 repair perf, 2026-08-06) — accepted, owner-approved scope reduction
+
+**Status:** closed at a documented, bounded level; accepted rather than left as a silent
+narrowing (owner instruction 2026-08-06: "stop re-hashing the 34.7 GB GGUF model set on every gate
+open").
+
+**What changed.** `FrozenCoreGate._validate_runtime` (`contracts.py`) previously re-hashed every
+GGUF file from bytes on EVERY gate open — measured 142–175s per call in WSL2 over the 9p mount onto
+the Windows-hosted `SPEECHRL_DATA_DIR`, run on every `scripts/reproduce.sh` dry run and every real
+run. It now defaults to a cheap-identity check per GGUF file — absolute path, byte size,
+`st_mtime_ns`, and OS file identity (`st_ino`/`st_dev` via Python's own `os.stat()`; on Windows
+CPython already populates these from the NTFS file ID via `GetFileInformationByHandle` — verified
+empirically stable and non-zero on this checkout, so no separate `ctypes`/`nFileIndex` path was
+needed) — against a cache at `<SPEECHRL_DATA_DIR>/.saea-runtime-identity-cache.json` (never
+committed, outside the repo, bound to the runtime receipt's own SHA-256 so a changed receipt
+invalidates it outright). A full SHA-256 re-hash of the GGUF set still runs whenever: any
+cheap-identity field differs from the cached record, a cache record is missing/corrupt/malformed
+(fail-safe — a bad cache is treated as absent, never trusted), the runtime receipt itself changed,
+the caller explicitly requests it (`full_hash=True`, or `RUNTIME_FULL_HASH_ENV`/
+`scripts/reproduce.sh --full`), or — the gate's own default when no explicit choice is made — this
+is the first gate open of the current process for a given runtime-receipt identity (a real model
+touch, `core.model.FrozenCoreAdapter`, never overrides `full_hash` and therefore always pays this
+floor cost at least once per session before it can ever be fast-pathed). Runtime libraries under
+`build/bin` and the llama.cpp launcher binary are UNCHANGED: always fully re-hashed from bytes,
+unconditionally, every gate open (~249 MB total — cheap, and it is the code that actually runs).
+Every other check the gate performs (E0 closure, the D3 scoring freeze, exposure
+pre-registration, carrier scope, the llama.cpp build binary, runtime libraries) is unconditionally
+re-verified from scratch on every call regardless of the GGUF identity cache.
+
+**What is NOT bound, and why — the accepted residual weakness.** Stated precisely, not overstated:
+the fast path defends against a WRONG, PARTIAL, or ACCIDENTALLY-REPLACED model set — a different
+file swapped in, a truncated or resumed download, a stale/foreign `SPEECHRL_DATA_DIR`. It does NOT
+defend against an adversary who edits a GGUF file's bytes in place while deliberately preserving
+its size, last-modified time and OS file identity (e.g. `open(path, "r+b")` followed by
+`os.utime()` restoring the original timestamp) — that specific tamper is silently accepted by the
+fast path. This is a genuine, accepted, owner-approved narrowing of what "the gate verified the
+model bytes" means for the common case, not an oversight: it is pinned by an explicit test
+(`tests/contract/test_runtime_identity_fastpath.py::
+test_bytes_replaced_same_size_and_mtime_restored_is_the_documented_residual_weakness`), not left as
+prose alone, and the authoritative full SHA-256 check (`full_hash=True` /
+`scripts/reproduce.sh --full`) remains available and unconditionally correct whenever this residual
+gap matters (e.g. immediately before a real model touch on a machine whose provenance is not
+already trusted).
+
+**Requested disposition:** accept the cheap-identity fast path, and the residual weakness it
+leaves, as R0's closure level for this perf fix (owner instruction 2026-08-06 already authorizes
+this scope reduction); revisit only if a future task needs a stronger per-file tamper guarantee
+than size/mtime/file-id (e.g. a periodic background full re-hash, or an external attestation of the
+asset fetch) cheaper than re-hashing 34.7 GB on every gate open.

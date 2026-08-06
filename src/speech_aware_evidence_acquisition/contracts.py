@@ -8,6 +8,21 @@ exposure-claim schema, the Stage-2 execution-scope guard with its structured
 ``ExecutionPlan``, and the frozen-core entry gate. Everything here is standard-library only
 so the contracts are testable before any ML stack is installed and before any model is
 touched.
+
+CHANGED GUARANTEE (owner decision 2026-08-06, docs/owner-decisions-pending.md item 7):
+``FrozenCoreGate`` no longer re-hashes the pinned ~34.7 GB GGUF set from bytes on every
+gate open. It defaults to a cheap-identity fast path (size + last-modified time + OS file
+identity against a cache bound to the runtime receipt's own SHA-256), falling back to a
+genuine full SHA-256 re-hash on any cache miss/mismatch, on explicit request
+(``full_hash=True``), or at least once per process/session for a real model touch (the
+gate's own default). Runtime libraries under ``build/bin`` are UNCHANGED: always fully
+hashed, unconditionally, every time (they are ~249 MB, cheap, and are the code that runs).
+Stated precisely: the fast path defends against a WRONG, PARTIAL, or ACCIDENTALLY-REPLACED
+model set (a swapped-in file, a truncated/resumed download, a stale/foreign data root) — it
+does NOT defend against an adversary who edits a GGUF file's bytes in place while
+deliberately preserving its size, mtime and OS file identity. See
+``FrozenCoreGate._validate_runtime`` and the module comment above
+``_SESSION_FULL_HASH_DONE`` for the exact mechanics.
 """
 
 from __future__ import annotations
@@ -90,6 +105,17 @@ STUDY_SLUG = "speech-aware-evidence-acquisition"
 MODEL_LOCK_KEY = "qwen3-omni-30b-a3b-instruct-gguf"
 E0_RECEIPT_SCHEMA = "saea-e0-closure-receipt-v1"
 RUNTIME_RECEIPT_SCHEMA = "saea-runtime-receipt-v2"
+# Owner decision 2026-08-06 (docs/owner-decisions-pending.md item 7): a cheap-identity
+# fast path for the pinned (34.7 GB) GGUF set only -- runtime libraries under
+# build/bin stay fully hashed unconditionally, always (module docstring below,
+# FrozenCoreGate._validate_runtime_libraries). The cache is a convenience record,
+# never an authority: it is bound to the runtime receipt's OWN sha256 (a new/changed
+# receipt invalidates it outright) and any missing/corrupt/mismatched cache falls
+# back to a full re-hash, fail-safe. See ``_cheap_file_identity`` and
+# ``FrozenCoreGate._validate_runtime`` for exactly what this does and does not
+# defend against.
+RUNTIME_IDENTITY_CACHE_SCHEMA = "saea-runtime-identity-cache-v1"
+RUNTIME_IDENTITY_CACHE_FILENAME = ".saea-runtime-identity-cache.json"
 SCORING_PACKAGE_RELPATH = "src/speech_aware_evidence_acquisition/scoring"
 _REPORTED_BUILD = re.compile(r"\(([0-9a-f]{7,40})\)")
 # IMPORTANT B follow-up (round-2 external-threat-model review): the module
@@ -803,6 +829,188 @@ def _measure_file(path: Path, label: str) -> tuple[int, str]:
     return size, digest.hexdigest()
 
 
+# ---------------------------------------------------------------------------
+# GGUF cheap-identity fast path (owner decision 2026-08-06,
+# docs/owner-decisions-pending.md item 7): re-hashing the pinned ~34.7 GB GGUF
+# set on EVERY gate open (142-175s measured over the WSL2 9p mount onto the
+# Windows-hosted data root) makes routine verification painful without making
+# any run safer than a cheap, well-scoped identity check already would for the
+# overwhelmingly common case -- nothing about the files changed since the last
+# genuine full verification. STATED GUARANTEE, precisely, not overstated: a
+# fast-path PASS proves the file at this path has the same size, last-modified
+# time and OS file identity (inode+device) as it did the last time this
+# process (or an earlier trusted cache write) actually read every byte and
+# recomputed its SHA-256. It defends against a WRONG, PARTIAL, or
+# ACCIDENTALLY-REPLACED model set -- a different file swapped in, a truncated
+# or resumed download, a stale/foreign directory pointed to by
+# SPEECHRL_DATA_DIR. It does NOT defend against an adversary who edits a
+# file's bytes IN PLACE while deliberately preserving its size, mtime and file
+# identity (e.g. `open(path, "r+b")` followed by `os.utime()` restoring the
+# original timestamp) -- that is a genuine, accepted, owner-approved residual
+# weakness, not an oversight (see the module/FrozenCoreGate docstrings and
+# docs/owner-decisions-pending.md item 7 for the full record; pinned by
+# ``tests/contract/test_runtime_identity_fastpath.py``).
+# ---------------------------------------------------------------------------
+
+# Process-local floor: ``FrozenCoreGate.assert_model_touch_allowed``'s own
+# default (``full_hash=None``, and no recognized ``RUNTIME_FULL_HASH_ENV``
+# override -- see below) must still perform ONE genuine full SHA-256
+# verification of the pinned GGUF set, per runtime-receipt identity, per
+# process, before it will ever trust a fast-path cheap-identity cache -- even
+# a pre-existing, on-disk, apparently-valid one written by an EARLIER process
+# (e.g. a prior ``scripts/reproduce.sh`` dry run). Keyed by the runtime
+# receipt's own SHA-256 (not a bare process-wide bool) so a receipt rotation
+# mid-process is treated as a genuinely new floor, never silently inherited
+# from a stale receipt this process happened to fully verify earlier. There is
+# no cross-process synchronization by design: "session" here means exactly
+# "this interpreter process" (reset only by process restart) -- a real model
+# touch (``core.model.FrozenCoreAdapter``, which never overrides ``full_hash``
+# and runs in its own freshly-started process) therefore always pays the full
+# cost at least once before it can ever be fast-pathed within that same run,
+# UNLESS ``RUNTIME_FULL_HASH_ENV`` happens to already be set to a fast value in
+# that process's own environment -- an operational responsibility of whatever
+# launched it, not a gap in this module (see ``RUNTIME_FULL_HASH_ENV``'s own
+# comment for why ``scripts/reproduce.sh`` setting it is safe: the export is
+# scoped to that script's own short-lived subprocess tree, never a parent
+# interactive shell).
+_SESSION_FULL_HASH_DONE: set[str] = set()
+
+# ``src/.../e0/**`` is a frozen, previously-reviewed surface this task does not
+# touch, so the CLI (``e0.generate._verify``, invoked by ``scripts/
+# reproduce.sh``) cannot be given a new ``--full`` argument to forward as an
+# explicit ``full_hash=`` keyword the way a real caller could. Instead, when a
+# caller passes ``full_hash=None`` (its own default -- the CLI never overrides
+# this), this environment variable is consulted BEFORE falling back to the
+# session/process floor above: a recognized value is honored as if the caller
+# had passed that literal bool; anything unset or unrecognized falls through
+# to the safe auto/session behavior (never silently treated as either explicit
+# value). ``scripts/reproduce.sh`` exports this only around its own `python -m
+# ... verify` invocation -- a subprocess of that one script run, never
+# persisted into the caller's interactive shell -- so a real model touch
+# started independently, in a separate shell command, is unaffected by it.
+RUNTIME_FULL_HASH_ENV = "SAEA_RUNTIME_FULL_HASH"
+_ENV_TRUE_VALUES = frozenset({"1", "true", "yes", "on"})
+_ENV_FALSE_VALUES = frozenset({"0", "false", "no", "off"})
+
+
+def _resolve_full_hash_override(explicit: bool | None) -> bool | None:
+    """An explicit caller value always wins. Otherwise a recognized
+    ``RUNTIME_FULL_HASH_ENV`` value is honored as if it had been passed
+    explicitly. Anything unset or unrecognized returns ``None`` unchanged --
+    "let the auto/session floor decide" (the safe behavior) -- a malformed
+    environment value therefore fails toward the SAFE (full-hash) side, never
+    silently toward the fast one."""
+
+    if explicit is not None:
+        return explicit
+    raw = os.environ.get(RUNTIME_FULL_HASH_ENV)
+    if raw is None:
+        return None
+    normalized = raw.strip().lower()
+    if normalized in _ENV_TRUE_VALUES:
+        return True
+    if normalized in _ENV_FALSE_VALUES:
+        return False
+    return None
+
+
+_CHEAP_IDENTITY_FIELDS = ("size", "mtime_ns", "st_ino", "st_dev")
+
+
+def _cheap_file_identity(path: Path, label: str) -> dict[str, int]:
+    """No-byte-read file identity: size, last-modified time (nanoseconds) and
+    OS file identity (inode + device). ``os.stat`` is used UNCHANGED on every
+    platform this study runs on: on POSIX (the WSL2/ext4 compute authority)
+    ``st_ino``/``st_dev`` are the kernel's own inode/device pair; on Windows,
+    CPython's own ``os.stat`` already populates the SAME two attributes from
+    the NTFS file ID via ``GetFileInformationByHandle`` -- verified
+    empirically on this checkout (stable and non-zero across repeated
+    ``os.stat()`` calls on the same file) -- so no separate ``ctypes``/
+    ``nFileIndex`` path was needed."""
+
+    try:
+        info = path.stat()
+    except OSError as error:
+        raise GateClosed(f"{label}: cannot stat for cheap identity check: {error}") from error
+    return {
+        "size": info.st_size,
+        "mtime_ns": info.st_mtime_ns,
+        "st_ino": info.st_ino,
+        "st_dev": info.st_dev,
+    }
+
+
+def _cheap_identity_matches(current: Mapping[str, int], cached: object) -> bool:
+    """Every cheap-identity field must be present, integral and equal. A
+    missing/malformed cached record (or a non-mapping) never matches -- the
+    caller then falls back to a full re-hash, fail-safe."""
+
+    if not isinstance(cached, Mapping):
+        return False
+    for field in _CHEAP_IDENTITY_FIELDS:
+        value = cached.get(field)
+        if isinstance(value, bool) or not isinstance(value, int) or current[field] != value:
+            return False
+    return True
+
+
+def _load_identity_cache(
+    cache_path: Path, receipt_sha256: str
+) -> Mapping[str, Mapping[str, int]] | None:
+    """Fail-safe: any missing, unreadable, malformed or receipt-mismatched
+    cache is treated as simply ABSENT (never fail-open) -- the caller then
+    re-hashes every file for real. Never raises."""
+
+    try:
+        raw = cache_path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    try:
+        document = json.loads(raw)
+    except (UnicodeError, json.JSONDecodeError):
+        return None
+    if not isinstance(document, Mapping):
+        return None
+    if (
+        document.get("schema") != RUNTIME_IDENTITY_CACHE_SCHEMA
+        or document.get("study") != STUDY_SLUG
+        # Bound to the runtime receipt's own bytes (item 1c): any change to
+        # the receipt -- a new build, a re-pinned file, even an unrelated
+        # field -- invalidates every cached identity record outright.
+        or document.get("runtime_receipt_sha256") != receipt_sha256
+    ):
+        return None
+    entries = document.get("gguf_files")
+    if not isinstance(entries, Mapping):
+        return None
+    return entries
+
+
+def _write_identity_cache(
+    cache_path: Path, receipt_sha256: str, entries: Mapping[str, Mapping[str, int]]
+) -> None:
+    """Best-effort convenience write: the cache is never an authority (module
+    docstring above), so a write failure (read-only mount, disk full,
+    permissions) must never fail a gate check that has already genuinely
+    succeeded -- it only means the NEXT gate open pays the full cost again.
+    Atomic (write-then-replace) so a process interrupted mid-write never
+    leaves a half-written, misleadingly-parseable cache file behind."""
+
+    document = {
+        "schema": RUNTIME_IDENTITY_CACHE_SCHEMA,
+        "study": STUDY_SLUG,
+        "runtime_receipt_sha256": receipt_sha256,
+        "gguf_files": entries,
+    }
+    try:
+        cache_path.parent.mkdir(parents=True, exist_ok=True)
+        tmp_path = cache_path.with_name(f"{cache_path.name}.tmp-{os.getpid()}")
+        tmp_path.write_text(json.dumps(document, sort_keys=True), encoding="utf-8")
+        tmp_path.replace(cache_path)
+    except OSError:
+        pass
+
+
 @dataclass(frozen=True)
 class FrozenCoreGate:
     """Fail-closed entry gate in front of every frozen-core (model) touch.
@@ -816,9 +1024,17 @@ class FrozenCoreGate:
       and the scoring package may contain no source file the freeze does not name;
     - the runtime receipt binds the frozen model lock key from the umbrella
       ``docs/datasets.lock.json`` to canonical relative paths under the controlled
-      asset root; the gate re-reads every declared GGUF file, the llama.cpp launcher
-      binary AND every runtime library in the launcher's directory (exact set — an
-      unlisted or missing file refuses) and recomputes size and SHA-256 itself;
+      asset root; the gate always re-reads the llama.cpp launcher binary AND every
+      runtime library in the launcher's directory (exact set — an unlisted or
+      missing file refuses) and recomputes size and SHA-256 itself. The pinned GGUF
+      set (owner decision 2026-08-06, docs/owner-decisions-pending.md item 7) is, by
+      default, verified via a cheap size+mtime+OS-file-identity check against a
+      cache bound to the runtime receipt's own SHA-256, falling back to a full
+      SHA-256 re-hash on any cache miss/mismatch, on explicit request
+      (``full_hash=True``), or at least once per process for a real model touch
+      (``assert_model_touch_allowed``'s own default) — see ``_validate_runtime``'s
+      docstring for the exact semantics and the STATED, narrower guarantee this
+      leaves for the GGUF set specifically;
     - the pre-registered exposure row must agree with the ``ExecutionPlan`` field by
       field (profile, split role, split identity hash, carrier, consumed=no, planned
       budgets); the plan's carrier must additionally resolve to a genuine speech
@@ -828,10 +1044,17 @@ class FrozenCoreGate:
       extra/missing model files are all refused.
 
     Any missing file, malformed JSON, schema/identity mismatch, lock mismatch or byte
-    drift refuses the touch. Verification is instantaneous: it proves the bytes at
-    measurement time. The process that opens the gate must be the process that starts
-    llama-server, immediately afterward — a gate result must never be cached, shared
-    across processes, or separated from the launch it authorizes.
+    drift refuses the touch. Verification proves the state at measurement time for
+    every check EXCEPT the GGUF fast path described above (which proves only cheap
+    identity, not bytes, unless it falls back to a full re-hash). The process that
+    opens the gate must be the process that starts llama-server, immediately
+    afterward — the gate's own pass/fail DECISION must never be cached, shared across
+    processes, or separated from the launch it authorizes; every other check here
+    (E0 closure, scoring freeze, exposure pre-registration, carrier scope, llama.cpp
+    build binary, runtime libraries) is unconditionally re-verified from scratch on
+    EVERY call regardless of the GGUF identity cache, which is a narrow, internal
+    performance optimization for one sub-check, never a substitute for calling this
+    gate at all.
     """
 
     e0_receipt: Path
@@ -1489,7 +1712,50 @@ class FrozenCoreGate:
                 return entry
         raise GateClosed(f"frozen model key {MODEL_LOCK_KEY!r} not found in datasets lock")
 
-    def _validate_runtime(self, lock: Mapping[str, object] | None = None) -> None:
+    def _validate_runtime(
+        self,
+        lock: Mapping[str, object] | None = None,
+        *,
+        full_hash: bool | None = None,
+        diagnostics: dict[str, object] | None = None,
+    ) -> None:
+        """Verify the runtime receipt: llama.cpp build, GGUF set, runtime libraries.
+
+        ``full_hash`` governs ONLY the GGUF set (runtime libraries below are always
+        fully hashed -- module-level comment above ``_SESSION_FULL_HASH_DONE``,
+        ``_validate_runtime_libraries``). Resolution order (``_resolve_full_hash_
+        override``):
+
+        1. An explicit ``True``/``False`` argument always wins.
+        2. Otherwise, a recognized ``RUNTIME_FULL_HASH_ENV`` environment value is
+           honored as if it had been passed explicitly (this is how
+           ``scripts/reproduce.sh --full``/default reaches this gate without this
+           study's frozen ``e0/`` CLI surface needing its own new argument -- see
+           that constant's own comment).
+        3. Otherwise (both unset/unrecognized) -- auto/session: the first call THIS
+           PROCESS makes for a given runtime-receipt identity forces a full
+           re-hash (ignoring even a valid pre-existing cache); subsequent calls in
+           the same process behave like ``False``. This is the gate's own SAFE
+           default -- a real model touch (``core.model.FrozenCoreAdapter``, which
+           never overrides ``full_hash`` and does not itself set the env var)
+           always pays the full cost at least once per session.
+
+        Meaning of the resolved value once known:
+
+        - ``True`` -- always fully re-hash every GGUF file from bytes (the
+          authoritative check; ignores any cache).
+        - ``False`` -- always attempt the cheap-identity fast path first, falling
+          back to a full re-hash per file on any cache miss/mismatch (owner
+          decision item 7, rules a/b/c).
+
+        ``diagnostics``, if given a mutable dict, is populated with
+        ``gguf_files_total``, ``gguf_files_full_hashed`` and
+        ``gguf_fast_path_used`` (True iff EVERY GGUF file was verified via the
+        cache this call, i.e. zero bytes were re-hashed) -- a caller that wants an
+        honest, accurate report of what actually happened (never merely what was
+        requested) reads this back after the call.
+        """
+
         runtime = self._load(self.runtime_receipt, "runtime receipt")
         self._require_schema(runtime, RUNTIME_RECEIPT_SCHEMA, "runtime receipt")
         expected_keys = {
@@ -1518,8 +1784,31 @@ class FrozenCoreGate:
                 f"runtime receipt declares {len(files)} model files but the lock freezes "
                 f"{lock_entry['files']}; extra or missing model files are refused"
             )
+        # Owner decision 2026-08-06 (item 7): resolve the fast/full policy and the
+        # identity cache BEFORE the per-file loop. ``receipt_sha256`` is the
+        # cache's binding key (item 1c) -- read directly from the receipt's own
+        # bytes, independent of ``self._load``'s already-parsed document, so this
+        # is a genuine re-hash of what is actually on disk, not a re-derivation
+        # from the parsed JSON.
+        try:
+            receipt_sha256 = hashlib.sha256(Path(self.runtime_receipt).read_bytes()).hexdigest()
+        except OSError as error:
+            raise GateClosed(
+                f"runtime receipt: cannot read bytes for identity cache: {error}"
+            ) from error
+        resolved_full_hash = _resolve_full_hash_override(full_hash)
+        do_full = (
+            resolved_full_hash
+            if resolved_full_hash is not None
+            else receipt_sha256 not in _SESSION_FULL_HASH_DONE
+        )
+        cache_path = Path(self.data_root) / RUNTIME_IDENTITY_CACHE_FILENAME
+        cached_entries = None if do_full else _load_identity_cache(cache_path, receipt_sha256)
+
         seen: set[str] = set()
         total_bytes = 0
+        new_cache_entries: dict[str, dict[str, int]] = {}
+        full_hashed_count = 0
         for index, entry in enumerate(files):
             label = f"runtime receipt gguf_files[{index}]"
             if not isinstance(entry, Mapping) or set(entry) != {"path", "bytes", "sha256"}:
@@ -1543,23 +1832,53 @@ class FrozenCoreGate:
             ):
                 raise GateClosed(f"{label} lacks valid bytes/sha256")
             resolved = _resolve_under(self.data_root, relative, f"{label}.path")
-            actual_bytes, actual_sha = _measure_file(resolved, f"{label}.path")
-            if actual_bytes != recorded_bytes:
-                raise GateClosed(
-                    f"{label} size drift: receipt {recorded_bytes}, actual {actual_bytes}; "
-                    "model touch refused"
-                )
-            if actual_sha != recorded_sha:
-                raise GateClosed(
-                    f"{label} SHA-256 drift: receipt {recorded_sha[:12]}..., "
-                    f"actual {actual_sha[:12]}...; model touch refused"
-                )
+
+            cheap = _cheap_file_identity(resolved, f"{label}.path")
+            cached_entry = cached_entries.get(relative) if cached_entries is not None else None
+            if cached_entry is not None and _cheap_identity_matches(cheap, cached_entry):
+                # Fast path (items 1/2): size/mtime/file-id match the cache bound
+                # to THIS exact runtime receipt -- skip re-reading the bytes.
+                # STATED LIMITATION (module comment above, owner-decisions-pending
+                # item 7): this defends a wrong/partial/accidentally-replaced
+                # model set, NOT an adversary who edits bytes in place while
+                # preserving size, mtime and OS file identity.
+                actual_bytes = cheap["size"]
+            else:
+                actual_bytes, actual_sha = _measure_file(resolved, f"{label}.path")
+                if actual_bytes != recorded_bytes:
+                    raise GateClosed(
+                        f"{label} size drift: receipt {recorded_bytes}, actual {actual_bytes}; "
+                        "model touch refused"
+                    )
+                if actual_sha != recorded_sha:
+                    raise GateClosed(
+                        f"{label} SHA-256 drift: receipt {recorded_sha[:12]}..., "
+                        f"actual {actual_sha[:12]}...; model touch refused"
+                    )
+                full_hashed_count += 1
+            new_cache_entries[relative] = cheap
             total_bytes += actual_bytes
         if total_bytes != lock_entry["size_bytes"]:
             raise GateClosed(
                 f"model files total {total_bytes} bytes but the lock freezes "
                 f"{lock_entry['size_bytes']}; model touch refused"
             )
+
+        # Persist the cache only after every GGUF file verified successfully --
+        # never cache a partial/failed check. A write failure is swallowed
+        # (best-effort convenience, module docstring); it never fails an already-
+        # successful gate check.
+        _write_identity_cache(cache_path, receipt_sha256, new_cache_entries)
+        if full_hashed_count == len(files):
+            # Every file was just genuinely, fully re-hashed from bytes this
+            # call -- this satisfies the process/session floor (see
+            # ``_SESSION_FULL_HASH_DONE``'s own docstring) regardless of
+            # whether that full pass was explicitly forced or auto-decided.
+            _SESSION_FULL_HASH_DONE.add(receipt_sha256)
+        if diagnostics is not None:
+            diagnostics["gguf_files_total"] = len(files)
+            diagnostics["gguf_files_full_hashed"] = full_hashed_count
+            diagnostics["gguf_fast_path_used"] = full_hashed_count == 0
 
         build = runtime["llama_cpp"]
         if not isinstance(build, Mapping) or set(build) != {
@@ -1919,7 +2238,13 @@ class FrozenCoreGate:
                     "new owner slice decision, not another row"
                 )
 
-    def assert_model_touch_allowed(self, plan: ExecutionPlan) -> str:
+    def assert_model_touch_allowed(
+        self,
+        plan: ExecutionPlan,
+        *,
+        full_hash: bool | None = None,
+        diagnostics: dict[str, object] | None = None,
+    ) -> str:
         """Refuse the touch unless a validated Stage-2 ``ExecutionPlan`` authorizes it
         AND both receipts verify. Plan/scope validation runs before any receipt or
         ledger byte is read, so a paper-scale request — however labeled — is refused
@@ -1928,6 +2253,20 @@ class FrozenCoreGate:
         must resolve to a genuine speech-dataset entry of this study's scope in the
         umbrella lock (never a model entry, never a general-audio asset, never an
         entry whose scope cannot be proven).
+
+        ``full_hash`` (owner decision 2026-08-06, docs/owner-decisions-pending.md
+        item 7) governs ONLY how the pinned GGUF set is verified; it is forwarded
+        unchanged to :meth:`_validate_runtime` (see that method's own docstring for
+        the exact True/False/None/``RUNTIME_FULL_HASH_ENV`` resolution order). The
+        default, ``None``, is the gate's own SAFE choice: a real model touch
+        (``core.model.FrozenCoreAdapter``, which never overrides this parameter and
+        does not itself set ``RUNTIME_FULL_HASH_ENV``) always pays for one genuine
+        full SHA-256 verification of the GGUF set per process/session before it can
+        ever be fast-pathed. Runtime libraries under ``build/bin`` are unaffected —
+        they are always fully hashed, regardless of ``full_hash`` (module
+        docstring). ``diagnostics``, if given a mutable dict, is populated by
+        :meth:`_validate_runtime` with what actually happened (never merely what
+        was requested) — see its own docstring.
 
         Returns the umbrella lock's SHA-256 (M-3): the lock is read exactly ONCE
         here (:meth:`_load_lock_with_hash`) and the same parsed document is
@@ -1953,5 +2292,5 @@ class FrozenCoreGate:
         self._require_exposure_preregistration(plan, lock)
         self._resolve_carrier_dataset_entry(plan.carrier_lock_key, lock)
         self._validate_e0()
-        self._validate_runtime(lock)
+        self._validate_runtime(lock, full_hash=full_hash, diagnostics=diagnostics)
         return lock_sha256

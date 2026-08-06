@@ -14,11 +14,35 @@ umbrella wiki.
   D1–D4 each bind an artifact file whose SHA-256 is recomputed, and the D3 artifact's frozen
   scoring-source hashes are re-measured against the live tree (an unlisted scoring module refuses);
   model files resolve only as canonical relative paths under `SPEECHRL_DATA_DIR` inside the lock's
-  `local_subdir`, with file count and total bytes bound to the umbrella `datasets.lock.json` entry
-  and every file re-hashed; `llama-server` is a ~18 KB launcher, so the receipt binds **every
-  regular file in `build/bin`** (inference/audio `.so` libraries included) as an exact set, the
-  40-hex build commit must be prefix-matched by the binary's self-reported build hash
-  (`llama-server --version` at receipt time), and a dirty tree or stale build is refused at
+  `local_subdir`, with file count and total bytes bound to the umbrella `datasets.lock.json` entry.
+  **GGUF identity, changed scope (owner decision 2026-08-06, `docs/owner-decisions-pending.md`
+  item 7):** re-hashing the pinned ~34.7 GB GGUF set from bytes on *every* gate open measured
+  142-175s over the WSL2 9p mount onto the Windows-hosted data root, which made routine
+  verification (`scripts/reproduce.sh`, run before/after every commit) painfully slow without
+  making a genuine model touch any safer for the overwhelming common case — nothing about the
+  files changed since the last real verification. The gate now defaults to a cheap-identity fast
+  path per GGUF file: absolute path, byte size, `st_mtime_ns`, and OS file identity (`st_ino`/
+  `st_dev` via Python's own `os.stat()` — CPython already populates these on Windows from the NTFS
+  file ID via `GetFileInformationByHandle`, verified stable and non-zero on this checkout; no
+  separate `ctypes`/`nFileIndex` path is needed) compared against a cache
+  (`<SPEECHRL_DATA_DIR>/.saea-runtime-identity-cache.json`, never committed, bound to the runtime
+  receipt's own SHA-256). A full SHA-256 re-hash still runs whenever any cheap-identity field
+  differs, a cache record is missing/corrupt, the runtime receipt itself changed, the caller
+  explicitly asks (`full_hash=True` / `scripts/reproduce.sh --full`), or — the gate's own SAFE
+  default — this is the first gate open of the current process/session
+  (`contracts.FrozenCoreGate.assert_model_touch_allowed`'s own `full_hash=None` default; a real
+  model touch, `core.model.FrozenCoreAdapter`, never overrides this). **STATED GUARANTEE, changed
+  and precise, not overstated: the fast path defends against a WRONG, PARTIAL, or
+  ACCIDENTALLY-REPLACED model set — it does NOT defend against an adversary who edits a GGUF
+  file's bytes in place while deliberately preserving its size, mtime and OS file identity**; this
+  residual weakness is pinned by an explicit test
+  (`tests/contract/test_runtime_identity_fastpath.py`), not left as prose alone. `llama-server` is
+  a ~18 KB launcher, so the receipt binds **every regular file in `build/bin`** (inference/audio
+  `.so` libraries included) as an exact set, **always fully re-hashed from bytes, unconditionally,
+  every gate open** (~249 MB total — cheap, and it is the code that actually runs; `full_hash` has
+  no effect here). The 40-hex build commit must be prefix-matched by the binary's self-reported
+  build hash (`llama-server --version` at receipt time), and a dirty tree or stale build is refused
+  at
   generation; absolute paths, traversal, duplicates and extra files are refused. In `build/bin`
   any non-file entry (subdirectory, symlink that is not a regular file) is refused; in the scoring
   package, nested sources must be named by the freeze, and non-source files, dangling symlinks and
@@ -27,9 +51,13 @@ umbrella wiki.
   (profile, split role, split identity hash, consumed=no, registered calls/audio-seconds/GPU-hours
   ≥ planned; every budget cell must be a finite non-negative number), and the first-slice caps are
   enforced as **slice totals**: the gate sums every registered row and refuses a plan that would
-  push the campaign over ≤3000 calls / ≤72000 audio seconds / ≤40 GPU-hours. Gate verification is
-  instantaneous: the process that opens the gate must be the process that starts llama-server,
-  immediately afterward — results are never cached or shared. The freeze binds source bytes, not
+  push the campaign over ≤3000 calls / ≤72000 audio seconds / ≤40 GPU-hours. The process that opens
+  the gate must be the process that starts llama-server, immediately afterward — the gate's own
+  pass/fail DECISION is never cached or shared across processes or separated from the launch it
+  authorizes; the GGUF identity cache above is a narrow, internal, per-file performance optimization
+  for one sub-check, never a substitute for calling the gate itself, which still re-verifies E0
+  closure, the scoring freeze, exposure pre-registration, carrier scope, the llama.cpp build binary
+  and every runtime library from scratch on every single call. The freeze binds source bytes, not
   compiled bytecode: the gate itself refuses (M-1 hardening, external-threat-model review) if
   `scoring/__pycache__` contains any entry, so a locally planted `.pyc` co-located with the frozen
   sources is refused rather than silently invisible to the freeze. That on-disk walk alone is not a
