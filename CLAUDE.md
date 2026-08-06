@@ -52,7 +52,9 @@ receipt。每次模型/工具触达在读结果前记 `docs/exposure-ledger.md`�
   confirmatory campaign、最终优越性/泛化结论、manuscript/submission/publication——这些属
   Stage‑3，须经 `OWNER_GO_AND_PAPER_EXECUTION_CONTRACT` 晋级到 `papers/<slug>` 独立仓，本仓
   永不接受（机器强制：`contracts.assert_execution_scope`）；
-- 越过首切片预算（≤3000 冻结核调用 / ≤40 GPU-hours / ≤20 小时 speech audio / 付费 API=0）；
+- 付费 API 支出（=0，未废止）；数值预算帽（原 ≤3000 调用 / ≤40 GPU-h / ≤20h 音频）已由
+  2026-08-06 owner amendment 废止，实施方不得自行重新引入；exposure 预登记与一次性 attempt
+  语义仍然强制；
 - 提交数据、权重、speech files 或 raw trace；绕过 migration manifest 搬运代码；
 - 把 R2 等候选编号写进包名、MLflow namespace 或正式 experiment ID；
 - 未经 owner 授权发布 Wiki 镜像或 public release。
