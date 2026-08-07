@@ -69,6 +69,19 @@ class _AttemptLifecycleMixin:
                     for sample_id in binding.allowed_sample_ids
                 },
             )
+        # IMPORTANT 1 (external-threat-model review round 4): the evidence-
+        # layer counterpart to the media-identity rail just above -- re-verify
+        # THIS run's evidence (via binding.evidence_relpaths) against D1's
+        # frozen evidence-layer facts, duck-typed the same way so test doubles
+        # that don't implement verify_evidence_identity are unaffected.
+        # binding.evidence_relpaths is empty whenever this run's evidence
+        # source supplied no evidence at all (e.g. "none"), in which case
+        # there is nothing to check.
+        evidence_identity_check: Callable[[str, Mapping[str, str]], None] | None = getattr(
+            gate, "verify_evidence_identity", None
+        )
+        if evidence_identity_check is not None and binding.evidence_relpaths:
+            evidence_identity_check(binding.carrier_lock_key, dict(binding.evidence_relpaths))
         # R0 repair T5 fix-3 (I5, reviewer-flagged): a second, adapter-level
         # enforcement call site for session liveness+identity, BEFORE any
         # attempt slot below is consumed. Duck-typed rather than a new

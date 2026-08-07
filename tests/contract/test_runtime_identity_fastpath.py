@@ -6,6 +6,7 @@ refuses the touch. The residual, owner-accepted weakness (an in-place edit
 that preserves size/mtime/file-id) is pinned here as a test, not left as
 prose alone."""
 
+import hashlib
 import json
 import os
 import time
@@ -287,6 +288,88 @@ def test_cache_file_lives_under_data_root_not_the_repo(world):
         f"{world.SUBDIR}/model-q8_0.gguf",
         f"{world.SUBDIR}/mmproj-bf16.gguf",
     }
+
+
+# ---------------------------------------------------------------------------
+# MINOR 1 (external-threat-model review round 4): the fast path never
+# compared the receipt's own per-file `bytes` to anything -- only the
+# AGGREGATE total was checked, at the very end of the per-file loop.
+# ---------------------------------------------------------------------------
+
+
+def _cheap_identity(path: Path) -> dict:
+    info = path.stat()
+    return {
+        "size": info.st_size,
+        "mtime_ns": info.st_mtime_ns,
+        "st_ino": info.st_ino,
+        "st_dev": info.st_dev,
+    }
+
+
+def test_forged_cache_cannot_hide_a_per_file_size_swap_when_aggregate_still_matches(world):
+    """Demonstrated defect: swap the two pinned GGUF files' CONTENTS on disk
+    (the aggregate byte total is unchanged -- len(GGUF_1)+len(GGUF_2) either
+    way), then forge a cache file whose per-file entries match the SWAPPED
+    files' own live stat (an attacker fully controls this cache -- module
+    docstring: never an authority, ordinary unsigned JSON). Before the fix,
+    the fast path accepted this outright; only the aggregate total was ever
+    checked, and it still matched."""
+
+    gate = world.gate()
+    plan = world.plan()
+
+    model_path = world.data_root / world.SUBDIR / "model-q8_0.gguf"
+    mmproj_path = world.data_root / world.SUBDIR / "mmproj-bf16.gguf"
+    model_path.write_bytes(world.GGUF_2)
+    mmproj_path.write_bytes(world.GGUF_1)
+
+    receipt_sha256 = hashlib.sha256(
+        (world.receipts / "runtime.json").read_bytes()
+    ).hexdigest()
+    forged_cache = {
+        "schema": contracts.RUNTIME_IDENTITY_CACHE_SCHEMA,
+        "study": contracts.STUDY_SLUG,
+        "runtime_receipt_sha256": receipt_sha256,
+        "gguf_files": {
+            f"{world.SUBDIR}/model-q8_0.gguf": _cheap_identity(model_path),
+            f"{world.SUBDIR}/mmproj-bf16.gguf": _cheap_identity(mmproj_path),
+        },
+    }
+    _cache_path(world).write_text(json.dumps(forged_cache), encoding="utf-8")
+
+    with pytest.raises(GateClosed, match="size drift"):
+        gate.assert_model_touch_allowed(plan, full_hash=False)
+
+
+# ---------------------------------------------------------------------------
+# MINOR 3 (external-threat-model review round 4): _load_identity_cache,
+# _cheap_file_identity, _cheap_identity_matches, _write_identity_cache and
+# _resolve_full_hash_override were imported as bare names in
+# gate_runtime_gguf.py -- re-exported so they LOOKED patchable, but a
+# monkeypatch on the `contracts` package attribute was never observed at the
+# real call site.
+# ---------------------------------------------------------------------------
+
+
+def test_patched_load_identity_cache_is_observed_by_the_fast_path(world, monkeypatch):
+    gate = world.gate()
+    plan = world.plan()
+    gate.assert_model_touch_allowed(plan, full_hash=False)  # warm a genuine, valid cache
+
+    calls = []
+    real_load = contracts._load_identity_cache
+
+    def spy(cache_path, receipt_sha256):
+        calls.append((cache_path, receipt_sha256))
+        return real_load(cache_path, receipt_sha256)
+
+    monkeypatch.setattr(contracts, "_load_identity_cache", spy)
+
+    diagnostics: dict[str, object] = {}
+    gate.assert_model_touch_allowed(plan, full_hash=False, diagnostics=diagnostics)
+    assert calls, "the patched _load_identity_cache was never observed by the fast path"
+    assert diagnostics["gguf_fast_path_used"] is True  # the real cache still warm/valid
 
 
 def test_cache_is_never_written_after_a_failed_verification(world):

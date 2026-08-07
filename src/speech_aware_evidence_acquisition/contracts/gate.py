@@ -2,14 +2,15 @@
 frozen-core (model) touch.
 
 Split out of the former monolithic ``contracts.py`` (R0 repair refactor stage 1).
-The class itself is composed from four mixins (each its own module, split by
-validation concern -- E0/scoring-freeze, media/reference identity, runtime/GGUF,
-carrier-scope/exposure-ledger) purely so no single file needs to hold the whole
-~1200-line validation surface; the mixins carry only methods (no dataclass
-fields, no ``__init__``), so combining them via multiple inheritance changes
-nothing about ``FrozenCoreGate``'s runtime behaviour, field set, equality or
-hashing -- ``@dataclass(frozen=True)`` still processes exactly the 7 annotated
-fields below, exactly as it did when every method lived in one class body.
+The class itself is composed from five mixins (each its own module, split by
+validation concern -- E0/scoring-freeze, media/reference identity, evidence
+identity, runtime/GGUF, carrier-scope/exposure-ledger) purely so no single file
+needs to hold the whole validation surface; the mixins carry only methods (no
+dataclass fields, no ``__init__``), so combining them via multiple inheritance
+changes nothing about ``FrozenCoreGate``'s runtime behaviour, field set,
+equality or hashing -- ``@dataclass(frozen=True)`` still processes exactly the
+7 annotated fields below, exactly as it did when every method lived in one
+class body.
 """
 
 from __future__ import annotations
@@ -21,6 +22,7 @@ from typing import Mapping
 
 from .errors import ExecutionScopeError, GateClosed
 from .gate_e0 import _E0AndScoringFreezeMixin
+from .gate_evidence_identity import _EvidenceIdentityMixin
 from .gate_exposure import _ExposureAndCarrierMixin
 from .gate_identity import _MediaReferenceIdentityMixin
 from .gate_runtime import _RuntimeValidationMixin
@@ -32,6 +34,7 @@ from .plan import MODEL_TOUCH_PROFILES, ExecutionPlan
 class FrozenCoreGate(
     _E0AndScoringFreezeMixin,
     _MediaReferenceIdentityMixin,
+    _EvidenceIdentityMixin,
     _RuntimeValidationMixin,
     _ExposureAndCarrierMixin,
 ):

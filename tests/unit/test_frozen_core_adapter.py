@@ -220,6 +220,86 @@ def test_adapter_construction_propagates_a_media_identity_refusal(tmp_path):
         )
 
 
+# ---------------------------------------------------------------------------
+# IMPORTANT 1 (external-threat-model review round 4): the evidence-layer
+# counterpart to I-4 above -- the adapter asks the gate to re-verify THIS
+# run's evidence (via binding.evidence_relpaths) against D1's frozen
+# evidence-layer facts, duck-typed exactly the same way.
+# ---------------------------------------------------------------------------
+
+
+class _EvidenceCheckingGate:
+    def __init__(self):
+        self.checked = []
+
+    def assert_model_touch_allowed(self, plan):
+        return None
+
+    def verify_evidence_identity(self, carrier_lock_key, evidence_facts):
+        self.checked.append((carrier_lock_key, dict(evidence_facts)))
+
+
+def _binding_with_evidence(tmp_path, **overrides):
+    binding = _binding(tmp_path, **overrides)
+    from speech_aware_evidence_acquisition.core.base import PayloadBindingContext
+
+    return PayloadBindingContext(
+        carrier_lock_key=binding.carrier_lock_key,
+        allowed_sample_ids=binding.allowed_sample_ids,
+        sample_facts=binding.sample_facts,
+        data_root=binding.data_root,
+        carrier_root=binding.carrier_root,
+        evidence_relpaths={
+            sample_id: f"datasets/conec/earnings21/contexts/{sample_id}.txt"
+            for sample_id in binding.allowed_sample_ids
+        },
+    )
+
+
+def test_adapter_calls_verify_evidence_identity_when_the_gate_and_binding_support_it(tmp_path):
+    gate = _EvidenceCheckingGate()
+    binding = _binding_with_evidence(tmp_path)
+    _adapter(tmp_path, gate=gate, binding=binding)
+    assert len(gate.checked) == 1
+    carrier_lock_key, evidence_facts = gate.checked[0]
+    assert carrier_lock_key == binding.carrier_lock_key
+    assert evidence_facts == {"5000001": "datasets/conec/earnings21/contexts/5000001.txt"}
+
+
+def test_adapter_skips_evidence_identity_check_when_binding_carries_no_evidence_relpaths(tmp_path):
+    """A binding built without evidence_relpaths (the default, empty mapping
+    -- e.g. every OTHER pre-existing test in this file, or a run whose
+    evidence_source is "none") never invokes the check, even against a gate
+    that implements it."""
+
+    gate = _EvidenceCheckingGate()
+    _adapter(tmp_path, gate=gate, binding=_binding(tmp_path))
+    assert gate.checked == []
+
+
+def test_adapter_construction_propagates_an_evidence_identity_refusal(tmp_path):
+    from speech_aware_evidence_acquisition.contracts import GateClosed
+
+    class _RefusingEvidenceGate:
+        def assert_model_touch_allowed(self, plan):
+            return None
+
+        def verify_evidence_identity(self, carrier_lock_key, evidence_facts):
+            raise GateClosed("evidence identity drift (test)")
+
+    binding = _binding_with_evidence(tmp_path)
+    sink = TraceSink(tmp_path / "run", "SAEA-E-000-evidencerefuse")
+    with pytest.raises(GateClosed, match="evidence identity drift"):
+        FrozenCoreAdapter(
+            gate=_RefusingEvidenceGate(),
+            plan=_plan(run_id="SAEA-E-000-evidencerefuse", attempt_id="attempt-evidencerefuse"),
+            arm="bare-core",
+            transport=_fake_transport,
+            sink=sink,
+            binding=binding,
+        )
+
+
 def test_request_round_trip_traces_and_counts(tmp_path):
     adapter, sink = _adapter(tmp_path)
     response = adapter.request(_payload())

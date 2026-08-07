@@ -150,6 +150,16 @@ class PayloadBindingContext:
     # core.model.FrozenCoreAdapter only attempts the D1 media-identity check
     # (gate.verify_media_identity) when it is present and non-empty.
     media_relpaths: Mapping[str, str] = field(default_factory=dict)
+    # IMPORTANT 1 (external-threat-model review round 4): the sample ids THIS
+    # run's evidence source supplied non-empty evidence for, mapped to that
+    # evidence file's path (core.evidence.evidence_file_relpath), so
+    # core.model.FrozenCoreAdapter can ask the gate to re-verify it against
+    # D1's frozen evidence-layer identity -- the evidence-layer counterpart to
+    # media_relpaths above. Optional/defaulted (not every sample necessarily
+    # carries evidence -- evidence_source "none" supplies an empty mapping)
+    # and, unlike media_relpaths, deliberately NOT required to cover every
+    # allowed_sample_id: only samples with actual evidence appear here.
+    evidence_relpaths: Mapping[str, str] = field(default_factory=dict)
 
     def validate(self) -> "PayloadBindingContext":
         """Structural self-check, no filesystem access: a malformed binding
@@ -216,6 +226,24 @@ class PayloadBindingContext:
             if not isinstance(relpath, str) or not relpath:
                 raise CoreError(
                     f"binding context media_relpaths[{sample_id!r}] must be a non-empty string"
+                )
+        if not isinstance(self.evidence_relpaths, Mapping):
+            raise CoreError("binding context evidence_relpaths must be a mapping")
+        # IMPORTANT 1: unlike media_relpaths, evidence is legitimately sparse
+        # (not every sample carries evidence -- evidence_source "none" yields
+        # none at all), so only a SUBSET check applies: every key must still
+        # name an actually-allowed sample id, never one outside this run's own
+        # verified split.
+        if not set(self.evidence_relpaths) <= set(self.allowed_sample_ids):
+            raise CoreError(
+                "binding context evidence_relpaths keys must be a subset of "
+                "allowed_sample_ids"
+            )
+        for sample_id, relpath in self.evidence_relpaths.items():
+            if not isinstance(relpath, str) or not relpath:
+                raise CoreError(
+                    f"binding context evidence_relpaths[{sample_id!r}] must be a "
+                    "non-empty string"
                 )
         return self
 

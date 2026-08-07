@@ -33,6 +33,7 @@ from speech_aware_evidence_acquisition.data.carriers import (
     get_carrier_descriptor,
     reference_scoped_carrier_lock_keys,
     register_carrier_descriptor,
+    resolve_media_identity_carrier,
 )
 from speech_aware_evidence_acquisition.data.lock import load_lock
 from speech_aware_evidence_acquisition.data.loader import load_carrier
@@ -173,6 +174,81 @@ def test_synthetic_carrier_reference_tokens_resolve_through_the_descriptor(
     lock = load_lock(lock_path)
     tokens = reference_tokens(lock, data_root, _LOCK_KEY, "lec-001")
     assert tokens == ["HELLO", "WORLD"]
+
+
+# ---------------------------------------------------------------------------
+# MINOR 2 (external-threat-model review round 4): the "conec" media-identity
+# alias is now registry-driven (media_identity_aliases /
+# resolve_media_identity_carrier), not a hand-coded ternary at the gate call
+# site.
+# ---------------------------------------------------------------------------
+
+
+def test_earnings21_original_declares_the_conec_media_identity_alias():
+    descriptor = get_carrier_descriptor("earnings21-original")
+    assert "conec" in descriptor.media_identity_aliases
+
+
+def test_resolve_media_identity_carrier_aliases_conec_to_earnings21_original():
+    assert resolve_media_identity_carrier("conec") == "earnings21-original"
+
+
+def test_resolve_media_identity_carrier_is_identity_for_an_unaliased_key():
+    assert resolve_media_identity_carrier("earnings22-original") == "earnings22-original"
+    assert resolve_media_identity_carrier("never-heard-of-this-one") == "never-heard-of-this-one"
+
+
+def test_evidence_layout_d1_layer_key_is_explicit_and_not_derived_from_subdir():
+    """D1 records ConEC's context layer as "e21_contexts" -- not derivable
+    from EvidenceLayout.subdir ("earnings21/contexts") by any fixed rule, so
+    it must be its own explicit field."""
+
+    descriptor = get_carrier_descriptor("earnings21-original")
+    assert descriptor.evidence.d1_layer_key == "e21_contexts"
+    assert descriptor.evidence.subdir != descriptor.evidence.d1_layer_key
+
+
+def test_a_new_carrier_can_register_its_own_media_identity_alias():
+    """A THIRD carrier, mirroring this file's own synthetic_descriptor
+    pattern: register_carrier_descriptor threads media_identity_aliases into
+    the SAME registry-driven index the built-in earnings21-original/conec
+    pairing uses -- no gate-side special case needed for a new carrier
+    either."""
+
+    alias_key = "synthetic-lecture-alt-identity"
+    descriptor = CarrierDescriptor(
+        lock_key=_LOCK_KEY,
+        media_subdir="audio",
+        media_extension=".flac",
+        metadata_filename="lecture-meta.csv",
+        metadata_columns=MetadataColumns(
+            id_column="clip_id", duration_column="seconds", sample_rate_column="hz"
+        ),
+        media_identity_aliases=frozenset({alias_key}),
+    )
+    register_carrier_descriptor(descriptor)
+    try:
+        assert resolve_media_identity_carrier(alias_key) == _LOCK_KEY
+    finally:
+        from speech_aware_evidence_acquisition.data import carriers as _carriers_module
+
+        _carriers_module._REGISTRY.pop(_LOCK_KEY, None)
+        _carriers_module._MEDIA_IDENTITY_ALIAS_INDEX.pop(alias_key, None)
+
+
+def test_duplicate_media_identity_alias_registration_refused(synthetic_descriptor):
+    colliding = CarrierDescriptor(
+        lock_key="another-synthetic-carrier",
+        media_subdir="audio",
+        media_extension=".flac",
+        metadata_filename="lecture-meta.csv",
+        metadata_columns=MetadataColumns(
+            id_column="clip_id", duration_column="seconds", sample_rate_column="hz"
+        ),
+        media_identity_aliases=frozenset({_LOCK_KEY}),  # collides with a registered carrier
+    )
+    with pytest.raises(CarrierDescriptorError, match="collides"):
+        register_carrier_descriptor(colliding)
 
 
 def test_synthetic_carrier_scores_through_the_unmodified_scoring_machinery(

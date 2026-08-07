@@ -101,7 +101,12 @@ umbrella wiki.
   and to sanity-check each sample's loader-reported `audio_seconds` against that same frozen byte
   size for MP3-bitrate plausibility (I-4; see `contracts.FrozenCoreGate.verify_media_identity` for
   the documented residue this leaves — a plausibility bound, not an exact duration re-derivation).
-  The R0 frozen-core adapter must enforce the per-arm
+  D1 evidence identity (IMPORTANT 1, external review round 4): the same construction-time check for
+  evidence — `contracts.FrozenCoreGate.verify_evidence_identity` re-verifies exactly the sample ids
+  the run's evidence source supplied non-empty evidence for against D1's frozen evidence-layer bytes
+  (today: `earnings21-original` via `conec.layers.e21_contexts` only — see
+  `docs/owner-decisions-pending.md` item 8 for scope and the pre-rotation negative-control scoping
+  decision). The R0 frozen-core adapter must enforce the per-arm
   visible-field **allowlists** frozen in the D2 artifact as its request choke point — the
   boundary blocklist alone is necessary, not sufficient. Canonical binding:
   `FrozenCoreGate.for_study_repo`.

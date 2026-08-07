@@ -235,6 +235,81 @@ def test_run_experiment_supplies_evidence_with_org_and_supply_traces(
     assert result.arm == "fixed-legal-context"
 
 
+# ---------------------------------------------------------------------------
+# IMPORTANT 1 (external-threat-model review round 4): run_experiment builds
+# the D1 evidence-identity rail's facts (core.evidence.evidence_file_relpath)
+# for exactly the discovery samples the evidence source actually supplied
+# evidence for, and threads them into the binding context a gate that
+# implements verify_evidence_identity can then check at adapter construction.
+# ---------------------------------------------------------------------------
+
+
+class _EvidenceCheckingGate:
+    def __init__(self):
+        self.checked = []
+
+    def assert_model_touch_allowed(self, plan):
+        return None
+
+    def verify_evidence_identity(self, carrier_lock_key, evidence_facts):
+        self.checked.append((carrier_lock_key, dict(evidence_facts)))
+
+
+def test_run_experiment_wires_evidence_relpaths_into_the_evidence_identity_gate(
+    synthetic_world, tmp_path
+):
+    lock, repo_root = _frozen_world(synthetic_world, tmp_path)
+    _, split_hash, _ = load_split(repo_root, "discovery", lock, synthetic_world.data_root)
+    composed = _composed(arm="fixed-legal-context", evidence_source="conec-contexts")
+    plan = _plan(
+        split_hash,
+        protocol_hash=protocol_hash(composed.config_hash, composed.values["arm"], split_hash),
+    )
+    gate = _EvidenceCheckingGate()
+    run_experiment(
+        composed=composed,
+        plan=plan,
+        gate=gate,
+        lock=lock,
+        root=synthetic_world.data_root,
+        run_dir=tmp_path / "run-evidence-identity",
+        transport=_transport,
+        repo_root=repo_root,
+    )
+    assert len(gate.checked) == 1
+    carrier_lock_key, evidence_facts = gate.checked[0]
+    assert carrier_lock_key == "earnings21-original"
+    assert evidence_facts == {
+        "4000001": "datasets/conec/earnings21/contexts/4000001.txt",
+        "4000002": "datasets/conec/earnings21/contexts/4000002.txt",
+        "4000003": "datasets/conec/earnings21/contexts/4000003.txt",
+    }
+
+
+def test_run_experiment_skips_the_evidence_identity_gate_when_evidence_source_is_none(
+    synthetic_world, tmp_path
+):
+    lock, repo_root = _frozen_world(synthetic_world, tmp_path)
+    _, split_hash, _ = load_split(repo_root, "discovery", lock, synthetic_world.data_root)
+    composed = _composed()  # evidence_source: "none" (default)
+    plan = _plan(
+        split_hash,
+        protocol_hash=protocol_hash(composed.config_hash, composed.values["arm"], split_hash),
+    )
+    gate = _EvidenceCheckingGate()
+    run_experiment(
+        composed=composed,
+        plan=plan,
+        gate=gate,
+        lock=lock,
+        root=synthetic_world.data_root,
+        run_dir=tmp_path / "run-evidence-identity-none",
+        transport=_transport,
+        repo_root=repo_root,
+    )
+    assert gate.checked == []
+
+
 def test_run_experiment_refuses_wrong_protocol_hash(synthetic_world, tmp_path):
     lock, repo_root = _frozen_world(synthetic_world, tmp_path)
     _, split_hash, _ = load_split(repo_root, "discovery", lock, synthetic_world.data_root)

@@ -24,12 +24,13 @@ from ..base import (
     EVIDENCE_SOURCES,
     POLICIES,
     CoreError,
+    EvidenceError,
     PayloadBindingContext,
     RunResult,
     SampleContext,
 )
 from ..config import ComposedConfig
-from ..evidence import rotated_mismatch
+from ..evidence import evidence_file_relpath, rotated_mismatch
 from ..resources import NullSampler, ResourceSampler, cpu_seconds_snapshot
 from ..model import FrozenCoreAdapter
 from ..split_receipt import load_verified_split
@@ -103,6 +104,32 @@ def run_experiment(
         evidence_by_sample = {
             s.sample_id: source(lock, root, s.sample_id, s.carrier_lock_key) for s in samples
         }
+        # IMPORTANT 1 (external-threat-model review round 4): the D1
+        # evidence-identity rail's facts (core.model.lifecycle's own
+        # verify_evidence_identity call), built from the ORIGINAL
+        # (pre-rotation) evidence_by_sample -- i.e. exactly the sample ids
+        # this run's evidence source itself supplied non-empty evidence for,
+        # using each sample's OWN D1-recorded evidence file
+        # (core.evidence.evidence_file_relpath -- never hand-coded, module
+        # docstring). Computed BEFORE any evidence_mismatch/rotated_mismatch
+        # reassignment below so this checks the byte-integrity of the
+        # evidence CORPUS the run's evidence source drew from, independent of
+        # which sample a later negative-control experiment happens to route
+        # that content to (see gate_evidence_identity's own docstring for why
+        # this scoping is deliberate, not an oversight).
+        evidence_relpaths: dict[str, str] = {}
+        for s in samples:
+            if not evidence_by_sample[s.sample_id]:
+                continue
+            try:
+                evidence_relpaths[s.sample_id] = evidence_file_relpath(
+                    lock, s.carrier_lock_key, s.sample_id
+                )
+            except EvidenceError as error:
+                raise CoreError(
+                    f"cannot resolve a D1 evidence-identity path for sample "
+                    f"{s.sample_id!r}: {error}"
+                ) from error
         if values.get("evidence_mismatch", False):
             evidence_by_sample = rotated_mismatch(evidence_by_sample)
         policy = POLICIES.resolve(str(values["policy"]))
@@ -121,6 +148,8 @@ def run_experiment(
             # exactly this run's split against D1's frozen media identity --
             # never a parallel/independently-derived path string.
             media_relpaths={s.sample_id: s.media_relpath for s in samples},
+            # IMPORTANT 1: the evidence-layer counterpart, see above.
+            evidence_relpaths=evidence_relpaths,
             data_root=Path(root),
             carrier_root=carrier_root,
         )

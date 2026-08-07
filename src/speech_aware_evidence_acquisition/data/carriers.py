@@ -65,11 +65,28 @@ class EvidenceLayout:
     the carrier's own asset root: ConEC evidence for Earnings21 lives under
     the separate ``conec`` lock key's own materialized root
     (``<conec root>/earnings21/contexts/<id>.txt``), so ``lock_key`` names
-    which asset the evidence bytes actually live under."""
+    which asset the evidence bytes actually live under.
+
+    ``d1_layer_key`` (IMPORTANT 1, external-threat-model review round 4)
+    names the layer key this evidence lives under in D1's own identity
+    artifact (``docs/receipts/artifacts/d1-identity.json``,
+    ``carriers[lock_key].layers[d1_layer_key]``) -- e.g. ConEC's context
+    layer is D1-recorded as ``e21_contexts``, not derivable from ``subdir``
+    (``earnings21/contexts``) by any fixed rule, so it is its own explicit
+    fact rather than a hand-coded string at the gate call site. This is what
+    lets ``contracts.FrozenCoreGate.verify_evidence_identity`` re-hash
+    exactly the D1-frozen evidence bytes a carrier's evidence source is
+    about to read, the same way ``ReferenceLayout``'s own subdir already
+    lets :meth:`verify_reference_identity` do for references (that method's
+    D1 layer key, ``nlp_references``, happens to equal its subdir's last
+    path segment for both registered carriers today -- evidence's does not,
+    which is exactly why this field exists instead of reusing that
+    coincidence)."""
 
     lock_key: str
     subdir: str
     extension: str
+    d1_layer_key: str
 
 
 @dataclass(frozen=True)
@@ -82,6 +99,20 @@ class CarrierDescriptor:
     reading nothing (or the wrong carrier's files) -- see
     ``data.references``/``core.evidence`` for the two fail-closed refusals
     this makes possible.
+
+    ``media_identity_aliases`` (MINOR 2, external-threat-model review round
+    4): the set of OTHER lock keys whose D1 media identity this carrier's
+    OWN media layer also supplies -- e.g. ``earnings21-original`` declares
+    ``{"conec"}`` because D1 records ``conec.canonical_identity ==
+    "earnings21-original media"`` (ConEC carries no media of its own).
+    Registry-driven so ``contracts.gate_media_identity.verify_media_identity``
+    never hand-codes this equivalence (MINOR 2's own fix): see
+    :func:`resolve_media_identity_carrier`. Layer-specific and deliberately
+    NOT reused for the reference layer (``reference_scoped_carrier_lock_
+    keys`` above): conec's own D1 reference layer, ``e21_nlp_references``,
+    is a DIFFERENT, differently-hashed file set than earnings21-original's
+    own ``nlp_references`` -- aliasing conec to earnings21-original for
+    references would score against the wrong bytes.
     """
 
     lock_key: str
@@ -91,9 +122,11 @@ class CarrierDescriptor:
     metadata_columns: MetadataColumns
     reference: ReferenceLayout | None = None
     evidence: EvidenceLayout | None = None
+    media_identity_aliases: frozenset[str] = frozenset()
 
 
 _REGISTRY: dict[str, CarrierDescriptor] = {}
+_MEDIA_IDENTITY_ALIAS_INDEX: dict[str, str] = {}
 
 
 def register_carrier_descriptor(descriptor: CarrierDescriptor) -> CarrierDescriptor:
@@ -102,7 +135,13 @@ def register_carrier_descriptor(descriptor: CarrierDescriptor) -> CarrierDescrip
     discipline ``core.base.Registry`` applies to loaders/evidence
     sources/scorers (this module stays independent of that registry, and of
     ``core.*`` generally, so it can be imported from ``contracts.*`` and
-    ``data.*`` alike without a cycle -- module docstring)."""
+    ``data.*`` alike without a cycle -- module docstring).
+
+    Also registers every one of ``descriptor.media_identity_aliases`` into
+    the module-level alias index (MINOR 2): refuses an alias that collides
+    with an already-registered carrier lock key or an already-registered
+    alias, the same duplicate discipline the primary registry itself
+    applies."""
 
     if not isinstance(descriptor, CarrierDescriptor):
         raise CarrierDescriptorError(
@@ -113,8 +152,34 @@ def register_carrier_descriptor(descriptor: CarrierDescriptor) -> CarrierDescrip
         raise CarrierDescriptorError(
             f"a carrier descriptor is already registered for {descriptor.lock_key!r}"
         )
+    for alias in descriptor.media_identity_aliases:
+        if not isinstance(alias, str) or not alias.strip():
+            raise CarrierDescriptorError(
+                f"{descriptor.lock_key!r} media_identity_aliases must contain only "
+                "non-empty strings"
+            )
+        if alias in _REGISTRY or alias in _MEDIA_IDENTITY_ALIAS_INDEX:
+            raise CarrierDescriptorError(
+                f"media identity alias {alias!r} (declared by {descriptor.lock_key!r}) "
+                "collides with an already-registered carrier lock key or alias"
+            )
     _REGISTRY[descriptor.lock_key] = descriptor
+    for alias in descriptor.media_identity_aliases:
+        _MEDIA_IDENTITY_ALIAS_INDEX[alias] = descriptor.lock_key
     return descriptor
+
+
+def resolve_media_identity_carrier(carrier_lock_key: str) -> str:
+    """MINOR 2 (external-threat-model review round 4): which carrier's D1
+    media layer supplies identity for ``carrier_lock_key`` -- itself, unless
+    some OTHER registered carrier declares it as one of its own
+    ``media_identity_aliases``. Today only ``earnings21-original`` declares
+    ``conec`` as an alias; a lock key that is neither a registered carrier
+    nor a declared alias is returned unchanged (the caller, e.g.
+    ``verify_media_identity``, is responsible for refusing an unresolvable
+    result -- this function itself never raises)."""
+
+    return _MEDIA_IDENTITY_ALIAS_INDEX.get(carrier_lock_key, carrier_lock_key)
 
 
 def get_carrier_descriptor(lock_key: str) -> CarrierDescriptor:
@@ -164,7 +229,17 @@ EARNINGS21_ORIGINAL = register_carrier_descriptor(
             sample_rate_column="sample_rate",
         ),
         reference=ReferenceLayout(subdir="transcripts/nlp_references", extension=".nlp"),
-        evidence=EvidenceLayout(lock_key="conec", subdir="earnings21/contexts", extension=".txt"),
+        evidence=EvidenceLayout(
+            lock_key="conec",
+            subdir="earnings21/contexts",
+            extension=".txt",
+            d1_layer_key="e21_contexts",
+        ),
+        # MINOR 2: D1 records conec.canonical_identity == "earnings21-original
+        # media" (ConEC carries no media of its own) -- see CarrierDescriptor's
+        # own docstring for why this is layer-specific (never applied to
+        # references).
+        media_identity_aliases=frozenset({"conec"}),
     )
 )
 

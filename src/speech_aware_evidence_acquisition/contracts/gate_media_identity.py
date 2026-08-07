@@ -13,6 +13,7 @@ from typing import Mapping
 
 import speech_aware_evidence_acquisition.contracts as _contracts_pkg
 
+from ..data.carriers import resolve_media_identity_carrier
 from .errors import GateClosed
 from .gate_d1_lookup import _D1IdentityLookupMixin
 from .identifiers import _SHA256
@@ -128,6 +129,11 @@ class _MediaIdentityMixin(_D1IdentityLookupMixin):
         ``carrier_lock_key`` of ``conec`` resolves to ``earnings21-original``'s
         D1 media layer: ConEC carries no media of its own (D1:
         ``conec.canonical_identity == "earnings21-original media"``).
+        MINOR 2 (external-threat-model review round 4): this aliasing is now
+        expressed registry-side (``data.carriers.CarrierDescriptor.media_
+        identity_aliases`` / :func:`data.carriers.resolve_media_identity_carrier`)
+        rather than hand-coded here -- see that function's own docstring for
+        why this is layer-specific and never applied to the reference layer.
         """
 
         if not isinstance(media_facts, Mapping) or not media_facts:
@@ -135,7 +141,7 @@ class _MediaIdentityMixin(_D1IdentityLookupMixin):
                 "verify_media_identity requires a non-empty sample_id -> "
                 "(media_relpath, audio_seconds) mapping"
             )
-        identity_carrier = "earnings21-original" if carrier_lock_key == "conec" else carrier_lock_key
+        identity_carrier = resolve_media_identity_carrier(carrier_lock_key)
         document = self._load(self._d1_identity_artifact_path(), "D1 identity artifact")
         carriers = document.get("carriers")
         carrier_doc = carriers.get(identity_carrier) if isinstance(carriers, Mapping) else None

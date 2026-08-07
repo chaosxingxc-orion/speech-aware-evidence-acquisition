@@ -292,3 +292,52 @@ leaves, as R0's closure level for this perf fix (owner instruction 2026-08-06 al
 this scope reduction); revisit only if a future task needs a stronger per-file tamper guarantee
 than size/mtime/file-id (e.g. a periodic background full re-hash, or an external attestation of the
 asset fetch) cheaper than re-hashing 34.7 GB on every gate open.
+
+## 8. IMPORTANT 1 (fix-wave4, external-threat-model review round 4): evidence-identity carrier coverage and negative-control scoping
+
+**Status:** closed at a documented, bounded level -- `contracts.FrozenCoreGate.verify_evidence_identity`
+re-hashes the evidence bytes `core.evidence._conec_contexts` reads, against D1's frozen per-file
+identity (`docs/receipts/artifacts/d1-identity.json`, `conec.layers.e21_contexts`), for exactly the
+sample ids a run's own evidence source supplied non-empty evidence for. Wired into
+`core.model.lifecycle._AttemptLifecycleMixin._open_gate_and_attempt` alongside the pre-existing
+media-identity rail (I-4) -- both re-verified at `FrozenCoreAdapter` construction, before any model
+touch. Scoring does not read evidence today (`core.scorers` imports only `data.references`, never
+`core.evidence`), so unlike the reference-identity rail there is no second call site inside
+`core.scorers._assert_scoring_entry_gate` to wire yet; if a future scorer ever reads evidence, that
+call site needs the same treatment `_assert_scoring_entry_gate` already gives references.
+
+**What is bound.** The evidence layer's location is derived entirely from `carrier_lock_key`'s own
+`data.carriers.CarrierDescriptor.evidence` (an `EvidenceLayout`: lock key, subdir, extension, AND the
+new `d1_layer_key` field this fix adds -- `e21_contexts` is not derivable from `subdir` by any fixed
+rule, unlike the reference layer's `nlp_references` key, which happens to equal its subdir's last
+segment for both registered carriers today). A carrier whose descriptor declares no evidence layer at
+all (`descriptor.evidence is None` -- today `earnings22-original`, whose ConEC contexts are a
+different-shaped, never-read per-call-PDF layer) fails closed inside `verify_evidence_identity` itself,
+independent of `core.evidence._conec_contexts`'s own pre-existing internal refusal for the same case --
+so a future evidence source that forgets that internal check is still caught by the gate.
+
+**Deliberate scoping decision: identity is verified BEFORE `evidence_mismatch`/`rotated_mismatch`.**
+`core.driver.run_experiment` builds the gate's `evidence_relpaths` facts from the evidence source's
+ORIGINAL, pre-rotation output -- i.e. "sample X's own evidence source call produced genuine,
+D1-identity-matching bytes" -- and only afterward, if the config sets `evidence_mismatch: true`, does
+`rotated_mismatch` reassign that already-verified content to a DIFFERENT sample id for the negative
+control. The alternative (verifying identity against whichever sample ultimately RECEIVES the content,
+post-rotation) was rejected: `rotated_mismatch` is an intentional, in-process reassignment of genuine
+D1-tracked bytes for a scoring probe, not a tampering attack, and re-deriving "sample id -> relpath"
+naively per RECEIVING sample after rotation would check the WRONG (the receiving sample's own, untouched)
+file instead of the file whose bytes were actually supplied -- silently verifying something other than
+what left the process. Checking pre-rotation instead verifies the byte-integrity of the evidence CORPUS
+the run's evidence source drew from, which is the property IMPORTANT 1 is actually about (a tampered
+on-disk context file), and composes correctly regardless of whether `evidence_mismatch` is set.
+
+**What is NOT bound, and why.** `earnings22-original` has no evidence-identity coverage because it has
+no evidence layer to cover: `_conec_contexts` has never read Earnings22's ConEC contexts (a different,
+per-call PDF-packet shape), so no config can legitimately supply earnings22 evidence today regardless of
+this rail. Should a future task register an earnings22-aware (or other-carrier) evidence source, its
+`CarrierDescriptor.evidence` needs a matching `EvidenceLayout` (including a genuine `d1_layer_key` D1
+records) before `verify_evidence_identity` can cover it -- an owner-level decision if it changes what
+this study's runtime is allowed to read, not an implementer one.
+
+**Requested disposition:** accept the current earnings21-original-only evidence-identity coverage, and
+the pre-rotation scoping decision above, as this fix wave's closure level; revisit only if and when an
+earnings22-aware (or other-carrier) evidence source is ever registered.

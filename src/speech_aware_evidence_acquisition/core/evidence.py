@@ -20,13 +20,56 @@ from pathlib import Path
 from typing import Mapping
 
 from ..data.carriers import CarrierDescriptorError, get_carrier_descriptor
-from ..data.lock import asset_dir
+from ..data.lock import asset_dir, lock_entry
 from ..e0.artifacts import sha256_file
 from .base import EVIDENCE_SOURCES, EvidenceError, EvidenceItem
 
 
 class OracleEvidenceError(RuntimeError):
     """Oracle evidence was requested on the runtime path."""
+
+
+def evidence_file_relpath(
+    lock: Mapping[str, object], carrier_lock_key: str, sample_id: str
+) -> str:
+    """IMPORTANT 1 (external-threat-model review round 4): the evidence
+    file's path, relative to the controlled data root -- the SAME
+    construction :func:`_conec_contexts` resolves internally, exposed here
+    so a run's D1 evidence-identity rail
+    (``contracts.FrozenCoreGate.verify_evidence_identity``) can ask the gate
+    to re-hash EXACTLY the file this run's evidence source is about to read,
+    from one shared path convention rather than a second, independently
+    drifting construction -- the same discipline ``data.references.
+    reference_file_relpath`` already applies for the reference layer.
+
+    Unlike ``reference_file_relpath`` (relative to the CARRIER's own asset
+    root), an evidence file lives under its OWN lock key's asset root
+    (``EvidenceLayout.lock_key`` -- module docstring: ConEC evidence for
+    Earnings21 lives under the separate ``conec`` lock key), so the
+    ``local_subdir`` prefix here comes from the evidence layout's own lock
+    key, not from ``carrier_lock_key`` itself. A carrier with no evidence
+    layer registered fails closed exactly as :func:`_conec_contexts` itself
+    does.
+    """
+
+    try:
+        descriptor = get_carrier_descriptor(carrier_lock_key)
+    except CarrierDescriptorError:
+        descriptor = None
+    if descriptor is None or descriptor.evidence is None:
+        raise EvidenceError(
+            f"carrier {carrier_lock_key!r} has no ConEC evidence layer registered "
+            "(data.carriers.CarrierDescriptor.evidence is None); cannot resolve an "
+            "evidence file path for it"
+        )
+    layout = descriptor.evidence
+    entry = lock_entry(lock, layout.lock_key)
+    local_subdir = entry.get("local_subdir")
+    if not isinstance(local_subdir, str) or not local_subdir:
+        raise EvidenceError(
+            f"asset {layout.lock_key!r} lacks a usable local_subdir in the lock"
+        )
+    return f"{local_subdir.rstrip('/')}/{layout.subdir}/{sample_id}{layout.extension}"
 
 
 def _none_source(

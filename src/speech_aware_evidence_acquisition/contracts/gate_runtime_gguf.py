@@ -6,6 +6,19 @@ own module docstring for why ``_measure_file``/``_SESSION_FULL_HASH_DONE``
 below go through ``_contracts_pkg`` rather than a bare/imported name --
 exactly the same reasoning applies here, unchanged by which file this method
 lives in.
+
+MINOR 3 (external-threat-model review round 4): ``_load_identity_cache``,
+``_cheap_file_identity``, ``_cheap_identity_matches``, ``_write_identity_
+cache`` and ``_resolve_full_hash_override`` are called the SAME way, via
+``_contracts_pkg.<name>(...)`` rather than a bare imported name -- before
+this fix they were imported directly from ``.receipts`` instead, so they
+were re-exported from ``contracts`` (and therefore LOOKED patchable) but a
+``monkeypatch.setattr(contracts, "_load_identity_cache", spy)`` in a test
+would never actually be observed at this module's own call site (it patches
+a different name binding than the one this module reads), passing
+vacuously on exactly the sub-check the fast path introduces. Only
+``RUNTIME_IDENTITY_CACHE_FILENAME`` (a plain string constant, never a
+monkeypatch target) and the path-safety helpers stay bare imports.
 """
 
 from __future__ import annotations
@@ -18,16 +31,8 @@ import speech_aware_evidence_acquisition.contracts as _contracts_pkg
 
 from .errors import GateClosed
 from .identifiers import _SHA256
-from .receipts import (
-    RUNTIME_IDENTITY_CACHE_FILENAME,
-    _cheap_file_identity,
-    _cheap_identity_matches,
-    _load_identity_cache,
-    _resolve_full_hash_override,
-    _resolve_under,
-    _safe_relative_path,
-    _write_identity_cache,
-)
+from .identity_cache import RUNTIME_IDENTITY_CACHE_FILENAME
+from .receipts import _resolve_under, _safe_relative_path
 
 
 class _GgufIdentityMixin:
@@ -64,14 +69,16 @@ class _GgufIdentityMixin:
             raise GateClosed(
                 f"runtime receipt: cannot read bytes for identity cache: {error}"
             ) from error
-        resolved_full_hash = _resolve_full_hash_override(full_hash)
+        resolved_full_hash = _contracts_pkg._resolve_full_hash_override(full_hash)
         do_full = (
             resolved_full_hash
             if resolved_full_hash is not None
             else receipt_sha256 not in _contracts_pkg._SESSION_FULL_HASH_DONE
         )
         cache_path = Path(self.data_root) / RUNTIME_IDENTITY_CACHE_FILENAME
-        cached_entries = None if do_full else _load_identity_cache(cache_path, receipt_sha256)
+        cached_entries = (
+            None if do_full else _contracts_pkg._load_identity_cache(cache_path, receipt_sha256)
+        )
 
         seen: set[str] = set()
         total_bytes = 0
@@ -101,11 +108,29 @@ class _GgufIdentityMixin:
                 raise GateClosed(f"{label} lacks valid bytes/sha256")
             resolved = _resolve_under(self.data_root, relative, f"{label}.path")
 
-            cheap = _cheap_file_identity(resolved, f"{label}.path")
+            cheap = _contracts_pkg._cheap_file_identity(resolved, f"{label}.path")
             cached_entry = cached_entries.get(relative) if cached_entries is not None else None
-            if cached_entry is not None and _cheap_identity_matches(cheap, cached_entry):
+            if cached_entry is not None and _contracts_pkg._cheap_identity_matches(
+                cheap, cached_entry
+            ):
                 # Fast path (items 1/2): size/mtime/file-id match the cache bound
                 # to THIS exact runtime receipt -- skip re-reading the bytes.
+                # MINOR 1 (external-threat-model review round 4): the cache is
+                # NEVER an authority (module docstring) -- an attacker who can
+                # write/forge the cache file directly controls what this fast
+                # branch considers "matching", so the RECEIPT's own per-file
+                # `bytes` (validated JSON, immune to the cache being forged)
+                # must still agree with the live-stat size, zero extra I/O
+                # (`cheap["size"]` already came from the `os.stat()` call just
+                # above). Demonstrated defect: swapping two pinned files'
+                # contents while forging matching cache stats left only the
+                # AGGREGATE total checked below, which stayed correct even
+                # though each individual file drifted.
+                if cheap["size"] != recorded_bytes:
+                    raise GateClosed(
+                        f"{label} size drift (fast path): receipt {recorded_bytes}, "
+                        f"actual {cheap['size']}; model touch refused"
+                    )
                 # STATED LIMITATION (module comment above, owner-decisions-pending
                 # item 7): this defends a wrong/partial/accidentally-replaced
                 # model set, NOT an adversary who edits bytes in place while
@@ -136,7 +161,7 @@ class _GgufIdentityMixin:
         # never cache a partial/failed check. A write failure is swallowed
         # (best-effort convenience, module docstring); it never fails an already-
         # successful gate check.
-        _write_identity_cache(cache_path, receipt_sha256, new_cache_entries)
+        _contracts_pkg._write_identity_cache(cache_path, receipt_sha256, new_cache_entries)
         if full_hashed_count == len(files):
             # Every file was just genuinely, fully re-hashed from bytes this
             # call -- this satisfies the process/session floor (see

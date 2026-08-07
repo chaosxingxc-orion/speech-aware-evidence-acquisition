@@ -11,6 +11,7 @@ from speech_aware_evidence_acquisition.core.base import (
 )
 from speech_aware_evidence_acquisition.core.evidence import (
     OracleEvidenceError,
+    evidence_file_relpath,
     rotated_mismatch,
 )
 from speech_aware_evidence_acquisition.data.lock import load_lock
@@ -64,6 +65,25 @@ def test_conec_source_fails_closed_for_a_carrier_with_no_evidence_layer(syntheti
         EVIDENCE_SOURCES.resolve("conec-contexts")(
             lock, synthetic_world.data_root, "5000000", "earnings22-original"
         )
+
+
+def test_evidence_file_relpath_matches_the_conec_contexts_source_layout(synthetic_world):
+    """IMPORTANT 1 (external review round 4): evidence_file_relpath -- the
+    path the D1 evidence-identity rail re-hashes -- must resolve to the SAME
+    on-disk file _conec_contexts itself reads (data.carriers.EvidenceLayout,
+    never hand-coded)."""
+
+    lock = load_lock(synthetic_world.lock_path)
+    relpath = evidence_file_relpath(lock, "earnings21-original", "4000001")
+    assert relpath == "datasets/conec/earnings21/contexts/4000001.txt"
+    assert (synthetic_world.data_root / relpath).is_file()
+    assert (synthetic_world.data_root / relpath).read_text(encoding="utf-8") == "ctx"
+
+
+def test_evidence_file_relpath_fails_closed_for_a_carrier_with_no_evidence_layer(synthetic_world):
+    lock = load_lock(synthetic_world.lock_path)
+    with pytest.raises(EvidenceError, match="no ConEC evidence layer"):
+        evidence_file_relpath(lock, "earnings22-original", "5000000")
 
 
 def _item(evidence_id):
