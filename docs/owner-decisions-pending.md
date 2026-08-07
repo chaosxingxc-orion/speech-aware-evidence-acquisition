@@ -6,6 +6,26 @@ file only records what is open and why. See design spec §6
 (`docs/superpowers/specs/2026-08-05-saea-r0-repair-trust-boundary-design.md`, umbrella) for the
 governing framing.
 
+## Owner disposition 2026-08-07 (in-session directive)
+
+The owner accepted the two items put to them at the close of the R0 repair campaign:
+
+1. **Entity/QA scorer adapters are OUT of R0 scope** (item 1 below). They stay unregistered; the
+   format decisions listed there remain for a later readiness memo. No adapter is to be faked.
+2. **The residual boundaries are accepted as R0 boundaries** — specifically: (a) the run bundle is a
+   self-consistency check, not an authenticity proof (a writer with run-directory access can forge a
+   coherent, finalizable bundle, because raw response bytes are not persisted and the chain has no
+   external anchor); (b) the GGUF cheap-identity fast path cannot detect an in-place byte
+   replacement that preserves size and mtime.
+
+**Interpretation note (recorded because the directive was terse):** "前两项接受" is read as accepting
+the *proposed dispositions* — defer entity/QA out of R0, and accept (a) and (b) as boundaries. If the
+owner instead intended entity/QA adapters to be built inside R0, that is the opposite of what is
+recorded here and should be corrected before the fresh third-party review consumes this file.
+
+Still open and NOT covered by this disposition: R0.3 (`SAEA-E-001`) execution authority, which has
+not been granted; no model touch has occurred.
+
 ## 1. Entity/QA scorer adapters (R0 repair T8, invariant I8 partial)
 
 **Status:** not registered. `core/scorers.py` registers `asr-wer` and `cost` only.
