@@ -51,7 +51,7 @@ umbrella wiki.
   (profile, split role, split identity hash, consumed=no, registered calls/audio-seconds/GPU-hours
   ≥ planned; every budget cell must be a finite non-negative number). **Budget caps, retired (owner
   amendment 2026-08-06, `SAEA-OWNER-AMENDMENT-2026-08-06-BUDGET-CAPS`,
-  `wiki/experiments/speech-aware-evidence-acquisition/
+  `wiki/audit/speech-aware-evidence-acquisition-r0-review/
   2026-08-06-owner-amendment-retire-first-slice-budget-caps.md`):** the first-slice numeric ceilings
   that used to live here (≤3,000 calls / ≤72,000 audio seconds / ≤40 GPU-hours, formerly
   `contracts.FIRST_SLICE_CAPS`, formerly summed as slice totals across every registered ledger row
