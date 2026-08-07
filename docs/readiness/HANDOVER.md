@@ -1,7 +1,8 @@
 # R0.1 readiness survey — handover
 
-Status at 2026-08-07: **incomplete.** Two of five work items landed; three were lost to an
-exhausted session-level web-search quota (200/200). This file is the brief for whoever resumes.
+Status at 2026-08-07 (second session): **complete.** All five work items have landed. The
+2026-08-07 resumed session (web-search quota raised to 1000 before launch, surveys run serially
+in the foreground per the operational notes below) closed items 1–5.
 
 ## What is done (committed)
 
@@ -9,17 +10,34 @@ exhausted session-level web-search quota (200/200). This file is the brief for w
 |---|---|
 | `2026-08-07-dataset-content-verification.md` | 15 on-disk datasets verified **by content** (not by name): modality, task shape, label layers, scale, license, scope verdict |
 | `2026-08-07-prior-readiness-group1.md` | Families A (contextual ASR/entity), C (spoken QA), E (meeting) — 22 prior lines |
+| `2026-08-07-prior-readiness-group2.md` | Families B (SLU), D (speech agentic/tool calling), F (assistant omnibus) — 19 lines |
+| `2026-08-07-artifact-hunt.md` | (a)/(b)/(c) artifact matrix for every candidate line in both groups; **corrects two group-1 "NONE found" assertions** (ConEC and CMT-LLM official repos exist); PlanRAG-Audio re-checked, still unreleased |
+| `2026-08-07-carrier-mechanism-map.md` | Per-carrier performance trajectories + consolidated three-bucket mechanism map — the deliverable the owner framing called most important |
+
+## Headline findings for the owner decision
+
+1. **Audio2Tool publishes numbers for our exact frozen core** (Qwen-3-Omni-30B: Tier1 92.4% →
+   Tier8 41.7%, deterministic metrics, prompt-only protocol) on an on-disk carrier — the only
+   same-model published anchor found anywhere; its eval scripts are unreleased (placeholder repo)
+   and there is a paper-vs-disk license contradiction (CC-BY-4.0 vs CC-BY-NC-4.0) to resolve.
+2. The group-1 open finding **splits** for B/D/F: method papers still ship zero runnable
+   artifacts, but ≥6 benchmark harnesses are runnable under our boundary with published numbers
+   (AIR-Bench SLURP-IC, Audio2Tool, VoiceAgentBench, VoiceBench, VoiceAssistant-Eval, URO-Bench,
+   Big Bench Audio). HANDOVER option 2 (official scorer + our arm vs published numbers) is
+   concretely enabled; option 3 pairs with it naturally. Owner decision still pending.
+3. Across all 17 in-scope carriers, **no published inference-time evidence-acquisition method
+   exists** — the study's target mechanism class is unpopulated everywhere (bucket 3 of the map).
+4. The strongest reachable, ablation-precedented arm designs: transcript self-mediation
+   (Big Bench Audio 66→~92 et al., with FDB-v3's self-correction reversal as the counter-case),
+   context-injection (Siskos dose-response on E21), one-shot prompting (VoiceAgentBench +10–17pp).
+5. Judge dependency: three of four Family F harnesses used paid judges — blocked by the =0
+   paid-API budget; VoiceBench's deterministic MCQ/rule tier and VoiceAssistant-Eval's open
+   gpt-oss-20b judge are the boundary-clean precedents.
 
 ## What is NOT done
 
-1. **Family B — SLU (intent/slot)**: `slurp`, `speech-massive`, `minds14`. Not surveyed.
-2. **Family D — speech agentic / tool calling**: `audio2tool`, `voiceagentbench`. Not surveyed.
-   This is the family that would calibrate the study's X4 question; currently no prior evidence at all.
-3. **Family F — assistant omnibus**: `voicebench`, `voiceassistant-eval`, `uro-bench`, `big-bench-audio`.
-4. **GitHub artifact hunt**: for every candidate line, does an open-source implementation exist
-   (official or third-party), plus any reproduction report.
-5. **Carrier usage survey + mechanism map**: see the framing rules below — this is the most important
-   missing piece.
+Nothing from the original five items. Remaining work is owner-side: the R1 re-plan decision
+(options 1–4 below) with both survey groups, the artifact matrix, and the mechanism map in hand.
 
 ## Framing rules the owner set (these were corrections to an initially wrong framing — apply from the start)
 
@@ -57,11 +75,14 @@ Three buckets per carrier:
 ## Open finding that may force a plan change
 
 Group 1's conclusion: across its 22 lines, **no candidate ships a runnable artifact that reproduces its
-published number** — every "runnable" line would have to be reimplemented from the paper. If the
-outstanding surveys confirm this for families B/D/F, then "R1 = closest-prior *reproduction*" (entry
-contract) is not achievable as written, and R0/R1 must be re-planned. The owner has said explicitly
-that this re-planning is on the table. Options sketched (owner decision, would need a dated record like
-the 2026-08-06 budget-caps retirement):
+published number** — every "runnable" line would have to be reimplemented from the paper.
+**2026-08-07 update (group 2 answered the conditional):** for families B/D/F the finding splits —
+confirmed for method papers (still zero runnable method artifacts), refuted for benchmark harnesses
+(several runnable protocols with published numbers, incl. one same-model row: Audio2Tool ×
+Qwen-3-Omni-30B). "R1 = closest-prior *method* reproduction" remains not achievable as written;
+protocol-level reproduction is. The owner has said explicitly that this re-planning is on the table.
+Options sketched (owner decision, would need a dated record like the 2026-08-06 budget-caps
+retirement):
 1. reproduce a paper that does ship a usable artifact, even if a weaker/older line;
 2. official dataset scorer + our own arm, compared against published numbers (calibrates the pipeline,
    not the method — and does not import "did we understand the paper correctly" as a confound);
