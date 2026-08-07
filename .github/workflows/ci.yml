@@ -38,6 +38,14 @@ jobs:
     # tests/contract/test_scripts_fail_closed.py -- and is intentionally
     # not asserted here). Finally, the model-free contract-test subset that
     # needs no private assets and no model touch is run for real.
+    #
+    # R0 operator-path repair (independent rereview finding B1): the checks
+    # above never dispatched past a bash branch into Python at all (--help/
+    # no-args both exit inside the shell script first) -- they proved the
+    # WRAPPER SCRIPT'S contract, not that the installed package's own
+    # `python -m ...core.driver` / `saea-driver` entry points actually
+    # execute. The two steps below close exactly that gap by invoking the
+    # real, installed entry points directly, the same way an operator would.
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -49,6 +57,19 @@ jobs:
 
       - name: Sync locked environment
         run: uv sync --frozen
+
+      - name: python -m ...core.driver --help dispatches (real module entry point)
+        run: |
+          out="$(uv run python -m speech_aware_evidence_acquisition.core.driver --help)"
+          echo "$out"
+          echo "$out" | grep -qi "saea-driver"
+          ! echo "$out" | grep -qi "cannot be directly executed"
+
+      - name: saea-driver --help dispatches (real console-script entry point)
+        run: |
+          out="$(uv run saea-driver --help)"
+          echo "$out"
+          echo "$out" | grep -qi "saea-driver"
 
       - name: reproduce.sh --help is model-free and exits 0
         run: |
@@ -72,6 +93,9 @@ jobs:
 
       - name: Model-free contract tests (no private assets, no model touch)
         run: uv run pytest tests/contract -q
+
+      - name: Model-free smoke-orchestrator tests (--dry-run only, no model touch)
+        run: uv run pytest tests/unit/test_driver_smoke.py -q
 
   lint:
     # Scoped to package source (src/), not tests/: tests/ carries findings

@@ -1,10 +1,15 @@
-"""``saea-driver`` CLI: ``score`` / ``run`` / ``finalize`` subcommands.
+"""``saea-driver`` CLI: ``score`` / ``run`` / ``finalize`` / ``smoke`` subcommands.
 
 Split out of the former monolithic ``core/driver.py`` (R0 repair refactor
 stage 1, pure move, no behaviour change). The function-local
 ``from ...contracts import FrozenCoreGate`` / ``from .. import session``
 imports inside ``_cli_run`` are preserved exactly as they were (not
 promoted to module level) -- see that function's own history for why.
+
+``smoke`` (R0 operator-path repair, independent rereview
+``2026-08-07-saea-r0-script-engineering-review-assessment.md`` §10 item 3) is
+implemented in ``smoke.py``, not here, purely for file size -- its own module
+docstring explains what it does and why ``--dry-run`` is TEST-ONLY.
 """
 
 from __future__ import annotations
@@ -22,6 +27,7 @@ from ..config import compose
 from ..resources import resolve_resource_sampler
 from ..scorers import score_bundle
 from .bundled import run_experiment_bundled
+from .smoke import _cli_smoke
 
 
 def _cli_score(args: argparse.Namespace) -> int:
@@ -224,5 +230,58 @@ def main(argv: list[str] | None = None) -> int:
         help="MLflow tracking URI; omit to skip the (stubbable) MLflow upload entirely",
     )
     finalize.set_defaults(func=_cli_finalize)
+
+    smoke = sub.add_parser(
+        "smoke",
+        help=(
+            "thin orchestrator (R0 operator-path repair): fresh attempt_id -> plan -> "
+            "session -> run -> finalize, one command, printing every artifact location; "
+            "see smoke.py's module docstring for exactly what --dry-run substitutes"
+        ),
+    )
+    smoke.add_argument("--model", required=True)
+    smoke.add_argument("--dataset", required=True)
+    smoke.add_argument("--baseline", required=True)
+    smoke.add_argument("--experiment", required=True)
+    smoke.add_argument("--run-id", required=True)
+    smoke.add_argument(
+        "--execution-profile",
+        default="bounded-discovery-probe",
+        help="Stage-2 execution profile (default: bounded-discovery-probe)",
+    )
+    smoke.add_argument(
+        "--planned-model-calls", type=int, required=True,
+        help="finite positive integer; no numeric ceiling since the 2026-08-06 owner amendment",
+    )
+    smoke.add_argument("--planned-gpu-hours", type=float, required=True)
+    smoke.add_argument("--planned-speech-audio-seconds", type=int, required=True)
+    smoke.add_argument(
+        "--run-dir", required=True,
+        help="STABLE parent directory; a fresh attempt_id subdirectory is created every run",
+    )
+    smoke.add_argument(
+        "--runtime-root", default=None,
+        help="required unless --dry-run; see docs/runbooks/2026-08-05-r0-smoke.md preconditions",
+    )
+    smoke.add_argument("--host", default="127.0.0.1")
+    smoke.add_argument("--port", type=int, default=8090)
+    smoke.add_argument(
+        "--tracking-uri", required=True,
+        help="explicit local MLflow tracking URI; smoke never silently skips the upload",
+    )
+    smoke.add_argument("--ledger-cells", default=None)
+    smoke.add_argument(
+        "--repo-root", default=None,
+        help="TEST-ONLY override of the study repo root; real operator usage should never pass this",
+    )
+    smoke.add_argument(
+        "--dry-run", action="store_true",
+        help=(
+            "TEST-ONLY: fake transport + no-op gate + a synthetic session receipt, never a "
+            "real model touch; never pass this for a real smoke"
+        ),
+    )
+    smoke.set_defaults(func=_cli_smoke)
+
     args = parser.parse_args(argv)
     return args.func(args)

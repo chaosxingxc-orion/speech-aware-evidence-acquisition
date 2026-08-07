@@ -11,11 +11,21 @@ R0 repair refactor stage 1 (behaviour-preserving): this used to be one
 the ``saea-driver`` CLI subcommands) purely for file size -- every name below
 was already part of this module's public surface and remains importable from
 exactly ``speech_aware_evidence_acquisition.core.driver`` as before.
+
+R0 operator-path repair (independent rereview
+``2026-08-07-saea-r0-script-engineering-review-assessment.md`` finding B1):
+``python -m some.package`` only ever executes ``some/package/__main__.py`` --
+never a package's own ``__init__.py`` (that module-execution special case is
+reserved for ``__main__.py`` alone). A prior ``if __name__ == "__main__":``
+guard here was therefore dead code as a ``python -m`` entry point; it has
+been removed in favour of an actual ``__main__.py`` (a two-line bridge to
+``main`` below) plus a ``saea-driver`` console script
+(``pyproject.toml``'s ``[project.scripts]``) -- both call exactly this
+module's own ``main``, so there is exactly one implementation of CLI dispatch
+regardless of which entry an operator uses.
 """
 
 from __future__ import annotations
-
-import sys
 
 # build_manifest re-exported here (as the original flat driver.py's own
 # `from .bundle import (..., build_manifest, ...)` accidentally did) because
@@ -27,7 +37,7 @@ import sys
 # module comment.
 from ..bundle import build_manifest
 from .bundled import run_experiment_bundled
-from .cli import _cli_finalize, _cli_run, _cli_score, main
+from .cli import _cli_finalize, _cli_run, _cli_score, _cli_smoke, main
 from .run import _NO_SAMPLER_PROVIDED_REASON, load_split, run_experiment
 
 __all__ = [
@@ -40,7 +50,5 @@ __all__ = [
     "_cli_finalize",
     "_cli_run",
     "_cli_score",
+    "_cli_smoke",
 ]
-
-if __name__ == "__main__":
-    sys.exit(main())

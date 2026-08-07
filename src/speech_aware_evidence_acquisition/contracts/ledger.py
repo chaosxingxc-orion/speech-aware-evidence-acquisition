@@ -132,7 +132,6 @@ def _strip_same_line_comments(line: str) -> tuple[str, bool]:
 
     parts: list[str] = []
     i = 0
-    n = len(line)
     while True:
         open_idx = line.find(_HTML_COMMENT_OPEN, i)
         if open_idx == -1:

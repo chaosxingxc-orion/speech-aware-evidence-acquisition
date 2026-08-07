@@ -11,6 +11,17 @@ license = "LicenseRef-Proprietary"
 license-files = ["LICENSE"]
 dependencies = []
 
+# R0 operator-path repair (independent rereview finding B1): a second,
+# equally-real way to reach `core.driver.main` besides
+# `python -m speech_aware_evidence_acquisition.core.driver` (that module form
+# needs `core/driver/__main__.py`, added alongside this) -- both call exactly
+# the same `main`, so there is exactly one CLI dispatch implementation
+# either way. Cheap to add (no new code, `main` already existed and is
+# already covered by the model-free CLI tests); kept because the CLI's own
+# `argparse.ArgumentParser(prog="saea-driver")` already names this program.
+[project.scripts]
+saea-driver = "speech_aware_evidence_acquisition.core.driver.cli:main"
+
 [project.optional-dependencies]
 dev = [
     "pytest>=8",

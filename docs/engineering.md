@@ -253,6 +253,29 @@ concurrently-landing repair tasks that own those specific files; folding
 `tests/` into the `lint` job is a follow-up for whichever task next closes out
 those files, not silently dropped.
 
+**R0 operator-path repair (2026-08-07), correcting the claim above:** an
+independent rereview found `ruff check src` was NOT actually clean at the
+reviewed commit — one `F841` (an unused `n` in
+`contracts/ledger.py::_strip_same_line_comments`) — despite this doc's own
+"0 findings" claim above. That variable is now removed; `ruff check src` is
+verified 0 findings again as of this fix. The same rereview also found
+`python -m speech_aware_evidence_acquisition.core.driver` could not dispatch
+at all: turning `core/driver.py` into a package left no `core/driver/
+__main__.py`, and `python -m <package>` only ever executes a package's own
+`__main__.py`, never its `__init__.py` (whose `if __name__ == "__main__":`
+guard was therefore dead code for that invocation form). Both a
+`__main__.py` and a `saea-driver` console script (`pyproject.toml`'s
+`[project.scripts]`) now exist, calling the same `core.driver.cli.main`
+either way; `.github/workflows/ci.yml`'s `contracts` job now asserts both
+dispatch for real (not merely `--help`/no-args inside `scripts/*.sh`, which
+exit before ever reaching Python) via
+`tests/contract/test_cli_module_dispatch.py`'s real-subprocess tests. A new
+`saea-driver smoke` subcommand (`core/driver/smoke.py`) collapses the R0
+smoke runbook's plan/session/run/finalize sequence into one command; its
+`--dry-run` path (TEST-ONLY, never a real model touch) is covered by
+`tests/unit/test_driver_smoke.py`, run in CI's `contracts` job. See
+`docs/runbooks/2026-08-05-r0-smoke.md` for the corrected operator sequence.
+
 **Coverage: `NOT_CONFIGURED`. Type-checking: `NOT_CONFIGURED`.** Neither is wired
 into `pyproject.toml`, the dev dependency group, or CI; this is stated explicitly
 per I9 rather than implied by an absence of failures.
