@@ -300,6 +300,97 @@ def test_adapter_construction_propagates_an_evidence_identity_refusal(tmp_path):
         )
 
 
+# ---------------------------------------------------------------------------
+# IMPROVEMENT (fifth external-threat-model review): the content-identity
+# counterpart to the two evidence tests above -- the adapter also asks the
+# gate to re-verify THIS run's evidence via binding.evidence_contents (the
+# bytes already read into memory), duck-typed exactly the same way.
+# ---------------------------------------------------------------------------
+
+
+class _EvidenceContentCheckingGate:
+    def __init__(self):
+        self.checked = []
+
+    def assert_model_touch_allowed(self, plan):
+        return None
+
+    def verify_evidence_content_identity(self, carrier_lock_key, evidence_contents):
+        self.checked.append((carrier_lock_key, dict(evidence_contents)))
+
+
+def _binding_with_evidence_content(tmp_path, *, content=b"ctx", **overrides):
+    binding = _binding(tmp_path, **overrides)
+    from speech_aware_evidence_acquisition.core.base import PayloadBindingContext
+
+    return PayloadBindingContext(
+        carrier_lock_key=binding.carrier_lock_key,
+        allowed_sample_ids=binding.allowed_sample_ids,
+        sample_facts=binding.sample_facts,
+        data_root=binding.data_root,
+        carrier_root=binding.carrier_root,
+        evidence_relpaths={
+            sample_id: f"datasets/conec/earnings21/contexts/{sample_id}.txt"
+            for sample_id in binding.allowed_sample_ids
+        },
+        evidence_contents={sample_id: content for sample_id in binding.allowed_sample_ids},
+    )
+
+
+def test_adapter_calls_verify_evidence_content_identity_when_the_gate_and_binding_support_it(
+    tmp_path,
+):
+    gate = _EvidenceContentCheckingGate()
+    binding = _binding_with_evidence_content(tmp_path)
+    _adapter(tmp_path, gate=gate, binding=binding)
+    assert len(gate.checked) == 1
+    carrier_lock_key, evidence_contents = gate.checked[0]
+    assert carrier_lock_key == binding.carrier_lock_key
+    assert evidence_contents == {"5000001": b"ctx"}
+
+
+def test_adapter_skips_evidence_content_identity_check_when_binding_carries_none(tmp_path):
+    gate = _EvidenceContentCheckingGate()
+    _adapter(tmp_path, gate=gate, binding=_binding(tmp_path))
+    assert gate.checked == []
+
+
+def test_adapter_refuses_construction_when_content_read_was_tampered_even_though_the_file_check_would_pass(
+    tmp_path,
+):
+    """The exact PROBE the review demonstrated, at the adapter/construction
+    level: a gate whose FILE rail (verify_evidence_identity) always passes --
+    modelling a file that was tampered, read, then RESTORED to pristine
+    bytes before the gate ever runs -- but whose CONTENT rail
+    (verify_evidence_content_identity) sees the tampered bytes actually read
+    and refuses. Construction must still refuse overall: the content check is
+    not bypassed just because the file check independently succeeded."""
+
+    from speech_aware_evidence_acquisition.contracts import GateClosed
+
+    class _FilePassesContentRefusesGate:
+        def assert_model_touch_allowed(self, plan):
+            return None
+
+        def verify_evidence_identity(self, carrier_lock_key, evidence_facts):
+            return None  # the restored, pristine file matches D1 -- passes
+
+        def verify_evidence_content_identity(self, carrier_lock_key, evidence_contents):
+            raise GateClosed("evidence content identity drift (test)")
+
+    binding = _binding_with_evidence_content(tmp_path, content=b"tampered-content-read-earlier")
+    sink = TraceSink(tmp_path / "run", "SAEA-E-000-contentrefuse")
+    with pytest.raises(GateClosed, match="evidence content identity drift"):
+        FrozenCoreAdapter(
+            gate=_FilePassesContentRefusesGate(),
+            plan=_plan(run_id="SAEA-E-000-contentrefuse", attempt_id="attempt-contentrefuse"),
+            arm="bare-core",
+            transport=_fake_transport,
+            sink=sink,
+            binding=binding,
+        )
+
+
 def test_request_round_trip_traces_and_counts(tmp_path):
     adapter, sink = _adapter(tmp_path)
     response = adapter.request(_payload())

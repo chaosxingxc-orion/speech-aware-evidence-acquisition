@@ -160,6 +160,17 @@ class PayloadBindingContext:
     # and, unlike media_relpaths, deliberately NOT required to cover every
     # allowed_sample_id: only samples with actual evidence appear here.
     evidence_relpaths: Mapping[str, str] = field(default_factory=dict)
+    # IMPROVEMENT (fifth external-threat-model review): the same sample ids as
+    # evidence_relpaths, mapped instead to the exact UTF-8 bytes of the
+    # evidence content this run's evidence source ALREADY READ into memory --
+    # so core.model.FrozenCoreAdapter can ask the gate to bind the D1
+    # evidence-identity check to the bytes actually consumed, never merely a
+    # second read of the file at gate-check time (see
+    # contracts.gate_evidence_identity's own module docstring for the
+    # check<->send race this closes). Optional/defaulted like
+    # evidence_relpaths, for the same reason: not every binding built in this
+    # module's own test suite constructs a real evidence corpus.
+    evidence_contents: Mapping[str, bytes] = field(default_factory=dict)
 
     def validate(self) -> "PayloadBindingContext":
         """Structural self-check, no filesystem access: a malformed binding
@@ -244,6 +255,21 @@ class PayloadBindingContext:
                 raise CoreError(
                     f"binding context evidence_relpaths[{sample_id!r}] must be a "
                     "non-empty string"
+                )
+        if not isinstance(self.evidence_contents, Mapping):
+            raise CoreError("binding context evidence_contents must be a mapping")
+        # IMPROVEMENT: same sparse-subset discipline as evidence_relpaths above
+        # -- not every allowed sample id necessarily carries evidence content.
+        if not set(self.evidence_contents) <= set(self.allowed_sample_ids):
+            raise CoreError(
+                "binding context evidence_contents keys must be a subset of "
+                "allowed_sample_ids"
+            )
+        for sample_id, content_bytes in self.evidence_contents.items():
+            if not isinstance(content_bytes, (bytes, bytearray)) or not content_bytes:
+                raise CoreError(
+                    f"binding context evidence_contents[{sample_id!r}] must be "
+                    "non-empty bytes"
                 )
         return self
 

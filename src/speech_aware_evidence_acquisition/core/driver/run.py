@@ -118,6 +118,16 @@ def run_experiment(
         # that content to (see gate_evidence_identity's own docstring for why
         # this scoping is deliberate, not an oversight).
         evidence_relpaths: dict[str, str] = {}
+        # IMPROVEMENT (fifth external-threat-model review): the SAME
+        # already-read content, keyed identically to evidence_relpaths --
+        # gives the D1 evidence-identity rail something to check that is
+        # bound to the bytes this run will actually put in the prompt,
+        # rather than a second, later read of the file (see
+        # contracts.gate_evidence_identity's own module docstring for the
+        # check<->send race this closes). Built here, from exactly the same
+        # evidence_by_sample this loop already reads for evidence_relpaths --
+        # never a fresh disk read.
+        evidence_contents: dict[str, bytes] = {}
         for s in samples:
             if not evidence_by_sample[s.sample_id]:
                 continue
@@ -130,6 +140,9 @@ def run_experiment(
                     f"cannot resolve a D1 evidence-identity path for sample "
                     f"{s.sample_id!r}: {error}"
                 ) from error
+            evidence_contents[s.sample_id] = "".join(
+                item.content for item in evidence_by_sample[s.sample_id]
+            ).encode("utf-8")
         if values.get("evidence_mismatch", False):
             evidence_by_sample = rotated_mismatch(evidence_by_sample)
         policy = POLICIES.resolve(str(values["policy"]))
@@ -150,6 +163,9 @@ def run_experiment(
             media_relpaths={s.sample_id: s.media_relpath for s in samples},
             # IMPORTANT 1: the evidence-layer counterpart, see above.
             evidence_relpaths=evidence_relpaths,
+            # IMPROVEMENT: the already-read content bound to the same keys, see
+            # above.
+            evidence_contents=evidence_contents,
             data_root=Path(root),
             carrier_root=carrier_root,
         )

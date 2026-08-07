@@ -11,10 +11,25 @@ self-consistent hash and no refusal. Nothing ever compared it to D1's own
 frozen per-file identity (``docs/receipts/artifacts/d1-identity.json``,
 ``conec.layers.e21_contexts``) the way :meth:`verify_media_identity` and
 :meth:`verify_reference_identity` already do for media and references.
+
+IMPROVEMENT (fifth external-threat-model review): :meth:`verify_evidence_identity`
+re-hashes the evidence FILE on disk, at gate/adapter-construction time -- but the
+content a run actually puts in the prompt was already read into memory earlier
+(``core.driver.run_experiment``, well before this gate ever opens). A file that is
+tampered, read, then RESTORED to its pristine bytes before the gate runs would pass
+``verify_evidence_identity`` while the tampered content already read is still what
+reaches the model -- the mirror image of the accepted check<->send race
+(``contracts.LlamaServerTransport.__call__``'s own documented residual gap; see
+``task-5-report.md``): there, the check happens first and the send might not match it
+later; here, the read already happened and the check might not reflect it.
+:meth:`verify_evidence_content_identity` closes this for evidence, at zero extra I/O
+cost -- no file is touched here at all, only the sha256 of bytes the caller already
+holds in memory.
 """
 
 from __future__ import annotations
 
+import hashlib
 from typing import Mapping
 
 import speech_aware_evidence_acquisition.contracts as _contracts_pkg
@@ -27,52 +42,19 @@ from .receipts import _resolve_under, _safe_relative_path
 
 
 class _EvidenceIdentityMixin(_D1IdentityLookupMixin):
-    """``verify_evidence_identity``: the evidence-layer counterpart to
+    """``verify_evidence_identity``/``verify_evidence_content_identity``: the
+    evidence-layer counterpart to
     ``gate_media_identity._MediaIdentityMixin.verify_media_identity`` /
     ``gate_reference_identity._ReferenceIdentityMixin.verify_reference_identity``."""
 
-    def verify_evidence_identity(
-        self, carrier_lock_key: str, evidence_facts: Mapping[str, str]
-    ) -> None:
-        """IMPORTANT 1 (external-threat-model review round 4): re-verify, AS
-        FILES, the D1-frozen evidence bytes a run's evidence source actually
-        drew from -- never merely trust a self-computed ``sha256_file()``
-        claim (``core.evidence`` module docstring for what this closes).
+    def _evidence_manifest(self, carrier_lock_key: str) -> tuple[object, dict[str, tuple[int, str]]]:
+        """Shared by :meth:`verify_evidence_identity` and
+        :meth:`verify_evidence_content_identity`: resolve ``carrier_lock_key``'s
+        evidence layout and load D1's recorded per-sample ``(bytes, sha256)``
+        manifest for it. Returns ``(layout, recorded)``; raises
+        :class:`GateClosed` for every refusal both callers already documented
+        (unregistered carrier, no evidence layer, missing/malformed manifest)."""
 
-        ``evidence_facts`` maps each sample id THIS run's evidence source
-        supplied non-empty evidence for, to that evidence file's path,
-        relative to ``self.data_root`` -- computed by the caller via
-        ``core.evidence.evidence_file_relpath``, the SAME relative-path
-        convention ``core.evidence._conec_contexts`` itself resolves,
-        rather than re-derived here. Scoped to exactly the samples the
-        run's evidence source actually touched (never the whole evidence
-        corpus), mirroring :meth:`verify_media_identity`'s cost discipline.
-        Computed BEFORE any ``evidence_mismatch``/``rotated_mismatch``
-        reassignment (``core.driver.run_experiment``'s own comment): this
-        checks the byte-integrity of the evidence CORPUS a sample's own
-        evidence-source call drew from, independent of which sample a later
-        negative-control experiment happens to route that content to.
-
-        The evidence layer's location is derived entirely from
-        ``carrier_lock_key``'s own ``data.carriers.CarrierDescriptor.
-        evidence`` (an :class:`~data.carriers.EvidenceLayout`: which lock
-        key/subdir/extension/D1-layer-key the layer lives under) -- never a
-        hand-coded path. A carrier whose descriptor declares no evidence
-        layer at all (``descriptor.evidence is None``, e.g.
-        earnings22-original, whose ConEC contexts are a different-shaped,
-        never-read per-call-PDF layer) fails closed here too, independent
-        of ``core.evidence``'s own internal refusal -- the same "never
-        merely trust the caller" discipline :meth:`verify_reference_identity`
-        already applies via ``_REFERENCE_SCOPED_CARRIER_LOCK_KEYS``. See
-        ``docs/owner-decisions-pending.md`` for the exact carrier coverage
-        this leaves and why.
-        """
-
-        if not isinstance(evidence_facts, Mapping) or not evidence_facts:
-            raise GateClosed(
-                "verify_evidence_identity requires a non-empty sample_id -> "
-                "evidence_relpath mapping"
-            )
         try:
             descriptor = get_carrier_descriptor(carrier_lock_key)
         except CarrierDescriptorError as error:
@@ -127,6 +109,51 @@ class _EvidenceIdentityMixin(_D1IdentityLookupMixin):
             ):
                 raise GateClosed(f"D1 evidence manifest entry is malformed: {entry!r}")
             recorded[sample_id] = (rec_bytes, rec_sha)
+        return layout, recorded
+
+    def verify_evidence_identity(
+        self, carrier_lock_key: str, evidence_facts: Mapping[str, str]
+    ) -> None:
+        """IMPORTANT 1 (external-threat-model review round 4): re-verify, AS
+        FILES, the D1-frozen evidence bytes a run's evidence source actually
+        drew from -- never merely trust a self-computed ``sha256_file()``
+        claim (``core.evidence`` module docstring for what this closes).
+
+        ``evidence_facts`` maps each sample id THIS run's evidence source
+        supplied non-empty evidence for, to that evidence file's path,
+        relative to ``self.data_root`` -- computed by the caller via
+        ``core.evidence.evidence_file_relpath``, the SAME relative-path
+        convention ``core.evidence._conec_contexts`` itself resolves,
+        rather than re-derived here. Scoped to exactly the samples the
+        run's evidence source actually touched (never the whole evidence
+        corpus), mirroring :meth:`verify_media_identity`'s cost discipline.
+        Computed BEFORE any ``evidence_mismatch``/``rotated_mismatch``
+        reassignment (``core.driver.run_experiment``'s own comment): this
+        checks the byte-integrity of the evidence CORPUS a sample's own
+        evidence-source call drew from, independent of which sample a later
+        negative-control experiment happens to route that content to.
+
+        The evidence layer's location is derived entirely from
+        ``carrier_lock_key``'s own ``data.carriers.CarrierDescriptor.
+        evidence`` (an :class:`~data.carriers.EvidenceLayout`: which lock
+        key/subdir/extension/D1-layer-key the layer lives under) -- never a
+        hand-coded path. A carrier whose descriptor declares no evidence
+        layer at all (``descriptor.evidence is None``, e.g.
+        earnings22-original, whose ConEC contexts are a different-shaped,
+        never-read per-call-PDF layer) fails closed here too, independent
+        of ``core.evidence``'s own internal refusal -- the same "never
+        merely trust the caller" discipline :meth:`verify_reference_identity`
+        already applies via ``_REFERENCE_SCOPED_CARRIER_LOCK_KEYS``. See
+        ``docs/owner-decisions-pending.md`` for the exact carrier coverage
+        this leaves and why.
+        """
+
+        if not isinstance(evidence_facts, Mapping) or not evidence_facts:
+            raise GateClosed(
+                "verify_evidence_identity requires a non-empty sample_id -> "
+                "evidence_relpath mapping"
+            )
+        _, recorded = self._evidence_manifest(carrier_lock_key)
 
         for sample_id, relpath in evidence_facts.items():
             if not isinstance(sample_id, str) or not isinstance(relpath, str):
@@ -154,4 +181,59 @@ class _EvidenceIdentityMixin(_D1IdentityLookupMixin):
                     f"{rec_bytes} bytes / {rec_sha[:12]}..., the live file is now "
                     f"{actual_bytes} bytes / {actual_sha[:12]}...; model touch refused "
                     "(IMPORTANT 1)"
+                )
+
+    def verify_evidence_content_identity(
+        self, carrier_lock_key: str, evidence_contents: Mapping[str, bytes]
+    ) -> None:
+        """IMPROVEMENT (fifth external-threat-model review): bind the check to
+        the bytes actually consumed -- compare D1's recorded sha256 against
+        the ALREADY-READ evidence content a run will actually put in the
+        prompt, never a second read of the file (module docstring for the
+        check<->send race this closes; :meth:`verify_evidence_identity`
+        remains the file-identity rail, unchanged, run alongside this one).
+
+        ``evidence_contents`` maps each sample id THIS run's evidence source
+        supplied non-empty evidence for to the exact UTF-8 bytes of that
+        evidence's ``EvidenceItem.content`` -- the SAME population
+        :meth:`verify_evidence_identity` checks (``core.driver.run_experiment``
+        builds both from the one ``evidence_by_sample`` it already read),
+        sharing this gate's D1 manifest lookup (:meth:`_evidence_manifest`).
+        No filesystem access happens in this method at all: the caller
+        already paid the one read cost when it built ``evidence_contents``,
+        so this check is a pure in-memory hash comparison, zero additional
+        I/O.
+        """
+
+        if not isinstance(evidence_contents, Mapping) or not evidence_contents:
+            raise GateClosed(
+                "verify_evidence_content_identity requires a non-empty sample_id -> "
+                "content-bytes mapping"
+            )
+        _, recorded = self._evidence_manifest(carrier_lock_key)
+
+        for sample_id, content_bytes in evidence_contents.items():
+            if not isinstance(sample_id, str) or not isinstance(
+                content_bytes, (bytes, bytearray)
+            ):
+                raise GateClosed(
+                    f"evidence_contents[{sample_id!r}] must be bytes"
+                )
+            d1_fact = recorded.get(sample_id)
+            if d1_fact is None:
+                raise GateClosed(
+                    f"sample {sample_id!r} (carrier {carrier_lock_key!r}) has no "
+                    "D1-recorded evidence identity; evidence outside D1's identity "
+                    "closure can never enter a run"
+                )
+            rec_bytes, rec_sha = d1_fact
+            actual_bytes = len(content_bytes)
+            actual_sha = hashlib.sha256(content_bytes).hexdigest()
+            if actual_bytes != rec_bytes or actual_sha != rec_sha:
+                raise GateClosed(
+                    f"evidence content identity drift for sample {sample_id!r}: D1 "
+                    f"recorded {rec_bytes} bytes / {rec_sha[:12]}..., the in-memory "
+                    f"content this run already read is {actual_bytes} bytes / "
+                    f"{actual_sha[:12]}...; model touch refused (fifth review, "
+                    "evidence-bytes-consumed check)"
                 )

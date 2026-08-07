@@ -251,6 +251,78 @@ def test_duplicate_media_identity_alias_registration_refused(synthetic_descripto
         register_carrier_descriptor(colliding)
 
 
+# ---------------------------------------------------------------------------
+# MINOR (fifth external-threat-model review): the alias-collision check was
+# previously one-directional -- an ALIAS colliding with an existing lock key
+# was refused (test above), but registering a real CarrierDescriptor whose
+# OWN lock_key equalled an already-registered ALIAS succeeded silently, and
+# resolve_media_identity_carrier then redirected that carrier's whole
+# media-identity rail to the ALIASING carrier's D1 media layer with no
+# signal. Both directions are probed here so the symmetry is pinned.
+# ---------------------------------------------------------------------------
+
+
+def test_alias_registration_refused_when_it_collides_with_a_lock_key_direction_one(
+    synthetic_descriptor,
+):
+    """Direction 1 (pre-existing): a NEW alias colliding with an
+    already-registered carrier lock key is refused."""
+
+    colliding = CarrierDescriptor(
+        lock_key="another-synthetic-carrier",
+        media_subdir="audio",
+        media_extension=".flac",
+        metadata_filename="lecture-meta.csv",
+        metadata_columns=MetadataColumns(
+            id_column="clip_id", duration_column="seconds", sample_rate_column="hz"
+        ),
+        media_identity_aliases=frozenset({_LOCK_KEY}),
+    )
+    with pytest.raises(CarrierDescriptorError, match="collides"):
+        register_carrier_descriptor(colliding)
+
+
+def test_lock_key_registration_refused_when_it_collides_with_an_existing_alias_direction_two():
+    """Direction 2 (the fix): registering a REAL carrier under a lock key an
+    earlier descriptor already declared as its own media-identity alias must
+    be refused too -- demonstrated exactly as the review reported it:
+    "zz-future-carrier" registered as an alias first, then a second
+    descriptor tries to claim "zz-future-carrier" as its own lock key."""
+
+    aliaser = CarrierDescriptor(
+        lock_key="zz-owner-carrier",
+        media_subdir="audio",
+        media_extension=".flac",
+        metadata_filename="owner-meta.csv",
+        metadata_columns=MetadataColumns(
+            id_column="clip_id", duration_column="seconds", sample_rate_column="hz"
+        ),
+        media_identity_aliases=frozenset({"zz-future-carrier"}),
+    )
+    register_carrier_descriptor(aliaser)
+    try:
+        colliding = CarrierDescriptor(
+            lock_key="zz-future-carrier",
+            media_subdir="audio",
+            media_extension=".flac",
+            metadata_filename="future-meta.csv",
+            metadata_columns=MetadataColumns(
+                id_column="clip_id", duration_column="seconds", sample_rate_column="hz"
+            ),
+        )
+        with pytest.raises(CarrierDescriptorError, match="collides"):
+            register_carrier_descriptor(colliding)
+        # Before the fix this succeeded silently and resolve_media_identity_carrier
+        # kept redirecting "zz-future-carrier" to "zz-owner-carrier" -- confirm the
+        # refusal above actually prevented that redirection from ever being set up.
+        assert resolve_media_identity_carrier("zz-future-carrier") == "zz-owner-carrier"
+    finally:
+        from speech_aware_evidence_acquisition.data import carriers as _carriers_module
+
+        _carriers_module._REGISTRY.pop("zz-owner-carrier", None)
+        _carriers_module._MEDIA_IDENTITY_ALIAS_INDEX.pop("zz-future-carrier", None)
+
+
 def test_synthetic_carrier_scores_through_the_unmodified_scoring_machinery(
     synthetic_carrier_world, synthetic_descriptor, tmp_path
 ):

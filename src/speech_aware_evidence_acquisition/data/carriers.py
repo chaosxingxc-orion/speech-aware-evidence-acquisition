@@ -141,7 +141,16 @@ def register_carrier_descriptor(descriptor: CarrierDescriptor) -> CarrierDescrip
     the module-level alias index (MINOR 2): refuses an alias that collides
     with an already-registered carrier lock key or an already-registered
     alias, the same duplicate discipline the primary registry itself
-    applies."""
+    applies -- and, symmetrically (MINOR, fifth external-threat-model
+    review), refuses registering a descriptor whose OWN ``lock_key`` was
+    already declared as someone else's alias. Before this direction was
+    checked too, a real carrier could register itself under a lock key an
+    earlier descriptor had claimed as an alias, and
+    :func:`resolve_media_identity_carrier` would then silently redirect that
+    new carrier's own media-identity rail to the ALIASING carrier's D1 media
+    layer instead of its own -- with no signal, exactly the collision this
+    docstring's "same duplicate discipline" claim was previously only half
+    true for."""
 
     if not isinstance(descriptor, CarrierDescriptor):
         raise CarrierDescriptorError(
@@ -151,6 +160,12 @@ def register_carrier_descriptor(descriptor: CarrierDescriptor) -> CarrierDescrip
     if descriptor.lock_key in _REGISTRY:
         raise CarrierDescriptorError(
             f"a carrier descriptor is already registered for {descriptor.lock_key!r}"
+        )
+    if descriptor.lock_key in _MEDIA_IDENTITY_ALIAS_INDEX:
+        raise CarrierDescriptorError(
+            f"carrier lock key {descriptor.lock_key!r} collides with an already-"
+            f"registered media identity alias (declared by "
+            f"{_MEDIA_IDENTITY_ALIAS_INDEX[descriptor.lock_key]!r})"
         )
     for alias in descriptor.media_identity_aliases:
         if not isinstance(alias, str) or not alias.strip():

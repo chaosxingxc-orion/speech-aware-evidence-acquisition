@@ -82,6 +82,20 @@ class _AttemptLifecycleMixin:
         )
         if evidence_identity_check is not None and binding.evidence_relpaths:
             evidence_identity_check(binding.carrier_lock_key, dict(binding.evidence_relpaths))
+        # IMPROVEMENT (fifth external-threat-model review): the content-identity
+        # counterpart, binding the check to the bytes THIS run already read into
+        # memory (binding.evidence_contents) rather than a second, later read of
+        # the file the check above performs -- see
+        # contracts.gate_evidence_identity's own module docstring for the
+        # check<->send race this closes. Duck-typed the same way: a test double
+        # that implements only verify_evidence_identity is unaffected.
+        evidence_content_identity_check: Callable[[str, Mapping[str, bytes]], None] | None = (
+            getattr(gate, "verify_evidence_content_identity", None)
+        )
+        if evidence_content_identity_check is not None and binding.evidence_contents:
+            evidence_content_identity_check(
+                binding.carrier_lock_key, dict(binding.evidence_contents)
+            )
         # R0 repair T5 fix-3 (I5, reviewer-flagged): a second, adapter-level
         # enforcement call site for session liveness+identity, BEFORE any
         # attempt slot below is consumed. Duck-typed rather than a new

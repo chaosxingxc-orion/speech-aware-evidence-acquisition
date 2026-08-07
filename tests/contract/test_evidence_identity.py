@@ -136,3 +136,100 @@ def test_traversal_relpath_is_refused(world):
     gate = world.gate()
     with pytest.raises(GateClosed):
         gate.verify_evidence_identity(world.CARRIER, {SAMPLE_ID: "../../etc/passwd"})
+
+
+# ---------------------------------------------------------------------------
+# IMPROVEMENT (fifth external-threat-model review): verify_evidence_content_
+# identity binds the check to the bytes ALREADY READ into memory, never a
+# second read of the file -- the mirror image of the accepted check<->send
+# race. No file is touched by this method at all: every probe below passes
+# in-memory bytes directly, several while the on-disk file is in a DIFFERENT
+# state than the bytes being checked, to prove the check never consults disk.
+# ---------------------------------------------------------------------------
+
+
+def _evidence_contents() -> dict:
+    return {SAMPLE_ID: EVIDENCE_BYTES}
+
+
+def test_unmodified_evidence_content_passes(world):
+    gate = world.gate()
+    gate.verify_evidence_content_identity(world.CARRIER, _evidence_contents())
+
+
+def test_tampered_in_memory_content_is_refused(world):
+    gate = world.gate()
+    with pytest.raises(GateClosed, match="evidence content identity drift"):
+        gate.verify_evidence_content_identity(
+            world.CARRIER, {SAMPLE_ID: b"tampered-bytes-not-the-original-context-at-all"}
+        )
+
+
+def test_restored_pristine_file_does_not_launder_tampered_in_memory_content(world):
+    """The exact PROBE the review demonstrated: content is read into memory
+    from a TAMPERED file (what a run would actually put in the prompt), the
+    file is then restored to its pristine, D1-matching bytes BEFORE any gate
+    check runs. verify_evidence_identity (the file rail) now sees a pristine
+    file and passes -- that is expected, unchanged behaviour. But the run
+    must still refuse overall, because verify_evidence_content_identity
+    checks the bytes actually consumed, which were tampered, regardless of
+    what the file on disk says right now."""
+
+    evidence_path = world.data_root / EVIDENCE_RELPATH
+    tampered = b"tampered-bytes-not-the-original-context-at-all"
+    evidence_path.write_bytes(tampered)
+    # The read a run's evidence source would perform, captured BEFORE restore.
+    content_actually_read = evidence_path.read_bytes()
+    evidence_path.write_bytes(EVIDENCE_BYTES)  # restored to pristine, D1-matching bytes
+
+    gate = world.gate()
+    gate.verify_evidence_identity(world.CARRIER, _evidence_facts())  # file rail: passes
+    with pytest.raises(GateClosed, match="evidence content identity drift"):
+        gate.verify_evidence_content_identity(
+            world.CARRIER, {SAMPLE_ID: content_actually_read}
+        )
+
+
+def test_untampered_content_still_runs_after_a_pristine_restore(world):
+    """The negative control for the probe above: when the content actually
+    read was never tampered in the first place, both rails pass."""
+
+    evidence_path = world.data_root / EVIDENCE_RELPATH
+    content_actually_read = evidence_path.read_bytes()
+    assert content_actually_read == EVIDENCE_BYTES
+
+    gate = world.gate()
+    gate.verify_evidence_identity(world.CARRIER, _evidence_facts())
+    gate.verify_evidence_content_identity(
+        world.CARRIER, {SAMPLE_ID: content_actually_read}
+    )
+
+
+def test_content_identity_sample_outside_d1_closure_is_refused(world):
+    gate = world.gate()
+    with pytest.raises(GateClosed, match="no D1-recorded evidence identity"):
+        gate.verify_evidence_content_identity(world.CARRIER, {"9999999": b"anything"})
+
+
+def test_content_identity_carrier_with_no_evidence_layer_is_refused(world):
+    gate = world.gate()
+    with pytest.raises(GateClosed, match="no D1-recorded evidence-layer identity"):
+        gate.verify_evidence_content_identity("earnings22-original", _evidence_contents())
+
+
+def test_content_identity_unregistered_carrier_is_refused(world):
+    gate = world.gate()
+    with pytest.raises(GateClosed, match="no registered carrier descriptor"):
+        gate.verify_evidence_content_identity("never-registered-carrier", _evidence_contents())
+
+
+def test_content_identity_empty_mapping_refused(world):
+    gate = world.gate()
+    with pytest.raises(GateClosed, match="non-empty"):
+        gate.verify_evidence_content_identity(world.CARRIER, {})
+
+
+def test_content_identity_non_bytes_value_refused(world):
+    gate = world.gate()
+    with pytest.raises(GateClosed, match="must be bytes"):
+        gate.verify_evidence_content_identity(world.CARRIER, {SAMPLE_ID: "not-bytes"})

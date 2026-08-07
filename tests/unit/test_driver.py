@@ -247,12 +247,16 @@ def test_run_experiment_supplies_evidence_with_org_and_supply_traces(
 class _EvidenceCheckingGate:
     def __init__(self):
         self.checked = []
+        self.content_checked = []
 
     def assert_model_touch_allowed(self, plan):
         return None
 
     def verify_evidence_identity(self, carrier_lock_key, evidence_facts):
         self.checked.append((carrier_lock_key, dict(evidence_facts)))
+
+    def verify_evidence_content_identity(self, carrier_lock_key, evidence_contents):
+        self.content_checked.append((carrier_lock_key, dict(evidence_contents)))
 
 
 def test_run_experiment_wires_evidence_relpaths_into_the_evidence_identity_gate(
@@ -284,6 +288,17 @@ def test_run_experiment_wires_evidence_relpaths_into_the_evidence_identity_gate(
         "4000002": "datasets/conec/earnings21/contexts/4000002.txt",
         "4000003": "datasets/conec/earnings21/contexts/4000003.txt",
     }
+    # IMPROVEMENT (fifth external-threat-model review): the same run also
+    # wires the ALREADY-READ evidence content (never a second file read) into
+    # the content-identity rail, keyed identically.
+    assert len(gate.content_checked) == 1
+    content_carrier_lock_key, evidence_contents = gate.content_checked[0]
+    assert content_carrier_lock_key == "earnings21-original"
+    assert evidence_contents == {
+        "4000001": b"ctx",
+        "4000002": b"ctx",
+        "4000003": b"ctx",
+    }
 
 
 def test_run_experiment_skips_the_evidence_identity_gate_when_evidence_source_is_none(
@@ -308,6 +323,7 @@ def test_run_experiment_skips_the_evidence_identity_gate_when_evidence_source_is
         repo_root=repo_root,
     )
     assert gate.checked == []
+    assert gate.content_checked == []
 
 
 def test_run_experiment_refuses_wrong_protocol_hash(synthetic_world, tmp_path):
