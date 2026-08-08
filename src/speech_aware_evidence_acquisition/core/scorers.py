@@ -186,6 +186,23 @@ def score_cost_outputs(
 SCORERS.register("cost", score_cost_outputs)
 
 
+# ---------------------------------------------------------------------------
+# Audio2Tool tool-call scorer (P1 scaffold): the function lives in
+# reproduction/a2t_scorer.py -- deliberately OUTSIDE the E0 D3 frozen scoring
+# package (reproduction/__init__.py's own contract) -- and registers HERE,
+# alongside asr-wer/cost, because this module is the one scorer-registration
+# site score_bundle resolves names through. Same uniform
+# `scorer(outputs_path, lock, root)` signature; gold (expected tool calls)
+# enters scorer-side only, via data.audio2tool.load_expected_calls -- never
+# through data.references, so this module's "ONLY importer of
+# data.references" contract above is untouched.
+# ---------------------------------------------------------------------------
+
+from ..reproduction.a2t_scorer import score_audio2tool_outputs  # noqa: E402
+
+SCORERS.register("a2t-toolcall", score_audio2tool_outputs)
+
+
 def _assert_scoring_entry_gate(
     bundle: object, lock: Mapping[str, object], root: Path, repo_root: Path
 ) -> None:
