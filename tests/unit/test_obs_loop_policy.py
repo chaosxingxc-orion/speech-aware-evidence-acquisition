@@ -6,7 +6,6 @@ PCM (no soundfile/ffmpeg, no model, no real audio).
 
 import hashlib
 import json
-import math
 import random
 from array import array
 from pathlib import Path
