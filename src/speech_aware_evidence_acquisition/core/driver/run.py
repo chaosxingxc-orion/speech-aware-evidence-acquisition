@@ -31,6 +31,7 @@ from ..base import (
 )
 from ..config import ComposedConfig
 from ..evidence import evidence_file_relpath, rotated_mismatch
+from ..instructions import resolve_task_instruction
 from ..resources import NullSampler, ResourceSampler, cpu_seconds_snapshot
 from ..model import FrozenCoreAdapter
 from ..split_receipt import load_verified_split
@@ -146,6 +147,14 @@ def run_experiment(
         if values.get("evidence_mismatch", False):
             evidence_by_sample = rotated_mismatch(evidence_by_sample)
         policy = POLICIES.resolve(str(values["policy"]))
+        # P1 scaffold: the run's single task instruction resolves HERE -- a
+        # literal `task_instruction` passes through unchanged (every
+        # pre-existing config), a `task_instruction_template` +
+        # `task_instruction_fill` pair renders the frozen template from
+        # pinned carrier data (core.instructions). Resolved once, BEFORE the
+        # adapter construction below opens the attempt, so an unrenderable
+        # instruction refuses with no budget ever spent.
+        task_instruction = resolve_task_instruction(values, repo_root, lock, root)
         sink = TraceSink(run_dir, plan.run_id)
         # Payload<->plan<->split binding context (R0 repair T3, I3/I4): built here,
         # from exactly the verified split ids and the same loader's SampleRef
@@ -237,7 +246,7 @@ def run_experiment(
                     adapter=adapter,
                     sink=sink,
                     arm=arm,
-                    task_instruction=str(values["task_instruction"]),
+                    task_instruction=task_instruction,
                     decoding_params=dict(values.get("decoding_params", {})),
                     request_id_base=request_id_base,
                     retrieval_query=values.get("retrieval_query"),
