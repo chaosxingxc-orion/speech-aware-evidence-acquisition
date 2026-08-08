@@ -144,3 +144,26 @@ class TestSampleBinding:
     def test_manifest_states_the_sample_once_policy(self, templates_dir, receipts_dir):
         manifest = build_manifest(templates_dir, receipts_dir)
         assert "sampled exactly once" in manifest["sampling_policy"]
+
+
+class TestServerArgs:
+    """2026-08-08: the first real smoke hit `56032 tokens > n_ctx 4096` — the
+    spawn argv carried no context/offload flags. Server args now live in the
+    MODEL config (so they are config-hash → protocol-hash bound, never an
+    ad-hoc operator flag) and smoke passes them to start_session."""
+
+    def test_absent_key_means_no_extra_argv(self):
+        from speech_aware_evidence_acquisition.core.driver.smoke import _server_args
+
+        assert _server_args({"base_url": "http://127.0.0.1:8080"}) == []
+
+    def test_list_is_stringified(self):
+        from speech_aware_evidence_acquisition.core.driver.smoke import _server_args
+
+        assert _server_args({"server_args": ["-c", 65536, "-fa"]}) == ["-c", "65536", "-fa"]
+
+    def test_non_list_is_refused(self):
+        from speech_aware_evidence_acquisition.core.driver.smoke import _server_args
+
+        with pytest.raises(ValueError, match="server_args"):
+            _server_args({"server_args": "-c 65536"})

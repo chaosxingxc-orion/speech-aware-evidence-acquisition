@@ -185,6 +185,23 @@ def run_smoke(
     )
 
 
+def _server_args(values: Mapping[str, object]) -> list[str]:
+    """Extra llama-server argv from the MODEL config's ``server_args`` key.
+
+    2026-08-08: the first real smoke failed with ``56032 tokens > n_ctx 4096``
+    — context/offload flags are part of the run's identity, so they live in
+    the config (config-hash → protocol-hash bound), never in an ad-hoc
+    operator flag. Absent key = no extra argv; a non-list fails closed.
+    """
+
+    raw = values.get("server_args", [])
+    if not isinstance(raw, (list, tuple)):
+        raise ValueError(
+            f"model config server_args must be a list of argv tokens, got {type(raw).__name__}"
+        )
+    return [str(token) for token in raw]
+
+
 def _cli_smoke(args: argparse.Namespace) -> int:
     from ...contracts import FrozenCoreGate
     from ...data.lock import data_root, load_lock, umbrella_lock_path
@@ -251,6 +268,7 @@ def _cli_smoke(args: argparse.Namespace) -> int:
             host=args.host,
             port=args.port,
             session_id=f"{plan.run_id}-{attempt_id}",
+            extra_argv=_server_args(composed.values),
             receipt_path=session_receipt_path,
         )
         transport_factory = TRANSPORTS.resolve(str(composed.values["transport"]))
