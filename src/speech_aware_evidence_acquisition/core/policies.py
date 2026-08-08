@@ -96,3 +96,15 @@ class FixedPolicy:
 
 
 POLICIES.register("fixed", FixedPolicy())
+
+# obs-agent-loop (owner directive 2026-08-08): the model-driven OBS
+# segmentation loop -- N slice requests per whole-call sample, one stitched
+# hypothesis out. Implementation lives in reproduction/obs_loop.py
+# (deliberately outside core, P1 pattern); it registers HERE because this
+# module is the one policy-registration site run_experiment resolves names
+# through. The arm payload vocabulary is untouched: every iteration's
+# request flows through build_arm_payload above under the same D2-frozen
+# per-arm field sets.
+from ..reproduction.obs_loop import OBS_LOOP_POLICY_NAME, ObsAgentLoopPolicy  # noqa: E402
+
+POLICIES.register(OBS_LOOP_POLICY_NAME, ObsAgentLoopPolicy())

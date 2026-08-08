@@ -86,13 +86,16 @@ def energy_vad_flags(
 ) -> list[bool]:
     """Deterministic energy VAD: one speech/non-speech flag per frame.
 
-    Threshold = ``max(absolute_floor, threshold_factor * noise_floor)`` where
-    the noise floor is the 10th-percentile frame RMS -- adaptive to the
-    recording's own quiet frames, with an absolute floor so an all-loud
-    signal never declares its quietest moments "silence" spuriously and an
-    all-digital-silence signal never divides by zero. A hangover keeps speech
-    active ``hangover_frames`` frames past the last energetic frame so brief
-    intra-word dips do not fragment spans.
+    Threshold rule: ``max(absolute_floor, min(threshold_factor * noise_floor,
+    0.5 * p90))`` where the noise floor is the 10th-percentile frame RMS and
+    ``p90`` the 90th. The adaptive term (factor x quietest frames) separates
+    speech from a genuinely quiet floor; the ``0.5 * p90`` cap keeps a
+    UNIFORMLY energetic recording (no quiet frames at all -- so the "noise
+    floor" IS the signal) from being declared entirely non-speech, which
+    would otherwise let the pre-trim tier silently skip a whole call; the
+    absolute floor keeps digital silence non-speech regardless. A hangover
+    keeps speech active ``hangover_frames`` frames past the last energetic
+    frame so brief intra-word dips do not fragment spans.
     """
 
     if sample_rate_hz <= 0:
@@ -101,8 +104,10 @@ def energy_vad_flags(
     rms = frame_rms(samples, frame_len)
     if not rms:
         return []
-    noise_floor = sorted(rms)[max(0, len(rms) // 10 - 1)] if len(rms) > 1 else rms[0]
-    threshold = max(absolute_floor, threshold_factor * noise_floor)
+    ordered = sorted(rms)
+    noise_floor = ordered[max(0, len(ordered) // 10 - 1)] if len(ordered) > 1 else ordered[0]
+    p90 = ordered[min(len(ordered) - 1, (len(ordered) * 9) // 10)]
+    threshold = max(absolute_floor, min(threshold_factor * noise_floor, 0.5 * p90))
     flags = [value > threshold for value in rms]
     with_hangover = list(flags)
     countdown = 0
