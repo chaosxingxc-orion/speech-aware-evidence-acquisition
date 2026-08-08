@@ -158,7 +158,16 @@ class LlamaServerTransport:
         try:
             parsed = json.loads(raw.decode("utf-8"))
             text = parsed["choices"][0]["message"]["content"]
-            usage = {str(k): int(v) for k, v in dict(parsed.get("usage", {})).items()}
+            # 2026-08-08: newer llama-server usage blocks carry nested
+            # OpenAI-style `*_tokens_details` objects — a valid schema
+            # extension, dropped here. Anything else keeps the original
+            # fail-closed int() contract: a malformed scalar counter still
+            # raises rather than being silently swallowed.
+            usage = {
+                str(k): int(v)
+                for k, v in dict(parsed.get("usage", {})).items()
+                if not isinstance(v, Mapping)
+            }
         except (KeyError, TypeError, ValueError, IndexError, UnicodeError) as error:
             raise FrozenCoreError(
                 f"transport returned a malformed response: {error}"

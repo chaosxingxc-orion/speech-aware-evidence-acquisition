@@ -213,6 +213,35 @@ def test_body_mapping_and_response_projection(tmp_path):
     assert base64.b64decode(audio_part["input_audio"]["data"]) == b"fake-mp3-bytes"
 
 
+def test_usage_with_nested_detail_objects_keeps_scalar_counters_only(tmp_path):
+    """2026-08-08: the first successful real request died at the LAST step —
+    newer llama-server usage blocks carry nested objects (OpenAI-style
+    `*_tokens_details`), and int(dict) raised. Scalar counters must survive;
+    non-scalar entries are dropped, never fatal."""
+
+    def fake_post(url, body):
+        return json.dumps(
+            {
+                "choices": [{"message": {"content": "transcript text"}}],
+                "usage": {
+                    "prompt_tokens": 56032,
+                    "completion_tokens": 800,
+                    "total_tokens": 56832,
+                    "prompt_tokens_details": {"cached_tokens": 0, "audio_tokens": 55000},
+                },
+            }
+        ).encode()
+
+    transport = _transport("http://127.0.0.1:8080", tmp_path, post=fake_post)
+    result = json.loads(transport(json.dumps(_boundary_payload(tmp_path)).encode()))
+    assert result["text"] == "transcript text"
+    assert result["usage"] == {
+        "prompt_tokens": 56032,
+        "completion_tokens": 800,
+        "total_tokens": 56832,
+    }
+
+
 def test_http_error_surfaces_status_and_server_body(tmp_path):
     """2026-08-08: the first real smoke died on a bare `HTTPError: 400` with the
     server's diagnostic body silently discarded — the transport must surface
