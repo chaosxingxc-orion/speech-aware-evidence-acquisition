@@ -213,6 +213,31 @@ def test_body_mapping_and_response_projection(tmp_path):
     assert base64.b64decode(audio_part["input_audio"]["data"]) == b"fake-mp3-bytes"
 
 
+def test_http_error_surfaces_status_and_server_body(tmp_path):
+    """2026-08-08: the first real smoke died on a bare `HTTPError: 400` with the
+    server's diagnostic body silently discarded — the transport must surface
+    status + body so an operator learns WHY (context overflow, bad schema, …)
+    without a second spend against the call budget."""
+
+    import io
+    import urllib.error
+
+    def fake_post(url, body):
+        raise urllib.error.HTTPError(
+            url,
+            400,
+            "Bad Request",
+            None,
+            io.BytesIO(
+                b'{"error":{"message":"the request exceeds the available context size"}}'
+            ),
+        )
+
+    transport = _transport("http://127.0.0.1:8080", tmp_path, post=fake_post)
+    with pytest.raises(FrozenCoreError, match="HTTP 400.*exceeds the available context"):
+        transport(json.dumps(_boundary_payload(tmp_path)).encode())
+
+
 def test_evidence_items_become_text_parts(tmp_path):
     def fake_post(url, body):
         parts = json.loads(body)["messages"][1]["content"]

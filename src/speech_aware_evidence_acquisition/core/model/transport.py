@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import base64
 import json
+import urllib.error
 import urllib.request
 from pathlib import Path
 from typing import Callable, Mapping
@@ -141,7 +142,19 @@ class LlamaServerTransport:
                     "request body and would silently override it"
                 )
             body[key] = value
-        raw = self._post(self._url, json.dumps(body).encode("utf-8"))
+        try:
+            raw = self._post(self._url, json.dumps(body).encode("utf-8"))
+        except urllib.error.HTTPError as error:
+            # 2026-08-08: surface the server's diagnostic body — a bare
+            # `HTTPError: 400` cost a metered call while discarding the one
+            # string that says WHY (context overflow, schema, …).
+            try:
+                detail = error.read()[:2048].decode("utf-8", "replace")
+            except OSError:
+                detail = "<unreadable body>"
+            raise FrozenCoreError(
+                f"server returned HTTP {error.code} {error.reason}: {detail}"
+            ) from error
         try:
             parsed = json.loads(raw.decode("utf-8"))
             text = parsed["choices"][0]["message"]["content"]
