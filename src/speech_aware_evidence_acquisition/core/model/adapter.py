@@ -27,6 +27,7 @@ from . import FrozenCoreError
 from .binding import _PayloadBindingMixin
 from .lifecycle import _AttemptLifecycleMixin
 from .request_types import ALLOWED_DECODING_KEYS, CoreResponse, _canonical
+from .slices import SliceRegistry
 
 
 class FrozenCoreAdapter(_PayloadBindingMixin, _AttemptLifecycleMixin):
@@ -38,6 +39,7 @@ class FrozenCoreAdapter(_PayloadBindingMixin, _AttemptLifecycleMixin):
         transport: Callable[[bytes], bytes],
         sink: TraceSink,
         binding: PayloadBindingContext,
+        slice_registry: SliceRegistry | None = None,
     ) -> None:
         if arm not in ARM_VISIBLE_FIELDS:
             raise FrozenCoreError(
@@ -63,6 +65,18 @@ class FrozenCoreAdapter(_PayloadBindingMixin, _AttemptLifecycleMixin):
                 f"{binding.carrier_lock_key!r} does not match the execution plan "
                 f"carrier_lock_key {plan.carrier_lock_key!r}"
             )
+        # Slice-rail extension (obs-agent-loop, owner directive 2026-08-08):
+        # optional and default-None, so every whole-file caller is untouched;
+        # when supplied it must be the real registry type -- a duck-typed
+        # stand-in here would silently weaken the derivation-chain guarantees
+        # _enforce_slice_payload_binding relies on (fail-closed constructor
+        # discipline, same as the binding context above).
+        if slice_registry is not None and not isinstance(slice_registry, SliceRegistry):
+            raise FrozenCoreError(
+                "FrozenCoreAdapter slice_registry must be a core.model.SliceRegistry "
+                f"or None; got {type(slice_registry).__name__}"
+            )
+        self._slice_registry = slice_registry
         # R0 repair refactor stage 2 (part C): the gate check, D1 media-
         # identity re-verification, transport session-liveness check, and the
         # durable one-time attempt open all live in
