@@ -1,0 +1,110 @@
+"""Probe-protocol manifest (P0.C): frozen prompt templates + probe specs.
+
+``PROBES`` is the declarative record of each sampled reproduction probe
+(plan R1–R5): its arms, which template files each arm uses, the scorer that
+reads its outputs, and the pre-registered sampling design. ``build_manifest``
+hashes every referenced template byte-exactly; an ExecutionPlan's protocol
+hash binds to the SHA-256 of the generated ``manifest.json`` blob. Editing a
+template after its probe has run is forbidden — add a new file and a new
+probe entry instead.
+"""
+
+from __future__ import annotations
+
+import hashlib
+import json
+from pathlib import Path
+
+PROBE_MANIFEST_VERSION = "probe-manifest-v1"
+
+_SEED = 20260807
+
+PROBES: dict[str, dict] = {
+    "R1-audio2tool-direct": {
+        "arms": {"direct": ["r1_audio2tool_direct.txt"]},
+        "scorer": "a2t-scorer-v1 (toolcall_scoring)",
+        "sampling": {"seed": _SEED, "design": "50 per tier x 8 tiers = 400 items"},
+        "success": "tier rank order preserved; per-tier |delta| <= 5pp vs published Qwen-3-Omni-30B row",
+        "profile": "baseline-reproduction",
+    },
+    "R2-bba-cascade-vs-direct": {
+        "arms": {
+            "direct": ["r2_bba_direct.txt"],
+            "self_cascade": ["shared_transcribe.txt", "r2_bba_cascade_answer.txt"],
+        },
+        "scorer": "deterministic: normalized match of text after final 'Answer:' vs official_answer",
+        "sampling": {"seed": _SEED, "design": "50 x 4 BBH categories = 200 items, paired arms"},
+        "success": "cascade > direct, paired-significant (McNemar)",
+        "profile": "bounded-discovery-probe",
+    },
+    "R3-airbench-slurp-ic": {
+        "arms": {
+            "direct": ["r3_airbench_ic_direct.txt"],
+            "self_cascade": ["shared_transcribe.txt", "r3_airbench_ic_cascade_answer.txt"],
+        },
+        "scorer": "deterministic: choice-letter match against gold choice",
+        "sampling": {"seed": _SEED, "design": "200 of the AIR-Bench 1k SLURP-IC items, paired arms"},
+        "success": "cascade > direct; absolute rows recorded to baseline wiki",
+        "profile": "bounded-discovery-probe",
+        "status": "BLOCKED: AIR-Bench data not on disk; acquisition needs the umbrella lock path",
+    },
+    "R4-context-dose": {
+        "arms": {
+            "no_context": ["r4_transcribe_nocontext.txt"],
+            "matched_context": ["r4_transcribe_with_context.txt"],
+            "mismatched_context": ["r4_transcribe_with_context.txt"],
+        },
+        "scorer": "frozen scoring stack (WER + entity P/R/F1); gold used scorer-side only",
+        "sampling": {
+            "seed": _SEED,
+            "design": "start: frozen dev subset10 (e22); e21 extension pending owner sample approval",
+        },
+        "success": "WER and per-entity-class WER monotone in evidence quality (Siskos direction)",
+        "profile": "bounded-discovery-probe",
+        "note": "matched arm uses the call's own ConEC materials; mismatched arm uses another call's; gold transcripts never enter runtime",
+    },
+    "R5-vab-oneshot": {
+        "arms": {
+            "zero_shot": ["r5_vab_zeroshot.txt"],
+            "one_shot": ["r5_vab_oneshot.txt"],
+        },
+        "scorer": "a2t-scorer-v1 components (tool selection / structure); semantic PF only via pinned local judge if unavoidable",
+        "sampling": {"seed": _SEED, "design": "50 x 3 EN complex strata (parallel/seqdep/multi-turn) = 150 items, paired arms"},
+        "success": "one-shot > zero-shot; magnitude compared to published +10-17pp",
+        "profile": "bounded-discovery-probe",
+    },
+}
+
+DECODE_DISCIPLINE = {
+    "temperature": 0,
+    "note": "greedy decoding for all scoring arms; sampling-based arms (R7 n-best) get their own entry when designed",
+}
+
+
+def build_manifest(templates_dir: Path) -> dict:
+    referenced = sorted(
+        {
+            template
+            for probe in PROBES.values()
+            for templates in probe["arms"].values()
+            for template in templates
+        }
+    )
+    hashes: dict[str, dict[str, str]] = {}
+    for name in referenced:
+        path = templates_dir / name
+        if not path.is_file():
+            raise FileNotFoundError(f"referenced template missing: {path}")
+        hashes[name] = {"sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
+    return {
+        "manifest_version": PROBE_MANIFEST_VERSION,
+        "decode": DECODE_DISCIPLINE,
+        "templates": hashes,
+        "probes": PROBES,
+    }
+
+
+def write_manifest(templates_dir: Path, out_path: Path) -> dict:
+    manifest = build_manifest(templates_dir)
+    out_path.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    return manifest

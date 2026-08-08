@@ -1,0 +1,5 @@
+Listen to the spoken request in the audio and classify the speaker's intent.
+Choose exactly one option from the list below and respond with only the
+letter of your choice.
+
+{choices}

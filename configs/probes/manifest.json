@@ -1,0 +1,130 @@
+{
+  "decode": {
+    "note": "greedy decoding for all scoring arms; sampling-based arms (R7 n-best) get their own entry when designed",
+    "temperature": 0
+  },
+  "manifest_version": "probe-manifest-v1",
+  "probes": {
+    "R1-audio2tool-direct": {
+      "arms": {
+        "direct": [
+          "r1_audio2tool_direct.txt"
+        ]
+      },
+      "profile": "baseline-reproduction",
+      "sampling": {
+        "design": "50 per tier x 8 tiers = 400 items",
+        "seed": 20260807
+      },
+      "scorer": "a2t-scorer-v1 (toolcall_scoring)",
+      "success": "tier rank order preserved; per-tier |delta| <= 5pp vs published Qwen-3-Omni-30B row"
+    },
+    "R2-bba-cascade-vs-direct": {
+      "arms": {
+        "direct": [
+          "r2_bba_direct.txt"
+        ],
+        "self_cascade": [
+          "shared_transcribe.txt",
+          "r2_bba_cascade_answer.txt"
+        ]
+      },
+      "profile": "bounded-discovery-probe",
+      "sampling": {
+        "design": "50 x 4 BBH categories = 200 items, paired arms",
+        "seed": 20260807
+      },
+      "scorer": "deterministic: normalized match of text after final 'Answer:' vs official_answer",
+      "success": "cascade > direct, paired-significant (McNemar)"
+    },
+    "R3-airbench-slurp-ic": {
+      "arms": {
+        "direct": [
+          "r3_airbench_ic_direct.txt"
+        ],
+        "self_cascade": [
+          "shared_transcribe.txt",
+          "r3_airbench_ic_cascade_answer.txt"
+        ]
+      },
+      "profile": "bounded-discovery-probe",
+      "sampling": {
+        "design": "200 of the AIR-Bench 1k SLURP-IC items, paired arms",
+        "seed": 20260807
+      },
+      "scorer": "deterministic: choice-letter match against gold choice",
+      "status": "BLOCKED: AIR-Bench data not on disk; acquisition needs the umbrella lock path",
+      "success": "cascade > direct; absolute rows recorded to baseline wiki"
+    },
+    "R4-context-dose": {
+      "arms": {
+        "matched_context": [
+          "r4_transcribe_with_context.txt"
+        ],
+        "mismatched_context": [
+          "r4_transcribe_with_context.txt"
+        ],
+        "no_context": [
+          "r4_transcribe_nocontext.txt"
+        ]
+      },
+      "note": "matched arm uses the call's own ConEC materials; mismatched arm uses another call's; gold transcripts never enter runtime",
+      "profile": "bounded-discovery-probe",
+      "sampling": {
+        "design": "start: frozen dev subset10 (e22); e21 extension pending owner sample approval",
+        "seed": 20260807
+      },
+      "scorer": "frozen scoring stack (WER + entity P/R/F1); gold used scorer-side only",
+      "success": "WER and per-entity-class WER monotone in evidence quality (Siskos direction)"
+    },
+    "R5-vab-oneshot": {
+      "arms": {
+        "one_shot": [
+          "r5_vab_oneshot.txt"
+        ],
+        "zero_shot": [
+          "r5_vab_zeroshot.txt"
+        ]
+      },
+      "profile": "bounded-discovery-probe",
+      "sampling": {
+        "design": "50 x 3 EN complex strata (parallel/seqdep/multi-turn) = 150 items, paired arms",
+        "seed": 20260807
+      },
+      "scorer": "a2t-scorer-v1 components (tool selection / structure); semantic PF only via pinned local judge if unavoidable",
+      "success": "one-shot > zero-shot; magnitude compared to published +10-17pp"
+    }
+  },
+  "templates": {
+    "r1_audio2tool_direct.txt": {
+      "sha256": "8ea2849d9f1d948ab46734fdc99e37efaba0b78216fdd2add0f8fccb3997da9a"
+    },
+    "r2_bba_cascade_answer.txt": {
+      "sha256": "974b65e34d419ae4fbdf520ec68f6c97fde75388709a4e37031a27647ff30703"
+    },
+    "r2_bba_direct.txt": {
+      "sha256": "a39a81fb03b73ae6dfe182bf480d47425588bcb24ac47dc10778a7b09cc0fa33"
+    },
+    "r3_airbench_ic_cascade_answer.txt": {
+      "sha256": "6d78ecc72139eae2991c121609c1c7818a3dfa5f22a7bc863e1246b96cbae500"
+    },
+    "r3_airbench_ic_direct.txt": {
+      "sha256": "c04dccd37b6767db8674317284c390246fb11bfd4136809734b6782699769f94"
+    },
+    "r4_transcribe_nocontext.txt": {
+      "sha256": "4b41c8ba551a01c2dc29f28649d12fccdc02f64a6654fc204e26e8fc63b3b230"
+    },
+    "r4_transcribe_with_context.txt": {
+      "sha256": "0385829ec3f1f444b8724ce0ef523bcce70064d7a339443cac058611cedda43e"
+    },
+    "r5_vab_oneshot.txt": {
+      "sha256": "2d8f85ecc2b6def70f40538325b59d9386b138d8f78d184aa125cfa1fbac19be"
+    },
+    "r5_vab_zeroshot.txt": {
+      "sha256": "53f9efee71d8772f54526c2373415b045e35c0ed62a17b618c161f17c5b13ada"
+    },
+    "shared_transcribe.txt": {
+      "sha256": "44365d551299d86097791e02e931614872ee503f6d3f3d689a8a12c0c311e677"
+    }
+  }
+}

@@ -1,0 +1,9 @@
+Reference material related to the recording you are about to hear. It may
+contain names, organizations, products, and technical terms that occur in
+the speech:
+
+{evidence}
+
+Now transcribe the speech in the audio exactly, word for word, using the
+reference material only to resolve unfamiliar names and terms. Output only
+the transcript.

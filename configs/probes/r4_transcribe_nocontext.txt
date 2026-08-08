@@ -1,0 +1,2 @@
+Transcribe the speech in the audio exactly, word for word. Output only the
+transcript.

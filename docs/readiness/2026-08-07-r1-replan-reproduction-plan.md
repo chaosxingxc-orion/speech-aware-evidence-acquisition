@@ -156,3 +156,9 @@ earlier steps earn it.
    P2b.
 5. Authorize P1 as the first model touch (supersedes/absorbs the R0.3
    `SAEA-E-001` slot or schedules after it — owner's call).
+6. **P0 finding (2026-08-07): the AIR-Bench SLURP-IC subset is not on disk**
+   — R3 is blocked until the asset enters via the umbrella's formal
+   acquisition path (`docs/datasets.lock.json` + fetch scripts;
+   distribution channel is a GitHub-issue link, itself a weak-channel flag).
+   R2 (Big Bench Audio, on disk) carries the cascade-vs-direct probe until
+   then; the probe manifest marks R3 `BLOCKED`.

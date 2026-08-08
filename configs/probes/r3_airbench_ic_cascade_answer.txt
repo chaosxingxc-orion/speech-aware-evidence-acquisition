@@ -1,0 +1,8 @@
+The following is a transcript of a spoken request:
+
+{transcript}
+
+Classify the speaker's intent. Choose exactly one option from the list below
+and respond with only the letter of your choice.
+
+{choices}

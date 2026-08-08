@@ -1,0 +1,4 @@
+Listen to the question in the audio and solve it. Think through the problem
+step by step if needed, then give your final answer on a new line in the
+form:
+Answer: <your final answer>
