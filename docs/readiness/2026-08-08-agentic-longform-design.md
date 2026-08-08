@@ -1,4 +1,41 @@
-# Agentic long-form design (owner directive, 2026-08-08)
+# Agentic long-form design (owner directives, 2026-08-08; v2)
+
+**v2 (same day, second owner directive + truncation evidence):** the OBS
+layer is a **model-driven agent loop**, not fixed pre-sliced windows. The
+whole-call protocol is empirically invalid — 7 of 9 "successful" whole-call
+transcripts were 2–106 words for 40–75-minute calls (the core transcribes
+the opening line and emits EOS); and no reference work loads whole calls
+(Earnings-21 scored VAD/streaming pipelines; Whisper's canonical recipe is
+30s sliding windows; Siskos/ConEC/CMT-LLM all segment; D/F-family benchmark
+clips average 3.6–47s). Fixed windows are kept only as a degenerate config
+(ablation arm A) of the loop policy.
+
+**obs-agent-loop (v2 design):** per call, a sliding buffer of
+`obs_buffer_seconds` (default 60, configurable) is transcribed by the frozen
+core, which also reports a rough end-of-last-complete-sentence boundary;
+boundary resolution is three-tier — model estimate → deterministic
+silence-snap (±`obs_silence_snap_seconds` RMS minimum) → clamp into
+[`obs_min_advance_seconds`, `obs_max_advance_seconds`], with a fixed-advance
++ overlap-text-merge fallback when the estimate is unusable. Accepted spans
+concatenate into the call hypothesis; every boundary decision is an OBS
+trace record (per the contract's per-axis tracing). Runtime slices are cut
+under the attempt run dir and hash-chained to the parent media through an
+extended payload-binding rail (fail-closed). Node-1's transcript IS the ASR
+output (single pass); Node-2 semantics (evidence injection per iteration)
+carry the R4 arms. Rationale guardrail: audio-LLM timestamps are unreliable,
+so the model's boundary is advisory, never trusted raw.
+
+**v2 addendum (third owner directive, same day):** speech preprocessing
+tools join the OBS toolkit as pinned, logged, tool-level components (no
+answer authority): VAD upgrades boundary tier 2 (snap to the nearest
+speech/non-speech transition; v1 engines: zero-dependency energy VAD
+default, webrtcvad when present, silero as a future pinned-model ablation);
+VAD pre-trim skips long non-speech spans (> `obs_vad_trim_min_seconds`,
+trimmed audio never metered, every trim an OBS trace record); optional
+per-slice RMS loudness normalization (`obs_preprocess`, default off;
+denoising deliberately excluded from v1 — future ablation arm). All knobs
+flow into config_hash → protocol_hash; all decisions and derived-audio
+hashes chain back to the parent media.
 
 Owner directive (session, 2026-08-08, recorded verbatim in intent): long-form
 audio must NOT be handled by driving the frozen core once over a whole call;
