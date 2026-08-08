@@ -33,7 +33,7 @@ from ..config import ComposedConfig
 from ..evidence import evidence_file_relpath, rotated_mismatch
 from ..instructions import resolve_task_instruction
 from ..resources import NullSampler, ResourceSampler, cpu_seconds_snapshot
-from ..model import FrozenCoreAdapter
+from ..model import FrozenCoreAdapter, SliceRegistry
 from ..split_receipt import load_verified_split
 from ..tracing import TraceSink
 from .cost import _assemble_run_cost
@@ -178,8 +178,21 @@ def run_experiment(
             data_root=Path(root),
             carrier_root=carrier_root,
         )
+        # obs-agent-loop rail (owner directive 2026-08-08): the per-run slice
+        # registry, built from EXACTLY the same loader facts the binding above
+        # carries. Always constructed (an empty registry admits nothing, so
+        # whole-file policies are untouched); the adapter consults it in
+        # _enforce_payload_binding, and a slice-cutting policy reaches the SAME
+        # object through SampleContext.extras below -- one registry, two ends
+        # of the derivation chain.
+        slice_registry = SliceRegistry(
+            data_root=Path(root),
+            run_id=plan.run_id,
+            parent_facts={s.sample_id: (s.media_relpath, s.audio_seconds) for s in samples},
+        )
         adapter = FrozenCoreAdapter(
-            gate=gate, plan=plan, arm=arm, transport=transport, sink=sink, binding=binding
+            gate=gate, plan=plan, arm=arm, transport=transport, sink=sink, binding=binding,
+            slice_registry=slice_registry,
         )
         # R0 repair T7 (I8): "setup" ends here -- split/carrier/evidence
         # resolution plus the gate check and attempt reservation the adapter's
@@ -250,6 +263,19 @@ def run_experiment(
                     decoding_params=dict(values.get("decoding_params", {})),
                     request_id_base=request_id_base,
                     retrieval_query=values.get("retrieval_query"),
+                    # obs-agent-loop rail: run facts a slice-cutting policy
+                    # needs (the SAME slice_registry the adapter enforces
+                    # against, the controlled roots, and the composed config
+                    # values its obs_* knobs live in). A fresh dict per sample
+                    # so no policy can leak per-sample mutations across
+                    # samples; whole-file policies simply never read these.
+                    extras={
+                        "slice_registry": slice_registry,
+                        "data_root": Path(root),
+                        "run_dir": Path(run_dir),
+                        "repo_root": Path(repo_root),
+                        "config_values": values,
+                    },
                 )
                 outcome = policy.run_sample(ctx)
                 if evidence and outcome.admitted:

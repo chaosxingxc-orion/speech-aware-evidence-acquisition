@@ -45,6 +45,23 @@ class _PayloadBindingMixin:
                 f"payload speech_ref {payload['speech_ref']!r} does not match the "
                 f"expected {expected_speech_ref!r} for carrier_lock_key/sample_id"
             )
+        relative = _normalized_relative_path(payload["media_relpath"], "payload media_relpath")
+        # Slice-rail extension (obs-agent-loop, owner directive 2026-08-08): a
+        # payload naming something OTHER than the sample's registered parent
+        # media is admitted ONLY as a derivation-chained runtime slice --
+        # exactly the (sample_id, media_relpath) pair a core.model.SliceRegistry
+        # verified chains to the registered media (parent-bytes hash, offsets
+        # inside the parent's verified duration, run-local slice tree, slice
+        # byte identity re-checked per send). Its metered audio_seconds /
+        # sample_rate_hz then bind to the SLICE record, so a slice request is
+        # charged exactly the seconds actually sent -- never the parent's
+        # whole duration, and never a payload-claimed number the rail cannot
+        # vouch for. With no registry (every pre-existing caller) or no
+        # matching record, the original exact-relpath refusal below fires
+        # unchanged.
+        if binding.media_relpaths and relative != binding.media_relpaths.get(sample_id):
+            self._enforce_slice_payload_binding(payload, audio_seconds, sample_id, relative)
+            return
         fact_audio_seconds, fact_sample_rate_hz = binding.sample_facts[sample_id]
         if float(audio_seconds) != float(fact_audio_seconds):
             raise FrozenCoreError(
@@ -61,7 +78,6 @@ class _PayloadBindingMixin:
                 f"payload sample_rate_hz {sample_rate_hz!r} disagrees with the loader "
                 f"fact {fact_sample_rate_hz!r} for sample {sample_id!r}"
             )
-        relative = _normalized_relative_path(payload["media_relpath"], "payload media_relpath")
         # IMPORTANT A (round-2 external-threat-model review): confinement alone
         # only proved the payload's media_relpath stays INSIDE the carrier
         # root -- it never compared it to what this run's verified split
@@ -104,5 +120,61 @@ class _PayloadBindingMixin:
             relative,
             binding.carrier_root,
             "payload media_relpath",
+            strict=True,
+        )
+
+    def _enforce_slice_payload_binding(
+        self, payload: Mapping[str, object], audio_seconds: object, sample_id: str, relative: str
+    ) -> None:
+        """Admit-or-refuse a non-parent media_relpath as a derivation-chained
+        runtime slice (see the call-site comment in
+        :meth:`_enforce_payload_binding` for the contract; fail-closed)."""
+
+        registry = getattr(self, "_slice_registry", None)
+        record = registry.lookup(sample_id, relative) if registry is not None else None
+        if record is None:
+            expected_relpath = self._binding.media_relpaths.get(sample_id)
+            if expected_relpath is None:
+                raise FrozenCoreError(
+                    f"payload binding has no verified media_relpath for sample "
+                    f"{sample_id!r}; a sample the binding cannot vouch for can never "
+                    "be sent"
+                )
+            raise FrozenCoreError(
+                f"payload media_relpath {relative!r} does not match the verified "
+                f"split's own media_relpath {expected_relpath!r} for sample "
+                f"{sample_id!r} -- confinement under the carrier root is necessary "
+                "but not sufficient; the payload must name EXACTLY the file the "
+                "binding (and, at the gate, verify_media_identity) vouches for, "
+                "never merely some other file that happens to live under the same "
+                "root (I4 exact media-relpath binding; a runtime slice is admitted "
+                "only through a registered core.model.SliceRecord derivation chain)"
+            )
+        if abs(float(audio_seconds) - float(record.audio_seconds)) > 1e-6:
+            raise FrozenCoreError(
+                f"payload audio_seconds {audio_seconds!r} disagrees with the slice "
+                f"derivation record's {record.audio_seconds!r} for {relative!r} -- a "
+                "slice request is metered by exactly the seconds its derivation "
+                "record proves were cut"
+            )
+        sample_rate_hz = payload["sample_rate_hz"]
+        if (
+            isinstance(sample_rate_hz, bool)
+            or not isinstance(sample_rate_hz, int)
+            or sample_rate_hz != record.sample_rate_hz
+        ):
+            raise FrozenCoreError(
+                f"payload sample_rate_hz {sample_rate_hz!r} disagrees with the slice "
+                f"derivation record's {record.sample_rate_hz!r} for {relative!r}"
+            )
+        # Byte identity re-checked on EVERY send, not merely at registration --
+        # a slice swapped between the two is caught before its bytes leave the
+        # process (mirrors the registration-time check; same registry code).
+        registry.verify_slice_bytes(record)
+        _resolve_confined(
+            self._binding.data_root,
+            relative,
+            registry.slice_root(),
+            "payload media_relpath (runtime slice)",
             strict=True,
         )

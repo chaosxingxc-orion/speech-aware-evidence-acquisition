@@ -1,0 +1,6 @@
+This audio clip is one window of a longer recording. Transcribe it, then report where the last COMPLETE sentence ends inside THIS clip.
+
+Output exactly two parts, in this order, and nothing else:
+TRANSCRIPT:
+<verbatim transcript of the clip>
+BOUNDARY_SECONDS: <number of seconds into this clip where the last complete sentence ends, as a plain number>

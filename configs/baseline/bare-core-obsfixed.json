@@ -1,0 +1,18 @@
+{
+  "arm": "bare-core",
+  "policy": "obs-agent-loop",
+  "evidence_source": "none",
+  "evidence_mismatch": false,
+  "scorers": ["asr-wer", "cost"],
+  "task_instruction": "Transcribe the speech verbatim. Output only the transcript text.",
+  "obs_buffer_seconds": 30,
+  "obs_min_advance_seconds": 30,
+  "obs_max_advance_seconds": 30,
+  "obs_silence_snap_seconds": 0,
+  "obs_fallback_advance_seconds": 30,
+  "obs_boundary_mode": "fixed",
+  "obs_vad": "energy",
+  "obs_vad_trim_min_seconds": 0,
+  "obs_preprocess": [],
+  "obs_condition_tail_chars": 0
+}

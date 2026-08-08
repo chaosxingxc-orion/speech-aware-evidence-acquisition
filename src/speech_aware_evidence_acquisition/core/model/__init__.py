@@ -31,6 +31,12 @@ class FrozenCoreError(RuntimeError):
 
 
 from .paths import _DRIVE_PREFIX, _normalized_relative_path, _resolve_confined  # noqa: E402
+from .slices import (  # noqa: E402
+    OBS_SLICES_SUBDIR,
+    PARENT_DURATION_TOLERANCE_SECONDS,
+    SliceRecord,
+    SliceRegistry,
+)
 from .binding import _PayloadBindingMixin  # noqa: E402
 from .request_types import ALLOWED_DECODING_KEYS, CoreResponse, _canonical  # noqa: E402
 from .lifecycle import _AttemptLifecycleMixin  # noqa: E402
@@ -47,6 +53,10 @@ __all__ = [
     "FrozenCoreAdapter",
     "FrozenCoreError",
     "LlamaServerTransport",
+    "OBS_SLICES_SUBDIR",
+    "PARENT_DURATION_TOLERANCE_SECONDS",
+    "SliceRecord",
+    "SliceRegistry",
     "_AttemptLifecycleMixin",
     "_DRIVE_PREFIX",
     "_PayloadBindingMixin",
