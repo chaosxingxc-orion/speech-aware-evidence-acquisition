@@ -4,10 +4,11 @@ Importing this package registers all built-in components (carriers, evidence
 sources, transports, policies, scorers).
 """
 
-from . import carriers, evidence, model, policies, scorers  # noqa: F401 (registration)
+from . import carriers, evidence, instructions, model, policies, scorers  # noqa: F401 (registration)
 from .base import (
     CARRIERS,
     EVIDENCE_SOURCES,
+    INSTRUCTION_FILLS,
     POLICIES,
     SCORERS,
     TRANSPORTS,
@@ -43,7 +44,7 @@ from .tracking import (
 )
 
 __all__ = [
-    "CARRIERS", "EVIDENCE_SOURCES", "POLICIES", "SCORERS", "TRANSPORTS",
+    "CARRIERS", "EVIDENCE_SOURCES", "INSTRUCTION_FILLS", "POLICIES", "SCORERS", "TRANSPORTS",
     "LEDGER_COLUMNS", "BundleError", "ComposedConfig", "ConfigError", "CoreError",
     "CoreResponse", "EvidenceError", "EvidenceItem", "FinalizeResult", "FrozenCoreAdapter",
     "FrozenCoreError", "LlamaServerTransport", "MlflowUnavailable", "RunResult",

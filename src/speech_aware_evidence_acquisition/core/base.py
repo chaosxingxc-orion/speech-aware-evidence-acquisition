@@ -51,6 +51,13 @@ EVIDENCE_SOURCES = Registry("evidence source")
 TRANSPORTS = Registry("transport")
 POLICIES = Registry("policy")
 SCORERS = Registry("scorer")
+# P1 scaffold: named fills for the ONE supported task-instruction template
+# placeholder ("{tool_schemas}" -- see core.instructions). A fill is a
+# callable (lock, root) -> str rendering pinned carrier data (e.g. the
+# Audio2Tool tools_registry.csv) into the frozen prompt template at run time,
+# so registry-sized prompt material is never committed into a config
+# fragment. Same one-Registry discipline as every other seam above.
+INSTRUCTION_FILLS = Registry("instruction fill")
 
 _REQUIRED_PROVENANCE = ("lock_key", "relpath", "sha256")
 
