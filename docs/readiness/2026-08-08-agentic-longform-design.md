@@ -61,6 +61,25 @@ contextual-biasing list — the same mechanism family as Siskos/ConEC external
 materials, but sourced from the agent's own OBS stream. No published
 inference-time precedent exists on any held carrier (mechanism map bucket 3).
 
+## Knowledge routing (fourth owner design question, 2026-08-08)
+
+Both workflow nodes have knowledge slots, of different types and sources:
+
+| node | knowledge | source | axis | precedent |
+|---|---|---|---|---|
+| Node-1 断句 | rolling tail conditioning (previous ACCEPTED span's tail in the prompt; model output, never gold) | self | ORG→SUPPLY | Whisper condition-on-previous (strong) — **v1, in scope** |
+| Node-1 | entity glossary guarding boundaries (never cut inside a name) | external (ConEC participants/bias lists) + self-accumulated | SUPPLY | none (bucket 3) — phase 2 |
+| Node-1 | structural priors (call phases, Q&A turn cadence) | external/static | ORG | meeting-ASR adjacent — phase 3 |
+| Node-2 任务 | bias/keyword lists injected per iteration | ConEC materials (on disk) | SUPPLY | Siskos — the R4 arms |
+| Node-2 | **confusable sets** ("heard form" → phonetically-near entity candidates), dual-sourced: deterministic phonetic keying over ConEC entities AND self-detected cross-segment spelling inconsistencies | external-derived + self | ORG+SUPPLY | RECOVER/DeRAGEC class (R6 in-loop) — phase 2 |
+| Node-2.5 | confusable-driven correction re-ask | same | USE | RECOVER-style — phase 2 |
+
+The dual sourcing of confusable knowledge (external-derived vs
+self-generated from the agent's own inconsistencies) gives a clean
+self-vs-external contrast INSIDE one mechanism class — scoping discipline:
+v1 ships tail conditioning only; every phase-2 arm gets its own
+pre-registration.
+
 ## Arm ladder this enables (extends R4's pre-registered monotonicity)
 
 On the same segmented substrate, per call: `no-carry` (independent segments,
