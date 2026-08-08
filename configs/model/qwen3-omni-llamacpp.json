@@ -3,6 +3,6 @@
   "transport": "llama-server",
   "base_url": "http://127.0.0.1:8080",
   "timeout_seconds": 3600.0,
-  "server_args": ["-c", "65536", "-fa", "-ngl", "999", "-ot", ".ffn_.*_exps.=CPU"],
+  "server_args": ["-c", "65536", "-fa", "on", "-ngl", "999", "-ot", ".ffn_.*_exps.=CPU"],
   "decoding_params": {"temperature": 0, "seed": 20260803}
 }
