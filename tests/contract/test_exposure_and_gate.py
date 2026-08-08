@@ -914,15 +914,22 @@ def test_row_with_missing_cell_is_refused(world):
 
 def test_real_exposure_ledger_still_parses_correctly(world):
     """I2 regression guard: the real committed docs/exposure-ledger.md (one
-    table, a data row, then trailing prose) must still parse to exactly its
-    one real row through the new whole-document parser."""
+    table, data rows, then trailing prose) must still parse through the
+    whole-document parser. 2026-08-08: the ledger is now a living document
+    (pre-registration rows land before every model touch), so this guard
+    checks structural invariants — every row parses with a non-empty,
+    unique run id and the E0 closure row is still present — rather than
+    pinning a historical row count."""
 
     from speech_aware_evidence_acquisition.contracts import _parse_ledger_tables
 
     real_ledger = REPO_ROOT / "docs" / "exposure-ledger.md"
     rows = _parse_ledger_tables(real_ledger.read_text(encoding="utf-8"))
-    assert len(rows) == 1
-    assert rows[0]["run/experiment id"] == "SAEA-E0-CLOSURE-2026-08-04"
+    assert len(rows) >= 1
+    run_ids = [row["run/experiment id"] for row in rows]
+    assert all(run_id.strip() for run_id in run_ids)
+    assert len(set(run_ids)) == len(run_ids)
+    assert "SAEA-E0-CLOSURE-2026-08-04" in run_ids
 
 
 def test_gate_refuses_unknown_carrier_lock_key(world):
