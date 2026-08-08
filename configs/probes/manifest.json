@@ -73,8 +73,9 @@
       "note": "matched arm uses the call's own ConEC contexts layer; mismatched arm uses the deterministic rotation derangement; oracle/gold evidence hard-raises on the runtime path",
       "profile": "bounded-discovery-probe",
       "runtime_binding": "2026-08-08 Route-1 retarget: under the R0 core driver the arm instructions are the task_instruction fields of configs/baseline/{bare-core,fixed-legal-context,mismatched-evidence}.json (bound into protocol_hash via config_hash); the r4_*.txt templates above are the design-time reference, not runtime-wired. The mismatched arm's instruction was equalized to the matched arm's on 2026-08-08 (a design-leak fix: the negative-control explanation must never reach the model).",
+      "sample_receipt": "r4-e21-sub10-sample.json",
       "sampling": {
-        "design": "Route 1 (2026-08-08): frozen earnings21-discovery split, 44 samples per arm \u2014 e22 dev subset10 has no registered ConEC evidence layer (per-call PDFs, not per-sample txt); e22 evidence layer remains an owner-level decision",
+        "design": "Route 1 (2026-08-08): e21 discovery carrier (e22 dev subset10 has no registered ConEC evidence layer). Mini-arm revision (same day, after the smoke measured RTF~0.57): seeded 10-of-44 subset of the frozen discovery split; segmented execution per the owner's agentic long-form directive (segments receipt derives from this parent receipt via scripts/build_segments.py)",
         "seed": 20260807
       },
       "scorer": "frozen scoring stack (asr-wer + cost); per-entity-class WER deferred until an owner-pinned wer_tags adapter exists",
@@ -112,6 +113,13 @@
       "receipt": "r2-bba-sample.json",
       "seed": 20260807,
       "split_identity_hash": "c602bd7ee650b35f767eb4e7064e17452dc1bd0b813909ea2caef20db80cf262",
+      "split_role": "discovery"
+    },
+    "R4-context-dose": {
+      "n_items": 10,
+      "receipt": "r4-e21-sub10-sample.json",
+      "seed": 20260807,
+      "split_identity_hash": "fa1d298208b1324d60a379ba06ec730c005e376369ddede114d29ae746134cc2",
       "split_role": "discovery"
     },
     "R5-vab-oneshot": {

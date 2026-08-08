@@ -67,8 +67,15 @@ PROBES: dict[str, dict] = {
         "scorer": "frozen scoring stack (asr-wer + cost); per-entity-class WER deferred until an owner-pinned wer_tags adapter exists",
         "sampling": {
             "seed": _SEED,
-            "design": "Route 1 (2026-08-08): frozen earnings21-discovery split, 44 samples per arm — e22 dev subset10 has no registered ConEC evidence layer (per-call PDFs, not per-sample txt); e22 evidence layer remains an owner-level decision",
+            "design": (
+                "Route 1 (2026-08-08): e21 discovery carrier (e22 dev subset10 has no registered "
+                "ConEC evidence layer). Mini-arm revision (same day, after the smoke measured "
+                "RTF~0.57): seeded 10-of-44 subset of the frozen discovery split; segmented "
+                "execution per the owner's agentic long-form directive (segments receipt derives "
+                "from this parent receipt via scripts/build_segments.py)"
+            ),
         },
+        "sample_receipt": "r4-e21-sub10-sample.json",
         "success": "WER monotone in evidence quality (Siskos direction): matched < no-context and matched < mismatched",
         "profile": "bounded-discovery-probe",
         "note": "matched arm uses the call's own ConEC contexts layer; mismatched arm uses the deterministic rotation derangement; oracle/gold evidence hard-raises on the runtime path",
