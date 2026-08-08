@@ -1,0 +1,54 @@
+{
+  "carrier": "earnings21-original",
+  "design": "seeded 10-of-44 subset of the FROZEN discovery split (parent hash fcc1b0bc55432d02347dcdf730c6bcef561a9b0ad9605c45b367e1ed3da5d69e); mini arms per the 2026-08-08 RTF finding; audio total 30407.7s, longest 4472.8s",
+  "items": [
+    {
+      "id": "4330115",
+      "key": "earnings21-original:4330115"
+    },
+    {
+      "id": "4365024",
+      "key": "earnings21-original:4365024"
+    },
+    {
+      "id": "4365948",
+      "key": "earnings21-original:4365948"
+    },
+    {
+      "id": "4366429",
+      "key": "earnings21-original:4366429"
+    },
+    {
+      "id": "4366522",
+      "key": "earnings21-original:4366522"
+    },
+    {
+      "id": "4384964",
+      "key": "earnings21-original:4384964"
+    },
+    {
+      "id": "4385072",
+      "key": "earnings21-original:4385072"
+    },
+    {
+      "id": "4387383",
+      "key": "earnings21-original:4387383"
+    },
+    {
+      "id": "4389907",
+      "key": "earnings21-original:4389907"
+    },
+    {
+      "id": "4397829",
+      "key": "earnings21-original:4397829"
+    }
+  ],
+  "pool_size": 44,
+  "probe": "R4-context-dose",
+  "seed": 20260807,
+  "split_identity_hash": "fa1d298208b1324d60a379ba06ec730c005e376369ddede114d29ae746134cc2",
+  "split_role": "discovery",
+  "strata_counts": {
+    "discovery": 10
+  }
+}

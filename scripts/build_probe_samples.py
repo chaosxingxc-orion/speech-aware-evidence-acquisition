@@ -183,10 +183,63 @@ def build_r5_vab() -> None:
     )
 
 
+def build_r4_e21_sub10() -> None:
+    """R4 mini-arm split (2026-08-08): the measured smoke throughput
+    (RTF ~0.57) makes 44-sample arms ~67h for three arms — infeasible. Draw a
+    seeded 10-of-44 subset of the FROZEN discovery split (identity stays
+    inside the frozen 44; sample-once policy; resolved at run time through
+    reproduction.probe_split as split name ``r4-e21-sub10-sample``)."""
+
+    from speech_aware_evidence_acquisition.core.driver import load_split
+    from speech_aware_evidence_acquisition.data.loader import load_earnings21
+    from speech_aware_evidence_acquisition.data.lock import load_lock, umbrella_lock_path
+
+    lock = load_lock(umbrella_lock_path())
+    ids, split_hash, split_role = load_split(REPO_ROOT, "discovery", lock, DATA_ROOT)
+    pool = [{"key": f"earnings21-original:{sample_id}", "id": sample_id} for sample_id in ids]
+    sample = stratified_sample(
+        pool, per_stratum=10, seed=SEED, stratum_of=lambda x: "discovery", key_of=lambda x: x["key"]
+    )
+    chosen = {item["id"] for item in sample}
+    durations = {
+        s.sample_id: s.audio_seconds
+        for s in load_earnings21(lock, DATA_ROOT)
+        if s.sample_id in chosen
+    }
+    if set(durations) != chosen:
+        raise RuntimeError("subset ids missing from the earnings21 loader universe")
+    total = sum(durations.values())
+    longest = max(durations.values())
+    write_receipt(
+        "r4-e21-sub10-sample.json",
+        {
+            "probe": "R4-context-dose",
+            "carrier": "earnings21-original",
+            "seed": SEED,
+            "design": (
+                "seeded 10-of-44 subset of the FROZEN discovery split (parent hash "
+                f"{split_hash}); mini arms per the 2026-08-08 RTF finding; audio total "
+                f"{total:.1f}s, longest {longest:.1f}s"
+            ),
+            "pool_size": len(pool),
+            "strata_counts": {"discovery": len(sample)},
+            "items": sample,
+            "split_identity_hash": split_identity_hash([item["key"] for item in sample]),
+            "split_role": "discovery",
+        },
+    )
+    import math
+
+    print(f"r4 sub10 audio: total={total:.1f}s longest={longest:.1f}s "
+          f"per-arm planned_speech_audio_seconds={math.ceil(total + 2 * longest)} "
+          f"per-arm planned_model_calls={len(sample) + 2}")
+
+
 def main() -> int:
     build_r1_audio2tool()
     build_r2_bba()
     build_r5_vab()
+    build_r4_e21_sub10()
     return 0
 
 
