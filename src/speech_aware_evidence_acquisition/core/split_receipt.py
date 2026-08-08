@@ -169,6 +169,18 @@ def load_verified_split(
     disagrees with the receipt on ids or identity_hash.
     """
 
+    # P1 scaffold: any split name OUTSIDE the three contract splits resolves
+    # as a frozen probe-sample receipt (docs/receipts/probe-samples/<name>.json,
+    # sample-once policy) -- see reproduction.probe_split's module docstring
+    # for the receipt-hash vs run-hash convention and the trust split. The
+    # three contract names below keep the exact strict-parse + live-recompute
+    # path they always had; the import is deferred because probe_split imports
+    # THIS module for VerifiedSplit/SplitReceiptError.
+    if split_name not in _CONTRACT_ROLE:
+        from ..reproduction.probe_split import load_verified_probe_split
+
+        return load_verified_probe_split(repo_root, split_name)
+
     receipt_path = Path(repo_root) / "docs" / "receipts" / SPLITS_RECEIPT_NAME
     if not receipt_path.is_file():
         raise SplitReceiptError(
