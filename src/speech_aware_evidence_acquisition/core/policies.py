@@ -108,3 +108,18 @@ POLICIES.register("fixed", FixedPolicy())
 from ..reproduction.obs_loop import OBS_LOOP_POLICY_NAME, ObsAgentLoopPolicy  # noqa: E402
 
 POLICIES.register(OBS_LOOP_POLICY_NAME, ObsAgentLoopPolicy())
+
+# obs-agent-loop-ojw (owner directive 2026-08-08, openJiuwen adoption): the
+# SAME obs loop orchestrated by the openJiuwen framework executor
+# (reproduction/ojw/ -- LoopGroup body + FuncCondition over the Pregel
+# engine). Registration is free of openjiuwen imports (the framework enters
+# only through the policy's lazy seam at run time and never enters
+# pyproject.toml -- D2 zero-dependency gate); with openjiuwen absent the
+# policy refuses with the install hint. Equivalence with the plain policy
+# above is a red line, asserted by tests/unit/test_obs_loop_ojw.py.
+from ..reproduction.ojw.policy import (  # noqa: E402
+    OJW_POLICY_NAME,
+    ObsAgentLoopOjwPolicy,
+)
+
+POLICIES.register(OJW_POLICY_NAME, ObsAgentLoopOjwPolicy())

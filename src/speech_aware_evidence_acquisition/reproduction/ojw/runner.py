@@ -1,0 +1,159 @@
+"""Build and run the per-sample openJiuwen workflow for the obs loop.
+
+Graph (all framework constructs, composed — never subclassed):
+
+    Workflow:  start(Start) ──> obsloop ──> end(End)
+    obsloop =  AdvancedLoopComponent(
+                   body = LoopGroup[ feed ─> asr ─> boundary ─> accept ],
+                   condition = FuncCondition(state.should_continue))
+
+- ``LoopGroup`` carries the OBS sliding-buffer loop body; the four nodes
+  are connected in a LINEAR chain, so every Pregel super-step has exactly
+  one ready node — the engine's execution order is structurally
+  deterministic here (rebuild-notes §determinism, verified empirically by
+  the 5x equivalence runs in ``tests/unit/test_obs_loop_ojw.py``).
+- ``FuncCondition(state.should_continue)`` is the audio-not-exhausted
+  condition (plus the trim/runaway/degenerate-window decisions the plain
+  policy takes at the top of its ``while`` loop — ``state.py`` docstring).
+- The loop-max guard is ``state.max_iterations`` — computed from config
+  with the plain policy's exact arithmetic and enforced by the SAME
+  condition (the framework's ``LOOP_NUMBER_MAX_LIMIT`` env applies only to
+  number-typed ``LoopComponent`` loops, not ``FuncCondition`` loops, so
+  the guard rides in the condition callable).
+- ``AdvancedLoopComponent`` is the framework's own loop engine (what its
+  ``LoopComponent`` wraps); we compose it directly because the
+  ``LoopComponent`` input schema only admits static loop types
+  (array/number/expression/always-true), not a dynamic Python condition.
+
+Iteration-local dataflow uses the framework's ``${node.field}`` input
+schemas; static per-sample values enter through ``Start`` from
+``build_invoke_inputs``; loop-carried text state lives in session global
+state (``components.ACCEPTED_SPANS_KEY``).
+
+This module imports openjiuwen at module level and is imported only behind
+``policy.py``'s lazy seam.
+"""
+
+from __future__ import annotations
+
+import asyncio
+
+from openjiuwen.core.workflow import (
+    End,
+    FuncCondition,
+    LoopGroup,
+    Start,
+    Workflow,
+    create_workflow_session,
+)
+
+# AdvancedLoopComponent is the framework loop engine LoopComponent itself
+# wraps; it is not re-exported by the workflow package root.
+from openjiuwen.core.workflow.components.flow.loop.loop_comp import (
+    AdvancedLoopComponent,
+)
+
+from .components import (
+    START_NODE_ID,
+    AcceptAdvance,
+    BoundaryResolve,
+    FeedBuffer,
+    FrozenCoreASR,
+)
+from .state import ObsSampleState
+
+LOOP_NODE_ID = "obsloop"
+END_NODE_ID = "end"
+
+
+def build_obs_workflow(state: ObsSampleState, adapter_request) -> Workflow:
+    """The per-sample workflow graph (module docstring). ``adapter_request``
+    is the injected single-door callable handed to ``FrozenCoreASR``."""
+
+    loop_group = LoopGroup()
+    loop_group.add_workflow_comp("feed", FeedBuffer(state))
+    loop_group.add_workflow_comp(
+        "asr",
+        FrozenCoreASR(adapter_request, state),
+        inputs_schema={"slice_spec": "${feed.slice_spec}", "tail": "${feed.tail}"},
+    )
+    loop_group.add_workflow_comp(
+        "boundary",
+        BoundaryResolve(state),
+        inputs_schema={"slice_spec": "${feed.slice_spec}", "text": "${asr.text}"},
+    )
+    loop_group.add_workflow_comp(
+        "accept",
+        AcceptAdvance(state),
+        inputs_schema={
+            "slice_spec": "${feed.slice_spec}",
+            "tail": "${feed.tail}",
+            "request_id": "${asr.request_id}",
+            "request_sha256": "${asr.request_sha256}",
+            "response_sha256": "${asr.response_sha256}",
+            "accepted": "${boundary.accepted}",
+            "dropped": "${boundary.dropped}",
+            "resolution": "${boundary.resolution}",
+        },
+    )
+    loop_group.start_nodes(["feed"])
+    loop_group.end_nodes(["accept"])
+    loop_group.add_connection("feed", "asr")
+    loop_group.add_connection("asr", "boundary")
+    loop_group.add_connection("boundary", "accept")
+
+    loop_node = AdvancedLoopComponent(loop_group, FuncCondition(state.should_continue))
+
+    flow = Workflow()
+    flow.set_start_comp(
+        START_NODE_ID,
+        Start(),
+        inputs_schema={
+            "sample": "${sample}",
+            "task_instruction": "${task_instruction}",
+            "evidence": "${evidence}",
+            "arm": "${arm}",
+            "decoding_params": "${decoding_params}",
+            "retrieval_query": "${retrieval_query}",
+        },
+    )
+    flow.set_end_comp(END_NODE_ID, End(), inputs_schema={"loop": "${" + LOOP_NODE_ID + "}"})
+    flow.add_workflow_comp(LOOP_NODE_ID, loop_node)
+    flow.add_connection(START_NODE_ID, LOOP_NODE_ID)
+    flow.add_connection(LOOP_NODE_ID, END_NODE_ID)
+    return flow
+
+
+def build_invoke_inputs(state: ObsSampleState) -> dict[str, object]:
+    """The workflow invoke inputs Start maps into session state — the
+    driver-resolved static values ``components._static`` reads back."""
+
+    return {
+        "sample": {
+            "carrier_lock_key": state.sample.carrier_lock_key,
+            "sample_id": state.sample.sample_id,
+            "request_id_base": state.request_id_base,
+        },
+        "task_instruction": state.task_instruction,
+        "evidence": state.evidence,
+        "arm": state.arm,
+        "decoding_params": dict(state.decoding_params),
+        "retrieval_query": state.retrieval_query,
+    }
+
+
+async def _build_and_invoke(state: ObsSampleState, adapter_request) -> None:
+    # Built INSIDE the running loop: the framework's graph vertices create
+    # asyncio primitives at construction time, which must belong to the same
+    # event loop that drives them.
+    flow = build_obs_workflow(state, adapter_request)
+    await flow.invoke(inputs=build_invoke_inputs(state), session=create_workflow_session())
+
+
+def execute_obs_workflow(state: ObsSampleState, adapter_request) -> None:
+    """Build the graph and drive it to completion. Synchronous wrapper: the
+    driver's per-sample loop is synchronous and strictly sequential, so the
+    framework's async engine runs to completion inside ``asyncio.run`` —
+    one fresh event loop, workflow and session per sample."""
+
+    asyncio.run(_build_and_invoke(state, adapter_request))
