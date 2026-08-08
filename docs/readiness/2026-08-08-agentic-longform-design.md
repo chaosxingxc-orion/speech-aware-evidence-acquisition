@@ -80,6 +80,29 @@ self-vs-external contrast INSIDE one mechanism class — scoping discipline:
 v1 ships tail conditioning only; every phase-2 arm gets its own
 pre-registration.
 
+## Selective re-observation (fifth owner design question, 2026-08-08)
+
+Noise-segment detection → model invokes a denoising tool → re-listens.
+Classification: NOT knowledge-driven — it is **condition-aware
+re-observation** (construct 1 acting on OBS; the acoustic sibling of
+exploration direction 8). The owner's *selective* framing designs out the
+documented failure mode of static denoise front-ends (enhancement artifacts
+hurting ASR on clean audio). Phase-2 arm, own pre-registration:
+
+- **Triggers (deterministic only; no logits available)**: per-slice acoustic
+  metrics (energy-SNR estimate, clipping rate, spectral flatness — pure
+  numpy) + output-pathology metrics (transcript-length ÷ VAD-speech-seconds
+  ratio — the cheapest bad-observation signal, handed to us by the
+  whole-call truncation finding — plus character-loop and OOV density).
+- **Denoiser**: pinned frozen tool-level component, no answer authority
+  (v1 pure-numpy spectral subtraction; RNNoise/DeepFilterNet runtime-
+  detected, hash-pinned, as tool ablations).
+- **Keep rule**: deterministic — adopt the re-listened transcript only if
+  the badness metric improves beyond a margin; both output hashes traced.
+- **Shared skeleton**: one re-ask policy skeleton serves two triggers —
+  acoustic badness (this arm) and entity suspicion (Node-2.5 confusable
+  re-ask).
+
 ## Arm ladder this enables (extends R4's pre-registered monotonicity)
 
 On the same segmented substrate, per call: `no-carry` (independent segments,
