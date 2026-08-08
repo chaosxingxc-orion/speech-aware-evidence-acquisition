@@ -1,0 +1,410 @@
+"""Audio2Tool carrier loading (P1 scaffold): frozen-receipt-scoped, fail-closed.
+
+Layout facts (verified against the materialized asset, 2026-08-08):
+``<asset root>/tools_registry.csv`` plus ``<asset root>/public/`` holding one
+``tier{N}_{name}_data/tier{N}_{name}.json`` manifest (a JSON list of items)
+and one ``tier{N}_{name}_audios/query_{id:05d}/*.wav`` directory tree per
+tier. Manifest items carry identity (``tier``/``id``/``query_idx``), media
+facts (``path``/``duration`` — except tier7_multiturn, where audio lives per
+turn inside ``chat_history`` and those top-level keys are absent), the
+ground-truth fields (``tool_name``/``expected_tool_call``/
+``extracted_params``/``additional_tool_calls``) and the spoken ``query``
+text, all in ONE file. That single-manifest shape forces this module to
+parse a file that also contains annotations; the RUNTIME surface
+(:func:`load_audio2tool`) exposes only the standard five ``SampleRef``
+identity/media fields (boundary-checked by ``SampleRef.runtime_view``), and
+gold leaves this module only through the scorer-side
+:func:`load_expected_calls`.
+
+The loader's sample universe IS the frozen probe receipt
+(``docs/receipts/probe-samples/``, P0.D): pre-registration means no run may
+ever resolve Audio2Tool items outside it, so ``load_audio2tool`` hydrates
+exactly the receipt's items — the receipt's ``split_identity_hash`` is
+recomputed fail-closed (``reproduction.sampling.split_identity_hash``)
+before any manifest is read, every receipt item must exist in its tier
+manifest with a matching ``query_idx``, and every referenced wav must exist
+(its header supplies ``sample_rate_hz``, the one media fact the manifests do
+not carry; ``duration`` supplies ``audio_seconds``).
+
+Lock binding mirrors the earnings pattern: identity resolves through the
+umbrella lock entry named ``audio2tool`` (``lock_entry``/``asset_dir``).
+That entry does not exist yet — the loader therefore fails closed with
+``AssetResolutionError('audio2tool' ...)`` until the owner lock amendment
+lands, and that is deliberately the ONLY missing piece (engineering notes
+``docs/readiness/2026-08-08-p1-engineering-notes.md``).
+
+Tier7 protocol note: the P1 scaffold sends the FINAL user turn's wav only
+(``chat_history[-1]``, whose role must be ``user`` — fail-closed otherwise).
+Prior turns (user and agent audio) are not yet representable in the
+D2-frozen bare-core payload beyond its empty ``history`` field; the
+engineering notes record this protocol-fidelity gap and the options.
+"""
+
+from __future__ import annotations
+
+import json
+import math
+import re
+import wave
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Mapping
+
+from ..reproduction.sampling import split_identity_hash
+from ..reproduction.toolcall_gold import GoldParseError, expected_tool_calls_for_entry
+from ..reproduction.toolcall_scoring import ToolCall
+from .loader import LoaderError, SampleRef
+from .lock import REPO_ROOT, asset_dir, lock_entry
+
+AUDIO2TOOL_LOCK_KEY = "audio2tool"
+
+_STAGE2_SPLIT_ROLES = frozenset({"discovery", "dev"})
+_TIER_PATTERN = re.compile(r"tier[0-9]+_[a-z0-9_]+")
+
+
+@dataclass(frozen=True)
+class _ResolvedItem:
+    """One receipt item hydrated from its tier manifest (internal only)."""
+
+    sample_id: str
+    tier: str
+    audio_relpath_in_public: str
+    audio_seconds: float
+    entry: Mapping[str, object]
+
+
+def _probe_samples_dir(repo_root: Path) -> Path:
+    return Path(repo_root) / "docs" / "receipts" / "probe-samples"
+
+
+def audio2tool_receipts(repo_root: Path) -> dict[str, Mapping[str, object]]:
+    """Every committed probe-sample receipt whose ``carrier`` is
+    ``audio2tool``, keyed by receipt name (filename stem), each strictly
+    verified via :func:`load_receipt`. The union of their items IS this
+    carrier's loadable universe (sample-once policy,
+    ``configs/probes/manifest.json``): pre-registration means no run may ever
+    resolve Audio2Tool items outside a frozen receipt. Receipts naming OTHER
+    carriers (r2-bba, r5-vab) are skipped by their ``carrier`` field; an
+    unreadable receipt file fails closed regardless of carrier."""
+
+    directory = _probe_samples_dir(repo_root)
+    if not directory.is_dir():
+        raise LoaderError(f"probe sample receipt directory missing: {directory}")
+    receipts: dict[str, Mapping[str, object]] = {}
+    for path in sorted(directory.glob("*.json")):
+        try:
+            payload = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, UnicodeError, json.JSONDecodeError) as error:
+            raise LoaderError(f"cannot read probe sample receipt {path}: {error}") from error
+        if not isinstance(payload, Mapping):
+            raise LoaderError(f"probe sample receipt {path} must be a JSON object")
+        if payload.get("carrier") != AUDIO2TOOL_LOCK_KEY:
+            continue
+        receipts[path.stem] = _verify_receipt(path, payload)
+    if not receipts:
+        raise LoaderError(
+            f"no {AUDIO2TOOL_LOCK_KEY!r} probe sample receipt found under {directory}"
+        )
+    return receipts
+
+
+def _verify_receipt(path: Path, payload: Mapping[str, object]) -> Mapping[str, object]:
+    """Strictly verify one frozen probe-sample receipt, re-verifying its
+    ``split_identity_hash`` (fail-closed) before anything trusts its items."""
+    split_role = payload.get("split_role")
+    if split_role not in _STAGE2_SPLIT_ROLES:
+        raise LoaderError(
+            f"probe sample receipt {path} split_role {split_role!r} is not a Stage-2 "
+            f"role {sorted(_STAGE2_SPLIT_ROLES)} (fail-closed)"
+        )
+    items = payload.get("items")
+    if not isinstance(items, list) or not items:
+        raise LoaderError(f"probe sample receipt {path} has no items")
+    keys: list[str] = []
+    for item in items:
+        if not isinstance(item, Mapping):
+            raise LoaderError(f"probe sample receipt {path} item is not an object")
+        key = item.get("key")
+        tier = item.get("tier")
+        item_id = item.get("id")
+        if (
+            not isinstance(key, str)
+            or not isinstance(tier, str)
+            or not _TIER_PATTERN.fullmatch(tier)
+            or isinstance(item_id, bool)
+            or not isinstance(item_id, int)
+            or item_id < 0
+        ):
+            raise LoaderError(f"probe sample receipt {path} item is malformed: {item!r}")
+        if key != f"{AUDIO2TOOL_LOCK_KEY}:{tier}:{item_id:06d}":
+            raise LoaderError(
+                f"probe sample receipt {path} item key {key!r} does not match its own "
+                f"tier/id fields (expected '{AUDIO2TOOL_LOCK_KEY}:{tier}:{item_id:06d}')"
+            )
+        keys.append(key)
+    try:
+        recomputed = split_identity_hash(keys)
+    except ValueError as error:
+        raise LoaderError(f"probe sample receipt {path}: {error}") from error
+    if recomputed != payload.get("split_identity_hash"):
+        raise LoaderError(
+            f"probe sample receipt {path} split_identity_hash "
+            f"{payload.get('split_identity_hash')!r} does not match the hash recomputed "
+            f"from its own item keys ({recomputed!r}); refusing a tampered receipt"
+        )
+    return payload
+
+
+def _validate_audio_relpath(relpath: object, context: str) -> str:
+    """A manifest audio path must be a plain, confined, relative wav path —
+    same character discipline the transport's media confinement enforces."""
+
+    if not isinstance(relpath, str) or not relpath:
+        raise LoaderError(f"{context}: manifest audio path must be a non-empty string")
+    if "\\" in relpath or ":" in relpath or relpath.startswith("/"):
+        raise LoaderError(f"{context}: manifest audio path {relpath!r} is not a plain relative path")
+    segments = relpath.split("/")
+    if any(segment in ("", ".", "..") for segment in segments):
+        raise LoaderError(f"{context}: manifest audio path {relpath!r} escapes its tier directory")
+    if not relpath.endswith(".wav"):
+        raise LoaderError(f"{context}: manifest audio path {relpath!r} is not a .wav file")
+    return relpath
+
+
+def _audio_seconds(value: object, context: str) -> float:
+    if (
+        isinstance(value, bool)
+        or not isinstance(value, (int, float))
+        or not math.isfinite(value)
+        or value <= 0
+    ):
+        raise LoaderError(f"{context}: duration must be a finite positive number, got {value!r}")
+    return float(value)
+
+
+def _entry_media(entry: Mapping[str, object], context: str) -> tuple[str, float]:
+    """(audio relpath under public/, audio_seconds) for one manifest entry.
+
+    tier7_multiturn rows carry no top-level ``path``/``duration``; the P1
+    scaffold sends the FINAL user turn's wav (module docstring records the
+    protocol-fidelity gap this leaves).
+    """
+
+    path = entry.get("path")
+    if isinstance(path, str) and path:
+        return (
+            _validate_audio_relpath(path, context),
+            _audio_seconds(entry.get("duration"), context),
+        )
+    history = entry.get("chat_history")
+    if not isinstance(history, list) or not history:
+        raise LoaderError(
+            f"{context}: manifest entry has neither a top-level audio path nor a chat_history"
+        )
+    final_turn = history[-1]
+    if not isinstance(final_turn, Mapping) or final_turn.get("role") != "user":
+        raise LoaderError(
+            f"{context}: the final chat_history turn must be a user turn carrying the "
+            "request audio (fail-closed)"
+        )
+    return (
+        _validate_audio_relpath(final_turn.get("path"), context),
+        _audio_seconds(final_turn.get("duration"), context),
+    )
+
+
+def _tier_manifest(public_dir: Path, tier: str) -> dict[int, Mapping[str, object]]:
+    path = public_dir / f"{tier}_data" / f"{tier}.json"
+    if not path.is_file():
+        raise LoaderError(f"audio2tool tier manifest missing: {path}")
+    try:
+        entries = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as error:
+        raise LoaderError(f"cannot read audio2tool tier manifest {path}: {error}") from error
+    if not isinstance(entries, list):
+        raise LoaderError(f"audio2tool tier manifest {path} must be a JSON list")
+    by_id: dict[int, Mapping[str, object]] = {}
+    for entry in entries:
+        if not isinstance(entry, Mapping) or isinstance(entry.get("id"), bool):
+            raise LoaderError(f"audio2tool tier manifest {path} has a malformed item")
+        entry_id = entry.get("id")
+        if not isinstance(entry_id, int) or entry_id in by_id:
+            raise LoaderError(
+                f"audio2tool tier manifest {path} has a missing or duplicate id: {entry_id!r}"
+            )
+        by_id[entry_id] = entry
+    return by_id
+
+
+def _resolve_items(lock: Mapping[str, object], root: Path, repo_root: Path) -> tuple[str, list[_ResolvedItem]]:
+    """(carrier local_subdir, receipt-scoped resolved items sorted by sample_id)."""
+
+    entry = lock_entry(lock, AUDIO2TOOL_LOCK_KEY)
+    carrier_dir = asset_dir(lock, AUDIO2TOOL_LOCK_KEY, root)
+    subdir = str(entry["local_subdir"]).rstrip("/")
+    public_dir = carrier_dir / "public"
+    if not public_dir.is_dir():
+        raise LoaderError(f"audio2tool public directory missing: {public_dir}")
+
+    wanted_by_tier: dict[str, list[Mapping[str, object]]] = {}
+    for payload in audio2tool_receipts(repo_root).values():
+        for item in payload["items"]:
+            wanted_by_tier.setdefault(str(item["tier"]), []).append(item)
+
+    resolved: list[_ResolvedItem] = []
+    seen: set[str] = set()
+    for tier in sorted(wanted_by_tier):
+        manifest = _tier_manifest(public_dir, tier)
+        for item in wanted_by_tier[tier]:
+            item_id = int(item["id"])
+            sample_id = f"{tier}:{item_id:06d}"
+            if sample_id in seen:
+                raise LoaderError(f"duplicate audio2tool receipt item {sample_id!r}")
+            seen.add(sample_id)
+            entry_doc = manifest.get(item_id)
+            if entry_doc is None:
+                raise LoaderError(
+                    f"receipt item {sample_id!r} has no row in the {tier} manifest; "
+                    "the frozen receipt and the on-disk carrier disagree"
+                )
+            receipt_query_idx = item.get("query_idx")
+            if receipt_query_idx is not None and entry_doc.get("query_idx") != receipt_query_idx:
+                raise LoaderError(
+                    f"receipt item {sample_id!r} query_idx {receipt_query_idx!r} does not "
+                    f"match the manifest row's query_idx {entry_doc.get('query_idx')!r}"
+                )
+            audio_relpath, audio_seconds = _entry_media(entry_doc, sample_id)
+            resolved.append(
+                _ResolvedItem(
+                    sample_id=sample_id,
+                    tier=tier,
+                    audio_relpath_in_public=audio_relpath,
+                    audio_seconds=audio_seconds,
+                    entry=entry_doc,
+                )
+            )
+    resolved.sort(key=lambda item: item.sample_id)
+    return subdir, resolved
+
+
+def _wav_sample_rate(path: Path, context: str) -> int:
+    if not path.is_file():
+        raise LoaderError(f"{context}: media missing: {path}")
+    try:
+        with wave.open(str(path), "rb") as handle:
+            rate = handle.getframerate()
+    except (OSError, EOFError, wave.Error) as error:
+        raise LoaderError(f"{context}: cannot read wav header of {path}: {error}") from error
+    if not isinstance(rate, int) or rate <= 0:
+        raise LoaderError(f"{context}: wav header of {path} reports sample rate {rate!r}")
+    return rate
+
+
+def load_audio2tool(
+    lock: Mapping[str, object], root: Path, *, repo_root: Path | None = None
+) -> list[SampleRef]:
+    """Every frozen-receipt Audio2Tool sample, sorted by sample id, with media
+    facts re-verified against the on-disk manifests and wav headers. Runtime
+    surface only — no ground-truth field leaves this function.
+
+    ``repo_root`` (where the committed probe receipt lives) resolves at CALL
+    time to this study checkout when not supplied — the ``core.base.CARRIERS``
+    seam calls every loader as ``loader(lock, root)``, and only tests bind a
+    synthetic repo."""
+
+    subdir, resolved = _resolve_items(
+        lock, root, Path(REPO_ROOT if repo_root is None else repo_root)
+    )
+    samples: list[SampleRef] = []
+    for item in resolved:
+        media_relpath = f"{subdir}/public/{item.audio_relpath_in_public}"
+        samples.append(
+            SampleRef(
+                carrier_lock_key=AUDIO2TOOL_LOCK_KEY,
+                sample_id=item.sample_id,
+                media_relpath=media_relpath,
+                audio_seconds=item.audio_seconds,
+                sample_rate_hz=_wav_sample_rate(Path(root) / media_relpath, item.sample_id),
+            )
+        )
+    return samples
+
+
+def load_expected_calls(
+    lock: Mapping[str, object], root: Path, *, repo_root: Path | None = None
+) -> dict[str, tuple[ToolCall, ...]]:
+    """Scorer-side ONLY: each receipt sample's expected ``ToolCall`` tuple,
+    parsed under ``reproduction.toolcall_gold`` (a2t-gold-v1). Never callable
+    from the runtime request path — gold must not enter runtime (D2)."""
+
+    _, resolved = _resolve_items(
+        lock, root, Path(REPO_ROOT if repo_root is None else repo_root)
+    )
+    expected: dict[str, tuple[ToolCall, ...]] = {}
+    for item in resolved:
+        try:
+            expected[item.sample_id] = expected_tool_calls_for_entry(item.entry)
+        except GoldParseError as error:
+            raise LoaderError(
+                f"cannot parse expected tool calls for {item.sample_id!r}: {error}"
+            ) from error
+    return expected
+
+
+_REGISTRY_COLUMNS = (
+    "tool_id",
+    "domain",
+    "category",
+    "tool_name",
+    "signature",
+    "description",
+    "argument_defaults",
+    "argument_constraints",
+)
+
+
+def render_tool_schemas(lock: Mapping[str, object], root: Path) -> str:
+    """The deterministic ``{tool_schemas}`` fill for the frozen P1 prompt
+    template: the FULL ``tools_registry.csv`` (the paper's direct protocol
+    prompts with the full tool schema), one canonical JSON object per line,
+    sorted by numeric ``tool_id``."""
+
+    import csv
+
+    carrier_dir = asset_dir(lock, AUDIO2TOOL_LOCK_KEY, root)
+    path = carrier_dir / "tools_registry.csv"
+    if not path.is_file():
+        raise LoaderError(f"audio2tool tools_registry.csv missing: {path}")
+    try:
+        with path.open(encoding="utf-8-sig", newline="") as handle:
+            reader = csv.DictReader(handle)
+            fields = reader.fieldnames or []
+            missing = [column for column in _REGISTRY_COLUMNS if column not in fields]
+            if missing:
+                raise LoaderError(f"tools_registry.csv lacks required columns {missing}")
+            rows = list(reader)
+    except (OSError, UnicodeError, csv.Error) as error:
+        raise LoaderError(f"cannot read tools_registry.csv {path}: {error}") from error
+    if not rows:
+        raise LoaderError(f"tools_registry.csv {path} has no rows")
+    parsed: list[tuple[int, dict[str, str]]] = []
+    seen_ids: set[int] = set()
+    for row in rows:
+        try:
+            tool_id = int(str(row["tool_id"]).strip())
+        except (TypeError, ValueError) as error:
+            raise LoaderError(f"tools_registry.csv has a non-numeric tool_id: {error}") from error
+        if tool_id in seen_ids:
+            raise LoaderError(f"tools_registry.csv has a duplicate tool_id {tool_id}")
+        seen_ids.add(tool_id)
+        name = row.get("tool_name")
+        signature = row.get("signature")
+        if not name or not signature:
+            raise LoaderError(f"tools_registry.csv row {tool_id} lacks tool_name/signature")
+        parsed.append(
+            (tool_id, {column: (row.get(column) or "") for column in _REGISTRY_COLUMNS})
+        )
+    parsed.sort(key=lambda pair: pair[0])
+    return "\n".join(
+        json.dumps(document, ensure_ascii=False, sort_keys=True) for _, document in parsed
+    )

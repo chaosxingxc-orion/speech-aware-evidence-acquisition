@@ -154,3 +154,229 @@ class SyntheticWorld:
 @pytest.fixture()
 def synthetic_world(tmp_path):
     return SyntheticWorld(tmp_path)
+
+
+# ---------------------------------------------------------------------------
+# Synthetic Audio2Tool carrier world (P1 scaffold): mirrors the real on-disk
+# layout exactly — per-tier JSON manifests under public/tier*_data/, per-query
+# wav directories under public/tier*_audios/, tools_registry.csv at the
+# carrier root, and a frozen probe-sample receipt in the (synthetic) study
+# repo — with fake but structurally-real gold shapes observed in the actual
+# tier manifests (tier1 call-string, tier3 bare name + concatenated
+# additional calls, tier7 chat_history with no top-level path/duration).
+# ---------------------------------------------------------------------------
+
+A2T_RECEIPT_NAME = "r1-a2t-test"
+
+
+def _write_wav(path: Path, *, sample_rate_hz: int, frames: int = 160) -> None:
+    import wave
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with wave.open(str(path), "wb") as handle:
+        handle.setnchannels(1)
+        handle.setsampwidth(2)
+        handle.setframerate(sample_rate_hz)
+        handle.writeframes(b"\x00\x00" * frames)
+
+
+class Audio2ToolWorld:
+    def __init__(self, tmp_path: Path) -> None:
+        self.data_root = tmp_path / "a2t-data"
+        self.repo_root = tmp_path / "a2t-repo"
+        self.lock_path = tmp_path / "a2t-lock.json"
+        self.carrier_dir = self.data_root / "datasets" / "audio2tool"
+        self.public = self.carrier_dir / "public"
+        self.receipt_name = A2T_RECEIPT_NAME
+        self.receipt_path = (
+            self.repo_root / "docs" / "receipts" / "probe-samples" / f"{A2T_RECEIPT_NAME}.json"
+        )
+        self.template_relpath = "probes/test_a2t_direct.txt"
+        self._materialize()
+        self._write_lock()
+
+    # -- carrier layout ----------------------------------------------------
+    def _materialize(self) -> None:
+        tier1 = [
+            {
+                "id": 1,
+                "tier": "tier1_direct",
+                "query_idx": 2100,
+                "query": "turn on the lights",
+                "domain": "smart_home",
+                "category": "lighting",
+                "tool_id": 2,
+                "tool_name": "setLighting",
+                "expected_tool_call": "setLighting()",
+                "extracted_params": {},
+                "additional_tool_calls": None,
+                "path": "tier1_direct_audios/query_00001/turn.wav",
+                "duration": 0.5,
+            },
+            {
+                # NOT in the receipt: its wav deliberately does not exist, so a
+                # loader that touches non-receipt items fails loudly in tests.
+                "id": 2,
+                "tier": "tier1_direct",
+                "query_idx": 2101,
+                "query": "unused",
+                "domain": "smart_home",
+                "category": "lighting",
+                "tool_id": 2,
+                "tool_name": "setLighting",
+                "expected_tool_call": "setLighting()",
+                "extracted_params": {},
+                "additional_tool_calls": None,
+                "path": "tier1_direct_audios/query_00002/turn.wav",
+                "duration": 0.5,
+            },
+        ]
+        tier3 = [
+            {
+                "id": 4,
+                "tier": "tier3_multi_intent",
+                "query_idx": 300,
+                "query": "arm the house and warm it up",
+                "domain": "smart_home",
+                "category": "security",
+                "tool_id": 10,
+                "tool_name": "setSecurityMode",
+                "expected_tool_call": "setSecurityMode",
+                "extracted_params": {"mode": "Armed_Away", "level": "2"},
+                "additional_tool_calls": [
+                    "setTargetTemperature(temperature=68.0)setColor(color='blue')",
+                    "calibrateThermostat",
+                ],
+                "path": "tier3_multi_intent_audios/query_00004/turn.wav",
+                "duration": 1.25,
+            }
+        ]
+        tier7 = [
+            {
+                # Real tier7 rows carry NO top-level path/duration/additional
+                # keys at all; audio lives per turn inside chat_history.
+                "id": 9,
+                "tier": "tier7_multiturn",
+                "query_idx": 2108,
+                "query": "USER: ...\nAGENT: ...\nUSER: set my gym alarm",
+                "domain": "wearables",
+                "category": "alarms",
+                "tool_id": 30,
+                "tool_name": "setAlarm",
+                "expected_tool_call": "setAlarm(time='06:30', repeat=['Weekdays'])",
+                "extracted_params": {"time": "06:30", "repeat": '["Weekdays"]'},
+                "chat_history": [
+                    {
+                        "role": "user",
+                        "content": "first ask",
+                        "path": "tier7_multiturn_audios/query_00009/turn_00_user.wav",
+                        "duration": 4.617,
+                    },
+                    {
+                        "role": "agent",
+                        "content": "which alarm?",
+                        "path": "tier7_multiturn_audios/query_00009/turn_01_agent.wav",
+                        "duration": 2.0,
+                    },
+                    {
+                        "role": "user",
+                        "content": "the gym one",
+                        "path": "tier7_multiturn_audios/query_00009/turn_02_user.wav",
+                        "duration": 6.7,
+                    },
+                ],
+            }
+        ]
+        for tier_name, entries in (
+            ("tier1_direct", tier1),
+            ("tier3_multi_intent", tier3),
+            ("tier7_multiturn", tier7),
+        ):
+            manifest = self.public / f"{tier_name}_data" / f"{tier_name}.json"
+            manifest.parent.mkdir(parents=True, exist_ok=True)
+            manifest.write_text(json.dumps(entries), encoding="utf-8")
+        _write_wav(
+            self.public / "tier1_direct_audios" / "query_00001" / "turn.wav",
+            sample_rate_hz=16000,
+        )
+        _write_wav(
+            self.public / "tier3_multi_intent_audios" / "query_00004" / "turn.wav",
+            sample_rate_hz=22050,
+        )
+        _write_wav(
+            self.public / "tier7_multiturn_audios" / "query_00009" / "turn_00_user.wav",
+            sample_rate_hz=16000,
+        )
+        # turn_01_agent.wav deliberately absent: only the FINAL user turn's
+        # media is loaded by the P1 scaffold.
+        _write_wav(
+            self.public / "tier7_multiturn_audios" / "query_00009" / "turn_02_user.wav",
+            sample_rate_hz=16000,
+        )
+        _touch(
+            self.carrier_dir / "tools_registry.csv",
+            "tool_id,domain,category,tool_name,signature,description,"
+            "argument_defaults,argument_constraints\n"
+            '10,smart_home,security,setSecurityMode,"setSecurityMode(mode: Mode)",'
+            '"Sets the security mode.","mode=\'Home\'","mode: [Home, Armed_Away]"\n'
+            '2,smart_home,lighting,setLighting,"setLighting(deviceId: String)",'
+            '"Turns a light on.","deviceId=\'light_1\'",""\n',
+        )
+        self.write_receipt()
+        _touch(
+            self.repo_root / "configs" / self.template_relpath,
+            "You control tools.\n\nAvailable tools:\n{tool_schemas}\n\n"
+            'Respond with ONLY a JSON array like [{"name": "x", "arguments": {}}].\n',
+        )
+
+    # -- frozen probe-sample receipt ----------------------------------------
+    def receipt_items(self) -> list[dict]:
+        return [
+            {"id": 1, "key": "audio2tool:tier1_direct:000001", "query_idx": 2100, "tier": "tier1_direct"},
+            {"id": 4, "key": "audio2tool:tier3_multi_intent:000004", "query_idx": 300, "tier": "tier3_multi_intent"},
+            {"id": 9, "key": "audio2tool:tier7_multiturn:000009", "query_idx": 2108, "tier": "tier7_multiturn"},
+        ]
+
+    def write_receipt(self, *, items: list[dict] | None = None, split_identity_hash: str | None = None, split_role: str = "discovery") -> None:
+        from speech_aware_evidence_acquisition.reproduction.sampling import (
+            split_identity_hash as compute_hash,
+        )
+
+        items = self.receipt_items() if items is None else items
+        payload = {
+            "probe": "R1-audio2tool-direct-test",
+            "carrier": "audio2tool",
+            "seed": 1,
+            "design": "synthetic test receipt",
+            "pool_size": 4,
+            "strata_counts": {},
+            "items": items,
+            "split_identity_hash": (
+                compute_hash([item["key"] for item in items])
+                if split_identity_hash is None
+                else split_identity_hash
+            ),
+            "split_role": split_role,
+        }
+        _touch(self.receipt_path, json.dumps(payload, indent=2, sort_keys=True))
+
+    def _write_lock(self) -> None:
+        document = {
+            "asset_catalog": [
+                {
+                    "name": "audio2tool",
+                    "kind": "dataset",
+                    "local_subdir": "datasets/audio2tool",
+                    "license": "CC-BY-NC-4.0 (disk README; paper says CC-BY-4.0 — owner decision pending)",
+                    "lifecycle": "STAGE2_CANDIDATE",
+                    "profiles": ["speech-aware-secondary"],
+                }
+            ],
+            "models": [],
+        }
+        self.lock_path.write_text(json.dumps(document), encoding="utf-8")
+
+
+@pytest.fixture()
+def audio2tool_world(tmp_path):
+    return Audio2ToolWorld(tmp_path)
