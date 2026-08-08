@@ -1,0 +1,9 @@
+{
+  "arm": "bare-core",
+  "policy": "fixed",
+  "evidence_source": "none",
+  "evidence_mismatch": false,
+  "scorers": ["a2t-toolcall", "cost"],
+  "task_instruction_template": "probes/r1_audio2tool_direct.txt",
+  "task_instruction_fill": "audio2tool-tool-schemas"
+}

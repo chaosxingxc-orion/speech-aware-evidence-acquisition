@@ -1,0 +1,5 @@
+{
+  "experiment_id": "SAEA-E-002",
+  "execution_profile": "baseline-reproduction",
+  "purpose": "P1 literal same-model Audio2Tool tool-calling reproduction over the frozen 400-item probe sample (probe R1-audio2tool-direct, configs/probes/manifest.json; receipt docs/receipts/probe-samples/r1-audio2tool-sample.json); success criteria pre-registered in the probe manifest; no superiority claim"
+}
