@@ -281,3 +281,79 @@ class TestSingleDoor:
     def test_frozen_core_asr_requires_an_injected_callable(self):
         with pytest.raises(ObsLoopError, match="callable adapter request"):
             FrozenCoreASR(adapter_request=None, state=None)
+
+
+class TestWorkflowTimeout:
+    """Real-run blocker (2026-08-08): the framework kills each per-sample
+    workflow at a builtin 60 s WORKFLOW_EXECUTE_TIMEOUT (error 100101). The
+    fragment knob ``ojw_workflow_timeout_seconds`` must genuinely reach the
+    framework session env, default to the generous backstop when absent,
+    and a real kill must surface as an actionable ObsLoopError."""
+
+    def _spy_envs(self, monkeypatch):
+        from speech_aware_evidence_acquisition.reproduction.ojw import runner
+
+        captured = {}
+        real = runner.create_workflow_session
+
+        def spy(*args, **kwargs):
+            captured.update(kwargs.get("envs") or {})
+            return real(*args, **kwargs)
+
+        monkeypatch.setattr(runner, "create_workflow_session", spy)
+        return captured
+
+    def test_configured_value_reaches_the_framework_session_env(
+        self, tmp_path, monkeypatch
+    ):
+        from openjiuwen.core.session import WORKFLOW_EXECUTE_TIMEOUT
+
+        captured = self._spy_envs(monkeypatch)
+        scenario = _scenario("vad-trim")
+        scenario["values"]["ojw_workflow_timeout_seconds"] = 1234.5
+        _run(tmp_path, monkeypatch, OJW_POLICY_NAME, scenario)
+        assert captured[WORKFLOW_EXECUTE_TIMEOUT] == 1234.5
+
+    def test_absent_key_defaults_to_the_generous_backstop(
+        self, tmp_path, monkeypatch
+    ):
+        from openjiuwen.core.session import WORKFLOW_EXECUTE_TIMEOUT
+
+        from speech_aware_evidence_acquisition.reproduction.ojw import (
+            DEFAULT_WORKFLOW_TIMEOUT_SECONDS,
+        )
+
+        captured = self._spy_envs(monkeypatch)
+        scenario = _scenario("vad-trim")
+        assert "ojw_workflow_timeout_seconds" not in scenario["values"]
+        _run(tmp_path, monkeypatch, OJW_POLICY_NAME, scenario)
+        assert captured[WORKFLOW_EXECUTE_TIMEOUT] == DEFAULT_WORKFLOW_TIMEOUT_SECONDS
+        assert DEFAULT_WORKFLOW_TIMEOUT_SECONDS == 21600.0
+
+    def test_framework_kill_surfaces_as_actionable_obs_loop_error(
+        self, tmp_path, monkeypatch
+    ):
+        """End to end against the REAL framework limit: a tiny configured
+        ceiling plus a slow adapter must reproduce the live incident's
+        100101 kill, translated to an ObsLoopError naming the knob."""
+
+        import time
+
+        scenario = _scenario("vad-trim")
+        scenario["values"]["ojw_workflow_timeout_seconds"] = 0.2
+        world = _World(
+            tmp_path,
+            monkeypatch,
+            pcm=scenario["pcm"],
+            texts=list(scenario["texts"]),
+            values=dict(scenario["values"]),
+        )
+        real_request = world.adapter.request
+
+        def slow_request(payload):
+            time.sleep(0.6)
+            return real_request(payload)
+
+        world.adapter.request = slow_request
+        with pytest.raises(ObsLoopError, match="ojw_workflow_timeout_seconds"):
+            POLICIES.resolve(OJW_POLICY_NAME).run_sample(world.ctx)

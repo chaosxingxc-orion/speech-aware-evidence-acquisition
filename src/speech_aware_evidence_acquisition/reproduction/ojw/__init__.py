@@ -33,6 +33,22 @@ from __future__ import annotations
 
 OJW_POLICY_NAME = "obs-agent-loop-ojw"
 
+# Per-sample workflow execution ceiling (real-run blocker, 2026-08-08): the
+# framework kills every Workflow.invoke at a builtin 60-second default
+# (openjiuwen.core.session.config.base.SessionConfig._load_builtin_configs_:
+# WORKFLOW_EXECUTE_TIMEOUT=60 -> Workflow._execute_with_timeout -> error
+# 100101), which no dry run could trigger (fake transport is instant) but a
+# real 40-75-minute call's loop always does. The knob below rides in the
+# baseline fragment (-> config_hash -> protocol_hash) and is injected via
+# create_workflow_session(envs={...}) -- the framework's own override path.
+# The default is deliberately generous (6 h per SAMPLE, not per request):
+# it is a hang backstop, not a budget rail -- budgets are the plan's
+# calls/audio-seconds caps on the adapter. Framework semantics: a value
+# <= 0 disables the limit entirely (Workflow._execute_with_timeout treats
+# non-positive as None).
+OJW_WORKFLOW_TIMEOUT_KEY = "ojw_workflow_timeout_seconds"
+DEFAULT_WORKFLOW_TIMEOUT_SECONDS = 21600.0
+
 OJW_INSTALL_HINT = (
     "policy 'obs-agent-loop-ojw' requires the openjiuwen framework, which is "
     "not importable in this environment; install the pinned version into the "

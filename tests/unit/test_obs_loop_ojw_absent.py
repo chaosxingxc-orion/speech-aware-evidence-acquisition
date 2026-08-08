@@ -19,11 +19,14 @@ from speech_aware_evidence_acquisition.reproduction.obs_loop import (
     ObsLoopError,
 )
 from speech_aware_evidence_acquisition.reproduction.ojw import (
+    DEFAULT_WORKFLOW_TIMEOUT_SECONDS,
     OJW_POLICY_NAME,
+    OJW_WORKFLOW_TIMEOUT_KEY,
     openjiuwen_available,
 )
 from speech_aware_evidence_acquisition.reproduction.ojw.policy import (
     ObsAgentLoopOjwPolicy,
+    workflow_timeout_seconds,
 )
 from speech_aware_evidence_acquisition.reproduction.ojw.state import ObsSampleState
 
@@ -48,6 +51,33 @@ def test_run_sample_refuses_with_install_hint_when_openjiuwen_absent(
     )
     with pytest.raises(ObsLoopError, match="openjiuwen"):
         ObsAgentLoopOjwPolicy().run_sample(world.ctx)
+
+
+# ---------------------------------------------------------------------------
+# The per-sample workflow ceiling parser (real-run blocker 2026-08-08):
+# openjiuwen-free, so the fragment-knob semantics are provable everywhere.
+# ---------------------------------------------------------------------------
+
+
+class TestWorkflowTimeoutParsing:
+    def test_declared_value_wins(self):
+        assert workflow_timeout_seconds({OJW_WORKFLOW_TIMEOUT_KEY: 900}) == 900.0
+
+    def test_absent_key_defaults_to_the_generous_backstop(self):
+        assert workflow_timeout_seconds({}) == DEFAULT_WORKFLOW_TIMEOUT_SECONDS
+        assert DEFAULT_WORKFLOW_TIMEOUT_SECONDS == 21600.0
+
+    def test_non_positive_passes_through_as_the_disable_convention(self):
+        # framework semantics: Workflow._execute_with_timeout treats <= 0 as
+        # no limit -- the knob deliberately admits it rather than inventing a
+        # second disable spelling
+        assert workflow_timeout_seconds({OJW_WORKFLOW_TIMEOUT_KEY: 0}) == 0.0
+        assert workflow_timeout_seconds({OJW_WORKFLOW_TIMEOUT_KEY: -1}) == -1.0
+
+    @pytest.mark.parametrize("bad", ["fast", True, float("nan"), float("inf"), None])
+    def test_unusable_values_refuse_rather_than_reenable_the_60s_kill(self, bad):
+        with pytest.raises(ObsLoopError, match=OJW_WORKFLOW_TIMEOUT_KEY):
+            workflow_timeout_seconds({OJW_WORKFLOW_TIMEOUT_KEY: bad})
 
 
 # ---------------------------------------------------------------------------

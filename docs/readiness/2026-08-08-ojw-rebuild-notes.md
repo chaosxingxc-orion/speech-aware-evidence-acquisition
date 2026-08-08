@@ -56,6 +56,51 @@ the composable half is what `LoopGroup.add_workflow_comp` requires).
 `LoopGroup`, `FuncCondition`, `Session`, the Pregel engine are composed,
 never subclassed.
 
+## Per-sample workflow execution ceiling (real-run blocker fix, 2026-08-08)
+
+First live SAEA-E-001 attempt on this executor died per sample with
+`[100101] workflow execution exceeded time limit of 60 seconds`: the
+framework's session config ships a builtin
+`WORKFLOW_EXECUTE_TIMEOUT: 60` default
+(`openjiuwen/core/session/config/base.py::SessionConfig._load_builtin_configs_`),
+read by `Workflow.invoke`
+(`workflow.py: invoke_timeout = workflow_session.config().get_env(
+WORKFLOW_EXECUTE_TIMEOUT)`) and enforced by
+`Workflow._execute_with_timeout`, which raises
+`StatusCode.WORKFLOW_EXECUTION_TIMEOUT` (100101) on expiry and treats a
+non-positive value as NO limit. No dry run could trigger it (fake
+transport is instant); a real call's loop runs 15-20 minutes.
+
+Exact framework API used for the fix: the sanctioned env-override chain
+`create_workflow_session(envs={WORKFLOW_EXECUTE_TIMEOUT: <seconds>})` →
+`Workflow._create_workflow_session` → `config().set_envs(...)`, which
+merges over the builtin default (`WORKFLOW_EXECUTE_TIMEOUT` is the
+constant `"_execute_timeout"`, re-exported by `openjiuwen.core.session`).
+No framework internals are patched.
+
+Study-side wiring:
+
+- fragment key `ojw_workflow_timeout_seconds` (all three ojw baseline
+  fragments carry `21600`; the key flows into config_hash →
+  protocol_hash). Absent → generous 6 h/sample backstop
+  (`DEFAULT_WORKFLOW_TIMEOUT_SECONDS`, `reproduction/ojw/__init__.py`);
+  `<= 0` disables the limit (framework convention, passed through
+  deliberately rather than inventing a second disable spelling); boolean/
+  non-numeric/non-finite values refuse (`policy.workflow_timeout_seconds`)
+  — a typo must never silently re-enable the 60 s kill. This is a hang
+  backstop, not a budget rail — budgets remain the plan's calls/audio caps
+  on the adapter.
+- a real 100101 kill is translated in `runner.execute_obs_workflow` into
+  an `ObsLoopError` naming the knob and the configured value.
+- tests: spy on `runner.create_workflow_session` proves the configured
+  value (and the absent-key default) genuinely reaches the framework
+  session env; an end-to-end test reproduces the live kill (tiny ceiling +
+  slow adapter → framework 100101 → actionable ObsLoopError); parser
+  semantics are covered openjiuwen-free in the absent-file suite.
+- note: a blocking transport call cannot be interrupted mid-request by the
+  asyncio timeout — the kill lands at the next await point after the
+  blocking call returns (this matches the live incident's log shape).
+
 ## Framework findings that shaped the build
 
 1. **None deletes.** The session state merge
@@ -210,3 +255,10 @@ pre-registration, not a v1 swap.
 4. Framework logs (loguru graph/workflow events) will appear on stderr
    during ojw runs; they are additive observability and are NOT part of
    the run's trace record set. The trace jsonl remains the audit surface.
+5. Per-sample ceiling: every ojw fragment declares
+   `ojw_workflow_timeout_seconds` (21600). If a sample dies with an
+   ObsLoopError naming this knob, the loop genuinely ran past 6 hours —
+   raise the value in the fragment (a config change, so a new
+   config_hash/protocol_hash) or set it `<= 0` to disable; never shrink it
+   below the longest call's expected loop time (~1.5-2 h worst case on a
+   75 min call at min-advance clamping).

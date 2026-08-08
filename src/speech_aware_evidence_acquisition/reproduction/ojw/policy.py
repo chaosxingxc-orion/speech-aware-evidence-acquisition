@@ -43,10 +43,15 @@ from ..obs_loop import (
     ObsLoopConfig,
     ObsLoopError,
 )
-from . import OJW_INSTALL_HINT, OJW_POLICY_NAME
+from . import (
+    DEFAULT_WORKFLOW_TIMEOUT_SECONDS,
+    OJW_INSTALL_HINT,
+    OJW_POLICY_NAME,
+    OJW_WORKFLOW_TIMEOUT_KEY,
+)
 from .state import ObsSampleState
 
-__all__ = ["OJW_POLICY_NAME", "ObsAgentLoopOjwPolicy"]
+__all__ = ["OJW_POLICY_NAME", "ObsAgentLoopOjwPolicy", "workflow_timeout_seconds"]
 
 
 def _load_runner():
@@ -58,6 +63,24 @@ def _load_runner():
     except ImportError as error:
         raise ObsLoopError(OJW_INSTALL_HINT) from error
     return runner
+
+
+def workflow_timeout_seconds(config_values) -> float:
+    """The per-sample workflow execution ceiling from the baseline fragment
+    (``ojw_workflow_timeout_seconds``; package ``__init__`` docstring for the
+    real-run blocker this replaces the framework's builtin 60 s default
+    for). Absent -> ``DEFAULT_WORKFLOW_TIMEOUT_SECONDS``; a non-finite,
+    boolean or non-numeric value refuses (a typo here must never silently
+    re-enable the 60 s kill); <= 0 disables the limit (framework
+    convention, ``Workflow._execute_with_timeout``)."""
+
+    value = config_values.get(OJW_WORKFLOW_TIMEOUT_KEY, DEFAULT_WORKFLOW_TIMEOUT_SECONDS)
+    if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value):
+        raise ObsLoopError(
+            f"config {OJW_WORKFLOW_TIMEOUT_KEY} must be a finite number of seconds "
+            f"(<= 0 disables the limit), got {value!r}"
+        )
+    return float(value)
 
 
 class ObsAgentLoopOjwPolicy:
@@ -85,6 +108,7 @@ class ObsAgentLoopOjwPolicy:
             ) from error
         runner = _load_runner()
         cfg = ObsLoopConfig.from_values(config_values, repo_root)
+        timeout_seconds = workflow_timeout_seconds(config_values)
         sample: SampleRef = ctx.sample
         rate = SLICE_SAMPLE_RATE_HZ
         parent_path = data_root / sample.media_relpath
@@ -135,7 +159,11 @@ class ObsAgentLoopOjwPolicy:
             effective_min=effective_min,
             max_iterations=max_iterations,
         )
-        runner.execute_obs_workflow(state, adapter_request=ctx.adapter.request)
+        runner.execute_obs_workflow(
+            state,
+            adapter_request=ctx.adapter.request,
+            workflow_timeout_seconds=timeout_seconds,
+        )
 
         if state.runaway:
             raise ObsLoopError(
