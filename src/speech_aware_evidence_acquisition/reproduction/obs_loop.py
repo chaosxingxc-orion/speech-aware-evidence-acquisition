@@ -73,7 +73,7 @@ from pathlib import Path
 from typing import Mapping, Sequence
 
 from ..core.base import SampleContext, SampleOutcome
-from ..core.model import SliceRecord, SliceRegistry
+from ..core.model import FrozenCoreError, SliceRecord, SliceRegistry
 from ..data.loader import SampleRef
 from ..e0.artifacts import write_json_artifact
 from .obs_audio import (
@@ -116,9 +116,46 @@ _KNOWN_OBS_KEYS = frozenset(
         "obs_preprocess",
         "obs_condition_tail_chars",
         "obs_rms_target_dbfs",
+        "obs_slice_retry_max",
     }
 )
 _EPSILON_SECONDS = 1e-6
+
+# Bounded per-slice retry (live E-001 finding, 2026-08-08): one slice request
+# hung server-side for the full transport socket timeout and the whole
+# attempt died with 27 good slices behind it. A retryable failure -- the
+# transport's own timeout/connection errors, or a FrozenCoreError (e.g. a
+# malformed response after a server hiccup; a budget/binding refusal retried
+# once fails identically and spends nothing, so no carve-out is needed) --
+# now gets up to ``obs_slice_retry_max`` fresh, separately-metered requests
+# under derived request ids (``<id>-r1``, ``-r2``...). This is exactly what
+# the +headroom in planned_model_calls exists for. Anything else (a bug) is
+# never retried. Shared by BOTH executors: the plain policy below and the
+# openJiuwen ``FrozenCoreASR`` component call this one function, so retry
+# behaviour can never diverge between them.
+SLICE_RETRYABLE_EXCEPTIONS = (FrozenCoreError, TimeoutError, ConnectionError)
+
+
+def request_slice_with_retry(adapter_request, build_payload, request_id, retry_max):
+    """One slice request with bounded retry (comment above).
+
+    ``build_payload(request_id) -> payload`` builds a FRESH payload per
+    attempt (each retry is a new request: new request id, separately traced
+    and metered by the adapter). Returns ``(request_id_used, response,
+    retry_of)`` where ``retry_of`` is the ORIGINAL request id when a retry
+    answered, else None. The final failure propagates unchanged
+    (fail-closed, as before this seam existed).
+    """
+
+    for attempt in range(max(0, int(retry_max)) + 1):
+        attempt_id = request_id if attempt == 0 else f"{request_id}-r{attempt}"
+        payload = build_payload(attempt_id)
+        try:
+            return attempt_id, adapter_request(payload), (request_id if attempt else None)
+        except SLICE_RETRYABLE_EXCEPTIONS:
+            if attempt >= retry_max:
+                raise
+    raise AssertionError("unreachable: the loop either returns or re-raises")
 
 
 class ObsLoopError(RuntimeError):
@@ -152,6 +189,7 @@ class ObsLoopConfig:
     preprocess: tuple[str, ...]
     condition_tail_chars: int
     rms_target_dbfs: float
+    slice_retry_max: int
 
     @classmethod
     def from_values(cls, values: Mapping[str, object], repo_root: Path) -> "ObsLoopConfig":
@@ -208,6 +246,11 @@ class ObsLoopConfig:
             raise ObsLoopError(
                 f"obs_condition_tail_chars must be an integer >= 0, got {tail_chars!r}"
             )
+        retry_max = values.get("obs_slice_retry_max", 1)
+        if isinstance(retry_max, bool) or not isinstance(retry_max, int) or retry_max < 0:
+            raise ObsLoopError(
+                f"obs_slice_retry_max must be an integer >= 0 (0 disables), got {retry_max!r}"
+            )
         prompt_relpath = values.get("obs_boundary_prompt")
         prompt_text: str | None = None
         prompt_sha256: str | None = None
@@ -240,6 +283,7 @@ class ObsLoopConfig:
             preprocess=tuple(raw_preprocess),
             condition_tail_chars=tail_chars,
             rms_target_dbfs=rms_target,
+            slice_retry_max=retry_max,
         )
 
 
@@ -471,22 +515,26 @@ class ObsAgentLoopPolicy:
                 audio_seconds=slice_seconds,
                 sample_rate_hz=rate,
             )
-            request_id = f"{ctx.request_id_base}-i{iteration:04d}"
+            base_request_id = f"{ctx.request_id_base}-i{iteration:04d}"
             # Deferred import: core.policies imports THIS module's policy class
             # to register it; importing build_arm_payload back at module level
             # would be circular. By run time both modules are always loaded.
             from ..core.policies import build_arm_payload
 
-            payload = build_arm_payload(
-                ctx.arm,
-                slice_ref,
-                request_id,
-                instruction,
-                ctx.decoding_params,
-                evidence=evidence,
-                retrieval_query=ctx.retrieval_query,
+            def _payload(rid, _slice_ref=slice_ref, _instruction=instruction):
+                return build_arm_payload(
+                    ctx.arm,
+                    _slice_ref,
+                    rid,
+                    _instruction,
+                    ctx.decoding_params,
+                    evidence=evidence,
+                    retrieval_query=ctx.retrieval_query,
+                )
+
+            request_id, response, retry_of = request_slice_with_retry(
+                ctx.adapter.request, _payload, base_request_id, cfg.slice_retry_max
             )
-            response = ctx.adapter.request(payload)
 
             if cfg.boundary_mode == "model":
                 transcript, estimate = parse_boundary_response(response.text)
@@ -556,6 +604,12 @@ class ObsAgentLoopPolicy:
                     "obs_tail_sha256": (
                         hashlib.sha256(tail.encode("utf-8")).hexdigest() if tail else None
                     ),
+                    # Bounded per-slice retry audit trail (module comment at
+                    # SLICE_RETRYABLE_EXCEPTIONS): when a retry answered this
+                    # iteration, the ORIGINAL request id -- its MODEL_REQUEST
+                    # record and metered spend precede this record; None on
+                    # the ordinary first-attempt path.
+                    "obs_retry_of": retry_of,
                 },
             )
             accepted_spans.append(accepted.strip())

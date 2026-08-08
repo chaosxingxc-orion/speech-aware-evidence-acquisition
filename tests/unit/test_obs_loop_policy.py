@@ -75,6 +75,27 @@ class _ScriptedAdapter:
         return _FakeResponse(text, tag=str(len(self.payloads)))
 
 
+class _FlakyAdapter:
+    """Wraps a scripted adapter: the given 1-based call indices raise
+    TimeoutError('timed out') — the live E-001 slice-hang shape — exactly
+    once each; a raised call consumes no scripted text (the real transport
+    never returned bytes either)."""
+
+    def __init__(self, inner, fail_calls) -> None:
+        self._inner = inner
+        self._fail = set(fail_calls)
+        self.calls = 0
+        self.failed_request_ids: list[str] = []
+
+    def request(self, payload):
+        self.calls += 1
+        if self.calls in self._fail:
+            self._fail.discard(self.calls)
+            self.failed_request_ids.append(str(payload["request_id"]))
+            raise TimeoutError("timed out")
+        return self._inner.request(payload)
+
+
 def _config_values(**overrides):
     values = {
         "obs_buffer_seconds": 60,
@@ -420,6 +441,31 @@ class TestConfigValidation:
                 _config_values(obs_preprocess=["denoise"]), tmp_path
             )
 
+    def test_slice_retry_max_parses_and_bad_values_refuse(self, tmp_path):
+        fixed = {
+            "obs_boundary_mode": "fixed",
+            "obs_buffer_seconds": 30,
+            "obs_min_advance_seconds": 30,
+            "obs_max_advance_seconds": 30,
+            "obs_fallback_advance_seconds": 30,
+        }
+        assert ObsLoopConfig.from_values(fixed, tmp_path).slice_retry_max == 1
+        assert (
+            ObsLoopConfig.from_values(
+                dict(fixed, obs_slice_retry_max=0), tmp_path
+            ).slice_retry_max
+            == 0
+        )
+        assert (
+            ObsLoopConfig.from_values(
+                dict(fixed, obs_slice_retry_max=2), tmp_path
+            ).slice_retry_max
+            == 2
+        )
+        for bad in (-1, True, 1.5, "once"):
+            with pytest.raises(ObsLoopError, match="obs_slice_retry_max"):
+                ObsLoopConfig.from_values(dict(fixed, obs_slice_retry_max=bad), tmp_path)
+
     def test_missing_slice_registry_refused(self, tmp_path, monkeypatch):
         world = _World(
             tmp_path, monkeypatch, pcm=_noise(30.0), texts=[_boundary_text("A.", 10)]
@@ -427,6 +473,123 @@ class TestConfigValidation:
         world.ctx.extras["slice_registry"] = None
         with pytest.raises(ObsLoopError, match="SliceRegistry"):
             world.run()
+
+
+class TestSliceRetry:
+    """Bounded per-slice retry (live E-001 finding, 2026-08-08): one slice
+    request hung server-side and the whole attempt died. A retryable failure
+    (timeout / FrozenCoreError) now gets ONE fresh, separately-metered
+    request under a new request id; the second failure propagates
+    fail-closed as before."""
+
+    def test_flaky_slice_retries_once_and_completes(self, tmp_path, monkeypatch):
+        world = _World(
+            tmp_path,
+            monkeypatch,
+            pcm=_noise(90.0),
+            texts=[
+                _boundary_text("First span done. Tail", 45),
+                _boundary_text("Second done.", 10),
+            ],
+        )
+        flaky = _FlakyAdapter(world.adapter, fail_calls={2})
+        world.ctx.adapter = flaky
+        outcome = world.run()
+        # three attempts total: i0000 ok, i0001 timed out, i0001-r1 ok
+        assert flaky.calls == 3
+        assert flaky.failed_request_ids == ["req-0001-i0001"]
+        assert outcome.request_ids == ("req-0001-i0000", "req-0001-i0001-r1")
+        # the retry was a FRESH request: new request_id in the resent payload
+        assert [p["request_id"] for p in world.adapter.payloads] == [
+            "req-0001-i0000",
+            "req-0001-i0001-r1",
+        ]
+        assert outcome.text == "First span done. Second done."
+        # audit visibility: the OBS record carries retry_of
+        raw = (world.run_dir / f"{RUN_ID}.trace.jsonl").read_text(encoding="utf-8")
+        records = {
+            document["record_id"]: document["payload"]
+            for document in (json.loads(line) for line in raw.splitlines() if line)
+        }
+        assert records["req-0001-i0000/obs"]["obs_retry_of"] is None
+        assert records["req-0001-i0001-r1/obs"]["obs_retry_of"] == "req-0001-i0001"
+
+    def test_second_failure_propagates_fail_closed(self, tmp_path, monkeypatch):
+        world = _World(
+            tmp_path,
+            monkeypatch,
+            pcm=_noise(90.0),
+            texts=[_boundary_text("A.", 45), _boundary_text("B.", 10)],
+        )
+        flaky = _FlakyAdapter(world.adapter, fail_calls={2, 3})
+        world.ctx.adapter = flaky
+        with pytest.raises(TimeoutError):
+            world.run()
+        assert flaky.calls == 3
+        assert flaky.failed_request_ids == ["req-0001-i0001", "req-0001-i0001-r1"]
+        # only the first slice's text was ever consumed
+        assert len(world.adapter.payloads) == 1
+
+    def test_retry_zero_disables(self, tmp_path, monkeypatch):
+        world = _World(
+            tmp_path,
+            monkeypatch,
+            pcm=_noise(30.0),
+            texts=[_boundary_text("A.", 10)],
+            values=_config_values(obs_slice_retry_max=0),
+        )
+        flaky = _FlakyAdapter(world.adapter, fail_calls={1})
+        world.ctx.adapter = flaky
+        with pytest.raises(TimeoutError):
+            world.run()
+        assert flaky.calls == 1
+
+    def test_helper_retries_frozen_core_error_but_not_foreign_errors(self):
+        from speech_aware_evidence_acquisition.core.model import FrozenCoreError
+        from speech_aware_evidence_acquisition.reproduction.obs_loop import (
+            request_slice_with_retry,
+        )
+
+        # FrozenCoreError (e.g. malformed response) is retryable
+        outcomes = [FrozenCoreError("malformed"), "ok"]
+        built = []
+
+        def build(rid):
+            built.append(rid)
+            return {"request_id": rid}
+
+        def flaky_request(payload):
+            result = outcomes.pop(0)
+            if isinstance(result, Exception):
+                raise result
+            return result
+
+        rid, response, retry_of = request_slice_with_retry(
+            flaky_request, build, "req-0001-i0007", 1
+        )
+        assert (rid, response, retry_of) == (
+            "req-0001-i0007-r1",
+            "ok",
+            "req-0001-i0007",
+        )
+        assert built == ["req-0001-i0007", "req-0001-i0007-r1"]
+
+        # a foreign error (a bug, not a transport/core failure) never retries
+        def broken_request(payload):
+            raise ValueError("bug")
+
+        with pytest.raises(ValueError):
+            request_slice_with_retry(broken_request, build, "req-0001-i0008", 1)
+
+    def test_first_attempt_success_reports_no_retry(self):
+        from speech_aware_evidence_acquisition.reproduction.obs_loop import (
+            request_slice_with_retry,
+        )
+
+        rid, response, retry_of = request_slice_with_retry(
+            lambda payload: "ok", lambda rid: {"request_id": rid}, "req-0001-i0000", 1
+        )
+        assert (rid, response, retry_of) == ("req-0001-i0000", "ok", None)
 
 
 class TestBudgetArithmeticSanity:

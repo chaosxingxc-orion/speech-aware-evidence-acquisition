@@ -56,6 +56,7 @@ from speech_aware_evidence_acquisition.reproduction.ojw.components import (  # n
 from test_obs_loop_policy import (  # noqa: E402
     RUN_ID,
     SAMPLE_ID,
+    _FlakyAdapter,
     _World,
     _boundary_text,
     _concat,
@@ -130,6 +131,20 @@ def _scenario(name):
             texts=["no boundary line at all here.", _boundary_text("Tail end.", 10)],
             values=_config_values(),
         )
+    if name == "retry-flaky":
+        # live E-001 finding (2026-08-08): call #2 times out once, the retry
+        # succeeds under a fresh request id -- both executors must retry
+        # IDENTICALLY (same retry id, same trace, same metered sequence)
+        return dict(
+            pcm=_noise(150.0),
+            texts=[
+                _boundary_text("First span one. First tail", 45),
+                _boundary_text("Second span two. Second tail", 50),
+                _boundary_text("Final span three.", 30),
+            ],
+            values=_config_values(obs_condition_tail_chars=4000),
+            flaky_calls=(2,),
+        )
     raise AssertionError(name)
 
 
@@ -140,6 +155,7 @@ SCENARIOS = (
     "evidence-arm",
     "rms-norm",
     "fallback-boundary",
+    "retry-flaky",
 )
 
 
@@ -153,6 +169,8 @@ def _run(tmp_path, monkeypatch, policy_name, scenario):
         evidence=scenario.get("evidence"),
         arm=scenario.get("arm", "bare-core"),
     )
+    if scenario.get("flaky_calls"):
+        world.ctx.adapter = _FlakyAdapter(world.adapter, scenario["flaky_calls"])
     outcome = POLICIES.resolve(policy_name).run_sample(world.ctx)
     return world, outcome
 

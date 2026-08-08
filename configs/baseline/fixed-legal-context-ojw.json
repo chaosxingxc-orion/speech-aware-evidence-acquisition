@@ -16,5 +16,6 @@
   "obs_vad_trim_min_seconds": 5.0,
   "obs_preprocess": [],
   "obs_condition_tail_chars": 400,
+  "obs_slice_retry_max": 1,
   "ojw_workflow_timeout_seconds": 21600
 }
