@@ -38,6 +38,9 @@ from __future__ import annotations
 
 import asyncio
 
+from openjiuwen.core.common.exception.codes import StatusCode
+from openjiuwen.core.common.exception.errors import BaseError
+from openjiuwen.core.session import WORKFLOW_EXECUTE_TIMEOUT
 from openjiuwen.core.workflow import (
     End,
     FuncCondition,
@@ -53,6 +56,8 @@ from openjiuwen.core.workflow.components.flow.loop.loop_comp import (
     AdvancedLoopComponent,
 )
 
+from ..obs_loop import ObsLoopError
+from . import OJW_WORKFLOW_TIMEOUT_KEY
 from .components import (
     START_NODE_ID,
     AcceptAdvance,
@@ -142,18 +147,47 @@ def build_invoke_inputs(state: ObsSampleState) -> dict[str, object]:
     }
 
 
-async def _build_and_invoke(state: ObsSampleState, adapter_request) -> None:
+async def _build_and_invoke(
+    state: ObsSampleState, adapter_request, workflow_timeout_seconds: float
+) -> None:
     # Built INSIDE the running loop: the framework's graph vertices create
     # asyncio primitives at construction time, which must belong to the same
     # event loop that drives them.
     flow = build_obs_workflow(state, adapter_request)
-    await flow.invoke(inputs=build_invoke_inputs(state), session=create_workflow_session())
+    # Per-sample execution ceiling (real-run blocker 2026-08-08): the
+    # framework's builtin session env WORKFLOW_EXECUTE_TIMEOUT defaults to
+    # 60 s (SessionConfig._load_builtin_configs_) and Workflow.invoke kills
+    # the run at that limit (error 100101). The sanctioned override is the
+    # session env: create_workflow_session(envs=...) -> Workflow.
+    # _create_workflow_session -> config().set_envs(...), which merges OVER
+    # the builtin default. <= 0 disables (framework convention).
+    session = create_workflow_session(
+        envs={WORKFLOW_EXECUTE_TIMEOUT: float(workflow_timeout_seconds)}
+    )
+    await flow.invoke(inputs=build_invoke_inputs(state), session=session)
 
 
-def execute_obs_workflow(state: ObsSampleState, adapter_request) -> None:
+def execute_obs_workflow(
+    state: ObsSampleState, adapter_request, workflow_timeout_seconds: float
+) -> None:
     """Build the graph and drive it to completion. Synchronous wrapper: the
     driver's per-sample loop is synchronous and strictly sequential, so the
     framework's async engine runs to completion inside ``asyncio.run`` —
-    one fresh event loop, workflow and session per sample."""
+    one fresh event loop, workflow and session per sample.
+    ``workflow_timeout_seconds`` is the fragment-declared per-sample ceiling
+    (``policy.workflow_timeout_seconds``); a framework timeout kill (error
+    100101) is translated into an actionable ``ObsLoopError`` naming the
+    knob."""
 
-    asyncio.run(_build_and_invoke(state, adapter_request))
+    try:
+        asyncio.run(_build_and_invoke(state, adapter_request, workflow_timeout_seconds))
+    except BaseError as error:
+        if getattr(error, "code", None) == StatusCode.WORKFLOW_EXECUTION_TIMEOUT.code:
+            raise ObsLoopError(
+                f"openJiuwen killed sample {state.sample.sample_id!r} at the "
+                f"per-sample workflow ceiling ({workflow_timeout_seconds} s); "
+                f"raise {OJW_WORKFLOW_TIMEOUT_KEY} in the baseline fragment "
+                "(<= 0 disables the limit) if the sample legitimately needs "
+                "longer"
+            ) from error
+        raise
