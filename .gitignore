@@ -1,3 +1,6 @@
+# Claude Code session/worktree surface (never part of a run manifest)
+.claude/
+
 # Python
 __pycache__/
 *.py[cod]
