@@ -82,6 +82,12 @@ can support a confirmatory claim.
    protocol-hash them.
 4. Build sample-identity lists + split-identity hashes for every sampled
    subset below; record power notes (paired designs, target deltas).
+   **DONE 2026-08-07** — receipts under `docs/receipts/probe-samples/`:
+   R1 400 items/8 tiers (`e1d751e6…`), R2 200/4 categories (`c602bd7e…`),
+   R5 140 EN-complex (parallel 50 original_english + multi_turn 50 english
+   + seqdep_tool 40 english, whole stratum; `7205f865…`); template manifest
+   anchor `c21b6a87…` (LF-byte discipline enforced by test). R4 starts from
+   the frozen dev subset10 identity; R3 blocked on data acquisition.
 5. Verify the local judge candidate (gpt-oss-20b) runs under the WSL2 stack
    if any non-deterministic scoring is retained; pin weights hash.
 

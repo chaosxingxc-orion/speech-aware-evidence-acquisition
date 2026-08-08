@@ -1,0 +1,1217 @@
+{
+  "carrier": "big-bench-audio",
+  "design": "50 per BBH category x 4, paired arms on the same items; official_answer deliberately NOT copied here",
+  "items": [
+    {
+      "category": "formal_fallacies",
+      "file_name": "data/question_0.mp3",
+      "id": 0,
+      "key": "big-bench-audio:0000"
+    },
+    {
+      "category": "formal_fallacies",
+      "file_name": "data/question_3.mp3",
+      "id": 3,
+      "key": "big-bench-audio:0003"
+    },
+    {
+      "category": "formal_fallacies",
+      "file_name": "data/question_12.mp3",
+      "id": 12,
+      "key": "big-bench-audio:0012"
+    },
+    {
+      "category": "formal_fallacies",
+      "file_name": "data/question_25.mp3",
+      "id": 25,
+      "key": "big-bench-audio:0025"
+    },
+    {
+      "category": "formal_fallacies",
+      "file_name": "data/question_26.mp3",
+      "id": 26,
+      "key": "big-bench-audio:0026"
+    },
+    {
+      "category": "formal_fallacies",
+      "file_name": "data/question_43.mp3",
+      "id": 43,
+      "key": "big-bench-audio:0043"
+    },
+    {
+      "category": "formal_fallacies",
+      "file_name": "data/question_45.mp3",
+      "id": 45,
+      "key": "big-bench-audio:0045"
+    },
+    {
+      "category": "formal_fallacies",
+      "file_name": "data/question_51.mp3",
+      "id": 51,
+      "key": "big-bench-audio:0051"
+    },
+    {
+      "category": "formal_fallacies",
+      "file_name": "data/question_52.mp3",
+      "id": 52,
+      "key": "big-bench-audio:0052"
+    },
+    {
+      "category": "formal_fallacies",
+      "file_name": "data/question_54.mp3",
+      "id": 54,
+      "key": "big-bench-audio:0054"
+    },
+    {
+      "category": "formal_fallacies",
+      "file_name": "data/question_60.mp3",
+      "id": 60,
+      "key": "big-bench-audio:0060"
+    },
+    {
+      "category": "formal_fallacies",
+      "file_name": "data/question_61.mp3",
+      "id": 61,
+      "key": "big-bench-audio:0061"
+    },
+    {
+      "category": "formal_fallacies",
+      "file_name": "data/question_83.mp3",
+      "id": 83,
+      "key": "big-bench-audio:0083"
+    },
+    {
+      "category": "formal_fallacies",
+      "file_name": "data/question_86.mp3",
+      "id": 86,
+      "key": "big-bench-audio:0086"
+    },
+    {
+      "category": "formal_fallacies",
+      "file_name": "data/question_92.mp3",
+      "id": 92,
+      "key": "big-bench-audio:0092"
+    },
+    {
+      "category": "formal_fallacies",
+      "file_name": "data/question_97.mp3",
+      "id": 97,
+      "key": "big-bench-audio:0097"
+    },
+    {
+      "category": "formal_fallacies",
+      "file_name": "data/question_100.mp3",
+      "id": 100,
+      "key": "big-bench-audio:0100"
+    },
+    {
+      "category": "formal_fallacies",
+      "file_name": "data/question_102.mp3",
+      "id": 102,
+      "key": "big-bench-audio:0102"
+    },
+    {
+      "category": "formal_fallacies",
+      "file_name": "data/question_104.mp3",
+      "id": 104,
+      "key": "big-bench-audio:0104"
+    },
+    {
+      "category": "formal_fallacies",
+      "file_name": "data/question_108.mp3",
+      "id": 108,
+      "key": "big-bench-audio:0108"
+    },
+    {
+      "category": "formal_fallacies",
+      "file_name": "data/question_114.mp3",
+      "id": 114,
+      "key": "big-bench-audio:0114"
+    },
+    {
+      "category": "formal_fallacies",
+      "file_name": "data/question_116.mp3",
+      "id": 116,
+      "key": "big-bench-audio:0116"
+    },
+    {
+      "category": "formal_fallacies",
+      "file_name": "data/question_120.mp3",
+      "id": 120,
+      "key": "big-bench-audio:0120"
+    },
+    {
+      "category": "formal_fallacies",
+      "file_name": "data/question_125.mp3",
+      "id": 125,
+      "key": "big-bench-audio:0125"
+    },
+    {
+      "category": "formal_fallacies",
+      "file_name": "data/question_127.mp3",
+      "id": 127,
+      "key": "big-bench-audio:0127"
+    },
+    {
+      "category": "formal_fallacies",
+      "file_name": "data/question_129.mp3",
+      "id": 129,
+      "key": "big-bench-audio:0129"
+    },
+    {
+      "category": "formal_fallacies",
+      "file_name": "data/question_136.mp3",
+      "id": 136,
+      "key": "big-bench-audio:0136"
+    },
+    {
+      "category": "formal_fallacies",
+      "file_name": "data/question_137.mp3",
+      "id": 137,
+      "key": "big-bench-audio:0137"
+    },
+    {
+      "category": "formal_fallacies",
+      "file_name": "data/question_147.mp3",
+      "id": 147,
+      "key": "big-bench-audio:0147"
+    },
+    {
+      "category": "formal_fallacies",
+      "file_name": "data/question_153.mp3",
+      "id": 153,
+      "key": "big-bench-audio:0153"
+    },
+    {
+      "category": "formal_fallacies",
+      "file_name": "data/question_155.mp3",
+      "id": 155,
+      "key": "big-bench-audio:0155"
+    },
+    {
+      "category": "formal_fallacies",
+      "file_name": "data/question_157.mp3",
+      "id": 157,
+      "key": "big-bench-audio:0157"
+    },
+    {
+      "category": "formal_fallacies",
+      "file_name": "data/question_160.mp3",
+      "id": 160,
+      "key": "big-bench-audio:0160"
+    },
+    {
+      "category": "formal_fallacies",
+      "file_name": "data/question_161.mp3",
+      "id": 161,
+      "key": "big-bench-audio:0161"
+    },
+    {
+      "category": "formal_fallacies",
+      "file_name": "data/question_167.mp3",
+      "id": 167,
+      "key": "big-bench-audio:0167"
+    },
+    {
+      "category": "formal_fallacies",
+      "file_name": "data/question_168.mp3",
+      "id": 168,
+      "key": "big-bench-audio:0168"
+    },
+    {
+      "category": "formal_fallacies",
+      "file_name": "data/question_172.mp3",
+      "id": 172,
+      "key": "big-bench-audio:0172"
+    },
+    {
+      "category": "formal_fallacies",
+      "file_name": "data/question_173.mp3",
+      "id": 173,
+      "key": "big-bench-audio:0173"
+    },
+    {
+      "category": "formal_fallacies",
+      "file_name": "data/question_177.mp3",
+      "id": 177,
+      "key": "big-bench-audio:0177"
+    },
+    {
+      "category": "formal_fallacies",
+      "file_name": "data/question_180.mp3",
+      "id": 180,
+      "key": "big-bench-audio:0180"
+    },
+    {
+      "category": "formal_fallacies",
+      "file_name": "data/question_186.mp3",
+      "id": 186,
+      "key": "big-bench-audio:0186"
+    },
+    {
+      "category": "formal_fallacies",
+      "file_name": "data/question_194.mp3",
+      "id": 194,
+      "key": "big-bench-audio:0194"
+    },
+    {
+      "category": "formal_fallacies",
+      "file_name": "data/question_202.mp3",
+      "id": 202,
+      "key": "big-bench-audio:0202"
+    },
+    {
+      "category": "formal_fallacies",
+      "file_name": "data/question_223.mp3",
+      "id": 223,
+      "key": "big-bench-audio:0223"
+    },
+    {
+      "category": "formal_fallacies",
+      "file_name": "data/question_227.mp3",
+      "id": 227,
+      "key": "big-bench-audio:0227"
+    },
+    {
+      "category": "formal_fallacies",
+      "file_name": "data/question_231.mp3",
+      "id": 231,
+      "key": "big-bench-audio:0231"
+    },
+    {
+      "category": "formal_fallacies",
+      "file_name": "data/question_237.mp3",
+      "id": 237,
+      "key": "big-bench-audio:0237"
+    },
+    {
+      "category": "formal_fallacies",
+      "file_name": "data/question_238.mp3",
+      "id": 238,
+      "key": "big-bench-audio:0238"
+    },
+    {
+      "category": "formal_fallacies",
+      "file_name": "data/question_243.mp3",
+      "id": 243,
+      "key": "big-bench-audio:0243"
+    },
+    {
+      "category": "formal_fallacies",
+      "file_name": "data/question_244.mp3",
+      "id": 244,
+      "key": "big-bench-audio:0244"
+    },
+    {
+      "category": "navigate",
+      "file_name": "data/question_250.mp3",
+      "id": 250,
+      "key": "big-bench-audio:0250"
+    },
+    {
+      "category": "navigate",
+      "file_name": "data/question_255.mp3",
+      "id": 255,
+      "key": "big-bench-audio:0255"
+    },
+    {
+      "category": "navigate",
+      "file_name": "data/question_256.mp3",
+      "id": 256,
+      "key": "big-bench-audio:0256"
+    },
+    {
+      "category": "navigate",
+      "file_name": "data/question_266.mp3",
+      "id": 266,
+      "key": "big-bench-audio:0266"
+    },
+    {
+      "category": "navigate",
+      "file_name": "data/question_271.mp3",
+      "id": 271,
+      "key": "big-bench-audio:0271"
+    },
+    {
+      "category": "navigate",
+      "file_name": "data/question_274.mp3",
+      "id": 274,
+      "key": "big-bench-audio:0274"
+    },
+    {
+      "category": "navigate",
+      "file_name": "data/question_275.mp3",
+      "id": 275,
+      "key": "big-bench-audio:0275"
+    },
+    {
+      "category": "navigate",
+      "file_name": "data/question_282.mp3",
+      "id": 282,
+      "key": "big-bench-audio:0282"
+    },
+    {
+      "category": "navigate",
+      "file_name": "data/question_283.mp3",
+      "id": 283,
+      "key": "big-bench-audio:0283"
+    },
+    {
+      "category": "navigate",
+      "file_name": "data/question_290.mp3",
+      "id": 290,
+      "key": "big-bench-audio:0290"
+    },
+    {
+      "category": "navigate",
+      "file_name": "data/question_301.mp3",
+      "id": 301,
+      "key": "big-bench-audio:0301"
+    },
+    {
+      "category": "navigate",
+      "file_name": "data/question_304.mp3",
+      "id": 304,
+      "key": "big-bench-audio:0304"
+    },
+    {
+      "category": "navigate",
+      "file_name": "data/question_309.mp3",
+      "id": 309,
+      "key": "big-bench-audio:0309"
+    },
+    {
+      "category": "navigate",
+      "file_name": "data/question_312.mp3",
+      "id": 312,
+      "key": "big-bench-audio:0312"
+    },
+    {
+      "category": "navigate",
+      "file_name": "data/question_313.mp3",
+      "id": 313,
+      "key": "big-bench-audio:0313"
+    },
+    {
+      "category": "navigate",
+      "file_name": "data/question_314.mp3",
+      "id": 314,
+      "key": "big-bench-audio:0314"
+    },
+    {
+      "category": "navigate",
+      "file_name": "data/question_316.mp3",
+      "id": 316,
+      "key": "big-bench-audio:0316"
+    },
+    {
+      "category": "navigate",
+      "file_name": "data/question_318.mp3",
+      "id": 318,
+      "key": "big-bench-audio:0318"
+    },
+    {
+      "category": "navigate",
+      "file_name": "data/question_326.mp3",
+      "id": 326,
+      "key": "big-bench-audio:0326"
+    },
+    {
+      "category": "navigate",
+      "file_name": "data/question_330.mp3",
+      "id": 330,
+      "key": "big-bench-audio:0330"
+    },
+    {
+      "category": "navigate",
+      "file_name": "data/question_340.mp3",
+      "id": 340,
+      "key": "big-bench-audio:0340"
+    },
+    {
+      "category": "navigate",
+      "file_name": "data/question_350.mp3",
+      "id": 350,
+      "key": "big-bench-audio:0350"
+    },
+    {
+      "category": "navigate",
+      "file_name": "data/question_354.mp3",
+      "id": 354,
+      "key": "big-bench-audio:0354"
+    },
+    {
+      "category": "navigate",
+      "file_name": "data/question_361.mp3",
+      "id": 361,
+      "key": "big-bench-audio:0361"
+    },
+    {
+      "category": "navigate",
+      "file_name": "data/question_365.mp3",
+      "id": 365,
+      "key": "big-bench-audio:0365"
+    },
+    {
+      "category": "navigate",
+      "file_name": "data/question_367.mp3",
+      "id": 367,
+      "key": "big-bench-audio:0367"
+    },
+    {
+      "category": "navigate",
+      "file_name": "data/question_371.mp3",
+      "id": 371,
+      "key": "big-bench-audio:0371"
+    },
+    {
+      "category": "navigate",
+      "file_name": "data/question_372.mp3",
+      "id": 372,
+      "key": "big-bench-audio:0372"
+    },
+    {
+      "category": "navigate",
+      "file_name": "data/question_374.mp3",
+      "id": 374,
+      "key": "big-bench-audio:0374"
+    },
+    {
+      "category": "navigate",
+      "file_name": "data/question_382.mp3",
+      "id": 382,
+      "key": "big-bench-audio:0382"
+    },
+    {
+      "category": "navigate",
+      "file_name": "data/question_387.mp3",
+      "id": 387,
+      "key": "big-bench-audio:0387"
+    },
+    {
+      "category": "navigate",
+      "file_name": "data/question_390.mp3",
+      "id": 390,
+      "key": "big-bench-audio:0390"
+    },
+    {
+      "category": "navigate",
+      "file_name": "data/question_403.mp3",
+      "id": 403,
+      "key": "big-bench-audio:0403"
+    },
+    {
+      "category": "navigate",
+      "file_name": "data/question_405.mp3",
+      "id": 405,
+      "key": "big-bench-audio:0405"
+    },
+    {
+      "category": "navigate",
+      "file_name": "data/question_407.mp3",
+      "id": 407,
+      "key": "big-bench-audio:0407"
+    },
+    {
+      "category": "navigate",
+      "file_name": "data/question_410.mp3",
+      "id": 410,
+      "key": "big-bench-audio:0410"
+    },
+    {
+      "category": "navigate",
+      "file_name": "data/question_413.mp3",
+      "id": 413,
+      "key": "big-bench-audio:0413"
+    },
+    {
+      "category": "navigate",
+      "file_name": "data/question_415.mp3",
+      "id": 415,
+      "key": "big-bench-audio:0415"
+    },
+    {
+      "category": "navigate",
+      "file_name": "data/question_439.mp3",
+      "id": 439,
+      "key": "big-bench-audio:0439"
+    },
+    {
+      "category": "navigate",
+      "file_name": "data/question_441.mp3",
+      "id": 441,
+      "key": "big-bench-audio:0441"
+    },
+    {
+      "category": "navigate",
+      "file_name": "data/question_454.mp3",
+      "id": 454,
+      "key": "big-bench-audio:0454"
+    },
+    {
+      "category": "navigate",
+      "file_name": "data/question_457.mp3",
+      "id": 457,
+      "key": "big-bench-audio:0457"
+    },
+    {
+      "category": "navigate",
+      "file_name": "data/question_458.mp3",
+      "id": 458,
+      "key": "big-bench-audio:0458"
+    },
+    {
+      "category": "navigate",
+      "file_name": "data/question_462.mp3",
+      "id": 462,
+      "key": "big-bench-audio:0462"
+    },
+    {
+      "category": "navigate",
+      "file_name": "data/question_471.mp3",
+      "id": 471,
+      "key": "big-bench-audio:0471"
+    },
+    {
+      "category": "navigate",
+      "file_name": "data/question_473.mp3",
+      "id": 473,
+      "key": "big-bench-audio:0473"
+    },
+    {
+      "category": "navigate",
+      "file_name": "data/question_478.mp3",
+      "id": 478,
+      "key": "big-bench-audio:0478"
+    },
+    {
+      "category": "navigate",
+      "file_name": "data/question_488.mp3",
+      "id": 488,
+      "key": "big-bench-audio:0488"
+    },
+    {
+      "category": "navigate",
+      "file_name": "data/question_492.mp3",
+      "id": 492,
+      "key": "big-bench-audio:0492"
+    },
+    {
+      "category": "navigate",
+      "file_name": "data/question_494.mp3",
+      "id": 494,
+      "key": "big-bench-audio:0494"
+    },
+    {
+      "category": "object_counting",
+      "file_name": "data/question_515.mp3",
+      "id": 515,
+      "key": "big-bench-audio:0515"
+    },
+    {
+      "category": "object_counting",
+      "file_name": "data/question_526.mp3",
+      "id": 526,
+      "key": "big-bench-audio:0526"
+    },
+    {
+      "category": "object_counting",
+      "file_name": "data/question_536.mp3",
+      "id": 536,
+      "key": "big-bench-audio:0536"
+    },
+    {
+      "category": "object_counting",
+      "file_name": "data/question_537.mp3",
+      "id": 537,
+      "key": "big-bench-audio:0537"
+    },
+    {
+      "category": "object_counting",
+      "file_name": "data/question_539.mp3",
+      "id": 539,
+      "key": "big-bench-audio:0539"
+    },
+    {
+      "category": "object_counting",
+      "file_name": "data/question_544.mp3",
+      "id": 544,
+      "key": "big-bench-audio:0544"
+    },
+    {
+      "category": "object_counting",
+      "file_name": "data/question_545.mp3",
+      "id": 545,
+      "key": "big-bench-audio:0545"
+    },
+    {
+      "category": "object_counting",
+      "file_name": "data/question_546.mp3",
+      "id": 546,
+      "key": "big-bench-audio:0546"
+    },
+    {
+      "category": "object_counting",
+      "file_name": "data/question_551.mp3",
+      "id": 551,
+      "key": "big-bench-audio:0551"
+    },
+    {
+      "category": "object_counting",
+      "file_name": "data/question_566.mp3",
+      "id": 566,
+      "key": "big-bench-audio:0566"
+    },
+    {
+      "category": "object_counting",
+      "file_name": "data/question_569.mp3",
+      "id": 569,
+      "key": "big-bench-audio:0569"
+    },
+    {
+      "category": "object_counting",
+      "file_name": "data/question_570.mp3",
+      "id": 570,
+      "key": "big-bench-audio:0570"
+    },
+    {
+      "category": "object_counting",
+      "file_name": "data/question_571.mp3",
+      "id": 571,
+      "key": "big-bench-audio:0571"
+    },
+    {
+      "category": "object_counting",
+      "file_name": "data/question_583.mp3",
+      "id": 583,
+      "key": "big-bench-audio:0583"
+    },
+    {
+      "category": "object_counting",
+      "file_name": "data/question_585.mp3",
+      "id": 585,
+      "key": "big-bench-audio:0585"
+    },
+    {
+      "category": "object_counting",
+      "file_name": "data/question_590.mp3",
+      "id": 590,
+      "key": "big-bench-audio:0590"
+    },
+    {
+      "category": "object_counting",
+      "file_name": "data/question_595.mp3",
+      "id": 595,
+      "key": "big-bench-audio:0595"
+    },
+    {
+      "category": "object_counting",
+      "file_name": "data/question_598.mp3",
+      "id": 598,
+      "key": "big-bench-audio:0598"
+    },
+    {
+      "category": "object_counting",
+      "file_name": "data/question_604.mp3",
+      "id": 604,
+      "key": "big-bench-audio:0604"
+    },
+    {
+      "category": "object_counting",
+      "file_name": "data/question_610.mp3",
+      "id": 610,
+      "key": "big-bench-audio:0610"
+    },
+    {
+      "category": "object_counting",
+      "file_name": "data/question_612.mp3",
+      "id": 612,
+      "key": "big-bench-audio:0612"
+    },
+    {
+      "category": "object_counting",
+      "file_name": "data/question_615.mp3",
+      "id": 615,
+      "key": "big-bench-audio:0615"
+    },
+    {
+      "category": "object_counting",
+      "file_name": "data/question_616.mp3",
+      "id": 616,
+      "key": "big-bench-audio:0616"
+    },
+    {
+      "category": "object_counting",
+      "file_name": "data/question_617.mp3",
+      "id": 617,
+      "key": "big-bench-audio:0617"
+    },
+    {
+      "category": "object_counting",
+      "file_name": "data/question_621.mp3",
+      "id": 621,
+      "key": "big-bench-audio:0621"
+    },
+    {
+      "category": "object_counting",
+      "file_name": "data/question_622.mp3",
+      "id": 622,
+      "key": "big-bench-audio:0622"
+    },
+    {
+      "category": "object_counting",
+      "file_name": "data/question_626.mp3",
+      "id": 626,
+      "key": "big-bench-audio:0626"
+    },
+    {
+      "category": "object_counting",
+      "file_name": "data/question_632.mp3",
+      "id": 632,
+      "key": "big-bench-audio:0632"
+    },
+    {
+      "category": "object_counting",
+      "file_name": "data/question_646.mp3",
+      "id": 646,
+      "key": "big-bench-audio:0646"
+    },
+    {
+      "category": "object_counting",
+      "file_name": "data/question_650.mp3",
+      "id": 650,
+      "key": "big-bench-audio:0650"
+    },
+    {
+      "category": "object_counting",
+      "file_name": "data/question_659.mp3",
+      "id": 659,
+      "key": "big-bench-audio:0659"
+    },
+    {
+      "category": "object_counting",
+      "file_name": "data/question_660.mp3",
+      "id": 660,
+      "key": "big-bench-audio:0660"
+    },
+    {
+      "category": "object_counting",
+      "file_name": "data/question_675.mp3",
+      "id": 675,
+      "key": "big-bench-audio:0675"
+    },
+    {
+      "category": "object_counting",
+      "file_name": "data/question_676.mp3",
+      "id": 676,
+      "key": "big-bench-audio:0676"
+    },
+    {
+      "category": "object_counting",
+      "file_name": "data/question_681.mp3",
+      "id": 681,
+      "key": "big-bench-audio:0681"
+    },
+    {
+      "category": "object_counting",
+      "file_name": "data/question_684.mp3",
+      "id": 684,
+      "key": "big-bench-audio:0684"
+    },
+    {
+      "category": "object_counting",
+      "file_name": "data/question_687.mp3",
+      "id": 687,
+      "key": "big-bench-audio:0687"
+    },
+    {
+      "category": "object_counting",
+      "file_name": "data/question_688.mp3",
+      "id": 688,
+      "key": "big-bench-audio:0688"
+    },
+    {
+      "category": "object_counting",
+      "file_name": "data/question_692.mp3",
+      "id": 692,
+      "key": "big-bench-audio:0692"
+    },
+    {
+      "category": "object_counting",
+      "file_name": "data/question_707.mp3",
+      "id": 707,
+      "key": "big-bench-audio:0707"
+    },
+    {
+      "category": "object_counting",
+      "file_name": "data/question_708.mp3",
+      "id": 708,
+      "key": "big-bench-audio:0708"
+    },
+    {
+      "category": "object_counting",
+      "file_name": "data/question_710.mp3",
+      "id": 710,
+      "key": "big-bench-audio:0710"
+    },
+    {
+      "category": "object_counting",
+      "file_name": "data/question_715.mp3",
+      "id": 715,
+      "key": "big-bench-audio:0715"
+    },
+    {
+      "category": "object_counting",
+      "file_name": "data/question_722.mp3",
+      "id": 722,
+      "key": "big-bench-audio:0722"
+    },
+    {
+      "category": "object_counting",
+      "file_name": "data/question_727.mp3",
+      "id": 727,
+      "key": "big-bench-audio:0727"
+    },
+    {
+      "category": "object_counting",
+      "file_name": "data/question_733.mp3",
+      "id": 733,
+      "key": "big-bench-audio:0733"
+    },
+    {
+      "category": "object_counting",
+      "file_name": "data/question_734.mp3",
+      "id": 734,
+      "key": "big-bench-audio:0734"
+    },
+    {
+      "category": "object_counting",
+      "file_name": "data/question_735.mp3",
+      "id": 735,
+      "key": "big-bench-audio:0735"
+    },
+    {
+      "category": "object_counting",
+      "file_name": "data/question_736.mp3",
+      "id": 736,
+      "key": "big-bench-audio:0736"
+    },
+    {
+      "category": "object_counting",
+      "file_name": "data/question_741.mp3",
+      "id": 741,
+      "key": "big-bench-audio:0741"
+    },
+    {
+      "category": "web_of_lies",
+      "file_name": "data/question_755.mp3",
+      "id": 755,
+      "key": "big-bench-audio:0755"
+    },
+    {
+      "category": "web_of_lies",
+      "file_name": "data/question_760.mp3",
+      "id": 760,
+      "key": "big-bench-audio:0760"
+    },
+    {
+      "category": "web_of_lies",
+      "file_name": "data/question_772.mp3",
+      "id": 772,
+      "key": "big-bench-audio:0772"
+    },
+    {
+      "category": "web_of_lies",
+      "file_name": "data/question_778.mp3",
+      "id": 778,
+      "key": "big-bench-audio:0778"
+    },
+    {
+      "category": "web_of_lies",
+      "file_name": "data/question_782.mp3",
+      "id": 782,
+      "key": "big-bench-audio:0782"
+    },
+    {
+      "category": "web_of_lies",
+      "file_name": "data/question_787.mp3",
+      "id": 787,
+      "key": "big-bench-audio:0787"
+    },
+    {
+      "category": "web_of_lies",
+      "file_name": "data/question_788.mp3",
+      "id": 788,
+      "key": "big-bench-audio:0788"
+    },
+    {
+      "category": "web_of_lies",
+      "file_name": "data/question_796.mp3",
+      "id": 796,
+      "key": "big-bench-audio:0796"
+    },
+    {
+      "category": "web_of_lies",
+      "file_name": "data/question_798.mp3",
+      "id": 798,
+      "key": "big-bench-audio:0798"
+    },
+    {
+      "category": "web_of_lies",
+      "file_name": "data/question_800.mp3",
+      "id": 800,
+      "key": "big-bench-audio:0800"
+    },
+    {
+      "category": "web_of_lies",
+      "file_name": "data/question_807.mp3",
+      "id": 807,
+      "key": "big-bench-audio:0807"
+    },
+    {
+      "category": "web_of_lies",
+      "file_name": "data/question_810.mp3",
+      "id": 810,
+      "key": "big-bench-audio:0810"
+    },
+    {
+      "category": "web_of_lies",
+      "file_name": "data/question_813.mp3",
+      "id": 813,
+      "key": "big-bench-audio:0813"
+    },
+    {
+      "category": "web_of_lies",
+      "file_name": "data/question_817.mp3",
+      "id": 817,
+      "key": "big-bench-audio:0817"
+    },
+    {
+      "category": "web_of_lies",
+      "file_name": "data/question_818.mp3",
+      "id": 818,
+      "key": "big-bench-audio:0818"
+    },
+    {
+      "category": "web_of_lies",
+      "file_name": "data/question_823.mp3",
+      "id": 823,
+      "key": "big-bench-audio:0823"
+    },
+    {
+      "category": "web_of_lies",
+      "file_name": "data/question_832.mp3",
+      "id": 832,
+      "key": "big-bench-audio:0832"
+    },
+    {
+      "category": "web_of_lies",
+      "file_name": "data/question_847.mp3",
+      "id": 847,
+      "key": "big-bench-audio:0847"
+    },
+    {
+      "category": "web_of_lies",
+      "file_name": "data/question_848.mp3",
+      "id": 848,
+      "key": "big-bench-audio:0848"
+    },
+    {
+      "category": "web_of_lies",
+      "file_name": "data/question_850.mp3",
+      "id": 850,
+      "key": "big-bench-audio:0850"
+    },
+    {
+      "category": "web_of_lies",
+      "file_name": "data/question_853.mp3",
+      "id": 853,
+      "key": "big-bench-audio:0853"
+    },
+    {
+      "category": "web_of_lies",
+      "file_name": "data/question_861.mp3",
+      "id": 861,
+      "key": "big-bench-audio:0861"
+    },
+    {
+      "category": "web_of_lies",
+      "file_name": "data/question_864.mp3",
+      "id": 864,
+      "key": "big-bench-audio:0864"
+    },
+    {
+      "category": "web_of_lies",
+      "file_name": "data/question_870.mp3",
+      "id": 870,
+      "key": "big-bench-audio:0870"
+    },
+    {
+      "category": "web_of_lies",
+      "file_name": "data/question_873.mp3",
+      "id": 873,
+      "key": "big-bench-audio:0873"
+    },
+    {
+      "category": "web_of_lies",
+      "file_name": "data/question_880.mp3",
+      "id": 880,
+      "key": "big-bench-audio:0880"
+    },
+    {
+      "category": "web_of_lies",
+      "file_name": "data/question_890.mp3",
+      "id": 890,
+      "key": "big-bench-audio:0890"
+    },
+    {
+      "category": "web_of_lies",
+      "file_name": "data/question_893.mp3",
+      "id": 893,
+      "key": "big-bench-audio:0893"
+    },
+    {
+      "category": "web_of_lies",
+      "file_name": "data/question_897.mp3",
+      "id": 897,
+      "key": "big-bench-audio:0897"
+    },
+    {
+      "category": "web_of_lies",
+      "file_name": "data/question_905.mp3",
+      "id": 905,
+      "key": "big-bench-audio:0905"
+    },
+    {
+      "category": "web_of_lies",
+      "file_name": "data/question_911.mp3",
+      "id": 911,
+      "key": "big-bench-audio:0911"
+    },
+    {
+      "category": "web_of_lies",
+      "file_name": "data/question_914.mp3",
+      "id": 914,
+      "key": "big-bench-audio:0914"
+    },
+    {
+      "category": "web_of_lies",
+      "file_name": "data/question_916.mp3",
+      "id": 916,
+      "key": "big-bench-audio:0916"
+    },
+    {
+      "category": "web_of_lies",
+      "file_name": "data/question_919.mp3",
+      "id": 919,
+      "key": "big-bench-audio:0919"
+    },
+    {
+      "category": "web_of_lies",
+      "file_name": "data/question_923.mp3",
+      "id": 923,
+      "key": "big-bench-audio:0923"
+    },
+    {
+      "category": "web_of_lies",
+      "file_name": "data/question_925.mp3",
+      "id": 925,
+      "key": "big-bench-audio:0925"
+    },
+    {
+      "category": "web_of_lies",
+      "file_name": "data/question_928.mp3",
+      "id": 928,
+      "key": "big-bench-audio:0928"
+    },
+    {
+      "category": "web_of_lies",
+      "file_name": "data/question_936.mp3",
+      "id": 936,
+      "key": "big-bench-audio:0936"
+    },
+    {
+      "category": "web_of_lies",
+      "file_name": "data/question_939.mp3",
+      "id": 939,
+      "key": "big-bench-audio:0939"
+    },
+    {
+      "category": "web_of_lies",
+      "file_name": "data/question_950.mp3",
+      "id": 950,
+      "key": "big-bench-audio:0950"
+    },
+    {
+      "category": "web_of_lies",
+      "file_name": "data/question_961.mp3",
+      "id": 961,
+      "key": "big-bench-audio:0961"
+    },
+    {
+      "category": "web_of_lies",
+      "file_name": "data/question_962.mp3",
+      "id": 962,
+      "key": "big-bench-audio:0962"
+    },
+    {
+      "category": "web_of_lies",
+      "file_name": "data/question_967.mp3",
+      "id": 967,
+      "key": "big-bench-audio:0967"
+    },
+    {
+      "category": "web_of_lies",
+      "file_name": "data/question_969.mp3",
+      "id": 969,
+      "key": "big-bench-audio:0969"
+    },
+    {
+      "category": "web_of_lies",
+      "file_name": "data/question_975.mp3",
+      "id": 975,
+      "key": "big-bench-audio:0975"
+    },
+    {
+      "category": "web_of_lies",
+      "file_name": "data/question_981.mp3",
+      "id": 981,
+      "key": "big-bench-audio:0981"
+    },
+    {
+      "category": "web_of_lies",
+      "file_name": "data/question_984.mp3",
+      "id": 984,
+      "key": "big-bench-audio:0984"
+    },
+    {
+      "category": "web_of_lies",
+      "file_name": "data/question_987.mp3",
+      "id": 987,
+      "key": "big-bench-audio:0987"
+    },
+    {
+      "category": "web_of_lies",
+      "file_name": "data/question_991.mp3",
+      "id": 991,
+      "key": "big-bench-audio:0991"
+    },
+    {
+      "category": "web_of_lies",
+      "file_name": "data/question_998.mp3",
+      "id": 998,
+      "key": "big-bench-audio:0998"
+    }
+  ],
+  "pool_size": 1000,
+  "probe": "R2-bba-cascade-vs-direct",
+  "seed": 20260807,
+  "split_identity_hash": "c602bd7ee650b35f767eb4e7064e17452dc1bd0b813909ea2caef20db80cf262",
+  "split_role": "discovery",
+  "strata_counts": {
+    "formal_fallacies": 50,
+    "navigate": 50,
+    "object_counting": 50,
+    "web_of_lies": 50
+  }
+}

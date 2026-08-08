@@ -60,3 +60,14 @@ def test_manifest_is_json_serializable_and_deterministic(templates_dir):
     first = json.dumps(build_manifest(templates_dir), sort_keys=True)
     second = json.dumps(build_manifest(templates_dir), sort_keys=True)
     assert first == second
+
+
+def test_written_manifest_bytes_are_lf_only_on_every_platform(templates_dir, tmp_path):
+    """The manifest's on-disk bytes must equal its git blob bytes (LF), because
+    the ExecutionPlan protocol hash binds to them — CRLF translation on
+    Windows would silently change the hash authority."""
+    from speech_aware_evidence_acquisition.reproduction.manifest import write_manifest
+
+    out = tmp_path / "manifest.json"
+    write_manifest(templates_dir, out)
+    assert b"\r" not in out.read_bytes()

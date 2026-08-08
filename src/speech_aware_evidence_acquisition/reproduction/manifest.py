@@ -106,5 +106,9 @@ def build_manifest(templates_dir: Path) -> dict:
 
 def write_manifest(templates_dir: Path, out_path: Path) -> dict:
     manifest = build_manifest(templates_dir)
-    out_path.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    out_path.write_text(
+        json.dumps(manifest, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+        newline="\n",
+    )
     return manifest

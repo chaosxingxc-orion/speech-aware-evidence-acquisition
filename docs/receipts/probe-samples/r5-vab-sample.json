@@ -1,0 +1,1001 @@
+{
+  "carrier": "voiceagentbench",
+  "design": "50 per EN complex stratum (parallel_tool/seqdep_tool/multi_turn), paired arms; strata smaller than 50 taken whole",
+  "en_variant_per_stratum": {
+    "multi_turn": "english",
+    "parallel_tool": "original_english",
+    "seqdep_tool": "english"
+  },
+  "items": [
+    {
+      "category": "multi_turn",
+      "file_name": "data/multi_turn_audios/english/diverse/record_0_msg_2_cloned.wav",
+      "id": "3722",
+      "key": "voiceagentbench:multi_turn:data/multi_turn_audios/english/diverse/record_0_msg_2_cloned.wav",
+      "variant": "english"
+    },
+    {
+      "category": "multi_turn",
+      "file_name": "data/multi_turn_audios/english/diverse/record_102_msg_10_cloned.wav",
+      "id": "3821",
+      "key": "voiceagentbench:multi_turn:data/multi_turn_audios/english/diverse/record_102_msg_10_cloned.wav",
+      "variant": "english"
+    },
+    {
+      "category": "multi_turn",
+      "file_name": "data/multi_turn_audios/english/diverse/record_120_msg_5_cloned.wav",
+      "id": "3839",
+      "key": "voiceagentbench:multi_turn:data/multi_turn_audios/english/diverse/record_120_msg_5_cloned.wav",
+      "variant": "english"
+    },
+    {
+      "category": "multi_turn",
+      "file_name": "data/multi_turn_audios/english/diverse/record_123_msg_2_cloned.wav",
+      "id": "3842",
+      "key": "voiceagentbench:multi_turn:data/multi_turn_audios/english/diverse/record_123_msg_2_cloned.wav",
+      "variant": "english"
+    },
+    {
+      "category": "multi_turn",
+      "file_name": "data/multi_turn_audios/english/diverse/record_126_msg_6_cloned.wav",
+      "id": "3845",
+      "key": "voiceagentbench:multi_turn:data/multi_turn_audios/english/diverse/record_126_msg_6_cloned.wav",
+      "variant": "english"
+    },
+    {
+      "category": "multi_turn",
+      "file_name": "data/multi_turn_audios/english/diverse/record_127_msg_6_cloned.wav",
+      "id": "3846",
+      "key": "voiceagentbench:multi_turn:data/multi_turn_audios/english/diverse/record_127_msg_6_cloned.wav",
+      "variant": "english"
+    },
+    {
+      "category": "multi_turn",
+      "file_name": "data/multi_turn_audios/english/diverse/record_131_msg_4_cloned.wav",
+      "id": "3849",
+      "key": "voiceagentbench:multi_turn:data/multi_turn_audios/english/diverse/record_131_msg_4_cloned.wav",
+      "variant": "english"
+    },
+    {
+      "category": "multi_turn",
+      "file_name": "data/multi_turn_audios/english/diverse/record_133_msg_3_cloned.wav",
+      "id": "3851",
+      "key": "voiceagentbench:multi_turn:data/multi_turn_audios/english/diverse/record_133_msg_3_cloned.wav",
+      "variant": "english"
+    },
+    {
+      "category": "multi_turn",
+      "file_name": "data/multi_turn_audios/english/diverse/record_137_msg_18_cloned.wav",
+      "id": "3855",
+      "key": "voiceagentbench:multi_turn:data/multi_turn_audios/english/diverse/record_137_msg_18_cloned.wav",
+      "variant": "english"
+    },
+    {
+      "category": "multi_turn",
+      "file_name": "data/multi_turn_audios/english/diverse/record_138_msg_0_cloned.wav",
+      "id": "3856",
+      "key": "voiceagentbench:multi_turn:data/multi_turn_audios/english/diverse/record_138_msg_0_cloned.wav",
+      "variant": "english"
+    },
+    {
+      "category": "multi_turn",
+      "file_name": "data/multi_turn_audios/english/diverse/record_142_msg_11_cloned.wav",
+      "id": "3860",
+      "key": "voiceagentbench:multi_turn:data/multi_turn_audios/english/diverse/record_142_msg_11_cloned.wav",
+      "variant": "english"
+    },
+    {
+      "category": "multi_turn",
+      "file_name": "data/multi_turn_audios/english/diverse/record_144_msg_2_cloned.wav",
+      "id": "3862",
+      "key": "voiceagentbench:multi_turn:data/multi_turn_audios/english/diverse/record_144_msg_2_cloned.wav",
+      "variant": "english"
+    },
+    {
+      "category": "multi_turn",
+      "file_name": "data/multi_turn_audios/english/diverse/record_145_msg_2_cloned.wav",
+      "id": "3863",
+      "key": "voiceagentbench:multi_turn:data/multi_turn_audios/english/diverse/record_145_msg_2_cloned.wav",
+      "variant": "english"
+    },
+    {
+      "category": "multi_turn",
+      "file_name": "data/multi_turn_audios/english/diverse/record_167_msg_4_cloned.wav",
+      "id": "3883",
+      "key": "voiceagentbench:multi_turn:data/multi_turn_audios/english/diverse/record_167_msg_4_cloned.wav",
+      "variant": "english"
+    },
+    {
+      "category": "multi_turn",
+      "file_name": "data/multi_turn_audios/english/diverse/record_174_msg_2_cloned.wav",
+      "id": "3890",
+      "key": "voiceagentbench:multi_turn:data/multi_turn_audios/english/diverse/record_174_msg_2_cloned.wav",
+      "variant": "english"
+    },
+    {
+      "category": "multi_turn",
+      "file_name": "data/multi_turn_audios/english/diverse/record_180_msg_4_cloned.wav",
+      "id": "3896",
+      "key": "voiceagentbench:multi_turn:data/multi_turn_audios/english/diverse/record_180_msg_4_cloned.wav",
+      "variant": "english"
+    },
+    {
+      "category": "multi_turn",
+      "file_name": "data/multi_turn_audios/english/diverse/record_182_msg_8_cloned.wav",
+      "id": "3898",
+      "key": "voiceagentbench:multi_turn:data/multi_turn_audios/english/diverse/record_182_msg_8_cloned.wav",
+      "variant": "english"
+    },
+    {
+      "category": "multi_turn",
+      "file_name": "data/multi_turn_audios/english/diverse/record_196_msg_5_cloned.wav",
+      "id": "3910",
+      "key": "voiceagentbench:multi_turn:data/multi_turn_audios/english/diverse/record_196_msg_5_cloned.wav",
+      "variant": "english"
+    },
+    {
+      "category": "multi_turn",
+      "file_name": "data/multi_turn_audios/english/diverse/record_207_msg_20_cloned.wav",
+      "id": "3921",
+      "key": "voiceagentbench:multi_turn:data/multi_turn_audios/english/diverse/record_207_msg_20_cloned.wav",
+      "variant": "english"
+    },
+    {
+      "category": "multi_turn",
+      "file_name": "data/multi_turn_audios/english/diverse/record_222_msg_2_cloned.wav",
+      "id": "3935",
+      "key": "voiceagentbench:multi_turn:data/multi_turn_audios/english/diverse/record_222_msg_2_cloned.wav",
+      "variant": "english"
+    },
+    {
+      "category": "multi_turn",
+      "file_name": "data/multi_turn_audios/english/diverse/record_226_msg_6_cloned.wav",
+      "id": "3939",
+      "key": "voiceagentbench:multi_turn:data/multi_turn_audios/english/diverse/record_226_msg_6_cloned.wav",
+      "variant": "english"
+    },
+    {
+      "category": "multi_turn",
+      "file_name": "data/multi_turn_audios/english/diverse/record_232_msg_4_cloned.wav",
+      "id": "3945",
+      "key": "voiceagentbench:multi_turn:data/multi_turn_audios/english/diverse/record_232_msg_4_cloned.wav",
+      "variant": "english"
+    },
+    {
+      "category": "multi_turn",
+      "file_name": "data/multi_turn_audios/english/diverse/record_242_msg_16_cloned.wav",
+      "id": "3955",
+      "key": "voiceagentbench:multi_turn:data/multi_turn_audios/english/diverse/record_242_msg_16_cloned.wav",
+      "variant": "english"
+    },
+    {
+      "category": "multi_turn",
+      "file_name": "data/multi_turn_audios/english/diverse/record_245_msg_4_cloned.wav",
+      "id": "3958",
+      "key": "voiceagentbench:multi_turn:data/multi_turn_audios/english/diverse/record_245_msg_4_cloned.wav",
+      "variant": "english"
+    },
+    {
+      "category": "multi_turn",
+      "file_name": "data/multi_turn_audios/english/diverse/record_255_msg_0_cloned.wav",
+      "id": "3967",
+      "key": "voiceagentbench:multi_turn:data/multi_turn_audios/english/diverse/record_255_msg_0_cloned.wav",
+      "variant": "english"
+    },
+    {
+      "category": "multi_turn",
+      "file_name": "data/multi_turn_audios/english/diverse/record_257_msg_4_cloned.wav",
+      "id": "3969",
+      "key": "voiceagentbench:multi_turn:data/multi_turn_audios/english/diverse/record_257_msg_4_cloned.wav",
+      "variant": "english"
+    },
+    {
+      "category": "multi_turn",
+      "file_name": "data/multi_turn_audios/english/diverse/record_264_msg_4_cloned.wav",
+      "id": "3975",
+      "key": "voiceagentbench:multi_turn:data/multi_turn_audios/english/diverse/record_264_msg_4_cloned.wav",
+      "variant": "english"
+    },
+    {
+      "category": "multi_turn",
+      "file_name": "data/multi_turn_audios/english/diverse/record_276_msg_5_cloned.wav",
+      "id": "3986",
+      "key": "voiceagentbench:multi_turn:data/multi_turn_audios/english/diverse/record_276_msg_5_cloned.wav",
+      "variant": "english"
+    },
+    {
+      "category": "multi_turn",
+      "file_name": "data/multi_turn_audios/english/diverse/record_277_msg_10_cloned.wav",
+      "id": "3987",
+      "key": "voiceagentbench:multi_turn:data/multi_turn_audios/english/diverse/record_277_msg_10_cloned.wav",
+      "variant": "english"
+    },
+    {
+      "category": "multi_turn",
+      "file_name": "data/multi_turn_audios/english/diverse/record_280_msg_2_cloned.wav",
+      "id": "3990",
+      "key": "voiceagentbench:multi_turn:data/multi_turn_audios/english/diverse/record_280_msg_2_cloned.wav",
+      "variant": "english"
+    },
+    {
+      "category": "multi_turn",
+      "file_name": "data/multi_turn_audios/english/diverse/record_284_msg_2_cloned.wav",
+      "id": "3994",
+      "key": "voiceagentbench:multi_turn:data/multi_turn_audios/english/diverse/record_284_msg_2_cloned.wav",
+      "variant": "english"
+    },
+    {
+      "category": "multi_turn",
+      "file_name": "data/multi_turn_audios/english/diverse/record_299_msg_7_cloned.wav",
+      "id": "4008",
+      "key": "voiceagentbench:multi_turn:data/multi_turn_audios/english/diverse/record_299_msg_7_cloned.wav",
+      "variant": "english"
+    },
+    {
+      "category": "multi_turn",
+      "file_name": "data/multi_turn_audios/english/diverse/record_305_msg_10_cloned.wav",
+      "id": "4014",
+      "key": "voiceagentbench:multi_turn:data/multi_turn_audios/english/diverse/record_305_msg_10_cloned.wav",
+      "variant": "english"
+    },
+    {
+      "category": "multi_turn",
+      "file_name": "data/multi_turn_audios/english/diverse/record_312_msg_6_cloned.wav",
+      "id": "4021",
+      "key": "voiceagentbench:multi_turn:data/multi_turn_audios/english/diverse/record_312_msg_6_cloned.wav",
+      "variant": "english"
+    },
+    {
+      "category": "multi_turn",
+      "file_name": "data/multi_turn_audios/english/diverse/record_317_msg_2_cloned.wav",
+      "id": "4026",
+      "key": "voiceagentbench:multi_turn:data/multi_turn_audios/english/diverse/record_317_msg_2_cloned.wav",
+      "variant": "english"
+    },
+    {
+      "category": "multi_turn",
+      "file_name": "data/multi_turn_audios/english/diverse/record_320_msg_4_cloned.wav",
+      "id": "4029",
+      "key": "voiceagentbench:multi_turn:data/multi_turn_audios/english/diverse/record_320_msg_4_cloned.wav",
+      "variant": "english"
+    },
+    {
+      "category": "multi_turn",
+      "file_name": "data/multi_turn_audios/english/diverse/record_336_msg_4_cloned.wav",
+      "id": "4044",
+      "key": "voiceagentbench:multi_turn:data/multi_turn_audios/english/diverse/record_336_msg_4_cloned.wav",
+      "variant": "english"
+    },
+    {
+      "category": "multi_turn",
+      "file_name": "data/multi_turn_audios/english/diverse/record_341_msg_7_cloned.wav",
+      "id": "4049",
+      "key": "voiceagentbench:multi_turn:data/multi_turn_audios/english/diverse/record_341_msg_7_cloned.wav",
+      "variant": "english"
+    },
+    {
+      "category": "multi_turn",
+      "file_name": "data/multi_turn_audios/english/diverse/record_344_msg_2_cloned.wav",
+      "id": "4052",
+      "key": "voiceagentbench:multi_turn:data/multi_turn_audios/english/diverse/record_344_msg_2_cloned.wav",
+      "variant": "english"
+    },
+    {
+      "category": "multi_turn",
+      "file_name": "data/multi_turn_audios/english/diverse/record_347_msg_12_cloned.wav",
+      "id": "4055",
+      "key": "voiceagentbench:multi_turn:data/multi_turn_audios/english/diverse/record_347_msg_12_cloned.wav",
+      "variant": "english"
+    },
+    {
+      "category": "multi_turn",
+      "file_name": "data/multi_turn_audios/english/diverse/record_34_msg_7_cloned.wav",
+      "id": "3756",
+      "key": "voiceagentbench:multi_turn:data/multi_turn_audios/english/diverse/record_34_msg_7_cloned.wav",
+      "variant": "english"
+    },
+    {
+      "category": "multi_turn",
+      "file_name": "data/multi_turn_audios/english/diverse/record_370_msg_0_cloned.wav",
+      "id": "4077",
+      "key": "voiceagentbench:multi_turn:data/multi_turn_audios/english/diverse/record_370_msg_0_cloned.wav",
+      "variant": "english"
+    },
+    {
+      "category": "multi_turn",
+      "file_name": "data/multi_turn_audios/english/diverse/record_393_msg_0_cloned.wav",
+      "id": "4098",
+      "key": "voiceagentbench:multi_turn:data/multi_turn_audios/english/diverse/record_393_msg_0_cloned.wav",
+      "variant": "english"
+    },
+    {
+      "category": "multi_turn",
+      "file_name": "data/multi_turn_audios/english/diverse/record_39_msg_2_cloned.wav",
+      "id": "3760",
+      "key": "voiceagentbench:multi_turn:data/multi_turn_audios/english/diverse/record_39_msg_2_cloned.wav",
+      "variant": "english"
+    },
+    {
+      "category": "multi_turn",
+      "file_name": "data/multi_turn_audios/english/diverse/record_61_msg_6_cloned.wav",
+      "id": "3780",
+      "key": "voiceagentbench:multi_turn:data/multi_turn_audios/english/diverse/record_61_msg_6_cloned.wav",
+      "variant": "english"
+    },
+    {
+      "category": "multi_turn",
+      "file_name": "data/multi_turn_audios/english/diverse/record_73_msg_6_cloned.wav",
+      "id": "3792",
+      "key": "voiceagentbench:multi_turn:data/multi_turn_audios/english/diverse/record_73_msg_6_cloned.wav",
+      "variant": "english"
+    },
+    {
+      "category": "multi_turn",
+      "file_name": "data/multi_turn_audios/english/diverse/record_87_msg_2_cloned.wav",
+      "id": "3806",
+      "key": "voiceagentbench:multi_turn:data/multi_turn_audios/english/diverse/record_87_msg_2_cloned.wav",
+      "variant": "english"
+    },
+    {
+      "category": "multi_turn",
+      "file_name": "data/multi_turn_audios/english/diverse/record_89_msg_12_cloned.wav",
+      "id": "3808",
+      "key": "voiceagentbench:multi_turn:data/multi_turn_audios/english/diverse/record_89_msg_12_cloned.wav",
+      "variant": "english"
+    },
+    {
+      "category": "multi_turn",
+      "file_name": "data/multi_turn_audios/english/diverse/record_94_msg_2_cloned.wav",
+      "id": "3813",
+      "key": "voiceagentbench:multi_turn:data/multi_turn_audios/english/diverse/record_94_msg_2_cloned.wav",
+      "variant": "english"
+    },
+    {
+      "category": "multi_turn",
+      "file_name": "data/multi_turn_audios/english/diverse/record_96_msg_4_cloned.wav",
+      "id": "3815",
+      "key": "voiceagentbench:multi_turn:data/multi_turn_audios/english/diverse/record_96_msg_4_cloned.wav",
+      "variant": "english"
+    },
+    {
+      "category": "parallel_tool",
+      "file_name": "data/parallel_tool_audios/original_english/0_audio.wav",
+      "id": "2757",
+      "key": "voiceagentbench:parallel_tool:data/parallel_tool_audios/original_english/0_audio.wav",
+      "variant": "original_english"
+    },
+    {
+      "category": "parallel_tool",
+      "file_name": "data/parallel_tool_audios/original_english/102_audio.wav",
+      "id": "2822",
+      "key": "voiceagentbench:parallel_tool:data/parallel_tool_audios/original_english/102_audio.wav",
+      "variant": "original_english"
+    },
+    {
+      "category": "parallel_tool",
+      "file_name": "data/parallel_tool_audios/original_english/107_audio.wav",
+      "id": "2823",
+      "key": "voiceagentbench:parallel_tool:data/parallel_tool_audios/original_english/107_audio.wav",
+      "variant": "original_english"
+    },
+    {
+      "category": "parallel_tool",
+      "file_name": "data/parallel_tool_audios/original_english/108_audio.wav",
+      "id": "2824",
+      "key": "voiceagentbench:parallel_tool:data/parallel_tool_audios/original_english/108_audio.wav",
+      "variant": "original_english"
+    },
+    {
+      "category": "parallel_tool",
+      "file_name": "data/parallel_tool_audios/original_english/10_audio.wav",
+      "id": "2765",
+      "key": "voiceagentbench:parallel_tool:data/parallel_tool_audios/original_english/10_audio.wav",
+      "variant": "original_english"
+    },
+    {
+      "category": "parallel_tool",
+      "file_name": "data/parallel_tool_audios/original_english/119_audio.wav",
+      "id": "2828",
+      "key": "voiceagentbench:parallel_tool:data/parallel_tool_audios/original_english/119_audio.wav",
+      "variant": "original_english"
+    },
+    {
+      "category": "parallel_tool",
+      "file_name": "data/parallel_tool_audios/original_english/11_audio.wav",
+      "id": "2766",
+      "key": "voiceagentbench:parallel_tool:data/parallel_tool_audios/original_english/11_audio.wav",
+      "variant": "original_english"
+    },
+    {
+      "category": "parallel_tool",
+      "file_name": "data/parallel_tool_audios/original_english/12_audio.wav",
+      "id": "2767",
+      "key": "voiceagentbench:parallel_tool:data/parallel_tool_audios/original_english/12_audio.wav",
+      "variant": "original_english"
+    },
+    {
+      "category": "parallel_tool",
+      "file_name": "data/parallel_tool_audios/original_english/134_audio.wav",
+      "id": "2837",
+      "key": "voiceagentbench:parallel_tool:data/parallel_tool_audios/original_english/134_audio.wav",
+      "variant": "original_english"
+    },
+    {
+      "category": "parallel_tool",
+      "file_name": "data/parallel_tool_audios/original_english/136_audio.wav",
+      "id": "2839",
+      "key": "voiceagentbench:parallel_tool:data/parallel_tool_audios/original_english/136_audio.wav",
+      "variant": "original_english"
+    },
+    {
+      "category": "parallel_tool",
+      "file_name": "data/parallel_tool_audios/original_english/137_audio.wav",
+      "id": "2840",
+      "key": "voiceagentbench:parallel_tool:data/parallel_tool_audios/original_english/137_audio.wav",
+      "variant": "original_english"
+    },
+    {
+      "category": "parallel_tool",
+      "file_name": "data/parallel_tool_audios/original_english/138_audio.wav",
+      "id": "2841",
+      "key": "voiceagentbench:parallel_tool:data/parallel_tool_audios/original_english/138_audio.wav",
+      "variant": "original_english"
+    },
+    {
+      "category": "parallel_tool",
+      "file_name": "data/parallel_tool_audios/original_english/139_audio.wav",
+      "id": "2842",
+      "key": "voiceagentbench:parallel_tool:data/parallel_tool_audios/original_english/139_audio.wav",
+      "variant": "original_english"
+    },
+    {
+      "category": "parallel_tool",
+      "file_name": "data/parallel_tool_audios/original_english/141_audio.wav",
+      "id": "2843",
+      "key": "voiceagentbench:parallel_tool:data/parallel_tool_audios/original_english/141_audio.wav",
+      "variant": "original_english"
+    },
+    {
+      "category": "parallel_tool",
+      "file_name": "data/parallel_tool_audios/original_english/150_audio.wav",
+      "id": "2849",
+      "key": "voiceagentbench:parallel_tool:data/parallel_tool_audios/original_english/150_audio.wav",
+      "variant": "original_english"
+    },
+    {
+      "category": "parallel_tool",
+      "file_name": "data/parallel_tool_audios/original_english/152_audio.wav",
+      "id": "2851",
+      "key": "voiceagentbench:parallel_tool:data/parallel_tool_audios/original_english/152_audio.wav",
+      "variant": "original_english"
+    },
+    {
+      "category": "parallel_tool",
+      "file_name": "data/parallel_tool_audios/original_english/159_audio.wav",
+      "id": "2856",
+      "key": "voiceagentbench:parallel_tool:data/parallel_tool_audios/original_english/159_audio.wav",
+      "variant": "original_english"
+    },
+    {
+      "category": "parallel_tool",
+      "file_name": "data/parallel_tool_audios/original_english/161_audio.wav",
+      "id": "2858",
+      "key": "voiceagentbench:parallel_tool:data/parallel_tool_audios/original_english/161_audio.wav",
+      "variant": "original_english"
+    },
+    {
+      "category": "parallel_tool",
+      "file_name": "data/parallel_tool_audios/original_english/165_audio.wav",
+      "id": "2861",
+      "key": "voiceagentbench:parallel_tool:data/parallel_tool_audios/original_english/165_audio.wav",
+      "variant": "original_english"
+    },
+    {
+      "category": "parallel_tool",
+      "file_name": "data/parallel_tool_audios/original_english/16_audio.wav",
+      "id": "2768",
+      "key": "voiceagentbench:parallel_tool:data/parallel_tool_audios/original_english/16_audio.wav",
+      "variant": "original_english"
+    },
+    {
+      "category": "parallel_tool",
+      "file_name": "data/parallel_tool_audios/original_english/170_audio.wav",
+      "id": "2864",
+      "key": "voiceagentbench:parallel_tool:data/parallel_tool_audios/original_english/170_audio.wav",
+      "variant": "original_english"
+    },
+    {
+      "category": "parallel_tool",
+      "file_name": "data/parallel_tool_audios/original_english/172_audio.wav",
+      "id": "2865",
+      "key": "voiceagentbench:parallel_tool:data/parallel_tool_audios/original_english/172_audio.wav",
+      "variant": "original_english"
+    },
+    {
+      "category": "parallel_tool",
+      "file_name": "data/parallel_tool_audios/original_english/176_audio.wav",
+      "id": "2866",
+      "key": "voiceagentbench:parallel_tool:data/parallel_tool_audios/original_english/176_audio.wav",
+      "variant": "original_english"
+    },
+    {
+      "category": "parallel_tool",
+      "file_name": "data/parallel_tool_audios/original_english/179_audio.wav",
+      "id": "2868",
+      "key": "voiceagentbench:parallel_tool:data/parallel_tool_audios/original_english/179_audio.wav",
+      "variant": "original_english"
+    },
+    {
+      "category": "parallel_tool",
+      "file_name": "data/parallel_tool_audios/original_english/187_audio.wav",
+      "id": "2873",
+      "key": "voiceagentbench:parallel_tool:data/parallel_tool_audios/original_english/187_audio.wav",
+      "variant": "original_english"
+    },
+    {
+      "category": "parallel_tool",
+      "file_name": "data/parallel_tool_audios/original_english/188_audio.wav",
+      "id": "2874",
+      "key": "voiceagentbench:parallel_tool:data/parallel_tool_audios/original_english/188_audio.wav",
+      "variant": "original_english"
+    },
+    {
+      "category": "parallel_tool",
+      "file_name": "data/parallel_tool_audios/original_english/18_audio.wav",
+      "id": "2770",
+      "key": "voiceagentbench:parallel_tool:data/parallel_tool_audios/original_english/18_audio.wav",
+      "variant": "original_english"
+    },
+    {
+      "category": "parallel_tool",
+      "file_name": "data/parallel_tool_audios/original_english/193_audio.wav",
+      "id": "2879",
+      "key": "voiceagentbench:parallel_tool:data/parallel_tool_audios/original_english/193_audio.wav",
+      "variant": "original_english"
+    },
+    {
+      "category": "parallel_tool",
+      "file_name": "data/parallel_tool_audios/original_english/194_audio.wav",
+      "id": "2880",
+      "key": "voiceagentbench:parallel_tool:data/parallel_tool_audios/original_english/194_audio.wav",
+      "variant": "original_english"
+    },
+    {
+      "category": "parallel_tool",
+      "file_name": "data/parallel_tool_audios/original_english/19_audio.wav",
+      "id": "2771",
+      "key": "voiceagentbench:parallel_tool:data/parallel_tool_audios/original_english/19_audio.wav",
+      "variant": "original_english"
+    },
+    {
+      "category": "parallel_tool",
+      "file_name": "data/parallel_tool_audios/original_english/20_audio.wav",
+      "id": "2772",
+      "key": "voiceagentbench:parallel_tool:data/parallel_tool_audios/original_english/20_audio.wav",
+      "variant": "original_english"
+    },
+    {
+      "category": "parallel_tool",
+      "file_name": "data/parallel_tool_audios/original_english/25_audio.wav",
+      "id": "2777",
+      "key": "voiceagentbench:parallel_tool:data/parallel_tool_audios/original_english/25_audio.wav",
+      "variant": "original_english"
+    },
+    {
+      "category": "parallel_tool",
+      "file_name": "data/parallel_tool_audios/original_english/26_audio.wav",
+      "id": "2778",
+      "key": "voiceagentbench:parallel_tool:data/parallel_tool_audios/original_english/26_audio.wav",
+      "variant": "original_english"
+    },
+    {
+      "category": "parallel_tool",
+      "file_name": "data/parallel_tool_audios/original_english/27_audio.wav",
+      "id": "2779",
+      "key": "voiceagentbench:parallel_tool:data/parallel_tool_audios/original_english/27_audio.wav",
+      "variant": "original_english"
+    },
+    {
+      "category": "parallel_tool",
+      "file_name": "data/parallel_tool_audios/original_english/28_audio.wav",
+      "id": "2780",
+      "key": "voiceagentbench:parallel_tool:data/parallel_tool_audios/original_english/28_audio.wav",
+      "variant": "original_english"
+    },
+    {
+      "category": "parallel_tool",
+      "file_name": "data/parallel_tool_audios/original_english/2_audio.wav",
+      "id": "2759",
+      "key": "voiceagentbench:parallel_tool:data/parallel_tool_audios/original_english/2_audio.wav",
+      "variant": "original_english"
+    },
+    {
+      "category": "parallel_tool",
+      "file_name": "data/parallel_tool_audios/original_english/36_audio.wav",
+      "id": "2784",
+      "key": "voiceagentbench:parallel_tool:data/parallel_tool_audios/original_english/36_audio.wav",
+      "variant": "original_english"
+    },
+    {
+      "category": "parallel_tool",
+      "file_name": "data/parallel_tool_audios/original_english/37_audio.wav",
+      "id": "2785",
+      "key": "voiceagentbench:parallel_tool:data/parallel_tool_audios/original_english/37_audio.wav",
+      "variant": "original_english"
+    },
+    {
+      "category": "parallel_tool",
+      "file_name": "data/parallel_tool_audios/original_english/48_audio.wav",
+      "id": "2791",
+      "key": "voiceagentbench:parallel_tool:data/parallel_tool_audios/original_english/48_audio.wav",
+      "variant": "original_english"
+    },
+    {
+      "category": "parallel_tool",
+      "file_name": "data/parallel_tool_audios/original_english/50_audio.wav",
+      "id": "2793",
+      "key": "voiceagentbench:parallel_tool:data/parallel_tool_audios/original_english/50_audio.wav",
+      "variant": "original_english"
+    },
+    {
+      "category": "parallel_tool",
+      "file_name": "data/parallel_tool_audios/original_english/53_audio.wav",
+      "id": "2795",
+      "key": "voiceagentbench:parallel_tool:data/parallel_tool_audios/original_english/53_audio.wav",
+      "variant": "original_english"
+    },
+    {
+      "category": "parallel_tool",
+      "file_name": "data/parallel_tool_audios/original_english/55_audio.wav",
+      "id": "2796",
+      "key": "voiceagentbench:parallel_tool:data/parallel_tool_audios/original_english/55_audio.wav",
+      "variant": "original_english"
+    },
+    {
+      "category": "parallel_tool",
+      "file_name": "data/parallel_tool_audios/original_english/5_audio.wav",
+      "id": "2761",
+      "key": "voiceagentbench:parallel_tool:data/parallel_tool_audios/original_english/5_audio.wav",
+      "variant": "original_english"
+    },
+    {
+      "category": "parallel_tool",
+      "file_name": "data/parallel_tool_audios/original_english/62_audio.wav",
+      "id": "2800",
+      "key": "voiceagentbench:parallel_tool:data/parallel_tool_audios/original_english/62_audio.wav",
+      "variant": "original_english"
+    },
+    {
+      "category": "parallel_tool",
+      "file_name": "data/parallel_tool_audios/original_english/70_audio.wav",
+      "id": "2804",
+      "key": "voiceagentbench:parallel_tool:data/parallel_tool_audios/original_english/70_audio.wav",
+      "variant": "original_english"
+    },
+    {
+      "category": "parallel_tool",
+      "file_name": "data/parallel_tool_audios/original_english/74_audio.wav",
+      "id": "2807",
+      "key": "voiceagentbench:parallel_tool:data/parallel_tool_audios/original_english/74_audio.wav",
+      "variant": "original_english"
+    },
+    {
+      "category": "parallel_tool",
+      "file_name": "data/parallel_tool_audios/original_english/81_audio.wav",
+      "id": "2810",
+      "key": "voiceagentbench:parallel_tool:data/parallel_tool_audios/original_english/81_audio.wav",
+      "variant": "original_english"
+    },
+    {
+      "category": "parallel_tool",
+      "file_name": "data/parallel_tool_audios/original_english/84_audio.wav",
+      "id": "2811",
+      "key": "voiceagentbench:parallel_tool:data/parallel_tool_audios/original_english/84_audio.wav",
+      "variant": "original_english"
+    },
+    {
+      "category": "parallel_tool",
+      "file_name": "data/parallel_tool_audios/original_english/91_audio.wav",
+      "id": "2816",
+      "key": "voiceagentbench:parallel_tool:data/parallel_tool_audios/original_english/91_audio.wav",
+      "variant": "original_english"
+    },
+    {
+      "category": "parallel_tool",
+      "file_name": "data/parallel_tool_audios/original_english/96_audio.wav",
+      "id": "2819",
+      "key": "voiceagentbench:parallel_tool:data/parallel_tool_audios/original_english/96_audio.wav",
+      "variant": "original_english"
+    },
+    {
+      "category": "seqdep_tool",
+      "file_name": "data/seqdep_tool_audios/english/diverse/0_audio.wav",
+      "id": "5163",
+      "key": "voiceagentbench:seqdep_tool:data/seqdep_tool_audios/english/diverse/0_audio.wav",
+      "variant": "english"
+    },
+    {
+      "category": "seqdep_tool",
+      "file_name": "data/seqdep_tool_audios/english/diverse/10_audio.wav",
+      "id": "5173",
+      "key": "voiceagentbench:seqdep_tool:data/seqdep_tool_audios/english/diverse/10_audio.wav",
+      "variant": "english"
+    },
+    {
+      "category": "seqdep_tool",
+      "file_name": "data/seqdep_tool_audios/english/diverse/11_audio.wav",
+      "id": "5174",
+      "key": "voiceagentbench:seqdep_tool:data/seqdep_tool_audios/english/diverse/11_audio.wav",
+      "variant": "english"
+    },
+    {
+      "category": "seqdep_tool",
+      "file_name": "data/seqdep_tool_audios/english/diverse/12_audio.wav",
+      "id": "5175",
+      "key": "voiceagentbench:seqdep_tool:data/seqdep_tool_audios/english/diverse/12_audio.wav",
+      "variant": "english"
+    },
+    {
+      "category": "seqdep_tool",
+      "file_name": "data/seqdep_tool_audios/english/diverse/13_audio.wav",
+      "id": "5176",
+      "key": "voiceagentbench:seqdep_tool:data/seqdep_tool_audios/english/diverse/13_audio.wav",
+      "variant": "english"
+    },
+    {
+      "category": "seqdep_tool",
+      "file_name": "data/seqdep_tool_audios/english/diverse/14_audio.wav",
+      "id": "5177",
+      "key": "voiceagentbench:seqdep_tool:data/seqdep_tool_audios/english/diverse/14_audio.wav",
+      "variant": "english"
+    },
+    {
+      "category": "seqdep_tool",
+      "file_name": "data/seqdep_tool_audios/english/diverse/15_audio.wav",
+      "id": "5178",
+      "key": "voiceagentbench:seqdep_tool:data/seqdep_tool_audios/english/diverse/15_audio.wav",
+      "variant": "english"
+    },
+    {
+      "category": "seqdep_tool",
+      "file_name": "data/seqdep_tool_audios/english/diverse/16_audio.wav",
+      "id": "5179",
+      "key": "voiceagentbench:seqdep_tool:data/seqdep_tool_audios/english/diverse/16_audio.wav",
+      "variant": "english"
+    },
+    {
+      "category": "seqdep_tool",
+      "file_name": "data/seqdep_tool_audios/english/diverse/17_audio.wav",
+      "id": "5180",
+      "key": "voiceagentbench:seqdep_tool:data/seqdep_tool_audios/english/diverse/17_audio.wav",
+      "variant": "english"
+    },
+    {
+      "category": "seqdep_tool",
+      "file_name": "data/seqdep_tool_audios/english/diverse/18_audio.wav",
+      "id": "5181",
+      "key": "voiceagentbench:seqdep_tool:data/seqdep_tool_audios/english/diverse/18_audio.wav",
+      "variant": "english"
+    },
+    {
+      "category": "seqdep_tool",
+      "file_name": "data/seqdep_tool_audios/english/diverse/19_audio.wav",
+      "id": "5182",
+      "key": "voiceagentbench:seqdep_tool:data/seqdep_tool_audios/english/diverse/19_audio.wav",
+      "variant": "english"
+    },
+    {
+      "category": "seqdep_tool",
+      "file_name": "data/seqdep_tool_audios/english/diverse/1_audio.wav",
+      "id": "5164",
+      "key": "voiceagentbench:seqdep_tool:data/seqdep_tool_audios/english/diverse/1_audio.wav",
+      "variant": "english"
+    },
+    {
+      "category": "seqdep_tool",
+      "file_name": "data/seqdep_tool_audios/english/diverse/20_audio.wav",
+      "id": "5183",
+      "key": "voiceagentbench:seqdep_tool:data/seqdep_tool_audios/english/diverse/20_audio.wav",
+      "variant": "english"
+    },
+    {
+      "category": "seqdep_tool",
+      "file_name": "data/seqdep_tool_audios/english/diverse/21_audio.wav",
+      "id": "5184",
+      "key": "voiceagentbench:seqdep_tool:data/seqdep_tool_audios/english/diverse/21_audio.wav",
+      "variant": "english"
+    },
+    {
+      "category": "seqdep_tool",
+      "file_name": "data/seqdep_tool_audios/english/diverse/22_audio.wav",
+      "id": "5185",
+      "key": "voiceagentbench:seqdep_tool:data/seqdep_tool_audios/english/diverse/22_audio.wav",
+      "variant": "english"
+    },
+    {
+      "category": "seqdep_tool",
+      "file_name": "data/seqdep_tool_audios/english/diverse/23_audio.wav",
+      "id": "5186",
+      "key": "voiceagentbench:seqdep_tool:data/seqdep_tool_audios/english/diverse/23_audio.wav",
+      "variant": "english"
+    },
+    {
+      "category": "seqdep_tool",
+      "file_name": "data/seqdep_tool_audios/english/diverse/24_audio.wav",
+      "id": "5187",
+      "key": "voiceagentbench:seqdep_tool:data/seqdep_tool_audios/english/diverse/24_audio.wav",
+      "variant": "english"
+    },
+    {
+      "category": "seqdep_tool",
+      "file_name": "data/seqdep_tool_audios/english/diverse/25_audio.wav",
+      "id": "5188",
+      "key": "voiceagentbench:seqdep_tool:data/seqdep_tool_audios/english/diverse/25_audio.wav",
+      "variant": "english"
+    },
+    {
+      "category": "seqdep_tool",
+      "file_name": "data/seqdep_tool_audios/english/diverse/26_audio.wav",
+      "id": "5189",
+      "key": "voiceagentbench:seqdep_tool:data/seqdep_tool_audios/english/diverse/26_audio.wav",
+      "variant": "english"
+    },
+    {
+      "category": "seqdep_tool",
+      "file_name": "data/seqdep_tool_audios/english/diverse/27_audio.wav",
+      "id": "5190",
+      "key": "voiceagentbench:seqdep_tool:data/seqdep_tool_audios/english/diverse/27_audio.wav",
+      "variant": "english"
+    },
+    {
+      "category": "seqdep_tool",
+      "file_name": "data/seqdep_tool_audios/english/diverse/28_audio.wav",
+      "id": "5191",
+      "key": "voiceagentbench:seqdep_tool:data/seqdep_tool_audios/english/diverse/28_audio.wav",
+      "variant": "english"
+    },
+    {
+      "category": "seqdep_tool",
+      "file_name": "data/seqdep_tool_audios/english/diverse/29_audio.wav",
+      "id": "5192",
+      "key": "voiceagentbench:seqdep_tool:data/seqdep_tool_audios/english/diverse/29_audio.wav",
+      "variant": "english"
+    },
+    {
+      "category": "seqdep_tool",
+      "file_name": "data/seqdep_tool_audios/english/diverse/2_audio.wav",
+      "id": "5165",
+      "key": "voiceagentbench:seqdep_tool:data/seqdep_tool_audios/english/diverse/2_audio.wav",
+      "variant": "english"
+    },
+    {
+      "category": "seqdep_tool",
+      "file_name": "data/seqdep_tool_audios/english/diverse/30_audio.wav",
+      "id": "5193",
+      "key": "voiceagentbench:seqdep_tool:data/seqdep_tool_audios/english/diverse/30_audio.wav",
+      "variant": "english"
+    },
+    {
+      "category": "seqdep_tool",
+      "file_name": "data/seqdep_tool_audios/english/diverse/31_audio.wav",
+      "id": "5194",
+      "key": "voiceagentbench:seqdep_tool:data/seqdep_tool_audios/english/diverse/31_audio.wav",
+      "variant": "english"
+    },
+    {
+      "category": "seqdep_tool",
+      "file_name": "data/seqdep_tool_audios/english/diverse/32_audio.wav",
+      "id": "5195",
+      "key": "voiceagentbench:seqdep_tool:data/seqdep_tool_audios/english/diverse/32_audio.wav",
+      "variant": "english"
+    },
+    {
+      "category": "seqdep_tool",
+      "file_name": "data/seqdep_tool_audios/english/diverse/33_audio.wav",
+      "id": "5196",
+      "key": "voiceagentbench:seqdep_tool:data/seqdep_tool_audios/english/diverse/33_audio.wav",
+      "variant": "english"
+    },
+    {
+      "category": "seqdep_tool",
+      "file_name": "data/seqdep_tool_audios/english/diverse/34_audio.wav",
+      "id": "5197",
+      "key": "voiceagentbench:seqdep_tool:data/seqdep_tool_audios/english/diverse/34_audio.wav",
+      "variant": "english"
+    },
+    {
+      "category": "seqdep_tool",
+      "file_name": "data/seqdep_tool_audios/english/diverse/35_audio.wav",
+      "id": "5198",
+      "key": "voiceagentbench:seqdep_tool:data/seqdep_tool_audios/english/diverse/35_audio.wav",
+      "variant": "english"
+    },
+    {
+      "category": "seqdep_tool",
+      "file_name": "data/seqdep_tool_audios/english/diverse/36_audio.wav",
+      "id": "5199",
+      "key": "voiceagentbench:seqdep_tool:data/seqdep_tool_audios/english/diverse/36_audio.wav",
+      "variant": "english"
+    },
+    {
+      "category": "seqdep_tool",
+      "file_name": "data/seqdep_tool_audios/english/diverse/37_audio.wav",
+      "id": "5200",
+      "key": "voiceagentbench:seqdep_tool:data/seqdep_tool_audios/english/diverse/37_audio.wav",
+      "variant": "english"
+    },
+    {
+      "category": "seqdep_tool",
+      "file_name": "data/seqdep_tool_audios/english/diverse/38_audio.wav",
+      "id": "5201",
+      "key": "voiceagentbench:seqdep_tool:data/seqdep_tool_audios/english/diverse/38_audio.wav",
+      "variant": "english"
+    },
+    {
+      "category": "seqdep_tool",
+      "file_name": "data/seqdep_tool_audios/english/diverse/39_audio.wav",
+      "id": "5202",
+      "key": "voiceagentbench:seqdep_tool:data/seqdep_tool_audios/english/diverse/39_audio.wav",
+      "variant": "english"
+    },
+    {
+      "category": "seqdep_tool",
+      "file_name": "data/seqdep_tool_audios/english/diverse/3_audio.wav",
+      "id": "5166",
+      "key": "voiceagentbench:seqdep_tool:data/seqdep_tool_audios/english/diverse/3_audio.wav",
+      "variant": "english"
+    },
+    {
+      "category": "seqdep_tool",
+      "file_name": "data/seqdep_tool_audios/english/diverse/4_audio.wav",
+      "id": "5167",
+      "key": "voiceagentbench:seqdep_tool:data/seqdep_tool_audios/english/diverse/4_audio.wav",
+      "variant": "english"
+    },
+    {
+      "category": "seqdep_tool",
+      "file_name": "data/seqdep_tool_audios/english/diverse/5_audio.wav",
+      "id": "5168",
+      "key": "voiceagentbench:seqdep_tool:data/seqdep_tool_audios/english/diverse/5_audio.wav",
+      "variant": "english"
+    },
+    {
+      "category": "seqdep_tool",
+      "file_name": "data/seqdep_tool_audios/english/diverse/6_audio.wav",
+      "id": "5169",
+      "key": "voiceagentbench:seqdep_tool:data/seqdep_tool_audios/english/diverse/6_audio.wav",
+      "variant": "english"
+    },
+    {
+      "category": "seqdep_tool",
+      "file_name": "data/seqdep_tool_audios/english/diverse/7_audio.wav",
+      "id": "5170",
+      "key": "voiceagentbench:seqdep_tool:data/seqdep_tool_audios/english/diverse/7_audio.wav",
+      "variant": "english"
+    },
+    {
+      "category": "seqdep_tool",
+      "file_name": "data/seqdep_tool_audios/english/diverse/8_audio.wav",
+      "id": "5171",
+      "key": "voiceagentbench:seqdep_tool:data/seqdep_tool_audios/english/diverse/8_audio.wav",
+      "variant": "english"
+    },
+    {
+      "category": "seqdep_tool",
+      "file_name": "data/seqdep_tool_audios/english/diverse/9_audio.wav",
+      "id": "5172",
+      "key": "voiceagentbench:seqdep_tool:data/seqdep_tool_audios/english/diverse/9_audio.wav",
+      "variant": "english"
+    }
+  ],
+  "pool_size": 546,
+  "probe": "R5-vab-oneshot",
+  "seed": 20260807,
+  "split_identity_hash": "7205f865eda0fc8f3195e7ec2cb741a4fefe475f6db819373be040f83ace5069",
+  "split_role": "discovery",
+  "strata_counts": {
+    "multi_turn": 50,
+    "parallel_tool": 50,
+    "seqdep_tool": 40
+  }
+}
