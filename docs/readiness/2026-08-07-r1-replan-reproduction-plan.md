@@ -66,6 +66,46 @@ can support a confirmatory claim.
 - **Success criteria pre-registered** before any result is read; one-shot
   attempt semantics per the consolidated contract.
 
+## The four-construct abstraction frame (owner alignment, 2026-08-07)
+
+The probes are not a flat list of paper deltas; each exercises one or more
+of four study-facing constructs, which sit on top of the contract's
+OBS/ORG/SUPPLY/USE axes as the working vocabulary for what is being built
+and measured:
+
+1. **Agent construction（智能体构建）** — how the inference-time agent is
+   assembled around the frozen core: prompt scaffolds, pass structure
+   (direct / self-cascade / multi-pass), routing policy, tool wiring,
+   output contracts. Primarily OBS plus the control plane itself.
+2. **Knowledge construction（知识构建）** — building and organizing the
+   evidence store independent of any single query: context materials →
+   biasing lists (ConEC), tool-schema registries, exemplar banks,
+   retrieval indexes. Primarily ORG.
+3. **Knowledge use（知识使用）** — delivering and consuming knowledge at
+   inference time: evidence injection and dose control, schema supply,
+   uncertainty/n-best surfacing, retrieval-grounded correction. Primarily
+   SUPPLY + USE.
+4. **Knowledge-utilization-driven agent optimization（基于知识利用优化智能
+   体性能）** — the closed loop: measure whether and how supplied knowledge
+   changed the answer (per-entity-class deltas, dose–response, attribution),
+   then adapt the agent — routing between direct and mediated paths, dose
+   selection, re-ask policies — with zero parameter training. Cross-axis;
+   this is the study's contribution space (mechanism-map bucket 3) and the
+   X probes' target.
+
+Probe ↔ construct map:
+
+| probe | constructs exercised | published anchor it calibrates against |
+|---|---|---|
+| P1/R1 | 1 (single-pass agent) | Audio2Tool Qwen-3-Omni-30B tier rows |
+| R2, R3 | 1 (pass structure: direct vs self-cascade) | BBA 66→~92; AIR-Bench 77.8→87.7 |
+| R4 | 2 (materials→evidence prep) + 3 (dose control) | Siskos 35.9→31.1→29.7 |
+| R5 | 2 (exemplar bank) + 3 (exemplar use) | VAB one-shot +10–17pp |
+| R6 | 3 (retrieval-grounded correction) | RECOVER 8–46% rel E-WER |
+| R7 | 3 (uncertainty surfacing) | WCN-ICL 81% gap closure |
+| P3/T-series | 2 + 3 (training-free analogs of trained knowledge components) | each analog's trained published row |
+| P4 fold-back → X probes | 4 (the optimization loop over 1–3) | — (un-preceded territory) |
+
 ## The plan
 
 ### P0 — model-free preparation (no authorization beyond normal docs/code work)
@@ -85,9 +125,16 @@ can support a confirmatory claim.
    **DONE 2026-08-07** — receipts under `docs/receipts/probe-samples/`:
    R1 400 items/8 tiers (`e1d751e6…`), R2 200/4 categories (`c602bd7e…`),
    R5 140 EN-complex (parallel 50 original_english + multi_turn 50 english
-   + seqdep_tool 40 english, whole stratum; `7205f865…`); template manifest
-   anchor `c21b6a87…` (LF-byte discipline enforced by test). R4 starts from
+   + seqdep_tool 40 english, whole stratum; `7205f865…`). R4 starts from
    the frozen dev subset10 identity; R3 blocked on data acquisition.
+   **Sample-once policy (owner alignment 2026-08-07): sampling is unified
+   through the probe manifest** — `configs/probes/manifest.json` binds every
+   probe to its verified receipt (split hash recomputed fail-closed at
+   manifest build); each carrier is sampled exactly once and every later
+   experiment on that carrier resolves items through this binding, never a
+   fresh draw; new carriers (e.g. T-series) enter by the same script +
+   manifest regeneration. Manifest anchor after binding: `c5130274…`
+   (LF-byte discipline enforced by test).
 5. Verify the local judge candidate (gpt-oss-20b) runs under the WSL2 stack
    if any non-deterministic scoring is retained; pin weights hash.
 
@@ -135,20 +182,45 @@ can support a confirmatory claim.
   n-best-in-prompt (WCN-ICL analog — sampled hypotheses, since a chat
   endpoint exposes no lattice).
 
-### P3 — fold-back
+### P3 — training-free analog track (T-series; owner alignment 2026-08-07)
 
-Consolidate P1/P2 outcomes into the R1 decision record: which deltas
-transferred, which didn't, calibrated pipeline receipts — the evidence base
-for freezing R1 (or formally replacing it with protocol-reproduction +
-ladder, HANDOVER options 2+3) and for designing the X-probe arms from
-bucket-1 mechanisms.
+For reference works classified "cannot reproduce" because their knowledge
+component is *trained*, we do not stop at the structural-gap record: we
+design a **training-free analog** under our boundary — same carrier, same
+scorer, modern frozen model selection (our core as the sole answering
+model; pinned deterministic tool-level retrievers allowed per contract) —
+and test whether the analog reaches, tracks, or beats the published
+trained number. Constructs 2+3 territory. Gated post-P2 (each is a
+`bounded-discovery-probe` with its own ExecutionPlan); carriers not yet
+sampled enter through the sample-once manifest process first.
+
+| id | trained reference (published row) | training-free analog design | comparability caveat |
+|---|---|---|---|
+| T1 | SpeechDPR (slue-sqa-5): Top-20 19.73, OpenSQA frame-F1 0.558 — trained speech bi-encoder | core transcribes question + a pre-registered bounded document pool; pinned lexical retriever (BM25) over core transcripts; core answers from retrieved doc | bounded pool ≠ their full-corpus retrieval — published row is a direction reference, not an equal-footing target; new sample receipt required |
+| T2 | SpeechRAG (spoken-squad): claim "speech retrieval does not degrade vs text" — trained speech retriever/adapter | passage retrieval over core-transcribed spoken passages (pinned BM25/embedder as tool); arms: closed-book / retrieved / oracle-passage — doubles as Family C's missing SUPPLY-sensitivity ladder | claim-level comparison (degrade-or-not), not number-level; new sample receipt required |
+| T3 | zero-shot SLURP slot filling line (ZS-Whisper-SLU 50.0 → WHISMA 63.3 SLU-F1 — all trained adapters) | prompt-only slot filling on SLURP with the on-disk official scorer — the literature's first zero-training number on this carrier | same carrier + official scorer → directly positionable against the published zero-shot line; new sample receipt required |
+| T4 | FlexCTC/TurboBias (earnings21): decoder-level bias-phrase boosting | prompt-level bias-list injection using ConEC's shipped biasing lists — implemented as the entity-class-scoped extension of R4, not a separate probe | mechanism analog only; decode-score-level recall numbers are not reproducible by construction |
+
+Success framing per analog: (i) direction/claim reproduced or refuted under
+our boundary; (ii) gap to the trained published row quantified — a small
+gap is evidence that training was not the load-bearing ingredient, a large
+gap is sharpened structural-gap evidence. Either outcome feeds construct 4.
+
+### P4 — fold-back
+
+Consolidate P1/P2/P3 outcomes into the R1 decision record: which deltas
+transferred, which analogs closed their gaps, calibrated pipeline receipts —
+the evidence base for freezing R1 (or formally replacing it with
+protocol-reproduction + ladder, HANDOVER options 2+3) and for designing the
+X-probe arms (construct 4) from bucket-1 mechanisms plus the analog results.
 
 ## Explicit non-goals
 
 No trained-method reimplementation; no absolute-number chasing across
 different backbones; no full test sets; no confirmatory splits; no paid
-judges; no new carriers. P2d and anything beyond stays out unless the
-earlier steps earn it.
+judges; no new carrier *acquisitions* (T-series uses already-held carriers;
+R3's acquisition is a separate owner decision). P2d and the T-series stay
+out unless the earlier steps earn them.
 
 ## Decision points for the owner
 
@@ -159,7 +231,9 @@ earlier steps earn it.
 3. Resolve the Audio2Tool license contradiction (paper CC-BY-4.0 vs disk
    CC-BY-NC-4.0) before its data drives any recorded result.
 4. Confirm sampled-subset identities (P0.4) and the e22-subset10 reuse in
-   P2b.
+   P2b; when the T-series is reached, approve the T1/T2/T3 sample receipts
+   (slue-sqa-5, spoken-squad, slurp) added through the same sample-once
+   manifest process.
 5. Authorize P1 as the first model touch (supersedes/absorbs the R0.3
    `SAEA-E-001` slot or schedules after it — owner's call).
 6. **P0 finding (2026-08-07): the AIR-Bench SLURP-IC subset is not on disk**

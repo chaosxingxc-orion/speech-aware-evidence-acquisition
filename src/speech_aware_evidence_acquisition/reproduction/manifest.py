@@ -24,6 +24,7 @@ PROBES: dict[str, dict] = {
         "arms": {"direct": ["r1_audio2tool_direct.txt"]},
         "scorer": "a2t-scorer-v1 (toolcall_scoring)",
         "sampling": {"seed": _SEED, "design": "50 per tier x 8 tiers = 400 items"},
+        "sample_receipt": "r1-audio2tool-sample.json",
         "success": "tier rank order preserved; per-tier |delta| <= 5pp vs published Qwen-3-Omni-30B row",
         "profile": "baseline-reproduction",
     },
@@ -34,6 +35,7 @@ PROBES: dict[str, dict] = {
         },
         "scorer": "deterministic: normalized match of text after final 'Answer:' vs official_answer",
         "sampling": {"seed": _SEED, "design": "50 x 4 BBH categories = 200 items, paired arms"},
+        "sample_receipt": "r2-bba-sample.json",
         "success": "cascade > direct, paired-significant (McNemar)",
         "profile": "bounded-discovery-probe",
     },
@@ -69,11 +71,24 @@ PROBES: dict[str, dict] = {
             "one_shot": ["r5_vab_oneshot.txt"],
         },
         "scorer": "a2t-scorer-v1 components (tool selection / structure); semantic PF only via pinned local judge if unavoidable",
-        "sampling": {"seed": _SEED, "design": "50 x 3 EN complex strata (parallel/seqdep/multi-turn) = 150 items, paired arms"},
+        "sampling": {"seed": _SEED, "design": "50 per EN complex stratum (parallel/seqdep/multi-turn); strata under 50 taken whole = 140 items, paired arms"},
+        "sample_receipt": "r5-vab-sample.json",
         "success": "one-shot > zero-shot; magnitude compared to published +10-17pp",
         "profile": "bounded-discovery-probe",
     },
 }
+
+SAMPLING_POLICY = (
+    "Each carrier is sampled exactly once, by scripts/build_probe_samples.py "
+    "(seeded, order-independent, metadata-only); the receipt under "
+    "docs/receipts/probe-samples/ is frozen and every later experiment on that "
+    "carrier resolves its items through the binding in this manifest — never "
+    "through a fresh draw. Adding a carrier means adding a new receipt through "
+    "the same script and regenerating this manifest; changing an existing "
+    "receipt requires owner approval and a new probe entry. R4 draws from the "
+    "already-frozen dev subset10 split receipt (docs/receipts/splits.json); "
+    "R3 has no sample yet (data acquisition blocked)."
+)
 
 DECODE_DISCIPLINE = {
     "temperature": 0,
@@ -81,7 +96,22 @@ DECODE_DISCIPLINE = {
 }
 
 
-def build_manifest(templates_dir: Path) -> dict:
+def _load_verified_receipt(path: Path) -> dict:
+    if not path.is_file():
+        raise FileNotFoundError(f"sample receipt missing: {path}")
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    from .sampling import split_identity_hash
+
+    recomputed = split_identity_hash([item["key"] for item in payload["items"]])
+    if recomputed != payload["split_identity_hash"]:
+        raise ValueError(
+            f"split_identity_hash mismatch in {path.name}: receipt says "
+            f"{payload['split_identity_hash'][:16]}…, items hash to {recomputed[:16]}…"
+        )
+    return payload
+
+
+def build_manifest(templates_dir: Path, receipts_dir: Path) -> dict:
     referenced = sorted(
         {
             template
@@ -96,16 +126,33 @@ def build_manifest(templates_dir: Path) -> dict:
         if not path.is_file():
             raise FileNotFoundError(f"referenced template missing: {path}")
         hashes[name] = {"sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
+
+    samples: dict[str, dict] = {}
+    for probe_name, probe in PROBES.items():
+        receipt_name = probe.get("sample_receipt")
+        if receipt_name is None:
+            continue
+        payload = _load_verified_receipt(receipts_dir / receipt_name)
+        samples[probe_name] = {
+            "receipt": receipt_name,
+            "split_identity_hash": payload["split_identity_hash"],
+            "n_items": len(payload["items"]),
+            "seed": payload["seed"],
+            "split_role": payload["split_role"],
+        }
+
     return {
         "manifest_version": PROBE_MANIFEST_VERSION,
         "decode": DECODE_DISCIPLINE,
+        "sampling_policy": SAMPLING_POLICY,
         "templates": hashes,
+        "samples": samples,
         "probes": PROBES,
     }
 
 
-def write_manifest(templates_dir: Path, out_path: Path) -> dict:
-    manifest = build_manifest(templates_dir)
+def write_manifest(templates_dir: Path, receipts_dir: Path, out_path: Path) -> dict:
+    manifest = build_manifest(templates_dir, receipts_dir)
     out_path.write_text(
         json.dumps(manifest, indent=2, sort_keys=True) + "\n",
         encoding="utf-8",

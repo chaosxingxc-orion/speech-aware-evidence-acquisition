@@ -17,3 +17,11 @@ Fidelity caveat (recorded in the plan): Audio2Tool's own prompts are
 unreleased; R1 templates are our reconstruction from the paper's protocol
 description. If their release later shows different prompts, R1 re-runs
 under the released ones with a new manifest entry.
+
+Sample binding (owner alignment 2026-08-07): `manifest.json` also carries a
+`samples` section binding each probe to its frozen sample receipt under
+`docs/receipts/probe-samples/` — the split-identity hash is recomputed from
+the receipt's items at manifest build and any mismatch fails closed. Each
+carrier is sampled exactly once (`scripts/build_probe_samples.py`, seeded,
+order-independent); all later experiments on a carrier resolve their items
+through this binding, never through a fresh draw.

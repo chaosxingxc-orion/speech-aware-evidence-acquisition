@@ -12,6 +12,7 @@
         ]
       },
       "profile": "baseline-reproduction",
+      "sample_receipt": "r1-audio2tool-sample.json",
       "sampling": {
         "design": "50 per tier x 8 tiers = 400 items",
         "seed": 20260807
@@ -30,6 +31,7 @@
         ]
       },
       "profile": "bounded-discovery-probe",
+      "sample_receipt": "r2-bba-sample.json",
       "sampling": {
         "design": "50 x 4 BBH categories = 200 items, paired arms",
         "seed": 20260807
@@ -87,14 +89,39 @@
         ]
       },
       "profile": "bounded-discovery-probe",
+      "sample_receipt": "r5-vab-sample.json",
       "sampling": {
-        "design": "50 x 3 EN complex strata (parallel/seqdep/multi-turn) = 150 items, paired arms",
+        "design": "50 per EN complex stratum (parallel/seqdep/multi-turn); strata under 50 taken whole = 140 items, paired arms",
         "seed": 20260807
       },
       "scorer": "a2t-scorer-v1 components (tool selection / structure); semantic PF only via pinned local judge if unavoidable",
       "success": "one-shot > zero-shot; magnitude compared to published +10-17pp"
     }
   },
+  "samples": {
+    "R1-audio2tool-direct": {
+      "n_items": 400,
+      "receipt": "r1-audio2tool-sample.json",
+      "seed": 20260807,
+      "split_identity_hash": "e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c",
+      "split_role": "discovery"
+    },
+    "R2-bba-cascade-vs-direct": {
+      "n_items": 200,
+      "receipt": "r2-bba-sample.json",
+      "seed": 20260807,
+      "split_identity_hash": "c602bd7ee650b35f767eb4e7064e17452dc1bd0b813909ea2caef20db80cf262",
+      "split_role": "discovery"
+    },
+    "R5-vab-oneshot": {
+      "n_items": 140,
+      "receipt": "r5-vab-sample.json",
+      "seed": 20260807,
+      "split_identity_hash": "7205f865eda0fc8f3195e7ec2cb741a4fefe475f6db819373be040f83ace5069",
+      "split_role": "discovery"
+    }
+  },
+  "sampling_policy": "Each carrier is sampled exactly once, by scripts/build_probe_samples.py (seeded, order-independent, metadata-only); the receipt under docs/receipts/probe-samples/ is frozen and every later experiment on that carrier resolves its items through the binding in this manifest \u2014 never through a fresh draw. Adding a carrier means adding a new receipt through the same script and regenerating this manifest; changing an existing receipt requires owner approval and a new probe entry. R4 draws from the already-frozen dev subset10 split receipt (docs/receipts/splits.json); R3 has no sample yet (data acquisition blocked).",
   "templates": {
     "r1_audio2tool_direct.txt": {
       "sha256": "8ea2849d9f1d948ab46734fdc99e37efaba0b78216fdd2add0f8fccb3997da9a"

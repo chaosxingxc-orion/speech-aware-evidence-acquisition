@@ -5,7 +5,8 @@ the R0.1 survey into three explicit classes — **planned for reproduction /
 not worth reproducing / cannot be reproduced** — then distills each family's
 improvement directions and the study's exploration directions. Execution
 sequencing, sampling, and compliance design live in
-`2026-08-07-r1-replan-reproduction-plan.md` (P0–P3); the published-number
+`2026-08-07-r1-replan-reproduction-plan.md` (P0–P4, incl. the four-construct
+abstraction frame and the sample-once manifest policy); the published-number
 tables live in the umbrella wiki:
 `wiki/experiments/speech-aware-evidence-acquisition/published-baselines.md`.
 Owner decision points from the reproduction plan still gate all model
@@ -27,6 +28,20 @@ improvement as direction + effect size — never full-scale reruns.
 | A2 | *VoiceBench deterministic tier* (TACL 2026) | MCQ/rule-scored subsets only (openbookqa/mmsu/ifeval/advbench/bbh) — no judge needed | optional, post-P2 | `voicebench` | sampled per subset | our core's position vs leaderboard |
 | A3 | *URO-Bench EN-basic* | official 1k **miniset** (a natural sampled unit), judge pinned/replaced | optional | `uro-bench` | miniset subset | position vs cascade 89.33 / GLM-4-Voice 69.09 |
 | A4 | *VoiceAssistant-Eval in-scope subtasks* | content dimension only, with its own **open judge** (gpt-oss-20b) | optional | `voiceassistant-eval` | sampled, 8/13 in-scope subtasks | position vs published rows |
+
+### 1b. Training-free analog track (plan P3, T-series — owner alignment 2026-08-07)
+
+Trained reference works whose *knowledge component* we re-design as a
+training-free analog on the same carrier + scorer, positioned against the
+published trained row (gap small → training wasn't load-bearing; gap large →
+sharpened structural-gap evidence):
+
+| id | trained reference | analog on carrier | published row it is positioned against |
+|---|---|---|---|
+| T1 | SpeechDPR | pinned lexical retrieval over core transcripts, bounded pool (`slue-sqa-5`) | Top-20 19.73 / frame-F1 0.558 (direction reference only — pool differs) |
+| T2 | SpeechRAG | retrieval ladder closed-book/retrieved/oracle over core-transcribed passages (`spoken-squad`) | the "does not degrade" claim |
+| T3 | ZS-Whisper-SLU → WHISMA line | prompt-only slot filling, official scorer (`slurp`) | 50.0 → 63.3 SLU-F1 (first zero-training number on the carrier) |
+| T4 | FlexCTC/TurboBias | ConEC bias-lists injected at prompt level — folded into R4's entity-class extension (`conec`/`earnings21`) | mechanism analog only |
 
 ## 2. Not worth reproducing (deliberate skips — each with the reason)
 
@@ -56,6 +71,11 @@ improvement as direction + effect size — never full-scale reruns.
 | PlanRAG-Audio | code + self-built eval set unreleased (re-checked 2026-08-07); **standing re-check trigger** — if released, becomes the top Family E candidate |
 | Interactive in-meeting speaker correction | live human feedback at inference |
 | Trained SDM class (GLM-4-Voice, Freeze-Omni, Kimi-Audio, …) & reasoning-trained native audio (Gemini-2.5-NAT) | they are models/products, not methods; the closed ones aren't even weights-available |
+
+Four of the lines above graduate into the P3 training-free analog track
+rather than ending as gap records: T1 (SpeechDPR), T2 (SpeechRAG), T3 (the
+zero-shot slot-filling line), T4 (FlexCTC/TurboBias, via R4's bias-list
+extension) — designs in the reproduction plan §P3.
 
 ## 4. Improvement directions in the literature (what actually moved numbers, per family)
 
@@ -91,7 +111,11 @@ improvement as direction + effect size — never full-scale reruns.
 ## 5. Distilled exploration directions for this study (bucket-1 precedent × bucket-3 vacancy)
 
 Ordered by evidence strength of the precedent; each maps to an axis and a
-first probe:
+first probe. The plan's four-construct frame (agent construction / knowledge
+construction / knowledge use / knowledge-utilization-driven agent
+optimization) is the working vocabulary over these: directions 1 and 8 are
+construct 1→4, directions 2–7 are constructs 2+3, and construct 4 is where
+the fold-back (plan P4) aims the X probes:
 
 1. **Self-cascade / transcript-mediation policies** (OBS→USE). Strongest
    multi-carrier precedent (BBA, AIR-Bench, URO-Bench, VoiceBench). Probe =

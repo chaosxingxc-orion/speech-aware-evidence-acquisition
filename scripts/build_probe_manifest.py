@@ -15,8 +15,9 @@ from speech_aware_evidence_acquisition.reproduction.manifest import write_manife
 
 def main() -> int:
     templates_dir = REPO_ROOT / "configs" / "probes"
+    receipts_dir = REPO_ROOT / "docs" / "receipts" / "probe-samples"
     out_path = templates_dir / "manifest.json"
-    write_manifest(templates_dir, out_path)
+    write_manifest(templates_dir, receipts_dir, out_path)
     digest = hashlib.sha256(out_path.read_bytes()).hexdigest()
     print(f"wrote {out_path}")
     print(f"manifest sha256 (protocol-hash anchor): {digest}")
