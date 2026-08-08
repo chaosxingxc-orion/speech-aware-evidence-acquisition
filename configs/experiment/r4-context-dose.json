@@ -1,0 +1,5 @@
+{
+  "experiment_id": "SAEA-E-002",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "R4/P2b context-dose probe (Siskos-direction): three arms (bare-core / fixed-legal-context / mismatched-evidence) on earnings21-discovery; success = WER monotone in evidence quality; per-entity-class WER deferred until an owner-pinned wer_tags adapter exists"
+}

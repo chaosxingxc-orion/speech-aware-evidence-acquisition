@@ -1223,11 +1223,87 @@ def test_adapter_with_a_bare_callable_transport_is_unaffected(tmp_path):
 
 
 # ---------------------------------------------------------------------------
+# Readiness wait (2026-08-08 fix): llama-server binds its port during model
+# load and answers 503 until ready; the first REAL smoke aborted on exactly
+# that. start_session must not hand out a receipt for a server that cannot
+# answer yet.
+# ---------------------------------------------------------------------------
+
+
+class TestWaitUntilReady:
+    def _url(self):
+        return "http://127.0.0.1:18099/health"
+
+    def test_returns_once_health_reports_200(self):
+        from speech_aware_evidence_acquisition.core.session.lifecycle import _wait_until_ready
+
+        statuses = iter([503, 503, 200])
+        seen = []
+
+        def fake_get(url, timeout):
+            seen.append(url)
+            return next(statuses)
+
+        _wait_until_ready(
+            self._url(),
+            is_process_alive=lambda: True,
+            http_get_status=fake_get,
+            timeout_seconds=10.0,
+            poll_interval_seconds=0.0,
+        )
+        assert seen == [self._url()] * 3
+
+    def test_connection_errors_count_as_not_ready_then_recover(self):
+        from speech_aware_evidence_acquisition.core.session.lifecycle import _wait_until_ready
+
+        phases = iter(["refuse", "ok"])
+
+        def fake_get(url, timeout):
+            if next(phases) == "refuse":
+                raise OSError("connection refused")
+            return 200
+
+        _wait_until_ready(
+            self._url(),
+            is_process_alive=lambda: True,
+            http_get_status=fake_get,
+            timeout_seconds=10.0,
+            poll_interval_seconds=0.0,
+        )
+
+    def test_process_death_during_load_fails_closed(self):
+        from speech_aware_evidence_acquisition.core.session.lifecycle import _wait_until_ready
+
+        with pytest.raises(SessionError, match="exited"):
+            _wait_until_ready(
+                self._url(),
+                is_process_alive=lambda: False,
+                http_get_status=lambda url, timeout: 503,
+                timeout_seconds=10.0,
+                poll_interval_seconds=0.0,
+            )
+
+    def test_ready_timeout_fails_closed(self):
+        from speech_aware_evidence_acquisition.core.session.lifecycle import _wait_until_ready
+
+        with pytest.raises(SessionError, match="not ready"):
+            _wait_until_ready(
+                self._url(),
+                is_process_alive=lambda: True,
+                http_get_status=lambda url, timeout: 503,
+                timeout_seconds=0.05,
+                poll_interval_seconds=0.0,
+            )
+
+
+# ---------------------------------------------------------------------------
 # start_session -- real spawn, POSIX-only, FAKE binary (never llama-server).
 # start_session itself is unchanged by this fix (it directly hash-verifies
 # then immediately Popen()s the exact same path -- no separate PID-identity
 # gap to close there the way attach_session/LlamaServerTransport had), so
-# these probes are unchanged.
+# these probes are unchanged. (2026-08-08: the spawn probe now injects an
+# always-ready prober -- the FAKE binary serves no HTTP, and the readiness
+# wait is exercised by TestWaitUntilReady above.)
 # ---------------------------------------------------------------------------
 
 
@@ -1285,6 +1361,7 @@ class TestStartSessionSpawn:
             session_id="spawn-test-1",
             receipt_path=receipt_path,
             startup_timeout_seconds=2.0,
+            http_get_status=lambda url, timeout: 200,
         )
         try:
             assert receipt.pid > 0

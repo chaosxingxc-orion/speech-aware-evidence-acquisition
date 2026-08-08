@@ -31,6 +31,65 @@ from .receipt import (
 
 DEFAULT_STARTUP_TIMEOUT_SECONDS = 5.0
 DEFAULT_STARTUP_MAX_BYTES = 65536
+# llama-server binds its port immediately but answers 503 until the model is
+# loaded; a 30B GGUF takes minutes. 2026-08-08: the first real smoke aborted
+# on exactly this, so start_session now waits for /health = 200 by default.
+DEFAULT_READY_TIMEOUT_SECONDS = 1800.0
+DEFAULT_READY_POLL_INTERVAL_SECONDS = 5.0
+
+
+def _http_get_status(url: str, timeout_seconds: float) -> int:
+    """Status code of a GET against a loopback URL (readiness probe only)."""
+
+    import urllib.error
+    import urllib.request
+
+    try:
+        with urllib.request.urlopen(url, timeout=timeout_seconds) as response:
+            return int(response.status)
+    except urllib.error.HTTPError as error:
+        return int(error.code)
+
+
+def _wait_until_ready(
+    url: str,
+    *,
+    is_process_alive: Callable[[], bool],
+    http_get_status: Callable[[str, float], int],
+    timeout_seconds: float,
+    poll_interval_seconds: float,
+    startup_stdout_tail: bytes = b"",
+) -> None:
+    """Block until the spawned server answers ``url`` with HTTP 200.
+
+    Fail-closed: the child exiting during load, or the deadline passing
+    without a 200, raises :class:`SessionError` — a session receipt must
+    never describe a server that cannot answer yet. Connection errors and
+    non-200 statuses (llama-server answers 503 while loading) both count as
+    not-ready.
+    """
+
+    deadline = time.monotonic() + timeout_seconds
+    while True:
+        if not is_process_alive():
+            raise SessionError(
+                "spawned server exited before becoming ready; startup output tail: "
+                f"{startup_stdout_tail[-512:]!r}"
+            )
+        try:
+            status = http_get_status(url, 5.0)
+        except OSError:
+            status = None
+        if status == 200:
+            return
+        if time.monotonic() >= deadline:
+            raise SessionError(
+                f"spawned server not ready after {timeout_seconds:.0f}s "
+                f"(last probe status: {status}); refusing to hand out a session "
+                "receipt for a server that cannot answer"
+            )
+        if poll_interval_seconds > 0:
+            time.sleep(poll_interval_seconds)
 
 
 def _iso(epoch_seconds: float) -> str:
@@ -113,6 +172,9 @@ def start_session(
     receipt_path: Path | None = None,
     popen: Callable[..., "subprocess.Popen[bytes]"] = subprocess.Popen,
     now: Callable[[], float] = time.time,
+    ready_timeout_seconds: float = DEFAULT_READY_TIMEOUT_SECONDS,
+    ready_poll_interval_seconds: float = DEFAULT_READY_POLL_INTERVAL_SECONDS,
+    http_get_status: Callable[[str, float], int] | None = None,
 ) -> SessionReceipt:
     """Spawn the runtime-receipt-pinned llama.cpp binary and return the
     :class:`SessionReceipt` that binds this run to the EXACT process it
@@ -148,6 +210,15 @@ def start_session(
     stdout_bytes = _capture_startup_stdout(
         process, max_bytes=startup_max_bytes, timeout_seconds=startup_timeout_seconds
     )
+    if ready_timeout_seconds > 0:
+        _wait_until_ready(
+            f"http://{_bracketed(host)}:{port}/health",
+            is_process_alive=lambda: process.poll() is None,
+            http_get_status=http_get_status or _http_get_status,
+            timeout_seconds=ready_timeout_seconds,
+            poll_interval_seconds=ready_poll_interval_seconds,
+            startup_stdout_tail=stdout_bytes,
+        )
     receipt = SessionReceipt(
         schema=SESSION_RECEIPT_SCHEMA,
         study=STUDY_SLUG,

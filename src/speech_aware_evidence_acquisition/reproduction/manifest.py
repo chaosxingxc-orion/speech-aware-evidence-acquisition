@@ -56,14 +56,22 @@ PROBES: dict[str, dict] = {
             "matched_context": ["r4_transcribe_with_context.txt"],
             "mismatched_context": ["r4_transcribe_with_context.txt"],
         },
-        "scorer": "frozen scoring stack (WER + entity P/R/F1); gold used scorer-side only",
+        "runtime_binding": (
+            "2026-08-08 Route-1 retarget: under the R0 core driver the arm instructions are the "
+            "task_instruction fields of configs/baseline/{bare-core,fixed-legal-context,"
+            "mismatched-evidence}.json (bound into protocol_hash via config_hash); the r4_*.txt "
+            "templates above are the design-time reference, not runtime-wired. The mismatched arm's "
+            "instruction was equalized to the matched arm's on 2026-08-08 (a design-leak fix: the "
+            "negative-control explanation must never reach the model)."
+        ),
+        "scorer": "frozen scoring stack (asr-wer + cost); per-entity-class WER deferred until an owner-pinned wer_tags adapter exists",
         "sampling": {
             "seed": _SEED,
-            "design": "start: frozen dev subset10 (e22); e21 extension pending owner sample approval",
+            "design": "Route 1 (2026-08-08): frozen earnings21-discovery split, 44 samples per arm — e22 dev subset10 has no registered ConEC evidence layer (per-call PDFs, not per-sample txt); e22 evidence layer remains an owner-level decision",
         },
-        "success": "WER and per-entity-class WER monotone in evidence quality (Siskos direction)",
+        "success": "WER monotone in evidence quality (Siskos direction): matched < no-context and matched < mismatched",
         "profile": "bounded-discovery-probe",
-        "note": "matched arm uses the call's own ConEC materials; mismatched arm uses another call's; gold transcripts never enter runtime",
+        "note": "matched arm uses the call's own ConEC contexts layer; mismatched arm uses the deterministic rotation derangement; oracle/gold evidence hard-raises on the runtime path",
     },
     "R5-vab-oneshot": {
         "arms": {
