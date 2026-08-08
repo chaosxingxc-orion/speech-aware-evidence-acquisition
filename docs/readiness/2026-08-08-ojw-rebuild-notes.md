@@ -101,6 +101,39 @@ Study-side wiring:
   asyncio timeout — the kill lands at the next await point after the
   blocking call returns (this matches the live incident's log shape).
 
+## Bounded per-slice retry (second live-run finding, 2026-08-08)
+
+Second real attempt: 27 slice requests succeeded, then one HTTP request
+hung server-side for the transport's full socket timeout; the transport's
+`TimeoutError` propagated (the ojw vertex wrapped it as 100054) and the
+whole attempt died. Fix: ONE shared helper,
+`reproduction/obs_loop.py::request_slice_with_retry`, called by BOTH
+executors (the plain policy's request site and the ojw `FrozenCoreASR`
+component), so retry behaviour can never diverge:
+
+- retryable = `SLICE_RETRYABLE_EXCEPTIONS = (FrozenCoreError,
+  TimeoutError, ConnectionError)`; anything else (a bug) propagates
+  immediately, never retried. A budget/binding `FrozenCoreError` retried
+  once fails identically and spends nothing, so no carve-out is needed.
+- each retry is a FRESH request: derived request id (`<id>-r1`, `-r2`…),
+  fresh payload build, separately traced and metered by the adapter —
+  exactly what the +headroom in `planned_model_calls` exists for. The
+  final failure propagates unchanged (fail-closed as before).
+- audit visibility: the iteration's OBS record (both executors, identical
+  field) carries `obs_retry_of` = the ORIGINAL request id (None on the
+  ordinary path); the failed original's MODEL_REQUEST record and its
+  metered spend precede it in the trace, so an auditor sees both calls.
+  The outputs row chains the request id that actually answered.
+- knob: `obs_slice_retry_max` (default 1; 0 disables) — a real obs_* key
+  in `ObsLoopConfig` (unknown-key check covers typos), declared in all
+  seven obsloop/obsfixed/ojw baseline fragments → config_hash →
+  protocol_hash.
+- tests: plain-suite `TestSliceRetry` (flaky-once completes with two
+  attempts visible; second failure propagates; retry 0 disables; the
+  helper retries FrozenCoreError but never foreign exceptions) + the
+  `retry-flaky` equivalence scenario driving BOTH executors through the
+  same flaky adapter (identical retry id, trace, payload sequence).
+
 ## Framework findings that shaped the build
 
 1. **None deletes.** The session state merge

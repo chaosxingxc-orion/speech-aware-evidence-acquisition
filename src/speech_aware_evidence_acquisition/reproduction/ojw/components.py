@@ -64,7 +64,7 @@ from ..obs_audio import (
     rms_normalize,
     write_wav_bytes,
 )
-from ..obs_loop import OBS_TAIL_FRAME_V1, ObsLoopError
+from ..obs_loop import OBS_TAIL_FRAME_V1, ObsLoopError, request_slice_with_retry
 from .state import ObsSampleState
 
 # Session global-state keys for the loop-carried text state (single writer:
@@ -221,28 +221,36 @@ class FrozenCoreASR(WorkflowComponent):
             audio_seconds=slice_spec["slice_seconds"],
             sample_rate_hz=state.rate,
         )
-        request_id = f"{sample_view['request_id_base']}-i{slice_spec['iteration']:04d}"
+        base_request_id = f"{sample_view['request_id_base']}-i{slice_spec['iteration']:04d}"
         # Deferred import (same reason as the plain policy): core.policies
         # registers the ojw policy, so importing build_arm_payload at module
         # level here would be circular; by run time both are always loaded.
         from ...core.policies import build_arm_payload  # noqa: PLC0415
 
-        payload = build_arm_payload(
-            arm,
-            slice_ref,
-            request_id,
-            instruction,
-            decoding_params,
-            evidence=evidence,
-            retrieval_query=retrieval_query,
+        def _payload(rid):
+            return build_arm_payload(
+                arm,
+                slice_ref,
+                rid,
+                instruction,
+                decoding_params,
+                evidence=evidence,
+                retrieval_query=retrieval_query,
+            )
+
+        # Bounded per-slice retry: the SAME shared helper the plain policy
+        # calls (obs_loop.request_slice_with_retry), so the two executors can
+        # never diverge in retry behaviour (live E-001 finding 2026-08-08).
+        request_id, response, retry_of = request_slice_with_retry(
+            self._adapter_request, _payload, base_request_id, cfg.slice_retry_max
         )
-        response = self._adapter_request(payload)
         return {
             "text": response.text,
             "usage": dict(getattr(response, "usage", None) or {}),
             "request_id": request_id,
             "request_sha256": response.request_sha256,
             "response_sha256": response.response_sha256,
+            "retry_of": retry_of,
         }
 
 
@@ -356,6 +364,9 @@ class AcceptAdvance(WorkflowComponent):
                 "obs_tail_sha256": (
                     hashlib.sha256(tail.encode("utf-8")).hexdigest() if tail else None
                 ),
+                # Retry audit trail, identical to the plain policy's record;
+                # None-deletion means a missing key IS the None that was set.
+                "obs_retry_of": inputs.get("retry_of"),
             },
         )
         span = accepted.strip()
