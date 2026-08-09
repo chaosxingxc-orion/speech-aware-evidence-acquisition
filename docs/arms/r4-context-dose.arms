@@ -1,0 +1,17 @@
+# SAEA-E-002 "R4 context-dose" (P2b, Siskos direction).
+#
+# Three arms over the SAME ten earnings21 discovery samples
+# (split r4-e21-sub10-sample) and ONE config hash. The arms differ only in the
+# baseline fragment, which is what makes the per-sample pairing legitimate.
+#
+# Hypothesis: WER is monotone in evidence quality, i.e.
+#   mismatched >= nocontext >= matched.
+# Caveat carried from docs/readiness/2026-08-09-conec-evidence-shape.md: the
+# ConEC "context materials" are unigram word-frequency lists, not prose, so a
+# null result on `matched` is equally consistent with "form is wrong" as with
+# "context does not help".
+#
+# run_id:baseline_fragment
+SAEA-E-002-r4-nocontext:bare-core-ojw
+SAEA-E-002-r4-matched:fixed-legal-context-ojw
+SAEA-E-002-r4-mismatched:mismatched-evidence-ojw
