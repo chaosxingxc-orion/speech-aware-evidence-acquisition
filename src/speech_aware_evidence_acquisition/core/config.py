@@ -142,6 +142,23 @@ def runtime_receipt_relpath(values: Mapping[str, object]) -> str:
     return value
 
 
+def model_lock_key(values: Mapping[str, object]) -> str:
+    """Resolve a composed config's ``model_lock_key`` -- the pinned model
+    THIS RUN declares. Read directly, no default: every model fragment names
+    its own frozen umbrella-lock entry explicitly (unlike ``runtime_receipt``,
+    which is genuinely optional), so an omitted or malformed value fails
+    closed rather than silently falling back to any one model. This is the
+    SAME declaration ``runtime_receipt_relpath`` already uses to pick the
+    receipt FILE -- callers bind both to the identical ``values`` mapping so
+    a run can never pair one model's config with a different model's
+    receipt (``contracts.FrozenCoreGate``'s ``expected_model_lock_key``)."""
+
+    value = values.get("model_lock_key")
+    if not isinstance(value, str) or not value:
+        raise ConfigError(f"model config model_lock_key must be a non-empty string, got {value!r}")
+    return value
+
+
 def resolve_runtime_receipt_path(repo_root: Path, values: Mapping[str, object]) -> Path:
     """The absolute path a composed config's ``runtime_receipt`` key names,
     under ``<repo_root>/docs/`` -- the one place every caller (driver smoke,

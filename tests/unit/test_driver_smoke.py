@@ -75,6 +75,24 @@ def _write_synthetic_configs(repo_root: Path) -> None:
         ),
         encoding="utf-8",
     )
+    # A DIFFERENT declared model_lock_key than every other fragment here (all
+    # of which share "qwen3-omni-30b-a3b-instruct-gguf") -- the one value
+    # that can distinguish "the gate learned this run's declared key from the
+    # composed config" from "the gate silently kept its own default", since
+    # the two coincide for every other fragment in this module.
+    (configs / "model" / "test-model-alt-key.json").write_text(
+        json.dumps(
+            {
+                "model_lock_key": "qwen3-omni-30b-a3b-instruct-gguf-q4km",
+                "transport": "llama-server",
+                "base_url": "http://127.0.0.1:8080",
+                "timeout_seconds": 300.0,
+                "decoding_params": {"temperature": 0, "seed": 20260803},
+                "runtime_receipt": "receipts/runtime-smoke-alt-key.json",
+            }
+        ),
+        encoding="utf-8",
+    )
     (configs / "dataset" / "test-dataset.json").write_text(
         json.dumps({"carrier_lock_key": "earnings21-original", "split_name": "discovery"}),
         encoding="utf-8",
@@ -357,3 +375,67 @@ def test_smoke_non_dry_run_falls_back_to_the_default_runtime_receipt_path(
                 "--repo-root", str(repo_root),
             ]
         )
+
+
+def test_smoke_non_dry_run_passes_the_models_declared_model_lock_key_to_the_gate(
+    synthetic_world, smoke_repo, tmp_path, monkeypatch
+):
+    """Identity-binding wiring (mirrors ``tests/unit/
+    test_runtime_receipt_selection.py``'s equivalent ``_cli_run`` proof): the
+    SAME composed config that selects the receipt PATH must also select the
+    gate's identity EXPECTATION, so ``_cli_smoke`` can never keep asserting
+    the frozen Q8_0 constant while resolving a genuinely different model's
+    receipt file. See ``tests/contract/test_model_lock_key_binding.py`` for
+    the gate's own refusal semantics once it has the wrong expectation.
+
+    The receipt file must actually PARSE here (unlike the sibling "falls
+    back"/"custom path" tests above, which prove the path selection itself
+    via a missing-file refusal) -- ``_cli_smoke`` calls ``load_runtime_
+    receipt`` BEFORE ``FrozenCoreGate.for_study_repo``, so a missing file
+    would refuse before the spy ever observes the gate construction this
+    test exists to check. An empty JSON object is enough: it fails one step
+    later, inside ``start_session``, for lacking a ``llama_cpp`` mapping --
+    strictly after the gate (and the spy) have already run."""
+
+    import speech_aware_evidence_acquisition.contracts as contracts_mod
+
+    lock, repo_root = smoke_repo
+    monkeypatch.setenv("SPEECHRL_DATA_DIR", str(synthetic_world.data_root))
+    monkeypatch.setattr(
+        "speech_aware_evidence_acquisition.data.lock.umbrella_lock_path",
+        lambda *a, **k: synthetic_world.lock_path,
+    )
+    receipt_path = repo_root / "docs" / "receipts" / "runtime-smoke-alt-key.json"
+    receipt_path.parent.mkdir(parents=True, exist_ok=True)
+    receipt_path.write_text("{}", encoding="utf-8")
+
+    captured: dict = {}
+    original = contracts_mod.FrozenCoreGate.for_study_repo.__func__
+
+    def _spy(cls, *args, **kwargs):
+        captured.update(kwargs)
+        return original(cls, *args, **kwargs)
+
+    monkeypatch.setattr(contracts_mod.FrozenCoreGate, "for_study_repo", classmethod(_spy))
+
+    with pytest.raises(SessionError, match="llama_cpp mapping"):
+        driver_main(
+            [
+                "smoke",
+                "--model", "test-model-alt-key",
+                "--dataset", "test-dataset",
+                "--baseline", "test-baseline",
+                "--experiment", "test-experiment",
+                "--run-id", "SAEA-E-000-smoke-alt-key",
+                "--planned-model-calls", "10",
+                "--planned-gpu-hours", "1.0",
+                "--planned-speech-audio-seconds", "1000",
+                "--run-dir", str(tmp_path / "smoke-runs"),
+                "--runtime-root", str(tmp_path / "runtime-root-not-used"),
+                "--tracking-uri", str(tmp_path / "mlruns"),
+                "--repo-root", str(repo_root),
+            ]
+        )
+
+    assert captured["expected_model_lock_key"] == "qwen3-omni-30b-a3b-instruct-gguf-q4km"
+    assert captured["runtime_receipt_relpath"] == "receipts/runtime-smoke-alt-key.json"
