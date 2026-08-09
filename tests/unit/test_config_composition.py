@@ -323,8 +323,13 @@ def test_q4km_repo_fragment_composes_with_the_expected_runtime_selection():
     )
     assert composed.values["model_lock_key"] == "qwen3-omni-30b-a3b-instruct-gguf-q4km"
     assert composed.values["timeout_seconds"] == 900.0
+    # 2026-08-09 ops-measured sizing (docs/readiness/2026-08-09-*): the worst
+    # request is ~11.8k tokens (ConEC evidence tokenizes at 2.19 B/token), so
+    # 12,288 tok/slot is the minimum viable; q8_0 KV keeps the whole thing on
+    # GPU with a 1,057 MiB margin that held +0 MiB over an 88-request test.
     assert composed.values["server_args"] == [
-        "-c", "32768", "-np", "4", "-fa", "on", "-ngl", "999",
+        "-c", "49152", "-np", "4", "-fa", "on", "-ngl", "999",
+        "-ctk", "q8_0", "-ctv", "q8_0",
     ]
     assert "-ot" not in composed.values["server_args"]
     assert composed.values["runtime_receipt"] == "receipts/runtime-q4km.json"
