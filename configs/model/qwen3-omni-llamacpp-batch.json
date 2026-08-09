@@ -1,0 +1,8 @@
+{
+  "model_lock_key": "qwen3-omni-30b-a3b-instruct-gguf",
+  "transport": "llama-server",
+  "base_url": "http://127.0.0.1:8080",
+  "timeout_seconds": 900.0,
+  "server_args": ["-c", "32768", "-np", "4", "-fa", "on", "-ngl", "999", "-ot", ".ffn_.*_exps.=CPU"],
+  "decoding_params": {"temperature": 0, "seed": 20260803}
+}
