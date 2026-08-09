@@ -111,6 +111,52 @@ floor) / `self-carry` (rolling compressed state) / `external`
 external- vs no-evidence is a dose spectrum; each new arm gets its own
 pre-registration before any run reads results.
 
+## Prefix-cache-friendly prompt order (transport engineering, 2026-08-09)
+
+**Rule:** stable content FIRST, variable audio LAST. In the transport's
+user-message `content` list, evidence text parts (deterministic, unchanged
+formatting) precede the audio part; the system message (task instruction)
+already precedes both and is unaffected.
+
+**Measured saving** (ops benchmark on the real server, 8 requests sharing an
+identical 23.3 KB evidence block): audio-first (the prior order) processed
+11,780 tokens/request with only 26 cached (22,283 ms prefill, 367.8 s total);
+evidence-first processed 2,200 tokens/request with 9,607 cached (8,416 ms
+prefill, 250.5 s total) — 93% fewer prompt tokens processed, 72% less
+prefill, 32% less wall-clock. llama-server only reuses a KV-cache prefix
+that is byte-identical AND contiguous from the start of the prompt; content
+placed after the audio does not get this benefit.
+
+**Why this matters specifically for the evidence arms (fixed-legal-context,
+mismatched-evidence, and the R4 context-dose ladder):** their evidence block
+is constant across every slice of one call — the same materials get
+re-sent, slice after slice, only the audio and the rolling carry-state
+change. With evidence-first ordering, that constant block is cached ONCE per
+server slot (after the first slice pays full prefill) and reused for every
+later slice of the same call; with audio-first ordering, the identical
+evidence text sat behind a per-slice-variable audio blob and could never
+form a reusable prefix, so it was fully re-processed on every single slice.
+For a long call with many OBS-loop slices, this compounds: the no-evidence
+arm (`bare-core`) is unaffected (no evidence block to cache), but every
+evidence-bearing arm pays full evidence-token cost on every slice under the
+old order and near-zero marginal cost after the first under the new one —
+this is a pure transport-efficiency fix, not a change to what evidence is
+supplied or how it is scored (D2 `ARM_VISIBLE_FIELDS` and the evidence
+formatting string are both untouched).
+
+**Audit signal:** this is a PROTOCOL-AFFECTING change (two runs on the same
+config hash differ in wire bytes across this commit) even though it alters
+no config value. Verified by tracing the code: `request_sha256` (the
+`payload_sha256` traced in `MODEL_REQUEST`, `core/model/adapter.py`) hashes
+the canonical `ExecutionPayload` dict *before* the transport ever runs —
+that dict has no `content`-array concept at all, so this reorder is NOT
+visible there, nor in `protocol_hash`/`config_hash` (both config-value
+derived, unaffected). The actual provenance signal is `study_commit` in the
+run manifest (`core/bundle/git_commit.py`), which binds the exact git HEAD
+of the study repo a run executed against — any run after this commit lands
+carries the new `study_commit`, which is how pre/post-reorder runs are
+distinguished in the audit trail.
+
 ## Sequencing
 
 1. Segmentation substrate (worktree agent, in flight): segmenter + derived

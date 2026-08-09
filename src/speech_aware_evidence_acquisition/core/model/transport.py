@@ -2,6 +2,29 @@
 
 Split out of the former monolithic ``core/model.py`` (R0 repair refactor
 stage 1, pure move, no behaviour change).
+
+Prefix-cache-friendly content order (2026-08-09, ops-measured; PROTOCOL-
+AFFECTING): the user-message ``content`` list is ordered evidence text
+parts FIRST, audio part LAST (system message already precedes both). An ops
+benchmark on the real server, over 8 requests sharing an identical 23.3 KB
+evidence block, measured audio-first (the prior order) against
+evidence-first:
+
+- audio-first: 26 cached tokens, 11,780 processed, 22,283 ms prefill,
+  367.8 s total
+- evidence-first: 9,607 cached tokens, 2,200 processed, 8,416 ms prefill,
+  250.5 s total
+
+i.e. 93% fewer prompt tokens processed, 72% less prefill, 32% less
+wall-clock, because llama-server only reuses a KV-cache prefix that is
+byte-identical AND contiguous from the start of the prompt (observed server
+log: ``alloc: - prompt is already in the cache, skipping``). The system
+message is already first and unaffected; putting the evidence block right
+after it (instead of after the audio) makes [system, evidence...] the
+stable, cacheable prefix, and the per-slice-variable audio -- which can
+never be part of a reused prefix anyway -- last. Content placed AFTER the
+audio does not break the cache, so nothing else about ordering matters
+except audio-last.
 """
 
 from __future__ import annotations
@@ -118,17 +141,23 @@ class LlamaServerTransport:
         if not media.is_file():
             raise FileNotFoundError(f"media missing for transport: {media}")
         audio_b64 = base64.b64encode(media.read_bytes()).decode("ascii")
-        content: list[dict[str, object]] = [
-            {
-                "type": "input_audio",
-                "input_audio": {"data": audio_b64, "format": media.suffix.lstrip(".").lower()},
-            }
-        ]
+        # Prefix-cache-friendly order (see module docstring, 2026-08-09,
+        # measured): stable evidence text FIRST, variable audio LAST -- the
+        # evidence formatting string and per-field iteration order
+        # (supplied_evidence then retrieved_evidence) are unchanged, only
+        # their position relative to the audio part moves.
+        content: list[dict[str, object]] = []
         for field in ("supplied_evidence", "retrieved_evidence"):
             for item in payload.get(field, []):  # type: ignore[union-attr]
                 content.append(
                     {"type": "text", "text": f"[evidence {item['evidence_id']}] {item['content']}"}
                 )
+        content.append(
+            {
+                "type": "input_audio",
+                "input_audio": {"data": audio_b64, "format": media.suffix.lstrip(".").lower()},
+            }
+        )
         body: dict[str, object] = {
             "messages": [
                 {"role": "system", "content": payload["task_instruction"]},

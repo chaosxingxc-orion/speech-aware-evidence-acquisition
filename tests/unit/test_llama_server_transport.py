@@ -269,8 +269,12 @@ def test_http_error_surfaces_status_and_server_body(tmp_path):
 
 def test_evidence_items_become_text_parts(tmp_path):
     def fake_post(url, body):
+        # 2026-08-09 prefix-cache reorder: evidence text parts now precede
+        # the audio part (see test_content_order_* below for the full
+        # ordering contract) -- this test keeps checking the text-part
+        # SHAPE, now at index 0 rather than index 1.
         parts = json.loads(body)["messages"][1]["content"]
-        assert parts[1] == {"type": "text", "text": "[evidence ev-1] context text"}
+        assert parts[0] == {"type": "text", "text": "[evidence ev-1] context text"}
         return _canned_response()
 
     transport = _transport("http://127.0.0.1:8080", tmp_path, post=fake_post)
@@ -280,6 +284,82 @@ def test_evidence_items_become_text_parts(tmp_path):
             {"evidence_id": "ev-1", "source_uri": "conec://x", "content": "context text"}
         ],
         evidence_provenance=[{"lock_key": "conec", "relpath": "x", "sha256": "0" * 64}],
+    )
+    transport(json.dumps(payload).encode())
+
+
+# ---------------------------------------------------------------------------
+# Prefix-cache-friendly content order (2026-08-09): stable evidence text
+# FIRST, variable audio LAST -- see the module docstring for the measured
+# server-side justification. The prefix (system message + evidence text)
+# must be byte-identical and contiguous across requests sharing the same
+# evidence block for llama-server to reuse its KV-cache prefix; content
+# placed after the audio does not get this benefit, so audio must be last.
+# ---------------------------------------------------------------------------
+
+
+def test_content_order_is_evidence_then_audio_when_evidence_present(tmp_path):
+    def fake_post(url, body):
+        parts = json.loads(body)["messages"][1]["content"]
+        assert [part["type"] for part in parts] == ["text", "input_audio"]
+        assert parts[0] == {"type": "text", "text": "[evidence ev-1] context text"}
+        assert parts[1]["type"] == "input_audio"
+        return _canned_response()
+
+    transport = _transport("http://127.0.0.1:8080", tmp_path, post=fake_post)
+    payload = _boundary_payload(
+        tmp_path,
+        supplied_evidence=[
+            {"evidence_id": "ev-1", "source_uri": "conec://x", "content": "context text"}
+        ],
+        evidence_provenance=[{"lock_key": "conec", "relpath": "x", "sha256": "0" * 64}],
+    )
+    transport(json.dumps(payload).encode())
+
+
+def test_content_order_is_audio_alone_when_no_evidence(tmp_path):
+    def fake_post(url, body):
+        parts = json.loads(body)["messages"][1]["content"]
+        assert [part["type"] for part in parts] == ["input_audio"]
+        return _canned_response()
+
+    transport = _transport("http://127.0.0.1:8080", tmp_path, post=fake_post)
+    payload = _boundary_payload(tmp_path)
+    assert "supplied_evidence" not in payload
+    assert "retrieved_evidence" not in payload
+    transport(json.dumps(payload).encode())
+
+
+def test_content_order_preserves_multi_evidence_order_before_audio(tmp_path):
+    """Multiple supplied_evidence AND retrieved_evidence items: all evidence
+    text parts precede the audio part, in the existing deterministic order
+    (supplied_evidence list order, then retrieved_evidence list order --
+    unchanged from before this reorder, only their position relative to the
+    audio part moves)."""
+
+    def fake_post(url, body):
+        parts = json.loads(body)["messages"][1]["content"]
+        assert [part["type"] for part in parts] == ["text", "text", "text", "input_audio"]
+        assert parts[0] == {"type": "text", "text": "[evidence sup-1] supplied one"}
+        assert parts[1] == {"type": "text", "text": "[evidence sup-2] supplied two"}
+        assert parts[2] == {"type": "text", "text": "[evidence ret-1] retrieved one"}
+        return _canned_response()
+
+    transport = _transport("http://127.0.0.1:8080", tmp_path, post=fake_post)
+    payload = _boundary_payload(
+        tmp_path,
+        supplied_evidence=[
+            {"evidence_id": "sup-1", "source_uri": "conec://a", "content": "supplied one"},
+            {"evidence_id": "sup-2", "source_uri": "conec://b", "content": "supplied two"},
+        ],
+        retrieved_evidence=[
+            {"evidence_id": "ret-1", "source_uri": "conec://c", "content": "retrieved one"},
+        ],
+        evidence_provenance=[
+            {"lock_key": "conec", "relpath": "a", "sha256": "0" * 64},
+            {"lock_key": "conec", "relpath": "b", "sha256": "1" * 64},
+            {"lock_key": "conec", "relpath": "c", "sha256": "2" * 64},
+        ],
     )
     transport(json.dumps(payload).encode())
 
