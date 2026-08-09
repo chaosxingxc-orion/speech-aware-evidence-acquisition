@@ -1,0 +1,611 @@
+{
+  "gguf_files": [
+    {
+      "bytes": 18557053952,
+      "path": "models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+      "sha256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d"
+    },
+    {
+      "bytes": 2207465568,
+      "path": "models/qwen3-omni-30b-a3b-instruct-gguf-q4km/mmproj-Qwen3-Omni-30B-A3B-Instruct-bf16.gguf",
+      "sha256": "f0dfe825fb692d426362b1ac79678fc08daa4758f7151526cad110515f122883"
+    }
+  ],
+  "llama_cpp": {
+    "binary_bytes": 17920,
+    "binary_path": "llama.cpp/build/bin/llama-server",
+    "binary_sha256": "6071c2c1d4b28a1c61c355e0d0ac66eaa0aa31c8a4ed6457acae2360c3a7bdb8",
+    "build_commit": "fdbd6abee20e408de21e90ca77a24cd50a6ea073",
+    "reported_build": "version: 1 (fdbd6ab)"
+  },
+  "model_lock_key": "qwen3-omni-30b-a3b-instruct-gguf-q4km",
+  "runtime_libraries": [
+    {
+      "bytes": 46600,
+      "path": "llama.cpp/build/bin/export-graph-ops",
+      "sha256": "8d24178992adda5a2aa4ea4b01f13acea69b4c0d9de48d1e75477367ed77d8c2"
+    },
+    {
+      "bytes": 913472,
+      "path": "llama.cpp/build/bin/libggml-base.so",
+      "sha256": "8d772b94b1348ca7bcb8c3473fd59ee79b98f56189d36f512eb3aba5e36bbd5f"
+    },
+    {
+      "bytes": 913472,
+      "path": "llama.cpp/build/bin/libggml-base.so.0",
+      "sha256": "8d772b94b1348ca7bcb8c3473fd59ee79b98f56189d36f512eb3aba5e36bbd5f"
+    },
+    {
+      "bytes": 913472,
+      "path": "llama.cpp/build/bin/libggml-base.so.0.15.2",
+      "sha256": "8d772b94b1348ca7bcb8c3473fd59ee79b98f56189d36f512eb3aba5e36bbd5f"
+    },
+    {
+      "bytes": 1114656,
+      "path": "llama.cpp/build/bin/libggml-cpu.so",
+      "sha256": "577ed6ac7a74f9da0de183daf1021ce37a0b95e0a27ee23f042d9709d4b1e166"
+    },
+    {
+      "bytes": 1114656,
+      "path": "llama.cpp/build/bin/libggml-cpu.so.0",
+      "sha256": "577ed6ac7a74f9da0de183daf1021ce37a0b95e0a27ee23f042d9709d4b1e166"
+    },
+    {
+      "bytes": 1114656,
+      "path": "llama.cpp/build/bin/libggml-cpu.so.0.15.2",
+      "sha256": "577ed6ac7a74f9da0de183daf1021ce37a0b95e0a27ee23f042d9709d4b1e166"
+    },
+    {
+      "bytes": 62929688,
+      "path": "llama.cpp/build/bin/libggml-cuda.so",
+      "sha256": "7a55fc80079d1505e25f475ef8f57fcb2a39815c3a7a30e8cff1e25b12c755fb"
+    },
+    {
+      "bytes": 62929688,
+      "path": "llama.cpp/build/bin/libggml-cuda.so.0",
+      "sha256": "7a55fc80079d1505e25f475ef8f57fcb2a39815c3a7a30e8cff1e25b12c755fb"
+    },
+    {
+      "bytes": 62929688,
+      "path": "llama.cpp/build/bin/libggml-cuda.so.0.15.2",
+      "sha256": "7a55fc80079d1505e25f475ef8f57fcb2a39815c3a7a30e8cff1e25b12c755fb"
+    },
+    {
+      "bytes": 56016,
+      "path": "llama.cpp/build/bin/libggml.so",
+      "sha256": "5321a21a21791adc8456e7b05aa9ea574f59f76c9438eab024d0199b4ffdc191"
+    },
+    {
+      "bytes": 56016,
+      "path": "llama.cpp/build/bin/libggml.so.0",
+      "sha256": "5321a21a21791adc8456e7b05aa9ea574f59f76c9438eab024d0199b4ffdc191"
+    },
+    {
+      "bytes": 56016,
+      "path": "llama.cpp/build/bin/libggml.so.0.15.2",
+      "sha256": "5321a21a21791adc8456e7b05aa9ea574f59f76c9438eab024d0199b4ffdc191"
+    },
+    {
+      "bytes": 45088,
+      "path": "llama.cpp/build/bin/libllama-batched-bench-impl.so",
+      "sha256": "c15296a60b90437709fde90ba4c7878b3880c7567b032fccfc9df3de70f3ec64"
+    },
+    {
+      "bytes": 462392,
+      "path": "llama.cpp/build/bin/libllama-bench-impl.so",
+      "sha256": "fd850f288cf1c057582adae7f95a83c326597ddc143d259dade742104c201a5d"
+    },
+    {
+      "bytes": 1971592,
+      "path": "llama.cpp/build/bin/libllama-cli-impl.so",
+      "sha256": "ffc13ac5a4ba6a892e40b159c44ac58095bdcebaea47b5af76f47ebdf38624a7"
+    },
+    {
+      "bytes": 5715912,
+      "path": "llama.cpp/build/bin/libllama-common.so",
+      "sha256": "9d8b9c1e7a64ce62abc68592078a9b4fa03b0e2f7c525bfb2c7e35682329cf9a"
+    },
+    {
+      "bytes": 5715912,
+      "path": "llama.cpp/build/bin/libllama-common.so.0",
+      "sha256": "9d8b9c1e7a64ce62abc68592078a9b4fa03b0e2f7c525bfb2c7e35682329cf9a"
+    },
+    {
+      "bytes": 5715912,
+      "path": "llama.cpp/build/bin/libllama-common.so.0.0.1",
+      "sha256": "9d8b9c1e7a64ce62abc68592078a9b4fa03b0e2f7c525bfb2c7e35682329cf9a"
+    },
+    {
+      "bytes": 111016,
+      "path": "llama.cpp/build/bin/libllama-completion-impl.so",
+      "sha256": "8ac973f4ab66111d69e8ac820fd6eeaf633cfc1512e24fa4c15b56584a8add61"
+    },
+    {
+      "bytes": 36032,
+      "path": "llama.cpp/build/bin/libllama-fit-params-impl.so",
+      "sha256": "c1604039d4a66fc272dfc34dc92fb15ea6c3e2634b92f7decf8cda86cb5ed13f"
+    },
+    {
+      "bytes": 164480,
+      "path": "llama.cpp/build/bin/libllama-perplexity-impl.so",
+      "sha256": "3732144a7add28ea4be52dbbeabc80af0f1ba5f2b5fa88fc84e6ab64aeff0a0e"
+    },
+    {
+      "bytes": 89744,
+      "path": "llama.cpp/build/bin/libllama-quantize-impl.so",
+      "sha256": "2ff50db3ce9f9a420c41fd7b09f096dfe8a98fedc06918d449dfe07987abf4f5"
+    },
+    {
+      "bytes": 6687728,
+      "path": "llama.cpp/build/bin/libllama-server-impl.so",
+      "sha256": "92714e59d0a716d22c196d83da797ffe958ee047cb617b5118a68fa4fced2c2d"
+    },
+    {
+      "bytes": 3871904,
+      "path": "llama.cpp/build/bin/libllama.so",
+      "sha256": "19a139f13f273e5817bcba487ddfe27b948a9ff9bcfdff79b229713ec1c9b730"
+    },
+    {
+      "bytes": 3871904,
+      "path": "llama.cpp/build/bin/libllama.so.0",
+      "sha256": "19a139f13f273e5817bcba487ddfe27b948a9ff9bcfdff79b229713ec1c9b730"
+    },
+    {
+      "bytes": 3871904,
+      "path": "llama.cpp/build/bin/libllama.so.0.0.1",
+      "sha256": "19a139f13f273e5817bcba487ddfe27b948a9ff9bcfdff79b229713ec1c9b730"
+    },
+    {
+      "bytes": 1428960,
+      "path": "llama.cpp/build/bin/libmtmd.so",
+      "sha256": "5f62e3987a26fd56e57803ce30f1c2495ab94488aaf1fdec0d848a57ca7ae66e"
+    },
+    {
+      "bytes": 1428960,
+      "path": "llama.cpp/build/bin/libmtmd.so.0",
+      "sha256": "5f62e3987a26fd56e57803ce30f1c2495ab94488aaf1fdec0d848a57ca7ae66e"
+    },
+    {
+      "bytes": 1428960,
+      "path": "llama.cpp/build/bin/libmtmd.so.0.0.1",
+      "sha256": "5f62e3987a26fd56e57803ce30f1c2495ab94488aaf1fdec0d848a57ca7ae66e"
+    },
+    {
+      "bytes": 30688,
+      "path": "llama.cpp/build/bin/llama",
+      "sha256": "8e6d6a557bc61cd589badc4a028944d11b0a6933764cbf02ada33986811b3138"
+    },
+    {
+      "bytes": 50280,
+      "path": "llama.cpp/build/bin/llama-batched",
+      "sha256": "1cd93ad82231ff15de6e7d1ac09e2115f3a7c24407c04e90b8092a12f566859d"
+    },
+    {
+      "bytes": 15976,
+      "path": "llama.cpp/build/bin/llama-batched-bench",
+      "sha256": "fcbc3411a2a747587873b4586350ea1b090aed12c8ffa38c0f0a9c0fc154ba9a"
+    },
+    {
+      "bytes": 17920,
+      "path": "llama.cpp/build/bin/llama-bench",
+      "sha256": "d8a90c98dfa0f2c475890174a1878a5d8045eac70f9d356277a0bf6bf8f4e088"
+    },
+    {
+      "bytes": 17920,
+      "path": "llama.cpp/build/bin/llama-cli",
+      "sha256": "3ca6c9afbf898017503ef843da6c531bb1588a9a04640d447074744718498a22"
+    },
+    {
+      "bytes": 15968,
+      "path": "llama.cpp/build/bin/llama-completion",
+      "sha256": "ed0ba320fe1781f463575d6efa8248039d41d3d8027c4faf53b51d139285eedc"
+    },
+    {
+      "bytes": 66240,
+      "path": "llama.cpp/build/bin/llama-convert-llama2c-to-ggml",
+      "sha256": "c62eac96b8cc2d866d1d4848e0b83cf56e766efa85b97069bc98cac91eff45ab"
+    },
+    {
+      "bytes": 85592,
+      "path": "llama.cpp/build/bin/llama-cvector-generator",
+      "sha256": "eb705b4362d1461db8978c22a0c693d0b12785da9daef85d0f86ec0cea28d5e6"
+    },
+    {
+      "bytes": 244960,
+      "path": "llama.cpp/build/bin/llama-debug",
+      "sha256": "3e6d650e3dac5976d72ddd79323b28e9fc534b332497bc4e35928d8d87d7f2fa"
+    },
+    {
+      "bytes": 215624,
+      "path": "llama.cpp/build/bin/llama-debug-template-parser",
+      "sha256": "7bc080963b3a24d97b28db3b6ed27624eefef74876568d27692abd986200b24b"
+    },
+    {
+      "bytes": 77592,
+      "path": "llama.cpp/build/bin/llama-diffusion-cli",
+      "sha256": "7b19308f54838bcb26e747139b60d62848f247d2e3e2541d4f9bd79752d4fa47"
+    },
+    {
+      "bytes": 64264,
+      "path": "llama.cpp/build/bin/llama-embedding",
+      "sha256": "d439fd7f4ac6007b21f10e85b2d9a028711957b7098cfd577aca3e9d8d4b0927"
+    },
+    {
+      "bytes": 40672,
+      "path": "llama.cpp/build/bin/llama-eval-callback",
+      "sha256": "b0fe3ec2e1bf0cfdc60d0d079d6cb82457c082abdbe1df93c1d750178c16da1b"
+    },
+    {
+      "bytes": 89872,
+      "path": "llama.cpp/build/bin/llama-export-lora",
+      "sha256": "8651dde5b0734f52492a2c34801b377cafad26526f8cec55736c1dddc27ff95b"
+    },
+    {
+      "bytes": 40944,
+      "path": "llama.cpp/build/bin/llama-finetune",
+      "sha256": "e0b5166b85148bb61a309845e868af04571c187b4c52b39afd90f4c398a881c0"
+    },
+    {
+      "bytes": 15968,
+      "path": "llama.cpp/build/bin/llama-fit-params",
+      "sha256": "4665b842ec1577285e7e011deb354945b41231189282ee839481aec12324e5b8"
+    },
+    {
+      "bytes": 17008,
+      "path": "llama.cpp/build/bin/llama-gemma3-cli",
+      "sha256": "11b3424ff4223000ae897ac6ab4e4f19e4718f85797c659395ff5e5f04c72c9b"
+    },
+    {
+      "bytes": 60032,
+      "path": "llama.cpp/build/bin/llama-gen-docs",
+      "sha256": "20e7571d582df869edf2ec6be6134815fde8891adea90b9419d31b99b2011722"
+    },
+    {
+      "bytes": 28744,
+      "path": "llama.cpp/build/bin/llama-gguf",
+      "sha256": "0a93bbf78a1c336ac1a36fc22f813e174754fcbedd6c0758d6e5ea1fdf982c16"
+    },
+    {
+      "bytes": 99008,
+      "path": "llama.cpp/build/bin/llama-gguf-hash",
+      "sha256": "e953e1e939e918bf4fc002545fc45a22bf838f1467416bdad997b8b5114172fc"
+    },
+    {
+      "bytes": 48664,
+      "path": "llama.cpp/build/bin/llama-gguf-split",
+      "sha256": "f02b0d3969723df93603e263fd0700b8f72e9648847c6a1f361806a8a921e199"
+    },
+    {
+      "bytes": 40632,
+      "path": "llama.cpp/build/bin/llama-idle",
+      "sha256": "bc198288302fe102ff71966dc4d356e14c9e2fb211b442c1c9542484dd04b8b5"
+    },
+    {
+      "bytes": 339024,
+      "path": "llama.cpp/build/bin/llama-imatrix",
+      "sha256": "4615f3ac8f422bee8f8d609bb9949da8bce1d03bd1a734f16b4e7c5ca429f713"
+    },
+    {
+      "bytes": 17008,
+      "path": "llama.cpp/build/bin/llama-llava-cli",
+      "sha256": "11b3424ff4223000ae897ac6ab4e4f19e4718f85797c659395ff5e5f04c72c9b"
+    },
+    {
+      "bytes": 54688,
+      "path": "llama.cpp/build/bin/llama-lookahead",
+      "sha256": "b7c196d2ded28a746700a47cfa715f68945c59cb24f55d1434b1239c9d1dce2f"
+    },
+    {
+      "bytes": 56056,
+      "path": "llama.cpp/build/bin/llama-lookup",
+      "sha256": "a77e69fda3ff2c46d13cd3fdc8fba53bf2aa1f7e91410df154b3b451e70356e5"
+    },
+    {
+      "bytes": 37096,
+      "path": "llama.cpp/build/bin/llama-lookup-create",
+      "sha256": "affff5880e5143f26d2e6bbdf609651234fb391d99f21f0f89bb677c43333b30"
+    },
+    {
+      "bytes": 22368,
+      "path": "llama.cpp/build/bin/llama-lookup-merge",
+      "sha256": "2f114b0602033ee1db511467ead995eba00322936420fa6a3b254afbc14e1e66"
+    },
+    {
+      "bytes": 42328,
+      "path": "llama.cpp/build/bin/llama-lookup-stats",
+      "sha256": "9b3fb16569b46092b281f4f5aac1a0e1a25ac9fd98fe7df825ef8b934dd85fdb"
+    },
+    {
+      "bytes": 17008,
+      "path": "llama.cpp/build/bin/llama-minicpmv-cli",
+      "sha256": "11b3424ff4223000ae897ac6ab4e4f19e4718f85797c659395ff5e5f04c72c9b"
+    },
+    {
+      "bytes": 87816,
+      "path": "llama.cpp/build/bin/llama-mtmd-cli",
+      "sha256": "dc55ec0f3265c972095aaf8fe2fb787dbaf94e70e9e6ac6ad2825884d840f1c6"
+    },
+    {
+      "bytes": 54808,
+      "path": "llama.cpp/build/bin/llama-mtmd-debug",
+      "sha256": "fcca0436d1c001a154df5fb1044af20011827e3897268824ad42677a23878118"
+    },
+    {
+      "bytes": 68312,
+      "path": "llama.cpp/build/bin/llama-parallel",
+      "sha256": "2ddd2ac1bbaafb25b7f421139ef3c7758774e3b30e4c76cd761ac5c20a2919d6"
+    },
+    {
+      "bytes": 49736,
+      "path": "llama.cpp/build/bin/llama-passkey",
+      "sha256": "2c790cfaf8e79e9da611b85c6f62215f9efa98d20aabaa63d6cb515c436ae6bd"
+    },
+    {
+      "bytes": 15968,
+      "path": "llama.cpp/build/bin/llama-perplexity",
+      "sha256": "669a8ca28c5bf22d1f7560fc2f8adba20ef4b81faac395f96fcd518f0e745469"
+    },
+    {
+      "bytes": 21528,
+      "path": "llama.cpp/build/bin/llama-q8dot",
+      "sha256": "d2bacb13d903247d73c3c594c8f9aadb4b8b1136df732121760441e148a22ab8"
+    },
+    {
+      "bytes": 17920,
+      "path": "llama.cpp/build/bin/llama-quantize",
+      "sha256": "a15b7ea7de97aaefcb5fd61ec21447fab3dbe72b2d68f421dd46c77c47b629c3"
+    },
+    {
+      "bytes": 17008,
+      "path": "llama.cpp/build/bin/llama-qwen2vl-cli",
+      "sha256": "11b3424ff4223000ae897ac6ab4e4f19e4718f85797c659395ff5e5f04c72c9b"
+    },
+    {
+      "bytes": 46168,
+      "path": "llama.cpp/build/bin/llama-results",
+      "sha256": "59661f3eb91f88103195791482933c109f06f94d836285fdd5b900c272ab79e9"
+    },
+    {
+      "bytes": 69848,
+      "path": "llama.cpp/build/bin/llama-retrieval",
+      "sha256": "aa91c33cefb65e503b5da8885a3e15ac70e51c5a9f5485a2d0f9537ef54e5c71"
+    },
+    {
+      "bytes": 27344,
+      "path": "llama.cpp/build/bin/llama-simple",
+      "sha256": "abfee34b62e0cb227faa873d0140aa5c6fc26f8f0ae3d37847e1179a143dd8a9"
+    },
+    {
+      "bytes": 32688,
+      "path": "llama.cpp/build/bin/llama-simple-chat",
+      "sha256": "481d047aae92397fda3507a3553663343e9bbcc2a040dbfda16340efc5cddceb"
+    },
+    {
+      "bytes": 74776,
+      "path": "llama.cpp/build/bin/llama-speculative",
+      "sha256": "5404e3ff548e3a8bc0e6a1f4683019e9b9b46c44938c74dd07224b12d423d548"
+    },
+    {
+      "bytes": 82520,
+      "path": "llama.cpp/build/bin/llama-speculative-simple",
+      "sha256": "7fe46ff9557804ab79b570343f92e87e8d5808f60550d40eac7d1e4e715a504f"
+    },
+    {
+      "bytes": 196376,
+      "path": "llama.cpp/build/bin/llama-template-analysis",
+      "sha256": "bf30d0f954ecfa84a2e14c26bb01726d00bb940ca455aac84fea28e6caf0e6f0"
+    },
+    {
+      "bytes": 31896,
+      "path": "llama.cpp/build/bin/llama-tokenize",
+      "sha256": "9c6f7dfeabbf0c0d155d95882b5dcff44b855fe4b2860adf63b076ca6eff4b91"
+    },
+    {
+      "bytes": 423008,
+      "path": "llama.cpp/build/bin/llama-tts",
+      "sha256": "2c7b338b7d26d7a82e5fc27f70d9bfaf1bf6bb65b210acdfa5c0def66c24aa39"
+    },
+    {
+      "bytes": 22248,
+      "path": "llama.cpp/build/bin/llama-vdot",
+      "sha256": "cc4a37653573a2a39a26b8518814b785344f2df08e3435c9214df5264947e544"
+    },
+    {
+      "bytes": 50424,
+      "path": "llama.cpp/build/bin/test-alloc",
+      "sha256": "3f48308d582c3e687bade4eaee0d1a87f27891294282c68faac741df5d7acbb8"
+    },
+    {
+      "bytes": 56608,
+      "path": "llama.cpp/build/bin/test-arg-parser",
+      "sha256": "ba0efe4ae29d3c0442fb60f2db904bbb3fd9375e4d82bc087dc1743b4effafa2"
+    },
+    {
+      "bytes": 18208,
+      "path": "llama.cpp/build/bin/test-autorelease",
+      "sha256": "bd71afbf310d70b6bdbe8ec17ff3bd7aac9f5fc64e0cda5ec13749a35e2ff680"
+    },
+    {
+      "bytes": 1057560,
+      "path": "llama.cpp/build/bin/test-backend-ops",
+      "sha256": "05d102f40885c2910b69bc2b3171dde40f881bedc4ede35e839c9498e8bb92c9"
+    },
+    {
+      "bytes": 117520,
+      "path": "llama.cpp/build/bin/test-backend-sampler",
+      "sha256": "67a19609fda2e46db0ba4cf81aa1150f2265dc4e5a49b130f0d01c2122410430"
+    },
+    {
+      "bytes": 26456,
+      "path": "llama.cpp/build/bin/test-barrier",
+      "sha256": "58820d720baa5b4eeb5191ed316d8dc82145f684122a729fd164f93e96d551f9"
+    },
+    {
+      "bytes": 15776,
+      "path": "llama.cpp/build/bin/test-c",
+      "sha256": "f468ed1e64609c7332b384b174d43f9aab55722680ec1806f89359ab1433d5b7"
+    },
+    {
+      "bytes": 1247008,
+      "path": "llama.cpp/build/bin/test-chat",
+      "sha256": "e0197017fbe2e63aa2da4180fa3cc40951152a1fe241e895dacf1e9b8d654dd4"
+    },
+    {
+      "bytes": 766496,
+      "path": "llama.cpp/build/bin/test-chat-auto-parser",
+      "sha256": "21f5031e8c1e45e1ad9260c2a0c9cf4356b506efe43af25d67507a5b91fb0a00"
+    },
+    {
+      "bytes": 722336,
+      "path": "llama.cpp/build/bin/test-chat-peg-parser",
+      "sha256": "0618a7b4759eb72d0ee3af0ba6396db865eee2bcd5c242685b5467ca91acba81"
+    },
+    {
+      "bytes": 317672,
+      "path": "llama.cpp/build/bin/test-chat-template",
+      "sha256": "884294217faf4777274ec3d2f3bcdd7a78b183517fc46c3cebffd6115cabcaf7"
+    },
+    {
+      "bytes": 17856,
+      "path": "llama.cpp/build/bin/test-col2im-1d",
+      "sha256": "f325bc40ebbf062a63dc40f85b816c719c14fe1cc55816d6199baf025e7118aa"
+    },
+    {
+      "bytes": 23104,
+      "path": "llama.cpp/build/bin/test-gbnf-validator",
+      "sha256": "42cadd906b60dd838c7dba2be84f11df8f29f02371f96a33ebd619f5dba7b6ec"
+    },
+    {
+      "bytes": 86296,
+      "path": "llama.cpp/build/bin/test-gguf",
+      "sha256": "3a45f99ce0a7ec1f090c1e7ae53e0cb8d9b0c4c4d8cbdaf80bf72bee5c9bcce2"
+    },
+    {
+      "bytes": 239152,
+      "path": "llama.cpp/build/bin/test-grammar-integration",
+      "sha256": "a00a417004a47ec8c5c2a2dfa03779ae402ff896e6774a240bc2273263afc7d8"
+    },
+    {
+      "bytes": 45208,
+      "path": "llama.cpp/build/bin/test-grammar-parser",
+      "sha256": "9415ac30d3d6adb92a2f7a301f4ee3042b0b83a7f3eb246257c37357dffdddbf"
+    },
+    {
+      "bytes": 738992,
+      "path": "llama.cpp/build/bin/test-jinja",
+      "sha256": "78d7853698260e0cbb0b8a73fceebddb60349c0860966558094a0ab191d30a4f"
+    },
+    {
+      "bytes": 411920,
+      "path": "llama.cpp/build/bin/test-json-schema-to-grammar",
+      "sha256": "e77e47cac969c9012cdac16f0c3a2362774b4e1ed26a96c012c6ef1342a315fb"
+    },
+    {
+      "bytes": 67696,
+      "path": "llama.cpp/build/bin/test-llama-archs",
+      "sha256": "758aaac2d3ca8719bd9b38aba8db51b6347c09a13ca46338fa62799ee78f0459"
+    },
+    {
+      "bytes": 46992,
+      "path": "llama.cpp/build/bin/test-llama-grammar",
+      "sha256": "813aeeb6cfd185345de32d0a92c34bf86ece7eeab5d78146e5392c1da6f712fe"
+    },
+    {
+      "bytes": 18312,
+      "path": "llama.cpp/build/bin/test-log",
+      "sha256": "e0bb5951872271bdf5183677cb58bf378b590f08fc3799f1a14362c224e355dc"
+    },
+    {
+      "bytes": 16512,
+      "path": "llama.cpp/build/bin/test-model-load-cancel",
+      "sha256": "77e66f703e48197676ea7ece19c2c8297fb1eb9dc34d564aef205e39520db9ef"
+    },
+    {
+      "bytes": 16952,
+      "path": "llama.cpp/build/bin/test-mtmd-c-api",
+      "sha256": "66a0f27b1b63b940e52f63e9f6f31088501bda2448073fc308f18181fe84db1f"
+    },
+    {
+      "bytes": 68944,
+      "path": "llama.cpp/build/bin/test-opt",
+      "sha256": "337ce133295ca559c8e79e078399fcad52c8fdcd748c51b31b9d29f0c134ad8a"
+    },
+    {
+      "bytes": 1026072,
+      "path": "llama.cpp/build/bin/test-peg-parser",
+      "sha256": "d16752cd2e3edd97fc17336aabaae8a48517e2292f1fa3dfee2e021833d82d27"
+    },
+    {
+      "bytes": 17800,
+      "path": "llama.cpp/build/bin/test-quantize-fns",
+      "sha256": "ad965ddedb9efa5ae8b736c51e3bd096f0d40d61e88bc189dc0100462b52c864"
+    },
+    {
+      "bytes": 42096,
+      "path": "llama.cpp/build/bin/test-quantize-perf",
+      "sha256": "9d46036ba081037a4f232636a2978496b41fb241e7d483f20b832d85272d9cff"
+    },
+    {
+      "bytes": 232472,
+      "path": "llama.cpp/build/bin/test-quantize-stats",
+      "sha256": "8de79f00ec7fbf4d36f4358c157807ce86256f93a4653c6868ceb0e703e7e0b3"
+    },
+    {
+      "bytes": 35432,
+      "path": "llama.cpp/build/bin/test-reasoning-budget",
+      "sha256": "7d2e0af2a0b34a309502c329dce9f0ee57d73a23af413ccd6bf513a4e68a6ad0"
+    },
+    {
+      "bytes": 45288,
+      "path": "llama.cpp/build/bin/test-recurrent-state-rollback",
+      "sha256": "013c8e333d5b84770a23a39a835d9df1db2358debb1d4ac3cc487f0001dbc76d"
+    },
+    {
+      "bytes": 59456,
+      "path": "llama.cpp/build/bin/test-regex-partial",
+      "sha256": "35c3f7730fbaa5fa27b50f56c3eec7f69250f1e1ecadd0d90e20c1742bd86602"
+    },
+    {
+      "bytes": 21568,
+      "path": "llama.cpp/build/bin/test-rope",
+      "sha256": "8f8acd28a1eaba7e944961270e3091b3377700be889ec79a35e6cc4a59c7c57e"
+    },
+    {
+      "bytes": 50520,
+      "path": "llama.cpp/build/bin/test-sampling",
+      "sha256": "dd8f2ae3a63dad73ef7c588e2a2c5b5de0bc32d838f23a6869dfa029259e57aa"
+    },
+    {
+      "bytes": 59712,
+      "path": "llama.cpp/build/bin/test-save-load-state",
+      "sha256": "8c4a7a2402bed1dd084f3da4d87f8f16197cba5ff575b95ccfc29bf98ee9a4b6"
+    },
+    {
+      "bytes": 41040,
+      "path": "llama.cpp/build/bin/test-state-restore-fragmented",
+      "sha256": "c686da8e9625bf7fb2ffa2979c41039a2efc51c4db098d1c5559761eebe56165"
+    },
+    {
+      "bytes": 51440,
+      "path": "llama.cpp/build/bin/test-thread-safety",
+      "sha256": "e280c462e84186b6e9d568689f722817e402907e698213f131c53980fa57ecc6"
+    },
+    {
+      "bytes": 53336,
+      "path": "llama.cpp/build/bin/test-tokenizer-0",
+      "sha256": "b95a0e3b6daa59bb87dceff5a80085e715776f9210a3b1b01295dc11ef85f09d"
+    },
+    {
+      "bytes": 28024,
+      "path": "llama.cpp/build/bin/test-tokenizer-1-bpe",
+      "sha256": "3f137d1ea485dce8eef36f29190291c587b7ab8dd15242fa1d1fab9d323ca7ba"
+    },
+    {
+      "bytes": 23408,
+      "path": "llama.cpp/build/bin/test-tokenizer-1-spm",
+      "sha256": "11950324ec709a68fef1162fb42742d4c25dd009246f88d1fb66a9e07cd7640e"
+    }
+  ],
+  "schema": "saea-runtime-receipt-v2",
+  "study": "speech-aware-evidence-acquisition"
+}
