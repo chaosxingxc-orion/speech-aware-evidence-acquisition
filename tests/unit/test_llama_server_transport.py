@@ -44,11 +44,23 @@ from speech_aware_evidence_acquisition.core.session import (
 # R0 repair T5 fix-2 (materially equivalent gap a re-review demonstrated:
 # PID/binary identity alone does not prove the pid OWNS the listening socket
 # on the claimed port): the shared process must also genuinely bind and
-# LISTEN on 127.0.0.1:8080 -- the literal base_url every test in this file
-# already hardcodes -- for real, not merely sleep.
+# LISTEN on 127.0.0.1:<port> -- every test in this file uses the same
+# base_url via ``_base_url()`` below -- for real, not merely sleep.
+#
+# 2026-08-09 (ephemeral port, do not re-hardcode 8080): this module used to
+# hardcode _LIVE_PORT = 8080 and every base_url string to match. 8080 is
+# also the port real experiments serve llama-server on; measured live, a
+# real llama-server already listening on 8080 made this fixture's own
+# readiness probe (a bare ``socket.create_connection`` to the hardcoded
+# port) report success while the fixture's OWN bind() had actually failed
+# with EADDRINUSE, so every test then failed downstream with a confusing
+# "pid does not own the listening socket" error instead of a clear setup
+# failure. The fixture now binds port 0 (OS-assigned, collision-free by
+# construction) and the spawned child reports back the exact port it got;
+# see ``_spawn_live_matching_process`` for how readiness is proven from
+# that self-report rather than assumed from a hardcoded literal.
 
 _BINARY_PATH = "llama.cpp/build/bin/llama-server"
-_LIVE_PORT = 8080
 _MODEL_FILES = (
     ModelFileRef(path="models/qwen3-omni/model.gguf", sha256="a" * 64),
     ModelFileRef(path="models/qwen3-omni/mmproj.gguf", sha256="b" * 64),
@@ -59,7 +71,9 @@ _live: dict[str, object] = {}
 
 @pytest.fixture(scope="module", autouse=True)
 def _spawn_live_matching_process(tmp_path_factory):
+    import queue
     import socket
+    import threading
     import time
 
     base = tmp_path_factory.mktemp("session-world")
@@ -71,12 +85,17 @@ def _spawn_live_matching_process(tmp_path_factory):
         binary.chmod(0o755)
     _live["runtime_root"] = runtime_root
     _live["binary_sha256"] = hashlib.sha256(binary.read_bytes()).hexdigest()
+    # bind(('127.0.0.1', 0)) asks the OS for an unused ephemeral port --
+    # collision-free by construction, unlike a hardcoded literal (see
+    # 2026-08-09 note above). The child prints back the exact port it was
+    # handed so the parent never has to assume a number.
     listener_code = (
         "import socket, time\n"
         "s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)\n"
         "s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)\n"
-        f"s.bind(('127.0.0.1', {_LIVE_PORT}))\n"
+        "s.bind(('127.0.0.1', 0))\n"
         "s.listen(1)\n"
+        "print(s.getsockname()[1], flush=True)\n"
         "time.sleep(300)\n"
     )
     # Fresh-spawn retry (not just a longer wait): this sandboxed Windows
@@ -85,29 +104,70 @@ def _spawn_live_matching_process(tmp_path_factory):
     # waiting longer on a possibly wedged one.
     process = None
     last_error = None
+    live_port = None
     for _attempt in range(3):
         process = subprocess.Popen(
             [str(binary), "-c", listener_code],
-            stdout=subprocess.DEVNULL,
+            stdout=subprocess.PIPE,
             stderr=subprocess.DEVNULL,
+            text=True,
         )
-        deadline = time.monotonic() + 15.0
-        connected = False
-        while time.monotonic() < deadline:
+        # Readiness proof, three independent legs -- a bare connect()
+        # succeeding is NOT proof (that is exactly the T5 fix-2 defect this
+        # fixture exists to demonstrate, and hardcoding a port made it
+        # trivial to reintroduce by accident): (1) the child itself -- the
+        # only party that actually knows which ephemeral port the OS gave
+        # it -- self-reports that port over stdout; (2) the child process is
+        # still alive at the moment we check; (3) a real connect() to
+        # EXACTLY that self-reported port succeeds.
+        port_box: "queue.Queue[str]" = queue.Queue(maxsize=1)
+
+        def _read_port_line(stream=process.stdout, box=port_box):
+            box.put(stream.readline())
+
+        threading.Thread(target=_read_port_line, daemon=True).start()
+        try:
+            reported = port_box.get(timeout=15.0)
+        except queue.Empty:
+            reported = ""
+        candidate_port = None
+        if reported and process.poll() is None:
             try:
-                with socket.create_connection(("127.0.0.1", _LIVE_PORT), timeout=0.5):
-                    connected = True
-                    break
-            except OSError as error:
-                last_error = error
-                time.sleep(0.05)
-        if connected:
+                candidate_port = int(reported.strip())
+            except ValueError:
+                last_error = f"listener printed non-port garbage: {reported!r}"
+                candidate_port = None
+        elif not reported:
+            last_error = "listener never printed a port before the 15s deadline"
+        elif process.poll() is not None:
+            last_error = f"listener exited early (returncode={process.poll()})"
+        if candidate_port is not None:
+            deadline = time.monotonic() + 5.0
+            while time.monotonic() < deadline:
+                try:
+                    with socket.create_connection(
+                        ("127.0.0.1", candidate_port), timeout=0.5
+                    ):
+                        live_port = candidate_port
+                        break
+                except OSError as error:
+                    last_error = error
+                    time.sleep(0.05)
+        if live_port is not None:
             break
         process.kill()
+        try:
+            process.wait(timeout=5)
+        except subprocess.TimeoutExpired:
+            pass
         process = None
     if process is None:
-        raise AssertionError(f"nothing ever listened on 127.0.0.1:{_LIVE_PORT}: {last_error}")
+        raise AssertionError(
+            f"no spawned listener ever self-reported and confirmed a live port "
+            f"on 127.0.0.1: {last_error}"
+        )
     _live["pid"] = process.pid
+    _live["port"] = live_port
     yield
     process.terminate()
     try:
@@ -124,7 +184,16 @@ def _fake_runtime_receipt():
     }
 
 
-def _fake_session(*, host="127.0.0.1", port=8080):
+def _base_url():
+    """The fixture's ephemeral port, read only after the module-scoped
+    fixture has run (never a hardcoded literal -- see 2026-08-09 note)."""
+
+    return f"http://127.0.0.1:{_live['port']}"
+
+
+def _fake_session(*, host="127.0.0.1", port=None):
+    if port is None:
+        port = _live["port"]
     return SessionReceipt(
         schema=SESSION_RECEIPT_SCHEMA,
         study=STUDY_SLUG,
@@ -192,14 +261,14 @@ def test_body_mapping_and_response_projection(tmp_path):
         captured["body"] = json.loads(body)
         return _canned_response()
 
-    transport = _transport("http://127.0.0.1:8080", tmp_path, post=fake_post)
+    transport = _transport(_base_url(), tmp_path, post=fake_post)
     raw = transport(json.dumps(_boundary_payload(tmp_path)).encode())
     result = json.loads(raw)
     assert result == {
         "text": "hello world",
         "usage": {"prompt_tokens": 7, "completion_tokens": 2},
     }
-    assert captured["url"] == "http://127.0.0.1:8080/v1/chat/completions"
+    assert captured["url"] == f"{_base_url()}/v1/chat/completions"
     body = captured["body"]
     assert body["temperature"] == 0
     assert body["seed"] == 20260803
@@ -232,7 +301,7 @@ def test_usage_with_nested_detail_objects_keeps_scalar_counters_only(tmp_path):
             }
         ).encode()
 
-    transport = _transport("http://127.0.0.1:8080", tmp_path, post=fake_post)
+    transport = _transport(_base_url(), tmp_path, post=fake_post)
     result = json.loads(transport(json.dumps(_boundary_payload(tmp_path)).encode()))
     assert result["text"] == "transcript text"
     assert result["usage"] == {
@@ -262,7 +331,7 @@ def test_http_error_surfaces_status_and_server_body(tmp_path):
             ),
         )
 
-    transport = _transport("http://127.0.0.1:8080", tmp_path, post=fake_post)
+    transport = _transport(_base_url(), tmp_path, post=fake_post)
     with pytest.raises(FrozenCoreError, match="HTTP 400.*exceeds the available context"):
         transport(json.dumps(_boundary_payload(tmp_path)).encode())
 
@@ -277,7 +346,7 @@ def test_evidence_items_become_text_parts(tmp_path):
         assert parts[0] == {"type": "text", "text": "[evidence ev-1] context text"}
         return _canned_response()
 
-    transport = _transport("http://127.0.0.1:8080", tmp_path, post=fake_post)
+    transport = _transport(_base_url(), tmp_path, post=fake_post)
     payload = _boundary_payload(
         tmp_path,
         supplied_evidence=[
@@ -306,7 +375,7 @@ def test_content_order_is_evidence_then_audio_when_evidence_present(tmp_path):
         assert parts[1]["type"] == "input_audio"
         return _canned_response()
 
-    transport = _transport("http://127.0.0.1:8080", tmp_path, post=fake_post)
+    transport = _transport(_base_url(), tmp_path, post=fake_post)
     payload = _boundary_payload(
         tmp_path,
         supplied_evidence=[
@@ -323,7 +392,7 @@ def test_content_order_is_audio_alone_when_no_evidence(tmp_path):
         assert [part["type"] for part in parts] == ["input_audio"]
         return _canned_response()
 
-    transport = _transport("http://127.0.0.1:8080", tmp_path, post=fake_post)
+    transport = _transport(_base_url(), tmp_path, post=fake_post)
     payload = _boundary_payload(tmp_path)
     assert "supplied_evidence" not in payload
     assert "retrieved_evidence" not in payload
@@ -345,7 +414,7 @@ def test_content_order_preserves_multi_evidence_order_before_audio(tmp_path):
         assert parts[2] == {"type": "text", "text": "[evidence ret-1] retrieved one"}
         return _canned_response()
 
-    transport = _transport("http://127.0.0.1:8080", tmp_path, post=fake_post)
+    transport = _transport(_base_url(), tmp_path, post=fake_post)
     payload = _boundary_payload(
         tmp_path,
         supplied_evidence=[
@@ -366,7 +435,7 @@ def test_content_order_preserves_multi_evidence_order_before_audio(tmp_path):
 
 def test_missing_media_fails_closed(tmp_path):
     transport = _transport(
-        "http://127.0.0.1:8080", tmp_path, post=lambda u, b: _canned_response()
+        _base_url(), tmp_path, post=lambda u, b: _canned_response()
     )
     payload = _boundary_payload(tmp_path, media_relpath="media/absent.mp3")
     with pytest.raises(FileNotFoundError):
@@ -379,7 +448,7 @@ def test_decoding_params_cannot_override_constructed_messages(tmp_path):
     audio while the adapter still meters it as delivered)."""
 
     transport = _transport(
-        "http://127.0.0.1:8080", tmp_path, post=lambda u, b: _canned_response()
+        _base_url(), tmp_path, post=lambda u, b: _canned_response()
     )
     payload = _boundary_payload(tmp_path, decoding_params={"messages": []})
     with pytest.raises(FrozenCoreError, match="messages"):
@@ -394,7 +463,7 @@ def test_malformed_usage_value_raises_frozen_core_error(tmp_path):
         }
     ).encode()
     transport = _transport(
-        "http://127.0.0.1:8080", tmp_path, post=lambda u, b: response
+        _base_url(), tmp_path, post=lambda u, b: response
     )
     with pytest.raises(FrozenCoreError, match="malformed"):
         transport(json.dumps(_boundary_payload(tmp_path)).encode())
@@ -428,7 +497,7 @@ def test_absolute_media_relpath_outside_data_root_is_refused_not_read(tmp_path):
 
     data_root = tmp_path / "data"
     data_root.mkdir()
-    transport = _transport("http://127.0.0.1:8080", data_root, post=_canary_post)
+    transport = _transport(_base_url(), data_root, post=_canary_post)
     payload = _boundary_payload(data_root, media_relpath=str(secret))
     with pytest.raises(FrozenCoreError, match="media_relpath"):
         transport(json.dumps(payload).encode())
@@ -436,7 +505,7 @@ def test_absolute_media_relpath_outside_data_root_is_refused_not_read(tmp_path):
 
 def test_drive_letter_media_relpath_refused_at_transport(tmp_path):
     transport = _transport(
-        "http://127.0.0.1:8080", tmp_path, post=lambda u, b: _canned_response()
+        _base_url(), tmp_path, post=lambda u, b: _canned_response()
     )
     payload = _boundary_payload(tmp_path, media_relpath="C:/secret.txt")
     with pytest.raises(FrozenCoreError, match="media_relpath"):
@@ -445,7 +514,7 @@ def test_drive_letter_media_relpath_refused_at_transport(tmp_path):
 
 def test_backslash_media_relpath_refused_at_transport(tmp_path):
     transport = _transport(
-        "http://127.0.0.1:8080", tmp_path, post=lambda u, b: _canned_response()
+        _base_url(), tmp_path, post=lambda u, b: _canned_response()
     )
     payload = _boundary_payload(tmp_path, media_relpath="media\\5000001.mp3")
     with pytest.raises(FrozenCoreError, match="media_relpath"):
@@ -454,7 +523,7 @@ def test_backslash_media_relpath_refused_at_transport(tmp_path):
 
 def test_traversal_media_relpath_refused_at_transport(tmp_path):
     transport = _transport(
-        "http://127.0.0.1:8080", tmp_path, post=lambda u, b: _canned_response()
+        _base_url(), tmp_path, post=lambda u, b: _canned_response()
     )
     payload = _boundary_payload(tmp_path, media_relpath="../outside/secret.mp3")
     with pytest.raises(FrozenCoreError, match="media_relpath"):
@@ -466,7 +535,7 @@ def test_missing_media_still_raises_file_not_found_after_confinement_check(tmp_p
     behavior for a syntactically clean, in-root relative path."""
 
     transport = _transport(
-        "http://127.0.0.1:8080", tmp_path, post=lambda u, b: _canned_response()
+        _base_url(), tmp_path, post=lambda u, b: _canned_response()
     )
     payload = _boundary_payload(tmp_path, media_relpath="media/absent.mp3")
     with pytest.raises(FileNotFoundError):
@@ -483,7 +552,7 @@ def test_media_relpath_symlink_escape_refused_at_transport(tmp_path):
     (data_root / "media_link").symlink_to(outside, target_is_directory=True)
 
     transport = _transport(
-        "http://127.0.0.1:8080", data_root, post=lambda u, b: _canned_response()
+        _base_url(), data_root, post=lambda u, b: _canned_response()
     )
     payload = _boundary_payload(data_root, media_relpath="media_link/leaked.mp3")
     with pytest.raises(FrozenCoreError, match="media_relpath"):
@@ -516,7 +585,7 @@ def test_media_relpath_windows_junction_escape_refused_at_transport(tmp_path):
         )
 
     transport = _transport(
-        "http://127.0.0.1:8080", data_root, post=lambda u, b: _canned_response()
+        _base_url(), data_root, post=lambda u, b: _canned_response()
     )
     payload = _boundary_payload(data_root, media_relpath="media_link/leaked.mp3")
     with pytest.raises(FrozenCoreError, match="escapes"):
@@ -532,7 +601,7 @@ def test_media_relpath_windows_junction_escape_refused_at_transport(tmp_path):
 
 def test_media_relpath_trailing_dot_segment_refused_at_transport(tmp_path):
     transport = _transport(
-        "http://127.0.0.1:8080", tmp_path, post=lambda u, b: _canned_response()
+        _base_url(), tmp_path, post=lambda u, b: _canned_response()
     )
     payload = _boundary_payload(tmp_path, media_relpath="media/5000001.mp3.")
     with pytest.raises(FrozenCoreError, match="media_relpath"):
@@ -541,7 +610,7 @@ def test_media_relpath_trailing_dot_segment_refused_at_transport(tmp_path):
 
 def test_media_relpath_trailing_space_segment_refused_at_transport(tmp_path):
     transport = _transport(
-        "http://127.0.0.1:8080", tmp_path, post=lambda u, b: _canned_response()
+        _base_url(), tmp_path, post=lambda u, b: _canned_response()
     )
     payload = _boundary_payload(tmp_path, media_relpath="media/5000001.mp3 ")
     with pytest.raises(FrozenCoreError, match="media_relpath"):
@@ -550,7 +619,7 @@ def test_media_relpath_trailing_space_segment_refused_at_transport(tmp_path):
 
 def test_media_relpath_colon_in_segment_refused_at_transport(tmp_path):
     transport = _transport(
-        "http://127.0.0.1:8080", tmp_path, post=lambda u, b: _canned_response()
+        _base_url(), tmp_path, post=lambda u, b: _canned_response()
     )
     payload = _boundary_payload(tmp_path, media_relpath="media/5000001.mp3:hidden")
     with pytest.raises(FrozenCoreError, match="media_relpath"):
