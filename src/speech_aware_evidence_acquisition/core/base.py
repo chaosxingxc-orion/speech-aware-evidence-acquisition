@@ -67,11 +67,87 @@ class EvidenceError(RuntimeError):
 
 
 @dataclass(frozen=True)
+class DerivedEvidenceRecord:
+    """One evidence item's derivation chain (2026-08-09, ``docs/readiness/
+    2026-08-09-conec-evidence-shape.md`` "Blocking gap"): the evidence-layer
+    counterpart to ``core.model.slices.SliceRecord`` for runtime audio
+    slices. ``core.driver.run_experiment`` used to bind evidence identity by
+    hashing the carrier's RAW per-sample file and checking that hash against
+    whatever content an evidence source actually returned -- correct for a
+    verbatim passthrough (``conec-contexts``), but it fails closed on every
+    source that TRANSFORMS that content (a capped bias list, reconstructed
+    phrases, a carrier-independent distractor list, ...), because the
+    transformed bytes never equal the raw file's D1-frozen hash.
+
+    The fix extends the chain rather than weakening the rail (exactly the
+    audio precedent): a transforming evidence source builds one of these
+    records alongside its :class:`EvidenceItem`, naming the untransformed
+    SOURCE it read, the PINNED transform (name+version) it applied, a hash of
+    the params that governed the transform, and the resulting derived
+    content's own hash. ``core.evidence_derivation.DerivedEvidenceRegistry``
+    re-derives every one of those links independently before the content is
+    trusted to reach a prompt -- see that module's docstring for the exact
+    four conditions and which refusal names which broken link.
+
+    ``carrier_bound`` (default ``True``): ``source_relpath``/``source_sha256``
+    name a SINGLE per-sample carrier file (the SAME relative-path convention
+    ``core.evidence.evidence_file_relpath`` already uses), whose identity the
+    EXISTING, UNCHANGED D1 evidence rail
+    (``contracts.gate_evidence_identity``) independently re-verifies via
+    ``core.driver.run_experiment``'s ``binding.evidence_relpaths``/
+    ``evidence_contents`` -- now scoped to the SOURCE bytes, never the
+    derived ones. ``carrier_bound=False`` is the HONEST alternative for
+    evidence built from files that carry no D1-recorded per-sample identity
+    at all (e.g. the shared ``bias_lists/`` corpus): ``source_relpath``/
+    ``source_sha256`` then name a COMBINED, canonically-ordered manifest of
+    those files, identity rests SOLELY on this record's own re-derived chain
+    (weaker than the D1-anchored case), and the record says so plainly
+    instead of fabricating a per-sample carrier binding it cannot back up.
+    """
+
+    sample_id: str
+    source_relpath: str
+    source_sha256: str
+    transform_name: str
+    transform_version: str
+    params_hash: str
+    derived_sha256: str
+    carrier_bound: bool = True
+
+    def trace_view(self) -> dict[str, object]:
+        """The record as a JSON-safe mapping for trace/derivation artifacts."""
+
+        return {
+            "sample_id": self.sample_id,
+            "source_relpath": self.source_relpath,
+            "source_sha256": self.source_sha256,
+            "transform_name": self.transform_name,
+            "transform_version": self.transform_version,
+            "params_hash": self.params_hash,
+            "derived_sha256": self.derived_sha256,
+            "carrier_bound": self.carrier_bound,
+        }
+
+
+@dataclass(frozen=True)
 class EvidenceItem:
     evidence_id: str
     source_uri: str
     content: str
     provenance: Mapping[str, str]
+    # Derivation-chain rail (2026-08-09): optional, defaulted so every
+    # pre-existing direct construction (this module's own "none" source, unit
+    # tests building a bare EvidenceItem) is unaffected. A transforming
+    # evidence source (core.evidence's conec-bias-list/distractor-only-
+    # bias-list) sets both: `derivation` is the claim, `derivation_source_
+    # bytes` is the untransformed source bytes the source function actually
+    # read (kept OFF the runtime/provenance views below -- never crosses the
+    # information boundary, it exists purely for
+    # core.evidence_derivation.DerivedEvidenceRegistry to re-verify against,
+    # zero extra I/O, mirroring verify_evidence_content_identity's own
+    # "check the bytes already read" discipline).
+    derivation: DerivedEvidenceRecord | None = None
+    derivation_source_bytes: bytes | None = None
 
     def validate(self) -> "EvidenceItem":
         for label, value in (

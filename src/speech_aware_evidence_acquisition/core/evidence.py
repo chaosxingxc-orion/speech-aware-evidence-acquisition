@@ -29,27 +29,46 @@ config plumbing only, no new registry, no new call site.
 
 See ``core.bias_lists``' own module docstring for: why only the entity-
 extraction rule (not a raw-text passthrough) satisfies B-2a's leakage
-constraint, the real yield measured against the materialized ConEC corpus,
-and a KNOWN GAP left open by this task (``conec-bias-list``'s transformed
-content will trip the D1 evidence-CONTENT-identity check on an actual gated
-model run; fixing that is separate, reviewed engineering, not done here).
+constraint and the real yield measured against the materialized ConEC
+corpus.
+
+Derivation-chain rail (2026-08-09, ``docs/readiness/2026-08-09-conec-
+evidence-shape.md`` "Blocking gap", now CLOSED): ``conec-contexts``,
+``conec-bias-list`` and ``distractor-only-bias-list`` each build a
+``core.base.DerivedEvidenceRecord`` alongside their ``EvidenceItem`` --
+``core.driver.run_experiment`` hands every one of them to
+``core.evidence_derivation.DerivedEvidenceRegistry`` before a run proceeds,
+so identity stays provable for TRANSFORMED evidence exactly the way
+``core.model.slices.SliceRegistry`` already proves it for runtime-derived
+AUDIO. ``conec-contexts``'s record uses the ``identity`` transform (its
+content is unchanged, byte-identical to before this rail existed);
+``conec-bias-list``'s and ``distractor-only-bias-list``'s content is built by
+calling the SAME pinned, registered transform functions
+(``core.bias_lists.conec_bias_list_content``/``distractor_only_content``)
+the registry independently re-invokes to verify them.
 """
 
 from __future__ import annotations
 
+import hashlib
 from pathlib import Path
 from typing import Mapping
 
 from ..data.carriers import CarrierDescriptorError, get_carrier_descriptor
 from ..data.lock import asset_dir, lock_entry
 from ..e0.artifacts import sha256_file
-from .base import EVIDENCE_SOURCES, EvidenceError, EvidenceItem
+from .base import EVIDENCE_SOURCES, DerivedEvidenceRecord, EvidenceError, EvidenceItem
 from .bias_lists import (
+    conec_bias_list_content,
+    distractor_only_content,
+    distractor_only_source_document,
+    distractor_only_source_texts,
     distractor_only_terms,
     extract_bias_candidates,
     format_bias_list_content,
     resolve_bias_list_max_entries,
 )
+from .evidence_derivation import canonical_params_hash
 
 
 class OracleEvidenceError(RuntimeError):
@@ -135,11 +154,32 @@ def _conec_contexts(
         content = path.read_text(encoding="utf-8")
     except (OSError, UnicodeError) as error:
         raise EvidenceError(f"cannot read conec context {path}: {error}") from error
+    # Derivation-chain rail (module docstring): a verbatim passthrough is
+    # still a transform -- the "identity" one -- so it carries a genuine
+    # DerivedEvidenceRecord too, rather than being a case the registry has to
+    # special-case. derived_sha256 == source_sha256 by construction (identity
+    # never changes a byte), which is exactly what
+    # core.evidence_derivation.DerivedEvidenceRegistry re-proves when it
+    # re-invokes the "identity" transform.
+    source_bytes = content.encode("utf-8")
+    source_sha256 = hashlib.sha256(source_bytes).hexdigest()
+    derivation = DerivedEvidenceRecord(
+        sample_id=sample_id,
+        source_relpath=evidence_file_relpath(lock, carrier_lock_key, sample_id),
+        source_sha256=source_sha256,
+        transform_name="identity",
+        transform_version="v1",
+        params_hash=canonical_params_hash({}),
+        derived_sha256=source_sha256,
+        carrier_bound=True,
+    )
     item = EvidenceItem(
         evidence_id=f"{layout.lock_key}/{sample_id}",
         source_uri=f"{layout.lock_key}://{relpath}",
         content=content,
         provenance={"lock_key": layout.lock_key, "relpath": relpath, "sha256": sha256_file(path)},
+        derivation=derivation,
+        derivation_source_bytes=source_bytes,
     )
     return [item.validate()]
 
@@ -184,22 +224,36 @@ def _conec_bias_list(
             f"context for sample {sample_id!r}; refusing to emit an empty "
             "bias list"
         )
-    header = (
-        f"ConEC-derived bias candidates for this call ({len(candidates)} of "
-        f"max {max_entries}), extracted deterministically from the call's own "
-        "ConEC context materials (participant/press-release vocabulary; no "
-        "model, no reference transcript):"
+    params: dict[str, object] = {"max_entries": max_entries}
+    # The SAME registered transform (core.evidence_derivation.TRANSFORMS)
+    # core.evidence_derivation.DerivedEvidenceRegistry will independently
+    # re-invoke to verify this item's derivation chain -- one implementation,
+    # never a second copy built inline here.
+    content = conec_bias_list_content(raw_item.content, params)
+    derived_sha256 = hashlib.sha256(content.encode("utf-8")).hexdigest()
+    source_record = raw_item.derivation
+    derivation = DerivedEvidenceRecord(
+        sample_id=sample_id,
+        source_relpath=source_record.source_relpath,
+        source_sha256=source_record.source_sha256,
+        transform_name="conec-bias-list",
+        transform_version="v1",
+        params_hash=canonical_params_hash(params),
+        derived_sha256=derived_sha256,
+        carrier_bound=True,
     )
     item = EvidenceItem(
         evidence_id=f"conec-bias-list/{sample_id}",
         source_uri=f"conec-bias-list://{raw_item.provenance['relpath']}",
-        content=format_bias_list_content(candidates, header),
+        content=content,
         provenance={
             **raw_item.provenance,
             "extraction": "conec-bias-list-v1",
             "candidate_count": len(candidates),
             "max_entries": max_entries,
         },
+        derivation=derivation,
+        derivation_source_bytes=raw_item.derivation_source_bytes,
     )
     return [item.validate()]
 
@@ -239,10 +293,46 @@ def _distractor_only_bias_list(
         "ABSENT from its reference-derived oracle list (negative control; no "
         "reference-transcript content):"
     )
+    content = format_bias_list_content(candidates, header)
+    # Carrier-independent derivation chain (core.base.DerivedEvidenceRecord
+    # docstring): this arm never reads a per-sample carrier file, so its
+    # SOURCE is the COMBINED text of the two shipped bias_lists/ files
+    # (never a fabricated single-file per-sample path). Re-read here purely
+    # to build that combined document; `content` above is unchanged from
+    # before this rail existed.
+    oracle_text, distractor_text, oracle_relpath, distractor_relpath = (
+        distractor_only_source_texts(lock, root)
+    )
+    params: dict[str, object] = {"max_entries": max_entries}
+    source_document = distractor_only_source_document(
+        oracle_text, distractor_text, oracle_relpath, distractor_relpath
+    )
+    source_bytes = source_document.encode("utf-8")
+    # Internal consistency guard: the registered transform (the SAME one
+    # core.evidence_derivation.DerivedEvidenceRegistry will independently
+    # re-invoke) must reproduce `content` exactly -- catches a future
+    # refactor that lets the two computations drift apart, before a run ever
+    # gets as far as the registry's own refusal.
+    transform_content = distractor_only_content(source_document, params)
+    if transform_content != content:
+        raise EvidenceError(
+            "distractor-only-bias-list internal consistency check failed: the "
+            "registered transform disagrees with the direct computation"
+        )
+    derivation = DerivedEvidenceRecord(
+        sample_id=sample_id,
+        source_relpath=f"{oracle_relpath}+{distractor_relpath}",
+        source_sha256=hashlib.sha256(source_bytes).hexdigest(),
+        transform_name="distractor-only",
+        transform_version="v1",
+        params_hash=canonical_params_hash(params),
+        derived_sha256=hashlib.sha256(content.encode("utf-8")).hexdigest(),
+        carrier_bound=False,
+    )
     item = EvidenceItem(
         evidence_id=f"distractor-only-bias-list/{sample_id}",
         source_uri=f"distractor-only-bias-list://{facts['distractor_relpath']}",
-        content=format_bias_list_content(candidates, header),
+        content=content,
         provenance={
             "lock_key": "earnings21-original",
             "relpath": facts["distractor_relpath"],
@@ -254,6 +344,8 @@ def _distractor_only_bias_list(
             "oracle_sha256": facts["oracle_sha256"],
             "distractor_only_total": facts["distractor_only_total"],
         },
+        derivation=derivation,
+        derivation_source_bytes=source_bytes,
     )
     return [item.validate()]
 
@@ -271,6 +363,29 @@ def rotated_mismatch(
         sample_id: list(evidence_by_sample[ordered[(index + 1) % len(ordered)]])
         for index, sample_id in enumerate(ordered)
     }
+
+
+def resolve_declared_transform_params(
+    transform_name: str, values: Mapping[str, object] | None
+) -> dict[str, object]:
+    """``core.driver.run_experiment``'s independent source of "what params
+    did THIS run's config actually declare for this transform" --
+    deliberately never read off a ``DerivedEvidenceRecord`` itself
+    (``core.evidence_derivation.DerivedEvidenceRegistry``'s condition 3: an
+    evidence source that lied about the params it used must be caught, not
+    trusted). One entry per transform this module actually wires
+    (deliverable 4); an unrecognised ``transform_name`` refuses rather than
+    silently resolving to an empty/wrong params mapping -- a derivation
+    record can never be verified against a transform this resolver does not
+    know."""
+
+    if transform_name == "identity":
+        return {}
+    if transform_name in ("conec-bias-list", "distractor-only"):
+        return {"max_entries": resolve_bias_list_max_entries(values)}
+    raise EvidenceError(
+        f"no declared-params resolver registered for transform {transform_name!r}"
+    )
 
 
 EVIDENCE_SOURCES.register("none", _none_source)

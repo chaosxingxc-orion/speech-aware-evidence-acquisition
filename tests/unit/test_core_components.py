@@ -1,5 +1,7 @@
 """Registered carriers and evidence sources resolve through the ONE registry."""
 
+import hashlib
+
 import pytest
 
 from speech_aware_evidence_acquisition.core import carriers, evidence  # noqa: F401 (registration)
@@ -12,8 +14,10 @@ from speech_aware_evidence_acquisition.core.base import (
 from speech_aware_evidence_acquisition.core.evidence import (
     OracleEvidenceError,
     evidence_file_relpath,
+    resolve_declared_transform_params,
     rotated_mismatch,
 )
+from speech_aware_evidence_acquisition.core.evidence_derivation import DerivedEvidenceRegistry
 from speech_aware_evidence_acquisition.data.lock import load_lock
 
 
@@ -109,3 +113,47 @@ def test_oracle_source_never_enters_runtime(synthetic_world):
         EVIDENCE_SOURCES.resolve("oracle")(
             lock, synthetic_world.data_root, "4000001", "earnings21-original"
         )
+
+
+# ---------------------------------------------------------------------------
+# Derivation-chain rail (2026-08-09, docs/readiness/2026-08-09-conec-
+# evidence-shape.md "Blocking gap"): conec-contexts is a verbatim passthrough
+# -- deliverable 4's "the identity transform, byte-identical to before this
+# rail existed" -- proven both by the pre-existing content/provenance
+# assertions above (unchanged) and by these new derivation-record checks.
+# ---------------------------------------------------------------------------
+
+
+def test_conec_contexts_carries_an_identity_derivation_record(synthetic_world):
+    lock = load_lock(synthetic_world.lock_path)
+    item = EVIDENCE_SOURCES.resolve("conec-contexts")(
+        lock, synthetic_world.data_root, "4000001", "earnings21-original"
+    )[0]
+    record = item.derivation
+    assert record is not None
+    assert record.sample_id == "4000001"
+    assert record.transform_name == "identity"
+    assert record.transform_version == "v1"
+    assert record.carrier_bound is True
+    assert record.source_relpath == evidence_file_relpath(lock, "earnings21-original", "4000001")
+    # identity: derived == source, byte for byte.
+    assert record.derived_sha256 == record.source_sha256
+    assert item.derivation_source_bytes == b"ctx"
+    assert record.source_sha256 == hashlib.sha256(b"ctx").hexdigest()
+
+
+def test_conec_contexts_derivation_record_passes_the_registry(synthetic_world):
+    lock = load_lock(synthetic_world.lock_path)
+    item = EVIDENCE_SOURCES.resolve("conec-contexts")(
+        lock, synthetic_world.data_root, "4000001", "earnings21-original"
+    )[0]
+    params = resolve_declared_transform_params(item.derivation.transform_name, None)
+    registry = DerivedEvidenceRegistry()
+    registered = registry.register(
+        item.derivation,
+        source_content=item.derivation_source_bytes,
+        derived_content=item.content.encode("utf-8"),
+        params=params,
+    )
+    assert registered is item.derivation
+    assert registry.lookup("4000001", "identity") is item.derivation

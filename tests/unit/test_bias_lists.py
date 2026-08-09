@@ -10,12 +10,25 @@ from speech_aware_evidence_acquisition.core.base import EVIDENCE_SOURCES, Eviden
 from speech_aware_evidence_acquisition.core.bias_lists import (
     DEFAULT_BIAS_LIST_MAX_ENTRIES,
     _assert_no_oracle_overlap,
+    bias_list_relpath,
+    conec_bias_list_content,
+    distractor_only_content,
+    distractor_only_source_document,
+    distractor_only_source_texts,
     distractor_only_terms,
     extract_bias_candidates,
     format_bias_list_content,
     resolve_bias_list_max_entries,
 )
-from speech_aware_evidence_acquisition.core.evidence import OracleEvidenceError
+from speech_aware_evidence_acquisition.core.evidence import (
+    OracleEvidenceError,
+    resolve_declared_transform_params,
+)
+from speech_aware_evidence_acquisition.core.evidence_derivation import (
+    TRANSFORMS,
+    DerivedEvidenceError,
+    DerivedEvidenceRegistry,
+)
 from speech_aware_evidence_acquisition.data.lock import load_lock
 
 from conftest import (
@@ -366,3 +379,269 @@ def test_no_registered_evidence_source_can_return_oracle_content(bias_list_world
     assert {"none", "conec-contexts", "conec-bias-list", "distractor-only-bias-list"} <= set(
         checked
     )
+
+
+# ---------------------------------------------------------------------------
+# The registered pure transforms (core.evidence_derivation.TRANSFORMS):
+# determinism + agreement with the evidence source's own content (deliverable
+# 4/5 -- "no second, independently drifting copy of this logic").
+# ---------------------------------------------------------------------------
+
+
+def test_conec_bias_list_content_is_registered_and_deterministic():
+    spec = TRANSFORMS.resolve("conec-bias-list", "v1")
+    params = {"max_entries": DEFAULT_BIAS_LIST_MAX_ENTRIES}
+    first = spec.apply(BIAS_WORLD_CONEC_CONTEXT_TEXT, params)
+    second = conec_bias_list_content(BIAS_WORLD_CONEC_CONTEXT_TEXT, params)
+    assert first == second
+    assert first == conec_bias_list_content(BIAS_WORLD_CONEC_CONTEXT_TEXT, dict(params))
+
+
+def test_conec_bias_list_content_matches_the_evidence_source_own_content(bias_list_world):
+    lock = load_lock(bias_list_world.lock_path)
+    item = EVIDENCE_SOURCES.resolve("conec-bias-list")(
+        lock, bias_list_world.data_root, bias_list_world.sample_id, "earnings21-original"
+    )[0]
+    params = {"max_entries": DEFAULT_BIAS_LIST_MAX_ENTRIES}
+    assert conec_bias_list_content(BIAS_WORLD_CONEC_CONTEXT_TEXT, params) == item.content
+
+
+def test_conec_bias_list_content_rejects_a_non_mapping_params():
+    with pytest.raises(EvidenceError, match="mapping"):
+        conec_bias_list_content("alpha 1\n", "not-a-mapping")
+
+
+def test_distractor_only_source_texts_reads_both_shipped_files(bias_list_world):
+    lock = load_lock(bias_list_world.lock_path)
+    oracle_text, distractor_text, oracle_relpath, distractor_relpath = (
+        distractor_only_source_texts(lock, bias_list_world.data_root)
+    )
+    for term in BIAS_WORLD_ORACLE_TERMS:
+        assert term in oracle_text
+    for term in list(BIAS_WORLD_ORACLE_TERMS) + list(BIAS_WORLD_DISTRACTOR_ONLY_TERMS):
+        assert term in distractor_text
+    assert oracle_relpath == bias_list_relpath(lock, "oracle_list.txt")
+    assert distractor_relpath == bias_list_relpath(lock, "distractor_list.txt")
+
+
+def test_distractor_only_content_is_registered_and_deterministic(bias_list_world):
+    lock = load_lock(bias_list_world.lock_path)
+    oracle_text, distractor_text, oracle_relpath, distractor_relpath = (
+        distractor_only_source_texts(lock, bias_list_world.data_root)
+    )
+    document = distractor_only_source_document(
+        oracle_text, distractor_text, oracle_relpath, distractor_relpath
+    )
+    params = {"max_entries": DEFAULT_BIAS_LIST_MAX_ENTRIES}
+    spec = TRANSFORMS.resolve("distractor-only", "v1")
+    first = spec.apply(document, params)
+    second = distractor_only_content(document, params)
+    assert first == second
+    # Two INDEPENDENT calls (a freshly rebuilt document each time) -> the
+    # SAME derived bytes (deliverable 5's determinism requirement).
+    rebuilt_document = distractor_only_source_document(
+        oracle_text, distractor_text, oracle_relpath, distractor_relpath
+    )
+    assert distractor_only_content(rebuilt_document, params) == first
+
+
+def test_distractor_only_content_matches_the_evidence_source_own_content(bias_list_world):
+    lock = load_lock(bias_list_world.lock_path)
+    item = EVIDENCE_SOURCES.resolve("distractor-only-bias-list")(
+        lock, bias_list_world.data_root, bias_list_world.sample_id, "earnings21-original"
+    )[0]
+    oracle_text, distractor_text, oracle_relpath, distractor_relpath = (
+        distractor_only_source_texts(lock, bias_list_world.data_root)
+    )
+    document = distractor_only_source_document(
+        oracle_text, distractor_text, oracle_relpath, distractor_relpath
+    )
+    params = {"max_entries": DEFAULT_BIAS_LIST_MAX_ENTRIES}
+    assert distractor_only_content(document, params) == item.content
+
+
+def test_distractor_only_content_rejects_malformed_source_documents():
+    with pytest.raises(EvidenceError, match="not valid JSON"):
+        distractor_only_content("not json", {"max_entries": 5})
+    with pytest.raises(EvidenceError, match="missing oracle_text/distractor_text"):
+        distractor_only_content("{}", {"max_entries": 5})
+
+
+# ---------------------------------------------------------------------------
+# Derivation-chain wiring (2026-08-09, docs/readiness/2026-08-09-conec-
+# evidence-shape.md "Blocking gap"): every source's EvidenceItem carries a
+# DerivedEvidenceRecord that core.evidence_derivation.DerivedEvidenceRegistry
+# accepts end to end using the SOURCE's own real content -- deliverable 6's
+# "happy path per source" for conec-bias-list/distractor-only-bias-list
+# (conec-contexts' own is covered in test_core_components.py).
+# ---------------------------------------------------------------------------
+
+
+def test_conec_bias_list_derivation_record_chains_and_is_carrier_bound(bias_list_world):
+    lock = load_lock(bias_list_world.lock_path)
+    item = EVIDENCE_SOURCES.resolve("conec-bias-list")(
+        lock, bias_list_world.data_root, bias_list_world.sample_id, "earnings21-original"
+    )[0]
+    record = item.derivation
+    assert record is not None
+    assert record.sample_id == bias_list_world.sample_id
+    assert record.carrier_bound is True
+    assert record.transform_name == "conec-bias-list"
+    assert record.transform_version == "v1"
+    assert record.source_relpath == (
+        f"datasets/conec/earnings21/contexts/{bias_list_world.sample_id}.txt"
+    )
+    params = resolve_declared_transform_params(record.transform_name, None)
+    registry = DerivedEvidenceRegistry()
+    registry.register(
+        record,
+        source_content=item.derivation_source_bytes,
+        derived_content=item.content.encode("utf-8"),
+        params=params,
+    )
+
+
+def test_distractor_only_derivation_record_chains_and_is_not_carrier_bound(bias_list_world):
+    lock = load_lock(bias_list_world.lock_path)
+    item = EVIDENCE_SOURCES.resolve("distractor-only-bias-list")(
+        lock, bias_list_world.data_root, bias_list_world.sample_id, "earnings21-original"
+    )[0]
+    record = item.derivation
+    assert record is not None
+    assert record.sample_id == bias_list_world.sample_id
+    # The honest treatment (deliverable 3): NO per-sample carrier binding --
+    # this arm's source is the combined bias_lists/ corpus, never a
+    # fabricated single-file per-sample path.
+    assert record.carrier_bound is False
+    assert record.transform_name == "distractor-only"
+    oracle_relpath = bias_list_relpath(lock, "oracle_list.txt")
+    distractor_relpath = bias_list_relpath(lock, "distractor_list.txt")
+    assert record.source_relpath == f"{oracle_relpath}+{distractor_relpath}"
+    params = resolve_declared_transform_params(record.transform_name, None)
+    registry = DerivedEvidenceRegistry()
+    registry.register(
+        record,
+        source_content=item.derivation_source_bytes,
+        derived_content=item.content.encode("utf-8"),
+        params=params,
+    )
+
+
+def test_conec_bias_list_derivation_refused_when_the_source_file_is_tampered(bias_list_world):
+    """A tampered source (the ConEC context file this arm derives from) must
+    break the chain at SOURCE -- never silently re-hash the tampered bytes."""
+
+    lock = load_lock(bias_list_world.lock_path)
+    item = EVIDENCE_SOURCES.resolve("conec-bias-list")(
+        lock, bias_list_world.data_root, bias_list_world.sample_id, "earnings21-original"
+    )[0]
+    params = resolve_declared_transform_params(item.derivation.transform_name, None)
+    registry = DerivedEvidenceRegistry()
+    with pytest.raises(DerivedEvidenceError, match="broke at SOURCE"):
+        registry.register(
+            item.derivation,
+            source_content=b"tampered conec context, not what was actually read",
+            derived_content=item.content.encode("utf-8"),
+            params=params,
+        )
+
+
+def test_conec_bias_list_derivation_refused_on_wrong_params_hash(bias_list_world):
+    """The run's config declares a DIFFERENT bias_list_max_entries than the
+    source used -- the chain must break at PARAMS."""
+
+    lock = load_lock(bias_list_world.lock_path)
+    item = EVIDENCE_SOURCES.resolve("conec-bias-list")(
+        lock, bias_list_world.data_root, bias_list_world.sample_id, "earnings21-original"
+    )[0]
+    registry = DerivedEvidenceRegistry()
+    with pytest.raises(DerivedEvidenceError, match="broke at PARAMS"):
+        registry.register(
+            item.derivation,
+            source_content=item.derivation_source_bytes,
+            derived_content=item.content.encode("utf-8"),
+            params={"max_entries": 1},  # the source actually used the default (100)
+        )
+
+
+def test_conec_bias_list_derivation_refused_for_an_unregistered_transform_name(bias_list_world):
+    from dataclasses import replace
+
+    lock = load_lock(bias_list_world.lock_path)
+    item = EVIDENCE_SOURCES.resolve("conec-bias-list")(
+        lock, bias_list_world.data_root, bias_list_world.sample_id, "earnings21-original"
+    )[0]
+    forged = replace(item.derivation, transform_name="not-a-real-transform")
+    params = resolve_declared_transform_params("conec-bias-list", None)
+    registry = DerivedEvidenceRegistry()
+    with pytest.raises(DerivedEvidenceError, match="unregistered transform"):
+        registry.register(
+            forged,
+            source_content=item.derivation_source_bytes,
+            derived_content=item.content.encode("utf-8"),
+            params=params,
+        )
+
+
+def test_resolve_declared_transform_params_for_every_wired_transform():
+    assert resolve_declared_transform_params("identity", None) == {}
+    assert resolve_declared_transform_params("conec-bias-list", None) == {
+        "max_entries": DEFAULT_BIAS_LIST_MAX_ENTRIES
+    }
+    assert resolve_declared_transform_params("distractor-only", {"bias_list_max_entries": 3}) == {
+        "max_entries": 3
+    }
+    with pytest.raises(EvidenceError, match="no declared-params resolver"):
+        resolve_declared_transform_params("not-a-real-transform", None)
+
+
+# ---------------------------------------------------------------------------
+# The oracle list must remain unreachable through any REGISTERED transform's
+# WIRING, not merely through its returned content (deliverable 6): no
+# evidence source's derivation record may ever name the oracle list file as
+# its source.
+# ---------------------------------------------------------------------------
+
+
+def test_oracle_list_is_unreachable_through_any_registered_transforms_wiring(bias_list_world):
+    """No source OTHER than ``distractor-only-bias-list`` may ever chain its
+    derivation record to the oracle list file at all. ``distractor-only-
+    bias-list`` legitimately READS it (to compute a set difference,
+    core.bias_lists._distractor_only_from_terms) but must never apply the
+    ``identity`` transform to a source that includes it -- that would just
+    pass oracle content straight through; only the registered
+    ``distractor-only`` transform may touch it, and that transform's own
+    ``_assert_no_oracle_overlap`` guard is what keeps its OUTPUT oracle-free
+    (proven directly by ``test_no_registered_evidence_source_can_return_
+    oracle_content`` above)."""
+
+    lock = load_lock(bias_list_world.lock_path)
+    oracle_relpath = bias_list_relpath(lock, "oracle_list.txt")
+    checked = []
+    for name in EVIDENCE_SOURCES.names():
+        try:
+            items = EVIDENCE_SOURCES.resolve(name)(
+                lock, bias_list_world.data_root, bias_list_world.sample_id, "earnings21-original"
+            )
+        except (EvidenceError, OracleEvidenceError):
+            continue
+        for item in items:
+            if item.derivation is None:
+                continue
+            checked.append(name)
+            names_oracle = oracle_relpath in item.derivation.source_relpath.split("+")
+            if names_oracle:
+                assert name == "distractor-only-bias-list", (
+                    f"evidence source {name!r} unexpectedly chains its derivation "
+                    "record to the oracle list file"
+                )
+                assert item.derivation.transform_name != "identity", (
+                    "distractor-only-bias-list must never apply the identity "
+                    "transform to a source that includes the oracle list"
+                )
+            else:
+                assert item.derivation.source_relpath != oracle_relpath, (
+                    f"evidence source {name!r} chains its derivation record to the "
+                    "oracle list file"
+                )
+    assert {"conec-contexts", "conec-bias-list", "distractor-only-bias-list"} <= set(checked)
