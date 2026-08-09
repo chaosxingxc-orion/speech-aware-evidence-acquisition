@@ -68,7 +68,7 @@ utterance (2.9–9 s) is ONE request and generates far fewer tokens, so ≈4–6
 | id | probe | carrier(s) | design | success signal | cost |
 |---|---|---|---|---|---|
 | B-1a | external context block (**running now**: R4) | e21+conec | 10 calls × 3 arms | WER(matched) < WER(none) and < WER(mismatched) | ~6.5 h |
-| B-2a | **E-21 bias lists** (`oracle_list` vs `distractor_list`) injected at prompt level | e21 | 6 calls × 3 arms (none/oracle/distractor) | entity-class WER; oracle should beat distractor | ~2.5 h |
+| B-2a | **bias lists at prompt level — REDESIGNED 2026-08-09, see the leakage note below** | e21 | 6 calls × 3 arms (none / ConEC-derived / distractor-only) | entity-class WER; ConEC-derived should beat distractor-only | ~2.5 h |
 | B-3a | phonetic confusable sets derived from the entity list | e21 | 6 calls × 2 arms | entity-class WER delta | ~2 h |
 | B-4a | self-generated rolling glossary (no external source) | e21 | 6 calls × 2 arms | WER delta vs no-carry; glossary growth | ~2 h |
 | B-6a | **indexed KB + local generative embedding** retrieval | spoken-squad | 60 questions × 2 arms (closed-book vs retrieved) | EM/F1 delta | ~25 min |
@@ -125,6 +125,39 @@ pinning down.
 Ordering rule: within a wave, run the cheapest probe with the strongest
 precedent first; drop any direction whose probe returns a clear null and say
 so in the record.
+
+## 3b. Leakage note on the E-21 bias lists (caught 2026-08-09, before any run)
+
+The E-21 release ships `bias_lists/oracle_list.txt` (1,013 entries) and
+`bias_lists/distractor_list.txt` (1,782 = oracle + 769 Fortune-500/CEO names
+absent from the corpus). Its README states plainly: **`oracle_list.txt`
+contains words and phrases found in the Earnings-21 reference transcripts.**
+
+That makes the oracle list a **reference-derived artefact**, and this study's
+contract forbids gold / reference transcripts / test annotations from entering
+runtime. Injecting it into a prompt would be feeding part of the answer to the
+system being measured: the WER would improve and the improvement would be
+meaningless. The distractor list is a superset of the oracle list and inherits
+the same problem.
+
+This is precisely the line that separates our R4 evidence from leakage: the
+ConEC materials are **pre-existing real-world context** (slides, press
+releases, participant rosters) that existed before the call, not a distillation
+of its transcript.
+
+**Redesigned B-2a arms:**
+
+| arm | source | admissible in runtime? |
+|---|---|---|
+| none | — | baseline |
+| **ConEC-derived bias list** | entities extracted from the call's own ConEC materials (participants, slides) | ✅ deployable, non-gold |
+| **distractor-only list** | the 769 Fortune-500/CEO names *absent* from E-21 | ✅ negative control: does irrelevant biasing hurt? |
+| ~~oracle list~~ | reference-derived | ❌ runtime-forbidden; usable **only scorer-side** as an unreachable upper bound |
+
+Reporting the oracle bound scorer-side is worth doing on its own terms: the gap
+between it and the ConEC-derived list quantifies the distance between *ideal*
+context and *actually obtainable* context — a number the published contextual-
+ASR literature (which uses the oracle list as its context) does not report.
 
 ## 4. Discipline for every probe
 
