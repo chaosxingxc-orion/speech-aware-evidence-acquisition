@@ -6,12 +6,16 @@ is absent. Covers the three call sites named by the plumbing change: the
 ``contracts.FrozenCoreGate.for_study_repo`` default, ``saea-driver smoke``,
 and ``saea-driver run`` (``core.session.attach_session``'s own receipt load).
 
-Loading a DIFFERENT model does not, by itself, authorize a gate open against
-it -- ``contracts.FrozenCoreGate._validate_runtime`` still asserts the
-receipt's ``model_lock_key`` equals the frozen ``contracts.MODEL_LOCK_KEY``
-unconditionally (see ``tests/unit/test_e0_generators.py``'s second-model
-receipt-builder tests for that boundary). This module only proves WHICH
-FILE gets read/refused.
+Loading a DIFFERENT model's receipt file does not, by itself, authorize a
+gate open against it: ``contracts.FrozenCoreGate._validate_runtime`` asserts
+the receipt's ``model_lock_key`` equals the gate's own ``expected_model_
+lock_key`` (default: the frozen ``contracts.MODEL_LOCK_KEY``; a caller may
+now widen it explicitly -- see ``tests/contract/
+test_model_lock_key_binding.py`` for that identity check, both directions,
+and ``test_cli_run_passes_the_models_declared_model_lock_key_to_the_gate``
+below for proof that ``saea-driver run`` derives it from the SAME composed
+config that chose the receipt path, never independently). This module only
+proves WHICH FILE gets read/refused.
 """
 
 from __future__ import annotations
@@ -92,6 +96,19 @@ def _write_minimal_fragments(repo_root: Path) -> None:
         configs, "custom-receipt", {"runtime_receipt": "receipts/runtime-cli-run.json"}
     )
     _write_model_fragment(configs, "default-receipt")
+    # A DIFFERENT declared model_lock_key than every other fragment in this
+    # module (which all share "qwen3-omni-30b-a3b-instruct-gguf") -- the one
+    # value that can distinguish "the gate learned this run's declared key
+    # from the composed config" from "the gate silently kept using its own
+    # default", since the two coincide for every other fragment here.
+    _write_model_fragment(
+        configs,
+        "alt-model-key",
+        {
+            "model_lock_key": "qwen3-omni-30b-a3b-instruct-gguf-q4km",
+            "runtime_receipt": "receipts/runtime-alt-key.json",
+        },
+    )
     (configs / "dataset" / "d.json").write_text(
         json.dumps({"carrier_lock_key": "earnings21-original", "split_name": "discovery"}),
         encoding="utf-8",
@@ -162,3 +179,35 @@ def test_cli_run_uses_the_models_custom_runtime_receipt_path(monkeypatch, tmp_pa
 def test_cli_run_falls_back_to_the_default_runtime_receipt_path(monkeypatch, tmp_path, synthetic_world):
     with pytest.raises(SessionError, match="runtime.json"):
         _run_cli_run(monkeypatch, tmp_path, synthetic_world, model="default-receipt")
+
+
+# ---------------------------------------------------------------------------
+# Identity-binding wiring: the SAME composed config that selects the receipt
+# PATH must also select the gate's identity EXPECTATION -- proving
+# ``_cli_run`` cannot silently keep asserting the frozen Q8_0 constant while
+# resolving a genuinely different model's receipt file. See
+# ``tests/contract/test_model_lock_key_binding.py`` for the gate's own
+# refusal semantics once it has the wrong expectation; this proves only that
+# ``_cli_run`` never lets the two drift apart in the first place.
+# ---------------------------------------------------------------------------
+
+
+def test_cli_run_passes_the_models_declared_model_lock_key_to_the_gate(
+    monkeypatch, tmp_path, synthetic_world
+):
+    import speech_aware_evidence_acquisition.contracts as contracts_mod
+
+    captured: dict = {}
+    original = contracts_mod.FrozenCoreGate.for_study_repo.__func__
+
+    def _spy(cls, *args, **kwargs):
+        captured.update(kwargs)
+        return original(cls, *args, **kwargs)
+
+    monkeypatch.setattr(contracts_mod.FrozenCoreGate, "for_study_repo", classmethod(_spy))
+
+    with pytest.raises(SessionError, match="runtime-alt-key.json"):
+        _run_cli_run(monkeypatch, tmp_path, synthetic_world, model="alt-model-key")
+
+    assert captured["expected_model_lock_key"] == "qwen3-omni-30b-a3b-instruct-gguf-q4km"
+    assert captured["runtime_receipt_relpath"] == "receipts/runtime-alt-key.json"

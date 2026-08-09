@@ -413,6 +413,89 @@ def test_verify_against_runtime_receipt_refuses_model_file_mismatch(tmp_path):
 
 
 # ---------------------------------------------------------------------------
+# Cross-model identity binding (the SESSION half of docs/readiness/
+# 2026-08-09-int4-model-identity.md's gap; the GATE half is
+# tests/contract/test_model_lock_key_binding.py). Nothing in this module's
+# own identity checks is keyed by ``model_lock_key``, or by any hardcoded
+# model constant at all -- ``verify_against_runtime_receipt``/
+# ``_pinned_binary``/``_pinned_model_files`` compare a session ONLY against
+# whichever ``runtime_receipt`` mapping the caller hands them, and
+# ``core.driver.smoke._cli_smoke``/``core.driver.cli._cli_run`` always
+# derive that mapping from the SAME composed model config that chose the
+# receipt PATH (``core.config.resolve_runtime_receipt_path``) -- so a real
+# Q4_K_M-declaring run has no path to reach a session verified against the
+# Q8_0 receipt's files, or vice versa. This proves the underlying mechanism
+# directly: a session genuinely started/matching one pinned model's runtime
+# receipt is refused when checked against a DIFFERENT pinned model's runtime
+# receipt, using realistic Q8_0-vs-Q4_K_M subdirectory shapes (not merely
+# the single-file substitution ``test_verify_against_runtime_receipt_
+# refuses_model_file_mismatch`` above already covers).
+# ---------------------------------------------------------------------------
+
+
+def _q4km_runtime_world(tmp_path):
+    """A second pinned model's runtime-receipt dict, same shape as
+    ``_runtime_world`` but at a distinct subdir/key -- the launcher/library
+    block is irrelevant here (session identity for the MODEL half is decided
+    entirely by ``gguf_files``), so it is omitted."""
+
+    data_root = tmp_path / "data"
+    model_dir = data_root / "models" / "qwen3-omni-30b-a3b-instruct-gguf-q4km"
+    model_dir.mkdir(parents=True)
+    main_relpath = "models/qwen3-omni-30b-a3b-instruct-gguf-q4km/model.gguf"
+    mmproj_relpath = "models/qwen3-omni-30b-a3b-instruct-gguf-q4km/mmproj.gguf"
+    main_bytes = b"fake-q4km-main-gguf"
+    mmproj_bytes = b"fake-q4km-mmproj-gguf"
+    (data_root / main_relpath).write_bytes(main_bytes)
+    (data_root / mmproj_relpath).write_bytes(mmproj_bytes)
+    return {
+        "schema": "saea-runtime-receipt-v2",
+        "study": "speech-aware-evidence-acquisition",
+        "model_lock_key": "qwen3-omni-30b-a3b-instruct-gguf-q4km",
+        "llama_cpp": {
+            "build_commit": "a" * 40,
+            "reported_build": "version: 1 (aaaaaaa)",
+            "binary_path": "llama.cpp/build/bin/llama-server",
+            "binary_bytes": 17,
+            "binary_sha256": _sha(b"fake-llama-server"),
+        },
+        "gguf_files": [
+            {"path": main_relpath, "bytes": len(main_bytes), "sha256": _sha(main_bytes)},
+            {"path": mmproj_relpath, "bytes": len(mmproj_bytes), "sha256": _sha(mmproj_bytes)},
+        ],
+        "runtime_libraries": [
+            {"path": "llama.cpp/build/bin/lib-fake.so", "bytes": 8, "sha256": _sha(b"fake-lib")},
+        ],
+    }
+
+
+def test_a_q8_matching_session_is_refused_against_the_q4km_runtime_receipt(tmp_path):
+    """A session genuinely bound to the Q8_0 receipt (identical binary,
+    identical GGUF paths/hashes) is refused when re-verified against the
+    Q4_K_M receipt -- a run using the Q4_K_M config can never pass off the
+    Q8_0 session's files as its own."""
+
+    _, _, _, q8_receipt = _runtime_world(tmp_path)
+    q4km_receipt = _q4km_runtime_world(tmp_path)
+    session = _matching_session(q8_receipt)
+    with pytest.raises(SessionError, match="model file set"):
+        verify_against_runtime_receipt(session, q4km_receipt)
+
+
+def test_a_q4km_matching_session_is_refused_against_the_q8_runtime_receipt(tmp_path):
+    """The reverse pairing: a session genuinely bound to the Q4_K_M receipt
+    is refused when re-verified against the Q8_0 receipt -- proves this is a
+    real two-way binding, not a one-sided check that only catches one
+    direction."""
+
+    _, _, _, q8_receipt = _runtime_world(tmp_path)
+    q4km_receipt = _q4km_runtime_world(tmp_path)
+    session = _matching_session(q4km_receipt)
+    with pytest.raises(SessionError, match="model file set"):
+        verify_against_runtime_receipt(session, q8_receipt)
+
+
+# ---------------------------------------------------------------------------
 # LlamaServerTransport -- probes 1, 2, 3, 6, 7 at the send choke point.
 # These declared-value/loopback probes are refused BEFORE the process-
 # identity check is ever reached, so a placeholder (non-existent, non-real)

@@ -9,6 +9,7 @@ from speech_aware_evidence_acquisition.core.config import (
     ComposedConfig,
     ConfigError,
     compose,
+    model_lock_key,
     protocol_hash,
     resolve_runtime_receipt_path,
     runtime_receipt_relpath,
@@ -333,3 +334,44 @@ def test_q4km_repo_fragment_composes_with_the_expected_runtime_selection():
         REPO_ROOT, "qwen3-omni-llamacpp", "earnings22-dev-subset10", "bare-core", "r0-smoke"
     )
     assert base_composed.config_hash != composed.config_hash
+
+
+# ---------------------------------------------------------------------------
+# model_lock_key: the composed config's own declaration of WHICH pinned model
+# this run is for -- the same declaration `runtime_receipt_relpath` already
+# uses to select the receipt FILE. Read directly, no default: every model
+# fragment names its own frozen umbrella-lock entry explicitly (unlike
+# `runtime_receipt`, which is genuinely optional), so an omitted or malformed
+# value fails closed rather than silently falling back to any one model.
+# ---------------------------------------------------------------------------
+
+
+def test_model_lock_key_returns_the_declared_value():
+    assert model_lock_key({"model_lock_key": "qwen3-omni-30b-a3b-instruct-gguf-q4km"}) == (
+        "qwen3-omni-30b-a3b-instruct-gguf-q4km"
+    )
+
+
+@pytest.mark.parametrize("values", [{}, {"model_lock_key": ""}, {"model_lock_key": 123}, {"model_lock_key": None}])
+def test_model_lock_key_rejects_missing_or_malformed_values(values):
+    with pytest.raises(ConfigError, match="model_lock_key"):
+        model_lock_key(values)
+
+
+def test_q4km_repo_fragment_model_lock_key_matches_its_own_receipt_selection():
+    """The real committed Q4_K_M fragment declares the SAME model_lock_key
+    that its own runtime_receipt selection is built for -- a run composed
+    from this fragment binds one identity throughout, not two independently
+    drifting strings."""
+
+    from speech_aware_evidence_acquisition.e0.artifacts import REPO_ROOT
+
+    composed = compose(
+        REPO_ROOT, "qwen3-omni-llamacpp-q4km", "earnings22-dev-subset10", "bare-core", "r0-smoke"
+    )
+    assert model_lock_key(composed.values) == "qwen3-omni-30b-a3b-instruct-gguf-q4km"
+
+    base_composed = compose(
+        REPO_ROOT, "qwen3-omni-llamacpp", "earnings22-dev-subset10", "bare-core", "r0-smoke"
+    )
+    assert model_lock_key(base_composed.values) == "qwen3-omni-30b-a3b-instruct-gguf"

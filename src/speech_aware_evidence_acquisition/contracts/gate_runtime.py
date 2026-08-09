@@ -30,7 +30,7 @@ import speech_aware_evidence_acquisition.contracts as _contracts_pkg
 
 from .errors import GateClosed
 from .gate_runtime_gguf import _GgufIdentityMixin
-from .identifiers import MODEL_LOCK_KEY, RUNTIME_RECEIPT_SCHEMA, _SHA256
+from .identifiers import RUNTIME_RECEIPT_SCHEMA, _SHA256
 from .receipts import _resolve_under, _safe_relative_path
 
 _REPORTED_BUILD = re.compile(r"\(([0-9a-f]{7,40})\)")
@@ -72,13 +72,21 @@ class _RuntimeValidationMixin(_GgufIdentityMixin):
         return document, hashlib.sha256(raw).hexdigest()
 
     def _lock_model_entry(self, lock: Mapping[str, object] | None = None) -> Mapping[str, object]:
+        """Resolve the umbrella lock's model entry for ``self.expected_model_
+        lock_key`` -- THIS run's own declared model, never a bare module
+        constant. Bound to the same key ``_validate_runtime`` compares the
+        receipt's own ``model_lock_key`` against, so the GGUF file-set/size
+        check below can never be validated against a DIFFERENT model's lock
+        entry than the one this run and its receipt both agree on."""
+
         if lock is None:
             lock, _ = self._load_lock_with_hash()
         models = lock.get("models")
         if not isinstance(models, list):
             raise GateClosed("datasets lock lacks a models list")
+        expected = self.expected_model_lock_key
         for entry in models:
-            if isinstance(entry, Mapping) and entry.get("name") == MODEL_LOCK_KEY:
+            if isinstance(entry, Mapping) and entry.get("name") == expected:
                 subdir = entry.get("local_subdir")
                 files = entry.get("files")
                 size_bytes = entry.get("size_bytes")
@@ -93,11 +101,11 @@ class _RuntimeValidationMixin(_GgufIdentityMixin):
                     or size_bytes <= 0
                 ):
                     raise GateClosed(
-                        f"datasets lock entry {MODEL_LOCK_KEY} lacks usable "
+                        f"datasets lock entry {expected} lacks usable "
                         "local_subdir/files/size_bytes"
                     )
                 return entry
-        raise GateClosed(f"frozen model key {MODEL_LOCK_KEY!r} not found in datasets lock")
+        raise GateClosed(f"frozen model key {expected!r} not found in datasets lock")
 
     def _validate_runtime(
         self,
@@ -155,10 +163,10 @@ class _RuntimeValidationMixin(_GgufIdentityMixin):
         }
         if set(runtime) != expected_keys:
             raise GateClosed(f"runtime receipt must have exact keys {sorted(expected_keys)}")
-        if runtime["model_lock_key"] != MODEL_LOCK_KEY:
+        if runtime["model_lock_key"] != self.expected_model_lock_key:
             raise GateClosed(
                 f"runtime receipt model_lock_key {runtime['model_lock_key']!r} does not match "
-                f"the frozen key {MODEL_LOCK_KEY!r}"
+                f"the model this run declares ({self.expected_model_lock_key!r})"
             )
         lock_entry = self._lock_model_entry(lock)
         subdir = str(lock_entry["local_subdir"]).rstrip("/")

@@ -26,7 +26,7 @@ from .gate_evidence_identity import _EvidenceIdentityMixin
 from .gate_exposure import _ExposureAndCarrierMixin
 from .gate_identity import _MediaReferenceIdentityMixin
 from .gate_runtime import _RuntimeValidationMixin
-from .identifiers import STUDY_SLUG
+from .identifiers import MODEL_LOCK_KEY, STUDY_SLUG
 from .plan import MODEL_TOUCH_PROFILES, ExecutionPlan
 
 
@@ -47,9 +47,12 @@ class FrozenCoreGate(
       recomputed SHA-256 matches the receipt; the D3 artifact's frozen scoring-source
       hashes are additionally re-measured against the live tree under ``source_root``,
       and the scoring package may contain no source file the freeze does not name;
-    - the runtime receipt binds the frozen model lock key from the umbrella
-      ``docs/datasets.lock.json`` to canonical relative paths under the controlled
-      asset root; the gate always re-reads the llama.cpp launcher binary AND every
+    - the runtime receipt binds this run's DECLARED model lock key
+      (``expected_model_lock_key`` -- default: the frozen Q8_0
+      ``contracts.MODEL_LOCK_KEY``, so every caller that does not opt in is
+      unaffected) to canonical relative paths under the controlled asset root
+      via that SAME key's own entry in the umbrella ``docs/datasets.lock.json``;
+      the gate always re-reads the llama.cpp launcher binary AND every
       runtime library in the launcher's directory (exact set — an unlisted or
       missing file refuses) and recomputes size and SHA-256 itself. The pinned GGUF
       set (owner decision 2026-08-06, docs/owner-decisions-pending.md item 7) is, by
@@ -89,6 +92,15 @@ class FrozenCoreGate(
     runtime_root: Path
     exposure_ledger: Path
     source_root: Path
+    #: WHICH pinned model this run declares -- ``_validate_runtime``
+    #: (``gate_runtime.py``) asserts the runtime receipt's own
+    #: ``model_lock_key`` equals THIS value (never a bare module constant),
+    #: and ``_lock_model_entry`` resolves the umbrella lock's model entry by
+    #: THIS value too, so the GGUF file-set/size check is bound to the same
+    #: declared model as the identity check above it. Defaults to the frozen
+    #: Q8_0 ``contracts.MODEL_LOCK_KEY`` -- every existing caller that never
+    #: sets this is byte-identical to before this field existed.
+    expected_model_lock_key: str = MODEL_LOCK_KEY
 
     E0_DELIVERABLES = ("d1_identity", "d2_leakage", "d3_scoring", "d4_trace")
 
@@ -107,6 +119,7 @@ class FrozenCoreGate(
         runtime_root: Path,
         *,
         runtime_receipt_relpath: str = _DEFAULT_RUNTIME_RECEIPT_RELPATH,
+        expected_model_lock_key: str = MODEL_LOCK_KEY,
     ) -> "FrozenCoreGate":
         """The canonical production binding — the only gate a real run may use.
 
@@ -120,11 +133,24 @@ class FrozenCoreGate(
         ``"receipts/runtime-q4km.json"`` for a second pinned model -- while
         every existing caller that omits it keeps resolving the exact same
         ``docs/receipts/runtime.json`` as before. This governs only WHICH
-        FILE is read; the gate's own ``_validate_runtime`` still asserts
-        that file's ``model_lock_key`` equals the frozen
-        ``contracts.MODEL_LOCK_KEY`` -- selecting a receipt for a different
-        pinned model is not, by itself, an authorization to open the gate
-        against it (see that method's own docstring).
+        FILE is read.
+
+        ``expected_model_lock_key`` is the matching identity half: the gate's
+        own ``_validate_runtime`` asserts that file's ``model_lock_key``
+        equals THIS value (never a bare module constant), and
+        ``_lock_model_entry`` resolves the umbrella lock's model entry by it
+        too. Selecting a receipt FILE for a different pinned model is
+        therefore not, by itself, an authorization to open the gate against
+        it -- a caller must ALSO declare that it expects that model, and the
+        one sanctioned way to do so consistently is to derive both keyword
+        arguments from the SAME composed run config
+        (``core.config.runtime_receipt_relpath`` /
+        ``core.config.model_lock_key``), exactly as ``core.driver.smoke.
+        _cli_smoke`` and ``core.driver.cli._cli_run`` do -- see that
+        pairing's own dedicated coverage in
+        ``tests/contract/test_model_lock_key_binding.py``. Defaults to the
+        frozen Q8_0 ``contracts.MODEL_LOCK_KEY``, so every existing caller
+        that omits it keeps exactly its old behaviour.
         """
 
         root = Path(repo_root)
@@ -136,6 +162,7 @@ class FrozenCoreGate(
             runtime_root=Path(runtime_root),
             exposure_ledger=root / "docs" / "exposure-ledger.md",
             source_root=root,
+            expected_model_lock_key=expected_model_lock_key,
         )
 
     def _load(self, path: Path, label: str) -> Mapping[str, object]:

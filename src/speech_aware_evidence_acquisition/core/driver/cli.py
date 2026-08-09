@@ -23,7 +23,7 @@ from ...contracts import ExecutionPlan
 from ...e0.artifacts import REPO_ROOT
 from ..base import SCORERS, TRANSPORTS
 from ..bundle import finalize_bundle, verify_bundle
-from ..config import compose, resolve_runtime_receipt_path, runtime_receipt_relpath
+from ..config import compose, model_lock_key, resolve_runtime_receipt_path, runtime_receipt_relpath
 from ..resources import resolve_resource_sampler
 from ..scorers import score_bundle
 from .bundled import run_experiment_bundled
@@ -94,10 +94,18 @@ def _cli_run(args: argparse.Namespace) -> int:
     # R0.2 second-model plumbing: the model fragment's own optional
     # "runtime_receipt" key (default: today's "receipts/runtime.json") picks
     # which committed receipt this gate/session pair is bound to -- see
-    # core.config.runtime_receipt_relpath's own docstring.
+    # core.config.runtime_receipt_relpath's own docstring. The gate's
+    # expected_model_lock_key is derived from the SAME composed config that
+    # chose the receipt path, so a run can never pair one model's config
+    # with a different model's receipt (core.config.model_lock_key's own
+    # docstring; contracts.FrozenCoreGate.expected_model_lock_key).
     receipt_relpath = runtime_receipt_relpath(composed.values)
     gate = FrozenCoreGate.for_study_repo(
-        REPO_ROOT, root, runtime_root, runtime_receipt_relpath=receipt_relpath
+        REPO_ROOT,
+        root,
+        runtime_root,
+        runtime_receipt_relpath=receipt_relpath,
+        expected_model_lock_key=model_lock_key(composed.values),
     )
     # R0 repair T5 (I5): the runtime receipt is the SAME committed file the
     # gate itself re-hashes. attach_session binds this run to a session

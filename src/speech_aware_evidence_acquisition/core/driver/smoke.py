@@ -61,6 +61,7 @@ from ..bundle import FinalizeResult, finalize_bundle
 from ..config import (
     ComposedConfig,
     compose,
+    model_lock_key,
     protocol_hash as compute_protocol_hash,
     resolve_runtime_receipt_path,
     runtime_receipt_relpath,
@@ -268,13 +269,19 @@ def _cli_smoke(args: argparse.Namespace) -> int:
         # R0.2 second-model plumbing: the model fragment's own optional
         # "runtime_receipt" key (default: today's "receipts/runtime.json")
         # picks which committed receipt this session/gate pair is bound to
-        # -- see core.config.runtime_receipt_relpath's own docstring.
+        # -- see core.config.runtime_receipt_relpath's own docstring. The
+        # gate's expected_model_lock_key is derived from the SAME composed
+        # config that chose the receipt path, so a run can never pair one
+        # model's config with a different model's receipt (core.config.
+        # model_lock_key's own docstring; contracts.FrozenCoreGate.
+        # expected_model_lock_key).
         runtime_receipt = load_runtime_receipt(resolve_runtime_receipt_path(repo_root, composed.values))
         gate = FrozenCoreGate.for_study_repo(
             repo_root,
             root,
             Path(args.runtime_root),
             runtime_receipt_relpath=runtime_receipt_relpath(composed.values),
+            expected_model_lock_key=model_lock_key(composed.values),
         )
         session = start_session(
             runtime_root=Path(args.runtime_root),

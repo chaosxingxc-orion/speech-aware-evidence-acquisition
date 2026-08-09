@@ -1,10 +1,15 @@
-# INT4 (Q4_K_M) second-model identity: plumbing landed, operator sequence
+# INT4 (Q4_K_M) second-model identity: plumbing landed, gate widened, operator sequence
 
-Status: engineering plumbing DONE and unit-tested (synthetic fixtures only — no
-real Q4_K_M bytes touched, no llama.cpp rebuild, no model run). What remains is
-owner-authority (the umbrella lock edit) and operator-authority (materializing
-the files, running the receipt-build script). No model was touched to produce
-this document; no receipt was regenerated.
+Status: engineering plumbing AND the gate-side identity check are both DONE
+and unit-tested (synthetic fixtures only — no real Q4_K_M bytes touched, no
+llama.cpp rebuild, no model run). The gap this document originally reported
+open (the gate's `model_lock_key` equality check was hardcoded to a single
+constant) is now CLOSED (2026-08-09, same-day follow-up) — see "CLOSED
+(2026-08-09 follow-up): the gate now binds to the DECLARED model" below for
+the exact new semantics. What remains is owner-authority (the umbrella lock
+edit) and operator-authority (materializing the files, running the
+receipt-build script). No model was touched to produce this document; no
+receipt was regenerated.
 
 ## What changed
 
@@ -96,36 +101,101 @@ receipt, its default file location, or any existing caller's behaviour.
    (`tests/unit/test_runtime_receipt_selection.py`,
    `tests/unit/test_driver_smoke.py`).
 
-## What this change deliberately does NOT do
+6. **(2026-08-09 follow-up) Gate identity widening** — `contracts.
+   FrozenCoreGate` gained `expected_model_lock_key` (default: the frozen
+   `contracts.MODEL_LOCK_KEY`); `_validate_runtime`/`_lock_model_entry`
+   (`gate_runtime.py`) now assert against that field instead of the bare
+   module constant. `core/config.py::model_lock_key` resolves the composed
+   config's own declared key (fail-closed on missing/malformed, no default —
+   every model fragment already declares one); `core/driver/smoke.py::
+   _cli_smoke` and `core/driver/cli.py::_cli_run` pass it to `FrozenCoreGate.
+   for_study_repo` alongside `runtime_receipt_relpath`, both derived from the
+   SAME composed config. See the dedicated section below for the exact
+   cross-binding refusal semantics and its test coverage.
 
-`contracts/gate_runtime.py::_RuntimeValidationMixin._validate_runtime` still
-asserts the receipt's `model_lock_key` equals the single frozen
-`contracts.MODEL_LOCK_KEY` constant (the Q8_0 key), unconditionally:
+## CLOSED (2026-08-09 follow-up): the gate now binds to the DECLARED model
+
+`contracts/gate_runtime.py::_RuntimeValidationMixin._validate_runtime` no
+longer compares the receipt's `model_lock_key` against a single hardcoded
+module constant. `contracts.FrozenCoreGate` gained a new, keyword-only,
+dataclass field:
 
 ```python
-if runtime["model_lock_key"] != MODEL_LOCK_KEY:
-    raise GateClosed(...)
+expected_model_lock_key: str = MODEL_LOCK_KEY   # default: the frozen Q8_0 key
 ```
 
-A Q4_K_M receipt's `model_lock_key` will legitimately be a *different* string
-(it must name the Q4_K_M model's own umbrella-lock entry — see below), so a
-real `FrozenCoreGate.assert_model_touch_allowed` call against
-`docs/receipts/runtime-q4km.json` will currently be **refused at this check**,
-even after the receipt itself is truthfully built and the umbrella lock entry
-exists. This is intentional, not an oversight: widening the frozen-core
-identity boundary to accept a second model is a materially different,
-security-relevant change to `contracts/` (the D1–D4 / gate-runtime enforcement
-surface), distinct from the receipt/config plumbing this task was scoped to,
-and it was not part of the six deliverables this task specified. It needs its
-own explicit review before landing — most naturally as a small, isolated
-follow-up (thread a `model_lock_key` field through `FrozenCoreGate` itself,
-defaulting to the current constant so every existing call site is unaffected,
-exactly the same pattern already used here for `runtime_receipt_relpath`).
-Until that lands, this change makes it possible to **build and select** a
-second receipt with full identity verification of its own bytes
-(`build_runtime_receipt` genuinely re-hashes whatever `model_lock_key` it is
-given), but a live gate-enforced model touch against the Q4_K_M receipt is not
-yet authorized by `contracts.FrozenCoreGate` as shipped.
+and both identity checks now assert against **that** value instead:
+
+```python
+# _validate_runtime (gate_runtime.py)
+if runtime["model_lock_key"] != self.expected_model_lock_key:
+    raise GateClosed(...)
+
+# _lock_model_entry (gate_runtime.py) -- the umbrella-lock ENTRY lookup that
+# backs the GGUF file-set/size check is bound to the SAME declared key, not
+# independently hardcoded, so the byte-level check can never validate a
+# receipt against the WRONG model's lock entry either.
+for entry in models:
+    if entry.get("name") == self.expected_model_lock_key: ...
+```
+
+`FrozenCoreGate.for_study_repo` (the one production constructor) takes the
+matching keyword argument, `expected_model_lock_key`, defaulting to the same
+frozen constant — every existing call site that omits it is byte-identical
+to before this change. The two real callers,
+`core/driver/smoke.py::_cli_smoke` and `core/driver/cli.py::_cli_run`, both
+now pass `expected_model_lock_key=core.config.model_lock_key(composed.values)`
+alongside the `runtime_receipt_relpath=core.config.runtime_receipt_relpath
+(composed.values)` they already passed — **the identical composed config
+selects both the receipt FILE and the identity EXPECTATION**, so a run can
+never pair one model's config with a different model's receipt: whichever
+model fragment a run names, that fragment's own `model_lock_key` is what the
+gate checks the receipt against, and that fragment's own `runtime_receipt`
+key is which file gets read. `core.config.model_lock_key` fails closed
+(`ConfigError`) on a missing/malformed value — a model fragment MUST declare
+its own `model_lock_key` (already true of every fragment in this repo; unlike
+`runtime_receipt`, this key has no default).
+
+**Cross-binding refusal semantics** (`tests/contract/
+test_model_lock_key_binding.py`, both directions): a gate constructed with
+`expected_model_lock_key=B` but handed a receipt whose own `model_lock_key`
+is `A` is refused with `GateClosed("runtime receipt model_lock_key 'A' does
+not match the model this run declares ('B')")` — before any byte is read
+from either model's files. The reverse pairing (`expected_model_lock_key=A`
+default, receipt says `B`) is refused with the identical message shape. A
+receipt that DOES match the declared key still goes through every existing
+byte-level check unchanged (GGUF size/hash, llama.cpp build binary, runtime
+libraries) — the widening only concerns WHICH model identity is legitimate to
+assert about, never HOW rigorously that identity is then verified. A receipt
+naming a model with no corresponding umbrella-lock entry is refused by
+`_lock_model_entry` with `"<key> not found in datasets lock"`, naming the
+DECLARED key, not the Q8_0 default.
+
+The **session** half of this identity boundary (`core/session`:
+`start_session`/`attach_session`/`LlamaServerTransport`) needed no code
+change and was already immune to this exact cross-binding failure mode by
+construction: `verify_against_runtime_receipt`/`_pinned_binary`/
+`_pinned_model_files` compare a `SessionReceipt` only against whichever
+`runtime_receipt` mapping object the caller hands them — nothing there is
+keyed by `model_lock_key` or any hardcoded model constant — and both real CLI
+call sites load that mapping via `core.session.load_runtime_receipt(core
+.config.resolve_runtime_receipt_path(repo_root, composed.values))`, the
+identical composed-config-driven path used for the gate. A session started
+(or attached) under one model's config therefore has no path to be verified
+against a different model's receipt in the real CLI flow. Proved directly
+(not merely argued) in `tests/unit/test_session.py`:
+`test_a_q8_matching_session_is_refused_against_the_q4km_runtime_receipt` and
+its reverse pairing — a session genuinely matching one pinned model's runtime
+receipt is refused when re-verified against the other's, using realistic
+Q8_0-vs-Q4_K_M subdirectory shapes.
+
+This makes a live, gate-enforced INT4 run possible end to end (pending the
+operator/owner steps below): a run naming the `qwen3-omni-llamacpp-q4km`
+model fragment resolves `receipts/runtime-q4km.json`, opens the gate with
+`expected_model_lock_key="qwen3-omni-30b-a3b-instruct-gguf-q4km"`, and — once
+that receipt is genuinely built from real, materialized Q4_K_M bytes (step 3
+below) — passes every check the Q8_0 path always has, on its own model
+identity.
 
 ## Operator sequence (WSL, speechrl venv, from the study repo root)
 
@@ -228,12 +298,18 @@ Commit `docs/receipts/runtime-q4km.json` once it is genuinely built from real
 bytes — this task did not, and per its own instructions must not, generate
 that file itself.
 
-### 4. Still open after step 3 (owner review, separate from this task)
+### 4. CLOSED (2026-08-09 follow-up) — no longer open
 
-Widen `contracts/gate_runtime.py`'s `model_lock_key` equality check (see "What
-this change deliberately does NOT do" above) before any real, gate-enforced
-run against the Q4_K_M receipt can be attempted — until then, `saea-driver
-smoke`/`run` against the `qwen3-omni-llamacpp-q4km` model fragment will
-correctly load `docs/receipts/runtime-q4km.json` (this task's plumbing) but
-will then be refused by the gate's still-single-key identity check (unchanged,
-by design, in this task).
+The gate's `model_lock_key` equality check is now widened (see "CLOSED
+(2026-08-09 follow-up)" above): `saea-driver smoke`/`run` against the
+`qwen3-omni-llamacpp-q4km` model fragment correctly loads
+`docs/receipts/runtime-q4km.json` (this task's original plumbing) AND opens
+the gate against it, because the same fragment's `model_lock_key` field
+(`"qwen3-omni-30b-a3b-instruct-gguf-q4km"`, already present in the committed
+`configs/model/qwen3-omni-llamacpp-q4km.json`) now flows into
+`FrozenCoreGate.for_study_repo(..., expected_model_lock_key=...)` at both
+call sites. Nothing further is needed in `contracts/` for the identity
+boundary itself. What remains open is exactly steps 1–3 above: materialize
+the real Q4_K_M bytes, get the owner to add the umbrella-lock entry, and run
+the receipt-build command against real files — none of which this or the
+prior follow-up task performed.
