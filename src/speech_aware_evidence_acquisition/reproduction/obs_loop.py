@@ -117,6 +117,7 @@ _KNOWN_OBS_KEYS = frozenset(
         "obs_condition_tail_chars",
         "obs_rms_target_dbfs",
         "obs_slice_retry_max",
+        "obs_batch_samples",
     }
 )
 _EPSILON_SECONDS = 1e-6
@@ -190,6 +191,7 @@ class ObsLoopConfig:
     condition_tail_chars: int
     rms_target_dbfs: float
     slice_retry_max: int
+    batch_samples: int
 
     @classmethod
     def from_values(cls, values: Mapping[str, object], repo_root: Path) -> "ObsLoopConfig":
@@ -251,6 +253,16 @@ class ObsLoopConfig:
             raise ObsLoopError(
                 f"obs_slice_retry_max must be an integer >= 0 (0 disables), got {retry_max!r}"
             )
+        # Sample-level concurrency (owner batching directive 2026-08-08):
+        # consumed by the ojw executor's run_samples (and by the driver's
+        # dispatch decision); the plain policy accepts and IGNORES it -- it
+        # is defined sequential, being the equivalence reference fixture.
+        batch_samples = values.get("obs_batch_samples", 1)
+        if isinstance(batch_samples, bool) or not isinstance(batch_samples, int) or batch_samples < 1:
+            raise ObsLoopError(
+                f"obs_batch_samples must be an integer >= 1 (1 = sequential), "
+                f"got {batch_samples!r}"
+            )
         prompt_relpath = values.get("obs_boundary_prompt")
         prompt_text: str | None = None
         prompt_sha256: str | None = None
@@ -284,6 +296,7 @@ class ObsLoopConfig:
             condition_tail_chars=tail_chars,
             rms_target_dbfs=rms_target,
             slice_retry_max=retry_max,
+            batch_samples=batch_samples,
         )
 
 

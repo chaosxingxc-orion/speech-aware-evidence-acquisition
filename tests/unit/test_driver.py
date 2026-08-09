@@ -1024,3 +1024,146 @@ def test_run_experiment_reports_failed_attempt_cost_from_a_prior_aborted_sibling
     calls, audio = store.prior_actual_usage(run_id, exclude_attempt_id="attempt-prior")
     assert calls == result.cost["calls_used"]
     assert audio == result.cost["audio_seconds_used"]
+
+
+# ---------------------------------------------------------------------------
+# Sample-batched dispatch (owner directive 2026-08-08): obs_batch_samples > 1
+# routes through a batch-capable policy's run_samples with per-sample
+# TraceBuffers; outputs rows and trace blocks land in split-id order, byte-
+# identical per sample to the sequential path. The batch contract: the policy
+# sets the current trace buffer (core.tracing.set_current_trace_buffer) per
+# sample so the shared adapter's emissions route to that sample's buffer.
+# ---------------------------------------------------------------------------
+
+from speech_aware_evidence_acquisition.core.base import POLICIES  # noqa: E402
+from speech_aware_evidence_acquisition.core.policies import FixedPolicy  # noqa: E402
+from speech_aware_evidence_acquisition.core.tracing import (  # noqa: E402
+    set_current_trace_buffer,
+)
+
+
+class _BatchFixedPolicy(FixedPolicy):
+    """FixedPolicy plus the batch seam: per-sample contextvar routing, then
+    the exact per-sample logic -- the minimal honest batch-capable policy."""
+
+    def run_samples(self, contexts):
+        outcomes = []
+        for ctx in contexts:
+            set_current_trace_buffer(ctx.sink)
+            try:
+                outcomes.append(self.run_sample(ctx))
+            finally:
+                set_current_trace_buffer(None)
+        return outcomes
+
+
+POLICIES.register("fixed-batch-test", _BatchFixedPolicy())
+
+
+def _record_ids(run_dir, run_id="SAEA-E-000-driver"):
+    raw = (run_dir / f"{run_id}.trace.jsonl").read_text(encoding="utf-8")
+    return [json.loads(line)["record_id"] for line in raw.splitlines() if line]
+
+
+def test_batched_run_matches_sequential_rows_and_groups_trace_per_sample(
+    synthetic_world, tmp_path
+):
+    lock, repo_root = _frozen_world(synthetic_world, tmp_path)
+    ids, split_hash, _ = load_split(
+        repo_root, "discovery", lock, synthetic_world.data_root
+    )
+
+    def run(policy_name, run_id, run_dir, extra_values):
+        composed = _composed(policy=policy_name, **extra_values)
+        plan = _plan(
+            split_hash,
+            run_id=run_id,
+            attempt_id=f"attempt-{run_id}",
+            protocol_hash=protocol_hash(
+                composed.config_hash, composed.values["arm"], split_hash
+            ),
+        )
+        return run_experiment(
+            composed=composed,
+            plan=plan,
+            gate=_OpenGate(),
+            lock=lock,
+            root=synthetic_world.data_root,
+            run_dir=run_dir,
+            transport=_transport,
+            repo_root=repo_root,
+        )
+
+    sequential = run("fixed", "SAEA-E-000-seq", tmp_path / "seq", {})
+    batched = run(
+        "fixed-batch-test",
+        "SAEA-E-000-bat",
+        tmp_path / "bat",
+        {"obs_batch_samples": 2},
+    )
+
+    sequential_rows = [
+        json.loads(line)
+        for line in sequential.outputs_path.read_text(encoding="utf-8").splitlines()
+    ]
+    batched_rows = [
+        json.loads(line)
+        for line in batched.outputs_path.read_text(encoding="utf-8").splitlines()
+    ]
+    assert batched_rows == sequential_rows  # split-id order, identical rows
+    assert batched.cost["calls_used"] == sequential.cost["calls_used"] == len(ids)
+
+    sequential_ids = _record_ids(tmp_path / "seq", "SAEA-E-000-seq")
+    batched_ids = _record_ids(tmp_path / "bat", "SAEA-E-000-bat")
+    assert batched_ids == sequential_ids  # per-sample grouping preserved
+
+
+def test_batching_a_sequential_only_policy_refuses(synthetic_world, tmp_path):
+    lock, repo_root = _frozen_world(synthetic_world, tmp_path)
+    _, split_hash, _ = load_split(
+        repo_root, "discovery", lock, synthetic_world.data_root
+    )
+    composed = _composed(obs_batch_samples=2)  # policy "fixed": no run_samples
+    plan = _plan(
+        split_hash,
+        protocol_hash=protocol_hash(
+            composed.config_hash, composed.values["arm"], split_hash
+        ),
+    )
+    with pytest.raises(CoreError, match="batch-capable"):
+        run_experiment(
+            composed=composed,
+            plan=plan,
+            gate=_OpenGate(),
+            lock=lock,
+            root=synthetic_world.data_root,
+            run_dir=tmp_path / "run",
+            transport=_transport,
+            repo_root=repo_root,
+        )
+
+
+@pytest.mark.parametrize("bad", [0, -1, True, 1.5, "four"])
+def test_bad_obs_batch_samples_refuses(synthetic_world, tmp_path, bad):
+    lock, repo_root = _frozen_world(synthetic_world, tmp_path)
+    _, split_hash, _ = load_split(
+        repo_root, "discovery", lock, synthetic_world.data_root
+    )
+    composed = _composed(obs_batch_samples=bad)
+    plan = _plan(
+        split_hash,
+        protocol_hash=protocol_hash(
+            composed.config_hash, composed.values["arm"], split_hash
+        ),
+    )
+    with pytest.raises(CoreError, match="obs_batch_samples"):
+        run_experiment(
+            composed=composed,
+            plan=plan,
+            gate=_OpenGate(),
+            lock=lock,
+            root=synthetic_world.data_root,
+            run_dir=tmp_path / "run",
+            transport=_transport,
+            repo_root=repo_root,
+        )

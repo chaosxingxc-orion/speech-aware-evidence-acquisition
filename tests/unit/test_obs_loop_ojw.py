@@ -29,6 +29,8 @@ with openjiuwen absent; see ``test_obs_loop_ojw_absent.py``).
 import dataclasses
 import hashlib
 import json
+import threading
+from pathlib import Path
 
 import pytest
 
@@ -39,7 +41,18 @@ pytest.importorskip(
 )
 
 import speech_aware_evidence_acquisition.core  # noqa: F401,E402 (populate registries)
-from speech_aware_evidence_acquisition.core.base import POLICIES, EvidenceItem  # noqa: E402
+from speech_aware_evidence_acquisition.core.base import (  # noqa: E402
+    POLICIES,
+    EvidenceItem,
+    SampleContext,
+)
+from speech_aware_evidence_acquisition.core.model import SliceRegistry  # noqa: E402
+from speech_aware_evidence_acquisition.core.tracing import (  # noqa: E402
+    TraceBuffer,
+    TraceSink,
+)
+from speech_aware_evidence_acquisition.data.loader import SampleRef  # noqa: E402
+from speech_aware_evidence_acquisition.reproduction import obs_loop  # noqa: E402
 from speech_aware_evidence_acquisition.reproduction.obs_audio import (  # noqa: E402
     accept_up_to_boundary,
     parse_boundary_response,
@@ -299,6 +312,293 @@ class TestSingleDoor:
     def test_frozen_core_asr_requires_an_injected_callable(self):
         with pytest.raises(ObsLoopError, match="callable adapter request"):
             FrozenCoreASR(adapter_request=None, state=None)
+
+
+class _FakeResponseById:
+    """Deterministic, ORDER-INDEPENDENT fake hashes (keyed by request id +
+    text): interleaved batch execution and per-sample sequential reference
+    runs must produce identical outcome/stitch hashes."""
+
+    def __init__(self, text, request_id):
+        self.text = text
+        self.request_sha256 = hashlib.sha256(f"req-{request_id}".encode()).hexdigest()
+        self.response_sha256 = hashlib.sha256(
+            f"resp-{request_id}-{text}".encode()
+        ).hexdigest()
+        self.response_text_sha256 = hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+class _SampleScriptedAdapter:
+    """Per-sample scripts, thread-safe (batch mode calls request from
+    asyncio.to_thread workers); records every payload in arrival order."""
+
+    def __init__(self, scripts):
+        self._scripts = {sid: list(texts) for sid, texts in scripts.items()}
+        self._lock = threading.Lock()
+        self.payloads = []
+
+    def request(self, payload):
+        with self._lock:
+            self.payloads.append(dict(payload))
+            texts = self._scripts[payload["sample_id"]]
+            if not texts:
+                raise AssertionError(
+                    f"sample {payload['sample_id']} sent more requests than scripted"
+                )
+            text = texts.pop(0)
+        return _FakeResponseById(text, payload["request_id"])
+
+
+def _parent_relpath(sample_id):
+    return f"datasets/earnings21-22/earnings21/media/{sample_id}.mp3"
+
+
+def _write_template(repo_root):
+    template = repo_root / "configs" / "probes/obs_boundary_v1.txt"
+    template.parent.mkdir(parents=True, exist_ok=True)
+    template.write_text(
+        "After the transcript report BOUNDARY_SECONDS as instructed.\n",
+        encoding="utf-8",
+    )
+
+
+def _batch_specs():
+    """Two whole-call samples with different lengths/scripts."""
+
+    return {
+        "4000001": (
+            _noise(150.0, seed=3),
+            [
+                _boundary_text("First span one. First tail", 45),
+                _boundary_text("Second span two. Second tail", 50),
+                _boundary_text("Final span three.", 30),
+            ],
+        ),
+        "4000002": (
+            _noise(90.0, seed=11),
+            [
+                _boundary_text("Other call alpha. spill", 45),
+                _boundary_text("Other call omega.", 10),
+            ],
+        ),
+    }
+
+
+def _ctx_for(sample_id, base, pcm, values, *, data_root, run_dir, repo_root,
+             registry, adapter, sink, pcm_map):
+    parent = data_root / _parent_relpath(sample_id)
+    parent.parent.mkdir(parents=True, exist_ok=True)
+    parent.write_bytes(b"fake-audio-" + sample_id.encode())
+    pcm_map[f"{sample_id}.mp3"] = pcm
+    duration = len(pcm) / 16000
+    return SampleContext(
+        sample=SampleRef(
+            carrier_lock_key="earnings21-original",
+            sample_id=sample_id,
+            media_relpath=_parent_relpath(sample_id),
+            audio_seconds=duration,
+            sample_rate_hz=16000,
+        ),
+        evidence=[],
+        adapter=adapter,
+        sink=sink,
+        arm="bare-core",
+        task_instruction="Transcribe the speech verbatim.",
+        decoding_params={"temperature": 0},
+        request_id_base=base,
+        extras={
+            "slice_registry": registry,
+            "data_root": data_root,
+            "run_dir": run_dir,
+            "repo_root": repo_root,
+            "config_values": values,
+        },
+    )
+
+
+class TestBatchExecution:
+    """Owner batching directive (2026-08-08): sample-level concurrency in
+    the ojw executor via run_samples (asyncio.gather + semaphore); per
+    sample everything must stay byte-identical to the sequential plain
+    reference, and rows/trace stay in split-id order."""
+
+    def _reference(self, root, sample_id, base, pcm, texts, values, pcm_map):
+        """The plain policy run sequentially over ONE sample — the
+        per-sample ground truth the batch run must reproduce exactly."""
+
+        data_root, run_dir, repo_root = root / "data", root / "run", root / "repo"
+        _write_template(repo_root)
+        registry = SliceRegistry(
+            data_root=data_root,
+            run_id=RUN_ID,
+            parent_facts={sample_id: (_parent_relpath(sample_id), len(pcm) / 16000)},
+        )
+        adapter = _SampleScriptedAdapter({sample_id: texts})
+        sink = TraceSink(run_dir, RUN_ID)
+        ctx = _ctx_for(
+            sample_id, base, pcm, values, data_root=data_root, run_dir=run_dir,
+            repo_root=repo_root, registry=registry, adapter=adapter, sink=sink,
+            pcm_map=pcm_map,
+        )
+        outcome = POLICIES.resolve(OBS_LOOP_POLICY_NAME).run_sample(ctx)
+        raw = (run_dir / f"{RUN_ID}.trace.jsonl").read_text(encoding="utf-8")
+        records = [
+            (doc["channel"], doc["record_id"], doc["payload"])
+            for doc in (json.loads(line) for line in raw.splitlines() if line)
+        ]
+        derivation = (
+            run_dir / f"{RUN_ID}.obs-derivation.{sample_id}.json"
+        ).read_bytes()
+        return outcome, records, derivation
+
+    def _batch_world(self, root, specs, values, pcm_map):
+        data_root, run_dir, repo_root = root / "data", root / "run", root / "repo"
+        _write_template(repo_root)
+        registry = SliceRegistry(
+            data_root=data_root,
+            run_id=RUN_ID,
+            parent_facts={
+                sid: (_parent_relpath(sid), len(pcm) / 16000)
+                for sid, (pcm, _) in specs.items()
+            },
+        )
+        adapter = _SampleScriptedAdapter(
+            {sid: texts for sid, (_, texts) in specs.items()}
+        )
+        contexts, buffers = [], {}
+        for index, sid in enumerate(sorted(specs), start=1):
+            pcm, _ = specs[sid]
+            buffer = TraceBuffer(RUN_ID)
+            buffers[sid] = buffer
+            contexts.append(
+                _ctx_for(
+                    sid, f"req-{index:04d}", pcm, values, data_root=data_root,
+                    run_dir=run_dir, repo_root=repo_root, registry=registry,
+                    adapter=adapter, sink=buffer, pcm_map=pcm_map,
+                )
+            )
+        return contexts, buffers, adapter, registry, data_root, run_dir
+
+    def test_batch_of_two_matches_sequential_plain_per_sample(
+        self, tmp_path, monkeypatch
+    ):
+        pcm_map = {}
+        monkeypatch.setattr(
+            obs_loop,
+            "decode_parent_pcm",
+            lambda path, rate=16000: pcm_map[Path(path).name],
+        )
+        specs = _batch_specs()
+        values = _config_values(obs_condition_tail_chars=400, obs_batch_samples=2)
+
+        references = {}
+        for index, sid in enumerate(sorted(specs), start=1):
+            pcm, texts = specs[sid]
+            references[sid] = self._reference(
+                tmp_path / f"ref-{sid}", sid, f"req-{index:04d}", pcm, texts,
+                dict(values), pcm_map,
+            )
+
+        contexts, buffers, adapter, registry, data_root, run_dir = self._batch_world(
+            tmp_path / "batch", specs, dict(values), pcm_map
+        )
+        outcomes = POLICIES.resolve(OJW_POLICY_NAME).run_samples(contexts)
+
+        assert len(outcomes) == len(contexts)
+        for ctx, outcome in zip(contexts, outcomes):
+            sid = ctx.sample.sample_id
+            ref_outcome, ref_records, ref_derivation = references[sid]
+            assert outcome == ref_outcome
+            assert buffers[sid].records == ref_records
+            assert (
+                run_dir / f"{RUN_ID}.obs-derivation.{sid}.json"
+            ).read_bytes() == ref_derivation
+
+        # slice-file collision check (item 4): per-sample-unique paths, all
+        # registered, all written under the shared data root
+        by_sample = {}
+        for payload in adapter.payloads:
+            by_sample.setdefault(payload["sample_id"], set()).add(
+                payload["media_relpath"]
+            )
+        sids = sorted(by_sample)
+        assert len(sids) == 2
+        assert by_sample[sids[0]].isdisjoint(by_sample[sids[1]])
+        for sid, relpaths in by_sample.items():
+            for relpath in relpaths:
+                assert f"/{sid}/" in relpath
+                assert (data_root / relpath).is_file()
+                assert registry.lookup(sid, relpath) is not None
+
+        # deterministic per-run trace file: flush in split-id order
+        sink = TraceSink(run_dir, RUN_ID)
+        for ctx in contexts:
+            buffers[ctx.sample.sample_id].flush_into(sink)
+        raw = (run_dir / f"{RUN_ID}.trace.jsonl").read_text(encoding="utf-8")
+        flushed_ids = [json.loads(line)["record_id"] for line in raw.splitlines() if line]
+        expected_ids = [
+            record_id
+            for sid in sorted(specs)
+            for _, record_id, _ in references[sid][1]
+        ]
+        assert flushed_ids == expected_ids
+
+    def test_batch_size_one_is_todays_behaviour(self, tmp_path, monkeypatch):
+        pcm_map = {}
+        monkeypatch.setattr(
+            obs_loop,
+            "decode_parent_pcm",
+            lambda path, rate=16000: pcm_map[Path(path).name],
+        )
+        specs = _batch_specs()
+        results = {}
+        for batch in (1, 2):
+            values = _config_values(
+                obs_condition_tail_chars=400, obs_batch_samples=batch
+            )
+            contexts, buffers, _, _, _, _ = self._batch_world(
+                tmp_path / f"batch-{batch}", specs, values, pcm_map
+            )
+            outcomes = POLICIES.resolve(OJW_POLICY_NAME).run_samples(contexts)
+            results[batch] = (
+                outcomes,
+                {sid: list(buffer.records) for sid, buffer in buffers.items()},
+            )
+        assert results[1] == results[2]
+
+    def test_batch_failure_surfaces_first_sample_in_split_order(
+        self, tmp_path, monkeypatch
+    ):
+        """When SEVERAL samples fail concurrently, the error that surfaces is
+        deterministically the FIRST in split-id order — never whichever task
+        happened to fail first in wall-clock time. (The framework wraps a
+        component failure as ExecutionError 100054, the same shape the live
+        run showed; the batch runner preserves that error, only choosing
+        WHICH one propagates.)"""
+
+        pcm_map = {}
+        monkeypatch.setattr(
+            obs_loop,
+            "decode_parent_pcm",
+            lambda path, rate=16000: pcm_map[Path(path).name],
+        )
+        specs = _batch_specs()
+        values = _config_values(obs_condition_tail_chars=400, obs_batch_samples=2)
+        contexts, _, adapter, _, _, _ = self._batch_world(
+            tmp_path / "batch", specs, values, pcm_map
+        )
+        # Exhaust BOTH scripts so both samples fail; the LONGER sample
+        # (4000001, 3 slices) necessarily fails LATER in wall-clock time than
+        # the shorter one (4000002, 2 slices) -- so "first in split-id order"
+        # and "first to fail" are genuinely different answers here.
+        for sample_id in specs:
+            adapter._scripts[sample_id].pop()
+        with pytest.raises(Exception) as failure:
+            POLICIES.resolve(OJW_POLICY_NAME).run_samples(contexts)
+        message = str(failure.value)
+        assert "more requests than scripted" in message
+        assert "4000001" in message  # split-id order wins
+        assert "4000002" not in message
 
 
 class TestWorkflowTimeout:

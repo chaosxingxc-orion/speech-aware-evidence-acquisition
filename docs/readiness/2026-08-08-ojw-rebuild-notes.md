@@ -134,6 +134,86 @@ component), so retry behaviour can never diverge:
   `retry-flaky` equivalence scenario driving BOTH executors through the
   same flaky adapter (identical retry id, trace, payload sequence).
 
+## Batch inference — sample-level concurrency (owner directive 2026-08-08)
+
+Owner directive: experiments must use BATCH inference, not one-by-one.
+
+**What parallelizes: samples. What cannot: intra-call slices.** Slice k+1's
+window start IS slice k's resolved boundary, so a call's slice chain is
+inherently sequential — no implementation could overlap it without
+inventing the boundary it hasn't heard yet. Concurrency therefore lives at
+the sample level: N whole calls in flight, each running its own strictly
+sequential obs loop. The plain policy stays sequential by definition — it
+is the equivalence reference fixture.
+
+Mechanism (`reproduction/ojw/runner.py::execute_obs_batch`):
+`asyncio.gather` over one task per sample, bounded by an
+`asyncio.Semaphore(obs_batch_samples)`; the semaphore also caps PEAK MEMORY
+because each sample decodes its own PCM inside its task, under the
+semaphore, so at most `obs_batch_samples` decoded calls are ever live. Real
+overlap comes from `FrozenCoreASR` hopping the blocking adapter call to a
+worker thread (`asyncio.to_thread`) — without that, N "concurrent" samples
+would serialize on the event-loop thread. The per-sample pipeline
+(`policy._prepare_state` / `_finalize_sample`) is shared VERBATIM with the
+sequential entry point, so a batched sample is byte-identical to a
+sequential one.
+
+**Determinism (the part that matters for the record).** Nothing observable
+depends on completion order:
+
+- **Outputs rows**: the driver builds contexts in split-id order, hands the
+  whole list to `run_samples`, and writes rows from the returned list, which
+  is aligned to the input order (`asyncio.gather` preserves argument order).
+- **Trace**: the per-run trace file stays single and append-only. Each
+  sample's ENTIRE trace — driver preamble (OBS/ORG/SUPPLY), policy records,
+  and the shared adapter's per-request records — buffers in its own
+  `core.tracing.TraceBuffer`; the driver flushes buffers into the real
+  `TraceSink` in split-id order after gather completes. Chosen over
+  flush-on-completion-with-a-lock precisely because ordering is then decided
+  by a `for` loop rather than by a race. Within a sample, record order is
+  emission order, exactly as sequential.
+- **Adapter routing**: one adapter serves all samples, so its records are
+  routed to the current sample's buffer through a contextvar
+  (`core.tracing.DispatchingSink` + `set_current_trace_buffer`), task-local
+  under asyncio and copied into `to_thread` workers. With no buffer set it
+  falls through to the real sink — the sequential path is untouched.
+- **Failures**: all tasks are allowed to settle (`return_exceptions=True`,
+  no completion-order cancellation) and the FIRST failed sample in split-id
+  order is raised. Tested with two concurrently-failing samples whose
+  wall-clock failure order is the OPPOSITE of split-id order.
+
+**Metering under concurrency (rail).** `core/model/adapter.py` now holds a
+`threading.Lock` across [fresh sibling read → budget checks → MODEL_REQUEST
+record → durable `record_usage`], plus the post-transport aggregate
+counters. The transport call itself stays OUTSIDE the lock — holding it
+across a multi-second model request would serialize away the very
+concurrency this exists to provide. This closes the in-process
+simultaneous-double-read the I3 comment explicitly left open; the
+cross-PROCESS case remains `core.attempts`'s concern, unchanged. Verified
+by a 12-thread hammer against a 5-call budget (exactly 5 succeed, exact
+in-process AND durable metering, exactly 5 MODEL_REQUEST records); with the
+lock neutralized the same hammer lets 6 through, so the test proves the
+lock rather than merely passing.
+
+**Slice-file collisions: none by construction.** Slice paths are
+`derived/obs-slices/<run_id>/<sample_id>/i<NNNN>.wav`
+(`SliceRegistry.slice_relpath`) — the sample id is a path component, so two
+concurrent samples cannot collide, and within a sample iterations are
+sequential. Asserted directly (disjoint path sets per sample, every path
+containing its own sample id, all registered and written).
+
+**Knob**: `obs_batch_samples` (default 4 in the three ojw fragments; 1 =
+exactly today's sequential behaviour) → config_hash → protocol_hash.
+Validated in both `ObsLoopConfig` and the driver; a config demanding
+batching from a policy that implements only `run_sample` refuses
+fail-closed BEFORE the attempt slot is reserved, so no budget is spent.
+
+**Server-side flags (operator sets these)**: `-np 4` (4 parallel slots) and
+`-c 32768` total context so each slot gets 8k — matching the per-slice
+~3k-token need with headroom. Expected 2-4x wall-clock on the
+CPU-expert-bound MoE; `obs_batch_samples` should not exceed `-np` (extra
+samples would just queue server-side).
+
 ## Framework findings that shaped the build
 
 1. **None deletes.** The session state merge
@@ -288,7 +368,15 @@ pre-registration, not a v1 swap.
 4. Framework logs (loguru graph/workflow events) will appear on stderr
    during ojw runs; they are additive observability and are NOT part of
    the run's trace record set. The trace jsonl remains the audit surface.
-5. Per-sample ceiling: every ojw fragment declares
+5. Batch inference: the ojw fragments declare `obs_batch_samples: 4`. Start
+   llama-server with `-np 4 -c 32768` (8k per slot) so the four in-flight
+   samples each get their own slot; keep `obs_batch_samples <= -np`. Set it
+   to 1 to reproduce the sequential behaviour exactly (same rows, same
+   trace). Note the per-sample workflow ceiling below is wall-clock, so
+   under batching a sample's elapsed time includes time spent waiting on
+   server slots — the 6 h default has ample room for this, but a much
+   larger batch on a slower server is the case to watch.
+6. Per-sample ceiling: every ojw fragment declares
    `ojw_workflow_timeout_seconds` (21600). If a sample dies with an
    ObsLoopError naming this knob, the loop genuinely ran past 6 hours —
    raise the value in the fragment (a config change, so a new
