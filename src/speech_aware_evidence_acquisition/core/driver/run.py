@@ -156,8 +156,16 @@ def run_experiment(
         # docstring) so a carrier-aware source (e.g. conec-contexts) can
         # resolve its layout via that carrier's own CarrierDescriptor instead
         # of guessing/hardcoding a single carrier's path.
+        # B-2a (core.evidence module docstring): every evidence source ALSO
+        # takes this run's composed config `values` (optional on the
+        # function signature -- every pre-existing source ignores it), the
+        # SAME `values` mapping `resolve_task_instruction` above already
+        # reads knobs from, so a source-specific knob (e.g. `conec-bias-
+        # list`'s `bias_list_max_entries`) is config plumbing only, never a
+        # new call site.
         evidence_by_sample = {
-            s.sample_id: source(lock, root, s.sample_id, s.carrier_lock_key) for s in samples
+            s.sample_id: source(lock, root, s.sample_id, s.carrier_lock_key, values)
+            for s in samples
         }
         # IMPORTANT 1 (external-threat-model review round 4): the D1
         # evidence-identity rail's facts (core.model.lifecycle's own
