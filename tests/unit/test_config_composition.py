@@ -322,7 +322,12 @@ def test_q4km_repo_fragment_composes_with_the_expected_runtime_selection():
         REPO_ROOT, "qwen3-omni-llamacpp-q4km", "earnings22-dev-subset10", "bare-core", "r0-smoke"
     )
     assert composed.values["model_lock_key"] == "qwen3-omni-30b-a3b-instruct-gguf-q4km"
-    assert composed.values["timeout_seconds"] == 900.0
+    # 2026-08-09: 900 -> 240 s and a 1024-token generation cap, after two arms
+    # aborted deterministically at ~578 slices on a runaway generation that
+    # filled the 12,288-token slot (~600 s) and outlasted even the 900 s
+    # ceiling, so the bounded retry could not recover either.
+    assert composed.values["timeout_seconds"] == 240.0
+    assert composed.values["decoding_params"]["max_tokens"] == 1024
     # 2026-08-09 ops-measured sizing (docs/readiness/2026-08-09-*): the worst
     # request is ~11.8k tokens (ConEC evidence tokenizes at 2.19 B/token), so
     # 12,288 tok/slot is the minimum viable; q8_0 KV keeps the whole thing on
