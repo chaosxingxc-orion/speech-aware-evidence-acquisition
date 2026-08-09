@@ -322,10 +322,15 @@ def test_q4km_repo_fragment_composes_with_the_expected_runtime_selection():
         REPO_ROOT, "qwen3-omni-llamacpp-q4km", "earnings22-dev-subset10", "bare-core", "r0-smoke"
     )
     assert composed.values["model_lock_key"] == "qwen3-omni-30b-a3b-instruct-gguf-q4km"
-    # 2026-08-09: 900 -> 240 s and a 1024-token generation cap, after two arms
-    # aborted deterministically at ~578 slices on a runaway generation that
-    # filled the 12,288-token slot (~600 s) and outlasted even the 900 s
-    # ceiling, so the bounded retry could not recover either.
+    # 2026-08-09: 900 -> 240 s, plus a 1024-token generation cap. Two arms
+    # aborted (577 / 581 calls) because ONE asr slice never returned; every
+    # other request in those runs finished within 38.6 s, so nothing was
+    # degrading. Uncapped, llama.cpp decodes until the slot's 12,288-token
+    # context fills, which under obs_batch_samples=4 contention outruns the
+    # request ceiling -- and since decoding is deterministic (temperature 0,
+    # fixed seed) the one bounded retry re-sent a byte-identical request and
+    # hung identically. The cap is what makes that worst case finite; the
+    # retry alone can only ever recover *transient* failures.
     assert composed.values["timeout_seconds"] == 240.0
     assert composed.values["decoding_params"]["max_tokens"] == 1024
     # 2026-08-09 ops-measured sizing (docs/readiness/2026-08-09-*): the worst
