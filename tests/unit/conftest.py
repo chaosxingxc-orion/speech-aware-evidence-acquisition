@@ -380,3 +380,67 @@ class Audio2ToolWorld:
 @pytest.fixture()
 def audio2tool_world(tmp_path):
     return Audio2ToolWorld(tmp_path)
+
+
+# ---------------------------------------------------------------------------
+# B-2a bias-list world (docs/readiness/2026-08-09-exploration-plan.md section
+# 3b): a richer earnings21-original + conec pairing than SyntheticWorld's
+# trivial "ctx" content (deliberately NOT changed above -- test_core_
+# components.py/test_driver.py assert on it byte-for-byte), so extraction can
+# actually be exercised through all four candidate categories
+# (core.bias_lists._TERM_PATTERN's own docstring), plus a small, obviously-
+# synthetic (ZQXVBIAS-prefixed, guaranteed not to collide with any realistic
+# proper noun elsewhere in this fixture) oracle/distractor bias-list pair for
+# the set-difference source.
+# ---------------------------------------------------------------------------
+
+BIAS_WORLD_SAMPLE_ID = "4900001"
+BIAS_WORLD_ORACLE_TERMS = ("ZQXVBIAS ALPHA", "ZQXVBIAS BRAVO", "ZQXVBIAS CHARLIE")
+BIAS_WORLD_DISTRACTOR_ONLY_TERMS = ("ZQXVBIAS DELTA", "ZQXVBIAS ECHO")
+BIAS_WORLD_CONEC_CONTEXT_TEXT = (
+    "Maureen Mulholland - Senior Vice President, General Counsel\n"
+    "Brett Ponton - President and CEO\n"
+    "Goldman Sachs & Co is acting as advisor\n"
+    "danaher 1\n"
+    "corporation 1\n"
+    "ponton 1\n"
+    "nyse 1\n"
+    "IBM reported strong quarterly results\n"
+)
+
+
+class BiasListWorld:
+    def __init__(self, tmp_path: Path) -> None:
+        self.data_root = tmp_path / "bias-data"
+        self.lock_path = tmp_path / "bias-lock.json"
+        self.e21 = self.data_root / "datasets" / "earnings21-22" / "earnings21"
+        self.conec = self.data_root / "datasets" / "conec"
+        self.sample_id = BIAS_WORLD_SAMPLE_ID
+        self._materialize()
+        self._write_lock()
+
+    def _materialize(self) -> None:
+        _touch(
+            self.conec / "earnings21" / "contexts" / f"{self.sample_id}.txt",
+            BIAS_WORLD_CONEC_CONTEXT_TEXT,
+        )
+        distractor_terms = list(BIAS_WORLD_ORACLE_TERMS) + list(BIAS_WORLD_DISTRACTOR_ONLY_TERMS)
+        _touch(self.e21 / "bias_lists" / "oracle_list.txt", "\n".join(BIAS_WORLD_ORACLE_TERMS) + "\n")
+        _touch(self.e21 / "bias_lists" / "distractor_list.txt", "\n".join(distractor_terms) + "\n")
+
+    def _write_lock(self) -> None:
+        document = {
+            "datasets": [
+                {
+                    "name": "earnings21-original",
+                    "local_subdir": "datasets/earnings21-22/earnings21",
+                },
+                {"name": "conec", "local_subdir": "datasets/conec"},
+            ]
+        }
+        self.lock_path.write_text(json.dumps(document), encoding="utf-8")
+
+
+@pytest.fixture()
+def bias_list_world(tmp_path):
+    return BiasListWorld(tmp_path)

@@ -1,0 +1,5 @@
+{
+  "experiment_id": "SAEA-E-003",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "B-2a prompt-level bias-list probe (exploration-plan section 3b, 2026-08-09 leakage-note redesign): three arms on earnings21-discovery -- none (bare-core), conec-derived (candidate bias terms extracted deterministically from the call's own ConEC context materials), and distractor-only (the shipped distractor_list.txt minus the reference-derived oracle_list.txt, i.e. Fortune-500/CEO names absent from Earnings-21); success = entity-class WER improves for conec-derived relative to none, distractor-only shows no leakage-driven gain (negative control); the shipped oracle_list.txt is reference-derived and never enters runtime -- it is usable only as a scorer-side upper bound, never as a runtime arm."
+}
