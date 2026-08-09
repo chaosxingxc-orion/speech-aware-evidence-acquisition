@@ -23,7 +23,7 @@ from ...contracts import ExecutionPlan
 from ...e0.artifacts import REPO_ROOT
 from ..base import SCORERS, TRANSPORTS
 from ..bundle import finalize_bundle, verify_bundle
-from ..config import compose
+from ..config import compose, resolve_runtime_receipt_path, runtime_receipt_relpath
 from ..resources import resolve_resource_sampler
 from ..scorers import score_bundle
 from .bundled import run_experiment_bundled
@@ -91,7 +91,14 @@ def _cli_run(args: argparse.Namespace) -> int:
     composed = compose(REPO_ROOT, args.model, args.dataset, args.baseline, args.experiment)
     plan = ExecutionPlan(**json.loads(Path(args.plan).read_text(encoding="utf-8")))
     runtime_root = Path(args.runtime_root)
-    gate = FrozenCoreGate.for_study_repo(REPO_ROOT, root, runtime_root)
+    # R0.2 second-model plumbing: the model fragment's own optional
+    # "runtime_receipt" key (default: today's "receipts/runtime.json") picks
+    # which committed receipt this gate/session pair is bound to -- see
+    # core.config.runtime_receipt_relpath's own docstring.
+    receipt_relpath = runtime_receipt_relpath(composed.values)
+    gate = FrozenCoreGate.for_study_repo(
+        REPO_ROOT, root, runtime_root, runtime_receipt_relpath=receipt_relpath
+    )
     # R0 repair T5 (I5): the runtime receipt is the SAME committed file the
     # gate itself re-hashes. attach_session binds this run to a session
     # receipt whose binary/model identity, live pid, PROCESS IMAGE identity
@@ -100,7 +107,7 @@ def _cli_run(args: argparse.Namespace) -> int:
     # started out of band is only usable if it can PROVE it is the
     # receipt-pinned process, never merely because its base_url matches the
     # config.
-    runtime_receipt = load_runtime_receipt(REPO_ROOT / "docs" / "receipts" / "runtime.json")
+    runtime_receipt = load_runtime_receipt(resolve_runtime_receipt_path(REPO_ROOT, composed.values))
     session = attach_session(
         Path(args.session_receipt), runtime_receipt=runtime_receipt, runtime_root=runtime_root
     )

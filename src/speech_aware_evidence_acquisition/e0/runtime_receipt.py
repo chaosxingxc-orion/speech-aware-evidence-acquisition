@@ -67,14 +67,29 @@ def build_runtime_receipt(
     runtime_root: Path,
     llama_dir_name: str = "llama.cpp",
     binary_relpath: str = "build/bin/llama-server",
+    model_lock_key: str = MODEL_LOCK_KEY,
 ) -> dict[str, object]:
+    """Build a runtime receipt for ``model_lock_key`` (default: the frozen
+    Q8_0 :data:`~..contracts.MODEL_LOCK_KEY`).
+
+    Passing a different umbrella-lock model entry name lets a SECOND pinned
+    model (e.g. a Q4_K_M requant, materialized under its own directory) get
+    its own truthful receipt without touching the default key or its
+    callers -- the returned document's own ``model_lock_key`` field always
+    records exactly the key that was actually used to resolve ``files``/
+    ``size_bytes`` below, never the frozen constant unconditionally. Note
+    this function only BUILDS the receipt; ``contracts.FrozenCoreGate``
+    still enforces its own (currently single, frozen) ``MODEL_LOCK_KEY``
+    equality check at gate-open time -- see ``gate_runtime.py``.
+    """
+
     lock = load_lock(lock_path)
-    entry = lock_entry(lock, MODEL_LOCK_KEY)
+    entry = lock_entry(lock, model_lock_key)
     subdir = str(entry.get("local_subdir", "")).rstrip("/")
     expected_files = entry.get("files")
     expected_bytes = entry.get("size_bytes")
     if not subdir or not isinstance(expected_files, int) or not isinstance(expected_bytes, int):
-        raise ArtifactError(f"lock entry {MODEL_LOCK_KEY!r} lacks subdir/files/size_bytes")
+        raise ArtifactError(f"lock entry {model_lock_key!r} lacks subdir/files/size_bytes")
 
     model_dir = Path(data_root) / subdir
     if not model_dir.is_dir():
@@ -152,7 +167,7 @@ def build_runtime_receipt(
     return {
         "schema": RUNTIME_RECEIPT_SCHEMA,
         "study": STUDY_SLUG,
-        "model_lock_key": MODEL_LOCK_KEY,
+        "model_lock_key": model_lock_key,
         "llama_cpp": {
             "build_commit": commit,
             "reported_build": reported,

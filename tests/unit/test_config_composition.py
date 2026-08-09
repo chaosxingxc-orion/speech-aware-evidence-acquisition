@@ -5,10 +5,13 @@ import json
 import pytest
 
 from speech_aware_evidence_acquisition.core.config import (
+    DEFAULT_RUNTIME_RECEIPT_RELPATH,
     ComposedConfig,
     ConfigError,
     compose,
     protocol_hash,
+    resolve_runtime_receipt_path,
+    runtime_receipt_relpath,
 )
 from speech_aware_evidence_acquisition.scoring import SCORING_STACK_VERSION
 
@@ -213,3 +216,120 @@ def test_non_mismatch_engineering_controls_do_not_set_the_mismatch_flag(baseline
     dataset = "earnings22-dev-subset10" if baseline_name == "bare-core" else "earnings21-discovery"
     composed = compose(REPO_ROOT, "qwen3-omni-llamacpp", dataset, baseline_name, "r0-smoke")
     assert composed.values["evidence_mismatch"] is False
+
+
+# ---------------------------------------------------------------------------
+# Second-pinned-model plumbing: an optional "runtime_receipt" key in the
+# model fragment selects WHICH committed runtime receipt a session/gate pair
+# binds to, defaulting to today's "receipts/runtime.json" when the key is
+# absent -- every fragment that predates the key keeps composing to the
+# exact same config_hash it always did.
+# ---------------------------------------------------------------------------
+
+
+def test_runtime_receipt_relpath_defaults_when_key_absent():
+    assert runtime_receipt_relpath({}) == DEFAULT_RUNTIME_RECEIPT_RELPATH == "receipts/runtime.json"
+
+
+def test_runtime_receipt_relpath_returns_the_explicit_value():
+    assert (
+        runtime_receipt_relpath({"runtime_receipt": "receipts/runtime-q4km.json"})
+        == "receipts/runtime-q4km.json"
+    )
+
+
+@pytest.mark.parametrize(
+    "value",
+    [
+        "",
+        "/etc/passwd",
+        "C:/receipts/runtime.json",
+        "receipts\\runtime.json",
+        "../outside.json",
+        "receipts/../../outside.json",
+        123,
+        None,
+    ],
+)
+def test_runtime_receipt_relpath_rejects_unsafe_or_malformed_values(value):
+    with pytest.raises(ConfigError, match="runtime_receipt"):
+        runtime_receipt_relpath({"runtime_receipt": value})
+
+
+def test_resolve_runtime_receipt_path_joins_under_the_repo_docs_directory(tmp_path):
+    assert (
+        resolve_runtime_receipt_path(tmp_path, {})
+        == tmp_path / "docs" / "receipts" / "runtime.json"
+    )
+    assert resolve_runtime_receipt_path(
+        tmp_path, {"runtime_receipt": "receipts/runtime-q4km.json"}
+    ) == tmp_path / "docs" / "receipts" / "runtime-q4km.json"
+
+
+def test_config_hash_changes_when_a_fragment_declares_runtime_receipt(tmp_path):
+    """Proves the flow-through end to end via the real compose() pipeline
+    (not merely the helper's own isolated logic): two model fragments,
+    identical except one declares ``runtime_receipt``, must compose to
+    DIFFERENT config_hash -> protocol_hash values -- exactly like any other
+    model-config key already does, since compose() merges every fragment's
+    top-level keys verbatim before hashing."""
+
+    for kind, name, body in (
+        ("dataset", "d", {"carrier_lock_key": "earnings22-original", "split_name": "dev"}),
+        ("baseline", "b", {"arm": "bare-core", "policy": "fixed", "task_instruction": "t"}),
+        ("experiment", "e", {"experiment_id": "SAEA-E-001"}),
+    ):
+        path = tmp_path / "configs" / kind / f"{name}.json"
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(body), encoding="utf-8")
+
+    model_dir = tmp_path / "configs" / "model"
+    model_dir.mkdir(parents=True)
+    (model_dir / "m-default.json").write_text(
+        json.dumps({"transport": "llama-server", "base_url": "http://x"}), encoding="utf-8"
+    )
+    (model_dir / "m-q4km.json").write_text(
+        json.dumps(
+            {
+                "transport": "llama-server",
+                "base_url": "http://x",
+                "runtime_receipt": "receipts/runtime-q4km.json",
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    default_composed = compose(tmp_path, "m-default", "d", "b", "e")
+    q4km_composed = compose(tmp_path, "m-q4km", "d", "b", "e")
+
+    assert "runtime_receipt" not in default_composed.values
+    assert q4km_composed.values["runtime_receipt"] == "receipts/runtime-q4km.json"
+    assert default_composed.config_hash != q4km_composed.config_hash
+    assert protocol_hash(
+        default_composed.config_hash, "bare-core", "s" * 64
+    ) != protocol_hash(q4km_composed.config_hash, "bare-core", "s" * 64)
+
+
+def test_q4km_repo_fragment_composes_with_the_expected_runtime_selection():
+    """The real committed fragment (deliverable 3): same shape as the
+    existing batch-profile config, minus the CPU-offload override, plus the
+    runtime_receipt selection pointing at the Q4_K_M receipt."""
+
+    from speech_aware_evidence_acquisition.e0.artifacts import REPO_ROOT
+
+    composed = compose(
+        REPO_ROOT, "qwen3-omni-llamacpp-q4km", "earnings22-dev-subset10", "bare-core", "r0-smoke"
+    )
+    assert composed.values["model_lock_key"] == "qwen3-omni-30b-a3b-instruct-gguf-q4km"
+    assert composed.values["timeout_seconds"] == 900.0
+    assert composed.values["server_args"] == [
+        "-c", "32768", "-np", "4", "-fa", "on", "-ngl", "999",
+    ]
+    assert "-ot" not in composed.values["server_args"]
+    assert composed.values["runtime_receipt"] == "receipts/runtime-q4km.json"
+    assert runtime_receipt_relpath(composed.values) == "receipts/runtime-q4km.json"
+
+    base_composed = compose(
+        REPO_ROOT, "qwen3-omni-llamacpp", "earnings22-dev-subset10", "bare-core", "r0-smoke"
+    )
+    assert base_composed.config_hash != composed.config_hash

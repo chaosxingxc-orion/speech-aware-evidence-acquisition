@@ -20,6 +20,21 @@ from ..scoring import SCORING_STACK_VERSION
 _KINDS = ("model", "dataset", "baseline", "experiment")
 _FRAGMENT_NAME_PATTERN = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]*")
 
+# A model fragment may pin a SECOND runtime receipt (e.g.
+# "receipts/runtime-q4km.json" for a Q4_K_M pinned model alongside the
+# default Q8_0) via an optional top-level "runtime_receipt" key, relative to
+# the study repo's docs/ directory. Every fragment that predates this key
+# (and every fragment that simply never sets it) resolves to exactly this
+# same default -- unchanged behaviour, unchanged config_hash for any
+# fragment that omits the key entirely (the default is applied here, at
+# CONSUMPTION time, never injected into `compose()`'s merged dict, so an
+# existing fragment's canonical hash never shifts under it). A fragment that
+# DOES set the key changes `config_hash` -> `protocol_hash` automatically,
+# the same way any other model-config key already does: `compose()` merges
+# every fragment's top-level keys verbatim before hashing.
+DEFAULT_RUNTIME_RECEIPT_RELPATH = "receipts/runtime.json"
+_DRIVE_PREFIX = re.compile(r"^[A-Za-z]:")
+
 
 class ConfigError(RuntimeError):
     """A config fragment is missing, unreadable, or collides with another."""
@@ -98,6 +113,43 @@ def compose(
             merged[key] = value
             origins[key] = kind
     return ComposedConfig(values=merged, config_hash=_canonical_hash(merged), fragments=names)
+
+
+def runtime_receipt_relpath(values: Mapping[str, object]) -> str:
+    """Resolve a composed config's ``runtime_receipt`` model key (relative to
+    the study repo's ``docs/`` directory), defaulting to today's committed
+    ``receipts/runtime.json`` when the key is absent -- so every fragment
+    that predates the key, or simply never sets it, behaves identically to
+    before. Fails closed (``ConfigError``) on a malformed value: this string
+    is about to be joined onto a filesystem path (``resolve_runtime_receipt_
+    path``), so the same absolute/drive-letter/backslash/traversal refusals
+    the rest of this study applies to any path-shaped config value apply
+    here too, before it ever reaches a caller."""
+
+    value = values.get("runtime_receipt", DEFAULT_RUNTIME_RECEIPT_RELPATH)
+    if not isinstance(value, str) or not value:
+        raise ConfigError(
+            f"model config runtime_receipt must be a non-empty string, got {value!r}"
+        )
+    if "\\" in value:
+        raise ConfigError(f"model config runtime_receipt must not contain a backslash: {value!r}")
+    if value.startswith("/") or _DRIVE_PREFIX.match(value):
+        raise ConfigError(f"model config runtime_receipt must be relative, got {value!r}")
+    if any(part in ("", ".", "..") for part in value.split("/")):
+        raise ConfigError(
+            f"model config runtime_receipt contains an empty or traversal segment: {value!r}"
+        )
+    return value
+
+
+def resolve_runtime_receipt_path(repo_root: Path, values: Mapping[str, object]) -> Path:
+    """The absolute path a composed config's ``runtime_receipt`` key names,
+    under ``<repo_root>/docs/`` -- the one place every caller (driver smoke,
+    ``saea-driver run``, and ``contracts.FrozenCoreGate.for_study_repo``'s
+    own default) should derive this path from, rather than each
+    re-implementing the same join."""
+
+    return Path(repo_root) / "docs" / runtime_receipt_relpath(values)
 
 
 def protocol_hash(config_hash: str, arm: str, split_identity_hash: str) -> str:

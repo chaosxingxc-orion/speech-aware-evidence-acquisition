@@ -92,9 +92,21 @@ class FrozenCoreGate(
 
     E0_DELIVERABLES = ("d1_identity", "d2_leakage", "d3_scoring", "d4_trace")
 
+    #: Kept in sync BY HAND with ``core.config.DEFAULT_RUNTIME_RECEIPT_RELPATH``
+    #: -- ``contracts`` stays dependency-free of ``core`` by design (module
+    #: docstring's circular-import note), so this literal is intentionally
+    #: duplicated rather than imported; both name the exact same on-disk
+    #: default, ``docs/receipts/runtime.json``.
+    _DEFAULT_RUNTIME_RECEIPT_RELPATH = "receipts/runtime.json"
+
     @classmethod
     def for_study_repo(
-        cls, repo_root: Path, data_root: Path, runtime_root: Path
+        cls,
+        repo_root: Path,
+        data_root: Path,
+        runtime_root: Path,
+        *,
+        runtime_receipt_relpath: str = _DEFAULT_RUNTIME_RECEIPT_RELPATH,
     ) -> "FrozenCoreGate":
         """The canonical production binding — the only gate a real run may use.
 
@@ -102,12 +114,23 @@ class FrozenCoreGate(
         of the registered adjacent-checkout layout. Constructing a gate against any
         other ledger (a copy, a temp file, a synthetic row) does not authorize
         anything: pre-registration means a row in ``docs/exposure-ledger.md``.
+
+        ``runtime_receipt_relpath`` (relative to ``<repo_root>/docs/``) lets a
+        caller pin a DIFFERENT committed runtime receipt -- e.g.
+        ``"receipts/runtime-q4km.json"`` for a second pinned model -- while
+        every existing caller that omits it keeps resolving the exact same
+        ``docs/receipts/runtime.json`` as before. This governs only WHICH
+        FILE is read; the gate's own ``_validate_runtime`` still asserts
+        that file's ``model_lock_key`` equals the frozen
+        ``contracts.MODEL_LOCK_KEY`` -- selecting a receipt for a different
+        pinned model is not, by itself, an authorization to open the gate
+        against it (see that method's own docstring).
         """
 
         root = Path(repo_root)
         return cls(
             e0_receipt=root / "docs" / "receipts" / "e0-closure.json",
-            runtime_receipt=root / "docs" / "receipts" / "runtime.json",
+            runtime_receipt=root / "docs" / runtime_receipt_relpath,
             data_root=Path(data_root),
             lock_path=root.parent.parent / "docs" / "datasets.lock.json",
             runtime_root=Path(runtime_root),

@@ -10,6 +10,15 @@ Usage (from the study repository root, WSL, speechrl venv)::
     python -m speech_aware_evidence_acquisition.e0.generate runtime --runtime-root ~
     python -m speech_aware_evidence_acquisition.e0.generate verify  --runtime-root ~
 
+    # A SECOND pinned model (e.g. a Q4_K_M requant, materialized in its own
+    # directory the umbrella lock names under a NEW model key): pass
+    # --model-lock-key and --out to write a receipt for that model without
+    # touching docs/receipts/runtime.json (the Q8_0 default).
+    python -m speech_aware_evidence_acquisition.e0.generate runtime \\
+        --runtime-root ~ \\
+        --model-lock-key qwen3-omni-30b-a3b-instruct-gguf-q4km \\
+        --out docs/receipts/runtime-q4km.json
+
 ``close`` binds the four deliverable artifacts (re-measured SHA-256) into
 ``docs/receipts/e0-closure.json``. ``verify`` is a gate dry run: it builds a
 temporary exposure-ledger row and a synthetic in-budget ExecutionPlan, then asks
@@ -26,6 +35,7 @@ from pathlib import Path
 
 from ..contracts import (
     E0_RECEIPT_SCHEMA,
+    MODEL_LOCK_KEY,
     STUDY_SLUG,
     ExecutionPlan,
     FrozenCoreGate,
@@ -76,9 +86,25 @@ def _close(receipts_dir: Path) -> None:
     print(f"wrote {path} sha256={digest}")
 
 
-def _runtime(receipts_dir: Path, lock_path: Path, root: Path, runtime_root: Path) -> None:
-    receipt = build_runtime_receipt(lock_path, root, runtime_root)
-    path = receipts_dir / "runtime.json"
+def _runtime(
+    receipts_dir: Path,
+    lock_path: Path,
+    root: Path,
+    runtime_root: Path,
+    *,
+    model_lock_key: str = MODEL_LOCK_KEY,
+    out: Path | None = None,
+) -> None:
+    """Build and write a runtime receipt for ``model_lock_key`` (default: the
+    frozen Q8_0 key) to ``out`` (default: ``<receipts_dir>/runtime.json``,
+    the committed Q8_0 receipt -- unchanged for every caller that passes
+    neither flag). Passing both lets an operator build a receipt for a
+    SECOND pinned model (e.g. ``--model-lock-key
+    qwen3-omni-30b-a3b-instruct-gguf-q4km --out docs/receipts/runtime-q4km.json``)
+    without ever touching the default Q8_0 receipt."""
+
+    receipt = build_runtime_receipt(lock_path, root, runtime_root, model_lock_key=model_lock_key)
+    path = out if out is not None else receipts_dir / "runtime.json"
     digest = write_json_artifact(path, receipt)
     print(f"wrote {path} sha256={digest}")
 
@@ -152,6 +178,26 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--receipts-dir", type=Path, default=DEFAULT_RECEIPTS_DIR)
     parser.add_argument("--lock", type=Path, default=None, help="umbrella datasets lock")
     parser.add_argument("--runtime-root", type=Path, default=None)
+    parser.add_argument(
+        "--model-lock-key",
+        default=MODEL_LOCK_KEY,
+        help=(
+            "umbrella-lock model entry name to pin (runtime command only); default: "
+            "the frozen Q8_0 key. Pass a different key (e.g. a Q4_K_M requant's own "
+            "lock entry) to build a receipt for a SECOND pinned model"
+        ),
+    )
+    parser.add_argument(
+        "--out",
+        type=Path,
+        default=None,
+        help=(
+            "receipt output path (runtime command only); default: "
+            "<receipts-dir>/runtime.json. Pass e.g. docs/receipts/runtime-q4km.json "
+            "alongside --model-lock-key to write a second model's receipt without "
+            "touching the default Q8_0 receipt"
+        ),
+    )
     arguments = parser.parse_args(argv)
 
     receipts_dir = arguments.receipts_dir.resolve()
@@ -180,7 +226,14 @@ def main(argv: list[str] | None = None) -> int:
                 raise ArtifactError(f"--runtime-root is required for {arguments.command}")
             runtime_root = arguments.runtime_root.expanduser().resolve()
             if arguments.command == "runtime":
-                _runtime(receipts_dir, lock_path(), data_root(), runtime_root)
+                _runtime(
+                    receipts_dir,
+                    lock_path(),
+                    data_root(),
+                    runtime_root,
+                    model_lock_key=arguments.model_lock_key,
+                    out=arguments.out,
+                )
             else:
                 _verify(receipts_dir, lock_path(), data_root(), runtime_root)
     except Exception as error:
