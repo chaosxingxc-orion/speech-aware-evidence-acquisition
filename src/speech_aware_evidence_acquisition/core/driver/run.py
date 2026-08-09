@@ -35,9 +35,63 @@ from ..instructions import resolve_task_instruction
 from ..resources import NullSampler, ResourceSampler, cpu_seconds_snapshot
 from ..model import FrozenCoreAdapter, SliceRegistry
 from ..split_receipt import load_verified_split
-from ..tracing import TraceSink
+from ..tracing import DispatchingSink, TraceBuffer, TraceSink
 from .cost import _assemble_run_cost
 from .split_check import _verify_split_for_run
+
+
+def _sample_batch_size(values: Mapping[str, object]) -> int:
+    """The sample-level concurrency knob (owner batching directive
+    2026-08-08). Declared in the baseline fragment (-> config_hash ->
+    protocol_hash); 1 (the default) is exactly the pre-batching sequential
+    path; anything unusable refuses fail-closed."""
+
+    raw = values.get("obs_batch_samples", 1)
+    if isinstance(raw, bool) or not isinstance(raw, int) or raw < 1:
+        raise CoreError(
+            f"config obs_batch_samples must be an integer >= 1 (1 = sequential), "
+            f"got {raw!r}"
+        )
+    return raw
+
+
+def _emit_sample_preamble(sink: object, request_id_base: str, sample, evidence) -> int:
+    """The per-sample OBS/ORG/SUPPLY records run_experiment emits BEFORE the
+    policy runs — one code path for both the sequential loop (real sink) and
+    the batch path (per-sample TraceBuffer). Returns the sample's supplied
+    evidence bytes (the figure the SUPPLY record itself carries)."""
+
+    view = sample.runtime_view()
+    sink.emit(
+        "OBS",
+        f"{request_id_base}/obs",
+        {
+            "obs_speech_ref": view["speech_ref"],
+            "obs_audio_seconds": view["audio_seconds"],
+        },
+    )
+    sample_evidence_bytes = 0
+    if evidence:
+        sample_evidence_bytes = sum(len(item.content.encode("utf-8")) for item in evidence)
+        sink.emit(
+            "ORG",
+            f"{request_id_base}/org",
+            {
+                "org_evidence_count": len(evidence),
+                "org_source_lock_keys": sorted(
+                    {item.provenance["lock_key"] for item in evidence}
+                ),
+            },
+        )
+        sink.emit(
+            "SUPPLY",
+            f"{request_id_base}/supply",
+            {
+                "supply_evidence_ids": [item.evidence_id for item in evidence],
+                "supply_content_bytes": sample_evidence_bytes,
+            },
+        )
+    return sample_evidence_bytes
 
 
 def load_split(
@@ -147,6 +201,18 @@ def run_experiment(
         if values.get("evidence_mismatch", False):
             evidence_by_sample = rotated_mismatch(evidence_by_sample)
         policy = POLICIES.resolve(str(values["policy"]))
+        # Sample batching (owner directive 2026-08-08): resolved and checked
+        # HERE, before the adapter construction below reserves the one-time
+        # attempt slot -- a config that demands batching from a policy that
+        # only implements run_sample must refuse with no budget ever spent.
+        batch_size = _sample_batch_size(values)
+        if batch_size > 1 and not callable(getattr(policy, "run_samples", None)):
+            raise CoreError(
+                f"config obs_batch_samples={batch_size} requires a batch-capable "
+                f"policy (run_samples), but policy {values['policy']!r} implements "
+                "only run_sample; set obs_batch_samples to 1 or use a "
+                "batch-capable policy"
+            )
         # P1 scaffold: the run's single task instruction resolves HERE -- a
         # literal `task_instruction` passes through unchanged (every
         # pre-existing config), a `task_instruction_template` +
@@ -190,9 +256,14 @@ def run_experiment(
             run_id=plan.run_id,
             parent_facts={s.sample_id: (s.media_relpath, s.audio_seconds) for s in samples},
         )
+        # Batch mode routes the shared adapter's per-request records to the
+        # CURRENT sample task's TraceBuffer (core.tracing.DispatchingSink,
+        # contextvar-driven); sequential mode keeps the adapter on the real
+        # sink exactly as before.
+        adapter_sink = sink if batch_size == 1 else DispatchingSink(sink)
         adapter = FrozenCoreAdapter(
-            gate=gate, plan=plan, arm=arm, transport=transport, sink=sink, binding=binding,
-            slice_registry=slice_registry,
+            gate=gate, plan=plan, arm=arm, transport=transport, sink=adapter_sink,
+            binding=binding, slice_registry=slice_registry,
         )
         # R0 repair T7 (I8): "setup" ends here -- split/carrier/evidence
         # resolution plus the gate check and attempt reservation the adapter's
@@ -216,88 +287,105 @@ def run_experiment(
         # future rejecting policy, e.g. X3).
         supplied_evidence_bytes = 0
         admitted_evidence_bytes = 0
-        with outputs_handle as outputs:
-            for index, sample in enumerate(sorted(samples, key=lambda s: s.sample_id), start=1):
-                request_id_base = f"req-{index:04d}"
-                view = sample.runtime_view()
-                sink.emit(
-                    "OBS",
-                    f"{request_id_base}/obs",
+        def _sample_context(sample, evidence, request_id_base, ctx_sink):
+            return SampleContext(
+                sample=sample,
+                evidence=evidence,
+                adapter=adapter,
+                sink=ctx_sink,
+                arm=arm,
+                task_instruction=task_instruction,
+                decoding_params=dict(values.get("decoding_params", {})),
+                request_id_base=request_id_base,
+                retrieval_query=values.get("retrieval_query"),
+                # obs-agent-loop rail: run facts a slice-cutting policy
+                # needs (the SAME slice_registry the adapter enforces
+                # against, the controlled roots, and the composed config
+                # values its obs_* knobs live in). A fresh dict per sample
+                # so no policy can leak per-sample mutations across
+                # samples; whole-file policies simply never read these.
+                extras={
+                    "slice_registry": slice_registry,
+                    "data_root": Path(root),
+                    "run_dir": Path(run_dir),
+                    "repo_root": Path(repo_root),
+                    "config_values": values,
+                },
+            )
+
+        def _write_row(outputs, request_id_base, sample, outcome):
+            outputs.write(
+                json.dumps(
                     {
-                        "obs_speech_ref": view["speech_ref"],
-                        "obs_audio_seconds": view["audio_seconds"],
+                        "request_id": request_id_base,
+                        "sample_id": outcome.sample_id,
+                        "carrier_lock_key": sample.carrier_lock_key,
+                        "arm": arm,
+                        "text": outcome.text,
+                        "admitted": outcome.admitted,
+                        "request_sha256": outcome.request_sha256,
+                        "response_sha256": outcome.response_sha256,
+                        "response_text_sha256": outcome.response_text_sha256,
                     },
+                    ensure_ascii=False,
+                    sort_keys=True,
                 )
-                evidence = evidence_by_sample.get(sample.sample_id, [])
-                sample_evidence_bytes = 0
-                if evidence:
-                    sample_evidence_bytes = sum(
-                        len(item.content.encode("utf-8")) for item in evidence
+                + "\n"
+            )
+
+        ordered_samples = sorted(samples, key=lambda s: s.sample_id)
+        with outputs_handle as outputs:
+            if batch_size == 1:
+                for index, sample in enumerate(ordered_samples, start=1):
+                    request_id_base = f"req-{index:04d}"
+                    evidence = evidence_by_sample.get(sample.sample_id, [])
+                    sample_evidence_bytes = _emit_sample_preamble(
+                        sink, request_id_base, sample, evidence
                     )
                     supplied_evidence_bytes += sample_evidence_bytes
-                    sink.emit(
-                        "ORG",
-                        f"{request_id_base}/org",
-                        {
-                            "org_evidence_count": len(evidence),
-                            "org_source_lock_keys": sorted(
-                                {item.provenance["lock_key"] for item in evidence}
-                            ),
-                        },
+                    ctx = _sample_context(sample, evidence, request_id_base, sink)
+                    outcome = policy.run_sample(ctx)
+                    if evidence and outcome.admitted:
+                        admitted_evidence_bytes += sample_evidence_bytes
+                    _write_row(outputs, request_id_base, sample, outcome)
+            else:
+                # Batch path (owner directive 2026-08-08): each sample's
+                # ENTIRE trace (driver preamble + policy records + the shared
+                # adapter's per-request records, routed by DispatchingSink)
+                # buffers in its own TraceBuffer; the policy's run_samples
+                # executes up to batch_size samples concurrently and returns
+                # outcomes aligned to the contexts (raising the FIRST failed
+                # sample's error in split-id order after all tasks settle);
+                # rows and trace blocks then land strictly in split-id order
+                # -- deterministic by construction, never completion order.
+                entries = []
+                for index, sample in enumerate(ordered_samples, start=1):
+                    request_id_base = f"req-{index:04d}"
+                    evidence = evidence_by_sample.get(sample.sample_id, [])
+                    buffer = TraceBuffer(plan.run_id)
+                    sample_evidence_bytes = _emit_sample_preamble(
+                        buffer, request_id_base, sample, evidence
                     )
-                    sink.emit(
-                        "SUPPLY",
-                        f"{request_id_base}/supply",
-                        {
-                            "supply_evidence_ids": [item.evidence_id for item in evidence],
-                            "supply_content_bytes": sample_evidence_bytes,
-                        },
+                    supplied_evidence_bytes += sample_evidence_bytes
+                    ctx = _sample_context(sample, evidence, request_id_base, buffer)
+                    entries.append(
+                        (sample, evidence, sample_evidence_bytes, buffer, ctx, request_id_base)
                     )
-                ctx = SampleContext(
-                    sample=sample,
-                    evidence=evidence,
-                    adapter=adapter,
-                    sink=sink,
-                    arm=arm,
-                    task_instruction=task_instruction,
-                    decoding_params=dict(values.get("decoding_params", {})),
-                    request_id_base=request_id_base,
-                    retrieval_query=values.get("retrieval_query"),
-                    # obs-agent-loop rail: run facts a slice-cutting policy
-                    # needs (the SAME slice_registry the adapter enforces
-                    # against, the controlled roots, and the composed config
-                    # values its obs_* knobs live in). A fresh dict per sample
-                    # so no policy can leak per-sample mutations across
-                    # samples; whole-file policies simply never read these.
-                    extras={
-                        "slice_registry": slice_registry,
-                        "data_root": Path(root),
-                        "run_dir": Path(run_dir),
-                        "repo_root": Path(repo_root),
-                        "config_values": values,
-                    },
-                )
-                outcome = policy.run_sample(ctx)
-                if evidence and outcome.admitted:
-                    admitted_evidence_bytes += sample_evidence_bytes
-                outputs.write(
-                    json.dumps(
-                        {
-                            "request_id": request_id_base,
-                            "sample_id": outcome.sample_id,
-                            "carrier_lock_key": sample.carrier_lock_key,
-                            "arm": arm,
-                            "text": outcome.text,
-                            "admitted": outcome.admitted,
-                            "request_sha256": outcome.request_sha256,
-                            "response_sha256": outcome.response_sha256,
-                            "response_text_sha256": outcome.response_text_sha256,
-                        },
-                        ensure_ascii=False,
-                        sort_keys=True,
+                outcomes = policy.run_samples([entry[4] for entry in entries])
+                if not isinstance(outcomes, list) or len(outcomes) != len(entries):
+                    raise CoreError(
+                        f"policy {values['policy']!r} run_samples returned "
+                        f"{type(outcomes).__name__} of length "
+                        f"{len(outcomes) if isinstance(outcomes, list) else 'n/a'} "
+                        f"for {len(entries)} samples; refusing a misaligned batch"
                     )
-                    + "\n"
-                )
+                for (sample, evidence, sample_evidence_bytes, buffer, ctx, request_id_base), outcome in zip(
+                    entries, outcomes
+                ):
+                    buffer.flush_into(sink)
+                    if evidence and outcome.admitted:
+                        admitted_evidence_bytes += sample_evidence_bytes
+                    _write_row(outputs, request_id_base, sample, outcome)
         manifest_hash = sink.close()
     finally:
         sampler.stop()

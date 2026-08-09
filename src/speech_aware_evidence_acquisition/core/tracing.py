@@ -1,13 +1,87 @@
-"""Append-only four-axis trace sink writing outside the repository (R0)."""
+"""Append-only four-axis trace sink writing outside the repository (R0).
+
+Batched execution additions (owner directive 2026-08-08): the per-run trace
+file stays SINGLE and append-only, but under sample-level concurrency each
+sample's records are buffered in-memory (:class:`TraceBuffer`) and flushed
+into the real :class:`TraceSink` in split-id order by the driver — the
+simpler of the two deterministic options (order is decided by the flush
+loop, not by task completion), and within-sample record order is emission
+order exactly as in sequential execution. :class:`DispatchingSink` routes
+the shared adapter's emissions to the current sample task's buffer through
+a contextvar (task-local under asyncio; ``asyncio.to_thread`` copies the
+context, so the adapter's worker-thread emissions land correctly); with no
+buffer set it falls through to the real sink, leaving every sequential
+caller untouched.
+"""
 
 from __future__ import annotations
 
+import contextvars
+import copy
 from pathlib import Path
 from typing import Mapping
 
 from ..contracts import RUN_ID_PATTERN as _RUN_ID_PATTERN
 from ..contracts import TraceRecord
 from ..e0.artifacts import REPO_ROOT, write_json_artifact
+
+_CURRENT_TRACE_BUFFER: contextvars.ContextVar[object | None] = contextvars.ContextVar(
+    "saea_current_trace_buffer", default=None
+)
+
+
+def set_current_trace_buffer(buffer: object | None) -> None:
+    """Bind the calling task's trace emissions (module docstring). Part of
+    the batch-policy contract: a ``run_samples`` implementation sets the
+    sample's own buffer before any work for that sample, and the driver's
+    :class:`DispatchingSink` routes accordingly."""
+
+    _CURRENT_TRACE_BUFFER.set(buffer)
+
+
+class TraceBuffer:
+    """One sample's in-memory trace: same ``emit`` contract as TraceSink
+    (eager validation included — a malformed record fails at emit time, not
+    at flush), mutation-proof (payloads are deep-copied at emit, matching
+    the sequential sink's serialize-at-emit semantics), replayed once into
+    the real sink by ``flush_into``."""
+
+    def __init__(self, run_id: str) -> None:
+        self._run_id = run_id
+        self.records: list[tuple[str, str, Mapping[str, object]]] = []
+
+    @property
+    def run_id(self) -> str:
+        return self._run_id
+
+    def emit(self, channel: str, record_id: str, payload: Mapping[str, object]) -> str:
+        record = TraceRecord(channel=channel, record_id=record_id, payload=payload)
+        record.serialize()  # eager: validation + JSON-serializability now
+        self.records.append((channel, record_id, copy.deepcopy(payload)))
+        return record.content_hash()
+
+    def flush_into(self, sink: "TraceSink") -> None:
+        for channel, record_id, payload in self.records:
+            sink.emit(channel, record_id, payload)
+        self.records = []  # one-shot: a second flush replays nothing
+
+
+class DispatchingSink:
+    """The adapter-facing sink under batching: routes to the current task's
+    buffer (contextvar) or falls through to the real per-run sink."""
+
+    def __init__(self, sink: "TraceSink") -> None:
+        self._sink = sink
+
+    @property
+    def run_id(self) -> str:
+        return self._sink.run_id
+
+    def emit(self, channel: str, record_id: str, payload: Mapping[str, object]) -> str:
+        target = _CURRENT_TRACE_BUFFER.get()
+        if target is None:
+            target = self._sink
+        return target.emit(channel, record_id, payload)
 
 
 class TraceSinkError(RuntimeError):

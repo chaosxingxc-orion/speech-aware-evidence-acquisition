@@ -56,6 +56,7 @@ from openjiuwen.core.workflow.components.flow.loop.loop_comp import (
     AdvancedLoopComponent,
 )
 
+from ...core.tracing import set_current_trace_buffer
 from ..obs_loop import ObsLoopError
 from . import OJW_WORKFLOW_TIMEOUT_KEY
 from .components import (
@@ -165,7 +166,18 @@ async def _build_and_invoke(
     session = create_workflow_session(
         envs={WORKFLOW_EXECUTE_TIMEOUT: float(workflow_timeout_seconds)}
     )
-    await flow.invoke(inputs=build_invoke_inputs(state), session=session)
+    try:
+        await flow.invoke(inputs=build_invoke_inputs(state), session=session)
+    except BaseError as error:
+        if getattr(error, "code", None) == StatusCode.WORKFLOW_EXECUTION_TIMEOUT.code:
+            raise ObsLoopError(
+                f"openJiuwen killed sample {state.sample.sample_id!r} at the "
+                f"per-sample workflow ceiling ({workflow_timeout_seconds} s); "
+                f"raise {OJW_WORKFLOW_TIMEOUT_KEY} in the baseline fragment "
+                "(<= 0 disables the limit) if the sample legitimately needs "
+                "longer"
+            ) from error
+        raise
 
 
 def execute_obs_workflow(
@@ -178,17 +190,57 @@ def execute_obs_workflow(
     ``workflow_timeout_seconds`` is the fragment-declared per-sample ceiling
     (``policy.workflow_timeout_seconds``); a framework timeout kill (error
     100101) is translated into an actionable ``ObsLoopError`` naming the
-    knob."""
+    knob (inside ``_build_and_invoke``, shared with the batch path)."""
 
-    try:
-        asyncio.run(_build_and_invoke(state, adapter_request, workflow_timeout_seconds))
-    except BaseError as error:
-        if getattr(error, "code", None) == StatusCode.WORKFLOW_EXECUTION_TIMEOUT.code:
-            raise ObsLoopError(
-                f"openJiuwen killed sample {state.sample.sample_id!r} at the "
-                f"per-sample workflow ceiling ({workflow_timeout_seconds} s); "
-                f"raise {OJW_WORKFLOW_TIMEOUT_KEY} in the baseline fragment "
-                "(<= 0 disables the limit) if the sample legitimately needs "
-                "longer"
-            ) from error
-        raise
+    asyncio.run(_build_and_invoke(state, adapter_request, workflow_timeout_seconds))
+
+
+def execute_obs_batch(
+    contexts,
+    *,
+    prepare,
+    finalize,
+    batch_size: int,
+    workflow_timeout_seconds: float,
+) -> list:
+    """Sample-level concurrency (owner batching directive 2026-08-08): up to
+    ``batch_size`` per-sample workflows in flight at once over ONE event
+    loop — ``asyncio.gather`` over per-sample tasks, a semaphore bounding
+    concurrency AND peak memory (a sample's PCM is decoded inside its task,
+    under the semaphore, so at most ``batch_size`` decoded calls are ever
+    live). Real overlap comes from ``FrozenCoreASR`` hopping the blocking
+    adapter call to a worker thread (``asyncio.to_thread``); everything
+    intra-sample stays strictly sequential (slice k+1 needs slice k's
+    boundary — inherent).
+
+    Determinism contract: results are returned aligned to ``contexts``
+    (split-id order); on failure, ALL tasks are allowed to settle
+    (``return_exceptions=True`` — no completion-order cancellation) and the
+    FIRST failed sample's error in split-id order is raised. Each task
+    binds its sample's trace sink as the current trace-routing target
+    (``core.tracing.set_current_trace_buffer``, task-local contextvar,
+    propagated into ``to_thread`` workers) so the shared adapter's records
+    land in that sample's buffer."""
+
+    contexts = list(contexts)
+
+    async def _run_all():
+        semaphore = asyncio.Semaphore(batch_size)
+
+        async def one(ctx):
+            set_current_trace_buffer(ctx.sink)
+            async with semaphore:
+                state = await asyncio.to_thread(prepare, ctx)
+                await _build_and_invoke(
+                    state, ctx.adapter.request, workflow_timeout_seconds
+                )
+                return finalize(ctx, state)
+
+        tasks = [asyncio.create_task(one(ctx)) for ctx in contexts]
+        return await asyncio.gather(*tasks, return_exceptions=True)
+
+    results = asyncio.run(_run_all())
+    for result in results:  # first failure in split-id order wins
+        if isinstance(result, BaseException):
+            raise result
+    return list(results)

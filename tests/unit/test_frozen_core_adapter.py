@@ -4,6 +4,8 @@ payload<->plan<->split value binding (I3) and media confinement (I4)."""
 import json
 import os
 import subprocess
+import threading
+import time
 
 import pytest
 
@@ -1174,3 +1176,135 @@ def test_crashed_attempts_audio_usage_counts_against_a_fresh_attempts_row_budget
     )
     with pytest.raises(FrozenCoreError, match="audio budget"):
         adapter2.request(_payload(request_id="req-1", audio_seconds=100.0))
+
+
+# ---------------------------------------------------------------------------
+# Intra-process metering thread-safety (owner batching directive 2026-08-08):
+# under sample-level concurrency N tasks call adapter.request from worker
+# threads; the sibling-read -> budget-check -> record_usage section must be
+# atomic or two threads can jointly overshoot the plan's budget (the I3
+# comment admitted the simultaneous double-read was open -- it is now closed
+# for the one-adapter-per-run case the driver actually builds).
+# ---------------------------------------------------------------------------
+
+
+class _ThreadSafeSink:
+    """Minimal duck-typed sink safe under concurrent emits (the production
+    concurrent path routes per-sample TraceBuffers; this test isolates the
+    adapter, so a locked list is enough)."""
+
+    def __init__(self):
+        self.records = []
+        self._lock = threading.Lock()
+
+    def emit(self, channel, record_id, payload):
+        with self._lock:
+            self.records.append((channel, record_id))
+        return "0" * 64
+
+
+def _hammer(adapter, *, threads, requests_each, audio_seconds=100.0):
+    """All threads released together; each fires requests_each requests.
+    Returns (successes, refusals); any non-budget error propagates."""
+
+    results = []
+    results_lock = threading.Lock()
+    errors = []
+    barrier = threading.Barrier(threads)
+
+    def worker(worker_index):
+        try:
+            barrier.wait()
+            for attempt_index in range(requests_each):
+                payload = _payload(
+                    request_id=f"req-t{worker_index:02d}-{attempt_index}",
+                    audio_seconds=audio_seconds,
+                )
+                try:
+                    adapter.request(payload)
+                except FrozenCoreError as error:
+                    if "budget exhausted" not in str(error):
+                        raise
+                    with results_lock:
+                        results.append("refused")
+                else:
+                    with results_lock:
+                        results.append("ok")
+        except BaseException as error:  # surfaced to the main thread below
+            errors.append(error)
+
+    pool = [threading.Thread(target=worker, args=(i,)) for i in range(threads)]
+    for thread in pool:
+        thread.start()
+    for thread in pool:
+        thread.join()
+    assert not errors, errors
+    return results.count("ok"), results.count("refused")
+
+
+def _widen_race_window(monkeypatch, seconds=0.005):
+    """Deterministically widen the check->record window: the sibling usage
+    read sleeps AFTER reading, so an unlocked adapter reliably lets several
+    threads pass the budget check on the same stale figure. Patched on the
+    CLASS (AttemptStore is a frozen dataclass -- per-instance setattr is
+    refused), which is equally precise here: the test builds one store."""
+
+    real = AttemptStore.prior_actual_usage
+
+    def slow(self, *args, **kwargs):
+        result = real(self, *args, **kwargs)
+        time.sleep(seconds)
+        return result
+
+    monkeypatch.setattr(AttemptStore, "prior_actual_usage", slow)
+
+
+def _slow_transport(request_bytes):
+    time.sleep(0.002)
+    return json.dumps({"text": "ok", "usage": {"prompt_tokens": 1}}).encode()
+
+
+def test_concurrent_requests_never_jointly_exceed_the_call_budget(
+    tmp_path, monkeypatch
+):
+    binding = _binding(tmp_path)
+    plan = _plan(planned_model_calls=5, planned_speech_audio_seconds=1_000_000)
+    sink = _ThreadSafeSink()
+    adapter = FrozenCoreAdapter(
+        gate=_OpenGate(), plan=plan, arm="bare-core", transport=_slow_transport,
+        sink=sink, binding=binding,
+    )
+    _widen_race_window(monkeypatch)
+    successes, refusals = _hammer(adapter, threads=12, requests_each=3)
+    assert successes == 5
+    assert refusals == 12 * 3 - 5
+    # exact in-process metering
+    summary = adapter.cost_summary()
+    assert summary["calls_used"] == 5
+    assert summary["audio_seconds_used"] == 500.0
+    # exact durable metering (the attempt file, the cross-attempt authority)
+    store = AttemptStore(binding.data_root / "attempts")
+    calls, audio = store.prior_actual_usage(plan.run_id)
+    assert (calls, audio) == (5, 500.0)
+    # a refused request is never traced as sent: exactly 5 MODEL_REQUESTs
+    request_records = [r for r in sink.records if r[0] == "MODEL_REQUEST"]
+    assert len(request_records) == 5
+
+
+def test_concurrent_requests_never_jointly_exceed_the_audio_budget(
+    tmp_path, monkeypatch
+):
+    binding = _binding(tmp_path)
+    plan = _plan(planned_model_calls=1_000_000, planned_speech_audio_seconds=350.0)
+    sink = _ThreadSafeSink()
+    adapter = FrozenCoreAdapter(
+        gate=_OpenGate(), plan=plan, arm="bare-core", transport=_slow_transport,
+        sink=sink, binding=binding,
+    )
+    _widen_race_window(monkeypatch)
+    successes, refusals = _hammer(adapter, threads=8, requests_each=2)
+    assert successes == 3  # 3 x 100s fits 350s; a 4th would cross
+    assert refusals == 8 * 2 - 3
+    store = AttemptStore(binding.data_root / "attempts")
+    calls, audio = store.prior_actual_usage(plan.run_id)
+    assert (calls, audio) == (3, 300.0)

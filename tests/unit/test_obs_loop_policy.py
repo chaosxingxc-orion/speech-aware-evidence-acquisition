@@ -466,6 +466,25 @@ class TestConfigValidation:
             with pytest.raises(ObsLoopError, match="obs_slice_retry_max"):
                 ObsLoopConfig.from_values(dict(fixed, obs_slice_retry_max=bad), tmp_path)
 
+    def test_batch_samples_parses_and_bad_values_refuse(self, tmp_path):
+        fixed = {
+            "obs_boundary_mode": "fixed",
+            "obs_buffer_seconds": 30,
+            "obs_min_advance_seconds": 30,
+            "obs_max_advance_seconds": 30,
+            "obs_fallback_advance_seconds": 30,
+        }
+        assert ObsLoopConfig.from_values(fixed, tmp_path).batch_samples == 1
+        assert (
+            ObsLoopConfig.from_values(
+                dict(fixed, obs_batch_samples=4), tmp_path
+            ).batch_samples
+            == 4
+        )
+        for bad in (0, -1, True, 1.5, "four"):
+            with pytest.raises(ObsLoopError, match="obs_batch_samples"):
+                ObsLoopConfig.from_values(dict(fixed, obs_batch_samples=bad), tmp_path)
+
     def test_missing_slice_registry_refused(self, tmp_path, monkeypatch):
         world = _World(
             tmp_path, monkeypatch, pcm=_noise(30.0), texts=[_boundary_text("A.", 10)]

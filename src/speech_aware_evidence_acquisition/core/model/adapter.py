@@ -15,6 +15,7 @@ from __future__ import annotations
 import hashlib
 import json
 import math
+import threading
 import time
 from typing import Callable, Mapping
 
@@ -99,6 +100,20 @@ class FrozenCoreAdapter(_PayloadBindingMixin, _AttemptLifecycleMixin):
         # just `attempts_root`, already resolved).
         self._store = store
         self._attempt_handle = handle
+        # Intra-process metering atomicity (owner batching directive
+        # 2026-08-08): under sample-level concurrency N tasks call request()
+        # from worker threads THROUGH THIS ONE ADAPTER (the driver builds
+        # exactly one per run). The lock makes [fresh sibling read -> budget
+        # checks -> MODEL_REQUEST trace -> durable record_usage] atomic, so
+        # two in-flight requests can never both pass the check on the same
+        # stale usage figure and jointly overshoot the plan's budget -- the
+        # simultaneous double-read the I3 comment below deliberately left to
+        # a "cross-process lock in core.attempts" is hereby closed for the
+        # in-process case (the cross-PROCESS case remains core.attempts's
+        # concern, unchanged). The transport call itself stays OUTSIDE the
+        # lock: holding it across a multi-second model request would
+        # serialize the very concurrency batching exists to provide.
+        self._metering_lock = threading.Lock()
         self._calls_used = 0
         self._audio_seconds_used = 0.0
         self._latency_total = 0.0
@@ -163,65 +178,70 @@ class FrozenCoreAdapter(_PayloadBindingMixin, _AttemptLifecycleMixin):
         # (and, without a cross-process lock in core.attempts, cannot) close a true
         # simultaneous-instant double-read between two OS threads/processes; that
         # primitive belongs to core.attempts, not this adapter, and is unchanged here.
-        sibling_calls, sibling_audio_seconds = self._store.prior_actual_usage(
-            self._plan.run_id, exclude_attempt_id=self._attempt_handle.attempt_id
-        )
-        if sibling_calls + self._calls_used + 1 > self._plan.planned_model_calls:
-            raise FrozenCoreError(
-                f"call budget exhausted: plan {self._plan.run_id} allows "
-                f"{self._plan.planned_model_calls} calls "
-                f"({sibling_calls} already spent by other attempts on this run, "
-                f"{self._calls_used} by this attempt)"
+        # Owner batching directive 2026-08-08: everything from the fresh
+        # sibling read through the durable record_usage is ONE atomic section
+        # under self._metering_lock (see __init__ for the race this closes);
+        # order and messages inside are byte-identical to the pre-lock code.
+        with self._metering_lock:
+            sibling_calls, sibling_audio_seconds = self._store.prior_actual_usage(
+                self._plan.run_id, exclude_attempt_id=self._attempt_handle.attempt_id
             )
-        if (
-            sibling_audio_seconds + self._audio_seconds_used + float(audio_seconds)
-            > self._plan.planned_speech_audio_seconds
-        ):
-            raise FrozenCoreError(
-                f"audio budget exhausted: plan {self._plan.run_id} allows "
-                f"{self._plan.planned_speech_audio_seconds} speech audio seconds "
-                f"({sibling_audio_seconds} already spent by other attempts on this "
-                f"run, {self._audio_seconds_used} by this attempt)"
+            if sibling_calls + self._calls_used + 1 > self._plan.planned_model_calls:
+                raise FrozenCoreError(
+                    f"call budget exhausted: plan {self._plan.run_id} allows "
+                    f"{self._plan.planned_model_calls} calls "
+                    f"({sibling_calls} already spent by other attempts on this run, "
+                    f"{self._calls_used} by this attempt)"
+                )
+            if (
+                sibling_audio_seconds + self._audio_seconds_used + float(audio_seconds)
+                > self._plan.planned_speech_audio_seconds
+            ):
+                raise FrozenCoreError(
+                    f"audio budget exhausted: plan {self._plan.run_id} allows "
+                    f"{self._plan.planned_speech_audio_seconds} speech audio seconds "
+                    f"({sibling_audio_seconds} already spent by other attempts on this "
+                    f"run, {self._audio_seconds_used} by this attempt)"
+                )
+            # R0 repair T5 fix-3 (I5): re-verify RIGHT BEFORE this specific
+            # request's trace/budget side effects, not merely once at
+            # construction -- a transport instance is reused for an entire run
+            # (potentially many calls / hours of audio, per the plan's own
+            # declared budget -- no numeric ceiling since the 2026-08-06 owner
+            # amendment retired the first-slice caps), so a session valid at
+            # construction time proves nothing about who is listening ten calls
+            # later.
+            if self._session_check is not None:
+                self._session_check()
+            request_id = str(payload["request_id"])
+            request_bytes = _canonical(payload)
+            request_sha256 = hashlib.sha256(request_bytes).hexdigest()
+            self._sink.emit(
+                "MODEL_REQUEST",
+                f"{request_id}/request",
+                {"arm": self._arm, "payload": dict(payload), "payload_sha256": request_sha256},
             )
-        # R0 repair T5 fix-3 (I5): re-verify RIGHT BEFORE this specific
-        # request's trace/budget side effects, not merely once at
-        # construction -- a transport instance is reused for an entire run
-        # (potentially many calls / hours of audio, per the plan's own
-        # declared budget -- no numeric ceiling since the 2026-08-06 owner
-        # amendment retired the first-slice caps), so a session valid at
-        # construction time proves nothing about who is listening ten calls
-        # later.
-        if self._session_check is not None:
-            self._session_check()
-        request_id = str(payload["request_id"])
-        request_bytes = _canonical(payload)
-        request_sha256 = hashlib.sha256(request_bytes).hexdigest()
-        self._sink.emit(
-            "MODEL_REQUEST",
-            f"{request_id}/request",
-            {"arm": self._arm, "payload": dict(payload), "payload_sha256": request_sha256},
-        )
-        # Metering counts the attempt as soon as the budget checks above have
-        # passed and the request is about to leave the process — a transport
-        # that raises (or returns a malformed response) after being invoked
-        # must not be under-reported as free; a sent request is a consumed
-        # request regardless of what comes back. R0 repair T4 (I6): the durable
-        # attempt-file write happens BEFORE the transport call, not after --
-        # a process crash between this line and the transport call must still
-        # leave the spend on disk, not only in memory that dies with it.
-        try:
-            new_calls_used, new_audio_seconds_used = self._attempt_handle.record_usage(
-                calls=1, audio_seconds=float(audio_seconds)
-            )
-        except AttemptError as error:
-            raise FrozenCoreError(f"attempt accounting refused: {error}") from error
-        # Adopt record_usage's own authoritative return value (R0 repair r0-repair,
-        # I3) instead of a locally-incremented shadow counter -- this attempt's file
-        # has exactly one writer (this handle), so the two are always numerically
-        # identical, but tracking the return value directly means there is nothing
-        # left to silently drift out of sync with what was actually persisted.
-        self._calls_used = new_calls_used
-        self._audio_seconds_used = new_audio_seconds_used
+            # Metering counts the attempt as soon as the budget checks above have
+            # passed and the request is about to leave the process — a transport
+            # that raises (or returns a malformed response) after being invoked
+            # must not be under-reported as free; a sent request is a consumed
+            # request regardless of what comes back. R0 repair T4 (I6): the durable
+            # attempt-file write happens BEFORE the transport call, not after --
+            # a process crash between this line and the transport call must still
+            # leave the spend on disk, not only in memory that dies with it.
+            try:
+                new_calls_used, new_audio_seconds_used = self._attempt_handle.record_usage(
+                    calls=1, audio_seconds=float(audio_seconds)
+                )
+            except AttemptError as error:
+                raise FrozenCoreError(f"attempt accounting refused: {error}") from error
+            # Adopt record_usage's own authoritative return value (R0 repair r0-repair,
+            # I3) instead of a locally-incremented shadow counter -- this attempt's file
+            # has exactly one writer (this handle), so the two are always numerically
+            # identical, but tracking the return value directly means there is nothing
+            # left to silently drift out of sync with what was actually persisted.
+            self._calls_used = new_calls_used
+            self._audio_seconds_used = new_audio_seconds_used
         started = time.monotonic()
         response_bytes = self._transport(request_bytes)
         latency = time.monotonic() - started
@@ -249,9 +269,13 @@ class FrozenCoreAdapter(_PayloadBindingMixin, _AttemptLifecycleMixin):
                 "usage": usage,
             },
         )
-        self._latency_total += latency
-        self._prompt_tokens += usage.get("prompt_tokens", 0)
-        self._completion_tokens += usage.get("completion_tokens", 0)
+        # Post-transport aggregate counters: += on plain ints/floats races
+        # under worker-thread concurrency exactly like the budget section;
+        # same lock, held only for the increments.
+        with self._metering_lock:
+            self._latency_total += latency
+            self._prompt_tokens += usage.get("prompt_tokens", 0)
+            self._completion_tokens += usage.get("completion_tokens", 0)
         self._sink.emit(
             "COST",
             f"{request_id}/cost",
@@ -287,7 +311,8 @@ class FrozenCoreAdapter(_PayloadBindingMixin, _AttemptLifecycleMixin):
             raise FrozenCoreError(
                 f"record_tool_call count must be a positive integer, got {count!r}"
             )
-        self._tool_calls += count
+        with self._metering_lock:
+            self._tool_calls += count
 
     def cost_summary(self) -> dict[str, object]:
         return {

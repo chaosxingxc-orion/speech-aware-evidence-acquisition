@@ -48,6 +48,7 @@ pyproject.toml; the suite passes with it absent).
 
 from __future__ import annotations
 
+import asyncio
 import hashlib
 
 from openjiuwen.core.context_engine import ModelContext
@@ -241,8 +242,18 @@ class FrozenCoreASR(WorkflowComponent):
         # Bounded per-slice retry: the SAME shared helper the plain policy
         # calls (obs_loop.request_slice_with_retry), so the two executors can
         # never diverge in retry behaviour (live E-001 finding 2026-08-08).
-        request_id, response, retry_of = request_slice_with_retry(
-            self._adapter_request, _payload, base_request_id, cfg.slice_retry_max
+        # The blocking adapter call hops to a worker thread (owner batching
+        # directive 2026-08-08): under sample-level concurrency the event
+        # loop must stay free while this sample's HTTP request blocks, or N
+        # "concurrent" samples would serialize on the loop thread. to_thread
+        # copies the task's contextvars, so the adapter's trace emissions
+        # still route to THIS sample's buffer (core.tracing.DispatchingSink).
+        request_id, response, retry_of = await asyncio.to_thread(
+            request_slice_with_retry,
+            self._adapter_request,
+            _payload,
+            base_request_id,
+            cfg.slice_retry_max,
         )
         return {
             "text": response.text,
