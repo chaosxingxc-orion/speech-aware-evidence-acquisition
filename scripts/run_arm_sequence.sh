@@ -136,6 +136,20 @@ run_arm () {
 }
 
 cd "$REPO"
+
+# A COMPLETED manifest binds study_commit by reading git at FINALIZE time, and
+# that read refuses a dirty tree (core/bundle/git_commit.py documents the
+# window: the pre-run cleanliness check cannot cover the hours the run then
+# takes). So an edit landing mid-run destroys the arm's result after all of its
+# compute. Print the commit every arm is claiming, and refuse to start dirty.
+HEAD_AT_START="$(git rev-parse --short HEAD 2>/dev/null)"
+if [ -n "$(git status --porcelain 2>/dev/null)" ]; then
+  echo "REFUSED: study repo is dirty; a run manifest must bind an exact commit" >&2
+  git status --porcelain >&2
+  exit 3
+fi
+echo "sequence binding study_commit $HEAD_AT_START -- keep the tree clean until it ends"
+
 failed=0 ran=0
 while IFS= read -r line; do
   line="${line%%#*}"
