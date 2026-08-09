@@ -58,7 +58,13 @@ from typing import Callable, Mapping
 from ...contracts import ExecutionPlan
 from ...e0.artifacts import REPO_ROOT
 from ..bundle import FinalizeResult, finalize_bundle
-from ..config import ComposedConfig, compose, protocol_hash as compute_protocol_hash
+from ..config import (
+    ComposedConfig,
+    compose,
+    protocol_hash as compute_protocol_hash,
+    resolve_runtime_receipt_path,
+    runtime_receipt_relpath,
+)
 from ..resources import NullSampler, ResourceSampler
 from ..session import (
     STUDY_SLUG,
@@ -242,8 +248,17 @@ def _cli_smoke(args: argparse.Namespace) -> int:
             "smoke --dry-run: TEST-ONLY, never touches a real GPU or model"
         )
     else:
-        runtime_receipt = load_runtime_receipt(repo_root / "docs" / "receipts" / "runtime.json")
-        gate = FrozenCoreGate.for_study_repo(repo_root, root, Path(args.runtime_root))
+        # R0.2 second-model plumbing: the model fragment's own optional
+        # "runtime_receipt" key (default: today's "receipts/runtime.json")
+        # picks which committed receipt this session/gate pair is bound to
+        # -- see core.config.runtime_receipt_relpath's own docstring.
+        runtime_receipt = load_runtime_receipt(resolve_runtime_receipt_path(repo_root, composed.values))
+        gate = FrozenCoreGate.for_study_repo(
+            repo_root,
+            root,
+            Path(args.runtime_root),
+            runtime_receipt_relpath=runtime_receipt_relpath(composed.values),
+        )
         session = start_session(
             runtime_root=Path(args.runtime_root),
             data_root=root,

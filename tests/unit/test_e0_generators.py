@@ -349,3 +349,139 @@ class TestRuntimeReceiptGenerator:
             build_runtime_receipt(
                 synthetic_world.lock_path, synthetic_world.data_root, runtime_root
             )
+
+    # -----------------------------------------------------------------
+    # Second-pinned-model plumbing (INT4 Q4_K_M alongside the frozen Q8_0):
+    # build_runtime_receipt(model_lock_key=...) resolves a DIFFERENT umbrella-
+    # lock entry, entirely independent of the default MODEL_LOCK_KEY, and
+    # records exactly the key it actually used. Only build_runtime_receipt
+    # is exercised here -- contracts.FrozenCoreGate still enforces its own
+    # frozen MODEL_LOCK_KEY equality check unconditionally (see
+    # gate_runtime.py); selecting a receipt for a different model is not, by
+    # itself, an authorization to gate-open against it.
+    # -----------------------------------------------------------------
+
+    _ALT_MODEL_LOCK_KEY = "qwen3-omni-30b-a3b-instruct-gguf-q4km"
+
+    def _with_named_model(
+        self, synthetic_world, name: str, files: dict[str, bytes]
+    ) -> None:
+        model_dir = synthetic_world.data_root / "models" / name
+        model_dir.mkdir(parents=True)
+        total = 0
+        for filename, content in files.items():
+            (model_dir / filename).write_bytes(content)
+            total += len(content)
+        lock = json.loads(synthetic_world.lock_path.read_text(encoding="utf-8"))
+        lock.setdefault("models", [])
+        lock["models"].append(
+            {
+                "name": name,
+                "local_subdir": f"models/{name}",
+                "files": len(files),
+                "size_bytes": total,
+            }
+        )
+        synthetic_world.lock_path.write_text(json.dumps(lock), encoding="utf-8")
+
+    def test_receipt_binds_a_non_default_model_lock_key(self, synthetic_world, tmp_path):
+        runtime_root = self._llama_checkout(tmp_path)
+        self._with_named_model(
+            synthetic_world,
+            self._ALT_MODEL_LOCK_KEY,
+            {"model.gguf": b"q4km-fake-main-shard", "mmproj.gguf": b"q4km-fake-mmproj"},
+        )
+        # The DEFAULT MODEL_LOCK_KEY has no lock entry at all here -- proving
+        # this call path never falls back to it.
+        receipt = build_runtime_receipt(
+            synthetic_world.lock_path,
+            synthetic_world.data_root,
+            runtime_root,
+            model_lock_key=self._ALT_MODEL_LOCK_KEY,
+        )
+        assert receipt["model_lock_key"] == self._ALT_MODEL_LOCK_KEY
+        assert len(receipt["gguf_files"]) == 2
+        assert all(
+            entry["path"].startswith(f"models/{self._ALT_MODEL_LOCK_KEY}/")
+            for entry in receipt["gguf_files"]
+        )
+
+    def test_receipt_model_lock_key_defaults_to_the_frozen_key(self, synthetic_world, tmp_path):
+        runtime_root = self._llama_checkout(tmp_path)
+        self._with_models(synthetic_world)
+        receipt = build_runtime_receipt(
+            synthetic_world.lock_path, synthetic_world.data_root, runtime_root
+        )
+        assert receipt["model_lock_key"] == MODEL_LOCK_KEY
+
+    def test_unknown_model_lock_key_refused(self, synthetic_world, tmp_path):
+        runtime_root = self._llama_checkout(tmp_path)
+        self._with_models(synthetic_world)
+        with pytest.raises(Exception, match="not found"):
+            build_runtime_receipt(
+                synthetic_world.lock_path,
+                synthetic_world.data_root,
+                runtime_root,
+                model_lock_key="no-such-model-in-the-lock",
+            )
+
+    def test_cli_runtime_command_writes_a_named_receipt_for_a_named_model(
+        self, synthetic_world, tmp_path, monkeypatch
+    ):
+        """Deliverable 4: the operator entry point (extended ``e0.generate
+        runtime`` -- ``--model-lock-key``/``--out``) builds and prints the
+        SHA-256 of a receipt for a second pinned model, without ever writing
+        to the default ``docs/receipts/runtime.json`` location."""
+
+        from speech_aware_evidence_acquisition.e0.generate import main as generate_main
+
+        monkeypatch.setenv("SPEECHRL_DATA_DIR", str(synthetic_world.data_root))
+        runtime_root = self._llama_checkout(tmp_path)
+        self._with_named_model(
+            synthetic_world,
+            self._ALT_MODEL_LOCK_KEY,
+            {"model.gguf": b"q4km-fake-main-shard", "mmproj.gguf": b"q4km-fake-mmproj"},
+        )
+        out_path = tmp_path / "receipts-out" / "runtime-q4km.json"
+        exit_code = generate_main(
+            [
+                "runtime",
+                "--lock", str(synthetic_world.lock_path),
+                "--runtime-root", str(runtime_root),
+                "--model-lock-key", self._ALT_MODEL_LOCK_KEY,
+                "--out", str(out_path),
+                "--receipts-dir", str(tmp_path / "unused-default-receipts-dir"),
+            ]
+        )
+        assert exit_code == 0
+        assert out_path.is_file()
+        receipt = json.loads(out_path.read_text(encoding="utf-8"))
+        assert receipt["model_lock_key"] == self._ALT_MODEL_LOCK_KEY
+        assert not (tmp_path / "unused-default-receipts-dir" / "runtime.json").exists()
+
+    def test_cli_runtime_command_defaults_preserve_the_q8_receipt_path_and_key(
+        self, synthetic_world, tmp_path, monkeypatch
+    ):
+        """No flags -> byte-identical behaviour to before this change: the
+        default receipt still lands at ``<receipts-dir>/runtime.json`` and
+        still names the frozen Q8_0 ``MODEL_LOCK_KEY``."""
+
+        from speech_aware_evidence_acquisition.e0.generate import main as generate_main
+
+        monkeypatch.setenv("SPEECHRL_DATA_DIR", str(synthetic_world.data_root))
+        runtime_root = self._llama_checkout(tmp_path)
+        self._with_models(synthetic_world)
+        receipts_dir = tmp_path / "receipts"
+        exit_code = generate_main(
+            [
+                "runtime",
+                "--lock", str(synthetic_world.lock_path),
+                "--runtime-root", str(runtime_root),
+                "--receipts-dir", str(receipts_dir),
+            ]
+        )
+        assert exit_code == 0
+        default_path = receipts_dir / "runtime.json"
+        assert default_path.is_file()
+        receipt = json.loads(default_path.read_text(encoding="utf-8"))
+        assert receipt["model_lock_key"] == MODEL_LOCK_KEY

@@ -23,6 +23,7 @@ import pytest
 
 import speech_aware_evidence_acquisition.core  # noqa: F401 (populate registries)
 from speech_aware_evidence_acquisition.core.driver import main as driver_main
+from speech_aware_evidence_acquisition.core.session import SessionError
 from speech_aware_evidence_acquisition.data.lock import load_lock
 from speech_aware_evidence_acquisition.data.splits import freeze_splits
 
@@ -52,6 +53,24 @@ def _write_synthetic_configs(repo_root: Path) -> None:
                 "base_url": "http://127.0.0.1:8080",
                 "timeout_seconds": 300.0,
                 "decoding_params": {"temperature": 0, "seed": 20260803},
+            }
+        ),
+        encoding="utf-8",
+    )
+    # Second-pinned-model plumbing: a model fragment naming a NON-DEFAULT
+    # runtime receipt (tests/unit/test_runtime_receipt_selection.py-style,
+    # but reusing this module's own real-git-repo smoke fixture) -- proves
+    # `saea-driver smoke`'s non-dry-run path genuinely reads this key rather
+    # than always hard-coding "docs/receipts/runtime.json".
+    (configs / "model" / "test-model-custom-receipt.json").write_text(
+        json.dumps(
+            {
+                "model_lock_key": "qwen3-omni-30b-a3b-instruct-gguf",
+                "transport": "llama-server",
+                "base_url": "http://127.0.0.1:8080",
+                "timeout_seconds": 300.0,
+                "decoding_params": {"temperature": 0, "seed": 20260803},
+                "runtime_receipt": "receipts/runtime-smoke-custom.json",
             }
         ),
         encoding="utf-8",
@@ -265,6 +284,75 @@ def test_smoke_requires_runtime_root_unless_dry_run(
                 "--planned-gpu-hours", "1.0",
                 "--planned-speech-audio-seconds", "1000",
                 "--run-dir", str(tmp_path / "smoke-runs"),
+                "--tracking-uri", str(tmp_path / "mlruns"),
+                "--repo-root", str(repo_root),
+            ]
+        )
+
+
+def test_smoke_non_dry_run_reads_the_models_custom_runtime_receipt_path(
+    synthetic_world, smoke_repo, tmp_path, monkeypatch
+):
+    """Second-pinned-model plumbing: a NON-DRY-RUN smoke invocation with a
+    model fragment naming ``runtime_receipt: "receipts/runtime-smoke-
+    custom.json"`` must fail closed on THAT exact file (which does not exist
+    in this synthetic repo), not on the default ``docs/receipts/
+    runtime.json`` -- proving `_cli_smoke` genuinely reads the composed
+    model config's own key rather than a hard-coded path."""
+
+    lock, repo_root = smoke_repo
+    monkeypatch.setenv("SPEECHRL_DATA_DIR", str(synthetic_world.data_root))
+    monkeypatch.setattr(
+        "speech_aware_evidence_acquisition.data.lock.umbrella_lock_path",
+        lambda *a, **k: synthetic_world.lock_path,
+    )
+    with pytest.raises(SessionError, match="runtime-smoke-custom.json"):
+        driver_main(
+            [
+                "smoke",
+                "--model", "test-model-custom-receipt",
+                "--dataset", "test-dataset",
+                "--baseline", "test-baseline",
+                "--experiment", "test-experiment",
+                "--run-id", "SAEA-E-000-smoke-custom-receipt",
+                "--planned-model-calls", "10",
+                "--planned-gpu-hours", "1.0",
+                "--planned-speech-audio-seconds", "1000",
+                "--run-dir", str(tmp_path / "smoke-runs"),
+                "--runtime-root", str(tmp_path / "runtime-root-not-used"),
+                "--tracking-uri", str(tmp_path / "mlruns"),
+                "--repo-root", str(repo_root),
+            ]
+        )
+
+
+def test_smoke_non_dry_run_falls_back_to_the_default_runtime_receipt_path(
+    synthetic_world, smoke_repo, tmp_path, monkeypatch
+):
+    """The existing ``test-model`` fragment (no ``runtime_receipt`` key)
+    keeps failing closed on the DEFAULT path -- unchanged behaviour for
+    every fragment that predates the new key."""
+
+    lock, repo_root = smoke_repo
+    monkeypatch.setenv("SPEECHRL_DATA_DIR", str(synthetic_world.data_root))
+    monkeypatch.setattr(
+        "speech_aware_evidence_acquisition.data.lock.umbrella_lock_path",
+        lambda *a, **k: synthetic_world.lock_path,
+    )
+    with pytest.raises(SessionError, match="runtime.json"):
+        driver_main(
+            [
+                "smoke",
+                "--model", "test-model",
+                "--dataset", "test-dataset",
+                "--baseline", "test-baseline",
+                "--experiment", "test-experiment",
+                "--run-id", "SAEA-E-000-smoke-default-receipt",
+                "--planned-model-calls", "10",
+                "--planned-gpu-hours", "1.0",
+                "--planned-speech-audio-seconds", "1000",
+                "--run-dir", str(tmp_path / "smoke-runs"),
+                "--runtime-root", str(tmp_path / "runtime-root-not-used"),
                 "--tracking-uri", str(tmp_path / "mlruns"),
                 "--repo-root", str(repo_root),
             ]
