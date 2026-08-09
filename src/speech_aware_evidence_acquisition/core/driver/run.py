@@ -30,7 +30,8 @@ from ..base import (
     SampleContext,
 )
 from ..config import ComposedConfig
-from ..evidence import evidence_file_relpath, rotated_mismatch
+from ..evidence import resolve_declared_transform_params, rotated_mismatch
+from ..evidence_derivation import DerivedEvidenceRegistry
 from ..instructions import resolve_task_instruction
 from ..resources import NullSampler, ResourceSampler, cpu_seconds_snapshot
 from ..model import FrozenCoreAdapter, SliceRegistry
@@ -191,21 +192,74 @@ def run_experiment(
         # evidence_by_sample this loop already reads for evidence_relpaths --
         # never a fresh disk read.
         evidence_contents: dict[str, bytes] = {}
+        # Derivation-chain rail (2026-08-09, docs/readiness/2026-08-09-conec-
+        # evidence-shape.md "Blocking gap"): a fresh registry per run, no
+        # shared state across runs (mirrors core.model.slices.SliceRegistry).
+        # Every sample's evidence item(s) must carry a DerivedEvidenceRecord
+        # this registry can independently re-verify -- source bytes actually
+        # read, a registered pinned transform, params matching THIS run's own
+        # config, and the content this run will actually send re-hashing to
+        # the claimed derived_sha256 -- before this run is allowed to
+        # proceed. Computed BEFORE any evidence_mismatch/rotated_mismatch
+        # reassignment below, same discipline as the (unchanged) D1
+        # evidence-identity facts just below: this checks the derivation
+        # integrity of the evidence CORPUS the run's evidence source itself
+        # produced, independent of which sample a later negative-control
+        # experiment happens to route that content to.
+        derivation_registry = DerivedEvidenceRegistry()
         for s in samples:
-            if not evidence_by_sample[s.sample_id]:
+            items = evidence_by_sample[s.sample_id]
+            if not items:
                 continue
-            try:
-                evidence_relpaths[s.sample_id] = evidence_file_relpath(
-                    lock, s.carrier_lock_key, s.sample_id
-                )
-            except EvidenceError as error:
-                raise CoreError(
-                    f"cannot resolve a D1 evidence-identity path for sample "
-                    f"{s.sample_id!r}: {error}"
-                ) from error
-            evidence_contents[s.sample_id] = "".join(
-                item.content for item in evidence_by_sample[s.sample_id]
-            ).encode("utf-8")
+            for item in items:
+                record = item.derivation
+                if record is None:
+                    raise CoreError(
+                        f"evidence source {values.get('evidence_source')!r} returned "
+                        f"evidence for sample {s.sample_id!r} with no derivation "
+                        "record; identity can never be proven for evidence that does "
+                        "not chain to a verified source (docs/readiness/2026-08-09-"
+                        "conec-evidence-shape.md)"
+                    )
+                if record.sample_id != s.sample_id:
+                    raise CoreError(
+                        f"evidence derivation record sample_id {record.sample_id!r} "
+                        f"does not match the sample it was returned for "
+                        f"({s.sample_id!r})"
+                    )
+                try:
+                    params = resolve_declared_transform_params(record.transform_name, values)
+                except EvidenceError as error:
+                    raise CoreError(
+                        f"cannot resolve declared params for evidence transform "
+                        f"{record.transform_name!r} (sample {s.sample_id!r}): {error}"
+                    ) from error
+                try:
+                    derivation_registry.register(
+                        record,
+                        source_content=item.derivation_source_bytes,
+                        derived_content=item.content.encode("utf-8"),
+                        params=params,
+                    )
+                except EvidenceError as error:
+                    raise CoreError(
+                        f"evidence derivation chain refused for sample "
+                        f"{s.sample_id!r}: {error}"
+                    ) from error
+                if record.carrier_bound:
+                    # IMPORTANT 1 (external-threat-model review round 4,
+                    # UNCHANGED rail): re-verify exactly the SOURCE facts a
+                    # carrier_bound record chains to against D1's frozen
+                    # per-sample identity -- never the derived/transformed
+                    # content (the blocking gap docs/readiness/2026-08-09-
+                    # conec-evidence-shape.md recorded, and core.evidence_
+                    # derivation's own module docstring, condition 1). A
+                    # carrier_bound=False record (core.base.
+                    # DerivedEvidenceRecord docstring) has no D1 anchor at
+                    # all and is deliberately excluded here -- its identity
+                    # rests solely on the self-verified chain above.
+                    evidence_relpaths[s.sample_id] = record.source_relpath
+                    evidence_contents[s.sample_id] = item.derivation_source_bytes
         if values.get("evidence_mismatch", False):
             evidence_by_sample = rotated_mismatch(evidence_by_sample)
         policy = POLICIES.resolve(str(values["policy"]))

@@ -43,34 +43,29 @@ list`` sources, which wrap the result as ONE :class:`~.base.EvidenceItem`
 each, newline-joined under a header, capped by ``bias_list_max_entries``
 (config knob, default :data:`DEFAULT_BIAS_LIST_MAX_ENTRIES`).
 
-KNOWN GAP (read before wiring an actual model run of B-2a arm 2): the D1
-evidence-identity gate (``contracts.gate_evidence_identity`` /
-``core.driver.run_experiment``'s ``evidence_relpaths``/``evidence_contents``
-binding) currently assumes an evidence source's ``EvidenceItem.content`` is
-BYTE-IDENTICAL to the raw D1-tracked file at
-``core.evidence.evidence_file_relpath``'s path -- true for
-``_conec_contexts`` (pure passthrough) and thus verified today by
-``tests/unit/test_driver.py::test_run_experiment_wires_evidence_relpaths_
-into_the_evidence_identity_gate``'s ``evidence_contents == {..., "sha256(raw
-file)"}`` assertion. ``conec-bias-list`` (arm 2) deliberately returns a
-TRANSFORMED (extracted, capped, header-wrapped) content, so
-``verify_evidence_content_identity`` will refuse a real gated run with a
-content-identity-drift error the moment this arm supplies non-empty
-evidence, until ``core.driver.run_experiment``'s evidence-identity binding
-is made evidence-source-aware (or a new D1 layer is registered for the
-derived content) -- a separate, reviewed change, out of this "no model
-touch" task's scope. ``distractor-only-bias-list`` (arm 3) is unaffected by
-its OWN content only in the sense that its content is identical across every
-sample; ``run_experiment`` still independently re-derives
-``evidence_relpaths[sample_id]`` from the CARRIER alone (never from the
-evidence source), so it too will be checked against the per-sample ConEC
-context file's D1 hash and will also fail the SAME way. Flagged here, in the
-config fragments, and in the engineering report -- fix before an actual B-2a
-model run is attempted.
+CLOSED GAP (2026-08-09, ``docs/readiness/2026-08-09-conec-evidence-shape.md``
+"Blocking gap"): a prior revision of this module noted that the D1
+evidence-identity gate assumed an evidence source's ``EvidenceItem.content``
+was BYTE-IDENTICAL to the raw D1-tracked source file -- true for
+``_conec_contexts`` (pure passthrough), false for ``conec-bias-list``/
+``distractor-only-bias-list``, both of which TRANSFORM their source. The fix
+is the derivation-chain rail in ``core.evidence_derivation`` (mirrors
+``core.model.slices`` for runtime audio slices): ``conec_bias_list_content``/
+``distractor_only_content`` below are the PURE, deterministic transform
+functions registered into ``core.evidence_derivation.TRANSFORMS`` (pinned
+name+version); ``core.evidence``'s ``_conec_bias_list``/
+``_distractor_only_bias_list`` call them to build both the returned
+``EvidenceItem.content`` AND a ``core.base.DerivedEvidenceRecord`` naming the
+verified source, the pinned transform, and the resulting content's own hash,
+so ``core.evidence_derivation.DerivedEvidenceRegistry`` can re-verify the
+whole chain before ``core.driver.run_experiment`` lets a run proceed. See
+``core.evidence_derivation``'s own module docstring for the exact four
+conditions.
 """
 
 from __future__ import annotations
 
+import json
 import re
 from pathlib import Path
 from typing import Mapping
@@ -78,6 +73,7 @@ from typing import Mapping
 from ..data.lock import asset_dir, lock_entry
 from ..e0.artifacts import sha256_file
 from .base import EvidenceError
+from .evidence_derivation import TRANSFORMS
 
 DEFAULT_BIAS_LIST_MAX_ENTRIES = 100
 
@@ -198,17 +194,38 @@ def bias_list_relpath(lock: Mapping[str, object], filename: str) -> str:
     return f"{local_subdir.rstrip('/')}/{_BIAS_LISTS_SUBDIR}/{filename}"
 
 
-def _load_term_list(path: Path, label: str) -> list[str]:
+def _read_text_file(path: Path, label: str) -> str:
+    """Missing/unreadable-file refusal, factored out of :func:`_load_term_list`
+    so :func:`distractor_only_source_texts` (which needs the raw TEXT, not a
+    line list) shares the same fail-closed checks rather than a second,
+    independently drifting read."""
+
     if not path.is_file():
         raise EvidenceError(f"{label} missing: {path}")
     try:
-        lines = path.read_text(encoding="utf-8").splitlines()
+        return path.read_text(encoding="utf-8")
     except (OSError, UnicodeError) as error:
         raise EvidenceError(f"cannot read {label} {path}: {error}") from error
-    terms = [line.strip() for line in lines if line.strip()]
+
+
+def _terms_from_text(text: str, label: str) -> list[str]:
+    """Pure (no filesystem access): one term per non-blank, stripped line --
+    the SAME parsing :func:`_load_term_list` always applied, factored out so
+    :func:`distractor_only_content` (the registered transform,
+    ``core.evidence_derivation.TRANSFORMS``) can apply it to a source TEXT
+    that was never read from disk by this call (it re-derives from bytes the
+    caller already holds, module docstring discipline)."""
+
+    if not isinstance(text, str):
+        raise EvidenceError(f"{label} text must be a string, got {type(text).__name__}")
+    terms = [line.strip() for line in text.splitlines() if line.strip()]
     if not terms:
-        raise EvidenceError(f"{label} is empty: {path}")
+        raise EvidenceError(f"{label} is empty")
     return terms
+
+
+def _load_term_list(path: Path, label: str) -> list[str]:
+    return _terms_from_text(_read_text_file(path, label), label)
 
 
 def _assert_no_oracle_overlap(candidates: list[str], oracle_terms: list[str]) -> None:
@@ -231,28 +248,17 @@ def _assert_no_oracle_overlap(candidates: list[str], oracle_terms: list[str]) ->
         )
 
 
-def distractor_only_terms(
-    lock: Mapping[str, object],
-    root: Path,
-    max_entries: int = DEFAULT_BIAS_LIST_MAX_ENTRIES,
+def _distractor_only_from_terms(
+    oracle_terms: list[str], distractor_terms: list[str], max_entries: int
 ) -> tuple[list[str], dict[str, object]]:
-    """The set difference ``distractor_list.txt - oracle_list.txt``, computed
-    at LOAD TIME from the two shipped files (never a hand-copied name list in
-    this module, per the task's own non-negotiable constraint). Case-
-    insensitive de-duplication, ``distractor_list.txt``'s own file order
-    preserved (empirically near-uniformly scattered across the alphabet, not
-    clustered -- so a simple prefix cap stays representative), independently
-    re-verified for oracle overlap (see _assert_no_oracle_overlap) before
-    any truncation. Returns ``(capped_terms, facts)`` where ``facts`` carries
-    the two source files' own relpath/sha256 plus the FULL (uncapped)
-    distractor-only count, for evidence provenance."""
-
-    _validate_max_entries(max_entries)
-    bias_dir = _bias_lists_dir(lock, root)
-    oracle_path = bias_dir / ORACLE_LIST_FILENAME
-    distractor_path = bias_dir / DISTRACTOR_LIST_FILENAME
-    oracle_terms = _load_term_list(oracle_path, "oracle bias list")
-    distractor_terms = _load_term_list(distractor_path, "distractor bias list")
+    """Pure core of the set difference ``distractor_terms - oracle_terms``
+    (no filesystem access): case-insensitive de-duplication, ``distractor_
+    terms``' own order preserved, independently re-verified for oracle
+    overlap (see :func:`_assert_no_oracle_overlap`) before truncation.
+    Shared by :func:`distractor_only_terms` (the pre-existing, file-based
+    entry point) and :func:`distractor_only_content` (the registered
+    transform, text-based) -- ONE implementation, never two independently
+    drifting copies of this logic."""
 
     oracle_keys = {term.casefold() for term in oracle_terms}
     seen: set[str] = set()
@@ -271,12 +277,163 @@ def distractor_only_terms(
             "distractor-only bias list is empty after removing every oracle-list "
             "entry from the distractor list"
         )
+    return distractor_only[:max_entries], {"distractor_only_total": len(distractor_only)}
+
+
+def distractor_only_terms(
+    lock: Mapping[str, object],
+    root: Path,
+    max_entries: int = DEFAULT_BIAS_LIST_MAX_ENTRIES,
+) -> tuple[list[str], dict[str, object]]:
+    """The set difference ``distractor_list.txt - oracle_list.txt``, computed
+    at LOAD TIME from the two shipped files (never a hand-copied name list in
+    this module, per the task's own non-negotiable constraint). Returns
+    ``(capped_terms, facts)`` where ``facts`` carries the two source files'
+    own relpath/sha256 plus the FULL (uncapped) distractor-only count, for
+    evidence provenance."""
+
+    _validate_max_entries(max_entries)
+    bias_dir = _bias_lists_dir(lock, root)
+    oracle_path = bias_dir / ORACLE_LIST_FILENAME
+    distractor_path = bias_dir / DISTRACTOR_LIST_FILENAME
+    oracle_terms = _load_term_list(oracle_path, "oracle bias list")
+    distractor_terms = _load_term_list(distractor_path, "distractor bias list")
+
+    capped, partial_facts = _distractor_only_from_terms(oracle_terms, distractor_terms, max_entries)
 
     facts = {
         "oracle_relpath": bias_list_relpath(lock, ORACLE_LIST_FILENAME),
         "oracle_sha256": sha256_file(oracle_path),
         "distractor_relpath": bias_list_relpath(lock, DISTRACTOR_LIST_FILENAME),
         "distractor_sha256": sha256_file(distractor_path),
-        "distractor_only_total": len(distractor_only),
+        "distractor_only_total": partial_facts["distractor_only_total"],
     }
-    return distractor_only[:max_entries], facts
+    return capped, facts
+
+
+# ---------------------------------------------------------------------------
+# Registered transforms (core.evidence_derivation.TRANSFORMS): pure,
+# deterministic ``(source_text, params) -> derived_text`` functions -- the
+# SAME functions core.evidence's conec-bias-list/distractor-only-bias-list
+# sources call to build their EvidenceItem.content, so there is exactly ONE
+# implementation of "what does this transform produce", never a content
+# construction inline at the call site plus a SEPARATE copy the registry
+# re-invokes to verify it (module docstring, "CLOSED GAP").
+# ---------------------------------------------------------------------------
+
+
+def conec_bias_list_content(text: str, params: Mapping[str, object]) -> str:
+    """TRANSFORMS: ``conec-bias-list`` v1. The full ``EvidenceItem.content``
+    ``core.evidence._conec_bias_list`` returns for a given ConEC context TEXT
+    and ``{"max_entries": N}`` -- deterministic (:func:`extract_bias_
+    candidates` is a pure left-to-right regex scan), never touches a
+    filesystem or a model."""
+
+    if not isinstance(params, Mapping):
+        raise EvidenceError(
+            f"conec-bias-list transform params must be a mapping, got {type(params).__name__}"
+        )
+    max_entries = _validate_max_entries(params.get("max_entries"))
+    candidates = extract_bias_candidates(text, max_entries=max_entries)
+    if not candidates:
+        raise EvidenceError(
+            "no bias-candidate entities could be extracted from the source text; "
+            "refusing to emit an empty bias list"
+        )
+    header = (
+        f"ConEC-derived bias candidates for this call ({len(candidates)} of "
+        f"max {max_entries}), extracted deterministically from the call's own "
+        "ConEC context materials (participant/press-release vocabulary; no "
+        "model, no reference transcript):"
+    )
+    return format_bias_list_content(candidates, header)
+
+
+TRANSFORMS.register("conec-bias-list", "v1", conec_bias_list_content)
+
+
+def distractor_only_source_texts(
+    lock: Mapping[str, object], root: Path
+) -> tuple[str, str, str, str]:
+    """The two shipped bias-list files' own raw TEXT + relpath (oracle, then
+    distractor) -- the material ``core.evidence._distractor_only_bias_list``
+    combines into its carrier-independent
+    ``core.base.DerivedEvidenceRecord`` source document
+    (``carrier_bound=False``: there is no single per-sample carrier file to
+    name here, module docstring). A read independent of
+    :func:`distractor_only_terms`'s own (unchanged) file access -- both read
+    the same small, static files, once each, per evidence-source call."""
+
+    bias_dir = _bias_lists_dir(lock, root)
+    oracle_text = _read_text_file(bias_dir / ORACLE_LIST_FILENAME, "oracle bias list")
+    distractor_text = _read_text_file(bias_dir / DISTRACTOR_LIST_FILENAME, "distractor bias list")
+    return (
+        oracle_text,
+        distractor_text,
+        bias_list_relpath(lock, ORACLE_LIST_FILENAME),
+        bias_list_relpath(lock, DISTRACTOR_LIST_FILENAME),
+    )
+
+
+def distractor_only_source_document(
+    oracle_text: str, distractor_text: str, oracle_relpath: str, distractor_relpath: str
+) -> str:
+    """Canonical, sorted-key JSON document combining the two shipped bias-list
+    files' own text -- the carrier-independent SOURCE for the
+    ``distractor-only`` transform. There is no SINGLE per-sample carrier file
+    to hash here (module docstring "CLOSED GAP"), so this document itself IS
+    the source, and its own sha256 becomes the derivation record's
+    ``source_sha256`` (``core.base.DerivedEvidenceRecord.carrier_bound=
+    False``)."""
+
+    return json.dumps(
+        {
+            "distractor_relpath": distractor_relpath,
+            "distractor_text": distractor_text,
+            "oracle_relpath": oracle_relpath,
+            "oracle_text": oracle_text,
+        },
+        sort_keys=True,
+    )
+
+
+def distractor_only_content(source_text: str, params: Mapping[str, object]) -> str:
+    """TRANSFORMS: ``distractor-only`` v1. ``source_text`` is a
+    :func:`distractor_only_source_document`; this parses it back into the two
+    term lists and reproduces the SAME ``EvidenceItem.content``
+    ``core.evidence._distractor_only_bias_list`` returns. Pure: never reads a
+    file, never touches a model, deterministic given (source_text, params)."""
+
+    if not isinstance(params, Mapping):
+        raise EvidenceError(
+            f"distractor-only transform params must be a mapping, got {type(params).__name__}"
+        )
+    max_entries = _validate_max_entries(params.get("max_entries"))
+    try:
+        document = json.loads(source_text)
+    except json.JSONDecodeError as error:
+        raise EvidenceError(
+            f"distractor-only source document is not valid JSON: {error}"
+        ) from error
+    if (
+        not isinstance(document, Mapping)
+        or "oracle_text" not in document
+        or "distractor_text" not in document
+    ):
+        raise EvidenceError(
+            "distractor-only source document is missing oracle_text/distractor_text"
+        )
+    oracle_terms = _terms_from_text(document["oracle_text"], "oracle bias list")
+    distractor_terms = _terms_from_text(document["distractor_text"], "distractor bias list")
+    capped, partial_facts = _distractor_only_from_terms(oracle_terms, distractor_terms, max_entries)
+    header = (
+        f"Distractor-only bias terms ({len(capped)} of max {max_entries}, "
+        f"{partial_facts['distractor_only_total']} total before the cap): Fortune-500/"
+        "CEO names present in the shipped Earnings-21 distractor list but "
+        "ABSENT from its reference-derived oracle list (negative control; no "
+        "reference-transcript content):"
+    )
+    return format_bias_list_content(capped, header)
+
+
+TRANSFORMS.register("distractor-only", "v1", distractor_only_content)

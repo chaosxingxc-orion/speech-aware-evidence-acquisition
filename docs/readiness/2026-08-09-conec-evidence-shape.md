@@ -60,21 +60,50 @@ cheap because the source and the scorer are already in place. Note the
 reconstruction must come from the ConEC file's own line order (which preserves
 document order), never from the reference transcript.
 
-## Blocking gap found during the build (owner attention needed)
+## Blocking gap found during the build — CLOSED (2026-08-09)
 
-`core.driver.run_experiment` binds evidence identity by hashing the carrier's
+`core.driver.run_experiment` bound evidence identity by hashing the carrier's
 **raw ConEC per-sample file** and checking it against D1
 (`verify_evidence_content_identity`). Any evidence source that **transforms**
 that content — the capped bias list, the reconstructed phrases, or the
-carrier-independent distractor list — will fail that check on a gated run.
+carrier-independent distractor list — failed that check on a gated run.
 
-The rail is correct (what enters the prompt must be identity-verified); it was
-simply designed for verbatim evidence. The fix should mirror the pattern this
-repo already uses for derived audio: `core/model/slices.py` chains a derived
-slice to its parent via `parent_sha256` + offsets. Derived evidence should
-likewise carry a record chaining **verified source file hash + pinned
-transform version → derived content hash**, so identity remains provable
-without requiring the derived artefact to pre-exist in D1.
+The rail was correct (what enters the prompt must be identity-verified); it
+was simply designed for verbatim evidence. The fix mirrors the pattern this
+repo already uses for derived audio (`core/model/slices.py`'s
+`SliceRecord`/`SliceRegistry`, which chains a derived slice to its parent via
+`parent_sha256` + offsets, re-verified at registration and again at send):
+a new `core.base.DerivedEvidenceRecord`
+(`{sample_id, source_relpath, source_sha256, transform_name,
+transform_version, params_hash, derived_sha256, carrier_bound}`) chains
+**verified source bytes + a registered, pinned, versioned transform + the
+run's own declared params → the derived content actually sent**, and
+`core.evidence_derivation.DerivedEvidenceRegistry` re-derives every one of
+those links independently (never merely re-hashing the record's own
+numbers), refusing with a message naming exactly which link broke: SOURCE
+(tampered/substituted source bytes), the transform itself (unregistered name
+or a registered name at the wrong pinned version — condition 5 makes an
+unregistered/unversioned transform impossible to reach at all), PARAMS (the
+record's claimed params disagree with what this run's config actually
+declares), DERIVED CONTENT (re-invoking the pinned transform does not
+reproduce the claimed hash), or SENT CONTENT (the bytes about to reach the
+prompt were tampered after derivation). `core.driver.run_experiment` runs
+this check for every sample before a run proceeds, BEFORE the (unchanged) D1
+evidence-identity rail, which now checks the SOURCE bytes a `carrier_bound`
+record chains to rather than the transformed output.
 
-Until that lands, B-2a arms 2–4 cannot run against the frozen core. R4 is
+`conec-contexts` carries a genuine record too, using the `identity`
+transform (`core.evidence_derivation.TRANSFORMS`) — content is unchanged,
+byte-identical to before this rail existed, and the pre-existing driver test
+asserting on it stayed green throughout. `conec-bias-list`'s record is
+`carrier_bound=True` (its source is the same per-sample ConEC context file
+`conec-contexts` reads, still D1-verified). `distractor-only-bias-list` gets
+the honest carrier-independent treatment: it derives from the shared
+`bias_lists/` corpus, not a per-sample carrier file, so its record is
+`carrier_bound=False` and chains to a combined, self-verified hash of the two
+shipped files rather than fabricating a D1 binding it cannot back up.
+
+B-2a arms 2–4 can now run against the frozen core (subject to the usual
+exposure-ledger/execution-plan discipline — this change is model-free
+engineering, not an authorization to touch the model). R4 was, and remains,
 unaffected (it injects the raw file verbatim).

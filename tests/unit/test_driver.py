@@ -1167,3 +1167,135 @@ def test_bad_obs_batch_samples_refuses(synthetic_world, tmp_path, bad):
             transport=_transport,
             repo_root=repo_root,
         )
+
+
+# ---------------------------------------------------------------------------
+# Derivation-chain rail wiring (2026-08-09, docs/readiness/2026-08-09-conec-
+# evidence-shape.md "Blocking gap"): run_experiment hands every evidence
+# item's DerivedEvidenceRecord to core.evidence_derivation.
+# DerivedEvidenceRegistry before a run proceeds, and only carrier_bound
+# records ever reach the (unchanged) D1 evidence-identity rail. Two test-only
+# evidence sources, registered here (module scope, like _BatchFixedPolicy
+# above) so a duplicate-registration refusal can never fire across reruns of
+# a single test function within one process.
+# ---------------------------------------------------------------------------
+
+from speech_aware_evidence_acquisition.core.base import (  # noqa: E402
+    EVIDENCE_SOURCES,
+    DerivedEvidenceRecord,
+    EvidenceItem,
+)
+from speech_aware_evidence_acquisition.core.evidence_derivation import (  # noqa: E402
+    canonical_params_hash,
+)
+
+
+def _no_derivation_evidence_source(lock, root, sample_id, carrier_lock_key, values=None):
+    """A misbehaving evidence source: real content, NO derivation record --
+    exactly what any evidence source predating this rail looked like."""
+
+    return [
+        EvidenceItem(
+            evidence_id=f"test-no-derivation/{sample_id}",
+            source_uri="test-no-derivation://x",
+            content="some evidence text",
+            provenance={"lock_key": "conec", "relpath": "r", "sha256": "0" * 64},
+        )
+    ]
+
+
+EVIDENCE_SOURCES.register("test-no-derivation-evidence", _no_derivation_evidence_source)
+
+
+def _carrier_independent_evidence_source(lock, root, sample_id, carrier_lock_key, values=None):
+    """A test double for a carrier-independent source (deliverable 3): its
+    own honest ``carrier_bound=False`` record, chained to a combined
+    (non-per-sample) source via the ``identity`` transform for simplicity --
+    the point under test is run_experiment's ROUTING, not any particular
+    transform's content logic (that is covered by
+    core.bias_lists/distractor-only-bias-list's own tests)."""
+
+    text = "combined bias-lists-style evidence for this test"
+    source_bytes = text.encode("utf-8")
+    derivation = DerivedEvidenceRecord(
+        sample_id=sample_id,
+        source_relpath="test/combined-a.txt+test/combined-b.txt",
+        source_sha256=hashlib.sha256(source_bytes).hexdigest(),
+        transform_name="identity",
+        transform_version="v1",
+        params_hash=canonical_params_hash({}),
+        derived_sha256=hashlib.sha256(source_bytes).hexdigest(),
+        carrier_bound=False,
+    )
+    return [
+        EvidenceItem(
+            evidence_id=f"test-carrier-independent/{sample_id}",
+            source_uri="test-carrier-independent://x",
+            content=text,
+            provenance={"lock_key": "conec", "relpath": "r", "sha256": "0" * 64},
+            derivation=derivation,
+            derivation_source_bytes=source_bytes,
+        )
+    ]
+
+
+EVIDENCE_SOURCES.register(
+    "test-carrier-independent-evidence", _carrier_independent_evidence_source
+)
+
+
+def test_run_experiment_refuses_evidence_with_no_derivation_record(synthetic_world, tmp_path):
+    lock, repo_root = _frozen_world(synthetic_world, tmp_path)
+    _, split_hash, _ = load_split(repo_root, "discovery", lock, synthetic_world.data_root)
+    composed = _composed(
+        arm="fixed-legal-context", evidence_source="test-no-derivation-evidence"
+    )
+    plan = _plan(
+        split_hash,
+        protocol_hash=protocol_hash(composed.config_hash, composed.values["arm"], split_hash),
+    )
+    with pytest.raises(CoreError, match="no derivation record"):
+        run_experiment(
+            composed=composed,
+            plan=plan,
+            gate=_OpenGate(),
+            lock=lock,
+            root=synthetic_world.data_root,
+            run_dir=tmp_path / "run-no-derivation",
+            transport=_transport,
+            repo_root=repo_root,
+        )
+
+
+def test_run_experiment_excludes_a_carrier_independent_record_from_the_d1_rail(
+    synthetic_world, tmp_path
+):
+    """The honest treatment (deliverable 3): a carrier_bound=False record's
+    sample never reaches the (unchanged) D1 evidence-identity rail at all --
+    there is no D1 record to check it against -- yet the run still completes,
+    because the derivation chain's own self-verification
+    (DerivedEvidenceRegistry) is a genuine, independent identity anchor."""
+
+    lock, repo_root = _frozen_world(synthetic_world, tmp_path)
+    _, split_hash, _ = load_split(repo_root, "discovery", lock, synthetic_world.data_root)
+    composed = _composed(
+        arm="fixed-legal-context", evidence_source="test-carrier-independent-evidence"
+    )
+    plan = _plan(
+        split_hash,
+        protocol_hash=protocol_hash(composed.config_hash, composed.values["arm"], split_hash),
+    )
+    gate = _EvidenceCheckingGate()
+    result = run_experiment(
+        composed=composed,
+        plan=plan,
+        gate=gate,
+        lock=lock,
+        root=synthetic_world.data_root,
+        run_dir=tmp_path / "run-carrier-independent",
+        transport=_transport,
+        repo_root=repo_root,
+    )
+    assert isinstance(result, RunResult)
+    assert gate.checked == []
+    assert gate.content_checked == []
