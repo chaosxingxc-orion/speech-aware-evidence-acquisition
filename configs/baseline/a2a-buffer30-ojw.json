@@ -1,0 +1,22 @@
+{
+  "arm": "bare-core",
+  "policy": "obs-agent-loop-ojw",
+  "evidence_source": "none",
+  "evidence_mismatch": false,
+  "scorers": ["asr-wer", "cost"],
+  "task_instruction": "Transcribe the speech verbatim. Output only the transcript text.",
+  "obs_buffer_seconds": 30,
+  "obs_min_advance_seconds": 10,
+  "obs_max_advance_seconds": 27,
+  "obs_silence_snap_seconds": 2.0,
+  "obs_fallback_advance_seconds": 25,
+  "obs_boundary_mode": "model",
+  "obs_boundary_prompt": "probes/obs_boundary_v1.txt",
+  "obs_vad": "energy",
+  "obs_vad_trim_min_seconds": 5.0,
+  "obs_preprocess": [],
+  "obs_condition_tail_chars": 400,
+  "obs_slice_retry_max": 1,
+  "obs_batch_samples": 4,
+  "ojw_workflow_timeout_seconds": 21600
+}

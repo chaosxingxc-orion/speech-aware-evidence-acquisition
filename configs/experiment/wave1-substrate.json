@@ -1,0 +1,5 @@
+{
+  "experiment_id": "SAEA-E-004",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "Wave-1 W-A substrate ablation ladder (exploration-plan section 2, probes A-1a/A-2a/A-3a) on the seeded five-sample earnings21 discovery sub-split, obs-agent-loop-ojw throughout, evidence_source none for every arm so the substrate is the only variable. ONE control arm (bare-core-ojw) is run once and read against all three contrasts -- boundary policy (model-guided vs fixed-window), buffer geometry (30/60/90 s with proportionally scaled advance), and preprocessing (VAD pre-trim off; per-slice RMS normalisation on) -- which both saves two redundant control runs and removes control-to-control variance between the contrasts. Success is directional only: each contrast reports a WER delta with its paired exact Wilcoxon and the n=5 achievable p floor stated; exploratory, n=5, not powered for a precise estimate."
+}

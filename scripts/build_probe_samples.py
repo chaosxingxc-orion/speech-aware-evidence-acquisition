@@ -235,11 +235,46 @@ def build_r4_e21_sub10() -> None:
           f"per-arm planned_model_calls={len(sample) + 2}")
 
 
+def build_wave1_e21_sub5() -> None:
+    """Wave-1 substrate-ablation split (2026-08-09, docs/readiness/
+    2026-08-09-exploration-plan.md section 2, A-1a/A-2a/A-3a): a seeded
+    5-of-10 subset of the FROZEN r4-e21-sub10-sample split (identity stays
+    inside the frozen 10; sample-once policy). Five items are enough for a
+    directional read and halves the ~2h-per-arm wall clock the sub10 mini
+    arms already established."""
+
+    parent_path = OUT_DIR / "r4-e21-sub10-sample.json"
+    parent = json.loads(parent_path.read_text(encoding="utf-8"))
+    pool = parent["items"]
+    sample = stratified_sample(
+        pool, per_stratum=5, seed=SEED, stratum_of=lambda x: "wave1", key_of=lambda x: x["key"]
+    )
+    write_receipt(
+        "wave1-e21-sub5-sample.json",
+        {
+            "probe": "wave1-substrate-ablation",
+            "carrier": "earnings21-original",
+            "seed": SEED,
+            "design": (
+                "seeded 5-of-10 subset of the FROZEN r4-e21-sub10-sample split (parent hash "
+                f"{parent['split_identity_hash']}); A-1a/A-2a/A-3a substrate-ablation probes "
+                "per docs/readiness/2026-08-09-exploration-plan.md section 2"
+            ),
+            "pool_size": len(pool),
+            "strata_counts": {"wave1": len(sample)},
+            "items": sample,
+            "split_identity_hash": split_identity_hash([item["key"] for item in sample]),
+            "split_role": "discovery",
+        },
+    )
+
+
 def main() -> int:
     build_r1_audio2tool()
     build_r2_bba()
     build_r5_vab()
     build_r4_e21_sub10()
+    build_wave1_e21_sub5()
     return 0
 
 

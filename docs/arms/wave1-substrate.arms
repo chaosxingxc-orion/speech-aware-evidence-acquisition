@@ -1,0 +1,69 @@
+# SAEA-E-004 "Wave-1 substrate ablation ladder" (exploration-plan section 2,
+# W-A probes A-1a / A-2a / A-3a).
+#
+# Six arms over the SAME five earnings21 discovery samples (split
+# wave1-e21-sub5-sample, configs/dataset/wave1-e21-sub5.json), all
+# obs-agent-loop-ojw so results stay comparable with SAEA-E-002 (R4), all
+# evidence_source "none" so the substrate is the only variable.
+#
+# ONE control run serves all three contrasts. The three probes each need the
+# identical bare-core-ojw arm, and because the experiment fragment is part of
+# the config hash, keeping them in one experiment is what makes that sharing
+# legitimate. It saves two redundant control runs (~2 h) and, more
+# importantly, removes control-to-control variance between the contrasts:
+# every delta below is measured against literally the same numbers.
+#
+# Exploratory, n=5, not powered for a precise estimate. Each contrast reports
+# a paired exact Wilcoxon whose achievable two-sided p floor at n=5 is
+# 2/2**5 = 0.0625 -- no contrast here can reach p<0.05 no matter how clean the
+# separation, so read effect sizes and direction, never significance.
+#
+# ---------------------------------------------------------------- contrast 1
+# A-1a boundary policy: control (obs_boundary_mode "model") vs fixedwindow
+# ("fixed", every other obs_* field unchanged, so the arm always advances by
+# the full buffer instead of asking the model for a boundary).
+# Hypothesis: the model-guided boundary lands cuts on sentence boundaries
+# rather than mid-word and reduces WER by >=1 pp.
+# A null result means the three-tier boundary machinery (model estimate -> VAD
+# snap -> clamp) is not earning its per-slice prompt and parse cost, and
+# fixed-window slicing becomes the cheaper default substrate for every
+# downstream OBS/ORG/SUPPLY/USE probe. Inspect the boundary-tier histogram
+# next, do not keep tuning this arm.
+#
+# ---------------------------------------------------------------- contrast 2
+# A-2a buffer geometry: buf30 vs control (60 s) vs buf90. The 30 s and 90 s
+# arms scale min/max/fallback advance PROPORTIONALLY (10/27/25 and 30/82/75
+# against the 60 s reference 20/55/50) so the contrast tests buffer size alone
+# rather than "buffer size plus a different advance regime"; every scaled
+# triple satisfies ObsLoopConfig.from_values's own invariant
+# (0 < min <= max <= buffer; min <= fallback <= max).
+# Hypothesis: WER trades against slices-per-call, with a visible knee -- a
+# short buffer gives less context per decode, a long one risks losing the
+# start of a long utterance to prompt pressure.
+# A null result (flat curve across 30/60/90 s) means buffer geometry is not a
+# lever worth tuning in isolation over this range; treat 60 s as good enough
+# and spend the tuning effort on boundary policy or preprocessing.
+#
+# ---------------------------------------------------------------- contrast 3
+# A-3a preprocessing, two independent single-field changes read against the
+# same control:
+#   vadtrim-off   obs_vad_trim_min_seconds 0, which genuinely disables the
+#                 pre-trim (the loop gates the trim-span computation on > 0)
+#                 rather than shrinking it.
+#   loudnorm      obs_preprocess ["rms-norm"], per-slice RMS gain applied
+#                 after cutting (reproduction/obs_audio.py::rms_normalize).
+# Hypotheses: trimming non-speech keeps silence out of the decode budget and
+# should not hurt WER; normalising per-slice level helps quiet segments on a
+# carrier with speaker-to-speaker level variation.
+# Null results mean, respectively, that the trim's case rests on cost
+# (trimmed seconds) and not on quality, and that per-slice loudness is not a
+# limiting factor for this carrier at this buffer size -- do not add
+# normalisation to the default substrate.
+#
+# run_id:baseline_fragment
+SAEA-E-004-control:bare-core-ojw
+SAEA-E-004-fixedwindow:a1a-fixed-window-ojw
+SAEA-E-004-buf30:a2a-buffer30-ojw
+SAEA-E-004-buf90:a2a-buffer90-ojw
+SAEA-E-004-vadtrim-off:a3a-vadtrim-off-ojw
+SAEA-E-004-loudnorm:a3a-loudnorm-ojw
