@@ -79,6 +79,17 @@ STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
 export PYTHONDONTWRITEBYTECODE=1
 export PYTHONUNBUFFERED=1
 
+# The ML stack is pinned to ~/.venvs/speechrl (CLAUDE.md); a detached launch
+# inherits no activation, and without this the driver never starts at all.
+VENV="${SPEECHRL_VENV:-$HOME/.venvs/speechrl}"
+if [ -f "$VENV/bin/activate" ]; then
+  # shellcheck disable=SC1091
+  . "$VENV/bin/activate"
+elif ! command -v python > /dev/null; then
+  echo "REFUSED: no python and no venv at $VENV" >&2
+  exit 4
+fi
+
 gpu_is_clean () {
   local used apps
   used="$(nvidia-smi --query-gpu=memory.used --format=csv,noheader,nounits 2>/dev/null)"
