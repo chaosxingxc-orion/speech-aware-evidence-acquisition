@@ -56,6 +56,16 @@ flagged ``"stitch": true`` and chaining every per-iteration
 ``MODEL_REQUEST``/``MODEL_RESPONSE`` record by request id and hash -- no
 model call is implied or double-counted (no COST record is emitted for the
 stitch).
+
+Exhausted-slice skip (Task 2, 2026-08-09 -- see the module comment above
+``SLICE_RETRYABLE_EXCEPTIONS`` for the full mechanism): a slice that
+exhausts ``obs_slice_retry_max`` retries no longer aborts the whole run --
+it is skipped as an honest hole, reported per slice (``obs_skipped`` in the
+OBS trace) and aggregated per run (``saturated_slice_count``'s sibling,
+``skipped_slice_count``/``skipped_sample_ids``, in the run manifest's cost
+block), bounded per sample by ``obs_slice_skip_max`` (default 1; exceeding
+it IS fatal). This deliberately changes what a run's WER means, so the
+manifest -- not only a trace -- always carries the count.
 """
 
 from __future__ import annotations
@@ -117,6 +127,7 @@ _KNOWN_OBS_KEYS = frozenset(
         "obs_condition_tail_chars",
         "obs_rms_target_dbfs",
         "obs_slice_retry_max",
+        "obs_slice_skip_max",
         "obs_batch_samples",
     }
 )
@@ -134,6 +145,18 @@ _EPSILON_SECONDS = 1e-6
 # never retried. Shared by BOTH executors: the plain policy below and the
 # openJiuwen ``FrozenCoreASR`` component call this one function, so retry
 # behaviour can never diverge between them.
+#
+# Task 2 interaction (2026-08-09): a budget/binding FrozenCoreError never
+# recovers between attempts (it is refused BEFORE any usage is durably
+# recorded, so a retry fails identically and free) -- since it is retryable
+# here, it now also exhausts and skips exactly like a transient failure, and
+# because the SAME refusal recurs on every following slice, it crosses
+# obs_slice_skip_max within a couple of slices regardless (see
+# test_obs_loop_integration.py::test_obs_loop_slice_budget_is_charged_per_
+# slice_not_per_parent for the concrete case: the raised message becomes the
+# skip-bound one, not the original budget one, but the attempt still aborts
+# either way). This is unchanged 2026-08-08 retry classification, not a new
+# decision -- Task 2 only changed what happens AFTER exhaustion.
 SLICE_RETRYABLE_EXCEPTIONS = (FrozenCoreError, TimeoutError, ConnectionError)
 
 # Per-slice decode-cap saturation (2026-08-09, continues the retry finding
@@ -145,6 +168,30 @@ SLICE_RETRYABLE_EXCEPTIONS = (FrozenCoreError, TimeoutError, ConnectionError)
 # ledger commits to "counted and reported, not scored silently"; this is the
 # detector, at the SAME shared seam as the retry above so both executors
 # observe identical saturation behaviour.
+
+# Exhausted-slice skip + bound (Task 2, 2026-08-09, continues both findings
+# above): a slice that exhausts obs_slice_retry_max used to propagate an
+# exception out of request_slice_with_retry and abort the WHOLE arm -- the
+# live incident this fixes lost ~3 hours and ~580 completed calls to ONE bad
+# slice, twice. request_slice_with_retry itself no longer raises on a
+# RETRYABLE exhaustion (see its own docstring below) -- both executors read
+# its ``skipped`` flag and treat that slice as an honest hole: no transcript,
+# and the sample's cursor advances past it via the SAME fallback-tier
+# arithmetic an unparseable boundary response already uses
+# (obs_audio.resolve_advance with estimate=None) -- never a special second
+# code path. The hole is recorded in the per-slice OBS record
+# (``obs_skipped``) next to ``obs_retry_of``/``obs_saturated``. Because this
+# changes what a run's WER means, a run that quietly skipped its audio must
+# never be scorable as clean: ``obs_slice_skip_max`` (default 1 -- tolerate
+# ONE bad slice per sample, matching the incident's own shape; a SECOND
+# skipped slice in the same sample signals something systemic, not one bad
+# request) makes exceeding the bound fatal, and the run manifest's cost
+# block carries the skipped-slice count/sample ids unconditionally (core.
+# driver.cost._assemble_run_cost), mirroring exactly how saturated_slice_
+# count/saturated_sample_ids were just added -- never buried in a trace
+# only. The bound-exceeded message is built by ONE function
+# (_skip_bound_exceeded_message below) that both executors call, so the
+# raised ObsLoopError can never diverge in wording between them either.
 
 
 def _slice_saturated(usage: Mapping[str, object] | None, max_tokens: object) -> bool:
@@ -173,12 +220,25 @@ def request_slice_with_retry(adapter_request, build_payload, request_id, retry_m
     ``build_payload(request_id) -> payload`` builds a FRESH payload per
     attempt (each retry is a new request: new request id, separately traced
     and metered by the adapter). Returns ``(request_id_used, response,
-    retry_of, saturated)`` where ``retry_of`` is the ORIGINAL request id when
-    a retry answered, else None, and ``saturated`` (``_slice_saturated``
-    above) is computed on the response actually returned -- a retried
-    slice's saturation reflects the attempt that succeeded, never a discarded
-    failure. The final failure propagates unchanged (fail-closed, as before
-    this seam existed).
+    retry_of, saturated, skipped)`` where ``retry_of`` is the ORIGINAL
+    request id when a retry was attempted at all (whether it answered or the
+    whole slice was ultimately skipped), else None; ``saturated``
+    (``_slice_saturated`` above) is computed on the response actually
+    returned -- a retried slice's saturation reflects the attempt that
+    succeeded, never a discarded failure.
+
+    ``skipped`` (Task 2, 2026-08-09, continues the retry finding above): True
+    iff every attempt (the original plus ``retry_max`` retries) raised a
+    RETRYABLE failure (``SLICE_RETRYABLE_EXCEPTIONS``) -- this no longer
+    raises out of here. ``response`` is then ``None`` (nothing to read a
+    transcript or a usage block from -- ``saturated`` is always False in
+    this case, there is no completion to judge) and ``request_id_used`` is
+    the id of the LAST attempt made, exactly what the adapter's own final
+    MODEL_REQUEST trace record names, so a caller's own record for the skip
+    lines up with what was actually sent. A NON-retryable exception (a bug,
+    never in ``SLICE_RETRYABLE_EXCEPTIONS``) still propagates immediately,
+    unretried, exactly as before this change -- only genuine retry
+    exhaustion is downgraded to a skip.
     """
 
     for attempt in range(max(0, int(retry_max)) + 1):
@@ -187,11 +247,26 @@ def request_slice_with_retry(adapter_request, build_payload, request_id, retry_m
         try:
             response = adapter_request(payload)
             saturated = _slice_saturated(getattr(response, "usage", None), max_tokens)
-            return attempt_id, response, (request_id if attempt else None), saturated
+            return attempt_id, response, (request_id if attempt else None), saturated, False
         except SLICE_RETRYABLE_EXCEPTIONS:
             if attempt >= retry_max:
-                raise
+                return attempt_id, None, (request_id if attempt else None), False, True
     raise AssertionError("unreachable: the loop either returns or re-raises")
+
+
+def _skip_bound_exceeded_message(sample_id: str, skipped_slices: int, cfg: "ObsLoopConfig") -> str:
+    """The ONE wording for a skip-bound-exceeded refusal (module comment
+    above ``SLICE_RETRYABLE_EXCEPTIONS``): both ``ObsAgentLoopPolicy.
+    run_sample`` below and ``ojw.policy._finalize_sample`` call this, so the
+    raised ``ObsLoopError`` can never diverge in wording between the two
+    executors for the same scenario."""
+
+    return (
+        f"sample {sample_id!r} exceeded obs_slice_skip_max={cfg.slice_skip_max} "
+        f"skipped slices (skipped_slices={skipped_slices}, obs_slice_retry_max="
+        f"{cfg.slice_retry_max} exhausted on each); refusing to score a sample "
+        "missing more audio than the configured bound tolerates"
+    )
 
 
 class ObsLoopError(RuntimeError):
@@ -226,6 +301,7 @@ class ObsLoopConfig:
     condition_tail_chars: int
     rms_target_dbfs: float
     slice_retry_max: int
+    slice_skip_max: int
     batch_samples: int
 
     @classmethod
@@ -288,6 +364,18 @@ class ObsLoopConfig:
             raise ObsLoopError(
                 f"obs_slice_retry_max must be an integer >= 0 (0 disables), got {retry_max!r}"
             )
+        # Skip bound (Task 2, 2026-08-09, module comment above
+        # SLICE_RETRYABLE_EXCEPTIONS): the count of retry-exhausted slices a
+        # SAMPLE tolerates before the whole run refuses rather than scoring
+        # audio it is silently missing. Default 1 -- tolerate one bad slice
+        # per sample (the live incident's own shape); 0 makes ANY skipped
+        # slice fatal.
+        skip_max = values.get("obs_slice_skip_max", 1)
+        if isinstance(skip_max, bool) or not isinstance(skip_max, int) or skip_max < 0:
+            raise ObsLoopError(
+                f"obs_slice_skip_max must be an integer >= 0 (0 = no skipped slice "
+                f"tolerated), got {skip_max!r}"
+            )
         # Sample-level concurrency (owner batching directive 2026-08-08):
         # consumed by the ojw executor's run_samples (and by the driver's
         # dispatch decision); the plain policy accepts and IGNORES it -- it
@@ -331,6 +419,7 @@ class ObsLoopConfig:
             condition_tail_chars=tail_chars,
             rms_target_dbfs=rms_target,
             slice_retry_max=retry_max,
+            slice_skip_max=skip_max,
             batch_samples=batch_samples,
         )
 
@@ -487,6 +576,7 @@ class ObsAgentLoopPolicy:
         iteration = 0
         trims = 0
         saturated_count = 0
+        skipped_count = 0
         cursor = 0.0
         effective_min = (
             cfg.buffer_seconds if cfg.boundary_mode == "fixed" else cfg.min_advance_seconds
@@ -587,13 +677,21 @@ class ObsAgentLoopPolicy:
                     retrieval_query=ctx.retrieval_query,
                 )
 
-            request_id, response, retry_of, saturated = request_slice_with_retry(
+            request_id, response, retry_of, saturated, skipped = request_slice_with_retry(
                 ctx.adapter.request, _payload, base_request_id, cfg.slice_retry_max, max_tokens
             )
             if saturated:
                 saturated_count += 1
 
-            if cfg.boundary_mode == "model":
+            # Exhausted-slice skip (module comment above
+            # SLICE_RETRYABLE_EXCEPTIONS): no response ever arrived, so
+            # there is no transcript/estimate to parse -- treated exactly
+            # like an unparseable boundary response (transcript="",
+            # estimate=None), which the SAME resolution tiers below already
+            # know how to fall back from. Never a second code path.
+            if skipped:
+                transcript, estimate = "", None
+            elif cfg.boundary_mode == "model":
                 transcript, estimate = parse_boundary_response(response.text)
             else:
                 transcript, estimate = response.text.strip(), None
@@ -672,12 +770,29 @@ class ObsAgentLoopPolicy:
                     # the configured decoding_params.max_tokens cap -- counted
                     # and reported here, never scored silently.
                     "obs_saturated": saturated,
+                    # Exhausted-slice skip (module comment above
+                    # SLICE_RETRYABLE_EXCEPTIONS): True when every retry
+                    # attempt for this slice failed and it was skipped as an
+                    # honest hole -- counted and reported here, next to
+                    # obs_retry_of/obs_saturated, never scored silently.
+                    "obs_skipped": skipped,
                 },
             )
             accepted_spans.append(accepted.strip())
-            request_ids.append(request_id)
-            iteration_request_sha256s.append(response.request_sha256)
-            iteration_response_sha256s.append(response.response_sha256)
+            # A skipped slice has no real response: nothing to hash into the
+            # stitch (module comment above SLICE_RETRYABLE_EXCEPTIONS) --
+            # request_ids/the per-iteration sha lists stay in lockstep,
+            # covering only iterations that actually contributed content.
+            if skipped:
+                skipped_count += 1
+                if skipped_count > cfg.slice_skip_max:
+                    raise ObsLoopError(
+                        _skip_bound_exceeded_message(sample.sample_id, skipped_count, cfg)
+                    )
+            else:
+                request_ids.append(request_id)
+                iteration_request_sha256s.append(response.request_sha256)
+                iteration_response_sha256s.append(response.response_sha256)
             cursor = record.start_seconds + float(resolution["advance"])
             iteration += 1
             if iteration > max_iterations:
@@ -688,8 +803,9 @@ class ObsAgentLoopPolicy:
 
         if not request_ids:
             raise ObsLoopError(
-                f"sample {sample.sample_id!r} produced no requests (entirely trimmed "
-                "as non-speech?); refusing to emit an empty hypothesis silently"
+                f"sample {sample.sample_id!r} produced no successful requests (entirely "
+                "trimmed as non-speech, or every slice skipped after exhausting retries?); "
+                "refusing to emit an empty hypothesis silently"
             )
 
         stitched = " ".join(span for span in accepted_spans if span)
@@ -766,6 +882,7 @@ class ObsAgentLoopPolicy:
             response_sha256=response_sha256,
             response_text_sha256=response_text_sha256,
             saturated_slices=saturated_count,
+            skipped_slices=skipped_count,
         )
 
     @staticmethod

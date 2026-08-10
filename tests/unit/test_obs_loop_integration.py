@@ -219,7 +219,20 @@ def test_obs_loop_slice_budget_is_charged_per_slice_not_per_parent(
 ):
     """The audio budget rail sees slice seconds: a plan too small for the
     slices (but big enough for one whole call) refuses mid-run and the
-    attempt aborts -- proving metering is per actually-sent slice."""
+    attempt aborts -- proving metering is per actually-sent slice.
+
+    Task 2 (2026-08-09) changed WHICH exception surfaces here, not WHETHER
+    the attempt aborts: "audio budget exhausted" is a FrozenCoreError, which
+    was already retryable before this task (2026-08-08 comment at
+    obs_loop.SLICE_RETRYABLE_EXCEPTIONS -- "a budget/binding refusal
+    retried once fails identically and spends nothing, so no carve-out is
+    needed"). A budget refusal never recovers between attempts, so it now
+    exhausts retries, skips, and -- because the SAME refusal recurs on every
+    following slice -- crosses obs_slice_skip_max within a couple of slices
+    either way. The attempt still aborts (proving the same underlying
+    invariant this test exists for), just via the skip-bound message rather
+    than the raw budget one.
+    """
 
     lock, repo_root = obs_repo
     ids, split_hash, _ = load_split(
@@ -239,7 +252,7 @@ def test_obs_loop_slice_budget_is_charged_per_slice_not_per_parent(
         protocol_hash=protocol_hash(composed.config_hash, "bare-core", split_hash),
         attempt_id="attempt-obs-budget",
     )
-    with pytest.raises(Exception, match="audio budget exhausted"):
+    with pytest.raises(Exception, match="obs_slice_skip_max"):
         run_experiment_bundled(
             composed, plan, _OpenGate(), lock, synthetic_world.data_root,
             tmp_path / "run-budget", _transport, repo_root=repo_root,

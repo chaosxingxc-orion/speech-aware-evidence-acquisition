@@ -74,6 +74,7 @@ from test_obs_loop_policy import (  # noqa: E402
     _boundary_text,
     _concat,
     _config_values,
+    _fixed_mode_skip_values,
     _noise,
     _obs_payloads,
     _silence,
@@ -159,6 +160,21 @@ def _scenario(name):
             values=_config_values(obs_condition_tail_chars=4000),
             flaky_calls=(2,),
         )
+    if name == "retry-exhausted-skip":
+        # Task 2 (2026-08-09): call #2 AND its retry (#3) both time out --
+        # exhausted, skipped (never aborted) -- both executors must reach
+        # byte-identical records for the surviving slices AND the skip
+        # itself (obs_skipped, skipped_slices, the shortened stitch).
+        return dict(
+            pcm=_noise(150.0),
+            texts=[
+                _boundary_text("First span one. First tail", 45),
+                _boundary_text("Second span two. Second tail", 50),
+                _boundary_text("Final span three.", 30),
+            ],
+            values=_config_values(obs_condition_tail_chars=4000),
+            flaky_calls=(2, 3),
+        )
     raise AssertionError(name)
 
 
@@ -170,6 +186,7 @@ SCENARIOS = (
     "rms-norm",
     "fallback-boundary",
     "retry-flaky",
+    "retry-exhausted-skip",
 )
 
 
@@ -345,6 +362,53 @@ class TestSaturation:
         obs = _obs_payloads(world)
         assert obs["req-0001-i0000/obs"]["obs_saturated"] is True
         assert obs["req-0001-i0001/obs"]["obs_saturated"] is False
+
+
+class TestSkip:
+    """Exhausted-slice skip (Task 2, 2026-08-09) reaches the ojw executor
+    through the SAME shared seam (obs_loop.request_slice_with_retry) as the
+    plain policy: FrozenCoreASR.invoke passes the skip through,
+    runner.py's ``${asr.skipped}`` wiring carries it to AcceptAdvance, which
+    emits it and mirrors it onto ObsSampleState.skipped_slices/
+    skip_exceeded, and policy._finalize_sample raises the SAME
+    ObsLoopError (obs_loop._skip_bound_exceeded_message, the ONE function
+    both executors call) when the bound is crossed -- proven directly
+    against the ojw policy here, not merely inferred from TestEquivalence's
+    "retry-exhausted-skip" scenario."""
+
+    def test_exhausted_slice_reaches_the_outcome_and_the_obs_record(
+        self, tmp_path, monkeypatch
+    ):
+        world = _World(
+            tmp_path,
+            monkeypatch,
+            pcm=_noise(90.0),
+            texts=[_boundary_text("A.", 45), _boundary_text("B.", 10)],
+        )
+        flaky = _FlakyAdapter(world.adapter, fail_calls={2, 3})
+        world.ctx.adapter = flaky
+        outcome = POLICIES.resolve(OJW_POLICY_NAME).run_sample(world.ctx)
+        assert outcome.skipped_slices == 1
+        assert outcome.request_ids == ("req-0001-i0000",)
+        obs = _obs_payloads(world)
+        assert obs["req-0001-i0000/obs"]["obs_skipped"] is False
+        assert obs["req-0001-i0001-r1/obs"]["obs_skipped"] is True
+        assert obs["req-0001-i0001-r1/obs"]["obs_retry_of"] == "req-0001-i0001"
+
+    def test_exceeding_the_skip_bound_raises_the_same_message_as_the_plain_policy(
+        self, tmp_path, monkeypatch
+    ):
+        world = _World(
+            tmp_path,
+            monkeypatch,
+            pcm=_noise(120.0),
+            texts=["one", "two", "three"],
+            values=_fixed_mode_skip_values(),
+        )
+        flaky = _FlakyAdapter(world.adapter, fail_calls={2, 3, 4, 5})
+        world.ctx.adapter = flaky
+        with pytest.raises(ObsLoopError, match="obs_slice_skip_max=1"):
+            POLICIES.resolve(OJW_POLICY_NAME).run_sample(world.ctx)
 
 
 class _FakeResponseById:

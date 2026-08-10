@@ -203,6 +203,14 @@ class SampleOutcome:
     # the whole-file "fixed" policy, which sends one request per sample
     # through no slicing seam at all and therefore can never saturate a slice.
     saturated_slices: int = 0
+    # Exhausted-slice skip count (Task 2, 2026-08-09, continues the obs-loop
+    # E-001 retry finding: ``reproduction.obs_loop`` module comment above
+    # ``SLICE_RETRYABLE_EXCEPTIONS``): the count of this sample's slice
+    # requests that exhausted ``obs_slice_retry_max`` retries and were
+    # skipped as an honest hole rather than aborting the whole run. Default
+    # 0 for the same reason as ``saturated_slices`` above -- the whole-file
+    # "fixed" policy has no slicing seam to skip a slice within.
+    skipped_slices: int = 0
 
 
 @dataclass(frozen=True)

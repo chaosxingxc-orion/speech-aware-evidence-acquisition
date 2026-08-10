@@ -533,8 +533,9 @@ class TestSliceRetry:
     """Bounded per-slice retry (live E-001 finding, 2026-08-08): one slice
     request hung server-side and the whole attempt died. A retryable failure
     (timeout / FrozenCoreError) now gets ONE fresh, separately-metered
-    request under a new request id; the second failure propagates
-    fail-closed as before."""
+    request under a new request id; a SECOND failure is skipped (Task 2,
+    2026-08-09 -- see TestSkip below for the degrade-not-abort behaviour and
+    its bound), never propagated fail-closed the way it used to be."""
 
     def test_flaky_slice_retries_once_and_completes(self, tmp_path, monkeypatch):
         world = _World(
@@ -559,6 +560,7 @@ class TestSliceRetry:
             "req-0001-i0001-r1",
         ]
         assert outcome.text == "First span done. Second done."
+        assert outcome.skipped_slices == 0
         # audit visibility: the OBS record carries retry_of
         raw = (world.run_dir / f"{RUN_ID}.trace.jsonl").read_text(encoding="utf-8")
         records = {
@@ -567,36 +569,6 @@ class TestSliceRetry:
         }
         assert records["req-0001-i0000/obs"]["obs_retry_of"] is None
         assert records["req-0001-i0001-r1/obs"]["obs_retry_of"] == "req-0001-i0001"
-
-    def test_second_failure_propagates_fail_closed(self, tmp_path, monkeypatch):
-        world = _World(
-            tmp_path,
-            monkeypatch,
-            pcm=_noise(90.0),
-            texts=[_boundary_text("A.", 45), _boundary_text("B.", 10)],
-        )
-        flaky = _FlakyAdapter(world.adapter, fail_calls={2, 3})
-        world.ctx.adapter = flaky
-        with pytest.raises(TimeoutError):
-            world.run()
-        assert flaky.calls == 3
-        assert flaky.failed_request_ids == ["req-0001-i0001", "req-0001-i0001-r1"]
-        # only the first slice's text was ever consumed
-        assert len(world.adapter.payloads) == 1
-
-    def test_retry_zero_disables(self, tmp_path, monkeypatch):
-        world = _World(
-            tmp_path,
-            monkeypatch,
-            pcm=_noise(30.0),
-            texts=[_boundary_text("A.", 10)],
-            values=_config_values(obs_slice_retry_max=0),
-        )
-        flaky = _FlakyAdapter(world.adapter, fail_calls={1})
-        world.ctx.adapter = flaky
-        with pytest.raises(TimeoutError):
-            world.run()
-        assert flaky.calls == 1
 
     def test_helper_retries_frozen_core_error_but_not_foreign_errors(self):
         from speech_aware_evidence_acquisition.core.model import FrozenCoreError
@@ -618,7 +590,7 @@ class TestSliceRetry:
                 raise result
             return result
 
-        rid, response, retry_of, saturated = request_slice_with_retry(
+        rid, response, retry_of, saturated, skipped = request_slice_with_retry(
             flaky_request, build, "req-0001-i0007", 1
         )
         assert (rid, response, retry_of) == (
@@ -629,6 +601,7 @@ class TestSliceRetry:
         # "ok" (a plain string) has no .usage attribute at all -- the missing
         # block must never crash, and never be flagged saturated.
         assert saturated is False
+        assert skipped is False
         assert built == ["req-0001-i0007", "req-0001-i0007-r1"]
 
         # a foreign error (a bug, not a transport/core failure) never retries
@@ -643,11 +616,54 @@ class TestSliceRetry:
             request_slice_with_retry,
         )
 
-        rid, response, retry_of, saturated = request_slice_with_retry(
+        rid, response, retry_of, saturated, skipped = request_slice_with_retry(
             lambda payload: "ok", lambda rid: {"request_id": rid}, "req-0001-i0000", 1
         )
         assert (rid, response, retry_of) == ("req-0001-i0000", "ok", None)
         assert saturated is False
+        assert skipped is False
+
+    def test_helper_never_raises_on_retry_exhaustion(self):
+        """Task 2 (2026-08-09): the raw helper itself never raises once every
+        attempt is exhausted on a RETRYABLE failure -- it reports the skip
+        instead (response=None, skipped=True), the id of the LAST attempt
+        made, and retry_of naming the original id (a retry WAS attempted)."""
+
+        from speech_aware_evidence_acquisition.reproduction.obs_loop import (
+            request_slice_with_retry,
+        )
+
+        def always_times_out(payload):
+            raise TimeoutError("timed out")
+
+        rid, response, retry_of, saturated, skipped = request_slice_with_retry(
+            always_times_out, lambda rid: {"request_id": rid}, "req-0001-i0003", 1
+        )
+        assert rid == "req-0001-i0003-r1"
+        assert response is None
+        assert retry_of == "req-0001-i0003"
+        assert saturated is False
+        assert skipped is True
+
+    def test_helper_never_raises_on_retry_exhaustion_with_retries_disabled(self):
+        """retry_max=0 exhausts on the FIRST failure -- still a skip, never a
+        raise, and retry_of is None (no retry was ever attempted)."""
+
+        from speech_aware_evidence_acquisition.reproduction.obs_loop import (
+            request_slice_with_retry,
+        )
+
+        def always_times_out(payload):
+            raise TimeoutError("timed out")
+
+        rid, response, retry_of, saturated, skipped = request_slice_with_retry(
+            always_times_out, lambda rid: {"request_id": rid}, "req-0001-i0004", 0
+        )
+        assert rid == "req-0001-i0004"
+        assert response is None
+        assert retry_of is None
+        assert saturated is False
+        assert skipped is True
 
 
 class TestSaturation:
@@ -752,6 +768,193 @@ class TestSaturation:
             obs[f"req-0001-i{index:04d}/obs"]["obs_saturated"] for index in range(5)
         ]
         assert flags == [True, False, True, True, False]
+
+
+def _fixed_mode_skip_values(**overrides):
+    """Deterministic fixed-mode config (no VAD at all -- boundary_mode
+    'fixed' and vad_trim_min_seconds 0 -- so every advance is exactly
+    obs_buffer_seconds, with no seed-dependent VAD snap to hand-compute):
+    the skip-bound tests below need EXACT control over which iteration is
+    final and how many total iterations exist."""
+
+    values = _config_values(
+        obs_buffer_seconds=40,
+        obs_min_advance_seconds=40,
+        obs_max_advance_seconds=40,
+        obs_fallback_advance_seconds=40,
+        obs_silence_snap_seconds=0,
+        obs_boundary_mode="fixed",
+        obs_vad_trim_min_seconds=0,
+    )
+    values.pop("obs_boundary_prompt")  # fixed mode needs no boundary template
+    values.update(overrides)
+    return values
+
+
+class TestSkip:
+    """Exhausted-slice skip (Task 2, 2026-08-09, continues the E-001 retry
+    finding above SLICE_RETRYABLE_EXCEPTIONS): a slice that exhausts
+    obs_slice_retry_max is skipped as an honest hole -- the SAMPLE
+    completes using whatever other slices succeeded -- unless the number of
+    skips in one sample crosses obs_slice_skip_max (default 1), which is
+    still fatal."""
+
+    def test_exhausted_slice_is_skipped_and_the_sample_completes(
+        self, tmp_path, monkeypatch
+    ):
+        world = _World(
+            tmp_path,
+            monkeypatch,
+            pcm=_noise(90.0),
+            texts=[_boundary_text("A.", 45), _boundary_text("B.", 10)],
+        )
+        flaky = _FlakyAdapter(world.adapter, fail_calls={2, 3})
+        world.ctx.adapter = flaky
+        outcome = world.run()  # must NOT raise -- the old behaviour aborted here
+        # i0000 ok, i0001 timed out, i0001-r1 timed out -> exhausted -> skipped
+        assert flaky.calls == 3
+        assert flaky.failed_request_ids == ["req-0001-i0001", "req-0001-i0001-r1"]
+        # the second slice's script was never even read (nothing to stitch)
+        assert len(world.adapter.payloads) == 1
+        assert outcome.skipped_slices == 1
+        assert outcome.request_ids == ("req-0001-i0000",)
+        raw = (world.run_dir / f"{RUN_ID}.trace.jsonl").read_text(encoding="utf-8")
+        records = {
+            document["record_id"]: document["payload"]
+            for document in (json.loads(line) for line in raw.splitlines() if line)
+        }
+        assert records["req-0001-i0000/obs"]["obs_skipped"] is False
+        # the exhausted slice's OWN record lands under its FINAL attempt id
+        # (module comment: request_id_used is the last attempt made).
+        assert records["req-0001-i0001-r1/obs"]["obs_skipped"] is True
+        assert records["req-0001-i0001-r1/obs"]["obs_retry_of"] == "req-0001-i0001"
+        # no transcript survived that slice, so nothing was accepted from it
+        assert records["req-0001-i0001-r1/obs"]["obs_accepted_chars"] == 0
+
+    def test_skipped_slice_advances_via_the_fallback_tier(self, tmp_path, monkeypatch):
+        """A skipped NON-final slice has no estimate at all -- resolved
+        through the SAME fallback tier an unparseable boundary response
+        already uses (obs_audio.resolve_advance with estimate=None), never
+        a second advance-computation path. (The final window uses a fixed
+        "consume everything" resolution regardless of skip -- this scenario
+        therefore skips the FIRST slice, which is never final for a 90s
+        sample over a 60s buffer, so the fallback tier genuinely fires.)"""
+
+        world = _World(
+            tmp_path,
+            monkeypatch,
+            pcm=_noise(90.0),
+            texts=[_boundary_text("Final.", 10)],
+            values=_config_values(
+                obs_fallback_advance_seconds=33, obs_silence_snap_seconds=0
+            ),
+        )
+        # i0000's original attempt + its retry both time out -> skipped;
+        # i0001 (the only real call) then covers the rest of the audio.
+        flaky = _FlakyAdapter(world.adapter, fail_calls={1, 2})
+        world.ctx.adapter = flaky
+        world.run()
+        obs = _obs_payloads(world)
+        skipped_record = obs["req-0001-i0000-r1/obs"]
+        assert skipped_record["obs_final_window"] is False
+        assert skipped_record["obs_boundary_estimate_seconds"] is None
+        assert skipped_record["obs_boundary_fallback"] is True
+        assert skipped_record["obs_boundary_advance_seconds"] == 33
+
+    def test_exceeding_the_skip_bound_aborts_the_sample(self, tmp_path, monkeypatch):
+        """A SECOND skipped slice in the same sample crosses the default
+        obs_slice_skip_max=1 -- fatal, exactly because a run that quietly
+        skipped its audio must never be scorable as clean."""
+
+        world = _World(
+            tmp_path,
+            monkeypatch,
+            pcm=_noise(120.0),
+            texts=["one", "two", "three"],
+            values=_fixed_mode_skip_values(),
+        )
+        # i0000 ok (call 1); i0001 + its retry both fail (calls 2, 3) -> skip
+        # #1 (within the default bound); i0002 + its retry both fail (calls
+        # 4, 5) -> skip #2 -> exceeds obs_slice_skip_max=1.
+        flaky = _FlakyAdapter(world.adapter, fail_calls={2, 3, 4, 5})
+        world.ctx.adapter = flaky
+        with pytest.raises(ObsLoopError, match="obs_slice_skip_max=1"):
+            world.run()
+        assert flaky.calls == 5
+        # the FIRST skip's own OBS record was still emitted before the
+        # second skip's bound-exceeded refusal -- reported, not swallowed.
+        raw = (world.run_dir / f"{RUN_ID}.trace.jsonl").read_text(encoding="utf-8")
+        records = {
+            document["record_id"]: document["payload"]
+            for document in (json.loads(line) for line in raw.splitlines() if line)
+        }
+        assert records["req-0001-i0001-r1/obs"]["obs_skipped"] is True
+        assert records["req-0001-i0002-r1/obs"]["obs_skipped"] is True
+
+    def test_skip_bound_zero_makes_any_skip_fatal(self, tmp_path, monkeypatch):
+        world = _World(
+            tmp_path,
+            monkeypatch,
+            pcm=_noise(120.0),
+            texts=["one", "two", "three"],
+            values=_fixed_mode_skip_values(obs_slice_skip_max=0),
+        )
+        flaky = _FlakyAdapter(world.adapter, fail_calls={2, 3})
+        world.ctx.adapter = flaky
+        with pytest.raises(ObsLoopError, match="obs_slice_skip_max=0"):
+            world.run()
+
+    def test_a_higher_configured_bound_tolerates_more_skips(self, tmp_path, monkeypatch):
+        world = _World(
+            tmp_path,
+            monkeypatch,
+            pcm=_noise(120.0),
+            texts=["one", "two", "three"],
+            values=_fixed_mode_skip_values(obs_slice_skip_max=2),
+        )
+        flaky = _FlakyAdapter(world.adapter, fail_calls={2, 3, 4, 5})
+        world.ctx.adapter = flaky
+        outcome = world.run()  # both skips tolerated under the raised bound
+        assert outcome.skipped_slices == 2
+        assert outcome.request_ids == ("req-0001-i0000",)
+
+    def test_retry_zero_disables_retries_but_the_sample_still_completes_via_skip(
+        self, tmp_path, monkeypatch
+    ):
+        world = _World(
+            tmp_path,
+            monkeypatch,
+            pcm=_noise(90.0),
+            texts=[_boundary_text("A.", 45), _boundary_text("B.", 10)],
+            values=_config_values(obs_slice_retry_max=0),
+        )
+        flaky = _FlakyAdapter(world.adapter, fail_calls={2})
+        world.ctx.adapter = flaky
+        outcome = world.run()
+        assert flaky.calls == 2  # i0000 ok, i0001 failed once, NO retry attempted
+        assert outcome.skipped_slices == 1
+        assert outcome.request_ids == ("req-0001-i0000",)
+
+    def test_retry_zero_disables_retries_and_a_sole_skip_still_refuses_empty_output(
+        self, tmp_path, monkeypatch
+    ):
+        """A sample whose ONLY slice fails is skipped (within the default
+        bound) but then still hits the PRE-EXISTING empty-hypothesis guard
+        -- skip degrades a sample that has OTHER surviving content, it does
+        not fabricate content where literally none survived at all."""
+
+        world = _World(
+            tmp_path,
+            monkeypatch,
+            pcm=_noise(30.0),
+            texts=[_boundary_text("A.", 10)],
+            values=_config_values(obs_slice_retry_max=0),
+        )
+        flaky = _FlakyAdapter(world.adapter, fail_calls={1})
+        world.ctx.adapter = flaky
+        with pytest.raises(ObsLoopError, match="no successful requests"):
+            world.run()
+        assert flaky.calls == 1
 
 
 class TestBudgetArithmeticSanity:

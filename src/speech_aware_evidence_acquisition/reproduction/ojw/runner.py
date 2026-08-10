@@ -99,6 +99,7 @@ def build_obs_workflow(state: ObsSampleState, adapter_request) -> Workflow:
             "response_sha256": "${asr.response_sha256}",
             "retry_of": "${asr.retry_of}",
             "saturated": "${asr.saturated}",
+            "skipped": "${asr.skipped}",
             "accepted": "${boundary.accepted}",
             "dropped": "${boundary.dropped}",
             "resolution": "${boundary.resolution}",

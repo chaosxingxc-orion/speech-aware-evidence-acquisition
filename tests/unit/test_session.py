@@ -1380,6 +1380,112 @@ class TestWaitUntilReady:
 
 
 # ---------------------------------------------------------------------------
+# Task 1 (2026-08-09 finding): llama-server's own stdout/stderr was captured
+# for the startup window only (``_capture_startup_stdout``), then the reader
+# thread that must keep draining it (so the pipe never fills and blocks the
+# server) simply discarded every later chunk -- hours of server output were
+# unrecoverable after exactly the kind of mid-run stall that killed two
+# arms. These probes exercise the persistence seam in isolation (no real
+# subprocess, OS-independent): every chunk the reader thread ever reads must
+# reach ``on_chunk``, in order, and a raising/broken ``on_chunk`` must never
+# stop the drain or the startup-window capture it does not otherwise affect.
+# ---------------------------------------------------------------------------
+
+
+class _FakeStdout:
+    """A minimal stand-in for ``Popen.stdout``: ``.read1(n)`` (the call
+    ``_capture_startup_stdout`` actually makes -- plain ``.read(n)`` on a
+    real BufferedReader blocks accumulating bytes until EOF, a 2026-08-09
+    finding this fake deliberately does NOT reproduce) hands out the given
+    chunks in order, then empty bytes forever (real-pipe EOF shape)."""
+
+    def __init__(self, chunks) -> None:
+        self._chunks = list(chunks)
+
+    def read1(self, _n: int) -> bytes:
+        if not self._chunks:
+            return b""
+        return self._chunks.pop(0)
+
+
+class _FakeProcess:
+    def __init__(self, chunks) -> None:
+        self.stdout = _FakeStdout(chunks)
+
+
+class TestCaptureStartupStdoutOnChunk:
+    def test_every_chunk_reaches_on_chunk_in_order(self):
+        from speech_aware_evidence_acquisition.core.session.lifecycle import (
+            _capture_startup_stdout,
+        )
+
+        process = _FakeProcess([b"a", b"b", b"c"])
+        seen: list[bytes] = []
+        result = _capture_startup_stdout(
+            process, max_bytes=65536, timeout_seconds=2.0, on_chunk=seen.append
+        )
+        assert result == b"abc"
+        assert seen == [b"a", b"b", b"c"]
+
+    def test_a_raising_on_chunk_never_breaks_collection(self):
+        from speech_aware_evidence_acquisition.core.session.lifecycle import (
+            _capture_startup_stdout,
+        )
+
+        process = _FakeProcess([b"a", b"b"])
+
+        def boom(_chunk: bytes) -> None:
+            raise RuntimeError("broken log writer")
+
+        result = _capture_startup_stdout(
+            process, max_bytes=65536, timeout_seconds=2.0, on_chunk=boom
+        )
+        assert result == b"ab"
+
+    def test_on_chunk_is_optional(self):
+        from speech_aware_evidence_acquisition.core.session.lifecycle import (
+            _capture_startup_stdout,
+        )
+
+        process = _FakeProcess([b"x"])
+        result = _capture_startup_stdout(process, max_bytes=65536, timeout_seconds=2.0)
+        assert result == b"x"
+
+
+class TestServerLogWriter:
+    def test_persists_every_write_immediately_flushed(self, tmp_path):
+        from speech_aware_evidence_acquisition.core.session.lifecycle import _ServerLogWriter
+
+        path = tmp_path / "logs" / "server.log"
+        writer = _ServerLogWriter(path)
+        writer.write(b"line one\n")
+        # unbuffered: visible on disk with no explicit flush/close needed --
+        # the whole point is reading it while the server is still wedged.
+        assert path.read_bytes() == b"line one\n"
+        writer.write(b"line two\n")
+        assert path.read_bytes() == b"line one\nline two\n"
+
+    def test_none_path_is_a_silent_no_op(self):
+        from speech_aware_evidence_acquisition.core.session.lifecycle import _ServerLogWriter
+
+        writer = _ServerLogWriter(None)
+        writer.write(b"never written anywhere")  # must not raise
+
+    def test_unwritable_path_disables_writes_without_raising(self, tmp_path):
+        """The log file cannot even be opened (its parent is a plain FILE, not
+        a directory -- mkdir/open both refuse); the drain this writer feeds
+        must never block or raise on that account (module docstring)."""
+
+        from speech_aware_evidence_acquisition.core.session.lifecycle import _ServerLogWriter
+
+        blocked = tmp_path / "blocked"
+        blocked.write_text("not a directory", encoding="utf-8")
+        writer = _ServerLogWriter(blocked / "server.log")
+        writer.write(b"first\n")
+        writer.write(b"second\n")  # repeated calls after the first failure are also safe
+
+
+# ---------------------------------------------------------------------------
 # start_session -- real spawn, POSIX-only, FAKE binary (never llama-server).
 # start_session itself is unchanged by this fix (it directly hash-verifies
 # then immediately Popen()s the exact same path -- no separate PID-identity
@@ -1458,6 +1564,9 @@ class TestStartSessionSpawn:
             assert "127.0.0.1" in receipt.argv
             assert receipt_path.is_file()
             assert read_session_receipt(receipt_path) == receipt
+            # no server_log_path was requested -- must default to None, not
+            # a fabricated path (Task 1, 2026-08-09).
+            assert receipt.server_log_path is None
             os.kill(receipt.pid, 0)  # the real subprocess is alive right now
         finally:
             try:
@@ -1500,3 +1609,101 @@ class TestStartSessionSpawn:
                 port=18082,
                 session_id="spawn-test-3",
             )
+
+    def test_spawn_persists_combined_stdout_after_the_startup_window(self, tmp_path):
+        """Task 1 (2026-08-09): the startup-window bytes AND everything the
+        server prints afterward (module docstring: the thread that must keep
+        draining the pipe so it never blocks the server) now both land, in
+        order, flushed as written, in ``server_log_path`` -- not merely the
+        startup window, and not merely thrown away once that window closes."""
+
+        runtime_root, data_root, runtime_receipt = self._fake_binary_world(tmp_path)
+        binary = runtime_root / "llama.cpp" / "build" / "bin" / "llama-server"
+        binary.write_text(
+            "#!/bin/sh\n"
+            "echo 'server listening on 127.0.0.1'\n"
+            "sleep 0.2\n"
+            "echo 'post-startup diagnostic line'\n"
+            "sleep 5\n",
+            encoding="utf-8",
+        )
+        binary.chmod(0o755)
+        runtime_receipt["llama_cpp"]["binary_sha256"] = _sha(binary.read_bytes())
+        receipt_path = tmp_path / "runs" / "session.json"
+        log_path = tmp_path / "runs" / "server.log"
+        receipt = start_session(
+            runtime_root=runtime_root,
+            data_root=data_root,
+            runtime_receipt=runtime_receipt,
+            host="127.0.0.1",
+            port=18083,
+            session_id="spawn-test-log",
+            receipt_path=receipt_path,
+            server_log_path=log_path,
+            # A tiny startup window that closes BEFORE the post-startup line
+            # is printed -- proving that line reaches the file only via the
+            # continued drain, not the startup-capture window itself.
+            startup_timeout_seconds=0.05,
+            http_get_status=lambda url, timeout: 200,
+        )
+        try:
+            assert receipt.server_log_path == str(log_path)
+            deadline = time.monotonic() + 5.0
+            content = b""
+            while time.monotonic() < deadline:
+                if log_path.is_file():
+                    content = log_path.read_bytes()
+                    if b"post-startup diagnostic line" in content:
+                        break
+                time.sleep(0.05)
+            assert b"server listening on 127.0.0.1" in content
+            assert b"post-startup diagnostic line" in content
+            assert content.index(b"server listening") < content.index(b"post-startup")
+        finally:
+            try:
+                os.kill(receipt.pid, 15)
+            except OSError:
+                pass
+            try:
+                os.waitpid(receipt.pid, 0)
+            except OSError:
+                pass
+
+    def test_spawn_survives_an_unwritable_server_log_path(self, tmp_path):
+        """The log path cannot be opened at all (its parent is a plain FILE);
+        the spawn must still succeed and the server must still become ready
+        -- losing the log is acceptable, stalling the experiment is not."""
+
+        runtime_root, data_root, runtime_receipt = self._fake_binary_world(tmp_path)
+        blocked = tmp_path / "blocked-parent"
+        blocked.write_text("not a directory", encoding="utf-8")
+        unwritable_log = blocked / "server.log"
+        receipt_path = tmp_path / "runs" / "session.json"
+        receipt = start_session(
+            runtime_root=runtime_root,
+            data_root=data_root,
+            runtime_receipt=runtime_receipt,
+            host="127.0.0.1",
+            port=18084,
+            session_id="spawn-test-badlog",
+            receipt_path=receipt_path,
+            server_log_path=unwritable_log,
+            startup_timeout_seconds=0.5,
+            http_get_status=lambda url, timeout: 200,
+        )
+        try:
+            # the declared path is still recorded even though nothing could
+            # ever be written there -- an operator checking it sees an
+            # honest absence, not a fabricated location.
+            assert receipt.server_log_path == str(unwritable_log)
+            assert not unwritable_log.exists()
+            os.kill(receipt.pid, 0)  # the spawn itself was never blocked
+        finally:
+            try:
+                os.kill(receipt.pid, 15)
+            except OSError:
+                pass
+            try:
+                os.waitpid(receipt.pid, 0)
+            except OSError:
+                pass

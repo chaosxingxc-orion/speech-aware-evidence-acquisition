@@ -29,6 +29,8 @@ def _assemble_run_cost(
     admitted_evidence_bytes: int,
     saturated_slice_count: int,
     saturated_sample_ids: list[str],
+    skipped_slice_count: int,
+    skipped_sample_ids: list[str],
 ) -> dict[str, object]:
     # Minor (fix-wave2, external-threat-model review round 2): gpu hours was
     # the only budget dimension with no derived counterpart, even though
@@ -114,6 +116,17 @@ def _assemble_run_cost(
             # missing data.
             "saturated_slice_count": saturated_slice_count,
             "saturated_sample_ids": saturated_sample_ids,
+            # Exhausted-slice skip aggregate (Task 2, 2026-08-09, continues
+            # the obs-loop E-001 retry finding): a straight sum/collection of
+            # what every SampleOutcome.skipped_slices already reported during
+            # the request loop above -- the SAME "genuinely measured whenever
+            # a RunResult exists, never best-effort" discipline as the
+            # saturation pair immediately above. This is deliberately what
+            # makes a skipped-slice run impossible to mistake for a clean one
+            # (module comment above SLICE_RETRYABLE_EXCEPTIONS): the count
+            # belongs in the manifest, not only in a trace.
+            "skipped_slice_count": skipped_slice_count,
+            "skipped_sample_ids": skipped_sample_ids,
             # Every field above this line is genuinely measured whenever this
             # function returns a RunResult at all (I8: nothing here is a
             # silent omission) -- unlike gpu_seconds/peak_vram_mib, which

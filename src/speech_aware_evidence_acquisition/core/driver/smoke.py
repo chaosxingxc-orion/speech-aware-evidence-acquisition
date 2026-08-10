@@ -255,6 +255,14 @@ def _cli_smoke(args: argparse.Namespace) -> int:
         json.dumps(asdict(plan), indent=2, sort_keys=True), encoding="utf-8", newline="\n"
     )
     session_receipt_path = attempt_run_dir / f"{plan.run_id}.session-receipt.json"
+    # Task 1 (2026-08-09 finding): llama-server's own stdout/stderr used to
+    # be captured for the startup window only, then thrown away -- hours of
+    # server output were unrecoverable after exactly the kind of mid-run
+    # stall that killed two arms. A real (non-dry-run) attempt now gets a
+    # persisted log automatically, next to this attempt's other artifacts --
+    # no operator flag, so it can never be forgotten the way the smoke
+    # launcher itself once was (scripts/run_arm_sequence.sh's own history).
+    server_log_path = attempt_run_dir / f"{plan.run_id}.server.log"
 
     if args.dry_run:
         gate: object = _NoOpGate()
@@ -292,6 +300,7 @@ def _cli_smoke(args: argparse.Namespace) -> int:
             session_id=f"{plan.run_id}-{attempt_id}",
             extra_argv=_server_args(composed.values),
             receipt_path=session_receipt_path,
+            server_log_path=server_log_path,
         )
         transport_factory = TRANSPORTS.resolve(str(composed.values["transport"]))
         transport = transport_factory(
@@ -318,6 +327,9 @@ def _cli_smoke(args: argparse.Namespace) -> int:
                 "dry_run": bool(args.dry_run),
                 "plan": str(result.plan_path),
                 "session_receipt": str(result.session_receipt_path),
+                # None under --dry-run: no real server was ever spawned, so
+                # no server log exists (Task 1, 2026-08-09).
+                "server_log": None if args.dry_run else str(server_log_path),
                 "manifest": str(result.manifest_path),
                 "scores": str(result.finalize.scores_path),
                 "ledger_markdown": str(result.finalize.ledger_markdown_path),

@@ -1111,6 +1111,85 @@ def test_run_experiment_aggregates_saturated_slices_across_samples(
 
 
 # ---------------------------------------------------------------------------
+# Exhausted-slice skip, aggregated per run (Task 2, 2026-08-09, continues the
+# obs-loop E-001 retry finding): a real end-to-end run_experiment call through
+# the obs-agent-loop policy over all 3 discovery samples, with a fake
+# transport that times out (retryable) BOTH attempts of one sample's FIRST
+# slice -- proving the sequential per-sample loop in core.driver.run.
+# run_experiment sums SampleOutcome.skipped_slices and collects sample ids
+# correctly (mirrors test_run_experiment_aggregates_saturated_slices_across_
+# samples immediately above, exactly the pattern the skip aggregate copies).
+# ---------------------------------------------------------------------------
+
+
+def test_run_experiment_aggregates_skipped_slices_across_samples(
+    synthetic_world, tmp_path, monkeypatch
+):
+    lock, repo_root = _frozen_world(synthetic_world, tmp_path)
+    ids, split_hash, _ = load_split(repo_root, "discovery", lock, synthetic_world.data_root)
+    assert ids == {"4000001", "4000002", "4000003"}
+
+    # 40s of fake PCM per sample, TWO 20s iterations each (not one -- an
+    # exhausted lone iteration would hit the pre-existing empty-hypothesis
+    # guard instead of completing the sample, which is not what this test is
+    # proving) -- well inside the loader-fact 100.5s parent duration
+    # tolerance; the monkeypatch only replaces the DECODE step, never the
+    # real on-disk parent bytes the slice's own parent_sha256 chains to.
+    pcm = _array("h", [1000] * (40 * 16000))
+    monkeypatch.setattr(_obs_loop, "decode_parent_pcm", lambda path, rate=16000: pcm)
+
+    # Only sample 4000001's FIRST slice ever times out -- both its original
+    # attempt AND its retry -- exhausting obs_slice_retry_max=1 (the
+    # from_values default) and skipping it; every other request across all
+    # 3 samples succeeds normally.
+    def _transport(request_bytes):
+        payload = json.loads(request_bytes.decode("utf-8"))
+        if payload["sample_id"] == "4000001" and payload["request_id"] in (
+            "req-0001-i0000",
+            "req-0001-i0000-r1",
+        ):
+            raise TimeoutError("simulated slice stall")
+        return json.dumps({"text": "hello", "usage": {}}).encode()
+
+    composed = _composed(
+        policy="obs-agent-loop",
+        decoding_params={"temperature": 0, "seed": 20260803},
+        **_saturation_config(
+            obs_buffer_seconds=20,
+            obs_min_advance_seconds=20,
+            obs_max_advance_seconds=20,
+            obs_fallback_advance_seconds=20,
+        ),
+    )
+    plan = _plan(
+        split_hash,
+        protocol_hash=protocol_hash(composed.config_hash, composed.values["arm"], split_hash),
+    )
+    result = run_experiment(
+        composed=composed,
+        plan=plan,
+        gate=_OpenGate(),
+        lock=lock,
+        root=synthetic_world.data_root,
+        run_dir=tmp_path / "run-skip",
+        transport=_transport,
+        repo_root=repo_root,
+    )
+    assert result.cost["skipped_slice_count"] == 1
+    assert result.cost["skipped_sample_ids"] == ["4000001"]
+    # key-shape parity with the saturation pair -- both aggregates ride the
+    # SAME cost block every run produces, never one without the other.
+    assert result.cost["saturated_slice_count"] == 0
+    assert result.cost["saturated_sample_ids"] == []
+    # the skipped sample still completed and produced a real (non-empty)
+    # output row -- the SURVIVING slice's content, not an abort.
+    lines = result.outputs_path.read_text(encoding="utf-8").splitlines()
+    rows = {json.loads(line)["sample_id"]: json.loads(line) for line in lines}
+    assert set(rows) == {"4000001", "4000002", "4000003"}
+    assert rows["4000001"]["text"]
+
+
+# ---------------------------------------------------------------------------
 # Sample-batched dispatch (owner directive 2026-08-08): obs_batch_samples > 1
 # routes through a batch-capable policy's run_samples with per-sample
 # TraceBuffers; outputs rows and trace blocks land in split-id order, byte-

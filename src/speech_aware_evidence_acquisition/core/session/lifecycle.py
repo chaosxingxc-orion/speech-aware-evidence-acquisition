@@ -116,15 +116,77 @@ def _model_file_argv(data_root: Path, model_files: tuple[ModelFileRef, ...]) -> 
     return argv
 
 
+class _ServerLogWriter:
+    """Best-effort persistent server-log writer (Task 1, 2026-08-09 finding:
+    llama-server's own combined stdout/stderr was captured for the startup
+    window only, then thrown away -- hours of server output were
+    unrecoverable after exactly the kind of mid-run stall that killed two
+    arms). Opened once, unbuffered (``buffering=0``) so every write reaches
+    disk immediately -- the whole point is an operator being able to read
+    the file WHILE the server is wedged, not after the process eventually
+    exits.
+
+    Fail-open, always: a path that cannot even be opened (missing/unwritable
+    parent, wrong permissions, ...) leaves this writer silently inert for
+    its whole life -- ``write`` is then a no-op, never a raise. A write that
+    fails after a successful open (disk full, path removed out from under
+    it, ...) disables further attempts the same way. Either failure loses
+    the log; neither is allowed to touch the reader thread that keeps the
+    child's stdout pipe draining (module docstring above
+    ``_capture_startup_stdout``) -- losing the log is acceptable, stalling
+    the experiment is not.
+    """
+
+    def __init__(self, path: "Path | None") -> None:
+        self._handle = None
+        if path is None:
+            return
+        try:
+            Path(path).parent.mkdir(parents=True, exist_ok=True)
+            self._handle = Path(path).open("ab", buffering=0)
+        except OSError:
+            self._handle = None
+
+    def write(self, chunk: bytes) -> None:
+        if self._handle is None:
+            return
+        try:
+            self._handle.write(chunk)
+        except OSError:
+            self._handle = None  # stop trying after the first failure
+
+
 def _capture_startup_stdout(
-    process: "subprocess.Popen[bytes]", *, max_bytes: int, timeout_seconds: float
+    process: "subprocess.Popen[bytes]",
+    *,
+    max_bytes: int,
+    timeout_seconds: float,
+    on_chunk: Callable[[bytes], None] | None = None,
 ) -> bytes:
     """Read up to ``max_bytes`` of the child's stdout, for up to
     ``timeout_seconds`` total -- WITHOUT waiting for the child to exit (a
     resident server never does). A background daemon thread does the actual
-    blocking read; the caller only ever waits its own bounded budget."""
+    blocking read; the caller only ever waits its own bounded budget.
+
+    ``on_chunk`` (Task 1, 2026-08-09 finding): called, best-effort, with
+    EVERY raw chunk the reader thread ever reads from the child's combined
+    stdout/stderr -- both the chunks THIS function's own startup window
+    collects below (so the startup bytes reach it too, in order, not just
+    the bytes read after this function returns) and every later chunk the
+    SAME thread keeps reading for the rest of the process's life (preserved
+    from before this change: that continued reading is what stops the pipe
+    filling and blocking the server). A raising/broken ``on_chunk`` is
+    swallowed here and never stops the drain -- ``_ServerLogWriter`` above
+    already fails open on its own; this is defense in depth for whatever
+    else a caller might pass. Once this function's own collection window
+    ends nothing reads the internal queue again, so the reader stops
+    enqueuing into it (it keeps calling ``on_chunk`` regardless) -- an
+    hours-long session would otherwise grow that queue unboundedly in
+    memory for bytes nobody was ever going to consume.
+    """
 
     chunks: "queue.Queue[bytes]" = queue.Queue()
+    stop_enqueue = threading.Event()
 
     def _reader() -> None:
         stream = process.stdout
@@ -133,13 +195,30 @@ def _capture_startup_stdout(
             return
         try:
             while True:
-                chunk = stream.read(4096)
+                # read1, NOT read: a plain BufferedReader.read(n) on a
+                # non-interactive stream (a subprocess pipe always is one)
+                # blocks accumulating raw reads until it has n bytes OR the
+                # child exits (io module docs) -- observed empirically
+                # (2026-08-09) as a multi-second stall before ANY bytes
+                # reached on_chunk, defeating the entire "flushed as
+                # written, readable while the server is wedged" point of
+                # the persisted log. read1 makes at most ONE underlying
+                # syscall and returns whatever is available right now.
+                chunk = stream.read1(4096)
                 if not chunk:
-                    chunks.put(b"")
+                    if not stop_enqueue.is_set():
+                        chunks.put(b"")
                     return
-                chunks.put(chunk)
+                if on_chunk is not None:
+                    try:
+                        on_chunk(chunk)
+                    except Exception:
+                        pass
+                if not stop_enqueue.is_set():
+                    chunks.put(chunk)
         except (OSError, ValueError):
-            chunks.put(b"")
+            if not stop_enqueue.is_set():
+                chunks.put(b"")
 
     threading.Thread(target=_reader, daemon=True).start()
     collected = bytearray()
@@ -155,6 +234,7 @@ def _capture_startup_stdout(
         if not chunk:
             break
         collected.extend(chunk)
+    stop_enqueue.set()
     return bytes(collected[:max_bytes])
 
 
@@ -175,6 +255,7 @@ def start_session(
     ready_timeout_seconds: float = DEFAULT_READY_TIMEOUT_SECONDS,
     ready_poll_interval_seconds: float = DEFAULT_READY_POLL_INTERVAL_SECONDS,
     http_get_status: Callable[[str, float], int] | None = None,
+    server_log_path: Path | None = None,
 ) -> SessionReceipt:
     """Spawn the runtime-receipt-pinned llama.cpp binary and return the
     :class:`SessionReceipt` that binds this run to the EXACT process it
@@ -187,6 +268,16 @@ def start_session(
     silently executed. This is the one place besides the gate itself that
     re-hashes real bytes (the binary only -- a ~18 KB stub -- never the
     multi-GB GGUF files, whose re-hash the gate already performed).
+
+    ``server_log_path`` (Task 1, 2026-08-09 finding): optional; when given,
+    the spawned process's combined stdout/stderr is persisted there for its
+    whole life (startup bytes included, in order, flushed as written --
+    ``_ServerLogWriter``/``_capture_startup_stdout``'s ``on_chunk``), so an
+    operator can read the server's own output while a hung request has it
+    wedged, rather than discovering only that llama-server's log was never
+    kept. A log that cannot be opened/written never blocks the spawn or the
+    pipe-draining thread that keeps the server itself unblocked -- it is
+    simply lost (module docstring at ``_ServerLogWriter``).
     """
 
     require_loopback(f"http://{_bracketed(host)}:{port}")
@@ -207,8 +298,12 @@ def start_session(
 
     started_wall = now()
     process = popen(argv, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, cwd=str(binary.parent))
+    log_writer = _ServerLogWriter(Path(server_log_path) if server_log_path is not None else None)
     stdout_bytes = _capture_startup_stdout(
-        process, max_bytes=startup_max_bytes, timeout_seconds=startup_timeout_seconds
+        process,
+        max_bytes=startup_max_bytes,
+        timeout_seconds=startup_timeout_seconds,
+        on_chunk=log_writer.write,
     )
     if ready_timeout_seconds > 0:
         _wait_until_ready(
@@ -232,6 +327,11 @@ def start_session(
         model_files=model_files,
         started_at=_iso(started_wall),
         startup_stdout_sha256=hashlib.sha256(stdout_bytes).hexdigest(),
+        # Recorded regardless of whether the writer actually managed to open
+        # the file (module docstring at _ServerLogWriter): the DECLARED
+        # location, so an operator who finds it missing learns that the log
+        # write failed, rather than finding no path recorded at all.
+        server_log_path=str(server_log_path) if server_log_path is not None else None,
     ).validate()
     if receipt_path is not None:
         write_session_receipt(receipt_path, receipt)

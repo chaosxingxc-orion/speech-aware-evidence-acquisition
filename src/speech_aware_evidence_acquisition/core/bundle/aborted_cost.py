@@ -86,6 +86,11 @@ def _best_effort_cost_for_aborted_attempt(
         # reason as latency_seconds_total/prompt_tokens_total above.
         "saturated_slice_count": NOT_AVAILABLE,
         "saturated_sample_ids": NOT_AVAILABLE,
+        # Key-shape parity, same reasoning, for the skipped-slice bookkeeping
+        # (Task 2, 2026-08-09): also lives entirely in-memory in the request
+        # loop, genuinely NOT_AVAILABLE for an attempt that never got there.
+        "skipped_slice_count": NOT_AVAILABLE,
+        "skipped_sample_ids": NOT_AVAILABLE,
         # M-3: key-shape parity with the COMPLETED cost dict (which carries
         # this whenever a FrozenCoreAdapter was genuinely constructed). An
         # attempt that ended ABORTED before that ever happened (or before the

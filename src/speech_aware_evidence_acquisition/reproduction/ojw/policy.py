@@ -193,10 +193,21 @@ def _finalize_sample(ctx: SampleContext, state: ObsSampleState) -> SampleOutcome
             f"obs loop exceeded {state.max_iterations} iterations for sample "
             f"{sample.sample_id!r}; refusing a runaway loop"
         )
+    # Skip-bound-exceeded (Task 2, 2026-08-09): mirrors the runaway check
+    # immediately above -- AcceptAdvance flagged this the instant the bound
+    # was crossed (state.py's own comment for why the raise is deferred to
+    # here rather than happening inside the component's own invoke()); the
+    # SAME message-building function the plain policy calls, so the two
+    # executors can never diverge in wording for the same scenario.
+    if state.skip_exceeded:
+        raise ObsLoopError(
+            obs_loop._skip_bound_exceeded_message(sample.sample_id, state.skipped_slices, cfg)
+        )
     if not state.request_ids:
         raise ObsLoopError(
-            f"sample {sample.sample_id!r} produced no requests (entirely trimmed "
-            "as non-speech?); refusing to emit an empty hypothesis silently"
+            f"sample {sample.sample_id!r} produced no successful requests (entirely "
+            "trimmed as non-speech, or every slice skipped after exhausting retries?); "
+            "refusing to emit an empty hypothesis silently"
         )
 
     stitched = " ".join(span for span in state.accepted_spans if span)
@@ -273,6 +284,7 @@ def _finalize_sample(ctx: SampleContext, state: ObsSampleState) -> SampleOutcome
         response_sha256=response_sha256,
         response_text_sha256=response_text_sha256,
         saturated_slices=state.saturated_slices,
+        skipped_slices=state.skipped_slices,
     )
 
 

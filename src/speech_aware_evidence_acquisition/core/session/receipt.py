@@ -61,6 +61,17 @@ class SessionReceipt:
     model_files: tuple[ModelFileRef, ...]
     started_at: str
     startup_stdout_sha256: str
+    # Persisted server-log path (2026-08-09 finding: llama-server's own
+    # stdout/stderr was captured for the startup window only, then thrown
+    # away -- hours of server output were unrecoverable after a mid-run
+    # stall). Optional/defaulted: a dry-run smoke receipt and every
+    # pre-existing hand-built receipt in this module's own test suite spawn
+    # no real process at all, so None is a legitimate "no log for this
+    # session" answer, not a missing field. Set only by start_session, from
+    # exactly the path (if any) its caller asked the spawned process's
+    # combined stdout/stderr to be persisted to -- never independently
+    # re-derived here.
+    server_log_path: str | None = None
 
     def validate(self) -> "SessionReceipt":
         if self.schema != SESSION_RECEIPT_SCHEMA:
@@ -107,6 +118,10 @@ class SessionReceipt:
             or _SHA256.fullmatch(self.startup_stdout_sha256) is None
         ):
             raise SessionError("session startup_stdout_sha256 must be a 64-hex sha256")
+        if self.server_log_path is not None and (
+            not isinstance(self.server_log_path, str) or not self.server_log_path.strip()
+        ):
+            raise SessionError("session server_log_path must be a non-empty string or None")
         return self
 
     def as_json(self) -> dict[str, object]:
@@ -123,6 +138,7 @@ class SessionReceipt:
             "model_files": [{"path": f.path, "sha256": f.sha256} for f in self.model_files],
             "started_at": self.started_at,
             "startup_stdout_sha256": self.startup_stdout_sha256,
+            "server_log_path": self.server_log_path,
         }
 
     @staticmethod
@@ -132,6 +148,7 @@ class SessionReceipt:
         required = {
             "schema", "study", "session_id", "binary_path", "binary_sha256", "argv",
             "pid", "host", "port", "model_files", "started_at", "startup_stdout_sha256",
+            "server_log_path",
         }
         if set(document) != required:
             raise SessionError(
@@ -163,6 +180,7 @@ class SessionReceipt:
             model_files=tuple(refs),
             started_at=document["started_at"],
             startup_stdout_sha256=document["startup_stdout_sha256"],
+            server_log_path=document["server_log_path"],
         ).validate()
 
 

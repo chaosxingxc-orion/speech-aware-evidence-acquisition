@@ -19,14 +19,21 @@ policy's ``while`` head and top-of-iteration trim branch decide
    crossed counter first thing, flags ``runaway`` and exits the loop, and
    the policy raises the same ``ObsLoopError`` after the workflow returns
    (identical trace prefix, identical number of model calls);
-2. trim consumption — the plain loop handles one long-non-speech span per
+2. skip-bound guard (Task 2, 2026-08-09) — the plain policy raises the
+   instant a skipped slice crosses ``obs_slice_skip_max``; here
+   ``AcceptAdvance`` flags ``skip_exceeded`` at that same instant and the
+   NEXT round's condition sees it first thing (right after the runaway
+   check), so no further request is ever sent either way -- the policy
+   raises the identically-worded ``ObsLoopError`` after the workflow
+   returns (``obs_loop._skip_bound_exceeded_message``);
+3. trim consumption — the plain loop handles one long-non-speech span per
    ``while`` round via ``continue``; consecutive rounds without a model
    call collapse here into one condition evaluation that consumes every
    applicable span in sequence, emitting byte-identical OBS trim records
    (same ``-trim{n:04d}`` ids, same fields, same order — a trim round
    never touched anything but the cursor and the trace);
-3. exhaustion — ``cursor < duration - epsilon``, the plain ``while`` head;
-4. the degenerate zero-length window — the plain loop ``break``s when the
+4. exhaustion — ``cursor < duration - epsilon``, the plain ``while`` head;
+5. the degenerate zero-length window — the plain loop ``break``s when the
    rounded frame window collapses (``end_frame <= start_frame``); the same
    arithmetic decides here before a body round is ever scheduled.
 """
@@ -87,6 +94,23 @@ class ObsSampleState:
     # counter above -- read back by policy._finalize_sample into the
     # outputs-row SampleOutcome.saturated_slices.
     saturated_slices: int = 0
+    # Exhausted-slice skip (Task 2, 2026-08-09, continues the obs_loop
+    # E-001 retry finding; module comment above obs_loop.
+    # SLICE_RETRYABLE_EXCEPTIONS): single writer AcceptAdvance, same
+    # discipline as saturated_slices above -- read back by policy.
+    # _finalize_sample into the outputs-row SampleOutcome.skipped_slices.
+    skipped_slices: int = 0
+    # Skip-bound-exceeded (Task 2): mirrors `runaway` exactly -- AcceptAdvance
+    # sets this the instant skipped_slices crosses cfg.slice_skip_max rather
+    # than raising directly (a component's invoke() failure is wrapped by
+    # the framework into its own error type, which would make the two
+    # executors diverge on exactly the exception this bound exists to raise
+    # identically -- see policy._finalize_sample, which raises the real
+    # ObsLoopError, built by obs_loop._skip_bound_exceeded_message, the SAME
+    # function the plain policy calls). should_continue sees the flag on its
+    # very next evaluation and stops the loop before any further request is
+    # sent -- identical in effect to the plain policy's immediate raise.
+    skip_exceeded: bool = False
 
     def should_continue(self) -> bool:
         """The framework loop's ``FuncCondition`` callable (module docstring
@@ -94,6 +118,8 @@ class ObsSampleState:
 
         if self.iteration > self.max_iterations:
             self.runaway = True
+            return False
+        if self.skip_exceeded:
             return False
         while self.cursor < self.duration - _EPSILON_SECONDS:
             trimmed = ObsAgentLoopPolicy._next_trim(

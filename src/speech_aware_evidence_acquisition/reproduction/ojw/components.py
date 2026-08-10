@@ -246,15 +246,16 @@ class FrozenCoreASR(WorkflowComponent):
         max_tokens = decoding_params.get("max_tokens") if isinstance(decoding_params, dict) else None
         # Bounded per-slice retry: the SAME shared helper the plain policy
         # calls (obs_loop.request_slice_with_retry), so the two executors can
-        # never diverge in retry OR saturation behaviour (live E-001 finding
-        # 2026-08-08, continued 2026-08-09). The blocking adapter call hops
-        # to a worker thread (owner batching directive 2026-08-08): under
-        # sample-level concurrency the event loop must stay free while this
-        # sample's HTTP request blocks, or N "concurrent" samples would
-        # serialize on the loop thread. to_thread copies the task's
-        # contextvars, so the adapter's trace emissions still route to THIS
-        # sample's buffer (core.tracing.DispatchingSink).
-        request_id, response, retry_of, saturated = await asyncio.to_thread(
+        # never diverge in retry, saturation OR exhausted-slice-skip
+        # behaviour (live E-001 finding 2026-08-08, continued 2026-08-09
+        # twice). The blocking adapter call hops to a worker thread (owner
+        # batching directive 2026-08-08): under sample-level concurrency the
+        # event loop must stay free while this sample's HTTP request blocks,
+        # or N "concurrent" samples would serialize on the loop thread.
+        # to_thread copies the task's contextvars, so the adapter's trace
+        # emissions still route to THIS sample's buffer (core.tracing.
+        # DispatchingSink).
+        request_id, response, retry_of, saturated, skipped = await asyncio.to_thread(
             request_slice_with_retry,
             self._adapter_request,
             _payload,
@@ -262,14 +263,21 @@ class FrozenCoreASR(WorkflowComponent):
             cfg.slice_retry_max,
             max_tokens,
         )
+        # Task 2 (2026-08-09): a skipped slice has no response at all -- the
+        # framework's own state-merge convention would DELETE a None-valued
+        # key (BoundaryResolve's own comment below), so this returns real,
+        # present values (empty text, no hashes) rather than None, and
+        # AcceptAdvance reads request_sha256/response_sha256 ONLY on the
+        # non-skipped path (never risks that deletion at all).
         return {
-            "text": response.text,
+            "text": response.text if response is not None else "",
             "usage": dict(getattr(response, "usage", None) or {}),
             "request_id": request_id,
-            "request_sha256": response.request_sha256,
-            "response_sha256": response.response_sha256,
+            "request_sha256": response.request_sha256 if response is not None else "",
+            "response_sha256": response.response_sha256 if response is not None else "",
             "retry_of": retry_of,
             "saturated": saturated,
+            "skipped": skipped,
         }
 
 
@@ -360,6 +368,8 @@ class AcceptAdvance(WorkflowComponent):
         # Never None (FrozenCoreASR always returns a real bool), so -- unlike
         # the None-able boundary/retry fields above -- required, not .get().
         saturated = inputs["saturated"]
+        # Task 2 (2026-08-09): also never None, same discipline as saturated.
+        skipped = inputs["skipped"]
         state.sink.emit(
             "OBS",
             f"{request_id}/obs",
@@ -392,6 +402,13 @@ class AcceptAdvance(WorkflowComponent):
                 # Per-slice decode-cap saturation, identical to the plain
                 # policy's record (obs_loop._slice_saturated).
                 "obs_saturated": saturated,
+                # Exhausted-slice skip, identical to the plain policy's
+                # record (module comment above obs_loop.
+                # SLICE_RETRYABLE_EXCEPTIONS) -- emitted for the
+                # bound-triggering skip too, before state.skip_exceeded ever
+                # stops the loop, so the audit trail is complete right up to
+                # the refusal.
+                "obs_skipped": skipped,
             },
         )
         span = accepted.strip()
@@ -399,11 +416,26 @@ class AcceptAdvance(WorkflowComponent):
         spans.append(span)
         session.update_global_state({ACCEPTED_SPANS_KEY: spans})
         state.accepted_spans.append(span)
-        state.request_ids.append(request_id)
         if saturated:
             state.saturated_slices += 1
-        state.iteration_request_sha256s.append(inputs["request_sha256"])
-        state.iteration_response_sha256s.append(inputs["response_sha256"])
+        # A skipped slice has no real response: nothing to hash into the
+        # stitch (module comment above obs_loop.SLICE_RETRYABLE_EXCEPTIONS)
+        # -- request_ids/the per-iteration sha lists stay in lockstep with
+        # the plain policy, covering only iterations that actually
+        # contributed content. skip_exceeded is set here, the instant the
+        # bound is crossed, but never raised here (state.py's own comment:
+        # a component's invoke() failure is wrapped by the framework into
+        # its own error type) -- should_continue sees the flag next and
+        # stops the loop, and policy._finalize_sample raises the real,
+        # identically-worded ObsLoopError once the workflow returns.
+        if skipped:
+            state.skipped_slices += 1
+            if state.skipped_slices > cfg.slice_skip_max:
+                state.skip_exceeded = True
+        else:
+            state.request_ids.append(request_id)
+            state.iteration_request_sha256s.append(inputs["request_sha256"])
+            state.iteration_response_sha256s.append(inputs["response_sha256"])
         state.cursor = float(slice_spec["start_seconds"]) + float(resolution["advance"])
         state.iteration += 1
         return {"accepted_spans_count": len(spans)}

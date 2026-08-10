@@ -357,6 +357,14 @@ def run_experiment(
         # supplied/admitted_evidence_bytes use above.
         saturated_slice_total = 0
         saturated_sample_ids: list[str] = []
+        # Exhausted-slice skip, aggregated per RUN (Task 2, 2026-08-09,
+        # continues the obs-loop E-001 retry finding): the SAME "sum
+        # whatever the outcome already reports" pattern as
+        # saturated_slice_total above -- SampleOutcome.skipped_slices is 0
+        # for every non-slicing policy (FixedPolicy), so this aggregate is
+        # exact and free of a policy-name branch.
+        skipped_slice_total = 0
+        skipped_sample_ids: list[str] = []
         def _sample_context(sample, evidence, request_id_base, ctx_sink):
             return SampleContext(
                 sample=sample,
@@ -420,6 +428,9 @@ def run_experiment(
                     if outcome.saturated_slices:
                         saturated_slice_total += outcome.saturated_slices
                         saturated_sample_ids.append(outcome.sample_id)
+                    if outcome.skipped_slices:
+                        skipped_slice_total += outcome.skipped_slices
+                        skipped_sample_ids.append(outcome.sample_id)
                     _write_row(outputs, request_id_base, sample, outcome)
             else:
                 # Batch path (owner directive 2026-08-08): each sample's
@@ -461,6 +472,9 @@ def run_experiment(
                     if outcome.saturated_slices:
                         saturated_slice_total += outcome.saturated_slices
                         saturated_sample_ids.append(outcome.sample_id)
+                    if outcome.skipped_slices:
+                        skipped_slice_total += outcome.skipped_slices
+                        skipped_sample_ids.append(outcome.sample_id)
                     _write_row(outputs, request_id_base, sample, outcome)
         manifest_hash = sink.close()
     finally:
@@ -483,6 +497,8 @@ def run_experiment(
         admitted_evidence_bytes=admitted_evidence_bytes,
         saturated_slice_count=saturated_slice_total,
         saturated_sample_ids=sorted(saturated_sample_ids),
+        skipped_slice_count=skipped_slice_total,
+        skipped_sample_ids=sorted(skipped_sample_ids),
     )
     return RunResult(
         run_id=plan.run_id,
