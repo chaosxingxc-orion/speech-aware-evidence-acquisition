@@ -1,0 +1,83 @@
+# SAEA-E-003 "B-2a bias-list probe" (docs/readiness/2026-08-09-conec-
+# evidence-shape.md "B-2a redesigned again"): does the FORM of a bias list
+# matter at equal content, not merely whether biasing content is present.
+#
+# Four arms over the SAME ten earnings21 discovery samples (split
+# r4-e21-sub10-sample, configs/dataset/r4-e21-sub10.json), all
+# obs-agent-loop-ojw so results stay comparable with SAEA-E-002 (R4), all
+# sharing ONE control arm (bare-core-ojw) so the three contrasts below are
+# measured against literally the same control numbers.
+#
+# Exploratory, n=10, not powered for a precise estimate. Each contrast reports
+# a paired exact Wilcoxon whose achievable two-sided p floor at n=10 is
+# 2/2**10 = 0.00195 -- reachable in principle at this n, but still read effect
+# sizes and direction alongside significance, not significance alone; ten
+# samples is a probe, not a confirmatory run.
+#
+# ---------------------------------------------------------------- contrast 1
+# unigram bag vs none (bias-conec-obsloop vs bare-core-ojw): the raw ConEC
+# context list, capped at 100 single-token entries (bias_list_max_entries),
+# extracted deterministically from the call's own ConEC context materials --
+# largely redundant with R4 "matched" (same source, same transform family),
+# kept here so it shares a control arm with the two contrasts below rather
+# than costing a second, separately-run dose point.
+# Hypothesis: a bag of call-relevant words reduces WER relative to no
+# context, replicating R4 "matched" at this dose.
+# A null result here (no gain over none) reproduces R4's own caveat: it is
+# equally consistent with "context does not help" as with "unigram form is
+# too fragmented to be useful" -- read together with contrast 2 below before
+# concluding either.
+#
+# ---------------------------------------------------------------- contrast 2
+# reconstructed phrases vs unigram bag (bias-phrases-ojw vs
+# bias-conec-obsloop): the SAME source tokens, re-assembled into adjacent-line
+# bigram phrase candidates (core.bias_lists.reconstruct_bias_phrases) instead
+# of single tokens, capped on an approximate WORD-COUNT budget
+# (bias_phrase_max_tokens=100) chosen to match the bag arm's own content
+# volume (100 single-token entries = 100 words) rather than its entry count --
+# see core.bias_lists.DEFAULT_BIAS_PHRASE_MAX_TOKENS for the exact arithmetic.
+# This is THE open question B-2a exists to answer: form, not source or dose.
+# Hypothesis: multi-word phrase candidates (e.g. "goldman sachs" instead of
+# "goldman" / "sachs" on separate lines) improve entity-class WER over the
+# fragmented unigram bag at equal content volume, because biasing toward
+# multi-word proper nouns is the harder case the unigram format handicaps.
+# INTERPRETATION LIMIT, measured 2026-08-10 on the real files before running:
+# the reconstruction emits every adjacent-line bigram, and its quality varies
+# strongly BY REGION within a file, because the ConEC list is a deduplicated
+# DOCUMENT-ORDER token sequence (every count field is 1 in every file checked --
+# 715/715, 811/811, 1057/1057 -- so it is not a frequency list at all). Roster
+# and headline regions reconstruct real entities: 4397829 opens "january bed
+# bath beyond mark tritton president ceo gustavo arnal cfo treasurer rafeh
+# masood john hartmann", where the adjacent pairs ARE the participants.
+# Boilerplate regions do not: 4330115 opens with webpage furniture ("investor
+# kit news release print rss feeds receive email alerts view contacts
+# printerfriendly version"), whose 50 bigrams contain about two plausible
+# units. The 100-word budget takes whichever region comes first in document
+# order, so the arms differ per sample in how entity-dense they are.
+# Therefore: a null on this contrast means FORM is not load-bearing **for a
+# list that mixes real multi-word entities with spurious adjacent pairs in an
+# unmeasured proportion**. It does NOT establish that a clean entity list would
+# fail. The clean-entity version of this question belongs to ladder rung L3
+# (docs/readiness/2026-08-09-positioning-and-ablation-ladder.md sec. 3b), where
+# the glossary is built from the system's own transcript and multi-word units
+# are directly observable rather than inferred from adjacency.
+#
+# ---------------------------------------------------------------- contrast 3
+# distractor-only vs none (bias-distractor-obsloop vs bare-core-ojw): the 769
+# Fortune-500/CEO names present in the shipped Earnings-21 distractor list but
+# ABSENT from the call's own content and from the reference-derived oracle
+# list (negative control; core.bias_lists.distractor_only_terms) -- proves any
+# WER change in contrasts 1-2 is not an artefact of merely supplying SOME
+# capitalized word list, regardless of relevance.
+# Hypothesis: no WER change relative to none (these names never appear in the
+# audio, so they cannot correct a transcription).
+# A null result here is the EXPECTED outcome and strengthens contrasts 1-2's
+# reading; a NON-null result here (WER moves) would mean something in the
+# pipeline reacts to bias-list PRESENCE regardless of relevance, and
+# contrasts 1-2 would need to be re-read with that confound in mind.
+#
+# run_id:baseline_fragment
+SAEA-E-003-b2a-none:bare-core-ojw
+SAEA-E-003-b2a-unigram-bag:bias-conec-obsloop
+SAEA-E-003-b2a-phrases:bias-phrases-ojw
+SAEA-E-003-b2a-distractor-only:bias-distractor-obsloop

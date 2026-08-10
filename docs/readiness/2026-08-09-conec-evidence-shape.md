@@ -6,7 +6,22 @@ the answer changes how R4's result must be read. Read-only inspection of all
 
 ## Finding
 
-They are **unigram word-frequency lists**, not prose documents:
+> **Correction (2026-08-10).** "Word-frequency list" is wrong. Every count
+> field is **1** in every file checked (4365024: 0 of 715 lines above 1;
+> 4366429: 0 of 811; 4385072: 0 of 272; 4397829: 0 of 1,057). These are
+> **deduplicated token sequences in document order**, and the trailing number
+> carries no information at all. Document order is genuinely preserved and
+> readable — 4397829 opens `january bed bath beyond mark tritton president ceo
+> gustavo arnal cfo treasurer rafeh masood john hartmann`, which is the
+> participant roster with function words stripped. That matters: adjacent
+> tokens often *are* the two halves of a real entity, so reconstruction from
+> adjacency is better founded than the original framing below suggested — but
+> only in roster and headline regions. Boilerplate regions (4330115 opens with
+> `investor kit news release print rss feeds receive email alerts view
+> contacts printerfriendly version`) yield almost nothing. See
+> `docs/arms/b2a-bias-lists.arms` for how this bounds the B-2a reading.
+
+They are **unigram word lists**, not prose documents:
 
 ```
 holleder 1 / parkway 1 / rochester 1 / new 1 / york 1 / contact 1 / kim 1 /

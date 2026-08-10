@@ -43,6 +43,18 @@ list`` sources, which wrap the result as ONE :class:`~.base.EvidenceItem`
 each, newline-joined under a header, capped by ``bias_list_max_entries``
 (config knob, default :data:`DEFAULT_BIAS_LIST_MAX_ENTRIES`).
 
+A third pure function, :func:`reconstruct_bias_phrases` (2026-08-10,
+``docs/readiness/2026-08-09-conec-evidence-shape.md`` "B-2a redesigned
+again"), answers the FORM question that finding raised: the real, materialized
+ConEC corpus is a unigram word list, so a multi-word entity such as
+``GOLDMAN SACHS`` arrives fragmented as ``goldman``/``sachs`` on separate
+lines. It re-assembles ADJACENT listline tokens (same document, same line
+order -- never a reference transcript) into bigram phrase candidates, capped
+by a WORD-COUNT budget rather than an entry count, so the phrase arm can be
+compared against the bag arm (:func:`extract_bias_candidates`) at matched
+content VOLUME rather than confounding form with dose. Feeds
+:mod:`core.evidence`'s ``conec-bias-phrases`` source.
+
 CLOSED GAP (2026-08-09, ``docs/readiness/2026-08-09-conec-evidence-shape.md``
 "Blocking gap"): a prior revision of this module noted that the D1
 evidence-identity gate assumed an evidence source's ``EvidenceItem.content``
@@ -76,6 +88,20 @@ from .base import EvidenceError
 from .evidence_derivation import TRANSFORMS
 
 DEFAULT_BIAS_LIST_MAX_ENTRIES = 100
+
+# 2026-08-10 (B-2a phrase-reconstruction arm, docs/readiness/2026-08-09-
+# conec-evidence-shape.md "B-2a redesigned again"): matched to the bag arm's
+# own DEFAULT_BIAS_LIST_MAX_ENTRIES (100) at its own content VOLUME, not its
+# entry count -- a bag entry is always exactly ONE listline token (no
+# internal whitespace), so 100 bag entries carry 100 words of content. A
+# reconstructed-phrase entry is a bigram (TWO adjacent source tokens, see
+# reconstruct_bias_phrases), so a 100-WORD budget caps out at 50 phrase
+# entries -- equal total word content to the bag arm at its default cap,
+# never double it. This is the crux of the B-2a "form, not dose" contrast:
+# capping the phrase arm at 100 ENTRIES instead would carry 2x the bag arm's
+# content and confound form with dose (R4/SAEA-E-002 already measures dose
+# separately).
+DEFAULT_BIAS_PHRASE_MAX_TOKENS = 100
 
 ORACLE_LIST_FILENAME = "oracle_list.txt"
 DISTRACTOR_LIST_FILENAME = "distractor_list.txt"
@@ -133,6 +159,28 @@ def resolve_bias_list_max_entries(values: Mapping[str, object] | None) -> int:
     if not isinstance(values, Mapping):
         raise EvidenceError(f"composed config values must be a mapping, got {type(values).__name__}")
     return _validate_max_entries(values.get("bias_list_max_entries", DEFAULT_BIAS_LIST_MAX_ENTRIES))
+
+
+def _validate_max_tokens(value: object) -> int:
+    if isinstance(value, bool) or not isinstance(value, int) or value < 1:
+        raise EvidenceError(f"bias_phrase_max_tokens must be a positive integer, got {value!r}")
+    return value
+
+
+def resolve_bias_phrase_max_tokens(values: Mapping[str, object] | None) -> int:
+    """Read ``bias_phrase_max_tokens`` from a run's composed config (the SAME
+    ``values`` mapping :func:`resolve_bias_list_max_entries` already reads),
+    defaulting to :data:`DEFAULT_BIAS_PHRASE_MAX_TOKENS` when absent or when
+    no config was supplied at all -- the identical fallback discipline, a
+    DIFFERENT knob (a word-count budget, not an entry count -- see
+    :data:`DEFAULT_BIAS_PHRASE_MAX_TOKENS` for why the two are not
+    interchangeable for this arm)."""
+
+    if values is None:
+        return DEFAULT_BIAS_PHRASE_MAX_TOKENS
+    if not isinstance(values, Mapping):
+        raise EvidenceError(f"composed config values must be a mapping, got {type(values).__name__}")
+    return _validate_max_tokens(values.get("bias_phrase_max_tokens", DEFAULT_BIAS_PHRASE_MAX_TOKENS))
 
 
 def extract_bias_candidates(
@@ -437,3 +485,133 @@ def distractor_only_content(source_text: str, params: Mapping[str, object]) -> s
 
 
 TRANSFORMS.register("distractor-only", "v1", distractor_only_content)
+
+
+# ---------------------------------------------------------------------------
+# Phrase reconstruction (2026-08-10, B-2a "form, not dose": docs/readiness/
+# 2026-08-09-conec-evidence-shape.md "B-2a redesigned again"). Leakage
+# boundary: this reads ONLY the ConEC context text already verified by D1
+# (the same source _conec_bias_list reads) and its OWN line order -- it never
+# opens oracle_list.txt/distractor_list.txt, so it needs no
+# _assert_no_oracle_overlap call at all (unlike distractor_only, which
+# legitimately reads the oracle list to compute a set difference, this
+# function structurally cannot reach oracle content -- the same reasoning
+# that already makes _conec_bias_list oracle-free, module docstring).
+# ---------------------------------------------------------------------------
+
+# Standalone (deliberately NOT reused from _TERM_PATTERN's `listline`
+# alternative, which is a lookahead embedded in a larger left-to-right scan
+# that also matches roster/span/ticker shapes at the SAME position): this
+# matches a WHOLE line that is exactly the real ConEC corpus's own shape --
+# one token, whitespace, a bare integer count, nothing else (module
+# docstring, "Verified against the real, materialized ConEC corpus"). Phrase
+# reconstruction needs each candidate LINE's own boundary to test adjacency
+# against its neighbour, not an entity scan across a whole document.
+_LISTLINE_ONLY = re.compile(r"[A-Za-z][A-Za-z0-9'-]{2,}[ \t]+\d+[ \t]*")
+
+
+def _listline_token_runs(text: str) -> list[list[str]]:
+    """The source's own tokens, split into maximal RUNS of consecutive lines
+    that are each individually shaped like a real ConEC listline. A line that
+    does NOT match that shape (roster prose, a blank line, junk) breaks the
+    run -- :func:`reconstruct_bias_phrases` below only ever joins two lines
+    that are BOTH confirmed listline shape, never bridges across a line of a
+    different shape. Order and duplicates from the source are both preserved
+    (adjacency, not a deduped candidate set, is what a phrase is built from);
+    on the real corpus (0 non-listline lines observed) this is one single run
+    per file, which is exactly the "preserves roster blocks, headline
+    phrases, contact blocks" document order the readiness note describes."""
+
+    runs: list[list[str]] = []
+    current: list[str] = []
+    for line in text.splitlines():
+        stripped = line.strip()
+        if _LISTLINE_ONLY.fullmatch(stripped) is None:
+            if current:
+                runs.append(current)
+                current = []
+            continue
+        current.append(stripped.split()[0])
+    if current:
+        runs.append(current)
+    return runs
+
+
+def reconstruct_bias_phrases(
+    text: str, max_tokens: int = DEFAULT_BIAS_PHRASE_MAX_TOKENS
+) -> list[str]:
+    """Deterministic multi-word phrase reconstruction from a ConEC-shaped
+    context file's OWN LINE ORDER (module docstring): every candidate is an
+    OVERLAPPING (stride-1) bigram of two lines directly adjacent in the
+    source, both individually confirmed listline shape
+    (:func:`_listline_token_runs`) -- "goldman" immediately followed by
+    "sachs" in the file yields "goldman sachs" regardless of which parity
+    offset the pair falls on (a stride-2/non-overlapping window would
+    silently miss half of all true adjacent pairs). Case-insensitive
+    de-duplication keeps first-seen casing/order (matching
+    :func:`extract_bias_candidates`'s own discipline), capped by a
+    WORD-COUNT budget (``max_tokens``, two words per bigram) rather than an
+    entry count -- see :data:`DEFAULT_BIAS_PHRASE_MAX_TOKENS` for why
+    entry-count capping would confound form with dose. A budget too small to
+    fit even one bigram (``max_tokens < 2``) legitimately yields an empty
+    list, exactly like :func:`extract_bias_candidates` on text with no
+    matching shape -- the caller (``core.evidence``'s ``conec-bias-phrases``
+    source) is what fails closed on an empty result, not this function. Same
+    purity guarantees as :func:`extract_bias_candidates`: no filesystem
+    access, no model, no network; same input -> byte-identical output."""
+
+    if not isinstance(text, str):
+        raise EvidenceError(f"phrase reconstruction requires text, got {type(text).__name__}")
+    _validate_max_tokens(max_tokens)
+    seen: set[str] = set()
+    candidates: list[str] = []
+    total_words = 0
+    for run in _listline_token_runs(text):
+        for index in range(len(run) - 1):
+            phrase = f"{run[index]} {run[index + 1]}"
+            key = phrase.casefold()
+            if key in seen:
+                continue
+            seen.add(key)
+            if total_words + 2 > max_tokens:
+                # Every remaining candidate is also a 2-word bigram and
+                # total_words never decreases, so the budget can never fit
+                # another one from here on -- stop scanning entirely rather
+                # than skip-and-continue through the rest of the source.
+                return candidates
+            candidates.append(phrase)
+            total_words += 2
+    return candidates
+
+
+def conec_bias_phrase_content(text: str, params: Mapping[str, object]) -> str:
+    """TRANSFORMS: ``conec-bias-phrases`` v1. The full ``EvidenceItem.content``
+    ``core.evidence._conec_bias_phrases`` returns for a given ConEC context
+    TEXT and ``{"max_tokens": N}`` -- deterministic
+    (:func:`reconstruct_bias_phrases` is a pure scan), never touches a
+    filesystem or a model. Same structure as :func:`conec_bias_list_content`
+    (module "CLOSED GAP" note): the evidence source and this registry-facing
+    transform call the SAME function, one implementation only."""
+
+    if not isinstance(params, Mapping):
+        raise EvidenceError(
+            f"conec-bias-phrases transform params must be a mapping, got {type(params).__name__}"
+        )
+    max_tokens = _validate_max_tokens(params.get("max_tokens"))
+    candidates = reconstruct_bias_phrases(text, max_tokens=max_tokens)
+    if not candidates:
+        raise EvidenceError(
+            "no phrase candidates could be reconstructed from the source text; "
+            "refusing to emit an empty phrase list"
+        )
+    header = (
+        f"ConEC-derived reconstructed phrase candidates for this call "
+        f"({len(candidates)} phrases, {2 * len(candidates)} of max {max_tokens} "
+        "words budget), assembled from adjacent lines of the call's own ConEC "
+        "context materials (document order preserved; no model, no reference "
+        "transcript):"
+    )
+    return format_bias_list_content(candidates, header)
+
+
+TRANSFORMS.register("conec-bias-phrases", "v1", conec_bias_phrase_content)

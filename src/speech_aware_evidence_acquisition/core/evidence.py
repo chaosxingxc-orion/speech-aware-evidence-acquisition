@@ -1,5 +1,5 @@
 """Evidence sources (the evidence seam): conec contexts, none, oracle refusal,
-the two B-2a bias-list sources, and the deterministic mismatch decorator
+the three B-2a bias-list sources, and the deterministic mismatch decorator
 applied by the driver on a config flag.
 
 R0 repair refactor stage 2 (part B): ``_conec_contexts`` used to hardcode the
@@ -25,27 +25,33 @@ entries``), mirroring the ``values``-consuming pattern
 ``core.instructions.resolve_task_instruction`` already established for
 task-instruction knobs; ``core.driver.run_experiment`` threads the SAME
 ``values`` it already holds into every evidence source call, so this is
-config plumbing only, no new registry, no new call site.
+config plumbing only, no new registry, no new call site. ``conec-bias-
+phrases`` (2026-08-10, below) reads a DIFFERENT knob the same way
+(``bias_phrase_max_tokens`` via ``core.bias_lists.resolve_bias_phrase_max_
+tokens``) -- config plumbing only, same discipline, no new mechanism.
 
 See ``core.bias_lists``' own module docstring for: why only the entity-
 extraction rule (not a raw-text passthrough) satisfies B-2a's leakage
 constraint and the real yield measured against the materialized ConEC
-corpus.
+corpus; and for ``conec-bias-phrases``, why the real ConEC corpus's unigram
+shape fragments multi-word entities and how phrase reconstruction undoes
+that at matched content volume, never entry count.
 
 Derivation-chain rail (2026-08-09, ``docs/readiness/2026-08-09-conec-
 evidence-shape.md`` "Blocking gap", now CLOSED): ``conec-contexts``,
-``conec-bias-list`` and ``distractor-only-bias-list`` each build a
-``core.base.DerivedEvidenceRecord`` alongside their ``EvidenceItem`` --
-``core.driver.run_experiment`` hands every one of them to
+``conec-bias-list``, ``conec-bias-phrases`` and ``distractor-only-bias-list``
+each build a ``core.base.DerivedEvidenceRecord`` alongside their
+``EvidenceItem`` -- ``core.driver.run_experiment`` hands every one of them to
 ``core.evidence_derivation.DerivedEvidenceRegistry`` before a run proceeds,
 so identity stays provable for TRANSFORMED evidence exactly the way
 ``core.model.slices.SliceRegistry`` already proves it for runtime-derived
 AUDIO. ``conec-contexts``'s record uses the ``identity`` transform (its
 content is unchanged, byte-identical to before this rail existed);
-``conec-bias-list``'s and ``distractor-only-bias-list``'s content is built by
-calling the SAME pinned, registered transform functions
-(``core.bias_lists.conec_bias_list_content``/``distractor_only_content``)
-the registry independently re-invokes to verify them.
+``conec-bias-list``'s, ``conec-bias-phrases``'s and ``distractor-only-bias-
+list``'s content is built by calling the SAME pinned, registered transform
+functions (``core.bias_lists.conec_bias_list_content``/
+``conec_bias_phrase_content``/``distractor_only_content``) the registry
+independently re-invokes to verify them.
 """
 
 from __future__ import annotations
@@ -60,13 +66,16 @@ from ..e0.artifacts import sha256_file
 from .base import EVIDENCE_SOURCES, DerivedEvidenceRecord, EvidenceError, EvidenceItem
 from .bias_lists import (
     conec_bias_list_content,
+    conec_bias_phrase_content,
     distractor_only_content,
     distractor_only_source_document,
     distractor_only_source_texts,
     distractor_only_terms,
     extract_bias_candidates,
     format_bias_list_content,
+    reconstruct_bias_phrases,
     resolve_bias_list_max_entries,
+    resolve_bias_phrase_max_tokens,
 )
 from .evidence_derivation import canonical_params_hash
 
@@ -258,6 +267,69 @@ def _conec_bias_list(
     return [item.validate()]
 
 
+def _conec_bias_phrases(
+    lock: Mapping[str, object],
+    root: Path,
+    sample_id: str,
+    carrier_lock_key: str,
+    values: Mapping[str, object] | None = None,
+) -> list[EvidenceItem]:
+    """B-2a arm 2b (2026-08-10, reconstructed multi-word phrase candidates,
+    ``docs/readiness/2026-08-09-conec-evidence-shape.md`` "B-2a redesigned
+    again"): the SAME ConEC context file ``_conec_bias_list`` reads (reused
+    here for the identical fail-closed behaviour on a carrier with no ConEC
+    evidence layer), reassembled by ``core.bias_lists.reconstruct_bias_
+    phrases`` into ADJACENT-LINE bigram phrase candidates instead of single
+    tokens -- the FORM contrast against ``conec-bias-list`` at matched
+    content VOLUME (``core.bias_lists.DEFAULT_BIAS_PHRASE_MAX_TOKENS``'s own
+    docstring has the budget-matching arithmetic). Never reads
+    ``bias_lists/oracle_list.txt`` -- structurally identical provenance to
+    ``conec-bias-list``, whose raw source read this function reuses
+    verbatim."""
+
+    raw_item = _conec_contexts(lock, root, sample_id, carrier_lock_key)[0]
+    max_tokens = resolve_bias_phrase_max_tokens(values)
+    candidates = reconstruct_bias_phrases(raw_item.content, max_tokens=max_tokens)
+    if not candidates:
+        raise EvidenceError(
+            f"no phrase candidates could be reconstructed from the conec "
+            f"context for sample {sample_id!r}; refusing to emit an empty "
+            "phrase list"
+        )
+    params: dict[str, object] = {"max_tokens": max_tokens}
+    # The SAME registered transform (core.evidence_derivation.TRANSFORMS)
+    # core.evidence_derivation.DerivedEvidenceRegistry will independently
+    # re-invoke to verify this item's derivation chain -- one implementation,
+    # never a second copy built inline here.
+    content = conec_bias_phrase_content(raw_item.content, params)
+    derived_sha256 = hashlib.sha256(content.encode("utf-8")).hexdigest()
+    source_record = raw_item.derivation
+    derivation = DerivedEvidenceRecord(
+        sample_id=sample_id,
+        source_relpath=source_record.source_relpath,
+        source_sha256=source_record.source_sha256,
+        transform_name="conec-bias-phrases",
+        transform_version="v1",
+        params_hash=canonical_params_hash(params),
+        derived_sha256=derived_sha256,
+        carrier_bound=True,
+    )
+    item = EvidenceItem(
+        evidence_id=f"conec-bias-phrases/{sample_id}",
+        source_uri=f"conec-bias-phrases://{raw_item.provenance['relpath']}",
+        content=content,
+        provenance={
+            **raw_item.provenance,
+            "extraction": "conec-bias-phrases-v1",
+            "candidate_count": len(candidates),
+            "max_tokens": max_tokens,
+        },
+        derivation=derivation,
+        derivation_source_bytes=raw_item.derivation_source_bytes,
+    )
+    return [item.validate()]
+
+
 def _distractor_only_bias_list(
     lock: Mapping[str, object],
     root: Path,
@@ -383,6 +455,8 @@ def resolve_declared_transform_params(
         return {}
     if transform_name in ("conec-bias-list", "distractor-only"):
         return {"max_entries": resolve_bias_list_max_entries(values)}
+    if transform_name == "conec-bias-phrases":
+        return {"max_tokens": resolve_bias_phrase_max_tokens(values)}
     raise EvidenceError(
         f"no declared-params resolver registered for transform {transform_name!r}"
     )
@@ -392,4 +466,5 @@ EVIDENCE_SOURCES.register("none", _none_source)
 EVIDENCE_SOURCES.register("conec-contexts", _conec_contexts)
 EVIDENCE_SOURCES.register("oracle", _oracle_refusal)
 EVIDENCE_SOURCES.register("conec-bias-list", _conec_bias_list)
+EVIDENCE_SOURCES.register("conec-bias-phrases", _conec_bias_phrases)
 EVIDENCE_SOURCES.register("distractor-only-bias-list", _distractor_only_bias_list)
