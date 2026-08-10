@@ -1,0 +1,28 @@
+# SAEA-BENCH-serving-q4km — pick the deployment configuration BEFORE running
+# any more science.
+#
+# Serving arguments live inside the config hash, so changing them after arms
+# have run invalidates those arms. That has already been paid for twice in this
+# study. One arm, one split, three model fragments; the launcher is invoked
+# once per fragment and the three attempts accumulate under this one run id,
+# distinguishable by their config hashes.
+#
+#   --model qwen3-omni-llamacpp-q4km    mmproj on GPU,  -np 4 -c 49152   (A)
+#   --model q4km-mmprojcpu              mmproj on CPU,  -np 4 -c 49152   (B)
+#   --model q4km-mmprojcpu-np8          mmproj on CPU,  -np 8 -c 98304   (C)
+#
+# What is already measured, so the prediction is falsifiable rather than a
+# preference: the audio encode is a FIXED 3.32 s per 60 s slice on GPU (n=622,
+# p10 3.17 / p90 3.46) against 6.79 s on CPU — 2.05x, +3.5 s per slice — and it
+# is 5% of a 64.4 s long-prompt request whose decode is 76%. On GPU that encode
+# occupies the device for 3.32 s x 4 slots per wave; on CPU it can in principle
+# overlap the GPU's decoding. So: if the overlap is real, B and C match or beat
+# A despite the 2x encode; if llama.cpp serialises encode and decode per slot,
+# B loses roughly 8%.
+#
+# Read wall clock AND the transcripts. Identical WER across the three is the
+# expected outcome; a divergence would mean serving configuration perturbs
+# numerics, which must be known before any arm's numbers are trusted.
+#
+# run_id:baseline_fragment
+SAEA-BENCH-serving-q4km:bare-core-ojw
