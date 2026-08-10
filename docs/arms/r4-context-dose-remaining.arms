@@ -1,0 +1,23 @@
+# SAEA-E-002 "R4 context-dose" — completing the set after two arms died.
+#
+# History: `nocontext` COMPLETED at study_commit 63d0f57 (614 calls, corpus WER
+# 26.61 %). `matched` ABORTED at 582 calls with three of four concurrent samples
+# unreturned at once. `mismatched` never started — the follow-up refused to
+# launch from a dirty tree.
+#
+# Order is deliberate. The two never-completed arms run FIRST so the paired
+# comparison becomes possible as early as possible; `nocontext` re-runs LAST so
+# the final set is commit-matched.
+#
+# On comparability with the already-completed nocontext attempt: the code has
+# moved (saturation flag, slice skip, server log). Those changes touch
+# observational fields and a retry-exhaustion path that arm never exercised, and
+# the model request bytes are unchanged, so with temperature 0 and a fixed seed
+# the transcripts should be identical. The re-run below TESTS that rather than
+# assuming it — if it does not reproduce 26.61 %, the earlier attempt is not
+# comparable and the analysis must use this one.
+#
+# run_id:baseline_fragment
+SAEA-E-002-r4-matched:fixed-legal-context-ojw
+SAEA-E-002-r4-mismatched:mismatched-evidence-ojw
+SAEA-E-002-r4-nocontext:bare-core-ojw
