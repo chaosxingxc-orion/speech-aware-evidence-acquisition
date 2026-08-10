@@ -1,0 +1,26 @@
+{
+  "carrier": "earnings21-original",
+  "design": "THE THREE SHORTEST of the FROZEN r4-e21-sub10-sample by measured audio duration (parent hash fa1d298208b1324d60a379ba06ec730c005e376369ddede114d29ae746134cc2); total audio 6035s across 3 samples versus 30,408s across 10. This selection is BIASED BY CONSTRUCTION toward short calls and exists only to make iteration cheap -- it is not seeded and it is not representative. Directional reads only; every comparative claim re-runs on r4-e21-sub10-sample.",
+  "items": [
+    {
+      "id": "4366522",
+      "key": "earnings21-original:4366522"
+    },
+    {
+      "id": "4387383",
+      "key": "earnings21-original:4387383"
+    },
+    {
+      "id": "4389907",
+      "key": "earnings21-original:4389907"
+    }
+  ],
+  "pool_size": 10,
+  "probe": "fast-iteration",
+  "seed": 20260807,
+  "split_identity_hash": "a87ebbfe0545610fae3eddc997cf61a3dd97e133a8f5c97d55e60d4ef45b5c4c",
+  "split_role": "discovery",
+  "strata_counts": {
+    "fast": 3
+  }
+}

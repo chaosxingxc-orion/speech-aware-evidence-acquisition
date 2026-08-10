@@ -1,0 +1,19 @@
+# SAEA-E-002 "R4 context-dose" on the FAST iteration split.
+#
+# Same three arms and the same experiment fragment as
+# docs/arms/r4-context-dose.arms, but on `fast-e21-sub3` (the three shortest of
+# the frozen ten): 122 slices instead of 614, about 21 minutes per arm instead
+# of 2.5 hours.
+#
+# **The fast split is biased by construction** — shortest-first, not seeded, so
+# it over-represents short calls. Everything run here is directional. The
+# monotonicity result this experiment exists to establish (mismatched ≥
+# nocontext ≥ matched) is re-run on `r4-e21-sub10` before it is claimed, and at
+# n=3 the exact-Wilcoxon two-sided p floor is 2/2**3 = 0.25, so per-sample
+# significance is unreachable here by construction — read corpus WER and the
+# direction of the per-sample deltas, nothing else.
+#
+# run_id:baseline_fragment
+SAEA-E-002F-r4-nocontext:bare-core-ojw
+SAEA-E-002F-r4-matched:fixed-legal-context-ojw
+SAEA-E-002F-r4-mismatched:mismatched-evidence-ojw

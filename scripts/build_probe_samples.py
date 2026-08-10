@@ -269,12 +269,84 @@ def build_wave1_e21_sub5() -> None:
     )
 
 
+# Measured per-sample decoded durations of the frozen 10 (2026-08-10, from the
+# completed SAEA-E-002 nocontext attempt's own obs-derivation records). Held
+# here as a literal so the fast split is reproducible without re-reading a run
+# bundle, and so the selection rule below is auditable.
+_R4_SUB10_SECONDS = {
+    "4366522": 1818.0,
+    "4389907": 2059.0,
+    "4387383": 2158.0,
+    "4330115": 2459.0,
+    "4365948": 2519.0,
+    "4385072": 2560.0,
+    "4366429": 4010.0,
+    "4384964": 4023.0,
+    "4365024": 4329.0,
+    "4397829": 4473.0,
+}
+
+
+def build_fast_e21_sub3() -> None:
+    """Fast-iteration split (owner directive 2026-08-10): the THREE SHORTEST of
+    the frozen r4-e21-sub10-sample, selected by measured audio duration.
+
+    Rationale and its cost. A full-10 arm is 614 slices, about 2.5 h; these
+    three are 122 slices, about 21 min -- 5x faster, and with thirteen arms
+    queued that is the difference between 32 h and 4.5 h of wall clock. Three
+    rather than two costs 8 extra minutes per arm and avoids a degenerate
+    paired n of 2, while still carrying ~100 minutes of audio (~15k reference
+    words) so corpus-level WER stays well estimated.
+
+    **This selection is deliberately BIASED** -- shortest-first, not seeded --
+    so it is for iteration and direction only. Any comparative claim re-runs on
+    the full r4-e21-sub10 split, whose per-sample pairing is what a claim needs.
+    The bias is recorded in the receipt's own design string so a reader of the
+    receipt cannot miss it.
+    """
+
+    parent_path = OUT_DIR / "r4-e21-sub10-sample.json"
+    parent = json.loads(parent_path.read_text(encoding="utf-8"))
+    pool = parent["items"]
+    chosen_ids = sorted(_R4_SUB10_SECONDS, key=lambda sid: _R4_SUB10_SECONDS[sid])[:3]
+    by_id = {item["id"]: item for item in pool}
+    missing = [sid for sid in chosen_ids if sid not in by_id]
+    if missing:
+        raise SystemExit(f"fast split ids absent from the parent receipt: {missing}")
+    # Keep the parent's own ordering rather than duration order, so the split's
+    # identity hash does not depend on the duration table.
+    sample = [item for item in pool if item["id"] in set(chosen_ids)]
+    total = sum(_R4_SUB10_SECONDS[sid] for sid in chosen_ids)
+    write_receipt(
+        "fast-e21-sub3-sample.json",
+        {
+            "probe": "fast-iteration",
+            "carrier": "earnings21-original",
+            "seed": SEED,
+            "design": (
+                "THE THREE SHORTEST of the FROZEN r4-e21-sub10-sample by measured audio "
+                f"duration (parent hash {parent['split_identity_hash']}); total audio "
+                f"{total:.0f}s across 3 samples versus 30,408s across 10. This selection is "
+                "BIASED BY CONSTRUCTION toward short calls and exists only to make iteration "
+                "cheap -- it is not seeded and it is not representative. Directional reads "
+                "only; every comparative claim re-runs on r4-e21-sub10-sample."
+            ),
+            "pool_size": len(pool),
+            "strata_counts": {"fast": len(sample)},
+            "items": sample,
+            "split_identity_hash": split_identity_hash([item["key"] for item in sample]),
+            "split_role": "discovery",
+        },
+    )
+
+
 def main() -> int:
     build_r1_audio2tool()
     build_r2_bba()
     build_r5_vab()
     build_r4_e21_sub10()
     build_wave1_e21_sub5()
+    build_fast_e21_sub3()
     return 0
 
 

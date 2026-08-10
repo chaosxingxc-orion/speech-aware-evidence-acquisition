@@ -91,16 +91,33 @@ elif ! command -v python > /dev/null; then
 fi
 
 gpu_is_clean () {
-  local used apps
-  used="$(nvidia-smi --query-gpu=memory.used --format=csv,noheader,nounits 2>/dev/null)"
-  apps="$(nvidia-smi --query-compute-apps=pid --format=csv,noheader 2>/dev/null | grep -c . || true)"
-  echo "    GPU used=${used} MiB compute-apps=${apps}"
+  # nvidia-smi is NOT usable as the authority here. Under WSL2 the GPU is
+  # reached through dxgkrnl paravirtualisation, VM workloads are not attributed
+  # in the memory query, and the query intermittently fails outright
+  # (`dxgk: dxgkio_query_adapter_info: Ioctl failed: -22`). Measured 2026-08-10:
+  # a llama-server with the model resident and answering /health reported
+  # "0 MiB" from nvidia-smi on both the WSL and the Windows side, minutes after
+  # the same process reported 23,312 MiB. A guard reading that would have
+  # declared a busy GPU clean and started an arm on top of a live server.
+  #
+  # The authoritative check is process-based, plus asking any server that might
+  # still be up whether it answers.
+  local n
+  n="$(pgrep -c -f llama-server 2>/dev/null)"; n="${n:-0}"
+  local port
+  for port in "$PORT" 8099; do
+    if curl -s -m 3 "http://127.0.0.1:${port}/health" 2>/dev/null | grep -q status; then
+      echo "    a server is still answering on port ${port}"
+      return 1
+    fi
+  done
+  echo "    llama-server processes: ${n}; nothing answering on ${PORT}/8099"
   # Standing rule (2026-08-09): no process that can open a CUDA context may run
-  # beside a live experiment, diagnostics included. One 715 MiB competing
-  # context degraded throughput 7.3x and did NOT recover when it exited,
-  # because -ngl 999 disables llama.cpp's device-memory fitting, so spilled
-  # allocations are never migrated back.
-  [ "${used:-999999}" -le 800 ] && [ "${apps:-1}" -eq 0 ]
+  # beside a live experiment, diagnostics included. One competing context
+  # degraded throughput 7.3x and did NOT recover when it exited, because
+  # -ngl 999 disables llama.cpp's device-memory fitting, so spilled allocations
+  # are never migrated back.
+  [ "$n" -eq 0 ]
 }
 
 run_arm () {
