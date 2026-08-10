@@ -46,6 +46,38 @@ one config hash, so the serving configuration **cannot** change between the arms
 of SAEA-E-002 regardless of which is faster. Any revisit happens at a clean
 experiment boundary, never inside one.
 
+## Open: decode is ~10× slower than this hardware should give (2026-08-10)
+
+The server log — persisted for the first time this run — shows the split
+between prefill and generation, and generation is the problem:
+
+```
+prompt eval time =  9964.35 ms /  4691 tokens   (470.78 tokens per second)
+       eval time = 61354.67 ms /   209 tokens   (  3.41 tokens per second)
+      total time = 71319.02 ms
+```
+
+Three consecutive requests give 3.41 / 3.07 / 4.40 tokens per second of
+generation per slot. Across the completed no-evidence arm the aggregate is
+114,345 completion tokens in 118 minutes ≈ **16 tokens per second total**, for a
+30B-A3B MoE (3B active) at Q4_K_M on a 5090. The prefill:decode ratio is about
+**138:1**, where 10–30:1 is normal — prefill is healthy, decode is not.
+
+This also settles a question the arm times raised: the evidence arm's 2.4×
+slower slices are **not** a prompt-cache miss. The cache is live
+(`cache state: 8 prompts, 2043.232 MiB`); evidence simply raises prefill from
+~1k to ~4.7k tokens, and prefill is the cheap half.
+
+Leading suspect is `-ctk q8_0 -ctv q8_0`: quantised KV must be dequantised on
+every decoded token, and it can push flash attention onto a slower path. Those
+flags exist to fit a 49,152-token context on a 24 GB card, so any change trades
+against the context sizing above and must be measured, not assumed.
+
+Worth doing properly, because a 2–5× decode speedup would compress every
+remaining arm in the study from hours to a fraction. Requires an idle GPU; do
+not touch it mid-sequence, and note that serving args are inside the config
+hash, so any change lands at a clean experiment boundary.
+
 ## Sizing rationale for the current values, for the record
 
 - `-c 49152` with `-np 4` gives **12,288 tokens per slot**. The worst request in
