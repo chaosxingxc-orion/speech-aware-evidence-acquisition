@@ -77,6 +77,53 @@ seconds disagree enough that alignment fails and content is dropped in the
 confusion. They imply different fixes, and the per-slice texts needed to
 separate them are already on disk.
 
+## A second, real mechanism: the advance outruns the transcript
+
+Raised by the owner as "premature truncation", and worth checking on its own
+terms because the trace shows it plainly. The worst slices look like this:
+
+```
+req-0002-i0025   60.0 s   13 words   24 tok   "...ty million dollars.  BOUNDARY_SECONDS: 43"
+req-0008-i0001   60.0 s   25 words   38 tok   "...ight back with you.  BOUNDARY_SECONDS: 44"
+```
+
+The model hears 60 s, emits a *complete, well-formed* sentence covering perhaps
+five seconds of it, and then declares a boundary at 43 s. The loop advances 43 s
+on that declaration. The audio between what was transcribed and the declared
+boundary is never transcribed and is never revisited — **the loop trusts the
+declared boundary without checking that the transcript reaches it.**
+
+Note this is not `max_tokens` truncation: those responses end on a finished
+sentence at 24–38 completion tokens, nowhere near the 1,024 cap, and exactly one
+slice in 614 reached the cap at all.
+
+Quantified — advance actually taken per slice against the span its own word
+count can cover at the corpus rate:
+
+| | |
+|---|---|
+| audio advanced past but never transcribed | **1,648 s** (5.4 % of all advance) |
+| words that implies at 2.54 w/s | 4,186 |
+| share of the 12,433 scored deletions | 33.7 % |
+| **per-sample correlation with deletions** | **−0.131** |
+
+So it is real and worth fixing, but it is **not** what makes one sample worse
+than another: the correlation is essentially zero and slightly negative, and the
+single worst offender (`4387383`, 672 s of overrun, 40 % of the total) has one
+of the *lowest* deletion counts in the set. Against the stitch measure's
+r = 0.847, the ranking is clear — overrun is a secondary mechanism concentrated
+in a few slices, the stitch is the systematic one. The two also overlap: some
+words are counted as lost by both.
+
+The fix is cheap and independent of the stitch work: clamp the advance to the
+span the transcript actually covers, and re-observe the remainder rather than
+skipping it.
+
+**Discarded diagnostic, recorded so it is not retried:** "does the response end
+mid-sentence" looked like a truncation signature and is worthless here — 98.9 %
+of *all* slices end mid-sentence because every response ends with the protocol's
+own `BOUNDARY_SECONDS: NN` line. It measures the protocol, not truncation.
+
 ## The left tail is real, and it is where enhancement belongs
 
 Per-slice yield (words per second of slice audio, reference 2.54):
@@ -100,7 +147,10 @@ rare, and now bounded at a cost of one truncated slice per arm.
 ## Consequences for the plan
 
 1. **The stitcher is now the highest-value single target in the study**, and it
-   is not currently an arm in the E-004 substrate ladder. Add one.
+   is not currently an arm in the E-004 substrate ladder. Add one. Add a second
+   for the advance-overrun clamp — cheaper, independent, and worth its own arm
+   precisely because the two mechanisms overlap and only separate arms can
+   apportion them.
 2. Evidence injection (W-B, the R4 contrast currently running) attacks
    substitutions, which are only 23 % of the error mass. Expect a small effect
    from the matched arm on aggregate WER **for this structural reason**, and do
