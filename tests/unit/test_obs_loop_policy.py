@@ -53,18 +53,28 @@ def _concat(*chunks: array) -> array:
 
 
 class _FakeResponse:
-    def __init__(self, text: str, tag: str) -> None:
+    def __init__(self, text: str, tag: str, usage: dict | None = None) -> None:
         self.text = text
         self.request_sha256 = hashlib.sha256(f"req-{tag}".encode()).hexdigest()
         self.response_sha256 = hashlib.sha256(f"resp-{tag}".encode()).hexdigest()
         self.response_text_sha256 = hashlib.sha256(text.encode("utf-8")).hexdigest()
+        # Mirrors core.model.CoreResponse.usage: a real response always
+        # carries a mapping (possibly empty), never None.
+        self.usage = usage if usage is not None else {}
 
 
 class _ScriptedAdapter:
-    """Returns the scripted texts in order and records every payload."""
+    """Returns the scripted texts in order and records every payload.
 
-    def __init__(self, texts: list[str]) -> None:
+    ``usages`` (optional, same length as ``texts``) lets a scenario pin each
+    response's ``usage`` mapping -- e.g. ``completion_tokens`` for the
+    saturation tests below; a response with no entry gets ``{}``, matching a
+    real transport's own "usage keys present but not this one" shape.
+    """
+
+    def __init__(self, texts: list[str], usages: list[dict | None] | None = None) -> None:
         self._texts = list(texts)
+        self._usages = list(usages) if usages is not None else [None] * len(texts)
         self.payloads: list[dict] = []
 
     def request(self, payload):
@@ -72,7 +82,8 @@ class _ScriptedAdapter:
         if not self._texts:
             raise AssertionError("policy sent more requests than the script expected")
         text = self._texts.pop(0)
-        return _FakeResponse(text, tag=str(len(self.payloads)))
+        usage = self._usages.pop(0) if self._usages else None
+        return _FakeResponse(text, tag=str(len(self.payloads)), usage=usage)
 
 
 class _FlakyAdapter:
@@ -115,7 +126,19 @@ def _config_values(**overrides):
 
 
 class _World:
-    def __init__(self, tmp_path: Path, monkeypatch, *, pcm: array, texts: list[str], values=None, evidence=None, arm="bare-core"):
+    def __init__(
+        self,
+        tmp_path: Path,
+        monkeypatch,
+        *,
+        pcm: array,
+        texts: list[str],
+        values=None,
+        evidence=None,
+        arm="bare-core",
+        usages=None,
+        decoding_params=None,
+    ):
         self.data_root = tmp_path / "data"
         self.run_dir = tmp_path / "run"
         self.repo_root = tmp_path / "repo"
@@ -135,7 +158,7 @@ class _World:
             run_id=RUN_ID,
             parent_facts={SAMPLE_ID: (PARENT_RELPATH, self.duration)},
         )
-        self.adapter = _ScriptedAdapter(texts)
+        self.adapter = _ScriptedAdapter(texts, usages=usages)
         self.sink = TraceSink(self.run_dir, RUN_ID)
         self.ctx = SampleContext(
             sample=SampleRef(
@@ -150,7 +173,7 @@ class _World:
             sink=self.sink,
             arm=arm,
             task_instruction="Transcribe the speech verbatim.",
-            decoding_params={"temperature": 0},
+            decoding_params=decoding_params if decoding_params is not None else {"temperature": 0},
             request_id_base="req-0001",
             extras={
                 "slice_registry": self.registry,
@@ -167,6 +190,18 @@ class _World:
 
 def _boundary_text(body: str, boundary: float) -> str:
     return f"TRANSCRIPT:\n{body}\nBOUNDARY_SECONDS: {boundary}"
+
+
+def _obs_payloads(world) -> dict[str, dict]:
+    """OBS trace records keyed by record_id -> payload (the pattern already
+    inlined repeatedly above, factored out for the saturation tests below)."""
+
+    raw = (world.run_dir / f"{RUN_ID}.trace.jsonl").read_text(encoding="utf-8")
+    return {
+        document["record_id"]: document["payload"]
+        for document in (json.loads(line) for line in raw.splitlines() if line)
+        if document["record_id"].endswith("/obs")
+    }
 
 
 def test_policy_is_registered():
@@ -583,7 +618,7 @@ class TestSliceRetry:
                 raise result
             return result
 
-        rid, response, retry_of = request_slice_with_retry(
+        rid, response, retry_of, saturated = request_slice_with_retry(
             flaky_request, build, "req-0001-i0007", 1
         )
         assert (rid, response, retry_of) == (
@@ -591,6 +626,9 @@ class TestSliceRetry:
             "ok",
             "req-0001-i0007",
         )
+        # "ok" (a plain string) has no .usage attribute at all -- the missing
+        # block must never crash, and never be flagged saturated.
+        assert saturated is False
         assert built == ["req-0001-i0007", "req-0001-i0007-r1"]
 
         # a foreign error (a bug, not a transport/core failure) never retries
@@ -605,10 +643,115 @@ class TestSliceRetry:
             request_slice_with_retry,
         )
 
-        rid, response, retry_of = request_slice_with_retry(
+        rid, response, retry_of, saturated = request_slice_with_retry(
             lambda payload: "ok", lambda rid: {"request_id": rid}, "req-0001-i0000", 1
         )
         assert (rid, response, retry_of) == ("req-0001-i0000", "ok", None)
+        assert saturated is False
+
+
+class TestSaturation:
+    """Per-slice decode-cap saturation (2026-08-09, continues the retry
+    finding above SLICE_RETRYABLE_EXCEPTIONS): a slice whose completion hits
+    the configured decoding_params.max_tokens cap is a runaway decode, not a
+    genuine transcript end -- the exposure ledger commits to "counted and
+    reported, not scored silently"."""
+
+    def test_slice_under_the_cap_is_not_flagged(self, tmp_path, monkeypatch):
+        world = _World(
+            tmp_path,
+            monkeypatch,
+            pcm=_noise(90.0),
+            texts=[
+                _boundary_text("First span done. Tail", 45),
+                _boundary_text("Second done.", 10),
+            ],
+            usages=[{"completion_tokens": 4}, {"completion_tokens": 3}],
+            decoding_params={"temperature": 0, "max_tokens": 5},
+        )
+        outcome = world.run()
+        assert outcome.saturated_slices == 0
+        obs = _obs_payloads(world)
+        assert obs["req-0001-i0000/obs"]["obs_saturated"] is False
+        assert obs["req-0001-i0001/obs"]["obs_saturated"] is False
+
+    def test_slice_exactly_at_the_cap_is_flagged(self, tmp_path, monkeypatch):
+        world = _World(
+            tmp_path,
+            monkeypatch,
+            pcm=_noise(90.0),
+            texts=[
+                _boundary_text("First span done. Tail", 45),
+                _boundary_text("Second done.", 10),
+            ],
+            # completion_tokens EQUALS max_tokens on the first slice -- the
+            # boundary case (>=, not >).
+            usages=[{"completion_tokens": 5}, {"completion_tokens": 4}],
+            decoding_params={"temperature": 0, "max_tokens": 5},
+        )
+        outcome = world.run()
+        assert outcome.saturated_slices == 1
+        obs = _obs_payloads(world)
+        assert obs["req-0001-i0000/obs"]["obs_saturated"] is True
+        assert obs["req-0001-i0001/obs"]["obs_saturated"] is False
+
+    def test_no_max_tokens_configured_never_flags(self, tmp_path, monkeypatch):
+        world = _World(
+            tmp_path,
+            monkeypatch,
+            pcm=_noise(30.0),
+            texts=[_boundary_text("Whole thing.", 10)],
+            # a huge completion_tokens count would trip any cap that existed
+            usages=[{"completion_tokens": 999999}],
+            decoding_params={"temperature": 0},  # no max_tokens key at all
+        )
+        outcome = world.run()
+        assert outcome.saturated_slices == 0
+        assert _obs_payloads(world)["req-0001-i0000/obs"]["obs_saturated"] is False
+
+    def test_missing_usage_never_crashes_and_never_flags(self, tmp_path, monkeypatch):
+        world = _World(
+            tmp_path,
+            monkeypatch,
+            pcm=_noise(30.0),
+            texts=[_boundary_text("Whole thing.", 10)],
+            # usages omitted entirely -> _FakeResponse.usage == {} -- a real
+            # response's "usage present but no completion_tokens key" shape.
+            decoding_params={"temperature": 0, "max_tokens": 5},
+        )
+        outcome = world.run()
+        assert outcome.saturated_slices == 0
+        assert _obs_payloads(world)["req-0001-i0000/obs"]["obs_saturated"] is False
+
+    def test_multiple_saturated_slices_aggregate_onto_the_outcome(
+        self, tmp_path, monkeypatch
+    ):
+        """The per-sample aggregate (SampleOutcome.saturated_slices) counts
+        every saturated slice across the sample's whole loop, not merely the
+        last one or a boolean flag."""
+
+        world = _World(
+            tmp_path,
+            monkeypatch,
+            pcm=_noise(200.0),
+            texts=[_boundary_text(f"S{i}.", 45) for i in range(4)]
+            + [_boundary_text("Last.", 10)],
+            usages=[
+                {"completion_tokens": 5},  # saturated
+                {"completion_tokens": 2},  # not
+                {"completion_tokens": 5},  # saturated
+                {"completion_tokens": 5},  # saturated
+                {"completion_tokens": 1},  # not (final window)
+            ],
+            decoding_params={"temperature": 0, "max_tokens": 5},
+        )
+        outcome = world.run()
+        assert outcome.saturated_slices == 3
+        obs = _obs_payloads(world)
+        flags = [
+            obs[f"req-0001-i{index:04d}/obs"]["obs_saturated"] for index in range(5)
+        ]
+        assert flags == [True, False, True, True, False]
 
 
 class TestBudgetArithmeticSanity:

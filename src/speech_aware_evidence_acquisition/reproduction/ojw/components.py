@@ -239,21 +239,28 @@ class FrozenCoreASR(WorkflowComponent):
                 retrieval_query=retrieval_query,
             )
 
+        # Per-slice saturation (obs_loop._slice_saturated): read the decode
+        # cap from the SAME composed decoding_params every slice payload
+        # above actually carries -- identical seam and identical source of
+        # truth to the plain policy, never a second reimplementation.
+        max_tokens = decoding_params.get("max_tokens") if isinstance(decoding_params, dict) else None
         # Bounded per-slice retry: the SAME shared helper the plain policy
         # calls (obs_loop.request_slice_with_retry), so the two executors can
-        # never diverge in retry behaviour (live E-001 finding 2026-08-08).
-        # The blocking adapter call hops to a worker thread (owner batching
-        # directive 2026-08-08): under sample-level concurrency the event
-        # loop must stay free while this sample's HTTP request blocks, or N
-        # "concurrent" samples would serialize on the loop thread. to_thread
-        # copies the task's contextvars, so the adapter's trace emissions
-        # still route to THIS sample's buffer (core.tracing.DispatchingSink).
-        request_id, response, retry_of = await asyncio.to_thread(
+        # never diverge in retry OR saturation behaviour (live E-001 finding
+        # 2026-08-08, continued 2026-08-09). The blocking adapter call hops
+        # to a worker thread (owner batching directive 2026-08-08): under
+        # sample-level concurrency the event loop must stay free while this
+        # sample's HTTP request blocks, or N "concurrent" samples would
+        # serialize on the loop thread. to_thread copies the task's
+        # contextvars, so the adapter's trace emissions still route to THIS
+        # sample's buffer (core.tracing.DispatchingSink).
+        request_id, response, retry_of, saturated = await asyncio.to_thread(
             request_slice_with_retry,
             self._adapter_request,
             _payload,
             base_request_id,
             cfg.slice_retry_max,
+            max_tokens,
         )
         return {
             "text": response.text,
@@ -262,6 +269,7 @@ class FrozenCoreASR(WorkflowComponent):
             "request_sha256": response.request_sha256,
             "response_sha256": response.response_sha256,
             "retry_of": retry_of,
+            "saturated": saturated,
         }
 
 
@@ -349,6 +357,9 @@ class AcceptAdvance(WorkflowComponent):
         accepted = inputs.get("accepted", "")
         dropped = inputs.get("dropped", "")
         request_id = inputs["request_id"]
+        # Never None (FrozenCoreASR always returns a real bool), so -- unlike
+        # the None-able boundary/retry fields above -- required, not .get().
+        saturated = inputs["saturated"]
         state.sink.emit(
             "OBS",
             f"{request_id}/obs",
@@ -378,6 +389,9 @@ class AcceptAdvance(WorkflowComponent):
                 # Retry audit trail, identical to the plain policy's record;
                 # None-deletion means a missing key IS the None that was set.
                 "obs_retry_of": inputs.get("retry_of"),
+                # Per-slice decode-cap saturation, identical to the plain
+                # policy's record (obs_loop._slice_saturated).
+                "obs_saturated": saturated,
             },
         )
         span = accepted.strip()
@@ -386,6 +400,8 @@ class AcceptAdvance(WorkflowComponent):
         session.update_global_state({ACCEPTED_SPANS_KEY: spans})
         state.accepted_spans.append(span)
         state.request_ids.append(request_id)
+        if saturated:
+            state.saturated_slices += 1
         state.iteration_request_sha256s.append(inputs["request_sha256"])
         state.iteration_response_sha256s.append(inputs["response_sha256"])
         state.cursor = float(slice_spec["start_seconds"]) + float(resolution["advance"])

@@ -272,6 +272,7 @@ def _finalize_sample(ctx: SampleContext, state: ObsSampleState) -> SampleOutcome
         request_sha256=request_sha256,
         response_sha256=response_sha256,
         response_text_sha256=response_text_sha256,
+        saturated_slices=state.saturated_slices,
     )
 
 

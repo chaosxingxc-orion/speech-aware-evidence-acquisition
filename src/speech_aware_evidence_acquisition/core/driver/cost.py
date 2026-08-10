@@ -27,6 +27,8 @@ def _assemble_run_cost(
     gate_setup_seconds: float,
     supplied_evidence_bytes: int,
     admitted_evidence_bytes: int,
+    saturated_slice_count: int,
+    saturated_sample_ids: list[str],
 ) -> dict[str, object]:
     # Minor (fix-wave2, external-threat-model review round 2): gpu hours was
     # the only budget dimension with no derived counterpart, even though
@@ -103,6 +105,15 @@ def _assemble_run_cost(
             "failed_attempt_calls": failed_attempt_calls,
             "failed_attempt_audio_seconds": failed_attempt_audio_seconds,
             "failed_attempt_cost_reason": failed_attempt_cost_reason,
+            # Per-slice decode-cap saturation aggregate (2026-08-09, continues
+            # the obs-loop E-001 retry finding): a straight sum/collection of
+            # what every SampleOutcome.saturated_slices already reported
+            # during the request loop above -- genuinely measured whenever a
+            # RunResult exists at all (I8), never best-effort, so this is a
+            # real 0/[] for a run with no saturated slices, not a stand-in for
+            # missing data.
+            "saturated_slice_count": saturated_slice_count,
+            "saturated_sample_ids": saturated_sample_ids,
             # Every field above this line is genuinely measured whenever this
             # function returns a RunResult at all (I8: nothing here is a
             # silent omission) -- unlike gpu_seconds/peak_vram_mib, which

@@ -194,6 +194,15 @@ class SampleOutcome:
     # untouched (see ``core.model.CoreResponse.response_text_sha256`` for
     # where it is first computed, at the one true model-request choke point).
     response_text_sha256: str
+    # Per-slice decode-cap saturation (2026-08-09, continues the obs-loop
+    # E-001 retry finding: ``reproduction.obs_loop.SLICE_RETRYABLE_EXCEPTIONS``
+    # comment): the count of this sample's slice requests whose completion hit
+    # the configured ``decoding_params.max_tokens`` cap (``reproduction.
+    # obs_loop._slice_saturated`` / ``request_slice_with_retry``) -- a runaway
+    # decode truncated by the cap, not a genuine transcript end. Default 0 for
+    # the whole-file "fixed" policy, which sends one request per sample
+    # through no slicing seam at all and therefore can never saturate a slice.
+    saturated_slices: int = 0
 
 
 @dataclass(frozen=True)

@@ -1027,6 +1027,90 @@ def test_run_experiment_reports_failed_attempt_cost_from_a_prior_aborted_sibling
 
 
 # ---------------------------------------------------------------------------
+# Per-slice decode-cap saturation, aggregated per run (2026-08-09, continues
+# the obs-loop E-001 retry finding): a real end-to-end run_experiment call
+# through the obs-agent-loop policy over all 3 discovery samples, with a fake
+# transport that pins each sample's completion_tokens deliberately either
+# side of the configured cap -- proves the sequential per-sample loop in
+# core.driver.run.run_experiment sums SampleOutcome.saturated_slices and
+# collects sample ids correctly, not merely that a single sample's own count
+# is right (already covered at the policy level in test_obs_loop_policy.py).
+# ---------------------------------------------------------------------------
+
+from array import array as _array  # noqa: E402
+
+from speech_aware_evidence_acquisition.reproduction import obs_loop as _obs_loop  # noqa: E402
+
+
+def _saturation_config(**overrides):
+    """Single-iteration-per-sample fixed-mode obs-loop config: no boundary
+    prompt template needed, one slice per sample (buffer covers the whole
+    synthetic PCM in one shot -- is_final on iteration 0)."""
+
+    values = {
+        "obs_buffer_seconds": 40,
+        "obs_min_advance_seconds": 40,
+        "obs_max_advance_seconds": 40,
+        "obs_fallback_advance_seconds": 40,
+        "obs_silence_snap_seconds": 0,
+        "obs_boundary_mode": "fixed",
+        "obs_vad_trim_min_seconds": 0,
+    }
+    values.update(overrides)
+    return values
+
+
+def test_run_experiment_aggregates_saturated_slices_across_samples(
+    synthetic_world, tmp_path, monkeypatch
+):
+    lock, repo_root = _frozen_world(synthetic_world, tmp_path)
+    ids, split_hash, _ = load_split(repo_root, "discovery", lock, synthetic_world.data_root)
+    assert ids == {"4000001", "4000002", "4000003"}
+
+    # 30s of fake PCM per sample -- well inside the loader-fact 100.5s parent
+    # duration (+1s tolerance) the slice-derivation chain checks against
+    # (core.model.slices.PARENT_DURATION_TOLERANCE_SECONDS); the monkeypatch
+    # only replaces the DECODE step, never the real on-disk parent bytes the
+    # slice's own parent_sha256 chains to.
+    pcm = _array("h", [1000] * (30 * 16000))
+    monkeypatch.setattr(_obs_loop, "decode_parent_pcm", lambda path, rate=16000: pcm)
+
+    # Each sample's completion_tokens sits deliberately either side of the
+    # configured cap (5): 4000001 well over, 4000002 well under, 4000003
+    # exactly AT the cap (the >= boundary case).
+    completion_tokens_by_sample = {"4000001": 10, "4000002": 2, "4000003": 5}
+
+    def _transport(request_bytes):
+        payload = json.loads(request_bytes.decode("utf-8"))
+        completion_tokens = completion_tokens_by_sample[payload["sample_id"]]
+        return json.dumps(
+            {"text": "hello", "usage": {"completion_tokens": completion_tokens}}
+        ).encode()
+
+    composed = _composed(
+        policy="obs-agent-loop",
+        decoding_params={"temperature": 0, "seed": 20260803, "max_tokens": 5},
+        **_saturation_config(),
+    )
+    plan = _plan(
+        split_hash,
+        protocol_hash=protocol_hash(composed.config_hash, composed.values["arm"], split_hash),
+    )
+    result = run_experiment(
+        composed=composed,
+        plan=plan,
+        gate=_OpenGate(),
+        lock=lock,
+        root=synthetic_world.data_root,
+        run_dir=tmp_path / "run-saturation",
+        transport=_transport,
+        repo_root=repo_root,
+    )
+    assert result.cost["saturated_slice_count"] == 2
+    assert result.cost["saturated_sample_ids"] == ["4000001", "4000003"]
+
+
+# ---------------------------------------------------------------------------
 # Sample-batched dispatch (owner directive 2026-08-08): obs_batch_samples > 1
 # routes through a batch-capable policy's run_samples with per-sample
 # TraceBuffers; outputs rows and trace blocks land in split-id order, byte-

@@ -349,6 +349,14 @@ def run_experiment(
         # future rejecting policy, e.g. X3).
         supplied_evidence_bytes = 0
         admitted_evidence_bytes = 0
+        # Per-slice decode-cap saturation, aggregated per RUN (2026-08-09,
+        # continues the obs-loop E-001 retry finding): SampleOutcome.
+        # saturated_slices is 0 for every non-slicing policy (FixedPolicy),
+        # so this aggregate is exact and free of a policy-name branch --
+        # exactly the same "sum whatever the outcome already reports" pattern
+        # supplied/admitted_evidence_bytes use above.
+        saturated_slice_total = 0
+        saturated_sample_ids: list[str] = []
         def _sample_context(sample, evidence, request_id_base, ctx_sink):
             return SampleContext(
                 sample=sample,
@@ -409,6 +417,9 @@ def run_experiment(
                     outcome = policy.run_sample(ctx)
                     if evidence and outcome.admitted:
                         admitted_evidence_bytes += sample_evidence_bytes
+                    if outcome.saturated_slices:
+                        saturated_slice_total += outcome.saturated_slices
+                        saturated_sample_ids.append(outcome.sample_id)
                     _write_row(outputs, request_id_base, sample, outcome)
             else:
                 # Batch path (owner directive 2026-08-08): each sample's
@@ -447,6 +458,9 @@ def run_experiment(
                     buffer.flush_into(sink)
                     if evidence and outcome.admitted:
                         admitted_evidence_bytes += sample_evidence_bytes
+                    if outcome.saturated_slices:
+                        saturated_slice_total += outcome.saturated_slices
+                        saturated_sample_ids.append(outcome.sample_id)
                     _write_row(outputs, request_id_base, sample, outcome)
         manifest_hash = sink.close()
     finally:
@@ -467,6 +481,8 @@ def run_experiment(
         gate_setup_seconds=gate_setup_seconds,
         supplied_evidence_bytes=supplied_evidence_bytes,
         admitted_evidence_bytes=admitted_evidence_bytes,
+        saturated_slice_count=saturated_slice_total,
+        saturated_sample_ids=sorted(saturated_sample_ids),
     )
     return RunResult(
         run_id=plan.run_id,

@@ -82,6 +82,11 @@ class ObsSampleState:
     slice_records: list[SliceRecord] = field(default_factory=list)
     trim_events: list[dict] = field(default_factory=list)
     runaway: bool = False
+    # Per-slice decode-cap saturation (obs_loop._slice_saturated); single
+    # writer AcceptAdvance, same discipline as every other loop-carried
+    # counter above -- read back by policy._finalize_sample into the
+    # outputs-row SampleOutcome.saturated_slices.
+    saturated_slices: int = 0
 
     def should_continue(self) -> bool:
         """The framework loop's ``FuncCondition`` callable (module docstring

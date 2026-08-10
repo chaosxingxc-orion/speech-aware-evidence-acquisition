@@ -78,6 +78,14 @@ def _best_effort_cost_for_aborted_attempt(
         "cost_unavailable_reason": _ABORTED_COST_UNAVAILABLE_REASON,
         "failed_attempt_calls": failed_calls,
         "failed_attempt_audio_seconds": failed_audio_seconds,
+        # Key-shape parity with the COMPLETED cost dict (core.driver.cost.
+        # _assemble_run_cost, 2026-08-09): saturated-slice bookkeeping lives
+        # entirely in the per-sample request loop's in-memory SampleOutcome
+        # values, never durably recorded anywhere an ABORTED attempt's
+        # post-hoc read could recover it -- genuinely NOT_AVAILABLE here, same
+        # reason as latency_seconds_total/prompt_tokens_total above.
+        "saturated_slice_count": NOT_AVAILABLE,
+        "saturated_sample_ids": NOT_AVAILABLE,
         # M-3: key-shape parity with the COMPLETED cost dict (which carries
         # this whenever a FrozenCoreAdapter was genuinely constructed). An
         # attempt that ended ABORTED before that ever happened (or before the

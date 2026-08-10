@@ -136,23 +136,58 @@ _EPSILON_SECONDS = 1e-6
 # behaviour can never diverge between them.
 SLICE_RETRYABLE_EXCEPTIONS = (FrozenCoreError, TimeoutError, ConnectionError)
 
+# Per-slice decode-cap saturation (2026-08-09, continues the retry finding
+# above): configs/model/qwen3-omni-llamacpp-q4km.json now caps
+# decoding_params.max_tokens at 1024 so an uncapped runaway decode can never
+# again outlast the request timeout and abort a whole arm -- but a slice that
+# HITS that cap is a truncated decode, not a genuine transcript end, and
+# scoring it silently would contaminate WER with no trace. The exposure
+# ledger commits to "counted and reported, not scored silently"; this is the
+# detector, at the SAME shared seam as the retry above so both executors
+# observe identical saturation behaviour.
 
-def request_slice_with_retry(adapter_request, build_payload, request_id, retry_max):
+
+def _slice_saturated(usage: Mapping[str, object] | None, max_tokens: object) -> bool:
+    """True iff ``usage['completion_tokens'] >= max_tokens``.
+
+    ``max_tokens`` is whatever the composed config's own
+    ``decoding_params.max_tokens`` holds for this request -- ``None`` means
+    the config declares no cap, so nothing can saturate (always False, never
+    a guessed default). Never raises: a missing/malformed ``usage`` block or
+    a non-numeric cap is simply "cannot be judged saturated", not a crash.
+    """
+
+    if max_tokens is None or isinstance(max_tokens, bool) or not isinstance(max_tokens, (int, float)):
+        return False
+    if not isinstance(usage, Mapping):
+        return False
+    completion_tokens = usage.get("completion_tokens")
+    if isinstance(completion_tokens, bool) or not isinstance(completion_tokens, (int, float)):
+        return False
+    return completion_tokens >= max_tokens
+
+
+def request_slice_with_retry(adapter_request, build_payload, request_id, retry_max, max_tokens=None):
     """One slice request with bounded retry (comment above).
 
     ``build_payload(request_id) -> payload`` builds a FRESH payload per
     attempt (each retry is a new request: new request id, separately traced
     and metered by the adapter). Returns ``(request_id_used, response,
-    retry_of)`` where ``retry_of`` is the ORIGINAL request id when a retry
-    answered, else None. The final failure propagates unchanged
-    (fail-closed, as before this seam existed).
+    retry_of, saturated)`` where ``retry_of`` is the ORIGINAL request id when
+    a retry answered, else None, and ``saturated`` (``_slice_saturated``
+    above) is computed on the response actually returned -- a retried
+    slice's saturation reflects the attempt that succeeded, never a discarded
+    failure. The final failure propagates unchanged (fail-closed, as before
+    this seam existed).
     """
 
     for attempt in range(max(0, int(retry_max)) + 1):
         attempt_id = request_id if attempt == 0 else f"{request_id}-r{attempt}"
         payload = build_payload(attempt_id)
         try:
-            return attempt_id, adapter_request(payload), (request_id if attempt else None)
+            response = adapter_request(payload)
+            saturated = _slice_saturated(getattr(response, "usage", None), max_tokens)
+            return attempt_id, response, (request_id if attempt else None), saturated
         except SLICE_RETRYABLE_EXCEPTIONS:
             if attempt >= retry_max:
                 raise
@@ -437,6 +472,12 @@ class ObsAgentLoopPolicy:
                 )
 
         evidence = ctx.evidence if ctx.arm != "bare-core" else None
+        # Per-slice saturation (module comment above SLICE_RETRYABLE_EXCEPTIONS):
+        # read the decode cap ONCE from the composed config's decoding_params
+        # (exactly what every slice payload actually carries via
+        # build_arm_payload -> core.model.FrozenCoreAdapter.request); absent
+        # -> None -> _slice_saturated always reports False.
+        max_tokens = ctx.decoding_params.get("max_tokens")
         accepted_spans: list[str] = []
         request_ids: list[str] = []
         iteration_request_sha256s: list[str] = []
@@ -445,6 +486,7 @@ class ObsAgentLoopPolicy:
         trim_events: list[dict[str, object]] = []
         iteration = 0
         trims = 0
+        saturated_count = 0
         cursor = 0.0
         effective_min = (
             cfg.buffer_seconds if cfg.boundary_mode == "fixed" else cfg.min_advance_seconds
@@ -545,9 +587,11 @@ class ObsAgentLoopPolicy:
                     retrieval_query=ctx.retrieval_query,
                 )
 
-            request_id, response, retry_of = request_slice_with_retry(
-                ctx.adapter.request, _payload, base_request_id, cfg.slice_retry_max
+            request_id, response, retry_of, saturated = request_slice_with_retry(
+                ctx.adapter.request, _payload, base_request_id, cfg.slice_retry_max, max_tokens
             )
+            if saturated:
+                saturated_count += 1
 
             if cfg.boundary_mode == "model":
                 transcript, estimate = parse_boundary_response(response.text)
@@ -623,6 +667,11 @@ class ObsAgentLoopPolicy:
                     # record and metered spend precede this record; None on
                     # the ordinary first-attempt path.
                     "obs_retry_of": retry_of,
+                    # Per-slice decode-cap saturation (module comment above
+                    # _slice_saturated): True when this slice's completion hit
+                    # the configured decoding_params.max_tokens cap -- counted
+                    # and reported here, never scored silently.
+                    "obs_saturated": saturated,
                 },
             )
             accepted_spans.append(accepted.strip())
@@ -716,6 +765,7 @@ class ObsAgentLoopPolicy:
             request_sha256=request_sha256,
             response_sha256=response_sha256,
             response_text_sha256=response_text_sha256,
+            saturated_slices=saturated_count,
         )
 
     @staticmethod

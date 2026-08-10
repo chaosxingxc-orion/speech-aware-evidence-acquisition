@@ -75,6 +75,7 @@ from test_obs_loop_policy import (  # noqa: E402
     _concat,
     _config_values,
     _noise,
+    _obs_payloads,
     _silence,
 )
 
@@ -312,6 +313,38 @@ class TestSingleDoor:
     def test_frozen_core_asr_requires_an_injected_callable(self):
         with pytest.raises(ObsLoopError, match="callable adapter request"):
             FrozenCoreASR(adapter_request=None, state=None)
+
+
+class TestSaturation:
+    """Per-slice decode-cap saturation reaches the ojw executor through the
+    SAME shared seam (obs_loop.request_slice_with_retry) as the plain
+    policy: FrozenCoreASR.invoke computes it, runner.py's ``${asr.saturated}``
+    wiring carries it to AcceptAdvance, which emits it and mirrors it onto
+    ObsSampleState.saturated_slices for policy._finalize_sample to read back
+    into the outputs-row SampleOutcome -- proven directly against the ojw
+    policy, not merely inferred from TestEquivalence (whose fake responses
+    carry no usage at all, so saturated_slices stays 0 on both sides
+    regardless of whether this wiring exists)."""
+
+    def test_saturated_slice_reaches_the_outcome_and_the_obs_record(
+        self, tmp_path, monkeypatch
+    ):
+        world = _World(
+            tmp_path,
+            monkeypatch,
+            pcm=_noise(90.0),
+            texts=[
+                _boundary_text("First span done. Tail", 45),
+                _boundary_text("Second done.", 10),
+            ],
+            usages=[{"completion_tokens": 5}, {"completion_tokens": 2}],
+            decoding_params={"temperature": 0, "max_tokens": 5},
+        )
+        outcome = POLICIES.resolve(OJW_POLICY_NAME).run_sample(world.ctx)
+        assert outcome.saturated_slices == 1
+        obs = _obs_payloads(world)
+        assert obs["req-0001-i0000/obs"]["obs_saturated"] is True
+        assert obs["req-0001-i0001/obs"]["obs_saturated"] is False
 
 
 class _FakeResponseById:
