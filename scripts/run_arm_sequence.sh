@@ -30,6 +30,13 @@ set -uo pipefail
 ARMS="" DATASET="" EXPERIMENT="" MODEL="" OUT_DIR="$HOME" DRY=0
 PLANNED_CALLS=2000 PLANNED_GPU_HOURS=30.0 PLANNED_AUDIO_SECONDS=150000
 PORT=8080 HOST=127.0.0.1
+# mlflow 3.14.0 refuses the filesystem tracking backend outright ("in
+# maintenance mode"), and it refuses it at FINALIZE -- after a two-hour arm has
+# already produced its COMPLETED manifest and scores. The run is unaffected but
+# the arm exits non-zero, which then trips this script's own two-failure rule
+# and silently costs the remaining arms. Default to sqlite, still on ext4 per
+# program policy ("only local MLflow stays on ext4").
+TRACKING_URI="sqlite:///${HOME}/mlruns.db"
 
 usage() { sed -n '2,30p' "$0" | sed 's/^# \{0,1\}//'; }
 
@@ -44,6 +51,7 @@ while [ $# -gt 0 ]; do
     --planned-gpu-hours) PLANNED_GPU_HOURS="$2"; shift 2 ;;
     --planned-speech-audio-seconds) PLANNED_AUDIO_SECONDS="$2"; shift 2 ;;
     --port) PORT="$2"; shift 2 ;;
+    --tracking-uri) TRACKING_URI="$2"; shift 2 ;;
     --dry-run) DRY=1; shift ;;
     --help|-h) usage; exit 0 ;;
     *) echo "unknown argument: $1" >&2; usage >&2; exit 2 ;;
@@ -122,7 +130,7 @@ run_arm () {
     --run-dir "$SPEECHRL_DATA_DIR/runs/$run_id" \
     --runtime-root "${LLAMA_RUNTIME_ROOT:-$HOME}" \
     --host "$HOST" --port "$PORT" \
-    --tracking-uri "$HOME/mlruns" \
+    --tracking-uri "$TRACKING_URI" \
     > "$log" 2>&1
   rc=$?
   t1="$(date +%s)"
