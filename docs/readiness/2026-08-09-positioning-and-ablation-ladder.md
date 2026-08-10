@@ -64,6 +64,62 @@ success criterion before it runs; a rung that does not move the metric is
 reported as a null, not quietly dropped; and the A0 baseline is re-run
 whenever the substrate changes so deltas are always same-substrate.
 
+### 3b. Amendment (owner, 2026-08-10): for long audio the policy IS the carrier
+
+The ladder above treats the segmentation substrate (A0) and knowledge supply
+(A1–A2) as independent rungs. That holds for short-utterance carriers. **It does
+not hold for long audio**, where the systematic answer is end-to-end agent
+optimisation, and where knowledge, memory and skills do not enter *alongside*
+the policy — they enter **through** it.
+
+Under the interleaved listening-and-spelling policy (IC-001) the four constructs
+stop being separate rungs and become parts of one loop:
+
+| construct | in the loop | what it was in A0 |
+|---|---|---|
+| OBS | commit step + left context + right lookahead | a fixed 60 s window |
+| ORG | the compacted carried memory | a 400-character rolling tail |
+| SUPPLY | what is placed in the next step's prompt | one static evidence block, identical on every slice |
+| USE | the decode | the decode |
+
+Two consequences the ladder has to absorb:
+
+**1. Evidence becomes dynamic rather than static.** In A0 the ConEC block is
+prepended identically to all ~60 slices of a call. In the loop it can be
+re-selected per step against what is currently being heard. That turns A1 from
+"does context help" into "does *this* context help *now*", which is a different
+and harder question — and the one worth asking.
+
+**2. Memory and knowledge merge, and the merge is self-supplied.** The entity
+glossary the loop keeps for continuity — speaker names, tickers, product names,
+recurring figures, all extracted from what the system has *already transcribed* —
+is simultaneously ORG (memory) and SUPPLY (a bias list). It is derived from the
+system's own output, never from gold, so it carries **no leakage exposure at
+all**, and it targets proper names, which is where this domain's errors
+concentrate. It is the training-free, incrementally-built analogue of contextual
+biasing, and it needs no external evidence source to exist.
+
+The revised long-audio ladder, therefore, is not A0→A1→A2 but:
+
+| rung | added element | falsified by |
+|---|---|---|
+| L0 | A0 as it stands — the floor every rung below must beat | — |
+| L1 | interleaved policy, verbatim tail only, no compaction | no reduction in deletion share below 60.6 % at matched audio-token budget |
+| L2 | + memory compaction (tail / glossary / discourse state) | compaction loses to a plain verbatim tail at equal token budget |
+| L3 | + **self-supplied** glossary fed forward as a bias list | no entity-class WER gain over L2 |
+| L4 | + external evidence, selected per step rather than prepended once | no gain over L3, i.e. external context adds nothing the system could not supply itself |
+| L5 | + tools (denoise-and-relisten, forced alignment where timing is needed) | no gain on the low-yield tail specifically |
+
+**L4 is the sharpest experiment in the ladder**: if a self-supplied glossary
+matches externally supplied context, then the study's evidence-acquisition
+premise needs restating for this carrier — and that is a result worth having
+either way.
+
+The A0-substrate probes already in flight (R4 dose, B-2a form) are **not
+superseded** by this. They measure the floor and they answer "does knowledge
+help at all, and in what form", which L3/L4 need as a reference point. A ladder
+without a measured floor cannot attribute its gains.
+
 ## 4. Sampling discipline (owner directive, same session)
 
 Validation work samples — it does not run full corpora. A firm rough answer
