@@ -62,4 +62,21 @@ Entry format:
   `docs/readiness/2026-08-09-segmentation-cost-model.md`; run bundle
   `SAEA-E-002-r4-nocontext` attempt `attempt-20260809T194151Z-ecdb38`
   (study_commit `63d0f57`)
+- carrier-scope decision rule (owner, 2026-08-10, recorded BEFORE the deciding
+  measurement so it cannot be chosen after seeing the numbers): the long-form
+  Earnings-21/22 carriers cost ~2–3 h per arm, and whether that is reducible is
+  being measured as decode throughput at **long** prompt (~4,700 tokens, the
+  size at which the collapse to 3.07–4.40 tok/s per slot was observed), against
+  the ~13 tok/s seen at 816 tokens. Three configurations separate the competing
+  explanations — plain attention scaling (all configs share the long/short
+  ratio), q8_0 KV dequantisation cost (f16 improves the long number), or VRAM
+  pressure (freeing the mmproj's 2,940 MiB improves the long number).
+  **If there is no headroom**, the long-form carriers move under this candidate
+  as their own sub-project rather than continuing to gate the study's
+  knowledge-introduction track, which runs on the same carriers but does not
+  need this policy to be settled first.
+  An earlier note in this session calling the CPU-mmproj configuration a "net
+  loss" was drawn from **short-prompt data only** (816 tokens, where the KV
+  cache is too small for memory pressure to exist) and does not bear on this
+  question; it is superseded by the long-prompt measurement.
 - status: OPEN
