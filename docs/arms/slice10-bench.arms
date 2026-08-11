@@ -1,0 +1,25 @@
+# SAEA-BENCH-slice10-q4km — segmentation-granularity probe (the S3 point of
+# docs/readiness/2026-08-11-segmentation-efficiency-frontier.md).
+#
+# One bare-core arm on the fast split under the LOCKED serving configuration A;
+# the ONLY delta vs bare-core-ojw is buffer geometry: 10 s buffer with
+# proportionally scaled advance 3/9/8 (the A-2a scaling convention). Owner
+# approved 2026-08-11 ("60s 跑科学 + 10s 探针").
+#
+# Pre-registered falsifiable predictions (exposure ledger row 2026-08-11):
+#   (i)  decode-context thesis  -> net wall < the 22.8 min of 60 s attempt
+#        fd7ba3 (short context ≈ 357 tok pulls decode out of the slow zone);
+#   (ii) per-call-floor thesis  -> net wall >= 22.8 min despite ~2x per-token
+#        decode (432 calls/audio-hour pay the floor 6x more often, and the
+#        228-token intercept makes total prompt tokens ~2.1x);
+#   (iii) stitch thesis         -> WER degrades vs 0.2359; >= 3 pp disqualifies
+#        10 s for scientific arms regardless of wall clock.
+# WER here judges the PROTOCOL, not the model. This probe also reads the
+# per-call wall-clock floor and encode(10 s) linearity — the two unknowns the
+# interleaved (IC-001) design memo lists as measure-before-building.
+#
+# Runs AFTER the E-002F fast set so a defect in the new fragment cannot cost
+# the science.
+#
+# run_id:baseline_fragment
+SAEA-BENCH-slice10-q4km:a2a-buffer10-ojw

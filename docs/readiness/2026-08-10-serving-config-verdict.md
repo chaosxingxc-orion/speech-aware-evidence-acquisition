@@ -77,6 +77,15 @@ configuration is frozen rather than "equivalent within noise".
 
 ## Open item: run-to-run determinism under the locked config
 
+> **CLOSED 2026-08-11 — NON-DETERMINISTIC.** The repeat (attempt `54a5e7`,
+> same config hash `dc67f633…`) diverged from `fd7ba3` on every sample:
+> 114/129 slice responses differ, slice counts 126 vs 124 (boundary cascade),
+> mean WER 0.2359 → 0.2680. Run-to-run noise floor: ±3.2 pp on the 3-sample
+> mean, up to ±9.6 pp per sample. Mechanism and consequences:
+> `docs/readiness/2026-08-11-segmentation-efficiency-frontier.md` §2 and the
+> exposure-ledger read-out of the same date. The paragraph below is the
+> pre-repeat state, kept as written.
+
 A fourth attempt (`639d36`, config A again) was launched as determinism
 repeat 1 — same arm, same split, same commit, twice, byte-compare — and
 ABORTED before its first request: the freshly-loaded llama-server process

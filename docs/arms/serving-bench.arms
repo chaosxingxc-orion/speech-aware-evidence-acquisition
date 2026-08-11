@@ -32,7 +32,10 @@
 # numerics (±3–7 pp per sample) and even slice counts (126/125/125), so the
 # serving args are load-bearing and stay frozen inside the config hash.
 # B/C fragments deleted from configs/model/ (bytes at fb234a8). Determinism
-# repeat under A remains OPEN (attempt 639d36 aborted pre-touch, server died).
+# repeat under A: CLOSED 2026-08-11, NON-DETERMINISTIC — repeat 54a5e7 vs
+# fd7ba3 diverges on every sample (mean WER 0.2359 vs 0.2680, slice counts
+# 126 vs 124); run-to-run noise floor ±3.2 pp mean / ±10 pp per-sample. See
+# the 2026-08-11 ledger read-out and the segmentation-efficiency-frontier doc.
 #
 # run_id:baseline_fragment
 SAEA-BENCH-serving-q4km:bare-core-ojw

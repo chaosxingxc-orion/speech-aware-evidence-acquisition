@@ -123,8 +123,33 @@ gpu_is_clean () {
 run_arm () {
   local run_id="$1" baseline="$2"
   local log="$OUT_DIR/${run_id}-${STAMP}.log"
-  local t0 t1 rc npyc
+  local t0 t1 rc npyc cells
   echo "===== $run_id ($baseline) -> $log  $(date -u +%Y-%m-%dT%H:%M:%SZ) ====="
+
+  # finalize_bundle renders a DRAFT wiki-ledger row and ledger_row refuses a
+  # missing column outright (core/tracking.py, fail-closed). The driver derives
+  # the identity cells from the verified bundle but has no basis to invent the
+  # judgment columns, so the launcher must supply them (the driver exposes
+  # --ledger-cells for exactly this). Discovered 2026-08-11: without this,
+  # EVERY completed arm finished its science, then exited 1 at finalize and
+  # stayed OPENED forever -- never FINALIZED -- which also tripped this
+  # script's own two-failure rule on multi-arm files. Placeholders are
+  # explicit PENDING markers: the draft row is a scaffold for the human wiki
+  # registration, never a claim.
+  cells="$(mktemp)"
+  cat > "$cells" <<CELLS
+{"experiment_id": "$run_id (draft; formal id assigned at wiki registration)",
+ "speech task/carrier": "dataset fragment '$DATASET' (identity: exposure-ledger row $run_id)",
+ "changed axes": "baseline fragment '$baseline' (draft; axis judgment pending)",
+ "shared code revision": "none (study repo only)",
+ "model rev": "model fragment '$MODEL' (revision: umbrella lock via runtime receipt)",
+ "dataset rev": "umbrella lock; sha256 recorded at manifest cost.umbrella_lock_sha256",
+ "effectiveness": "PENDING-ANALYSIS (draft row)",
+ "reasonableness": "PENDING-ANALYSIS (draft row)",
+ "efficiency": "PENDING-ANALYSIS (draft row)",
+ "deviations": "PENDING-ANALYSIS (draft row)",
+ "decision": "PENDING-ANALYSIS (draft row)"}
+CELLS
 
   # A dry run must be safe to invoke while a real sequence is live, so it
   # returns before the two side effects below -- killing llama-server and
@@ -159,8 +184,10 @@ run_arm () {
     --runtime-root "${LLAMA_RUNTIME_ROOT:-$HOME}" \
     --host "$HOST" --port "$PORT" \
     --tracking-uri "$TRACKING_URI" \
+    --ledger-cells "$cells" \
     > "$log" 2>&1
   rc=$?
+  rm -f "$cells"
   t1="$(date +%s)"
   echo "  exit=$rc  elapsed=$(( (t1 - t0) / 60 )) min"
   if [ "$rc" -ne 0 ]; then
