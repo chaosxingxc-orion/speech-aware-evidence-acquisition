@@ -1,0 +1,28 @@
+# SAEA-BENCH-featcache — the owner's feature-cache vision, measured for real
+# (owner directive 2026-08-11 "不能靠观测去进行方案决策,要实际跑出效果来,再lock").
+#
+# Patched llama-server (local commit b3dc62149 on the pinned fdbd6abee, the
+# 93-line diff archived at docs/patches/2026-08-11-mtmd-feature-cache.diff,
+# bound by receipts/runtime-q4km-featcache.json): audio-chunk embeddings
+# keyed by the chunk's FNV content hash, RAM layer + persistent dir carried
+# in server_env (config-hashed). A hit decodes from the cached embd and
+# skips the encoder; a miss encodes and back-fills; fallback is the stock
+# path.
+#
+# Substrate: a1a-fixed-window-ojw — fixed windows make slice bytes
+# run-invariant (A-1a verdict, same day: fixedwindow also WINS the WER
+# contrast by 6.7 pp at 20% fewer calls), so the warm run's keys are
+# byte-identical to the cold run's.
+#
+# Protocol: the SAME arm runs twice under one row. COLD attempt builds the
+# cache (encode + back-fill); WARM attempt consumes it. Pre-registered
+# readings: (i) warm wall vs cold wall — THE measured benefit the lock
+# decision waits on; (ii) warm server log shows feat-cache HIT lines and
+# zero "encoding mtmd batch" lines; (iii) warm WER vs cold WER — same
+# config hash, fixed windows: this doubles as the CASCADE-FREE determinism
+# repeat (byte-compare transcripts); (iv) cold wall vs the unpatched
+# fixedwindow arm (2a0d08, 20 min) — the patch's overhead when cache is
+# empty must be ~zero.
+#
+# run_id:baseline_fragment
+SAEA-BENCH-featcache:a1a-fixed-window-ojw
