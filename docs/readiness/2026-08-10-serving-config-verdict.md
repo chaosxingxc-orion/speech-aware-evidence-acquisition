@@ -1,5 +1,15 @@
 # Serving-configuration verdict: mmproj stays on the GPU, `-np 4` stays (2026-08-10)
 
+> **RE-LOCK 2026-08-11 (config A′).** After the pre-registered cacheorder
+> re-verification passed all three predictions (wall −37%, 121/124 cache
+> hits, WER 0.2575 inside the noise band, no systematic digit loss), the
+> locked fragment gained three deltas — `id_slot: "per-sample"`,
+> `prompt_order: "evidence-first-system-v2"`, `timeout_seconds: 420` — with
+> server args unchanged. Evidence chain: SAEA-BENCH-idslot-q4km (diagnosis)
+> → SAEA-BENCH-cacheorder-q4km attempts `dba5bf` (attribution) + `73488c`
+> (re-verify) and the same-day saturation-quarantine fix. The A-vs-B/C
+> verdict below is unchanged; this note is the config's continuation.
+
 Reads the SAEA-BENCH-serving-q4km results (three completed attempts, study
 commit `fb234a8`, fast-e21-sub3, identical bare-core-ojw arm) and locks the
 deployment configuration for every subsequent arm. The bench was registered
