@@ -1,0 +1,20 @@
+# SAEA-E-004F — A-1a boundary-policy contrast on the FAST split (owner
+# sampling-ratio authorization 2026-08-11; ≤30-min-per-task phase rule).
+#
+# The E-004 design (wave1-e21-sub5, one shared control, three contrasts)
+# stands for the full pass; this fast pair is DIRECTIONAL — and it carries
+# two engineering stakes beyond the WER question: fixed windows make slice
+# audio RUN-INVARIANT, which (a) removes the model-boundary cascade that
+# drives the measured run-to-run noise, and (b) is the enabler for the
+# owner's audio-feature-cache design (encode once per slice, reuse across
+# arms/runs — impossible while boundaries drift).
+#
+# Both arms under locked A-prime. The control doubles as the A-prime-era
+# bare-core floor on this split (all prior bare-core fast runs were A-era).
+# Read: WER delta (vs the noise band; the a1a hypothesis is model-boundary
+# >= 1 pp better), boundary-tier histogram, slice-count/audio-total delta
+# (fixed windows have NO overlap: ~17% less audio per pass).
+#
+# run_id:baseline_fragment
+SAEA-E-004F-a1a-control:bare-core-ojw
+SAEA-E-004F-a1a-fixedwindow:a1a-fixed-window-ojw
