@@ -209,6 +209,22 @@ def _server_args(values: Mapping[str, object]) -> list[str]:
     return [str(token) for token in raw]
 
 
+def _server_env(values: Mapping[str, object]) -> dict[str, str]:
+    """Extra llama-server environment from the MODEL config's ``server_env``
+    key (W3, 2026-08-11: GGML_CUDA_DISABLE_GRAPHS changes decode rate by
+    +34% at batch>1, so a runtime env var is serving identity — it lives in
+    the config, inside the config hash, never in an operator shell). Absent
+    key = no extra env; a non-mapping or non-string content fails closed
+    (``start_session`` re-checks the str->str contract at spawn time)."""
+
+    raw = values.get("server_env", {})
+    if not isinstance(raw, Mapping):
+        raise ValueError(
+            f"model config server_env must be a mapping of str->str, got {type(raw).__name__}"
+        )
+    return {str(key): str(value) for key, value in raw.items()}
+
+
 def _cli_smoke(args: argparse.Namespace) -> int:
     from ...contracts import FrozenCoreGate
     from ...data.lock import data_root, load_lock, umbrella_lock_path
@@ -299,6 +315,7 @@ def _cli_smoke(args: argparse.Namespace) -> int:
             port=args.port,
             session_id=f"{plan.run_id}-{attempt_id}",
             extra_argv=_server_args(composed.values),
+            extra_env=_server_env(composed.values),
             receipt_path=session_receipt_path,
             server_log_path=server_log_path,
         )

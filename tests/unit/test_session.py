@@ -1578,6 +1578,61 @@ class TestStartSessionSpawn:
             except OSError:
                 pass
 
+    def test_spawn_passes_extra_env_to_the_server_process(self, tmp_path):
+        """server_env (W3, 2026-08-11): a model-fragment environment variable
+        (e.g. GGML_CUDA_DISABLE_GRAPHS) must reach the spawned server's
+        environment — the fake binary writes the variable to a marker file."""
+
+        runtime_root, data_root, runtime_receipt = self._fake_binary_world(tmp_path)
+        marker = tmp_path / "env-marker.txt"
+        binary = runtime_root / "llama.cpp" / "build" / "bin" / "llama-server"
+        binary.write_text(
+            "#!/bin/sh\n"
+            f"echo \"$SAEA_TEST_SERVER_ENV\" > {marker}\n"
+            "echo 'server listening on 127.0.0.1'\n"
+            "sleep 5\n",
+            encoding="utf-8",
+        )
+        binary.chmod(0o755)
+        runtime_receipt["llama_cpp"]["binary_sha256"] = _sha(binary.read_bytes())
+        receipt = start_session(
+            runtime_root=runtime_root,
+            data_root=data_root,
+            runtime_receipt=runtime_receipt,
+            host="127.0.0.1",
+            port=18084,
+            session_id="spawn-env-test",
+            extra_env={"SAEA_TEST_SERVER_ENV": "graphs-off"},
+            startup_timeout_seconds=2.0,
+            http_get_status=lambda url, timeout: 200,
+        )
+        try:
+            assert marker.read_text(encoding="utf-8").strip() == "graphs-off"
+        finally:
+            try:
+                os.kill(receipt.pid, 15)
+                os.waitpid(receipt.pid, 0)
+            except OSError:
+                pass
+
+    def test_spawn_refuses_non_string_extra_env(self, tmp_path):
+        """extra_env is str->str, fail-closed — an int value (a config typo)
+        is refused before any process is spawned."""
+
+        runtime_root, data_root, runtime_receipt = self._fake_binary_world(tmp_path)
+        with pytest.raises(SessionError, match="extra_env"):
+            start_session(
+                runtime_root=runtime_root,
+                data_root=data_root,
+                runtime_receipt=runtime_receipt,
+                host="127.0.0.1",
+                port=18085,
+                session_id="spawn-env-bad",
+                extra_env={"GGML_CUDA_DISABLE_GRAPHS": 1},  # type: ignore[dict-item]
+                startup_timeout_seconds=2.0,
+                http_get_status=lambda url, timeout: 200,
+            )
+
     def test_spawn_of_a_binary_whose_hash_does_not_match_pinned_is_refused(self, tmp_path):
         """Probe 5: the binary on disk was swapped after the receipt captured
         a hash for the ORIGINAL bytes -- spawn must refuse, not execute it."""

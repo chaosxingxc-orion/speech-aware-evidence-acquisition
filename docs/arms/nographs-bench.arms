@@ -1,0 +1,26 @@
+# SAEA-BENCH-nographs — W3: CUDA graphs OFF as a config-hashed server_env
+# (owner directive 2026-08-11 "把W3跑了,之后锁定一个配置基线").
+#
+# W2 measured graphs actively HURTING at batch>1: np4 aligned-concurrency
+# decode 10.75 tok/s with graphs vs 14.43 without (+34%) — re-capture
+# overhead under changing batch shapes exceeds any launch savings; at np1
+# graphs make zero difference (17.68 vs 17.67). Fragment q4km-nographs =
+# locked A-prime + server_env {"GGML_CUDA_DISABLE_GRAPHS": "1"} (a new
+# config-hashed field wired through core.session in the same commit).
+#
+# One evidence arm on the fast split — the campaign shape (real staggered
+# batching + cache hits + evidence contexts). OFF reference: cacheorder
+# re-verify attempt 73488c (27 min wall, decode p50 ~6 tok/s per slot at
+# evidence contexts, WER 0.2575, hits 121/124).
+#
+# Pre-registered predictions: (i) per-slot decode p50 rises materially
+# (W2 bounds the aligned-case gain at +34%; real stagger should keep most
+# of it); (ii) wall drops below 27 min accordingly; (iii) cache hits
+# reproduce (>=95%); (iv) WER inside the [0.2359, 0.2680] band (graphs
+# change execution scheduling, not arithmetic — but the serving-numerics
+# discipline demands the check). Adoption: all four -> re-lock as config
+# A-double-prime, the locked inference baseline this tuning phase ends on.
+# Phase rule in force (owner, 2026-08-11): no task over 30 minutes.
+#
+# run_id:baseline_fragment
+SAEA-BENCH-nographs:fixed-legal-context-ojw

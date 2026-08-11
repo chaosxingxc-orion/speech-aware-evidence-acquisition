@@ -8,6 +8,7 @@ stage 1, pure move, no behaviour change).
 from __future__ import annotations
 
 import hashlib
+import os
 import queue
 import subprocess
 import threading
@@ -247,6 +248,7 @@ def start_session(
     port: int,
     session_id: str,
     extra_argv: Sequence[str] = (),
+    extra_env: Mapping[str, str] | None = None,
     startup_timeout_seconds: float = DEFAULT_STARTUP_TIMEOUT_SECONDS,
     startup_max_bytes: int = DEFAULT_STARTUP_MAX_BYTES,
     receipt_path: Path | None = None,
@@ -297,7 +299,23 @@ def start_session(
     argv = [str(binary), "--host", host, "--port", str(port), *model_argv, *list(extra_argv)]
 
     started_wall = now()
-    process = popen(argv, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, cwd=str(binary.parent))
+    # server_env (W3, 2026-08-11): runtime-behaviour environment for the
+    # spawned server (e.g. GGML_CUDA_DISABLE_GRAPHS). It rides the MODEL
+    # fragment and therefore the config hash — a decode-rate-changing
+    # environment variable is serving identity, never an operator-shell
+    # accident. Fail-closed on non-string content; None = inherit only.
+    env = None
+    if extra_env:
+        for key, value in extra_env.items():
+            if not isinstance(key, str) or not isinstance(value, str):
+                raise SessionError(
+                    f"extra_env entries must be str->str, got {key!r}={value!r}"
+                )
+        env = {**os.environ, **extra_env}
+    process = popen(
+        argv, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+        cwd=str(binary.parent), env=env,
+    )
     log_writer = _ServerLogWriter(Path(server_log_path) if server_log_path is not None else None)
     stdout_bytes = _capture_startup_stdout(
         process,
