@@ -26,6 +26,16 @@ ALLOWED_DECODING_KEYS = frozenset(
         "max_tokens",
         "presence_penalty",
         "frequency_penalty",
+        # llama-server slot pinning (SAEA-BENCH-idslot-q4km, 2026-08-11): an
+        # integer here pins the request to one server slot so a sample's
+        # stable evidence prefix stays in that slot's KV instead of being
+        # re-prefilled every slice (measured: zero cache hits under free slot
+        # assignment; ~4.4k evidence tokens re-prefilled per slice on the
+        # evidence arms). A config fragment declares the SENTINEL
+        # "per-sample" and the batch executor resolves it to an allocated
+        # slot integer; the adapter refuses an unresolved sentinel
+        # (adapter.request) so it can never reach the server as a string.
+        "id_slot",
     }
 )
 

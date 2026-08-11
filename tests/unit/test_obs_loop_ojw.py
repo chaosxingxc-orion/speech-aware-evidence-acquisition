@@ -576,6 +576,45 @@ class TestBatchExecution:
             )
         return contexts, buffers, adapter, registry, data_root, run_dir
 
+    def test_slot_affinity_sentinel_resolves_to_distinct_stable_slots(
+        self, tmp_path, monkeypatch
+    ):
+        """Slot affinity (SAEA-BENCH-idslot-q4km, 2026-08-11): with
+        decoding_params.id_slot = 'per-sample', every request of one sample
+        carries ONE allocated integer slot, distinct across concurrently
+        batched samples and inside [0, batch_size) — so a sample's stable
+        evidence prefix stays in a single llama-server slot's KV."""
+
+        pcm_map = {}
+        monkeypatch.setattr(
+            obs_loop,
+            "decode_parent_pcm",
+            lambda path, rate=16000: pcm_map[Path(path).name],
+        )
+        specs = _batch_specs()
+        values = _config_values(obs_condition_tail_chars=400, obs_batch_samples=2)
+        contexts, _, adapter, _, _, _ = self._batch_world(
+            tmp_path / "batch", specs, dict(values), pcm_map
+        )
+        contexts = [
+            dataclasses.replace(
+                ctx, decoding_params={"temperature": 0, "id_slot": "per-sample"}
+            )
+            for ctx in contexts
+        ]
+        POLICIES.resolve(OJW_POLICY_NAME).run_samples(contexts)
+
+        slots_by_sample = {}
+        for payload in adapter.payloads:
+            slot = payload["decoding_params"]["id_slot"]
+            slots_by_sample.setdefault(payload["sample_id"], set()).add(slot)
+        assert set(slots_by_sample) == set(specs)
+        for sample_id, slots in slots_by_sample.items():
+            assert len(slots) == 1, f"{sample_id} hopped slots: {slots}"
+            (slot,) = slots
+            assert isinstance(slot, int) and 0 <= slot < 2
+        assert len({next(iter(s)) for s in slots_by_sample.values()}) == len(specs)
+
     def test_batch_of_two_matches_sequential_plain_per_sample(
         self, tmp_path, monkeypatch
     ):

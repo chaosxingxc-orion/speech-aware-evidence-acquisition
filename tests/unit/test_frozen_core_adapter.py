@@ -439,6 +439,31 @@ def test_decoding_params_unknown_key_refused(tmp_path):
         adapter.request(_payload(decoding_params={"logit_bias": {"1": 10}}))
 
 
+def test_decoding_params_id_slot_integer_admitted(tmp_path):
+    """Slot affinity (2026-08-11): an executor-resolved integer id_slot is a
+    legal decoding key — the request goes through the choke point."""
+
+    adapter, _ = _adapter(tmp_path)
+    response = adapter.request(
+        _payload(decoding_params={"temperature": 0, "id_slot": 2})
+    )
+    assert response.text
+
+
+def test_decoding_params_id_slot_unresolved_sentinel_refused(tmp_path):
+    """The config-level sentinel 'per-sample' must be resolved to an integer
+    by the batch executor BEFORE the adapter; an unresolved sentinel (or any
+    non-integer/negative value) is refused at the choke point rather than
+    reaching llama-server as a malformed field."""
+
+    adapter, _ = _adapter(tmp_path)
+    for bad in ("per-sample", -1, 1.5, True):
+        with pytest.raises(FrozenCoreError, match="id_slot"):
+            adapter.request(
+                _payload(decoding_params={"temperature": 0, "id_slot": bad})
+            )
+
+
 def test_call_budget_exhaustion_fails_closed(tmp_path):
     adapter, _ = _adapter(tmp_path, plan=_plan(planned_model_calls=1))
     adapter.request(_payload())

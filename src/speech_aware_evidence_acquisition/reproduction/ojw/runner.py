@@ -71,6 +71,32 @@ from .state import ObsSampleState
 LOOP_NODE_ID = "obsloop"
 END_NODE_ID = "end"
 
+# Slot affinity (SAEA-BENCH-idslot-q4km, 2026-08-11). A model fragment may
+# declare decoding_params.id_slot = "per-sample"; the batch executor below
+# resolves that sentinel to an allocated llama-server slot integer so every
+# request of one sample lands on ONE slot, keeping the sample's stable
+# evidence prefix in that slot's KV (measured under free assignment: zero
+# prefix-cache hits; ~4.4k evidence tokens re-prefilled on every slice of an
+# evidence arm). Zero concurrency cost by construction: a sample's slices
+# are strictly sequential (slice k+1 needs slice k's boundary), so its
+# pinned slot is always free when its next request is issued. The allocated
+# slot NUMBER depends on completion timing under rolling concurrency, which
+# changes request bytes across runs — irrelevant to numerics (the slot id
+# selects a cache, not arithmetic) and run-to-run byte identity is already
+# absent at this protocol (2026-08-11 determinism read-out).
+SLOT_AFFINITY_SENTINEL = "per-sample"
+
+
+def _resolve_slot_affinity(state: "ObsSampleState", slot: int) -> bool:
+    """Replace the sentinel with the allocated slot integer. Returns True
+    iff this state asked for affinity (its slot must then be released when
+    the sample settles)."""
+
+    if state.decoding_params.get("id_slot") == SLOT_AFFINITY_SENTINEL:
+        state.decoding_params["id_slot"] = int(slot)
+        return True
+    return False
+
 
 def build_obs_workflow(state: ObsSampleState, adapter_request) -> Workflow:
     """The per-sample workflow graph (module docstring). ``adapter_request``
@@ -194,6 +220,8 @@ def execute_obs_workflow(
     100101) is translated into an actionable ``ObsLoopError`` naming the
     knob (inside ``_build_and_invoke``, shared with the batch path)."""
 
+    # Sequential single-sample execution: slot 0 is trivially free.
+    _resolve_slot_affinity(state, 0)
     asyncio.run(_build_and_invoke(state, adapter_request, workflow_timeout_seconds))
 
 
@@ -228,15 +256,27 @@ def execute_obs_batch(
 
     async def _run_all():
         semaphore = asyncio.Semaphore(batch_size)
+        # Free-slot pool for slot affinity: at most ``batch_size`` samples
+        # hold the semaphore, so a pool of the same size can never run dry.
+        # Allocation and release are synchronous list operations inside one
+        # event loop — no await sits between pop and use.
+        free_slots = list(range(batch_size))
 
         async def one(ctx):
             set_current_trace_buffer(ctx.sink)
             async with semaphore:
                 state = await asyncio.to_thread(prepare, ctx)
-                await _build_and_invoke(
-                    state, ctx.adapter.request, workflow_timeout_seconds
-                )
-                return finalize(ctx, state)
+                pinned = _resolve_slot_affinity(state, free_slots[0])
+                if pinned:
+                    free_slots.pop(0)
+                try:
+                    await _build_and_invoke(
+                        state, ctx.adapter.request, workflow_timeout_seconds
+                    )
+                    return finalize(ctx, state)
+                finally:
+                    if pinned:
+                        free_slots.append(int(state.decoding_params["id_slot"]))
 
         tasks = [asyncio.create_task(one(ctx)) for ctx in contexts]
         return await asyncio.gather(*tasks, return_exceptions=True)

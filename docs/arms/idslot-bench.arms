@@ -1,0 +1,32 @@
+# SAEA-BENCH-idslot-q4km — slot-affinity cache bench (P2 of the 2026-08-11
+# efficiency frontier; owner GO 2026-08-11).
+#
+# One evidence-carrying arm (fixed-legal-context-ojw, where the effect lives)
+# under model fragment `q4km-slotaffinity`: byte-identical serving args to the
+# LOCKED config A, plus decoding_params.id_slot = "per-sample" — the ojw batch
+# executor resolves the sentinel to an allocated slot integer per sample, so
+# every request of one sample lands on ONE llama-server slot and its ~4.4k-token
+# evidence prefix is prefilled once per sample instead of on every slice.
+#
+# OFF reference (pre-registered, not re-run): SAEA-E-002F-r4-matched attempt
+# d02706 — same arm, same split, same serving args, free slot assignment,
+# 133 calls / 42.7 min / WER 0.2513. Wall-clock run-to-run noise is ~3%
+# (24.1 vs 24.9 min on the bare-core repeats), an order of magnitude below
+# the predicted effect.
+#
+# Pre-registered readouts and predictions (ledger row 2026-08-11):
+#   wall     — prediction: 15-25% below the OFF reference;
+#   prefill  — server log prompt-eval sizes: ~5.4k on a sample's FIRST slice,
+#              ~1.0k after (the direct evidence of cache hits);
+#   WER      — judged for EQUIVALENCE against the same-config noise band
+#              [0.2359, 0.2680] (P0: byte identity does not exist at this
+#              protocol), plus digit/entity spot-check;
+#   noise    — opportunistic: pinning removes one batch-composition timing
+#              dependence; if divergence shrinks, that is a path to
+#              reproducible paired reads.
+# Adoption rule: >=15% wall saving AND WER inside the noise band AND no
+# digit/entity regression -> re-lock bench folds id_slot into the locked
+# config before the full R4; any miss -> fragment retired, record kept.
+#
+# run_id:baseline_fragment
+SAEA-BENCH-idslot-q4km:fixed-legal-context-ojw

@@ -144,6 +144,16 @@ class FrozenCoreAdapter(_PayloadBindingMixin, _AttemptLifecycleMixin):
                     "payload decoding_params contains disallowed keys: "
                     f"{sorted(disallowed_decoding_keys)}"
                 )
+            if "id_slot" in decoding_params:
+                id_slot = decoding_params["id_slot"]
+                if isinstance(id_slot, bool) or not isinstance(id_slot, int) or id_slot < 0:
+                    raise FrozenCoreError(
+                        f"decoding_params id_slot must be a non-negative integer, got "
+                        f"{id_slot!r} — a config declares the sentinel 'per-sample' and "
+                        "the batch executor resolves it to an allocated slot; this "
+                        "executor did not (slot affinity is resolved by the ojw batch "
+                        "path, reproduction/ojw/runner.py)"
+                    )
         assert_information_boundary(dict(payload))
         audio_seconds = payload["audio_seconds"]
         if (
