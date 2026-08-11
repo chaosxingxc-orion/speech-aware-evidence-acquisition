@@ -777,7 +777,13 @@ class TestSaturation:
     ):
         """The per-sample aggregate (SampleOutcome.saturated_slices) counts
         every saturated slice across the sample's whole loop, not merely the
-        last one or a boolean flag."""
+        last one or a boolean flag.
+
+        Quarantine-era geometry (2026-08-11): a saturated slice's text and
+        boundary estimate are refused, so it advances by the FALLBACK tier
+        (50 s here), not its scripted 45 s boundary — the 200 s sample now
+        completes in 4 slices (50 + 45 + 50 → final window), and the last
+        scripted text/usage pair is simply never requested."""
 
         world = _World(
             tmp_path,
@@ -786,11 +792,11 @@ class TestSaturation:
             texts=[_boundary_text(f"S{i}.", 45) for i in range(4)]
             + [_boundary_text("Last.", 10)],
             usages=[
-                {"completion_tokens": 5},  # saturated
-                {"completion_tokens": 2},  # not
-                {"completion_tokens": 5},  # saturated
-                {"completion_tokens": 5},  # saturated
-                {"completion_tokens": 1},  # not (final window)
+                {"completion_tokens": 5},  # saturated -> quarantined, fallback 50
+                {"completion_tokens": 2},  # not -> boundary 45
+                {"completion_tokens": 5},  # saturated -> fallback 50
+                {"completion_tokens": 5},  # saturated (final window)
+                {"completion_tokens": 1},  # never requested
             ],
             decoding_params={"temperature": 0, "max_tokens": 5},
         )
@@ -798,9 +804,14 @@ class TestSaturation:
         assert outcome.saturated_slices == 3
         obs = _obs_payloads(world)
         flags = [
-            obs[f"req-0001-i{index:04d}/obs"]["obs_saturated"] for index in range(5)
+            obs[f"req-0001-i{index:04d}/obs"]["obs_saturated"] for index in range(4)
         ]
-        assert flags == [True, False, True, True, False]
+        assert flags == [True, False, True, True]
+        # The quarantined slices contribute NOTHING to the stitched text —
+        # only the one healthy slice's accepted span survives.
+        assert "S1" in outcome.text
+        for garbage in ("S0", "S2", "S3"):
+            assert garbage not in outcome.text
 
 
 def _fixed_mode_skip_values(**overrides):

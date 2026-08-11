@@ -704,7 +704,14 @@ class ObsAgentLoopPolicy:
             # like an unparseable boundary response (transcript="",
             # estimate=None), which the SAME resolution tiers below already
             # know how to fall back from. Never a second code path.
-            if skipped:
+            # Saturation QUARANTINE (2026-08-11): a slice that hit the
+            # max_tokens cap is a runaway repetition, not a transcript --
+            # same empty-transcript fallback treatment, raw response still
+            # fully traced, hole counted via obs_saturated/cost block and
+            # deliberately NOT counted toward obs_slice_skip_max (a skip is
+            # an unknown failure; a saturation is a detected, bounded
+            # degeneracy). Mirrored in ojw.components.FrozenCoreASR.
+            if skipped or saturated:
                 transcript, estimate = "", None
             elif cfg.boundary_mode == "model":
                 transcript, estimate = parse_boundary_response(response.text)

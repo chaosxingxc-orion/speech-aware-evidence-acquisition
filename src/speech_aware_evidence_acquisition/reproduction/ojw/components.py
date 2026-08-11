@@ -269,8 +269,22 @@ class FrozenCoreASR(WorkflowComponent):
         # present values (empty text, no hashes) rather than None, and
         # AcceptAdvance reads request_sha256/response_sha256 ONLY on the
         # non-skipped path (never risks that deletion at all).
+        # Saturation QUARANTINE (2026-08-11, SAEA-BENCH-cacheorder-q4km
+        # read-out): a slice that hit the max_tokens cap is a runaway
+        # repetition, not a transcript — admitting its text into the stitch
+        # cost one sample +20.6 pp WER the night this landed. The raw
+        # response stays fully traced by the adapter's own MODEL_RESPONSE
+        # record; only ACCEPTANCE is refused: empty text here makes the
+        # boundary tiers fall back exactly like an unparseable response
+        # (identical treatment in the plain policy, same commit). The hole
+        # is counted and reported (obs_saturated per slice,
+        # saturated_slice_count/saturated_sample_ids in the manifest cost
+        # block), never scored silently — and deliberately does NOT count
+        # toward obs_slice_skip_max: a skip is an UNKNOWN failure
+        # (fail-closed caution), a saturation is a detected, bounded
+        # degeneracy whose cost is one fallback-advance hole.
         return {
-            "text": response.text if response is not None else "",
+            "text": "" if saturated else (response.text if response is not None else ""),
             "usage": dict(getattr(response, "usage", None) or {}),
             "request_id": request_id,
             "request_sha256": response.request_sha256 if response is not None else "",

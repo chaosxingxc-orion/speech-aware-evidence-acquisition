@@ -144,7 +144,44 @@ Decision rules, pre-stated so the reading is mechanical:
 - Noise floor for the full R4 (owner decision, informed by P3): more samples,
   repeated runs, or `-np 1` deterministic serving at ~1.7× wall.
 
-## 5. What this buys the full R4 re-run
+## 5. The config-lock protocol (owner directive 2026-08-11, standing)
+
+Configuration decisions are locked on SMALL runs, never on campaigns:
+
+1. **Venue**: fast-e21-sub3 for anything whose readout is wall clock,
+   prefill sizes, or WER-equivalence-vs-noise-band (~25–40 min per
+   configuration); the raw single-slice probe pattern (memory-strategy
+   precedent, outside the driver) for pure serving-throughput questions
+   (~minutes). Lightweight means a SMALL SLICE OF THE REAL WORKLOAD —
+   60 s slices, real ConEC evidence sizes, 4-way concurrency — never a
+   different-domain small corpus, whose prompt shape would lock the wrong
+   configuration.
+2. **Form**: registered bench namespace, pre-stated falsifiable predictions,
+   mechanical adoption rules, ~1 GPU-h budget per decision.
+3. **Throughput readings need n=3 single runs** (wall noise ~3%). **Quality
+   readings at small n can only check equivalence against the measured
+   noise band** — never small effects. Scientific claims stay on n=10+
+   under a noise treatment; short-utterance carriers escape the floor
+   entirely.
+4. Anything that changes request bytes or output semantics enters through a
+   fragment/config-hash change plus a bench — never a silent code default.
+
+Applied so far: serving A/B/C, slice10, idslot, cacheorder, decode
+attribution — six locked decisions in ~6 GPU-hours total.
+
+## 6. Decode attribution (2026-08-11, SAEA-BENCH-decode-q4km)
+
+M1 VRAM-spill and M2 quantized-KV-kernel are REFUTED (p50 6.59 / 6.73 vs
+reference 6.74 tok/s per slot); M3 shows badly sublinear batched-MoE
+scaling (aggregate ~13.1 / ~19.5 / ~27.0 tok/s at 1/2/4 slots). Single-slot
+13 tok/s is 5–10× below the realistic band for a 3B-active MoE at Q4_K_M on
+this card: **the deficit is intrinsic to the pinned llama.cpp build's MoE
+decode path, compounded by WSL2 per-launch overhead. Next lever: the
+version-upgrade bench (rebuild → receipt v2 rebind → transcript A/B →
+re-lock), gated on owner authorization. vLLM is ruled out by owner
+judgment.**
+
+## 7. What this buys the full R4 re-run
 
 The full set (three arms × 44 samples, two arms evidence-carrying) is the
 next large spend — ~5 h under S0 today. The ladder can legally change that
