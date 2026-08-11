@@ -1,0 +1,35 @@
+# SAEA-BENCH-llamacpp-next — the engine version-upgrade bench (owner
+# approval 2026-08-11 "批准 llama.cpp 升级 bench"). The decode-attribution
+# probe exhausted the configuration space: M1 (VRAM spill) and M2
+# (quantized-KV FA kernel) refuted, batched-MoE scaling badly sublinear
+# (aggregate ~13.1/19.5/27.0 tok/s at 1/2/4 slots), single-slot 13 tok/s
+# still 5-10x below the realistic band for a 3B-active MoE at Q4_K_M — the
+# deficit is intrinsic to the pinned build fdbd6abee (2026-06-25), seven
+# weeks behind upstream.
+#
+# Delta under test: ONLY the llama.cpp build (fresh upstream master, same
+# cmake flags: Release / CUDA arch 120 / FA on / ALL_QUANTS off), bound by
+# its own runtime-receipt-v2 (receipts/runtime-q4km-next.json). Fragment
+# q4km-next is byte-identical to the locked A-prime except the receipt
+# pointer. Rollback = the pinned build and its receipt, both untouched.
+#
+# Two arms under one run id, both on the fast split at A-prime settings:
+#   bare-core-ojw            — the decode-rate readout (the headline);
+#   fixed-legal-context-ojw  — WER-vs-noise-band + cache-hit structure
+#                              under the new build's server (prompt cache,
+#                              id_slot, mtmd behaviour may all have moved).
+#
+# Pre-registered predictions: (i) per-slot decode rate rises materially
+# (upstream MoE work; 2-5x is the plausible band) — read from server-log
+# print_timing against the 6.74 tok/s reference; (ii) evidence-arm cache
+# hits reproduce (>=95% of slices after each sample's first); (iii) WER of
+# both arms inside/near the [0.2359, 0.2680] band (a new build is a new
+# numerics regime — a small shift is expected and is judged against the
+# band, with digit spot-check); (iv) wall clock drops in proportion to the
+# decode gain on the bare-core arm. Adoption rule: (i)+(ii) hold AND (iii)
+# shows no digit/entity regression -> re-lock the deployment fragment onto
+# the new receipt; the pinned build is retired to rollback status.
+#
+# run_id:baseline_fragment
+SAEA-BENCH-llamacpp-next:bare-core-ojw
+SAEA-BENCH-llamacpp-next:fixed-legal-context-ojw

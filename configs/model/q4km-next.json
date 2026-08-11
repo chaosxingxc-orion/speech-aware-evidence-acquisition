@@ -1,0 +1,10 @@
+{
+  "model_lock_key": "qwen3-omni-30b-a3b-instruct-gguf-q4km",
+  "transport": "llama-server",
+  "base_url": "http://127.0.0.1:8080",
+  "timeout_seconds": 420.0,
+  "runtime_receipt": "receipts/runtime-q4km-next.json",
+  "server_args": ["-c", "49152", "-np", "4", "-fa", "on", "-ngl", "999", "-ctk", "q8_0", "-ctv", "q8_0"],
+  "decoding_params": {"temperature": 0, "seed": 20260803, "max_tokens": 1024, "id_slot": "per-sample"},
+  "prompt_order": "evidence-first-system-v2"
+}
