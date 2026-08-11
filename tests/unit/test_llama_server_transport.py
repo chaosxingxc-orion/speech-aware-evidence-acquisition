@@ -282,6 +282,67 @@ def test_body_mapping_and_response_projection(tmp_path):
     assert base64.b64decode(audio_part["input_audio"]["data"]) == b"fake-mp3-bytes"
 
 
+def test_prompt_order_v2_moves_evidence_into_system_ahead_of_instruction(tmp_path):
+    """SAEA-BENCH-cacheorder-q4km (2026-08-11): stable-first order — evidence
+    text joins the SYSTEM message ahead of the instruction(+tail), user
+    content carries only the audio, and the evidence formatting strings stay
+    byte-identical to v1 (only their position moves)."""
+
+    captured = {}
+
+    def fake_post(url, body):
+        captured["body"] = json.loads(body)
+        return _canned_response()
+
+    transport = _transport(
+        _base_url(), tmp_path, post=fake_post,
+        prompt_order="evidence-first-system-v2",
+    )
+    payload = _boundary_payload(
+        tmp_path,
+        supplied_evidence=[
+            {"evidence_id": "e1", "content": "Acme Corp Q3"},
+            {"evidence_id": "e2", "content": "CEO Jane Doe"},
+        ],
+    )
+    transport(json.dumps(payload).encode())
+    messages = captured["body"]["messages"]
+    assert messages[0]["role"] == "system"
+    assert messages[0]["content"] == (
+        "[evidence e1] Acme Corp Q3\n\n[evidence e2] CEO Jane Doe\n\n"
+        "Transcribe the speech verbatim."
+    )
+    assert [part["type"] for part in messages[1]["content"]] == ["input_audio"]
+
+
+def test_prompt_order_v2_without_evidence_is_byte_identical_to_v1(tmp_path):
+    """Arms without evidence must produce byte-identical requests under both
+    orders — the change is scoped to exactly the arms it targets."""
+
+    bodies = {}
+
+    def make_post(key):
+        def fake_post(url, body):
+            bodies[key] = body
+            return _canned_response()
+        return fake_post
+
+    for key, order in (("v1", "system-instruction-v1"), ("v2", "evidence-first-system-v2")):
+        transport = _transport(
+            _base_url(), tmp_path, post=make_post(key), prompt_order=order
+        )
+        transport(json.dumps(_boundary_payload(tmp_path)).encode())
+    assert bodies["v1"] == bodies["v2"]
+
+
+def test_unknown_prompt_order_refused_at_construction(tmp_path):
+    with pytest.raises(Exception, match="prompt_order"):
+        _transport(
+            _base_url(), tmp_path, post=lambda u, b: _canned_response(),
+            prompt_order="evidence-last",
+        )
+
+
 def test_usage_with_nested_detail_objects_keeps_scalar_counters_only(tmp_path):
     """2026-08-08: the first successful real request died at the LAST step —
     newer llama-server usage blocks carry nested objects (OpenAI-style

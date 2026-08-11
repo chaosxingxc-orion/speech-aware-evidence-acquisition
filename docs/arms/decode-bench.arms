@@ -1,0 +1,30 @@
+# SAEA-BENCH-decode-q4km — decode-rate ATTRIBUTION probe (owner directive
+# 2026-08-11: "decode 探针跑完把归因结果给我"). The observed decode is 10-20x
+# below what a 3B-active MoE on this card should give (6.31 tok/s per slot at
+# ~1.0k context, 3-4 at ~4.7k, vs a 60-150 tok/s realistic band), and THAT —
+# not token accounting — is what makes large campaigns take days. Three
+# single-delta configurations against the locked config A reference
+# (fd7ba3: 6.31 tok/s per slot at 4-way), identical bare-core arm, same fast
+# split, wall clock NOT the readout — per-slot decode rates from the server
+# log are:
+#
+#   --model decode-c16k    -c 16384 (4k/slot)   M1: VRAM-spill hypothesis —
+#                          if decode jumps when ~2.5 GB of KV reservation is
+#                          returned, the 95.7%-full card is silently backing
+#                          allocations with host memory (-ngl 999 disables
+#                          llama.cpp's own fitting);
+#   --model decode-f16kv   -ctk/-ctv f16 -c 24576   M2: quantized-KV
+#                          flash-attention kernel path on sm_120 — f16 KV in
+#                          VRAM isolates the kernel from the memory question
+#                          (the 2026-08-09 f16 datum had KV in system RAM);
+#   --model decode-np2     -np 2 -c 24576   M3: MoE batch-dimension
+#                          efficiency — if per-slot rate nearly doubles at
+#                          np2, 4-way batching buys little aggregate and the
+#                          bottleneck is the batched MoE kernel itself.
+#
+# M3 (llama.cpp version upgrade) and the WSL dxgkrnl overhead are NOT probed
+# here; the attribution from these three points decides whether the upgrade
+# bench is the next move. vLLM is ruled out by owner judgment (2026-08-11).
+#
+# run_id:baseline_fragment
+SAEA-BENCH-decode-q4km:bare-core-ojw

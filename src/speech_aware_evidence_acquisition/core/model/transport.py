@@ -63,7 +63,27 @@ class LlamaServerTransport:
         runtime_root: Path,
         timeout_seconds: float = 300.0,
         post: Callable[[str, bytes], bytes] | None = None,
+        prompt_order: str = "system-instruction-v1",
     ) -> None:
+        # Prompt ordering is part of the request's identity: the bytes the
+        # model sees change with it, so it is a MODEL-CONFIG field (inside the
+        # config hash), never a code default silently applied to existing
+        # arms. "system-instruction-v1" is the historical order ([system:
+        # instruction+tail][user: evidence…, audio]). "evidence-first-system-v2"
+        # (SAEA-BENCH-cacheorder-q4km, 2026-08-11) moves the STABLE evidence
+        # text into the system message ahead of the instruction(+tail), so the
+        # cacheable prefix covers evidence+instruction and dies only at the
+        # per-slice tail: measured under v1, the varying tail sits BEFORE the
+        # evidence and the prefix cache scored 1 hit in 91 evidence slices;
+        # the one hit re-prefilled exactly tail+audio (~799 tok), proving the
+        # mechanism. Arms without evidence produce byte-identical requests
+        # under both orders.
+        if prompt_order not in ("system-instruction-v1", "evidence-first-system-v2"):
+            raise SessionError(
+                f"unknown prompt_order {prompt_order!r}; allowed: "
+                "'system-instruction-v1', 'evidence-first-system-v2'"
+            )
+        self._prompt_order = prompt_order
         # R0 repair T5 (I5): there is no "no session" transport, mirroring the
         # T3 fail-closed constructor discipline for PayloadBindingContext --
         # a caller can never construct a transport that could ever be asked
@@ -146,24 +166,33 @@ class LlamaServerTransport:
         # evidence formatting string and per-field iteration order
         # (supplied_evidence then retrieved_evidence) are unchanged, only
         # their position relative to the audio part moves.
-        content: list[dict[str, object]] = []
+        evidence_texts: list[str] = []
         for field in ("supplied_evidence", "retrieved_evidence"):
             for item in payload.get(field, []):  # type: ignore[union-attr]
-                content.append(
-                    {"type": "text", "text": f"[evidence {item['evidence_id']}] {item['content']}"}
-                )
-        content.append(
-            {
-                "type": "input_audio",
-                "input_audio": {"data": audio_b64, "format": media.suffix.lstrip(".").lower()},
-            }
-        )
-        body: dict[str, object] = {
-            "messages": [
+                evidence_texts.append(f"[evidence {item['evidence_id']}] {item['content']}")
+        audio_part = {
+            "type": "input_audio",
+            "input_audio": {"data": audio_b64, "format": media.suffix.lstrip(".").lower()},
+        }
+        if self._prompt_order == "evidence-first-system-v2":
+            # Stable-first order: [system: evidence…, instruction(+tail at its
+            # end)][user: audio]. The evidence formatting strings are
+            # byte-identical to v1; only their position moves.
+            system_text = "\n\n".join([*evidence_texts, str(payload["task_instruction"])])
+            messages = [
+                {"role": "system", "content": system_text},
+                {"role": "user", "content": [audio_part]},
+            ]
+        else:
+            content: list[dict[str, object]] = [
+                {"type": "text", "text": text} for text in evidence_texts
+            ]
+            content.append(audio_part)
+            messages = [
                 {"role": "system", "content": payload["task_instruction"]},
                 {"role": "user", "content": content},
-            ],
-        }
+            ]
+        body: dict[str, object] = {"messages": messages}
         for key, value in dict(payload.get("decoding_params", {})).items():  # type: ignore[arg-type]
             if key in body:
                 raise FrozenCoreError(
@@ -219,6 +248,7 @@ def _llama_server_factory(
         runtime_receipt,
         runtime_root,
         float(values.get("timeout_seconds", 300.0)),
+        prompt_order=str(values.get("prompt_order", "system-instruction-v1")),
     )
 
 

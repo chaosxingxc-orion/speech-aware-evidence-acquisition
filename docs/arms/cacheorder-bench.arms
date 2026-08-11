@@ -1,0 +1,36 @@
+# SAEA-BENCH-cacheorder-q4km — the combined cache bench: slot affinity +
+# stable-first prompt order + evidence-sized timeout (owner GO 2026-08-11
+# "V1 补丁和组合 bench 落下去").
+#
+# Supersedes SAEA-BENCH-idslot-q4km, whose read-out (ABORTED, 95 calls,
+# 1 cache hit in 91 evidence slices) proved pinning alone cannot help while
+# the per-slice rolling tail sits in the system message AHEAD of the stable
+# evidence block — the cacheable prefix dies before the evidence starts. The
+# one hit re-prefilled exactly tail+audio (~799 tok): every link of the chain
+# works the moment the prefix is stable.
+#
+# Fragment q4km-cacheorder, three deltas vs locked config A (same server args):
+#   id_slot "per-sample"                  — sample→slot pinning (already built);
+#   prompt_order "evidence-first-system-v2" — [system: evidence…, instruction+tail]
+#                                           [user: audio]; bare-core requests are
+#                                           byte-identical under both orders;
+#   timeout_seconds 240 → 420             — the armed logging finally named the
+#                                           silent killer: a runaway evidence
+#                                           slice decoding toward the 1024-token
+#                                           cap at ~3 tok/s needs ~340 s and hit
+#                                           the 240 s ceiling deterministically
+#                                           (TimeoutError ×2 → skip ×2 → abort);
+#                                           420 s makes the retry able to flag it
+#                                           as saturation instead of dying.
+#
+# OFF reference: SAEA-E-002F-r4-matched attempt d02706 (42.7 min, WER 0.2513).
+# Pre-registered predictions: prefill per slice drops to ~900 tok after each
+# sample's first slice; wall 15-25% below the reference; WER inside the
+# same-config noise band [0.2359, 0.2680] + digit/entity spot-check — note the
+# order change IS a semantic prompt change, so the WER equivalence read is a
+# real scientific check, not a formality. Adoption: all three → re-lock as the
+# deployment config before the R4 n=10 re-run; any miss → analyze which delta
+# failed before retiring anything.
+#
+# run_id:baseline_fragment
+SAEA-BENCH-cacheorder-q4km:fixed-legal-context-ojw
