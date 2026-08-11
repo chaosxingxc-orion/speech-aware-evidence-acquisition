@@ -72,6 +72,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import logging
 import math
 import shutil
 import subprocess
@@ -158,6 +159,15 @@ _EPSILON_SECONDS = 1e-6
 # either way). This is unchanged 2026-08-08 retry classification, not a new
 # decision -- Task 2 only changed what happens AFTER exhaustion.
 SLICE_RETRYABLE_EXCEPTIONS = (FrozenCoreError, TimeoutError, ConnectionError)
+
+# One WARNING per swallowed retryable failure (2026-08-11 live incident): the
+# matched fast arm aborted on two silently skipped slices, and because the
+# swallowed exception was never logged anywhere and the OBS trace of an
+# ABORTED attempt is never persisted, the ONLY on-disk evidence was the
+# generic skip-bound wording -- the actual failure class and message were
+# unrecoverable. Logging here is diagnosis only: it changes no request bytes,
+# no retry/skip semantics, and no hash.
+_LOG = logging.getLogger(__name__)
 
 # Per-slice decode-cap saturation (2026-08-09, continues the retry finding
 # above): configs/model/qwen3-omni-llamacpp-q4km.json now caps
@@ -248,7 +258,12 @@ def request_slice_with_retry(adapter_request, build_payload, request_id, retry_m
             response = adapter_request(payload)
             saturated = _slice_saturated(getattr(response, "usage", None), max_tokens)
             return attempt_id, response, (request_id if attempt else None), saturated, False
-        except SLICE_RETRYABLE_EXCEPTIONS:
+        except SLICE_RETRYABLE_EXCEPTIONS as error:
+            _LOG.warning(
+                "slice request %s attempt %d/%d failed retryably: %s: %s",
+                attempt_id, attempt + 1, max(0, int(retry_max)) + 1,
+                type(error).__name__, error,
+            )
             if attempt >= retry_max:
                 return attempt_id, None, (request_id if attempt else None), False, True
     raise AssertionError("unreachable: the loop either returns or re-raises")

@@ -645,6 +645,39 @@ class TestSliceRetry:
         assert saturated is False
         assert skipped is True
 
+    def test_exhaustion_logs_each_swallowed_failure(self, caplog):
+        """2026-08-11 live incident: two slices skipped on a build-time
+        FrozenCoreError left NO on-disk evidence of the actual failure — the
+        exception was swallowed unlogged and an ABORTED attempt never persists
+        its OBS trace. Every swallowed retryable failure now emits one WARNING
+        naming the attempt id, the class, and the message."""
+
+        import logging as _logging
+
+        from speech_aware_evidence_acquisition.core.model import FrozenCoreError
+        from speech_aware_evidence_acquisition.reproduction.obs_loop import (
+            request_slice_with_retry,
+        )
+
+        def always_refused(payload):
+            raise FrozenCoreError("the real reason the gate refused")
+
+        with caplog.at_level(
+            _logging.WARNING,
+            logger="speech_aware_evidence_acquisition.reproduction.obs_loop",
+        ):
+            *_, skipped = request_slice_with_retry(
+                always_refused, lambda rid: {"request_id": rid}, "req-0001-i0042", 1
+            )
+        assert skipped is True
+        warnings = [r for r in caplog.records if "failed retryably" in r.getMessage()]
+        assert len(warnings) == 2  # the original attempt plus one retry
+        assert "req-0001-i0042 attempt 1/2" in warnings[0].getMessage()
+        assert "req-0001-i0042-r1 attempt 2/2" in warnings[1].getMessage()
+        for record in warnings:
+            assert "FrozenCoreError" in record.getMessage()
+            assert "the real reason the gate refused" in record.getMessage()
+
     def test_helper_never_raises_on_retry_exhaustion_with_retries_disabled(self):
         """retry_max=0 exhausts on the FIRST failure -- still a skip, never a
         raise, and retry_of is None (no retry was ever attempted)."""

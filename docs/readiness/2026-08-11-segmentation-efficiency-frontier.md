@@ -25,7 +25,9 @@ determinism result adds a second binding axis nobody planned for:
 | boundary overrun | 1,648 s advanced past untranscribed by the model-declared boundary | same |
 | current overlap factor | 1.207× (612 calls over 30,408 s) | cost model |
 | locked-config wall | 10.8 s wall per 60 s slice at 4-way = 5.5× real time; WER 0.2359 on fast-e21-sub3 | serving verdict (2026-08-10) |
-| **run-to-run noise, same config hash** | **mean WER 0.2359 → 0.2680 (Δ 3.2 pp) across two runs of the identical configuration; per-sample −3.5 to +9.6 pp; slice counts 126 vs 124; 114/129 slice responses diverge, first at slice 3** | determinism repeat 54a5e7 vs fd7ba3 (2026-08-11) |
+| **run-to-run noise, same config hash** | **three runs of the identical configuration: mean WER 0.2359 / 0.2680 / 0.2604 (band 3.2 pp); per-sample range up to 13.6 pp with orderings inverting; slice counts 126/124/126; 114/129 slice responses diverge, first at slice 3** | fd7ba3 / 54a5e7 / E-002F-nocontext dfc630 (2026-08-11) |
+| **per-call wall-clock floor** | **≈4.3 s** (two-point fit with slice10: latency ≈ 0.40×audio + 4.3 s at 4-way) — invisible in the 13–60 s fit range, dominant below it | slice10 probe f8292e (2026-08-11) |
+| **per-call output intercept** | **~18 completion tok** (boundary-report format): slice10 slices emit 42.8 tok where the transcript needs ~25 | same |
 | evidence block (SUPPLY arms) | 1,850 tok median / 5,835 worst per call, re-prefilled EVERY call — measured zero prompt-cache hits | 72179f log analysis (2026-08-11) |
 | prompt-cache machinery | exact-prefix KV reuse present and on by default in the pinned build; media chunks hash-match; misses are caused by slot churn at 4×4 saturation | source audit of fdbd6abee (2026-08-11) |
 | pause structure | a ≥1 s pause every 12–55 s in 9/10 discovery files; 4366522 is energy-VAD-blind (7 dB dynamic range) | cost-model memo §VAD |
@@ -81,7 +83,7 @@ row = S0.
 | S0 | **60 s buffer, model boundary, 1.2× overlap** (current) | 72 | 72.0 k (1.00×) | ~1,000 | 72 overlap-dedup | boundary cascade (measured ±3.2 pp) | **658 s (measured)** | locked baseline |
 | S1 | 60 s fixed window, no overlap (`a1a-fixed-window-ojw`, exists) | 60 | 60.0 k (0.83×) | ~1,000 | 60 hard cuts | per-slice flips only, no cascade | ~550 s | E-004 A-1a arm, designed |
 | S2 | pause-packed 60–90 s, no overlap (recommended shape, 2026-08-09) | 40–60 | 55–60 k (0.77–0.83×) | 1,000–1,400 | 40–60 pause-aligned | no cascade (cuts are signal-derived, run-invariant) | ~520–610 s | needs packer + per-file VAD threshold |
-| S3 | 10 s buffer, 1.2× overlap (`a2a-buffer10-ojw`) | 432 | 154 k (2.14×) | ~357 | **432 overlap-dedup** | cascade ×6 boundary decisions | 400–700 s (probe decides) | **registered, runs tonight** |
+| S3 | 10 s buffer, 1.2× overlap (`a2a-buffer10-ojw`) | 432 | 154 k (**measured 2.11×**) | ~357 (measured 352) | **432 overlap-dedup** | cascade ×6 boundary decisions | **MEASURED: 1.75× SLOWER (42 vs 24 min) and WER 0.5337 (+27 pp)** | **DEAD — both kill-rules fired** |
 | S4 | interleaved listen-and-spell, step S window W (IC-001) | 3600/S | 12.87·W/S per s + cached history | history + 12.87·W | none (continue-the-text) | no cuts; history content still noise-carrying | unknown; compaction-bound | design after P1–P3 |
 | S5 | S0 + per-sample `id_slot` cache affinity | 72 | 72.0 k charged, stable prefix prefilled once | ~1,000 | 72 overlap-dedup | **reduces timing variance** (less prefill contention) — may shrink the cascade trigger | bare-core −5–10 %; **evidence arms −20–30 %** | bench proposal to owner |
 
@@ -111,8 +113,8 @@ What the table settles on measurement alone:
 
 | rung | probe | what it kills | status |
 |---|---|---|---|
-| P0 | determinism repeat (54a5e7 vs fd7ba3) | the run-to-run noise floor | **DONE tonight: non-deterministic, ±3.2 pp mean** |
-| P1 | `SAEA-BENCH-slice10-q4km` (S3) | decode-vs-context at fixed concurrency; per-call floor; encode(10 s); stitch×6 WER prediction | **registered, runs tonight after the fast set** |
+| P0 | determinism repeat (54a5e7 vs fd7ba3) | the run-to-run noise floor | **DONE: non-deterministic; 3-run band 3.2 pp mean, 13.6 pp per-sample** |
+| P1 | `SAEA-BENCH-slice10-q4km` (S3) | decode-vs-context at fixed concurrency; per-call floor; encode(10 s); stitch×6 WER prediction | **DONE: both kill-rules fired — 42 min (1.75× slower), WER 0.5337 (+27 pp); floor ≈4.3 s/call; token model verified (2.11× vs 2.14× predicted)** |
 | P2 | id_slot affinity bench (S5, matched-style arm) | cache-hit wall saving on evidence arms; batch-composition numerics effect (may also REDUCE noise) | proposal due to owner after the fast set |
 | P3 | A-1a fixed-window contrast (S1) | hard-cut WER vs model-boundary WER; the 0.83× no-overlap gain; **cascade-free determinism check for free** (fixed windows ⇒ run-invariant slice audio) | designed inside E-004 wave1 |
 | P4 | pause-packed prototype (S2) | pause-cut WER; packer feasibility incl. the VAD-blind file (webrtc fallback) | needs packer implementation; go/no-go after P1+P3 |
@@ -122,12 +124,17 @@ Decision rules, pre-stated so the reading is mechanical:
 
 - P1 WER degrades ≥3 pp → 10 s granularity is dead for scientific arms in ANY
   overlapping design; short steps survive only inside S4 (seamless) designs.
+  **FIRED (+26.6 pp above the 3-run noise band).**
 - P1 net wall ≥ 22.8 min (the S0 fast-split reference) → the per-call floor
   dominates; fine granularity is dead on efficiency grounds too, and the
   efficiency direction is locked to S1/S2 (fewer, longer calls) + S5 (cache).
+  **FIRED (40.6 min net; floor ≈4.3 s/call, ~28 of the 42 minutes).**
 - P1 net wall materially < 22.8 min AND WER holds → the decode-context effect
   is real and large; S4's design proceeds with priority, because it is the
-  only way to keep short contexts without paying seams.
+  only way to keep short contexts without paying seams. **DID NOT FIRE — any
+  S4 design must beat the 4.3 s floor per step, which at 1 s steps would be
+  ~13× real time of pure overhead; steps below ~20 s are not viable on this
+  serving stack without amortising the floor.**
 - P2 saves ≥15 % on the matched-style arm → propose id_slot into the locked
   config via a re-lock bench before the full R4 re-run (two of its three arms
   carry evidence). Transcript A/B is part of that bench either way.
