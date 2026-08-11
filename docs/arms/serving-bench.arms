@@ -24,5 +24,15 @@
 # expected outcome; a divergence would mean serving configuration perturbs
 # numerics, which must be known before any arm's numbers are trusted.
 #
+# RESULT (read 2026-08-10, docs/readiness/2026-08-10-serving-config-verdict.md):
+# A LOCKED — 22.8 min net / 10.8 s/slice / WER 0.2359, vs B 29.1 min / 0.2601
+# and C 31.0 min / 0.3451 (+1 saturated runaway slice). No encode/decode
+# overlap: B's +3.2 s/slice is the full CPU-encode delta on the critical path.
+# The identical-WER expectation was FALSIFIED — serving configuration perturbs
+# numerics (±3–7 pp per sample) and even slice counts (126/125/125), so the
+# serving args are load-bearing and stay frozen inside the config hash.
+# B/C fragments deleted from configs/model/ (bytes at fb234a8). Determinism
+# repeat under A remains OPEN (attempt 639d36 aborted pre-touch, server died).
+#
 # run_id:baseline_fragment
 SAEA-BENCH-serving-q4km:bare-core-ojw
