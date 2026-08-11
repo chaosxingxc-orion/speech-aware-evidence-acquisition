@@ -322,17 +322,21 @@ def test_q4km_repo_fragment_composes_with_the_expected_runtime_selection():
         REPO_ROOT, "qwen3-omni-llamacpp-q4km", "earnings22-dev-subset10", "bare-core", "r0-smoke"
     )
     assert composed.values["model_lock_key"] == "qwen3-omni-30b-a3b-instruct-gguf-q4km"
-    # 2026-08-09: 900 -> 240 s, plus a 1024-token generation cap. Two arms
-    # aborted (577 / 581 calls) because ONE asr slice never returned; every
-    # other request in those runs finished within 38.6 s, so nothing was
-    # degrading. Uncapped, llama.cpp decodes until the slot's 12,288-token
-    # context fills, which under obs_batch_samples=4 contention outruns the
-    # request ceiling -- and since decoding is deterministic (temperature 0,
-    # fixed seed) the one bounded retry re-sent a byte-identical request and
-    # hung identically. The cap is what makes that worst case finite; the
-    # retry alone can only ever recover *transient* failures.
-    assert composed.values["timeout_seconds"] == 240.0
+    # 2026-08-09: 900 -> 240 s, plus a 1024-token generation cap (two arms
+    # aborted on ONE runaway slice each; the cap makes the worst case
+    # finite). 2026-08-11 RE-LOCK (config A-prime, cacheorder re-verify
+    # 73488c): 240 -> 420 s -- a runaway EVIDENCE slice decoding toward the
+    # cap at ~3 tok/s needs ~340 s and deterministically crossed the 240 s
+    # ceiling (the armed retry logging named it: TimeoutError x2 -> skip x2
+    # -> abort); 420 s lets it finish into a quarantined saturation flag
+    # instead of killing the arm. Same re-lock adds per-sample slot
+    # affinity and the stable-first prompt order (evidence ahead of the
+    # instruction+tail in the system message; bare-core prompts are
+    # byte-identical under both orders).
+    assert composed.values["timeout_seconds"] == 420.0
     assert composed.values["decoding_params"]["max_tokens"] == 1024
+    assert composed.values["decoding_params"]["id_slot"] == "per-sample"
+    assert composed.values["prompt_order"] == "evidence-first-system-v2"
     # 2026-08-09 ops-measured sizing (docs/readiness/2026-08-09-*): the worst
     # request is ~11.8k tokens (ConEC evidence tokenizes at 2.19 B/token), so
     # 12,288 tok/slot is the minimum viable; q8_0 KV keeps the whole thing on
