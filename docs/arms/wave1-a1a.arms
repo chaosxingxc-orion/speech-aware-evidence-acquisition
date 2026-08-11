@@ -1,0 +1,17 @@
+# SAEA-E-004 A-1a CONFIRMATION pair on the registered wave1-e21-sub5 split
+# (owner directive 2026-08-11 "把 wave1-sub5 的 A-1a 确认也排上" — explicit
+# authorization past the 30-min task cap; ~45 min per arm at n=5).
+#
+# The fast pair (E-004F) measured fixedwindow BETTER by 6.7 pp at 20% fewer
+# calls. This pair confirms the effect size on the unexposed, seeded n=5
+# design split under locked A-prime. Read: paired per-call deltas + corpus
+# WER; exact-Wilcoxon two-sided floor at n=5 is 0.0625 — direction and
+# effect size, never significance (registered E-004 discipline).
+# Adoption rule: fixedwindow confirms directionally (>=3 of 5 samples
+# improve, corpus WER better) -> S1 becomes the default substrate for new
+# arms via a re-registered baseline set; a reversal or a wash -> the fast
+# result is demoted to split-bias and the boundary machinery survives.
+#
+# run_id:baseline_fragment
+SAEA-E-004-a1a-control:bare-core-ojw
+SAEA-E-004-a1a-fixedwindow:a1a-fixed-window-ojw
