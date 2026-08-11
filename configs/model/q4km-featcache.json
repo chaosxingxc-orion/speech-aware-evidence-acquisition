@@ -26,6 +26,6 @@
   },
   "prompt_order": "evidence-first-system-v2",
   "server_env": {
-    "LLAMA_MTMD_FEAT_CACHE_DIR": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/derived/audio-features/q4km-fdbd6ab-featcache"
+    "LLAMA_MTMD_FEAT_CACHE_DIR": "/home/chao/feat-cache/q4km"
   }
 }
