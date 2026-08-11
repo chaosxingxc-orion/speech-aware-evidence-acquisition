@@ -1,0 +1,15 @@
+# SAEA-E-002F matched arm re-run, alone.
+#
+# History: the first fast-set pass (2026-08-11) completed nocontext (0.2604)
+# and mismatched (0.2623) but ABORTED matched at 107 calls — two slices of
+# 4387383 failed BEFORE their requests were sent (never metered, never at the
+# server) and the underlying exception was swallowed unlogged. The paired
+# criterion is not evaluable without this arm.
+#
+# This re-run executes under the same pre-registered ledger row (spend to
+# date stays on record; envelope 1,500 calls holds) at a commit where
+# request_slice_with_retry logs every swallowed failure — if the build-time
+# failure recurs on this cascade path, the driver log names it.
+#
+# run_id:baseline_fragment
+SAEA-E-002F-r4-matched:fixed-legal-context-ojw
