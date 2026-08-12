@@ -1,0 +1,7 @@
+# buf30 solo rerun: the first authoring kept the 60s-era advance params
+# (min 20 / max 55) against buffer=30 and ObsLoopConfig.from_values refused
+# (fail-closed, zero spend). Advance params scaled to the window (10/27/25);
+# in fixed mode they are inert bounds, but the legality contract holds.
+# Same run_id, same registration row.
+# run_id:baseline_fragment
+SAEA-BENCH-buf30:fixed-batch-bare16-buf30
