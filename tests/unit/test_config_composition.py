@@ -312,9 +312,10 @@ def test_config_hash_changes_when_a_fragment_declares_runtime_receipt(tmp_path):
 
 
 def test_q4km_repo_fragment_composes_with_the_expected_runtime_selection():
-    """The real committed fragment (deliverable 3): same shape as the
-    existing batch-profile config, minus the CPU-offload override, plus the
-    runtime_receipt selection pointing at the Q4_K_M receipt."""
+    """The real committed fragment (deliverable 3): the locked serving
+    baseline. Since the 2026-08-12 A-double-prime re-lock this is the
+    hbmfree shape: feature-cache build receipt, mmproj evicted to host,
+    np8 with slots sized to the measured evidence-prompt ceiling."""
 
     from speech_aware_evidence_acquisition.e0.artifacts import REPO_ROOT
 
@@ -337,17 +338,29 @@ def test_q4km_repo_fragment_composes_with_the_expected_runtime_selection():
     assert composed.values["decoding_params"]["max_tokens"] == 1024
     assert composed.values["decoding_params"]["id_slot"] == "per-sample"
     assert composed.values["prompt_order"] == "evidence-first-system-v2"
-    # 2026-08-09 ops-measured sizing (docs/readiness/2026-08-09-*): the worst
-    # request is ~11.8k tokens (ConEC evidence tokenizes at 2.19 B/token), so
-    # 12,288 tok/slot is the minimum viable; q8_0 KV keeps the whole thing on
-    # GPU with a 1,057 MiB margin that held +0 MiB over an 88-request test.
+    # 2026-08-12 RE-LOCK (config A-double-prime, hbmfree probes A+B): the
+    # feature cache makes the audio encoder a no-op on warm corpora (806/806
+    # hits, zero encoder calls), so --no-mmproj-offload evicts the mmproj's
+    # 2.9 GB from the GPU with none of the config-B-era CPU-encode penalty
+    # (probe A: peak 18,738 MiB, WER on the no-tail floor, wall in-band).
+    # The freed HBM buys evidence-arm np8: slots re-sized to the MEASURED
+    # prompt ceiling (R4 max 7,611 + 1,024 gen -> 10,240/slot; the ConEC
+    # worst-case 12,288 guess is retired), and -c 81920 -np 8 fits at
+    # 22,114 MiB peak where the mmproj-resident equivalent could not boot
+    # (config C's grave). Same matched-evidence workload: 43.2 min on the
+    # np4 sequential era -> 20 min (probe B, SAEA-BENCH-hbmfree-evid).
+    # The cache dir env is part of the config hash; the receipt binds the
+    # patched build (5d9dfcb58).
     assert composed.values["server_args"] == [
-        "-c", "49152", "-np", "4", "-fa", "on", "-ngl", "999",
-        "-ctk", "q8_0", "-ctv", "q8_0",
+        "-c", "81920", "-np", "8", "-fa", "on", "-ngl", "999",
+        "-ctk", "q8_0", "-ctv", "q8_0", "--no-mmproj-offload",
     ]
     assert "-ot" not in composed.values["server_args"]
-    assert composed.values["runtime_receipt"] == "receipts/runtime-q4km.json"
-    assert runtime_receipt_relpath(composed.values) == "receipts/runtime-q4km.json"
+    assert composed.values["runtime_receipt"] == "receipts/runtime-q4km-featcache.json"
+    assert runtime_receipt_relpath(composed.values) == "receipts/runtime-q4km-featcache.json"
+    assert composed.values["server_env"] == {
+        "LLAMA_MTMD_FEAT_CACHE_DIR": "/home/chao/feat-cache/q4km"
+    }
 
     base_composed = compose(
         REPO_ROOT, "qwen3-omni-llamacpp", "earnings22-dev-subset10", "bare-core", "r0-smoke"
