@@ -2,8 +2,10 @@
 
 Standing owner sequence closed by this plan's premise: featcache locked (HBM purchase measured),
 batch locked (np8 bare + np8 evidence), baseline packaged
-(`2026-08-12-a2-baseline-verdict.md`). Everything below runs on the a2 substrate: fixed windows,
-tail 0, slice-parallel ×8, featcache warm, mmproj off-GPU.
+(`2026-08-12-hbmfree-baseline-verdict.md`, the consolidated A″ verdict). Everything below runs
+on the a2 substrate: fixed windows, tail 0, slice-parallel ×8, featcache warm, mmproj off-GPU.
+Naming map: Wave A2-1 here is the run the verdict doc queues as "E-005" — the formal ID is
+assigned at registration time.
 
 Phase note: the "no task over 30 minutes" rule governed the perf-tuning phase. The campaigns
 below are science reads with per-arm walls beyond 30 min at n=10; they need the owner to close

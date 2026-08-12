@@ -55,6 +55,25 @@ over-allocation costs no measured decode speed — M1), evidence arms fit to the
 ceiling. Substrate baselines for new work: fixed windows + `tail=0` + `trim=0` +
 `obs_batch_slices 8` (`fixed-batch-bare8` / `-matched8` / `-mismatched8`).
 
+## Fragment naming, provenance, and authorship of this re-lock
+
+Named per-workload references exist beside the canonical lock:
+`qwen3-omni-llamacpp-q4km-a2-evid.json` (byte-equivalent to the canonical shape) and
+`qwen3-omni-llamacpp-q4km-a2-bare.json` (`-c 16384 -np 8` tighter bare variant — probe A's
+measured shape: 16 min, 18,738 MiB). Probe fragments `q4km-hbmfree-np8*.json` are audit
+provenance. A′'s bytes stay authoritative in history:
+`git show 5fae758:configs/model/qwen3-omni-llamacpp-q4km.json`.
+
+Authorship record: this re-lock was packaged by two concurrent sessions working the same
+checkout after probe B finalized — the babysitter session wrote the in-place canonical
+re-lock, the composition-test update, this document, and `fixed-batch-mismatched8`; the
+planning session wrote the a2-named fragments, the experiment plan
+(`2026-08-12-a2-experiment-plan.md`), and a parallel verdict since consolidated into this
+document. Commits `da8f9a4` and `328e6f8` therefore carry mixed authorship (the planning
+session's `git add -A` swept in-flight babysitter work); coherence of the merged tree was
+verified twice (37/37 composition tests; full gate suite 1,223 passed / 9 skipped).
+Single-writer discipline for one checkout is an open owner call.
+
 ## Determinism statement (honest, unchanged from the slice-parallel adoption)
 
 Runs are not byte-deterministic under concurrent slots; the measured run-to-run WER noise
