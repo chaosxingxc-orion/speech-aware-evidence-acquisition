@@ -1,0 +1,12 @@
+# SAEA-BENCH-np8short — step 3 on the new substrate (owner plan): -np 8
+# with SHORT prompts. The notail bare request is ~850 tokens, so 2048/slot
+# suffices: -c 16384's KV is SMALLER than A-prime's 49152 — np8 fits with
+# mmproj on GPU and VRAM to spare. Slice dispatch (obs_batch_slices=8)
+# saturates all 8 slots from fast-3's ~102 slices.
+# Reference: slicebatch np4 pair (17.9 / 17.5 min, WER 0.1368 / 0.1379).
+# Read: wall (M3 curve extrapolation predicts +25-35% aggregate; flat would
+# mean the batched-MoE path saturates at 4); WER vs the new ~0.1 pp
+# noise floor; per-slot decode rates from the server log.
+#
+# run_id:baseline_fragment
+SAEA-BENCH-np8short:fixed-batch-bare8
