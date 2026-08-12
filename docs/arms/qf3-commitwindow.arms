@@ -1,0 +1,8 @@
+# QF-3 — commit-window geometry on the a2 substrate (A-2a under its IC-001
+# reframing: find the window where this frozen core's verbatim accuracy
+# peaks; the 60s point is today's 13.89 nocontext floor). New cuts = cold
+# encode by construction (new bitmap keys), so these also price small- and
+# large-window cold encodes. Same fast-3 split, bare instruction, np16.
+# run_id:baseline_fragment
+SAEA-BENCH-buf30:fixed-batch-bare16-buf30
+SAEA-BENCH-buf90:fixed-batch-bare16-buf90
