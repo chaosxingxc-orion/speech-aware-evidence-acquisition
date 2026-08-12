@@ -57,9 +57,17 @@ Two serving shapes, both: pinned featcache build `5d9dfcb58` (receipt
 - **`configs/model/qwen3-omni-llamacpp-q4km-a2-evid.json`** — `-c 81920 -np 8`. Substrate
   baseline: `configs/baseline/fixed-batch-matched8.json` (same, + matched conec-contexts).
 
-Provenance probe fragments (`q4km-hbmfree-np8*.json`) stay as byte-identical audit copies; the
-a2-named files are the working reference. A′ (`qwen3-omni-llamacpp-q4km.json`) remains on disk
-as the historical config of every pre-2026-08-12 attempt and must not be edited.
+The canonical fragment **`qwen3-omni-llamacpp-q4km.json` is re-locked in place** to the evid
+shape (`-c 81920 -np 8`, hbmfree) — every existing arms invocation consumes the fragment by
+name, so in-place is what makes the re-lock take effect everywhere without churn; the unit test
+`test_q4km_repo_fragment_composes_with_the_expected_runtime_selection` asserts the new shape.
+(This in-place edit + test update were authored by the concurrent babysitter session right after
+probe B finalized and were swept into commit `da8f9a4` together with this document — recorded
+here so the mixed authorship of that commit is on the record.) A′'s bytes remain authoritative
+in history per the blob rule: `git show 5fae758:configs/model/qwen3-omni-llamacpp-q4km.json`.
+The a2-named files are explicit per-workload references: `-a2-evid` is byte-equivalent to the
+canonical lock; `-a2-bare` (`-c 16384 -np 8`) is the tighter bare-workload variant (16 min,
+18,738 MiB); probe fragments (`q4km-hbmfree-np8*.json`) stay as audit provenance.
 
 Cold-start rule: a corpus's first-ever pass pays CPU encode (~6.8 s/60s-slice) once under
 `--no-mmproj-offload`. For campaigns on new audio, either accept the one-time cost or run one
