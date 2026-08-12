@@ -1,0 +1,12 @@
+# SAEA-E-003F — SUPPLY dose pilot on the clean floor. E-005F fixed the
+# endpoints: zero evidence (ctx instruction) 13.08, full matched pack 14.81
+# (+1.73 tax). These three budget arms (2k/4k/8k bytes ~= 0.9k/1.8k/3.7k
+# tokens of the pack HEAD - byte-prefix truncation, so this is a
+# dose-of-prefix curve) fill the middle: does the tax grow monotonically
+# with dose, or is there a small-dose regime where matched content pays?
+# Serving/instruction identical to the matched arm; evidence_budget_bytes
+# is the only delta and it is config-hashed.
+# run_id:baseline_fragment
+SAEA-E-003F-dose2k:fixed-batch-matched8-b2k
+SAEA-E-003F-dose4k:fixed-batch-matched8-b4k
+SAEA-E-003F-dose8k:fixed-batch-matched8-b8k
