@@ -1,0 +1,17 @@
+# SAEA-E-005F — pilot (fast-3) of the clean-floor context re-read.
+# Dual-dimension read per the 2026-08-12 stage reframe: KC-Q1 (does supplied
+# matched knowledge help at all on the clean floor) + KX-Q1 (priming vs
+# content use, via matched-vs-mismatched). Serving held constant across all
+# four arms on the locked EVIDENCE shape (canonical fragment, np8 -c 81920,
+# featcache warm, mmproj off-GPU) - contrasts must share the config hash.
+# Arm 2 is new vs R4: R4's nocontext used the bare instruction, conflating
+# evidence presence with instruction wording (R4's own noted limitation);
+# nocontext-ctxinstr isolates it. Read rules: corpus WER + per-sample paired
+# deltas against the SAEA-BENCH-evidfloor floor; n=3 pilot - directional
+# only, no significance claims; graduation to n=10 needs any pre-registered
+# contrast |delta| >= 0.5 pp AND owner D-1.
+# run_id:baseline_fragment
+SAEA-E-005F-nocontext:fixed-batch-bare8
+SAEA-E-005F-nocontext-ctxinstr:fixed-batch-nocontext8
+SAEA-E-005F-matched:fixed-batch-matched8
+SAEA-E-005F-mismatched:fixed-batch-mismatched8
