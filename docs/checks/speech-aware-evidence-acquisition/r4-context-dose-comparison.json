@@ -1,0 +1,576 @@
+{
+  "aggregate": {
+    "matched": {
+      "corpus_wer": 0.2435837610825945,
+      "macro_wer": 0.24205837398322588,
+      "n": 10,
+      "total_errors": 18792,
+      "total_reference_words": 77148
+    },
+    "mismatched": {
+      "corpus_wer": 0.2459687872660341,
+      "macro_wer": 0.24535421942201588,
+      "n": 10,
+      "total_errors": 18976,
+      "total_reference_words": 77148
+    },
+    "nocontext": {
+      "corpus_wer": 0.2711800694768497,
+      "macro_wer": 0.2593296778488324,
+      "n": 10,
+      "total_errors": 20921,
+      "total_reference_words": 77148
+    }
+  },
+  "arms": {
+    "matched": {
+      "attempt_id": "attempt-20260811T214439Z-aba607",
+      "baseline_fragment": "fixed-legal-context-ojw",
+      "config_hash": "8294718dfdb42c5a964421e51d081dc80f7c8c79dcffc77d308eb154a10735df",
+      "manifest_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E-002-r4-matched/attempt-20260811T214439Z-aba607/SAEA-E-002-r4-matched.run-manifest.json",
+      "other_completed_attempts_not_used": [
+        "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E-002-r4-matched/attempt-20260810T015430Z-72179f/SAEA-E-002-r4-matched.run-manifest.json"
+      ],
+      "run_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E-002-r4-matched",
+      "run_id": "SAEA-E-002-r4-matched",
+      "skipped_attempts": [
+        {
+          "manifest_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E-002-r4-matched/attempt-20260809T193742Z-3750d4/SAEA-E-002-r4-matched.run-manifest.json",
+          "reason": "scoring package contains a __pycache__ entry '__pycache__'; the D3 freeze binds source bytes only, so cached/forged bytecode next to frozen sources is refused rather than silently ignored -- purge it (PYTHONDONTWRITEBYTECODE=1 keeps it from reappearing) before opening the gate",
+          "status": "ABORTED"
+        },
+        {
+          "manifest_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E-002-r4-matched/attempt-20260809T214054Z-17c452/SAEA-E-002-r4-matched.run-manifest.json",
+          "reason": "[100054] component 'asr' execute 'invoke' error, reason='timed out', workflow='8db08efd1ccc4c2d97477ad38a242faf'",
+          "status": "ABORTED"
+        },
+        {
+          "manifest_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E-002-r4-matched/attempt-20260811T194434Z-b3628c",
+          "reason": "no *.run-manifest.json in this attempt directory",
+          "status": null
+        }
+      ]
+    },
+    "mismatched": {
+      "attempt_id": "attempt-20260811T235730Z-b545f5",
+      "baseline_fragment": "mismatched-evidence-ojw",
+      "config_hash": "4cd367759e25c88770301b53137aca69a46d10ffe9410f8e9c063c29459b111a",
+      "manifest_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E-002-r4-mismatched/attempt-20260811T235730Z-b545f5/SAEA-E-002-r4-mismatched.run-manifest.json",
+      "other_completed_attempts_not_used": [],
+      "run_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E-002-r4-mismatched",
+      "run_id": "SAEA-E-002-r4-mismatched",
+      "skipped_attempts": [
+        {
+          "manifest_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E-002-r4-mismatched/attempt-20260810T050041Z-5a3af6",
+          "reason": "no *.run-manifest.json in this attempt directory",
+          "status": null
+        }
+      ]
+    },
+    "nocontext": {
+      "attempt_id": "attempt-20260811T194642Z-016128",
+      "baseline_fragment": "bare-core-ojw",
+      "config_hash": "ce7970bfd7b1c046fd9f62454815bd278e75dbf59e41262add77995e62f71f4a",
+      "manifest_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E-002-r4-nocontext/attempt-20260811T194642Z-016128/SAEA-E-002-r4-nocontext.run-manifest.json",
+      "other_completed_attempts_not_used": [
+        "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E-002-r4-nocontext/attempt-20260809T194151Z-ecdb38/SAEA-E-002-r4-nocontext.run-manifest.json"
+      ],
+      "run_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E-002-r4-nocontext",
+      "run_id": "SAEA-E-002-r4-nocontext",
+      "skipped_attempts": [
+        {
+          "manifest_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E-002-r4-nocontext/attempt-20260809T085906Z-3e7579/SAEA-E-002-r4-nocontext.run-manifest.json",
+          "reason": "exposure row disagrees with the execution plan on 'split identity hash': row 'fcc1b0bc55432d02347dcdf730c6bcef561a9b0ad9605c45b367e1ed3da5d69e' vs plan '744c4b2e2d2eece3b05c68089c02000e38c96d5c62db8055d9c421fd509a8f61'; model touch refused",
+          "status": "ABORTED"
+        },
+        {
+          "manifest_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E-002-r4-nocontext/attempt-20260809T090531Z-96ccb8/SAEA-E-002-r4-nocontext.run-manifest.json",
+          "reason": "[100054] component 'asr' execute 'invoke' error, reason='timed out', workflow='02434cd52c2e4261b35bc783ae6297ed'",
+          "status": "ABORTED"
+        },
+        {
+          "manifest_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E-002-r4-nocontext/attempt-20260809T112222Z-30ca91",
+          "reason": "no *.run-manifest.json in this attempt directory",
+          "status": null
+        },
+        {
+          "manifest_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E-002-r4-nocontext/attempt-20260809T163132Z-7a771c",
+          "reason": "no *.run-manifest.json in this attempt directory",
+          "status": null
+        },
+        {
+          "manifest_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E-002-r4-nocontext/attempt-20260809T171603Z-1c09ee/SAEA-E-002-r4-nocontext.run-manifest.json",
+          "reason": "[100054] component 'asr' execute 'invoke' error, reason='timed out', workflow='c5982d1f5a58405f8f70de505be38091'",
+          "status": "ABORTED"
+        },
+        {
+          "manifest_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E-002-r4-nocontext/attempt-20260809T193528Z-f2d7c1/SAEA-E-002-r4-nocontext.run-manifest.json",
+          "reason": "scoring package contains a __pycache__ entry '__pycache__'; the D3 freeze binds source bytes only, so cached/forged bytecode next to frozen sources is refused rather than silently ignored -- purge it (PYTHONDONTWRITEBYTECODE=1 keeps it from reappearing) before opening the gate",
+          "status": "ABORTED"
+        },
+        {
+          "manifest_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E-002-r4-nocontext/attempt-20260811T133414Z-a50ffb",
+          "reason": "no *.run-manifest.json in this attempt directory",
+          "status": null
+        },
+        {
+          "manifest_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E-002-r4-nocontext/attempt-20260811T193619Z-6535f7/SAEA-E-002-r4-nocontext.run-manifest.json",
+          "reason": "sample '4330115' exceeded obs_slice_skip_max=1 skipped slices (skipped_slices=2, obs_slice_retry_max=1 exhausted on each); refusing to score a sample missing more audio than the configured bound tolerates",
+          "status": "ABORTED"
+        }
+      ]
+    }
+  },
+  "bootstrap": {
+    "resamples": 10000,
+    "seed": 20260807
+  },
+  "comparability": {
+    "n_samples": 10,
+    "ok": true,
+    "sample_ids": [
+      "4330115",
+      "4365024",
+      "4365948",
+      "4366429",
+      "4366522",
+      "4384964",
+      "4385072",
+      "4387383",
+      "4389907",
+      "4397829"
+    ],
+    "split_identity_hash": "744c4b2e2d2eece3b05c68089c02000e38c96d5c62db8055d9c421fd509a8f61"
+  },
+  "contrasts": {
+    "matched_vs_mismatched": {
+      "bootstrap": {
+        "mean": {
+          "ci95": [
+            -0.011623402540976898,
+            0.004815548463796576
+          ],
+          "point_estimate": -0.0032958454387899934
+        },
+        "median": {
+          "ci95": [
+            -0.015768416097905386,
+            0.011886033910155552
+          ],
+          "point_estimate": -0.004412859564405985
+        },
+        "resamples": 10000,
+        "seed": 20260807
+      },
+      "condition_arm": "matched",
+      "diff_convention": "wer(matched) - wer(mismatched); negative = matched better",
+      "diffs": [
+        0.016741405082212252,
+        -0.0017720023626698334,
+        -0.010906411201179078,
+        0.011886033910155552,
+        -0.015768416097905386,
+        0.012231822153188965,
+        -0.01907645722937168,
+        -0.007053716766142137,
+        0.0033849129593810368,
+        -0.022625624835569624
+      ],
+      "reference_arm": "mismatched",
+      "sample_ids": [
+        "4330115",
+        "4365024",
+        "4365948",
+        "4366429",
+        "4366522",
+        "4384964",
+        "4385072",
+        "4387383",
+        "4389907",
+        "4397829"
+      ],
+      "wilcoxon": {
+        "min_achievable_two_sided_p": 0.001953125,
+        "n_effective_nonzero": 10,
+        "n_pairs": 10,
+        "note": "exact two-sided Wilcoxon signed-rank test over 10 nonzero paired difference(s); the smallest p-value this test can ever report at this n is 0.00195312 -- do not read a p-value near this floor as strong evidence",
+        "pvalue_two_sided_exact": 0.556640625,
+        "statistic_w_plus": 21.0
+      }
+    },
+    "matched_vs_nocontext": {
+      "bootstrap": {
+        "mean": {
+          "ci95": [
+            -0.04488857698042727,
+            0.009512515793948217
+          ],
+          "point_estimate": -0.017271303865606498
+        },
+        "median": {
+          "ci95": [
+            -0.055709462523844955,
+            0.026606875934230195
+          ],
+          "point_estimate": -0.021325931828143685
+        },
+        "resamples": 10000,
+        "seed": 20260807
+      },
+      "condition_arm": "matched",
+      "diff_convention": "wer(matched) - wer(nocontext); negative = matched better",
+      "diffs": [
+        0.026606875934230195,
+        -0.018479453210699548,
+        -0.07988209285187914,
+        -0.08870826778535224,
+        -0.03153683219581077,
+        -0.024172410445587822,
+        -0.0036336109008326956,
+        0.05127509495387958,
+        0.03650870406189555,
+        -0.04069104621590808
+      ],
+      "reference_arm": "nocontext",
+      "sample_ids": [
+        "4330115",
+        "4365024",
+        "4365948",
+        "4366429",
+        "4366522",
+        "4384964",
+        "4385072",
+        "4387383",
+        "4389907",
+        "4397829"
+      ],
+      "wilcoxon": {
+        "min_achievable_two_sided_p": 0.001953125,
+        "n_effective_nonzero": 10,
+        "n_pairs": 10,
+        "note": "exact two-sided Wilcoxon signed-rank test over 10 nonzero paired difference(s); the smallest p-value this test can ever report at this n is 0.00195312 -- do not read a p-value near this floor as strong evidence",
+        "pvalue_two_sided_exact": 0.375,
+        "statistic_w_plus": 18.0
+      }
+    },
+    "mismatched_vs_nocontext": {
+      "bootstrap": {
+        "mean": {
+          "ci95": [
+            -0.04310493981132292,
+            0.012583720601721485
+          ],
+          "point_estimate": -0.013975458426816504
+        },
+        "median": {
+          "ci95": [
+            -0.04352055151551926,
+            0.021494630977266227
+          ],
+          "point_estimate": -0.01623793347296755
+        },
+        "resamples": 10000,
+        "seed": 20260807
+      },
+      "condition_arm": "mismatched",
+      "diff_convention": "wer(mismatched) - wer(nocontext); negative = mismatched better",
+      "diffs": [
+        0.009865470852017943,
+        -0.016707450848029715,
+        -0.06897568165070006,
+        -0.10059430169550779,
+        -0.015768416097905386,
+        -0.03640423259877679,
+        0.015442846328538984,
+        0.05832881172002172,
+        0.03312379110251451,
+        -0.018065421380338453
+      ],
+      "reference_arm": "nocontext",
+      "sample_ids": [
+        "4330115",
+        "4365024",
+        "4365948",
+        "4366429",
+        "4366522",
+        "4384964",
+        "4385072",
+        "4387383",
+        "4389907",
+        "4397829"
+      ],
+      "wilcoxon": {
+        "min_achievable_two_sided_p": 0.001953125,
+        "n_effective_nonzero": 10,
+        "n_pairs": 10,
+        "note": "exact two-sided Wilcoxon signed-rank test over 10 nonzero paired difference(s); the smallest p-value this test can ever report at this n is 0.00195312 -- do not read a p-value near this floor as strong evidence",
+        "pvalue_two_sided_exact": 0.322265625,
+        "statistic_w_plus": 17.0
+      }
+    }
+  },
+  "generated_at": "2026-08-12T02:23:33.871421+00:00",
+  "per_sample": {
+    "4330115": {
+      "matched": {
+        "deletions": 863,
+        "hits": 5470,
+        "insertions": 267,
+        "reference_length": 6690,
+        "substitutions": 357,
+        "wer": 0.22227204783258595
+      },
+      "mismatched": {
+        "deletions": 788,
+        "hits": 5477,
+        "insertions": 162,
+        "reference_length": 6690,
+        "substitutions": 425,
+        "wer": 0.2055306427503737
+      },
+      "nocontext": {
+        "deletions": 952,
+        "hits": 5473,
+        "insertions": 92,
+        "reference_length": 6690,
+        "substitutions": 265,
+        "wer": 0.19566517189835575
+      }
+    },
+    "4365024": {
+      "matched": {
+        "deletions": 2388,
+        "hits": 8694,
+        "insertions": 538,
+        "reference_length": 11851,
+        "substitutions": 769,
+        "wer": 0.3117880347649987
+      },
+      "mismatched": {
+        "deletions": 2541,
+        "hits": 8561,
+        "insertions": 426,
+        "reference_length": 11851,
+        "substitutions": 749,
+        "wer": 0.31356003712766856
+      },
+      "nocontext": {
+        "deletions": 2757,
+        "hits": 8282,
+        "insertions": 345,
+        "reference_length": 11851,
+        "substitutions": 812,
+        "wer": 0.33026748797569827
+      }
+    },
+    "4365948": {
+      "matched": {
+        "deletions": 780,
+        "hits": 5756,
+        "insertions": 213,
+        "reference_length": 6785,
+        "substitutions": 249,
+        "wer": 0.18305084745762712
+      },
+      "mismatched": {
+        "deletions": 857,
+        "hits": 5667,
+        "insertions": 198,
+        "reference_length": 6785,
+        "substitutions": 261,
+        "wer": 0.1939572586588062
+      },
+      "nocontext": {
+        "deletions": 879,
+        "hits": 5459,
+        "insertions": 458,
+        "reference_length": 6785,
+        "substitutions": 447,
+        "wer": 0.26293294030950626
+      }
+    },
+    "4366429": {
+      "matched": {
+        "deletions": 1719,
+        "hits": 9229,
+        "insertions": 320,
+        "reference_length": 11442,
+        "substitutions": 494,
+        "wer": 0.22137738157664744
+      },
+      "mismatched": {
+        "deletions": 1534,
+        "hits": 9348,
+        "insertions": 303,
+        "reference_length": 11442,
+        "substitutions": 560,
+        "wer": 0.20949134766649188
+      },
+      "nocontext": {
+        "deletions": 2830,
+        "hits": 8080,
+        "insertions": 186,
+        "reference_length": 11442,
+        "substitutions": 532,
+        "wer": 0.31008564936199967
+      }
+    },
+    "4366522": {
+      "matched": {
+        "deletions": 600,
+        "hits": 3412,
+        "insertions": 149,
+        "reference_length": 4249,
+        "substitutions": 237,
+        "wer": 0.23205460108260767
+      },
+      "mismatched": {
+        "deletions": 697,
+        "hits": 3305,
+        "insertions": 109,
+        "reference_length": 4249,
+        "substitutions": 247,
+        "wer": 0.24782301718051306
+      },
+      "nocontext": {
+        "deletions": 648,
+        "hits": 3300,
+        "insertions": 171,
+        "reference_length": 4249,
+        "substitutions": 301,
+        "wer": 0.26359143327841844
+      }
+    },
+    "4384964": {
+      "matched": {
+        "deletions": 1953,
+        "hits": 7873,
+        "insertions": 321,
+        "reference_length": 10301,
+        "substitutions": 475,
+        "wer": 0.26686729443743323
+      },
+      "mismatched": {
+        "deletions": 1684,
+        "hits": 8109,
+        "insertions": 431,
+        "reference_length": 10301,
+        "substitutions": 508,
+        "wer": 0.25463547228424427
+      },
+      "nocontext": {
+        "deletions": 2134,
+        "hits": 7607,
+        "insertions": 304,
+        "reference_length": 10301,
+        "substitutions": 560,
+        "wer": 0.29103970488302106
+      }
+    },
+    "4385072": {
+      "matched": {
+        "deletions": 864,
+        "hits": 5524,
+        "insertions": 220,
+        "reference_length": 6605,
+        "substitutions": 217,
+        "wer": 0.19697199091597276
+      },
+      "mismatched": {
+        "deletions": 562,
+        "hits": 5660,
+        "insertions": 482,
+        "reference_length": 6605,
+        "substitutions": 383,
+        "wer": 0.21604844814534443
+      },
+      "nocontext": {
+        "deletions": 639,
+        "hits": 5581,
+        "insertions": 301,
+        "reference_length": 6605,
+        "substitutions": 385,
+        "wer": 0.20060560181680545
+      }
+    },
+    "4387383": {
+      "matched": {
+        "deletions": 563,
+        "hits": 2855,
+        "insertions": 224,
+        "reference_length": 3686,
+        "substitutions": 268,
+        "wer": 0.28621812262615304
+      },
+      "mismatched": {
+        "deletions": 531,
+        "hits": 2794,
+        "insertions": 189,
+        "reference_length": 3686,
+        "substitutions": 361,
+        "wer": 0.2932718393922952
+      },
+      "nocontext": {
+        "deletions": 348,
+        "hits": 3098,
+        "insertions": 278,
+        "reference_length": 3686,
+        "substitutions": 240,
+        "wer": 0.23494302767227346
+      }
+    },
+    "4389907": {
+      "matched": {
+        "deletions": 489,
+        "hits": 3254,
+        "insertions": 232,
+        "reference_length": 4136,
+        "substitutions": 393,
+        "wer": 0.26934235976789167
+      },
+      "mismatched": {
+        "deletions": 471,
+        "hits": 3268,
+        "insertions": 232,
+        "reference_length": 4136,
+        "substitutions": 397,
+        "wer": 0.26595744680851063
+      },
+      "nocontext": {
+        "deletions": 398,
+        "hits": 3403,
+        "insertions": 230,
+        "reference_length": 4136,
+        "substitutions": 335,
+        "wer": 0.23283365570599612
+      }
+    },
+    "4397829": {
+      "matched": {
+        "deletions": 1552,
+        "hits": 9230,
+        "insertions": 457,
+        "reference_length": 11403,
+        "substitutions": 621,
+        "wer": 0.23064105937034113
+      },
+      "mismatched": {
+        "deletions": 1425,
+        "hits": 9090,
+        "insertions": 575,
+        "reference_length": 11403,
+        "substitutions": 888,
+        "wer": 0.25326668420591075
+      },
+      "nocontext": {
+        "deletions": 1703,
+        "hits": 8860,
+        "insertions": 551,
+        "reference_length": 11403,
+        "substitutions": 840,
+        "wer": 0.2713321055862492
+      }
+    }
+  },
+  "schema": "saea-r4-context-dose-comparison-v1"
+}
