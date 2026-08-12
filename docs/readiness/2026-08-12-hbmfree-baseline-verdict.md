@@ -99,9 +99,15 @@ gold/reference material; keys bind audio bitmap hash + media ordinal only.
   of this section was wrong, and the owner's push to measure was right. Bare lock updated
   in place: `-a2-bare` = `-c 32768 -np 16` (dispatch baseline `fixed-batch-bare16`).
   Evidence-arm np16 stays excluded by capacity (+4.4 GB KV vs 2.3 GB free at the legal
-  10,240 slot); the evidence shape gets one np10 probe (`-c 102400 -np 10`, fits by the
-  same arithmetic) before A2-0 pins its noise floor. The stock np16short registration
-  (commit 95272dc) stands unlaunched — superseded by the featcache-form measurement.
+  10,240 slot); the np10 probe (`-c 102400 -np 10`, SAEA-BENCH-hbmfree-np10-evid,
+  attempt a9e405) came back NEGATIVE: 21.0 min vs np8's 20.1 (+4.5%), WER 0.1528 in-band,
+  clean run (0 quarantine, 102/102 truncated=0, peak 23,174 MiB) — the np16 flip is
+  short-context-specific; long evidence contexts decode slower per token and 10-way
+  splitting lengthens tails. **Evidence shape locks at np8; the config chapter is closed**
+  (bare np16 / evidence np8, both by measurement; np24/np32 recorded as
+  feasible-but-not-pursued — expected <1 min marginal against certain 420 s-timeout tails
+  at ~1.1–1.3 tok/s per slot). The stock np16short registration (commit 95272dc) stands
+  unlaunched — superseded by the featcache-form measurement.
 - **Stock (unpatched) build**: retired from the baseline; receipt kept for provenance.
 - **Comparability break**: A″ is a new config era. Nothing measured under A/A′ pairs with
   A″ numbers; E-002F tail-era reads (incl. R4 n=10) are provenance, and R4 re-reads on the

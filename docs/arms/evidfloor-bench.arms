@@ -1,0 +1,9 @@
+# SAEA-BENCH-evidfloor — A2-0 item 1: the evidence-arm run-to-run noise floor
+# on the FINAL locked shape (evidence np8, canonical fragment). One
+# registration, two attempts of the identical arm; the read is the per-sample
+# paired WER delta between attempts. Feeds: E-005's significance reads and
+# every IC-001 ladder contrast (all are evidence-arm-vs-evidence-arm deltas).
+# The bare floor is 0.11 pp; evidence prompts are 5-7x longer with different
+# slot occupancy, so the floor must be measured, not assumed.
+# run_id:baseline_fragment
+SAEA-BENCH-evidfloor:fixed-batch-matched8
