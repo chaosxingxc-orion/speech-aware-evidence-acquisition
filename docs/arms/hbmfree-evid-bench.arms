@@ -1,0 +1,13 @@
+# SAEA-BENCH-hbmfree-evid — probe B: spend the freed HBM on its purpose.
+# Probe A (SAEA-BENCH-hbmfree, attempt-20260812T141853Z-c54874) proved the
+# claim: featcache warm + --no-mmproj-offload -> peak 18,738 MiB (-2.96 GB),
+# zero encoder calls, cache dir untouched at 806, WER 0.1397 on the notail
+# floor, wall 16 min in-band. This probe brings np8 to the EVIDENCE arm —
+# the configuration that killed config C when mmproj was resident.
+# Sizing from measured R4 prompts (max 7,611 + 1,024 gen ~= 8.7k):
+# -c 81920 = 10,240/slot, down from the ConEC-worst-case 12,288 guess.
+# Gates: (i) fits — peak ~23.1 GB expected, the -c 81920 verdict is this
+# boot; (ii) no slot overflow on p99 evidence prompts; (iii) wall/WER vs
+# bare np8 16.1 = the evidence tax, and vs the np4 sequential evidence era.
+# run_id:baseline_fragment
+SAEA-BENCH-hbmfree-evid:fixed-batch-matched8
