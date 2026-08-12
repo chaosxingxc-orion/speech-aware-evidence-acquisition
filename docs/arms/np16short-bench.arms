@@ -1,0 +1,7 @@
+# SAEA-BENCH-np16short — the batch curve's endpoint (owner sequence: find
+# the optimal batch config before packaging the baseline).
+# Reference: np8short 16.1 min / 0.1390. The aggregate-decode ceiling
+# (~27 tok/s, flat across np4/np8) predicts FLAT; a gain would mean
+# overlap still had headroom. -c 32768 = 2048/slot x 16; VRAM fits.
+# run_id:baseline_fragment
+SAEA-BENCH-np16short:fixed-batch-bare16
