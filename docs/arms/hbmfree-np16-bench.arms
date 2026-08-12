@@ -1,0 +1,10 @@
+# SAEA-BENCH-hbmfree-np16 — the owner's twice-asked question, answered by
+# measurement per the family doctrine: does featcache+np16 lift BARE-core
+# throughput? (Evidence-arm np16 is excluded by capacity arithmetic: +4.4 GB
+# KV needed vs 2.3 GB free at the legal 10,240 slot width.) Same 102-slice
+# fast-3 load as every bench today; encode fully cached, mmproj off-GPU, so
+# np16 gets its best-case shot at the freed 6-7% decode headroom.
+# Reads: wall vs np8 hbmfree bare 16.0 min; per-slot decode tails; WER floor.
+# Prior basis says <=2-3% or negative (aggregate ceiling ~93% kernel-bound).
+# run_id:baseline_fragment
+SAEA-BENCH-hbmfree-np16:fixed-batch-bare16
