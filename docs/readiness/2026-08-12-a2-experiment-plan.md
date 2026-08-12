@@ -26,6 +26,10 @@ The n=3 flag (matched 0.1498 vs bare 0.1397) says the old R4 conclusion — cont
 domain priming, matched ≈ mismatched ≪ nocontext — was read on a floor 9 pp noisier than today's.
 Re-run the three arms on a2: **nocontext / matched / mismatched × n=10 discovery split**.
 
+- **Pilot first, no D-1 needed**: a fast-3 trio (~1 h as three <30-min tasks) re-reads the
+  contrasts at n=3 against the noise floor from Wave A2-0. Graduation gate to the n=10
+  triplet: any pre-registered contrast with |Δ| ≥ 0.5 pp (plus D-1).
+
 - New fragments (no code): `fixed-batch-nocontext8` (matched8 minus evidence, instruction held
   constant with the matched arm per R4 design) and `fixed-batch-mismatched8`
   (`evidence_mismatch: true`). Both legal on the slice-parallel path (evidence constant
@@ -65,6 +69,13 @@ to n=10.
 - **D-4**: after Wave A2-1, whether R4's conclusion stands, flips, or needs n beyond 10 —
   decides what E-003 inherits as its context prior.
 
-Sequencing: A2-0 immediately (fits today's cap), A2-2 pilot next, A2-1 on D-1, A2-3 on D-1+D-2.
+Carried unchanged from the W-A..W-D validation plan (still open, owner-side): carrier
+lock-profile batch policy; secondary-carrier engineering; confirmatory-touch disposition
+id 4420696; audio2tool id collision SAEA-E-002→E-006; B-5/D-6 gaps. The registered
+np16short bench (commit 95272dc) is recommended closed as not-pursued per the verdict's
+disposition.
+
+Sequencing: A2-0 immediately (fits today's cap), A2-1 fast-3 pilot next, A2-2 pilot after,
+A2-1 n=10 on D-1 + pilot signal, A2-3 on D-1+D-2.
 The W-A..W-D validation plan's perf-sensitive items (throughput, cost-model, batch-scaling
 entries) recalibrate against a2 numbers as they execute; its science items are unchanged.
