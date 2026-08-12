@@ -1,0 +1,21 @@
+# SAEA-BENCH-featcache-np8 — the feature cache retried on the PACKED
+# substrate (owner directive 2026-08-12 "先锁定featcache").
+#
+# The earlier "efficiency zero" verdict was measured on the idle-rich np4
+# sample-level substrate, where inline encode hid in scheduling gaps. np8
+# slice dispatch packs the device (16.1 min wall vs a ~15.8 min pure-work
+# floor), putting the ~5.6 min of encode GPU work ON the critical path.
+# Skipping it bounds the gain at ~30% (16.1 -> ~11 min).
+#
+# Zero-preparation warm start: the validation trio's 806 ordinal-keyed
+# features are still on ext4, and fixed windows make the notail arm's slice
+# BYTES identical to the trio's — the media-ordinal keys (built for exactly
+# this) hit across the prompt-variant change.
+#
+# Fragment q4km-featcache-np8 = featcache build 5d9dfcb58 receipt + np8short
+# server args + the cache dir. Read: wall vs the 16.1-min np8 reference
+# (lock rule: material gain -> featcache LOCKS into the baseline package);
+# hits/encodes from the log; WER vs the ~0.1 pp noise floor.
+#
+# run_id:baseline_fragment
+SAEA-BENCH-featcache-np8:fixed-batch-bare8
