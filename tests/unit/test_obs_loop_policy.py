@@ -902,6 +902,43 @@ class TestSliceParallel:
             assert payload["obs_tail_chars_used"] == 0
             assert payload["obs_boundary_mode"] == "fixed"
 
+    def test_slot_affinity_sentinel_resolved_per_dispatch_slot(
+        self, tmp_path, monkeypatch
+    ):
+        """The plain parallel path resolves id_slot='per-sample' itself
+        (first launch was refused fail-closed by the adapter because only the
+        ojw executor resolved it): each in-flight request carries a distinct
+        integer slot from a pool of size obs_batch_slices."""
+
+        import dataclasses
+        import threading as _threading
+
+        seen = []
+        lock = _threading.Lock()
+
+        class _SentinelAdapter:
+            def request(self, payload):
+                idx = int(payload["request_id"].split("-i")[1].split("-")[0])
+                slot = payload["decoding_params"]["id_slot"]
+                with lock:
+                    seen.append(slot)
+                import time as _time
+
+                _time.sleep(0.03)
+                return _FakeResponse(f"T{idx}.", payload["request_id"])
+
+        pcm = _noise(150.0)
+        world = _World(
+            tmp_path, monkeypatch, pcm=pcm, texts=["x"] * 3,
+            values=self._values(),
+            decoding_params={"temperature": 0, "id_slot": "per-sample"},
+        )
+        world.adapter = _SentinelAdapter()
+        world.ctx = dataclasses.replace(world.ctx, adapter=world.adapter)
+        outcome = world.run()
+        assert outcome.text  # completed
+        assert all(isinstance(s, int) and 0 <= s < 3 for s in seen), seen
+
 
 def _fixed_mode_skip_values(**overrides):
     """Deterministic fixed-mode config (no VAD at all -- boundary_mode

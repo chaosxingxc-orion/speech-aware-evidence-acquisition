@@ -630,6 +630,18 @@ class ObsAgentLoopPolicy:
             cursor = record.start_seconds + slice_seconds
             iteration += 1
 
+        # Slot-affinity sentinel resolution for the PLAIN parallel path
+        # (2026-08-12, caught fail-closed by the adapter on first launch):
+        # the ojw executor resolves id_slot="per-sample" per SAMPLE; here one
+        # sample spans all slots, so the working unit is the DISPATCH SLOT —
+        # a pool of cfg.batch_slices integers, acquired per request and
+        # released when it settles, exactly the ojw free-slots pattern.
+        import threading as _threading
+
+        sentinel_active = ctx.decoding_params.get("id_slot") == "per-sample"
+        slot_lock = _threading.Lock()
+        free_slots = list(range(cfg.batch_slices))
+
         def request_one(window):
             win_iteration, record, _is_final, slice_seconds, _pre = window
             slice_ref = SampleRef(
@@ -640,22 +652,34 @@ class ObsAgentLoopPolicy:
                 sample_rate_hz=rate,
             )
             base_request_id = f"{ctx.request_id_base}-i{win_iteration:04d}"
+            slot = None
+            if sentinel_active:
+                with slot_lock:
+                    slot = free_slots.pop(0)
+            decoding_params = dict(ctx.decoding_params)
+            if slot is not None:
+                decoding_params["id_slot"] = slot
 
-            def _payload(rid, _slice_ref=slice_ref):
+            def _payload(rid, _slice_ref=slice_ref, _params=decoding_params):
                 return build_arm_payload(
                     ctx.arm,
                     _slice_ref,
                     rid,
                     ctx.task_instruction,
-                    ctx.decoding_params,
+                    _params,
                     evidence=evidence,
                     retrieval_query=ctx.retrieval_query,
                 )
 
-            return request_slice_with_retry(
-                ctx.adapter.request, _payload, base_request_id,
-                cfg.slice_retry_max, max_tokens,
-            )
+            try:
+                return request_slice_with_retry(
+                    ctx.adapter.request, _payload, base_request_id,
+                    cfg.slice_retry_max, max_tokens,
+                )
+            finally:
+                if slot is not None:
+                    with slot_lock:
+                        free_slots.append(slot)
 
         with ThreadPoolExecutor(max_workers=cfg.batch_slices) as pool:
             results = list(pool.map(request_one, windows))
