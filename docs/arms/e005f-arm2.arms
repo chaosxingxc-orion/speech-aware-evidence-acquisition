@@ -1,0 +1,10 @@
+# SAEA-E-005F arm 2 solo rerun after fragment repair: the first authoring
+# paired arm=fixed-legal-context with evidence_source=none and
+# build_arm_payload fail-closed on it (gate-refused, zero spend, 2026-08-12
+# 17:30Z attempt). Repair: bare-core arm + the context-flavored instruction,
+# no evidence -- the control that isolates instruction wording from evidence
+# presence. Same run_id, same registration row. Completes C1/C2/C4; C4 also
+# deconfounds the supplementary matched-nocontext contrast, which currently
+# spans both an instruction change and an arm-codepath change.
+# run_id:baseline_fragment
+SAEA-E-005F-nocontext-ctxinstr:fixed-batch-nocontext8

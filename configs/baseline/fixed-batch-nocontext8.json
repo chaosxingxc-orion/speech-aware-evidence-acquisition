@@ -1,5 +1,5 @@
 {
-  "arm": "fixed-legal-context",
+  "arm": "bare-core",
   "policy": "obs-agent-loop",
   "evidence_source": "none",
   "evidence_mismatch": false,
