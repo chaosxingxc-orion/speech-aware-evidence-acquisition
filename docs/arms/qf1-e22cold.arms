@@ -1,0 +1,8 @@
+# SAEA-BENCH-e22cold — QF-1 (GPU-fill doctrine) = A2-0 item 2. First E-22
+# touch of the featcache era: the cache holds no e22 features, so this run
+# IS the cold-start receipt under --no-mmproj-offload (CPU encode ~6.8s per
+# 60s slice, np16 overlap unknown - the wall is the datum). Reads: cold
+# wall/encode price, cache backfill count, E-22 bare WER floor on a2-bare,
+# and the corpus turns warm for every later E-22 arm. Feeds KC-Q4 breadth.
+# run_id:baseline_fragment
+SAEA-BENCH-e22cold:fixed-batch-bare16

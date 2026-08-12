@@ -1,0 +1,6 @@
+# SAEA-BENCH-a2wave5 — QF-2: the A-doubleprime bare floor at n=5 on the
+# seeded wave1 split. Links the fast-3 floor (0.1393) to a seeded 5-sample
+# split: per-sample floor distribution for D-1 campaign sizing, plus wider
+# E-21 cache warm-up. a2-bare np16, slice-parallel 16.
+# run_id:baseline_fragment
+SAEA-BENCH-a2wave5:fixed-batch-bare16
