@@ -1,0 +1,16 @@
+# SAEA-E-004-a1a-notail-w5 — the tail=0 finding meets the unexposed design
+# split (owner GO 2026-08-12 "继续吧"; explicit cap authorization inherited
+# from the wave1 confirmation directive).
+#
+# Reference on this split already exists: SAEA-E-004-a1a-fixedwindow
+# (attempt 14692a, tail=400, mean WER 0.2166). This arm is byte-identical
+# except obs_condition_tail_chars 0. The fast split showed -9 pp; the
+# confirmation reading is the paired per-sample delta at n=5.
+#
+# The arm runs TWICE under this row: attempt 2 is the byte-level
+# determinism probe — fixed windows + no tail = zero cross-slice
+# dependencies; whether thinker batch-composition noise alone still breaks
+# byte identity is now an isolated, answerable question.
+#
+# run_id:baseline_fragment
+SAEA-E-004-a1a-notail-w5:a1a-fixedwindow-notail-ojw
