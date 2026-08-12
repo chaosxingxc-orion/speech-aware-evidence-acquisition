@@ -1,0 +1,11 @@
+# SAEA-BENCH-hbmfree — probe A of the owner's HBM-freeing requirement
+# (2026-08-12 "如果没法空出HBM的话,我们的缓存方案没有价值"):
+# featcache warm + --no-mmproj-offload. With 100% cache hits the encoder is
+# never invoked, so the mmproj-on-CPU penalty that killed config B in the
+# encode-inline era does not apply; the mmproj's ~2.9 GB leaves the GPU.
+# Reads: (i) peak VRAM drops ~2.9 GB vs featcache-np8's 21.7 (the direct
+# proof of the HBM claim); (ii) wall ~15.5 min, no degradation; (iii) hits
+# 806/806, encodes 0; (iv) WER in-floor. Pass -> probe B brings the freed
+# HBM to its purpose: evidence-arm np8 (-c 98304 fits once mmproj leaves).
+# run_id:baseline_fragment
+SAEA-BENCH-hbmfree:fixed-batch-bare8
