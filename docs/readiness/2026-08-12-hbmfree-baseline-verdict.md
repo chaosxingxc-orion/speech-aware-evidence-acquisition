@@ -91,10 +91,17 @@ gold/reference material; keys bind audio bitmap hash + media ordinal only.
 
 ## Dispositions
 
-- **np16**: not pursued. Aggregate decode ceiling is ~93% batched-MoE-kernel-intrinsic
-  (encode removal lifts per-slot decode only 3.27→3.47 tok/s p50); np16 splits the same
-  aggregate 16 ways and lengthens tails. Registered np16short bench (commit 95272dc)
-  stands unlaunched.
+- **np16 — REVERSED for the bare arm by measurement** (2026-08-12, SAEA-BENCH-hbmfree-np16,
+  attempt 340b84): with encode fully cached, featcache+np16 ran the same 102-slice load in
+  **14.0 min vs np8's 16.0 (−12.5%)**, WER 0.1393 on the floor, 0 skips / 0 saturations /
+  0 timeouts, peak 19,558 MiB. The np4→np8 aggregate-flatness result does NOT extrapolate
+  to np16 once the encoder leaves the device; the prediction recorded in the first version
+  of this section was wrong, and the owner's push to measure was right. Bare lock updated
+  in place: `-a2-bare` = `-c 32768 -np 16` (dispatch baseline `fixed-batch-bare16`).
+  Evidence-arm np16 stays excluded by capacity (+4.4 GB KV vs 2.3 GB free at the legal
+  10,240 slot); the evidence shape gets one np10 probe (`-c 102400 -np 10`, fits by the
+  same arithmetic) before A2-0 pins its noise floor. The stock np16short registration
+  (commit 95272dc) stands unlaunched — superseded by the featcache-form measurement.
 - **Stock (unpatched) build**: retired from the baseline; receipt kept for provenance.
 - **Comparability break**: A″ is a new config era. Nothing measured under A/A′ pairs with
   A″ numbers; E-002F tail-era reads (incl. R4 n=10) are provenance, and R4 re-reads on the

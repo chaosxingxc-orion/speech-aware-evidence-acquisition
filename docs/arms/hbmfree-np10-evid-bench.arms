@@ -1,0 +1,8 @@
+# SAEA-BENCH-hbmfree-np10-evid — evidence-shape endpoint probe. The np16 bare
+# flip (14.0 vs 16.0 min) showed deeper batching still scales once encode is
+# cached; evidence arms cannot take np16 (capacity) but np10 x 10,240 fits:
+# KV +~1.1 GB over np8's 22,114 MiB peak -> expect ~23.2 GB. Reads: fits,
+# 102/102 truncated=0, wall vs 20.1 min np8 evidence, WER vs 0.1498, zero
+# quarantine. Decides the evidence shape BEFORE A2-0 pins its noise floor.
+# run_id:baseline_fragment
+SAEA-BENCH-hbmfree-np10-evid:fixed-batch-matched10
