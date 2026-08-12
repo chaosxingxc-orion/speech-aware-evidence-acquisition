@@ -1,0 +1,9 @@
+# SAEA-E-005W5 — the evidence-tax replication pair on the seeded wave5
+# split (n=5, per-sample bare spread 0.69 pp - a far sharper paired
+# instrument than fast-3). Two arms, instruction held constant (context
+# instruction): zero evidence vs matched conec pack. Replicates E-005F's
+# C1 (+1.73 pp tax) on an independent, more homogeneous split. E-21 wave5
+# features are warm (QF-2 backfilled them).
+# run_id:baseline_fragment
+SAEA-E-005W5-ctxinstr:fixed-batch-nocontext8
+SAEA-E-005W5-matched:fixed-batch-matched8
