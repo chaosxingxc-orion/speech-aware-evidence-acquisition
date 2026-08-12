@@ -1,0 +1,24 @@
+# SAEA-BENCH-slicebatch — step-2 equivalence + throughput bench (owner
+# directive 2026-08-12 "直接进入step2").
+#
+# obs_batch_slices=4 on the fixed-window/no-tail substrate: every window cut
+# and registered before the first model touch, then dispatched through a
+# 4-worker pool over the SAME retry/saturation seam; acceptance, traces and
+# stitch chains emitted in slice order. Legality (fixed + tail=0 + trim=0)
+# enforced fail-closed in ObsLoopConfig.from_values.
+#
+# Reference: the sequential notail run fac835 (19 min / WER 0.1409, same
+# split, same per-slice prompts — only scheduling differs).
+# Runs TWICE under this row. Pre-registered readings:
+#   (i)  WER within the notail run's vicinity (prompts byte-identical);
+#   (ii) wall < 19 min (straggler elimination: loop effective concurrency
+#        was ~2.6/4, slice dispatch keeps 4/4 busy);
+#   (iii) run-2 vs run-1 byte-compare — determinism under slice dispatch
+#        (zero cross-slice dependencies; thinker batch noise isolated);
+#   (iv) concurrency decoupled from sample count by construction (3 samples
+#        cannot saturate 4 slots at sample level; slice level can).
+# Adoption: (i)+(ii) hold -> slice-parallel becomes the default bare-core
+# substrate for new arms alongside the S1/notail re-registration.
+#
+# run_id:baseline_fragment
+SAEA-BENCH-slicebatch:fixed-batch-bare

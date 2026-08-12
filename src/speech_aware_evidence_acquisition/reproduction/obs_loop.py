@@ -130,6 +130,7 @@ _KNOWN_OBS_KEYS = frozenset(
         "obs_slice_retry_max",
         "obs_slice_skip_max",
         "obs_batch_samples",
+        "obs_batch_slices",
     }
 )
 _EPSILON_SECONDS = 1e-6
@@ -318,6 +319,7 @@ class ObsLoopConfig:
     slice_retry_max: int
     slice_skip_max: int
     batch_samples: int
+    batch_slices: int
 
     @classmethod
     def from_values(cls, values: Mapping[str, object], repo_root: Path) -> "ObsLoopConfig":
@@ -401,6 +403,36 @@ class ObsLoopConfig:
                 f"obs_batch_samples must be an integer >= 1 (1 = sequential), "
                 f"got {batch_samples!r}"
             )
+        # Slice-level dispatch (2026-08-12, owner's slice-batching direction):
+        # legal ONLY when iterations are provably independent — fixed windows
+        # (positions known upfront), no tail (no text fed forward), no VAD
+        # trim (window positions must not depend on runtime trim spans).
+        # Anything else fails closed here, before a single slice is cut.
+        batch_slices = values.get("obs_batch_slices", 1)
+        if isinstance(batch_slices, bool) or not isinstance(batch_slices, int) or batch_slices < 1:
+            raise ObsLoopError(
+                f"obs_batch_slices must be an integer >= 1 (1 = sequential), "
+                f"got {batch_slices!r}"
+            )
+        if batch_slices > 1:
+            tail_chars = values.get("obs_condition_tail_chars", 400)
+            if values.get("obs_boundary_mode", "model") != "fixed":
+                raise ObsLoopError(
+                    "obs_batch_slices > 1 requires obs_boundary_mode 'fixed' — "
+                    "model-declared boundaries make slice k+1's window depend on "
+                    "slice k's answer"
+                )
+            if tail_chars != 0:
+                raise ObsLoopError(
+                    "obs_batch_slices > 1 requires obs_condition_tail_chars 0 — "
+                    "the rolling tail feeds slice k's transcript into slice k+1's "
+                    "prompt (and was measured to HURT WER by ~9 pp besides)"
+                )
+            if trim_min != 0:
+                raise ObsLoopError(
+                    "obs_batch_slices > 1 requires obs_vad_trim_min_seconds 0 — "
+                    "runtime trim spans would move window positions"
+                )
         prompt_relpath = values.get("obs_boundary_prompt")
         prompt_text: str | None = None
         prompt_sha256: str | None = None
@@ -436,6 +468,7 @@ class ObsLoopConfig:
             slice_retry_max=retry_max,
             slice_skip_max=skip_max,
             batch_samples=batch_samples,
+            batch_slices=batch_slices,
         )
 
 
@@ -533,6 +566,163 @@ class ObsAgentLoopPolicy:
     ``SampleContext`` (``extras``: slice_registry / data_root / run_dir /
     repo_root / config_values, supplied by ``core.driver.run_experiment``)."""
 
+    def _slice_parallel_pass(
+        self, ctx, cfg, registry, data_root, sample, rate, pcm, duration,
+        parent_sha256, engine_descriptor, evidence, max_tokens,
+    ):
+        """Phases of the slice-level dispatch (owner's slice-batching
+        direction, 2026-08-12; legality enforced fail-closed in
+        ``from_values``): (1) cut and register EVERY fixed window before the
+        first model touch; (2) dispatch up to ``cfg.batch_slices`` concurrent
+        requests through the SAME ``request_slice_with_retry`` seam (the real
+        adapter is thread-safe — the ojw batch mode has exercised it
+        concurrently in production since 2026-08-09); (3) accept, count and
+        emit OBS records in slice order, so trace shapes, stitch chains and
+        the skip bound behave byte-compatibly with the sequential path. The
+        MODEL_REQUEST/RESPONSE records interleave in arrival order within
+        this sample's sink — ids still chain, and the stitch verifier binds
+        by id, not position."""
+
+        from concurrent.futures import ThreadPoolExecutor
+
+        from ..core.policies import build_arm_payload
+
+        windows: list[tuple[int, SliceRecord, bool, float, str | None]] = []
+        slice_records: list[SliceRecord] = []
+        cursor = 0.0
+        iteration = 0
+        while cursor < duration - _EPSILON_SECONDS:
+            start_frame = int(round(cursor * rate))
+            end_frame = min(int(round((cursor + cfg.buffer_seconds) * rate)), len(pcm))
+            if end_frame <= start_frame:
+                break
+            slice_samples = pcm[start_frame:end_frame]
+            slice_seconds = (end_frame - start_frame) / rate
+            is_final = end_frame >= len(pcm)
+            raw_bytes = write_wav_bytes(slice_samples, rate)
+            pre_sha256: str | None = None
+            if "rms-norm" in cfg.preprocess:
+                pre_sha256 = hashlib.sha256(raw_bytes).hexdigest()
+                slice_samples = rms_normalize(slice_samples, cfg.rms_target_dbfs)
+                raw_bytes = write_wav_bytes(slice_samples, rate)
+            relpath = registry.slice_relpath(sample.sample_id, iteration)
+            slice_path = data_root / relpath
+            slice_path.parent.mkdir(parents=True, exist_ok=True)
+            slice_path.write_bytes(raw_bytes)
+            record = SliceRecord(
+                sample_id=sample.sample_id,
+                parent_media_relpath=sample.media_relpath,
+                parent_sha256=parent_sha256,
+                start_seconds=start_frame / rate,
+                end_seconds=end_frame / rate,
+                audio_seconds=slice_seconds,
+                sample_rate_hz=rate,
+                media_relpath=relpath,
+                sha256=hashlib.sha256(raw_bytes).hexdigest(),
+                bytes=len(raw_bytes),
+                iteration=iteration,
+                preprocess=cfg.preprocess,
+                pre_sha256=pre_sha256,
+            )
+            registry.register(record)
+            slice_records.append(record)
+            windows.append((iteration, record, is_final, slice_seconds, pre_sha256))
+            cursor = record.start_seconds + slice_seconds
+            iteration += 1
+
+        def request_one(window):
+            win_iteration, record, _is_final, slice_seconds, _pre = window
+            slice_ref = SampleRef(
+                carrier_lock_key=sample.carrier_lock_key,
+                sample_id=sample.sample_id,
+                media_relpath=record.media_relpath,
+                audio_seconds=slice_seconds,
+                sample_rate_hz=rate,
+            )
+            base_request_id = f"{ctx.request_id_base}-i{win_iteration:04d}"
+
+            def _payload(rid, _slice_ref=slice_ref):
+                return build_arm_payload(
+                    ctx.arm,
+                    _slice_ref,
+                    rid,
+                    ctx.task_instruction,
+                    ctx.decoding_params,
+                    evidence=evidence,
+                    retrieval_query=ctx.retrieval_query,
+                )
+
+            return request_slice_with_retry(
+                ctx.adapter.request, _payload, base_request_id,
+                cfg.slice_retry_max, max_tokens,
+            )
+
+        with ThreadPoolExecutor(max_workers=cfg.batch_slices) as pool:
+            results = list(pool.map(request_one, windows))
+
+        accepted_spans: list[str] = []
+        request_ids: list[str] = []
+        iteration_request_sha256s: list[str] = []
+        iteration_response_sha256s: list[str] = []
+        saturated_count = 0
+        skipped_count = 0
+        for window, result in zip(windows, results):
+            win_iteration, record, is_final, slice_seconds, pre_sha256 = window
+            request_id, response, retry_of, saturated, skipped = result
+            if saturated:
+                saturated_count += 1
+            transcript = "" if (skipped or saturated) else response.text.strip()
+            ctx.sink.emit(
+                "OBS",
+                f"{request_id}/obs",
+                {
+                    "obs_iteration": win_iteration,
+                    "obs_window_start_seconds": record.start_seconds,
+                    "obs_window_end_seconds": record.end_seconds,
+                    "obs_final_window": is_final,
+                    "obs_slice_relpath": record.media_relpath,
+                    "obs_slice_sha256": record.sha256,
+                    "obs_pre_sha256": pre_sha256,
+                    "obs_preprocess": list(cfg.preprocess),
+                    "obs_vad_engine": engine_descriptor,
+                    "obs_boundary_mode": cfg.boundary_mode,
+                    "obs_boundary_prompt_sha256": cfg.boundary_prompt_sha256,
+                    "obs_boundary_estimate_seconds": None,
+                    "obs_boundary_snapped_seconds": None,
+                    "obs_boundary_advance_seconds": slice_seconds,
+                    "obs_boundary_clamped": False,
+                    "obs_boundary_fallback": False,
+                    "obs_accepted_chars": len(transcript),
+                    "obs_dropped_chars": 0,
+                    "obs_tail_chars_used": 0,
+                    "obs_tail_sha256": None,
+                    "obs_retry_of": retry_of,
+                    "obs_saturated": saturated,
+                    "obs_skipped": skipped,
+                    # Slice-level dispatch marker: records emitted in slice
+                    # order AFTER concurrent completion; MODEL records
+                    # interleave in arrival order, chained by id.
+                    "obs_dispatch": "slice-parallel",
+                },
+            )
+            accepted_spans.append(transcript)
+            if skipped:
+                skipped_count += 1
+                if skipped_count > cfg.slice_skip_max:
+                    raise ObsLoopError(
+                        _skip_bound_exceeded_message(sample.sample_id, skipped_count, cfg)
+                    )
+            else:
+                request_ids.append(request_id)
+                iteration_request_sha256s.append(response.request_sha256)
+                iteration_response_sha256s.append(response.response_sha256)
+
+        return (
+            accepted_spans, request_ids, iteration_request_sha256s,
+            iteration_response_sha256s, slice_records, saturated_count,
+            skipped_count, iteration,
+        )
+
     def run_sample(self, ctx: SampleContext) -> SampleOutcome:
         registry = ctx.extras.get("slice_registry")
         if not isinstance(registry, SliceRegistry):
@@ -597,6 +787,22 @@ class ObsAgentLoopPolicy:
             cfg.buffer_seconds if cfg.boundary_mode == "fixed" else cfg.min_advance_seconds
         )
         max_iterations = math.ceil(duration / max(effective_min, 1e-9)) + len(trim_spans) + 8
+
+        # Slice-level dispatch (2026-08-12): when the config proves iteration
+        # independence (from_values: fixed windows + no tail + no trim),
+        # phases 1-3 below replace the sequential loop; setting the cursor to
+        # the end makes the loop a no-op and execution falls through to the
+        # SAME finalize/stitch/outcome code as the sequential path.
+        if cfg.batch_slices > 1:
+            (
+                accepted_spans, request_ids, iteration_request_sha256s,
+                iteration_response_sha256s, slice_records, saturated_count,
+                skipped_count, iteration,
+            ) = self._slice_parallel_pass(
+                ctx, cfg, registry, data_root, sample, rate, pcm, duration,
+                parent_sha256, engine_descriptor, evidence, max_tokens,
+            )
+            cursor = duration
 
         while cursor < duration - _EPSILON_SECONDS:
             trimmed = self._next_trim(trim_spans, cursor, cfg.vad_trim_min_seconds)

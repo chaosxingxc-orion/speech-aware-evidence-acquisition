@@ -814,6 +814,95 @@ class TestSaturation:
             assert garbage not in outcome.text
 
 
+class TestSliceParallel:
+    """Slice-level dispatch (2026-08-12): with fixed windows, no tail and no
+    trim, iterations are independent — obs_batch_slices > 1 cuts every
+    window upfront and dispatches concurrently, falling through to the SAME
+    finalize path as the sequential loop."""
+
+    def _values(self, **overrides):
+        values = _config_values(
+            obs_boundary_mode="fixed",
+            obs_condition_tail_chars=0,
+            obs_vad_trim_min_seconds=0,
+            obs_batch_slices=3,
+        )
+        values.update(overrides)
+        return values
+
+    def test_legality_is_fail_closed(self, tmp_path):
+        from speech_aware_evidence_acquisition.reproduction.obs_loop import (
+            ObsLoopConfig,
+            ObsLoopError,
+        )
+
+        for bad in (
+            {"obs_boundary_mode": "model"},
+            {"obs_condition_tail_chars": 400},
+            {"obs_vad_trim_min_seconds": 5.0},
+        ):
+            with pytest.raises(ObsLoopError, match="obs_batch_slices"):
+                ObsLoopConfig.from_values(self._values(**bad), tmp_path)
+        ObsLoopConfig.from_values(self._values(), tmp_path)  # legal set passes
+
+    def test_parallel_matches_sequential_and_actually_overlaps(
+        self, tmp_path, monkeypatch
+    ):
+        """The parallel pass must reproduce the sequential fixed/notail
+        outcome (same stitched text, same request-id order, full OBS trail)
+        while genuinely overlapping requests."""
+
+        import dataclasses
+        import threading as _threading
+
+        class _IndexedAdapter:
+            """Thread-safe: answers by the slice index parsed from the
+            request id, so concurrent arrival order cannot mis-assign
+            scripted texts. Tracks peak in-flight concurrency."""
+
+            def __init__(self, texts):
+                self._texts = texts
+                self._lock = _threading.Lock()
+                self._in_flight = 0
+                self.peak = 0
+                self._gate = _threading.Semaphore(0)
+                self.payloads = []
+
+            def request(self, payload):
+                idx = int(payload["request_id"].split("-i")[1].split("-")[0])
+                with self._lock:
+                    self.payloads.append(dict(payload))
+                    self._in_flight += 1
+                    self.peak = max(self.peak, self._in_flight)
+                import time as _time
+
+                _time.sleep(0.05)  # widen the overlap window
+                with self._lock:
+                    self._in_flight -= 1
+                return _FakeResponse(self._texts[idx], payload["request_id"])
+
+        pcm = _noise(150.0)  # 3 fixed 60s windows: 60 + 60 + 30
+        texts = ["First window text.", "Second window text.", "Third window text."]
+        world = _World(
+            tmp_path, monkeypatch, pcm=pcm, texts=texts, values=self._values()
+        )
+        world.adapter = _IndexedAdapter(texts)
+        world.ctx = dataclasses.replace(world.ctx, adapter=world.adapter)
+        outcome = world.run()
+
+        assert outcome.text == "First window text. Second window text. Third window text."
+        assert list(outcome.request_ids) == [
+            "req-0001-i0000", "req-0001-i0001", "req-0001-i0002",
+        ]
+        assert world.adapter.peak >= 2, "requests never overlapped"
+        obs = _obs_payloads(world)
+        for index in range(3):
+            payload = obs[f"req-0001-i{index:04d}/obs"]
+            assert payload["obs_dispatch"] == "slice-parallel"
+            assert payload["obs_tail_chars_used"] == 0
+            assert payload["obs_boundary_mode"] == "fixed"
+
+
 def _fixed_mode_skip_values(**overrides):
     """Deterministic fixed-mode config (no VAD at all -- boundary_mode
     'fixed' and vad_trim_min_seconds 0 -- so every advance is exactly
