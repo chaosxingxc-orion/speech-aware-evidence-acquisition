@@ -214,6 +214,60 @@ def test_obs_loop_end_to_end_bundle_verifies_and_scores(
         assert document["slices"][1]["start_seconds"] == pytest.approx(45.0)
 
 
+def test_obs_loop_evidence_budget_is_identical_across_every_slice(
+    synthetic_world, tmp_path, obs_repo
+):
+    """SUPPLY dose knob (evidence_budget_bytes, core.evidence_budget):
+    truncated ONCE per sample in core.driver.run.run_experiment, before
+    ObsAgentLoopPolicy's per-slice fan-out even starts -- every one of a
+    sample's N slice requests must carry the SAME truncated evidence text,
+    never a fresh/independent truncation per slice."""
+
+    lock, repo_root = obs_repo
+    _, split_hash, _ = load_split(repo_root, "discovery", lock, synthetic_world.data_root)
+    composed = _composed(
+        arm="fixed-legal-context",
+        evidence_source="conec-contexts",
+        evidence_budget_bytes=2,
+    )
+    plan = ExecutionPlan(
+        run_id="SAEA-E-000-obsloop-evbudget",
+        execution_profile="bounded-discovery-probe",
+        carrier_lock_key="earnings21-original",
+        split_role="discovery",
+        split_identity_hash=split_hash,
+        planned_model_calls=10,
+        planned_gpu_hours=1.0,
+        planned_speech_audio_seconds=1000,
+        protocol_hash=protocol_hash(composed.config_hash, composed.values["arm"], split_hash),
+        attempt_id="attempt-obs-evbudget",
+    )
+    seen_contents = []
+
+    def _capturing_transport(request_bytes):
+        payload = json.loads(request_bytes.decode("utf-8"))
+        seen_contents.append(payload["supplied_evidence"][0]["content"])
+        slice_name = payload["media_relpath"].rsplit("/", 1)[-1]
+        return json.dumps(
+            {
+                "text": f"TRANSCRIPT:\nhello world {slice_name}.\nBOUNDARY_SECONDS: 45",
+                "usage": {"prompt_tokens": 3},
+            }
+        ).encode()
+
+    run_experiment_bundled(
+        composed, plan, _OpenGate(), lock, synthetic_world.data_root,
+        tmp_path / "run-evbudget", _capturing_transport, repo_root=repo_root,
+    )
+    # 2 slices per 90s call (45s advance, module docstring above) x 3 calls
+    assert len(seen_contents) == 6
+    # every slice's evidence is the SAME truncated 2-byte prefix (the shipped
+    # conec fixture "ctx" -- see tests/unit/conftest.py) -- never a
+    # per-slice-independent truncation, and always within the configured
+    # budget.
+    assert set(seen_contents) == {"ct"}
+
+
 def test_obs_loop_slice_budget_is_charged_per_slice_not_per_parent(
     synthetic_world, tmp_path, obs_repo
 ):

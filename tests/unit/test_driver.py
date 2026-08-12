@@ -10,7 +10,7 @@ import subprocess
 import speech_aware_evidence_acquisition.core  # noqa: F401 (populate registries)
 from speech_aware_evidence_acquisition.contracts import ExecutionPlan
 from speech_aware_evidence_acquisition.core.attempts import AttemptStore
-from speech_aware_evidence_acquisition.core.base import CoreError, RunResult
+from speech_aware_evidence_acquisition.core.base import CoreError, EvidenceError, RunResult
 from speech_aware_evidence_acquisition.core.bundle import verify_bundle
 from speech_aware_evidence_acquisition.core.config import ComposedConfig, compose, protocol_hash
 from speech_aware_evidence_acquisition.core.driver import (
@@ -978,6 +978,115 @@ def test_run_experiment_aggregates_supplied_and_admitted_evidence_bytes(syntheti
     # admitted coincide today; the two fields exist as SEPARATE counters for
     # a future rejecting policy (e.g. X3), not merged into one.
     assert result.cost["admitted_evidence_bytes"] == expected_bytes
+
+
+# ---------------------------------------------------------------------------
+# SUPPLY dose knob (evidence_budget_bytes, core.evidence_budget): absent/0 is
+# byte-identical to the sibling test above; a positive value truncates ONCE
+# per sample, before _emit_sample_preamble's byte accounting -- so both the
+# aggregated cost fields AND the bytes actually sent reflect the
+# POST-truncation size; a bad value refuses at composition time, before any
+# other per-run work.
+# ---------------------------------------------------------------------------
+
+
+def test_run_experiment_zero_evidence_budget_matches_the_unlimited_default(
+    synthetic_world, tmp_path
+):
+    lock, repo_root = _frozen_world(synthetic_world, tmp_path)
+    _, split_hash, _ = load_split(repo_root, "discovery", lock, synthetic_world.data_root)
+    composed = _composed(**_baseline_fragment("fixed-legal-context"), evidence_budget_bytes=0)
+    plan = _plan(
+        split_hash,
+        protocol_hash=protocol_hash(composed.config_hash, composed.values["arm"], split_hash),
+    )
+    run_dir = tmp_path / "run-cost-evidence-budget-zero"
+    result = run_experiment(
+        composed=composed,
+        plan=plan,
+        gate=_OpenGate(),
+        lock=lock,
+        root=synthetic_world.data_root,
+        run_dir=run_dir,
+        transport=_transport,
+        repo_root=repo_root,
+    )
+    supply_by_sample = _supply_evidence_ids_by_sample(run_dir, plan.run_id, result.outputs_path)
+    # same expected figure as the sibling absent-key test above -- 0 is
+    # unlimited exactly like omitting the key entirely.
+    expected_bytes = 3 * len(supply_by_sample)
+    assert result.cost["supplied_evidence_bytes"] == expected_bytes
+    request_records = [
+        record
+        for record in _raw_trace_records(run_dir, plan.run_id)
+        if record["record_id"].endswith("/request")
+    ]
+    assert request_records
+    for record in request_records:
+        content = record["payload"]["payload"]["supplied_evidence"][0]["content"]
+        assert content == "ctx"  # byte-identical to today's un-truncated context
+
+
+def test_run_experiment_positive_evidence_budget_truncates_supplied_and_admitted_bytes(
+    synthetic_world, tmp_path
+):
+    lock, repo_root = _frozen_world(synthetic_world, tmp_path)
+    _, split_hash, _ = load_split(repo_root, "discovery", lock, synthetic_world.data_root)
+    composed = _composed(**_baseline_fragment("fixed-legal-context"), evidence_budget_bytes=2)
+    plan = _plan(
+        split_hash,
+        protocol_hash=protocol_hash(composed.config_hash, composed.values["arm"], split_hash),
+    )
+    run_dir = tmp_path / "run-cost-evidence-budget-positive"
+    result = run_experiment(
+        composed=composed,
+        plan=plan,
+        gate=_OpenGate(),
+        lock=lock,
+        root=synthetic_world.data_root,
+        run_dir=run_dir,
+        transport=_transport,
+        repo_root=repo_root,
+    )
+    supply_by_sample = _supply_evidence_ids_by_sample(run_dir, plan.run_id, result.outputs_path)
+    # the shipped conec fixture context is "ctx" (3 bytes); budget=2 caps
+    # every sample's supplied evidence at exactly 2 (post-truncation) bytes
+    # -- the SAME figure the existing supply_content_bytes/cost aggregation
+    # already computes, no new field needed.
+    expected_bytes = 2 * len(supply_by_sample)
+    assert result.cost["supplied_evidence_bytes"] == expected_bytes
+    assert result.cost["admitted_evidence_bytes"] == expected_bytes
+    request_records = [
+        record
+        for record in _raw_trace_records(run_dir, plan.run_id)
+        if record["record_id"].endswith("/request")
+    ]
+    assert request_records
+    for record in request_records:
+        content = record["payload"]["payload"]["supplied_evidence"][0]["content"]
+        assert content == "ct"
+        assert len(content.encode("utf-8")) <= 2
+
+
+def test_run_experiment_refuses_a_negative_evidence_budget(synthetic_world, tmp_path):
+    lock, repo_root = _frozen_world(synthetic_world, tmp_path)
+    _, split_hash, _ = load_split(repo_root, "discovery", lock, synthetic_world.data_root)
+    composed = _composed(evidence_budget_bytes=-1)
+    plan = _plan(
+        split_hash,
+        protocol_hash=protocol_hash(composed.config_hash, composed.values["arm"], split_hash),
+    )
+    with pytest.raises(EvidenceError, match="evidence_budget_bytes"):
+        run_experiment(
+            composed=composed,
+            plan=plan,
+            gate=_OpenGate(),
+            lock=lock,
+            root=synthetic_world.data_root,
+            run_dir=tmp_path / "run-evidence-budget-negative",
+            transport=_transport,
+            repo_root=repo_root,
+        )
 
 
 def test_run_experiment_reports_failed_attempt_cost_from_a_prior_aborted_sibling(

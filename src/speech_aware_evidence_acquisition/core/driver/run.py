@@ -31,6 +31,7 @@ from ..base import (
 )
 from ..config import ComposedConfig
 from ..evidence import resolve_declared_transform_params, rotated_mismatch
+from ..evidence_budget import apply_evidence_budget, resolve_evidence_budget_bytes
 from ..evidence_derivation import DerivedEvidenceRegistry
 from ..instructions import resolve_task_instruction
 from ..resources import NullSampler, ResourceSampler, cpu_seconds_snapshot
@@ -141,6 +142,14 @@ def run_experiment(
     try:
         values = composed.values
         arm = str(values["arm"])
+        # SUPPLY dose knob (evidence_budget_bytes, optional baseline-config
+        # key): resolved and validated HERE, before any other per-run work
+        # (split verification, evidence resolution, the gate/attempt
+        # reservation below) -- a malformed value refuses with nothing yet
+        # spent, same fail-closed discipline as ObsLoopConfig.from_values
+        # (reproduction.obs_loop). See core.evidence_budget's own module
+        # docstring for the single application seam below.
+        evidence_budget_bytes = resolve_evidence_budget_bytes(values)
         # R0 repair refactor stage 2 (part C): the split<->plan<->config
         # cross-checks (M-2, split identity hash/role/carrier, protocol hash)
         # live in split_check._verify_split_for_run now -- same checks, same
@@ -262,6 +271,18 @@ def run_experiment(
                     evidence_contents[s.sample_id] = item.derivation_source_bytes
         if values.get("evidence_mismatch", False):
             evidence_by_sample = rotated_mismatch(evidence_by_sample)
+        # SUPPLY dose knob (continued from the composition-time validation
+        # above): applied ONCE per sample, HERE -- before _emit_sample_
+        # preamble's OBS/ORG/SUPPLY byte accounting below and before ANY
+        # policy's per-slice fan-out (obs-agent-loop sends N requests per
+        # sample; this dict is built once, so every one of them reads the
+        # SAME already-truncated content). Applied AFTER the derivation
+        # -chain registry above (which must see each source's untouched,
+        # self-verified content) and AFTER evidence_mismatch rotation (so a
+        # mismatched-evidence negative control is budgeted exactly like a
+        # normal run). budget_bytes<=0 is unlimited and returns
+        # evidence_by_sample untouched -- byte-identical prompts.
+        evidence_by_sample = apply_evidence_budget(evidence_by_sample, evidence_budget_bytes)
         policy = POLICIES.resolve(str(values["policy"]))
         # Sample batching (owner directive 2026-08-08): resolved and checked
         # HERE, before the adapter construction below reserves the one-time
