@@ -1,0 +1,20 @@
+# SAEA-E-004F-a1a-notail — the LAST serialization dependency (owner directive
+# 2026-08-12 "排上,tail=0 对比先跑").
+#
+# Fixed windows killed the boundary dependency (slice positions known
+# upfront); the rolling tail (obs_condition_tail_chars: 400) is the one
+# remaining reason slice k+1 must wait for slice k. This arm sets it to 0 —
+# byte-identical to a1a-fixed-window-ojw otherwise. Reference band: the four
+# fixedwindow tail=400 runs on this split (WER 0.2229-0.2406).
+#
+# Read rule: WER inside the reference band -> the tail buys nothing under
+# no-overlap fixed windows -> ALL slices become fully independent ->
+# slice-level batch scheduling unlocks (effective concurrency = min(np,
+# total slices); fast-3's ~102 slices saturate np8; straggler idle
+# eliminated; uniform 60s batch shapes; and byte-level determinism becomes
+# plausible again - no cross-slice dependency of any kind remains).
+# WER above the band -> the tail earns its serialization and slice-level
+# mode needs a different design.
+#
+# run_id:baseline_fragment
+SAEA-E-004F-a1a-notail:a1a-fixedwindow-notail-ojw
