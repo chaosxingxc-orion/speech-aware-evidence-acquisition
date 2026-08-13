@@ -2,7 +2,7 @@
   "deliverables": {
     "d1_identity": {
       "artifact": "artifacts/d1-identity.json",
-      "sha256": "e827508b70d12d97546fa33eefcc2dde979648b61ae2dcfe84a47965ad422a67",
+      "sha256": "de432880f564075386becbafe2129f60fd849201acfa99d2f1978b9deac50f68",
       "status": "CLOSED"
     },
     "d2_leakage": {
