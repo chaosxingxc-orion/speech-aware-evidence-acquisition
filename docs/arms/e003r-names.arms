@@ -1,0 +1,9 @@
+# SAEA-E-003R-names — the first coherent-small-form arm of the retrieval
+# pilot, on the 90s era (endpoints: zero 12.51, full pack 14.03, tax +1.52).
+# Supply = participant names only (conec-names source: tiny, coherent,
+# cased real entities - the anti-thesis of the bag-of-words head that cost
+# +6.9pp at 2k bytes). Same instruction and serving as the endpoints.
+# Read: does a small COHERENT entity form land below the full pack - or
+# even below zero (positive value at last)?
+# run_id:baseline_fragment
+SAEA-E-003R-names:fixed-batch-names8-buf90
