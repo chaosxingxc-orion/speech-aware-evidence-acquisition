@@ -363,7 +363,8 @@ class LlamaServerTransport:
             ) from error
         try:
             parsed = json.loads(raw.decode("utf-8"))
-            text = parsed["choices"][0]["message"]["content"]
+            choice = parsed["choices"][0]
+            text = choice["message"]["content"]
             # 2026-08-08: newer llama-server usage blocks carry nested
             # OpenAI-style `*_tokens_details` objects — a valid schema
             # extension, dropped here. Anything else keeps the original
@@ -378,7 +379,20 @@ class LlamaServerTransport:
             raise FrozenCoreError(
                 f"transport returned a malformed response: {error}"
             ) from error
-        return json.dumps({"text": text, "usage": usage}).encode("utf-8")
+        envelope: dict[str, object] = {"text": text, "usage": usage}
+        # obs-replay-loop policy (reproduction.replay_loop, 2026-08-13): only
+        # ADD the "logprobs" key when the server's own choice actually
+        # carried one (i.e. the request asked for it via
+        # decoding_params.logprobs -- module docstring of
+        # core.model.request_types.ALLOWED_DECODING_KEYS). Every
+        # pre-existing/default request never sets that decoding param, the
+        # server never echoes a "logprobs" key on the choice, and this
+        # envelope stays byte-identical to before this field existed
+        # (tests/unit/test_llama_server_transport.py's strict equality
+        # check on the canned no-logprobs response depends on exactly this).
+        if isinstance(choice, Mapping) and "logprobs" in choice:
+            envelope["logprobs"] = choice["logprobs"]
+        return json.dumps(envelope).encode("utf-8")
 
 
 def _llama_server_factory(

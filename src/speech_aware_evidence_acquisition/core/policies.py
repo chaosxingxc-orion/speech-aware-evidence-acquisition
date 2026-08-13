@@ -28,6 +28,7 @@ def build_arm_payload(
     evidence: list[EvidenceItem] | None = None,
     retrieval_query: str | None = None,
     exemplar_bank: Sequence[Mapping[str, object]] | None = None,
+    delta_candidates: Sequence[Mapping[str, object]] | None = None,
 ) -> dict[str, object]:
     if arm not in ARM_VISIBLE_FIELDS:
         raise ArmError(f"unknown arm {arm!r}; D2-frozen arms are {sorted(ARM_VISIBLE_FIELDS)}")
@@ -71,6 +72,19 @@ def build_arm_payload(
                 "set; cannot attach an exemplar bank to this arm's payload"
             )
         payload["exemplar_bank"] = [dict(pair) for pair in exemplar_bank]
+    # v3 delta candidates (core.model.transport tier 3, obs-replay-loop
+    # policy prep): the SAME "default None is a byte-identical no-op, a
+    # supplied sequence attaches only for an arm whose D2-frozen field set
+    # declares 'delta_candidates'" discipline exemplar_bank just established
+    # above -- no arm does yet either, so every arm registered today fails
+    # closed here too rather than silently dropping retrieved candidates.
+    if delta_candidates is not None:
+        if "delta_candidates" not in ARM_VISIBLE_FIELDS[arm]:
+            raise ArmError(
+                f"arm {arm!r} does not declare 'delta_candidates' in its D2-frozen "
+                "field set; cannot attach delta candidates to this arm's payload"
+            )
+        payload["delta_candidates"] = [dict(item) for item in delta_candidates]
     if set(payload) != set(ARM_VISIBLE_FIELDS[arm]):
         raise ArmError(
             f"arm {arm!r} builder produced a field set that diverges from the D2 freeze: "
@@ -141,3 +155,18 @@ from ..reproduction.ojw.policy import (  # noqa: E402
 )
 
 POLICIES.register(OJW_POLICY_NAME, ObsAgentLoopOjwPolicy())
+
+# obs-replay-loop (listen-score-replay orchestration policy, 2026-08-13):
+# assembles the already-merged organs (core.replay_signals, core.span_surgery,
+# core.retrieval, core.exemplars, core.model.transport's v3 tiers) into one
+# policy -- PASS 1 reuses reproduction.obs_loop.ObsAgentLoopPolicy's own
+# slice-parallel pass verbatim, then SCORE/LOCATE/RETRIEVE/REPLAY/ACCEPT are
+# new orchestration this module owns. Registers here for the SAME reason
+# obs-agent-loop/obs-agent-loop-ojw do: this module is the one
+# policy-registration site run_experiment resolves names through.
+from ..reproduction.replay_loop import (  # noqa: E402
+    OBS_REPLAY_LOOP_POLICY_NAME,
+    ObsReplayLoopPolicy,
+)
+
+POLICIES.register(OBS_REPLAY_LOOP_POLICY_NAME, ObsReplayLoopPolicy())

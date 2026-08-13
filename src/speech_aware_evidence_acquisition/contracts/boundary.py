@@ -41,12 +41,19 @@ TRACE_CHANNELS = (
     "MODEL_RESPONSE",
     "TOOL",
     "COST",
+    # obs-replay-loop policy (reproduction.replay_loop): a fifth research-axis
+    # channel for the listen-score-replay splice decision -- span/candidate
+    # provenance and the accept/reject verdict. "Mirror OBS record
+    # conventions" (the policy's own design brief): namespaced exactly like
+    # OBS/ORG/SUPPLY/USE below, never sharing their prefix.
+    "REPLAY",
 )
 _CHANNEL_PREFIX = {
     "OBS": "obs_",
     "ORG": "org_",
     "SUPPLY": "supply_",
     "USE": "use_",
+    "REPLAY": "replay_",
 }
 _DATE = re.compile(r"\d{4}-\d{2}-\d{2}\Z")
 

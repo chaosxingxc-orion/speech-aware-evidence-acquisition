@@ -36,6 +36,22 @@ ALLOWED_DECODING_KEYS = frozenset(
         # slot integer; the adapter refuses an unresolved sentinel
         # (adapter.request) so it can never reach the server as a string.
         "id_slot",
+        # obs-replay-loop policy (reproduction.replay_loop, 2026-08-13): the
+        # SCORE stage's optional per-token confidence signal. Requested only
+        # when a run's ``replay_logprobs`` config key is true (default
+        # false, byte-identical requests otherwise) -- llama-server's
+        # OpenAI-compatible /v1/chat/completions endpoint shape:
+        # ``"logprobs": true, "top_logprobs": 1`` on the request, a
+        # ``choices[0].logprobs.content[]`` list of ``{"token", "logprob"}``
+        # entries on the response. Real-server availability is not
+        # guaranteed (prior offline exploration observed llama-server
+        # sometimes omitting usable logprobs for a hypothesis) -- core.
+        # model.transport/adapter forward whatever the server actually
+        # returns, and core.replay_signals-consuming code treats an
+        # absent/malformed logprobs object as "trigger unavailable", never
+        # a crash.
+        "logprobs",
+        "top_logprobs",
     }
 )
 
@@ -58,6 +74,14 @@ class CoreResponse:
     # mutated post-hoc while `response_sha256` stayed stale and unchecked.
     response_text_sha256: str
     latency_seconds: float
+    # obs-replay-loop policy (reproduction.replay_loop, 2026-08-13): the raw
+    # ``choices[0].logprobs`` object llama-server returned, forwarded
+    # verbatim by the transport when the request actually carried
+    # ``decoding_params.logprobs: true`` (module comment above
+    # ALLOWED_DECODING_KEYS). ``None`` is the pre-existing, byte-identical
+    # default for every request that never asked for logprobs -- no
+    # behaviour change for any caller that does not read this field.
+    logprobs: object = None
 
 
 def _canonical(payload: Mapping[str, object]) -> bytes:

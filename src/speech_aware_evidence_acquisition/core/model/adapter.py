@@ -260,6 +260,13 @@ class FrozenCoreAdapter(_PayloadBindingMixin, _AttemptLifecycleMixin):
             parsed = json.loads(response_bytes.decode("utf-8"))
             text = parsed["text"]
             usage = {str(k): int(v) for k, v in dict(parsed.get("usage", {})).items()}
+            # obs-replay-loop policy (reproduction.replay_loop, 2026-08-13):
+            # optional, transport-forwarded raw logprobs object -- absent on
+            # every pre-existing/default request (transport.py only adds the
+            # key when the server's own choice carried one), so `.get`
+            # keeps this None and CoreResponse.logprobs stays at its
+            # byte-identical default for every caller that never reads it.
+            logprobs = parsed.get("logprobs")
         except (KeyError, TypeError, ValueError, UnicodeError) as error:
             raise FrozenCoreError(
                 f"transport returned a malformed response: {error}"
@@ -304,6 +311,7 @@ class FrozenCoreAdapter(_PayloadBindingMixin, _AttemptLifecycleMixin):
             response_sha256=response_sha256,
             response_text_sha256=response_text_sha256,
             latency_seconds=latency,
+            logprobs=logprobs,
         )
 
     def record_tool_call(self, count: int = 1) -> None:
