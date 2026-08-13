@@ -654,6 +654,315 @@ def test_media_relpath_windows_junction_escape_refused_at_transport(tmp_path):
 
 
 # ---------------------------------------------------------------------------
+# Multimedia array (Part 1) + "evidence-first-system-v3" four-tier layout
+# (Part 2, prep infrastructure for the future listen-score-replay policy).
+# ---------------------------------------------------------------------------
+
+
+def test_existing_style_request_produces_byte_identical_wire_payload(tmp_path):
+    """Part 1 back-compat requirement: a request built in the pre-existing
+    single-audio style (no exemplar_bank/delta_candidates) must produce the
+    EXACT SAME wire bytes it always did -- checked against the literal body,
+    not merely a structural/partial comparison."""
+
+    captured = {}
+
+    def fake_post(url, body):
+        captured["raw"] = body
+        return _canned_response()
+
+    transport = _transport(_base_url(), tmp_path, post=fake_post)
+    payload = _boundary_payload(tmp_path)
+    transport(json.dumps(payload).encode())
+
+    media = tmp_path / payload["media_relpath"]
+    expected_body = {
+        "messages": [
+            {"role": "system", "content": "Transcribe the speech verbatim."},
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "input_audio",
+                        "input_audio": {
+                            "data": base64.b64encode(media.read_bytes()).decode("ascii"),
+                            "format": "mp3",
+                        },
+                    }
+                ],
+            },
+        ],
+        "temperature": 0,
+        "seed": 20260803,
+    }
+    assert captured["raw"] == json.dumps(expected_body).encode("utf-8")
+
+
+def test_v3_delta_candidates_preserve_caller_order_on_the_wire(tmp_path):
+    """Part 1: an ORDERED LIST of media items keeps EXACTLY the order the
+    caller supplied. Unlike the canonically-sorted exemplar bank (see
+    test_v3_exemplar_bank_canonical_serialization_is_order_independent
+    below), tier 3 delta candidates are per-request and position-sensitive
+    -- labels are chosen so alphabetical (canonical) order would disagree
+    with caller order, discriminating the two behaviors."""
+
+    media_b = tmp_path / "media" / "b_candidate.mp3"
+    media_b.parent.mkdir(parents=True, exist_ok=True)
+    media_b.write_bytes(b"candidate-b-bytes")
+    media_a = tmp_path / "media" / "a_candidate.mp3"
+    media_a.write_bytes(b"candidate-a-bytes")
+
+    def fake_post(url, body):
+        parts = json.loads(body)["messages"][1]["content"]
+        assert parts[0] == {"type": "text", "text": "[candidate b]"}
+        assert base64.b64decode(parts[1]["input_audio"]["data"]) == b"candidate-b-bytes"
+        assert parts[2] == {"type": "text", "text": "[candidate a]"}
+        assert base64.b64decode(parts[3]["input_audio"]["data"]) == b"candidate-a-bytes"
+        assert parts[4]["type"] == "input_audio"  # tier 4, the target, always last
+        assert len(parts) == 5
+        return _canned_response()
+
+    transport = _transport(
+        _base_url(), tmp_path, post=fake_post, prompt_order="evidence-first-system-v3"
+    )
+    payload = _boundary_payload(
+        tmp_path,
+        delta_candidates=[
+            {"media_relpath": "media/b_candidate.mp3", "label": "b"},
+            {"media_relpath": "media/a_candidate.mp3", "label": "a"},
+        ],
+    )
+    transport(json.dumps(payload).encode())
+
+
+def test_v3_text_only_delta_candidate_produces_single_text_part(tmp_path):
+    def fake_post(url, body):
+        parts = json.loads(body)["messages"][1]["content"]
+        assert parts[0] == {"type": "text", "text": "[candidate] a text-only guess"}
+        assert parts[1]["type"] == "input_audio"  # tier 4, the target
+        assert len(parts) == 2
+        return _canned_response()
+
+    transport = _transport(
+        _base_url(), tmp_path, post=fake_post, prompt_order="evidence-first-system-v3"
+    )
+    payload = _boundary_payload(tmp_path, delta_candidates=[{"text": "a text-only guess"}])
+    transport(json.dumps(payload).encode())
+
+
+def test_v3_exemplar_bank_appears_in_system_message_after_instruction(tmp_path):
+    media_one = tmp_path / "media" / "one.mp3"
+    media_one.parent.mkdir(parents=True, exist_ok=True)
+    media_one.write_bytes(b"exemplar-one-bytes")
+
+    def fake_post(url, body):
+        system = json.loads(body)["messages"][0]
+        assert system["role"] == "system"
+        assert system["content"] == [
+            {"type": "text", "text": "Transcribe the speech verbatim."},
+            {"type": "text", "text": "[exemplar alpha]"},
+            {
+                "type": "input_audio",
+                "input_audio": {
+                    "data": base64.b64encode(b"exemplar-one-bytes").decode("ascii"),
+                    "format": "mp3",
+                },
+            },
+        ]
+        return _canned_response()
+
+    transport = _transport(
+        _base_url(), tmp_path, post=fake_post, prompt_order="evidence-first-system-v3"
+    )
+    payload = _boundary_payload(
+        tmp_path, exemplar_bank=[{"media_relpath": "media/one.mp3", "label": "alpha"}]
+    )
+    transport(json.dumps(payload).encode())
+
+
+def test_v3_exemplar_bank_canonical_serialization_is_order_independent(tmp_path):
+    """Tier 2: the SAME bank (same members) must serialize to the SAME
+    bytes regardless of the order the caller assembled it in -- required
+    for llama-server KV-cache prefix reuse across requests sharing a bank
+    (see the module docstring's v1->v2 cache-order rationale)."""
+
+    media_one = tmp_path / "media" / "one.mp3"
+    media_one.parent.mkdir(parents=True, exist_ok=True)
+    media_one.write_bytes(b"exemplar-one-bytes")
+    media_two = tmp_path / "media" / "two.mp3"
+    media_two.write_bytes(b"exemplar-two-bytes")
+
+    entry_one = {"media_relpath": "media/one.mp3", "label": "alpha"}
+    entry_two = {"media_relpath": "media/two.mp3", "label": "beta"}
+
+    bodies = {}
+
+    def make_post(key):
+        def fake_post(url, body):
+            bodies[key] = body
+            return _canned_response()
+        return fake_post
+
+    for key, bank in (
+        ("forward", [entry_one, entry_two]),
+        ("reversed", [entry_two, entry_one]),
+    ):
+        transport = _transport(
+            _base_url(), tmp_path, post=make_post(key), prompt_order="evidence-first-system-v3"
+        )
+        payload = _boundary_payload(tmp_path, exemplar_bank=bank)
+        transport(json.dumps(payload).encode())
+
+    assert bodies["forward"] == bodies["reversed"]
+
+
+def test_v3_empty_bank_and_no_deltas_matches_v2_shape(tmp_path):
+    """Fail-closed clause counterpart: v3 with an empty bank and no delta
+    candidates must produce a payload equivalent to v2's shape for the same
+    inputs -- including evidence, which v3 places exactly like v2 does."""
+
+    bodies = {}
+
+    def make_post(key):
+        def fake_post(url, body):
+            bodies[key] = body
+            return _canned_response()
+        return fake_post
+
+    payload_kwargs = dict(
+        supplied_evidence=[
+            {"evidence_id": "e1", "source_uri": "conec://x", "content": "context text"}
+        ],
+        evidence_provenance=[{"lock_key": "conec", "relpath": "x", "sha256": "0" * 64}],
+    )
+    for key, order in (("v2", "evidence-first-system-v2"), ("v3", "evidence-first-system-v3")):
+        transport = _transport(_base_url(), tmp_path, post=make_post(key), prompt_order=order)
+        payload = _boundary_payload(tmp_path, **payload_kwargs)
+        transport(json.dumps(payload).encode())
+    assert bodies["v2"] == bodies["v3"]
+
+
+def test_v3_bank_entry_missing_label_fails_closed(tmp_path):
+    transport = _transport(
+        _base_url(), tmp_path, post=lambda u, b: _canned_response(),
+        prompt_order="evidence-first-system-v3",
+    )
+    payload = _boundary_payload(
+        tmp_path, exemplar_bank=[{"media_relpath": "media/5000001.mp3"}]
+    )
+    with pytest.raises(FrozenCoreError, match="label"):
+        transport(json.dumps(payload).encode())
+
+
+def test_v3_bank_entry_nonexistent_media_fails_closed(tmp_path):
+    transport = _transport(
+        _base_url(), tmp_path, post=lambda u, b: _canned_response(),
+        prompt_order="evidence-first-system-v3",
+    )
+    payload = _boundary_payload(
+        tmp_path, exemplar_bank=[{"media_relpath": "media/absent.mp3", "label": "x"}]
+    )
+    with pytest.raises(FileNotFoundError):
+        transport(json.dumps(payload).encode())
+
+
+def test_v3_bank_entry_wrong_type_fails_closed(tmp_path):
+    transport = _transport(
+        _base_url(), tmp_path, post=lambda u, b: _canned_response(),
+        prompt_order="evidence-first-system-v3",
+    )
+    payload = _boundary_payload(
+        tmp_path, exemplar_bank=[{"media_relpath": "media/5000001.mp3", "label": 123}]
+    )
+    with pytest.raises(FrozenCoreError, match="label"):
+        transport(json.dumps(payload).encode())
+
+
+def test_v3_bank_entry_not_a_mapping_fails_closed(tmp_path):
+    transport = _transport(
+        _base_url(), tmp_path, post=lambda u, b: _canned_response(),
+        prompt_order="evidence-first-system-v3",
+    )
+    payload = _boundary_payload(tmp_path, exemplar_bank=["not-a-mapping"])
+    with pytest.raises(FrozenCoreError, match="exemplar_bank"):
+        transport(json.dumps(payload).encode())
+
+
+def test_v3_bank_not_a_list_fails_closed(tmp_path):
+    transport = _transport(
+        _base_url(), tmp_path, post=lambda u, b: _canned_response(),
+        prompt_order="evidence-first-system-v3",
+    )
+    payload = _boundary_payload(tmp_path, exemplar_bank={"label": "x"})
+    with pytest.raises(FrozenCoreError, match="exemplar_bank"):
+        transport(json.dumps(payload).encode())
+
+
+def test_v3_bank_media_relpath_traversal_refused_at_transport(tmp_path):
+    """The bank's media items go through the SAME I4 confinement rail as the
+    target audio (``_load_audio_part`` is shared) -- never a weaker check
+    just because the item is one of several."""
+
+    transport = _transport(
+        _base_url(), tmp_path, post=lambda u, b: _canned_response(),
+        prompt_order="evidence-first-system-v3",
+    )
+    payload = _boundary_payload(
+        tmp_path,
+        exemplar_bank=[{"media_relpath": "../outside/secret.mp3", "label": "x"}],
+    )
+    with pytest.raises(FrozenCoreError, match="media_relpath"):
+        transport(json.dumps(payload).encode())
+
+
+def test_v3_delta_candidate_both_text_and_media_fails_closed(tmp_path):
+    transport = _transport(
+        _base_url(), tmp_path, post=lambda u, b: _canned_response(),
+        prompt_order="evidence-first-system-v3",
+    )
+    payload = _boundary_payload(
+        tmp_path,
+        delta_candidates=[
+            {"text": "a candidate", "media_relpath": "media/5000001.mp3", "label": "x"}
+        ],
+    )
+    with pytest.raises(FrozenCoreError, match="delta_candidates"):
+        transport(json.dumps(payload).encode())
+
+
+def test_v3_delta_candidate_neither_text_nor_media_fails_closed(tmp_path):
+    transport = _transport(
+        _base_url(), tmp_path, post=lambda u, b: _canned_response(),
+        prompt_order="evidence-first-system-v3",
+    )
+    payload = _boundary_payload(tmp_path, delta_candidates=[{"label": "x"}])
+    with pytest.raises(FrozenCoreError, match="delta_candidates"):
+        transport(json.dumps(payload).encode())
+
+
+def test_v3_more_than_two_delta_candidates_fails_closed(tmp_path):
+    transport = _transport(
+        _base_url(), tmp_path, post=lambda u, b: _canned_response(),
+        prompt_order="evidence-first-system-v3",
+    )
+    payload = _boundary_payload(
+        tmp_path, delta_candidates=[{"text": "one"}, {"text": "two"}, {"text": "three"}]
+    )
+    with pytest.raises(FrozenCoreError, match="delta_candidates"):
+        transport(json.dumps(payload).encode())
+
+
+def test_v3_delta_candidates_not_a_list_fails_closed(tmp_path):
+    transport = _transport(
+        _base_url(), tmp_path, post=lambda u, b: _canned_response(),
+        prompt_order="evidence-first-system-v3",
+    )
+    payload = _boundary_payload(tmp_path, delta_candidates={"text": "x"})
+    with pytest.raises(FrozenCoreError, match="delta_candidates"):
+        transport(json.dumps(payload).encode())
+
+
+# ---------------------------------------------------------------------------
 # I4 defense in depth: per-segment Windows-only looseness (trailing dot/space,
 # NTFS alternate-data-stream colon) -- see test_frozen_core_adapter.py's
 # mirror tests for the rationale.

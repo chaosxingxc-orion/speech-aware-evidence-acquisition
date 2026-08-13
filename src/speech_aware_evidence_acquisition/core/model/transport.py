@@ -25,6 +25,21 @@ stable, cacheable prefix, and the per-slice-variable audio -- which can
 never be part of a reused prefix anyway -- last. Content placed AFTER the
 audio does not break the cache, so nothing else about ordering matters
 except audio-last.
+
+"evidence-first-system-v3" (2026-08-12) is prep infrastructure for the
+future listen-score-replay policy: a four-tier layout -- tier 1 [system]
+task instruction, tier 2 [system] an ordered exemplar bank of (media,
+label) pairs, tier 3 [user, before the target] 0..2 delta candidates
+(media+label or text-only), tier 4 [user] the target audio -- built from
+generic function parameters (payload fields), not a new config surface.
+Bank content is serialized in CANONICAL (label, relpath) order, not
+caller-supplied order, so the same bank always produces the same bytes
+regardless of assembly order, in the same cache-friendly spirit as the v2
+reorder above; delta candidates keep caller order (they are per-request,
+position-sensitive, never a stable reusable prefix). An empty bank with no
+delta candidates reduces to exactly v2's shape for the same inputs. No ops
+benchmark exists yet for v3 -- unlike v1->v2 above, this is new, unmeasured
+infrastructure.
 """
 
 from __future__ import annotations
@@ -53,6 +68,92 @@ def _default_post(timeout_seconds: float) -> Callable[[str, bytes], bytes]:
     return post
 
 
+def _load_audio_part(
+    data_root: Path, media_relpath: object, field: str
+) -> tuple[str, dict[str, object]]:
+    """Confine and load ONE media item under ``data_root`` (I4, independent
+    second rail -- see ``core.model.paths``): returns its normalized relpath
+    (so canonical-sort callers, e.g. the exemplar bank below, have a stable
+    sort key) and its ``input_audio`` wire content part. Shared by the
+    single target-audio path and every exemplar-bank / delta-candidate media
+    item below so the SAME confinement guarantee applies uniformly, never
+    only to the first media item a request carries."""
+
+    relative = _normalized_relative_path(media_relpath, field)
+    media = _resolve_confined(data_root, relative, data_root, field, strict=False)
+    if not media.is_file():
+        raise FileNotFoundError(f"media missing for transport: {media}")
+    data_b64 = base64.b64encode(media.read_bytes()).decode("ascii")
+    return relative, {
+        "type": "input_audio",
+        "input_audio": {"data": data_b64, "format": media.suffix.lstrip(".").lower()},
+    }
+
+
+def _exemplar_bank_entry(
+    data_root: Path, item: object, index: int
+) -> tuple[str, str, list[dict[str, object]]]:
+    """Validate ONE ``evidence-first-system-v3`` ``exemplar_bank`` entry (a
+    required (media, label) pair; fail-closed on anything else) and build
+    its wire content parts. Returns ``(label, relpath, parts)`` -- the
+    caller sorts on ``(label, relpath)`` before flattening ``parts`` so the
+    SAME bank serializes to the SAME bytes regardless of the order it was
+    supplied in (tier 2 is a stable, cache-friendly bank, unlike tier 3's
+    order-preserving delta candidates below)."""
+
+    field = f"exemplar_bank[{index}]"
+    if not isinstance(item, Mapping):
+        raise FrozenCoreError(f"{field} must be a mapping, got {type(item).__name__}")
+    if "label" not in item:
+        raise FrozenCoreError(f"{field} missing required 'label'")
+    label = item["label"]
+    if not isinstance(label, str) or not label:
+        raise FrozenCoreError(f"{field} label must be a non-empty string, got {label!r}")
+    if "media_relpath" not in item:
+        raise FrozenCoreError(f"{field} missing required 'media_relpath'")
+    relative, audio_part = _load_audio_part(
+        data_root, item["media_relpath"], f"transport {field}.media_relpath"
+    )
+    return label, relative, [{"type": "text", "text": f"[exemplar {label}]"}, audio_part]
+
+
+def _delta_candidate_entry(
+    data_root: Path, item: object, index: int
+) -> list[dict[str, object]]:
+    """Validate ONE ``evidence-first-system-v3`` ``delta_candidates`` entry
+    -- either a text-only entry (``text``) or a (media, label) pair, never
+    both; fail-closed on anything else -- and build its wire content parts
+    in the exact position given (tier 3 candidates are per-request and
+    order-sensitive, unlike tier 2's canonically-sorted bank above)."""
+
+    field = f"delta_candidates[{index}]"
+    if not isinstance(item, Mapping):
+        raise FrozenCoreError(f"{field} must be a mapping, got {type(item).__name__}")
+    has_text = "text" in item
+    has_media = "media_relpath" in item
+    if has_text and has_media:
+        raise FrozenCoreError(
+            f"{field} must be either a text-only entry ('text') or a "
+            "(media_relpath, label) pair, not both"
+        )
+    if has_text:
+        text = item["text"]
+        if not isinstance(text, str) or not text:
+            raise FrozenCoreError(f"{field} text must be a non-empty string, got {text!r}")
+        return [{"type": "text", "text": f"[candidate] {text}"}]
+    if not has_media:
+        raise FrozenCoreError(f"{field} must contain either 'text' or 'media_relpath'")
+    if "label" not in item:
+        raise FrozenCoreError(f"{field} missing required 'label'")
+    label = item["label"]
+    if not isinstance(label, str) or not label:
+        raise FrozenCoreError(f"{field} label must be a non-empty string, got {label!r}")
+    _, audio_part = _load_audio_part(
+        data_root, item["media_relpath"], f"transport {field}.media_relpath"
+    )
+    return [{"type": "text", "text": f"[candidate {label}]"}, audio_part]
+
+
 class LlamaServerTransport:
     def __init__(
         self,
@@ -78,10 +179,21 @@ class LlamaServerTransport:
         # the one hit re-prefilled exactly tail+audio (~799 tok), proving the
         # mechanism. Arms without evidence produce byte-identical requests
         # under both orders.
-        if prompt_order not in ("system-instruction-v1", "evidence-first-system-v2"):
+        #
+        # "evidence-first-system-v3" (2026-08-12) layers a four-tier
+        # exemplar-bank/delta-candidate structure on top of v2's system-
+        # message evidence placement -- see the module docstring for the
+        # full tier breakdown. Prep infrastructure for the future
+        # listen-score-replay policy, not yet ops-measured.
+        if prompt_order not in (
+            "system-instruction-v1",
+            "evidence-first-system-v2",
+            "evidence-first-system-v3",
+        ):
             raise SessionError(
                 f"unknown prompt_order {prompt_order!r}; allowed: "
-                "'system-instruction-v1', 'evidence-first-system-v2'"
+                "'system-instruction-v1', 'evidence-first-system-v2', "
+                "'evidence-first-system-v3'"
             )
         self._prompt_order = prompt_order
         # R0 repair T5 (I5): there is no "no session" transport, mirroring the
@@ -149,18 +261,13 @@ class LlamaServerTransport:
         # transport's OWN authority -- this must hold even if the adapter's
         # binding-context check were somehow bypassed or absent (the
         # reproduced defect: `self._data_root / <absolute path>` silently
-        # discards the data root via Path.__truediv__).
-        relative = _normalized_relative_path(payload["media_relpath"], "transport media_relpath")
-        media = _resolve_confined(
-            self._data_root,
-            relative,
-            self._data_root,
-            "transport media_relpath",
-            strict=False,
+        # discards the data root via Path.__truediv__). ``_load_audio_part``
+        # is the SAME confinement rail every exemplar-bank / delta-candidate
+        # media item below goes through, never a target-audio-only special
+        # case.
+        _, audio_part = _load_audio_part(
+            self._data_root, payload["media_relpath"], "transport media_relpath"
         )
-        if not media.is_file():
-            raise FileNotFoundError(f"media missing for transport: {media}")
-        audio_b64 = base64.b64encode(media.read_bytes()).decode("ascii")
         # Prefix-cache-friendly order (see module docstring, 2026-08-09,
         # measured): stable evidence text FIRST, variable audio LAST -- the
         # evidence formatting string and per-field iteration order
@@ -170,10 +277,6 @@ class LlamaServerTransport:
         for field in ("supplied_evidence", "retrieved_evidence"):
             for item in payload.get(field, []):  # type: ignore[union-attr]
                 evidence_texts.append(f"[evidence {item['evidence_id']}] {item['content']}")
-        audio_part = {
-            "type": "input_audio",
-            "input_audio": {"data": audio_b64, "format": media.suffix.lstrip(".").lower()},
-        }
         if self._prompt_order == "evidence-first-system-v2":
             # Stable-first order: [system: evidence…, instruction(+tail at its
             # end)][user: audio]. The evidence formatting strings are
@@ -182,6 +285,51 @@ class LlamaServerTransport:
             messages = [
                 {"role": "system", "content": system_text},
                 {"role": "user", "content": [audio_part]},
+            ]
+        elif self._prompt_order == "evidence-first-system-v3":
+            # Four-tier layout (see module docstring): tier 1 [system] task
+            # instruction, tier 2 [system] the canonically-ordered exemplar
+            # bank, tier 3 [user, before the target] 0..2 order-preserving
+            # delta candidates, tier 4 [user] the target audio (already
+            # built above as `audio_part`, exactly like v1/v2). Evidence
+            # placement is UNCHANGED from v2 so an empty bank with no delta
+            # candidates reduces to EXACTLY v2's shape for the same inputs.
+            exemplar_bank = payload.get("exemplar_bank", [])
+            if not isinstance(exemplar_bank, list):
+                raise FrozenCoreError("payload exemplar_bank must be a list")
+            delta_candidates = payload.get("delta_candidates", [])
+            if not isinstance(delta_candidates, list):
+                raise FrozenCoreError("payload delta_candidates must be a list")
+            if len(delta_candidates) > 2:
+                raise FrozenCoreError(
+                    "payload delta_candidates must contain at most 2 entries, got "
+                    f"{len(delta_candidates)}"
+                )
+            instruction_text = str(payload["task_instruction"])
+            if exemplar_bank:
+                bank_entries = [
+                    _exemplar_bank_entry(self._data_root, item, index)
+                    for index, item in enumerate(exemplar_bank)
+                ]
+                # Canonical sort (see _exemplar_bank_entry's docstring): the
+                # SAME bank serializes to the SAME bytes regardless of the
+                # order it was assembled in.
+                bank_entries.sort(key=lambda entry: (entry[0], entry[1]))
+                system_content: object = (
+                    [{"type": "text", "text": text} for text in evidence_texts]
+                    + [{"type": "text", "text": instruction_text}]
+                    + [part for _, _, parts in bank_entries for part in parts]
+                )
+            else:
+                system_content = "\n\n".join([*evidence_texts, instruction_text])
+            delta_parts = [
+                part
+                for index, item in enumerate(delta_candidates)
+                for part in _delta_candidate_entry(self._data_root, item, index)
+            ]
+            messages = [
+                {"role": "system", "content": system_content},
+                {"role": "user", "content": [*delta_parts, audio_part]},
             ]
         else:
             content: list[dict[str, object]] = [
