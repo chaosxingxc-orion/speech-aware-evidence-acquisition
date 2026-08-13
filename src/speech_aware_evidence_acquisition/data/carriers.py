@@ -90,6 +90,28 @@ class EvidenceLayout:
 
 
 @dataclass(frozen=True)
+class EntityLayout:
+    """Where a carrier's entity-annotation sidecar layer lives (owner decision
+    D-3, entity-class WER scorer admission): one JSON file per sample,
+    ``<sample_id><extension>`` under ``subdir``, relative to the carrier's own
+    materialized root -- the SAME root :class:`ReferenceLayout` resolves
+    under, via the SAME ``data.lock.asset_dir`` convention.
+
+    This sidecar (Earnings21's ``transcripts/wer_tags/<id>.wer_tag.json``)
+    maps an entity ID to its ``entity_type`` label; the entity ID -> reference
+    TOKEN membership itself lives in the carrier's OWN ``.nlp`` reference
+    file's ``wer_tags`` column (:class:`ReferenceLayout`, read by
+    :func:`speech_aware_evidence_acquisition.data.references.reference_tokens`'s
+    sibling, ``reference_entity_mentions``) -- an entity layer is therefore
+    only usable for a carrier that ALSO declares a ``reference`` layout;
+    ``reference_entity_mentions`` fails closed otherwise.
+    """
+
+    subdir: str
+    extension: str
+
+
+@dataclass(frozen=True)
 class CarrierDescriptor:
     """Every per-carrier layout fact this study's data-access layer needs.
 
@@ -123,6 +145,7 @@ class CarrierDescriptor:
     reference: ReferenceLayout | None = None
     evidence: EvidenceLayout | None = None
     media_identity_aliases: frozenset[str] = frozenset()
+    entity: EntityLayout | None = None
 
 
 _REGISTRY: dict[str, CarrierDescriptor] = {}
@@ -221,6 +244,17 @@ def reference_scoped_carrier_lock_keys() -> frozenset[str]:
     return frozenset(key for key, entry in _REGISTRY.items() if entry.reference is not None)
 
 
+def entity_scoped_carrier_lock_keys() -> frozenset[str]:
+    """Every registered carrier whose descriptor declares its own entity
+    layer (owner decision D-3) -- the ``entity-wer`` scorer's fail-closed
+    scope check derives from this, exactly the way ``asr-wer`` already
+    derives its own scope from :func:`reference_scoped_carrier_lock_keys`.
+    Today: ``earnings21-original`` only -- ``earnings22-original`` has no
+    ``wer_tags`` layer at all (E0 D1, ``data/identity.py::earnings22_layers``)."""
+
+    return frozenset(key for key, entry in _REGISTRY.items() if entry.entity is not None)
+
+
 # ---------------------------------------------------------------------------
 # The two built-in carriers this study actually scores today. Registered
 # unconditionally at import time (not lazily), so importing this module
@@ -255,6 +289,14 @@ EARNINGS21_ORIGINAL = register_carrier_descriptor(
         # own docstring for why this is layer-specific (never applied to
         # references).
         media_identity_aliases=frozenset({"conec"}),
+        # Owner decision D-3 (entity-class WER scorer admission): the ONLY
+        # carrier whose `.nlp` reference file's `wer_tags` column has a
+        # matching `<id>.wer_tag.json` entity-type sidecar registered here at
+        # all (E0 D1, `data/identity.py::earnings21_layers`'s own "wer_tags"
+        # layer). `earnings22-original` below declares no `entity` layout --
+        # `earnings22_layers` has no `wer_tags` layer -- so `entity-wer`
+        # fails closed for it via `entity_scoped_carrier_lock_keys`.
+        entity=EntityLayout(subdir="transcripts/wer_tags", extension=".wer_tag.json"),
     )
 )
 

@@ -4,17 +4,17 @@ This is the ONLY module allowed to import data.references (AST contract
 test). It runs strictly after the runtime phase, on recorded outputs — never
 inside a request loop.
 
-Registered SCORERS (R0 repair T8): ``asr-wer`` (WER against the carrier's
-frozen ``.nlp`` reference layer) and ``cost`` (the run manifest's cost
-block). ``scoring/entity.py`` and ``scoring/qa.py`` are frozen, hash-pinned
-functions but have NO registered adapter here: the reference-layer format an
-entity/QA adapter would need to consume (the Earnings21 ``wer_tags`` sidecar
-JSON + the ``.nlp`` file's own ``wer_tags`` column, which is Python-repr list
-syntax, not JSON, and encodes multi-token entity spans by shared entity ID)
-was never pinned by an owner-approved readiness memo, and no spoken-QA
-carrier has any reference layer wired into ``data/identity.py`` at all. See
-``docs/owner-decisions-pending.md`` for what was inspected and what remains
-open; do not add a guessed adapter here.
+Registered SCORERS: ``asr-wer`` (R0 repair T8, WER against the carrier's
+frozen ``.nlp`` reference layer), ``cost`` (R0 repair T8, the run manifest's
+cost block), ``a2t-toolcall`` (P1 scaffold), and ``entity-wer`` (owner
+decision D-3, entity-class WER scorer admission -- see
+:func:`score_entity_wer_outputs` below). ``scoring/qa.py`` remains frozen,
+hash-pinned pure functions with NO registered adapter here: no spoken-QA
+carrier has any reference layer wired into ``data/identity.py`` at all, so
+registering a QA adapter would mean inventing a new carrier's reference
+contract from scratch, not wiring an existing one. See
+``docs/owner-decisions-pending.md`` for what remains open there; do not add a
+guessed QA adapter here.
 """
 
 from __future__ import annotations
@@ -23,9 +23,10 @@ import json
 from pathlib import Path
 from typing import Mapping
 
-from ..data.references import reference_tokens
+from ..data.carriers import entity_scoped_carrier_lock_keys
+from ..data.references import ReferenceError, reference_entity_mentions, reference_tokens
 from ..e0.artifacts import REPO_ROOT
-from ..scoring import align, tokens_v1
+from ..scoring import align, score_entities, tokens_v1
 from ..scoring.transitions import flag_transitions
 from .base import SCORERS
 
@@ -203,6 +204,276 @@ from ..reproduction.a2t_scorer import score_audio2tool_outputs  # noqa: E402
 SCORERS.register("a2t-toolcall", score_audio2tool_outputs)
 
 
+# ---------------------------------------------------------------------------
+# Entity-class WER scorer (owner decision D-3, entity-class WER scorer
+# admission -- carried from the W-A..W-D validation plan's item 6a and
+# 2026-08-12-a2-experiment-plan.md's D-3): wires the previously-unregistered
+# ``scoring/entity.py`` (``score_entities``) to a reference layer, following
+# owner-decisions-pending.md item 1's own format decisions, now resolved:
+#
+#   1. the ``.nlp`` file's ``wer_tags`` column is Python-repr list syntax,
+#      parsed with ``ast.literal_eval`` -- see
+#      ``data.references.reference_entity_mentions``.
+#   2. an entity ID's member tokens are grouped in reference order, never
+#      assumed contiguous -- same function.
+#   3. the string ``scoring.entity.score_entities`` compares is the entity
+#      MENTION TEXT (the raw reference tokens joined by a space; ``
+#      score_entities`` normalizes it internally through the SAME frozen
+#      ``scoring.normalize.normalize_text_v1`` every other scorer uses) --
+#      never the ``entity_type`` label or a composite. ``entity_type`` is
+#      carried alongside as metadata for the per-class ("entity-class")
+#      breakdown the plan's own terminology asks for, not baked into the
+#      compared string.
+#   4. scope: exactly ``data.carriers.entity_scoped_carrier_lock_keys()`` --
+#      today, ``earnings21-original`` only (``earnings22-original`` has no
+#      ``wer_tags`` layer at all, E0 D1). A row naming any other carrier
+#      fails closed.
+#
+# "Entity token" (for the notes this scorer's docstring is required to state
+# precisely): a reference token position that the SAME ``.nlp`` file's own
+# ``wer_tags`` column tags with at least one entity ID -- i.e. exactly the
+# tokens Earnings21's own annotation already marks as part of a named
+# entity/number/date/etc. span (``entity_type`` values observed in the real
+# corpus: YEAR, CARDINAL, ORG, PERSON, DATE, MONEY, PERCENT, TIME, WEBSITE,
+# ABBREVIATION, CONTRACTION, ALPHANUMERIC, ...). No new taxonomy is invented
+# here; the classes are whatever ``entity_type`` values the frozen
+# ``wer_tag.json`` sidecar already assigns.
+#
+# Gold discipline (same as ``score_asr_outputs``): the ``.nlp`` reference
+# file and the ``wer_tag.json`` sidecar are read HERE, at scoring time, on
+# already-recorded outputs -- never inside a request loop, never by any
+# runtime-phase module (this file is the ONLY module allowed to import
+# ``data.references``, AST-enforced; ``data.carriers`` is plain layout data,
+# not gold content).
+# ---------------------------------------------------------------------------
+
+ENTITY_WER_ADAPTER_VERSION = "entity-wer-v1"
+
+
+def _normalized_span_offsets(raw_tokens: list[str]) -> list[tuple[int, int]]:
+    """For each RAW reference token (in order), the ``[start, end)`` half-open
+    range of positions it occupies in ``tokens_v1(" ".join(raw_tokens))`` --
+    the SAME normalized sequence :func:`score_asr_outputs`/this module's own
+    ``align()`` call aligns against. A raw token that normalizes to zero
+    tokens (e.g. a stray punctuation-only cell) maps to an EMPTY range; one
+    that normalizes to more than one space-separated piece maps to a
+    multi-position range.
+
+    This holds because ``normalize_text_v1`` processes text character by
+    character and collapses whitespace: normalizing the whole
+    space-joined string is equivalent to normalizing each raw token on its
+    own and concatenating the resulting pieces in order. (Exercised directly
+    by ``tests/unit/test_entity_wer_scorer.py``, not merely assumed.)
+    """
+
+    spans: list[tuple[int, int]] = []
+    cursor = 0
+    for token in raw_tokens:
+        count = len(tokens_v1(token))
+        spans.append((cursor, cursor + count))
+        cursor += count
+    return spans
+
+
+def _mention_fully_hit(
+    token_indices: tuple[int, ...],
+    spans: list[tuple[int, int]],
+    ref_hit_mask: tuple[bool, ...],
+) -> bool:
+    """An entity mention counts as correctly recognized only if EVERY one of
+    its member reference tokens survived ``align()`` as an exact hit at every
+    normalized position it maps to -- no partial credit. A mention that
+    normalizes to zero positions (all its raw tokens vanished under
+    normalization -- not observed in real data, but handled explicitly
+    rather than raising) is conservatively NOT counted correct."""
+
+    positions: list[int] = []
+    for raw_index in token_indices:
+        start, end = spans[raw_index]
+        positions.extend(range(start, end))
+    if not positions:
+        return False
+    return all(ref_hit_mask[position] for position in positions)
+
+
+def _entity_score_summary(score) -> dict[str, object]:
+    """Render one :class:`scoring.entity.EntityScore` as a JSON-able summary,
+    plus this scorer's own ``entity_wer`` field.
+
+    ``entity_wer := 1.0 - recall`` when ``expected_total > 0`` -- the
+    fraction of gold entity mentions this sample/class/corpus did NOT
+    reproduce verbatim, the natural "error rate" reading of the plan's own
+    "entity-class WER" name. When ``expected_total == 0`` this deliberately
+    reports ``0.0`` ("nothing to get wrong"), NOT ``EntityScore.recall``'s own
+    ``0.0``-when-empty convention run through ``1 - recall`` -- that would
+    read as a MISLEADING 100% error rate for a sample/class with no gold
+    entities at all, rather than an undefined-but-harmless case.
+
+    ``precision`` is always ``1.0`` whenever any mention was predicted
+    correct (and ``0.0``/undefined only when nothing was, per
+    ``EntityScore``'s own convention) by this adapter's construction: a
+    mention is only ever added to ``predicted`` as the EXACT SAME string
+    already in ``expected`` when every one of its positions was an exact
+    ``ref_hit_mask`` hit (see ``_mention_fully_hit``), so ``predicted`` is
+    always a subset of ``expected`` and never contains anything spurious.
+    This is a genuine scoping limit, not an oversight: ``scoring.wer.align``
+    (frozen, E0 D3) exposes only a per-reference-position boolean hit mask,
+    never a hypothesis-side backtrace, so this adapter has no way to name
+    WHAT incorrect text a hypothesis substituted for a missed entity --
+    ``entity_wer`` (recall-based) is therefore the metric of interest here,
+    not this scorer's own always-trivial precision."""
+
+    entity_wer = 0.0 if score.expected_total == 0 else 1.0 - score.recall
+    return {
+        "expected_total": score.expected_total,
+        "correct": score.true_positives,
+        "precision": score.precision,
+        "recall": score.recall,
+        "f1": score.f1,
+        "entity_wer": entity_wer,
+    }
+
+
+def score_entity_wer_outputs(
+    outputs_path: Path, lock: Mapping[str, object], root: Path
+) -> dict[str, object]:
+    """Entity-class WER scorer (owner decision D-3): registered as
+    ``entity-wer``, usable exactly like ``asr-wer`` -- same
+    ``scorer(outputs_path, lock, root)`` signature, same outputs.jsonl rows
+    (``sample_id``, ``carrier_lock_key``, ``text``) -- both in-run (via
+    ``core.scorers.score_bundle``/``SCORERS.resolve("entity-wer")``) and
+    OFFLINE/deferred over an already-finalized attempt's persisted outputs
+    (``scripts/score_entity_wer.py`` /
+    ``speech_aware_evidence_acquisition.analysis.entity_wer_offline``) --
+    both call this exact function, so the two modes are bit-identical.
+
+    GOLD DISCIPLINE: the reference ``.nlp`` file and the entity-type sidecar
+    are read HERE, at scoring time, over already-recorded outputs -- never at
+    runtime, never inside a request loop (same discipline as
+    ``score_asr_outputs``; see this module's own docstring for the AST
+    contract that enforces it).
+
+    See the module-level comment block just above this function for the
+    resolved format decisions (owner-decisions-pending.md item 1) and the
+    precise definition of "entity token"/"entity mention" this scorer uses --
+    unchanged from what ``data.references.reference_entity_mentions`` already
+    defines; no new taxonomy is invented here.
+
+    Fails closed (:class:`ScoringPhaseError`) on: unreadable/empty/malformed
+    outputs (identical checks to ``score_asr_outputs``); a row naming a
+    carrier outside ``data.carriers.entity_scoped_carrier_lock_keys()``
+    (today, exactly ``{"earnings21-original"}``); or any
+    ``data.references.ReferenceError`` raised while resolving a sample's
+    reference tokens or entity mentions (missing/malformed sidecar, missing
+    ``wer_tags`` column, etc.) -- re-raised as ``ScoringPhaseError`` so every
+    scorer in this module fails through the one exception type callers
+    already handle.
+    """
+
+    try:
+        text = Path(outputs_path).read_text(encoding="utf-8")
+    except (OSError, UnicodeError) as error:
+        raise ScoringPhaseError(f"cannot read outputs {outputs_path}: {error}") from error
+    lines = text.split("\n")
+    if lines and lines[-1] == "":
+        lines = lines[:-1]
+    if not lines:
+        raise ScoringPhaseError(f"outputs file {outputs_path} is empty")
+
+    scoped_carriers = entity_scoped_carrier_lock_keys()
+
+    per_sample: list[dict[str, object]] = []
+    corpus_expected: list[str] = []
+    corpus_predicted: list[str] = []
+    corpus_by_type_expected: dict[str, list[str]] = {}
+    corpus_by_type_predicted: dict[str, list[str]] = {}
+    samples_with_entities = 0
+    macro_entity_wer_values: list[float] = []
+
+    for number, line in enumerate(lines, start=1):
+        try:
+            row = json.loads(line)
+        except json.JSONDecodeError as error:
+            raise ScoringPhaseError(f"outputs line {number} malformed: {error}") from error
+        carrier_lock_key = row["carrier_lock_key"]
+        sample_id = row["sample_id"]
+        if carrier_lock_key not in scoped_carriers:
+            raise ScoringPhaseError(
+                f"entity-wer has no registered entity layer for carrier "
+                f"{carrier_lock_key!r} (sample {sample_id!r}); supported carriers: "
+                f"{sorted(scoped_carriers)}"
+            )
+        try:
+            raw_ref_tokens = reference_tokens(lock, root, carrier_lock_key, sample_id)
+            mentions = reference_entity_mentions(lock, root, carrier_lock_key, sample_id)
+        except ReferenceError as error:
+            raise ScoringPhaseError(
+                f"cannot resolve entity references for sample {sample_id!r} "
+                f"(carrier {carrier_lock_key!r}): {error}"
+            ) from error
+
+        ref = tokens_v1(" ".join(raw_ref_tokens))
+        hyp = tokens_v1(row["text"])
+        alignment = align(ref, hyp)
+        spans = _normalized_span_offsets(raw_ref_tokens)
+
+        expected_texts: list[str] = []
+        predicted_texts: list[str] = []
+        by_type_expected: dict[str, list[str]] = {}
+        by_type_predicted: dict[str, list[str]] = {}
+        for mention in mentions:
+            mention_text = " ".join(mention.tokens)
+            expected_texts.append(mention_text)
+            by_type_expected.setdefault(mention.entity_type, []).append(mention_text)
+            if _mention_fully_hit(mention.token_indices, spans, alignment.ref_hit_mask):
+                predicted_texts.append(mention_text)
+                by_type_predicted.setdefault(mention.entity_type, []).append(mention_text)
+
+        overall_score = score_entities(expected_texts, predicted_texts)
+        sample_summary = _entity_score_summary(overall_score)
+        sample_summary["sample_id"] = sample_id
+        sample_summary["by_entity_type"] = {
+            entity_type: _entity_score_summary(
+                score_entities(exp_list, by_type_predicted.get(entity_type, []))
+            )
+            for entity_type, exp_list in sorted(by_type_expected.items())
+        }
+        per_sample.append(sample_summary)
+
+        corpus_expected.extend(expected_texts)
+        corpus_predicted.extend(predicted_texts)
+        for entity_type, exp_list in by_type_expected.items():
+            corpus_by_type_expected.setdefault(entity_type, []).extend(exp_list)
+        for entity_type, pred_list in by_type_predicted.items():
+            corpus_by_type_predicted.setdefault(entity_type, []).extend(pred_list)
+        if overall_score.expected_total > 0:
+            samples_with_entities += 1
+            macro_entity_wer_values.append(sample_summary["entity_wer"])
+
+    corpus_score = score_entities(corpus_expected, corpus_predicted)
+    aggregate: dict[str, object] = {
+        "adapter_version": ENTITY_WER_ADAPTER_VERSION,
+        "samples": len(per_sample),
+        "samples_with_entities": samples_with_entities,
+        "macro_entity_wer": (
+            sum(macro_entity_wer_values) / len(macro_entity_wer_values)
+            if macro_entity_wer_values
+            else 0.0
+        ),
+    }
+    aggregate.update(_entity_score_summary(corpus_score))
+    aggregate["by_entity_type"] = {
+        entity_type: _entity_score_summary(
+            score_entities(exp_list, corpus_by_type_predicted.get(entity_type, []))
+        )
+        for entity_type, exp_list in sorted(corpus_by_type_expected.items())
+    }
+    return {"per_sample": per_sample, "aggregate": aggregate}
+
+
+SCORERS.register("entity-wer", score_entity_wer_outputs)
+
+
 def _assert_scoring_entry_gate(
     bundle: object, lock: Mapping[str, object], root: Path, repo_root: Path
 ) -> None:
@@ -271,11 +542,14 @@ def _assert_scoring_entry_gate(
     only change is OUTSIDE ``scoring/`` (e.g. ``data/references.py``) still
     reaches and trips the clean-tree check exactly as before.
 
-    IMPORTANT 2 (external-threat-model review round 3): between the carrier-
-    scope check and the clean-tree check, when this bundle's configured
-    scorers include ``asr-wer`` (the ONLY scorer that reads
-    ``data.references.reference_tokens``), re-verify the reference (``.nlp``)
-    bytes it is about to read against D1's frozen per-file identity --
+    IMPORTANT 2 (external-threat-model review round 3; widened by owner
+    decision D-3 to cover ``entity-wer`` too -- see below): between the
+    carrier-scope check and the clean-tree check, when this bundle's
+    configured scorers include ``asr-wer`` OR ``entity-wer`` (the scorers
+    that read ``data.references.reference_tokens``/
+    ``data.references.reference_entity_mentions``, both of which read the
+    SAME ``.nlp`` file's bytes), re-verify the reference (``.nlp``)
+    bytes about to be read against D1's frozen per-file identity --
     ``contracts.FrozenCoreGate.verify_reference_identity``, the reference-
     layer counterpart to the media-side ``verify_media_identity`` I-4 already
     added. Scoped to exactly ``bundle.split_ids`` (the bundle's own verified
@@ -311,7 +585,9 @@ def _assert_scoring_entry_gate(
     gate._resolve_carrier_dataset_entry(carrier_lock_key, lock)
 
     scorer_names = bundle.manifest.get("scorers")
-    if isinstance(scorer_names, list) and "asr-wer" in scorer_names:
+    if isinstance(scorer_names, list) and (
+        "asr-wer" in scorer_names or "entity-wer" in scorer_names
+    ):
         split_ids = getattr(bundle, "split_ids", None)
         if not split_ids:
             raise ScoringPhaseError(

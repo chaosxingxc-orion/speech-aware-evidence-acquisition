@@ -82,6 +82,36 @@ so a later task can implement `core.scorers` adapters against a frozen contract,
 to `earnings21-original` first; or (b) accept that entity/QA scoring is out of scope for R0 and
 defer it to R1 or later, recorded as a deviation rather than silently absent.
 
+**Addendum 2026-08-13 (owner decision D-3): the ENTITY half is resolved and wired.** The three
+format decisions above are now pinned, implemented in `data.carriers.EntityLayout`/
+`data.references.reference_entity_mentions`, and registered as the `entity-wer` scorer in
+`core.scorers.score_entity_wer_outputs` (`core.base.SCORERS`), usable both in-run and offline/deferred
+(`scripts/score_entity_wer.py` / `speech_aware_evidence_acquisition.analysis.entity_wer_offline`):
+
+1. the `.nlp` file's `wer_tags` column is parsed with `ast.literal_eval` (a Python literal, refused if
+   it is not a list of strings).
+2. an entity ID's member tokens are grouped in reference order, never assumed contiguous.
+3. `scoring.entity.score_entities` compares the entity MENTION TEXT (raw reference tokens joined by a
+   space, normalized internally by the frozen `normalize_text_v1` every other scorer already uses) —
+   never the `entity_type` label or a composite; `entity_type` is carried alongside as metadata for
+   the per-class breakdown, unchanged from the frozen module's own contract.
+4. scope is exactly `data.carriers.entity_scoped_carrier_lock_keys()` — today, `earnings21-original`
+   only (`earnings22-original` has no `wer_tags` layer at all, E0 D1); a row naming any other carrier
+   fails closed.
+
+`entity_wer := 1 - recall` (0.0 when a sample/class has no gold entities, not `EntityScore.recall`'s
+own 0.0-when-empty convention run through `1 - recall`, which would misleadingly read as a 100% error
+rate). The `entity-wer`-reads-the-`.nlp`-file reference-identity re-check (IMPORTANT 2, IMPORTANT
+list item 5 below) was widened to cover `entity-wer` alongside `asr-wer` in
+`core.scorers._assert_scoring_entry_gate`. **Not extended by this addendum:** the `wer_tags` sidecar
+(`<id>.wer_tag.json`) itself carries NO D1-identity re-verification at scoring time (unlike the
+`.nlp` file it sits beside) — `contracts.FrozenCoreGate.verify_reference_identity` was not touched,
+scoped deliberately to keep this addition to `core.scorers.py`/`data.*` and out of the
+security-critical gate; a future task that wants that coverage needs a `d1_layer_key`-style fact on
+`EntityLayout` and a `contracts.py` change, an owner-level decision given what it changes about this
+study's trust boundary. QA remains unregistered exactly as recorded above; nothing in this addendum
+changes that.
+
 ## 2. GPU/CPU/peak-VRAM cost accounting (design spec §6.2, I8) — engineering closed by T7
 
 T8 (above) restated this as open. R0 repair T7 (`core/resources.py`, `core/model.py`,
