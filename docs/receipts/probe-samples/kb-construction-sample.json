@@ -1,0 +1,150 @@
+{
+  "carrier": "earnings21-original",
+  "design": "owner decision 2026-08-13: the 34 earnings21-original discovery calls OUTSIDE the FROZEN r4-e21-sub10-sample ten (parent discovery hash fcc1b0bc55432d02347dcdf730c6bcef561a9b0ad9605c45b367e1ed3da5d69e, parent r4 hash fa1d298208b1324d60a379ba06ec730c005e376369ddede114d29ae746134cc2). Membership rule: discovery minus r4-e21-sub10-sample, a deterministic set subtraction -- not a fresh seeded draw, so this selection is not itself random (the 'seed' field below is carried for schema parity only). Anti-cheat purpose: gold annotations for these 34 calls may enter OFFLINE v2 error-pattern (\"错题集\") knowledge-base construction ONLY; runtime evaluation splits must never intersect this set (a future gate check enforces the intersection refusal separately -- this receipt freezes identity only).",
+  "items": [
+    {
+      "id": "4320211",
+      "key": "earnings21-original:4320211"
+    },
+    {
+      "id": "4341191",
+      "key": "earnings21-original:4341191"
+    },
+    {
+      "id": "4344338",
+      "key": "earnings21-original:4344338"
+    },
+    {
+      "id": "4344866",
+      "key": "earnings21-original:4344866"
+    },
+    {
+      "id": "4346818",
+      "key": "earnings21-original:4346818"
+    },
+    {
+      "id": "4346923",
+      "key": "earnings21-original:4346923"
+    },
+    {
+      "id": "4359732",
+      "key": "earnings21-original:4359732"
+    },
+    {
+      "id": "4359971",
+      "key": "earnings21-original:4359971"
+    },
+    {
+      "id": "4360366",
+      "key": "earnings21-original:4360366"
+    },
+    {
+      "id": "4360674",
+      "key": "earnings21-original:4360674"
+    },
+    {
+      "id": "4360717",
+      "key": "earnings21-original:4360717"
+    },
+    {
+      "id": "4361631",
+      "key": "earnings21-original:4361631"
+    },
+    {
+      "id": "4363614",
+      "key": "earnings21-original:4363614"
+    },
+    {
+      "id": "4364366",
+      "key": "earnings21-original:4364366"
+    },
+    {
+      "id": "4366302",
+      "key": "earnings21-original:4366302"
+    },
+    {
+      "id": "4366893",
+      "key": "earnings21-original:4366893"
+    },
+    {
+      "id": "4367318",
+      "key": "earnings21-original:4367318"
+    },
+    {
+      "id": "4367535",
+      "key": "earnings21-original:4367535"
+    },
+    {
+      "id": "4368670",
+      "key": "earnings21-original:4368670"
+    },
+    {
+      "id": "4374910",
+      "key": "earnings21-original:4374910"
+    },
+    {
+      "id": "4375653",
+      "key": "earnings21-original:4375653"
+    },
+    {
+      "id": "4382825",
+      "key": "earnings21-original:4382825"
+    },
+    {
+      "id": "4383161",
+      "key": "earnings21-original:4383161"
+    },
+    {
+      "id": "4384198",
+      "key": "earnings21-original:4384198"
+    },
+    {
+      "id": "4384683",
+      "key": "earnings21-original:4384683"
+    },
+    {
+      "id": "4384744",
+      "key": "earnings21-original:4384744"
+    },
+    {
+      "id": "4385388",
+      "key": "earnings21-original:4385388"
+    },
+    {
+      "id": "4385939",
+      "key": "earnings21-original:4385939"
+    },
+    {
+      "id": "4386541",
+      "key": "earnings21-original:4386541"
+    },
+    {
+      "id": "4387332",
+      "key": "earnings21-original:4387332"
+    },
+    {
+      "id": "4387865",
+      "key": "earnings21-original:4387865"
+    },
+    {
+      "id": "4392809",
+      "key": "earnings21-original:4392809"
+    },
+    {
+      "id": "4394084",
+      "key": "earnings21-original:4394084"
+    },
+    {
+      "id": "4397800",
+      "key": "earnings21-original:4397800"
+    }
+  ],
+  "pool_size": 44,
+  "probe": "kb-construction",
+  "seed": 20260807,
+  "split_identity_hash": "67e32336102e88ab3e16820d60e5f0a0e4e64238ef004cd8318d58137bf4bf83",
+  "split_role": "discovery",
+  "strata_counts": {
+    "kb-construction": 34
+  }
+}

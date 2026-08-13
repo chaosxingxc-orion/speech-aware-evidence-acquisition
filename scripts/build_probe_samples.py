@@ -340,6 +340,70 @@ def build_fast_e21_sub3() -> None:
     )
 
 
+def build_kb_construction() -> None:
+    """kb-construction split (owner decision 2026-08-13): the 34
+    earnings21-original discovery calls OUTSIDE the FROZEN r4-e21-sub10-sample
+    ten. Purpose: the v2 error-pattern ("错题集") knowledge base consumes GOLD
+    annotations from exactly these 34 calls at OFFLINE construction time;
+    runtime evaluation splits must stay disjoint from a KB's source set (a
+    future gate check enforces that refusal separately -- this receipt only
+    freezes identity). Membership rule is deterministic set subtraction --
+    discovery minus r4-e21-sub10-sample -- not a fresh seeded draw, so both
+    parent splits are read from their own committed, already-verified
+    receipts rather than re-touching the data root."""
+
+    splits_doc = json.loads(
+        (REPO_ROOT / "docs" / "receipts" / "splits.json").read_text(encoding="utf-8")
+    )
+    discovery = splits_doc["splits"]["discovery"]
+    discovery_hash = discovery["identity_hash"]
+    all_ids = sorted(prefixed_id.split("/", 1)[1] for prefixed_id in discovery["ids"])
+
+    parent_path = OUT_DIR / "r4-e21-sub10-sample.json"
+    parent = json.loads(parent_path.read_text(encoding="utf-8"))
+    frozen_ten = {item["id"] for item in parent["items"]}
+    missing = frozen_ten - set(all_ids)
+    if missing:
+        raise SystemExit(
+            f"r4-e21-sub10-sample ids absent from the frozen discovery split: {sorted(missing)}"
+        )
+
+    chosen_ids = sorted(set(all_ids) - frozen_ten)
+    if len(chosen_ids) != 34:
+        raise SystemExit(f"expected exactly 34 kb-construction ids, got {len(chosen_ids)}")
+    pool = [{"key": f"earnings21-original:{sample_id}", "id": sample_id} for sample_id in all_ids]
+    # Keep the discovery split's own ordering (mirrors build_fast_e21_sub3's
+    # rationale): the identity hash never depends on list order either way,
+    # but preserving the parent's order keeps the receipt legible.
+    sample = [item for item in pool if item["id"] in set(chosen_ids)]
+    write_receipt(
+        "kb-construction-sample.json",
+        {
+            "probe": "kb-construction",
+            "carrier": "earnings21-original",
+            "seed": SEED,
+            "design": (
+                "owner decision 2026-08-13: the 34 earnings21-original discovery calls "
+                f"OUTSIDE the FROZEN r4-e21-sub10-sample ten (parent discovery hash "
+                f"{discovery_hash}, parent r4 hash {parent['split_identity_hash']}). "
+                "Membership rule: discovery minus r4-e21-sub10-sample, a deterministic set "
+                "subtraction -- not a fresh seeded draw, so this selection is not itself "
+                "random (the 'seed' field below is carried for schema parity only). "
+                "Anti-cheat purpose: gold annotations for these 34 calls may enter OFFLINE "
+                'v2 error-pattern ("错题集") knowledge-base construction ONLY; runtime '
+                "evaluation splits must never intersect this set (a future gate check "
+                "enforces the intersection refusal separately -- this receipt freezes "
+                "identity only)."
+            ),
+            "pool_size": len(pool),
+            "strata_counts": {"kb-construction": len(sample)},
+            "items": sample,
+            "split_identity_hash": split_identity_hash([item["key"] for item in sample]),
+            "split_role": "discovery",
+        },
+    )
+
+
 def main() -> int:
     build_r1_audio2tool()
     build_r2_bba()
@@ -347,6 +411,7 @@ def main() -> int:
     build_r4_e21_sub10()
     build_wave1_e21_sub5()
     build_fast_e21_sub3()
+    build_kb_construction()
     return 0
 
 
