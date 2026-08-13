@@ -1,0 +1,12 @@
+# SAEA-E-005B — the framing x form completion of E-005 (owner-approved
+# prompts, quoted verbatim in the ledger rows per the new first-class-
+# prompt governance rule). fast-3 pilot, 90s era, canonical evidence
+# shape. Arm 1 zero point with the framing-matched verbatim+no-insert
+# core; arm 2 full bag pack WITH honest form description + reference-only
+# lock (does E-005's death survive proper framing?); arm 3 names roster
+# (coherent cased small form) with the same lock. Entity-WER rides
+# retroactively.
+# run_id:baseline_fragment
+SAEA-E-005B-zero:fixed-batch-zero-locked-buf90
+SAEA-E-005B-matched-locked:fixed-batch-matched-locked-buf90
+SAEA-E-005B-names-locked:fixed-batch-names-locked-buf90
