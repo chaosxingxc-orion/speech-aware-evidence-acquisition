@@ -1,0 +1,11 @@
+# SAEA-BENCH-b90base — the 90 s-window re-baseline endpoints (owner locked
+# the 90 s window for new campaigns; feature re-cut accepted: "特征该重新做
+# 就重新做"). Zero-evidence (ctx instruction) and matched endpoints on the
+# canonical EVIDENCE shape at 90 s windows (evidence 7.6k + audio 1,386 +
+# gen fits the existing 10,240 slot). 90 s cuts are already cached from the
+# buf90 runs (same windows -> same keys), so both arms run warm.
+# Anchors every future 90 s campaign to the same endpoints E-005F pinned at
+# 60 s (13.08 / 14.81 there).
+# run_id:baseline_fragment
+SAEA-BENCH-b90base-ctxinstr:fixed-batch-nocontext8-buf90
+SAEA-BENCH-b90base-matched:fixed-batch-matched8-buf90
