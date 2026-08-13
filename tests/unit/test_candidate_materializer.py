@@ -34,7 +34,18 @@ from speech_aware_evidence_acquisition.data.lock import load_lock
 SAMPLE_ID = "4000001"
 CONTEXT_CONTENT = "danaher corporation revenue growth unrelated tokenzzz filler padding words extra\n"
 NAMES_CONTENT = "danaher - CEO\ncorporation - Something\nunrelated person - Nobody\n"
-DRAFT_HYPOTHESIS = "quarterly revenue exceeded expectations danaher corporation growth"
+# Correction semantics (materialize_sample, 2026-08-13): a pack candidate
+# verbatim-present in the draft is dropped before scoring, so a fixture
+# using the SAME spellings in both would filter its own signal down to
+# nothing. This hypothesis instead uses plausible ASR-typo variants of
+# CONTEXT_CONTENT/NAMES_CONTENT's terms (danahr/corperation/revenuw/groath
+# for danaher/corporation/revenue/growth) -- none of them equal a pack
+# candidate verbatim, so all four survive the filter and are ranked by
+# fuzzy/phonetic score, exactly the shape a real garbled ASR draft produces
+# (verified: corporation=0.955, danaher=0.929, revenue=0.804, growth=0.792
+# against this draft -- see the four MIN_SCORE-gated tests below).
+DRAFT_HYPOTHESIS = "quarterly revenuw exceeded expectations danahr corperation groath"
+MIN_SCORE = 0.75
 
 
 def _write(path: Path, content: str) -> Path:
@@ -252,16 +263,23 @@ def test_pack_candidates_refuses_an_unsupported_source():
 # ---------------------------------------------------------------------------
 
 
-def test_materialize_sample_ranks_exact_matches_first_and_ties_alphabetically():
+def test_materialize_sample_ranks_fuzzy_matches_by_score_descending():
+    """Correction semantics (materialize_sample): CONTEXT_CONTENT's four
+    correctly-spelled terms are never verbatim-present in DRAFT_HYPOTHESIS's
+    typo'd forms, so none are dropped by the new filter -- they rank by
+    fuzzy/phonetic score, not tied at 1.0 and not alphabetically."""
+
     draft = DraftSample(sample_id=SAMPLE_ID, carrier_lock_key="earnings21-original", hypothesis=DRAFT_HYPOTHESIS)
-    retrieved = materialize_sample(draft, CONTEXT_CONTENT, "conec-contexts", k=10, min_score=0.9)
-    assert [candidate for candidate, _score in retrieved] == ["corporation", "danaher", "growth", "revenue"]
-    assert all(score == 1.0 for _candidate, score in retrieved)
+    retrieved = materialize_sample(draft, CONTEXT_CONTENT, "conec-contexts", k=10, min_score=MIN_SCORE)
+    assert [candidate for candidate, _score in retrieved] == ["corporation", "danaher", "revenue", "growth"]
+    scores = [score for _candidate, score in retrieved]
+    assert scores == sorted(scores, reverse=True)
+    assert all(MIN_SCORE <= score < 1.0 for score in scores)
 
 
 def test_materialize_sample_respects_k():
     draft = DraftSample(sample_id=SAMPLE_ID, carrier_lock_key="earnings21-original", hypothesis=DRAFT_HYPOTHESIS)
-    retrieved = materialize_sample(draft, CONTEXT_CONTENT, "conec-contexts", k=2, min_score=0.9)
+    retrieved = materialize_sample(draft, CONTEXT_CONTENT, "conec-contexts", k=2, min_score=MIN_SCORE)
     assert [candidate for candidate, _score in retrieved] == ["corporation", "danaher"]
 
 
@@ -278,6 +296,38 @@ def test_materialize_sample_refuses_when_pack_has_no_candidates():
 
 
 # ---------------------------------------------------------------------------
+# Correction semantics itself (materialize_sample, 2026-08-13 fix): a pack
+# candidate verbatim-present in the draft (post normalize_term) is dropped
+# before scoring -- even though an exact match would otherwise score 1.0 and
+# flood the top-k -- and the all-filtered case fails closed with its own
+# named message rather than falling through to core.retrieval.retrieve's
+# unrelated "no candidates" refusal.
+# ---------------------------------------------------------------------------
+
+
+def test_materialize_sample_never_returns_a_candidate_verbatim_present_in_the_draft():
+    draft = DraftSample(sample_id=SAMPLE_ID, carrier_lock_key="earnings21-original", hypothesis=DRAFT_HYPOTHESIS)
+    # "danahr" is verbatim one of DRAFT_HYPOTHESIS's own query terms (a
+    # pre-existing pack candidate could coincide with the draft's own
+    # -- garbled -- wording); it would score 1.0 against itself, exactly the
+    # inversion the fix (commit 4a78dfa) exists to prevent.
+    pack_content = CONTEXT_CONTENT.strip() + " danahr\n"
+    retrieved = materialize_sample(draft, pack_content, "conec-contexts", k=10, min_score=MIN_SCORE)
+    returned = [candidate for candidate, _score in retrieved]
+    assert "danahr" not in returned
+    assert "danaher" in returned  # the non-verbatim fuzzy variant still survives
+
+
+def test_materialize_sample_refuses_when_every_candidate_is_verbatim_present():
+    draft = DraftSample(sample_id=SAMPLE_ID, carrier_lock_key="earnings21-original", hypothesis=DRAFT_HYPOTHESIS)
+    # Every token here is verbatim one of DRAFT_HYPOTHESIS's own query terms,
+    # so the correction-semantics filter empties the pool completely.
+    pack_content = "danahr corperation groath"
+    with pytest.raises(MaterializeError, match="nothing to supply"):
+        materialize_sample(draft, pack_content, "conec-contexts", k=10, min_score=0.5)
+
+
+# ---------------------------------------------------------------------------
 # materialize(): the full offline pipeline.
 # ---------------------------------------------------------------------------
 
@@ -289,18 +339,18 @@ def test_materialize_writes_candidate_files_and_a_manifest(tmp_path):
 
     result = materialize(
         lock=lock, root=world.data_root, draft_run="draft-run-1", pack_source="conec-contexts",
-        k=10, min_score=0.9, out_id="mat-test-1",
+        k=10, min_score=MIN_SCORE, out_id="mat-test-1",
         now=lambda: datetime(2026, 8, 12, tzinfo=timezone.utc),
     )
 
     candidate_path = result.out_dir / f"{SAMPLE_ID}.candidates.txt"
-    assert candidate_path.read_text(encoding="utf-8") == "corporation\ndanaher\ngrowth\nrevenue\n"
+    assert candidate_path.read_text(encoding="utf-8") == "corporation\ndanaher\nrevenue\ngrowth\n"
     manifest = json.loads(result.manifest_path.read_text(encoding="utf-8"))
     assert manifest["schema"] == MANIFEST_SCHEMA
     assert manifest["materialization_id"] == "mat-test-1"
     assert manifest["inputs"]["draft_run"] == "draft-run-1"
     assert manifest["inputs"]["pack_source"] == "conec-contexts"
-    assert manifest["params"] == {"k": 10, "min_score": 0.9}
+    assert manifest["params"] == {"k": 10, "min_score": MIN_SCORE}
     assert manifest["samples"][SAMPLE_ID]["candidate_count"] == 4
     assert len(manifest["samples"][SAMPLE_ID]["sha256"]) == 64
     assert manifest["generated_at"] == "2026-08-12T00:00:00+00:00"
@@ -313,7 +363,7 @@ def test_materialize_conec_names_pack_source(tmp_path):
 
     result = materialize(
         lock=lock, root=world.data_root, draft_run="draft-run-2", pack_source="conec-names",
-        k=10, min_score=0.9, out_id="mat-test-2",
+        k=10, min_score=MIN_SCORE, out_id="mat-test-2",
     )
     candidate_path = result.out_dir / f"{SAMPLE_ID}.candidates.txt"
     assert candidate_path.read_text(encoding="utf-8") == "corporation\ndanaher\n"
@@ -326,7 +376,7 @@ def test_materialize_dry_run_writes_nothing(tmp_path):
 
     result = materialize(
         lock=lock, root=world.data_root, draft_run="draft-run-3", pack_source="conec-contexts",
-        k=10, min_score=0.9, out_id="mat-test-3", dry_run=True,
+        k=10, min_score=MIN_SCORE, out_id="mat-test-3", dry_run=True,
     )
     assert result.manifest_path is None
     assert not result.out_dir.exists()
@@ -340,11 +390,11 @@ def test_materialize_is_deterministic_across_two_runs(tmp_path):
 
     first = materialize(
         lock=lock, root=world.data_root, draft_run="draft-run-4", pack_source="conec-contexts",
-        k=10, min_score=0.9, out_id="mat-test-4a",
+        k=10, min_score=MIN_SCORE, out_id="mat-test-4a",
     )
     second = materialize(
         lock=lock, root=world.data_root, draft_run="draft-run-4", pack_source="conec-contexts",
-        k=10, min_score=0.9, out_id="mat-test-4b",
+        k=10, min_score=MIN_SCORE, out_id="mat-test-4b",
     )
     first_bytes = (first.out_dir / f"{SAMPLE_ID}.candidates.txt").read_bytes()
     second_bytes = (second.out_dir / f"{SAMPLE_ID}.candidates.txt").read_bytes()
@@ -371,7 +421,7 @@ def test_materialize_uses_the_newest_attempt(tmp_path):
 
     result = materialize(
         lock=lock, root=world.data_root, draft_run="draft-run-5", pack_source="conec-contexts",
-        k=10, min_score=0.9, out_id="mat-test-5",
+        k=10, min_score=MIN_SCORE, out_id="mat-test-5",
     )
     assert result.per_sample[SAMPLE_ID]["candidate_count"] == 4
 
