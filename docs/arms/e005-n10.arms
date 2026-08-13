@@ -1,0 +1,14 @@
+# SAEA-E-005 — the FORMAL n=10 campaign (owner D-1 released 2026-08-13,
+# conditioned on GPU idleness; fired by the idle-waiting chain). Three arms
+# on the 90 s era, canonical evidence shape, instruction held constant
+# (context instruction): zero evidence / matched conec pack / mismatched
+# rotation. Split: r4-e21-sub10 (the frozen discovery ten). Analysis per
+# the pre-registered 2026-08-09 R4 analysis plan: per-sample paired
+# contrasts, exact Wilcoxon two-sided, bootstrap CIs; the pilot triple
+# evidence-tax replication (+1.52/+1.73/+2.16) is the prior. Entity-class
+# WER rides as deferred computation once D-3 wiring lands (outputs are
+# persisted; the adapter version gets pinned before any deferred read).
+# run_id:baseline_fragment
+SAEA-E-005-ctxinstr:fixed-batch-nocontext8-buf90
+SAEA-E-005-matched:fixed-batch-matched8-buf90
+SAEA-E-005-mismatched:fixed-batch-mismatched8-buf90
