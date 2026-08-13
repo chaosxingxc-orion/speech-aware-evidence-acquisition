@@ -1,6 +1,7 @@
-"""Evidence sources (the evidence seam): conec contexts, none, oracle refusal,
-the three B-2a bias-list sources, and the deterministic mismatch decorator
-applied by the driver on a config flag.
+"""Evidence sources (the evidence seam): conec contexts, conec names,
+derived candidates, none, oracle refusal, the three B-2a bias-list sources,
+and the deterministic mismatch decorator applied by the driver on a config
+flag.
 
 R0 repair refactor stage 2 (part B): ``_conec_contexts`` used to hardcode the
 ConEC evidence path as ``earnings21/contexts/<id>.txt`` regardless of which
@@ -79,6 +80,38 @@ per-sample carrier file, exactly like ``conec-contexts``), so a real gated
 run correctly keeps failing closed at the unchanged
 ``contracts.gate_evidence_identity`` rail until a future D0/D1 update adds
 this layer; nothing here weakens that gate or bypasses it early.
+
+``derived-candidates`` (2026-08-12, offline retrieval-gated candidate
+evidence -- the E-003R mechanism and the KC-Q3 two-pass machinery's shared
+evidence layer; see ``scripts/materialize_candidates.py``'s own module
+docstring for how these files are produced): a THIRD verbatim-passthrough
+source, ``_derived_candidates``, reading a per-sample file an OFFLINE
+materializer already wrote --
+``derived/evidence-candidates/<materialization_id>/<sample_id>.candidates.
+txt`` directly under the controlled data root (never a lock-registered asset
+subdir) -- one already retrieval-gated, score-thresholded candidate per
+line. Same ``identity`` transform / ``DerivedEvidenceRecord``/``EvidenceItem``
+shape as ``conec-contexts``/``conec-names`` above, but this source names no
+carrier at all: ``materialization_id`` comes from a NEW baseline-config key,
+``evidence_materialization_id`` -- required by, and legal ONLY WITH,
+``evidence_source == "derived-candidates"``. :func:`resolve_evidence_
+materialization_id` fails closed on a missing/empty value (called inside
+``_derived_candidates`` itself, so a direct call to that source function --
+e.g. a unit test bypassing ``run_experiment`` entirely, exactly the pattern
+every other source's own test suite already uses -- gets the identical
+fail-closed behaviour); :func:`assert_evidence_materialization_id_legal`
+fails closed if the key is supplied alongside any OTHER ``evidence_source``,
+called once, early, in ``core.driver.run_experiment`` -- the same "resolved
+and validated HERE, before any other per-run work" placement ``core.
+evidence_budget.resolve_evidence_budget_bytes`` already established.
+Because this source never resolves a ``data.carriers.CarrierDescriptor`` at
+all, its ``DerivedEvidenceRecord.carrier_bound`` is honestly ``False``
+(``core.base.DerivedEvidenceRecord``'s own docstring): the file was never,
+and can never be, D1-recorded under any carrier's identity layer -- it is a
+materializer's own derived output, not a shipped carrier asset -- so
+identity rests solely on this record's own re-derived chain plus the
+materializer's own ``manifest.json`` sha256 receipt, exactly the honesty
+``distractor-only-bias-list`` already established for the identical reason.
 """
 
 from __future__ import annotations
@@ -326,6 +359,109 @@ def _conec_names(
         source_uri=f"{layout.lock_key}://{relpath}",
         content=content,
         provenance={"lock_key": layout.lock_key, "relpath": relpath, "sha256": sha256_file(path)},
+        derivation=derivation,
+        derivation_source_bytes=source_bytes,
+    )
+    return [item.validate()]
+
+
+def resolve_evidence_materialization_id(values: Mapping[str, object] | None) -> str:
+    """The ``evidence_materialization_id`` baseline-config key
+    ``_derived_candidates`` needs to find its offline-materialized per-sample
+    candidate file (``scripts/materialize_candidates.py``'s own ``--out-id``)
+    -- a non-empty string, no default (there is no sane fallback id here, the
+    same "no default" discipline ``core.config.model_lock_key`` already
+    applies to a model fragment's own required key).
+
+    Deliberately does NOT look at ``evidence_source``: this resolver is
+    shared, unconditional, and never re-derives which source called it --
+    the same discipline ``resolve_bias_list_max_entries`` already applies for
+    its own (differently-scoped) knob. See :func:`assert_evidence_
+    materialization_id_legal` for the source-exclusivity half of this key's
+    contract, checked once, early, at the composed-config level."""
+
+    value = values.get("evidence_materialization_id") if values is not None else None
+    if not isinstance(value, str) or not value:
+        raise EvidenceError(
+            "baseline config evidence_materialization_id must be a non-empty "
+            f"string (required by the derived-candidates evidence source), got {value!r}"
+        )
+    return value
+
+
+def assert_evidence_materialization_id_legal(values: Mapping[str, object]) -> None:
+    """Key-legality matrix for ``evidence_materialization_id`` (module
+    docstring): required by, and legal ONLY WITH, ``evidence_source ==
+    "derived-candidates"``. Called once, early, in ``core.driver.
+    run_experiment`` -- the same "resolved and validated HERE, before any
+    other per-run work" placement ``core.evidence_budget.resolve_evidence_
+    budget_bytes`` already established -- so a baseline fragment that sets
+    this key under any OTHER evidence_source refuses before any per-run work
+    happens, rather than the source dispatch simply never reading (and
+    therefore never catching) a stray key left over from a copy-pasted
+    fragment."""
+
+    evidence_source = str(values.get("evidence_source", "none"))
+    if evidence_source == "derived-candidates":
+        resolve_evidence_materialization_id(values)
+        return
+    if "evidence_materialization_id" in values:
+        raise EvidenceError(
+            "baseline config evidence_materialization_id is only legal with "
+            f"evidence_source='derived-candidates', got evidence_source={evidence_source!r}"
+        )
+
+
+def _derived_candidates(
+    lock: Mapping[str, object],
+    root: Path,
+    sample_id: str,
+    carrier_lock_key: str,
+    values: Mapping[str, object] | None = None,
+) -> list[EvidenceItem]:
+    """Verbatim passthrough of one sample's OFFLINE-materialized candidate
+    file (module docstring) -- carrier-independent (``carrier_lock_key`` is
+    accepted only for signature parity with every other evidence source,
+    exactly like ``_none_source``, and is never read), so no ``data.carriers.
+    CarrierDescriptor`` lookup happens here at all."""
+
+    materialization_id = resolve_evidence_materialization_id(values)
+    relpath = f"derived/evidence-candidates/{materialization_id}/{sample_id}.candidates.txt"
+    path = Path(root) / "derived" / "evidence-candidates" / materialization_id / f"{sample_id}.candidates.txt"
+    if not path.is_file():
+        raise EvidenceError(f"derived candidates missing for {sample_id}: {path}")
+    try:
+        content = path.read_text(encoding="utf-8")
+    except (OSError, UnicodeError) as error:
+        raise EvidenceError(f"cannot read derived candidates {path}: {error}") from error
+    # Same identity-transform derivation chain as _conec_contexts/_conec_names
+    # (module docstring), but carrier_bound=False (core.base.
+    # DerivedEvidenceRecord's own docstring): this file lives outside any
+    # carrier's asset root entirely, so it can never be D1-recorded -- the
+    # HONEST record here rests solely on this chain's own re-derivation,
+    # never a fabricated D1 anchor, exactly like distractor-only-bias-list.
+    source_bytes = content.encode("utf-8")
+    source_sha256 = hashlib.sha256(source_bytes).hexdigest()
+    derivation = DerivedEvidenceRecord(
+        sample_id=sample_id,
+        source_relpath=relpath,
+        source_sha256=source_sha256,
+        transform_name="identity",
+        transform_version="v1",
+        params_hash=canonical_params_hash({}),
+        derived_sha256=source_sha256,
+        carrier_bound=False,
+    )
+    item = EvidenceItem(
+        evidence_id=f"derived-candidates/{sample_id}",
+        source_uri=f"derived-candidates://{relpath}",
+        content=content,
+        provenance={
+            "lock_key": "derived-candidates",
+            "relpath": relpath,
+            "sha256": sha256_file(path),
+            "materialization_id": materialization_id,
+        },
         derivation=derivation,
         derivation_source_bytes=source_bytes,
     )
@@ -604,6 +740,7 @@ def resolve_declared_transform_params(
 EVIDENCE_SOURCES.register("none", _none_source)
 EVIDENCE_SOURCES.register("conec-contexts", _conec_contexts)
 EVIDENCE_SOURCES.register("conec-names", _conec_names)
+EVIDENCE_SOURCES.register("derived-candidates", _derived_candidates)
 EVIDENCE_SOURCES.register("oracle", _oracle_refusal)
 EVIDENCE_SOURCES.register("conec-bias-list", _conec_bias_list)
 EVIDENCE_SOURCES.register("conec-bias-phrases", _conec_bias_phrases)

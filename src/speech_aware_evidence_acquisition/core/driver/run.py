@@ -30,7 +30,11 @@ from ..base import (
     SampleContext,
 )
 from ..config import ComposedConfig
-from ..evidence import resolve_declared_transform_params, rotated_mismatch
+from ..evidence import (
+    assert_evidence_materialization_id_legal,
+    resolve_declared_transform_params,
+    rotated_mismatch,
+)
 from ..evidence_budget import apply_evidence_budget, resolve_evidence_budget_bytes
 from ..evidence_derivation import DerivedEvidenceRegistry
 from ..instructions import resolve_task_instruction
@@ -150,6 +154,14 @@ def run_experiment(
         # (reproduction.obs_loop). See core.evidence_budget's own module
         # docstring for the single application seam below.
         evidence_budget_bytes = resolve_evidence_budget_bytes(values)
+        # derived-candidates key-legality matrix (core.evidence module
+        # docstring): resolved and validated HERE too, same "before any
+        # other per-run work" placement as evidence_budget_bytes above -- a
+        # baseline fragment that sets evidence_materialization_id under any
+        # OTHER evidence_source refuses before any per-run work happens,
+        # rather than the source dispatch below simply never reading (and
+        # therefore never catching) a stray key.
+        assert_evidence_materialization_id_legal(values)
         # R0 repair refactor stage 2 (part C): the split<->plan<->config
         # cross-checks (M-2, split identity hash/role/carrier, protocol hash)
         # live in split_check._verify_split_for_run now -- same checks, same
