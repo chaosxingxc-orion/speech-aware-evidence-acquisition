@@ -1,0 +1,11 @@
+# SAEA-BENCH-buf90w/buf120/buf180 — the window frontier the freed HBM pays
+# for (owner directive 2026-08-12: mmproj-to-CPU's larger value = longer
+# slices; verify the optimum). Wide shape -c 65536 -np 16 (4,096/slot)
+# fits at ~21.2 GB without mmproj. buf90w REruns the 90 s point on the wide
+# shape as the cross-shape bridge (90 s narrow = 13.35); buf120/180 extend
+# the curve (sized: 120 s ~1,772 audio tok, 180 s ~2,545; decode ~230-350 s
+# vs the 420 s timeout - tight at 180, watched). New cuts are cold encodes.
+# run_id:baseline_fragment
+SAEA-BENCH-buf90w:fixed-batch-bare16-buf90
+SAEA-BENCH-buf120:fixed-batch-bare16-buf120
+SAEA-BENCH-buf180:fixed-batch-bare16-buf180

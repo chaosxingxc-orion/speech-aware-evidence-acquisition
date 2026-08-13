@@ -1,0 +1,25 @@
+{
+  "arm": "bare-core",
+  "policy": "obs-agent-loop",
+  "evidence_source": "none",
+  "evidence_mismatch": false,
+  "scorers": [
+    "asr-wer",
+    "cost"
+  ],
+  "task_instruction": "Transcribe the speech verbatim. Output only the transcript text.",
+  "obs_buffer_seconds": 180,
+  "obs_min_advance_seconds": 20,
+  "obs_max_advance_seconds": 170,
+  "obs_silence_snap_seconds": 2.0,
+  "obs_fallback_advance_seconds": 160,
+  "obs_boundary_mode": "fixed",
+  "obs_vad": "energy",
+  "obs_vad_trim_min_seconds": 0,
+  "obs_preprocess": [],
+  "obs_condition_tail_chars": 0,
+  "obs_slice_retry_max": 1,
+  "obs_slice_skip_max": 1,
+  "obs_batch_samples": 1,
+  "obs_batch_slices": 16
+}
