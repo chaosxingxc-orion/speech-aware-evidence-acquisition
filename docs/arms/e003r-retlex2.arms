@@ -1,0 +1,10 @@
+# SAEA-E-003R-retlex2 — the owner's framing challenge made concrete: the
+# first retlex arm supplied five bare words under a generic prose-context
+# instruction (no reference-only lock, no conditional-use rule) and blew up
+# to 36.87 (insertion x5-7 per word + 19-31% transcript shrinkage). This
+# arm holds everything constant except the instruction: an explicit
+# reference-list frame (use listed spellings ONLY if actually heard; never
+# insert). Reads: WER vs 36.87 (framing effect), vs 12.51 zero (does framed
+# tiny supply finally go non-negative), plus the same insertion forensics.
+# run_id:baseline_fragment
+SAEA-E-003R-retlex2:fixed-batch-retlex8-buf90-locked
