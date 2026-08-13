@@ -73,7 +73,7 @@ from typing import Callable, Mapping
 from ..e0.artifacts import REPO_ROOT, sha256_file, write_json_artifact
 from .base import EVIDENCE_SOURCES, CoreError, EvidenceError
 from . import evidence as _evidence  # noqa: F401 (registration: conec-contexts/conec-names/...)
-from .retrieval import RetrievalError, retrieve
+from .retrieval import RetrievalError, normalize_term, retrieve
 
 MANIFEST_SCHEMA = "saea-derived-candidates-materialization-v1"
 
@@ -293,6 +293,21 @@ def materialize_sample(
     if not candidates:
         raise MaterializeError(
             f"sample {draft.sample_id!r}: pack source {pack_source!r} produced no candidates"
+        )
+    # Correction semantics (2026-08-13 first-materialization read): a pack
+    # term the draft already contains verbatim needs no supplying -- exact
+    # matches score 1.0, flood the top-k, and the lexicographic tie-break
+    # then returns the alphabet ("able", "across", ...), not the entities
+    # the draft got WRONG. Supply only what the draft LACKS: drop candidates
+    # whose normalized form already appears among the query terms, so every
+    # surviving hit is a fuzzy/phonetic match -- the draft's garbled version
+    # pointing at the pack's correct form.
+    draft_forms = {normalize_term(term) for term in query_terms}
+    candidates = [c for c in candidates if normalize_term(c) not in draft_forms]
+    if not candidates:
+        raise MaterializeError(
+            f"sample {draft.sample_id!r}: every pack candidate already appears in the "
+            "draft; nothing to supply"
         )
     try:
         return retrieve(query_terms, candidates, k, min_score)
