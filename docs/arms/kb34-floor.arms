@@ -1,0 +1,9 @@
+# SAEA-BENCH-kb34-floor — dataset-expansion baseline exploration (owner
+# 8h-queue directive): the bare 90s-era floor over the kb-construction 34
+# (the discovery calls OUTSIDE the frozen ten, frozen at bea16af). Prices
+# the corpus-wide floor beyond the ten, gives the per-sample distribution
+# for future campaign sizing, and warms features for the whole corpus -
+# including the v2 error-pattern KB construction that will consume these
+# same 34 calls. Locked-zero instruction (verbatim = SAEA-E-005B-zero's).
+# run_id:baseline_fragment
+SAEA-BENCH-kb34-floor:fixed-batch-zero-locked-buf90

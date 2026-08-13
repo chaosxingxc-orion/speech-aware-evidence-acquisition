@@ -1,0 +1,7 @@
+# SAEA-E-003L — the dose axis RERUN under the locked framing (the earlier
+# dose curve ran the generic unlocked instruction; its +6.9pp small-dose
+# spike is framing-confounded). Two doses of the honestly-described bag
+# with the reference-only lock; endpoints come from E-005B arms 1-2.
+# run_id:baseline_fragment
+SAEA-E-003L-dose2k:fixed-batch-matched-locked-b2k-buf90
+SAEA-E-003L-dose8k:fixed-batch-matched-locked-b8k-buf90

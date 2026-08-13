@@ -1,0 +1,5 @@
+# SAEA-E-005B-W5 — cross-split replication pair on the sharp seeded wave5
+# split (bare spread 0.69pp): locked zero + locked names.
+# run_id:baseline_fragment
+SAEA-E-005B-W5-zero:fixed-batch-zero-locked-buf90
+SAEA-E-005B-W5-names:fixed-batch-names-locked-buf90

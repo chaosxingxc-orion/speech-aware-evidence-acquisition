@@ -1,0 +1,9 @@
+# SAEA-E-005B-N10 — the formal n=10 read of the framing x form matrix
+# (fragments byte-identical to the approved E-005B pilot arms; instructions
+# quoted verbatim in the E-005B rows). Whatever the pilot shows, this
+# completes the CORRECTLY-FRAMED static-supply verdict at Wilcoxon-capable
+# scale - the honest successor to E-005's generically-framed verdict.
+# run_id:baseline_fragment
+SAEA-E-005B-N10-zero:fixed-batch-zero-locked-buf90
+SAEA-E-005B-N10-matched:fixed-batch-matched-locked-buf90
+SAEA-E-005B-N10-names:fixed-batch-names-locked-buf90
