@@ -1,0 +1,10 @@
+# SAEA-E-003R-retlex — the retrieval-gated arm: k=5 candidates per sample,
+# selected by the correction-semantics materializer (fuzzy pointers from
+# the 90s-era draft's garbled forms to pack forms the draft LACKS;
+# materialization e003r-lex-k5-v2, per-file sha256 in its manifest).
+# ~30 bytes of supply per sample vs the full pack's 10-16k. Same
+# instruction/serving as the b90base endpoints (zero 12.51 / full 14.03).
+# The decisive read: does relevance-selected tiny supply beat both the
+# full pack AND the zero point?
+# run_id:baseline_fragment
+SAEA-E-003R-retlex:fixed-batch-retlex8-buf90
