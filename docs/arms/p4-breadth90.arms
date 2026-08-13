@@ -1,0 +1,7 @@
+# P4 breadth fill at the 90 s window (GPU-fill; cold cuts priced and accepted
+# by the owner's "特征该重新做就重新做"): E-22 subset10 and wave5 bare floors
+# on the locked 90 s bare shape (wide, np16). Anchors the 90 s era across
+# carriers/splits the way QF-1/QF-2 anchored 60 s (12.75 / 10.35 there).
+# run_id:baseline_fragment
+SAEA-BENCH-e22-b90:fixed-batch-bare16-buf90
+SAEA-BENCH-wave5-b90:fixed-batch-bare16-buf90
