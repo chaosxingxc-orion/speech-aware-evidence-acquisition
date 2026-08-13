@@ -46,10 +46,27 @@ before this rail existed), a relpath one level deeper under
 ``layout.subdir``'s own ``participant_names/`` resolves to the new
 ``e21_participant_names`` layer, and anything else matches no routing rule and
 refuses -- fail-closed, the same discipline a missing D1 layer already gets.
-:meth:`verify_evidence_content_identity` is unchanged by this: it carries no
-relpath to route by (its caller, ``core.model.lifecycle``, passes only
-``sample_id -> content bytes``), so it keeps checking the carrier's single
-default evidence layer via :meth:`_evidence_manifest`, exactly as before.
+
+Follow-up (2026-08-13, same incident, second check point): the relpath-routing
+fix above landed alone first and was declared "unchanged" for
+:meth:`verify_evidence_content_identity` -- but that method sees the SAME
+``conec-names`` evidence in a real gated run (``core.model.lifecycle`` calls
+both checks back to back on the SAME ``binding``), and it ALSO used to resolve
+every sample's expected facts from the carrier's single default layer
+(``e21_contexts``) by ``sample_id`` alone, with no relpath at all to route by.
+A real run hit this exact "evidence content identity drift" for the same
+reason, one check point later: the file rail passed (routed correctly), the
+content rail still checked the names bytes against the contexts layer's
+facts. :meth:`verify_evidence_content_identity` now takes a SECOND required
+mapping, ``evidence_relpaths`` -- the SAME per-sample relpaths
+:meth:`verify_evidence_identity` itself routes by -- and routes each sample's
+content the identical way (:func:`_route_evidence_layer_key`, shared, not
+reimplemented). ``core.model.lifecycle`` threads it through from the SAME
+``binding.evidence_relpaths`` the file check already consulted (that field
+already existed on ``core.base.PayloadBindingContext`` for the first check;
+nothing new needed there). A sample present in ``evidence_contents`` with no
+matching entry in ``evidence_relpaths`` refuses -- fail-closed, never assumed
+to belong to the default layer.
 """
 
 from __future__ import annotations
@@ -163,12 +180,13 @@ class _EvidenceIdentityMixin(_D1IdentityLookupMixin):
     ) -> dict[str, tuple[int, str]]:
         """Load D1's recorded per-sample ``(bytes, sha256)`` manifest for
         exactly ONE of ``layout.lock_key``'s D1 layers (``d1_layer_key``) --
-        the routing-aware building block :meth:`verify_evidence_identity`
-        calls once per distinct layer key its relpaths route to, and
-        :meth:`_evidence_manifest` calls once for the carrier's single
-        default layer. Raises :class:`GateClosed` for every refusal both
-        callers already documented (missing carrier identity, missing/
-        malformed manifest)."""
+        the routing-aware building block both :meth:`verify_evidence_identity`
+        and :meth:`verify_evidence_content_identity` call once per distinct
+        layer key their relpaths route to (follow-up, module docstring: both
+        checks now share this exact per-layer loader, neither has its own
+        single-default-layer path any more). Raises :class:`GateClosed` for
+        every refusal both callers already documented (missing carrier
+        identity, missing/malformed manifest)."""
 
         document = self._load(self._d1_identity_artifact_path(), "D1 identity artifact")
         carriers = document.get("carriers")
@@ -208,23 +226,6 @@ class _EvidenceIdentityMixin(_D1IdentityLookupMixin):
                 raise GateClosed(f"D1 evidence manifest entry is malformed: {entry!r}")
             recorded[sample_id] = (rec_bytes, rec_sha)
         return recorded
-
-    def _evidence_manifest(self, carrier_lock_key: str) -> tuple[object, dict[str, tuple[int, str]]]:
-        """Shared by :meth:`verify_evidence_content_identity` (the ONLY
-        caller left -- :meth:`verify_evidence_identity` now routes per
-        relpath via :meth:`_evidence_layer_manifest` directly, module
-        docstring): resolve ``carrier_lock_key``'s evidence layout and load
-        D1's recorded per-sample ``(bytes, sha256)`` manifest for its single
-        DEFAULT layer (``layout.d1_layer_key``) -- unchanged from before the
-        relpath-routing rail existed, since content identity carries no
-        relpath to route by. Returns ``(layout, recorded)``; raises
-        :class:`GateClosed` for every refusal both callers already
-        documented (unregistered carrier, no evidence layer, missing/
-        malformed manifest)."""
-
-        layout = self._evidence_layout(carrier_lock_key)
-        recorded = self._evidence_layer_manifest(carrier_lock_key, layout, layout.d1_layer_key)
-        return layout, recorded
 
     def verify_evidence_identity(
         self, carrier_lock_key: str, evidence_facts: Mapping[str, str]
@@ -314,7 +315,10 @@ class _EvidenceIdentityMixin(_D1IdentityLookupMixin):
                 )
 
     def verify_evidence_content_identity(
-        self, carrier_lock_key: str, evidence_contents: Mapping[str, bytes]
+        self,
+        carrier_lock_key: str,
+        evidence_contents: Mapping[str, bytes],
+        evidence_relpaths: Mapping[str, str],
     ) -> None:
         """IMPROVEMENT (fifth external-threat-model review): bind the check to
         the bytes actually consumed -- compare D1's recorded sha256 against
@@ -327,12 +331,24 @@ class _EvidenceIdentityMixin(_D1IdentityLookupMixin):
         supplied non-empty evidence for to the exact UTF-8 bytes of that
         evidence's ``EvidenceItem.content`` -- the SAME population
         :meth:`verify_evidence_identity` checks (``core.driver.run_experiment``
-        builds both from the one ``evidence_by_sample`` it already read),
-        sharing this gate's D1 manifest lookup (:meth:`_evidence_manifest`).
+        builds both from the one ``evidence_by_sample`` it already read).
         No filesystem access happens in this method at all: the caller
         already paid the one read cost when it built ``evidence_contents``,
         so this check is a pure in-memory hash comparison, zero additional
         I/O.
+
+        ``evidence_relpaths`` (follow-up, 2026-08-13, module docstring's
+        second "Relpath layer routing" section) maps the SAME sample ids to
+        the SAME evidence relpath :meth:`verify_evidence_identity` itself
+        routes by -- the caller (``core.model.lifecycle``) threads it
+        through from the SAME ``binding.evidence_relpaths`` the file check
+        already consulted. Each sample's content is routed to its own D1
+        layer key via :func:`_route_evidence_layer_key`, exactly like the
+        file rail; per-layer manifests are loaded at most once per distinct
+        layer key actually routed to in this call, not once per sample. A
+        sample present in ``evidence_contents`` with no matching entry in
+        ``evidence_relpaths`` refuses -- fail-closed, never assumed to
+        belong to the carrier's default layer.
         """
 
         if not isinstance(evidence_contents, Mapping) or not evidence_contents:
@@ -340,7 +356,14 @@ class _EvidenceIdentityMixin(_D1IdentityLookupMixin):
                 "verify_evidence_content_identity requires a non-empty sample_id -> "
                 "content-bytes mapping"
             )
-        _, recorded = self._evidence_manifest(carrier_lock_key)
+        if not isinstance(evidence_relpaths, Mapping) or not evidence_relpaths:
+            raise GateClosed(
+                "verify_evidence_content_identity requires a non-empty sample_id -> "
+                "evidence_relpath mapping to route each sample's content against its "
+                "own D1 layer (IMPORTANT 1 fail-closed)"
+            )
+        layout = self._evidence_layout(carrier_lock_key)
+        manifests_by_layer_key: dict[str, dict[str, tuple[int, str]]] = {}
 
         for sample_id, content_bytes in evidence_contents.items():
             if not isinstance(sample_id, str) or not isinstance(
@@ -349,6 +372,18 @@ class _EvidenceIdentityMixin(_D1IdentityLookupMixin):
                 raise GateClosed(
                     f"evidence_contents[{sample_id!r}] must be bytes"
                 )
+            relpath = evidence_relpaths.get(sample_id)
+            if not isinstance(relpath, str):
+                raise GateClosed(
+                    f"evidence_contents[{sample_id!r}] has no matching "
+                    "evidence_relpaths entry to route its D1 layer by; model touch "
+                    "refused (IMPORTANT 1 fail-closed)"
+                )
+            d1_layer_key = _route_evidence_layer_key(layout, relpath)
+            recorded = manifests_by_layer_key.get(d1_layer_key)
+            if recorded is None:
+                recorded = self._evidence_layer_manifest(carrier_lock_key, layout, d1_layer_key)
+                manifests_by_layer_key[d1_layer_key] = recorded
             d1_fact = recorded.get(sample_id)
             if d1_fact is None:
                 raise GateClosed(

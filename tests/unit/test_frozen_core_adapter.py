@@ -317,8 +317,10 @@ class _EvidenceContentCheckingGate:
     def assert_model_touch_allowed(self, plan):
         return None
 
-    def verify_evidence_content_identity(self, carrier_lock_key, evidence_contents):
-        self.checked.append((carrier_lock_key, dict(evidence_contents)))
+    def verify_evidence_content_identity(self, carrier_lock_key, evidence_contents, evidence_relpaths):
+        self.checked.append(
+            (carrier_lock_key, dict(evidence_contents), dict(evidence_relpaths))
+        )
 
 
 def _binding_with_evidence_content(tmp_path, *, content=b"ctx", **overrides):
@@ -346,9 +348,12 @@ def test_adapter_calls_verify_evidence_content_identity_when_the_gate_and_bindin
     binding = _binding_with_evidence_content(tmp_path)
     _adapter(tmp_path, gate=gate, binding=binding)
     assert len(gate.checked) == 1
-    carrier_lock_key, evidence_contents = gate.checked[0]
+    carrier_lock_key, evidence_contents, evidence_relpaths = gate.checked[0]
     assert carrier_lock_key == binding.carrier_lock_key
     assert evidence_contents == {"5000001": b"ctx"}
+    # conec-names follow-up (2026-08-13): threaded from the SAME
+    # binding.evidence_relpaths the file-identity check itself uses.
+    assert evidence_relpaths == dict(binding.evidence_relpaths)
 
 
 def test_adapter_skips_evidence_content_identity_check_when_binding_carries_none(tmp_path):
@@ -377,7 +382,7 @@ def test_adapter_refuses_construction_when_content_read_was_tampered_even_though
         def verify_evidence_identity(self, carrier_lock_key, evidence_facts):
             return None  # the restored, pristine file matches D1 -- passes
 
-        def verify_evidence_content_identity(self, carrier_lock_key, evidence_contents):
+        def verify_evidence_content_identity(self, carrier_lock_key, evidence_contents, evidence_relpaths):
             raise GateClosed("evidence content identity drift (test)")
 
     binding = _binding_with_evidence_content(tmp_path, content=b"tampered-content-read-earlier")

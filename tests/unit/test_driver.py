@@ -255,8 +255,10 @@ class _EvidenceCheckingGate:
     def verify_evidence_identity(self, carrier_lock_key, evidence_facts):
         self.checked.append((carrier_lock_key, dict(evidence_facts)))
 
-    def verify_evidence_content_identity(self, carrier_lock_key, evidence_contents):
-        self.content_checked.append((carrier_lock_key, dict(evidence_contents)))
+    def verify_evidence_content_identity(self, carrier_lock_key, evidence_contents, evidence_relpaths):
+        self.content_checked.append(
+            (carrier_lock_key, dict(evidence_contents), dict(evidence_relpaths))
+        )
 
 
 def test_run_experiment_wires_evidence_relpaths_into_the_evidence_identity_gate(
@@ -292,13 +294,17 @@ def test_run_experiment_wires_evidence_relpaths_into_the_evidence_identity_gate(
     # wires the ALREADY-READ evidence content (never a second file read) into
     # the content-identity rail, keyed identically.
     assert len(gate.content_checked) == 1
-    content_carrier_lock_key, evidence_contents = gate.content_checked[0]
+    content_carrier_lock_key, evidence_contents, content_evidence_relpaths = gate.content_checked[0]
     assert content_carrier_lock_key == "earnings21-original"
     assert evidence_contents == {
         "4000001": b"ctx",
         "4000002": b"ctx",
         "4000003": b"ctx",
     }
+    # conec-names follow-up (2026-08-13): the content-identity rail now gets
+    # the SAME relpaths the file rail got, threaded from the SAME binding, so
+    # it can route each sample's content against its own D1 layer.
+    assert content_evidence_relpaths == evidence_facts
 
 
 def test_run_experiment_skips_the_evidence_identity_gate_when_evidence_source_is_none(

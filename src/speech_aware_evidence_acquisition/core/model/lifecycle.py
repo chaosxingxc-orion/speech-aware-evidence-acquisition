@@ -89,12 +89,26 @@ class _AttemptLifecycleMixin:
         # contracts.gate_evidence_identity's own module docstring for the
         # check<->send race this closes. Duck-typed the same way: a test double
         # that implements only verify_evidence_identity is unaffected.
-        evidence_content_identity_check: Callable[[str, Mapping[str, bytes]], None] | None = (
-            getattr(gate, "verify_evidence_content_identity", None)
-        )
+        #
+        # conec-names gate-closure incident, follow-up (2026-08-13): threads the
+        # SAME binding.evidence_relpaths the file-identity check just above
+        # already consulted, so verify_evidence_content_identity can route each
+        # sample's content against its OWN D1 layer key
+        # (contracts.gate_evidence_identity._route_evidence_layer_key) instead of
+        # the carrier's single default layer -- the content-identity mirror of
+        # the relpath-routing fix verify_evidence_identity already had. A test
+        # double implementing only the old two-argument
+        # verify_evidence_content_identity(carrier_lock_key, evidence_contents)
+        # signature now raises a TypeError here; every such double in this
+        # repo's own test suite was updated alongside this change.
+        evidence_content_identity_check: (
+            Callable[[str, Mapping[str, bytes], Mapping[str, str]], None] | None
+        ) = getattr(gate, "verify_evidence_content_identity", None)
         if evidence_content_identity_check is not None and binding.evidence_contents:
             evidence_content_identity_check(
-                binding.carrier_lock_key, dict(binding.evidence_contents)
+                binding.carrier_lock_key,
+                dict(binding.evidence_contents),
+                dict(binding.evidence_relpaths),
             )
         # R0 repair T5 fix-3 (I5, reviewer-flagged): a second, adapter-level
         # enforcement call site for session liveness+identity, BEFORE any
