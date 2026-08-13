@@ -37,6 +37,13 @@ from ..evidence import (
 )
 from ..evidence_budget import apply_evidence_budget, resolve_evidence_budget_bytes
 from ..evidence_derivation import DerivedEvidenceRegistry
+from ..exemplars import (
+    ExemplarManifest,
+    assert_exemplar_manifest_id_legal,
+    load_exemplar_manifest,
+    resolve_exemplar_bank,
+    resolve_exemplar_manifest_id,
+)
 from ..instructions import resolve_task_instruction
 from ..resources import NullSampler, ResourceSampler, cpu_seconds_snapshot
 from ..model import FrozenCoreAdapter, SliceRegistry
@@ -61,11 +68,27 @@ def _sample_batch_size(values: Mapping[str, object]) -> int:
     return raw
 
 
-def _emit_sample_preamble(sink: object, request_id_base: str, sample, evidence) -> int:
+def _emit_sample_preamble(
+    sink: object,
+    request_id_base: str,
+    sample,
+    evidence,
+    exemplar_manifest: ExemplarManifest | None = None,
+    exemplar_bank: object = None,
+) -> int:
     """The per-sample OBS/ORG/SUPPLY records run_experiment emits BEFORE the
     policy runs — one code path for both the sequential loop (real sink) and
     the batch path (per-sample TraceBuffer). Returns the sample's supplied
-    evidence bytes (the figure the SUPPLY record itself carries)."""
+    evidence bytes (the figure the SUPPLY record itself carries).
+
+    ``exemplar_manifest``/``exemplar_bank`` (core.exemplars module
+    docstring): optional and defaulted, so every pre-existing call site
+    (there is none outside this module, but the defaults keep the signature
+    self-contained) is unaffected. Gated purely on ``exemplar_manifest is
+    not None`` -- i.e. the run's composed config actually declared
+    ``exemplar_manifest_id`` -- so an absent key emits NO new trace record
+    at all (deliverable 1's byte-identity contract), independent of whether
+    this particular sample's evidence is empty."""
 
     view = sample.runtime_view()
     sink.emit(
@@ -95,6 +118,16 @@ def _emit_sample_preamble(sink: object, request_id_base: str, sample, evidence) 
             {
                 "supply_evidence_ids": [item.evidence_id for item in evidence],
                 "supply_content_bytes": sample_evidence_bytes,
+            },
+        )
+    if exemplar_manifest is not None:
+        sink.emit(
+            "ORG",
+            f"{request_id_base}/org-exemplars",
+            {
+                "org_exemplar_manifest_id": exemplar_manifest.manifest_id,
+                "org_exemplar_manifest_sha256": exemplar_manifest.sha256,
+                "org_exemplar_count": len(exemplar_bank or ()),
             },
         )
     return sample_evidence_bytes
@@ -162,6 +195,14 @@ def run_experiment(
         # rather than the source dispatch below simply never reading (and
         # therefore never catching) a stray key.
         assert_evidence_materialization_id_legal(values)
+        # exemplar_manifest_id key-legality matrix (core.exemplars module
+        # docstring): resolved and validated HERE too, same "before any
+        # other per-run work" placement -- legal only alongside the model
+        # fragment's own prompt_order == "evidence-first-system-v3", checked
+        # on this SAME flat `values` mapping (core.config.compose already
+        # merged the model and baseline fragments' keys into it before this
+        # function ever saw it -- the one seam where both are visible).
+        assert_exemplar_manifest_id_legal(values)
         # R0 repair refactor stage 2 (part C): the split<->plan<->config
         # cross-checks (M-2, split identity hash/role/carrier, protocol hash)
         # live in split_check._verify_split_for_run now -- same checks, same
@@ -172,6 +213,26 @@ def run_experiment(
         samples = [s for s in loader(lock, root) if s.sample_id in sample_ids]
         if {s.sample_id for s in samples} != sample_ids:
             raise CoreError("split ids missing from the carrier's loaded samples")
+        # Acoustic exemplar banks (core.exemplars module docstring):
+        # resolved HERE, right after `samples` becomes available -- same
+        # "before any other per-run work" family as evidence_budget_bytes/
+        # evidence_materialization_id above (legality already checked at the
+        # top of this function), independent of the evidence pipeline below.
+        # exemplar_manifest stays None exactly when the composed config
+        # never declared exemplar_manifest_id, so every downstream reader
+        # (SampleContext.exemplar_bank, _emit_sample_preamble's ORG record)
+        # sees EXACTLY the pre-existing absent state -- byte-identical to
+        # before this feature existed.
+        exemplar_manifest_id = resolve_exemplar_manifest_id(values)
+        if exemplar_manifest_id is not None:
+            exemplar_manifest = load_exemplar_manifest(root, exemplar_manifest_id)
+            exemplar_bank_by_sample = {
+                s.sample_id: resolve_exemplar_bank(exemplar_manifest, s.sample_id)
+                for s in samples
+            }
+        else:
+            exemplar_manifest = None
+            exemplar_bank_by_sample = {}
         source = EVIDENCE_SOURCES.resolve(str(values.get("evidence_source", "none")))
         # R0 repair refactor stage 2 (part B): every evidence source now takes
         # the sample's own carrier_lock_key explicitly (core.evidence module
@@ -409,6 +470,12 @@ def run_experiment(
                 decoding_params=dict(values.get("decoding_params", {})),
                 request_id_base=request_id_base,
                 retrieval_query=values.get("retrieval_query"),
+                # Acoustic exemplar bank (core.exemplars module docstring):
+                # None when exemplar_bank_by_sample is empty (no
+                # exemplar_manifest_id declared), else this sample's own
+                # (possibly empty) resolved bank -- the SAME sample_id keys
+                # `samples` was built from above.
+                exemplar_bank=exemplar_bank_by_sample.get(sample.sample_id),
                 # obs-agent-loop rail: run facts a slice-cutting policy
                 # needs (the SAME slice_registry the adapter enforces
                 # against, the controlled roots, and the composed config
@@ -451,7 +518,8 @@ def run_experiment(
                     request_id_base = f"req-{index:04d}"
                     evidence = evidence_by_sample.get(sample.sample_id, [])
                     sample_evidence_bytes = _emit_sample_preamble(
-                        sink, request_id_base, sample, evidence
+                        sink, request_id_base, sample, evidence,
+                        exemplar_manifest, exemplar_bank_by_sample.get(sample.sample_id),
                     )
                     supplied_evidence_bytes += sample_evidence_bytes
                     ctx = _sample_context(sample, evidence, request_id_base, sink)
@@ -481,7 +549,8 @@ def run_experiment(
                     evidence = evidence_by_sample.get(sample.sample_id, [])
                     buffer = TraceBuffer(plan.run_id)
                     sample_evidence_bytes = _emit_sample_preamble(
-                        buffer, request_id_base, sample, evidence
+                        buffer, request_id_base, sample, evidence,
+                        exemplar_manifest, exemplar_bank_by_sample.get(sample.sample_id),
                     )
                     supplied_evidence_bytes += sample_evidence_bytes
                     ctx = _sample_context(sample, evidence, request_id_base, buffer)

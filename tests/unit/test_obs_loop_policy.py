@@ -18,6 +18,7 @@ from speech_aware_evidence_acquisition.core.base import EvidenceItem
 from speech_aware_evidence_acquisition.core.model import SliceRegistry
 from speech_aware_evidence_acquisition.core.tracing import TraceSink
 from speech_aware_evidence_acquisition.data.loader import SampleRef
+from speech_aware_evidence_acquisition.e0.d2_leakage import ARM_VISIBLE_FIELDS
 from speech_aware_evidence_acquisition.reproduction import obs_loop
 from speech_aware_evidence_acquisition.reproduction.obs_loop import (
     OBS_LOOP_POLICY_NAME,
@@ -1143,3 +1144,100 @@ class TestBudgetArithmeticSanity:
         metered = sum(p["audio_seconds"] for p in world.adapter.payloads)
         assert metered == pytest.approx(60 * 4 + 20, abs=0.01)
         assert metered / world.duration == pytest.approx(1.3, abs=0.01)
+
+
+class TestExemplarBank:
+    """Acoustic exemplar bank (core.exemplars, M-C-prime prep infrastructure):
+    every slice of a sample carries the SAME resolved
+    ``SampleContext.exemplar_bank`` -- both the sequential loop and the
+    slice-parallel dispatch path build every request through the SAME
+    ``core.policies.build_arm_payload`` seam. No D2-frozen arm declares
+    "exemplar_bank" yet (core.policies module comment), so these tests
+    temporarily extend "bare-core"'s own ARM_VISIBLE_FIELDS entry
+    (monkeypatch, reverted at teardown) the same way test_policies.py does,
+    rather than registering a real new arm."""
+
+    _BANK = (
+        {"media_relpath": "derived/exemplar-pairs/mc2-v1/4000001/alpha.wav", "label": "alpha"},
+    )
+
+    def _with_exemplar_bank_field(self, monkeypatch):
+        monkeypatch.setitem(
+            ARM_VISIBLE_FIELDS, "bare-core", ARM_VISIBLE_FIELDS["bare-core"] + ("exemplar_bank",)
+        )
+
+    def test_sequential_loop_every_slice_carries_the_same_bank(self, tmp_path, monkeypatch):
+        import dataclasses
+
+        self._with_exemplar_bank_field(monkeypatch)
+        world = _World(
+            tmp_path,
+            monkeypatch,
+            pcm=_noise(150.0),
+            texts=[
+                _boundary_text("First span one. First tail", 45),
+                _boundary_text("Second span two. Second tail", 50),
+                _boundary_text("Final span three.", 30),
+            ],
+        )
+        world.ctx = dataclasses.replace(world.ctx, exemplar_bank=self._BANK)
+        world.run()
+        assert len(world.adapter.payloads) == 3
+        for payload in world.adapter.payloads:
+            assert payload["exemplar_bank"] == list(self._BANK)
+
+    def test_slice_parallel_pass_every_slice_carries_the_same_bank(self, tmp_path, monkeypatch):
+        import dataclasses
+
+        self._with_exemplar_bank_field(monkeypatch)
+        values = _config_values(
+            obs_boundary_mode="fixed",
+            obs_condition_tail_chars=0,
+            obs_vad_trim_min_seconds=0,
+            obs_batch_slices=3,
+        )
+        world = _World(
+            tmp_path,
+            monkeypatch,
+            pcm=_noise(150.0),
+            texts=["First.", "Second.", "Third."],
+            values=values,
+        )
+        world.ctx = dataclasses.replace(world.ctx, exemplar_bank=self._BANK)
+        world.run()
+        assert len(world.adapter.payloads) == 3
+        for payload in world.adapter.payloads:
+            assert payload["exemplar_bank"] == list(self._BANK)
+
+    def test_empty_bank_is_attached_as_an_empty_list_not_dropped(self, tmp_path, monkeypatch):
+        import dataclasses
+
+        self._with_exemplar_bank_field(monkeypatch)
+        world = _World(
+            tmp_path,
+            monkeypatch,
+            pcm=_noise(70.0),
+            texts=[_boundary_text("One two. Three", 40), _boundary_text("Rest.", 5)],
+        )
+        world.ctx = dataclasses.replace(world.ctx, exemplar_bank=())
+        world.run()
+        assert len(world.adapter.payloads) == 2
+        for payload in world.adapter.payloads:
+            assert payload["exemplar_bank"] == []
+
+    def test_absent_exemplar_bank_omits_the_payload_field(self, tmp_path, monkeypatch):
+        """ctx.exemplar_bank defaults to None -- byte-identical to before
+        this feature existed: no "exemplar_bank" key at all on any slice's
+        payload, not even an empty list. Deliberately does NOT extend
+        ARM_VISIBLE_FIELDS -- absence must be safe against the unmodified
+        D2 freeze too."""
+
+        world = _World(
+            tmp_path,
+            monkeypatch,
+            pcm=_noise(70.0),
+            texts=[_boundary_text("One two. Three", 40), _boundary_text("Rest.", 5)],
+        )
+        world.run()
+        assert len(world.adapter.payloads) == 2
+        assert all("exemplar_bank" not in payload for payload in world.adapter.payloads)

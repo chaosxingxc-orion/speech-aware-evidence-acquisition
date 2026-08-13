@@ -1577,3 +1577,156 @@ def test_run_experiment_excludes_a_carrier_independent_record_from_the_d1_rail(
     assert isinstance(result, RunResult)
     assert gate.checked == []
     assert gate.content_checked == []
+
+
+# ---------------------------------------------------------------------------
+# Acoustic exemplar banks (core.exemplars, M-C-prime prep infrastructure):
+# exemplar_manifest_id key legality (against the composed config's own
+# prompt_order), byte-identity when the key is absent, and per-sample
+# manifest-id/sha256/count provenance traced the same "ORG" way evidence
+# sources already are.
+# ---------------------------------------------------------------------------
+
+
+def _write_exemplar_manifest(data_root, manifest_id, samples):
+    import json as _json
+
+    path = data_root / "derived" / "exemplar-pairs" / manifest_id / "manifest.json"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        _json.dumps(
+            {"schema": "saea-mc2-exemplar-pairs-manifest-v1", "samples": samples},
+        ),
+        encoding="utf-8",
+    )
+    return path
+
+
+def test_run_experiment_without_exemplar_manifest_id_emits_no_exemplar_trace(
+    synthetic_world, tmp_path
+):
+    """Deliverable 1's byte-identity contract at the run_experiment seam:
+    the absent key must add no trace record at all -- checked directly,
+    beyond merely "the pre-existing test suite still passes"."""
+
+    lock, repo_root = _frozen_world(synthetic_world, tmp_path)
+    _, split_hash, _ = load_split(repo_root, "discovery", lock, synthetic_world.data_root)
+    composed = _composed()
+    plan = _plan(
+        split_hash,
+        protocol_hash=protocol_hash(composed.config_hash, composed.values["arm"], split_hash),
+    )
+    run_experiment(
+        composed=composed,
+        plan=plan,
+        gate=_OpenGate(),
+        lock=lock,
+        root=synthetic_world.data_root,
+        run_dir=tmp_path / "run-no-exemplars",
+        transport=_transport,
+        repo_root=repo_root,
+    )
+    manifest = json.loads(
+        (tmp_path / "run-no-exemplars" / "SAEA-E-000-driver.trace-manifest.json").read_text(
+            "utf-8"
+        )
+    )["records"]
+    assert not any("org-exemplars" in record_id for record_id in manifest)
+
+
+def test_run_experiment_refuses_exemplar_manifest_id_without_v3_prompt_order(
+    synthetic_world, tmp_path
+):
+    from speech_aware_evidence_acquisition.core.exemplars import ExemplarError
+
+    lock, repo_root = _frozen_world(synthetic_world, tmp_path)
+    _, split_hash, _ = load_split(repo_root, "discovery", lock, synthetic_world.data_root)
+    composed = _composed(exemplar_manifest_id="mc2-test")  # no prompt_order declared
+    plan = _plan(
+        split_hash,
+        protocol_hash=protocol_hash(composed.config_hash, composed.values["arm"], split_hash),
+    )
+    with pytest.raises(ExemplarError, match="prompt_order"):
+        run_experiment(
+            composed=composed,
+            plan=plan,
+            gate=_OpenGate(),
+            lock=lock,
+            root=synthetic_world.data_root,
+            run_dir=tmp_path / "run-exemplar-illegal",
+            transport=_transport,
+            repo_root=repo_root,
+        )
+
+
+def test_run_experiment_resolves_exemplar_manifest_and_traces_provenance(
+    synthetic_world, tmp_path
+):
+    """Deliverable 2/4 end to end: a real manifest on disk resolves into a
+    per-sample bank and an ORG record carrying the manifest id, its own
+    sha256, and this sample's exemplar count -- for every sample once the
+    key is declared, including samples with zero "found" exemplars
+    (empty-bank is legal, module docstring)."""
+
+    manifest_id = "mc2-test"
+    content = b"exemplar-audio-bytes"
+    wav_path = (
+        synthetic_world.data_root
+        / "derived"
+        / "exemplar-pairs"
+        / manifest_id
+        / "4000001"
+        / "alpha.wav"
+    )
+    wav_path.parent.mkdir(parents=True, exist_ok=True)
+    wav_path.write_bytes(content)
+    _write_exemplar_manifest(
+        synthetic_world.data_root,
+        manifest_id,
+        {
+            "4000001": {
+                "alpha": {
+                    "term": "alpha",
+                    "status": "found",
+                    "span_sha256": hashlib.sha256(content).hexdigest(),
+                }
+            },
+            "4000002": {"beta": {"term": "beta", "status": "no-cross-call-occurrence"}},
+            # 4000003 deliberately absent from the manifest entirely.
+        },
+    )
+
+    lock, repo_root = _frozen_world(synthetic_world, tmp_path)
+    _, split_hash, _ = load_split(repo_root, "discovery", lock, synthetic_world.data_root)
+    composed = _composed(prompt_order="evidence-first-system-v3", exemplar_manifest_id=manifest_id)
+    plan = _plan(
+        split_hash,
+        protocol_hash=protocol_hash(composed.config_hash, composed.values["arm"], split_hash),
+    )
+    run_dir = tmp_path / "run-exemplar-trace"
+    result = run_experiment(
+        composed=composed,
+        plan=plan,
+        gate=_OpenGate(),
+        lock=lock,
+        root=synthetic_world.data_root,
+        run_dir=run_dir,
+        transport=_transport,
+        repo_root=repo_root,
+    )
+    assert isinstance(result, RunResult)
+    raw = (run_dir / "SAEA-E-000-driver.trace.jsonl").read_text(encoding="utf-8")
+    records = {
+        document["record_id"]: document["payload"]
+        for document in (json.loads(line) for line in raw.splitlines() if line)
+    }
+    # ordered_samples is sorted by sample_id: 4000001 -> req-0001, etc.
+    found = records["req-0001/org-exemplars"]
+    assert found["org_exemplar_manifest_id"] == manifest_id
+    assert len(found["org_exemplar_manifest_sha256"]) == 64
+    assert found["org_exemplar_count"] == 1
+    rejected_only = records["req-0002/org-exemplars"]
+    assert rejected_only["org_exemplar_count"] == 0
+    absent_from_manifest = records["req-0003/org-exemplars"]
+    assert absent_from_manifest["org_exemplar_count"] == 0
+    assert absent_from_manifest["org_exemplar_manifest_id"] == manifest_id

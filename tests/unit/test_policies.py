@@ -81,6 +81,74 @@ def test_unknown_arm_refused():
         build_arm_payload("oracle-arm", _REF, "req-1", "T.", _DECODING)
 
 
+# ---------------------------------------------------------------------------
+# Acoustic exemplar bank (core.exemplars, M-C-prime prep infrastructure):
+# no D2-frozen arm declares "exemplar_bank" yet, so the default (None) is a
+# byte-identical no-op and every arm registered today fails closed when one
+# is supplied -- exercised here by temporarily extending "bare-core"'s own
+# ARM_VISIBLE_FIELDS entry (monkeypatch, reverted at teardown) rather than
+# registering a real new arm, which would need its own D2 receipt.
+# ---------------------------------------------------------------------------
+
+_EXEMPLAR_BANK = [
+    {"media_relpath": "derived/exemplar-pairs/mc2-v1/4000001/alpha.wav", "label": "alpha"}
+]
+
+
+def test_build_arm_payload_omitting_exemplar_bank_is_byte_identical():
+    without = build_arm_payload("bare-core", _REF, "req-1", "T.", _DECODING)
+    with_explicit_none = build_arm_payload(
+        "bare-core", _REF, "req-1", "T.", _DECODING, exemplar_bank=None
+    )
+    assert without == with_explicit_none
+    assert "exemplar_bank" not in without
+
+
+@pytest.mark.parametrize(
+    "arm,kwargs",
+    [
+        ("bare-core", {}),
+        ("fixed-legal-context", {"evidence": _EVIDENCE}),
+        ("fixed-retrieval", {"evidence": _EVIDENCE, "retrieval_query": "acme q2"}),
+    ],
+)
+def test_build_arm_payload_refuses_exemplar_bank_for_every_arm_registered_today(arm, kwargs):
+    with pytest.raises(ArmError, match="exemplar_bank"):
+        build_arm_payload(arm, _REF, "req-1", "T.", _DECODING, exemplar_bank=[], **kwargs)
+
+
+def test_build_arm_payload_refuses_a_nonempty_exemplar_bank_too():
+    with pytest.raises(ArmError, match="exemplar_bank"):
+        build_arm_payload(
+            "bare-core", _REF, "req-1", "T.", _DECODING, exemplar_bank=_EXEMPLAR_BANK
+        )
+
+
+def test_build_arm_payload_attaches_exemplar_bank_for_an_arm_that_declares_it(monkeypatch):
+    monkeypatch.setitem(
+        ARM_VISIBLE_FIELDS, "bare-core", ARM_VISIBLE_FIELDS["bare-core"] + ("exemplar_bank",)
+    )
+    payload = build_arm_payload(
+        "bare-core", _REF, "req-1", "T.", _DECODING, exemplar_bank=_EXEMPLAR_BANK
+    )
+    assert set(payload) == set(ARM_VISIBLE_FIELDS["bare-core"])
+    assert payload["exemplar_bank"] == _EXEMPLAR_BANK
+
+
+def test_build_arm_payload_attaches_an_empty_exemplar_bank_for_an_arm_that_declares_it(
+    monkeypatch,
+):
+    """An empty bank is a legal v3 shape (core.model.transport's own module
+    docstring: an empty bank reduces to v2's shape) -- attached, never
+    dropped, once the arm declares the field."""
+
+    monkeypatch.setitem(
+        ARM_VISIBLE_FIELDS, "bare-core", ARM_VISIBLE_FIELDS["bare-core"] + ("exemplar_bank",)
+    )
+    payload = build_arm_payload("bare-core", _REF, "req-1", "T.", _DECODING, exemplar_bank=[])
+    assert payload["exemplar_bank"] == []
+
+
 class _OpenGate:
     def assert_model_touch_allowed(self, plan):
         pass

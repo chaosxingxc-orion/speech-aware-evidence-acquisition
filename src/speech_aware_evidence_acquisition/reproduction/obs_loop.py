@@ -669,6 +669,10 @@ class ObsAgentLoopPolicy:
                     _params,
                     evidence=evidence,
                     retrieval_query=ctx.retrieval_query,
+                    # Every slice of this sample carries the SAME bank
+                    # (ctx.exemplar_bank is resolved once per sample by
+                    # core.driver.run_experiment, module docstring above).
+                    exemplar_bank=ctx.exemplar_bank,
                 )
 
             try:
@@ -920,6 +924,9 @@ class ObsAgentLoopPolicy:
                     ctx.decoding_params,
                     evidence=evidence,
                     retrieval_query=ctx.retrieval_query,
+                    # Every slice of this sample carries the SAME bank (see
+                    # the slice-parallel pass's identical comment above).
+                    exemplar_bank=ctx.exemplar_bank,
                 )
 
             request_id, response, retry_of, saturated, skipped = request_slice_with_retry(

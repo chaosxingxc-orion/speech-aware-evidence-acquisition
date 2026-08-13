@@ -12,7 +12,7 @@ from __future__ import annotations
 import math
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Mapping
+from typing import Mapping, Sequence
 
 from ..contracts import assert_information_boundary
 
@@ -385,4 +385,12 @@ class SampleContext:
     decoding_params: Mapping[str, object]
     request_id_base: str
     retrieval_query: str | None = None
+    # Acoustic exemplar bank (core.exemplars module docstring, M-C-prime prep
+    # infrastructure): None means the run never resolved an exemplar_manifest_id
+    # at all (the pre-existing state, unaffected); a (possibly empty) sequence
+    # means core.driver.run_experiment resolved this sample's own bank and a
+    # policy MAY thread it into core.policies.build_arm_payload the same way
+    # `evidence` already flows -- legal only for an arm whose D2-frozen field
+    # set declares "exemplar_bank" (none does yet).
+    exemplar_bank: Sequence[Mapping[str, str]] | None = None
     extras: dict[str, object] = field(default_factory=dict)

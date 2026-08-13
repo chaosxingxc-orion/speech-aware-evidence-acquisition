@@ -8,7 +8,7 @@ vocabulary never grows without a new D2 receipt.
 
 from __future__ import annotations
 
-from typing import Mapping
+from typing import Mapping, Sequence
 
 from ..data.loader import SampleRef
 from ..e0.d2_leakage import ARM_VISIBLE_FIELDS
@@ -27,6 +27,7 @@ def build_arm_payload(
     decoding_params: Mapping[str, object],
     evidence: list[EvidenceItem] | None = None,
     retrieval_query: str | None = None,
+    exemplar_bank: Sequence[Mapping[str, object]] | None = None,
 ) -> dict[str, object]:
     if arm not in ARM_VISIBLE_FIELDS:
         raise ArmError(f"unknown arm {arm!r}; D2-frozen arms are {sorted(ARM_VISIBLE_FIELDS)}")
@@ -53,6 +54,23 @@ def build_arm_payload(
             payload["retrieval_query"] = retrieval_query
             payload["retrieved_evidence"] = [item.runtime_view() for item in validated]
         payload["evidence_provenance"] = provenance
+    # Acoustic exemplar bank (core.exemplars module docstring, M-C-prime prep
+    # infrastructure): orthogonal to the evidence/retrieval_query handling
+    # above -- default None is a no-op (byte-identical payload, the pre
+    # -existing shape), and a supplied bank (possibly empty -- an empty bank
+    # is a legal v3 shape, core.model.transport's own module docstring) is
+    # attached ONLY for an arm whose D2-frozen field set actually declares
+    # "exemplar_bank"; no arm does yet (this ships ahead of any consuming
+    # arm, mirroring how core.model.transport's v3 prompt order itself
+    # shipped unused before this module existed), so every arm registered
+    # today fails closed here rather than silently dropping the bank.
+    if exemplar_bank is not None:
+        if "exemplar_bank" not in ARM_VISIBLE_FIELDS[arm]:
+            raise ArmError(
+                f"arm {arm!r} does not declare 'exemplar_bank' in its D2-frozen field "
+                "set; cannot attach an exemplar bank to this arm's payload"
+            )
+        payload["exemplar_bank"] = [dict(pair) for pair in exemplar_bank]
     if set(payload) != set(ARM_VISIBLE_FIELDS[arm]):
         raise ArmError(
             f"arm {arm!r} builder produced a field set that diverges from the D2 freeze: "
