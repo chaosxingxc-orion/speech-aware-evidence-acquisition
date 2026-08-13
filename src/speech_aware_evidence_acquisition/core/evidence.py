@@ -52,6 +52,33 @@ list``'s content is built by calling the SAME pinned, registered transform
 functions (``core.bias_lists.conec_bias_list_content``/
 ``conec_bias_phrase_content``/``distractor_only_content``) the registry
 independently re-invokes to verify them.
+
+``conec-names`` (2026-08-12, ``docs/readiness/2026-08-12-clean-floor-
+context-verdict.md`` "the decisive pilot"): a second verbatim ConEC source,
+``_conec_names``, built by literally mirroring ``_conec_contexts`` -- same
+carrier-availability gate (``descriptor.evidence is None`` fails closed
+identically), same ``identity`` transform, same ``DerivedEvidenceRecord``/
+``EvidenceItem`` shape, registered into the SAME ``EVIDENCE_SOURCES`` and
+``core.evidence_derivation.TRANSFORMS`` registries -- differing only in
+WHICH per-sample file it reads: ConEC ships one participant-name roster per
+sample (``earnings21/contexts/participant_names/<id>.names.txt``, "Name -
+Role/Affiliation" one per line -- the shape ``core.bias_lists``' own
+``roster`` sub-pattern already documents) alongside its context file
+(``earnings21/contexts/<id>.txt``), under the SAME ``conec`` lock key asset
+root, one directory level deeper. Because this is a different SOURCE FILE
+and not a new registered evidence LAYER, ``conec_names_file_relpath`` builds
+its own participant-names path rather than reusing ``evidence_file_relpath``
+(which is pinned to ``descriptor.evidence``'s own contexts subdir/
+extension) -- see that function's docstring for the one place the two
+diverge. D1's own identity artifact (``docs/receipts/artifacts/d1-identity.
+json``, ``conec.layers.e21_contexts.excluded_non_layer_files``) already
+lists ``participant_names`` as OUTSIDE the ``e21_contexts`` layer it
+manifests today, i.e. this file's per-sample identity has never been
+D1-recorded -- ``carrier_bound`` stays ``True`` (this is structurally a
+per-sample carrier file, exactly like ``conec-contexts``), so a real gated
+run correctly keeps failing closed at the unchanged
+``contracts.gate_evidence_identity`` rail until a future D0/D1 update adds
+this layer; nothing here weakens that gate or bypasses it early.
 """
 
 from __future__ import annotations
@@ -184,6 +211,118 @@ def _conec_contexts(
     )
     item = EvidenceItem(
         evidence_id=f"{layout.lock_key}/{sample_id}",
+        source_uri=f"{layout.lock_key}://{relpath}",
+        content=content,
+        provenance={"lock_key": layout.lock_key, "relpath": relpath, "sha256": sha256_file(path)},
+        derivation=derivation,
+        derivation_source_bytes=source_bytes,
+    )
+    return [item.validate()]
+
+
+# conec-names (module docstring): the participant-names roster subdir/
+# extension, one directory level below conec-contexts' own
+# ``descriptor.evidence.subdir`` -- not part of any ``data.carriers.
+# EvidenceLayout`` (that dataclass names conec-contexts' own layer, D1
+# layer key included; participant_names has no D1 layer key at all yet, see
+# module docstring), so these two constants are this source's own, in
+# exactly the same spirit as ``core.bias_lists._BIAS_LISTS_SUBDIR``.
+_CONEC_NAMES_SUBDIR_SUFFIX = "participant_names"
+_CONEC_NAMES_EXTENSION = ".names.txt"
+
+
+def conec_names_file_relpath(
+    lock: Mapping[str, object], carrier_lock_key: str, sample_id: str
+) -> str:
+    """The ``conec-names`` counterpart to :func:`evidence_file_relpath`: same
+    carrier-availability gate (a carrier with no ConEC evidence layer at all
+    still refuses, identically worded), same ``conec`` lock key asset root
+    resolution -- but the participant-names subdir/extension in place of
+    conec-contexts' own ``layout.subdir``/``layout.extension``, since a
+    names roster is a DIFFERENT source file under the SAME evidence layer's
+    asset root, not a second registered ``EvidenceLayout`` (module
+    docstring). Exposed the same way ``evidence_file_relpath`` is, in case a
+    future D1 update wants to re-hash exactly this file too."""
+
+    try:
+        descriptor = get_carrier_descriptor(carrier_lock_key)
+    except CarrierDescriptorError:
+        descriptor = None
+    if descriptor is None or descriptor.evidence is None:
+        raise EvidenceError(
+            f"carrier {carrier_lock_key!r} has no ConEC evidence layer registered "
+            "(data.carriers.CarrierDescriptor.evidence is None); cannot resolve a "
+            "conec-names file path for it"
+        )
+    layout = descriptor.evidence
+    entry = lock_entry(lock, layout.lock_key)
+    local_subdir = entry.get("local_subdir")
+    if not isinstance(local_subdir, str) or not local_subdir:
+        raise EvidenceError(
+            f"asset {layout.lock_key!r} lacks a usable local_subdir in the lock"
+        )
+    return (
+        f"{local_subdir.rstrip('/')}/{layout.subdir}/{_CONEC_NAMES_SUBDIR_SUFFIX}/"
+        f"{sample_id}{_CONEC_NAMES_EXTENSION}"
+    )
+
+
+def _conec_names(
+    lock: Mapping[str, object],
+    root: Path,
+    sample_id: str,
+    carrier_lock_key: str,
+    values: Mapping[str, object] | None = None,
+) -> list[EvidenceItem]:
+    """Verbatim passthrough of one sample's ConEC participant-names roster
+    (module docstring) -- literally ``_conec_contexts`` with the names
+    subdir/extension in place of the carrier's own contexts layout; every
+    other line (carrier gate, identity transform, ``EvidenceItem``/
+    ``DerivedEvidenceRecord`` shape) is unchanged."""
+
+    try:
+        descriptor = get_carrier_descriptor(carrier_lock_key)
+    except CarrierDescriptorError:
+        descriptor = None
+    if descriptor is None or descriptor.evidence is None:
+        raise EvidenceError(
+            f"carrier {carrier_lock_key!r} has no ConEC evidence layer registered "
+            "(data.carriers.CarrierDescriptor.evidence is None); refusing to guess "
+            "another carrier's participant-names path"
+        )
+    layout = descriptor.evidence
+    relpath = f"{layout.subdir}/{_CONEC_NAMES_SUBDIR_SUFFIX}/{sample_id}{_CONEC_NAMES_EXTENSION}"
+    path = (
+        asset_dir(lock, layout.lock_key, root)
+        / layout.subdir
+        / _CONEC_NAMES_SUBDIR_SUFFIX
+        / f"{sample_id}{_CONEC_NAMES_EXTENSION}"
+    )
+    if not path.is_file():
+        raise EvidenceError(f"conec participant names missing for {sample_id}: {path}")
+    try:
+        content = path.read_text(encoding="utf-8")
+    except (OSError, UnicodeError) as error:
+        raise EvidenceError(f"cannot read conec participant names {path}: {error}") from error
+    # Same identity-transform derivation chain as _conec_contexts (module
+    # docstring): derived_sha256 == source_sha256 by construction, re-proved
+    # by core.evidence_derivation.DerivedEvidenceRegistry re-invoking the
+    # SAME registered "identity" transform -- no second transform to
+    # register, no change to resolve_declared_transform_params below.
+    source_bytes = content.encode("utf-8")
+    source_sha256 = hashlib.sha256(source_bytes).hexdigest()
+    derivation = DerivedEvidenceRecord(
+        sample_id=sample_id,
+        source_relpath=conec_names_file_relpath(lock, carrier_lock_key, sample_id),
+        source_sha256=source_sha256,
+        transform_name="identity",
+        transform_version="v1",
+        params_hash=canonical_params_hash({}),
+        derived_sha256=source_sha256,
+        carrier_bound=True,
+    )
+    item = EvidenceItem(
+        evidence_id=f"{layout.lock_key}/participant-names/{sample_id}",
         source_uri=f"{layout.lock_key}://{relpath}",
         content=content,
         provenance={"lock_key": layout.lock_key, "relpath": relpath, "sha256": sha256_file(path)},
@@ -464,6 +603,7 @@ def resolve_declared_transform_params(
 
 EVIDENCE_SOURCES.register("none", _none_source)
 EVIDENCE_SOURCES.register("conec-contexts", _conec_contexts)
+EVIDENCE_SOURCES.register("conec-names", _conec_names)
 EVIDENCE_SOURCES.register("oracle", _oracle_refusal)
 EVIDENCE_SOURCES.register("conec-bias-list", _conec_bias_list)
 EVIDENCE_SOURCES.register("conec-bias-phrases", _conec_bias_phrases)

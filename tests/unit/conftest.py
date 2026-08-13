@@ -2,8 +2,8 @@
 
 The directory shapes mirror the real materialized carriers exactly (media, metadata
 CSVs, nlp_references, wer_tags, normalizations, force-aligned references, subset10,
-ConEC contexts/timestamps) so identity and loader code paths are exercised without
-any real data or network access.
+ConEC contexts/timestamps/participant_names) so identity and loader code paths are
+exercised without any real data or network access.
 """
 
 import json
@@ -45,6 +45,14 @@ class SyntheticWorld:
                 self.e21 / "transcripts" / "normalizations" / f"{sample_id}.norm.json", "{}"
             )
             _touch(self.conec / "earnings21" / "contexts" / f"{sample_id}.txt", "ctx")
+            _touch(
+                self.conec
+                / "earnings21"
+                / "contexts"
+                / "participant_names"
+                / f"{sample_id}.names.txt",
+                "Jane Doe - CEO\n",
+            )
             _touch(
                 self.conec / "earnings21" / "transcripts" / "nlp_references" / f"{sample_id}.nlp",
                 "token|tags\n",
