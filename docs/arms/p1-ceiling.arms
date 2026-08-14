@@ -1,0 +1,20 @@
+# SAEA-P1 — the LOOP-CEILING probe (revised-plan keystone; owner goal-mode).
+# Oracle candidates (gold-selected correct cased forms of each fast-3
+# sample's REAL entity errors, alphabetized; materialization p1-oracle-v1,
+# deployment-illegal BY DESIGN - a ceiling measurement, never a method).
+# ADVERSARIAL-REVIEW AMENDMENT (wf_f412e338): 2x2 decomposition
+# (knowledge x delivery). Arm C: static oracle supply, plain policy,
+# locked instruction. Arm D: same supply + obs-replay-loop (thresholds
+# as MM-3, exemplar bank p1-oracle-v1). Entity-WER retroactive on all.
+# Arm A
+# (locked-zero 14.48) is REUSED from SAEA-E-005B-zero, not re-run. Arm B =
+# forced re-listen: obs-replay-loop on the bare-core arm (the policy's own
+# documented zero-bias re-listen form - no candidates ever attach, skip
+# never applies). Pre-registered reads: B-A = re-listen effect; C-A =
+# static oracle knowledge; D-B = knowledge-in-replay; D-C = replay-over-
+# prompt at equal knowledge. GATE: P5/P7 investment requires D-B > 0 on
+# the entity ledger.
+# run_id:baseline_fragment
+SAEA-P1-relisten:p1-relisten8-buf90
+SAEA-P1-static:p1-oracle-static8-buf90
+SAEA-P1-replay:p1-oracle-replay8-buf90
