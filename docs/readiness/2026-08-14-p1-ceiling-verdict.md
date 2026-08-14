@@ -48,8 +48,10 @@ Livingstone, Tribecca, eCommerce. **10/14 flip under C vs 0/14 under B, correct 
    own-history bank (4389907, ecommerce span), the core transcribed the exemplar audio
    instead of slice content: the exemplar sentence appears 17x in D's final text (0x in B,
    1x in C = the real occurrence), output 6.5k chars short, 1116 deletions, 44.49 WER.
-   MM-3's flight shares this exposure surface; its WER-level reads should be treated as
-   contaminated-suspect (its mechanics verdicts stand). Fix direction: a replay-scoped bank
+   MM-3's flight shares this exposure surface; CHECKED same day: MM-3's outputs carry no
+   repeated-exemplar signature (its mm5-selfsup-v2 labels are short common-word spans; no
+   label string repeats in any output) — MM-3's WER-level reads stand, the hijack risk is
+   specific to long own-call exemplar spans. Fix direction: a replay-scoped bank
    must not ride pass-1 — either a pass-1-suppressed bank resolution for obs-replay-loop or
    a separate arm whose D2 field set declares exemplar_bank for replay requests only.
 
@@ -62,6 +64,21 @@ Livingstone, Tribecca, eCommerce. **10/14 flip under C vs 0/14 under B, correct 
   frozen candidate hypothesis before P6: the claim becomes TARGETING / small-N supply; the
   "every static supply interface fails" clause is struck; prompt-delivery runs co-primary
   with splice-delivery in P6.
+
+## Tax decomposition (same-day offline analysis, alignment-mask diff vs arm B)
+
+The C-A "collateral tax" is, at this dose, an ORTHOGRAPHIC FORMAT ARTIFACT, not recognition
+damage: on 4366522, 59 of C's 68 arm-only reference misses are digit-form tokens (2020, 30,
+2191, ...) — C spells numbers as spoken words (digit tokens 49->3, "twenty twenty" 5->17)
+while the reference uses digits; B's arm-only misses contain ZERO digit refs. The other two
+calls show no net format effect. Recognition-wise C is at parity with B while flipping 10/14
+targets. Retroactive check on the E-005 family (same method): the n=10 matched-locked tax
+(+60 errors) has SYMMETRIC digit shares (63/237 vs 36/116) — the full-dose tax is real
+recognition churn, so the tax law survives at n=10 and the format artifact dominates only at
+small N. Separately, the ctxinstr instruction variant alone swings >100 digit tokens
+(E-005F-nocontext-ctxinstr −162 errors vs zero): number format is a volatile,
+instruction-controlled axis, and every cross-framing aggregate-WER comparison needs a
+format-normalized secondary read (analysis-only; the frozen scorer stays primary).
 
 ## Redirect
 
