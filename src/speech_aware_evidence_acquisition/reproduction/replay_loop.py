@@ -58,15 +58,42 @@ seconds, so it chains to the SAME parent media pass-1 already verified.
 RETRIEVE: query = the flagged words; candidates = this sample's evidence
 text, tokenized via ``core.candidate_materializer.pack_candidates`` keyed by
 the run's own ``evidence_source`` (an evidence_source outside that module's
-two known pack shapes yields an honestly empty pool, never an error) ->
-``core.retrieval.retrieve`` top-``replay_k`` (cap 5) at or above
+two known pack shapes yields an honestly empty pool, never an error).
+CORRECTION SEMANTICS (DEFECT 2 fix, first hit SAEA-MM3-replay 2026-08-14 --
+flagged "conditions and" retrieved its own verbatim "conditions" as the top
+candidate at score 1.0, burying the real corrections "condition"/
+"conditioner" underneath it): every pack candidate whose
+``core.retrieval.normalize_term`` form equals ANY flagged/query word is
+dropped BEFORE ``core.retrieval.retrieve`` ever scores it (ported from
+``core.candidate_materializer.materialize_sample``, commit 4a78dfa) --
+surviving candidates are things the flagged run does NOT already say. The
+survivors go through ``retrieve`` top-``replay_k`` (cap 5) at or above
 ``replay_min_score``. If this run resolved an exemplar bank
 (``SampleContext.exemplar_bank`` -- i.e. the composed config declared
-``exemplar_manifest_id``), every retrieved term with a bank entry whose
-NORMALIZED label matches is attached to tier 2 (uncapped, matching
-``core.model.transport``'s own exemplar-bank shape); only the top 2 retrieved
-terms become tier-3 text ``delta_candidates`` (the transport's own hard v3
-cap, ``LlamaServerTransport._delta_candidate_entry``).
+``exemplar_manifest_id``), every bank entry whose NORMALIZED label matches
+EITHER a retrieved term OR one of the flagged words itself is attached to
+tier 2 (uncapped, matching ``core.model.transport``'s own exemplar-bank
+shape) -- unlike a text delta-candidate (redundant once verbatim), an
+exemplar clip is a pronunciation anchor and stays useful even when its own
+label is the very word the flagged run already (mis)produced, which is what
+keeps a span "still replayable with exemplars" once the correction filter
+above empties the text-candidate pool; only the top 2 retrieved terms become
+tier-3 text ``delta_candidates`` (the transport's own hard v3 cap,
+``LlamaServerTransport._delta_candidate_entry``).
+
+SKIP (DEFECT 2 fix): once the correction filter runs, an arm whose
+D2-frozen field set can actually CARRY a correction signal (declares
+``exemplar_bank`` and/or ``delta_candidates``) skips the REPLAY call
+entirely -- no ``ctx.adapter.request`` at all -- when BOTH the retrieved set
+and the exemplar match are empty (``"no-candidates"``, recorded in the
+REPLAY trace with the request/response hashes left ``None``): there is
+nothing to correct with and nothing to anchor with, so a call would only
+re-hear with zero new information. This gate is scoped to arms that could
+have carried something: a bare-core-shaped arm (declares neither field)
+never attaches either tier regardless of what RETRIEVE finds (see ACCEPT's
+own "usable against every arm" note below), so a REPLAY call under such an
+arm is ALWAYS a zero-bias re-listen probe by design, not a wasted one --
+skip never applies to it.
 
 REPLAY: one ``core.model`` request per flagged span, through
 ``ctx.adapter.request`` -- the SAME gate/budget/metering/trace choke point
@@ -106,14 +133,46 @@ field (satisfying the exact-match requirement for a tier PASS 1 itself
 never has content for), and leaves every arm that does not declare the
 field untouched.
 
-ACCEPT (splice policy v1): reject an empty replay output, a replay output
-whose normalized text equals the flagged run's own (nothing to correct), or
-one exceeding ``replay_len_ratio_max`` times the flagged run's word count;
-otherwise splice the replay words into the slice's own word sequence in
-place of the flagged run. Multiple accepted spans in one slice are applied
-in one left-to-right reconstruction pass (spans are non-overlapping,
-ascending-start, per ``core.replay_signals.flag_spans``' own contract).
-Deterministic given fixed inputs.
+ACCEPT (splice policy v2, DEFECT 1 fix -- first hit SAEA-MM3-replay
+2026-08-14): the REPLAY request transcribes the WHOLE replay window
+(``replay_context_s`` seconds either side of the flagged span, LOCATE
+section above), not just the flagged region -- comparing THAT whole-window
+transcript's length against the flagged run's own (often 2-3 words) made
+acceptance unreachable (8/12 real MM3 spans rejected
+``"length-ratio-exceeded"``; a further 2/12 falsely ACCEPTED a whole
+unrelated sentence spliced in place of a 2-word flagged run). LOCALIZE
+first: once a non-empty replay transcript comes back, a SECOND
+``core.span_surgery.align_words`` call -- the same authorized tool pathway
+LOCATE already uses above, one MORE alignment per REPLAYED span (never per
+skipped or fast-path span) -- aligns the replay transcript to the replay
+window's own wav; the flagged span's own timing within that window (already
+known -- it is exactly what was cut, LOCATE section above) then selects
+only the aligned replay words whose ``[start_s, end_s]`` MIDPOINT falls
+inside that interval, padded by ``replay_span_pad_s``. THAT localized word
+run -- not the full replay transcript -- is both the splice replacement and
+the length-ratio operand. Reject reasons, in order: an empty replay output
+(``"empty-replay-output"``); a non-empty replay output with nothing
+localizeable inside the flagged interval, including an alignment failure
+(``"no-overlap-words"``); a localized run whose normalized text equals the
+flagged run's own (nothing to correct, ``"replay-text-unchanged"``); one
+exceeding ``replay_len_ratio_max`` times the flagged run's word count
+(``"length-ratio-exceeded"``). Otherwise splice the localized words into the
+slice's own word sequence in place of the flagged run. Multiple accepted
+spans in one slice are applied in one left-to-right reconstruction pass
+(spans are non-overlapping, ascending-start, per
+``core.replay_signals.flag_spans``' own contract). A span RETRIEVE already
+skipped (``"no-candidates"`` above) never reaches this stage at all -- it is
+spliced as a reject with no replay text to judge. Deterministic given fixed
+inputs.
+
+This policy remains usable against every arm, including one whose D2-frozen
+field set carries neither ``exemplar_bank`` nor ``delta_candidates``
+(``"bare-core"``): a REPLAY call attaches a tier only when there is actual
+matched content for it AND the arm declares the field, an empty tier is
+omitted (not attached as an empty list) for an arm that does not declare
+it, and real content the arm cannot carry still fails closed (``ArmError``)
+-- see RETRIEVE's SKIP note above for why this also means the DEFECT 2 skip
+gate never applies to such an arm.
 
 Trace: one ``REPLAY`` channel record per flagged span (``contracts.
 boundary.TRACE_CHANNELS``/``_CHANNEL_PREFIX``, ``replay_``-prefixed,
@@ -523,6 +582,47 @@ def _pack_terms(ctx: SampleContext) -> list[str]:
     return list(terms)
 
 
+def _correction_pool(candidates: Sequence[str], flagged_words: Sequence[str]) -> list[str]:
+    """DEFECT 2 fix, port of ``core.candidate_materializer.
+    materialize_sample``'s correction semantics (commit 4a78dfa, module
+    docstring's RETRIEVE section): every candidate whose
+    ``core.retrieval.normalize_term`` form equals ANY normalized
+    ``flagged_words`` entry is dropped -- a pack term the flagged run
+    already says verbatim needs no supplying (it would otherwise score 1.0
+    and trivially win retrieval over the real correction). Order-preserving,
+    pure; may return an empty list (the caller treats that as nothing to
+    retrieve, module docstring's SKIP note)."""
+
+    flagged_forms = {normalize_term(word) for word in flagged_words}
+    return [term for term in candidates if normalize_term(term) not in flagged_forms]
+
+
+def _localize_replay_words(
+    aligned_replay_words: Sequence[Mapping[str, object]],
+    interval: tuple[float, float],
+) -> list[str]:
+    """DEFECT 1 fix (module docstring's ACCEPT section, first hit
+    SAEA-MM3-replay 2026-08-14): the subset of ``aligned_replay_words`` --
+    one ``core.span_surgery.align_words``-shaped ``{"word", "start_s",
+    "end_s"}`` entry per REPLAY-transcript word, timestamps LOCAL to the
+    replay window's own wav -- whose MIDPOINT falls inside ``interval``
+    (``(lo, hi)``, inclusive both ends: the flagged span's own timing
+    within the window, already padded by ``replay_span_pad_s``), returned in
+    input (left-to-right transcript) order. Pure, deterministic; may be
+    empty when nothing aligned inside the interval -- the caller rejects
+    with ``"no-overlap-words"``."""
+
+    lo, hi = interval
+    selected: list[str] = []
+    for entry in aligned_replay_words:
+        start_s = float(entry["start_s"])
+        end_s = float(entry["end_s"])
+        midpoint = (start_s + end_s) / 2.0
+        if lo <= midpoint <= hi:
+            selected.append(str(entry["word"]))
+    return selected
+
+
 def _matching_exemplars(
     exemplar_bank: Sequence[Mapping[str, object]] | None, retrieved_terms: Sequence[str]
 ) -> list[dict[str, object]]:
@@ -552,18 +652,25 @@ def _cut_replay_window(
     context_s: float,
     rate: int,
     out_path: Path,
-) -> tuple[Path, float, float, float]:
+) -> tuple[Path, float, float, float, float, float]:
     """Cut the flagged span's neighborhood-context window (module
     docstring's two-tier design) from the SLICE's own wav, returning
-    ``(out_path, local_start_seconds, local_end_seconds, audio_seconds)``
-    -- all SLICE-LOCAL (relative to the slice's own start, not the whole
-    call). ``local_start``/``audio_seconds`` are computed from the SAME
-    ``int(round(seconds * rate))`` sample-count rounding
-    ``core.span_surgery.cut_span`` applies internally (called here with its
-    own ``pad_s=0.0`` -- the pad is already folded into the pre-clamped
-    bounds), so the caller's derivation record stays bit-exact with the
-    file actually written (``core.model.slices.SliceRegistry``'s 1e-6
-    float-tolerance equality check)."""
+    ``(out_path, local_start_seconds, local_end_seconds, audio_seconds,
+    flagged_local_start_seconds, flagged_local_end_seconds)`` -- all
+    SLICE-LOCAL (relative to the slice's own start, not the whole call)
+    EXCEPT the last two, which are WINDOW-LOCAL (relative to the cut
+    window's own start, i.e. ``flagged_start_s - local_start`` /
+    ``flagged_end_s - local_start``): the flagged span's own timing
+    expressed in the frame ACCEPT's DEFECT-1 localization step (module
+    docstring) needs, since it aligns the replay transcript against this
+    SAME cut window file, not the original slice. ``local_start``/
+    ``audio_seconds`` are computed from the SAME ``int(round(seconds *
+    rate))`` sample-count rounding ``core.span_surgery.cut_span`` applies
+    internally (called here with its own ``pad_s=0.0`` -- the pad is
+    already folded into the pre-clamped bounds), so the caller's derivation
+    record stays bit-exact with the file actually written
+    (``core.model.slices.SliceRegistry``'s 1e-6 float-tolerance equality
+    check)."""
 
     start_idx, end_idx = span
     flagged_start_s = float(aligned_words[start_idx]["start_s"])
@@ -589,7 +696,9 @@ def _cut_replay_window(
     audio_seconds = (end_sample - start_sample) / rate
     local_start = start_sample / rate
     local_end = local_start + audio_seconds
-    return out_path, local_start, local_end, audio_seconds
+    flagged_local_start = flagged_start_s - local_start
+    flagged_local_end = flagged_end_s - local_start
+    return out_path, local_start, local_end, audio_seconds, flagged_local_start, flagged_local_end
 
 
 def _canonical_json_bytes(document: Mapping[str, object]) -> bytes:
@@ -734,11 +843,94 @@ class ObsReplayLoopPolicy:
                 start_idx, end_idx = span
                 flagged_words = words[start_idx:end_idx]
                 flagged_text = " ".join(flagged_words)
+                replay_request_id = f"{ctx.request_id_base}-replay{replay_call_index:03d}"
+
+                # RETRIEVE (DEFECT 2 fix, module docstring's CORRECTION
+                # SEMANTICS note): drop any pack candidate the flagged run
+                # already says verbatim BEFORE retrieve() ever scores it.
+                query_terms = flagged_words
+                correction_pool = (
+                    _correction_pool(pack_terms_cache, query_terms) if pack_terms_cache else []
+                )
+                retrieved: list[tuple[str, float]] = []
+                if correction_pool and query_terms:
+                    try:
+                        retrieved = retrieve(
+                            query_terms, correction_pool, replay_cfg.k, replay_cfg.min_score
+                        )
+                    except RetrievalError:
+                        retrieved = []
+
+                # Exemplar matching also checks the flagged words themselves,
+                # not only retrieved text candidates (module docstring's
+                # RETRIEVE section): an exemplar clip is a pronunciation
+                # anchor, not a text suggestion, so it stays useful even when
+                # its own label IS the word the flagged run already said.
+                exemplar_match_terms = list(
+                    dict.fromkeys([term for term, _score in retrieved] + list(query_terms))
+                )
+                matching_exemplars = _matching_exemplars(ctx.exemplar_bank, exemplar_match_terms)
+
+                # An arm's D2-frozen field set is looked up once for both
+                # the SKIP decision below and the payload-attachment rule
+                # further down (same "an empty tier is omitted unless the
+                # arm declares the field, required once declared" contract
+                # -- core.policies.build_arm_payload demands an EXACT
+                # field-set match).
+                arm_fields = ARM_VISIBLE_FIELDS[ctx.arm]
+                can_attach_correction = (
+                    "exemplar_bank" in arm_fields or "delta_candidates" in arm_fields
+                )
+
+                if can_attach_correction and not retrieved and not matching_exemplars:
+                    # DEFECT 2 fix, module docstring's SKIP note: nothing to
+                    # correct with and nothing to anchor with -- burning a
+                    # REPLAY model call to re-hear with zero new information
+                    # is pure waste. No adapter.request at all for this span;
+                    # never reaches LOCATE/ACCEPT below.
+                    window_record = {
+                        "replay_sample_id": sample.sample_id,
+                        "replay_slice_iteration": record.iteration,
+                        "replay_window_iteration": None,
+                        "replay_span_index": span_index,
+                        "replay_span_start_word": start_idx,
+                        "replay_span_end_word": end_idx,
+                        "replay_trigger": trigger_label,
+                        "replay_window_relpath": None,
+                        "replay_window_sha256": None,
+                        "replay_window_start_seconds": None,
+                        "replay_window_end_seconds": None,
+                        "replay_window_audio_seconds": None,
+                        "replay_query_terms": list(query_terms),
+                        "replay_candidates": [],
+                        "replay_exemplars_attached": [],
+                        "replay_pass1_text": flagged_text,
+                        "replay_replay_text": None,
+                        "replay_accepted": False,
+                        "replay_reject_reason": "no-candidates",
+                        "replay_request_sha256": None,
+                        "replay_response_sha256": None,
+                        "replay_localized_words": [],
+                        "replay_localized_word_count": 0,
+                        "replay_localize_source": None,
+                    }
+                    ctx.sink.emit("REPLAY", f"{replay_request_id}/replay", window_record)
+                    replay_window_records.append(window_record)
+                    decisions.append((start_idx, end_idx, False, None))
+                    replay_call_index += 1
+                    continue
 
                 relpath = registry.slice_relpath(sample.sample_id, next_iteration)
                 out_path = data_root / relpath
                 out_path.parent.mkdir(parents=True, exist_ok=True)
-                _, local_start, local_end, cut_audio_seconds = _cut_replay_window(
+                (
+                    _,
+                    local_start,
+                    local_end,
+                    cut_audio_seconds,
+                    flagged_local_start,
+                    flagged_local_end,
+                ) = _cut_replay_window(
                     slice_wav_path,
                     record,
                     aligned,
@@ -769,19 +961,6 @@ class ObsReplayLoopPolicy:
                 )
                 registry.register(replay_slice_record)
 
-                query_terms = flagged_words
-                retrieved: list[tuple[str, float]] = []
-                if pack_terms_cache and query_terms:
-                    try:
-                        retrieved = retrieve(
-                            query_terms, pack_terms_cache, replay_cfg.k, replay_cfg.min_score
-                        )
-                    except RetrievalError:
-                        retrieved = []
-
-                matching_exemplars = _matching_exemplars(
-                    ctx.exemplar_bank, [term for term, _score in retrieved]
-                )
                 delta_terms = retrieved[:TRANSPORT_DELTA_CANDIDATE_CAP]
                 delta_candidates_content = [{"text": term} for term, _score in delta_terms]
                 # Attach a (possibly empty) tier whenever ctx.arm's D2-frozen
@@ -798,7 +977,6 @@ class ObsReplayLoopPolicy:
                 # attach, refused (ArmError, unchanged --
                 # see test_replay_call_refused_when_arm_does_not_declare_the_
                 # attached_tier) when there is real content it cannot carry.
-                arm_fields = ARM_VISIBLE_FIELDS[ctx.arm]
                 exemplar_payload = (
                     matching_exemplars
                     if (matching_exemplars or "exemplar_bank" in arm_fields)
@@ -810,7 +988,6 @@ class ObsReplayLoopPolicy:
                     else None
                 )
 
-                replay_request_id = f"{ctx.request_id_base}-replay{replay_call_index:03d}"
                 replay_sample_ref = SampleRef(
                     carrier_lock_key=sample.carrier_lock_key,
                     sample_id=sample.sample_id,
@@ -853,21 +1030,58 @@ class ObsReplayLoopPolicy:
                     ) from error
 
                 replay_text = getattr(replay_response, "text", "") or ""
-                replay_words = replay_text.split()
+                replay_words_full = replay_text.split()
                 flagged_normalized = normalize_term(flagged_text)
-                replay_normalized = normalize_term(replay_text)
+
+                localized_words: list[str] = []
+                localize_source: str | None = None
                 accepted = False
                 reject_reason: str | None = None
-                if not replay_words:
-                    reject_reason = "empty-replay-output"
-                elif replay_normalized == flagged_normalized:
-                    reject_reason = "replay-text-unchanged"
-                elif len(replay_words) > replay_cfg.len_ratio_max * max(1, len(flagged_words)):
-                    reject_reason = "length-ratio-exceeded"
-                else:
-                    accepted = True
 
-                decisions.append((start_idx, end_idx, accepted, replay_words if accepted else None))
+                if not replay_words_full:
+                    reject_reason = "empty-replay-output"
+                else:
+                    # LOCALIZE (DEFECT 1 fix, module docstring's ACCEPT
+                    # section, first hit SAEA-MM3-replay 2026-08-14): a
+                    # SECOND align_words call -- the same authorized tool
+                    # pathway LOCATE above already uses, one MORE CPU
+                    # alignment per REPLAYED span (this span already passed
+                    # the SKIP gate above, so it is a genuine, already
+                    # counted model-adjacent tool touch, not an extra one --
+                    # core.span_surgery's own docstring gates the MODEL
+                    # touch itself, not per-call policy bookkeeping, exactly
+                    # as LOCATE's own call already relies on) -- aligns the
+                    # REPLAY TRANSCRIPT to the REPLAY WINDOW wav just
+                    # written above, then keeps only the words whose
+                    # timestamp midpoint falls inside the flagged span's own
+                    # window-local interval (padded by replay_span_pad_s).
+                    try:
+                        aligned_replay = align_words(out_path, replay_words_full)
+                        localize_source = "align_words"
+                    except SpanSurgeryError:
+                        aligned_replay = []
+                        localize_source = "alignment-failed"
+                    localize_interval = (
+                        flagged_local_start - replay_cfg.span_pad_s,
+                        flagged_local_end + replay_cfg.span_pad_s,
+                    )
+                    localized_words = _localize_replay_words(aligned_replay, localize_interval)
+                    if not localized_words:
+                        reject_reason = "no-overlap-words"
+                    else:
+                        localized_text = " ".join(localized_words)
+                        if normalize_term(localized_text) == flagged_normalized:
+                            reject_reason = "replay-text-unchanged"
+                        elif len(localized_words) > replay_cfg.len_ratio_max * max(
+                            1, len(flagged_words)
+                        ):
+                            reject_reason = "length-ratio-exceeded"
+                        else:
+                            accepted = True
+
+                decisions.append(
+                    (start_idx, end_idx, accepted, localized_words if accepted else None)
+                )
 
                 window_record = {
                     "replay_sample_id": sample.sample_id,
@@ -895,6 +1109,9 @@ class ObsReplayLoopPolicy:
                     "replay_reject_reason": reject_reason,
                     "replay_request_sha256": getattr(replay_response, "request_sha256", None),
                     "replay_response_sha256": getattr(replay_response, "response_sha256", None),
+                    "replay_localized_words": list(localized_words),
+                    "replay_localized_word_count": len(localized_words),
+                    "replay_localize_source": localize_source,
                 }
                 ctx.sink.emit("REPLAY", f"{replay_request_id}/replay", window_record)
                 replay_window_records.append(window_record)
@@ -919,6 +1136,13 @@ class ObsReplayLoopPolicy:
             )
 
         stitched = " ".join(span for span in accepted_spans if span)
+        # DEFECT 2 fix (module docstring's SKIP note): a post-hoc count over
+        # the already-written per-span records, never a separately
+        # incremented counter -- one source of truth for "how many flagged
+        # spans this sample never bothered the model for."
+        no_candidate_skip_count = sum(
+            1 for record_ in replay_window_records if record_["replay_reject_reason"] == "no-candidates"
+        )
         write_json_artifact(
             run_dir / f"{ctx.sink.run_id}.replay-derivation.{sample.sample_id}.json",
             {
@@ -929,6 +1153,7 @@ class ObsReplayLoopPolicy:
                 "parent_sha256": parent_sha256,
                 "decoded_duration_seconds": duration,
                 "pass1_slices": [record.trace_view() for record in slice_records],
+                "replay_no_candidate_skip_count": no_candidate_skip_count,
                 "replay_windows": replay_window_records,
             },
         )

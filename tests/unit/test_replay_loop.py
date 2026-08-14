@@ -19,13 +19,16 @@ from speech_aware_evidence_acquisition.data.loader import SampleRef
 from speech_aware_evidence_acquisition.e0.d2_leakage import ARM_VISIBLE_FIELDS
 from speech_aware_evidence_acquisition.reproduction import obs_loop, replay_loop
 from speech_aware_evidence_acquisition.reproduction.obs_loop import ObsAgentLoopPolicy
+from speech_aware_evidence_acquisition.core.span_surgery import SpanSurgeryError
 from speech_aware_evidence_acquisition.reproduction.replay_loop import (
     OBS_REPLAY_LOOP_POLICY_NAME,
     ObsReplayLoopPolicy,
     ReplayLoopConfig,
     ReplayLoopError,
+    _correction_pool,
     _extract_token_logprobs,
     _flag_spans_for_slice,
+    _localize_replay_words,
     _matching_exemplars,
     _word_logprob_scores,
 )
@@ -119,6 +122,31 @@ def _fake_align_words(audio_path, words, device="cpu"):
         {"word": word, "start_s": float(index), "end_s": float(index) + 1.0}
         for index, word in enumerate(words)
     ]
+
+
+def _dense_localize_align_words(pass1_words):
+    """``align_words`` fake for DEFECT-1 localization tests: a LOCATE call
+    (``words`` == the slice's own pass1 transcript, exactly as
+    ``_fake_align_words`` already handles) gets the standard one-word-per-
+    second timing; every OTHER call -- the NEW localization alignment of a
+    REPLAY transcript -- packs every word into a tight 0.01s stride
+    starting at 0.5s, deterministically landing an arbitrary word COUNT
+    inside a small, fixed window-local interval (module docstring math: a
+    flagged span with default ``replay_context_s``/``replay_span_pad_s``
+    always localizes to something near ``(-0.1, 2.1)`` for a 2-word flagged
+    run under ``_fake_align_words``' own 1-second-per-word timing) -- so a
+    length-ratio test can control the localized word count directly,
+    independent of the replay transcript's raw word count."""
+
+    def _align(audio_path, words, device="cpu"):
+        if list(words) == list(pass1_words):
+            return _fake_align_words(audio_path, words, device)
+        return [
+            {"word": word, "start_s": 0.5 + index * 0.01, "end_s": 0.5 + index * 0.01 + 0.01}
+            for index, word in enumerate(words)
+        ]
+
+    return _align
 
 
 def _fake_cut_span(audio_path, start_s, end_s, pad_s, out_path):
@@ -376,6 +404,76 @@ class TestMatchingExemplars:
         assert _matching_exemplars(bank, ["acme"]) == []
 
 
+class TestCorrectionPool:
+    """DEFECT 2 fix: drop candidates matching a flagged word verbatim
+    BEFORE retrieve() ever scores them (ported from
+    core.candidate_materializer.materialize_sample, commit 4a78dfa)."""
+
+    def test_drops_candidates_matching_a_flagged_word_verbatim(self):
+        # Real MM3 shape (SAEA-MM3-replay, 2026-08-14): flagged "conditions
+        # and" trivially self-matched pack term "conditions" at score 1.0.
+        pool = _correction_pool(
+            ["conditions", "condition", "conditioner", "guidance"],
+            ["conditions", "and"],
+        )
+        assert pool == ["condition", "conditioner", "guidance"]
+
+    def test_comparison_is_normalized_not_literal(self):
+        # "Acme," normalizes to "acme" (case + trailing punctuation) and is
+        # still dropped despite not being byte-identical to the flagged word.
+        pool = _correction_pool(["Acme,", "acmeco"], ["acme"])
+        assert pool == ["acmeco"]
+
+    def test_empty_pool_when_every_candidate_matches(self):
+        assert _correction_pool(["acme", "Acme"], ["acme"]) == []
+
+    def test_no_matches_leaves_the_pool_untouched(self):
+        pool = _correction_pool(["merger", "guidance"], ["acme", "zzz"])
+        assert pool == ["merger", "guidance"]
+
+
+class TestLocalizeReplayWords:
+    """DEFECT 1 fix: select the aligned replay words whose timestamp
+    midpoint falls inside the flagged span's own (padded) window-local
+    interval."""
+
+    @staticmethod
+    def _aligned(*triples):
+        return [{"word": w, "start_s": s, "end_s": e} for w, s, e in triples]
+
+    def test_selects_words_whose_midpoint_falls_inside_the_interval(self):
+        aligned = self._aligned(
+            ("a", 0.0, 1.0),  # midpoint 0.5 -- inside
+            ("b", 1.0, 2.0),  # midpoint 1.5 -- inside
+            ("c", 2.0, 3.0),  # midpoint 2.5 -- outside
+        )
+        assert _localize_replay_words(aligned, (-0.1, 2.1)) == ["a", "b"]
+
+    def test_boundary_is_inclusive_on_both_ends(self):
+        aligned = self._aligned(("a", 0.0, 1.0))  # midpoint exactly 0.5
+        assert _localize_replay_words(aligned, (0.5, 0.5)) == ["a"]
+        assert _localize_replay_words(aligned, (0.500001, 10.0)) == []
+
+    def test_empty_overlap_returns_empty_list(self):
+        aligned = self._aligned(("a", 10.0, 11.0), ("b", 20.0, 21.0))
+        assert _localize_replay_words(aligned, (0.0, 2.0)) == []
+
+    def test_preserves_transcript_order_not_time_order(self):
+        aligned = self._aligned(("late", 1.5, 2.0), ("early", 0.0, 0.5))
+        assert _localize_replay_words(aligned, (0.0, 3.0)) == ["late", "early"]
+
+    def test_zero_width_word_is_selected_by_its_own_point(self):
+        # core.span_surgery.align_words interpolates an unalignable word
+        # (digits/symbols) to a zero-width span at the preceding boundary
+        # (that module's own docstring) -- still selectable by its point.
+        aligned = self._aligned(("123", 1.0, 1.0))
+        assert _localize_replay_words(aligned, (0.9, 1.1)) == ["123"]
+        assert _localize_replay_words(aligned, (1.1, 2.0)) == []
+
+    def test_empty_input_returns_empty_list(self):
+        assert _localize_replay_words([], (0.0, 10.0)) == []
+
+
 # ---------------------------------------------------------------------------
 # Empty-flag fast path: byte-identical to plain obs-agent-loop
 # ---------------------------------------------------------------------------
@@ -498,7 +596,13 @@ class TestReplayPayloadAssembly:
         assert replay_payload["exemplar_bank"] == [
             {"media_relpath": "derived/exemplar-pairs/mc2-v1/4000001/acme.wav", "label": "acme"}
         ]
-        assert replay_payload["delta_candidates"] == [{"text": "acme"}]
+        # DEFECT 2 fix: "acme" is dropped from the correction pool (it is
+        # one of the flagged words itself -- the trivial verbatim match
+        # this fix removes) and nothing else in this small evidence pack
+        # scores >= replay_min_score, so there is no text correction left
+        # to attach -- but the arm declares the field, so an EMPTY list is
+        # still required (module docstring's "required once declared").
+        assert replay_payload["delta_candidates"] == []
 
         records = world.replay_records()
         assert len(records) == 1
@@ -507,10 +611,22 @@ class TestReplayPayloadAssembly:
         assert record["replay_pass1_text"] == "acme zzz"
         assert record["replay_replay_text"] == "corrected replay text"
         assert record["replay_accepted"] is True
-        assert record["replay_candidates"] == [{"text": "acme", "score": 1.0}]
+        assert record["replay_candidates"] == []
+        # The exemplar still matches -- via the flagged word itself, not a
+        # retrieved text candidate (module docstring's "still replayable
+        # with exemplars" note): an audio pronunciation anchor for "acme"
+        # is useful even though there is no text correction to offer.
         assert record["replay_exemplars_attached"] == ["acme"]
-        # Splice landed in the final stitched text.
-        assert outcome.text == "corrected replay text"
+        # DEFECT 1 fix: the REPLAY window's full 3-word transcript is
+        # localized down to the 2 words whose alignment lands inside the
+        # flagged span's own interval ("text" falls outside it under the
+        # deterministic one-word-per-second fake) -- that localized run,
+        # not the raw replay text, is what gets spliced in.
+        assert record["replay_localized_words"] == ["corrected", "replay"]
+        assert record["replay_localized_word_count"] == 2
+        assert record["replay_localize_source"] == "align_words"
+        # Splice landed in the final stitched text -- the LOCALIZED run.
+        assert outcome.text == "corrected replay"
 
     def test_delta_candidates_clamped_to_transport_cap_even_with_more_retrieved(
         self, tmp_path, monkeypatch
@@ -544,6 +660,51 @@ class TestReplayPayloadAssembly:
         # Full retrieved set (up to replay_k) is still recorded for audit.
         assert len(records[0]["replay_candidates"]) >= len(replay_payload["delta_candidates"])
         assert len(records[0]["replay_candidates"]) > replay_loop.TRANSPORT_DELTA_CANDIDATE_CAP
+
+    def test_no_candidates_and_no_exemplars_skips_the_replay_call_entirely(
+        self, tmp_path, monkeypatch
+    ):
+        """DEFECT 2 fix: for an arm that COULD carry a correction (here
+        bare-core patched to declare delta_candidates), once the DEFECT-2
+        correction filter empties retrieval AND there is no exemplar match
+        either, the REPLAY call is skipped entirely -- the mock transport
+        gets NO request for that span at all (do not burn a model call to
+        re-hear with zero new information, module docstring's SKIP note).
+
+        Evidence is ``self._EVIDENCE`` ("acme merger guidance revenue
+        outlook"): "acme" is the only term that would have scored well, and
+        it IS a flagged word, so the correction filter drops it, emptying
+        the pool; no exemplar_bank is supplied either."""
+
+        monkeypatch.setitem(
+            ARM_VISIBLE_FIELDS,
+            "bare-core",
+            ARM_VISIBLE_FIELDS["bare-core"] + ("delta_candidates",),
+        )
+        _stub_pass1(monkeypatch, accepted_spans=["acme zzz"], slice_records=[_fake_slice_record()])
+        world = _World(
+            tmp_path,
+            monkeypatch,
+            pcm=_noise(40.0),
+            texts=[],  # the REPLAY call must never be sent
+            values=self._values(),
+            evidence=self._EVIDENCE,
+        )
+        outcome = world.run()
+
+        assert world.adapter.payloads == []  # PASS 1 stubbed away, REPLAY skipped
+        records = world.replay_records()
+        assert len(records) == 1
+        record = records[0]
+        assert record["replay_accepted"] is False
+        assert record["replay_reject_reason"] == "no-candidates"
+        assert record["replay_replay_text"] is None
+        assert record["replay_request_sha256"] is None
+        assert record["replay_response_sha256"] is None
+        assert record["replay_window_relpath"] is None
+        assert record["replay_candidates"] == []
+        assert record["replay_exemplars_attached"] == []
+        assert outcome.text == "acme zzz"  # unmodified -- nothing was spliced
 
     def test_no_pack_terms_means_no_candidates_and_no_exemplar_match(self, tmp_path, monkeypatch):
         world = _World(
@@ -579,15 +740,36 @@ class TestReplayPayloadAssembly:
     ):
         """bare-core does NOT declare exemplar_bank/delta_candidates today
         (module docstring); a REPLAY call that has real content to attach
-        fails closed rather than silently dropping it."""
+        fails closed rather than silently dropping it.
 
+        Evidence here is deliberately NOT ``self._EVIDENCE`` ("acme merger
+        guidance revenue outlook"): under the DEFECT 2 correction filter,
+        that pool's only real candidate ("acme") is itself a flagged word
+        and gets dropped, leaving nothing that scores above
+        replay_min_score -- which would make this test's own "real content
+        the arm cannot carry" premise false (bare-core also cannot trigger
+        the DEFECT 2 skip, module docstring's SKIP note, so an empty
+        candidate set here would just silently proceed with an empty tier,
+        never reaching build_arm_payload's refusal at all). This pool
+        instead contains genuine fuzzy-but-not-verbatim variants of the
+        flagged word ("acmeco" etc.) that survive the filter and retrieve
+        for real."""
+
+        evidence = [
+            EvidenceItem(
+                evidence_id="conec/4000001",
+                source_uri="conec://x",
+                content="acme acmeco acmetwo acmethree acmefour",
+                provenance={"lock_key": "conec", "relpath": "x.txt", "sha256": "0" * 64},
+            )
+        ]
         world = _World(
             tmp_path,
             monkeypatch,
             pcm=_noise(40.0),
             texts=["acme zzz.", "corrected"],
             values=self._values(),
-            evidence=self._EVIDENCE,
+            evidence=evidence,
         )
         with pytest.raises(ReplayLoopError, match="delta_candidates"):
             world.run()
@@ -643,17 +825,25 @@ class TestReplayPayloadAssembly:
         assert pass1_payload["exemplar_bank"] == list(exemplar_bank)
         assert pass1_payload["delta_candidates"] == []
 
-        # REPLAY attaches genuine, non-empty retrieved/exemplar content --
-        # the previously-impossible case: an arm that can actually carry it.
+        # REPLAY attaches genuine exemplar content -- matched via the
+        # flagged word itself (module docstring's "still replayable with
+        # exemplars" note), since DEFECT 2's correction filter drops
+        # "acme" from the text-candidate pool (it IS a flagged word) and
+        # nothing else in this small evidence pack scores high enough to
+        # survive retrieval; the arm still requires the (now empty)
+        # delta_candidates key once it declares the field.
         assert replay_payload["exemplar_bank"] == list(exemplar_bank)
-        assert replay_payload["delta_candidates"] == [{"text": "acme"}]
+        assert replay_payload["delta_candidates"] == []
 
         records = world.replay_records()
         assert len(records) == 1
         assert records[0]["replay_accepted"] is True
-        # The REPLAY correction actually lands in the final stitched text --
-        # a genuinely, fully successful run, not merely a refused payload.
-        assert outcome.text == "corrected replay text"
+        # DEFECT 1 fix: the replay window's full 3-word transcript
+        # localizes to 2 words ("text" aligns outside the flagged span's
+        # own interval under the deterministic fake) -- the LOCALIZED run
+        # lands in the final stitched text, a genuinely, fully successful
+        # run, not merely a refused payload.
+        assert outcome.text == "corrected replay"
 
 
 # ---------------------------------------------------------------------------
@@ -672,11 +862,21 @@ class TestAcceptRejectSplice:
         )
 
     def test_accepted_replacement_splices_into_the_stitched_text(self, tmp_path, monkeypatch):
+        # DEFECT 1 fix: the replay window's full 3-word transcript
+        # localizes down to 2 words ("here" aligns outside the flagged
+        # span's own interval under the deterministic one-word-per-second
+        # fake) -- the LOCALIZED run, not the raw replay text, is spliced
+        # in and judged against the length-ratio guard.
         world = self._world(tmp_path, monkeypatch, "corrected words here")
         outcome = world.run()
-        assert outcome.text == "corrected words here"
-        assert world.replay_records()[0]["replay_accepted"] is True
-        assert world.replay_records()[0]["replay_reject_reason"] is None
+        assert outcome.text == "corrected words"
+        record = world.replay_records()[0]
+        assert record["replay_accepted"] is True
+        assert record["replay_reject_reason"] is None
+        assert record["replay_replay_text"] == "corrected words here"
+        assert record["replay_localized_words"] == ["corrected", "words"]
+        assert record["replay_localized_word_count"] == 2
+        assert record["replay_localize_source"] == "align_words"
 
     def test_empty_replay_output_is_rejected(self, tmp_path, monkeypatch):
         world = self._world(tmp_path, monkeypatch, "   ")
@@ -685,30 +885,104 @@ class TestAcceptRejectSplice:
         record = world.replay_records()[0]
         assert record["replay_accepted"] is False
         assert record["replay_reject_reason"] == "empty-replay-output"
+        assert record["replay_localized_words"] == []
+        assert record["replay_localized_word_count"] == 0
+        assert record["replay_localize_source"] is None
 
     def test_unchanged_text_is_rejected(self, tmp_path, monkeypatch):
+        # Both words of "Acme ZZZ" localize (2 words fit the same-shaped
+        # flagged interval as the 2-word flagged run), so this still tests
+        # unchanged-text detection on the localized run.
         world = self._world(tmp_path, monkeypatch, "Acme ZZZ")  # same words, different case
         outcome = world.run()
         assert outcome.text == "acme zzz"
         record = world.replay_records()[0]
         assert record["replay_accepted"] is False
         assert record["replay_reject_reason"] == "replay-text-unchanged"
+        assert record["replay_localized_words"] == ["Acme", "ZZZ"]
 
-    def test_length_ratio_guard_rejects_a_runaway_replay(self, tmp_path, monkeypatch):
-        runaway = " ".join(["word"] * 10)  # 10 words vs 2 flagged * 3.0 ratio = max 6
+    def test_no_overlap_words_is_rejected(self, tmp_path, monkeypatch):
+        """DEFECT 1's new reject reason: a non-empty replay transcript
+        whose every word aligns OUTSIDE the flagged span's own (padded)
+        interval leaves nothing to splice or judge."""
+
+        world = self._world(tmp_path, monkeypatch, "totally unrelated words")
+
+        def far_align(audio_path, words, device="cpu"):
+            if words == ["acme", "zzz"]:
+                return _fake_align_words(audio_path, words, device)
+            # Every replay word aligns far outside the flagged span's own
+            # window-local interval (~(-0.1, 2.1) for this fixture).
+            return [
+                {"word": word, "start_s": 100.0 + index, "end_s": 101.0 + index}
+                for index, word in enumerate(words)
+            ]
+
+        monkeypatch.setattr(replay_loop, "align_words", far_align)
+        outcome = world.run()
+        assert outcome.text == "acme zzz"
+        record = world.replay_records()[0]
+        assert record["replay_accepted"] is False
+        assert record["replay_reject_reason"] == "no-overlap-words"
+        assert record["replay_localized_words"] == []
+        assert record["replay_localized_word_count"] == 0
+        assert record["replay_localize_source"] == "align_words"
+
+    def test_localize_alignment_failure_degrades_to_no_overlap_words(self, tmp_path, monkeypatch):
+        """A SECOND align_words failure (the NEW DEFECT-1 localization
+        call, made against UNTRUSTED model output) degrades gracefully to
+        "no-overlap-words" rather than raising through the whole run --
+        unlike LOCATE's own align_words call above it (against the
+        SLICE's own already-verified transcript), which still hard-fails:
+        a genuine tool/audio problem on trusted input is a bug, an
+        unalignable REPLAY transcript is just unusable content, the same
+        as any other reject reason at this stage."""
+
+        world = self._world(tmp_path, monkeypatch, "123 456")  # digits-only, MMS-unalignable
+
+        def failing_align(audio_path, words, device="cpu"):
+            if words == ["acme", "zzz"]:
+                return _fake_align_words(audio_path, words, device)
+            raise SpanSurgeryError("no MMS-alignable word in transcript_words")
+
+        monkeypatch.setattr(replay_loop, "align_words", failing_align)
+        outcome = world.run()
+        assert outcome.text == "acme zzz"
+        record = world.replay_records()[0]
+        assert record["replay_accepted"] is False
+        assert record["replay_reject_reason"] == "no-overlap-words"
+        assert record["replay_localize_source"] == "alignment-failed"
+
+    def test_length_ratio_guard_rejects_a_runaway_localized_replay(self, tmp_path, monkeypatch):
+        """DEFECT 1 fix: the length-ratio guard now judges the LOCALIZED
+        word run, not the raw replay-window transcript -- a genuine reject
+        now requires many words packed INSIDE the flagged interval itself
+        (forced here via a dense align fake), not merely a long window
+        transcript (the OLD bug's false-reject shape this replaces --
+        see test_accepted_replacement_splices_into_the_stitched_text for
+        the case that used to wrongly reject on raw length)."""
+
+        runaway = " ".join(["word"] * 10)  # 10 localized words vs 2 flagged * 3.0 ratio = max 6
         world = self._world(tmp_path, monkeypatch, runaway, replay_len_ratio_max=3.0)
+        monkeypatch.setattr(replay_loop, "align_words", _dense_localize_align_words(["acme", "zzz"]))
         outcome = world.run()
         assert outcome.text == "acme zzz"
         record = world.replay_records()[0]
         assert record["replay_accepted"] is False
         assert record["replay_reject_reason"] == "length-ratio-exceeded"
+        assert record["replay_localized_word_count"] == 10
 
-    def test_length_ratio_guard_boundary_is_inclusive(self, tmp_path, monkeypatch):
-        exactly_at_ratio = " ".join(["word"] * 6)  # 6 == 2 * 3.0, must be accepted
+    def test_length_ratio_guard_boundary_is_inclusive_on_the_localized_run(
+        self, tmp_path, monkeypatch
+    ):
+        exactly_at_ratio = " ".join(["word"] * 6)  # 6 == 2 flagged * 3.0, must be accepted
         world = self._world(tmp_path, monkeypatch, exactly_at_ratio, replay_len_ratio_max=3.0)
+        monkeypatch.setattr(replay_loop, "align_words", _dense_localize_align_words(["acme", "zzz"]))
         outcome = world.run()
         assert outcome.text == exactly_at_ratio
-        assert world.replay_records()[0]["replay_accepted"] is True
+        record = world.replay_records()[0]
+        assert record["replay_accepted"] is True
+        assert record["replay_localized_word_count"] == 6
 
 
 # ---------------------------------------------------------------------------
@@ -736,6 +1010,10 @@ class TestTraceRecordShapes:
         assert document["schema"] == replay_loop.REPLAY_DERIVATION_SCHEMA
         assert len(document["pass1_slices"]) == 1
         assert len(document["replay_windows"]) == 1
+        # bare-core (this world's default arm) can never trigger the
+        # DEFECT-2 skip (module docstring's SKIP note), so this real,
+        # non-skipped REPLAY call contributes zero to the count.
+        assert document["replay_no_candidate_skip_count"] == 0
 
     def test_stitch_records_still_carry_only_pass1_request_ids(self, tmp_path, monkeypatch):
         """Design-boundary check (module docstring): the top-level
