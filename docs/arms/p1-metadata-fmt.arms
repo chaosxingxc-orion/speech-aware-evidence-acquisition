@@ -1,0 +1,8 @@
+# SAEA-P1-metadata-fmt — the format-pinning variant of SAEA-P1-metadata:
+# identical p1-metadata-v1 candidates and framing, plus ONE instruction
+# line pinning digit-form numbers. Isolates the instruction-controlled
+# number-format axis the tax decomposition exposed. Reads: vs
+# SAEA-P1-metadata on macro (drift recovery) and entity (must not lose
+# the Aldeyra/Frenz/Horne/Kusera/Bistricer flips).
+# run_id:baseline_fragment
+SAEA-P1-metadata-fmt:p1-metadata-fmt8-buf90
