@@ -51,16 +51,34 @@ and one-shot attempt semantics unchanged.
 ## Candidate A (SUBSYSTEM, frozen jointly): the error-pattern multimodal KB
 ## ("错题集" — the model's own confusion pairs as retrievable knowledge)
 
-FROZEN HYPOTHESIS. A KB of (speech span, gold text, model-error text) triples built
-OFFLINE from the isolated kb-construction split (34 calls, identity 67e32336..., gold
-never at runtime, evaluation-split intersection machine-refused) supplies entity-grade
-labels the self-supervised path structurally cannot (measured: morphological-neighbor
-capture, no cross-call occurrences for unique entities, self-labels wrong on the hardest
-names) — and its error-to-error matching outperforms generic phonetic retrieval at
-equal k.
+FROZEN HYPOTHESIS (superseded 2026-08-14 — see MEASURED CLOSURE). A KB of (speech span,
+gold text, model-error text) triples built OFFLINE from the isolated kb-construction split
+(34 calls, identity 67e32336..., gold never at runtime, evaluation-split intersection
+machine-refused) supplies entity-grade labels the self-supervised path structurally cannot.
 
-STATUS. Split frozen (bea16af); anti-cheat wall specified; consumed by Candidate B's
-WP1/WP2. Not an independent campaign until B's pilots justify one.
+MEASURED CLOSURE (2026-08-14, P0.1 reachability partition,
+derived/reachability-partition/v1/, 57 queries, mass n=70). The partition was read before
+any stratum-(b) floor was registered, so no blind pre-registration is possible; disclosed
+as such. Stratum (b) cross-call-KB-reachable = 37.1% of error mass but contains ZERO rare
+proper names: entirely style normalization (gonna/wanna/kinda), orthography (ecommerce vs
+e-commerce under the frozen v1 normalizer), and ONE homophone (Steven/Stephen). Every
+rare-entity query (aldeyra, chumbley, livesmart, ifeng, rafeh, buybuy, ...) is b=false.
+No defensible entity-grade floor passes: the cross-call error-pattern KB route is CLOSED
+by measurement (P7 never opens), independent of P1's D-B outcome. KC-Q3's structural
+limit is sealed with mass numbers. kb34 expansion floor for the record: macro WER 12.59%
+over the 34 calls (derived/offline-asr-wer/SAEA-BENCH-kb34-floor/).
+
+WHAT REPLACES IT. Stratum (a2) own-history-audio + document-label is the LARGEST
+reachable stratum of hard entities (32.9% mass; aldeyra lands there as the anchor case
+predicted); (a1) self-labelable is 4.3% (re-confirming the self-supervision limit). The
+surviving supply hypothesis: own-history acoustic exemplars TARGETED by span retrieval,
+labeled by deployment-legal DOCUMENT sources (P0.3 pin). P1's targeted read strengthens
+the text side: static oracle candidates flip 10/14 rare entities with correct casing
+(P1 verdict doc), so small-N prompt supply is a co-primary delivery route per the
+pre-registered delivery fork. Candidate A's KB framing is absorbed into this route.
+
+STATUS. Split frozen (bea16af); kb34 decode complete + floor read; KB route closed as
+above; retrieval showdown (P5-lite) remains live for own-history exemplar lookup.
 
 ## Explicitly out of scope for this freeze
 W-D / training-free-RL system optimization (owner sequencing: after both knowledge
