@@ -119,3 +119,18 @@ class TestAlignWords:
         # before any transcript validation or model/waveform I/O.
         with pytest.raises(SpanSurgeryError, match="audio file missing"):
             align_words(tmp_path / "does-not-exist.wav", [])
+
+
+def test_mms_word_normalizes_to_the_aligner_alphabet():
+    """MMS_FA's tokenizer dictionary is lowercase a-z plus apostrophe; raw
+    transcript words (capitals, digits, punctuation) crashed the aligner in
+    production (SAEA-MM3-replay, 2026-08-14, KeyError 'L'). The normalizer
+    maps every word into that alphabet, possibly to empty."""
+    from speech_aware_evidence_acquisition.core.span_surgery import _mms_word
+
+    assert _mms_word("Louise") == "louise"
+    assert _mms_word("RASp,") == "rasp"
+    assert _mms_word("company's") == "company's"
+    assert _mms_word("2020") == ""
+    assert _mms_word("$1.5") == ""
+    assert _mms_word("Co-Chairman") == "cochairman"

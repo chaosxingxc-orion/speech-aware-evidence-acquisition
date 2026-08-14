@@ -44,6 +44,18 @@ class SpanSurgeryError(RuntimeError):
     waveform I/O it wraps failed."""
 
 
+import re as _re
+
+_MMS_STRIP = _re.compile(r"[^a-z']")
+
+
+def _mms_word(word: str) -> str:
+    """Normalize one transcript word to MMS_FA's tokenizer alphabet
+    (lowercase a-z plus apostrophe); may normalize to empty (digits,
+    symbols), which align_words maps to a zero-width interpolated span."""
+    return _MMS_STRIP.sub("", word.lower())
+
+
 def _read_mono(audio_path: Path):
     """Read ``audio_path`` as float32 mono via ``soundfile`` -- module
     docstring: NOT ``torchaudio.load`` (torchcodec/FFmpeg unavailable on
@@ -97,20 +109,36 @@ def align_words(
     with torch.inference_mode():
         emission, _ = model(waveform)
 
-    tokens = tokenizer(transcript_words)
+    # MMS_FA's tokenizer dictionary is lowercase a-z (plus apostrophe): raw
+    # model transcripts carry capitals, digits and punctuation and crash it
+    # with a KeyError (first hit: SAEA-MM3-replay, 2026-08-14, "Louise").
+    # Align only the MMS-compatible normalized words, then map timestamps
+    # back to ALL input positions -- unalignable words (pure digits, symbols)
+    # get a zero-width span interpolated at the preceding aligned boundary,
+    # keeping the one-entry-per-input-word contract flag_spans depends on.
+    normalized = [_mms_word(word) for word in transcript_words]
+    alignable = [(i, n) for i, n in enumerate(normalized) if n]
+    if not alignable:
+        raise SpanSurgeryError(
+            "no MMS-alignable word in transcript_words (all normalized to empty)"
+        )
+    tokens = tokenizer([n for _, n in alignable])
     token_spans = aligner(emission[0], tokens)
 
     num_frames = emission.size(1)
     seconds_per_frame = waveform.size(1) / num_frames / bundle.sample_rate
+    aligned: dict[int, tuple[float, float]] = {}
+    for (i, _n), spans in zip(alignable, token_spans):
+        aligned[i] = (spans[0].start * seconds_per_frame, spans[-1].end * seconds_per_frame)
     results: list[dict[str, object]] = []
-    for word, spans in zip(transcript_words, token_spans):
-        results.append(
-            {
-                "word": word,
-                "start_s": spans[0].start * seconds_per_frame,
-                "end_s": spans[-1].end * seconds_per_frame,
-            }
-        )
+    last_end = 0.0
+    for i, word in enumerate(transcript_words):
+        if i in aligned:
+            start_s, end_s = aligned[i]
+            last_end = end_s
+        else:
+            start_s = end_s = last_end
+        results.append({"word": word, "start_s": start_s, "end_s": end_s})
     return results
 
 
