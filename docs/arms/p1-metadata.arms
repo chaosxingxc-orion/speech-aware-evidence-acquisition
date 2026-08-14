@@ -1,0 +1,10 @@
+# SAEA-P1-metadata — deployment-legal analogue of P1 arm C (P0.3 probe).
+# Candidates verbatim from the earnings21 asset's own call/speaker metadata
+# (p1-metadata-v1): no gold at any step, typos preserved, placeholder
+# speakers dropped. Same locked framing/fragment shape as arm C.
+# Reads: vs locked-zero 14.48 both ledgers + targeted flip counts
+# (does Aldeyra 0->6 survive the legal source?); vs P1-C bounds how much
+# of the oracle ceiling metadata alone recovers. Built-in conditions:
+# 4366522 full roster / 4387383 company-only / 4389907 typo'd company.
+# run_id:baseline_fragment
+SAEA-P1-metadata:p1-metadata8-buf90
