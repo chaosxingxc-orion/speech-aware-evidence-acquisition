@@ -45,7 +45,15 @@ KX-Q2 modality — THE keystone result (MM-1, SAEA-SMOKE-mapflip): an acoustic e
 from the call's OWN HISTORY flips a wrong rare entity to correct (Aldera->Aldeyra, with
 a spillover RAS->RASp), with zero insertion side effects across all 11 probe pairs;
 common-word morphology does NOT flip (LM prior wins there). Multimodal knowledge has
-demonstrated value precisely where text supply failed, in a deployment-legal form.
+demonstrated value precisely where text supply failed — as a MECHANISM claim only.
+SCOPE AMENDMENT (2026-08-14, adversarial review wf_f412e338): the earlier
+"deployment-legal form" wording is WITHDRAWN for the Aldeyra round: its exemplar came
+from the target's own call (the registered row said cross-call only) and its text label
+(the correct spelling in the treatment prompt) was derived from reference tokens at
+selection time — a gold-sourced label no deployment has. What stands: the audio->text
+mapping mechanism works on rare entities. What is NOT yet shown: the same flip under a
+deployment-legal label source (document/roster-labeled); that re-demo is scheduled
+(plan P0.3). The exposure-ledger row carries the matching amendment.
 
 KX-Q3 timing/interface — static whole-call prompt supply is closed as an interface (the
 tax); the surviving interface is TARGETED consumption: the listen-score-replay loop
