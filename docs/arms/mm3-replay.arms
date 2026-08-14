@@ -1,0 +1,13 @@
+# SAEA-MM3-replay — the agentic loop's first flight (mechanical smoke, owner
+# standing GO for exploration): obs-replay-loop on fast-3, 90s era, v3 model
+# shape. PASS-1 = the standard slice-parallel matched arm; SCORE = logprob
+# gate + wps catastrophe (trigger both, threshold -1.2 mean-logprob, min-run
+# 2, cap 2 spans/slice); LOCATE = span surgery on flagged runs; RETRIEVE =
+# conec pack terms k=3 + mm5-selfsup-v2 exemplars where labels match;
+# REPLAY = one v3 request per span with the locked replay instruction;
+# ACCEPT = length-guarded splice. Mechanical reads ONLY: flags fired, spans
+# cut+registered, replay requests issued and metered, splice decisions
+# recorded in the REPLAY channel, cost ratio vs the plain arm (~20 min).
+# WER is recorded but not a claim.
+# run_id:baseline_fragment
+SAEA-MM3-replay:mm3-replay8-buf90
