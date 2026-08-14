@@ -818,13 +818,22 @@ class ObsReplayLoopPolicy:
                     audio_seconds=cut_audio_seconds,
                     sample_rate_hz=rate,
                 )
+                # PASS-1's slice-parallel pool resolves the id_slot
+                # "per-sample" sentinel to an allocated slot; this one-off
+                # REPLAY request does not run through that pool, so the raw
+                # sentinel would fail closed at the adapter (first hit:
+                # SAEA-MM3-replay, 2026-08-14). REPLAY calls are sequential
+                # per sample -- pin them all to slot 0.
+                replay_decoding = dict(ctx.decoding_params)
+                if replay_decoding.get("id_slot") == "per-sample":
+                    replay_decoding["id_slot"] = 0
                 try:
                     replay_payload = build_arm_payload(
                         ctx.arm,
                         replay_sample_ref,
                         replay_request_id,
                         replay_cfg.instruction,
-                        dict(ctx.decoding_params),
+                        replay_decoding,
                         evidence=evidence,
                         retrieval_query=ctx.retrieval_query,
                         exemplar_bank=exemplar_payload,

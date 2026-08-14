@@ -849,3 +849,16 @@ class TestMultiSpanSplice:
         assert len(records) == 2
         assert records[0]["replay_span_start_word"] == 1
         assert records[1]["replay_span_start_word"] == 6
+
+
+def test_replay_request_resolves_the_per_sample_id_slot_sentinel():
+    """PASS-1's slice-parallel pool resolves id_slot "per-sample" to a real
+    slot; the one-off REPLAY request does not run through that pool and the
+    raw sentinel fail-closed at the adapter in production (SAEA-MM3-replay,
+    2026-08-14). The REPLAY builder pins the sentinel to slot 0."""
+    from speech_aware_evidence_acquisition.reproduction import replay_loop as rl
+    import inspect
+
+    src = inspect.getsource(rl)
+    assert 'replay_decoding.get("id_slot") == "per-sample"' in src
+    assert 'replay_decoding["id_slot"] = 0' in src
