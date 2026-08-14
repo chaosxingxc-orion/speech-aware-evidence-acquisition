@@ -5,10 +5,12 @@ exemplar-pairs manifest into a per-sample (audio exemplar, label) bank.
 Prep infrastructure for a future "M-C-prime" arm (see ``docs/exposure-
 ledger.md``'s ``SAEA-SMOKE-mm2`` row): this module resolves and verifies the
 bank, and threads it through ``core.base.SampleContext``/``core.policies.
-build_arm_payload`` exactly the way evidence already flows -- but no D2-frozen
-arm declares an ``exemplar_bank`` field yet, so ``build_arm_payload`` still
-fails closed for every arm registered today (``core.policies`` module
-comment). Wire format target: ``core.model.transport``'s
+build_arm_payload`` exactly the way evidence already flows. The D2-frozen
+arms ``exemplar-context`` and ``fixed-legal-context-replay``
+(``e0.d2_leakage.ARM_VISIBLE_FIELDS``, 2026-08-13) declare an
+``exemplar_bank`` field; ``build_arm_payload`` still fails closed for every
+OTHER arm registered today (``core.policies`` module comment). Wire format
+target: ``core.model.transport``'s
 ``"evidence-first-system-v3"`` prompt order, whose tier-2 ``exemplar_bank``
 payload field is exactly a list of ``{"media_relpath": ..., "label": ...}``
 mappings (``core.model.transport._exemplar_bank_entry``).

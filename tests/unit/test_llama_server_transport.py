@@ -15,15 +15,18 @@ import sys
 import pytest
 
 from speech_aware_evidence_acquisition.contracts import STUDY_SLUG
+from speech_aware_evidence_acquisition.core.base import EvidenceItem
 from speech_aware_evidence_acquisition.core.model import (
     FrozenCoreError,
     LlamaServerTransport,
 )
+from speech_aware_evidence_acquisition.core.policies import build_arm_payload
 from speech_aware_evidence_acquisition.core.session import (
     SESSION_RECEIPT_SCHEMA,
     ModelFileRef,
     SessionReceipt,
 )
+from speech_aware_evidence_acquisition.data.loader import SampleRef
 
 # R0 repair T5 (I5): every LlamaServerTransport now requires a session receipt
 # that has already been verified against a runtime receipt. These tests are
@@ -960,6 +963,84 @@ def test_v3_delta_candidates_not_a_list_fails_closed(tmp_path):
     payload = _boundary_payload(tmp_path, delta_candidates={"text": "x"})
     with pytest.raises(FrozenCoreError, match="delta_candidates"):
         transport(json.dumps(payload).encode())
+
+
+# ---------------------------------------------------------------------------
+# New-arm resolution + payload attachment, end to end (2026-08-13): a REAL
+# D2-registered arm's own core.policies.build_arm_payload output -- not a
+# hand-built _boundary_payload -- driving the transport's own v3 tier
+# assembly, mock-transport-asserting-tier-contents style.
+# ---------------------------------------------------------------------------
+
+
+def test_exemplar_context_arm_payload_produces_correct_v3_tiers_on_the_wire(tmp_path):
+    """core.policies.build_arm_payload("exemplar-context", ...) ->
+    LlamaServerTransport's own v3 tier assembly: evidence in tier 1's
+    system text, the exemplar bank in tier 2, the target audio last -- the
+    exact same shape test_v3_exemplar_bank_appears_in_system_message_
+    after_instruction already proves for a hand-built payload, but here
+    the payload comes from the real arm-payload builder for a real,
+    D2-registered arm ("exemplar-context" -- e0.d2_leakage.
+    ARM_VISIBLE_FIELDS)."""
+
+    target = tmp_path / "media" / "5000001.mp3"
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_bytes(b"target-audio-bytes")
+    exemplar = tmp_path / "media" / "alpha.mp3"
+    exemplar.write_bytes(b"exemplar-audio-bytes")
+
+    ref = SampleRef(
+        carrier_lock_key="earnings22-original",
+        sample_id="5000001",
+        media_relpath="media/5000001.mp3",
+        audio_seconds=10.0,
+        sample_rate_hz=16000,
+    )
+    evidence = [
+        EvidenceItem(
+            evidence_id="conec/5000001",
+            source_uri="conec://earnings22/contexts/5000001.txt",
+            content="Acme Corp Q3",
+            provenance={"lock_key": "conec", "relpath": "x.txt", "sha256": "0" * 64},
+        )
+    ]
+    payload = build_arm_payload(
+        "exemplar-context",
+        ref,
+        "req-1",
+        "Transcribe the speech verbatim.",
+        {"temperature": 0, "seed": 20260803},
+        evidence=evidence,
+        exemplar_bank=[{"media_relpath": "media/alpha.mp3", "label": "alpha"}],
+    )
+
+    def fake_post(url, body):
+        parsed = json.loads(body)
+        system = parsed["messages"][0]
+        assert system["role"] == "system"
+        assert system["content"] == [
+            {"type": "text", "text": "[evidence conec/5000001] Acme Corp Q3"},
+            {"type": "text", "text": "Transcribe the speech verbatim."},
+            {"type": "text", "text": "[exemplar alpha]"},
+            {
+                "type": "input_audio",
+                "input_audio": {
+                    "data": base64.b64encode(b"exemplar-audio-bytes").decode("ascii"),
+                    "format": "mp3",
+                },
+            },
+        ]
+        user_content = parsed["messages"][1]["content"]
+        assert len(user_content) == 1
+        assert (
+            base64.b64decode(user_content[0]["input_audio"]["data"]) == b"target-audio-bytes"
+        )
+        return _canned_response()
+
+    transport = _transport(
+        _base_url(), tmp_path, post=fake_post, prompt_order="evidence-first-system-v3"
+    )
+    transport(json.dumps(payload).encode())
 
 
 # ---------------------------------------------------------------------------

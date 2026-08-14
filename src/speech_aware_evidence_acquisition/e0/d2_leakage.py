@@ -76,6 +76,66 @@ ARM_VISIBLE_FIELDS: dict[str, tuple[str, ...]] = {
         "retrieved_evidence",
         "evidence_provenance",
     ),
+    # New arms (2026-08-13), introduced rather than mutating a frozen entry
+    # above (core.policies module docstring: "the arm payload vocabulary
+    # never grows without a new D2 receipt" -- growing it means a NEW key
+    # here, never appending a field to an existing tuple, which would
+    # retroactively break every already-issued payload for that arm).
+    #
+    # "exemplar-context": fixed-legal-context's own field set plus
+    # "exemplar_bank" -- the M-C-prime static acoustic-supply arm
+    # (core.exemplars module docstring; docs/exposure-ledger.md's
+    # SAEA-SMOKE-mm2 row). Consumed by core.policies.FixedPolicy (which
+    # threads SampleContext.exemplar_bank into build_arm_payload for this
+    # arm the same way it already threads evidence) and, unchanged, by the
+    # obs-agent-loop/obs-replay-loop slice payload builders (reproduction.
+    # obs_loop already threads ctx.exemplar_bank into every slice
+    # unconditionally).
+    "exemplar-context": (
+        "request_id",
+        "carrier_lock_key",
+        "sample_id",
+        "speech_ref",
+        "media_relpath",
+        "audio_seconds",
+        "sample_rate_hz",
+        "task_instruction",
+        "history",
+        "decoding_params",
+        "supplied_evidence",
+        "evidence_provenance",
+        "exemplar_bank",
+    ),
+    # "fixed-legal-context-replay": fixed-legal-context's own field set plus
+    # "exemplar_bank" AND "delta_candidates" -- the REPLAY-scoped arm
+    # reproduction.replay_loop.ObsReplayLoopPolicy needs so its pass-2
+    # (REPLAY) requests can attach genuine retrieved/exemplar content
+    # (module docstring of that file). Evidence-bearing (unlike bare-core)
+    # so RETRIEVE has real per-sample text to draw candidates from -- see
+    # that module's own RETRIEVE section. Because core.driver.run_experiment
+    # constructs exactly ONE core.model.FrozenCoreAdapter per run, bound to
+    # this ONE arm's field set for every request the run sends, PASS 1's own
+    # slice requests (reused verbatim from reproduction.obs_loop) must
+    # ALSO satisfy this arm's frozen fields -- reproduction.obs_loop now
+    # attaches an always-empty "delta_candidates" placeholder exactly when
+    # the run's arm declares the field (its own module comment), so PASS 1
+    # is never broken by a REPLAY-only arm requirement.
+    "fixed-legal-context-replay": (
+        "request_id",
+        "carrier_lock_key",
+        "sample_id",
+        "speech_ref",
+        "media_relpath",
+        "audio_seconds",
+        "sample_rate_hz",
+        "task_instruction",
+        "history",
+        "decoding_params",
+        "supplied_evidence",
+        "evidence_provenance",
+        "exemplar_bank",
+        "delta_candidates",
+    ),
 }
 
 

@@ -1241,3 +1241,87 @@ class TestExemplarBank:
         world.run()
         assert len(world.adapter.payloads) == 2
         assert all("exemplar_bank" not in payload for payload in world.adapter.payloads)
+
+
+class TestDeltaCandidatesSeam:
+    """obs_loop's own slice payload builder (2026-08-13, reproduction.
+    replay_loop module docstring): PASS 1 has no delta candidates of its
+    own to offer (RETRIEVE is a per-flagged-span REPLAY concept), but an
+    arm whose D2-frozen field set declares "delta_candidates" requires the
+    key on EVERY request that arm sends, PASS 1's own slice requests
+    included (core.model.FrozenCoreAdapter's own allowlist demands an
+    exact key-set match). obs_loop now attaches an always-empty placeholder
+    exactly when the run's arm declares the field, and omits it
+    (byte-identical to before this fix) for every arm that does not --
+    exercised here against the REAL, D2-registered "fixed-legal-context-
+    replay" arm rather than a monkeypatched field set."""
+
+    _EVIDENCE = [
+        EvidenceItem(
+            evidence_id="conec/4000001",
+            source_uri="conec://earnings21/contexts/4000001.txt",
+            content="acme merger guidance",
+            provenance={"lock_key": "conec", "relpath": "x.txt", "sha256": "0" * 64},
+        )
+    ]
+
+    def test_an_arm_that_does_not_declare_it_never_sees_the_key(self, tmp_path, monkeypatch):
+        world = _World(
+            tmp_path,
+            monkeypatch,
+            pcm=_noise(70.0),
+            texts=[_boundary_text("One two. Three", 40), _boundary_text("Rest.", 5)],
+        )
+        world.run()
+        assert len(world.adapter.payloads) == 2
+        assert all("delta_candidates" not in payload for payload in world.adapter.payloads)
+
+    def test_an_arm_that_declares_it_gets_an_always_empty_placeholder_sequential(
+        self, tmp_path, monkeypatch
+    ):
+        import dataclasses
+
+        world = _World(
+            tmp_path,
+            monkeypatch,
+            pcm=_noise(70.0),
+            texts=[_boundary_text("One two. Three", 40), _boundary_text("Rest.", 5)],
+            evidence=self._EVIDENCE,
+            arm="fixed-legal-context-replay",
+        )
+        # "fixed-legal-context-replay" also declares "exemplar_bank" (its own
+        # field set is fixed-legal-context's plus BOTH tiers) -- an empty,
+        # non-None bank satisfies that requirement without this test caring
+        # about exemplar content (TestExemplarBank above covers that).
+        world.ctx = dataclasses.replace(world.ctx, exemplar_bank=())
+        world.run()
+        assert len(world.adapter.payloads) == 2
+        for payload in world.adapter.payloads:
+            assert payload["delta_candidates"] == []
+            assert payload["exemplar_bank"] == []
+
+    def test_an_arm_that_declares_it_gets_an_always_empty_placeholder_slice_parallel(
+        self, tmp_path, monkeypatch
+    ):
+        import dataclasses
+
+        values = _config_values(
+            obs_boundary_mode="fixed",
+            obs_condition_tail_chars=0,
+            obs_vad_trim_min_seconds=0,
+            obs_batch_slices=3,
+        )
+        world = _World(
+            tmp_path,
+            monkeypatch,
+            pcm=_noise(150.0),
+            texts=["First.", "Second.", "Third."],
+            values=values,
+            evidence=self._EVIDENCE,
+            arm="fixed-legal-context-replay",
+        )
+        world.ctx = dataclasses.replace(world.ctx, exemplar_bank=())
+        world.run()
+        assert len(world.adapter.payloads) == 3
+        for payload in world.adapter.payloads:
+            assert payload["delta_candidates"] == []

@@ -391,6 +391,7 @@ class SampleContext:
     # means core.driver.run_experiment resolved this sample's own bank and a
     # policy MAY thread it into core.policies.build_arm_payload the same way
     # `evidence` already flows -- legal only for an arm whose D2-frozen field
-    # set declares "exemplar_bank" (none does yet).
+    # set declares "exemplar_bank" ("exemplar-context" and
+    # "fixed-legal-context-replay" do, e0.d2_leakage.ARM_VISIBLE_FIELDS).
     exemplar_bank: Sequence[Mapping[str, str]] | None = None
     extras: dict[str, object] = field(default_factory=dict)

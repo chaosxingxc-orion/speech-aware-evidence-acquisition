@@ -51,7 +51,7 @@
       ]
     }
   },
-  "generated": "2026-08-04",
+  "generated": "2026-08-13",
   "negative_controls": {
     "boundary_injections": {
       "all_rejected": true,
@@ -283,6 +283,24 @@
         "decoding_params"
       ]
     },
+    "exemplar-context": {
+      "clean_payload_accepted": true,
+      "visible_fields": [
+        "request_id",
+        "carrier_lock_key",
+        "sample_id",
+        "speech_ref",
+        "media_relpath",
+        "audio_seconds",
+        "sample_rate_hz",
+        "task_instruction",
+        "history",
+        "decoding_params",
+        "supplied_evidence",
+        "evidence_provenance",
+        "exemplar_bank"
+      ]
+    },
     "fixed-legal-context": {
       "clean_payload_accepted": true,
       "visible_fields": [
@@ -298,6 +316,25 @@
         "decoding_params",
         "supplied_evidence",
         "evidence_provenance"
+      ]
+    },
+    "fixed-legal-context-replay": {
+      "clean_payload_accepted": true,
+      "visible_fields": [
+        "request_id",
+        "carrier_lock_key",
+        "sample_id",
+        "speech_ref",
+        "media_relpath",
+        "audio_seconds",
+        "sample_rate_hz",
+        "task_instruction",
+        "history",
+        "decoding_params",
+        "supplied_evidence",
+        "evidence_provenance",
+        "exemplar_bank",
+        "delta_candidates"
       ]
     },
     "fixed-retrieval": {

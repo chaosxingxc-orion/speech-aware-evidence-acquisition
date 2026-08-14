@@ -1698,7 +1698,25 @@ def test_run_experiment_resolves_exemplar_manifest_and_traces_provenance(
 
     lock, repo_root = _frozen_world(synthetic_world, tmp_path)
     _, split_hash, _ = load_split(repo_root, "discovery", lock, synthetic_world.data_root)
-    composed = _composed(prompt_order="evidence-first-system-v3", exemplar_manifest_id=manifest_id)
+    # "exemplar-context" (e0.d2_leakage.ARM_VISIBLE_FIELDS, 2026-08-13): the
+    # only arm whose D2-frozen field set declares "exemplar_bank" alongside
+    # a single-request FixedPolicy run -- required now that FixedPolicy
+    # threads SampleContext.exemplar_bank into build_arm_payload
+    # (core.policies module comment); "bare-core" would fail closed on
+    # sample 4000001's real, non-empty resolved bank (ArmError), exactly
+    # the same "an arm that cannot carry it must never silently drop it"
+    # contract tests/unit/test_obs_loop_policy.py::TestExemplarBank already
+    # exercises for the OBS loop. evidence_source="conec-contexts" is the
+    # same evidence source test_run_experiment_supplies_evidence_with_org_
+    # and_supply_traces already proves covers every one of these three
+    # discovery samples -- required because "exemplar-context" inherits
+    # fixed-legal-context's own non-empty-evidence requirement.
+    composed = _composed(
+        arm="exemplar-context",
+        evidence_source="conec-contexts",
+        prompt_order="evidence-first-system-v3",
+        exemplar_manifest_id=manifest_id,
+    )
     plan = _plan(
         split_hash,
         protocol_hash=protocol_hash(composed.config_hash, composed.values["arm"], split_hash),

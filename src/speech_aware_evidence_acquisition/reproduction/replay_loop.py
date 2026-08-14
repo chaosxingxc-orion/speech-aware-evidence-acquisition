@@ -78,11 +78,33 @@ params are the arm's own (``ctx.decoding_params``, unmodified). Built via
 ``core.policies.build_arm_payload`` (extended here with a ``delta_candidates``
 kwarg mirroring its existing ``exemplar_bank`` one) so the D2-frozen
 per-arm field-set gate applies identically to every other request this
-study ever sends -- no arm registered today declares "exemplar_bank" or
-"delta_candidates", so a REPLAY call only ever attaches a tier when there is
-actual matched content for it; an empty tier is omitted (not attached as an
-empty list) precisely so this policy remains usable against today's arms
-whenever retrieval/exemplar-matching finds nothing to attach.
+study ever sends. ``"fixed-legal-context-replay"`` (``e0.d2_leakage.
+ARM_VISIBLE_FIELDS``, 2026-08-13) is the REPLAY-scoped arm that declares
+both fields -- for that arm (or any other arm that declares them) a REPLAY
+call attaches a tier EVEN WHEN EMPTY (required, not optional, once an arm's
+D2-frozen field set names the field: ``core.model.FrozenCoreAdapter``'s own
+allowlist demands an exact key-set match on every request that arm sends).
+For every arm that does NOT declare a field, the pre-existing discipline is
+unchanged: a REPLAY call attaches a tier only when there is actual matched
+content for it, and an empty tier is omitted (not attached as an empty
+list) precisely so this policy remains usable against those arms whenever
+retrieval/exemplar-matching finds nothing to attach; real content the arm
+cannot carry still fails closed (``ArmError``).
+
+Because ``core.driver.run_experiment`` builds exactly ONE
+``core.model.FrozenCoreAdapter`` per run, bound to the run's single
+declared arm, PASS 1's own slice requests (reused verbatim from
+``reproduction.obs_loop``, module docstring above) are bound to the SAME
+arm as REPLAY and must ALSO satisfy whatever fields it declares --
+extending an EXISTING arm's frozen field set in place would have broken
+PASS 1's own calls this way (``obs_loop``'s slice payload builder never had
+a "delta candidates" concept to thread through). The resolution is a NEW
+arm rather than a mutated one, plus one small, arm-conditional addition to
+``obs_loop``'s own slice payload builder: it now attaches an always-empty
+``delta_candidates`` placeholder exactly when the run's arm declares the
+field (satisfying the exact-match requirement for a tier PASS 1 itself
+never has content for), and leaves every arm that does not declare the
+field untouched.
 
 ACCEPT (splice policy v1): reject an empty replay output, a replay output
 whose normalized text equals the flagged run's own (nothing to correct), or
@@ -136,6 +158,7 @@ from ..core.retrieval import RetrievalError, normalize_term, retrieve
 from ..core.span_surgery import SpanSurgeryError, align_words, cut_span
 from ..data.loader import SampleRef
 from ..e0.artifacts import sha256_file, write_json_artifact
+from ..e0.d2_leakage import ARM_VISIBLE_FIELDS
 from . import obs_loop
 from .obs_loop import (
     SLICE_SAMPLE_RATE_HZ,
@@ -760,10 +783,32 @@ class ObsReplayLoopPolicy:
                     ctx.exemplar_bank, [term for term, _score in retrieved]
                 )
                 delta_terms = retrieved[:TRANSPORT_DELTA_CANDIDATE_CAP]
-                delta_candidates_payload = (
-                    [{"text": term} for term, _score in delta_terms] if delta_terms else None
+                delta_candidates_content = [{"text": term} for term, _score in delta_terms]
+                # Attach a (possibly empty) tier whenever ctx.arm's D2-frozen
+                # field set declares it -- REQUIRED once declared, since
+                # core.policies.build_arm_payload demands an EXACT field-set
+                # match. The module docstring's "an empty tier is omitted"
+                # discipline applies only to an arm that does NOT declare the
+                # field; an arm that DOES declare it (e.g.
+                # "fixed-legal-context-replay") must carry the key on every
+                # request, empty-content REPLAY calls included, or the
+                # exact-match check would refuse an otherwise-legal request.
+                # An arm that does not declare the field keeps the exact
+                # pre-existing behaviour: omitted when there is nothing to
+                # attach, refused (ArmError, unchanged --
+                # see test_replay_call_refused_when_arm_does_not_declare_the_
+                # attached_tier) when there is real content it cannot carry.
+                arm_fields = ARM_VISIBLE_FIELDS[ctx.arm]
+                exemplar_payload = (
+                    matching_exemplars
+                    if (matching_exemplars or "exemplar_bank" in arm_fields)
+                    else None
                 )
-                exemplar_payload = matching_exemplars or None
+                delta_candidates_payload = (
+                    delta_candidates_content
+                    if (delta_candidates_content or "delta_candidates" in arm_fields)
+                    else None
+                )
 
                 replay_request_id = f"{ctx.request_id_base}-replay{replay_call_index:03d}"
                 replay_sample_ref = SampleRef(

@@ -592,6 +592,69 @@ class TestReplayPayloadAssembly:
         with pytest.raises(ReplayLoopError, match="delta_candidates"):
             world.run()
 
+    def test_full_pipeline_succeeds_end_to_end_with_the_real_replay_arm(
+        self, tmp_path, monkeypatch
+    ):
+        """The 'previously-impossible' fully successful run (module
+        docstring; commit b2c530e's own documented limitation): unlike
+        every test above, this one declares the REAL, D2-registered
+        "fixed-legal-context-replay" arm (e0.d2_leakage.ARM_VISIBLE_FIELDS)
+        -- no ARM_VISIBLE_FIELDS monkeypatch, and no ``_stub_pass1``. PASS 1
+        runs for real (``obs_loop``'s own slice payload builder threads an
+        always-empty ``delta_candidates`` placeholder because the arm
+        declares the field, and the real, resolved
+        ``SampleContext.exemplar_bank``) and REPLAY runs for real too,
+        attaching genuine retrieved/exemplar content on the flagged span's
+        own request -- the scenario ``_stub_pass1``'s own docstring says
+        "extending an arm's ARM_VISIBLE_FIELDS to require [delta_candidates]
+        for a successful REPLAY attachment would ALSO require every PASS 1
+        slice payload for that arm to carry the identical field, which the
+        reused, unmodified reproduction.obs_loop call site cannot do
+        without being forked" -- resolved by a NEW arm plus the obs_loop
+        seam this module's own docstring documents, rather than a fork."""
+
+        exemplar_bank = (
+            {
+                "media_relpath": "derived/exemplar-pairs/mc2-v1/4000001/acme.wav",
+                "label": "acme",
+            },
+        )
+        world = _World(
+            tmp_path,
+            monkeypatch,
+            pcm=_noise(40.0),
+            texts=["acme zzz", "corrected replay text"],
+            values=self._values(),
+            evidence=self._EVIDENCE,
+            arm="fixed-legal-context-replay",
+            exemplar_bank=exemplar_bank,
+        )
+        outcome = world.run()
+
+        assert len(world.adapter.payloads) == 2  # PASS 1's one slice + REPLAY
+        pass1_payload, replay_payload = world.adapter.payloads
+
+        # PASS 1 satisfies the arm's full frozen field set: real evidence
+        # (this arm is evidence-bearing, unlike bare-core), the real
+        # per-sample exemplar bank (obs_loop already threads
+        # ctx.exemplar_bank unconditionally), and an always-empty
+        # delta_candidates placeholder (the seam this test exists to prove).
+        assert pass1_payload["supplied_evidence"] == [self._EVIDENCE[0].runtime_view()]
+        assert pass1_payload["exemplar_bank"] == list(exemplar_bank)
+        assert pass1_payload["delta_candidates"] == []
+
+        # REPLAY attaches genuine, non-empty retrieved/exemplar content --
+        # the previously-impossible case: an arm that can actually carry it.
+        assert replay_payload["exemplar_bank"] == list(exemplar_bank)
+        assert replay_payload["delta_candidates"] == [{"text": "acme"}]
+
+        records = world.replay_records()
+        assert len(records) == 1
+        assert records[0]["replay_accepted"] is True
+        # The REPLAY correction actually lands in the final stitched text --
+        # a genuinely, fully successful run, not merely a refused payload.
+        assert outcome.text == "corrected replay text"
+
 
 # ---------------------------------------------------------------------------
 # ACCEPT: splice matrix

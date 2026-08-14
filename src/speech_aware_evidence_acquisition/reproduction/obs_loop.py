@@ -87,6 +87,7 @@ from ..core.base import SampleContext, SampleOutcome
 from ..core.model import FrozenCoreError, SliceRecord, SliceRegistry
 from ..data.loader import SampleRef
 from ..e0.artifacts import write_json_artifact
+from ..e0.d2_leakage import ARM_VISIBLE_FIELDS
 from .obs_audio import (
     accept_up_to_boundary,
     energy_vad_flags,
@@ -673,6 +674,28 @@ class ObsAgentLoopPolicy:
                     # (ctx.exemplar_bank is resolved once per sample by
                     # core.driver.run_experiment, module docstring above).
                     exemplar_bank=ctx.exemplar_bank,
+                    # obs-replay-loop's REPLAY-scoped arm (reproduction.
+                    # replay_loop module docstring, 2026-08-13): PASS 1 --
+                    # this slice-parallel pass, reused VERBATIM by
+                    # ObsReplayLoopPolicy -- never has retrieved delta
+                    # candidates of its own (RETRIEVE is a per-flagged-span
+                    # REPLAY concept). But core.driver.run_experiment builds
+                    # exactly ONE core.model.FrozenCoreAdapter per run, bound
+                    # to ctx.arm's own D2-frozen field set for EVERY request
+                    # that arm sends, PASS 1's own included -- so an arm
+                    # that declares "delta_candidates" (e.g.
+                    # "fixed-legal-context-replay") requires the key on
+                    # every one of THIS pass's requests too, or the exact
+                    # field-set match in build_arm_payload refuses a
+                    # perfectly legal PASS 1 request as readily as it would
+                    # refuse a smuggled field. An always-empty list satisfies
+                    # that requirement without claiming any candidate this
+                    # pass never retrieved; an arm that does NOT declare the
+                    # field gets None (an omitted key, byte-identical to
+                    # every arm registered before this one).
+                    delta_candidates=(
+                        [] if "delta_candidates" in ARM_VISIBLE_FIELDS[ctx.arm] else None
+                    ),
                 )
 
             try:
@@ -927,6 +950,13 @@ class ObsAgentLoopPolicy:
                     # Every slice of this sample carries the SAME bank (see
                     # the slice-parallel pass's identical comment above).
                     exemplar_bank=ctx.exemplar_bank,
+                    # obs-replay-loop's REPLAY-scoped arm: see the identical
+                    # comment on the slice-parallel pass's own _payload
+                    # above -- same requirement, same always-empty
+                    # placeholder, same arm-conditional omission.
+                    delta_candidates=(
+                        [] if "delta_candidates" in ARM_VISIBLE_FIELDS[ctx.arm] else None
+                    ),
                 )
 
             request_id, response, retry_of, saturated, skipped = request_slice_with_retry(
