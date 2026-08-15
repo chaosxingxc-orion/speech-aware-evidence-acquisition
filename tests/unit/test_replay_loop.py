@@ -348,6 +348,53 @@ class TestReplayFlagSourceConfig:
             self._cfg(replay_flag_source="entity-ner")
 
 
+class TestReplayPromptTemplateConfig:
+    """Pure config-load-time validation for the optional
+    ``replay_prompt_template`` key (module docstring's REPLAY PROMPT
+    TEMPLATING section, ``docs/readiness/2026-08-15-rectification-plan.md``
+    PHASE 2)."""
+
+    def _cfg(self, **overrides):
+        return ReplayLoopConfig.from_values(
+            {
+                "replay_trigger": "wps",
+                "replay_flag_low_threshold": -2.0,
+                "replay_flag_min_run": 1,
+                "replay_max_spans_per_slice": 3,
+                "replay_instruction": "Listen again.",
+                **overrides,
+            }
+        )
+
+    def test_absent_key_is_none(self):
+        # (a): no key at all -> None -> run_sample keeps using
+        # replay_instruction verbatim (byte-identical regression).
+        assert self._cfg().prompt_template is None
+
+    def test_both_slots_accepted(self):
+        template = "Draft: {draft_span}. Reference: {reference}."
+        assert self._cfg(replay_prompt_template=template).prompt_template == template
+
+    def test_template_with_no_slots_is_accepted(self):
+        # (e): a pure framing swap with no substitution at all is legal.
+        template = "Just listen again, carefully."
+        assert self._cfg(replay_prompt_template=template).prompt_template == template
+
+    def test_unknown_slot_fails_closed_at_config_load(self):
+        # (c): an unsupported/typo'd slot name is refused eagerly, when the
+        # config is parsed -- never deferred to REPLAY request time.
+        with pytest.raises(ReplayLoopError, match="replay_prompt_template"):
+            self._cfg(replay_prompt_template="Draft: {draft_span}. Gold: {gold_text}.")
+
+    def test_blank_template_is_rejected(self):
+        with pytest.raises(ReplayLoopError, match="replay_prompt_template"):
+            self._cfg(replay_prompt_template="   ")
+
+    def test_malformed_template_fails_closed(self):
+        with pytest.raises(ReplayLoopError, match="replay_prompt_template"):
+            self._cfg(replay_prompt_template="unterminated {draft_span")
+
+
 # ---------------------------------------------------------------------------
 # Pure helper functions
 # ---------------------------------------------------------------------------
@@ -964,6 +1011,134 @@ class TestReplayPayloadAssembly:
         assert records[0]["replay_accepted"] is True
         assert records[0]["replay_exemplars_attached"] == ["acme"]
         assert outcome.text.startswith("corrected replay")
+
+
+# ---------------------------------------------------------------------------
+# Replay prompt templating (replay_prompt_template, R-ladder prep --
+# docs/readiness/2026-08-15-rectification-plan.md PHASE 2)
+# ---------------------------------------------------------------------------
+
+
+class TestReplayPromptTemplateRendering:
+    """End-to-end (``run_sample``) coverage of the optional
+    ``replay_prompt_template`` substitution: absent-key regression, both-slot
+    rendering against the actual window's own draft/reference, the additive
+    ``replay_prompt_rendered_sha256`` trace field, and its ``None`` value on
+    the "no-candidates" skip path where no REPLAY request (and so no
+    rendering) ever happens."""
+
+    _EVIDENCE = [
+        EvidenceItem(
+            evidence_id="conec/4000001",
+            source_uri="conec://x",
+            content="acme acmeco acmetwo",
+            provenance={"lock_key": "conec", "relpath": "x.txt", "sha256": "0" * 64},
+        )
+    ]
+
+    def _values(self, **overrides):
+        return _fixed_mode_values(
+            evidence_source="conec-contexts", replay_k=5, replay_min_score=0.1, **overrides
+        )
+
+    def _run(self, tmp_path, monkeypatch, **value_overrides):
+        monkeypatch.setitem(
+            ARM_VISIBLE_FIELDS,
+            "bare-core",
+            ARM_VISIBLE_FIELDS["bare-core"] + ("delta_candidates",),
+        )
+        _stub_pass1(monkeypatch, accepted_spans=["acme zzz"], slice_records=[_fake_slice_record()])
+        world = _World(
+            tmp_path,
+            monkeypatch,
+            pcm=_noise(40.0),
+            texts=["still acme"],
+            values=self._values(**value_overrides),
+            evidence=self._EVIDENCE,
+        )
+        world.run()
+        return world
+
+    def test_absent_key_is_byte_identical_instruction(self, tmp_path, monkeypatch):
+        # (a) regression: no replay_prompt_template configured -> the REPLAY
+        # request's task_instruction is exactly replay_instruction, unchanged
+        # from today's behaviour.
+        world = self._run(tmp_path, monkeypatch)
+        instruction = self._values()["replay_instruction"]
+        replay_payload = world.adapter.payloads[0]
+        assert replay_payload["task_instruction"] == instruction
+
+        record = world.replay_records()[0]
+        assert record["replay_prompt_rendered_sha256"] == hashlib.sha256(
+            instruction.encode("utf-8")
+        ).hexdigest()
+
+    def test_template_renders_draft_span_and_reference(self, tmp_path, monkeypatch):
+        # (b): both slots substitute this window's own flagged pass-1 text
+        # and the correction content RETRIEVE actually delivered for it.
+        template = "Draft heard: {draft_span}. Candidate correction: {reference}."
+        world = self._run(tmp_path, monkeypatch, replay_prompt_template=template)
+
+        replay_payload = world.adapter.payloads[0]
+        delta_terms = [entry["text"] for entry in replay_payload["delta_candidates"]]
+        assert delta_terms  # this evidence/threshold combo always retrieves something
+
+        expected = template.format(draft_span="acme zzz", reference=" ".join(delta_terms))
+        assert replay_payload["task_instruction"] == expected
+
+        record = world.replay_records()[0]
+        assert record["replay_pass1_text"] == "acme zzz"
+        # (d): the trace hash is present and matches the deterministic hash
+        # of the actually-rendered instruction -- never the raw text itself.
+        assert record["replay_prompt_rendered_sha256"] == hashlib.sha256(
+            expected.encode("utf-8")
+        ).hexdigest()
+        assert "replay_prompt_rendered_text" not in record
+
+    def test_template_with_no_slots_is_a_pure_framing_swap(self, tmp_path, monkeypatch):
+        # (e): a template referencing neither slot just replaces the
+        # instruction text wholesale -- e.g. an R0-bias framing swap.
+        template = "R0-bias framing: transcribe exactly what you hear, unaided."
+        world = self._run(tmp_path, monkeypatch, replay_prompt_template=template)
+        replay_payload = world.adapter.payloads[0]
+        assert replay_payload["task_instruction"] == template
+
+    def test_no_candidates_skip_path_leaves_rendered_hash_none(self, tmp_path, monkeypatch):
+        # A "no-candidates" skip never builds or sends a REPLAY request
+        # (module docstring's SKIP note), so no instruction is ever
+        # rendered -- the hash field stays None, exactly like the
+        # request/response hashes it sits beside in the same record.
+        monkeypatch.setitem(
+            ARM_VISIBLE_FIELDS,
+            "bare-core",
+            ARM_VISIBLE_FIELDS["bare-core"] + ("delta_candidates",),
+        )
+        _stub_pass1(monkeypatch, accepted_spans=["acme zzz"], slice_records=[_fake_slice_record()])
+        no_match_evidence = [
+            EvidenceItem(
+                evidence_id="conec/4000001",
+                source_uri="conec://x",
+                content="acme merger guidance revenue outlook",
+                provenance={"lock_key": "conec", "relpath": "x.txt", "sha256": "0" * 64},
+            )
+        ]
+        world = _World(
+            tmp_path,
+            monkeypatch,
+            pcm=_noise(40.0),
+            texts=[],  # the REPLAY call must never be sent
+            values=_fixed_mode_values(
+                evidence_source="conec-contexts",
+                replay_prompt_template="Draft: {draft_span}.",
+            ),
+            evidence=no_match_evidence,
+        )
+        world.run()
+
+        assert world.adapter.payloads == []
+        record = world.replay_records()[0]
+        assert record["replay_reject_reason"] == "no-candidates"
+        assert record["replay_prompt_rendered_sha256"] is None
 
 
 # ---------------------------------------------------------------------------

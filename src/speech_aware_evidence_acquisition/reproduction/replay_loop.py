@@ -180,6 +180,20 @@ field (satisfying the exact-match requirement for a tier PASS 1 itself
 never has content for), and leaves every arm that does not declare the
 field untouched.
 
+REPLAY PROMPT TEMPLATING (R-ladder prep, ``docs/readiness/2026-08-15-
+rectification-plan.md`` PHASE 2 -- R0-bias/R1-verify/R2-draft each need
+different per-window content spliced into an otherwise shared framing): an
+optional ``replay_prompt_template`` config string, when present, replaces
+``replay_instruction`` as tier 1 after substituting ``{draft_span}`` (this
+window's own flagged pass-1 text) and ``{reference}`` (whatever correction
+content RETRIEVE attached for this window, empty when none) -- both slots
+optional in any given template, both newline-stripped before substitution,
+unknown slot names refused at config load (never at request time). Absent
+the key, behaviour is byte-identical to today; the rendered instruction is
+never traced verbatim, only its ``replay_prompt_rendered_sha256`` hash
+(this module's existing hash-not-raw-text discipline). PASS 1's own task
+instruction is untouched either way.
+
 ACCEPT (splice policy v2, DEFECT 1 fix -- first hit SAEA-MM3-replay
 2026-08-14): the REPLAY request transcribes the WHOLE replay window
 (``replay_context_s`` seconds either side of the flagged span, LOCATE
@@ -300,8 +314,15 @@ _KNOWN_REPLAY_KEYS = frozenset(
         "replay_min_score",
         "replay_instruction",
         "replay_len_ratio_max",
+        "replay_prompt_template",
     }
 )
+
+# REPLAY PROMPT TEMPLATING (module docstring's own section): the only two
+# slot names `replay_prompt_template` may reference -- anything else fails
+# closed at config load (ReplayLoopConfig.from_values), never at request
+# time.
+_REPLAY_PROMPT_SLOTS = frozenset({"draft_span", "reference"})
 
 
 class ReplayLoopError(RuntimeError):
@@ -314,6 +335,33 @@ def _finite_number(values: Mapping[str, object], key: str, *, default: object = 
     if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value):
         raise ReplayLoopError(f"config {key} must be a finite number, got {value!r}")
     return float(value)
+
+
+def _validate_replay_prompt_template(template: str) -> None:
+    """Fail-closed at config-load time, never at request time (module
+    docstring's REPLAY PROMPT TEMPLATING section): every ``{...}`` field
+    name in ``template`` must be one of :data:`_REPLAY_PROMPT_SLOTS` --
+    a typo here would otherwise only surface as a ``KeyError`` deep inside
+    a REPLAY request, well after the config was already accepted."""
+
+    import string
+
+    try:
+        field_names = {
+            field_name
+            for _, field_name, _, _ in string.Formatter().parse(template)
+            if field_name is not None
+        }
+    except ValueError as error:
+        raise ReplayLoopError(
+            f"config replay_prompt_template is not a valid template: {error}"
+        ) from error
+    unknown = sorted(field_names - _REPLAY_PROMPT_SLOTS)
+    if unknown:
+        raise ReplayLoopError(
+            f"config replay_prompt_template references unknown slot(s) {unknown}; "
+            f"known slots: {sorted(_REPLAY_PROMPT_SLOTS)}"
+        )
 
 
 @dataclass(frozen=True)
@@ -336,6 +384,7 @@ class ReplayLoopConfig:
     min_score: float
     instruction: str
     len_ratio_max: float
+    prompt_template: str | None
 
     @classmethod
     def from_values(cls, values: Mapping[str, object]) -> "ReplayLoopConfig":
@@ -456,6 +505,20 @@ class ReplayLoopConfig:
                 f"config replay_len_ratio_max must be a finite number > 0, got {len_ratio_max!r}"
             )
 
+        # Optional (module docstring's REPLAY PROMPT TEMPLATING section):
+        # absent key -> None -> byte-identical behaviour (REPLAY keeps using
+        # `instruction` unmodified). When present, validated eagerly here
+        # (fail closed on an unknown slot at config load, never at request
+        # time) rather than deferred to first substitution.
+        prompt_template = values.get("replay_prompt_template")
+        if prompt_template is not None:
+            if not isinstance(prompt_template, str) or not prompt_template.strip():
+                raise ReplayLoopError(
+                    "config replay_prompt_template must be a non-empty string when "
+                    f"present, got {prompt_template!r}"
+                )
+            _validate_replay_prompt_template(prompt_template)
+
         return cls(
             logprobs=logprobs,
             flag_low_threshold=flag_low_threshold,
@@ -469,6 +532,7 @@ class ReplayLoopConfig:
             min_score=float(min_score),
             instruction=str(instruction),
             len_ratio_max=float(len_ratio_max),
+            prompt_template=str(prompt_template) if prompt_template is not None else None,
         )
 
 
@@ -754,6 +818,36 @@ def _matching_exemplars(
         if isinstance(label, str) and normalize_term(label) in normalized_retrieved:
             matches.append(dict(pair))
     return matches
+
+
+def _sanitize_replay_prompt_slot(value: str) -> str:
+    """Minimal slot sanitization for ``replay_prompt_template`` substitution
+    (module docstring's REPLAY PROMPT TEMPLATING section): strip newlines to
+    spaces so a multi-line draft/reference can never fracture the rendered
+    instruction's own line structure. No other normalization -- the
+    template owns everything else about the final instruction's shape."""
+
+    return value.replace("\r\n", " ").replace("\r", " ").replace("\n", " ")
+
+
+def _render_replay_instruction(
+    template: str | None, base_instruction: str, draft_span: str, reference: str
+) -> str:
+    """The REPLAY request's tier-1 task instruction (module docstring's
+    REPLAY PROMPT TEMPLATING section): byte-identical to ``base_instruction``
+    when no template is configured (``template is None`` -- the regression
+    contract), else ``template`` with ``{draft_span}``/``{reference}``
+    substituted (either or both may be absent from a given template; a
+    template with neither is a pure framing swap). Slot validity is already
+    guaranteed by :func:`_validate_replay_prompt_template` at config-load
+    time, so this never raises."""
+
+    if template is None:
+        return base_instruction
+    return template.format(
+        draft_span=_sanitize_replay_prompt_slot(draft_span),
+        reference=_sanitize_replay_prompt_slot(reference),
+    )
 
 
 def _cut_replay_window(
@@ -1069,6 +1163,11 @@ class ObsReplayLoopPolicy:
                         "replay_flag_source": replay_cfg.flag_source,
                         "replay_flag_matched_candidate": band_flag.candidate if band_flag else None,
                         "replay_flag_distance": band_flag.distance if band_flag else None,
+                        # No REPLAY request was ever built for a skipped span
+                        # (module docstring's SKIP note) -- no instruction was
+                        # ever rendered either, so this stays None exactly
+                        # like the request/response hashes above.
+                        "replay_prompt_rendered_sha256": None,
                     }
                     ctx.sink.emit("REPLAY", f"{replay_request_id}/replay", window_record)
                     replay_window_records.append(window_record)
@@ -1144,6 +1243,29 @@ class ObsReplayLoopPolicy:
                     else None
                 )
 
+                # REPLAY PROMPT TEMPLATING (module docstring's own section):
+                # `{reference}` is whatever correction content RETRIEVE
+                # attached for THIS window -- the top delivered delta-term
+                # text(s) plus any matched exemplar labels, in that order --
+                # empty when the arm delivers none. This mirrors the CONTENT
+                # (`delta_terms`/`matching_exemplars`), not the arm-gated
+                # payload above, since a template render never itself raises
+                # ArmError.
+                reference_parts = [term for term, _score in delta_terms]
+                for pair in matching_exemplars:
+                    label = pair.get("label")
+                    if isinstance(label, str) and label:
+                        reference_parts.append(label)
+                rendered_instruction = _render_replay_instruction(
+                    replay_cfg.prompt_template,
+                    replay_cfg.instruction,
+                    flagged_text,
+                    " ".join(reference_parts),
+                )
+                rendered_instruction_sha256 = hashlib.sha256(
+                    rendered_instruction.encode("utf-8")
+                ).hexdigest()
+
                 replay_sample_ref = SampleRef(
                     carrier_lock_key=sample.carrier_lock_key,
                     sample_id=sample.sample_id,
@@ -1165,7 +1287,7 @@ class ObsReplayLoopPolicy:
                         ctx.arm,
                         replay_sample_ref,
                         replay_request_id,
-                        replay_cfg.instruction,
+                        rendered_instruction,
                         replay_decoding,
                         evidence=evidence,
                         retrieval_query=ctx.retrieval_query,
@@ -1271,6 +1393,7 @@ class ObsReplayLoopPolicy:
                     "replay_flag_source": replay_cfg.flag_source,
                     "replay_flag_matched_candidate": band_flag.candidate if band_flag else None,
                     "replay_flag_distance": band_flag.distance if band_flag else None,
+                    "replay_prompt_rendered_sha256": rendered_instruction_sha256,
                 }
                 ctx.sink.emit("REPLAY", f"{replay_request_id}/replay", window_record)
                 replay_window_records.append(window_record)
