@@ -73,10 +73,57 @@ Sonnet=scoped code.
 - I3 Ops facts archived: manifests write twice (scores null then rewritten ~2min later);
   wrapper logs are 0 bytes until final summary — liveness = artifact growth + process list.
 
-## Sequence
+## Sequence — SUPERSEDED by the adversarial-review amendment below
 
-NOW (parallel): R1, R4 (both in flight) + D5 dispatch.
-D5 lands -> D3+D4 registration -> GPU campaign resumes (reflection ladder + ConEC full chain).
-R4 lands -> T1 registrations (SLURP needs the owner's one-line boundary confirmation).
-Extended survey lands -> T2 decision session with the owner.
-I1/I2 take effect from the next campaign.
+~~D5 lands -> D3+D4 registration -> GPU campaign resumes.~~
+
+## AMENDMENT (2026-08-15, adversarial review wf_c21a2756: SOUND-WITH-AMENDMENTS,
+## 20 findings -> 5 surviving incl. 3 critical; full synthesis in the workflow output)
+
+Status updates: R1 DONE (umbrella 6a42d1d, 92 papers, ledger 1642 rows); R4 DONE (umbrella
+be337c5, 6 assets); D5 DONE (872c114); D2 DONE incl. the review's per-arm provenance schema
+(2026-08-15-legality-doctrine.md); lever-(iv) hijack fix ALREADY LANDED at e6ac359 — D6
+discharge = citing it (or omitting exemplar_bank from the arm's D2 field set) in every
+splice-delivery registration.
+
+- PHASE 0 (now): D2 doctrine+schema [done]; D6 discharge citation rule [active]; I2 gains
+  the assertion: no splice-delivery arm threads a non-empty exemplar_bank into pass-1.
+- PHASE 1 (<=16-request probes): D7 (NEW, gates D4) — end-to-end delivery probe through
+  production obs-replay-loop with the D5 flag source; pass criteria on TRACE COUNTERS only:
+  acceptance>0 with the reference verifiably in the delivered payload; delivered-reference-
+  on-true-error fraction >= 0.15. Below floor -> re-tune band/K before any campaign. D4
+  prompt free-axis probes (draft slot / provenance wording / top-1-vs-k / R0-bias framing
+  wording) registered as shape screens with a no-directional-inference clause. Optional
+  fast-3 smoke: mechanical go/no-go only, no-WER-inference clause.
+- PHASE 2 (GPU night block, frozen ten n=10, ~7-9h, detached launch): the D4 ceiling block
+  vs N10 anchors — arms R0-bias (span-scoped static bias, byte-identical reference, no
+  verify framing), R1 (reference + verify-with-abstention), R2-ceiling (+ gold-aligned own
+  errored draft), wrong-reference controls under BOTH framings. Co-primary paired Wilcoxon
+  on macro AND entity ledgers; HER + recoverable-information ratio + wrong-reference copy
+  counts; format-normalized secondary. PRE-REGISTERED BRANCH RULES: operator AFFIRMED iff
+  (R2-R1>0) or (R1 beats R0-bias at matched entity gain with lower HER) or (copy rate
+  materially lower under verify framing); taxonomy COLLAPSE iff R1~R0-bias on both ledgers
+  and HER and R2~R1 — then the scope amendments are re-amended and the candidate keeps the
+  targeting/small-N wording with no "different operator" language. Fast-3 B/C anchors are
+  permanently disallowed for aggregate reads.
+- PHASE 3 (D3 ConEC, after registered NON-GOLD casing source): oracle-flag-routing recall
+  gate FIRST (if oracle routing converts but S1 forfeits most of it, invest in the flag,
+  not the KB); construction ladder raw-lowercase/casing-recovered/oracle-cased; consumption
+  ceiling = the Phase 2 block; then the legal-tier full chain vs zero/metadata anchors with
+  per-layer recovered fractions. Casing sources (legal): metadata fields, pinned issuer
+  documents, or the core's own truecasing; gold/oracle recasing is a gold derivative.
+- PHASE 4 (independent, GPU gaps): T1-SLURP first (owner-go recorded; full n + read
+  pre-registration, not the one-liner); SlideASR after receipt verification; SLUE-SQA-5
+  deleted-pairs arm HELD pending a restoration-feasibility re-check; Audio2Tool probe:
+  roster factor WITHIN-ITEM paired per query, query-level clustering (2.16
+  renditions/query pseudo-replication guard), {clean,noisy} axis dropped until a noise
+  source exists, NC-license + probe-scoped-claim firewall carried into the registration.
+  T3 rebuttal re-anchored honestly: p=.027 is the ORACLE rung; the legal rung (12.09,
+  n.s.) is currently CONSISTENT with ProfASR — the rebuttal is real speech + held-out
+  discipline + the coverage decomposition, not the p-value.
+
+MUST-NOT-FLY (explicit blocks): any R-ladder GPU arm until D6-cited + D7-passed + amended
+registration committed; any splice-delivery arm without D6 citation; R2-legal / D3 full
+chain until D7 + legal casing source, and no scaling past n=10 until the oracle-routing
+gate shows S1 retains a usable fraction; SLUE-SQA-5 restoration until feasibility
+re-check; Audio2Tool noisy cells until a noise path is registered.
