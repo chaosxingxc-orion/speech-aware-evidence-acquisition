@@ -1,0 +1,10 @@
+# SAEA-D7C-delivery — the delivery-gate THIRD probe, after the TRUE root
+# cause landed (D7B operator finding, ledger e8b21c2): pack_candidates now
+# consumes derived-candidates and an empty pool FAILS CLOSED (fix dbf139a
+# cited in the row). Same vehicle as D7B (bare pass-1 via
+# replay_pass1_evidence=suppressed, word-granularity roster-band). Same
+# trace-counter pass criteria, no WER inference. Empirical prior: matcher
+# fires at d=0.083-0.143 on Franz/Reedy/Phoenix-class errors when fed
+# this exact pool.
+# run_id:baseline_fragment
+SAEA-D7C-delivery:d7c-delivery8-buf90
