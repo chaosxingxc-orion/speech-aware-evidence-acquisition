@@ -22,7 +22,7 @@ candidate，不是完成论文。当前唯一自包含有效合同：伞仓
 入场序列：伞仓
 `docs/superpowers/specs/2026-08-02-speech-aware-evidence-acquisition-stage2a-entry.md`。
 2026-08-15 owner amendment(伞仓
-`wiki/experiments/speech-aware-evidence-acquisition/2026-08-15-owner-amendment-dual-track-agentic.md`):
+`wiki/experiments/speech-aware-evidence-acquisition/2026-08-15-owner-go-dual-track-agentic.md`):
 Audio2Tool 单次有界杠杆探针获准(probe-scoped,claim surface 不变);SLURP slot-SLU 经实体条款入场。
 执行 profile 只接受 `model-free-check` / `baseline-reproduction` / `bounded-discovery-probe`
 （`contracts.assert_execution_scope`，fail-closed）；模型触达必须携带结构化
