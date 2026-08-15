@@ -118,6 +118,15 @@ instead of flying that silent zero-flag pass -- except a derived-candidates
 file that genuinely has zero non-blank lines, which is allowed and recorded
 on the replay-derivation artifact (``replay_pack_terms_empty_note``).
 
+Guard 1, SCORE-stage min-score floor (D7D fix, ``docs/exposure-ledger.md``'s
+SAEA-D7D-delivery consumption note, 2026-08-15): under ``"roster-band"``,
+``replay_flag_min_score`` (default 0.15, only legal in this mode) drops any
+span whose SCORE-stage ``band_centrality * rarity`` lands below the floor
+before it is ever flagged -- measured live: near-zero sub-token band matches
+(score 0.0-0.034) were issuing full REPLAY calls with nothing worth
+correcting. Recorded on the replay-derivation artifact
+(``replay_flag_min_score``, ``None`` outside roster-band mode).
+
 LOCATE: for each flagged span, ``core.span_surgery.align_words`` aligns the
 SLICE's OWN full pass-1 transcript against the SLICE's OWN wav (a genuine
 tool-model touch this module does not itself gate -- see that function's own
@@ -259,10 +268,25 @@ the length-ratio operand. Reject reasons, in order: an empty replay output
 (``"empty-replay-output"``); a non-empty replay output with nothing
 localizeable inside the flagged interval, including an alignment failure
 (``"no-overlap-words"``); a localized run whose normalized text equals the
-flagged run's own (nothing to correct, ``"replay-text-unchanged"``); one
-exceeding ``replay_len_ratio_max`` times the flagged run's word count
-(``"length-ratio-exceeded"``). Otherwise splice the localized words into the
-slice's own word sequence in place of the flagged run. Multiple accepted
+flagged run's own (nothing to correct, ``"replay-text-unchanged"``); a
+localized run whose normalized text equals the delivered reference text,
+including a trivial punctuation variant (nothing beyond the supplied hint,
+``"reference-echo"``, Guard 2 below); one exceeding ``replay_len_ratio_max``
+times the flagged run's word count (``"length-ratio-exceeded"``); a
+localized run containing a delivered-reference word with no fuzzy support
+(``core.flag_sources.weighted_grapheme_distance``, band ``BAND_HIGH``) in the
+flagged run itself (``"splice-unsupported-reference"``, Guard 3 below).
+Otherwise splice the localized words into the slice's own word sequence in
+place of the flagged run.
+
+Guards 2/3 (D7D fix, ``docs/exposure-ledger.md``'s SAEA-D7D-delivery
+consumption note, 2026-08-15): measured live, 14/115 replay outputs were
+ONLY the delivered reference string (some accepted and spliced,
+:func:`_reference_echo_reject`), and mislocalized splices injected roster
+words -- including metadata typo forms -- into unrelated filler (e.g. "we'll
+be right Bistricer Micheal with you", :func:`_unsupported_reference_word`).
+A word the model produced on its own re-hearing, not sourced from the
+delivered reference, is never blocked by Guard 3. Multiple accepted
 spans in one slice are applied in one left-to-right reconstruction pass
 (spans are non-overlapping, ascending-start, per
 ``core.replay_signals.flag_spans``' own contract). A span RETRIEVE already
@@ -312,7 +336,12 @@ from typing import Mapping, Sequence
 from ..core.base import SampleContext, SampleOutcome
 from ..core.candidate_materializer import MaterializeError, pack_candidates
 from ..core.evidence import derived_candidates_file_relpath, resolve_evidence_materialization_id
-from ..core.flag_sources import RosterBandFlag, roster_band_flags
+from ..core.flag_sources import (
+    BAND_HIGH,
+    RosterBandFlag,
+    roster_band_flags,
+    weighted_grapheme_distance,
+)
 from ..core.model import FrozenCoreError, SliceRecord, SliceRegistry
 from ..core.replay_signals import (
     ReplaySignalsError,
@@ -354,6 +383,7 @@ _KNOWN_REPLAY_KEYS = frozenset(
         "replay_max_spans_per_slice",
         "replay_trigger",
         "replay_flag_source",
+        "replay_flag_min_score",
         "replay_span_pad_s",
         "replay_context_s",
         "replay_k",
@@ -431,6 +461,7 @@ class ReplayLoopConfig:
     max_spans_per_slice: int
     trigger: str
     flag_source: str
+    flag_min_score: float
     span_pad_s: float
     context_s: float
     k: int
@@ -472,6 +503,30 @@ class ReplayLoopConfig:
         if flag_source not in _FLAG_SOURCES:
             raise ReplayLoopError(
                 f"config replay_flag_source must be one of {_FLAG_SOURCES}, got {flag_source!r}"
+            )
+
+        # Guard 1 (D7D fix, ``docs/exposure-ledger.md``'s SAEA-D7D-delivery
+        # consumption note, 2026-08-15; core.flag_sources.roster_band_flags'
+        # own ``min_score`` docstring): only legal under
+        # replay_flag_source="roster-band" -- a stray key left over from a
+        # copy-pasted logprob-mode fragment would otherwise silently do
+        # nothing, the same key-legality discipline
+        # core.evidence.assert_evidence_materialization_id_legal already
+        # applies to its own source-scoped key.
+        flag_min_score = values.get("replay_flag_min_score", 0.15)
+        if (
+            isinstance(flag_min_score, bool)
+            or not isinstance(flag_min_score, (int, float))
+            or not (0.0 <= float(flag_min_score) <= 1.0)
+        ):
+            raise ReplayLoopError(
+                f"config replay_flag_min_score must be a number in [0, 1], got "
+                f"{flag_min_score!r}"
+            )
+        if flag_source != "roster-band" and "replay_flag_min_score" in values:
+            raise ReplayLoopError(
+                "config replay_flag_min_score is only legal with "
+                f"replay_flag_source='roster-band', got replay_flag_source={flag_source!r}"
             )
 
         # No baked-in default for the logprob threshold/run-length (core.
@@ -592,6 +647,7 @@ class ReplayLoopConfig:
             max_spans_per_slice=max_spans_per_slice,
             trigger=str(trigger),
             flag_source=str(flag_source),
+            flag_min_score=float(flag_min_score),
             span_pad_s=float(span_pad_s),
             context_s=float(context_s),
             k=k,
@@ -777,7 +833,11 @@ def _flag_spans_for_slice_roster_band(
 
     ``df`` (D7C fix, module docstring's D7C paragraph): the whole-SAMPLE
     pass-1 draft word-count table, threaded straight through to
-    ``roster_band_flags`` -- see that function's own docstring."""
+    ``roster_band_flags`` -- see that function's own docstring.
+
+    Guard 1 (D7D fix, module docstring): ``cfg.flag_min_score`` is threaded
+    straight through to ``roster_band_flags``'s own ``min_score`` -- see
+    that function's own docstring."""
 
     labels: dict[tuple[int, int], set[str]] = {}
     detail: dict[tuple[int, int], RosterBandFlag] = {}
@@ -786,7 +846,9 @@ def _flag_spans_for_slice_roster_band(
         if is_catastrophic(wps):
             labels.setdefault((0, len(words)), set()).add("wps")
     if cfg.trigger in ("logprob", "both") and words and candidate_terms:
-        for flag in roster_band_flags(words, candidate_terms, cfg.max_spans_per_slice, df=df):
+        for flag in roster_band_flags(
+            words, candidate_terms, cfg.max_spans_per_slice, df=df, min_score=cfg.flag_min_score
+        ):
             labels.setdefault(flag.span, set()).add("roster-band")
             detail[flag.span] = flag
     ordered = sorted(labels)[: cfg.max_spans_per_slice]
@@ -941,6 +1003,63 @@ def _localize_replay_words(
         if lo <= midpoint <= hi:
             selected.append(str(entry["word"]))
     return selected
+
+
+def _reference_echo_reject(localized_text: str, reference_text: str) -> bool:
+    """Guard 2 (D7D fix, ``docs/exposure-ledger.md``'s SAEA-D7D-delivery
+    consumption note, 2026-08-15, module docstring's ACCEPT section): True
+    when ``localized_text``, normalized the same way the judge already
+    normalizes the flagged run (``core.retrieval.normalize_term``), equals
+    the delivered ``reference_text`` -- a trivial punctuation-only variant
+    included for free, since ``normalize_term`` already strips punctuation
+    entirely regardless of position. ``reference_text`` empty (nothing was
+    delivered) never triggers this guard -- nothing was echoed."""
+
+    if not reference_text:
+        return False
+    return normalize_term(localized_text) == normalize_term(reference_text)
+
+
+def _unsupported_reference_word(
+    localized_words: Sequence[str],
+    reference_text: str,
+    flagged_words: Sequence[str],
+) -> str | None:
+    """Guard 3 (D7D fix, ``docs/exposure-ledger.md``'s SAEA-D7D-delivery
+    consumption note, 2026-08-15, module docstring's ACCEPT section): the
+    first ``localized_words`` entry (input order) that (i) normalizes to a
+    word appearing in the delivered ``reference_text`` and (ii) has NO word
+    of the flagged span itself (``flagged_words`` -- the ORIGINAL pass-1
+    text this window replaces, not the whole slice) within
+    ``core.flag_sources.BAND_HIGH`` weighted-grapheme distance, i.e. no
+    fuzzy support for having actually been said. A localized word the model
+    produced on its own re-hearing (not one of the reference's own words) is
+    never checked -- this guard only distrusts a splice where the sole
+    reason a roster word appears is that it was handed to the model as a
+    hint, unsupported by anything pass-1 itself heard (measured: mislocalized
+    splices injecting roster words, including metadata typo forms, into
+    unrelated filler). ``None`` when every localized word either is not a
+    reference word or has support, or when ``reference_text`` is empty."""
+
+    reference_words = set(normalize_term(reference_text).split()) if reference_text else set()
+    if not reference_words:
+        return None
+    flagged_normalized = [
+        normalized for word in flagged_words if (normalized := normalize_term(word))
+    ]
+    for word in localized_words:
+        normalized_word = normalize_term(word)
+        if not normalized_word or normalized_word not in reference_words:
+            continue
+        if not flagged_normalized:
+            return normalized_word
+        min_distance = min(
+            weighted_grapheme_distance(normalized_word, flagged_word)
+            for flagged_word in flagged_normalized
+        )
+        if min_distance > BAND_HIGH:
+            return normalized_word
+    return None
 
 
 def _matching_exemplars(
@@ -1493,11 +1612,17 @@ class ObsReplayLoopPolicy:
                     label = pair.get("label")
                     if isinstance(label, str) and label:
                         reference_parts.append(label)
+                # Guards 2/3 (D7D fix, module docstring's ACCEPT section)
+                # reuse this SAME delivered-reference text below -- the
+                # ACCEPT stage's "what was this window handed as a hint"
+                # is, by construction, identical to the prompt-template
+                # `{reference}` slot's own content.
+                reference_text = " ".join(reference_parts)
                 rendered_instruction = _render_replay_instruction(
                     replay_cfg.prompt_template,
                     replay_cfg.instruction,
                     flagged_text,
-                    " ".join(reference_parts),
+                    reference_text,
                 )
                 rendered_instruction_sha256 = hashlib.sha256(
                     rendered_instruction.encode("utf-8")
@@ -1587,10 +1712,29 @@ class ObsReplayLoopPolicy:
                         localized_text = " ".join(localized_words)
                         if normalize_term(localized_text) == flagged_normalized:
                             reject_reason = "replay-text-unchanged"
+                        elif _reference_echo_reject(localized_text, reference_text):
+                            # Guard 2 (D7D fix, module docstring's ACCEPT
+                            # section): measured 14/115 replay outputs were
+                            # ONLY the delivered reference string, some
+                            # accepted and spliced -- reject before ever
+                            # reaching the length-ratio/splice checks below.
+                            reject_reason = "reference-echo"
                         elif len(localized_words) > replay_cfg.len_ratio_max * max(
                             1, len(flagged_words)
                         ):
                             reject_reason = "length-ratio-exceeded"
+                        elif (
+                            _unsupported_reference_word(
+                                localized_words, reference_text, flagged_words
+                            )
+                            is not None
+                        ):
+                            # Guard 3 (D7D fix, module docstring's ACCEPT
+                            # section): a delivered-reference word with no
+                            # fuzzy support in the flagged span itself never
+                            # splices, however well everything else checks
+                            # out.
+                            reject_reason = "splice-unsupported-reference"
                         else:
                             accepted = True
 
@@ -1681,6 +1825,13 @@ class ObsReplayLoopPolicy:
                 # recorded here (trace-visible) rather than silently
                 # discarded; `None` for every other run, unchanged.
                 "replay_pack_terms_empty_note": pack_terms_empty_note,
+                # Guard 1 (D7D fix, module docstring): the SCORE-stage floor
+                # actually in force for this run -- None outside roster-band
+                # mode, where the key is never legal (ReplayLoopConfig.
+                # from_values).
+                "replay_flag_min_score": (
+                    replay_cfg.flag_min_score if replay_cfg.flag_source == "roster-band" else None
+                ),
                 "replay_windows": replay_window_records,
             },
         )

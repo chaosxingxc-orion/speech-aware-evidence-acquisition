@@ -30,7 +30,9 @@ from speech_aware_evidence_acquisition.reproduction.replay_loop import (
     _flag_spans_for_slice,
     _localize_replay_words,
     _matching_exemplars,
+    _reference_echo_reject,
     _resolve_original_cased_term,
+    _unsupported_reference_word,
     _word_logprob_scores,
 )
 
@@ -316,6 +318,9 @@ class TestReplayLoopConfigDefaults:
         # (d) D5: "logprob" is the untouched default -- every pre-existing
         # config that never sets replay_flag_source keeps this value.
         assert cfg.flag_source == "logprob"
+        # Guard 1 (D7D fix): the SCORE-stage floor default, unused outside
+        # roster-band mode but still resolved to a value.
+        assert cfg.flag_min_score == 0.15
 
 
 class TestReplayFlagSourceConfig:
@@ -347,6 +352,51 @@ class TestReplayFlagSourceConfig:
     def test_unknown_value_fails_closed(self):
         with pytest.raises(ReplayLoopError, match="replay_flag_source"):
             self._cfg(replay_flag_source="entity-ner")
+
+
+class TestReplayFlagMinScoreConfig:
+    """Guard 1 (D7D fix, ``docs/exposure-ledger.md``'s SAEA-D7D-delivery
+    consumption note, 2026-08-15): ``replay_flag_min_score`` defaults to
+    0.15, accepts any finite number in [0, 1], and is only legal alongside
+    ``replay_flag_source="roster-band"`` -- the same source-scoped
+    key-legality discipline ``core.evidence.
+    assert_evidence_materialization_id_legal`` already applies to its own
+    key."""
+
+    def _cfg(self, **overrides):
+        return ReplayLoopConfig.from_values(
+            {
+                "replay_trigger": "logprob",
+                "replay_flag_low_threshold": -1.5,
+                "replay_flag_min_run": 1,
+                "replay_max_spans_per_slice": 2,
+                "replay_instruction": "Listen again.",
+                "replay_flag_source": "roster-band",
+                **overrides,
+            }
+        )
+
+    def test_default_is_point_one_five(self):
+        assert self._cfg().flag_min_score == 0.15
+
+    def test_explicit_value_in_range_is_accepted(self):
+        assert self._cfg(replay_flag_min_score=0.2).flag_min_score == 0.2
+
+    @pytest.mark.parametrize("bad", [-0.1, 1.1, "0.2", True, False, float("nan")])
+    def test_out_of_range_or_non_numeric_fails_closed(self, bad):
+        with pytest.raises(ReplayLoopError, match="replay_flag_min_score"):
+            self._cfg(replay_flag_min_score=bad)
+
+    def test_illegal_outside_roster_band_mode(self):
+        with pytest.raises(ReplayLoopError, match="replay_flag_min_score"):
+            self._cfg(replay_flag_source="logprob", replay_flag_min_score=0.2)
+
+    def test_default_applies_untouched_outside_roster_band_mode_when_absent(self):
+        # No explicit key at all under logprob mode: the default (0.15)
+        # still resolves without raising -- only an EXPLICIT key under a
+        # non-roster-band mode is illegal.
+        cfg = self._cfg(replay_flag_source="logprob")
+        assert cfg.flag_min_score == 0.15
 
 
 class TestReplayPass1EvidenceConfig:
@@ -620,6 +670,104 @@ class TestLocalizeReplayWords:
 
     def test_empty_input_returns_empty_list(self):
         assert _localize_replay_words([], (0.0, 10.0)) == []
+
+
+class TestReferenceEchoReject:
+    """Guard 2 (D7D fix, ``docs/exposure-ledger.md``'s SAEA-D7D-delivery
+    consumption note, 2026-08-15): a localized run that is ONLY the
+    delivered reference text is rejected -- measured live, 14/115 replay
+    outputs were exactly this shape, some accepted and spliced."""
+
+    def test_exact_match_is_an_echo(self):
+        assert _reference_echo_reject("Aldeyra", "Aldeyra") is True
+
+    def test_trailing_punctuation_variant_is_still_an_echo(self):
+        # normalize_term strips punctuation entirely (replaced with a
+        # space) regardless of position, so this is covered "for free" by
+        # the same normalization the judge already applies.
+        assert _reference_echo_reject("Aldeyra.", "Aldeyra") is True
+        assert _reference_echo_reject("Aldeyra,", "Aldeyra") is True
+
+    def test_case_only_difference_is_still_an_echo(self):
+        assert _reference_echo_reject("ALDEYRA", "aldeyra") is True
+
+    def test_multi_word_reference_exact_match_is_an_echo(self):
+        assert _reference_echo_reject("Michael Frenz", "Michael Frenz") is True
+
+    def test_reference_plus_real_content_is_not_an_echo(self):
+        # Out of scope (module docstring's own note): a reference-PREFIXED
+        # output that also carries real content stays a candidate for
+        # acceptance -- this guard only catches the bare echo.
+        assert _reference_echo_reject("Aldeyra is correct", "Aldeyra") is False
+
+    def test_reordered_words_are_not_treated_as_an_echo(self):
+        # Literal normalized-text equality, not a word-set comparison --
+        # documents the guard's actual (narrower) scope.
+        assert _reference_echo_reject("Frenz Michael", "Michael Frenz") is False
+
+    def test_empty_reference_never_triggers_the_guard(self):
+        # Nothing was delivered, so nothing can have been echoed.
+        assert _reference_echo_reject("Aldeyra", "") is False
+        assert _reference_echo_reject("", "") is False
+
+
+class TestUnsupportedReferenceWord:
+    """Guard 3 (D7D fix, ``docs/exposure-ledger.md``'s SAEA-D7D-delivery
+    consumption note, 2026-08-15): a localized replacement word sourced from
+    the delivered reference, with no fuzzy support (weighted-grapheme
+    distance <= ``core.flag_sources.BAND_HIGH``) in the flagged span's own
+    pass-1 text, blocks the splice -- measured live: mislocalized splices
+    injected roster words, including metadata typo forms, into unrelated
+    filler."""
+
+    def test_unsupported_reference_word_is_flagged(self):
+        # "aldeyra" is nowhere near either flagged word ("acme"/"zzz") --
+        # the model produced it only because it was handed the hint.
+        result = _unsupported_reference_word(
+            ["we", "heard", "Aldeyra", "clearly"], "Aldeyra", ["acme", "zzz"]
+        )
+        assert result == "aldeyra"
+
+    def test_supported_reference_word_is_not_flagged(self):
+        # The "Frends." -> "Michael Frenz" shape (docs/exposure-ledger.md's
+        # SAEA-D7D-delivery consumption note: "one genuine repair landed"):
+        # both delivered reference words have fuzzy support in the flagged
+        # span's own corrupted forms.
+        result = _unsupported_reference_word(
+            ["Michael", "Frenz", "was", "here"], "Michael Frenz", ["Micheal", "Frentz"]
+        )
+        assert result is None
+
+    def test_first_unsupported_reference_word_wins_in_input_order(self):
+        # "michael" has support (vs "Micheal"); "bistricer" does not --
+        # only the unsupported one is reported, regardless of scan order.
+        assert (
+            _unsupported_reference_word(
+                ["Bistricer", "Michael"], "Michael Bistricer", ["Micheal"]
+            )
+            == "bistricer"
+        )
+        assert (
+            _unsupported_reference_word(
+                ["Michael", "Bistricer"], "Michael Bistricer", ["Micheal"]
+            )
+            == "bistricer"
+        )
+
+    def test_word_not_from_the_reference_is_never_checked(self):
+        # The model's own re-hearing (not sourced from the delivered
+        # reference) is never blocked by this guard, however unrelated it
+        # is to the flagged span.
+        assert (
+            _unsupported_reference_word(["totally", "unrelated"], "Aldeyra", ["acme"])
+            is None
+        )
+
+    def test_empty_reference_never_triggers_the_guard(self):
+        assert _unsupported_reference_word(["Aldeyra"], "", ["acme"]) is None
+
+    def test_empty_flagged_words_means_no_support_is_possible(self):
+        assert _unsupported_reference_word(["Aldeyra"], "Aldeyra", []) == "aldeyra"
 
 
 # ---------------------------------------------------------------------------
@@ -1394,6 +1542,83 @@ class TestRosterBandFlagSourceIntegration:
         assert record["replay_localized_words"] == ["replay"]
         assert outcome.text == "we spoke with replay about growth"
 
+    # -----------------------------------------------------------------
+    # Guard 1 -- SCORE-stage min-score floor (D7D fix, docs/exposure-
+    # ledger.md's SAEA-D7D-delivery consumption note, 2026-08-15).
+    # -----------------------------------------------------------------
+
+    def test_min_score_floor_filters_a_sub_token_match_end_to_end(self, tmp_path, monkeypatch):
+        # The default floor (0.15) drops a sub-token near-zero band match
+        # (measured live: Phoenix "new"/"media"/"now" windows at
+        # 0.0-0.034, score here 0.028) before it is ever flagged -- zero
+        # REPLAY calls for this sample.
+        world = _World(
+            tmp_path,
+            monkeypatch,
+            pcm=_noise(40.0),
+            texts=["the company posted its now results"],
+            values=self._values(),
+            evidence=[
+                EvidenceItem(
+                    evidence_id="conec/4000001",
+                    source_uri="conec://x",
+                    content="news",
+                    provenance={"lock_key": "conec", "relpath": "x.txt", "sha256": "0" * 64},
+                )
+            ],
+        )
+        outcome = world.run()
+        assert len(world.adapter.payloads) == 1  # PASS 1 only, zero REPLAY calls
+        assert world.replay_records() == []
+        assert outcome.text == "the company posted its now results"
+
+    def test_min_score_floor_is_configurable(self, tmp_path, monkeypatch):
+        # Lowering the floor below the same 0.028 sub-token score lets it
+        # through -- the floor is a config knob, not a hardcoded cutoff.
+        monkeypatch.setitem(
+            ARM_VISIBLE_FIELDS,
+            "bare-core",
+            ARM_VISIBLE_FIELDS["bare-core"] + ("delta_candidates",),
+        )
+        world = _World(
+            tmp_path,
+            monkeypatch,
+            pcm=_noise(40.0),
+            texts=["the company posted its now results", "corrected replay text"],
+            values=self._values(replay_flag_min_score=0.02),
+            evidence=[
+                EvidenceItem(
+                    evidence_id="conec/4000001",
+                    source_uri="conec://x",
+                    content="news",
+                    provenance={"lock_key": "conec", "relpath": "x.txt", "sha256": "0" * 64},
+                )
+            ],
+        )
+        world.run()
+        records = world.replay_records()
+        assert len(records) == 1
+        assert records[0]["replay_flag_matched_candidate"] == "news"
+
+    def test_derivation_artifact_records_the_configured_floor(self, tmp_path, monkeypatch):
+        monkeypatch.setitem(
+            ARM_VISIBLE_FIELDS,
+            "bare-core",
+            ARM_VISIBLE_FIELDS["bare-core"] + ("delta_candidates",),
+        )
+        world = _World(
+            tmp_path,
+            monkeypatch,
+            pcm=_noise(40.0),
+            texts=["we spoke with Aldera about growth", "corrected replay text"],
+            values=self._values(replay_flag_min_score=0.2),
+            evidence=self._EVIDENCE,
+        )
+        world.run()
+        artifact_path = world.run_dir / f"{RUN_ID}.replay-derivation.{SAMPLE_ID}.json"
+        document = json.loads(artifact_path.read_text(encoding="utf-8"))
+        assert document["replay_flag_min_score"] == 0.2
+
     def test_exemplar_bank_labels_also_serve_as_roster_band_candidates(
         self, tmp_path, monkeypatch
     ):
@@ -1561,7 +1786,11 @@ class TestD7CMatchedRosterBandCandidateDelivery:
             monkeypatch,
             pcm=_noise(40.0),
             texts=["we spoke with Deery about growth", "corrected replay text"],
-            values=self._values(replay_min_score=0.5),
+            # Guard 1's own default floor (0.15, D7D fix) would otherwise
+            # filter this fixture's deliberately weak 0.0625-scoring match
+            # before it ever reached the D7C bypass this test targets --
+            # explicitly neutralized here so the two fixes stay isolated.
+            values=self._values(replay_min_score=0.5, replay_flag_min_score=0.0),
             evidence=evidence,
         )
         outcome = world.run()
@@ -1985,6 +2214,139 @@ class TestAcceptRejectSplice:
         assert record["replay_accepted"] is True
         assert record["replay_localized_word_count"] == 6
 
+    # -----------------------------------------------------------------
+    # Guard 2 -- reference-echo rejection (D7D fix, docs/exposure-ledger.
+    # md's SAEA-D7D-delivery consumption note, 2026-08-15): measured live,
+    # 14/115 replay outputs were ONLY the delivered reference string, some
+    # accepted and spliced.
+    # -----------------------------------------------------------------
+
+    def _evidence(self, content: str) -> list[EvidenceItem]:
+        return [
+            EvidenceItem(
+                evidence_id="conec/4000001",
+                source_uri="conec://x",
+                content=content,
+                provenance={"lock_key": "conec", "relpath": "x.txt", "sha256": "0" * 64},
+            )
+        ]
+
+    def test_reference_echo_is_rejected(self, tmp_path, monkeypatch):
+        # "Ackme" is close enough to the flagged "acme" to survive Guard 3
+        # too (weighted-grapheme distance 0.2 <= BAND_HIGH) -- isolating
+        # this test to Guard 2's own behaviour.
+        monkeypatch.setitem(
+            ARM_VISIBLE_FIELDS,
+            "bare-core",
+            ARM_VISIBLE_FIELDS["bare-core"] + ("delta_candidates",),
+        )
+        world = _World(
+            tmp_path,
+            monkeypatch,
+            pcm=_noise(40.0),
+            texts=["acme zzz", "Ackme"],
+            values=_fixed_mode_values(evidence_source="conec-contexts", replay_min_score=0.0),
+            evidence=self._evidence("Ackme"),
+        )
+        monkeypatch.setattr(
+            replay_loop, "align_words", _dense_localize_align_words(["acme", "zzz"])
+        )
+        outcome = world.run()
+        assert outcome.text == "acme zzz"
+        record = world.replay_records()[0]
+        assert [c["text"] for c in record["replay_candidates"]] == ["Ackme"]
+        assert record["replay_accepted"] is False
+        assert record["replay_reject_reason"] == "reference-echo"
+
+    def test_reference_plus_real_content_is_not_rejected_by_the_echo_guard(
+        self, tmp_path, monkeypatch
+    ):
+        # Out-of-scope note (module docstring): a reference-PREFIXED output
+        # that also carries real content stays a candidate for acceptance.
+        monkeypatch.setitem(
+            ARM_VISIBLE_FIELDS,
+            "bare-core",
+            ARM_VISIBLE_FIELDS["bare-core"] + ("delta_candidates",),
+        )
+        world = _World(
+            tmp_path,
+            monkeypatch,
+            pcm=_noise(40.0),
+            texts=["acme zzz", "Ackme is correct"],
+            values=_fixed_mode_values(evidence_source="conec-contexts", replay_min_score=0.0),
+            evidence=self._evidence("Ackme"),
+        )
+        monkeypatch.setattr(
+            replay_loop, "align_words", _dense_localize_align_words(["acme", "zzz"])
+        )
+        outcome = world.run()
+        record = world.replay_records()[0]
+        assert record["replay_accepted"] is True
+        assert record["replay_reject_reason"] is None
+        assert outcome.text == "Ackme is correct"
+
+    # -----------------------------------------------------------------
+    # Guard 3 -- splice-support guard (D7D fix, docs/exposure-ledger.md's
+    # SAEA-D7D-delivery consumption note, 2026-08-15): measured live,
+    # mislocalized splices injected roster words -- including metadata
+    # typo forms -- into unrelated filler.
+    # -----------------------------------------------------------------
+
+    def test_unsupported_reference_word_blocks_the_splice(self, tmp_path, monkeypatch):
+        # "Aldeyra" has no fuzzy support in either flagged word ("acme"/
+        # "zzz", weighted-grapheme distance well over BAND_HIGH) -- the
+        # model produced it only because it was handed the hint.
+        monkeypatch.setitem(
+            ARM_VISIBLE_FIELDS,
+            "bare-core",
+            ARM_VISIBLE_FIELDS["bare-core"] + ("delta_candidates",),
+        )
+        world = _World(
+            tmp_path,
+            monkeypatch,
+            pcm=_noise(40.0),
+            texts=["acme zzz", "we heard Aldeyra clearly"],
+            values=_fixed_mode_values(evidence_source="conec-contexts", replay_min_score=0.0),
+            evidence=self._evidence("Aldeyra"),
+        )
+        monkeypatch.setattr(
+            replay_loop, "align_words", _dense_localize_align_words(["acme", "zzz"])
+        )
+        outcome = world.run()
+        assert outcome.text == "acme zzz"
+        record = world.replay_records()[0]
+        assert record["replay_accepted"] is False
+        assert record["replay_reject_reason"] == "splice-unsupported-reference"
+
+    def test_supported_reference_word_still_splices(self, tmp_path, monkeypatch):
+        # The "Frends." -> "Michael Frenz" shape (docs/exposure-ledger.md's
+        # SAEA-D7D-delivery consumption note: "one genuine repair landed"):
+        # BOTH delivered reference words ("Michael"/"Frenz") have fuzzy
+        # support in the flagged span's own corrupted forms ("Micheal"/
+        # "Frentz").
+        monkeypatch.setitem(
+            ARM_VISIBLE_FIELDS,
+            "bare-core",
+            ARM_VISIBLE_FIELDS["bare-core"] + ("delta_candidates",),
+        )
+        world = _World(
+            tmp_path,
+            monkeypatch,
+            pcm=_noise(40.0),
+            texts=["Micheal Frentz", "Michael Frenz was on the call"],
+            values=_fixed_mode_values(evidence_source="conec-contexts", replay_min_score=0.0),
+            evidence=self._evidence("Michael Frenz"),
+        )
+        monkeypatch.setattr(
+            replay_loop, "align_words", _dense_localize_align_words(["Micheal", "Frentz"])
+        )
+        outcome = world.run()
+        record = world.replay_records()[0]
+        assert sorted(c["text"] for c in record["replay_candidates"]) == ["Frenz", "Michael"]
+        assert record["replay_accepted"] is True
+        assert record["replay_reject_reason"] is None
+        assert outcome.text == "Michael Frenz was on the call"
+
 
 # ---------------------------------------------------------------------------
 # Trace record shapes
@@ -2015,6 +2377,9 @@ class TestTraceRecordShapes:
         # DEFECT-2 skip (module docstring's SKIP note), so this real,
         # non-skipped REPLAY call contributes zero to the count.
         assert document["replay_no_candidate_skip_count"] == 0
+        # Guard 1 (D7D fix): the floor is only meaningful under roster-band
+        # mode -- this world's default "logprob" flag_source records None.
+        assert document["replay_flag_min_score"] is None
 
     def test_stitch_records_still_carry_only_pass1_request_ids(self, tmp_path, monkeypatch):
         """Design-boundary check (module docstring): the top-level

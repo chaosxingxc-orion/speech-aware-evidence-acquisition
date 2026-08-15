@@ -296,3 +296,63 @@ class TestRosterBandDfRarity:
         assert roster_band_flags(["Aldera"], ["Aldeyra"], 5) == roster_band_flags(
             ["Aldera"], ["Aldeyra"], 5, df=None
         )
+
+
+# ---------------------------------------------------------------------------
+# Guard 1 -- SCORE-stage min-score floor (D7D fix, docs/exposure-ledger.md's
+# SAEA-D7D-delivery consumption note, 2026-08-15): the D7C pass-through
+# bypassed retrieve()'s own min_score entirely, so near-zero roster-band
+# fires (measured live: Phoenix sub-token windows "new"/"media"/"now" at
+# scores 0.0-0.034) issued full REPLAY calls with nothing worth correcting.
+# ---------------------------------------------------------------------------
+
+
+class TestRosterBandMinScoreFloor:
+    # "now"/"news": a sub-token, lowercase, common-length draft word --
+    # centrality 0.1875 x prior 0.15 (lowercase, len < 6) = 0.028125, in the
+    # exact 0.0-0.034 measured range this fix targets.
+    _LOW_WORDS = "the company posted its now results".split()
+    _LOW_CANDIDATES = ["news"]
+
+    # "Reed"/"Reedy": a capitalized mid-sentence draft word (real true-error
+    # shape from the same consumption note) -- centrality 0.625 x prior 0.5
+    # (capitalized, len < 6) = 0.3125, comfortably in-band and above the
+    # default floor.
+    _HIGH_WORDS = "we spoke with Reed about the numbers".split()
+    _HIGH_CANDIDATES = ["Reedy"]
+
+    def test_sub_token_near_zero_match_creates_no_window_at_the_default_floor(self):
+        flags = roster_band_flags(
+            self._LOW_WORDS, self._LOW_CANDIDATES, max_spans=5, min_score=0.15
+        )
+        assert flags == []
+
+    def test_in_band_match_above_the_floor_still_flags(self):
+        flags = roster_band_flags(
+            self._HIGH_WORDS, self._HIGH_CANDIDATES, max_spans=5, min_score=0.15
+        )
+        assert len(flags) == 1
+        assert flags[0].candidate == "reedy"
+        assert flags[0].score == pytest.approx(0.3125)
+
+    def test_score_exactly_at_the_floor_is_kept_inclusive(self):
+        flags = roster_band_flags(
+            self._HIGH_WORDS, self._HIGH_CANDIDATES, max_spans=5, min_score=0.3125
+        )
+        assert len(flags) == 1
+
+    def test_score_a_hair_below_the_floor_is_dropped(self):
+        flags = roster_band_flags(
+            self._HIGH_WORDS, self._HIGH_CANDIDATES, max_spans=5, min_score=0.3126
+        )
+        assert flags == []
+
+    def test_default_min_score_is_zero_and_never_filters(self):
+        # Signature backward-compatibility, mirroring test_df_is_keyword_
+        # only_and_optional above: every pre-existing 3/4-positional-arg
+        # call (no min_score) keeps its old, unfiltered behaviour.
+        assert roster_band_flags(
+            self._LOW_WORDS, self._LOW_CANDIDATES, max_spans=5
+        ) == roster_band_flags(self._LOW_WORDS, self._LOW_CANDIDATES, max_spans=5, min_score=0.0)
+        flags = roster_band_flags(self._LOW_WORDS, self._LOW_CANDIDATES, max_spans=5)
+        assert len(flags) == 1

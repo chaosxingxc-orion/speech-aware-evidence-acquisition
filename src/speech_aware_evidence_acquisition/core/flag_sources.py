@@ -344,6 +344,7 @@ def roster_band_flags(
     candidate_terms: Sequence[str],
     max_spans: int,
     df: Mapping[str, int] | None = None,
+    min_score: float = 0.0,
 ) -> list[RosterBandFlag]:
     """The top ``max_spans`` non-overlapping roster-band flags for one
     slice's draft ``words`` (module docstring): every non-stopword draft
@@ -380,6 +381,14 @@ def roster_band_flags(
     rarity uses ``1/sqrt(df[word])`` (clamped ``df >= 1``, missing entries
     treated as 1) instead of this call's own slice-local count. ``None``
     (the default) is byte-identical to the pre-D7C behaviour.
+
+    ``min_score`` (Guard 1, D7D fix, ``docs/exposure-ledger.md``'s
+    SAEA-D7D-delivery consumption note, 2026-08-15): a candidate scoring
+    below this floor is dropped before selection -- never flagged, never
+    consuming a ``max_spans`` slot (measured: near-zero sub-token band
+    matches at score 0.0-0.034 were issuing full REPLAY calls). ``0.0``
+    (the default) is byte-identical to the pre-D7D behaviour, since every
+    ``score`` here is already non-negative.
 
     Returns an empty list (never raises) when ``words``/``candidate_terms``
     is empty or nothing lands in-band -- SCORE already treats zero flags as
@@ -482,6 +491,10 @@ def roster_band_flags(
                     )
                 )
 
+    # Guard 1 (D7D fix, this function's own docstring): dropped BEFORE
+    # selection, not after -- a below-floor span never occupies a
+    # `max_spans` slot a genuine flag could otherwise have used.
+    candidates = [flag for flag in candidates if flag.score >= min_score]
     ordered = sorted(candidates, key=lambda flag: (-flag.score, flag.span[0], flag.span[1]))
     selected: list[RosterBandFlag] = []
     for flag in ordered:
