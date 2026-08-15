@@ -1348,6 +1348,11 @@ class TestRosterBandFlagSourceIntegration:
         assert record["replay_trigger"] == "roster-band"
         assert record["replay_flag_source"] == "roster-band"
         assert record["replay_flag_matched_candidate"] == "aldeyra"
+        # additive field (item 3, D7/D7B chain-defect fix): the
+        # RosterBandFlag dataclass already carried matched_form, unpersisted
+        # until now -- equal to `candidate` here since "aldeyra" decomposes
+        # to a single word matched directly.
+        assert record["replay_flag_matched_form"] == "aldeyra"
         assert 0.05 <= record["replay_flag_distance"] <= 0.45
         # RETRIEVE correction-filter pass-through (module docstring's
         # RETRIEVE section note): the flagged word ("Aldera") is NOT
@@ -1466,6 +1471,165 @@ class TestRosterBandFlagSourceIntegration:
         outcome = world.run()
         assert len(world.adapter.payloads) == 1  # PASS 1 only, zero REPLAY calls
         assert outcome.text == "we spoke with Aldera about growth"
+
+
+# ---------------------------------------------------------------------------
+# derived-candidates roster-band pool (D7/D7B chain-defect fix, 2026-08-15,
+# ``docs/exposure-ledger.md``'s SAEA-D7-delivery/SAEA-D7B-delivery
+# consumption notes): _pack_terms previously supported only
+# conec-contexts/conec-names -- every "derived-candidates" call raised
+# MaterializeError and was silently swallowed into an empty pool, so
+# roster-band never flagged anything for either probe.
+# ---------------------------------------------------------------------------
+
+
+class TestDerivedCandidatesRosterBand:
+    """Same Aldera->Aldeyra shape as ``TestRosterBandFlagSourceIntegration``
+    above, but the candidate pool comes from an offline-materialized
+    ``derived-candidates`` file on disk instead of ``conec-contexts``
+    evidence content -- proving the pool builder now actually reads it."""
+
+    MATERIALIZATION_ID = "mm-d7-fix-v1"
+
+    def _values(self, **overrides):
+        return _fixed_mode_values(
+            evidence_source="derived-candidates",
+            evidence_materialization_id=self.MATERIALIZATION_ID,
+            replay_trigger="logprob",
+            replay_flag_source="roster-band",
+            **overrides,
+        )
+
+    def _candidates_path(self, world) -> Path:
+        return (
+            world.data_root
+            / "derived"
+            / "evidence-candidates"
+            / self.MATERIALIZATION_ID
+            / f"{SAMPLE_ID}.candidates.txt"
+        )
+
+    def _write_candidates_file(self, world, lines: list[str]) -> Path:
+        path = self._candidates_path(world)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text("".join(f"{line}\n" for line in lines), encoding="utf-8", newline="\n")
+        return path
+
+    def test_corrupted_entity_word_is_flagged_and_replayed_from_derived_candidates(
+        self, tmp_path, monkeypatch
+    ):
+        """(a) end-to-end: the SAME Aldera->Aldeyra flag/replay/splice
+        outcome as the conec-contexts happy path, driven entirely by a
+        derived-candidates materialization file -- ``ctx.evidence`` is
+        deliberately empty; the pool must come from disk, never from it."""
+
+        monkeypatch.setitem(
+            ARM_VISIBLE_FIELDS,
+            "bare-core",
+            ARM_VISIBLE_FIELDS["bare-core"] + ("delta_candidates",),
+        )
+        world = _World(
+            tmp_path,
+            monkeypatch,
+            pcm=_noise(40.0),
+            texts=["we spoke with Aldera about growth", "corrected replay text"],
+            values=self._values(),
+            evidence=[],
+        )
+        self._write_candidates_file(world, ["Aldeyra"])
+        outcome = world.run()
+
+        assert len(world.adapter.payloads) == 2  # PASS 1's one slice + REPLAY
+        records = world.replay_records()
+        assert len(records) == 1
+        record = records[0]
+        assert record["replay_pass1_text"] == "Aldera"
+        assert record["replay_trigger"] == "roster-band"
+        assert record["replay_flag_source"] == "roster-band"
+        assert record["replay_flag_matched_candidate"] == "aldeyra"
+        assert record["replay_flag_matched_form"] == "aldeyra"
+        assert [c["text"] for c in record["replay_candidates"]] == ["Aldeyra"]
+        assert record["replay_accepted"] is True
+        assert record["replay_localized_words"] == ["replay"]
+        assert outcome.text == "we spoke with replay about growth"
+
+        artifact_path = world.run_dir / f"{RUN_ID}.replay-derivation.{SAMPLE_ID}.json"
+        document = json.loads(artifact_path.read_text(encoding="utf-8"))
+        assert document["replay_pack_terms_empty_note"] is None
+
+    def test_missing_materialization_file_fails_closed(self, tmp_path, monkeypatch):
+        """(b) fail-closed: roster-band + a declared evidence_source whose
+        materialized candidates file does not exist on disk at all --
+        a configuration/materialization error, refused with a clear message
+        rather than silently flying a zero-flag pass (the exact SAEA-D7
+        -delivery/SAEA-D7B-delivery shape)."""
+
+        world = _World(
+            tmp_path,
+            monkeypatch,
+            pcm=_noise(40.0),
+            texts=["we spoke with Aldera about growth"],
+            values=self._values(),
+            evidence=[],
+        )
+        # Deliberately never written: self._candidates_path(world) does not exist.
+        with pytest.raises(ReplayLoopError, match="derived-candidates materialization"):
+            world.run()
+
+    def test_empty_candidates_file_is_tolerated_with_annotation(self, tmp_path, monkeypatch):
+        """(c) the one legitimate empty pool: a materialized candidates file
+        that exists, reads cleanly, and has zero non-blank lines is allowed
+        -- zero flags, unmodified stitched text -- and noted on the
+        replay-derivation artifact rather than raising."""
+
+        world = _World(
+            tmp_path,
+            monkeypatch,
+            pcm=_noise(40.0),
+            texts=["we spoke with Aldera about growth"],
+            values=self._values(),
+            evidence=[],
+        )
+        self._write_candidates_file(world, [])  # zero non-blank lines
+        outcome = world.run()
+
+        assert len(world.adapter.payloads) == 1  # PASS 1 only, zero REPLAY calls
+        assert world.replay_records() == []
+        assert outcome.text == "we spoke with Aldera about growth"
+
+        artifact_path = world.run_dir / f"{RUN_ID}.replay-derivation.{SAMPLE_ID}.json"
+        document = json.loads(artifact_path.read_text(encoding="utf-8"))
+        assert document["replay_pack_terms_empty_note"] == "empty-candidates-file"
+
+    def test_unsupported_pack_source_still_fails_closed_under_roster_band(
+        self, tmp_path, monkeypatch
+    ):
+        """The same fail-closed guard also catches ANY other evidence_source
+        whose pack shape ``core.candidate_materializer.pack_candidates``
+        does not know (the original defect's swallow point) -- not only
+        derived-candidates' own missing-file case."""
+
+        world = _World(
+            tmp_path,
+            monkeypatch,
+            pcm=_noise(40.0),
+            texts=["we spoke with Aldera about growth"],
+            values=_fixed_mode_values(
+                evidence_source="conec-bias-list",
+                replay_trigger="logprob",
+                replay_flag_source="roster-band",
+            ),
+            evidence=[
+                EvidenceItem(
+                    evidence_id="conec-bias-list/4000001",
+                    source_uri="conec-bias-list://x",
+                    content="Aldeyra Therapeutics reported strong quarterly results",
+                    provenance={"lock_key": "conec", "relpath": "x.txt", "sha256": "0" * 64},
+                )
+            ],
+        )
+        with pytest.raises(ReplayLoopError, match="resolved candidate pool"):
+            world.run()
 
 
 # ---------------------------------------------------------------------------

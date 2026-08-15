@@ -412,6 +412,20 @@ def assert_evidence_materialization_id_legal(values: Mapping[str, object]) -> No
         )
 
 
+def derived_candidates_file_relpath(materialization_id: str, sample_id: str) -> str:
+    """The on-disk relpath (relative to the controlled data root) of one
+    sample's offline-materialized ``derived-candidates`` file (module
+    docstring) -- exposed the same way ``evidence_file_relpath``/
+    ``conec_names_file_relpath`` are, so a SECOND caller
+    (``reproduction.replay_loop._pack_terms``, RETRIEVE's own/roster-band's
+    own candidate-pool builder, D7/D7B chain-defect fix) can resolve the
+    EXACT SAME file :func:`_derived_candidates` already reads for this
+    evidence source, from one shared path convention rather than a second,
+    independently drifting construction."""
+
+    return f"derived/evidence-candidates/{materialization_id}/{sample_id}.candidates.txt"
+
+
 def _derived_candidates(
     lock: Mapping[str, object],
     root: Path,
@@ -426,8 +440,8 @@ def _derived_candidates(
     CarrierDescriptor`` lookup happens here at all."""
 
     materialization_id = resolve_evidence_materialization_id(values)
-    relpath = f"derived/evidence-candidates/{materialization_id}/{sample_id}.candidates.txt"
-    path = Path(root) / "derived" / "evidence-candidates" / materialization_id / f"{sample_id}.candidates.txt"
+    relpath = derived_candidates_file_relpath(materialization_id, sample_id)
+    path = Path(root) / relpath
     if not path.is_file():
         raise EvidenceError(f"derived candidates missing for {sample_id}: {path}")
     try:

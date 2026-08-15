@@ -102,8 +102,21 @@ detector is identical either way.
   ``replay_flag_source``), but the returned logprobs are never consulted
   for flagging. The trace's per-window record additionally carries
   ``replay_flag_source``/``replay_flag_matched_candidate``/
-  ``replay_flag_distance`` (``None`` for a ``"wps"``-only span, or under
-  ``"logprob"`` mode).
+  ``replay_flag_matched_form``/``replay_flag_distance`` (``None`` for a
+  ``"wps"``-only span, or under ``"logprob"`` mode).
+
+D7/D7B chain-defect fix (``docs/exposure-ledger.md``'s SAEA-D7-delivery/
+SAEA-D7B-delivery consumption notes, 2026-08-14/2026-08-15): ``_pack_terms``
+now also resolves ``evidence_source == "derived-candidates"`` -- previously
+an unsupported ``pack_candidates`` shape whose ``MaterializeError`` was
+silently swallowed into an EMPTY pool on every call, so roster-band never
+ran at all (guarded by ``and candidate_terms``) and both probes flew a
+zero-flag pass undetected. Fail-closed guard: under ``"roster-band"``, a
+declared (non-``"none"``) evidence_source whose resolved pool (plus
+exemplar-bank labels) is still EMPTY for a sample now raises at sample start
+instead of flying that silent zero-flag pass -- except a derived-candidates
+file that genuinely has zero non-blank lines, which is allowed and recorded
+on the replay-derivation artifact (``replay_pack_terms_empty_note``).
 
 LOCATE: for each flagged span, ``core.span_surgery.align_words`` aligns the
 SLICE's OWN full pass-1 transcript against the SLICE's OWN wav (a genuine
@@ -282,6 +295,7 @@ from typing import Mapping, Sequence
 
 from ..core.base import SampleContext, SampleOutcome
 from ..core.candidate_materializer import MaterializeError, pack_candidates
+from ..core.evidence import derived_candidates_file_relpath, resolve_evidence_materialization_id
 from ..core.flag_sources import RosterBandFlag, roster_band_flags
 from ..core.model import FrozenCoreError, SliceRecord, SliceRegistry
 from ..core.replay_signals import (
@@ -757,17 +771,63 @@ def _flag_spans_for_slice_roster_band(
     return [(span, ",".join(sorted(labels[span]))) for span in ordered], detail
 
 
-def _pack_terms(ctx: SampleContext) -> list[str]:
-    """The candidate pool RETRIEVE draws from: this sample's own evidence
-    content, tokenized via ``core.candidate_materializer.pack_candidates``
-    keyed by the run's own ``evidence_source`` (module docstring). An
-    evidence_source outside that module's two known pack shapes
-    (``"conec-contexts"``/``"conec-names"``) yields an honestly empty pool
-    for THAT item, never an error -- RETRIEVE already treats an empty pool
-    as "nothing to retrieve"."""
+def _pack_terms(ctx: SampleContext, data_root: Path) -> tuple[list[str], str | None]:
+    """The candidate pool RETRIEVE (and, under ``replay_flag_source=
+    "roster-band"``, SCORE) draws from: this sample's own evidence content,
+    tokenized via ``core.candidate_materializer.pack_candidates`` keyed by
+    the run's own ``evidence_source`` (module docstring) for the two
+    verbatim-passthrough conec sources -- or, for ``"derived-candidates"``
+    (D7/D7B chain-defect fix), read DIRECTLY off the offline-materialized
+    file the SAME materialization this run's evidence already resolves
+    (``core.evidence.resolve_evidence_materialization_id`` /
+    ``derived_candidates_file_relpath``, never re-derived path logic), one
+    candidate per non-blank line -- bypassing ``pack_candidates`` entirely,
+    since that function only ever knew the two conec shapes and previously
+    raised (silently swallowed below) for this one. This reads straight off
+    disk rather than ``ctx.evidence`` so PASS-1 evidence suppression
+    (``replay_pass1_evidence="suppressed"``, this module's own docstring
+    section) can never affect it: this pool feeds REPLAY-stage machinery and
+    must reflect the resolved materialization regardless of what PASS 1 was
+    or was not allowed to see. Any OTHER evidence_source (including
+    ``"none"``) yields an honestly empty pool for THAT item, never an error
+    -- RETRIEVE already treats an empty pool as "nothing to retrieve".
+
+    Returns ``(terms, empty_note)``: ``empty_note`` is ``None`` unless
+    ``terms`` is empty for the one LEGITIMATE reason a caller must not treat
+    as a configuration/materialization error -- a derived-candidates file
+    that exists, reads cleanly, and genuinely has zero non-blank lines
+    (``"empty-candidates-file"``)."""
 
     config_values = ctx.extras.get("config_values", {}) if isinstance(ctx.extras, Mapping) else {}
     evidence_source = str(config_values.get("evidence_source", "none")) if isinstance(config_values, Mapping) else "none"
+
+    if evidence_source == "derived-candidates":
+        materialization_id = resolve_evidence_materialization_id(config_values)
+        relpath = derived_candidates_file_relpath(materialization_id, ctx.sample.sample_id)
+        path = Path(data_root) / relpath
+        if not path.is_file():
+            raise ReplayLoopError(
+                "obs-replay-loop candidate pool: derived-candidates materialization "
+                f"{materialization_id!r} has no candidates file for sample "
+                f"{ctx.sample.sample_id!r} at {path} -- a configuration/materialization "
+                "error, not a legitimately empty pool"
+            )
+        try:
+            content = path.read_text(encoding="utf-8")
+        except (OSError, UnicodeError) as error:
+            raise ReplayLoopError(
+                "obs-replay-loop candidate pool: cannot read derived-candidates file "
+                f"{path} for sample {ctx.sample.sample_id!r}: {error}"
+            ) from error
+        derived_terms: dict[str, None] = {}
+        for line in content.splitlines():
+            stripped = line.strip()
+            if stripped:
+                derived_terms.setdefault(stripped, None)
+        if not derived_terms:
+            return [], "empty-candidates-file"
+        return list(derived_terms), None
+
     terms: dict[str, None] = {}
     for item in ctx.evidence or []:
         try:
@@ -775,7 +835,7 @@ def _pack_terms(ctx: SampleContext) -> list[str]:
                 terms.setdefault(term, None)
         except MaterializeError:
             continue
-    return list(terms)
+    return list(terms), None
 
 
 def _roster_band_candidate_terms(ctx: SampleContext, pack_terms: Sequence[str]) -> list[str]:
@@ -989,6 +1049,16 @@ class ObsReplayLoopPolicy:
         obs_cfg = ObsLoopConfig.from_values(config_values, repo_root)
         _assert_pass1_legality(obs_cfg)
         replay_cfg = ReplayLoopConfig.from_values(config_values)
+        # Fail-closed guard input (D7/D7B chain-defect fix, module
+        # docstring's FLAG SOURCES section): whether this run's config
+        # DECLARES an evidence source at all -- "none" means it does not,
+        # exactly the local `_pack_terms` itself computes from the same
+        # `config_values` mapping.
+        config_evidence_source = (
+            str(config_values.get("evidence_source", "none"))
+            if isinstance(config_values, Mapping)
+            else "none"
+        )
 
         sample: SampleRef = ctx.sample
         rate = SLICE_SAMPLE_RATE_HZ
@@ -1084,6 +1154,7 @@ class ObsReplayLoopPolicy:
         replay_call_index = 0
         replay_window_records: list[dict[str, object]] = []
         pack_terms_cache: list[str] | None = None
+        pack_terms_empty_note: str | None = None
 
         for slot_index, (transcript, record) in enumerate(zip(accepted_spans, slice_records)):
             if not transcript:
@@ -1100,8 +1171,33 @@ class ObsReplayLoopPolicy:
                 # SCORE runs, not lazily after LOCATE like the logprob-mode
                 # branch below.
                 if pack_terms_cache is None:
-                    pack_terms_cache = _pack_terms(ctx)
+                    pack_terms_cache, pack_terms_empty_note = _pack_terms(ctx, data_root)
                 candidate_terms = _roster_band_candidate_terms(ctx, pack_terms_cache)
+                # FAIL CLOSED on silent emptiness (D7/D7B chain-defect fix,
+                # module docstring's FLAG SOURCES section): a declared
+                # evidence source whose resolved pool -- plus whatever
+                # exemplar-bank labels this sample carries, the SAME union
+                # roster-band's own SCORE stage is about to search -- is
+                # still EMPTY is a configuration/materialization error, not
+                # "nothing to flag"; flying it silently is exactly the
+                # SAEA-D7-delivery/SAEA-D7B-delivery shape. The one
+                # legitimate empty pool (a derived-candidates file that
+                # genuinely has zero non-blank lines, `_pack_terms`'s own
+                # "empty-candidates-file" note) is exempted -- allowed, not
+                # an error, and already recorded on the replay-derivation
+                # artifact below.
+                if (
+                    not candidate_terms
+                    and config_evidence_source != "none"
+                    and pack_terms_empty_note != "empty-candidates-file"
+                ):
+                    raise ReplayLoopError(
+                        "obs-replay-loop roster-band: evidence_source="
+                        f"{config_evidence_source!r} is declared but sample "
+                        f"{sample.sample_id!r}'s resolved candidate pool (plus exemplar-bank "
+                        "labels) is empty -- refusing to fly a silent zero-flag pass "
+                        "(configuration/materialization error)"
+                    )
                 spans, band_detail_by_span = _flag_spans_for_slice_roster_band(
                     words, candidate_terms, record.audio_seconds, replay_cfg
                 )
@@ -1133,7 +1229,7 @@ class ObsReplayLoopPolicy:
                 ) from error
 
             if pack_terms_cache is None:
-                pack_terms_cache = _pack_terms(ctx)
+                pack_terms_cache, pack_terms_empty_note = _pack_terms(ctx, data_root)
 
             decisions: list[tuple[int, int, bool, list[str] | None]] = []
             for span_index, (span, trigger_label) in enumerate(spans):
@@ -1216,6 +1312,7 @@ class ObsReplayLoopPolicy:
                         "replay_localize_source": None,
                         "replay_flag_source": replay_cfg.flag_source,
                         "replay_flag_matched_candidate": band_flag.candidate if band_flag else None,
+                        "replay_flag_matched_form": band_flag.matched_form if band_flag else None,
                         "replay_flag_distance": band_flag.distance if band_flag else None,
                         # No REPLAY request was ever built for a skipped span
                         # (module docstring's SKIP note) -- no instruction was
@@ -1446,6 +1543,7 @@ class ObsReplayLoopPolicy:
                     "replay_localize_source": localize_source,
                     "replay_flag_source": replay_cfg.flag_source,
                     "replay_flag_matched_candidate": band_flag.candidate if band_flag else None,
+                    "replay_flag_matched_form": band_flag.matched_form if band_flag else None,
                     "replay_flag_distance": band_flag.distance if band_flag else None,
                     "replay_prompt_rendered_sha256": rendered_instruction_sha256,
                 }
@@ -1490,6 +1588,13 @@ class ObsReplayLoopPolicy:
                 "decoded_duration_seconds": duration,
                 "pass1_slices": [record.trace_view() for record in slice_records],
                 "replay_no_candidate_skip_count": no_candidate_skip_count,
+                # D7/D7B chain-defect fix (module docstring's FLAG SOURCES
+                # section): the one legitimate empty-pool reason
+                # (`_pack_terms`'s "empty-candidates-file" note) the
+                # fail-closed guard above deliberately does NOT raise on --
+                # recorded here (trace-visible) rather than silently
+                # discarded; `None` for every other run, unchanged.
+                "replay_pack_terms_empty_note": pack_terms_empty_note,
                 "replay_windows": replay_window_records,
             },
         )
