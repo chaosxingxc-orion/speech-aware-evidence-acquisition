@@ -1,0 +1,15 @@
+# SAEA-D4 prompt free-axis probes (wf_c21a2756 Phase 1; vehicle = the
+# D7E-passed shape, gate consumed at the D7E row). Four replay_prompt_
+# template framings, verbatim in each fragment: R0-bias (span-scoped
+# static-bias lineage), R1-verify (verify-with-abstention), R2-draft
+# (+ own errored draft slot), R1-hedged (provenance wording). SHAPE
+# SCREENS ONLY - pre-registered no-directional-inference clause; reads
+# are echo rate (PRE-localize replay output vs delivered reference -
+# the D7E-noted correct measurement point), acceptance/reject mix, and
+# span-level flip lists. Top-k axis dropped: pass-through delivery is
+# top-1 by construction. Floor 0.10, suppressed pass-1, roster-band.
+# run_id:baseline_fragment
+SAEA-D4-r0bias:d4-r0bias8-buf90
+SAEA-D4-r1verify:d4-r1verify8-buf90
+SAEA-D4-r2draft:d4-r2draft8-buf90
+SAEA-D4-r1hedged:d4-r1hedged8-buf90
