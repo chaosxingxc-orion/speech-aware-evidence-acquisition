@@ -348,6 +348,39 @@ class TestReplayFlagSourceConfig:
             self._cfg(replay_flag_source="entity-ner")
 
 
+class TestReplayPass1EvidenceConfig:
+    """Pure config-load-time validation for ``replay_pass1_evidence`` (D7
+    delivery-gate design-gap fix, ``docs/exposure-ledger.md``'s
+    SAEA-D7-delivery consumption note, 2026-08-15): "arm-default"/
+    "suppressed" only, defaults to "arm-default", fails closed otherwise --
+    the same discipline replay_flag_source already carries."""
+
+    def _cfg(self, **overrides):
+        return ReplayLoopConfig.from_values(
+            {
+                "replay_trigger": "wps",
+                "replay_flag_low_threshold": -2.0,
+                "replay_flag_min_run": 1,
+                "replay_max_spans_per_slice": 2,
+                "replay_instruction": "Listen again.",
+                **overrides,
+            }
+        )
+
+    def test_default_is_arm_default(self):
+        assert self._cfg().pass1_evidence == "arm-default"
+
+    def test_explicit_arm_default_is_accepted(self):
+        assert self._cfg(replay_pass1_evidence="arm-default").pass1_evidence == "arm-default"
+
+    def test_explicit_suppressed_is_accepted(self):
+        assert self._cfg(replay_pass1_evidence="suppressed").pass1_evidence == "suppressed"
+
+    def test_unknown_value_fails_closed(self):
+        with pytest.raises(ReplayLoopError, match="replay_pass1_evidence"):
+            self._cfg(replay_pass1_evidence="omit-entirely")
+
+
 class TestReplayPromptTemplateConfig:
     """Pure config-load-time validation for the optional
     ``replay_prompt_template`` key (module docstring's REPLAY PROMPT
@@ -629,7 +662,7 @@ def _stub_pass1(monkeypatch, *, accepted_spans, slice_records):
     request_ids = [f"req-0001-i{r.iteration:04d}" for r in slice_records]
     hashes = [f"sha-{i}" for i in range(len(slice_records))]
 
-    def fake(self, ctx, cfg, registry, data_root, sample, rate, pcm, duration, parent_sha256, engine_descriptor, evidence, max_tokens):
+    def fake(self, ctx, cfg, registry, data_root, sample, rate, pcm, duration, parent_sha256, engine_descriptor, evidence, max_tokens, *, allow_empty_evidence=False):
         return (list(accepted_spans), request_ids, list(hashes), list(hashes), list(slice_records), 0, 0, len(slice_records))
 
     monkeypatch.setattr(ObsAgentLoopPolicy, "_slice_parallel_pass", fake)
@@ -1011,6 +1044,128 @@ class TestReplayPayloadAssembly:
         assert records[0]["replay_accepted"] is True
         assert records[0]["replay_exemplars_attached"] == ["acme"]
         assert outcome.text.startswith("corrected replay")
+
+
+# ---------------------------------------------------------------------------
+# PASS-1 evidence suppression (replay_pass1_evidence, D7 delivery-gate
+# design-gap fix -- docs/exposure-ledger.md's SAEA-D7-delivery consumption
+# note, 2026-08-15)
+# ---------------------------------------------------------------------------
+
+
+class TestReplayPass1EvidenceSuppression:
+    """End-to-end (``run_sample``) coverage of ``replay_pass1_evidence``,
+    mirroring ``TestReplayPayloadAssembly.
+    test_full_pipeline_succeeds_end_to_end_with_the_real_replay_arm``
+    exactly (same real, D2-registered "fixed-legal-context-replay" arm, no
+    ``_stub_pass1``, no ARM_VISIBLE_FIELDS monkeypatch) with
+    ``replay_pass1_evidence`` added: "suppressed" empties PASS 1's own
+    evidence content while REPLAY keeps full, unaffected access to the
+    real evidence/candidate pool; "arm-default" (explicit or omitted) is
+    byte-identical to that pre-existing test."""
+
+    _EVIDENCE = TestReplayPayloadAssembly._EVIDENCE
+
+    def _values(self, **overrides):
+        return _fixed_mode_values(evidence_source="conec-contexts", **overrides)
+
+    def test_suppressed_mode_empties_pass1_evidence_but_replay_still_delivers(
+        self, tmp_path, monkeypatch
+    ):
+        exemplar_bank = (
+            {
+                "media_relpath": "derived/exemplar-pairs/mc2-v1/4000001/acme.wav",
+                "label": "acme",
+            },
+        )
+        world = _World(
+            tmp_path,
+            monkeypatch,
+            pcm=_noise(40.0),
+            texts=["acme zzz", "corrected replay text"],
+            values=self._values(replay_pass1_evidence="suppressed"),
+            evidence=self._EVIDENCE,
+            arm="fixed-legal-context-replay",
+            exemplar_bank=exemplar_bank,
+        )
+        outcome = world.run()
+
+        assert len(world.adapter.payloads) == 2  # PASS 1's one slice + REPLAY
+        pass1_payload, replay_payload = world.adapter.payloads
+
+        # PASS 1 still carries the KEYS -- the arm's D2-frozen field set
+        # requires them on every request it sends -- but the evidence
+        # CONTENT is empty: no static evidence rides along on the
+        # bare-listen pass (the SAME "key stays, content empties"
+        # discipline the pass-1 exemplar-bank suppression above already
+        # established).
+        assert pass1_payload["supplied_evidence"] == []
+        assert pass1_payload["evidence_provenance"] == []
+        # Unaffected by this knob -- the orthogonal, already-shipped
+        # pass-1 exemplar-bank suppression defect fix.
+        assert pass1_payload["exemplar_bank"] == []
+        assert pass1_payload["delta_candidates"] == []
+
+        # REPLAY is entirely unaffected: RETRIEVE and exemplar-matching
+        # still resolve the real per-sample evidence pool and exemplar
+        # bank -- this knob is PASS-1-scoped only.
+        assert replay_payload["supplied_evidence"] == [self._EVIDENCE[0].runtime_view()]
+        assert replay_payload["exemplar_bank"] == list(exemplar_bank)
+        assert replay_payload["delta_candidates"] == []
+
+        records = world.replay_records()
+        assert len(records) == 1
+        assert records[0]["replay_accepted"] is True
+        assert records[0]["replay_exemplars_attached"] == ["acme"]
+        assert outcome.text == "corrected replay"
+
+    def test_default_mode_is_byte_identical_to_the_pre_existing_behaviour(
+        self, tmp_path, monkeypatch
+    ):
+        # (b) regression: an explicit "arm-default" behaves exactly like
+        # the omitted-key path TestReplayPayloadAssembly.
+        # test_full_pipeline_succeeds_end_to_end_with_the_real_replay_arm
+        # already exercises (same fixture, exemplar bank included) -- PASS
+        # 1's supplied_evidence/evidence_provenance carry the REAL evidence
+        # content, untouched.
+        exemplar_bank = (
+            {
+                "media_relpath": "derived/exemplar-pairs/mc2-v1/4000001/acme.wav",
+                "label": "acme",
+            },
+        )
+        world = _World(
+            tmp_path,
+            monkeypatch,
+            pcm=_noise(40.0),
+            texts=["acme zzz", "corrected replay text"],
+            values=self._values(replay_pass1_evidence="arm-default"),
+            evidence=self._EVIDENCE,
+            arm="fixed-legal-context-replay",
+            exemplar_bank=exemplar_bank,
+        )
+        outcome = world.run()
+
+        pass1_payload = world.adapter.payloads[0]
+        assert pass1_payload["supplied_evidence"] == [self._EVIDENCE[0].runtime_view()]
+        assert pass1_payload["evidence_provenance"] == [self._EVIDENCE[0].provenance_view()]
+        assert outcome.text == "corrected replay"
+
+    def test_unknown_value_fails_closed_end_to_end(self, tmp_path, monkeypatch):
+        # (c): the same fail-closed discipline as every other replay_* key,
+        # exercised through the full config-composition path (not merely
+        # ReplayLoopConfig.from_values directly -- TestReplayPass1EvidenceConfig
+        # already covers that in isolation).
+        world = _World(
+            tmp_path,
+            monkeypatch,
+            pcm=_noise(40.0),
+            texts=["one two."],
+            values=self._values(replay_pass1_evidence="omit-entirely"),
+            evidence=self._EVIDENCE,
+        )
+        with pytest.raises(ReplayLoopError, match="replay_pass1_evidence"):
+            world.run()
 
 
 # ---------------------------------------------------------------------------

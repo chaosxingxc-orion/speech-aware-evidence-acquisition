@@ -37,6 +37,22 @@ request such an arm sends, mirroring the pre-existing always-empty
 already threads for the identical reason (see this docstring's REPLAY
 section below).
 
+PASS-1 evidence suppression (``replay_pass1_evidence``, design gap, ``docs/
+exposure-ledger.md``'s SAEA-D7-delivery consumption note, 2026-08-15): the
+D7 delivery-gate probe measured a static+replay same-content confound -- an
+evidence-bearing arm's PASS 1 already sees the same roster the REPLAY
+flags/corrections are drawn from, so pass-1 bias can consume the very
+errors the flags target before SCORE ever runs. ``"arm-default"`` (default,
+byte-identical) leaves PASS 1's evidence untouched; ``"suppressed"`` builds
+the same ``pass1_ctx``-adjacent evidence value this policy already computes
+with its CONTENT emptied -- an always-empty list, never omitted, mirroring
+the exemplar-bank suppression paragraph above -- so an evidence-bearing arm
+still carries the ``supplied_evidence``/``retrieved_evidence`` keys on every
+pass-1 request but with nothing in them; REPLAY's own evidence/candidate
+resolution (RETRIEVE, exemplar matching) is entirely unaffected. The
+R-ladder needs exactly this bare-pass-1/replay-only-delivery vehicle before
+any campaign (wf_c21a2756 Phase-2 shared-draft design).
+
 SCORE: per pass-1 slice, two independent trigger families
 (``replay_trigger``: ``"wps"``, ``"logprob"`` or ``"both"``):
 
@@ -315,6 +331,7 @@ _KNOWN_REPLAY_KEYS = frozenset(
         "replay_instruction",
         "replay_len_ratio_max",
         "replay_prompt_template",
+        "replay_pass1_evidence",
     }
 )
 
@@ -323,6 +340,12 @@ _KNOWN_REPLAY_KEYS = frozenset(
 # closed at config load (ReplayLoopConfig.from_values), never at request
 # time.
 _REPLAY_PROMPT_SLOTS = frozenset({"draft_span", "reference"})
+
+# PASS-1 evidence suppression (module docstring's own section, D7 delivery
+# -gate design-gap fix, 2026-08-15): "arm-default" is the untouched default
+# every pre-existing config keeps; "suppressed" empties PASS 1's own
+# evidence content.
+_PASS1_EVIDENCE_MODES = ("arm-default", "suppressed")
 
 
 class ReplayLoopError(RuntimeError):
@@ -385,6 +408,7 @@ class ReplayLoopConfig:
     instruction: str
     len_ratio_max: float
     prompt_template: str | None
+    pass1_evidence: str
 
     @classmethod
     def from_values(cls, values: Mapping[str, object]) -> "ReplayLoopConfig":
@@ -519,6 +543,18 @@ class ReplayLoopConfig:
                 )
             _validate_replay_prompt_template(prompt_template)
 
+        # D7 (module docstring's PASS-1 evidence suppression section):
+        # defaults to "arm-default" so every pre-existing config/test that
+        # never sets this key keeps byte-identical behaviour; fails closed
+        # on anything else, the same discipline replay_flag_source above
+        # already carries.
+        pass1_evidence = values.get("replay_pass1_evidence", "arm-default")
+        if pass1_evidence not in _PASS1_EVIDENCE_MODES:
+            raise ReplayLoopError(
+                f"config replay_pass1_evidence must be one of {_PASS1_EVIDENCE_MODES}, "
+                f"got {pass1_evidence!r}"
+            )
+
         return cls(
             logprobs=logprobs,
             flag_low_threshold=flag_low_threshold,
@@ -533,6 +569,7 @@ class ReplayLoopConfig:
             instruction=str(instruction),
             len_ratio_max=float(len_ratio_max),
             prompt_template=str(prompt_template) if prompt_template is not None else None,
+            pass1_evidence=str(pass1_evidence),
         )
 
 
@@ -995,6 +1032,22 @@ class ObsReplayLoopPolicy:
         pass1_exemplar_bank = (
             () if "exemplar_bank" in ARM_VISIBLE_FIELDS[ctx.arm] else None
         )
+        # D7 (module docstring's PASS-1 evidence suppression section):
+        # "suppressed" mirrors the exemplar-bank suppression immediately
+        # above -- emptying the CONTENT, never dropping the key -- but only
+        # when this arm/sample actually carries evidence at all (`evidence
+        # is not None`; a bare-core arm's `evidence` is already `None` here
+        # and stays so regardless of this knob, since bare-core declares
+        # neither evidence field for build_arm_payload to attach). Threaded
+        # into `_slice_parallel_pass` below as a SEPARATE `pass1_evidence`
+        # value, never through `pass1_ctx.evidence` -- that method reads its
+        # own `evidence` parameter, not `ctx.evidence` (see its own call
+        # site in ObsAgentLoopPolicy.run_sample). REPLAY's own evidence
+        # (the `evidence` local variable below) is untouched either way.
+        pass1_evidence_suppressed = (
+            replay_cfg.pass1_evidence == "suppressed" and evidence is not None
+        )
+        pass1_evidence = [] if pass1_evidence_suppressed else evidence
         pass1_ctx = dataclasses.replace(
             ctx,
             adapter=recorder,
@@ -1022,8 +1075,9 @@ class ObsReplayLoopPolicy:
             duration,
             parent_sha256,
             "vad-not-run",
-            evidence,
+            pass1_evidence,
             max_tokens,
+            allow_empty_evidence=pass1_evidence_suppressed,
         )
 
         next_iteration = iteration

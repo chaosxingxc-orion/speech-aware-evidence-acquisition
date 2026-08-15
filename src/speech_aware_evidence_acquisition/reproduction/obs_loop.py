@@ -570,6 +570,7 @@ class ObsAgentLoopPolicy:
     def _slice_parallel_pass(
         self, ctx, cfg, registry, data_root, sample, rate, pcm, duration,
         parent_sha256, engine_descriptor, evidence, max_tokens,
+        *, allow_empty_evidence: bool = False,
     ):
         """Phases of the slice-level dispatch (owner's slice-batching
         direction, 2026-08-12; legality enforced fail-closed in
@@ -582,7 +583,15 @@ class ObsAgentLoopPolicy:
         the skip bound behave byte-compatibly with the sequential path. The
         MODEL_REQUEST/RESPONSE records interleave in arrival order within
         this sample's sink — ids still chain, and the stitch verifier binds
-        by id, not position."""
+        by id, not position.
+
+        ``allow_empty_evidence`` (keyword-only, default ``False`` --
+        ``reproduction.replay_loop``'s ``replay_pass1_evidence="suppressed"``
+        knob, D7 delivery-gate design-gap fix, 2026-08-15): forwarded
+        verbatim to ``build_arm_payload`` below; this method's OWN call site
+        (``run_sample``) never sets it, so every pre-existing call keeps
+        today's behaviour (an evidence-bearing arm still refuses an empty
+        ``evidence``)."""
 
         from concurrent.futures import ThreadPoolExecutor
 
@@ -696,6 +705,7 @@ class ObsAgentLoopPolicy:
                     delta_candidates=(
                         [] if "delta_candidates" in ARM_VISIBLE_FIELDS[ctx.arm] else None
                     ),
+                    allow_empty_evidence=allow_empty_evidence,
                 )
 
             try:

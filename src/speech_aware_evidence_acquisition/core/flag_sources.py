@@ -69,6 +69,26 @@ BAND_LOW = 0.05
 BAND_HIGH = 0.45
 MIN_RARE_WORD_LENGTH = 6
 
+# Word-granularity decomposition (D7 delivery-gate defect fix, ``docs/
+# exposure-ledger.md``'s SAEA-D7-delivery consumption note, 2026-08-15): a
+# candidate word shorter than this never anchors a decomposed match target
+# on its own (mirrors STOPWORDS' spirit for the CANDIDATE side of a match,
+# not just the draft side) -- ``_STOP_FORMS`` below additionally excludes a
+# small closed list of honorific/corporate-suffix forms that would otherwise
+# clear this length bar (e.g. "Inc", "Ltd").
+MIN_CANDIDATE_WORD_LENGTH = 3
+
+# Closed-class honorific/corporate-suffix forms (D7 fix): stripped out of a
+# candidate term's decomposition below so, e.g., "Dr. Todd Brady" yields
+# match targets ``["todd", "brady"]`` (plus the bigram "todd brady"), never
+# "dr" -- ``normalize_term`` already turns "Dr." into "dr" before this set is
+# checked.
+_STOP_FORMS = frozenset(
+    """
+    dr mr mrs ms prof jr sr inc ltd co corp llc
+    """.split()
+)
+
 _VOWELS = frozenset("aeiou")
 _VOICED_PAIRS = frozenset(
     frozenset(pair) for pair in (("b", "p"), ("d", "t"), ("g", "k"), ("v", "f"))
@@ -153,6 +173,41 @@ def _length_prune_ok(la: int, lb: int) -> bool:
     if la == 0 or lb == 0:
         return False
     return abs(la - lb) <= BAND_HIGH * max(la, lb)
+
+
+def _decompose_candidate_words(term: str) -> list[str]:
+    """The constituent NORMALIZED words of one candidate ``term`` that a
+    roster-band query may anchor on (D7 delivery-gate defect fix, ``docs/
+    exposure-ledger.md``'s SAEA-D7-delivery consumption note, 2026-08-15):
+    every raw whitespace-split token of ``term``, normalized via
+    :func:`core.retrieval.normalize_term` (further split on any internal
+    whitespace THAT normalization itself introduces, e.g. a hyphenated
+    token), dropped when it is empty, a closed-class honorific/suffix form
+    (:data:`_STOP_FORMS`), or shorter than :data:`MIN_CANDIDATE_WORD_LENGTH`.
+
+    Order-preserving (adjacent survivors are what :func:`_candidate_bigrams`
+    below pairs) -- "Dr. Todd Brady" decomposes to ``["todd", "brady"]``,
+    "Aldeyra Therapeutics Inc" to ``["aldeyra", "therapeutics"]``. May be
+    empty (e.g. a term that is entirely honorifics/short forms)."""
+
+    words: list[str] = []
+    for raw in term.split():
+        for normalized in normalize_term(raw).split():
+            if not normalized or normalized in _STOP_FORMS:
+                continue
+            if len(normalized) < MIN_CANDIDATE_WORD_LENGTH:
+                continue
+            words.append(normalized)
+    return words
+
+
+def _candidate_bigrams(words: Sequence[str]) -> list[str]:
+    """Adjacent (i, i+1) pairs of already-decomposed candidate words
+    (D7 fix), space-joined -- the granularity a 2-word draft window matches
+    against, mirroring :func:`roster_band_flags`'s own draft-side 2-word
+    window. Empty when ``words`` has fewer than two entries."""
+
+    return [f"{words[i]} {words[i + 1]}" for i in range(len(words) - 1)]
 
 
 class _TargetIndex:
@@ -245,12 +300,18 @@ class RosterBandFlag:
     flag_spans``' own convention), ``candidate``/``distance`` are the
     best-band-matching candidate term and its weighted grapheme distance,
     and ``score`` is ``band_centrality(distance) * rarity`` (module
-    docstring)."""
+    docstring). ``candidate`` is always the ORIGINAL full candidate term
+    (normalized), even when the actual band match landed on one of its
+    decomposed WORDS or an adjacent word bigram (D7 fix,
+    :func:`_decompose_candidate_words`) -- ``matched_form`` is that
+    decomposed form (additive; equal to ``candidate`` whenever a term
+    decomposes to a single word matched directly)."""
 
     span: tuple[int, int]
     candidate: str
     distance: float
     score: float
+    matched_form: str
 
 
 def _overlaps(a: tuple[int, int], b: tuple[int, int]) -> bool:
@@ -264,14 +325,30 @@ def roster_band_flags(
     slice's draft ``words`` (module docstring): every non-stopword draft
     word, and every 2-word window starting at a non-stopword word whose
     second word is also not a stopword, is compared against
-    ``candidate_terms`` (normalized via ``core.retrieval.normalize_term``)
-    through the band-matching machinery above. Greedy non-overlapping
-    selection by descending score (ties broken by earlier span start,
-    mirroring the flag-eval harness's ``budget.select_topk``), truncated to
-    ``max_spans``, then returned in ascending span-start order -- the same
-    "non-overlapping, ascending-start" contract ``core.replay_signals.
-    flag_spans`` already guarantees, since ``reproduction.replay_loop``'s
-    ACCEPT stage splices spans in one left-to-right pass assuming it.
+    ``candidate_terms`` through the band-matching machinery above. Greedy
+    non-overlapping selection by descending score (ties broken by earlier
+    span start, mirroring the flag-eval harness's ``budget.select_topk``),
+    truncated to ``max_spans``, then returned in ascending span-start order
+    -- the same "non-overlapping, ascending-start" contract
+    ``core.replay_signals.flag_spans`` already guarantees, since
+    ``reproduction.replay_loop``'s ACCEPT stage splices spans in one
+    left-to-right pass assuming it.
+
+    WORD-GRANULARITY MATCHING (D7 delivery-gate defect fix, ``docs/
+    exposure-ledger.md``'s SAEA-D7-delivery consumption note, 2026-08-15):
+    each ``candidate_terms`` entry is DECOMPOSED into its constituent words
+    (:func:`_decompose_candidate_words`, honorifics/corporate suffixes
+    stripped, words shorter than :data:`MIN_CANDIDATE_WORD_LENGTH` dropped)
+    before matching -- a multi-word candidate like "Aldeyra Therapeutics
+    Inc" no longer has to band-match a 1-2 word draft span AS A WHOLE
+    (impossible by length alone; the pre-fix defect measured 0 acceptances
+    end to end). A single draft word matches against the decomposed WORDS
+    only; a 2-word draft window matches against BOTH those words AND the
+    term's adjacent word BIGRAMS (:func:`_candidate_bigrams`) -- whichever
+    yields the higher :func:`band_centrality`. Every :class:`RosterBandFlag`
+    still reports the ORIGINAL full term as ``candidate`` (module docstring
+    -- unchanged trace/test contract), with the actual decomposed form that
+    matched additionally in ``matched_form``.
 
     Returns an empty list (never raises) when ``words``/``candidate_terms``
     is empty or nothing lands in-band -- SCORE already treats zero flags as
@@ -282,19 +359,55 @@ def roster_band_flags(
     if not words or not candidate_terms:
         return []
 
-    normalized_targets = [normalize_term(term) for term in candidate_terms]
-    index = _TargetIndex(normalized_targets)
+    # D7 fix: index DECOMPOSED words/bigrams, not whole candidate strings
+    # (see this function's own docstring above) -- target_to_term maps each
+    # decomposed form back to its ORIGINAL (normalized, whole) term for the
+    # trace-facing `candidate` field; first-registered term wins a shared
+    # decomposed form, deterministic given `candidate_terms`' own order.
+    word_targets: dict[str, None] = {}
+    bigram_targets: dict[str, None] = {}
+    target_to_term: dict[str, str] = {}
+    for term in candidate_terms:
+        full_term = normalize_term(term)
+        decomposed = _decompose_candidate_words(term)
+        for word in decomposed:
+            word_targets.setdefault(word, None)
+            target_to_term.setdefault(word, full_term)
+        for bigram in _candidate_bigrams(decomposed):
+            bigram_targets.setdefault(bigram, None)
+            target_to_term.setdefault(bigram, full_term)
+
+    word_index = _TargetIndex(list(word_targets))
+    bigram_index = _TargetIndex(list(bigram_targets))
     words = list(words)
     normalized_words = [normalize_term(word) for word in words]
     sentence_initial = _sentence_initial_flags(words)
     rarity_model = _RarityModel(counts=Counter(w for w in normalized_words if w))
 
-    match_cache: dict[str, tuple[str, float] | None] = {}
+    match_cache: dict[tuple[str, bool], tuple[str, float] | None] = {}
 
-    def lookup(text: str) -> tuple[str, float] | None:
-        if text not in match_cache:
-            match_cache[text] = index.best_band_match(text)
-        return match_cache[text]
+    def lookup(text: str, *, allow_bigram: bool) -> tuple[str, float] | None:
+        """Best band match for ``text`` (module docstring's WORD-GRANULARITY
+        MATCHING section): always checks ``word_index``; a 2-word draft
+        window (``allow_bigram=True``) ALSO checks ``bigram_index``, keeping
+        whichever candidate has the higher :func:`band_centrality`."""
+
+        cache_key = (text, allow_bigram)
+        if cache_key not in match_cache:
+            best: tuple[str, float] | None = None
+            best_centrality = -1.0
+            lookups = (word_index.best_band_match(text),)
+            if allow_bigram:
+                lookups += (bigram_index.best_band_match(text),)
+            for found in lookups:
+                if found is None:
+                    continue
+                centrality = band_centrality(found[1])
+                if centrality > best_centrality:
+                    best_centrality = centrality
+                    best = found
+            match_cache[cache_key] = best
+        return match_cache[cache_key]
 
     def word_rarity(i: int) -> float:
         capitalized = words[i][:1].isupper() and not sentence_initial[i]
@@ -308,22 +421,34 @@ def roster_band_flags(
         w = normalized_words[i]
         if not w or w in STOPWORDS:
             continue
-        match = lookup(w)
+        match = lookup(w, allow_bigram=False)
         if match is not None:
             target, distance = match
             score = band_centrality(distance) * word_rarity(i)
             candidates.append(
-                RosterBandFlag(span=(i, i + 1), candidate=target, distance=distance, score=score)
+                RosterBandFlag(
+                    span=(i, i + 1),
+                    candidate=target_to_term[target],
+                    distance=distance,
+                    score=score,
+                    matched_form=target,
+                )
             )
         w2 = normalized_words[i + 1] if i + 1 < n else None
         if w2 and w2 not in STOPWORDS:
             window = f"{w} {w2}"
-            match2 = lookup(window)
+            match2 = lookup(window, allow_bigram=True)
             if match2 is not None:
                 target, distance = match2
                 score = band_centrality(distance) * min(word_rarity(i), word_rarity(i + 1))
                 candidates.append(
-                    RosterBandFlag(span=(i, i + 2), candidate=target, distance=distance, score=score)
+                    RosterBandFlag(
+                        span=(i, i + 2),
+                        candidate=target_to_term[target],
+                        distance=distance,
+                        score=score,
+                        matched_form=target,
+                    )
                 )
 
     ordered = sorted(candidates, key=lambda flag: (-flag.score, flag.span[0], flag.span[1]))

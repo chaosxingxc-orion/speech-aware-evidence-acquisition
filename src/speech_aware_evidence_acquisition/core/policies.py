@@ -29,6 +29,7 @@ def build_arm_payload(
     retrieval_query: str | None = None,
     exemplar_bank: Sequence[Mapping[str, object]] | None = None,
     delta_candidates: Sequence[Mapping[str, object]] | None = None,
+    allow_empty_evidence: bool = False,
 ) -> dict[str, object]:
     if arm not in ARM_VISIBLE_FIELDS:
         raise ArmError(f"unknown arm {arm!r}; D2-frozen arms are {sorted(ARM_VISIBLE_FIELDS)}")
@@ -56,9 +57,20 @@ def build_arm_payload(
         if evidence is not None or retrieval_query is not None:
             raise ArmError(f"arm {arm!r} carries no evidence and no retrieval query")
     else:
-        if not evidence:
+        # allow_empty_evidence (reproduction.replay_loop's replay_pass1_evidence
+        # ="suppressed" knob, D7 delivery-gate design-gap fix, 2026-08-15):
+        # default False keeps every pre-existing caller's behaviour byte
+        # -identical -- an evidence-bearing arm still refuses a missing or
+        # empty evidence list. Explicitly opting in (never the default) lets
+        # a caller attach the arm's declared evidence KEYS with EMPTY
+        # content -- the same "field present, content empty" shape
+        # exemplar_bank/delta_candidates below already allow for any caller,
+        # deliberately narrower here since ordinary evidence resolution
+        # failures (a sample with no evidence at all) must keep failing
+        # loud rather than silently downgrading to an empty tier.
+        if not evidence and not allow_empty_evidence:
             raise ArmError(f"arm {arm!r} requires non-empty evidence")
-        validated = [item.validate() for item in evidence]
+        validated = [item.validate() for item in evidence or []]
         provenance = [item.provenance_view() for item in validated]
         if carries_supplied_evidence:
             if retrieval_query is not None:
