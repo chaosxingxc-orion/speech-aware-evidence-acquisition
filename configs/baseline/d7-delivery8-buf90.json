@@ -1,0 +1,33 @@
+{
+  "arm": "fixed-legal-context-replay",
+  "policy": "obs-replay-loop",
+  "evidence_source": "derived-candidates",
+  "evidence_mismatch": false,
+  "scorers": [
+    "asr-wer",
+    "cost"
+  ],
+  "task_instruction": "The context above is a short reference list of rare terms and names that MAY occur in this call, with correct spelling and capitalization. It is reference material ONLY, so you can spell them correctly IF you actually hear them. Transcribe the speech verbatim exactly as spoken. Never insert, repeat, or add any listed term you do not clearly hear in the audio. Output only the transcript text.",
+  "obs_buffer_seconds": 90,
+  "obs_min_advance_seconds": 20,
+  "obs_max_advance_seconds": 55,
+  "obs_silence_snap_seconds": 2.0,
+  "obs_fallback_advance_seconds": 50,
+  "obs_boundary_mode": "fixed",
+  "obs_vad": "energy",
+  "obs_vad_trim_min_seconds": 0,
+  "obs_preprocess": [],
+  "obs_condition_tail_chars": 0,
+  "obs_slice_retry_max": 1,
+  "obs_slice_skip_max": 1,
+  "obs_batch_samples": 1,
+  "obs_batch_slices": 8,
+  "replay_logprobs": true,
+  "replay_trigger": "both",
+  "replay_flag_low_threshold": -1.2,
+  "replay_flag_min_run": 2,
+  "replay_max_spans_per_slice": 2,
+  "replay_instruction": "The context above lists candidate terms for a passage that was hard to hear, and any reference clips demonstrate how they sound - reference material ONLY. Listen to the target clip again and transcribe it verbatim exactly as spoken, using a listed spelling ONLY if you clearly hear that term. Never insert anything you do not hear. Output only the transcript text.",
+  "evidence_materialization_id": "p1-metadata-v1",
+  "replay_flag_source": "roster-band"
+}

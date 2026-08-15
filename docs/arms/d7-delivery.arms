@@ -1,0 +1,13 @@
+# SAEA-D7-delivery — the Phase-1 delivery-gate probe (review wf_c21a2756;
+# plan amendment 39200dd). obs-replay-loop with replay_flag_source=
+# roster-band (872c114) + p1-metadata-v1 candidates. D6 lever-(iv)
+# discharge: pass-1 exemplar suppression landed at e6ac359 AND this arm
+# resolves no exemplar bank. Provenance: span_source=roster-band-flag
+# (legal); reference_source=p1-metadata-v1 (legal). PASS CRITERIA ARE
+# TRACE COUNTERS ONLY (no WER inference clause): (a) replay acceptance
+# count > 0 with the matched candidate verifiably in the delivered
+# payload; (b) delivered-reference-on-true-error fraction >= 0.15
+# (offline gold-aligned read, discovery-side). Below floor -> re-tune
+# band/K before any campaign.
+# run_id:baseline_fragment
+SAEA-D7-delivery:d7-delivery8-buf90
