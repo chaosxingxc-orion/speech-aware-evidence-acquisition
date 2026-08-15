@@ -242,3 +242,57 @@ class TestRosterBandEmptyInputs:
 
     def test_empty_candidates_returns_empty(self):
         assert roster_band_flags(["Aldera"], [], max_spans=2) == []
+
+
+# ---------------------------------------------------------------------------
+# (c) whole-SAMPLE df-rarity (D7C fix, docs/exposure-ledger.md's
+# SAEA-D7C-delivery consumption note, 2026-08-15): the in-loop score lacked
+# the offline harness's df-rarity term, so a common word recurring across
+# many slices of the same call (e.g. "operating"/"operations") out-competed
+# a same-slice hapax name for the K budget -- this slice's OWN local count
+# of each looks identically rare without whole-draft counts.
+# ---------------------------------------------------------------------------
+
+
+class TestRosterBandDfRarity:
+    _WORDS = "we discussed operating costs with Deery again".split()
+    _CANDIDATES = ["Operations", "Reedy"]
+
+    def test_without_df_the_common_word_wins_the_k_budget(self):
+        # Regression: df=None (the default) is byte-identical to the
+        # pre-D7C behaviour -- both "operating" and "Deery" occur once in
+        # THIS slice, so the local-count rarity ties them at 1.0 and
+        # "operating"'s much higher band centrality (0.625 vs 0.125, a
+        # near-exact match to "operations") wins the K=1 budget -- exactly
+        # the insertion-harm shape the fix addresses.
+        flags = roster_band_flags(self._WORDS, self._CANDIDATES, max_spans=1)
+        assert len(flags) == 1
+        assert flags[0].candidate == "operations"
+
+    def test_with_whole_draft_df_the_rare_name_wins_the_k_budget(self):
+        # Fix: df carries the WHOLE-SAMPLE pass-1 draft's own word counts --
+        # "operating" recurs 20x across the call (this slice sees only one
+        # of those 20), "deery" is a true hapax -- and the rare name now
+        # wins the same K=1 budget instead.
+        df = {"operating": 20, "deery": 1}
+        flags = roster_band_flags(self._WORDS, self._CANDIDATES, max_spans=1, df=df)
+        assert len(flags) == 1
+        assert flags[0].candidate == "reedy"
+
+    def test_df_missing_entry_falls_back_to_a_hapax_count_of_one(self):
+        # A word absent from `df` (should not happen in practice -- df is
+        # built FROM this same sample's words -- but must never raise or
+        # divide by zero) is treated as count 1, the maximally-rare case --
+        # both words fall back identically here (df={} has neither), which
+        # reproduces the SAME "operating wins" outcome as df=None (band
+        # centrality alone decides once rarity ties at 1.0 for both).
+        flags = roster_band_flags(self._WORDS, self._CANDIDATES, max_spans=1, df={})
+        assert len(flags) == 1
+        assert flags[0].candidate == "operations"
+
+    def test_df_is_keyword_only_and_optional(self):
+        # Signature backward-compatibility (the task's own requirement):
+        # every pre-existing positional 3-arg call keeps its old meaning.
+        assert roster_band_flags(["Aldera"], ["Aldeyra"], 5) == roster_band_flags(
+            ["Aldera"], ["Aldeyra"], 5, df=None
+        )

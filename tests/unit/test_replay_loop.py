@@ -30,6 +30,7 @@ from speech_aware_evidence_acquisition.reproduction.replay_loop import (
     _flag_spans_for_slice,
     _localize_replay_words,
     _matching_exemplars,
+    _resolve_original_cased_term,
     _word_logprob_scores,
 )
 
@@ -552,6 +553,31 @@ class TestCorrectionPool:
     def test_no_matches_leaves_the_pool_untouched(self):
         pool = _correction_pool(["merger", "guidance"], ["acme", "zzz"])
         assert pool == ["merger", "guidance"]
+
+
+class TestResolveOriginalCasedTerm:
+    """D7C fix: recover the ORIGINAL, materialization-cased candidate string
+    for a ``RosterBandFlag.candidate`` (already normalized), never deliver
+    the normalized form itself."""
+
+    def test_resolves_the_original_cased_multi_word_term(self):
+        # (d): "Mr. Joshua Reed" file form -> delivered as the file's own
+        # line content, not the normalized "mr joshua reed".
+        resolved = _resolve_original_cased_term(
+            ["Mr. Joshua Reed", "Aldeyra"], "mr joshua reed"
+        )
+        assert resolved == "Mr. Joshua Reed"
+
+    def test_first_match_wins_on_a_normalization_collision(self):
+        resolved = _resolve_original_cased_term(
+            ["Aldeyra,", "ALDEYRA"], "aldeyra"
+        )
+        assert resolved == "Aldeyra,"
+
+    def test_falls_back_to_the_normalized_target_when_nothing_matches(self):
+        # Should not happen in practice (module docstring), but never raises.
+        resolved = _resolve_original_cased_term(["Aldeyra"], "zzzzz")
+        assert resolved == "zzzzz"
 
 
 class TestLocalizeReplayWords:
@@ -1354,11 +1380,10 @@ class TestRosterBandFlagSourceIntegration:
         # to a single word matched directly.
         assert record["replay_flag_matched_form"] == "aldeyra"
         assert 0.05 <= record["replay_flag_distance"] <= 0.45
-        # RETRIEVE correction-filter pass-through (module docstring's
-        # RETRIEVE section note): the flagged word ("Aldera") is NOT
-        # verbatim-equal to the matched candidate ("Aldeyra"), so the
-        # correction filter does not drop it -- retrieve() finds it for
-        # real, the same candidate roster-band itself already matched.
+        # D7C fix (module docstring's D7C paragraph): a matched roster-band
+        # window's delivery set IS the flag's own candidate -- retrieve()
+        # never runs for this window at all, so this is the SCORE stage's
+        # own match, resolved to its original cased evidence form.
         assert [c["text"] for c in record["replay_candidates"]] == ["Aldeyra"]
         assert record["replay_accepted"] is True
         # Splice landed in the final stitched text -- the LOCALIZED run (one
@@ -1375,38 +1400,52 @@ class TestRosterBandFlagSourceIntegration:
         """No evidence at all -- the ONLY candidate source is the exemplar
         bank's own label, proving requirement 2's "ALSO match against
         exemplar-bank labels" independently of RETRIEVE's own pack-term
-        pool. ``_matching_exemplars`` (an existing, unrelated mechanism)
-        only attaches on an EXACT normalized-term match against a retrieved
-        text candidate or the flagged word itself, neither of which applies
-        here ("Aldera" != "aldeyra"), so the REPLAY call is DEFECT-2 skipped
-        -- but the roster-band SCORE stage still flagged the span from the
-        exemplar label alone, and that fact is recorded in the trace."""
+        pool.
+
+        D7C fix update (module docstring's D7C paragraph): pre-fix,
+        ``_matching_exemplars`` (an existing, unrelated mechanism) only
+        attached on an EXACT normalized-term match against a RETRIEVED text
+        candidate or the flagged word itself -- neither applied here
+        ("Aldera" != "aldeyra") because ``retrieve()`` never ran at all (no
+        pack pool to search), so the REPLAY call was DEFECT-2 skipped. Now
+        the roster-band bypass delivers "Aldeyra" directly regardless of
+        pack pool emptiness, which ALSO feeds ``exemplar_match_terms`` --
+        so both the delta-candidate and exemplar tiers attach and a real
+        REPLAY call happens (the arm must declare ``delta_candidates`` too,
+        the same production pairing ``"fixed-legal-context-replay"``
+        always carries alongside ``exemplar_bank``)."""
 
         monkeypatch.setitem(
             ARM_VISIBLE_FIELDS,
             "bare-core",
-            ARM_VISIBLE_FIELDS["bare-core"] + ("exemplar_bank",),
+            ARM_VISIBLE_FIELDS["bare-core"] + ("exemplar_bank", "delta_candidates"),
         )
         exemplar_bank = ({"media_relpath": "derived/exemplar-pairs/mc2-v1/x/aldeyra.wav", "label": "Aldeyra"},)
         world = _World(
             tmp_path,
             monkeypatch,
             pcm=_noise(40.0),
-            texts=["we spoke with Aldera about growth"],  # REPLAY never fires
+            texts=["we spoke with Aldera about growth", "corrected replay text"],
             values=self._values(),
             evidence=[],  # no pack terms at all -- only the exemplar label
             exemplar_bank=exemplar_bank,
         )
         outcome = world.run()
 
-        assert len(world.adapter.payloads) == 1  # PASS 1 only; REPLAY skipped
+        assert len(world.adapter.payloads) == 2  # PASS 1's one slice + REPLAY
         records = world.replay_records()
         assert len(records) == 1
         record = records[0]
         assert record["replay_flag_source"] == "roster-band"
         assert record["replay_flag_matched_candidate"] == "aldeyra"
-        assert record["replay_reject_reason"] == "no-candidates"
-        assert outcome.text == "we spoke with Aldera about growth"
+        assert record["replay_reject_reason"] is None
+        # The bypass-delivered candidate is a text tier (from the exemplar
+        # label alone, no pack terms at all) AND, because its normalized
+        # form matches the exemplar's own label, an exemplar tier too.
+        assert [c["text"] for c in record["replay_candidates"]] == ["Aldeyra"]
+        assert record["replay_exemplars_attached"] == ["Aldeyra"]
+        assert record["replay_accepted"] is True
+        assert outcome.text == "we spoke with replay about growth"
 
     def test_no_matching_candidate_flags_nothing_and_makes_zero_replay_calls(
         self, tmp_path, monkeypatch
@@ -1471,6 +1510,140 @@ class TestRosterBandFlagSourceIntegration:
         outcome = world.run()
         assert len(world.adapter.payloads) == 1  # PASS 1 only, zero REPLAY calls
         assert outcome.text == "we spoke with Aldera about growth"
+
+
+# ---------------------------------------------------------------------------
+# D7C delivery-gate fix (``docs/exposure-ledger.md``'s SAEA-D7C-delivery
+# consumption note, 2026-08-15, measured at commit 7295b39): a roster-band
+# matched window's own delivery set IS its SCORE-stage candidate -- RETRIEVE's
+# independent fuzzy metric is bypassed entirely for such a window, never
+# re-run against the flagged words.
+# ---------------------------------------------------------------------------
+
+
+class TestD7CMatchedRosterBandCandidateDelivery:
+    def _values(self, **overrides):
+        base = {
+            "evidence_source": "conec-contexts",
+            "replay_trigger": "logprob",
+            "replay_flag_source": "roster-band",
+        }
+        base.update(overrides)
+        return _fixed_mode_values(**base)
+
+    def test_matched_candidate_delivers_even_when_retrieve_would_have_rejected_it(
+        self, tmp_path, monkeypatch
+    ):
+        # (a) end-to-end, the measured D7C shape: "Deery" (misheard) against
+        # roster candidate "Reedy" lands in-band under the weighted-grapheme
+        # metric (distance 0.4) -- SCORE flags it -- but core.retrieval's
+        # independent fuzzy metric scores the SAME pair at 0.3, below a
+        # replay_min_score=0.5 gate: pre-fix, the second retrieve() call
+        # rejected the flag's own match, correction_pool/retrieved came back
+        # empty, and the window died at "no-candidates" despite SCORE having
+        # already found the real correction. Post-fix, the matched candidate
+        # is delivered directly -- no retrieve() call happens at all.
+        monkeypatch.setitem(
+            ARM_VISIBLE_FIELDS,
+            "bare-core",
+            ARM_VISIBLE_FIELDS["bare-core"] + ("delta_candidates",),
+        )
+        evidence = [
+            EvidenceItem(
+                evidence_id="conec/4000001",
+                source_uri="conec://earnings21/contexts/4000001.txt",
+                content="Reedy",
+                provenance={"lock_key": "conec", "relpath": "x.txt", "sha256": "0" * 64},
+            )
+        ]
+        world = _World(
+            tmp_path,
+            monkeypatch,
+            pcm=_noise(40.0),
+            texts=["we spoke with Deery about growth", "corrected replay text"],
+            values=self._values(replay_min_score=0.5),
+            evidence=evidence,
+        )
+        outcome = world.run()
+
+        assert len(world.adapter.payloads) == 2  # PASS 1's one slice + REPLAY
+        records = world.replay_records()
+        assert len(records) == 1
+        record = records[0]
+        assert record["replay_pass1_text"] == "Deery"
+        assert record["replay_trigger"] == "roster-band"
+        assert record["replay_flag_matched_candidate"] == "reedy"
+        # The delivered candidate is the flag's own match, resolved to its
+        # ORIGINAL cased evidence form ("Reedy"), never the normalized
+        # "reedy" -- and it is delivered even though a direct
+        # core.retrieval.retrieve() call at this test's own min_score would
+        # have rejected it (verified below).
+        assert [c["text"] for c in record["replay_candidates"]] == ["Reedy"]
+        assert record["replay_reject_reason"] != "no-candidates"
+        assert record["replay_accepted"] is True
+        assert outcome.text == "we spoke with replay about growth"
+
+        # Sanity: prove the OLD path really would have rejected this pair --
+        # the defect this test guards against, not a tautology.
+        from speech_aware_evidence_acquisition.core.retrieval import retrieve
+
+        assert retrieve(["Deery"], ["Reedy"], k=3, min_score=0.5) == []
+
+    def test_wps_triggered_window_is_unaffected_and_still_uses_retrieve(
+        self, tmp_path, monkeypatch
+    ):
+        # (b) regression: a "wps"-triggered window (no matched candidate,
+        # trigger="wps" so the roster-band matching family never runs at
+        # all) still goes through the pre-existing correction-pool/
+        # retrieve() path, even under replay_flag_source="roster-band" --
+        # the D7C bypass only ever applies to a window band_detail_by_span
+        # actually carries a match for.
+        monkeypatch.setitem(
+            ARM_VISIBLE_FIELDS,
+            "bare-core",
+            ARM_VISIBLE_FIELDS["bare-core"] + ("delta_candidates",),
+        )
+        world = _World(
+            tmp_path,
+            monkeypatch,
+            pcm=_noise(40.0),
+            texts=["we spoke with Aldera about growth", "corrected replay text"],
+            values=self._values(replay_trigger="wps"),
+            evidence=self._EVIDENCE_ALDEYRA,
+        )
+        outcome = world.run()
+
+        assert len(world.adapter.payloads) == 2  # PASS 1's one slice + REPLAY
+        records = world.replay_records()
+        assert len(records) == 1
+        record = records[0]
+        assert record["replay_trigger"] == "wps"
+        # No SCORE-stage band match backs a "wps" span -- these stay None,
+        # proving the bypass branch never fired for this window.
+        assert record["replay_flag_matched_candidate"] is None
+        assert record["replay_flag_matched_form"] is None
+        assert record["replay_flag_distance"] is None
+        # retrieve() genuinely ran and found "Aldeyra" for real (the SAME
+        # single-candidate pool the pre-existing roster-band happy path
+        # already exercises through retrieve()).
+        assert [c["text"] for c in record["replay_candidates"]] == ["Aldeyra"]
+        # The "wps" flagged span is the whole 6-word slice (module
+        # docstring's SCORE section: "there is no finer-grained catastrophe
+        # location"), so the padded localize interval spans the entire
+        # replay window and all 3 replay words localize (unlike the narrow
+        # single-word roster-band spans elsewhere in this file).
+        assert record["replay_localized_words"] == ["corrected", "replay", "text"]
+        assert record["replay_accepted"] is True
+        assert outcome.text == "corrected replay text"
+
+    _EVIDENCE_ALDEYRA = [
+        EvidenceItem(
+            evidence_id="conec/4000001",
+            source_uri="conec://earnings21/contexts/4000001.txt",
+            content="Aldeyra Therapeutics reported strong quarterly results",
+            provenance={"lock_key": "conec", "relpath": "x.txt", "sha256": "0" * 64},
+        )
+    ]
 
 
 # ---------------------------------------------------------------------------
@@ -1556,6 +1729,48 @@ class TestDerivedCandidatesRosterBand:
         artifact_path = world.run_dir / f"{RUN_ID}.replay-derivation.{SAMPLE_ID}.json"
         document = json.loads(artifact_path.read_text(encoding="utf-8"))
         assert document["replay_pack_terms_empty_note"] is None
+
+    def test_delivered_candidate_is_the_files_own_cased_line_not_the_normalized_form(
+        self, tmp_path, monkeypatch
+    ):
+        """(d) D7C fix: a multi-word, punctuated candidate line
+        ("Mr. Joshua Reed") is delivered EXACTLY as it appears in the
+        derived-candidates file -- the ``RosterBandFlag.candidate`` a
+        matched roster-band window carries is already normalized ("mr
+        joshua reed"); the delivery set must resolve back to the file's own
+        line content, never hand that normalized string to the model."""
+
+        monkeypatch.setitem(
+            ARM_VISIBLE_FIELDS,
+            "bare-core",
+            ARM_VISIBLE_FIELDS["bare-core"] + ("delta_candidates",),
+        )
+        world = _World(
+            tmp_path,
+            monkeypatch,
+            pcm=_noise(40.0),
+            texts=["we met with Joshua Reid yesterday afternoon", "corrected replay text"],
+            values=self._values(),
+            evidence=[],
+        )
+        self._write_candidates_file(world, ["Mr. Joshua Reed"])
+        outcome = world.run()
+
+        assert len(world.adapter.payloads) == 2
+        records = world.replay_records()
+        assert len(records) == 1
+        record = records[0]
+        assert record["replay_pass1_text"] == "Reid"
+        assert record["replay_flag_source"] == "roster-band"
+        # RosterBandFlag.candidate is already normalized ...
+        assert record["replay_flag_matched_candidate"] == "mr joshua reed"
+        assert record["replay_flag_matched_form"] == "reed"
+        # ... but the DELIVERED text is the file's own cased line, not that
+        # normalized form and not the bare matched_form either.
+        assert [c["text"] for c in record["replay_candidates"]] == ["Mr. Joshua Reed"]
+        assert record["replay_accepted"] is True
+        assert record["replay_localized_words"] == ["replay"]
+        assert outcome.text == "we met with Joshua replay yesterday afternoon"
 
     def test_missing_materialization_file_fails_closed(self, tmp_path, monkeypatch):
         """(b) fail-closed: roster-band + a declared evidence_source whose

@@ -135,6 +135,21 @@ RETRIEVE: query = the flagged words; candidates = this sample's evidence
 text, tokenized via ``core.candidate_materializer.pack_candidates`` keyed by
 the run's own ``evidence_source`` (an evidence_source outside that module's
 two known pack shapes yields an honestly empty pool, never an error).
+
+D7C delivery-gate fix (``docs/exposure-ledger.md``'s SAEA-D7C-delivery
+consumption note, 2026-08-15, measured at commit 7295b39): a roster-band
+flagged window already carries SCORE's own matched candidate
+(``RosterBandFlag.candidate``/``matched_form``) -- re-searching the pool
+here with ``retrieve``'s different fuzzy metric dropped that very match for
+107/117 windows in flight, including all three known true errors. Such a
+window now delivers that candidate directly -- resolved to its ORIGINAL
+cased materialization form, never the normalized one -- bypassing this
+section's ``retrieve`` call entirely; a ``"wps"``-triggered window (no
+matched candidate) is unaffected and still follows the paragraph below.
+``core.flag_sources``' own df-rarity term was widened the same day to the
+whole-SAMPLE pass-1 draft's word counts, not just this one slice's, for the
+matching reason (that module's own docstring).
+
 CORRECTION SEMANTICS (DEFECT 2 fix, first hit SAEA-MM3-replay 2026-08-14 --
 flagged "conditions and" retrieved its own verbatim "conditions" as the top
 candidate at score 1.0, burying the real corrections "condition"/
@@ -289,6 +304,7 @@ from __future__ import annotations
 import dataclasses
 import hashlib
 import math
+from collections import Counter
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Mapping, Sequence
@@ -743,6 +759,8 @@ def _flag_spans_for_slice_roster_band(
     candidate_terms: Sequence[str],
     audio_seconds: float,
     cfg: ReplayLoopConfig,
+    *,
+    df: Mapping[str, int] | None = None,
 ) -> tuple[list[tuple[tuple[int, int], str]], dict[tuple[int, int], RosterBandFlag]]:
     """roster-band counterpart to :func:`_flag_spans_for_slice` (D5, module
     docstring's FLAG SOURCES section): the ``"wps"`` family is IDENTICAL
@@ -755,7 +773,11 @@ def _flag_spans_for_slice_roster_band(
     same ``(span, trigger_label)`` list shape PLUS a ``span ->
     RosterBandFlag`` detail map (the matched candidate term / distance the
     trace record needs, module docstring's Trace requirement) -- a
-    ``"wps"``-only span carries no detail entry."""
+    ``"wps"``-only span carries no detail entry.
+
+    ``df`` (D7C fix, module docstring's D7C paragraph): the whole-SAMPLE
+    pass-1 draft word-count table, threaded straight through to
+    ``roster_band_flags`` -- see that function's own docstring."""
 
     labels: dict[tuple[int, int], set[str]] = {}
     detail: dict[tuple[int, int], RosterBandFlag] = {}
@@ -764,7 +786,7 @@ def _flag_spans_for_slice_roster_band(
         if is_catastrophic(wps):
             labels.setdefault((0, len(words)), set()).add("wps")
     if cfg.trigger in ("logprob", "both") and words and candidate_terms:
-        for flag in roster_band_flags(words, candidate_terms, cfg.max_spans_per_slice):
+        for flag in roster_band_flags(words, candidate_terms, cfg.max_spans_per_slice, df=df):
             labels.setdefault(flag.span, set()).add("roster-band")
             detail[flag.span] = flag
     ordered = sorted(labels)[: cfg.max_spans_per_slice]
@@ -870,6 +892,29 @@ def _correction_pool(candidates: Sequence[str], flagged_words: Sequence[str]) ->
 
     flagged_forms = {normalize_term(word) for word in flagged_words}
     return [term for term in candidates if normalize_term(term) not in flagged_forms]
+
+
+def _resolve_original_cased_term(candidate_terms: Sequence[str], normalized_target: str) -> str:
+    """D7C fix (module docstring's D7C paragraph): the ORIGINAL,
+    materialization-cased string in ``candidate_terms`` whose
+    ``core.retrieval.normalize_term`` form equals ``normalized_target`` --
+    i.e. the exact ``RosterBandFlag.candidate`` a matched roster-band window
+    is about to deliver, resolved back to the file/evidence line it came
+    from rather than delivering the already-normalized (lowercased,
+    depunctuated) form. First match wins when two distinct original strings
+    normalize identically, deterministic given ``candidate_terms``' own
+    order (mirroring ``core.flag_sources.roster_band_flags``'s own
+    first-registered-term-wins tie rule for a shared decomposed form).
+    Falls back to ``normalized_target`` itself when no match is found --
+    should not happen in practice, since ``normalized_target`` always
+    originates from one of these SAME ``candidate_terms`` via
+    ``roster_band_flags``, but this stays a safe, non-raising default rather
+    than an assertion a caller has to guard against."""
+
+    for term in candidate_terms:
+        if normalize_term(term) == normalized_target:
+            return term
+    return normalized_target
 
 
 def _localize_replay_words(
@@ -1155,6 +1200,23 @@ class ObsReplayLoopPolicy:
         replay_window_records: list[dict[str, object]] = []
         pack_terms_cache: list[str] | None = None
         pack_terms_empty_note: str | None = None
+        # D7C fix (module docstring's D7C paragraph, core.flag_sources'
+        # own docstring): the whole-SAMPLE pass-1 draft's own normalized
+        # word-count table -- built ONCE, here, from the PRISTINE
+        # `accepted_spans` PASS 1 just returned (before this loop starts
+        # splicing REPLAY text back into it below) -- so a word recurring
+        # across MULTIPLE slices reads as common even though any one
+        # slice's own local count of it may be 1. Threaded into every
+        # roster-band SCORE call for this sample, never recomputed per
+        # slice.
+        sample_word_df: Counter[str] = Counter()
+        for pass1_transcript in accepted_spans:
+            if not pass1_transcript:
+                continue
+            for pass1_word in pass1_transcript.split():
+                normalized_pass1_word = normalize_term(pass1_word)
+                if normalized_pass1_word:
+                    sample_word_df[normalized_pass1_word] += 1
 
         for slot_index, (transcript, record) in enumerate(zip(accepted_spans, slice_records)):
             if not transcript:
@@ -1199,7 +1261,7 @@ class ObsReplayLoopPolicy:
                         "(configuration/materialization error)"
                     )
                 spans, band_detail_by_span = _flag_spans_for_slice_roster_band(
-                    words, candidate_terms, record.audio_seconds, replay_cfg
+                    words, candidate_terms, record.audio_seconds, replay_cfg, df=sample_word_df
                 )
             else:
                 word_scores: list[float] | None = None
@@ -1242,21 +1304,45 @@ class ObsReplayLoopPolicy:
                 # span even under roster-band mode.
                 band_flag = band_detail_by_span.get(span)
 
-                # RETRIEVE (DEFECT 2 fix, module docstring's CORRECTION
-                # SEMANTICS note): drop any pack candidate the flagged run
-                # already says verbatim BEFORE retrieve() ever scores it.
                 query_terms = flagged_words
-                correction_pool = (
-                    _correction_pool(pack_terms_cache, query_terms) if pack_terms_cache else []
-                )
-                retrieved: list[tuple[str, float]] = []
-                if correction_pool and query_terms:
-                    try:
-                        retrieved = retrieve(
-                            query_terms, correction_pool, replay_cfg.k, replay_cfg.min_score
-                        )
-                    except RetrievalError:
-                        retrieved = []
+                if band_flag is not None:
+                    # D7C fix (module docstring's D7C paragraph): this
+                    # window's own SCORE-stage weighted-grapheme band match
+                    # IS its delivery set -- re-searching the pool below
+                    # with retrieve()'s different fuzzy metric is exactly
+                    # what dropped 107/117 matched windows in flight,
+                    # including all three known true errors (measured at
+                    # commit 7295b39). `candidate_terms` here is the SAME
+                    # roster-band candidate/target pool this slice's SCORE
+                    # stage already searched (set above, in scope for the
+                    # whole slice iteration whenever flag_source ==
+                    # "roster-band" -- the only case band_flag can be
+                    # non-None). The score recorded alongside it is the
+                    # band flag's own (band_centrality * rarity), not a
+                    # retrieve() score -- retrieve() never runs for this
+                    # window at all.
+                    resolved_candidate = _resolve_original_cased_term(
+                        candidate_terms, band_flag.candidate
+                    )
+                    retrieved = [(resolved_candidate, band_flag.score)]
+                else:
+                    # RETRIEVE (DEFECT 2 fix, module docstring's CORRECTION
+                    # SEMANTICS note): drop any pack candidate the flagged
+                    # run already says verbatim BEFORE retrieve() ever
+                    # scores it. Unchanged for a "wps"-triggered window
+                    # (no matched candidate, module docstring's D7C
+                    # paragraph) regardless of flag_source.
+                    correction_pool = (
+                        _correction_pool(pack_terms_cache, query_terms) if pack_terms_cache else []
+                    )
+                    retrieved = []
+                    if correction_pool and query_terms:
+                        try:
+                            retrieved = retrieve(
+                                query_terms, correction_pool, replay_cfg.k, replay_cfg.min_score
+                            )
+                        except RetrievalError:
+                            retrieved = []
 
                 # Exemplar matching also checks the flagged words themselves,
                 # not only retrieved text candidates (module docstring's

@@ -24,9 +24,18 @@ parameters:
   ``max(len(a), len(b))``. A character-histogram lower bound skips the
   O(len_a * len_b) DP for any candidate that provably cannot land in-band
   (exact, never causes a real in-band match to be missed).
-- rarity = ``1/sqrt(count)`` in THIS SLICE's own word-frequency table,
-  times a name-likeness prior: capitalized mid-sentence x1.0 else x0.3;
-  word length >= 6 x1.0 else x0.5.
+- rarity = ``1/sqrt(count)`` in THIS SLICE's own word-frequency table by
+  default, times a name-likeness prior: capitalized mid-sentence x1.0 else
+  x0.3; word length >= 6 x1.0 else x0.5. :func:`roster_band_flags` takes an
+  OPTIONAL ``df`` mapping (D7C delivery-gate fix, ``docs/exposure-ledger.md``'s
+  SAEA-D7C-delivery consumption note, 2026-08-15) -- the whole-SAMPLE pass-1
+  draft's own word counts, across every slice, not just this one -- and uses
+  ``1/sqrt(df[word])`` (clamped ``df >= 1``) in place of the slice-local
+  count whenever supplied: a common word recurring dozens of times across a
+  call but only once or twice within any single slice (e.g.
+  "operations"/"operating" in an earnings call) otherwise reads as locally
+  rare and out-competes a genuinely hapax name for the K budget. ``df=None``
+  (the default) keeps the slice-local behaviour above byte-identical.
 - score = ``band_centrality(distance) * rarity``; 1-2 word spans (single
   draft words and adjacent 2-word windows); closed-class stopwords are
   excluded from query positions (none can plausibly be a corrupted entity
@@ -61,7 +70,7 @@ from __future__ import annotations
 import math
 from collections import Counter
 from dataclasses import dataclass
-from typing import Sequence
+from typing import Mapping, Sequence
 
 from .retrieval import normalize_term
 
@@ -255,11 +264,23 @@ class _TargetIndex:
 @dataclass(frozen=True)
 class _RarityModel:
     counts: Counter
+    df: Mapping[str, int] | None = None
 
     def df_rarity(self, word: str) -> float:
-        """``1/sqrt(count)`` in THIS SLICE's own word-count table (module
-        docstring); saturates to 1.0 for a hapax."""
+        """``1/sqrt(count)`` (module docstring); saturates to 1.0 for a
+        hapax. Prefers ``self.df`` (the whole-SAMPLE pass-1 draft word
+        count, D7C fix) when supplied -- a missing or malformed entry
+        (never expected in practice: ``df`` is built FROM this same
+        sample's words, module docstring) falls back to count 1, never
+        raising or dividing by zero. Falls back to THIS SLICE's own
+        ``counts`` table when ``df`` is ``None`` (byte-identical to the
+        pre-fix behaviour)."""
 
+        if self.df is not None:
+            count = self.df.get(word, 1)
+            if not isinstance(count, int) or isinstance(count, bool) or count < 1:
+                count = 1
+            return 1.0 / math.sqrt(count)
         count = self.counts.get(word, 0)
         if count <= 0:
             return 1.0
@@ -319,7 +340,10 @@ def _overlaps(a: tuple[int, int], b: tuple[int, int]) -> bool:
 
 
 def roster_band_flags(
-    words: Sequence[str], candidate_terms: Sequence[str], max_spans: int
+    words: Sequence[str],
+    candidate_terms: Sequence[str],
+    max_spans: int,
+    df: Mapping[str, int] | None = None,
 ) -> list[RosterBandFlag]:
     """The top ``max_spans`` non-overlapping roster-band flags for one
     slice's draft ``words`` (module docstring): every non-stopword draft
@@ -349,6 +373,13 @@ def roster_band_flags(
     still reports the ORIGINAL full term as ``candidate`` (module docstring
     -- unchanged trace/test contract), with the actual decomposed form that
     matched additionally in ``matched_form``.
+
+    ``df`` (D7C fix, module docstring's rarity bullet): the whole-SAMPLE
+    pass-1 draft's own normalized word-count table, keyed by
+    :func:`core.retrieval.normalize_term` form. When supplied, every word's
+    rarity uses ``1/sqrt(df[word])`` (clamped ``df >= 1``, missing entries
+    treated as 1) instead of this call's own slice-local count. ``None``
+    (the default) is byte-identical to the pre-D7C behaviour.
 
     Returns an empty list (never raises) when ``words``/``candidate_terms``
     is empty or nothing lands in-band -- SCORE already treats zero flags as
@@ -382,7 +413,7 @@ def roster_band_flags(
     words = list(words)
     normalized_words = [normalize_term(word) for word in words]
     sentence_initial = _sentence_initial_flags(words)
-    rarity_model = _RarityModel(counts=Counter(w for w in normalized_words if w))
+    rarity_model = _RarityModel(counts=Counter(w for w in normalized_words if w), df=df)
 
     match_cache: dict[tuple[str, bool], tuple[str, float] | None] = {}
 
