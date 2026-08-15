@@ -1,0 +1,9 @@
+# SAEA-D7D-delivery — the delivery-gate FOURTH probe, after fix 5661ba4
+# (D7C's metric-mismatch defect: roster-band windows now deliver their
+# OWN matched candidate directly - the flag IS the retrieval - and the
+# score gains whole-sample df-rarity to suppress common-word fires).
+# Same vehicle otherwise. Same trace-counter pass criteria. Expectation:
+# Reedy/Franz/Phoenix-class windows now DELIVER; operator-class fires
+# demoted by rarity.
+# run_id:baseline_fragment
+SAEA-D7D-delivery:d7d-delivery8-buf90
