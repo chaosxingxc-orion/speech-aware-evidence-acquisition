@@ -59,6 +59,36 @@ SCORE: per pass-1 slice, two independent trigger families
 Flags across both families are capped at ``replay_max_spans_per_slice``
 (ascending word-start order, deterministic truncation).
 
+FLAG SOURCES (D5 rectification, ``docs/readiness/2026-08-15-rectification-
+plan.md``): ``replay_flag_source`` selects WHICH mechanism fills the
+``"logprob"`` trigger family's role above -- the ``"wps"`` catastrophe
+detector is identical either way.
+
+- ``"logprob"`` (default): the SCORE description above, unchanged --
+  contiguous low-confidence word runs from PASS 1's own per-token
+  logprobs. Measured (``docs/readiness/2026-08-14-p1-ceiling-verdict.md``,
+  finding 1): 0/17 entity overlap -- every logprob-flagged span on the
+  clean P1 samples was function-word/boundary text ("with a", "for the",
+  "increase by"), never one of the real entity errors the oracle
+  candidates could have corrected; the correction filter then (correctly)
+  found nothing to retrieve and every REPLAY call was skipped.
+- ``"roster-band"``: ``core.flag_sources.roster_band_flags`` replaces
+  logprob-derived word_scores with weighted-grapheme band-matching against
+  this sample's own resolved evidence candidate terms (RETRIEVE's own pool,
+  ``_pack_terms``) plus exemplar-bank labels when one was resolved -- see
+  ``core.flag_sources`` module docstring for the frozen band/distance/rarity
+  parameters. Offline-validated at proper-name P@1=0.252 (the flag-eval
+  harness's S1 method against the same class of earnings-call drafts) --
+  the mechanism this mode ports, faithfully, into the study package. In
+  this mode PASS 1's requests still carry ``decoding_params.logprobs``
+  whenever ``replay_logprobs: true`` (request-shape stability across arms
+  -- ``build_arm_payload``'s exact-field-match contract does not vary by
+  ``replay_flag_source``), but the returned logprobs are never consulted
+  for flagging. The trace's per-window record additionally carries
+  ``replay_flag_source``/``replay_flag_matched_candidate``/
+  ``replay_flag_distance`` (``None`` for a ``"wps"``-only span, or under
+  ``"logprob"`` mode).
+
 LOCATE: for each flagged span, ``core.span_surgery.align_words`` aligns the
 SLICE's OWN full pass-1 transcript against the SLICE's OWN wav (a genuine
 tool-model touch this module does not itself gate -- see that function's own
@@ -222,6 +252,7 @@ from typing import Mapping, Sequence
 
 from ..core.base import SampleContext, SampleOutcome
 from ..core.candidate_materializer import MaterializeError, pack_candidates
+from ..core.flag_sources import RosterBandFlag, roster_band_flags
 from ..core.model import FrozenCoreError, SliceRecord, SliceRegistry
 from ..core.replay_signals import (
     ReplaySignalsError,
@@ -254,6 +285,7 @@ REPLAY_DERIVATION_SCHEMA = "saea-replay-derivation-v1"
 TRANSPORT_DELTA_CANDIDATE_CAP = 2
 
 _TRIGGERS = ("wps", "logprob", "both")
+_FLAG_SOURCES = ("logprob", "roster-band")
 _KNOWN_REPLAY_KEYS = frozenset(
     {
         "replay_logprobs",
@@ -261,6 +293,7 @@ _KNOWN_REPLAY_KEYS = frozenset(
         "replay_flag_min_run",
         "replay_max_spans_per_slice",
         "replay_trigger",
+        "replay_flag_source",
         "replay_span_pad_s",
         "replay_context_s",
         "replay_k",
@@ -296,6 +329,7 @@ class ReplayLoopConfig:
     flag_min_run: int
     max_spans_per_slice: int
     trigger: str
+    flag_source: str
     span_pad_s: float
     context_s: float
     k: int
@@ -325,6 +359,16 @@ class ReplayLoopConfig:
         if trigger not in _TRIGGERS:
             raise ReplayLoopError(
                 f"config replay_trigger must be one of {_TRIGGERS}, got {trigger!r}"
+            )
+
+        # D5 (module docstring's FLAG SOURCES section): defaults to
+        # "logprob" so every pre-existing config/test that never sets this
+        # key keeps byte-identical behaviour; fails closed on anything else
+        # (a typo here would silently fall back to logprob flagging).
+        flag_source = values.get("replay_flag_source", "logprob")
+        if flag_source not in _FLAG_SOURCES:
+            raise ReplayLoopError(
+                f"config replay_flag_source must be one of {_FLAG_SOURCES}, got {flag_source!r}"
             )
 
         # No baked-in default for the logprob threshold/run-length (core.
@@ -418,6 +462,7 @@ class ReplayLoopConfig:
             flag_min_run=flag_min_run,
             max_spans_per_slice=max_spans_per_slice,
             trigger=str(trigger),
+            flag_source=str(flag_source),
             span_pad_s=float(span_pad_s),
             context_s=float(context_s),
             k=k,
@@ -578,6 +623,39 @@ def _flag_spans_for_slice(
     return [(span, ",".join(sorted(labels[span]))) for span in ordered]
 
 
+def _flag_spans_for_slice_roster_band(
+    words: list[str],
+    candidate_terms: Sequence[str],
+    audio_seconds: float,
+    cfg: ReplayLoopConfig,
+) -> tuple[list[tuple[tuple[int, int], str]], dict[tuple[int, int], RosterBandFlag]]:
+    """roster-band counterpart to :func:`_flag_spans_for_slice` (D5, module
+    docstring's FLAG SOURCES section): the ``"wps"`` family is IDENTICAL
+    (same catastrophe detector, same call); the ``"logprob"`` family's ROLE
+    (per-slice contiguous-flagging) is filled by ``core.flag_sources.
+    roster_band_flags`` instead of ``core.replay_signals.flag_spans`` --
+    everything else (label merge on an exact-span collision, ascending
+    -start truncation at ``cfg.max_spans_per_slice``) is the identical
+    contract :func:`_flag_spans_for_slice` already establishes. Returns the
+    same ``(span, trigger_label)`` list shape PLUS a ``span ->
+    RosterBandFlag`` detail map (the matched candidate term / distance the
+    trace record needs, module docstring's Trace requirement) -- a
+    ``"wps"``-only span carries no detail entry."""
+
+    labels: dict[tuple[int, int], set[str]] = {}
+    detail: dict[tuple[int, int], RosterBandFlag] = {}
+    if cfg.trigger in ("wps", "both") and words:
+        wps = words_per_second(len(words), audio_seconds)
+        if is_catastrophic(wps):
+            labels.setdefault((0, len(words)), set()).add("wps")
+    if cfg.trigger in ("logprob", "both") and words and candidate_terms:
+        for flag in roster_band_flags(words, candidate_terms, cfg.max_spans_per_slice):
+            labels.setdefault(flag.span, set()).add("roster-band")
+            detail[flag.span] = flag
+    ordered = sorted(labels)[: cfg.max_spans_per_slice]
+    return [(span, ",".join(sorted(labels[span]))) for span in ordered], detail
+
+
 def _pack_terms(ctx: SampleContext) -> list[str]:
     """The candidate pool RETRIEVE draws from: this sample's own evidence
     content, tokenized via ``core.candidate_materializer.pack_candidates``
@@ -596,6 +674,25 @@ def _pack_terms(ctx: SampleContext) -> list[str]:
                 terms.setdefault(term, None)
         except MaterializeError:
             continue
+    return list(terms)
+
+
+def _roster_band_candidate_terms(ctx: SampleContext, pack_terms: Sequence[str]) -> list[str]:
+    """The roster-band SCORE stage's candidate/target set (D5, module
+    docstring's FLAG SOURCES section): ``pack_terms`` (the SAME evidence
+    pool RETRIEVE already draws from, :func:`_pack_terms`) union this run's
+    exemplar-bank labels when one was resolved. Matches ``ctx.exemplar_bank``
+    directly, the same "no bank -> nothing to add" discipline
+    :func:`_matching_exemplars` already applies -- gated on the bank being
+    resolved at all, never on the arm's D2-frozen field-set legality (this
+    is pure text matching over already-resolved run facts, not a wire
+    payload attachment)."""
+
+    terms: dict[str, None] = {term: None for term in pack_terms}
+    for pair in ctx.exemplar_bank or ():
+        label = pair.get("label") if isinstance(pair, Mapping) else None
+        if isinstance(label, str) and label:
+            terms.setdefault(label, None)
     return list(terms)
 
 
@@ -784,6 +881,13 @@ class ObsReplayLoopPolicy:
         recorder = _RecordingAdapter(ctx.adapter)
         pass1_decoding_params = dict(ctx.decoding_params)
         if replay_cfg.logprobs:
+            # request-shape stability across arms/flag sources: this key is
+            # governed solely by replay_logprobs, never by replay_flag_source
+            # -- under "roster-band" the SCORE stage below never reads the
+            # returned logprobs, but PASS 1's own request shape stays
+            # identical to "logprob" mode regardless (module docstring's
+            # FLAG SOURCES section), so switching flag_source alone can never
+            # change what PASS 1 sends the model.
             pass1_decoding_params["logprobs"] = True
             pass1_decoding_params["top_logprobs"] = 1
         # Defect fix (module docstring's PASS-1 section, measured 2026-08-14):
@@ -840,20 +944,34 @@ class ObsReplayLoopPolicy:
             if not words:
                 continue
 
-            word_scores: list[float] | None = None
-            if replay_cfg.trigger in ("logprob", "both"):
-                response = _pass1_response_for_window(
-                    recorder, ctx.request_id_base, record.iteration, obs_cfg.slice_retry_max
+            band_detail_by_span: dict[tuple[int, int], RosterBandFlag] = {}
+            if replay_cfg.flag_source == "roster-band":
+                # D5 (module docstring's FLAG SOURCES section): the
+                # roster-band candidate/target set IS RETRIEVE's own pool
+                # (plus exemplar labels), so it must be resolved before
+                # SCORE runs, not lazily after LOCATE like the logprob-mode
+                # branch below.
+                if pack_terms_cache is None:
+                    pack_terms_cache = _pack_terms(ctx)
+                candidate_terms = _roster_band_candidate_terms(ctx, pack_terms_cache)
+                spans, band_detail_by_span = _flag_spans_for_slice_roster_band(
+                    words, candidate_terms, record.audio_seconds, replay_cfg
                 )
-                token_logprobs = _extract_token_logprobs(getattr(response, "logprobs", None))
-                if token_logprobs:
-                    stats = slice_logprob_stats(
-                        token_logprobs, below_threshold=replay_cfg.flag_low_threshold
+            else:
+                word_scores: list[float] | None = None
+                if replay_cfg.trigger in ("logprob", "both"):
+                    response = _pass1_response_for_window(
+                        recorder, ctx.request_id_base, record.iteration, obs_cfg.slice_retry_max
                     )
-                    if stats["below_threshold_count"] > 0:
-                        word_scores = _word_logprob_scores(len(words), token_logprobs)
+                    token_logprobs = _extract_token_logprobs(getattr(response, "logprobs", None))
+                    if token_logprobs:
+                        stats = slice_logprob_stats(
+                            token_logprobs, below_threshold=replay_cfg.flag_low_threshold
+                        )
+                        if stats["below_threshold_count"] > 0:
+                            word_scores = _word_logprob_scores(len(words), token_logprobs)
 
-            spans = _flag_spans_for_slice(words, word_scores, record.audio_seconds, replay_cfg)
+                spans = _flag_spans_for_slice(words, word_scores, record.audio_seconds, replay_cfg)
             if not spans:
                 continue
 
@@ -875,6 +993,10 @@ class ObsReplayLoopPolicy:
                 flagged_words = words[start_idx:end_idx]
                 flagged_text = " ".join(flagged_words)
                 replay_request_id = f"{ctx.request_id_base}-replay{replay_call_index:03d}"
+                # Trace enrichment (D5, module docstring's FLAG SOURCES
+                # section): None under logprob mode, or for a "wps"-only
+                # span even under roster-band mode.
+                band_flag = band_detail_by_span.get(span)
 
                 # RETRIEVE (DEFECT 2 fix, module docstring's CORRECTION
                 # SEMANTICS note): drop any pack candidate the flagged run
@@ -944,6 +1066,9 @@ class ObsReplayLoopPolicy:
                         "replay_localized_words": [],
                         "replay_localized_word_count": 0,
                         "replay_localize_source": None,
+                        "replay_flag_source": replay_cfg.flag_source,
+                        "replay_flag_matched_candidate": band_flag.candidate if band_flag else None,
+                        "replay_flag_distance": band_flag.distance if band_flag else None,
                     }
                     ctx.sink.emit("REPLAY", f"{replay_request_id}/replay", window_record)
                     replay_window_records.append(window_record)
@@ -1143,6 +1268,9 @@ class ObsReplayLoopPolicy:
                     "replay_localized_words": list(localized_words),
                     "replay_localized_word_count": len(localized_words),
                     "replay_localize_source": localize_source,
+                    "replay_flag_source": replay_cfg.flag_source,
+                    "replay_flag_matched_candidate": band_flag.candidate if band_flag else None,
+                    "replay_flag_distance": band_flag.distance if band_flag else None,
                 }
                 ctx.sink.emit("REPLAY", f"{replay_request_id}/replay", window_record)
                 replay_window_records.append(window_record)

@@ -281,6 +281,14 @@ class TestLegalityMatrix:
         with pytest.raises(ReplayLoopError, match="replay_k"):
             world.run()
 
+    def test_unknown_flag_source_is_refused(self, tmp_path, monkeypatch):
+        # (e) D5: an unknown replay_flag_source fails closed, the same
+        # discipline every other replay_* config value already carries.
+        values = _fixed_mode_values(replay_flag_source="draft-ner")
+        world = _World(tmp_path, monkeypatch, pcm=_noise(40.0), texts=["one two."], values=values)
+        with pytest.raises(ReplayLoopError, match="replay_flag_source"):
+            world.run()
+
 
 # ---------------------------------------------------------------------------
 # Config parsing (pure)
@@ -304,6 +312,40 @@ class TestReplayLoopConfigDefaults:
         assert cfg.min_score == 0.5
         assert cfg.len_ratio_max == 3.0
         assert cfg.logprobs is False
+        # (d) D5: "logprob" is the untouched default -- every pre-existing
+        # config that never sets replay_flag_source keeps this value.
+        assert cfg.flag_source == "logprob"
+
+
+class TestReplayFlagSourceConfig:
+    """(d)/(e) D5: replay_flag_source accepts exactly "logprob"/"roster-band",
+    defaults to "logprob", and fails closed otherwise -- pure config parsing,
+    isolated from the rest of the SCORE-stage machinery it selects between."""
+
+    def _cfg(self, **overrides):
+        return ReplayLoopConfig.from_values(
+            {
+                "replay_trigger": "logprob",
+                "replay_flag_low_threshold": -1.5,
+                "replay_flag_min_run": 1,
+                "replay_max_spans_per_slice": 2,
+                "replay_instruction": "Listen again.",
+                **overrides,
+            }
+        )
+
+    def test_default_is_logprob(self):
+        assert self._cfg().flag_source == "logprob"
+
+    def test_explicit_roster_band_is_accepted(self):
+        assert self._cfg(replay_flag_source="roster-band").flag_source == "roster-band"
+
+    def test_explicit_logprob_is_accepted(self):
+        assert self._cfg(replay_flag_source="logprob").flag_source == "logprob"
+
+    def test_unknown_value_fails_closed(self):
+        with pytest.raises(ReplayLoopError, match="replay_flag_source"):
+            self._cfg(replay_flag_source="entity-ner")
 
 
 # ---------------------------------------------------------------------------
@@ -922,6 +964,178 @@ class TestReplayPayloadAssembly:
         assert records[0]["replay_accepted"] is True
         assert records[0]["replay_exemplars_attached"] == ["acme"]
         assert outcome.text.startswith("corrected replay")
+
+
+# ---------------------------------------------------------------------------
+# Roster-band flag source (D5, replay_flag_source="roster-band")
+# ---------------------------------------------------------------------------
+
+
+class TestRosterBandFlagSourceIntegration:
+    """End-to-end (run_sample) coverage of ``replay_flag_source="roster-band"``:
+    a corrupted draft entity word is flagged by band-matching against the
+    arm's own resolved evidence candidates, and the trace carries the flag
+    source / matched candidate / band distance additively."""
+
+    _EVIDENCE = [
+        EvidenceItem(
+            evidence_id="conec/4000001",
+            source_uri="conec://earnings21/contexts/4000001.txt",
+            content="Aldeyra Therapeutics reported strong quarterly results",
+            provenance={"lock_key": "conec", "relpath": "x.txt", "sha256": "0" * 64},
+        )
+    ]
+
+    def _values(self, **overrides):
+        return _fixed_mode_values(
+            evidence_source="conec-contexts",
+            replay_trigger="logprob",
+            replay_flag_source="roster-band",
+            **overrides,
+        )
+
+    def test_corrupted_entity_word_is_flagged_and_replayed(self, tmp_path, monkeypatch):
+        monkeypatch.setitem(
+            ARM_VISIBLE_FIELDS,
+            "bare-core",
+            ARM_VISIBLE_FIELDS["bare-core"] + ("delta_candidates",),
+        )
+        world = _World(
+            tmp_path,
+            monkeypatch,
+            pcm=_noise(40.0),
+            texts=["we spoke with Aldera about growth", "corrected replay text"],
+            values=self._values(),
+            evidence=self._EVIDENCE,
+        )
+        outcome = world.run()
+
+        assert len(world.adapter.payloads) == 2  # PASS 1's one slice + REPLAY
+        records = world.replay_records()
+        assert len(records) == 1
+        record = records[0]
+        assert record["replay_pass1_text"] == "Aldera"
+        assert record["replay_trigger"] == "roster-band"
+        assert record["replay_flag_source"] == "roster-band"
+        assert record["replay_flag_matched_candidate"] == "aldeyra"
+        assert 0.05 <= record["replay_flag_distance"] <= 0.45
+        # RETRIEVE correction-filter pass-through (module docstring's
+        # RETRIEVE section note): the flagged word ("Aldera") is NOT
+        # verbatim-equal to the matched candidate ("Aldeyra"), so the
+        # correction filter does not drop it -- retrieve() finds it for
+        # real, the same candidate roster-band itself already matched.
+        assert [c["text"] for c in record["replay_candidates"]] == ["Aldeyra"]
+        assert record["replay_accepted"] is True
+        # Splice landed in the final stitched text -- the LOCALIZED run (one
+        # word: "corrected" aligns just outside the flagged span's own
+        # padded interval under the deterministic one-word-per-second fake
+        # plus float rounding, the same DEFECT-1 localization machinery
+        # every other replay test above already exercises).
+        assert record["replay_localized_words"] == ["replay"]
+        assert outcome.text == "we spoke with replay about growth"
+
+    def test_exemplar_bank_labels_also_serve_as_roster_band_candidates(
+        self, tmp_path, monkeypatch
+    ):
+        """No evidence at all -- the ONLY candidate source is the exemplar
+        bank's own label, proving requirement 2's "ALSO match against
+        exemplar-bank labels" independently of RETRIEVE's own pack-term
+        pool. ``_matching_exemplars`` (an existing, unrelated mechanism)
+        only attaches on an EXACT normalized-term match against a retrieved
+        text candidate or the flagged word itself, neither of which applies
+        here ("Aldera" != "aldeyra"), so the REPLAY call is DEFECT-2 skipped
+        -- but the roster-band SCORE stage still flagged the span from the
+        exemplar label alone, and that fact is recorded in the trace."""
+
+        monkeypatch.setitem(
+            ARM_VISIBLE_FIELDS,
+            "bare-core",
+            ARM_VISIBLE_FIELDS["bare-core"] + ("exemplar_bank",),
+        )
+        exemplar_bank = ({"media_relpath": "derived/exemplar-pairs/mc2-v1/x/aldeyra.wav", "label": "Aldeyra"},)
+        world = _World(
+            tmp_path,
+            monkeypatch,
+            pcm=_noise(40.0),
+            texts=["we spoke with Aldera about growth"],  # REPLAY never fires
+            values=self._values(),
+            evidence=[],  # no pack terms at all -- only the exemplar label
+            exemplar_bank=exemplar_bank,
+        )
+        outcome = world.run()
+
+        assert len(world.adapter.payloads) == 1  # PASS 1 only; REPLAY skipped
+        records = world.replay_records()
+        assert len(records) == 1
+        record = records[0]
+        assert record["replay_flag_source"] == "roster-band"
+        assert record["replay_flag_matched_candidate"] == "aldeyra"
+        assert record["replay_reject_reason"] == "no-candidates"
+        assert outcome.text == "we spoke with Aldera about growth"
+
+    def test_no_matching_candidate_flags_nothing_and_makes_zero_replay_calls(
+        self, tmp_path, monkeypatch
+    ):
+        world = _World(
+            tmp_path,
+            monkeypatch,
+            pcm=_noise(40.0),
+            texts=["the weather today is sunny and calm"],
+            values=self._values(),
+            evidence=self._EVIDENCE,
+        )
+        outcome = world.run()
+        assert len(world.adapter.payloads) == 1  # PASS 1 only, zero REPLAY calls
+        assert world.replay_records() == []
+        assert outcome.text == "the weather today is sunny and calm"
+
+    def test_k_cap_is_honored_end_to_end(self, tmp_path, monkeypatch):
+        monkeypatch.setitem(
+            ARM_VISIBLE_FIELDS,
+            "bare-core",
+            ARM_VISIBLE_FIELDS["bare-core"] + ("delta_candidates",),
+        )
+        evidence = [
+            EvidenceItem(
+                evidence_id="conec/4000001",
+                source_uri="conec://x",
+                content="Aldeyra McMullin Frenz Horne executives",
+                provenance={"lock_key": "conec", "relpath": "x.txt", "sha256": "0" * 64},
+            )
+        ]
+        world = _World(
+            tmp_path,
+            monkeypatch,
+            pcm=_noise(40.0),
+            texts=[
+                "we spoke with Aldera and Mcmullen and Frentz executives today",
+                "first replacement",
+                "second replacement",
+            ],
+            values=self._values(replay_max_spans_per_slice=2),
+            evidence=evidence,
+        )
+        world.run()
+        records = world.replay_records()
+        assert len(records) == 2  # capped at replay_max_spans_per_slice=2
+
+    def test_logprob_mode_default_is_unaffected_by_this_feature(self, tmp_path, monkeypatch):
+        # (d) byte-identical regression guard: the SAME draft/evidence shape
+        # as the roster-band happy path above, run under the untouched
+        # default flag_source, produces zero flags (no logprobs supplied,
+        # healthy words/second) -- confirms adding roster-band support did
+        # not change default (logprob) behaviour for this fixture.
+        world = _World(
+            tmp_path,
+            monkeypatch,
+            pcm=_noise(40.0),
+            texts=["we spoke with Aldera about growth"],
+            values=_fixed_mode_values(evidence_source="conec-contexts", replay_trigger="logprob"),
+            evidence=self._EVIDENCE,
+        )
+        outcome = world.run()
+        assert len(world.adapter.payloads) == 1  # PASS 1 only, zero REPLAY calls
+        assert outcome.text == "we spoke with Aldera about growth"
 
 
 # ---------------------------------------------------------------------------
