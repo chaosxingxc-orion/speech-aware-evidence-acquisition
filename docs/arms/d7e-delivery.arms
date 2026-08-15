@@ -1,0 +1,9 @@
+# SAEA-D7E-delivery — the delivery-gate FIFTH probe, after the three
+# 19b5f8a guards (flag min-score floor / reference-echo reject / splice-
+# support guard). Floor set to 0.10 NOT the 0.15 default: D7D's measured
+# score distribution separates true errors (Reedy ~0.92 centrality,
+# Phoenix ~0.77, Frenz ~0.11-0.125) from operator fires (0.056-0.075)
+# and sub-token noise (0.0-0.034) - 0.15 would kill the Frenz-class true
+# error. Same vehicle otherwise; same trace-counter criteria.
+# run_id:baseline_fragment
+SAEA-D7E-delivery:d7e-delivery8-buf90
