@@ -20,6 +20,23 @@ this policy enforces the same three-condition legality
 since this policy always takes the slice-parallel path regardless of that
 knob's value.
 
+PASS-1 exemplar-bank suppression (defect fix, measured 2026-08-14, ``docs/
+readiness/2026-08-14-p1-ceiling-verdict.md``): ``_slice_parallel_pass``'s own
+slice payload builder threads ``ctx.exemplar_bank`` into EVERY pass-1 slice
+request unconditionally -- correct for the static ``exemplar-context`` arm,
+but for ``"fixed-legal-context-replay"`` this let a non-empty own-call
+exemplar ride every pass-1 request; on sample 4389907 the core transcribed
+the exemplar audio instead of slice content 17x (44.49 WER, 1116 deletions).
+The bank belongs at REPLAY (tier 2) only for this policy, per the RETRIEVE
+section below -- so ``run_sample`` builds ``pass1_ctx`` with the bank's
+CONTENT emptied (an always-empty tuple, not ``None``, whenever the arm's
+D2-frozen field set still declares ``exemplar_bank`` -- the exact-field-match
+contract in ``core.policies.build_arm_payload`` requires the key on every
+request such an arm sends, mirroring the pre-existing always-empty
+``delta_candidates`` placeholder ``obs_loop.py``'s own slice payload builder
+already threads for the identical reason (see this docstring's REPLAY
+section below).
+
 SCORE: per pass-1 slice, two independent trigger families
 (``replay_trigger``: ``"wps"``, ``"logprob"`` or ``"both"``):
 
@@ -769,8 +786,22 @@ class ObsReplayLoopPolicy:
         if replay_cfg.logprobs:
             pass1_decoding_params["logprobs"] = True
             pass1_decoding_params["top_logprobs"] = 1
+        # Defect fix (module docstring's PASS-1 section, measured 2026-08-14):
+        # obs_loop's slice payload builder threads whatever exemplar_bank
+        # this ctx carries into EVERY pass-1 slice request unconditionally --
+        # the bank belongs at REPLAY only for this policy. Emptying the
+        # CONTENT (an always-empty tuple, never None) rather than dropping
+        # the field keeps build_arm_payload's exact-field-match contract
+        # satisfied for an arm whose D2-frozen set still declares
+        # "exemplar_bank" (e.g. "fixed-legal-context-replay").
+        pass1_exemplar_bank = (
+            () if "exemplar_bank" in ARM_VISIBLE_FIELDS[ctx.arm] else None
+        )
         pass1_ctx = dataclasses.replace(
-            ctx, adapter=recorder, decoding_params=pass1_decoding_params
+            ctx,
+            adapter=recorder,
+            decoding_params=pass1_decoding_params,
+            exemplar_bank=pass1_exemplar_bank,
         )
 
         (

@@ -784,7 +784,9 @@ class TestReplayPayloadAssembly:
         -- no ARM_VISIBLE_FIELDS monkeypatch, and no ``_stub_pass1``. PASS 1
         runs for real (``obs_loop``'s own slice payload builder threads an
         always-empty ``delta_candidates`` placeholder because the arm
-        declares the field, and the real, resolved
+        declares the field, and an EMPTY ``exemplar_bank`` -- pass-1
+        exemplar-bank suppression, ``replay_loop``'s own module docstring,
+        measured 2026-08-14 -- rather than the real, resolved
         ``SampleContext.exemplar_bank``) and REPLAY runs for real too,
         attaching genuine retrieved/exemplar content on the flagged span's
         own request -- the scenario ``_stub_pass1``'s own docstring says
@@ -817,12 +819,15 @@ class TestReplayPayloadAssembly:
         pass1_payload, replay_payload = world.adapter.payloads
 
         # PASS 1 satisfies the arm's full frozen field set: real evidence
-        # (this arm is evidence-bearing, unlike bare-core), the real
-        # per-sample exemplar bank (obs_loop already threads
-        # ctx.exemplar_bank unconditionally), and an always-empty
-        # delta_candidates placeholder (the seam this test exists to prove).
+        # (this arm is evidence-bearing, unlike bare-core), an EMPTY
+        # exemplar bank (pass-1 exemplar-bank suppression, module
+        # docstring's PASS-1 section, measured 2026-08-14 -- the key is
+        # still required by the arm's frozen field set, but never carries
+        # the real bank content pass-1's own request must not receive), and
+        # an always-empty delta_candidates placeholder (the seam this test
+        # exists to prove).
         assert pass1_payload["supplied_evidence"] == [self._EVIDENCE[0].runtime_view()]
-        assert pass1_payload["exemplar_bank"] == list(exemplar_bank)
+        assert pass1_payload["exemplar_bank"] == []
         assert pass1_payload["delta_candidates"] == []
 
         # REPLAY attaches genuine exemplar content -- matched via the
@@ -844,6 +849,79 @@ class TestReplayPayloadAssembly:
         # lands in the final stitched text, a genuinely, fully successful
         # run, not merely a refused payload.
         assert outcome.text == "corrected replay"
+
+    def test_pass1_never_carries_the_real_exemplar_bank_but_replay_still_can(
+        self, tmp_path, monkeypatch
+    ):
+        """Defect fix (module docstring's PASS-1 exemplar-bank suppression
+        paragraph, measured 2026-08-14, ``docs/readiness/
+        2026-08-14-p1-ceiling-verdict.md``): ``_slice_parallel_pass``
+        threads whatever exemplar bank its ``ctx`` carries into EVERY
+        pass-1 slice request, and on sample 4389907 a non-empty own-call
+        bank rode along and got transcribed instead of the slice itself
+        (17x repeated exemplar text, 44.49 WER, 1116 deletions). Two real
+        (unstubbed) PASS-1 slices here -- not just one -- so the assertion
+        below covers EVERY pass-1 request this sample sends, matching the
+        defect's own "every slice request" framing.
+
+        (a) neither PASS-1 payload ever carries the bank's real content --
+        "fixed-legal-context-replay" still requires the "exemplar_bank" KEY
+        on every request it sends (build_arm_payload's exact-field-match
+        contract, unchanged by this fix), so "carries no bank" means an
+        EMPTY list, never an omitted key or the real entries.
+        (b) the REPLAY request for the one flagged span still attaches the
+        real bank once its own exemplar match finds "acme" -- unaffected by
+        this fix, which is scoped to PASS 1 only."""
+
+        exemplar_bank = (
+            {
+                "media_relpath": "derived/exemplar-pairs/mc2-v1/4000001/acme.wav",
+                "label": "acme",
+            },
+        )
+        # Slice 1 ("acme zzz", 2 words / 40s = 0.05 wps) is catastrophic
+        # under the default 0.5 wps cut and flags its entire span. Slice 2
+        # (25 filler words / 40s = 0.625 wps) stays healthy and never flags
+        # -- so exactly one REPLAY call follows the two PASS-1 slice calls,
+        # keeping this test's payload accounting unambiguous.
+        healthy_slice_text = " ".join(f"word{i:02d}" for i in range(25))
+        world = _World(
+            tmp_path,
+            monkeypatch,
+            pcm=_noise(80.0),
+            texts=["acme zzz", healthy_slice_text, "corrected replay text"],
+            values=self._values(),
+            evidence=self._EVIDENCE,
+            arm="fixed-legal-context-replay",
+            exemplar_bank=exemplar_bank,
+        )
+        outcome = world.run()
+
+        assert len(world.adapter.payloads) == 3  # 2 PASS-1 slices + 1 REPLAY
+        pass1_payloads = [
+            payload
+            for payload in world.adapter.payloads
+            if payload["task_instruction"] == world.ctx.task_instruction
+        ]
+        replay_payloads = [
+            payload
+            for payload in world.adapter.payloads
+            if payload["task_instruction"] != world.ctx.task_instruction
+        ]
+        assert len(pass1_payloads) == 2
+        assert len(replay_payloads) == 1
+
+        for payload in pass1_payloads:
+            assert payload["exemplar_bank"] == []
+            assert payload["exemplar_bank"] != list(exemplar_bank)
+
+        assert replay_payloads[0]["exemplar_bank"] == list(exemplar_bank)
+
+        records = world.replay_records()
+        assert len(records) == 1
+        assert records[0]["replay_accepted"] is True
+        assert records[0]["replay_exemplars_attached"] == ["acme"]
+        assert outcome.text.startswith("corrected replay")
 
 
 # ---------------------------------------------------------------------------
