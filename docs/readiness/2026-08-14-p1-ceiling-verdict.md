@@ -1,5 +1,10 @@
 # P1 loop-ceiling verdict — the 2x2 decomposition (2026-08-14)
 
+SCOPE AMENDMENT (2026-08-15, owner discussion): "ceiling" throughout means the ceiling of
+STATIC-BIAS delivery (knowledge as prompt-prior). The reflection family (span audio + own
+errored draft + retrieved reference, verify-with-abstention) is a different inference
+operator, unmeasured here (the D vehicle failed first), and not bounded by these numbers.
+
 Runs: SAEA-P1-relisten (B), SAEA-P1-static (C), SAEA-P1-replay (D); arm A = reused
 SAEA-E-005B-zero (14.48). fast-e21-sub3, 90s era, v3 shape, locked instruction, oracle
 materialization p1-oracle-v1 (14 gold-selected terms; ceiling probe, deployment-illegal by

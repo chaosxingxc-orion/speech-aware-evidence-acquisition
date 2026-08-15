@@ -15,6 +15,14 @@ Offline entity reads: derived/entity-wer/<run>/.
 | names roster (oracle-sourced) | **10.88** | **-1.50** | **p=.027** (9/10) | **6631 (+999)** | **19.95** | 468k | 3963 |
 | metadata roster (deployment-legal) | 12.09 | -0.30 | p=.19 (7/10) | 5749 (+117) | 30.60 | 451k | 3883 |
 
+SCOPE AMENDMENT (2026-08-15, owner discussion): every "ceiling" in this document is the
+ceiling of STATIC-BIAS DELIVERY only — knowledge consumed as a prompt-prior that shifts
+decoding. The REFLECTION delivery family (per-span: audio + the model's own errored draft +
+retrieved reference, verify-against-audio with abstention) is a different operator, is NOT
+bounded by these numbers, and has never been measured in this program (the P1-D vehicle
+failed before it could engage). The oracle-names 10.88 therefore anchors the bias family's
+best case, not knowledge value overall.
+
 ## Law revisions (scale-grade, supersede the fast-3-era readings)
 
 1. **The n=10 macro tax is ZERO under locked framing.** The historical +1.55pp tax was the
