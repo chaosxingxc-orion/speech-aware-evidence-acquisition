@@ -1,0 +1,11 @@
+# SAEA-D7B-delivery — the delivery-gate RE-PROBE after D7's two-defect
+# diagnosis (ledger c15d235; fixes 60ff73d): word-granularity candidate
+# decomposition + replay_pass1_evidence=suppressed (BARE pass-1 drafts,
+# replay-only delivery - the R-ladder vehicle shape). Same pass criteria
+# as D7 (trace counters only, no WER inference): (a) acceptances > 0
+# with the matched candidate in the delivered payload; (b) delivered-
+# reference-on-true-error fraction >= 0.15. D6 discharge: e6ac359 +
+# empty bank. Provenance: span_source=roster-band-flag (legal);
+# reference_source=p1-metadata-v1 (legal).
+# run_id:baseline_fragment
+SAEA-D7B-delivery:d7b-delivery8-buf90
