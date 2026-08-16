@@ -42,3 +42,19 @@ SAEA-P2-r1verify:p2-r1verify8-buf90
 SAEA-P2-r2draft:p2-r2draft8-buf90
 SAEA-P2-r0wrong:p2-r0wrong8-buf90
 SAEA-P2-r1wrong:p2-r1wrong8-buf90
+# ---------------------------------------------------------------------------
+# POST-REGISTRATION CORRECTION NOTE, 2026-08-16. No line above this block is
+# altered; this is an append only. The header above (lines 27-40 of this
+# file) describes the sealed SAEA-P2-r0bias attempt-20260816T002109Z-4e1f59
+# trace with the phrasing "sealed and UNREAD" / "is being salvaged". That
+# phrasing is now SUPERSEDED: the one-shot offline salvage read was SPENT
+# 2026-08-16 06:48-07:18 local (EDT, UTC-04:00), before the HER/RIR metric
+# definitions were pinned (umbrella record 2026-08-16-p2-metric-definitions.md
+# section 2; mirrored in this repo at docs/p2-metric-definitions-mirror.md).
+# The read is therefore COMPLETE, not pending, as of this note. The read's
+# tooling and output bytes are preserved durably at
+# docs/checks/speech-aware-evidence-acquisition/2026-08-16-p2-r0bias-salvage/
+# (commit 5f7ae83). See docs/exposure-ledger.md's 2026-08-16 entries for the
+# full accounting, including the SAEA-P2-r1verify attempt that died at the
+# same dirty-tree bind and left no terminal manifest.
+# ---------------------------------------------------------------------------
