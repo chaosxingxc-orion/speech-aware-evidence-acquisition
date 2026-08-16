@@ -1,0 +1,44 @@
+# PHASE 2 — the R-ladder ceiling block (wf_c21a2756 Phase 2, amended
+# plan 39200dd; D7-gate chain passed at D7E; D4 screens: R1-verify
+# primary, hedge dropped, R2 kept for the pre-registered R2-R1 read
+# despite measured anchoring). Frozen ten, oracle references (p1-oracle-
+# v2; shuffled derangement for the wrong-reference controls). ALL ARMS
+# CEILING-TIER: span_source=roster-band-flag (legal) but reference_
+# source=oracle lineage (gold-selected) - either-field rule applies;
+# reads against oracle anchors (names 10.88 lineage) for operator-vs-
+# operator conclusions ONLY. Four of the ten calls have ZERO oracle
+# candidates (no benchmark errors: 4365024/4365948/4366429/4384964) -
+# they fly as legitimate-empty (fix-3 exemption), paired Wilcoxon
+# effective n=6, entity ledger co-primary compensates.
+# PRE-REGISTERED READS: co-primary paired call-level Wilcoxon on macro
+# WER and entity-WER (8284-token ledger); HER; recoverable-information
+# ratio; wrong-reference COPY COUNT measured on PRE-LOCALIZE replay
+# text (the D7E guard-2 aperture note); format-normalized secondary;
+# per-term flip lists.
+# BRANCH RULES (registered before launch): operator AFFIRMED iff at
+# least one of (R2-R1>0) / (R1 beats R0-bias at matched entity gain
+# with lower HER) / (wrongref copy rate materially lower under verify
+# than bias framing). Taxonomy COLLAPSE iff R1~R0-bias on both ledgers
+# and HER AND R2~R1 - then the 2026-08-14/15 scope amendments are
+# re-amended, the candidate keeps targeting/small-N wording, no
+# "different operator" language. Wrong-reference copying in R1/R2
+# voids the audio-verification claim regardless of WER deltas.
+# run_id:baseline_fragment
+# ---------------------------------------------------------------------------
+# RESUME (2026-08-16). The block launched 2026-08-16T00:21Z died at MANIFEST
+# BIND, not in science: the English-only rewrite of AGENTS.md/CLAUDE.md landed
+# in the working tree mid-flight, and a COMPLETED manifest refuses a dirty tree.
+# Arm SAEA-P2-r0bias, attempt-20260816T002109Z-4e1f59, had already FINISHED its
+# inference - 395 metered model calls, 30959.04 speech-audio seconds, all ten
+# replay derivations written - and its raw trace is sealed and UNREAD. That
+# attempt is being salvaged offline, so r0bias is NOT re-flown: one-shot attempt
+# semantics are preserved by reading that attempt, never a second one. This file
+# therefore carries the FOUR un-run arms only. The header above is copied
+# verbatim from docs/arms/p2-rladder.arms; the reads and BRANCH RULES are
+# unchanged, and this resume flies under the SAME pre-registration (ledger rows
+# committed at a001a22). No new registration was created.
+# ---------------------------------------------------------------------------
+SAEA-P2-r1verify:p2-r1verify8-buf90
+SAEA-P2-r2draft:p2-r2draft8-buf90
+SAEA-P2-r0wrong:p2-r0wrong8-buf90
+SAEA-P2-r1wrong:p2-r1wrong8-buf90
