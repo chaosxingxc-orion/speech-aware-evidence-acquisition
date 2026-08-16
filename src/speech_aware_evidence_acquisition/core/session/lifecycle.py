@@ -97,22 +97,112 @@ def _iso(epoch_seconds: float) -> str:
     return datetime.fromtimestamp(epoch_seconds, tz=timezone.utc).isoformat()
 
 
+# ---------------------------------------------------------------------------
+# ext4-first model source resolution (2026-08-16 perf fix). The pinned GGUF
+# set's canonical location is $SPEECHRL_DATA_DIR (``data_root``), which on
+# this host is a 9p-mounted /mnt/e path -- fine once a model is resident in
+# llama-server's own memory, but a COLD-CACHE reload from that mount measured
+# ~20 MB/s on 2026-08-16, costing one arm roughly 45 minutes it should never
+# have spent. Bit-identical copies of both GGUFs were placed directly on the
+# WSL2 ext4 filesystem (no 9p hop) at ``EXT4_MODELS_ROOT_DEFAULT``.
+#
+# ``_resolve_model_file_source`` prefers that ext4 copy ONLY when both (a)
+# the file exists there and (b) it re-hashes to EXACTLY the receipt-pinned
+# sha256 for that filename -- any miss (file absent, unreadable, or hash
+# mismatch) falls back to the existing ``data_root`` resolution UNCHANGED, so
+# a host without the ext4 mirror, or a stale/partial one, behaves exactly as
+# before this change.
+#
+# Expected pins: the two hashes in ``EXT4_MODEL_SHA256_PINS`` are the SAME
+# two values the runtime receipt's own ``gguf_files[*].sha256`` carries (what
+# the existing ``data_root`` branch has always trusted -- gate-verified
+# before any model touch is allowed, see
+# ``contracts.gate_runtime_gguf._verify_gguf_files``) and the umbrella lock's
+# live authority record, ``docs/datasets.lock.json`` -> ``models[]`` where
+# ``name == "qwen3-omni-30b-a3b-instruct-gguf-q4km"`` -> its ``note`` field
+# (prose, not a structured per-file key, so it is not machine-read from the
+# lock at runtime -- see that entry for the identical two hashes quoted
+# verbatim: "requant product sha256 0751c279..." for the main shard and
+# "mmproj sha256 f0dfe825..." for the mmproj file). Do not hand-edit these
+# constants without re-deriving them from that lock entry. They are also
+# cross-checked against the runtime receipt's own per-file pin below (a
+# filename whose receipt-pinned sha256 disagrees with this constant is
+# refused for the ext4 fast path and falls back to data_root instead of
+# silently trusting whichever value happens to be embedded here), so a drift
+# between the two sources fails toward the slower-but-already-verified path,
+# never toward loading an unverified file.
+EXT4_MODELS_ROOT_ENV = "SAEA_EXT4_MODELS_ROOT"
+EXT4_MODELS_ROOT_DEFAULT = Path("/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km")
+EXT4_MODEL_SHA256_PINS: Mapping[str, str] = {
+    "Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf": (
+        "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d"
+    ),
+    "mmproj-Qwen3-Omni-30B-A3B-Instruct-bf16.gguf": (
+        "f0dfe825fb692d426362b1ac79678fc08daa4758f7151526cad110515f122883"
+    ),
+}
+
+
+def _ext4_models_root() -> Path:
+    """``EXT4_MODELS_ROOT_ENV`` overrides the default -- test-only in
+    practice, but also lets an operator point at a differently-placed mirror
+    without editing source."""
+
+    override = os.environ.get(EXT4_MODELS_ROOT_ENV)
+    return Path(override) if override else EXT4_MODELS_ROOT_DEFAULT
+
+
+def _resolve_model_file_source(
+    data_root: Path,
+    entry: ModelFileRef,
+    *,
+    ext4_root: Path | None = None,
+    sha256_file: Callable[[Path], str] = _sha256_file,
+) -> Path:
+    """Resolve ONE runtime-receipt-pinned GGUF file's real, on-disk path.
+
+    Prefers the ext4 mirror (default :data:`EXT4_MODELS_ROOT_DEFAULT`,
+    overridable via :data:`EXT4_MODELS_ROOT_ENV`) over the canonical
+    ``data_root`` (/mnt/e) path -- but ONLY when ALL of: (1) this filename has
+    a pinned entry in :data:`EXT4_MODEL_SHA256_PINS`; (2) that pin agrees with
+    the runtime receipt's own ``entry.sha256`` for this file (a drifted
+    constant refuses the fast path rather than trusting itself over the
+    receipt); (3) the ext4 candidate file exists; (4) re-hashing it produces
+    EXACTLY the pinned sha256. Any failure at any of those four steps falls
+    back to :func:`_resolve_under` against ``data_root`` UNCHANGED -- this
+    function never raises for a missing/mismatched ext4 copy, and never
+    trusts the ext4 file on file size or mtime alone.
+    """
+
+    filename = Path(entry.path).name
+    expected_pin = EXT4_MODEL_SHA256_PINS.get(filename)
+    if expected_pin is not None and expected_pin == entry.sha256:
+        root = ext4_root if ext4_root is not None else _ext4_models_root()
+        candidate = root / filename
+        if candidate.is_file() and sha256_file(candidate) == expected_pin:
+            return candidate
+    return _resolve_under(data_root, entry.path, "runtime gguf_files path", must_exist=True)
+
+
 def _model_file_argv(data_root: Path, model_files: tuple[ModelFileRef, ...]) -> list[str]:
     """Build ``-m <main>`` / ``--mmproj <mmproj>`` flags from the runtime
     receipt's GGUF set, classifying by filename (the real receipt's two
     entries are the main Q8_0 shard and an ``mmproj-``-prefixed file). Each
-    referenced file must exist under ``data_root`` (a cheap existence check,
-    NOT a re-hash -- the multi-GB GGUF re-hash is the gate's job, already
-    done before a session is ever started)."""
+    file is resolved via :func:`_resolve_model_file_source` -- ext4-first when
+    a verified mirror is present, otherwise the existing ``data_root``
+    resolution (a cheap existence check, NOT a re-hash -- the multi-GB GGUF
+    re-hash against ``data_root`` is the gate's job, already done before a
+    session is ever started; only the ext4 branch re-hashes here, and only
+    the (typically much smaller, always-local) ext4 copy)."""
 
     mmproj = [entry for entry in model_files if "mmproj" in Path(entry.path).name.lower()]
     primary = [entry for entry in model_files if entry not in mmproj]
     argv: list[str] = []
     for entry in primary:
-        resolved = _resolve_under(data_root, entry.path, "runtime gguf_files path", must_exist=True)
+        resolved = _resolve_model_file_source(data_root, entry)
         argv.extend(["-m", str(resolved)])
     for entry in mmproj:
-        resolved = _resolve_under(data_root, entry.path, "runtime gguf_files path", must_exist=True)
+        resolved = _resolve_model_file_source(data_root, entry)
         argv.extend(["--mmproj", str(resolved)])
     return argv
 

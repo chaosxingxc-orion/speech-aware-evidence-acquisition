@@ -123,7 +123,7 @@ gpu_is_clean () {
 run_arm () {
   local run_id="$1" baseline="$2"
   local log="$OUT_DIR/${run_id}-${STAMP}.log"
-  local t0 t1 rc npyc cells
+  local t0 t1 rc npyc cells driver_pid guard_deadline warned
   echo "===== $run_id ($baseline) -> $log  $(date -u +%Y-%m-%dT%H:%M:%SZ) ====="
 
   # finalize_bundle renders a DRAFT wiki-ledger row and ledger_row refuses a
@@ -170,6 +170,8 @@ CELLS
   fi
 
   t0="$(date +%s)"
+  # Backgrounded (not a plain foreground run) so the load-time guard just
+  # below can poll /health concurrently -- see that block's own comment.
   python -m speech_aware_evidence_acquisition.core.driver smoke \
     --model "$MODEL" \
     --dataset "$DATASET" \
@@ -185,7 +187,32 @@ CELLS
     --host "$HOST" --port "$PORT" \
     --tracking-uri "$TRACKING_URI" \
     --ledger-cells "$cells" \
-    > "$log" 2>&1
+    > "$log" 2>&1 &
+  driver_pid=$!
+
+  # Load-time guard (2026-08-16 perf incident): on 2026-08-16 an arm lost
+  # ~45 minutes because the /mnt/e (9p) model reload went cold-cache at
+  # ~20 MB/s -- nothing failed, so nothing surfaced until the arm's own
+  # multi-hour wall clock had already been spent. This polls the SAME
+  # /health endpoint gpu_is_clean() checks pre-flight (never the run
+  # directory -- a marker file there is NOT allowed) while the driver loads,
+  # and warns ONCE, loudly, to stderr/console only if the server has not
+  # answered within 6 minutes. It never kills the arm: a slow-but-eventually-
+  # successful load is still a successful arm, so this is a warning, not a
+  # guard that aborts.
+  guard_deadline=$(( $(date +%s) + 360 ))
+  warned=0
+  while kill -0 "$driver_pid" 2>/dev/null; do
+    if curl -s -m 3 "http://${HOST}:${PORT}/health" 2>/dev/null | grep -q status; then
+      break  # server answered -- ready; the guard's job is done for this arm
+    fi
+    if [ "$warned" -eq 0 ] && [ "$(date +%s)" -ge "$guard_deadline" ]; then
+      echo "  WARNING: $run_id server has not become ready after 6 min (still loading? see $log)" >&2
+      warned=1
+    fi
+    sleep 5
+  done
+  wait "$driver_pid"
   rc=$?
   rm -f "$cells"
   t1="$(date +%s)"

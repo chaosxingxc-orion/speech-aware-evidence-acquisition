@@ -58,10 +58,15 @@ from speech_aware_evidence_acquisition.contracts import STUDY_SLUG, ExecutionPla
 from speech_aware_evidence_acquisition.core.base import PayloadBindingContext
 from speech_aware_evidence_acquisition.core.model import FrozenCoreAdapter, LlamaServerTransport
 from speech_aware_evidence_acquisition.core.session import (
+    EXT4_MODEL_SHA256_PINS,
+    EXT4_MODELS_ROOT_DEFAULT,
+    EXT4_MODELS_ROOT_ENV,
     SESSION_RECEIPT_SCHEMA,
     ModelFileRef,
     SessionError,
     SessionReceipt,
+    _model_file_argv,
+    _resolve_model_file_source,
     attach_session,
     read_session_receipt,
     require_loopback,
@@ -329,6 +334,194 @@ def _matching_session(runtime_receipt, **overrides):
     )
     base.update(overrides)
     return _session(**base)
+
+
+# ---------------------------------------------------------------------------
+# _resolve_model_file_source / _model_file_argv -- ext4-first model path
+# resolution (2026-08-16 perf fix). No real model bytes anywhere here: tiny
+# fake files stand in for the multi-GB GGUFs, and the two constants are
+# monkeypatched to the fake files' own hashes so the pass/fail branches are
+# exercised without needing a hash preimage of the real production pins.
+# ---------------------------------------------------------------------------
+
+
+def test_ext4_models_root_default_matches_the_known_mirror_location():
+    # Locks in the exact path the 2026-08-16 perf fix's operator set up --
+    # a silent change here would misroute every future launch.
+    assert EXT4_MODELS_ROOT_DEFAULT == Path("/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km")
+
+
+def test_ext4_model_sha256_pins_match_the_committed_runtime_receipt():
+    """Regression guard against the two embedded constants drifting from the
+    receipt (and, transitively, the umbrella lock note the module docstring
+    cites) -- the exact failure mode ``_resolve_model_file_source`` is
+    written to refuse toward safety on, caught here as a static check
+    instead of only at run time."""
+
+    receipt_path = (
+        Path(__file__).resolve().parents[2] / "docs" / "receipts" / "runtime-q4km-featcache.json"
+    )
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    receipt_pins = {Path(e["path"]).name: e["sha256"] for e in receipt["gguf_files"]}
+    assert EXT4_MODEL_SHA256_PINS == receipt_pins
+
+
+def test_resolve_model_file_source_prefers_ext4_when_present_and_hash_matches(tmp_path, monkeypatch):
+    data_root = tmp_path / "data"
+    data_root.mkdir()
+    data_bytes = b"cold-9p-copy"
+    (data_root / "models" / "x").mkdir(parents=True)
+    (data_root / "models" / "x" / "model.gguf").write_bytes(data_bytes)
+
+    ext4_root = tmp_path / "ext4"
+    ext4_root.mkdir()
+    ext4_bytes = b"fast-local-copy"
+    ext4_pin = _sha(ext4_bytes)
+    (ext4_root / "model.gguf").write_bytes(ext4_bytes)
+
+    import speech_aware_evidence_acquisition.core.session.lifecycle as lifecycle_module
+
+    monkeypatch.setattr(lifecycle_module, "EXT4_MODEL_SHA256_PINS", {"model.gguf": ext4_pin})
+
+    entry = ModelFileRef(path="models/x/model.gguf", sha256=ext4_pin)
+    resolved = _resolve_model_file_source(data_root, entry, ext4_root=ext4_root)
+    assert resolved == ext4_root / "model.gguf"
+    assert resolved.read_bytes() == ext4_bytes
+
+
+def test_resolve_model_file_source_falls_back_when_ext4_file_missing(tmp_path, monkeypatch):
+    data_root = tmp_path / "data"
+    data_bytes = b"cold-9p-copy"
+    (data_root / "models" / "x").mkdir(parents=True)
+    (data_root / "models" / "x" / "model.gguf").write_bytes(data_bytes)
+
+    ext4_root = tmp_path / "ext4-empty"  # never created: candidate file absent
+
+    import speech_aware_evidence_acquisition.core.session.lifecycle as lifecycle_module
+
+    monkeypatch.setattr(lifecycle_module, "EXT4_MODEL_SHA256_PINS", {"model.gguf": "a" * 64})
+
+    entry = ModelFileRef(path="models/x/model.gguf", sha256="a" * 64)
+    resolved = _resolve_model_file_source(data_root, entry, ext4_root=ext4_root)
+    assert resolved == (data_root / "models" / "x" / "model.gguf").resolve()
+
+
+def test_resolve_model_file_source_falls_back_on_ext4_hash_mismatch(tmp_path, monkeypatch):
+    data_root = tmp_path / "data"
+    data_bytes = b"cold-9p-copy"
+    (data_root / "models" / "x").mkdir(parents=True)
+    (data_root / "models" / "x" / "model.gguf").write_bytes(data_bytes)
+
+    ext4_root = tmp_path / "ext4"
+    ext4_root.mkdir()
+    # ext4 file present but its bytes do NOT hash to the pinned value --
+    # a stale or partial mirror must never be trusted.
+    (ext4_root / "model.gguf").write_bytes(b"corrupted-or-partial-copy")
+
+    import speech_aware_evidence_acquisition.core.session.lifecycle as lifecycle_module
+
+    expected_pin = "a" * 64
+    monkeypatch.setattr(lifecycle_module, "EXT4_MODEL_SHA256_PINS", {"model.gguf": expected_pin})
+
+    entry = ModelFileRef(path="models/x/model.gguf", sha256=expected_pin)
+    resolved = _resolve_model_file_source(data_root, entry, ext4_root=ext4_root)
+    assert resolved == (data_root / "models" / "x" / "model.gguf").resolve()
+
+
+def test_resolve_model_file_source_falls_back_when_receipt_pin_disagrees_with_constant(
+    tmp_path, monkeypatch
+):
+    """A drift between the embedded constant and the runtime receipt's own
+    per-file pin must fail toward data_root, never toward trusting the
+    embedded constant over the receipt."""
+
+    data_root = tmp_path / "data"
+    data_bytes = b"cold-9p-copy"
+    (data_root / "models" / "x").mkdir(parents=True)
+    (data_root / "models" / "x" / "model.gguf").write_bytes(data_bytes)
+
+    ext4_root = tmp_path / "ext4"
+    ext4_root.mkdir()
+    ext4_bytes = b"fast-local-copy"
+    ext4_pin = _sha(ext4_bytes)
+    (ext4_root / "model.gguf").write_bytes(ext4_bytes)
+
+    import speech_aware_evidence_acquisition.core.session.lifecycle as lifecycle_module
+
+    monkeypatch.setattr(lifecycle_module, "EXT4_MODEL_SHA256_PINS", {"model.gguf": ext4_pin})
+
+    # entry.sha256 (the receipt's own pin) disagrees with the constant above.
+    entry = ModelFileRef(path="models/x/model.gguf", sha256="b" * 64)
+    resolved = _resolve_model_file_source(data_root, entry, ext4_root=ext4_root)
+    assert resolved == (data_root / "models" / "x" / "model.gguf").resolve()
+
+
+def test_resolve_model_file_source_ignores_unpinned_filenames(tmp_path):
+    """A filename absent from EXT4_MODEL_SHA256_PINS (e.g. any of the
+    synthetic 'model.gguf'/'mmproj.gguf' fixtures used throughout the rest of
+    this file) always resolves via data_root -- unchanged, pre-existing
+    behavior for a host with no ext4 mirror configured at all."""
+
+    data_root = tmp_path / "data"
+    (data_root / "models" / "x").mkdir(parents=True)
+    (data_root / "models" / "x" / "model.gguf").write_bytes(b"whatever")
+
+    entry = ModelFileRef(path="models/x/model.gguf", sha256="a" * 64)
+    resolved = _resolve_model_file_source(data_root, entry, ext4_root=Path("/does/not/exist"))
+    assert resolved == (data_root / "models" / "x" / "model.gguf").resolve()
+
+
+def test_ext4_models_root_env_override(monkeypatch, tmp_path):
+    import speech_aware_evidence_acquisition.core.session.lifecycle as lifecycle_module
+
+    override = tmp_path / "custom-mirror"
+    monkeypatch.setenv(EXT4_MODELS_ROOT_ENV, str(override))
+    assert lifecycle_module._ext4_models_root() == override
+
+
+def test_ext4_models_root_env_unset_uses_default(monkeypatch):
+    import speech_aware_evidence_acquisition.core.session.lifecycle as lifecycle_module
+
+    monkeypatch.delenv(EXT4_MODELS_ROOT_ENV, raising=False)
+    assert lifecycle_module._ext4_models_root() == EXT4_MODELS_ROOT_DEFAULT
+
+
+def test_model_file_argv_prefers_ext4_for_both_main_and_mmproj(tmp_path, monkeypatch):
+    """End-to-end through the real ``_model_file_argv`` entry point
+    ``start_session`` calls -- proves the ext4-first resolution is actually
+    wired into the argv the server is launched with, for BOTH the main shard
+    and the mmproj file."""
+
+    data_root = tmp_path / "data"
+    (data_root / "models" / "x").mkdir(parents=True)
+    (data_root / "models" / "x" / "model.gguf").write_bytes(b"cold-main")
+    (data_root / "models" / "x" / "mmproj.gguf").write_bytes(b"cold-mmproj")
+
+    ext4_root = tmp_path / "ext4"
+    ext4_root.mkdir()
+    main_bytes, mmproj_bytes = b"fast-main", b"fast-mmproj"
+    main_pin, mmproj_pin = _sha(main_bytes), _sha(mmproj_bytes)
+    (ext4_root / "model.gguf").write_bytes(main_bytes)
+    (ext4_root / "mmproj.gguf").write_bytes(mmproj_bytes)
+
+    import speech_aware_evidence_acquisition.core.session.lifecycle as lifecycle_module
+
+    monkeypatch.setattr(
+        lifecycle_module,
+        "EXT4_MODEL_SHA256_PINS",
+        {"model.gguf": main_pin, "mmproj.gguf": mmproj_pin},
+    )
+    monkeypatch.setattr(lifecycle_module, "_ext4_models_root", lambda: ext4_root)
+
+    model_files = (
+        ModelFileRef(path="models/x/model.gguf", sha256=main_pin),
+        ModelFileRef(path="models/x/mmproj.gguf", sha256=mmproj_pin),
+    )
+    argv = _model_file_argv(data_root, model_files)
+    assert argv == [
+        "-m", str(ext4_root / "model.gguf"),
+        "--mmproj", str(ext4_root / "mmproj.gguf"),
+    ]
 
 
 # ---------------------------------------------------------------------------
