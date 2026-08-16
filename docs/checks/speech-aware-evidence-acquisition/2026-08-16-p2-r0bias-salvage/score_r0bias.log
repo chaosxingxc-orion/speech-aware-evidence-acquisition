@@ -1,0 +1,70 @@
+scoring stack version: saea-scoring-v1
+entity-wer adapter   : entity-wer-v1
+data root            : /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+
+=== asr-wer (score_asr_outputs) ===
+sample          wer    hits    sub    del    ins  reflen
+4330115     0.11809    6174    410    106    274    6690
+4365024     0.12961   10938    673    240    623   11851
+4365948     0.09668    6450    279     56    321    6785
+4366429     0.11571   10577    495    370    459   11442
+4366522     0.12379    3912    250     87    189    4249
+4384964     0.10989    9595    493    213    426   10301
+4385072     0.12051    6152    334    119    343    6605
+4387383     0.12859    3414    234     38    202    3686
+4389907     0.19874    3643    447     46    329    4136
+4397829     0.13453   10517    753    133    648   11403
+AGGREGATE (macro mean_wer): {'mean_wer': 0.12761581796845875, 'samples': 10}
+micro/corpus WER = 9590/77148 = 0.124307
+
+=== entity-wer (score_entity_wer_outputs) ===
+sample     expected correct  ent_wer   recall
+4330115         596     392  0.34228  0.65772
+4365024        1469     994  0.32335  0.67665
+4365948         936     662  0.29274  0.70726
+4366429        1153     802  0.30442  0.69558
+4366522         519     295  0.43160  0.56840
+4384964         931     684  0.26531  0.73469
+4385072         669     424  0.36622  0.63378
+4387383         395     241  0.38987  0.61013
+4389907         396     206  0.47980  0.52020
+4397829        1220     762  0.37541  0.62459
+AGGREGATE: {
+ "adapter_version": "entity-wer-v1",
+ "correct": 5462,
+ "entity_wer": 0.340656687590536,
+ "expected_total": 8284,
+ "f1": 0.7947039138658519,
+ "macro_entity_wer": 0.35709942042907916,
+ "precision": 1.0,
+ "recall": 0.659343312409464,
+ "samples": 10,
+ "samples_with_entities": 10
+}
+ENTITY LEDGER expected_total (corpus) = 8284
+by_entity_type:
+  ABBREVIATION           expected=  520 correct=  375 entity_wer=0.27885
+  ALPHANUMERIC           expected=  229 correct=   27 entity_wer=0.88210
+  CARDINAL               expected= 1246 correct=  522 entity_wer=0.58106
+  CONTRACTION            expected= 1774 correct= 1560 entity_wer=0.12063
+  DATE                   expected= 1545 correct= 1204 entity_wer=0.22071
+  EVENT                  expected=   73 correct=   37 entity_wer=0.49315
+  FAC                    expected=   11 correct=    3 entity_wer=0.72727
+  GPE                    expected=  333 correct=  263 entity_wer=0.21021
+  LOC                    expected=   74 correct=   70 entity_wer=0.05405
+  MONEY                  expected=  364 correct=  201 entity_wer=0.44780
+  NORP                   expected=   21 correct=   17 entity_wer=0.19048
+  ORDINAL                expected=  198 correct=  170 entity_wer=0.14141
+  ORG                    expected=  608 correct=  426 entity_wer=0.29934
+  PERCENT                expected=  369 correct=   94 entity_wer=0.74526
+  PERSON                 expected=  447 correct=  350 entity_wer=0.21700
+  PRODUCT                expected=   45 correct=   12 entity_wer=0.73333
+  QUANTITY               expected=   19 correct=   12 entity_wer=0.36842
+  RANGE                  expected=    1 correct=    0 entity_wer=1.00000
+  TIME                   expected=  102 correct=   93 entity_wer=0.08824
+  TWITTER                expected=    1 correct=    1 entity_wer=0.00000
+  WEBSITE                expected=    8 correct=    2 entity_wer=0.75000
+  WORK_OF_ART            expected=    4 correct=    2 entity_wer=0.50000
+  YEAR                   expected=  292 correct=   21 entity_wer=0.92808
+
+wrote /mnt/c/Users/35686/AppData/Local/Temp/claude/D--chao-workspace-exploring-l4-intelligence-studies-speech-aware-evidence-acquisition/95b8e5b0-424d-494b-9d7b-4f101bc186be/scratchpad/r0bias.asr-wer.json and r0bias.entity-wer.json

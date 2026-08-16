@@ -1,0 +1,20 @@
+SAEA-P2-r0bias.trace.jsonl         bytes=1964356   ends_with_newline=True
+   last line parses OK; keys=['channel', 'payload', 'record_id']
+SAEA-P2-r0bias.outputs.jsonl       bytes=462956    ends_with_newline=True
+   last line parses OK; keys=['admitted', 'arm', 'carrier_lock_key', 'request_id', 'request_sha256', 'response_sha256', 'response_text_sha256', 'sample_id', 'text']
+
+trace records=1634  manifest entries=1634  ids unique=True  id sets equal=True
+trace-manifest content-hash mismatches: 0 / 1634
+
+FINAL SAMPLE 4397829 (req-0010):
+  audio_seconds        = 4472.768
+  last slice iteration = 49
+  last window          = [4410.00, 4472.74]
+  obs_final_window     = True
+  obs_saturated/skipped= False False
+  use_admitted         = True
+  use_stitched_iters   = 50
+  final text words     = 11884
+  final text tail      = "e. Thank you, ladies and gentlemen. That concludes today's call. Thank you for participating and you may now disconnect."
+  sha256(final text)   = 21d9ac707042979552dee814b12cd17a3e487532c2b13ac723eb9f8a59ade549
+  recorded text sha256 = 21d9ac707042979552dee814b12cd17a3e487532c2b13ac723eb9f8a59ade549

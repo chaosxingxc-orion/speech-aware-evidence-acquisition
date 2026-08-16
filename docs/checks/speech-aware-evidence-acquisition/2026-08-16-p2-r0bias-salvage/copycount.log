@@ -1,0 +1,112 @@
+replay windows: derivation=55 trace=55 identical=True
+
+replay windows total=55  with a model call=53  skipped(no-candidates)=2
+accepted splices            : 3
+PRE-localize strict echo    : 49 / 53
+POST-localize strict echo   : 16 / 53   (the in-run guard-2 aperture)
+PRE-localize COPY COUNT (delivered reference occurring inside the raw replay text):
+   total occurrences        : 51
+   windows with >=1 copy    : 51 / 53
+   NOVEL copies (term absent from the pass-1 span it replaces): 51 / 53
+   guard-3 unsupported-reference word present pre-localize   : 0 / 53
+
+reject-reason histogram: {'no-overlap-words': 33, 'reference-echo': 16, None: 3, 'no-candidates': 2, 'length-ratio-exceeded': 1}
+
+=== per-sample ===
+sample      wins called  acc echoPre echoPost  copies  novel
+4330115        3      3    0       3        0       3      3
+4366522        5      5    0       5        2       5      5
+4385072       14     14    2      12        2      12     12
+4387383       13     11    0      11        6      11     11
+4389907       12     12    1      11        5      12     12
+4397829        8      8    0       7        1       8      8
+
+=== ACCEPTED splices (the only ones that changed the transcript) ===
+{
+ "sample": "4385072",
+ "win": 33,
+ "span": 1,
+ "ref": "SiTimes",
+ "pass1": "SiTime",
+ "pre": "With the recent introduction of our Apex MEMS family of resonator products, SiTime now offers all three categories of timing products, which are the oscillators, the resonators",
+ "localized": "SiTime now",
+ "copies_pre": 0,
+ "novel_copy": false
+}
+{
+ "sample": "4385072",
+ "win": 37,
+ "span": 0,
+ "ref": "Vashist",
+ "pass1": "fastest",
+ "pre": "infrastructure including 5G, data center and networking. This was the fastest growing segment over the same quarter last year. Sales were 5.4 million dollars, up 11.",
+ "localized": "the fastest growing",
+ "copies_pre": 0,
+ "novel_copy": false
+}
+{
+ "sample": "4389907",
+ "win": 28,
+ "span": 0,
+ "ref": "Ching",
+ "pass1": "China,",
+ "pre": "Ching performing due to the reverse of the epidemic in certain areas of China, uh as well as this year's uh geopolitical issues.",
+ "localized": "of China,",
+ "copies_pre": 1,
+ "novel_copy": true
+}
+
+=== every PRE-localize copy window ===
+  4330115 w28s0 ref='Chumbley' pass1='Chamblee,' pre='Chumbley' copies=1 novel=True accepted=False reason=no-overlap-words
+  4330115 w29s0 ref='LiveSmart' pass1='Lissmart' pre='LiveSmart' copies=1 novel=True accepted=False reason=no-overlap-words
+  4330115 w30s1 ref='LiveSmart' pass1='Lissmart' pre='LiveSmart' copies=1 novel=True accepted=False reason=no-overlap-words
+  4366522 w21s0 ref='Aldeyra' pass1='Alderis' pre='Aldeyra' copies=1 novel=True accepted=False reason=reference-echo
+  4366522 w22s1 ref='McMullin' pass1='McMullen,' pre='McMullin' copies=1 novel=True accepted=False reason=reference-echo
+  4366522 w23s0 ref='Aldeyra' pass1='aldehyde' pre='Aldeyra' copies=1 novel=True accepted=False reason=no-overlap-words
+  4366522 w24s0 ref='EUDARIO' pass1='Udario' pre='EUDARIO' copies=1 novel=True accepted=False reason=no-overlap-words
+  4366522 w25s0 ref='Aldeyra' pass1='Alderona.' pre='Aldeyra' copies=1 novel=True accepted=False reason=no-overlap-words
+  4385072 w29s0 ref='Vashist' pass1='Vasisth,' pre='Vashist' copies=1 novel=True accepted=False reason=reference-echo
+  4385072 w30s0 ref='SiTimes' pass1='SiTime' pre='SiTimes' copies=1 novel=True accepted=False reason=reference-echo
+  4385072 w31s1 ref='SiTimes' pass1="SiTime's" pre='SiTimes' copies=1 novel=True accepted=False reason=no-overlap-words
+  4385072 w32s0 ref='SiTimes' pass1='SiTime.' pre='SiTimes' copies=1 novel=True accepted=False reason=no-overlap-words
+  4385072 w34s0 ref='SiTimes' pass1='SiTime' pre='SiTimes' copies=1 novel=True accepted=False reason=no-overlap-words
+  4385072 w35s1 ref='SiTimes' pass1="SiTime's" pre='SiTimes' copies=1 novel=True accepted=False reason=no-overlap-words
+  4385072 w36s0 ref='SiTimes' pass1='SiTime' pre='SiTimes' copies=1 novel=True accepted=False reason=no-overlap-words
+  4385072 w38s0 ref='SiTimes' pass1='SiTime?' pre='SiTimes' copies=1 novel=True accepted=False reason=no-overlap-words
+  4385072 w39s0 ref='SiTimes' pass1="SiTime's" pre='SiTimes' copies=1 novel=True accepted=False reason=no-overlap-words
+  4385072 w40s0 ref='Castle' pass1='Casto' pre='Castle' copies=1 novel=True accepted=False reason=no-overlap-words
+  4385072 w41s0 ref='SiTimes' pass1="SiTime's" pre='SiTimes' copies=1 novel=True accepted=False reason=no-overlap-words
+  4385072 w42s1 ref='SiTimes' pass1='SiTime' pre='SiTimes' copies=1 novel=True accepted=False reason=no-overlap-words
+  4387383 w24s0 ref='Compumedics' pass1='Compunetics' pre='Compumedics' copies=1 novel=True accepted=False reason=reference-echo
+  4387383 w25s0 ref='Frenz' pass1='Franz.' pre='Frenz' copies=1 novel=True accepted=False reason=no-overlap-words
+  4387383 w26s0 ref='Livingstone' pass1='Livingston' pre='Livingstone' copies=1 novel=True accepted=False reason=no-overlap-words
+  4387383 w27s1 ref='Livingstone' pass1='Livingston' pre='Livingstone' copies=1 novel=True accepted=False reason=no-overlap-words
+  4387383 w28s0 ref='Tribecca' pass1='Tribeca' pre='Tribecca' copies=1 novel=True accepted=False reason=reference-echo
+  4387383 w29s0 ref='Tribecca' pass1='Tribeca' pre='Tribecca' copies=1 novel=True accepted=False reason=no-overlap-words
+  4387383 w30s1 ref='Tribecca' pass1='Tribeca' pre='Tribecca' copies=1 novel=True accepted=False reason=reference-echo
+  4387383 w31s0 ref='Livingstone' pass1='Livingston' pre='Livingstone' copies=1 novel=True accepted=False reason=reference-echo
+  4387383 w32s1 ref='Tribecca' pass1='Tribeca' pre='Tribecca' copies=1 novel=True accepted=False reason=reference-echo
+  4387383 w33s0 ref='Tribecca' pass1='Tribeca' pre='Tribecca' copies=1 novel=True accepted=False reason=reference-echo
+  4387383 w34s0 ref='Horne' pass1='Horn.' pre='Horne' copies=1 novel=True accepted=False reason=no-overlap-words
+  4389907 w23s0 ref='Ching' pass1='China,' pre='Ching' copies=1 novel=True accepted=False reason=no-overlap-words
+  4389907 w24s0 ref='Ching' pass1='China,' pre='Ching' copies=1 novel=True accepted=False reason=no-overlap-words
+  4389907 w25s0 ref='Ching' pass1='China' pre='Ching' copies=1 novel=True accepted=False reason=no-overlap-words
+  4389907 w26s0 ref='Ching' pass1='China,' pre='Ching' copies=1 novel=True accepted=False reason=no-overlap-words
+  4389907 w27s0 ref='Ching' pass1='China' pre='Ching' copies=1 novel=True accepted=False reason=reference-echo
+  4389907 w28s0 ref='Ching' pass1='China,' pre="Ching performing due to the reverse of the epidemic in certain areas of China, uh as well as this year's uh geopolitical issues." copies=1 novel=True accepted=True reason=None
+  4389907 w29s0 ref='Ching' pass1='Zhang' pre='Ching' copies=1 novel=True accepted=False reason=reference-echo
+  4389907 w30s0 ref='ifeng' pass1='Fang' pre='ifeng' copies=1 novel=True accepted=False reason=no-overlap-words
+  4389907 w31s1 ref='ifeng' pass1='Fang.' pre='ifeng' copies=1 novel=True accepted=False reason=no-overlap-words
+  4389907 w32s0 ref='Ching' pass1='Chen' pre='Ching' copies=1 novel=True accepted=False reason=reference-echo
+  4389907 w33s0 ref='Ching' pass1='China' pre='Ching' copies=1 novel=True accepted=False reason=reference-echo
+  4389907 w34s1 ref='eCommerce' pass1='commerce' pre='eCommerce' copies=1 novel=True accepted=False reason=reference-echo
+  4397829 w50s0 ref='Masood' pass1='Masud.' pre='Masood' copies=1 novel=True accepted=False reason=no-overlap-words
+  4397829 w51s0 ref='Masood' pass1='Massoud,' pre='Masood' copies=1 novel=True accepted=False reason=no-overlap-words
+  4397829 w52s0 ref='Masood' pass1='Masud,' pre='Masood' copies=1 novel=True accepted=False reason=no-overlap-words
+  4397829 w53s0 ref='Horvers' pass1='Harvers' pre='Horvers' copies=1 novel=True accepted=False reason=no-overlap-words
+  4397829 w54s0 ref='Steven' pass1='Stephen' pre='Steven' copies=1 novel=True accepted=False reason=reference-echo
+  4397829 w55s1 ref='Steven' pass1='Stephen.' pre="Yeah, thanks Steven. It's a great question. I think that there's been some natural headwinds there just based on" copies=1 novel=True accepted=False reason=length-ratio-exceeded
+  4397829 w56s0 ref='MADEC' pass1='Madam.' pre='MADEC' copies=1 novel=True accepted=False reason=no-overlap-words
+  4397829 w57s0 ref='Basham' pass1='Bassam' pre='Basham' copies=1 novel=True accepted=False reason=no-overlap-words
+
+wrote /mnt/c/Users/35686/AppData/Local/Temp/claude/D--chao-workspace-exploring-l4-intelligence-studies-speech-aware-evidence-acquisition/95b8e5b0-424d-494b-9d7b-4f101bc186be/scratchpad/r0bias.copycount.json

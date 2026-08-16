@@ -1,0 +1,3 @@
+FIRST_RESP SAEA-P2-r1verify 2026-08-16T11:09:01Z attempt=attempt-20260816T105836Z-b06529 server_start=2026-08-16T10:58:37Z at_n=25
+DUTY SAEA-P2-r1verify mean_util=22% zero_frac=0.73 mean_clk=1169MHz mean_pw=17.2W samples=30 at_n=25
+FCACHE SAEA-P2-r1verify encoding_lines=0 cache_files=34334 cache_newest_local=2026-08-15T22:56:47 at_n=25

@@ -1,0 +1,31 @@
+=== accepted splices: reached the final transcript? / HER-specimen criterion ===
+
+  sample=4385072 window=33 span=1
+    delivered reference : 'SiTimes'
+    pass-1 span text    : 'SiTime'
+    spliced-in text     : 'SiTime now'
+    spliced text present in final transcript : True
+    pass-1 text still present in final       : True
+    HER specimen (spliced text INSERTED the delivered reference): False
+
+  sample=4385072 window=37 span=0
+    delivered reference : 'Vashist'
+    pass-1 span text    : 'fastest'
+    spliced-in text     : 'the fastest growing'
+    spliced text present in final transcript : True
+    pass-1 text still present in final       : True
+    HER specimen (spliced text INSERTED the delivered reference): False
+
+  sample=4389907 window=28 span=0
+    delivered reference : 'Ching'
+    pass-1 span text    : 'China,'
+    spliced-in text     : 'of China,'
+    spliced text present in final transcript : True
+    pass-1 text still present in final       : True
+    HER specimen (spliced text INSERTED the delivered reference): False
+
+ACCEPTED EDITS (HER denominator)        : 3
+reference-inserting edits (HER numerator, exposure-ledger criterion): 0
+=> HER under that criterion             : 0/3 = 0.0000
+
+total final-transcript words across the ten calls: 79285

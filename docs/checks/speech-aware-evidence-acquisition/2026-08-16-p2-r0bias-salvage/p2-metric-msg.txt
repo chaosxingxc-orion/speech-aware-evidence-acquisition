@@ -1,0 +1,34 @@
+amend(p2): pin HER and RIR formulas before the comparator arms are read
+
+The P2 R-ladder pre-registration (studies/.../docs/arms/p2-rladder.arms,
+committed a001a22) names HER and the recoverable-information ratio as
+registered reads, and one BRANCH RULE turns on HER directly - "R1 beats
+R0-bias at matched entity gain with lower HER". An offline salvage of the
+first arm established that neither metric has a pinned formula anywhere in
+the repository. A branch rule whose deciding quantity has no formula is not
+falsifiable, so the formulas are fixed here in writing.
+
+HER = harmful edit rate (Voice Memory sense, not hallucinated-entity rate),
+computed over accepted replay splices, scoring each affected span against
+the aligned gold span with pass-1 vs post-splice text on the macro-word and
+entity ledgers separately; harmful iff post-splice span error is strictly
+greater. RIR = of the delivered candidates that could have fixed a pass-1
+entity error, the fraction that ended up correct in the final hypothesis,
+matched with core.retrieval.normalize_term over the entity-wer-v1 /
+8284-token ledger. Both carry the same degenerate-denominator guard: below
+10 the rate is descriptive only, the read falls back to raw counts, and a
+degenerate fallback is recorded UNRESOLVED rather than silently passed.
+
+Disclosed in the record: SAEA-P2-r0bias was scored offline BEFORE these
+formulas were pinned, and the four comparator arms are unread. r0bias's
+numbers were not used to choose between candidate definitions, but this is
+a weaker position than pinning at registration time and is stated so a
+reader can discount it.
+
+Nothing else in the pre-registration changes: the co-primary Wilcoxon
+reads, the AFFIRM/COLLAPSE branch rules and the five-arm set stand exactly
+as registered. Written in the umbrella only because the study tree is
+frozen while the block flies; mirror into the study repo docs/ at the next
+GPU gap.
+
+Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>

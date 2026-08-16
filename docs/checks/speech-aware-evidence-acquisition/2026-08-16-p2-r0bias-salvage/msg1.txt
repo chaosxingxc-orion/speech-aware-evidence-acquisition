@@ -1,0 +1,30 @@
+docs(english-only): active surface converted, policy oracle retargeted, contract re-issued
+
+Lands the staged English-only conversion of the current-truth surface as one atomic
+change, because the policy and its oracle must move together: wiki/AI-Collaboration.md
+now carries English section anchors and scripts/checks/ai_context_surface_check.py plus
+test_ai_context_surface.py key on those anchors instead of the former Chinese identifiers.
+Splitting them would leave a commit where the gate cannot find its own policy headings.
+
+Converted in place: the sixteen HOT wiki pages, wiki/survey/README.md, root Markdown
+(AGENTS.md, CLAUDE.md, README.md, CONTRIBUTING.md), papers/README.md, docs/architecture.md,
+and the checker/test surface that matched Chinese tokens. README_CN.md and CONTRIBUTING_CN.md
+are deleted and the bilingual "## Chinese" mirror blocks removed; the English half of every
+pair was already the authoritative one, so no content is lost by dropping the mirror.
+
+Adds validate_english_only to the surface checker: it fails closed on any CJK codepoint in
+an explicit ENGLISH_ONLY_PATHS allowlist, so the rule is enforced on exactly the scoped
+surface and cannot silently expand onto immutable records.
+
+The owner execution contract
+wiki/experiments/speech-aware-evidence-acquisition/2026-08-04-owner-consolidated-execution-contract.md
+is re-issued in English with its terms unchanged. Pre-translation bytes are preserved as Git
+blob 8ddd0cf2a96908befc8b49e69602185729ba17ba; studies/registry.json:decision_record_blob is
+re-pinned to d1d8fce657ec593e35ff140ebab13f6d3545e5c6 in this same commit, and the two agree.
+Scope, budget, carrier binding, paper gate and authority are identical to the 2026-08-04
+acceptance, including the numeric caps as originally written.
+
+Decision-Log-2026-08 gains continuation entry 94 by append only; no existing log text is
+rewritten. Content is preserved throughout: this is a language conversion, not an edit.
+
+Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>

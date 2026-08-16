@@ -1,0 +1,18 @@
+fragments            : {'baseline': 'p2-r0bias8-buf90', 'dataset': 'r4-e21-sub10', 'experiment': 'r4-context-dose', 'model': 'q4km-evid-v3'}
+config_hash recorded : cc207169f47e6707a3a9e7ae885ae1f312a06daba4100442c649e655f3f7d07b
+config_hash recomputed: cc207169f47e6707a3a9e7ae885ae1f312a06daba4100442c649e655f3f7d07b
+CONFIG HASH MATCH    : True
+
+arm recorded         : fixed-legal-context-replay
+arm from config      : fixed-legal-context-replay
+evidence_materialization_id: p1-oracle-v2
+
+protocol_hash recorded  : 0b38e23f8435ea30f40843a5d0f356b30386bab4dfbb401a83ca50b8b527f89f
+protocol_hash recomputed: 0b38e23f8435ea30f40843a5d0f356b30386bab4dfbb401a83ca50b8b527f89f
+PROTOCOL HASH MATCH     : True
+plan protocol_hash      : 0b38e23f8435ea30f40843a5d0f356b30386bab4dfbb401a83ca50b8b527f89f (match: True )
+
+split identity recorded  : 744c4b2e2d2eece3b05c68089c02000e38c96d5c62db8055d9c421fd509a8f61
+split identity recomputed: 744c4b2e2d2eece3b05c68089c02000e38c96d5c62db8055d9c421fd509a8f61
+SPLIT IDENTITY MATCH     : True
+plan split_identity_hash : 744c4b2e2d2eece3b05c68089c02000e38c96d5c62db8055d9c421fd509a8f61 (match: True )

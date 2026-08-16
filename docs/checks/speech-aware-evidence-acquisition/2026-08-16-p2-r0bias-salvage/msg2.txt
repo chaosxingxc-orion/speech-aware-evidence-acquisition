@@ -1,0 +1,26 @@
+docs(english-only): translate the speech-aware-evidence-acquisition experiment ledger
+
+Converts the three non-owner-signed pages under
+wiki/experiments/speech-aware-evidence-acquisition/ to English:
+
+- README.md — the experiment lifecycle control plane: routing block, registration
+  requirements, and the closing status paragraph.
+- published-baselines.md — the living published-baseline comparison table: purpose and
+  discipline notes, the comparability error budget, the same-metric calibration section,
+  and every carrier table (Families A-F) plus the backfill rules.
+- 2026-08-04-speech-domain-dataset-scope-and-retention-plan.md — full document.
+
+Content is preserved, not edited. Every number, hash, commit id, arXiv id, dataset key,
+lock key, path, link target, table row and heading level is unchanged; only the prose and
+the Chinese table cells ("同上", "待回填", "是/否") are rendered in English. The measured
+values (WER 0.2674, the 15.70-17.95% calibration band, the +-1.3-2.2pp deviation, all
+published baseline figures) are carried across verbatim. Chinese fullwidth parentheses in
+the carrier headings become ASCII parentheses.
+
+The four owner-signed contracts in the same directory are deliberately untouched: filenames
+carrying owner- are signed authority and are superseded, never rewritten in place.
+
+Gates after the change: ai_context_surface_check PASS (0 failures),
+build_ai_context_manifest --check PASS.
+
+Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>

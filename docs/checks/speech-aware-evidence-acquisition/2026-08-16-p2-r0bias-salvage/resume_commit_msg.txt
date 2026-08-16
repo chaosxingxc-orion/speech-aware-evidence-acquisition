@@ -1,0 +1,10 @@
+fix(guides): English-only rewrite of the study guides; resume the P2 block minus the salvageable arm
+
+The 2026-08-16T00:21Z R-ladder block died at manifest bind: this
+translation landed in the working tree mid-flight and a COMPLETED
+manifest refuses a dirty tree. Arm r0bias had already finished its
+inference (395 calls, 30959 audio s) and is sealed unread for offline
+salvage, so it is not re-flown; the resume arms file carries the four
+un-run arms with the pre-registered reads and branch rules verbatim.
+
+Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>

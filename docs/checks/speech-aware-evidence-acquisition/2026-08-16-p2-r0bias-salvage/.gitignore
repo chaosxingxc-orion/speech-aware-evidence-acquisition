@@ -1,0 +1,6 @@
+# The repository-wide `*.log` rule exists to keep runtime logs (multi-MB
+# llama-server / driver logs under SPEECHRL_DATA_DIR) out of Git. The five
+# `*.log` files in this directory are not runtime logs: they are the stdout
+# transcripts of the one-shot salvage derivation itself, i.e. the evidence this
+# archive exists to preserve. Re-include them here only.
+!*.log
