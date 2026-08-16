@@ -1,0 +1,825 @@
+"""P2 R-ladder offline read suite: hand-authored synthetic fixtures only.
+
+Every numerator/denominator, guard trigger, the n=6 legitimate-empty
+exclusion, the voiding precedence, and the Wilcoxon reuse are exercised
+against fixtures built in this file -- never against
+$SPEECHRL_DATA_DIR/runs/SAEA-P2-*/... or SAEA-D4-*/... (the pre-registered
+P2 results stay unread)."""
+
+import hashlib
+import json
+from pathlib import Path
+
+import pytest
+
+from speech_aware_evidence_acquisition.analysis import p2_reads as p2
+from speech_aware_evidence_acquisition.core.bundle import RUN_MANIFEST_SCHEMA, STATUS_COMPLETED
+from speech_aware_evidence_acquisition.data.lock import load_lock
+
+
+def _sha256_text(text: str) -> str:
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+# ---------------------------------------------------------------------------
+# guarded_rate / compare_via_raw_counts (docs/p2-metric-definitions-mirror.md
+# sections 3.1 / 4.1, IDENTICAL guard for HER and RIR).
+# ---------------------------------------------------------------------------
+
+
+def test_guarded_rate_resolved_at_or_above_the_floor():
+    rate = p2.guarded_rate(3, 10, label="HER[macro]")
+    assert rate.status == "resolved"
+    assert rate.rate == pytest.approx(0.3)
+    assert rate.numerator == 3 and rate.denominator == 10
+
+
+def test_guarded_rate_descriptive_only_below_the_floor():
+    rate = p2.guarded_rate(1, 3, label="HER[macro]")
+    assert rate.status == "descriptive_only"
+    assert rate.rate == pytest.approx(1 / 3)
+    assert "descriptive only" in rate.note
+
+
+def test_guarded_rate_zero_denominator_is_descriptive_only_with_no_rate():
+    rate = p2.guarded_rate(0, 0, label="RIR")
+    assert rate.status == "descriptive_only"
+    assert rate.rate is None
+
+
+def test_guarded_rate_refuses_numerator_exceeding_denominator():
+    with pytest.raises(p2.P2ReadsError):
+        p2.guarded_rate(5, 3, label="HER[macro]")
+
+
+def test_guarded_rate_refuses_negative_inputs():
+    with pytest.raises(p2.P2ReadsError):
+        p2.guarded_rate(-1, 3, label="HER[macro]")
+
+
+def test_compare_via_raw_counts_favors_lower_when_lower_is_better():
+    a = p2.guarded_rate(1, 3, label="a")
+    b = p2.guarded_rate(2, 3, label="b")
+    assert p2.compare_via_raw_counts(a, b, lower_is_better=True) == "favors_a"
+    assert p2.compare_via_raw_counts(b, a, lower_is_better=True) == "favors_b"
+
+
+def test_compare_via_raw_counts_tie():
+    a = p2.guarded_rate(2, 3, label="a")
+    b = p2.guarded_rate(2, 5, label="b")
+    assert p2.compare_via_raw_counts(a, b, lower_is_better=True) == "tie"
+
+
+def test_compare_via_raw_counts_unresolved_when_either_denominator_is_zero():
+    a = p2.guarded_rate(0, 0, label="a")
+    b = p2.guarded_rate(1, 3, label="b")
+    assert p2.compare_via_raw_counts(a, b, lower_is_better=True) == "unresolved"
+    assert p2.compare_via_raw_counts(b, a, lower_is_better=True) == "unresolved"
+
+
+# ---------------------------------------------------------------------------
+# HER -- exact numerator/denominator, the strict-inequality harm criterion,
+# and the mandatory <10 guard (mirror section 3 / 3.1).
+# ---------------------------------------------------------------------------
+
+
+def _splice(sample_id, macro_pass1, macro_post, entity_pass1=0, entity_post=0):
+    return p2.SpliceScore(
+        sample_id=sample_id, window_iteration=0, span_index=0,
+        macro_pass1_errors=macro_pass1, macro_post_errors=macro_post,
+        entity_pass1_errors=entity_pass1, entity_post_errors=entity_post,
+    )
+
+
+def test_splice_is_harmful_requires_strict_increase_equality_is_not_harm():
+    equal = _splice("s1", macro_pass1=2, macro_post=2)
+    increased = _splice("s2", macro_pass1=2, macro_post=3)
+    decreased = _splice("s3", macro_pass1=3, macro_post=2)
+    assert p2.splice_is_harmful(equal, "macro") is False
+    assert p2.splice_is_harmful(increased, "macro") is True
+    assert p2.splice_is_harmful(decreased, "macro") is False
+
+
+def test_splice_is_harmful_rejects_unknown_ledger():
+    with pytest.raises(p2.P2ReadsError):
+        p2.splice_is_harmful(_splice("s1", 1, 1), "phoneme")
+
+
+def test_compute_her_below_guard_floor_is_descriptive_only_with_exact_counts():
+    # mirror's own worked example shape: 3 accepted splices, denominator < 10.
+    splices = [
+        _splice("s1", macro_pass1=1, macro_post=2),  # harmful
+        _splice("s2", macro_pass1=2, macro_post=1),  # not harmful (improved)
+        _splice("s3", macro_pass1=1, macro_post=1),  # not harmful (equal)
+    ]
+    result = p2.compute_her(splices, "macro")
+    assert result.harmful_splices == 1
+    assert result.accepted_splices == 3
+    assert result.rate.status == "descriptive_only"
+    assert result.rate.rate == pytest.approx(1 / 3)
+    assert result.harmful_sample_ids == ("s1",)
+
+
+def test_compute_her_at_or_above_guard_floor_is_resolved():
+    splices = [_splice(f"s{i}", macro_pass1=1, macro_post=2) for i in range(4)] + [
+        _splice(f"s{i}", macro_pass1=2, macro_post=1) for i in range(6)
+    ]
+    result = p2.compute_her(splices, "macro")
+    assert result.accepted_splices == 10
+    assert result.harmful_splices == 4
+    assert result.rate.status == "resolved"
+    assert result.rate.rate == pytest.approx(0.4)
+
+
+def test_compute_her_zero_accepted_splices_is_degenerate():
+    result = p2.compute_her([], "macro")
+    assert result.accepted_splices == 0
+    assert result.rate.status == "descriptive_only"
+    assert result.rate.rate is None
+
+
+def test_compute_her_ledgers_are_independent():
+    splices = [_splice("s1", macro_pass1=1, macro_post=2, entity_pass1=1, entity_post=1)]
+    macro = p2.compute_her(splices, "macro")
+    entity = p2.compute_her(splices, "entity")
+    assert macro.harmful_splices == 1
+    assert entity.harmful_splices == 0
+
+
+# ---------------------------------------------------------------------------
+# RIR -- exact numerator/denominator and the same guard (mirror section 4/4.1).
+# ---------------------------------------------------------------------------
+
+
+def _rir(sample_id, entity_id, wrong, delivered, correct_final):
+    return p2.RIRTokenRecord(
+        sample_id=sample_id, entity_id=entity_id,
+        wrong_in_pass1=wrong, correct_form_delivered=delivered, correct_in_final=correct_final,
+    )
+
+
+def test_compute_rir_denominator_is_wrong_and_delivered_numerator_is_also_correct_in_final():
+    records = [
+        _rir("s1", "e1", wrong=True, delivered=True, correct_final=True),  # numerator + denominator
+        _rir("s1", "e2", wrong=True, delivered=True, correct_final=False),  # denominator only
+        _rir("s1", "e3", wrong=True, delivered=False, correct_final=True),  # not delivered -> excluded
+        _rir("s1", "e4", wrong=False, delivered=True, correct_final=True),  # not wrong -> excluded
+    ]
+    result = p2.compute_rir(records)
+    assert result.denominator == 2
+    assert result.numerator == 1
+    assert result.rate.rate == pytest.approx(0.5)
+    assert result.rate.status == "descriptive_only"  # denominator 2 < 10
+
+
+def test_compute_rir_at_or_above_guard_floor_is_resolved():
+    records = [_rir(f"s{i}", f"e{i}", wrong=True, delivered=True, correct_final=(i < 7)) for i in range(10)]
+    result = p2.compute_rir(records)
+    assert result.denominator == 10
+    assert result.numerator == 7
+    assert result.rate.status == "resolved"
+    assert result.rate.rate == pytest.approx(0.7)
+
+
+def test_compute_rir_zero_denominator_is_degenerate():
+    records = [_rir("s1", "e1", wrong=False, delivered=True, correct_final=True)]
+    result = p2.compute_rir(records)
+    assert result.denominator == 0
+    assert result.rate.status == "descriptive_only"
+    assert result.rate.rate is None
+
+
+# ---------------------------------------------------------------------------
+# Wilcoxon reuse + the n=6 legitimate-empty exclusion (arms file: four of
+# the ten calls fly legitimate-empty -> paired Wilcoxon effective n=6).
+# ---------------------------------------------------------------------------
+
+
+def _call(sample_id, macro_wer, entity_correct, expected_total=10, legitimate_empty=False):
+    return p2.PerCallMetrics(
+        sample_id=sample_id, macro_wer=macro_wer,
+        macro_ref_hit_mask=(True,) * (expected_total - 1) + (False,),
+        entity_wer=1.0 - entity_correct / expected_total if expected_total else 0.0,
+        entity_correct=entity_correct, entity_expected_total=expected_total,
+        legitimate_empty=legitimate_empty,
+    )
+
+
+def test_build_wilcoxon_contrast_matches_direct_call_on_a_hand_checkable_example():
+    """Same two-point example test_context_dose_comparison.py's own
+    ``test_wilcoxon_signed_rank_exact_on_a_hand_checkable_pair`` uses,
+    wired through this module's contrast builder instead of called bare --
+    proves the reuse is bit-identical, not a re-derivation."""
+
+    from speech_aware_evidence_acquisition.analysis.context_dose import wilcoxon_signed_rank_exact
+
+    condition = {"s1": _call("s1", macro_wer=0.30, entity_correct=6), "s2": _call("s2", macro_wer=0.10, entity_correct=6)}
+    reference = {"s1": _call("s1", macro_wer=0.20, entity_correct=6), "s2": _call("s2", macro_wer=0.40, entity_correct=6)}
+    contrast = p2.build_wilcoxon_contrast("t", "cond", "ref", "macro", condition, reference)
+    assert contrast.diffs == (pytest.approx(0.10), pytest.approx(-0.30))
+    assert contrast.wilcoxon == wilcoxon_signed_rank_exact([0.10, -0.30])
+
+
+def test_build_wilcoxon_contrast_excludes_legitimate_empty_calls_to_n6():
+    ids = [f"s{i}" for i in range(10)]
+    empty_ids = {"s0", "s3", "s6", "s9"}  # mirrors "four of the ten calls"
+    condition = {sid: _call(sid, macro_wer=0.2, entity_correct=6, legitimate_empty=sid in empty_ids) for sid in ids}
+    reference = {sid: _call(sid, macro_wer=0.3, entity_correct=5) for sid in ids}
+    contrast = p2.build_wilcoxon_contrast("t", "cond", "ref", "macro", condition, reference)
+    assert len(contrast.included_sample_ids) == 6
+    assert contrast.excluded_legitimate_empty == ("s0", "s3", "s6", "s9")
+    assert contrast.wilcoxon.n_pairs == 6
+
+
+def test_build_wilcoxon_contrast_excludes_when_EITHER_side_is_legitimate_empty():
+    ids = [f"s{i}" for i in range(4)]
+    condition = {sid: _call(sid, 0.2, 6, legitimate_empty=(sid == "s0")) for sid in ids}
+    reference = {sid: _call(sid, 0.3, 5, legitimate_empty=(sid == "s1")) for sid in ids}
+    contrast = p2.build_wilcoxon_contrast("t", "cond", "ref", "macro", condition, reference)
+    assert contrast.included_sample_ids == ("s2", "s3")
+    assert contrast.excluded_legitimate_empty == ("s0", "s1")
+
+
+def test_build_wilcoxon_contrast_refuses_mismatched_sample_sets():
+    condition = {"s1": _call("s1", 0.1, 6)}
+    reference = {"s2": _call("s2", 0.1, 6)}
+    with pytest.raises(p2.P2ReadsError):
+        p2.build_wilcoxon_contrast("t", "cond", "ref", "macro", condition, reference)
+
+
+def test_build_wilcoxon_contrast_per_call_macro_transitions_reuse_flag_transitions():
+    condition = {"s1": _call("s1", 0.1, 6, expected_total=4)}
+    reference = {"s1": _call("s1", 0.1, 6, expected_total=4)}
+    # override ref_hit_mask directly to a hand-picked transition
+    condition["s1"] = condition["s1"].__class__(
+        **{**condition["s1"].__dict__, "macro_ref_hit_mask": (True, True, False, True)}
+    )
+    reference["s1"] = reference["s1"].__class__(
+        **{**reference["s1"].__dict__, "macro_ref_hit_mask": (True, False, False, False)}
+    )
+    contrast = p2.build_wilcoxon_contrast("t", "cond", "ref", "macro", condition, reference)
+    transitions = contrast.per_call[0].macro_transitions
+    # reference=(T,F,F,F), condition=(T,T,F,T): pos0 T->T, pos1 F->T,
+    # pos2 F->F, pos3 F->T.
+    assert transitions.correct_to_correct == 1  # position 0
+    assert transitions.wrong_to_correct == 2  # positions 1, 3
+    assert transitions.correct_to_wrong == 0
+    assert transitions.wrong_to_wrong == 1  # position 2
+
+
+def test_ledger_value_rejects_unknown_ledger():
+    with pytest.raises(p2.P2ReadsError):
+        p2._ledger_value(_call("s1", 0.1, 6), "phoneme")
+
+
+# ---------------------------------------------------------------------------
+# per_term_flip_list.
+# ---------------------------------------------------------------------------
+
+
+def test_per_term_flip_list():
+    flips = p2.per_term_flip_list(
+        "r1verify", "r0bias",
+        reference_correct_terms={"acme", "bistricer"},
+        condition_correct_terms={"bistricer", "micheal"},
+    )
+    assert flips.flipped_to_correct == ("micheal",)
+    assert flips.flipped_to_wrong == ("acme",)
+
+
+# ---------------------------------------------------------------------------
+# format_normalized_wer -- reuses align/tokens_v1 unchanged; only the
+# normalization input changes (module docstring note 5).
+# ---------------------------------------------------------------------------
+
+
+def test_format_normalized_wer_survives_punctuation_and_case_drift():
+    result = p2.format_normalized_wer(["co-op", "revenue"], "Co Op, Revenue!")
+    assert result.wer == pytest.approx(0.0)
+
+
+# ---------------------------------------------------------------------------
+# delivered_reference_text -- exemplars_attached is a FLAT list of label
+# strings in the authoritative runtime schema (reproduction/replay_loop.py),
+# not a list of {"label": ...} mappings (a correction relative to the
+# salvage script's own assumption; see module docstring/comment).
+# ---------------------------------------------------------------------------
+
+
+def test_delivered_reference_text_candidates_and_flat_exemplar_labels():
+    window = {
+        "replay_candidates": [{"text": "Acme", "score": 0.9}, {"text": "Corp", "score": 0.5}],
+        "replay_exemplars_attached": ["Jane Doe", None, ""],
+    }
+    assert p2.delivered_reference_text(window) == "Acme Corp Jane Doe"
+
+
+def test_delivered_reference_text_handles_missing_fields():
+    assert p2.delivered_reference_text({}) == ""
+
+
+# ---------------------------------------------------------------------------
+# copy_count_for_arm -- reuses reproduction.replay_loop guard predicates and
+# core.retrieval.normalize_term; measured on PRE-LOCALIZE replay text (D7E
+# guard-2 aperture note).
+# ---------------------------------------------------------------------------
+
+
+def _window(sample_id, *, replay_text, pass1_text, candidates=(), exemplars=(), accepted=True, localized_words=None):
+    return {
+        "replay_sample_id": sample_id,
+        "replay_window_iteration": 0,
+        "replay_span_index": 0,
+        "replay_candidates": [{"text": t, "score": 1.0} for t in candidates],
+        "replay_exemplars_attached": list(exemplars),
+        "replay_pass1_text": pass1_text,
+        "replay_replay_text": replay_text,
+        "replay_accepted": accepted,
+        "replay_reject_reason": None if accepted else "rejected",
+        "replay_localized_words": localized_words if localized_words is not None else (replay_text or "").split(),
+    }
+
+
+def test_copy_count_for_arm_counts_verbatim_copies_on_pre_localize_text():
+    windows = [
+        _window("s1", replay_text="the model said wrongname here", pass1_text="something else", candidates=["wrongname"]),
+        _window("s2", replay_text="clean transcript with no copy", pass1_text="clean transcript", candidates=["othername"]),
+        _window("s3", replay_text=None, pass1_text=None, candidates=["unreachable"], accepted=False),  # no-candidates skip
+    ]
+    result = p2.copy_count_for_arm("r0wrong", windows)
+    assert result.total_windows == 3
+    assert result.called_windows == 2  # s3 never received a call
+    assert result.windows_with_copy == 1
+    assert result.total_copy_occurrences == 1
+    assert result.novel_copies == 1  # "wrongname" absent from pass1
+    assert result.copy_rate == pytest.approx(0.5)
+
+
+def test_copy_count_for_arm_zero_called_windows_has_zero_rate_not_a_zerodivisionerror():
+    result = p2.copy_count_for_arm("r0wrong", [])
+    assert result.called_windows == 0
+    assert result.copy_rate == 0.0
+
+
+def test_copy_count_for_arm_counts_a_non_novel_copy():
+    windows = [
+        _window("s1", replay_text="wrongname was already in pass1", pass1_text="wrongname stayed", candidates=["wrongname"]),
+    ]
+    result = p2.copy_count_for_arm("r0wrong", windows)
+    assert result.windows_with_copy == 1
+    assert result.novel_copies == 0  # "wrongname" WAS present in pass1 already
+
+
+# ---------------------------------------------------------------------------
+# Mechanical branch-rule evaluator: voiding precedence, AFFIRM/COLLAPSE/
+# UNRESOLVED, clauses quoted verbatim against the actual arms file text.
+# ---------------------------------------------------------------------------
+
+
+def test_branch_rules_text_matches_the_registered_arms_file_verbatim():
+    arms_file = (
+        Path(__file__).resolve().parents[2] / "docs" / "arms" / "p2-rladder.arms"
+    ).read_text(encoding="utf-8")
+    # BRANCH_RULES_TEXT is a whitespace-joined rendering of the commented
+    # block; every distinctive substring below must appear verbatim in the
+    # committed registration so this module can never silently drift from it.
+    for fragment in (
+        "operator AFFIRMED iff at",
+        "least one of (R2-R1>0) / (R1 beats R0-bias at matched entity gain",
+        "with lower HER) / (wrongref copy rate materially lower under verify",
+        "than bias framing). Taxonomy COLLAPSE iff R1~R0-bias on both ledgers",
+        "Wrong-reference copying in R1/R2",
+        "voids the audio-verification claim regardless of WER deltas.",
+    ):
+        assert fragment in arms_file
+        assert fragment in p2.BRANCH_RULES_TEXT
+
+
+def _contrast(diffs, entity_deltas=None):
+    entity_deltas = entity_deltas if entity_deltas is not None else [0] * len(diffs)
+    per_call = tuple(
+        p2.PerCallRow(sample_id=f"s{i}", condition_value=0.0, reference_value=0.0, diff=d,
+                       macro_transitions=None, entity_correct_delta=ed)
+        for i, (d, ed) in enumerate(zip(diffs, entity_deltas))
+    )
+    from speech_aware_evidence_acquisition.analysis.context_dose import wilcoxon_signed_rank_exact
+    return p2.ContrastResult(
+        name="t", condition_arm="a", reference_arm="b", ledger="macro",
+        included_sample_ids=tuple(row.sample_id for row in per_call),
+        excluded_legitimate_empty=(), diffs=tuple(diffs),
+        wilcoxon=wilcoxon_signed_rank_exact(diffs), per_call=per_call,
+    )
+
+
+def _copy(windows_with_copy, called_windows):
+    return p2.CopyCountResult(
+        arm="x", total_windows=called_windows, called_windows=called_windows, accepted_splices=0,
+        total_copy_occurrences=windows_with_copy, windows_with_copy=windows_with_copy,
+        novel_copies=0, guard3_unsupported=0, copy_window_sample_ids=(),
+    )
+
+
+def _her(harmful, accepted, rate=None):
+    r = p2.guarded_rate(harmful, accepted, label="HER[entity]")
+    return p2.HERResult(ledger="entity", harmful_splices=harmful, accepted_splices=accepted, rate=r, harmful_sample_ids=())
+
+
+def test_voiding_precedence_bars_affirm_even_when_an_affirm_clause_would_fire():
+    # r2 beats r1 on entities (clause A would AFFIRM) but r1wrong copies its
+    # wrong reference verbatim -> VOIDED, and AFFIRM must NOT be "met".
+    verdict = p2.evaluate_branch_rules(
+        macro_r1_vs_r0bias=_contrast([-0.1] * 6),
+        entity_r1_vs_r0bias=_contrast([0.0] * 6, entity_deltas=[1] * 6),
+        macro_r2_vs_r1=_contrast([-0.1] * 6),
+        entity_r2_vs_r1=_contrast([0.0] * 6, entity_deltas=[1] * 6),
+        her_r1verify=_her(1, 20), her_r0bias=_her(5, 20),
+        copy_r1wrong=_copy(windows_with_copy=3, called_windows=10),
+        copy_r0wrong=_copy(windows_with_copy=0, called_windows=10),
+        copy_r2draft=_copy(windows_with_copy=0, called_windows=10),
+    )
+    assert verdict.voided is True
+    assert verdict.affirm == "not_met"
+    assert verdict.overall.startswith("VOIDED")
+    # the affirm clauses are still computed and reported (transparency),
+    # even though voiding bars the overall AFFIRM verdict.
+    assert verdict.affirm_clauses[0].verdict == "met"
+
+
+def test_affirm_via_clause_a_r2_beats_r1_on_entities():
+    verdict = p2.evaluate_branch_rules(
+        macro_r1_vs_r0bias=_contrast([0.0] * 6),
+        entity_r1_vs_r0bias=_contrast([0.0] * 6, entity_deltas=[0] * 6),
+        macro_r2_vs_r1=_contrast([0.0] * 6),
+        entity_r2_vs_r1=_contrast([0.0] * 6, entity_deltas=[2] * 6),  # R2 recovers more entities
+        her_r1verify=_her(1, 20), her_r0bias=_her(1, 20),
+        copy_r1wrong=_copy(0, 10), copy_r0wrong=_copy(0, 10), copy_r2draft=_copy(0, 10),
+    )
+    assert verdict.affirm == "met"
+    assert verdict.overall == "AFFIRMED"
+    assert verdict.affirm_clauses[0].verdict == "met"
+    assert verdict.affirm_clauses[0].clause_text == "(R2-R1>0)"
+
+
+def test_affirm_via_clause_b_r1_beats_r0bias_matched_entity_gain_lower_her():
+    verdict = p2.evaluate_branch_rules(
+        macro_r1_vs_r0bias=_contrast([0.0] * 6),
+        entity_r1_vs_r0bias=_contrast([0.0] * 6, entity_deltas=[3] * 6),  # R1 gains entities vs R0bias
+        macro_r2_vs_r1=_contrast([0.0] * 6),
+        entity_r2_vs_r1=_contrast([0.0] * 6, entity_deltas=[0] * 6),
+        her_r1verify=_her(1, 20), her_r0bias=_her(5, 20),  # R1's HER is lower
+        copy_r1wrong=_copy(0, 10), copy_r0wrong=_copy(0, 10), copy_r2draft=_copy(0, 10),
+    )
+    assert verdict.affirm == "met"
+    assert verdict.affirm_clauses[1].verdict == "met"
+
+
+def test_affirm_via_clause_b_falls_back_to_raw_her_counts_when_guard_bound():
+    # denominators < 10 on both sides -> HER is descriptive_only -> clause B
+    # falls back to raw harmful-splice counts (mirror section 3.1).
+    verdict = p2.evaluate_branch_rules(
+        macro_r1_vs_r0bias=_contrast([0.0] * 6),
+        entity_r1_vs_r0bias=_contrast([0.0] * 6, entity_deltas=[1] * 6),
+        macro_r2_vs_r1=_contrast([0.0] * 6),
+        entity_r2_vs_r1=_contrast([0.0] * 6, entity_deltas=[0] * 6),
+        her_r1verify=_her(0, 3), her_r0bias=_her(2, 3),
+        copy_r1wrong=_copy(0, 10), copy_r0wrong=_copy(0, 10), copy_r2draft=_copy(0, 10),
+    )
+    assert verdict.affirm_clauses[1].verdict == "met"
+    assert "guard-bound" in verdict.affirm_clauses[1].detail
+
+
+def test_clause_b_unresolved_when_her_denominators_are_both_zero():
+    verdict = p2.evaluate_branch_rules(
+        macro_r1_vs_r0bias=_contrast([0.0] * 6),
+        entity_r1_vs_r0bias=_contrast([0.0] * 6, entity_deltas=[1] * 6),
+        macro_r2_vs_r1=_contrast([0.0] * 6),
+        entity_r2_vs_r1=_contrast([0.0] * 6, entity_deltas=[0] * 6),
+        her_r1verify=_her(0, 0), her_r0bias=_her(0, 0),
+        copy_r1wrong=_copy(0, 10), copy_r0wrong=_copy(0, 10), copy_r2draft=_copy(0, 10),
+    )
+    assert verdict.affirm_clauses[1].verdict == "unresolved"
+    assert verdict.affirm == "unresolved"
+    assert "UNRESOLVED" in verdict.overall
+
+
+def test_affirm_via_clause_c_wrongref_copy_rate_materially_lower_under_verify():
+    verdict = p2.evaluate_branch_rules(
+        macro_r1_vs_r0bias=_contrast([0.0] * 6),
+        entity_r1_vs_r0bias=_contrast([0.0] * 6, entity_deltas=[0] * 6),
+        macro_r2_vs_r1=_contrast([0.0] * 6),
+        entity_r2_vs_r1=_contrast([0.0] * 6, entity_deltas=[0] * 6),
+        her_r1verify=_her(1, 20), her_r0bias=_her(1, 20),
+        # r1wrong must stay at ZERO copies here: any nonzero r1wrong copy
+        # count fires the VOIDING clause regardless of clause C, which is
+        # exactly what test_voiding_precedence_bars_affirm_even_when_an_
+        # affirm_clause_would_fire covers separately.
+        copy_r1wrong=_copy(windows_with_copy=0, called_windows=10),  # 0% copy rate
+        copy_r0wrong=_copy(windows_with_copy=8, called_windows=10),  # 80% copy rate
+        copy_r2draft=_copy(0, 10),
+    )
+    assert verdict.affirm_clauses[2].verdict == "met"
+    assert verdict.affirm == "met"
+
+
+def test_collapse_when_every_similarity_clause_holds():
+    verdict = p2.evaluate_branch_rules(
+        macro_r1_vs_r0bias=_contrast([0.0] * 6),
+        entity_r1_vs_r0bias=_contrast([0.0] * 6, entity_deltas=[0] * 6),
+        macro_r2_vs_r1=_contrast([0.0] * 6),
+        entity_r2_vs_r1=_contrast([0.0] * 6, entity_deltas=[0] * 6),
+        her_r1verify=_her(2, 20), her_r0bias=_her(2, 20),
+        copy_r1wrong=_copy(0, 10), copy_r0wrong=_copy(0, 10), copy_r2draft=_copy(0, 10),
+    )
+    assert verdict.affirm == "not_met"
+    assert verdict.collapse == "met"
+    assert verdict.overall == "COLLAPSE"
+
+
+def test_neither_affirmed_nor_collapsed_when_no_clause_fires():
+    verdict = p2.evaluate_branch_rules(
+        macro_r1_vs_r0bias=_contrast([0.0] * 6),
+        entity_r1_vs_r0bias=_contrast([0.0] * 6, entity_deltas=[-1] * 6),  # R1 LOSES vs R0bias
+        macro_r2_vs_r1=_contrast([0.0] * 6),
+        entity_r2_vs_r1=_contrast([0.0] * 6, entity_deltas=[0] * 6),  # tie, not similar-enough win
+        her_r1verify=_her(5, 20), her_r0bias=_her(1, 20),  # R1's HER is HIGHER (worse)
+        # r1wrong stays at zero copies (a nonzero count would fire VOIDING,
+        # tested separately); r0wrong likewise, so clause C's "materially
+        # lower" comparison has no drop to find (0.0 vs 0.0).
+        copy_r1wrong=_copy(0, 10), copy_r0wrong=_copy(0, 10),
+        copy_r2draft=_copy(0, 10),
+    )
+    assert verdict.affirm == "not_met"
+    assert verdict.collapse == "not_met"
+    assert verdict.overall == "NEITHER AFFIRMED NOR COLLAPSED (no clause fired either way)"
+
+
+def test_render_branch_verdict_quotes_every_clause_and_the_registered_text():
+    verdict = p2.evaluate_branch_rules(
+        macro_r1_vs_r0bias=_contrast([0.0] * 6),
+        entity_r1_vs_r0bias=_contrast([0.0] * 6, entity_deltas=[0] * 6),
+        macro_r2_vs_r1=_contrast([0.0] * 6),
+        entity_r2_vs_r1=_contrast([0.0] * 6, entity_deltas=[0] * 6),
+        her_r1verify=_her(2, 20), her_r0bias=_her(2, 20),
+        copy_r1wrong=_copy(0, 10), copy_r0wrong=_copy(0, 10), copy_r2draft=_copy(0, 10),
+    )
+    rendered = p2.render_branch_verdict(verdict)
+    assert p2.BRANCH_RULES_TEXT in rendered
+    assert "(R2-R1>0)" in rendered
+    assert "OVERALL:" in rendered
+
+
+# ---------------------------------------------------------------------------
+# Offline extraction layer: real arm run dir shape -> ArmRead. Reuses
+# find_completed_attempt (context_dose) and the frozen scorers; never
+# touches speechrl-data/runs -- everything below is written under tmp_path.
+# ---------------------------------------------------------------------------
+
+
+def _write_fake_arm_run(
+    tmp_path, run_id, attempt_id, *, carrier_lock_key, samples, replay_windows
+):
+    """Mirrors tests/unit/test_scorers.py's _write_fake_run, extended with a
+    trace.jsonl carrying REPLAY channel records -- the same on-disk shape
+    core.bundle.build_manifest + a real run's trace sink produce."""
+
+    runs_root = tmp_path / "runs"
+    attempt_dir = runs_root / run_id / attempt_id
+    attempt_dir.mkdir(parents=True)
+    outputs_path = attempt_dir / f"{run_id}.outputs.jsonl"
+    outputs_text = "".join(
+        json.dumps({"sample_id": sid, "carrier_lock_key": carrier_lock_key, "text": text}, sort_keys=True) + "\n"
+        for sid, text in samples
+    )
+    outputs_path.write_text(outputs_text, encoding="utf-8")
+
+    trace_path = attempt_dir / f"{run_id}.trace.jsonl"
+    trace_text = "".join(
+        json.dumps({"channel": "REPLAY", "payload": window}, sort_keys=True) + "\n" for window in replay_windows
+    )
+    trace_path.write_text(trace_text, encoding="utf-8")
+
+    manifest = {
+        "schema": RUN_MANIFEST_SCHEMA,
+        "run_id": run_id,
+        "created_at": "2026-08-16T00:00:00+00:00",
+        "status": STATUS_COMPLETED,
+        "failure_reason": None,
+        "plan": {"carrier_lock_key": carrier_lock_key},
+        "outputs": {"path": str(outputs_path.resolve()), "sha256": _sha256_text(outputs_text)},
+    }
+    (attempt_dir / f"{run_id}.run-manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
+    return runs_root / run_id
+
+
+def test_read_arm_end_to_end_on_a_synthetic_run_dir(tmp_path, synthetic_world):
+    # Sample 4000001: a genuine reference, an accepted splice that is
+    # HARMFUL on macro but NOT on entity (verifies the ledgers stay
+    # independent through the whole extraction pipeline), plus one RIR-
+    # eligible delivered candidate and one wrong-reference copy.
+    nlp = synthetic_world.e21 / "transcripts" / "nlp_references" / "4000001.nlp"
+    nlp.write_text(
+        "token|tags|wer_tags\n"
+        "bistricer||['0']\n"
+        "said||[]\n"
+        "the||[]\n"
+        "revenue||[]\n"
+        "grew||[]\n",
+        encoding="utf-8",
+    )
+    sidecar = synthetic_world.e21 / "transcripts" / "wer_tags" / "4000001.wer_tag.json"
+    sidecar.write_text(json.dumps({"0": {"entity_type": "PERSON"}}), encoding="utf-8")
+
+    # Sample 4000002: legitimate-empty (zero replay windows), perfectly
+    # scored final hypothesis.
+    nlp2 = synthetic_world.e21 / "transcripts" / "nlp_references" / "4000002.nlp"
+    nlp2.write_text("token|tags|wer_tags\nok||[]\nfine||[]\n", encoding="utf-8")
+    sidecar2 = synthetic_world.e21 / "transcripts" / "wer_tags" / "4000002.wer_tag.json"
+    sidecar2.write_text("{}", encoding="utf-8")
+
+    samples = [
+        ("4000001", "bistricer said the revenue grew"),
+        ("4000002", "ok fine"),
+    ]
+    windows = [
+        # accepted splice: pass1 span "grew" (4 macro errors vs full ref),
+        # post-splice span "grew extra hallucinated words" (7 macro errors)
+        # -> HARMFUL on macro. Neither span contains the entity mention
+        # ("bistricer") -> entity errors equal (1 vs 1) -> NOT harmful on
+        # entity.
+        {
+            "replay_sample_id": "4000001", "replay_window_iteration": 0, "replay_span_index": 0,
+            "replay_candidates": [], "replay_exemplars_attached": [],
+            "replay_pass1_text": "grew", "replay_replay_text": "grew extra hallucinated words",
+            "replay_accepted": True, "replay_reject_reason": None,
+            "replay_localized_words": ["grew", "extra", "hallucinated", "words"],
+        },
+        # a second, rejected window that delivers the correct form of the
+        # PERSON entity ("Bistricer") after a garbled pass-1 ("bistricher")
+        # -> RIR-eligible (wrong in pass1, delivered, correct in final).
+        {
+            "replay_sample_id": "4000001", "replay_window_iteration": 1, "replay_span_index": 1,
+            "replay_candidates": [{"text": "Bistricer", "score": 0.9}], "replay_exemplars_attached": [],
+            "replay_pass1_text": "bistricher", "replay_replay_text": "bistricher",
+            "replay_accepted": False, "replay_reject_reason": "low-confidence",
+            "replay_localized_words": [],
+        },
+        # a window that COPIES its delivered (here, incidentally correct)
+        # candidate verbatim into the pre-localize replay text -- exercises
+        # the copy-count path end to end.
+        {
+            "replay_sample_id": "4000001", "replay_window_iteration": 2, "replay_span_index": 2,
+            "replay_candidates": [{"text": "revenue", "score": 0.5}], "replay_exemplars_attached": [],
+            "replay_pass1_text": "sales", "replay_replay_text": "revenue figures were strong",
+            "replay_accepted": True, "replay_reject_reason": None,
+            "replay_localized_words": ["revenue", "figures", "were", "strong"],
+        },
+    ]
+
+    run_id, attempt_id = "SAEA-TEST-P2-r1verify", "attempt-0001-aaaaaa"
+    run_dir = _write_fake_arm_run(
+        synthetic_world.data_root, run_id, attempt_id,
+        carrier_lock_key="earnings21-original", samples=samples, replay_windows=windows,
+    )
+    lock = load_lock(synthetic_world.lock_path)
+
+    arm_read = p2.read_arm("r1verify", run_dir, lock, synthetic_world.data_root)
+
+    # per-call metrics + legitimate-empty flag
+    by_sample = {c.sample_id: c for c in arm_read.calls}
+    assert by_sample["4000001"].macro_wer == pytest.approx(0.0)
+    assert by_sample["4000002"].macro_wer == pytest.approx(0.0)
+    assert arm_read.legitimate_empty_sample_ids == ("4000002",)
+
+    # HER: two accepted splices (window iterations 0 and 2 -- iteration 1
+    # was REJECTED, not a unit per mirror section 3). Window 0 is harmful on
+    # macro (span "grew" -> 4 errors against the full reference; post-splice
+    # "grew extra hallucinated words" -> 5 errors, verified via the real
+    # frozen align()/tokens_v1() functions directly, not hand-computed).
+    # Window 2 is NOT harmful (pass1 "sales" -> 5 errors, post-splice
+    # "revenue figures were strong" -> 5 errors, equal -- "equality is not
+    # harm"). Neither window is harmful on entity (the sole PERSON mention
+    # "bistricer" is absent from every span variant on both sides).
+    assert arm_read.her["macro"].accepted_splices == 2
+    assert arm_read.her["macro"].harmful_splices == 1
+    assert arm_read.her["macro"].rate.status == "descriptive_only"  # denom 2 < 10
+    assert arm_read.her["entity"].harmful_splices == 0
+
+    # RIR: the "Bistricer" candidate is wrong-in-pass1 ("bistricher" !=
+    # "bistricer"), delivered, and correct in the final hypothesis.
+    assert arm_read.rir.denominator >= 1
+    assert arm_read.rir.numerator >= 1
+
+    # copy count: one window copies its delivered candidate verbatim.
+    assert arm_read.copy_count.called_windows == 3
+    assert arm_read.copy_count.windows_with_copy == 1
+
+
+def test_read_arm_refuses_when_no_completed_attempt_exists(tmp_path, synthetic_world):
+    with pytest.raises(p2.P2ReadsError):
+        p2.read_arm("r1verify", tmp_path / "runs" / "never-existed", load_lock(synthetic_world.lock_path), synthetic_world.data_root)
+
+
+def test_build_p2_report_refuses_an_incomplete_arm_set(synthetic_world):
+    lock = load_lock(synthetic_world.lock_path)
+    with pytest.raises(p2.P2ReadsError, match="missing arm"):
+        p2.build_p2_report({"r0bias": Path("/nonexistent")}, lock, synthetic_world.data_root)
+
+
+# ---------------------------------------------------------------------------
+# build_p2_report / report_to_json / render_report / main(): the full
+# five-arm orchestration and CLI wiring, on tiny synthetic arms (no replay
+# windows -- HER/RIR/copy-count are legitimately all-zero/degenerate here;
+# the metric ARITHMETIC is already covered above, this proves the PLUMBING).
+# ---------------------------------------------------------------------------
+
+
+def _write_minimal_arm(synthetic_world, run_id, texts):
+    return _write_fake_arm_run(
+        synthetic_world.data_root, run_id, "attempt-0001-aaaaaa",
+        carrier_lock_key="earnings21-original", samples=list(texts.items()), replay_windows=[],
+    )
+
+
+@pytest.fixture()
+def five_arm_run_dirs(synthetic_world):
+    nlp = synthetic_world.e21 / "transcripts" / "nlp_references" / "4000001.nlp"
+    nlp.write_text("token|tags|wer_tags\nhello||[]\nworld||[]\n", encoding="utf-8")
+    (synthetic_world.e21 / "transcripts" / "wer_tags" / "4000001.wer_tag.json").write_text("{}", encoding="utf-8")
+
+    run_dirs = {}
+    for arm in p2.ARM_NAMES:
+        run_dirs[arm] = _write_minimal_arm(
+            synthetic_world, f"SAEA-TEST-P2-{arm}", {"4000001": "hello world"}
+        )
+    return run_dirs
+
+
+def test_build_p2_report_full_five_arm_orchestration(synthetic_world, five_arm_run_dirs):
+    lock = load_lock(synthetic_world.lock_path)
+    report = p2.build_p2_report(five_arm_run_dirs, lock, synthetic_world.data_root)
+    assert set(report["reads"]) == set(p2.ARM_NAMES)
+    assert set(report["contrasts"]) == {name for name, _, _ in p2.CONTRASTS}
+    for name in report["contrasts"]:
+        assert set(report["contrasts"][name]) == set(p2.LEDGERS)
+    verdict = report["branch_verdict"]
+    assert verdict.overall  # a verdict string was produced, never blank
+
+    document = p2.report_to_json(report)
+    assert document["schema"] == p2.REPORT_SCHEMA
+    assert set(document["arms"]) == set(p2.ARM_NAMES)
+    assert document["per_term_flip_lists"]["available"] is False
+    assert document["format_normalized_secondary"]["available"] is False
+    # JSON-serializable end to end (no dataclasses/non-primitive leftovers).
+    json.dumps(document)
+
+    rendered = p2.render_report(report)
+    assert "HER (mirror section 3)" in rendered
+    assert "RIR (mirror section 4)" in rendered
+    assert p2.BRANCH_RULES_TEXT in rendered
+
+
+def test_main_writes_a_verdict_and_never_touches_the_attempt_dirs(
+    tmp_path, monkeypatch, synthetic_world, five_arm_run_dirs
+):
+    import speech_aware_evidence_acquisition.data.lock as lock_module
+    from speech_aware_evidence_acquisition.analysis import p2_reads as p2_module
+
+    monkeypatch.setattr(lock_module, "data_root", lambda: synthetic_world.data_root)
+    monkeypatch.setattr(lock_module, "umbrella_lock_path", lambda repo_root=None: synthetic_world.lock_path)
+
+    runs_root = synthetic_world.data_root / "runs"
+    entries_before = sorted(p.relative_to(synthetic_world.data_root) for p in runs_root.rglob("*"))
+
+    output_path = tmp_path / "p2-reads-report.json"
+    argv = ["--output", str(output_path)]
+    for arm in p2.ARM_NAMES:
+        argv.extend([f"--{arm}-run-dir", str(five_arm_run_dirs[arm])])
+
+    exit_code = p2_module.main(argv)
+    assert exit_code == 0
+    assert output_path.is_file()
+    document = json.loads(output_path.read_text(encoding="utf-8"))
+    assert document["schema"] == p2.REPORT_SCHEMA
+
+    entries_after = sorted(p.relative_to(synthetic_world.data_root) for p in runs_root.rglob("*"))
+    assert entries_after == entries_before
+
+
+def test_main_refuses_a_missing_arm_run_dir(tmp_path, monkeypatch, synthetic_world, five_arm_run_dirs, capsys):
+    import speech_aware_evidence_acquisition.data.lock as lock_module
+    from speech_aware_evidence_acquisition.analysis import p2_reads as p2_module
+
+    monkeypatch.setattr(lock_module, "data_root", lambda: synthetic_world.data_root)
+    monkeypatch.setattr(lock_module, "umbrella_lock_path", lambda repo_root=None: synthetic_world.lock_path)
+
+    output_path = tmp_path / "p2-reads-report.json"
+    argv = ["--output", str(output_path)]
+    for arm in p2.ARM_NAMES:
+        run_dir = five_arm_run_dirs[arm] if arm != "r1wrong" else tmp_path / "runs" / "never-existed"
+        argv.extend([f"--{arm}-run-dir", str(run_dir)])
+
+    exit_code = p2_module.main(argv)
+    assert exit_code == 1
+    captured = capsys.readouterr()
+    assert "REFUSED" in captured.err
+    assert not output_path.exists()
