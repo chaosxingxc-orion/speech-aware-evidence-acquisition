@@ -20,6 +20,19 @@ Usage:
         --r0wrong-run-dir  "$SPEECHRL_DATA_DIR/runs/SAEA-P2-r0wrong" \\
         --r1wrong-run-dir  "$SPEECHRL_DATA_DIR/runs/SAEA-P2-r1wrong" \\
         --output docs/checks/speech-aware-evidence-acquisition/p2-reads-report.json
+
+r0bias's own COMPLETED attempt died at manifest bind and was salvaged
+offline instead of re-flown (one-shot semantics); ``--r0bias-run-dir`` is
+therefore mutually exclusive with ``--r0bias-salvage-dir`` (exactly one
+required) --
+
+    python scripts/p2_reads.py \\
+        --r0bias-salvage-dir "docs/checks/speech-aware-evidence-acquisition/2026-08-16-p2-r0bias-salvage" \\
+        --r1verify-run-dir "$SPEECHRL_DATA_DIR/runs/SAEA-P2-r1verify" \\
+        --r2draft-run-dir  "$SPEECHRL_DATA_DIR/runs/SAEA-P2-r2draft" \\
+        --r0wrong-run-dir  "$SPEECHRL_DATA_DIR/runs/SAEA-P2-r0wrong" \\
+        --r1wrong-run-dir  "$SPEECHRL_DATA_DIR/runs/SAEA-P2-r1wrong" \\
+        --output docs/checks/speech-aware-evidence-acquisition/p2-reads-report.json
 """
 
 from __future__ import annotations

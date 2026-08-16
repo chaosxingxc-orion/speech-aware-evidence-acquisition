@@ -300,6 +300,14 @@ class RIRResult:
     numerator: int
     denominator: int
     rate: GuardedRate
+    # F1: an RIR read built from the r0bias salvage archive cannot derive
+    # this metric at all (the preserved JSONs carry no per-window delivered-
+    # candidate/final-hypothesis identity) -- rather than fabricate a 0/0
+    # read indistinguishable from a genuinely-degenerate one, that path sets
+    # ``available=False`` with ``unavailable_reason`` explaining why. RIR
+    # feeds no branch-rule clause, so this never blocks a verdict.
+    available: bool = True
+    unavailable_reason: str | None = None
 
 
 def compute_rir(records: Sequence[RIRTokenRecord]) -> RIRResult:
@@ -387,14 +395,20 @@ class CopyCountResult:
 
 
 def copy_count_for_arm(arm: str, windows: Sequence[Mapping[str, object]]) -> CopyCountResult:
-    """Reuses ``reproduction.replay_loop._reference_echo_reject`` (Guard 2)
-    and ``core.retrieval.normalize_term`` directly -- never reimplements
-    matching logic. Measured on ``replay_replay_text`` (the RAW, PRE-
-    LOCALIZE replay transcript), per the D7E guard-2 aperture note the
-    arms file's own PRE-REGISTERED READS cite; a window with no model call
-    (``replay_replay_text is None``, the legitimate-empty "no-candidates"
-    skip path) contributes zero to every count here but is still counted in
-    ``total_windows``."""
+    """F9 correction: verbatim-copy DETECTION below uses this module's OWN
+    ``_count_subsequence`` (a plain occurrence counter), never
+    ``reproduction.replay_loop._reference_echo_reject`` -- an earlier
+    revision of this docstring claimed that reuse, but ``_reference_echo_
+    reject`` is a boolean strict-echo REJECTION predicate (Guard 2), not a
+    verbatim-occurrence counter, and this function never imports it.
+    ``core.retrieval.normalize_term`` IS reused directly for both the copy
+    count and the ``guard3_unsupported`` read below (Guard 3's own
+    ``_unsupported_reference_word`` predicate, reused unchanged). Measured
+    on ``replay_replay_text`` (the RAW, PRE-LOCALIZE replay transcript), per
+    the D7E guard-2 aperture note the arms file's own PRE-REGISTERED READS
+    cite; a window with no model call (``replay_replay_text is None``, the
+    legitimate-empty "no-candidates" skip path) contributes zero to every
+    count here but is still counted in ``total_windows``."""
 
     from ..core.retrieval import normalize_term
 
@@ -426,6 +440,17 @@ def copy_count_for_arm(arm: str, windows: Sequence[Mapping[str, object]]) -> Cop
         from ..reproduction.replay_loop import _unsupported_reference_word
     except ImportError as error:  # pragma: no cover - defensive only
         raise P2ReadsError(f"cannot import replay-loop guard predicates: {error}") from error
+    # F9: unlike the copy-occurrence count above (measured on ``pre_tokens``,
+    # i.e. PRE-localize), this guard-3 read is measured on POST-localize
+    # words (``replay_localized_words``) -- a real inconsistency against the
+    # D7E pre-localize aperture note this function's own docstring and the
+    # module comment above cite. Left uncorrected here rather than silently
+    # re-apertured: ``guard3_unsupported`` is purely descriptive and feeds
+    # no branch-rule clause, so changing its substrate would be a silent
+    # behavior change with no registered read depending on it. A future
+    # revision that DOES want guard-3 measured pre-localize should pass
+    # ``pre_tokens`` (from ``replay_replay_text``) here instead of
+    # ``localized_words``.
     for window in called:
         reference_text = delivered_reference_text(window)
         localized_words = [str(w) for w in (window.get("replay_localized_words") or [])]
@@ -494,6 +519,12 @@ class ContrastResult:
     diffs: tuple[float, ...]
     wilcoxon: WilcoxonResult
     per_call: tuple[PerCallRow, ...]
+    # F8 / Pin 1: "Any cross-arm contrast must state both sources." Defaults
+    # preserve every pre-existing direct construction of this dataclass
+    # (hand-built fixtures in tests/unit/test_p2_reads.py); build_p2_report
+    # always threads the real per-arm ArmRead.source through explicitly.
+    condition_source: str = "completed-attempt"
+    reference_source: str = "completed-attempt"
 
 
 def build_wilcoxon_contrast(
@@ -503,6 +534,9 @@ def build_wilcoxon_contrast(
     ledger: str,
     condition_calls: Mapping[str, PerCallMetrics],
     reference_calls: Mapping[str, PerCallMetrics],
+    *,
+    condition_source: str = "completed-attempt",
+    reference_source: str = "completed-attempt",
 ) -> ContrastResult:
     if set(condition_calls) != set(reference_calls):
         raise P2ReadsError(
@@ -552,6 +586,8 @@ def build_wilcoxon_contrast(
         diffs=tuple(diffs),
         wilcoxon=wilcoxon,
         per_call=tuple(per_call),
+        condition_source=condition_source,
+        reference_source=reference_source,
     )
 
 
@@ -617,6 +653,10 @@ class ClauseResult:
 class BranchVerdict:
     voided: bool
     voiding_clause: ClauseResult
+    # F3 / Pin 6: a raw wrong-reference copy count of exactly 1 (on r1wrong
+    # or r2draft) does not void the claim but must be surfaced as a
+    # material weakening; None when neither side sits at exactly 1.
+    weakening_note: str | None
     affirm: ClauseVerdict
     affirm_clauses: tuple[ClauseResult, ClauseResult, ClauseResult]
     collapse: ClauseVerdict
@@ -628,50 +668,82 @@ class BranchVerdict:
 def _clause_a_r2_beats_r1(
     entity_contrast: ContrastResult, macro_contrast: ContrastResult
 ) -> ClauseResult:
-    """"(R2-R1>0)". See module docstring note 3: resolved on the entity-
-    correct-token delta, with the macro-WER delta printed for transparency
-    -- an engineering interpretation of ambiguous prose, not itself
-    pre-registered."""
+    """"(R2-R1>0)". Pin 2: fires iff BOTH co-primary ledgers agree -- paired
+    entity-correct total STRICTLY HIGHER under R2-draft AND paired macro
+    WER STRICTLY LOWER under R2-draft, over the effective paired calls
+    (conjunctive; F4, superseding the prior entity-only engineering
+    interpretation). A mixed result (the ledgers disagree) does NOT fire
+    the limb and is reported "not_met" along a "mixed" detail path (Pin 2:
+    "A mixed result does not fire the limb and is reported as mixed")."""
 
     clause_text = "(R2-R1>0)"
-    if not entity_contrast.per_call:
+    if not entity_contrast.per_call or not macro_contrast.diffs:
         return ClauseResult(clause_text, "unresolved", "no paired calls survive the legitimate-empty exclusion")
     entity_delta = sum(row.entity_correct_delta for row in entity_contrast.per_call)
-    macro_delta = statistics.fmean(macro_contrast.diffs) if macro_contrast.diffs else 0.0
-    verdict: ClauseVerdict = "met" if entity_delta > 0 else "not_met"
+    macro_delta = statistics.fmean(macro_contrast.diffs)
+    entity_up = entity_delta > 0
+    macro_down = macro_delta < 0
+    if entity_up and macro_down:
+        verdict: ClauseVerdict = "met"
+        path = "both ledgers agree (entity strictly up, macro strictly down)"
+    elif entity_up or macro_down:
+        verdict = "not_met"
+        path = "mixed (ledgers disagree)"
+    else:
+        verdict = "not_met"
+        path = "neither ledger moved in R2's favor"
     detail = (
-        f"ENGINEERING INTERPRETATION (module docstring note 3): resolved on the summed "
-        f"entity-correct delta R2-R1 = {entity_delta:+d} across {len(entity_contrast.per_call)} "
-        f"paired call(s); mean macro-WER delta R2-R1 = {macro_delta:+.4f} (not decisive, printed "
-        f"for transparency)."
+        f"PIN 2 (conjunctive, both ledgers required): entity-correct delta R2-R1 = {entity_delta:+d} "
+        f"across {len(entity_contrast.per_call)} paired call(s) "
+        f"({'strictly up' if entity_up else 'not up'}); mean macro-WER delta R2-R1 = "
+        f"{macro_delta:+.4f} ({'strictly down' if macro_down else 'not down'}); path={path}"
     )
     return ClauseResult(clause_text, verdict, detail)
+
+
+# Pin 3 / Pin 5: the tie margin in entity-correct TOKENS -- "not lower than
+# R0-bias's by more than 25 tokens" (clause B's "matched entity gain") and
+# the COLLAPSE entity-ledger equivalence (F6) both use this SAME margin.
+MATCHED_GAIN_TOKEN_MARGIN = 25
 
 
 def _clause_b_r1_beats_r0bias(
     entity_contrast: ContrastResult,
     her_r1: HERResult,
     her_r0bias: HERResult,
+    *,
+    token_margin: int = MATCHED_GAIN_TOKEN_MARGIN,
 ) -> ClauseResult:
-    """"(R1 beats R0-bias at matched entity gain with lower HER)"."""
+    """"(R1 beats R0-bias at matched entity gain with lower HER)". Pin 3:
+    "matched entity gain" means R1-verify's entity-correct total is NOT
+    LOWER than R0-bias's by more than the tie margin (``token_margin``,
+    Pin 5's 25 tokens) -- i.e. ``entity_delta >= -token_margin``, not a
+    strict R1>R0bias requirement (F5). "Lower HER": strictly fewer harmful
+    accepted splices, guard-aware (mirror 3.1 / Pin 3); when the guard-bound
+    raw-count fallback is ITSELF degenerate -- ``compare_via_raw_counts``
+    returns "tie" (equal raw harmful counts, including the literal 0-vs-0
+    case) or "unresolved" (a zero-denominator side) -- this clause is
+    UNRESOLVED, never silently resolved toward ``not_met`` (Pin 3: "if raw
+    counts are degenerate ... the limb is UNRESOLVED"; F5)."""
 
     clause_text = "(R1 beats R0-bias at matched entity gain with lower HER)"
     if not entity_contrast.per_call:
         return ClauseResult(clause_text, "unresolved", "no paired calls survive the legitimate-empty exclusion")
     entity_delta = sum(row.entity_correct_delta for row in entity_contrast.per_call)
-    entity_gain = entity_delta > 0
+    entity_matched = entity_delta >= -token_margin
     if her_r1.rate.status == "resolved" and her_r0bias.rate.status == "resolved":
         assert her_r1.rate.rate is not None and her_r0bias.rate.rate is not None
         her_lower = her_r1.rate.rate < her_r0bias.rate.rate
         her_detail = f"HER[entity] r1verify={her_r1.rate.rate:.4f} vs r0bias={her_r0bias.rate.rate:.4f} (rate-decided)"
     else:
         raw = compare_via_raw_counts(her_r1.rate, her_r0bias.rate, lower_is_better=True)
-        if raw == "unresolved":
+        if raw in ("unresolved", "tie"):
             return ClauseResult(
                 clause_text, "unresolved",
-                "HER guard-bound on at least one side with a zero denominator (mirror section "
-                f"3.1); r1verify {her_r1.harmful_splices}/{her_r1.accepted_splices}, "
-                f"r0bias {her_r0bias.harmful_splices}/{her_r0bias.accepted_splices}",
+                f"HER guard-bound (mirror 3.1) and raw harmful-splice counts degenerate ({raw}) -- "
+                f"Pin 3/F5: UNRESOLVED rather than silently passed/failed; r1verify "
+                f"{her_r1.harmful_splices}/{her_r1.accepted_splices}, r0bias "
+                f"{her_r0bias.harmful_splices}/{her_r0bias.accepted_splices}",
             )
         her_lower = raw == "favors_a"
         her_detail = (
@@ -679,8 +751,11 @@ def _clause_b_r1_beats_r0bias(
             f"raw harmful-splice counts r1verify={her_r1.harmful_splices}/{her_r1.accepted_splices} "
             f"vs r0bias={her_r0bias.harmful_splices}/{her_r0bias.accepted_splices} ({raw})"
         )
-    verdict: ClauseVerdict = "met" if entity_gain and her_lower else "not_met"
-    detail = f"entity gain R1-R0bias = {entity_delta:+d} ({'gain' if entity_gain else 'no gain'}); {her_detail}"
+    verdict: ClauseVerdict = "met" if entity_matched and her_lower else "not_met"
+    detail = (
+        f"PIN 3 matched-entity-gain margin={token_margin}: entity delta R1-R0bias = "
+        f"{entity_delta:+d} ({'matched' if entity_matched else 'not matched'}); {her_detail}"
+    )
     return ClauseResult(clause_text, verdict, detail)
 
 
@@ -688,67 +763,99 @@ def _clause_c_wrongref_copy_rate(
     copy_r1wrong: CopyCountResult,
     copy_r0wrong: CopyCountResult,
     *,
-    material_relative_drop: float = 0.30,
+    material_relative_drop: float = 0.50,
+    c_bias_floor: int = 4,
 ) -> ClauseResult:
     """"(wrongref copy rate materially lower under verify than bias
-    framing)". "Materially lower" has no numeric definition anywhere in the
-    pre-registration; ``material_relative_drop`` (default 30% relative
-    reduction) is a documented, overridable engineering threshold, not a
-    pre-registered number."""
+    framing)". Pin 4: basis is the RAW ``total_copy_occurrences`` count
+    (F2 -- NOT ``windows_with_copy``/``called_windows`` rate); the limb
+    fires iff ``C_verify <= material_relative_drop * C_bias`` (Pin 4's
+    registered 50% factor) AND ``C_bias >= c_bias_floor`` (Pin 4's
+    registered floor of 4). Below the floor the copy-opportunity base is
+    too thin to say anything and the clause is UNRESOLVED -- never
+    met/not_met (F2, replacing the prior bare ``bias_rate==0.0 ->
+    not_met``)."""
 
     clause_text = "(wrongref copy rate materially lower under verify than bias framing)"
-    if copy_r0wrong.called_windows == 0 or copy_r1wrong.called_windows == 0:
+    c_bias = copy_r0wrong.total_copy_occurrences
+    c_verify = copy_r1wrong.total_copy_occurrences
+    if c_bias < c_bias_floor:
         return ClauseResult(
             clause_text, "unresolved",
-            f"no called windows to rate: r0wrong called={copy_r0wrong.called_windows}, "
-            f"r1wrong called={copy_r1wrong.called_windows}",
+            f"PIN 4: C_bias (raw total_copy_occurrences, r0wrong) = {c_bias} < floor {c_bias_floor} "
+            "-- the copy-opportunity base is too thin (insufficient opportunities); never passed "
+            f"or failed. C_verify (r1wrong) = {c_verify}.",
         )
-    bias_rate = copy_r0wrong.copy_rate
-    verify_rate = copy_r1wrong.copy_rate
-    if bias_rate == 0.0:
-        verdict: ClauseVerdict = "not_met"
-        detail = f"bias-framing copy rate is already 0.0 ({copy_r0wrong.windows_with_copy}/{copy_r0wrong.called_windows}); no room for a materially lower verify rate"
-    else:
-        relative_drop = (bias_rate - verify_rate) / bias_rate
-        verdict = "met" if relative_drop >= material_relative_drop else "not_met"
-        detail = (
-            f"ENGINEERING THRESHOLD material_relative_drop={material_relative_drop:.2f}: "
-            f"r0wrong (bias) copy_rate={bias_rate:.4f} ({copy_r0wrong.windows_with_copy}/"
-            f"{copy_r0wrong.called_windows}), r1wrong (verify) copy_rate={verify_rate:.4f} "
-            f"({copy_r1wrong.windows_with_copy}/{copy_r1wrong.called_windows}), "
-            f"relative_drop={relative_drop:+.4f}"
-        )
+    verdict: ClauseVerdict = "met" if c_verify <= material_relative_drop * c_bias else "not_met"
+    relative_drop = (c_bias - c_verify) / c_bias
+    detail = (
+        f"PIN 4 basis=raw total_copy_occurrences, material_relative_drop={material_relative_drop:.2f}, "
+        f"c_bias_floor={c_bias_floor}: C_bias(r0wrong)={c_bias}, C_verify(r1wrong)={c_verify}, "
+        f"threshold C_verify <= {material_relative_drop * c_bias:.2f}, relative_drop={relative_drop:+.4f}"
+    )
     return ClauseResult(clause_text, verdict, detail)
 
 
-def _voiding_clause(copy_r1wrong: CopyCountResult, copy_r2draft: CopyCountResult) -> ClauseResult:
+def _voiding_clause(
+    copy_r1wrong: CopyCountResult, copy_r2draft: CopyCountResult
+) -> tuple[ClauseResult, str | None]:
     """"Wrong-reference copying in R1/R2 voids the audio-verification
-    claim regardless of WER deltas." See module docstring note 4 for why
-    ``r2draft``'s OWN copy count (against its own delivered draft) is the
-    R2 side of this check."""
+    claim regardless of WER deltas." Pin 6 (F3): basis is the RAW copy
+    count (``total_copy_occurrences``, NOT ``windows_with_copy``); void iff
+    that count is >= 2 on EITHER side -- ``r1wrong`` (wrong-reference echo)
+    or ``r2draft`` (own-draft anchoring, module docstring note 4). A count
+    of EXACTLY 1 on a side does NOT void, but Pin 6 requires it be reported
+    as a material weakening of the claim; that note is returned separately
+    (never silently absorbed into the boolean verdict) so callers can
+    surface it independently (F3).
+
+    Note: because clause C's own "materially lower" test (Pin 4) requires
+    ``C_verify > 0.5 * C_bias`` with ``C_bias >= 4`` whenever it resolves
+    "not_met", ``C_verify`` in that branch is always >= 3 -- i.e. a
+    cleanly-resolved-"not_met" clause C on the SAME r1wrong arm always
+    co-occurs with voiding here. This is an intended interlock (copying
+    the wrong reference often enough to not be "materially lower" than the
+    bias framing IS, definitionally, copying it >= 2 times), not a bug."""
 
     clause_text = (
         "Wrong-reference copying in R1/R2 voids the audio-verification claim regardless of "
         "WER deltas."
     )
-    voided = copy_r1wrong.windows_with_copy > 0 or copy_r2draft.windows_with_copy > 0
+    c1 = copy_r1wrong.total_copy_occurrences
+    c2 = copy_r2draft.total_copy_occurrences
+    voided = c1 >= 2 or c2 >= 2
     verdict: ClauseVerdict = "met" if voided else "not_met"
     detail = (
-        f"r1wrong copies={copy_r1wrong.windows_with_copy}/{copy_r1wrong.called_windows} "
-        f"(wrong-reference echo); r2draft copies={copy_r2draft.windows_with_copy}/"
-        f"{copy_r2draft.called_windows} (own-draft anchoring, module docstring note 4)"
+        f"PIN 6 basis=raw total_copy_occurrences (void iff >= 2 on either side): r1wrong={c1} "
+        f"(wrong-reference echo); r2draft={c2} (own-draft anchoring, module docstring note 4)"
     )
-    return ClauseResult(clause_text, verdict, detail)
+    weak_sides = []
+    if c1 == 1:
+        weak_sides.append(f"r1wrong={c1}")
+    if c2 == 1:
+        weak_sides.append(f"r2draft={c2}")
+    weakening_note = None
+    if not voided and weak_sides:
+        weakening_note = (
+            f"PIN 6 material weakening: exactly 1 raw wrong-reference copy on {', '.join(weak_sides)} "
+            "-- does not void the audio-verification claim, but is reported as a material weakening "
+            "per the registered rule's exact-1 carve-out."
+        )
+    return ClauseResult(clause_text, verdict, detail), weakening_note
 
 
-def _collapse_clause_ledger_similarity(
-    contrast: ContrastResult, *, tie_floor: float = 0.0
+# Pin 5 (F6): the macro-WER equivalence tie floor, in FRACTIONAL WER units
+# -- 0.001 = 0.10 percentage points ("|paired macro WER difference| <= 0.10
+# percentage points").
+COLLAPSE_MACRO_TIE_FLOOR = 0.001
+
+
+def _collapse_clause_macro_similarity(
+    contrast: ContrastResult, *, tie_floor: float = COLLAPSE_MACRO_TIE_FLOOR
 ) -> ClauseResult:
-    """"R1~R0-bias on both ledgers" / "R2~R1" -- read as: the Wilcoxon
-    contrast on this ledger shows no directional signal, i.e. the observed
-    statistic sits at its OWN null expectation (paired mean diff within
-    ``tie_floor`` of zero) or there are too few nonzero pairs to say
-    anything (``n_effective == 0``)."""
+    """"R1~R0-bias" / "R2~R1" on the MACRO-WER ledger (Pin 5): the paired
+    mean WER difference sits within ``tie_floor`` (0.10pp, F6) of zero, or
+    there are too few nonzero pairs to say anything (``n_effective == 0``)."""
 
     clause_text = f"{contrast.condition_arm}~{contrast.reference_arm} on {contrast.ledger}"
     if not contrast.diffs:
@@ -757,10 +864,73 @@ def _collapse_clause_ledger_similarity(
     similar = contrast.wilcoxon.n_effective == 0 or abs(mean_diff) <= tie_floor
     verdict: ClauseVerdict = "met" if similar else "not_met"
     detail = (
-        f"mean_diff={mean_diff:+.4f}, wilcoxon n_effective={contrast.wilcoxon.n_effective}, "
-        f"p={contrast.wilcoxon.pvalue:.4g} (floor {contrast.wilcoxon.min_two_sided_p:.4g})"
+        f"PIN 5 tie_floor={tie_floor:.4f} fractional ({tie_floor * 100:.2f}pp): mean_diff={mean_diff:+.4f}, "
+        f"wilcoxon n_effective={contrast.wilcoxon.n_effective}, p={contrast.wilcoxon.pvalue:.4g} "
+        f"(floor {contrast.wilcoxon.min_two_sided_p:.4g})"
     )
     return ClauseResult(clause_text, verdict, detail)
+
+
+def _collapse_clause_entity_similarity(
+    contrast: ContrastResult, *, token_margin: int = MATCHED_GAIN_TOKEN_MARGIN
+) -> ClauseResult:
+    """"R1~R0-bias" / "R2~R1" on the ENTITY ledger (Pin 5, F6): compares the
+    SUMMED ``entity_correct_delta`` against the 25-token margin -- NOT the
+    ``entity_wer`` mean diff (F6's explicit correction). Entity-correct is
+    the co-primary ledger's own unit, and Pin 5's 25-token scale is defined
+    in that unit, not a WER fraction."""
+
+    clause_text = f"{contrast.condition_arm}~{contrast.reference_arm} on {contrast.ledger} (entity-correct delta)"
+    if not contrast.per_call:
+        return ClauseResult(clause_text, "unresolved", "no paired calls survive the legitimate-empty exclusion")
+    entity_delta = sum(row.entity_correct_delta for row in contrast.per_call)
+    similar = abs(entity_delta) <= token_margin
+    verdict: ClauseVerdict = "met" if similar else "not_met"
+    detail = (
+        f"PIN 5 token_margin={token_margin}: summed entity_correct_delta={entity_delta:+d} across "
+        f"{len(contrast.per_call)} paired call(s) (F6: entity-correct delta, not entity_wer mean diff)"
+    )
+    return ClauseResult(clause_text, verdict, detail)
+
+
+def _collapse_her_similarity(
+    her_r1: HERResult, her_r0bias: HERResult, *, rate_tie_floor: float = COLLAPSE_MACRO_TIE_FLOOR
+) -> ClauseResult:
+    """"R1~R0-bias ... on HER" (Pin 5: "HER equivalence is raw-count-based
+    and guard-aware per Pin 3"). F6: when EITHER side is guard-bound
+    (denominator < 10, mirror 3.1), this conjunct falls back to comparing
+    RAW harmful counts via :func:`compare_via_raw_counts` rather than
+    auto-declaring "met" (the prior behavior). A degenerate raw comparison
+    -- both sides tied, including the literal 0-vs-0 case, or a zero
+    denominator -- resolves this conjunct as UNRESOLVED, never silently
+    "met" (F6); per :func:`evaluate_branch_rules`, an unresolved conjunct
+    means COLLAPSE cannot be declared."""
+
+    clause_text = "HER[entity] r1verify~r0bias"
+    if her_r1.rate.status == "resolved" and her_r0bias.rate.status == "resolved":
+        assert her_r1.rate.rate is not None and her_r0bias.rate.rate is not None
+        similar = abs(her_r1.rate.rate - her_r0bias.rate.rate) <= rate_tie_floor
+        verdict: ClauseVerdict = "met" if similar else "not_met"
+        detail = (
+            f"HER[entity] rate-decided: r1verify={her_r1.rate.rate:.4f} vs r0bias="
+            f"{her_r0bias.rate.rate:.4f}, tie_floor={rate_tie_floor:.4f}"
+        )
+        return ClauseResult(clause_text, verdict, detail)
+    raw = compare_via_raw_counts(her_r1.rate, her_r0bias.rate, lower_is_better=True)
+    if raw in ("unresolved", "tie"):
+        return ClauseResult(
+            clause_text, "unresolved",
+            f"HER guard-bound (mirror 3.1) and raw harmful-splice counts degenerate ({raw}) -- F6: "
+            f"UNRESOLVED rather than auto-met; r1verify {her_r1.harmful_splices}/"
+            f"{her_r1.accepted_splices}, r0bias {her_r0bias.harmful_splices}/{her_r0bias.accepted_splices}",
+        )
+    detail = (
+        f"HER guard-bound (mirror 3.1): raw harmful-splice counts r1verify="
+        f"{her_r1.harmful_splices}/{her_r1.accepted_splices} vs r0bias={her_r0bias.harmful_splices}/"
+        f"{her_r0bias.accepted_splices} ({raw}) -- NOT a tie, so not similar under the guard-aware "
+        "raw-count comparison (F6)"
+    )
+    return ClauseResult(clause_text, "not_met", detail)
 
 
 def evaluate_branch_rules(
@@ -774,20 +944,22 @@ def evaluate_branch_rules(
     copy_r1wrong: CopyCountResult,
     copy_r0wrong: CopyCountResult,
     copy_r2draft: CopyCountResult,
-    material_relative_drop: float = 0.30,
-    collapse_tie_floor: float = 0.0,
+    material_relative_drop: float = 0.50,
+    c_bias_floor: int = 4,
+    token_margin: int = MATCHED_GAIN_TOKEN_MARGIN,
+    collapse_tie_floor: float = COLLAPSE_MACRO_TIE_FLOOR,
 ) -> BranchVerdict:
     """The mechanical evaluator: quotes the registered clauses verbatim
     next to each computed verdict, checks the VOIDING condition FIRST (it
     bars AFFIRM regardless of every WER-based clause), then AFFIRM, then
     COLLAPSE. Never silently resolves an UNRESOLVED clause either way."""
 
-    voiding = _voiding_clause(copy_r1wrong, copy_r2draft)
+    voiding, weakening_note = _voiding_clause(copy_r1wrong, copy_r2draft)
 
     clause_a = _clause_a_r2_beats_r1(entity_r2_vs_r1, macro_r2_vs_r1)
-    clause_b = _clause_b_r1_beats_r0bias(entity_r1_vs_r0bias, her_r1verify, her_r0bias)
+    clause_b = _clause_b_r1_beats_r0bias(entity_r1_vs_r0bias, her_r1verify, her_r0bias, token_margin=token_margin)
     clause_c = _clause_c_wrongref_copy_rate(
-        copy_r1wrong, copy_r0wrong, material_relative_drop=material_relative_drop
+        copy_r1wrong, copy_r0wrong, material_relative_drop=material_relative_drop, c_bias_floor=c_bias_floor
     )
     affirm_clauses = (clause_a, clause_b, clause_c)
     if voiding.verdict == "met":
@@ -799,19 +971,11 @@ def evaluate_branch_rules(
     else:
         affirm = "not_met"
 
-    collapse_r1_macro = _collapse_clause_ledger_similarity(macro_r1_vs_r0bias, tie_floor=collapse_tie_floor)
-    collapse_r1_entity = _collapse_clause_ledger_similarity(entity_r1_vs_r0bias, tie_floor=collapse_tie_floor)
-    collapse_her = ClauseResult(
-        "HER[entity] r1verify~r0bias",
-        "met" if her_r1verify.rate.status != "resolved" or her_r0bias.rate.status != "resolved" or (
-            her_r1verify.rate.rate is not None and her_r0bias.rate.rate is not None
-            and abs(her_r1verify.rate.rate - her_r0bias.rate.rate) <= collapse_tie_floor
-        ) else "not_met",
-        f"HER[entity] r1verify={her_r1verify.rate.rate} (status={her_r1verify.rate.status}), "
-        f"r0bias={her_r0bias.rate.rate} (status={her_r0bias.rate.status})",
-    )
-    collapse_r2_macro = _collapse_clause_ledger_similarity(macro_r2_vs_r1, tie_floor=collapse_tie_floor)
-    collapse_r2_entity = _collapse_clause_ledger_similarity(entity_r2_vs_r1, tie_floor=collapse_tie_floor)
+    collapse_r1_macro = _collapse_clause_macro_similarity(macro_r1_vs_r0bias, tie_floor=collapse_tie_floor)
+    collapse_r1_entity = _collapse_clause_entity_similarity(entity_r1_vs_r0bias, token_margin=token_margin)
+    collapse_her = _collapse_her_similarity(her_r1verify, her_r0bias, rate_tie_floor=collapse_tie_floor)
+    collapse_r2_macro = _collapse_clause_macro_similarity(macro_r2_vs_r1, tie_floor=collapse_tie_floor)
+    collapse_r2_entity = _collapse_clause_entity_similarity(entity_r2_vs_r1, token_margin=token_margin)
     collapse_clauses = (
         collapse_r1_macro, collapse_r1_entity, collapse_her, collapse_r2_macro, collapse_r2_entity,
     )
@@ -838,6 +1002,7 @@ def evaluate_branch_rules(
     return BranchVerdict(
         voided=voiding.verdict == "met",
         voiding_clause=voiding,
+        weakening_note=weakening_note,
         affirm=affirm,
         affirm_clauses=affirm_clauses,
         collapse=collapse,
@@ -851,6 +1016,8 @@ def render_branch_verdict(verdict: BranchVerdict) -> str:
     lines.append(f"VOIDING (checked FIRST): {verdict.voiding_clause.verdict.upper()}")
     lines.append(f"  clause: {verdict.voiding_clause.clause_text}")
     lines.append(f"  detail: {verdict.voiding_clause.detail}")
+    if verdict.weakening_note:
+        lines.append(f"  WEAKENING NOTE: {verdict.weakening_note}")
     lines.append("")
     lines.append(f"AFFIRM: {verdict.affirm.upper()}")
     for clause in verdict.affirm_clauses:
@@ -887,6 +1054,13 @@ class ArmRead:
     rir: RIRResult
     copy_count: CopyCountResult
     legitimate_empty_sample_ids: tuple[str, ...]
+    # F8 / Pin 1: which extraction path produced this read -- "completed-
+    # attempt" (:func:`read_arm`, the COMPLETED-manifest run-dir path) or
+    # "salvage-json" (:func:`read_arm_from_salvage`, F1's one-shot preserved
+    # salvage-JSON path). Echoed into every cross-arm contrast this arm
+    # participates in (Pin 1: "Any cross-arm contrast must state both
+    # sources").
+    source: str = "completed-attempt"
 
 
 def _resolve_outputs_path(manifest: Mapping[str, object], manifest_path: Path) -> Path:
@@ -1157,22 +1331,292 @@ def read_arm(arm: str, run_dir: Path, lock: Mapping[str, object], root: Path) ->
         rir=rir,
         copy_count=copy_count,
         legitimate_empty_sample_ids=tuple(legitimate_empty_ids),
+        source="completed-attempt",
     )
 
 
+# ---------------------------------------------------------------------------
+# F1: the salvage input path -- read_arm_from_salvage. Builds an ArmRead
+# directly from a preserved one-shot salvage archive's three JSON outputs
+# (docs/checks/speech-aware-evidence-acquisition/2026-08-16-p2-r0bias-
+# salvage/ for r0bias) instead of a COMPLETED attempt run-dir. The sealed
+# raw attempt trace is NEVER re-read here -- one-shot attempt semantics
+# (Pin 1) are preserved by consuming only the already-spent read's
+# preserved bytes.
+# ---------------------------------------------------------------------------
+
+# Provenance for this default: the P2 R-ladder frozen ten IS the
+# r4-e21-sub10-sample split (configs/dataset/r4-e21-sub10.json,
+# docs/receipts/probe-samples/r4-e21-sub10-sample.json) -- every one of the
+# ten sample ids the salvage JSONs carry (4330115, 4365024, 4365948,
+# 4366429, 4366522, 4384964, 4385072, 4387383, 4389907, 4397829) is listed
+# there under carrier "earnings21-original". This module does not re-derive
+# that fact from the sealed r0bias trace (never re-read); it is read off
+# the already-committed split receipt instead.
+SALVAGE_CARRIER_LOCK_KEY_DEFAULT = "earnings21-original"
+
+
+def _load_salvage_json(path: Path) -> object:
+    import json
+
+    if not path.is_file():
+        raise P2ReadsError(f"salvage input missing: {path}")
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _copycount_rows_by_sample(
+    rows: Sequence[Mapping[str, object]]
+) -> dict[str, list[Mapping[str, object]]]:
+    by_sample: dict[str, list[Mapping[str, object]]] = {}
+    for row in rows:
+        by_sample.setdefault(str(row["sample"]), []).append(row)
+    return by_sample
+
+
+def copy_count_from_salvage_rows(arm: str, rows: Sequence[Mapping[str, object]]) -> CopyCountResult:
+    """F1: builds a :class:`CopyCountResult` directly from the salvage
+    ``{arm}.copycount.json`` flat-row shape (``copycount_r0bias.py``'s own
+    output), reusing its ALREADY-COMPUTED ``copies_pre``/``novel_copy``/
+    ``guard3_pre`` fields rather than re-deriving them from a trace this
+    module never re-reads (one-shot semantics). Basis is ``copies_pre``
+    (F2 Pin 4: raw ``total_copy_occurrences``), matching
+    :func:`copy_count_for_arm`'s own ``total_copy_occurrences`` field
+    exactly. A row's ``pre`` is ``None`` for the "no-candidates" skip path
+    (mirrors ``replay_replay_text is None`` in the trace-based path)."""
+
+    called = [row for row in rows if row.get("pre") is not None]
+    total_occurrences = sum(int(row.get("copies_pre") or 0) for row in called)
+    with_copy = [row for row in called if int(row.get("copies_pre") or 0) > 0]
+    novel = sum(1 for row in called if row.get("novel_copy"))
+    guard3 = sum(1 for row in called if row.get("guard3_pre") is True)
+    accepted = sum(1 for row in rows if row.get("accepted"))
+    return CopyCountResult(
+        arm=arm,
+        total_windows=len(rows),
+        called_windows=len(called),
+        accepted_splices=accepted,
+        total_copy_occurrences=total_occurrences,
+        windows_with_copy=len(with_copy),
+        novel_copies=novel,
+        guard3_unsupported=guard3,
+        copy_window_sample_ids=tuple(str(row["sample"]) for row in with_copy),
+    )
+
+
+def extract_her_splices_from_salvage_rows(
+    rows: Sequence[Mapping[str, object]],
+    carrier_lock_key: str,
+    lock: Mapping[str, object],
+    root: Path,
+) -> list[SpliceScore]:
+    """F1: HER's ACCEPTED-splice substrate, built from the salvage
+    copycount rows' own ``pass1``/``localized`` fields (each accepted row
+    already carries the exact pass-1 span text and the exact post-splice
+    localized-word text ``copycount_r0bias.py`` measured) through the SAME
+    :func:`_score_span_errors` reuse every other HER extraction in this
+    module uses -- no new alignment/scoring logic (module docstring
+    note 1)."""
+
+    splices: list[SpliceScore] = []
+    for row in rows:
+        if not row.get("accepted"):
+            continue
+        sample_id = str(row["sample"])
+        pass1_text = str(row.get("pass1") or "")
+        post_text = str(row.get("localized") or "")
+        macro_pass1, entity_pass1 = _score_span_errors(sample_id, carrier_lock_key, pass1_text, lock, root)
+        macro_post, entity_post = _score_span_errors(sample_id, carrier_lock_key, post_text, lock, root)
+        splices.append(
+            SpliceScore(
+                sample_id=sample_id,
+                window_iteration=row.get("win"),  # type: ignore[arg-type]
+                span_index=row.get("span"),  # type: ignore[arg-type]
+                macro_pass1_errors=macro_pass1,
+                macro_post_errors=macro_post,
+                entity_pass1_errors=entity_pass1,
+                entity_post_errors=entity_post,
+            )
+        )
+    return splices
+
+
+def read_arm_from_salvage(
+    arm: str,
+    salvage_dir: Path,
+    lock: Mapping[str, object],
+    root: Path,
+    *,
+    carrier_lock_key: str = SALVAGE_CARRIER_LOCK_KEY_DEFAULT,
+) -> ArmRead:
+    """F1: builds an :class:`ArmRead` directly from a preserved one-shot
+    salvage archive's three JSON outputs, NEVER from a re-read of the
+    sealed raw attempt trace (one-shot attempt semantics; Pin 1). Expects
+    ``salvage_dir`` to carry exactly:
+
+    - ``{arm}.asr-wer.json`` -- the EXACT, lossless return of
+      ``core.scorers.score_asr_outputs``
+      (``{"aggregate": {...}, "per_sample": [...]}}``);
+    - ``{arm}.entity-wer.json`` -- the EXACT, lossless return of
+      ``core.scorers.score_entity_wer_outputs``;
+    - ``{arm}.copycount.json`` -- a flat list of per-window rows, the
+      salvage's own ``copycount_r0bias.py`` output shape (keys: ``sample``,
+      ``win``, ``span``, ``ref``, ``pre``, ``pass1``, ``localized``,
+      ``accepted``, ``reason``, ``copies_pre``, ``copies_pass1``,
+      ``novel_copy``, ``echo_pre``, ``echo_post``, ``guard3_pre``).
+
+    Legitimate-empty: a sample_id is legitimate-empty iff it has ZERO rows
+    in the copycount JSON -- literal, NOT "every row is a no-candidates
+    skip" (a sample CAN carry a mix of skip rows and real windows, as
+    SAEA-P2-r0bias's own sample 4387383 does; that sample is NOT
+    legitimate-empty). This is the rule that reproduces the four registered
+    zero-oracle-candidate ids exactly against the real archive.
+
+    RIR is NOT derivable from the three preserved salvage JSONs (they never
+    captured per-window delivered-candidate/final-hypothesis identity in a
+    form this can read) and RIR feeds no branch-rule clause -- the returned
+    :class:`RIRResult` carries ``available=False`` with an explanatory
+    reason rather than a fabricated 0/0 read passed off as real."""
+
+    asr_scores = _load_salvage_json(salvage_dir / f"{arm}.asr-wer.json")
+    entity_scores = _load_salvage_json(salvage_dir / f"{arm}.entity-wer.json")
+    copycount_rows = _load_salvage_json(salvage_dir / f"{arm}.copycount.json")
+    if (
+        not isinstance(asr_scores, Mapping)
+        or not isinstance(entity_scores, Mapping)
+        or not isinstance(copycount_rows, list)
+    ):
+        raise P2ReadsError(f"arm {arm!r}: malformed salvage JSON shape under {salvage_dir}")
+
+    asr_by_sample = {str(entry["sample_id"]): entry for entry in asr_scores["per_sample"]}
+    entity_by_sample = {str(entry["sample_id"]): entry for entry in entity_scores["per_sample"]}
+    if set(asr_by_sample) != set(entity_by_sample):
+        raise P2ReadsError(f"arm {arm!r}: asr-wer and entity-wer salvage JSONs scored different sample sets")
+
+    rows_by_sample = _copycount_rows_by_sample(copycount_rows)
+
+    calls: list[PerCallMetrics] = []
+    legitimate_empty_ids: list[str] = []
+    for sample_id in sorted(asr_by_sample):
+        asr_entry = asr_by_sample[sample_id]
+        entity_entry = entity_by_sample[sample_id]
+        empty = sample_id not in rows_by_sample
+        if empty:
+            legitimate_empty_ids.append(sample_id)
+        calls.append(
+            PerCallMetrics(
+                sample_id=sample_id,
+                macro_wer=float(asr_entry["wer"]),
+                macro_ref_hit_mask=tuple(asr_entry["ref_hit_mask"]),
+                entity_wer=float(entity_entry["entity_wer"]),
+                entity_correct=int(entity_entry["correct"]),
+                entity_expected_total=int(entity_entry["expected_total"]),
+                legitimate_empty=empty,
+            )
+        )
+
+    splices = extract_her_splices_from_salvage_rows(copycount_rows, carrier_lock_key, lock, root)
+    her = {ledger: compute_her(splices, ledger) for ledger in LEDGERS}
+
+    rir = RIRResult(
+        numerator=0,
+        denominator=0,
+        rate=guarded_rate(0, 0, label="RIR"),
+        available=False,
+        unavailable_reason=(
+            "not derivable from preserved salvage outputs (the salvage JSONs carry no per-window "
+            "delivered-candidate/final-hypothesis identity); RIR feeds no branch-rule clause (F1)."
+        ),
+    )
+
+    copy_count = copy_count_from_salvage_rows(arm, copycount_rows)
+
+    return ArmRead(
+        arm=arm,
+        run_dir=Path(salvage_dir),
+        manifest_path=Path(salvage_dir) / "MANIFEST.sha256",
+        outputs_path=Path(salvage_dir) / f"{arm}.asr-wer.json",
+        calls=tuple(calls),
+        macro_aggregate=asr_scores["aggregate"],
+        entity_aggregate=entity_scores["aggregate"],
+        her=her,
+        rir=rir,
+        copy_count=copy_count,
+        legitimate_empty_sample_ids=tuple(legitimate_empty_ids),
+        source="salvage-json",
+    )
+
+
+# F7: the two decisive co-primary contrasts evaluate_branch_rules actually
+# consumes, and the exact registered zero-oracle-candidate exclusion set
+# (arms file: "4365024/4365948/4366429/4384964", "paired Wilcoxon effective
+# n=6").
+DECISIVE_CONTRAST_NAMES: tuple[str, ...] = ("r1verify_vs_r0bias", "r2draft_vs_r1verify")
+EXPECTED_LEGITIMATE_EMPTY_IDS: frozenset[str] = frozenset(
+    {"4365024", "4365948", "4366429", "4384964"}
+)
+
+
+def _check_decisive_contrast_exclusions(
+    contrasts: Mapping[str, Mapping[str, ContrastResult]]
+) -> list[str]:
+    """F7: loudly (never silently) verifies that the two decisive
+    co-primary contrasts land at the pre-registered ``n_effective_paired
+    == 6`` with EXACTLY the four registered zero-oracle-candidate ids
+    excluded. Returns a (possibly empty) list of human-readable warning
+    lines; NEVER raises -- a mismatch is reported prominently, not a
+    hard-crash (F7)."""
+
+    warnings: list[str] = []
+    for name in DECISIVE_CONTRAST_NAMES:
+        by_ledger = contrasts.get(name, {})
+        for ledger, contrast in by_ledger.items():
+            excluded = set(contrast.excluded_legitimate_empty)
+            n_effective = len(contrast.included_sample_ids)
+            if n_effective != 6 or excluded != EXPECTED_LEGITIMATE_EMPTY_IDS:
+                warnings.append(
+                    f"MISMATCH on decisive contrast {name!r} [{ledger}]: n_effective_paired="
+                    f"{n_effective} (expected 6), excluded={sorted(excluded)} (expected "
+                    f"{sorted(EXPECTED_LEGITIMATE_EMPTY_IDS)})"
+                )
+    return warnings
+
+
 def build_p2_report(
-    run_dirs: Mapping[str, Path], lock: Mapping[str, object], root: Path
+    run_dirs: Mapping[str, Path],
+    lock: Mapping[str, object],
+    root: Path,
+    *,
+    r0bias_read: ArmRead | None = None,
 ) -> dict[str, object]:
     """Top-level orchestration: reads all five arms, builds the
     pre-registered paired contrasts, and runs the mechanical branch-rule
     evaluator. Raises :class:`P2ReadsError` (never returns a partial
-    report) if any arm is unreadable or the arm set is incomplete."""
+    report) if any arm is unreadable or the arm set is incomplete.
 
-    missing = sorted(set(ARM_NAMES) - set(run_dirs))
-    if missing:
-        raise P2ReadsError(f"missing arm(s) {missing}; expected exactly {ARM_NAMES}")
+    F1: pass ``r0bias_read`` (e.g. the output of :func:`read_arm_from_
+    salvage`) to supply the r0bias arm directly instead of via
+    ``run_dirs`` -- the two are mutually exclusive sources for that one
+    arm, mirroring the CLI's ``--r0bias-run-dir`` / ``--r0bias-salvage-dir``
+    split. ``run_dirs`` must then carry every OTHER arm name but must NOT
+    carry ``"r0bias"``."""
 
-    reads = {arm: read_arm(arm, run_dirs[arm], lock, root) for arm in ARM_NAMES}
+    if r0bias_read is not None:
+        expected = tuple(name for name in ARM_NAMES if name != "r0bias")
+        missing = sorted(set(expected) - set(run_dirs))
+        if missing:
+            raise P2ReadsError(f"missing arm(s) {missing}; expected exactly {expected} plus r0bias_read")
+        if "r0bias" in run_dirs:
+            raise P2ReadsError(
+                "both run_dirs['r0bias'] and r0bias_read were given; exactly one r0bias source is allowed"
+            )
+        reads = {arm: read_arm(arm, run_dirs[arm], lock, root) for arm in expected}
+        reads["r0bias"] = r0bias_read
+    else:
+        missing = sorted(set(ARM_NAMES) - set(run_dirs))
+        if missing:
+            raise P2ReadsError(f"missing arm(s) {missing}; expected exactly {ARM_NAMES}")
+        reads = {arm: read_arm(arm, run_dirs[arm], lock, root) for arm in ARM_NAMES}
+
     calls_by_arm = {arm: {c.sample_id: c for c in reads[arm].calls} for arm in ARM_NAMES}
 
     contrasts: dict[str, dict[str, ContrastResult]] = {}
@@ -1181,6 +1625,8 @@ def build_p2_report(
             ledger: build_wilcoxon_contrast(
                 name, condition_arm, reference_arm, ledger,
                 calls_by_arm[condition_arm], calls_by_arm[reference_arm],
+                condition_source=reads[condition_arm].source,
+                reference_source=reads[reference_arm].source,
             )
             for ledger in LEDGERS
         }
@@ -1197,11 +1643,14 @@ def build_p2_report(
         copy_r2draft=reads["r2draft"].copy_count,
     )
 
+    exclusion_warnings = _check_decisive_contrast_exclusions(contrasts)
+
     return {
         "schema": REPORT_SCHEMA,
         "reads": reads,
         "contrasts": contrasts,
         "branch_verdict": verdict,
+        "exclusion_warnings": exclusion_warnings,
     }
 
 
@@ -1228,7 +1677,10 @@ def _her_json(result: HERResult) -> dict[str, object]:
 
 
 def _rir_json(result: RIRResult) -> dict[str, object]:
-    return {"numerator": result.numerator, "denominator": result.denominator, "rate": _guarded_rate_json(result.rate)}
+    return {
+        "numerator": result.numerator, "denominator": result.denominator, "rate": _guarded_rate_json(result.rate),
+        "available": result.available, "unavailable_reason": result.unavailable_reason,
+    }
 
 
 def _copy_count_json(result: CopyCountResult) -> dict[str, object]:
@@ -1255,6 +1707,8 @@ def _transitions_json(transitions: TransitionCounts | None) -> dict[str, object]
 def _contrast_json(contrast: ContrastResult) -> dict[str, object]:
     return {
         "name": contrast.name, "condition_arm": contrast.condition_arm, "reference_arm": contrast.reference_arm,
+        # F8 / Pin 1: "Any cross-arm contrast must state both sources."
+        "condition_source": contrast.condition_source, "reference_source": contrast.reference_source,
         "ledger": contrast.ledger, "included_sample_ids": list(contrast.included_sample_ids),
         "excluded_legitimate_empty": list(contrast.excluded_legitimate_empty),
         "n_pairs_before_exclusion": len(contrast.included_sample_ids) + len(contrast.excluded_legitimate_empty),
@@ -1286,6 +1740,7 @@ def _branch_verdict_json(verdict: BranchVerdict) -> dict[str, object]:
         "registered_text": verdict.registered_text,
         "voided": verdict.voided,
         "voiding_clause": _clause_json(verdict.voiding_clause),
+        "weakening_note": verdict.weakening_note,
         "affirm": verdict.affirm,
         "affirm_clauses": [_clause_json(c) for c in verdict.affirm_clauses],
         "collapse": verdict.collapse,
@@ -1297,6 +1752,7 @@ def _branch_verdict_json(verdict: BranchVerdict) -> dict[str, object]:
 def _arm_read_json(read: ArmRead) -> dict[str, object]:
     return {
         "arm": read.arm,
+        "source": read.source,  # F8: "completed-attempt" or "salvage-json"
         "run_dir": str(read.run_dir),
         "manifest_path": str(read.manifest_path),
         "outputs_path": str(read.outputs_path),
@@ -1327,6 +1783,7 @@ def report_to_json(report: Mapping[str, object]) -> dict[str, object]:
     reads: Mapping[str, ArmRead] = report["reads"]  # type: ignore[assignment]
     contrasts: Mapping[str, Mapping[str, ContrastResult]] = report["contrasts"]  # type: ignore[assignment]
     verdict: BranchVerdict = report["branch_verdict"]  # type: ignore[assignment]
+    exclusion_warnings: list[str] = list(report.get("exclusion_warnings") or [])  # type: ignore[arg-type]
     return {
         "schema": report["schema"],
         "arms": {arm: _arm_read_json(read) for arm, read in reads.items()},
@@ -1335,6 +1792,10 @@ def report_to_json(report: Mapping[str, object]) -> dict[str, object]:
             for name, by_ledger in contrasts.items()
         },
         "branch_verdict": _branch_verdict_json(verdict),
+        # F7: loud (never silent) exclusion-mismatch banner data -- empty
+        # when the two decisive contrasts land exactly at the pre-
+        # registered n_effective_paired==6 / four-id exclusion set.
+        "exclusion_warnings": exclusion_warnings,
         "per_term_flip_lists": {
             "available": False,
             "note": (
@@ -1366,8 +1827,21 @@ def render_report(report: Mapping[str, object]) -> str:
     reads: Mapping[str, ArmRead] = report["reads"]  # type: ignore[assignment]
     contrasts: Mapping[str, Mapping[str, ContrastResult]] = report["contrasts"]  # type: ignore[assignment]
     verdict: BranchVerdict = report["branch_verdict"]  # type: ignore[assignment]
+    exclusion_warnings: list[str] = list(report.get("exclusion_warnings") or [])  # type: ignore[arg-type]
 
     lines = ["P2 R-ladder offline reads (docs/arms/p2-rladder.arms)", "=" * 60, ""]
+
+    # F7: a LOUD banner, never a silent report, when the decisive
+    # co-primary contrasts don't land at the pre-registered n_effective_
+    # paired==6 / four-id exclusion set.
+    if exclusion_warnings:
+        lines.append("!" * 70)
+        lines.append("PROMINENT WARNING (F7): decisive-contrast exclusion mismatch")
+        for warning in exclusion_warnings:
+            lines.append(f"  {warning}")
+        lines.append("!" * 70)
+        lines.append("")
+
     lines.append("Per-arm aggregates")
     lines.append(f"  {'arm':<10}{'macro_wer':>11}{'entity_wer':>12}{'ent_correct':>13}{'ent_expected':>13}")
     for arm in ARM_NAMES:
@@ -1440,6 +1914,25 @@ def _cli_parser():
         ),
     )
     for arm in ARM_NAMES:
+        if arm == "r0bias":
+            # F1: r0bias's COMPLETED attempt was never re-flown after the
+            # 2026-08-16 manifest-bind death (one-shot semantics) -- it has
+            # exactly two mutually exclusive input paths: the ordinary
+            # run-dir (if a COMPLETED attempt ever exists) or the preserved
+            # one-shot salvage-JSON archive. Exactly one is required.
+            r0bias_group = parser.add_mutually_exclusive_group(required=True)
+            r0bias_group.add_argument(
+                "--r0bias-run-dir", type=Path, default=None,
+                help="stable run_dir for the r0bias arm (COMPLETED-attempt path; mutually "
+                "exclusive with --r0bias-salvage-dir)",
+            )
+            r0bias_group.add_argument(
+                "--r0bias-salvage-dir", type=Path, default=None,
+                help="F1: preserved one-shot salvage archive directory for r0bias, carrying "
+                "r0bias.asr-wer.json / r0bias.entity-wer.json / r0bias.copycount.json "
+                "(mutually exclusive with --r0bias-run-dir)",
+            )
+            continue
         parser.add_argument(
             f"--{arm.replace('_', '-')}-run-dir", required=True, type=Path,
             help=f"stable run_dir for the {arm} arm (parent of attempt-*/ subdirectories)",
@@ -1462,10 +1955,20 @@ def main(argv: list[str] | None = None) -> int:
     repo_root = Path(args.repo_root) if args.repo_root else REPO_ROOT
     lock = load_lock(umbrella_lock_path(repo_root))
     root = data_root()
-    run_dirs = {arm: getattr(args, f"{arm}_run_dir") for arm in ARM_NAMES}
+    run_dirs = {arm: getattr(args, f"{arm}_run_dir") for arm in ARM_NAMES if arm != "r0bias"}
+
+    r0bias_read = None
+    if args.r0bias_salvage_dir is not None:
+        try:
+            r0bias_read = read_arm_from_salvage("r0bias", args.r0bias_salvage_dir, lock, root)
+        except P2ReadsError as error:
+            print(f"REFUSED: {error}", file=sys.stderr)
+            return 1
+    else:
+        run_dirs["r0bias"] = args.r0bias_run_dir
 
     try:
-        report = build_p2_report(run_dirs, lock, root)
+        report = build_p2_report(run_dirs, lock, root, r0bias_read=r0bias_read)
     except P2ReadsError as error:
         print(f"REFUSED: {error}", file=sys.stderr)
         return 1

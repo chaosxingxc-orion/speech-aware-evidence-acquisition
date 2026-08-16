@@ -4,7 +4,16 @@ Every numerator/denominator, guard trigger, the n=6 legitimate-empty
 exclusion, the voiding precedence, and the Wilcoxon reuse are exercised
 against fixtures built in this file -- never against
 $SPEECHRL_DATA_DIR/runs/SAEA-P2-*/... or SAEA-D4-*/... (the pre-registered
-P2 results stay unread)."""
+P2 results stay unread).
+
+ONE documented exception (F1): a handful of tests near the end of this file
+read the PRESERVED r0bias salvage archive (docs/checks/speech-aware-
+evidence-acquisition/2026-08-16-p2-r0bias-salvage/) through
+:func:`read_arm_from_salvage`. That archive's read is already spent
+(one-shot semantics, docs/p2-branch-rule-pins.md Pin 1) and its bytes are
+durably preserved specifically so F1 could be developed against the real
+schema; those tests never open $SPEECHRL_DATA_DIR/runs/SAEA-P2-* (no run
+directory for any arm is read there, salvage or otherwise)."""
 
 import hashlib
 import json
@@ -449,7 +458,10 @@ def test_affirm_via_clause_a_r2_beats_r1_on_entities():
     verdict = p2.evaluate_branch_rules(
         macro_r1_vs_r0bias=_contrast([0.0] * 6),
         entity_r1_vs_r0bias=_contrast([0.0] * 6, entity_deltas=[0] * 6),
-        macro_r2_vs_r1=_contrast([0.0] * 6),
+        # F4: clause A is conjunctive (Pin 2) -- BOTH ledgers must move in
+        # R2's favor, so the macro contrast here must be strictly negative
+        # too, not a bare tie.
+        macro_r2_vs_r1=_contrast([-0.05] * 6),
         entity_r2_vs_r1=_contrast([0.0] * 6, entity_deltas=[2] * 6),  # R2 recovers more entities
         her_r1verify=_her(1, 20), her_r0bias=_her(1, 20),
         copy_r1wrong=_copy(0, 10), copy_r0wrong=_copy(0, 10), copy_r2draft=_copy(0, 10),
@@ -458,6 +470,26 @@ def test_affirm_via_clause_a_r2_beats_r1_on_entities():
     assert verdict.overall == "AFFIRMED"
     assert verdict.affirm_clauses[0].verdict == "met"
     assert verdict.affirm_clauses[0].clause_text == "(R2-R1>0)"
+
+
+def test_clause_a_mixed_result_does_not_fire_and_is_reported_mixed():
+    """Pin 2 (F4): a mixed result -- only ONE ledger moves in R2's favor --
+    does not fire the limb and is reported "not_met" with a "mixed" detail
+    path, never silently resolved via either ledger alone."""
+
+    entity_up_only = p2._clause_a_r2_beats_r1(
+        _contrast([0.0] * 6, entity_deltas=[3] * 6),  # entity delta=18>0
+        _contrast([0.0] * 6),  # macro delta=0, not strictly <0
+    )
+    assert entity_up_only.verdict == "not_met"
+    assert "mixed" in entity_up_only.detail
+
+    macro_down_only = p2._clause_a_r2_beats_r1(
+        _contrast([0.0] * 6, entity_deltas=[0] * 6),  # entity delta=0, not >0
+        _contrast([-0.05] * 6),  # macro delta=-0.05, strictly <0
+    )
+    assert macro_down_only.verdict == "not_met"
+    assert "mixed" in macro_down_only.detail
 
 
 def test_affirm_via_clause_b_r1_beats_r0bias_matched_entity_gain_lower_her():
@@ -522,35 +554,191 @@ def test_affirm_via_clause_c_wrongref_copy_rate_materially_lower_under_verify():
 
 
 def test_collapse_when_every_similarity_clause_holds():
+    # NOTE (F2/F3 interlock, see _voiding_clause's own docstring): clause C
+    # can only resolve cleanly to "not_met" when C_verify (== copy_r1wrong's
+    # raw count) is >= 2 -- but that ALSO trips voiding (Pin 6, F3) and
+    # overrides the overall verdict to "VOIDED" regardless of collapse. To
+    # isolate the COLLAPSE similarity-conjunct machinery under test here
+    # from clause C's OWN Pin-4 threshold arithmetic (which has its
+    # dedicated tests elsewhere in this file), this scenario overrides
+    # material_relative_drop down so a NON-voiding C_verify=1 against a
+    # C_bias=4 base still resolves clause C "not_met" cleanly.
     verdict = p2.evaluate_branch_rules(
         macro_r1_vs_r0bias=_contrast([0.0] * 6),
         entity_r1_vs_r0bias=_contrast([0.0] * 6, entity_deltas=[0] * 6),
         macro_r2_vs_r1=_contrast([0.0] * 6),
         entity_r2_vs_r1=_contrast([0.0] * 6, entity_deltas=[0] * 6),
         her_r1verify=_her(2, 20), her_r0bias=_her(2, 20),
-        copy_r1wrong=_copy(0, 10), copy_r0wrong=_copy(0, 10), copy_r2draft=_copy(0, 10),
+        copy_r1wrong=_copy(1, 10), copy_r0wrong=_copy(4, 10), material_relative_drop=0.1,
+        copy_r2draft=_copy(0, 10),
     )
+    assert verdict.voided is False
     assert verdict.affirm == "not_met"
     assert verdict.collapse == "met"
     assert verdict.overall == "COLLAPSE"
 
 
 def test_neither_affirmed_nor_collapsed_when_no_clause_fires():
+    # Same F2/F3-interlock override as test_collapse_when_every_similarity_
+    # clause_holds above (see its note): a non-voiding, cleanly-"not_met"
+    # clause C requires overriding material_relative_drop away from its
+    # Pin-4 default of 0.5 for this particular AFFIRM/COLLAPSE-plumbing
+    # test; clause C's own default-threshold arithmetic is covered
+    # separately (test_clause_c_unresolved_when_c_bias_below_floor / test_
+    # clause_c_met_and_not_met_around_the_50_percent_threshold below).
     verdict = p2.evaluate_branch_rules(
         macro_r1_vs_r0bias=_contrast([0.0] * 6),
         entity_r1_vs_r0bias=_contrast([0.0] * 6, entity_deltas=[-1] * 6),  # R1 LOSES vs R0bias
         macro_r2_vs_r1=_contrast([0.0] * 6),
         entity_r2_vs_r1=_contrast([0.0] * 6, entity_deltas=[0] * 6),  # tie, not similar-enough win
         her_r1verify=_her(5, 20), her_r0bias=_her(1, 20),  # R1's HER is HIGHER (worse)
-        # r1wrong stays at zero copies (a nonzero count would fire VOIDING,
-        # tested separately); r0wrong likewise, so clause C's "materially
-        # lower" comparison has no drop to find (0.0 vs 0.0).
-        copy_r1wrong=_copy(0, 10), copy_r0wrong=_copy(0, 10),
+        # r1wrong stays at 1 copy (a count >= 2 would fire VOIDING, tested
+        # separately) with r0wrong at 4 -- clause C is cleanly "not_met"
+        # under the overridden 10% drop threshold (1 > 0.1*4).
+        copy_r1wrong=_copy(1, 10), copy_r0wrong=_copy(4, 10), material_relative_drop=0.1,
         copy_r2draft=_copy(0, 10),
     )
+    assert verdict.voided is False
     assert verdict.affirm == "not_met"
     assert verdict.collapse == "not_met"
     assert verdict.overall == "NEITHER AFFIRMED NOR COLLAPSED (no clause fired either way)"
+
+
+# ---------------------------------------------------------------------------
+# F2 -- clause C: basis is raw total_copy_occurrences, 50% relative-drop
+# threshold, C_bias >= 4 floor (below it -> unresolved, never not_met).
+# ---------------------------------------------------------------------------
+
+
+def test_clause_c_unresolved_when_c_bias_below_floor():
+    result = p2._clause_c_wrongref_copy_rate(_copy(0, 10), _copy(3, 10))
+    assert result.verdict == "unresolved"
+    assert "floor" in result.detail
+
+
+def test_clause_c_met_and_not_met_around_the_50_percent_threshold():
+    # C_bias=10 (>= floor 4), C_verify=5 -> exactly 50% -> met (Pin 4: "<=").
+    met = p2._clause_c_wrongref_copy_rate(_copy(5, 10), _copy(10, 10))
+    assert met.verdict == "met"
+    # C_verify=6 -> 60%, strictly above the 50% drop -> not_met.
+    not_met = p2._clause_c_wrongref_copy_rate(_copy(6, 10), _copy(10, 10))
+    assert not_met.verdict == "not_met"
+
+
+# ---------------------------------------------------------------------------
+# F3 -- voiding: basis is raw total_copy_occurrences, void iff >= 2 on
+# EITHER side; exactly 1 does not void but is a reported material weakening.
+# ---------------------------------------------------------------------------
+
+
+def test_voiding_exactly_one_copy_does_not_void_but_notes_a_weakening():
+    clause, note = p2._voiding_clause(_copy(1, 10), _copy(0, 10))
+    assert clause.verdict == "not_met"
+    assert note is not None
+    assert "r1wrong=1" in note
+
+
+def test_voiding_two_or_more_copies_voids_with_no_weakening_note():
+    clause, note = p2._voiding_clause(_copy(2, 10), _copy(0, 10))
+    assert clause.verdict == "met"
+    assert note is None
+
+
+def test_voiding_weakening_note_surfaces_through_evaluate_branch_rules_and_rendering():
+    verdict = p2.evaluate_branch_rules(
+        macro_r1_vs_r0bias=_contrast([0.0] * 6),
+        entity_r1_vs_r0bias=_contrast([0.0] * 6, entity_deltas=[0] * 6),
+        macro_r2_vs_r1=_contrast([0.0] * 6),
+        entity_r2_vs_r1=_contrast([0.0] * 6, entity_deltas=[0] * 6),
+        her_r1verify=_her(2, 20), her_r0bias=_her(2, 20),
+        copy_r1wrong=_copy(1, 10), copy_r0wrong=_copy(0, 10), copy_r2draft=_copy(0, 10),
+    )
+    assert verdict.voided is False
+    assert verdict.weakening_note is not None
+    rendered = p2.render_branch_verdict(verdict)
+    assert "WEAKENING NOTE" in rendered
+    document = p2._branch_verdict_json(verdict)
+    assert document["weakening_note"] == verdict.weakening_note
+
+
+# ---------------------------------------------------------------------------
+# F5 -- clause B: MATCHED_GAIN_TOKEN_MARGIN=25, entity_gain redefined as
+# entity_delta >= -25, and a guard-bound RAW-COUNT TIE (not just a zero
+# denominator) resolves the clause UNRESOLVED, never not_met.
+# ---------------------------------------------------------------------------
+
+
+def test_clause_b_unresolved_on_a_raw_tie_not_just_zero_denominators():
+    contrast = _contrast([0.0] * 6, entity_deltas=[0] * 6)
+    result = p2._clause_b_r1_beats_r0bias(contrast, _her(2, 5), _her(2, 8))
+    assert result.verdict == "unresolved"
+
+
+def test_clause_b_matched_entity_gain_margin_boundary_both_sides():
+    at_margin = _contrast([0.0] * 6, entity_deltas=[-25] + [0] * 5)  # sum=-25
+    beyond_margin = _contrast([0.0] * 6, entity_deltas=[-26] + [0] * 5)  # sum=-26
+    her_r1_lower, her_r0bias_higher = _her(1, 20), _her(5, 20)  # resolved, her_lower=True
+    at = p2._clause_b_r1_beats_r0bias(at_margin, her_r1_lower, her_r0bias_higher)
+    beyond = p2._clause_b_r1_beats_r0bias(beyond_margin, her_r1_lower, her_r0bias_higher)
+    assert at.verdict == "met"  # exactly -25 tokens: still "matched" (Pin 5: <=)
+    assert beyond.verdict == "not_met"  # -26 tokens: no longer matched
+
+
+# ---------------------------------------------------------------------------
+# F6 -- COLLAPSE: macro tie floor 0.001 fractional (0.10pp), the entity
+# conjunct compares entity_correct_delta (not entity_wer) at a 25-token
+# margin, and collapse_her falls back to raw counts when guard-bound
+# (a degenerate raw comparison -> unresolved, never auto-"met").
+# ---------------------------------------------------------------------------
+
+
+def test_collapse_macro_similarity_tie_floor_boundary_both_sides():
+    at_floor = _contrast([0.001] * 6)
+    beyond_floor = _contrast([0.0011] * 6)
+    assert p2._collapse_clause_macro_similarity(at_floor).verdict == "met"
+    assert p2._collapse_clause_macro_similarity(beyond_floor).verdict == "not_met"
+
+
+def test_collapse_entity_similarity_token_margin_boundary_both_sides():
+    at_margin = _contrast([0.0] * 6, entity_deltas=[25] + [0] * 5)
+    beyond_margin = _contrast([0.0] * 6, entity_deltas=[26] + [0] * 5)
+    assert p2._collapse_clause_entity_similarity(at_margin).verdict == "met"
+    assert p2._collapse_clause_entity_similarity(beyond_margin).verdict == "not_met"
+
+
+def test_collapse_her_similarity_falls_back_to_raw_counts_when_guard_bound():
+    tie = p2._collapse_her_similarity(_her(1, 5), _her(1, 5))  # equal raw counts, guard-bound -> unresolved
+    assert tie.verdict == "unresolved"
+
+    resolved_similar = p2._collapse_her_similarity(_her(2, 20), _her(2, 20))  # resolved rates, equal
+    assert resolved_similar.verdict == "met"
+
+    resolved_not_similar = p2._collapse_her_similarity(_her(1, 20), _her(5, 20))  # resolved rates, differ
+    assert resolved_not_similar.verdict == "not_met"
+
+    guard_bound_not_similar = p2._collapse_her_similarity(_her(1, 5), _her(4, 5))  # raw counts differ, guard-bound
+    assert guard_bound_not_similar.verdict == "not_met"
+
+
+def test_collapse_unresolved_when_her_conjunct_is_0_vs_0():
+    """Both clause B (AFFIRM) and the collapse HER conjunct are guard-aware
+    over the SAME her_r1verify/her_r0bias inputs (Pin 3/5) -- a 0-vs-0 raw
+    tie leaves BOTH unresolved, so neither AFFIRM nor COLLAPSE can be
+    cleanly declared (F5/F6)."""
+
+    verdict = p2.evaluate_branch_rules(
+        macro_r1_vs_r0bias=_contrast([0.0] * 6),
+        entity_r1_vs_r0bias=_contrast([0.0] * 6, entity_deltas=[0] * 6),
+        macro_r2_vs_r1=_contrast([0.0] * 6),
+        entity_r2_vs_r1=_contrast([0.0] * 6, entity_deltas=[0] * 6),
+        her_r1verify=_her(0, 0), her_r0bias=_her(0, 0),
+        copy_r1wrong=_copy(0, 10), copy_r0wrong=_copy(0, 10), copy_r2draft=_copy(0, 10),
+    )
+    assert verdict.affirm_clauses[1].verdict == "unresolved"  # clause B
+    assert verdict.collapse_clauses[2].verdict == "unresolved"  # collapse_her
+    assert verdict.affirm == "unresolved"
+    assert verdict.collapse == "unresolved"
+    assert "UNRESOLVED" in verdict.overall
 
 
 def test_render_branch_verdict_quotes_every_clause_and_the_registered_text():
@@ -683,6 +871,9 @@ def test_read_arm_end_to_end_on_a_synthetic_run_dir(tmp_path, synthetic_world):
     lock = load_lock(synthetic_world.lock_path)
 
     arm_read = p2.read_arm("r1verify", run_dir, lock, synthetic_world.data_root)
+
+    # F8: read_arm's own extraction path is always "completed-attempt".
+    assert arm_read.source == "completed-attempt"
 
     # per-call metrics + legitimate-empty flag
     by_sample = {c.sample_id: c for c in arm_read.calls}
@@ -823,3 +1014,341 @@ def test_main_refuses_a_missing_arm_run_dir(tmp_path, monkeypatch, synthetic_wor
     captured = capsys.readouterr()
     assert "REFUSED" in captured.err
     assert not output_path.exists()
+
+
+# ---------------------------------------------------------------------------
+# F1 -- the salvage input path: read_arm_from_salvage() against miniature,
+# hand-authored salvage-shaped fixtures, plus (per the task brief, an
+# explicitly-allowed exception -- see the module docstring) a smoke test
+# against the PRESERVED r0bias salvage archive bytes. Never opens
+# $SPEECHRL_DATA_DIR/runs/SAEA-P2-* anywhere in this section.
+# ---------------------------------------------------------------------------
+
+
+def _write_salvage_fixture(salvage_dir, arm, *, asr, entity, copycount_rows):
+    salvage_dir.mkdir(parents=True, exist_ok=True)
+    (salvage_dir / f"{arm}.asr-wer.json").write_text(json.dumps(asr), encoding="utf-8")
+    (salvage_dir / f"{arm}.entity-wer.json").write_text(json.dumps(entity), encoding="utf-8")
+    (salvage_dir / f"{arm}.copycount.json").write_text(json.dumps(copycount_rows), encoding="utf-8")
+
+
+def test_read_arm_from_salvage_on_a_miniature_fixture(tmp_path, synthetic_world):
+    # Only sample 4000001 carries an ACCEPTED splice row, so only it needs a
+    # real reference layer for _score_span_errors to score against.
+    nlp = synthetic_world.e21 / "transcripts" / "nlp_references" / "4000001.nlp"
+    nlp.write_text("token|tags|wer_tags\nrevenue||[]\ngrew||[]\nfast||[]\n", encoding="utf-8")
+    (synthetic_world.e21 / "transcripts" / "wer_tags" / "4000001.wer_tag.json").write_text("{}", encoding="utf-8")
+
+    asr = {
+        "aggregate": {"mean_wer": 0.2, "samples": 3},
+        "per_sample": [
+            {"sample_id": "4000001", "wer": 0.1, "hits": 9, "substitutions": 1, "deletions": 0, "insertions": 0,
+             "ref_hit_mask": [True] * 9 + [False]},
+            {"sample_id": "4000002", "wer": 0.3, "hits": 7, "substitutions": 2, "deletions": 1, "insertions": 0,
+             "ref_hit_mask": [True] * 7 + [False] * 3},
+            {"sample_id": "4000003", "wer": 0.0, "hits": 5, "substitutions": 0, "deletions": 0, "insertions": 0,
+             "ref_hit_mask": [True] * 5},
+        ],
+    }
+    entity = {
+        "aggregate": {"correct": 10, "expected_total": 15, "entity_wer": 0.3333},
+        "per_sample": [
+            {"sample_id": "4000001", "correct": 4, "expected_total": 5, "entity_wer": 0.2},
+            {"sample_id": "4000002", "correct": 3, "expected_total": 5, "entity_wer": 0.4},
+            {"sample_id": "4000003", "correct": 3, "expected_total": 5, "entity_wer": 0.4},
+        ],
+    }
+    copycount_rows = [
+        # 4000001: one ACCEPTED splice (win 0) + one rejected window (win 1,
+        # no-copy).
+        {"sample": "4000001", "win": 0, "span": 0, "ref": "revenue", "pre": "revenue figures were strong",
+         "pass1": "sales", "localized": "revenue figures were strong", "accepted": True, "reason": None,
+         "copies_pre": 1, "copies_pass1": 0, "novel_copy": True, "echo_pre": False, "echo_post": False,
+         "guard3_pre": False},
+        {"sample": "4000001", "win": 1, "span": 1, "ref": "bistricer", "pre": "bistricher", "pass1": "bistricher",
+         "localized": "", "accepted": False, "reason": "low-confidence", "copies_pre": 0, "copies_pass1": 0,
+         "novel_copy": False, "echo_pre": False, "echo_post": None, "guard3_pre": None},
+        # 4000002: one rejected, copying window -- NOT legitimate-empty
+        # (it has a row), even though it never accepted a splice.
+        {"sample": "4000002", "win": 0, "span": 0, "ref": "acme", "pre": "the acme corp said", "pass1": "corp said",
+         "localized": "", "accepted": False, "reason": "reference-echo", "copies_pre": 1, "copies_pass1": 0,
+         "novel_copy": True, "echo_pre": True, "echo_post": False, "guard3_pre": False},
+        # 4000003 has ZERO rows -> legitimate-empty (F1's literal rule).
+    ]
+
+    salvage_dir = tmp_path / "salvage"
+    _write_salvage_fixture(salvage_dir, "r0bias", asr=asr, entity=entity, copycount_rows=copycount_rows)
+    lock = load_lock(synthetic_world.lock_path)
+
+    arm_read = p2.read_arm_from_salvage("r0bias", salvage_dir, lock, synthetic_world.data_root)
+
+    assert arm_read.source == "salvage-json"  # F8
+    assert arm_read.macro_aggregate == asr["aggregate"]
+    assert arm_read.entity_aggregate == entity["aggregate"]
+
+    by_sample = {c.sample_id: c for c in arm_read.calls}
+    assert by_sample["4000001"].macro_wer == pytest.approx(0.1)
+    assert by_sample["4000001"].entity_correct == 4
+    assert by_sample["4000001"].entity_expected_total == 5
+    assert by_sample["4000001"].legitimate_empty is False
+    assert by_sample["4000002"].legitimate_empty is False  # has a row, just no accepted splice
+    assert by_sample["4000003"].legitimate_empty is True  # zero rows
+    assert arm_read.legitimate_empty_sample_ids == ("4000003",)
+
+    # HER: exactly the one ACCEPTED row (4000001/win0) becomes a splice,
+    # scored via the real _score_span_errors reuse (module docstring note 1).
+    assert arm_read.her["macro"].accepted_splices == 1
+
+    # RIR is NOT derivable from the preserved salvage outputs (F1).
+    assert arm_read.rir.available is False
+    assert arm_read.rir.numerator == 0 and arm_read.rir.denominator == 0
+    assert arm_read.rir.unavailable_reason is not None
+    assert "not derivable" in arm_read.rir.unavailable_reason
+
+    # copy count: basis is copies_pre over CALLED rows (pre is not None) --
+    # 4000001/win0 and 4000002/win0 each contribute 1 -> total 2.
+    assert arm_read.copy_count.total_windows == 3
+    assert arm_read.copy_count.called_windows == 3
+    assert arm_read.copy_count.accepted_splices == 1
+    assert arm_read.copy_count.total_copy_occurrences == 2
+    assert arm_read.copy_count.windows_with_copy == 2
+
+
+def test_read_arm_from_salvage_refuses_mismatched_sample_sets(tmp_path, synthetic_world):
+    asr = {
+        "aggregate": {"mean_wer": 0.0, "samples": 1},
+        "per_sample": [{"sample_id": "4000001", "wer": 0.0, "hits": 1, "substitutions": 0, "deletions": 0,
+                         "insertions": 0, "ref_hit_mask": [True]}],
+    }
+    entity = {
+        "aggregate": {"correct": 0, "expected_total": 0, "entity_wer": 0.0},
+        "per_sample": [{"sample_id": "4000002", "correct": 0, "expected_total": 0, "entity_wer": 0.0}],
+    }
+    salvage_dir = tmp_path / "salvage"
+    _write_salvage_fixture(salvage_dir, "r0bias", asr=asr, entity=entity, copycount_rows=[])
+    lock = load_lock(synthetic_world.lock_path)
+    with pytest.raises(p2.P2ReadsError):
+        p2.read_arm_from_salvage("r0bias", salvage_dir, lock, synthetic_world.data_root)
+
+
+def test_read_arm_from_salvage_refuses_missing_files(tmp_path, synthetic_world):
+    lock = load_lock(synthetic_world.lock_path)
+    with pytest.raises(p2.P2ReadsError):
+        p2.read_arm_from_salvage("r0bias", tmp_path / "does-not-exist", lock, synthetic_world.data_root)
+
+
+REAL_R0BIAS_SALVAGE_DIR = (
+    Path(__file__).resolve().parents[2]
+    / "docs" / "checks" / "speech-aware-evidence-acquisition" / "2026-08-16-p2-r0bias-salvage"
+)
+
+
+def test_read_arm_from_salvage_smoke_on_the_real_r0bias_archive():
+    """Smoke test against the PRESERVED r0bias salvage bytes (already-spent
+    one-shot read; docs/checks/.../2026-08-16-p2-r0bias-salvage/README.md).
+    Explicitly allowed by the task brief: "developing F1 against those real
+    schemas is encouraged". Uses the REAL umbrella lock/data root (not
+    synthetic_world) because scoring the three accepted HER splices reads
+    the real earnings21-original reference transcripts -- exactly the real-
+    data access docs/checks/.../score_r0bias.py itself used. This NEVER
+    opens $SPEECHRL_DATA_DIR/runs/SAEA-P2-*; the three preserved salvage
+    JSONs are the only input."""
+
+    from speech_aware_evidence_acquisition.data.lock import (
+        AssetResolutionError, data_root, load_lock, umbrella_lock_path,
+    )
+    from speech_aware_evidence_acquisition.e0.artifacts import REPO_ROOT
+
+    if not REAL_R0BIAS_SALVAGE_DIR.is_dir():
+        pytest.skip("real r0bias salvage archive not present in this checkout")
+    try:
+        root = data_root()
+        lock = load_lock(umbrella_lock_path(REPO_ROOT))
+    except AssetResolutionError:
+        pytest.skip("SPEECHRL_DATA_DIR / umbrella lock not configured in this environment")
+
+    arm_read = p2.read_arm_from_salvage("r0bias", REAL_R0BIAS_SALVAGE_DIR, lock, root)
+
+    assert arm_read.source == "salvage-json"
+    assert arm_read.her["macro"].accepted_splices == 3
+    assert arm_read.copy_count.accepted_splices == 3
+    assert arm_read.entity_aggregate["correct"] == 5462
+    assert arm_read.macro_aggregate["mean_wer"] == pytest.approx(0.12762, abs=1e-4)
+    assert set(arm_read.legitimate_empty_sample_ids) == {"4365024", "4365948", "4366429", "4384964"}
+
+
+# ---------------------------------------------------------------------------
+# F8 -- build_p2_report threads the r0bias_read salvage path through, and
+# every cross-arm contrast states both sides' sources.
+# ---------------------------------------------------------------------------
+
+
+def test_build_p2_report_refuses_when_both_r0bias_sources_given(synthetic_world, five_arm_run_dirs, tmp_path):
+    lock = load_lock(synthetic_world.lock_path)
+    asr = {"aggregate": {"mean_wer": 0.0, "samples": 1},
+           "per_sample": [{"sample_id": "4000001", "wer": 0.0, "hits": 2, "substitutions": 0, "deletions": 0,
+                            "insertions": 0, "ref_hit_mask": [True, True]}]}
+    entity = {"aggregate": {"correct": 0, "expected_total": 0, "entity_wer": 0.0},
+              "per_sample": [{"sample_id": "4000001", "correct": 0, "expected_total": 0, "entity_wer": 0.0}]}
+    salvage_dir = tmp_path / "salvage"
+    _write_salvage_fixture(salvage_dir, "r0bias", asr=asr, entity=entity, copycount_rows=[])
+    r0bias_read = p2.read_arm_from_salvage("r0bias", salvage_dir, lock, synthetic_world.data_root)
+
+    with pytest.raises(p2.P2ReadsError, match="r0bias"):
+        p2.build_p2_report(five_arm_run_dirs, lock, synthetic_world.data_root, r0bias_read=r0bias_read)
+
+
+def test_build_p2_report_threads_r0bias_salvage_source_into_contrasts(synthetic_world, five_arm_run_dirs, tmp_path):
+    lock = load_lock(synthetic_world.lock_path)
+    asr = {"aggregate": {"mean_wer": 0.0, "samples": 1},
+           "per_sample": [{"sample_id": "4000001", "wer": 0.0, "hits": 2, "substitutions": 0, "deletions": 0,
+                            "insertions": 0, "ref_hit_mask": [True, True]}]}
+    entity = {"aggregate": {"correct": 0, "expected_total": 0, "entity_wer": 0.0},
+              "per_sample": [{"sample_id": "4000001", "correct": 0, "expected_total": 0, "entity_wer": 0.0}]}
+    salvage_dir = tmp_path / "salvage"
+    # Zero copycount rows for 4000001 -> legitimate-empty, matching the
+    # OTHER four arms' own 4000001 (five_arm_run_dirs carries no replay
+    # windows for any arm) -- required so build_wilcoxon_contrast's sample-
+    # set pairing succeeds.
+    _write_salvage_fixture(salvage_dir, "r0bias", asr=asr, entity=entity, copycount_rows=[])
+    r0bias_read = p2.read_arm_from_salvage("r0bias", salvage_dir, lock, synthetic_world.data_root)
+
+    run_dirs = {arm: five_arm_run_dirs[arm] for arm in p2.ARM_NAMES if arm != "r0bias"}
+    report = p2.build_p2_report(run_dirs, lock, synthetic_world.data_root, r0bias_read=r0bias_read)
+
+    assert report["reads"]["r0bias"].source == "salvage-json"
+    assert report["reads"]["r1verify"].source == "completed-attempt"
+
+    contrast = report["contrasts"]["r1verify_vs_r0bias"]["macro"]
+    assert contrast.condition_source == "completed-attempt"
+    assert contrast.reference_source == "salvage-json"
+
+    document = p2.report_to_json(report)
+    assert document["arms"]["r0bias"]["source"] == "salvage-json"
+    contrast_json = document["contrasts"]["r1verify_vs_r0bias"]["macro"]
+    assert contrast_json["condition_source"] == "completed-attempt"
+    assert contrast_json["reference_source"] == "salvage-json"
+
+
+# ---------------------------------------------------------------------------
+# F1 CLI wiring -- --r0bias-salvage-dir is mutually exclusive with
+# --r0bias-run-dir, exactly one required.
+# ---------------------------------------------------------------------------
+
+
+def test_main_accepts_r0bias_salvage_dir_instead_of_run_dir(
+    tmp_path, monkeypatch, synthetic_world, five_arm_run_dirs
+):
+    import speech_aware_evidence_acquisition.data.lock as lock_module
+    from speech_aware_evidence_acquisition.analysis import p2_reads as p2_module
+
+    monkeypatch.setattr(lock_module, "data_root", lambda: synthetic_world.data_root)
+    monkeypatch.setattr(lock_module, "umbrella_lock_path", lambda repo_root=None: synthetic_world.lock_path)
+
+    asr = {"aggregate": {"mean_wer": 0.0, "samples": 1},
+           "per_sample": [{"sample_id": "4000001", "wer": 0.0, "hits": 2, "substitutions": 0, "deletions": 0,
+                            "insertions": 0, "ref_hit_mask": [True, True]}]}
+    entity = {"aggregate": {"correct": 0, "expected_total": 0, "entity_wer": 0.0},
+              "per_sample": [{"sample_id": "4000001", "correct": 0, "expected_total": 0, "entity_wer": 0.0}]}
+    salvage_dir = tmp_path / "salvage"
+    _write_salvage_fixture(salvage_dir, "r0bias", asr=asr, entity=entity, copycount_rows=[])
+
+    output_path = tmp_path / "p2-reads-report.json"
+    argv = ["--output", str(output_path), "--r0bias-salvage-dir", str(salvage_dir)]
+    for arm in p2.ARM_NAMES:
+        if arm == "r0bias":
+            continue
+        argv.extend([f"--{arm}-run-dir", str(five_arm_run_dirs[arm])])
+
+    exit_code = p2_module.main(argv)
+    assert exit_code == 0
+    document = json.loads(output_path.read_text(encoding="utf-8"))
+    assert document["arms"]["r0bias"]["source"] == "salvage-json"
+
+
+def test_cli_parser_requires_exactly_one_of_r0bias_run_dir_or_salvage_dir(tmp_path, five_arm_run_dirs):
+    parser = p2._cli_parser()
+    base_argv = ["--output", str(tmp_path / "out.json")]
+    for arm in p2.ARM_NAMES:
+        if arm == "r0bias":
+            continue
+        base_argv.extend([f"--{arm}-run-dir", str(five_arm_run_dirs[arm])])
+
+    # Neither r0bias source given -> argparse refuses (required group).
+    with pytest.raises(SystemExit):
+        parser.parse_args(base_argv)
+
+    # Both given -> argparse refuses (mutually exclusive group).
+    both_argv = base_argv + [
+        "--r0bias-run-dir", str(five_arm_run_dirs["r0bias"]),
+        "--r0bias-salvage-dir", str(tmp_path / "salvage"),
+    ]
+    with pytest.raises(SystemExit):
+        parser.parse_args(both_argv)
+
+
+# ---------------------------------------------------------------------------
+# F7 -- build_p2_report loudly (never silently) flags a decisive-contrast
+# n_effective_paired / exclusion-set mismatch.
+# ---------------------------------------------------------------------------
+
+
+def _contrast_with_exclusion(name, included_ids, excluded_ids):
+    from speech_aware_evidence_acquisition.analysis.context_dose import wilcoxon_signed_rank_exact
+
+    diffs = [0.0] * len(included_ids)
+    per_call = tuple(
+        p2.PerCallRow(sample_id=sid, condition_value=0.0, reference_value=0.0, diff=0.0,
+                       macro_transitions=None, entity_correct_delta=0)
+        for sid in included_ids
+    )
+    return p2.ContrastResult(
+        name=name, condition_arm="a", reference_arm="b", ledger="macro",
+        included_sample_ids=tuple(included_ids), excluded_legitimate_empty=tuple(excluded_ids),
+        diffs=tuple(diffs), wilcoxon=wilcoxon_signed_rank_exact(diffs), per_call=per_call,
+    )
+
+
+def test_check_decisive_contrast_exclusions_flags_a_synthetic_five_sample_exclusion():
+    """F7: a SYNTHETIC 5-sample exclusion (not the registered 4) trips the
+    loud mismatch banner rather than being silently accepted."""
+
+    bad_excluded = ("1111111", "2222222", "3333333", "4444444", "5555555")
+    included = ("6666666", "7777777", "8888888", "9999999", "1010101")  # 5 -> n_effective=5, not 6
+    contrasts = {
+        "r1verify_vs_r0bias": {
+            "macro": _contrast_with_exclusion("r1verify_vs_r0bias", included, bad_excluded),
+        },
+    }
+    warnings = p2._check_decisive_contrast_exclusions(contrasts)
+    assert len(warnings) == 1
+    assert "r1verify_vs_r0bias" in warnings[0]
+    assert "n_effective_paired=5" in warnings[0]
+
+
+def test_check_decisive_contrast_exclusions_empty_when_exactly_the_registered_four():
+    good_excluded = tuple(sorted(p2.EXPECTED_LEGITIMATE_EMPTY_IDS))
+    included = tuple(f"s{i}" for i in range(6))
+    contrasts = {
+        name: {"macro": _contrast_with_exclusion(name, included, good_excluded)}
+        for name in p2.DECISIVE_CONTRAST_NAMES
+    }
+    assert p2._check_decisive_contrast_exclusions(contrasts) == []
+
+
+def test_render_report_and_json_surface_the_f7_banner_on_a_natural_mismatch(synthetic_world, five_arm_run_dirs):
+    """five_arm_run_dirs' single, legitimate-empty sample naturally
+    mismatches the registered n_effective_paired==6 / four-id exclusion
+    set -- proving the F7 banner surfaces in BOTH the JSON and the human-
+    readable text output, not just the isolated pure-function checks
+    above."""
+
+    lock = load_lock(synthetic_world.lock_path)
+    report = p2.build_p2_report(five_arm_run_dirs, lock, synthetic_world.data_root)
+    assert report["exclusion_warnings"]  # non-empty: a real mismatch here
+
+    document = p2.report_to_json(report)
+    assert document["exclusion_warnings"] == report["exclusion_warnings"]
+
+    rendered = p2.render_report(report)
+    assert "PROMINENT WARNING (F7)" in rendered
