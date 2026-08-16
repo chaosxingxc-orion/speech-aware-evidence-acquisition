@@ -588,10 +588,13 @@ class ObsAgentLoopPolicy:
         ``allow_empty_evidence`` (keyword-only, default ``False`` --
         ``reproduction.replay_loop``'s ``replay_pass1_evidence="suppressed"``
         knob, D7 delivery-gate design-gap fix, 2026-08-15): forwarded
-        verbatim to ``build_arm_payload`` below; this method's OWN call site
-        (``run_sample``) never sets it, so every pre-existing call keeps
-        today's behaviour (an evidence-bearing arm still refuses an empty
-        ``evidence``)."""
+        verbatim to ``build_arm_payload`` below. ``run_sample``'s own call
+        site now also sets it True for exactly one, narrower reason (SAEA-P2
+        abort fix, 2026-08-15 P2 abort): this sample's evidence resolved to a
+        legitimately empty ``derived-candidates`` materialization
+        (``evidence_empty_by_materialization``, computed in ``run_sample``) --
+        every OTHER call keeps today's behaviour (an evidence-bearing arm
+        still refuses an empty ``evidence``)."""
 
         from concurrent.futures import ThreadPoolExecutor
 
@@ -827,6 +830,28 @@ class ObsAgentLoopPolicy:
                 )
 
         evidence = ctx.evidence if ctx.arm != "bare-core" else None
+        # SAEA-P2 abort fix (core.evidence._derived_candidates module comment,
+        # 2026-08-15 P2 abort): a legitimately empty derived-candidates
+        # materialization (a 0-byte candidates file) resolves this sample's
+        # evidence to an empty list here -- but an arm that still declares an
+        # evidence field (unlike bare-core) requires build_arm_payload's
+        # ``allow_empty_evidence`` to accept that empty content for THIS
+        # sample, the same vehicle reproduction.replay_loop's
+        # ``replay_pass1_evidence="suppressed"`` knob already uses. Scoped
+        # tightly to the one evidence_source that can legitimately resolve
+        # empty (``derived-candidates``) so a real config/materialization
+        # error (any other source resolving no evidence for an
+        # evidence-bearing arm) keeps failing loud exactly as before.
+        config_evidence_source = (
+            str(config_values.get("evidence_source", "none"))
+            if isinstance(config_values, Mapping)
+            else "none"
+        )
+        evidence_empty_by_materialization = (
+            evidence is not None
+            and not evidence
+            and config_evidence_source == "derived-candidates"
+        )
         # Per-slice saturation (module comment above SLICE_RETRYABLE_EXCEPTIONS):
         # read the decode cap ONCE from the composed config's decoding_params
         # (exactly what every slice payload actually carries via
@@ -862,6 +887,7 @@ class ObsAgentLoopPolicy:
             ) = self._slice_parallel_pass(
                 ctx, cfg, registry, data_root, sample, rate, pcm, duration,
                 parent_sha256, engine_descriptor, evidence, max_tokens,
+                allow_empty_evidence=evidence_empty_by_materialization,
             )
             cursor = duration
 
@@ -967,6 +993,7 @@ class ObsAgentLoopPolicy:
                     delta_candidates=(
                         [] if "delta_candidates" in ARM_VISIBLE_FIELDS[ctx.arm] else None
                     ),
+                    allow_empty_evidence=evidence_empty_by_materialization,
                 )
 
             request_id, response, retry_of, saturated, skipped = request_slice_with_retry(

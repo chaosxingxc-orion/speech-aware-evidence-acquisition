@@ -112,6 +112,17 @@ materializer's own derived output, not a shipped carrier asset -- so
 identity rests solely on this record's own re-derived chain plus the
 materializer's own ``manifest.json`` sha256 receipt, exactly the honesty
 ``distractor-only-bias-list`` already established for the identical reason.
+
+SAEA-P2 abort fix (2026-08-15 P2 abort -- both R-ladder arms aborted at
+``run_experiment``'s eager per-sample evidence resolution with ``failure_
+reason: 'evidence content must be a non-empty string'`` on a legitimately
+0-byte p1-oracle-v2/-shuffled candidates file): a candidates file that
+EXISTS and reads cleanly but has zero non-blank lines (a call with zero
+benchmark errors) now returns ``_none_source``'s own "no evidence" shape --
+an empty list, no ``EvidenceItem`` -- instead of building one whose empty
+``content`` :meth:`~.base.EvidenceItem.validate` refuses. A MISSING or
+unreadable file is unchanged (still raises). See :func:`_derived_candidates`
+for the exact check and why this loses no provenance in practice.
 """
 
 from __future__ import annotations
@@ -448,6 +459,37 @@ def _derived_candidates(
         content = path.read_text(encoding="utf-8")
     except (OSError, UnicodeError) as error:
         raise EvidenceError(f"cannot read derived candidates {path}: {error}") from error
+    # SAEA-P2 abort fix (2026-08-15 P2 abort, both r0bias/r1verify arms: the
+    # p1-oracle-v2/-shuffled materializations legitimately ship a 0-byte
+    # candidates file for a call with zero benchmark errors -- the exact
+    # "legitimate empty pool" reproduction.replay_loop._pack_terms already
+    # tolerates downstream, module docstring's D7/D7B chain-defect fix
+    # paragraph). ``core.driver.run_experiment`` resolves EVERY sample's
+    # evidence eagerly, before any policy (and therefore _pack_terms) ever
+    # runs, so this source itself must never hand such a file to
+    # ``EvidenceItem(content=...).validate()`` -- that call refuses an empty
+    # ``content`` string unconditionally (``core.base.EvidenceItem.
+    # validate``), which is correct for every OTHER reason content could be
+    # empty but wrong for THIS one: a materializer's honest "nothing to
+    # supply here" is not a malformed evidence item. A file that exists and
+    # reads cleanly but carries zero non-blank lines therefore mirrors
+    # ``_none_source``'s own "no evidence for this sample" shape -- an empty
+    # list, no ``EvidenceItem`` -- exactly like a bare-core sample's;
+    # ``core.driver.run_experiment``'s derivation-chain loop already skips
+    # an empty per-sample list (``if not items: continue``), and
+    # ``core.evidence_derivation.DerivedEvidenceRegistry.register`` refuses
+    # empty source/derived bytes outright, so this content could never have
+    # produced a verifiable ``DerivedEvidenceRecord`` here either way. A
+    # MISSING or unreadable file is UNCHANGED above -- still raises. This
+    # does not lose the file's provenance: ``derived_candidates_file_relpath``
+    # (public, module docstring) resolves the SAME relpath a caller can
+    # re-hash on demand, and ``reproduction.replay_loop._pack_terms``
+    # independently re-reads this exact file (by design, so PASS-1 evidence
+    # suppression can never affect it -- that function's own docstring) and
+    # records its own "empty-candidates-file" note on the replay-derivation
+    # artifact, which is the audit trail this emptiness actually needs.
+    if not any(line.strip() for line in content.splitlines()):
+        return []
     # Same identity-transform derivation chain as _conec_contexts/_conec_names
     # (module docstring), but carrier_bound=False (core.base.
     # DerivedEvidenceRecord's own docstring): this file lives outside any

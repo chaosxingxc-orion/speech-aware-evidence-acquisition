@@ -2045,6 +2045,37 @@ class TestDerivedCandidatesRosterBand:
         document = json.loads(artifact_path.read_text(encoding="utf-8"))
         assert document["replay_pack_terms_empty_note"] == "empty-candidates-file"
 
+    def test_empty_by_materialization_evidence_is_tolerated_for_an_evidence_bearing_arm(
+        self, tmp_path, monkeypatch
+    ):
+        """SAEA-P2 abort fix (2026-08-15 P2 abort): unlike the bare-core
+        happy path above, THIS arm ("fixed-legal-context-replay") declares an
+        evidence field -- PASS 1's own slice payload must still attach
+        "supplied_evidence" with empty content for a legitimately-empty
+        derived-candidates materialization, never refuse the sample with
+        ArmError (core.evidence._derived_candidates module comment)."""
+
+        world = _World(
+            tmp_path,
+            monkeypatch,
+            pcm=_noise(40.0),
+            texts=["we spoke with Aldera about growth"],
+            values=self._values(),
+            evidence=[],
+            arm="fixed-legal-context-replay",
+        )
+        self._write_candidates_file(world, [])  # zero non-blank lines
+        outcome = world.run()
+
+        assert len(world.adapter.payloads) == 1  # PASS 1 only, zero REPLAY calls
+        assert world.adapter.payloads[0]["supplied_evidence"] == []
+        assert world.replay_records() == []
+        assert outcome.text == "we spoke with Aldera about growth"
+
+        artifact_path = world.run_dir / f"{RUN_ID}.replay-derivation.{SAMPLE_ID}.json"
+        document = json.loads(artifact_path.read_text(encoding="utf-8"))
+        assert document["replay_pack_terms_empty_note"] == "empty-candidates-file"
+
     def test_unsupported_pack_source_still_fails_closed_under_roster_band(
         self, tmp_path, monkeypatch
     ):

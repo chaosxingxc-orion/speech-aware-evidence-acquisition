@@ -429,6 +429,52 @@ class TestEvidenceEveryIteration:
         for payload in world.adapter.payloads:
             assert payload["supplied_evidence"][0]["content"] == "ACME Corp, Q3, John Smith"
 
+    def test_empty_by_materialization_evidence_is_tolerated(self, tmp_path, monkeypatch):
+        """SAEA-P2 abort fix (2026-08-15 P2 abort): an evidence-bearing arm
+        whose resolved evidence is an empty list BECAUSE this run's
+        evidence_source is a legitimately-empty derived-candidates
+        materialization (core.evidence._derived_candidates module comment)
+        must still complete -- build_arm_payload attaches "supplied_evidence"
+        with empty content rather than refusing the sample."""
+
+        world = _World(
+            tmp_path,
+            monkeypatch,
+            pcm=_noise(90.0),
+            texts=[_boundary_text("A.", 45), _boundary_text("B.", 10)],
+            evidence=[],
+            arm="fixed-legal-context",
+            values=_config_values(
+                evidence_source="derived-candidates",
+                evidence_materialization_id="mat-p2-empty",
+            ),
+        )
+        world.run()
+        assert len(world.adapter.payloads) == 2
+        for payload in world.adapter.payloads:
+            assert payload["supplied_evidence"] == []
+
+    def test_generic_empty_evidence_still_refuses_outside_derived_candidates(
+        self, tmp_path, monkeypatch
+    ):
+        """The tolerance above is scoped to evidence_source="derived-
+        candidates" only -- an evidence-bearing arm with empty evidence for
+        any OTHER reason (e.g. evidence_source left at its "none" default)
+        must keep failing loud, unchanged."""
+
+        from speech_aware_evidence_acquisition.core.policies import ArmError
+
+        world = _World(
+            tmp_path,
+            monkeypatch,
+            pcm=_noise(90.0),
+            texts=[_boundary_text("A.", 45), _boundary_text("B.", 10)],
+            evidence=[],
+            arm="fixed-legal-context",
+        )
+        with pytest.raises(ArmError, match="requires non-empty evidence"):
+            world.run()
+
 
 class TestPreprocess:
     def test_rms_norm_records_pre_and_post_hashes(self, tmp_path, monkeypatch):

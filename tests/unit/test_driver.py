@@ -1748,3 +1748,212 @@ def test_run_experiment_resolves_exemplar_manifest_and_traces_provenance(
     absent_from_manifest = records["req-0003/org-exemplars"]
     assert absent_from_manifest["org_exemplar_count"] == 0
     assert absent_from_manifest["org_exemplar_manifest_id"] == manifest_id
+
+
+# ---------------------------------------------------------------------------
+# SIXTH-defect driver-level regression (SAEA-P2 abort, 2026-08-15): both
+# SAEA-P2 arms ABORTED the WHOLE run at run_experiment's eager per-sample
+# evidence resolution (core.driver.run.run_experiment's evidence_by_sample
+# dict comprehension, before any sample ever ran) because the p1-oracle-v2/
+# -shuffled materializations legitimately ship a 0-byte candidates file for
+# a call with zero benchmark errors -- core.evidence._derived_candidates
+# used to build an EvidenceItem(content="") and EvidenceItem.validate() (core
+# .base.py) refused it with "evidence content must be a non-empty string".
+# The downstream fix-3 tolerance (reproduction.replay_loop._pack_terms's own
+# "empty-candidates-file" annotation) sat unreachable behind this. Proves the
+# real, end-to-end path -- not a hand-built SampleContext -- accepts a mixed
+# empty/non-empty split under obs-replay-loop.
+# ---------------------------------------------------------------------------
+
+from array import array as _array  # noqa: E402
+
+from speech_aware_evidence_acquisition.reproduction import obs_loop, replay_loop  # noqa: E402
+
+
+def _replay_composed(**overrides):
+    values = {
+        "carrier_lock_key": "earnings21-original",
+        "split_name": "discovery",
+        "arm": "fixed-legal-context-replay",
+        "policy": "obs-replay-loop",
+        "evidence_source": "derived-candidates",
+        "evidence_materialization_id": "p2-empty-mat",
+        "evidence_mismatch": False,
+        "scorers": ["asr-wer"],
+        "task_instruction": "Transcribe the speech verbatim.",
+        "decoding_params": {"temperature": 0, "seed": 20260803},
+        "experiment_id": "SAEA-E-000",
+        "obs_buffer_seconds": 60,
+        "obs_min_advance_seconds": 20,
+        "obs_max_advance_seconds": 55,
+        "obs_silence_snap_seconds": 2.0,
+        "obs_fallback_advance_seconds": 50,
+        "obs_boundary_mode": "fixed",
+        "obs_vad": "energy",
+        "obs_vad_trim_min_seconds": 0,
+        "obs_preprocess": [],
+        "obs_condition_tail_chars": 0,
+        "replay_trigger": "logprob",
+        "replay_flag_source": "roster-band",
+        "replay_flag_low_threshold": -2.0,
+        "replay_flag_min_run": 1,
+        "replay_max_spans_per_slice": 3,
+        "replay_span_pad_s": 0.1,
+        "replay_context_s": 0.5,
+        "replay_k": 3,
+        "replay_min_score": 0.3,
+        "replay_instruction": "Listen again and correct the flagged words.",
+        "replay_len_ratio_max": 3.0,
+        "replay_logprobs": False,
+    }
+    values.update(overrides)
+    return ComposedConfig(
+        values=values, config_hash="d" * 64,
+        fragments={"model": "m", "dataset": "d", "baseline": "b", "experiment": "e"},
+    )
+
+
+def _replay_transport(request_bytes):
+    return json.dumps({"text": "hello world", "usage": {"prompt_tokens": 3}}).encode()
+
+
+def _replay_fake_align_words(audio_path, words, device="cpu"):
+    return [
+        {"word": word, "start_s": float(index), "end_s": float(index) + 1.0}
+        for index, word in enumerate(words)
+    ]
+
+
+def _replay_fake_cut_span(audio_path, start_s, end_s, pad_s, out_path):
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_bytes(f"cut:{start_s}:{end_s}:{pad_s}".encode("utf-8"))
+    return out_path
+
+
+def _write_derived_candidates_file(data_root, materialization_id, sample_id, content):
+    path = (
+        data_root
+        / "derived"
+        / "evidence-candidates"
+        / materialization_id
+        / f"{sample_id}.candidates.txt"
+    )
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(content, encoding="utf-8")
+    return path
+
+
+def test_run_experiment_derived_candidates_empty_by_materialization_completes_under_obs_replay_loop(
+    synthetic_world, tmp_path, monkeypatch
+):
+    """(a) driver-level regression, SAEA-P2 abort fix: the 3-sample
+    earnings21-original discovery split, one sample's derived-candidates
+    materialization is genuinely 0 bytes (p1-oracle-v2's own "zero benchmark
+    errors" shape) and the other two are non-empty -- the WHOLE run used to
+    abort before any sample ran. All three samples must now complete; the
+    empty sample resolves zero roster-band windows and carries the fix-3
+    "empty-candidates-file" annotation."""
+
+    monkeypatch.setattr(
+        obs_loop, "decode_parent_pcm", lambda path, rate=16000: _array("h", [50] * (90 * 16000))
+    )
+    monkeypatch.setattr(replay_loop, "align_words", _replay_fake_align_words)
+    monkeypatch.setattr(replay_loop, "cut_span", _replay_fake_cut_span)
+
+    lock, repo_root = _frozen_world(synthetic_world, tmp_path)
+    ids, split_hash, _ = load_split(repo_root, "discovery", lock, synthetic_world.data_root)
+    assert ids == {"4000001", "4000002", "4000003"}
+
+    materialization_id = "p2-empty-mat"
+    _write_derived_candidates_file(
+        synthetic_world.data_root, materialization_id, "4000001", ""
+    )  # zero bytes -- the SAEA-P2 abort shape
+    _write_derived_candidates_file(
+        synthetic_world.data_root, materialization_id, "4000002", "Acme Corp\n"
+    )
+    _write_derived_candidates_file(
+        synthetic_world.data_root, materialization_id, "4000003", "Beta Inc\n"
+    )
+
+    composed = _replay_composed(evidence_materialization_id=materialization_id)
+    plan = _plan(
+        split_hash,
+        protocol_hash=protocol_hash(composed.config_hash, composed.values["arm"], split_hash),
+    )
+    run_dir = tmp_path / "run-p2-empty"
+    result = run_experiment(
+        composed=composed,
+        plan=plan,
+        gate=_OpenGate(),
+        lock=lock,
+        root=synthetic_world.data_root,
+        run_dir=run_dir,
+        transport=_replay_transport,
+        repo_root=repo_root,
+    )
+
+    assert isinstance(result, RunResult)
+    rows = [
+        json.loads(line)
+        for line in result.outputs_path.read_text(encoding="utf-8").splitlines()
+        if line
+    ]
+    assert sorted(row["sample_id"] for row in rows) == ["4000001", "4000002", "4000003"]
+
+    empty_document = json.loads(
+        (run_dir / f"{plan.run_id}.replay-derivation.4000001.json").read_text(encoding="utf-8")
+    )
+    assert empty_document["replay_pack_terms_empty_note"] == "empty-candidates-file"
+    assert empty_document["replay_windows"] == []
+
+    for sample_id in ("4000002", "4000003"):
+        other_document = json.loads(
+            (run_dir / f"{plan.run_id}.replay-derivation.{sample_id}.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        assert other_document["replay_pack_terms_empty_note"] is None
+
+
+def test_run_experiment_derived_candidates_missing_file_still_fails_closed(
+    synthetic_world, tmp_path, monkeypatch
+):
+    """(b) the MISSING/unreadable-file rail is unchanged by the fix above:
+    a sample with no materialized candidates file at all must still refuse
+    the whole run at evidence resolution, before any sample runs."""
+
+    monkeypatch.setattr(
+        obs_loop, "decode_parent_pcm", lambda path, rate=16000: _array("h", [50] * (90 * 16000))
+    )
+    monkeypatch.setattr(replay_loop, "align_words", _replay_fake_align_words)
+    monkeypatch.setattr(replay_loop, "cut_span", _replay_fake_cut_span)
+
+    lock, repo_root = _frozen_world(synthetic_world, tmp_path)
+    _, split_hash, _ = load_split(repo_root, "discovery", lock, synthetic_world.data_root)
+
+    materialization_id = "p2-missing-mat"
+    # Deliberately write candidates for only two of the three split samples;
+    # 4000003's file never exists.
+    _write_derived_candidates_file(
+        synthetic_world.data_root, materialization_id, "4000001", ""
+    )
+    _write_derived_candidates_file(
+        synthetic_world.data_root, materialization_id, "4000002", "Acme Corp\n"
+    )
+
+    composed = _replay_composed(evidence_materialization_id=materialization_id)
+    plan = _plan(
+        split_hash,
+        protocol_hash=protocol_hash(composed.config_hash, composed.values["arm"], split_hash),
+    )
+    with pytest.raises(EvidenceError, match="derived candidates missing"):
+        run_experiment(
+            composed=composed,
+            plan=plan,
+            gate=_OpenGate(),
+            lock=lock,
+            root=synthetic_world.data_root,
+            run_dir=tmp_path / "run-p2-missing",
+            transport=_replay_transport,
+            repo_root=repo_root,
+        )

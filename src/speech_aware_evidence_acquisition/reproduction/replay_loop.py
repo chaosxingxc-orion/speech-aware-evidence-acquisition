@@ -1234,6 +1234,23 @@ class ObsReplayLoopPolicy:
         parent_sha256 = sha256_file(parent_path)
 
         evidence = ctx.evidence if ctx.arm != "bare-core" else None
+        # SAEA-P2 abort fix (core.evidence._derived_candidates module comment,
+        # 2026-08-15 P2 abort): the SAME empty-by-materialization signal
+        # reproduction.obs_loop's own run_sample computes (identical
+        # docstring there) -- a legitimately empty derived-candidates
+        # materialization resolves this sample's evidence to an empty list,
+        # but an arm that declares an evidence field still requires
+        # build_arm_payload's allow_empty_evidence to accept it for THIS
+        # sample. Threaded into PASS 1 below (mirroring the
+        # replay_pass1_evidence="suppressed" vehicle) and into REPLAY's own
+        # build_arm_payload call further down, for the same reason -- a
+        # "wps"-triggered REPLAY call (candidates never required) can still
+        # fire on a sample whose materialized pool is legitimately empty.
+        evidence_empty_by_materialization = (
+            evidence is not None
+            and not evidence
+            and config_evidence_source == "derived-candidates"
+        )
         max_tokens = ctx.decoding_params.get("max_tokens")
 
         # PASS 1 (module docstring): reuse ObsAgentLoopPolicy's own
@@ -1311,7 +1328,7 @@ class ObsReplayLoopPolicy:
             "vad-not-run",
             pass1_evidence,
             max_tokens,
-            allow_empty_evidence=pass1_evidence_suppressed,
+            allow_empty_evidence=pass1_evidence_suppressed or evidence_empty_by_materialization,
         )
 
         next_iteration = iteration
@@ -1655,6 +1672,7 @@ class ObsReplayLoopPolicy:
                         retrieval_query=ctx.retrieval_query,
                         exemplar_bank=exemplar_payload,
                         delta_candidates=delta_candidates_payload,
+                        allow_empty_evidence=evidence_empty_by_materialization,
                     )
                 except ArmError as error:
                     raise ReplayLoopError(

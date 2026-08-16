@@ -311,6 +311,42 @@ def test_derived_candidates_source_loads_and_hashes(synthetic_world):
     assert len(item.provenance["sha256"]) == 64
 
 
+def test_derived_candidates_source_returns_empty_for_a_zero_byte_file(synthetic_world):
+    """SAEA-P2 abort fix (2026-08-15 P2 abort): a materialized candidates
+    file that exists and reads cleanly but is genuinely empty (a call with
+    zero benchmark errors, e.g. p1-oracle-v2) must never reach
+    ``EvidenceItem(content=...).validate()`` -- it mirrors ``_none_source``'s
+    own "no evidence for this sample" shape instead."""
+
+    lock = load_lock(synthetic_world.lock_path)
+    _write_derived_candidates(synthetic_world.data_root, "mat-test", "4000001", "")
+    items = EVIDENCE_SOURCES.resolve("derived-candidates")(
+        lock,
+        synthetic_world.data_root,
+        "4000001",
+        "earnings21-original",
+        {"evidence_source": "derived-candidates", "evidence_materialization_id": "mat-test"},
+    )
+    assert items == []
+
+
+def test_derived_candidates_source_returns_empty_for_a_whitespace_only_file(synthetic_world):
+    """Same "no evidence" shape for a file with only blank lines -- zero
+    NON-BLANK lines, the exact test ``reproduction.replay_loop._pack_terms``
+    already applies to this same file."""
+
+    lock = load_lock(synthetic_world.lock_path)
+    _write_derived_candidates(synthetic_world.data_root, "mat-test", "4000001", "\n  \n\n")
+    items = EVIDENCE_SOURCES.resolve("derived-candidates")(
+        lock,
+        synthetic_world.data_root,
+        "4000001",
+        "earnings21-original",
+        {"evidence_source": "derived-candidates", "evidence_materialization_id": "mat-test"},
+    )
+    assert items == []
+
+
 def test_derived_candidates_source_fails_closed_when_missing(synthetic_world):
     lock = load_lock(synthetic_world.lock_path)
     with pytest.raises(EvidenceError, match="missing"):
