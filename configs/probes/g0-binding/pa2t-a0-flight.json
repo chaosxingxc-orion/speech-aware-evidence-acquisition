@@ -1,0 +1,48 @@
+{
+  "flight_config_version": "pa2t-a0-flight-v1",
+  "probe": "P-A2T",
+  "stage": "Stage-1 A0 baseline",
+  "status": "FLYABLE",
+  "status_note": "The FULL P-A2T probe (pa2t-binding.json) is DRAFT-NOT-REGISTRABLE (5 blockers: B1-B5, see that file). This config covers ONLY the one arm every blocker's own remediation path starts from -- pa2t-binding.json's own headroom_extraction.proposed_selection_rule: 'fly A0 on the frozen 400 ... score with a2t-scorer-v1, then select the headroom set'. A0 itself (zero-supply, the frozen 400-item split, the already-implemented Audio2ToolAdapter) carries none of B1/B3/B4/B5 (those concern A1/A2/A3/headroom selection, not A0), and B2 ('A0 cannot be reused; no artifact exists on the frozen split') is exactly what flying this config produces the missing artifact for.",
+  "binding_source": "configs/probes/g0-binding/pa2t-binding.json",
+  "carrier": "audio2tool",
+  "carrier_lock_key": "audio2tool",
+  "split_identity": {
+    "receipt": "docs/receipts/probe-samples/r1-audio2tool-sample.json",
+    "split_role": "discovery",
+    "split_identity_hash": "e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c",
+    "seed": 20260807,
+    "n_items": 400,
+    "note": "rails.adapters.audio2tool.Audio2ToolAdapter.load_split('discovery') resolves exactly this frozen 400-item receipt -- no extra filtering/manifest step needed (unlike P-SLU's n=60 subset-of-devel situation)."
+  },
+  "bridge": {
+    "core_client": "rails.core_client.FrozenCoreClient",
+    "d2_arm": "fixed-legal-context",
+    "note": "A0 is zero-supply, so every request sends supplied_evidence=[]/evidence_provenance=[] under this same fixed D2 arm (see rails.core_client's own module docstring for why this arm was chosen for the bridge generally, not only for this probe)."
+  },
+  "arms": ["zero-supply"],
+  "runner": "rails.runner.run_rails_experiment",
+  "runner_call": {
+    "adapter": "rails.adapters.audio2tool.Audio2ToolAdapter(lock, root)",
+    "split_id": "discovery",
+    "arms": ["zero-supply"],
+    "supply_builder": null,
+    "note": "zero-supply is one of rails.runner.RAILS_ARMS -- this probe needs no probe-specific orchestration module (unlike P-SLU's six named arms); run_rails_experiment is used directly."
+  },
+  "execution_plan": {
+    "execution_profile": "baseline-reproduction",
+    "carrier_lock_key": "audio2tool",
+    "split_role": "discovery",
+    "split_identity_hash": "e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c",
+    "planned_model_calls": 420,
+    "planned_gpu_hours": 2.0,
+    "planned_speech_audio_seconds": 2400,
+    "note": "protocol_hash and run_id/attempt_id are assigned by the flying agent's own launcher at flight time, never frozen here."
+  },
+  "cost_budget": {
+    "call_formula": "400 items x 1 request (zero-supply, one arm) = 400; ceiling 420 for headroom",
+    "audio_seconds_basis": "pa2t-binding.json timing_basis: audio_seconds_total_350 = 1801.3s covers 350/400 items with a top-level duration field; the remaining 50 tier7_multiturn items carry PER-TURN media with no top-level duration (that tier's own per-sample audio is the P1 scaffold's final-turn-only wav, reproduction; exact total unmeasured) -- planned_speech_audio_seconds=2400 is a documented, generous ceiling over the known 1801.3s, not a precise figure.",
+    "gpu_hours_basis": "UNMEASURED for A0 on this exact split/runtime pairing -- pa2t-binding.json's own timing_basis notes 'prefill_dominates: every request carries the full registry (~12693 estimated prompt tokens before audio)', so GPU time is dominated by the 152-tool registry prefill, not audio length; planned_gpu_hours=2.0 is a conservative placeholder the flying agent should refine against a real per-request latency measurement before committing to the plan (no numeric ceiling is enforced here since the 2026-08-06 owner amendment retired the first-slice caps -- contracts.ExecutionPlan.validate only requires it be finite and positive)."
+  },
+  "purpose": "Produces the missing A0 artifact pa2t-binding.json's own A0_reuse_verdict records as absent (no run directory, outputs.jsonl, scores.json, ExecutionPlan, or exposure-ledger row exists anywhere for the frozen 400-item split) -- unblocks B2, and its per-sample scored output is the headroom_extraction.proposed_selection_rule's own first step toward eventually registering the FULL P-A2T probe (A1/A2/A3, still blocked on B1/B4/B5 independent of this flight)."
+}
