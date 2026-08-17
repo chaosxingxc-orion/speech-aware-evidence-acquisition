@@ -102,7 +102,7 @@ def test_load_split_train_is_real_audio_and_needs_no_flag(slurp_world):
 # ---------------------------------------------------------------------------
 
 
-def test_build_query_is_the_ontology_roster_from_train_splits_only(slurp_world):
+def test_build_query_is_the_ontology_roster_from_train_split_only(slurp_world):
     adapter = _adapter(slurp_world)
     sample = adapter.load_split("devel")[0]
     obs = default_obs_packet(sample)
@@ -111,12 +111,14 @@ def test_build_query_is_the_ontology_roster_from_train_splits_only(slurp_world):
     assert "weather" in document["scenarios"]  # train.jsonl only
     assert "house_place" in document["entity_types"]
     assert "kitchen" in document["entity_types"]["house_place"]
-    # train_synthetic also feeds the roster (module docstring: text-only
-    # roster mining is unconditional, unlike actually running the split).
-    assert "time" in document["entity_types"]
-    assert "six" in document["entity_types"]["time"]
+    # train_synthetic must NOT feed the roster by default (2026-08-17 fix:
+    # data.slurp.load_slurp_ontology's include_synthetic defaults False --
+    # the fixture's only synthetic record is scenario="alarm",
+    # type="time"/filler="six", present ONLY in train_synthetic.jsonl).
+    assert "alarm" not in document["scenarios"]
+    assert "time" not in document["entity_types"]
     # devel's own gold ("iot"/"email") must NOT leak in merely by loading a
-    # devel sample -- the roster is mined from train* only.
+    # devel sample -- the roster is mined from train only.
     assert "email" not in document["scenarios"]
 
 

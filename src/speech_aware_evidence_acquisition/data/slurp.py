@@ -91,10 +91,14 @@ _AUDIO_SUBDIR_FOR_SPLIT: Mapping[str, str] = {
     "train_synthetic": "slurp_synth",
 }
 # The task brief's own "roster/KB construction only" split scope --
-# load_slurp_ontology mines exactly these two, unconditionally (text-only,
-# no audio touched; distinct from actually RUNNING train_synthetic samples
-# through the rails runner, which still requires allow_synthetic=True).
-_ROSTER_SPLITS: tuple[str, ...] = ("train", "train_synthetic")
+# load_slurp_ontology mines from this pool, text-only (no audio touched;
+# distinct from actually RUNNING train_synthetic samples through the rails
+# runner, which still requires allow_synthetic=True). ``train_synthetic`` is
+# EXCLUDED by default -- see load_slurp_ontology's own docstring for the
+# 64.8% devel-overlap finding that makes it ceiling-tier, not legal, for any
+# roster a devel-split probe consumes.
+_ROSTER_SPLITS_LEGAL: tuple[str, ...] = ("train",)
+_ROSTER_SPLITS_WITH_SYNTHETIC: tuple[str, ...] = ("train", "train_synthetic")
 _ONTOLOGY_EXAMPLES_PER_TYPE = 5
 
 
@@ -350,18 +354,38 @@ def load_slurp_split(
     return records
 
 
-def load_slurp_ontology(lock: Mapping[str, object], root: Path) -> SlurpOntology:
-    """Deterministic user-ontology roster mined from ``train`` +
-    ``train_synthetic`` ONLY (module docstring: the task brief's own
-    "roster/KB construction only" split scope) -- text-only, no audio file
-    is opened and no per-recording existence check runs (this is NOT
-    :func:`load_slurp_split`)."""
+def load_slurp_ontology(
+    lock: Mapping[str, object], root: Path, *, include_synthetic: bool = False
+) -> SlurpOntology:
+    """Deterministic user-ontology roster mined from ``train`` (module
+    docstring: the task brief's own "roster/KB construction only" split
+    scope) -- text-only, no audio file is opened and no per-recording
+    existence check runs (this is NOT :func:`load_slurp_split`).
+
+    ``include_synthetic`` (default ``False``, 2026-08-17 finding): mining
+    ``train_synthetic.jsonl`` alongside ``train.jsonl`` was the PRIOR
+    unconditional behaviour, but measurement on the real governed corpus
+    found 1,317 of 2,033 ``devel.jsonl`` ``slurp_id``s (64.8%) recur
+    VERBATIM in ``train_synthetic.jsonl`` -- identical sentence AND
+    identical entity set. A roster mined from ``train_synthetic`` therefore
+    places a majority of the devel evaluation surface's own gold entity
+    fillers directly into the "legal-tier" roster text: CEILING tier by the
+    either-field doctrine (``core.legality`` module docstring), not legal,
+    for any probe that reads the ``devel`` split. ``train.jsonl`` alone has
+    ZERO overlap with ``devel`` (verified on the real corpus,
+    ``configs/probes/g0-binding/pslu-rosters-train-only.json``'s own
+    ``train_synthetic_refused`` block) and is the only legal-tier roster
+    source for a devel-split read. Passing ``include_synthetic=True`` is an
+    explicit, auditable opt-in for a caller that has already accepted
+    ceiling-tier provenance (e.g. building an oracle/ceiling companion arm
+    on purpose) -- never the default for a legal-tier read."""
 
     _, _, metadata_dir = _governed_roots(lock, root)
     scenarios: set[str] = set()
     actions: set[str] = set()
     fillers_by_type: dict[str, set[str]] = {}
-    for split_id in _ROSTER_SPLITS:
+    roster_splits = _ROSTER_SPLITS_WITH_SYNTHETIC if include_synthetic else _ROSTER_SPLITS_LEGAL
+    for split_id in roster_splits:
         metadata_path = metadata_dir / _SPLIT_FILES[split_id]
         if not metadata_path.is_file():
             raise LoaderError(f"SLURP split metadata file missing: {metadata_path}")
