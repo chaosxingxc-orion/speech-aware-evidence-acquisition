@@ -1,0 +1,525 @@
+{
+  "binding_table_version": "g0-binding-v1",
+  "status": "DRAFT - not a registered receipt; the coordinator registers before any flight",
+  "probe": "P-SLU",
+  "carrier": "slurp",
+  "lock_key": "slurp",
+  "lock_revision": "8eb16545762be97ace75334109d73824217311f1",
+  "metadata_sha256": {
+    "devel.jsonl": "00d346b183ecc2d160853cd3dc20e8ccd207d9e1809cf6e2c05182076bd0ecc9",
+    "train.jsonl": "4a05a3de6c7f028aff298c4a90196e6a3fecd1938d96fb1c125d6fd10d5e301e"
+  },
+  "split": "devel",
+  "split_role": "discovery",
+  "seed": 20260807,
+  "n_items": 60,
+  "selection_rule": "scenario-stratified over the 18 devel scenarios, largest-remainder allocation with a floor of 1, restricted to ENTITY-BEARING utterances (>=1 gold slot); within a scenario random.Random(f'{seed}:{scenario}').sample over the id-sorted pool; one recording per utterance via random.Random(f'{seed}:{scenario}:{utterance_id}'). Gold slot counts are used for SELECTION ONLY and never enter any supply path.",
+  "split_identity_hash": "fc9de436eba5aba120ecf07ee112765cd4ac0609150e0aaf36f4d44c9c5b5ee5",
+  "split_identity_hash_basis": "sha256 over the newline-joined, sorted sample_id list",
+  "real_audio_only": true,
+  "audio_seconds_total": 182.26,
+  "audio_seconds_mean": 3.038,
+  "gold_slots_total": 89,
+  "scenario_allocation": {
+    "alarm": 2,
+    "audio": 1,
+    "calendar": 8,
+    "cooking": 2,
+    "datetime": 3,
+    "email": 4,
+    "general": 2,
+    "iot": 3,
+    "lists": 2,
+    "music": 2,
+    "news": 3,
+    "play": 7,
+    "qa": 5,
+    "recommendation": 3,
+    "social": 3,
+    "takeaway": 2,
+    "transport": 4,
+    "weather": 4
+  },
+  "items": [
+    {
+      "sample_id": "slurp:devel:000115:audio-1495375974",
+      "utterance_id": "115",
+      "scenario": "audio",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1495375974.flac",
+      "audio_seconds": 2.688,
+      "n_gold_slots": 1
+    },
+    {
+      "sample_id": "slurp:devel:000444:audio-1502891018-headset",
+      "utterance_id": "444",
+      "scenario": "music",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502891018-headset.flac",
+      "audio_seconds": 2.24,
+      "n_gold_slots": 2
+    },
+    {
+      "sample_id": "slurp:devel:000943:audio-1434529860-headset",
+      "utterance_id": "943",
+      "scenario": "datetime",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1434529860-headset.flac",
+      "audio_seconds": 5.184,
+      "n_gold_slots": 3
+    },
+    {
+      "sample_id": "slurp:devel:001637:audio-1502195066-headset",
+      "utterance_id": "1637",
+      "scenario": "news",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502195066-headset.flac",
+      "audio_seconds": 4.032,
+      "n_gold_slots": 1
+    },
+    {
+      "sample_id": "slurp:devel:002120:audio-1502218226",
+      "utterance_id": "2120",
+      "scenario": "iot",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502218226.flac",
+      "audio_seconds": 2.176,
+      "n_gold_slots": 1
+    },
+    {
+      "sample_id": "slurp:devel:002992:audio-1489152746",
+      "utterance_id": "2992",
+      "scenario": "news",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1489152746.flac",
+      "audio_seconds": 1.536,
+      "n_gold_slots": 1
+    },
+    {
+      "sample_id": "slurp:devel:003121:audio-1501696857-headset",
+      "utterance_id": "3121",
+      "scenario": "weather",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501696857-headset.flac",
+      "audio_seconds": 3.264,
+      "n_gold_slots": 2
+    },
+    {
+      "sample_id": "slurp:devel:003309:audio-1501756265",
+      "utterance_id": "3309",
+      "scenario": "weather",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501756265.flac",
+      "audio_seconds": 1.536,
+      "n_gold_slots": 1
+    },
+    {
+      "sample_id": "slurp:devel:004134:audio-1500387396-headset",
+      "utterance_id": "4134",
+      "scenario": "play",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1500387396-headset.flac",
+      "audio_seconds": 1.984,
+      "n_gold_slots": 1
+    },
+    {
+      "sample_id": "slurp:devel:004604:audio-1501759214",
+      "utterance_id": "4604",
+      "scenario": "takeaway",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501759214.flac",
+      "audio_seconds": 2.304,
+      "n_gold_slots": 1
+    },
+    {
+      "sample_id": "slurp:devel:005025:audio-1500900618",
+      "utterance_id": "5025",
+      "scenario": "iot",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1500900618.flac",
+      "audio_seconds": 2.048,
+      "n_gold_slots": 1
+    },
+    {
+      "sample_id": "slurp:devel:005028:audio-1502893878-headset",
+      "utterance_id": "5028",
+      "scenario": "datetime",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502893878-headset.flac",
+      "audio_seconds": 3.456,
+      "n_gold_slots": 1
+    },
+    {
+      "sample_id": "slurp:devel:005108:audio-1494422588-headset",
+      "utterance_id": "5108",
+      "scenario": "play",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1494422588-headset.flac",
+      "audio_seconds": 2.176,
+      "n_gold_slots": 1
+    },
+    {
+      "sample_id": "slurp:devel:005359:audio-1497265137-headset",
+      "utterance_id": "5359",
+      "scenario": "datetime",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1497265137-headset.flac",
+      "audio_seconds": 2.816,
+      "n_gold_slots": 1
+    },
+    {
+      "sample_id": "slurp:devel:005453:audio-1490183633-headset",
+      "utterance_id": "5453",
+      "scenario": "weather",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490183633-headset.flac",
+      "audio_seconds": 2.304,
+      "n_gold_slots": 2
+    },
+    {
+      "sample_id": "slurp:devel:005518:audio-1490203960",
+      "utterance_id": "5518",
+      "scenario": "iot",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490203960.flac",
+      "audio_seconds": 1.984,
+      "n_gold_slots": 1
+    },
+    {
+      "sample_id": "slurp:devel:005536:audio-1499090415-headset",
+      "utterance_id": "5536",
+      "scenario": "music",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1499090415-headset.flac",
+      "audio_seconds": 2.624,
+      "n_gold_slots": 1
+    },
+    {
+      "sample_id": "slurp:devel:005541:audio--1504191543",
+      "utterance_id": "5541",
+      "scenario": "alarm",
+      "media_relpath": "datasets/slurp/slurp_real/audio--1504191543.flac",
+      "audio_seconds": 3.583,
+      "n_gold_slots": 2
+    },
+    {
+      "sample_id": "slurp:devel:005567:audio-1497359684",
+      "utterance_id": "5567",
+      "scenario": "alarm",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1497359684.flac",
+      "audio_seconds": 5.567,
+      "n_gold_slots": 3
+    },
+    {
+      "sample_id": "slurp:devel:005684:audio-1498577434",
+      "utterance_id": "5684",
+      "scenario": "play",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1498577434.flac",
+      "audio_seconds": 1.408,
+      "n_gold_slots": 1
+    },
+    {
+      "sample_id": "slurp:devel:005743:audio-1501407405-headset",
+      "utterance_id": "5743",
+      "scenario": "weather",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501407405-headset.flac",
+      "audio_seconds": 1.728,
+      "n_gold_slots": 1
+    },
+    {
+      "sample_id": "slurp:devel:005770:audio-1495377172",
+      "utterance_id": "5770",
+      "scenario": "takeaway",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1495377172.flac",
+      "audio_seconds": 2.304,
+      "n_gold_slots": 3
+    },
+    {
+      "sample_id": "slurp:devel:005943:audio-1499266055",
+      "utterance_id": "5943",
+      "scenario": "news",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1499266055.flac",
+      "audio_seconds": 2.432,
+      "n_gold_slots": 1
+    },
+    {
+      "sample_id": "slurp:devel:006603:audio-1502101512",
+      "utterance_id": "6603",
+      "scenario": "general",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502101512.flac",
+      "audio_seconds": 3.904,
+      "n_gold_slots": 1
+    },
+    {
+      "sample_id": "slurp:devel:006751:audio-1501773837-headset",
+      "utterance_id": "6751",
+      "scenario": "calendar",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501773837-headset.flac",
+      "audio_seconds": 2.496,
+      "n_gold_slots": 1
+    },
+    {
+      "sample_id": "slurp:devel:007374:audio-1498569508",
+      "utterance_id": "7374",
+      "scenario": "calendar",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1498569508.flac",
+      "audio_seconds": 2.88,
+      "n_gold_slots": 2
+    },
+    {
+      "sample_id": "slurp:devel:007541:audio-1490202471",
+      "utterance_id": "7541",
+      "scenario": "calendar",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490202471.flac",
+      "audio_seconds": 3.2,
+      "n_gold_slots": 1
+    },
+    {
+      "sample_id": "slurp:devel:007653:audio-1497438989-headset",
+      "utterance_id": "7653",
+      "scenario": "calendar",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1497438989-headset.flac",
+      "audio_seconds": 6.208,
+      "n_gold_slots": 3
+    },
+    {
+      "sample_id": "slurp:devel:007852:audio-1494416109-headset",
+      "utterance_id": "7852",
+      "scenario": "calendar",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1494416109-headset.flac",
+      "audio_seconds": 3.136,
+      "n_gold_slots": 3
+    },
+    {
+      "sample_id": "slurp:devel:008014:audio-1500899290",
+      "utterance_id": "8014",
+      "scenario": "calendar",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1500899290.flac",
+      "audio_seconds": 3.52,
+      "n_gold_slots": 2
+    },
+    {
+      "sample_id": "slurp:devel:008047:audio-1498570919",
+      "utterance_id": "8047",
+      "scenario": "calendar",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1498570919.flac",
+      "audio_seconds": 3.328,
+      "n_gold_slots": 3
+    },
+    {
+      "sample_id": "slurp:devel:008072:audio-1488986707",
+      "utterance_id": "8072",
+      "scenario": "calendar",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1488986707.flac",
+      "audio_seconds": 2.176,
+      "n_gold_slots": 1
+    },
+    {
+      "sample_id": "slurp:devel:009340:audio-1497882818-headset",
+      "utterance_id": "9340",
+      "scenario": "play",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1497882818-headset.flac",
+      "audio_seconds": 2.816,
+      "n_gold_slots": 1
+    },
+    {
+      "sample_id": "slurp:devel:009518:audio-1495734594-headset",
+      "utterance_id": "9518",
+      "scenario": "play",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1495734594-headset.flac",
+      "audio_seconds": 1.984,
+      "n_gold_slots": 1
+    },
+    {
+      "sample_id": "slurp:devel:009733:audio--1505407176",
+      "utterance_id": "9733",
+      "scenario": "play",
+      "media_relpath": "datasets/slurp/slurp_real/audio--1505407176.flac",
+      "audio_seconds": 3.583,
+      "n_gold_slots": 1
+    },
+    {
+      "sample_id": "slurp:devel:010162:audio-1501765286",
+      "utterance_id": "10162",
+      "scenario": "cooking",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501765286.flac",
+      "audio_seconds": 2.304,
+      "n_gold_slots": 1
+    },
+    {
+      "sample_id": "slurp:devel:010186:audio-1501415369-headset",
+      "utterance_id": "10186",
+      "scenario": "cooking",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501415369-headset.flac",
+      "audio_seconds": 3.264,
+      "n_gold_slots": 1
+    },
+    {
+      "sample_id": "slurp:devel:010545:audio-1490006493",
+      "utterance_id": "10545",
+      "scenario": "lists",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490006493.flac",
+      "audio_seconds": 2.944,
+      "n_gold_slots": 1
+    },
+    {
+      "sample_id": "slurp:devel:010732:audio-1490184504",
+      "utterance_id": "10732",
+      "scenario": "lists",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490184504.flac",
+      "audio_seconds": 4.095,
+      "n_gold_slots": 1
+    },
+    {
+      "sample_id": "slurp:devel:011503:audio-1494514154",
+      "utterance_id": "11503",
+      "scenario": "play",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1494514154.flac",
+      "audio_seconds": 2.688,
+      "n_gold_slots": 1
+    },
+    {
+      "sample_id": "slurp:devel:011654:audio-1501692977-headset",
+      "utterance_id": "11654",
+      "scenario": "recommendation",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501692977-headset.flac",
+      "audio_seconds": 2.56,
+      "n_gold_slots": 2
+    },
+    {
+      "sample_id": "slurp:devel:011693:audio-1498565017-headset",
+      "utterance_id": "11693",
+      "scenario": "recommendation",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1498565017-headset.flac",
+      "audio_seconds": 3.904,
+      "n_gold_slots": 1
+    },
+    {
+      "sample_id": "slurp:devel:012076:audio-1501766742-headset",
+      "utterance_id": "12076",
+      "scenario": "recommendation",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501766742-headset.flac",
+      "audio_seconds": 2.944,
+      "n_gold_slots": 1
+    },
+    {
+      "sample_id": "slurp:devel:012253:audio-1488974202",
+      "utterance_id": "12253",
+      "scenario": "transport",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1488974202.flac",
+      "audio_seconds": 2.432,
+      "n_gold_slots": 1
+    },
+    {
+      "sample_id": "slurp:devel:012478:audio-1498486426",
+      "utterance_id": "12478",
+      "scenario": "transport",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1498486426.flac",
+      "audio_seconds": 4.287,
+      "n_gold_slots": 3
+    },
+    {
+      "sample_id": "slurp:devel:012654:audio-1497860426-headset",
+      "utterance_id": "12654",
+      "scenario": "transport",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1497860426-headset.flac",
+      "audio_seconds": 3.648,
+      "n_gold_slots": 2
+    },
+    {
+      "sample_id": "slurp:devel:012667:audio-1501751776-headset",
+      "utterance_id": "12667",
+      "scenario": "transport",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501751776-headset.flac",
+      "audio_seconds": 1.856,
+      "n_gold_slots": 1
+    },
+    {
+      "sample_id": "slurp:devel:013281:audio-1490354296-headset",
+      "utterance_id": "13281",
+      "scenario": "general",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490354296-headset.flac",
+      "audio_seconds": 4.352,
+      "n_gold_slots": 1
+    },
+    {
+      "sample_id": "slurp:devel:013795:audio-1499266495",
+      "utterance_id": "13795",
+      "scenario": "qa",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1499266495.flac",
+      "audio_seconds": 4.991,
+      "n_gold_slots": 2
+    },
+    {
+      "sample_id": "slurp:devel:014173:audio-1490291441",
+      "utterance_id": "14173",
+      "scenario": "qa",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490291441.flac",
+      "audio_seconds": 3.264,
+      "n_gold_slots": 2
+    },
+    {
+      "sample_id": "slurp:devel:014263:audio-1501692486",
+      "utterance_id": "14263",
+      "scenario": "qa",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501692486.flac",
+      "audio_seconds": 2.944,
+      "n_gold_slots": 2
+    },
+    {
+      "sample_id": "slurp:devel:014397:audio-1497368809",
+      "utterance_id": "14397",
+      "scenario": "qa",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1497368809.flac",
+      "audio_seconds": 3.136,
+      "n_gold_slots": 1
+    },
+    {
+      "sample_id": "slurp:devel:014657:audio-1499695487",
+      "utterance_id": "14657",
+      "scenario": "qa",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1499695487.flac",
+      "audio_seconds": 4.159,
+      "n_gold_slots": 1
+    },
+    {
+      "sample_id": "slurp:devel:015258:audio-1501777355-headset",
+      "utterance_id": "15258",
+      "scenario": "social",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501777355-headset.flac",
+      "audio_seconds": 3.392,
+      "n_gold_slots": 1
+    },
+    {
+      "sample_id": "slurp:devel:015375:audio-1501754418",
+      "utterance_id": "15375",
+      "scenario": "social",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501754418.flac",
+      "audio_seconds": 2.176,
+      "n_gold_slots": 1
+    },
+    {
+      "sample_id": "slurp:devel:015632:audio-1490021137-headset",
+      "utterance_id": "15632",
+      "scenario": "social",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490021137-headset.flac",
+      "audio_seconds": 4.8,
+      "n_gold_slots": 1
+    },
+    {
+      "sample_id": "slurp:devel:015805:audio-1489153743",
+      "utterance_id": "15805",
+      "scenario": "email",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1489153743.flac",
+      "audio_seconds": 5.247,
+      "n_gold_slots": 5
+    },
+    {
+      "sample_id": "slurp:devel:016653:audio-1494513016",
+      "utterance_id": "16653",
+      "scenario": "email",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1494513016.flac",
+      "audio_seconds": 2.624,
+      "n_gold_slots": 1
+    },
+    {
+      "sample_id": "slurp:devel:016825:audio-1498573552-headset",
+      "utterance_id": "16825",
+      "scenario": "email",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1498573552-headset.flac",
+      "audio_seconds": 1.856,
+      "n_gold_slots": 1
+    },
+    {
+      "sample_id": "slurp:devel:017009:audio-1502198805-headset",
+      "utterance_id": "17009",
+      "scenario": "email",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502198805-headset.flac",
+      "audio_seconds": 1.792,
+      "n_gold_slots": 1
+    }
+  ]
+}

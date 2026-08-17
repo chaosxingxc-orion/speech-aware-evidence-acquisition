@@ -1,0 +1,388 @@
+{
+  "binding_table_version": "g0-binding-v1",
+  "status": "DRAFT - NOT REGISTRABLE AS DRAFTED; see blockers",
+  "probe": "P-A2T",
+  "carrier": "audio2tool",
+  "lock_revision": "f1388da9a3189541ab82adac88824a0661670c43",
+  "asset_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/datasets/audio2tool",
+  "split_identity": {
+    "receipt": "docs/receipts/probe-samples/r1-audio2tool-sample.json",
+    "probe": "R1-audio2tool-direct",
+    "split_identity_hash": "e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c",
+    "split_role": "discovery",
+    "seed": 20260807,
+    "n_items": 400,
+    "pool_size": 30733,
+    "strata_counts": {
+      "tier1_direct": 50,
+      "tier2_parametric": 50,
+      "tier3_multi_intent": 50,
+      "tier4_implicit": 50,
+      "tier5_needle": 50,
+      "tier6_correction": 50,
+      "tier7_multiturn": 50,
+      "tier8_intent_blending": 50
+    },
+    "all_items_resolve_in_tier_manifests": true
+  },
+  "A0_reuse_verdict": {
+    "verdict": "RE-FLY REQUIRED - reuse is NOT identity-clean",
+    "reason": "No prediction or score artifact for any Audio2Tool read on the frozen 400-item discovery split exists anywhere: no run directory under SPEECHRL_DATA_DIR/runs, no outputs.jsonl, no scores.json, no ExecutionPlan bound to split identity hash e1d751e6..., and no row in docs/exposure-ledger.md.",
+    "only_recoverable_a2t_reads": {
+      "provenance": "cold-backup bundle mirror program-archives/mirrors/speech-mllm-training-free-rl.git, _repro/baselines/audio2tool__qwen3-omni-30b-gguf__{dev,test}.json (archival replay of consumed artifacts; no inference re-run)",
+      "why_not_reusable": [
+        "split: dev (n=40) / test (n=60) -- NOT the 400-item discovery split",
+        "seed: 20260705 / 20261705 -- NOT the frozen 20260807",
+        "model: Q8_0 GGUF -ngl 28 -- NOT the study runtime Q4_K_M",
+        "sampling: top_p 0.95 / top_k 40 -- NOT the manifest's greedy temperature 0",
+        "prompt: ships ONLY the sample's gold tool (one registry line, oracle-scoped) -- NOT the full 152-tool registry of r1_audio2tool_direct.txt"
+      ],
+      "measured": {
+        "dev": {
+          "blob": "9d7da43c2d68fb44165951ac8932c9fad1125233",
+          "n": 40,
+          "seed": 20260705,
+          "model": "qwen3-omni-30b-a3b-instruct Q8_0 GGUF (llama.cpp, -ngl 28)",
+          "sampling_params": {
+            "greedy_seed_base": 20260705,
+            "temperature": 0.0,
+            "max_tokens": 200,
+            "top_p": 0.95,
+            "top_k": 40,
+            "repeat_penalty": 1.0,
+            "n_parallel": 4,
+            "server_slots": 4,
+            "cache_ram_mib": 8192
+          },
+          "tool_name_accuracy_pct": 67.5,
+          "args_match_pct": 97.5,
+          "joint_score_pct": 65.0,
+          "aggregate_reported": {
+            "mean": 0.65,
+            "ci95": [
+              0.5,
+              0.8
+            ],
+            "n_scored": 40,
+            "n_total": 40
+          },
+          "parse_failures": 10,
+          "headroom_name_ok_but_wrong": 1,
+          "headroom_item_ids": [
+            "tier1_direct|2793"
+          ],
+          "tier_distribution": {
+            "tier1_direct": 40
+          },
+          "prompt_ships_only_gold_tool": true,
+          "registry_lines_in_prompt": 1
+        },
+        "test": {
+          "blob": "35ce686a8822ac6bf35581805a5941c09a704318",
+          "n": 60,
+          "seed": 20261705,
+          "model": "qwen3-omni-30b-a3b-instruct Q8_0 GGUF (llama.cpp, -ngl 28)",
+          "sampling_params": {
+            "greedy_seed_base": 20261705,
+            "temperature": 0.0,
+            "max_tokens": 200,
+            "top_p": 0.95,
+            "top_k": 40,
+            "repeat_penalty": 1.0,
+            "n_parallel": 4,
+            "server_slots": 4,
+            "cache_ram_mib": 8192
+          },
+          "tool_name_accuracy_pct": 86.7,
+          "args_match_pct": 98.3,
+          "joint_score_pct": 85.0,
+          "aggregate_reported": {
+            "mean": 0.85,
+            "ci95": [
+              0.75,
+              0.9333
+            ],
+            "n_scored": 60,
+            "n_total": 60
+          },
+          "parse_failures": 6,
+          "headroom_name_ok_but_wrong": 1,
+          "headroom_item_ids": [
+            "tier1_direct|2792"
+          ],
+          "tier_distribution": {
+            "tier1_direct": 60
+          },
+          "prompt_ships_only_gold_tool": true,
+          "registry_lines_in_prompt": 1
+        }
+      }
+    }
+  },
+  "headroom_extraction": {
+    "status": "IMPOSSIBLE FROM EXISTING ARTIFACTS",
+    "headroom_count_on_discovery_split": 0,
+    "reason": "no per-sample tool-selection/exact-match record exists for the 400-item split",
+    "archived_analogue_headroom_counts": {
+      "dev_n40": 1,
+      "test_n60": 1
+    },
+    "proposed_n": null,
+    "proposed_selection_rule": "cannot be bound now. Sequence instead: fly A0 on the frozen 400 (or a seeded tier-stratified subset), score with a2t-scorer-v1, then select the headroom set {tool_accuracy == 1.0 AND exact_match == 0.0}; if that set exceeds 40, take n = 40 by seeded tier-stratified draw at seed 20260807.",
+    "cited_premise_unverified": {
+      "claim": "tool-acc 84.6% vs EM 15.6% (P-A2T draft section 1)",
+      "status": "UNSOURCED - appears only as prose; contradicted by every recoverable measurement",
+      "recoverable_measurements": {
+        "dev_n40": {
+          "tool_name_acc_pct": 67.5,
+          "joint_pct": 65.0
+        },
+        "test_n60": {
+          "tool_name_acc_pct": 86.7,
+          "joint_pct": 85.0
+        }
+      }
+    }
+  },
+  "legality_findings": {
+    "per_sample_functions_field_is_gold": {
+      "finding": "every tier item ships a 'functions' list whose members ARE the gold tool(s): size 1 on single-intent tiers, 2-5 on tier3/tier8 matching the expected call count",
+      "functions_list_sizes_by_tier": {
+        "tier1_direct": {
+          "1": 4292
+        },
+        "tier2_parametric": {
+          "1": 6320
+        },
+        "tier3_multi_intent": {
+          "2": 2856,
+          "3": 1322,
+          "4": 82,
+          "1": 26
+        },
+        "tier4_implicit": {
+          "1": 4278
+        },
+        "tier5_needle": {
+          "1": 4292
+        },
+        "tier6_correction": {
+          "1": 4292
+        },
+        "tier7_multiturn": {
+          "1": 2146
+        },
+        "tier8_intent_blending": {
+          "2": 536,
+          "3": 180,
+          "4": 55,
+          "5": 27
+        }
+      },
+      "consequence": "any roster keyed on 'functions' is CEILING tier and may not be flown per draft section 5"
+    },
+    "A0_already_ships_the_full_pool": {
+      "finding": "render_tool_schemas fills {tool_schemas} with ALL 152 registry rows and ALL 8 columns, argument_defaults and argument_constraints included",
+      "consequence": "arm A3 ('full task entity pool, no per-sample targeting') is byte-identical to A0"
+    },
+    "no_legal_per_sample_targeting_source": "the shipped legal-tier keys are domain, category and the global registry; nothing task-native identifies this sample's relevant tool without using gold"
+  },
+  "A0_shipped_supply_measurements": {
+    "template": "configs/probes/r1_audio2tool_direct.txt",
+    "template_sha256": "8ea2849d9f1d948ab46734fdc99e37efaba0b78216fdd2add0f8fccb3997da9a",
+    "template_sha256_matches_manifest": true,
+    "registry_tools": 152,
+    "tools_with_argument_constraints": 92,
+    "rendered_schemas_chars": 50291,
+    "rendered_schemas_est_tokens": 12573,
+    "full_prompt_chars": 50770,
+    "full_prompt_est_tokens": 12693,
+    "per_tool_line_chars_mean": 329.9,
+    "per_tool_line_chars_max": 468
+  },
+  "proposed_redefinition_compaction_ladder": {
+    "rationale": "A0 already supplies the entire 152-tool pool, so the only available legal manipulation is NARROWING, not adding. The ladder measures whether reducing roster breadth converts exact match -- which is the draft's own kb34 mirror question, correctly oriented.",
+    "arms": {
+      "A0_and_A3_collapse": {
+        "supply": "full 152-tool registry (status quo)",
+        "entries": 152,
+        "est_tokens": 12573,
+        "note": "A3 as drafted IS A0; fly one arm, not two"
+      },
+      "A1prime_self_supplied": {
+        "supply": "the registry row of the tool the core itself named in its A0 pass",
+        "entries": 1,
+        "est_tokens_mean": 82.5,
+        "legality_tier": "self-supplied (legal) - selection is the system's own, content is task-shipped",
+        "requires": "A0 per-sample predicted tool name; hence A0 must be flown first"
+      },
+      "A2_diluted": {
+        "supply": "the A1' row plus K distractor rows drawn from the registry",
+        "proposed_K": 9,
+        "entries": 10,
+        "est_tokens": 824.7,
+        "K_rationale": "10 entries keeps the diluted arm below the 50-100-entry dose window while still an order of magnitude above A1'; distractors drawn at seed 20260807 from the same domain where possible, else globally"
+      },
+      "A1_oracle_ceiling_reference": {
+        "supply": "the sample's own 'functions' rows",
+        "legality_tier": "ceiling - NOT flyable in this probe (draft section 5); register separately if wanted"
+      },
+      "A4_deranged": {
+        "supply": "another sample's A1' row, length-matched",
+        "entries": 1,
+        "note": "derangement is over predicted-tool rows, so it also depends on the A0 pass"
+      }
+    },
+    "registry_grouping_for_distractors": {
+      "domains": {
+        "smart_car": 86,
+        "smart_home": 53,
+        "wearables": 13
+      },
+      "categories_n": 28
+    }
+  },
+  "timing_basis": {
+    "featcache_state": "COLD for audio2tool (0/350 coverage measured 2026-08-17)",
+    "items_with_top_level_duration": 350,
+    "audio_seconds_total_350": 1801.3,
+    "audio_seconds_mean": 5.147,
+    "audio_seconds_max": 15.417,
+    "tier7_note": "the 50 tier7_multiturn items carry per-turn media; no top-level duration",
+    "first_arm_warm_cost": "arm 1 pays the full encode of ~350 wavs (30.0 min of audio, ~82.5 MiB, ~350 encoder chunk-forwards); later arms hit the cache",
+    "prefill_dominates": "every request carries the full registry: ~12693 estimated prompt tokens before audio, so prefill, not audio, sets the per-request cost"
+  },
+  "arg_structure_on_the_400": {
+    "resolved": 400,
+    "expected": 400,
+    "args_per_sample_mean": 1.14,
+    "args_per_sample_median": 1.0,
+    "args_per_sample_min": 0,
+    "args_per_sample_max": 4,
+    "samples_with_zero_args": 97,
+    "by_tier_args_mean": {
+      "tier1_direct": 0.06,
+      "tier2_parametric": 1.58,
+      "tier3_multi_intent": 1,
+      "tier4_implicit": 1.28,
+      "tier5_needle": 1.3,
+      "tier6_correction": 1.4,
+      "tier7_multiturn": 1.42,
+      "tier8_intent_blending": 1.04
+    }
+  },
+  "pool_argument_entity_inventory": {
+    "provenance": "items OUTSIDE the frozen 400-item discovery receipt (the 30,333 held-out pool)",
+    "distinct_param_names": 87,
+    "distinct_values_total": 3504,
+    "top_params": {
+      "deviceId": {
+        "distinct_values": 1427,
+        "occurrences": 12754
+      },
+      "state": {
+        "distinct_values": 11,
+        "occurrences": 2367
+      },
+      "mode": {
+        "distinct_values": 37,
+        "occurrences": 2365
+      },
+      "level": {
+        "distinct_values": 92,
+        "occurrences": 1764
+      },
+      "enabled": {
+        "distinct_values": 4,
+        "occurrences": 1728
+      },
+      "period": {
+        "distinct_values": 6,
+        "occurrences": 1156
+      },
+      "color": {
+        "distinct_values": 207,
+        "occurrences": 836
+      },
+      "time": {
+        "distinct_values": 92,
+        "occurrences": 422
+      },
+      "action": {
+        "distinct_values": 15,
+        "occurrences": 421
+      },
+      "type": {
+        "distinct_values": 11,
+        "occurrences": 398
+      },
+      "temperature": {
+        "distinct_values": 50,
+        "occurrences": 397
+      },
+      "activity": {
+        "distinct_values": 7,
+        "occurrences": 395
+      },
+      "appName": {
+        "distinct_values": 145,
+        "occurrences": 382
+      },
+      "sceneId": {
+        "distinct_values": 5,
+        "occurrences": 373
+      },
+      "routineId": {
+        "distinct_values": 4,
+        "occurrences": 372
+      },
+      "targetHumidity": {
+        "distinct_values": 48,
+        "occurrences": 369
+      },
+      "offset": {
+        "distinct_values": 68,
+        "occurrences": 368
+      },
+      "query": {
+        "distinct_values": 161,
+        "occurrences": 356
+      },
+      "kelvin": {
+        "distinct_values": 50,
+        "occurrences": 341
+      },
+      "groupId": {
+        "distinct_values": 35,
+        "occurrences": 336
+      },
+      "eventType": {
+        "distinct_values": 5,
+        "occurrences": 335
+      },
+      "input": {
+        "distinct_values": 6,
+        "occurrences": 333
+      },
+      "targetLevel": {
+        "distinct_values": 33,
+        "occurrences": 315
+      },
+      "source": {
+        "distinct_values": 11,
+        "occurrences": 312
+      },
+      "duration": {
+        "distinct_values": 40,
+        "occurrences": 311
+      }
+    }
+  },
+  "blockers_for_registration": [
+    "B1 - the section 1 headroom premise (84.6% / 15.6%) is unsourced and contradicted by the archived reads",
+    "B2 - A0 cannot be reused; no artifact exists on the frozen 400-item split",
+    "B3 - the headroom sample list cannot be extracted, so n stays unbound",
+    "B4 - A1 and A2 as drafted have no legal-tier per-sample source ('functions' is gold)",
+    "B5 - A3 as drafted is byte-identical to A0"
+  ]
+}

@@ -1,0 +1,3168 @@
+{
+  "binding_table_version": "g0-binding-v1",
+  "status": "DRAFT - not a registered receipt; the coordinator registers before any flight",
+  "probe": "P-SLU",
+  "legality_tier": "legal",
+  "provenance": "SLURP train.jsonl ONLY (real train split)",
+  "train_synthetic_refused": {
+    "reason": "1317 of 2033 devel slurp_ids (64.8%) recur verbatim in train_synthetic.jsonl with IDENTICAL sentence and IDENTICAL entity set. Mining train_synthetic would place the devel evaluation surface's own gold fillers into the roster: ceiling tier, not legal.",
+    "shared_slurp_ids": 1317,
+    "values_reachable_only_via_train_synthetic": 1281,
+    "train_jsonl_overlap_with_devel": 0
+  },
+  "ontology_train_only": {
+    "entity_types": 55,
+    "distinct_values": 4157
+  },
+  "arms": {
+    "A1_scenario_roster": {
+      "rule": "per scenario: top-5 train values per entity type, round-robin capped at 40 entries",
+      "entries_cap": 40,
+      "entries_by_scenario": {
+        "alarm": 33,
+        "audio": 19,
+        "calendar": 40,
+        "cooking": 27,
+        "datetime": 27,
+        "email": 40,
+        "general": 40,
+        "iot": 38,
+        "lists": 38,
+        "music": 40,
+        "news": 36,
+        "play": 40,
+        "qa": 40,
+        "recommendation": 40,
+        "social": 40,
+        "takeaway": 33,
+        "transport": 40,
+        "weather": 30
+      },
+      "entries_mean": 35.61,
+      "est_tokens_by_scenario": {
+        "alarm": 165,
+        "audio": 105,
+        "calendar": 210,
+        "cooking": 142,
+        "datetime": 120,
+        "email": 209,
+        "general": 197,
+        "iot": 213,
+        "lists": 182,
+        "music": 231,
+        "news": 167,
+        "play": 246,
+        "qa": 216,
+        "recommendation": 212,
+        "social": 219,
+        "takeaway": 168,
+        "transport": 213,
+        "weather": 161
+      },
+      "est_tokens_mean": 187.6,
+      "dose_window_status": "below the 50-100-entry degradation window by construction",
+      "rosters": {
+        "alarm": [
+          [
+            "alarm_type",
+            "wake up"
+          ],
+          [
+            "date",
+            "tomorrow"
+          ],
+          [
+            "device_type",
+            "phone"
+          ],
+          [
+            "event_name",
+            "meeting"
+          ],
+          [
+            "general_frequency",
+            "every weekday"
+          ],
+          [
+            "house_place",
+            "house"
+          ],
+          [
+            "order_type",
+            "delivery"
+          ],
+          [
+            "relation",
+            "children"
+          ],
+          [
+            "time",
+            "six am"
+          ],
+          [
+            "time_zone",
+            "mountain"
+          ],
+          [
+            "timeofday",
+            "morning"
+          ],
+          [
+            "alarm_type",
+            "continuous alarm"
+          ],
+          [
+            "date",
+            "today"
+          ],
+          [
+            "event_name",
+            "concert"
+          ],
+          [
+            "general_frequency",
+            "seven days a week"
+          ],
+          [
+            "relation",
+            "the agent"
+          ],
+          [
+            "time",
+            "eight am"
+          ],
+          [
+            "timeofday",
+            "evening"
+          ],
+          [
+            "alarm_type",
+            "house alarm"
+          ],
+          [
+            "date",
+            "tuesday"
+          ],
+          [
+            "event_name",
+            "dentist appointment"
+          ],
+          [
+            "relation",
+            "the team"
+          ],
+          [
+            "time",
+            "seven am"
+          ],
+          [
+            "timeofday",
+            "noon"
+          ],
+          [
+            "alarm_type",
+            "soccer practice"
+          ],
+          [
+            "date",
+            "friday"
+          ],
+          [
+            "event_name",
+            "kickball"
+          ],
+          [
+            "time",
+            "five am"
+          ],
+          [
+            "timeofday",
+            "this evening"
+          ],
+          [
+            "date",
+            "wednesday"
+          ],
+          [
+            "event_name",
+            "train"
+          ],
+          [
+            "time",
+            "five pm"
+          ],
+          [
+            "timeofday",
+            "afternoon"
+          ]
+        ],
+        "audio": [
+          [
+            "change_amount",
+            "to fifty"
+          ],
+          [
+            "device_type",
+            "music player"
+          ],
+          [
+            "event_name",
+            "meeting"
+          ],
+          [
+            "media_type",
+            "music"
+          ],
+          [
+            "song_name",
+            "hips do n't lie"
+          ],
+          [
+            "time",
+            "five minutes"
+          ],
+          [
+            "timeofday",
+            "tonight"
+          ],
+          [
+            "change_amount",
+            "to ninety"
+          ],
+          [
+            "device_type",
+            "radio"
+          ],
+          [
+            "time",
+            "one hour"
+          ],
+          [
+            "change_amount",
+            "to zero"
+          ],
+          [
+            "device_type",
+            "left speaker"
+          ],
+          [
+            "time",
+            "ten seconds"
+          ],
+          [
+            "change_amount",
+            "to level seven"
+          ],
+          [
+            "device_type",
+            "music system"
+          ],
+          [
+            "time",
+            "twenty minutes"
+          ],
+          [
+            "change_amount",
+            "to twenty"
+          ],
+          [
+            "device_type",
+            "television"
+          ],
+          [
+            "time",
+            "two hours"
+          ]
+        ],
+        "calendar": [
+          [
+            "app_name",
+            "calendar app"
+          ],
+          [
+            "artist_name",
+            "tech n9ne"
+          ],
+          [
+            "business_name",
+            "black angus"
+          ],
+          [
+            "business_type",
+            "restaurant"
+          ],
+          [
+            "date",
+            "today"
+          ],
+          [
+            "event_name",
+            "meeting"
+          ],
+          [
+            "general_frequency",
+            "every day"
+          ],
+          [
+            "house_place",
+            "room"
+          ],
+          [
+            "list_name",
+            "concert schedule"
+          ],
+          [
+            "meal_type",
+            "lunch"
+          ],
+          [
+            "media_type",
+            "bbc four"
+          ],
+          [
+            "person",
+            "john"
+          ],
+          [
+            "personal_info",
+            "accounting"
+          ],
+          [
+            "place_name",
+            "rccg"
+          ],
+          [
+            "relation",
+            "mom"
+          ],
+          [
+            "song_name",
+            "be warned"
+          ],
+          [
+            "sport_type",
+            "boston redso game"
+          ],
+          [
+            "time",
+            "two pm"
+          ],
+          [
+            "timeofday",
+            "morning"
+          ],
+          [
+            "transport_type",
+            "taxi"
+          ],
+          [
+            "business_name",
+            "human resources"
+          ],
+          [
+            "date",
+            "tomorrow"
+          ],
+          [
+            "event_name",
+            "birthday"
+          ],
+          [
+            "general_frequency",
+            "every friday"
+          ],
+          [
+            "list_name",
+            "my appointment"
+          ],
+          [
+            "meal_type",
+            "dinner"
+          ],
+          [
+            "media_type",
+            "book"
+          ],
+          [
+            "person",
+            "sarah"
+          ],
+          [
+            "place_name",
+            "conference room"
+          ],
+          [
+            "relation",
+            "boss"
+          ],
+          [
+            "sport_type",
+            "basketball game"
+          ],
+          [
+            "time",
+            "three pm"
+          ],
+          [
+            "timeofday",
+            "tonight"
+          ],
+          [
+            "business_name",
+            "subway"
+          ],
+          [
+            "date",
+            "friday"
+          ],
+          [
+            "event_name",
+            "appointment"
+          ],
+          [
+            "general_frequency",
+            "daily"
+          ],
+          [
+            "list_name",
+            "tasks"
+          ],
+          [
+            "meal_type",
+            "breakfast"
+          ],
+          [
+            "media_type",
+            "facebook"
+          ]
+        ],
+        "cooking": [
+          [
+            "app_name",
+            "cooking app"
+          ],
+          [
+            "business_name",
+            "foodnetworkcom"
+          ],
+          [
+            "cooking_type",
+            "cook"
+          ],
+          [
+            "date",
+            "one thousand nine hundred and seventy"
+          ],
+          [
+            "drink_type",
+            "margarita"
+          ],
+          [
+            "event_name",
+            "chili"
+          ],
+          [
+            "food_type",
+            "steak"
+          ],
+          [
+            "ingredient",
+            "rice"
+          ],
+          [
+            "meal_type",
+            "lunch"
+          ],
+          [
+            "cooking_type",
+            "boil"
+          ],
+          [
+            "drink_type",
+            "milk"
+          ],
+          [
+            "food_type",
+            "pasta"
+          ],
+          [
+            "ingredient",
+            "vegan egg"
+          ],
+          [
+            "meal_type",
+            "break fast"
+          ],
+          [
+            "cooking_type",
+            "bake"
+          ],
+          [
+            "drink_type",
+            "rice wine"
+          ],
+          [
+            "food_type",
+            "chicken"
+          ],
+          [
+            "ingredient",
+            "yellow rice"
+          ],
+          [
+            "meal_type",
+            "breakfast"
+          ],
+          [
+            "cooking_type",
+            "poach"
+          ],
+          [
+            "drink_type",
+            "sweet tea"
+          ],
+          [
+            "food_type",
+            "cookies"
+          ],
+          [
+            "ingredient",
+            "ground beef"
+          ],
+          [
+            "meal_type",
+            "dinner"
+          ],
+          [
+            "cooking_type",
+            "sear"
+          ],
+          [
+            "food_type",
+            "eggs"
+          ],
+          [
+            "ingredient",
+            "zucchini"
+          ]
+        ],
+        "datetime": [
+          [
+            "date",
+            "today"
+          ],
+          [
+            "event_name",
+            "christmas"
+          ],
+          [
+            "person",
+            "mike"
+          ],
+          [
+            "place_name",
+            "new york"
+          ],
+          [
+            "time",
+            "midnight"
+          ],
+          [
+            "time_zone",
+            "eastern"
+          ],
+          [
+            "timeofday",
+            "noon"
+          ],
+          [
+            "date",
+            "today 's"
+          ],
+          [
+            "event_name",
+            "halloween"
+          ],
+          [
+            "place_name",
+            "london"
+          ],
+          [
+            "time",
+            "nine am"
+          ],
+          [
+            "time_zone",
+            "central"
+          ],
+          [
+            "date",
+            "this year"
+          ],
+          [
+            "event_name",
+            "easter"
+          ],
+          [
+            "place_name",
+            "india"
+          ],
+          [
+            "time",
+            "four pm"
+          ],
+          [
+            "time_zone",
+            "pacific"
+          ],
+          [
+            "date",
+            "this month"
+          ],
+          [
+            "event_name",
+            "birthday"
+          ],
+          [
+            "place_name",
+            "boston"
+          ],
+          [
+            "time",
+            "six pm"
+          ],
+          [
+            "time_zone",
+            "mountain"
+          ],
+          [
+            "date",
+            "twenty second"
+          ],
+          [
+            "event_name",
+            "easter sunday"
+          ],
+          [
+            "place_name",
+            "california"
+          ],
+          [
+            "time",
+            "ten am"
+          ],
+          [
+            "time_zone",
+            "ist"
+          ]
+        ],
+        "email": [
+          [
+            "artist_name",
+            "adele"
+          ],
+          [
+            "business_name",
+            "amazon"
+          ],
+          [
+            "date",
+            "today"
+          ],
+          [
+            "device_type",
+            "phone book"
+          ],
+          [
+            "email_address",
+            "joejoe@gmail dot com"
+          ],
+          [
+            "email_folder",
+            "inbox"
+          ],
+          [
+            "event_name",
+            "meeting"
+          ],
+          [
+            "general_frequency",
+            "everyday"
+          ],
+          [
+            "list_name",
+            "contact list"
+          ],
+          [
+            "meal_type",
+            "dinner"
+          ],
+          [
+            "media_type",
+            "facebook"
+          ],
+          [
+            "person",
+            "john"
+          ],
+          [
+            "personal_info",
+            "phone number"
+          ],
+          [
+            "place_name",
+            "alabama"
+          ],
+          [
+            "relation",
+            "mom"
+          ],
+          [
+            "time",
+            "last hour"
+          ],
+          [
+            "timeofday",
+            "morning"
+          ],
+          [
+            "business_name",
+            "comcastcom"
+          ],
+          [
+            "date",
+            "this week"
+          ],
+          [
+            "email_address",
+            "john@gmail dot com"
+          ],
+          [
+            "email_folder",
+            "drafts"
+          ],
+          [
+            "event_name",
+            "birthday"
+          ],
+          [
+            "list_name",
+            "contact lists"
+          ],
+          [
+            "meal_type",
+            "lunch"
+          ],
+          [
+            "person",
+            "sarah"
+          ],
+          [
+            "personal_info",
+            "email"
+          ],
+          [
+            "place_name",
+            "coffee house"
+          ],
+          [
+            "relation",
+            "family"
+          ],
+          [
+            "time",
+            "ten pm"
+          ],
+          [
+            "timeofday",
+            "tonight"
+          ],
+          [
+            "business_name",
+            "starbucks"
+          ],
+          [
+            "date",
+            "tomorrow"
+          ],
+          [
+            "email_address",
+            "apahelp@yahoo dot com"
+          ],
+          [
+            "email_folder",
+            "inboxes"
+          ],
+          [
+            "event_name",
+            "party"
+          ],
+          [
+            "person",
+            "john smith"
+          ],
+          [
+            "personal_info",
+            "number"
+          ],
+          [
+            "place_name",
+            "main street"
+          ],
+          [
+            "relation",
+            "boss"
+          ],
+          [
+            "time",
+            "seven am"
+          ]
+        ],
+        "general": [
+          [
+            "artist_name",
+            "katy perry"
+          ],
+          [
+            "business_type",
+            "bar"
+          ],
+          [
+            "date",
+            "today"
+          ],
+          [
+            "device_type",
+            "laptop"
+          ],
+          [
+            "drink_type",
+            "coffee"
+          ],
+          [
+            "event_name",
+            "concert"
+          ],
+          [
+            "food_type",
+            "chicken"
+          ],
+          [
+            "joke_type",
+            "funny"
+          ],
+          [
+            "meal_type",
+            "dinner"
+          ],
+          [
+            "media_type",
+            "snap"
+          ],
+          [
+            "movie_name",
+            "titanic"
+          ],
+          [
+            "news_topic",
+            "tornadoes"
+          ],
+          [
+            "person",
+            "trump"
+          ],
+          [
+            "place_name",
+            "america"
+          ],
+          [
+            "relation",
+            "kids"
+          ],
+          [
+            "time",
+            "eight am"
+          ],
+          [
+            "timeofday",
+            "morning"
+          ],
+          [
+            "artist_name",
+            "rihana"
+          ],
+          [
+            "business_type",
+            "restaurant"
+          ],
+          [
+            "date",
+            "earlier today"
+          ],
+          [
+            "device_type",
+            "robot vacuum cleaner"
+          ],
+          [
+            "event_name",
+            "japan day festival"
+          ],
+          [
+            "food_type",
+            "italian"
+          ],
+          [
+            "joke_type",
+            "good"
+          ],
+          [
+            "meal_type",
+            "breakfast"
+          ],
+          [
+            "media_type",
+            "youtube"
+          ],
+          [
+            "person",
+            "angelina jolie"
+          ],
+          [
+            "place_name",
+            "my city"
+          ],
+          [
+            "relation",
+            "wife"
+          ],
+          [
+            "time",
+            "in six week"
+          ],
+          [
+            "business_type",
+            "restaurants"
+          ],
+          [
+            "date",
+            "this month"
+          ],
+          [
+            "event_name",
+            "meeting"
+          ],
+          [
+            "food_type",
+            "junk food"
+          ],
+          [
+            "joke_type",
+            "silly"
+          ],
+          [
+            "meal_type",
+            "lunch"
+          ],
+          [
+            "person",
+            "bob"
+          ],
+          [
+            "place_name",
+            "office"
+          ],
+          [
+            "relation",
+            "girlfriend"
+          ],
+          [
+            "time",
+            "last three days"
+          ]
+        ],
+        "iot": [
+          [
+            "business_name",
+            "starbucks"
+          ],
+          [
+            "business_type",
+            "coffee shop"
+          ],
+          [
+            "change_amount",
+            "a bit"
+          ],
+          [
+            "coffee_type",
+            "cappuccino"
+          ],
+          [
+            "color_type",
+            "blue"
+          ],
+          [
+            "date",
+            "today"
+          ],
+          [
+            "device_type",
+            "vacuum"
+          ],
+          [
+            "general_frequency",
+            "daily"
+          ],
+          [
+            "house_place",
+            "living room"
+          ],
+          [
+            "place_name",
+            "floor"
+          ],
+          [
+            "player_setting",
+            "shuffle"
+          ],
+          [
+            "time",
+            "six am"
+          ],
+          [
+            "timeofday",
+            "noon"
+          ],
+          [
+            "change_amount",
+            "to fifty percent"
+          ],
+          [
+            "coffee_type",
+            "coffee with one cream and three sugars"
+          ],
+          [
+            "color_type",
+            "red"
+          ],
+          [
+            "date",
+            "every week day"
+          ],
+          [
+            "device_type",
+            "vacuum cleaner"
+          ],
+          [
+            "house_place",
+            "kitchen"
+          ],
+          [
+            "time",
+            "eight am"
+          ],
+          [
+            "change_amount",
+            "by twenty percent"
+          ],
+          [
+            "coffee_type",
+            "espresso"
+          ],
+          [
+            "color_type",
+            "green"
+          ],
+          [
+            "device_type",
+            "robot vacuum cleaner"
+          ],
+          [
+            "house_place",
+            "room"
+          ],
+          [
+            "time",
+            "four pm"
+          ],
+          [
+            "change_amount",
+            "to full power"
+          ],
+          [
+            "coffee_type",
+            "filter"
+          ],
+          [
+            "color_type",
+            "yellow"
+          ],
+          [
+            "device_type",
+            "wemo plug socket"
+          ],
+          [
+            "house_place",
+            "house"
+          ],
+          [
+            "time",
+            "one pm"
+          ],
+          [
+            "change_amount",
+            "to twenty percent"
+          ],
+          [
+            "coffee_type",
+            "hot"
+          ],
+          [
+            "color_type",
+            "orange"
+          ],
+          [
+            "device_type",
+            "smart socket"
+          ],
+          [
+            "house_place",
+            "bedroom"
+          ],
+          [
+            "time",
+            "three pm"
+          ]
+        ],
+        "lists": [
+          [
+            "app_name",
+            "note pad"
+          ],
+          [
+            "business_name",
+            "ralph and lauren"
+          ],
+          [
+            "date",
+            "today"
+          ],
+          [
+            "device_type",
+            "screen"
+          ],
+          [
+            "drink_type",
+            "coffee"
+          ],
+          [
+            "event_name",
+            "appointment"
+          ],
+          [
+            "list_name",
+            "shopping"
+          ],
+          [
+            "meal_type",
+            "lunch"
+          ],
+          [
+            "music_descriptor",
+            "new songs"
+          ],
+          [
+            "music_genre",
+            "rap"
+          ],
+          [
+            "person",
+            "ashley"
+          ],
+          [
+            "place_name",
+            "store"
+          ],
+          [
+            "relation",
+            "co workers"
+          ],
+          [
+            "song_name",
+            "what if"
+          ],
+          [
+            "time",
+            "next week 's"
+          ],
+          [
+            "timeofday",
+            "evening"
+          ],
+          [
+            "date",
+            "tomorrow"
+          ],
+          [
+            "drink_type",
+            "water"
+          ],
+          [
+            "event_name",
+            "christmas"
+          ],
+          [
+            "list_name",
+            "to do"
+          ],
+          [
+            "music_descriptor",
+            "recent"
+          ],
+          [
+            "person",
+            "mike stein"
+          ],
+          [
+            "place_name",
+            "target"
+          ],
+          [
+            "relation",
+            "friends"
+          ],
+          [
+            "timeofday",
+            "morning"
+          ],
+          [
+            "date",
+            "this week"
+          ],
+          [
+            "event_name",
+            "holiday"
+          ],
+          [
+            "list_name",
+            "grocery"
+          ],
+          [
+            "person",
+            "frida"
+          ],
+          [
+            "relation",
+            "mother"
+          ],
+          [
+            "date",
+            "this weekend"
+          ],
+          [
+            "event_name",
+            "party"
+          ],
+          [
+            "list_name",
+            "groceries"
+          ],
+          [
+            "person",
+            "gloria"
+          ],
+          [
+            "date",
+            "yesterday"
+          ],
+          [
+            "event_name",
+            "wedding invite"
+          ],
+          [
+            "list_name",
+            "grocery list"
+          ],
+          [
+            "person",
+            "joe"
+          ]
+        ],
+        "music": [
+          [
+            "app_name",
+            "pandora"
+          ],
+          [
+            "artist_name",
+            "coldplay"
+          ],
+          [
+            "date",
+            "this year"
+          ],
+          [
+            "device_type",
+            "music player"
+          ],
+          [
+            "media_type",
+            "music"
+          ],
+          [
+            "music_album",
+            "theme song for frasier"
+          ],
+          [
+            "music_descriptor",
+            "background"
+          ],
+          [
+            "music_genre",
+            "rap"
+          ],
+          [
+            "person",
+            "ed sheeran"
+          ],
+          [
+            "player_setting",
+            "repeat"
+          ],
+          [
+            "playlist_name",
+            "sad songs of arijit singh"
+          ],
+          [
+            "song_name",
+            "last song"
+          ],
+          [
+            "timeofday",
+            "evening"
+          ],
+          [
+            "app_name",
+            "spotify"
+          ],
+          [
+            "artist_name",
+            "elton john"
+          ],
+          [
+            "date",
+            "yesterday"
+          ],
+          [
+            "device_type",
+            "equalizer"
+          ],
+          [
+            "media_type",
+            "radio"
+          ],
+          [
+            "music_descriptor",
+            "dangal movie"
+          ],
+          [
+            "music_genre",
+            "jazz"
+          ],
+          [
+            "person",
+            "justin bieber 's"
+          ],
+          [
+            "player_setting",
+            "shuffle"
+          ],
+          [
+            "song_name",
+            "bohemian rhapsody"
+          ],
+          [
+            "artist_name",
+            "katy perry"
+          ],
+          [
+            "date",
+            "last month"
+          ],
+          [
+            "media_type",
+            "song"
+          ],
+          [
+            "music_descriptor",
+            "music library"
+          ],
+          [
+            "music_genre",
+            "rock"
+          ],
+          [
+            "player_setting",
+            "party mode"
+          ],
+          [
+            "song_name",
+            "chhana mereya"
+          ],
+          [
+            "artist_name",
+            "kfi"
+          ],
+          [
+            "media_type",
+            "songs"
+          ],
+          [
+            "music_descriptor",
+            "sad"
+          ],
+          [
+            "music_genre",
+            "classic"
+          ],
+          [
+            "player_setting",
+            "shazam"
+          ],
+          [
+            "song_name",
+            "i just wanna dance with you"
+          ],
+          [
+            "artist_name",
+            "akon"
+          ],
+          [
+            "media_type",
+            "track"
+          ],
+          [
+            "music_genre",
+            "zydeco jams"
+          ],
+          [
+            "player_setting",
+            "stop repeating"
+          ]
+        ],
+        "news": [
+          [
+            "date",
+            "today"
+          ],
+          [
+            "device_type",
+            "gps"
+          ],
+          [
+            "general_frequency",
+            "daily"
+          ],
+          [
+            "media_type",
+            "cnn"
+          ],
+          [
+            "news_topic",
+            "politics"
+          ],
+          [
+            "person",
+            "donald trump"
+          ],
+          [
+            "place_name",
+            "world"
+          ],
+          [
+            "time",
+            "four pm"
+          ],
+          [
+            "timeofday",
+            "morning"
+          ],
+          [
+            "transport_type",
+            "car"
+          ],
+          [
+            "date",
+            "today 's"
+          ],
+          [
+            "general_frequency",
+            "hourly"
+          ],
+          [
+            "media_type",
+            "bbc"
+          ],
+          [
+            "news_topic",
+            "trump"
+          ],
+          [
+            "person",
+            "trump"
+          ],
+          [
+            "place_name",
+            "international"
+          ],
+          [
+            "time",
+            "last six hours"
+          ],
+          [
+            "timeofday",
+            "noon"
+          ],
+          [
+            "date",
+            "yesterday"
+          ],
+          [
+            "media_type",
+            "new york times"
+          ],
+          [
+            "news_topic",
+            "election"
+          ],
+          [
+            "person",
+            "brad pitt"
+          ],
+          [
+            "place_name",
+            "new york"
+          ],
+          [
+            "time",
+            "noontime"
+          ],
+          [
+            "date",
+            "todays"
+          ],
+          [
+            "media_type",
+            "fox news"
+          ],
+          [
+            "news_topic",
+            "sports"
+          ],
+          [
+            "person",
+            "donald trump 's"
+          ],
+          [
+            "place_name",
+            "us"
+          ],
+          [
+            "time",
+            "six o clock"
+          ],
+          [
+            "date",
+            "this week"
+          ],
+          [
+            "media_type",
+            "la times"
+          ],
+          [
+            "news_topic",
+            "blank"
+          ],
+          [
+            "person",
+            "chris hedges"
+          ],
+          [
+            "place_name",
+            "ny"
+          ],
+          [
+            "time",
+            "three pm"
+          ]
+        ],
+        "play": [
+          [
+            "app_name",
+            "pandora"
+          ],
+          [
+            "artist_name",
+            "michael jackson"
+          ],
+          [
+            "audiobook_author",
+            "dean koontz"
+          ],
+          [
+            "audiobook_name",
+            "the two towers"
+          ],
+          [
+            "date",
+            "one thousand nine hundred and ninety"
+          ],
+          [
+            "device_type",
+            "television"
+          ],
+          [
+            "game_name",
+            "chess"
+          ],
+          [
+            "game_type",
+            "video"
+          ],
+          [
+            "house_place",
+            "kitchen"
+          ],
+          [
+            "media_type",
+            "audiobook"
+          ],
+          [
+            "movie_name",
+            "led zeppelin houses of the holy"
+          ],
+          [
+            "music_descriptor",
+            "heard in gaana app"
+          ],
+          [
+            "music_genre",
+            "jazz"
+          ],
+          [
+            "person",
+            "dr demento"
+          ],
+          [
+            "place_name",
+            "uk"
+          ],
+          [
+            "player_setting",
+            "resume"
+          ],
+          [
+            "playlist_name",
+            "workout playlist"
+          ],
+          [
+            "podcast_descriptor",
+            "next episode"
+          ],
+          [
+            "podcast_name",
+            "the united states of anxiety"
+          ],
+          [
+            "radio_name",
+            "npr"
+          ],
+          [
+            "relation",
+            "kids"
+          ],
+          [
+            "song_name",
+            "be warned"
+          ],
+          [
+            "time",
+            "after five minutes"
+          ],
+          [
+            "timeofday",
+            "morning"
+          ],
+          [
+            "transport_type",
+            "train"
+          ],
+          [
+            "app_name",
+            "spotify"
+          ],
+          [
+            "artist_name",
+            "beatles"
+          ],
+          [
+            "audiobook_author",
+            "john grisham"
+          ],
+          [
+            "audiobook_name",
+            "american gods"
+          ],
+          [
+            "date",
+            "last night"
+          ],
+          [
+            "device_type",
+            "bedside radio"
+          ],
+          [
+            "game_name",
+            "candy crush"
+          ],
+          [
+            "house_place",
+            "living room"
+          ],
+          [
+            "media_type",
+            "audio book"
+          ],
+          [
+            "movie_name",
+            "rangoon"
+          ],
+          [
+            "music_descriptor",
+            "popular"
+          ],
+          [
+            "music_genre",
+            "rock"
+          ],
+          [
+            "person",
+            "gary mcnamara"
+          ],
+          [
+            "player_setting",
+            "start"
+          ],
+          [
+            "playlist_name",
+            "electronic"
+          ]
+        ],
+        "qa": [
+          [
+            "artist_name",
+            "michael jackson"
+          ],
+          [
+            "business_name",
+            "google"
+          ],
+          [
+            "currency_name",
+            "dollar"
+          ],
+          [
+            "date",
+            "today"
+          ],
+          [
+            "definition_word",
+            "computer"
+          ],
+          [
+            "event_name",
+            "birthday"
+          ],
+          [
+            "food_type",
+            "buttermilk"
+          ],
+          [
+            "general_frequency",
+            "every day"
+          ],
+          [
+            "movie_name",
+            "swat"
+          ],
+          [
+            "news_topic",
+            "stock market"
+          ],
+          [
+            "person",
+            "brad pitt"
+          ],
+          [
+            "place_name",
+            "world"
+          ],
+          [
+            "time",
+            "last five years"
+          ],
+          [
+            "artist_name",
+            "madonna"
+          ],
+          [
+            "business_name",
+            "apple"
+          ],
+          [
+            "currency_name",
+            "u. s. d."
+          ],
+          [
+            "date",
+            "today 's"
+          ],
+          [
+            "definition_word",
+            "banana"
+          ],
+          [
+            "event_name",
+            "aerosmith concert"
+          ],
+          [
+            "news_topic",
+            "stock market prices"
+          ],
+          [
+            "person",
+            "elvis"
+          ],
+          [
+            "place_name",
+            "india"
+          ],
+          [
+            "time",
+            "last ten years"
+          ],
+          [
+            "artist_name",
+            "adele"
+          ],
+          [
+            "business_name",
+            "amazon"
+          ],
+          [
+            "currency_name",
+            "euro"
+          ],
+          [
+            "date",
+            "this week"
+          ],
+          [
+            "definition_word",
+            "placid"
+          ],
+          [
+            "event_name",
+            "paris fashion shows"
+          ],
+          [
+            "person",
+            "obama"
+          ],
+          [
+            "place_name",
+            "new york"
+          ],
+          [
+            "time",
+            "next fourteen days"
+          ],
+          [
+            "artist_name",
+            "rihana"
+          ],
+          [
+            "business_name",
+            "sony"
+          ],
+          [
+            "currency_name",
+            "us dollar"
+          ],
+          [
+            "date",
+            "yesterday"
+          ],
+          [
+            "definition_word",
+            "problematic"
+          ],
+          [
+            "person",
+            "tom cruise"
+          ],
+          [
+            "place_name",
+            "europe"
+          ],
+          [
+            "artist_name",
+            "beatles"
+          ]
+        ],
+        "recommendation": [
+          [
+            "business_name",
+            "amazon"
+          ],
+          [
+            "business_type",
+            "restaurant"
+          ],
+          [
+            "date",
+            "this weekend"
+          ],
+          [
+            "drink_type",
+            "beer"
+          ],
+          [
+            "event_name",
+            "concerts"
+          ],
+          [
+            "food_type",
+            "pizza"
+          ],
+          [
+            "meal_type",
+            "dinner"
+          ],
+          [
+            "media_type",
+            "movie"
+          ],
+          [
+            "movie_name",
+            "swat"
+          ],
+          [
+            "movie_type",
+            "rom com"
+          ],
+          [
+            "personal_info",
+            "zipcode"
+          ],
+          [
+            "place_name",
+            "new york"
+          ],
+          [
+            "time",
+            "weekend"
+          ],
+          [
+            "timeofday",
+            "tonight"
+          ],
+          [
+            "business_name",
+            "sainsbury 's"
+          ],
+          [
+            "business_type",
+            "restaurants"
+          ],
+          [
+            "date",
+            "today"
+          ],
+          [
+            "event_name",
+            "movie"
+          ],
+          [
+            "food_type",
+            "chinese"
+          ],
+          [
+            "movie_name",
+            "fast and the furious"
+          ],
+          [
+            "movie_type",
+            "action"
+          ],
+          [
+            "place_name",
+            "chicago"
+          ],
+          [
+            "time",
+            "nine pm"
+          ],
+          [
+            "business_name",
+            "shops"
+          ],
+          [
+            "business_type",
+            "shops"
+          ],
+          [
+            "date",
+            "this week"
+          ],
+          [
+            "event_name",
+            "blue grass band"
+          ],
+          [
+            "food_type",
+            "italian"
+          ],
+          [
+            "movie_name",
+            "learning games"
+          ],
+          [
+            "movie_type",
+            "best imdb ratings"
+          ],
+          [
+            "place_name",
+            "this area"
+          ],
+          [
+            "time",
+            "after midnight"
+          ],
+          [
+            "business_name",
+            "starbucks"
+          ],
+          [
+            "business_type",
+            "bar"
+          ],
+          [
+            "date",
+            "next week"
+          ],
+          [
+            "event_name",
+            "playing in the roosendaal cinema"
+          ],
+          [
+            "food_type",
+            "mexican"
+          ],
+          [
+            "movie_name",
+            "logan"
+          ],
+          [
+            "movie_type",
+            "good drama"
+          ],
+          [
+            "place_name",
+            "town"
+          ]
+        ],
+        "social": [
+          [
+            "business_name",
+            "consumer service"
+          ],
+          [
+            "business_type",
+            "restaurant"
+          ],
+          [
+            "date",
+            "today"
+          ],
+          [
+            "device_type",
+            "phone"
+          ],
+          [
+            "event_name",
+            "birthday"
+          ],
+          [
+            "general_frequency",
+            "every three hours"
+          ],
+          [
+            "media_type",
+            "tweet"
+          ],
+          [
+            "news_topic",
+            "shark attacks"
+          ],
+          [
+            "person",
+            "ale"
+          ],
+          [
+            "personal_info",
+            "customer service number"
+          ],
+          [
+            "place_name",
+            "home"
+          ],
+          [
+            "relation",
+            "friends"
+          ],
+          [
+            "time",
+            "last hour"
+          ],
+          [
+            "business_name",
+            "samsung"
+          ],
+          [
+            "date",
+            "yesterday"
+          ],
+          [
+            "event_name",
+            "birthdays"
+          ],
+          [
+            "media_type",
+            "facebook"
+          ],
+          [
+            "person",
+            "amy"
+          ],
+          [
+            "personal_info",
+            "family phone"
+          ],
+          [
+            "place_name",
+            "manhattan"
+          ],
+          [
+            "relation",
+            "husbands"
+          ],
+          [
+            "time",
+            "twenty four hours"
+          ],
+          [
+            "business_name",
+            "@microsoft"
+          ],
+          [
+            "date",
+            "last day"
+          ],
+          [
+            "event_name",
+            "engaged or give birth"
+          ],
+          [
+            "media_type",
+            "twitter"
+          ],
+          [
+            "person",
+            "arijit singh"
+          ],
+          [
+            "personal_info",
+            "twitter handler"
+          ],
+          [
+            "place_name",
+            "paris"
+          ],
+          [
+            "relation",
+            "family"
+          ],
+          [
+            "time",
+            "weekend"
+          ],
+          [
+            "business_name",
+            "amazon"
+          ],
+          [
+            "date",
+            "this week"
+          ],
+          [
+            "event_name",
+            "india consumer complaints forum"
+          ],
+          [
+            "media_type",
+            "instagram"
+          ],
+          [
+            "person",
+            "leo"
+          ],
+          [
+            "relation",
+            "friend"
+          ],
+          [
+            "business_name",
+            "mcdonalds"
+          ],
+          [
+            "date",
+            "today 's"
+          ],
+          [
+            "media_type",
+            "social media"
+          ]
+        ],
+        "takeaway": [
+          [
+            "app_name",
+            "grubhub"
+          ],
+          [
+            "business_name",
+            "pizza hut"
+          ],
+          [
+            "business_type",
+            "restaurant"
+          ],
+          [
+            "date",
+            "today"
+          ],
+          [
+            "drink_type",
+            "diet coke"
+          ],
+          [
+            "event_name",
+            "birthday party"
+          ],
+          [
+            "food_type",
+            "pizza"
+          ],
+          [
+            "meal_type",
+            "dinner"
+          ],
+          [
+            "order_type",
+            "takeaway"
+          ],
+          [
+            "person",
+            "john 's"
+          ],
+          [
+            "place_name",
+            "grassmarket"
+          ],
+          [
+            "time",
+            "seven pm"
+          ],
+          [
+            "timeofday",
+            "tonight"
+          ],
+          [
+            "business_name",
+            "dominos"
+          ],
+          [
+            "business_type",
+            "restaurants"
+          ],
+          [
+            "food_type",
+            "chinese"
+          ],
+          [
+            "meal_type",
+            "lunch"
+          ],
+          [
+            "order_type",
+            "delivery"
+          ],
+          [
+            "time",
+            "five pm"
+          ],
+          [
+            "timeofday",
+            "tonight 's"
+          ],
+          [
+            "business_name",
+            "olive garden"
+          ],
+          [
+            "business_type",
+            "pizza place"
+          ],
+          [
+            "food_type",
+            "mexican"
+          ],
+          [
+            "meal_type",
+            "diner"
+          ],
+          [
+            "order_type",
+            "takeout"
+          ],
+          [
+            "time",
+            "hour"
+          ],
+          [
+            "business_name",
+            "dominoes"
+          ],
+          [
+            "food_type",
+            "sushi"
+          ],
+          [
+            "order_type",
+            "take out"
+          ],
+          [
+            "time",
+            "this time"
+          ],
+          [
+            "business_name",
+            "jason 's deli"
+          ],
+          [
+            "food_type",
+            "pizzas"
+          ],
+          [
+            "order_type",
+            "deliver"
+          ]
+        ],
+        "transport": [
+          [
+            "app_name",
+            "gps"
+          ],
+          [
+            "business_name",
+            "pizza hut"
+          ],
+          [
+            "business_type",
+            "bar"
+          ],
+          [
+            "currency_name",
+            "dollars"
+          ],
+          [
+            "date",
+            "today"
+          ],
+          [
+            "event_name",
+            "accidents"
+          ],
+          [
+            "food_type",
+            "mexican"
+          ],
+          [
+            "person",
+            "joe 's"
+          ],
+          [
+            "place_name",
+            "new york"
+          ],
+          [
+            "relation",
+            "father"
+          ],
+          [
+            "time",
+            "five pm"
+          ],
+          [
+            "timeofday",
+            "morning"
+          ],
+          [
+            "transport_agency",
+            "uber"
+          ],
+          [
+            "transport_descriptor",
+            "berth seat"
+          ],
+          [
+            "transport_name",
+            "indianapolis express"
+          ],
+          [
+            "transport_type",
+            "train"
+          ],
+          [
+            "app_name",
+            "irctc"
+          ],
+          [
+            "business_name",
+            "dunkin donut"
+          ],
+          [
+            "business_type",
+            "bank"
+          ],
+          [
+            "date",
+            "tomorrow"
+          ],
+          [
+            "event_name",
+            "meeting"
+          ],
+          [
+            "person",
+            "shelley hennessey"
+          ],
+          [
+            "place_name",
+            "chicago"
+          ],
+          [
+            "relation",
+            "grandmother 's"
+          ],
+          [
+            "time",
+            "seven pm"
+          ],
+          [
+            "timeofday",
+            "tonight"
+          ],
+          [
+            "transport_agency",
+            "ola"
+          ],
+          [
+            "transport_descriptor",
+            "business class"
+          ],
+          [
+            "transport_name",
+            "acela"
+          ],
+          [
+            "transport_type",
+            "taxi"
+          ],
+          [
+            "app_name",
+            "lyft"
+          ],
+          [
+            "business_name",
+            "mc donalds"
+          ],
+          [
+            "business_type",
+            "restaurant"
+          ],
+          [
+            "date",
+            "friday"
+          ],
+          [
+            "event_name",
+            "panic concert"
+          ],
+          [
+            "place_name",
+            "home"
+          ],
+          [
+            "relation",
+            "mother"
+          ],
+          [
+            "time",
+            "eight am"
+          ],
+          [
+            "timeofday",
+            "this afternoon"
+          ],
+          [
+            "transport_agency",
+            "golden taxi"
+          ]
+        ],
+        "weather": [
+          [
+            "date",
+            "today"
+          ],
+          [
+            "event_name",
+            "birthday"
+          ],
+          [
+            "general_frequency",
+            "weekly"
+          ],
+          [
+            "meal_type",
+            "lunch"
+          ],
+          [
+            "place_name",
+            "new york"
+          ],
+          [
+            "time",
+            "week"
+          ],
+          [
+            "timeofday",
+            "tonight"
+          ],
+          [
+            "weather_descriptor",
+            "rain"
+          ],
+          [
+            "date",
+            "this week"
+          ],
+          [
+            "event_name",
+            "go to the store"
+          ],
+          [
+            "place_name",
+            "chicago"
+          ],
+          [
+            "time",
+            "next seven days"
+          ],
+          [
+            "timeofday",
+            "morning"
+          ],
+          [
+            "weather_descriptor",
+            "temperature"
+          ],
+          [
+            "date",
+            "tomorrow"
+          ],
+          [
+            "event_name",
+            "going to meet my friend"
+          ],
+          [
+            "place_name",
+            "toronto"
+          ],
+          [
+            "time",
+            "after ten pm"
+          ],
+          [
+            "timeofday",
+            "this afternoon"
+          ],
+          [
+            "weather_descriptor",
+            "umbrella"
+          ],
+          [
+            "date",
+            "today 's"
+          ],
+          [
+            "place_name",
+            "miami"
+          ],
+          [
+            "time",
+            "before i leave this afternoon"
+          ],
+          [
+            "timeofday",
+            "evening"
+          ],
+          [
+            "weather_descriptor",
+            "sunny"
+          ],
+          [
+            "date",
+            "tuesday"
+          ],
+          [
+            "place_name",
+            "new york city"
+          ],
+          [
+            "time",
+            "ten day"
+          ],
+          [
+            "timeofday",
+            "night"
+          ],
+          [
+            "weather_descriptor",
+            "snow"
+          ]
+        ]
+      }
+    },
+    "A2_global_type_vocabulary": {
+      "rule": "every train entity type name, comma-joined, no values",
+      "entries": 55,
+      "chars": 734,
+      "est_tokens": 184,
+      "types": [
+        "alarm_type",
+        "app_name",
+        "artist_name",
+        "audiobook_author",
+        "audiobook_name",
+        "business_name",
+        "business_type",
+        "change_amount",
+        "coffee_type",
+        "color_type",
+        "cooking_type",
+        "currency_name",
+        "date",
+        "definition_word",
+        "device_type",
+        "drink_type",
+        "email_address",
+        "email_folder",
+        "event_name",
+        "food_type",
+        "game_name",
+        "game_type",
+        "general_frequency",
+        "house_place",
+        "ingredient",
+        "joke_type",
+        "list_name",
+        "meal_type",
+        "media_type",
+        "movie_name",
+        "movie_type",
+        "music_album",
+        "music_descriptor",
+        "music_genre",
+        "news_topic",
+        "order_type",
+        "person",
+        "personal_info",
+        "place_name",
+        "player_setting",
+        "playlist_name",
+        "podcast_descriptor",
+        "podcast_name",
+        "radio_name",
+        "relation",
+        "song_name",
+        "sport_type",
+        "time",
+        "time_zone",
+        "timeofday",
+        "transport_agency",
+        "transport_descriptor",
+        "transport_name",
+        "transport_type",
+        "weather_descriptor"
+      ]
+    },
+    "A3_full_ontology_dose_capped": {
+      "rule": "global train ontology, type-round-robin by frequency rank, capped at 100 entries",
+      "cap": 100,
+      "entries": 100,
+      "chars": 2331,
+      "est_tokens": 583,
+      "uncapped_entries": 4157,
+      "uncapped_est_tokens": 24931,
+      "roster": [
+        [
+          "alarm_type",
+          "wake up"
+        ],
+        [
+          "app_name",
+          "pandora"
+        ],
+        [
+          "artist_name",
+          "michael jackson"
+        ],
+        [
+          "audiobook_author",
+          "bill nye"
+        ],
+        [
+          "audiobook_name",
+          "the two towers"
+        ],
+        [
+          "business_name",
+          "amazon"
+        ],
+        [
+          "business_type",
+          "restaurant"
+        ],
+        [
+          "change_amount",
+          "to fifty percent"
+        ],
+        [
+          "coffee_type",
+          "cappuccino"
+        ],
+        [
+          "color_type",
+          "blue"
+        ],
+        [
+          "cooking_type",
+          "cook"
+        ],
+        [
+          "currency_name",
+          "dollar"
+        ],
+        [
+          "date",
+          "today"
+        ],
+        [
+          "definition_word",
+          "computer"
+        ],
+        [
+          "device_type",
+          "vacuum"
+        ],
+        [
+          "drink_type",
+          "coffee"
+        ],
+        [
+          "email_address",
+          "joejoe@gmail dot com"
+        ],
+        [
+          "email_folder",
+          "inbox"
+        ],
+        [
+          "event_name",
+          "meeting"
+        ],
+        [
+          "food_type",
+          "pizza"
+        ],
+        [
+          "game_name",
+          "chess"
+        ],
+        [
+          "game_type",
+          "video"
+        ],
+        [
+          "general_frequency",
+          "every day"
+        ],
+        [
+          "house_place",
+          "living room"
+        ],
+        [
+          "ingredient",
+          "rice"
+        ],
+        [
+          "joke_type",
+          "funny"
+        ],
+        [
+          "list_name",
+          "shopping"
+        ],
+        [
+          "meal_type",
+          "dinner"
+        ],
+        [
+          "media_type",
+          "tweet"
+        ],
+        [
+          "movie_name",
+          "swat"
+        ],
+        [
+          "movie_type",
+          "rom com"
+        ],
+        [
+          "music_album",
+          "theme song for frasier"
+        ],
+        [
+          "music_descriptor",
+          "background"
+        ],
+        [
+          "music_genre",
+          "jazz"
+        ],
+        [
+          "news_topic",
+          "politics"
+        ],
+        [
+          "order_type",
+          "takeaway"
+        ],
+        [
+          "person",
+          "john"
+        ],
+        [
+          "personal_info",
+          "phone number"
+        ],
+        [
+          "place_name",
+          "new york"
+        ],
+        [
+          "player_setting",
+          "resume"
+        ],
+        [
+          "playlist_name",
+          "workout playlist"
+        ],
+        [
+          "podcast_descriptor",
+          "next episode"
+        ],
+        [
+          "podcast_name",
+          "the united states of anxiety"
+        ],
+        [
+          "radio_name",
+          "npr"
+        ],
+        [
+          "relation",
+          "mom"
+        ],
+        [
+          "song_name",
+          "last song"
+        ],
+        [
+          "sport_type",
+          "boston redso game"
+        ],
+        [
+          "time",
+          "five pm"
+        ],
+        [
+          "time_zone",
+          "eastern"
+        ],
+        [
+          "timeofday",
+          "morning"
+        ],
+        [
+          "transport_agency",
+          "uber"
+        ],
+        [
+          "transport_descriptor",
+          "berth seat"
+        ],
+        [
+          "transport_name",
+          "indianapolis express"
+        ],
+        [
+          "transport_type",
+          "train"
+        ],
+        [
+          "weather_descriptor",
+          "rain"
+        ],
+        [
+          "alarm_type",
+          "continuous alarm"
+        ],
+        [
+          "app_name",
+          "spotify"
+        ],
+        [
+          "artist_name",
+          "beatles"
+        ],
+        [
+          "audiobook_author",
+          "dean koontz"
+        ],
+        [
+          "audiobook_name",
+          "american gods"
+        ],
+        [
+          "business_name",
+          "apple"
+        ],
+        [
+          "business_type",
+          "restaurants"
+        ],
+        [
+          "change_amount",
+          "a bit"
+        ],
+        [
+          "coffee_type",
+          "coffee with one cream and three sugars"
+        ],
+        [
+          "color_type",
+          "red"
+        ],
+        [
+          "cooking_type",
+          "boil"
+        ],
+        [
+          "currency_name",
+          "u. s. d."
+        ],
+        [
+          "date",
+          "tomorrow"
+        ],
+        [
+          "definition_word",
+          "arrow"
+        ],
+        [
+          "device_type",
+          "vacuum cleaner"
+        ],
+        [
+          "drink_type",
+          "beer"
+        ],
+        [
+          "email_address",
+          "john@gmail dot com"
+        ],
+        [
+          "email_folder",
+          "drafts"
+        ],
+        [
+          "event_name",
+          "birthday"
+        ],
+        [
+          "food_type",
+          "chinese"
+        ],
+        [
+          "game_name",
+          "candy crush"
+        ],
+        [
+          "general_frequency",
+          "every friday"
+        ],
+        [
+          "house_place",
+          "kitchen"
+        ],
+        [
+          "ingredient",
+          "vegan egg"
+        ],
+        [
+          "joke_type",
+          "good"
+        ],
+        [
+          "list_name",
+          "to do"
+        ],
+        [
+          "meal_type",
+          "lunch"
+        ],
+        [
+          "media_type",
+          "facebook"
+        ],
+        [
+          "movie_name",
+          "led zeppelin houses of the holy"
+        ],
+        [
+          "movie_type",
+          "action"
+        ],
+        [
+          "music_descriptor",
+          "heard in gaana app"
+        ],
+        [
+          "music_genre",
+          "rock"
+        ],
+        [
+          "news_topic",
+          "trump"
+        ],
+        [
+          "order_type",
+          "delivery"
+        ],
+        [
+          "person",
+          "sarah"
+        ],
+        [
+          "personal_info",
+          "email"
+        ],
+        [
+          "place_name",
+          "world"
+        ],
+        [
+          "player_setting",
+          "shuffle"
+        ],
+        [
+          "playlist_name",
+          "electronic"
+        ],
+        [
+          "podcast_descriptor",
+          "next podcast"
+        ],
+        [
+          "podcast_name",
+          "friends"
+        ],
+        [
+          "radio_name",
+          "ninety nine point five"
+        ],
+        [
+          "relation",
+          "boss"
+        ],
+        [
+          "song_name",
+          "be warned"
+        ],
+        [
+          "sport_type",
+          "basketball game"
+        ]
+      ]
+    },
+    "A4_deranged": {
+      "rule": "each scenario receives another scenario's A1 roster; pairing is by adjacent capped size, no fixed point",
+      "mapping": {
+        "audio": "cooking",
+        "cooking": "audio",
+        "datetime": "weather",
+        "weather": "datetime",
+        "alarm": "takeaway",
+        "takeaway": "alarm",
+        "news": "iot",
+        "iot": "news",
+        "lists": "calendar",
+        "calendar": "lists",
+        "email": "general",
+        "general": "email",
+        "music": "play",
+        "play": "music",
+        "qa": "recommendation",
+        "recommendation": "qa",
+        "social": "transport",
+        "transport": "social"
+      },
+      "no_fixed_point": true,
+      "entry_delta_mean": 1.67,
+      "entry_delta_max": 8
+    }
+  }
+}
