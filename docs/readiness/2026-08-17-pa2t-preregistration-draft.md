@@ -70,3 +70,23 @@ pre-registration binding.
 B0 rails + Audio2Tool adapter green (in flight today); E0' flight lock active; Audio2Tool
 featcache warm (campaign running); stale lock-blocked docstrings fixed. GPU estimate
 0.1–0.25 GPU-h.
+
+## 8. 2026-08-17 night RESTRUCTURE (binding-prep findings `928a048` — supersedes §2)
+
+1. **The 84.6%/15.6% headroom premise is RETIRED**: unsourced (prose-only in five files) and
+   contradicted by both recoverable archival reads (dev 67.5%/65.0%, test 86.7%/85.0% —
+   tool-acc ≈ EM). The L5 headroom is unknown until measured. Corrected in the standard-scheme
+   spec the same night.
+2. **A0 reuse is impossible**: the consumed T2 read left zero artifacts anywhere on this
+   machine; the frozen 400-item split was never bound to an execution here. The headroom sample
+   list is unbindable pre-flight.
+3. **Two design defects**: the per-item `functions` field IS the gold tool (so A3 ≡ A0
+   byte-identically), and A1/A2 have no legal-tier per-sample source.
+4. **New shape**: Stage 1 = **A0 zero-supply baseline re-fly** on the frozen 400-item split
+   (`baseline-reproduction` profile; ~0.5–1.3 GPU-h — every request carries a ~12.7k-token
+   registry prefill; warms the featcache; measures the REAL tool-acc/EM gap and yields the
+   headroom list {tool_acc==1 ∧ EM==0}). Stage 2 (registered separately, only if Stage 1 shows
+   measurable headroom): compacted supply probe — A0/A3 collapsed; A1' self-supplied single-row
+   roster keyed on the core's own first-pass tool selection; A2 diluted K=9; deranged arm. The
+   2026-08-15 amendment's 2×2 {roster, not} × {clean, noisy} factorization mismatch is noted
+   for the owner if Stage 2 diverges from it.
