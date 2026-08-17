@@ -61,6 +61,8 @@ from speech_aware_evidence_acquisition.core.session import (
     EXT4_MODEL_SHA256_PINS,
     EXT4_MODELS_ROOT_DEFAULT,
     EXT4_MODELS_ROOT_ENV,
+    FEAT_CACHE_DIR_DEFAULT,
+    FEAT_CACHE_DIR_ENV,
     SESSION_RECEIPT_SCHEMA,
     ModelFileRef,
     SessionError,
@@ -68,6 +70,7 @@ from speech_aware_evidence_acquisition.core.session import (
     _model_file_argv,
     _resolve_model_file_source,
     attach_session,
+    feat_cache_dir,
     read_session_receipt,
     require_loopback,
     start_session,
@@ -484,6 +487,39 @@ def test_ext4_models_root_env_unset_uses_default(monkeypatch):
 
     monkeypatch.delenv(EXT4_MODELS_ROOT_ENV, raising=False)
     assert lifecycle_module._ext4_models_root() == EXT4_MODELS_ROOT_DEFAULT
+
+
+# ---------------------------------------------------------------------------
+# feat_cache_dir -- per-campaign feature-cache directory convention
+# (2026-08-16, docs/featcache-directories.md). Same env-override-with-default
+# shape as _ext4_models_root above, mirrored here for the same reason: an
+# unset override must resolve to the exact legacy, already-warm literal path
+# every existing q4km-family config fragment already hand-types.
+# ---------------------------------------------------------------------------
+
+
+def test_feat_cache_dir_default_matches_the_warm_legacy_cache():
+    # Locks in the exact literal path every existing q4km-family model
+    # fragment already hand-types in its own server_env -- a silent change
+    # here would orphan those fragments' already-warm 26GB cache.
+    assert FEAT_CACHE_DIR_DEFAULT == "/home/chao/feat-cache/q4km"
+
+
+def test_feat_cache_dir_env_unset_uses_default(monkeypatch):
+    monkeypatch.delenv(FEAT_CACHE_DIR_ENV, raising=False)
+    assert feat_cache_dir() == FEAT_CACHE_DIR_DEFAULT
+
+
+def test_feat_cache_dir_env_override(monkeypatch):
+    monkeypatch.setenv(FEAT_CACHE_DIR_ENV, "/home/chao/feat-cache/slurp-q4km")
+    assert feat_cache_dir() == "/home/chao/feat-cache/slurp-q4km"
+
+
+def test_feat_cache_dir_env_empty_string_falls_back_to_default(monkeypatch):
+    # An empty override is not a meaningful directory choice -- treat it the
+    # same as unset rather than handing callers "".
+    monkeypatch.setenv(FEAT_CACHE_DIR_ENV, "")
+    assert feat_cache_dir() == FEAT_CACHE_DIR_DEFAULT
 
 
 def test_model_file_argv_prefers_ext4_for_both_main_and_mmproj(tmp_path, monkeypatch):

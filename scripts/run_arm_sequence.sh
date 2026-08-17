@@ -14,6 +14,7 @@
 #
 #   usage: run_arm_sequence.sh --arms <file> --dataset <frag> --experiment <frag>
 #                              --model <frag> [--out-dir DIR] [--dry-run]
+#                              [--feat-cache-dir DIR]
 #
 # The arm file is one `run_id:baseline_fragment` per line; `#` comments and
 # blank lines are ignored. Example (docs/arms/r4-context-dose.arms):
@@ -49,6 +50,18 @@ set -uo pipefail
 ARMS="" DATASET="" EXPERIMENT="" MODEL="" OUT_DIR="$HOME" DRY=0
 PLANNED_CALLS=2000 PLANNED_GPU_HOURS=30.0 PLANNED_AUDIO_SECONDS=150000
 PORT=8080 HOST=127.0.0.1
+# Feature-cache directory (docs/featcache-directories.md): opt-in only, empty
+# by default. Left unset, this script changes NOTHING -- every model
+# fragment's own server_env (docs/patches/2026-08-11-mtmd-feature-cache.diff),
+# if any, is still fully authoritative (core/session/lifecycle.py::
+# start_session merges os.environ UNDER extra_env, so a fragment's own
+# LLAMA_MTMD_FEAT_CACHE_DIR always wins over this). Set --feat-cache-dir to
+# point a NEW campaign's caching at its own directory
+# (core/session/lifecycle.py::feat_cache_dir's default is the legacy,
+# already-warm q4km cache, 26GB -- MUST NOT be renamed or moved) without
+# hand-editing a config fragment's server_env for a fragment that never set
+# LLAMA_MTMD_FEAT_CACHE_DIR at all.
+FEAT_CACHE_DIR=""
 # mlflow 3.14.0 refuses the filesystem tracking backend outright ("in
 # maintenance mode"), and it refuses it at FINALIZE -- after a two-hour arm has
 # already produced its COMPLETED manifest and scores. The run is unaffected but
@@ -57,7 +70,7 @@ PORT=8080 HOST=127.0.0.1
 # program policy ("only local MLflow stays on ext4").
 TRACKING_URI="sqlite:///${HOME}/mlruns.db"
 
-usage() { sed -n '2,43p' "$0" | sed 's/^# \{0,1\}//'; }
+usage() { sed -n '2,44p' "$0" | sed 's/^# \{0,1\}//'; }
 
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -71,6 +84,7 @@ while [ $# -gt 0 ]; do
     --planned-speech-audio-seconds) PLANNED_AUDIO_SECONDS="$2"; shift 2 ;;
     --port) PORT="$2"; shift 2 ;;
     --tracking-uri) TRACKING_URI="$2"; shift 2 ;;
+    --feat-cache-dir) FEAT_CACHE_DIR="$2"; shift 2 ;;
     --dry-run) DRY=1; shift ;;
     --help|-h) usage; exit 0 ;;
     *) echo "unknown argument: $1" >&2; usage >&2; exit 2 ;;
@@ -97,6 +111,17 @@ STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
 # pytest run in another window.
 export PYTHONDONTWRITEBYTECODE=1
 export PYTHONUNBUFFERED=1
+
+# --feat-cache-dir opt-in (see the FEAT_CACHE_DIR declaration above): exported
+# into THIS process's environment only when given, so it reaches every arm's
+# python driver subprocess via plain os.environ inheritance -- and a model
+# fragment's own server_env still overrides it per-arm exactly as before,
+# since core/session/lifecycle.py::start_session merges os.environ UNDER
+# extra_env.
+if [ -n "$FEAT_CACHE_DIR" ]; then
+  export LLAMA_MTMD_FEAT_CACHE_DIR="$FEAT_CACHE_DIR"
+  echo "feature-cache dir override for this sequence: LLAMA_MTMD_FEAT_CACHE_DIR=$FEAT_CACHE_DIR"
+fi
 
 # The ML stack is pinned to ~/.venvs/speechrl (CLAUDE.md); a detached launch
 # inherits no activation, and without this the driver never starts at all.

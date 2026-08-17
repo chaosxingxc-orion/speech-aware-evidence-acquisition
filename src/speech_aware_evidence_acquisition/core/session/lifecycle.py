@@ -207,6 +207,50 @@ def _model_file_argv(data_root: Path, model_files: tuple[ModelFileRef, ...]) -> 
     return argv
 
 
+# ---------------------------------------------------------------------------
+# Feature-cache directory convention (2026-08-16, docs/featcache-directories.md).
+# The llama.cpp mtmd feature-cache patch
+# (docs/patches/2026-08-11-mtmd-feature-cache.diff) reads ONE environment
+# variable, ``LLAMA_MTMD_FEAT_CACHE_DIR``, off the spawned server's own
+# process environment (a model fragment's ``server_env``, W3 2026-08-11 --
+# ``core.driver.smoke._server_env``, merged with ``os.environ`` in
+# ``start_session`` below with the config's own value always winning). Every
+# cache-enabled fragment to date (docs/arms/featcache-bench.arms and its
+# np8/validate variants) hand-types the SAME literal absolute path,
+# ``/home/chao/feat-cache/q4km`` -- correct for the warm, 26GB earnings21/22
+# cache, but it left a brand-new dataset campaign (e.g. SLURP) no NAMED
+# parameter to point elsewhere with, only a copy-pasted string to hand-edit:
+# exactly the typo hazard that could otherwise mix a new campaign's writes
+# into the warm q4km cache.
+#
+# ``FEAT_CACHE_DIR_DEFAULT`` is that legacy path, pinned here as the single
+# source of truth -- it must never change (the on-disk q4km cache must never
+# be renamed or moved) -- and it is still what ``feat_cache_dir()`` returns
+# when no override is given, so every existing q4km-family fragment's
+# behaviour is completely unchanged by this. The resolver is opt-in, never
+# force-injected into every spawn: an unset ``FEAT_CACHE_DIR_ENV`` changes
+# nothing (a model fragment's own ``server_env``, if any, is still fully
+# authoritative), and ``scripts/run_arm_sequence.sh --feat-cache-dir`` is the
+# one place that exports it, only when an operator asks. See
+# docs/featcache-directories.md for the per-dataset naming convention new
+# campaigns should follow (``/home/chao/feat-cache/<dataset>-<encoder>/``)
+# and the ext4-only rule.
+FEAT_CACHE_DIR_ENV = "SAEA_FEAT_CACHE_DIR"
+FEAT_CACHE_DIR_DEFAULT = "/home/chao/feat-cache/q4km"
+
+
+def feat_cache_dir() -> str:
+    """``FEAT_CACHE_DIR_ENV`` overrides the default -- lets one invocation
+    (an operator's shell, or ``run_arm_sequence.sh --feat-cache-dir``) name a
+    NEW campaign's feature-cache directory without hand-editing a model
+    config fragment's ``server_env``. Unset resolves to the legacy,
+    already-warm q4km cache (docs/featcache-directories.md), so nothing
+    already relying on that literal path changes."""
+
+    override = os.environ.get(FEAT_CACHE_DIR_ENV)
+    return override if override else FEAT_CACHE_DIR_DEFAULT
+
+
 class _ServerLogWriter:
     """Best-effort persistent server-log writer (Task 1, 2026-08-09 finding:
     llama-server's own combined stdout/stderr was captured for the startup
