@@ -215,6 +215,15 @@ patch, so none of its audio was ever cached. The legacy `/home/chao/feat-cache/q
 holds 34,350 `.feat` files across 3,469 distinct media ids — all earnings21/22, and untouched by
 this pass.
 
+**Positive control for the coverage method.** A "0/350" result is only meaningful if the key
+computation is correct, so the same code was run against audio known to have been encoded: eight
+60 s slices under `derived/obs-slices/SAEA-BENCH-a2wave5/4330115/` (1,920,044 bytes each) resolve
+to **8/8** cache hits, each with exactly 8 `.feat` files — consistent with the 8 s window split
+(60 s → 8 windows). The method therefore demonstrably hits on cached audio and genuinely misses on
+Audio2Tool. Cache integrity was re-checked after the pass: 34,350 files, newest mtime
+2026-08-16 14:09 (i.e. predating this session), and `/home/chao/feat-cache/` still contains the
+single `q4km` directory — nothing was written, created, moved or renamed.
+
 **The whole probe-backed prebuild workload is 30 minutes of audio, 82.5 MiB, ~350 encoder
 chunk-forwards** — on the order of a couple of minutes of RTX 5090 time. Building a bespoke
 standalone encoder binary to save that is a poor trade, and it has a real cost: the frozen-core
