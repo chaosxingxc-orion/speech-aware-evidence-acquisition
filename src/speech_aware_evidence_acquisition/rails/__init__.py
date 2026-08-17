@@ -25,7 +25,17 @@ from .consumption import (
     build_consumption_trace,
     classify_outcome,
 )
-from .core_client import CoreClient, MockCoreClient
+from .core_client import (
+    DEFAULT_RAILS_ARM,
+    CoreClient,
+    FrozenCoreClient,
+    FrozenCoreClientError,
+    MockCoreClient,
+    RequestTiming,
+    build_payload_binding,
+    build_slice_registry,
+    probe_sample_rate_hz,
+)
 from .errors import RailsError
 from .evidence import EvidenceItem, EvidenceSet, RetrievalKeyKind, RetrievalParams
 from .obs import AudioRef, ObsPacket, SpanRef, default_obs_packet
@@ -40,12 +50,16 @@ __all__ = [
     "ConsumptionRecord",
     "ConsumptionTrace",
     "CoreClient",
+    "DEFAULT_RAILS_ARM",
     "EvidenceItem",
     "EvidenceSet",
+    "FrozenCoreClient",
+    "FrozenCoreClientError",
     "MockCoreClient",
     "ObsPacket",
     "RailsError",
     "RailsRunnerError",
+    "RequestTiming",
     "RetrievalKeyKind",
     "RetrievalParams",
     "RunSummary",
@@ -57,7 +71,10 @@ __all__ = [
     "TaskAdapter",
     "TaskSample",
     "build_consumption_trace",
+    "build_payload_binding",
+    "build_slice_registry",
     "classify_outcome",
     "default_obs_packet",
+    "probe_sample_rate_hz",
     "run_rails_experiment",
 ]

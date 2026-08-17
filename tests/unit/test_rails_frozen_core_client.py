@@ -1,0 +1,490 @@
+"""``FrozenCoreClient`` (bridge mission, 2026-08-17): the REAL ``CoreClient``
+delegating to ``core.model.FrozenCoreAdapter``. Engineering-only, ZERO live
+model contact -- every test here uses a fake gate and a fake transport,
+mirroring ``tests/unit/test_frozen_core_adapter.py``'s own
+``_OpenGate``/``_fake_transport`` doubles.
+"""
+
+from __future__ import annotations
+
+import hashlib
+import json
+import wave
+from dataclasses import dataclass
+from pathlib import Path
+
+import pytest
+
+from speech_aware_evidence_acquisition.contracts import ExecutionPlan, ExecutionScopeError
+from speech_aware_evidence_acquisition.core.config import protocol_hash
+from speech_aware_evidence_acquisition.core.model.slices import SliceRecord
+from speech_aware_evidence_acquisition.rails import (
+    DEFAULT_RAILS_ARM,
+    AudioRef,
+    FrozenCoreClient,
+    FrozenCoreClientError,
+    build_payload_binding,
+    build_slice_registry,
+)
+
+_SHA_A = "a" * 64
+
+
+class _OpenGate:
+    """Mirrors tests/unit/test_frozen_core_adapter.py's own _OpenGate."""
+
+    def __init__(self):
+        self.checked_plans = []
+
+    def assert_model_touch_allowed(self, plan):
+        self.checked_plans.append(plan)
+
+
+class _CapturingTransport:
+    """A fake, in-process transport -- never opens a socket. Records every
+    parsed request payload and returns a canned/responder-driven text."""
+
+    def __init__(self, responder=None):
+        self.calls: list[dict] = []
+        self._responder = responder
+
+    def __call__(self, request_bytes: bytes) -> bytes:
+        assert isinstance(request_bytes, bytes)
+        payload = json.loads(request_bytes.decode("utf-8"))
+        self.calls.append(payload)
+        text = self._responder(payload) if self._responder is not None else "ok"
+        return json.dumps(
+            {"text": text, "usage": {"prompt_tokens": 3, "completion_tokens": 2}}
+        ).encode("utf-8")
+
+
+def _write_wav(path: Path, *, sample_rate_hz: int = 16000, seconds: float = 1.0) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    n_frames = int(sample_rate_hz * seconds)
+    with wave.open(str(path), "wb") as handle:
+        handle.setnchannels(1)
+        handle.setsampwidth(2)
+        handle.setframerate(sample_rate_hz)
+        handle.writeframes(b"\x00\x00" * n_frames)
+
+
+def _sha256_file(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+@dataclass(frozen=True)
+class _FakeSample:
+    sample_id: str
+    audio_ref: AudioRef
+    audio_seconds: float
+
+
+class _World:
+    def __init__(self, tmp_path: Path, *, sample_rate_hz: int = 16000) -> None:
+        self.data_root = tmp_path / "data"
+        self.carrier_root = self.data_root / "datasets" / "fake-carrier"
+        self.media_dir = self.carrier_root / "media"
+        self.run_dir = tmp_path / "run"
+        self.samples: list[_FakeSample] = []
+        for sample_id, seconds in (("s1", 2.0), ("s2", 3.5)):
+            relpath = f"datasets/fake-carrier/media/{sample_id}.wav"
+            path = self.data_root / relpath
+            _write_wav(path, sample_rate_hz=sample_rate_hz, seconds=seconds)
+            self.samples.append(
+                _FakeSample(
+                    sample_id=sample_id,
+                    audio_ref=AudioRef(path=relpath, sha256=_sha256_file(path)).validate(),
+                    audio_seconds=seconds,
+                )
+            )
+
+    def media_relpath(self, sample_id: str) -> str:
+        return next(s for s in self.samples if s.sample_id == sample_id).audio_ref.path
+
+
+def _plan(**overrides) -> ExecutionPlan:
+    values = dict(
+        run_id="SAEA-E-TEST-frozen-core-client",
+        execution_profile="bounded-discovery-probe",
+        carrier_lock_key="fake-carrier",
+        split_role="discovery",
+        split_identity_hash=_SHA_A,
+        planned_model_calls=10,
+        planned_gpu_hours=1.0,
+        planned_speech_audio_seconds=1000,
+        protocol_hash=protocol_hash("f" * 64, "bare-core", _SHA_A),
+        attempt_id="attempt-frozen-core-client-0001",
+    )
+    values.update(overrides)
+    return ExecutionPlan(**values)
+
+
+def _binding(world: _World):
+    return build_payload_binding(
+        carrier_lock_key="fake-carrier",
+        samples=world.samples,
+        data_root=world.data_root,
+        carrier_root=world.carrier_root,
+    )
+
+
+def _client(world, tmp_path, *, gate=None, transport=None, plan=None, **kwargs) -> tuple[FrozenCoreClient, _OpenGate, _CapturingTransport]:
+    gate = gate or _OpenGate()
+    transport = transport or _CapturingTransport()
+    client = FrozenCoreClient(
+        plan=plan or _plan(),
+        gate=gate,
+        transport=transport,
+        run_dir=world.run_dir,
+        binding=_binding(world),
+        **kwargs,
+    )
+    return client, gate, transport
+
+
+def _zero_supply_messages(media_relpath: str):
+    return (
+        {"role": "system", "content": "Transcribe the speech verbatim."},
+        {"role": "user", "content": [{"type": "input_audio", "media_relpath": media_relpath}]},
+    )
+
+
+def _supplied_messages(media_relpath: str, *texts: str):
+    content = [{"type": "text", "text": text} for text in texts]
+    content.append({"type": "input_audio", "media_relpath": media_relpath})
+    return (
+        {"role": "system", "content": "Transcribe the speech verbatim."},
+        {"role": "user", "content": content},
+    )
+
+
+# ---------------------------------------------------------------------------
+# build_payload_binding
+# ---------------------------------------------------------------------------
+
+
+def test_build_payload_binding_probes_real_sample_rate_from_the_wav_header(tmp_path):
+    world = _World(tmp_path, sample_rate_hz=22050)
+    binding = _binding(world)
+    assert binding.sample_facts["s1"] == (2.0, 22050)
+    assert binding.sample_facts["s2"] == (3.5, 22050)
+    assert binding.media_relpaths["s1"] == "datasets/fake-carrier/media/s1.wav"
+    assert binding.allowed_sample_ids == frozenset({"s1", "s2"})
+
+
+def test_build_payload_binding_rejects_empty_samples(tmp_path):
+    world = _World(tmp_path)
+    with pytest.raises(FrozenCoreClientError, match="at least one sample"):
+        build_payload_binding(
+            carrier_lock_key="fake-carrier",
+            samples=(),
+            data_root=world.data_root,
+            carrier_root=world.carrier_root,
+        )
+
+
+def test_build_payload_binding_rejects_duplicate_sample_ids(tmp_path):
+    world = _World(tmp_path)
+    with pytest.raises(FrozenCoreClientError, match="duplicate sample_id"):
+        build_payload_binding(
+            carrier_lock_key="fake-carrier",
+            samples=world.samples + [world.samples[0]],
+            data_root=world.data_root,
+            carrier_root=world.carrier_root,
+        )
+
+
+# ---------------------------------------------------------------------------
+# construction
+# ---------------------------------------------------------------------------
+
+
+def test_construction_checks_the_gate_exactly_once(tmp_path):
+    world = _World(tmp_path)
+    _, gate, _ = _client(world, tmp_path)
+    assert len(gate.checked_plans) == 1
+
+
+def test_construction_rejects_a_paper_scale_profile(tmp_path):
+    world = _World(tmp_path)
+    with pytest.raises(ExecutionScopeError, match="paper-scale"):
+        _client(world, tmp_path, plan=_plan(execution_profile="paper-scale-confirmatory"))
+
+
+def test_construction_rejects_an_arm_with_a_different_field_set(tmp_path):
+    world = _World(tmp_path)
+    with pytest.raises(FrozenCoreClientError, match="different field set"):
+        _client(world, tmp_path, arm="bare-core")
+
+
+def test_construction_rejects_an_unknown_arm(tmp_path):
+    world = _World(tmp_path)
+    with pytest.raises(FrozenCoreClientError, match="unknown D2 arm"):
+        _client(world, tmp_path, arm="not-a-real-arm")
+
+
+def test_default_arm_is_fixed_legal_context(tmp_path):
+    world = _World(tmp_path)
+    client, _, _ = _client(world, tmp_path)
+    assert client.arm == DEFAULT_RAILS_ARM == "fixed-legal-context"
+
+
+# ---------------------------------------------------------------------------
+# complete() -- zero-supply
+# ---------------------------------------------------------------------------
+
+
+def test_complete_zero_supply_sends_the_full_d2_field_set_and_returns_text(tmp_path):
+    world = _World(tmp_path)
+    client, _, transport = _client(world, tmp_path)
+
+    text = client.complete(_zero_supply_messages(world.media_relpath("s1")))
+
+    assert text == "ok"
+    assert len(transport.calls) == 1
+    payload = transport.calls[0]
+    assert set(payload) == {
+        "request_id", "carrier_lock_key", "sample_id", "speech_ref", "media_relpath",
+        "audio_seconds", "sample_rate_hz", "task_instruction", "history",
+        "decoding_params", "supplied_evidence", "evidence_provenance",
+    }
+    assert payload["sample_id"] == "s1"
+    assert payload["carrier_lock_key"] == "fake-carrier"
+    assert payload["speech_ref"] == "fake-carrier/s1"
+    assert payload["media_relpath"] == world.media_relpath("s1")
+    assert payload["audio_seconds"] == 2.0
+    assert payload["sample_rate_hz"] == 16000
+    assert payload["task_instruction"] == "Transcribe the speech verbatim."
+    assert payload["history"] == []
+    assert payload["decoding_params"] == {}
+    assert payload["supplied_evidence"] == []
+    assert payload["evidence_provenance"] == []
+
+
+def test_complete_forwards_decoding_params(tmp_path):
+    world = _World(tmp_path)
+    client, _, transport = _client(world, tmp_path)
+    client.complete(
+        _zero_supply_messages(world.media_relpath("s1")),
+        decoding_params={"temperature": 0, "seed": 1},
+    )
+    assert transport.calls[0]["decoding_params"] == {"temperature": 0, "seed": 1}
+
+
+def test_complete_request_ids_are_distinct_and_incrementing(tmp_path):
+    world = _World(tmp_path)
+    client, _, transport = _client(world, tmp_path)
+    client.complete(_zero_supply_messages(world.media_relpath("s1")))
+    client.complete(_zero_supply_messages(world.media_relpath("s2")))
+    assert transport.calls[0]["request_id"] == "rails-0001"
+    assert transport.calls[1]["request_id"] == "rails-0002"
+
+
+# ---------------------------------------------------------------------------
+# complete() -- supplied arm
+# ---------------------------------------------------------------------------
+
+
+def test_complete_supplied_builds_one_evidence_item_per_text_part(tmp_path):
+    world = _World(tmp_path)
+
+    def responder(payload):
+        return f"saw {len(payload['supplied_evidence'])} evidence items"
+
+    client, _, transport = _client(world, tmp_path, transport=_CapturingTransport(responder))
+    text = client.complete(_supplied_messages(world.media_relpath("s1"), "roster: kitchen", "roster: email"))
+
+    assert text == "saw 2 evidence items"
+    payload = transport.calls[0]
+    assert [item["content"] for item in payload["supplied_evidence"]] == [
+        "roster: kitchen", "roster: email",
+    ]
+    assert len({item["evidence_id"] for item in payload["supplied_evidence"]}) == 2
+    assert len(payload["evidence_provenance"]) == 2
+    for provenance in payload["evidence_provenance"]:
+        assert set(provenance) == {"lock_key", "relpath", "sha256"}
+
+
+# ---------------------------------------------------------------------------
+# complete() -- malformed messages / unresolved media
+# ---------------------------------------------------------------------------
+
+
+def test_complete_rejects_the_wrong_number_of_messages(tmp_path):
+    world = _World(tmp_path)
+    client, _, _ = _client(world, tmp_path)
+    with pytest.raises(FrozenCoreClientError, match="exactly 2 messages"):
+        client.complete(({"role": "system", "content": "x"},))
+
+
+def test_complete_rejects_a_missing_input_audio_part(tmp_path):
+    world = _World(tmp_path)
+    client, _, _ = _client(world, tmp_path)
+    with pytest.raises(FrozenCoreClientError, match="exactly one input_audio"):
+        client.complete(
+            (
+                {"role": "system", "content": "x"},
+                {"role": "user", "content": [{"type": "text", "text": "no audio here"}]},
+            )
+        )
+
+
+def test_complete_rejects_more_than_one_input_audio_part(tmp_path):
+    world = _World(tmp_path)
+    client, _, _ = _client(world, tmp_path)
+    relpath = world.media_relpath("s1")
+    with pytest.raises(FrozenCoreClientError, match="more than one input_audio"):
+        client.complete(
+            (
+                {"role": "system", "content": "x"},
+                {
+                    "role": "user",
+                    "content": [
+                        {"type": "input_audio", "media_relpath": relpath},
+                        {"type": "input_audio", "media_relpath": relpath},
+                    ],
+                },
+            )
+        )
+
+
+def test_complete_rejects_an_unknown_content_part_type(tmp_path):
+    world = _World(tmp_path)
+    client, _, _ = _client(world, tmp_path)
+    with pytest.raises(FrozenCoreClientError, match="unsupported content part type"):
+        client.complete(
+            (
+                {"role": "system", "content": "x"},
+                {"role": "user", "content": [{"type": "logit_bias", "value": 1}]},
+            )
+        )
+
+
+def test_complete_rejects_an_unresolvable_media_relpath(tmp_path):
+    world = _World(tmp_path)
+    client, _, _ = _client(world, tmp_path)
+    with pytest.raises(FrozenCoreClientError, match="not bound to any sample"):
+        client.complete(_zero_supply_messages("datasets/fake-carrier/media/unknown.wav"))
+
+
+# ---------------------------------------------------------------------------
+# flight lock (advisory, threaded through)
+# ---------------------------------------------------------------------------
+
+
+def test_flight_lock_is_none_when_absent(tmp_path):
+    world = _World(tmp_path)
+    client, _, _ = _client(world, tmp_path)
+    assert client.flight_lock is None
+
+
+def test_flight_lock_is_threaded_through_when_present(tmp_path):
+    world = _World(tmp_path)
+    lock_path = world.data_root / "locks" / "flight.lock"
+    lock_path.parent.mkdir(parents=True, exist_ok=True)
+    lock_path.write_text(json.dumps({"study_head": "deadbeef", "pid": 123}), encoding="utf-8")
+    client, _, _ = _client(world, tmp_path)
+    assert client.flight_lock == {"study_head": "deadbeef", "pid": 123}
+
+
+# ---------------------------------------------------------------------------
+# close() / lifecycle
+# ---------------------------------------------------------------------------
+
+
+def test_close_returns_manifest_hash_cost_and_timings(tmp_path):
+    world = _World(tmp_path)
+    client, _, _ = _client(world, tmp_path)
+    client.complete(_zero_supply_messages(world.media_relpath("s1")))
+
+    summary = client.close()
+
+    assert summary["run_id"] == "SAEA-E-TEST-frozen-core-client"
+    assert summary["arm"] == "fixed-legal-context"
+    assert isinstance(summary["trace_manifest_hash"], str) and summary["trace_manifest_hash"]
+    assert summary["cost"]["calls_used"] == 1
+    assert summary["request_count"] == 1
+    assert len(summary["timings"]) == 1
+    timing = summary["timings"][0]
+    assert timing["request_id"] == "rails-0001"
+    assert timing["sample_id"] == "s1"
+    assert timing["latency_seconds"] >= 0.0
+    assert client.timings[0].sample_id == "s1"
+
+
+def test_close_twice_raises(tmp_path):
+    world = _World(tmp_path)
+    client, _, _ = _client(world, tmp_path)
+    client.close()
+    with pytest.raises(FrozenCoreClientError, match="close\\(\\) called twice"):
+        client.close()
+
+
+def test_complete_after_close_raises(tmp_path):
+    world = _World(tmp_path)
+    client, _, _ = _client(world, tmp_path)
+    client.close()
+    with pytest.raises(FrozenCoreClientError, match="after close"):
+        client.complete(_zero_supply_messages(world.media_relpath("s1")))
+
+
+# ---------------------------------------------------------------------------
+# register_slice -- silence-swap-style runtime-derived media
+# ---------------------------------------------------------------------------
+
+
+def test_register_slice_resolves_a_derived_media_relpath_to_its_parent_sample(tmp_path):
+    world = _World(tmp_path)
+    plan = _plan()
+    registry = build_slice_registry(data_root=world.data_root, run_id=plan.run_id, samples=world.samples)
+    client, _, transport = _client(world, tmp_path, plan=plan, slice_registry=registry)
+
+    parent_relpath = world.media_relpath("s1")
+    parent_sha256 = _sha256_file(world.data_root / parent_relpath)
+    slice_relpath = registry.slice_relpath("s1", 0)
+    slice_path = world.data_root / slice_relpath
+    # A duration DIFFERENT from the parent (2.0s) -- proves complete() reads
+    # the SLICE's own facts, not the parent's, once registered.
+    _write_wav(slice_path, sample_rate_hz=8000, seconds=1.25)
+    record = SliceRecord(
+        sample_id="s1",
+        parent_media_relpath=parent_relpath,
+        parent_sha256=parent_sha256,
+        start_seconds=0.0,
+        end_seconds=1.25,
+        audio_seconds=1.25,
+        sample_rate_hz=8000,
+        media_relpath=slice_relpath,
+        sha256=_sha256_file(slice_path),
+        bytes=slice_path.stat().st_size,
+        iteration=0,
+    )
+
+    client.register_slice(record)
+    client.complete(_zero_supply_messages(slice_relpath))
+
+    payload = transport.calls[0]
+    assert payload["sample_id"] == "s1"
+    assert payload["media_relpath"] == slice_relpath
+    assert payload["audio_seconds"] == 1.25
+    assert payload["sample_rate_hz"] == 8000
+
+
+def test_register_slice_without_a_registry_raises(tmp_path):
+    world = _World(tmp_path)
+    client, _, _ = _client(world, tmp_path)
+    record = SliceRecord(
+        sample_id="s1",
+        parent_media_relpath=world.media_relpath("s1"),
+        parent_sha256="a" * 64,
+        start_seconds=0.0,
+        end_seconds=1.0,
+        audio_seconds=1.0,
+        sample_rate_hz=16000,
+        media_relpath="derived/obs-slices/x/s1/i0000.wav",
+        sha256="b" * 64,
+        bytes=1,
+        iteration=0,
+    )
+    with pytest.raises(FrozenCoreClientError, match="slice_registry"):
+        client.register_slice(record)
