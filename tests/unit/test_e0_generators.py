@@ -31,7 +31,13 @@ from speech_aware_evidence_acquisition.e0.runtime_receipt import (
     build_runtime_receipt,
 )
 
-from conftest import E21_IDS, SUBSET10_IDS
+from conftest import (
+    AUDIO2TOOL_D1_SAMPLE_ID,
+    E21_IDS,
+    SLURP_D1_SAMPLE_ID,
+    SLURP_D1_SLURP_ID,
+    SUBSET10_IDS,
+)
 
 
 def _sha(raw: bytes) -> str:
@@ -39,32 +45,72 @@ def _sha(raw: bytes) -> str:
 
 
 class TestD1:
+    def _build(self, synthetic_world):
+        return build_d1(
+            synthetic_world.lock_path,
+            synthetic_world.data_root,
+            repo_root=synthetic_world.repo_root,
+        )
+
     def test_closure_on_clean_world(self, synthetic_world):
-        artifact = build_d1(synthetic_world.lock_path, synthetic_world.data_root)
+        artifact = self._build(synthetic_world)
         carriers = artifact["carriers"]
         assert carriers["earnings21-original"]["sample_count"] == len(E21_IDS)
         assert carriers["earnings22-original"]["sample_count"] == 12
-        for report in carriers.values():
+        for name, report in carriers.items():
+            if name in ("slurp", "audio2tool"):
+                continue
             for fact in report["cross_layer_relations"]:
                 if fact["right"] == "subset10_media":
                     assert fact["relation"] == "right_subset_of_left"
                 else:
                     assert fact["relation"] == "equal"
         assert "license_facts" in carriers["conec"]
+        # Bounded discovery-probe carriers (2026-08-15 owner amendment):
+        # single-layer media identity, admitted alongside the three core
+        # carriers so verify_media_identity('slurp')/('audio2tool') accept.
+        slurp_media = carriers["slurp"]["layers"]["media"]["manifest"]
+        assert [entry["id"] for entry in slurp_media] == [SLURP_D1_SAMPLE_ID]
+        assert len(slurp_media[0]["sha256"]) == 64
+        audio2tool_media = carriers["audio2tool"]["layers"]["media"]["manifest"]
+        assert [entry["id"] for entry in audio2tool_media] == [AUDIO2TOOL_D1_SAMPLE_ID]
+        assert len(audio2tool_media[0]["sha256"]) == 64
 
     def test_layer_drift_refuses_closure(self, synthetic_world):
         (synthetic_world.conec / "earnings21" / "contexts" / "extra_call.txt").write_text(
             "ctx", encoding="utf-8"
         )
         with pytest.raises(Exception, match="invariant violated"):
-            build_d1(synthetic_world.lock_path, synthetic_world.data_root)
+            self._build(synthetic_world)
 
     def test_lock_count_disagreement_refuses_closure(self, synthetic_world):
         lock = json.loads(synthetic_world.lock_path.read_text(encoding="utf-8"))
         lock["datasets"][0]["verification"]["main_audio_files"] = 99
         synthetic_world.lock_path.write_text(json.dumps(lock), encoding="utf-8")
         with pytest.raises(Exception, match="disagrees with the umbrella lock"):
-            build_d1(synthetic_world.lock_path, synthetic_world.data_root)
+            self._build(synthetic_world)
+
+    def test_missing_slurp_devel_media_refuses_closure(self, synthetic_world):
+        """The two bounded-discovery-probe carriers are closed with the SAME
+        fail-closed discipline as the three core carriers: a caller lacking
+        SLURP media data never gets a silently narrower artifact."""
+
+        slurp_flac_dir = synthetic_world.slurp_audio_root / "slurp_real"
+        for flac in slurp_flac_dir.glob("*.flac"):
+            flac.unlink()
+        with pytest.raises(Exception, match="media missing"):
+            self._build(synthetic_world)
+
+    def test_missing_audio2tool_receipt_refuses_closure(self, synthetic_world):
+        (
+            synthetic_world.repo_root
+            / "docs"
+            / "receipts"
+            / "probe-samples"
+            / "d1-test-audio2tool-sample.json"
+        ).unlink()
+        with pytest.raises(Exception, match="audio2tool"):
+            self._build(synthetic_world)
 
 
 class TestD2:
@@ -139,7 +185,14 @@ class TestCloseAndGate:
     def _generated_receipts(self, synthetic_world, tmp_path) -> Path:
         receipts = tmp_path / "receipts"
         for name, builder in (
-            ("d1-identity.json", lambda: build_d1(synthetic_world.lock_path, synthetic_world.data_root)),
+            (
+                "d1-identity.json",
+                lambda: build_d1(
+                    synthetic_world.lock_path,
+                    synthetic_world.data_root,
+                    repo_root=synthetic_world.repo_root,
+                ),
+            ),
             ("d2-leakage.json", lambda: build_d2(synthetic_world.lock_path)),
             ("d3-scoring.json", build_d3),
             ("d4-trace.json", lambda: build_d4(synthetic_world.lock_path, synthetic_world.data_root)),
@@ -252,6 +305,63 @@ class TestCloseAndGate:
         artifact.write_text(tampered, encoding="utf-8")
         with pytest.raises(GateClosed, match="hash drift"):
             gate.assert_model_touch_allowed(plan)
+
+    def test_verify_media_identity_accepts_slurp_and_audio2tool(
+        self, synthetic_world, tmp_path
+    ):
+        """Direct reproduction of the refused-flight probe
+        (docs/checks/speech-aware-evidence-acquisition/2026-08-17-pslu-flight/
+        launcher/probe_d1.py): D1's own media identity artifact, resolved
+        THROUGH the generated E0 closure receipt, now closes over both
+        bounded discovery-probe carriers -- ``verify_media_identity`` accepts
+        rather than refusing with "D1 identity artifact has no per-sample
+        media identity for carrier ...'."""
+
+        receipts = self._generated_receipts(synthetic_world, tmp_path)
+        runtime_root, _, runtime = self._model_world(synthetic_world, tmp_path)
+        (receipts / "runtime.json").write_text(json.dumps(runtime), encoding="utf-8")
+        gate = FrozenCoreGate(
+            e0_receipt=receipts / "e0-closure.json",
+            runtime_receipt=receipts / "runtime.json",
+            data_root=synthetic_world.data_root,
+            lock_path=synthetic_world.lock_path,
+            runtime_root=runtime_root,
+            exposure_ledger=tmp_path / "unused-ledger.md",
+            source_root=REPO_ROOT,
+        )
+        slurp_flac = (
+            synthetic_world.slurp_audio_root / "slurp_real" / f"audio-{SLURP_D1_SLURP_ID}.flac"
+        )
+        gate.verify_media_identity(
+            "slurp",
+            {
+                SLURP_D1_SAMPLE_ID: (
+                    str(slurp_flac.relative_to(synthetic_world.data_root)).replace("\\", "/"),
+                    # A tiny silent FLAC compresses far below any real MP3
+                    # bitrate; a small audio_seconds keeps the implied-kbps
+                    # plausibility band happy without touching this test's
+                    # real point (D1 byte identity, not bitrate plausibility).
+                    0.1,
+                )
+            },
+        )
+        a2t_wav = (
+            synthetic_world.audio2tool_public
+            / "tier1_direct_audios"
+            / "query_00001"
+            / "turn.wav"
+        )
+        gate.verify_media_identity(
+            "audio2tool",
+            {
+                AUDIO2TOOL_D1_SAMPLE_ID: (
+                    str(a2t_wav.relative_to(synthetic_world.data_root)).replace("\\", "/"),
+                    0.5,
+                )
+            },
+        )
+        with pytest.raises(GateClosed, match="no D1-recorded media identity"):
+            gate.verify_media_identity("slurp", {"slurp:devel:999999:nope": ("x/y.flac", 1.0)})
 
 
 @pytest.mark.skipif(

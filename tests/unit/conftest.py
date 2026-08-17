@@ -14,6 +14,14 @@ import pytest
 E21_IDS = ("4000001", "4000002", "4000003")
 E22_IDS = tuple(f"50000{index:02d}" for index in range(12))
 SUBSET10_IDS = E22_IDS[:10]
+# D1's bounded-discovery-probe carriers (2026-08-15 owner amendment):
+# SLURP's one devel-split sentence/recording and Audio2Tool's one frozen
+# receipt item, materialized directly under SyntheticWorld's own data_root/
+# lock (data.identity.slurp_layers/audio2tool_layers own docstrings).
+SLURP_D1_SLURP_ID = 9001
+SLURP_D1_SAMPLE_ID = f"slurp:devel:{SLURP_D1_SLURP_ID:06d}:audio-{SLURP_D1_SLURP_ID}"
+AUDIO2TOOL_D1_SAMPLE_ID = "tier1_direct:000001"
+AUDIO2TOOL_D1_RECEIPT_NAME = "d1-test-audio2tool-sample"
 
 
 def _touch(path: Path, content: str) -> None:
@@ -25,9 +33,14 @@ class SyntheticWorld:
     def __init__(self, tmp_path: Path) -> None:
         self.data_root = tmp_path / "speechrl-data"
         self.lock_path = tmp_path / "datasets.lock.json"
+        self.repo_root = tmp_path / "repo"
         self.e21 = self.data_root / "datasets" / "earnings21-22" / "earnings21"
         self.e22 = self.data_root / "datasets" / "earnings21-22" / "earnings22"
         self.conec = self.data_root / "datasets" / "conec"
+        self.slurp_audio_root = self.data_root / "datasets" / "slurp"
+        self.slurp_metadata_dir = self.slurp_audio_root / "metadata"
+        self.audio2tool_dir = self.data_root / "datasets" / "audio2tool"
+        self.audio2tool_public = self.audio2tool_dir / "public"
         self._materialize()
         self._write_lock()
 
@@ -110,6 +123,104 @@ class SyntheticWorld:
         _touch(
             self.conec / "earnings22" / "contexts" / "pdfs" / f"{E22_IDS[0]}_2.pdf", "pdf"
         )
+        self._materialize_slurp()
+        self._materialize_audio2tool()
+
+    def _materialize_slurp(self) -> None:
+        """One devel-split (sentence, recording) sample -- just enough for
+        ``data.identity.slurp_layers``'s ``devel``-only D1 read; the other
+        three splits' jsonl files are never opened by that call path (module
+        docstring: only the requested split's metadata file is read)."""
+
+        devel = [
+            {
+                "slurp_id": SLURP_D1_SLURP_ID,
+                "sentence": "turn on the kitchen lights",
+                "sentence_annotation": "turn on the [house_place : kitchen] lights",
+                "intent": "iot_hue_lighton",
+                "scenario": "iot",
+                "action": "hue_lighton",
+                "tokens": _tokens("turn", "on", "the", "kitchen", "lights"),
+                "entities": [{"span": [3], "type": "house_place"}],
+                "recordings": [
+                    {
+                        "file": f"audio-{SLURP_D1_SLURP_ID}.flac",
+                        "wer": 0.0,
+                        "ent_wer": 0.0,
+                        "status": "correct",
+                    }
+                ],
+            }
+        ]
+        self.slurp_metadata_dir.mkdir(parents=True, exist_ok=True)
+        (self.slurp_metadata_dir / "devel.jsonl").write_text(
+            "\n".join(json.dumps(record) for record in devel) + "\n", encoding="utf-8"
+        )
+        _write_flac(self.slurp_audio_root / "slurp_real" / f"audio-{SLURP_D1_SLURP_ID}.flac")
+
+    def _materialize_audio2tool(self) -> None:
+        """One frozen-receipt tier1 item -- the same shape ``Audio2ToolWorld``
+        uses, materialized under THIS world's own ``data_root``/``repo_root``
+        so ``data.identity.audio2tool_layers`` (default-scoped, ``devel``-only
+        SLURP aside) resolves without touching the real 400-item receipt."""
+
+        manifest = [
+            {
+                "id": 1,
+                "tier": "tier1_direct",
+                "query_idx": 9100,
+                "query": "turn on the lights",
+                "domain": "smart_home",
+                "category": "lighting",
+                "tool_id": 2,
+                "tool_name": "setLighting",
+                "expected_tool_call": "setLighting()",
+                "extracted_params": {},
+                "additional_tool_calls": None,
+                "path": "tier1_direct_audios/query_00001/turn.wav",
+                "duration": 0.5,
+            }
+        ]
+        manifest_path = self.audio2tool_public / "tier1_direct_data" / "tier1_direct.json"
+        manifest_path.parent.mkdir(parents=True, exist_ok=True)
+        manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+        _write_wav(
+            self.audio2tool_public / "tier1_direct_audios" / "query_00001" / "turn.wav",
+            sample_rate_hz=16000,
+        )
+        _touch(
+            self.audio2tool_dir / "tools_registry.csv",
+            "tool_id,domain,category,tool_name,signature,description,"
+            "argument_defaults,argument_constraints\n"
+            '2,smart_home,lighting,setLighting,"setLighting(deviceId: String)",'
+            '"Turns a light on.","deviceId=\'light_1\'",""\n',
+        )
+        from speech_aware_evidence_acquisition.reproduction.sampling import (
+            split_identity_hash as compute_hash,
+        )
+
+        items = [
+            {"id": 1, "key": f"audio2tool:{AUDIO2TOOL_D1_SAMPLE_ID}", "query_idx": 9100, "tier": "tier1_direct"}
+        ]
+        receipt_payload = {
+            "probe": "D1-audio2tool-test",
+            "carrier": "audio2tool",
+            "seed": 1,
+            "design": "synthetic D1-closure test receipt",
+            "pool_size": 1,
+            "strata_counts": {},
+            "items": items,
+            "split_identity_hash": compute_hash([item["key"] for item in items]),
+            "split_role": "discovery",
+        }
+        receipt_path = (
+            self.repo_root
+            / "docs"
+            / "receipts"
+            / "probe-samples"
+            / f"{AUDIO2TOOL_D1_RECEIPT_NAME}.json"
+        )
+        _touch(receipt_path, json.dumps(receipt_payload, indent=2, sort_keys=True))
 
     def _write_lock(self) -> None:
         document = {
@@ -145,6 +256,23 @@ class SyntheticWorld:
                     "license": "paper CC-BY-NC-4.0",
                     "lifecycle": "STAGE2_CORE",
                     "profiles": ["speech-aware-core"],
+                },
+                {
+                    "name": "slurp",
+                    "kind": "dataset",
+                    "local_subdir": "repos/slurp/scripts/audio",
+                    "license": "mixed: textual part CC BY 4.0, audio part CC BY-NC 4.0",
+                    "lifecycle": "SECONDARY_CARRIER",
+                    "profiles": ["speech-aware-secondary"],
+                    "annotations": {"governed_copy": "datasets/slurp/metadata"},
+                },
+                {
+                    "name": "audio2tool",
+                    "kind": "dataset",
+                    "local_subdir": "datasets/audio2tool",
+                    "license": "cc-by-nc-4.0",
+                    "lifecycle": "LOCAL_CANDIDATE",
+                    "profiles": ["speech-aware-secondary"],
                 },
                 {"name": "fsd50k", "kind": "dataset", "profiles": ["retained-cross-domain"]},
                 {

@@ -1,14 +1,18 @@
 """E0 D1/D4 substrate: identity layers and the deterministic boundary-safe loader."""
 
+import hashlib
+
 import pytest
 
 from speech_aware_evidence_acquisition.data.identity import (
     IdentityError,
+    audio2tool_layers,
     earnings21_layers,
     earnings22_layers,
     conec_layers,
     relation,
     require_equal,
+    slurp_layers,
 )
 from speech_aware_evidence_acquisition.data.loader import (
     LoaderError,
@@ -131,3 +135,81 @@ def test_load_earnings21_fails_closed_on_identity_drift(synthetic_world):
     lock = load_lock(synthetic_world.lock_path)
     with pytest.raises(LoaderError, match="identity drift"):
         load_earnings21(lock, synthetic_world.data_root)
+
+
+class TestBoundedDiscoveryProbeMediaLayers:
+    """SLURP/Audio2Tool D1 media-identity layers (2026-08-15 owner amendment):
+    single-layer, fresh on-disk re-hash only -- see ``data.identity`` module
+    docstring and ``slurp_layers``/``audio2tool_layers`` own docstrings for
+    the scope this deliberately narrows to (vs. the three core carriers'
+    multi-layer cross-check)."""
+
+    def test_slurp_layers_cover_devel_in_full(self, slurp_world):
+        lock = load_lock(slurp_world.lock_path)
+        layers = slurp_layers(lock, slurp_world.data_root)
+        assert set(layers) == {"media"}
+        assert layers["media"].ids == (
+            "slurp:devel:000101:audio-101",
+            "slurp:devel:000101:audio-101-headset",
+            "slurp:devel:000102:audio-102",
+        )
+        for fact in layers["media"].files.values():
+            assert fact.bytes > 0
+            assert len(fact.sha256) == 64
+
+    def test_slurp_layers_hash_matches_real_bytes_on_disk(self, slurp_world):
+        lock = load_lock(slurp_world.lock_path)
+        layers = slurp_layers(lock, slurp_world.data_root)
+        sample_id = "slurp:devel:000102:audio-102"
+        media_path = slurp_world.audio_root / "slurp_real" / "audio-102.flac"
+        fact = layers["media"].files[sample_id]
+        assert fact.bytes == media_path.stat().st_size
+        assert fact.sha256 == hashlib.sha256(media_path.read_bytes()).hexdigest()
+
+    def test_slurp_layers_fails_closed_on_missing_flac(self, slurp_world):
+        from speech_aware_evidence_acquisition.data.loader import LoaderError
+
+        (slurp_world.audio_root / "slurp_real" / "audio-102.flac").unlink()
+        lock = load_lock(slurp_world.lock_path)
+        with pytest.raises(LoaderError, match="media missing"):
+            slurp_layers(lock, slurp_world.data_root)
+
+    def test_slurp_layers_other_split_ids_are_addressable_too(self, slurp_world):
+        lock = load_lock(slurp_world.lock_path)
+        layers = slurp_layers(lock, slurp_world.data_root, split_id="train")
+        assert layers["media"].ids == (
+            "slurp:train:000301:audio-301",
+            "slurp:train:000302:audio-302",
+        )
+
+    def test_audio2tool_layers_cover_exactly_the_frozen_receipt(self, audio2tool_world):
+        lock = load_lock(audio2tool_world.lock_path)
+        layers = audio2tool_layers(
+            lock, audio2tool_world.data_root, repo_root=audio2tool_world.repo_root
+        )
+        assert set(layers) == {"media"}
+        assert layers["media"].ids == (
+            "tier1_direct:000001",
+            "tier3_multi_intent:000004",
+            "tier7_multiturn:000009",
+        )
+
+    def test_audio2tool_layers_hash_matches_real_bytes_on_disk(self, audio2tool_world):
+        lock = load_lock(audio2tool_world.lock_path)
+        layers = audio2tool_layers(
+            lock, audio2tool_world.data_root, repo_root=audio2tool_world.repo_root
+        )
+        media_path = audio2tool_world.public / "tier1_direct_audios" / "query_00001" / "turn.wav"
+        fact = layers["media"].files["tier1_direct:000001"]
+        assert fact.bytes == media_path.stat().st_size
+        assert fact.sha256 == hashlib.sha256(media_path.read_bytes()).hexdigest()
+
+    def test_audio2tool_layers_fails_closed_on_missing_wav(self, audio2tool_world):
+        (
+            audio2tool_world.public / "tier1_direct_audios" / "query_00001" / "turn.wav"
+        ).unlink()
+        lock = load_lock(audio2tool_world.lock_path)
+        with pytest.raises(Exception, match="tier1_direct:000001"):
+            audio2tool_layers(
+                lock, audio2tool_world.data_root, repo_root=audio2tool_world.repo_root
+            )
