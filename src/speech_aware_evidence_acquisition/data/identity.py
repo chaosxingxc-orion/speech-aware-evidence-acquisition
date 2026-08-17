@@ -1,9 +1,21 @@
-"""Cross-layer sample/segment identity for the three core speech carriers (E0 D1).
+"""Cross-layer sample/segment identity for this study's speech carriers (E0 D1).
 
-Each carrier materializes several *layers* that must name the same samples: audio
-media, tabular metadata, reference transcripts and (for ConEC) per-call context
-artifacts. D1 closes when every layer of one carrier resolves to one deterministic
-identity set and the cross-layer relations are machine-checked and receipted.
+The three core carriers (earnings21-original, earnings22-original, conec) each
+materialize several *layers* that must name the same samples: audio media, tabular
+metadata, reference transcripts and (for ConEC) per-call context artifacts. D1
+closes when every layer of one such carrier resolves to one deterministic identity
+set and the cross-layer relations are machine-checked and receipted.
+
+Two bounded-discovery-probe carriers (SLURP, Audio2Tool -- 2026-08-15 owner
+amendment) are admitted with a deliberately NARROWER, single-layer MEDIA identity
+closure only (:func:`slurp_layers`/:func:`audio2tool_layers`): each carrier's own
+governed metadata (SLURP's ``annotation-receipt.json``) or frozen probe-sample
+receipt (Audio2Tool's ``docs/receipts/probe-samples/r1-audio2tool-sample.json``)
+already IS the sample universe's identity authority; D1's job for these two is
+the one thing neither already does -- bind a fresh re-hash of the real audio
+bytes on disk to each sample id, exactly the byte-identity guarantee the three
+core carriers' own media layer gives. See each function's own docstring for its
+carrier's scope.
 
 Receipts carry only sample IDs, counts, byte sizes and SHA-256 digests — never
 transcript, annotation or context *content* (E0 is model-free and the runtime
@@ -112,6 +124,32 @@ def _dir_layer(name: str, directory: Path, strip: tuple[str, ...]) -> Layer:
     if not files:
         raise IdentityError(f"layer {name!r}: no layer files under {directory}")
     return Layer(name=name, ids=tuple(sorted(files)), files=files, extras=tuple(extras))
+
+
+def _explicit_media_layer(name: str, entries: Iterable[tuple[str, Path]]) -> Layer:
+    """Build a layer from an explicit ``(sample_id, absolute_path)`` sequence.
+
+    Unlike :func:`_dir_layer` (every file directly under one flat directory),
+    this is for carriers whose per-sample media is not addressable by listing
+    a directory: SLURP resolves samples through governed jsonl metadata into a
+    shared ``slurp_real``/``slurp_synth`` audio tree that also holds files for
+    OTHER splits/sentences; Audio2Tool resolves samples through a frozen
+    probe-sample receipt into a much larger per-tier manifest tree. Both
+    require enumerating exactly the caller-resolved sample set, never a
+    directory listing. Same duplicate-id/empty-set fail-closed discipline as
+    :func:`_dir_layer`; ``extras`` is always empty here since there is no
+    directory listing to report stray entries from."""
+
+    files: dict[str, FileFact] = {}
+    for sample_id, path in entries:
+        if not sample_id:
+            raise IdentityError(f"layer {name!r}: empty sample id")
+        if sample_id in files:
+            raise IdentityError(f"layer {name!r}: duplicate sample id {sample_id!r}")
+        files[sample_id] = hash_file(Path(path))
+    if not files:
+        raise IdentityError(f"layer {name!r}: no layer files")
+    return Layer(name=name, ids=tuple(sorted(files)), files=files)
 
 
 def _csv_layer(name: str, path: Path, id_column: str) -> Layer:
@@ -248,6 +286,66 @@ def conec_layers(root: Path) -> dict[str, Layer]:
             "e21_wer_tags", e21 / "transcripts" / "wer_tags", (".wer_tag.json",)
         ),
     }
+
+
+def slurp_layers(
+    lock: Mapping[str, object], root: Path, *, split_id: str = "devel"
+) -> dict[str, Layer]:
+    """SLURP layers: per-sample MEDIA identity for the flight-addressable
+    split (module docstring's "deliberately narrower" scope).
+
+    SLURP's own governed metadata already carries a reconciliation receipt
+    (``datasets/slurp/annotation-receipt.json``, ``data.slurp`` module
+    docstring) that verified every ``recordings[]`` reference against the
+    flac tree upstream (100%, 141,648/141,648 unique recording refs across
+    all four splits) -- D1 does not re-derive a second independent metadata
+    layer here; it re-hashes the real flac bytes on disk fresh, exactly the
+    byte-identity guarantee ``earnings21_layers``/``earnings22_layers`` give
+    their own media layer, keyed by the SAME ``sample_id`` shape
+    :func:`speech_aware_evidence_acquisition.data.slurp.load_slurp_split`
+    already returns (``slurp:<split>:<slurp_id>:<recording stem>``).
+
+    ``split_id`` defaults to, and this study's D1 closure only ever covers,
+    ``devel`` -- the ONLY split this study's own ``CLAUDE.md`` research
+    boundary and ``data.slurp`` split discipline make addressable without an
+    explicit ``allow_heldout``/``allow_synthetic`` opt-in (``test`` is held
+    out; ``train``/``train_synthetic`` are roster-construction-only, never a
+    probe target). Coverage is the FULL split (every devel recording),
+    mirroring the three core carriers' own "cover a full split" rule -- never
+    a partial subset silently narrowed here."""
+
+    from .slurp import load_slurp_split
+
+    records = load_slurp_split(lock, root, split_id)
+    entries = ((record.sample_id, Path(root) / record.media_relpath) for record in records)
+    return {"media": _explicit_media_layer("media", entries)}
+
+
+def audio2tool_layers(lock: Mapping[str, object], root: Path, *, repo_root: Path | None = None) -> dict[str, Layer]:
+    """Audio2Tool layers: per-sample MEDIA identity for the frozen 400-item
+    discovery split (module docstring's "deliberately narrower" scope).
+
+    The sample universe IS the frozen probe-sample receipt
+    (``docs/receipts/probe-samples/r1-audio2tool-sample.json``,
+    ``split_role == "discovery"``, 400 items across 8 tiers) --
+    ``data.audio2tool`` module docstring: pre-registration means no run may
+    ever resolve Audio2Tool items outside it, so D1 covers exactly, and only,
+    what a flight can ever touch. Each sample's WAV bytes are re-hashed fresh
+    from disk (the receipt/manifest chain only carries a claimed ``duration``,
+    never a byte digest, so nothing upstream of this function already proves
+    byte identity the way SLURP's own reconciliation receipt does).
+
+    ``repo_root`` is threaded straight to
+    :func:`speech_aware_evidence_acquisition.data.audio2tool.load_audio2tool`
+    (default: this study checkout, where the committed receipt lives) so a
+    synthetic test world can point it at its own receipt tree without
+    touching the real one."""
+
+    from .audio2tool import load_audio2tool
+
+    refs = load_audio2tool(lock, root, repo_root=repo_root)
+    entries = ((ref.sample_id, Path(root) / ref.media_relpath) for ref in refs)
+    return {"media": _explicit_media_layer("media", entries)}
 
 
 def layer_report(layers: Mapping[str, Layer], embed_manifest: bool = True) -> dict[str, object]:
