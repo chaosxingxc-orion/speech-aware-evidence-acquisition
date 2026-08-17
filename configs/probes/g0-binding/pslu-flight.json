@@ -1,0 +1,66 @@
+{
+  "flight_config_version": "pslu-flight-v1",
+  "probe": "P-SLU",
+  "status": "REGISTERED",
+  "preregistration": "docs/readiness/2026-08-17-pslu-preregistration-REGISTERED.md",
+  "exposure_ledger_row": "SAEA-PROBE-pslu-n60",
+  "carrier": "slurp",
+  "carrier_lock_key": "slurp",
+  "sample_manifest": "configs/probes/g0-binding/pslu-sample-devel-n60.json",
+  "roster_table": "configs/probes/g0-binding/pslu-rosters-train-only.json",
+  "ontology_miner_prohibited_on_this_path": "speech_aware_evidence_acquisition.data.slurp.load_slurp_ontology",
+  "ontology_miner_prohibition_enforced_by": "rails.probes.pslu_flight.assert_never_calls_ontology_miner (AST-based, executed at module import time and again at the top of run_pslu_flight)",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "carrier_lock_key": "slurp",
+    "split_role": "discovery",
+    "split_identity_hash": "fc9de436eba5aba120ecf07ee112765cd4ac0609150e0aaf36f4d44c9c5b5ee5",
+    "planned_model_calls": 450,
+    "planned_gpu_hours": 0.5,
+    "planned_speech_audio_seconds": 1500,
+    "note": "planned_* are ceilings the plan is validated/metered against (contracts.ExecutionPlan); protocol_hash and run_id/attempt_id are assigned by the flying agent's own launcher at flight time, never frozen here."
+  },
+  "bridge": {
+    "core_client": "rails.core_client.FrozenCoreClient",
+    "d2_arm": "fixed-legal-context",
+    "note": "FrozenCoreClient is constructed with binding=rails.core_client.build_payload_binding(carrier_lock_key='slurp', samples=<the frozen 60, via select_pslu_samples>, data_root=<SPEECHRL_DATA_DIR>, carrier_root=<SPEECHRL_DATA_DIR>/<slurp local_subdir's parent, per data.lock.asset_dir('slurp', ...)>)."
+  },
+  "arms": ["A0", "A1", "A1p", "A2", "A3", "A4"],
+  "arm_semantics": {
+    "A0": "zero-supply baseline (also phase 1's scenario-prediction source)",
+    "A1": "scenario-scoped roster, scenario = GOLD label -- ceiling companion (gold-scoped selection)",
+    "A1p": "scenario-scoped roster, scenario = the core's own phase-1 predicted scenario -- self-supplied, deployment-legal; falls back to A2's global vocabulary (never to gold) when phase 1 did not parse a scenario in the roster table",
+    "A2": "global type vocabulary (55 types, no values)",
+    "A3": "full-ontology roster, dose-capped at 100 entries (table-side cap, uncapped 4,157)",
+    "A4": "deranged roster: fixed-point-free scenario permutation (control)"
+  },
+  "phases": {
+    "phase1": "one zero-supply (A0) request per sample; response doubles as both A0's own scored row and the scenario-prediction source A1p reads -- never a second, throwaway call",
+    "phase2": "A1, A1p, A2, A3, A4 per sample, in that order; A1p additionally fires one silence-swapped request for each sample named in silence_swap"
+  },
+  "silence_swap": {
+    "count": 3,
+    "seed": 20260807,
+    "selection_rule": "sorted(random.Random(f'{seed}:silence-swap').sample(sorted(item['sample_id'] for item in sample_manifest['items']), 3))",
+    "sample_ids": [
+      "slurp:devel:005518:audio-1490203960",
+      "slurp:devel:007852:audio-1494416109-headset",
+      "slurp:devel:011654:audio-1501692977-headset"
+    ],
+    "generation": "rails.silence_swap.build_silence_swap_slice per sample_id, duration_seconds = that sample's own audio_seconds (matched duration), sample_rate_hz = rails.core_client.probe_sample_rate_hz(parent media) -- registered via FrozenCoreClient.register_slice BEFORE the flight's phase-2 loop reaches that sample's A1p arm",
+    "arm": "A1p",
+    "note": "adds exactly 3 extra requests beyond the base 6-arm x 60 total; rails.probes.pslu_flight.run_pslu_flight's own silence_swap_media_relpaths parameter consumes {sample_id: registered_slice_media_relpath} and fires the extra request itself"
+  },
+  "cost_budget": {
+    "call_formula": "60 (phase1 A0) + 60*5 (phase2 A1/A1p/A2/A3/A4) + 3 (silence-swap extra) = 363",
+    "call_ceiling": 450,
+    "audio_seconds_formula": "182.26s (one full pass over the 60 samples) x 6 sends per sample (1 phase1 + 5 phase2) + ~9.12s (3 silence-swap extra sends, duration-matched to their own samples) ~= 1102.68s",
+    "audio_seconds_ceiling": 1500,
+    "gpu_hours_ceiling": 0.5
+  },
+  "metrics": {
+    "primary": "official SLU-F1 delta on entity slots vs A0 (adapter's slu_f1 family, score_slu.as_metrics_dict)",
+    "alongside": ["slot_f1_exact", "scenario_action_exact (intent-accuracy guardrail)", "copy_rate (rails.consumption.ConsumptionTrace)", "induced-substitution count (post-hoc analysis, not computed by run_pslu_flight itself)"]
+  },
+  "branch_rules_source": "docs/readiness/2026-08-17-pslu-preregistration-REGISTERED.md section 4 (SUPPLY-CONVERTS / COPY-TRAP / DOSE-CONFIRM / INERT / VOID) -- mechanical from the per-sample PsluArmResult rows this flight produces; branch evaluation itself is NOT implemented by this engineering mission (post-flight analysis, a later task)."
+}
