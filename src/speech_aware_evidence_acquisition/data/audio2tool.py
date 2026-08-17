@@ -28,10 +28,17 @@ not carry; ``duration`` supplies ``audio_seconds``).
 
 Lock binding mirrors the earnings pattern: identity resolves through the
 umbrella lock entry named ``audio2tool`` (``lock_entry``/``asset_dir``).
-That entry does not exist yet — the loader therefore fails closed with
-``AssetResolutionError('audio2tool' ...)`` until the owner lock amendment
-lands, and that is deliberately the ONLY missing piece (engineering notes
-``docs/readiness/2026-08-08-p1-engineering-notes.md``).
+That entry now exists (``docs/datasets.lock.json``'s ``asset_catalog``,
+``local_subdir: "datasets/audio2tool"``, ``status: "COMPLETE"``) — the
+owner lock amendment referenced below has landed, and the bounded
+discovery probe it gates is admitted by the 2026-08-15 owner amendment
+(umbrella ``wiki/experiments/speech-aware-evidence-acquisition/
+2026-08-15-owner-go-dual-track-agentic.md``, Amendment 1). The loader
+resolves against the real umbrella lock directly; a lock lacking the entry
+(e.g. a synthetic test lock) still fails closed with
+``AssetResolutionError('audio2tool' ...)`` — see
+``docs/readiness/2026-08-08-p1-engineering-notes.md`` for the original
+engineering notes this scaffold was built from.
 
 Tier7 protocol note: the P1 scaffold sends the FINAL user turn's wav only
 (``chat_history[-1]``, whose role must be ``user`` — fail-closed otherwise).
