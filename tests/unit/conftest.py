@@ -452,3 +452,168 @@ class BiasListWorld:
 @pytest.fixture()
 def bias_list_world(tmp_path):
     return BiasListWorld(tmp_path)
+
+
+# ---------------------------------------------------------------------------
+# Synthetic SLURP carrier world: mirrors the real governed-metadata layout
+# exactly -- ``datasets/slurp/metadata/{devel,test,train,train_synthetic}.jsonl``
+# plus ``datasets/slurp/{slurp_real,slurp_synth}/*.flac`` siblings, with a
+# lock entry carrying the SAME ``local_subdir``/``annotations.governed_copy``
+# shape the real umbrella ``docs/datasets.lock.json`` ``slurp`` entry has
+# (data.slurp module docstring) -- fake but structurally-real flac bytes
+# (tiny, silent, written via ``soundfile`` so ``data.slurp._audio_seconds``
+# exercises the real flac-header code path, not a stub).
+# ---------------------------------------------------------------------------
+
+
+def _write_flac(path: Path, *, sample_rate_hz: int = 16000, seconds: float = 0.5) -> None:
+    import numpy as np
+    import soundfile as sf
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    frames = int(sample_rate_hz * seconds)
+    sf.write(str(path), np.zeros(frames, dtype="float32"), sample_rate_hz, format="FLAC")
+
+
+def _tokens(*surfaces: str) -> list[dict]:
+    return [{"surface": surface, "id": index, "lemma": surface, "pos": "NN"} for index, surface in enumerate(surfaces)]
+
+
+class SlurpWorld:
+    def __init__(self, tmp_path: Path) -> None:
+        self.data_root = tmp_path / "slurp-data"
+        self.lock_path = tmp_path / "slurp-lock.json"
+        self.audio_root = self.data_root / "datasets" / "slurp"
+        self.metadata_dir = self.audio_root / "metadata"
+        self._materialize()
+        self._write_lock()
+
+    def _materialize(self) -> None:
+        devel = [
+            {
+                "slurp_id": 101,
+                "sentence": "turn on the kitchen lights",
+                "sentence_annotation": "turn on the [house_place : kitchen] lights",
+                "intent": "iot_hue_lighton",
+                "scenario": "iot",
+                "action": "hue_lighton",
+                "tokens": _tokens("turn", "on", "the", "kitchen", "lights"),
+                "entities": [{"span": [3], "type": "house_place"}],
+                "recordings": [
+                    {"file": "audio-101-headset.flac", "wer": 0.0, "ent_wer": 0.0, "status": "correct"},
+                    {"file": "audio-101.flac", "wer": 0.0, "ent_wer": 0.0, "status": "correct"},
+                ],
+            },
+            {
+                "slurp_id": 102,
+                "sentence": "how many unread emails do i have",
+                "sentence_annotation": "how many unread emails do i have",
+                "intent": "email_query",
+                "scenario": "email",
+                "action": "query",
+                "tokens": _tokens("how", "many", "unread", "emails", "do", "i", "have"),
+                "entities": [],
+                "recordings": [
+                    {"file": "audio-102.flac", "wer": 0.0, "ent_wer": None, "status": "correct"},
+                ],
+            },
+        ]
+        test = [
+            {
+                "slurp_id": 201,
+                "sentence": "set an alarm",
+                "sentence_annotation": "set an alarm",
+                "intent": "alarm_set",
+                "scenario": "alarm",
+                "action": "set",
+                "tokens": _tokens("set", "an", "alarm"),
+                "entities": [],
+                "recordings": [
+                    {"file": "audio-201.flac", "wer": 0.0, "ent_wer": None, "status": "correct"},
+                ],
+            }
+        ]
+        train = [
+            {
+                "slurp_id": 301,
+                "sentence": "dim the lights in the kitchen",
+                "sentence_annotation": "dim the lights in the [house_place : kitchen]",
+                "intent": "iot_hue_lightdim",
+                "scenario": "iot",
+                "action": "hue_lightdim",
+                "tokens": _tokens("dim", "the", "lights", "in", "the", "kitchen"),
+                "entities": [{"span": [5], "type": "house_place"}],
+                "recordings": [
+                    {"file": "audio-301.flac", "wer": 0.0, "ent_wer": 0.0, "status": "correct"},
+                ],
+            },
+            {
+                "slurp_id": 302,
+                "sentence": "what is the weather",
+                "sentence_annotation": "what is the weather",
+                "intent": "weather_query",
+                "scenario": "weather",
+                "action": "query",
+                "tokens": _tokens("what", "is", "the", "weather"),
+                "entities": [],
+                "recordings": [
+                    {"file": "audio-302.flac", "wer": 0.0, "ent_wer": None, "status": "correct"},
+                ],
+            },
+        ]
+        train_synthetic = [
+            {
+                "slurp_id": 401,
+                "sentence": "wake me at six",
+                "sentence_annotation": "wake me at [time : six]",
+                "intent": "alarm_set",
+                "scenario": "alarm",
+                "action": "set",
+                "tokens": _tokens("wake", "me", "at", "six"),
+                "entities": [{"span": [3], "type": "time"}],
+                "recordings": [
+                    {"file": "audio-401-synth.flac", "wer": 0.0, "ent_wer": 0.0, "status": "synthetic"},
+                ],
+            }
+        ]
+        self.metadata_dir.mkdir(parents=True, exist_ok=True)
+        for name, records in (
+            ("devel.jsonl", devel),
+            ("test.jsonl", test),
+            ("train.jsonl", train),
+            ("train_synthetic.jsonl", train_synthetic),
+        ):
+            (self.metadata_dir / name).write_text(
+                "\n".join(json.dumps(record) for record in records) + "\n", encoding="utf-8"
+            )
+        real_dir = self.audio_root / "slurp_real"
+        for filename in ("audio-101-headset.flac", "audio-101.flac", "audio-102.flac", "audio-201.flac", "audio-301.flac", "audio-302.flac"):
+            _write_flac(real_dir / filename)
+        synth_dir = self.audio_root / "slurp_synth"
+        _write_flac(synth_dir / "audio-401-synth.flac")
+
+    def _write_lock(self) -> None:
+        document = {
+            "datasets": [
+                {
+                    "name": "slurp",
+                    "kind": "dataset",
+                    "local_subdir": "repos/slurp/scripts/audio",
+                    "license": (
+                        "mixed: textual part CC BY 4.0, audio part CC BY-NC 4.0"
+                    ),
+                    "lifecycle": "SECONDARY_CARRIER",
+                    "profiles": ["speech-aware-secondary"],
+                    "annotations": {
+                        "governed_copy": "datasets/slurp/metadata",
+                    },
+                }
+            ],
+            "models": [],
+        }
+        self.lock_path.write_text(json.dumps(document), encoding="utf-8")
+
+
+@pytest.fixture()
+def slurp_world(tmp_path):
+    return SlurpWorld(tmp_path)
