@@ -1,0 +1,130 @@
+P2 R-ladder offline reads (docs/arms/p2-rladder.arms)
+============================================================
+
+Per-arm aggregates
+  arm         macro_wer  entity_wer  ent_correct ent_expected
+  r0bias         0.1276      0.3407         5462         8284
+  r1verify       0.1280      0.3468         5411         8284
+  r2draft        0.1276      0.3393         5473         8284
+  r0wrong        0.1283      0.3409         5460         8284
+  r1wrong        0.1309      0.3491         5392         8284
+
+HER (mirror section 3) -- harmful/accepted, per ledger, per arm
+  r0bias    [ macro] 0/3 status=descriptive_only rate=0.0
+  r0bias    [entity] 0/3 status=descriptive_only rate=0.0
+  r1verify  [ macro] 0/1 status=descriptive_only rate=0.0
+  r1verify  [entity] 0/1 status=descriptive_only rate=0.0
+  r2draft   [ macro] 0/1 status=descriptive_only rate=0.0
+  r2draft   [entity] 0/1 status=descriptive_only rate=0.0
+  r0wrong   [ macro] 0/0 status=descriptive_only rate=None
+  r0wrong   [entity] 0/0 status=descriptive_only rate=None
+  r1wrong   [ macro] 1/1 status=descriptive_only rate=1.0
+  r1wrong   [entity] 1/1 status=descriptive_only rate=1.0
+
+RIR (mirror section 4) -- numerator/denominator, per arm
+  r0bias    0/0 status=descriptive_only rate=None
+  r1verify  0/54 status=resolved rate=0.0
+  r2draft   0/53 status=resolved rate=0.0
+  r0wrong   0/10 status=resolved rate=0.0
+  r1wrong   2/10 status=resolved rate=0.2
+
+Wrong-reference copy count (PRE-LOCALIZE, D7E guard-2 aperture) -- per arm
+  r0bias    copies=51/53 (rate=0.9623, novel=51, guard3=0)
+  r1verify  copies=52/54 (rate=0.9630, novel=52, guard3=0)
+  r2draft   copies=48/53 (rate=0.9057, novel=48, guard3=0)
+  r0wrong   copies=7/9 (rate=0.7778, novel=7, guard3=0)
+  r1wrong   copies=7/9 (rate=0.7778, novel=7, guard3=1)
+
+Paired call-level contrasts (co-primary Wilcoxon, macro + entity)
+  r1verify_vs_r0bias      [ macro] n_effective=6 (of 6, 4 legitimate-empty excluded) p=1 (floor 0.03125)
+      4330115: diff=-0.0010 entity_correct_delta=-1 transitions={'correct_to_correct': 6169, 'correct_to_wrong': 5, 'wrong_to_correct': 16, 'wrong_to_wrong': 500}
+      4366522: diff=+0.0101 entity_correct_delta=-54 transitions={'correct_to_correct': 3858, 'correct_to_wrong': 54, 'wrong_to_correct': 18, 'wrong_to_wrong': 319}
+      4385072: diff=-0.0002 entity_correct_delta=-12 transitions={'correct_to_correct': 6130, 'correct_to_wrong': 22, 'wrong_to_correct': 17, 'wrong_to_wrong': 436}
+      4387383: diff=+0.0030 entity_correct_delta=-5 transitions={'correct_to_correct': 3407, 'correct_to_wrong': 7, 'wrong_to_correct': 0, 'wrong_to_wrong': 272}
+      4389907: diff=-0.0063 entity_correct_delta=+20 transitions={'correct_to_correct': 3628, 'correct_to_wrong': 15, 'wrong_to_correct': 19, 'wrong_to_wrong': 474}
+      4397829: diff=-0.0019 entity_correct_delta=+5 transitions={'correct_to_correct': 10505, 'correct_to_wrong': 12, 'wrong_to_correct': 26, 'wrong_to_wrong': 860}
+  r1verify_vs_r0bias      [entity] n_effective=6 (of 6, 4 legitimate-empty excluded) p=0.5625 (floor 0.03125)
+      4330115: diff=+0.0017 entity_correct_delta=-1
+      4366522: diff=+0.1040 entity_correct_delta=-54
+      4385072: diff=+0.0179 entity_correct_delta=-12
+      4387383: diff=+0.0127 entity_correct_delta=-5
+      4389907: diff=-0.0505 entity_correct_delta=+20
+      4397829: diff=-0.0041 entity_correct_delta=+5
+  r2draft_vs_r1verify     [ macro] n_effective=6 (of 6, 4 legitimate-empty excluded) p=0.4375 (floor 0.03125)
+      4330115: diff=-0.0048 entity_correct_delta=+12 transitions={'correct_to_correct': 6164, 'correct_to_wrong': 21, 'wrong_to_correct': 37, 'wrong_to_wrong': 468}
+      4366522: diff=-0.0080 entity_correct_delta=+36 transitions={'correct_to_correct': 3868, 'correct_to_wrong': 8, 'wrong_to_correct': 34, 'wrong_to_wrong': 339}
+      4385072: diff=-0.0026 entity_correct_delta=+18 transitions={'correct_to_correct': 6131, 'correct_to_wrong': 16, 'wrong_to_correct': 25, 'wrong_to_wrong': 433}
+      4387383: diff=+0.0008 entity_correct_delta=-1 transitions={'correct_to_correct': 3401, 'correct_to_wrong': 6, 'wrong_to_correct': 5, 'wrong_to_wrong': 274}
+      4389907: diff=+0.0022 entity_correct_delta=-6 transitions={'correct_to_correct': 3639, 'correct_to_wrong': 8, 'wrong_to_correct': 10, 'wrong_to_wrong': 479}
+      4397829: diff=+0.0004 entity_correct_delta=+1 transitions={'correct_to_correct': 10502, 'correct_to_wrong': 29, 'wrong_to_correct': 16, 'wrong_to_wrong': 856}
+  r2draft_vs_r1verify     [entity] n_effective=6 (of 6, 4 legitimate-empty excluded) p=0.3125 (floor 0.03125)
+      4330115: diff=-0.0201 entity_correct_delta=+12
+      4366522: diff=-0.0694 entity_correct_delta=+36
+      4385072: diff=-0.0269 entity_correct_delta=+18
+      4387383: diff=+0.0025 entity_correct_delta=-1
+      4389907: diff=+0.0152 entity_correct_delta=-6
+      4397829: diff=-0.0008 entity_correct_delta=+1
+  r0wrong_vs_r0bias       [ macro] n_effective=4 (of 4, 6 legitimate-empty excluded) p=0.625 (floor 0.125)
+      4330115: diff=-0.0028 entity_correct_delta=+6 transitions={'correct_to_correct': 6170, 'correct_to_wrong': 4, 'wrong_to_correct': 27, 'wrong_to_wrong': 489}
+      4387383: diff=+0.0043 entity_correct_delta=+0 transitions={'correct_to_correct': 3407, 'correct_to_wrong': 7, 'wrong_to_correct': 1, 'wrong_to_wrong': 271}
+      4389907: diff=-0.0046 entity_correct_delta=+21 transitions={'correct_to_correct': 3629, 'correct_to_wrong': 14, 'wrong_to_correct': 19, 'wrong_to_wrong': 474}
+      4397829: diff=-0.0011 entity_correct_delta=+9 transitions={'correct_to_correct': 10488, 'correct_to_wrong': 29, 'wrong_to_correct': 20, 'wrong_to_wrong': 866}
+  r0wrong_vs_r0bias       [entity] n_effective=3 (of 4, 6 legitimate-empty excluded) p=0.25 (floor 0.25)
+      4330115: diff=-0.0101 entity_correct_delta=+6
+      4387383: diff=+0.0000 entity_correct_delta=+0
+      4389907: diff=-0.0530 entity_correct_delta=+21
+      4397829: diff=-0.0074 entity_correct_delta=+9
+  r1wrong_vs_r1verify     [ macro] n_effective=4 (of 4, 6 legitimate-empty excluded) p=0.25 (floor 0.125)
+      4330115: diff=-0.0010 entity_correct_delta=+1 transitions={'correct_to_correct': 6178, 'correct_to_wrong': 7, 'wrong_to_correct': 17, 'wrong_to_wrong': 488}
+      4387383: diff=+0.0114 entity_correct_delta=+2 transitions={'correct_to_correct': 3363, 'correct_to_wrong': 44, 'wrong_to_correct': 6, 'wrong_to_wrong': 273}
+      4389907: diff=+0.0092 entity_correct_delta=-14 transitions={'correct_to_correct': 3630, 'correct_to_wrong': 17, 'wrong_to_correct': 13, 'wrong_to_wrong': 476}
+      4397829: diff=+0.0025 entity_correct_delta=-7 transitions={'correct_to_correct': 10491, 'correct_to_wrong': 40, 'wrong_to_correct': 4, 'wrong_to_wrong': 868}
+  r1wrong_vs_r1verify     [entity] n_effective=4 (of 4, 6 legitimate-empty excluded) p=0.625 (floor 0.125)
+      4330115: diff=-0.0017 entity_correct_delta=+1
+      4387383: diff=-0.0051 entity_correct_delta=+2
+      4389907: diff=+0.0354 entity_correct_delta=-14
+      4397829: diff=+0.0057 entity_correct_delta=-7
+  r1wrong_vs_r0wrong      [ macro] n_effective=5 (of 5, 5 legitimate-empty excluded) p=0.0625 (floor 0.0625)
+      4330115: diff=+0.0007 entity_correct_delta=-6 transitions={'correct_to_correct': 6186, 'correct_to_wrong': 11, 'wrong_to_correct': 9, 'wrong_to_wrong': 484}
+      4384964: diff=+0.0012 entity_correct_delta=-2 transitions={'correct_to_correct': 9547, 'correct_to_wrong': 40, 'wrong_to_correct': 39, 'wrong_to_wrong': 675}
+      4387383: diff=+0.0100 entity_correct_delta=-3 transitions={'correct_to_correct': 3362, 'correct_to_wrong': 46, 'wrong_to_correct': 7, 'wrong_to_wrong': 271}
+      4389907: diff=+0.0075 entity_correct_delta=-15 transitions={'correct_to_correct': 3631, 'correct_to_wrong': 17, 'wrong_to_correct': 12, 'wrong_to_wrong': 476}
+      4397829: diff=+0.0016 entity_correct_delta=-11 transitions={'correct_to_correct': 10480, 'correct_to_wrong': 28, 'wrong_to_correct': 15, 'wrong_to_wrong': 880}
+  r1wrong_vs_r0wrong      [entity] n_effective=5 (of 5, 5 legitimate-empty excluded) p=0.0625 (floor 0.0625)
+      4330115: diff=+0.0101 entity_correct_delta=-6
+      4384964: diff=+0.0021 entity_correct_delta=-2
+      4387383: diff=+0.0076 entity_correct_delta=-3
+      4389907: diff=+0.0379 entity_correct_delta=-15
+      4397829: diff=+0.0090 entity_correct_delta=-11
+
+Branch-rule evaluation (docs/arms/p2-rladder.arms, quoted verbatim):
+
+BRANCH RULES (registered before launch): operator AFFIRMED iff at least one of (R2-R1>0) / (R1 beats R0-bias at matched entity gain with lower HER) / (wrongref copy rate materially lower under verify than bias framing). Taxonomy COLLAPSE iff R1~R0-bias on both ledgers and HER AND R2~R1 - then the 2026-08-14/15 scope amendments are re-amended, the candidate keeps targeting/small-N wording, no "different operator" language. Wrong-reference copying in R1/R2 voids the audio-verification claim regardless of WER deltas.
+
+VOIDING (checked FIRST): MET
+  clause: Wrong-reference copying in R1/R2 voids the audio-verification claim regardless of WER deltas.
+  detail: PIN 6 basis=raw total_copy_occurrences (void iff >= 2 on either side): r1wrong=7 (wrong-reference echo); r2draft=48 (own-draft anchoring, module docstring note 4)
+
+AFFIRM: NOT_MET
+  [       MET] (R2-R1>0)
+             PIN 2 (conjunctive, both ledgers required): entity-correct delta R2-R1 = +60 across 6 paired call(s) (strictly up); mean macro-WER delta R2-R1 = -0.0020 (strictly down); path=both ledgers agree (entity strictly up, macro strictly down)
+  [UNRESOLVED] (R1 beats R0-bias at matched entity gain with lower HER)
+             HER guard-bound (mirror 3.1) and raw harmful-splice counts degenerate (tie) -- Pin 3/F5: UNRESOLVED rather than silently passed/failed; r1verify 0/1, r0bias 0/3
+  [   NOT_MET] (wrongref copy rate materially lower under verify than bias framing)
+             PIN 4 basis=raw total_copy_occurrences, material_relative_drop=0.50, c_bias_floor=4: C_bias(r0wrong)=7, C_verify(r1wrong)=7, threshold C_verify <= 3.50, relative_drop=+0.0000
+
+COLLAPSE: UNRESOLVED
+  [       MET] r1verify~r0bias on macro
+             PIN 5 tie_floor=0.0010 fractional (0.10pp): mean_diff=+0.0006, wilcoxon n_effective=6, p=1 (floor 0.03125)
+  [   NOT_MET] r1verify~r0bias on entity (entity-correct delta)
+             PIN 5 token_margin=25: summed entity_correct_delta=-47 across 6 paired call(s) (F6: entity-correct delta, not entity_wer mean diff)
+  [UNRESOLVED] HER[entity] r1verify~r0bias
+             HER guard-bound (mirror 3.1) and raw harmful-splice counts degenerate (tie) -- F6: UNRESOLVED rather than auto-met; r1verify 0/1, r0bias 0/3
+  [   NOT_MET] r2draft~r1verify on macro
+             PIN 5 tie_floor=0.0010 fractional (0.10pp): mean_diff=-0.0020, wilcoxon n_effective=6, p=0.4375 (floor 0.03125)
+  [   NOT_MET] r2draft~r1verify on entity (entity-correct delta)
+             PIN 5 token_margin=25: summed entity_correct_delta=+60 across 6 paired call(s) (F6: entity-correct delta, not entity_wer mean diff)
+
+OVERALL: VOIDED (audio-verification claim voided by wrong-reference copying; WER-based AFFIRM/COLLAPSE clauses are advisory only below)
+
+wrote machine-readable summary to /mnt/c/Users/35686/AppData/Local/Temp/claude/D--chao-workspace-exploring-l4-intelligence-studies-speech-aware-evidence-acquisition/6d9f1834-68e9-41a7-bbcc-724898cf15a9/scratchpad/report.json

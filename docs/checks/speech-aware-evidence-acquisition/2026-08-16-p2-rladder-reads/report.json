@@ -1,0 +1,2949 @@
+{
+  "arms": {
+    "r0bias": {
+      "arm": "r0bias",
+      "copy_count": {
+        "accepted_splices": 3,
+        "arm": "r0bias",
+        "called_windows": 53,
+        "copy_rate": 0.9622641509433962,
+        "copy_window_sample_ids": [
+          "4330115",
+          "4330115",
+          "4330115",
+          "4366522",
+          "4366522",
+          "4366522",
+          "4366522",
+          "4366522",
+          "4385072",
+          "4385072",
+          "4385072",
+          "4385072",
+          "4385072",
+          "4385072",
+          "4385072",
+          "4385072",
+          "4385072",
+          "4385072",
+          "4385072",
+          "4385072",
+          "4387383",
+          "4387383",
+          "4387383",
+          "4387383",
+          "4387383",
+          "4387383",
+          "4387383",
+          "4387383",
+          "4387383",
+          "4387383",
+          "4387383",
+          "4389907",
+          "4389907",
+          "4389907",
+          "4389907",
+          "4389907",
+          "4389907",
+          "4389907",
+          "4389907",
+          "4389907",
+          "4389907",
+          "4389907",
+          "4389907",
+          "4397829",
+          "4397829",
+          "4397829",
+          "4397829",
+          "4397829",
+          "4397829",
+          "4397829",
+          "4397829"
+        ],
+        "guard3_unsupported": 0,
+        "novel_copies": 51,
+        "total_copy_occurrences": 51,
+        "total_windows": 55,
+        "windows_with_copy": 51
+      },
+      "entity_aggregate": {
+        "adapter_version": "entity-wer-v1",
+        "correct": 5462,
+        "entity_wer": 0.340656687590536,
+        "expected_total": 8284,
+        "f1": 0.7947039138658519,
+        "macro_entity_wer": 0.35709942042907916,
+        "precision": 1.0,
+        "recall": 0.659343312409464,
+        "samples": 10,
+        "samples_with_entities": 10
+      },
+      "entity_by_type": {
+        "ABBREVIATION": {
+          "correct": 375,
+          "entity_wer": 0.27884615384615385,
+          "expected_total": 520,
+          "f1": 0.8379888268156424,
+          "precision": 1.0,
+          "recall": 0.7211538461538461
+        },
+        "ALPHANUMERIC": {
+          "correct": 27,
+          "entity_wer": 0.8820960698689957,
+          "expected_total": 229,
+          "f1": 0.2109375,
+          "precision": 1.0,
+          "recall": 0.11790393013100436
+        },
+        "CARDINAL": {
+          "correct": 522,
+          "entity_wer": 0.5810593900481541,
+          "expected_total": 1246,
+          "f1": 0.590497737556561,
+          "precision": 1.0,
+          "recall": 0.4189406099518459
+        },
+        "CONTRACTION": {
+          "correct": 1560,
+          "entity_wer": 0.12063134160090194,
+          "expected_total": 1774,
+          "f1": 0.9358128374325135,
+          "precision": 1.0,
+          "recall": 0.8793686583990981
+        },
+        "DATE": {
+          "correct": 1204,
+          "entity_wer": 0.2207119741100324,
+          "expected_total": 1545,
+          "f1": 0.8759548926882502,
+          "precision": 1.0,
+          "recall": 0.7792880258899676
+        },
+        "EVENT": {
+          "correct": 37,
+          "entity_wer": 0.4931506849315068,
+          "expected_total": 73,
+          "f1": 0.6727272727272727,
+          "precision": 1.0,
+          "recall": 0.5068493150684932
+        },
+        "FAC": {
+          "correct": 3,
+          "entity_wer": 0.7272727272727273,
+          "expected_total": 11,
+          "f1": 0.42857142857142855,
+          "precision": 1.0,
+          "recall": 0.2727272727272727
+        },
+        "GPE": {
+          "correct": 263,
+          "entity_wer": 0.21021021021021025,
+          "expected_total": 333,
+          "f1": 0.8825503355704697,
+          "precision": 1.0,
+          "recall": 0.7897897897897898
+        },
+        "LOC": {
+          "correct": 70,
+          "entity_wer": 0.05405405405405406,
+          "expected_total": 74,
+          "f1": 0.9722222222222222,
+          "precision": 1.0,
+          "recall": 0.9459459459459459
+        },
+        "MONEY": {
+          "correct": 201,
+          "entity_wer": 0.44780219780219777,
+          "expected_total": 364,
+          "f1": 0.7115044247787611,
+          "precision": 1.0,
+          "recall": 0.5521978021978022
+        },
+        "NORP": {
+          "correct": 17,
+          "entity_wer": 0.19047619047619047,
+          "expected_total": 21,
+          "f1": 0.8947368421052632,
+          "precision": 1.0,
+          "recall": 0.8095238095238095
+        },
+        "ORDINAL": {
+          "correct": 170,
+          "entity_wer": 0.14141414141414144,
+          "expected_total": 198,
+          "f1": 0.9239130434782609,
+          "precision": 1.0,
+          "recall": 0.8585858585858586
+        },
+        "ORG": {
+          "correct": 426,
+          "entity_wer": 0.29934210526315785,
+          "expected_total": 608,
+          "f1": 0.8239845261121858,
+          "precision": 1.0,
+          "recall": 0.7006578947368421
+        },
+        "PERCENT": {
+          "correct": 94,
+          "entity_wer": 0.7452574525745257,
+          "expected_total": 369,
+          "f1": 0.4060475161987041,
+          "precision": 1.0,
+          "recall": 0.25474254742547425
+        },
+        "PERSON": {
+          "correct": 350,
+          "entity_wer": 0.21700223713646527,
+          "expected_total": 447,
+          "f1": 0.8782936010037642,
+          "precision": 1.0,
+          "recall": 0.7829977628635347
+        },
+        "PRODUCT": {
+          "correct": 12,
+          "entity_wer": 0.7333333333333334,
+          "expected_total": 45,
+          "f1": 0.4210526315789474,
+          "precision": 1.0,
+          "recall": 0.26666666666666666
+        },
+        "QUANTITY": {
+          "correct": 12,
+          "entity_wer": 0.368421052631579,
+          "expected_total": 19,
+          "f1": 0.7741935483870968,
+          "precision": 1.0,
+          "recall": 0.631578947368421
+        },
+        "RANGE": {
+          "correct": 0,
+          "entity_wer": 1.0,
+          "expected_total": 1,
+          "f1": 0.0,
+          "precision": 0.0,
+          "recall": 0.0
+        },
+        "TIME": {
+          "correct": 93,
+          "entity_wer": 0.08823529411764708,
+          "expected_total": 102,
+          "f1": 0.9538461538461539,
+          "precision": 1.0,
+          "recall": 0.9117647058823529
+        },
+        "TWITTER": {
+          "correct": 1,
+          "entity_wer": 0.0,
+          "expected_total": 1,
+          "f1": 1.0,
+          "precision": 1.0,
+          "recall": 1.0
+        },
+        "WEBSITE": {
+          "correct": 2,
+          "entity_wer": 0.75,
+          "expected_total": 8,
+          "f1": 0.4,
+          "precision": 1.0,
+          "recall": 0.25
+        },
+        "WORK_OF_ART": {
+          "correct": 2,
+          "entity_wer": 0.5,
+          "expected_total": 4,
+          "f1": 0.6666666666666666,
+          "precision": 1.0,
+          "recall": 0.5
+        },
+        "YEAR": {
+          "correct": 21,
+          "entity_wer": 0.928082191780822,
+          "expected_total": 292,
+          "f1": 0.134185303514377,
+          "precision": 1.0,
+          "recall": 0.07191780821917808
+        }
+      },
+      "her": {
+        "entity": {
+          "accepted_splices": 3,
+          "harmful_sample_ids": [],
+          "harmful_splices": 0,
+          "ledger": "entity",
+          "rate": {
+            "denominator": 3,
+            "label": "HER[entity]",
+            "note": "HER[entity]: denominator 3 < 10 -- rate is descriptive only per the mandatory guard; must not decide a branch rule on its own, fall back to raw counts.",
+            "numerator": 0,
+            "rate": 0.0,
+            "status": "descriptive_only"
+          }
+        },
+        "macro": {
+          "accepted_splices": 3,
+          "harmful_sample_ids": [],
+          "harmful_splices": 0,
+          "ledger": "macro",
+          "rate": {
+            "denominator": 3,
+            "label": "HER[macro]",
+            "note": "HER[macro]: denominator 3 < 10 -- rate is descriptive only per the mandatory guard; must not decide a branch rule on its own, fall back to raw counts.",
+            "numerator": 0,
+            "rate": 0.0,
+            "status": "descriptive_only"
+          }
+        }
+      },
+      "legitimate_empty_sample_ids": [
+        "4365024",
+        "4365948",
+        "4366429",
+        "4384964"
+      ],
+      "macro_aggregate": {
+        "mean_wer": 0.12761581796845875,
+        "samples": 10
+      },
+      "manifest_path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/checks/speech-aware-evidence-acquisition/2026-08-16-p2-r0bias-salvage/MANIFEST.sha256",
+      "outputs_path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/checks/speech-aware-evidence-acquisition/2026-08-16-p2-r0bias-salvage/r0bias.asr-wer.json",
+      "per_call": [
+        {
+          "entity_correct": 392,
+          "entity_expected_total": 596,
+          "entity_wer": 0.3422818791946308,
+          "legitimate_empty": false,
+          "macro_wer": 0.11808669656203288,
+          "sample_id": "4330115"
+        },
+        {
+          "entity_correct": 994,
+          "entity_expected_total": 1469,
+          "entity_wer": 0.3233492171545269,
+          "legitimate_empty": true,
+          "macro_wer": 0.12960931566956374,
+          "sample_id": "4365024"
+        },
+        {
+          "entity_correct": 662,
+          "entity_expected_total": 936,
+          "entity_wer": 0.2927350427350427,
+          "legitimate_empty": true,
+          "macro_wer": 0.09668386145910096,
+          "sample_id": "4365948"
+        },
+        {
+          "entity_correct": 802,
+          "entity_expected_total": 1153,
+          "entity_wer": 0.30442324371205554,
+          "legitimate_empty": true,
+          "macro_wer": 0.11571403600769097,
+          "sample_id": "4366429"
+        },
+        {
+          "entity_correct": 295,
+          "entity_expected_total": 519,
+          "entity_wer": 0.4315992292870906,
+          "legitimate_empty": false,
+          "macro_wer": 0.12379383384325723,
+          "sample_id": "4366522"
+        },
+        {
+          "entity_correct": 684,
+          "entity_expected_total": 931,
+          "entity_wer": 0.26530612244897955,
+          "legitimate_empty": true,
+          "macro_wer": 0.10989224347150763,
+          "sample_id": "4384964"
+        },
+        {
+          "entity_correct": 424,
+          "entity_expected_total": 669,
+          "entity_wer": 0.3662182361733931,
+          "legitimate_empty": false,
+          "macro_wer": 0.12051476154428463,
+          "sample_id": "4385072"
+        },
+        {
+          "entity_correct": 241,
+          "entity_expected_total": 395,
+          "entity_wer": 0.38987341772151896,
+          "legitimate_empty": false,
+          "macro_wer": 0.12859468258274553,
+          "sample_id": "4387383"
+        },
+        {
+          "entity_correct": 206,
+          "entity_expected_total": 396,
+          "entity_wer": 0.4797979797979798,
+          "legitimate_empty": false,
+          "macro_wer": 0.19874274661508703,
+          "sample_id": "4389907"
+        },
+        {
+          "entity_correct": 762,
+          "entity_expected_total": 1220,
+          "entity_wer": 0.37540983606557377,
+          "legitimate_empty": false,
+          "macro_wer": 0.13452600192931685,
+          "sample_id": "4397829"
+        }
+      ],
+      "rir": {
+        "available": false,
+        "denominator": 0,
+        "numerator": 0,
+        "rate": {
+          "denominator": 0,
+          "label": "RIR",
+          "note": "RIR: denominator is 0 -- no units at all; the rate is undefined.",
+          "numerator": 0,
+          "rate": null,
+          "status": "descriptive_only"
+        },
+        "unavailable_reason": "not derivable from preserved salvage outputs (the salvage JSONs carry no per-window delivered-candidate/final-hypothesis identity); RIR feeds no branch-rule clause (F1)."
+      },
+      "run_dir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/checks/speech-aware-evidence-acquisition/2026-08-16-p2-r0bias-salvage",
+      "source": "salvage-json"
+    },
+    "r0wrong": {
+      "arm": "r0wrong",
+      "copy_count": {
+        "accepted_splices": 0,
+        "arm": "r0wrong",
+        "called_windows": 9,
+        "copy_rate": 0.7777777777777778,
+        "copy_window_sample_ids": [
+          "4330115",
+          "4384964",
+          "4387383",
+          "4389907",
+          "4389907",
+          "4389907",
+          "4397829"
+        ],
+        "guard3_unsupported": 0,
+        "novel_copies": 7,
+        "total_copy_occurrences": 7,
+        "total_windows": 9,
+        "windows_with_copy": 7
+      },
+      "entity_aggregate": {
+        "adapter_version": "entity-wer-v1",
+        "correct": 5460,
+        "entity_wer": 0.3408981168517624,
+        "expected_total": 8284,
+        "f1": 0.7945285215366705,
+        "macro_entity_wer": 0.35169312497185423,
+        "precision": 1.0,
+        "recall": 0.6591018831482376,
+        "samples": 10,
+        "samples_with_entities": 10
+      },
+      "entity_by_type": {
+        "ABBREVIATION": {
+          "correct": 406,
+          "entity_wer": 0.21923076923076923,
+          "expected_total": 520,
+          "f1": 0.8768898488120951,
+          "precision": 1.0,
+          "recall": 0.7807692307692308
+        },
+        "ALPHANUMERIC": {
+          "correct": 19,
+          "entity_wer": 0.9170305676855895,
+          "expected_total": 229,
+          "f1": 0.15322580645161288,
+          "precision": 1.0,
+          "recall": 0.08296943231441048
+        },
+        "CARDINAL": {
+          "correct": 504,
+          "entity_wer": 0.5955056179775281,
+          "expected_total": 1246,
+          "f1": 0.576,
+          "precision": 1.0,
+          "recall": 0.4044943820224719
+        },
+        "CONTRACTION": {
+          "correct": 1555,
+          "entity_wer": 0.12344983089064265,
+          "expected_total": 1774,
+          "f1": 0.9342144788224692,
+          "precision": 1.0,
+          "recall": 0.8765501691093573
+        },
+        "DATE": {
+          "correct": 1197,
+          "entity_wer": 0.22524271844660193,
+          "expected_total": 1545,
+          "f1": 0.8730853391684902,
+          "precision": 1.0,
+          "recall": 0.7747572815533981
+        },
+        "EVENT": {
+          "correct": 37,
+          "entity_wer": 0.4931506849315068,
+          "expected_total": 73,
+          "f1": 0.6727272727272727,
+          "precision": 1.0,
+          "recall": 0.5068493150684932
+        },
+        "FAC": {
+          "correct": 3,
+          "entity_wer": 0.7272727272727273,
+          "expected_total": 11,
+          "f1": 0.42857142857142855,
+          "precision": 1.0,
+          "recall": 0.2727272727272727
+        },
+        "GPE": {
+          "correct": 262,
+          "entity_wer": 0.21321321321321318,
+          "expected_total": 333,
+          "f1": 0.880672268907563,
+          "precision": 1.0,
+          "recall": 0.7867867867867868
+        },
+        "LOC": {
+          "correct": 69,
+          "entity_wer": 0.06756756756756754,
+          "expected_total": 74,
+          "f1": 0.965034965034965,
+          "precision": 1.0,
+          "recall": 0.9324324324324325
+        },
+        "MONEY": {
+          "correct": 199,
+          "entity_wer": 0.45329670329670335,
+          "expected_total": 364,
+          "f1": 0.7069271758436945,
+          "precision": 1.0,
+          "recall": 0.5467032967032966
+        },
+        "NORP": {
+          "correct": 17,
+          "entity_wer": 0.19047619047619047,
+          "expected_total": 21,
+          "f1": 0.8947368421052632,
+          "precision": 1.0,
+          "recall": 0.8095238095238095
+        },
+        "ORDINAL": {
+          "correct": 168,
+          "entity_wer": 0.1515151515151515,
+          "expected_total": 198,
+          "f1": 0.9180327868852458,
+          "precision": 1.0,
+          "recall": 0.8484848484848485
+        },
+        "ORG": {
+          "correct": 442,
+          "entity_wer": 0.2730263157894737,
+          "expected_total": 608,
+          "f1": 0.8419047619047619,
+          "precision": 1.0,
+          "recall": 0.7269736842105263
+        },
+        "PERCENT": {
+          "correct": 91,
+          "entity_wer": 0.7533875338753387,
+          "expected_total": 369,
+          "f1": 0.39565217391304347,
+          "precision": 1.0,
+          "recall": 0.24661246612466126
+        },
+        "PERSON": {
+          "correct": 352,
+          "entity_wer": 0.21252796420581654,
+          "expected_total": 447,
+          "f1": 0.8811013767209012,
+          "precision": 1.0,
+          "recall": 0.7874720357941835
+        },
+        "PRODUCT": {
+          "correct": 10,
+          "entity_wer": 0.7777777777777778,
+          "expected_total": 45,
+          "f1": 0.3636363636363636,
+          "precision": 1.0,
+          "recall": 0.2222222222222222
+        },
+        "QUANTITY": {
+          "correct": 11,
+          "entity_wer": 0.42105263157894735,
+          "expected_total": 19,
+          "f1": 0.7333333333333334,
+          "precision": 1.0,
+          "recall": 0.5789473684210527
+        },
+        "RANGE": {
+          "correct": 0,
+          "entity_wer": 1.0,
+          "expected_total": 1,
+          "f1": 0.0,
+          "precision": 0.0,
+          "recall": 0.0
+        },
+        "TIME": {
+          "correct": 92,
+          "entity_wer": 0.0980392156862745,
+          "expected_total": 102,
+          "f1": 0.9484536082474228,
+          "precision": 1.0,
+          "recall": 0.9019607843137255
+        },
+        "TWITTER": {
+          "correct": 1,
+          "entity_wer": 0.0,
+          "expected_total": 1,
+          "f1": 1.0,
+          "precision": 1.0,
+          "recall": 1.0
+        },
+        "WEBSITE": {
+          "correct": 2,
+          "entity_wer": 0.75,
+          "expected_total": 8,
+          "f1": 0.4,
+          "precision": 1.0,
+          "recall": 0.25
+        },
+        "WORK_OF_ART": {
+          "correct": 2,
+          "entity_wer": 0.5,
+          "expected_total": 4,
+          "f1": 0.6666666666666666,
+          "precision": 1.0,
+          "recall": 0.5
+        },
+        "YEAR": {
+          "correct": 21,
+          "entity_wer": 0.928082191780822,
+          "expected_total": 292,
+          "f1": 0.134185303514377,
+          "precision": 1.0,
+          "recall": 0.07191780821917808
+        }
+      },
+      "her": {
+        "entity": {
+          "accepted_splices": 0,
+          "harmful_sample_ids": [],
+          "harmful_splices": 0,
+          "ledger": "entity",
+          "rate": {
+            "denominator": 0,
+            "label": "HER[entity]",
+            "note": "HER[entity]: denominator is 0 -- no units at all; the rate is undefined.",
+            "numerator": 0,
+            "rate": null,
+            "status": "descriptive_only"
+          }
+        },
+        "macro": {
+          "accepted_splices": 0,
+          "harmful_sample_ids": [],
+          "harmful_splices": 0,
+          "ledger": "macro",
+          "rate": {
+            "denominator": 0,
+            "label": "HER[macro]",
+            "note": "HER[macro]: denominator is 0 -- no units at all; the rate is undefined.",
+            "numerator": 0,
+            "rate": null,
+            "status": "descriptive_only"
+          }
+        }
+      },
+      "legitimate_empty_sample_ids": [
+        "4365024",
+        "4365948",
+        "4366429",
+        "4366522",
+        "4385072"
+      ],
+      "macro_aggregate": {
+        "mean_wer": 0.1283381265128371,
+        "samples": 10
+      },
+      "manifest_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-P2-r0wrong/attempt-20260816T155116Z-4e93d3/SAEA-P2-r0wrong.run-manifest.json",
+      "outputs_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-P2-r0wrong/attempt-20260816T155116Z-4e93d3/SAEA-P2-r0wrong.outputs.jsonl",
+      "per_call": [
+        {
+          "entity_correct": 398,
+          "entity_expected_total": 596,
+          "entity_wer": 0.33221476510067116,
+          "legitimate_empty": false,
+          "macro_wer": 0.11524663677130045,
+          "sample_id": "4330115"
+        },
+        {
+          "entity_correct": 966,
+          "entity_expected_total": 1469,
+          "entity_wer": 0.34240980258679377,
+          "legitimate_empty": true,
+          "macro_wer": 0.13458779849801705,
+          "sample_id": "4365024"
+        },
+        {
+          "entity_correct": 649,
+          "entity_expected_total": 936,
+          "entity_wer": 0.30662393162393164,
+          "legitimate_empty": true,
+          "macro_wer": 0.10390567428150331,
+          "sample_id": "4365948"
+        },
+        {
+          "entity_correct": 806,
+          "entity_expected_total": 1153,
+          "entity_wer": 0.3009540329575021,
+          "legitimate_empty": true,
+          "macro_wer": 0.1139660898444328,
+          "sample_id": "4366429"
+        },
+        {
+          "entity_correct": 318,
+          "entity_expected_total": 519,
+          "entity_wer": 0.3872832369942196,
+          "legitimate_empty": true,
+          "macro_wer": 0.1226170863732643,
+          "sample_id": "4366522"
+        },
+        {
+          "entity_correct": 673,
+          "entity_expected_total": 931,
+          "entity_wer": 0.27712137486573574,
+          "legitimate_empty": false,
+          "macro_wer": 0.11183380254344238,
+          "sample_id": "4384964"
+        },
+        {
+          "entity_correct": 411,
+          "entity_expected_total": 669,
+          "entity_wer": 0.38565022421524664,
+          "legitimate_empty": true,
+          "macro_wer": 0.120666161998486,
+          "sample_id": "4385072"
+        },
+        {
+          "entity_correct": 241,
+          "entity_expected_total": 395,
+          "entity_wer": 0.38987341772151896,
+          "legitimate_empty": false,
+          "macro_wer": 0.13293543136190994,
+          "sample_id": "4387383"
+        },
+        {
+          "entity_correct": 227,
+          "entity_expected_total": 396,
+          "entity_wer": 0.4267676767676768,
+          "legitimate_empty": false,
+          "macro_wer": 0.19414893617021275,
+          "sample_id": "4389907"
+        },
+        {
+          "entity_correct": 771,
+          "entity_expected_total": 1220,
+          "entity_wer": 0.3680327868852459,
+          "legitimate_empty": false,
+          "macro_wer": 0.133473647285802,
+          "sample_id": "4397829"
+        }
+      ],
+      "rir": {
+        "available": true,
+        "denominator": 10,
+        "numerator": 0,
+        "rate": {
+          "denominator": 10,
+          "label": "RIR",
+          "note": "RIR: resolved (0/10 = 0.0000).",
+          "numerator": 0,
+          "rate": 0.0,
+          "status": "resolved"
+        },
+        "unavailable_reason": null
+      },
+      "run_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-P2-r0wrong",
+      "source": "completed-attempt"
+    },
+    "r1verify": {
+      "arm": "r1verify",
+      "copy_count": {
+        "accepted_splices": 1,
+        "arm": "r1verify",
+        "called_windows": 54,
+        "copy_rate": 0.9629629629629629,
+        "copy_window_sample_ids": [
+          "4330115",
+          "4330115",
+          "4330115",
+          "4366522",
+          "4366522",
+          "4366522",
+          "4366522",
+          "4366522",
+          "4385072",
+          "4385072",
+          "4385072",
+          "4385072",
+          "4385072",
+          "4385072",
+          "4385072",
+          "4385072",
+          "4385072",
+          "4385072",
+          "4385072",
+          "4385072",
+          "4387383",
+          "4387383",
+          "4387383",
+          "4387383",
+          "4387383",
+          "4387383",
+          "4387383",
+          "4387383",
+          "4387383",
+          "4387383",
+          "4387383",
+          "4389907",
+          "4389907",
+          "4389907",
+          "4389907",
+          "4389907",
+          "4389907",
+          "4389907",
+          "4389907",
+          "4389907",
+          "4389907",
+          "4389907",
+          "4389907",
+          "4397829",
+          "4397829",
+          "4397829",
+          "4397829",
+          "4397829",
+          "4397829",
+          "4397829",
+          "4397829",
+          "4397829"
+        ],
+        "guard3_unsupported": 0,
+        "novel_copies": 52,
+        "total_copy_occurrences": 52,
+        "total_windows": 56,
+        "windows_with_copy": 52
+      },
+      "entity_aggregate": {
+        "adapter_version": "entity-wer-v1",
+        "correct": 5411,
+        "entity_wer": 0.34681313375181066,
+        "expected_total": 8284,
+        "f1": 0.790215407082877,
+        "macro_entity_wer": 0.36597216407257255,
+        "precision": 1.0,
+        "recall": 0.6531868662481893,
+        "samples": 10,
+        "samples_with_entities": 10
+      },
+      "entity_by_type": {
+        "ABBREVIATION": {
+          "correct": 386,
+          "entity_wer": 0.25769230769230766,
+          "expected_total": 520,
+          "f1": 0.8520971302428256,
+          "precision": 1.0,
+          "recall": 0.7423076923076923
+        },
+        "ALPHANUMERIC": {
+          "correct": 11,
+          "entity_wer": 0.9519650655021834,
+          "expected_total": 229,
+          "f1": 0.09166666666666667,
+          "precision": 1.0,
+          "recall": 0.048034934497816595
+        },
+        "CARDINAL": {
+          "correct": 507,
+          "entity_wer": 0.5930979133226324,
+          "expected_total": 1246,
+          "f1": 0.57843696520251,
+          "precision": 1.0,
+          "recall": 0.4069020866773676
+        },
+        "CONTRACTION": {
+          "correct": 1561,
+          "entity_wer": 0.12006764374295376,
+          "expected_total": 1774,
+          "f1": 0.9361319340329836,
+          "precision": 1.0,
+          "recall": 0.8799323562570462
+        },
+        "DATE": {
+          "correct": 1196,
+          "entity_wer": 0.22588996763754043,
+          "expected_total": 1545,
+          "f1": 0.8726742064939803,
+          "precision": 1.0,
+          "recall": 0.7741100323624596
+        },
+        "EVENT": {
+          "correct": 38,
+          "entity_wer": 0.4794520547945206,
+          "expected_total": 73,
+          "f1": 0.6846846846846847,
+          "precision": 1.0,
+          "recall": 0.5205479452054794
+        },
+        "FAC": {
+          "correct": 2,
+          "entity_wer": 0.8181818181818181,
+          "expected_total": 11,
+          "f1": 0.3076923076923077,
+          "precision": 1.0,
+          "recall": 0.18181818181818182
+        },
+        "GPE": {
+          "correct": 262,
+          "entity_wer": 0.21321321321321318,
+          "expected_total": 333,
+          "f1": 0.880672268907563,
+          "precision": 1.0,
+          "recall": 0.7867867867867868
+        },
+        "LOC": {
+          "correct": 70,
+          "entity_wer": 0.05405405405405406,
+          "expected_total": 74,
+          "f1": 0.9722222222222222,
+          "precision": 1.0,
+          "recall": 0.9459459459459459
+        },
+        "MONEY": {
+          "correct": 189,
+          "entity_wer": 0.4807692307692307,
+          "expected_total": 364,
+          "f1": 0.6835443037974684,
+          "precision": 1.0,
+          "recall": 0.5192307692307693
+        },
+        "NORP": {
+          "correct": 17,
+          "entity_wer": 0.19047619047619047,
+          "expected_total": 21,
+          "f1": 0.8947368421052632,
+          "precision": 1.0,
+          "recall": 0.8095238095238095
+        },
+        "ORDINAL": {
+          "correct": 170,
+          "entity_wer": 0.14141414141414144,
+          "expected_total": 198,
+          "f1": 0.9239130434782609,
+          "precision": 1.0,
+          "recall": 0.8585858585858586
+        },
+        "ORG": {
+          "correct": 424,
+          "entity_wer": 0.3026315789473685,
+          "expected_total": 608,
+          "f1": 0.8217054263565892,
+          "precision": 1.0,
+          "recall": 0.6973684210526315
+        },
+        "PERCENT": {
+          "correct": 90,
+          "entity_wer": 0.7560975609756098,
+          "expected_total": 369,
+          "f1": 0.39215686274509803,
+          "precision": 1.0,
+          "recall": 0.24390243902439024
+        },
+        "PERSON": {
+          "correct": 352,
+          "entity_wer": 0.21252796420581654,
+          "expected_total": 447,
+          "f1": 0.8811013767209012,
+          "precision": 1.0,
+          "recall": 0.7874720357941835
+        },
+        "PRODUCT": {
+          "correct": 11,
+          "entity_wer": 0.7555555555555555,
+          "expected_total": 45,
+          "f1": 0.39285714285714285,
+          "precision": 1.0,
+          "recall": 0.24444444444444444
+        },
+        "QUANTITY": {
+          "correct": 12,
+          "entity_wer": 0.368421052631579,
+          "expected_total": 19,
+          "f1": 0.7741935483870968,
+          "precision": 1.0,
+          "recall": 0.631578947368421
+        },
+        "RANGE": {
+          "correct": 0,
+          "entity_wer": 1.0,
+          "expected_total": 1,
+          "f1": 0.0,
+          "precision": 0.0,
+          "recall": 0.0
+        },
+        "TIME": {
+          "correct": 93,
+          "entity_wer": 0.08823529411764708,
+          "expected_total": 102,
+          "f1": 0.9538461538461539,
+          "precision": 1.0,
+          "recall": 0.9117647058823529
+        },
+        "TWITTER": {
+          "correct": 1,
+          "entity_wer": 0.0,
+          "expected_total": 1,
+          "f1": 1.0,
+          "precision": 1.0,
+          "recall": 1.0
+        },
+        "WEBSITE": {
+          "correct": 2,
+          "entity_wer": 0.75,
+          "expected_total": 8,
+          "f1": 0.4,
+          "precision": 1.0,
+          "recall": 0.25
+        },
+        "WORK_OF_ART": {
+          "correct": 2,
+          "entity_wer": 0.5,
+          "expected_total": 4,
+          "f1": 0.6666666666666666,
+          "precision": 1.0,
+          "recall": 0.5
+        },
+        "YEAR": {
+          "correct": 15,
+          "entity_wer": 0.9486301369863014,
+          "expected_total": 292,
+          "f1": 0.09771986970684038,
+          "precision": 1.0,
+          "recall": 0.05136986301369863
+        }
+      },
+      "her": {
+        "entity": {
+          "accepted_splices": 1,
+          "harmful_sample_ids": [],
+          "harmful_splices": 0,
+          "ledger": "entity",
+          "rate": {
+            "denominator": 1,
+            "label": "HER[entity]",
+            "note": "HER[entity]: denominator 1 < 10 -- rate is descriptive only per the mandatory guard; must not decide a branch rule on its own, fall back to raw counts.",
+            "numerator": 0,
+            "rate": 0.0,
+            "status": "descriptive_only"
+          }
+        },
+        "macro": {
+          "accepted_splices": 1,
+          "harmful_sample_ids": [],
+          "harmful_splices": 0,
+          "ledger": "macro",
+          "rate": {
+            "denominator": 1,
+            "label": "HER[macro]",
+            "note": "HER[macro]: denominator 1 < 10 -- rate is descriptive only per the mandatory guard; must not decide a branch rule on its own, fall back to raw counts.",
+            "numerator": 0,
+            "rate": 0.0,
+            "status": "descriptive_only"
+          }
+        }
+      },
+      "legitimate_empty_sample_ids": [
+        "4365024",
+        "4365948",
+        "4366429",
+        "4384964"
+      ],
+      "macro_aggregate": {
+        "mean_wer": 0.12801588895597854,
+        "samples": 10
+      },
+      "manifest_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-P2-r1verify/attempt-20260816T105836Z-b06529/SAEA-P2-r1verify.run-manifest.json",
+      "outputs_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-P2-r1verify/attempt-20260816T105836Z-b06529/SAEA-P2-r1verify.outputs.jsonl",
+      "per_call": [
+        {
+          "entity_correct": 391,
+          "entity_expected_total": 596,
+          "entity_wer": 0.34395973154362414,
+          "legitimate_empty": false,
+          "macro_wer": 0.11704035874439461,
+          "sample_id": "4330115"
+        },
+        {
+          "entity_correct": 991,
+          "entity_expected_total": 1469,
+          "entity_wer": 0.3253914227365555,
+          "legitimate_empty": true,
+          "macro_wer": 0.13028436418867606,
+          "sample_id": "4365024"
+        },
+        {
+          "entity_correct": 656,
+          "entity_expected_total": 936,
+          "entity_wer": 0.2991452991452992,
+          "legitimate_empty": true,
+          "macro_wer": 0.09786293294030951,
+          "sample_id": "4365948"
+        },
+        {
+          "entity_correct": 821,
+          "entity_expected_total": 1153,
+          "entity_wer": 0.2879444926279271,
+          "legitimate_empty": true,
+          "macro_wer": 0.1130047194546408,
+          "sample_id": "4366429"
+        },
+        {
+          "entity_correct": 241,
+          "entity_expected_total": 519,
+          "entity_wer": 0.535645472061657,
+          "legitimate_empty": false,
+          "macro_wer": 0.1339138620851965,
+          "sample_id": "4366522"
+        },
+        {
+          "entity_correct": 670,
+          "entity_expected_total": 931,
+          "entity_wer": 0.28034371643394196,
+          "legitimate_empty": true,
+          "macro_wer": 0.11105717891466847,
+          "sample_id": "4384964"
+        },
+        {
+          "entity_correct": 412,
+          "entity_expected_total": 669,
+          "entity_wer": 0.38415545590433486,
+          "legitimate_empty": false,
+          "macro_wer": 0.12036336109008328,
+          "sample_id": "4385072"
+        },
+        {
+          "entity_correct": 236,
+          "entity_expected_total": 395,
+          "entity_wer": 0.4025316455696203,
+          "legitimate_empty": false,
+          "macro_wer": 0.13157894736842105,
+          "sample_id": "4387383"
+        },
+        {
+          "entity_correct": 226,
+          "entity_expected_total": 396,
+          "entity_wer": 0.4292929292929293,
+          "legitimate_empty": false,
+          "macro_wer": 0.19245647969052224,
+          "sample_id": "4389907"
+        },
+        {
+          "entity_correct": 767,
+          "entity_expected_total": 1220,
+          "entity_wer": 0.3713114754098361,
+          "legitimate_empty": false,
+          "macro_wer": 0.13259668508287292,
+          "sample_id": "4397829"
+        }
+      ],
+      "rir": {
+        "available": true,
+        "denominator": 54,
+        "numerator": 0,
+        "rate": {
+          "denominator": 54,
+          "label": "RIR",
+          "note": "RIR: resolved (0/54 = 0.0000).",
+          "numerator": 0,
+          "rate": 0.0,
+          "status": "resolved"
+        },
+        "unavailable_reason": null
+      },
+      "run_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-P2-r1verify",
+      "source": "completed-attempt"
+    },
+    "r1wrong": {
+      "arm": "r1wrong",
+      "copy_count": {
+        "accepted_splices": 1,
+        "arm": "r1wrong",
+        "called_windows": 9,
+        "copy_rate": 0.7777777777777778,
+        "copy_window_sample_ids": [
+          "4330115",
+          "4384964",
+          "4387383",
+          "4389907",
+          "4389907",
+          "4389907",
+          "4397829"
+        ],
+        "guard3_unsupported": 1,
+        "novel_copies": 7,
+        "total_copy_occurrences": 7,
+        "total_windows": 9,
+        "windows_with_copy": 7
+      },
+      "entity_aggregate": {
+        "adapter_version": "entity-wer-v1",
+        "correct": 5392,
+        "entity_wer": 0.3491067117334621,
+        "expected_total": 8284,
+        "f1": 0.7885346592570928,
+        "macro_entity_wer": 0.368273487678599,
+        "precision": 1.0,
+        "recall": 0.6508932882665379,
+        "samples": 10,
+        "samples_with_entities": 10
+      },
+      "entity_by_type": {
+        "ABBREVIATION": {
+          "correct": 384,
+          "entity_wer": 0.2615384615384615,
+          "expected_total": 520,
+          "f1": 0.8495575221238938,
+          "precision": 1.0,
+          "recall": 0.7384615384615385
+        },
+        "ALPHANUMERIC": {
+          "correct": 17,
+          "entity_wer": 0.9257641921397379,
+          "expected_total": 229,
+          "f1": 0.13821138211382114,
+          "precision": 1.0,
+          "recall": 0.07423580786026202
+        },
+        "CARDINAL": {
+          "correct": 497,
+          "entity_wer": 0.601123595505618,
+          "expected_total": 1246,
+          "f1": 0.570281124497992,
+          "precision": 1.0,
+          "recall": 0.398876404494382
+        },
+        "CONTRACTION": {
+          "correct": 1553,
+          "entity_wer": 0.12457722660653892,
+          "expected_total": 1774,
+          "f1": 0.9335737902013825,
+          "precision": 1.0,
+          "recall": 0.8754227733934611
+        },
+        "DATE": {
+          "correct": 1192,
+          "entity_wer": 0.22847896440129445,
+          "expected_total": 1545,
+          "f1": 0.8710266715381805,
+          "precision": 1.0,
+          "recall": 0.7715210355987056
+        },
+        "EVENT": {
+          "correct": 39,
+          "entity_wer": 0.4657534246575342,
+          "expected_total": 73,
+          "f1": 0.6964285714285715,
+          "precision": 1.0,
+          "recall": 0.5342465753424658
+        },
+        "FAC": {
+          "correct": 3,
+          "entity_wer": 0.7272727272727273,
+          "expected_total": 11,
+          "f1": 0.42857142857142855,
+          "precision": 1.0,
+          "recall": 0.2727272727272727
+        },
+        "GPE": {
+          "correct": 264,
+          "entity_wer": 0.2072072072072072,
+          "expected_total": 333,
+          "f1": 0.8844221105527639,
+          "precision": 1.0,
+          "recall": 0.7927927927927928
+        },
+        "LOC": {
+          "correct": 71,
+          "entity_wer": 0.04054054054054057,
+          "expected_total": 74,
+          "f1": 0.9793103448275862,
+          "precision": 1.0,
+          "recall": 0.9594594594594594
+        },
+        "MONEY": {
+          "correct": 188,
+          "entity_wer": 0.48351648351648346,
+          "expected_total": 364,
+          "f1": 0.6811594202898552,
+          "precision": 1.0,
+          "recall": 0.5164835164835165
+        },
+        "NORP": {
+          "correct": 17,
+          "entity_wer": 0.19047619047619047,
+          "expected_total": 21,
+          "f1": 0.8947368421052632,
+          "precision": 1.0,
+          "recall": 0.8095238095238095
+        },
+        "ORDINAL": {
+          "correct": 170,
+          "entity_wer": 0.14141414141414144,
+          "expected_total": 198,
+          "f1": 0.9239130434782609,
+          "precision": 1.0,
+          "recall": 0.8585858585858586
+        },
+        "ORG": {
+          "correct": 433,
+          "entity_wer": 0.287828947368421,
+          "expected_total": 608,
+          "f1": 0.8318924111431316,
+          "precision": 1.0,
+          "recall": 0.712171052631579
+        },
+        "PERCENT": {
+          "correct": 88,
+          "entity_wer": 0.7615176151761518,
+          "expected_total": 369,
+          "f1": 0.3851203501094092,
+          "precision": 1.0,
+          "recall": 0.23848238482384823
+        },
+        "PERSON": {
+          "correct": 349,
+          "entity_wer": 0.2192393736017897,
+          "expected_total": 447,
+          "f1": 0.8768844221105527,
+          "precision": 1.0,
+          "recall": 0.7807606263982103
+        },
+        "PRODUCT": {
+          "correct": 9,
+          "entity_wer": 0.8,
+          "expected_total": 45,
+          "f1": 0.33333333333333337,
+          "precision": 1.0,
+          "recall": 0.2
+        },
+        "QUANTITY": {
+          "correct": 10,
+          "entity_wer": 0.4736842105263158,
+          "expected_total": 19,
+          "f1": 0.6896551724137931,
+          "precision": 1.0,
+          "recall": 0.5263157894736842
+        },
+        "RANGE": {
+          "correct": 0,
+          "entity_wer": 1.0,
+          "expected_total": 1,
+          "f1": 0.0,
+          "precision": 0.0,
+          "recall": 0.0
+        },
+        "TIME": {
+          "correct": 93,
+          "entity_wer": 0.08823529411764708,
+          "expected_total": 102,
+          "f1": 0.9538461538461539,
+          "precision": 1.0,
+          "recall": 0.9117647058823529
+        },
+        "TWITTER": {
+          "correct": 1,
+          "entity_wer": 0.0,
+          "expected_total": 1,
+          "f1": 1.0,
+          "precision": 1.0,
+          "recall": 1.0
+        },
+        "WEBSITE": {
+          "correct": 2,
+          "entity_wer": 0.75,
+          "expected_total": 8,
+          "f1": 0.4,
+          "precision": 1.0,
+          "recall": 0.25
+        },
+        "WORK_OF_ART": {
+          "correct": 2,
+          "entity_wer": 0.5,
+          "expected_total": 4,
+          "f1": 0.6666666666666666,
+          "precision": 1.0,
+          "recall": 0.5
+        },
+        "YEAR": {
+          "correct": 10,
+          "entity_wer": 0.9657534246575342,
+          "expected_total": 292,
+          "f1": 0.06622516556291391,
+          "precision": 1.0,
+          "recall": 0.03424657534246575
+        }
+      },
+      "her": {
+        "entity": {
+          "accepted_splices": 1,
+          "harmful_sample_ids": [
+            "4387383"
+          ],
+          "harmful_splices": 1,
+          "ledger": "entity",
+          "rate": {
+            "denominator": 1,
+            "label": "HER[entity]",
+            "note": "HER[entity]: denominator 1 < 10 -- rate is descriptive only per the mandatory guard; must not decide a branch rule on its own, fall back to raw counts.",
+            "numerator": 1,
+            "rate": 1.0,
+            "status": "descriptive_only"
+          }
+        },
+        "macro": {
+          "accepted_splices": 1,
+          "harmful_sample_ids": [
+            "4387383"
+          ],
+          "harmful_splices": 1,
+          "ledger": "macro",
+          "rate": {
+            "denominator": 1,
+            "label": "HER[macro]",
+            "note": "HER[macro]: denominator 1 < 10 -- rate is descriptive only per the mandatory guard; must not decide a branch rule on its own, fall back to raw counts.",
+            "numerator": 1,
+            "rate": 1.0,
+            "status": "descriptive_only"
+          }
+        }
+      },
+      "legitimate_empty_sample_ids": [
+        "4365024",
+        "4365948",
+        "4366429",
+        "4366522",
+        "4385072"
+      ],
+      "macro_aggregate": {
+        "mean_wer": 0.130889421828706,
+        "samples": 10
+      },
+      "manifest_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-P2-r1wrong/attempt-20260816T181330Z-f9a51f/SAEA-P2-r1wrong.run-manifest.json",
+      "outputs_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-P2-r1wrong/attempt-20260816T181330Z-f9a51f/SAEA-P2-r1wrong.outputs.jsonl",
+      "per_call": [
+        {
+          "entity_correct": 392,
+          "entity_expected_total": 596,
+          "entity_wer": 0.3422818791946308,
+          "legitimate_empty": false,
+          "macro_wer": 0.11599402092675636,
+          "sample_id": "4330115"
+        },
+        {
+          "entity_correct": 995,
+          "entity_expected_total": 1469,
+          "entity_wer": 0.32266848196051734,
+          "legitimate_empty": true,
+          "macro_wer": 0.1285967428908953,
+          "sample_id": "4365024"
+        },
+        {
+          "entity_correct": 654,
+          "entity_expected_total": 936,
+          "entity_wer": 0.3012820512820513,
+          "legitimate_empty": true,
+          "macro_wer": 0.09874723655121592,
+          "sample_id": "4365948"
+        },
+        {
+          "entity_correct": 805,
+          "entity_expected_total": 1153,
+          "entity_wer": 0.30182133564614055,
+          "legitimate_empty": true,
+          "macro_wer": 0.11492746023422479,
+          "sample_id": "4366429"
+        },
+        {
+          "entity_correct": 254,
+          "entity_expected_total": 519,
+          "entity_wer": 0.5105973025048169,
+          "legitimate_empty": true,
+          "macro_wer": 0.13532595904918804,
+          "sample_id": "4366522"
+        },
+        {
+          "entity_correct": 671,
+          "entity_expected_total": 931,
+          "entity_wer": 0.27926960257787325,
+          "legitimate_empty": false,
+          "macro_wer": 0.11299873798660325,
+          "sample_id": "4384964"
+        },
+        {
+          "entity_correct": 411,
+          "entity_expected_total": 669,
+          "entity_wer": 0.38565022421524664,
+          "legitimate_empty": true,
+          "macro_wer": 0.12263436790310371,
+          "sample_id": "4385072"
+        },
+        {
+          "entity_correct": 238,
+          "entity_expected_total": 395,
+          "entity_wer": 0.39746835443037976,
+          "legitimate_empty": false,
+          "macro_wer": 0.14297341291372762,
+          "sample_id": "4387383"
+        },
+        {
+          "entity_correct": 212,
+          "entity_expected_total": 396,
+          "entity_wer": 0.46464646464646464,
+          "legitimate_empty": false,
+          "macro_wer": 0.2016441005802708,
+          "sample_id": "4389907"
+        },
+        {
+          "entity_correct": 760,
+          "entity_expected_total": 1220,
+          "entity_wer": 0.3770491803278688,
+          "legitimate_empty": false,
+          "macro_wer": 0.13505217925107427,
+          "sample_id": "4397829"
+        }
+      ],
+      "rir": {
+        "available": true,
+        "denominator": 10,
+        "numerator": 2,
+        "rate": {
+          "denominator": 10,
+          "label": "RIR",
+          "note": "RIR: resolved (2/10 = 0.2000).",
+          "numerator": 2,
+          "rate": 0.2,
+          "status": "resolved"
+        },
+        "unavailable_reason": null
+      },
+      "run_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-P2-r1wrong",
+      "source": "completed-attempt"
+    },
+    "r2draft": {
+      "arm": "r2draft",
+      "copy_count": {
+        "accepted_splices": 1,
+        "arm": "r2draft",
+        "called_windows": 53,
+        "copy_rate": 0.9056603773584906,
+        "copy_window_sample_ids": [
+          "4330115",
+          "4330115",
+          "4366522",
+          "4366522",
+          "4366522",
+          "4366522",
+          "4385072",
+          "4385072",
+          "4385072",
+          "4385072",
+          "4385072",
+          "4385072",
+          "4385072",
+          "4385072",
+          "4385072",
+          "4385072",
+          "4385072",
+          "4385072",
+          "4385072",
+          "4385072",
+          "4387383",
+          "4387383",
+          "4387383",
+          "4387383",
+          "4387383",
+          "4387383",
+          "4387383",
+          "4387383",
+          "4387383",
+          "4387383",
+          "4387383",
+          "4389907",
+          "4389907",
+          "4389907",
+          "4389907",
+          "4389907",
+          "4389907",
+          "4389907",
+          "4389907",
+          "4389907",
+          "4397829",
+          "4397829",
+          "4397829",
+          "4397829",
+          "4397829",
+          "4397829",
+          "4397829",
+          "4397829"
+        ],
+        "guard3_unsupported": 0,
+        "novel_copies": 48,
+        "total_copy_occurrences": 48,
+        "total_windows": 55,
+        "windows_with_copy": 48
+      },
+      "entity_aggregate": {
+        "adapter_version": "entity-wer-v1",
+        "correct": 5473,
+        "entity_wer": 0.3393288266537905,
+        "expected_total": 8284,
+        "f1": 0.7956676601003124,
+        "macro_entity_wer": 0.3563841557297338,
+        "precision": 1.0,
+        "recall": 0.6606711733462095,
+        "samples": 10,
+        "samples_with_entities": 10
+      },
+      "entity_by_type": {
+        "ABBREVIATION": {
+          "correct": 410,
+          "entity_wer": 0.21153846153846156,
+          "expected_total": 520,
+          "f1": 0.8817204301075269,
+          "precision": 1.0,
+          "recall": 0.7884615384615384
+        },
+        "ALPHANUMERIC": {
+          "correct": 16,
+          "entity_wer": 0.9301310043668123,
+          "expected_total": 229,
+          "f1": 0.1306122448979592,
+          "precision": 1.0,
+          "recall": 0.06986899563318777
+        },
+        "CARDINAL": {
+          "correct": 523,
+          "entity_wer": 0.5802568218298556,
+          "expected_total": 1246,
+          "f1": 0.5912945166760882,
+          "precision": 1.0,
+          "recall": 0.41974317817014445
+        },
+        "CONTRACTION": {
+          "correct": 1557,
+          "entity_wer": 0.12232243517474639,
+          "expected_total": 1774,
+          "f1": 0.9348543980786551,
+          "precision": 1.0,
+          "recall": 0.8776775648252536
+        },
+        "DATE": {
+          "correct": 1198,
+          "entity_wer": 0.22459546925566343,
+          "expected_total": 1545,
+          "f1": 0.8734961720743711,
+          "precision": 1.0,
+          "recall": 0.7754045307443366
+        },
+        "EVENT": {
+          "correct": 40,
+          "entity_wer": 0.452054794520548,
+          "expected_total": 73,
+          "f1": 0.7079646017699115,
+          "precision": 1.0,
+          "recall": 0.547945205479452
+        },
+        "FAC": {
+          "correct": 3,
+          "entity_wer": 0.7272727272727273,
+          "expected_total": 11,
+          "f1": 0.42857142857142855,
+          "precision": 1.0,
+          "recall": 0.2727272727272727
+        },
+        "GPE": {
+          "correct": 263,
+          "entity_wer": 0.21021021021021025,
+          "expected_total": 333,
+          "f1": 0.8825503355704697,
+          "precision": 1.0,
+          "recall": 0.7897897897897898
+        },
+        "LOC": {
+          "correct": 71,
+          "entity_wer": 0.04054054054054057,
+          "expected_total": 74,
+          "f1": 0.9793103448275862,
+          "precision": 1.0,
+          "recall": 0.9594594594594594
+        },
+        "MONEY": {
+          "correct": 190,
+          "entity_wer": 0.478021978021978,
+          "expected_total": 364,
+          "f1": 0.6859205776173286,
+          "precision": 1.0,
+          "recall": 0.521978021978022
+        },
+        "NORP": {
+          "correct": 17,
+          "entity_wer": 0.19047619047619047,
+          "expected_total": 21,
+          "f1": 0.8947368421052632,
+          "precision": 1.0,
+          "recall": 0.8095238095238095
+        },
+        "ORDINAL": {
+          "correct": 170,
+          "entity_wer": 0.14141414141414144,
+          "expected_total": 198,
+          "f1": 0.9239130434782609,
+          "precision": 1.0,
+          "recall": 0.8585858585858586
+        },
+        "ORG": {
+          "correct": 437,
+          "entity_wer": 0.28125,
+          "expected_total": 608,
+          "f1": 0.8363636363636363,
+          "precision": 1.0,
+          "recall": 0.71875
+        },
+        "PERCENT": {
+          "correct": 93,
+          "entity_wer": 0.7479674796747968,
+          "expected_total": 369,
+          "f1": 0.4025974025974026,
+          "precision": 1.0,
+          "recall": 0.25203252032520324
+        },
+        "PERSON": {
+          "correct": 349,
+          "entity_wer": 0.2192393736017897,
+          "expected_total": 447,
+          "f1": 0.8768844221105527,
+          "precision": 1.0,
+          "recall": 0.7807606263982103
+        },
+        "PRODUCT": {
+          "correct": 12,
+          "entity_wer": 0.7333333333333334,
+          "expected_total": 45,
+          "f1": 0.4210526315789474,
+          "precision": 1.0,
+          "recall": 0.26666666666666666
+        },
+        "QUANTITY": {
+          "correct": 12,
+          "entity_wer": 0.368421052631579,
+          "expected_total": 19,
+          "f1": 0.7741935483870968,
+          "precision": 1.0,
+          "recall": 0.631578947368421
+        },
+        "RANGE": {
+          "correct": 0,
+          "entity_wer": 1.0,
+          "expected_total": 1,
+          "f1": 0.0,
+          "precision": 0.0,
+          "recall": 0.0
+        },
+        "TIME": {
+          "correct": 93,
+          "entity_wer": 0.08823529411764708,
+          "expected_total": 102,
+          "f1": 0.9538461538461539,
+          "precision": 1.0,
+          "recall": 0.9117647058823529
+        },
+        "TWITTER": {
+          "correct": 1,
+          "entity_wer": 0.0,
+          "expected_total": 1,
+          "f1": 1.0,
+          "precision": 1.0,
+          "recall": 1.0
+        },
+        "WEBSITE": {
+          "correct": 2,
+          "entity_wer": 0.75,
+          "expected_total": 8,
+          "f1": 0.4,
+          "precision": 1.0,
+          "recall": 0.25
+        },
+        "WORK_OF_ART": {
+          "correct": 2,
+          "entity_wer": 0.5,
+          "expected_total": 4,
+          "f1": 0.6666666666666666,
+          "precision": 1.0,
+          "recall": 0.5
+        },
+        "YEAR": {
+          "correct": 14,
+          "entity_wer": 0.952054794520548,
+          "expected_total": 292,
+          "f1": 0.0915032679738562,
+          "precision": 1.0,
+          "recall": 0.04794520547945205
+        }
+      },
+      "her": {
+        "entity": {
+          "accepted_splices": 1,
+          "harmful_sample_ids": [],
+          "harmful_splices": 0,
+          "ledger": "entity",
+          "rate": {
+            "denominator": 1,
+            "label": "HER[entity]",
+            "note": "HER[entity]: denominator 1 < 10 -- rate is descriptive only per the mandatory guard; must not decide a branch rule on its own, fall back to raw counts.",
+            "numerator": 0,
+            "rate": 0.0,
+            "status": "descriptive_only"
+          }
+        },
+        "macro": {
+          "accepted_splices": 1,
+          "harmful_sample_ids": [],
+          "harmful_splices": 0,
+          "ledger": "macro",
+          "rate": {
+            "denominator": 1,
+            "label": "HER[macro]",
+            "note": "HER[macro]: denominator 1 < 10 -- rate is descriptive only per the mandatory guard; must not decide a branch rule on its own, fall back to raw counts.",
+            "numerator": 0,
+            "rate": 0.0,
+            "status": "descriptive_only"
+          }
+        }
+      },
+      "legitimate_empty_sample_ids": [
+        "4365024",
+        "4365948",
+        "4366429",
+        "4384964"
+      ],
+      "macro_aggregate": {
+        "mean_wer": 0.12758968977055404,
+        "samples": 10
+      },
+      "manifest_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-P2-r2draft/attempt-20260816T131610Z-930eca/SAEA-P2-r2draft.run-manifest.json",
+      "outputs_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-P2-r2draft/attempt-20260816T131610Z-930eca/SAEA-P2-r2draft.outputs.jsonl",
+      "per_call": [
+        {
+          "entity_correct": 403,
+          "entity_expected_total": 596,
+          "entity_wer": 0.3238255033557047,
+          "legitimate_empty": false,
+          "macro_wer": 0.11225710014947683,
+          "sample_id": "4330115"
+        },
+        {
+          "entity_correct": 1006,
+          "entity_expected_total": 1469,
+          "entity_wer": 0.3151803948264126,
+          "legitimate_empty": true,
+          "macro_wer": 0.12724664585267065,
+          "sample_id": "4365024"
+        },
+        {
+          "entity_correct": 640,
+          "entity_expected_total": 936,
+          "entity_wer": 0.3162393162393162,
+          "legitimate_empty": true,
+          "macro_wer": 0.10420044215180545,
+          "sample_id": "4365948"
+        },
+        {
+          "entity_correct": 821,
+          "entity_expected_total": 1153,
+          "entity_wer": 0.2879444926279271,
+          "legitimate_empty": true,
+          "macro_wer": 0.11387869253626988,
+          "sample_id": "4366429"
+        },
+        {
+          "entity_correct": 277,
+          "entity_expected_total": 519,
+          "entity_wer": 0.4662813102119461,
+          "legitimate_empty": false,
+          "macro_wer": 0.12591197928924452,
+          "sample_id": "4366522"
+        },
+        {
+          "entity_correct": 673,
+          "entity_expected_total": 931,
+          "entity_wer": 0.27712137486573574,
+          "legitimate_empty": true,
+          "macro_wer": 0.11455198524415106,
+          "sample_id": "4384964"
+        },
+        {
+          "entity_correct": 430,
+          "entity_expected_total": 669,
+          "entity_wer": 0.35724962630792223,
+          "legitimate_empty": false,
+          "macro_wer": 0.11778955336866011,
+          "sample_id": "4385072"
+        },
+        {
+          "entity_correct": 235,
+          "entity_expected_total": 395,
+          "entity_wer": 0.40506329113924056,
+          "legitimate_empty": false,
+          "macro_wer": 0.13239283776451438,
+          "sample_id": "4387383"
+        },
+        {
+          "entity_correct": 220,
+          "entity_expected_total": 396,
+          "entity_wer": 0.4444444444444444,
+          "legitimate_empty": false,
+          "macro_wer": 0.19463249516441006,
+          "sample_id": "4389907"
+        },
+        {
+          "entity_correct": 768,
+          "entity_expected_total": 1220,
+          "entity_wer": 0.37049180327868847,
+          "legitimate_empty": false,
+          "macro_wer": 0.13303516618433744,
+          "sample_id": "4397829"
+        }
+      ],
+      "rir": {
+        "available": true,
+        "denominator": 53,
+        "numerator": 0,
+        "rate": {
+          "denominator": 53,
+          "label": "RIR",
+          "note": "RIR: resolved (0/53 = 0.0000).",
+          "numerator": 0,
+          "rate": 0.0,
+          "status": "resolved"
+        },
+        "unavailable_reason": null
+      },
+      "run_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-P2-r2draft",
+      "source": "completed-attempt"
+    }
+  },
+  "branch_verdict": {
+    "affirm": "not_met",
+    "affirm_clauses": [
+      {
+        "clause_text": "(R2-R1>0)",
+        "detail": "PIN 2 (conjunctive, both ledgers required): entity-correct delta R2-R1 = +60 across 6 paired call(s) (strictly up); mean macro-WER delta R2-R1 = -0.0020 (strictly down); path=both ledgers agree (entity strictly up, macro strictly down)",
+        "verdict": "met"
+      },
+      {
+        "clause_text": "(R1 beats R0-bias at matched entity gain with lower HER)",
+        "detail": "HER guard-bound (mirror 3.1) and raw harmful-splice counts degenerate (tie) -- Pin 3/F5: UNRESOLVED rather than silently passed/failed; r1verify 0/1, r0bias 0/3",
+        "verdict": "unresolved"
+      },
+      {
+        "clause_text": "(wrongref copy rate materially lower under verify than bias framing)",
+        "detail": "PIN 4 basis=raw total_copy_occurrences, material_relative_drop=0.50, c_bias_floor=4: C_bias(r0wrong)=7, C_verify(r1wrong)=7, threshold C_verify <= 3.50, relative_drop=+0.0000",
+        "verdict": "not_met"
+      }
+    ],
+    "collapse": "unresolved",
+    "collapse_clauses": [
+      {
+        "clause_text": "r1verify~r0bias on macro",
+        "detail": "PIN 5 tie_floor=0.0010 fractional (0.10pp): mean_diff=+0.0006, wilcoxon n_effective=6, p=1 (floor 0.03125)",
+        "verdict": "met"
+      },
+      {
+        "clause_text": "r1verify~r0bias on entity (entity-correct delta)",
+        "detail": "PIN 5 token_margin=25: summed entity_correct_delta=-47 across 6 paired call(s) (F6: entity-correct delta, not entity_wer mean diff)",
+        "verdict": "not_met"
+      },
+      {
+        "clause_text": "HER[entity] r1verify~r0bias",
+        "detail": "HER guard-bound (mirror 3.1) and raw harmful-splice counts degenerate (tie) -- F6: UNRESOLVED rather than auto-met; r1verify 0/1, r0bias 0/3",
+        "verdict": "unresolved"
+      },
+      {
+        "clause_text": "r2draft~r1verify on macro",
+        "detail": "PIN 5 tie_floor=0.0010 fractional (0.10pp): mean_diff=-0.0020, wilcoxon n_effective=6, p=0.4375 (floor 0.03125)",
+        "verdict": "not_met"
+      },
+      {
+        "clause_text": "r2draft~r1verify on entity (entity-correct delta)",
+        "detail": "PIN 5 token_margin=25: summed entity_correct_delta=+60 across 6 paired call(s) (F6: entity-correct delta, not entity_wer mean diff)",
+        "verdict": "not_met"
+      }
+    ],
+    "overall": "VOIDED (audio-verification claim voided by wrong-reference copying; WER-based AFFIRM/COLLAPSE clauses are advisory only below)",
+    "registered_text": "BRANCH RULES (registered before launch): operator AFFIRMED iff at least one of (R2-R1>0) / (R1 beats R0-bias at matched entity gain with lower HER) / (wrongref copy rate materially lower under verify than bias framing). Taxonomy COLLAPSE iff R1~R0-bias on both ledgers and HER AND R2~R1 - then the 2026-08-14/15 scope amendments are re-amended, the candidate keeps targeting/small-N wording, no \"different operator\" language. Wrong-reference copying in R1/R2 voids the audio-verification claim regardless of WER deltas.",
+    "voided": true,
+    "voiding_clause": {
+      "clause_text": "Wrong-reference copying in R1/R2 voids the audio-verification claim regardless of WER deltas.",
+      "detail": "PIN 6 basis=raw total_copy_occurrences (void iff >= 2 on either side): r1wrong=7 (wrong-reference echo); r2draft=48 (own-draft anchoring, module docstring note 4)",
+      "verdict": "met"
+    },
+    "weakening_note": null
+  },
+  "contrasts": {
+    "r0wrong_vs_r0bias": {
+      "entity": {
+        "condition_arm": "r0wrong",
+        "condition_source": "completed-attempt",
+        "diffs": [
+          -0.010067114093959662,
+          0.0,
+          -0.05303030303030298,
+          -0.007377049180327888
+        ],
+        "excluded_legitimate_empty": [
+          "4365024",
+          "4365948",
+          "4366429",
+          "4366522",
+          "4384964",
+          "4385072"
+        ],
+        "included_sample_ids": [
+          "4330115",
+          "4387383",
+          "4389907",
+          "4397829"
+        ],
+        "ledger": "entity",
+        "n_effective_paired": 4,
+        "n_pairs_before_exclusion": 10,
+        "name": "r0wrong_vs_r0bias",
+        "per_call": [
+          {
+            "condition_value": 0.33221476510067116,
+            "diff": -0.010067114093959662,
+            "entity_correct_delta": 6,
+            "macro_transitions": null,
+            "reference_value": 0.3422818791946308,
+            "sample_id": "4330115"
+          },
+          {
+            "condition_value": 0.38987341772151896,
+            "diff": 0.0,
+            "entity_correct_delta": 0,
+            "macro_transitions": null,
+            "reference_value": 0.38987341772151896,
+            "sample_id": "4387383"
+          },
+          {
+            "condition_value": 0.4267676767676768,
+            "diff": -0.05303030303030298,
+            "entity_correct_delta": 21,
+            "macro_transitions": null,
+            "reference_value": 0.4797979797979798,
+            "sample_id": "4389907"
+          },
+          {
+            "condition_value": 0.3680327868852459,
+            "diff": -0.007377049180327888,
+            "entity_correct_delta": 9,
+            "macro_transitions": null,
+            "reference_value": 0.37540983606557377,
+            "sample_id": "4397829"
+          }
+        ],
+        "reference_arm": "r0bias",
+        "reference_source": "salvage-json",
+        "wilcoxon": {
+          "min_achievable_two_sided_p": 0.25,
+          "n_effective_nonzero": 3,
+          "n_pairs": 4,
+          "pvalue_two_sided_exact": 0.25,
+          "statistic_w_plus": 0
+        }
+      },
+      "macro": {
+        "condition_arm": "r0wrong",
+        "condition_source": "completed-attempt",
+        "diffs": [
+          -0.00284005979073243,
+          0.004340748779164405,
+          -0.00459381044487428,
+          -0.0010523546435148579
+        ],
+        "excluded_legitimate_empty": [
+          "4365024",
+          "4365948",
+          "4366429",
+          "4366522",
+          "4384964",
+          "4385072"
+        ],
+        "included_sample_ids": [
+          "4330115",
+          "4387383",
+          "4389907",
+          "4397829"
+        ],
+        "ledger": "macro",
+        "n_effective_paired": 4,
+        "n_pairs_before_exclusion": 10,
+        "name": "r0wrong_vs_r0bias",
+        "per_call": [
+          {
+            "condition_value": 0.11524663677130045,
+            "diff": -0.00284005979073243,
+            "entity_correct_delta": 6,
+            "macro_transitions": {
+              "correct_to_correct": 6170,
+              "correct_to_wrong": 4,
+              "wrong_to_correct": 27,
+              "wrong_to_wrong": 489
+            },
+            "reference_value": 0.11808669656203288,
+            "sample_id": "4330115"
+          },
+          {
+            "condition_value": 0.13293543136190994,
+            "diff": 0.004340748779164405,
+            "entity_correct_delta": 0,
+            "macro_transitions": {
+              "correct_to_correct": 3407,
+              "correct_to_wrong": 7,
+              "wrong_to_correct": 1,
+              "wrong_to_wrong": 271
+            },
+            "reference_value": 0.12859468258274553,
+            "sample_id": "4387383"
+          },
+          {
+            "condition_value": 0.19414893617021275,
+            "diff": -0.00459381044487428,
+            "entity_correct_delta": 21,
+            "macro_transitions": {
+              "correct_to_correct": 3629,
+              "correct_to_wrong": 14,
+              "wrong_to_correct": 19,
+              "wrong_to_wrong": 474
+            },
+            "reference_value": 0.19874274661508703,
+            "sample_id": "4389907"
+          },
+          {
+            "condition_value": 0.133473647285802,
+            "diff": -0.0010523546435148579,
+            "entity_correct_delta": 9,
+            "macro_transitions": {
+              "correct_to_correct": 10488,
+              "correct_to_wrong": 29,
+              "wrong_to_correct": 20,
+              "wrong_to_wrong": 866
+            },
+            "reference_value": 0.13452600192931685,
+            "sample_id": "4397829"
+          }
+        ],
+        "reference_arm": "r0bias",
+        "reference_source": "salvage-json",
+        "wilcoxon": {
+          "min_achievable_two_sided_p": 0.125,
+          "n_effective_nonzero": 4,
+          "n_pairs": 4,
+          "pvalue_two_sided_exact": 0.625,
+          "statistic_w_plus": 3.0
+        }
+      }
+    },
+    "r1verify_vs_r0bias": {
+      "entity": {
+        "condition_arm": "r1verify",
+        "condition_source": "completed-attempt",
+        "diffs": [
+          0.001677852348993314,
+          0.10404624277456642,
+          0.017937219730941756,
+          0.012658227848101333,
+          -0.0505050505050505,
+          -0.004098360655737654
+        ],
+        "excluded_legitimate_empty": [
+          "4365024",
+          "4365948",
+          "4366429",
+          "4384964"
+        ],
+        "included_sample_ids": [
+          "4330115",
+          "4366522",
+          "4385072",
+          "4387383",
+          "4389907",
+          "4397829"
+        ],
+        "ledger": "entity",
+        "n_effective_paired": 6,
+        "n_pairs_before_exclusion": 10,
+        "name": "r1verify_vs_r0bias",
+        "per_call": [
+          {
+            "condition_value": 0.34395973154362414,
+            "diff": 0.001677852348993314,
+            "entity_correct_delta": -1,
+            "macro_transitions": null,
+            "reference_value": 0.3422818791946308,
+            "sample_id": "4330115"
+          },
+          {
+            "condition_value": 0.535645472061657,
+            "diff": 0.10404624277456642,
+            "entity_correct_delta": -54,
+            "macro_transitions": null,
+            "reference_value": 0.4315992292870906,
+            "sample_id": "4366522"
+          },
+          {
+            "condition_value": 0.38415545590433486,
+            "diff": 0.017937219730941756,
+            "entity_correct_delta": -12,
+            "macro_transitions": null,
+            "reference_value": 0.3662182361733931,
+            "sample_id": "4385072"
+          },
+          {
+            "condition_value": 0.4025316455696203,
+            "diff": 0.012658227848101333,
+            "entity_correct_delta": -5,
+            "macro_transitions": null,
+            "reference_value": 0.38987341772151896,
+            "sample_id": "4387383"
+          },
+          {
+            "condition_value": 0.4292929292929293,
+            "diff": -0.0505050505050505,
+            "entity_correct_delta": 20,
+            "macro_transitions": null,
+            "reference_value": 0.4797979797979798,
+            "sample_id": "4389907"
+          },
+          {
+            "condition_value": 0.3713114754098361,
+            "diff": -0.004098360655737654,
+            "entity_correct_delta": 5,
+            "macro_transitions": null,
+            "reference_value": 0.37540983606557377,
+            "sample_id": "4397829"
+          }
+        ],
+        "reference_arm": "r0bias",
+        "reference_source": "salvage-json",
+        "wilcoxon": {
+          "min_achievable_two_sided_p": 0.03125,
+          "n_effective_nonzero": 6,
+          "n_pairs": 6,
+          "pvalue_two_sided_exact": 0.5625,
+          "statistic_w_plus": 14.0
+        }
+      },
+      "macro": {
+        "condition_arm": "r1verify",
+        "condition_source": "completed-attempt",
+        "diffs": [
+          -0.001046337817638271,
+          0.010120028241939277,
+          -0.00015140045420135306,
+          0.002984264785675511,
+          -0.006286266924564798,
+          -0.0019293168464439292
+        ],
+        "excluded_legitimate_empty": [
+          "4365024",
+          "4365948",
+          "4366429",
+          "4384964"
+        ],
+        "included_sample_ids": [
+          "4330115",
+          "4366522",
+          "4385072",
+          "4387383",
+          "4389907",
+          "4397829"
+        ],
+        "ledger": "macro",
+        "n_effective_paired": 6,
+        "n_pairs_before_exclusion": 10,
+        "name": "r1verify_vs_r0bias",
+        "per_call": [
+          {
+            "condition_value": 0.11704035874439461,
+            "diff": -0.001046337817638271,
+            "entity_correct_delta": -1,
+            "macro_transitions": {
+              "correct_to_correct": 6169,
+              "correct_to_wrong": 5,
+              "wrong_to_correct": 16,
+              "wrong_to_wrong": 500
+            },
+            "reference_value": 0.11808669656203288,
+            "sample_id": "4330115"
+          },
+          {
+            "condition_value": 0.1339138620851965,
+            "diff": 0.010120028241939277,
+            "entity_correct_delta": -54,
+            "macro_transitions": {
+              "correct_to_correct": 3858,
+              "correct_to_wrong": 54,
+              "wrong_to_correct": 18,
+              "wrong_to_wrong": 319
+            },
+            "reference_value": 0.12379383384325723,
+            "sample_id": "4366522"
+          },
+          {
+            "condition_value": 0.12036336109008328,
+            "diff": -0.00015140045420135306,
+            "entity_correct_delta": -12,
+            "macro_transitions": {
+              "correct_to_correct": 6130,
+              "correct_to_wrong": 22,
+              "wrong_to_correct": 17,
+              "wrong_to_wrong": 436
+            },
+            "reference_value": 0.12051476154428463,
+            "sample_id": "4385072"
+          },
+          {
+            "condition_value": 0.13157894736842105,
+            "diff": 0.002984264785675511,
+            "entity_correct_delta": -5,
+            "macro_transitions": {
+              "correct_to_correct": 3407,
+              "correct_to_wrong": 7,
+              "wrong_to_correct": 0,
+              "wrong_to_wrong": 272
+            },
+            "reference_value": 0.12859468258274553,
+            "sample_id": "4387383"
+          },
+          {
+            "condition_value": 0.19245647969052224,
+            "diff": -0.006286266924564798,
+            "entity_correct_delta": 20,
+            "macro_transitions": {
+              "correct_to_correct": 3628,
+              "correct_to_wrong": 15,
+              "wrong_to_correct": 19,
+              "wrong_to_wrong": 474
+            },
+            "reference_value": 0.19874274661508703,
+            "sample_id": "4389907"
+          },
+          {
+            "condition_value": 0.13259668508287292,
+            "diff": -0.0019293168464439292,
+            "entity_correct_delta": 5,
+            "macro_transitions": {
+              "correct_to_correct": 10505,
+              "correct_to_wrong": 12,
+              "wrong_to_correct": 26,
+              "wrong_to_wrong": 860
+            },
+            "reference_value": 0.13452600192931685,
+            "sample_id": "4397829"
+          }
+        ],
+        "reference_arm": "r0bias",
+        "reference_source": "salvage-json",
+        "wilcoxon": {
+          "min_achievable_two_sided_p": 0.03125,
+          "n_effective_nonzero": 6,
+          "n_pairs": 6,
+          "pvalue_two_sided_exact": 1.0,
+          "statistic_w_plus": 10.0
+        }
+      }
+    },
+    "r1wrong_vs_r0wrong": {
+      "entity": {
+        "condition_arm": "r1wrong",
+        "condition_source": "completed-attempt",
+        "diffs": [
+          0.010067114093959662,
+          0.002148227712137518,
+          0.0075949367088608,
+          0.037878787878787845,
+          0.00901639344262295
+        ],
+        "excluded_legitimate_empty": [
+          "4365024",
+          "4365948",
+          "4366429",
+          "4366522",
+          "4385072"
+        ],
+        "included_sample_ids": [
+          "4330115",
+          "4384964",
+          "4387383",
+          "4389907",
+          "4397829"
+        ],
+        "ledger": "entity",
+        "n_effective_paired": 5,
+        "n_pairs_before_exclusion": 10,
+        "name": "r1wrong_vs_r0wrong",
+        "per_call": [
+          {
+            "condition_value": 0.3422818791946308,
+            "diff": 0.010067114093959662,
+            "entity_correct_delta": -6,
+            "macro_transitions": null,
+            "reference_value": 0.33221476510067116,
+            "sample_id": "4330115"
+          },
+          {
+            "condition_value": 0.27926960257787325,
+            "diff": 0.002148227712137518,
+            "entity_correct_delta": -2,
+            "macro_transitions": null,
+            "reference_value": 0.27712137486573574,
+            "sample_id": "4384964"
+          },
+          {
+            "condition_value": 0.39746835443037976,
+            "diff": 0.0075949367088608,
+            "entity_correct_delta": -3,
+            "macro_transitions": null,
+            "reference_value": 0.38987341772151896,
+            "sample_id": "4387383"
+          },
+          {
+            "condition_value": 0.46464646464646464,
+            "diff": 0.037878787878787845,
+            "entity_correct_delta": -15,
+            "macro_transitions": null,
+            "reference_value": 0.4267676767676768,
+            "sample_id": "4389907"
+          },
+          {
+            "condition_value": 0.3770491803278688,
+            "diff": 0.00901639344262295,
+            "entity_correct_delta": -11,
+            "macro_transitions": null,
+            "reference_value": 0.3680327868852459,
+            "sample_id": "4397829"
+          }
+        ],
+        "reference_arm": "r0wrong",
+        "reference_source": "completed-attempt",
+        "wilcoxon": {
+          "min_achievable_two_sided_p": 0.0625,
+          "n_effective_nonzero": 5,
+          "n_pairs": 5,
+          "pvalue_two_sided_exact": 0.0625,
+          "statistic_w_plus": 15.0
+        }
+      },
+      "macro": {
+        "condition_arm": "r1wrong",
+        "condition_source": "completed-attempt",
+        "diffs": [
+          0.0007473841554559019,
+          0.001164935443160861,
+          0.010037981551817676,
+          0.007495164410058042,
+          0.001578531965272273
+        ],
+        "excluded_legitimate_empty": [
+          "4365024",
+          "4365948",
+          "4366429",
+          "4366522",
+          "4385072"
+        ],
+        "included_sample_ids": [
+          "4330115",
+          "4384964",
+          "4387383",
+          "4389907",
+          "4397829"
+        ],
+        "ledger": "macro",
+        "n_effective_paired": 5,
+        "n_pairs_before_exclusion": 10,
+        "name": "r1wrong_vs_r0wrong",
+        "per_call": [
+          {
+            "condition_value": 0.11599402092675636,
+            "diff": 0.0007473841554559019,
+            "entity_correct_delta": -6,
+            "macro_transitions": {
+              "correct_to_correct": 6186,
+              "correct_to_wrong": 11,
+              "wrong_to_correct": 9,
+              "wrong_to_wrong": 484
+            },
+            "reference_value": 0.11524663677130045,
+            "sample_id": "4330115"
+          },
+          {
+            "condition_value": 0.11299873798660325,
+            "diff": 0.001164935443160861,
+            "entity_correct_delta": -2,
+            "macro_transitions": {
+              "correct_to_correct": 9547,
+              "correct_to_wrong": 40,
+              "wrong_to_correct": 39,
+              "wrong_to_wrong": 675
+            },
+            "reference_value": 0.11183380254344238,
+            "sample_id": "4384964"
+          },
+          {
+            "condition_value": 0.14297341291372762,
+            "diff": 0.010037981551817676,
+            "entity_correct_delta": -3,
+            "macro_transitions": {
+              "correct_to_correct": 3362,
+              "correct_to_wrong": 46,
+              "wrong_to_correct": 7,
+              "wrong_to_wrong": 271
+            },
+            "reference_value": 0.13293543136190994,
+            "sample_id": "4387383"
+          },
+          {
+            "condition_value": 0.2016441005802708,
+            "diff": 0.007495164410058042,
+            "entity_correct_delta": -15,
+            "macro_transitions": {
+              "correct_to_correct": 3631,
+              "correct_to_wrong": 17,
+              "wrong_to_correct": 12,
+              "wrong_to_wrong": 476
+            },
+            "reference_value": 0.19414893617021275,
+            "sample_id": "4389907"
+          },
+          {
+            "condition_value": 0.13505217925107427,
+            "diff": 0.001578531965272273,
+            "entity_correct_delta": -11,
+            "macro_transitions": {
+              "correct_to_correct": 10480,
+              "correct_to_wrong": 28,
+              "wrong_to_correct": 15,
+              "wrong_to_wrong": 880
+            },
+            "reference_value": 0.133473647285802,
+            "sample_id": "4397829"
+          }
+        ],
+        "reference_arm": "r0wrong",
+        "reference_source": "completed-attempt",
+        "wilcoxon": {
+          "min_achievable_two_sided_p": 0.0625,
+          "n_effective_nonzero": 5,
+          "n_pairs": 5,
+          "pvalue_two_sided_exact": 0.0625,
+          "statistic_w_plus": 15.0
+        }
+      }
+    },
+    "r1wrong_vs_r1verify": {
+      "entity": {
+        "condition_arm": "r1wrong",
+        "condition_source": "completed-attempt",
+        "diffs": [
+          -0.001677852348993314,
+          -0.005063291139240533,
+          0.03535353535353536,
+          0.0057377049180327155
+        ],
+        "excluded_legitimate_empty": [
+          "4365024",
+          "4365948",
+          "4366429",
+          "4366522",
+          "4384964",
+          "4385072"
+        ],
+        "included_sample_ids": [
+          "4330115",
+          "4387383",
+          "4389907",
+          "4397829"
+        ],
+        "ledger": "entity",
+        "n_effective_paired": 4,
+        "n_pairs_before_exclusion": 10,
+        "name": "r1wrong_vs_r1verify",
+        "per_call": [
+          {
+            "condition_value": 0.3422818791946308,
+            "diff": -0.001677852348993314,
+            "entity_correct_delta": 1,
+            "macro_transitions": null,
+            "reference_value": 0.34395973154362414,
+            "sample_id": "4330115"
+          },
+          {
+            "condition_value": 0.39746835443037976,
+            "diff": -0.005063291139240533,
+            "entity_correct_delta": 2,
+            "macro_transitions": null,
+            "reference_value": 0.4025316455696203,
+            "sample_id": "4387383"
+          },
+          {
+            "condition_value": 0.46464646464646464,
+            "diff": 0.03535353535353536,
+            "entity_correct_delta": -14,
+            "macro_transitions": null,
+            "reference_value": 0.4292929292929293,
+            "sample_id": "4389907"
+          },
+          {
+            "condition_value": 0.3770491803278688,
+            "diff": 0.0057377049180327155,
+            "entity_correct_delta": -7,
+            "macro_transitions": null,
+            "reference_value": 0.3713114754098361,
+            "sample_id": "4397829"
+          }
+        ],
+        "reference_arm": "r1verify",
+        "reference_source": "completed-attempt",
+        "wilcoxon": {
+          "min_achievable_two_sided_p": 0.125,
+          "n_effective_nonzero": 4,
+          "n_pairs": 4,
+          "pvalue_two_sided_exact": 0.625,
+          "statistic_w_plus": 7.0
+        }
+      },
+      "macro": {
+        "condition_arm": "r1wrong",
+        "condition_source": "completed-attempt",
+        "diffs": [
+          -0.001046337817638257,
+          0.01139446554530657,
+          0.00918762088974856,
+          0.0024554941682013443
+        ],
+        "excluded_legitimate_empty": [
+          "4365024",
+          "4365948",
+          "4366429",
+          "4366522",
+          "4384964",
+          "4385072"
+        ],
+        "included_sample_ids": [
+          "4330115",
+          "4387383",
+          "4389907",
+          "4397829"
+        ],
+        "ledger": "macro",
+        "n_effective_paired": 4,
+        "n_pairs_before_exclusion": 10,
+        "name": "r1wrong_vs_r1verify",
+        "per_call": [
+          {
+            "condition_value": 0.11599402092675636,
+            "diff": -0.001046337817638257,
+            "entity_correct_delta": 1,
+            "macro_transitions": {
+              "correct_to_correct": 6178,
+              "correct_to_wrong": 7,
+              "wrong_to_correct": 17,
+              "wrong_to_wrong": 488
+            },
+            "reference_value": 0.11704035874439461,
+            "sample_id": "4330115"
+          },
+          {
+            "condition_value": 0.14297341291372762,
+            "diff": 0.01139446554530657,
+            "entity_correct_delta": 2,
+            "macro_transitions": {
+              "correct_to_correct": 3363,
+              "correct_to_wrong": 44,
+              "wrong_to_correct": 6,
+              "wrong_to_wrong": 273
+            },
+            "reference_value": 0.13157894736842105,
+            "sample_id": "4387383"
+          },
+          {
+            "condition_value": 0.2016441005802708,
+            "diff": 0.00918762088974856,
+            "entity_correct_delta": -14,
+            "macro_transitions": {
+              "correct_to_correct": 3630,
+              "correct_to_wrong": 17,
+              "wrong_to_correct": 13,
+              "wrong_to_wrong": 476
+            },
+            "reference_value": 0.19245647969052224,
+            "sample_id": "4389907"
+          },
+          {
+            "condition_value": 0.13505217925107427,
+            "diff": 0.0024554941682013443,
+            "entity_correct_delta": -7,
+            "macro_transitions": {
+              "correct_to_correct": 10491,
+              "correct_to_wrong": 40,
+              "wrong_to_correct": 4,
+              "wrong_to_wrong": 868
+            },
+            "reference_value": 0.13259668508287292,
+            "sample_id": "4397829"
+          }
+        ],
+        "reference_arm": "r1verify",
+        "reference_source": "completed-attempt",
+        "wilcoxon": {
+          "min_achievable_two_sided_p": 0.125,
+          "n_effective_nonzero": 4,
+          "n_pairs": 4,
+          "pvalue_two_sided_exact": 0.25,
+          "statistic_w_plus": 9.0
+        }
+      }
+    },
+    "r2draft_vs_r1verify": {
+      "entity": {
+        "condition_arm": "r2draft",
+        "condition_source": "completed-attempt",
+        "diffs": [
+          -0.020134228187919434,
+          -0.06936416184971095,
+          -0.026905829596412634,
+          0.0025316455696202667,
+          0.015151515151515138,
+          -0.0008196721311476418
+        ],
+        "excluded_legitimate_empty": [
+          "4365024",
+          "4365948",
+          "4366429",
+          "4384964"
+        ],
+        "included_sample_ids": [
+          "4330115",
+          "4366522",
+          "4385072",
+          "4387383",
+          "4389907",
+          "4397829"
+        ],
+        "ledger": "entity",
+        "n_effective_paired": 6,
+        "n_pairs_before_exclusion": 10,
+        "name": "r2draft_vs_r1verify",
+        "per_call": [
+          {
+            "condition_value": 0.3238255033557047,
+            "diff": -0.020134228187919434,
+            "entity_correct_delta": 12,
+            "macro_transitions": null,
+            "reference_value": 0.34395973154362414,
+            "sample_id": "4330115"
+          },
+          {
+            "condition_value": 0.4662813102119461,
+            "diff": -0.06936416184971095,
+            "entity_correct_delta": 36,
+            "macro_transitions": null,
+            "reference_value": 0.535645472061657,
+            "sample_id": "4366522"
+          },
+          {
+            "condition_value": 0.35724962630792223,
+            "diff": -0.026905829596412634,
+            "entity_correct_delta": 18,
+            "macro_transitions": null,
+            "reference_value": 0.38415545590433486,
+            "sample_id": "4385072"
+          },
+          {
+            "condition_value": 0.40506329113924056,
+            "diff": 0.0025316455696202667,
+            "entity_correct_delta": -1,
+            "macro_transitions": null,
+            "reference_value": 0.4025316455696203,
+            "sample_id": "4387383"
+          },
+          {
+            "condition_value": 0.4444444444444444,
+            "diff": 0.015151515151515138,
+            "entity_correct_delta": -6,
+            "macro_transitions": null,
+            "reference_value": 0.4292929292929293,
+            "sample_id": "4389907"
+          },
+          {
+            "condition_value": 0.37049180327868847,
+            "diff": -0.0008196721311476418,
+            "entity_correct_delta": 1,
+            "macro_transitions": null,
+            "reference_value": 0.3713114754098361,
+            "sample_id": "4397829"
+          }
+        ],
+        "reference_arm": "r1verify",
+        "reference_source": "completed-attempt",
+        "wilcoxon": {
+          "min_achievable_two_sided_p": 0.03125,
+          "n_effective_nonzero": 6,
+          "n_pairs": 6,
+          "pvalue_two_sided_exact": 0.3125,
+          "statistic_w_plus": 5.0
+        }
+      },
+      "macro": {
+        "condition_arm": "r2draft",
+        "condition_source": "completed-attempt",
+        "diffs": [
+          -0.00478325859491778,
+          -0.008001882795951987,
+          -0.0025738077214231686,
+          0.0008138903960933364,
+          0.0021760154738878212,
+          0.0004384811014645218
+        ],
+        "excluded_legitimate_empty": [
+          "4365024",
+          "4365948",
+          "4366429",
+          "4384964"
+        ],
+        "included_sample_ids": [
+          "4330115",
+          "4366522",
+          "4385072",
+          "4387383",
+          "4389907",
+          "4397829"
+        ],
+        "ledger": "macro",
+        "n_effective_paired": 6,
+        "n_pairs_before_exclusion": 10,
+        "name": "r2draft_vs_r1verify",
+        "per_call": [
+          {
+            "condition_value": 0.11225710014947683,
+            "diff": -0.00478325859491778,
+            "entity_correct_delta": 12,
+            "macro_transitions": {
+              "correct_to_correct": 6164,
+              "correct_to_wrong": 21,
+              "wrong_to_correct": 37,
+              "wrong_to_wrong": 468
+            },
+            "reference_value": 0.11704035874439461,
+            "sample_id": "4330115"
+          },
+          {
+            "condition_value": 0.12591197928924452,
+            "diff": -0.008001882795951987,
+            "entity_correct_delta": 36,
+            "macro_transitions": {
+              "correct_to_correct": 3868,
+              "correct_to_wrong": 8,
+              "wrong_to_correct": 34,
+              "wrong_to_wrong": 339
+            },
+            "reference_value": 0.1339138620851965,
+            "sample_id": "4366522"
+          },
+          {
+            "condition_value": 0.11778955336866011,
+            "diff": -0.0025738077214231686,
+            "entity_correct_delta": 18,
+            "macro_transitions": {
+              "correct_to_correct": 6131,
+              "correct_to_wrong": 16,
+              "wrong_to_correct": 25,
+              "wrong_to_wrong": 433
+            },
+            "reference_value": 0.12036336109008328,
+            "sample_id": "4385072"
+          },
+          {
+            "condition_value": 0.13239283776451438,
+            "diff": 0.0008138903960933364,
+            "entity_correct_delta": -1,
+            "macro_transitions": {
+              "correct_to_correct": 3401,
+              "correct_to_wrong": 6,
+              "wrong_to_correct": 5,
+              "wrong_to_wrong": 274
+            },
+            "reference_value": 0.13157894736842105,
+            "sample_id": "4387383"
+          },
+          {
+            "condition_value": 0.19463249516441006,
+            "diff": 0.0021760154738878212,
+            "entity_correct_delta": -6,
+            "macro_transitions": {
+              "correct_to_correct": 3639,
+              "correct_to_wrong": 8,
+              "wrong_to_correct": 10,
+              "wrong_to_wrong": 479
+            },
+            "reference_value": 0.19245647969052224,
+            "sample_id": "4389907"
+          },
+          {
+            "condition_value": 0.13303516618433744,
+            "diff": 0.0004384811014645218,
+            "entity_correct_delta": 1,
+            "macro_transitions": {
+              "correct_to_correct": 10502,
+              "correct_to_wrong": 29,
+              "wrong_to_correct": 16,
+              "wrong_to_wrong": 856
+            },
+            "reference_value": 0.13259668508287292,
+            "sample_id": "4397829"
+          }
+        ],
+        "reference_arm": "r1verify",
+        "reference_source": "completed-attempt",
+        "wilcoxon": {
+          "min_achievable_two_sided_p": 0.03125,
+          "n_effective_nonzero": 6,
+          "n_pairs": 6,
+          "pvalue_two_sided_exact": 0.4375,
+          "statistic_w_plus": 6.0
+        }
+      }
+    }
+  },
+  "exclusion_warnings": [],
+  "format_normalized_secondary": {
+    "available": false,
+    "note": "format_normalized_wer(reference_raw_tokens, hypothesis_text) is provided as a reusable, independently-tested function; no formula for this read exists anywhere in the repository (unlike HER/RIR, no definitions amendment covers it -- module docstring note 5), so this report does not silently invent an aggregate for it. Call format_normalized_wer(...) directly per sample/arm if this secondary read is wanted."
+  },
+  "per_term_flip_lists": {
+    "available": false,
+    "note": "per_term_flip_list(...) is provided as a reusable, independently-tested pure function (see tests/unit/test_p2_reads.py); it is not auto-populated in this report because per-sample predicted-entity-term IDENTITY is aggregated away by core.scorers.score_entity_wer_outputs's public return value, and re-deriving it here would require either violating the data.references import-isolation contract (tests/contract/test_reference_import_isolation.py) or extending core/scorers.py's public surface, both out of this task's scope. Call per_term_flip_list(...) directly with sets of correct terms recovered another way."
+  },
+  "schema": "saea-p2-reads-v1"
+}
