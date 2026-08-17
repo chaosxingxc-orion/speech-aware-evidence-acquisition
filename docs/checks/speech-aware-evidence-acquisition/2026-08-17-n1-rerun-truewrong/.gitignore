@@ -1,0 +1,5 @@
+# The repository-wide `*.log` rule keeps multi-MB runtime logs (llama-server,
+# driver) under SPEECHRL_DATA_DIR out of Git. `n1_run.log` is not a runtime log:
+# it is the stdout transcript of this offline derivation, i.e. the evidence this
+# archive exists to preserve. Re-include it here only.
+!*.log

@@ -1,0 +1,118 @@
+{
+ "arm": "SAEA-P2-r1verify",
+ "calls_with_windows": 6,
+ "mean_window_seconds": 10.40505324074074,
+ "rung0_as_shipped": [
+  {
+   "core_reached": 24,
+   "core_recall": 0.008353637312913331,
+   "denominator": "(legacy) all wrong mentions",
+   "mentions": 2873,
+   "mentions_per_window": 1.2962962962962963,
+   "productive_windows": 36,
+   "reached": 70,
+   "recall": 0.024364775495997214,
+   "window_precision": 0.6666666666666666,
+   "windows": 54
+  },
+  {
+   "core_reached": 22,
+   "core_recall": 0.023109243697478993,
+   "denominator": "true-wrong (FORMAT removed)",
+   "mentions": 952,
+   "mentions_per_window": 0.7777777777777778,
+   "productive_windows": 29,
+   "reached": 42,
+   "recall": 0.04411764705882353,
+   "window_precision": 0.5370370370370371,
+   "windows": 54
+  },
+  {
+   "core_reached": 22,
+   "core_recall": 0.05851063829787234,
+   "denominator": "true-wrong NAME only",
+   "mentions": 376,
+   "mentions_per_window": 0.5925925925925926,
+   "productive_windows": 26,
+   "reached": 32,
+   "recall": 0.0851063829787234,
+   "window_precision": 0.48148148148148145,
+   "windows": 54
+  },
+  {
+   "core_reached": 22,
+   "core_recall": 0.09322033898305085,
+   "denominator": "true-wrong NAME + 5+ char key",
+   "mentions": 236,
+   "mentions_per_window": 0.5740740740740741,
+   "productive_windows": 26,
+   "reached": 31,
+   "recall": 0.13135593220338984,
+   "window_precision": 0.48148148148148145,
+   "windows": 54
+  }
+ ],
+ "rung1_roster_ceiling": {
+  "true-wrong (FORMAT removed)": {
+   "mentions": 952,
+   "reachable": 110,
+   "recall": 0.11554621848739496
+  },
+  "true-wrong NAME + 5+ char key": {
+   "mentions": 236,
+   "reachable": 68,
+   "recall": 0.288135593220339
+  },
+  "true-wrong NAME only": {
+   "mentions": 376,
+   "reachable": 73,
+   "recall": 0.19414893617021275
+  }
+ },
+ "rung2_matched_budget_oracle": {
+  "true-wrong (FORMAT removed)": {
+   "mentions": 952,
+   "reached": 213,
+   "recall": 0.22373949579831934,
+   "windows": 54
+  },
+  "true-wrong NAME + 5+ char key": {
+   "mentions": 236,
+   "reached": 95,
+   "recall": 0.4025423728813559,
+   "windows": 54
+  },
+  "true-wrong NAME only": {
+   "mentions": 376,
+   "reached": 116,
+   "recall": 0.30851063829787234,
+   "windows": 54
+  }
+ },
+ "rung3_no_budget": {
+  "true-wrong (FORMAT removed)": {
+   "audio_fraction_at_100pct": 0.1912861479442681,
+   "mentions": 952,
+   "windows_for_100pct": 559,
+   "windows_for_50pct": 171,
+   "windows_for_90pct": 469
+  },
+  "true-wrong NAME + 5+ char key": {
+   "audio_fraction_at_100pct": 0.06638553256026478,
+   "mentions": 236,
+   "windows_for_100pct": 194,
+   "windows_for_50pct": 79,
+   "windows_for_90pct": 175
+  },
+  "true-wrong NAME only": {
+   "audio_fraction_at_100pct": 0.10231584657484108,
+   "mentions": 376,
+   "windows_for_100pct": 299,
+   "windows_for_50pct": 112,
+   "windows_for_90pct": 264
+  }
+ },
+ "schema": "saea-n1-rerun-v1",
+ "untimed_windows": 2,
+ "windows": 54
+}

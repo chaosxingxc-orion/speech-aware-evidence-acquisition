@@ -1,0 +1,93 @@
+### 1. surviving true-wrong inventory (FORMAT removed)
+=== r1verify: true-wrong inventory ===
+  wrong mentions       2873
+  FORMAT (removed)     1921
+  TRUE-WRONG            952   <- the new N1 denominator
+  group          wrong  format  truewrong  len5plus  prepub   novel
+  NUMERIC         2082    1800        282       118     178     104
+  CONVENTION       347      53        294       165     116     178
+  NAME             444      68        376       236     233     143
+
+  wrote /mnt/c/Users/35686/AppData/Local/Temp/claude/D--chao-workspace-exploring-l4-intelligence-studies-speech-aware-evidence-acquisition/6d9f1834-68e9-41a7-bbcc-724898cf15a9/scratchpad/agentN1/truewrong_r1verify.jsonl (952 rows)
+
+=== r0bias: true-wrong inventory ===
+  wrong mentions       2822
+  FORMAT (removed)     1852
+  TRUE-WRONG            970   <- the new N1 denominator
+  group          wrong  format  truewrong  len5plus  prepub   novel
+  NUMERIC         2021    1735        286       119     188      98
+  CONVENTION       359      51        308       165     128     180
+  NAME             442      66        376       236     229     147
+
+  wrote /mnt/c/Users/35686/AppData/Local/Temp/claude/D--chao-workspace-exploring-l4-intelligence-studies-speech-aware-evidence-acquisition/6d9f1834-68e9-41a7-bbcc-724898cf15a9/scratchpad/agentN1/truewrong_r0bias.jsonl (970 rows)
+
+### 2. reference-token -> absolute audio time
+{
+ "4330115": 2458.872,
+ "4365024": 4328.676,
+ "4365948": 2518.9878125,
+ "4366429": 4010.4809375,
+ "4366522": 1817.730625,
+ "4384964": 4022.592,
+ "4385072": 2559.986,
+ "4387383": 2158.0539375,
+ "4389907": 2058.816,
+ "4397829": 4472.736
+}
+call        scored   conec  matched   timed    rate    span_s
+4330115       6602    6612     6576    5012   75.9%    2458.9
+4365024      11773   11772    11715    7857   66.7%    4328.7
+4365948       6718    6713     6699    5106   76.0%    2519.0
+4366429      11371   11421    11338    7803   68.6%    4010.5
+4366522       4166    4174     4161    2993   71.8%    1817.7
+4384964      10265   10237    10181    5902   57.5%    4022.6
+4385072       6551    6557     6530    4585   70.0%    2560.0
+4387383       3627    3636     3618    2530   69.8%    2158.1
+4389907       4089    4119     4066    2716   66.4%    2058.8
+4397829      11326   11341    11270    8367   73.9%    4472.7
+
+wrote /mnt/c/Users/35686/AppData/Local/Temp/claude/D--chao-workspace-exploring-l4-intelligence-studies-speech-aware-evidence-acquisition/6d9f1834-68e9-41a7-bbcc-724898cf15a9/scratchpad/agentN1/timemap.json
+
+### 3. routing metrics + counterfactual ladder (headline arm)
+=== SAEA-P2-r1verify: 54 timed re-listen windows (+2 untimed, LOCALIZE alignment failure), mean 10.41s, over 6 of 10 calls
+
+--- RUNG 0: as-shipped flag (54 windows) ---
+denominator                            n  reached   recall   coreR  prodW  winPrec
+(legacy) all wrong mentions         2873       70    2.44%   0.84%     36    66.7%
+true-wrong (FORMAT removed)          952       42    4.41%   2.31%     29    53.7%
+true-wrong NAME only                 376       32    8.51%   5.85%     26    48.1%
+true-wrong NAME + 5+ char key        236       31   13.14%   9.32%     26    48.1%
+
+--- RUNG 1: roster ceiling (no floor, no budget, shipped participant roster: 95 terms) ---
+true-wrong (FORMAT removed)          952      110   11.55%
+true-wrong NAME only                 376       73   19.41%
+true-wrong NAME + 5+ char key        236       68   28.81%
+
+--- RUNG 2/3: oracle window placement (window = 10.4s) ---
+true-wrong (FORMAT removed)        matched-budget oracle recall= 22.37% (213/952); windows for 50%/90%/100% = 171/469/559
+true-wrong NAME only               matched-budget oracle recall= 30.85% (116/376); windows for 50%/90%/100% = 112/264/299
+true-wrong NAME + 5+ char key      matched-budget oracle recall= 40.25% (95/236); windows for 50%/90%/100% = 79/175/194
+
+wrote /mnt/c/Users/35686/AppData/Local/Temp/claude/D--chao-workspace-exploring-l4-intelligence-studies-speech-aware-evidence-acquisition/6d9f1834-68e9-41a7-bbcc-724898cf15a9/scratchpad/agentN1/n1_r1verify.json
+
+### 4. cross-arm control
+=== SAEA-P2-r0bias: 53 timed re-listen windows (+2 untimed, LOCALIZE alignment failure), mean 10.42s, over 6 of 10 calls
+
+--- RUNG 0: as-shipped flag (53 windows) ---
+denominator                            n  reached   recall   coreR  prodW  winPrec
+(legacy) all wrong mentions         2822       69    2.45%   0.82%     37    69.8%
+true-wrong (FORMAT removed)          970       43    4.43%   2.27%     30    56.6%
+true-wrong NAME only                 376       32    8.51%   5.85%     26    49.1%
+true-wrong NAME + 5+ char key        236       31   13.14%   9.32%     26    49.1%
+
+--- RUNG 1: roster ceiling (no floor, no budget, shipped participant roster: 95 terms) ---
+true-wrong (FORMAT removed)          970      107   11.03%
+true-wrong NAME only                 376       71   18.88%
+true-wrong NAME + 5+ char key        236       66   27.97%
+
+--- RUNG 2/3: oracle window placement (window = 10.4s) ---
+true-wrong (FORMAT removed)        matched-budget oracle recall= 21.65% (210/970); windows for 50%/90%/100% = 172/473/565
+true-wrong NAME only               matched-budget oracle recall= 30.05% (113/376); windows for 50%/90%/100% = 112/265/299
+true-wrong NAME + 5+ char key      matched-budget oracle recall= 39.83% (94/236); windows for 50%/90%/100% = 79/176/194
+
+wrote /mnt/c/Users/35686/AppData/Local/Temp/claude/D--chao-workspace-exploring-l4-intelligence-studies-speech-aware-evidence-acquisition/6d9f1834-68e9-41a7-bbcc-724898cf15a9/scratchpad/agentN1/n1_r0bias.json
