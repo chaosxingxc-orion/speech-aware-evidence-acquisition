@@ -269,3 +269,132 @@ Each of these is CPU/IO-bound and can proceed without any GPU or model contact.
    Note that running the mmproj in-process reaches a component of the frozen core *outside* the
    API-shaped service boundary the consolidated contract describes; even though it loads no LLM and
    produces no answer, that framing deserves an explicit owner ruling before such a tool is built.
+
+   *Resolved 2026-08-17*: stand down. The concept was already owner-endorsed in the 2026-08-16 D4
+   correction ruling, so the boundary question is settled in principle, but since no prebuild is
+   value-positive the tool is **not** to be built. If it ever is, its build hash joins the
+   runtime-identity receipt.
+
+---
+
+## 6. Extraction receipt (2026-08-17, CPU/IO only)
+
+Carrier-readiness extraction executed per §4.3. **No GPU work, no model loaded, no `llama-server`,
+no audio sent anywhere** — the GPU sat at P8/~8 W throughout. No exposure row: this is asset
+preparation, not a touch. Nothing was downloaded. `ffmpeg` remains absent and unused.
+
+Free space before starting: **2.66 TiB of 3.73 TiB on `/mnt/e` (71.3% free)**; after all work,
+30% used — far above the 15% floor.
+
+Manifests all under `$SPEECHRL_DATA_DIR/derived/carrier-manifests/2026-08-17/`.
+
+### 6.1 ContextASR-Bench — English Speech extracted
+
+8 tars → `datasets/contextasr-bench/audio/ContextASR-Speech/English/`, extracted **in place** so the
+JSONL `audio` field resolves with no path rewriting. All 8 returned rc=0.
+
+| Metric | Value |
+|---|---|
+| Bytes extracted | 21,668,044,800 (20.18 GiB) |
+| Wall | 1,123 s (18.7 min) |
+| Average throughput | 18.4 MB/s |
+| Throughput range | 44.3 MB/s (tar 1) → 10.1 MB/s (tar 4) → 18.8 MB/s (tar 8) |
+| Files extracted | **15,326** — exactly the JSONL record count |
+
+The throughput decay is 9p directory-size scaling (cost per file creation rises as the directory
+fills), briefly compounded by the concurrent SLUE job; it recovered once that finished. Extracting
+all 8 tars rather than a subset was deliberate: tar 1 is domain-clustered (`BANK-*`), so a sample
+drawn from one tar would be domain-biased.
+
+Verification (`contextasr-speech-english.manifest.json`, per-file table in the `.files.json`
+sibling): **15,326/15,326 paths resolve, 0 missing, 0 header failures, 0 duration mismatches over
+0.5 s, 25/25 full-decode spot-check passed**, and measured duration **187.98 h exactly equals the
+declared 187.98 h**. Total 20.17 GiB.
+
+The tars were left in place unmodified, so the `.speechrl-asset.json` receipt (revision
+`7906fd98…`, source `MrSupW/ContextASR-Bench`) stays valid; the extracted tree is a local
+derivation of already-verified bytes.
+
+**Finding that sharpens the §3.1 open question.** The subset carries **3,275 distinct
+`domain_label` values across 15,326 items — about 4.7 utterances per domain.** A "domain-pooled
+global roster" is therefore *not* the clean legal-tier construction it looked like on paper: a pool
+of ~5 utterances' entities is barely coarser than the per-utterance `entity_list` and would still
+sit very close to oracle selection. A genuinely legal-tier ContextASR roster needs a much coarser
+pool — subset-wide entity vocabulary, or a large seeded pool — and the roster-precision ladder
+should treat `domain_label` as an *intermediate* dilution level, not as the legal anchor.
+
+### 6.2 SLUE-SQA-5 — `validation` projected to playable audio
+
+12 shards → `derived/slue-sqa-5/validation-audio/{questions,documents}/`.
+
+| Metric | Value |
+|---|---|
+| Rows read | 1,939 |
+| Unique questions | 1,939 — 3.23 h, 0.69 GiB |
+| Unique documents | 1,624 — 17.95 h, 3.85 GiB (dedup avoided 315 redundant copies) |
+| Total | **21.18 h, 4.54 GiB** |
+| Wall | 334 s |
+| Failures | 0 missing audio, 0 header failures, 20/20 decode check |
+
+Audio bytes were written **verbatim** from the embedded HF `struct<bytes, path>` (RIFF/wav) — no
+re-encode, no resample, so no decoder drift and no ffmpeg dependency. Manifest carries id, path,
+bytes, sha256, duration, sample rate, channels, subtype.
+
+**Gold quarantine is enforced at the reader, not after the fact**: the parquet projection requests
+only `question_id`, `question_audio`, `document_id`, `document_audio`, so `raw_question_text`,
+`normalized_question_text`, `raw_document_text`, `normalized_document_text`, `word2time` and
+`answer_spans` were never decoded off disk at all.
+
+### 6.3 AMI — dev partition manifest
+
+`ami-dev-partition.manifest.json`: **18/18 dev meetings resolved**, 9.67 h, 1.04 GiB, Mix-Headset;
+all 16 eval meetings confirmed present but deliberately not manifested. No re-encoding (the wavs
+are already playable). No annotation or transcript file was opened.
+
+**Provenance caveat, recorded in the manifest itself**: the shipped annotation packages
+(`ami_public_manual_1.6.2.zip`, `ami_public_auto_1.5.1.zip`) contain **no** partition list, so the
+18 dev ids are the published standard partition transcribed from knowledge and verified to exist on
+disk — they are *not* sourced from a shipped file. Cross-check against an authoritative source
+before binding them into any registration.
+
+### 6.4 LibriSQA — join spec (no download)
+
+`librisqa-join-spec.json`. The outcome is better than the §4.3 plan assumed: **no acquisition is
+needed.** LibriSpeech `test-clean` is already local as
+`datasets/librispeech/all/test.clean/0000.parquet` (2,620 rows, 334.2 MiB; `clean/test/0000.parquet`
+is an identical duplicate view).
+
+- Join key: LibriSQA `speech_path` stem ↔ parquet `id` (e.g. `6930-75918-0000`), 1:1, globally unique.
+- **PartI test: 2,620/2,620 resolvable. PartII test: 2,620/2,620 resolvable.** 5.40 h each.
+- Runtime-legal: `question`, `speech_path`, `duration`, parquet `audio`/`id`. Runtime-prohibited:
+  LibriSQA `text` and `answer`, and the parquet's own `text` column.
+- Materialisation (not yet performed): project `audio` + `id` verbatim, attach `question` by stem;
+  ~334 MiB for the full 2,620.
+
+### 6.5 SLURP — what is missing (no acquisition attempted)
+
+Per instruction, nothing was acquired. Confirmed by direct search: **no `.json`, `.jsonl`, `.csv`
+or `.txt` file exists anywhere under `datasets/slurp/` to depth 4**, and unlike every other carrier
+inspected there is **no `.speechrl-asset.json` receipt** either — SLURP's audio was fetched without
+the registration the other carriers carry.
+
+Present: `slurp_real/` 72,395 flac + `slurp_synth/` 69,257 flac (141,652 unique; mirrored again
+under `audio/`, hence the 283,304 raw file count), plus the original `.tar.gz` pair. Filename
+convention `audio--1504190166.flac`, `audio--1504190166-headset.flac`, `audio-…-synth.flac` — these
+are exactly the strings SLURP label records reference in `recordings[].file`.
+
+Missing is the entire label side: the split files (`train.jsonl`, `devel.jsonl`, `test.jsonl`, and
+`train_synthetic.jsonl` for the synthetic portion) carrying `slurp_id`, `sentence`, `intent`,
+`scenario`, `action`, `entities[]` and `recordings[]`. Upstream is the SLURP repository's
+`dataset/slurp/` directory — **file names stated from knowledge and to be verified by the
+dataset-expansion survey agent**, which owns acquisition and lock registration. Until those land,
+SLURP is audio-without-labels: it can carry no scored probe, and the L3 rung has no metric.
+This directly constrains the `rails(b0)` SLURP interface stub (commit `7671e75`), which currently
+has no label source to bind to.
+
+### 6.6 Nothing failed to decode
+
+Across all carriers touched: **0 files failed to decode**. 45 files were fully decoded as spot
+checks (25 ContextASR + 20 SLUE), and 17,265 audio headers were read (15,326 ContextASR + 1,939
+SLUE questions, plus 1,624 SLUE documents and 18 AMI meetings) with zero header failures. Decoding
+was `soundfile`/`librosa` only; `ffmpeg` was never invoked and remains absent.
