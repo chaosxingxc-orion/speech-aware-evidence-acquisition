@@ -343,14 +343,14 @@ def build_fast_e21_sub3() -> None:
 def build_kb_construction() -> None:
     """kb-construction split (owner decision 2026-08-13): the 34
     earnings21-original discovery calls OUTSIDE the FROZEN r4-e21-sub10-sample
-    ten. Purpose: the v2 error-pattern ("错题集") knowledge base consumes GOLD
-    annotations from exactly these 34 calls at OFFLINE construction time;
-    runtime evaluation splits must stay disjoint from a KB's source set (a
-    future gate check enforces that refusal separately -- this receipt only
-    freezes identity). Membership rule is deterministic set subtraction --
-    discovery minus r4-e21-sub10-sample -- not a fresh seeded draw, so both
-    parent splits are read from their own committed, already-verified
-    receipts rather than re-touching the data root."""
+    ten. Purpose: the v2 error-pattern ("wrong-answer collection") knowledge
+    base consumes GOLD annotations from exactly these 34 calls at OFFLINE
+    construction time; runtime evaluation splits must stay disjoint from a
+    KB's source set (a future gate check enforces that refusal separately --
+    this receipt only freezes identity). Membership rule is deterministic set
+    subtraction -- discovery minus r4-e21-sub10-sample -- not a fresh seeded
+    draw, so both parent splits are read from their own committed,
+    already-verified receipts rather than re-touching the data root."""
 
     splits_doc = json.loads(
         (REPO_ROOT / "docs" / "receipts" / "splits.json").read_text(encoding="utf-8")
@@ -390,10 +390,10 @@ def build_kb_construction() -> None:
                 "subtraction -- not a fresh seeded draw, so this selection is not itself "
                 "random (the 'seed' field below is carried for schema parity only). "
                 "Anti-cheat purpose: gold annotations for these 34 calls may enter OFFLINE "
-                'v2 error-pattern ("错题集") knowledge-base construction ONLY; runtime '
-                "evaluation splits must never intersect this set (a future gate check "
-                "enforces the intersection refusal separately -- this receipt freezes "
-                "identity only)."
+                'v2 error-pattern ("wrong-answer collection") knowledge-base construction '
+                "ONLY; runtime evaluation splits must never intersect this set (a future "
+                "gate check enforces the intersection refusal separately -- this receipt "
+                "freezes identity only)."
             ),
             "pool_size": len(pool),
             "strata_counts": {"kb-construction": len(sample)},
