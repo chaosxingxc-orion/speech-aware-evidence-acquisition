@@ -306,6 +306,7 @@ def test_build_manifest_binds_study_commit_config_plan_split_and_artifacts(
     assert manifest["schema"] == "saea-run-manifest-v1"
     assert manifest["status"] == STATUS_COMPLETED
     assert len(manifest["study_commit"]) == 40
+    assert manifest["study_repo_dirt"] == []
     assert manifest["config"]["config_hash"] == composed.config_hash
     assert manifest["config"]["fragments"] == dict(composed.fragments)
     assert manifest["protocol_hash"] == plan.protocol_hash
@@ -319,9 +320,12 @@ def test_build_manifest_binds_study_commit_config_plan_split_and_artifacts(
 
 
 def test_build_manifest_completed_status_refuses_a_dirty_study_repo(synthetic_world, bundled_repo, tmp_path):
-    """A COMPLETED manifest's strictness is UNCHANGED by the T6 fix-2 round's
-    ABORTED-only tolerance below: a dirty tree still refuses
-    build_manifest(status=COMPLETED) outright."""
+    """E0-prime flight protection (2026-08-16): dirt INSIDE the load-bearing
+    surface (src/, configs/, docs/arms/, scripts/) still refuses
+    build_manifest(status=COMPLETED) outright -- unchanged. See the
+    load-bearing-surface parametrized probe below for all four prefixes, and
+    the sibling "outside the surface" probe proving that class now
+    SURVIVES instead."""
 
     lock, repo_root = bundled_repo
     ids, split_hash, split_role = load_split(repo_root, "discovery", lock, synthetic_world.data_root)
@@ -331,9 +335,225 @@ def test_build_manifest_completed_status_refuses_a_dirty_study_repo(synthetic_wo
         composed, plan, _OpenGate(), lock, synthetic_world.data_root,
         tmp_path / "run", _transport, repo_root=repo_root,
     )
-    (repo_root / "uncommitted.txt").write_text("dirty", encoding="utf-8")
+    (repo_root / "src" / "uncommitted.py").parent.mkdir(parents=True, exist_ok=True)
+    (repo_root / "src" / "uncommitted.py").write_text("dirty", encoding="utf-8")
     verified_split = load_verified_split(repo_root, "discovery", lock, synthetic_world.data_root)
-    with pytest.raises(BundleError, match="uncommitted"):
+    with pytest.raises(BundleError, match="load-bearing"):
+        build_manifest(
+            repo_root=repo_root, data_root=synthetic_world.data_root, composed=composed,
+            plan=plan, verified_split=verified_split, session_receipt_path=None,
+            run_dir=tmp_path / "run", status=STATUS_COMPLETED, result=result,
+        )
+
+
+@pytest.mark.parametrize(
+    "relpath",
+    [
+        "src/tampered.py",
+        "configs/tampered.yaml",
+        "docs/arms/tampered.arms",
+        "scripts/tampered.sh",
+    ],
+)
+def test_build_manifest_completed_status_refuses_dirt_anywhere_in_load_bearing_surface(
+    synthetic_world, bundled_repo, tmp_path, relpath
+):
+    """E0-prime flight protection fixture (b): a mid-flight edit under any of
+    the four load-bearing prefixes still refuses build_manifest(status=
+    COMPLETED) -- code, config fragments, arm files, and launch scripts
+    describe WHAT the run executed, so dirt there is still "the commit is a
+    lie"."""
+
+    lock, repo_root = bundled_repo
+    ids, split_hash, split_role = load_split(repo_root, "discovery", lock, synthetic_world.data_root)
+    composed = _composed()
+    plan = _plan(split_hash, protocol_hash=protocol_hash(composed.config_hash, composed.values["arm"], split_hash))
+    result = run_experiment(
+        composed, plan, _OpenGate(), lock, synthetic_world.data_root,
+        tmp_path / "run", _transport, repo_root=repo_root,
+    )
+    target = repo_root / relpath
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text("tampered mid-flight", encoding="utf-8")
+    verified_split = load_verified_split(repo_root, "discovery", lock, synthetic_world.data_root)
+    with pytest.raises(BundleError, match="load-bearing"):
+        build_manifest(
+            repo_root=repo_root, data_root=synthetic_world.data_root, composed=composed,
+            plan=plan, verified_split=verified_split, session_receipt_path=None,
+            run_dir=tmp_path / "run", status=STATUS_COMPLETED, result=result,
+        )
+
+
+def test_build_manifest_completed_status_survives_dirt_outside_load_bearing_surface(
+    synthetic_world, bundled_repo, tmp_path
+):
+    """E0-prime flight protection fixture (a): a mid-flight edit to a
+    docs/*.md file OUTSIDE docs/arms/ (a governance-document shape, exactly
+    the 2026-08-16 00:21Z incident's defect class) now SURVIVES
+    build_manifest(status=COMPLETED) -- the manifest still binds a real,
+    well-shaped study_commit, and the tolerated path is recorded on the
+    manifest for auditability rather than silently dropped."""
+
+    lock, repo_root = bundled_repo
+    ids, split_hash, split_role = load_split(repo_root, "discovery", lock, synthetic_world.data_root)
+    composed = _composed()
+    plan = _plan(split_hash, protocol_hash=protocol_hash(composed.config_hash, composed.values["arm"], split_hash))
+    result = run_experiment(
+        composed, plan, _OpenGate(), lock, synthetic_world.data_root,
+        tmp_path / "run", _transport, repo_root=repo_root,
+    )
+    # A NEW subdirectory (e.g. docs/readiness/) that is WHOLLY untracked
+    # collapses in `git status --porcelain` output to just its own directory
+    # entry (git's default untracked-file rendering) -- placed directly
+    # under docs/ instead, which already has tracked content (docs/receipts,
+    # written by freeze_splits below), so git lists this new file
+    # individually, matching how a governance-doc edit shows up in the real
+    # study repo (docs/ is a long-tracked directory there too).
+    governance_doc = repo_root / "docs" / "mid-flight-note.md"
+    governance_doc.write_text("a governance edit landed mid-flight", encoding="utf-8")
+    verified_split = load_verified_split(repo_root, "discovery", lock, synthetic_world.data_root)
+    manifest_path = build_manifest(
+        repo_root=repo_root, data_root=synthetic_world.data_root, composed=composed,
+        plan=plan, verified_split=verified_split, session_receipt_path=None,
+        run_dir=tmp_path / "run", status=STATUS_COMPLETED, result=result,
+    )
+    manifest = _read_manifest(manifest_path)
+    assert manifest["status"] == STATUS_COMPLETED
+    assert len(manifest["study_commit"]) == 40
+    assert manifest["study_repo_dirt"] == ["docs/mid-flight-note.md"]
+
+
+def test_run_experiment_bundled_toctou_dirty_tree_outside_load_bearing_surface_still_completes(
+    synthetic_world, bundled_repo, tmp_path
+):
+    """The EXACT 2026-08-16 00:21Z incident, reproduced end to end and now
+    repaired: the tree is clean when run_experiment_bundled's OWN preflight
+    (require_clean_study_repo, unchanged/still strict) runs, a governance-
+    document-shaped edit lands OUTSIDE the load-bearing surface DURING
+    run_experiment (simulated via a transport whose side effect dirties the
+    repo on its first call), and the run succeeds. BEFORE this fix,
+    build_manifest(status=COMPLETED) then refused outright over ANY dirt,
+    forcing the attempt to ABORTED -- and I7 forbids ever finalizing an
+    ABORTED manifest as COMPLETED afterward, permanently stranding the real,
+    complete outputs already on disk (156 minutes of inference, in the real
+    incident). Now: the manifest is COMPLETED, binds a real study_commit,
+    and the attempt stays OPENED (finalizable), never forced to ABORTED."""
+
+    lock, repo_root = bundled_repo
+    ids, split_hash, split_role = load_split(repo_root, "discovery", lock, synthetic_world.data_root)
+    composed = _composed()
+    plan = _plan(
+        split_hash, run_id="SAEA-E-000-flightprotect", attempt_id="attempt-flightprotect",
+        protocol_hash=protocol_hash(composed.config_hash, composed.values["arm"], split_hash),
+    )
+
+    dirtied = {"done": False}
+
+    def _dirty_then_succeed(request_bytes):
+        if not dirtied["done"]:
+            # Placed directly under docs/ (already tracked in bundled_repo --
+            # it holds docs/receipts), not in a brand-new subdirectory: an
+            # entirely NEW, wholly-untracked directory collapses in `git
+            # status --porcelain` to just its own directory entry, which
+            # would defeat this test's point (it wants the full per-file
+            # path git actually reports for a new file under an EXISTING
+            # tracked directory -- exactly how a governance-doc edit shows
+            # up in the real study repo, where docs/ is long-tracked).
+            (repo_root / "docs" / "mid-flight-note.md").write_text(
+                "a governance edit landed mid-flight", encoding="utf-8"
+            )
+            dirtied["done"] = True
+        return _transport(request_bytes)
+
+    manifest_path = run_experiment_bundled(
+        composed, plan, _OpenGate(), lock, synthetic_world.data_root,
+        tmp_path / "run", _dirty_then_succeed, repo_root=repo_root,
+    )
+    manifest = _read_manifest(manifest_path)
+    assert manifest["status"] == STATUS_COMPLETED
+    assert len(manifest["study_commit"]) == 40
+    assert manifest["study_repo_dirt"] == ["docs/mid-flight-note.md"]
+
+    store = AttemptStore(synthetic_world.data_root / "attempts")
+    assert store.handle(plan.run_id, plan.attempt_id).state() == "OPENED"
+
+
+def _write_flight_lock(
+    data_root: Path, *, run_ids: list, study_head: str, pid: int = 999999,
+    started_at: str = "2026-08-16T00:00:00Z",
+) -> Path:
+    path = Path(data_root) / "locks" / "flight.lock"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    document = {
+        "run_ids": list(run_ids), "pid": pid, "started_at": started_at, "study_head": study_head,
+    }
+    path.write_text(json.dumps(document), encoding="utf-8")
+    return path
+
+
+def test_build_manifest_completed_status_tolerates_dirt_when_flight_lock_head_matches(
+    synthetic_world, bundled_repo, tmp_path
+):
+    """A flight lock's presence is not itself a refusal reason: when its
+    recorded study_head still matches the tree's current HEAD, non-load-
+    bearing dirt is tolerated exactly as with no lock present at all."""
+
+    lock, repo_root = bundled_repo
+    ids, split_hash, split_role = load_split(repo_root, "discovery", lock, synthetic_world.data_root)
+    composed = _composed()
+    plan = _plan(
+        split_hash, run_id="SAEA-E-000-lockmatch", attempt_id="attempt-lockmatch",
+        protocol_hash=protocol_hash(composed.config_hash, composed.values["arm"], split_hash),
+    )
+    result = run_experiment(
+        composed, plan, _OpenGate(), lock, synthetic_world.data_root,
+        tmp_path / "run", _transport, repo_root=repo_root,
+    )
+    current_head = subprocess.run(
+        ["git", "rev-parse", "HEAD"], cwd=repo_root, check=True, capture_output=True, text=True,
+    ).stdout.strip()
+    _write_flight_lock(synthetic_world.data_root, run_ids=[plan.run_id], study_head=current_head)
+    (repo_root / "readiness-note.md").write_text("mid-flight note", encoding="utf-8")
+    verified_split = load_verified_split(repo_root, "discovery", lock, synthetic_world.data_root)
+    manifest_path = build_manifest(
+        repo_root=repo_root, data_root=synthetic_world.data_root, composed=composed,
+        plan=plan, verified_split=verified_split, session_receipt_path=None,
+        run_dir=tmp_path / "run", status=STATUS_COMPLETED, result=result,
+    )
+    manifest = _read_manifest(manifest_path)
+    assert manifest["status"] == STATUS_COMPLETED
+    assert manifest["study_repo_dirt"] == ["readiness-note.md"]
+
+
+def test_build_manifest_completed_status_refuses_when_head_moved_since_flight_lock(
+    synthetic_world, bundled_repo, tmp_path
+):
+    """E0-prime flight protection fixture (c): even with a PERFECTLY clean
+    tree, a HEAD that moved since the flight lock's recorded study_head
+    still refuses build_manifest(status=COMPLETED) -- a moved HEAD is a
+    different checked-out CODE identity, not mere dirt, and the load-
+    bearing-surface carve-out was never meant to tolerate that."""
+
+    lock, repo_root = bundled_repo
+    ids, split_hash, split_role = load_split(repo_root, "discovery", lock, synthetic_world.data_root)
+    composed = _composed()
+    plan = _plan(
+        split_hash, run_id="SAEA-E-000-headmoved", attempt_id="attempt-headmoved",
+        protocol_hash=protocol_hash(composed.config_hash, composed.values["arm"], split_hash),
+    )
+    result = run_experiment(
+        composed, plan, _OpenGate(), lock, synthetic_world.data_root,
+        tmp_path / "run", _transport, repo_root=repo_root,
+    )
+    launch_head = subprocess.run(
+        ["git", "rev-parse", "HEAD"], cwd=repo_root, check=True, capture_output=True, text=True,
+    ).stdout.strip()
+    _write_flight_lock(synthetic_world.data_root, run_ids=[plan.run_id], study_head=launch_head)
+    (repo_root / "committed-after-launch.txt").write_text("x", encoding="utf-8")
+    _git(repo_root, "add", "-A")
+    _git(repo_root, "commit", "-q", "-m", "moved head mid-flight")
+    verified_split = load_verified_split(repo_root, "discovery", lock, synthetic_world.data_root)
+    with pytest.raises(BundleError, match="HEAD moved"):
         build_manifest(
             repo_root=repo_root, data_root=synthetic_world.data_root, composed=composed,
             plan=plan, verified_split=verified_split, session_receipt_path=None,
@@ -398,6 +618,23 @@ def test_verify_bundle_accepts_a_legitimate_completed_bundle(synthetic_world, bu
     assert len(bundle.outputs_rows) == 3
     assert bundle.split_ids == {row["sample_id"] for row in bundle.outputs_rows}
     assert bundle.attempt_state == "OPENED"
+
+
+def test_verify_bundle_accepts_a_manifest_missing_study_repo_dirt_field(
+    synthetic_world, bundled_repo, tmp_path
+):
+    """Backward compatibility (E0-prime flight protection): a manifest built
+    BEFORE this fix never carried a study_repo_dirt field at all --
+    verify_bundle must accept it exactly as before. The field is additive,
+    never required."""
+
+    manifest_path, composed, plan, lock = _run_completed(synthetic_world, bundled_repo, tmp_path)
+    manifest = _read_manifest(manifest_path)
+    assert "study_repo_dirt" in manifest  # sanity: build_manifest DOES write it
+    del manifest["study_repo_dirt"]
+    write_json_artifact(manifest_path, manifest)
+    bundle = verify_bundle(manifest_path)
+    assert isinstance(bundle, VerifiedBundle)
 
 
 def test_verify_bundle_refuses_mutated_text_with_stale_response_text_hash(

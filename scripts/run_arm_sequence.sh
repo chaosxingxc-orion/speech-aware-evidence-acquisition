@@ -25,7 +25,26 @@
 # contract requires (validated ExecutionPlan, pre-registered exposure ledger
 # row) is enforced by the driver's own gate, not here -- this script only
 # refuses the environment-level hazards the gate cannot see.
+#
+# E0-prime flight protection (2026-08-16 incident, 156 min of inference lost):
+# a governance-document edit landed in the working tree MID-FLIGHT and
+# core/bundle/git_commit.py's THEN-unconditional dirty-tree refusal fired at
+# COMPLETED-manifest build time, permanently stranding an already-successful
+# run as unfinalizable (I7 forbids ever finalizing an ABORTED manifest as
+# COMPLETED). Two independent repairs, together:
+#   1. This script now holds a single-flight lockfile
+#      ($SPEECHRL_DATA_DIR/locks/flight.lock, scripts/lib/flight_lock.sh) for
+#      its whole run, so a second overlapping launch is refused outright
+#      rather than silently competing for the same GPU/llama-server.
+#   2. core/bundle/git_commit.py's COMPLETED-manifest bind now tolerates dirt
+#      CONFINED outside the load-bearing surface (src/, configs/, docs/arms/,
+#      scripts/) instead of refusing on ANY dirt -- a stray governance-doc
+#      edit no longer destroys a run's result; code/config/arm/script dirt,
+#      or a moved HEAD, still refuses exactly as before.
 set -uo pipefail
+
+# shellcheck source=lib/flight_lock.sh
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/lib/flight_lock.sh"
 
 ARMS="" DATASET="" EXPERIMENT="" MODEL="" OUT_DIR="$HOME" DRY=0
 PLANNED_CALLS=2000 PLANNED_GPU_HOURS=30.0 PLANNED_AUDIO_SECONDS=150000
@@ -38,7 +57,7 @@ PORT=8080 HOST=127.0.0.1
 # program policy ("only local MLflow stays on ext4").
 TRACKING_URI="sqlite:///${HOME}/mlruns.db"
 
-usage() { sed -n '2,30p' "$0" | sed 's/^# \{0,1\}//'; }
+usage() { sed -n '2,43p' "$0" | sed 's/^# \{0,1\}//'; }
 
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -227,18 +246,42 @@ CELLS
 
 cd "$REPO"
 
-# A COMPLETED manifest binds study_commit by reading git at FINALIZE time, and
-# that read refuses a dirty tree (core/bundle/git_commit.py documents the
-# window: the pre-run cleanliness check cannot cover the hours the run then
-# takes). So an edit landing mid-run destroys the arm's result after all of its
-# compute. Print the commit every arm is claiming, and refuse to start dirty.
+# A COMPLETED manifest binds study_commit by reading git at FINALIZE time
+# (core/bundle/git_commit.py); dirt CONFINED to code/config/arm/script paths
+# (src/, configs/, docs/arms/, scripts/) still refuses there, exactly as
+# before -- only dirt outside that load-bearing surface is now tolerated (and
+# recorded, never silently). Print the commit every arm is claiming, and
+# refuse to start dirty at ALL here regardless -- launching on top of ANY
+# uncommitted change (load-bearing or not) is still never a deliberate choice
+# this script should make silently on an operator's behalf.
 HEAD_AT_START="$(git rev-parse --short HEAD 2>/dev/null)"
+HEAD_FULL_AT_START="$(git rev-parse HEAD 2>/dev/null)"
 if [ -n "$(git status --porcelain 2>/dev/null)" ]; then
   echo "REFUSED: study repo is dirty; a run manifest must bind an exact commit" >&2
   git status --porcelain >&2
   exit 3
 fi
 echo "sequence binding study_commit $HEAD_AT_START -- keep the tree clean until it ends"
+
+# Single-flight lock: refuse to launch a SECOND overlapping sequence (see the
+# E0-prime flight-protection comment near the top of this file). run_ids come
+# from the SAME arm file the main loop below reads, parsed identically
+# (comment-stripped, whitespace-stripped, ":"-split) so the lock's own record
+# of "what this flight is running" never drifts from what actually runs.
+_run_ids=()
+while IFS= read -r _arm_line; do
+  _arm_line="${_arm_line%%#*}"
+  _arm_line="$(echo "$_arm_line" | tr -d '[:space:]')"
+  [ -z "$_arm_line" ] && continue
+  _run_ids+=("\"${_arm_line%%:*}\"")
+done < "$ARMS"
+_run_ids_json="[$(IFS=,; echo "${_run_ids[*]}")]"
+unset _arm_line _run_ids
+
+if ! flight_lock_acquire "$_run_ids_json"; then
+  exit 3
+fi
+echo "flight lock held at $(flight_lock_path) -- study_head $HEAD_FULL_AT_START"
 
 failed=0 ran=0
 while IFS= read -r line; do

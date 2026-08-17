@@ -110,6 +110,14 @@ def _manifest_document(
     attempts_root = Path(data_root) / "attempts"
     attempt_state_path = attempts_root / run_id / f"{attempt_id}.json"
 
+    # E0-prime flight protection (2026-08-16): for a COMPLETED manifest, this
+    # now tolerates dirt confined outside git_commit.LOAD_BEARING_SURFACE_
+    # PREFIXES rather than refusing outright -- see git_commit.py's module
+    # docstring for the incident this repairs. `study_repo_dirt` is an
+    # ADDITIVE field: old manifests (built before this fix) simply lack it,
+    # and nothing in verify_bundle requires its presence.
+    study_commit, study_repo_dirt = _resolve_study_commit(Path(repo_root), Path(data_root), status)
+
     return {
         "schema": RUN_MANIFEST_SCHEMA,
         "study": STUDY_SLUG,
@@ -117,7 +125,13 @@ def _manifest_document(
         "created_at": now().astimezone(timezone.utc).isoformat(),
         "status": status,
         "failure_reason": failure_reason,
-        "study_commit": _resolve_study_commit(Path(repo_root), status),
+        "study_commit": study_commit,
+        # Non-load-bearing paths that were dirty when study_commit was
+        # bound (always [] for a genuinely clean tree, and always [] for an
+        # ABORTED manifest -- see _resolve_study_commit's docstring).
+        # Auditability, not a claim of significance: a human reviewing this
+        # manifest can see exactly what was tolerated, never silently.
+        "study_repo_dirt": study_repo_dirt,
         # I-1 fix: the arm this attempt actually ran under -- needed so
         # verify_bundle can independently recompute protocol_hash from
         # (config_hash, arm, split_identity_hash) via the exact same
