@@ -53,6 +53,55 @@ shipped 19–54 bytes of ORG/SUPPLY evidence, so nothing could ever route there.
 4. **NOVEL floor 32.2%**: honest ceiling for KB approaches; candidate mechanisms for a later
    probe: within-episode self-consistency (first vs repeated mentions) and spelled-out cues.
 
+### 2.1 The repair chain for the 376 (owner question: can they be DETECTED and ACQUIRED?)
+
+Repair = Reach × Acquire × Consume. Measured link by link:
+
+**Acquire** (does the correct form exist legally?): within the 376 true-wrong names, 233
+(**62.0%**) are pre-published in the call's own materials; 143 (38.0%) are novel. On the
+5+ char subset the coverage is 54.2% at 0.0% decoy.
+
+**Reach** has two modes with opposite economics:
+
+- **Global mode (detection-free)**: put the compact name roster in every prompt; no error
+  detection needed at all. Reach = 100% of acquirable mass by construction. Earnings rosters
+  are 6–15 names/call — far below the 50–100-entry dose-degradation onset, so global supply is
+  dose-safe here. Consume: kb34 measured 10/14 flips (small n). Chain estimate:
+  1.0 × 0.62 × ~0.7 ≈ **~40% of the 376 plausibly repairable with no detector** — this is the
+  L1 name-supply mechanism probe's registered question.
+- **Targeted mode (detection-dependent)**: runtime detection signals that are legal today:
+  (a) roster-band grapheme distance (the current flag family — shipped reach 8.51%/376,
+  13.14%/236; roster ceiling 28.81%; perfect-flag-at-budget 40.25%); (b) lexical
+  implausibility (non-word tokens like "sitimes"); (c) decode disagreement (two-pass
+  self-consistency, costs a second pass); (d) token-level confidence via API logprobs —
+  observation not control, but absent from consumed traces, so it needs one instrumented
+  flight before it can be evaluated. **The broken link in targeted mode is Consume, not
+  Reach**: the replay chain converted 0 (27 routed → 0 flips; RIR 0/54) because it supplied
+  whole reference text — the measured copy trap. Any flag-v3 targeted arm must therefore
+  switch its supply form to compact roster as well.
+
+**Why detection still matters even though global mode wins on earnings**: global mode's
+dose-safety is a small-corpus luxury. At L2 (ContextASR) the legal subset-wide roster is
+thousands of entities — far past the dose law — so the SUPPLY gate (retrieval/threshold
+selection) becomes load-bearing exactly where the corpus scales. Earnings lets us skip
+detection; L2 does not. Detection R&D (flag v3, offline) is therefore an L2 prerequisite,
+not an L1 luxury.
+
+### 3.1 Relative-date resolution is agent-plane work, not ASR (owner ruling direction)
+
+Splitting "date handling" into three layers resolves the confusion:
+
+1. **Transcription** (L1, verbatim): "the fourth quarter of last year" transcribed as those
+   words is CORRECT. Demanding "Q4 2019" from a transcript is a category error.
+2. **Form conversion** (control plane, deterministic ITN): "twenty twenty" → "2020". Rules,
+   no semantics.
+3. **Semantic resolution** (agent plane): "last year" → 2019 requires a temporal anchor plus
+   inference. This is exactly what L3 slots and L5 tool arguments demand (tool calls need ISO
+   dates), and where the omni-agent earns its keep over dedicated ASR. Accordingly the
+   **temporal anchor** (call/current date from shipped metadata) is promoted from an "L1 ASR
+   patch" to a **standard element of the scheme's prompt assembly**, and resolution accuracy
+   is measured at L3/L5 where the task demands it — not scored against L1 transcripts.
+
 ## Bucket 3 — NUMERIC true errors: two real fixes plus one bounded backlog
 
 1. **Date anchoring (new, cheap, legal)**: DATE is the worst numeric class (17.2% novel) partly
