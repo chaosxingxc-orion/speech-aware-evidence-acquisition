@@ -1957,3 +1957,132 @@ def test_run_experiment_derived_candidates_missing_file_still_fails_closed(
             transport=_replay_transport,
             repo_root=repo_root,
         )
+
+
+# ---------------------------------------------------------------------------
+# E1-prime (2026-08-16, docs/readiness/2026-08-15-legality-doctrine.md +
+# docs/p2-branch-rule-pins.md vocabulary): the machine-checked either-field
+# rule + oracle-lineage-consistency rule, exercised at the SAME seam
+# (core.driver.run.run_experiment) every other config-legality gate above is
+# exercised at.
+# ---------------------------------------------------------------------------
+
+from speech_aware_evidence_acquisition.core.legality import LegalityError  # noqa: E402
+
+
+def test_run_experiment_refuses_legal_tier_with_gold_derived_reference_before_any_model_contact(
+    synthetic_world, tmp_path
+):
+    """Negative control: legality_tier='legal' declared alongside a
+    gold-derived reference_source is REFUSED -- and refused before touching
+    the transport at all (no attempt budget spent, no model contact)."""
+
+    lock, repo_root = _frozen_world(synthetic_world, tmp_path)
+    _, split_hash, _ = load_split(repo_root, "discovery", lock, synthetic_world.data_root)
+    composed = _composed(legality_tier="legal", reference_source="oracle-lineage")
+    plan = _plan(
+        split_hash,
+        protocol_hash=protocol_hash(composed.config_hash, composed.values["arm"], split_hash),
+    )
+    calls = []
+
+    def _counting_transport(request_bytes):
+        calls.append(request_bytes)
+        return _transport(request_bytes)
+
+    with pytest.raises(LegalityError, match="either-field rule"):
+        run_experiment(
+            composed=composed,
+            plan=plan,
+            gate=_OpenGate(),
+            lock=lock,
+            root=synthetic_world.data_root,
+            run_dir=tmp_path / "run-legality-refused",
+            transport=_counting_transport,
+            repo_root=repo_root,
+        )
+    assert calls == []
+
+
+def test_run_experiment_accepts_a_correctly_declared_oracle_lineage_arm_end_to_end(
+    synthetic_world, tmp_path, monkeypatch
+):
+    """Negative control: an arm whose evidence_materialization_id IS oracle
+    lineage (registry-detected, module docstring of core.legality),
+    declaring reference_source consistent with that lineage, is accepted --
+    the run completes end to end, exactly like the p2-empty-mat run above."""
+
+    monkeypatch.setattr(
+        obs_loop, "decode_parent_pcm", lambda path, rate=16000: _array("h", [50] * (90 * 16000))
+    )
+    monkeypatch.setattr(replay_loop, "align_words", _replay_fake_align_words)
+    monkeypatch.setattr(replay_loop, "cut_span", _replay_fake_cut_span)
+
+    lock, repo_root = _frozen_world(synthetic_world, tmp_path)
+    ids, split_hash, _ = load_split(repo_root, "discovery", lock, synthetic_world.data_root)
+    assert ids == {"4000001", "4000002", "4000003"}
+
+    materialization_id = "p1-oracle-v2"
+    for sample_id in ("4000001", "4000002", "4000003"):
+        _write_derived_candidates_file(
+            synthetic_world.data_root, materialization_id, sample_id, "Acme Corp\n"
+        )
+
+    composed = _replay_composed(
+        evidence_materialization_id=materialization_id,
+        reference_source="oracle-lineage",
+        span_source="roster-band-flag",
+        legality_tier="ceiling",
+    )
+    plan = _plan(
+        split_hash,
+        protocol_hash=protocol_hash(composed.config_hash, composed.values["arm"], split_hash),
+    )
+    result = run_experiment(
+        composed=composed,
+        plan=plan,
+        gate=_OpenGate(),
+        lock=lock,
+        root=synthetic_world.data_root,
+        run_dir=tmp_path / "run-legality-oracle-accepted",
+        transport=_replay_transport,
+        repo_root=repo_root,
+    )
+    assert isinstance(result, RunResult)
+    rows = [
+        json.loads(line)
+        for line in result.outputs_path.read_text(encoding="utf-8").splitlines()
+        if line
+    ]
+    assert sorted(row["sample_id"] for row in rows) == ["4000001", "4000002", "4000003"]
+
+
+def test_run_experiment_warns_on_stderr_for_missing_legality_declarations_but_still_completes(
+    synthetic_world, tmp_path, capsys
+):
+    """Negative control: an evidence-bearing arm declaring none of
+    span_source/reference_source/legality_tier is GRANDFATHERED -- a loud
+    stderr warning, never a refusal; the run completes end to end."""
+
+    lock, repo_root = _frozen_world(synthetic_world, tmp_path)
+    _, split_hash, _ = load_split(repo_root, "discovery", lock, synthetic_world.data_root)
+    composed = _composed(arm="fixed-legal-context", evidence_source="conec-contexts")
+    plan = _plan(
+        split_hash,
+        protocol_hash=protocol_hash(composed.config_hash, composed.values["arm"], split_hash),
+    )
+    result = run_experiment(
+        composed=composed,
+        plan=plan,
+        gate=_OpenGate(),
+        lock=lock,
+        root=synthetic_world.data_root,
+        run_dir=tmp_path / "run-legality-warning",
+        transport=_transport,
+        repo_root=repo_root,
+    )
+    assert isinstance(result, RunResult)
+    captured = capsys.readouterr()
+    assert "WARNING" in captured.err
+    assert "GRANDFATHERED" in captured.err
+    assert "span_source" in captured.err

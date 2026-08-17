@@ -22,6 +22,7 @@ from ...contracts import STUDY_SLUG, ExecutionPlan
 from ...e0.artifacts import sha256_file, write_json_artifact
 from ..base import RunResult
 from ..config import ComposedConfig
+from ..legality import describe_legality_for_manifest
 from ..split_receipt import VerifiedSplit
 from . import (
     RUN_MANIFEST_SCHEMA,
@@ -139,6 +140,16 @@ def _manifest_document(
         # itself checks at run time, rather than merely trusting the
         # manifest's own protocol_hash field.
         "arm": str(composed.values.get("arm", "")),
+        # E1-prime (deliverable 3, docs/readiness/2026-08-15-legality-doctrine.md):
+        # span_source/reference_source/legality_tier recorded VERBATIM, plus
+        # the independently-recomputed oracle-lineage verdict and
+        # grandfathering warning text -- computed fresh from composed.values
+        # here (never threaded through RunResult) so this can never raise and
+        # is identical whether this manifest is COMPLETED or ABORTED. See
+        # core.legality.describe_legality_for_manifest's own docstring for
+        # why this never duplicates core.driver.run.run_experiment's own
+        # stderr warning.
+        "legality": describe_legality_for_manifest(composed.values, data_root),
         "config": {"fragments": dict(composed.fragments), "config_hash": composed.config_hash},
         "protocol_hash": plan.protocol_hash,
         "plan": {

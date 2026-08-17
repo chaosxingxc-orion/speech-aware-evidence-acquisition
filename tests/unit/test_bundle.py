@@ -585,6 +585,106 @@ def test_build_manifest_aborted_status_tolerates_a_dirty_study_repo(synthetic_wo
     assert "uncommitted" in manifest["study_commit"]
 
 
+# ---------------------------------------------------------------------------
+# E1-prime (deliverable 3, docs/readiness/2026-08-15-legality-doctrine.md):
+# the run manifest carries span_source/reference_source/legality_tier
+# verbatim, plus the independently-recomputed oracle-lineage verdict and
+# grandfathering warning. Exercised via the SAME lightweight ABORTED-manifest
+# pattern as the fixture above -- build_manifest's own recomputation
+# (core.legality.describe_legality_for_manifest) never depends on the run
+# having actually succeeded.
+# ---------------------------------------------------------------------------
+
+
+def _build_probe_manifest(synthetic_world, bundled_repo, tmp_path, *, composed, run_dir_name):
+    lock, repo_root = bundled_repo
+    ids, split_hash, split_role = load_split(repo_root, "discovery", lock, synthetic_world.data_root)
+    plan = _plan(split_hash, protocol_hash=protocol_hash(composed.config_hash, composed.values["arm"], split_hash))
+    verified_split = load_verified_split(repo_root, "discovery", lock, synthetic_world.data_root)
+    manifest_path = build_manifest(
+        repo_root=repo_root, data_root=synthetic_world.data_root, composed=composed,
+        plan=plan, verified_split=verified_split, session_receipt_path=None,
+        run_dir=tmp_path / run_dir_name, status=STATUS_ABORTED, failure_reason="legality probe",
+    )
+    return _read_manifest(manifest_path)
+
+
+def test_build_manifest_records_a_correctly_declared_legality_tier_verbatim(
+    synthetic_world, bundled_repo, tmp_path
+):
+    composed = _composed(
+        evidence_source="conec-contexts",
+        span_source="roster-band-flag",
+        reference_source="metadata-roster",
+        legality_tier="legal",
+    )
+    manifest = _build_probe_manifest(
+        synthetic_world, bundled_repo, tmp_path, composed=composed, run_dir_name="run-legality-clean"
+    )
+    assert manifest["legality"] == {
+        "span_source": "roster-band-flag",
+        "reference_source": "metadata-roster",
+        "legality_tier": "legal",
+        "evidence_materialization_id": None,
+        "oracle_lineage_materialization": False,
+        "declaration_warning": None,
+    }
+
+
+def test_build_manifest_records_the_grandfathering_warning_for_missing_declarations(
+    synthetic_world, bundled_repo, tmp_path
+):
+    composed = _composed(evidence_source="conec-contexts")
+    manifest = _build_probe_manifest(
+        synthetic_world, bundled_repo, tmp_path, composed=composed, run_dir_name="run-legality-missing"
+    )
+    legality = manifest["legality"]
+    assert legality["span_source"] is None
+    assert legality["reference_source"] is None
+    assert legality["legality_tier"] is None
+    assert legality["declaration_warning"] is not None
+    assert "GRANDFATHERED" in legality["declaration_warning"]
+
+
+def test_build_manifest_never_raises_for_a_refused_legality_declaration(
+    synthetic_world, bundled_repo, tmp_path
+):
+    """A REFUSED declaration (the either-field rule) must still produce a
+    manifest -- deliverable 3's "carries the three fields verbatim" applies
+    even to an attempt core.driver.run.run_experiment already aborted for
+    this exact reason; build_manifest must never itself crash re-deriving
+    it."""
+
+    composed = _composed(
+        evidence_source="conec-contexts", legality_tier="legal", reference_source="oracle-lineage"
+    )
+    manifest = _build_probe_manifest(
+        synthetic_world, bundled_repo, tmp_path, composed=composed, run_dir_name="run-legality-refused"
+    )
+    legality = manifest["legality"]
+    assert legality["reference_source"] == "oracle-lineage"
+    assert legality["legality_tier"] == "legal"
+    assert legality["declaration_warning"].startswith("REFUSED:")
+
+
+def test_build_manifest_records_oracle_lineage_materialization_true(
+    synthetic_world, bundled_repo, tmp_path
+):
+    composed = _composed(
+        evidence_source="derived-candidates",
+        evidence_materialization_id="p1-oracle-v2",
+        span_source="roster-band-flag",
+        reference_source="oracle-lineage",
+        legality_tier="ceiling",
+    )
+    manifest = _build_probe_manifest(
+        synthetic_world, bundled_repo, tmp_path, composed=composed, run_dir_name="run-legality-oracle"
+    )
+    legality = manifest["legality"]
+    assert legality["oracle_lineage_materialization"] is True
+    assert legality["declaration_warning"] is None
+
+
 def test_build_manifest_refuses_a_non_git_repo_root(synthetic_world, tmp_path):
     lock = load_lock(synthetic_world.lock_path)
     repo_root = tmp_path / "not-a-repo"

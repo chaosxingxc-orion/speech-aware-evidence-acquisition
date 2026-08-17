@@ -45,6 +45,7 @@ from ..exemplars import (
     resolve_exemplar_manifest_id,
 )
 from ..instructions import resolve_task_instruction
+from ..legality import assert_legality_declaration_legal
 from ..resources import NullSampler, ResourceSampler, cpu_seconds_snapshot
 from ..model import FrozenCoreAdapter, SliceRegistry
 from ..split_receipt import load_verified_split
@@ -203,6 +204,20 @@ def run_experiment(
         # merged the model and baseline fragments' keys into it before this
         # function ever saw it -- the one seam where both are visible).
         assert_exemplar_manifest_id_legal(values)
+        # E1-prime (2026-08-16, docs/readiness/2026-08-15-legality-doctrine.md
+        # + docs/p2-branch-rule-pins.md vocabulary): the machine-checked
+        # either-field rule + oracle-lineage-consistency rule for the three
+        # optional span_source/reference_source/legality_tier baseline-config
+        # keys. Same "resolved and validated HERE, before any other per-run
+        # work" placement as assert_evidence_materialization_id_legal/
+        # assert_exemplar_manifest_id_legal above -- a REFUSED declaration
+        # spends no attempt budget and touches the frozen core zero times. A
+        # merely-missing declaration on an evidence-bearing arm only warns
+        # (grandfathering, core.legality module docstring); core.bundle.
+        # manifest independently recomputes and records the same three
+        # fields verbatim in every run manifest (deliverable 3), so nothing
+        # from this call needs to be threaded any further here.
+        assert_legality_declaration_legal(values, root)
         # R0 repair refactor stage 2 (part C): the split<->plan<->config
         # cross-checks (M-2, split identity hash/role/carrier, protocol hash)
         # live in split_check._verify_split_for_run now -- same checks, same
