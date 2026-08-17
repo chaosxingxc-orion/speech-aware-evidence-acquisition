@@ -1,7 +1,7 @@
-"""SLURP slot-filling ``TaskAdapter`` (B0 rails): interface-complete STUB.
+"""SLURP slot-filling ``TaskAdapter`` (B0 rails).
 
-SLURP entered this study's scope via the entity clause (2026-08-15 owner
-amendment, Amendment 2, umbrella
+Carrier admission: the bounded discovery-probe carrier admitted by the
+2026-08-15 owner amendment (Amendment 2, umbrella
 ``wiki/experiments/speech-aware-evidence-acquisition/
 2026-08-15-owner-go-dual-track-agentic.md``): "SLURP slot filling enters as
 a task carrier under the existing boundary's entity clause (slot values are
@@ -9,118 +9,173 @@ entity extraction from human speech). Probe scope: user-ontology matching ->
 slot repair -> command-level success, deployment-legal knowledge only ...
 after the R4 acquisition verification."
 
-No SLURP lock entry, on-disk layout, or loader exists in this repository
-yet -- a separate agent is inventorying local bytes/layout concurrently with
-this B0 rails-freeze mission, and this adapter deliberately does not block
-on that inventory landing first (mission instruction: "write
-interface-complete stubs with TODOs if local bytes/layout are unclear").
+License split (governed metadata's own annotation-receipt.json, umbrella
+``docs/datasets.lock.json``'s ``slurp`` entry): the textual annotation layer
+this adapter reads (scenario/action/entities/tokens) is Creative Commons
+Attribution 4.0 International (CC BY 4.0); the audio this adapter points
+prompts at is Creative Commons Attribution-NonCommercial 4.0 International
+(CC BY-NC 4.0) -- the NC term binds every use of the ``.flac`` bytes this
+module resolves paths to, even though it never reads their content itself.
 
-Every method below is STRUCTURALLY complete against the same ``TaskAdapter``
-shape ``rails.adapters.audio2tool.Audio2ToolAdapter`` implements, but raises
-``NotImplementedError`` with a TODO pointing at the missing piece -- there is
-no SLURP loader to call yet, so any real implementation here would be a
-guess this module refuses to make. Replace each TODO once a SLURP loader
-(``data.slurp`` or wherever it lands) exists.
+Supersedes the former interface-complete stub now that ``data.slurp`` and
+``reproduction.slurp_scoring`` exist to back it (every method used to raise
+``NotImplementedError`` with a TODO; ``git log`` this file for that
+history) -- governed SLURP metadata landed 2026-08-17 (``data.slurp``
+module docstring has the full layout/split-discipline account).
 """
 
 from __future__ import annotations
 
+import hashlib
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Mapping, Sequence
 
-from ..consumption import ConsumptionTrace
+from ...data.lock import REPO_ROOT
+from ...data.slurp import SLURP_LOCK_KEY, load_slurp_ontology, load_slurp_split, render_slurp_ontology
+from ...reproduction.slurp_scoring import SlotEntity, parse_slu_response, score_slu
+from ..consumption import ConsumptionTrace, build_consumption_trace
 from ..obs import AudioRef, ObsPacket
 from ..supply import SupplyPacket
 from ..task_adapter import TaskAdapter
 
+_INSTRUCTION = (
+    "You are given spoken audio expressing one command to a voice assistant. "
+    "Identify the scenario, the action, and every entity slot (type and "
+    "value) expressed in the speech.\n\n"
+    'Respond with ONLY a JSON object of the form '
+    '{"scenario": "...", "action": "...", "entities": '
+    '[{"type": "...", "filler": "..."}, ...]}.'
+)
+
 
 @dataclass(frozen=True)
 class SlurpSample:
-    """``TaskSample`` shape for SLURP -- ``sample_id``/``audio_ref``/
-    ``audio_seconds`` satisfy ``rails.task_adapter.TaskSample``;
-    ``utterance_id``/``scenario`` mirror the two identity fields the public
-    SLURP release itself carries per record (its ``recordings.jsonl``'s own
-    ``slurp_id``/``scenario`` columns), named here ahead of the loader
-    landing so a real loader has an obvious target shape to fill rather than
-    inventing one from scratch."""
+    """``TaskSample`` shape for SLURP (module docstring) -- ``sample_id``/
+    ``audio_ref``/``audio_seconds`` satisfy ``rails.task_adapter.
+    TaskSample``; ``utterance_id``/``scenario``/``action``/``intent``/
+    ``entities`` carry SLURP's own SLU gold layer directly on the sample
+    (unlike ``rails.adapters.audio2tool.Audio2ToolSample``, which keeps gold
+    off the sample entirely and re-derives it scorer-side) -- deliberately
+    WITHOUT the raw sentence text (``data.slurp.SlurpRecord`` docstring).
+    Carrying these fields here is loader-legal; the boundary this study's
+    own gold-leak test enforces is that ``SlurpAdapter.assemble_prompt``
+    below never renders them into prompt text."""
 
     sample_id: str
     audio_ref: AudioRef
     audio_seconds: float
     utterance_id: str
+    media_relpath: str
     scenario: str
+    action: str
+    intent: str
+    entities: tuple[SlotEntity, ...]
 
 
 class SlurpAdapter(TaskAdapter):
-    """STUB (module docstring): every method raises ``NotImplementedError``
-    until a SLURP loader lands. Constructible today so rails-layer plumbing
-    (the runner, TaskAdapter-shape tests) can exercise "an adapter that is
-    not Audio2Tool" without waiting on the SLURP inventory."""
+    """``TaskAdapter`` over the governed-metadata-scoped SLURP carrier
+    (module docstring)."""
 
     def __init__(
         self, lock: Mapping[str, object], root: Path, *, repo_root: Path | None = None
     ) -> None:
         self._lock = lock
         self._root = Path(root)
-        self._repo_root = repo_root
+        self._repo_root = Path(REPO_ROOT if repo_root is None else repo_root)
 
-    def load_split(self, split_id: str) -> Sequence[SlurpSample]:
-        # TODO(slurp-loader): no data.slurp loader/lock entry exists yet
-        # (module docstring); wire this to whatever load_slurp(lock, root)
-        # the concurrent inventory task lands, filtered to split_id the
-        # same way Audio2ToolAdapter.load_split filters by split_role.
-        raise NotImplementedError(
-            "SlurpAdapter.load_split: no SLURP loader exists in this repository yet "
-            "(2026-08-15 owner amendment Amendment 2 admits the carrier; the on-disk "
-            "layout/lock entry are still being inventoried) -- TODO wire a data.slurp "
-            "loader once it lands"
+    def load_split(
+        self, split_id: str, *, allow_heldout: bool = False, allow_synthetic: bool = False
+    ) -> Sequence[SlurpSample]:
+        """``split_id`` is one of ``data.slurp``'s four governed splits.
+        ``allow_heldout``/``allow_synthetic`` default closed (``data.slurp.
+        load_slurp_split``'s own split-discipline account) -- additive,
+        defaulted keyword-only refusals; the base ``TaskAdapter.
+        load_split(split_id)`` call shape a caller that only ever wants
+        ``devel`` needs stays intact."""
+
+        records = load_slurp_split(
+            self._lock,
+            self._root,
+            split_id,
+            allow_heldout=allow_heldout,
+            allow_synthetic=allow_synthetic,
         )
+        samples = [
+            SlurpSample(
+                sample_id=record.sample_id,
+                audio_ref=self._audio_ref(record.media_relpath),
+                audio_seconds=record.audio_seconds,
+                utterance_id=record.utterance_id,
+                media_relpath=record.media_relpath,
+                scenario=record.scenario,
+                action=record.action,
+                intent=record.intent,
+                entities=record.entities,
+            )
+            for record in records
+        ]
+        return tuple(sorted(samples, key=lambda sample: sample.sample_id))
+
+    def _audio_ref(self, media_relpath: str) -> AudioRef:
+        media_path = self._root / media_relpath
+        digest = hashlib.sha256(media_path.read_bytes()).hexdigest()
+        return AudioRef(path=media_relpath, sha256=digest).validate()
 
     def build_query(self, sample: SlurpSample, obs: ObsPacket) -> str:
-        # TODO(slurp-loader): SLURP's task-native query is presumably the
-        # user-ontology (scenario/action/slot-type roster) the slot values
-        # must be matched against (mirroring Audio2ToolAdapter.build_query's
-        # tool-schema roster) -- the entity clause's own "user-ontology
-        # matching" probe scope names this explicitly. Confirm the exact
-        # ontology source once the loader lands; do not guess its shape here.
-        raise NotImplementedError(
-            "SlurpAdapter.build_query: SLURP ontology source is not yet wired -- see "
-            "this method's own TODO"
-        )
+        """SLURP's task-native "query" is the user-ontology roster (entity
+        types + example fillers, scenarios, actions) the spoken command's
+        slots must be matched against (module docstring, entity clause's own
+        "user-ontology matching" probe scope) -- mined from ``train``/
+        ``train_synthetic`` only (``data.slurp.load_slurp_ontology``), never
+        from ``sample``'s own gold fields."""
+
+        ontology = load_slurp_ontology(self._lock, self._root)
+        return render_slurp_ontology(ontology)
 
     def assemble_prompt(
         self, sample: SlurpSample, supply: SupplyPacket | None
     ) -> Sequence[Mapping[str, object]]:
-        # TODO(slurp-loader): same {system-instruction, user-audio(+supply)}
-        # shape Audio2ToolAdapter.assemble_prompt already uses; blocked only
-        # on having a real sample.media_relpath (or equivalent) to point at.
-        raise NotImplementedError(
-            "SlurpAdapter.assemble_prompt: no SLURP media path resolution yet -- see "
-            "this method's own TODO"
+        """Fixed task instruction plus the sample's own audio -- gold-leak
+        boundary (module docstring): NOTHING from ``sample.scenario``/
+        ``action``/``intent``/``entities`` is ever read here; the only text
+        besides the fixed instruction is ``supply.prompt_block`` when a
+        caller's ``supply_builder`` chose to inject a roster."""
+
+        content: list[Mapping[str, object]] = []
+        if supply is not None:
+            content.append({"type": "text", "text": supply.prompt_block})
+        content.append({"type": "input_audio", "media_relpath": sample.media_relpath})
+        return (
+            {"role": "system", "content": _INSTRUCTION},
+            {"role": "user", "content": content},
         )
 
     def score(self, sample: SlurpSample, response: str) -> Mapping[str, object]:
-        # TODO(slurp-loader): slot-filling scoring (slot-F1 at minimum,
-        # mirroring reproduction.toolcall_scoring's slot-triple machinery)
-        # needs SLURP's own gold slot annotations, scorer-side only (D2) --
-        # no such gold layer is wired into data/identity.py yet.
-        raise NotImplementedError(
-            "SlurpAdapter.score: no SLURP gold/scoring layer wired yet -- see this "
-            "method's own TODO"
+        """Post-hoc only (module docstring): gold (``sample.scenario``/
+        ``action``/``entities``) is read HERE, never in
+        ``assemble_prompt``/``build_query`` above. See
+        ``reproduction.slurp_scoring`` module docstring for the
+        ``slot_f1_exact`` vs official ``slu_f1`` distinction -- never
+        mislabeled, per this mission's own instruction."""
+
+        predicted_scenario, predicted_action, predicted_entities, parsed = parse_slu_response(response)
+        result = score_slu(
+            gold_scenario=sample.scenario,
+            gold_action=sample.action,
+            gold_entities=sample.entities,
+            predicted_scenario=predicted_scenario,
+            predicted_action=predicted_action,
+            predicted_entities=tuple(predicted_entities),
         )
+        metrics = dict(result.as_metrics_dict())
+        metrics["parsed"] = parsed
+        return metrics
 
     def extract_consumption(
         self, sample: SlurpSample, supply: SupplyPacket | None, response: str
     ) -> ConsumptionTrace:
-        # Not actually blocked on the loader -- rails.consumption.build_consumption_trace
-        # is already generic and works for any SupplyPacket once one exists.
-        # Kept raising here anyway rather than silently returning a trace no
-        # real assemble_prompt call could ever have produced yet.
-        raise NotImplementedError(
-            "SlurpAdapter.extract_consumption: no SLURP response is ever produced yet "
-            "(assemble_prompt is unimplemented) -- see this class's other TODOs"
-        )
+        return build_consumption_trace(span_id="full", supply=supply, response_text=response)
 
 
-__all__ = ["SlurpAdapter", "SlurpSample"]
+__all__ = ["SLURP_LOCK_KEY", "SlurpAdapter", "SlurpSample"]
