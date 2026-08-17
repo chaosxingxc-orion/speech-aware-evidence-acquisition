@@ -1,0 +1,6 @@
+# The repository-wide `*.log` rule keeps multi-MB runtime logs (llama-server,
+# driver) under SPEECHRL_DATA_DIR out of Git. The two `*.log` files here are not
+# runtime logs: they are the stdout transcripts of this offline derivation --
+# including both frozen-scorer reconciliations -- i.e. the evidence this archive
+# exists to preserve. Re-include them here only.
+!*.log

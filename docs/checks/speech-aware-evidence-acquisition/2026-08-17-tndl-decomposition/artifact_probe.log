@@ -1,0 +1,35 @@
+target mentions: 49
+
+4365024 entity 12 CARDINAL indices=(95,)
+  gold tokens in context: ['Security', 'Securities', 'Litigation', 'Reform', 'Act', 'of', '199', 'Nexstar', 'cautions', 'that', 'these', 'forward', 'looking']
+  mention tokens        : ['199']
+
+4365024 entity 19 DATE indices=(95,)
+  gold tokens in context: ['Security', 'Securities', 'Litigation', 'Reform', 'Act', 'of', '199', 'Nexstar', 'cautions', 'that', 'these', 'forward', 'looking']
+  mention tokens        : ['199']
+
+4365024 entity 6 YEAR indices=(95,)
+  gold tokens in context: ['Security', 'Securities', 'Litigation', 'Reform', 'Act', 'of', '199', 'Nexstar', 'cautions', 'that', 'these', 'forward', 'looking']
+  mention tokens        : ['199']
+
+4365024 entity 126 CARDINAL indices=(575,)
+  gold tokens in context: ['free', 'cash', 'flow', 'in', 'all', 'of', '201', 'So', 'our', 'growth', 'momentum', 'remained', 'strong']
+  mention tokens        : ['201']
+
+4365024 entity 239 DATE indices=(575,)
+  gold tokens in context: ['free', 'cash', 'flow', 'in', 'all', 'of', '201', 'So', 'our', 'growth', 'momentum', 'remained', 'strong']
+  mention tokens        : ['201']
+
+4365024 entity 85 YEAR indices=(575,)
+  gold tokens in context: ['free', 'cash', 'flow', 'in', 'all', 'of', '201', 'So', 'our', 'growth', 'momentum', 'remained', 'strong']
+  mention tokens        : ['201']
+
+=== numeric-class wrong mentions whose gold text carries NO number at all ===
+  DATE             22 /  349
+  CARDINAL          2 /  739
+  TIME              2 /    9
+  MONEY             2 /  175
+  PERCENT           2 /  279
+  ORDINAL           1 /   28
+  TOTAL 31/2082 = 1.5% of numeric wrong mass
+  examples: [('approximately', 4), ('last year', 2), ('the quarter', 2), ('a year', 2), ('quarter', 1), ('EET', 1), ('the prior years', 1), ('the year', 1), ('the next quarter', 1), ('quarters', 1), ('Today', 1), ('nove-', 1), ('year-to-date', 1), ('just a minute', 1), ('year over- year', 1), ('the more than', 1), ('Thirdly', 1), ('this year', 1), ('the same period of last year', 1), ('the pre prior year', 1)]

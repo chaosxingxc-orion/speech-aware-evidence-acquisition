@@ -1,0 +1,188 @@
+### 0. canonicalizer + aligner self-test
+=== POSITIVE (expect window-tier match) ===
+  strict=1 window=1 value=1  '2020'                                 vs 'twenty twenty'
+  strict=1 window=1 value=1  '2020'                                 vs 'two thousand twenty'
+  strict=1 window=1 value=1  '2026'                                 vs 'twenty twenty-six'
+  strict=1 window=1 value=1  '1998'                                 vs 'nineteen ninety eight'
+  strict=1 window=1 value=1  '6.8%'                                 vs 'six point eight percent'
+  strict=1 window=1 value=1  '19%'                                  vs 'nineteen percent'
+  strict=1 window=1 value=1  '142.8%'                               vs 'one hundred forty two point eight percent'
+  strict=1 window=1 value=1  '$58,000'                              vs 'fifty eight thousand dollars'
+  strict=1 window=1 value=1  '$350,000'                             vs 'three hundred fifty thousand dollars'
+  strict=0 window=1 value=1  '$6.5'                                 vs 'six point five'
+  strict=1 window=1 value=1  '5.1'                                  vs 'five point one'
+  strict=1 window=1 value=1  '72'                                   vs 'seventy two'
+  strict=1 window=1 value=1  '25 cents'                             vs 'twenty five cents'
+  strict=1 window=1 value=1  '10-K'                                 vs 'ten K'
+  strict=1 window=1 value=1  '8-K'                                  vs 'eight K'
+  strict=1 window=1 value=1  '3D'                                   vs 'three D'
+  strict=1 window=1 value=0  '18th'                                 vs 'eighteenth'
+  strict=1 window=1 value=0  '4th'                                  vs 'fourth'
+  strict=1 window=1 value=0  'first'                                vs '1st'
+  strict=1 window=1 value=1  'third quarter'                        vs '3rd quarter'
+  strict=1 window=1 value=1  'the third quarter of fiscal 2020'     vs 'the third quarter of fiscal twenty twenty'
+  strict=0 window=1 value=1  '$53.2M'                               vs 'fifty three point two million dollars'
+  strict=0 window=1 value=1  '53.2 million'                         vs '$53.2M'
+  strict=1 window=1 value=1  '2,873'                                vs 'two thousand eight hundred seventy three'
+  strict=1 window=1 value=1  '$2'                                   vs 'two dollars'
+  strict=1 window=1 value=1  '0.5'                                  vs 'point five'
+  strict=1 window=1 value=1  'zero cents'                           vs '0 cents'
+  strict=1 window=1 value=1  '2021'                                 vs 'twenty twenty one'
+
+=== NEGATIVE (expect window-tier NON-match) ===
+  strict=0 window=0 value=0  '2020'                                 vs 'twenty nineteen'
+  strict=0 window=0 value=0  '6.8%'                                 vs 'six point nine percent'
+  strict=0 window=1 value=1  '$58,000'                              vs 'fifty eight thousand'   <-- FALSE POSITIVE
+  strict=0 window=0 value=0  '72'                                   vs 'seventy three'
+  strict=0 window=0 value=0  'Culp'                                 vs 'Cult'
+  strict=0 window=0 value=0  'first'                                vs 'second'
+
+=== canonical_variants spot dump ===
+  '2020'                                 -> [('2020',)]
+  'twenty twenty'                        -> [('2020',), ('40',), ('twenty', 'twenty')]
+  '$53.2M'                               -> [('53.2', '#usd', 'million'), ('53200000', '#usd')]
+  'six point eight percent'              -> [('6.8', '#pct'), ('six', 'point', 'eight', '#pct')]
+  '10-K'                                 -> [('10', 'k')]
+  'the third quarter of fiscal 2020'     -> [('the', '#ord3', 'quarter', 'of', 'fiscal', '2020'), ('the', 'third', 'quarter', 'of', 'fiscal', '2020')]
+  "we'll"                                -> [('we', 'will')]
+  '$6.5 million'                         -> [('6.5', '#usd', 'million')]
+
+=== align_trace vs frozen align ===
+  randomised mirror check: 300/300 masks identical to frozen align()
+
+POSITIVE misses at window tier: 0/28
+
+=== compound ordinals ===
+  window=1 want=1  '31st' vs 'thirty first'
+  window=1 want=1  'December 31st 2019' vs 'December thirty first twenty nineteen'
+  window=1 want=1  '21st' vs 'twenty first'
+  window=0 want=0  '31st' vs 'thirty second'
+
+### 1. wrong-mention inventory, arm r1verify (headline)
+samples: 10
+  4330115: ref=  6690 hyp=  6873 expected= 596 correct= 391 wrong= 205
+  4365024: ref= 11851 hyp= 12245 expected=1469 correct= 991 wrong= 478
+  4365948: ref=  6785 hyp=  7051 expected= 936 correct= 656 wrong= 280
+  4366429: ref= 11442 hyp= 11522 expected=1153 correct= 821 wrong= 332
+  4366522: ref=  4249 hyp=  4351 expected= 519 correct= 241 wrong= 278
+  4384964: ref= 10301 hyp= 10567 expected= 931 correct= 670 wrong= 261
+  4385072: ref=  6605 hyp=  6832 expected= 669 correct= 412 wrong= 257
+  4387383: ref=  3686 hyp=  3852 expected= 395 correct= 236 wrong= 159
+  4389907: ref=  4136 hyp=  4393 expected= 396 correct= 226 wrong= 170
+  4397829: ref= 11403 hyp= 11919 expected=1220 correct= 767 wrong= 453
+
+TOTAL expected=8284 correct=5411 wrong=2873  -> /mnt/c/Users/35686/AppData/Local/Temp/claude/D--chao-workspace-exploring-l4-intelligence-studies-speech-aware-evidence-acquisition/6d9f1834-68e9-41a7-bbcc-724898cf15a9/scratchpad/agentD/wrong_mentions_r1verify.jsonl
+
+RECONCILIATION OK: all 23 entity classes match arm 'r1verify' of report.json exactly.
+
+### 2. wrong-mention inventory, arm r0bias (cross-arm control)
+samples: 10
+  4330115: ref=  6690 hyp=  6858 expected= 596 correct= 392 wrong= 204
+  4365024: ref= 11851 hyp= 12234 expected=1469 correct= 994 wrong= 475
+  4365948: ref=  6785 hyp=  7050 expected= 936 correct= 662 wrong= 274
+  4366429: ref= 11442 hyp= 11531 expected=1153 correct= 802 wrong= 351
+  4366522: ref=  4249 hyp=  4351 expected= 519 correct= 295 wrong= 224
+  4384964: ref= 10301 hyp= 10514 expected= 931 correct= 684 wrong= 247
+  4385072: ref=  6605 hyp=  6829 expected= 669 correct= 424 wrong= 245
+  4387383: ref=  3686 hyp=  3850 expected= 395 correct= 241 wrong= 154
+  4389907: ref=  4136 hyp=  4419 expected= 396 correct= 206 wrong= 190
+  4397829: ref= 11403 hyp= 11918 expected=1220 correct= 762 wrong= 458
+
+TOTAL expected=8284 correct=5462 wrong=2822  -> /mnt/c/Users/35686/AppData/Local/Temp/claude/D--chao-workspace-exploring-l4-intelligence-studies-speech-aware-evidence-acquisition/6d9f1834-68e9-41a7-bbcc-724898cf15a9/scratchpad/agentD/wrong_mentions_r0bias.jsonl
+
+RECONCILIATION OK: 10 samples and 23 entity classes match the frozen entity-wer scorer exactly (r0bias.entity-wer.json).
+
+### 3. mention-level vs token-level error share
+=== r1verify: mention-level vs token-level wrong-entity mass ===
+  wrong MENTIONS: 2873     distinct wrong TOKENS: 2954   (inflation x0.97)
+  group         mentions   m-share    tokens   t-share
+  NUMERIC           2082    72.47%      2074    70.21%
+  CONVENTION         347    12.08%       274     9.28%
+  NAME               444    15.45%       606    20.51%
+  NUM+CONV          2429    84.55%      2348    79.49%
+
+  entity labels per wrong token: {1: 2361, 2: 317, 3: 276}
+
+  distinct wrong tokens whose mentions include a FORMAT match: 1809/2954 = 61.24%
+=== r0bias: mention-level vs token-level wrong-entity mass ===
+  wrong MENTIONS: 2822     distinct wrong TOKENS: 2897   (inflation x0.97)
+  group         mentions   m-share    tokens   t-share
+  NUMERIC           2021    71.62%      2003    69.14%
+  CONVENTION         359    12.72%       288     9.94%
+  NAME               442    15.66%       606    20.92%
+  NUM+CONV          2380    84.34%      2291    79.08%
+
+  entity labels per wrong token: {1: 2315, 2: 311, 3: 271}
+
+  distinct wrong tokens whose mentions include a FORMAT match: 1742/2897 = 60.13%
+
+### 4. three-way decomposition
+  ConEC 4330115: biasing=   8802 names=  340 pdf=   94753 chars  pdfs=[('4330115_1.pdf', 212049), ('4330115_2.pdf', 39056)]
+  ConEC 4365024: biasing=   5964 names=  290 pdf=   22655 chars  pdfs=[('4365024_2.pdf', 49890)]
+  ConEC 4365948: biasing=   7403 names=  180 pdf=   37304 chars  pdfs=[('4365948_1.pdf', 75797)]
+  ConEC 4366429: biasing=   6723 names=  325 pdf=   46142 chars  pdfs=[('4366429_1.pdf', 38441), ('4366429_2.pdf', 63428)]
+  ConEC 4366522: biasing=  11132 names=   91 pdf=       0 chars  pdfs=[]
+  ConEC 4384964: biasing=   2800 names=  499 pdf=    9348 chars  pdfs=[('4384964_1.pdf', 11556)]
+  ConEC 4385072: biasing=   2299 names=  221 pdf=       0 chars  pdfs=[]
+  ConEC 4387383: biasing=   3636 names=  101 pdf=   41244 chars  pdfs=[('4387383_2.pdf', 109767)]
+  ConEC 4389907: biasing=   7347 names=  134 pdf=   31194 chars  pdfs=[('4389907_2.pdf', 75602)]
+  ConEC 4397829: biasing=   8637 names=  417 pdf=   48014 chars  pdfs=[('4397829_1.pdf', 44282), ('4397829_2.pdf', 55291)]
+
+=== r1verify: three-way decomposition over ALL wrong mentions ===
+  wrong         2873
+  FORMAT        1921   66.86%
+  PRE-PUBLISHED  527   18.34%  (decoy  5.22%)
+  NOVEL          425   14.79%
+
+  [NUMERIC] wrong=2082  FORMAT=1800 (86.46%)  PRE-PUB=178 (8.55%, decoy 4.32%)  NOVEL=104 (5.00%)
+      key len1_2    surviving=  25 prepub=  24 ( 96.0%)  decoy=  22 ( 88.0%)
+      key len3_4    surviving= 139 prepub= 114 ( 82.0%)  decoy=  62 ( 44.6%)
+      key len5plus  surviving= 118 prepub=  40 ( 33.9%)  decoy=   6 (  5.1%)
+
+  [CONVENTION] wrong=347  FORMAT=53 (15.27%)  PRE-PUB=116 (33.43%, decoy 5.48%)  NOVEL=178 (51.30%)
+      key len1_2    surviving=   5 prepub=   5 (100.0%)  decoy=   3 ( 60.0%)
+      key len3_4    surviving= 124 prepub=  73 ( 58.9%)  decoy=  16 ( 12.9%)
+      key len5plus  surviving= 165 prepub=  38 ( 23.0%)  decoy=   0 (  0.0%)
+
+  [NAME] wrong=444  FORMAT=68 (15.32%)  PRE-PUB=233 (52.48%, decoy 9.23%)  NOVEL=143 (32.21%)
+      key len1_2    surviving=  40 prepub=  39 ( 97.5%)  decoy=  32 ( 80.0%)
+      key len3_4    surviving= 100 prepub=  66 ( 66.0%)  decoy=   9 (  9.0%)
+      key len5plus  surviving= 236 prepub= 128 ( 54.2%)  decoy=   0 (  0.0%)
+
+wrote /mnt/c/Users/35686/AppData/Local/Temp/claude/D--chao-workspace-exploring-l4-intelligence-studies-speech-aware-evidence-acquisition/6d9f1834-68e9-41a7-bbcc-724898cf15a9/scratchpad/agentD/decomposition_r1verify.json
+  ConEC 4330115: biasing=   8802 names=  340 pdf=   94753 chars  pdfs=[('4330115_1.pdf', 212049), ('4330115_2.pdf', 39056)]
+  ConEC 4365024: biasing=   5964 names=  290 pdf=   22655 chars  pdfs=[('4365024_2.pdf', 49890)]
+  ConEC 4365948: biasing=   7403 names=  180 pdf=   37304 chars  pdfs=[('4365948_1.pdf', 75797)]
+  ConEC 4366429: biasing=   6723 names=  325 pdf=   46142 chars  pdfs=[('4366429_1.pdf', 38441), ('4366429_2.pdf', 63428)]
+  ConEC 4366522: biasing=  11132 names=   91 pdf=       0 chars  pdfs=[]
+  ConEC 4384964: biasing=   2800 names=  499 pdf=    9348 chars  pdfs=[('4384964_1.pdf', 11556)]
+  ConEC 4385072: biasing=   2299 names=  221 pdf=       0 chars  pdfs=[]
+  ConEC 4387383: biasing=   3636 names=  101 pdf=   41244 chars  pdfs=[('4387383_2.pdf', 109767)]
+  ConEC 4389907: biasing=   7347 names=  134 pdf=   31194 chars  pdfs=[('4389907_2.pdf', 75602)]
+  ConEC 4397829: biasing=   8637 names=  417 pdf=   48014 chars  pdfs=[('4397829_1.pdf', 44282), ('4397829_2.pdf', 55291)]
+
+=== r0bias: three-way decomposition over ALL wrong mentions ===
+  wrong         2822
+  FORMAT        1852   65.63%
+  PRE-PUBLISHED  545   19.31%  (decoy  5.10%)
+  NOVEL          425   15.06%
+
+  [NUMERIC] wrong=2021  FORMAT=1735 (85.85%)  PRE-PUB=188 (9.30%, decoy 4.01%)  NOVEL=98 (4.85%)
+      key len1_2    surviving=  25 prepub=  24 ( 96.0%)  decoy=  22 ( 88.0%)
+      key len3_4    surviving= 142 prepub= 117 ( 82.4%)  decoy=  53 ( 37.3%)
+      key len5plus  surviving= 119 prepub=  47 ( 39.5%)  decoy=   6 (  5.0%)
+
+  [CONVENTION] wrong=359  FORMAT=51 (14.21%)  PRE-PUB=128 (35.65%, decoy 5.29%)  NOVEL=180 (50.14%)
+      key len1_2    surviving=   5 prepub=   5 (100.0%)  decoy=   2 ( 40.0%)
+      key len3_4    surviving= 138 prepub=  88 ( 63.8%)  decoy=  17 ( 12.3%)
+      key len5plus  surviving= 165 prepub=  35 ( 21.2%)  decoy=   0 (  0.0%)
+
+  [NAME] wrong=442  FORMAT=66 (14.93%)  PRE-PUB=229 (51.81%, decoy 9.95%)  NOVEL=147 (33.26%)
+      key len1_2    surviving=  39 prepub=  38 ( 97.4%)  decoy=  31 ( 79.5%)
+      key len3_4    surviving= 101 prepub=  67 ( 66.3%)  decoy=  13 ( 12.9%)
+      key len5plus  surviving= 236 prepub= 124 ( 52.5%)  decoy=   0 (  0.0%)
+
+wrote /mnt/c/Users/35686/AppData/Local/Temp/claude/D--chao-workspace-exploring-l4-intelligence-studies-speech-aware-evidence-acquisition/6d9f1834-68e9-41a7-bbcc-724898cf15a9/scratchpad/agentD/decomposition_r0bias.json
+
+### 5. report tables
+wrote /mnt/c/Users/35686/AppData/Local/Temp/claude/D--chao-workspace-exploring-l4-intelligence-studies-speech-aware-evidence-acquisition/6d9f1834-68e9-41a7-bbcc-724898cf15a9/scratchpad/agentD/tables_r1verify.md and /mnt/c/Users/35686/AppData/Local/Temp/claude/D--chao-workspace-exploring-l4-intelligence-studies-speech-aware-evidence-acquisition/6d9f1834-68e9-41a7-bbcc-724898cf15a9/scratchpad/agentD/tables_r0bias.md

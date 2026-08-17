@@ -1,0 +1,4187 @@
+{
+ "arm": "r0bias",
+ "conec_pdfs": {
+  "4330115": [
+   {
+    "chars": 212049,
+    "cmap_entries": 40,
+    "glyph_offset": null,
+    "hex_accepted": false,
+    "hex_chars": 419,
+    "hex_textiness": 0.518,
+    "literal_chars": 212049,
+    "name": "4330115_1.pdf"
+   },
+   {
+    "chars": 39056,
+    "cmap_entries": 84,
+    "glyph_offset": null,
+    "hex_accepted": true,
+    "hex_chars": 39029,
+    "hex_textiness": 0.996,
+    "literal_chars": 26,
+    "name": "4330115_2.pdf"
+   }
+  ],
+  "4365024": [
+   {
+    "chars": 49890,
+    "cmap_entries": 61,
+    "glyph_offset": null,
+    "hex_accepted": true,
+    "hex_chars": 2163,
+    "hex_textiness": 0.975,
+    "literal_chars": 47726,
+    "name": "4365024_2.pdf"
+   }
+  ],
+  "4365948": [
+   {
+    "chars": 75797,
+    "cmap_entries": 57,
+    "glyph_offset": null,
+    "hex_accepted": true,
+    "hex_chars": 1833,
+    "hex_textiness": 0.905,
+    "literal_chars": 73963,
+    "name": "4365948_1.pdf"
+   }
+  ],
+  "4366429": [
+   {
+    "chars": 38441,
+    "cmap_entries": 48,
+    "glyph_offset": null,
+    "hex_accepted": true,
+    "hex_chars": 1883,
+    "hex_textiness": 0.952,
+    "literal_chars": 36557,
+    "name": "4366429_1.pdf"
+   },
+   {
+    "chars": 63428,
+    "cmap_entries": 59,
+    "glyph_offset": null,
+    "hex_accepted": true,
+    "hex_chars": 2646,
+    "hex_textiness": 0.945,
+    "literal_chars": 60781,
+    "name": "4366429_2.pdf"
+   }
+  ],
+  "4366522": [],
+  "4384964": [
+   {
+    "chars": 11556,
+    "cmap_entries": 0,
+    "glyph_offset": 29,
+    "hex_accepted": true,
+    "hex_chars": 11556,
+    "hex_textiness": 0.996,
+    "literal_chars": 0,
+    "name": "4384964_1.pdf"
+   }
+  ],
+  "4385072": [],
+  "4387383": [
+   {
+    "chars": 109767,
+    "cmap_entries": 47,
+    "glyph_offset": null,
+    "hex_accepted": true,
+    "hex_chars": 1363,
+    "hex_textiness": 0.95,
+    "literal_chars": 108403,
+    "name": "4387383_2.pdf"
+   }
+  ],
+  "4389907": [
+   {
+    "chars": 75602,
+    "cmap_entries": 70,
+    "glyph_offset": null,
+    "hex_accepted": true,
+    "hex_chars": 4885,
+    "hex_textiness": 0.972,
+    "literal_chars": 70716,
+    "name": "4389907_2.pdf"
+   }
+  ],
+  "4397829": [
+   {
+    "chars": 44282,
+    "cmap_entries": 54,
+    "glyph_offset": null,
+    "hex_accepted": true,
+    "hex_chars": 2235,
+    "hex_textiness": 0.933,
+    "literal_chars": 42046,
+    "name": "4397829_1.pdf"
+   },
+   {
+    "chars": 55291,
+    "cmap_entries": 0,
+    "glyph_offset": null,
+    "hex_accepted": false,
+    "hex_chars": 0,
+    "hex_textiness": 0.0,
+    "literal_chars": 55291,
+    "name": "4397829_2.pdf"
+   }
+  ]
+ },
+ "examples": {
+  "format_caught": [
+   {
+    "degenerate": false,
+    "entity_id": "0",
+    "entity_type": "YEAR",
+    "fmt_strict": false,
+    "fmt_value": true,
+    "fmt_window": true,
+    "hyp_tight": "twenty",
+    "hyp_wide": "welcome to Cult's third quarter twenty twenty earnings conference call. Today's call is",
+    "ref_text": "2020",
+    "sample_id": "4330115",
+    "token_indices": [
+     8
+    ]
+   },
+   {
+    "degenerate": false,
+    "entity_id": "1",
+    "entity_type": "CARDINAL",
+    "fmt_strict": false,
+    "fmt_value": true,
+    "fmt_window": true,
+    "hyp_tight": "twenty",
+    "hyp_wide": "welcome to Cult's third quarter twenty twenty earnings conference call. Today's call is",
+    "ref_text": "2020",
+    "sample_id": "4330115",
+    "token_indices": [
+     8
+    ]
+   },
+   {
+    "degenerate": false,
+    "entity_id": "25",
+    "entity_type": "DATE",
+    "fmt_strict": true,
+    "fmt_value": true,
+    "fmt_window": true,
+    "hyp_tight": "the third quarter of fiscal two thousand twenty.",
+    "hyp_wide": "to review the company's results for the third quarter of fiscal two thousand twenty. As we start, let me state",
+    "ref_text": "the third quarter of fiscal 2020",
+    "sample_id": "4330115",
+    "token_indices": [
+     56,
+     57,
+     58,
+     59,
+     60,
+     61
+    ]
+   },
+   {
+    "degenerate": false,
+    "entity_id": "16",
+    "entity_type": "CARDINAL",
+    "fmt_strict": false,
+    "fmt_value": true,
+    "fmt_window": true,
+    "hyp_tight": "twenty.",
+    "hyp_wide": "third quarter of fiscal two thousand twenty. As we start, let me state",
+    "ref_text": "2020",
+    "sample_id": "4330115",
+    "token_indices": [
+     61
+    ]
+   },
+   {
+    "degenerate": false,
+    "entity_id": "8",
+    "entity_type": "YEAR",
+    "fmt_strict": false,
+    "fmt_value": true,
+    "fmt_window": true,
+    "hyp_tight": "twenty.",
+    "hyp_wide": "third quarter of fiscal two thousand twenty. As we start, let me state",
+    "ref_text": "2020",
+    "sample_id": "4330115",
+    "token_indices": [
+     61
+    ]
+   },
+   {
+    "degenerate": false,
+    "entity_id": "9",
+    "entity_type": "ALPHANUMERIC",
+    "fmt_strict": true,
+    "fmt_value": true,
+    "fmt_window": true,
+    "hyp_tight": "ten K",
+    "hyp_wide": "company's most recent filings on Form ten K and Form ten Q. You are",
+    "ref_text": "10-K",
+    "sample_id": "4330115",
+    "token_indices": [
+     151
+    ]
+   },
+   {
+    "degenerate": false,
+    "entity_id": "10",
+    "entity_type": "ALPHANUMERIC",
+    "fmt_strict": true,
+    "fmt_value": true,
+    "fmt_window": true,
+    "hyp_tight": "ten Q.",
+    "hyp_wide": "on Form ten K and Form ten Q. You are cautioned not to place",
+    "ref_text": "10-Q",
+    "sample_id": "4330115",
+    "token_indices": [
+     154
+    ]
+   },
+   {
+    "degenerate": false,
+    "entity_id": "679",
+    "entity_type": "ALPHANUMERIC",
+    "fmt_strict": true,
+    "fmt_value": true,
+    "fmt_window": true,
+    "hyp_tight": "eight K",
+    "hyp_wide": "schedule to the company's press release. eight K filed yesterday and posted on the",
+    "ref_text": "8-K",
+    "sample_id": "4330115",
+    "token_indices": [
+     226
+    ]
+   },
+   {
+    "degenerate": false,
+    "entity_id": "680",
+    "entity_type": "ALPHANUMERIC",
+    "fmt_strict": true,
+    "fmt_value": true,
+    "fmt_window": true,
+    "hyp_tight": "eight K",
+    "hyp_wide": "information which is available in the eight K filed yesterday and posted on the",
+    "ref_text": "8-K",
+    "sample_id": "4330115",
+    "token_indices": [
+     297
+    ]
+   },
+   {
+    "degenerate": false,
+    "entity_id": "61",
+    "entity_type": "DATE",
+    "fmt_strict": true,
+    "fmt_value": true,
+    "fmt_window": true,
+    "hyp_tight": "fourth quarter fiscal twenty twenty",
+    "hyp_wide": "after that, Ken will review our fourth quarter fiscal twenty twenty business outlook. We will then be",
+    "ref_text": "fourth quarter fiscal 2020",
+    "sample_id": "4330115",
+    "token_indices": [
+     430,
+     431,
+     432,
+     433
+    ]
+   },
+   {
+    "degenerate": false,
+    "entity_id": "36",
+    "entity_type": "YEAR",
+    "fmt_strict": false,
+    "fmt_value": true,
+    "fmt_window": true,
+    "hyp_tight": "twenty",
+    "hyp_wide": "review our fourth quarter fiscal twenty twenty business outlook. We will then be",
+    "ref_text": "2020",
+    "sample_id": "4330115",
+    "token_indices": [
+     433
+    ]
+   },
+   {
+    "degenerate": false,
+    "entity_id": "39",
+    "entity_type": "CARDINAL",
+    "fmt_strict": false,
+    "fmt_value": true,
+    "fmt_window": true,
+    "hyp_tight": "twenty",
+    "hyp_wide": "review our fourth quarter fiscal twenty twenty business outlook. We will then be",
+    "ref_text": "2020",
+    "sample_id": "4330115",
+    "token_indices": [
+     433
+    ]
+   },
+   {
+    "degenerate": false,
+    "entity_id": "83",
+    "entity_type": "DATE",
+    "fmt_strict": true,
+    "fmt_value": true,
+    "fmt_window": true,
+    "hyp_tight": "fiscal twenty twenty,",
+    "hyp_wide": "of a diverse customer base. Throughout fiscal twenty twenty, we have maintained our position as",
+    "ref_text": "fiscal 2020",
+    "sample_id": "4330115",
+    "token_indices": [
+     797,
+     798
+    ]
+   },
+   {
+    "degenerate": false,
+    "entity_id": "37",
+    "entity_type": "YEAR",
+    "fmt_strict": false,
+    "fmt_value": true,
+    "fmt_window": true,
+    "hyp_tight": "twenty,",
+    "hyp_wide": "diverse customer base. Throughout fiscal twenty twenty, we have maintained our position as",
+    "ref_text": "2020",
+    "sample_id": "4330115",
+    "token_indices": [
+     798
+    ]
+   },
+   {
+    "degenerate": false,
+    "entity_id": "40",
+    "entity_type": "CARDINAL",
+    "fmt_strict": false,
+    "fmt_value": true,
+    "fmt_window": true,
+    "hyp_tight": "twenty,",
+    "hyp_wide": "diverse customer base. Throughout fiscal twenty twenty, we have maintained our position as",
+    "ref_text": "2020",
+    "sample_id": "4330115",
+    "token_indices": [
+     798
+    ]
+   },
+   {
+    "degenerate": false,
+    "entity_id": "84",
+    "entity_type": "DATE",
+    "fmt_strict": true,
+    "fmt_value": true,
+    "fmt_window": true,
+    "hyp_tight": "fiscal twenty twenty",
+    "hyp_wide": "opportunities ahead for the remainder of fiscal twenty twenty and beyond. I'll now turn the",
+    "ref_text": "fiscal 2020",
+    "sample_id": "4330115",
+    "token_indices": [
+     844,
+     845
+    ]
+   },
+   {
+    "degenerate": false,
+    "entity_id": "38",
+    "entity_type": "YEAR",
+    "fmt_strict": false,
+    "fmt_value": true,
+    "fmt_window": true,
+    "hyp_tight": "twenty",
+    "hyp_wide": "for the remainder of fiscal twenty twenty and beyond. I'll now turn the",
+    "ref_text": "2020",
+    "sample_id": "4330115",
+    "token_indices": [
+     845
+    ]
+   },
+   {
+    "degenerate": false,
+    "entity_id": "41",
+    "entity_type": "CARDINAL",
+    "fmt_strict": false,
+    "fmt_value": true,
+    "fmt_window": true,
+    "hyp_tight": "twenty",
+    "hyp_wide": "for the remainder of fiscal twenty twenty and beyond. I'll now turn the",
+    "ref_text": "2020",
+    "sample_id": "4330115",
+    "token_indices": [
+     845
+    ]
+   },
+   {
+    "degenerate": false,
+    "entity_id": "119",
+    "entity_type": "CARDINAL",
+    "fmt_strict": false,
+    "fmt_value": true,
+    "fmt_window": true,
+    "hyp_tight": "two",
+    "hyp_wide": "third quarter. Net sales were seventy two million, down six point eight percent",
+    "ref_text": "72",
+    "sample_id": "4330115",
+    "token_indices": [
+     905
+    ]
+   },
+   {
+    "degenerate": false,
+    "entity_id": "90",
+    "entity_type": "PERCENT",
+    "fmt_strict": false,
+    "fmt_value": true,
+    "fmt_window": true,
+    "hyp_tight": "eight percent",
+    "hyp_wide": "seventy two million, down six point eight percent compared with the prior year period.",
+    "ref_text": "6.8%",
+    "sample_id": "4330115",
+    "token_indices": [
+     908
+    ]
+   },
+   {
+    "degenerate": false,
+    "entity_id": "121",
+    "entity_type": "CARDINAL",
+    "fmt_strict": false,
+    "fmt_value": true,
+    "fmt_window": true,
+    "hyp_tight": "point one",
+    "hyp_wide": "reported a net loss of five point one million compared with a pre tax",
+    "ref_text": "5.1",
+    "sample_id": "4330115",
+    "token_indices": [
+     927
+    ]
+   },
+   {
+    "degenerate": false,
+    "entity_id": "122",
+    "entity_type": "CARDINAL",
+    "fmt_strict": false,
+    "fmt_value": true,
+    "fmt_window": true,
+    "hyp_tight": "point three",
+    "hyp_wide": "a pre tax income of four point three million for the same period last",
+    "ref_text": "4.3",
+    "sample_id": "4330115",
+    "token_indices": [
+     935
+    ]
+   },
+   {
+    "degenerate": false,
+    "entity_id": "197",
+    "entity_type": "DATE",
+    "fmt_strict": true,
+    "fmt_value": true,
+    "fmt_window": true,
+    "hyp_tight": "February eighteenth,",
+    "hyp_wide": "disclosed a few weeks ago on February eighteenth, the results for the third quarter",
+    "ref_text": "February 18th",
+    "sample_id": "4330115",
+    "token_indices": [
+     953,
+     954
+    ]
+   },
+   {
+    "degenerate": false,
+    "entity_id": "111",
+    "entity_type": "ORDINAL",
+    "fmt_strict": true,
+    "fmt_value": true,
+    "fmt_window": true,
+    "hyp_tight": "eighteenth,",
+    "hyp_wide": "a few weeks ago on February eighteenth, the results for the third quarter",
+    "ref_text": "18th",
+    "sample_id": "4330115",
+    "token_indices": [
+     954
+    ]
+   },
+   {
+    "degenerate": false,
+    "entity_id": "113",
+    "entity_type": "ALPHANUMERIC",
+    "fmt_strict": true,
+    "fmt_value": true,
+    "fmt_window": true,
+    "hyp_tight": "eighteenth,",
+    "hyp_wide": "a few weeks ago on February eighteenth, the results for the third quarter",
+    "ref_text": "18th",
+    "sample_id": "4330115",
+    "token_indices": [
+     954
+    ]
+   },
+   {
+    "degenerate": false,
+    "entity_id": "123",
+    "entity_type": "CARDINAL",
+    "fmt_strict": false,
+    "fmt_value": true,
+    "fmt_window": true,
+    "hyp_tight": "point one",
+    "hyp_wide": "include a reversal of a six point one million recorded contingent earnout liability, as",
+    "ref_text": "6.1",
+    "sample_id": "4330115",
+    "token_indices": [
+     971
+    ]
+   },
+   {
+    "degenerate": false,
+    "entity_id": "124",
+    "entity_type": "CARDINAL",
+    "fmt_strict": false,
+    "fmt_value": true,
+    "fmt_window": true,
+    "hyp_tight": "point six",
+    "hyp_wide": "non-cash impairment charges of thirteen point six million related to the home accessories",
+    "ref_text": "13.6",
+    "sample_id": "4330115",
+    "token_indices": [
+     984
+    ]
+   },
+   {
+    "degenerate": false,
+    "entity_id": "125",
+    "entity_type": "CARDINAL",
+    "fmt_strict": false,
+    "fmt_value": true,
+    "fmt_window": true,
+    "hyp_tight": "point six",
+    "hyp_wide": "non-cash net charge of seven point six million. Excluding this net charge, adjusted",
+    "ref_text": "7.6",
+    "sample_id": "4330115",
+    "token_indices": [
+     999
+    ]
+   },
+   {
+    "degenerate": false,
+    "entity_id": "126",
+    "entity_type": "CARDINAL",
+    "fmt_strict": false,
+    "fmt_value": true,
+    "fmt_window": true,
+    "hyp_tight": "point four",
+    "hyp_wide": "pre-tax income, non-GAAP, was two point four million for the third quarter of",
+    "ref_text": "2.4",
+    "sample_id": "4330115",
+    "token_indices": [
+     1011
+    ]
+   },
+   {
+    "degenerate": false,
+    "entity_id": "127",
+    "entity_type": "CARDINAL",
+    "fmt_strict": false,
+    "fmt_value": true,
+    "fmt_window": true,
+    "hyp_tight": "nine thousand",
+    "hyp_wide": "year included approximately seven hundred sixty nine thousand in restructuring and related charges and",
+    "ref_text": "769,000",
+    "sample_id": "4330115",
+    "token_indices": [
+     1034
+    ]
+   },
+   {
+    "degenerate": false,
+    "entity_id": "128",
+    "entity_type": "CARDINAL",
+    "fmt_strict": true,
+    "fmt_value": true,
+    "fmt_window": true,
+    "hyp_tight": "five",
+    "hyp_wide": "third quarter of last year was five million. Net loss attributable to the",
+    "ref_text": "5",
+    "sample_id": "4330115",
+    "token_indices": [
+     1073
+    ]
+   },
+   {
+    "degenerate": false,
+    "entity_id": "87",
+    "entity_type": "MONEY",
+    "fmt_strict": false,
+    "fmt_value": true,
+    "fmt_window": true,
+    "hyp_tight": "thousand dollars",
+    "hyp_wide": "Corp Inc. shareholders was fifty eight thousand dollars or zero cents per diluted share",
+    "ref_text": "$58,000",
+    "sample_id": "4330115",
+    "token_indices": [
+     1083
+    ]
+   },
+   {
+    "degenerate": false,
+    "entity_id": "130",
+    "entity_type": "CARDINAL",
+    "fmt_strict": false,
+    "fmt_value": true,
+    "fmt_window": true,
+    "hyp_tight": "point two",
+    "hyp_wide": "compared with net income of three point two million or twenty five cents per",
+    "ref_text": "3.2",
+    "sample_id": "4330115",
+    "token_indices": [
+     1099
+    ]
+   },
+   {
+    "degenerate": false,
+    "entity_id": "131",
+    "entity_type": "CARDINAL",
+    "fmt_strict": false,
+    "fmt_value": true,
+    "fmt_window": true,
+    "hyp_tight": "five",
+    "hyp_wide": "three point two million or twenty five cents per diluted share for the",
+    "ref_text": "25",
+    "sample_id": "4330115",
+    "token_indices": [
+     1102
+    ]
+   },
+   {
+    "degenerate": false,
+    "entity_id": "215",
+    "entity_type": "MONEY",
+    "fmt_strict": false,
+    "fmt_value": true,
+    "fmt_window": true,
+    "hyp_tight": "five cents",
+    "hyp_wide": "three point two million or twenty five cents per diluted share for the prior",
+    "ref_text": "25 cents",
+    "sample_id": "4330115",
+    "token_indices": [
+     1102,
+     1103
+    ]
+   },
+   {
+    "degenerate": false,
+    "entity_id": "91",
+    "entity_type": "PERCENT",
+    "fmt_strict": false,
+    "fmt_value": true,
+    "fmt_window": true,
+    "hyp_tight": "percent",
+    "hyp_wide": "effective income tax rate was nineteen percent for the third quarter and a",
+    "ref_text": "19%",
+    "sample_id": "4330115",
+    "token_indices": [
+     1139
+    ]
+   },
+   {
+    "degenerate": false,
+    "entity_id": "92",
+    "entity_type": "PERCENT",
+    "fmt_strict": false,
+    "fmt_value": true,
+    "fmt_window": true,
+    "hyp_tight": "eight percent",
+    "hyp_wide": "a hundred and forty two point eight percent for the year to date period",
+    "ref_text": "142.8%",
+    "sample_id": "4330115",
+    "token_indices": [
+     1145
+    ]
+   },
+   {
+    "degenerate": false,
+    "entity_id": "231",
+    "entity_type": "DATE",
+    "fmt_strict": true,
+    "fmt_value": true,
+    "fmt_window": true,
+    "hyp_tight": "fiscal twenty twenty",
+    "hyp_wide": "S on a cash basis for fiscal twenty twenty are expected to be minimal due",
+    "ref_text": "fiscal 2020",
+    "sample_id": "4330115",
+    "token_indices": [
+     1280,
+     1281
+    ]
+   },
+   {
+    "degenerate": false,
+    "entity_id": "107",
+    "entity_type": "YEAR",
+    "fmt_strict": false,
+    "fmt_value": true,
+    "fmt_window": true,
+    "hyp_tight": "twenty",
+    "hyp_wide": "a cash basis for fiscal twenty twenty are expected to be minimal due",
+    "ref_text": "2020",
+    "sample_id": "4330115",
+    "token_indices": [
+     1281
+    ]
+   },
+   {
+    "degenerate": false,
+    "entity_id": "134",
+    "entity_type": "CARDINAL",
+    "fmt_strict": false,
+    "fmt_value": true,
+    "fmt_window": true,
+    "hyp_tight": "twenty",
+    "hyp_wide": "a cash basis for fiscal twenty twenty are expected to be minimal due",
+    "ref_text": "2020",
+    "sample_id": "4330115",
+    "token_indices": [
+     1281
+    ]
+   }
+  ],
+  "format_missed": [
+   {
+    "decoy_hit": true,
+    "degenerate": false,
+    "entity_id": "93",
+    "entity_type": "PERCENT",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "thirty",
+    "hyp_wide": "twenty percent to one hundred and thirty percent range based on the facts",
+    "key_len": 3,
+    "keys": [
+     "120"
+    ],
+    "layer_hit": {
+     "any": true,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": true
+    },
+    "ref_text": "120%",
+    "sample_id": "4330115",
+    "token_indices": [
+     1335
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "255",
+    "entity_type": "DATE",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "last year's",
+    "hyp_wide": "seven point four percent compared with last year's third quarter. Operating income for the",
+    "key_len": 8,
+    "keys": [
+     "lastyear"
+    ],
+    "layer_hit": {
+     "any": true,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": true
+    },
+    "ref_text": "last year",
+    "sample_id": "4330115",
+    "token_indices": [
+     1593,
+     1594
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "301",
+    "entity_type": "CARDINAL",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "quarterly",
+    "hyp_wide": "five million to shareholders in regular quarterly dividends and share repurchases through the",
+    "key_len": 7,
+    "keys": [
+     "quarter"
+    ],
+    "layer_hit": {
+     "any": true,
+     "biasing_txt": true,
+     "names": false,
+     "pdf": true
+    },
+    "ref_text": "quarter",
+    "sample_id": "4330115",
+    "token_indices": [
+     1890
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "305",
+    "entity_type": "DATE",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "the first nine months of this fiscal year",
+    "hyp_wide": "four point seven million respectively for the first nine months of this fiscal year due primarily to the timing of",
+    "key_len": 29,
+    "keys": [
+     "thefirstmonthofthisfiscalyear",
+     "themonthofthisfiscalyear"
+    ],
+    "layer_hit": {
+     "any": false,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": false
+    },
+    "ref_text": "the first month of this fiscal year",
+    "sample_id": "4330115",
+    "token_indices": [
+     1922,
+     1923,
+     1924,
+     1925,
+     1926,
+     1927,
+     1928
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "488",
+    "entity_type": "ORDINAL",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "thing",
+    "hyp_wide": "cases. Okay. And then secondly, um. thing for me on the home accessories",
+    "key_len": 6,
+    "keys": [
+     "second"
+    ],
+    "layer_hit": {
+     "any": true,
+     "biasing_txt": true,
+     "names": false,
+     "pdf": true
+    },
+    "ref_text": "second",
+    "sample_id": "4330115",
+    "token_indices": [
+     4253
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "493",
+    "entity_type": "ALPHANUMERIC",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "B",
+    "hyp_wide": "accessory products on the B to B side. Uh we have a lot",
+    "key_len": 3,
+    "keys": [
+     "b2b"
+    ],
+    "layer_hit": {
+     "any": false,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": false
+    },
+    "ref_text": "B2B",
+    "sample_id": "4330115",
+    "token_indices": [
+     4518
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "4",
+    "entity_type": "DATE",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "second quarter twenty twenty",
+    "hyp_wide": "welcome to the Nexstar Media Group second quarter twenty twenty results call. Today's call is being",
+    "key_len": 18,
+    "keys": [
+     "quarters2020",
+     "secondquarters2020"
+    ],
+    "layer_hit": {
+     "any": false,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": false
+    },
+    "ref_text": "second quarter's 2020",
+    "sample_id": "4365024",
+    "token_indices": [
+     9,
+     10,
+     11
+    ]
+   },
+   {
+    "decoy_hit": true,
+    "degenerate": false,
+    "entity_id": "12",
+    "entity_type": "CARDINAL",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "five.",
+    "hyp_wide": "Litigation Reform Act of nineteen ninety five. Nexstar cautions that these forward-looking",
+    "key_len": 3,
+    "keys": [
+     "199"
+    ],
+    "layer_hit": {
+     "any": true,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": true
+    },
+    "ref_text": "199",
+    "sample_id": "4365024",
+    "token_indices": [
+     95
+    ]
+   },
+   {
+    "decoy_hit": true,
+    "degenerate": false,
+    "entity_id": "19",
+    "entity_type": "DATE",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "five.",
+    "hyp_wide": "Litigation Reform Act of nineteen ninety five. Nexstar cautions that these forward-looking",
+    "key_len": 3,
+    "keys": [
+     "199"
+    ],
+    "layer_hit": {
+     "any": true,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": true
+    },
+    "ref_text": "199",
+    "sample_id": "4365024",
+    "token_indices": [
+     95
+    ]
+   },
+   {
+    "decoy_hit": true,
+    "degenerate": false,
+    "entity_id": "6",
+    "entity_type": "YEAR",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "five.",
+    "hyp_wide": "Litigation Reform Act of nineteen ninety five. Nexstar cautions that these forward-looking",
+    "key_len": 3,
+    "keys": [
+     "199"
+    ],
+    "layer_hit": {
+     "any": true,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": true
+    },
+    "ref_text": "199",
+    "sample_id": "4365024",
+    "token_indices": [
+     95
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "9",
+    "entity_type": "ALPHANUMERIC",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "K",
+    "hyp_wide": "Nexstar's annual report on Form ten K for the year ended December thirty",
+    "key_len": 10,
+    "keys": [
+     "10000",
+     "10k",
+     "10thousand"
+    ],
+    "layer_hit": {
+     "any": false,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": false
+    },
+    "ref_text": "10K",
+    "sample_id": "4365024",
+    "token_indices": [
+     144
+    ]
+   },
+   {
+    "decoy_hit": true,
+    "degenerate": false,
+    "entity_id": "58",
+    "entity_type": "PERCENT",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "one",
+    "hyp_wide": "eight percent, forty nine percent and one hundred and twenty seven percent respectively",
+    "key_len": 2,
+    "keys": [
+     "28"
+    ],
+    "layer_hit": {
+     "any": true,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": true
+    },
+    "ref_text": "28%",
+    "sample_id": "4365024",
+    "token_indices": [
+     479
+    ]
+   },
+   {
+    "decoy_hit": true,
+    "degenerate": false,
+    "entity_id": "126",
+    "entity_type": "CARDINAL",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "nineteen.",
+    "hyp_wide": "cash flow in all of twenty nineteen. So our growth momentum remains strong",
+    "key_len": 3,
+    "keys": [
+     "201"
+    ],
+    "layer_hit": {
+     "any": true,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": true
+    },
+    "ref_text": "201",
+    "sample_id": "4365024",
+    "token_indices": [
+     575
+    ]
+   },
+   {
+    "decoy_hit": true,
+    "degenerate": false,
+    "entity_id": "239",
+    "entity_type": "DATE",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "nineteen.",
+    "hyp_wide": "cash flow in all of twenty nineteen. So our growth momentum remains strong",
+    "key_len": 3,
+    "keys": [
+     "201"
+    ],
+    "layer_hit": {
+     "any": true,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": true
+    },
+    "ref_text": "201",
+    "sample_id": "4365024",
+    "token_indices": [
+     575
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "85",
+    "entity_type": "YEAR",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "nineteen.",
+    "hyp_wide": "cash flow in all of twenty nineteen. So our growth momentum remains strong",
+    "key_len": 3,
+    "keys": [
+     "201"
+    ],
+    "layer_hit": {
+     "any": true,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": true
+    },
+    "ref_text": "201",
+    "sample_id": "4365024",
+    "token_indices": [
+     575
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "51",
+    "entity_type": "MONEY",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "six cents",
+    "hyp_wide": "to about thirteen dollars and eighty six cents per share. And we remain confident",
+    "key_len": 5,
+    "keys": [
+     "13.86"
+    ],
+    "layer_hit": {
+     "any": false,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": false
+    },
+    "ref_text": "$13.86",
+    "sample_id": "4365024",
+    "token_indices": [
+     627
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "254",
+    "entity_type": "DATE",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "year end twenty twenty one. twenty nineteen,",
+    "hyp_wide": "seventy percent of our subscribers at year end twenty twenty one. twenty nineteen, as well as new long-term",
+    "key_len": 11,
+    "keys": [
+     "yearend2019"
+    ],
+    "layer_hit": {
+     "any": false,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": false
+    },
+    "ref_text": "year end 2019",
+    "sample_id": "4365024",
+    "token_indices": [
+     733,
+     734,
+     735
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "318",
+    "entity_type": "DATE",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "twenty second quarter",
+    "hyp_wide": "committees and from candidates with twenty twenty second quarter political revenue of twenty one point",
+    "key_len": 17,
+    "keys": [
+     "2020quarter",
+     "2020secondquarter"
+    ],
+    "layer_hit": {
+     "any": true,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": true
+    },
+    "ref_text": "2020 second quarter",
+    "sample_id": "4365024",
+    "token_indices": [
+     1405,
+     1406,
+     1407
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "349",
+    "entity_type": "DATE",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "the second half of twenty nineteen",
+    "hyp_wide": "CBS, Fox and NBCUniversal. completed in the second half of twenty nineteen and as a result over eighty",
+    "key_len": 18,
+    "keys": [
+     "thehalfof201",
+     "thesecondhalfof201"
+    ],
+    "layer_hit": {
+     "any": true,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": true
+    },
+    "ref_text": "the second half of 201",
+    "sample_id": "4365024",
+    "token_indices": [
+     1659,
+     1660,
+     1661,
+     1662,
+     1663
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "177",
+    "entity_type": "CARDINAL",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "nineteen",
+    "hyp_wide": "in the second half of twenty nineteen and as a result over eighty",
+    "key_len": 3,
+    "keys": [
+     "201"
+    ],
+    "layer_hit": {
+     "any": true,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": true
+    },
+    "ref_text": "201",
+    "sample_id": "4365024",
+    "token_indices": [
+     1663
+    ]
+   },
+   {
+    "decoy_hit": true,
+    "degenerate": false,
+    "entity_id": "95",
+    "entity_type": "YEAR",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "nineteen",
+    "hyp_wide": "in the second half of twenty nineteen and as a result over eighty",
+    "key_len": 3,
+    "keys": [
+     "201"
+    ],
+    "layer_hit": {
+     "any": true,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": true
+    },
+    "ref_text": "201",
+    "sample_id": "4365024",
+    "token_indices": [
+     1663
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "355",
+    "entity_type": "DATE",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "december thirty one of twenty twenty two.",
+    "hyp_wide": "big four affiliations are contracted through december thirty one of twenty twenty two. With our successful twenty nineteen renewal",
+    "key_len": 15,
+    "keys": [
+     "december31of202"
+    ],
+    "layer_hit": {
+     "any": false,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": false
+    },
+    "ref_text": "December 31 of 202",
+    "sample_id": "4365024",
+    "token_indices": [
+     1693,
+     1694,
+     1695,
+     1696
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "183",
+    "entity_type": "CARDINAL",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "two.",
+    "hyp_wide": "december thirty one of twenty twenty two. With our successful twenty nineteen renewal",
+    "key_len": 3,
+    "keys": [
+     "202"
+    ],
+    "layer_hit": {
+     "any": true,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": true
+    },
+    "ref_text": "202",
+    "sample_id": "4365024",
+    "token_indices": [
+     1696
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "97",
+    "entity_type": "YEAR",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "two.",
+    "hyp_wide": "december thirty one of twenty twenty two. With our successful twenty nineteen renewal",
+    "key_len": 3,
+    "keys": [
+     "202"
+    ],
+    "layer_hit": {
+     "any": true,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": true
+    },
+    "ref_text": "202",
+    "sample_id": "4365024",
+    "token_indices": [
+     1696
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "366",
+    "entity_type": "DATE",
+    "fmt_strict": false,
+    "fmt_value": true,
+    "fmt_window": false,
+    "hyp_tight": "to third quarter,",
+    "hyp_wide": "budgeted second quarter levels. Looking ahead to third quarter, while the pandemic continues to impact",
+    "key_len": 15,
+    "keys": [
+     "thequarter",
+     "thethirdquarter"
+    ],
+    "layer_hit": {
+     "any": true,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": true
+    },
+    "ref_text": "the third quarter",
+    "sample_id": "4365024",
+    "token_indices": [
+     1843,
+     1844,
+     1845
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "47",
+    "entity_type": "TIME",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "eight p m",
+    "hyp_wide": "News Nation will air daily from eight p m to eleven p m E T",
+    "key_len": 5,
+    "keys": [
+     "800pm",
+     "80pm"
+    ],
+    "layer_hit": {
+     "any": false,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": false
+    },
+    "ref_text": "8:00 PM",
+    "sample_id": "4365024",
+    "token_indices": [
+     2001,
+     2002
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "48",
+    "entity_type": "TIME",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "p m E",
+    "hyp_wide": "from eight p m to eleven p m E T and will draw on the",
+    "key_len": 6,
+    "keys": [
+     "1100pm",
+     "110pm"
+    ],
+    "layer_hit": {
+     "any": false,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": false
+    },
+    "ref_text": "11:00 PM",
+    "sample_id": "4365024",
+    "token_indices": [
+     2004,
+     2005
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "1838",
+    "entity_type": "TIME",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "T",
+    "hyp_wide": "m to eleven p m E T and will draw on the local",
+    "key_len": 3,
+    "keys": [
+     "eet"
+    ],
+    "layer_hit": {
+     "any": true,
+     "biasing_txt": true,
+     "names": false,
+     "pdf": true
+    },
+    "ref_text": "EET",
+    "sample_id": "4365024",
+    "token_indices": [
+     2006
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "402",
+    "entity_type": "DATE",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "every quarter of twenty twenty,",
+    "hyp_wide": "be free cash flow positive in every quarter of twenty twenty, and we continue to expect NextStar's",
+    "key_len": 17,
+    "keys": [
+     "everyquarterof202"
+    ],
+    "layer_hit": {
+     "any": true,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": true
+    },
+    "ref_text": "every quarter of 202",
+    "sample_id": "4365024",
+    "token_indices": [
+     2323,
+     2324,
+     2325,
+     2326
+    ]
+   },
+   {
+    "decoy_hit": true,
+    "degenerate": false,
+    "entity_id": "102",
+    "entity_type": "YEAR",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "twenty,",
+    "hyp_wide": "positive in every quarter of twenty twenty, and we continue to expect NextStar's",
+    "key_len": 3,
+    "keys": [
+     "202"
+    ],
+    "layer_hit": {
+     "any": true,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": true
+    },
+    "ref_text": "202",
+    "sample_id": "4365024",
+    "token_indices": [
+     2326
+    ]
+   },
+   {
+    "decoy_hit": true,
+    "degenerate": false,
+    "entity_id": "207",
+    "entity_type": "CARDINAL",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "twenty,",
+    "hyp_wide": "positive in every quarter of twenty twenty, and we continue to expect NextStar's",
+    "key_len": 3,
+    "keys": [
+     "202"
+    ],
+    "layer_hit": {
+     "any": true,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": true
+    },
+    "ref_text": "202",
+    "sample_id": "4365024",
+    "token_indices": [
+     2326
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "586",
+    "entity_type": "DATE",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "the three and six months ended June thirty twenty twenty",
+    "hyp_wide": "press release, the actual results for the three and six months ended June thirty twenty twenty reflect the company's legacy Nexstar operations",
+    "key_len": 35,
+    "keys": [
+     "the36monthsendedjune302020",
+     "the9monthsendedjune302020",
+     "thethreeandsixmonthsendedjune302020",
+     "thethreesixmonthsendedjune302020"
+    ],
+    "layer_hit": {
+     "any": true,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": true
+    },
+    "ref_text": "the three and six months ended June 30 2020",
+    "sample_id": "4365024",
+    "token_indices": [
+     2452,
+     2453,
+     2454,
+     2455,
+     2456,
+     2457,
+     2458,
+     2459,
+     2460
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "589",
+    "entity_type": "DATE",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "September nineteenth twenty nineteen.",
+    "hyp_wide": "Media stations which were acquired on September nineteenth twenty nineteen. Second quarter twenty twenty revenue from",
+    "key_len": 16,
+    "keys": [
+     "september19th201",
+     "september201"
+    ],
+    "layer_hit": {
+     "any": false,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": false
+    },
+    "ref_text": "September 19th 201",
+    "sample_id": "4365024",
+    "token_indices": [
+     2478,
+     2479,
+     2480
+    ]
+   },
+   {
+    "decoy_hit": true,
+    "degenerate": false,
+    "entity_id": "445",
+    "entity_type": "YEAR",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "nineteen.",
+    "hyp_wide": "were acquired on September nineteenth twenty nineteen. Second quarter twenty twenty revenue from",
+    "key_len": 3,
+    "keys": [
+     "201"
+    ],
+    "layer_hit": {
+     "any": true,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": true
+    },
+    "ref_text": "201",
+    "sample_id": "4365024",
+    "token_indices": [
+     2480
+    ]
+   },
+   {
+    "decoy_hit": true,
+    "degenerate": false,
+    "entity_id": "481",
+    "entity_type": "CARDINAL",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "nineteen.",
+    "hyp_wide": "were acquired on September nineteenth twenty nineteen. Second quarter twenty twenty revenue from",
+    "key_len": 3,
+    "keys": [
+     "201"
+    ],
+    "layer_hit": {
+     "any": true,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": true
+    },
+    "ref_text": "201",
+    "sample_id": "4365024",
+    "token_indices": [
+     2480
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "598",
+    "entity_type": "DATE",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "June thirty twenty nineteen",
+    "hyp_wide": "three and six month period ended June thirty twenty nineteen reflects legacy Nexstar operations during that",
+    "key_len": 10,
+    "keys": [
+     "june302019"
+    ],
+    "layer_hit": {
+     "any": true,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": true
+    },
+    "ref_text": "June 30 2019",
+    "sample_id": "4365024",
+    "token_indices": [
+     2558,
+     2559,
+     2560
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "603",
+    "entity_type": "DATE",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "the six month period ending June thirty twenty twenty",
+    "hyp_wide": "quarters both in the quarters and the six month period ending June thirty twenty twenty and June thirty twenty nineteen. With",
+    "key_len": 33,
+    "keys": [
+     "the6monthperiodendingjune302020",
+     "thesixmonthperiodendingjune302020"
+    ],
+    "layer_hit": {
+     "any": false,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": false
+    },
+    "ref_text": "the six month period ending June 30 2020",
+    "sample_id": "4365024",
+    "token_indices": [
+     2589,
+     2590,
+     2591,
+     2592,
+     2593,
+     2594,
+     2595,
+     2596
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "604",
+    "entity_type": "DATE",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "June thirty twenty nineteen. With that,",
+    "hyp_wide": "ending June thirty twenty twenty and June thirty twenty nineteen. With that, I'll start with a review of",
+    "key_len": 9,
+    "keys": [
+     "june30201"
+    ],
+    "layer_hit": {
+     "any": true,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": true
+    },
+    "ref_text": "June 30 201",
+    "sample_id": "4365024",
+    "token_indices": [
+     2598,
+     2599,
+     2600
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "449",
+    "entity_type": "YEAR",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "that,",
+    "hyp_wide": "and June thirty twenty nineteen. With that, I'll start with a review of",
+    "key_len": 3,
+    "keys": [
+     "201"
+    ],
+    "layer_hit": {
+     "any": true,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": true
+    },
+    "ref_text": "201",
+    "sample_id": "4365024",
+    "token_indices": [
+     2600
+    ]
+   },
+   {
+    "decoy_hit": true,
+    "degenerate": false,
+    "entity_id": "489",
+    "entity_type": "CARDINAL",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "that,",
+    "hyp_wide": "and June thirty twenty nineteen. With that, I'll start with a review of",
+    "key_len": 3,
+    "keys": [
+     "201"
+    ],
+    "layer_hit": {
+     "any": true,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": true
+    },
+    "ref_text": "201",
+    "sample_id": "4365024",
+    "token_indices": [
+     2600
+    ]
+   }
+  ],
+  "novel": [
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "305",
+    "entity_type": "DATE",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "the first nine months of this fiscal year",
+    "hyp_wide": "four point seven million respectively for the first nine months of this fiscal year due primarily to the timing of",
+    "key_len": 29,
+    "keys": [
+     "thefirstmonthofthisfiscalyear",
+     "themonthofthisfiscalyear"
+    ],
+    "layer_hit": {
+     "any": false,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": false
+    },
+    "ref_text": "the first month of this fiscal year",
+    "sample_id": "4330115",
+    "token_indices": [
+     1922,
+     1923,
+     1924,
+     1925,
+     1926,
+     1927,
+     1928
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "493",
+    "entity_type": "ALPHANUMERIC",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "B",
+    "hyp_wide": "accessory products on the B to B side. Uh we have a lot",
+    "key_len": 3,
+    "keys": [
+     "b2b"
+    ],
+    "layer_hit": {
+     "any": false,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": false
+    },
+    "ref_text": "B2B",
+    "sample_id": "4330115",
+    "token_indices": [
+     4518
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "4",
+    "entity_type": "DATE",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "second quarter twenty twenty",
+    "hyp_wide": "welcome to the Nexstar Media Group second quarter twenty twenty results call. Today's call is being",
+    "key_len": 18,
+    "keys": [
+     "quarters2020",
+     "secondquarters2020"
+    ],
+    "layer_hit": {
+     "any": false,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": false
+    },
+    "ref_text": "second quarter's 2020",
+    "sample_id": "4365024",
+    "token_indices": [
+     9,
+     10,
+     11
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "9",
+    "entity_type": "ALPHANUMERIC",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "K",
+    "hyp_wide": "Nexstar's annual report on Form ten K for the year ended December thirty",
+    "key_len": 10,
+    "keys": [
+     "10000",
+     "10k",
+     "10thousand"
+    ],
+    "layer_hit": {
+     "any": false,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": false
+    },
+    "ref_text": "10K",
+    "sample_id": "4365024",
+    "token_indices": [
+     144
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "51",
+    "entity_type": "MONEY",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "six cents",
+    "hyp_wide": "to about thirteen dollars and eighty six cents per share. And we remain confident",
+    "key_len": 5,
+    "keys": [
+     "13.86"
+    ],
+    "layer_hit": {
+     "any": false,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": false
+    },
+    "ref_text": "$13.86",
+    "sample_id": "4365024",
+    "token_indices": [
+     627
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "254",
+    "entity_type": "DATE",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "year end twenty twenty one. twenty nineteen,",
+    "hyp_wide": "seventy percent of our subscribers at year end twenty twenty one. twenty nineteen, as well as new long-term",
+    "key_len": 11,
+    "keys": [
+     "yearend2019"
+    ],
+    "layer_hit": {
+     "any": false,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": false
+    },
+    "ref_text": "year end 2019",
+    "sample_id": "4365024",
+    "token_indices": [
+     733,
+     734,
+     735
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "355",
+    "entity_type": "DATE",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "december thirty one of twenty twenty two.",
+    "hyp_wide": "big four affiliations are contracted through december thirty one of twenty twenty two. With our successful twenty nineteen renewal",
+    "key_len": 15,
+    "keys": [
+     "december31of202"
+    ],
+    "layer_hit": {
+     "any": false,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": false
+    },
+    "ref_text": "December 31 of 202",
+    "sample_id": "4365024",
+    "token_indices": [
+     1693,
+     1694,
+     1695,
+     1696
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "47",
+    "entity_type": "TIME",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "eight p m",
+    "hyp_wide": "News Nation will air daily from eight p m to eleven p m E T",
+    "key_len": 5,
+    "keys": [
+     "800pm",
+     "80pm"
+    ],
+    "layer_hit": {
+     "any": false,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": false
+    },
+    "ref_text": "8:00 PM",
+    "sample_id": "4365024",
+    "token_indices": [
+     2001,
+     2002
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "48",
+    "entity_type": "TIME",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "p m E",
+    "hyp_wide": "from eight p m to eleven p m E T and will draw on the",
+    "key_len": 6,
+    "keys": [
+     "1100pm",
+     "110pm"
+    ],
+    "layer_hit": {
+     "any": false,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": false
+    },
+    "ref_text": "11:00 PM",
+    "sample_id": "4365024",
+    "token_indices": [
+     2004,
+     2005
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "589",
+    "entity_type": "DATE",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "September nineteenth twenty nineteen.",
+    "hyp_wide": "Media stations which were acquired on September nineteenth twenty nineteen. Second quarter twenty twenty revenue from",
+    "key_len": 16,
+    "keys": [
+     "september19th201",
+     "september201"
+    ],
+    "layer_hit": {
+     "any": false,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": false
+    },
+    "ref_text": "September 19th 201",
+    "sample_id": "4365024",
+    "token_indices": [
+     2478,
+     2479,
+     2480
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "603",
+    "entity_type": "DATE",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "the six month period ending June thirty twenty twenty",
+    "hyp_wide": "quarters both in the quarters and the six month period ending June thirty twenty twenty and June thirty twenty nineteen. With",
+    "key_len": 33,
+    "keys": [
+     "the6monthperiodendingjune302020",
+     "thesixmonthperiodendingjune302020"
+    ],
+    "layer_hit": {
+     "any": false,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": false
+    },
+    "ref_text": "the six month period ending June 30 2020",
+    "sample_id": "4365024",
+    "token_indices": [
+     2589,
+     2590,
+     2591,
+     2592,
+     2593,
+     2594,
+     2595,
+     2596
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "672",
+    "entity_type": "DATE",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "the second half of the year and",
+    "hyp_wide": "free distribution agreement renewals executed in the second half of the year and the deferred tax cash taxes as",
+    "key_len": 27,
+    "keys": [
+     "thehalfoftheyearended",
+     "thesecondhalfoftheyearended"
+    ],
+    "layer_hit": {
+     "any": false,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": false
+    },
+    "ref_text": "the second half of the year ended",
+    "sample_id": "4365024",
+    "token_indices": [
+     3140,
+     3141,
+     3142,
+     3143,
+     3144,
+     3145,
+     3146
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "729",
+    "entity_type": "DATE",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "12 31, 2019.",
+    "hyp_wide": "31st and 8.3 billion at 12 31, 2019. Net debt for first lien covenant",
+    "key_len": 7,
+    "keys": [
+     "1231201"
+    ],
+    "layer_hit": {
+     "any": false,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": false
+    },
+    "ref_text": "12 / 31 / 201",
+    "sample_id": "4365024",
+    "token_indices": [
+     3573,
+     3574,
+     3575,
+     3576,
+     3577
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "773",
+    "entity_type": "DATE",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "year end twenty twenty.",
+    "hyp_wide": "net leverage to four times by year end twenty twenty. Nextstar has already made significant progress",
+    "key_len": 10,
+    "keys": [
+     "yearend202"
+    ],
+    "layer_hit": {
+     "any": false,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": false
+    },
+    "ref_text": "year end 202",
+    "sample_id": "4365024",
+    "token_indices": [
+     4004,
+     4005,
+     4006
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "775",
+    "entity_type": "DATE",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "the second half of twenty twenty.",
+    "hyp_wide": "will also serve us well in the second half of twenty twenty. As a result, we're confident in",
+    "key_len": 18,
+    "keys": [
+     "thehalfof202",
+     "thesecondhalfof202"
+    ],
+    "layer_hit": {
+     "any": false,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": false
+    },
+    "ref_text": "the second half of 202",
+    "sample_id": "4365024",
+    "token_indices": [
+     4061,
+     4062,
+     4063,
+     4064,
+     4065
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "809",
+    "entity_type": "DATE",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "the prior year's",
+    "hyp_wide": "local news and that's up over the prior year's uh uh cumulative totals, which indicates",
+    "key_len": 13,
+    "keys": [
+     "theprioryears"
+    ],
+    "layer_hit": {
+     "any": false,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": false
+    },
+    "ref_text": "the prior years",
+    "sample_id": "4365024",
+    "token_indices": [
+     4644,
+     4645,
+     4646
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "839",
+    "entity_type": "DATE",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "one and twenty two.",
+    "hyp_wide": "our agreements nailed down through twenty one and twenty two. We do have some that will",
+    "key_len": 6,
+    "keys": [
+     "21and2"
+    ],
+    "layer_hit": {
+     "any": false,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": false
+    },
+    "ref_text": "' 21 and ' 2",
+    "sample_id": "4365024",
+    "token_indices": [
+     5287,
+     5288,
+     5289,
+     5290,
+     5291
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "852",
+    "entity_type": "ALPHANUMERIC",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "Q",
+    "hyp_wide": "in July versus uh total two Q twenty or even the pro forma",
+    "key_len": 2,
+    "keys": [
+     "q2"
+    ],
+    "layer_hit": {
+     "any": false,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": false
+    },
+    "ref_text": "Q2",
+    "sample_id": "4365024",
+    "token_indices": [
+     5516
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "1327",
+    "entity_type": "DATE",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "callable two days ago",
+    "hyp_wide": "the uh twenty four bonds were callable two days ago and I heard nothing. Does that",
+    "key_len": 15,
+    "keys": [
+     "about2daysago",
+     "abouttwodaysago"
+    ],
+    "layer_hit": {
+     "any": false,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": false
+    },
+    "ref_text": "about two days ago",
+    "sample_id": "4365024",
+    "token_indices": [
+     9965,
+     9966,
+     9967,
+     9968
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "105",
+    "entity_type": "DATE",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "May twenty eighth, twenty twenty",
+    "hyp_wide": "members that were elected at the May twenty eighth, twenty twenty annual meeting. Management has been working",
+    "key_len": 9,
+    "keys": [
+     "may282020"
+    ],
+    "layer_hit": {
+     "any": false,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": false
+    },
+    "ref_text": "May 28 2020",
+    "sample_id": "4365948",
+    "token_indices": [
+     395,
+     396,
+     397
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "165",
+    "entity_type": "DATE",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "June of 2019.",
+    "hyp_wide": "ending the month 1.5% behind June of 2019. We continue to win and progress",
+    "key_len": 9,
+    "keys": [
+     "juneof201"
+    ],
+    "layer_hit": {
+     "any": false,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": false
+    },
+    "ref_text": "June of 201",
+    "sample_id": "4365948",
+    "token_indices": [
+     997,
+     998,
+     999
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "201",
+    "entity_type": "DATE",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "July thirty first, twenty twenty.",
+    "hyp_wide": "sale of GCP's Cambridge headquarters on July thirty first, twenty twenty. Planning is underway to locate a",
+    "key_len": 11,
+    "keys": [
+     "july202",
+     "july31st202"
+    ],
+    "layer_hit": {
+     "any": false,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": false
+    },
+    "ref_text": "July 31st 202",
+    "sample_id": "4365948",
+    "token_indices": [
+     1405,
+     1406,
+     1407
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "442",
+    "entity_type": "DATE",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "for second quarter two thousand and nineteen.",
+    "hyp_wide": "shareholders of three point one million for second quarter two thousand and nineteen. The change was primarily due to",
+    "key_len": 19,
+    "keys": [
+     "perquarter201",
+     "persecondquarter201"
+    ],
+    "layer_hit": {
+     "any": false,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": false
+    },
+    "ref_text": "per second quarter 201",
+    "sample_id": "4365948",
+    "token_indices": [
+     2136,
+     2137,
+     2138,
+     2139
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "449",
+    "entity_type": "DATE",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "the same period two thousand and nineteen.",
+    "hyp_wide": "a hundred basis points lower than the same period two thousand and nineteen. Looking at the specific performance of",
+    "key_len": 16,
+    "keys": [
+     "thesameperiod201"
+    ],
+    "layer_hit": {
+     "any": false,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": false
+    },
+    "ref_text": "the same period 201",
+    "sample_id": "4365948",
+    "token_indices": [
+     2226,
+     2227,
+     2228,
+     2229
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "451",
+    "entity_type": "DATE",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "ten and eleven. We will now go to",
+    "hyp_wide": "segments, you can refer to pages ten and eleven. We will now go to FCC sales were down twenty point",
+    "key_len": 6,
+    "keys": [
+     "10and1"
+    ],
+    "layer_hit": {
+     "any": false,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": false
+    },
+    "ref_text": "10 and 1",
+    "sample_id": "4365948",
+    "token_indices": [
+     2244,
+     2245,
+     2246
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "476",
+    "entity_type": "DATE",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "June two thousand and nineteen.",
+    "hyp_wide": "point six percent respectively compared with June two thousand and nineteen. Price gains also occurred in Latin",
+    "key_len": 7,
+    "keys": [
+     "june201"
+    ],
+    "layer_hit": {
+     "any": false,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": false
+    },
+    "ref_text": "June 201",
+    "sample_id": "4365948",
+    "token_indices": [
+     2373,
+     2374
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "483",
+    "entity_type": "DATE",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "sixth consecutive quarter",
+    "hyp_wide": "basis points during the second quarter, sixth consecutive quarter of gross margin improvement as Randy",
+    "key_len": 21,
+    "keys": [
+     "6consecutivequarter",
+     "sixconsecutivequarter"
+    ],
+    "layer_hit": {
+     "any": false,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": false
+    },
+    "ref_text": "six consecutive quarter",
+    "sample_id": "4365948",
+    "token_indices": [
+     2410,
+     2411,
+     2412
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "493",
+    "entity_type": "DATE",
+    "fmt_strict": false,
+    "fmt_value": true,
+    "fmt_window": false,
+    "hyp_tight": "the second quarter two thousand and nineteen,",
+    "hyp_wide": "a twenty eight percent decline versus the second quarter two thousand and nineteen, due to challenging construction markets as",
+    "key_len": 22,
+    "keys": [
+     "thequarterof2019",
+     "thesecondquarterof2019"
+    ],
+    "layer_hit": {
+     "any": false,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": false
+    },
+    "ref_text": "the second quarter of 2019",
+    "sample_id": "4365948",
+    "token_indices": [
+     2491,
+     2492,
+     2493,
+     2494,
+     2495
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "536",
+    "entity_type": "DATE",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "the six months ended June thirty first, two thousand and nineteen.",
+    "hyp_wide": "of thirteen point one million for the six months ended June thirty first, two thousand and nineteen. Adjusted free cash flow totaled eighteen",
+    "key_len": 28,
+    "keys": [
+     "the6monthsendedjune201",
+     "thesixmonthsendedjune201",
+     "thesixmonthsendedjune31st201"
+    ],
+    "layer_hit": {
+     "any": false,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": false
+    },
+    "ref_text": "the six months ended June 31st 201",
+    "sample_id": "4365948",
+    "token_indices": [
+     2809,
+     2810,
+     2811,
+     2812,
+     2813,
+     2814,
+     2815
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "564",
+    "entity_type": "DATE",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "the first half of June two thousand and nineteen.",
+    "hyp_wide": "shareholders of twenty four million for the first half of June two thousand and nineteen. The change resulted mainly from the",
+    "key_len": 21,
+    "keys": [
+     "thefirsthalfofjune201",
+     "thehalfofjune201"
+    ],
+    "layer_hit": {
+     "any": false,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": false
+    },
+    "ref_text": "the first half of June 201",
+    "sample_id": "4365948",
+    "token_indices": [
+     2982,
+     2983,
+     2984,
+     2985,
+     2986,
+     2987
+    ]
+   }
+  ],
+  "prepublished": [
+   {
+    "decoy_hit": true,
+    "degenerate": false,
+    "entity_id": "93",
+    "entity_type": "PERCENT",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "thirty",
+    "hyp_wide": "twenty percent to one hundred and thirty percent range based on the facts",
+    "key_len": 3,
+    "keys": [
+     "120"
+    ],
+    "layer_hit": {
+     "any": true,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": true
+    },
+    "ref_text": "120%",
+    "sample_id": "4330115",
+    "token_indices": [
+     1335
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "255",
+    "entity_type": "DATE",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "last year's",
+    "hyp_wide": "seven point four percent compared with last year's third quarter. Operating income for the",
+    "key_len": 8,
+    "keys": [
+     "lastyear"
+    ],
+    "layer_hit": {
+     "any": true,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": true
+    },
+    "ref_text": "last year",
+    "sample_id": "4330115",
+    "token_indices": [
+     1593,
+     1594
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "301",
+    "entity_type": "CARDINAL",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "quarterly",
+    "hyp_wide": "five million to shareholders in regular quarterly dividends and share repurchases through the",
+    "key_len": 7,
+    "keys": [
+     "quarter"
+    ],
+    "layer_hit": {
+     "any": true,
+     "biasing_txt": true,
+     "names": false,
+     "pdf": true
+    },
+    "ref_text": "quarter",
+    "sample_id": "4330115",
+    "token_indices": [
+     1890
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "488",
+    "entity_type": "ORDINAL",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "thing",
+    "hyp_wide": "cases. Okay. And then secondly, um. thing for me on the home accessories",
+    "key_len": 6,
+    "keys": [
+     "second"
+    ],
+    "layer_hit": {
+     "any": true,
+     "biasing_txt": true,
+     "names": false,
+     "pdf": true
+    },
+    "ref_text": "second",
+    "sample_id": "4330115",
+    "token_indices": [
+     4253
+    ]
+   },
+   {
+    "decoy_hit": true,
+    "degenerate": false,
+    "entity_id": "12",
+    "entity_type": "CARDINAL",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "five.",
+    "hyp_wide": "Litigation Reform Act of nineteen ninety five. Nexstar cautions that these forward-looking",
+    "key_len": 3,
+    "keys": [
+     "199"
+    ],
+    "layer_hit": {
+     "any": true,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": true
+    },
+    "ref_text": "199",
+    "sample_id": "4365024",
+    "token_indices": [
+     95
+    ]
+   },
+   {
+    "decoy_hit": true,
+    "degenerate": false,
+    "entity_id": "19",
+    "entity_type": "DATE",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "five.",
+    "hyp_wide": "Litigation Reform Act of nineteen ninety five. Nexstar cautions that these forward-looking",
+    "key_len": 3,
+    "keys": [
+     "199"
+    ],
+    "layer_hit": {
+     "any": true,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": true
+    },
+    "ref_text": "199",
+    "sample_id": "4365024",
+    "token_indices": [
+     95
+    ]
+   },
+   {
+    "decoy_hit": true,
+    "degenerate": false,
+    "entity_id": "6",
+    "entity_type": "YEAR",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "five.",
+    "hyp_wide": "Litigation Reform Act of nineteen ninety five. Nexstar cautions that these forward-looking",
+    "key_len": 3,
+    "keys": [
+     "199"
+    ],
+    "layer_hit": {
+     "any": true,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": true
+    },
+    "ref_text": "199",
+    "sample_id": "4365024",
+    "token_indices": [
+     95
+    ]
+   },
+   {
+    "decoy_hit": true,
+    "degenerate": false,
+    "entity_id": "58",
+    "entity_type": "PERCENT",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "one",
+    "hyp_wide": "eight percent, forty nine percent and one hundred and twenty seven percent respectively",
+    "key_len": 2,
+    "keys": [
+     "28"
+    ],
+    "layer_hit": {
+     "any": true,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": true
+    },
+    "ref_text": "28%",
+    "sample_id": "4365024",
+    "token_indices": [
+     479
+    ]
+   },
+   {
+    "decoy_hit": true,
+    "degenerate": false,
+    "entity_id": "126",
+    "entity_type": "CARDINAL",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "nineteen.",
+    "hyp_wide": "cash flow in all of twenty nineteen. So our growth momentum remains strong",
+    "key_len": 3,
+    "keys": [
+     "201"
+    ],
+    "layer_hit": {
+     "any": true,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": true
+    },
+    "ref_text": "201",
+    "sample_id": "4365024",
+    "token_indices": [
+     575
+    ]
+   },
+   {
+    "decoy_hit": true,
+    "degenerate": false,
+    "entity_id": "239",
+    "entity_type": "DATE",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "nineteen.",
+    "hyp_wide": "cash flow in all of twenty nineteen. So our growth momentum remains strong",
+    "key_len": 3,
+    "keys": [
+     "201"
+    ],
+    "layer_hit": {
+     "any": true,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": true
+    },
+    "ref_text": "201",
+    "sample_id": "4365024",
+    "token_indices": [
+     575
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "85",
+    "entity_type": "YEAR",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "nineteen.",
+    "hyp_wide": "cash flow in all of twenty nineteen. So our growth momentum remains strong",
+    "key_len": 3,
+    "keys": [
+     "201"
+    ],
+    "layer_hit": {
+     "any": true,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": true
+    },
+    "ref_text": "201",
+    "sample_id": "4365024",
+    "token_indices": [
+     575
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "318",
+    "entity_type": "DATE",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "twenty second quarter",
+    "hyp_wide": "committees and from candidates with twenty twenty second quarter political revenue of twenty one point",
+    "key_len": 17,
+    "keys": [
+     "2020quarter",
+     "2020secondquarter"
+    ],
+    "layer_hit": {
+     "any": true,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": true
+    },
+    "ref_text": "2020 second quarter",
+    "sample_id": "4365024",
+    "token_indices": [
+     1405,
+     1406,
+     1407
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "349",
+    "entity_type": "DATE",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "the second half of twenty nineteen",
+    "hyp_wide": "CBS, Fox and NBCUniversal. completed in the second half of twenty nineteen and as a result over eighty",
+    "key_len": 18,
+    "keys": [
+     "thehalfof201",
+     "thesecondhalfof201"
+    ],
+    "layer_hit": {
+     "any": true,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": true
+    },
+    "ref_text": "the second half of 201",
+    "sample_id": "4365024",
+    "token_indices": [
+     1659,
+     1660,
+     1661,
+     1662,
+     1663
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "177",
+    "entity_type": "CARDINAL",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "nineteen",
+    "hyp_wide": "in the second half of twenty nineteen and as a result over eighty",
+    "key_len": 3,
+    "keys": [
+     "201"
+    ],
+    "layer_hit": {
+     "any": true,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": true
+    },
+    "ref_text": "201",
+    "sample_id": "4365024",
+    "token_indices": [
+     1663
+    ]
+   },
+   {
+    "decoy_hit": true,
+    "degenerate": false,
+    "entity_id": "95",
+    "entity_type": "YEAR",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "nineteen",
+    "hyp_wide": "in the second half of twenty nineteen and as a result over eighty",
+    "key_len": 3,
+    "keys": [
+     "201"
+    ],
+    "layer_hit": {
+     "any": true,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": true
+    },
+    "ref_text": "201",
+    "sample_id": "4365024",
+    "token_indices": [
+     1663
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "183",
+    "entity_type": "CARDINAL",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "two.",
+    "hyp_wide": "december thirty one of twenty twenty two. With our successful twenty nineteen renewal",
+    "key_len": 3,
+    "keys": [
+     "202"
+    ],
+    "layer_hit": {
+     "any": true,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": true
+    },
+    "ref_text": "202",
+    "sample_id": "4365024",
+    "token_indices": [
+     1696
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "97",
+    "entity_type": "YEAR",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "two.",
+    "hyp_wide": "december thirty one of twenty twenty two. With our successful twenty nineteen renewal",
+    "key_len": 3,
+    "keys": [
+     "202"
+    ],
+    "layer_hit": {
+     "any": true,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": true
+    },
+    "ref_text": "202",
+    "sample_id": "4365024",
+    "token_indices": [
+     1696
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "366",
+    "entity_type": "DATE",
+    "fmt_strict": false,
+    "fmt_value": true,
+    "fmt_window": false,
+    "hyp_tight": "to third quarter,",
+    "hyp_wide": "budgeted second quarter levels. Looking ahead to third quarter, while the pandemic continues to impact",
+    "key_len": 15,
+    "keys": [
+     "thequarter",
+     "thethirdquarter"
+    ],
+    "layer_hit": {
+     "any": true,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": true
+    },
+    "ref_text": "the third quarter",
+    "sample_id": "4365024",
+    "token_indices": [
+     1843,
+     1844,
+     1845
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "1838",
+    "entity_type": "TIME",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "T",
+    "hyp_wide": "m to eleven p m E T and will draw on the local",
+    "key_len": 3,
+    "keys": [
+     "eet"
+    ],
+    "layer_hit": {
+     "any": true,
+     "biasing_txt": true,
+     "names": false,
+     "pdf": true
+    },
+    "ref_text": "EET",
+    "sample_id": "4365024",
+    "token_indices": [
+     2006
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "402",
+    "entity_type": "DATE",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "every quarter of twenty twenty,",
+    "hyp_wide": "be free cash flow positive in every quarter of twenty twenty, and we continue to expect NextStar's",
+    "key_len": 17,
+    "keys": [
+     "everyquarterof202"
+    ],
+    "layer_hit": {
+     "any": true,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": true
+    },
+    "ref_text": "every quarter of 202",
+    "sample_id": "4365024",
+    "token_indices": [
+     2323,
+     2324,
+     2325,
+     2326
+    ]
+   },
+   {
+    "decoy_hit": true,
+    "degenerate": false,
+    "entity_id": "102",
+    "entity_type": "YEAR",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "twenty,",
+    "hyp_wide": "positive in every quarter of twenty twenty, and we continue to expect NextStar's",
+    "key_len": 3,
+    "keys": [
+     "202"
+    ],
+    "layer_hit": {
+     "any": true,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": true
+    },
+    "ref_text": "202",
+    "sample_id": "4365024",
+    "token_indices": [
+     2326
+    ]
+   },
+   {
+    "decoy_hit": true,
+    "degenerate": false,
+    "entity_id": "207",
+    "entity_type": "CARDINAL",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "twenty,",
+    "hyp_wide": "positive in every quarter of twenty twenty, and we continue to expect NextStar's",
+    "key_len": 3,
+    "keys": [
+     "202"
+    ],
+    "layer_hit": {
+     "any": true,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": true
+    },
+    "ref_text": "202",
+    "sample_id": "4365024",
+    "token_indices": [
+     2326
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "586",
+    "entity_type": "DATE",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "the three and six months ended June thirty twenty twenty",
+    "hyp_wide": "press release, the actual results for the three and six months ended June thirty twenty twenty reflect the company's legacy Nexstar operations",
+    "key_len": 35,
+    "keys": [
+     "the36monthsendedjune302020",
+     "the9monthsendedjune302020",
+     "thethreeandsixmonthsendedjune302020",
+     "thethreesixmonthsendedjune302020"
+    ],
+    "layer_hit": {
+     "any": true,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": true
+    },
+    "ref_text": "the three and six months ended June 30 2020",
+    "sample_id": "4365024",
+    "token_indices": [
+     2452,
+     2453,
+     2454,
+     2455,
+     2456,
+     2457,
+     2458,
+     2459,
+     2460
+    ]
+   },
+   {
+    "decoy_hit": true,
+    "degenerate": false,
+    "entity_id": "445",
+    "entity_type": "YEAR",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "nineteen.",
+    "hyp_wide": "were acquired on September nineteenth twenty nineteen. Second quarter twenty twenty revenue from",
+    "key_len": 3,
+    "keys": [
+     "201"
+    ],
+    "layer_hit": {
+     "any": true,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": true
+    },
+    "ref_text": "201",
+    "sample_id": "4365024",
+    "token_indices": [
+     2480
+    ]
+   },
+   {
+    "decoy_hit": true,
+    "degenerate": false,
+    "entity_id": "481",
+    "entity_type": "CARDINAL",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "nineteen.",
+    "hyp_wide": "were acquired on September nineteenth twenty nineteen. Second quarter twenty twenty revenue from",
+    "key_len": 3,
+    "keys": [
+     "201"
+    ],
+    "layer_hit": {
+     "any": true,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": true
+    },
+    "ref_text": "201",
+    "sample_id": "4365024",
+    "token_indices": [
+     2480
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "598",
+    "entity_type": "DATE",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "June thirty twenty nineteen",
+    "hyp_wide": "three and six month period ended June thirty twenty nineteen reflects legacy Nexstar operations during that",
+    "key_len": 10,
+    "keys": [
+     "june302019"
+    ],
+    "layer_hit": {
+     "any": true,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": true
+    },
+    "ref_text": "June 30 2019",
+    "sample_id": "4365024",
+    "token_indices": [
+     2558,
+     2559,
+     2560
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "604",
+    "entity_type": "DATE",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "June thirty twenty nineteen. With that,",
+    "hyp_wide": "ending June thirty twenty twenty and June thirty twenty nineteen. With that, I'll start with a review of",
+    "key_len": 9,
+    "keys": [
+     "june30201"
+    ],
+    "layer_hit": {
+     "any": true,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": true
+    },
+    "ref_text": "June 30 201",
+    "sample_id": "4365024",
+    "token_indices": [
+     2598,
+     2599,
+     2600
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "449",
+    "entity_type": "YEAR",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "that,",
+    "hyp_wide": "and June thirty twenty nineteen. With that, I'll start with a review of",
+    "key_len": 3,
+    "keys": [
+     "201"
+    ],
+    "layer_hit": {
+     "any": true,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": true
+    },
+    "ref_text": "201",
+    "sample_id": "4365024",
+    "token_indices": [
+     2600
+    ]
+   },
+   {
+    "decoy_hit": true,
+    "degenerate": false,
+    "entity_id": "489",
+    "entity_type": "CARDINAL",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "that,",
+    "hyp_wide": "and June thirty twenty nineteen. With that, I'll start with a review of",
+    "key_len": 3,
+    "keys": [
+     "201"
+    ],
+    "layer_hit": {
+     "any": true,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": true
+    },
+    "ref_text": "201",
+    "sample_id": "4365024",
+    "token_indices": [
+     2600
+    ]
+   },
+   {
+    "decoy_hit": false,
+    "degenerate": false,
+    "entity_id": "621",
+    "entity_type": "DATE",
+    "fmt_strict": false,
+    "fmt_value": false,
+    "fmt_window": false,
+    "hyp_tight": "the second quarter of twenty twenty.",
+    "hyp_wide": "million dollars from budgeted levels in the second quarter of twenty twenty. Second quarter station direct operating expenses",
+    "key_len": 21,
+    "keys": [
+     "thequarterof202",
+     "thesecondquarterof202"
+    ],
+    "layer_hit": {
+     "any": true,
+     "biasing_txt": false,
+     "names": false,
+     "pdf": true
+    },
+    "ref_text": "the second quarter of 202",
+    "sample_id": "4365024",
+    "token_indices": [
+     2775,
+     2776,
+     2777,
+     2778,
+     2779
+    ]
+   }
+  ]
+ },
+ "groups": {
+  "CONVENTION": [
+   "ABBREVIATION",
+   "CONTRACTION"
+  ],
+  "NAME": [
+   "EVENT",
+   "FAC",
+   "GPE",
+   "LOC",
+   "NORP",
+   "ORG",
+   "PERSON",
+   "PRODUCT",
+   "TWITTER",
+   "WEBSITE",
+   "WORK_OF_ART"
+  ],
+  "NUMERIC": [
+   "ALPHANUMERIC",
+   "CARDINAL",
+   "DATE",
+   "MONEY",
+   "ORDINAL",
+   "PERCENT",
+   "QUANTITY",
+   "RANGE",
+   "TIME",
+   "YEAR"
+  ]
+ },
+ "per_call": {
+  "4330115": {
+   "biasing_hit": 49,
+   "decoy_len1_2": 18,
+   "decoy_len3_4": 4,
+   "format": 140,
+   "names_hit": 36,
+   "novel": 6,
+   "pdf_hit": 56,
+   "prepublished": 58,
+   "prepublished_decoy": 22,
+   "prepublished_len1_2": 18,
+   "prepublished_len3_4": 26,
+   "prepublished_len5plus": 14,
+   "surviving": 64,
+   "surviving_len1_2": 18,
+   "surviving_len3_4": 27,
+   "surviving_len5plus": 19,
+   "wrong": 204
+  },
+  "4365024": {
+   "biasing_hit": 36,
+   "decoy_len1_2": 6,
+   "decoy_len3_4": 25,
+   "format": 315,
+   "names_hit": 5,
+   "novel": 53,
+   "pdf_hit": 105,
+   "prepublished": 107,
+   "prepublished_decoy": 31,
+   "prepublished_len1_2": 6,
+   "prepublished_len3_4": 51,
+   "prepublished_len5plus": 50,
+   "surviving": 160,
+   "surviving_len1_2": 7,
+   "surviving_len3_4": 60,
+   "surviving_len5plus": 93,
+   "wrong": 475
+  },
+  "4365948": {
+   "biasing_hit": 23,
+   "decoy_len1_2": 5,
+   "decoy_len3_4": 15,
+   "decoy_len5plus": 1,
+   "format": 177,
+   "names_hit": 5,
+   "novel": 39,
+   "pdf_hit": 56,
+   "prepublished": 58,
+   "prepublished_decoy": 21,
+   "prepublished_len1_2": 7,
+   "prepublished_len3_4": 39,
+   "prepublished_len5plus": 12,
+   "surviving": 97,
+   "surviving_len1_2": 7,
+   "surviving_len3_4": 57,
+   "surviving_len5plus": 33,
+   "wrong": 274
+  },
+  "4366429": {
+   "biasing_hit": 56,
+   "decoy_len1_2": 16,
+   "decoy_len3_4": 12,
+   "decoy_len5plus": 1,
+   "format": 172,
+   "names_hit": 7,
+   "novel": 100,
+   "pdf_hit": 75,
+   "prepublished": 79,
+   "prepublished_decoy": 29,
+   "prepublished_len1_2": 24,
+   "prepublished_len3_4": 36,
+   "prepublished_len5plus": 19,
+   "surviving": 179,
+   "surviving_len1_2": 25,
+   "surviving_len3_4": 43,
+   "surviving_len5plus": 111,
+   "wrong": 351
+  },
+  "4366522": {
+   "biasing_hit": 79,
+   "decoy_len3_4": 8,
+   "format": 98,
+   "names_hit": 3,
+   "novel": 46,
+   "pdf_hit": 0,
+   "prepublished": 80,
+   "prepublished_decoy": 8,
+   "prepublished_len3_4": 56,
+   "prepublished_len5plus": 24,
+   "surviving": 126,
+   "surviving_len3_4": 80,
+   "surviving_len5plus": 46,
+   "wrong": 224
+  },
+  "4384964": {
+   "biasing_hit": 11,
+   "decoy_len1_2": 2,
+   "decoy_len3_4": 6,
+   "decoy_len5plus": 4,
+   "format": 167,
+   "names_hit": 10,
+   "novel": 41,
+   "pdf_hit": 31,
+   "prepublished": 39,
+   "prepublished_decoy": 12,
+   "prepublished_len1_2": 2,
+   "prepublished_len3_4": 22,
+   "prepublished_len5plus": 15,
+   "surviving": 80,
+   "surviving_len1_2": 2,
+   "surviving_len3_4": 37,
+   "surviving_len5plus": 41,
+   "wrong": 247
+  },
+  "4385072": {
+   "biasing_hit": 21,
+   "decoy_len3_4": 1,
+   "format": 180,
+   "names_hit": 3,
+   "novel": 43,
+   "pdf_hit": 0,
+   "prepublished": 22,
+   "prepublished_decoy": 1,
+   "prepublished_len1_2": 2,
+   "prepublished_len3_4": 11,
+   "prepublished_len5plus": 9,
+   "surviving": 65,
+   "surviving_len1_2": 2,
+   "surviving_len3_4": 30,
+   "surviving_len5plus": 33,
+   "wrong": 245
+  },
+  "4387383": {
+   "biasing_hit": 10,
+   "decoy_len1_2": 3,
+   "decoy_len3_4": 6,
+   "format": 116,
+   "names_hit": 8,
+   "novel": 15,
+   "pdf_hit": 22,
+   "prepublished": 23,
+   "prepublished_decoy": 9,
+   "prepublished_len1_2": 3,
+   "prepublished_len3_4": 9,
+   "prepublished_len5plus": 11,
+   "surviving": 38,
+   "surviving_len1_2": 3,
+   "surviving_len3_4": 14,
+   "surviving_len5plus": 21,
+   "wrong": 154
+  },
+  "4389907": {
+   "biasing_hit": 21,
+   "decoy_len3_4": 4,
+   "format": 133,
+   "names_hit": 4,
+   "novel": 25,
+   "pdf_hit": 31,
+   "prepublished": 32,
+   "prepublished_decoy": 4,
+   "prepublished_len3_4": 14,
+   "prepublished_len5plus": 18,
+   "surviving": 57,
+   "surviving_len3_4": 22,
+   "surviving_len5plus": 35,
+   "wrong": 190
+  },
+  "4397829": {
+   "biasing_hit": 32,
+   "decoy_len1_2": 5,
+   "decoy_len3_4": 2,
+   "format": 354,
+   "names_hit": 19,
+   "novel": 57,
+   "pdf_hit": 39,
+   "prepublished": 47,
+   "prepublished_decoy": 7,
+   "prepublished_len1_2": 5,
+   "prepublished_len3_4": 8,
+   "prepublished_len5plus": 34,
+   "surviving": 104,
+   "surviving_len1_2": 5,
+   "surviving_len3_4": 11,
+   "surviving_len5plus": 88,
+   "wrong": 458
+  }
+ },
+ "per_class": {
+  "ABBREVIATION": {
+   "biasing_hit": 71,
+   "decoy_len1_2": 2,
+   "decoy_len3_4": 12,
+   "format": 3,
+   "names_hit": 4,
+   "novel": 69,
+   "pdf_hit": 32,
+   "prepublished": 73,
+   "prepublished_decoy": 14,
+   "prepublished_len1_2": 5,
+   "prepublished_len3_4": 63,
+   "prepublished_len5plus": 5,
+   "surviving": 142,
+   "surviving_len1_2": 5,
+   "surviving_len3_4": 111,
+   "surviving_len5plus": 26,
+   "wrong": 145
+  },
+  "ALPHANUMERIC": {
+   "biasing_hit": 8,
+   "decoy_len5plus": 1,
+   "format": 178,
+   "names_hit": 0,
+   "novel": 15,
+   "pdf_hit": 2,
+   "prepublished": 9,
+   "prepublished_decoy": 1,
+   "prepublished_len1_2": 1,
+   "prepublished_len3_4": 1,
+   "prepublished_len5plus": 7,
+   "surviving": 24,
+   "surviving_len1_2": 2,
+   "surviving_len3_4": 8,
+   "surviving_len5plus": 14,
+   "wrong": 202
+  },
+  "CARDINAL": {
+   "biasing_hit": 21,
+   "decoy_len1_2": 7,
+   "decoy_len3_4": 28,
+   "decoy_len5plus": 1,
+   "format": 650,
+   "names_hit": 1,
+   "novel": 14,
+   "pdf_hit": 59,
+   "prepublished": 60,
+   "prepublished_decoy": 36,
+   "prepublished_len1_2": 8,
+   "prepublished_len3_4": 50,
+   "prepublished_len5plus": 2,
+   "surviving": 74,
+   "surviving_len1_2": 8,
+   "surviving_len3_4": 63,
+   "surviving_len5plus": 3,
+   "wrong": 724
+  },
+  "CONTRACTION": {
+   "biasing_hit": 31,
+   "decoy_len3_4": 5,
+   "format": 48,
+   "names_hit": 14,
+   "novel": 111,
+   "pdf_hit": 48,
+   "prepublished": 55,
+   "prepublished_decoy": 5,
+   "prepublished_len3_4": 25,
+   "prepublished_len5plus": 30,
+   "surviving": 166,
+   "surviving_len3_4": 27,
+   "surviving_len5plus": 139,
+   "wrong": 214
+  },
+  "DATE": {
+   "biasing_hit": 16,
+   "decoy_len1_2": 8,
+   "decoy_len3_4": 9,
+   "format": 242,
+   "names_hit": 0,
+   "novel": 53,
+   "pdf_hit": 44,
+   "prepublished": 46,
+   "prepublished_decoy": 17,
+   "prepublished_len1_2": 8,
+   "prepublished_len3_4": 14,
+   "prepublished_len5plus": 24,
+   "surviving": 99,
+   "surviving_len1_2": 8,
+   "surviving_len3_4": 15,
+   "surviving_len5plus": 76,
+   "wrong": 341
+  },
+  "EVENT": {
+   "biasing_hit": 1,
+   "format": 31,
+   "names_hit": 0,
+   "novel": 4,
+   "pdf_hit": 0,
+   "prepublished": 1,
+   "prepublished_decoy": 0,
+   "prepublished_len3_4": 1,
+   "surviving": 5,
+   "surviving_len3_4": 1,
+   "surviving_len5plus": 4,
+   "wrong": 36
+  },
+  "FAC": {
+   "biasing_hit": 0,
+   "format": 1,
+   "names_hit": 0,
+   "novel": 5,
+   "pdf_hit": 2,
+   "prepublished": 2,
+   "prepublished_decoy": 0,
+   "prepublished_len5plus": 2,
+   "surviving": 7,
+   "surviving_len5plus": 7,
+   "wrong": 8
+  },
+  "GPE": {
+   "biasing_hit": 55,
+   "decoy_len1_2": 27,
+   "decoy_len3_4": 1,
+   "format": 10,
+   "names_hit": 32,
+   "novel": 5,
+   "pdf_hit": 54,
+   "prepublished": 55,
+   "prepublished_decoy": 28,
+   "prepublished_len1_2": 34,
+   "prepublished_len3_4": 14,
+   "prepublished_len5plus": 7,
+   "surviving": 60,
+   "surviving_len1_2": 34,
+   "surviving_len3_4": 15,
+   "surviving_len5plus": 11,
+   "wrong": 70
+  },
+  "LOC": {
+   "biasing_hit": 0,
+   "format": 1,
+   "names_hit": 0,
+   "novel": 1,
+   "pdf_hit": 2,
+   "prepublished": 2,
+   "prepublished_decoy": 0,
+   "prepublished_len5plus": 2,
+   "surviving": 3,
+   "surviving_len5plus": 3,
+   "wrong": 4
+  },
+  "MONEY": {
+   "biasing_hit": 3,
+   "decoy_len3_4": 3,
+   "decoy_len5plus": 2,
+   "format": 137,
+   "names_hit": 0,
+   "novel": 6,
+   "pdf_hit": 20,
+   "prepublished": 20,
+   "prepublished_decoy": 5,
+   "prepublished_len3_4": 10,
+   "prepublished_len5plus": 10,
+   "surviving": 26,
+   "surviving_len3_4": 13,
+   "surviving_len5plus": 13,
+   "wrong": 163
+  },
+  "NORP": {
+   "biasing_hit": 0,
+   "names_hit": 0,
+   "novel": 4,
+   "pdf_hit": 0,
+   "prepublished": 0,
+   "prepublished_decoy": 0,
+   "surviving": 4,
+   "surviving_len5plus": 4,
+   "wrong": 4
+  },
+  "ORDINAL": {
+   "biasing_hit": 2,
+   "format": 25,
+   "names_hit": 0,
+   "novel": 1,
+   "pdf_hit": 2,
+   "prepublished": 2,
+   "prepublished_decoy": 0,
+   "prepublished_len5plus": 2,
+   "surviving": 3,
+   "surviving_len5plus": 3,
+   "wrong": 28
+  },
+  "ORG": {
+   "biasing_hit": 70,
+   "decoy_len1_2": 4,
+   "decoy_len3_4": 8,
+   "format": 3,
+   "names_hit": 8,
+   "novel": 89,
+   "pdf_hit": 56,
+   "prepublished": 90,
+   "prepublished_decoy": 12,
+   "prepublished_len1_2": 4,
+   "prepublished_len3_4": 38,
+   "prepublished_len5plus": 48,
+   "surviving": 179,
+   "surviving_len1_2": 5,
+   "surviving_len3_4": 64,
+   "surviving_len5plus": 110,
+   "wrong": 182
+  },
+  "PERCENT": {
+   "biasing_hit": 5,
+   "decoy_len1_2": 7,
+   "decoy_len3_4": 1,
+   "decoy_len5plus": 2,
+   "format": 260,
+   "names_hit": 0,
+   "novel": 3,
+   "pdf_hit": 12,
+   "prepublished": 12,
+   "prepublished_decoy": 10,
+   "prepublished_len1_2": 7,
+   "prepublished_len3_4": 3,
+   "prepublished_len5plus": 2,
+   "surviving": 15,
+   "surviving_len1_2": 7,
+   "surviving_len3_4": 3,
+   "surviving_len5plus": 5,
+   "wrong": 275
+  },
+  "PERSON": {
+   "biasing_hit": 32,
+   "decoy_len3_4": 4,
+   "format": 6,
+   "names_hit": 41,
+   "novel": 30,
+   "pdf_hit": 37,
+   "prepublished": 61,
+   "prepublished_decoy": 4,
+   "prepublished_len3_4": 14,
+   "prepublished_len5plus": 47,
+   "surviving": 91,
+   "surviving_len3_4": 20,
+   "surviving_len5plus": 71,
+   "wrong": 97
+  },
+  "PRODUCT": {
+   "biasing_hit": 11,
+   "format": 14,
+   "names_hit": 0,
+   "novel": 7,
+   "pdf_hit": 1,
+   "prepublished": 12,
+   "prepublished_decoy": 0,
+   "prepublished_len5plus": 12,
+   "surviving": 19,
+   "surviving_len3_4": 1,
+   "surviving_len5plus": 18,
+   "wrong": 33
+  },
+  "QUANTITY": {
+   "biasing_hit": 0,
+   "format": 6,
+   "names_hit": 0,
+   "novel": 1,
+   "pdf_hit": 0,
+   "prepublished": 0,
+   "prepublished_decoy": 0,
+   "surviving": 1,
+   "surviving_len5plus": 1,
+   "wrong": 7
+  },
+  "RANGE": {
+   "biasing_hit": 0,
+   "names_hit": 0,
+   "pdf_hit": 1,
+   "prepublished": 1,
+   "prepublished_decoy": 0,
+   "prepublished_len3_4": 1,
+   "surviving": 1,
+   "surviving_len3_4": 1,
+   "wrong": 1
+  },
+  "TIME": {
+   "biasing_hit": 1,
+   "format": 5,
+   "names_hit": 0,
+   "novel": 3,
+   "pdf_hit": 1,
+   "prepublished": 1,
+   "prepublished_decoy": 0,
+   "prepublished_len3_4": 1,
+   "surviving": 4,
+   "surviving_len3_4": 1,
+   "surviving_len5plus": 3,
+   "wrong": 9
+  },
+  "WEBSITE": {
+   "biasing_hit": 6,
+   "names_hit": 0,
+   "pdf_hit": 5,
+   "prepublished": 6,
+   "prepublished_decoy": 0,
+   "prepublished_len5plus": 6,
+   "surviving": 6,
+   "surviving_len5plus": 6,
+   "wrong": 6
+  },
+  "WORK_OF_ART": {
+   "biasing_hit": 0,
+   "names_hit": 0,
+   "novel": 2,
+   "pdf_hit": 0,
+   "prepublished": 0,
+   "prepublished_decoy": 0,
+   "surviving": 2,
+   "surviving_len5plus": 2,
+   "wrong": 2
+  },
+  "YEAR": {
+   "biasing_hit": 5,
+   "decoy_len3_4": 12,
+   "format": 232,
+   "names_hit": 0,
+   "novel": 2,
+   "pdf_hit": 37,
+   "prepublished": 37,
+   "prepublished_decoy": 12,
+   "prepublished_len3_4": 37,
+   "surviving": 39,
+   "surviving_len3_4": 38,
+   "surviving_len5plus": 1,
+   "wrong": 271
+  },
+  "__ALL": {
+   "biasing_hit": 338,
+   "decoy_len1_2": 55,
+   "decoy_len3_4": 83,
+   "decoy_len5plus": 6,
+   "format": 1852,
+   "names_hit": 100,
+   "novel": 425,
+   "pdf_hit": 415,
+   "prepublished": 545,
+   "prepublished_decoy": 144,
+   "prepublished_len1_2": 67,
+   "prepublished_len3_4": 272,
+   "prepublished_len5plus": 206,
+   "surviving": 970,
+   "surviving_len1_2": 69,
+   "surviving_len3_4": 381,
+   "surviving_len5plus": 520,
+   "wrong": 2822
+  },
+  "__CONVENTION": {
+   "biasing_hit": 102,
+   "decoy_len1_2": 2,
+   "decoy_len3_4": 17,
+   "format": 51,
+   "names_hit": 18,
+   "novel": 180,
+   "pdf_hit": 80,
+   "prepublished": 128,
+   "prepublished_decoy": 19,
+   "prepublished_len1_2": 5,
+   "prepublished_len3_4": 88,
+   "prepublished_len5plus": 35,
+   "surviving": 308,
+   "surviving_len1_2": 5,
+   "surviving_len3_4": 138,
+   "surviving_len5plus": 165,
+   "wrong": 359
+  },
+  "__NAME": {
+   "biasing_hit": 175,
+   "decoy_len1_2": 31,
+   "decoy_len3_4": 13,
+   "format": 66,
+   "names_hit": 81,
+   "novel": 147,
+   "pdf_hit": 157,
+   "prepublished": 229,
+   "prepublished_decoy": 44,
+   "prepublished_len1_2": 38,
+   "prepublished_len3_4": 67,
+   "prepublished_len5plus": 124,
+   "surviving": 376,
+   "surviving_len1_2": 39,
+   "surviving_len3_4": 101,
+   "surviving_len5plus": 236,
+   "wrong": 442
+  },
+  "__NUMERIC": {
+   "biasing_hit": 61,
+   "decoy_len1_2": 22,
+   "decoy_len3_4": 53,
+   "decoy_len5plus": 6,
+   "format": 1735,
+   "names_hit": 1,
+   "novel": 98,
+   "pdf_hit": 178,
+   "prepublished": 188,
+   "prepublished_decoy": 81,
+   "prepublished_len1_2": 24,
+   "prepublished_len3_4": 117,
+   "prepublished_len5plus": 47,
+   "surviving": 286,
+   "surviving_len1_2": 25,
+   "surviving_len3_4": 142,
+   "surviving_len5plus": 119,
+   "wrong": 2021
+  }
+ },
+ "schema": "saea-tndl-decomposition-v1"
+}
