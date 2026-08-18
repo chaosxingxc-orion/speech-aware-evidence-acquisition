@@ -1,0 +1,46 @@
+{
+  "flight_config_version": "a2t-s2c-flight-v1",
+  "probe": "P-A2T",
+  "stage": "Stage-2c form-robustness probe",
+  "status": "REGISTERED",
+  "preregistration": "docs/readiness/2026-08-18-pa2t-stage2c-preregistration-REGISTERED.md",
+  "exposure_ledger_row": "SAEA-PROBE-a2t-s2c-120",
+  "carrier": "audio2tool",
+  "carrier_lock_key": "audio2tool",
+  "headroom_manifest": "docs/checks/speech-aware-evidence-acquisition/2026-08-18-pa2t-a0-read/headroom.json",
+  "stage2_arm_plan_path": {
+    "path": "$SPEECHRL_DATA_DIR/runs/SAEA-PROBE-a2t-s2-120/attempt-20260818T124955Z-84b944/SAEA-PROBE-a2t-s2-120.arm-plan.json",
+    "note": "The already-flown Stage-2 probe's OWN {RUN_ID}.arm-plan.json (rails.probes.a2t_s2_flight / launch_pa2t_s2.py's own write shape) -- the SAME file Stage-2b's own config already names, REUSED VERBATIM a second time: every C-arm's per-sample content is loaded straight out of this file's s1p_tool_names field via analysis.a2t_s2_read.load_arm_plan (rails.probes.a2t_s2c_flight.build_flight_plan takes the ALREADY-LOADED ArmPlan object, never a path). $SPEECHRL_DATA_DIR is a runtime environment variable; a real launcher expands it at flight time. Unlike Stage-2b's B2 arm, no C-arm touches s4_tool_name/s4_derangement at all -- out of scope for a probe whose every arm supplies only the correct tool's own content."
+  },
+  "seed": 20260807,
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "carrier_lock_key": "audio2tool",
+    "split_role": "discovery",
+    "split_identity_hash": "e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c",
+    "planned_model_calls": 380,
+    "planned_gpu_hours": 0.75,
+    "planned_speech_audio_seconds": 2621,
+    "note": "planned_* are ceilings the plan is validated/metered against (contracts.ExecutionPlan); protocol_hash and run_id/attempt_id are assigned by the flying agent's own launcher at flight time, never frozen here. split_identity_hash is the SAME frozen discovery-split hash Stage-2/2b's own flight configs carry (the SAME 120 headroom ids, prereg intro) -- this flight resolves its own sample set from headroom_manifest, not from a fresh Audio2ToolAdapter.load_split() draw."
+  },
+  "arms": ["C1", "C2", "C3"],
+  "arm_semantics": {
+    "C1": "permuted: B1's exact content (the correct tool's row(s), argument_defaults STRIPPED), rendered with a seeded permutation of each row's own JSON field order and its argument_constraints clause order, deterministic from (seed, sample_id) (n=120). Replacing form, like B1. Presentation-axis robustness probe.",
+    "C2": "verbalized: B1's exact content, with argument_constraints rewritten as English prose sentence(s) covering the SAME clauses (no new values, a small deterministic function, no LLM involvement) (n=120). Replacing form, like B1. Presentation-axis robustness probe.",
+    "C3": "augmented right row: A0's EXACT full 152-row registry system prompt PLUS B1's own content (stripped, unpermuted, unverbalized) appended under the hash-pinned 'particularly relevant' header (rails.probes.a2t_s2b_flight.B2_HIGHLIGHT_HEADER, reused verbatim) -- correct tool PRESENT both inside the full registry and highlighted (n=120). Augmenting form, the direct right-row contrast to Stage-2b's B2 wrong-row augment."
+  },
+  "supply_shape": {
+    "note": "For C1/C2 the system prompt's {tool_schemas} fill is REPLACED by B1's content in its own presentation variant (permuted / verbalized) -- same supply-shape convention as B1 itself. For C3 it is the FULL 152-row registry (byte-identical to A0/N0r/B2) PLUS the pinned header PLUS B1's own content appended -- same supply-shape convention as B2. The rest of the instruction template (rails.adapters.audio2tool._INSTRUCTION_TEMPLATE) is byte-identical across every arm and across every Stage-2/2b/2c arm (rails.probes.a2t_s2_flight.assemble_roster_prompt, reused directly, never reimplemented).",
+    "c1_c2_entries": "1 (typical; multi-intent tier3/tier8 minority may carry more, one row per distinct tool named in s1p_tool_names -- identical to B1's own shape)",
+    "c3_entries": "153 (the full 152-row registry + 1-or-more appended correct-tool row(s))",
+    "token_estimate_basis": "C1/C2's own per-sample prompt is at or near B1's own measured shape (docs/readiness/2026-08-18-a2t-s2b-verdict.md: B1 slightly larger than S1' owing to format hygiene, not size) -- permutation/verbalization change presentation, not content length materially. C3's own per-sample prompt is A0's measured full-152-row prefill (~12693 tokens, pa2t-binding.json A0_shipped_supply_measurements) PLUS B1's own appended row(s) (~330 chars each) PLUS the pinned header (~65 chars) -- roughly A0's own token count, marginally above it, same order as Stage-2b's B2. Exact per-arm counts are computed by rails.probes.a2t_s2c_flight.render_c1_tool_schemas / render_c2_tool_schemas / render_c3_tool_schemas's own output length at flight-plan build time, not hardcoded here."
+  },
+  "cost_budget": {
+    "call_formula": "120 (C1) + 120 (C2) + 120 (C3) = 360",
+    "call_ceiling": 400,
+    "audio_seconds_ceiling": 3000,
+    "gpu_hours_ceiling": 0.75,
+    "basis": "preregistration section 5: '360 requests (3x120); <=400 core calls; <=3,000 metered audio-seconds; <=0.75 GPU-h (featcache fully warm; C1/C2 prompts tiny, C3 registry-sized with prefix-cache reuse)'. planned_speech_audio_seconds=2621 derives from Stage-2's own measured one-pass load over the SAME 120 headroom ids (635.28s, docs/checks/speech-aware-evidence-acquisition/2026-08-18-a2t-s2-flight/README.md): each of C1/C2/C3 re-sends its sample's own audio once, so 3 x 635.28 = 1905.84s base, +20 retries each bounded by the headroom set's own longest item (35.71s, same README, the same fixed retry-margin convention Stage-2b's own config uses) = 1905.84 + 714.2 = 2620.04 -> rounded up to 2621, still under the registered 3000 ceiling. planned_model_calls=380 = 360 base + the same 20-request retry margin, under the registered 400 ceiling."
+  },
+  "branch_rules_source": "docs/readiness/2026-08-18-pa2t-stage2c-preregistration-REGISTERED.md section 3 (ROBUST / FORM-FRAGILE / INCONCLUSIVE-C from C1+C2 jointly; the independent DEPLOY-AUGMENT overlay -- DEPLOYABLE / CHANNEL-REOPENED / no flag -- from C3 alone) -- mechanical from the per-sample outputs.jsonl rows this flight produces; branch evaluation itself is NOT implemented by the flight machinery (analysis.a2t_s2c_read, a separately pinned read suite, evaluates it against an already-written attempt)."
+}
