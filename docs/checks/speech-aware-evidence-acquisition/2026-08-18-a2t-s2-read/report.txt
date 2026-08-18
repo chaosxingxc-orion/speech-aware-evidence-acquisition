@@ -1,0 +1,92 @@
+P-A2T Stage-2 supply-probe pinned offline read (docs/readiness/2026-08-18-pa2t-stage2-preregistration-REGISTERED.md)
+==============================================================================
+
+attempt dir: /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-a2t-s2-120/attempt-20260818T124955Z-84b944
+flight status: 'COMPLETED'
+split identity hash: e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c
+arm plan: /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-a2t-s2-120/attempt-20260818T124955Z-84b944/SAEA-PROBE-a2t-s2-120.arm-plan.json
+headroom manifest: /mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/checks/speech-aware-evidence-acquisition/2026-08-18-pa2t-a0-read/headroom.json
+
+Per-arm aggregates (pooled)
+  arm      n  retention  conv_rate em_flips  slot_f1  empty parse_fail  induced
+  S1p    120     0.9333     0.1333       16   0.4077 0.0583     0.0583       34
+  S2     120     0.9250     0.0917       11   0.3812 0.0583     0.0583       34
+  S4     120     0.0000     0.0000        0   0.0000 0.9583     0.0333        0
+  N0r     40     0.8750     0.0000        0   0.3200 0.1250     0.1250        0
+
+Per-tier breakdown (PER-TIER REPORTING MANDATORY -- pooled is never the headline)
+  arm S1p:
+    tier1_direct            23 conv_rate=0.2609 retention=1.0000 slot_f1=0.0000 induced=0 (interpretive-weight)
+    tier2_parametric        17 conv_rate=0.1765 retention=1.0000 slot_f1=0.5185 induced=8 (interpretive-weight)
+    tier3_multi_intent      29 conv_rate=0.0000 retention=0.8966 slot_f1=0.3796 induced=14 (interpretive-weight)
+    tier4_implicit           3 conv_rate=0.3333 retention=1.0000 slot_f1=0.7273 induced=1 (small-n caveat)
+    tier5_needle            12 conv_rate=0.1667 retention=0.9167 slot_f1=0.5333 induced=3 (small-n caveat)
+    tier6_correction        12 conv_rate=0.0000 retention=0.8333 slot_f1=0.2083 induced=6 (small-n caveat)
+    tier7_multiturn          8 conv_rate=0.5000 retention=1.0000 slot_f1=0.7647 induced=2 (small-n caveat)
+    tier8_intent_blending   16 conv_rate=0.0000 retention=0.8750 slot_f1=0.3667 induced=0 (interpretive-weight)
+  arm S2:
+    tier1_direct            23 conv_rate=0.1739 retention=1.0000 slot_f1=0.0000 induced=0 (interpretive-weight)
+    tier2_parametric        17 conv_rate=0.1176 retention=0.8824 slot_f1=0.4138 induced=9 (interpretive-weight)
+    tier3_multi_intent      29 conv_rate=0.0000 retention=0.8966 slot_f1=0.3714 induced=13 (interpretive-weight)
+    tier4_implicit           3 conv_rate=0.0000 retention=0.6667 slot_f1=0.4444 induced=1 (small-n caveat)
+    tier5_needle            12 conv_rate=0.2500 retention=1.0000 slot_f1=0.5652 induced=3 (small-n caveat)
+    tier6_correction        12 conv_rate=0.0000 retention=0.8333 slot_f1=0.1860 induced=2 (small-n caveat)
+    tier7_multiturn          8 conv_rate=0.2500 retention=0.8750 slot_f1=0.6667 induced=2 (small-n caveat)
+    tier8_intent_blending   16 conv_rate=0.0000 retention=1.0000 slot_f1=0.3824 induced=4 (interpretive-weight)
+  arm S4:
+    tier1_direct            23 conv_rate=0.0000 retention=0.0000 slot_f1=0.0000 induced=0 (interpretive-weight)
+    tier2_parametric        17 conv_rate=0.0000 retention=0.0000 slot_f1=0.0000 induced=0 (interpretive-weight)
+    tier3_multi_intent      29 conv_rate=0.0000 retention=0.0000 slot_f1=0.0000 induced=0 (interpretive-weight)
+    tier4_implicit           3 conv_rate=0.0000 retention=0.0000 slot_f1=0.0000 induced=0 (small-n caveat)
+    tier5_needle            12 conv_rate=0.0000 retention=0.0000 slot_f1=0.0000 induced=0 (small-n caveat)
+    tier6_correction        12 conv_rate=0.0000 retention=0.0000 slot_f1=0.0000 induced=0 (small-n caveat)
+    tier7_multiturn          8 conv_rate=0.0000 retention=0.0000 slot_f1=0.0000 induced=0 (small-n caveat)
+    tier8_intent_blending   16 conv_rate=0.0000 retention=0.0000 slot_f1=0.0000 induced=0 (interpretive-weight)
+  arm N0r:
+    tier1_direct             8 conv_rate=0.0000 retention=1.0000 slot_f1=0.0000 induced=0 (small-n caveat)
+    tier2_parametric         6 conv_rate=0.0000 retention=1.0000 slot_f1=0.4615 induced=0 (small-n caveat)
+    tier3_multi_intent       9 conv_rate=0.0000 retention=0.8889 slot_f1=0.2941 induced=0 (small-n caveat)
+    tier4_implicit           1 conv_rate=0.0000 retention=1.0000 slot_f1=0.0000 induced=0 (small-n caveat)
+    tier5_needle             4 conv_rate=0.0000 retention=0.7500 slot_f1=0.5000 induced=0 (small-n caveat)
+    tier6_correction         4 conv_rate=0.0000 retention=1.0000 slot_f1=0.0000 induced=0 (small-n caveat)
+    tier7_multiturn          3 conv_rate=0.0000 retention=1.0000 slot_f1=0.6154 induced=0 (small-n caveat)
+    tier8_intent_blending    5 conv_rate=0.0000 retention=0.4000 slot_f1=0.2667 induced=0 (small-n caveat)
+
+noise floor: 0.0250  conversion floor (max(2x noise, 5%)): 0.0500
+
+VOID (checked FIRST): not met
+  [ NOT_MET] N0r EM-flip rate > 25% (unstable A0 comparator)
+           N0r EM-flip rate=0.0000 (0/40), ceiling=0.25
+
+COPY-TRAP: MET
+  [     MET] S1p: induced-substitutions >= EM-flips
+           note 9 (requires EM-flip count > 0 -- a bare >= is vacuous at 0 vs 0): induced=34, em_flips=16
+  [     MET] S2: induced-substitutions >= EM-flips
+           note 9 (requires EM-flip count > 0 -- a bare >= is vacuous at 0 vs 0): induced=34, em_flips=11
+  [ NOT_MET] S4: induced-substitutions >= EM-flips
+           note 9 (requires EM-flip count > 0 -- a bare >= is vacuous at 0 vs 0): induced=0, em_flips=0
+  [     MET] S4 tool-selection retention < 90%
+           S4 tool_accuracy=0.0000 (120 samples), floor=0.90
+
+SCHEMA-ONLY: not met
+  [ NOT_MET] |S1' conversion - S4 conversion| <= 2x noise floor
+           S1'=0.1333, S4=0.0000, |diff|=0.1333, 2xnoise=0.0500
+  [ NOT_MET] both S1' and S4 conversion >= max(2x noise, 5%)
+           S1'=0.1333, S4=0.0000, floor=0.0500
+
+SUPPLY-CONVERTS: not met
+  [ NOT_MET] S1' conversion >= 15% of 120
+           S1'=0.1333, floor=0.15
+  [     MET] S4 conversion <= max(2x noise, 5%)
+           S4=0.0000, ceiling=0.0500
+  [ NOT_MET] S1' tool-selection retention >= 95%
+           S1' tool_accuracy=0.9333, floor=0.95
+
+INERT: not met
+  [ NOT_MET] every supply arm conversion < max(2x noise, 5%)
+           S1'=0.1333, S2=0.0917, S4=0.0000, floor=0.0500
+
+DOSE point (secondary, descriptive): MET
+  S2=0.0917, S1'=0.1333
+
+OVERALL: COPY-TRAP + DOSE point (secondary, descriptive)

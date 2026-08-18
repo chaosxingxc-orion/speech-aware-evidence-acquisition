@@ -1,0 +1,607 @@
+{
+  "arm_plan_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-a2t-s2-120/attempt-20260818T124955Z-84b944/SAEA-PROBE-a2t-s2-120.arm-plan.json",
+  "attempt_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-a2t-s2-120/attempt-20260818T124955Z-84b944",
+  "branch_verdict": {
+    "conversion_floor": 0.05,
+    "copy_trap": true,
+    "copy_trap_clauses": [
+      {
+        "clause_text": "S1p: induced-substitutions >= EM-flips",
+        "detail": "note 9 (requires EM-flip count > 0 -- a bare >= is vacuous at 0 vs 0): induced=34, em_flips=16",
+        "verdict": "met"
+      },
+      {
+        "clause_text": "S2: induced-substitutions >= EM-flips",
+        "detail": "note 9 (requires EM-flip count > 0 -- a bare >= is vacuous at 0 vs 0): induced=34, em_flips=11",
+        "verdict": "met"
+      },
+      {
+        "clause_text": "S4: induced-substitutions >= EM-flips",
+        "detail": "note 9 (requires EM-flip count > 0 -- a bare >= is vacuous at 0 vs 0): induced=0, em_flips=0",
+        "verdict": "not_met"
+      },
+      {
+        "clause_text": "S4 tool-selection retention < 90%",
+        "detail": "S4 tool_accuracy=0.0000 (120 samples), floor=0.90",
+        "verdict": "met"
+      }
+    ],
+    "dose_point": {
+      "clause_text": "S2 underperforms S1' (dilution to K=9 costs conversion; secondary, descriptive)",
+      "detail": "S2=0.0917, S1'=0.1333",
+      "verdict": "met"
+    },
+    "inert": false,
+    "inert_clause": {
+      "clause_text": "every supply arm conversion < max(2x noise, 5%)",
+      "detail": "S1'=0.1333, S2=0.0917, S4=0.0000, floor=0.0500",
+      "verdict": "not_met"
+    },
+    "noise_floor": 0.025,
+    "overall": "COPY-TRAP + DOSE point (secondary, descriptive)",
+    "schema_only": false,
+    "schema_only_clauses": [
+      {
+        "clause_text": "|S1' conversion - S4 conversion| <= 2x noise floor",
+        "detail": "S1'=0.1333, S4=0.0000, |diff|=0.1333, 2xnoise=0.0500",
+        "verdict": "not_met"
+      },
+      {
+        "clause_text": "both S1' and S4 conversion >= max(2x noise, 5%)",
+        "detail": "S1'=0.1333, S4=0.0000, floor=0.0500",
+        "verdict": "not_met"
+      }
+    ],
+    "supply_converts": false,
+    "supply_converts_clauses": [
+      {
+        "clause_text": "S1' conversion >= 15% of 120",
+        "detail": "S1'=0.1333, floor=0.15",
+        "verdict": "not_met"
+      },
+      {
+        "clause_text": "S4 conversion <= max(2x noise, 5%)",
+        "detail": "S4=0.0000, ceiling=0.0500",
+        "verdict": "met"
+      },
+      {
+        "clause_text": "S1' tool-selection retention >= 95%",
+        "detail": "S1' tool_accuracy=0.9333, floor=0.95",
+        "verdict": "not_met"
+      }
+    ],
+    "void_clause": {
+      "clause_text": "N0r EM-flip rate > 25% (unstable A0 comparator)",
+      "detail": "N0r EM-flip rate=0.0000 (0/40), ceiling=0.25",
+      "verdict": "not_met"
+    },
+    "voided": false
+  },
+  "flight_status": "COMPLETED",
+  "headroom_path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/checks/speech-aware-evidence-acquisition/2026-08-18-pa2t-a0-read/headroom.json",
+  "per_arm": {
+    "N0r": {
+      "by_tier": {
+        "tier1_direct": {
+          "arm": "N0r",
+          "em_conversion_rate": 0.0,
+          "em_flip_count": 0,
+          "empty_call_rate": 0.0,
+          "induced_substitution_count": 0,
+          "interpretive_weight": false,
+          "n_samples": 8,
+          "parse_failure_rate": 0.0,
+          "slot_f1": 0.0,
+          "slot_precision": 0.0,
+          "slot_recall": 0.0,
+          "tool_selection_retention": 1.0
+        },
+        "tier2_parametric": {
+          "arm": "N0r",
+          "em_conversion_rate": 0.0,
+          "em_flip_count": 0,
+          "empty_call_rate": 0.0,
+          "induced_substitution_count": 0,
+          "interpretive_weight": false,
+          "n_samples": 6,
+          "parse_failure_rate": 0.0,
+          "slot_f1": 0.46153846153846156,
+          "slot_precision": 0.46153846153846156,
+          "slot_recall": 0.46153846153846156,
+          "tool_selection_retention": 1.0
+        },
+        "tier3_multi_intent": {
+          "arm": "N0r",
+          "em_conversion_rate": 0.0,
+          "em_flip_count": 0,
+          "empty_call_rate": 0.1111111111111111,
+          "induced_substitution_count": 0,
+          "interpretive_weight": false,
+          "n_samples": 9,
+          "parse_failure_rate": 0.1111111111111111,
+          "slot_f1": 0.29411764705882354,
+          "slot_precision": 0.2,
+          "slot_recall": 0.5555555555555556,
+          "tool_selection_retention": 0.8888888888888888
+        },
+        "tier4_implicit": {
+          "arm": "N0r",
+          "em_conversion_rate": 0.0,
+          "em_flip_count": 0,
+          "empty_call_rate": 0.0,
+          "induced_substitution_count": 0,
+          "interpretive_weight": false,
+          "n_samples": 1,
+          "parse_failure_rate": 0.0,
+          "slot_f1": 0.0,
+          "slot_precision": 0.0,
+          "slot_recall": 0.0,
+          "tool_selection_retention": 1.0
+        },
+        "tier5_needle": {
+          "arm": "N0r",
+          "em_conversion_rate": 0.0,
+          "em_flip_count": 0,
+          "empty_call_rate": 0.25,
+          "induced_substitution_count": 0,
+          "interpretive_weight": false,
+          "n_samples": 4,
+          "parse_failure_rate": 0.25,
+          "slot_f1": 0.5,
+          "slot_precision": 0.42857142857142855,
+          "slot_recall": 0.6,
+          "tool_selection_retention": 0.75
+        },
+        "tier6_correction": {
+          "arm": "N0r",
+          "em_conversion_rate": 0.0,
+          "em_flip_count": 0,
+          "empty_call_rate": 0.0,
+          "induced_substitution_count": 0,
+          "interpretive_weight": false,
+          "n_samples": 4,
+          "parse_failure_rate": 0.0,
+          "slot_f1": 0.0,
+          "slot_precision": 0.0,
+          "slot_recall": 0.0,
+          "tool_selection_retention": 1.0
+        },
+        "tier7_multiturn": {
+          "arm": "N0r",
+          "em_conversion_rate": 0.0,
+          "em_flip_count": 0,
+          "empty_call_rate": 0.0,
+          "induced_substitution_count": 0,
+          "interpretive_weight": false,
+          "n_samples": 3,
+          "parse_failure_rate": 0.0,
+          "slot_f1": 0.6153846153846153,
+          "slot_precision": 0.6666666666666666,
+          "slot_recall": 0.5714285714285714,
+          "tool_selection_retention": 1.0
+        },
+        "tier8_intent_blending": {
+          "arm": "N0r",
+          "em_conversion_rate": 0.0,
+          "em_flip_count": 0,
+          "empty_call_rate": 0.6,
+          "induced_substitution_count": 0,
+          "interpretive_weight": false,
+          "n_samples": 5,
+          "parse_failure_rate": 0.6,
+          "slot_f1": 0.26666666666666666,
+          "slot_precision": 0.2857142857142857,
+          "slot_recall": 0.25,
+          "tool_selection_retention": 0.4
+        }
+      },
+      "overall": {
+        "arm": "N0r",
+        "em_conversion_rate": 0.0,
+        "em_flip_count": 0,
+        "empty_call_rate": 0.125,
+        "induced_substitution_count": 0,
+        "interpretive_weight": true,
+        "n_samples": 40,
+        "parse_failure_rate": 0.125,
+        "slot_f1": 0.32,
+        "slot_precision": 0.2631578947368421,
+        "slot_recall": 0.40816326530612246,
+        "tool_selection_retention": 0.875
+      }
+    },
+    "S1p": {
+      "by_tier": {
+        "tier1_direct": {
+          "arm": "S1p",
+          "em_conversion_rate": 0.2608695652173913,
+          "em_flip_count": 6,
+          "empty_call_rate": 0.0,
+          "induced_substitution_count": 0,
+          "interpretive_weight": true,
+          "n_samples": 23,
+          "parse_failure_rate": 0.0,
+          "slot_f1": 0.0,
+          "slot_precision": 0.0,
+          "slot_recall": 0.0,
+          "tool_selection_retention": 1.0
+        },
+        "tier2_parametric": {
+          "arm": "S1p",
+          "em_conversion_rate": 0.17647058823529413,
+          "em_flip_count": 3,
+          "empty_call_rate": 0.0,
+          "induced_substitution_count": 8,
+          "interpretive_weight": true,
+          "n_samples": 17,
+          "parse_failure_rate": 0.0,
+          "slot_f1": 0.5185185185185186,
+          "slot_precision": 0.5384615384615384,
+          "slot_recall": 0.5,
+          "tool_selection_retention": 1.0
+        },
+        "tier3_multi_intent": {
+          "arm": "S1p",
+          "em_conversion_rate": 0.0,
+          "em_flip_count": 0,
+          "empty_call_rate": 0.10344827586206896,
+          "induced_substitution_count": 14,
+          "interpretive_weight": true,
+          "n_samples": 29,
+          "parse_failure_rate": 0.10344827586206896,
+          "slot_f1": 0.3795620437956205,
+          "slot_precision": 0.2524271844660194,
+          "slot_recall": 0.7647058823529411,
+          "tool_selection_retention": 0.896551724137931
+        },
+        "tier4_implicit": {
+          "arm": "S1p",
+          "em_conversion_rate": 0.3333333333333333,
+          "em_flip_count": 1,
+          "empty_call_rate": 0.0,
+          "induced_substitution_count": 1,
+          "interpretive_weight": false,
+          "n_samples": 3,
+          "parse_failure_rate": 0.0,
+          "slot_f1": 0.7272727272727272,
+          "slot_precision": 0.6666666666666666,
+          "slot_recall": 0.8,
+          "tool_selection_retention": 1.0
+        },
+        "tier5_needle": {
+          "arm": "S1p",
+          "em_conversion_rate": 0.16666666666666666,
+          "em_flip_count": 2,
+          "empty_call_rate": 0.08333333333333333,
+          "induced_substitution_count": 3,
+          "interpretive_weight": false,
+          "n_samples": 12,
+          "parse_failure_rate": 0.08333333333333333,
+          "slot_f1": 0.5333333333333332,
+          "slot_precision": 0.5217391304347826,
+          "slot_recall": 0.5454545454545454,
+          "tool_selection_retention": 0.9166666666666666
+        },
+        "tier6_correction": {
+          "arm": "S1p",
+          "em_conversion_rate": 0.0,
+          "em_flip_count": 0,
+          "empty_call_rate": 0.08333333333333333,
+          "induced_substitution_count": 6,
+          "interpretive_weight": false,
+          "n_samples": 12,
+          "parse_failure_rate": 0.08333333333333333,
+          "slot_f1": 0.20833333333333331,
+          "slot_precision": 0.2,
+          "slot_recall": 0.21739130434782608,
+          "tool_selection_retention": 0.8333333333333334
+        },
+        "tier7_multiturn": {
+          "arm": "S1p",
+          "em_conversion_rate": 0.5,
+          "em_flip_count": 4,
+          "empty_call_rate": 0.0,
+          "induced_substitution_count": 2,
+          "interpretive_weight": false,
+          "n_samples": 8,
+          "parse_failure_rate": 0.0,
+          "slot_f1": 0.7647058823529411,
+          "slot_precision": 0.8125,
+          "slot_recall": 0.7222222222222222,
+          "tool_selection_retention": 1.0
+        },
+        "tier8_intent_blending": {
+          "arm": "S1p",
+          "em_conversion_rate": 0.0,
+          "em_flip_count": 0,
+          "empty_call_rate": 0.125,
+          "induced_substitution_count": 0,
+          "interpretive_weight": true,
+          "n_samples": 16,
+          "parse_failure_rate": 0.125,
+          "slot_f1": 0.3666666666666667,
+          "slot_precision": 0.275,
+          "slot_recall": 0.55,
+          "tool_selection_retention": 0.875
+        }
+      },
+      "overall": {
+        "arm": "S1p",
+        "em_conversion_rate": 0.13333333333333333,
+        "em_flip_count": 16,
+        "empty_call_rate": 0.058333333333333334,
+        "induced_substitution_count": 34,
+        "interpretive_weight": true,
+        "n_samples": 120,
+        "parse_failure_rate": 0.058333333333333334,
+        "slot_f1": 0.407673860911271,
+        "slot_precision": 0.31835205992509363,
+        "slot_recall": 0.5666666666666667,
+        "tool_selection_retention": 0.9333333333333333
+      }
+    },
+    "S2": {
+      "by_tier": {
+        "tier1_direct": {
+          "arm": "S2",
+          "em_conversion_rate": 0.17391304347826086,
+          "em_flip_count": 4,
+          "empty_call_rate": 0.0,
+          "induced_substitution_count": 0,
+          "interpretive_weight": true,
+          "n_samples": 23,
+          "parse_failure_rate": 0.0,
+          "slot_f1": 0.0,
+          "slot_precision": 0.0,
+          "slot_recall": 0.0,
+          "tool_selection_retention": 1.0
+        },
+        "tier2_parametric": {
+          "arm": "S2",
+          "em_conversion_rate": 0.11764705882352941,
+          "em_flip_count": 2,
+          "empty_call_rate": 0.058823529411764705,
+          "induced_substitution_count": 9,
+          "interpretive_weight": true,
+          "n_samples": 17,
+          "parse_failure_rate": 0.058823529411764705,
+          "slot_f1": 0.4137931034482759,
+          "slot_precision": 0.4,
+          "slot_recall": 0.42857142857142855,
+          "tool_selection_retention": 0.8823529411764706
+        },
+        "tier3_multi_intent": {
+          "arm": "S2",
+          "em_conversion_rate": 0.0,
+          "em_flip_count": 0,
+          "empty_call_rate": 0.06896551724137931,
+          "induced_substitution_count": 13,
+          "interpretive_weight": true,
+          "n_samples": 29,
+          "parse_failure_rate": 0.06896551724137931,
+          "slot_f1": 0.3714285714285715,
+          "slot_precision": 0.24528301886792453,
+          "slot_recall": 0.7647058823529411,
+          "tool_selection_retention": 0.896551724137931
+        },
+        "tier4_implicit": {
+          "arm": "S2",
+          "em_conversion_rate": 0.0,
+          "em_flip_count": 0,
+          "empty_call_rate": 0.3333333333333333,
+          "induced_substitution_count": 1,
+          "interpretive_weight": false,
+          "n_samples": 3,
+          "parse_failure_rate": 0.3333333333333333,
+          "slot_f1": 0.4444444444444445,
+          "slot_precision": 0.5,
+          "slot_recall": 0.4,
+          "tool_selection_retention": 0.6666666666666666
+        },
+        "tier5_needle": {
+          "arm": "S2",
+          "em_conversion_rate": 0.25,
+          "em_flip_count": 3,
+          "empty_call_rate": 0.0,
+          "induced_substitution_count": 3,
+          "interpretive_weight": false,
+          "n_samples": 12,
+          "parse_failure_rate": 0.0,
+          "slot_f1": 0.5652173913043478,
+          "slot_precision": 0.5416666666666666,
+          "slot_recall": 0.5909090909090909,
+          "tool_selection_retention": 1.0
+        },
+        "tier6_correction": {
+          "arm": "S2",
+          "em_conversion_rate": 0.0,
+          "em_flip_count": 0,
+          "empty_call_rate": 0.16666666666666666,
+          "induced_substitution_count": 2,
+          "interpretive_weight": false,
+          "n_samples": 12,
+          "parse_failure_rate": 0.16666666666666666,
+          "slot_f1": 0.18604651162790697,
+          "slot_precision": 0.2,
+          "slot_recall": 0.17391304347826086,
+          "tool_selection_retention": 0.8333333333333334
+        },
+        "tier7_multiturn": {
+          "arm": "S2",
+          "em_conversion_rate": 0.25,
+          "em_flip_count": 2,
+          "empty_call_rate": 0.125,
+          "induced_substitution_count": 2,
+          "interpretive_weight": false,
+          "n_samples": 8,
+          "parse_failure_rate": 0.125,
+          "slot_f1": 0.6666666666666666,
+          "slot_precision": 0.7333333333333333,
+          "slot_recall": 0.6111111111111112,
+          "tool_selection_retention": 0.875
+        },
+        "tier8_intent_blending": {
+          "arm": "S2",
+          "em_conversion_rate": 0.0,
+          "em_flip_count": 0,
+          "empty_call_rate": 0.0,
+          "induced_substitution_count": 4,
+          "interpretive_weight": true,
+          "n_samples": 16,
+          "parse_failure_rate": 0.0,
+          "slot_f1": 0.3823529411764705,
+          "slot_precision": 0.2708333333333333,
+          "slot_recall": 0.65,
+          "tool_selection_retention": 1.0
+        }
+      },
+      "overall": {
+        "arm": "S2",
+        "em_conversion_rate": 0.09166666666666666,
+        "em_flip_count": 11,
+        "empty_call_rate": 0.058333333333333334,
+        "induced_substitution_count": 34,
+        "interpretive_weight": true,
+        "n_samples": 120,
+        "parse_failure_rate": 0.058333333333333334,
+        "slot_f1": 0.38117647058823534,
+        "slot_precision": 0.29454545454545455,
+        "slot_recall": 0.54,
+        "tool_selection_retention": 0.925
+      }
+    },
+    "S4": {
+      "by_tier": {
+        "tier1_direct": {
+          "arm": "S4",
+          "em_conversion_rate": 0.0,
+          "em_flip_count": 0,
+          "empty_call_rate": 1.0,
+          "induced_substitution_count": 0,
+          "interpretive_weight": true,
+          "n_samples": 23,
+          "parse_failure_rate": 0.043478260869565216,
+          "slot_f1": 0.0,
+          "slot_precision": 0.0,
+          "slot_recall": 0.0,
+          "tool_selection_retention": 0.0
+        },
+        "tier2_parametric": {
+          "arm": "S4",
+          "em_conversion_rate": 0.0,
+          "em_flip_count": 0,
+          "empty_call_rate": 1.0,
+          "induced_substitution_count": 0,
+          "interpretive_weight": true,
+          "n_samples": 17,
+          "parse_failure_rate": 0.0,
+          "slot_f1": 0.0,
+          "slot_precision": 0.0,
+          "slot_recall": 0.0,
+          "tool_selection_retention": 0.0
+        },
+        "tier3_multi_intent": {
+          "arm": "S4",
+          "em_conversion_rate": 0.0,
+          "em_flip_count": 0,
+          "empty_call_rate": 0.9655172413793104,
+          "induced_substitution_count": 0,
+          "interpretive_weight": true,
+          "n_samples": 29,
+          "parse_failure_rate": 0.06896551724137931,
+          "slot_f1": 0.0,
+          "slot_precision": 0.0,
+          "slot_recall": 0.0,
+          "tool_selection_retention": 0.0
+        },
+        "tier4_implicit": {
+          "arm": "S4",
+          "em_conversion_rate": 0.0,
+          "em_flip_count": 0,
+          "empty_call_rate": 1.0,
+          "induced_substitution_count": 0,
+          "interpretive_weight": false,
+          "n_samples": 3,
+          "parse_failure_rate": 0.0,
+          "slot_f1": 0.0,
+          "slot_precision": 0.0,
+          "slot_recall": 0.0,
+          "tool_selection_retention": 0.0
+        },
+        "tier5_needle": {
+          "arm": "S4",
+          "em_conversion_rate": 0.0,
+          "em_flip_count": 0,
+          "empty_call_rate": 0.9166666666666666,
+          "induced_substitution_count": 0,
+          "interpretive_weight": false,
+          "n_samples": 12,
+          "parse_failure_rate": 0.08333333333333333,
+          "slot_f1": 0.0,
+          "slot_precision": 0.0,
+          "slot_recall": 0.0,
+          "tool_selection_retention": 0.0
+        },
+        "tier6_correction": {
+          "arm": "S4",
+          "em_conversion_rate": 0.0,
+          "em_flip_count": 0,
+          "empty_call_rate": 1.0,
+          "induced_substitution_count": 0,
+          "interpretive_weight": false,
+          "n_samples": 12,
+          "parse_failure_rate": 0.0,
+          "slot_f1": 0.0,
+          "slot_precision": 0.0,
+          "slot_recall": 0.0,
+          "tool_selection_retention": 0.0
+        },
+        "tier7_multiturn": {
+          "arm": "S4",
+          "em_conversion_rate": 0.0,
+          "em_flip_count": 0,
+          "empty_call_rate": 0.875,
+          "induced_substitution_count": 0,
+          "interpretive_weight": false,
+          "n_samples": 8,
+          "parse_failure_rate": 0.0,
+          "slot_f1": 0.0,
+          "slot_precision": 0.0,
+          "slot_recall": 0.0,
+          "tool_selection_retention": 0.0
+        },
+        "tier8_intent_blending": {
+          "arm": "S4",
+          "em_conversion_rate": 0.0,
+          "em_flip_count": 0,
+          "empty_call_rate": 0.875,
+          "induced_substitution_count": 0,
+          "interpretive_weight": true,
+          "n_samples": 16,
+          "parse_failure_rate": 0.0,
+          "slot_f1": 0.0,
+          "slot_precision": 0.0,
+          "slot_recall": 0.0,
+          "tool_selection_retention": 0.0
+        }
+      },
+      "overall": {
+        "arm": "S4",
+        "em_conversion_rate": 0.0,
+        "em_flip_count": 0,
+        "empty_call_rate": 0.9583333333333334,
+        "induced_substitution_count": 0,
+        "interpretive_weight": true,
+        "n_samples": 120,
+        "parse_failure_rate": 0.03333333333333333,
+        "slot_f1": 0.0,
+        "slot_precision": 0.0,
+        "slot_recall": 0.0,
+        "tool_selection_retention": 0.0
+      }
+    }
+  },
+  "registry_defaults_parse_warnings": [],
+  "schema": "saea-a2t-s2-read-v1",
+  "split_identity_hash": "e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c"
+}
