@@ -188,6 +188,149 @@ class TestRegisterRefusals:
             registry.register(_record(relpath, raw, preprocess=("rms-norm",)))
 
 
+class TestSliceAddressingToken:
+    """core/model/slices.py:_slice_token -- exercised only through the REAL
+    SliceRegistry's public surface (slice_relpath/register/lookup), never a
+    mock. Regression: docs/checks/speech-aware-evidence-acquisition/
+    2026-08-17-pslu-flight/2026-08-18-attempt2-flight-execution.md -- a
+    colon-bearing sample id (SLURP, Audio2Tool) used to abort registration
+    because the raw id doubled as an unscreened directory component."""
+
+    def test_earnings_style_id_maps_to_unchanged_path_no_token_suffix(self, world):
+        """Regression guard: an already path-safe id (every historical
+        earnings run) must keep its EXACT existing path -- no hash suffix --
+        so the warm feature cache and every existing attempt dir stay
+        addressable byte-identically."""
+
+        _, registry = world
+        assert (
+            registry.slice_relpath(SAMPLE_ID, 0)
+            == f"derived/obs-slices/{RUN_ID}/{SAMPLE_ID}/i0000.wav"
+        )
+
+    def test_slurp_style_colon_id_round_trips_through_the_real_registry(self, tmp_path):
+        sample_id = "slurp:devel:005518:audio-1490203960"
+        parent_relpath = "datasets/slurp/audio/audio-1490203960.flac"
+        data_root = tmp_path / "data"
+        parent = data_root / parent_relpath
+        parent.parent.mkdir(parents=True)
+        parent.write_bytes(PARENT_BYTES)
+        registry = SliceRegistry(
+            data_root=data_root,
+            run_id=RUN_ID,
+            parent_facts={sample_id: (parent_relpath, PARENT_SECONDS)},
+        )
+        relpath = registry.slice_relpath(sample_id, 0)
+        assert ":" not in relpath  # the raw id no longer reaches the filesystem verbatim
+        assert relpath.startswith(f"derived/obs-slices/{RUN_ID}/")
+        raw = write_wav_bytes(array("h", [1, -1] * 800), 16000)
+        path = data_root / relpath
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(raw)
+        record = SliceRecord(
+            sample_id=sample_id,
+            parent_media_relpath=parent_relpath,
+            parent_sha256=_sha(PARENT_BYTES),
+            start_seconds=0.0,
+            end_seconds=60.0,
+            audio_seconds=60.0,
+            sample_rate_hz=16000,
+            media_relpath=relpath,
+            sha256=_sha(raw),
+            bytes=len(raw),
+            iteration=0,
+        )
+        registry.register(record)
+        assert (data_root / relpath).is_file()
+        looked_up = registry.lookup(sample_id, relpath)  # lookup keys on the RAW id
+        assert looked_up is record
+        assert looked_up.sample_id == sample_id  # raw id preserved, never the token
+        registry.verify_slice_bytes(record)
+
+    def test_audio2tool_style_colon_id_round_trips_through_the_real_registry(self, tmp_path):
+        sample_id = "tier1_direct:000001"
+        parent_relpath = "datasets/audio2tool/public/tier1_direct/000001.wav"
+        data_root = tmp_path / "data"
+        parent = data_root / parent_relpath
+        parent.parent.mkdir(parents=True)
+        parent.write_bytes(PARENT_BYTES)
+        registry = SliceRegistry(
+            data_root=data_root,
+            run_id=RUN_ID,
+            parent_facts={sample_id: (parent_relpath, PARENT_SECONDS)},
+        )
+        relpath = registry.slice_relpath(sample_id, 0)
+        assert ":" not in relpath
+        raw = write_wav_bytes(array("h", [2, -2] * 800), 16000)
+        path = data_root / relpath
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(raw)
+        record = SliceRecord(
+            sample_id=sample_id,
+            parent_media_relpath=parent_relpath,
+            parent_sha256=_sha(PARENT_BYTES),
+            start_seconds=0.0,
+            end_seconds=60.0,
+            audio_seconds=60.0,
+            sample_rate_hz=16000,
+            media_relpath=relpath,
+            sha256=_sha(raw),
+            bytes=len(raw),
+            iteration=0,
+        )
+        registry.register(record)
+        looked_up = registry.lookup(sample_id, relpath)
+        assert looked_up is record
+        assert looked_up.sample_id == sample_id
+        registry.verify_slice_bytes(record)
+
+    def test_distinct_ids_that_sanitize_identically_get_distinct_tokens(self, tmp_path):
+        """Two raw ids differing only in a character that sanitization maps
+        to the same '_' (':' vs ';') must never collide on disk."""
+
+        id_a = "slurp:a"
+        id_b = "slurp;a"
+        assert id_a != id_b
+        parent_relpath = "datasets/slurp/audio/shared.flac"
+        data_root = tmp_path / "data"
+        parent = data_root / parent_relpath
+        parent.parent.mkdir(parents=True)
+        parent.write_bytes(PARENT_BYTES)
+        registry = SliceRegistry(
+            data_root=data_root,
+            run_id=RUN_ID,
+            parent_facts={
+                id_a: (parent_relpath, PARENT_SECONDS),
+                id_b: (parent_relpath, PARENT_SECONDS),
+            },
+        )
+        relpath_a = registry.slice_relpath(id_a, 0)
+        relpath_b = registry.slice_relpath(id_b, 0)
+        assert relpath_a != relpath_b
+        for relpath, raw_id in ((relpath_a, id_a), (relpath_b, id_b)):
+            raw = write_wav_bytes(array("h", [3, -3] * 800), 16000)
+            path = data_root / relpath
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(raw)
+            registry.register(
+                SliceRecord(
+                    sample_id=raw_id,
+                    parent_media_relpath=parent_relpath,
+                    parent_sha256=_sha(PARENT_BYTES),
+                    start_seconds=0.0,
+                    end_seconds=60.0,
+                    audio_seconds=60.0,
+                    sample_rate_hz=16000,
+                    media_relpath=relpath,
+                    sha256=_sha(raw),
+                    bytes=len(raw),
+                    iteration=0,
+                )
+            )
+        assert registry.lookup(id_a, relpath_a).sample_id == id_a
+        assert registry.lookup(id_b, relpath_b).sample_id == id_b
+
+
 class TestSendTimeReverification:
     def test_bytes_swapped_after_registration_refused_at_send(self, world):
         """Registration alone is not enough: the send-path re-check catches a
