@@ -1,0 +1,58 @@
+P-A2T Stage-2b follow-up probe pinned offline read (docs/readiness/2026-08-18-pa2t-stage2b-preregistration-REGISTERED.md)
+==============================================================================
+
+attempt dir: /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-a2t-s2b-120/attempt-20260818T153859Z-8da515
+flight status: 'COMPLETED'
+split identity hash: e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c
+Stage-2 arm plan (reused verbatim): /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-a2t-s2-120/attempt-20260818T124955Z-84b944/SAEA-PROBE-a2t-s2-120.arm-plan.json
+headroom manifest: /mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/checks/speech-aware-evidence-acquisition/2026-08-18-pa2t-a0-read/headroom.json
+
+Per-arm aggregates (pooled)
+  arm      n  retention  conv_rate em_flips  slot_f1  empty parse_fail  induced
+  B1     120     0.8667     0.0667        8   0.3307 0.1250     0.1083        2
+  B2     120     0.8250     0.0083        1   0.3102 0.1000     0.0500        0
+
+Per-tier breakdown (PER-TIER REPORTING MANDATORY -- pooled is never the headline)
+  arm B1:
+    tier1_direct            23 conv_rate=0.2174 retention=0.8696 slot_f1=0.0000 induced=0 (interpretive-weight)
+    tier2_parametric        17 conv_rate=0.0000 retention=1.0000 slot_f1=0.4444 induced=1 (interpretive-weight)
+    tier3_multi_intent      29 conv_rate=0.0000 retention=0.8276 slot_f1=0.2632 induced=0 (interpretive-weight)
+    tier4_implicit           3 conv_rate=0.0000 retention=1.0000 slot_f1=0.5455 induced=1 (small-n caveat)
+    tier5_needle            12 conv_rate=0.0833 retention=0.9167 slot_f1=0.4255 induced=0 (small-n caveat)
+    tier6_correction        12 conv_rate=0.1667 retention=0.7500 slot_f1=0.2609 induced=0 (small-n caveat)
+    tier7_multiturn          8 conv_rate=0.0000 retention=1.0000 slot_f1=0.5294 induced=0 (small-n caveat)
+    tier8_intent_blending   16 conv_rate=0.0000 retention=0.7500 slot_f1=0.3077 induced=0 (interpretive-weight)
+  arm B2:
+    tier1_direct            23 conv_rate=0.0000 retention=0.9130 slot_f1=0.0000 induced=0 (interpretive-weight)
+    tier2_parametric        17 conv_rate=0.0000 retention=0.7647 slot_f1=0.2712 induced=0 (interpretive-weight)
+    tier3_multi_intent      29 conv_rate=0.0000 retention=0.9310 slot_f1=0.3758 induced=0 (interpretive-weight)
+    tier4_implicit           3 conv_rate=0.0000 retention=0.0000 slot_f1=0.0000 induced=0 (small-n caveat)
+    tier5_needle            12 conv_rate=0.0000 retention=0.8333 slot_f1=0.4091 induced=0 (small-n caveat)
+    tier6_correction        12 conv_rate=0.0000 retention=0.9167 slot_f1=0.2800 induced=0 (small-n caveat)
+    tier7_multiturn          8 conv_rate=0.1250 retention=0.3750 slot_f1=0.3226 induced=0 (small-n caveat)
+    tier8_intent_blending   16 conv_rate=0.0000 retention=0.8750 slot_f1=0.3333 induced=0 (interpretive-weight)
+
+Q-A -- corruption-channel localization (arm B1)
+CONFIRMED-CUT: MET
+  [     MET] B1 induced-substitutions <= 5
+           B1 induced=2, ceiling=5
+  [     MET] B1 conversion >= 8/120
+           B1 conversion=0.0667 (8/120), floor=0.0667
+NOT-DEFAULTS: not met
+  [ NOT_MET] B1 induced-substitutions >= 20
+           B1 induced=2, floor=20
+Q-A OVERALL: CONFIRMED-CUT
+
+Q-B -- schema vs knowledge (arm B2)
+SCHEMA-CONTRIBUTES: not met
+  [ NOT_MET] B2 conversion >= 6/120 (= max(2x noise, 5%), cited from Stage-2's own N0r 0/40)
+           B2 conversion=0.0083 (1/120), floor=0.0500
+KNOWLEDGE-TIED: not met
+  [     MET] B2 conversion <= 2/120
+           B2 conversion=0.0083, ceiling=0.0167
+  [ NOT_MET] B2 tool-selection retention >= 85%
+           B2 retention=0.8250 (120 samples), floor=0.85
+MISLEAD overlay (fires independently): not met
+  [ NOT_MET] B2 tool-selection retention < 80% (clearly below the measured 12.5% selection-noise band)
+           B2 retention=0.8250, ceiling=0.80
+Q-B OVERALL: INCONCLUSIVE-B

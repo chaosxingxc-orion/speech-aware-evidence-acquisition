@@ -1,0 +1,322 @@
+{
+  "attempt_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-a2t-s2b-120/attempt-20260818T153859Z-8da515",
+  "flight_status": "COMPLETED",
+  "headroom_path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/checks/speech-aware-evidence-acquisition/2026-08-18-pa2t-a0-read/headroom.json",
+  "per_arm": {
+    "B1": {
+      "by_tier": {
+        "tier1_direct": {
+          "arm": "B1",
+          "em_conversion_rate": 0.21739130434782608,
+          "em_flip_count": 5,
+          "empty_call_rate": 0.13043478260869565,
+          "induced_substitution_count": 0,
+          "interpretive_weight": true,
+          "n_samples": 23,
+          "parse_failure_rate": 0.043478260869565216,
+          "slot_f1": 0.0,
+          "slot_precision": 0.0,
+          "slot_recall": 0.0,
+          "tool_selection_retention": 0.8695652173913043
+        },
+        "tier2_parametric": {
+          "arm": "B1",
+          "em_conversion_rate": 0.0,
+          "em_flip_count": 0,
+          "empty_call_rate": 0.0,
+          "induced_substitution_count": 1,
+          "interpretive_weight": true,
+          "n_samples": 17,
+          "parse_failure_rate": 0.0,
+          "slot_f1": 0.4444444444444445,
+          "slot_precision": 0.46153846153846156,
+          "slot_recall": 0.42857142857142855,
+          "tool_selection_retention": 1.0
+        },
+        "tier3_multi_intent": {
+          "arm": "B1",
+          "em_conversion_rate": 0.0,
+          "em_flip_count": 0,
+          "empty_call_rate": 0.1724137931034483,
+          "induced_substitution_count": 0,
+          "interpretive_weight": true,
+          "n_samples": 29,
+          "parse_failure_rate": 0.1724137931034483,
+          "slot_f1": 0.2631578947368421,
+          "slot_precision": 0.1875,
+          "slot_recall": 0.4411764705882353,
+          "tool_selection_retention": 0.8275862068965517
+        },
+        "tier4_implicit": {
+          "arm": "B1",
+          "em_conversion_rate": 0.0,
+          "em_flip_count": 0,
+          "empty_call_rate": 0.0,
+          "induced_substitution_count": 1,
+          "interpretive_weight": false,
+          "n_samples": 3,
+          "parse_failure_rate": 0.0,
+          "slot_f1": 0.5454545454545454,
+          "slot_precision": 0.5,
+          "slot_recall": 0.6,
+          "tool_selection_retention": 1.0
+        },
+        "tier5_needle": {
+          "arm": "B1",
+          "em_conversion_rate": 0.08333333333333333,
+          "em_flip_count": 1,
+          "empty_call_rate": 0.08333333333333333,
+          "induced_substitution_count": 0,
+          "interpretive_weight": false,
+          "n_samples": 12,
+          "parse_failure_rate": 0.08333333333333333,
+          "slot_f1": 0.4255319148936171,
+          "slot_precision": 0.4,
+          "slot_recall": 0.45454545454545453,
+          "tool_selection_retention": 0.9166666666666666
+        },
+        "tier6_correction": {
+          "arm": "B1",
+          "em_conversion_rate": 0.16666666666666666,
+          "em_flip_count": 2,
+          "empty_call_rate": 0.16666666666666666,
+          "induced_substitution_count": 0,
+          "interpretive_weight": false,
+          "n_samples": 12,
+          "parse_failure_rate": 0.16666666666666666,
+          "slot_f1": 0.2608695652173913,
+          "slot_precision": 0.2608695652173913,
+          "slot_recall": 0.2608695652173913,
+          "tool_selection_retention": 0.75
+        },
+        "tier7_multiturn": {
+          "arm": "B1",
+          "em_conversion_rate": 0.0,
+          "em_flip_count": 0,
+          "empty_call_rate": 0.0,
+          "induced_substitution_count": 0,
+          "interpretive_weight": false,
+          "n_samples": 8,
+          "parse_failure_rate": 0.0,
+          "slot_f1": 0.5294117647058824,
+          "slot_precision": 0.5625,
+          "slot_recall": 0.5,
+          "tool_selection_retention": 1.0
+        },
+        "tier8_intent_blending": {
+          "arm": "B1",
+          "em_conversion_rate": 0.0,
+          "em_flip_count": 0,
+          "empty_call_rate": 0.25,
+          "induced_substitution_count": 0,
+          "interpretive_weight": true,
+          "n_samples": 16,
+          "parse_failure_rate": 0.25,
+          "slot_f1": 0.3076923076923077,
+          "slot_precision": 0.25,
+          "slot_recall": 0.4,
+          "tool_selection_retention": 0.75
+        }
+      },
+      "overall": {
+        "arm": "B1",
+        "em_conversion_rate": 0.06666666666666667,
+        "em_flip_count": 8,
+        "empty_call_rate": 0.125,
+        "induced_substitution_count": 2,
+        "interpretive_weight": true,
+        "n_samples": 120,
+        "parse_failure_rate": 0.10833333333333334,
+        "slot_f1": 0.33070866141732286,
+        "slot_precision": 0.2727272727272727,
+        "slot_recall": 0.42,
+        "tool_selection_retention": 0.8666666666666667
+      }
+    },
+    "B2": {
+      "by_tier": {
+        "tier1_direct": {
+          "arm": "B2",
+          "em_conversion_rate": 0.0,
+          "em_flip_count": 0,
+          "empty_call_rate": 0.08695652173913043,
+          "induced_substitution_count": 0,
+          "interpretive_weight": true,
+          "n_samples": 23,
+          "parse_failure_rate": 0.0,
+          "slot_f1": 0.0,
+          "slot_precision": 0.0,
+          "slot_recall": 0.0,
+          "tool_selection_retention": 0.9130434782608695
+        },
+        "tier2_parametric": {
+          "arm": "B2",
+          "em_conversion_rate": 0.0,
+          "em_flip_count": 0,
+          "empty_call_rate": 0.058823529411764705,
+          "induced_substitution_count": 0,
+          "interpretive_weight": true,
+          "n_samples": 17,
+          "parse_failure_rate": 0.0,
+          "slot_f1": 0.2711864406779661,
+          "slot_precision": 0.25806451612903225,
+          "slot_recall": 0.2857142857142857,
+          "tool_selection_retention": 0.7647058823529411
+        },
+        "tier3_multi_intent": {
+          "arm": "B2",
+          "em_conversion_rate": 0.0,
+          "em_flip_count": 0,
+          "empty_call_rate": 0.034482758620689655,
+          "induced_substitution_count": 0,
+          "interpretive_weight": true,
+          "n_samples": 29,
+          "parse_failure_rate": 0.034482758620689655,
+          "slot_f1": 0.3758389261744967,
+          "slot_precision": 0.24347826086956523,
+          "slot_recall": 0.8235294117647058,
+          "tool_selection_retention": 0.9310344827586207
+        },
+        "tier4_implicit": {
+          "arm": "B2",
+          "em_conversion_rate": 0.0,
+          "em_flip_count": 0,
+          "empty_call_rate": 1.0,
+          "induced_substitution_count": 0,
+          "interpretive_weight": false,
+          "n_samples": 3,
+          "parse_failure_rate": 0.3333333333333333,
+          "slot_f1": 0.0,
+          "slot_precision": 0.0,
+          "slot_recall": 0.0,
+          "tool_selection_retention": 0.0
+        },
+        "tier5_needle": {
+          "arm": "B2",
+          "em_conversion_rate": 0.0,
+          "em_flip_count": 0,
+          "empty_call_rate": 0.08333333333333333,
+          "induced_substitution_count": 0,
+          "interpretive_weight": false,
+          "n_samples": 12,
+          "parse_failure_rate": 0.08333333333333333,
+          "slot_f1": 0.4090909090909091,
+          "slot_precision": 0.4090909090909091,
+          "slot_recall": 0.4090909090909091,
+          "tool_selection_retention": 0.8333333333333334
+        },
+        "tier6_correction": {
+          "arm": "B2",
+          "em_conversion_rate": 0.0,
+          "em_flip_count": 0,
+          "empty_call_rate": 0.0,
+          "induced_substitution_count": 0,
+          "interpretive_weight": false,
+          "n_samples": 12,
+          "parse_failure_rate": 0.0,
+          "slot_f1": 0.27999999999999997,
+          "slot_precision": 0.25925925925925924,
+          "slot_recall": 0.30434782608695654,
+          "tool_selection_retention": 0.9166666666666666
+        },
+        "tier7_multiturn": {
+          "arm": "B2",
+          "em_conversion_rate": 0.125,
+          "em_flip_count": 1,
+          "empty_call_rate": 0.25,
+          "induced_substitution_count": 0,
+          "interpretive_weight": false,
+          "n_samples": 8,
+          "parse_failure_rate": 0.125,
+          "slot_f1": 0.3225806451612903,
+          "slot_precision": 0.38461538461538464,
+          "slot_recall": 0.2777777777777778,
+          "tool_selection_retention": 0.375
+        },
+        "tier8_intent_blending": {
+          "arm": "B2",
+          "em_conversion_rate": 0.0,
+          "em_flip_count": 0,
+          "empty_call_rate": 0.125,
+          "induced_substitution_count": 0,
+          "interpretive_weight": true,
+          "n_samples": 16,
+          "parse_failure_rate": 0.125,
+          "slot_f1": 0.3333333333333333,
+          "slot_precision": 0.25,
+          "slot_recall": 0.5,
+          "tool_selection_retention": 0.875
+        }
+      },
+      "overall": {
+        "arm": "B2",
+        "em_conversion_rate": 0.008333333333333333,
+        "em_flip_count": 1,
+        "empty_call_rate": 0.1,
+        "induced_substitution_count": 0,
+        "interpretive_weight": true,
+        "n_samples": 120,
+        "parse_failure_rate": 0.05,
+        "slot_f1": 0.3101851851851852,
+        "slot_precision": 0.2375886524822695,
+        "slot_recall": 0.44666666666666666,
+        "tool_selection_retention": 0.825
+      }
+    }
+  },
+  "qa_verdict": {
+    "confirmed_cut": true,
+    "confirmed_cut_clauses": [
+      {
+        "clause_text": "B1 induced-substitutions <= 5",
+        "detail": "B1 induced=2, ceiling=5",
+        "verdict": "met"
+      },
+      {
+        "clause_text": "B1 conversion >= 8/120",
+        "detail": "B1 conversion=0.0667 (8/120), floor=0.0667",
+        "verdict": "met"
+      }
+    ],
+    "not_defaults": false,
+    "not_defaults_clause": {
+      "clause_text": "B1 induced-substitutions >= 20",
+      "detail": "B1 induced=2, floor=20",
+      "verdict": "not_met"
+    },
+    "overall": "CONFIRMED-CUT"
+  },
+  "qb_verdict": {
+    "knowledge_tied": false,
+    "knowledge_tied_clauses": [
+      {
+        "clause_text": "B2 conversion <= 2/120",
+        "detail": "B2 conversion=0.0083, ceiling=0.0167",
+        "verdict": "met"
+      },
+      {
+        "clause_text": "B2 tool-selection retention >= 85%",
+        "detail": "B2 retention=0.8250 (120 samples), floor=0.85",
+        "verdict": "not_met"
+      }
+    ],
+    "mislead": false,
+    "mislead_clause": {
+      "clause_text": "B2 tool-selection retention < 80% (clearly below the measured 12.5% selection-noise band)",
+      "detail": "B2 retention=0.8250, ceiling=0.80",
+      "verdict": "not_met"
+    },
+    "overall": "INCONCLUSIVE-B",
+    "overall_with_overlay": "INCONCLUSIVE-B",
+    "schema_contributes": false,
+    "schema_contributes_clause": {
+      "clause_text": "B2 conversion >= 6/120 (= max(2x noise, 5%), cited from Stage-2's own N0r 0/40)",
+      "detail": "B2 conversion=0.0083 (1/120), floor=0.0500",
+      "verdict": "not_met"
+    }
+  },
+  "registry_defaults_parse_warnings": [],
+  "schema": "saea-a2t-s2b-read-v1",
+  "split_identity_hash": "e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c",
+  "stage2_arm_plan_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-a2t-s2-120/attempt-20260818T124955Z-84b944/SAEA-PROBE-a2t-s2-120.arm-plan.json"
+}
