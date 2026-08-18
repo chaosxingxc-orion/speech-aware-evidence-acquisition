@@ -1,0 +1,268 @@
+launcher: /mnt/c/Users/35686/AppData/Local/Temp/claude/D--chao-workspace-exploring-l4-intelligence-studies-speech-aware-evidence-acquisition/6d9f1834-68e9-41a7-bbcc-724898cf15a9/scratchpad/s2bfly/launch_pa2t_s2b.py
+args: --run-dir /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-a2t-s2b-120
+feat cache: /home/chao/feat-cache/audio2tool-q4km
+start: 2026-08-18T15:38:55Z
+[15:38:56Z] headroom manifest: 120 ids from headroom.json
+[15:38:56Z] Stage-2 arm plan REUSED VERBATIM from /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-a2t-s2-120/attempt-20260818T124955Z-84b944/SAEA-PROBE-a2t-s2-120.arm-plan.json (seed 20260807, 120 ids); Stage-2 outputs.jsonl NOT opened
+[15:38:56Z] flight plan: 120 headroom x 2 arms ('B1', 'B2') = 240 requests (seed 20260807)
+[15:38:56Z] resolving the frozen discovery split (sha256 of every media file -- slow, model-free)
+[15:38:59Z] headroom sample set: 120 samples, one pass 635.28s audio; metered total for this flight 1270.56s (plan ceiling 1985)
+[15:38:59Z] attempt attempt-20260818T153859Z-8da515 -> /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-a2t-s2b-120/attempt-20260818T153859Z-8da515
+[15:38:59Z] gate constructed (receipt receipts/runtime-q4km-featcache.json, model qwen3-omni-30b-a3b-instruct-gguf-q4km)
+[15:38:59Z] spawning llama-server (receipt-pinned binary)
+[15:39:23Z] session up: pid=572 port=8080 (spawn+load 24.7s)
+[15:39:23Z] session argv: /home/chao/llama.cpp-featcache/build/bin/llama-server --host 127.0.0.1 --port 8080 -m /home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf --mmproj /home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/mmproj-Qwen3-Omni-30B-A3B-Instruct-bf16.gguf -c 49152 -np 1 -fa on -ngl 999 -ctk q8_0 -ctv q8_0
+[15:39:23Z]   model file: models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf sha256=0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d
+[15:39:23Z]   model file: models/qwen3-omni-30b-a3b-instruct-gguf-q4km/mmproj-Qwen3-Omni-30B-A3B-Instruct-bf16.gguf sha256=f0dfe825fb692d426362b1ac79678fc08daa4758f7151526cad110515f122883
+[15:40:47Z] FrozenCoreClient constructed (D2 arm fixed-legal-context); flight lock None
+[15:40:47Z] FLIGHT START: 240 requests over arms ('B1', 'B2'); ceilings 280 requests / 0.5 h cumulative wall (prior 0s)
+[15:40:47Z] req 0001 [B1] ok   0.70s media=datasets/audio2tool/public/tier1_direct_audios/query_00039/speaker_08_ecapa_speaker_44437.wav chars=55 | flown=1 85.2 req/min eta=2.8 min
+[15:40:54Z] req 0002 [B2] ok   6.46s media=datasets/audio2tool/public/tier1_direct_audios/query_00039/speaker_08_ecapa_speaker_44437.wav chars=78 | flown=2 16.7 req/min eta=14.2 min
+[15:40:55Z] req 0003 [B1] ok   0.90s media=datasets/audio2tool/public/tier1_direct_audios/query_00135/speaker_21_yodas_speaker_uPz0cKUxf4o.wav chars=65 | flown=3 22.3 req/min eta=10.6 min
+[15:40:56Z] req 0004 [B2] ok   0.79s media=datasets/audio2tool/public/tier1_direct_audios/query_00135/speaker_21_yodas_speaker_uPz0cKUxf4o.wav chars=88 | flown=4 27.1 req/min eta=8.7 min
+[15:40:56Z] req 0005 [B1] ok   0.63s media=datasets/audio2tool/public/tier1_direct_audios/query_00310/speaker_15_yodas_speaker_-glYfrjK1F4.wav chars=2 | flown=5 31.6 req/min eta=7.4 min
+[15:40:57Z] req 0006 [B2] ok   0.88s media=datasets/audio2tool/public/tier1_direct_audios/query_00310/speaker_15_yodas_speaker_-glYfrjK1F4.wav chars=97 | flown=6 34.7 req/min eta=6.7 min
+[15:40:58Z] req 0007 [B1] ok   0.62s media=datasets/audio2tool/public/tier1_direct_audios/query_00318/speaker_23_yodas_speaker_w2LKibRHJa0.wav chars=2 | flown=7 38.2 req/min eta=6.1 min
+[15:40:58Z] req 0008 [B2] ok   0.66s media=datasets/audio2tool/public/tier1_direct_audios/query_00318/speaker_23_yodas_speaker_w2LKibRHJa0.wav chars=97 | flown=8 41.2 req/min eta=5.6 min
+[15:40:59Z] req 0009 [B1] ok   0.80s media=datasets/audio2tool/public/tier1_direct_audios/query_00621/speaker_22_yodas_speaker_ZNdSRk-YTKM.wav chars=80 | flown=9 43.4 req/min eta=5.3 min
+[15:41:00Z] req 0010 [B2] ok   0.84s media=datasets/audio2tool/public/tier1_direct_audios/query_00621/speaker_22_yodas_speaker_ZNdSRk-YTKM.wav chars=82 | flown=10 45.2 req/min eta=5.1 min
+[15:41:01Z] req 0011 [B1] ok   0.99s media=datasets/audio2tool/public/tier1_direct_audios/query_00711/speaker_18_yodas_speaker_QGoBLv2tXd4.wav chars=114 | flown=11 46.2 req/min eta=5.0 min
+[15:41:02Z] req 0012 [B2] ok   0.82s media=datasets/audio2tool/public/tier1_direct_audios/query_00711/speaker_18_yodas_speaker_QGoBLv2tXd4.wav chars=87 | flown=12 47.7 req/min eta=4.8 min
+[15:41:03Z] req 0013 [B1] ok   0.80s media=datasets/audio2tool/public/tier1_direct_audios/query_00722/speaker_13_ecapa_speaker_5666.wav chars=71 | flown=13 49.1 req/min eta=4.6 min
+[15:41:03Z] req 0014 [B2] ok   0.71s media=datasets/audio2tool/public/tier1_direct_audios/query_00722/speaker_13_ecapa_speaker_5666.wav chars=69 | flown=14 50.5 req/min eta=4.5 min
+[15:41:04Z] req 0015 [B1] ok   0.83s media=datasets/audio2tool/public/tier1_direct_audios/query_00804/speaker_06_ecapa_speaker_20061.wav chars=45 | flown=15 51.6 req/min eta=4.4 min
+[15:41:05Z] req 0016 [B2] ok   0.68s media=datasets/audio2tool/public/tier1_direct_audios/query_00804/speaker_06_ecapa_speaker_20061.wav chars=69 | flown=16 52.9 req/min eta=4.2 min
+[15:41:06Z] req 0017 [B1] ok   0.84s media=datasets/audio2tool/public/tier1_direct_audios/query_00816/speaker_04_3dspeaker_speaker_3D_SPK_00165.wav chars=94 | flown=17 53.8 req/min eta=4.1 min
+[15:41:06Z] req 0018 [B2] ok   0.44s media=datasets/audio2tool/public/tier1_direct_audios/query_00816/speaker_04_3dspeaker_speaker_3D_SPK_00165.wav chars=2 | flown=18 55.6 req/min eta=4.0 min
+[15:41:07Z] req 0019 [B1] ok   0.82s media=datasets/audio2tool/public/tier1_direct_audios/query_01106/speaker_06_ecapa_speaker_20061.wav chars=49 | flown=19 56.3 req/min eta=3.9 min
+[15:41:08Z] req 0020 [B2] ok   0.75s media=datasets/audio2tool/public/tier1_direct_audios/query_01106/speaker_06_ecapa_speaker_20061.wav chars=75 | flown=20 57.2 req/min eta=3.8 min
+[15:41:08Z] req 0021 [B1] ok   0.73s media=datasets/audio2tool/public/tier1_direct_audios/query_01255/speaker_22_yodas_speaker_I8cMNYjtqfE.wav chars=45 | flown=21 58.0 req/min eta=3.8 min
+[15:41:09Z] req 0022 [B2] ok   0.73s media=datasets/audio2tool/public/tier1_direct_audios/query_01255/speaker_22_yodas_speaker_I8cMNYjtqfE.wav chars=67 | flown=22 58.8 req/min eta=3.7 min
+[15:41:10Z] req 0023 [B1] ok   0.87s media=datasets/audio2tool/public/tier1_direct_audios/query_01291/speaker_05_ecapa_speaker_1888.wav chars=48 | flown=23 59.2 req/min eta=3.7 min
+[15:41:10Z] req 0024 [B2] ok   0.37s media=datasets/audio2tool/public/tier1_direct_audios/query_01291/speaker_05_ecapa_speaker_1888.wav chars=2 | flown=24 60.8 req/min eta=3.6 min
+[15:41:11Z] req 0025 [B1] ok   0.59s media=datasets/audio2tool/public/tier1_direct_audios/query_01305/speaker_03_3dspeaker_speaker_3D_SPK_01992.wav chars=48 | flown=25 61.8 req/min eta=3.5 min
+[15:41:12Z] req 0026 [B2] ok   0.57s media=datasets/audio2tool/public/tier1_direct_audios/query_01305/speaker_03_3dspeaker_speaker_3D_SPK_01992.wav chars=84 | flown=26 62.7 req/min eta=3.4 min
+[15:41:13Z] req 0027 [B1] ok   1.44s media=datasets/audio2tool/public/tier1_direct_audios/query_01360/speaker_15_ecapa_speaker_44345.wav chars=106 | flown=27 61.6 req/min eta=3.5 min
+[15:41:14Z] req 0028 [B2] ok   1.01s media=datasets/audio2tool/public/tier1_direct_audios/query_01360/speaker_15_ecapa_speaker_44345.wav chars=112 | flown=28 61.5 req/min eta=3.4 min
+[15:41:15Z] req 0029 [B1] ok   0.72s media=datasets/audio2tool/public/tier1_direct_audios/query_01364/speaker_06_ecapa_speaker_7803.wav chars=69 | flown=29 62.1 req/min eta=3.4 min
+[15:41:16Z] req 0030 [B2] ok   0.95s media=datasets/audio2tool/public/tier1_direct_audios/query_01364/speaker_06_ecapa_speaker_7803.wav chars=112 | flown=30 62.1 req/min eta=3.4 min
+[15:41:17Z] req 0031 [B1] ok   0.88s media=datasets/audio2tool/public/tier1_direct_audios/query_01382/speaker_07_ecapa_speaker_6754.wav chars=64 | flown=31 62.3 req/min eta=3.4 min
+[15:41:17Z] req 0032 [B2] ok   0.72s media=datasets/audio2tool/public/tier1_direct_audios/query_01382/speaker_07_ecapa_speaker_6754.wav chars=64 | flown=32 62.8 req/min eta=3.3 min
+[15:41:18Z] req 0033 [B1] ok   0.80s media=datasets/audio2tool/public/tier1_direct_audios/query_01605/speaker_06_ecapa_speaker_42827.wav chars=67 | flown=33 63.1 req/min eta=3.3 min
+[15:41:19Z] req 0034 [B2] ok   0.73s media=datasets/audio2tool/public/tier1_direct_audios/query_01605/speaker_06_ecapa_speaker_42827.wav chars=67 | flown=34 63.5 req/min eta=3.2 min
+[15:41:20Z] req 0035 [B1] ok   0.86s media=datasets/audio2tool/public/tier1_direct_audios/query_01672/speaker_14_yodas_speaker_-glYfrjK1F4.wav chars=64 | flown=35 63.7 req/min eta=3.2 min
+[15:41:20Z] req 0036 [B2] ok   0.72s media=datasets/audio2tool/public/tier1_direct_audios/query_01672/speaker_14_yodas_speaker_-glYfrjK1F4.wav chars=78 | flown=36 64.1 req/min eta=3.2 min
+[15:41:21Z] req 0037 [B1] ok   0.73s media=datasets/audio2tool/public/tier1_direct_audios/query_01781/speaker_17_yodas_speaker_VAXJacMq33E.wav chars=66 | flown=37 64.5 req/min eta=3.1 min
+[15:41:22Z] req 0038 [B2] ok   0.70s media=datasets/audio2tool/public/tier1_direct_audios/query_01781/speaker_17_yodas_speaker_VAXJacMq33E.wav chars=60 | flown=38 64.9 req/min eta=3.1 min
+[15:41:23Z] req 0039 [B1] ok   0.73s media=datasets/audio2tool/public/tier1_direct_audios/query_01826/speaker_09_ecapa_speaker_20139.wav chars=58 | flown=39 65.3 req/min eta=3.1 min
+[15:41:23Z] req 0040 [B2] ok   0.67s media=datasets/audio2tool/public/tier1_direct_audios/query_01826/speaker_09_ecapa_speaker_20139.wav chars=58 | flown=40 65.7 req/min eta=3.0 min
+[15:41:24Z] req 0041 [B1] ok   0.87s media=datasets/audio2tool/public/tier1_direct_audios/query_01853/speaker_04_3dspeaker_speaker_3D_SPK_05717.wav chars=61 | flown=41 65.8 req/min eta=3.0 min
+[15:41:25Z] req 0042 [B2] ok   0.62s media=datasets/audio2tool/public/tier1_direct_audios/query_01853/speaker_04_3dspeaker_speaker_3D_SPK_05717.wav chars=61 | flown=42 66.3 req/min eta=3.0 min
+[15:41:25Z] req 0043 [B1] ok   0.68s media=datasets/audio2tool/public/tier1_direct_audios/query_01857/speaker_00_voxpopuli_speaker_4267.wav chars=84 | flown=43 66.7 req/min eta=3.0 min
+[15:41:26Z] req 0044 [B2] ok   0.45s media=datasets/audio2tool/public/tier1_direct_audios/query_01857/speaker_00_voxpopuli_speaker_4267.wav chars=61 | flown=44 67.4 req/min eta=2.9 min
+[15:41:27Z] req 0045 [B1] ok   0.79s media=datasets/audio2tool/public/tier1_direct_audios/query_02020/speaker_20_yodas_speaker_c1I4gQB_orU.wav chars=75 | flown=45 67.6 req/min eta=2.9 min
+[15:41:27Z] req 0046 [B2] ok   0.70s media=datasets/audio2tool/public/tier1_direct_audios/query_02020/speaker_20_yodas_speaker_c1I4gQB_orU.wav chars=75 | flown=46 67.9 req/min eta=2.9 min
+[15:41:28Z] req 0047 [B1] ok   0.79s media=datasets/audio2tool/public/tier2_parametric_audios/query_00023/speaker_00_ecapa_speaker_37288.wav chars=75 | flown=47 68.1 req/min eta=2.8 min
+[15:41:29Z] req 0048 [B2] ok   0.73s media=datasets/audio2tool/public/tier2_parametric_audios/query_00023/speaker_00_ecapa_speaker_37288.wav chars=75 | flown=48 68.3 req/min eta=2.8 min
+[15:41:30Z] req 0049 [B1] ok   0.78s media=datasets/audio2tool/public/tier2_parametric_audios/query_00034/speaker_03_yodas_speaker_MgdL5ixcxmI.wav chars=65 | flown=49 68.5 req/min eta=2.8 min
+[15:41:30Z] req 0050 [B2] ok   0.55s media=datasets/audio2tool/public/tier2_parametric_audios/query_00034/speaker_03_yodas_speaker_MgdL5ixcxmI.wav chars=66 | flown=50 69.0 req/min eta=2.8 min
+[15:41:31Z] req 0051 [B1] ok   0.83s media=datasets/audio2tool/public/tier2_parametric_audios/query_00120/speaker_02_ecapa_speaker_39642.wav chars=87 | flown=51 69.0 req/min eta=2.7 min
+[15:41:32Z] req 0052 [B2] ok   0.79s media=datasets/audio2tool/public/tier2_parametric_audios/query_00120/speaker_02_ecapa_speaker_39642.wav chars=85 | flown=52 69.1 req/min eta=2.7 min
+[15:41:33Z] req 0053 [B1] ok   0.75s media=datasets/audio2tool/public/tier2_parametric_audios/query_00124/speaker_00_ecapa_speaker_20061.wav chars=93 | flown=53 69.3 req/min eta=2.7 min
+[15:41:33Z] req 0054 [B2] ok   0.71s media=datasets/audio2tool/public/tier2_parametric_audios/query_00124/speaker_00_ecapa_speaker_20061.wav chars=92 | flown=54 69.5 req/min eta=2.7 min
+[15:41:34Z] req 0055 [B1] ok   1.00s media=datasets/audio2tool/public/tier2_parametric_audios/query_00185/speaker_00_ecapa_speaker_35733.wav chars=95 | flown=55 69.3 req/min eta=2.7 min
+[15:41:35Z] req 0056 [B2] ok   0.93s media=datasets/audio2tool/public/tier2_parametric_audios/query_00185/speaker_00_ecapa_speaker_35733.wav chars=91 | flown=56 69.2 req/min eta=2.7 min
+[15:41:36Z] req 0057 [B1] ok   0.72s media=datasets/audio2tool/public/tier2_parametric_audios/query_00263/speaker_02_ecapa_speaker_7466.wav chars=65 | flown=57 69.4 req/min eta=2.6 min
+[15:41:37Z] req 0058 [B2] ok   0.84s media=datasets/audio2tool/public/tier2_parametric_audios/query_00263/speaker_02_ecapa_speaker_7466.wav chars=88 | flown=58 69.5 req/min eta=2.6 min
+[15:41:38Z] req 0059 [B1] ok   0.82s media=datasets/audio2tool/public/tier2_parametric_audios/query_00284/speaker_03_yodas_speaker_TTjYV9lLOAM.wav chars=66 | flown=59 69.5 req/min eta=2.6 min
+[15:41:38Z] req 0060 [B2] ok   0.69s media=datasets/audio2tool/public/tier2_parametric_audios/query_00284/speaker_03_yodas_speaker_TTjYV9lLOAM.wav chars=89 | flown=60 69.8 req/min eta=2.6 min
+[15:41:39Z] req 0061 [B1] ok   0.61s media=datasets/audio2tool/public/tier2_parametric_audios/query_00352/speaker_02_ecapa_speaker_16347.wav chars=55 | flown=61 70.1 req/min eta=2.6 min
+[15:41:40Z] req 0062 [B2] ok   0.79s media=datasets/audio2tool/public/tier2_parametric_audios/query_00352/speaker_02_ecapa_speaker_16347.wav chars=78 | flown=62 70.2 req/min eta=2.5 min
+[15:41:41Z] req 0063 [B1] ok   1.03s media=datasets/audio2tool/public/tier2_parametric_audios/query_00448/speaker_01_ecapa_speaker_44345.wav chars=92 | flown=63 69.9 req/min eta=2.5 min
+[15:41:42Z] req 0064 [B2] ok   0.87s media=datasets/audio2tool/public/tier2_parametric_audios/query_00448/speaker_01_ecapa_speaker_44345.wav chars=92 | flown=64 69.9 req/min eta=2.5 min
+[15:41:42Z] req 0065 [B1] ok   0.81s media=datasets/audio2tool/public/tier2_parametric_audios/query_00683/speaker_00_3dspeaker_speaker_3D_SPK_09068.wav chars=104 | flown=65 70.0 req/min eta=2.5 min
+[15:41:43Z] req 0066 [B2] ok   0.98s media=datasets/audio2tool/public/tier2_parametric_audios/query_00683/speaker_00_3dspeaker_speaker_3D_SPK_09068.wav chars=102 | flown=66 69.8 req/min eta=2.5 min
+[15:41:44Z] req 0067 [B1] ok   0.83s media=datasets/audio2tool/public/tier2_parametric_audios/query_00737/speaker_03_yodas_speaker_ArvqdW5XMqy.wav chars=78 | flown=67 69.9 req/min eta=2.5 min
+[15:41:45Z] req 0068 [B2] ok   0.82s media=datasets/audio2tool/public/tier2_parametric_audios/query_00737/speaker_03_yodas_speaker_ArvqdW5XMqy.wav chars=80 | flown=68 69.9 req/min eta=2.5 min
+[15:41:46Z] req 0069 [B1] ok   1.05s media=datasets/audio2tool/public/tier2_parametric_audios/query_00935/speaker_00_ecapa_speaker_20812.wav chars=118 | flown=69 69.7 req/min eta=2.5 min
+[15:41:48Z] req 0070 [B2] ok   2.05s media=datasets/audio2tool/public/tier2_parametric_audios/query_00935/speaker_00_ecapa_speaker_20812.wav chars=197 | flown=70 68.3 req/min eta=2.5 min
+[15:41:49Z] req 0071 [B1] ok   1.02s media=datasets/audio2tool/public/tier2_parametric_audios/query_00986/speaker_03_yodas_speaker_B_l775N0WHI.wav chars=93 | flown=71 68.2 req/min eta=2.5 min
+[15:41:50Z] req 0072 [B2] ok   0.82s media=datasets/audio2tool/public/tier2_parametric_audios/query_00986/speaker_03_yodas_speaker_B_l775N0WHI.wav chars=97 | flown=72 68.3 req/min eta=2.5 min
+[15:41:51Z] req 0073 [B1] ok   0.75s media=datasets/audio2tool/public/tier2_parametric_audios/query_01035/speaker_00_ecapa_speaker_37062.wav chars=43 | flown=73 68.4 req/min eta=2.4 min
+[15:41:51Z] req 0074 [B2] ok   0.76s media=datasets/audio2tool/public/tier2_parametric_audios/query_01035/speaker_00_ecapa_speaker_37062.wav chars=65 | flown=74 68.5 req/min eta=2.4 min
+[15:41:52Z] req 0075 [B1] ok   0.97s media=datasets/audio2tool/public/tier2_parametric_audios/query_01145/speaker_02_yodas_speaker_XRHuz4LqVLE.wav chars=91 | flown=75 68.4 req/min eta=2.4 min
+[15:41:53Z] req 0076 [B2] ok   0.86s media=datasets/audio2tool/public/tier2_parametric_audios/query_01145/speaker_02_yodas_speaker_XRHuz4LqVLE.wav chars=87 | flown=76 68.4 req/min eta=2.4 min
+[15:41:54Z] req 0077 [B1] ok   0.88s media=datasets/audio2tool/public/tier2_parametric_audios/query_01534/speaker_03_ecapa_speaker_34810.wav chars=70 | flown=77 68.4 req/min eta=2.4 min
+[15:41:55Z] req 0078 [B2] ok   0.76s media=datasets/audio2tool/public/tier2_parametric_audios/query_01534/speaker_03_ecapa_speaker_34810.wav chars=68 | flown=78 68.5 req/min eta=2.4 min
+[15:41:56Z] req 0079 [B1] ok   0.74s media=datasets/audio2tool/public/tier2_parametric_audios/query_03105/speaker_01_3dspeaker_speaker_3D_SPK_06428.wav chars=58 | flown=79 68.7 req/min eta=2.3 min
+[15:41:56Z] req 0080 [B2] ok   0.41s media=datasets/audio2tool/public/tier2_parametric_audios/query_03105/speaker_01_3dspeaker_speaker_3D_SPK_06428.wav chars=2 | flown=80 69.1 req/min eta=2.3 min
+[15:41:57Z] req 0081 [B1] ok   1.06s media=datasets/audio2tool/public/tier3_multi_intent_audios/query_00039/speaker_05_3dspeaker_speaker_3D_SPK_09068.wav chars=182 | flown=81 68.9 req/min eta=2.3 min
+[15:41:59Z] req 0082 [B2] ok   1.76s media=datasets/audio2tool/public/tier3_multi_intent_audios/query_00039/speaker_05_3dspeaker_speaker_3D_SPK_09068.wav chars=254 | flown=82 68.1 req/min eta=2.3 min
+[15:42:00Z] req 0083 [B1] ok   1.14s media=datasets/audio2tool/public/tier3_multi_intent_audios/query_00130/speaker_18_yodas_speaker_-ACo-lMw92y.wav chars=154 | flown=83 67.8 req/min eta=2.3 min
+[15:42:02Z] req 0084 [B2] ok   1.45s media=datasets/audio2tool/public/tier3_multi_intent_audios/query_00130/speaker_18_yodas_speaker_-ACo-lMw92y.wav chars=191 | flown=84 67.3 req/min eta=2.3 min
+[15:42:03Z] req 0085 [B1] ok   1.00s media=datasets/audio2tool/public/tier3_multi_intent_audios/query_00210/speaker_09_ecapa_speaker_35733.wav chars=126 | flown=85 67.2 req/min eta=2.3 min
+[15:42:04Z] req 0086 [B2] ok   1.43s media=datasets/audio2tool/public/tier3_multi_intent_audios/query_00210/speaker_09_ecapa_speaker_35733.wav chars=176 | flown=86 66.8 req/min eta=2.3 min
+[15:42:05Z] req 0087 [B1] ok   1.11s media=datasets/audio2tool/public/tier3_multi_intent_audios/query_00428/speaker_12_ecapa_speaker_35314.wav chars=181 | flown=87 66.6 req/min eta=2.3 min
+[15:42:06Z] req 0088 [B2] ok   1.37s media=datasets/audio2tool/public/tier3_multi_intent_audios/query_00428/speaker_12_ecapa_speaker_35314.wav chars=183 | flown=88 66.2 req/min eta=2.3 min
+[15:42:08Z] req 0089 [B1] ok   1.10s media=datasets/audio2tool/public/tier3_multi_intent_audios/query_00462/speaker_20_yodas_speaker__BDER10dTkc.wav chars=181 | flown=89 66.0 req/min eta=2.3 min
+[15:42:09Z] req 0090 [B2] ok   1.63s media=datasets/audio2tool/public/tier3_multi_intent_audios/query_00462/speaker_20_yodas_speaker__BDER10dTkc.wav chars=225 | flown=90 65.5 req/min eta=2.3 min
+[15:42:10Z] req 0091 [B1] ok   1.02s media=datasets/audio2tool/public/tier3_multi_intent_audios/query_00499/speaker_14_yodas_speaker_HZJ1KPA6wz0.wav chars=158 | flown=91 65.4 req/min eta=2.3 min
+[15:42:12Z] req 0092 [B2] ok   1.55s media=datasets/audio2tool/public/tier3_multi_intent_audios/query_00499/speaker_14_yodas_speaker_HZJ1KPA6wz0.wav chars=211 | flown=92 64.9 req/min eta=2.3 min
+[15:42:13Z] req 0093 [B1] ok   1.32s media=datasets/audio2tool/public/tier3_multi_intent_audios/query_00626/speaker_03_3dspeaker_speaker_3D_SPK_08244.wav chars=259 | flown=93 64.6 req/min eta=2.3 min
+[15:42:15Z] req 0094 [B2] ok   1.73s media=datasets/audio2tool/public/tier3_multi_intent_audios/query_00626/speaker_03_3dspeaker_speaker_3D_SPK_08244.wav chars=248 | flown=94 64.0 req/min eta=2.3 min
+[15:42:16Z] req 0095 [B1] ok   1.50s media=datasets/audio2tool/public/tier3_multi_intent_audios/query_00744/speaker_14_yodas_speaker_IaSD5peeA8I.wav chars=282 | flown=95 63.6 req/min eta=2.3 min
+[15:42:18Z] req 0096 [B2] ok   1.79s media=datasets/audio2tool/public/tier3_multi_intent_audios/query_00744/speaker_14_yodas_speaker_IaSD5peeA8I.wav chars=274 | flown=96 63.0 req/min eta=2.3 min
+[15:42:19Z] req 0097 [B1] ok   1.35s media=datasets/audio2tool/public/tier3_multi_intent_audios/query_00781/speaker_12_ecapa_speaker_4613.wav chars=256 | flown=97 62.7 req/min eta=2.3 min
+[15:42:21Z] req 0098 [B2] ok   1.65s media=datasets/audio2tool/public/tier3_multi_intent_audios/query_00781/speaker_12_ecapa_speaker_4613.wav chars=237 | flown=98 62.3 req/min eta=2.3 min
+[15:42:22Z] req 0099 [B1] ok   1.34s media=datasets/audio2tool/public/tier3_multi_intent_audios/query_00957/speaker_11_ecapa_speaker_4613.wav chars=254 | flown=99 62.0 req/min eta=2.3 min
+[15:42:24Z] req 0100 [B2] ok   1.80s media=datasets/audio2tool/public/tier3_multi_intent_audios/query_00957/speaker_11_ecapa_speaker_4613.wav chars=258 | flown=100 61.5 req/min eta=2.3 min
+[15:42:26Z] req 0101 [B1] ok   1.56s media=datasets/audio2tool/public/tier3_multi_intent_audios/query_01132/speaker_22_yodas_speaker_IDNre0VfvSA.wav chars=265 | flown=101 61.1 req/min eta=2.3 min
+[15:42:27Z] req 0102 [B2] ok   1.68s media=datasets/audio2tool/public/tier3_multi_intent_audios/query_01132/speaker_22_yodas_speaker_IDNre0VfvSA.wav chars=262 | flown=102 60.7 req/min eta=2.3 min
+[15:42:29Z] req 0103 [B1] ok   1.08s media=datasets/audio2tool/public/tier3_multi_intent_audios/query_01245/speaker_15_ecapa_speaker_44959.wav chars=171 | flown=103 60.7 req/min eta=2.3 min
+[15:42:30Z] req 0104 [B2] ok   1.36s media=datasets/audio2tool/public/tier3_multi_intent_audios/query_01245/speaker_15_ecapa_speaker_44959.wav chars=171 | flown=104 60.4 req/min eta=2.3 min
+[15:42:31Z] req 0105 [B1] ok   1.12s media=datasets/audio2tool/public/tier3_multi_intent_audios/query_01277/speaker_09_ecapa_speaker_37343.wav chars=186 | flown=105 60.4 req/min eta=2.2 min
+[15:42:33Z] req 0106 [B2] ok   1.47s media=datasets/audio2tool/public/tier3_multi_intent_audios/query_01277/speaker_09_ecapa_speaker_37343.wav chars=186 | flown=106 60.1 req/min eta=2.2 min
+[15:42:34Z] req 0107 [B1] ok   1.66s media=datasets/audio2tool/public/tier3_multi_intent_audios/query_01280/speaker_22_yodas_speaker_OGepvfT9qok.wav chars=333 | flown=107 59.7 req/min eta=2.2 min
+[15:42:36Z] req 0108 [B2] ok   1.78s media=datasets/audio2tool/public/tier3_multi_intent_audios/query_01280/speaker_22_yodas_speaker_OGepvfT9qok.wav chars=274 | flown=108 59.3 req/min eta=2.2 min
+[15:42:37Z] req 0109 [B1] ok   1.31s media=datasets/audio2tool/public/tier3_multi_intent_audios/query_01323/speaker_14_ecapa_speaker_13180.wav chars=239 | flown=109 59.1 req/min eta=2.2 min
+[15:42:39Z] req 0110 [B2] ok   1.58s media=datasets/audio2tool/public/tier3_multi_intent_audios/query_01323/speaker_14_ecapa_speaker_13180.wav chars=237 | flown=110 58.8 req/min eta=2.2 min
+[15:42:40Z] req 0111 [B1] ok   1.04s media=datasets/audio2tool/public/tier3_multi_intent_audios/query_01458/speaker_12_ecapa_speaker_49269.wav chars=145 | flown=111 58.8 req/min eta=2.2 min
+[15:42:41Z] req 0112 [B2] ok   1.10s media=datasets/audio2tool/public/tier3_multi_intent_audios/query_01458/speaker_12_ecapa_speaker_49269.wav chars=127 | flown=112 58.8 req/min eta=2.2 min
+[15:42:42Z] req 0113 [B1] ok   0.90s media=datasets/audio2tool/public/tier3_multi_intent_audios/query_01485/speaker_15_yodas_speaker_-glYfrjK1F4.wav chars=99 | flown=113 58.8 req/min eta=2.2 min
+[15:42:43Z] req 0114 [B2] ok   1.13s media=datasets/audio2tool/public/tier3_multi_intent_audios/query_01485/speaker_15_yodas_speaker_-glYfrjK1F4.wav chars=122 | flown=114 58.8 req/min eta=2.1 min
+[15:42:44Z] req 0115 [B1] ok   1.03s media=datasets/audio2tool/public/tier3_multi_intent_audios/query_01493/speaker_07_ecapa_speaker_20812.wav chars=109 | flown=115 58.8 req/min eta=2.1 min
+[15:42:45Z] req 0116 [B2] ok   1.14s media=datasets/audio2tool/public/tier3_multi_intent_audios/query_01493/speaker_07_ecapa_speaker_20812.wav chars=132 | flown=116 58.7 req/min eta=2.1 min
+[15:42:46Z] req 0117 [B1] ok   1.12s media=datasets/audio2tool/public/tier3_multi_intent_audios/query_01498/speaker_05_ecapa_speaker_34316.wav chars=174 | flown=117 58.7 req/min eta=2.1 min
+[15:42:47Z] req 0118 [B2] ok   1.12s media=datasets/audio2tool/public/tier3_multi_intent_audios/query_01498/speaker_05_ecapa_speaker_34316.wav chars=128 | flown=118 58.6 req/min eta=2.1 min
+[15:42:49Z] req 0119 [B1] ok   1.08s media=datasets/audio2tool/public/tier3_multi_intent_audios/query_01529/speaker_19_yodas_speaker_vUCXxKPxZSU.wav chars=168 | flown=119 58.6 req/min eta=2.1 min
+[15:42:50Z] req 0120 [B2] ok   1.79s media=datasets/audio2tool/public/tier3_multi_intent_audios/query_01529/speaker_19_yodas_speaker_vUCXxKPxZSU.wav chars=260 | flown=120 58.2 req/min eta=2.1 min
+[15:42:52Z] req 0121 [B1] ok   1.54s media=datasets/audio2tool/public/tier3_multi_intent_audios/query_01577/speaker_14_yodas_speaker_Jr43JUhwBpo.wav chars=321 | flown=121 58.0 req/min eta=2.1 min
+[15:42:54Z] req 0122 [B2] ok   2.24s media=datasets/audio2tool/public/tier3_multi_intent_audios/query_01577/speaker_14_yodas_speaker_Jr43JUhwBpo.wav chars=335 | flown=122 57.4 req/min eta=2.1 min
+[15:42:56Z] req 0123 [B1] ok   1.59s media=datasets/audio2tool/public/tier3_multi_intent_audios/query_01610/speaker_14_ecapa_speaker_20197.wav chars=129 | flown=123 57.2 req/min eta=2.0 min
+[15:42:57Z] req 0124 [B2] ok   1.11s media=datasets/audio2tool/public/tier3_multi_intent_audios/query_01610/speaker_14_ecapa_speaker_20197.wav chars=129 | flown=124 57.2 req/min eta=2.0 min
+[15:42:58Z] req 0125 [B1] ok   1.17s media=datasets/audio2tool/public/tier3_multi_intent_audios/query_01634/speaker_17_yodas_speaker_fDqvqnccx4y.wav chars=148 | flown=125 57.1 req/min eta=2.0 min
+[15:42:59Z] req 0126 [B2] ok   1.19s media=datasets/audio2tool/public/tier3_multi_intent_audios/query_01634/speaker_17_yodas_speaker_fDqvqnccx4y.wav chars=148 | flown=126 57.1 req/min eta=2.0 min
+[15:43:00Z] req 0127 [B1] ok   1.30s media=datasets/audio2tool/public/tier3_multi_intent_audios/query_01821/speaker_17_yodas_speaker_z2hPI6d00BE.wav chars=202 | flown=127 56.9 req/min eta=2.0 min
+[15:43:02Z] req 0128 [B2] ok   1.43s media=datasets/audio2tool/public/tier3_multi_intent_audios/query_01821/speaker_17_yodas_speaker_z2hPI6d00BE.wav chars=200 | flown=128 56.8 req/min eta=2.0 min
+[15:43:03Z] req 0129 [B1] ok   1.21s media=datasets/audio2tool/public/tier3_multi_intent_audios/query_01870/speaker_20_yodas_speaker_g0QuUU70BEo.wav chars=161 | flown=129 56.7 req/min eta=2.0 min
+[15:43:04Z] req 0130 [B2] ok   1.03s media=datasets/audio2tool/public/tier3_multi_intent_audios/query_01870/speaker_20_yodas_speaker_g0QuUU70BEo.wav chars=161 | flown=130 56.7 req/min eta=1.9 min
+[15:43:05Z] req 0131 [B1] ok   1.18s media=datasets/audio2tool/public/tier3_multi_intent_audios/query_01908/speaker_19_yodas_speaker_ArvqdW5XMqy.wav chars=209 | flown=131 56.7 req/min eta=1.9 min
+[15:43:07Z] req 0132 [B2] ok   1.46s media=datasets/audio2tool/public/tier3_multi_intent_audios/query_01908/speaker_19_yodas_speaker_ArvqdW5XMqy.wav chars=209 | flown=132 56.5 req/min eta=1.9 min
+[15:43:08Z] req 0133 [B1] ok   1.17s media=datasets/audio2tool/public/tier3_multi_intent_audios/query_01934/speaker_16_yodas_speaker_AcmYKJdu3xQ.wav chars=197 | flown=133 56.5 req/min eta=1.9 min
+[15:43:10Z] req 0134 [B2] ok   1.64s media=datasets/audio2tool/public/tier3_multi_intent_audios/query_01934/speaker_16_yodas_speaker_AcmYKJdu3xQ.wav chars=232 | flown=134 56.2 req/min eta=1.9 min
+[15:43:11Z] req 0135 [B1] ok   1.40s media=datasets/audio2tool/public/tier3_multi_intent_audios/query_01997/speaker_13_ecapa_speaker_16096.wav chars=264 | flown=135 56.1 req/min eta=1.9 min
+[15:43:13Z] req 0136 [B2] ok   1.73s media=datasets/audio2tool/public/tier3_multi_intent_audios/query_01997/speaker_13_ecapa_speaker_16096.wav chars=264 | flown=136 55.9 req/min eta=1.9 min
+[15:43:14Z] req 0137 [B1] ok   0.98s media=datasets/audio2tool/public/tier3_multi_intent_audios/query_02146/speaker_03_3dspeaker_speaker_3D_SPK_07983.wav chars=133 | flown=137 55.9 req/min eta=1.8 min
+[15:43:15Z] req 0138 [B2] ok   1.01s media=datasets/audio2tool/public/tier3_multi_intent_audios/query_02146/speaker_03_3dspeaker_speaker_3D_SPK_07983.wav chars=121 | flown=138 55.9 req/min eta=1.8 min
+[15:43:16Z] req 0139 [B1] ok   0.85s media=datasets/audio2tool/public/tier4_implicit_audios/query_00766/speaker_09_ecapa_speaker_3139.wav chars=87 | flown=139 56.0 req/min eta=1.8 min
+[15:43:16Z] req 0140 [B2] ok   0.44s media=datasets/audio2tool/public/tier4_implicit_audios/query_00766/speaker_09_ecapa_speaker_3139.wav chars=2 | flown=140 56.2 req/min eta=1.8 min
+[15:43:17Z] req 0141 [B1] ok   0.91s media=datasets/audio2tool/public/tier4_implicit_audios/query_01649/speaker_23_yodas_speaker_TTjYV9lLOAM.wav chars=75 | flown=141 56.3 req/min eta=1.8 min
+[15:43:17Z] req 0142 [B2] ok   0.43s media=datasets/audio2tool/public/tier4_implicit_audios/query_01649/speaker_23_yodas_speaker_TTjYV9lLOAM.wav chars=2 | flown=142 56.5 req/min eta=1.7 min
+[15:43:18Z] req 0143 [B1] ok   0.87s media=datasets/audio2tool/public/tier4_implicit_audios/query_01983/speaker_12_ecapa_speaker_5666.wav chars=89 | flown=143 56.6 req/min eta=1.7 min
+[15:43:19Z] req 0144 [B2] ok   1.04s media=datasets/audio2tool/public/tier4_implicit_audios/query_01983/speaker_12_ecapa_speaker_5666.wav chars=110 | flown=144 56.6 req/min eta=1.7 min
+[15:43:20Z] req 0145 [B1] ok   0.78s media=datasets/audio2tool/public/tier5_needle_audios/query_00030/speaker_19_yodas_speaker_N0gs3eh4QzU.wav chars=86 | flown=145 56.7 req/min eta=1.7 min
+[15:43:21Z] req 0146 [B2] ok   0.87s media=datasets/audio2tool/public/tier5_needle_audios/query_00030/speaker_19_yodas_speaker_N0gs3eh4QzU.wav chars=78 | flown=146 56.8 req/min eta=1.7 min
+[15:43:22Z] req 0147 [B1] ok   1.14s media=datasets/audio2tool/public/tier5_needle_audios/query_00121/speaker_02_3dspeaker_speaker_3D_SPK_00481.wav chars=88 | flown=147 56.8 req/min eta=1.6 min
+[15:43:23Z] req 0148 [B2] ok   1.07s media=datasets/audio2tool/public/tier5_needle_audios/query_00121/speaker_02_3dspeaker_speaker_3D_SPK_00481.wav chars=88 | flown=148 56.8 req/min eta=1.6 min
+[15:43:24Z] req 0149 [B1] ok   1.05s media=datasets/audio2tool/public/tier5_needle_audios/query_00143/speaker_09_ecapa_speaker_37062.wav chars=91 | flown=149 56.8 req/min eta=1.6 min
+[15:43:25Z] req 0150 [B2] ok   0.85s media=datasets/audio2tool/public/tier5_needle_audios/query_00143/speaker_09_ecapa_speaker_37062.wav chars=88 | flown=150 56.8 req/min eta=1.6 min
+[15:43:26Z] req 0151 [B1] ok   1.06s media=datasets/audio2tool/public/tier5_needle_audios/query_00269/speaker_07_ecapa_speaker_42252.wav chars=95 | flown=151 56.8 req/min eta=1.6 min
+[15:43:27Z] req 0152 [B2] ok   1.02s media=datasets/audio2tool/public/tier5_needle_audios/query_00269/speaker_07_ecapa_speaker_42252.wav chars=85 | flown=152 56.8 req/min eta=1.5 min
+[15:43:28Z] req 0153 [B1] ok   1.08s media=datasets/audio2tool/public/tier5_needle_audios/query_00488/speaker_18_ecapa_speaker_44345.wav chars=100 | flown=153 56.8 req/min eta=1.5 min
+[15:43:30Z] req 0154 [B2] ok   1.66s media=datasets/audio2tool/public/tier5_needle_audios/query_00488/speaker_18_ecapa_speaker_44345.wav chars=116 | flown=154 56.6 req/min eta=1.5 min
+[15:43:31Z] req 0155 [B1] ok   1.02s media=datasets/audio2tool/public/tier5_needle_audios/query_00766/speaker_12_ecapa_speaker_13180.wav chars=79 | flown=155 56.6 req/min eta=1.5 min
+[15:43:32Z] req 0156 [B2] ok   0.89s media=datasets/audio2tool/public/tier5_needle_audios/query_00766/speaker_12_ecapa_speaker_13180.wav chars=80 | flown=156 56.7 req/min eta=1.5 min
+[15:43:33Z] req 0157 [B1] ok   1.14s media=datasets/audio2tool/public/tier5_needle_audios/query_01142/speaker_18_yodas_speaker_Jy_jAo62j0E.wav chars=74 | flown=157 56.7 req/min eta=1.5 min
+[15:43:34Z] req 0158 [B2] ok   0.88s media=datasets/audio2tool/public/tier5_needle_audios/query_01142/speaker_18_yodas_speaker_Jy_jAo62j0E.wav chars=72 | flown=158 56.7 req/min eta=1.4 min
+[15:43:35Z] req 0159 [B1] ok   1.15s media=datasets/audio2tool/public/tier5_needle_audios/query_01377/speaker_03_3dspeaker_speaker_3D_SPK_07907.wav chars=118 | flown=159 56.7 req/min eta=1.4 min
+[15:43:36Z] req 0160 [B2] ok   1.16s media=datasets/audio2tool/public/tier5_needle_audios/query_01377/speaker_03_3dspeaker_speaker_3D_SPK_07907.wav chars=105 | flown=160 56.7 req/min eta=1.4 min
+[15:43:37Z] req 0161 [B1] ok   1.06s media=datasets/audio2tool/public/tier5_needle_audios/query_01653/speaker_04_3dspeaker_speaker_3D_SPK_09068.wav chars=90 | flown=161 56.7 req/min eta=1.4 min
+[15:43:38Z] req 0162 [B2] ok   1.17s media=datasets/audio2tool/public/tier5_needle_audios/query_01653/speaker_04_3dspeaker_speaker_3D_SPK_09068.wav chars=90 | flown=162 56.6 req/min eta=1.4 min
+[15:43:39Z] req 0163 [B1] ok   0.93s media=datasets/audio2tool/public/tier5_needle_audios/query_01678/speaker_03_3dspeaker_speaker_3D_SPK_07983.wav chars=61 | flown=163 56.7 req/min eta=1.4 min
+[15:43:40Z] req 0164 [B2] ok   0.80s media=datasets/audio2tool/public/tier5_needle_audios/query_01678/speaker_03_3dspeaker_speaker_3D_SPK_07983.wav chars=75 | flown=164 56.8 req/min eta=1.3 min
+[15:43:41Z] req 0165 [B1] ok   1.18s media=datasets/audio2tool/public/tier5_needle_audios/query_01921/speaker_02_3dspeaker_speaker_3D_SPK_05717.wav chars=97 | flown=165 56.7 req/min eta=1.3 min
+[15:43:42Z] req 0166 [B2] ok   0.98s media=datasets/audio2tool/public/tier5_needle_audios/query_01921/speaker_02_3dspeaker_speaker_3D_SPK_05717.wav chars=77 | flown=166 56.7 req/min eta=1.3 min
+[15:43:43Z] req 0167 [B1] ok   1.14s media=datasets/audio2tool/public/tier5_needle_audios/query_01937/speaker_20_yodas_speaker_VAXJacMq33E.wav chars=99 | flown=167 56.7 req/min eta=1.3 min
+[15:43:45Z] req 0168 [B2] ok   2.05s media=datasets/audio2tool/public/tier5_needle_audios/query_01937/speaker_20_yodas_speaker_VAXJacMq33E.wav chars=94 | flown=168 56.4 req/min eta=1.3 min
+[15:43:47Z] req 0169 [B1] ok   1.70s media=datasets/audio2tool/public/tier6_correction_audios/query_00005/speaker_07_ecapa_speaker_6652.wav chars=112 | flown=169 56.2 req/min eta=1.3 min
+[15:43:49Z] req 0170 [B2] ok   1.76s media=datasets/audio2tool/public/tier6_correction_audios/query_00005/speaker_07_ecapa_speaker_6652.wav chars=112 | flown=170 55.9 req/min eta=1.3 min
+[15:43:51Z] req 0171 [B1] ok   1.61s media=datasets/audio2tool/public/tier6_correction_audios/query_00153/speaker_01_3dspeaker_speaker_3D_SPK_07674.wav chars=106 | flown=171 55.8 req/min eta=1.2 min
+[15:43:53Z] req 0172 [B2] ok   2.66s media=datasets/audio2tool/public/tier6_correction_audios/query_00153/speaker_01_3dspeaker_speaker_3D_SPK_07674.wav chars=207 | flown=172 55.3 req/min eta=1.2 min
+[15:43:55Z] req 0173 [B1] ok   2.10s media=datasets/audio2tool/public/tier6_correction_audios/query_00878/speaker_08_ecapa_speaker_21897.wav chars=127 | flown=173 55.0 req/min eta=1.2 min
+[15:43:57Z] req 0174 [B2] ok   1.67s media=datasets/audio2tool/public/tier6_correction_audios/query_00878/speaker_08_ecapa_speaker_21897.wav chars=105 | flown=174 54.8 req/min eta=1.2 min
+[15:43:59Z] req 0175 [B1] ok   1.86s media=datasets/audio2tool/public/tier6_correction_audios/query_00882/speaker_23_yodas_speaker_qlZUlplKVQY.wav chars=129 | flown=175 54.6 req/min eta=1.2 min
+[15:44:00Z] req 0176 [B2] ok   1.40s media=datasets/audio2tool/public/tier6_correction_audios/query_00882/speaker_23_yodas_speaker_qlZUlplKVQY.wav chars=96 | flown=176 54.5 req/min eta=1.2 min
+[15:44:02Z] req 0177 [B1] ok   1.58s media=datasets/audio2tool/public/tier6_correction_audios/query_00883/speaker_22_yodas_speaker_GxD_Nizci-Q.wav chars=96 | flown=177 54.3 req/min eta=1.2 min
+[15:44:04Z] req 0178 [B2] ok   1.99s media=datasets/audio2tool/public/tier6_correction_audios/query_00883/speaker_22_yodas_speaker_GxD_Nizci-Q.wav chars=96 | flown=178 54.1 req/min eta=1.1 min
+[15:44:06Z] req 0179 [B1] ok   1.63s media=datasets/audio2tool/public/tier6_correction_audios/query_00897/speaker_17_yodas_speaker_Y-YYpNa0LwM.wav chars=139 | flown=179 53.9 req/min eta=1.1 min
+[15:44:07Z] req 0180 [B2] ok   1.47s media=datasets/audio2tool/public/tier6_correction_audios/query_00897/speaker_17_yodas_speaker_Y-YYpNa0LwM.wav chars=96 | flown=180 53.8 req/min eta=1.1 min
+[15:44:09Z] req 0181 [B1] ok   1.58s media=datasets/audio2tool/public/tier6_correction_audios/query_00937/speaker_00_voxpopuli_speaker_5729.wav chars=78 | flown=181 53.7 req/min eta=1.1 min
+[15:44:10Z] req 0182 [B2] ok   1.61s media=datasets/audio2tool/public/tier6_correction_audios/query_00937/speaker_00_voxpopuli_speaker_5729.wav chars=81 | flown=182 53.6 req/min eta=1.1 min
+[15:44:12Z] req 0183 [B1] ok   1.53s media=datasets/audio2tool/public/tier6_correction_audios/query_01103/speaker_13_ecapa_speaker_3578.wav chars=81 | flown=183 53.5 req/min eta=1.1 min
+[15:44:13Z] req 0184 [B2] ok   1.40s media=datasets/audio2tool/public/tier6_correction_audios/query_01103/speaker_13_ecapa_speaker_3578.wav chars=78 | flown=184 53.4 req/min eta=1.0 min
+[15:44:15Z] req 0185 [B1] ok   1.44s media=datasets/audio2tool/public/tier6_correction_audios/query_01157/speaker_02_ecapa_speaker_6652.wav chars=67 | flown=185 53.3 req/min eta=1.0 min
+[15:44:17Z] req 0186 [B2] ok   1.78s media=datasets/audio2tool/public/tier6_correction_audios/query_01157/speaker_02_ecapa_speaker_6652.wav chars=64 | flown=186 53.1 req/min eta=1.0 min
+[15:44:19Z] req 0187 [B1] ok   1.78s media=datasets/audio2tool/public/tier6_correction_audios/query_01274/speaker_24_yodas_speaker_tPApD0MC85I.wav chars=121 | flown=187 53.0 req/min eta=1.0 min
+[15:44:20Z] req 0188 [B2] ok   1.66s media=datasets/audio2tool/public/tier6_correction_audios/query_01274/speaker_24_yodas_speaker_tPApD0MC85I.wav chars=100 | flown=188 52.8 req/min eta=1.0 min
+[15:44:22Z] req 0189 [B1] ok   1.56s media=datasets/audio2tool/public/tier6_correction_audios/query_01315/speaker_10_ecapa_speaker_50050.wav chars=78 | flown=189 52.7 req/min eta=1.0 min
+[15:44:23Z] req 0190 [B2] ok   1.53s media=datasets/audio2tool/public/tier6_correction_audios/query_01315/speaker_10_ecapa_speaker_50050.wav chars=78 | flown=190 52.6 req/min eta=1.0 min
+[15:44:26Z] req 0191 [B1] ok   2.21s media=datasets/audio2tool/public/tier6_correction_audios/query_01370/speaker_17_yodas_speaker_z2hPI6d00BE.wav chars=205 | flown=191 52.3 req/min eta=0.9 min
+[15:44:27Z] req 0192 [B2] ok   1.78s media=datasets/audio2tool/public/tier6_correction_audios/query_01370/speaker_17_yodas_speaker_z2hPI6d00BE.wav chars=105 | flown=192 52.2 req/min eta=0.9 min
+[15:44:29Z] req 0193 [B1] ok   1.61s media=datasets/audio2tool/public/tier7_multiturn_audios/query_00043/turn_02_user_voxpopuli_speaker_127096.wav chars=84 | flown=193 52.1 req/min eta=0.9 min
+[15:44:31Z] req 0194 [B2] ok   1.81s media=datasets/audio2tool/public/tier7_multiturn_audios/query_00043/turn_02_user_voxpopuli_speaker_127096.wav chars=106 | flown=194 51.9 req/min eta=0.9 min
+[15:44:33Z] req 0195 [B1] ok   1.70s media=datasets/audio2tool/public/tier7_multiturn_audios/query_00348/turn_02_user_3dspeaker_speaker_3D_SPK_08177.wav chars=60 | flown=195 51.8 req/min eta=0.9 min
+[15:44:34Z] req 0196 [B2] ok   1.68s media=datasets/audio2tool/public/tier7_multiturn_audios/query_00348/turn_02_user_3dspeaker_speaker_3D_SPK_08177.wav chars=91 | flown=196 51.6 req/min eta=0.9 min
+[15:44:36Z] req 0197 [B1] ok   1.40s media=datasets/audio2tool/public/tier7_multiturn_audios/query_00554/turn_02_user_yodas_speaker_IaSD5peeA8I.wav chars=75 | flown=197 51.6 req/min eta=0.8 min
+[15:44:38Z] req 0198 [B2] ok   2.10s media=datasets/audio2tool/public/tier7_multiturn_audios/query_00554/turn_02_user_yodas_speaker_IaSD5peeA8I.wav chars=76 | flown=198 51.4 req/min eta=0.8 min
+[15:44:40Z] req 0199 [B1] ok   1.60s media=datasets/audio2tool/public/tier7_multiturn_audios/query_00599/turn_02_user_ecapa_speaker_6450.wav chars=124 | flown=199 51.3 req/min eta=0.8 min
+[15:44:42Z] req 0200 [B2] ok   1.92s media=datasets/audio2tool/public/tier7_multiturn_audios/query_00599/turn_02_user_ecapa_speaker_6450.wav chars=124 | flown=200 51.1 req/min eta=0.8 min
+[15:44:43Z] req 0201 [B1] ok   1.48s media=datasets/audio2tool/public/tier7_multiturn_audios/query_00813/turn_02_user_yodas_speaker_Ktog0P985wc.wav chars=87 | flown=201 51.0 req/min eta=0.8 min
+[15:44:45Z] req 0202 [B2] ok   1.47s media=datasets/audio2tool/public/tier7_multiturn_audios/query_00813/turn_02_user_yodas_speaker_Ktog0P985wc.wav chars=85 | flown=202 51.0 req/min eta=0.7 min
+[15:44:48Z] req 0203 [B1] ok   3.20s media=datasets/audio2tool/public/tier7_multiturn_audios/query_01590/turn_02_user_yodas_speaker_-E5BzpJl-K4.wav chars=340 | flown=203 50.5 req/min eta=0.7 min
+[15:44:50Z] req 0204 [B2] ok   2.38s media=datasets/audio2tool/public/tier7_multiturn_audios/query_01590/turn_02_user_yodas_speaker_-E5BzpJl-K4.wav chars=75 | flown=204 50.3 req/min eta=0.7 min
+[15:44:52Z] req 0205 [B1] ok   1.62s media=datasets/audio2tool/public/tier7_multiturn_audios/query_01922/turn_04_user_ecapa_speaker_27607.wav chars=77 | flown=205 50.2 req/min eta=0.7 min
+[15:44:53Z] req 0206 [B2] ok   1.61s media=datasets/audio2tool/public/tier7_multiturn_audios/query_01922/turn_04_user_ecapa_speaker_27607.wav chars=94 | flown=206 50.1 req/min eta=0.7 min
+[15:44:55Z] req 0207 [B1] ok   1.73s media=datasets/audio2tool/public/tier7_multiturn_audios/query_02115/turn_02_user_ecapa_speaker_37343.wav chars=78 | flown=207 50.0 req/min eta=0.7 min
+[15:44:56Z] req 0208 [B2] ok   1.20s media=datasets/audio2tool/public/tier7_multiturn_audios/query_02115/turn_02_user_ecapa_speaker_37343.wav chars=2 | flown=208 50.0 req/min eta=0.6 min
+[15:44:58Z] req 0209 [B1] ok   1.79s media=datasets/audio2tool/public/tier8_intent_blending_audios/query_00061/mixed.wav chars=186 | flown=209 49.8 req/min eta=0.6 min
+[15:45:00Z] req 0210 [B2] ok   2.14s media=datasets/audio2tool/public/tier8_intent_blending_audios/query_00061/mixed.wav chars=176 | flown=210 49.7 req/min eta=0.6 min
+[15:45:02Z] req 0211 [B1] ok   1.94s media=datasets/audio2tool/public/tier8_intent_blending_audios/query_00065/mixed.wav chars=179 | flown=211 49.5 req/min eta=0.6 min
+[15:45:05Z] req 0212 [B2] ok   2.19s media=datasets/audio2tool/public/tier8_intent_blending_audios/query_00065/mixed.wav chars=166 | flown=212 49.3 req/min eta=0.6 min
+[15:45:07Z] req 0213 [B1] ok   2.32s media=datasets/audio2tool/public/tier8_intent_blending_audios/query_00160/mixed.wav chars=249 | flown=213 49.1 req/min eta=0.6 min
+[15:45:10Z] req 0214 [B2] ok   2.48s media=datasets/audio2tool/public/tier8_intent_blending_audios/query_00160/mixed.wav chars=254 | flown=214 48.8 req/min eta=0.5 min
+[15:45:11Z] req 0215 [B1] ok   1.84s media=datasets/audio2tool/public/tier8_intent_blending_audios/query_00201/mixed.wav chars=130 | flown=215 48.7 req/min eta=0.5 min
+[15:45:14Z] req 0216 [B2] ok   2.45s media=datasets/audio2tool/public/tier8_intent_blending_audios/query_00201/mixed.wav chars=153 | flown=216 48.5 req/min eta=0.5 min
+[15:45:16Z] req 0217 [B1] ok   2.00s media=datasets/audio2tool/public/tier8_intent_blending_audios/query_00245/mixed.wav chars=204 | flown=217 48.4 req/min eta=0.5 min
+[15:45:18Z] req 0218 [B2] ok   2.19s media=datasets/audio2tool/public/tier8_intent_blending_audios/query_00245/mixed.wav chars=202 | flown=218 48.2 req/min eta=0.5 min
+[15:45:20Z] req 0219 [B1] ok   1.69s media=datasets/audio2tool/public/tier8_intent_blending_audios/query_00284/mixed.wav chars=120 | flown=219 48.1 req/min eta=0.4 min
+[15:45:22Z] req 0220 [B2] ok   2.37s media=datasets/audio2tool/public/tier8_intent_blending_audios/query_00284/mixed.wav chars=144 | flown=220 47.9 req/min eta=0.4 min
+[15:45:24Z] req 0221 [B1] ok   1.85s media=datasets/audio2tool/public/tier8_intent_blending_audios/query_00352/mixed.wav chars=111 | flown=221 47.8 req/min eta=0.4 min
+[15:45:26Z] req 0222 [B2] ok   2.04s media=datasets/audio2tool/public/tier8_intent_blending_audios/query_00352/mixed.wav chars=111 | flown=222 47.6 req/min eta=0.4 min
+[15:45:28Z] req 0223 [B1] ok   2.07s media=datasets/audio2tool/public/tier8_intent_blending_audios/query_00355/mixed.wav chars=204 | flown=223 47.5 req/min eta=0.4 min
+[15:45:31Z] req 0224 [B2] ok   2.31s media=datasets/audio2tool/public/tier8_intent_blending_audios/query_00355/mixed.wav chars=204 | flown=224 47.3 req/min eta=0.3 min
+[15:45:33Z] req 0225 [B1] ok   1.82s media=datasets/audio2tool/public/tier8_intent_blending_audios/query_00372/mixed.wav chars=134 | flown=225 47.2 req/min eta=0.3 min
+[15:45:34Z] req 0226 [B2] ok   1.81s media=datasets/audio2tool/public/tier8_intent_blending_audios/query_00372/mixed.wav chars=134 | flown=226 47.1 req/min eta=0.3 min
+[15:45:36Z] req 0227 [B1] ok   1.90s media=datasets/audio2tool/public/tier8_intent_blending_audios/query_00423/mixed.wav chars=174 | flown=227 47.0 req/min eta=0.3 min
+[15:45:38Z] req 0228 [B2] ok   2.09s media=datasets/audio2tool/public/tier8_intent_blending_audios/query_00423/mixed.wav chars=188 | flown=228 46.9 req/min eta=0.3 min
+[15:45:40Z] req 0229 [B1] ok   1.84s media=datasets/audio2tool/public/tier8_intent_blending_audios/query_00475/mixed.wav chars=144 | flown=229 46.8 req/min eta=0.2 min
+[15:45:42Z] req 0230 [B2] ok   1.88s media=datasets/audio2tool/public/tier8_intent_blending_audios/query_00475/mixed.wav chars=144 | flown=230 46.7 req/min eta=0.2 min
+[15:45:44Z] req 0231 [B1] ok   1.74s media=datasets/audio2tool/public/tier8_intent_blending_audios/query_00488/mixed.wav chars=126 | flown=231 46.6 req/min eta=0.2 min
+[15:45:46Z] req 0232 [B2] ok   2.30s media=datasets/audio2tool/public/tier8_intent_blending_audios/query_00488/mixed.wav chars=126 | flown=232 46.4 req/min eta=0.2 min
+[15:45:49Z] req 0233 [B1] ok   2.16s media=datasets/audio2tool/public/tier8_intent_blending_audios/query_00489/mixed.wav chars=260 | flown=233 46.3 req/min eta=0.2 min
+[15:45:51Z] req 0234 [B2] ok   2.14s media=datasets/audio2tool/public/tier8_intent_blending_audios/query_00489/mixed.wav chars=174 | flown=234 46.2 req/min eta=0.1 min
+[15:45:53Z] req 0235 [B1] ok   1.85s media=datasets/audio2tool/public/tier8_intent_blending_audios/query_00494/mixed.wav chars=123 | flown=235 46.1 req/min eta=0.1 min
+[15:45:55Z] req 0236 [B2] ok   1.85s media=datasets/audio2tool/public/tier8_intent_blending_audios/query_00494/mixed.wav chars=123 | flown=236 46.0 req/min eta=0.1 min
+[15:45:56Z] req 0237 [B1] ok   1.74s media=datasets/audio2tool/public/tier8_intent_blending_audios/query_00656/mixed.wav chars=125 | flown=237 45.9 req/min eta=0.1 min
+[15:45:58Z] req 0238 [B2] ok   1.63s media=datasets/audio2tool/public/tier8_intent_blending_audios/query_00656/mixed.wav chars=108 | flown=238 45.9 req/min eta=0.0 min
+[15:46:00Z] req 0239 [B1] ok   2.03s media=datasets/audio2tool/public/tier8_intent_blending_audios/query_00696/mixed.wav chars=222 | flown=239 45.8 req/min eta=0.0 min
+[15:46:02Z] req 0240 [B2] ok   2.26s media=datasets/audio2tool/public/tier8_intent_blending_audios/query_00696/mixed.wav chars=179 | flown=240 45.6 req/min eta=0.0 min
+[15:46:02Z] outputs.jsonl written: 240 rows (NOT read by this launcher)
+[15:46:02Z] per-arm row counts: {"B1": 120, "B2": 120}
+[15:46:03Z] client.close(): trace_manifest_hash=d90ccfc002419531e710cac0ff21ed6eb4750177cb61f84852abd93611b92833
+[15:46:03Z] requests: flown=240 replayed=0 failures=0
+[15:46:03Z] flown by arm: {"B1": 120, "B2": 120}
+[15:46:03Z] mean latency by arm: {"B1": 1.243, "B2": 1.365}
+[15:46:03Z] cost: {"audio_seconds_used": 1270.5640000000005, "calls_used": 240, "completion_tokens_total": 9632, "latency_seconds_total": 267.2093998629989, "prompt_tokens_total": 1638764, "tool_calls": 0, "umbrella_lock_sha256": "b588f3641ae1d1774fb7652c8978acf25eda7dcbc45a34a898d5471bce5b2e42"}
+[15:46:03Z] wall: flight 5.3 min; GPU-occupied 7.1 min (0.118 h cumulative of the 0.5 h ceiling)
+[15:46:03Z] flight receipt: /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-a2t-s2b-120/attempt-20260818T153859Z-8da515/flight-receipt.json
+exit: 0 at 2026-08-18T15:46:03Z

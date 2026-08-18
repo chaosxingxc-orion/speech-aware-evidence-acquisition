@@ -1,0 +1,45 @@
+start: 2026-08-18T15:37:05Z
+repo module root: /mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/src/speech_aware_evidence_acquisition
+__pycache__ .pyc files under src/: 0
+B2 header sha256: befe65146a5abaa18b7d3446dfcdfeb5ed665f73e5b8564ba8b7d6916a71ebdf
+data_root: /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+carrier_root (asset_dir audio2tool): /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/datasets/audio2tool
+feat cache /home/chao/feat-cache/audio2tool-q4km: 480 entries
+audio2tool receipts declaring split_role=discovery: ['r1-audio2tool-sample']
+split_identity_hash (from the receipt): e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c
+headroom manifest: 120 ids, attempt_dir /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-BASE-a2t-a0-400/attempt-20260818T055500Z-res315
+resolving discovery split (sha256 of every media file -- slow, model-free)
+discovery split resolved: 400 samples
+headroom media resolved: 120/120
+Stage-2 arm-plan (REUSED VERBATIM, never re-derived): /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-a2t-s2-120/attempt-20260818T124955Z-84b944/SAEA-PROBE-a2t-s2-120.arm-plan.json
+arm plan loaded: seed=20260807 headroom=120 s1p=120 s4=120 derangement=54
+registry: 152 rows, full text 50291 chars
+flight plan: 240 requests over arms ('B1', 'B2')
+B1 roster sizes: min=1 max=3 single=75/120
+metered audio seconds for one full flight: 1270.56 (one pass 635.28, longest item 35.71)
+worst case within the 260-call budget: 1984.84 audio seconds
+server_args (after the -np delta): ['-c', '49152', '-np', '1', '-fa', 'on', '-ngl', '999', '-ctk', 'q8_0', '-ctv', 'q8_0']
+per-slot context: 49152/1 = 49152 tokens
+A0's own full-registry system prompt: 50413 chars (~12603 tokens)
+worst B1 system prompt: 1117 chars (~279 tokens)
+worst B2 system prompt: 50929 chars (~12732 tokens); delta over A0 = +516 chars
+max_tokens: 1024; worst-case sequence ~14256 tokens
+exposure rows matching run id 'SAEA-PROBE-a2t-s2b-120': 1
+  ledger['execution profile'] = 'bounded-discovery-probe'
+  ledger['split role'] = 'discovery'
+  ledger['split identity hash'] = 'e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c'
+  ledger['consumed'] = 'no'
+  ledger['calls'] = '280'
+  ledger['speech audio seconds'] = '2000'
+  ledger['gpu hours'] = '0.5'
+  ledger['speech carrier + split'] = 'audio2tool (speech-aware-diagnostics), the 120-sample headroom list (saea-a2t-a0'...
+config_hash: 8820275ba437a59ca7f6207154d4a6bf7ab7d1a97db3f7cc0ee73410bcba4d12
+protocol_hash: ff642e87a28f965f0568f5137fa40c9242e64f0dbc84bd1ab8b029b5dc83a3d7
+server_env: {'LLAMA_MTMD_FEAT_CACHE_DIR': '/home/chao/feat-cache/audio2tool-q4km'}
+ExecutionPlan validates: profile=bounded-discovery-probe role=discovery calls=260 audio_s=1985 gpu_h=0.5
+payload binding built: 120 ids, sample rates [24000]
+GATE DRY-RUN: model touch AUTHORIZED (umbrella lock sha256 b588f3641ae1d1774fb7652c8978acf25eda7dcbc45a34a898d5471bce5b2e42)
+measurement written: /mnt/c/Users/35686/AppData/Local/Temp/claude/D--chao-workspace-exploring-l4-intelligence-studies-speech-aware-evidence-acquisition/6d9f1834-68e9-41a7-bbcc-724898cf15a9/scratchpad/s2bfly/preflight-split-measurement.json
+
+PRE-FLIGHT CLEAN
+exit: 0 at 2026-08-18T15:37:13Z

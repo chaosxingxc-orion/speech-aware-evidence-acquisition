@@ -1,0 +1,7 @@
+2026-08-18T15:37:05Z baseline-preflight 180 MHz, 3090 MHz, 46, 11.11 W, 5 %, 254 MiB, P8
+2026-08-18T15:39:52Z during-flight 180 MHz, 3090 MHz, 47, 8.24 W, 1 %, 23605 MiB, P8
+2026-08-18T15:41:18Z during-flight-loop 232 MHz, 3090 MHz, 53, 50.83 W, 75 %, 23627 MiB, P2
+2026-08-18T15:41:48Z during-flight-mid 232 MHz, 3090 MHz, 58, 70.52 W, 94 %, 23627 MiB, P4
+2026-08-18T15:43:04Z during-flight-half 232 MHz, 3090 MHz, 60, 73.55 W, 93 %, 23627 MiB, P4
+2026-08-18T15:44:03Z during-flight-late 232 MHz, 3090 MHz, 55, 22.82 W, 1 %, 23627 MiB, P4
+2026-08-18T15:46:18Z after-flight 180 MHz, 3090 MHz, 54, 8.97 W, 0 %, 254 MiB, P8

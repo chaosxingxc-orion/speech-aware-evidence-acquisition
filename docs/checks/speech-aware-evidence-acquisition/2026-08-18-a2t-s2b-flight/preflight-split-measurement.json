@@ -1,0 +1,32 @@
+{
+  "a0_full_registry_prompt_chars": 50413,
+  "arms": [
+    "B1",
+    "B2"
+  ],
+  "b1_roster_size_max": 3,
+  "b1_roster_size_min": 1,
+  "b1_single_tool_samples": 75,
+  "config_hash": "8820275ba437a59ca7f6207154d4a6bf7ab7d1a97db3f7cc0ee73410bcba4d12",
+  "feat_cache_dir": "/home/chao/feat-cache/audio2tool-q4km",
+  "feat_cache_entries_preflight": 480,
+  "longest_item_audio_seconds": 35.714,
+  "metered_audio_seconds_expected": 1270.564,
+  "n_headroom_samples": 120,
+  "n_requests_planned": 240,
+  "one_pass_audio_seconds": 635.282,
+  "per_slot_context_tokens": 49152,
+  "planned_budgets": {
+    "gpu_hours": 0.5,
+    "model_calls": 260,
+    "speech_audio_seconds": 1985
+  },
+  "protocol_hash": "ff642e87a28f965f0568f5137fa40c9242e64f0dbc84bd1ab8b029b5dc83a3d7",
+  "run_id": "SAEA-PROBE-a2t-s2b-120",
+  "split_identity_hash": "e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c",
+  "stage2_arm_plan": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-a2t-s2-120/attempt-20260818T124955Z-84b944/SAEA-PROBE-a2t-s2-120.arm-plan.json",
+  "stage2_arm_plan_seed": 20260807,
+  "worst_b1_prompt_chars": 1117,
+  "worst_b2_prompt_chars": 50929,
+  "worst_case_audio_seconds_within_call_budget": 1984.844
+}
