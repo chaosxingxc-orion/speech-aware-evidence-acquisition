@@ -370,11 +370,13 @@ _REGISTRY_COLUMNS = (
 )
 
 
-def render_tool_schemas(lock: Mapping[str, object], root: Path) -> str:
-    """The deterministic ``{tool_schemas}`` fill for the frozen P1 prompt
-    template: the FULL ``tools_registry.csv`` (the paper's direct protocol
-    prompts with the full tool schema), one canonical JSON object per line,
-    sorted by numeric ``tool_id``."""
+def _load_registry_rows(lock: Mapping[str, object], root: Path) -> tuple[tuple[int, dict[str, str]], ...]:
+    """Every ``tools_registry.csv`` row, parsed and validated, sorted by
+    numeric ``tool_id`` -- the shared parse both :func:`render_tool_schemas`
+    (all 152 rows) and :func:`load_tool_registry` (the same rows, exposed
+    per-row for a caller that needs to select a SUBSET rather than the
+    flattened all-rows string) build on, so the CSV is parsed once per call
+    site instead of twice."""
 
     import csv
 
@@ -412,6 +414,35 @@ def render_tool_schemas(lock: Mapping[str, object], root: Path) -> str:
             (tool_id, {column: (row.get(column) or "") for column in _REGISTRY_COLUMNS})
         )
     parsed.sort(key=lambda pair: pair[0])
-    return "\n".join(
-        json.dumps(document, ensure_ascii=False, sort_keys=True) for _, document in parsed
-    )
+    return tuple(parsed)
+
+
+def render_registry_row(row: Mapping[str, str]) -> str:
+    """Canonical one-line JSON rendering of a SINGLE registry row -- the
+    exact per-row format :func:`render_tool_schemas` joins with newlines
+    for all 152 rows, extracted here so a caller (e.g. a supply-narrowing
+    probe) can render an arbitrary SUBSET of rows with byte-identical
+    per-row formatting."""
+
+    return json.dumps(dict(row), ensure_ascii=False, sort_keys=True)
+
+
+def load_tool_registry(lock: Mapping[str, object], root: Path) -> tuple[dict[str, str], ...]:
+    """Every ``tools_registry.csv`` row, sorted by numeric ``tool_id`` --
+    the SAME rows :func:`render_tool_schemas` flattens into one string, but
+    exposed per-row (each a plain ``{column: value}`` dict over
+    ``_REGISTRY_COLUMNS``, ``tool_name`` included) for a caller that needs
+    PER-TOOL lookup (e.g. keying a subset roster by ``tool_name``) rather
+    than the flattened all-152 string."""
+
+    return tuple(row for _tool_id, row in _load_registry_rows(lock, root))
+
+
+def render_tool_schemas(lock: Mapping[str, object], root: Path) -> str:
+    """The deterministic ``{tool_schemas}`` fill for the frozen P1 prompt
+    template: the FULL ``tools_registry.csv`` (the paper's direct protocol
+    prompts with the full tool schema), one canonical JSON object per line,
+    sorted by numeric ``tool_id``."""
+
+    rows = _load_registry_rows(lock, root)
+    return "\n".join(render_registry_row(row) for _tool_id, row in rows)
