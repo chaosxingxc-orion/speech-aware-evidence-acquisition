@@ -1,0 +1,6 @@
+resolve_media_identity_carrier('audio2tool') -> audio2tool
+headroom samples resolved: 120/120
+offering 2 real headroom samples: ['tier1_direct:000077', 'tier8_intent_blending:000696']
+verify_media_identity('audio2tool') on 2 headroom samples: PASS
+verify_media_identity('audio2tool') on all 120 headroom samples: PASS
+negative control (unlisted id): correctly refused -> GateClosed

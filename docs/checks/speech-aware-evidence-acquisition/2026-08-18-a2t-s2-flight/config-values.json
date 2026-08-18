@@ -1,0 +1,53 @@
+{
+  "config_hash": "c8d05b6f5a4f9b58bee1f474b8484cc60eabe2b95e61d4dc20dd55507de67c07",
+  "protocol_hash": "ae3744a879ccf6cb1a979b9d161e80e95bc85b05f3882eb5ce800adc9e06d0c8",
+  "values": {
+    "a0_verdict": "docs/checks/speech-aware-evidence-acquisition/2026-08-18-pa2t-a0-read/verdict.json",
+    "arm": "fixed-legal-context",
+    "arms": [
+      "S1p",
+      "S2",
+      "S4",
+      "N0r"
+    ],
+    "base_url": "http://127.0.0.1:8080",
+    "carrier_lock_key": "audio2tool",
+    "decoding_params": {
+      "max_tokens": 1024,
+      "seed": 20260803,
+      "temperature": 0
+    },
+    "flight_config": "configs/probes/g0-binding/a2t-s2-flight.json",
+    "flight_config_version": "a2t-s2-flight-v1",
+    "headroom_manifest": "docs/checks/speech-aware-evidence-acquisition/2026-08-18-pa2t-a0-read/headroom.json",
+    "launcher": "scratchpad s2fly2/launch_pa2t_s2.py (archived with the flight receipt)",
+    "model_lock_key": "qwen3-omni-30b-a3b-instruct-gguf-q4km",
+    "orchestrator": "rails.probes.a2t_s2_flight.run_a2t_s2_flight",
+    "preregistration": "docs/readiness/2026-08-18-pa2t-stage2-preregistration-REGISTERED.md",
+    "probe": "P-A2T",
+    "prompt_order": "evidence-first-system-v2",
+    "runtime_receipt": "receipts/runtime-q4km-featcache.json",
+    "seed": 20260807,
+    "server_args": [
+      "-c",
+      "49152",
+      "-np",
+      "1",
+      "-fa",
+      "on",
+      "-ngl",
+      "999",
+      "-ctk",
+      "q8_0",
+      "-ctv",
+      "q8_0"
+    ],
+    "server_env": {
+      "LLAMA_MTMD_FEAT_CACHE_DIR": "/home/chao/feat-cache/audio2tool-q4km"
+    },
+    "split_name": "discovery",
+    "stage": "Stage-2 supply probe",
+    "timeout_seconds": 420.0,
+    "transport": "llama-server"
+  }
+}

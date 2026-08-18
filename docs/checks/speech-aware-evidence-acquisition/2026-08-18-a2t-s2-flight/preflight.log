@@ -1,0 +1,34 @@
+repo module root: /mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/src/speech_aware_evidence_acquisition
+__pycache__ .pyc files under src/: 0
+data_root: /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+carrier_root (asset_dir audio2tool): /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/datasets/audio2tool
+audio2tool receipts declaring split_role=discovery: ['r1-audio2tool-sample']
+split_identity_hash (from the receipt): e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c
+headroom manifest: 120 ids, attempt_dir /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-BASE-a2t-a0-400/attempt-20260818T055500Z-res315
+resolving discovery split (sha256 of every media file -- slow, model-free)
+discovery split resolved: 400 samples
+headroom media resolved: 120/120
+flight plan: 400 requests over arms ('S1p', 'S2', 'S4', 'N0r')
+metered audio seconds for one full flight: 2110.47 (longest item 35.71)
+worst case within the 420-call budget: 2824.75 audio seconds
+server_args (after the -np delta): ['-c', '49152', '-np', '1', '-fa', 'on', '-ngl', '999', '-ctk', 'q8_0', '-ctv', 'q8_0']
+per-slot context: 49152/1 = 49152 tokens
+worst arm (N0r, full registry): 50413 chars, est 12603 tokens
+max_tokens: 1024; worst-case sequence ~14127 tokens
+exposure rows matching run id 'SAEA-PROBE-a2t-s2-120': 1
+  ledger['execution profile'] = 'bounded-discovery-probe'
+  ledger['split role'] = 'discovery'
+  ledger['split identity hash'] = 'e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c'
+  ledger['consumed'] = 'no'
+  ledger['calls'] = '450'
+  ledger['speech audio seconds'] = '3500'
+  ledger['gpu hours'] = '1.0'
+  ledger['speech carrier + split'] = 'audio2tool (speech-aware-diagnostics), frozen 400-item discovery split subset = '...
+config_hash: c8d05b6f5a4f9b58bee1f474b8484cc60eabe2b95e61d4dc20dd55507de67c07
+protocol_hash: ae3744a879ccf6cb1a979b9d161e80e95bc85b05f3882eb5ce800adc9e06d0c8
+server_env: {'LLAMA_MTMD_FEAT_CACHE_DIR': '/home/chao/feat-cache/audio2tool-q4km'}
+ExecutionPlan validates: profile=bounded-discovery-probe role=discovery calls=420 audio_s=3000 gpu_h=1.0
+payload binding built: 120 ids, sample rates [24000]
+GATE DRY-RUN: model touch AUTHORIZED (umbrella lock sha256 b588f3641ae1d1774fb7652c8978acf25eda7dcbc45a34a898d5471bce5b2e42)
+
+PRE-FLIGHT CLEAN

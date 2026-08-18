@@ -1,0 +1,32 @@
+headroom manifest: /mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/checks/speech-aware-evidence-acquisition/2026-08-18-pa2t-a0-read/headroom.json
+  ids: 120  attempt_dir: /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-BASE-a2t-a0-400/attempt-20260818T055500Z-res315
+  split_identity_hash: e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c
+deriving A0 selected tools from /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-BASE-a2t-a0-400/attempt-20260818T055500Z-res315 (already-flown, already-consumed)
+  derived for 120 samples; 45 carry >1 distinct tool
+tool registry rows: 152
+flight plan built (seed 20260807)
+  S4 derangement over 54 distinct tools, fixed points: []
+  S4 samples whose supplied tool is one of their OWN selections: 0 (must be 0)
+  S2 roster sizes: {9: 120} (must be exactly {9: 120})
+  S1p roster sizes: {1: 75, 3: 18, 2: 27}
+  N0r draw: 40 ids, tiers {'tier1_direct': 8, 'tier2_parametric': 6, 'tier3_multi_intent': 9, 'tier4_implicit': 1, 'tier5_needle': 4, 'tier6_correction': 4, 'tier7_multiturn': 3, 'tier8_intent_blending': 5}
+  headroom tiers: {'tier1_direct': 23, 'tier2_parametric': 17, 'tier3_multi_intent': 29, 'tier4_implicit': 3, 'tier5_needle': 12, 'tier6_correction': 12, 'tier7_multiturn': 8, 'tier8_intent_blending': 16}
+resolving discovery split (sha256 of every media file -- slow, model-free)
+discovery split resolved: 400 samples
+headroom media present: 120/120
+audio seconds: one pass over the 120 = 635.28
+audio seconds: N0r 40 = 204.62
+audio seconds: METERED TOTAL 3x120 + 40 = 2110.47
+audio seconds: longest single headroom item = 35.71
+audio seconds: + 50 retries worst case = 3896.17
+  arm S1p : n=120 chars min=   409 mean=    654.7 max=  1270 (max est 317 tokens)
+  arm S2  : n=120 chars min=  2798 mean=   3134.8 max=  3570 (max est 892 tokens)
+  arm S4  : n=120 chars min=   372 mean=    455.6 max=   575 (max est 143 tokens)
+  arm N0r : n= 40 chars min= 50413 mean=  50413.0 max= 50413 (max est 12603 tokens)
+  full 152-row registry text: 50291 chars
+  sample-0 supply doses: {"S1p": {"n_items": 1, "token_count": 29}, "S2": {"n_items": 9, "token_count": 261}, "S4": {"n_items": 1, "token_count": 24}}
+server_args (after the -np delta): ['-c', '49152', '-np', '1', '-fa', 'on', '-ngl', '999', '-ctk', 'q8_0', '-ctv', 'q8_0']
+per-slot context: 49152/1 = 49152 tokens
+worst-arm prefill est 12603 tokens + ~500 audio + 1024 out
+measurement written: /mnt/c/Users/35686/AppData/Local/Temp/claude/D--chao-workspace-exploring-l4-intelligence-studies-speech-aware-evidence-acquisition/6d9f1834-68e9-41a7-bbcc-724898cf15a9/scratchpad/s2fly2/preflight-split-measurement.json
+MEASUREMENT CLEAN
