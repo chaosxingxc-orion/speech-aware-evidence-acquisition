@@ -1,0 +1,999 @@
+{
+  "arm_plan_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-a2t-s2-120/attempt-20260818T124955Z-84b944/SAEA-PROBE-a2t-s2-120.arm-plan.json",
+  "b2_verdict": {
+    "b2_shape": {
+      "DRAGGED-TO-SUPPLIED": 3,
+      "DRIFTED-OTHER": 5,
+      "EMPTY": 6,
+      "MULTIPLICITY": 1,
+      "PARSE-FAIL": 6
+    },
+    "drag_confirmed": false,
+    "drag_confirmed_clause": {
+      "clause_text": "B2 DRAGGED-TO-SUPPLIED >= 0.5238 (11/21) of B2's own losses",
+      "detail": "dragged=3/21 (rate=0.1429), floor=0.5238",
+      "verdict": "not_met"
+    },
+    "dragged_count": 3,
+    "drift_confirmed": true,
+    "drift_confirmed_clause": {
+      "clause_text": "B2 DRAGGED-TO-SUPPLIED <= 0.2381 (5/21) of B2's own losses (N0r reference shape reported side-by-side, note 2: not statistically tested at n=21 vs n=5, prereg section 3)",
+      "detail": "dragged=3/21 (rate=0.1429), ceiling=0.2381",
+      "verdict": "met"
+    },
+    "n0r_reference_shape": {
+      "DRAGGED-TO-SUPPLIED": 0,
+      "DRIFTED-OTHER": 0,
+      "EMPTY": 0,
+      "MULTIPLICITY": 0,
+      "PARSE-FAIL": 5
+    },
+    "overall": "DRIFT-CONFIRMED",
+    "total_losses": 21
+  },
+  "headroom_path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/checks/speech-aware-evidence-acquisition/2026-08-18-pa2t-a0-read/headroom.json",
+  "integrity": {
+    "flight_archive_verified": {
+      "s2": [
+        "README.md",
+        "config-values.json",
+        "execution-plan.json",
+        "flight-receipt.json",
+        "flight.log",
+        "gpu-health.log",
+        "launcher/archive.sh",
+        "launcher/env.sh",
+        "launcher/flight_identity.py",
+        "launcher/flight_plan.py",
+        "launcher/gpu_health.sh",
+        "launcher/gpu_sample.sh",
+        "launcher/launch_pa2t_s2.py",
+        "launcher/measure_split.py",
+        "launcher/preflight.py",
+        "launcher/probe_d1.py",
+        "launcher/run_flight.sh",
+        "launcher/run_measure.sh",
+        "launcher/run_preflight.sh",
+        "launcher/run_probe_d1.sh",
+        "launcher/run_tests.sh",
+        "launcher/status.sh",
+        "preflight-d1-probe.log",
+        "preflight-split-measurement.json",
+        "preflight-split-measurement.log",
+        "preflight-tests.log",
+        "preflight.log",
+        "session-receipt.json"
+      ],
+      "s2b": [
+        "README.md",
+        "config-values.json",
+        "execution-plan.json",
+        "flight-receipt.json",
+        "flight.log",
+        "gpu-health.log",
+        "launcher/archive.sh",
+        "launcher/env.sh",
+        "launcher/flight_identity.py",
+        "launcher/flight_plan.py",
+        "launcher/gpu_health.sh",
+        "launcher/gpu_sample.sh",
+        "launcher/launch_pa2t_s2b.py",
+        "launcher/preflight.py",
+        "launcher/probe_d1.py",
+        "launcher/run_flight.sh",
+        "launcher/run_preflight.sh",
+        "launcher/run_probe_d1.sh",
+        "launcher/run_tests.sh",
+        "launcher/status.sh",
+        "preflight-d1-probe.log",
+        "preflight-split-measurement.json",
+        "preflight-tests.log",
+        "preflight.log",
+        "session-receipt.json"
+      ],
+      "s2c": [
+        "README.md",
+        "config-values.json",
+        "execution-plan.json",
+        "flight-receipt.json",
+        "flight.log",
+        "gpu-health.log",
+        "launcher/archive.sh",
+        "launcher/env.sh",
+        "launcher/flight_identity.py",
+        "launcher/flight_plan.py",
+        "launcher/gpu_health.sh",
+        "launcher/gpu_sample.sh",
+        "launcher/launch_pa2t_s2c.py",
+        "launcher/postcheck.sh",
+        "launcher/precheck.sh",
+        "launcher/preflight.py",
+        "launcher/probe_d1.py",
+        "launcher/run_flight.sh",
+        "launcher/run_preflight.sh",
+        "launcher/run_probe_d1.sh",
+        "launcher/run_tests.sh",
+        "launcher/status.sh",
+        "postcheck.log",
+        "precheck.log",
+        "preflight-d1-probe.log",
+        "preflight-split-measurement.json",
+        "preflight-tests.log",
+        "preflight.log",
+        "session-receipt.json"
+      ]
+    },
+    "headroom_archive_verified_files": [
+      "README.md",
+      "headroom.json",
+      "report.txt",
+      "verdict.json"
+    ],
+    "read_archive_verified": {
+      "s2": [
+        "README.md",
+        "report.txt",
+        "verdict.json"
+      ],
+      "s2b": [
+        "README.md",
+        "report.txt",
+        "verdict.json"
+      ],
+      "s2c": [
+        "README.md",
+        "report.txt",
+        "verdict.json"
+      ]
+    },
+    "reconciliation": [
+      {
+        "archived_loss_count": 5,
+        "arm": "N0r",
+        "computed_loss_count": 5,
+        "detail": "computed=5, parent_recomputed=5, archived=5, exact_gate=5/40 (applies, n_samples matches)",
+        "matched": true,
+        "parent_recomputed_loss_count": 5
+      },
+      {
+        "archived_loss_count": 8,
+        "arm": "S1p",
+        "computed_loss_count": 8,
+        "detail": "computed=8, parent_recomputed=8, archived=8",
+        "matched": true,
+        "parent_recomputed_loss_count": 8
+      },
+      {
+        "archived_loss_count": 9,
+        "arm": "S2",
+        "computed_loss_count": 9,
+        "detail": "computed=9, parent_recomputed=9, archived=9",
+        "matched": true,
+        "parent_recomputed_loss_count": 9
+      },
+      {
+        "archived_loss_count": 16,
+        "arm": "B1",
+        "computed_loss_count": 16,
+        "detail": "computed=16, parent_recomputed=16, archived=16",
+        "matched": true,
+        "parent_recomputed_loss_count": 16
+      },
+      {
+        "archived_loss_count": 21,
+        "arm": "B2",
+        "computed_loss_count": 21,
+        "detail": "computed=21, parent_recomputed=21, archived=21, exact_gate=21/120 (applies, n_samples matches)",
+        "matched": true,
+        "parent_recomputed_loss_count": 21
+      },
+      {
+        "archived_loss_count": 31,
+        "arm": "C1",
+        "computed_loss_count": 31,
+        "detail": "computed=31, parent_recomputed=31, archived=31",
+        "matched": true,
+        "parent_recomputed_loss_count": 31
+      },
+      {
+        "archived_loss_count": 13,
+        "arm": "C2",
+        "computed_loss_count": 13,
+        "detail": "computed=13, parent_recomputed=13, archived=13",
+        "matched": true,
+        "parent_recomputed_loss_count": 13
+      },
+      {
+        "archived_loss_count": 7,
+        "arm": "C3",
+        "computed_loss_count": 7,
+        "detail": "computed=7, parent_recomputed=7, archived=7, exact_gate=7/120 (applies, n_samples matches)",
+        "matched": true,
+        "parent_recomputed_loss_count": 7
+      }
+    ],
+    "unpinned_inputs": [
+      "outputs.jsonl",
+      "{RUN_ID}.arm-plan.json"
+    ]
+  },
+  "s2_attempt_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-a2t-s2-120/attempt-20260818T124955Z-84b944",
+  "s2b_attempt_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-a2t-s2b-120/attempt-20260818T153859Z-8da515",
+  "s2c_attempt_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-a2t-s2c-120/attempt-20260818T175018Z-0d3363",
+  "schema": "saea-a2t-loss-decomp-read-v1",
+  "split_identity_hash": "e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c",
+  "tables": {
+    "B1": {
+      "arm": "B1",
+      "class_counts": {
+        "DRAGGED-TO-SUPPLIED": 0,
+        "DRIFTED-OTHER": 0,
+        "EMPTY": 2,
+        "MULTIPLICITY": 1,
+        "PARSE-FAIL": 13
+      },
+      "n_losses": 16,
+      "n_samples": 120,
+      "rows": [
+        {
+          "a0_tool": "setHumidifierState",
+          "arm_tool": "(empty)",
+          "class": "EMPTY",
+          "sample_id": "tier1_direct:000620"
+        },
+        {
+          "a0_tool": "setHumidifierState",
+          "arm_tool": "(empty)",
+          "class": "EMPTY",
+          "sample_id": "tier1_direct:000636"
+        },
+        {
+          "a0_tool": "enableWaterLock",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier1_direct:003713"
+        },
+        {
+          "a0_tool": "setAdaptiveLighting,setBrightness,setInputSource",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier3_multi_intent:001251"
+        },
+        {
+          "a0_tool": "getEnergyUsage,setBrightness,setThermostatMode",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier3_multi_intent:001562"
+        },
+        {
+          "a0_tool": "calibrateThermostat,setLighting,setTargetTemperature",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier3_multi_intent:002560"
+        },
+        {
+          "a0_tool": "getDeviceList,setBrightness",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier3_multi_intent:002995"
+        },
+        {
+          "a0_tool": "setAdaptiveLighting,setThermostatMode,setThermostatSchedule",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier3_multi_intent:003153"
+        },
+        {
+          "a0_tool": "setAlarm",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier5_needle:003873"
+        },
+        {
+          "a0_tool": "broadcastMessage",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier6_correction:001756"
+        },
+        {
+          "a0_tool": "calibrateThermostat",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier6_correction:002548"
+        },
+        {
+          "a0_tool": "setLighting",
+          "arm_tool": "setLighting",
+          "class": "MULTIPLICITY",
+          "sample_id": "tier6_correction:002740"
+        },
+        {
+          "a0_tool": "setAdaptiveLighting,setBrightness",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier8_intent_blending:000061"
+        },
+        {
+          "a0_tool": "setThermostatMode,updateFirmware",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier8_intent_blending:000065"
+        },
+        {
+          "a0_tool": "getActivitySummary,setDoNotDisturb,stopWorkout",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier8_intent_blending:000489"
+        },
+        {
+          "a0_tool": "setFanSpeed,setSeatComfort,wiperServiceMode",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier8_intent_blending:000696"
+        }
+      ]
+    },
+    "B2": {
+      "arm": "B2",
+      "class_counts": {
+        "DRAGGED-TO-SUPPLIED": 3,
+        "DRIFTED-OTHER": 5,
+        "EMPTY": 6,
+        "MULTIPLICITY": 1,
+        "PARSE-FAIL": 6
+      },
+      "n_losses": 21,
+      "n_samples": 120,
+      "rows": [
+        {
+          "a0_tool": "setWaterValve",
+          "arm_tool": "(empty)",
+          "class": "EMPTY",
+          "sample_id": "tier1_direct:001631"
+        },
+        {
+          "a0_tool": "resetFilterStatus",
+          "arm_tool": "(empty)",
+          "class": "EMPTY",
+          "sample_id": "tier1_direct:002581"
+        },
+        {
+          "a0_tool": "setLightState",
+          "arm_tool": "setLighting",
+          "class": "DRIFTED-OTHER",
+          "sample_id": "tier2_parametric:000240"
+        },
+        {
+          "a0_tool": "setLightState",
+          "arm_tool": "setLighting",
+          "class": "DRIFTED-OTHER",
+          "sample_id": "tier2_parametric:000247"
+        },
+        {
+          "a0_tool": "castContent",
+          "arm_tool": "castContent,setInputSource",
+          "class": "DRIFTED-OTHER",
+          "sample_id": "tier2_parametric:001869"
+        },
+        {
+          "a0_tool": "setValetMode",
+          "arm_tool": "(empty)",
+          "class": "EMPTY",
+          "sample_id": "tier2_parametric:006210"
+        },
+        {
+          "a0_tool": "setGarageDoor,setTargetTemperature",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier3_multi_intent:000924"
+        },
+        {
+          "a0_tool": "activateRoutine,setTargetTemperature",
+          "arm_tool": "activateRoutine,setTargetTemperature,setThermostatMode",
+          "class": "DRIFTED-OTHER",
+          "sample_id": "tier3_multi_intent:003058"
+        },
+        {
+          "a0_tool": "setPowerState",
+          "arm_tool": "(empty)",
+          "class": "EMPTY",
+          "sample_id": "tier4_implicit:001541"
+        },
+        {
+          "a0_tool": "startWorkout",
+          "arm_tool": "(empty)",
+          "class": "EMPTY",
+          "sample_id": "tier4_implicit:003312"
+        },
+        {
+          "a0_tool": "setCabinOverheatProtection",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier4_implicit:003979"
+        },
+        {
+          "a0_tool": "setFanMode",
+          "arm_tool": "getApplianceStatus",
+          "class": "DRAGGED-TO-SUPPLIED",
+          "sample_id": "tier5_needle:000537"
+        },
+        {
+          "a0_tool": "setLighting",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier5_needle:002753"
+        },
+        {
+          "a0_tool": "rampBrightness",
+          "arm_tool": "rampBrightness",
+          "class": "MULTIPLICITY",
+          "sample_id": "tier6_correction:000305"
+        },
+        {
+          "a0_tool": "setBrightness",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier7_multiturn:000043"
+        },
+        {
+          "a0_tool": "setLockState",
+          "arm_tool": "setLockState_home",
+          "class": "DRIFTED-OTHER",
+          "sample_id": "tier7_multiturn:000348"
+        },
+        {
+          "a0_tool": "castContent",
+          "arm_tool": "playMedia",
+          "class": "DRAGGED-TO-SUPPLIED",
+          "sample_id": "tier7_multiturn:000599"
+        },
+        {
+          "a0_tool": "setThermostatSchedule",
+          "arm_tool": "getThermostatState",
+          "class": "DRAGGED-TO-SUPPLIED",
+          "sample_id": "tier7_multiturn:001590"
+        },
+        {
+          "a0_tool": "setMirrorAngle",
+          "arm_tool": "(empty)",
+          "class": "EMPTY",
+          "sample_id": "tier7_multiturn:002115"
+        },
+        {
+          "a0_tool": "setAdaptiveLighting,setBrightness",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier8_intent_blending:000284"
+        },
+        {
+          "a0_tool": "setFanSpeed,setSeatComfort,wiperServiceMode",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier8_intent_blending:000696"
+        }
+      ]
+    },
+    "C1": {
+      "arm": "C1",
+      "class_counts": {
+        "DRAGGED-TO-SUPPLIED": 0,
+        "DRIFTED-OTHER": 0,
+        "EMPTY": 0,
+        "MULTIPLICITY": 1,
+        "PARSE-FAIL": 30
+      },
+      "n_losses": 31,
+      "n_samples": 120,
+      "rows": [
+        {
+          "a0_tool": "enableWaterLock",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier1_direct:003706"
+        },
+        {
+          "a0_tool": "castContent",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier2_parametric:001869"
+        },
+        {
+          "a0_tool": "getEnergyUsage",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier2_parametric:003068"
+        },
+        {
+          "a0_tool": "setAdaptiveLighting,setBrightness,setInputSource",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier3_multi_intent:001251"
+        },
+        {
+          "a0_tool": "getApplianceStatus,rampBrightness,setAdaptiveLighting",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier3_multi_intent:001487"
+        },
+        {
+          "a0_tool": "getEnergyUsage,setBrightness,setThermostatMode",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier3_multi_intent:001562"
+        },
+        {
+          "a0_tool": "getSensorState,setTargetTemperature,setThermostatMode",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier3_multi_intent:002264"
+        },
+        {
+          "a0_tool": "calibrateThermostat,setTargetTemperature",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier3_multi_intent:002553"
+        },
+        {
+          "a0_tool": "calibrateThermostat,setLighting,setTargetTemperature",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier3_multi_intent:002560"
+        },
+        {
+          "a0_tool": "runNetworkSpeedTest,setAdaptiveLighting,setColorTemperature",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier3_multi_intent:002645"
+        },
+        {
+          "a0_tool": "getDeviceList,setBrightness",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier3_multi_intent:002970"
+        },
+        {
+          "a0_tool": "getDeviceList,setAdaptiveLighting",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier3_multi_intent:002986"
+        },
+        {
+          "a0_tool": "getDeviceList,setBrightness",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier3_multi_intent:002995"
+        },
+        {
+          "a0_tool": "setAdaptiveLighting,setThermostatMode,setThermostatSchedule",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier3_multi_intent:003153"
+        },
+        {
+          "a0_tool": "getActivitySummary,setDoNotDisturb",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier3_multi_intent:003268"
+        },
+        {
+          "a0_tool": "getSoftwareUpdateStatus,setSteeringWheelHeat",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier3_multi_intent:004291"
+        },
+        {
+          "a0_tool": "playMedia",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier5_needle:000976"
+        },
+        {
+          "a0_tool": "broadcastMessage",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier6_correction:001756"
+        },
+        {
+          "a0_tool": "broadcastMessage",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier6_correction:001794"
+        },
+        {
+          "a0_tool": "calibrateThermostat",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier6_correction:002548"
+        },
+        {
+          "a0_tool": "setLighting",
+          "arm_tool": "setLighting",
+          "class": "MULTIPLICITY",
+          "sample_id": "tier6_correction:002740"
+        },
+        {
+          "a0_tool": "castContent",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier7_multiturn:000599"
+        },
+        {
+          "a0_tool": "setMirrorAngle",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier7_multiturn:002115"
+        },
+        {
+          "a0_tool": "setThermostatMode,updateFirmware",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier8_intent_blending:000065"
+        },
+        {
+          "a0_tool": "rampBrightness,runNetworkSpeedTest",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier8_intent_blending:000201"
+        },
+        {
+          "a0_tool": "setAdaptiveLighting,setBrightness",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier8_intent_blending:000284"
+        },
+        {
+          "a0_tool": "getSleepSummary,setDoNotDisturb,setHapticStrength",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier8_intent_blending:000355"
+        },
+        {
+          "a0_tool": "findPairedPhone,setAlwaysOnDisplay,startWorkout",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier8_intent_blending:000423"
+        },
+        {
+          "a0_tool": "getSleepSummary,setHapticStrength",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier8_intent_blending:000488"
+        },
+        {
+          "a0_tool": "getActivitySummary,setDoNotDisturb,stopWorkout",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier8_intent_blending:000489"
+        },
+        {
+          "a0_tool": "setFanSpeed,setSeatComfort,wiperServiceMode",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier8_intent_blending:000696"
+        }
+      ]
+    },
+    "C2": {
+      "arm": "C2",
+      "class_counts": {
+        "DRAGGED-TO-SUPPLIED": 0,
+        "DRIFTED-OTHER": 0,
+        "EMPTY": 1,
+        "MULTIPLICITY": 1,
+        "PARSE-FAIL": 11
+      },
+      "n_losses": 13,
+      "n_samples": 120,
+      "rows": [
+        {
+          "a0_tool": "setHumidifierState",
+          "arm_tool": "(empty)",
+          "class": "EMPTY",
+          "sample_id": "tier1_direct:000620"
+        },
+        {
+          "a0_tool": "getEnergyUsage,setBrightness,setThermostatMode",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier3_multi_intent:001562"
+        },
+        {
+          "a0_tool": "calibrateThermostat,setLighting,setTargetTemperature",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier3_multi_intent:002560"
+        },
+        {
+          "a0_tool": "getDeviceList,setBrightness",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier3_multi_intent:002970"
+        },
+        {
+          "a0_tool": "setAdaptiveLighting,setThermostatMode,setThermostatSchedule",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier3_multi_intent:003153"
+        },
+        {
+          "a0_tool": "installApp,setHapticStrength,stopWorkout",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier3_multi_intent:003740"
+        },
+        {
+          "a0_tool": "setFanMode",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier5_needle:000537"
+        },
+        {
+          "a0_tool": "setAlarm",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier5_needle:003841"
+        },
+        {
+          "a0_tool": "setAlarm",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier5_needle:003873"
+        },
+        {
+          "a0_tool": "calibrateThermostat",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier6_correction:002548"
+        },
+        {
+          "a0_tool": "setLighting",
+          "arm_tool": "setLighting",
+          "class": "MULTIPLICITY",
+          "sample_id": "tier6_correction:002740"
+        },
+        {
+          "a0_tool": "setThermostatMode,updateFirmware",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier8_intent_blending:000065"
+        },
+        {
+          "a0_tool": "getActivitySummary,setDoNotDisturb,stopWorkout",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier8_intent_blending:000489"
+        }
+      ]
+    },
+    "C3": {
+      "arm": "C3",
+      "class_counts": {
+        "DRAGGED-TO-SUPPLIED": 0,
+        "DRIFTED-OTHER": 0,
+        "EMPTY": 0,
+        "MULTIPLICITY": 0,
+        "PARSE-FAIL": 7
+      },
+      "n_losses": 7,
+      "n_samples": 120,
+      "rows": [
+        {
+          "a0_tool": "setAdaptiveLighting",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier5_needle:000241"
+        },
+        {
+          "a0_tool": "setFanMode",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier5_needle:000537"
+        },
+        {
+          "a0_tool": "setLighting",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier5_needle:002753"
+        },
+        {
+          "a0_tool": "setAlarm",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier5_needle:003873"
+        },
+        {
+          "a0_tool": "broadcastMessage",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier6_correction:001756"
+        },
+        {
+          "a0_tool": "broadcastMessage",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier6_correction:001764"
+        },
+        {
+          "a0_tool": "calibrateThermostat",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier6_correction:002548"
+        }
+      ]
+    },
+    "N0r": {
+      "arm": "N0r",
+      "class_counts": {
+        "DRAGGED-TO-SUPPLIED": 0,
+        "DRIFTED-OTHER": 0,
+        "EMPTY": 0,
+        "MULTIPLICITY": 0,
+        "PARSE-FAIL": 5
+      },
+      "n_losses": 5,
+      "n_samples": 40,
+      "rows": [
+        {
+          "a0_tool": "calibrateThermostat,setLighting,setTargetTemperature",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier3_multi_intent:002560"
+        },
+        {
+          "a0_tool": "setAdaptiveLighting",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier5_needle:000285"
+        },
+        {
+          "a0_tool": "rampBrightness,runNetworkSpeedTest",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier8_intent_blending:000201"
+        },
+        {
+          "a0_tool": "getActivitySummary,setDoNotDisturb,stopWorkout",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier8_intent_blending:000489"
+        },
+        {
+          "a0_tool": "setFanSpeed,setSeatComfort,wiperServiceMode",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier8_intent_blending:000696"
+        }
+      ]
+    },
+    "S1p": {
+      "arm": "S1p",
+      "class_counts": {
+        "DRAGGED-TO-SUPPLIED": 0,
+        "DRIFTED-OTHER": 0,
+        "EMPTY": 0,
+        "MULTIPLICITY": 1,
+        "PARSE-FAIL": 7
+      },
+      "n_losses": 8,
+      "n_samples": 120,
+      "rows": [
+        {
+          "a0_tool": "calibrateThermostat,setLighting,setTargetTemperature",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier3_multi_intent:002560"
+        },
+        {
+          "a0_tool": "getDeviceList,setBrightness",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier3_multi_intent:002970"
+        },
+        {
+          "a0_tool": "activateRoutine,setTargetTemperature",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier3_multi_intent:003058"
+        },
+        {
+          "a0_tool": "setAlarm",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier5_needle:003873"
+        },
+        {
+          "a0_tool": "calibrateThermostat",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier6_correction:002548"
+        },
+        {
+          "a0_tool": "setLighting",
+          "arm_tool": "setLighting",
+          "class": "MULTIPLICITY",
+          "sample_id": "tier6_correction:002740"
+        },
+        {
+          "a0_tool": "setThermostatMode,updateFirmware",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier8_intent_blending:000065"
+        },
+        {
+          "a0_tool": "getAirQuality,setTargetTemperature,setThermostatMode",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier8_intent_blending:000160"
+        }
+      ]
+    },
+    "S2": {
+      "arm": "S2",
+      "class_counts": {
+        "DRAGGED-TO-SUPPLIED": 0,
+        "DRIFTED-OTHER": 2,
+        "EMPTY": 0,
+        "MULTIPLICITY": 0,
+        "PARSE-FAIL": 7
+      },
+      "n_losses": 9,
+      "n_samples": 120,
+      "rows": [
+        {
+          "a0_tool": "castContent",
+          "arm_tool": "castContent,setGroupLightState",
+          "class": "DRIFTED-OTHER",
+          "sample_id": "tier2_parametric:001869"
+        },
+        {
+          "a0_tool": "getCameraEvent",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier2_parametric:001972"
+        },
+        {
+          "a0_tool": "setGarageDoor,setTargetTemperature",
+          "arm_tool": "setClimate,setGarageDoor",
+          "class": "DRIFTED-OTHER",
+          "sample_id": "tier3_multi_intent:000924"
+        },
+        {
+          "a0_tool": "playMedia,setTargetTemperature",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier3_multi_intent:000998"
+        },
+        {
+          "a0_tool": "getDeviceList,setAdaptiveLighting",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier3_multi_intent:002986"
+        },
+        {
+          "a0_tool": "setPowerState",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier4_implicit:001541"
+        },
+        {
+          "a0_tool": "getLightState",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier6_correction:002313"
+        },
+        {
+          "a0_tool": "calibrateThermostat",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier6_correction:002548"
+        },
+        {
+          "a0_tool": "castContent",
+          "arm_tool": "(parse-fail)",
+          "class": "PARSE-FAIL",
+          "sample_id": "tier7_multiturn:000599"
+        }
+      ]
+    }
+  }
+}

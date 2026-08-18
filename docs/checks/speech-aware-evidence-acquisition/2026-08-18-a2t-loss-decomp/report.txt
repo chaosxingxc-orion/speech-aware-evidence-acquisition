@@ -1,0 +1,183 @@
+P-A2T selection-loss decomposition -- registered model-free re-read (docs/readiness/2026-08-18-a2t-loss-decomp-preregistration-REGISTERED.md)
+==============================================================================
+
+S2  attempt dir: /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-a2t-s2-120/attempt-20260818T124955Z-84b944
+S2b attempt dir: /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-a2t-s2b-120/attempt-20260818T153859Z-8da515
+S2c attempt dir: /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-a2t-s2c-120/attempt-20260818T175018Z-0d3363
+arm plan (reused verbatim): /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-a2t-s2-120/attempt-20260818T124955Z-84b944/SAEA-PROBE-a2t-s2-120.arm-plan.json
+headroom manifest: /mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/checks/speech-aware-evidence-acquisition/2026-08-18-pa2t-a0-read/headroom.json
+split identity hash: e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c
+
+Per-arm loss-class tables
+  arm      n  losses  DRAGGED  DRIFTED  MULTIPL  EMPTY  PARSE-FAIL
+  N0r     40       5        0        0        0      0           5
+  S1p    120       8        0        0        1      0           7
+  S2     120       9        0        2        0      0           7
+  B1     120      16        0        0        1      2          13
+  B2     120      21        3        5        1      6           6
+  C1     120      31        0        0        1      0          30
+  C2     120      13        0        0        1      1          11
+  C3     120       7        0        0        0      0           7
+
+arm N0r -- 5 loss row(s):
+  tier3_multi_intent:002560 a0=calibrateThermostat,setLighting,setTargetTemperature arm=(parse-fail)             class=PARSE-FAIL
+  tier5_needle:000285      a0=setAdaptiveLighting  arm=(parse-fail)             class=PARSE-FAIL
+  tier8_intent_blending:000201 a0=rampBrightness,runNetworkSpeedTest arm=(parse-fail)             class=PARSE-FAIL
+  tier8_intent_blending:000489 a0=getActivitySummary,setDoNotDisturb,stopWorkout arm=(parse-fail)             class=PARSE-FAIL
+  tier8_intent_blending:000696 a0=setFanSpeed,setSeatComfort,wiperServiceMode arm=(parse-fail)             class=PARSE-FAIL
+
+arm S1p -- 8 loss row(s):
+  tier3_multi_intent:002560 a0=calibrateThermostat,setLighting,setTargetTemperature arm=(parse-fail)             class=PARSE-FAIL
+  tier3_multi_intent:002970 a0=getDeviceList,setBrightness arm=(parse-fail)             class=PARSE-FAIL
+  tier3_multi_intent:003058 a0=activateRoutine,setTargetTemperature arm=(parse-fail)             class=PARSE-FAIL
+  tier5_needle:003873      a0=setAlarm             arm=(parse-fail)             class=PARSE-FAIL
+  tier6_correction:002548  a0=calibrateThermostat  arm=(parse-fail)             class=PARSE-FAIL
+  tier6_correction:002740  a0=setLighting          arm=setLighting              class=MULTIPLICITY
+  tier8_intent_blending:000065 a0=setThermostatMode,updateFirmware arm=(parse-fail)             class=PARSE-FAIL
+  tier8_intent_blending:000160 a0=getAirQuality,setTargetTemperature,setThermostatMode arm=(parse-fail)             class=PARSE-FAIL
+
+arm S2 -- 9 loss row(s):
+  tier2_parametric:001869  a0=castContent          arm=castContent,setGroupLightState class=DRIFTED-OTHER
+  tier2_parametric:001972  a0=getCameraEvent       arm=(parse-fail)             class=PARSE-FAIL
+  tier3_multi_intent:000924 a0=setGarageDoor,setTargetTemperature arm=setClimate,setGarageDoor class=DRIFTED-OTHER
+  tier3_multi_intent:000998 a0=playMedia,setTargetTemperature arm=(parse-fail)             class=PARSE-FAIL
+  tier3_multi_intent:002986 a0=getDeviceList,setAdaptiveLighting arm=(parse-fail)             class=PARSE-FAIL
+  tier4_implicit:001541    a0=setPowerState        arm=(parse-fail)             class=PARSE-FAIL
+  tier6_correction:002313  a0=getLightState        arm=(parse-fail)             class=PARSE-FAIL
+  tier6_correction:002548  a0=calibrateThermostat  arm=(parse-fail)             class=PARSE-FAIL
+  tier7_multiturn:000599   a0=castContent          arm=(parse-fail)             class=PARSE-FAIL
+
+arm B1 -- 16 loss row(s):
+  tier1_direct:000620      a0=setHumidifierState   arm=(empty)                  class=EMPTY
+  tier1_direct:000636      a0=setHumidifierState   arm=(empty)                  class=EMPTY
+  tier1_direct:003713      a0=enableWaterLock      arm=(parse-fail)             class=PARSE-FAIL
+  tier3_multi_intent:001251 a0=setAdaptiveLighting,setBrightness,setInputSource arm=(parse-fail)             class=PARSE-FAIL
+  tier3_multi_intent:001562 a0=getEnergyUsage,setBrightness,setThermostatMode arm=(parse-fail)             class=PARSE-FAIL
+  tier3_multi_intent:002560 a0=calibrateThermostat,setLighting,setTargetTemperature arm=(parse-fail)             class=PARSE-FAIL
+  tier3_multi_intent:002995 a0=getDeviceList,setBrightness arm=(parse-fail)             class=PARSE-FAIL
+  tier3_multi_intent:003153 a0=setAdaptiveLighting,setThermostatMode,setThermostatSchedule arm=(parse-fail)             class=PARSE-FAIL
+  tier5_needle:003873      a0=setAlarm             arm=(parse-fail)             class=PARSE-FAIL
+  tier6_correction:001756  a0=broadcastMessage     arm=(parse-fail)             class=PARSE-FAIL
+  tier6_correction:002548  a0=calibrateThermostat  arm=(parse-fail)             class=PARSE-FAIL
+  tier6_correction:002740  a0=setLighting          arm=setLighting              class=MULTIPLICITY
+  tier8_intent_blending:000061 a0=setAdaptiveLighting,setBrightness arm=(parse-fail)             class=PARSE-FAIL
+  tier8_intent_blending:000065 a0=setThermostatMode,updateFirmware arm=(parse-fail)             class=PARSE-FAIL
+  tier8_intent_blending:000489 a0=getActivitySummary,setDoNotDisturb,stopWorkout arm=(parse-fail)             class=PARSE-FAIL
+  tier8_intent_blending:000696 a0=setFanSpeed,setSeatComfort,wiperServiceMode arm=(parse-fail)             class=PARSE-FAIL
+
+arm B2 -- 21 loss row(s):
+  tier1_direct:001631      a0=setWaterValve        arm=(empty)                  class=EMPTY
+  tier1_direct:002581      a0=resetFilterStatus    arm=(empty)                  class=EMPTY
+  tier2_parametric:000240  a0=setLightState        arm=setLighting              class=DRIFTED-OTHER
+  tier2_parametric:000247  a0=setLightState        arm=setLighting              class=DRIFTED-OTHER
+  tier2_parametric:001869  a0=castContent          arm=castContent,setInputSource class=DRIFTED-OTHER
+  tier2_parametric:006210  a0=setValetMode         arm=(empty)                  class=EMPTY
+  tier3_multi_intent:000924 a0=setGarageDoor,setTargetTemperature arm=(parse-fail)             class=PARSE-FAIL
+  tier3_multi_intent:003058 a0=activateRoutine,setTargetTemperature arm=activateRoutine,setTargetTemperature,setThermostatMode class=DRIFTED-OTHER
+  tier4_implicit:001541    a0=setPowerState        arm=(empty)                  class=EMPTY
+  tier4_implicit:003312    a0=startWorkout         arm=(empty)                  class=EMPTY
+  tier4_implicit:003979    a0=setCabinOverheatProtection arm=(parse-fail)             class=PARSE-FAIL
+  tier5_needle:000537      a0=setFanMode           arm=getApplianceStatus       class=DRAGGED-TO-SUPPLIED
+  tier5_needle:002753      a0=setLighting          arm=(parse-fail)             class=PARSE-FAIL
+  tier6_correction:000305  a0=rampBrightness       arm=rampBrightness           class=MULTIPLICITY
+  tier7_multiturn:000043   a0=setBrightness        arm=(parse-fail)             class=PARSE-FAIL
+  tier7_multiturn:000348   a0=setLockState         arm=setLockState_home        class=DRIFTED-OTHER
+  tier7_multiturn:000599   a0=castContent          arm=playMedia                class=DRAGGED-TO-SUPPLIED
+  tier7_multiturn:001590   a0=setThermostatSchedule arm=getThermostatState       class=DRAGGED-TO-SUPPLIED
+  tier7_multiturn:002115   a0=setMirrorAngle       arm=(empty)                  class=EMPTY
+  tier8_intent_blending:000284 a0=setAdaptiveLighting,setBrightness arm=(parse-fail)             class=PARSE-FAIL
+  tier8_intent_blending:000696 a0=setFanSpeed,setSeatComfort,wiperServiceMode arm=(parse-fail)             class=PARSE-FAIL
+
+arm C1 -- 31 loss row(s):
+  tier1_direct:003706      a0=enableWaterLock      arm=(parse-fail)             class=PARSE-FAIL
+  tier2_parametric:001869  a0=castContent          arm=(parse-fail)             class=PARSE-FAIL
+  tier2_parametric:003068  a0=getEnergyUsage       arm=(parse-fail)             class=PARSE-FAIL
+  tier3_multi_intent:001251 a0=setAdaptiveLighting,setBrightness,setInputSource arm=(parse-fail)             class=PARSE-FAIL
+  tier3_multi_intent:001487 a0=getApplianceStatus,rampBrightness,setAdaptiveLighting arm=(parse-fail)             class=PARSE-FAIL
+  tier3_multi_intent:001562 a0=getEnergyUsage,setBrightness,setThermostatMode arm=(parse-fail)             class=PARSE-FAIL
+  tier3_multi_intent:002264 a0=getSensorState,setTargetTemperature,setThermostatMode arm=(parse-fail)             class=PARSE-FAIL
+  tier3_multi_intent:002553 a0=calibrateThermostat,setTargetTemperature arm=(parse-fail)             class=PARSE-FAIL
+  tier3_multi_intent:002560 a0=calibrateThermostat,setLighting,setTargetTemperature arm=(parse-fail)             class=PARSE-FAIL
+  tier3_multi_intent:002645 a0=runNetworkSpeedTest,setAdaptiveLighting,setColorTemperature arm=(parse-fail)             class=PARSE-FAIL
+  tier3_multi_intent:002970 a0=getDeviceList,setBrightness arm=(parse-fail)             class=PARSE-FAIL
+  tier3_multi_intent:002986 a0=getDeviceList,setAdaptiveLighting arm=(parse-fail)             class=PARSE-FAIL
+  tier3_multi_intent:002995 a0=getDeviceList,setBrightness arm=(parse-fail)             class=PARSE-FAIL
+  tier3_multi_intent:003153 a0=setAdaptiveLighting,setThermostatMode,setThermostatSchedule arm=(parse-fail)             class=PARSE-FAIL
+  tier3_multi_intent:003268 a0=getActivitySummary,setDoNotDisturb arm=(parse-fail)             class=PARSE-FAIL
+  tier3_multi_intent:004291 a0=getSoftwareUpdateStatus,setSteeringWheelHeat arm=(parse-fail)             class=PARSE-FAIL
+  tier5_needle:000976      a0=playMedia            arm=(parse-fail)             class=PARSE-FAIL
+  tier6_correction:001756  a0=broadcastMessage     arm=(parse-fail)             class=PARSE-FAIL
+  tier6_correction:001794  a0=broadcastMessage     arm=(parse-fail)             class=PARSE-FAIL
+  tier6_correction:002548  a0=calibrateThermostat  arm=(parse-fail)             class=PARSE-FAIL
+  tier6_correction:002740  a0=setLighting          arm=setLighting              class=MULTIPLICITY
+  tier7_multiturn:000599   a0=castContent          arm=(parse-fail)             class=PARSE-FAIL
+  tier7_multiturn:002115   a0=setMirrorAngle       arm=(parse-fail)             class=PARSE-FAIL
+  tier8_intent_blending:000065 a0=setThermostatMode,updateFirmware arm=(parse-fail)             class=PARSE-FAIL
+  tier8_intent_blending:000201 a0=rampBrightness,runNetworkSpeedTest arm=(parse-fail)             class=PARSE-FAIL
+  tier8_intent_blending:000284 a0=setAdaptiveLighting,setBrightness arm=(parse-fail)             class=PARSE-FAIL
+  tier8_intent_blending:000355 a0=getSleepSummary,setDoNotDisturb,setHapticStrength arm=(parse-fail)             class=PARSE-FAIL
+  tier8_intent_blending:000423 a0=findPairedPhone,setAlwaysOnDisplay,startWorkout arm=(parse-fail)             class=PARSE-FAIL
+  tier8_intent_blending:000488 a0=getSleepSummary,setHapticStrength arm=(parse-fail)             class=PARSE-FAIL
+  tier8_intent_blending:000489 a0=getActivitySummary,setDoNotDisturb,stopWorkout arm=(parse-fail)             class=PARSE-FAIL
+  tier8_intent_blending:000696 a0=setFanSpeed,setSeatComfort,wiperServiceMode arm=(parse-fail)             class=PARSE-FAIL
+
+arm C2 -- 13 loss row(s):
+  tier1_direct:000620      a0=setHumidifierState   arm=(empty)                  class=EMPTY
+  tier3_multi_intent:001562 a0=getEnergyUsage,setBrightness,setThermostatMode arm=(parse-fail)             class=PARSE-FAIL
+  tier3_multi_intent:002560 a0=calibrateThermostat,setLighting,setTargetTemperature arm=(parse-fail)             class=PARSE-FAIL
+  tier3_multi_intent:002970 a0=getDeviceList,setBrightness arm=(parse-fail)             class=PARSE-FAIL
+  tier3_multi_intent:003153 a0=setAdaptiveLighting,setThermostatMode,setThermostatSchedule arm=(parse-fail)             class=PARSE-FAIL
+  tier3_multi_intent:003740 a0=installApp,setHapticStrength,stopWorkout arm=(parse-fail)             class=PARSE-FAIL
+  tier5_needle:000537      a0=setFanMode           arm=(parse-fail)             class=PARSE-FAIL
+  tier5_needle:003841      a0=setAlarm             arm=(parse-fail)             class=PARSE-FAIL
+  tier5_needle:003873      a0=setAlarm             arm=(parse-fail)             class=PARSE-FAIL
+  tier6_correction:002548  a0=calibrateThermostat  arm=(parse-fail)             class=PARSE-FAIL
+  tier6_correction:002740  a0=setLighting          arm=setLighting              class=MULTIPLICITY
+  tier8_intent_blending:000065 a0=setThermostatMode,updateFirmware arm=(parse-fail)             class=PARSE-FAIL
+  tier8_intent_blending:000489 a0=getActivitySummary,setDoNotDisturb,stopWorkout arm=(parse-fail)             class=PARSE-FAIL
+
+arm C3 -- 7 loss row(s):
+  tier5_needle:000241      a0=setAdaptiveLighting  arm=(parse-fail)             class=PARSE-FAIL
+  tier5_needle:000537      a0=setFanMode           arm=(parse-fail)             class=PARSE-FAIL
+  tier5_needle:002753      a0=setLighting          arm=(parse-fail)             class=PARSE-FAIL
+  tier5_needle:003873      a0=setAlarm             arm=(parse-fail)             class=PARSE-FAIL
+  tier6_correction:001756  a0=broadcastMessage     arm=(parse-fail)             class=PARSE-FAIL
+  tier6_correction:001764  a0=broadcastMessage     arm=(parse-fail)             class=PARSE-FAIL
+  tier6_correction:002548  a0=calibrateThermostat  arm=(parse-fail)             class=PARSE-FAIL
+
+B2 verdict (the verdict carrier)
+DRAG-CONFIRMED: not met
+  [ NOT_MET] B2 DRAGGED-TO-SUPPLIED >= 0.5238 (11/21) of B2's own losses
+           dragged=3/21 (rate=0.1429), floor=0.5238
+DRIFT-CONFIRMED: MET
+  [     MET] B2 DRAGGED-TO-SUPPLIED <= 0.2381 (5/21) of B2's own losses (N0r reference shape reported side-by-side, note 2: not statistically tested at n=21 vs n=5, prereg section 3)
+           dragged=3/21 (rate=0.1429), ceiling=0.2381
+B2 OVERALL: DRIFT-CONFIRMED
+
+N0r reference shape side-by-side (note 2: reporting obligation, not a statistical test)
+  class                  B2 (n=21)  N0r (n=40)
+  DRAGGED-TO-SUPPLIED            3           0
+  DRIFTED-OTHER                  5           0
+  MULTIPLICITY                   1           0
+  EMPTY                          6           0
+  PARSE-FAIL                     6           5
+
+Integrity section
+headroom archive verified files: 4
+flight archive [s2] verified files: 28 (flight-receipt.json cross-checked)
+flight archive [s2b] verified files: 25 (flight-receipt.json cross-checked)
+flight archive [s2c] verified files: 29 (flight-receipt.json cross-checked)
+read archive [s2] verified files: 3 (verdict.json in-place verified)
+read archive [s2b] verified files: 3 (verdict.json in-place verified)
+read archive [s2c] verified files: 3 (verdict.json in-place verified)
+unpinned inputs (never committed, by design): outputs.jsonl, {RUN_ID}.arm-plan.json
+
+Three-way reconciliation (computed / parent-recomputed / archived-published)
+  [      OK] N0r: computed=5, parent_recomputed=5, archived=5, exact_gate=5/40 (applies, n_samples matches)
+  [      OK] S1p: computed=8, parent_recomputed=8, archived=8
+  [      OK] S2: computed=9, parent_recomputed=9, archived=9
+  [      OK] B1: computed=16, parent_recomputed=16, archived=16
+  [      OK] B2: computed=21, parent_recomputed=21, archived=21, exact_gate=21/120 (applies, n_samples matches)
+  [      OK] C1: computed=31, parent_recomputed=31, archived=31
+  [      OK] C2: computed=13, parent_recomputed=13, archived=13
+  [      OK] C3: computed=7, parent_recomputed=7, archived=7, exact_gate=7/120 (applies, n_samples matches)
