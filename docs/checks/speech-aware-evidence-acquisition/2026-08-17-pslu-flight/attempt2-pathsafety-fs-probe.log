@@ -1,0 +1,16 @@
+=== base: /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/tmp-pathsafety-probe ===
+RESULT: colon directory + file CREATED ok
+total 0
+drwxrwxrwx 1 chao chao 4096 Aug 17 20:15 .
+drwxrwxrwx 1 chao chao 4096 Aug 17 20:15 ..
+-rwxrwxrwx 1 chao chao    5 Aug 17 20:15 i0000.wav
+cleaned: gone
+
+=== base: /home/chao/tmp-pathsafety-probe ===
+RESULT: colon directory + file CREATED ok
+total 12
+drwxr-xr-x 2 chao chao 4096 Aug 17 20:15 .
+drwxr-xr-x 3 chao chao 4096 Aug 17 20:15 ..
+-rw-r--r-- 1 chao chao    5 Aug 17 20:15 i0000.wav
+cleaned: gone
+

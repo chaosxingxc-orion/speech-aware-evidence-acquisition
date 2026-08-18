@@ -1,0 +1,2 @@
+resolve_media_identity_carrier('slurp') -> slurp
+verify_media_identity('slurp'): PASS

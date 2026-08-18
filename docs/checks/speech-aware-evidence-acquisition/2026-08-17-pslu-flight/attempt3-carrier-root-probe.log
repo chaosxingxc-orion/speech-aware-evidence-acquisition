@@ -1,0 +1,59 @@
+=== lock local_subdir root: repos/slurp/scripts/audio ===
+drwxrwxrwx 1 chao chao 4096 Jun 24 02:13 /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/repos/slurp/scripts/audio
+  subdirs:
+slurp_real
+slurp_real.tar.gz
+slurp_real_download.log
+slurp_synth
+slurp_synth.tar.gz
+slurp_synth_download.log
+  is the request-1 file there (slurp_real)?
+-rwxrwxrwx 1 chao chao 51039 Jun 14  2020 /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/repos/slurp/scripts/audio/slurp_real/audio-1495375974.flac
+  is it there flat?
+ls: cannot access '/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/repos/slurp/scripts/audio/audio-1495375974.flac': No such file or directory
+
+=== loader root (annotations.governed_copy parent): datasets/slurp ===
+drwxrwxrwx 1 chao chao 4096 Aug 17 11:20 /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/datasets/slurp
+  subdirs:
+annotation-receipt.json
+audio
+metadata
+slurp_real
+slurp_real.tar.gz
+slurp_real_download.log
+slurp_synth
+slurp_synth.tar.gz
+slurp_synth_download.log
+  request-1 file:
+-rwxrwxrwx 1 chao chao 51039 Jun 14  2020 /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/datasets/slurp/slurp_real/audio-1495375974.flac
+
+=== symlink / same-inode question ===
+readlink -f datasets/slurp        : /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/datasets/slurp
+readlink -f repos/slurp/scripts/audio: /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/repos/slurp/scripts/audio
+
+=== counts ===
+datasets/slurp/slurp_real       : 72395
+repos/slurp/scripts/audio/slurp_real: 72395
+
+=== comparison carrier: earnings21-original (a carrier that flies today) ===
+slurp: local_subdir='repos/slurp/scripts/audio' governed_copy='datasets/slurp/metadata'
+earnings21-original: local_subdir='datasets/earnings21-22/earnings21' governed_copy=None
+conec: local_subdir='datasets/conec' governed_copy=None
+
+=== post-abort state ===
+orphan llama-server:
+  none
+campaign featcache entries: 0  size: 4.0K
+legacy q4km size: 26G  entries: 34350  mtime: 2026-08-16 14:09:12.587865213 -0400
+attempt dir:
+total 16
+-rwxrwxrwx 1 chao chao 1520 Aug 17 20:40 SAEA-PROBE-pslu-n60.config-values.json
+-rwxrwxrwx 1 chao chao  562 Aug 17 20:40 SAEA-PROBE-pslu-n60.plan.json
+-rwxrwxrwx 1 chao chao 3841 Aug 17 20:41 SAEA-PROBE-pslu-n60.server.log
+-rwxrwxrwx 1 chao chao 1614 Aug 17 20:41 SAEA-PROBE-pslu-n60.session-receipt.json
+-rwxrwxrwx 1 chao chao   55 Aug 17 20:42 SAEA-PROBE-pslu-n60.trace-manifest.json
+-rwxrwxrwx 1 chao chao 3484 Aug 17 20:42 flight-receipt.json
+obs-slices written:
+  /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/derived/obs-slices/SAEA-PROBE-pslu-n60/slurp_devel_005518_audio-1490203960-44a26008c62b/i0000.wav
+  /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/derived/obs-slices/SAEA-PROBE-pslu-n60/slurp_devel_007852_audio-1494416109-headset-806f7af8ce69/i0000.wav
+  /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/derived/obs-slices/SAEA-PROBE-pslu-n60/slurp_devel_011654_audio-1501692977-headset-6001e3015204/i0000.wav

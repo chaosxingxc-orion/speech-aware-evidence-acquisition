@@ -1,0 +1,24 @@
+launcher: /mnt/c/Users/35686/AppData/Local/Temp/claude/D--chao-workspace-exploring-l4-intelligence-studies-speech-aware-evidence-acquisition/6d9f1834-68e9-41a7-bbcc-724898cf15a9/scratchpad/pslufly3/launch_pslu_flight.py
+args: --run-dir /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-pslu-n60
+feat cache: /home/chao/feat-cache/slurp-q4km
+start: 2026-08-18T00:40:01Z
+[00:40:02Z] loading devel split (sha256 of every devel media file -- slow, model-free)
+[00:40:57Z] frozen sample set: 60 samples, 182.26s audio
+[00:40:57Z] attempt attempt-20260818T004057Z-7edb9c -> /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-pslu-n60/attempt-20260818T004057Z-7edb9c
+[00:40:57Z] gate constructed (receipt receipts/runtime-q4km-featcache.json, model qwen3-omni-30b-a3b-instruct-gguf-q4km)
+[00:40:57Z] spawning llama-server (receipt-pinned binary)
+[00:41:22Z] session up: pid=640 port=8080
+[00:41:22Z]   model file: models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf sha256=0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d
+[00:41:22Z]   model file: models/qwen3-omni-30b-a3b-instruct-gguf-q4km/mmproj-Qwen3-Omni-30B-A3B-Instruct-bf16.gguf sha256=f0dfe825fb692d426362b1ac79678fc08daa4758f7151526cad110515f122883
+[00:42:16Z] FrozenCoreClient constructed (D2 arm fixed-legal-context); flight lock None
+[00:42:16Z] silence-swap registered: slurp:devel:005518:audio-1490203960 -> derived/obs-slices/SAEA-PROBE-pslu-n60/slurp_devel_005518_audio-1490203960-44a26008c62b/i0000.wav (1.98s)
+[00:42:16Z] silence-swap registered: slurp:devel:007852:audio-1494416109-headset -> derived/obs-slices/SAEA-PROBE-pslu-n60/slurp_devel_007852_audio-1494416109-headset-806f7af8ce69/i0000.wav (3.14s)
+[00:42:16Z] silence-swap registered: slurp:devel:011654:audio-1501692977-headset -> derived/obs-slices/SAEA-PROBE-pslu-n60/slurp_devel_011654_audio-1501692977-headset-6001e3015204/i0000.wav (2.56s)
+[00:42:16Z] FLIGHT START: phase 1 = 60 x A0, phase 2 = 60 x (A1,A1p,A2,A3,A4) + 3 silence-swap
+[00:42:16Z] req 0001 FAILED after 0.0s media=datasets/slurp/slurp_real/audio-1495375974.flac :: FrozenCoreError
+[00:42:16Z] FLIGHT ABORTED: FrozenCoreError: payload media_relpath escapes its confined root /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/repos/slurp/scripts/audio: 'datasets/slurp/slurp_real/audio-1495375974.flac'
+[00:42:16Z] client.close(): trace_manifest_hash=3bb15c2b443688a275f16088e8b8113f0e2cf3f9533785b1ddefdd839b6a20c1
+[00:42:16Z] requests: flown=0 replayed=0 failures=1
+[00:42:16Z] cost: {"audio_seconds_used": 0.0, "calls_used": 0, "completion_tokens_total": 0, "latency_seconds_total": 0.0, "prompt_tokens_total": 0, "tool_calls": 0, "umbrella_lock_sha256": "3a74c797b20de1b3d572f2bc1c77247e069a90a032b1c7f75679ed1442f1a730"}
+[00:42:16Z] wall: 0.0 min
+[00:42:16Z] flight receipt: /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-pslu-n60/attempt-20260818T004057Z-7edb9c/flight-receipt.json

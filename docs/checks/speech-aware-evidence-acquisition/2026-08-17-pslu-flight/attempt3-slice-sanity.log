@@ -1,0 +1,4 @@
+slice_relpath('slurp:devel:005518:audio-1490203960', 0) -> derived/obs-slices/SAEA-PROBE-pslu-n60/slurp_devel_005518_audio-1490203960-44a26008c62b/i0000.wav
+slice_relpath('tier1_direct:000001', 0) -> derived/obs-slices/SAEA-PROBE-pslu-n60/tier1_direct_000001-b7cce6f6fdc7/i0000.wav
+injectivity: derived/obs-slices/SAEA-PROBE-pslu-n60/slurp_devel_005518_audio-1490203960-44a26008c62b/i0000.wav != derived/obs-slices/SAEA-PROBE-pslu-n60/slurp_devel_005518_audio_1490203960-56ceba050da1/i0000.wav -> True
+SLICE PATH SANITY: PASS (colon-free, path-safe, injective)

@@ -1,0 +1,4 @@
+exposure pre-registration check: PASS
+carrier scope check: PASS
+E0 receipt check: PASS
+runtime receipt: receipts/runtime-q4km-featcache.json  model_lock_key: qwen3-omni-30b-a3b-instruct-gguf-q4km

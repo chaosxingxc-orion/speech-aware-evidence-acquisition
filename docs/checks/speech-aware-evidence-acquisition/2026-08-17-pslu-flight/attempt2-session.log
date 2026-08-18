@@ -1,0 +1,83 @@
+=== plan.json ===
+{
+  "attempt_id": "attempt-20260818T000441Z-92584e",
+  "carrier_lock_key": "slurp",
+  "execution_profile": "bounded-discovery-probe",
+  "planned_gpu_hours": 0.5,
+  "planned_model_calls": 450,
+  "planned_speech_audio_seconds": 1500,
+  "protocol_hash": "5a9d989d9e628f91fd6b49c6eb400b29b9556b80583b14d4dfc8fe0b6de8d72c",
+  "run_id": "SAEA-PROBE-pslu-n60",
+  "schema": "saea-execution-plan-v1",
+  "split_identity_hash": "fc9de436eba5aba120ecf07ee112765cd4ac0609150e0aaf36f4d44c9c5b5ee5",
+  "split_role": "discovery",
+  "study": "speech-aware-evidence-acquisition"
+}
+=== session-receipt.json ===
+{
+  "argv": [
+    "/home/chao/llama.cpp-featcache/build/bin/llama-server",
+    "--host",
+    "127.0.0.1",
+    "--port",
+    "8080",
+    "-m",
+    "/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+    "--mmproj",
+    "/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/mmproj-Qwen3-Omni-30B-A3B-Instruct-bf16.gguf",
+    "-c",
+    "49152",
+    "-np",
+    "4",
+    "-fa",
+    "on",
+    "-ngl",
+    "999",
+    "-ctk",
+    "q8_0",
+    "-ctv",
+    "q8_0"
+  ],
+  "binary_path": "llama.cpp-featcache/build/bin/llama-server",
+  "binary_sha256": "097c96ec5a3f576f378d4d5e103928bf070647fdcc1f015eacb839503e121c68",
+  "host": "127.0.0.1",
+  "model_files": [
+    {
+      "path": "models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+      "sha256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d"
+    },
+    {
+      "path": "models/qwen3-omni-30b-a3b-instruct-gguf-q4km/mmproj-Qwen3-Omni-30B-A3B-Instruct-bf16.gguf",
+      "sha256": "f0dfe825fb692d426362b1ac79678fc08daa4758f7151526cad110515f122883"
+    }
+  ],
+  "pid": 638,
+  "port": 8080,
+  "schema": "saea-session-receipt-v1",
+  "server_log_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-pslu-n60/attempt-20260818T000441Z-92584e/SAEA-PROBE-pslu-n60.server.log",
+  "session_id": "SAEA-PROBE-pslu-n60-attempt-20260818T000441Z-92584e",
+  "started_at": "2026-08-18T00:04:57.181778+00:00",
+  "startup_stdout_sha256": "b3ab294000c8e8b559caaed1ad7f908f6faa5c007dc9179a3f589d1dd45c8ecf",
+  "study": "speech-aware-evidence-acquisition"
+}
+=== server.log: startup summary lines ===
+0.00.246.819 I   - CUDA0   : NVIDIA GeForce RTX 5090 Laptop GPU (24462 MiB, 23119 MiB free)
+0.00.247.118 I system_info: n_threads = 24 (n_threads_batch = 24) / 24 | CUDA : ARCHS = 1200 | USE_GRAPHS = 1 | PEER_MAX_BATCH_SIZE = 128 | BLACKWELL_NATIVE_FP4 = 1 | CPU : SSE3 = 1 | SSSE3 = 1 | AVX = 1 | AVX_VNNI = 1 | AVX2 = 1 | F16C = 1 | FMA = 1 | BMI2 = 1 | LLAMAFILE = 1 | OPENMP = 1 | REPACK = 1 | 
+0.00.249.707 I srv  llama_server: loading model
+0.00.250.043 I srv    load_model: loading model '/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf'
+0.00.361.038 I srv    load_model: [mtmd] estimated worst-case memory usage of mmproj is 2940.29 MiB (took 110.95 ms)
+0.05.116.985 W llama_context: n_ctx_seq (12288) < n_ctx_train (65536) -- the full capacity of the model will not be utilized
+0.05.827.614 I srv    load_model: loaded multimodal model, '/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/mmproj-Qwen3-Omni-30B-A3B-Instruct-bf16.gguf'
+0.05.827.626 I srv    load_model: initializing slots, n_slots = 4
+0.05.854.507 I slot   load_model: id  0 | task -1 | new slot, n_ctx = 12288
+0.05.854.512 I slot   load_model: id  1 | task -1 | new slot, n_ctx = 12288
+0.05.854.512 I slot   load_model: id  2 | task -1 | new slot, n_ctx = 12288
+0.05.854.512 I slot   load_model: id  3 | task -1 | new slot, n_ctx = 12288
+0.05.854.546 I srv    load_model: prompt cache is enabled, size limit: 8192 MiB
+0.05.854.546 I srv    load_model: use `--cache-ram 0` to disable the prompt cache
+0.05.854.546 I srv    load_model: for more info see https://github.com/ggml-org/llama.cpp/pull/16391
+0.05.854.547 I srv    load_model: context checkpoints enabled, max = 32, min spacing = 8192
+0.05.854.827 I srv          init: idle slots will be saved to prompt cache upon starting a new task
+0.05.863.849 I srv  llama_server: model loaded
+0.05.863.853 I srv  llama_server: server is listening on http://127.0.0.1:8080
+0.05.863.858 I srv  update_slots: all slots are idle

@@ -1,0 +1,2 @@
+resolve_media_identity_carrier('slurp') -> slurp
+verify_media_identity('slurp'): REFUSED -> GateClosed: D1 identity artifact has no per-sample media identity for carrier 'slurp' (plan carrier 'slurp'); model touch refused

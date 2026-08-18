@@ -1,0 +1,84 @@
+{
+  "attempt_id": "attempt-20260818T004057Z-7edb9c",
+  "close_receipt": {
+    "arm": "fixed-legal-context",
+    "cost": {
+      "audio_seconds_used": 0.0,
+      "calls_used": 0,
+      "completion_tokens_total": 0,
+      "latency_seconds_total": 0.0,
+      "prompt_tokens_total": 0,
+      "tool_calls": 0,
+      "umbrella_lock_sha256": "3a74c797b20de1b3d572f2bc1c77247e069a90a032b1c7f75679ed1442f1a730"
+    },
+    "flight_lock": null,
+    "request_count": 1,
+    "run_id": "SAEA-PROBE-pslu-n60",
+    "timings": [],
+    "trace_manifest_hash": "3bb15c2b443688a275f16088e8b8113f0e2cf3f9533785b1ddefdd839b6a20c1"
+  },
+  "config_hash": "a72c7a6cadda40a852a766e8eed9b99f0a9d0daf7c7784f9fa01780df9f5ee4d",
+  "error": "FrozenCoreError: payload media_relpath escapes its confined root /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/repos/slurp/scripts/audio: 'datasets/slurp/slurp_real/audio-1495375974.flac'",
+  "protocol_hash": "5a9d989d9e628f91fd6b49c6eb400b29b9556b80583b14d4dfc8fe0b6de8d72c",
+  "request_failures": [
+    {
+      "error": "FrozenCoreError: payload media_relpath escapes its confined root /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/repos/slurp/scripts/audio: 'datasets/slurp/slurp_real/audio-1495375974.flac'",
+      "index": 1,
+      "media_relpath": "datasets/slurp/slurp_real/audio-1495375974.flac"
+    }
+  ],
+  "requests_flown_this_attempt": 0,
+  "requests_replayed_from_cache": 0,
+  "result_rows": 0,
+  "run_id": "SAEA-PROBE-pslu-n60",
+  "session": {
+    "argv": [
+      "/home/chao/llama.cpp-featcache/build/bin/llama-server",
+      "--host",
+      "127.0.0.1",
+      "--port",
+      "8080",
+      "-m",
+      "/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+      "--mmproj",
+      "/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/mmproj-Qwen3-Omni-30B-A3B-Instruct-bf16.gguf",
+      "-c",
+      "49152",
+      "-np",
+      "4",
+      "-fa",
+      "on",
+      "-ngl",
+      "999",
+      "-ctk",
+      "q8_0",
+      "-ctv",
+      "q8_0"
+    ],
+    "binary_path": "llama.cpp-featcache/build/bin/llama-server",
+    "binary_sha256": "097c96ec5a3f576f378d4d5e103928bf070647fdcc1f015eacb839503e121c68",
+    "host": "127.0.0.1",
+    "model_files": [
+      {
+        "path": "models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+        "sha256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d"
+      },
+      {
+        "path": "models/qwen3-omni-30b-a3b-instruct-gguf-q4km/mmproj-Qwen3-Omni-30B-A3B-Instruct-bf16.gguf",
+        "sha256": "f0dfe825fb692d426362b1ac79678fc08daa4758f7151526cad110515f122883"
+      }
+    ],
+    "pid": 640,
+    "port": 8080,
+    "session_id": "SAEA-PROBE-pslu-n60-attempt-20260818T004057Z-7edb9c",
+    "started_at": "2026-08-18T00:41:12.760115+00:00"
+  },
+  "silence_swap": {
+    "slurp:devel:005518:audio-1490203960": "derived/obs-slices/SAEA-PROBE-pslu-n60/slurp_devel_005518_audio-1490203960-44a26008c62b/i0000.wav",
+    "slurp:devel:007852:audio-1494416109-headset": "derived/obs-slices/SAEA-PROBE-pslu-n60/slurp_devel_007852_audio-1494416109-headset-806f7af8ce69/i0000.wav",
+    "slurp:devel:011654:audio-1501692977-headset": "derived/obs-slices/SAEA-PROBE-pslu-n60/slurp_devel_011654_audio-1501692977-headset-6001e3015204/i0000.wav"
+  },
+  "split_identity_hash": "fc9de436eba5aba120ecf07ee112765cd4ac0609150e0aaf36f4d44c9c5b5ee5",
+  "status": "ABORTED",
+  "wall_seconds": 0.009618759155273438
+}

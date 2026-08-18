@@ -1,0 +1,12 @@
+usage: launch_pslu_flight.py [-h] --run-dir RUN_DIR [--attempt-id ATTEMPT_ID]
+                             [--host HOST] [--port PORT]
+                             [--runtime-root RUNTIME_ROOT]
+
+options:
+  -h, --help            show this help message and exit
+  --run-dir RUN_DIR
+  --attempt-id ATTEMPT_ID
+                        resume an existing attempt directory
+  --host HOST
+  --port PORT
+  --runtime-root RUNTIME_ROOT

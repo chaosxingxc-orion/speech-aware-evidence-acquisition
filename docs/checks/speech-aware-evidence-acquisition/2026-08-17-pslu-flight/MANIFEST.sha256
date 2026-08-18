@@ -1,4 +1,5 @@
 cfd7fa55cc45832e438cb8a31471b1a790637353b705e9e9a550181cf9c539bc *./2026-08-18-attempt2-flight-execution.md
+90f2bb3ee8c50ff9a69ca34604e5bfccef3de5f81ba25919be0e7d5a290fc5c4 *./2026-08-18-attempt3-flight-execution.md
 a4d7e627270dd403ef0e0edac3dfe0fbf5e5ba6b93c93969d9a9025f6a7ecfef *./README.md
 08a2d52512ffec30c6244987e1958450f2eacd7c2597cd02e7cc156f5f3d11d8 *./attempt2-cache-integrity.log
 e97b77af0f53b555c19a412fd7af3395f3223cff6eaa8ed5955c69b185862a89 *./attempt2-d1-probe.log
@@ -7,6 +8,17 @@ b3f24455c872efdf05627b6cc8c750239aafab73e1831db4e09d2f05b51d4295 *./attempt2-pat
 db1ea4e46eecb92b253f484b1b584b07bd54e2deef9669be55c6d15548493e72 *./attempt2-pathsafety-fs-probe.sh
 743c9ccce42f1a7b6833a6224a6e71920a8dc9ddeb11836fac6985d943884413 *./attempt2-preflight.log
 bbccdcc72eaa17c968d801dcb540d3251422d3b5d6683ed2383165f009b15c5a *./attempt2-session.log
+24a055c1538a69891c5bd96a4f4c777d181c112cd879e8fe53e0939728737f13 *./attempt3-carrier-root-probe.log
+6d6e9aabe0b81a485d9bf6adb7bc912c0bcae8abbd3bfd3ffad2bfee55431181 *./attempt3-carrier-root-probe.sh
+e97b77af0f53b555c19a412fd7af3395f3223cff6eaa8ed5955c69b185862a89 *./attempt3-d1-probe.log
+765b785ed8d9e6b99b09867ef09cb2501aec2ffd8ecf7f0ecfefbb0d6b745862 *./attempt3-env-probe-before.log
+363e40d86e6167a3a1f83913b0c64cfcbf6850bebe26bacaff383b9d3067387e *./attempt3-env-probe.sh
+7859be0e3c66812a2b156595341c889c23fe92e4773d0cb981ffd358cec6e445 *./attempt3-flight-receipt.json
+2ce4d67f2bb57c70b820b19e7220868ad36ade4659a776c56ead1fe3bdd13507 *./attempt3-flight.log
+743c9ccce42f1a7b6833a6224a6e71920a8dc9ddeb11836fac6985d943884413 *./attempt3-preflight.log
+ba798e90521e4fe81eabf432f51cb4b8395724002193c8bbdd316b0553dc3f34 *./attempt3-run-flight.sh
+89a0220fd6141266ba7d3de63dfb7d6e7d773f34099b87042e57e0581335156d *./attempt3-slice-sanity.log
+46fff91816b9e142e1754dcedf160d44922cb5827445f6441162cb82cbb76a27 *./attempt3-slice-sanity.py
 5535ec345c8076a009d210ec5059f63e133d6d64d77f877cbf09fd476818aacc *./d1-media-identity-refusal.log
 d956d57342f44ec5a065dbd90567b056175f1150173bf830921873862108f8ab *./gate-recheck-after-ledger-repair.log
 5daf902948559534690e83a0f860dde7c39aaba81ff70dcf7155b8551641677d *./launcher-import-check.log

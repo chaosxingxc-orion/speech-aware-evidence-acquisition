@@ -1,0 +1,28 @@
+=== feature caches BEFORE flight ===
+campaign  SAEA_FEAT_CACHE_DIR=/home/chao/feat-cache/slurp-q4km
+4.0K	/home/chao/feat-cache/slurp-q4km
+  entries: 0
+legacy /home/chao/feat-cache/q4km (MUST NOT BE TOUCHED)
+26G	/home/chao/feat-cache/q4km
+  entries: 34350
+  dir mtime: 2026-08-16 14:09:12.587865213 -0400
+  dir atime: 2026-08-17 19:59:52.640215928 -0400
+
+=== model files (ext4 copies) ===
+total 20277864
+-rwxr-xr-x 1 chao chao 18557053952 Aug 16 17:24 Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf
+-rwxr-xr-x 1 chao chao  2207465568 Aug 16 17:24 mmproj-Qwen3-Omni-30B-A3B-Instruct-bf16.gguf
+
+=== runtime receipt pins ===
+build commit: None
+
+=== orphan llama-server check ===
+  none running
+
+=== existing attempt dirs for this run ===
+attempt-20260818T000441Z-92584e
+
+=== disk headroom ===
+  Filesystem      Size  Used Avail Use% Mounted on
+  /dev/sdd       1007G  169G  788G  18% /
+  E:\             3.8T  1.2T  2.6T  31% /mnt/e
