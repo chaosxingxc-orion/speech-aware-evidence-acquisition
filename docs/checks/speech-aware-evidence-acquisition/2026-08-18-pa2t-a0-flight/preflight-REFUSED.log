@@ -1,0 +1,32 @@
+repo module root: /mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/src/speech_aware_evidence_acquisition
+__pycache__ .pyc files under src/: 0
+data_root: /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+carrier_root (asset_dir audio2tool): /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/datasets/audio2tool
+audio2tool receipts declaring split_role=discovery: ['r1-audio2tool-sample']
+split_identity_hash (from the receipt): e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c
+resolving discovery split (sha256 of every media file -- slow, model-free)
+discovery split resolved: 400 samples
+media resolved: 400/400
+total audio seconds: 2159.69 (max item 35.71)
+arms: ('zero-supply',) (rails arms: ('zero-supply', 'supplied'))
+server_args (after the -np delta): ['-c', '49152', '-np', '1', '-fa', 'on', '-ngl', '999', '-ctk', 'q8_0', '-ctv', 'q8_0']
+per-slot context: 49152/1 = 49152 tokens
+system instruction: 50413 chars, est 12603 tokens
+max_tokens: 1024; worst-case sequence ~14127 tokens
+exposure rows matching run id 'SAEA-BASE-a2t-a0-400': 1
+  ledger['execution profile'] = 'baseline-reproduction'
+  ledger['split role'] = 'discovery'
+  ledger['split identity hash'] = 'e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c'
+  ledger['consumed'] = 'no'
+  ledger['calls'] = '450'
+  ledger['speech audio seconds'] = '3000'
+  ledger['gpu hours'] = '1.5'
+  ledger['speech carrier + split'] = 'audio2tool, frozen 400-item discovery-split probe receipt docs/receipts/probe-samples/r1-audio2tool-sample.json, all 8 tiers x 50 at seed 20260807'
+config_hash: 29dcf6cdd069560780ead62e4da00e4e97660f54eaa6c1dc4032e24382f87c04
+protocol_hash: c4227ac934d072ece0985ba30807bc177ae236c1ccc462e21f4a0d1b9b569c0a
+server_env: {'LLAMA_MTMD_FEAT_CACHE_DIR': '/home/chao/feat-cache/audio2tool-q4km'}
+ExecutionPlan validates: profile=baseline-reproduction role=discovery calls=420 audio_s=3000 gpu_h=1.5
+payload binding built: 400 ids, sample rates [24000]
+
+PRE-FLIGHT PROBLEMS (1):
+  - GATE DRY-RUN REFUSED -> GateClosed: carrier lock key 'audio2tool' profiles ['local-candidates'] do not intersect this study's speech-only scope ['speech-aware-core', 'speech-aware-diagnostics', 'speech-aware-secondary', 'speech-aware-small-public']; model touch refused

@@ -1,0 +1,14 @@
+data_root: /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+carrier_root (asset_dir audio2tool): /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/datasets/audio2tool
+audio2tool probe receipts: ['r1-audio2tool-sample']
+  r1-audio2tool-sample: split_role='discovery' n_items=400 split_identity_hash=e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c
+resolving discovery split (sha256 of every media file -- slow, model-free)
+discovery split resolved: 400 samples
+tier counts: {'tier1_direct': 50, 'tier2_parametric': 50, 'tier3_multi_intent': 50, 'tier4_implicit': 50, 'tier5_needle': 50, 'tier6_correction': 50, 'tier7_multiturn': 50, 'tier8_intent_blending': 50}
+media present: 400/400
+TOTAL AUDIO SECONDS (all 400): 2159.69
+  mean 5.399  min 0.617  max 35.714
+  binding JSON knew only 1801.30 s over 350 top-level-duration items
+rendered tool schemas: 50291 chars, est 12572 tokens
+full system instruction: 50413 chars, est 12603 tokens
+summary written: /mnt/c/Users/35686/AppData/Local/Temp/claude/D--chao-workspace-exploring-l4-intelligence-studies-speech-aware-evidence-acquisition/6d9f1834-68e9-41a7-bbcc-724898cf15a9/scratchpad/a2tfly2/split-measurement.json

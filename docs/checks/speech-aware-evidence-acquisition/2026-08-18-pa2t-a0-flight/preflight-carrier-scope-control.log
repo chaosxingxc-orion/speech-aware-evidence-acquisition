@@ -1,0 +1,4 @@
+slurp                  -> IN SCOPE   profiles=['speech-aware-secondary'] lifecycle=SECONDARY_CARRIER
+earnings21-original    -> IN SCOPE   profiles=['speech-aware-core'] lifecycle=STAGE2_CORE
+conec                  -> IN SCOPE   profiles=['speech-aware-core'] lifecycle=STAGE2_CORE
+audio2tool             -> REFUSED    GateClosed: carrier lock key 'audio2tool' profiles ['local-candidates'] do not intersect this study's speech-only scope ['speech-aware-core', 'speech-aware-diagnostics', 'speech-aware-secondary', 'speech-aware-small-public']; model touch refused

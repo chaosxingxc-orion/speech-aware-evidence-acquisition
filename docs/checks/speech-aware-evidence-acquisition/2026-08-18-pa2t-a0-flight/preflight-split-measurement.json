@@ -1,0 +1,19 @@
+{
+  "max_audio_seconds": 35.714,
+  "mean_audio_seconds": 5.399,
+  "missing_media": [],
+  "n_samples": 400,
+  "system_instruction_chars": 50413,
+  "system_instruction_est_tokens": 12603,
+  "tier_counts": {
+    "tier1_direct": 50,
+    "tier2_parametric": 50,
+    "tier3_multi_intent": 50,
+    "tier4_implicit": 50,
+    "tier5_needle": 50,
+    "tier6_correction": 50,
+    "tier7_multiturn": 50,
+    "tier8_intent_blending": 50
+  },
+  "total_audio_seconds": 2159.688
+}

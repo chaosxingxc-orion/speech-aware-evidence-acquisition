@@ -1,0 +1,4 @@
+resolve_media_identity_carrier('audio2tool') -> audio2tool
+offering 2 real frozen-split samples: ['tier1_direct:000045', 'tier8_intent_blending:000772']
+verify_media_identity('audio2tool'): PASS
+negative control (unlisted id): correctly refused -> GateClosed
