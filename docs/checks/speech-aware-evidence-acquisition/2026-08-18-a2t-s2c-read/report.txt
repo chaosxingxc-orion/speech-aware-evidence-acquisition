@@ -1,0 +1,75 @@
+P-A2T Stage-2c form-robustness probe pinned offline read (docs/readiness/2026-08-18-pa2t-stage2c-preregistration-REGISTERED.md)
+==============================================================================
+
+attempt dir: /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-a2t-s2c-120/attempt-20260818T175018Z-0d3363
+flight status: 'COMPLETED'
+split identity hash: e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c
+Stage-2 arm plan (reused verbatim): /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-a2t-s2-120/attempt-20260818T124955Z-84b944/SAEA-PROBE-a2t-s2-120.arm-plan.json
+headroom manifest: /mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/checks/speech-aware-evidence-acquisition/2026-08-18-pa2t-a0-read/headroom.json
+
+Per-arm aggregates (pooled)
+  arm      n  retention  conv_rate em_flips  slot_f1  empty parse_fail  induced
+  C1     120     0.7417     0.0833       10   0.3343 0.2500     0.2500        4
+  C2     120     0.8917     0.0750        9   0.3077 0.1000     0.0917        3
+  C3     120     0.9417     0.0583        7   0.3674 0.0583     0.0583       22
+
+Per-tier breakdown (PER-TIER REPORTING MANDATORY -- pooled is never the headline)
+  arm C1:
+    tier1_direct            23 conv_rate=0.2174 retention=0.9565 slot_f1=0.0000 induced=0 (interpretive-weight)
+    tier2_parametric        17 conv_rate=0.0588 retention=0.8824 slot_f1=0.4528 induced=1 (interpretive-weight)
+    tier3_multi_intent      29 conv_rate=0.0000 retention=0.5517 slot_f1=0.3191 induced=1 (interpretive-weight)
+    tier4_implicit           3 conv_rate=0.0000 retention=1.0000 slot_f1=0.5455 induced=1 (small-n caveat)
+    tier5_needle            12 conv_rate=0.0833 retention=0.9167 slot_f1=0.4348 induced=0 (small-n caveat)
+    tier6_correction        12 conv_rate=0.1667 retention=0.6667 slot_f1=0.2791 induced=0 (small-n caveat)
+    tier7_multiturn          8 conv_rate=0.1250 retention=0.7500 slot_f1=0.5333 induced=1 (small-n caveat)
+    tier8_intent_blending   16 conv_rate=0.0000 retention=0.5000 slot_f1=0.1818 induced=0 (interpretive-weight)
+  arm C2:
+    tier1_direct            23 conv_rate=0.2174 retention=0.9565 slot_f1=0.0000 induced=0 (interpretive-weight)
+    tier2_parametric        17 conv_rate=0.0000 retention=1.0000 slot_f1=0.4444 induced=1 (interpretive-weight)
+    tier3_multi_intent      29 conv_rate=0.0000 retention=0.8276 slot_f1=0.2222 induced=0 (interpretive-weight)
+    tier4_implicit           3 conv_rate=0.0000 retention=1.0000 slot_f1=0.5455 induced=1 (small-n caveat)
+    tier5_needle            12 conv_rate=0.0833 retention=0.7500 slot_f1=0.3415 induced=0 (small-n caveat)
+    tier6_correction        12 conv_rate=0.1667 retention=0.8333 slot_f1=0.2500 induced=0 (small-n caveat)
+    tier7_multiturn          8 conv_rate=0.1250 retention=1.0000 slot_f1=0.5714 induced=1 (small-n caveat)
+    tier8_intent_blending   16 conv_rate=0.0000 retention=0.8750 slot_f1=0.3226 induced=0 (interpretive-weight)
+  arm C3:
+    tier1_direct            23 conv_rate=0.1304 retention=1.0000 slot_f1=0.0000 induced=0 (interpretive-weight)
+    tier2_parametric        17 conv_rate=0.0000 retention=1.0000 slot_f1=0.3793 induced=3 (interpretive-weight)
+    tier3_multi_intent      29 conv_rate=0.0000 retention=1.0000 slot_f1=0.3576 induced=12 (interpretive-weight)
+    tier4_implicit           3 conv_rate=0.0000 retention=1.0000 slot_f1=0.3636 induced=2 (small-n caveat)
+    tier5_needle            12 conv_rate=0.0833 retention=0.6667 slot_f1=0.3684 induced=0 (small-n caveat)
+    tier6_correction        12 conv_rate=0.1667 retention=0.7500 slot_f1=0.3500 induced=1 (small-n caveat)
+    tier7_multiturn          8 conv_rate=0.1250 retention=1.0000 slot_f1=0.6286 induced=1 (small-n caveat)
+    tier8_intent_blending   16 conv_rate=0.0000 retention=1.0000 slot_f1=0.4179 induced=3 (interpretive-weight)
+
+Form-robustness verdict (primary, C1+C2 jointly; retention carries NO verdict clause)
+ROBUST: MET
+  [     MET] C1 conversion >= 6/120
+           C1 conversion=0.0833 (10/120), floor=0.0500
+  [     MET] C2 conversion >= 6/120
+           C2 conversion=0.0750 (9/120), floor=0.0500
+  [     MET] C1 induced-substitutions <= 5
+           C1 induced=4, ceiling=5
+  [     MET] C2 induced-substitutions <= 5
+           C2 induced=3, ceiling=5
+FORM-FRAGILE: not met
+  [ NOT_MET] C1 conversion <= 3/120 (<= noise)
+           C1 conversion=0.0833, ceiling=0.0250
+  [ NOT_MET] C2 conversion <= 3/120 (<= noise)
+           C2 conversion=0.0750, ceiling=0.0250
+  [ NOT_MET] C1 induced-substitutions >= 20
+           C1 induced=4, floor=20
+  [ NOT_MET] C2 induced-substitutions >= 20
+           C2 induced=3, floor=20
+FORM-ROBUSTNESS OVERALL: ROBUST
+
+DEPLOY-AUGMENT overlay (independent, C3 alone -- fires no primary branch)
+DEPLOYABLE: not met
+  [     MET] C3 conversion >= 6/120
+           C3 conversion=0.0583 (7/120), floor=0.0500
+  [ NOT_MET] C3 induced-substitutions <= 5
+           C3 induced=22, ceiling=5
+CHANNEL-REOPENED: MET
+  [     MET] C3 induced-substitutions >= 20
+           C3 induced=22, floor=20
+DEPLOY-AUGMENT OVERALL: CHANNEL-REOPENED
