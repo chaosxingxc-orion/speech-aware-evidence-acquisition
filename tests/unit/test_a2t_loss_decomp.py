@@ -26,6 +26,7 @@ from speech_aware_evidence_acquisition.analysis.a2t_loss_decomp import (
     DRIFT_CONFIRMED_MAX_RATIO,
     DRAG_CONFIRMED_MIN_RATIO,
     EMPTY,
+    MULTIPLICITY,
     PARSE_FAIL,
     A2tLossDecompError,
     ArmLossTable,
@@ -49,6 +50,7 @@ from speech_aware_evidence_acquisition.data.lock import load_lock
 from speech_aware_evidence_acquisition.rails.probes.a2t_s2_flight import N0R_ARM, S1P_ARM, S2_ARM
 from speech_aware_evidence_acquisition.rails.probes.a2t_s2b_flight import B1_ARM, B2_ARM
 from speech_aware_evidence_acquisition.rails.probes.a2t_s2c_flight import C1_ARM, C2_ARM, C3_ARM
+from speech_aware_evidence_acquisition.reproduction.toolcall_scoring import ToolCall
 
 from test_a2t_s2_read import (  # reuse the SAME synthetic world + response builders
     A2tS2World,
@@ -84,6 +86,21 @@ def _empty_response(_sample_id: str) -> str:
 
 def _parse_fail_response(_sample_id: str) -> str:
     return "not valid json at all"
+
+
+def _expected_calls_for_world(world: A2tS2World) -> dict[str, tuple[ToolCall, ...]]:
+    """Fresh, single-tool-per-sample gold ``ToolCall`` tuples mirroring
+    ``A2tS2World``'s own ``expected_tool_call`` fixture data -- the
+    loss-detection comparator (module docstring note 1, 2026-08-18
+    amendment): reused verbatim via ``reproduction.toolcall_scoring.
+    score_item``, never the deduplicated ``arm_plan.selected_tools``. Tests
+    that need a DUPLICATED gold tool name (the amendment's own diagnosed
+    defect) override one entry directly."""
+
+    return {
+        sample_id: (ToolCall(name=_tool_for(sample_id), arguments={"x": _gold_value(sample_id)}),)
+        for sample_id in world.sample_ids
+    }
 
 
 def _write_manifest_for_dir(dir_path: Path) -> None:
@@ -130,13 +147,61 @@ def test_classify_loss_drifted_when_no_supplied_wrong_tool_at_all():
     assert classify_loss(parsed=True, predicted_names=("toolX",), supplied_wrong_tool=None) == DRIFTED_OTHER
 
 
+def test_classify_loss_multiplicity_when_same_distinct_set_wrong_multiplicity():
+    """2026-08-18 amendment (module docstring note 1): a loss whose own
+    distinct-tool SET matches the correct SET exactly -- right tool(s),
+    wrong call COUNT -- classifies MULTIPLICITY, checked BEFORE DRAGGED."""
+
+    assert (
+        classify_loss(
+            parsed=True,
+            predicted_names=("toolA", "toolB"),
+            supplied_wrong_tool=None,
+            correct_tool_names=("toolA", "toolB"),
+        )
+        == MULTIPLICITY
+    )
+
+
+def test_classify_loss_multiplicity_checked_before_dragged():
+    """Even when ``supplied_wrong_tool`` happens to be a member of the
+    correct SET (never actually reachable given the derangement no-fixed-
+    point premise, note 3 -- but checked here directly, unit-level), the
+    registered order still classifies MULTIPLICITY first."""
+
+    assert (
+        classify_loss(
+            parsed=True,
+            predicted_names=("toolA",),
+            supplied_wrong_tool="toolA",
+            correct_tool_names=("toolA",),
+        )
+        == MULTIPLICITY
+    )
+
+
+def test_classify_loss_old_calls_without_correct_tool_names_are_unaffected():
+    """Backward compatibility: omitting ``correct_tool_names`` (default
+    ``()``) never spuriously fires MULTIPLICITY for a non-empty prediction,
+    so every pre-amendment call site's own behavior is preserved."""
+
+    assert (
+        classify_loss(parsed=True, predicted_names=("toolX",), supplied_wrong_tool="toolX")
+        == DRAGGED_TO_SUPPLIED
+    )
+    assert (
+        classify_loss(parsed=True, predicted_names=("toolY",), supplied_wrong_tool="toolX")
+        == DRIFTED_OTHER
+    )
+
+
 # ===========================================================================
 # evaluate_b2_verdict -- DRAG-CONFIRMED / DRIFT-CONFIRMED / MIXED.
 # ===========================================================================
 
 
 def _table(arm: str, n_samples: int, counts: dict) -> ArmLossTable:
-    full = {k: 0 for k in (DRAGGED_TO_SUPPLIED, DRIFTED_OTHER, EMPTY, PARSE_FAIL)}
+    full = {k: 0 for k in (DRAGGED_TO_SUPPLIED, DRIFTED_OTHER, MULTIPLICITY, EMPTY, PARSE_FAIL)}
     full.update(counts)
     return ArmLossTable(
         arm=arm, n_samples=n_samples, n_losses=sum(full.values()), class_counts=full, rows=()
@@ -182,7 +247,9 @@ def test_evaluate_b2_verdict_drift_confirmed_reports_n0r_reference_shape():
     # carried on the verdict object, never dropped just because no
     # statistical test applies to them.
     assert verdict.b2_shape[DRAGGED_TO_SUPPLIED] == 5
-    assert verdict.n0r_reference_shape == {DRAGGED_TO_SUPPLIED: 0, DRIFTED_OTHER: 3, EMPTY: 2, PARSE_FAIL: 0}
+    assert verdict.n0r_reference_shape == {
+        DRAGGED_TO_SUPPLIED: 0, DRIFTED_OTHER: 3, MULTIPLICITY: 0, EMPTY: 2, PARSE_FAIL: 0
+    }
 
 
 def test_evaluate_b2_verdict_mixed_in_the_gap_between_thresholds():
@@ -209,6 +276,25 @@ def test_evaluate_b2_verdict_zero_losses_is_mixed_not_drift():
     assert verdict.drag_confirmed is False
     assert verdict.drift_confirmed is False
     assert verdict.overall == "MIXED"
+
+
+def test_evaluate_b2_verdict_multiplicity_counts_toward_denominator_not_dragged():
+    """MULTIPLICITY losses widen B2's own total-loss denominator exactly
+    like EMPTY/PARSE-FAIL (2026-08-18 amendment, module docstring note 1):
+    they weigh AGAINST DRAG-CONFIRMED without ever counting as dragged --
+    the B2 verdict's own math (denominator = total losses) is unchanged."""
+
+    b2 = _table(B2_ARM, 120, {DRAGGED_TO_SUPPLIED: 11, DRIFTED_OTHER: 9, MULTIPLICITY: 1})
+    n0r = _table(N0R_ARM, 40, {DRIFTED_OTHER: 5})
+    verdict = evaluate_b2_verdict(b2, n0r)
+
+    assert verdict.dragged_count == 11
+    assert verdict.total_losses == 21
+    assert verdict.b2_shape[MULTIPLICITY] == 1
+    # 11/21 still exactly meets the DRAG-CONFIRMED floor even with a
+    # MULTIPLICITY loss folded into the denominator.
+    assert verdict.drag_confirmed is True
+    assert verdict.overall == "DRAG-CONFIRMED"
 
 
 # ===========================================================================
@@ -281,11 +367,13 @@ def test_build_arm_loss_table_classifies_b2_rows_across_all_four_classes(loss_wo
         _row(B2_ARM, correct_id, _correct_response(correct_id)),
     ] + [_row(B2_ARM, sid, _correct_response(sid)) for sid in ids if sid not in (drag_id, drift_id, empty_id, fail_id, correct_id)]
 
-    table = build_arm_loss_table(B2_ARM, rows, plan)
+    table = build_arm_loss_table(B2_ARM, rows, plan, _expected_calls_for_world(world))
 
     assert table.n_samples == 20
     assert table.n_losses == 4
-    assert table.class_counts == {DRAGGED_TO_SUPPLIED: 1, DRIFTED_OTHER: 1, EMPTY: 1, PARSE_FAIL: 1}
+    assert table.class_counts == {
+        DRAGGED_TO_SUPPLIED: 1, DRIFTED_OTHER: 1, MULTIPLICITY: 0, EMPTY: 1, PARSE_FAIL: 1
+    }
     by_id = {r.sample_id: r for r in table.rows}
     assert by_id[drag_id].klass == DRAGGED_TO_SUPPLIED
     assert by_id[drag_id].arm_tool == DERANGEMENT[_tool_for(drag_id)]
@@ -309,7 +397,7 @@ def test_build_arm_loss_table_correct_tool_arm_never_produces_dragged(loss_world
         _row(S1P_ARM, other, _correct_response(other)) for other in world.sample_ids if other != sid
     ]
 
-    table = build_arm_loss_table(S1P_ARM, rows, plan)
+    table = build_arm_loss_table(S1P_ARM, rows, plan, _expected_calls_for_world(world))
 
     assert table.n_losses == 1
     assert table.rows[0].klass == DRIFTED_OTHER
@@ -325,7 +413,7 @@ def test_build_arm_loss_table_n0r_iterates_its_own_subset_not_full_headroom(loss
     plan = _plan_from_document(document)
     rows = [_row(N0R_ARM, sid, _correct_response(sid)) for sid in n0r_subset]
 
-    table = build_arm_loss_table(N0R_ARM, rows, plan)
+    table = build_arm_loss_table(N0R_ARM, rows, plan, _expected_calls_for_world(world))
 
     assert table.n_samples == 8
     assert table.n_losses == 0
@@ -337,7 +425,86 @@ def test_build_arm_loss_table_refuses_when_a_domain_sample_has_no_row(loss_world
     rows = [_row(S1P_ARM, sid, _correct_response(sid)) for sid in world.sample_ids[:-1]]  # one missing
 
     with pytest.raises(A2tLossDecompError, match="no row for"):
-        build_arm_loss_table(S1P_ARM, rows, plan)
+        build_arm_loss_table(S1P_ARM, rows, plan, _expected_calls_for_world(world))
+
+
+def _duplicated_gold_fixture(world: A2tS2World):
+    """A headroom sample whose GOLD carries a duplicated tool name --
+    reproduces the refused first execution's own diagnosis (module
+    docstring note 1, 2026-08-18 amendment): the real headroom sample
+    ``tier3_multi_intent:003994``'s own
+    ``{setZoneTemperature: 2, setCabinOverheatProtection: 1}``. Returns
+    ``(plan, expected_calls, dup_id, tool_a, tool_b, dup_response_text)``
+    where ``dup_response_text`` names the SAME distinct tool SET as gold
+    ({tool_a, tool_b}) but ONE FEWER tool_a call -- right tools, wrong
+    call COUNT."""
+
+    document = _arm_plan_document(world)
+    dup_id, other_id = world.sample_ids[0], world.sample_ids[1]
+    tool_a = _tool_for(dup_id)
+    tool_b = _tool_for(other_id)
+    document["selected_tools"][dup_id] = sorted([tool_a, tool_b])
+    document["s1p_tool_names"][dup_id] = sorted([tool_a, tool_b])
+    plan = _plan_from_document(document)
+
+    expected_calls = _expected_calls_for_world(world)
+    expected_calls[dup_id] = (
+        ToolCall(name=tool_a, arguments={"x": _gold_value(dup_id)}),
+        ToolCall(name=tool_a, arguments={"x": _gold_value(dup_id)}),
+        ToolCall(name=tool_b, arguments={"x": _gold_value(dup_id)}),
+    )
+
+    dup_response_text = json.dumps(
+        [
+            {"name": tool_a, "arguments": {"x": _gold_value(dup_id)}},
+            {"name": tool_b, "arguments": {"x": _gold_value(dup_id)}},
+        ]
+    )
+    return plan, expected_calls, dup_id, tool_a, tool_b, dup_response_text
+
+
+def test_build_arm_loss_table_detects_multiset_loss_missed_by_identity_comparison(loss_world):
+    """The refused first execution's own diagnosis, reproduced directly: a
+    duplicated-gold-tool sample that IS a loss under the parents' own
+    multiset ``tool_accuracy`` comparison but would have been silently
+    treated as a retained correct selection under the pre-amendment
+    deduplicated-SET comparison -- classified MULTIPLICITY, never missed."""
+
+    world = loss_world
+    plan, expected_calls, dup_id, tool_a, tool_b, dup_response_text = _duplicated_gold_fixture(world)
+
+    rows = [_row(B2_ARM, dup_id, dup_response_text)] + [
+        _row(B2_ARM, sid, _correct_response(sid)) for sid in world.sample_ids if sid != dup_id
+    ]
+
+    table = build_arm_loss_table(B2_ARM, rows, plan, expected_calls)
+
+    assert table.n_losses == 1
+    assert table.rows[0].sample_id == dup_id
+    assert table.rows[0].klass == MULTIPLICITY
+    assert table.class_counts == {
+        DRAGGED_TO_SUPPLIED: 0, DRIFTED_OTHER: 0, MULTIPLICITY: 1, EMPTY: 0, PARSE_FAIL: 0
+    }
+
+
+def test_build_arm_loss_table_correct_tool_arm_allows_multiplicity_without_assertion(loss_world):
+    """Note 3's structural-impossibility defense-in-depth guards
+    DRAGGED-TO-SUPPLIED only; MULTIPLICITY is legal for EVERY arm, including
+    correct-tool arms (module docstring note 1, 2026-08-18 amendment) -- no
+    assertion fires even though S1p carries no supplied WRONG tool at all."""
+
+    world = loss_world
+    plan, expected_calls, dup_id, tool_a, tool_b, dup_response_text = _duplicated_gold_fixture(world)
+
+    rows = [_row(S1P_ARM, dup_id, dup_response_text)] + [
+        _row(S1P_ARM, sid, _correct_response(sid)) for sid in world.sample_ids if sid != dup_id
+    ]
+
+    table = build_arm_loss_table(S1P_ARM, rows, plan, expected_calls)  # must not raise
+
+    assert table.n_losses == 1
+    assert table.rows[0].klass == MULTIPLICITY
+    assert table.class_counts[DRAGGED_TO_SUPPLIED] == 0
 
 
 def test_loss_row_internal_consistency_guard_fires_on_unreachable_state(monkeypatch, loss_world):
@@ -356,7 +523,9 @@ def test_loss_row_internal_consistency_guard_fires_on_unreachable_state(monkeypa
     monkeypatch.setattr(module, "_supplied_wrong_tool", lambda arm, arm_plan, sample_id: wrong)
 
     with pytest.raises(A2tLossDecompError, match="structural-impossibility invariant violated"):
-        module._loss_row_for(S1P_ARM, _row(S1P_ARM, sid, _wrong_tool_response(sid)), plan)
+        module._loss_row_for(
+            S1P_ARM, _row(S1P_ARM, sid, _wrong_tool_response(sid)), plan, _expected_calls_for_world(world)
+        )
 
 
 # ===========================================================================
@@ -460,6 +629,22 @@ def test_reconcile_arm_exact_gate_applies_and_passes_at_real_scale():
     assert "exact_gate=21/120 (applies" in row.detail
 
 
+def test_reconcile_arm_exact_gate_counts_multiplicity_losses_too():
+    """MULTIPLICITY losses count toward B2's own total exactly like every
+    other loss class (module docstring note 1, 2026-08-18 amendment) -- the
+    real-scale 21/120 gate still applies when some of those 21 are
+    MULTIPLICITY, not just DRAGGED/DRIFTED/EMPTY/PARSE-FAIL."""
+
+    table = _table(B2_ARM, 120, {DRAGGED_TO_SUPPLIED: 11, DRIFTED_OTHER: 9, MULTIPLICITY: 1})
+    parent = {"n_samples": 120, "tool_selection_retention": 99 / 120}
+    archived = {"n_samples": 120, "tool_selection_retention": 99 / 120}
+
+    row = reconcile_arm(B2_ARM, table, parent, archived)
+    assert row.matched is True
+    assert row.computed_loss_count == 21
+    assert "exact_gate=21/120 (applies" in row.detail
+
+
 def test_reconcile_arm_refuses_when_b2_losses_are_not_exactly_21_at_real_scale():
     """The mission's own literal requirement: at the real 120-sample scale,
     B2 must yield EXACTLY 21 losses, else fail closed -- even when the
@@ -554,8 +739,11 @@ def _build_full_environment(tmp_path: Path, world: A2tS2World):
     s2c_rows, _ = load_attempt_rows(s2c_attempt_dir)
     rows_by_role = {"s2": s2_rows, "s2b": s2b_rows, "s2c": s2c_rows}
 
+    expected_calls = _expected_calls_for_world(world)
     expected_tables = {
-        arm: build_arm_loss_table(arm, [r for r in rows_by_role[ARM_DIR_ROLE[arm]] if r.arm == arm], plan)
+        arm: build_arm_loss_table(
+            arm, [r for r in rows_by_role[ARM_DIR_ROLE[arm]] if r.arm == arm], plan, expected_calls
+        )
         for arm in ALL_ARMS
     }
 

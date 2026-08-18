@@ -24,6 +24,10 @@ for eight arms across three already-flown, already-consumed attempts --
   structurally impossible for these arms (their supplied tool IS the
   correct tool) and is asserted, not merely omitted.
 
+A fifth class, **MULTIPLICITY** (correct tool SET, wrong call COUNT --
+2026-08-18 amendment, note 1 below), applies to every one of the eight arms
+and is never structurally impossible for any of them.
+
 REUSE, NOT RE-DERIVATION. Every parsing/scoring/loading primitive below is
 imported directly from the three consumed suites, never reimplemented a
 second way:
@@ -46,7 +50,11 @@ second way:
 - ``reproduction.toolcall_scoring.parse_tool_calls_text`` (the tool-selection
   extraction primitive) and ``analysis.a2t_read.is_empty_tool_call`` (the
   empty-call classifier) -- the SAME two calls ``analysis.a2t_s2_read.
-  score_row`` itself makes internally.
+  score_row`` itself makes internally. ``reproduction.toolcall_scoring.
+  score_item`` -- the SAME name-MULTISET ``tool_accuracy`` comparator every
+  consumed suite's own ``Audio2ToolAdapter.score`` calls internally -- is
+  ALSO now this module's own loss-detection comparator (note 1, 2026-08-18
+  amendment).
 - ``data.audio2tool.load_expected_calls`` -- the A0-comparator's own gold
   source, reused for the sanity re-check note 1 below describes.
 
@@ -54,34 +62,54 @@ ENGINEERING-INTERPRETATION NOTES (flagged here, mirroring the three consumed
 suites' own discipline -- each is a documented, reviewable choice, not a
 silent guess):
 
-1. **The A0 comparator is ``ArmPlan.selected_tools``, never a fresh parse of
-   A0's own ``outputs.jsonl``.** ``rails.probes.a2t_s2_flight.
+1. **AMENDED 2026-08-18 (preregistration section 5): a loss is exactly what
+   the PARENTS' OWN multiset ``tool_accuracy`` comparison scores != 1.0,
+   never a deduplicated distinct-tool-IDENTITY comparison.** The first
+   execution attempt refused at this module's own three-way reconciliation
+   gate (note 4) before writing any output row: one headroom sample
+   (``tier3_multi_intent:003994``) carries a duplicated GOLD tool name
+   (``{setZoneTemperature: 2, setCabinOverheatProtection: 1}``), and the
+   PRE-amendment identity/SET comparison below silently treated "same
+   distinct tool SET, wrong call COUNT" as a retained correct selection --
+   undercounting every full-headroom arm's own loss total by exactly one.
+   The repair: a row is a loss iff ``reproduction.toolcall_scoring.
+   score_item(gold, predicted).tool_accuracy != 1.0`` -- ``score_item`` (a
+   ``collections.Counter`` comparison of tool NAMES, never arguments) is
+   IMPORTED and called UNCHANGED, never reimplemented a second way, against
+   ``gold`` = this sample's own fresh ``data.audio2tool.load_expected_calls``
+   entry (already loaded once, for the sanity re-check this note's tail
+   describes, and reused here rather than re-loaded a second time). A loss
+   whose predicted call's own distinct-tool SET nonetheless equals the
+   correct SET (right tool(s), wrong call COUNT) classifies as the fifth
+   class, **MULTIPLICITY** (:func:`classify_loss`) -- structurally neither
+   dragged nor drifted, and legal for every arm (note 3).
+
+   The PRE-amendment design, kept here for the record since one piece of it
+   still applies (below): ``rails.probes.a2t_s2_flight.
    derive_a0_selected_tools`` already computed, ONCE, "the tool(s) the core
    ITSELF named in its own A0 response" for every headroom sample, straight
    from the CONSUMED A0 attempt's own rows (reusing ``analysis.a2t_read.
    load_attempt_rows`` + ``reproduction.toolcall_scoring.
-   parse_tool_calls_text`` -- see that function's own docstring), and froze
-   the result into ``{RUN_ID}.arm-plan.json``'s own ``selected_tools`` field.
-   Combined with the headroom set's own DEFINING criterion (``tool_accuracy
-   == 1.0``, i.e. A0's predicted tool-name multiset equals gold's), every
-   sample this module ever iterates (every row in all eight configured arms
-   lives on ``arm_plan.headroom_ids`` or its ``n0r_sample_ids`` subset) is
-   A0-correct BY CONSTRUCTION -- exactly ``analysis.a2t_s2_read``'s own note
-   11 precedent ("A0 baseline is fixed at tool_accuracy=1.0 ... by that
-   set's own defining criterion; no re-fly, no re-load ... needed"). This
-   module therefore never re-parses A0's own response text: ``arm_plan.
-   selected_tools[sample_id]`` (a sorted, deduplicated tool-name tuple) IS
-   "the consumed A0 read's per-sample tool selection" the mission names, and
-   a LOSS for arm X at sample s is exactly ``arm_X_predicted_names(s) !=
-   arm_plan.selected_tools[s]`` (a distinct-tool-IDENTITY comparison,
-   mirroring ``rails.probes.a2t_s2_flight.build_s4_derangement``'s own
-   "derived over DISTINCT tool identities, never raw multisets" convention
-   -- this module cares whether the wrong TOOL was picked, not whether call
-   MULTIPLICITY matched). :func:`_a0_comparator_sanity_check` below still
-   independently re-verifies this premise against FRESH gold
-   (``data.audio2tool.load_expected_calls``, reused verbatim) rather than
-   trusting the frozen file blindly -- an orthogonal, cheap integrity check,
-   not a re-derivation.
+   parse_tool_calls_text``), and froze the result into ``{RUN_ID}.
+   arm-plan.json``'s own ``selected_tools`` field -- a SORTED, DEDUPLICATED
+   tool-name tuple, never the raw multiset A0 itself predicted. Combined
+   with the headroom set's own DEFINING criterion (``tool_accuracy == 1.0``,
+   i.e. A0's predicted tool-name multiset equals gold's), that deduplicated
+   tuple's DISTINCT-TOOL SET is still exactly gold's own distinct-tool set
+   for every headroom sample (dedup of two equal multisets is the same set)
+   -- so ``arm_plan.selected_tools[sample_id]`` remains exactly right as the
+   ``correct_tool_names`` argument :func:`classify_loss` uses for its
+   MULTIPLICITY SET-equality check, even though it is NO LONGER trusted as
+   the LOSS-DETECTION comparator itself (that role moved to fresh gold +
+   ``score_item``, above -- the SAME distinct-tool-IDENTITY convention
+   ``rails.probes.a2t_s2_flight.build_s4_derangement`` uses for deriving the
+   derangement is preserved for THIS narrower SET-equality role, just no
+   longer for loss detection). The A0-comparator sanity check inside
+   :func:`build_loss_decomp_report` still independently re-verifies
+   ``arm_plan.selected_tools``'s own distinct-SET agreement with fresh gold
+   for every headroom sample before trusting the frozen file for that
+   narrower role -- an orthogonal, cheap integrity check, not a
+   re-derivation.
 2. **DRIFT-CONFIRMED's "compatible with N0r's reference shape" clause is a
    REPORTING obligation, not a second boolean gate; "11/21"/"5/21" are
    RATIOS of B2's OWN total loss count, never a raw count fixed to the
@@ -123,6 +151,11 @@ silent guess):
    `# pragma: no cover`, mirroring ``rails.probes.a2t_s2_flight.
    build_s4_derangement``'s own "Sattolo's algorithm precludes this; defense
    in depth" precedent) rather than relying on the level-one premise alone.
+   MULTIPLICITY is deliberately EXEMPT from this guard (2026-08-18
+   amendment): a MULTIPLICITY loss never implies the arm selected a WRONG
+   tool identity, only a wrong call COUNT among the correct tool(s), so it
+   is legal for every arm, correct-tool arms included -- only
+   DRAGGED-TO-SUPPLIED remains structurally impossible for non-B2 arms.
 4. **Three-way reconciliation, fail-closed on any disagreement.** For every
    one of the eight arms this module reconciles its OWN per-row loss count
    against (a) that SAME arm's fresh ``ArmAggregate.tool_accuracy`` from
@@ -187,7 +220,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Literal, Mapping, Sequence
 
-from ..reproduction.toolcall_scoring import parse_tool_calls_text
+from ..reproduction.toolcall_scoring import ToolCall, parse_tool_calls_text, score_item
 from ..rails.probes.a2t_s2_flight import N0R_ARM, S1P_ARM, S2_ARM
 from ..rails.probes.a2t_s2b_flight import B1_ARM, B2_ARM
 from ..rails.probes.a2t_s2c_flight import C1_ARM, C2_ARM, C3_ARM
@@ -216,13 +249,15 @@ S2_READ_ARCHIVE_DIRNAME = "2026-08-18-a2t-s2-read"
 S2B_READ_ARCHIVE_DIRNAME = "2026-08-18-a2t-s2b-read"
 S2C_READ_ARCHIVE_DIRNAME = "2026-08-18-a2t-s2c-read"
 
-# Loss classes (preregistration section 2, quoted verbatim).
+# Loss classes (preregistration section 2, quoted verbatim, PLUS the
+# 2026-08-18 amendment's fifth class MULTIPLICITY -- module docstring note 1).
 DRAGGED_TO_SUPPLIED = "DRAGGED-TO-SUPPLIED"
 DRIFTED_OTHER = "DRIFTED-OTHER"
+MULTIPLICITY = "MULTIPLICITY"
 EMPTY = "EMPTY"
 PARSE_FAIL = "PARSE-FAIL"
-LOSS_CLASSES: tuple[str, ...] = (DRAGGED_TO_SUPPLIED, DRIFTED_OTHER, EMPTY, PARSE_FAIL)
-LossClass = Literal["DRAGGED-TO-SUPPLIED", "DRIFTED-OTHER", "EMPTY", "PARSE-FAIL"]
+LOSS_CLASSES: tuple[str, ...] = (DRAGGED_TO_SUPPLIED, DRIFTED_OTHER, MULTIPLICITY, EMPTY, PARSE_FAIL)
+LossClass = Literal["DRAGGED-TO-SUPPLIED", "DRIFTED-OTHER", "MULTIPLICITY", "EMPTY", "PARSE-FAIL"]
 
 # The eight configured arms (preregistration section 2 -- S4 is NOT in scope).
 CORRECT_TOOL_ARMS: tuple[str, ...] = (S1P_ARM, S2_ARM, B1_ARM, C1_ARM, C2_ARM, C3_ARM)
@@ -434,19 +469,29 @@ def assert_structural_premises(arm_plan: ArmPlan) -> None:
 
 
 def classify_loss(
-    *, parsed: bool, predicted_names: tuple[str, ...], supplied_wrong_tool: str | None
+    *,
+    parsed: bool,
+    predicted_names: tuple[str, ...],
+    supplied_wrong_tool: str | None,
+    correct_tool_names: tuple[str, ...] = (),
 ) -> LossClass:
-    """The four mechanical classes (preregistration section 2, quoted
-    verbatim): PARSE-FAIL (row unparseable), EMPTY (well-formed empty call),
-    DRAGGED-TO-SUPPLIED (selected tool == the arm's supplied/highlighted
+    """The five mechanical classes (preregistration section 2 + the
+    2026-08-18 amendment, module docstring note 1), checked in this
+    registered order: PARSE-FAIL (row unparseable), EMPTY (well-formed empty
+    call), MULTIPLICITY (the predicted call's own distinct-tool SET equals
+    ``correct_tool_names`` exactly -- right tool(s), wrong call COUNT;
+    structurally neither dragged nor drifted, legal for every arm -- note
+    3), DRAGGED-TO-SUPPLIED (selected tool == the arm's supplied/highlighted
     tool), DRIFTED-OTHER (any other wrong tool). Only called for rows this
-    module has ALREADY determined are losses (predicted != A0's selection,
-    note 1)."""
+    module has ALREADY determined are losses (the parents' own multiset
+    ``tool_accuracy`` comparison scored != 1.0 against fresh gold, note 1)."""
 
     if not parsed:
         return PARSE_FAIL
     if not predicted_names:
         return EMPTY
+    if set(predicted_names) == set(correct_tool_names):
+        return MULTIPLICITY
     if supplied_wrong_tool is not None and predicted_names == (supplied_wrong_tool,):
         return DRAGGED_TO_SUPPLIED
     return DRIFTED_OTHER
@@ -460,16 +505,25 @@ class LossRow:
     klass: LossClass
 
 
-def _loss_row_for(arm: str, row: OutputRow, arm_plan: ArmPlan) -> LossRow | None:
-    """``None`` when this row is NOT a loss (arm's selection matches A0's,
-    note 1's distinct-tool-identity comparison)."""
+def _loss_row_for(
+    arm: str,
+    row: OutputRow,
+    arm_plan: ArmPlan,
+    expected_calls: Mapping[str, Sequence[ToolCall]],
+) -> LossRow | None:
+    """``None`` when this row is NOT a loss. 2026-08-18 amendment (note 1):
+    a loss is exactly what the PARENTS' OWN ``tool_accuracy`` comparison
+    (``reproduction.toolcall_scoring.score_item``, a name-MULTISET
+    comparison, reused verbatim) scores != 1.0 against this sample's own
+    fresh gold -- never a deduplicated distinct-tool-IDENTITY comparison."""
 
     predicted, parsed = parse_tool_calls_text(row.response)
     predicted_names = tuple(sorted({call.name for call in predicted}))
     a0_names = arm_plan.selected_tools.get(row.sample_id, ())
 
-    if predicted_names == a0_names:
-        return None  # arm retained A0's own correct selection -- not a loss
+    gold = expected_calls.get(row.sample_id, ())
+    if score_item(gold, predicted).tool_accuracy == 1.0:  # the parents' own primitive, verbatim
+        return None  # arm retained A0's own correct multiset selection -- not a loss
 
     empty = is_empty_tool_call(row.response)  # reused verbatim (module docstring)
     if not parsed:
@@ -486,7 +540,12 @@ def _loss_row_for(arm: str, row: OutputRow, arm_plan: ArmPlan) -> LossRow | None
         arm_tool_label = "(empty)"
     else:
         supplied_wrong = _supplied_wrong_tool(arm, arm_plan, row.sample_id)
-        klass = classify_loss(parsed=parsed, predicted_names=predicted_names, supplied_wrong_tool=supplied_wrong)
+        klass = classify_loss(
+            parsed=parsed,
+            predicted_names=predicted_names,
+            supplied_wrong_tool=supplied_wrong,
+            correct_tool_names=a0_names,
+        )
         if klass == DRAGGED_TO_SUPPLIED and arm not in DRAG_POSSIBLE_ARMS:  # pragma: no cover -- note 3
             raise A2tLossDecompError(
                 f"sample {row.sample_id!r} arm {arm!r}: classified DRAGGED-TO-SUPPLIED, but this arm is "
@@ -506,7 +565,12 @@ class ArmLossTable:
     rows: tuple[LossRow, ...]
 
 
-def build_arm_loss_table(arm: str, rows: Sequence[OutputRow], arm_plan: ArmPlan) -> ArmLossTable:
+def build_arm_loss_table(
+    arm: str,
+    rows: Sequence[OutputRow],
+    arm_plan: ArmPlan,
+    expected_calls: Mapping[str, Sequence[ToolCall]],
+) -> ArmLossTable:
     domain = _sample_domain(arm, arm_plan)
     by_id = {row.sample_id: row for row in rows}
     missing = [sid for sid in domain if sid not in by_id]
@@ -515,7 +579,7 @@ def build_arm_loss_table(arm: str, rows: Sequence[OutputRow], arm_plan: ArmPlan)
 
     loss_rows: list[LossRow] = []
     for sample_id in domain:
-        loss = _loss_row_for(arm, by_id[sample_id], arm_plan)
+        loss = _loss_row_for(arm, by_id[sample_id], arm_plan, expected_calls)
         if loss is not None:
             loss_rows.append(loss)
     loss_rows.sort(key=lambda r: r.sample_id)
@@ -788,7 +852,7 @@ def build_loss_decomp_report(
     rows_by_arm.update(_group_rows_by_arm(s2c_rows, (C1_ARM, C2_ARM, C3_ARM)))
 
     tables: dict[str, ArmLossTable] = {
-        arm: build_arm_loss_table(arm, rows_by_arm[arm], arm_plan) for arm in ALL_ARMS
+        arm: build_arm_loss_table(arm, rows_by_arm[arm], arm_plan, expected_by_id) for arm in ALL_ARMS
     }
 
     # 6. MANIFEST integrity section (note 5).
@@ -946,14 +1010,17 @@ def render_report(report: LossDecompReport) -> str:
         "",
         "Per-arm loss-class tables",
     ]
-    header = f"  {'arm':<6}{'n':>4}{'losses':>8}{'DRAGGED':>9}{'DRIFTED':>9}{'EMPTY':>7}{'PARSE-FAIL':>12}"
+    header = (
+        f"  {'arm':<6}{'n':>4}{'losses':>8}{'DRAGGED':>9}{'DRIFTED':>9}"
+        f"{'MULTIPL':>9}{'EMPTY':>7}{'PARSE-FAIL':>12}"
+    )
     lines.append(header)
     for arm in ALL_ARMS:
         table = report.tables[arm]
         c = table.class_counts
         lines.append(
             f"  {arm:<6}{table.n_samples:>4}{table.n_losses:>8}{c[DRAGGED_TO_SUPPLIED]:>9}"
-            f"{c[DRIFTED_OTHER]:>9}{c[EMPTY]:>7}{c[PARSE_FAIL]:>12}"
+            f"{c[DRIFTED_OTHER]:>9}{c[MULTIPLICITY]:>9}{c[EMPTY]:>7}{c[PARSE_FAIL]:>12}"
         )
     lines.append("")
 
