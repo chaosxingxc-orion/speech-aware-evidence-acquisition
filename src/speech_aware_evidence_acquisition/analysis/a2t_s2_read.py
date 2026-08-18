@@ -785,7 +785,8 @@ def evaluate_branch_rules(per_arm: Mapping[str, PerArmReport]) -> BranchVerdict:
     voided = void_clause.verdict == "met"
 
     copy_trap_clauses: list[ClauseResult] = []
-    for arm_name, agg in ((S1P_ARM, s1p), (S2_ARM, s2), (S4_ARM, s4)):
+    for arm_name in A2T_S2_SUPPLY_ARMS:
+        agg = per_arm[arm_name].overall
         fires = agg.em_flip_count > 0 and agg.induced_substitution_count >= agg.em_flip_count
         copy_trap_clauses.append(
             ClauseResult(
