@@ -1,0 +1,47 @@
+P-A2T Stage-1 A0 baseline pinned offline read
+======================================================================
+
+attempt dir: /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-BASE-a2t-a0-400/attempt-20260818T055500Z-res315
+flight status: 'COMPLETED'
+split identity hash: e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c
+
+REAL tool-acc/EM gap (replaces the retired 84.6%/15.6% headroom claim)
+  overall: n=400 tool_acc=0.5425 EM=0.2425 gap=+0.3000
+
+Per-tier breakdown
+  tier                       n  tool_acc       EM      gap  empty  empty_rate
+  tier1_direct              50    0.5800   0.1200   0.4600      1      0.0200
+  tier2_parametric          50    0.7200   0.3800   0.3400      0      0.0000
+  tier3_multi_intent        50    0.6200   0.0400   0.5800      2      0.0400
+  tier4_implicit            50    0.3000   0.2400   0.0600     11      0.2200
+  tier5_needle              50    0.5400   0.3000   0.2400     16      0.3200
+  tier6_correction          50    0.6400   0.4000   0.2400      4      0.0800
+  tier7_multiturn           50    0.6000   0.4400   0.1600      4      0.0800
+  tier8_intent_blending     50    0.3400   0.0200   0.3200      3      0.0600
+
+overall empty-tool-call rate: 41/400 (0.1025)
+
+Stage-2 headroom list (tool_accuracy==1.0 AND exact_match==0.0): 120 sample(s)
+  tier1_direct:000077
+  tier1_direct:000270
+  tier1_direct:000620
+  tier1_direct:000636
+  tier1_direct:001242
+  tier1_direct:001422
+  tier1_direct:001444
+  tier1_direct:001607
+  tier1_direct:001631
+  tier1_direct:002212
+  tier1_direct:002510
+  tier1_direct:002581
+  tier1_direct:002609
+  tier1_direct:002720
+  tier1_direct:002728
+  tier1_direct:002763
+  tier1_direct:003210
+  tier1_direct:003343
+  tier1_direct:003562
+  tier1_direct:003651
+  ... (+100 more; full list in headroom.json)
+
+recheck mismatches (recomputed vs. flight-embedded metrics, informational only): 0
