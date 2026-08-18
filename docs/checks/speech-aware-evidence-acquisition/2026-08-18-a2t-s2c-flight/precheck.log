@@ -1,0 +1,25 @@
+start: 2026-08-18T17:48:01Z
+=== llama-server processes ===
+(none)
+=== s2c run dir ===
+(absent -- fresh start confirmed)
+=== stage2 arm plan ===
+-rwxrwxrwx 1 chao chao 63841 Aug 18 08:49 /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-a2t-s2-120/attempt-20260818T124955Z-84b944/SAEA-PROBE-a2t-s2-120.arm-plan.json
+6eb32b2798e8289d257a14d273dd970a8dc13b48e2943118ccb42645159dba1a  /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-a2t-s2-120/attempt-20260818T124955Z-84b944/SAEA-PROBE-a2t-s2-120.arm-plan.json
+=== server binary hash (receipt pins 097c96ec...) ===
+097c96ec5a3f576f378d4d5e103928bf070647fdcc1f015eacb839503e121c68  /home/chao/llama.cpp-featcache/build/bin/llama-server
+=== GGUF hashes per the s2b session receipt ===
+f0dfe825fb692d426362b1ac79678fc08daa4758f7151526cad110515f122883  /home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/mmproj-Qwen3-Omni-30B-A3B-Instruct-bf16.gguf
+0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d  /home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf
+=== feat cache ===
+entries: 480
+243M	/home/chao/feat-cache/audio2tool-q4km
+2026-08-18 02:36:43.478984940 -0400 /home/chao/feat-cache/audio2tool-q4km
+=== python ===
+/home/chao/.venvs/speechrl/bin/python
+Python 3.12.3
+=== git (via WSL view) ===
+59c6fa509fd90ca470c777efe0ba799222ac52fe
+=== pyc under src ===
+0
+PRECHECK DONE

@@ -1,0 +1,50 @@
+start: 2026-08-18T17:49:49Z
+git HEAD: 59c6fa509fd90ca470c777efe0ba799222ac52fe
+git status: 0 dirty entries
+llama-server binary sha256 (receipt pins 097c96ec...):
+097c96ec5a3f576f378d4d5e103928bf070647fdcc1f015eacb839503e121c68  /home/chao/llama.cpp-featcache/build/bin/llama-server
+repo module root: /mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/src/speech_aware_evidence_acquisition
+__pycache__ .pyc files under src/: 0
+C3 header (B2_HIGHLIGHT_HEADER) sha256: befe65146a5abaa18b7d3446dfcdfeb5ed665f73e5b8564ba8b7d6916a71ebdf
+data_root: /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+carrier_root (asset_dir audio2tool): /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/datasets/audio2tool
+feat cache /home/chao/feat-cache/audio2tool-q4km: 480 entries
+audio2tool receipts declaring split_role=discovery: ['r1-audio2tool-sample']
+split_identity_hash (from the receipt): e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c
+headroom manifest: 120 ids, attempt_dir /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-BASE-a2t-a0-400/attempt-20260818T055500Z-res315
+resolving discovery split (sha256 of every media file -- slow, model-free)
+discovery split resolved: 400 samples
+headroom media resolved: 120/120
+Stage-2 arm-plan (REUSED VERBATIM, never re-derived): /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-a2t-s2-120/attempt-20260818T124955Z-84b944/SAEA-PROBE-a2t-s2-120.arm-plan.json
+arm plan loaded: seed=20260807 headroom=120 s1p=120 (s4/derangement present but UNUSED by any C-arm)
+registry: 152 rows, full text 50291 chars
+flight plan: 360 requests over arms ('C1', 'C2', 'C3')
+C-arm roster sizes (S1p's own shape verbatim): min=1 max=3 single=75/120
+metered audio seconds for one full flight: 1905.85 (one pass 635.28, longest item 35.71)
+worst case within the 380-call budget: 2620.13 audio seconds
+server_args (after the -np delta): ['-c', '49152', '-np', '1', '-fa', 'on', '-ngl', '999', '-ctk', 'q8_0', '-ctv', 'q8_0']
+per-slot context: 49152/1 = 49152 tokens
+A0's own full-registry system prompt: 50413 chars (~12603 tokens)
+worst C1 system prompt: 1117 chars (~279 tokens)
+worst C2 system prompt: 1184 chars (~296 tokens)
+worst C3 system prompt: 51471 chars (~12867 tokens); delta over A0 = +1058 chars
+max_tokens: 1024; worst-case sequence ~14391 tokens
+exposure rows matching run id 'SAEA-PROBE-a2t-s2c-120': 1
+  ledger['execution profile'] = 'bounded-discovery-probe'
+  ledger['split role'] = 'discovery'
+  ledger['split identity hash'] = 'e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c'
+  ledger['consumed'] = 'no'
+  ledger['calls'] = '400'
+  ledger['speech audio seconds'] = '3000'
+  ledger['gpu hours'] = '0.75'
+  ledger['speech carrier + split'] = 'audio2tool (speech-aware-diagnostics), the 120-sample headroom list (saea-a2t-a0'...
+config_hash: 54a4617cb62cac9f9df07dcaa0621b0f99e302484425b6ab67ad44a0c5bfbc71
+protocol_hash: a805d90629178b31f0df575947cd48e5a4d7b06ba3f2853a202429f0a5b9900e
+server_env: {'LLAMA_MTMD_FEAT_CACHE_DIR': '/home/chao/feat-cache/audio2tool-q4km'}
+ExecutionPlan validates: profile=bounded-discovery-probe role=discovery calls=380 audio_s=2621 gpu_h=0.75
+payload binding built: 120 ids, sample rates [24000]
+GATE DRY-RUN: model touch AUTHORIZED (umbrella lock sha256 b588f3641ae1d1774fb7652c8978acf25eda7dcbc45a34a898d5471bce5b2e42)
+measurement written: /mnt/c/Users/35686/AppData/Local/Temp/claude/D--chao-workspace-exploring-l4-intelligence-studies-speech-aware-evidence-acquisition/6d9f1834-68e9-41a7-bbcc-724898cf15a9/scratchpad/s2cfly/preflight-split-measurement.json
+
+PRE-FLIGHT CLEAN
+exit: 0 at 2026-08-18T17:49:55Z

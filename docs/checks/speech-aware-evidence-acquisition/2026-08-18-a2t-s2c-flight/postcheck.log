@@ -1,0 +1,32 @@
+start: 2026-08-18T17:58:57Z
+=== llama-server processes (must be none) ===
+(none)
+=== feat cache after flight ===
+entries: 480
+243M	/home/chao/feat-cache/audio2tool-q4km
+2026-08-18 02:36:43.478984940 -0400 /home/chao/feat-cache/audio2tool-q4km
+newest entry mtime:
+2026-08-18 02:36:43.478984940 -0400 /home/chao/feat-cache/audio2tool-q4km/3445865419075171592_o0.feat
+=== encode lines in the server log (expect 0) ===
+0
+=== run dir inventory ===
+total 11920
+drwxrwxrwx 1 chao chao    4096 Aug 18 13:57 .
+drwxrwxrwx 1 chao chao    4096 Aug 18 13:50 ..
+-rwxrwxrwx 1 chao chao   13361 Aug 18 13:50 SAEA-PROBE-a2t-s2c-120.arm-plan.json
+-rwxrwxrwx 1 chao chao    1769 Aug 18 13:50 SAEA-PROBE-a2t-s2c-120.config-values.json
+-rwxrwxrwx 1 chao chao     571 Aug 18 13:50 SAEA-PROBE-a2t-s2c-120.plan.json
+-rwxrwxrwx 1 chao chao 4350206 Aug 18 13:57 SAEA-PROBE-a2t-s2c-120.server.log
+-rwxrwxrwx 1 chao chao    1624 Aug 18 13:50 SAEA-PROBE-a2t-s2c-120.session-receipt.json
+-rwxrwxrwx 1 chao chao  103020 Aug 18 13:57 SAEA-PROBE-a2t-s2c-120.trace-manifest.json
+-rwxrwxrwx 1 chao chao 7347649 Aug 18 13:57 SAEA-PROBE-a2t-s2c-120.trace.jsonl
+-rwxrwxrwx 1 chao chao   77999 Aug 18 13:57 flight-receipt.json
+-rwxrwxrwx 1 chao chao  129581 Aug 18 13:57 outputs.jsonl
+-rwxrwxrwx 1 chao chao  157319 Aug 18 13:57 responses.jsonl
+=== outputs.jsonl row count (wc only, content never opened) ===
+360 /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-a2t-s2c-120/attempt-20260818T175018Z-0d3363/outputs.jsonl
+360 /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-a2t-s2c-120/attempt-20260818T175018Z-0d3363/responses.jsonl
+=== git tree (must be clean) ===
+dirty entries: 0
+59c6fa509fd90ca470c777efe0ba799222ac52fe
+POSTCHECK DONE
