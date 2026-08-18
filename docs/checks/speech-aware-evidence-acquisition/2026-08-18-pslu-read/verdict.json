@@ -1,0 +1,294 @@
+{
+  "aggregates": {
+    "A0": {
+      "arm": "A0",
+      "copy_rate": 0.0,
+      "copy_records": 0,
+      "copy_records_total": 0,
+      "induced_substitution_count": 0,
+      "intent_accuracy": 0.0,
+      "n_samples": 60,
+      "slot_f1_exact": {
+        "f1": 0.043478260869565216,
+        "precision": 0.042105263157894736,
+        "recall": 0.0449438202247191,
+        "tp_sum": 4.0
+      },
+      "slu_f1": {
+        "f1": 0.1740786454061426,
+        "precision": 0.1691704839577968,
+        "recall": 0.17928011877696706
+      }
+    },
+    "A1": {
+      "arm": "A1",
+      "copy_rate": 0.0,
+      "copy_records": 0,
+      "copy_records_total": 2224,
+      "induced_substitution_count": 1,
+      "intent_accuracy": 0.0,
+      "n_samples": 60,
+      "slot_f1_exact": {
+        "f1": 0.5245901639344263,
+        "precision": 0.5106382978723404,
+        "recall": 0.5393258426966292,
+        "tp_sum": 48.0
+      },
+      "slu_f1": {
+        "f1": 0.63401186634837,
+        "precision": 0.618689351106766,
+        "recall": 0.6501126128727477
+      }
+    },
+    "A1p": {
+      "arm": "A1p",
+      "copy_rate": 0.025454545454545455,
+      "copy_records": 84,
+      "copy_records_total": 3300,
+      "induced_substitution_count": 0,
+      "intent_accuracy": 0.0,
+      "n_samples": 60,
+      "slot_f1_exact": {
+        "f1": 0.21348314606741572,
+        "precision": 0.21348314606741572,
+        "recall": 0.21348314606741572,
+        "tp_sum": 19.0
+      },
+      "slu_f1": {
+        "f1": 0.4556768779317589,
+        "precision": 0.4556768779317589,
+        "recall": 0.4556768779317589
+      }
+    },
+    "A2": {
+      "arm": "A2",
+      "copy_rate": 0.02878787878787879,
+      "copy_records": 95,
+      "copy_records_total": 3300,
+      "induced_substitution_count": 0,
+      "intent_accuracy": 0.0,
+      "n_samples": 60,
+      "slot_f1_exact": {
+        "f1": 0.24864864864864866,
+        "precision": 0.23958333333333334,
+        "recall": 0.25842696629213485,
+        "tp_sum": 23.0
+      },
+      "slu_f1": {
+        "f1": 0.46863681617556163,
+        "precision": 0.455065691116922,
+        "recall": 0.4830422683109831
+      }
+    },
+    "A3": {
+      "arm": "A3",
+      "copy_rate": 0.0,
+      "copy_records": 0,
+      "copy_records_total": 6000,
+      "induced_substitution_count": 3,
+      "intent_accuracy": 0.0,
+      "n_samples": 60,
+      "slot_f1_exact": {
+        "f1": 0.5,
+        "precision": 0.46601941747572817,
+        "recall": 0.5393258426966292,
+        "tp_sum": 48.0
+      },
+      "slu_f1": {
+        "f1": 0.5961280580450439,
+        "precision": 0.5601662758969022,
+        "recall": 0.6370239824628252
+      }
+    },
+    "A4": {
+      "arm": "A4",
+      "copy_rate": 0.0,
+      "copy_records": 0,
+      "copy_records_total": 2201,
+      "induced_substitution_count": 1,
+      "intent_accuracy": 0.0,
+      "n_samples": 60,
+      "slot_f1_exact": {
+        "f1": 0.18994413407821228,
+        "precision": 0.18888888888888888,
+        "recall": 0.19101123595505617,
+        "tp_sum": 17.0
+      },
+      "slu_f1": {
+        "f1": 0.30867573379198643,
+        "precision": 0.307146561369207,
+        "recall": 0.3102202088014848
+      }
+    }
+  },
+  "attempt_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-pslu-n60/attempt-20260818T010218Z-4c97cb",
+  "branch_verdict": {
+    "copy_trap": false,
+    "copy_trap_clauses": [
+      {
+        "clause_text": "A4 gain >= half of A1' gain",
+        "detail": "module docstring note 9 (requires A1' gain > 0 -- a bare >= is vacuous at 0 vs 0): A1' gain=+0.2816, A4 gain=+0.1346, threshold=+0.1408 (half of A1' gain)",
+        "verdict": "not_met"
+      },
+      {
+        "clause_text": "any glossary-arm induced-substitution count >= its entity true-positive gain",
+        "detail": "module docstring notes 6+9 (entity TP = summed slot_f1_exact_tp; requires induced count > 0 -- a bare >= is vacuous at 0 vs 0): A1: induced=1, entity_tp_gain=+44.00; A1p: induced=0, entity_tp_gain=+15.00; A2: induced=0, entity_tp_gain=+19.00; A3: induced=3, entity_tp_gain=+44.00; A4: induced=1, entity_tp_gain=+13.00",
+        "verdict": "not_met"
+      },
+      {
+        "clause_text": "copy-rate >= 50%",
+        "detail": "module docstring note 5 (A1' copy-rate specifically): A1' copy_rate=0.0255 (84/3300), floor=0.50",
+        "verdict": "not_met"
+      }
+    ],
+    "dose_confirm": {
+      "clause_text": "A3 underperforms A2 (secondary, descriptive)",
+      "detail": "A3 slu_f1=0.5961, A2 slu_f1=0.4686",
+      "verdict": "not_met"
+    },
+    "inert": false,
+    "inert_detail": "no arm gains >= +0.02 SLU-F1 over A0: A1=+0.4599; A1p=+0.2816; A2=+0.2946; A3=+0.4220; A4=+0.1346",
+    "intent_drift_guardrail_flags": [],
+    "overall": "UNRESOLVED (no branch rule fired mechanically)",
+    "supply_converts": false,
+    "supply_converts_clauses": [
+      {
+        "clause_text": "A1' SLU-F1 gain >= +0.05 absolute over A0",
+        "detail": "A1' gain=+0.2816, floor=0.05",
+        "verdict": "met"
+      },
+      {
+        "clause_text": "A4 gain <= +0.01",
+        "detail": "A4 gain=+0.1346, ceiling=0.01",
+        "verdict": "not_met"
+      },
+      {
+        "clause_text": "A1' copy-rate < 50%",
+        "detail": "A1' copy_rate=0.0255 (84/3300), ceiling=0.50",
+        "verdict": "met"
+      }
+    ],
+    "void_clauses": [
+      {
+        "clause_text": "silence-swap answers persist unchanged",
+        "detail": "module docstring note 7: VOID iff ALL 3 silence-swap sample(s) are unchanged (documented ambiguity resolution -- the prereg names no quantifier); slurp:devel:005518:audio-1490203960: unchanged=False; slurp:devel:007852:audio-1494416109-headset: unchanged=False; slurp:devel:011654:audio-1501692977-headset: unchanged=False",
+        "verdict": "not_met"
+      },
+      {
+        "clause_text": "harness defect",
+        "detail": "no structural harness defects detected",
+        "verdict": "not_met"
+      },
+      {
+        "clause_text": "per-sample TP/FP/FN fail to reproduce the adapter's committed scorer on recheck",
+        "detail": "every row's recomputed TP/FP/FN/parsed matched its embedded metrics exactly",
+        "verdict": "not_met"
+      }
+    ],
+    "voided": false
+  },
+  "flight_error": null,
+  "flight_status": "COMPLETED",
+  "harness_defect_reasons": [],
+  "note": "gold-derived; scoring-side only; must never enter a runtime path",
+  "recheck_mismatch_count": 0,
+  "runtime_prohibited": true,
+  "schema": "saea-pslu-read-v1",
+  "silence_swap": [
+    {
+      "has_real_counterpart": true,
+      "real_signature": [
+        "Smart Home Control",
+        "Turn off",
+        [
+          [
+            "device_type",
+            "room light"
+          ]
+        ]
+      ],
+      "sample_id": "slurp:devel:005518:audio-1490203960",
+      "silence_signature": [
+        "Setting an alarm",
+        "Set an alarm",
+        [
+          [
+            "alarm_type",
+            "alarm"
+          ],
+          [
+            "time",
+            "8:00"
+          ]
+        ]
+      ],
+      "unchanged": false
+    },
+    {
+      "has_real_counterpart": true,
+      "real_signature": [
+        "Adding an event to a calendar",
+        "Add event",
+        [
+          [
+            "date",
+            "tonight"
+          ],
+          [
+            "event_name",
+            "baseball practice"
+          ],
+          [
+            "time",
+            "5:00 PM"
+          ]
+        ]
+      ],
+      "sample_id": "slurp:devel:007852:audio-1494416109-headset",
+      "silence_signature": [
+        "Setting a timer",
+        "Set a timer",
+        [
+          [
+            "time",
+            "10 minutes"
+          ]
+        ]
+      ],
+      "unchanged": false
+    },
+    {
+      "has_real_counterpart": true,
+      "real_signature": [
+        "searching for restaurants",
+        "search",
+        [
+          [
+            "food_type",
+            "Chinese"
+          ],
+          [
+            "place_name",
+            "Nerby"
+          ]
+        ]
+      ],
+      "sample_id": "slurp:devel:011654:audio-1501692977-headset",
+      "silence_signature": [
+        "Setting an alarm",
+        "Set an alarm",
+        [
+          [
+            "time",
+            "10:00"
+          ],
+          [
+            "timeofday",
+            "morning"
+          ]
+        ]
+      ],
+      "unchanged": false
+    }
+  ]
+}

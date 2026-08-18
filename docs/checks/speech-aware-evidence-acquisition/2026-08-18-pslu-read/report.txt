@@ -1,0 +1,56 @@
+P-SLU pinned offline read (docs/readiness/2026-08-17-pslu-preregistration-REGISTERED.md)
+======================================================================
+
+attempt dir: /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-pslu-n60/attempt-20260818T010218Z-4c97cb
+flight status: 'COMPLETED' (error=None)
+
+Per-arm aggregates
+  arm      n   slu_f1  slot_f1x  intent_acc  copy_rate  induced
+  A0      60   0.1741    0.0435      0.0000     0.0000        0
+  A1      60   0.6340    0.5246      0.0000     0.0000        1
+  A1p     60   0.4557    0.2135      0.0000     0.0255        0
+  A2      60   0.4686    0.2486      0.0000     0.0288        0
+  A3      60   0.5961    0.5000      0.0000     0.0000        3
+  A4      60   0.3087    0.1899      0.0000     0.0000        1
+
+Silence-swap comparison (3 A1' silence variants vs their real-audio counterparts)
+  slurp:devel:005518:audio-1490203960: unchanged=False has_real_counterpart=True
+  slurp:devel:007852:audio-1494416109-headset: unchanged=False has_real_counterpart=True
+  slurp:devel:011654:audio-1501692977-headset: unchanged=False has_real_counterpart=True
+
+recheck mismatches (TP/FP/FN vs adapter's committed scorer): 0
+
+VOID (checked FIRST): not met
+  [ NOT_MET] silence-swap answers persist unchanged
+           module docstring note 7: VOID iff ALL 3 silence-swap sample(s) are unchanged (documented ambiguity resolution -- the prereg names no quantifier); slurp:devel:005518:audio-1490203960: unchanged=False; slurp:devel:007852:audio-1494416109-headset: unchanged=False; slurp:devel:011654:audio-1501692977-headset: unchanged=False
+  [ NOT_MET] harness defect
+           no structural harness defects detected
+  [ NOT_MET] per-sample TP/FP/FN fail to reproduce the adapter's committed scorer on recheck
+           every row's recomputed TP/FP/FN/parsed matched its embedded metrics exactly
+
+COPY-TRAP: not met
+  [ NOT_MET] A4 gain >= half of A1' gain
+           module docstring note 9 (requires A1' gain > 0 -- a bare >= is vacuous at 0 vs 0): A1' gain=+0.2816, A4 gain=+0.1346, threshold=+0.1408 (half of A1' gain)
+  [ NOT_MET] any glossary-arm induced-substitution count >= its entity true-positive gain
+           module docstring notes 6+9 (entity TP = summed slot_f1_exact_tp; requires induced count > 0 -- a bare >= is vacuous at 0 vs 0): A1: induced=1, entity_tp_gain=+44.00; A1p: induced=0, entity_tp_gain=+15.00; A2: induced=0, entity_tp_gain=+19.00; A3: induced=3, entity_tp_gain=+44.00; A4: induced=1, entity_tp_gain=+13.00
+  [ NOT_MET] copy-rate >= 50%
+           module docstring note 5 (A1' copy-rate specifically): A1' copy_rate=0.0255 (84/3300), floor=0.50
+
+SUPPLY-CONVERTS: not met
+  [     MET] A1' SLU-F1 gain >= +0.05 absolute over A0
+           A1' gain=+0.2816, floor=0.05
+  [ NOT_MET] A4 gain <= +0.01
+           A4 gain=+0.1346, ceiling=0.01
+  [     MET] A1' copy-rate < 50%
+           A1' copy_rate=0.0255 (84/3300), ceiling=0.50
+
+DOSE-CONFIRM (secondary, descriptive): NOT_MET
+  A3 slu_f1=0.5961, A2 slu_f1=0.4686
+
+INERT: not met
+  no arm gains >= +0.02 SLU-F1 over A0: A1=+0.4599; A1p=+0.2816; A2=+0.2946; A3=+0.4220; A4=+0.1346
+
+intent-accuracy drift guardrail (-5pp)
+  no arm drifted below -5pp intent accuracy vs A0
+
+OVERALL: UNRESOLVED (no branch rule fired mechanically)
