@@ -51,3 +51,19 @@ coordinator-reviewed BEFORE execution; one execution, idempotence-guarded output
 `SAEA-CHECK-a2t-loss-decomp` appended at registration (consumed=no; flips at the read).
 Zero core contact, zero GPU, no attempt-directory mutation. NC license carried on
 audio-derived results.
+
+## 5. Amendment 2026-08-18 (pre-read instrument repair; nothing consumed)
+
+The first execution attempt REFUSED at the suite's own three-way reconciliation gate
+before writing any output: the suite declared losses on deduplicated distinct-tool
+identity, while the parents' `tool_accuracy` is a name-MULTISET comparison — one headroom
+sample (`tier3_multi_intent:003994`, a duplicated gold tool name) makes the identity
+count exactly one low on every full-headroom arm. No output row was read, no verdict
+produced, the idempotence guard did not trip, and the ledger row stays consumed=no.
+Repair, registered before any read: (a) the loss definition is aligned to the parents'
+multiset comparison verbatim; (b) a fifth class **MULTIPLICITY** (correct tool SET,
+wrong multiplicity — structurally neither dragged nor drifted) joins the taxonomy; the
+B2 verdict clauses are unchanged and keep counting DRAGGED-TO-SUPPLIED over B2's total
+losses (a MULTIPLICITY loss therefore weighs against DRAG-CONFIRMED exactly as EMPTY and
+PARSE-FAIL do). The reconciliation gate itself is unchanged — it is the instrument that
+caught the defect.
