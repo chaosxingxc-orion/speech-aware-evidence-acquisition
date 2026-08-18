@@ -1,0 +1,69 @@
+=== run dir ===
+total 5992
+drwxrwxrwx 1 chao chao    4096 Aug 18 16:22 .
+drwxrwxrwx 1 chao chao    4096 Aug 18 16:03 ..
+-rwxrwxrwx 1 chao chao    1588 Aug 18 16:03 SAEA-PROBE-pslu-s2-183.config-values.json
+-rwxrwxrwx 1 chao chao     565 Aug 18 16:03 SAEA-PROBE-pslu-s2-183.plan.json
+-rwxrwxrwx 1 chao chao 4089198 Aug 18 16:22 SAEA-PROBE-pslu-s2-183.server.log
+-rwxrwxrwx 1 chao chao    1623 Aug 18 16:04 SAEA-PROBE-pslu-s2-183.session-receipt.json
+-rwxrwxrwx 1 chao chao   51849 Aug 18 16:22 SAEA-PROBE-pslu-s2-183.trace-manifest.json
+-rwxrwxrwx 1 chao chao  529814 Aug 18 16:22 SAEA-PROBE-pslu-s2-183.trace.jsonl
+-rwxrwxrwx 1 chao chao   43566 Aug 18 16:22 flight-receipt.json
+-rwxrwxrwx 1 chao chao 1319571 Aug 18 16:22 outputs.jsonl
+-rwxrwxrwx 1 chao chao   79609 Aug 18 16:22 responses.jsonl
+
+=== flight receipt (operational fields) ===
+  run_id: SAEA-PROBE-pslu-s2-183
+  attempt_id: attempt-20260818T200339Z-80119a
+  status: COMPLETED
+  error: None
+  config_hash: 9cab7b17f77f03c729e76a21725a31def90113a00e20fa53d733ab7e6e24bd00
+  protocol_hash: ee29c40569b1fdea131bcf45a996837b2d7fa221fed54a8381339ac797bd1001
+  split_identity_hash: fc9de436eba5aba120ecf07ee112765cd4ac0609150e0aaf36f4d44c9c5b5ee5
+  wall_seconds: 196.66904759407043
+  requests_flown_this_attempt: 183
+  requests_replayed_from_cache: 0
+  request_failures: []
+  result_rows: 183
+  session.binary_path: llama.cpp-featcache/build/bin/llama-server
+  session.binary_sha256: 097c96ec5a3f576f378d4d5e103928bf070647fdcc1f015eacb839503e121c68
+  session.argv: /home/chao/llama.cpp-featcache/build/bin/llama-server --host 127.0.0.1 --port 8080 -m /home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf --mmproj /home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/mmproj-Qwen3-Omni-30B-A3B-Instruct-bf16.gguf -c 49152 -np 4 -fa on -ngl 999 -ctk q8_0 -ctv q8_0
+  session.model_file: models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf 0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d
+  session.model_file: models/qwen3-omni-30b-a3b-instruct-gguf-q4km/mmproj-Qwen3-Omni-30B-A3B-Instruct-bf16.gguf f0dfe825fb692d426362b1ac79678fc08daa4758f7151526cad110515f122883
+  close_receipt.trace_manifest_hash: 103355d2e5ae90f92d1388705af06e6fa629522aacb8249af62e4e70b21cee12
+  close_receipt.cost: {"audio_seconds_used": 554.4580625000001, "calls_used": 183, "completion_tokens_total": 9765, "latency_seconds_total": 142.61915656800284, "prompt_tokens_total": 79673, "tool_calls": 0, "umbrella_lock_sha256": "b588f3641ae1d1774fb7652c8978acf25eda7dcbc45a34a898d5471bce5b2e42"}
+  silence_swap entries: 3
+  longest string anywhere in receipt: 108 chars (receipt, not a trace)
+
+=== output artifact shapes (line counts only, content NEVER read) ===
+  responses.jsonl: 183 lines, 79609 bytes
+  outputs.jsonl: 183 lines, 1319571 bytes
+
+=== trace manifest status (operational) ===
+  SAEA-PROBE-pslu-s2-183.trace-manifest.json
+    run_id: SAEA-PROBE-pslu-s2-183
+
+=== feature cache AFTER flight ===
+campaign  /home/chao/feat-cache/slurp-q4km
+23M	/home/chao/feat-cache/slurp-q4km
+  entries: 63
+legacy /home/chao/feat-cache/q4km
+  entries: 34350
+  dir mtime: 2026-08-16 14:09:12.587865213 -0400
+
+=== server.log encode-line evidence (featcache hits are proven by ABSENT encode lines) ===
+  server.log lines matching 'encoding audio': 0
+  server.log lines matching 'feat_cache MISS': 0
+  server.log lines matching 'feat_cache HIT': 0
+  server.log lines matching 'cache save': 0
+  server.log lines matching 'encode': 0
+
+=== orphan llama-server check ===
+  none running
+
+=== exposure ledger row mentions (count only) ===
+1
+
+=== git tree ===
+  (clean)
+852e041 amend(a2t-loss-decomp): pre-read instrument repair - multiset loss definition + MULTIPLICITY class

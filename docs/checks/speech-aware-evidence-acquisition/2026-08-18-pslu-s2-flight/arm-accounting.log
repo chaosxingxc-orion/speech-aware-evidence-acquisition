@@ -1,0 +1,18 @@
+total rows: 183
+
+=== rows per arm ===
+  A1r                      rows=  63  distinct samples=60
+  A1r-phase1               rows=  60  distinct samples=60
+  F1                       rows=  60  distinct samples=60
+
+=== silence-swapped rows per arm ===
+  A1r                      3
+  total swapped rows: 3
+
+=== duplicate (arm, sample_id, silence_swapped) keys ===
+  0 duplicates
+
+=== A1r-phase1 closed-set mapping (structural machinery flags, not content) ===
+  fallback=False: 60
+  non-fallback total: 60 / 60
+  outcome[exact]: 60

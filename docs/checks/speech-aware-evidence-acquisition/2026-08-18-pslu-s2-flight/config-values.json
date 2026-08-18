@@ -1,0 +1,50 @@
+{
+  "config_hash": "9cab7b17f77f03c729e76a21725a31def90113a00e20fa53d733ab7e6e24bd00",
+  "protocol_hash": "ee29c40569b1fdea131bcf45a996837b2d7fa221fed54a8381339ac797bd1001",
+  "values": {
+    "arm": "fixed-legal-context",
+    "arms": [
+      "F1",
+      "A1r-phase1",
+      "A1r"
+    ],
+    "base_url": "http://127.0.0.1:8080",
+    "carrier_lock_key": "slurp",
+    "decoding_params": {
+      "max_tokens": 1024,
+      "seed": 20260803,
+      "temperature": 0
+    },
+    "filler_lexicon": "configs/probes/g0-binding/pslu-s2-filler-lexicon.json",
+    "flight_config": "configs/probes/g0-binding/pslu-s2-flight.json",
+    "flight_config_version": "pslu-s2-flight-v1",
+    "launcher": "scratchpad pslus2fly/launch_pslu_s2_flight.py (archived with the flight receipt)",
+    "model_lock_key": "qwen3-omni-30b-a3b-instruct-gguf-q4km",
+    "preregistration": "docs/readiness/2026-08-18-pslu-s2-preregistration-REGISTERED.md",
+    "probe": "P-SLU-S2",
+    "prompt_order": "evidence-first-system-v2",
+    "roster_table": "configs/probes/g0-binding/pslu-rosters-train-only.json",
+    "runtime_receipt": "receipts/runtime-q4km-featcache.json",
+    "sample_manifest": "configs/probes/g0-binding/pslu-sample-devel-n60.json",
+    "server_args": [
+      "-c",
+      "49152",
+      "-np",
+      "4",
+      "-fa",
+      "on",
+      "-ngl",
+      "999",
+      "-ctk",
+      "q8_0",
+      "-ctv",
+      "q8_0"
+    ],
+    "server_env": {
+      "LLAMA_MTMD_FEAT_CACHE_DIR": "/home/chao/feat-cache/slurp-q4km"
+    },
+    "split_name": "devel",
+    "timeout_seconds": 420.0,
+    "transport": "llama-server"
+  }
+}

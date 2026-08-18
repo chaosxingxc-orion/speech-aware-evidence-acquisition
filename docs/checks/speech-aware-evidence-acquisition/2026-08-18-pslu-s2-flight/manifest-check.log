@@ -1,0 +1,32 @@
+=== trace-manifest top-level keys ===
+  records: <dict len=549>
+  run_id: SAEA-PROBE-pslu-s2-183
+
+=== session receipt ===
+  argv: <list len=21>
+  binary_path: llama.cpp-featcache/build/bin/llama-server
+  binary_sha256: 097c96ec5a3f576f378d4d5e103928bf070647fdcc1f015eacb839503e121c68
+  host: 127.0.0.1
+  model_files: <list len=2>
+  pid: 653
+  port: 8080
+  schema: saea-session-receipt-v1
+  server_log_path: /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-pslu-s2-183/attempt-20260818T200339Z-80119a/SAEA-PROBE-pslu-s2-183.server.log
+  session_id: SAEA-PROBE-pslu-s2-183-attempt-20260818T200339Z-80119a
+  started_at: 2026-08-18T20:03:54.749594+00:00
+  startup_stdout_sha256: 81e124cfab34165f4fa92b97a8b84b9232131fb38645504fcf865470dd86eb65
+  study: speech-aware-evidence-acquisition
+
+=== plan ===
+  attempt_id: attempt-20260818T200339Z-80119a
+  carrier_lock_key: slurp
+  execution_profile: bounded-discovery-probe
+  planned_gpu_hours: 0.5
+  planned_model_calls: 220
+  planned_speech_audio_seconds: 2000
+  protocol_hash: ee29c40569b1fdea131bcf45a996837b2d7fa221fed54a8381339ac797bd1001
+  run_id: SAEA-PROBE-pslu-s2-183
+  schema: saea-execution-plan-v1
+  split_identity_hash: fc9de436eba5aba120ecf07ee112765cd4ac0609150e0aaf36f4d44c9c5b5ee5
+  split_role: discovery
+  study: speech-aware-evidence-acquisition

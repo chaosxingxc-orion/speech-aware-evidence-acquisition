@@ -1,0 +1,61 @@
+=== git tree (must be clean at 852e041 for the whole flight) ===
+852e041 amend(a2t-loss-decomp): pre-read instrument repair - multiset loss definition + MULTIPLICITY class
+  (clean)
+
+=== bytecode hygiene (D3 gate) ===
+PYTHONDONTWRITEBYTECODE=1
+  *.pyc under src/:        0
+  __pycache__ under src/:  0
+
+=== GPU health ===
+name, pstate, clocks.current.sm [MHz], clocks.max.sm [MHz], utilization.gpu [%], memory.used [MiB], temperature.gpu, clocks_event_reasons.active
+NVIDIA GeForce RTX 5090 Laptop GPU, P8, 180 MHz, 3090 MHz, 1 %, 493 MiB, 45, 0x0000000000000000
+
+=== feature caches ===
+campaign  SAEA_FEAT_CACHE_DIR=/home/chao/feat-cache/slurp-q4km (WARM expected: 63 entries from the parent flight)
+23M	/home/chao/feat-cache/slurp-q4km
+  entries: 63
+  dir mtime: 2026-08-17 21:08:20.452621618 -0400
+legacy /home/chao/feat-cache/q4km (MUST NOT BE TOUCHED)
+26G	/home/chao/feat-cache/q4km
+  entries: 34350
+  dir mtime: 2026-08-16 14:09:12.587865213 -0400
+
+=== model files (ext4 copies) ===
+total 20277864
+-rwxr-xr-x 1 chao chao 18557053952 Aug 16 17:24 Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf
+-rwxr-xr-x 1 chao chao  2207465568 Aug 16 17:24 mmproj-Qwen3-Omni-30B-A3B-Instruct-bf16.gguf
+
+=== runtime receipt pins ===
+build commit: None
+
+=== binary + GGUF sha256 verification against the parent attempt-4 pins ===
+binary /home/chao/llama.cpp-featcache/build/bin/llama-server
+  sha256 097c96ec5a3f576f378d4d5e103928bf070647fdcc1f015eacb839503e121c68
+  == parent attempt-4 pin? True
+
+=== orphan llama-server check ===
+  none running
+
+=== existing attempt dirs for this run ===
+  (no run dir yet)
+
+=== disk headroom ===
+  Filesystem      Size  Used Avail Use% Mounted on
+  /dev/sdd       1007G  169G  788G  18% /
+  E:\             3.8T  1.2T  2.6T  32% /mnt/e
+=== runtime receipt pins (schema saea-runtime-receipt-v2) ===
+llama.cpp build commit: 5d9dfcb58ea860295da8fc93c7b5bed9e2c71151 | version: 5 (5d9dfcb58)
+binary pin: llama.cpp-featcache/build/bin/llama-server 097c96ec5a3f576f378d4d5e103928bf070647fdcc1f015eacb839503e121c68
+
+=== per-file GGUF sha256 verification (ext4 copies vs receipt pins) ===
+/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf
+  bytes 18557053952 (pin 18557053952, match=True)
+  sha256 0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d
+  == receipt pin? True
+/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/mmproj-Qwen3-Omni-30B-A3B-Instruct-bf16.gguf
+  bytes 2207465568 (pin 2207465568, match=True)
+  sha256 f0dfe825fb692d426362b1ac79678fc08daa4758f7151526cad110515f122883
+  == receipt pin? True
+
+GGUF VERIFICATION: PASS
