@@ -1,0 +1,60 @@
+{
+  "flight_config_version": "a2t-s2-flight-v1",
+  "probe": "P-A2T",
+  "stage": "Stage-2 supply probe",
+  "status": "REGISTERED",
+  "preregistration": "docs/readiness/2026-08-18-pa2t-stage2-preregistration-REGISTERED.md",
+  "exposure_ledger_row": "SAEA-PROBE-a2t-s2-120",
+  "carrier": "audio2tool",
+  "carrier_lock_key": "audio2tool",
+  "headroom_manifest": "docs/checks/speech-aware-evidence-acquisition/2026-08-18-pa2t-a0-read/headroom.json",
+  "a0_verdict": "docs/checks/speech-aware-evidence-acquisition/2026-08-18-pa2t-a0-read/verdict.json",
+  "a0_selected_tool_source": {
+    "binding": "DERIVED, not read verbatim: neither headroom.json (schema saea-a2t-a0-headroom-v1) nor verdict.json (schema saea-a2t-a0-read-v1) carries a per-sample selected-tool-name field -- both were checked and carry only sample_ids/per-tier aggregates. rails.probes.a2t_s2_flight.derive_a0_selected_tools re-reads attempt_dir/outputs.jsonl (via analysis.a2t_read.load_attempt_rows, reused) and parses each zero-supply row's response_text through reproduction.toolcall_scoring.parse_tool_calls_text (the committed scorer parser, the SAME one Audio2ToolAdapter.score calls) -- never gold, never a second parser.",
+    "attempt_dir": "headroom.json's own attempt_dir field (currently attempt-20260818T055500Z-res315)"
+  },
+  "seed": 20260807,
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "carrier_lock_key": "audio2tool",
+    "split_role": "discovery",
+    "split_identity_hash": "e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c",
+    "planned_model_calls": 450,
+    "planned_gpu_hours": 1.0,
+    "planned_speech_audio_seconds": 3500,
+    "note": "planned_* are ceilings the plan is validated/metered against (contracts.ExecutionPlan); protocol_hash and run_id/attempt_id are assigned by the flying agent's own launcher at flight time, never frozen here. split_identity_hash is carried through for D2/ExecutionPlan identity even though this flight resolves its own sample set from headroom_manifest, not from a fresh Audio2ToolAdapter.load_split() draw."
+  },
+  "bridge": {
+    "core_client": "rails.core_client.FrozenCoreClient",
+    "d2_arm": "fixed-legal-context",
+    "note": "Every S1p/S2/S4/N0r request sends supplied_evidence=[]/evidence_provenance=[] under this same fixed D2 arm -- the supply manipulation lives inside task_instruction (system message) text for every arm in this probe, S1p/S2/S4 included (bridge mission item 3: supply REPLACES {tool_schemas}, it is never an extra user-content text part), so FrozenCoreClient never has a rails 'text' content part to translate into a supplied_evidence item, exactly like A0's own zero-supply request."
+  },
+  "arms": ["S1p", "S2", "S4", "N0r"],
+  "arm_semantics": {
+    "S1p": "self-supplied single roster: the registry row(s) of the tool(s) the core ITSELF named in its own A0 response for that sample (n=120). Exactly 1 row for the ~75/120 single-intent-tier samples; >1 row only for the tier3/tier8 multi-intent minority.",
+    "S2": "diluted: correct tool row(s) + seeded distractor rows, TOTAL roster size fixed at 9 (prereg 'K=9' read literally as a total dose, not 9 distractors on top of the correct row) (n=120)",
+    "S4": "deranged: exactly ONE wrong tool's row, from a fixed-point-free seeded (Sattolo-cycle) mapping over the distinct tool identities the 120 samples' own A0 selections cover (n=120)",
+    "N0r": "noise-floor arm: zero-supply re-fly of 40 seeded, tier-proportional samples of the 120 -- byte-identical request shape to A0 (Audio2ToolAdapter.assemble_prompt(sample, None) reused unchanged, full 152-row registry, no extra content part) (n=40)"
+  },
+  "supply_shape": {
+    "note": "Bridge mission item 3: for S1p/S2/S4 the system prompt's {tool_schemas} fill is REPLACED by the arm's own narrowed roster -- the full 152-row registry IS the A0/N0r condition, never re-sent alongside a narrowed one. The rest of the instruction template (rails.adapters.audio2tool._INSTRUCTION_TEMPLATE) is byte-identical across every arm.",
+    "s1p_entries": "1 (typical; multi-intent tier3/tier8 minority may carry more, one row per distinct selected tool)",
+    "s2_entries": 9,
+    "s4_entries": 1,
+    "n0r_entries": 152,
+    "token_estimate_basis": "A0's own measured full-152-row prefill: ~12693 tokens (pa2t-binding.json A0_shipped_supply_measurements); a single registry row averages ~330 chars (per_tool_line_chars_mean 329.9) so S1p/S4's single-row prompts are two orders of magnitude below A0's prefill, S2's 9-row prompt roughly an order of magnitude below -- exact per-arm counts are computed by rails.probes.a2t_s2_flight.roster_supply_packet's own SupplyDose.token_count (whitespace-split estimate, the SAME convention rails.probes.pslu_flight._roster_packet already uses) and reported at flight-plan build time, not hardcoded here."
+  },
+  "n0r": {
+    "target_n": 40,
+    "seed": 20260807,
+    "selection_rule": "tier-proportional largest-remainder (Hare quota) apportionment of 40 across the 120 headroom ids' own tiers, ties among equal remainders broken by a seeded shuffle (never an arbitrary tier-name order), then a seeded per-tier draw without replacement -- rails.probes.a2t_s2_flight.n0r_seeded_draw. Fully reproducible from (headroom_ids, seed, target_n) alone."
+  },
+  "cost_budget": {
+    "call_formula": "120 (S1p) + 120 (S2) + 120 (S4) + 40 (N0r) = 400",
+    "call_ceiling": 450,
+    "audio_seconds_ceiling": 3500,
+    "gpu_hours_ceiling": 1.0,
+    "basis": "preregistration section 6: A0 measured ~10.5 req/min with registry prefix-cache reuse; 400 requests approx 40 min + margin. S1p/S2/S4's narrowed registry text breaks the SAME prefix-cache A0/N0r's full-152-row system prompt shares, so no per-arm prefill cache reuse is assumed across arms in this ceiling."
+  },
+  "branch_rules_source": "docs/readiness/2026-08-18-pa2t-stage2-preregistration-REGISTERED.md section 4 (VOID / COPY-TRAP / SCHEMA-ONLY / SUPPLY-CONVERTS / INERT / DOSE point) -- mechanical from the per-sample outputs.jsonl rows this flight produces; branch evaluation itself is NOT implemented by this engineering mission (a separately-registered, pinned read suite extending analysis.a2t_read is a later task, built and reviewed BEFORE the one-shot read per the preregistration's own discipline section)."
+}
