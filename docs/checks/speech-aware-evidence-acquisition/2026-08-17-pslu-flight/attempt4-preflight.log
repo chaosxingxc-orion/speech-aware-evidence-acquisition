@@ -1,0 +1,28 @@
+repo module root: /mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/src/speech_aware_evidence_acquisition
+data_root: /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+carrier_root (asset_dir slurp): /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/datasets/slurp
+manifest: n=60 seed=20260807
+split_identity_hash (full, from binding JSON): fc9de436eba5aba120ecf07ee112765cd4ac0609150e0aaf36f4d44c9c5b5ee5
+rosters: 18 scenarios, 55 global types, 100 full-roster entries, 18 derangement keys
+devel split resolved: 8690 samples
+frozen sample set selected: 60
+media resolved: 60/60 flac present
+total audio seconds: 182.26 (prereg: 182.26), mean 3.04
+gold slots on the frozen 60: 89 (prereg: 89)
+distinct gold scenarios: 18 (prereg: 18 devel scenarios)
+silence-swap ids: ['slurp:devel:005518:audio-1490203960', 'slurp:devel:007852:audio-1494416109-headset', 'slurp:devel:011654:audio-1501692977-headset']
+silence-swap ids: all 3 inside the frozen 60 -- OK
+exposure rows matching run id 'SAEA-PROBE-pslu-n60': 1
+  ledger['execution profile'] = 'bounded-discovery-probe'
+  ledger['split role'] = 'discovery'
+  ledger['split identity hash'] = 'fc9de436eba5aba120ecf07ee112765cd4ac0609150e0aaf36f4d44c9c5b5ee5'
+  ledger['consumed'] = 'no'
+  ledger['calls'] = '450'
+  ledger['speech audio seconds'] = '1500'
+  ledger['gpu hours'] = '0.5'
+config_hash: a72c7a6cadda40a852a766e8eed9b99f0a9d0daf7c7784f9fa01780df9f5ee4d
+protocol_hash: 5a9d989d9e628f91fd6b49c6eb400b29b9556b80583b14d4dfc8fe0b6de8d72c
+server_env: {'LLAMA_MTMD_FEAT_CACHE_DIR': '/home/chao/feat-cache/slurp-q4km'}
+ExecutionPlan validates: profile=bounded-discovery-probe role=discovery
+
+PRE-FLIGHT CLEAN

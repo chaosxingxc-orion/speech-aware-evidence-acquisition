@@ -1,0 +1,31 @@
+umbrella lock: /mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json
+data_root:     /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+
+=== lock entry (slurp) ===
+  local_subdir:    datasets/slurp
+  governed_copy:   datasets/slurp/metadata
+
+=== carrier_root, resolved the way core/driver/run.py does ===
+  asset_dir(...):   /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/datasets/slurp
+  realpath:         /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/datasets/slurp
+  exists:           True
+  == $SPEECHRL_DATA_DIR/datasets/slurp ? True
+
+loading devel split (model-free sha256 pass) ...
+  frozen sample set: 60 samples
+
+=== request-1 sample ===
+  sample_id:       slurp:devel:000115:audio-1495375974
+  media_relpath:   datasets/slurp/slurp_real/audio-1495375974.flac
+  absolute:        /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/datasets/slurp/slurp_real/audio-1495375974.flac
+  exists:          True
+  INSIDE carrier_root: True
+
+=== all 60 media_relpaths confined? ===
+  outside carrier_root: 0/60
+
+=== build_payload_binding (the rail that refused attempt 3) ===
+  binding constructed OK: PayloadBindingContext
+  carrier_root on binding: /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/datasets/slurp
+
+CONFINEMENT SANITY: PASS

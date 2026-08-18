@@ -1,5 +1,6 @@
 cfd7fa55cc45832e438cb8a31471b1a790637353b705e9e9a550181cf9c539bc *./2026-08-18-attempt2-flight-execution.md
 90f2bb3ee8c50ff9a69ca34604e5bfccef3de5f81ba25919be0e7d5a290fc5c4 *./2026-08-18-attempt3-flight-execution.md
+160138b1cd9e1fb7fcc326d6ff0bbb27cd4873473e832cec4f3235afc0a794da *./2026-08-18-attempt4-flight-execution.md
 a4d7e627270dd403ef0e0edac3dfe0fbf5e5ba6b93c93969d9a9025f6a7ecfef *./README.md
 08a2d52512ffec30c6244987e1958450f2eacd7c2597cd02e7cc156f5f3d11d8 *./attempt2-cache-integrity.log
 e97b77af0f53b555c19a412fd7af3395f3223cff6eaa8ed5955c69b185862a89 *./attempt2-d1-probe.log
@@ -19,6 +20,19 @@ e97b77af0f53b555c19a412fd7af3395f3223cff6eaa8ed5955c69b185862a89 *./attempt3-d1-
 ba798e90521e4fe81eabf432f51cb4b8395724002193c8bbdd316b0553dc3f34 *./attempt3-run-flight.sh
 89a0220fd6141266ba7d3de63dfb7d6e7d773f34099b87042e57e0581335156d *./attempt3-slice-sanity.log
 46fff91816b9e142e1754dcedf160d44922cb5827445f6441162cb82cbb76a27 *./attempt3-slice-sanity.py
+0a5fa16c8e201b87d61bd37ebd56e23586ce473d79514e98c7e7c8a387cdd9d3 *./attempt4-arm-accounting.log
+e38d681c6c608a4d4bc1adaceeebc5c2b4c8029e9efc7b3740b2900be798876f *./attempt4-arm-accounting.sh
+a7ef8d3d54abd0d61b9f7d5521417dd3f81d59faae0dfc707f0aa2a28404660f *./attempt4-confinement-sanity.log
+7e44030515118b18e4f2d3adce7d47518c07021aecd5ba56d4528b222bc172af *./attempt4-confinement-sanity.py
+e97b77af0f53b555c19a412fd7af3395f3223cff6eaa8ed5955c69b185862a89 *./attempt4-d1-probe.log
+e79966843db474b83b52a1b52ca979420ea1d769b6cb94a50a2273f4c3d74dd3 *./attempt4-env-probe-before.log
+2c9d58c865d70f1936d272f76f9c9c092c216c7f5d7f98ea58e5d9ae8e89e04c *./attempt4-flight-receipt.json
+cb772486c751abdaa4fd0308b74c7532f47439d5ab1427b21d649d220275f91e *./attempt4-flight.log
+a78a7e90244fbf8430ad31f74b38899bb42d6faa1f11adfb954b5954be8d386d *./attempt4-hygiene.sh
+b8aa244196ac73b3fdd788c10e5fa09acd33b47f7383cde941f15564d89d32fe *./attempt4-manifest-check.log
+5f47fac13400f0336df403bb4338846eba36ebd7eef89ec8312f004db6c3527b *./attempt4-postflight.log
+981855ed1315666e269a979408562159f9c445b85e57b2ae0958ca8274c3d77f *./attempt4-preflight.log
+f0cd5141f202e96e9bc5cdff4801ed138fab2a82c5fa0de49148848877f4bca5 *./attempt4-run-flight.sh
 5535ec345c8076a009d210ec5059f63e133d6d64d77f877cbf09fd476818aacc *./d1-media-identity-refusal.log
 d956d57342f44ec5a065dbd90567b056175f1150173bf830921873862108f8ab *./gate-recheck-after-ledger-repair.log
 5daf902948559534690e83a0f860dde7c39aaba81ff70dcf7155b8551641677d *./launcher-import-check.log

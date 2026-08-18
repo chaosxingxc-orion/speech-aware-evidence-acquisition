@@ -1,0 +1,52 @@
+=== run dir ===
+total 18280
+drwxrwxrwx 1 chao chao     4096 Aug 17 21:10 .
+drwxrwxrwx 1 chao chao     4096 Aug 17 21:02 ..
+-rwxrwxrwx 1 chao chao     1520 Aug 17 21:02 SAEA-PROBE-pslu-n60.config-values.json
+-rwxrwxrwx 1 chao chao      562 Aug 17 21:02 SAEA-PROBE-pslu-n60.plan.json
+-rwxrwxrwx 1 chao chao 14570202 Aug 17 21:10 SAEA-PROBE-pslu-n60.server.log
+-rwxrwxrwx 1 chao chao     1614 Aug 17 21:02 SAEA-PROBE-pslu-n60.session-receipt.json
+-rwxrwxrwx 1 chao chao   100608 Aug 17 21:10 SAEA-PROBE-pslu-n60.trace-manifest.json
+-rwxrwxrwx 1 chao chao  1020124 Aug 17 21:10 SAEA-PROBE-pslu-n60.trace.jsonl
+-rwxrwxrwx 1 chao chao    82691 Aug 17 21:10 flight-receipt.json
+-rwxrwxrwx 1 chao chao  2740921 Aug 17 21:10 outputs.jsonl
+-rwxrwxrwx 1 chao chao     4558 Aug 17 21:10 predicted-scenarios.json
+-rwxrwxrwx 1 chao chao   171833 Aug 17 21:10 responses.jsonl
+
+=== flight receipt (operational fields) ===
+  run_id: SAEA-PROBE-pslu-n60
+  attempt_id: attempt-20260818T010218Z-4c97cb
+  status: COMPLETED
+  error: None
+  config_hash: a72c7a6cadda40a852a766e8eed9b99f0a9d0daf7c7784f9fa01780df9f5ee4d
+  protocol_hash: 5a9d989d9e628f91fd6b49c6eb400b29b9556b80583b14d4dfc8fe0b6de8d72c
+  split_identity_hash: fc9de436eba5aba120ecf07ee112765cd4ac0609150e0aaf36f4d44c9c5b5ee5
+  wall_seconds: 361.8084375858307
+  requests_flown_this_attempt: 363
+  requests_replayed_from_cache: 0
+  request_failures: []
+  result_rows: 363
+  session.binary_path: llama.cpp-featcache/build/bin/llama-server
+  session.binary_sha256: 097c96ec5a3f576f378d4d5e103928bf070647fdcc1f015eacb839503e121c68
+  session.model_file: models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf 0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d
+  session.model_file: models/qwen3-omni-30b-a3b-instruct-gguf-q4km/mmproj-Qwen3-Omni-30B-A3B-Instruct-bf16.gguf f0dfe825fb692d426362b1ac79678fc08daa4758f7151526cad110515f122883
+  close_receipt.trace_manifest_hash: bc25cb53e597e404520168b6dd2bedfd830b3f2bc9b87bd16a29dff108059a5f
+  close_receipt.cost: {"audio_seconds_used": 1101.2363749999986, "calls_used": 363, "completion_tokens_total": 22890, "latency_seconds_total": 279.79532306485635, "prompt_tokens_total": 132516, "tool_calls": 0, "umbrella_lock_sha256": "38bcaf2ab6d39d6d954e54e691a55e8245354462b92d4d8a7921b1065f9101e3"}
+  silence_swap entries: 3
+
+=== output artifact shapes (line counts only, content NEVER read) ===
+  responses.jsonl: 363 lines, 171833 bytes
+  outputs.jsonl: 363 lines, 2740921 bytes
+  predicted-scenarios.json: 4558 bytes
+
+=== trace manifest status (operational) ===
+  SAEA-PROBE-pslu-n60.trace-manifest.json
+    run_id: SAEA-PROBE-pslu-n60
+
+=== exposure ledger row still unconsumed ===
+1
+1
+
+=== git tree ===
+  (clean)
+7d65909 check(pslu): flight attempt 3 NOT flown - SLURP lock has two disagreeing path authorities

@@ -1,0 +1,18 @@
+total rows: 363
+
+=== rows per arm ===
+  A0                       rows=  60  distinct samples=60
+  A1                       rows=  60  distinct samples=60
+  A1p                      rows=  63  distinct samples=60
+  A2                       rows=  60  distinct samples=60
+  A3                       rows=  60  distinct samples=60
+  A4                       rows=  60  distinct samples=60
+
+=== silence-swapped rows per arm ===
+  A1p                      3
+  total swapped rows: 3
+
+=== phase-1 scenario parse flag (structural, not a metric) ===
+  parsed=True: 60
+
+predicted-scenarios.json: 60 sample entries (values NOT printed)
