@@ -1,0 +1,65 @@
+{
+  "flight_config_version": "pslu-s2-flight-v1",
+  "probe": "P-SLU-S2",
+  "status": "REGISTERED",
+  "preregistration": "docs/readiness/2026-08-18-pslu-s2-preregistration-REGISTERED.md",
+  "parent_probe_preregistration": "docs/readiness/2026-08-17-pslu-preregistration-REGISTERED.md",
+  "parent_probe_verdict": "docs/readiness/2026-08-18-pslu-verdict.md",
+  "exposure_ledger_row": "SAEA-PROBE-pslu-s2-183",
+  "carrier": "slurp",
+  "carrier_lock_key": "slurp",
+  "sample_manifest": "configs/probes/g0-binding/pslu-sample-devel-n60.json",
+  "roster_table": "configs/probes/g0-binding/pslu-rosters-train-only.json",
+  "filler_lexicon": "configs/probes/g0-binding/pslu-s2-filler-lexicon.json",
+  "ontology_miner_prohibited_on_this_path": "speech_aware_evidence_acquisition.data.slurp.load_slurp_ontology",
+  "ontology_miner_prohibition_enforced_by": "rails.probes.pslu_flight.assert_never_calls_ontology_miner (reused verbatim) PLUS rails.probes.pslu_s2_flight._assert_this_module_never_calls_ontology_miner (this module's own source, checked separately -- see that function's own docstring for why the parent's default guard alone cannot scan a different file) -- both checked at rails.probes.pslu_s2_flight import time and again at the top of run_pslu_s2_flight",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "carrier_lock_key": "slurp",
+    "split_role": "discovery",
+    "split_identity_hash": "fc9de436eba5aba120ecf07ee112765cd4ac0609150e0aaf36f4d44c9c5b5ee5",
+    "planned_model_calls": 220,
+    "planned_gpu_hours": 0.5,
+    "planned_speech_audio_seconds": 2000,
+    "note": "planned_* are ceilings the plan is validated/metered against (contracts.ExecutionPlan); protocol_hash and run_id/attempt_id are assigned by the flying agent's own launcher at flight time, never frozen here. split_identity_hash is IDENTICAL to the parent flight's own value -- this probe reuses the SAME frozen 60-sample manifest, never a fresh draw."
+  },
+  "bridge": {
+    "core_client": "rails.core_client.FrozenCoreClient",
+    "d2_arm": "fixed-legal-context",
+    "note": "Same bridge convention as the parent pslu-flight.json: every request sends supplied_evidence=[]/evidence_provenance=[] under this same fixed D2 arm -- F1's roster text and A1'r phase 1's closed-set instruction text both live inside a rails 'text' content part FrozenCoreClient never has to translate specially, exactly like the parent's own roster arms."
+  },
+  "arms": ["F1", "A1r-phase1", "A1r"],
+  "arm_semantics": {
+    "F1": "format-matched filler control: ONE fixed 100-entry synthetic non-ontology roster (rails.probes.pslu_s2_filler.generate_f1_filler_roster, seed 20260807), rendered byte-identically to A3's own type=value shape via the SAME rails.probes.pslu_flight._roster_packet, identical for every sample (n=60)",
+    "A1r-phase1": "closed-set scenario choice over the 18 canonical scenario labels (rails.probes.pslu_s2_flight.canonical_scenario_labels, derived from the frozen roster table's own scenario_rosters keys), deterministically mapped to a canonical label or recorded as an A2-fallback (rails.probes.pslu_s2_flight.map_predicted_scenario_to_canonical) (n=60)",
+    "A1r": "self-scoping re-fly, phase 2: the frozen rails.probes.pslu_flight.pslu_supply_packet('A1p', scenario=<A1r-phase1's own parsed label>, rosters=...) roster, scored for official SLU-F1 (n=60, plus 3 silence-swap variants)"
+  },
+  "phases": {
+    "phase1": "F1's own single-phase request (independent per sample), and A1'r's own closed-set scenario-choice request (independent of F1) -- both fired once per sample",
+    "phase2": "A1'r's own supply-scored request, keyed on phase 1's own parsed label -- A1'r additionally fires one silence-swapped phase-2 request for each sample named in silence_swap; F1 has no phase 2"
+  },
+  "silence_swap": {
+    "count": 3,
+    "seed": 20260807,
+    "selection_rule": "sorted(random.Random(f'{seed}:silence-swap').sample(sorted(item['sample_id'] for item in sample_manifest['items']), 3)) -- IDENTICAL rule and seed to the parent flight's own silence_swap block, over the SAME frozen 60-sample manifest, so it reproduces the SAME 3 sample ids (test_pslu_s2_flight_config.py proves this against BOTH this file and the parent's own pslu-flight.json)",
+    "sample_ids": [
+      "slurp:devel:005518:audio-1490203960",
+      "slurp:devel:007852:audio-1494416109-headset",
+      "slurp:devel:011654:audio-1501692977-headset"
+    ],
+    "arm": "A1r",
+    "note": "adds exactly 3 extra requests beyond the base 60+60+60 total, on A1'r's OWN phase-2 request only (never F1, never A1'r's own phase-1 request) -- rails.probes.pslu_s2_flight.run_pslu_s2_flight's own silence_swap_media_relpaths parameter consumes {sample_id: registered_slice_media_relpath} exactly like the parent's own run_pslu_flight"
+  },
+  "cost_budget": {
+    "call_formula": "60 (F1) + 60 (A1'r phase1) + 60 (A1'r phase2) + 3 (silence-swap extra) = 183",
+    "call_ceiling": 220,
+    "audio_seconds_formula": "182.26s (one full pass over the 60 samples) x 3 sends per sample (F1 + A1'r phase1 + A1'r phase2) + ~9.12s (3 silence-swap extra sends, duration-matched to their own samples) ~= 555.9s",
+    "audio_seconds_ceiling": 2000,
+    "gpu_hours_ceiling": 0.5
+  },
+  "metrics": {
+    "primary": "official SLU-F1 on F1 and A1'r, compared against the CITED consumed A0 (0.1741, docs/checks/speech-aware-evidence-acquisition/2026-08-18-pslu-read/verdict.json, commit d8b71a5) and CITED consumed A3 (0.5961, same source) -- A0 is NOT re-flown by this probe",
+    "alongside": ["slot_f1_exact", "entity TP/FP/FN", "induced-substitution count", "intent accuracy (reported-only)", "copy_rate (rails.consumption.ConsumptionTrace, reported, no clause)", "supplied-item count audit", "phase-1 non-fallback rate / mapping-outcome breakdown / phase-1 scenario accuracy vs gold (scoring-side only)"]
+  },
+  "branch_rules_source": "docs/readiness/2026-08-18-pslu-s2-preregistration-REGISTERED.md section 1 (Q-A: FORMAT-FLOOR-CONFIRMED / KNOWLEDGE-BEYOND-FORMAT / FORMAT-IS-EVERYTHING / INCONCLUSIVE-QA; Q-B: SELF-SCOPING-WORKS / SELF-SCOPING-FAILS / INCONCLUSIVE-QB; independent, no exclusive lattice) plus the parent's own silence-swap unanimity VOID bar (note 7, reused) -- mechanical from the per-sample PsluS2ArmResult rows this flight produces; branch evaluation itself lives in analysis.pslu_s2_read, built and coordinator-reviewed BEFORE the one-shot read per the registration's own discipline section."
+}
