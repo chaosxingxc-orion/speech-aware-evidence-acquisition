@@ -1,0 +1,280 @@
+{
+  "aggregates": {
+    "A1r": {
+      "arm": "A1r",
+      "copy_rate": 0.0,
+      "copy_records": 0,
+      "copy_records_total": 2177,
+      "entity_tp_fp_fn": {
+        "fn": 44.0,
+        "fp": 50.0,
+        "tp": 45.0
+      },
+      "induced_substitution_count": 2,
+      "intent_accuracy": 0.0,
+      "n_samples": 60,
+      "slot_f1_exact": {
+        "f1": 0.48913043478260865,
+        "precision": 0.47368421052631576,
+        "recall": 0.5056179775280899,
+        "tp_sum": 45.0
+      },
+      "slu_f1": {
+        "f1": 0.6093242545024063,
+        "precision": 0.5918737842281638,
+        "recall": 0.6278349843635939
+      }
+    },
+    "A1r-phase1": {
+      "arm": "A1r-phase1",
+      "copy_rate": 0.0,
+      "copy_records": 0,
+      "copy_records_total": 0,
+      "entity_tp_fp_fn": {
+        "fn": 85.0,
+        "fp": 66.0,
+        "tp": 4.0
+      },
+      "induced_substitution_count": 0,
+      "intent_accuracy": 0.11666666666666667,
+      "n_samples": 60,
+      "slot_f1_exact": {
+        "f1": 0.050314465408805034,
+        "precision": 0.05714285714285714,
+        "recall": 0.0449438202247191,
+        "tp_sum": 4.0
+      },
+      "slu_f1": {
+        "f1": 0.12866461723026165,
+        "precision": 0.14474905103331925,
+        "recall": 0.11579728726634725
+      }
+    },
+    "F1": {
+      "arm": "F1",
+      "copy_rate": 0.0,
+      "copy_records": 0,
+      "copy_records_total": 6000,
+      "entity_tp_fp_fn": {
+        "fn": 88.0,
+        "fp": 82.0,
+        "tp": 1.0
+      },
+      "induced_substitution_count": 0,
+      "intent_accuracy": 0.0,
+      "n_samples": 60,
+      "slot_f1_exact": {
+        "f1": 0.011627906976744188,
+        "precision": 0.012048192771084338,
+        "recall": 0.011235955056179775,
+        "tp_sum": 1.0
+      },
+      "slu_f1": {
+        "f1": 0.13561683312189396,
+        "precision": 0.1399982451169835,
+        "recall": 0.13150134184520335
+      }
+    }
+  },
+  "attempt_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-pslu-s2-183/attempt-20260818T200339Z-80119a",
+  "flight_error": null,
+  "flight_status": "COMPLETED",
+  "harness_defect_reasons": [],
+  "mapping_summary": {
+    "fallback_count": 0,
+    "n_calls": 60,
+    "non_fallback_count": 60,
+    "outcome_counts": {
+      "exact": 60
+    },
+    "phase1_scenario_accuracy": 0.7833333333333333
+  },
+  "note": "gold-derived; scoring-side only; must never enter a runtime path",
+  "qa": {
+    "f1_slu_f1": 0.13561683312189396,
+    "format_floor_confirmed": {
+      "clause_text": "F1 SLU-F1 gain vs CITED A0 >= +0.1046 (= A4's CITED +0.1346 - 0.03)",
+      "detail": "F1 slu_f1=0.1356, gain vs A0_CITED(0.1741)=-0.0385, floor=+0.1046",
+      "verdict": "not_met"
+    },
+    "format_is_everything": {
+      "clause_text": "A3_CITED - F1 SLU-F1 <= 0.03",
+      "detail": "gap=+0.4605, ceiling=0.03",
+      "verdict": "not_met"
+    },
+    "gain_vs_a0": -0.038483166878106045,
+    "gap_a3_minus_f1": 0.460483166878106,
+    "knowledge_beyond_format": {
+      "clause_text": "A3_CITED(0.5961) - F1 SLU-F1 >= 0.10",
+      "detail": "gap=A3_CITED(0.5961) - F1(0.1356)=+0.4605, floor=0.10",
+      "verdict": "met"
+    },
+    "overall": "KNOWLEDGE-BEYOND-FORMAT"
+  },
+  "qb": {
+    "gain_vs_a0": 0.4352242545024063,
+    "n_calls": 60,
+    "non_fallback_count": 60,
+    "overall": "SELF-SCOPING-WORKS",
+    "self_scoping_fails": {
+      "clause_text": "non-fallback < 30/60 OR A1'r gain vs CITED A0 < A2's CITED - 0.10",
+      "detail": "non_fallback=60/60 (ceiling <30), gain=+0.4352 (ceiling <+0.1946)",
+      "verdict": "not_met"
+    },
+    "self_scoping_works": {
+      "clause_text": "non-fallback >= 50/60 AND A1'r gain vs CITED A0 >= A2's CITED +0.2946 - 0.03",
+      "detail": "non_fallback=60/60 (floor 50), gain=+0.4352 (floor +0.2646)",
+      "verdict": "met"
+    }
+  },
+  "recheck_mismatch_count": 0,
+  "runtime_prohibited": true,
+  "schema": "saea-pslu-s2-read-v1",
+  "silence_swap": [
+    {
+      "has_real_counterpart": true,
+      "real_signature": [
+        "controlling a smart device",
+        "turn off",
+        [
+          [
+            "device_type",
+            "room light"
+          ]
+        ]
+      ],
+      "sample_id": "slurp:devel:005518:audio-1490203960",
+      "silence_signature": [
+        "coffee shop",
+        "order coffee",
+        [
+          [
+            "business_name",
+            "starbucks"
+          ],
+          [
+            "coffee_type",
+            "coffee with one cream and three sugars"
+          ]
+        ]
+      ],
+      "unchanged": false
+    },
+    {
+      "has_real_counterpart": true,
+      "real_signature": [
+        "Adding an event to a calendar",
+        "Add event",
+        [
+          [
+            "event_name",
+            "baseball practice"
+          ],
+          [
+            "time",
+            "5 pm"
+          ],
+          [
+            "timeofday",
+            "tonight"
+          ]
+        ]
+      ],
+      "sample_id": "slurp:devel:007852:audio-1494416109-headset",
+      "silence_signature": [
+        "Setting a reminder for a daily task",
+        "Set a reminder",
+        [
+          [
+            "general_frequency",
+            "daily"
+          ],
+          [
+            "list_name",
+            "tasks"
+          ]
+        ]
+      ],
+      "unchanged": false
+    },
+    {
+      "has_real_counterpart": true,
+      "real_signature": [
+        "searching for restaurants",
+        "search for",
+        [
+          [
+            "business_type",
+            "restaurants"
+          ],
+          [
+            "food_type",
+            "chinese"
+          ],
+          [
+            "place_name",
+            "nearby"
+          ]
+        ]
+      ],
+      "sample_id": "slurp:devel:011654:audio-1501692977-headset",
+      "silence_signature": [
+        "finding a restaurant for dinner",
+        "search for a restaurant",
+        [
+          [
+            "food_type",
+            "pizza"
+          ],
+          [
+            "meal_type",
+            "dinner"
+          ],
+          [
+            "place_name",
+            "new york"
+          ],
+          [
+            "time",
+            "tonight"
+          ]
+        ]
+      ],
+      "unchanged": false
+    }
+  ],
+  "supplied_item_audit": {
+    "A1r": {
+      "max": 40,
+      "mean": 36.28333333333333,
+      "min": 19,
+      "n_calls": 60
+    },
+    "F1": {
+      "max": 100,
+      "mean": 100.0,
+      "min": 100,
+      "n_calls": 60
+    }
+  },
+  "void": {
+    "clauses": [
+      {
+        "clause_text": "silence-swap answers persist unchanged",
+        "detail": "module docstring note 7: VOID iff ALL 3 silence-swap sample(s) are unchanged (documented ambiguity resolution -- the prereg names no quantifier); slurp:devel:005518:audio-1490203960: unchanged=False; slurp:devel:007852:audio-1494416109-headset: unchanged=False; slurp:devel:011654:audio-1501692977-headset: unchanged=False",
+        "verdict": "not_met"
+      },
+      {
+        "clause_text": "harness defect",
+        "detail": "no structural harness defects detected",
+        "verdict": "not_met"
+      },
+      {
+        "clause_text": "per-sample TP/FP/FN fail to reproduce the adapter's committed scorer on recheck",
+        "detail": "every row's recomputed TP/FP/FN/parsed matched its embedded metrics exactly",
+        "verdict": "not_met"
+      }
+    ],
+    "voided": false
+  }
+}

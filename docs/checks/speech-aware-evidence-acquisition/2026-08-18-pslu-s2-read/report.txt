@@ -1,0 +1,52 @@
+P-SLU Stage-2 pinned offline read (docs/readiness/2026-08-18-pslu-s2-preregistration-REGISTERED.md)
+==============================================================================
+
+attempt dir: /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-pslu-s2-183/attempt-20260818T200339Z-80119a
+flight status: 'COMPLETED' (error=None)
+
+Per-arm aggregates
+  arm              n   slu_f1  slot_f1x  intent_acc  copy_rate  induced
+  F1              60   0.1356    0.0116      0.0000     0.0000        0
+  A1r-phase1      60   0.1287    0.0503      0.1167     0.0000        0
+  A1r             60   0.6093    0.4891      0.0000     0.0000        2
+
+Supplied-item audit (F1 / A1'r)
+  F1: n_calls=60 mean=100.00 min=100 max=100
+  A1r: n_calls=60 mean=36.28 min=19 max=40
+
+Phase-1 (A1r-phase1) mapping summary
+  non_fallback=60/60  fallback=0/60
+  outcome_counts={'exact': 60}
+  phase1_scenario_accuracy (scoring-side only, reported)=0.7833
+
+Silence-swap comparison (3 A1'r silence variants vs their real-audio counterparts)
+  slurp:devel:005518:audio-1490203960: unchanged=False has_real_counterpart=True
+  slurp:devel:007852:audio-1494416109-headset: unchanged=False has_real_counterpart=True
+  slurp:devel:011654:audio-1501692977-headset: unchanged=False has_real_counterpart=True
+
+recheck mismatches (TP/FP/FN vs adapter's committed scorer): 0
+
+VOID (checked FIRST, gates BOTH Q-A and Q-B): not met
+  [ NOT_MET] silence-swap answers persist unchanged
+           module docstring note 7: VOID iff ALL 3 silence-swap sample(s) are unchanged (documented ambiguity resolution -- the prereg names no quantifier); slurp:devel:005518:audio-1490203960: unchanged=False; slurp:devel:007852:audio-1494416109-headset: unchanged=False; slurp:devel:011654:audio-1501692977-headset: unchanged=False
+  [ NOT_MET] harness defect
+           no structural harness defects detected
+  [ NOT_MET] per-sample TP/FP/FN fail to reproduce the adapter's committed scorer on recheck
+           every row's recomputed TP/FP/FN/parsed matched its embedded metrics exactly
+
+Q-A (arm F1: is the control gain format, does knowledge survive the schema-primed floor?)
+  [ NOT_MET] F1 SLU-F1 gain vs CITED A0 >= +0.1046 (= A4's CITED +0.1346 - 0.03)
+           F1 slu_f1=0.1356, gain vs A0_CITED(0.1741)=-0.0385, floor=+0.1046
+  [     MET] A3_CITED(0.5961) - F1 SLU-F1 >= 0.10
+           gap=A3_CITED(0.5961) - F1(0.1356)=+0.4605, floor=0.10
+  [ NOT_MET] A3_CITED - F1 SLU-F1 <= 0.03
+           gap=+0.4605, ceiling=0.03
+  OVERALL Q-A: KNOWLEDGE-BEYOND-FORMAT
+
+Q-B (arm A1'r: does legal self-scoping work once the label-space defect is fixed?)
+  [     MET] non-fallback >= 50/60 AND A1'r gain vs CITED A0 >= A2's CITED +0.2946 - 0.03
+           non_fallback=60/60 (floor 50), gain=+0.4352 (floor +0.2646)
+  [ NOT_MET] non-fallback < 30/60 OR A1'r gain vs CITED A0 < A2's CITED - 0.10
+           non_fallback=60/60 (ceiling <30), gain=+0.4352 (ceiling <+0.1946)
+  OVERALL Q-B: SELF-SCOPING-WORKS
+
