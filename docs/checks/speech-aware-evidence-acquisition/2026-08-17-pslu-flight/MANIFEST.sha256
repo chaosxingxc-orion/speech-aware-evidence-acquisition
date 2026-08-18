@@ -1,4 +1,12 @@
+cfd7fa55cc45832e438cb8a31471b1a790637353b705e9e9a550181cf9c539bc *./2026-08-18-attempt2-flight-execution.md
 a4d7e627270dd403ef0e0edac3dfe0fbf5e5ba6b93c93969d9a9025f6a7ecfef *./README.md
+08a2d52512ffec30c6244987e1958450f2eacd7c2597cd02e7cc156f5f3d11d8 *./attempt2-cache-integrity.log
+e97b77af0f53b555c19a412fd7af3395f3223cff6eaa8ed5955c69b185862a89 *./attempt2-d1-probe.log
+d974a31b1da67eaa8d0582a7505707001c22fad21ef9903031d8e80e5ea3f2d4 *./attempt2-flight-abort.log
+b3f24455c872efdf05627b6cc8c750239aafab73e1831db4e09d2f05b51d4295 *./attempt2-pathsafety-fs-probe.log
+db1ea4e46eecb92b253f484b1b584b07bd54e2deef9669be55c6d15548493e72 *./attempt2-pathsafety-fs-probe.sh
+743c9ccce42f1a7b6833a6224a6e71920a8dc9ddeb11836fac6985d943884413 *./attempt2-preflight.log
+bbccdcc72eaa17c968d801dcb540d3251422d3b5d6683ed2383165f009b15c5a *./attempt2-session.log
 5535ec345c8076a009d210ec5059f63e133d6d64d77f877cbf09fd476818aacc *./d1-media-identity-refusal.log
 d956d57342f44ec5a065dbd90567b056175f1150173bf830921873862108f8ab *./gate-recheck-after-ledger-repair.log
 5daf902948559534690e83a0f860dde7c39aaba81ff70dcf7155b8551641677d *./launcher-import-check.log
