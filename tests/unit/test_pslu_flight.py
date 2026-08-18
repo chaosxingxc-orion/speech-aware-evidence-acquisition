@@ -11,6 +11,7 @@ from pathlib import Path
 
 import pytest
 
+from speech_aware_evidence_acquisition.core.model import SliceRegistry
 from speech_aware_evidence_acquisition.data.lock import load_lock
 from speech_aware_evidence_acquisition.rails import MockCoreClient
 from speech_aware_evidence_acquisition.rails.adapters.slurp import SlurpAdapter
@@ -29,6 +30,7 @@ from speech_aware_evidence_acquisition.rails.probes.pslu_flight import (
     run_pslu_flight,
     select_pslu_samples,
 )
+from speech_aware_evidence_acquisition.rails.silence_swap import build_silence_swap_slice
 
 _ROSTERS = PsluRosters(
     scenario_rosters={
@@ -374,9 +376,34 @@ def test_run_pslu_flight_phase1_row_carries_whether_it_parsed(slurp_world):
 
 
 def test_run_pslu_flight_silence_swap_adds_one_extra_a1p_row(slurp_world):
+    """``silence_swap_media_relpaths`` carries whatever media_relpath a REAL
+    SliceRegistry actually produced for s_iot's raw, colon-bearing SLURP id
+    (``slurp:devel:000101:audio-101``) -- not a hand-typed path the real
+    registry could never build. This is the regression test for
+    docs/checks/speech-aware-evidence-acquisition/2026-08-17-pslu-flight/
+    2026-08-18-attempt2-flight-execution.md: the original version of this
+    test hardcoded exactly the string the pre-fix registry refused to
+    produce, so it hid the defect behind a green suite."""
+
     adapter, s_iot, s_email = _flight_world(slurp_world)
     client = MockCoreClient(responder=_responder(s_iot))
-    silence_relpath = "derived/obs-slices/run-x/slurp:devel:000101:audio-101/i0000.wav"
+    assert ":" in s_iot.sample_id  # the defect only bites a colon-bearing raw id
+    registry = SliceRegistry(
+        data_root=slurp_world.data_root,
+        run_id="run-x",
+        parent_facts={s_iot.sample_id: (s_iot.media_relpath, s_iot.audio_seconds)},
+    )
+    silence_record = build_silence_swap_slice(
+        registry=registry,
+        data_root=slurp_world.data_root,
+        sample_id=s_iot.sample_id,
+        parent_media_relpath=s_iot.media_relpath,
+        duration_seconds=s_iot.audio_seconds,
+        sample_rate_hz=16000,
+    )
+    registry.register(silence_record)
+    silence_relpath = silence_record.media_relpath
+    assert ":" not in silence_relpath  # raw id sanitized into the filesystem token
 
     summary = run_pslu_flight(
         adapter=adapter,
