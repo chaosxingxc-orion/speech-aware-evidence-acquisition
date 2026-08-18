@@ -28,9 +28,17 @@ media, meaning all of the following verified facts hold at registration time
   loader-fact duration (a small tolerance absorbs CSV-vs-decoder rounding;
   a span materially outside the parent is refused);
 - the slice file lives at the run's own convention path
-  (``derived/obs-slices/<run_id>/<sample_id>/i<NNNN>.wav`` -- never anywhere
+  (``derived/obs-slices/<run_id>/<token>/i<NNNN>.wav`` -- never anywhere
   else under the data root), exists, and its measured (size, SHA-256) equal
-  the record's.
+  the record's. ``<token>`` is a path-safe filesystem TOKEN derived from the
+  sample id (:func:`_slice_token`) -- an already path-safe id (every
+  historical earnings id) is used unchanged, so no existing run's paths
+  move; a raw id that is not path-safe (SLURP's ``carrier:split:index:stem``,
+  Audio2Tool's ``tier:000001``) is sanitized and hash-suffixed instead. The
+  RAW sample id, never the token, stays the one binding/lookup key
+  (``parent_facts``, ``SliceRecord.sample_id``, ``register()``): this
+  separates identity (what the slice chains to) from addressing (where it
+  lives on disk).
 
 Preprocessing provenance (owner addition, 2026-08-08): when the policy
 applies a declared per-slice transform (v1: ``rms-norm`` only), the record
@@ -61,6 +69,36 @@ PARENT_DURATION_TOLERANCE_SECONDS = 1.0
 _FLOAT_TOLERANCE = 1e-6
 _SHA256 = re.compile(r"[0-9a-f]{64}")
 _PATH_SAFE = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]*")
+_TOKEN_UNSAFE = re.compile(r"[^A-Za-z0-9._-]")
+
+
+def _slice_token(raw_id: str) -> str:
+    """Deterministic, injective path-safe filesystem token for ``raw_id``.
+
+    Every slice directory before this function existed used the sample id
+    itself, which only ever worked because every id in use (earnings' bare
+    numeric ids) already satisfied ``_PATH_SAFE``. This keeps that case
+    byte-identical -- an already path-safe id is returned UNCHANGED, so no
+    historical run's paths move -- and extends addressing to ids that are
+    not (SLURP's ``carrier:split:index:stem``, Audio2Tool's ``tier:000001``):
+    every character outside ``_PATH_SAFE``'s alphabet is replaced with ``_``
+    and a 12-hex-char slice of ``sha256(raw_id)`` is appended, so two
+    different raw ids can never collide after sanitization even when their
+    sanitized forms coincide (e.g. ``a:b`` and ``a;b``). The raw id remains
+    the ONLY binding/lookup key anywhere in this module -- this token is
+    filesystem addressing only, never identity."""
+
+    if _PATH_SAFE.fullmatch(raw_id):
+        return raw_id
+    sanitized = _TOKEN_UNSAFE.sub("_", raw_id)
+    digest = hashlib.sha256(raw_id.encode("utf-8")).hexdigest()[:12]
+    token = f"{sanitized}-{digest}"
+    if not _PATH_SAFE.fullmatch(token):
+        # sanitization alone cannot fix a leading '.', '-', '_', or an empty
+        # raw id; a single safe prefix keeps the token a legal path
+        # component without touching injectivity (still keyed by raw_id).
+        token = f"t{token}"
+    return token
 
 
 def _measure(path: Path, label: str) -> tuple[int, str]:
@@ -150,13 +188,21 @@ class SliceRegistry:
         return self._data_root / OBS_SLICES_SUBDIR / self._run_id
 
     def slice_relpath(self, sample_id: str, iteration: int) -> str:
-        if not isinstance(sample_id, str) or not _PATH_SAFE.fullmatch(sample_id):
+        """This run's convention path for one iteration of a slice derived
+        from ``sample_id``. ``sample_id`` is always the RAW binding id; the
+        path component is :func:`_slice_token` of it, so this never raises
+        for a raw id merely because it is not path-safe -- it only raises
+        for a non-string or empty id (nothing to derive a token from) or an
+        out-of-range iteration."""
+
+        if not isinstance(sample_id, str) or not sample_id:
             raise FrozenCoreError(f"slice sample_id {sample_id!r} is not path-safe")
         if isinstance(iteration, bool) or not isinstance(iteration, int) or not (
             0 <= iteration <= 9999
         ):
             raise FrozenCoreError(f"slice iteration {iteration!r} outside 0..9999")
-        return f"{self.root_relpath}/{sample_id}/i{iteration:04d}.wav"
+        token = _slice_token(sample_id)
+        return f"{self.root_relpath}/{token}/i{iteration:04d}.wav"
 
     def _parent_sha256(self, sample_id: str, parent_relpath: str) -> str:
         cached = self._parent_sha_cache.get(sample_id)
