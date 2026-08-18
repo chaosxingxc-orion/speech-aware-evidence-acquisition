@@ -1,0 +1,45 @@
+{
+  "flight_config_version": "a2t-s2b-flight-v1",
+  "probe": "P-A2T",
+  "stage": "Stage-2b follow-up probe",
+  "status": "REGISTERED",
+  "preregistration": "docs/readiness/2026-08-18-pa2t-stage2b-preregistration-REGISTERED.md",
+  "exposure_ledger_row": "SAEA-PROBE-a2t-s2b-120",
+  "carrier": "audio2tool",
+  "carrier_lock_key": "audio2tool",
+  "headroom_manifest": "docs/checks/speech-aware-evidence-acquisition/2026-08-18-pa2t-a0-read/headroom.json",
+  "stage2_arm_plan_path": {
+    "path": "$SPEECHRL_DATA_DIR/runs/SAEA-PROBE-a2t-s2-120/attempt-20260818T124955Z-84b944/SAEA-PROBE-a2t-s2-120.arm-plan.json",
+    "note": "The already-flown Stage-2 probe's OWN {RUN_ID}.arm-plan.json (rails.probes.a2t_s2_flight / launch_pa2t_s2.py's own write shape) -- REUSED VERBATIM, never re-derived: B1's per-sample roster and B2's per-sample wrong tool are loaded straight out of this file's s1p_tool_names / s4_tool_name fields via analysis.a2t_s2_read.load_arm_plan (rails.probes.a2t_s2b_flight.build_flight_plan takes the ALREADY-LOADED ArmPlan object, never a path). $SPEECHRL_DATA_DIR is a runtime environment variable (docs/checks/speech-aware-evidence-acquisition/2026-08-18-a2t-s2-flight/README.md 'Run dir' row carries the same literal placeholder); a real launcher expands it at flight time. The mapping's own s4_derangement/s4_tool_name/selected_tools carry the fail-closed no-fixed-point invariants Stage-2's own preflight already confirmed (0 fixed points, 0 samples supplied one of their own selections) -- rails.probes.a2t_s2b_flight.build_flight_plan re-checks them anyway (defense-in-depth on a verbatim reuse, not a new derivation)."
+  },
+  "seed": 20260807,
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "carrier_lock_key": "audio2tool",
+    "split_role": "discovery",
+    "split_identity_hash": "e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c",
+    "planned_model_calls": 260,
+    "planned_gpu_hours": 0.5,
+    "planned_speech_audio_seconds": 1985,
+    "note": "planned_* are ceilings the plan is validated/metered against (contracts.ExecutionPlan); protocol_hash and run_id/attempt_id are assigned by the flying agent's own launcher at flight time, never frozen here. split_identity_hash is the SAME frozen discovery-split hash Stage-2's own flight config carries (the SAME 120 headroom ids, prereg intro) -- this flight resolves its own sample set from headroom_manifest, not from a fresh Audio2ToolAdapter.load_split() draw."
+  },
+  "arms": ["B1", "B2"],
+  "arm_semantics": {
+    "B1": "nodefaults: S1p's EXACT reused roster (the tool(s) the core itself named in its own A0 response, one row per distinct tool, ~75/120 single vs tier3/tier8 multi-intent minority), rendered with argument_defaults STRIPPED (data.audio2tool.render_registry_row's own strip_defaults=True) -- schema structure + constraints only, no values (n=120). Corruption-channel probe, Q-A.",
+    "B2": "augmented wrong row: A0's EXACT full 152-row registry system prompt PLUS the Stage-2-deranged wrong tool's row appended under the hash-pinned 'particularly relevant' header (rails.probes.a2t_s2b_flight.B2_HIGHLIGHT_HEADER) -- correct tool stays PRESENT, wrong row highlighted (n=120). Schema-vs-knowledge probe, Q-B."
+  },
+  "supply_shape": {
+    "note": "Mirrors Stage-2's own supply_shape convention (bridge mission item 3, carried through): for B1 the system prompt's {tool_schemas} fill is REPLACED by S1p's reused, nodefaults-rendered roster; for B2 it is the FULL 152-row registry (byte-identical to A0/N0r) PLUS the pinned header PLUS the wrong row appended. The rest of the instruction template (rails.adapters.audio2tool._INSTRUCTION_TEMPLATE) is byte-identical across both arms and across every Stage-2/Stage-2b arm (rails.probes.a2t_s2_flight.assemble_roster_prompt, reused directly, never re-implemented).",
+    "b1_entries": "1 (typical; multi-intent tier3/tier8 minority may carry more, one row per distinct selected tool -- identical to S1p's own shape)",
+    "b2_entries": "153 (the full 152-row registry + 1 highlighted wrong row)",
+    "token_estimate_basis": "B1's own per-sample prompt is at or below S1p's own measured shape (pa2t-binding.json / a2t-s2-flight.json 'a single registry row averages ~330 chars' -- stripping argument_defaults only ever REMOVES characters, never adds them). B2's own per-sample prompt is A0's measured full-152-row prefill (~12693 tokens, pa2t-binding.json A0_shipped_supply_measurements) PLUS one extra row (~330 chars) PLUS the pinned header (~65 chars) -- roughly A0's own token count, marginally above it. Exact per-arm counts are computed by rails.probes.a2t_s2b_flight.render_b1_tool_schemas / render_b2_tool_schemas's own output length at flight-plan build time, not hardcoded here."
+  },
+  "cost_budget": {
+    "call_formula": "120 (B1) + 120 (B2) = 240",
+    "call_ceiling": 280,
+    "audio_seconds_ceiling": 2000,
+    "gpu_hours_ceiling": 0.5,
+    "basis": "preregistration section 3: '240 requests (2x120); <=280 core calls; <=2,000 metered audio-seconds; <=0.5 GPU-h (featcache fully warm; B1 prompts tiny, B2 prompts registry-sized with prefix-cache reuse -- Stage-2 measured 86-115 req/min in exactly these regimes)'. planned_speech_audio_seconds=1985 derives from Stage-2's own measured one-pass load over the SAME 120 headroom ids (635.28s, docs/checks/speech-aware-evidence-acquisition/2026-08-18-a2t-s2-flight/README.md): B1 and B2 EACH re-send their sample's own audio once, so 2 x 635.28 = 1270.56s base, +20 retries each bounded by the headroom set's own longest item (35.71s, same README) = 1270.56 + 714.2 = 1984.76 -> rounded up to 1985, still under the registered 2000 ceiling."
+  },
+  "branch_rules_source": "docs/readiness/2026-08-18-pa2t-stage2b-preregistration-REGISTERED.md section 1 (Q-A: CONFIRMED-CUT / NOT-DEFAULTS / INCONCLUSIVE-A; Q-B: SCHEMA-CONTRIBUTES / KNOWLEDGE-TIED / MISLEAD overlay / INCONCLUSIVE-B) -- mechanical from the per-sample outputs.jsonl rows this flight produces; branch evaluation itself is NOT implemented by the flight machinery (analysis.a2t_s2b_read, a separately pinned read suite, evaluates it against an already-written attempt)."
+}

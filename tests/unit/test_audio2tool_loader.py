@@ -15,6 +15,8 @@ from speech_aware_evidence_acquisition.data.audio2tool import (
     AUDIO2TOOL_LOCK_KEY,
     load_audio2tool,
     load_expected_calls,
+    load_tool_registry,
+    render_registry_row,
     render_tool_schemas,
 )
 from speech_aware_evidence_acquisition.data.loader import LoaderError, SampleRef
@@ -184,6 +186,54 @@ def test_render_tool_schemas_missing_registry_fails_closed(audio2tool_world):
     lock = load_lock(audio2tool_world.lock_path)
     with pytest.raises(LoaderError, match="tools_registry"):
         render_tool_schemas(lock, audio2tool_world.data_root)
+
+
+def test_render_registry_row_strip_defaults_removes_only_that_key(audio2tool_world):
+    """Stage-2b B1's own nodefaults rendering (docs/readiness/2026-08-18-
+    pa2t-stage2b-preregistration-REGISTERED.md section 1, Q-A): the
+    ``argument_defaults`` KEY is absent, every other key/value and the JSON
+    formatting convention stay byte-identical to the normal rendering."""
+
+    lock = load_lock(audio2tool_world.lock_path)
+    rows = load_tool_registry(lock, audio2tool_world.data_root)
+    (setlighting_row,) = (row for row in rows if row["tool_name"] == "setLighting")
+    assert setlighting_row["argument_defaults"] == "deviceId='light_1'"  # non-empty: a real test
+
+    normal = render_registry_row(setlighting_row)
+    stripped = render_registry_row(setlighting_row, strip_defaults=True)
+    assert stripped != normal
+
+    normal_obj = json.loads(normal)
+    stripped_obj = json.loads(stripped)
+    assert "argument_defaults" in normal_obj
+    assert "argument_defaults" not in stripped_obj
+    assert {k: v for k, v in normal_obj.items() if k != "argument_defaults"} == stripped_obj
+
+    # Byte-identical formatting convention (sort_keys, ensure_ascii, no
+    # trailing whitespace) -- not just equal parsed content.
+    assert stripped == json.dumps(
+        {k: v for k, v in dict(setlighting_row).items() if k != "argument_defaults"},
+        ensure_ascii=False,
+        sort_keys=True,
+    )
+
+
+def test_render_registry_row_strip_defaults_is_a_noop_when_already_absent():
+    row = {
+        "tool_id": "1",
+        "domain": "d",
+        "category": "c",
+        "tool_name": "t",
+        "signature": "t()",
+        "description": "desc",
+        "argument_defaults": "",
+        "argument_constraints": "",
+    }
+    assert render_registry_row(row, strip_defaults=True) == json.dumps(
+        {k: v for k, v in row.items() if k != "argument_defaults"},
+        ensure_ascii=False,
+        sort_keys=True,
+    )
 
 
 def test_p1_config_fragments_compose_against_the_real_repo():

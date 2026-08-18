@@ -417,14 +417,28 @@ def _load_registry_rows(lock: Mapping[str, object], root: Path) -> tuple[tuple[i
     return tuple(parsed)
 
 
-def render_registry_row(row: Mapping[str, str]) -> str:
+def render_registry_row(row: Mapping[str, str], *, strip_defaults: bool = False) -> str:
     """Canonical one-line JSON rendering of a SINGLE registry row -- the
     exact per-row format :func:`render_tool_schemas` joins with newlines
     for all 152 rows, extracted here so a caller (e.g. a supply-narrowing
     probe) can render an arbitrary SUBSET of rows with byte-identical
-    per-row formatting."""
+    per-row formatting.
 
-    return json.dumps(dict(row), ensure_ascii=False, sort_keys=True)
+    ``strip_defaults=True`` (Stage-2b's B1 arm, corruption-channel probe:
+    ``docs/readiness/2026-08-18-pa2t-stage2b-preregistration-REGISTERED.md``
+    section 1, Q-A) REMOVES the ``argument_defaults`` KEY entirely rather
+    than blanking its value -- "schema structure + constraints only, no
+    values" (the prereg's own wording) reads as the key being ABSENT, not
+    present-but-empty, since an empty-string value is already how a tool
+    with genuinely no defaults renders today (indistinguishable from
+    "stripped" under blanking). Every other key/value and the JSON
+    formatting convention (``sort_keys=True``, ``ensure_ascii=False``) stay
+    byte-identical to the ``strip_defaults=False`` rendering."""
+
+    payload = dict(row)
+    if strip_defaults:
+        payload.pop("argument_defaults", None)
+    return json.dumps(payload, ensure_ascii=False, sort_keys=True)
 
 
 def load_tool_registry(lock: Mapping[str, object], root: Path) -> tuple[dict[str, str], ...]:
