@@ -1,11 +1,13 @@
-# Stage-2B candidate qualification — DRAFT for owner review
+# Stage-2B candidate qualification — FREEZE CANDIDATE for owner approval
 
-Date: 2026-08-18. Status: **DRAFT** — becomes the frozen paper candidate on owner approval;
-until then no claim below is citable outside this repository. Carrier: this study
+Date: 2026-08-18; freeze-candidate revision 2026-08-19 (all five panel-demanded probes
+consumed). Status: **FREEZE CANDIDATE** — becomes the frozen paper candidate on owner
+approval; until then no claim below is citable outside this repository. Carrier: this study
 (Stage-2 endpoint = qualified paper candidates; manuscript work is Stage-3, prohibited here).
 
 Working title: **"Signed supply: a two-channel, content-gated law of prompt-level knowledge
-supply for a frozen speech-capable omni core."**
+supply for a frozen speech-capable omni core."** (The negative sign is now MEASURED, not
+inferred — see C1's regression term.)
 
 ## 1. Evidence base (all consumed, one-shot, registered)
 
@@ -37,10 +39,15 @@ core already selects the right tool but fails the call, the values-stripped row 
 **[8, 10]/120** across three renderings (envelope, form-ROBUST); the full row converts
 16/120. POPULATION DISCLOSURE (binding): the 120-sample headroom population is
 **gold-identified** (tool_accuracy=1 ∧ EM=0, both gold-scored) — a deployment control
-plane cannot identify it and would supply on all 400; the whole-population
-conversion-minus-regression rate is unmeasured pending the registered 97-id regression arm
-(the only EM-regression-eligible ids; on the 183 tool-wrong ids EM cannot regress and no
-gold-free supply rule exists — recorded limitation). The L3 line
+plane cannot identify it. **THE REGRESSION TERM IS NOW MEASURED (V4, `5baab4c`,
+REGRESSION-COSTLY)**: on the 97 EM-correct ids the same clean form regresses **36/97**
+(CI [+28, +44]) against a PERFECT 0/97 byte-identical re-fly baseline — zero induced
+substitutions (the damage is argument-level and selection-level, NOT value injection).
+Net signed account over the 217 ids where the rule is defined: **−26 to −28 EM samples**
+(blind application breaks ~3.6–4.5 already-correct answers per failure fixed); 183/400
+excluded by design (EM cannot regress; no gold-free supply rule). C1's conditional
+conversion claim STANDS; its unconditional deployment reading is REFUTED; the open problem
+moves from supply FORM to supply TARGETING (a gold-free rule for when to supply). The L3 line
 (SLURP: +0.4220 undirected / +0.4352 self-scoped with 60/60 closed-set mapping, 94.6% of
 the gold-scoped ceiling) is DEMOTED to a **mechanism probe**: its roster is train-mined and
 same-distribution with the eval split, so it demonstrates the gain's COMPOSITION (see C4),
@@ -88,14 +95,34 @@ registry — deployment needs a value-stripped context (ORG) or replacing supply
 replacing branch carries its measured cost: a wrong or over-narrowed roster fails to
 SILENCE (S4: retention 0.0000, 111/120 well-formed abstentions), not to error. Legal
 self-scoping works (closed-set label choice; oracle-selection premium closes to within the
-0.03 separability bar). Audio-conditioning: silence-swap 0/6 — **three SLURP devel ids
-flown twice; no audio-conditioning control exists on the A2T carrier** (§3 item 9). Under
-silence the core confabulates confident well-formed commands while under tool-withholding
-it abstains cleanly — the refusal-is-gated-by-action-space asymmetry is recorded as an
-OPEN safety question (promotable to a claim only via the registered within-carrier 2×2,
-~30 calls, which also closes the missing A2T audio-conditioning control).
+0.03 separability bar). **Audio-conditioning and refusal (REVISED 2026-08-19 per V1,
+`b5b7f7c`, ASYMMETRY-REFUTED)**: the within-carrier 2×2 closed §3 item 9 affirmatively
+(A2T real audio 9/11 tool calls → 0/11 under duration-matched silence) and **INVERTED the
+drafted asymmetry**: under missing EVIDENCE the A2T core abstains 11/11; under a missing
+ACTION it abstains only 2/11 — refusal is gated by evidence quality, not the action space,
+on this carrier. The SLURP silence-confabulation observation is therefore
+CARRIER-SPECIFIC, and the previously drafted C6 ("refusal gated by the action space") is
+withdrawn as false. What survives as citable: the evidence-gated-refusal finding itself,
+the carrier divergence as an open question, and the tier3-weighted-draw caveat (n=11 flat
+draw; the REFUTED verdict is tier-invariant, TW-A's rate is not).
 
-## 2b. OPEN QUESTION — the speech term (freeze is HELD on this)
+## 2b-RESOLUTION (2026-08-19). The speech-term program is COMPLETE; the freeze hold lifts.
+
+The five probes (P-PHON `24e0404`, P-KEY `b6e7595`, P-TRAP `c4a8a67`, V1 `b5b7f7c`, V4
+`5baab4c`) resolve the section as follows. **Supply-use matching is acoustically
+mediated** — a roster entry equal to THIS sample's own earlier mishearing of this audio
+captures the output 29/32 (0.9062) while the identical construction seeded from another
+sample's mishearing captures 0/32 (Δ +0.9062, 90% CI [+0.8125, +0.9688]) — killing the
+deflationary "audio is only a retrieval key" account. But the one place acoustic mediation
+is MEASURED, it is a **cost** (self-percept contamination: −0.0958 SLU-F1, 8 induced vs the
+control's 0), and the NET benefit of audio over the core's own 53.6%-WER self-transcript
+stays unresolved (P-KEY I = +0.0463, CI crossing zero; ~89% of the supply benefit is
+text-side realizable; supply acts as an elicitation/recall bank per P-PHON). What the
+candidate records: a mechanism (acoustic mediation) with a demonstrated risk channel, an
+unresolved net-benefit question honestly bounded, and the K=0 starvation caveat (28/60
+excluded; adverse reweighting keeps the sign at +0.4833, not the magnitude).
+
+## 2b. ORIGINAL OPEN-QUESTION TEXT (superseded by the resolution above; kept for the record)
 
 C1–C4 as measured are substrate-general retrieval-augmentation logic, verified mechanically
 on a frozen speech core. Whether **speech knowledge participates in the supply loop** or the
