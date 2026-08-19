@@ -17,10 +17,10 @@
     "carrier_lock_key": "slurp",
     "split_role": "discovery",
     "split_identity_hash": "fc9de436eba5aba120ecf07ee112765cd4ac0609150e0aaf36f4d44c9c5b5ee5",
-    "planned_model_calls": 340,
+    "planned_model_calls": 338,
     "planned_gpu_hours": 0.6,
     "planned_speech_audio_seconds": 2500,
-    "note": "planned_* are ceilings the plan is validated/metered against (contracts.ExecutionPlan); protocol_hash and run_id/attempt_id are assigned by the flying agent's own launcher at flight time, never frozen here. split_identity_hash is IDENTICAL to the consumed P-SLU flight's own value -- this probe reuses the SAME frozen 60-sample manifest, never a fresh draw."
+    "note": "planned_* are ceilings the plan is validated/metered against (contracts.ExecutionPlan); protocol_hash and run_id/attempt_id are assigned by the flying agent's own launcher at flight time, never frozen here. split_identity_hash is IDENTICAL to the consumed P-SLU flight's own value -- this probe reuses the SAME frozen 60-sample manifest, never a fresh draw. planned_model_calls bumped 303 -> 338 by the 2026-08-19 amendment's own txt_duplicate sub-block (item 4 below); still <= the registered 340-call ceiling; the sub-block adds zero NEW audio CONTENT (TXT-NOSUP is audio-free by construction) -- see the txt_duplicate block's own ENGINEERING NOTE for the payload-bookkeeping-field distinction, and the realized total stays comfortably inside the registered <=2500s audio-seconds ceiling regardless."
   },
   "bridge": {
     "core_client": "rails.core_client.FrozenCoreClient",
@@ -45,7 +45,53 @@
     "pass1": "AUD-NOSUP: one request per sample (n=60), independent of pass 0.",
     "pass2": "AUD-SUP: one request per sample (n=60), independent of pass 0; fires one EXTRA silence-swapped request for each sample named in silence_swap.",
     "pass3": "TXT-NOSUP: one request per sample (n=60) -- REQUIRES pass 0's own transcript registry entry for that sample (hard ordering dependency; rails.probes.pkey_flight.assemble_txt_messages refuses otherwise).",
-    "pass4": "TXT-SUP: one request per sample (n=60) -- same ordering dependency as pass 3."
+    "pass4": "TXT-SUP: one request per sample (n=60) -- same ordering dependency as pass 3.",
+    "pass6": "TXT-NOSUP-DUP (2026-08-19 amendment item 4): one BYTE-IDENTICAL re-send per sample named in txt_duplicate (n=35) of that SAME sample's own pass-3 request -- SAME session, SAME construction (assemble_txt_messages(sample, None, transcript_registry)); named 'pass6' (not 'pass5') because it is a re-send OF pass 3, never a new arm."
+  },
+  "txt_duplicate": {
+    "count": 35,
+    "seed": 20260807,
+    "selection_rule": "sorted(random.Random(f'{seed}:txt-duplicate').sample(sorted(item['sample_id'] for item in sample_manifest['items']), 35)) -- SAME seeding discipline as silence_swap below, over the SAME frozen 60-sample manifest, salted 'txt-duplicate' so the two draws never collide.",
+    "sample_ids": [
+      "slurp:devel:000115:audio-1495375974",
+      "slurp:devel:000444:audio-1502891018-headset",
+      "slurp:devel:001637:audio-1502195066-headset",
+      "slurp:devel:003309:audio-1501756265",
+      "slurp:devel:004134:audio-1500387396-headset",
+      "slurp:devel:004604:audio-1501759214",
+      "slurp:devel:005359:audio-1497265137-headset",
+      "slurp:devel:005518:audio-1490203960",
+      "slurp:devel:005536:audio-1499090415-headset",
+      "slurp:devel:005684:audio-1498577434",
+      "slurp:devel:005770:audio-1495377172",
+      "slurp:devel:006603:audio-1502101512",
+      "slurp:devel:007541:audio-1490202471",
+      "slurp:devel:007852:audio-1494416109-headset",
+      "slurp:devel:008014:audio-1500899290",
+      "slurp:devel:008047:audio-1498570919",
+      "slurp:devel:009518:audio-1495734594-headset",
+      "slurp:devel:009733:audio--1505407176",
+      "slurp:devel:010186:audio-1501415369-headset",
+      "slurp:devel:010732:audio-1490184504",
+      "slurp:devel:011503:audio-1494514154",
+      "slurp:devel:011693:audio-1498565017-headset",
+      "slurp:devel:012076:audio-1501766742-headset",
+      "slurp:devel:012253:audio-1488974202",
+      "slurp:devel:012478:audio-1498486426",
+      "slurp:devel:012654:audio-1497860426-headset",
+      "slurp:devel:013281:audio-1490354296-headset",
+      "slurp:devel:013795:audio-1499266495",
+      "slurp:devel:014173:audio-1490291441",
+      "slurp:devel:014657:audio-1499695487",
+      "slurp:devel:015375:audio-1501754418",
+      "slurp:devel:015805:audio-1489153743",
+      "slurp:devel:016653:audio-1494513016",
+      "slurp:devel:016825:audio-1498573552-headset",
+      "slurp:devel:017009:audio-1502198805-headset"
+    ],
+    "arm": "TXT-NOSUP",
+    "generation": "rails.probes.pkey_flight.run_pkey_flight's own txt_duplicate_sample_ids parameter -- for each named sample, re-runs the EXACT pass-3 construction (assemble_txt_messages(sample, None, transcript_registry), supply=None) and sends it via the SAME real-client text-mode path (core_client.complete(..., text_only_sample_id=sample.sample_id)) as a SIXTH, separately-flagged row (PKeyArmResult.txt_duplicate=True) -- never merged into the ordinary 60-row TXT-NOSUP bucket.",
+    "note": "adds exactly 35 extra requests beyond the base 5-pass x 60 + 3 silence-swap total (303 + 35 = 338 <= the registered 340-call ceiling); no NEW audio bytes are ever transmitted for this sub-block (TXT-NOSUP is audio-free by construction -- assemble_txt_messages never appends an input_audio content part, and rails.core_client.FrozenCoreClient's own text-mode refuses if one is present); validate_pkey_flight_summary fail-closed byte-identity checks every duplicate row against its own pass-3 original via rails.probes.pkey_flight.txt_duplicate_content_matches -- a resend that diverges from its own pass-3 prompt refuses the whole flight. ENGINEERING NOTE (flagged, not buried): FrozenCoreAdapter.request's own I3/I4 payload-binding enforcement requires EVERY payload (audio or text-only, one shared D2 arm) to carry a positive audio_seconds equal to its sample_id's own verified loader fact -- FrozenCoreClient's text-mode therefore reuses that SAME real per-sample duration as bookkeeping identity for a text-only request too (never a fabricated zero, which core.model.adapter.FrozenCoreAdapter.request would refuse outright as non-positive). The realized total across the WHOLE 338-call flight (~1026.7s: 555.9s audio-bearing + ~470.8s of TXT-arm bookkeeping duration) still stays comfortably inside the registered <=2500s ceiling either way; 'zero audio-seconds added' above describes the sub-block adding no NEW audio CONTENT (bytes actually decoded), not a claim that this bridge's own per-request bookkeeping field reads exactly 0.0."
   },
   "silence_swap": {
     "count": 3,
@@ -61,9 +107,9 @@
     "note": "adds exactly 3 extra requests beyond the base 5-pass x 60 total; rails.probes.pkey_flight.run_pkey_flight's own silence_swap_media_relpaths parameter consumes {sample_id: registered_slice_media_relpath} and fires the extra request itself, on AUD-SUP only -- never T0, never a TXT-* arm."
   },
   "cost_budget": {
-    "call_formula": "60 (T0) + 60 (AUD-NOSUP) + 60 (AUD-SUP) + 60 (TXT-NOSUP) + 60 (TXT-SUP) + 3 (silence-swap extra) = 303",
+    "call_formula": "60 (T0) + 60 (AUD-NOSUP) + 60 (AUD-SUP) + 60 (TXT-NOSUP) + 60 (TXT-SUP) + 3 (silence-swap extra) + 35 (2026-08-19 amendment: txt_duplicate sub-block) = 338",
     "call_ceiling": 340,
-    "audio_seconds_formula": "182.26s (one full pass over the 60 samples) x 3 audio-bearing sends per sample (T0 + AUD-NOSUP + AUD-SUP) + ~9.12s (3 silence-swap extra sends, duration-matched to their own samples) ~= 555.9s; TXT-NOSUP/TXT-SUP carry zero audio seconds (audio-free by construction).",
+    "audio_seconds_formula": "182.26s (one full pass over the 60 samples) x 3 audio-bearing sends per sample (T0 + AUD-NOSUP + AUD-SUP) + ~9.12s (3 silence-swap extra sends, duration-matched to their own samples) ~= 555.9s; TXT-NOSUP/TXT-SUP/the 35-sample txt_duplicate sub-block send zero NEW audio CONTENT (audio-free by construction -- see txt_duplicate's own ENGINEERING NOTE on the bridge's payload-bookkeeping field vs audio content actually transmitted); realized total including that bookkeeping figure stays well inside the <=2500s ceiling either way.",
     "audio_seconds_ceiling": 2500,
     "gpu_hours_ceiling": 0.6
   },
@@ -79,10 +125,10 @@
     ]
   },
   "interaction_verdicts": {
-    "SPEECH-TERM-PRESENT": "I >= +0.06 (2x the measured 0.03 separability bar) -- supply pays extra only when raw audio is present",
-    "KEY-ONLY": "|I| <= 0.03 -- the benefit is modality-invariant (text-side mechanism)",
-    "TEXT-DOMINANT": "I <= -0.06 -- supply helps more once perception is frozen to text",
+    "SPEECH-TERM-PRESENT": "I >= +0.06 (2x the measured 0.03 separability bar) -- supply pays extra only when raw audio is present. Point-based, UNCHANGED by the 2026-08-19 amendment.",
+    "KEY-ONLY": "2026-08-19 amendment item 1: CI-GATED equivalence decision -- fires ONLY if the ENTIRE 90% per-sample paired cluster bootstrap CI of I lies inside [-0.03, +0.03] (a point estimate inside the band with a CI crossing it is INCONCLUSIVE-KEY instead); item 2: may not fire as an affirmative negative when SPEECH-TERM-PRESENT is unreachable given the P-PHON census (reported as INCONCLUSIVE-KEY with the reachability bound instead).",
+    "TEXT-DOMINANT": "I <= -0.06 -- supply helps more once perception is frozen to text. Point-based, UNCHANGED by the 2026-08-19 amendment.",
     "INCONCLUSIVE-KEY": "otherwise"
   },
-  "branch_rules_source": "docs/readiness/2026-08-18-pkey-preregistration-REGISTERED.md section 4 (INTERACTION I and its four verdicts, mandatory descriptives) -- mechanical from the per-sample PKeyArmResult rows this flight produces; branch evaluation itself lives in analysis.pkey_read, built and coordinator-reviewed BEFORE the one-shot read per the registration's own discipline section."
+  "branch_rules_source": "docs/readiness/2026-08-18-pkey-preregistration-REGISTERED.md section 4 (INTERACTION I and its four verdicts, mandatory descriptives) plus section 7 (2026-08-19 amendment: CI-gated KEY-ONLY, mandatory reachability statement, NEAR-MISS n<=4 caveat, txt_duplicate sub-block) -- mechanical from the per-sample PKeyArmResult rows this flight produces; branch evaluation itself lives in analysis.pkey_read (bootstrap core shared via analysis.bootstrap, reused by the future P-TRAP read suite too), built and coordinator-reviewed BEFORE the one-shot read per the registration's own discipline section."
 }

@@ -14,7 +14,9 @@ from pathlib import Path
 
 from speech_aware_evidence_acquisition.rails.probes.pkey_flight import (
     EXPECTED_SPLIT_IDENTITY_HASH,
+    EXPECTED_TXT_DUPLICATE_COUNT,
     PKEY_ARMS,
+    TXT_NOSUP_ARM,
     assert_pinned_text_matches_config,
 )
 from speech_aware_evidence_acquisition.rails.probes.pslu_flight import load_pslu_rosters, load_pslu_sample_manifest
@@ -100,9 +102,45 @@ def test_flight_config_cost_budget_stays_within_the_registered_ceilings():
     n = len(load_pslu_sample_manifest(Path(__file__).resolve().parents[2] / document["sample_manifest"]).sample_ids)
     per_pass_calls = n * len(PKEY_ARMS)
     silence_calls = document["silence_swap"]["count"]
-    total_calls = per_pass_calls + silence_calls
-    assert total_calls == 303  # registration section 5: "303 requests (300 + 3 swaps)"
+    base_total_calls = per_pass_calls + silence_calls
+    assert base_total_calls == 303  # registration section 5: "303 requests (300 + 3 swaps)"
+
+    duplicate_calls = document["txt_duplicate"]["count"]
+    total_calls = base_total_calls + duplicate_calls
+    assert total_calls == 338  # 2026-08-19 amendment item 4: "303 + 35 = 338 <= 340 calls"
     assert total_calls <= document["execution_plan"]["planned_model_calls"]
+    assert document["execution_plan"]["planned_model_calls"] == 338
     assert document["execution_plan"]["planned_model_calls"] <= 340  # registration's own cap
     assert document["execution_plan"]["planned_speech_audio_seconds"] <= 2500  # registration's own cap
     assert document["execution_plan"]["planned_gpu_hours"] <= 0.6  # registration's own cap
+
+
+# ---------------------------------------------------------------------------
+# 2026-08-19 amendment item 4: the 35-call TXT duplicate sub-block.
+# ---------------------------------------------------------------------------
+
+
+def test_flight_config_txt_duplicate_reproduces_the_seeded_selection():
+    document = _load_flight_config()
+    manifest_path = Path(__file__).resolve().parents[2] / document["sample_manifest"]
+    manifest = load_pslu_sample_manifest(manifest_path)
+
+    seed = document["txt_duplicate"]["seed"]
+    assert seed == manifest.seed == document["silence_swap"]["seed"]
+    expected = sorted(random.Random(f"{seed}:txt-duplicate").sample(sorted(manifest.sample_ids), EXPECTED_TXT_DUPLICATE_COUNT))
+
+    assert document["txt_duplicate"]["sample_ids"] == expected
+    assert document["txt_duplicate"]["count"] == EXPECTED_TXT_DUPLICATE_COUNT == 35 == len(expected)
+    assert set(expected) <= set(manifest.sample_ids)
+    assert document["txt_duplicate"]["arm"] == TXT_NOSUP_ARM == "TXT-NOSUP"
+
+
+def test_flight_config_txt_duplicate_ids_have_no_duplicates_and_use_a_different_salt_than_silence_swap():
+    """Sanity: the two seeded draws (silence-swap salt vs txt-duplicate
+    salt) over the SAME 60-id pool are allowed to overlap in sample id (they
+    select from DIFFERENT arms), but each draw's own ids must themselves be
+    duplicate-free."""
+
+    document = _load_flight_config()
+    txt_dup_ids = document["txt_duplicate"]["sample_ids"]
+    assert len(txt_dup_ids) == len(set(txt_dup_ids))

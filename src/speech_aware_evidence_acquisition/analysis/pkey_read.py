@@ -111,6 +111,7 @@ from ..rails.probes.pkey_flight import (
     content_has_audio,
     content_text_parts,
     extract_txt_transcript_from_rendered,
+    txt_duplicate_content_matches,
 )
 from ..rails.probes.pslu_flight import (
     PsluFlightError,
@@ -118,7 +119,8 @@ from ..rails.probes.pslu_flight import (
     load_pslu_sample_manifest,
     pslu_supply_packet,
 )
-from ..reproduction.slurp_scoring import parse_slu_response, score_slu
+from ..reproduction.slurp_scoring import SluScore, parse_slu_response, score_slu
+from .bootstrap import BootstrapResult, paired_cluster_bootstrap
 from .pslu_read import (
     ArmAggregate,
     ClauseResult,
@@ -127,6 +129,7 @@ from .pslu_read import (
     RowAnalysis,
     RUNTIME_PROHIBITED_NOTE,
     SilenceSwapComparison,
+    _aggregate_slu_score,
     _parsed_answer_signature,
     _recheck_row,
     _roster_values_for_packet,
@@ -147,6 +150,37 @@ N_SAMPLES = 60
 SPEECH_TERM_PRESENT_MIN = 0.06
 KEY_ONLY_MAX_ABS = 0.03
 TEXT_DOMINANT_MAX = -0.06
+
+# 2026-08-19 amendment section 7 item 1: "N=10,000 replicates, seeded
+# 20260807"; "a 90% CI" -- pinned here, never re-typed at each call site.
+BOOTSTRAP_N_REPLICATES = 10_000
+BOOTSTRAP_SEED = 20260807
+BOOTSTRAP_CI_LEVEL = 0.90
+
+# CITED constants (mandatory pre-read reachability statement, amendment item
+# 2): P-PHON's own consumed class census --
+# docs/checks/speech-aware-evidence-acquisition/2026-08-18-pphon-decomp/
+# verdict.json's own baseline (A0) arm: "total_baseline_failures": 85,
+# NEAR-MISS "baseline_failures": 4 (the SLURP-scored baseline row; this
+# module never reads that JSON file itself -- the two numbers are cited
+# VERBATIM as frozen module constants, exactly like EXPECTED_SPLIT_IDENTITY_HASH
+# is pinned verbatim elsewhere in this probe family, so a drifted P-PHON
+# re-run can never silently change this read suite's own arithmetic without
+# a code review).
+NEAR_MISS_COUNT = 4
+NEAR_MISS_CENSUS_TOTAL = 85
+NEAR_MISS_RATE = NEAR_MISS_COUNT / NEAR_MISS_CENSUS_TOTAL
+
+# Registration section 7 item 3: "the NEAR-MISS cross-reference carries an
+# n<=4 caveat (effectively n<=3 after P-PHON disqualified the single A3
+# NEAR-MISS row as a clock-format variant); it licenses no mechanism claim."
+NEAR_MISS_CROSS_REF_CAVEAT = (
+    "NEAR-MISS cross-reference caveat (2026-08-19 amendment item 3): P-PHON's own consumed class "
+    f"census names at most n<={NEAR_MISS_COUNT} NEAR-MISS baseline failures (effectively n<=3 after "
+    "P-PHON disqualified its single A3 NEAR-MISS row as a clock-format variant) -- this cross-reference "
+    "is descriptive context for the converted-set difference above, never sufficient evidence for a "
+    "mechanism claim on its own."
+)
 
 
 class PKeyReadError(RuntimeError):
@@ -170,6 +204,11 @@ class PKeyOutputRow:
     response_text: str
     metrics: Mapping[str, object]
     consumption: Mapping[str, object]
+    # 2026-08-19 amendment item 4: True on a txt_duplicate sub-block row
+    # (rails.probes.pkey_flight.PKeyArmResult's own field, same name) --
+    # defaults False so an attempt written before this amendment landed
+    # (no key present at all) still parses.
+    txt_duplicate: bool = False
 
     @classmethod
     def from_json(cls, document: Mapping[str, object]) -> "PKeyOutputRow":
@@ -182,6 +221,7 @@ class PKeyOutputRow:
             response_text=str(document["response_text"]),
             metrics=document["metrics"],
             consumption=document["consumption"],
+            txt_duplicate=bool(document.get("txt_duplicate", False)),
         )
 
 
@@ -284,6 +324,193 @@ def _sample_fully_correct(analysis: RowAnalysis) -> bool:
 
 def _fully_correct_by_sample(analyses: Sequence[RowAnalysis]) -> dict[str, bool]:
     return {analysis.row.sample_id: _sample_fully_correct(analysis) for analysis in analyses}
+
+
+def _pooled_slu_f1(scores: Sequence[SluScore]) -> float:
+    """The official POOLED SLU-F1 over ``scores`` (reuses
+    ``pslu_read._aggregate_slu_score`` -- a plain sum-then-``_prf`` wrap --
+    verbatim; ``scores`` may legitimately contain the SAME sample's own
+    ingredients more than once, which is exactly what a bootstrap replicate
+    or a duplicate-block subset needs: a sample drawn/counted twice
+    contributes twice to the pooled TP/FP/FN sums, precisely reproducing
+    the official corpus-level micro-averaging convention over a resampled
+    or repeated multiset)."""
+
+    return _aggregate_slu_score(scores).slu_f1[2]
+
+
+def _score_by_sample(analyses: Sequence[RowAnalysis]) -> dict[str, SluScore]:
+    return {analysis.row.sample_id: analysis.recomputed_score for analysis in analyses}
+
+
+# ---------------------------------------------------------------------------
+# Duplicate-block analysis (2026-08-19 amendment item 4): empirical |Delta
+# F1| between byte-identical resends -- this axis's OWN measured
+# non-determinism floor, reported next to sigma-hat(I).
+# ---------------------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class DuplicateMismatch:
+    sample_id: str
+    detail: str
+
+
+def find_duplicate_reuse_mismatches(
+    txt_nosup_rows: Sequence[PKeyOutputRow], duplicate_rows: Sequence[PKeyOutputRow]
+) -> tuple[DuplicateMismatch, ...]:
+    """VOID-worthy legality/integrity check (mirrors
+    :func:`find_transcript_reuse_mismatches`'s own discipline exactly, one
+    axis over): every txt_duplicate row's OWN prompt content must be
+    BYTE-IDENTICAL (``rails.probes.pkey_flight.txt_duplicate_content_matches``,
+    reused -- never re-derived) to that SAME sample's own pass-3 (TXT-NOSUP,
+    non-duplicate) row found in THIS attempt's own ``outputs.jsonl``."""
+
+    originals = {row.sample_id: row for row in txt_nosup_rows}
+    mismatches: list[DuplicateMismatch] = []
+    for row in duplicate_rows:
+        original = originals.get(row.sample_id)
+        if original is None:
+            mismatches.append(
+                DuplicateMismatch(
+                    row.sample_id,
+                    "no original pass-3 TXT-NOSUP row found for this sample id in this attempt",
+                )
+            )
+            continue
+        if not txt_duplicate_content_matches(row.messages, original.messages):
+            mismatches.append(
+                DuplicateMismatch(
+                    row.sample_id,
+                    "this duplicate row's own prompt content does not byte-match its own pass-3 "
+                    "TXT-NOSUP original",
+                )
+            )
+    return tuple(mismatches)
+
+
+@dataclass(frozen=True)
+class DuplicateBlockResult:
+    n_samples: int
+    original_slu_f1: float
+    duplicate_slu_f1: float
+    delta_f1: float
+    abs_delta_f1: float
+
+
+def compute_duplicate_block_delta_f1(
+    *,
+    txt_nosup_analyses: Sequence[RowAnalysis],
+    duplicate_analyses: Sequence[RowAnalysis],
+) -> DuplicateBlockResult:
+    """Mission work item 3 ("the duplicate-block analysis"): the empirical
+    pooled SLU-F1 over the duplicate sub-block's own byte-identical resends,
+    compared against the SAME samples' pooled SLU-F1 under their ORIGINAL
+    pass-3 responses -- ``abs_delta_f1`` is this axis's own measured floor
+    (report it next to sigma-hat(I): if a byte-identical resend already
+    moves pooled SLU-F1 by this much on its own, sigma-hat(I) below it is
+    not evidence of anything beyond ordinary decode non-determinism).
+    Scoped to the samples ``duplicate_analyses`` actually names (the common
+    denominator); a duplicate sample id missing its own pass-3 original is a
+    SEPARATE VOID-worthy defect (:func:`find_duplicate_reuse_mismatches`),
+    never silently dropped here without being reported there too."""
+
+    duplicate_ids = {analysis.row.sample_id for analysis in duplicate_analyses}
+    original_subset = [
+        analysis for analysis in txt_nosup_analyses if analysis.row.sample_id in duplicate_ids
+    ]
+    original_f1 = _pooled_slu_f1([analysis.recomputed_score for analysis in original_subset])
+    duplicate_f1 = _pooled_slu_f1([analysis.recomputed_score for analysis in duplicate_analyses])
+    delta = duplicate_f1 - original_f1
+    return DuplicateBlockResult(
+        n_samples=len(duplicate_ids),
+        original_slu_f1=original_f1,
+        duplicate_slu_f1=duplicate_f1,
+        delta_f1=delta,
+        abs_delta_f1=abs(delta),
+    )
+
+
+# ---------------------------------------------------------------------------
+# Mandatory pre-read reachability statement (2026-08-19 amendment item 2).
+# ---------------------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class ReachabilityStatement:
+    aud_nosup_failure_count: int
+    n_samples: int
+    near_miss_count: int
+    near_miss_census_total: int
+    near_miss_rate: float
+    eligible_near_miss_samples: int
+    max_attainable_interaction: float
+    speech_term_present_reachable: bool
+    detail: str
+
+
+def compute_reachability_statement(
+    aud_nosup_analyses: Sequence[RowAnalysis], *, n_samples: int | None = None
+) -> ReachabilityStatement:
+    """Note 5 (mandatory pre-read reachability statement, amendment item 2):
+    "the read publishes the maximum |I| attainable given P-PHON's consumed
+    class census (NEAR-MISS 4/85 baseline failures)."
+
+    ENGINEERING-INTERPRETATION (flagged, not buried, mirrors this module's
+    own notes 1-4 above): P-PHON's own census (85 baseline failures,
+    ``docs/checks/speech-aware-evidence-acquisition/2026-08-18-pphon-decomp/
+    verdict.json``) was measured over a DIFFERENT, larger evaluated set than
+    this probe's own 60-sample manifest -- 85 already exceeds this probe's
+    entire sample count, so ``NEAR_MISS_COUNT`` (4) cannot be re-scaled as a
+    RATE reapplied to this run's own failure count without producing a bound
+    (4/85 =~ 0.047) that is BELOW +0.06 for every possible input, making
+    SPEECH-TERM-PRESENT permanently unreachable regardless of the actual
+    data -- a degenerate, uninformative reading. Instead, ``NEAR_MISS_COUNT``
+    is read as an ABSOLUTE CAP: at most 4 of THIS run's own AUD-NOSUP
+    failures could plausibly be acoustically-repairable (the SAME small
+    reference count observed in a comparable, larger census), so the maximum
+    attainable interaction magnitude is::
+
+        eligible = min(NEAR_MISS_COUNT, aud_nosup_failure_count)
+        max_attainable_interaction = eligible / n_samples
+
+    -- the BEST CASE where the core repairs every eligible sample under
+    AUD-SUP (100% conversion) while TXT-SUP improves 0% over TXT-NOSUP.
+    ``NEAR_MISS_CENSUS_TOTAL`` (85) and the resulting rate (4/85) are still
+    CITED verbatim in :attr:`ReachabilityStatement.detail` for full
+    provenance, even though the cap (not the rate) drives the arithmetic.
+
+    ``aud_nosup_failure_count`` is the count of ``aud_nosup_analyses`` rows
+    that are NOT :func:`_sample_fully_correct` (module docstring note 1's
+    OWN definition, reused -- never a second correctness test); ``n_samples``
+    defaults to ``len(aud_nosup_analyses)`` (the ACTUAL loaded manifest size,
+    60 in a real flight, smaller in a test fixture)."""
+
+    failures = sum(1 for analysis in aud_nosup_analyses if not _sample_fully_correct(analysis))
+    n = n_samples if n_samples is not None else len(aud_nosup_analyses)
+    eligible = min(NEAR_MISS_COUNT, failures)
+    max_attainable = (eligible / n) if n else 0.0
+    reachable = max_attainable >= SPEECH_TERM_PRESENT_MIN
+    detail = (
+        f"CITED constants (P-PHON consumed class census): NEAR-MISS baseline failures "
+        f"{NEAR_MISS_COUNT}/{NEAR_MISS_CENSUS_TOTAL} (rate={NEAR_MISS_RATE:.4f}). This run's own "
+        f"AUD-NOSUP failures={failures}/{n}. Arithmetic: eligible = min(NEAR_MISS_COUNT, "
+        f"aud_nosup_failures) = min({NEAR_MISS_COUNT}, {failures}) = {eligible}; "
+        f"max_attainable_interaction = eligible / n_samples = {eligible} / {n} = {max_attainable:.4f}. "
+        f"SPEECH-TERM-PRESENT floor is +{SPEECH_TERM_PRESENT_MIN:.2f} -> "
+        f"{'REACHABLE' if reachable else 'UNREACHABLE'} given this census."
+    )
+    return ReachabilityStatement(
+        aud_nosup_failure_count=failures,
+        n_samples=n,
+        near_miss_count=NEAR_MISS_COUNT,
+        near_miss_census_total=NEAR_MISS_CENSUS_TOTAL,
+        near_miss_rate=NEAR_MISS_RATE,
+        eligible_near_miss_samples=eligible,
+        max_attainable_interaction=max_attainable,
+        speech_term_present_reachable=reachable,
+        detail=detail,
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -499,7 +726,7 @@ def _harness_defect_reasons(
     silence_rows: Sequence[PKeyOutputRow],
     sample_ids: Sequence[str],
     unknown_arm_rows: Sequence[PKeyOutputRow],
-    duplicate_keys: Sequence[tuple[str, str, bool]],
+    duplicate_keys: Sequence[tuple[str, str, bool, bool]],
     shape_reasons: Sequence[str],
 ) -> tuple[str, ...]:
     reasons: list[str] = []
@@ -508,7 +735,7 @@ def _harness_defect_reasons(
     for row in unknown_arm_rows:
         reasons.append(f"unknown arm {row.arm!r} on sample {row.sample_id!r}")
     for key in duplicate_keys:
-        reasons.append(f"duplicate row for (arm, sample_id, silence_swapped)={key}")
+        reasons.append(f"duplicate row for (arm, sample_id, silence_swapped, txt_duplicate)={key}")
     id_set = set(sample_ids)
     for arm in PKEY_ARMS:
         rows = rows_by_arm[arm]
@@ -600,6 +827,17 @@ def _void_clause_transcript_reuse(mismatches: Sequence[TranscriptMismatch]) -> C
     return ClauseResult(clause_text, "not_met", "every TXT-* row's own rendered transcript sha256-matched its own T0 response")
 
 
+def _void_clause_duplicate_reuse(mismatches: Sequence[DuplicateMismatch]) -> ClauseResult:
+    clause_text = "a txt_duplicate row disagrees with its own pass-3 TXT-NOSUP original (byte-identity)"
+    if mismatches:
+        shown = "; ".join(f"{m.sample_id}: {m.detail}" for m in mismatches[:10])
+        more = f" (+{len(mismatches) - 10} more)" if len(mismatches) > 10 else ""
+        return ClauseResult(clause_text, "met", f"{len(mismatches)} mismatch(es): {shown}{more}")
+    return ClauseResult(
+        clause_text, "not_met", "every txt_duplicate row byte-matched its own pass-3 TXT-NOSUP original"
+    )
+
+
 def evaluate_void(
     *,
     recheck_mismatches: Sequence[RecheckMismatch],
@@ -607,13 +845,15 @@ def evaluate_void(
     silence_comparisons: Sequence[SilenceSwapComparison],
     gold_leak_violations: Sequence[GoldLeakViolation],
     transcript_mismatches: Sequence[TranscriptMismatch],
+    duplicate_mismatches: Sequence[DuplicateMismatch] = (),
 ) -> VoidVerdict:
     void_recheck = _void_clause_recheck(recheck_mismatches)
     void_harness = _void_clause_harness_defect(harness_defect_reasons)
     void_silence = _void_clause_silence_swap(silence_comparisons)
     void_gold_leak = _void_clause_gold_leak(gold_leak_violations)
     void_transcript = _void_clause_transcript_reuse(transcript_mismatches)
-    clauses = (void_silence, void_harness, void_recheck, void_gold_leak, void_transcript)
+    void_duplicate = _void_clause_duplicate_reuse(duplicate_mismatches)
+    clauses = (void_silence, void_harness, void_recheck, void_gold_leak, void_transcript, void_duplicate)
     voided = any(clause.verdict == "met" for clause in clauses)
     return VoidVerdict(clauses=clauses, voided=voided)
 
@@ -650,7 +890,19 @@ def evaluate_interaction(aggregates: Mapping[str, ArmAggregate]) -> InteractionV
     TXT-SUP - TXT-NOSUP; I = Delta_AUD - Delta_TXT. The three threshold
     ranges (I >= +0.06, |I| <= 0.03, I <= -0.06) are mutually exclusive and
     checked in the registered order; "otherwise INCONCLUSIVE-KEY" covers the
-    two open gaps between them."""
+    two open gaps between them.
+
+    POINT-ESTIMATE layer only (2026-08-19 amendment, section 7 item 1: "the
+    unamended clause fires ~=90% under a pure-noise null"): this function's
+    OWN ``key_only`` clause is the pre-amendment, point-only reading, kept
+    exactly as registered section 4 originally specified it and still
+    reported (:attr:`PKeyReadReport.interaction`) -- but it is NO LONGER
+    what decides the P-KEY read's own top-level "OVERALL" line.
+    :func:`evaluate_interaction_ci_gated` wraps this result with the
+    mandatory bootstrap CI and reachability statement and produces the
+    verdict :attr:`PKeyReadReport.overall` actually reports;
+    ``speech_term_present``/``text_dominant`` stay point-based and
+    UNCHANGED by the amendment either way."""
 
     delta_aud = aggregates[AUD_SUP_ARM].slu_f1_f1 - aggregates[AUD_NOSUP_ARM].slu_f1_f1
     delta_txt = aggregates[TXT_SUP_ARM].slu_f1_f1 - aggregates[TXT_NOSUP_ARM].slu_f1_f1
@@ -690,6 +942,140 @@ def evaluate_interaction(aggregates: Mapping[str, ArmAggregate]) -> InteractionV
         key_only=key_only,
         text_dominant=text_dominant,
         overall=overall,
+    )
+
+
+# ---------------------------------------------------------------------------
+# Per-sample paired cluster bootstrap over INTERACTION I (amendment item 1).
+# ---------------------------------------------------------------------------
+
+
+def compute_interaction_bootstrap(
+    *,
+    aud_nosup_analyses: Sequence[RowAnalysis],
+    aud_sup_analyses: Sequence[RowAnalysis],
+    txt_nosup_analyses: Sequence[RowAnalysis],
+    txt_sup_analyses: Sequence[RowAnalysis],
+    n_replicates: int = BOOTSTRAP_N_REPLICATES,
+    seed: int = BOOTSTRAP_SEED,
+    ci_level: float = BOOTSTRAP_CI_LEVEL,
+) -> BootstrapResult:
+    """Amendment item 1: "the read suite computes a per-sample paired
+    cluster bootstrap over the 60 samples (resampling samples, recomputing
+    all four pooled arm scores and I) and publishes sigma-hat(I) and a 90%
+    CI." Delegates the resampling primitive itself to
+    :func:`analysis.bootstrap.paired_cluster_bootstrap` (module docstring:
+    "reused, never re-implemented"; the future P-TRAP read suite reuses the
+    SAME primitive for its own V1-V2 capture-difference bootstrap).
+
+    PAIRED cluster bootstrap over the id set the FOUR arms actually share in
+    common (never assumed to be exactly 60 -- a harness-defective attempt
+    missing some sample's row in one arm is reported separately via
+    ``harness_defect_reasons``; this bootstrap silently narrows to whatever
+    intersection it is actually given rather than crashing on a KeyError,
+    but a caller should treat a narrowed intersection as itself informative
+    and check it against the expected manifest size)."""
+
+    aud_nosup_by_sample = _score_by_sample(aud_nosup_analyses)
+    aud_sup_by_sample = _score_by_sample(aud_sup_analyses)
+    txt_nosup_by_sample = _score_by_sample(txt_nosup_analyses)
+    txt_sup_by_sample = _score_by_sample(txt_sup_analyses)
+    common_sample_ids = sorted(
+        set(aud_nosup_by_sample) & set(aud_sup_by_sample) & set(txt_nosup_by_sample) & set(txt_sup_by_sample)
+    )
+    if not common_sample_ids:
+        raise PKeyReadError(
+            "compute_interaction_bootstrap: no sample id is present in all four SLU-scored arms -- "
+            "cannot compute a paired bootstrap over zero paired samples"
+        )
+
+    def statistic(ids: Sequence[str]) -> float:
+        delta_aud = _pooled_slu_f1([aud_sup_by_sample[i] for i in ids]) - _pooled_slu_f1(
+            [aud_nosup_by_sample[i] for i in ids]
+        )
+        delta_txt = _pooled_slu_f1([txt_sup_by_sample[i] for i in ids]) - _pooled_slu_f1(
+            [txt_nosup_by_sample[i] for i in ids]
+        )
+        return delta_aud - delta_txt
+
+    return paired_cluster_bootstrap(
+        sample_ids=common_sample_ids, statistic=statistic, n_replicates=n_replicates, seed=seed, ci_level=ci_level
+    )
+
+
+@dataclass(frozen=True)
+class InteractionCIVerdict:
+    """The FINAL, CI-gated P-KEY verdict (amendment items 1-2): wraps
+    :func:`evaluate_interaction`'s own point-based :class:`InteractionVerdict`
+    with the mandatory bootstrap and reachability statement, and re-derives
+    ONLY the ``key_only`` clause's own firing condition -- SPEECH-TERM-PRESENT/
+    TEXT-DOMINANT stay exactly ``point``'s own clauses, unchanged (amendment:
+    "unchanged on the point estimate")."""
+
+    point: InteractionVerdict
+    bootstrap: BootstrapResult
+    reachability: ReachabilityStatement
+    key_only: ClauseResult
+    overall: str
+
+
+def evaluate_interaction_ci_gated(
+    point: InteractionVerdict, bootstrap: BootstrapResult, reachability: ReachabilityStatement
+) -> InteractionCIVerdict:
+    """Amendment item 1: "KEY-ONLY fires only if the ENTIRE CI lies inside
+    [-0.03, +0.03]; a point estimate inside the band with a CI crossing it is
+    INCONCLUSIVE-KEY." Amendment item 2: "If SPEECH-TERM-PRESENT is
+    unreachable, KEY-ONLY may not be reported as an affirmative negative --
+    only as INCONCLUSIVE with the reachability bound." Both gates apply
+    ONLY to the KEY-ONLY clause; SPEECH-TERM-PRESENT/TEXT-DOMINANT are
+    ``point``'s own clauses, read through unchanged, and are checked FIRST
+    in the SAME registered order :func:`evaluate_interaction` uses."""
+
+    ci_within_band = bootstrap.contains(-KEY_ONLY_MAX_ABS, KEY_ONLY_MAX_ABS)
+    clause_text = (
+        f"the ENTIRE {bootstrap.ci_level:.0%} bootstrap CI of I lies inside "
+        f"[-{KEY_ONLY_MAX_ABS:.2f}, +{KEY_ONLY_MAX_ABS:.2f}] AND SPEECH-TERM-PRESENT is reachable given "
+        "the P-PHON census (2026-08-19 amendment items 1-2)"
+    )
+    if not ci_within_band:
+        key_only = ClauseResult(
+            clause_text,
+            "not_met",
+            f"CI=[{bootstrap.ci_low:+.4f}, {bootstrap.ci_high:+.4f}] is NOT entirely inside the band "
+            f"(point I={point.interaction:+.4f}, sigma_hat={bootstrap.sigma_hat:.4f}, "
+            f"n_replicates={bootstrap.n_replicates}) -- a point estimate inside the band with a CI "
+            "crossing it is INCONCLUSIVE-KEY, never an affirmative KEY-ONLY",
+        )
+    elif not reachability.speech_term_present_reachable:
+        key_only = ClauseResult(
+            clause_text,
+            "not_met",
+            f"CI=[{bootstrap.ci_low:+.4f}, {bootstrap.ci_high:+.4f}] IS entirely inside the band, but "
+            f"SPEECH-TERM-PRESENT (I>=+{SPEECH_TERM_PRESENT_MIN:.2f}) is UNREACHABLE given the P-PHON "
+            f"census (max attainable |I|={reachability.max_attainable_interaction:.4f}) -- KEY-ONLY may "
+            "not be reported as an affirmative negative under an unreachable alternative; "
+            "INCONCLUSIVE-KEY with the reachability bound instead",
+        )
+    else:
+        key_only = ClauseResult(
+            clause_text,
+            "met",
+            f"CI=[{bootstrap.ci_low:+.4f}, {bootstrap.ci_high:+.4f}] sigma_hat={bootstrap.sigma_hat:.4f} "
+            f"n_replicates={bootstrap.n_replicates}; reachability bound="
+            f"{reachability.max_attainable_interaction:.4f} (>= +{SPEECH_TERM_PRESENT_MIN:.2f} required)",
+        )
+
+    if point.speech_term_present.verdict == "met":
+        overall = "SPEECH-TERM-PRESENT"
+    elif key_only.verdict == "met":
+        overall = "KEY-ONLY"
+    elif point.text_dominant.verdict == "met":
+        overall = "TEXT-DOMINANT"
+    else:
+        overall = "INCONCLUSIVE-KEY"
+
+    return InteractionCIVerdict(
+        point=point, bootstrap=bootstrap, reachability=reachability, key_only=key_only, overall=overall
     )
 
 
@@ -797,17 +1183,24 @@ class PKeyReadReport:
     t0_wer: T0WerResult
     perception_gap: float
     interaction: InteractionVerdict
+    ci_verdict: InteractionCIVerdict
+    reachability: ReachabilityStatement
+    duplicate_block: DuplicateBlockResult | None
     converted_set: ConvertedSetResult
     silence_comparisons: tuple[SilenceSwapComparison, ...]
     recheck_mismatches: tuple[RecheckMismatch, ...]
     harness_defect_reasons: tuple[str, ...]
     gold_leak_violations: tuple[GoldLeakViolation, ...]
     transcript_mismatches: tuple[TranscriptMismatch, ...]
+    duplicate_mismatches: tuple[DuplicateMismatch, ...]
     void_verdict: VoidVerdict
 
     @property
     def overall(self) -> str:
-        return "VOID" if self.void_verdict.voided else self.interaction.overall
+        # 2026-08-19 amendment: the CI-gated verdict (evaluate_interaction_ci_gated),
+        # never the pre-amendment point-only self.interaction.overall, decides
+        # the top-level line -- VOID is still checked first, unchanged.
+        return "VOID" if self.void_verdict.voided else self.ci_verdict.overall
 
 
 def build_pkey_report(
@@ -834,11 +1227,12 @@ def build_pkey_report(
 
     rows_by_arm: dict[str, list[PKeyOutputRow]] = {arm: [] for arm in PKEY_ARMS}
     silence_rows: list[PKeyOutputRow] = []
+    duplicate_rows: list[PKeyOutputRow] = []
     unknown_arm_rows: list[PKeyOutputRow] = []
-    seen_keys: set[tuple[str, str, bool]] = set()
-    duplicate_keys: list[tuple[str, str, bool]] = []
+    seen_keys: set[tuple[str, str, bool, bool]] = set()
+    duplicate_keys: list[tuple[str, str, bool, bool]] = []
     for row in rows:
-        key = (row.arm, row.sample_id, row.silence_swapped)
+        key = (row.arm, row.sample_id, row.silence_swapped, row.txt_duplicate)
         if key in seen_keys:
             duplicate_keys.append(key)
             continue
@@ -848,6 +1242,8 @@ def build_pkey_report(
             continue
         if row.silence_swapped:
             silence_rows.append(row)
+        elif row.txt_duplicate:
+            duplicate_rows.append(row)
         else:
             rows_by_arm[row.arm].append(row)
 
@@ -892,6 +1288,19 @@ def build_pkey_report(
             continue
         recheck_mismatches.extend(_score_row(row, gold).recheck_mismatches)
 
+    # txt_duplicate sub-block (2026-08-19 amendment item 4): scored the
+    # SAME way as an ordinary TXT-NOSUP row (SAME arm, SAME gold lookup) --
+    # never merged into analyses_by_arm[TXT_NOSUP_ARM] itself (that bucket
+    # stays exactly the 60 ordinary pass-3 rows).
+    duplicate_analyses: list[RowAnalysis] = []
+    for row in duplicate_rows:
+        gold = gold_by_id.get(row.sample_id)
+        if gold is None:
+            continue
+        analysis = _score_row(row, gold)
+        recheck_mismatches.extend(analysis.recheck_mismatches)
+        duplicate_analyses.append(analysis)
+
     aggregates = {arm: build_arm_aggregate(arm, analyses_by_arm[arm]) for arm in PKEY_SLU_ARMS}
 
     t0_wer = compute_t0_wer(rows_by_arm[T0_ARM], gold_sentence_by_id)
@@ -914,6 +1323,7 @@ def build_pkey_report(
     transcript_mismatches = find_transcript_reuse_mismatches(
         rows_by_arm[T0_ARM], list(rows_by_arm[TXT_NOSUP_ARM]) + list(rows_by_arm[TXT_SUP_ARM])
     )
+    duplicate_mismatches = find_duplicate_reuse_mismatches(rows_by_arm[TXT_NOSUP_ARM], duplicate_rows)
 
     void_verdict = evaluate_void(
         recheck_mismatches=recheck_mismatches,
@@ -921,6 +1331,7 @@ def build_pkey_report(
         silence_comparisons=silence_comparisons,
         gold_leak_violations=gold_leak_violations,
         transcript_mismatches=transcript_mismatches,
+        duplicate_mismatches=duplicate_mismatches,
     )
     interaction = evaluate_interaction(aggregates)
     perception = perception_gap(aggregates)
@@ -932,6 +1343,28 @@ def build_pkey_report(
         pphon_classes=load_pphon_classes(pphon_verdict_path),
     )
 
+    # 2026-08-19 amendment: the mandatory bootstrap + reachability statement
+    # + CI-gated verdict (items 1-2), and the duplicate-block descriptive
+    # (item 4) -- computed unconditionally as part of every read, never an
+    # opt-in extra.
+    bootstrap = compute_interaction_bootstrap(
+        aud_nosup_analyses=analyses_by_arm[AUD_NOSUP_ARM],
+        aud_sup_analyses=analyses_by_arm[AUD_SUP_ARM],
+        txt_nosup_analyses=analyses_by_arm[TXT_NOSUP_ARM],
+        txt_sup_analyses=analyses_by_arm[TXT_SUP_ARM],
+    )
+    reachability = compute_reachability_statement(
+        analyses_by_arm[AUD_NOSUP_ARM], n_samples=len(sample_ids)
+    )
+    ci_verdict = evaluate_interaction_ci_gated(interaction, bootstrap, reachability)
+    duplicate_block = (
+        compute_duplicate_block_delta_f1(
+            txt_nosup_analyses=analyses_by_arm[TXT_NOSUP_ARM], duplicate_analyses=duplicate_analyses
+        )
+        if duplicate_analyses
+        else None
+    )
+
     return PKeyReadReport(
         attempt_dir=attempt_dir,
         flight_status=flight_status,
@@ -940,12 +1373,16 @@ def build_pkey_report(
         t0_wer=t0_wer,
         perception_gap=perception,
         interaction=interaction,
+        ci_verdict=ci_verdict,
+        reachability=reachability,
+        duplicate_block=duplicate_block,
         converted_set=converted_set,
         silence_comparisons=silence_comparisons,
         recheck_mismatches=tuple(recheck_mismatches),
         harness_defect_reasons=harness_defect_reasons,
         gold_leak_violations=gold_leak_violations,
         transcript_mismatches=transcript_mismatches,
+        duplicate_mismatches=duplicate_mismatches,
         void_verdict=void_verdict,
     )
 
@@ -978,8 +1415,24 @@ def _aggregate_json(aggregate: ArmAggregate) -> dict[str, object]:
     }
 
 
+def _duplicate_block_json(duplicate_block: DuplicateBlockResult | None) -> dict[str, object] | None:
+    if duplicate_block is None:
+        return None
+    return {
+        "n_samples": duplicate_block.n_samples,
+        "original_slu_f1": duplicate_block.original_slu_f1,
+        "duplicate_slu_f1": duplicate_block.duplicate_slu_f1,
+        "delta_f1": duplicate_block.delta_f1,
+        "abs_delta_f1": duplicate_block.abs_delta_f1,
+        "note": "empirical |Delta F1| between byte-identical resends -- this axis's own measured floor, "
+        "reported next to sigma_hat(I) (2026-08-19 amendment item 4)",
+    }
+
+
 def report_to_json(report: PKeyReadReport) -> dict[str, object]:
     verdict = report.interaction
+    ci_verdict = report.ci_verdict
+    reachability = report.reachability
     converted = report.converted_set
     return {
         "runtime_prohibited": True,
@@ -998,6 +1451,8 @@ def report_to_json(report: PKeyReadReport) -> dict[str, object]:
             "value": report.perception_gap,
             "definition": "TXT-NOSUP.slu_f1 - AUD-NOSUP.slu_f1 (descriptive, no clause)",
         },
+        # Pre-amendment point-only reading (kept, reported, no longer
+        # authoritative for "overall" -- see "ci_verdict" below).
         "interaction": {
             "delta_aud": verdict.delta_aud,
             "delta_txt": verdict.delta_txt,
@@ -1007,11 +1462,36 @@ def report_to_json(report: PKeyReadReport) -> dict[str, object]:
             "text_dominant": _clause_json(verdict.text_dominant),
             "overall": verdict.overall,
         },
+        # 2026-08-19 amendment items 1-2: the bootstrap, the mandatory
+        # reachability statement, and the CI-gated FINAL verdict.
+        "bootstrap": report.ci_verdict.bootstrap.as_json(),
+        "reachability": {
+            "aud_nosup_failure_count": reachability.aud_nosup_failure_count,
+            "n_samples": reachability.n_samples,
+            "near_miss_count": reachability.near_miss_count,
+            "near_miss_census_total": reachability.near_miss_census_total,
+            "near_miss_rate": reachability.near_miss_rate,
+            "eligible_near_miss_samples": reachability.eligible_near_miss_samples,
+            "max_attainable_interaction": reachability.max_attainable_interaction,
+            "speech_term_present_reachable": reachability.speech_term_present_reachable,
+            "detail": reachability.detail,
+        },
+        "ci_verdict": {
+            "delta_aud": ci_verdict.point.delta_aud,
+            "delta_txt": ci_verdict.point.delta_txt,
+            "interaction": ci_verdict.point.interaction,
+            "speech_term_present": _clause_json(ci_verdict.point.speech_term_present),
+            "key_only": _clause_json(ci_verdict.key_only),
+            "text_dominant": _clause_json(ci_verdict.point.text_dominant),
+            "overall": ci_verdict.overall,
+        },
+        "duplicate_block": _duplicate_block_json(report.duplicate_block),
         "converted_set": {
             "aud_converted": list(converted.aud_converted),
             "txt_converted": list(converted.txt_converted),
             "aud_only": list(converted.aud_only),
             "pphon_class_by_sample": dict(converted.pphon_class_by_sample),
+            "near_miss_cross_ref_caveat": NEAR_MISS_CROSS_REF_CAVEAT,
         },
         "silence_swap": [
             {
@@ -1027,6 +1507,7 @@ def report_to_json(report: PKeyReadReport) -> dict[str, object]:
         "harness_defect_reasons": list(report.harness_defect_reasons),
         "gold_leak_violation_count": len(report.gold_leak_violations),
         "transcript_mismatch_count": len(report.transcript_mismatches),
+        "duplicate_mismatch_count": len(report.duplicate_mismatches),
         "void": {"clauses": [_clause_json(c) for c in report.void_verdict.clauses], "voided": report.void_verdict.voided},
         "overall": report.overall,
     }
@@ -1060,10 +1541,37 @@ def render_report(report: PKeyReadReport) -> str:
 
     verdict = report.interaction
     lines.append(f"Delta_AUD={verdict.delta_aud:+.4f}  Delta_TXT={verdict.delta_txt:+.4f}  INTERACTION I={verdict.interaction:+.4f}")
+    lines.append("  (pre-amendment POINT-ONLY reading -- reported, no longer authoritative; see CI-GATED VERDICT below)")
     for clause in (verdict.speech_term_present, verdict.key_only, verdict.text_dominant):
         lines.append(f"  [{clause.verdict.upper():>8}] {clause.clause_text}")
         lines.append(f"           {clause.detail}")
-    lines.append(f"  INTERACTION VERDICT: {verdict.overall}")
+    lines.append(f"  point-only interaction verdict: {verdict.overall}")
+    lines.append("")
+
+    lines.append("Mandatory pre-read reachability statement (2026-08-19 amendment item 2)")
+    lines.append(f"  {report.reachability.detail}")
+    lines.append("")
+
+    ci_verdict = report.ci_verdict
+    lines.append(
+        f"Per-sample paired cluster bootstrap over I: sigma_hat={ci_verdict.bootstrap.sigma_hat:.4f} "
+        f"90% CI=[{ci_verdict.bootstrap.ci_low:+.4f}, {ci_verdict.bootstrap.ci_high:+.4f}] "
+        f"(N={ci_verdict.bootstrap.n_replicates} replicates, seed={ci_verdict.bootstrap.seed})"
+    )
+    lines.append(f"  [{ci_verdict.key_only.verdict.upper():>8}] {ci_verdict.key_only.clause_text}")
+    lines.append(f"           {ci_verdict.key_only.detail}")
+    lines.append(f"  CI-GATED VERDICT (2026-08-19 amendment, AUTHORITATIVE): {ci_verdict.overall}")
+    lines.append("")
+
+    if report.duplicate_block is not None:
+        db = report.duplicate_block
+        lines.append(
+            f"Duplicate-block analysis (2026-08-19 amendment item 4, n={db.n_samples} byte-identical resends): "
+            f"original_slu_f1={db.original_slu_f1:.4f} duplicate_slu_f1={db.duplicate_slu_f1:.4f} "
+            f"|Delta F1|={db.abs_delta_f1:.4f} (this axis's own measured floor -- compare against sigma_hat(I) above)"
+        )
+    else:
+        lines.append("Duplicate-block analysis: (no txt_duplicate rows found in this attempt)")
     lines.append("")
 
     converted = report.converted_set
@@ -1071,6 +1579,7 @@ def render_report(report: PKeyReadReport) -> str:
     for sample_id in converted.aud_only:
         pphon = converted.pphon_class_by_sample.get(sample_id, "(P-PHON class unavailable)")
         lines.append(f"  {sample_id}: P-PHON class = {pphon}")
+    lines.append(f"  {NEAR_MISS_CROSS_REF_CAVEAT}")
     lines.append("")
 
     lines.append("Silence-swap comparison (3 AUD-SUP silence variants vs their real-audio counterparts)")
@@ -1091,6 +1600,7 @@ def render_report(report: PKeyReadReport) -> str:
     lines.append(f"recheck mismatches (TP/FP/FN vs adapter's committed scorer): {len(report.recheck_mismatches)}")
     lines.append(f"gold-leak violations: {len(report.gold_leak_violations)}")
     lines.append(f"transcript-reuse byte-identity mismatches: {len(report.transcript_mismatches)}")
+    lines.append(f"duplicate-block byte-identity mismatches: {len(report.duplicate_mismatches)}")
     lines.append("")
 
     void = report.void_verdict

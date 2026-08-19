@@ -13,16 +13,29 @@ from pathlib import Path
 
 import pytest
 
+from speech_aware_evidence_acquisition.analysis.bootstrap import BootstrapResult
 from speech_aware_evidence_acquisition.analysis.pkey_read import (
+    BOOTSTRAP_CI_LEVEL,
+    BOOTSTRAP_N_REPLICATES,
+    BOOTSTRAP_SEED,
     KEY_ONLY_MAX_ABS,
+    NEAR_MISS_CENSUS_TOTAL,
+    NEAR_MISS_COUNT,
+    NEAR_MISS_CROSS_REF_CAVEAT,
     SPEECH_TERM_PRESENT_MIN,
     TEXT_DOMINANT_MAX,
     PKeyOutputRow,
     PKeyReadError,
+    ReachabilityStatement,
     build_pkey_report,
     compute_converted_set,
+    compute_duplicate_block_delta_f1,
+    compute_interaction_bootstrap,
+    compute_reachability_statement,
     compute_t0_wer,
     evaluate_interaction,
+    evaluate_interaction_ci_gated,
+    find_duplicate_reuse_mismatches,
     find_gold_leak_violations,
     find_transcript_reuse_mismatches,
     load_attempt_rows,
@@ -31,7 +44,7 @@ from speech_aware_evidence_acquisition.analysis.pkey_read import (
     main as pkey_read_main,
     perception_gap,
 )
-from speech_aware_evidence_acquisition.analysis.pslu_read import ArmAggregate
+from speech_aware_evidence_acquisition.analysis.pslu_read import ArmAggregate, RowAnalysis
 from speech_aware_evidence_acquisition.data.lock import load_lock
 from speech_aware_evidence_acquisition.rails.adapters.slurp import SlurpAdapter
 from speech_aware_evidence_acquisition.rails.consumption import ConsumptionTrace
@@ -142,6 +155,247 @@ def test_evaluate_interaction_verdicts_are_mutually_exclusive_densely():
             for c in (verdict.speech_term_present, verdict.key_only, verdict.text_dominant)
         ]
         assert sum(fired) <= 1, f"I={i_value} fired more than one clause"
+
+
+# ---------------------------------------------------------------------------
+# evaluate_interaction_ci_gated -- CI-gate fixtures (2026-08-19 amendment
+# items 1-2, mission work item 4).
+# ---------------------------------------------------------------------------
+
+
+def _bootstrap_fixture(ci_low: float, ci_high: float, *, point_estimate: float | None = None, sigma_hat: float = 0.01) -> BootstrapResult:
+    return BootstrapResult(
+        point_estimate=point_estimate if point_estimate is not None else (ci_low + ci_high) / 2.0,
+        replicates=(), sigma_hat=sigma_hat, ci_low=ci_low, ci_high=ci_high,
+        ci_level=0.90, n_replicates=100, seed=20260807,
+    )
+
+
+def _reachability_fixture(*, reachable: bool, max_attainable: float = 0.5) -> ReachabilityStatement:
+    return ReachabilityStatement(
+        aud_nosup_failure_count=10, n_samples=60, near_miss_count=NEAR_MISS_COUNT,
+        near_miss_census_total=NEAR_MISS_CENSUS_TOTAL, near_miss_rate=NEAR_MISS_COUNT / NEAR_MISS_CENSUS_TOTAL,
+        eligible_near_miss_samples=min(NEAR_MISS_COUNT, 10), max_attainable_interaction=max_attainable,
+        speech_term_present_reachable=reachable, detail="test fixture",
+    )
+
+
+def test_ci_gated_ci_entirely_inside_band_and_reachable_is_key_only():
+    point = evaluate_interaction(_aggregates(aud_nosup=0.20, aud_sup=0.50, txt_nosup=0.10, txt_sup=0.40))  # I=0.0
+    result = evaluate_interaction_ci_gated(point, _bootstrap_fixture(-0.02, 0.02), _reachability_fixture(reachable=True))
+    assert result.key_only.verdict == "met"
+    assert result.overall == "KEY-ONLY"
+
+
+def test_ci_gated_point_inside_band_but_ci_crossing_is_inconclusive_key():
+    """Amendment item 1, quoted verbatim: 'a point estimate inside the band
+    with a CI crossing it is INCONCLUSIVE-KEY.'"""
+
+    point = evaluate_interaction(_aggregates(aud_nosup=0.20, aud_sup=0.50, txt_nosup=0.10, txt_sup=0.40))  # I=0.0
+    assert point.key_only.verdict == "met"  # point-only reading WOULD have fired
+    result = evaluate_interaction_ci_gated(point, _bootstrap_fixture(-0.05, 0.05), _reachability_fixture(reachable=True))
+    assert result.key_only.verdict == "not_met"
+    assert result.overall == "INCONCLUSIVE-KEY"
+
+
+def test_ci_gated_ci_boundary_entirely_inside_is_key_only():
+    point = evaluate_interaction(_aggregates(aud_nosup=0.20, aud_sup=0.50, txt_nosup=0.10, txt_sup=0.40))  # I=0.0
+    result = evaluate_interaction_ci_gated(point, _bootstrap_fixture(-0.03, 0.03), _reachability_fixture(reachable=True))
+    assert result.key_only.verdict == "met"
+    assert result.overall == "KEY-ONLY"
+
+
+def test_ci_gated_ci_barely_crossing_the_boundary_is_inconclusive_key():
+    point = evaluate_interaction(_aggregates(aud_nosup=0.20, aud_sup=0.50, txt_nosup=0.10, txt_sup=0.40))  # I=0.0
+    result = evaluate_interaction_ci_gated(point, _bootstrap_fixture(-0.03, 0.0301), _reachability_fixture(reachable=True))
+    assert result.key_only.verdict == "not_met"
+    assert result.overall == "INCONCLUSIVE-KEY"
+
+
+def test_ci_gated_speech_term_present_is_point_based_regardless_of_ci():
+    """Amendment: SPEECH-TERM-PRESENT is 'unchanged on the point estimate' --
+    fires from point.speech_term_present alone, checked BEFORE key_only, so
+    a wide CI (even one that would also satisfy the KEY-ONLY band, which
+    this fixture's own CI does not) never overrides it."""
+
+    point = evaluate_interaction(_aggregates(aud_nosup=0.20, aud_sup=0.70, txt_nosup=0.50, txt_sup=0.50))  # I=0.50
+    result = evaluate_interaction_ci_gated(point, _bootstrap_fixture(0.40, 0.60), _reachability_fixture(reachable=True))
+    assert result.overall == "SPEECH-TERM-PRESENT"
+
+
+def test_ci_gated_text_dominant_is_point_based_regardless_of_ci():
+    point = evaluate_interaction(_aggregates(aud_nosup=0.40, aud_sup=0.40, txt_nosup=0.10, txt_sup=0.60))  # I=-0.50
+    result = evaluate_interaction_ci_gated(point, _bootstrap_fixture(-0.60, -0.40), _reachability_fixture(reachable=True))
+    assert result.overall == "TEXT-DOMINANT"
+
+
+def test_ci_gated_unreachable_downgrades_an_otherwise_firing_key_only_to_inconclusive():
+    """Amendment item 2, quoted verbatim: 'If SPEECH-TERM-PRESENT is
+    unreachable, KEY-ONLY may not be reported as an affirmative negative --
+    only as INCONCLUSIVE with the reachability bound.'"""
+
+    point = evaluate_interaction(_aggregates(aud_nosup=0.20, aud_sup=0.50, txt_nosup=0.10, txt_sup=0.40))  # I=0.0
+    result = evaluate_interaction_ci_gated(
+        point, _bootstrap_fixture(-0.02, 0.02), _reachability_fixture(reachable=False, max_attainable=0.01)
+    )
+    assert result.key_only.verdict == "not_met"
+    assert result.overall == "INCONCLUSIVE-KEY"
+    assert "UNREACHABLE" in result.key_only.detail
+    assert "0.01" in result.key_only.detail
+
+
+def test_ci_gated_carries_the_point_and_bootstrap_and_reachability_through_unchanged():
+    point = evaluate_interaction(_aggregates(aud_nosup=0.20, aud_sup=0.50, txt_nosup=0.10, txt_sup=0.40))
+    bootstrap = _bootstrap_fixture(-0.02, 0.02)
+    reachability = _reachability_fixture(reachable=True)
+    result = evaluate_interaction_ci_gated(point, bootstrap, reachability)
+    assert result.point is point
+    assert result.bootstrap is bootstrap
+    assert result.reachability is reachability
+    # point's OWN speech_term_present/text_dominant clauses are read through unchanged.
+    assert result.point.speech_term_present.verdict == "not_met"
+    assert result.point.text_dominant.verdict == "not_met"
+
+
+# ---------------------------------------------------------------------------
+# compute_interaction_bootstrap -- determinism + a hand-checkable tiny case.
+# ---------------------------------------------------------------------------
+
+
+def _score(word_tp: float, word_fp: float, word_fn: float) -> SluScore:
+    return SluScore(0, 0, 0, 0, 0, 0, word_tp, word_fp, word_fn, 0, 0, 0)
+
+
+def _analysis_with_score(sample_id: str, score: SluScore) -> RowAnalysis:
+    row = _t0_row(sample_id, "{}")
+    return RowAnalysis(
+        row=row, predicted_scenario=None, predicted_action=None, predicted_entities=(), parsed=True,
+        recomputed_score=score, recheck_mismatches=(), roster_reconciliation=None, induced_substitutions=0,
+    )
+
+
+def test_compute_interaction_bootstrap_is_deterministic_for_the_same_seed():
+    aud_nosup = [_analysis_with_score("s1", _score(0, 1, 1)), _analysis_with_score("s2", _score(1, 0, 0))]
+    aud_sup = [_analysis_with_score("s1", _score(1, 0, 0)), _analysis_with_score("s2", _score(1, 0, 0))]
+    txt_nosup = [_analysis_with_score("s1", _score(0, 1, 1)), _analysis_with_score("s2", _score(1, 0, 0))]
+    txt_sup = [_analysis_with_score("s1", _score(0, 1, 1)), _analysis_with_score("s2", _score(1, 0, 0))]
+
+    result_a = compute_interaction_bootstrap(
+        aud_nosup_analyses=aud_nosup, aud_sup_analyses=aud_sup,
+        txt_nosup_analyses=txt_nosup, txt_sup_analyses=txt_sup, n_replicates=500, seed=20260807,
+    )
+    result_b = compute_interaction_bootstrap(
+        aud_nosup_analyses=aud_nosup, aud_sup_analyses=aud_sup,
+        txt_nosup_analyses=txt_nosup, txt_sup_analyses=txt_sup, n_replicates=500, seed=20260807,
+    )
+    assert result_a.replicates == result_b.replicates
+    assert result_a.ci == result_b.ci
+    assert result_a.sigma_hat == result_b.sigma_hat
+
+
+def test_compute_interaction_bootstrap_defaults_match_the_registered_discipline():
+    assert BOOTSTRAP_N_REPLICATES == 10_000
+    assert BOOTSTRAP_SEED == 20260807
+    assert BOOTSTRAP_CI_LEVEL == 0.90
+
+
+def test_compute_interaction_bootstrap_hand_checkable_two_sample_case():
+    """Hand-computable by construction: AUD-SUP repairs s1 (word F1 0 -> 1)
+    and leaves s2 unchanged; TXT-SUP == TXT-NOSUP exactly (zero TXT
+    improvement, same ingredients as AUD-NOSUP) -- so Delta_TXT is EXACTLY
+    0.0 for every possible resample, and I == Delta_AUD deterministically.
+    With only 2 unique ids, every resample is one of (s1,s1)/(s2,s2)/mixed,
+    each with an exactly hand-computable pooled-F1 delta."""
+
+    aud_nosup = [_analysis_with_score("s1", _score(0, 1, 1)), _analysis_with_score("s2", _score(2, 0, 0))]
+    aud_sup = [_analysis_with_score("s1", _score(1, 0, 0)), _analysis_with_score("s2", _score(2, 0, 0))]
+    txt_nosup = aud_nosup
+    txt_sup = aud_nosup  # zero TXT improvement, by construction
+
+    result = compute_interaction_bootstrap(
+        aud_nosup_analyses=aud_nosup, aud_sup_analyses=aud_sup,
+        txt_nosup_analyses=txt_nosup, txt_sup_analyses=txt_sup, n_replicates=2000, seed=20260807,
+    )
+
+    # Point estimate: original (s1, s2) exactly once each.
+    # aud_nosup pooled: tp=0+2=2, fp=1, fn=1 -> F1 = 2*2/(2*2+1+1) = 4/6 = 0.66667
+    # aud_sup pooled:   tp=1+2=3, fp=0, fn=0 -> F1 = 1.0
+    # delta_aud = 1.0 - 0.66667 = 0.33333; delta_txt = 0.0 (identical arms) -> I = 0.33333
+    assert result.point_estimate == pytest.approx(1.0 / 3.0, abs=1e-4)
+    # Every replicate must be one of exactly three hand-computed values:
+    #   (s1,s1): aud_nosup F1=0, aud_sup F1=1 -> I=1.0
+    #   (s2,s2): aud_nosup F1=1, aud_sup F1=1 -> I=0.0
+    #   mixed:   I=0.33333 (same arithmetic as the point estimate)
+    rounded = {round(v, 4) for v in result.replicates}
+    assert rounded <= {0.0, round(1.0 / 3.0, 4), 1.0}
+    assert rounded == {0.0, round(1.0 / 3.0, 4), 1.0}  # n_replicates=2000 sees all three
+    assert result.sigma_hat > 0.0
+    assert result.ci_level == 0.90
+
+
+def test_compute_interaction_bootstrap_raises_on_zero_common_sample_ids():
+    aud_nosup = [_analysis_with_score("s1", _score(0, 1, 1))]
+    aud_sup = [_analysis_with_score("s2", _score(1, 0, 0))]  # disjoint from aud_nosup
+    with pytest.raises(PKeyReadError, match="no sample id is present in all four"):
+        compute_interaction_bootstrap(
+            aud_nosup_analyses=aud_nosup, aud_sup_analyses=aud_sup,
+            txt_nosup_analyses=aud_nosup, txt_sup_analyses=aud_sup, n_replicates=10,
+        )
+
+
+# ---------------------------------------------------------------------------
+# compute_reachability_statement -- reachability-statement arithmetic
+# (mission work item 4).
+# ---------------------------------------------------------------------------
+
+
+def test_compute_reachability_statement_arithmetic_below_the_floor():
+    analyses = [
+        _analysis("s1", fully_correct=False),
+        _analysis("s2", fully_correct=False),
+        _analysis("s3", fully_correct=True),
+    ]
+    result = compute_reachability_statement(analyses, n_samples=60)
+    assert result.aud_nosup_failure_count == 2
+    assert result.n_samples == 60
+    assert result.near_miss_count == NEAR_MISS_COUNT == 4
+    assert result.near_miss_census_total == NEAR_MISS_CENSUS_TOTAL == 85
+    assert result.near_miss_rate == pytest.approx(4 / 85)
+    assert result.eligible_near_miss_samples == min(4, 2) == 2
+    assert result.max_attainable_interaction == pytest.approx(2 / 60)
+    assert result.speech_term_present_reachable is False  # 2/60 =~ 0.0333 < 0.06
+    assert "UNREACHABLE" in result.detail
+    assert "4/85" in result.detail
+
+
+def test_compute_reachability_statement_reachable_when_failures_reach_the_cap():
+    analyses = [_analysis(f"s{i}", fully_correct=False) for i in range(10)]
+    result = compute_reachability_statement(analyses, n_samples=60)
+    assert result.aud_nosup_failure_count == 10
+    assert result.eligible_near_miss_samples == 4  # capped at NEAR_MISS_COUNT, not 10
+    assert result.max_attainable_interaction == pytest.approx(4 / 60)
+    assert result.speech_term_present_reachable is True  # 4/60 =~ 0.0667 >= 0.06
+    assert "REACHABLE" in result.detail
+
+
+def test_compute_reachability_statement_zero_failures_is_unreachable():
+    analyses = [_analysis("s1", fully_correct=True), _analysis("s2", fully_correct=True)]
+    result = compute_reachability_statement(analyses, n_samples=60)
+    assert result.aud_nosup_failure_count == 0
+    assert result.eligible_near_miss_samples == 0
+    assert result.max_attainable_interaction == pytest.approx(0.0)
+    assert result.speech_term_present_reachable is False
+
+
+def test_compute_reachability_statement_defaults_n_samples_to_len_analyses():
+    analyses = [_analysis("s1", fully_correct=False)]
+    result = compute_reachability_statement(analyses)
+    assert result.n_samples == 1
+
+
+def test_near_miss_cross_ref_caveat_cites_the_n_le_4_bound():
+    assert "n<=4" in NEAR_MISS_CROSS_REF_CAVEAT
+    assert "mechanism claim" in NEAR_MISS_CROSS_REF_CAVEAT
 
 
 # ---------------------------------------------------------------------------
@@ -687,6 +941,144 @@ def test_find_transcript_reuse_mismatches_direct():
     mismatches = find_transcript_reuse_mismatches(t0_rows, [good_row, bad_row])
     assert len(mismatches) == 1
     assert mismatches[0].arm == TXT_SUP_ARM
+
+
+# ---------------------------------------------------------------------------
+# Duplicate-block byte-identity (2026-08-19 amendment item 4, mission work
+# item 4): "fixture where a resend differs -> refuse."
+# ---------------------------------------------------------------------------
+
+
+def _txt_nosup_row(sample_id: str, text: str) -> PKeyOutputRow:
+    return PKeyOutputRow(
+        arm=TXT_NOSUP_ARM, sample_id=sample_id, silence_swapped=False, transcript_sha256_used=None,
+        messages=({"role": "system", "content": "x"}, {"role": "user", "content": [{"type": "text", "text": text}]}),
+        response_text="{}", metrics={}, consumption={},
+    )
+
+
+def _dup_row_direct(sample_id: str, text: str) -> PKeyOutputRow:
+    return PKeyOutputRow(
+        arm=TXT_NOSUP_ARM, sample_id=sample_id, silence_swapped=False, transcript_sha256_used=None,
+        messages=({"role": "system", "content": "x"}, {"role": "user", "content": [{"type": "text", "text": text}]}),
+        response_text="{}", metrics={}, consumption={}, txt_duplicate=True,
+    )
+
+
+def test_find_duplicate_reuse_mismatches_accepts_a_matching_resend():
+    originals = [_txt_nosup_row("s1", "The user said: hello")]
+    good = _dup_row_direct("s1", "The user said: hello")
+    assert find_duplicate_reuse_mismatches(originals, [good]) == ()
+
+
+def test_find_duplicate_reuse_mismatches_refuses_a_resend_that_differs():
+    originals = [_txt_nosup_row("s1", "The user said: hello")]
+    diverged = _dup_row_direct("s1", "The user said: something else entirely")
+    mismatches = find_duplicate_reuse_mismatches(originals, [diverged])
+    assert len(mismatches) == 1
+    assert mismatches[0].sample_id == "s1"
+
+
+def test_find_duplicate_reuse_mismatches_reports_a_missing_original():
+    originals = [_txt_nosup_row("s1", "The user said: hello")]
+    orphan = _dup_row_direct("s2", "The user said: goodbye")  # no s2 original at all
+    mismatches = find_duplicate_reuse_mismatches(originals, [orphan])
+    assert len(mismatches) == 1
+    assert mismatches[0].sample_id == "s2"
+    assert "no original pass-3" in mismatches[0].detail
+
+
+def test_duplicate_block_byte_identity_violation_voids_the_read(pkey_world, tmp_path):
+    rows = _clean_rows(pkey_world)
+    transcript_registry = {
+        pkey_world.sid[slurp_id].sample_id: build_transcript_record(pkey_world.sid[slurp_id].sample_id, T0_RESPONSES[slurp_id])
+        for slurp_id in SLURP_IDS
+    }
+    dup_row = _row(
+        pkey_world, pkey_world.sid[101], TXT_NOSUP_ARM, IOT_WRONG, transcript_registry=transcript_registry
+    )
+    dup_row["txt_duplicate"] = True
+    # Corrupt the duplicate's own rendered transcript text -- a resend that
+    # diverges from its own pass-3 original.
+    dup_row["messages"][1]["content"][0]["text"] = "The user said: a totally different resend"
+    rows = rows + [dup_row]
+
+    report = _build_report(pkey_world, tmp_path, rows)
+
+    assert len(report.duplicate_mismatches) >= 1
+    assert any(m.sample_id == pkey_world.sid[101].sample_id for m in report.duplicate_mismatches)
+    assert report.void_verdict.voided is True
+    assert report.overall == "VOID"
+    clause = next(
+        c for c in report.void_verdict.clauses
+        if c.clause_text == "a txt_duplicate row disagrees with its own pass-3 TXT-NOSUP original (byte-identity)"
+    )
+    assert clause.verdict == "met"
+
+
+def test_duplicate_block_matching_resend_is_not_voided_and_reports_delta_f1(pkey_world, tmp_path):
+    # NOT _clean_rows()'s own default silence_responses (unanimous unchanged
+    # -- see test_silence_swap_unanimous_unchanged_voids_the_read): sample
+    # 101 flips under silence here, so THAT clause stays not_met and this
+    # fixture isolates the duplicate-block clause exactly the way
+    # test_happy_path_key_only_and_zero_defects does for the parent probe.
+    rows = _build_rows(
+        pkey_world,
+        aud_nosup={101: IOT_WRONG, 900: NEUTRAL, 901: NEUTRAL},
+        aud_sup={101: IOT_RIGHT, 900: NEUTRAL, 901: NEUTRAL},
+        txt_nosup={101: IOT_WRONG, 900: NEUTRAL, 901: NEUTRAL},
+        txt_sup={101: IOT_RIGHT, 900: NEUTRAL, 901: NEUTRAL},
+        silence_responses={101: NEUTRAL, 900: NEUTRAL, 901: NEUTRAL},
+    )
+    transcript_registry = {
+        pkey_world.sid[slurp_id].sample_id: build_transcript_record(pkey_world.sid[slurp_id].sample_id, T0_RESPONSES[slurp_id])
+        for slurp_id in SLURP_IDS
+    }
+    # A BYTE-IDENTICAL resend of the sample 101 TXT-NOSUP row (same
+    # response text -> same score -> zero measured floor for this sample).
+    dup_row = _row(
+        pkey_world, pkey_world.sid[101], TXT_NOSUP_ARM, IOT_WRONG, transcript_registry=transcript_registry
+    )
+    dup_row["txt_duplicate"] = True
+    rows = rows + [dup_row]
+
+    report = _build_report(pkey_world, tmp_path, rows)
+
+    assert report.duplicate_mismatches == ()
+    assert report.void_verdict.voided is False
+    assert report.duplicate_block is not None
+    assert report.duplicate_block.n_samples == 1
+    assert report.duplicate_block.delta_f1 == pytest.approx(0.0)
+    assert report.duplicate_block.abs_delta_f1 == pytest.approx(0.0)
+
+
+def test_duplicate_block_is_none_when_no_duplicate_rows_present(pkey_world, tmp_path):
+    rows = _clean_rows(pkey_world)  # no duplicate rows at all
+    report = _build_report(pkey_world, tmp_path, rows)
+    assert report.duplicate_block is None
+    assert report.duplicate_mismatches == ()
+
+
+def test_compute_duplicate_block_delta_f1_hand_computable():
+    txt_nosup = [_analysis_with_score("s1", _score(0, 1, 1)), _analysis_with_score("s2", _score(1, 0, 0))]
+    # s1's resend scores DIFFERENTLY (empirical non-determinism, not a byte-
+    # identity violation -- the PROMPT is identical, the RESPONSE differs).
+    duplicate = [_analysis_with_score("s1", _score(1, 0, 0))]
+
+    result = compute_duplicate_block_delta_f1(txt_nosup_analyses=txt_nosup, duplicate_analyses=duplicate)
+    assert result.n_samples == 1
+    assert result.original_slu_f1 == pytest.approx(0.0)  # s1-only subset of the original pass-3 rows
+    assert result.duplicate_slu_f1 == pytest.approx(1.0)
+    assert result.delta_f1 == pytest.approx(1.0)
+    assert result.abs_delta_f1 == pytest.approx(1.0)
+
+
+def test_compute_duplicate_block_delta_f1_zero_when_scores_match():
+    txt_nosup = [_analysis_with_score("s1", _score(0, 1, 1)), _analysis_with_score("s2", _score(1, 0, 0))]
+    duplicate = [_analysis_with_score("s1", _score(0, 1, 1))]  # SAME ingredients as the original s1
+    result = compute_duplicate_block_delta_f1(txt_nosup_analyses=txt_nosup, duplicate_analyses=duplicate)
+    assert result.delta_f1 == pytest.approx(0.0)
+    assert result.abs_delta_f1 == pytest.approx(0.0)
 
 
 # ---------------------------------------------------------------------------

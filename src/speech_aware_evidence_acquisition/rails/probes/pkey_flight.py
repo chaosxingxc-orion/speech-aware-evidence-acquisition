@@ -78,6 +78,26 @@ checked at import time and again at the top of :func:`run_pkey_flight` --
 this probe's rosters come ONLY from ``configs/probes/g0-binding/
 pslu-rosters-train-only.json`` via the SAME frozen
 ``rails.probes.pslu_flight.load_pslu_rosters``/``pslu_supply_packet``.
+
+2026-08-19 amendment (docs/readiness/2026-08-18-pkey-preregistration-
+REGISTERED.md section 7) machinery, two pieces:
+
+1. TXT-NOSUP/TXT-SUP now send every request via
+   ``core_client.complete(..., text_only_sample_id=sample.sample_id)`` --
+   the real-client text-mode capability
+   (``rails.core_client.FrozenCoreClient.complete``) that repairs the
+   attempt-1 abort's own root cause (a text-only message was refused by the
+   AUDIO invariant, because the client layer was never relaxed for
+   registered text-only arms).
+2. A SIXTH pass, the seeded 35-sample TXT duplicate sub-block
+   (:data:`TXT_DUPLICATE_ARM` == :data:`TXT_NOSUP_ARM`,
+   :data:`EXPECTED_TXT_DUPLICATE_COUNT` == 35): :func:`run_pkey_flight`'s
+   own ``txt_duplicate_sample_ids`` parameter names which pass-3 samples get
+   re-sent BYTE-IDENTICALLY (SAME construction, SAME supply=None) as an
+   extra row, flagged ``PKeyArmResult.txt_duplicate=True`` and validated by
+   :func:`validate_pkey_flight_summary` against
+   :func:`txt_duplicate_content_matches` -- fail-closed if a resend ever
+   diverges from its own pass-3 original.
 """
 
 from __future__ import annotations
@@ -118,6 +138,13 @@ TXT_ARMS: tuple[str, ...] = (TXT_NOSUP_ARM, TXT_SUP_ARM)
 
 SILENCE_SWAP_ARM = AUD_SUP_ARM
 EXPECTED_SILENCE_SWAP_COUNT = 3
+
+# 2026-08-19 amendment (docs/readiness/2026-08-18-pkey-preregistration-
+# REGISTERED.md section 7 item 4): a seeded 35-sample sub-block of pass 3
+# (TXT-NOSUP), re-sent BYTE-IDENTICALLY in the SAME session as a sixth pass
+# -- ALWAYS TXT-NOSUP (never TXT-SUP; the amendment names pass 3 only).
+TXT_DUPLICATE_ARM = TXT_NOSUP_ARM
+EXPECTED_TXT_DUPLICATE_COUNT = 35
 
 # docs/readiness/2026-08-18-pkey-preregistration-REGISTERED.md's own opening
 # line: "the SAME frozen 60 SLURP devel samples (seed 20260807) ... identical
@@ -272,6 +299,24 @@ def content_has_audio(messages: Sequence[Mapping[str, object]]) -> bool:
     return any(isinstance(part, Mapping) and part.get("type") == "input_audio" for part in content)
 
 
+def txt_duplicate_content_matches(
+    candidate: Sequence[Mapping[str, object]], original: Sequence[Mapping[str, object]]
+) -> bool:
+    """Byte-identity check (2026-08-19 amendment item 4): ``True`` iff
+    ``candidate`` (a duplicate-block row's own prompt) and ``original`` (that
+    SAME sample's own pass-3 TXT-NOSUP row) are BOTH audio-free and carry the
+    IDENTICAL text content parts, in order -- never merely "close enough".
+    Reused by BOTH this module's own :func:`validate_pkey_flight_summary` and
+    ``analysis.pkey_read``'s read-side VOID clause (never two independently
+    drifting implementations of the SAME byte-identity bar)."""
+
+    return (
+        content_has_audio(candidate) is False
+        and content_has_audio(original) is False
+        and content_text_parts(candidate) == content_text_parts(original)
+    )
+
+
 # ---------------------------------------------------------------------------
 # T0 transcript registry.
 # ---------------------------------------------------------------------------
@@ -370,6 +415,13 @@ class PKeyArmResult:
     # independently re-derives the SAME value from the row's own rendered
     # prompt text -- this field is never trusted blindly).
     transcript_sha256_used: str | None = None
+    # 2026-08-19 amendment item 4: True on exactly the sixth-pass duplicate
+    # sub-block rows (always arm==TXT_NOSUP_ARM, a re-send of that SAME
+    # sample's own pass-3 row) -- kept in a separate bucket from the ordinary
+    # pass-3 rows by both validate_pkey_flight_summary and analysis.pkey_read
+    # (mirrors how silence_swapped already separates AUD-SUP's own extra
+    # rows), never merged into the primary per-sample aggregate.
+    txt_duplicate: bool = False
 
 
 @dataclass(frozen=True)
@@ -383,16 +435,21 @@ def validate_pkey_flight_summary(
     *,
     expected_sample_ids: Sequence[str],
     expected_silence_swap_sample_ids: Sequence[str] = (),
+    expected_txt_duplicate_sample_ids: Sequence[str] = (),
 ) -> None:
     """Fail-closed structural checks (module docstring / mission
     instruction): every arm in :data:`PKEY_ARMS` carries EXACTLY one row
     per id in ``expected_sample_ids`` (60/60 per pass), no duplicate
     sample_id rows, EXACTLY one silence-swap row per id in
     ``expected_silence_swap_sample_ids`` (all on :data:`SILENCE_SWAP_ARM`),
-    every TXT-* row is audio-free, and every TXT-* row's OWN rendered
-    transcript text sha256-matches this SAME summary's own T0 row for the
-    same sample id (the registered hard ordering dependency's own
-    byte-identity bar). Called automatically at the end of
+    EXACTLY one txt-duplicate row per id in
+    ``expected_txt_duplicate_sample_ids`` (all on :data:`TXT_DUPLICATE_ARM`,
+    each BYTE-IDENTICAL -- :func:`txt_duplicate_content_matches` -- to that
+    SAME sample's own pass-3 row: 2026-08-19 amendment item 4's own
+    byte-identity bar), every TXT-* row is audio-free, and every TXT-* row's
+    OWN rendered transcript text sha256-matches this SAME summary's own T0
+    row for the same sample id (the registered hard ordering dependency's
+    own byte-identity bar). Called automatically at the end of
     :func:`run_pkey_flight`; independently callable against an
     already-assembled summary (e.g. by a test fixture)."""
 
@@ -404,14 +461,21 @@ def validate_pkey_flight_summary(
     expected_silence_set = set(expected_silence)
     if len(expected_silence) != len(expected_silence_set):
         raise PKeyFlightError("expected_silence_swap_sample_ids carries a duplicate")
+    expected_txt_dup = tuple(expected_txt_duplicate_sample_ids)
+    expected_txt_dup_set = set(expected_txt_dup)
+    if len(expected_txt_dup) != len(expected_txt_dup_set):
+        raise PKeyFlightError("expected_txt_duplicate_sample_ids carries a duplicate")
 
     by_arm: dict[str, list[PKeyArmResult]] = {arm: [] for arm in PKEY_ARMS}
     silence_rows: list[PKeyArmResult] = []
+    txt_duplicate_rows: list[PKeyArmResult] = []
     for row in summary.results:
         if row.arm not in PKEY_ARMS:
             raise PKeyFlightError(f"unknown P-KEY arm {row.arm!r}")
         if row.silence_swapped:
             silence_rows.append(row)
+        elif row.txt_duplicate:
+            txt_duplicate_rows.append(row)
         else:
             by_arm[row.arm].append(row)
 
@@ -445,6 +509,40 @@ def validate_pkey_flight_summary(
             raise PKeyFlightError(
                 f"silence-swap row on sample {row.sample_id!r} is on arm {row.arm!r}, expected "
                 f"{SILENCE_SWAP_ARM!r}"
+            )
+
+    # 2026-08-19 amendment item 4: the 35-call TXT duplicate sub-block --
+    # structural id-set check plus the FAIL-CLOSED byte-identity check
+    # against each sample's own pass-3 (TXT-NOSUP) row.
+    txt_dup_ids = [row.sample_id for row in txt_duplicate_rows]
+    if len(txt_dup_ids) != len(set(txt_dup_ids)):
+        raise PKeyFlightError("duplicate txt-duplicate sample_id row(s)")
+    got_txt_dup = set(txt_dup_ids)
+    if got_txt_dup != expected_txt_dup_set:
+        missing = sorted(expected_txt_dup_set - got_txt_dup)
+        extra = sorted(got_txt_dup - expected_txt_dup_set)
+        raise PKeyFlightError(
+            f"txt-duplicate sample id set does not match the expected {len(expected_txt_dup_set)}-sample "
+            f"set (missing={missing[:5]}, extra={extra[:5]})"
+        )
+    txt_nosup_by_sample = {row.sample_id: row for row in by_arm[TXT_DUPLICATE_ARM]}
+    for row in txt_duplicate_rows:
+        if row.arm != TXT_DUPLICATE_ARM:
+            raise PKeyFlightError(
+                f"txt-duplicate row on sample {row.sample_id!r} is on arm {row.arm!r}, expected "
+                f"{TXT_DUPLICATE_ARM!r}"
+            )
+        original_row = txt_nosup_by_sample.get(row.sample_id)
+        if original_row is None:
+            raise PKeyFlightError(
+                f"txt-duplicate row on sample {row.sample_id!r}: no original pass-3 "
+                f"{TXT_DUPLICATE_ARM!r} row present in this summary to compare against"
+            )
+        if not txt_duplicate_content_matches(row.messages, original_row.messages):
+            raise PKeyFlightError(
+                f"txt-duplicate row on sample {row.sample_id!r}: this row's own prompt content does "
+                "not byte-match its own pass-3 TXT-NOSUP original -- duplicate-block byte-identity "
+                "violated (2026-08-19 amendment item 4)"
             )
 
     # Audio-free legality (module docstring) + transcript-reuse byte-identity
@@ -498,17 +596,27 @@ def run_pkey_flight(
     split_identity_hash: str,
     decoding_params: Mapping[str, object] | None = None,
     silence_swap_media_relpaths: Mapping[str, str] = MappingProxyType({}),
+    txt_duplicate_sample_ids: Sequence[str] = (),
 ) -> PKeyFlightSummary:
     """Execute the full five-pass P-KEY flight over ``samples`` (module
     docstring) plus one extra AUD-SUP request per entry in
     ``silence_swap_media_relpaths`` (``sample_id -> already-registered
     silent media_relpath`` -- ``rails.silence_swap`` +
     ``FrozenCoreClient.register_slice`` build that registration, exactly as
-    the parent P-SLU flight's own ``run_pslu_flight`` documents).
+    the parent P-SLU flight's own ``run_pslu_flight`` documents) plus, as a
+    SIXTH pass, one extra byte-identical re-send of pass 3 (TXT-NOSUP) per id
+    in ``txt_duplicate_sample_ids`` (2026-08-19 amendment item 4: the seeded
+    35-sample duplicate sub-block -- caller-supplied, exactly like
+    ``silence_swap_media_relpaths``, since selection lives in the REGISTERED
+    flight config, ``configs/probes/g0-binding/pkey-flight.json``'s own
+    ``txt_duplicate`` block, never re-derived here).
 
     ``core_client`` is duck-typed against ``rails.core_client.CoreClient``
     (the SAME "no forced import" discipline ``run_pslu_flight``/
-    ``run_pslu_s2_flight`` use).
+    ``run_pslu_s2_flight`` use); each duplicate-block request is sent via
+    ``core_client.complete(..., text_only_sample_id=sample.sample_id)``,
+    exactly like pass 3/4's own TXT-* requests (the real-client text-mode
+    capability, ``rails.core_client.FrozenCoreClient.complete``).
     """
 
     assert_never_calls_ontology_miner()
@@ -525,6 +633,15 @@ def run_pkey_flight(
         raise PKeyFlightError(
             f"silence_swap_media_relpaths names sample ids outside this flight's own samples: "
             f"{sorted(unknown_silence_ids)}"
+        )
+    txt_duplicate_id_list = list(txt_duplicate_sample_ids)
+    if len(txt_duplicate_id_list) != len(set(txt_duplicate_id_list)):
+        raise PKeyFlightError("txt_duplicate_sample_ids carries a duplicate")
+    unknown_txt_duplicate_ids = set(txt_duplicate_id_list) - sample_id_set
+    if unknown_txt_duplicate_ids:
+        raise PKeyFlightError(
+            f"txt_duplicate_sample_ids names sample ids outside this flight's own samples: "
+            f"{sorted(unknown_txt_duplicate_ids)}"
         )
 
     # The SAME frozen A3 roster the consumed P-SLU A3 arm used -- built ONCE
@@ -611,11 +728,16 @@ def run_pkey_flight(
     # fully populated from pass 0's OWN completed responses --
     # assemble_txt_messages below refuses if any entry were somehow missing.
 
-    # Pass 3: TXT-NOSUP -- T0's transcript, zero supply, audio-free.
+    # Pass 3: TXT-NOSUP -- T0's transcript, zero supply, audio-free. Real-
+    # client text-mode: text_only_sample_id names the sample a text-only
+    # message carries no media_relpath to reverse-look-up
+    # (rails.core_client.FrozenCoreClient.complete's own opt-in gate).
     for sample in samples:
         record = transcript_registry[sample.sample_id]
         messages = assemble_txt_messages(sample, None, transcript_registry)
-        response_text = core_client.complete(messages, decoding_params=decoding_params)
+        response_text = core_client.complete(
+            messages, decoding_params=decoding_params, text_only_sample_id=sample.sample_id
+        )
         metrics = adapter.score(sample, response_text)
         consumption = adapter.extract_consumption(sample, None, response_text)
         results.append(
@@ -634,7 +756,9 @@ def run_pkey_flight(
     for sample in samples:
         record = transcript_registry[sample.sample_id]
         messages = assemble_txt_messages(sample, a3_supply, transcript_registry)
-        response_text = core_client.complete(messages, decoding_params=decoding_params)
+        response_text = core_client.complete(
+            messages, decoding_params=decoding_params, text_only_sample_id=sample.sample_id
+        )
         metrics = adapter.score(sample, response_text)
         consumption = adapter.extract_consumption(sample, a3_supply, response_text)
         results.append(
@@ -649,6 +773,35 @@ def run_pkey_flight(
             )
         )
 
+    # Pass 6 (2026-08-19 amendment item 4): the seeded 35-sample TXT
+    # duplicate sub-block -- a BYTE-IDENTICAL re-send (SAME construction:
+    # assemble_txt_messages(sample, None, transcript_registry), supply=None,
+    # exactly pass 3's own call) of a sub-block of pass 3, in the SAME
+    # session, for this axis's own measured duplicate floor.
+    txt_duplicate_id_set = set(txt_duplicate_id_list)
+    for sample in samples:
+        if sample.sample_id not in txt_duplicate_id_set:
+            continue
+        record = transcript_registry[sample.sample_id]
+        messages = assemble_txt_messages(sample, None, transcript_registry)
+        response_text = core_client.complete(
+            messages, decoding_params=decoding_params, text_only_sample_id=sample.sample_id
+        )
+        metrics = adapter.score(sample, response_text)
+        consumption = adapter.extract_consumption(sample, None, response_text)
+        results.append(
+            PKeyArmResult(
+                arm=TXT_DUPLICATE_ARM,
+                sample_id=sample.sample_id,
+                messages=tuple(messages),
+                response_text=response_text,
+                metrics=metrics,
+                consumption=consumption,
+                transcript_sha256_used=record.sha256,
+                txt_duplicate=True,
+            )
+        )
+
     summary = PKeyFlightSummary(
         results=tuple(results), transcript_registry=MappingProxyType(dict(transcript_registry))
     )
@@ -656,6 +809,7 @@ def run_pkey_flight(
         summary,
         expected_sample_ids=tuple(sample_ids_list),
         expected_silence_swap_sample_ids=tuple(silence_swap_media_relpaths.keys()),
+        expected_txt_duplicate_sample_ids=tuple(txt_duplicate_id_list),
     )
     return summary
 
@@ -665,12 +819,14 @@ __all__ = [
     "AUD_SUP_ARM",
     "EXPECTED_SILENCE_SWAP_COUNT",
     "EXPECTED_SPLIT_IDENTITY_HASH",
+    "EXPECTED_TXT_DUPLICATE_COUNT",
     "PKEY_ARMS",
     "PKEY_SLU_ARMS",
     "SILENCE_SWAP_ARM",
     "T0_ARM",
     "T0_INSTRUCTION",
     "TXT_ARMS",
+    "TXT_DUPLICATE_ARM",
     "TXT_NOSUP_ARM",
     "TXT_SUP_ARM",
     "TXT_TRANSCRIPT_TEMPLATE",
@@ -690,6 +846,7 @@ __all__ = [
     "run_pkey_flight",
     "t0_instruction_sha256",
     "transcript_registry_as_json",
+    "txt_duplicate_content_matches",
     "txt_template_sha256",
     "validate_pkey_flight_summary",
 ]

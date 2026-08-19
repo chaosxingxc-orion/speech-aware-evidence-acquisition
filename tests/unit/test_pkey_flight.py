@@ -24,6 +24,7 @@ from speech_aware_evidence_acquisition.rails.probes.pkey_flight import (
     SILENCE_SWAP_ARM,
     T0_ARM,
     T0_INSTRUCTION,
+    TXT_DUPLICATE_ARM,
     TXT_NOSUP_ARM,
     TXT_SUP_ARM,
     TXT_TRANSCRIPT_TEMPLATE,
@@ -43,6 +44,7 @@ from speech_aware_evidence_acquisition.rails.probes.pkey_flight import (
     run_pkey_flight,
     t0_instruction_sha256,
     transcript_registry_as_json,
+    txt_duplicate_content_matches,
     txt_template_sha256,
     validate_pkey_flight_summary,
 )
@@ -342,6 +344,167 @@ def test_run_pkey_flight_silence_swap_adds_one_extra_aud_sup_row(slurp_world):
     assert swapped[0].messages[1]["content"][0] == normal_aud_sup.messages[1]["content"][0]
 
 
+# ---------------------------------------------------------------------------
+# txt_duplicate sub-block (2026-08-19 amendment item 4).
+# ---------------------------------------------------------------------------
+
+
+class _RecordingClient:
+    """Wraps a MockCoreClient and additionally records the
+    ``text_only_sample_id`` kwarg every ``complete()`` call carried --
+    MockCoreClient itself accepts-and-discards it (module docstring, "THE
+    TEST LESSON"), so a test that wants to assert run_pkey_flight actually
+    PASSES this kwarg for TXT arms needs its own thin recorder."""
+
+    def __init__(self, responder):
+        self._mock = MockCoreClient(responder=responder)
+        self.text_only_sample_ids: list[str | None] = []
+
+    def complete(self, messages, *, decoding_params=None, text_only_sample_id=None):
+        self.text_only_sample_ids.append(text_only_sample_id)
+        return self._mock.complete(messages, decoding_params=decoding_params)
+
+    @property
+    def calls(self):
+        return self._mock.calls
+
+
+def test_run_pkey_flight_txt_arms_and_duplicate_block_use_text_only_mode(slurp_world):
+    """rails/probes/pkey_flight.py's TXT passes (3, 4, and the duplicate
+    sub-block) use the real-client text-mode capability -- pass 0/1/2 (audio
+    arms) never do."""
+
+    adapter, s_iot, s_email = _flight_world(slurp_world)
+    transcripts = {s_iot.media_relpath: "turn on the kitchen light", s_email.media_relpath: "check email"}
+    client = _RecordingClient(_responder(transcripts))
+
+    run_pkey_flight(
+        adapter=adapter, core_client=client, samples=[s_iot, s_email], rosters=_ROSTERS,
+        split_identity_hash=EXPECTED_SPLIT_IDENTITY_HASH,
+        txt_duplicate_sample_ids=[s_iot.sample_id],
+    )
+
+    # Registered order: T0(2) AUD-NOSUP(2) AUD-SUP(2) TXT-NOSUP(2) TXT-SUP(2) DUP(1).
+    assert client.text_only_sample_ids == [
+        None, None,  # T0
+        None, None,  # AUD-NOSUP
+        None, None,  # AUD-SUP
+        s_iot.sample_id, s_email.sample_id,  # TXT-NOSUP
+        s_iot.sample_id, s_email.sample_id,  # TXT-SUP
+        s_iot.sample_id,  # duplicate sub-block
+    ]
+
+
+def test_run_pkey_flight_txt_duplicate_adds_one_extra_byte_identical_row_per_named_sample(slurp_world):
+    adapter, s_iot, s_email = _flight_world(slurp_world)
+    transcripts = {s_iot.media_relpath: "turn on the kitchen light", s_email.media_relpath: "check email"}
+    client = MockCoreClient(responder=_responder(transcripts))
+
+    summary = run_pkey_flight(
+        adapter=adapter, core_client=client, samples=[s_iot, s_email], rosters=_ROSTERS,
+        split_identity_hash=EXPECTED_SPLIT_IDENTITY_HASH,
+        txt_duplicate_sample_ids=[s_iot.sample_id],
+    )
+
+    assert len(summary.results) == 11  # 10 base + 1 duplicate
+    duplicates = [r for r in summary.results if r.txt_duplicate]
+    assert len(duplicates) == 1
+    dup = duplicates[0]
+    assert dup.arm == TXT_DUPLICATE_ARM == TXT_NOSUP_ARM
+    assert dup.sample_id == s_iot.sample_id
+    assert content_has_audio(dup.messages) is False
+
+    original = next(
+        r for r in summary.results
+        if r.arm == TXT_NOSUP_ARM and r.sample_id == s_iot.sample_id and not r.txt_duplicate
+    )
+    assert txt_duplicate_content_matches(dup.messages, original.messages) is True
+    assert content_text_parts(dup.messages) == content_text_parts(original.messages)
+    assert dup.transcript_sha256_used == original.transcript_sha256_used
+
+
+def test_run_pkey_flight_txt_duplicate_empty_by_default(slurp_world):
+    adapter, s_iot, s_email = _flight_world(slurp_world)
+    transcripts = {s_iot.media_relpath: "t", s_email.media_relpath: "t2"}
+    client = MockCoreClient(responder=_responder(transcripts))
+    summary = run_pkey_flight(
+        adapter=adapter, core_client=client, samples=[s_iot, s_email], rosters=_ROSTERS,
+        split_identity_hash=EXPECTED_SPLIT_IDENTITY_HASH,
+    )
+    assert len(summary.results) == 10  # unchanged when txt_duplicate_sample_ids is omitted
+    assert not any(r.txt_duplicate for r in summary.results)
+
+
+def test_run_pkey_flight_rejects_unknown_txt_duplicate_sample_ids(slurp_world):
+    adapter, s_iot, _ = _flight_world(slurp_world)
+    client = MockCoreClient(responder=_responder({s_iot.media_relpath: "t"}))
+    with pytest.raises(PKeyFlightError, match="outside this flight"):
+        run_pkey_flight(
+            adapter=adapter, core_client=client, samples=[s_iot], rosters=_ROSTERS,
+            split_identity_hash=EXPECTED_SPLIT_IDENTITY_HASH,
+            txt_duplicate_sample_ids=["bogus-sample-id"],
+        )
+
+
+def test_run_pkey_flight_rejects_a_duplicate_id_within_txt_duplicate_sample_ids(slurp_world):
+    adapter, s_iot, _ = _flight_world(slurp_world)
+    client = MockCoreClient(responder=_responder({s_iot.media_relpath: "t"}))
+    with pytest.raises(PKeyFlightError, match="txt_duplicate_sample_ids carries a duplicate"):
+        run_pkey_flight(
+            adapter=adapter, core_client=client, samples=[s_iot], rosters=_ROSTERS,
+            split_identity_hash=EXPECTED_SPLIT_IDENTITY_HASH,
+            txt_duplicate_sample_ids=[s_iot.sample_id, s_iot.sample_id],
+        )
+
+
+# ---------------------------------------------------------------------------
+# txt_duplicate_content_matches -- direct.
+# ---------------------------------------------------------------------------
+
+
+def test_txt_duplicate_content_matches_true_for_identical_audio_free_content():
+    messages = (
+        {"role": "system", "content": "x"},
+        {"role": "user", "content": [{"type": "text", "text": "The user said: hello"}]},
+    )
+    other = (
+        {"role": "system", "content": "different system text -- irrelevant to this check"},
+        {"role": "user", "content": [{"type": "text", "text": "The user said: hello"}]},
+    )
+    assert txt_duplicate_content_matches(messages, other) is True
+
+
+def test_txt_duplicate_content_matches_false_when_text_diverges():
+    original = (
+        {"role": "system", "content": "x"},
+        {"role": "user", "content": [{"type": "text", "text": "The user said: hello"}]},
+    )
+    diverged = (
+        {"role": "system", "content": "x"},
+        {"role": "user", "content": [{"type": "text", "text": "The user said: goodbye"}]},
+    )
+    assert txt_duplicate_content_matches(diverged, original) is False
+
+
+def test_txt_duplicate_content_matches_false_when_either_side_carries_audio():
+    text_only = (
+        {"role": "system", "content": "x"},
+        {"role": "user", "content": [{"type": "text", "text": "The user said: hello"}]},
+    )
+    with_audio = (
+        {"role": "system", "content": "x"},
+        {
+            "role": "user",
+            "content": [
+                {"type": "text", "text": "The user said: hello"},
+                {"type": "input_audio", "media_relpath": "s1.flac"},
+            ],
+        },
+    )
+    assert txt_duplicate_content_matches(with_audio, text_only) is False
+    assert txt_duplicate_content_matches(text_only, with_audio) is False
+
+
 def test_run_pkey_flight_rejects_empty_samples(slurp_world):
     adapter, s_iot, _ = _flight_world(slurp_world)
     with pytest.raises(PKeyFlightError, match="at least one sample"):
@@ -502,3 +665,120 @@ def test_validate_pkey_flight_summary_silence_swap_must_be_on_aud_sup():
     bad_summary = PKeyFlightSummary(results=tuple(results), transcript_registry=summary.transcript_registry)
     with pytest.raises(PKeyFlightError, match=f"expected {SILENCE_SWAP_ARM!r}"):
         validate_pkey_flight_summary(bad_summary, expected_sample_ids=sample_ids, expected_silence_swap_sample_ids=["s1"])
+
+
+# ---------------------------------------------------------------------------
+# validate_pkey_flight_summary -- txt_duplicate sub-block (2026-08-19
+# amendment item 4): fail-closed byte-identity fixtures.
+# ---------------------------------------------------------------------------
+
+
+def _duplicate_row_for(summary: PKeyFlightSummary, sample_id: str) -> PKeyArmResult:
+    original = next(
+        row for row in summary.results
+        if row.arm == TXT_NOSUP_ARM and row.sample_id == sample_id and not row.txt_duplicate
+    )
+    return PKeyArmResult(
+        arm=TXT_NOSUP_ARM, sample_id=sample_id, messages=original.messages, response_text=original.response_text,
+        metrics=original.metrics, consumption=original.consumption,
+        transcript_sha256_used=original.transcript_sha256_used, txt_duplicate=True,
+    )
+
+
+def test_validate_pkey_flight_summary_accepts_a_matching_txt_duplicate_row():
+    summary, sample_ids = _valid_two_sample_summary()
+    results = list(summary.results) + [_duplicate_row_for(summary, "s1")]
+    extended = PKeyFlightSummary(results=tuple(results), transcript_registry=summary.transcript_registry)
+    validate_pkey_flight_summary(
+        extended, expected_sample_ids=sample_ids, expected_txt_duplicate_sample_ids=["s1"]
+    )  # does not raise
+
+
+def test_validate_pkey_flight_summary_refuses_a_txt_duplicate_row_that_diverges_from_its_pass3_original():
+    """The FAIL-CLOSED byte-identity check (mission requirement, work item
+    2): a resend that differs from its own pass-3 original must refuse."""
+
+    summary, sample_ids = _valid_two_sample_summary()
+    diverged = _duplicate_row_for(summary, "s1")
+    diverged_messages = (
+        diverged.messages[0],
+        {"role": "user", "content": [{"type": "text", "text": "The user said: a totally different resend"}]},
+    )
+    diverged = PKeyArmResult(
+        arm=diverged.arm, sample_id=diverged.sample_id, messages=diverged_messages,
+        response_text=diverged.response_text, metrics=diverged.metrics, consumption=diverged.consumption,
+        transcript_sha256_used=diverged.transcript_sha256_used, txt_duplicate=True,
+    )
+    results = list(summary.results) + [diverged]
+    corrupted = PKeyFlightSummary(results=tuple(results), transcript_registry=summary.transcript_registry)
+    with pytest.raises(PKeyFlightError, match="duplicate-block byte-identity violated"):
+        validate_pkey_flight_summary(
+            corrupted, expected_sample_ids=sample_ids, expected_txt_duplicate_sample_ids=["s1"]
+        )
+
+
+def test_validate_pkey_flight_summary_refuses_a_txt_duplicate_row_carrying_audio():
+    summary, sample_ids = _valid_two_sample_summary()
+    original = _duplicate_row_for(summary, "s1")
+    leaked_messages = (
+        original.messages[0],
+        {"role": "user", "content": [
+            {"type": "text", "text": original.messages[1]["content"][0]["text"]},
+            {"type": "input_audio", "media_relpath": "s1.flac"},
+        ]},
+    )
+    leaked = PKeyArmResult(
+        arm=original.arm, sample_id=original.sample_id, messages=leaked_messages,
+        response_text=original.response_text, metrics=original.metrics, consumption=original.consumption,
+        transcript_sha256_used=original.transcript_sha256_used, txt_duplicate=True,
+    )
+    results = list(summary.results) + [leaked]
+    corrupted = PKeyFlightSummary(results=tuple(results), transcript_registry=summary.transcript_registry)
+    with pytest.raises(PKeyFlightError, match="duplicate-block byte-identity violated"):
+        validate_pkey_flight_summary(
+            corrupted, expected_sample_ids=sample_ids, expected_txt_duplicate_sample_ids=["s1"]
+        )
+
+
+def test_validate_pkey_flight_summary_txt_duplicate_must_be_on_txt_nosup_arm():
+    summary, sample_ids = _valid_two_sample_summary()
+    t0_s1 = next(row for row in summary.results if row.arm == T0_ARM and row.sample_id == "s1")
+    mislabeled = PKeyArmResult(
+        arm=T0_ARM, sample_id="s1", messages=t0_s1.messages, response_text=t0_s1.response_text,
+        metrics=t0_s1.metrics, consumption=t0_s1.consumption, txt_duplicate=True,
+    )
+    results = list(summary.results) + [mislabeled]
+    bad_summary = PKeyFlightSummary(results=tuple(results), transcript_registry=summary.transcript_registry)
+    with pytest.raises(PKeyFlightError, match=f"expected {TXT_NOSUP_ARM!r}"):
+        validate_pkey_flight_summary(
+            bad_summary, expected_sample_ids=sample_ids, expected_txt_duplicate_sample_ids=["s1"]
+        )
+
+
+def test_validate_pkey_flight_summary_refuses_a_missing_txt_duplicate_row():
+    summary, sample_ids = _valid_two_sample_summary()
+    with pytest.raises(PKeyFlightError, match="does not match the expected"):
+        validate_pkey_flight_summary(
+            summary, expected_sample_ids=sample_ids, expected_txt_duplicate_sample_ids=["s1"]
+        )  # named but never added
+
+
+def test_validate_pkey_flight_summary_rejects_a_duplicate_expected_txt_duplicate_id():
+    summary, sample_ids = _valid_two_sample_summary()
+    with pytest.raises(PKeyFlightError, match="expected_txt_duplicate_sample_ids carries a duplicate"):
+        validate_pkey_flight_summary(
+            summary, expected_sample_ids=sample_ids, expected_txt_duplicate_sample_ids=["s1", "s1"]
+        )
+
+
+def test_validate_pkey_flight_summary_ordinary_txt_nosup_rows_stay_60_even_with_duplicates_present():
+    """The duplicate bucket is kept SEPARATE from the ordinary per-sample
+    TXT-NOSUP bucket -- a duplicate row must never be miscounted as a second
+    (illegally duplicate) TXT-NOSUP row for the same sample id."""
+
+    summary, sample_ids = _valid_two_sample_summary()
+    results = list(summary.results) + [_duplicate_row_for(summary, "s1"), _duplicate_row_for(summary, "s2")]
+    extended = PKeyFlightSummary(results=tuple(results), transcript_registry=summary.transcript_registry)
+    validate_pkey_flight_summary(
+        extended, expected_sample_ids=sample_ids, expected_txt_duplicate_sample_ids=["s1", "s2"]
+    )  # does not raise -- ordinary TXT-NOSUP arm still has exactly 2 rows
