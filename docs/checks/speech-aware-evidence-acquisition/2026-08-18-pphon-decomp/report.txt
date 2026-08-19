@@ -1,0 +1,101 @@
+P-PHON failure-class decomposition -- registered model-free re-read (docs/readiness/2026-08-18-pphon-preregistration-REGISTERED.md)
+==============================================================================
+
+pslu attempt dir: /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-pslu-n60/attempt-20260818T010218Z-4c97cb
+pslu-s2 attempt dir: /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-pslu-s2-183/attempt-20260818T200339Z-80119a
+a2t (A0) attempt dir: /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-BASE-a2t-a0-400/attempt-20260818T055500Z-res315
+a2t-s2b attempt dir: /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-a2t-s2b-120/attempt-20260818T153859Z-8da515
+a2t-s2c attempt dir: /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-a2t-s2c-120/attempt-20260818T175018Z-0d3363
+arm plan (reused verbatim): /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-a2t-s2-120/attempt-20260818T124955Z-84b944/SAEA-PROBE-a2t-s2-120.arm-plan.json
+
+SLURP (primary)
+----------------------------------------
+n_gold_entities_total=89  baseline_total_failures=85
+
+A3 (primary supply arm) per-class table
+  class           baseline  converted    CR(c)
+  MISSING               71         36   0.5070
+  EQUIV-FORMAT           6          6   1.0000
+  NEAR-MISS              4          1   0.2500
+  FAR-WRONG              4          1   0.2500
+  TOTAL                 85         44   0.5176
+  regressions (A0-correct, A3-incorrect): 0
+
+A3 verdict
+  [ NOT_MET] NEAR-MISS conversions >= 25% of all conversions
+           near_miss_share=0.0227 (1/44), floor=0.25
+  [ NOT_MET] CR(NEAR-MISS) >= CR(FAR-WRONG) + 0.15
+           CR(NEAR-MISS)=0.2500, CR(FAR-WRONG)=0.2500, margin=+0.0000, floor=0.15
+  SPEECH-SNAP-PRESENT: not met
+  [ NOT_MET] EQUIV-FORMAT conversions >= 60% of all conversions
+           equiv_format_share=0.1364 (6/44), floor=0.60
+  FORMAT-DOMINANT: not met
+  OVERALL (slurp/A3): MIXED
+
+A1'r (concordance) per-class table
+  class           baseline  converted    CR(c)
+  MISSING               71         35   0.4930
+  EQUIV-FORMAT           6          5   0.8333
+  NEAR-MISS              4          0   0.0000
+  FAR-WRONG              4          1   0.2500
+  TOTAL                 85         41   0.4824
+  regressions (A0-correct, A1'r-incorrect): 0
+
+A1'r verdict
+  [ NOT_MET] NEAR-MISS conversions >= 25% of all conversions
+           near_miss_share=0.0000 (0/41), floor=0.25
+  [ NOT_MET] CR(NEAR-MISS) >= CR(FAR-WRONG) + 0.15
+           CR(NEAR-MISS)=0.0000, CR(FAR-WRONG)=0.2500, margin=-0.2500, floor=0.15
+  SPEECH-SNAP-PRESENT: not met
+  [ NOT_MET] EQUIV-FORMAT conversions >= 60% of all conversions
+           equiv_format_share=0.1220 (5/41), floor=0.60
+  FORMAT-DOMINANT: not met
+  OVERALL (slurp/A1r): MIXED
+
+CONCORDANCE (A1'r vs A3): CONCORDANT
+  A3 (primary): overall='MIXED', speech_snap_present=False, format_dominant=False; A1'r (secondary): overall='MIXED', speech_snap_present=False, format_dominant=False
+
+SLURP reconciliation (computed / parent-recomputed / archived)
+  [      OK] slurp-baseline-failures: computed=85, parent_recomputed=85, archived=85
+  [      OK] slurp-A3-conversions-net-of-regressions: computed=44, parent_recomputed=44, archived=44
+  [      OK] slurp-A1r-conversions-net-of-regressions: computed=41, parent_recomputed=41, archived=41
+
+A2T (secondary, orthographic proxy only; B1/C1/C2 descriptive)
+----------------------------------------
+baseline_total_failures=56
+
+arm B1 per-class table
+  class           baseline  converted    CR(c)
+  MISSING               12          0   0.0000
+  EQUIV-FORMAT           5          0   0.0000
+  NEAR-MISS             15          2   0.1333
+  FAR-WRONG             24          3   0.1250
+  TOTAL                 56          5   0.0893
+
+arm C1 per-class table
+  class           baseline  converted    CR(c)
+  MISSING               12          1   0.0833
+  EQUIV-FORMAT           5          0   0.0000
+  NEAR-MISS             15          0   0.0000
+  FAR-WRONG             24          4   0.1667
+  TOTAL                 56          5   0.0893
+
+arm C2 per-class table
+  class           baseline  converted    CR(c)
+  MISSING               12          1   0.0833
+  EQUIV-FORMAT           5          0   0.0000
+  NEAR-MISS             15          2   0.1333
+  FAR-WRONG             24          4   0.1667
+  TOTAL                 56          7   0.1250
+
+A2T EM-flip reconciliation (computed / parent-recomputed / archived, exact gate at n=120)
+  [      OK] a2t-B1-em-flips: computed=8, parent_recomputed=8, archived=8, exact_gate=8/120 (applies, n_samples matches)
+  [      OK] a2t-C1-em-flips: computed=10, parent_recomputed=10, archived=10, exact_gate=10/120 (applies, n_samples matches)
+  [      OK] a2t-C2-em-flips: computed=9, parent_recomputed=9, archived=9, exact_gate=9/120 (applies, n_samples matches)
+
+MANIFEST verification (input archives)
+  pslu-read: 3 file(s) verified
+  pslu-s2-read: 3 file(s) verified
+  a2t-a0-read: 4 file(s) verified
+  a2t-s2b-read: 3 file(s) verified
+  a2t-s2c-read: 3 file(s) verified

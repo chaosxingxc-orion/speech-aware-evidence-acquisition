@@ -1,0 +1,309 @@
+{
+  "a2t": {
+    "baseline_total_failures": 56,
+    "em_flip_reconciliation": {
+      "B1": {
+        "archived": 8,
+        "computed": 8,
+        "detail": "computed=8, parent_recomputed=8, archived=8, exact_gate=8/120 (applies, n_samples matches)",
+        "label": "a2t-B1-em-flips",
+        "matched": true,
+        "parent_recomputed": 8
+      },
+      "C1": {
+        "archived": 10,
+        "computed": 10,
+        "detail": "computed=10, parent_recomputed=10, archived=10, exact_gate=10/120 (applies, n_samples matches)",
+        "label": "a2t-C1-em-flips",
+        "matched": true,
+        "parent_recomputed": 10
+      },
+      "C2": {
+        "archived": 9,
+        "computed": 9,
+        "detail": "computed=9, parent_recomputed=9, archived=9, exact_gate=9/120 (applies, n_samples matches)",
+        "label": "a2t-C2-em-flips",
+        "matched": true,
+        "parent_recomputed": 9
+      }
+    },
+    "tables": {
+      "B1": {
+        "arm": "B1",
+        "carrier": "a2t",
+        "classes": {
+          "EQUIV-FORMAT": {
+            "baseline_failures": 5,
+            "conversion_rate": 0.0,
+            "converted": 0
+          },
+          "FAR-WRONG": {
+            "baseline_failures": 24,
+            "conversion_rate": 0.125,
+            "converted": 3
+          },
+          "MISSING": {
+            "baseline_failures": 12,
+            "conversion_rate": 0.0,
+            "converted": 0
+          },
+          "NEAR-MISS": {
+            "baseline_failures": 15,
+            "conversion_rate": 0.13333333333333333,
+            "converted": 2
+          }
+        },
+        "conversion_rate_overall": 0.08928571428571429,
+        "total_baseline_failures": 56,
+        "total_converted": 5
+      },
+      "C1": {
+        "arm": "C1",
+        "carrier": "a2t",
+        "classes": {
+          "EQUIV-FORMAT": {
+            "baseline_failures": 5,
+            "conversion_rate": 0.0,
+            "converted": 0
+          },
+          "FAR-WRONG": {
+            "baseline_failures": 24,
+            "conversion_rate": 0.16666666666666666,
+            "converted": 4
+          },
+          "MISSING": {
+            "baseline_failures": 12,
+            "conversion_rate": 0.08333333333333333,
+            "converted": 1
+          },
+          "NEAR-MISS": {
+            "baseline_failures": 15,
+            "conversion_rate": 0.0,
+            "converted": 0
+          }
+        },
+        "conversion_rate_overall": 0.08928571428571429,
+        "total_baseline_failures": 56,
+        "total_converted": 5
+      },
+      "C2": {
+        "arm": "C2",
+        "carrier": "a2t",
+        "classes": {
+          "EQUIV-FORMAT": {
+            "baseline_failures": 5,
+            "conversion_rate": 0.0,
+            "converted": 0
+          },
+          "FAR-WRONG": {
+            "baseline_failures": 24,
+            "conversion_rate": 0.16666666666666666,
+            "converted": 4
+          },
+          "MISSING": {
+            "baseline_failures": 12,
+            "conversion_rate": 0.08333333333333333,
+            "converted": 1
+          },
+          "NEAR-MISS": {
+            "baseline_failures": 15,
+            "conversion_rate": 0.13333333333333333,
+            "converted": 2
+          }
+        },
+        "conversion_rate_overall": 0.125,
+        "total_baseline_failures": 56,
+        "total_converted": 7
+      }
+    }
+  },
+  "a2t_attempt_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-BASE-a2t-a0-400/attempt-20260818T055500Z-res315",
+  "a2t_s2b_attempt_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-a2t-s2b-120/attempt-20260818T153859Z-8da515",
+  "a2t_s2c_attempt_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-a2t-s2c-120/attempt-20260818T175018Z-0d3363",
+  "arm_plan_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-a2t-s2-120/attempt-20260818T124955Z-84b944/SAEA-PROBE-a2t-s2-120.arm-plan.json",
+  "manifest_verified": {
+    "a2t-a0-read": [
+      "README.md",
+      "headroom.json",
+      "report.txt",
+      "verdict.json"
+    ],
+    "a2t-s2b-read": [
+      "README.md",
+      "report.txt",
+      "verdict.json"
+    ],
+    "a2t-s2c-read": [
+      "README.md",
+      "report.txt",
+      "verdict.json"
+    ],
+    "pslu-read": [
+      "README.md",
+      "report.txt",
+      "verdict.json"
+    ],
+    "pslu-s2-read": [
+      "README.md",
+      "report.txt",
+      "verdict.json"
+    ]
+  },
+  "pslu_attempt_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-pslu-n60/attempt-20260818T010218Z-4c97cb",
+  "pslu_s2_attempt_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-pslu-s2-183/attempt-20260818T200339Z-80119a",
+  "schema": "saea-pphon-decomp-read-v1",
+  "slurp": {
+    "a1r": {
+      "regressions": 0,
+      "table": {
+        "arm": "A1r",
+        "carrier": "slurp",
+        "classes": {
+          "EQUIV-FORMAT": {
+            "baseline_failures": 6,
+            "conversion_rate": 0.8333333333333334,
+            "converted": 5
+          },
+          "FAR-WRONG": {
+            "baseline_failures": 4,
+            "conversion_rate": 0.25,
+            "converted": 1
+          },
+          "MISSING": {
+            "baseline_failures": 71,
+            "conversion_rate": 0.49295774647887325,
+            "converted": 35
+          },
+          "NEAR-MISS": {
+            "baseline_failures": 4,
+            "conversion_rate": 0.0,
+            "converted": 0
+          }
+        },
+        "conversion_rate_overall": 0.4823529411764706,
+        "total_baseline_failures": 85,
+        "total_converted": 41
+      },
+      "verdict": {
+        "arm": "A1r",
+        "boundary_co_fire": false,
+        "carrier": "slurp",
+        "cr_far_wrong": 0.25,
+        "cr_near_miss": 0.0,
+        "equiv_format_share": 0.12195121951219512,
+        "format_dominant": false,
+        "format_dominant_clause": {
+          "clause_text": "EQUIV-FORMAT conversions >= 60% of all conversions",
+          "detail": "equiv_format_share=0.1220 (5/41), floor=0.60",
+          "verdict": "not_met"
+        },
+        "near_miss_margin_clause": {
+          "clause_text": "CR(NEAR-MISS) >= CR(FAR-WRONG) + 0.15",
+          "detail": "CR(NEAR-MISS)=0.0000, CR(FAR-WRONG)=0.2500, margin=-0.2500, floor=0.15",
+          "verdict": "not_met"
+        },
+        "near_miss_share": 0.0,
+        "near_miss_share_clause": {
+          "clause_text": "NEAR-MISS conversions >= 25% of all conversions",
+          "detail": "near_miss_share=0.0000 (0/41), floor=0.25",
+          "verdict": "not_met"
+        },
+        "overall": "MIXED",
+        "speech_snap_present": false,
+        "total_converted": 41
+      }
+    },
+    "a3": {
+      "regressions": 0,
+      "table": {
+        "arm": "A3",
+        "carrier": "slurp",
+        "classes": {
+          "EQUIV-FORMAT": {
+            "baseline_failures": 6,
+            "conversion_rate": 1.0,
+            "converted": 6
+          },
+          "FAR-WRONG": {
+            "baseline_failures": 4,
+            "conversion_rate": 0.25,
+            "converted": 1
+          },
+          "MISSING": {
+            "baseline_failures": 71,
+            "conversion_rate": 0.5070422535211268,
+            "converted": 36
+          },
+          "NEAR-MISS": {
+            "baseline_failures": 4,
+            "conversion_rate": 0.25,
+            "converted": 1
+          }
+        },
+        "conversion_rate_overall": 0.5176470588235295,
+        "total_baseline_failures": 85,
+        "total_converted": 44
+      },
+      "verdict": {
+        "arm": "A3",
+        "boundary_co_fire": false,
+        "carrier": "slurp",
+        "cr_far_wrong": 0.25,
+        "cr_near_miss": 0.25,
+        "equiv_format_share": 0.13636363636363635,
+        "format_dominant": false,
+        "format_dominant_clause": {
+          "clause_text": "EQUIV-FORMAT conversions >= 60% of all conversions",
+          "detail": "equiv_format_share=0.1364 (6/44), floor=0.60",
+          "verdict": "not_met"
+        },
+        "near_miss_margin_clause": {
+          "clause_text": "CR(NEAR-MISS) >= CR(FAR-WRONG) + 0.15",
+          "detail": "CR(NEAR-MISS)=0.2500, CR(FAR-WRONG)=0.2500, margin=+0.0000, floor=0.15",
+          "verdict": "not_met"
+        },
+        "near_miss_share": 0.022727272727272728,
+        "near_miss_share_clause": {
+          "clause_text": "NEAR-MISS conversions >= 25% of all conversions",
+          "detail": "near_miss_share=0.0227 (1/44), floor=0.25",
+          "verdict": "not_met"
+        },
+        "overall": "MIXED",
+        "speech_snap_present": false,
+        "total_converted": 44
+      }
+    },
+    "baseline_total_failures": 85,
+    "concordance": {
+      "concordant": true,
+      "detail": "A3 (primary): overall='MIXED', speech_snap_present=False, format_dominant=False; A1'r (secondary): overall='MIXED', speech_snap_present=False, format_dominant=False"
+    },
+    "n_gold_entities_total": 89,
+    "reconciliation": [
+      {
+        "archived": 85.0,
+        "computed": 85,
+        "detail": "computed=85, parent_recomputed=85, archived=85",
+        "label": "slurp-baseline-failures",
+        "matched": true,
+        "parent_recomputed": 85.0
+      },
+      {
+        "archived": 44.0,
+        "computed": 44,
+        "detail": "computed=44, parent_recomputed=44, archived=44",
+        "label": "slurp-A3-conversions-net-of-regressions",
+        "matched": true,
+        "parent_recomputed": 44.0
+      },
+      {
+        "archived": 41.0,
+        "computed": 41,
+        "detail": "computed=41, parent_recomputed=41, archived=41",
+        "label": "slurp-A1r-conversions-net-of-regressions",
+        "matched": true,
+        "parent_recomputed": 41.0
+      }
+    ]
+  }
+}
