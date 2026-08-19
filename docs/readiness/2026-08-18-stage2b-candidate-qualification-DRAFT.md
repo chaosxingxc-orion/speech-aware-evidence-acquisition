@@ -28,15 +28,20 @@ flight receipt, budget, and integrity line.)
 
 ## 2. Claim–evidence matrix
 
-**C1 — Prompt-level legal supply converts real failures on a frozen core, at two task
-levels.** L5 (tool calling): on the 120 samples where the core already selects the right
-tool but fails the call, the values-stripped row converts **[8, 10]/120** across three
-renderings (envelope, form-ROBUST); the full row converts 16/120. L3 (slot SLU): a legal
-train-mined roster lifts SLU-F1 by **+0.4220** (undirected, 100 entries) and **+0.4352**
-(self-scoped, ~36 entries/call, phase-1 closed-set mapping 60/60 non-fallback) — **94.6% of
-the gold-scoped ceiling gain**. Boundary: conversion is exactly **zero on all 45
-compositional samples** (tier3 multi-intent + tier8 intent-blending) under every supply form
-flown. *License: descriptive, discovery-split, n=120/n=60; no superiority claims.*
+**C1 (restated 2026-08-18 per owner review) — Deployment-real supply converts real
+failures on a frozen core.** PRIMARY EVIDENCE IS L5 (tool calling), where the supplied
+object is the task's OWN shipped tool registry — a deployment-real asset, not
+evaluation-distribution material: on the 120 samples where the core already selects the
+right tool but fails the call, the values-stripped row converts **[8, 10]/120** across
+three renderings (envelope, form-ROBUST); the full row converts 16/120. The L3 line
+(SLURP: +0.4220 undirected / +0.4352 self-scoped with 60/60 closed-set mapping, 94.6% of
+the gold-scoped ceiling) is DEMOTED to a **mechanism probe**: its roster is train-mined and
+same-distribution with the eval split, so it demonstrates the gain's COMPOSITION (see C4),
+never a deployment claim — the owner's cherry-pick objection is accepted and this framing
+is binding on all downstream citation. Boundary: conversion is exactly **zero on all 45
+compositional samples** (tier3 + tier8) under every supply form flown. *License:
+descriptive, discovery-split, n=120/n=60; no superiority claims; L3 numbers never travel
+without the same-distribution disclosure.*
 
 **C2 — The harm channel rides supplied VALUES, and any in-context values, not structure.**
 Full-row supply injects supplied default values at 2:1 against its own conversions (34 vs
@@ -69,6 +74,23 @@ self-scoping works (closed-set label choice; oracle-selection premium closes to 
 0.03 separability bar). Silence-swap controls (0/6 persisted across both carriers) tie all
 gains to the audio; under silence the core confabulates confident well-formed commands —
 recorded as a safety observation.
+
+## 2b. OPEN QUESTION — the speech term (freeze is HELD on this)
+
+C1–C4 as measured are substrate-general retrieval-augmentation logic, verified mechanically
+on a frozen speech core. Whether **speech knowledge participates in the supply loop** — the
+roster acting as a perceptual disambiguation prior over acoustically proximate mishearings —
+or the audio serves ONLY as a retrieval key with all benefit realized text-side, is
+**undetermined by the eight consumed reads** (silence-swap 0/6 proves audio-conditioning of
+the gains, not speech participation in supply). The registered speech-term program decides
+this before the candidate freezes: **P-PHON** (consumed-attempt re-read: which failure
+class supply converts — NEAR-MISS vs EQUIV-FORMAT vs recall), **P-KEY** (2×2 factorial,
+audio vs oracle-transcript × supply vs none — the interaction term IS the speech term;
+oracle arm labeled, never deployment-claimable), **P-TRAP** (phonetically confusable
+distractor supply — is supply matching acoustically mediated?). Either outcome is
+publishable: a demonstrated speech term upgrades the candidate; a clean "key-only" result
+is an honest negative that redirects the speech-specific thesis to the meeting carrier,
+where episode-local context supply is deployment-real by construction.
 
 ## 3. Bounds and honesty ledger (travel WITH every claim)
 
