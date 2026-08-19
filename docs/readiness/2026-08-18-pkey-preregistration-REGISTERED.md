@@ -64,3 +64,38 @@ interaction decomposition + converted-set cross-reference) built and coordinator
 BEFORE the read; exposure row `SAEA-PROBE-pkey-303` appended at registration (consumed=no);
 no gold-derived field in any prompt (T0 output is model text; the roster is the consumed
 A3 binding reused); SLURP audio CC BY-NC 4.0 carried.
+
+## 7. Amendment 2026-08-19 (pre-read; adversarial-panel Finding 2 + attempt-1 abort)
+
+Registered before any read; nothing consumed. Four changes:
+1. **KEY-ONLY becomes a CI-based equivalence decision.** The read suite computes a
+   per-sample paired cluster bootstrap over the 60 samples (resampling samples, recomputing
+   all four pooled arm scores and I) and publishes σ̂(I) and a 90% CI. KEY-ONLY fires only
+   if the ENTIRE CI lies inside [−0.03, +0.03]; a point estimate inside the band with a CI
+   crossing it is INCONCLUSIVE-KEY. (Panel calibration: the 0.03 band was imported from a
+   single-contrast duplicate pair; I is a four-arm difference-of-differences with
+   σ(I) ≈ √2 × 0.0129, so the unamended clause fires ≈90% under a pure-noise null.)
+2. **Pre-read reachability statement is mandatory.** Before the verdicts are evaluated, the
+   read publishes the maximum |I| attainable given P-PHON's consumed class census (NEAR-MISS
+   4/85 baseline failures). If SPEECH-TERM-PRESENT is unreachable, KEY-ONLY may not be
+   reported as an affirmative negative — only as INCONCLUSIVE with the reachability bound.
+3. **The NEAR-MISS cross-reference carries an n≤4 caveat** (effectively n≤3 after P-PHON
+   disqualified the single A3 NEAR-MISS row as a clock-format variant); it licenses no
+   mechanism claim.
+4. **A 35-call TXT duplicate sub-block joins the flight** (within the registered ceilings:
+   303 + 35 = 338 ≤ 340 calls; zero audio-seconds): a seeded 35-sample sub-block of pass 3
+   re-sent byte-identically in the same session, giving this axis its own measured
+   duplicate floor for the bootstrap to anchor.
+License line bound now: a positive I upgrades the L3 MECHANISM reading and travels with
+C1's same-distribution disclosure; it is never a deployment claim.
+
+**Attempt-1 accounting**: `attempt-20260819T085521Z-654dc8` ABORTED at request 184 — the
+three audio passes flew clean (183/183: T0 60, AUD-NOSUP 60, AUD-SUP 60, swaps 3, zero
+failures) and the first TXT request was refused by the transport invariant ("user message
+must carry exactly one input_audio content part"): the client layer was never relaxed for
+registered text-only arms, and the machinery's mock-client tests could not see the real
+invariant (the P-SLU mock-reality lesson, recurring). Repair: a text-path capability in the
+real client, tested through the REAL validation layer; then a full re-fly (attempt-2, all
+338 requests in ONE session — resuming across sessions would break the in-session
+comparability the factorial is designed around, so the aborted attempt's audio rows are
+dead weight, recorded and never read).
