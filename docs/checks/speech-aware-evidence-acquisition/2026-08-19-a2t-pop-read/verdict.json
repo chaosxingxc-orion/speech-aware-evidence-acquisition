@@ -1,0 +1,245 @@
+{
+  "attempt_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-a2t-pop-194/attempt-20260819T162625Z-b3257c",
+  "flight_status": "COMPLETED",
+  "per_arm": {
+    "R0": {
+      "by_tier": {
+        "tier1_direct": {
+          "arm": "R0",
+          "empty_call_rate": 0.0,
+          "induced_substitution_count": 0,
+          "n_samples": 6,
+          "parse_failure_rate": 0.0,
+          "regression_count": 0,
+          "regression_rate": 0.0,
+          "slot_f1": 0.0,
+          "tool_selection_retention": 1.0
+        },
+        "tier2_parametric": {
+          "arm": "R0",
+          "empty_call_rate": 0.0,
+          "induced_substitution_count": 0,
+          "n_samples": 19,
+          "parse_failure_rate": 0.0,
+          "regression_count": 0,
+          "regression_rate": 0.0,
+          "slot_f1": 1.0,
+          "tool_selection_retention": 1.0
+        },
+        "tier3_multi_intent": {
+          "arm": "R0",
+          "empty_call_rate": 0.0,
+          "induced_substitution_count": 0,
+          "n_samples": 2,
+          "parse_failure_rate": 0.0,
+          "regression_count": 0,
+          "regression_rate": 0.0,
+          "slot_f1": 1.0,
+          "tool_selection_retention": 1.0
+        },
+        "tier4_implicit": {
+          "arm": "R0",
+          "empty_call_rate": 0.0,
+          "induced_substitution_count": 0,
+          "n_samples": 12,
+          "parse_failure_rate": 0.0,
+          "regression_count": 0,
+          "regression_rate": 0.0,
+          "slot_f1": 1.0,
+          "tool_selection_retention": 1.0
+        },
+        "tier5_needle": {
+          "arm": "R0",
+          "empty_call_rate": 0.0,
+          "induced_substitution_count": 0,
+          "n_samples": 15,
+          "parse_failure_rate": 0.0,
+          "regression_count": 0,
+          "regression_rate": 0.0,
+          "slot_f1": 1.0,
+          "tool_selection_retention": 1.0
+        },
+        "tier6_correction": {
+          "arm": "R0",
+          "empty_call_rate": 0.0,
+          "induced_substitution_count": 0,
+          "n_samples": 20,
+          "parse_failure_rate": 0.0,
+          "regression_count": 0,
+          "regression_rate": 0.0,
+          "slot_f1": 1.0,
+          "tool_selection_retention": 1.0
+        },
+        "tier7_multiturn": {
+          "arm": "R0",
+          "empty_call_rate": 0.0,
+          "induced_substitution_count": 0,
+          "n_samples": 22,
+          "parse_failure_rate": 0.0,
+          "regression_count": 0,
+          "regression_rate": 0.0,
+          "slot_f1": 1.0,
+          "tool_selection_retention": 1.0
+        },
+        "tier8_intent_blending": {
+          "arm": "R0",
+          "empty_call_rate": 0.0,
+          "induced_substitution_count": 0,
+          "n_samples": 1,
+          "parse_failure_rate": 0.0,
+          "regression_count": 0,
+          "regression_rate": 0.0,
+          "slot_f1": 1.0,
+          "tool_selection_retention": 1.0
+        }
+      },
+      "overall": {
+        "arm": "R0",
+        "empty_call_rate": 0.0,
+        "induced_substitution_count": 0,
+        "n_samples": 97,
+        "parse_failure_rate": 0.0,
+        "regression_count": 0,
+        "regression_rate": 0.0,
+        "slot_f1": 1.0,
+        "tool_selection_retention": 1.0
+      }
+    },
+    "R1": {
+      "by_tier": {
+        "tier1_direct": {
+          "arm": "R1",
+          "empty_call_rate": 0.0,
+          "induced_substitution_count": 0,
+          "n_samples": 6,
+          "parse_failure_rate": 0.0,
+          "regression_count": 0,
+          "regression_rate": 0.0,
+          "slot_f1": 0.0,
+          "tool_selection_retention": 1.0
+        },
+        "tier2_parametric": {
+          "arm": "R1",
+          "empty_call_rate": 0.0,
+          "induced_substitution_count": 0,
+          "n_samples": 19,
+          "parse_failure_rate": 0.0,
+          "regression_count": 7,
+          "regression_rate": 0.3684210526315789,
+          "slot_f1": 0.8076923076923077,
+          "tool_selection_retention": 1.0
+        },
+        "tier3_multi_intent": {
+          "arm": "R1",
+          "empty_call_rate": 0.0,
+          "induced_substitution_count": 0,
+          "n_samples": 2,
+          "parse_failure_rate": 0.0,
+          "regression_count": 0,
+          "regression_rate": 0.0,
+          "slot_f1": 1.0,
+          "tool_selection_retention": 1.0
+        },
+        "tier4_implicit": {
+          "arm": "R1",
+          "empty_call_rate": 0.08333333333333333,
+          "induced_substitution_count": 0,
+          "n_samples": 12,
+          "parse_failure_rate": 0.08333333333333333,
+          "regression_count": 3,
+          "regression_rate": 0.25,
+          "slot_f1": 0.6666666666666666,
+          "tool_selection_retention": 0.9166666666666666
+        },
+        "tier5_needle": {
+          "arm": "R1",
+          "empty_call_rate": 0.13333333333333333,
+          "induced_substitution_count": 0,
+          "n_samples": 15,
+          "parse_failure_rate": 0.13333333333333333,
+          "regression_count": 9,
+          "regression_rate": 0.6,
+          "slot_f1": 0.5882352941176471,
+          "tool_selection_retention": 0.8666666666666667
+        },
+        "tier6_correction": {
+          "arm": "R1",
+          "empty_call_rate": 0.15,
+          "induced_substitution_count": 0,
+          "n_samples": 20,
+          "parse_failure_rate": 0.15,
+          "regression_count": 6,
+          "regression_rate": 0.3,
+          "slot_f1": 0.7428571428571429,
+          "tool_selection_retention": 0.85
+        },
+        "tier7_multiturn": {
+          "arm": "R1",
+          "empty_call_rate": 0.045454545454545456,
+          "induced_substitution_count": 0,
+          "n_samples": 22,
+          "parse_failure_rate": 0.045454545454545456,
+          "regression_count": 10,
+          "regression_rate": 0.45454545454545453,
+          "slot_f1": 0.7142857142857142,
+          "tool_selection_retention": 0.9545454545454546
+        },
+        "tier8_intent_blending": {
+          "arm": "R1",
+          "empty_call_rate": 0.0,
+          "induced_substitution_count": 0,
+          "n_samples": 1,
+          "parse_failure_rate": 0.0,
+          "regression_count": 1,
+          "regression_rate": 1.0,
+          "slot_f1": 0.6666666666666666,
+          "tool_selection_retention": 1.0
+        }
+      },
+      "overall": {
+        "arm": "R1",
+        "empty_call_rate": 0.07216494845360824,
+        "induced_substitution_count": 0,
+        "n_samples": 97,
+        "parse_failure_rate": 0.07216494845360824,
+        "regression_count": 36,
+        "regression_rate": 0.3711340206185567,
+        "slot_f1": 0.7272727272727272,
+        "tool_selection_retention": 0.9278350515463918
+      }
+    }
+  },
+  "reachability": {
+    "detail": "Pre-read reachability statement (mandatory): the branch space is trivially reachable -- EM can regress on any/all of the 97 EM-correct ids under either arm. R0 (zero-supply re-fly, byte-identical to A0's own request) shows 0/97 EM regressions (rate=0.0000) under a bare re-fly with no prompt change whatsoever -- this population's own FIRST empirical measurement of A0's zero-supply decode stability (no prior re-fly of this specific 97-id EM-correct population exists).",
+    "n_samples": 97,
+    "r0_regression_count": 0,
+    "r0_regression_rate": 0.0
+  },
+  "registry_defaults_parse_warnings": [],
+  "run_id": "SAEA-PROBE-a2t-pop-194",
+  "schema": "saea-a2t-pop-read-v1",
+  "split_identity_hash": "e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c",
+  "verdict": {
+    "bootstrap": {
+      "ci_high": 44.0,
+      "ci_level": 0.9,
+      "ci_low": 28.0,
+      "n_replicates": 10000,
+      "point_estimate": 36.0,
+      "seed": 20260807,
+      "sigma_hat": 4.761552986159033
+    },
+    "costly_clause": {
+      "clause_text": "Δreg >= 6",
+      "detail": "Δreg=36, floor=6",
+      "verdict": "met"
+    },
+    "delta_reg": 36,
+    "overall": "REGRESSION-COSTLY",
+    "safe_clause": {
+      "clause_text": "Δreg <= 2 AND CI upper bound <= 5.0",
+      "detail": "Δreg=36 (reg(R1)=36, reg(R0)=0), CI=[+28.0000, +44.0000], sigma_hat=4.7616",
+      "verdict": "not_met"
+    }
+  }
+}

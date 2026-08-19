@@ -1,0 +1,46 @@
+P-A2T whole-population regression-arm pinned offline read (docs/readiness/2026-08-19-a2t-pop-preregistration-REGISTERED.md)
+==============================================================================
+
+attempt dir: /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-a2t-pop-194/attempt-20260819T162625Z-b3257c
+flight status: 'COMPLETED'
+split identity hash: e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c
+
+Pre-read reachability statement (mandatory): the branch space is trivially reachable -- EM can regress on any/all of the 97 EM-correct ids under either arm. R0 (zero-supply re-fly, byte-identical to A0's own request) shows 0/97 EM regressions (rate=0.0000) under a bare re-fly with no prompt change whatsoever -- this population's own FIRST empirical measurement of A0's zero-supply decode stability (no prior re-fly of this specific 97-id EM-correct population exists).
+
+Per-arm aggregates (pooled)
+  arm      n  retention  reg_count  reg_rate  slot_f1  empty parse_fail  induced
+  R0      97     1.0000          0    0.0000   1.0000 0.0000     0.0000        0
+  R1      97     0.9278         36    0.3711   0.7273 0.0722     0.0722        0
+
+Per-tier breakdown
+  arm R0:
+    tier1_direct             6 reg_count=0 reg_rate=0.0000 retention=1.0000 slot_f1=0.0000 induced=0
+    tier2_parametric        19 reg_count=0 reg_rate=0.0000 retention=1.0000 slot_f1=1.0000 induced=0
+    tier3_multi_intent       2 reg_count=0 reg_rate=0.0000 retention=1.0000 slot_f1=1.0000 induced=0
+    tier4_implicit          12 reg_count=0 reg_rate=0.0000 retention=1.0000 slot_f1=1.0000 induced=0
+    tier5_needle            15 reg_count=0 reg_rate=0.0000 retention=1.0000 slot_f1=1.0000 induced=0
+    tier6_correction        20 reg_count=0 reg_rate=0.0000 retention=1.0000 slot_f1=1.0000 induced=0
+    tier7_multiturn         22 reg_count=0 reg_rate=0.0000 retention=1.0000 slot_f1=1.0000 induced=0
+    tier8_intent_blending    1 reg_count=0 reg_rate=0.0000 retention=1.0000 slot_f1=1.0000 induced=0
+  arm R1:
+    tier1_direct             6 reg_count=0 reg_rate=0.0000 retention=1.0000 slot_f1=0.0000 induced=0
+    tier2_parametric        19 reg_count=7 reg_rate=0.3684 retention=1.0000 slot_f1=0.8077 induced=0
+    tier3_multi_intent       2 reg_count=0 reg_rate=0.0000 retention=1.0000 slot_f1=1.0000 induced=0
+    tier4_implicit          12 reg_count=3 reg_rate=0.2500 retention=0.9167 slot_f1=0.6667 induced=0
+    tier5_needle            15 reg_count=9 reg_rate=0.6000 retention=0.8667 slot_f1=0.5882 induced=0
+    tier6_correction        20 reg_count=6 reg_rate=0.3000 retention=0.8500 slot_f1=0.7429 induced=0
+    tier7_multiturn         22 reg_count=10 reg_rate=0.4545 retention=0.9545 slot_f1=0.7143 induced=0
+    tier8_intent_blending    1 reg_count=1 reg_rate=1.0000 retention=1.0000 slot_f1=0.6667 induced=0
+
+Δreg = reg(R1) - reg(R0) = 36 (reg(R0)=0, reg(R1)=36)
+paired bootstrap: CI=[+28.0000, +44.0000] sigma_hat=4.7616 n_replicates=10000 seed=20260807
+
+REGRESSION-SAFE: not met
+  [ NOT_MET] Δreg <= 2 AND CI upper bound <= 5.0
+           Δreg=36 (reg(R1)=36, reg(R0)=0), CI=[+28.0000, +44.0000], sigma_hat=4.7616
+
+REGRESSION-COSTLY: MET
+  [     MET] Δreg >= 6
+           Δreg=36, floor=6
+
+OVERALL: REGRESSION-COSTLY
