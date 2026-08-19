@@ -1,0 +1,1277 @@
+{
+  "arms": [
+    "R0",
+    "R1"
+  ],
+  "attempt_id": "attempt-20260819T162625Z-b3257c",
+  "close_receipt": {
+    "arm": "fixed-legal-context",
+    "cost": {
+      "audio_seconds_used": 1092.7819999999997,
+      "calls_used": 194,
+      "completion_tokens_total": 4567,
+      "latency_seconds_total": 133.082894701045,
+      "prompt_tokens_total": 1311780,
+      "tool_calls": 0,
+      "umbrella_lock_sha256": "ad71f96732a2b69fb741b4fed4fe60fb1978dc23eb55522ce3943702f0801d1e"
+    },
+    "flight_lock": null,
+    "request_count": 194,
+    "run_id": "SAEA-PROBE-a2t-pop-194",
+    "timings": [
+      {
+        "latency_seconds": 6.977568351001537,
+        "request_id": "a2tpop-0001",
+        "sample_id": "tier1_direct:002687",
+        "started_at": "2026-08-19T16:27:50.078201+00:00"
+      },
+      {
+        "latency_seconds": 0.7717790059978142,
+        "request_id": "a2tpop-0002",
+        "sample_id": "tier1_direct:002687",
+        "started_at": "2026-08-19T16:27:57.081363+00:00"
+      },
+      {
+        "latency_seconds": 0.39186665000306675,
+        "request_id": "a2tpop-0003",
+        "sample_id": "tier1_direct:003492",
+        "started_at": "2026-08-19T16:27:57.881738+00:00"
+      },
+      {
+        "latency_seconds": 0.7960621279999032,
+        "request_id": "a2tpop-0004",
+        "sample_id": "tier1_direct:003492",
+        "started_at": "2026-08-19T16:27:58.299781+00:00"
+      },
+      {
+        "latency_seconds": 0.39966679200006183,
+        "request_id": "a2tpop-0005",
+        "sample_id": "tier1_direct:003775",
+        "started_at": "2026-08-19T16:27:59.131901+00:00"
+      },
+      {
+        "latency_seconds": 0.6388681320022442,
+        "request_id": "a2tpop-0006",
+        "sample_id": "tier1_direct:003775",
+        "started_at": "2026-08-19T16:27:59.560293+00:00"
+      },
+      {
+        "latency_seconds": 0.36510378400271293,
+        "request_id": "a2tpop-0007",
+        "sample_id": "tier1_direct:004145",
+        "started_at": "2026-08-19T16:28:00.231576+00:00"
+      },
+      {
+        "latency_seconds": 0.6324789419959416,
+        "request_id": "a2tpop-0008",
+        "sample_id": "tier1_direct:004145",
+        "started_at": "2026-08-19T16:28:00.624832+00:00"
+      },
+      {
+        "latency_seconds": 0.3769133710011374,
+        "request_id": "a2tpop-0009",
+        "sample_id": "tier1_direct:004218",
+        "started_at": "2026-08-19T16:28:01.293068+00:00"
+      },
+      {
+        "latency_seconds": 0.6451657049983623,
+        "request_id": "a2tpop-0010",
+        "sample_id": "tier1_direct:004218",
+        "started_at": "2026-08-19T16:28:01.693374+00:00"
+      },
+      {
+        "latency_seconds": 0.3971262150007533,
+        "request_id": "a2tpop-0011",
+        "sample_id": "tier1_direct:004244",
+        "started_at": "2026-08-19T16:28:02.370965+00:00"
+      },
+      {
+        "latency_seconds": 0.6525890209959471,
+        "request_id": "a2tpop-0012",
+        "sample_id": "tier1_direct:004244",
+        "started_at": "2026-08-19T16:28:02.794274+00:00"
+      },
+      {
+        "latency_seconds": 0.5978464759973576,
+        "request_id": "a2tpop-0013",
+        "sample_id": "tier2_parametric:000632",
+        "started_at": "2026-08-19T16:28:03.478105+00:00"
+      },
+      {
+        "latency_seconds": 0.6800658270003623,
+        "request_id": "a2tpop-0014",
+        "sample_id": "tier2_parametric:000632",
+        "started_at": "2026-08-19T16:28:04.099621+00:00"
+      },
+      {
+        "latency_seconds": 0.5558461199980229,
+        "request_id": "a2tpop-0015",
+        "sample_id": "tier2_parametric:000713",
+        "started_at": "2026-08-19T16:28:04.806336+00:00"
+      },
+      {
+        "latency_seconds": 0.7453252150007756,
+        "request_id": "a2tpop-0016",
+        "sample_id": "tier2_parametric:000713",
+        "started_at": "2026-08-19T16:28:05.387402+00:00"
+      },
+      {
+        "latency_seconds": 0.4376242110010935,
+        "request_id": "a2tpop-0017",
+        "sample_id": "tier2_parametric:001014",
+        "started_at": "2026-08-19T16:28:06.162485+00:00"
+      },
+      {
+        "latency_seconds": 0.6775458930060267,
+        "request_id": "a2tpop-0018",
+        "sample_id": "tier2_parametric:001014",
+        "started_at": "2026-08-19T16:28:06.627716+00:00"
+      },
+      {
+        "latency_seconds": 0.6242929340005503,
+        "request_id": "a2tpop-0019",
+        "sample_id": "tier2_parametric:001644",
+        "started_at": "2026-08-19T16:28:07.336312+00:00"
+      },
+      {
+        "latency_seconds": 0.8202597220006282,
+        "request_id": "a2tpop-0020",
+        "sample_id": "tier2_parametric:001644",
+        "started_at": "2026-08-19T16:28:07.984385+00:00"
+      },
+      {
+        "latency_seconds": 0.6392219030021806,
+        "request_id": "a2tpop-0021",
+        "sample_id": "tier2_parametric:002334",
+        "started_at": "2026-08-19T16:28:08.834698+00:00"
+      },
+      {
+        "latency_seconds": 0.7081730300051277,
+        "request_id": "a2tpop-0022",
+        "sample_id": "tier2_parametric:002334",
+        "started_at": "2026-08-19T16:28:09.500179+00:00"
+      },
+      {
+        "latency_seconds": 0.5647558660057257,
+        "request_id": "a2tpop-0023",
+        "sample_id": "tier2_parametric:002787",
+        "started_at": "2026-08-19T16:28:10.237382+00:00"
+      },
+      {
+        "latency_seconds": 0.855027572994004,
+        "request_id": "a2tpop-0024",
+        "sample_id": "tier2_parametric:002787",
+        "started_at": "2026-08-19T16:28:10.827797+00:00"
+      },
+      {
+        "latency_seconds": 0.4653183690024889,
+        "request_id": "a2tpop-0025",
+        "sample_id": "tier2_parametric:003115",
+        "started_at": "2026-08-19T16:28:11.719934+00:00"
+      },
+      {
+        "latency_seconds": 0.6818834599980619,
+        "request_id": "a2tpop-0026",
+        "sample_id": "tier2_parametric:003115",
+        "started_at": "2026-08-19T16:28:12.219441+00:00"
+      },
+      {
+        "latency_seconds": 0.5522966440039454,
+        "request_id": "a2tpop-0027",
+        "sample_id": "tier2_parametric:003650",
+        "started_at": "2026-08-19T16:28:12.933186+00:00"
+      },
+      {
+        "latency_seconds": 0.8383866320000379,
+        "request_id": "a2tpop-0028",
+        "sample_id": "tier2_parametric:003650",
+        "started_at": "2026-08-19T16:28:13.510933+00:00"
+      },
+      {
+        "latency_seconds": 0.49023655100609176,
+        "request_id": "a2tpop-0029",
+        "sample_id": "tier2_parametric:004290",
+        "started_at": "2026-08-19T16:28:14.382548+00:00"
+      },
+      {
+        "latency_seconds": 0.688204730002326,
+        "request_id": "a2tpop-0030",
+        "sample_id": "tier2_parametric:004290",
+        "started_at": "2026-08-19T16:28:14.897748+00:00"
+      },
+      {
+        "latency_seconds": 0.6986991410012706,
+        "request_id": "a2tpop-0031",
+        "sample_id": "tier2_parametric:004516",
+        "started_at": "2026-08-19T16:28:15.618579+00:00"
+      },
+      {
+        "latency_seconds": 0.7306503969957703,
+        "request_id": "a2tpop-0032",
+        "sample_id": "tier2_parametric:004516",
+        "started_at": "2026-08-19T16:28:17.604557+00:00"
+      },
+      {
+        "latency_seconds": 0.5193586599998525,
+        "request_id": "a2tpop-0033",
+        "sample_id": "tier2_parametric:005385",
+        "started_at": "2026-08-19T16:28:18.369017+00:00"
+      },
+      {
+        "latency_seconds": 0.8045618010000908,
+        "request_id": "a2tpop-0034",
+        "sample_id": "tier2_parametric:005385",
+        "started_at": "2026-08-19T16:28:18.915781+00:00"
+      },
+      {
+        "latency_seconds": 0.7734265859980951,
+        "request_id": "a2tpop-0035",
+        "sample_id": "tier2_parametric:005677",
+        "started_at": "2026-08-19T16:28:19.748982+00:00"
+      },
+      {
+        "latency_seconds": 0.8194853160021012,
+        "request_id": "a2tpop-0036",
+        "sample_id": "tier2_parametric:005677",
+        "started_at": "2026-08-19T16:28:20.548918+00:00"
+      },
+      {
+        "latency_seconds": 0.7905051729976549,
+        "request_id": "a2tpop-0037",
+        "sample_id": "tier2_parametric:005678",
+        "started_at": "2026-08-19T16:28:21.395622+00:00"
+      },
+      {
+        "latency_seconds": 0.7693024210020667,
+        "request_id": "a2tpop-0038",
+        "sample_id": "tier2_parametric:005678",
+        "started_at": "2026-08-19T16:28:22.208988+00:00"
+      },
+      {
+        "latency_seconds": 0.4505586340019363,
+        "request_id": "a2tpop-0039",
+        "sample_id": "tier2_parametric:005732",
+        "started_at": "2026-08-19T16:28:23.007252+00:00"
+      },
+      {
+        "latency_seconds": 0.8340961450012401,
+        "request_id": "a2tpop-0040",
+        "sample_id": "tier2_parametric:005732",
+        "started_at": "2026-08-19T16:28:23.481860+00:00"
+      },
+      {
+        "latency_seconds": 0.416143304995785,
+        "request_id": "a2tpop-0041",
+        "sample_id": "tier2_parametric:005856",
+        "started_at": "2026-08-19T16:28:24.349147+00:00"
+      },
+      {
+        "latency_seconds": 0.641478568999446,
+        "request_id": "a2tpop-0042",
+        "sample_id": "tier2_parametric:005856",
+        "started_at": "2026-08-19T16:28:24.794027+00:00"
+      },
+      {
+        "latency_seconds": 0.42995149900525576,
+        "request_id": "a2tpop-0043",
+        "sample_id": "tier2_parametric:005859",
+        "started_at": "2026-08-19T16:28:25.470958+00:00"
+      },
+      {
+        "latency_seconds": 0.5762725830063573,
+        "request_id": "a2tpop-0044",
+        "sample_id": "tier2_parametric:005859",
+        "started_at": "2026-08-19T16:28:25.926896+00:00"
+      },
+      {
+        "latency_seconds": 0.4071902229989064,
+        "request_id": "a2tpop-0045",
+        "sample_id": "tier2_parametric:005891",
+        "started_at": "2026-08-19T16:28:26.530633+00:00"
+      },
+      {
+        "latency_seconds": 0.5605329109966988,
+        "request_id": "a2tpop-0046",
+        "sample_id": "tier2_parametric:005891",
+        "started_at": "2026-08-19T16:28:26.961151+00:00"
+      },
+      {
+        "latency_seconds": 0.46793238899408607,
+        "request_id": "a2tpop-0047",
+        "sample_id": "tier2_parametric:006028",
+        "started_at": "2026-08-19T16:28:27.550390+00:00"
+      },
+      {
+        "latency_seconds": 0.7016824599995743,
+        "request_id": "a2tpop-0048",
+        "sample_id": "tier2_parametric:006028",
+        "started_at": "2026-08-19T16:28:28.042744+00:00"
+      },
+      {
+        "latency_seconds": 0.45034981799835805,
+        "request_id": "a2tpop-0049",
+        "sample_id": "tier2_parametric:006317",
+        "started_at": "2026-08-19T16:28:28.776079+00:00"
+      },
+      {
+        "latency_seconds": 0.6800393960002111,
+        "request_id": "a2tpop-0050",
+        "sample_id": "tier2_parametric:006317",
+        "started_at": "2026-08-19T16:28:29.251627+00:00"
+      },
+      {
+        "latency_seconds": 1.0061854379964643,
+        "request_id": "a2tpop-0051",
+        "sample_id": "tier3_multi_intent:002096",
+        "started_at": "2026-08-19T16:28:29.959684+00:00"
+      },
+      {
+        "latency_seconds": 0.9388994900000398,
+        "request_id": "a2tpop-0052",
+        "sample_id": "tier3_multi_intent:002096",
+        "started_at": "2026-08-19T16:28:30.991474+00:00"
+      },
+      {
+        "latency_seconds": 0.599895633997221,
+        "request_id": "a2tpop-0053",
+        "sample_id": "tier3_multi_intent:003764",
+        "started_at": "2026-08-19T16:28:31.961798+00:00"
+      },
+      {
+        "latency_seconds": 0.8846984139963752,
+        "request_id": "a2tpop-0054",
+        "sample_id": "tier3_multi_intent:003764",
+        "started_at": "2026-08-19T16:28:32.589076+00:00"
+      },
+      {
+        "latency_seconds": 0.42601253899920266,
+        "request_id": "a2tpop-0055",
+        "sample_id": "tier4_implicit:001074",
+        "started_at": "2026-08-19T16:28:33.510397+00:00"
+      },
+      {
+        "latency_seconds": 0.7165716250019614,
+        "request_id": "a2tpop-0056",
+        "sample_id": "tier4_implicit:001074",
+        "started_at": "2026-08-19T16:28:33.964314+00:00"
+      },
+      {
+        "latency_seconds": 0.5416915239984519,
+        "request_id": "a2tpop-0057",
+        "sample_id": "tier4_implicit:002376",
+        "started_at": "2026-08-19T16:28:34.709438+00:00"
+      },
+      {
+        "latency_seconds": 0.7219513640011428,
+        "request_id": "a2tpop-0058",
+        "sample_id": "tier4_implicit:002376",
+        "started_at": "2026-08-19T16:28:35.274324+00:00"
+      },
+      {
+        "latency_seconds": 0.49996549500065157,
+        "request_id": "a2tpop-0059",
+        "sample_id": "tier4_implicit:002412",
+        "started_at": "2026-08-19T16:28:36.026473+00:00"
+      },
+      {
+        "latency_seconds": 0.7620186519998242,
+        "request_id": "a2tpop-0060",
+        "sample_id": "tier4_implicit:002412",
+        "started_at": "2026-08-19T16:28:36.551664+00:00"
+      },
+      {
+        "latency_seconds": 0.41973017700365745,
+        "request_id": "a2tpop-0061",
+        "sample_id": "tier4_implicit:002649",
+        "started_at": "2026-08-19T16:28:37.347956+00:00"
+      },
+      {
+        "latency_seconds": 0.5689197719984804,
+        "request_id": "a2tpop-0062",
+        "sample_id": "tier4_implicit:002649",
+        "started_at": "2026-08-19T16:28:37.794661+00:00"
+      },
+      {
+        "latency_seconds": 0.3975303960032761,
+        "request_id": "a2tpop-0063",
+        "sample_id": "tier4_implicit:002943",
+        "started_at": "2026-08-19T16:28:38.392202+00:00"
+      },
+      {
+        "latency_seconds": 0.717862805002369,
+        "request_id": "a2tpop-0064",
+        "sample_id": "tier4_implicit:002943",
+        "started_at": "2026-08-19T16:28:38.814919+00:00"
+      },
+      {
+        "latency_seconds": 0.3757043019941193,
+        "request_id": "a2tpop-0065",
+        "sample_id": "tier4_implicit:002987",
+        "started_at": "2026-08-19T16:28:39.562540+00:00"
+      },
+      {
+        "latency_seconds": 0.5505278209966491,
+        "request_id": "a2tpop-0066",
+        "sample_id": "tier4_implicit:002987",
+        "started_at": "2026-08-19T16:28:39.961725+00:00"
+      },
+      {
+        "latency_seconds": 0.547874732001219,
+        "request_id": "a2tpop-0067",
+        "sample_id": "tier4_implicit:003370",
+        "started_at": "2026-08-19T16:28:40.548352+00:00"
+      },
+      {
+        "latency_seconds": 0.7354944360049558,
+        "request_id": "a2tpop-0068",
+        "sample_id": "tier4_implicit:003370",
+        "started_at": "2026-08-19T16:28:41.122521+00:00"
+      },
+      {
+        "latency_seconds": 0.47244222199515207,
+        "request_id": "a2tpop-0069",
+        "sample_id": "tier4_implicit:003473",
+        "started_at": "2026-08-19T16:28:41.893346+00:00"
+      },
+      {
+        "latency_seconds": 0.651990049998858,
+        "request_id": "a2tpop-0070",
+        "sample_id": "tier4_implicit:003473",
+        "started_at": "2026-08-19T16:28:42.395758+00:00"
+      },
+      {
+        "latency_seconds": 0.4082847509998828,
+        "request_id": "a2tpop-0071",
+        "sample_id": "tier4_implicit:003484",
+        "started_at": "2026-08-19T16:28:43.078278+00:00"
+      },
+      {
+        "latency_seconds": 0.5645498310041148,
+        "request_id": "a2tpop-0072",
+        "sample_id": "tier4_implicit:003484",
+        "started_at": "2026-08-19T16:28:43.510830+00:00"
+      },
+      {
+        "latency_seconds": 0.37666204100241885,
+        "request_id": "a2tpop-0073",
+        "sample_id": "tier4_implicit:003523",
+        "started_at": "2026-08-19T16:28:44.106156+00:00"
+      },
+      {
+        "latency_seconds": 0.5425453339994419,
+        "request_id": "a2tpop-0074",
+        "sample_id": "tier4_implicit:003523",
+        "started_at": "2026-08-19T16:28:44.506754+00:00"
+      },
+      {
+        "latency_seconds": 0.43493415800185176,
+        "request_id": "a2tpop-0075",
+        "sample_id": "tier4_implicit:004122",
+        "started_at": "2026-08-19T16:28:45.082243+00:00"
+      },
+      {
+        "latency_seconds": 0.668259329002467,
+        "request_id": "a2tpop-0076",
+        "sample_id": "tier4_implicit:004122",
+        "started_at": "2026-08-19T16:28:45.541261+00:00"
+      },
+      {
+        "latency_seconds": 0.4012939460008056,
+        "request_id": "a2tpop-0077",
+        "sample_id": "tier4_implicit:004273",
+        "started_at": "2026-08-19T16:28:46.237824+00:00"
+      },
+      {
+        "latency_seconds": 0.6605218550030258,
+        "request_id": "a2tpop-0078",
+        "sample_id": "tier4_implicit:004273",
+        "started_at": "2026-08-19T16:28:46.666988+00:00"
+      },
+      {
+        "latency_seconds": 0.6465065869997488,
+        "request_id": "a2tpop-0079",
+        "sample_id": "tier5_needle:000595",
+        "started_at": "2026-08-19T16:28:47.360526+00:00"
+      },
+      {
+        "latency_seconds": 0.8403995429980569,
+        "request_id": "a2tpop-0080",
+        "sample_id": "tier5_needle:000595",
+        "started_at": "2026-08-19T16:28:48.032292+00:00"
+      },
+      {
+        "latency_seconds": 0.7874949890028802,
+        "request_id": "a2tpop-0081",
+        "sample_id": "tier5_needle:001656",
+        "started_at": "2026-08-19T16:28:48.903972+00:00"
+      },
+      {
+        "latency_seconds": 0.8893008719969657,
+        "request_id": "a2tpop-0082",
+        "sample_id": "tier5_needle:001656",
+        "started_at": "2026-08-19T16:28:49.716639+00:00"
+      },
+      {
+        "latency_seconds": 0.7987578780011972,
+        "request_id": "a2tpop-0083",
+        "sample_id": "tier5_needle:001679",
+        "started_at": "2026-08-19T16:28:50.635489+00:00"
+      },
+      {
+        "latency_seconds": 0.8910691710043466,
+        "request_id": "a2tpop-0084",
+        "sample_id": "tier5_needle:001679",
+        "started_at": "2026-08-19T16:28:52.542463+00:00"
+      },
+      {
+        "latency_seconds": 0.5957454550007242,
+        "request_id": "a2tpop-0085",
+        "sample_id": "tier5_needle:001687",
+        "started_at": "2026-08-19T16:28:53.460909+00:00"
+      },
+      {
+        "latency_seconds": 0.7449111899986747,
+        "request_id": "a2tpop-0086",
+        "sample_id": "tier5_needle:001687",
+        "started_at": "2026-08-19T16:28:54.081310+00:00"
+      },
+      {
+        "latency_seconds": 0.6412190650007688,
+        "request_id": "a2tpop-0087",
+        "sample_id": "tier5_needle:001719",
+        "started_at": "2026-08-19T16:28:54.852436+00:00"
+      },
+      {
+        "latency_seconds": 0.6942134240016458,
+        "request_id": "a2tpop-0088",
+        "sample_id": "tier5_needle:001719",
+        "started_at": "2026-08-19T16:28:55.520880+00:00"
+      },
+      {
+        "latency_seconds": 0.6317470670037437,
+        "request_id": "a2tpop-0089",
+        "sample_id": "tier5_needle:001930",
+        "started_at": "2026-08-19T16:28:56.243349+00:00"
+      },
+      {
+        "latency_seconds": 0.9094853869974031,
+        "request_id": "a2tpop-0090",
+        "sample_id": "tier5_needle:001930",
+        "started_at": "2026-08-19T16:28:56.897614+00:00"
+      },
+      {
+        "latency_seconds": 0.6888732890001847,
+        "request_id": "a2tpop-0091",
+        "sample_id": "tier5_needle:002007",
+        "started_at": "2026-08-19T16:28:57.836371+00:00"
+      },
+      {
+        "latency_seconds": 0.7416047200022149,
+        "request_id": "a2tpop-0092",
+        "sample_id": "tier5_needle:002007",
+        "started_at": "2026-08-19T16:28:58.550750+00:00"
+      },
+      {
+        "latency_seconds": 0.8434617620005156,
+        "request_id": "a2tpop-0093",
+        "sample_id": "tier5_needle:002546",
+        "started_at": "2026-08-19T16:28:59.317521+00:00"
+      },
+      {
+        "latency_seconds": 0.8744692420004867,
+        "request_id": "a2tpop-0094",
+        "sample_id": "tier5_needle:002546",
+        "started_at": "2026-08-19T16:29:00.186112+00:00"
+      },
+      {
+        "latency_seconds": 0.7126710340016871,
+        "request_id": "a2tpop-0095",
+        "sample_id": "tier5_needle:002640",
+        "started_at": "2026-08-19T16:29:01.094522+00:00"
+      },
+      {
+        "latency_seconds": 0.9940391979980632,
+        "request_id": "a2tpop-0096",
+        "sample_id": "tier5_needle:002640",
+        "started_at": "2026-08-19T16:29:01.843328+00:00"
+      },
+      {
+        "latency_seconds": 0.640632063994417,
+        "request_id": "a2tpop-0097",
+        "sample_id": "tier5_needle:003189",
+        "started_at": "2026-08-19T16:29:02.865494+00:00"
+      },
+      {
+        "latency_seconds": 0.9824238039946067,
+        "request_id": "a2tpop-0098",
+        "sample_id": "tier5_needle:003189",
+        "started_at": "2026-08-19T16:29:03.530820+00:00"
+      },
+      {
+        "latency_seconds": 0.8588551210050355,
+        "request_id": "a2tpop-0099",
+        "sample_id": "tier5_needle:003863",
+        "started_at": "2026-08-19T16:29:04.541198+00:00"
+      },
+      {
+        "latency_seconds": 0.8661609440023312,
+        "request_id": "a2tpop-0100",
+        "sample_id": "tier5_needle:003863",
+        "started_at": "2026-08-19T16:29:05.427361+00:00"
+      },
+      {
+        "latency_seconds": 0.6252536540050642,
+        "request_id": "a2tpop-0101",
+        "sample_id": "tier5_needle:003935",
+        "started_at": "2026-08-19T16:29:06.331426+00:00"
+      },
+      {
+        "latency_seconds": 0.7758948860064265,
+        "request_id": "a2tpop-0102",
+        "sample_id": "tier5_needle:003935",
+        "started_at": "2026-08-19T16:29:06.984179+00:00"
+      },
+      {
+        "latency_seconds": 0.5685966620003455,
+        "request_id": "a2tpop-0103",
+        "sample_id": "tier5_needle:003940",
+        "started_at": "2026-08-19T16:29:07.789252+00:00"
+      },
+      {
+        "latency_seconds": 0.7633548929952667,
+        "request_id": "a2tpop-0104",
+        "sample_id": "tier5_needle:003940",
+        "started_at": "2026-08-19T16:29:08.380601+00:00"
+      },
+      {
+        "latency_seconds": 0.6365476499995566,
+        "request_id": "a2tpop-0105",
+        "sample_id": "tier5_needle:004037",
+        "started_at": "2026-08-19T16:29:09.176909+00:00"
+      },
+      {
+        "latency_seconds": 0.8961217469986877,
+        "request_id": "a2tpop-0106",
+        "sample_id": "tier5_needle:004037",
+        "started_at": "2026-08-19T16:29:09.845715+00:00"
+      },
+      {
+        "latency_seconds": 0.5855020360031631,
+        "request_id": "a2tpop-0107",
+        "sample_id": "tier5_needle:004242",
+        "started_at": "2026-08-19T16:29:10.777857+00:00"
+      },
+      {
+        "latency_seconds": 0.6812695460030227,
+        "request_id": "a2tpop-0108",
+        "sample_id": "tier5_needle:004242",
+        "started_at": "2026-08-19T16:29:11.389603+00:00"
+      },
+      {
+        "latency_seconds": 0.6554416169965407,
+        "request_id": "a2tpop-0109",
+        "sample_id": "tier6_correction:000398",
+        "started_at": "2026-08-19T16:29:12.101635+00:00"
+      },
+      {
+        "latency_seconds": 0.8363022869962151,
+        "request_id": "a2tpop-0110",
+        "sample_id": "tier6_correction:000398",
+        "started_at": "2026-08-19T16:29:12.787821+00:00"
+      },
+      {
+        "latency_seconds": 0.6943246690061642,
+        "request_id": "a2tpop-0111",
+        "sample_id": "tier6_correction:000484",
+        "started_at": "2026-08-19T16:29:13.653592+00:00"
+      },
+      {
+        "latency_seconds": 0.8114126410000608,
+        "request_id": "a2tpop-0112",
+        "sample_id": "tier6_correction:000484",
+        "started_at": "2026-08-19T16:29:14.371809+00:00"
+      },
+      {
+        "latency_seconds": 0.711619403999066,
+        "request_id": "a2tpop-0113",
+        "sample_id": "tier6_correction:000631",
+        "started_at": "2026-08-19T16:29:15.212684+00:00"
+      },
+      {
+        "latency_seconds": 0.8303893460033578,
+        "request_id": "a2tpop-0114",
+        "sample_id": "tier6_correction:000631",
+        "started_at": "2026-08-19T16:29:15.951338+00:00"
+      },
+      {
+        "latency_seconds": 0.5895217810029862,
+        "request_id": "a2tpop-0115",
+        "sample_id": "tier6_correction:002178",
+        "started_at": "2026-08-19T16:29:16.811312+00:00"
+      },
+      {
+        "latency_seconds": 0.7277220169999055,
+        "request_id": "a2tpop-0116",
+        "sample_id": "tier6_correction:002178",
+        "started_at": "2026-08-19T16:29:17.426549+00:00"
+      },
+      {
+        "latency_seconds": 0.5926049219997367,
+        "request_id": "a2tpop-0117",
+        "sample_id": "tier6_correction:002179",
+        "started_at": "2026-08-19T16:29:18.182439+00:00"
+      },
+      {
+        "latency_seconds": 0.6361635439970996,
+        "request_id": "a2tpop-0118",
+        "sample_id": "tier6_correction:002179",
+        "started_at": "2026-08-19T16:29:18.800867+00:00"
+      },
+      {
+        "latency_seconds": 0.49776860699785175,
+        "request_id": "a2tpop-0119",
+        "sample_id": "tier6_correction:002689",
+        "started_at": "2026-08-19T16:29:19.464471+00:00"
+      },
+      {
+        "latency_seconds": 0.6453998219949426,
+        "request_id": "a2tpop-0120",
+        "sample_id": "tier6_correction:002689",
+        "started_at": "2026-08-19T16:29:19.987707+00:00"
+      },
+      {
+        "latency_seconds": 0.46590925199416233,
+        "request_id": "a2tpop-0121",
+        "sample_id": "tier6_correction:002940",
+        "started_at": "2026-08-19T16:29:20.663011+00:00"
+      },
+      {
+        "latency_seconds": 0.7099034670027322,
+        "request_id": "a2tpop-0122",
+        "sample_id": "tier6_correction:002940",
+        "started_at": "2026-08-19T16:29:21.156496+00:00"
+      },
+      {
+        "latency_seconds": 0.42809851500351215,
+        "request_id": "a2tpop-0123",
+        "sample_id": "tier6_correction:002999",
+        "started_at": "2026-08-19T16:29:21.902813+00:00"
+      },
+      {
+        "latency_seconds": 0.5755814209987875,
+        "request_id": "a2tpop-0124",
+        "sample_id": "tier6_correction:002999",
+        "started_at": "2026-08-19T16:29:22.354770+00:00"
+      },
+      {
+        "latency_seconds": 0.49948706299619516,
+        "request_id": "a2tpop-0125",
+        "sample_id": "tier6_correction:003043",
+        "started_at": "2026-08-19T16:29:22.957349+00:00"
+      },
+      {
+        "latency_seconds": 0.7133334489990375,
+        "request_id": "a2tpop-0126",
+        "sample_id": "tier6_correction:003043",
+        "started_at": "2026-08-19T16:29:23.480395+00:00"
+      },
+      {
+        "latency_seconds": 0.543442103000416,
+        "request_id": "a2tpop-0127",
+        "sample_id": "tier6_correction:003197",
+        "started_at": "2026-08-19T16:29:24.224263+00:00"
+      },
+      {
+        "latency_seconds": 0.6216709080035798,
+        "request_id": "a2tpop-0128",
+        "sample_id": "tier6_correction:003197",
+        "started_at": "2026-08-19T16:29:24.790935+00:00"
+      },
+      {
+        "latency_seconds": 0.4840990409938968,
+        "request_id": "a2tpop-0129",
+        "sample_id": "tier6_correction:003198",
+        "started_at": "2026-08-19T16:29:25.442005+00:00"
+      },
+      {
+        "latency_seconds": 0.6063640729989856,
+        "request_id": "a2tpop-0130",
+        "sample_id": "tier6_correction:003198",
+        "started_at": "2026-08-19T16:29:25.949860+00:00"
+      },
+      {
+        "latency_seconds": 0.49507619100040756,
+        "request_id": "a2tpop-0131",
+        "sample_id": "tier6_correction:003226",
+        "started_at": "2026-08-19T16:29:27.735132+00:00"
+      },
+      {
+        "latency_seconds": 0.623081256999285,
+        "request_id": "a2tpop-0132",
+        "sample_id": "tier6_correction:003226",
+        "started_at": "2026-08-19T16:29:28.253531+00:00"
+      },
+      {
+        "latency_seconds": 0.5034164519965998,
+        "request_id": "a2tpop-0133",
+        "sample_id": "tier6_correction:003267",
+        "started_at": "2026-08-19T16:29:28.906188+00:00"
+      },
+      {
+        "latency_seconds": 0.6248642170030507,
+        "request_id": "a2tpop-0134",
+        "sample_id": "tier6_correction:003267",
+        "started_at": "2026-08-19T16:29:29.433332+00:00"
+      },
+      {
+        "latency_seconds": 0.48717712899815524,
+        "request_id": "a2tpop-0135",
+        "sample_id": "tier6_correction:003450",
+        "started_at": "2026-08-19T16:29:30.085420+00:00"
+      },
+      {
+        "latency_seconds": 0.7144148990046233,
+        "request_id": "a2tpop-0136",
+        "sample_id": "tier6_correction:003450",
+        "started_at": "2026-08-19T16:29:30.600488+00:00"
+      },
+      {
+        "latency_seconds": 0.49688065800000913,
+        "request_id": "a2tpop-0137",
+        "sample_id": "tier6_correction:003671",
+        "started_at": "2026-08-19T16:29:31.343000+00:00"
+      },
+      {
+        "latency_seconds": 0.5992287440021755,
+        "request_id": "a2tpop-0138",
+        "sample_id": "tier6_correction:003671",
+        "started_at": "2026-08-19T16:29:31.863986+00:00"
+      },
+      {
+        "latency_seconds": 0.47531231500033755,
+        "request_id": "a2tpop-0139",
+        "sample_id": "tier6_correction:003783",
+        "started_at": "2026-08-19T16:29:32.490747+00:00"
+      },
+      {
+        "latency_seconds": 0.6071799929995905,
+        "request_id": "a2tpop-0140",
+        "sample_id": "tier6_correction:003783",
+        "started_at": "2026-08-19T16:29:32.989601+00:00"
+      },
+      {
+        "latency_seconds": 0.4973834630000056,
+        "request_id": "a2tpop-0141",
+        "sample_id": "tier6_correction:003820",
+        "started_at": "2026-08-19T16:29:33.624041+00:00"
+      },
+      {
+        "latency_seconds": 0.6140929289977066,
+        "request_id": "a2tpop-0142",
+        "sample_id": "tier6_correction:003820",
+        "started_at": "2026-08-19T16:29:34.145486+00:00"
+      },
+      {
+        "latency_seconds": 0.5418949169979896,
+        "request_id": "a2tpop-0143",
+        "sample_id": "tier6_correction:004017",
+        "started_at": "2026-08-19T16:29:34.788380+00:00"
+      },
+      {
+        "latency_seconds": 0.7873778230059543,
+        "request_id": "a2tpop-0144",
+        "sample_id": "tier6_correction:004017",
+        "started_at": "2026-08-19T16:29:35.355677+00:00"
+      },
+      {
+        "latency_seconds": 0.49652725600026315,
+        "request_id": "a2tpop-0145",
+        "sample_id": "tier6_correction:004155",
+        "started_at": "2026-08-19T16:29:36.172349+00:00"
+      },
+      {
+        "latency_seconds": 0.6799151559971506,
+        "request_id": "a2tpop-0146",
+        "sample_id": "tier6_correction:004155",
+        "started_at": "2026-08-19T16:29:36.694904+00:00"
+      },
+      {
+        "latency_seconds": 0.5081475569968461,
+        "request_id": "a2tpop-0147",
+        "sample_id": "tier6_correction:004281",
+        "started_at": "2026-08-19T16:29:37.402432+00:00"
+      },
+      {
+        "latency_seconds": 0.6969768739945721,
+        "request_id": "a2tpop-0148",
+        "sample_id": "tier6_correction:004281",
+        "started_at": "2026-08-19T16:29:37.934852+00:00"
+      },
+      {
+        "latency_seconds": 0.5477707000027294,
+        "request_id": "a2tpop-0149",
+        "sample_id": "tier7_multiturn:000293",
+        "started_at": "2026-08-19T16:29:38.663913+00:00"
+      },
+      {
+        "latency_seconds": 0.6084840100011206,
+        "request_id": "a2tpop-0150",
+        "sample_id": "tier7_multiturn:000293",
+        "started_at": "2026-08-19T16:29:39.238670+00:00"
+      },
+      {
+        "latency_seconds": 0.7382873579990701,
+        "request_id": "a2tpop-0151",
+        "sample_id": "tier7_multiturn:000330",
+        "started_at": "2026-08-19T16:29:39.876514+00:00"
+      },
+      {
+        "latency_seconds": 0.7093385059997672,
+        "request_id": "a2tpop-0152",
+        "sample_id": "tier7_multiturn:000330",
+        "started_at": "2026-08-19T16:29:40.640804+00:00"
+      },
+      {
+        "latency_seconds": 0.6566256639998755,
+        "request_id": "a2tpop-0153",
+        "sample_id": "tier7_multiturn:000418",
+        "started_at": "2026-08-19T16:29:41.382963+00:00"
+      },
+      {
+        "latency_seconds": 0.7552111040058662,
+        "request_id": "a2tpop-0154",
+        "sample_id": "tier7_multiturn:000418",
+        "started_at": "2026-08-19T16:29:42.063285+00:00"
+      },
+      {
+        "latency_seconds": 0.6808435179991648,
+        "request_id": "a2tpop-0155",
+        "sample_id": "tier7_multiturn:000440",
+        "started_at": "2026-08-19T16:29:42.848107+00:00"
+      },
+      {
+        "latency_seconds": 0.8168844800020452,
+        "request_id": "a2tpop-0156",
+        "sample_id": "tier7_multiturn:000440",
+        "started_at": "2026-08-19T16:29:43.554813+00:00"
+      },
+      {
+        "latency_seconds": 1.1322178740010713,
+        "request_id": "a2tpop-0157",
+        "sample_id": "tier7_multiturn:000545",
+        "started_at": "2026-08-19T16:29:44.401637+00:00"
+      },
+      {
+        "latency_seconds": 1.2222272759972839,
+        "request_id": "a2tpop-0158",
+        "sample_id": "tier7_multiturn:000545",
+        "started_at": "2026-08-19T16:29:45.563007+00:00"
+      },
+      {
+        "latency_seconds": 0.7245941319997655,
+        "request_id": "a2tpop-0159",
+        "sample_id": "tier7_multiturn:000637",
+        "started_at": "2026-08-19T16:29:46.811849+00:00"
+      },
+      {
+        "latency_seconds": 0.7408304480049992,
+        "request_id": "a2tpop-0160",
+        "sample_id": "tier7_multiturn:000637",
+        "started_at": "2026-08-19T16:29:47.566140+00:00"
+      },
+      {
+        "latency_seconds": 0.4987947479967261,
+        "request_id": "a2tpop-0161",
+        "sample_id": "tier7_multiturn:000739",
+        "started_at": "2026-08-19T16:29:48.335616+00:00"
+      },
+      {
+        "latency_seconds": 0.7628934540043701,
+        "request_id": "a2tpop-0162",
+        "sample_id": "tier7_multiturn:000739",
+        "started_at": "2026-08-19T16:29:48.860385+00:00"
+      },
+      {
+        "latency_seconds": 0.6890077319985721,
+        "request_id": "a2tpop-0163",
+        "sample_id": "tier7_multiturn:000818",
+        "started_at": "2026-08-19T16:29:49.654907+00:00"
+      },
+      {
+        "latency_seconds": 0.6679150859999936,
+        "request_id": "a2tpop-0164",
+        "sample_id": "tier7_multiturn:000818",
+        "started_at": "2026-08-19T16:29:50.374051+00:00"
+      },
+      {
+        "latency_seconds": 0.5984783870007959,
+        "request_id": "a2tpop-0165",
+        "sample_id": "tier7_multiturn:001098",
+        "started_at": "2026-08-19T16:29:51.076486+00:00"
+      },
+      {
+        "latency_seconds": 0.7725653120069182,
+        "request_id": "a2tpop-0166",
+        "sample_id": "tier7_multiturn:001098",
+        "started_at": "2026-08-19T16:29:51.700619+00:00"
+      },
+      {
+        "latency_seconds": 0.4990409380043275,
+        "request_id": "a2tpop-0167",
+        "sample_id": "tier7_multiturn:001129",
+        "started_at": "2026-08-19T16:29:52.507519+00:00"
+      },
+      {
+        "latency_seconds": 0.9099250369981746,
+        "request_id": "a2tpop-0168",
+        "sample_id": "tier7_multiturn:001129",
+        "started_at": "2026-08-19T16:29:53.037389+00:00"
+      },
+      {
+        "latency_seconds": 0.680645820000791,
+        "request_id": "a2tpop-0169",
+        "sample_id": "tier7_multiturn:001148",
+        "started_at": "2026-08-19T16:29:54.002454+00:00"
+      },
+      {
+        "latency_seconds": 0.686222728996654,
+        "request_id": "a2tpop-0170",
+        "sample_id": "tier7_multiturn:001148",
+        "started_at": "2026-08-19T16:29:54.728985+00:00"
+      },
+      {
+        "latency_seconds": 0.4691179369983729,
+        "request_id": "a2tpop-0171",
+        "sample_id": "tier7_multiturn:001240",
+        "started_at": "2026-08-19T16:29:55.451575+00:00"
+      },
+      {
+        "latency_seconds": 0.7112870130004012,
+        "request_id": "a2tpop-0172",
+        "sample_id": "tier7_multiturn:001240",
+        "started_at": "2026-08-19T16:29:55.948298+00:00"
+      },
+      {
+        "latency_seconds": 0.5869073540015961,
+        "request_id": "a2tpop-0173",
+        "sample_id": "tier7_multiturn:001599",
+        "started_at": "2026-08-19T16:29:56.691471+00:00"
+      },
+      {
+        "latency_seconds": 0.6533530649976456,
+        "request_id": "a2tpop-0174",
+        "sample_id": "tier7_multiturn:001599",
+        "started_at": "2026-08-19T16:29:57.303138+00:00"
+      },
+      {
+        "latency_seconds": 0.5027675719975377,
+        "request_id": "a2tpop-0175",
+        "sample_id": "tier7_multiturn:001629",
+        "started_at": "2026-08-19T16:29:57.987241+00:00"
+      },
+      {
+        "latency_seconds": 0.7114209630017285,
+        "request_id": "a2tpop-0176",
+        "sample_id": "tier7_multiturn:001629",
+        "started_at": "2026-08-19T16:29:58.515270+00:00"
+      },
+      {
+        "latency_seconds": 0.5003960320027545,
+        "request_id": "a2tpop-0177",
+        "sample_id": "tier7_multiturn:001646",
+        "started_at": "2026-08-19T16:29:59.261445+00:00"
+      },
+      {
+        "latency_seconds": 0.619093093999254,
+        "request_id": "a2tpop-0178",
+        "sample_id": "tier7_multiturn:001646",
+        "started_at": "2026-08-19T16:29:59.787750+00:00"
+      },
+      {
+        "latency_seconds": 0.5584925520015531,
+        "request_id": "a2tpop-0179",
+        "sample_id": "tier7_multiturn:001701",
+        "started_at": "2026-08-19T16:30:00.435035+00:00"
+      },
+      {
+        "latency_seconds": 0.7457008069977746,
+        "request_id": "a2tpop-0180",
+        "sample_id": "tier7_multiturn:001701",
+        "started_at": "2026-08-19T16:30:01.022832+00:00"
+      },
+      {
+        "latency_seconds": 0.6079216879952583,
+        "request_id": "a2tpop-0181",
+        "sample_id": "tier7_multiturn:001707",
+        "started_at": "2026-08-19T16:30:02.983764+00:00"
+      },
+      {
+        "latency_seconds": 0.7316304350024438,
+        "request_id": "a2tpop-0182",
+        "sample_id": "tier7_multiturn:001707",
+        "started_at": "2026-08-19T16:30:03.624087+00:00"
+      },
+      {
+        "latency_seconds": 0.47568377700372366,
+        "request_id": "a2tpop-0183",
+        "sample_id": "tier7_multiturn:001732",
+        "started_at": "2026-08-19T16:30:04.385332+00:00"
+      },
+      {
+        "latency_seconds": 0.6029808480016072,
+        "request_id": "a2tpop-0184",
+        "sample_id": "tier7_multiturn:001732",
+        "started_at": "2026-08-19T16:30:04.896477+00:00"
+      },
+      {
+        "latency_seconds": 0.6707556820038008,
+        "request_id": "a2tpop-0185",
+        "sample_id": "tier7_multiturn:001734",
+        "started_at": "2026-08-19T16:30:05.541188+00:00"
+      },
+      {
+        "latency_seconds": 0.8246401830037939,
+        "request_id": "a2tpop-0186",
+        "sample_id": "tier7_multiturn:001734",
+        "started_at": "2026-08-19T16:30:06.239546+00:00"
+      },
+      {
+        "latency_seconds": 0.584742446000746,
+        "request_id": "a2tpop-0187",
+        "sample_id": "tier7_multiturn:001836",
+        "started_at": "2026-08-19T16:30:07.094632+00:00"
+      },
+      {
+        "latency_seconds": 0.7413993660011329,
+        "request_id": "a2tpop-0188",
+        "sample_id": "tier7_multiturn:001836",
+        "started_at": "2026-08-19T16:30:07.710258+00:00"
+      },
+      {
+        "latency_seconds": 0.4899349980041734,
+        "request_id": "a2tpop-0189",
+        "sample_id": "tier7_multiturn:001892",
+        "started_at": "2026-08-19T16:30:08.482425+00:00"
+      },
+      {
+        "latency_seconds": 0.6078902349981945,
+        "request_id": "a2tpop-0190",
+        "sample_id": "tier7_multiturn:001892",
+        "started_at": "2026-08-19T16:30:08.997653+00:00"
+      },
+      {
+        "latency_seconds": 0.8399130500038154,
+        "request_id": "a2tpop-0191",
+        "sample_id": "tier7_multiturn:002120",
+        "started_at": "2026-08-19T16:30:09.634720+00:00"
+      },
+      {
+        "latency_seconds": 1.0569962599984137,
+        "request_id": "a2tpop-0192",
+        "sample_id": "tier7_multiturn:002120",
+        "started_at": "2026-08-19T16:30:10.501597+00:00"
+      },
+      {
+        "latency_seconds": 0.8538271859943052,
+        "request_id": "a2tpop-0193",
+        "sample_id": "tier8_intent_blending:000441",
+        "started_at": "2026-08-19T16:30:11.587643+00:00"
+      },
+      {
+        "latency_seconds": 0.9224123729945859,
+        "request_id": "a2tpop-0194",
+        "sample_id": "tier8_intent_blending:000441",
+        "started_at": "2026-08-19T16:30:12.467715+00:00"
+      }
+    ],
+    "trace_manifest_hash": "bea4f8fe86b929dfed20a86b81f885e02ccda3911928de76aa5ebfe9c92ff4c7"
+  },
+  "config_hash": "ae5b3d5e79bf83ba5dcceaafc42394e98c151d4da3650d9169eb09fba52b00ab",
+  "consumed_a0_attempt_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-BASE-a2t-a0-400/attempt-20260818T055500Z-res315",
+  "cumulative_gpu_hours": 0.0633934963411755,
+  "d2_arm": "fixed-legal-context",
+  "distinct_supplied_tool_count": 51,
+  "error": null,
+  "gpu_occupied_seconds_this_attempt": 228.2165868282318,
+  "latency_seconds_by_arm": {
+    "R0": 66.46328926086426,
+    "R1": 76.23644709587097
+  },
+  "metered_audio_seconds_expected": 1092.782,
+  "n_requests_planned": 194,
+  "planned_budgets": {
+    "gpu_hours": 0.5,
+    "model_calls": 210,
+    "speech_audio_seconds": 1538
+  },
+  "population_headroom_overlap": 0,
+  "population_n": 97,
+  "preregistration": "docs/readiness/2026-08-19-a2t-pop-preregistration-REGISTERED.md",
+  "prior_wall_seconds": 0.0,
+  "protocol_hash": "48593086cd1ba2c3f2508ef2072d9d02c62e4208e5d63439eec7df0cb6d23d48",
+  "registered_ceilings": {
+    "gpu_hours": 0.5,
+    "model_calls": 220,
+    "speech_audio_seconds": 2000
+  },
+  "request_failures": [],
+  "request_latency_seconds_this_attempt": 142.69973635673523,
+  "requests_flown_by_arm": {
+    "R0": 97,
+    "R1": 97
+  },
+  "requests_flown_this_attempt": 194,
+  "requests_replayed_from_cache": 0,
+  "result_rows": 194,
+  "result_rows_by_arm": {
+    "R0": 97,
+    "R1": 97
+  },
+  "run_id": "SAEA-PROBE-a2t-pop-194",
+  "seed": 20260807,
+  "session": {
+    "argv": [
+      "/home/chao/llama.cpp-featcache/build/bin/llama-server",
+      "--host",
+      "127.0.0.1",
+      "--port",
+      "8080",
+      "-m",
+      "/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+      "--mmproj",
+      "/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/mmproj-Qwen3-Omni-30B-A3B-Instruct-bf16.gguf",
+      "-c",
+      "49152",
+      "-np",
+      "1",
+      "-fa",
+      "on",
+      "-ngl",
+      "999",
+      "-ctk",
+      "q8_0",
+      "-ctv",
+      "q8_0"
+    ],
+    "binary_path": "llama.cpp-featcache/build/bin/llama-server",
+    "binary_sha256": "097c96ec5a3f576f378d4d5e103928bf070647fdcc1f015eacb839503e121c68",
+    "host": "127.0.0.1",
+    "model_files": [
+      {
+        "path": "models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+        "sha256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d"
+      },
+      {
+        "path": "models/qwen3-omni-30b-a3b-instruct-gguf-q4km/mmproj-Qwen3-Omni-30B-A3B-Instruct-bf16.gguf",
+        "sha256": "f0dfe825fb692d426362b1ac79678fc08daa4758f7151526cad110515f122883"
+      }
+    ],
+    "pid": 1332,
+    "port": 8080,
+    "session_id": "SAEA-PROBE-a2t-pop-194-attempt-20260819T162625Z-b3257c",
+    "started_at": "2026-08-19T16:26:41.225919+00:00"
+  },
+  "split_identity_hash": "e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c",
+  "status": "COMPLETED",
+  "wall_seconds": 143.34110689163208
+}

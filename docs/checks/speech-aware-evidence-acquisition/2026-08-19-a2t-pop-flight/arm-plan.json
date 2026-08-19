@@ -1,0 +1,408 @@
+{
+  "arms": [
+    "R0",
+    "R1"
+  ],
+  "consumed_a0_attempt_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-BASE-a2t-a0-400/attempt-20260818T055500Z-res315",
+  "excluded_population_note": "the 183 tool-selection-failure ids are excluded (EM cannot regress there and no gold-free supply-row rule exists for them) -- recorded limitation, prereg section 1",
+  "full_registry_render_chars": 50291,
+  "population": "EM-correct (tool_accuracy==1 AND exact_match==1) ids of the frozen A2T 400",
+  "population_n": 97,
+  "r1_tool_names": {
+    "tier1_direct:002687": [
+      "runNetworkSpeedTest"
+    ],
+    "tier1_direct:003492": [
+      "findPairedPhone"
+    ],
+    "tier1_direct:003775": [
+      "stopWorkout"
+    ],
+    "tier1_direct:004145": [
+      "getBatteryHealth"
+    ],
+    "tier1_direct:004218": [
+      "startLightShow"
+    ],
+    "tier1_direct:004244": [
+      "getClimateState"
+    ],
+    "tier2_parametric:000632": [
+      "setThermostatMode"
+    ],
+    "tier2_parametric:000713": [
+      "setBrightness"
+    ],
+    "tier2_parametric:001014": [
+      "armSecuritySystem"
+    ],
+    "tier2_parametric:001644": [
+      "setGarageDoor"
+    ],
+    "tier2_parametric:002334": [
+      "startCleaning"
+    ],
+    "tier2_parametric:002787": [
+      "getLightState"
+    ],
+    "tier2_parametric:003115": [
+      "activateScene"
+    ],
+    "tier2_parametric:003650": [
+      "getAirQuality_diag"
+    ],
+    "tier2_parametric:004290": [
+      "streamCamera"
+    ],
+    "tier2_parametric:004516": [
+      "calibrateThermostat"
+    ],
+    "tier2_parametric:005385": [
+      "getActivitySummary"
+    ],
+    "tier2_parametric:005677": [
+      "setAlarm"
+    ],
+    "tier2_parametric:005678": [
+      "setAlarm"
+    ],
+    "tier2_parametric:005732": [
+      "getHRV"
+    ],
+    "tier2_parametric:005856": [
+      "enableWaterLock"
+    ],
+    "tier2_parametric:005859": [
+      "enableWaterLock"
+    ],
+    "tier2_parametric:005891": [
+      "enableWaterLock"
+    ],
+    "tier2_parametric:006028": [
+      "getSleepSummary"
+    ],
+    "tier2_parametric:006317": [
+      "setFollowDistance"
+    ],
+    "tier3_multi_intent:002096": [
+      "getFilterLife",
+      "setThermostatMode"
+    ],
+    "tier3_multi_intent:003764": [
+      "findPairedPhone",
+      "stopWorkout"
+    ],
+    "tier4_implicit:001074": [
+      "controlPlayback"
+    ],
+    "tier4_implicit:002376": [
+      "getApplianceState"
+    ],
+    "tier4_implicit:002412": [
+      "rebootDevice"
+    ],
+    "tier4_implicit:002649": [
+      "runNetworkSpeedTest"
+    ],
+    "tier4_implicit:002943": [
+      "getDeviceList"
+    ],
+    "tier4_implicit:002987": [
+      "getDeviceList"
+    ],
+    "tier4_implicit:003370": [
+      "setDoNotDisturb"
+    ],
+    "tier4_implicit:003473": [
+      "findPairedPhone"
+    ],
+    "tier4_implicit:003484": [
+      "findPairedPhone"
+    ],
+    "tier4_implicit:003523": [
+      "findPairedPhone"
+    ],
+    "tier4_implicit:004122": [
+      "setVoiceGuidance"
+    ],
+    "tier4_implicit:004273": [
+      "getVehicleInfo"
+    ],
+    "tier5_needle:000595": [
+      "getAirQuality"
+    ],
+    "tier5_needle:001656": [
+      "setWaterValve"
+    ],
+    "tier5_needle:001679": [
+      "setWaterValve"
+    ],
+    "tier5_needle:001687": [
+      "activateScene"
+    ],
+    "tier5_needle:001719": [
+      "activateScene"
+    ],
+    "tier5_needle:001930": [
+      "getBatteryLevel"
+    ],
+    "tier5_needle:002007": [
+      "getAirQuality_diag"
+    ],
+    "tier5_needle:002546": [
+      "calibrateThermostat"
+    ],
+    "tier5_needle:002640": [
+      "resetFilterStatus"
+    ],
+    "tier5_needle:003189": [
+      "getBiometricData"
+    ],
+    "tier5_needle:003863": [
+      "setAlarm"
+    ],
+    "tier5_needle:003935": [
+      "getHRV"
+    ],
+    "tier5_needle:003940": [
+      "getHRV"
+    ],
+    "tier5_needle:004037": [
+      "setRegenerativeBraking"
+    ],
+    "tier5_needle:004242": [
+      "getClimateState"
+    ],
+    "tier6_correction:000398": [
+      "setThermostatMode"
+    ],
+    "tier6_correction:000484": [
+      "setFanMode"
+    ],
+    "tier6_correction:000631": [
+      "setHumidifierState"
+    ],
+    "tier6_correction:002178": [
+      "getThermostatState"
+    ],
+    "tier6_correction:002179": [
+      "getThermostatState"
+    ],
+    "tier6_correction:002689": [
+      "runNetworkSpeedTest"
+    ],
+    "tier6_correction:002940": [
+      "findMyDevice"
+    ],
+    "tier6_correction:002999": [
+      "getDeviceList"
+    ],
+    "tier6_correction:003043": [
+      "activateRoutine"
+    ],
+    "tier6_correction:003197": [
+      "getBiometricData"
+    ],
+    "tier6_correction:003198": [
+      "getBiometricData"
+    ],
+    "tier6_correction:003226": [
+      "getBiometricData"
+    ],
+    "tier6_correction:003267": [
+      "getActivitySummary"
+    ],
+    "tier6_correction:003450": [
+      "setAlwaysOnDisplay"
+    ],
+    "tier6_correction:003671": [
+      "enableWaterLock"
+    ],
+    "tier6_correction:003783": [
+      "getSleepSummary"
+    ],
+    "tier6_correction:003820": [
+      "getSleepSummary"
+    ],
+    "tier6_correction:004017": [
+      "foldExteriorMirrors"
+    ],
+    "tier6_correction:004155": [
+      "getActiveAlerts"
+    ],
+    "tier6_correction:004281": [
+      "setFollowDistance"
+    ],
+    "tier7_multiturn:000293": [
+      "getAirQuality"
+    ],
+    "tier7_multiturn:000330": [
+      "setHumidifierState"
+    ],
+    "tier7_multiturn:000418": [
+      "getCameraStream"
+    ],
+    "tier7_multiturn:000440": [
+      "getCameraEvent"
+    ],
+    "tier7_multiturn:000545": [
+      "setVolume"
+    ],
+    "tier7_multiturn:000637": [
+      "startCleaning"
+    ],
+    "tier7_multiturn:000739": [
+      "getApplianceStatus"
+    ],
+    "tier7_multiturn:000818": [
+      "setWaterValve"
+    ],
+    "tier7_multiturn:001098": [
+      "getThermostatState"
+    ],
+    "tier7_multiturn:001129": [
+      "getSensorState"
+    ],
+    "tier7_multiturn:001148": [
+      "getLightState"
+    ],
+    "tier7_multiturn:001240": [
+      "updateFirmware"
+    ],
+    "tier7_multiturn:001599": [
+      "getBiometricData"
+    ],
+    "tier7_multiturn:001629": [
+      "getActivitySummary"
+    ],
+    "tier7_multiturn:001646": [
+      "getActivitySummary"
+    ],
+    "tier7_multiturn:001701": [
+      "setDoNotDisturb"
+    ],
+    "tier7_multiturn:001707": [
+      "setDoNotDisturb"
+    ],
+    "tier7_multiturn:001732": [
+      "setAlwaysOnDisplay"
+    ],
+    "tier7_multiturn:001734": [
+      "setAlwaysOnDisplay"
+    ],
+    "tier7_multiturn:001836": [
+      "enableWaterLock"
+    ],
+    "tier7_multiturn:001892": [
+      "getSleepSummary"
+    ],
+    "tier7_multiturn:002120": [
+      "setRecirculation"
+    ],
+    "tier8_intent_blending:000441": [
+      "findPairedPhone",
+      "setDoNotDisturb"
+    ]
+  },
+  "sample_ids": [
+    "tier1_direct:002687",
+    "tier1_direct:003492",
+    "tier1_direct:003775",
+    "tier1_direct:004145",
+    "tier1_direct:004218",
+    "tier1_direct:004244",
+    "tier2_parametric:000632",
+    "tier2_parametric:000713",
+    "tier2_parametric:001014",
+    "tier2_parametric:001644",
+    "tier2_parametric:002334",
+    "tier2_parametric:002787",
+    "tier2_parametric:003115",
+    "tier2_parametric:003650",
+    "tier2_parametric:004290",
+    "tier2_parametric:004516",
+    "tier2_parametric:005385",
+    "tier2_parametric:005677",
+    "tier2_parametric:005678",
+    "tier2_parametric:005732",
+    "tier2_parametric:005856",
+    "tier2_parametric:005859",
+    "tier2_parametric:005891",
+    "tier2_parametric:006028",
+    "tier2_parametric:006317",
+    "tier3_multi_intent:002096",
+    "tier3_multi_intent:003764",
+    "tier4_implicit:001074",
+    "tier4_implicit:002376",
+    "tier4_implicit:002412",
+    "tier4_implicit:002649",
+    "tier4_implicit:002943",
+    "tier4_implicit:002987",
+    "tier4_implicit:003370",
+    "tier4_implicit:003473",
+    "tier4_implicit:003484",
+    "tier4_implicit:003523",
+    "tier4_implicit:004122",
+    "tier4_implicit:004273",
+    "tier5_needle:000595",
+    "tier5_needle:001656",
+    "tier5_needle:001679",
+    "tier5_needle:001687",
+    "tier5_needle:001719",
+    "tier5_needle:001930",
+    "tier5_needle:002007",
+    "tier5_needle:002546",
+    "tier5_needle:002640",
+    "tier5_needle:003189",
+    "tier5_needle:003863",
+    "tier5_needle:003935",
+    "tier5_needle:003940",
+    "tier5_needle:004037",
+    "tier5_needle:004242",
+    "tier6_correction:000398",
+    "tier6_correction:000484",
+    "tier6_correction:000631",
+    "tier6_correction:002178",
+    "tier6_correction:002179",
+    "tier6_correction:002689",
+    "tier6_correction:002940",
+    "tier6_correction:002999",
+    "tier6_correction:003043",
+    "tier6_correction:003197",
+    "tier6_correction:003198",
+    "tier6_correction:003226",
+    "tier6_correction:003267",
+    "tier6_correction:003450",
+    "tier6_correction:003671",
+    "tier6_correction:003783",
+    "tier6_correction:003820",
+    "tier6_correction:004017",
+    "tier6_correction:004155",
+    "tier6_correction:004281",
+    "tier7_multiturn:000293",
+    "tier7_multiturn:000330",
+    "tier7_multiturn:000418",
+    "tier7_multiturn:000440",
+    "tier7_multiturn:000545",
+    "tier7_multiturn:000637",
+    "tier7_multiturn:000739",
+    "tier7_multiturn:000818",
+    "tier7_multiturn:001098",
+    "tier7_multiturn:001129",
+    "tier7_multiturn:001148",
+    "tier7_multiturn:001240",
+    "tier7_multiturn:001599",
+    "tier7_multiturn:001629",
+    "tier7_multiturn:001646",
+    "tier7_multiturn:001701",
+    "tier7_multiturn:001707",
+    "tier7_multiturn:001732",
+    "tier7_multiturn:001734",
+    "tier7_multiturn:001836",
+    "tier7_multiturn:001892",
+    "tier7_multiturn:002120",
+    "tier8_intent_blending:000441"
+  ],
+  "seed": 20260807,
+  "split_identity_hash": "e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c"
+}

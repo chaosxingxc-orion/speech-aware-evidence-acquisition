@@ -1,0 +1,54 @@
+{
+  "config_hash": "ae5b3d5e79bf83ba5dcceaafc42394e98c151d4da3650d9169eb09fba52b00ab",
+  "protocol_hash": "48593086cd1ba2c3f2508ef2072d9d02c62e4208e5d63439eec7df0cb6d23d48",
+  "values": {
+    "arm": "fixed-legal-context",
+    "arms": [
+      "R0",
+      "R1"
+    ],
+    "base_url": "http://127.0.0.1:8080",
+    "carrier_lock_key": "audio2tool",
+    "consumed_a0_attempt_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-BASE-a2t-a0-400/attempt-20260818T055500Z-res315",
+    "decoding_params": {
+      "max_tokens": 1024,
+      "seed": 20260803,
+      "temperature": 0
+    },
+    "flight_config_version": "a2t-pop-launcher-v1 (no committed g0-binding config; see module docstring)",
+    "headroom_manifest": "docs/checks/speech-aware-evidence-acquisition/2026-08-18-pa2t-a0-read/headroom.json",
+    "launcher": "scratchpad tri/pop/launch_a2t_pop.py (archived with the flight receipt)",
+    "model_lock_key": "qwen3-omni-30b-a3b-instruct-gguf-q4km",
+    "orchestrator": "rails.probes.a2t_pop_flight.run_a2t_pop_flight",
+    "population": "EM-correct ids of the frozen A2T 400 (tool_accuracy==1 AND exact_match==1)",
+    "population_n": 97,
+    "preregistration": "docs/readiness/2026-08-19-a2t-pop-preregistration-REGISTERED.md",
+    "probe": "P-A2T-POP",
+    "prompt_order": "evidence-first-system-v2",
+    "runtime_receipt": "receipts/runtime-q4km-featcache.json",
+    "seed": 20260807,
+    "server_args": [
+      "-c",
+      "49152",
+      "-np",
+      "1",
+      "-fa",
+      "on",
+      "-ngl",
+      "999",
+      "-ctk",
+      "q8_0",
+      "-ctv",
+      "q8_0"
+    ],
+    "server_env": {
+      "LLAMA_MTMD_FEAT_CACHE_DIR": "/home/chao/feat-cache/audio2tool-q4km"
+    },
+    "split_identity_hash": "e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c",
+    "split_name": "discovery",
+    "stage": "2026-08-19 registration wave, adversarial-panel Finding 3 (V4)",
+    "status": "REGISTERED",
+    "timeout_seconds": 420.0,
+    "transport": "llama-server"
+  }
+}
