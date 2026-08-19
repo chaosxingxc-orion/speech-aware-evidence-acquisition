@@ -1,0 +1,79 @@
+{
+  "flight_config_version": "ptrap-flight-v1",
+  "probe": "P-TRAP",
+  "status": "REGISTERED",
+  "preregistration": "docs/readiness/2026-08-19-ptrap-preregistration-REGISTERED.md",
+  "exposure_ledger_row": "SAEA-PROBE-ptrap-120",
+  "carrier": "slurp",
+  "carrier_lock_key": "slurp",
+  "sample_manifest": "configs/probes/g0-binding/pslu-sample-devel-n60.json",
+  "roster_table": "configs/probes/g0-binding/pslu-rosters-train-only.json",
+  "sample_manifest_note": "REUSED byte-identically from the consumed P-SLU probe (and from P-KEY) -- the SAME frozen 60 SLURP devel samples, seed 20260807, never a fresh draw (preregistration's own opening line).",
+  "roster_table_note": "REUSED byte-identically from the consumed P-SLU probe -- V1/V2 both start from the SAME A3-form 100-entry roster via the frozen rails.probes.pslu_flight.pslu_supply_packet('A3', scenario=None, rosters=...).full_roster / rails.probes.pslu_flight.render_roster_entries, then append K<=5 trap entries on top (rails.probes.ptrap_flight._trap_roster_packet) -- never a re-derivation of the base 100 entries.",
+  "ontology_miner_prohibited_on_this_path": "speech_aware_evidence_acquisition.data.slurp.load_slurp_ontology",
+  "ontology_miner_prohibition_enforced_by": "rails.probes.pslu_flight.assert_never_calls_ontology_miner (reused verbatim) PLUS rails.probes.ptrap_flight._assert_this_module_never_calls_ontology_miner (this module's own source, checked separately) -- both checked at rails.probes.ptrap_flight import time and again at the top of run_ptrap_flight",
+  "trap_source": {
+    "consumed_pslu_attempt_id": "attempt-20260818T010218Z-4c97cb",
+    "consumed_pslu_arm": "A0",
+    "consumed_pslu_flight_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-08-17-pslu-flight/attempt4-flight-receipt.json",
+    "harvester": "analysis.ptrap_read.harvest_a0_wrong_values -- reuses rails.probes.pslu_flight.PSLU_PHASE1_ARM ('A0'), analysis.pslu_read.load_attempt_rows, and reproduction.slurp_scoring.parse_slu_response verbatim against that SAME consumed attempt's outputs.jsonl; NEVER run against the real attempt directory by the machinery-building task that authored this file -- developed and tested exclusively against hand-authored synthetic fixtures (tests/unit/test_ptrap_read.py), exactly mirroring analysis.pslu_read's own module-docstring discipline. A later, separately-registered flight-BINDING session points the harvester at the real consumed attempt dir and feeds its output into rails.probes.ptrap_flight.build_trap_sets before the first V1/V2 request is ever sent.",
+    "wrong_value_definition": "one A0 predicted entity (type, filler) that does NOT exact-match any gold entity of that SAME sample (the identical FP convention reproduction.slurp_scoring._exact_counts already uses for slot_f1_exact, never a second drifting definition) -- deduplicated per sample by normalized (type, filler), order-preserving.",
+    "trap_k_cap": 5,
+    "trap_donor_seed": 20260807,
+    "trap_construction": "rails.probes.ptrap_flight.build_trap_sets -- V1 per sample: this SAME sample's own harvested wrong values, K<=5 (order-preserving, first-emitted), each excluded (fail-closed) if its normalized filler equals ANY gold slot value of this SAME sample (any type). V2 per sample: seeded-drawn (random.Random(20260807), samples processed in sorted order) from the pool of every OTHER sample's own harvested wrong values (never this sample's own -- fixed-point-free by pool construction, not merely by a derangement label), length-matched to V1's own K for this SAME sample, identical gold-overlap exclusion re-applied against THIS sample's own gold. A donor pool that runs dry after exclusion yields a shorter V2 K than V1's K for that sample; this shrink is reported per sample, never silently padded."
+  },
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "carrier_lock_key": "slurp",
+    "split_role": "discovery",
+    "split_identity_hash": "fc9de436eba5aba120ecf07ee112765cd4ac0609150e0aaf36f4d44c9c5b5ee5",
+    "planned_model_calls": 120,
+    "planned_gpu_hours": 0.3,
+    "planned_speech_audio_seconds": 1000,
+    "note": "planned_model_calls is the EXACT total run_ptrap_flight issues (60 samples x 2 arms, fail-closed structural checks enforce this precisely, never more, never fewer); protocol_hash and run_id/attempt_id are assigned by the flying agent's own launcher at flight time, never frozen here. split_identity_hash is IDENTICAL to the consumed P-SLU/P-KEY flights' own value -- this probe reuses the SAME frozen 60-sample manifest, never a fresh draw."
+  },
+  "bridge": {
+    "core_client": "rails.core_client.FrozenCoreClient",
+    "d2_arm": "fixed-legal-context",
+    "note": "Both V1 and V2 rows carry audio (IDENTICAL construction to the consumed P-SLU A3 arm: rails.adapters.slurp.SlurpAdapter.assemble_prompt with a roster SupplyPacket, never text-only) -- FrozenCoreClient's text-mode capability is never invoked by this flight."
+  },
+  "arms": ["V1", "V2"],
+  "arm_semantics": {
+    "V1": "self-percept trap: the A3-form 100-entry legal roster PLUS K<=5 appended entries, each one of THIS sample's own A0 zero-supply wrong emitted values (model text, consumed attempt, deployment-legal) -- tests whether the core preferentially re-commits to its OWN earlier mishearing of THIS audio when it is supplied back as a legal-looking roster entry.",
+    "V2": "cross-percept control: IDENTICAL construction, but the K appended entries are seeded-drawn from OTHER samples' own A0 wrong values (fixed-point-free at sample level, length-matched to V1's own K for this sample) -- same source distribution, no acoustic relation to this audio."
+  },
+  "phases": {
+    "binding": "OFFLINE, zero model calls: analysis.ptrap_read.harvest_a0_wrong_values (consumed P-SLU attempt) -> rails.probes.ptrap_flight.build_trap_sets (K-cap, binding-time fail-closed gold zero-overlap check, seeded V2 cross-sample draw) -- produces the per-sample SampleTrapSet table this flight's own requests are built from. MUST complete and be coordinator-reviewed BEFORE the first V1/V2 request (registration section 5's own 'pinned read suite ... built and coordinator-reviewed BEFORE the read' discipline, extended here to binding since the trap CONTENT itself is derived data).",
+    "pass1": "V1: one request per sample (n=60).",
+    "pass2": "V2: one request per sample (n=60), independent of pass 1."
+  },
+  "cost_budget": {
+    "call_formula": "60 (V1) + 60 (V2) = 120 -- the binding phase is offline (zero model calls)",
+    "call_ceiling": 140,
+    "call_ceiling_note": "the flight's own exact total is 120 (planned_model_calls above); the registered 140-call ceiling leaves headroom for a future preflight/health probe, never expected to be spent by run_ptrap_flight itself",
+    "audio_seconds_formula": "182.26s (one full pass over the 60 samples, IDENTICAL audio to the consumed P-SLU/P-KEY A0/A3 passes) x 2 (V1 + V2) ~= 365s",
+    "audio_seconds_ceiling": 1000,
+    "gpu_hours_ceiling": 0.3
+  },
+  "metrics": {
+    "primary": "CAPTURE per (arm, sample) := the response emits an appended trap entry (post-normalization exact match) in any slot (analysis.ptrap_read.response_captures_trap); capture rate V1 vs V2 on the common denominator (samples with V1 K>=1)",
+    "alongside": [
+      "SLU-F1 per arm vs the consumed A3 aggregate (analysis.ptrap_read.CONSUMED_A3_SLU_F1, cited verbatim from docs/checks/speech-aware-evidence-acquisition/2026-08-18-pslu-read/verdict.json's own A3 row) -- descriptive guardrail, does trapping cost task quality",
+      "induced substitutions per arm (reproduction of analysis.pslu_read.count_induced_substitutions over the full supplied roster, including the appended traps)",
+      "empty/parse rate per arm (reproduction.slurp_scoring.parse_slu_response's own parsed flag)",
+      "per-sample K distribution for V1 and V2 (mandatory reachability statement ingredient)"
+    ]
+  },
+  "verdicts": {
+    "ACOUSTIC-MEDIATED": "capture(V1) - capture(V2) >= +0.10 AND raw difference >= 6 AND (2026-08-19 amendment section 6) the per-sample paired bootstrap CI lower bound of the V1-V2 capture difference is > 0",
+    "KEY-ONLY-MATCHING": "|capture(V1) - capture(V2)| <= 0.03 AND the ENTIRE 90% bootstrap CI lies inside [-0.03, +0.03] AND ACOUSTIC-MEDIATED is reachable given this run's own per-sample K distribution (mirrors the P-KEY 2026-08-19 amendment's own item 2 gating: an equivalence verdict may not fire as an affirmative negative under an unreachable alternative)",
+    "INCONCLUSIVE-TRAP": "otherwise -- reports both rates, the per-sample table, sigma_hat/CI, and the reachability bound"
+  },
+  "bootstrap": {
+    "primitive": "analysis.bootstrap.paired_cluster_bootstrap (shared with analysis.pkey_read, per that module's own docstring)",
+    "n_replicates": 10000,
+    "seed": 20260807,
+    "ci_level": 0.90
+  },
+  "branch_rules_source": "docs/readiness/2026-08-19-ptrap-preregistration-REGISTERED.md sections 2-3 (design, metrics, point-threshold verdicts) and section 6 (2026-08-19 CI amendment: bootstrap-gated ACOUSTIC-MEDIATED/KEY-ONLY-MATCHING, mandatory pre-read reachability statement) -- mechanical from the per-sample PTrapArmResult rows this flight produces; branch evaluation itself lives in analysis.ptrap_read, built and coordinator-reviewed BEFORE the one-shot read per the registration's own discipline section."
+}
