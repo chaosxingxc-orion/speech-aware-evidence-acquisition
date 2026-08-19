@@ -1,0 +1,88 @@
+{
+  "flight_config_version": "pkey-flight-v1",
+  "probe": "P-KEY",
+  "status": "REGISTERED",
+  "preregistration": "docs/readiness/2026-08-18-pkey-preregistration-REGISTERED.md",
+  "exposure_ledger_row": "SAEA-PROBE-pkey-303",
+  "carrier": "slurp",
+  "carrier_lock_key": "slurp",
+  "sample_manifest": "configs/probes/g0-binding/pslu-sample-devel-n60.json",
+  "roster_table": "configs/probes/g0-binding/pslu-rosters-train-only.json",
+  "sample_manifest_note": "REUSED byte-identically from the consumed P-SLU probe -- the SAME frozen 60 SLURP devel samples, seed 20260807, never a fresh draw (preregistration's own opening line).",
+  "roster_table_note": "REUSED byte-identically from the consumed P-SLU probe -- AUD-SUP/TXT-SUP both supply the SAME A3-form 100-entry roster via the frozen rails.probes.pslu_flight.pslu_supply_packet('A3', scenario=None, rosters=...), never a re-derivation.",
+  "ontology_miner_prohibited_on_this_path": "speech_aware_evidence_acquisition.data.slurp.load_slurp_ontology",
+  "ontology_miner_prohibition_enforced_by": "rails.probes.pslu_flight.assert_never_calls_ontology_miner (reused verbatim) PLUS rails.probes.pkey_flight._assert_this_module_never_calls_ontology_miner (this module's own source, checked separately) -- both checked at rails.probes.pkey_flight import time and again at the top of run_pkey_flight",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "carrier_lock_key": "slurp",
+    "split_role": "discovery",
+    "split_identity_hash": "fc9de436eba5aba120ecf07ee112765cd4ac0609150e0aaf36f4d44c9c5b5ee5",
+    "planned_model_calls": 340,
+    "planned_gpu_hours": 0.6,
+    "planned_speech_audio_seconds": 2500,
+    "note": "planned_* are ceilings the plan is validated/metered against (contracts.ExecutionPlan); protocol_hash and run_id/attempt_id are assigned by the flying agent's own launcher at flight time, never frozen here. split_identity_hash is IDENTICAL to the consumed P-SLU flight's own value -- this probe reuses the SAME frozen 60-sample manifest, never a fresh draw."
+  },
+  "bridge": {
+    "core_client": "rails.core_client.FrozenCoreClient",
+    "d2_arm": "fixed-legal-context",
+    "note": "FrozenCoreClient is constructed with binding=rails.core_client.build_payload_binding(carrier_lock_key='slurp', samples=<the frozen 60>, data_root=<SPEECHRL_DATA_DIR>, carrier_root=<SPEECHRL_DATA_DIR>/<slurp local_subdir's parent, per data.lock.asset_dir('slurp', ...)>). TXT-NOSUP/TXT-SUP rows carry NO input_audio content part at all -- FrozenCoreClient never resolves a media_relpath for those two arms' own requests."
+  },
+  "arms": ["T0", "AUD-NOSUP", "AUD-SUP", "TXT-NOSUP", "TXT-SUP"],
+  "arm_semantics": {
+    "T0": "pass 0: audio -> the pinned t0_instruction (verbatim transcription), zero supply. Doubles as the transcript source passes 3-4 reuse byte-identically; NOT itself an SLU-F1-scored arm (its own quality is the separate, scoring-side-only T0-vs-gold WER descriptive).",
+    "AUD-NOSUP": "pass 1: audio, zero supply -- IDENTICAL construction to the consumed P-SLU A0 arm (in-session comparator).",
+    "AUD-SUP": "pass 2: audio, the A3-form 100-entry legal roster -- IDENTICAL construction to the consumed P-SLU A3 arm. Carries the 3 seeded silence-swap extra requests.",
+    "TXT-NOSUP": "pass 3: T0's OWN transcript text (audio absent), zero supply -- audio-free, requires pass 0 to have completed and hash-recorded this sample's own transcript first (hard ordering dependency).",
+    "TXT-SUP": "pass 4: T0's OWN transcript text (audio absent), the SAME A3-form roster -- audio-free, same ordering dependency as TXT-NOSUP."
+  },
+  "t0_instruction": "You are given spoken audio expressing one command to a voice assistant. Transcribe EXACTLY what was said, verbatim -- no paraphrasing, no correction, no punctuation or words you did not hear, no commentary. Respond with ONLY the transcript text, nothing else.",
+  "t0_instruction_sha256": "9d20350e68339f58ae0fe61b3e89281a6aac0131311c3279549835940d81b00f",
+  "txt_template": "The user said: {transcript}",
+  "txt_template_sha256": "68bb3c21a5cc8e0c46a88abd1dba964c851040ca733d0e56ca53f92f2bffe9f9",
+  "txt_template_note": "The frozen '{transcript}' placeholder is filled with T0's OWN response text (rails.probes.pkey_flight.render_txt_transcript_block) -- never gold text; rails.probes.pkey_flight.assert_pinned_text_matches_config checks this field and its sha256 companion agree byte-for-byte with the module's own T0_INSTRUCTION/TXT_TRANSCRIPT_TEMPLATE constants (config/code parity, fail-closed).",
+  "phases": {
+    "pass0": "T0: one request per sample (n=60) over the full frozen sample set; every response is hash-recorded into the per-sample transcript registry BEFORE any later pass builds a prompt.",
+    "pass1": "AUD-NOSUP: one request per sample (n=60), independent of pass 0.",
+    "pass2": "AUD-SUP: one request per sample (n=60), independent of pass 0; fires one EXTRA silence-swapped request for each sample named in silence_swap.",
+    "pass3": "TXT-NOSUP: one request per sample (n=60) -- REQUIRES pass 0's own transcript registry entry for that sample (hard ordering dependency; rails.probes.pkey_flight.assemble_txt_messages refuses otherwise).",
+    "pass4": "TXT-SUP: one request per sample (n=60) -- same ordering dependency as pass 3."
+  },
+  "silence_swap": {
+    "count": 3,
+    "seed": 20260807,
+    "selection_rule": "sorted(random.Random(f'{seed}:silence-swap').sample(sorted(item['sample_id'] for item in sample_manifest['items']), 3)) -- IDENTICAL rule and seed to the consumed P-SLU flight's own silence_swap block, over the SAME frozen 60-sample manifest, so it reproduces the SAME 3 sample ids.",
+    "sample_ids": [
+      "slurp:devel:005518:audio-1490203960",
+      "slurp:devel:007852:audio-1494416109-headset",
+      "slurp:devel:011654:audio-1501692977-headset"
+    ],
+    "arm": "AUD-SUP",
+    "generation": "rails.silence_swap.build_silence_swap_slice per sample_id, duration_seconds = that sample's own audio_seconds (matched duration), sample_rate_hz = rails.core_client.probe_sample_rate_hz(parent media) -- registered via FrozenCoreClient.register_slice BEFORE the flight's pass-2 loop reaches that sample's AUD-SUP arm",
+    "note": "adds exactly 3 extra requests beyond the base 5-pass x 60 total; rails.probes.pkey_flight.run_pkey_flight's own silence_swap_media_relpaths parameter consumes {sample_id: registered_slice_media_relpath} and fires the extra request itself, on AUD-SUP only -- never T0, never a TXT-* arm."
+  },
+  "cost_budget": {
+    "call_formula": "60 (T0) + 60 (AUD-NOSUP) + 60 (AUD-SUP) + 60 (TXT-NOSUP) + 60 (TXT-SUP) + 3 (silence-swap extra) = 303",
+    "call_ceiling": 340,
+    "audio_seconds_formula": "182.26s (one full pass over the 60 samples) x 3 audio-bearing sends per sample (T0 + AUD-NOSUP + AUD-SUP) + ~9.12s (3 silence-swap extra sends, duration-matched to their own samples) ~= 555.9s; TXT-NOSUP/TXT-SUP carry zero audio seconds (audio-free by construction).",
+    "audio_seconds_ceiling": 2500,
+    "gpu_hours_ceiling": 0.6
+  },
+  "metrics": {
+    "primary": "official SLU-F1 per arm over AUD-NOSUP/AUD-SUP/TXT-NOSUP/TXT-SUP (adapter's slu_f1 family, score_slu.as_metrics_dict); Delta_AUD = AUD-SUP - AUD-NOSUP; Delta_TXT = TXT-SUP - TXT-NOSUP; INTERACTION I = Delta_AUD - Delta_TXT",
+    "alongside": [
+      "perception-gap descriptive (TXT-NOSUP vs AUD-NOSUP)",
+      "converted-sample SET difference (samples converting under AUD-SUP but not TXT-SUP = the perception-repair set; soft cross-referenced against P-PHON's NEAR-MISS class when that probe's own output is available)",
+      "T0 transcript quality vs gold (scoring-side-only WER, reported only -- gold text never enters any prompt path)",
+      "induced-substitution count per arm (rails.probes.pslu_flight roster reuse, analysis.pslu_read.count_induced_substitutions reused verbatim)",
+      "copy_rate (rails.consumption.ConsumptionTrace, reported)",
+      "3 seeded silence-swaps on AUD-SUP (unanimity VOID bar, reused from analysis.pslu_read)"
+    ]
+  },
+  "interaction_verdicts": {
+    "SPEECH-TERM-PRESENT": "I >= +0.06 (2x the measured 0.03 separability bar) -- supply pays extra only when raw audio is present",
+    "KEY-ONLY": "|I| <= 0.03 -- the benefit is modality-invariant (text-side mechanism)",
+    "TEXT-DOMINANT": "I <= -0.06 -- supply helps more once perception is frozen to text",
+    "INCONCLUSIVE-KEY": "otherwise"
+  },
+  "branch_rules_source": "docs/readiness/2026-08-18-pkey-preregistration-REGISTERED.md section 4 (INTERACTION I and its four verdicts, mandatory descriptives) -- mechanical from the per-sample PKeyArmResult rows this flight produces; branch evaluation itself lives in analysis.pkey_read, built and coordinator-reviewed BEFORE the one-shot read per the registration's own discipline section."
+}
