@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+source /mnt/c/Users/35686/AppData/Local/Temp/claude/D--chao-workspace-exploring-l4-intelligence-studies-speech-aware-evidence-acquisition/6d9f1834-68e9-41a7-bbcc-724898cf15a9/scratchpad/pkey2fly/env.sh
+cd "$REPO"
+python "$SCRATCH/probe_d1.py" 2>&1 | tee "$SCRATCH/d1-probe.log"
+exit "${PIPESTATUS[0]}"

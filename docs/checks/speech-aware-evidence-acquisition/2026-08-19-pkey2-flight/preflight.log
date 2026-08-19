@@ -1,0 +1,52 @@
+repo module root: /mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/src/speech_aware_evidence_acquisition
+data_root: /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+carrier_root (asset_dir slurp): /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/datasets/slurp
+config/code parity: t0_instruction + txt_template + both sha256 companions agree -- PASS
+  t0_instruction_sha256: 9d20350e68339f58ae0fe61b3e89281a6aac0131311c3279549835940d81b00f
+  txt_template_sha256:   68bb3c21a5cc8e0c46a88abd1dba964c851040ca733d0e56ca53f92f2bffe9f9
+arms: config == machinery PKEY_ARMS == ['T0', 'AUD-NOSUP', 'AUD-SUP', 'TXT-NOSUP', 'TXT-SUP']
+manifest: n=60 seed=20260807
+split_identity_hash (full, from binding JSON): fc9de436eba5aba120ecf07ee112765cd4ac0609150e0aaf36f4d44c9c5b5ee5
+split identity: manifest == machinery EXPECTED_SPLIT_IDENTITY_HASH verbatim -- PASS
+rosters: 18 scenarios, 55 global types, 100 full-roster entries, 18 derangement keys
+A3 packet: 100 items, dose n_items=100 (prereg: 100-entry roster)
+devel split resolved: 8690 samples
+frozen sample set selected: 60
+media resolved: 60/60 flac present
+total audio seconds: 182.26 (prereg: 182.26), mean 3.04
+silence-swap ids: ['slurp:devel:005518:audio-1490203960', 'slurp:devel:007852:audio-1494416109-headset', 'slurp:devel:011654:audio-1501692977-headset']
+silence-swap ids: all 3 inside the frozen 60 -- OK
+silence-swap seeded re-derivation (seed 20260807): matches config verbatim -- PASS
+txt-duplicate sub-block: count=35, 35 ids listed
+txt-duplicate ids: all 35 inside the frozen 60 -- OK
+txt-duplicate seeded re-derivation (seed 20260807, salt 'txt-duplicate'): matches config verbatim -- PASS
+draw overlap (silence-swap AND txt-duplicate): ['slurp:devel:005518:audio-1490203960', 'slurp:devel:007852:audio-1494416109-headset'] (informational -- different arms, no interference)
+exposure rows matching run id 'SAEA-PROBE-pkey2-338': 1
+  ledger['execution profile'] = 'bounded-discovery-probe'
+  ledger['split role'] = 'discovery'
+  ledger['split identity hash'] = 'fc9de436eba5aba120ecf07ee112765cd4ac0609150e0aaf36f4d44c9c5b5ee5'
+  ledger['consumed'] = 'no'
+  ledger['calls'] = '360'
+  ledger['speech audio seconds'] = '2500'
+  ledger['gpu hours'] = '0.6'
+  budget cell 'calls': registered 360 >= planned 338 -- OK
+  budget cell 'speech audio seconds': registered 2500 >= planned 2500 -- OK
+  budget cell 'gpu hours': registered 0.6 >= planned 0.6 -- OK
+config_hash: 349b5fa9dfb49541e7ff20a0968a3fd68b9687c1987cbead9cc271599857cdd1
+protocol_hash: c4ca737b1326bb089217dfaf18347c2aa6164944643c00ac515b3d0a30a6b307
+server_env: {'LLAMA_MTMD_FEAT_CACHE_DIR': '/home/chao/feat-cache/slurp-q4km'}
+server_args: ['-c', '49152', '-np', '4', '-fa', 'on', '-ngl', '999', '-ctk', 'q8_0', '-ctv', 'q8_0']
+decoding_params: {'temperature': 0, 'seed': 20260803, 'max_tokens': 1024}
+ExecutionPlan validates: profile=bounded-discovery-probe role=discovery
+registered call arithmetic: 60 (T0) + 60 (AUD-NOSUP) + 60 (AUD-SUP) + 60 (TXT-NOSUP) + 60 (TXT-SUP) + 3 (swap) + 35 (txt-duplicate) = 338 <= plan ceiling 338
+audio-seconds arithmetic (content actually decoded): 182.26 x 3 audio passes + 7.68 swap = 554.46
+audio-seconds arithmetic (METERED, incl. TXT bookkeeping): 554.46 + 182.26 (TXT-NOSUP) + 182.26 (TXT-SUP) + 106.30 (txt-dup) = 1025.27 <= plan ceiling 2500
+
+=== run-total budget feasibility (sibling attempts count) ===
+prior durable spend on SAEA-PROBE-pkey2-338: calls=0, audio_seconds=0.00
+headroom for a FRESH attempt: calls=338, audio_seconds=2500.00
+this flight needs: calls=338, metered audio_seconds=1025.27
+call headroom: sufficient for a full fresh attempt -- OK
+audio headroom: sufficient for a full fresh attempt -- OK
+
+PRE-FLIGHT CLEAN

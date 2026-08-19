@@ -1,0 +1,11 @@
+compile OK: flight_identity.py
+compile OK: preflight.py
+compile OK: probe_d1.py
+compile OK: launch_pkey_flight.py
+RUN_ID: SAEA-PROBE-pkey2-338
+FLIGHT_CONFIG: configs/probes/g0-binding/pkey-flight.json
+machinery import OK: pkey_flight arms = ('T0', 'AUD-NOSUP', 'AUD-SUP', 'TXT-NOSUP', 'TXT-SUP')
+machinery split identity pin = fc9de436eba5aba120ecf07ee112765cd4ac0609150e0aaf36f4d44c9c5b5ee5
+config/code parity guard: PASS (model-free)
+build_values OK: keys = 22 arm = fixed-legal-context feat cache = /home/chao/feat-cache/slurp-q4km
+config_hash: 349b5fa9dfb49541e7ff20a0968a3fd68b9687c1987cbead9cc271599857cdd1

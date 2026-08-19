@@ -1,0 +1,16 @@
+total rows: 338
+row top-level keys: ['arm', 'consumption', 'messages', 'metrics', 'response_text', 'sample_id', 'silence_swapped', 'transcript_sha256_used', 'txt_duplicate']
+
+=== (arm, txt_duplicate) counts ===
+  AUD-NOSUP    txt_duplicate=False: 60
+  AUD-SUP      txt_duplicate=False: 63
+  T0           txt_duplicate=False: 60
+  TXT-NOSUP    txt_duplicate=False: 60
+  TXT-NOSUP    txt_duplicate=True: 35
+  TXT-SUP      txt_duplicate=False: 60
+
+distinct txt_duplicate sample ids: 35
+distinct silence_swap  sample ids: 3
+
+=== duplicate (arm, sample_id, silence_swapped, txt_duplicate) keys ===
+  0 duplicates

@@ -1,0 +1,24 @@
+total rows: 338
+
+=== rows per arm ===
+  AUD-NOSUP                rows=  60  distinct samples=60
+  AUD-SUP                  rows=  63  distinct samples=60
+  T0                       rows=  60  distinct samples=60
+  TXT-NOSUP                rows=  95  distinct samples=60
+  TXT-SUP                  rows=  60  distinct samples=60
+
+=== silence-swapped rows per arm ===
+  AUD-SUP                  3
+  total swapped rows: 3
+
+=== duplicate (arm, sample_id, silence_swapped) keys ===
+  35 duplicates: [('TXT-NOSUP', 'slurp:devel:000115:audio-1495375974', False), ('TXT-NOSUP', 'slurp:devel:000444:audio-1502891018-headset', False), ('TXT-NOSUP', 'slurp:devel:001637:audio-1502195066-headset', False), ('TXT-NOSUP', 'slurp:devel:003309:audio-1501756265', False), ('TXT-NOSUP', 'slurp:devel:004134:audio-1500387396-headset', False)]
+
+=== transcript_sha256_used presence per arm (structural flag only) ===
+  AUD-NOSUP                present=False: 60
+  AUD-SUP                  present=False: 63
+  T0                       present=False: 60
+  TXT-NOSUP                present=True: 95
+  TXT-SUP                  present=True: 60
+
+=== transcript-registry.json: 60 entries (content never printed) ===
