@@ -1,0 +1,42 @@
+{
+  "cells": [
+    "TP-A",
+    "TP-S",
+    "TW-A",
+    "TW-S"
+  ],
+  "consumed_a0_attempt_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-BASE-a2t-a0-400/attempt-20260818T055500Z-res315",
+  "correct_tool_count_distribution": {
+    "1": 3,
+    "2": 4,
+    "3": 4
+  },
+  "distinct_withheld_tool_count": 14,
+  "drawn_sample_ids": [
+    "tier1_direct:001242",
+    "tier1_direct:001607",
+    "tier3_multi_intent:000078",
+    "tier3_multi_intent:000419",
+    "tier3_multi_intent:001251",
+    "tier3_multi_intent:002915",
+    "tier3_multi_intent:002986",
+    "tier3_multi_intent:003153",
+    "tier7_multiturn:000554",
+    "tier8_intent_blending:000065",
+    "tier8_intent_blending:000696"
+  ],
+  "full_registry_render_chars": 50291,
+  "longest_sample_audio_seconds": 7.417,
+  "mean_sample_audio_seconds": 5.148,
+  "n_draw": 11,
+  "n_samples": 11,
+  "one_pass_audio_seconds": 56.627,
+  "registry_rows": 152,
+  "run_id": "SAEA-PROBE-a2t-abst-44",
+  "schema": "saea-a2t-abst-split-measurement-v1",
+  "seed": 20260807,
+  "shortest_sample_audio_seconds": 2.377,
+  "split_identity_hash": "e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c",
+  "tw_registry_render_chars_max": 49989,
+  "tw_registry_render_chars_min": 49176
+}

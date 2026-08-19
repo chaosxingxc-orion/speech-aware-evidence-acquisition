@@ -1,0 +1,398 @@
+{
+  "attempt_id": "attempt-20260819T160757Z-9425ce",
+  "cells": [
+    "TP-A",
+    "TP-S",
+    "TW-A",
+    "TW-S"
+  ],
+  "close_receipt": {
+    "arm": "fixed-legal-context",
+    "cost": {
+      "audio_seconds_used": 226.508,
+      "calls_used": 44,
+      "completion_tokens_total": 1393,
+      "latency_seconds_total": 93.38073795701348,
+      "prompt_tokens_total": 581278,
+      "tool_calls": 0,
+      "umbrella_lock_sha256": "ad71f96732a2b69fb741b4fed4fe60fb1978dc23eb55522ce3943702f0801d1e"
+    },
+    "flight_lock": null,
+    "request_count": 44,
+    "run_id": "SAEA-PROBE-a2t-abst-44",
+    "timings": [
+      {
+        "latency_seconds": 7.405455280997558,
+        "request_id": "a2tabst-0001",
+        "sample_id": "tier1_direct:001242",
+        "started_at": "2026-08-19T16:09:23.770889+00:00"
+      },
+      {
+        "latency_seconds": 0.3687051309971139,
+        "request_id": "a2tabst-0002",
+        "sample_id": "tier1_direct:001242",
+        "started_at": "2026-08-19T16:09:31.204461+00:00"
+      },
+      {
+        "latency_seconds": 3.0156762069964316,
+        "request_id": "a2tabst-0003",
+        "sample_id": "tier1_direct:001242",
+        "started_at": "2026-08-19T16:09:31.601114+00:00"
+      },
+      {
+        "latency_seconds": 0.13660015799541725,
+        "request_id": "a2tabst-0004",
+        "sample_id": "tier1_direct:001242",
+        "started_at": "2026-08-19T16:09:35.531815+00:00"
+      },
+      {
+        "latency_seconds": 3.4330204539946862,
+        "request_id": "a2tabst-0005",
+        "sample_id": "tier1_direct:001607",
+        "started_at": "2026-08-19T16:09:35.700217+00:00"
+      },
+      {
+        "latency_seconds": 0.13537627999903634,
+        "request_id": "a2tabst-0006",
+        "sample_id": "tier1_direct:001607",
+        "started_at": "2026-08-19T16:09:39.161889+00:00"
+      },
+      {
+        "latency_seconds": 2.643521789999795,
+        "request_id": "a2tabst-0007",
+        "sample_id": "tier1_direct:001607",
+        "started_at": "2026-08-19T16:09:39.324656+00:00"
+      },
+      {
+        "latency_seconds": 0.12329832300019916,
+        "request_id": "a2tabst-0008",
+        "sample_id": "tier1_direct:001607",
+        "started_at": "2026-08-19T16:09:41.995458+00:00"
+      },
+      {
+        "latency_seconds": 4.041915067995433,
+        "request_id": "a2tabst-0009",
+        "sample_id": "tier3_multi_intent:000078",
+        "started_at": "2026-08-19T16:09:42.159343+00:00"
+      },
+      {
+        "latency_seconds": 0.1756355440011248,
+        "request_id": "a2tabst-0010",
+        "sample_id": "tier3_multi_intent:000078",
+        "started_at": "2026-08-19T16:09:46.227891+00:00"
+      },
+      {
+        "latency_seconds": 6.336005065997597,
+        "request_id": "a2tabst-0011",
+        "sample_id": "tier3_multi_intent:000078",
+        "started_at": "2026-08-19T16:09:46.432399+00:00"
+      },
+      {
+        "latency_seconds": 0.15742775100079598,
+        "request_id": "a2tabst-0012",
+        "sample_id": "tier3_multi_intent:000078",
+        "started_at": "2026-08-19T16:09:52.796017+00:00"
+      },
+      {
+        "latency_seconds": 1.6517122280056356,
+        "request_id": "a2tabst-0013",
+        "sample_id": "tier3_multi_intent:000419",
+        "started_at": "2026-08-19T16:09:52.988845+00:00"
+      },
+      {
+        "latency_seconds": 0.1702213530006702,
+        "request_id": "a2tabst-0014",
+        "sample_id": "tier3_multi_intent:000419",
+        "started_at": "2026-08-19T16:09:54.668629+00:00"
+      },
+      {
+        "latency_seconds": 5.138027996006713,
+        "request_id": "a2tabst-0015",
+        "sample_id": "tier3_multi_intent:000419",
+        "started_at": "2026-08-19T16:09:54.870148+00:00"
+      },
+      {
+        "latency_seconds": 0.15971241000079317,
+        "request_id": "a2tabst-0016",
+        "sample_id": "tier3_multi_intent:000419",
+        "started_at": "2026-08-19T16:10:00.033544+00:00"
+      },
+      {
+        "latency_seconds": 1.9943966950013419,
+        "request_id": "a2tabst-0017",
+        "sample_id": "tier3_multi_intent:001251",
+        "started_at": "2026-08-19T16:10:00.228820+00:00"
+      },
+      {
+        "latency_seconds": 0.1862734870010172,
+        "request_id": "a2tabst-0018",
+        "sample_id": "tier3_multi_intent:001251",
+        "started_at": "2026-08-19T16:10:02.251860+00:00"
+      },
+      {
+        "latency_seconds": 6.208466653006326,
+        "request_id": "a2tabst-0019",
+        "sample_id": "tier3_multi_intent:001251",
+        "started_at": "2026-08-19T16:10:02.465658+00:00"
+      },
+      {
+        "latency_seconds": 0.18434327500290237,
+        "request_id": "a2tabst-0020",
+        "sample_id": "tier3_multi_intent:001251",
+        "started_at": "2026-08-19T16:10:09.653003+00:00"
+      },
+      {
+        "latency_seconds": 1.223133229999803,
+        "request_id": "a2tabst-0021",
+        "sample_id": "tier3_multi_intent:002915",
+        "started_at": "2026-08-19T16:10:09.870971+00:00"
+      },
+      {
+        "latency_seconds": 0.2482033539999975,
+        "request_id": "a2tabst-0022",
+        "sample_id": "tier3_multi_intent:002915",
+        "started_at": "2026-08-19T16:10:11.121803+00:00"
+      },
+      {
+        "latency_seconds": 5.269125061000523,
+        "request_id": "a2tabst-0023",
+        "sample_id": "tier3_multi_intent:002915",
+        "started_at": "2026-08-19T16:10:11.399074+00:00"
+      },
+      {
+        "latency_seconds": 0.14953327600233024,
+        "request_id": "a2tabst-0024",
+        "sample_id": "tier3_multi_intent:002915",
+        "started_at": "2026-08-19T16:10:16.693646+00:00"
+      },
+      {
+        "latency_seconds": 1.2553811510006199,
+        "request_id": "a2tabst-0025",
+        "sample_id": "tier3_multi_intent:002986",
+        "started_at": "2026-08-19T16:10:16.876676+00:00"
+      },
+      {
+        "latency_seconds": 0.24634647500352003,
+        "request_id": "a2tabst-0026",
+        "sample_id": "tier3_multi_intent:002986",
+        "started_at": "2026-08-19T16:10:18.160564+00:00"
+      },
+      {
+        "latency_seconds": 4.5373066129977815,
+        "request_id": "a2tabst-0027",
+        "sample_id": "tier3_multi_intent:002986",
+        "started_at": "2026-08-19T16:10:18.435621+00:00"
+      },
+      {
+        "latency_seconds": 0.15800700199906714,
+        "request_id": "a2tabst-0028",
+        "sample_id": "tier3_multi_intent:002986",
+        "started_at": "2026-08-19T16:10:23.013551+00:00"
+      },
+      {
+        "latency_seconds": 2.5382381640010863,
+        "request_id": "a2tabst-0029",
+        "sample_id": "tier3_multi_intent:003153",
+        "started_at": "2026-08-19T16:10:23.214778+00:00"
+      },
+      {
+        "latency_seconds": 0.1995756780015654,
+        "request_id": "a2tabst-0030",
+        "sample_id": "tier3_multi_intent:003153",
+        "started_at": "2026-08-19T16:10:25.779048+00:00"
+      },
+      {
+        "latency_seconds": 6.1748607760018785,
+        "request_id": "a2tabst-0031",
+        "sample_id": "tier3_multi_intent:003153",
+        "started_at": "2026-08-19T16:10:26.010679+00:00"
+      },
+      {
+        "latency_seconds": 0.17880081000475911,
+        "request_id": "a2tabst-0032",
+        "sample_id": "tier3_multi_intent:003153",
+        "started_at": "2026-08-19T16:10:32.212055+00:00"
+      },
+      {
+        "latency_seconds": 1.0317695519988774,
+        "request_id": "a2tabst-0033",
+        "sample_id": "tier7_multiturn:000554",
+        "started_at": "2026-08-19T16:10:32.424646+00:00"
+      },
+      {
+        "latency_seconds": 0.15252508800040232,
+        "request_id": "a2tabst-0034",
+        "sample_id": "tier7_multiturn:000554",
+        "started_at": "2026-08-19T16:10:33.482841+00:00"
+      },
+      {
+        "latency_seconds": 3.7354171400002087,
+        "request_id": "a2tabst-0035",
+        "sample_id": "tier7_multiturn:000554",
+        "started_at": "2026-08-19T16:10:33.661571+00:00"
+      },
+      {
+        "latency_seconds": 0.15277958899969235,
+        "request_id": "a2tabst-0036",
+        "sample_id": "tier7_multiturn:000554",
+        "started_at": "2026-08-19T16:10:37.424359+00:00"
+      },
+      {
+        "latency_seconds": 4.128991890000179,
+        "request_id": "a2tabst-0037",
+        "sample_id": "tier8_intent_blending:000065",
+        "started_at": "2026-08-19T16:10:37.607820+00:00"
+      },
+      {
+        "latency_seconds": 0.17440139799873577,
+        "request_id": "a2tabst-0038",
+        "sample_id": "tier8_intent_blending:000065",
+        "started_at": "2026-08-19T16:10:41.764044+00:00"
+      },
+      {
+        "latency_seconds": 4.607512663998932,
+        "request_id": "a2tabst-0039",
+        "sample_id": "tier8_intent_blending:000065",
+        "started_at": "2026-08-19T16:10:42.848882+00:00"
+      },
+      {
+        "latency_seconds": 0.14780409899685765,
+        "request_id": "a2tabst-0040",
+        "sample_id": "tier8_intent_blending:000065",
+        "started_at": "2026-08-19T16:10:47.485068+00:00"
+      },
+      {
+        "latency_seconds": 4.962581730003876,
+        "request_id": "a2tabst-0041",
+        "sample_id": "tier8_intent_blending:000696",
+        "started_at": "2026-08-19T16:10:47.671051+00:00"
+      },
+      {
+        "latency_seconds": 0.19573220000165747,
+        "request_id": "a2tabst-0042",
+        "sample_id": "tier8_intent_blending:000696",
+        "started_at": "2026-08-19T16:10:52.662779+00:00"
+      },
+      {
+        "latency_seconds": 8.062827959998685,
+        "request_id": "a2tabst-0043",
+        "sample_id": "tier8_intent_blending:000696",
+        "started_at": "2026-08-19T16:10:52.888542+00:00"
+      },
+      {
+        "latency_seconds": 0.18409190700185718,
+        "request_id": "a2tabst-0044",
+        "sample_id": "tier8_intent_blending:000696",
+        "started_at": "2026-08-19T16:11:00.977542+00:00"
+      }
+    ],
+    "trace_manifest_hash": "75979faa4d29a1a318ffdb551c374216cd0cdfdf0bbe6a04cff433779cdcf4d3"
+  },
+  "config_hash": "9b363f920c490d40e08507b29eac7cf5aea70f40703d21fe6d6f7b6395e46778",
+  "consumed_a0_attempt_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-BASE-a2t-a0-400/attempt-20260818T055500Z-res315",
+  "cumulative_gpu_hours": 0.05095360199610392,
+  "d2_arm": "fixed-legal-context",
+  "distinct_withheld_tool_count": 14,
+  "error": null,
+  "gpu_occupied_seconds_this_attempt": 183.43296718597412,
+  "latency_seconds_by_cell": {
+    "TP-A": 33.95669364929199,
+    "TP-S": 3.4372780323028564,
+    "TW-A": 57.86381196975708,
+    "TW-S": 2.0605592727661133
+  },
+  "metered_audio_seconds_expected": 226.508,
+  "n_requests_planned": 44,
+  "n_samples": 11,
+  "n_silence_swap_slices": 11,
+  "planned_budgets": {
+    "gpu_hours": 0.15,
+    "model_calls": 50,
+    "speech_audio_seconds": 272
+  },
+  "preregistration": "docs/readiness/2026-08-19-a2t-abst-preregistration-REGISTERED.md",
+  "prior_wall_seconds": 0.0,
+  "protocol_hash": "47c502be32601b35c7166d40cc1ad03bef88bc85ce061da301c3bd19f05a7668",
+  "registered_ceilings": {
+    "gpu_hours": 0.15,
+    "model_calls": 60,
+    "speech_audio_seconds": 500
+  },
+  "request_failures": [],
+  "request_latency_seconds_this_attempt": 97.31834292411804,
+  "requests_flown_by_cell": {
+    "TP-A": 11,
+    "TP-S": 11,
+    "TW-A": 11,
+    "TW-S": 11
+  },
+  "requests_flown_this_attempt": 44,
+  "requests_replayed_from_cache": 0,
+  "result_rows": 44,
+  "result_rows_by_cell": {
+    "TP-A": 11,
+    "TP-S": 11,
+    "TW-A": 11,
+    "TW-S": 11
+  },
+  "run_id": "SAEA-PROBE-a2t-abst-44",
+  "seed": 20260807,
+  "session": {
+    "argv": [
+      "/home/chao/llama.cpp-featcache/build/bin/llama-server",
+      "--host",
+      "127.0.0.1",
+      "--port",
+      "8080",
+      "-m",
+      "/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+      "--mmproj",
+      "/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/mmproj-Qwen3-Omni-30B-A3B-Instruct-bf16.gguf",
+      "-c",
+      "49152",
+      "-np",
+      "1",
+      "-fa",
+      "on",
+      "-ngl",
+      "999",
+      "-ctk",
+      "q8_0",
+      "-ctv",
+      "q8_0"
+    ],
+    "binary_path": "llama.cpp-featcache/build/bin/llama-server",
+    "binary_sha256": "097c96ec5a3f576f378d4d5e103928bf070647fdcc1f015eacb839503e121c68",
+    "host": "127.0.0.1",
+    "model_files": [
+      {
+        "path": "models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+        "sha256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d"
+      },
+      {
+        "path": "models/qwen3-omni-30b-a3b-instruct-gguf-q4km/mmproj-Qwen3-Omni-30B-A3B-Instruct-bf16.gguf",
+        "sha256": "f0dfe825fb692d426362b1ac79678fc08daa4758f7151526cad110515f122883"
+      }
+    ],
+    "pid": 680,
+    "port": 8080,
+    "session_id": "SAEA-PROBE-a2t-abst-44-attempt-20260819T160757Z-9425ce",
+    "started_at": "2026-08-19T16:08:13.313750+00:00"
+  },
+  "silence_swap": {
+    "tier1_direct:001242": "derived/obs-slices/SAEA-PROBE-a2t-abst-44/tier1_direct_001242-ddced9e19514/i0000.wav",
+    "tier1_direct:001607": "derived/obs-slices/SAEA-PROBE-a2t-abst-44/tier1_direct_001607-406705391574/i0000.wav",
+    "tier3_multi_intent:000078": "derived/obs-slices/SAEA-PROBE-a2t-abst-44/tier3_multi_intent_000078-8ab28b798be7/i0000.wav",
+    "tier3_multi_intent:000419": "derived/obs-slices/SAEA-PROBE-a2t-abst-44/tier3_multi_intent_000419-02d0fe362789/i0000.wav",
+    "tier3_multi_intent:001251": "derived/obs-slices/SAEA-PROBE-a2t-abst-44/tier3_multi_intent_001251-fcdb2a01e1cb/i0000.wav",
+    "tier3_multi_intent:002915": "derived/obs-slices/SAEA-PROBE-a2t-abst-44/tier3_multi_intent_002915-72b19190856c/i0000.wav",
+    "tier3_multi_intent:002986": "derived/obs-slices/SAEA-PROBE-a2t-abst-44/tier3_multi_intent_002986-ec5efac97f25/i0000.wav",
+    "tier3_multi_intent:003153": "derived/obs-slices/SAEA-PROBE-a2t-abst-44/tier3_multi_intent_003153-07fd88f69d6c/i0000.wav",
+    "tier7_multiturn:000554": "derived/obs-slices/SAEA-PROBE-a2t-abst-44/tier7_multiturn_000554-fda4fe94d42d/i0000.wav",
+    "tier8_intent_blending:000065": "derived/obs-slices/SAEA-PROBE-a2t-abst-44/tier8_intent_blending_000065-d5ab0df4c403/i0000.wav",
+    "tier8_intent_blending:000696": "derived/obs-slices/SAEA-PROBE-a2t-abst-44/tier8_intent_blending_000696-a223245affbf/i0000.wav"
+  },
+  "split_identity_hash": "e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c",
+  "status": "COMPLETED",
+  "wall_seconds": 97.42973756790161
+}

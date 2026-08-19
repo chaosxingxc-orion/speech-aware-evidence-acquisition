@@ -1,0 +1,86 @@
+{
+  "cells": [
+    "TP-A",
+    "TP-S",
+    "TW-A",
+    "TW-S"
+  ],
+  "consumed_a0_attempt_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-BASE-a2t-a0-400/attempt-20260818T055500Z-res315",
+  "correct_tool_names": {
+    "tier1_direct:001242": [
+      "setInputSource"
+    ],
+    "tier1_direct:001607": [
+      "getEnergyUsage"
+    ],
+    "tier3_multi_intent:000078": [
+      "setAdaptiveLighting",
+      "setBrightness",
+      "setThermostatMode"
+    ],
+    "tier3_multi_intent:000419": [
+      "setColorTemperature",
+      "setThermostatMode"
+    ],
+    "tier3_multi_intent:001251": [
+      "setAdaptiveLighting",
+      "setBrightness",
+      "setInputSource"
+    ],
+    "tier3_multi_intent:002915": [
+      "findMyDevice",
+      "setBrightness"
+    ],
+    "tier3_multi_intent:002986": [
+      "getDeviceList",
+      "setAdaptiveLighting"
+    ],
+    "tier3_multi_intent:003153": [
+      "setAdaptiveLighting",
+      "setThermostatMode",
+      "setThermostatSchedule"
+    ],
+    "tier7_multiturn:000554": [
+      "setVolume"
+    ],
+    "tier8_intent_blending:000065": [
+      "setThermostatMode",
+      "updateFirmware"
+    ],
+    "tier8_intent_blending:000696": [
+      "setFanSpeed",
+      "setSeatComfort",
+      "wiperServiceMode"
+    ]
+  },
+  "full_registry_render_chars": 50291,
+  "n_draw": 11,
+  "sample_ids": [
+    "tier1_direct:001242",
+    "tier1_direct:001607",
+    "tier3_multi_intent:000078",
+    "tier3_multi_intent:000419",
+    "tier3_multi_intent:001251",
+    "tier3_multi_intent:002915",
+    "tier3_multi_intent:002986",
+    "tier3_multi_intent:003153",
+    "tier7_multiturn:000554",
+    "tier8_intent_blending:000065",
+    "tier8_intent_blending:000696"
+  ],
+  "seed": 20260807,
+  "split_identity_hash": "e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c",
+  "tw_registry_render_chars": {
+    "tier1_direct:001242": 49936,
+    "tier1_direct:001607": 49986,
+    "tier3_multi_intent:000078": 49200,
+    "tier3_multi_intent:000419": 49553,
+    "tier3_multi_intent:001251": 49229,
+    "tier3_multi_intent:002915": 49714,
+    "tier3_multi_intent:002986": 49631,
+    "tier3_multi_intent:003153": 49176,
+    "tier7_multiturn:000554": 49989,
+    "tier8_intent_blending:000065": 49613,
+    "tier8_intent_blending:000696": 49219
+  }
+}

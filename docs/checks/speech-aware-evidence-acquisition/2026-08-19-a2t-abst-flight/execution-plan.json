@@ -1,0 +1,14 @@
+{
+  "attempt_id": "attempt-20260819T160757Z-9425ce",
+  "carrier_lock_key": "audio2tool",
+  "execution_profile": "bounded-discovery-probe",
+  "planned_gpu_hours": 0.15,
+  "planned_model_calls": 50,
+  "planned_speech_audio_seconds": 272,
+  "protocol_hash": "47c502be32601b35c7166d40cc1ad03bef88bc85ce061da301c3bd19f05a7668",
+  "run_id": "SAEA-PROBE-a2t-abst-44",
+  "schema": "saea-execution-plan-v1",
+  "split_identity_hash": "e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c",
+  "split_role": "discovery",
+  "study": "speech-aware-evidence-acquisition"
+}

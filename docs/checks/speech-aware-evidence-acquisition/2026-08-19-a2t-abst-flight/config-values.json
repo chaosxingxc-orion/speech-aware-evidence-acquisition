@@ -1,0 +1,68 @@
+{
+  "config_hash": "9b363f920c490d40e08507b29eac7cf5aea70f40703d21fe6d6f7b6395e46778",
+  "protocol_hash": "47c502be32601b35c7166d40cc1ad03bef88bc85ce061da301c3bd19f05a7668",
+  "values": {
+    "arm": "fixed-legal-context",
+    "base_url": "http://127.0.0.1:8080",
+    "carrier_lock_key": "audio2tool",
+    "cells": [
+      "TP-A",
+      "TP-S",
+      "TW-A",
+      "TW-S"
+    ],
+    "consumed_a0_attempt_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-BASE-a2t-a0-400/attempt-20260818T055500Z-res315",
+    "decoding_params": {
+      "max_tokens": 1024,
+      "seed": 20260803,
+      "temperature": 0
+    },
+    "drawn_sample_ids": [
+      "tier1_direct:001242",
+      "tier1_direct:001607",
+      "tier3_multi_intent:000078",
+      "tier3_multi_intent:000419",
+      "tier3_multi_intent:001251",
+      "tier3_multi_intent:002915",
+      "tier3_multi_intent:002986",
+      "tier3_multi_intent:003153",
+      "tier7_multiturn:000554",
+      "tier8_intent_blending:000065",
+      "tier8_intent_blending:000696"
+    ],
+    "flight_config_version": "a2t-abst-launcher-v1 (no committed g0-binding config; see module docstring)",
+    "headroom_manifest": "docs/checks/speech-aware-evidence-acquisition/2026-08-18-pa2t-a0-read/headroom.json",
+    "launcher": "scratchpad tri/abst/launch_a2t_abst.py (archived with the flight receipt)",
+    "model_lock_key": "qwen3-omni-30b-a3b-instruct-gguf-q4km",
+    "n_draw": 11,
+    "orchestrator": "rails.probes.a2t_abst_flight.run_a2t_abst_flight",
+    "preregistration": "docs/readiness/2026-08-19-a2t-abst-preregistration-REGISTERED.md",
+    "probe": "P-A2T-ABST",
+    "prompt_order": "evidence-first-system-v2",
+    "runtime_receipt": "receipts/runtime-q4km-featcache.json",
+    "seed": 20260807,
+    "server_args": [
+      "-c",
+      "49152",
+      "-np",
+      "1",
+      "-fa",
+      "on",
+      "-ngl",
+      "999",
+      "-ctk",
+      "q8_0",
+      "-ctv",
+      "q8_0"
+    ],
+    "server_env": {
+      "LLAMA_MTMD_FEAT_CACHE_DIR": "/home/chao/feat-cache/audio2tool-q4km"
+    },
+    "split_identity_hash": "e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c",
+    "split_name": "discovery",
+    "stage": "2026-08-19 registration wave, panel value item V1",
+    "status": "REGISTERED",
+    "timeout_seconds": 420.0,
+    "transport": "llama-server"
+  }
+}
