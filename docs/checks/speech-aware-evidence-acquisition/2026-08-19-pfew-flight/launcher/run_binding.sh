@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# P-FEW binding phase -- OFFLINE, zero model calls.
+SDIR=/mnt/c/Users/35686/AppData/Local/Temp/claude/D--chao-workspace-exploring-l4-intelligence-studies-speech-aware-evidence-acquisition/6d9f1834-68e9-41a7-bbcc-724898cf15a9/scratchpad/tri2/pfew
+source "$SDIR/env.sh"
+cd "$REPO"
+python -u "$SCRATCH/binding.py" --out-dir "$SCRATCH" 2>&1 | tee "$SCRATCH/binding.log"
+exit "${PIPESTATUS[0]}"

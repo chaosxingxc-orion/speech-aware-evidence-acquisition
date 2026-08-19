@@ -1,0 +1,58 @@
+{
+  "config_hash": "c7b49eed72b86ab2daa9302a2e2c58dea26b7835a0ed0001cc89595b85370f92",
+  "protocol_hash": "d67887ba618632fa0c9f4007ed52562e9ffdb9d8953ac467374aefdbd4ca4cef",
+  "values": {
+    "arm": "fixed-legal-context",
+    "arms": [
+      "FS-NONE",
+      "FS-BAL",
+      "FS-SKEW"
+    ],
+    "base_url": "http://127.0.0.1:8080",
+    "carrier_lock_key": "slurp",
+    "closed_set_construction": "rails.probes.pslu_s2_flight.closed_set_phase1_supply_packet over canonical_scenario_labels(rosters), reused verbatim from the consumed A1'r phase 1",
+    "decoding_params": {
+      "max_tokens": 1024,
+      "seed": 20260803,
+      "temperature": 0
+    },
+    "demo_seed": 20260807,
+    "demo_source": "TRAIN-split (utterance text -> scenario label) pairs, read from the raw governed train.jsonl via rails.probes.pfew_flight.load_train_demo_pool (text-only, no audio opened, never devel/test) -- legal supply per the program split philosophy",
+    "flight_config_version": "pfew-launcher-v1 (no committed g0-binding config; see module docstring)",
+    "fs_bal_k": 4,
+    "fs_skew_k": 4,
+    "launcher": "scratchpad tri2/pfew/launch_pfew_flight.py (archived with the flight receipt)",
+    "model_lock_key": "qwen3-omni-30b-a3b-instruct-gguf-q4km",
+    "orchestrator": "rails.probes.pfew_flight.run_pfew_flight",
+    "preregistration": "docs/readiness/2026-08-19-pfew-preregistration-REGISTERED.md",
+    "probe": "P-FEW",
+    "prompt_order": "evidence-first-system-v2",
+    "roster_table": "configs/probes/g0-binding/pslu-rosters-train-only.json",
+    "runtime_receipt": "receipts/runtime-q4km-featcache.json",
+    "sample_manifest": "configs/probes/g0-binding/pslu-sample-devel-n60.json",
+    "server_args": [
+      "-c",
+      "49152",
+      "-np",
+      "4",
+      "-fa",
+      "on",
+      "-ngl",
+      "999",
+      "-ctk",
+      "q8_0",
+      "-ctv",
+      "q8_0"
+    ],
+    "server_env": {
+      "LLAMA_MTMD_FEAT_CACHE_DIR": "/home/chao/feat-cache/slurp-q4km"
+    },
+    "split_identity_hash": "fc9de436eba5aba120ecf07ee112765cd4ac0609150e0aaf36f4d44c9c5b5ee5",
+    "split_name": "devel",
+    "split_role": "discovery",
+    "stage": "2026-08-19 second-arc design order, routing-tier x filling-tier program probe 1",
+    "status": "REGISTERED",
+    "timeout_seconds": 420.0,
+    "transport": "llama-server"
+  }
+}

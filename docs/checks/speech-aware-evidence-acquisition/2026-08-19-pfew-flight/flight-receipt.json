@@ -1,0 +1,1280 @@
+{
+  "arms": [
+    "FS-NONE",
+    "FS-BAL",
+    "FS-SKEW"
+  ],
+  "attempt_id": "attempt-20260819T233312Z-480fed",
+  "close_receipt": {
+    "arm": "fixed-legal-context",
+    "cost": {
+      "audio_seconds_used": 546.7783125000002,
+      "calls_used": 180,
+      "completion_tokens_total": 6716,
+      "latency_seconds_total": 99.96556143205089,
+      "prompt_tokens_total": 53466,
+      "tool_calls": 0,
+      "umbrella_lock_sha256": "ad71f96732a2b69fb741b4fed4fe60fb1978dc23eb55522ce3943702f0801d1e"
+    },
+    "flight_lock": null,
+    "request_count": 180,
+    "run_id": "SAEA-PROBE-pfew-180",
+    "timings": [
+      {
+        "latency_seconds": 0.7264739370002644,
+        "request_id": "pfew-0001",
+        "sample_id": "slurp:devel:000115:audio-1495375974",
+        "started_at": "2026-08-19T23:37:01.758984+00:00"
+      },
+      {
+        "latency_seconds": 0.6448699579923414,
+        "request_id": "pfew-0002",
+        "sample_id": "slurp:devel:000444:audio-1502891018-headset",
+        "started_at": "2026-08-19T23:37:02.522019+00:00"
+      },
+      {
+        "latency_seconds": 0.7087836119899293,
+        "request_id": "pfew-0003",
+        "sample_id": "slurp:devel:000943:audio-1434529860-headset",
+        "started_at": "2026-08-19T23:37:03.297968+00:00"
+      },
+      {
+        "latency_seconds": 0.5019389990047785,
+        "request_id": "pfew-0004",
+        "sample_id": "slurp:devel:001637:audio-1502195066-headset",
+        "started_at": "2026-08-19T23:37:04.321923+00:00"
+      },
+      {
+        "latency_seconds": 0.5172984569944674,
+        "request_id": "pfew-0005",
+        "sample_id": "slurp:devel:002120:audio-1502218226",
+        "started_at": "2026-08-19T23:37:04.938179+00:00"
+      },
+      {
+        "latency_seconds": 0.43746903000283055,
+        "request_id": "pfew-0006",
+        "sample_id": "slurp:devel:002992:audio-1489152746",
+        "started_at": "2026-08-19T23:37:05.578882+00:00"
+      },
+      {
+        "latency_seconds": 0.42208770000434015,
+        "request_id": "pfew-0007",
+        "sample_id": "slurp:devel:003121:audio-1501696857-headset",
+        "started_at": "2026-08-19T23:37:06.545682+00:00"
+      },
+      {
+        "latency_seconds": 0.4661281550070271,
+        "request_id": "pfew-0008",
+        "sample_id": "slurp:devel:003309:audio-1501756265",
+        "started_at": "2026-08-19T23:37:07.078022+00:00"
+      },
+      {
+        "latency_seconds": 0.5242648060084321,
+        "request_id": "pfew-0009",
+        "sample_id": "slurp:devel:004134:audio-1500387396-headset",
+        "started_at": "2026-08-19T23:37:07.865216+00:00"
+      },
+      {
+        "latency_seconds": 0.4577881139994133,
+        "request_id": "pfew-0010",
+        "sample_id": "slurp:devel:004604:audio-1501759214",
+        "started_at": "2026-08-19T23:37:08.519237+00:00"
+      },
+      {
+        "latency_seconds": 0.4453800180053804,
+        "request_id": "pfew-0011",
+        "sample_id": "slurp:devel:005025:audio-1500900618",
+        "started_at": "2026-08-19T23:37:09.148492+00:00"
+      },
+      {
+        "latency_seconds": 0.48818397300783545,
+        "request_id": "pfew-0012",
+        "sample_id": "slurp:devel:005028:audio-1502893878-headset",
+        "started_at": "2026-08-19T23:37:09.686378+00:00"
+      },
+      {
+        "latency_seconds": 0.5467661129951011,
+        "request_id": "pfew-0013",
+        "sample_id": "slurp:devel:005108:audio-1494422588-headset",
+        "started_at": "2026-08-19T23:37:10.919626+00:00"
+      },
+      {
+        "latency_seconds": 0.5109924160060473,
+        "request_id": "pfew-0014",
+        "sample_id": "slurp:devel:005359:audio-1497265137-headset",
+        "started_at": "2026-08-19T23:37:11.542753+00:00"
+      },
+      {
+        "latency_seconds": 0.4647663360083243,
+        "request_id": "pfew-0015",
+        "sample_id": "slurp:devel:005453:audio-1490183633-headset",
+        "started_at": "2026-08-19T23:37:12.093478+00:00"
+      },
+      {
+        "latency_seconds": 0.499577868002234,
+        "request_id": "pfew-0016",
+        "sample_id": "slurp:devel:005518:audio-1490203960",
+        "started_at": "2026-08-19T23:37:12.616138+00:00"
+      },
+      {
+        "latency_seconds": 0.541084109005169,
+        "request_id": "pfew-0017",
+        "sample_id": "slurp:devel:005536:audio-1499090415-headset",
+        "started_at": "2026-08-19T23:37:13.294308+00:00"
+      },
+      {
+        "latency_seconds": 0.5621805980044883,
+        "request_id": "pfew-0018",
+        "sample_id": "slurp:devel:005541:audio--1504191543",
+        "started_at": "2026-08-19T23:37:14.156386+00:00"
+      },
+      {
+        "latency_seconds": 0.6355740700091701,
+        "request_id": "pfew-0019",
+        "sample_id": "slurp:devel:005567:audio-1497359684",
+        "started_at": "2026-08-19T23:37:14.998226+00:00"
+      },
+      {
+        "latency_seconds": 0.4645529769913992,
+        "request_id": "pfew-0020",
+        "sample_id": "slurp:devel:005684:audio-1498577434",
+        "started_at": "2026-08-19T23:37:15.791104+00:00"
+      },
+      {
+        "latency_seconds": 0.3221729180077091,
+        "request_id": "pfew-0021",
+        "sample_id": "slurp:devel:005743:audio-1501407405-headset",
+        "started_at": "2026-08-19T23:37:16.350034+00:00"
+      },
+      {
+        "latency_seconds": 0.49407472199527547,
+        "request_id": "pfew-0022",
+        "sample_id": "slurp:devel:005770:audio-1495377172",
+        "started_at": "2026-08-19T23:37:16.938300+00:00"
+      },
+      {
+        "latency_seconds": 0.524943116994109,
+        "request_id": "pfew-0023",
+        "sample_id": "slurp:devel:005943:audio-1499266055",
+        "started_at": "2026-08-19T23:37:17.468535+00:00"
+      },
+      {
+        "latency_seconds": 0.45136753299448173,
+        "request_id": "pfew-0024",
+        "sample_id": "slurp:devel:006603:audio-1502101512",
+        "started_at": "2026-08-19T23:37:18.118295+00:00"
+      },
+      {
+        "latency_seconds": 0.44324317599239293,
+        "request_id": "pfew-0025",
+        "sample_id": "slurp:devel:006751:audio-1501773837-headset",
+        "started_at": "2026-08-19T23:37:19.030359+00:00"
+      },
+      {
+        "latency_seconds": 0.48880826600361615,
+        "request_id": "pfew-0026",
+        "sample_id": "slurp:devel:007374:audio-1498569508",
+        "started_at": "2026-08-19T23:37:19.520148+00:00"
+      },
+      {
+        "latency_seconds": 0.484955005988013,
+        "request_id": "pfew-0027",
+        "sample_id": "slurp:devel:007541:audio-1490202471",
+        "started_at": "2026-08-19T23:37:20.121543+00:00"
+      },
+      {
+        "latency_seconds": 1.117260004990385,
+        "request_id": "pfew-0028",
+        "sample_id": "slurp:devel:007653:audio-1497438989-headset",
+        "started_at": "2026-08-19T23:37:20.689626+00:00"
+      },
+      {
+        "latency_seconds": 0.781301301001804,
+        "request_id": "pfew-0029",
+        "sample_id": "slurp:devel:007852:audio-1494416109-headset",
+        "started_at": "2026-08-19T23:37:21.898265+00:00"
+      },
+      {
+        "latency_seconds": 0.47352610899542924,
+        "request_id": "pfew-0030",
+        "sample_id": "slurp:devel:008014:audio-1500899290",
+        "started_at": "2026-08-19T23:37:22.895760+00:00"
+      },
+      {
+        "latency_seconds": 0.670731355989119,
+        "request_id": "pfew-0031",
+        "sample_id": "slurp:devel:008047:audio-1498570919",
+        "started_at": "2026-08-19T23:37:23.714678+00:00"
+      },
+      {
+        "latency_seconds": 0.4990933579974808,
+        "request_id": "pfew-0032",
+        "sample_id": "slurp:devel:008072:audio-1488986707",
+        "started_at": "2026-08-19T23:37:24.677463+00:00"
+      },
+      {
+        "latency_seconds": 0.5806920840113889,
+        "request_id": "pfew-0033",
+        "sample_id": "slurp:devel:009340:audio-1497882818-headset",
+        "started_at": "2026-08-19T23:37:25.326676+00:00"
+      },
+      {
+        "latency_seconds": 0.47275936299411114,
+        "request_id": "pfew-0034",
+        "sample_id": "slurp:devel:009518:audio-1495734594-headset",
+        "started_at": "2026-08-19T23:37:26.122404+00:00"
+      },
+      {
+        "latency_seconds": 0.48458870900503825,
+        "request_id": "pfew-0035",
+        "sample_id": "slurp:devel:009733:audio--1505407176",
+        "started_at": "2026-08-19T23:37:26.896832+00:00"
+      },
+      {
+        "latency_seconds": 0.6091700849938206,
+        "request_id": "pfew-0036",
+        "sample_id": "slurp:devel:010162:audio-1501765286",
+        "started_at": "2026-08-19T23:37:27.898883+00:00"
+      },
+      {
+        "latency_seconds": 0.5124290789972292,
+        "request_id": "pfew-0037",
+        "sample_id": "slurp:devel:010186:audio-1501415369-headset",
+        "started_at": "2026-08-19T23:37:28.646468+00:00"
+      },
+      {
+        "latency_seconds": 0.5064910600049188,
+        "request_id": "pfew-0038",
+        "sample_id": "slurp:devel:010545:audio-1490006493",
+        "started_at": "2026-08-19T23:37:29.499454+00:00"
+      },
+      {
+        "latency_seconds": 0.5997376779996557,
+        "request_id": "pfew-0039",
+        "sample_id": "slurp:devel:010732:audio-1490184504",
+        "started_at": "2026-08-19T23:37:30.679283+00:00"
+      },
+      {
+        "latency_seconds": 0.3938472159934463,
+        "request_id": "pfew-0040",
+        "sample_id": "slurp:devel:011503:audio-1494514154",
+        "started_at": "2026-08-19T23:37:31.944434+00:00"
+      },
+      {
+        "latency_seconds": 0.7098090849904111,
+        "request_id": "pfew-0041",
+        "sample_id": "slurp:devel:011654:audio-1501692977-headset",
+        "started_at": "2026-08-19T23:37:32.606506+00:00"
+      },
+      {
+        "latency_seconds": 0.5203218350070529,
+        "request_id": "pfew-0042",
+        "sample_id": "slurp:devel:011693:audio-1498565017-headset",
+        "started_at": "2026-08-19T23:37:33.693986+00:00"
+      },
+      {
+        "latency_seconds": 0.5132314959919313,
+        "request_id": "pfew-0043",
+        "sample_id": "slurp:devel:012076:audio-1501766742-headset",
+        "started_at": "2026-08-19T23:37:34.455269+00:00"
+      },
+      {
+        "latency_seconds": 0.5219821039936505,
+        "request_id": "pfew-0044",
+        "sample_id": "slurp:devel:012253:audio-1488974202",
+        "started_at": "2026-08-19T23:37:35.511325+00:00"
+      },
+      {
+        "latency_seconds": 0.6749903890013229,
+        "request_id": "pfew-0045",
+        "sample_id": "slurp:devel:012478:audio-1498486426",
+        "started_at": "2026-08-19T23:37:36.265166+00:00"
+      },
+      {
+        "latency_seconds": 0.5413860800035764,
+        "request_id": "pfew-0046",
+        "sample_id": "slurp:devel:012654:audio-1497860426-headset",
+        "started_at": "2026-08-19T23:37:37.394913+00:00"
+      },
+      {
+        "latency_seconds": 0.5032862569933059,
+        "request_id": "pfew-0047",
+        "sample_id": "slurp:devel:012667:audio-1501751776-headset",
+        "started_at": "2026-08-19T23:37:38.043683+00:00"
+      },
+      {
+        "latency_seconds": 0.5811918149993289,
+        "request_id": "pfew-0048",
+        "sample_id": "slurp:devel:013281:audio-1490354296-headset",
+        "started_at": "2026-08-19T23:37:38.741663+00:00"
+      },
+      {
+        "latency_seconds": 0.681059576003463,
+        "request_id": "pfew-0049",
+        "sample_id": "slurp:devel:013795:audio-1499266495",
+        "started_at": "2026-08-19T23:37:39.750480+00:00"
+      },
+      {
+        "latency_seconds": 1.2108864609908778,
+        "request_id": "pfew-0050",
+        "sample_id": "slurp:devel:014173:audio-1490291441",
+        "started_at": "2026-08-19T23:37:40.707368+00:00"
+      },
+      {
+        "latency_seconds": 0.6599926610069815,
+        "request_id": "pfew-0051",
+        "sample_id": "slurp:devel:014263:audio-1501692486",
+        "started_at": "2026-08-19T23:37:42.544721+00:00"
+      },
+      {
+        "latency_seconds": 0.5809812600055011,
+        "request_id": "pfew-0052",
+        "sample_id": "slurp:devel:014397:audio-1497368809",
+        "started_at": "2026-08-19T23:37:43.389608+00:00"
+      },
+      {
+        "latency_seconds": 0.5933807059918763,
+        "request_id": "pfew-0053",
+        "sample_id": "slurp:devel:014657:audio-1499695487",
+        "started_at": "2026-08-19T23:37:44.700299+00:00"
+      },
+      {
+        "latency_seconds": 0.4479816300008679,
+        "request_id": "pfew-0054",
+        "sample_id": "slurp:devel:015258:audio-1501777355-headset",
+        "started_at": "2026-08-19T23:37:45.837229+00:00"
+      },
+      {
+        "latency_seconds": 0.5139953430043533,
+        "request_id": "pfew-0055",
+        "sample_id": "slurp:devel:015375:audio-1501754418",
+        "started_at": "2026-08-19T23:37:46.668187+00:00"
+      },
+      {
+        "latency_seconds": 0.5515642300015315,
+        "request_id": "pfew-0056",
+        "sample_id": "slurp:devel:015632:audio-1490021137-headset",
+        "started_at": "2026-08-19T23:37:47.239959+00:00"
+      },
+      {
+        "latency_seconds": 0.7558827869943343,
+        "request_id": "pfew-0057",
+        "sample_id": "slurp:devel:015805:audio-1489153743",
+        "started_at": "2026-08-19T23:37:48.079634+00:00"
+      },
+      {
+        "latency_seconds": 0.6402706789958756,
+        "request_id": "pfew-0058",
+        "sample_id": "slurp:devel:016653:audio-1494513016",
+        "started_at": "2026-08-19T23:37:49.134512+00:00"
+      },
+      {
+        "latency_seconds": 0.5002260320034111,
+        "request_id": "pfew-0059",
+        "sample_id": "slurp:devel:016825:audio-1498573552-headset",
+        "started_at": "2026-08-19T23:37:49.824678+00:00"
+      },
+      {
+        "latency_seconds": 0.5838087869924493,
+        "request_id": "pfew-0060",
+        "sample_id": "slurp:devel:017009:audio-1502198805-headset",
+        "started_at": "2026-08-19T23:37:50.412487+00:00"
+      },
+      {
+        "latency_seconds": 0.5014891749888193,
+        "request_id": "pfew-0061",
+        "sample_id": "slurp:devel:000115:audio-1495375974",
+        "started_at": "2026-08-19T23:37:51.185181+00:00"
+      },
+      {
+        "latency_seconds": 0.640368206994026,
+        "request_id": "pfew-0062",
+        "sample_id": "slurp:devel:000444:audio-1502891018-headset",
+        "started_at": "2026-08-19T23:37:52.450871+00:00"
+      },
+      {
+        "latency_seconds": 0.726548698003171,
+        "request_id": "pfew-0063",
+        "sample_id": "slurp:devel:000943:audio-1434529860-headset",
+        "started_at": "2026-08-19T23:37:53.161693+00:00"
+      },
+      {
+        "latency_seconds": 0.540665516993613,
+        "request_id": "pfew-0064",
+        "sample_id": "slurp:devel:001637:audio-1502195066-headset",
+        "started_at": "2026-08-19T23:37:54.304497+00:00"
+      },
+      {
+        "latency_seconds": 0.6102252249984303,
+        "request_id": "pfew-0065",
+        "sample_id": "slurp:devel:002120:audio-1502218226",
+        "started_at": "2026-08-19T23:37:55.066522+00:00"
+      },
+      {
+        "latency_seconds": 0.49821234900446143,
+        "request_id": "pfew-0066",
+        "sample_id": "slurp:devel:002992:audio-1489152746",
+        "started_at": "2026-08-19T23:37:55.857353+00:00"
+      },
+      {
+        "latency_seconds": 0.3825273779948475,
+        "request_id": "pfew-0067",
+        "sample_id": "slurp:devel:003121:audio-1501696857-headset",
+        "started_at": "2026-08-19T23:37:56.667375+00:00"
+      },
+      {
+        "latency_seconds": 0.4384540820028633,
+        "request_id": "pfew-0068",
+        "sample_id": "slurp:devel:003309:audio-1501756265",
+        "started_at": "2026-08-19T23:37:57.436704+00:00"
+      },
+      {
+        "latency_seconds": 0.4838824670005124,
+        "request_id": "pfew-0069",
+        "sample_id": "slurp:devel:004134:audio-1500387396-headset",
+        "started_at": "2026-08-19T23:37:58.245264+00:00"
+      },
+      {
+        "latency_seconds": 0.5001770480012055,
+        "request_id": "pfew-0070",
+        "sample_id": "slurp:devel:004604:audio-1501759214",
+        "started_at": "2026-08-19T23:37:58.764447+00:00"
+      },
+      {
+        "latency_seconds": 0.5691948080057045,
+        "request_id": "pfew-0071",
+        "sample_id": "slurp:devel:005025:audio-1500900618",
+        "started_at": "2026-08-19T23:37:59.515798+00:00"
+      },
+      {
+        "latency_seconds": 0.5713116570113925,
+        "request_id": "pfew-0072",
+        "sample_id": "slurp:devel:005028:audio-1502893878-headset",
+        "started_at": "2026-08-19T23:38:00.311469+00:00"
+      },
+      {
+        "latency_seconds": 0.49129241600167006,
+        "request_id": "pfew-0073",
+        "sample_id": "slurp:devel:005108:audio-1494422588-headset",
+        "started_at": "2026-08-19T23:38:01.919498+00:00"
+      },
+      {
+        "latency_seconds": 0.5017801520007197,
+        "request_id": "pfew-0074",
+        "sample_id": "slurp:devel:005359:audio-1497265137-headset",
+        "started_at": "2026-08-19T23:38:02.700740+00:00"
+      },
+      {
+        "latency_seconds": 0.4670639970136108,
+        "request_id": "pfew-0075",
+        "sample_id": "slurp:devel:005453:audio-1490183633-headset",
+        "started_at": "2026-08-19T23:38:03.511752+00:00"
+      },
+      {
+        "latency_seconds": 0.48060822699335404,
+        "request_id": "pfew-0076",
+        "sample_id": "slurp:devel:005518:audio-1490203960",
+        "started_at": "2026-08-19T23:38:04.302994+00:00"
+      },
+      {
+        "latency_seconds": 0.518864821002353,
+        "request_id": "pfew-0077",
+        "sample_id": "slurp:devel:005536:audio-1499090415-headset",
+        "started_at": "2026-08-19T23:38:04.937819+00:00"
+      },
+      {
+        "latency_seconds": 0.8901975320040947,
+        "request_id": "pfew-0078",
+        "sample_id": "slurp:devel:005541:audio--1504191543",
+        "started_at": "2026-08-19T23:38:05.529514+00:00"
+      },
+      {
+        "latency_seconds": 0.7903816939942772,
+        "request_id": "pfew-0079",
+        "sample_id": "slurp:devel:005567:audio-1497359684",
+        "started_at": "2026-08-19T23:38:06.754099+00:00"
+      },
+      {
+        "latency_seconds": 0.45927629800280556,
+        "request_id": "pfew-0080",
+        "sample_id": "slurp:devel:005684:audio-1498577434",
+        "started_at": "2026-08-19T23:38:07.631119+00:00"
+      },
+      {
+        "latency_seconds": 0.3914932659972692,
+        "request_id": "pfew-0081",
+        "sample_id": "slurp:devel:005743:audio-1501407405-headset",
+        "started_at": "2026-08-19T23:38:08.559224+00:00"
+      },
+      {
+        "latency_seconds": 0.49304547600331716,
+        "request_id": "pfew-0082",
+        "sample_id": "slurp:devel:005770:audio-1495377172",
+        "started_at": "2026-08-19T23:38:09.198834+00:00"
+      },
+      {
+        "latency_seconds": 0.500601181993261,
+        "request_id": "pfew-0083",
+        "sample_id": "slurp:devel:005943:audio-1499266055",
+        "started_at": "2026-08-19T23:38:09.958821+00:00"
+      },
+      {
+        "latency_seconds": 0.48750529500830453,
+        "request_id": "pfew-0084",
+        "sample_id": "slurp:devel:006603:audio-1502101512",
+        "started_at": "2026-08-19T23:38:10.635790+00:00"
+      },
+      {
+        "latency_seconds": 0.411397111005499,
+        "request_id": "pfew-0085",
+        "sample_id": "slurp:devel:006751:audio-1501773837-headset",
+        "started_at": "2026-08-19T23:38:11.835051+00:00"
+      },
+      {
+        "latency_seconds": 0.47121288400376216,
+        "request_id": "pfew-0086",
+        "sample_id": "slurp:devel:007374:audio-1498569508",
+        "started_at": "2026-08-19T23:38:12.479316+00:00"
+      },
+      {
+        "latency_seconds": 0.5717956619919278,
+        "request_id": "pfew-0087",
+        "sample_id": "slurp:devel:007541:audio-1490202471",
+        "started_at": "2026-08-19T23:38:12.991120+00:00"
+      },
+      {
+        "latency_seconds": 0.5454762800072785,
+        "request_id": "pfew-0088",
+        "sample_id": "slurp:devel:007653:audio-1497438989-headset",
+        "started_at": "2026-08-19T23:38:13.703389+00:00"
+      },
+      {
+        "latency_seconds": 0.8492023889994016,
+        "request_id": "pfew-0089",
+        "sample_id": "slurp:devel:007852:audio-1494416109-headset",
+        "started_at": "2026-08-19T23:38:14.475836+00:00"
+      },
+      {
+        "latency_seconds": 0.5007845770014683,
+        "request_id": "pfew-0090",
+        "sample_id": "slurp:devel:008014:audio-1500899290",
+        "started_at": "2026-08-19T23:38:15.894673+00:00"
+      },
+      {
+        "latency_seconds": 0.8526531960087596,
+        "request_id": "pfew-0091",
+        "sample_id": "slurp:devel:008047:audio-1498570919",
+        "started_at": "2026-08-19T23:38:16.654903+00:00"
+      },
+      {
+        "latency_seconds": 0.46078406799642835,
+        "request_id": "pfew-0092",
+        "sample_id": "slurp:devel:008072:audio-1488986707",
+        "started_at": "2026-08-19T23:38:17.672448+00:00"
+      },
+      {
+        "latency_seconds": 0.4957574830041267,
+        "request_id": "pfew-0093",
+        "sample_id": "slurp:devel:009340:audio-1497882818-headset",
+        "started_at": "2026-08-19T23:38:18.209893+00:00"
+      },
+      {
+        "latency_seconds": 0.4721153769933153,
+        "request_id": "pfew-0094",
+        "sample_id": "slurp:devel:009518:audio-1495734594-headset",
+        "started_at": "2026-08-19T23:38:19.163312+00:00"
+      },
+      {
+        "latency_seconds": 0.5242061330063734,
+        "request_id": "pfew-0095",
+        "sample_id": "slurp:devel:009733:audio--1505407176",
+        "started_at": "2026-08-19T23:38:19.859391+00:00"
+      },
+      {
+        "latency_seconds": 0.6125283500005025,
+        "request_id": "pfew-0096",
+        "sample_id": "slurp:devel:010162:audio-1501765286",
+        "started_at": "2026-08-19T23:38:20.495324+00:00"
+      },
+      {
+        "latency_seconds": 0.4930219720117748,
+        "request_id": "pfew-0097",
+        "sample_id": "slurp:devel:010186:audio-1501415369-headset",
+        "started_at": "2026-08-19T23:38:21.755328+00:00"
+      },
+      {
+        "latency_seconds": 0.5528524170076707,
+        "request_id": "pfew-0098",
+        "sample_id": "slurp:devel:010545:audio-1490006493",
+        "started_at": "2026-08-19T23:38:22.411950+00:00"
+      },
+      {
+        "latency_seconds": 0.5709748000081163,
+        "request_id": "pfew-0099",
+        "sample_id": "slurp:devel:010732:audio-1490184504",
+        "started_at": "2026-08-19T23:38:23.005434+00:00"
+      },
+      {
+        "latency_seconds": 0.38147148399730213,
+        "request_id": "pfew-0100",
+        "sample_id": "slurp:devel:011503:audio-1494514154",
+        "started_at": "2026-08-19T23:38:23.680552+00:00"
+      },
+      {
+        "latency_seconds": 0.6666810260066995,
+        "request_id": "pfew-0101",
+        "sample_id": "slurp:devel:011654:audio-1501692977-headset",
+        "started_at": "2026-08-19T23:38:24.171402+00:00"
+      },
+      {
+        "latency_seconds": 1.0756867560121464,
+        "request_id": "pfew-0102",
+        "sample_id": "slurp:devel:011693:audio-1498565017-headset",
+        "started_at": "2026-08-19T23:38:25.084788+00:00"
+      },
+      {
+        "latency_seconds": 0.45598068000981584,
+        "request_id": "pfew-0103",
+        "sample_id": "slurp:devel:012076:audio-1501766742-headset",
+        "started_at": "2026-08-19T23:38:26.206240+00:00"
+      },
+      {
+        "latency_seconds": 0.5317773730057525,
+        "request_id": "pfew-0104",
+        "sample_id": "slurp:devel:012253:audio-1488974202",
+        "started_at": "2026-08-19T23:38:26.937094+00:00"
+      },
+      {
+        "latency_seconds": 0.7878025200043339,
+        "request_id": "pfew-0105",
+        "sample_id": "slurp:devel:012478:audio-1498486426",
+        "started_at": "2026-08-19T23:38:27.897651+00:00"
+      },
+      {
+        "latency_seconds": 0.5174907610053197,
+        "request_id": "pfew-0106",
+        "sample_id": "slurp:devel:012654:audio-1497860426-headset",
+        "started_at": "2026-08-19T23:38:28.734731+00:00"
+      },
+      {
+        "latency_seconds": 0.37470471099368297,
+        "request_id": "pfew-0107",
+        "sample_id": "slurp:devel:012667:audio-1501751776-headset",
+        "started_at": "2026-08-19T23:38:29.468282+00:00"
+      },
+      {
+        "latency_seconds": 0.7796615029947134,
+        "request_id": "pfew-0108",
+        "sample_id": "slurp:devel:013281:audio-1490354296-headset",
+        "started_at": "2026-08-19T23:38:29.964824+00:00"
+      },
+      {
+        "latency_seconds": 0.5500348229979863,
+        "request_id": "pfew-0109",
+        "sample_id": "slurp:devel:013795:audio-1499266495",
+        "started_at": "2026-08-19T23:38:30.863623+00:00"
+      },
+      {
+        "latency_seconds": 0.7207867419929244,
+        "request_id": "pfew-0110",
+        "sample_id": "slurp:devel:014173:audio-1490291441",
+        "started_at": "2026-08-19T23:38:31.568426+00:00"
+      },
+      {
+        "latency_seconds": 0.5652184189966647,
+        "request_id": "pfew-0111",
+        "sample_id": "slurp:devel:014263:audio-1501692486",
+        "started_at": "2026-08-19T23:38:32.515496+00:00"
+      },
+      {
+        "latency_seconds": 0.4436896940023871,
+        "request_id": "pfew-0112",
+        "sample_id": "slurp:devel:014397:audio-1497368809",
+        "started_at": "2026-08-19T23:38:33.998070+00:00"
+      },
+      {
+        "latency_seconds": 0.7501176850055344,
+        "request_id": "pfew-0113",
+        "sample_id": "slurp:devel:014657:audio-1499695487",
+        "started_at": "2026-08-19T23:38:34.739966+00:00"
+      },
+      {
+        "latency_seconds": 0.43383217699010856,
+        "request_id": "pfew-0114",
+        "sample_id": "slurp:devel:015258:audio-1501777355-headset",
+        "started_at": "2026-08-19T23:38:35.523721+00:00"
+      },
+      {
+        "latency_seconds": 0.42332413099939004,
+        "request_id": "pfew-0115",
+        "sample_id": "slurp:devel:015375:audio-1501754418",
+        "started_at": "2026-08-19T23:38:37.077883+00:00"
+      },
+      {
+        "latency_seconds": 0.5747846689919243,
+        "request_id": "pfew-0116",
+        "sample_id": "slurp:devel:015632:audio-1490021137-headset",
+        "started_at": "2026-08-19T23:38:37.879558+00:00"
+      },
+      {
+        "latency_seconds": 0.9942132980067981,
+        "request_id": "pfew-0117",
+        "sample_id": "slurp:devel:015805:audio-1489153743",
+        "started_at": "2026-08-19T23:38:38.898359+00:00"
+      },
+      {
+        "latency_seconds": 0.5365837330027716,
+        "request_id": "pfew-0118",
+        "sample_id": "slurp:devel:016653:audio-1494513016",
+        "started_at": "2026-08-19T23:38:39.984847+00:00"
+      },
+      {
+        "latency_seconds": 0.4302305010060081,
+        "request_id": "pfew-0119",
+        "sample_id": "slurp:devel:016825:audio-1498573552-headset",
+        "started_at": "2026-08-19T23:38:40.730748+00:00"
+      },
+      {
+        "latency_seconds": 0.4716275509999832,
+        "request_id": "pfew-0120",
+        "sample_id": "slurp:devel:017009:audio-1502198805-headset",
+        "started_at": "2026-08-19T23:38:41.486639+00:00"
+      },
+      {
+        "latency_seconds": 0.4744476019986905,
+        "request_id": "pfew-0121",
+        "sample_id": "slurp:devel:000115:audio-1495375974",
+        "started_at": "2026-08-19T23:38:42.277918+00:00"
+      },
+      {
+        "latency_seconds": 0.43117654099478386,
+        "request_id": "pfew-0122",
+        "sample_id": "slurp:devel:000444:audio-1502891018-headset",
+        "started_at": "2026-08-19T23:38:42.949224+00:00"
+      },
+      {
+        "latency_seconds": 0.7816406030033249,
+        "request_id": "pfew-0123",
+        "sample_id": "slurp:devel:000943:audio-1434529860-headset",
+        "started_at": "2026-08-19T23:38:43.660705+00:00"
+      },
+      {
+        "latency_seconds": 0.5151995810010703,
+        "request_id": "pfew-0124",
+        "sample_id": "slurp:devel:001637:audio-1502195066-headset",
+        "started_at": "2026-08-19T23:38:44.721666+00:00"
+      },
+      {
+        "latency_seconds": 0.4970603630063124,
+        "request_id": "pfew-0125",
+        "sample_id": "slurp:devel:002120:audio-1502218226",
+        "started_at": "2026-08-19T23:38:45.434060+00:00"
+      },
+      {
+        "latency_seconds": 0.5072796570020728,
+        "request_id": "pfew-0126",
+        "sample_id": "slurp:devel:002992:audio-1489152746",
+        "started_at": "2026-08-19T23:38:45.966795+00:00"
+      },
+      {
+        "latency_seconds": 0.3804937940003583,
+        "request_id": "pfew-0127",
+        "sample_id": "slurp:devel:003121:audio-1501696857-headset",
+        "started_at": "2026-08-19T23:38:46.697828+00:00"
+      },
+      {
+        "latency_seconds": 0.47644333099015057,
+        "request_id": "pfew-0128",
+        "sample_id": "slurp:devel:003309:audio-1501756265",
+        "started_at": "2026-08-19T23:38:47.664751+00:00"
+      },
+      {
+        "latency_seconds": 0.4642199800000526,
+        "request_id": "pfew-0129",
+        "sample_id": "slurp:devel:004134:audio-1500387396-headset",
+        "started_at": "2026-08-19T23:38:48.469756+00:00"
+      },
+      {
+        "latency_seconds": 0.5483666340005584,
+        "request_id": "pfew-0130",
+        "sample_id": "slurp:devel:004604:audio-1501759214",
+        "started_at": "2026-08-19T23:38:48.973249+00:00"
+      },
+      {
+        "latency_seconds": 0.4739124699990498,
+        "request_id": "pfew-0131",
+        "sample_id": "slurp:devel:005025:audio-1500900618",
+        "started_at": "2026-08-19T23:38:49.780640+00:00"
+      },
+      {
+        "latency_seconds": 0.4807001449953532,
+        "request_id": "pfew-0132",
+        "sample_id": "slurp:devel:005028:audio-1502893878-headset",
+        "started_at": "2026-08-19T23:38:50.372173+00:00"
+      },
+      {
+        "latency_seconds": 0.46585339499870315,
+        "request_id": "pfew-0133",
+        "sample_id": "slurp:devel:005108:audio-1494422588-headset",
+        "started_at": "2026-08-19T23:38:51.111699+00:00"
+      },
+      {
+        "latency_seconds": 0.45894887900794856,
+        "request_id": "pfew-0134",
+        "sample_id": "slurp:devel:005359:audio-1497265137-headset",
+        "started_at": "2026-08-19T23:38:51.658442+00:00"
+      },
+      {
+        "latency_seconds": 0.4488415820087539,
+        "request_id": "pfew-0135",
+        "sample_id": "slurp:devel:005453:audio-1490183633-headset",
+        "started_at": "2026-08-19T23:38:52.465039+00:00"
+      },
+      {
+        "latency_seconds": 0.4907452510087751,
+        "request_id": "pfew-0136",
+        "sample_id": "slurp:devel:005518:audio-1490203960",
+        "started_at": "2026-08-19T23:38:53.432826+00:00"
+      },
+      {
+        "latency_seconds": 0.38088078500004485,
+        "request_id": "pfew-0137",
+        "sample_id": "slurp:devel:005536:audio-1499090415-headset",
+        "started_at": "2026-08-19T23:38:54.313887+00:00"
+      },
+      {
+        "latency_seconds": 0.5719585180049762,
+        "request_id": "pfew-0138",
+        "sample_id": "slurp:devel:005541:audio--1504191543",
+        "started_at": "2026-08-19T23:38:54.876911+00:00"
+      },
+      {
+        "latency_seconds": 0.7857197819976136,
+        "request_id": "pfew-0139",
+        "sample_id": "slurp:devel:005567:audio-1497359684",
+        "started_at": "2026-08-19T23:38:55.555539+00:00"
+      },
+      {
+        "latency_seconds": 0.4537227230030112,
+        "request_id": "pfew-0140",
+        "sample_id": "slurp:devel:005684:audio-1498577434",
+        "started_at": "2026-08-19T23:38:56.602801+00:00"
+      },
+      {
+        "latency_seconds": 0.3915058749989839,
+        "request_id": "pfew-0141",
+        "sample_id": "slurp:devel:005743:audio-1501407405-headset",
+        "started_at": "2026-08-19T23:38:57.229741+00:00"
+      },
+      {
+        "latency_seconds": 0.48542964000080246,
+        "request_id": "pfew-0142",
+        "sample_id": "slurp:devel:005770:audio-1495377172",
+        "started_at": "2026-08-19T23:38:58.261797+00:00"
+      },
+      {
+        "latency_seconds": 0.4082531469903188,
+        "request_id": "pfew-0143",
+        "sample_id": "slurp:devel:005943:audio-1499266055",
+        "started_at": "2026-08-19T23:38:58.789388+00:00"
+      },
+      {
+        "latency_seconds": 0.48390885899425484,
+        "request_id": "pfew-0144",
+        "sample_id": "slurp:devel:006603:audio-1502101512",
+        "started_at": "2026-08-19T23:38:59.293833+00:00"
+      },
+      {
+        "latency_seconds": 0.5157901979982853,
+        "request_id": "pfew-0145",
+        "sample_id": "slurp:devel:006751:audio-1501773837-headset",
+        "started_at": "2026-08-19T23:39:00.087130+00:00"
+      },
+      {
+        "latency_seconds": 0.49879057898942847,
+        "request_id": "pfew-0146",
+        "sample_id": "slurp:devel:007374:audio-1498569508",
+        "started_at": "2026-08-19T23:39:01.085110+00:00"
+      },
+      {
+        "latency_seconds": 0.5156241009972291,
+        "request_id": "pfew-0147",
+        "sample_id": "slurp:devel:007541:audio-1490202471",
+        "started_at": "2026-08-19T23:39:02.064631+00:00"
+      },
+      {
+        "latency_seconds": 0.9548214479873423,
+        "request_id": "pfew-0148",
+        "sample_id": "slurp:devel:007653:audio-1497438989-headset",
+        "started_at": "2026-08-19T23:39:02.893031+00:00"
+      },
+      {
+        "latency_seconds": 0.7816835930134403,
+        "request_id": "pfew-0149",
+        "sample_id": "slurp:devel:007852:audio-1494416109-headset",
+        "started_at": "2026-08-19T23:39:04.102448+00:00"
+      },
+      {
+        "latency_seconds": 0.5484933230036404,
+        "request_id": "pfew-0150",
+        "sample_id": "slurp:devel:008014:audio-1500899290",
+        "started_at": "2026-08-19T23:39:05.177732+00:00"
+      },
+      {
+        "latency_seconds": 0.5706656300026225,
+        "request_id": "pfew-0151",
+        "sample_id": "slurp:devel:008047:audio-1498570919",
+        "started_at": "2026-08-19T23:39:06.117706+00:00"
+      },
+      {
+        "latency_seconds": 0.5200712069927249,
+        "request_id": "pfew-0152",
+        "sample_id": "slurp:devel:008072:audio-1488986707",
+        "started_at": "2026-08-19T23:39:07.011929+00:00"
+      },
+      {
+        "latency_seconds": 0.5020442789973458,
+        "request_id": "pfew-0153",
+        "sample_id": "slurp:devel:009340:audio-1497882818-headset",
+        "started_at": "2026-08-19T23:39:07.967199+00:00"
+      },
+      {
+        "latency_seconds": 0.5247321209899383,
+        "request_id": "pfew-0154",
+        "sample_id": "slurp:devel:009518:audio-1495734594-headset",
+        "started_at": "2026-08-19T23:39:08.979679+00:00"
+      },
+      {
+        "latency_seconds": 0.6508774209942203,
+        "request_id": "pfew-0155",
+        "sample_id": "slurp:devel:009733:audio--1505407176",
+        "started_at": "2026-08-19T23:39:09.553174+00:00"
+      },
+      {
+        "latency_seconds": 0.5803420540032675,
+        "request_id": "pfew-0156",
+        "sample_id": "slurp:devel:010162:audio-1501765286",
+        "started_at": "2026-08-19T23:39:11.678378+00:00"
+      },
+      {
+        "latency_seconds": 0.4639298240072094,
+        "request_id": "pfew-0157",
+        "sample_id": "slurp:devel:010186:audio-1501415369-headset",
+        "started_at": "2026-08-19T23:39:12.601518+00:00"
+      },
+      {
+        "latency_seconds": 0.4636880329926498,
+        "request_id": "pfew-0158",
+        "sample_id": "slurp:devel:010545:audio-1490006493",
+        "started_at": "2026-08-19T23:39:13.457067+00:00"
+      },
+      {
+        "latency_seconds": 0.5344412289996399,
+        "request_id": "pfew-0159",
+        "sample_id": "slurp:devel:010732:audio-1490184504",
+        "started_at": "2026-08-19T23:39:14.237118+00:00"
+      },
+      {
+        "latency_seconds": 0.4872621840040665,
+        "request_id": "pfew-0160",
+        "sample_id": "slurp:devel:011503:audio-1494514154",
+        "started_at": "2026-08-19T23:39:15.073466+00:00"
+      },
+      {
+        "latency_seconds": 0.637557767011458,
+        "request_id": "pfew-0161",
+        "sample_id": "slurp:devel:011654:audio-1501692977-headset",
+        "started_at": "2026-08-19T23:39:15.932036+00:00"
+      },
+      {
+        "latency_seconds": 0.5081361540069338,
+        "request_id": "pfew-0162",
+        "sample_id": "slurp:devel:011693:audio-1498565017-headset",
+        "started_at": "2026-08-19T23:39:17.194911+00:00"
+      },
+      {
+        "latency_seconds": 0.5420751630008454,
+        "request_id": "pfew-0163",
+        "sample_id": "slurp:devel:012076:audio-1501766742-headset",
+        "started_at": "2026-08-19T23:39:17.776254+00:00"
+      },
+      {
+        "latency_seconds": 0.4833381329954136,
+        "request_id": "pfew-0164",
+        "sample_id": "slurp:devel:012253:audio-1488974202",
+        "started_at": "2026-08-19T23:39:18.491583+00:00"
+      },
+      {
+        "latency_seconds": 0.688961150997784,
+        "request_id": "pfew-0165",
+        "sample_id": "slurp:devel:012478:audio-1498486426",
+        "started_at": "2026-08-19T23:39:19.822453+00:00"
+      },
+      {
+        "latency_seconds": 0.46917236999433953,
+        "request_id": "pfew-0166",
+        "sample_id": "slurp:devel:012654:audio-1497860426-headset",
+        "started_at": "2026-08-19T23:39:20.600815+00:00"
+      },
+      {
+        "latency_seconds": 0.5371116580063244,
+        "request_id": "pfew-0167",
+        "sample_id": "slurp:devel:012667:audio-1501751776-headset",
+        "started_at": "2026-08-19T23:39:21.350683+00:00"
+      },
+      {
+        "latency_seconds": 0.4725757620035438,
+        "request_id": "pfew-0168",
+        "sample_id": "slurp:devel:013281:audio-1490354296-headset",
+        "started_at": "2026-08-19T23:39:22.222548+00:00"
+      },
+      {
+        "latency_seconds": 0.5852948719984852,
+        "request_id": "pfew-0169",
+        "sample_id": "slurp:devel:013795:audio-1499266495",
+        "started_at": "2026-08-19T23:39:23.037886+00:00"
+      },
+      {
+        "latency_seconds": 0.596162745001493,
+        "request_id": "pfew-0170",
+        "sample_id": "slurp:devel:014173:audio-1490291441",
+        "started_at": "2026-08-19T23:39:24.022578+00:00"
+      },
+      {
+        "latency_seconds": 0.538024713008781,
+        "request_id": "pfew-0171",
+        "sample_id": "slurp:devel:014263:audio-1501692486",
+        "started_at": "2026-08-19T23:39:24.825395+00:00"
+      },
+      {
+        "latency_seconds": 0.48689987300895154,
+        "request_id": "pfew-0172",
+        "sample_id": "slurp:devel:014397:audio-1497368809",
+        "started_at": "2026-08-19T23:39:25.729804+00:00"
+      },
+      {
+        "latency_seconds": 0.6407940130011411,
+        "request_id": "pfew-0173",
+        "sample_id": "slurp:devel:014657:audio-1499695487",
+        "started_at": "2026-08-19T23:39:26.597870+00:00"
+      },
+      {
+        "latency_seconds": 0.514775996998651,
+        "request_id": "pfew-0174",
+        "sample_id": "slurp:devel:015258:audio-1501777355-headset",
+        "started_at": "2026-08-19T23:39:27.807170+00:00"
+      },
+      {
+        "latency_seconds": 0.5708646229904843,
+        "request_id": "pfew-0175",
+        "sample_id": "slurp:devel:015375:audio-1501754418",
+        "started_at": "2026-08-19T23:39:28.596064+00:00"
+      },
+      {
+        "latency_seconds": 0.6160283049975988,
+        "request_id": "pfew-0176",
+        "sample_id": "slurp:devel:015632:audio-1490021137-headset",
+        "started_at": "2026-08-19T23:39:29.564881+00:00"
+      },
+      {
+        "latency_seconds": 1.0303378829994472,
+        "request_id": "pfew-0177",
+        "sample_id": "slurp:devel:015805:audio-1489153743",
+        "started_at": "2026-08-19T23:39:30.402948+00:00"
+      },
+      {
+        "latency_seconds": 0.47279279900249094,
+        "request_id": "pfew-0178",
+        "sample_id": "slurp:devel:016653:audio-1494513016",
+        "started_at": "2026-08-19T23:39:31.840119+00:00"
+      },
+      {
+        "latency_seconds": 0.5469266400032211,
+        "request_id": "pfew-0179",
+        "sample_id": "slurp:devel:016825:audio-1498573552-headset",
+        "started_at": "2026-08-19T23:39:32.576768+00:00"
+      },
+      {
+        "latency_seconds": 0.5085519470012514,
+        "request_id": "pfew-0180",
+        "sample_id": "slurp:devel:017009:audio-1502198805-headset",
+        "started_at": "2026-08-19T23:39:33.173298+00:00"
+      }
+    ],
+    "trace_manifest_hash": "ad630a506346de77ae619a701d104a33828f8ed2b185c0ecfa21dd2be597b7ae"
+  },
+  "config_hash": "c7b49eed72b86ab2daa9302a2e2c58dea26b7835a0ed0001cc89595b85370f92",
+  "demo_binding_sha256": "b0479cf63d168f1575b2aaf95c8dd3d902ccdc444639d5e279a74be876627b8b",
+  "demo_binding_stats": {
+    "all_demo_ids_are_train_namespaced": true,
+    "canonical_label_count": 18,
+    "canonical_labels": [
+      "alarm",
+      "audio",
+      "calendar",
+      "cooking",
+      "datetime",
+      "email",
+      "general",
+      "iot",
+      "lists",
+      "music",
+      "news",
+      "play",
+      "qa",
+      "recommendation",
+      "social",
+      "takeaway",
+      "transport",
+      "weather"
+    ],
+    "demo_binding_sha256": "b0479cf63d168f1575b2aaf95c8dd3d902ccdc444639d5e279a74be876627b8b",
+    "demo_seed": 20260807,
+    "fs_bal_demo_total": 240,
+    "fs_bal_distinct_label_count_distribution": {
+      "4": 60
+    },
+    "fs_bal_distinct_train_donors": 236,
+    "fs_bal_k": 4,
+    "fs_bal_k_distribution": {
+      "4": 60
+    },
+    "fs_bal_label_usage": {
+      "alarm": 15,
+      "audio": 13,
+      "calendar": 9,
+      "cooking": 9,
+      "datetime": 14,
+      "email": 13,
+      "general": 20,
+      "iot": 14,
+      "lists": 11,
+      "music": 12,
+      "news": 11,
+      "play": 13,
+      "qa": 11,
+      "recommendation": 17,
+      "social": 16,
+      "takeaway": 14,
+      "transport": 14,
+      "weather": 14
+    },
+    "fs_skew_demo_total": 240,
+    "fs_skew_distinct_train_donors": 165,
+    "fs_skew_k": 4,
+    "fs_skew_k_distribution": {
+      "4": 60
+    },
+    "n_samples": 60,
+    "run_id": "SAEA-PROBE-pfew-180",
+    "schema": "saea-pfew-demo-binding-stats-v1",
+    "skew_label": "audio",
+    "split_identity_hash": "fc9de436eba5aba120ecf07ee112765cd4ac0609150e0aaf36f4d44c9c5b5ee5",
+    "train_demo_pool_label_coverage": {
+      "alarm": 390,
+      "audio": 290,
+      "calendar": 1688,
+      "cooking": 211,
+      "datetime": 402,
+      "email": 953,
+      "general": 652,
+      "iot": 769,
+      "lists": 539,
+      "music": 332,
+      "news": 503,
+      "play": 1377,
+      "qa": 1183,
+      "recommendation": 433,
+      "social": 391,
+      "takeaway": 257,
+      "transport": 571,
+      "weather": 573
+    },
+    "train_demo_pool_labels_with_candidates": 18
+  },
+  "error": null,
+  "gpu_hours_this_attempt": 0.10602670974201626,
+  "gpu_occupied_seconds_this_attempt": 381.69615507125854,
+  "latency_seconds_by_arm": {
+    "FS-BAL": 48.45002245903015,
+    "FS-NONE": 48.06391739845276,
+    "FS-SKEW": 49.5070960521698
+  },
+  "metered_audio_seconds_expected": 546.778,
+  "n_requests_planned": 180,
+  "n_samples": 60,
+  "planned_budgets": {
+    "gpu_hours": 0.25,
+    "model_calls": 180,
+    "speech_audio_seconds": 700
+  },
+  "preregistration": "docs/readiness/2026-08-19-pfew-preregistration-REGISTERED.md",
+  "protocol_hash": "d67887ba618632fa0c9f4007ed52562e9ffdb9d8953ac467374aefdbd4ca4cef",
+  "registered_ceilings": {
+    "gpu_hours": 0.25,
+    "model_calls": 200,
+    "speech_audio_seconds": 700
+  },
+  "request_failures": [],
+  "request_latency_seconds_this_attempt": 146.0210359096527,
+  "requests_flown_by_arm": {
+    "FS-BAL": 60,
+    "FS-NONE": 60,
+    "FS-SKEW": 60
+  },
+  "requests_flown_this_attempt": 180,
+  "requests_replayed_from_cache": 0,
+  "result_rows": 180,
+  "result_rows_by_arm": {
+    "FS-BAL": 60,
+    "FS-NONE": 60,
+    "FS-SKEW": 60
+  },
+  "run_id": "SAEA-PROBE-pfew-180",
+  "session": {
+    "argv": [
+      "/home/chao/llama.cpp-featcache/build/bin/llama-server",
+      "--host",
+      "127.0.0.1",
+      "--port",
+      "8080",
+      "-m",
+      "/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+      "--mmproj",
+      "/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/mmproj-Qwen3-Omni-30B-A3B-Instruct-bf16.gguf",
+      "-c",
+      "49152",
+      "-np",
+      "4",
+      "-fa",
+      "on",
+      "-ngl",
+      "999",
+      "-ctk",
+      "q8_0",
+      "-ctv",
+      "q8_0"
+    ],
+    "binary_path": "llama.cpp-featcache/build/bin/llama-server",
+    "binary_sha256": "097c96ec5a3f576f378d4d5e103928bf070647fdcc1f015eacb839503e121c68",
+    "host": "127.0.0.1",
+    "model_files": [
+      {
+        "path": "models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+        "sha256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d"
+      },
+      {
+        "path": "models/qwen3-omni-30b-a3b-instruct-gguf-q4km/mmproj-Qwen3-Omni-30B-A3B-Instruct-bf16.gguf",
+        "sha256": "f0dfe825fb692d426362b1ac79678fc08daa4758f7151526cad110515f122883"
+      }
+    ],
+    "pid": 7778,
+    "port": 8080,
+    "session_id": "SAEA-PROBE-pfew-180-attempt-20260819T233312Z-480fed",
+    "started_at": "2026-08-19T23:33:28.795340+00:00"
+  },
+  "skew_label": "audio",
+  "split_identity_hash": "fc9de436eba5aba120ecf07ee112765cd4ac0609150e0aaf36f4d44c9c5b5ee5",
+  "status": "COMPLETED",
+  "wall_seconds": 152.23950862884521
+}
