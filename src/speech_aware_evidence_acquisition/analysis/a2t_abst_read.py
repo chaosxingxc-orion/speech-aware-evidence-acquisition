@@ -42,9 +42,10 @@ See :func:`classify_response`.
 ENGINEERING-INTERPRETATION NOTES:
 
 1. Harness-defect checks (malformed rows, non-``COMPLETED`` receipt,
-   non-empty ``request_failures``, an unexpected ``arms`` field (this
-   probe's own flight-receipt ``arms`` names its 4 CELLS, never a Stage-2
-   arm name), a split-identity-hash mismatch, an unknown-cell row, a
+   non-empty ``request_failures``, an unexpected cell list (this probe's
+   own flight-receipt names its 4 CELLS under ``cells``, with ``arms``
+   accepted as an alias, never a Stage-2 arm name; a receipt declaring
+   neither key is a defect), a split-identity-hash mismatch, an unknown-cell row, a
    duplicate ``(cell, sample_id)`` pair, a per-cell row count other than
    ``ABST_N`` (11), or the four cells NOT sharing the identical sample-id
    set (the per-sample 4-cell table requires every sample to carry all four
@@ -140,9 +141,19 @@ def _harness_defect_reasons(
         failures = flight_receipt.get("request_failures")
         if failures:
             reasons.append(f"flight-receipt request_failures non-empty: {len(failures)} failure(s)")
-        cells = flight_receipt.get("arms")
-        if cells != list(A2T_ABST_CELLS):
-            reasons.append(f"flight-receipt arms={cells!r}, expected {list(A2T_ABST_CELLS)!r}")
+        # The flight machinery writes the cell list under ``cells``; ``arms``
+        # is accepted as an alias so a receipt of either shape is validated
+        # rather than silently read as ``None``. Whichever key(s) a receipt
+        # declares must agree with the registered cell list, and a receipt
+        # declaring neither is itself a defect.
+        declared_cells = [(key, flight_receipt[key]) for key in ("cells", "arms") if key in flight_receipt]
+        if not declared_cells:
+            reasons.append(
+                f"flight-receipt declares neither 'cells' nor 'arms'; expected {list(A2T_ABST_CELLS)!r}"
+            )
+        for key, value in declared_cells:
+            if value != list(A2T_ABST_CELLS):
+                reasons.append(f"flight-receipt {key}={value!r}, expected {list(A2T_ABST_CELLS)!r}")
         receipt_hash = flight_receipt.get("split_identity_hash")
         if receipt_hash != split_identity_hash:
             reasons.append(

@@ -237,15 +237,22 @@ def _write_outputs_jsonl(path: Path, rows: list) -> None:
 
 def _write_flight_receipt(
     path: Path, *, split_identity_hash: str, status: str = "COMPLETED", arms: list | None = None,
-    request_failures: list | None = None,
+    request_failures: list | None = None, cells: list | None = None,
+    omit_cell_list: bool = False,
 ) -> None:
     document = {
         "status": status,
         "error": None,
-        "arms": arms if arms is not None else list(A2T_ABST_CELLS),
         "split_identity_hash": split_identity_hash,
         "request_failures": request_failures if request_failures is not None else [],
     }
+    if not omit_cell_list:
+        # The real flight machinery writes ``cells``; ``arms`` is the accepted
+        # alias. Passing ``cells=`` writes the real shape, exactly one key.
+        if cells is not None:
+            document["cells"] = cells
+        else:
+            document["arms"] = arms if arms is not None else list(A2T_ABST_CELLS)
     path.write_text(json.dumps(document), encoding="utf-8")
 
 
@@ -379,6 +386,34 @@ def test_build_report_rejects_unexpected_arms_field(a2tabst_world, tmp_path):
     world = a2tabst_world
     attempt_dir = _build_attempt(tmp_path, world, receipt_kwargs={"arms": [TP_A_CELL]})
     with pytest.raises(A2tAbstReadError, match="arms"):
+        _build_report(tmp_path, world, attempt_dir)
+
+
+def test_build_report_accepts_real_receipt_cells_key(a2tabst_world, tmp_path):
+    """The flight machinery names the 4 cells under ``cells``, not ``arms``.
+
+    Regression guard: the check previously read only ``arms`` and therefore
+    saw ``None`` on every real receipt, refusing the read fail-closed.
+    """
+
+    world = a2tabst_world
+    attempt_dir = _build_attempt(tmp_path, world, receipt_kwargs={"cells": list(A2T_ABST_CELLS)})
+    report = _build_report(tmp_path, world, attempt_dir)
+    assert report.flight_status == "COMPLETED"
+    assert set(report.per_cell) == set(A2T_ABST_CELLS)
+
+
+def test_build_report_rejects_unexpected_cells_field(a2tabst_world, tmp_path):
+    world = a2tabst_world
+    attempt_dir = _build_attempt(tmp_path, world, receipt_kwargs={"cells": [TP_A_CELL]})
+    with pytest.raises(A2tAbstReadError, match="cells"):
+        _build_report(tmp_path, world, attempt_dir)
+
+
+def test_build_report_rejects_receipt_declaring_no_cell_list(a2tabst_world, tmp_path):
+    world = a2tabst_world
+    attempt_dir = _build_attempt(tmp_path, world, receipt_kwargs={"omit_cell_list": True})
+    with pytest.raises(A2tAbstReadError, match="neither 'cells' nor 'arms'"):
         _build_report(tmp_path, world, attempt_dir)
 
 
