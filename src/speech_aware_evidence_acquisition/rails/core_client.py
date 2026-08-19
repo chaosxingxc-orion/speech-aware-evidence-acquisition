@@ -68,13 +68,26 @@ class CoreClient(Protocol):
     """One completion call: chat-style ``messages`` in, response text out.
     No implementation in THIS module ever touches a real model -- see
     :class:`MockCoreClient` below, the only implementation this engineering
-    mission constructs."""
+    mission constructs.
+
+    ``text_only_sample_id`` (P-KEY machinery, 2026-08-19): opt-in, default
+    ``None`` -- every EXISTING caller never passes it and observes byte-
+    identical behaviour. When a caller names a sample id here, ``messages``
+    is a REGISTERED TEXT-ONLY arm's own prompt (e.g.
+    ``rails.probes.pkey_flight.assemble_txt_messages``'s TXT-NOSUP/TXT-SUP
+    output) -- audio-free BY CONSTRUCTION, never carrying an
+    ``input_audio`` content part -- and ``text_only_sample_id`` is how the
+    caller identifies WHICH bound sample this text-only request is about
+    (a text-only ``messages`` shape carries no ``media_relpath`` a client
+    could otherwise reverse-look-up). See :class:`FrozenCoreClient.complete`
+    for the real validation this gates."""
 
     def complete(
         self,
         messages: Sequence[Mapping[str, object]],
         *,
         decoding_params: Mapping[str, object] | None = None,
+        text_only_sample_id: str | None = None,
     ) -> str: ...
 
 
@@ -98,7 +111,17 @@ class MockCoreClient:
         messages: Sequence[Mapping[str, object]],
         *,
         decoding_params: Mapping[str, object] | None = None,
+        text_only_sample_id: str | None = None,
     ) -> str:
+        # text_only_sample_id is accepted (never validated -- this is a mock,
+        # zero real invariants live here by design, module docstring) purely
+        # so a flight that calls it unconditionally (rails.probes.pkey_flight's
+        # own TXT-arm loops) works unchanged against BOTH this mock and the
+        # real FrozenCoreClient below. THE TEST LESSON this repository keeps
+        # re-learning: this acceptance is exactly why a test that only drives
+        # THIS class can never catch a missing real invariant -- see
+        # tests/unit/test_rails_frozen_core_client.py's own text-mode tests,
+        # which drive FrozenCoreClient.complete directly instead.
         recorded_params = dict(decoding_params) if decoding_params else {}
         self.calls.append((tuple(messages), recorded_params))
         if self.responder is not None:
@@ -265,13 +288,33 @@ class RequestTiming:
 
 def _parse_rails_messages(
     messages: Sequence[Mapping[str, object]],
-) -> tuple[str, str, list[str]]:
+    *,
+    text_only: bool = False,
+) -> tuple[str, str | None, list[str]]:
     """Extract ``(task_instruction, media_relpath, supply_texts)`` from a
     rails ``TaskAdapter.assemble_prompt`` output -- exactly the two-message
     ``[system, user]`` shape both ``SlurpAdapter`` and ``Audio2ToolAdapter``
     build (module docstring). Fail-closed on anything else: this bridge
     speaks exactly the shape those adapters produce, not an arbitrary chat
-    transcript."""
+    transcript.
+
+    ``text_only`` (default ``False``, EVERY pre-2026-08-19 caller): the
+    AUDIO invariant -- the user message must carry EXACTLY one
+    ``input_audio`` content part, never zero, never two -- is enforced
+    exactly as before; the returned ``media_relpath`` is never ``None``.
+
+    ``text_only=True`` (opt-in, :meth:`FrozenCoreClient.complete`'s own
+    ``text_only_sample_id`` parameter -- P-KEY machinery, 2026-08-19): the
+    INVERSE invariant is enforced instead -- the user message must carry
+    ZERO ``input_audio`` content parts (a registered TEXT-ONLY arm, e.g.
+    P-KEY's TXT-NOSUP/TXT-SUP, is audio-free BY CONSTRUCTION --
+    ``rails.probes.pkey_flight.assemble_txt_messages``'s own module
+    docstring: "TXT arms are audio-free by construction ... never appends
+    an input_audio content part"). The returned ``media_relpath`` is always
+    ``None`` in this mode; the caller (:meth:`FrozenCoreClient.complete`)
+    resolves sample identity from its own ``text_only_sample_id`` argument
+    instead, since a text-only ``messages`` shape carries no
+    ``media_relpath`` a reverse index could look up."""
 
     if len(messages) != 2:
         raise FrozenCoreClientError(
@@ -297,6 +340,12 @@ def _parse_rails_messages(
             )
         part_type = part["type"]
         if part_type == "input_audio":
+            if text_only:
+                raise FrozenCoreClientError(
+                    "text-only request must not carry an input_audio content part -- a registered "
+                    "TEXT-ONLY arm is audio-free by construction (rails.probes.pkey_flight."
+                    "assemble_txt_messages's own invariant)"
+                )
             if media_relpath is not None:
                 raise FrozenCoreClientError(
                     "user content carries more than one input_audio part"
@@ -314,7 +363,7 @@ def _parse_rails_messages(
             supply_texts.append(text)
         else:
             raise FrozenCoreClientError(f"unsupported content part type {part_type!r}")
-    if media_relpath is None:
+    if not text_only and media_relpath is None:
         raise FrozenCoreClientError(
             "user message must carry exactly one input_audio content part"
         )
@@ -443,23 +492,66 @@ class FrozenCoreClient:
         messages: Sequence[Mapping[str, object]],
         *,
         decoding_params: Mapping[str, object] | None = None,
+        text_only_sample_id: str | None = None,
     ) -> str:
+        """The abort's own root cause, repaired (attempt-1 accounting,
+        docs/readiness/2026-08-18-pkey-preregistration-REGISTERED.md section
+        7): pre-2026-08-19, this method ALWAYS ran ``messages`` through the
+        AUDIO invariant (``_parse_rails_messages``'s default), so the first
+        registered TEXT-ONLY request (P-KEY's TXT-NOSUP) was refused with
+        "user message must carry exactly one input_audio content part" --
+        the client layer was never relaxed for registered text-only arms.
+
+        ``text_only_sample_id`` (opt-in, default ``None`` -- every
+        pre-existing caller is byte-identical) is that relaxation, GATED
+        explicitly rather than inferred from ``messages`` shape alone (a
+        text-only ``messages`` shape carries no ``media_relpath`` a reverse
+        index could resolve on its own -- the caller must name the sample):
+        when given, ``messages`` is parsed under the INVERSE (audio-free)
+        invariant (:func:`_parse_rails_messages` ``text_only=True`` --
+        refuses loud if an ``input_audio`` part is present), and this
+        request's ``sample_id``/``media_relpath``/``audio_seconds``/
+        ``sample_rate_hz`` payload fields are resolved from THIS client's own
+        verified binding for ``text_only_sample_id`` directly (the SAME
+        facts an audio request for that sample would carry -- I3/I4 payload-
+        binding enforcement, ``core.model.binding._enforce_payload_binding``,
+        is unchanged and untouched by this bridge: a text-only request is
+        still, honestly, about that exact bound sample's speech_ref, even
+        though no audio content part is ever sent). The DEFAULT AUDIO
+        invariant is preserved byte-for-byte for every existing caller: a
+        message carrying zero or two-or-more ``input_audio`` parts still
+        refuses exactly as before.
+        """
+
         if self._closed:
             raise FrozenCoreClientError("complete() called after close()")
-        task_instruction, media_relpath, supply_texts = _parse_rails_messages(messages)
-        sample_id = self._reverse_media_index.get(media_relpath)
-        if sample_id is None:
-            raise FrozenCoreClientError(
-                f"media_relpath {media_relpath!r} is not bound to any sample this client "
-                "was constructed with (and no matching slice was registered)"
+        if text_only_sample_id is not None:
+            if not isinstance(text_only_sample_id, str) or not text_only_sample_id:
+                raise FrozenCoreClientError("text_only_sample_id must be a non-empty string")
+            task_instruction, _, supply_texts = _parse_rails_messages(messages, text_only=True)
+            sample_id = text_only_sample_id
+            if sample_id not in self._binding.allowed_sample_ids:
+                raise FrozenCoreClientError(
+                    f"text_only_sample_id {sample_id!r} is not bound to any sample this client "
+                    "was constructed with"
+                )
+            media_relpath = self._binding.media_relpaths[sample_id]
+            audio_seconds, sample_rate_hz = self._binding.sample_facts[sample_id]
+        else:
+            task_instruction, media_relpath, supply_texts = _parse_rails_messages(messages)
+            sample_id = self._reverse_media_index.get(media_relpath)
+            if sample_id is None:
+                raise FrozenCoreClientError(
+                    f"media_relpath {media_relpath!r} is not bound to any sample this client "
+                    "was constructed with (and no matching slice was registered)"
+                )
+            # A registered slice's own facts take priority over the parent
+            # sample's -- a slice is admitted precisely because its bytes (and
+            # therefore its duration) may differ from the parent (comment at
+            # self._slice_facts's own declaration).
+            audio_seconds, sample_rate_hz = self._slice_facts.get(
+                media_relpath, self._binding.sample_facts[sample_id]
             )
-        # A registered slice's own facts take priority over the parent
-        # sample's -- a slice is admitted precisely because its bytes (and
-        # therefore its duration) may differ from the parent (comment at
-        # self._slice_facts's own declaration).
-        audio_seconds, sample_rate_hz = self._slice_facts.get(
-            media_relpath, self._binding.sample_facts[sample_id]
-        )
         self._request_counter += 1
         request_id = f"{self._request_id_prefix}-{self._request_counter:04d}"
         # Every rails "text" content part becomes one supplied-evidence item

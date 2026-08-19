@@ -368,6 +368,126 @@ def test_complete_rejects_an_unresolvable_media_relpath(tmp_path):
 
 
 # ---------------------------------------------------------------------------
+# complete() -- text-only mode (P-KEY machinery, 2026-08-19 amendment).
+#
+# THE TEST LESSON (recurring, now twice in this program): these tests drive
+# FrozenCoreClient.complete() -- the REAL client's own validation layer --
+# never MockCoreClient, which validates nothing and could not have caught the
+# attempt-1 abort in the first place (docs/readiness/2026-08-18-pkey-
+# preregistration-REGISTERED.md section 7's own attempt-1 accounting).
+# ---------------------------------------------------------------------------
+
+
+def _text_only_messages(*texts: str):
+    content = [{"type": "text", "text": text} for text in texts]
+    return (
+        {"role": "system", "content": "Answer using only the text below."},
+        {"role": "user", "content": content},
+    )
+
+
+def test_complete_text_only_sample_id_sends_the_bound_samples_own_media_facts(tmp_path):
+    world = _World(tmp_path)
+    client, _, transport = _client(world, tmp_path)
+
+    text = client.complete(
+        _text_only_messages("The user said: turn on the kitchen light"),
+        text_only_sample_id="s1",
+    )
+
+    assert text == "ok"
+    assert len(transport.calls) == 1
+    payload = transport.calls[0]
+    # SAME full D2 field set an audio request sends -- text-only mode changes
+    # nothing about the payload SHAPE, only how it is resolved.
+    assert set(payload) == {
+        "request_id", "carrier_lock_key", "sample_id", "speech_ref", "media_relpath",
+        "audio_seconds", "sample_rate_hz", "task_instruction", "history",
+        "decoding_params", "supplied_evidence", "evidence_provenance",
+    }
+    assert payload["sample_id"] == "s1"
+    assert payload["media_relpath"] == world.media_relpath("s1")
+    assert payload["audio_seconds"] == 2.0
+    assert payload["sample_rate_hz"] == 16000
+    assert [item["content"] for item in payload["supplied_evidence"]] == [
+        "The user said: turn on the kitchen light",
+    ]
+
+
+def test_complete_text_only_sample_id_rejects_a_message_carrying_audio(tmp_path):
+    """A registered text-only arm is audio-free BY CONSTRUCTION
+    (rails.probes.pkey_flight.assemble_txt_messages's own invariant) -- a
+    caller naming text_only_sample_id on a message that still carries an
+    input_audio part is refused, never silently accepted."""
+
+    world = _World(tmp_path)
+    client, _, _ = _client(world, tmp_path)
+    with pytest.raises(FrozenCoreClientError, match="must not carry an input_audio content part"):
+        client.complete(
+            _supplied_messages(world.media_relpath("s1"), "some text"),
+            text_only_sample_id="s1",
+        )
+
+
+def test_complete_text_only_sample_id_rejects_an_unknown_sample(tmp_path):
+    world = _World(tmp_path)
+    client, _, _ = _client(world, tmp_path)
+    with pytest.raises(FrozenCoreClientError, match="not bound to any sample"):
+        client.complete(_text_only_messages("hello"), text_only_sample_id="not-a-real-sample")
+
+
+def test_complete_text_only_sample_id_rejects_an_empty_string(tmp_path):
+    world = _World(tmp_path)
+    client, _, _ = _client(world, tmp_path)
+    with pytest.raises(FrozenCoreClientError, match="non-empty string"):
+        client.complete(_text_only_messages("hello"), text_only_sample_id="")
+
+
+def test_complete_default_mode_still_refuses_zero_audio_parts_when_text_only_is_not_named(tmp_path):
+    """The DEFAULT AUDIO invariant is untouched: a caller that never opts
+    into text_only_sample_id still gets the pre-2026-08-19 refusal -- this is
+    exactly the invariant the attempt-1 abort's own error message quoted."""
+
+    world = _World(tmp_path)
+    client, _, _ = _client(world, tmp_path)
+    with pytest.raises(FrozenCoreClientError, match="exactly one input_audio"):
+        client.complete(_text_only_messages("The user said: hello"))
+
+
+def test_complete_default_mode_still_refuses_two_audio_parts(tmp_path):
+    world = _World(tmp_path)
+    client, _, _ = _client(world, tmp_path)
+    relpath = world.media_relpath("s1")
+    with pytest.raises(FrozenCoreClientError, match="more than one input_audio"):
+        client.complete(
+            (
+                {"role": "system", "content": "x"},
+                {
+                    "role": "user",
+                    "content": [
+                        {"type": "input_audio", "media_relpath": relpath},
+                        {"type": "input_audio", "media_relpath": relpath},
+                    ],
+                },
+            ),
+            text_only_sample_id=None,
+        )
+
+
+def test_complete_text_only_mode_produces_a_distinct_request_id_sequence_alongside_audio_calls(tmp_path):
+    """text-only and audio requests share the SAME request_id counter/
+    transport path -- no parallel accounting."""
+
+    world = _World(tmp_path)
+    client, _, transport = _client(world, tmp_path)
+    client.complete(_zero_supply_messages(world.media_relpath("s1")))
+    client.complete(_text_only_messages("The user said: hi"), text_only_sample_id="s2")
+    assert transport.calls[0]["request_id"] == "rails-0001"
+    assert transport.calls[1]["request_id"] == "rails-0002"
+    assert transport.calls[1]["sample_id"] == "s2"
+
+
+# ---------------------------------------------------------------------------
 # flight lock (advisory, threaded through)
 # ---------------------------------------------------------------------------
 
