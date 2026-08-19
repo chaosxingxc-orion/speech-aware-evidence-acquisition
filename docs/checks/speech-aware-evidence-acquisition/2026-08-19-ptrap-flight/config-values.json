@@ -1,0 +1,54 @@
+{
+  "config_hash": "75b5b0be185718ac45c526786b00be52f89b175307b3ac1830f477fe2d84256b",
+  "protocol_hash": "5af8033b8574023ec8e6319c127b8086b8f4209105e11ca275b57bc722965f37",
+  "values": {
+    "arm": "fixed-legal-context",
+    "arms": [
+      "V1",
+      "V2"
+    ],
+    "base_url": "http://127.0.0.1:8080",
+    "carrier_lock_key": "slurp",
+    "decoding_params": {
+      "max_tokens": 1024,
+      "seed": 20260803,
+      "temperature": 0
+    },
+    "flight_config": "configs/probes/g0-binding/ptrap-flight.json",
+    "flight_config_version": "ptrap-flight-v1",
+    "launcher": "scratchpad tri/ptrap/launch_ptrap_flight.py (archived with the flight receipt)",
+    "model_lock_key": "qwen3-omni-30b-a3b-instruct-gguf-q4km",
+    "orchestrator": "rails.probes.ptrap_flight.run_ptrap_flight",
+    "preregistration": "docs/readiness/2026-08-19-ptrap-preregistration-REGISTERED.md",
+    "probe": "P-TRAP",
+    "prompt_order": "evidence-first-system-v2",
+    "roster_table": "configs/probes/g0-binding/pslu-rosters-train-only.json",
+    "runtime_receipt": "receipts/runtime-q4km-featcache.json",
+    "sample_manifest": "configs/probes/g0-binding/pslu-sample-devel-n60.json",
+    "server_args": [
+      "-c",
+      "49152",
+      "-np",
+      "4",
+      "-fa",
+      "on",
+      "-ngl",
+      "999",
+      "-ctk",
+      "q8_0",
+      "-ctv",
+      "q8_0"
+    ],
+    "server_env": {
+      "LLAMA_MTMD_FEAT_CACHE_DIR": "/home/chao/feat-cache/slurp-q4km"
+    },
+    "split_name": "devel",
+    "status": "REGISTERED",
+    "timeout_seconds": 420.0,
+    "transport": "llama-server",
+    "trap_donor_seed": 20260807,
+    "trap_k_cap": 5,
+    "trap_source_arm": "A0",
+    "trap_source_attempt": "attempt-20260818T010218Z-4c97cb"
+  }
+}
