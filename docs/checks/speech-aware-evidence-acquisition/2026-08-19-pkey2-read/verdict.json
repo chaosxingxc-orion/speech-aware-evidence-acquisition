@@ -1,0 +1,419 @@
+{
+  "aggregates": {
+    "AUD-NOSUP": {
+      "arm": "AUD-NOSUP",
+      "copy_rate": 0.0,
+      "copy_records": 0,
+      "copy_records_total": 0,
+      "induced_substitution_count": 0,
+      "intent_accuracy": 0.0,
+      "n_samples": 60,
+      "slot_f1_exact": {
+        "f1": 0.043478260869565216,
+        "precision": 0.042105263157894736,
+        "recall": 0.0449438202247191,
+        "tp_sum": 4.0
+      },
+      "slu_f1": {
+        "f1": 0.1740786454061426,
+        "precision": 0.1691704839577968,
+        "recall": 0.17928011877696706
+      }
+    },
+    "AUD-SUP": {
+      "arm": "AUD-SUP",
+      "copy_rate": 0.0,
+      "copy_records": 0,
+      "copy_records_total": 6000,
+      "induced_substitution_count": 3,
+      "intent_accuracy": 0.0,
+      "n_samples": 60,
+      "slot_f1_exact": {
+        "f1": 0.5235602094240838,
+        "precision": 0.49019607843137253,
+        "recall": 0.5617977528089888,
+        "tp_sum": 50.0
+      },
+      "slu_f1": {
+        "f1": 0.6138239343259204,
+        "precision": 0.5788321655155785,
+        "recall": 0.6533185826277249
+      }
+    },
+    "TXT-NOSUP": {
+      "arm": "TXT-NOSUP",
+      "copy_rate": 0.0,
+      "copy_records": 0,
+      "copy_records_total": 0,
+      "induced_substitution_count": 0,
+      "intent_accuracy": 0.0,
+      "n_samples": 60,
+      "slot_f1_exact": {
+        "f1": 0.033898305084745756,
+        "precision": 0.03409090909090909,
+        "recall": 0.033707865168539325,
+        "tp_sum": 3.0
+      },
+      "slu_f1": {
+        "f1": 0.17399230835961918,
+        "precision": 0.17488728017078536,
+        "recall": 0.17310644980685935
+      }
+    },
+    "TXT-SUP": {
+      "arm": "TXT-SUP",
+      "copy_rate": 0.0,
+      "copy_records": 0,
+      "copy_records_total": 6000,
+      "induced_substitution_count": 3,
+      "intent_accuracy": 0.0,
+      "n_samples": 60,
+      "slot_f1_exact": {
+        "f1": 0.3707865168539326,
+        "precision": 0.3707865168539326,
+        "recall": 0.3707865168539326,
+        "tp_sum": 33.0
+      },
+      "slu_f1": {
+        "f1": 0.5674156837879871,
+        "precision": 0.5674156837879871,
+        "recall": 0.5674156837879871
+      }
+    }
+  },
+  "attempt_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-pkey2-338/attempt-20260819T111032Z-3109e8",
+  "bootstrap": {
+    "ci_high": 0.09697300997334078,
+    "ci_level": 0.9,
+    "ci_low": -0.0032624183981000573,
+    "n_replicates": 10000,
+    "point_estimate": 0.046321913491409905,
+    "seed": 20260807,
+    "sigma_hat": 0.03061174995639854
+  },
+  "ci_verdict": {
+    "delta_aud": 0.4397452889197778,
+    "delta_txt": 0.3934233754283679,
+    "interaction": 0.046321913491409905,
+    "key_only": {
+      "clause_text": "the ENTIRE 90% bootstrap CI of I lies inside [-0.03, +0.03] AND SPEECH-TERM-PRESENT is reachable given the P-PHON census (2026-08-19 amendment items 1-2)",
+      "detail": "CI=[-0.0033, +0.0970] is NOT entirely inside the band (point I=+0.0463, sigma_hat=0.0306, n_replicates=10000) -- a point estimate inside the band with a CI crossing it is INCONCLUSIVE-KEY, never an affirmative KEY-ONLY",
+      "verdict": "not_met"
+    },
+    "overall": "INCONCLUSIVE-KEY",
+    "speech_term_present": {
+      "clause_text": "I >= +0.06 (2x the measured 0.03 separability bar)",
+      "detail": "I=+0.0463, floor=+0.06, margin=-0.0137",
+      "verdict": "not_met"
+    },
+    "text_dominant": {
+      "clause_text": "I <= -0.06",
+      "detail": "I=+0.0463, ceiling=-0.06, margin=-0.1063",
+      "verdict": "not_met"
+    }
+  },
+  "converted_set": {
+    "aud_converted": [],
+    "aud_only": [],
+    "near_miss_cross_ref_caveat": "NEAR-MISS cross-reference caveat (2026-08-19 amendment item 3): P-PHON's own consumed class census names at most n<=4 NEAR-MISS baseline failures (effectively n<=3 after P-PHON disqualified its single A3 NEAR-MISS row as a clock-format variant) -- this cross-reference is descriptive context for the converted-set difference above, never sufficient evidence for a mechanism claim on its own.",
+    "pphon_class_by_sample": {},
+    "txt_converted": []
+  },
+  "duplicate_block": {
+    "abs_delta_f1": 0.0,
+    "delta_f1": 0.0,
+    "duplicate_slu_f1": 0.15525310545495605,
+    "n_samples": 35,
+    "note": "empirical |Delta F1| between byte-identical resends -- this axis's own measured floor, reported next to sigma_hat(I) (2026-08-19 amendment item 4)",
+    "original_slu_f1": 0.15525310545495605
+  },
+  "duplicate_mismatch_count": 0,
+  "flight_error": null,
+  "flight_status": "COMPLETED",
+  "gold_leak_violation_count": 0,
+  "harness_defect_reasons": [],
+  "interaction": {
+    "delta_aud": 0.4397452889197778,
+    "delta_txt": 0.3934233754283679,
+    "interaction": 0.046321913491409905,
+    "key_only": {
+      "clause_text": "|I| <= 0.03",
+      "detail": "I=+0.0463, |I|=0.0463, ceiling=0.03, margin=-0.0163",
+      "verdict": "not_met"
+    },
+    "overall": "INCONCLUSIVE-KEY",
+    "speech_term_present": {
+      "clause_text": "I >= +0.06 (2x the measured 0.03 separability bar)",
+      "detail": "I=+0.0463, floor=+0.06, margin=-0.0137",
+      "verdict": "not_met"
+    },
+    "text_dominant": {
+      "clause_text": "I <= -0.06",
+      "detail": "I=+0.0463, ceiling=-0.06, margin=-0.1063",
+      "verdict": "not_met"
+    }
+  },
+  "note": "gold-derived; scoring-side only; must never enter a runtime path",
+  "overall": "INCONCLUSIVE-KEY",
+  "perception_gap": {
+    "definition": "TXT-NOSUP.slu_f1 - AUD-NOSUP.slu_f1 (descriptive, no clause)",
+    "value": -8.63370465234159e-05
+  },
+  "reachability": {
+    "aud_nosup_failure_count": 60,
+    "detail": "CITED constants (P-PHON consumed class census): NEAR-MISS baseline failures 4/85 (rate=0.0471). This run's own AUD-NOSUP failures=60/60. Arithmetic: eligible = min(NEAR_MISS_COUNT, aud_nosup_failures) = min(4, 60) = 4; max_attainable_interaction = eligible / n_samples = 4 / 60 = 0.0667. SPEECH-TERM-PRESENT floor is +0.06 -> REACHABLE given this census.",
+    "eligible_near_miss_samples": 4,
+    "max_attainable_interaction": 0.06666666666666667,
+    "n_samples": 60,
+    "near_miss_census_total": 85,
+    "near_miss_count": 4,
+    "near_miss_rate": 0.047058823529411764,
+    "speech_term_present_reachable": true
+  },
+  "recheck_mismatch_count": 0,
+  "runtime_prohibited": true,
+  "schema": "saea-pkey-read-v1",
+  "silence_swap": [
+    {
+      "has_real_counterpart": true,
+      "real_signature": [
+        "controlling a smart home device",
+        "turn off",
+        [
+          [
+            "device_type",
+            "room light"
+          ]
+        ]
+      ],
+      "sample_id": "slurp:devel:005518:audio-1490203960",
+      "silence_signature": [
+        "Setting an alarm",
+        "Set an alarm",
+        [
+          [
+            "alarm_type",
+            "wake up"
+          ],
+          [
+            "general_frequency",
+            "every day"
+          ],
+          [
+            "time",
+            "five pm"
+          ],
+          [
+            "time_zone",
+            "eastern"
+          ],
+          [
+            "timeofday",
+            "morning"
+          ]
+        ]
+      ],
+      "unchanged": false
+    },
+    {
+      "has_real_counterpart": true,
+      "real_signature": [
+        "Adding an event to a calendar",
+        "Add event",
+        [
+          [
+            "date",
+            "tonight"
+          ],
+          [
+            "event_name",
+            "baseball practice"
+          ],
+          [
+            "time",
+            "five pm"
+          ]
+        ]
+      ],
+      "sample_id": "slurp:devel:007852:audio-1494416109-headset",
+      "silence_signature": [
+        "Setting an alarm",
+        "Set an alarm",
+        [
+          [
+            "alarm_type",
+            "wake up"
+          ],
+          [
+            "date",
+            "today"
+          ],
+          [
+            "time",
+            "five pm"
+          ],
+          [
+            "time_zone",
+            "eastern"
+          ],
+          [
+            "timeofday",
+            "morning"
+          ]
+        ]
+      ],
+      "unchanged": false
+    },
+    {
+      "has_real_counterpart": true,
+      "real_signature": [
+        "searching for restaurants",
+        "search",
+        [
+          [
+            "business_type",
+            "restaurants"
+          ],
+          [
+            "food_type",
+            "chinese"
+          ],
+          [
+            "place_name",
+            "nearby"
+          ]
+        ]
+      ],
+      "sample_id": "slurp:devel:011654:audio-1501692977-headset",
+      "silence_signature": [
+        "Setting an alarm",
+        "Set an alarm",
+        [
+          [
+            "alarm_type",
+            "wake up"
+          ],
+          [
+            "date",
+            "today"
+          ],
+          [
+            "time",
+            "five pm"
+          ],
+          [
+            "time_zone",
+            "eastern"
+          ],
+          [
+            "timeofday",
+            "morning"
+          ]
+        ]
+      ],
+      "unchanged": false
+    }
+  ],
+  "t0_wer": {
+    "macro_wer": 0.5359343434343434,
+    "note": "scoring-side only -- gold text never entered any prompt path (find_gold_leak_violations)",
+    "per_sample": {
+      "slurp:devel:000115:audio-1495375974": 0.4,
+      "slurp:devel:000444:audio-1502891018-headset": 1.0,
+      "slurp:devel:000943:audio-1434529860-headset": 0.9333333333333333,
+      "slurp:devel:001637:audio-1502195066-headset": 0.375,
+      "slurp:devel:002120:audio-1502218226": 1.3333333333333333,
+      "slurp:devel:002992:audio-1489152746": 0.6666666666666666,
+      "slurp:devel:003121:audio-1501696857-headset": 0.7142857142857143,
+      "slurp:devel:003309:audio-1501756265": 0.7142857142857143,
+      "slurp:devel:004134:audio-1500387396-headset": 1.0,
+      "slurp:devel:004604:audio-1501759214": 0.4166666666666667,
+      "slurp:devel:005025:audio-1500900618": 0.6666666666666666,
+      "slurp:devel:005028:audio-1502893878-headset": 0.375,
+      "slurp:devel:005108:audio-1494422588-headset": 1.0,
+      "slurp:devel:005359:audio-1497265137-headset": 0.6,
+      "slurp:devel:005453:audio-1490183633-headset": 0.875,
+      "slurp:devel:005518:audio-1490203960": 0.6,
+      "slurp:devel:005536:audio-1499090415-headset": 0.375,
+      "slurp:devel:005541:audio--1504191543": 0.2,
+      "slurp:devel:005567:audio-1497359684": 0.3333333333333333,
+      "slurp:devel:005684:audio-1498577434": 0.6666666666666666,
+      "slurp:devel:005743:audio-1501407405-headset": 1.0,
+      "slurp:devel:005770:audio-1495377172": 0.6,
+      "slurp:devel:005943:audio-1499266055": 0.4,
+      "slurp:devel:006603:audio-1502101512": 0.25,
+      "slurp:devel:006751:audio-1501773837-headset": 0.4,
+      "slurp:devel:007374:audio-1498569508": 0.3333333333333333,
+      "slurp:devel:007541:audio-1490202471": 0.42857142857142855,
+      "slurp:devel:007653:audio-1497438989-headset": 0.25,
+      "slurp:devel:007852:audio-1494416109-headset": 0.5714285714285714,
+      "slurp:devel:008014:audio-1500899290": 0.3,
+      "slurp:devel:008047:audio-1498570919": 0.4444444444444444,
+      "slurp:devel:008072:audio-1488986707": 0.5,
+      "slurp:devel:009340:audio-1497882818-headset": 0.75,
+      "slurp:devel:009518:audio-1495734594-headset": 0.5,
+      "slurp:devel:009733:audio--1505407176": 0.625,
+      "slurp:devel:010162:audio-1501765286": 0.2857142857142857,
+      "slurp:devel:010186:audio-1501415369-headset": 0.42857142857142855,
+      "slurp:devel:010545:audio-1490006493": 0.2857142857142857,
+      "slurp:devel:010732:audio-1490184504": 0.5,
+      "slurp:devel:011503:audio-1494514154": 1.0,
+      "slurp:devel:011654:audio-1501692977-headset": 0.6,
+      "slurp:devel:011693:audio-1498565017-headset": 0.6,
+      "slurp:devel:012076:audio-1501766742-headset": 0.4,
+      "slurp:devel:012253:audio-1488974202": 0.42857142857142855,
+      "slurp:devel:012478:audio-1498486426": 0.4,
+      "slurp:devel:012654:audio-1497860426-headset": 0.375,
+      "slurp:devel:012667:audio-1501751776-headset": 0.6666666666666666,
+      "slurp:devel:013281:audio-1490354296-headset": 0.25,
+      "slurp:devel:013795:audio-1499266495": 0.4444444444444444,
+      "slurp:devel:014173:audio-1490291441": 0.2,
+      "slurp:devel:014263:audio-1501692486": 0.2727272727272727,
+      "slurp:devel:014397:audio-1497368809": 0.8,
+      "slurp:devel:014657:audio-1499695487": 0.2857142857142857,
+      "slurp:devel:015258:audio-1501777355-headset": 0.6,
+      "slurp:devel:015375:audio-1501754418": 0.42857142857142855,
+      "slurp:devel:015632:audio-1490021137-headset": 0.5,
+      "slurp:devel:015805:audio-1489153743": 0.3333333333333333,
+      "slurp:devel:016653:audio-1494513016": 0.4444444444444444,
+      "slurp:devel:016825:audio-1498573552-headset": 0.42857142857142855,
+      "slurp:devel:017009:audio-1502198805-headset": 0.6
+    }
+  },
+  "transcript_mismatch_count": 0,
+  "void": {
+    "clauses": [
+      {
+        "clause_text": "silence-swap answers persist unchanged",
+        "detail": "module docstring note 7: VOID iff ALL 3 silence-swap sample(s) are unchanged (documented ambiguity resolution -- the prereg names no quantifier); slurp:devel:005518:audio-1490203960: unchanged=False; slurp:devel:007852:audio-1494416109-headset: unchanged=False; slurp:devel:011654:audio-1501692977-headset: unchanged=False",
+        "verdict": "not_met"
+      },
+      {
+        "clause_text": "harness defect",
+        "detail": "no structural harness defects detected",
+        "verdict": "not_met"
+      },
+      {
+        "clause_text": "per-sample TP/FP/FN fail to reproduce the adapter's committed scorer on recheck",
+        "detail": "every row's recomputed TP/FP/FN/parsed matched its embedded metrics exactly",
+        "verdict": "not_met"
+      },
+      {
+        "clause_text": "gold sentence text found inside a prompt",
+        "detail": "no row's own prompt text contains its sample's own gold sentence",
+        "verdict": "not_met"
+      },
+      {
+        "clause_text": "a TXT-* row's transcript disagrees with its own T0 output (byte-identity)",
+        "detail": "every TXT-* row's own rendered transcript sha256-matched its own T0 response",
+        "verdict": "not_met"
+      },
+      {
+        "clause_text": "a txt_duplicate row disagrees with its own pass-3 TXT-NOSUP original (byte-identity)",
+        "detail": "every txt_duplicate row byte-matched its own pass-3 TXT-NOSUP original",
+        "verdict": "not_met"
+      }
+    ],
+    "voided": false
+  }
+}

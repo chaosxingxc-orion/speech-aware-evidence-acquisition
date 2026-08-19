@@ -1,0 +1,65 @@
+P-KEY pinned offline read (docs/readiness/2026-08-18-pkey-preregistration-REGISTERED.md)
+==============================================================================
+
+attempt dir: /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-pkey2-338/attempt-20260819T111032Z-3109e8
+flight status: 'COMPLETED' (error=None)
+
+Per-arm aggregates
+  arm            n   slu_f1  slot_f1x  intent_acc  copy_rate  induced
+  AUD-NOSUP     60   0.1741    0.0435      0.0000     0.0000        0
+  AUD-SUP       60   0.6138    0.5236      0.0000     0.0000        3
+  TXT-NOSUP     60   0.1740    0.0339      0.0000     0.0000        0
+  TXT-SUP       60   0.5674    0.3708      0.0000     0.0000        3
+
+T0 vs gold transcript WER (scoring-side only): macro=0.5359 over 60 sample(s)
+
+Perception gap (TXT-NOSUP - AUD-NOSUP SLU-F1, descriptive): -0.0001
+
+Delta_AUD=+0.4397  Delta_TXT=+0.3934  INTERACTION I=+0.0463
+  (pre-amendment POINT-ONLY reading -- reported, no longer authoritative; see CI-GATED VERDICT below)
+  [ NOT_MET] I >= +0.06 (2x the measured 0.03 separability bar)
+           I=+0.0463, floor=+0.06, margin=-0.0137
+  [ NOT_MET] |I| <= 0.03
+           I=+0.0463, |I|=0.0463, ceiling=0.03, margin=-0.0163
+  [ NOT_MET] I <= -0.06
+           I=+0.0463, ceiling=-0.06, margin=-0.1063
+  point-only interaction verdict: INCONCLUSIVE-KEY
+
+Mandatory pre-read reachability statement (2026-08-19 amendment item 2)
+  CITED constants (P-PHON consumed class census): NEAR-MISS baseline failures 4/85 (rate=0.0471). This run's own AUD-NOSUP failures=60/60. Arithmetic: eligible = min(NEAR_MISS_COUNT, aud_nosup_failures) = min(4, 60) = 4; max_attainable_interaction = eligible / n_samples = 4 / 60 = 0.0667. SPEECH-TERM-PRESENT floor is +0.06 -> REACHABLE given this census.
+
+Per-sample paired cluster bootstrap over I: sigma_hat=0.0306 90% CI=[-0.0033, +0.0970] (N=10000 replicates, seed=20260807)
+  [ NOT_MET] the ENTIRE 90% bootstrap CI of I lies inside [-0.03, +0.03] AND SPEECH-TERM-PRESENT is reachable given the P-PHON census (2026-08-19 amendment items 1-2)
+           CI=[-0.0033, +0.0970] is NOT entirely inside the band (point I=+0.0463, sigma_hat=0.0306, n_replicates=10000) -- a point estimate inside the band with a CI crossing it is INCONCLUSIVE-KEY, never an affirmative KEY-ONLY
+  CI-GATED VERDICT (2026-08-19 amendment, AUTHORITATIVE): INCONCLUSIVE-KEY
+
+Duplicate-block analysis (2026-08-19 amendment item 4, n=35 byte-identical resends): original_slu_f1=0.1553 duplicate_slu_f1=0.1553 |Delta F1|=0.0000 (this axis's own measured floor -- compare against sigma_hat(I) above)
+
+Converted-set difference: aud_converted=0 txt_converted=0 aud_only(perception-repair)=0
+  NEAR-MISS cross-reference caveat (2026-08-19 amendment item 3): P-PHON's own consumed class census names at most n<=4 NEAR-MISS baseline failures (effectively n<=3 after P-PHON disqualified its single A3 NEAR-MISS row as a clock-format variant) -- this cross-reference is descriptive context for the converted-set difference above, never sufficient evidence for a mechanism claim on its own.
+
+Silence-swap comparison (3 AUD-SUP silence variants vs their real-audio counterparts)
+  slurp:devel:005518:audio-1490203960: unchanged=False has_real_counterpart=True
+  slurp:devel:007852:audio-1494416109-headset: unchanged=False has_real_counterpart=True
+  slurp:devel:011654:audio-1501692977-headset: unchanged=False has_real_counterpart=True
+
+recheck mismatches (TP/FP/FN vs adapter's committed scorer): 0
+gold-leak violations: 0
+transcript-reuse byte-identity mismatches: 0
+duplicate-block byte-identity mismatches: 0
+
+VOID (checked FIRST): not met
+  [ NOT_MET] silence-swap answers persist unchanged
+           module docstring note 7: VOID iff ALL 3 silence-swap sample(s) are unchanged (documented ambiguity resolution -- the prereg names no quantifier); slurp:devel:005518:audio-1490203960: unchanged=False; slurp:devel:007852:audio-1494416109-headset: unchanged=False; slurp:devel:011654:audio-1501692977-headset: unchanged=False
+  [ NOT_MET] harness defect
+           no structural harness defects detected
+  [ NOT_MET] per-sample TP/FP/FN fail to reproduce the adapter's committed scorer on recheck
+           every row's recomputed TP/FP/FN/parsed matched its embedded metrics exactly
+  [ NOT_MET] gold sentence text found inside a prompt
+           no row's own prompt text contains its sample's own gold sentence
+  [ NOT_MET] a TXT-* row's transcript disagrees with its own T0 output (byte-identity)
+           every TXT-* row's own rendered transcript sha256-matched its own T0 response
+  [ NOT_MET] a txt_duplicate row disagrees with its own pass-3 TXT-NOSUP original (byte-identity)
+           every txt_duplicate row byte-matched its own pass-3 TXT-NOSUP original
+
+OVERALL: INCONCLUSIVE-KEY
