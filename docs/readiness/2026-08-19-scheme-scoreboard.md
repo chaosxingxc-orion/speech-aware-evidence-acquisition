@@ -43,7 +43,7 @@ at every consumed read. (Registration/verdict docs remain the evidence of record
 | Blind supply regresses correct answers | ✅ 1/1 (V4) | 36/97 vs 0/97 baseline |
 | Closed-set decode routing viable | ✅ 1/1 (A1'r) | 60/60 non-fallback |
 | Refusal evidence-gated (A2T) | ✅ 1/1 (V1) | 11/11 vs 2/11 — carrier-specific vs SLURP |
-| Embedding routing | ⏳ P-EMB-1/2 (E-0 gating) | — |
+| Embedding routing | ⏳ P-EMB-1/2 REGISTERED (E-0: feasible AS-BUILT, `--embedding --pooling mean`, dim 2048, bit-deterministic; prefix-dilution + marker-pinning + GPU time-share facts bound into the registration) | E-0 scratch report 2026-08-19 |
 | Few-shot routing gain/bias | ⏳ P-FEW (flying next) | — |
 | Router-confidence targeting | 🔜 P-TARGET (needs P-EMB) | — |
 | Corrective confusable supply | 🔜 design queue | — |
