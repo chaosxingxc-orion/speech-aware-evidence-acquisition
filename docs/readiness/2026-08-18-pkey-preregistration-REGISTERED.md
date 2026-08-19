@@ -99,3 +99,20 @@ real client, tested through the REAL validation layer; then a full re-fly (attem
 338 requests in ONE session — resuming across sessions would break the in-session
 comparability the factorial is designed around, so the aborted attempt's audio rows are
 dead weight, recorded and never read).
+
+## 8. Amendment 2026-08-19 (run closure and successor run; nothing consumed)
+
+Attempt-2's takeoff REFUSED fail-closed at a run-total feasibility preflight check: the
+attempt store's one-shot semantics charge attempt-1's durable 183 calls against the run
+ceiling forever (183 + 338 = 521 > 340 registered), so no compliant attempt can fly under
+`SAEA-PROBE-pkey-303`. Per the coordinator's registration decision (successor run, never a
+post-hoc ceiling expansion and never a falsification of the durable spend record):
+- **`SAEA-PROBE-pkey-303` is CLOSED NOT-CONSUMED** — its ledger row stays consumed=no
+  forever with the closure note; attempt-1's 183-call/554.46-audio-second dead spend
+  remains attributed to it; no output of attempt-1 is ever read.
+- **Successor run `SAEA-PROBE-pkey2-338`** carries the identical §1–§7 design (six passes,
+  338 requests, one session, the §7 CI/reachability read amendments) with fresh accounting
+  (ceilings 360 calls / 2,500 audio-seconds / 0.6 GPU-h) and its own exposure row.
+Second mock-reality instance recorded: the launcher's hand-rolled HealthProxy narrowed the
+real client's signature (would have re-aborted at the first TXT request despite the library
+repair); fixed in the launcher, and proxy-signature parity joins the machinery checklist.
