@@ -1,0 +1,41 @@
+P-A2T abstention-asymmetry 2x2 pinned offline read (docs/readiness/2026-08-19-a2t-abst-preregistration-REGISTERED.md)
+==============================================================================
+
+attempt dir: /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-a2t-abst-44/attempt-20260819T160757Z-9425ce
+flight status: 'COMPLETED'
+split identity hash: e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c
+
+Per-cell aggregates
+  cell     n   abst   abst_r  confab  confab_r  pfail  pfail_r
+  TP-A    11      0   0.0000       9    0.8182      2   0.1818
+  TP-S    11     11   1.0000       0    0.0000      0   0.0000
+  TW-A    11      2   0.1818       5    0.4545      4   0.3636
+  TW-S    11     11   1.0000       0    0.0000      0   0.0000
+
+Per-sample 4-cell table (11 sample(s))
+  tier1_direct:001242: TP-A=confabulated_call, TP-S=well_formed_abstention, TW-A=well_formed_abstention, TW-S=well_formed_abstention
+  tier1_direct:001607: TP-A=confabulated_call, TP-S=well_formed_abstention, TW-A=well_formed_abstention, TW-S=well_formed_abstention
+  tier3_multi_intent:000078: TP-A=parse_failure, TP-S=well_formed_abstention, TW-A=parse_failure, TW-S=well_formed_abstention
+  tier3_multi_intent:000419: TP-A=confabulated_call, TP-S=well_formed_abstention, TW-A=confabulated_call, TW-S=well_formed_abstention
+  tier3_multi_intent:001251: TP-A=confabulated_call, TP-S=well_formed_abstention, TW-A=parse_failure, TW-S=well_formed_abstention
+  tier3_multi_intent:002915: TP-A=confabulated_call, TP-S=well_formed_abstention, TW-A=parse_failure, TW-S=well_formed_abstention
+  tier3_multi_intent:002986: TP-A=confabulated_call, TP-S=well_formed_abstention, TW-A=confabulated_call, TW-S=well_formed_abstention
+  tier3_multi_intent:003153: TP-A=confabulated_call, TP-S=well_formed_abstention, TW-A=parse_failure, TW-S=well_formed_abstention
+  tier7_multiturn:000554: TP-A=confabulated_call, TP-S=well_formed_abstention, TW-A=confabulated_call, TW-S=well_formed_abstention
+  tier8_intent_blending:000065: TP-A=confabulated_call, TP-S=well_formed_abstention, TW-A=confabulated_call, TW-S=well_formed_abstention
+  tier8_intent_blending:000696: TP-A=parse_failure, TP-S=well_formed_abstention, TW-A=confabulated_call, TW-S=well_formed_abstention
+
+Descriptive bootstrap CI (verdict-critical rates; never gates the raw-count verdict)
+  well_formed_abstention_TW-A: point=0.1818 CI=[0.0000, 0.3636] sigma_hat=0.1169 n_replicates=10000 seed=20260807
+  confabulated_call_TP-S: point=0.0000 CI=[0.0000, 0.0000] sigma_hat=0.0000 n_replicates=10000 seed=20260807
+  well_formed_abstention_TP-S: point=1.0000 CI=[1.0000, 1.0000] sigma_hat=0.0000 n_replicates=10000 seed=20260807
+
+ASYMMETRY-CONFIRMED: not met
+  [ NOT_MET] well_formed_abstention(TW-A) >= 8/11 AND confabulated_call(TP-S) >= 8/11
+           abstention(TW-A)=2/11, confabulation(TP-S)=0/11
+
+ASYMMETRY-REFUTED: MET
+  [     MET] well_formed_abstention(TP-S) >= 6/11
+           abstention(TP-S)=11/11
+
+OVERALL: ASYMMETRY-REFUTED

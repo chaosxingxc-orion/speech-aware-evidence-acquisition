@@ -1,0 +1,159 @@
+{
+  "attempt_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-a2t-abst-44/attempt-20260819T160757Z-9425ce",
+  "bootstraps_descriptive": {
+    "confabulated_call_TP-S": {
+      "ci_high": 0.0,
+      "ci_level": 0.9,
+      "ci_low": 0.0,
+      "n_replicates": 10000,
+      "point_estimate": 0.0,
+      "seed": 20260807,
+      "sigma_hat": 0.0
+    },
+    "well_formed_abstention_TP-S": {
+      "ci_high": 1.0,
+      "ci_level": 0.9,
+      "ci_low": 1.0,
+      "n_replicates": 10000,
+      "point_estimate": 1.0,
+      "seed": 20260807,
+      "sigma_hat": 0.0
+    },
+    "well_formed_abstention_TW-A": {
+      "ci_high": 0.36363636363636365,
+      "ci_level": 0.9,
+      "ci_low": 0.0,
+      "n_replicates": 10000,
+      "point_estimate": 0.18181818181818182,
+      "seed": 20260807,
+      "sigma_hat": 0.11694788519353254
+    }
+  },
+  "flight_status": "COMPLETED",
+  "per_cell": {
+    "TP-A": {
+      "cell": "TP-A",
+      "confabulated_call_count": 9,
+      "confabulated_call_rate": 0.8181818181818182,
+      "n_samples": 11,
+      "parse_failure_count": 2,
+      "parse_failure_rate": 0.18181818181818182,
+      "well_formed_abstention_count": 0,
+      "well_formed_abstention_rate": 0.0
+    },
+    "TP-S": {
+      "cell": "TP-S",
+      "confabulated_call_count": 0,
+      "confabulated_call_rate": 0.0,
+      "n_samples": 11,
+      "parse_failure_count": 0,
+      "parse_failure_rate": 0.0,
+      "well_formed_abstention_count": 11,
+      "well_formed_abstention_rate": 1.0
+    },
+    "TW-A": {
+      "cell": "TW-A",
+      "confabulated_call_count": 5,
+      "confabulated_call_rate": 0.45454545454545453,
+      "n_samples": 11,
+      "parse_failure_count": 4,
+      "parse_failure_rate": 0.36363636363636365,
+      "well_formed_abstention_count": 2,
+      "well_formed_abstention_rate": 0.18181818181818182
+    },
+    "TW-S": {
+      "cell": "TW-S",
+      "confabulated_call_count": 0,
+      "confabulated_call_rate": 0.0,
+      "n_samples": 11,
+      "parse_failure_count": 0,
+      "parse_failure_rate": 0.0,
+      "well_formed_abstention_count": 11,
+      "well_formed_abstention_rate": 1.0
+    }
+  },
+  "per_sample_table": {
+    "tier1_direct:001242": {
+      "TP-A": "confabulated_call",
+      "TP-S": "well_formed_abstention",
+      "TW-A": "well_formed_abstention",
+      "TW-S": "well_formed_abstention"
+    },
+    "tier1_direct:001607": {
+      "TP-A": "confabulated_call",
+      "TP-S": "well_formed_abstention",
+      "TW-A": "well_formed_abstention",
+      "TW-S": "well_formed_abstention"
+    },
+    "tier3_multi_intent:000078": {
+      "TP-A": "parse_failure",
+      "TP-S": "well_formed_abstention",
+      "TW-A": "parse_failure",
+      "TW-S": "well_formed_abstention"
+    },
+    "tier3_multi_intent:000419": {
+      "TP-A": "confabulated_call",
+      "TP-S": "well_formed_abstention",
+      "TW-A": "confabulated_call",
+      "TW-S": "well_formed_abstention"
+    },
+    "tier3_multi_intent:001251": {
+      "TP-A": "confabulated_call",
+      "TP-S": "well_formed_abstention",
+      "TW-A": "parse_failure",
+      "TW-S": "well_formed_abstention"
+    },
+    "tier3_multi_intent:002915": {
+      "TP-A": "confabulated_call",
+      "TP-S": "well_formed_abstention",
+      "TW-A": "parse_failure",
+      "TW-S": "well_formed_abstention"
+    },
+    "tier3_multi_intent:002986": {
+      "TP-A": "confabulated_call",
+      "TP-S": "well_formed_abstention",
+      "TW-A": "confabulated_call",
+      "TW-S": "well_formed_abstention"
+    },
+    "tier3_multi_intent:003153": {
+      "TP-A": "confabulated_call",
+      "TP-S": "well_formed_abstention",
+      "TW-A": "parse_failure",
+      "TW-S": "well_formed_abstention"
+    },
+    "tier7_multiturn:000554": {
+      "TP-A": "confabulated_call",
+      "TP-S": "well_formed_abstention",
+      "TW-A": "confabulated_call",
+      "TW-S": "well_formed_abstention"
+    },
+    "tier8_intent_blending:000065": {
+      "TP-A": "confabulated_call",
+      "TP-S": "well_formed_abstention",
+      "TW-A": "confabulated_call",
+      "TW-S": "well_formed_abstention"
+    },
+    "tier8_intent_blending:000696": {
+      "TP-A": "parse_failure",
+      "TP-S": "well_formed_abstention",
+      "TW-A": "confabulated_call",
+      "TW-S": "well_formed_abstention"
+    }
+  },
+  "run_id": "SAEA-PROBE-a2t-abst-44",
+  "schema": "saea-a2t-abst-read-v1",
+  "split_identity_hash": "e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c",
+  "verdict": {
+    "confirmed_clause": {
+      "clause_text": "well_formed_abstention(TW-A) >= 8/11 AND confabulated_call(TP-S) >= 8/11",
+      "detail": "abstention(TW-A)=2/11, confabulation(TP-S)=0/11",
+      "verdict": "not_met"
+    },
+    "overall": "ASYMMETRY-REFUTED",
+    "refuted_clause": {
+      "clause_text": "well_formed_abstention(TP-S) >= 6/11",
+      "detail": "abstention(TP-S)=11/11",
+      "verdict": "met"
+    }
+  }
+}
