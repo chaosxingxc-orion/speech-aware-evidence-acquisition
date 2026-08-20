@@ -1,0 +1,698 @@
+{
+  "accuracy": {
+    "fs_bal": 0.8166666666666667,
+    "fs_none": 0.8166666666666667,
+    "fs_skew": 0.75
+  },
+  "attempt_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-pfew-180/attempt-20260819T233312Z-480fed",
+  "bootstrap": {
+    "bal_none": {
+      "ci_high": 0.06666666666666665,
+      "ci_level": 0.9,
+      "ci_low": -0.06666666666666665,
+      "n_replicates": 10000,
+      "point_estimate": 0.0,
+      "seed": 20260807,
+      "sigma_hat": 0.04114650126884018
+    },
+    "none_skew": {
+      "ci_high": 0.1166666666666667,
+      "ci_level": 0.9,
+      "ci_low": 0.01666666666666672,
+      "n_replicates": 10000,
+      "point_estimate": 0.06666666666666665,
+      "seed": 20260807,
+      "sigma_hat": 0.03234745241557328
+    }
+  },
+  "capture": {
+    "capture_count": 2,
+    "capture_rate": 0.03389830508474576,
+    "n_denominator": 59,
+    "n_excluded_gold_equals_skew": 1,
+    "n_samples": 60,
+    "skew_label": "audio"
+  },
+  "flight_error": null,
+  "flight_status": "COMPLETED",
+  "harness_defect_reasons": [],
+  "mapping_outcome_counts": {
+    "FS-BAL": {
+      "exact": 60
+    },
+    "FS-NONE": {
+      "exact": 60
+    },
+    "FS-SKEW": {
+      "exact": 60
+    }
+  },
+  "n_samples": 60,
+  "note": "gold-derived; scoring-side only; must never enter a runtime path",
+  "per_sample": [
+    {
+      "fs_bal_correct": true,
+      "fs_bal_label": "audio",
+      "fs_none_correct": true,
+      "fs_none_label": "audio",
+      "fs_skew_correct": true,
+      "fs_skew_label": "audio",
+      "gold_scenario": "audio",
+      "sample_id": "slurp:devel:000115:audio-1495375974"
+    },
+    {
+      "fs_bal_correct": true,
+      "fs_bal_label": "music",
+      "fs_none_correct": true,
+      "fs_none_label": "music",
+      "fs_skew_correct": true,
+      "fs_skew_label": "music",
+      "gold_scenario": "music",
+      "sample_id": "slurp:devel:000444:audio-1502891018-headset"
+    },
+    {
+      "fs_bal_correct": false,
+      "fs_bal_label": "qa",
+      "fs_none_correct": true,
+      "fs_none_label": "datetime",
+      "fs_skew_correct": true,
+      "fs_skew_label": "datetime",
+      "gold_scenario": "datetime",
+      "sample_id": "slurp:devel:000943:audio-1434529860-headset"
+    },
+    {
+      "fs_bal_correct": true,
+      "fs_bal_label": "news",
+      "fs_none_correct": true,
+      "fs_none_label": "news",
+      "fs_skew_correct": true,
+      "fs_skew_label": "news",
+      "gold_scenario": "news",
+      "sample_id": "slurp:devel:001637:audio-1502195066-headset"
+    },
+    {
+      "fs_bal_correct": true,
+      "fs_bal_label": "iot",
+      "fs_none_correct": true,
+      "fs_none_label": "iot",
+      "fs_skew_correct": true,
+      "fs_skew_label": "iot",
+      "gold_scenario": "iot",
+      "sample_id": "slurp:devel:002120:audio-1502218226"
+    },
+    {
+      "fs_bal_correct": true,
+      "fs_bal_label": "news",
+      "fs_none_correct": true,
+      "fs_none_label": "news",
+      "fs_skew_correct": true,
+      "fs_skew_label": "news",
+      "gold_scenario": "news",
+      "sample_id": "slurp:devel:002992:audio-1489152746"
+    },
+    {
+      "fs_bal_correct": true,
+      "fs_bal_label": "weather",
+      "fs_none_correct": true,
+      "fs_none_label": "weather",
+      "fs_skew_correct": true,
+      "fs_skew_label": "weather",
+      "gold_scenario": "weather",
+      "sample_id": "slurp:devel:003121:audio-1501696857-headset"
+    },
+    {
+      "fs_bal_correct": true,
+      "fs_bal_label": "weather",
+      "fs_none_correct": true,
+      "fs_none_label": "weather",
+      "fs_skew_correct": true,
+      "fs_skew_label": "weather",
+      "gold_scenario": "weather",
+      "sample_id": "slurp:devel:003309:audio-1501756265"
+    },
+    {
+      "fs_bal_correct": false,
+      "fs_bal_label": "music",
+      "fs_none_correct": false,
+      "fs_none_label": "music",
+      "fs_skew_correct": false,
+      "fs_skew_label": "music",
+      "gold_scenario": "play",
+      "sample_id": "slurp:devel:004134:audio-1500387396-headset"
+    },
+    {
+      "fs_bal_correct": true,
+      "fs_bal_label": "takeaway",
+      "fs_none_correct": true,
+      "fs_none_label": "takeaway",
+      "fs_skew_correct": true,
+      "fs_skew_label": "takeaway",
+      "gold_scenario": "takeaway",
+      "sample_id": "slurp:devel:004604:audio-1501759214"
+    },
+    {
+      "fs_bal_correct": true,
+      "fs_bal_label": "iot",
+      "fs_none_correct": false,
+      "fs_none_label": "music",
+      "fs_skew_correct": false,
+      "fs_skew_label": "music",
+      "gold_scenario": "iot",
+      "sample_id": "slurp:devel:005025:audio-1500900618"
+    },
+    {
+      "fs_bal_correct": true,
+      "fs_bal_label": "datetime",
+      "fs_none_correct": true,
+      "fs_none_label": "datetime",
+      "fs_skew_correct": true,
+      "fs_skew_label": "datetime",
+      "gold_scenario": "datetime",
+      "sample_id": "slurp:devel:005028:audio-1502893878-headset"
+    },
+    {
+      "fs_bal_correct": false,
+      "fs_bal_label": "music",
+      "fs_none_correct": false,
+      "fs_none_label": "music",
+      "fs_skew_correct": false,
+      "fs_skew_label": "music",
+      "gold_scenario": "play",
+      "sample_id": "slurp:devel:005108:audio-1494422588-headset"
+    },
+    {
+      "fs_bal_correct": true,
+      "fs_bal_label": "datetime",
+      "fs_none_correct": true,
+      "fs_none_label": "datetime",
+      "fs_skew_correct": false,
+      "fs_skew_label": "general",
+      "gold_scenario": "datetime",
+      "sample_id": "slurp:devel:005359:audio-1497265137-headset"
+    },
+    {
+      "fs_bal_correct": false,
+      "fs_bal_label": "alarm",
+      "fs_none_correct": false,
+      "fs_none_label": "alarm",
+      "fs_skew_correct": false,
+      "fs_skew_label": "alarm",
+      "gold_scenario": "weather",
+      "sample_id": "slurp:devel:005453:audio-1490183633-headset"
+    },
+    {
+      "fs_bal_correct": true,
+      "fs_bal_label": "iot",
+      "fs_none_correct": true,
+      "fs_none_label": "iot",
+      "fs_skew_correct": true,
+      "fs_skew_label": "iot",
+      "gold_scenario": "iot",
+      "sample_id": "slurp:devel:005518:audio-1490203960"
+    },
+    {
+      "fs_bal_correct": true,
+      "fs_bal_label": "music",
+      "fs_none_correct": true,
+      "fs_none_label": "music",
+      "fs_skew_correct": true,
+      "fs_skew_label": "music",
+      "gold_scenario": "music",
+      "sample_id": "slurp:devel:005536:audio-1499090415-headset"
+    },
+    {
+      "fs_bal_correct": true,
+      "fs_bal_label": "alarm",
+      "fs_none_correct": true,
+      "fs_none_label": "alarm",
+      "fs_skew_correct": true,
+      "fs_skew_label": "alarm",
+      "gold_scenario": "alarm",
+      "sample_id": "slurp:devel:005541:audio--1504191543"
+    },
+    {
+      "fs_bal_correct": true,
+      "fs_bal_label": "alarm",
+      "fs_none_correct": true,
+      "fs_none_label": "alarm",
+      "fs_skew_correct": true,
+      "fs_skew_label": "alarm",
+      "gold_scenario": "alarm",
+      "sample_id": "slurp:devel:005567:audio-1497359684"
+    },
+    {
+      "fs_bal_correct": false,
+      "fs_bal_label": "music",
+      "fs_none_correct": false,
+      "fs_none_label": "music",
+      "fs_skew_correct": false,
+      "fs_skew_label": "music",
+      "gold_scenario": "play",
+      "sample_id": "slurp:devel:005684:audio-1498577434"
+    },
+    {
+      "fs_bal_correct": true,
+      "fs_bal_label": "weather",
+      "fs_none_correct": true,
+      "fs_none_label": "weather",
+      "fs_skew_correct": true,
+      "fs_skew_label": "weather",
+      "gold_scenario": "weather",
+      "sample_id": "slurp:devel:005743:audio-1501407405-headset"
+    },
+    {
+      "fs_bal_correct": true,
+      "fs_bal_label": "takeaway",
+      "fs_none_correct": true,
+      "fs_none_label": "takeaway",
+      "fs_skew_correct": true,
+      "fs_skew_label": "takeaway",
+      "gold_scenario": "takeaway",
+      "sample_id": "slurp:devel:005770:audio-1495377172"
+    },
+    {
+      "fs_bal_correct": true,
+      "fs_bal_label": "news",
+      "fs_none_correct": true,
+      "fs_none_label": "news",
+      "fs_skew_correct": true,
+      "fs_skew_label": "news",
+      "gold_scenario": "news",
+      "sample_id": "slurp:devel:005943:audio-1499266055"
+    },
+    {
+      "fs_bal_correct": false,
+      "fs_bal_label": "datetime",
+      "fs_none_correct": false,
+      "fs_none_label": "datetime",
+      "fs_skew_correct": false,
+      "fs_skew_label": "datetime",
+      "gold_scenario": "general",
+      "sample_id": "slurp:devel:006603:audio-1502101512"
+    },
+    {
+      "fs_bal_correct": true,
+      "fs_bal_label": "calendar",
+      "fs_none_correct": true,
+      "fs_none_label": "calendar",
+      "fs_skew_correct": true,
+      "fs_skew_label": "calendar",
+      "gold_scenario": "calendar",
+      "sample_id": "slurp:devel:006751:audio-1501773837-headset"
+    },
+    {
+      "fs_bal_correct": true,
+      "fs_bal_label": "calendar",
+      "fs_none_correct": true,
+      "fs_none_label": "calendar",
+      "fs_skew_correct": true,
+      "fs_skew_label": "calendar",
+      "gold_scenario": "calendar",
+      "sample_id": "slurp:devel:007374:audio-1498569508"
+    },
+    {
+      "fs_bal_correct": true,
+      "fs_bal_label": "calendar",
+      "fs_none_correct": true,
+      "fs_none_label": "calendar",
+      "fs_skew_correct": true,
+      "fs_skew_label": "calendar",
+      "gold_scenario": "calendar",
+      "sample_id": "slurp:devel:007541:audio-1490202471"
+    },
+    {
+      "fs_bal_correct": true,
+      "fs_bal_label": "calendar",
+      "fs_none_correct": true,
+      "fs_none_label": "calendar",
+      "fs_skew_correct": true,
+      "fs_skew_label": "calendar",
+      "gold_scenario": "calendar",
+      "sample_id": "slurp:devel:007653:audio-1497438989-headset"
+    },
+    {
+      "fs_bal_correct": true,
+      "fs_bal_label": "calendar",
+      "fs_none_correct": true,
+      "fs_none_label": "calendar",
+      "fs_skew_correct": true,
+      "fs_skew_label": "calendar",
+      "gold_scenario": "calendar",
+      "sample_id": "slurp:devel:007852:audio-1494416109-headset"
+    },
+    {
+      "fs_bal_correct": true,
+      "fs_bal_label": "calendar",
+      "fs_none_correct": true,
+      "fs_none_label": "calendar",
+      "fs_skew_correct": true,
+      "fs_skew_label": "calendar",
+      "gold_scenario": "calendar",
+      "sample_id": "slurp:devel:008014:audio-1500899290"
+    },
+    {
+      "fs_bal_correct": true,
+      "fs_bal_label": "calendar",
+      "fs_none_correct": false,
+      "fs_none_label": "lists",
+      "fs_skew_correct": false,
+      "fs_skew_label": "lists",
+      "gold_scenario": "calendar",
+      "sample_id": "slurp:devel:008047:audio-1498570919"
+    },
+    {
+      "fs_bal_correct": true,
+      "fs_bal_label": "calendar",
+      "fs_none_correct": true,
+      "fs_none_label": "calendar",
+      "fs_skew_correct": false,
+      "fs_skew_label": "datetime",
+      "gold_scenario": "calendar",
+      "sample_id": "slurp:devel:008072:audio-1488986707"
+    },
+    {
+      "fs_bal_correct": false,
+      "fs_bal_label": "audio",
+      "fs_none_correct": false,
+      "fs_none_label": "audio",
+      "fs_skew_correct": false,
+      "fs_skew_label": "audio",
+      "gold_scenario": "play",
+      "sample_id": "slurp:devel:009340:audio-1497882818-headset"
+    },
+    {
+      "fs_bal_correct": true,
+      "fs_bal_label": "play",
+      "fs_none_correct": false,
+      "fs_none_label": "news",
+      "fs_skew_correct": false,
+      "fs_skew_label": "news",
+      "gold_scenario": "play",
+      "sample_id": "slurp:devel:009518:audio-1495734594-headset"
+    },
+    {
+      "fs_bal_correct": false,
+      "fs_bal_label": "general",
+      "fs_none_correct": true,
+      "fs_none_label": "play",
+      "fs_skew_correct": false,
+      "fs_skew_label": "general",
+      "gold_scenario": "play",
+      "sample_id": "slurp:devel:009733:audio--1505407176"
+    },
+    {
+      "fs_bal_correct": true,
+      "fs_bal_label": "cooking",
+      "fs_none_correct": true,
+      "fs_none_label": "cooking",
+      "fs_skew_correct": true,
+      "fs_skew_label": "cooking",
+      "gold_scenario": "cooking",
+      "sample_id": "slurp:devel:010162:audio-1501765286"
+    },
+    {
+      "fs_bal_correct": true,
+      "fs_bal_label": "cooking",
+      "fs_none_correct": true,
+      "fs_none_label": "cooking",
+      "fs_skew_correct": true,
+      "fs_skew_label": "cooking",
+      "gold_scenario": "cooking",
+      "sample_id": "slurp:devel:010186:audio-1501415369-headset"
+    },
+    {
+      "fs_bal_correct": true,
+      "fs_bal_label": "lists",
+      "fs_none_correct": true,
+      "fs_none_label": "lists",
+      "fs_skew_correct": true,
+      "fs_skew_label": "lists",
+      "gold_scenario": "lists",
+      "sample_id": "slurp:devel:010545:audio-1490006493"
+    },
+    {
+      "fs_bal_correct": true,
+      "fs_bal_label": "lists",
+      "fs_none_correct": true,
+      "fs_none_label": "lists",
+      "fs_skew_correct": true,
+      "fs_skew_label": "lists",
+      "gold_scenario": "lists",
+      "sample_id": "slurp:devel:010732:audio-1490184504"
+    },
+    {
+      "fs_bal_correct": false,
+      "fs_bal_label": "audio",
+      "fs_none_correct": false,
+      "fs_none_label": "audio",
+      "fs_skew_correct": false,
+      "fs_skew_label": "audio",
+      "gold_scenario": "play",
+      "sample_id": "slurp:devel:011503:audio-1494514154"
+    },
+    {
+      "fs_bal_correct": true,
+      "fs_bal_label": "recommendation",
+      "fs_none_correct": true,
+      "fs_none_label": "recommendation",
+      "fs_skew_correct": false,
+      "fs_skew_label": "transport",
+      "gold_scenario": "recommendation",
+      "sample_id": "slurp:devel:011654:audio-1501692977-headset"
+    },
+    {
+      "fs_bal_correct": true,
+      "fs_bal_label": "recommendation",
+      "fs_none_correct": true,
+      "fs_none_label": "recommendation",
+      "fs_skew_correct": true,
+      "fs_skew_label": "recommendation",
+      "gold_scenario": "recommendation",
+      "sample_id": "slurp:devel:011693:audio-1498565017-headset"
+    },
+    {
+      "fs_bal_correct": true,
+      "fs_bal_label": "recommendation",
+      "fs_none_correct": true,
+      "fs_none_label": "recommendation",
+      "fs_skew_correct": true,
+      "fs_skew_label": "recommendation",
+      "gold_scenario": "recommendation",
+      "sample_id": "slurp:devel:012076:audio-1501766742-headset"
+    },
+    {
+      "fs_bal_correct": true,
+      "fs_bal_label": "transport",
+      "fs_none_correct": true,
+      "fs_none_label": "transport",
+      "fs_skew_correct": true,
+      "fs_skew_label": "transport",
+      "gold_scenario": "transport",
+      "sample_id": "slurp:devel:012253:audio-1488974202"
+    },
+    {
+      "fs_bal_correct": false,
+      "fs_bal_label": "takeaway",
+      "fs_none_correct": true,
+      "fs_none_label": "transport",
+      "fs_skew_correct": true,
+      "fs_skew_label": "transport",
+      "gold_scenario": "transport",
+      "sample_id": "slurp:devel:012478:audio-1498486426"
+    },
+    {
+      "fs_bal_correct": true,
+      "fs_bal_label": "transport",
+      "fs_none_correct": true,
+      "fs_none_label": "transport",
+      "fs_skew_correct": true,
+      "fs_skew_label": "transport",
+      "gold_scenario": "transport",
+      "sample_id": "slurp:devel:012654:audio-1497860426-headset"
+    },
+    {
+      "fs_bal_correct": true,
+      "fs_bal_label": "transport",
+      "fs_none_correct": true,
+      "fs_none_label": "transport",
+      "fs_skew_correct": true,
+      "fs_skew_label": "transport",
+      "gold_scenario": "transport",
+      "sample_id": "slurp:devel:012667:audio-1501751776-headset"
+    },
+    {
+      "fs_bal_correct": true,
+      "fs_bal_label": "general",
+      "fs_none_correct": true,
+      "fs_none_label": "general",
+      "fs_skew_correct": true,
+      "fs_skew_label": "general",
+      "gold_scenario": "general",
+      "sample_id": "slurp:devel:013281:audio-1490354296-headset"
+    },
+    {
+      "fs_bal_correct": true,
+      "fs_bal_label": "qa",
+      "fs_none_correct": true,
+      "fs_none_label": "qa",
+      "fs_skew_correct": true,
+      "fs_skew_label": "qa",
+      "gold_scenario": "qa",
+      "sample_id": "slurp:devel:013795:audio-1499266495"
+    },
+    {
+      "fs_bal_correct": true,
+      "fs_bal_label": "qa",
+      "fs_none_correct": true,
+      "fs_none_label": "qa",
+      "fs_skew_correct": true,
+      "fs_skew_label": "qa",
+      "gold_scenario": "qa",
+      "sample_id": "slurp:devel:014173:audio-1490291441"
+    },
+    {
+      "fs_bal_correct": true,
+      "fs_bal_label": "qa",
+      "fs_none_correct": true,
+      "fs_none_label": "qa",
+      "fs_skew_correct": true,
+      "fs_skew_label": "qa",
+      "gold_scenario": "qa",
+      "sample_id": "slurp:devel:014263:audio-1501692486"
+    },
+    {
+      "fs_bal_correct": true,
+      "fs_bal_label": "qa",
+      "fs_none_correct": true,
+      "fs_none_label": "qa",
+      "fs_skew_correct": true,
+      "fs_skew_label": "qa",
+      "gold_scenario": "qa",
+      "sample_id": "slurp:devel:014397:audio-1497368809"
+    },
+    {
+      "fs_bal_correct": true,
+      "fs_bal_label": "qa",
+      "fs_none_correct": true,
+      "fs_none_label": "qa",
+      "fs_skew_correct": true,
+      "fs_skew_label": "qa",
+      "gold_scenario": "qa",
+      "sample_id": "slurp:devel:014657:audio-1499695487"
+    },
+    {
+      "fs_bal_correct": false,
+      "fs_bal_label": "news",
+      "fs_none_correct": false,
+      "fs_none_label": "news",
+      "fs_skew_correct": false,
+      "fs_skew_label": "news",
+      "gold_scenario": "social",
+      "sample_id": "slurp:devel:015258:audio-1501777355-headset"
+    },
+    {
+      "fs_bal_correct": true,
+      "fs_bal_label": "social",
+      "fs_none_correct": true,
+      "fs_none_label": "social",
+      "fs_skew_correct": true,
+      "fs_skew_label": "social",
+      "gold_scenario": "social",
+      "sample_id": "slurp:devel:015375:audio-1501754418"
+    },
+    {
+      "fs_bal_correct": true,
+      "fs_bal_label": "social",
+      "fs_none_correct": true,
+      "fs_none_label": "social",
+      "fs_skew_correct": true,
+      "fs_skew_label": "social",
+      "gold_scenario": "social",
+      "sample_id": "slurp:devel:015632:audio-1490021137-headset"
+    },
+    {
+      "fs_bal_correct": true,
+      "fs_bal_label": "email",
+      "fs_none_correct": true,
+      "fs_none_label": "email",
+      "fs_skew_correct": true,
+      "fs_skew_label": "email",
+      "gold_scenario": "email",
+      "sample_id": "slurp:devel:015805:audio-1489153743"
+    },
+    {
+      "fs_bal_correct": true,
+      "fs_bal_label": "email",
+      "fs_none_correct": true,
+      "fs_none_label": "email",
+      "fs_skew_correct": true,
+      "fs_skew_label": "email",
+      "gold_scenario": "email",
+      "sample_id": "slurp:devel:016653:audio-1494513016"
+    },
+    {
+      "fs_bal_correct": true,
+      "fs_bal_label": "email",
+      "fs_none_correct": true,
+      "fs_none_label": "email",
+      "fs_skew_correct": true,
+      "fs_skew_label": "email",
+      "gold_scenario": "email",
+      "sample_id": "slurp:devel:016825:audio-1498573552-headset"
+    },
+    {
+      "fs_bal_correct": true,
+      "fs_bal_label": "email",
+      "fs_none_correct": true,
+      "fs_none_label": "email",
+      "fs_skew_correct": true,
+      "fs_skew_label": "email",
+      "gold_scenario": "email",
+      "sample_id": "slurp:devel:017009:audio-1502198805-headset"
+    }
+  ],
+  "reachability": {
+    "bias_sensitive_reachable": true,
+    "detail": "FS-NONE accuracy=0.8167. BAL-NONE contrast: best case FS-BAL=1.0 -> max_attainable_diff=0.1833 (FS-HELPS floor +0.10) -> REACHABLE. NONE-SKEW contrast: best case FS-SKEW=0.0 -> max_attainable_diff=0.8167 (BIAS-SENSITIVE floor +0.15) -> REACHABLE.",
+    "fs_helps_reachable": true,
+    "fs_none_accuracy": 0.8166666666666667,
+    "max_attainable_bal_none_diff": 0.18333333333333335,
+    "max_attainable_none_skew_diff": 0.8166666666666667
+  },
+  "runtime_prohibited": true,
+  "schema": "saea-pfew-read-v1",
+  "skew_label": "audio",
+  "verdict": {
+    "bias_sensitive": {
+      "clause_text": "acc(FS-NONE) - acc(FS-SKEW) >= +0.15 AND skew-label capture rate >= 0.25",
+      "detail": "none_skew_diff=+0.0667 (floor +0.15), capture_rate=0.0339 (floor 0.25)",
+      "verdict": "not_met"
+    },
+    "bias_sensitive_point": {
+      "clause_text": "acc(FS-NONE) - acc(FS-SKEW) >= +0.15 AND skew-label capture rate >= 0.25",
+      "detail": "none_skew_diff=+0.0667 (floor +0.15), capture_rate=0.0339 (floor 0.25)",
+      "verdict": "not_met"
+    },
+    "fs_helps": {
+      "clause_text": "registered point threshold met AND the bootstrap CI lower bound of the BAL-NONE accuracy difference is > 0",
+      "detail": "point=not_met, CI=[-0.0667, +0.0667] (sigma_hat=0.0411, n_replicates=10000); ci_low>0 is False",
+      "verdict": "not_met"
+    },
+    "fs_helps_point": {
+      "clause_text": "acc(FS-BAL) - acc(FS-NONE) >= +0.10",
+      "detail": "diff=+0.0000, floor=+0.10",
+      "verdict": "not_met"
+    },
+    "fs_inert": {
+      "clause_text": "|point diff| <= 0.05 AND the ENTIRE 90% bootstrap CI lies inside [-0.05, +0.05] AND FS-HELPS is reachable given FS-NONE's own accuracy",
+      "detail": "CI=[-0.0667, +0.0667] is NOT entirely inside [-0.05, +0.05] -- a point estimate inside the band with a CI crossing it is INCONCLUSIVE-FEW, never an affirmative FS-INERT",
+      "verdict": "not_met"
+    },
+    "fs_inert_point": {
+      "clause_text": "|acc(FS-BAL) - acc(FS-NONE)| <= 0.05",
+      "detail": "diff=+0.0000, ceiling=+/-0.05",
+      "verdict": "met"
+    },
+    "overall": "INCONCLUSIVE-FEW"
+  }
+}

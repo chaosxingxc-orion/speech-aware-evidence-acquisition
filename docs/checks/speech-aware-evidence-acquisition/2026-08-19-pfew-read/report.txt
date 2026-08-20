@@ -1,0 +1,99 @@
+P-FEW pinned offline read (docs/readiness/2026-08-19-pfew-preregistration-REGISTERED.md)
+==========================================================================
+
+attempt dir: /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-pfew-180/attempt-20260819T233312Z-480fed
+flight status: 'COMPLETED' (error=None)
+skew_label: 'audio'
+n_samples=60
+
+Per-arm closed-set accuracy vs gold (scoring-side)
+  FS-NONE=0.8167  FS-BAL=0.8167  FS-SKEW=0.7500
+
+Mapping-outcome distribution per arm
+  FS-NONE: {'exact': 60}
+  FS-BAL: {'exact': 60}
+  FS-SKEW: {'exact': 60}
+
+Per-sample 3-arm table
+  sample_id                                       gold          NONE          BAL           SKEW          
+  slurp:devel:000115:audio-1495375974             audio         audio         audio         audio         
+  slurp:devel:000444:audio-1502891018-headset     music         music         music         music         
+  slurp:devel:000943:audio-1434529860-headset     datetime      datetime      qa            datetime      
+  slurp:devel:001637:audio-1502195066-headset     news          news          news          news          
+  slurp:devel:002120:audio-1502218226             iot           iot           iot           iot           
+  slurp:devel:002992:audio-1489152746             news          news          news          news          
+  slurp:devel:003121:audio-1501696857-headset     weather       weather       weather       weather       
+  slurp:devel:003309:audio-1501756265             weather       weather       weather       weather       
+  slurp:devel:004134:audio-1500387396-headset     play          music         music         music         
+  slurp:devel:004604:audio-1501759214             takeaway      takeaway      takeaway      takeaway      
+  slurp:devel:005025:audio-1500900618             iot           music         iot           music         
+  slurp:devel:005028:audio-1502893878-headset     datetime      datetime      datetime      datetime      
+  slurp:devel:005108:audio-1494422588-headset     play          music         music         music         
+  slurp:devel:005359:audio-1497265137-headset     datetime      datetime      datetime      general       
+  slurp:devel:005453:audio-1490183633-headset     weather       alarm         alarm         alarm         
+  slurp:devel:005518:audio-1490203960             iot           iot           iot           iot           
+  slurp:devel:005536:audio-1499090415-headset     music         music         music         music         
+  slurp:devel:005541:audio--1504191543            alarm         alarm         alarm         alarm         
+  slurp:devel:005567:audio-1497359684             alarm         alarm         alarm         alarm         
+  slurp:devel:005684:audio-1498577434             play          music         music         music         
+  slurp:devel:005743:audio-1501407405-headset     weather       weather       weather       weather       
+  slurp:devel:005770:audio-1495377172             takeaway      takeaway      takeaway      takeaway      
+  slurp:devel:005943:audio-1499266055             news          news          news          news          
+  slurp:devel:006603:audio-1502101512             general       datetime      datetime      datetime      
+  slurp:devel:006751:audio-1501773837-headset     calendar      calendar      calendar      calendar      
+  slurp:devel:007374:audio-1498569508             calendar      calendar      calendar      calendar      
+  slurp:devel:007541:audio-1490202471             calendar      calendar      calendar      calendar      
+  slurp:devel:007653:audio-1497438989-headset     calendar      calendar      calendar      calendar      
+  slurp:devel:007852:audio-1494416109-headset     calendar      calendar      calendar      calendar      
+  slurp:devel:008014:audio-1500899290             calendar      calendar      calendar      calendar      
+  slurp:devel:008047:audio-1498570919             calendar      lists         calendar      lists         
+  slurp:devel:008072:audio-1488986707             calendar      calendar      calendar      datetime      
+  slurp:devel:009340:audio-1497882818-headset     play          audio         audio         audio         
+  slurp:devel:009518:audio-1495734594-headset     play          news          play          news          
+  slurp:devel:009733:audio--1505407176            play          play          general       general       
+  slurp:devel:010162:audio-1501765286             cooking       cooking       cooking       cooking       
+  slurp:devel:010186:audio-1501415369-headset     cooking       cooking       cooking       cooking       
+  slurp:devel:010545:audio-1490006493             lists         lists         lists         lists         
+  slurp:devel:010732:audio-1490184504             lists         lists         lists         lists         
+  slurp:devel:011503:audio-1494514154             play          audio         audio         audio         
+  slurp:devel:011654:audio-1501692977-headset     recommendationrecommendationrecommendationtransport     
+  slurp:devel:011693:audio-1498565017-headset     recommendationrecommendationrecommendationrecommendation
+  slurp:devel:012076:audio-1501766742-headset     recommendationrecommendationrecommendationrecommendation
+  slurp:devel:012253:audio-1488974202             transport     transport     transport     transport     
+  slurp:devel:012478:audio-1498486426             transport     transport     takeaway      transport     
+  slurp:devel:012654:audio-1497860426-headset     transport     transport     transport     transport     
+  slurp:devel:012667:audio-1501751776-headset     transport     transport     transport     transport     
+  slurp:devel:013281:audio-1490354296-headset     general       general       general       general       
+  slurp:devel:013795:audio-1499266495             qa            qa            qa            qa            
+  slurp:devel:014173:audio-1490291441             qa            qa            qa            qa            
+  slurp:devel:014263:audio-1501692486             qa            qa            qa            qa            
+  slurp:devel:014397:audio-1497368809             qa            qa            qa            qa            
+  slurp:devel:014657:audio-1499695487             qa            qa            qa            qa            
+  slurp:devel:015258:audio-1501777355-headset     social        news          news          news          
+  slurp:devel:015375:audio-1501754418             social        social        social        social        
+  slurp:devel:015632:audio-1490021137-headset     social        social        social        social        
+  slurp:devel:015805:audio-1489153743             email         email         email         email         
+  slurp:devel:016653:audio-1494513016             email         email         email         email         
+  slurp:devel:016825:audio-1498573552-headset     email         email         email         email         
+  slurp:devel:017009:audio-1502198805-headset     email         email         email         email         
+
+Skew-label capture: skew_label='audio', capture=2/59 (rate=0.0339); excluded (gold==skew_label)=1/60
+
+Mandatory pre-read reachability statement
+  FS-NONE accuracy=0.8167. BAL-NONE contrast: best case FS-BAL=1.0 -> max_attainable_diff=0.1833 (FS-HELPS floor +0.10) -> REACHABLE. NONE-SKEW contrast: best case FS-SKEW=0.0 -> max_attainable_diff=0.8167 (BIAS-SENSITIVE floor +0.15) -> REACHABLE.
+
+BAL-NONE bootstrap: sigma_hat=0.0411 90% CI=[-0.0667, +0.0667] (N=10000, seed=20260807)
+NONE-SKEW bootstrap: sigma_hat=0.0323 90% CI=[+0.0167, +0.1167] (N=10000, seed=20260807)
+
+FS-HELPS: not met
+  point: [ NOT_MET] diff=+0.0000, floor=+0.10
+  CI-gated: [ NOT_MET] point=not_met, CI=[-0.0667, +0.0667] (sigma_hat=0.0411, n_replicates=10000); ci_low>0 is False
+
+FS-INERT: not met
+  point: [     MET] diff=+0.0000, ceiling=+/-0.05
+  CI-gated: [ NOT_MET] CI=[-0.0667, +0.0667] is NOT entirely inside [-0.05, +0.05] -- a point estimate inside the band with a CI crossing it is INCONCLUSIVE-FEW, never an affirmative FS-INERT
+
+BIAS-SENSITIVE (independent overlay): not met
+  [ NOT_MET] none_skew_diff=+0.0667 (floor +0.15), capture_rate=0.0339 (floor 0.25)
+
+OVERALL: INCONCLUSIVE-FEW
