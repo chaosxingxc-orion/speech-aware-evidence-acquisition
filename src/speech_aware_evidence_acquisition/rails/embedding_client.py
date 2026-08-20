@@ -19,12 +19,26 @@ here so this module's own request-shape choices are traceable to them):
   ``{"content": [{"prompt_string": <marker>, "multimodal_data": [<base64
   audio>]}]}`` against ``POST /embedding``. Text request shape is plain
   content strings: ``{"content": [<text>]}``. NO instruct prefix on either
-  side (E-0 measured a prefix shifting the pooled vector more than swapping
-  the audio does).
+  side by DEFAULT (E-0 measured a prefix shifting the pooled vector more
+  than swapping the audio does; this was P-EMB-1/2's own binding decision).
 - outputs are L2-normalized, dim :data:`EMBEDDING_DIM` (2048), bit-
   deterministic (encode+pool, zero sampling -- this client accepts no
   decoding-params argument anywhere, so there is no seam through which a
   sampling parameter could leak into a request).
+
+EXTENSION (SAEA-PROBE-pemb3l-234, ``docs/readiness/
+2026-08-20-pemb3l-preregistration-REGISTERED.md``): :meth:`EmbeddingClient.
+embed_text`/:meth:`embed_audio` accept an OPTIONAL ``prefix``/
+``prompt_prefix`` keyword, defaulting to the empty string so P-EMB-1/2's own
+byte-for-byte bare-content request shape is UNCHANGED for every existing
+caller (``embed_text``: ``{"content": [prefix + text]}``; ``embed_audio``:
+``prompt_string`` becomes ``prompt_prefix + <marker>``, i.e. the prefix text
+sits BEFORE the media marker, never after). P-EMB-3L is the first (and, as
+of this module, only registered) caller that ever passes a non-empty value
+-- the two EXACT prefix strings it uses are frozen and sha256-pinned in
+``rails.probes.pemb3l_flight`` (never re-derived here); this client performs
+no validation of prefix CONTENT beyond "must be a str", since prefix
+legality is that module's own job.
 
 Every request is a frozen-core contact (encode+pool) and is ledgered as a
 call exactly like a generation request (prereg section 4): every
@@ -214,9 +228,11 @@ class EmbeddingClientProtocol(Protocol):
 
     def verify_media_marker(self) -> Mapping[str, object]: ...
 
-    def embed_text(self, *, contact_id: str, text: str) -> EmbeddingVector: ...
+    def embed_text(self, *, contact_id: str, text: str, prefix: str = "") -> EmbeddingVector: ...
 
-    def embed_audio(self, *, contact_id: str, audio_bytes: bytes) -> EmbeddingVector: ...
+    def embed_audio(
+        self, *, contact_id: str, audio_bytes: bytes, prompt_prefix: str = ""
+    ) -> EmbeddingVector: ...
 
 
 def _default_post(timeout_seconds: float) -> Callable[[str, bytes], bytes]:
@@ -318,29 +334,40 @@ class EmbeddingClient:
                 "whose actual placeholder token differs from the env-pinned one"
             )
 
-    def embed_text(self, *, contact_id: str, text: str) -> EmbeddingVector:
-        """Plain content-string text embedding -- NO instruct prefix (module
-        docstring)."""
+    def embed_text(self, *, contact_id: str, text: str, prefix: str = "") -> EmbeddingVector:
+        """Plain content-string text embedding. ``prefix`` defaults to the
+        empty string, preserving P-EMB-1/2's own pinned bare-content shape
+        byte-for-byte (module docstring's EXTENSION paragraph); a non-empty
+        ``prefix`` is prepended verbatim before ``text`` with no separator
+        inserted here -- the caller's own EXACT registered string already
+        carries whatever trailing space it needs."""
 
         if not isinstance(text, str) or not text:
             raise EmbeddingClientError(f"embed_text contact {contact_id!r}: text must be a non-empty string")
-        return self._send(contact_id=contact_id, kind="text", body={"content": [text]})
+        if not isinstance(prefix, str):
+            raise EmbeddingClientError(f"embed_text contact {contact_id!r}: prefix must be a string")
+        return self._send(contact_id=contact_id, kind="text", body={"content": [prefix + text]})
 
-    def embed_audio(self, *, contact_id: str, audio_bytes: bytes) -> EmbeddingVector:
+    def embed_audio(self, *, contact_id: str, audio_bytes: bytes, prompt_prefix: str = "") -> EmbeddingVector:
         """Audio embedding via the non-chat-style marker schema (module
         docstring): ``{"content": [{"prompt_string": <marker>,
         "multimodal_data": [<base64>]}]}``. ``audio_bytes`` are base64-
         encoded here (RAW file bytes, whatever container the carrier ships --
         flac for SLURP, wav for Audio2Tool -- never re-encoded, mirroring
         ``core.model.transport._load_audio_part``'s own "read the file,
-        base64 it" discipline)."""
+        base64 it" discipline). ``prompt_prefix`` defaults to the empty
+        string (module docstring's EXTENSION paragraph); a non-empty value is
+        prepended to ``prompt_string`` BEFORE the media marker -- the marker
+        itself is never altered, only what precedes it."""
 
         if not isinstance(audio_bytes, (bytes, bytearray)) or not audio_bytes:
             raise EmbeddingClientError(f"embed_audio contact {contact_id!r}: audio_bytes must be non-empty bytes")
+        if not isinstance(prompt_prefix, str):
+            raise EmbeddingClientError(f"embed_audio contact {contact_id!r}: prompt_prefix must be a string")
         audio_b64 = base64.b64encode(bytes(audio_bytes)).decode("ascii")
         body = {
             "content": [
-                {"prompt_string": self._expected_marker, "multimodal_data": [audio_b64]}
+                {"prompt_string": prompt_prefix + self._expected_marker, "multimodal_data": [audio_b64]}
             ]
         }
         return self._send(contact_id=contact_id, kind="audio", body=body)
@@ -438,6 +465,7 @@ class MockEmbeddingClient:
 
     vector_source: Callable[[str, str], Sequence[float]] | None = None
     calls: list[tuple[str, str]] = field(default_factory=list)
+    prefixes: list[str] = field(default_factory=list)
     marker_verified: bool = False
     props: Mapping[str, object] = field(default_factory=lambda: {"media_marker": "<__media__>"})
 
@@ -445,18 +473,19 @@ class MockEmbeddingClient:
         self.marker_verified = True
         return self.props
 
-    def embed_text(self, *, contact_id: str, text: str) -> EmbeddingVector:
-        return self._embed("text", contact_id)
+    def embed_text(self, *, contact_id: str, text: str, prefix: str = "") -> EmbeddingVector:
+        return self._embed("text", contact_id, prefix)
 
-    def embed_audio(self, *, contact_id: str, audio_bytes: bytes) -> EmbeddingVector:
-        return self._embed("audio", contact_id)
+    def embed_audio(self, *, contact_id: str, audio_bytes: bytes, prompt_prefix: str = "") -> EmbeddingVector:
+        return self._embed("audio", contact_id, prompt_prefix)
 
-    def _embed(self, kind: str, contact_id: str) -> EmbeddingVector:
+    def _embed(self, kind: str, contact_id: str, prefix: str = "") -> EmbeddingVector:
         if not self.marker_verified:
             raise EmbeddingClientError(
                 "verify_media_marker() must succeed before any embed_text/embed_audio call"
             )
         self.calls.append((kind, contact_id))
+        self.prefixes.append(prefix)
         if self.vector_source is not None:
             values = tuple(float(value) for value in self.vector_source(kind, contact_id))
         else:
