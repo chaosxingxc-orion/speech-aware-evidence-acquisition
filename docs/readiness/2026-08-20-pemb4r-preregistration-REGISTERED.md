@@ -78,3 +78,31 @@ exposure row `SAEA-PROBE-pemb4r-4100` at machinery landing (consumed=no); vector
 manifests on the data root, hashes only in Git; gold labels scoring-side and value-
 metadata only (never embedded, never in an embedding prompt); SLURP CC BY-NC 4.0 carried;
 T0 transcripts are consumed pkey2 artifacts (cited, not re-generated).
+
+## 7. Pre-contact amendment (coordinator, 2026-08-20, after the seven embedding arms
+## landed and BEFORE any C-DECODE contact; zero results read; receipt-proven zero core
+## POSTs in the landed attempt)
+
+1. **Ceiling repair, with the arithmetic.** §5's audio ceiling budgeted only the three
+   audio EMBEDDING passes (3 × 182.259 = 546.78 s) and omitted that the frozen-core
+   client meters a full corpus audio pass for C-DECODE's own requests on either modality
+   (546.778 + 182.259 + 3.038 gate = 746.075 s). The metered-audio ceiling is raised
+   **700 → 900 s**. Calls (4031/4500 spent) and GPU (0.2566/0.5 active) ceilings are
+   unchanged. Precedent: pre-contact instrument amendments; the C-DECODE spend had not
+   begun (fail-closed refusal, 0 `POST /v1/chat/completions` in the session log).
+2. **Modality directive.** The gold-free winner proxy chose `t-glap` (a text arm). To
+   keep §4's C-DECODE clauses evaluable against the AUDIO-modality FS-NONE comparator,
+   C-DECODE SHALL fly **audio modality** with the winner arm's top-5 dedup label sets
+   (the machinery's first-class modality parameter). This isolates the label-set
+   variable: the only difference vs the comparator is the shrunk candidate list. The
+   flight-recorded ruling stands for the counterfactual: a transcript-modality C-DECODE
+   would have been descriptive-only.
+3. **Successor attempt semantics.** The successor reuses attempt-3e6c8f's retrieval plan
+   by sha256 `7150c6b3410de4cc883da7f5ef0798dd80e4beaf253037594e99ff8cf5cea768`;
+   embedding arms are complete and carried; the successor flies the core gate +
+   plan-hash verification + 60 generation calls + one identical-prompt resend pair,
+   recording the server's `-np` setting (the pcorrf resend-divergence finding makes
+   parallelism load-bearing).
+4. **Read note.** `t-glap` is in-process and has no measured repeat-δ; the read derives
+   margin context from the persisted lco3/lco7/qw jitter pairs and reports the winner's
+   jitter gap honestly.
