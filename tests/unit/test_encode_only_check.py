@@ -24,7 +24,7 @@ from speech_aware_evidence_acquisition.rails.encode_only_check import (
     run_encode_only_machine_check,
 )
 from speech_aware_evidence_acquisition.rails.local_encoder_client import MockLocalEncoderClient
-from speech_aware_evidence_acquisition.rails.probes import pemb3m_flight
+from speech_aware_evidence_acquisition.rails.probes import pemb3m_flight, pemb4r_flight
 
 
 # ---------------------------------------------------------------------------
@@ -234,6 +234,22 @@ def test_encode_only_check_module_itself_names_pemb3m_flight_kind_import_free():
     assert hasattr(pemb3m_flight, "run_cascade_t0_supplement_flight")
     report = run_encode_only_machine_check(module_names=("speech_aware_evidence_acquisition.rails.probes.pemb3m_flight",))
     assert report.checked_modules == ("speech_aware_evidence_acquisition.rails.probes.pemb3m_flight",)
+
+
+def test_pemb4r_flight_module_is_one_of_the_pinned_modules():
+    # P-EMB-4R (SAEA-PROBE-pemb4r-4100): coverage EXTENDED to this module
+    # (this check's own logic carried unchanged, mission instruction).
+    assert "speech_aware_evidence_acquisition.rails.probes.pemb4r_flight" in PINNED_ENCODE_ONLY_MODULE_NAMES
+
+
+def test_encode_only_check_module_itself_names_pemb4r_flight_kind_import_free():
+    # Sanity: pemb4r_flight legitimately duck-types a core_client parameter
+    # for its own C-DECODE arm (rails.probes.pemb4r_flight.
+    # run_c_decode_flight) without ever importing the generation-capable
+    # client -- prove the sweep still passes with that function present.
+    assert hasattr(pemb4r_flight, "run_c_decode_flight")
+    report = run_encode_only_machine_check(module_names=("speech_aware_evidence_acquisition.rails.probes.pemb4r_flight",))
+    assert report.checked_modules == ("speech_aware_evidence_acquisition.rails.probes.pemb4r_flight",)
 
 
 def test_run_encode_only_machine_check_refuses_a_module_with_no_file(monkeypatch):

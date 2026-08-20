@@ -108,6 +108,15 @@ PINNED_ENCODE_ONLY_MODULE_NAMES: tuple[str, ...] = (
     "speech_aware_evidence_acquisition.rails.embedding_client",
     "speech_aware_evidence_acquisition.rails.local_encoder_client",
     "speech_aware_evidence_acquisition.rails.probes.pemb3m_flight",
+    # P-EMB-4R (SAEA-PROBE-pemb4r-4100, docs/readiness/
+    # 2026-08-20-pemb4r-preregistration-REGISTERED.md): coverage EXTENDED
+    # here (this check's own logic carried unchanged) -- pemb4r_flight uses
+    # the SAME embedding-client family as pemb3m_flight PLUS the SAME
+    # duck-typed core_client.complete(...) escape hatch pemb3m_flight's own
+    # CASCADE-T0 supplement already established (guard 1's own docstring:
+    # scoped to ast.Import/ast.ImportFrom only, so a duck-typed parameter
+    # never trips it) for its own C-DECODE arm.
+    "speech_aware_evidence_acquisition.rails.probes.pemb4r_flight",
 )
 
 
