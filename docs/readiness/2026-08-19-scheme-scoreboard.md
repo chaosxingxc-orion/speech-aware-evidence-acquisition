@@ -41,12 +41,13 @@ at every consumed read. (Registration/verdict docs remain the evidence of record
 | Augment re-opens in-context values | ✅ 1/1 (C3) | 22 induced |
 | Self-percept resonance captures decode | ✅ 1/1 (P-TRAP) | 29/32 vs 0/32 |
 | Blind supply regresses correct answers | ✅ 1/1 (V4) | 36/97 vs 0/97 baseline |
-| Closed-set decode routing viable | ✅ 1/1 (A1'r) | 60/60 non-fallback |
+| Closed-set decode routing viable | ✅ 2/2 (A1'r 0.7833; P-FEW FS-NONE 0.8167 — cross-session ±2 samples) | the routing tier's ONLY working lever |
 | Refusal evidence-gated (A2T) | ✅ 1/1 (V1) | 11/11 vs 2/11 — carrier-specific vs SLURP |
-| Embedding routing | ⏳ P-EMB-1/2 REGISTERED (E-0: feasible AS-BUILT, `--embedding --pooling mean`, dim 2048, bit-deterministic; prefix-dilution + marker-pinning + GPU time-share facts bound into the registration) | E-0 scratch report 2026-08-19 |
-| Few-shot routing gain/bias | ⏳ P-FEW (flying next) | — |
-| Router-confidence targeting | 🔜 P-TARGET (needs P-EMB) | — |
-| Corrective confusable supply | 🔜 design queue | — |
+| Label-level supply has NO resonance channel | ✅ 2/2 (P-FEW skew capture 0/59 incremental; P-EMB no audio→label signal) | the arc's founding premise, now evidenced |
+| Embedding routing | ❌ REFUTED 2/2 (P-EMB-1 EMB-WEAK 3/60 below chance, attractor collapse; P-EMB-2 EMB-CLOSED 2/183 at chance, 400/400 negative cosines; richer text made it WORSE) — a property of the frozen core's representation (no contrastive objective → no shared audio/text space), not of the construction | `6ebcaba`, `af99ebe` |
+| Few-shot routing gain/bias | ❌ INERT-ish (P-FEW: Δ exactly 0.0000, CI [−.067,+.067]; skew costs −0.067 generic ICL noise, ZERO prior capture; equivalence not certified — band 0.05 < measured ±0.033×2 noise) | `162cca3` |
+| Router-confidence targeting | 🔜 P-TARGET redesign: DECODE-path signals only (cross-prompt disagreement 2.73× precision lift n=6 descriptive; label logprobs) — embedding-derived confidence refuted; the 183 stay excluded | pemb2 synthesis §5.3 |
+| Corrective confusable supply | 🔜 P-CORR — now the routing tier's remaining idea too (the decode router's errors are CONCENTRATED: 6/11 in one class `play`→music/audio/news) | design queue |
 
 ## Design queue (small probes, each ≤0.5 GPU-h, registered one at a time)
 
