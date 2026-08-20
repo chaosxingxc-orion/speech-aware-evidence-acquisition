@@ -1,0 +1,16 @@
+{
+  "actual": {
+    "audio_seconds": 2159.6880001519967,
+    "calls": 552,
+    "gpu_seconds": 93.48430180549622
+  },
+  "attempt_id": "attempt-20260820T002031Z-e816e2",
+  "carrier_lock_key": "audio2tool",
+  "reserved": {
+    "audio_seconds": 3000.0,
+    "calls": 552
+  },
+  "run_id": "SAEA-PROBE-pemb2-552",
+  "schema": "saea-attempt-v1",
+  "state": "FINALIZED"
+}

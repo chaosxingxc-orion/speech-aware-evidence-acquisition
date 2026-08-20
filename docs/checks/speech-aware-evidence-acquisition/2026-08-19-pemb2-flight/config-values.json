@@ -1,0 +1,60 @@
+{
+  "config_hash": "4aa5ad30e2aafdb6a18dfa3dba70dffab75e858da90a719d8b9037bde7ec700f",
+  "protocol_hash": "b4f4d4884ebdadc26106fb56ed5327d787d931cdb4c19c1d8b046b22aabe63d7",
+  "values": {
+    "arm": "fixed-legal-context",
+    "audio_contacts": 400,
+    "base_url": "http://127.0.0.1:8091",
+    "carrier_lock_key": "audio2tool",
+    "decoding_params": {
+      "max_tokens": 1024,
+      "seed": 20260803,
+      "temperature": 0
+    },
+    "embedding_dim": 2048,
+    "embedding_endpoint": "/embedding",
+    "flight_config_version": "pemb-launcher-v1 (no committed g0-binding config; see module docstring)",
+    "instruct_prefix": "NONE on either side (E-0 binding decision: prefix dilution)",
+    "launcher": "scratchpad tri2/pemb/launch_pemb_flight.py (archived with the flight receipt)",
+    "media_marker_env": "LLAMA_MEDIA_MARKER",
+    "media_marker_props_field": "media_marker",
+    "model_lock_key": "qwen3-omni-30b-a3b-instruct-gguf-q4km",
+    "orchestrator": "rails.probes.pemb_flight.run_pemb2_flight",
+    "preregistration": "docs/readiness/2026-08-19-pemb-preregistration-REGISTERED.md",
+    "probe": "P-EMB",
+    "prompt_order": "evidence-first-system-v2",
+    "run_key": "B",
+    "runtime_receipt": "receipts/runtime-q4km-featcache.json",
+    "server_args": [
+      "-c",
+      "49152",
+      "-np",
+      "1",
+      "-fa",
+      "on",
+      "-ngl",
+      "999",
+      "-ctk",
+      "q8_0",
+      "-ctv",
+      "q8_0",
+      "--embedding",
+      "--pooling",
+      "mean"
+    ],
+    "server_env": {
+      "LLAMA_MTMD_FEAT_CACHE_DIR": "/home/chao/feat-cache/audio2tool-q4km"
+    },
+    "split_identity_hash": "e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c",
+    "split_name": "discovery",
+    "split_role": "discovery",
+    "stage": "2026-08-19 second-arc design order, routing-tier scheme scoreboard v1",
+    "status": "REGISTERED",
+    "text_contact_kind": "the 152 tool registry rows, data.audio2tool.render_registry_row shipped form",
+    "text_contacts": 152,
+    "tier": "embedding (encode+pool, ZERO generation)",
+    "timeout_seconds": 420.0,
+    "total_contacts": 552,
+    "transport": "llama-server"
+  }
+}

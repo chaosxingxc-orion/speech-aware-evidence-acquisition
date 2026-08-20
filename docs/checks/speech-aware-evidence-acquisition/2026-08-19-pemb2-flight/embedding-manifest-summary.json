@@ -1,0 +1,3884 @@
+{
+  "audio_count": 400,
+  "dim_distribution": {
+    "2048": 552
+  },
+  "dims": 2048,
+  "distinct_vector_sha256": 552,
+  "entries": [
+    {
+      "contact_id": "tier1_direct:000045",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier1_direct_000045.npy",
+      "sha256": "0da67be67e5cc7e9d0f8b856a595abc58b328c62239235cb9fa3712bbe4685e1"
+    },
+    {
+      "contact_id": "tier1_direct:000062",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier1_direct_000062.npy",
+      "sha256": "488e76d59f4ab416d5b510b9f73337fc0070bc0b12cf26506efabb8b7e6b7337"
+    },
+    {
+      "contact_id": "tier1_direct:000074",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier1_direct_000074.npy",
+      "sha256": "872e1129837debf6ecbccbe025ad5cc55526834bd6ba5c8aa6dabc83bb24d597"
+    },
+    {
+      "contact_id": "tier1_direct:000077",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier1_direct_000077.npy",
+      "sha256": "577abaf898c99bf43a2e57fdae816db819a15f7b4220f41820ffe6fbbc28d3e7"
+    },
+    {
+      "contact_id": "tier1_direct:000167",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier1_direct_000167.npy",
+      "sha256": "d2555f11236c9333b4990020a8ac6385564dafb8f8d1cffc2ae6496df5c47373"
+    },
+    {
+      "contact_id": "tier1_direct:000178",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier1_direct_000178.npy",
+      "sha256": "8d034c111b5aeacb744e62da89bddba9b67accf246d94ab077e558cf3a256ad5"
+    },
+    {
+      "contact_id": "tier1_direct:000232",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier1_direct_000232.npy",
+      "sha256": "ec4909f16a942aaefe74473bbcbbe1470742800fcea551a73745a8c9e87917ed"
+    },
+    {
+      "contact_id": "tier1_direct:000270",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier1_direct_000270.npy",
+      "sha256": "fce899a6785134733c22ed555c3c1d1202e4a72b21acf5fc01f4e90f1aef0004"
+    },
+    {
+      "contact_id": "tier1_direct:000362",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier1_direct_000362.npy",
+      "sha256": "7ea38f26ce0f26ea25598216be78061d9e3fb159c64865202344c1e3a853c02f"
+    },
+    {
+      "contact_id": "tier1_direct:000424",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier1_direct_000424.npy",
+      "sha256": "5c65dbae99179af67297aff8795f3e0069df656cabffc717ce910d111832ee88"
+    },
+    {
+      "contact_id": "tier1_direct:000579",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier1_direct_000579.npy",
+      "sha256": "c185748e0b7ce84bb855e48785717209d64c0c311883e9ca5c9057efa5376ead"
+    },
+    {
+      "contact_id": "tier1_direct:000593",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier1_direct_000593.npy",
+      "sha256": "78bb727f037dd253e5043c611b1e899482778ee37c73e2a26832ef0a908d0514"
+    },
+    {
+      "contact_id": "tier1_direct:000620",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier1_direct_000620.npy",
+      "sha256": "6540da5c63225244c2db727f797c28ccff0ea1125719ea4ec812fca1371795fb"
+    },
+    {
+      "contact_id": "tier1_direct:000636",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier1_direct_000636.npy",
+      "sha256": "612cf38488406c6fac19b4799a55b2eedb0a99e3a13f8ba7ae0714042e099264"
+    },
+    {
+      "contact_id": "tier1_direct:001124",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier1_direct_001124.npy",
+      "sha256": "fc43246868aaf407bb33f5bb8f8b41d0487d971a1e6312f8c0e08780d6e2a32f"
+    },
+    {
+      "contact_id": "tier1_direct:001128",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier1_direct_001128.npy",
+      "sha256": "9863d3a18b864a00d50f45b767fa59b2f21e19b550a47c819a6c202145e1e025"
+    },
+    {
+      "contact_id": "tier1_direct:001242",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier1_direct_001242.npy",
+      "sha256": "a3d847ac2915bbfe5dd24d254cfeccdaea5f44525745e0d5ceb9bda9ed6d61ce"
+    },
+    {
+      "contact_id": "tier1_direct:001422",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier1_direct_001422.npy",
+      "sha256": "33c8c9c5e7ef43d8a4c4c67769caf32d15e4270a76586aa495c78f160126cf32"
+    },
+    {
+      "contact_id": "tier1_direct:001432",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier1_direct_001432.npy",
+      "sha256": "980a84ee28adeafecf5368987eaeb6b91d653b9e3bbd69c565da049bf45e2f10"
+    },
+    {
+      "contact_id": "tier1_direct:001444",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier1_direct_001444.npy",
+      "sha256": "550f8926fd192115c93245285f1a583b51a76d81208952111a159ada4244ab6d"
+    },
+    {
+      "contact_id": "tier1_direct:001607",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier1_direct_001607.npy",
+      "sha256": "a2c3682b2e4cf58b1c5f63d6ca74469461338f07929775a678237f30ca63ff2b"
+    },
+    {
+      "contact_id": "tier1_direct:001631",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier1_direct_001631.npy",
+      "sha256": "724d49de67306c88e1ab03c226b265026bebd714e1671f0f34040c24005118c6"
+    },
+    {
+      "contact_id": "tier1_direct:001976",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier1_direct_001976.npy",
+      "sha256": "572aad8df92db50e7606224e685aa3ac1e9a6e50609c5db3b92cb7398182490f"
+    },
+    {
+      "contact_id": "tier1_direct:002212",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier1_direct_002212.npy",
+      "sha256": "9ca50183c633034082313c75168eb2a3fd31e99d44b3247bc31aa0770b7eae00"
+    },
+    {
+      "contact_id": "tier1_direct:002300",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier1_direct_002300.npy",
+      "sha256": "b947aae4454e161f29d90e71c0cdb266657acae436b52718475b76203ec8985e"
+    },
+    {
+      "contact_id": "tier1_direct:002510",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier1_direct_002510.npy",
+      "sha256": "6d25cef899901eab66ea69f9b97a4181edf486ff89f3a21a5cca5fb671d0c282"
+    },
+    {
+      "contact_id": "tier1_direct:002581",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier1_direct_002581.npy",
+      "sha256": "442a3d0066754a3bfd49854ffce0c6b87d65eb21a56422a54d877161e0f7d4b0"
+    },
+    {
+      "contact_id": "tier1_direct:002609",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier1_direct_002609.npy",
+      "sha256": "882609a6e90cb863f8212a18473f5f97600047d91d9fb05d44e5d577558b7de6"
+    },
+    {
+      "contact_id": "tier1_direct:002687",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier1_direct_002687.npy",
+      "sha256": "156722af0307f4607901fe228e4e448357cd1be395397ca80a2188f784ce9279"
+    },
+    {
+      "contact_id": "tier1_direct:002720",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier1_direct_002720.npy",
+      "sha256": "b2a0257ac44f2a6f5acc20a69d3112b586bc39339eb6337710419c2b6cb372c1"
+    },
+    {
+      "contact_id": "tier1_direct:002728",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier1_direct_002728.npy",
+      "sha256": "bdf9bbfcebf20c45cab6ae055c3451f25239a9dbf281c20aac3fd49a210eee63"
+    },
+    {
+      "contact_id": "tier1_direct:002763",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier1_direct_002763.npy",
+      "sha256": "778484847779b141fbb7da21889e33a58dd75780c16107237b1d3245054c41b6"
+    },
+    {
+      "contact_id": "tier1_direct:003109",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier1_direct_003109.npy",
+      "sha256": "1034206540942e9ac4b47b4feed88fb2e466996be5af417339c999ec69bce254"
+    },
+    {
+      "contact_id": "tier1_direct:003178",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier1_direct_003178.npy",
+      "sha256": "808faf17ba70706bd60d0c603daa9cca7fe5a3f988ccc41a8050304484ff1795"
+    },
+    {
+      "contact_id": "tier1_direct:003198",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier1_direct_003198.npy",
+      "sha256": "c9eefc96e2f6b9f501f23813c21f28762aca68c32c5fddcc85322ba4ab88f534"
+    },
+    {
+      "contact_id": "tier1_direct:003210",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier1_direct_003210.npy",
+      "sha256": "b974098daec731632523b8e19e910195a1cc76f598fdf46f90433c89f76eb5a6"
+    },
+    {
+      "contact_id": "tier1_direct:003343",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier1_direct_003343.npy",
+      "sha256": "75dc63a582aaa27172c2a2c56041591e311c0b1c69c5aab7c6ef0576912c2aa2"
+    },
+    {
+      "contact_id": "tier1_direct:003492",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier1_direct_003492.npy",
+      "sha256": "a58f83f049870226a643858ee58606b8e80bc94bcdf1077c8852f7b84916aa03"
+    },
+    {
+      "contact_id": "tier1_direct:003562",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier1_direct_003562.npy",
+      "sha256": "31a997417a1b739d65d15edbc0b4789f6045cf29ecb2e17f3ea0a582473ced56"
+    },
+    {
+      "contact_id": "tier1_direct:003651",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier1_direct_003651.npy",
+      "sha256": "c408d4a8432dcd5afc6bc0addf0781339b55f9cbd3dc3bd330d034dd257d90d4"
+    },
+    {
+      "contact_id": "tier1_direct:003668",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier1_direct_003668.npy",
+      "sha256": "01da0f1b2e01e140745780bdf27e1e87de5630f06b3aab8e9fc020dc554b631f"
+    },
+    {
+      "contact_id": "tier1_direct:003706",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier1_direct_003706.npy",
+      "sha256": "ed4736b0ce1d67d102807ba4ded1bd0e715f0ddc24244b7bcbe8b1e416b72972"
+    },
+    {
+      "contact_id": "tier1_direct:003713",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier1_direct_003713.npy",
+      "sha256": "7df25707c7cb21aea146d0974b57d3ac305c9561df0e02d06ea529da747570de"
+    },
+    {
+      "contact_id": "tier1_direct:003775",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier1_direct_003775.npy",
+      "sha256": "f15805d1ca2d666b5051b6a0c3d93166846a06a480ccaa2ba1f4b8cfb6563969"
+    },
+    {
+      "contact_id": "tier1_direct:004040",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier1_direct_004040.npy",
+      "sha256": "6d0181b8de401e960b88fdf37ae3c8ab4e9cb2013584fbd32f81be9744486d41"
+    },
+    {
+      "contact_id": "tier1_direct:004082",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier1_direct_004082.npy",
+      "sha256": "083440715a9c65c5ebb6c0a338d5d7a5304991dbea8752d5182d235d07760e47"
+    },
+    {
+      "contact_id": "tier1_direct:004145",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier1_direct_004145.npy",
+      "sha256": "9fc196a3907b00a5367792d1d8f723ffde04c1af2fd60192dd982feb3212e80e"
+    },
+    {
+      "contact_id": "tier1_direct:004159",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier1_direct_004159.npy",
+      "sha256": "55e40a5f819f2d2035d2f8d76f3fc14f768dbab6e14fb738a599a095342d197b"
+    },
+    {
+      "contact_id": "tier1_direct:004218",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier1_direct_004218.npy",
+      "sha256": "90391894a0ab5be98f1939eeb330d3ff495807a35cb3aa070f7fa2a542a930af"
+    },
+    {
+      "contact_id": "tier1_direct:004244",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier1_direct_004244.npy",
+      "sha256": "dabf1a903703bf08da3c63ad4b6e879e528887fa8517019cbf8d4c3f4bec7ba7"
+    },
+    {
+      "contact_id": "tier2_parametric:000045",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier2_parametric_000045.npy",
+      "sha256": "895c5cdd1f58b18cb5d8bf28c713dbc53e46f749b4f8695b35056e364d472fca"
+    },
+    {
+      "contact_id": "tier2_parametric:000068",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier2_parametric_000068.npy",
+      "sha256": "936c516f0ee5fc5f2b897ab0682744443a5e66b88761cbabe32242cffd6afb4b"
+    },
+    {
+      "contact_id": "tier2_parametric:000132",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier2_parametric_000132.npy",
+      "sha256": "4dc71643f55190a9e731ff9bbfb94c391742a1e10604dd9a9b4efd5884f4908d"
+    },
+    {
+      "contact_id": "tier2_parametric:000240",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier2_parametric_000240.npy",
+      "sha256": "97af96b097effd2b27d8449c819ee81ff48a3b09ca341c132925420b03c319d8"
+    },
+    {
+      "contact_id": "tier2_parametric:000247",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier2_parametric_000247.npy",
+      "sha256": "925c81debbe178b6d0c35010dc0f755177043edd8a775d2f5862e3d090017d3c"
+    },
+    {
+      "contact_id": "tier2_parametric:000369",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier2_parametric_000369.npy",
+      "sha256": "42505d0dec8398c485fcd0e32f569a5ba310d5172117c11d3a371beb116e0609"
+    },
+    {
+      "contact_id": "tier2_parametric:000421",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier2_parametric_000421.npy",
+      "sha256": "f20e8f645aab516479cd3419d42039ebb4d2de5210edffb2276a50ab1752194c"
+    },
+    {
+      "contact_id": "tier2_parametric:000525",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier2_parametric_000525.npy",
+      "sha256": "533ff70f88648ef23a2e5677caa76014b0f353697eac234ac5b67f1c46735073"
+    },
+    {
+      "contact_id": "tier2_parametric:000568",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier2_parametric_000568.npy",
+      "sha256": "c74a6f8b9c5ac2b445c155983602999648ca1eb1bca41a041e4cb5fafc2f5586"
+    },
+    {
+      "contact_id": "tier2_parametric:000632",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier2_parametric_000632.npy",
+      "sha256": "5048a14938dc3f17961ab91fcfc3461d5a8ac081e97535aaebc3933c7dfd90ae"
+    },
+    {
+      "contact_id": "tier2_parametric:000695",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier2_parametric_000695.npy",
+      "sha256": "6f0687aa9ccfff76a1593b06f0b4d03443a1fb1420acd79b5436052341251e3c"
+    },
+    {
+      "contact_id": "tier2_parametric:000704",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier2_parametric_000704.npy",
+      "sha256": "6f72cc0849eb419443040f3461aa6fca68fac64aab9602cc696b3e10edfc3c84"
+    },
+    {
+      "contact_id": "tier2_parametric:000713",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier2_parametric_000713.npy",
+      "sha256": "269626aec73b13b9590687d863a306ff057f045758e8d45dbc721f81402c62a1"
+    },
+    {
+      "contact_id": "tier2_parametric:000895",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier2_parametric_000895.npy",
+      "sha256": "ba3e5d32da09f5b37cb7dd0e52b9cf610430595db03afd7ae48bcd14d303bdd1"
+    },
+    {
+      "contact_id": "tier2_parametric:001004",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier2_parametric_001004.npy",
+      "sha256": "14882f210803656e05057c92ebfb9596dd4b0cec341122dcda7f74b5c75b3923"
+    },
+    {
+      "contact_id": "tier2_parametric:001014",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier2_parametric_001014.npy",
+      "sha256": "762887025cd09ecc0df86d251d4f815205ee30c946c48b37142564de9e7c9335"
+    },
+    {
+      "contact_id": "tier2_parametric:001365",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier2_parametric_001365.npy",
+      "sha256": "619a88358d840296173f1a8e16fa346da39ebce0f21575b7392d1724e315e2f7"
+    },
+    {
+      "contact_id": "tier2_parametric:001474",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier2_parametric_001474.npy",
+      "sha256": "2cbf18e168d49f587f957374945f89930e0b4b5ef54355ae107979fdddf76d71"
+    },
+    {
+      "contact_id": "tier2_parametric:001644",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier2_parametric_001644.npy",
+      "sha256": "db1eec7c807608cb55de2dc56ae2047c50e4599093f05164c852a4bc36d5ab56"
+    },
+    {
+      "contact_id": "tier2_parametric:001693",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier2_parametric_001693.npy",
+      "sha256": "12a61e4c25f878f2aebb92bfce7b395922d623601076d8ea345ec26ec61f18ef"
+    },
+    {
+      "contact_id": "tier2_parametric:001720",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier2_parametric_001720.npy",
+      "sha256": "a815176899523cbfd7d11ed6dcd0a9ace62b06c46c41b8cabdc960a11767c741"
+    },
+    {
+      "contact_id": "tier2_parametric:001869",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier2_parametric_001869.npy",
+      "sha256": "d901416f1e8ed03a976b833c2e6f65e0f922e08fd7d59bdd2c8a4e28cbeb8678"
+    },
+    {
+      "contact_id": "tier2_parametric:001972",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier2_parametric_001972.npy",
+      "sha256": "663da95edcabbd9cdec7e08484910e7b609c07dde63dec8d5d04a564b8c6ff56"
+    },
+    {
+      "contact_id": "tier2_parametric:002069",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier2_parametric_002069.npy",
+      "sha256": "99c9ee6620c1fee052a5e2beb9a1b23afc712d6aae44b12bfee58158e202fc6d"
+    },
+    {
+      "contact_id": "tier2_parametric:002197",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier2_parametric_002197.npy",
+      "sha256": "0322eaf6ca10d333066c3afa6930242ecc2802af2e485e914dc8e455791769cf"
+    },
+    {
+      "contact_id": "tier2_parametric:002289",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier2_parametric_002289.npy",
+      "sha256": "eaad3a87c33ef6858df9e0f851125a301829ca56ade1c129d590595f53560109"
+    },
+    {
+      "contact_id": "tier2_parametric:002334",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier2_parametric_002334.npy",
+      "sha256": "eb4e0d40e09ea93cc1b293a7d921a370df46caaf13be6581fc5db2b85f10ca70"
+    },
+    {
+      "contact_id": "tier2_parametric:002653",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier2_parametric_002653.npy",
+      "sha256": "8b09b7786e7ef7f97c7fdfc62485f53e0a9ccc7374aa779f9ed7cee4311b23f3"
+    },
+    {
+      "contact_id": "tier2_parametric:002787",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier2_parametric_002787.npy",
+      "sha256": "8e650bc1f58663fb873074be8040d62e1a90e9e68683846aaa508b4034756b2d"
+    },
+    {
+      "contact_id": "tier2_parametric:003068",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier2_parametric_003068.npy",
+      "sha256": "15d061acfe73841855852d47c5904835a7d8cb5a15f281a7e6110da156ac6a6a"
+    },
+    {
+      "contact_id": "tier2_parametric:003115",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier2_parametric_003115.npy",
+      "sha256": "5b526ecc7873c9fd3d1c771b83658c47d32ec8a402a7991b71964bda85ed4d08"
+    },
+    {
+      "contact_id": "tier2_parametric:003619",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier2_parametric_003619.npy",
+      "sha256": "1e7d38381d2101f2cd51f1bf89d9203cf2963ecc307d482e2327510967cec09f"
+    },
+    {
+      "contact_id": "tier2_parametric:003631",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier2_parametric_003631.npy",
+      "sha256": "bfae51ed7450fd2ed5c455279bc7b186a84498fd1b0e81bd774f93edb754a6f5"
+    },
+    {
+      "contact_id": "tier2_parametric:003650",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier2_parametric_003650.npy",
+      "sha256": "7d24e6e4c65ccb950bb14bab34732e3b7f3d2d3d4e13924d0e9d466812c1f918"
+    },
+    {
+      "contact_id": "tier2_parametric:003923",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier2_parametric_003923.npy",
+      "sha256": "25e197f1c52faea4c09ff4e60c6c98c7972302d3f37f6421a88514c66e7c5875"
+    },
+    {
+      "contact_id": "tier2_parametric:004217",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier2_parametric_004217.npy",
+      "sha256": "9ef5a43596c32a3e7070e386a601e97083428bcd50d3076a5e6ada2c3bd5f2ce"
+    },
+    {
+      "contact_id": "tier2_parametric:004290",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier2_parametric_004290.npy",
+      "sha256": "aede178160855b30fb0483e3440f17bad6914e3f146bd2a8d57716adaa0db2e4"
+    },
+    {
+      "contact_id": "tier2_parametric:004516",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier2_parametric_004516.npy",
+      "sha256": "42fbd8ebc143e14aff1794967f47b8542480605f2a9b4cba3f4e534727b78eec"
+    },
+    {
+      "contact_id": "tier2_parametric:004826",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier2_parametric_004826.npy",
+      "sha256": "0165eac428854966318f22d2e16072ce40868f60afc0de858f02c53f1534d796"
+    },
+    {
+      "contact_id": "tier2_parametric:005385",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier2_parametric_005385.npy",
+      "sha256": "66d1070bcfb54e4b6ee14a5106153cfbabcf0810c2b1a3fa51cf2b92e9cc46f4"
+    },
+    {
+      "contact_id": "tier2_parametric:005407",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier2_parametric_005407.npy",
+      "sha256": "8ced3b28e1a7acb2d4791bd81849a6985607b2fb19798b04791b76d8e657f053"
+    },
+    {
+      "contact_id": "tier2_parametric:005677",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier2_parametric_005677.npy",
+      "sha256": "c3b1cefed415563125d1de344f6e088378577ed0e5c68a13d77bcd334806f497"
+    },
+    {
+      "contact_id": "tier2_parametric:005678",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier2_parametric_005678.npy",
+      "sha256": "6e0132ada2bcbc2201b6addd2748491978698acda325b8819819bb9e3973eb8a"
+    },
+    {
+      "contact_id": "tier2_parametric:005732",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier2_parametric_005732.npy",
+      "sha256": "6bbc13b8acfd497d77d77973bd70c5d9a1792d93f1f7d2f7a20759348cb649c0"
+    },
+    {
+      "contact_id": "tier2_parametric:005856",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier2_parametric_005856.npy",
+      "sha256": "c71d661b15e2e7c9344987bd0b2b75beb249084c6fe3692841543e6818bc36d0"
+    },
+    {
+      "contact_id": "tier2_parametric:005859",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier2_parametric_005859.npy",
+      "sha256": "280d7ecc13a986de95c5b576ef3d161a6ec2ea202b98644b40da1df1c3eaa491"
+    },
+    {
+      "contact_id": "tier2_parametric:005891",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier2_parametric_005891.npy",
+      "sha256": "e0ef7b41e3b25dae6eb658f7381809a821d09bb1c9db14d16ebae14cb74b7a4a"
+    },
+    {
+      "contact_id": "tier2_parametric:006028",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier2_parametric_006028.npy",
+      "sha256": "cef17f39c1752528324f061b7f981bafec44db96ca2bff99c12c52ff8e6fbb33"
+    },
+    {
+      "contact_id": "tier2_parametric:006210",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier2_parametric_006210.npy",
+      "sha256": "799f5d9b0b4477183587c00c79e673c034c43a4938c3281e7f6b9e415a23c181"
+    },
+    {
+      "contact_id": "tier2_parametric:006317",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier2_parametric_006317.npy",
+      "sha256": "00f890a7ed6be725e2da387b727adac3dbf432cadce469b2e2cb40667a0a4087"
+    },
+    {
+      "contact_id": "tier3_multi_intent:000078",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier3_multi_intent_000078.npy",
+      "sha256": "1286e7f319865013b8a65952539d9dde6cf77a66829b185d7bed41ec25b40a5f"
+    },
+    {
+      "contact_id": "tier3_multi_intent:000259",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier3_multi_intent_000259.npy",
+      "sha256": "a37559fedeb73b1b04e449de6bf8f77c55ef4e7b125a5a8e457a9e04da766254"
+    },
+    {
+      "contact_id": "tier3_multi_intent:000419",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier3_multi_intent_000419.npy",
+      "sha256": "c2117f5d42e1aec7d6e7ee95774ed703ad8029b16b0cf6a8bcfe23f62dcdf4a5"
+    },
+    {
+      "contact_id": "tier3_multi_intent:000427",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier3_multi_intent_000427.npy",
+      "sha256": "d441f7fd38b8e023dc1f7a205dedd8db7802c39e079b66bd19fbcdde4b38b20a"
+    },
+    {
+      "contact_id": "tier3_multi_intent:000760",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier3_multi_intent_000760.npy",
+      "sha256": "9a6d70852e78507611a91a690845df46303dffbe94956f9b591164da722c9e68"
+    },
+    {
+      "contact_id": "tier3_multi_intent:000855",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier3_multi_intent_000855.npy",
+      "sha256": "8ece6d865d99b72420fdbf9cab93063c071969861b29e1af8b6db05d238a66e0"
+    },
+    {
+      "contact_id": "tier3_multi_intent:000879",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier3_multi_intent_000879.npy",
+      "sha256": "3d0ec2310cd83bf51ea056eb3ee9c121f070dff1eed1b485a34eeb2558f02571"
+    },
+    {
+      "contact_id": "tier3_multi_intent:000924",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier3_multi_intent_000924.npy",
+      "sha256": "73d6d2b873498e702f0c76da041b9f0da915e9c64f248a82f3d9991a2aa0abe4"
+    },
+    {
+      "contact_id": "tier3_multi_intent:000998",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier3_multi_intent_000998.npy",
+      "sha256": "c48c08e6637e2fbe83e3a386cad7729f58cdb8be868cd6a29dd58c6acf2f8dbd"
+    },
+    {
+      "contact_id": "tier3_multi_intent:001251",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier3_multi_intent_001251.npy",
+      "sha256": "9f4da14c945f13ac107f8650080f8e76e04a2b9a5d861e0975f33e20f248efee"
+    },
+    {
+      "contact_id": "tier3_multi_intent:001424",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier3_multi_intent_001424.npy",
+      "sha256": "9feaedfd13e8bf418bbd01fcc73018b3ef80684fb0894f453099802e6c1d650b"
+    },
+    {
+      "contact_id": "tier3_multi_intent:001487",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier3_multi_intent_001487.npy",
+      "sha256": "47bbc16711ab5197bf46d9c2144e1165e11aabf71db1c53bfed2cd90d8a1a065"
+    },
+    {
+      "contact_id": "tier3_multi_intent:001511",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier3_multi_intent_001511.npy",
+      "sha256": "529564740f9ec36ae20ff791cb69d2e0ffe5d5ed9cae3507fa652b3e22eb6f3e"
+    },
+    {
+      "contact_id": "tier3_multi_intent:001562",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier3_multi_intent_001562.npy",
+      "sha256": "f2b3327d472d75a779627ac2427a4e6e3d0e7ced98d98ea0ab1e8015fb03e751"
+    },
+    {
+      "contact_id": "tier3_multi_intent:001732",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier3_multi_intent_001732.npy",
+      "sha256": "ce6eb55faf623a7127db80da82e9619beaca6d23245e906a6d0819bc97d78ce2"
+    },
+    {
+      "contact_id": "tier3_multi_intent:001914",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier3_multi_intent_001914.npy",
+      "sha256": "2165b39a901c4aa5fd7b8ffb609829cfba98b9c01f82847bc4cd9dbcec071af5"
+    },
+    {
+      "contact_id": "tier3_multi_intent:002096",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier3_multi_intent_002096.npy",
+      "sha256": "489f7fd83cc958884b8e3caf4bb978b637825590f33c917e11afddc5f0c78285"
+    },
+    {
+      "contact_id": "tier3_multi_intent:002103",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier3_multi_intent_002103.npy",
+      "sha256": "fb2ca99f3f7f5b204f9af8470b1e7faace8059885038028408dfe4297e537fcf"
+    },
+    {
+      "contact_id": "tier3_multi_intent:002163",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier3_multi_intent_002163.npy",
+      "sha256": "850bcffc973d049b6aa94b71ef00b77cba6bebef702b9da3c0b66f153a50f897"
+    },
+    {
+      "contact_id": "tier3_multi_intent:002166",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier3_multi_intent_002166.npy",
+      "sha256": "1cae1100a4b4f6e4b47986a7d292ac6d5e7fc38b626dbaccbc7a29216f6f1f35"
+    },
+    {
+      "contact_id": "tier3_multi_intent:002200",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier3_multi_intent_002200.npy",
+      "sha256": "98cd53a969514f2656bba6af15bb773d7d482ad43eee4b1b4c9837de8bf8ff8a"
+    },
+    {
+      "contact_id": "tier3_multi_intent:002264",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier3_multi_intent_002264.npy",
+      "sha256": "54b3e8852a9ebf674fd360b7a734f25cde367640a82f9ff2fd10b51d992b28ce"
+    },
+    {
+      "contact_id": "tier3_multi_intent:002382",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier3_multi_intent_002382.npy",
+      "sha256": "a3b0cbdffeb52920c2049cdb200d4e32e6a15f9a12770f8afbe335818ca53f7d"
+    },
+    {
+      "contact_id": "tier3_multi_intent:002405",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier3_multi_intent_002405.npy",
+      "sha256": "5b6e010c97c60b48935659677635157e45cb10be60269bc7fc3131b7ffd8da1d"
+    },
+    {
+      "contact_id": "tier3_multi_intent:002421",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier3_multi_intent_002421.npy",
+      "sha256": "32b5c266bf830a5f5bf6b2123b30fc91112a3c2962177fb7150d6f011c484b1e"
+    },
+    {
+      "contact_id": "tier3_multi_intent:002490",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier3_multi_intent_002490.npy",
+      "sha256": "b590c59765dfc41c447bd6ced311fa5e65460e82fbf83f73ef7958cf422d5324"
+    },
+    {
+      "contact_id": "tier3_multi_intent:002553",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier3_multi_intent_002553.npy",
+      "sha256": "49b6903c7a4f2fcf93e625d97a983d1faf6a2ef94be15648eb1ada396b21f695"
+    },
+    {
+      "contact_id": "tier3_multi_intent:002560",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier3_multi_intent_002560.npy",
+      "sha256": "9f9b83b5e231a539b481c4bd3a0449b739a282ba1211114d3c56d4102d1bc80c"
+    },
+    {
+      "contact_id": "tier3_multi_intent:002645",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier3_multi_intent_002645.npy",
+      "sha256": "2d86158a9509f707625dc5171834a6bcd74b61fb3cecfe1db8999386974b69dc"
+    },
+    {
+      "contact_id": "tier3_multi_intent:002651",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier3_multi_intent_002651.npy",
+      "sha256": "eaabb9a55973ad334934a7cec5c162bc5c952beb9e0e7e75cf3eb74b027c1b5a"
+    },
+    {
+      "contact_id": "tier3_multi_intent:002818",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier3_multi_intent_002818.npy",
+      "sha256": "daeca915037d6184f4a336f4912d4ca04485c7d8ebaf578265d654dd1aef55c1"
+    },
+    {
+      "contact_id": "tier3_multi_intent:002915",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier3_multi_intent_002915.npy",
+      "sha256": "5d8bcaa5934d96541e5a0545ac190a031a3677f1e08acbd954c8e8e16f9dfd3d"
+    },
+    {
+      "contact_id": "tier3_multi_intent:002970",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier3_multi_intent_002970.npy",
+      "sha256": "dd054dbc965f4ac8b36d2618ecce51410aeff59d14f0df0451fe46d177f0ccf8"
+    },
+    {
+      "contact_id": "tier3_multi_intent:002986",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier3_multi_intent_002986.npy",
+      "sha256": "c398802ce5495b1fb8c56e1b2269b65282cfb7d45bdb5f659fc89d73ce97e078"
+    },
+    {
+      "contact_id": "tier3_multi_intent:002995",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier3_multi_intent_002995.npy",
+      "sha256": "f591e225b87cee07d7db3621595780352733534e052a5f837bc73cbdd74b28d0"
+    },
+    {
+      "contact_id": "tier3_multi_intent:003058",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier3_multi_intent_003058.npy",
+      "sha256": "f9277a4e25b29fb4307b6b9def62e41f4c6b90b2468222d7711dabc4caa18625"
+    },
+    {
+      "contact_id": "tier3_multi_intent:003153",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier3_multi_intent_003153.npy",
+      "sha256": "3076d81d9ee2d3bde6b0092d275c0253b3b35eedf31e8102c9a66574eca2a2be"
+    },
+    {
+      "contact_id": "tier3_multi_intent:003220",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier3_multi_intent_003220.npy",
+      "sha256": "7e56a0c10d43d1629a8b92a58f99dee5e1416aea2757ad8075f20f2ab8aac413"
+    },
+    {
+      "contact_id": "tier3_multi_intent:003268",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier3_multi_intent_003268.npy",
+      "sha256": "a628cb3cbb4b6b4e5ff1c9984113c6b39564fc26d01d012ea77e6422eb82be5f"
+    },
+    {
+      "contact_id": "tier3_multi_intent:003469",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier3_multi_intent_003469.npy",
+      "sha256": "256aaf4ad8a4c0c482785fe7edb1a864e0714543db2108bc729d478de52b078c"
+    },
+    {
+      "contact_id": "tier3_multi_intent:003642",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier3_multi_intent_003642.npy",
+      "sha256": "e998c3cbec4fbf8c3dc3086e4cf6bb167a292d5f7814373126cba406e08755bd"
+    },
+    {
+      "contact_id": "tier3_multi_intent:003740",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier3_multi_intent_003740.npy",
+      "sha256": "e863dffcb2da10366ce7d935d79b75b7f2699dbe961c1f84cea539a201819106"
+    },
+    {
+      "contact_id": "tier3_multi_intent:003764",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier3_multi_intent_003764.npy",
+      "sha256": "5dcdd2e6aa0390291003c610c8b28076050edd45428612d8deb630c4ee016b70"
+    },
+    {
+      "contact_id": "tier3_multi_intent:003816",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier3_multi_intent_003816.npy",
+      "sha256": "394007957c927be23bc72ebf9a229e52fe7ffb9df8a40d06aae778315ec74d28"
+    },
+    {
+      "contact_id": "tier3_multi_intent:003868",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier3_multi_intent_003868.npy",
+      "sha256": "f62258ffb2ecfda3417d5eb95e2dd4910dc8c0bce8933e7dabb63f9308e181e6"
+    },
+    {
+      "contact_id": "tier3_multi_intent:003973",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier3_multi_intent_003973.npy",
+      "sha256": "e239ec723d811cafb77dce729f4324d7dd2859f947564ac954d2a7ecc6b07902"
+    },
+    {
+      "contact_id": "tier3_multi_intent:003982",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier3_multi_intent_003982.npy",
+      "sha256": "0f7420a70fb1aa0b8815ab2229ef67c1dedef22e8fd5b1f02bf8ed669b0997e8"
+    },
+    {
+      "contact_id": "tier3_multi_intent:003994",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier3_multi_intent_003994.npy",
+      "sha256": "d1882bf6cfdcbf10e346db8236698c197a229e600c5b87dc1a5f0f79a666b935"
+    },
+    {
+      "contact_id": "tier3_multi_intent:004025",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier3_multi_intent_004025.npy",
+      "sha256": "d6216be516272022859cb2d95ecdabdbd029846f9e5a106e3079ca3babf1fae3"
+    },
+    {
+      "contact_id": "tier3_multi_intent:004291",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier3_multi_intent_004291.npy",
+      "sha256": "3179ffb5aa34c17ec4b9cd65a9ae6acd09b3809f19af0d8729814abc446bd287"
+    },
+    {
+      "contact_id": "tier4_implicit:000141",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier4_implicit_000141.npy",
+      "sha256": "22f9077cf39b0fa82864eb978c129152aeae46256ac3dc84fc539016d935586e"
+    },
+    {
+      "contact_id": "tier4_implicit:000216",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier4_implicit_000216.npy",
+      "sha256": "577224f5b337e78b3dfa522128b1efe8ba9b8517cbd45b0aaa86573cf30f3708"
+    },
+    {
+      "contact_id": "tier4_implicit:000279",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier4_implicit_000279.npy",
+      "sha256": "93e65277e7bc7aa3552488c6dc955ffd010e549d50f41f66e0f1b51e627f92d0"
+    },
+    {
+      "contact_id": "tier4_implicit:000469",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier4_implicit_000469.npy",
+      "sha256": "561b1bd62142db8d9b8ed03efc855cddb251d81b402f782fd81ea92403045160"
+    },
+    {
+      "contact_id": "tier4_implicit:000562",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier4_implicit_000562.npy",
+      "sha256": "e55c05b94c9019d8f3774273064377193ce8bc67a35a414804bc478cfa2464b6"
+    },
+    {
+      "contact_id": "tier4_implicit:000655",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier4_implicit_000655.npy",
+      "sha256": "8598cdf948a34120ee600d9a2187074d2c2e776530cccec2a01f5949e8506cb3"
+    },
+    {
+      "contact_id": "tier4_implicit:000812",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier4_implicit_000812.npy",
+      "sha256": "eea737cf6e4a2355d7aaa590734d113a050c3ca92bff30da83ab42b10d496f1c"
+    },
+    {
+      "contact_id": "tier4_implicit:000900",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier4_implicit_000900.npy",
+      "sha256": "6196fce7cbf5d649374cc42c287cc7fd815d18c0ffb2a135cbe12262e9dc1e0e"
+    },
+    {
+      "contact_id": "tier4_implicit:001010",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier4_implicit_001010.npy",
+      "sha256": "355f226947b420816b39f85914328c92c2ab90a41cedfd4ef9503a0656176de6"
+    },
+    {
+      "contact_id": "tier4_implicit:001034",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier4_implicit_001034.npy",
+      "sha256": "49c09eb350db62af8715842188412792dadfd5c8d664750d1c2c097c171265ac"
+    },
+    {
+      "contact_id": "tier4_implicit:001074",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier4_implicit_001074.npy",
+      "sha256": "e1a6b68c96408d4d18a8885efd19fb163aa0bbca34463b4e285415945830266a"
+    },
+    {
+      "contact_id": "tier4_implicit:001148",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier4_implicit_001148.npy",
+      "sha256": "9720b289652b85b10d3d59e02194dabdc56a644a805a380582b5981c09f2911d"
+    },
+    {
+      "contact_id": "tier4_implicit:001389",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier4_implicit_001389.npy",
+      "sha256": "887ed59e311eff378d8ddcff4314d66a14d1693e8e1ff4d5e532c0e32163119f"
+    },
+    {
+      "contact_id": "tier4_implicit:001409",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier4_implicit_001409.npy",
+      "sha256": "8c21ab4e671bc5ba414d728dbc2a6209e94177ed641c8699cc010261564d66f9"
+    },
+    {
+      "contact_id": "tier4_implicit:001513",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier4_implicit_001513.npy",
+      "sha256": "5bbf7a05e201bb24ced741e26fd0ca67246535eb8338a10e035a93dad874248f"
+    },
+    {
+      "contact_id": "tier4_implicit:001541",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier4_implicit_001541.npy",
+      "sha256": "62de2b67c66745ea33aa4fa41a59bc7d65f59c3a161481febc3d8bc5bc569518"
+    },
+    {
+      "contact_id": "tier4_implicit:001546",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier4_implicit_001546.npy",
+      "sha256": "f5a8d08f67dc3c30c85beeb04a759d92841303d2633e130c77af98b0a6569237"
+    },
+    {
+      "contact_id": "tier4_implicit:001628",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier4_implicit_001628.npy",
+      "sha256": "08ea3ed33a1079980ef3aba9c8592162656b7ab36386644d07d0290c8d90a718"
+    },
+    {
+      "contact_id": "tier4_implicit:001759",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier4_implicit_001759.npy",
+      "sha256": "804d046f8b37eb8f3db7a37d6c4a57ab620dd6cd51043b852c1745514edde99b"
+    },
+    {
+      "contact_id": "tier4_implicit:001855",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier4_implicit_001855.npy",
+      "sha256": "de0fc92d4779c15e8bbf978dc9a19d8cdd6ffdf19e397c64536630646724a25d"
+    },
+    {
+      "contact_id": "tier4_implicit:002024",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier4_implicit_002024.npy",
+      "sha256": "6749fb8b70b2dd3db7922a1efcaa9e699b2d592e22f2215b9046112736725b1b"
+    },
+    {
+      "contact_id": "tier4_implicit:002046",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier4_implicit_002046.npy",
+      "sha256": "7b5fbd15e584e93b73a78203a6dcd369ce58866882e492b658ab63a17a0ada4a"
+    },
+    {
+      "contact_id": "tier4_implicit:002071",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier4_implicit_002071.npy",
+      "sha256": "9d38880daa1dd0254d3733479057d914adb54e0759ae5208f717809b9aff78e6"
+    },
+    {
+      "contact_id": "tier4_implicit:002119",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier4_implicit_002119.npy",
+      "sha256": "069d774d469838605d899e81afff325a053e47e12d593aa9e442aa17c802a6d5"
+    },
+    {
+      "contact_id": "tier4_implicit:002241",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier4_implicit_002241.npy",
+      "sha256": "5cc38020b3fe97c0078da050612a3ae501ae2b344821f33afe178ec9f7127355"
+    },
+    {
+      "contact_id": "tier4_implicit:002314",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier4_implicit_002314.npy",
+      "sha256": "ecdfad428d5c1762ebb1c64a57cec1cc41e5b238735e7bedfd5b095ead5fc441"
+    },
+    {
+      "contact_id": "tier4_implicit:002376",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier4_implicit_002376.npy",
+      "sha256": "e91bd20580b064329b9659ce391bc5174c7f58f763ded3a1dc14fdf4f78dede3"
+    },
+    {
+      "contact_id": "tier4_implicit:002412",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier4_implicit_002412.npy",
+      "sha256": "ca9960dc6ef3542bcbf90007b1e6371565847c8175dcaf5395633a3f46edd8b4"
+    },
+    {
+      "contact_id": "tier4_implicit:002563",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier4_implicit_002563.npy",
+      "sha256": "97ce12024d57d99c0160cd89826ee5d177175fde4c981245ec9ee3bc81f12d24"
+    },
+    {
+      "contact_id": "tier4_implicit:002649",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier4_implicit_002649.npy",
+      "sha256": "6070b6c902452714564e1aad0eddaef5d081911e780f276623c0995180bff1ea"
+    },
+    {
+      "contact_id": "tier4_implicit:002718",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier4_implicit_002718.npy",
+      "sha256": "67b2a131fc438e3e3e9f7a227561a2720ece3d4f26db7cdd0551a3e6cec1de64"
+    },
+    {
+      "contact_id": "tier4_implicit:002719",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier4_implicit_002719.npy",
+      "sha256": "807a9e7dce5a8f47d67560e264b2d8dfaaf19ac6992209e1f9b95f04a30db89e"
+    },
+    {
+      "contact_id": "tier4_implicit:002943",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier4_implicit_002943.npy",
+      "sha256": "df44f883a374d828cf0ea06a2f12b3339a504268a8775d330cabce419d19d1fa"
+    },
+    {
+      "contact_id": "tier4_implicit:002987",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier4_implicit_002987.npy",
+      "sha256": "d34f4ae41ed43418ae25ea364bdd43e5d017dd144489d0b9114b396aedb5ed89"
+    },
+    {
+      "contact_id": "tier4_implicit:003049",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier4_implicit_003049.npy",
+      "sha256": "67a5210f9412d3a70cab757b26e050383887aee1c371a967b648c41c17d67cba"
+    },
+    {
+      "contact_id": "tier4_implicit:003079",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier4_implicit_003079.npy",
+      "sha256": "435550e17ddd38ad950b579e6441c781f1ebb96122c399f5686b44be4a795f58"
+    },
+    {
+      "contact_id": "tier4_implicit:003199",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier4_implicit_003199.npy",
+      "sha256": "5c4064d64e211d235719bb8c10eaf564fc37387c8543d75217b598540d67f6c4"
+    },
+    {
+      "contact_id": "tier4_implicit:003312",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier4_implicit_003312.npy",
+      "sha256": "7deae89cb6779929e4833cd485623c08f22caf484f803b8b041185fd5d7bcfa3"
+    },
+    {
+      "contact_id": "tier4_implicit:003317",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier4_implicit_003317.npy",
+      "sha256": "7de8649c7b55632367ea90245d3c890f11c8a1a19f52919a70e643ce35f22315"
+    },
+    {
+      "contact_id": "tier4_implicit:003370",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier4_implicit_003370.npy",
+      "sha256": "cadc1dfa7ed59e7136b2ba3eb125369ce21c4827e9e4c8ba53270979acbb74a7"
+    },
+    {
+      "contact_id": "tier4_implicit:003464",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier4_implicit_003464.npy",
+      "sha256": "b98d1248dfa3fd3a92ed9a312405cb63b664843a6bf0b8399a5e3ad44fd85c36"
+    },
+    {
+      "contact_id": "tier4_implicit:003473",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier4_implicit_003473.npy",
+      "sha256": "b26ec85b8233a6e74190d07406542560723e52e986ba20384d2c227a66e8a4d8"
+    },
+    {
+      "contact_id": "tier4_implicit:003484",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier4_implicit_003484.npy",
+      "sha256": "f9fd55b4cf1b3d76c6c48a30ec1fe70d838183fe9dfbd03953834f3f8e55bf7d"
+    },
+    {
+      "contact_id": "tier4_implicit:003523",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier4_implicit_003523.npy",
+      "sha256": "21c9713623a840e73c0368ecb215cc573e8c85eaf1d4af62348f83e66c696feb"
+    },
+    {
+      "contact_id": "tier4_implicit:003664",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier4_implicit_003664.npy",
+      "sha256": "42273218c4a026d2aeb79bf6f1272d95e60ad980d23a67cbdf09eede5770243a"
+    },
+    {
+      "contact_id": "tier4_implicit:003734",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier4_implicit_003734.npy",
+      "sha256": "0397624054a93678710c56aeb683b07958ac7adc996f281cc989ce37c1d883bc"
+    },
+    {
+      "contact_id": "tier4_implicit:003949",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier4_implicit_003949.npy",
+      "sha256": "00e3b315b2ba685ff6732b5cf33e786fe92f6fea9ad4ddb3d8121b6f1c8c804f"
+    },
+    {
+      "contact_id": "tier4_implicit:003979",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier4_implicit_003979.npy",
+      "sha256": "0306dc59ae2812bc171cb2cc7e927f1f2ed944447998912eaabea94dc35954fd"
+    },
+    {
+      "contact_id": "tier4_implicit:004122",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier4_implicit_004122.npy",
+      "sha256": "e493f21f53819070262dfafa336b826c501b1396c20dcb92c048b5f5089a5cbf"
+    },
+    {
+      "contact_id": "tier4_implicit:004273",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier4_implicit_004273.npy",
+      "sha256": "d2b42ee5c01a1e9fb4e4aa2bb2a8f1911489d36a79c21299163b498813bbff5a"
+    },
+    {
+      "contact_id": "tier5_needle:000060",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier5_needle_000060.npy",
+      "sha256": "6da2c14e917588aab47f3f3a631c1e3d83282a44b7480db6088a8b2fce85ce0a"
+    },
+    {
+      "contact_id": "tier5_needle:000061",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier5_needle_000061.npy",
+      "sha256": "b641006efde7d91abec1a7041c24a68d51ac88117e0433e867064c1d3603670b"
+    },
+    {
+      "contact_id": "tier5_needle:000151",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier5_needle_000151.npy",
+      "sha256": "771299e2c1a75f9c5164dedcb3ef40e39fd07a52b6630765647bfcc90188d0cf"
+    },
+    {
+      "contact_id": "tier5_needle:000171",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier5_needle_000171.npy",
+      "sha256": "8a259961df902440bf7ca3494908ee3cd3ab5587cae42b7626282219f7b53b79"
+    },
+    {
+      "contact_id": "tier5_needle:000241",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier5_needle_000241.npy",
+      "sha256": "a9cd828763fcd2f8c293fdda325a38c02ee662c4623d862c59c94d626a2ae72b"
+    },
+    {
+      "contact_id": "tier5_needle:000285",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier5_needle_000285.npy",
+      "sha256": "275529a7d37f23295de6b0fcd14208bea3bb390cc1bbb7ce1dd0bb321961253b"
+    },
+    {
+      "contact_id": "tier5_needle:000534",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier5_needle_000534.npy",
+      "sha256": "553aac7142be370938e372f3c11f65897644a565b34e11f70d928ad18b50f7a3"
+    },
+    {
+      "contact_id": "tier5_needle:000537",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier5_needle_000537.npy",
+      "sha256": "e9d384a2f3e0111b703a998d7055eba664dd57febef07fcc17faebb976144d4b"
+    },
+    {
+      "contact_id": "tier5_needle:000595",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier5_needle_000595.npy",
+      "sha256": "abd87dfb5b625e597822715ab2068da198c0a5805bdeceafe72f67b544b0b372"
+    },
+    {
+      "contact_id": "tier5_needle:000757",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier5_needle_000757.npy",
+      "sha256": "c149a8538053dfbf673b6568679bb629a761da74329efe7fb2bcd0790b4a1690"
+    },
+    {
+      "contact_id": "tier5_needle:000976",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier5_needle_000976.npy",
+      "sha256": "f049b7e89465f5214025c9037a4c486d22fdb09f6814aaea84e5b8f8bc43ac43"
+    },
+    {
+      "contact_id": "tier5_needle:001059",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier5_needle_001059.npy",
+      "sha256": "5f4b0c6bb3a9d32ede678d1670f459576271f0593722212ecbf5c3957a68d22d"
+    },
+    {
+      "contact_id": "tier5_needle:001248",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier5_needle_001248.npy",
+      "sha256": "ff881d7538a4b8884b4fec16217a04a67212229ac5603e9c59f660c83e09aa17"
+    },
+    {
+      "contact_id": "tier5_needle:001296",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier5_needle_001296.npy",
+      "sha256": "160a2e1f590f44ae54e389478dfc17ae0c353cce21758d7785daba5ed628ecd0"
+    },
+    {
+      "contact_id": "tier5_needle:001323",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier5_needle_001323.npy",
+      "sha256": "107b087d47e76d595de046510a468a8b6bfe11bee1da613f0690bb1bda8847d7"
+    },
+    {
+      "contact_id": "tier5_needle:001368",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier5_needle_001368.npy",
+      "sha256": "98586942d21484843139e4da5e9125c1ba3b3b065cac45d60dd8d5815fa05aac"
+    },
+    {
+      "contact_id": "tier5_needle:001430",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier5_needle_001430.npy",
+      "sha256": "a8fda43e648aa7bdf255c6dfa5fed1a7a9299b3c305b95715dea15e6b9d9eb7c"
+    },
+    {
+      "contact_id": "tier5_needle:001458",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier5_needle_001458.npy",
+      "sha256": "394b6a0b94bf5c24ea21f55c1a90dfba6e727d2942ac9a2b3bf51a288a4db95d"
+    },
+    {
+      "contact_id": "tier5_needle:001532",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier5_needle_001532.npy",
+      "sha256": "0d5343caea3ce2903385496a2878dd697c97d70b0704e55c2daaefc0a76efbde"
+    },
+    {
+      "contact_id": "tier5_needle:001656",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier5_needle_001656.npy",
+      "sha256": "fd1df2d95cad8580f221294de4ef1a53f35408a2abdd9b7cf4179ff036c72308"
+    },
+    {
+      "contact_id": "tier5_needle:001679",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier5_needle_001679.npy",
+      "sha256": "6bbfe704ab08f8d234ff3354e08dad256322fcf7a1dc658479a7fdd209e77812"
+    },
+    {
+      "contact_id": "tier5_needle:001687",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier5_needle_001687.npy",
+      "sha256": "7a59a021fde482dffd2b349880575b66fcede59ab23dd154fa38c391afc94b9f"
+    },
+    {
+      "contact_id": "tier5_needle:001719",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier5_needle_001719.npy",
+      "sha256": "846453f2843cd89a4594c4f711ff2ba90089a5229a1ffaff868cad36ec4449ba"
+    },
+    {
+      "contact_id": "tier5_needle:001795",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier5_needle_001795.npy",
+      "sha256": "c7aa6b854ee6dc1081b6ae8b1caa46da698906bee1ab7b1192ef9fa8e6d29ec9"
+    },
+    {
+      "contact_id": "tier5_needle:001930",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier5_needle_001930.npy",
+      "sha256": "6166c2ea55e4093e0c754ee7af075e7e146200d67d46a6a70c4399cc4021cca4"
+    },
+    {
+      "contact_id": "tier5_needle:002007",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier5_needle_002007.npy",
+      "sha256": "a60cb4a6e661f2b6db139b0497c4832a789fc1c6c3af8d72a8f59f1b3d717369"
+    },
+    {
+      "contact_id": "tier5_needle:002054",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier5_needle_002054.npy",
+      "sha256": "ab7ee73eeb89184bad169f8e2341b56296749975ad44b873ce5dcecc1720edd8"
+    },
+    {
+      "contact_id": "tier5_needle:002215",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier5_needle_002215.npy",
+      "sha256": "250089bd17b9e3992e9c802ecbf250e8e62ad659d3ee40ec9d9f8c856ee972b5"
+    },
+    {
+      "contact_id": "tier5_needle:002284",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier5_needle_002284.npy",
+      "sha256": "39aca8cfe18bdde6a499434086dd9291ce47dac37d2c3f28fdab45d533c1c1a0"
+    },
+    {
+      "contact_id": "tier5_needle:002396",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier5_needle_002396.npy",
+      "sha256": "81efa29343db8fb345a99f9ae4d330cde3e2ca13597236c143bbe4e4e92f86d0"
+    },
+    {
+      "contact_id": "tier5_needle:002428",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier5_needle_002428.npy",
+      "sha256": "4762801e23b54283d456b02512b3aa7a73ea14eb5d06ccad3db01fffc6d30fac"
+    },
+    {
+      "contact_id": "tier5_needle:002546",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier5_needle_002546.npy",
+      "sha256": "8792d33653eeef28dbcfb65c67dc150571f6737c3dec52c99e04761d7479d1be"
+    },
+    {
+      "contact_id": "tier5_needle:002638",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier5_needle_002638.npy",
+      "sha256": "4710f1f1b2afa41b675a91ac40c42f7156d3f8b5fbf6452fb810f74cf6b51d1e"
+    },
+    {
+      "contact_id": "tier5_needle:002640",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier5_needle_002640.npy",
+      "sha256": "b6e338016f0fb76a8e6c4aab0b90ca67d8c940de253feec1283dffcc54b22d47"
+    },
+    {
+      "contact_id": "tier5_needle:002753",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier5_needle_002753.npy",
+      "sha256": "957a15db03b6c06be65c06fbb6f9a813a56bf1a7099d71611593aa746e1a9ec1"
+    },
+    {
+      "contact_id": "tier5_needle:003107",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier5_needle_003107.npy",
+      "sha256": "7311a73471d1a66c622181d3c2f763523374fc04c51338cb566ea2ddc6dabafa"
+    },
+    {
+      "contact_id": "tier5_needle:003189",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier5_needle_003189.npy",
+      "sha256": "6362e6d5eb77edfba06e51ee48fa4a33d991416da9ec77cbce0c7f3b0cd72992"
+    },
+    {
+      "contact_id": "tier5_needle:003305",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier5_needle_003305.npy",
+      "sha256": "6154d5a8d52e6fa32d2f49b58f3e2429ca32036041dae0c7dedaa16b4bace43d"
+    },
+    {
+      "contact_id": "tier5_needle:003341",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier5_needle_003341.npy",
+      "sha256": "4e110a202994e35586915f922fced62cffe7178200051fa5cce2e8e4bfc0b296"
+    },
+    {
+      "contact_id": "tier5_needle:003355",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier5_needle_003355.npy",
+      "sha256": "bfe05fa719bc7ee0a579799cbe762fbb7a908b4df07a0841224386906fcd3833"
+    },
+    {
+      "contact_id": "tier5_needle:003398",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier5_needle_003398.npy",
+      "sha256": "30863642ceffe5a52587c69a39039f7290b75f42ce645b1dfb5329241b76b531"
+    },
+    {
+      "contact_id": "tier5_needle:003592",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier5_needle_003592.npy",
+      "sha256": "7648811e69edc70b8ac2e95cb2aae98f848c129d490bd2a403c1bb00db889a3b"
+    },
+    {
+      "contact_id": "tier5_needle:003841",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier5_needle_003841.npy",
+      "sha256": "a86d5ceee25d9654f629ecd6ffe6db0b6c7d8fbe22aa03b7818b3ade2126874b"
+    },
+    {
+      "contact_id": "tier5_needle:003863",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier5_needle_003863.npy",
+      "sha256": "1918a0798da929195e227f48ee2f2ae210099cc5ebb679682d986cdbd2119a75"
+    },
+    {
+      "contact_id": "tier5_needle:003873",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier5_needle_003873.npy",
+      "sha256": "2c6a6e98a531ba787c3a3d58940648efb4c8a8abc78e2a6088e6981fb2aa48b2"
+    },
+    {
+      "contact_id": "tier5_needle:003935",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier5_needle_003935.npy",
+      "sha256": "e4f5a6539594ba0835c76cd18c0276eda3b1ee2c4ca863f82308b863a830ffac"
+    },
+    {
+      "contact_id": "tier5_needle:003940",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier5_needle_003940.npy",
+      "sha256": "77d3e02f4c7e3d7fa5668f2d83499e766a35f11fc6cb8385cb30ad75141452d3"
+    },
+    {
+      "contact_id": "tier5_needle:004037",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier5_needle_004037.npy",
+      "sha256": "2e6ae60ba5274b3a6657edda625c2ef41640d5eb4c9c5414f532c1d5c0aa13a7"
+    },
+    {
+      "contact_id": "tier5_needle:004078",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier5_needle_004078.npy",
+      "sha256": "75c8f44f26c9783886bc595fccdb3c76e0197aec7358ffbaf0c069845ea23bc8"
+    },
+    {
+      "contact_id": "tier5_needle:004242",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier5_needle_004242.npy",
+      "sha256": "06f1a9ea67c6452594b8ce102198ddccf4c866898d230443197603468578c372"
+    },
+    {
+      "contact_id": "tier6_correction:000008",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier6_correction_000008.npy",
+      "sha256": "c68cf95f5b9d62a847dbeddaa8b0ef33ae504b2d95cfaec1f19ba1700630745a"
+    },
+    {
+      "contact_id": "tier6_correction:000009",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier6_correction_000009.npy",
+      "sha256": "fbe1abfdb682019713158db5f1e31f9db418d2f3a07f0a33d5191d616b3b1b68"
+    },
+    {
+      "contact_id": "tier6_correction:000168",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier6_correction_000168.npy",
+      "sha256": "f09066dd10723ff91faf357d67ac80ed1e134f507a7882bd0dbe1137faef7035"
+    },
+    {
+      "contact_id": "tier6_correction:000305",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier6_correction_000305.npy",
+      "sha256": "782a79270bd3d9452337ca995ca76b163269cffd0828d8eeabb9bd070cc144eb"
+    },
+    {
+      "contact_id": "tier6_correction:000398",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier6_correction_000398.npy",
+      "sha256": "1f34822f1a63d945d64bfc3687c68ff8e92ae439c8ffc94f001b11a04d6308a3"
+    },
+    {
+      "contact_id": "tier6_correction:000484",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier6_correction_000484.npy",
+      "sha256": "9a3e08c3e83739396d13b22d22cd363dd3d46d19fafe299a901983167fd28c87"
+    },
+    {
+      "contact_id": "tier6_correction:000590",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier6_correction_000590.npy",
+      "sha256": "074d5ef943fe1b52575746254affa38877606f089cec98ee564d5358ffd27eba"
+    },
+    {
+      "contact_id": "tier6_correction:000631",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier6_correction_000631.npy",
+      "sha256": "c8885b2301d4b26eeb3eb1f17298aa67363b0b548615448fb8cace12e0afd2e9"
+    },
+    {
+      "contact_id": "tier6_correction:000946",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier6_correction_000946.npy",
+      "sha256": "1d41448988d619463b1b3b7f9fa8d780d446202d938e9f28838189eba8e6f767"
+    },
+    {
+      "contact_id": "tier6_correction:001056",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier6_correction_001056.npy",
+      "sha256": "c7078aa3907e741afffe9e56525763b0f5ff708a01dd6e12d61759c7729ba253"
+    },
+    {
+      "contact_id": "tier6_correction:001329",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier6_correction_001329.npy",
+      "sha256": "2d4d874eb2757033cdf503da48ae2b1bf9997c28613e469f4ef2e2fbc18e1084"
+    },
+    {
+      "contact_id": "tier6_correction:001489",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier6_correction_001489.npy",
+      "sha256": "5524729b5c6eff9acc235a97abdf27603646266584b8ab7dc181d12496cf9a1e"
+    },
+    {
+      "contact_id": "tier6_correction:001618",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier6_correction_001618.npy",
+      "sha256": "a687627fd130d2a60d8c5dbb993f2186747a80845d5b4d76b584c518bc289266"
+    },
+    {
+      "contact_id": "tier6_correction:001756",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier6_correction_001756.npy",
+      "sha256": "4d489798d3ec716eea9799964402349d17d86d7b872125fffbe31768fb27d218"
+    },
+    {
+      "contact_id": "tier6_correction:001764",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier6_correction_001764.npy",
+      "sha256": "edfa4c8bbbeabc1e29b9100d3ef7ace071ef900f3c3f39d5012931c66e77a02a"
+    },
+    {
+      "contact_id": "tier6_correction:001766",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier6_correction_001766.npy",
+      "sha256": "0e42c95abd38d7dabd0f84d311e7687f8d58657d44f280efbb17e7f96bc59c9a"
+    },
+    {
+      "contact_id": "tier6_correction:001794",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier6_correction_001794.npy",
+      "sha256": "b30a7fe64aa53a7af39972e4c740719288c29f80588b2a66c6fb97f100e52db6"
+    },
+    {
+      "contact_id": "tier6_correction:001873",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier6_correction_001873.npy",
+      "sha256": "0b9d1241e8ba0b5e47e376a703cefba4aa947d8a861b26898ba69d71ad11e737"
+    },
+    {
+      "contact_id": "tier6_correction:002178",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier6_correction_002178.npy",
+      "sha256": "2ad0c16f8cfa1f6f3ac18698457f84c1a2f9fac90f9f81f1aa347b8b4f5dfe03"
+    },
+    {
+      "contact_id": "tier6_correction:002179",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier6_correction_002179.npy",
+      "sha256": "0c40d6f5fa6966a43343d014e02b40aaec2a5d0a96ac835603c9bb65175d81f8"
+    },
+    {
+      "contact_id": "tier6_correction:002205",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier6_correction_002205.npy",
+      "sha256": "b1fc50a3dc4198a9ed828eb060550d441a30b5a2ef9ab30e5c4881a7e0c3d61e"
+    },
+    {
+      "contact_id": "tier6_correction:002270",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier6_correction_002270.npy",
+      "sha256": "09a556a1ac3a50e58954f681636da04118d9975d727cf443b701ede447d38959"
+    },
+    {
+      "contact_id": "tier6_correction:002313",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier6_correction_002313.npy",
+      "sha256": "aa5d0bcf20fe9e397f3abc180855f9eaad02d96046b53d9b815f0a387c033c0b"
+    },
+    {
+      "contact_id": "tier6_correction:002430",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier6_correction_002430.npy",
+      "sha256": "85d255187786d809945f3cba40782423603ddcfeb475031e279dc20b07733321"
+    },
+    {
+      "contact_id": "tier6_correction:002461",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier6_correction_002461.npy",
+      "sha256": "45f3cbeb486404a640e8b14b7203aa0238b037a877d33ed40455c6c5154d563e"
+    },
+    {
+      "contact_id": "tier6_correction:002548",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier6_correction_002548.npy",
+      "sha256": "0233d7a47938321846364bb56337a9432b4e126910be5e12617a8fa511e3a4a3"
+    },
+    {
+      "contact_id": "tier6_correction:002630",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier6_correction_002630.npy",
+      "sha256": "60e6004b460286156b86e33c6fcbd8734b524ca45617e70846d2bf33c685738b"
+    },
+    {
+      "contact_id": "tier6_correction:002689",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier6_correction_002689.npy",
+      "sha256": "40c332cf49641df76788f9f5f90819f1180875fa89714b1565d9bb69685c9920"
+    },
+    {
+      "contact_id": "tier6_correction:002740",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier6_correction_002740.npy",
+      "sha256": "817fb43f87c620a39e98412ee03c034786ca4575157399220d90688d3da418b5"
+    },
+    {
+      "contact_id": "tier6_correction:002850",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier6_correction_002850.npy",
+      "sha256": "af679f587b9aa2089d89de605e87de28d211ebc1aa1ddbeaed21e7cfa4b3580d"
+    },
+    {
+      "contact_id": "tier6_correction:002940",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier6_correction_002940.npy",
+      "sha256": "51570227e826423c1fb203c69340481bb5def9041bd3a963173a26b00c35c259"
+    },
+    {
+      "contact_id": "tier6_correction:002999",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier6_correction_002999.npy",
+      "sha256": "e5dd930a72a4e13527ed237e6c950c606822f06e87dc2a7b233ccae2d30504dd"
+    },
+    {
+      "contact_id": "tier6_correction:003043",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier6_correction_003043.npy",
+      "sha256": "05aadf0652e79860bd536d154ef1bb9e68ca8eac73f20b75c14c9b4553518374"
+    },
+    {
+      "contact_id": "tier6_correction:003103",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier6_correction_003103.npy",
+      "sha256": "6435c959ffb4817be607d6be13bb06b3208f0bc9ad1b1759ddbd547b42a7d51c"
+    },
+    {
+      "contact_id": "tier6_correction:003197",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier6_correction_003197.npy",
+      "sha256": "76131af7bce44f194e177cc48902d7a3da486df54088ae31f5a9dea32dfc5b76"
+    },
+    {
+      "contact_id": "tier6_correction:003198",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier6_correction_003198.npy",
+      "sha256": "264d94e0d4d41a88e6e6f8af684f2a700ce4ba37bd9c294411bf608779bc31b5"
+    },
+    {
+      "contact_id": "tier6_correction:003226",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier6_correction_003226.npy",
+      "sha256": "85db54ca031efd3ba34aeb362b4008fa1515538b5a1896258433a9c31b29fcc6"
+    },
+    {
+      "contact_id": "tier6_correction:003267",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier6_correction_003267.npy",
+      "sha256": "930f31d6faf3e44997cb583b617222c89da22fb6a264732fd14ca4235dc66c81"
+    },
+    {
+      "contact_id": "tier6_correction:003450",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier6_correction_003450.npy",
+      "sha256": "b6218002815e62764dbb107500c92c12224a38c04e4e856c0fb41c1828290a27"
+    },
+    {
+      "contact_id": "tier6_correction:003568",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier6_correction_003568.npy",
+      "sha256": "597b8d3bb2ee279ca0b7c9bd289e7c48db641655a29012eb902d61b489de1198"
+    },
+    {
+      "contact_id": "tier6_correction:003671",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier6_correction_003671.npy",
+      "sha256": "125d287e1a7962d72432464d2f918e7dec40c80963a965eeab9d61fb80b8d57d"
+    },
+    {
+      "contact_id": "tier6_correction:003783",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier6_correction_003783.npy",
+      "sha256": "a07260adfe6b410bff38077f003aef8b2dfab807cac7d3d00c7364f29739db1c"
+    },
+    {
+      "contact_id": "tier6_correction:003820",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier6_correction_003820.npy",
+      "sha256": "20aea412c2b9c8e19fd50ed64032be2cf52ff1fa60d14349a15726f73abd052b"
+    },
+    {
+      "contact_id": "tier6_correction:003856",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier6_correction_003856.npy",
+      "sha256": "e108f718adb84f01fd76291cbb30cfc05baa52484f3b3452a5444f5aff2b139b"
+    },
+    {
+      "contact_id": "tier6_correction:003900",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier6_correction_003900.npy",
+      "sha256": "c4018b5f4af97479b13ad3149ecffc4ec8df8d95fa4a75cc5635230c70e7334e"
+    },
+    {
+      "contact_id": "tier6_correction:004017",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier6_correction_004017.npy",
+      "sha256": "1792ab5ecbf650e1cda5780c3c0b91b7e4ce680a3fe3f05b485c82e44243ba24"
+    },
+    {
+      "contact_id": "tier6_correction:004155",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier6_correction_004155.npy",
+      "sha256": "1e8a3bfe17f2548826f02de99a8a52b83b70c1c8b1603b055355aedb163edaf9"
+    },
+    {
+      "contact_id": "tier6_correction:004160",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier6_correction_004160.npy",
+      "sha256": "e05980aee91d2a484b7cc82972670eba6e87e583e9d5b7a429259ab2a74cfb9e"
+    },
+    {
+      "contact_id": "tier6_correction:004215",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier6_correction_004215.npy",
+      "sha256": "1f679ac6e859f323b4764838ef7bf7b4f77e1744589909616cb66a9987dc5820"
+    },
+    {
+      "contact_id": "tier6_correction:004281",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier6_correction_004281.npy",
+      "sha256": "57be4866d643c3cd0895c5a5f02c7fc4cf6a41faed8821adf675358099127912"
+    },
+    {
+      "contact_id": "tier7_multiturn:000009",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier7_multiturn_000009.npy",
+      "sha256": "a6a870ea7c83b59bf36965edb312d89846c120b9ff57ec047448d0e490b0f766"
+    },
+    {
+      "contact_id": "tier7_multiturn:000043",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier7_multiturn_000043.npy",
+      "sha256": "05272093897d48f3f6df9647e7bd4bdcb6c8d32e52e6a94ee6ceb99d543d9278"
+    },
+    {
+      "contact_id": "tier7_multiturn:000062",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier7_multiturn_000062.npy",
+      "sha256": "93de06cfad79ad27e5fcfee3937c095f4fcd423fb8d9e5a484e136f3ecc6b4d2"
+    },
+    {
+      "contact_id": "tier7_multiturn:000091",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier7_multiturn_000091.npy",
+      "sha256": "e8ec67aa5bc20fff98364cdfcdca3163ee3ac823d0432c9009671162890d6a0d"
+    },
+    {
+      "contact_id": "tier7_multiturn:000214",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier7_multiturn_000214.npy",
+      "sha256": "a4fafefd69b4e680df1b8af5fa6a1fdbdaa70a758ec8d6c0b8253a16ca9b6546"
+    },
+    {
+      "contact_id": "tier7_multiturn:000272",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier7_multiturn_000272.npy",
+      "sha256": "aead508396d8662f25f638aaeba607c6dbcebca7d29c0e8d05f01079f6563c01"
+    },
+    {
+      "contact_id": "tier7_multiturn:000274",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier7_multiturn_000274.npy",
+      "sha256": "efa75a4f4928d72cc57921be554de38cae745df8e6069a6041ccc22d36214714"
+    },
+    {
+      "contact_id": "tier7_multiturn:000293",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier7_multiturn_000293.npy",
+      "sha256": "5b813d2a308cd1a213f1cb48c1d0f1e4444a05d12cad452777e78b1a968e39bd"
+    },
+    {
+      "contact_id": "tier7_multiturn:000318",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier7_multiturn_000318.npy",
+      "sha256": "715b56030fcb60c354505db400d0e652ad0aa174bb3a73317cbd99c59aa1cf75"
+    },
+    {
+      "contact_id": "tier7_multiturn:000330",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier7_multiturn_000330.npy",
+      "sha256": "12ac1b856b7ff7493a7537965c40ed3a5333bcc3540d0020033fae439a5e45c4"
+    },
+    {
+      "contact_id": "tier7_multiturn:000348",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier7_multiturn_000348.npy",
+      "sha256": "5aafaf20c86d291d1c2e670864d854731e2175870c3bfa7ab793d2a75cd4a2c6"
+    },
+    {
+      "contact_id": "tier7_multiturn:000418",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier7_multiturn_000418.npy",
+      "sha256": "3d4d7ff751ced87aaa8070c6f819558accd5a0e765b6a84c07557195572614f7"
+    },
+    {
+      "contact_id": "tier7_multiturn:000440",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier7_multiturn_000440.npy",
+      "sha256": "d550de834a87ae1cf700cc93324467d97a8f2db54a47d032651fb44b68d67bb9"
+    },
+    {
+      "contact_id": "tier7_multiturn:000545",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier7_multiturn_000545.npy",
+      "sha256": "6356c94e8d4c48c34a566eee29f5d9ded7e78f8dc4a3367ca608cc9e8d9cff66"
+    },
+    {
+      "contact_id": "tier7_multiturn:000554",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier7_multiturn_000554.npy",
+      "sha256": "65e5d9eebe7bdaf2c989e2272f7988e6cedc68a0b98ffc01b816c321bfa1a707"
+    },
+    {
+      "contact_id": "tier7_multiturn:000599",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier7_multiturn_000599.npy",
+      "sha256": "1431a370c182901e185cc8a5e1ee66fdfb00c6e79b0ec10882b94384e5671f63"
+    },
+    {
+      "contact_id": "tier7_multiturn:000637",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier7_multiturn_000637.npy",
+      "sha256": "95e7d568abedc0cecfa578a22a0966065e732c1600e108f9e1203a51712535c2"
+    },
+    {
+      "contact_id": "tier7_multiturn:000739",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier7_multiturn_000739.npy",
+      "sha256": "45e03ed24ca4771e9db978a6fdce5063e0dc4f0e1652bec328cae5ed1aa9f3b9"
+    },
+    {
+      "contact_id": "tier7_multiturn:000813",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier7_multiturn_000813.npy",
+      "sha256": "5d1195df4ce96f16199967f28ec14ede3286096d3e375e9285e5c666eae29f0b"
+    },
+    {
+      "contact_id": "tier7_multiturn:000818",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier7_multiturn_000818.npy",
+      "sha256": "7542e9116e69aac77ab0f222471c330c550e4915e321fd9e2e726667229f95ab"
+    },
+    {
+      "contact_id": "tier7_multiturn:001098",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier7_multiturn_001098.npy",
+      "sha256": "fb55b35a925ed12f1b03e176720f23740b0ea0dfba0ce82c216630dc5c564bc9"
+    },
+    {
+      "contact_id": "tier7_multiturn:001129",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier7_multiturn_001129.npy",
+      "sha256": "b9ad2b1565925fdeb0a30cae639903edb885daef55bda3f8e55f673ab2beb6d9"
+    },
+    {
+      "contact_id": "tier7_multiturn:001148",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier7_multiturn_001148.npy",
+      "sha256": "7d530f5e2f8c2fd557592c8f93be6f1101134c76296a263338a4ad5288d93b21"
+    },
+    {
+      "contact_id": "tier7_multiturn:001240",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier7_multiturn_001240.npy",
+      "sha256": "2cace6191ab508cd80d6c4e2dd03c07a881c8c9a7268c318b5ef9ffa2236ef3b"
+    },
+    {
+      "contact_id": "tier7_multiturn:001272",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier7_multiturn_001272.npy",
+      "sha256": "c74646253a8812318f95a76dfe0237e74caca97680a61507cd6f0d2c05784643"
+    },
+    {
+      "contact_id": "tier7_multiturn:001292",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier7_multiturn_001292.npy",
+      "sha256": "e215bff3b411caaf7f72d240b2a6dc7b05e88c7b22b30bcfa014f44820c9315c"
+    },
+    {
+      "contact_id": "tier7_multiturn:001293",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier7_multiturn_001293.npy",
+      "sha256": "7b33a1d76900dddf57f8fff9644d8a3473359890fe20de6fccb9e89f39d032a6"
+    },
+    {
+      "contact_id": "tier7_multiturn:001418",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier7_multiturn_001418.npy",
+      "sha256": "cc2ce14a53adae7ad9eb994939abf41b9abbd6ae19aeb1889266afefc02ad8a9"
+    },
+    {
+      "contact_id": "tier7_multiturn:001453",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier7_multiturn_001453.npy",
+      "sha256": "06c4d0c1e22ab23d3263262644237560c9c29c7b9f2dcadd18f34e9bd7ced06c"
+    },
+    {
+      "contact_id": "tier7_multiturn:001516",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier7_multiturn_001516.npy",
+      "sha256": "d5e7119ab3a453236ffeeca87726f9cf89091aaf68224701337f1a78b4bff7ea"
+    },
+    {
+      "contact_id": "tier7_multiturn:001590",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier7_multiturn_001590.npy",
+      "sha256": "895d798043872f38d810752d739de5fbe78d0c52e10e6200fca1d6d82881ac4a"
+    },
+    {
+      "contact_id": "tier7_multiturn:001599",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier7_multiturn_001599.npy",
+      "sha256": "265639c718e4eee1b508813f7b533bdeb7a39d35298c81d35462a803124fbb27"
+    },
+    {
+      "contact_id": "tier7_multiturn:001614",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier7_multiturn_001614.npy",
+      "sha256": "63fa1862ace0f36d97a0166afdc587156dca5f05c9581c0866feea1c1b6db9bf"
+    },
+    {
+      "contact_id": "tier7_multiturn:001629",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier7_multiturn_001629.npy",
+      "sha256": "f6471a4aa59531d26f138e457d747a883854de40fa8db2f922075965a847cae7"
+    },
+    {
+      "contact_id": "tier7_multiturn:001646",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier7_multiturn_001646.npy",
+      "sha256": "3a3818cad52991c16f7fdfb5e1356afe6e4fc27c376fb7b4bd516b3b7e76bdaf"
+    },
+    {
+      "contact_id": "tier7_multiturn:001701",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier7_multiturn_001701.npy",
+      "sha256": "54b0b5293d1babc5cbf690cd82adbc8e934daeb47f86567fcbf4d5a16182de6f"
+    },
+    {
+      "contact_id": "tier7_multiturn:001707",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier7_multiturn_001707.npy",
+      "sha256": "a4d16bbd0fa3ccd2f6718c7e24065487091bb1cb945bf27f3bd816b22a573ca8"
+    },
+    {
+      "contact_id": "tier7_multiturn:001708",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier7_multiturn_001708.npy",
+      "sha256": "d6e3c58e79e1111aa358c38ad06b10cd23bf5b312e42aded24ca174d3541664c"
+    },
+    {
+      "contact_id": "tier7_multiturn:001732",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier7_multiturn_001732.npy",
+      "sha256": "692968f08ac8d710028806a6628d07221436e838fb9d41f3ba5575794946b79e"
+    },
+    {
+      "contact_id": "tier7_multiturn:001734",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier7_multiturn_001734.npy",
+      "sha256": "20aa9a7a1b2979c217acdb08119578267e9b8e69787f0f51541a390137e7ec18"
+    },
+    {
+      "contact_id": "tier7_multiturn:001777",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier7_multiturn_001777.npy",
+      "sha256": "e25ac6263f5a1fce83ad8a9666e7891fea38dbf33a3bc82f703358b8706890a4"
+    },
+    {
+      "contact_id": "tier7_multiturn:001781",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier7_multiturn_001781.npy",
+      "sha256": "35e8f7da2fa350321be2e8d6193da58963b4ec54764b61ada34e5cea9b9ef2b3"
+    },
+    {
+      "contact_id": "tier7_multiturn:001834",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier7_multiturn_001834.npy",
+      "sha256": "621c4e65c56f3e6161f65847d7b4baa570056411df05bb193778ccfbcb325b69"
+    },
+    {
+      "contact_id": "tier7_multiturn:001836",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier7_multiturn_001836.npy",
+      "sha256": "e9e8ba858dee5876308bf1efb4188f076a59a2baf7880839eb94dde2091d80bf"
+    },
+    {
+      "contact_id": "tier7_multiturn:001865",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier7_multiturn_001865.npy",
+      "sha256": "45fb8660023e1f142f77905d8d9326f091d088e8dc057a0762e8c55e37365d05"
+    },
+    {
+      "contact_id": "tier7_multiturn:001892",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier7_multiturn_001892.npy",
+      "sha256": "df37db681c7f99ee3dded90129c2deee0543e774c969fa8755eb1bad1c8e10b9"
+    },
+    {
+      "contact_id": "tier7_multiturn:001922",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier7_multiturn_001922.npy",
+      "sha256": "733c3d76bc61ff47bbc910ae53b01cf1b7b57d6e12ef5e25a7b828b9c373a284"
+    },
+    {
+      "contact_id": "tier7_multiturn:002099",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier7_multiturn_002099.npy",
+      "sha256": "3679725a8ff0dcad9e343570cf60574ecd95342e8ce88ed24cf24d6bd9f871ef"
+    },
+    {
+      "contact_id": "tier7_multiturn:002115",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier7_multiturn_002115.npy",
+      "sha256": "80698059eb32d92b0bc10c5c50959cedf538229faaf13a304b3d7f132537aef6"
+    },
+    {
+      "contact_id": "tier7_multiturn:002120",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier7_multiturn_002120.npy",
+      "sha256": "6a560b187c510db190a0409feae35d92a65e614ddb37945d122ba36a09c2df31"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000010",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier8_intent_blending_000010.npy",
+      "sha256": "7072061e63b31c7a493a4ebf8362130c49319069da93d66f240d821547722f73"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000023",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier8_intent_blending_000023.npy",
+      "sha256": "d49c30df22203dc6e74ef67dc9b5e22b5fe36e8b32b53a193b82543b4472725a"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000039",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier8_intent_blending_000039.npy",
+      "sha256": "1027d14d299aa5cd87690c8120f95e6cf723fe2162d63237655b28b6a6c48369"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000052",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier8_intent_blending_000052.npy",
+      "sha256": "a8f2d1f683f745569d04630b258b72d688f6bcb17b21cb7505477e05e2fbefea"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000061",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier8_intent_blending_000061.npy",
+      "sha256": "acf717a4ec5cf4fd4a6b18b6d3dc4ce026e47782979917b7834264db4d9875a4"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000065",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier8_intent_blending_000065.npy",
+      "sha256": "51a8b221dc08a75fcfd70894ac7861c1a463e073a28fc0160fc60d1c6212e730"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000108",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier8_intent_blending_000108.npy",
+      "sha256": "e2ec97d6767125d16bb058dbc270700ea3e547290675b5314eb88c84db4afa06"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000160",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier8_intent_blending_000160.npy",
+      "sha256": "a82c4c7445d5f95fa3caeb4fb6b9e49dd033046ced43fb72bf3ab8ecc0262be6"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000185",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier8_intent_blending_000185.npy",
+      "sha256": "49c0b35fe2a9c7732a3d0a846c81eafb89630d61e72cc6f366ca6225e449c65c"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000192",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier8_intent_blending_000192.npy",
+      "sha256": "1ee10c32017515c83f5061d536d521fd9741b6fca840ba22c9f9014674b96722"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000201",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier8_intent_blending_000201.npy",
+      "sha256": "9ebcc167b6dd980a5651eb4dc727db33df8b9fb251e76c0c545699d872767380"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000213",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier8_intent_blending_000213.npy",
+      "sha256": "d1902b4063ee865caf3dab7f3a4027d4f3b99aa4d2c418977bd7c3466637d637"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000216",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier8_intent_blending_000216.npy",
+      "sha256": "45bacb316fe890271efe30ead359569207fa6582842fb2485087d501e9326ded"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000220",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier8_intent_blending_000220.npy",
+      "sha256": "59a72128bdf737ba3d52536596aef5dd69230daac114b07fe5017649c30e4415"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000224",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier8_intent_blending_000224.npy",
+      "sha256": "750d5274541ca058c2f096448d79633e3595f8a9fbce8f203345c681e832f95c"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000231",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier8_intent_blending_000231.npy",
+      "sha256": "24f88d55a8d719c4d0d87b6fa5c19c0e9c8dc63d85e7a26aa799a858db781ab4"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000245",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier8_intent_blending_000245.npy",
+      "sha256": "859ea423b0b9c025472ae796889c6330b720e069eb58340cb5a483199ad1ac81"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000249",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier8_intent_blending_000249.npy",
+      "sha256": "c19123b64b33d65a7d2f82c23cd36b5e16949b6e28d37e35fdda1f485f40458b"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000269",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier8_intent_blending_000269.npy",
+      "sha256": "ffa4454013d6ad94f7c656f014e837c14acfdd9e2d6dc29f6be5288280241287"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000284",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier8_intent_blending_000284.npy",
+      "sha256": "d2c07948a3c2669dc9d3cc8fc7715e017ca702bc31271cbf2461a56db911d6f9"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000305",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier8_intent_blending_000305.npy",
+      "sha256": "c530fbe7007ff3173f85db6c1d867f7f3665c2548523f2997f7753962817250d"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000324",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier8_intent_blending_000324.npy",
+      "sha256": "d80f5e53729b40ff379e84f269d77c58071712081dd43fd0834d3fef4fa48066"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000339",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier8_intent_blending_000339.npy",
+      "sha256": "b770f63e1b6a6d77d6d24693d1c7d8f5a32171a53c3440410a95668218e6707b"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000352",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier8_intent_blending_000352.npy",
+      "sha256": "82e150742d08bb5297caf620ab5976da5e98e19d19331566561783f0d500c88e"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000355",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier8_intent_blending_000355.npy",
+      "sha256": "627ce4ec4cce039b4db437f9d2e9438c0f092b19153aeaeb731096cd952510db"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000358",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier8_intent_blending_000358.npy",
+      "sha256": "36eefc4cd1a51275d79e16f9bd7716231a3e80b80b5906ad4b3f87c00e5a7599"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000372",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier8_intent_blending_000372.npy",
+      "sha256": "14a78a0c7a32e09c00a00bfe49a58b588759d6bdb0ce1deb7909ff674c489660"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000376",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier8_intent_blending_000376.npy",
+      "sha256": "1b30dab805244a47803e28a3f46ba678926d50939dc1f219c47cb248b412ef3b"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000423",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier8_intent_blending_000423.npy",
+      "sha256": "0f8e4a982761b30846d75dca642d179727385c6fec138750bef0bf5dce22d282"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000426",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier8_intent_blending_000426.npy",
+      "sha256": "90b03586714ef137ebcb740b1787dbad91a336a8c75c17c8902863ca6980d959"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000433",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier8_intent_blending_000433.npy",
+      "sha256": "295f9cd9942c01f103bf75978d49dd99e8e8331588a98247b15ba96924daf01b"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000434",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier8_intent_blending_000434.npy",
+      "sha256": "b4ae242f35fe2cf3f9281d8dbb0737bc6f5d3d5e9d4b892361d6eca5f82ca278"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000441",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier8_intent_blending_000441.npy",
+      "sha256": "dbba20c6ca6d16f7c2044d0999730f3c6bc11a81a75f307ef4e0f478d8fe66b1"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000475",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier8_intent_blending_000475.npy",
+      "sha256": "d1bd8ac594fa8f93ff57bfb45ad5d4e56b4a366750906a2f82c9d0b69de136c6"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000484",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier8_intent_blending_000484.npy",
+      "sha256": "781656d0c0b4c1b0896eccfe60d321e2c3da0dd215bc88e93618aa2c75afe2c6"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000488",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier8_intent_blending_000488.npy",
+      "sha256": "425a0d2b7e90b3934b9e598a248ed0a265461497bb8b842b40ca645e2071d905"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000489",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier8_intent_blending_000489.npy",
+      "sha256": "4f09dae03b93372dfb496576e243c377d131043ef786c96307a2dbb99e472259"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000494",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier8_intent_blending_000494.npy",
+      "sha256": "188a553db682cf25de43ef7fb2c467d3a853cee461de6520e4e39ca3a0692028"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000528",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier8_intent_blending_000528.npy",
+      "sha256": "e5592d7b4f090e81c3534a83d5130aaba2af84cb8a6f837a6c62fc12490d530b"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000581",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier8_intent_blending_000581.npy",
+      "sha256": "22cdeb23e6506c6b2ad8b70c94c0e4c1436000900eb1da492001da8ce0fade59"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000631",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier8_intent_blending_000631.npy",
+      "sha256": "fe083eb3509bf38c40d2e3d5f631cb550369cf1c445026991d46fabd17655914"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000656",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier8_intent_blending_000656.npy",
+      "sha256": "33e9499c908c0c40ff34a9b3925d8c7ab82b7ce8f6dd34aeaf307cebdd71790e"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000673",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier8_intent_blending_000673.npy",
+      "sha256": "1c1d1059506382a279c80183d1417c9ba09f882d6daaddeaa2891236e1e11009"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000696",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier8_intent_blending_000696.npy",
+      "sha256": "8c9965ddd08132b16d8fc02cb6e3543a18b40a88575e34f5afb5bc838906a9ae"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000713",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier8_intent_blending_000713.npy",
+      "sha256": "c34b07e3dd0db67c1a62d55bdf13ea342809abe7f9ab9c5c4803f14519fb66db"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000720",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier8_intent_blending_000720.npy",
+      "sha256": "cfad54118af7ae4aba760ec886e258f393dc23a9e6ab09cd9c09e0fd83623177"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000724",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier8_intent_blending_000724.npy",
+      "sha256": "cc3c2797f2d2a48a5ea019c49814b95b7f3a5dad41bbfdae3e101a046685bb4b"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000758",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier8_intent_blending_000758.npy",
+      "sha256": "3eb10d64a458d36bc50b094de428338a7747880234ef5387edfdf567306fce8d"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000763",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier8_intent_blending_000763.npy",
+      "sha256": "6b09d8237932f83b2069f29f2fda7d1728b190f2ca887c4c8d09a73c1c02d09b"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000772",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/audio/tier8_intent_blending_000772.npy",
+      "sha256": "4158f93c349bb0db8cbd6464d6897ebd75f3343fe9a32982bd2b98a2ed66742c"
+    },
+    {
+      "contact_id": "activateRoutine",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/activateRoutine.npy",
+      "sha256": "3d03b1972bd4d7a5a8cafdcc3e9d913b161285f661c5e47738c9668fd3ab8fb2"
+    },
+    {
+      "contact_id": "activateScene",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/activateScene.npy",
+      "sha256": "293a696ad5901b57ca15679611f05fd37ef8d3ffd9014156b16abc6cb8e1be78"
+    },
+    {
+      "contact_id": "addTripStop",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/addTripStop.npy",
+      "sha256": "63ff9831903ed3f1ae8188fa414d005d98f4d08b10b8ff3774d380c01677f3a2"
+    },
+    {
+      "contact_id": "adjustVolume",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/adjustVolume.npy",
+      "sha256": "92772a854427005f79810eca566fdb08286d2168c80296978d20d0b21a990879"
+    },
+    {
+      "contact_id": "armSecuritySystem",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/armSecuritySystem.npy",
+      "sha256": "ac180d35b7d9922adb540444a0d1165cbf5826cd07f566d7149146751acf5082"
+    },
+    {
+      "contact_id": "broadcastMessage",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/broadcastMessage.npy",
+      "sha256": "2ee4ba8b82b5edb37eb85d19462c0caf7b8aee2d7388ddc34b44eabd94ae806c"
+    },
+    {
+      "contact_id": "calibrateCameras",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/calibrateCameras.npy",
+      "sha256": "6142face0e08b8ed9d01075a233b35249107d5bf53fdbc70a604995a9540596c"
+    },
+    {
+      "contact_id": "calibrateThermostat",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/calibrateThermostat.npy",
+      "sha256": "aadebab3a242a5793c0a963333b8c7f36911c371c43682c2c10e8f0fe59ecc6e"
+    },
+    {
+      "contact_id": "cancelNavigation",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/cancelNavigation.npy",
+      "sha256": "97a31b80c03dbb98d427f7644efd2b6040e251193914deef0eab3584344c1ee1"
+    },
+    {
+      "contact_id": "castContent",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/castContent.npy",
+      "sha256": "474cf0f1669ac8cf2fb150cda3a58fb1e77ed57c8887fb3167c77efed1c9729b"
+    },
+    {
+      "contact_id": "controlLocks",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/controlLocks.npy",
+      "sha256": "1775b5c5be096a2ba84f1656f985a251a468682a669d501039fe4f0ff26cd1a3"
+    },
+    {
+      "contact_id": "controlPlayback",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/controlPlayback.npy",
+      "sha256": "9233f69daf738e8499ce56d2c1d2c99c680ca1d904fc383f5eca9fa787a686aa"
+    },
+    {
+      "contact_id": "controlPlayback_home",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/controlPlayback_home.npy",
+      "sha256": "b4f6d338e8741985bf704579ccb4198a3ba33e9f8c3c5b9ffb277931dde7db66"
+    },
+    {
+      "contact_id": "enableRemoteStart",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/enableRemoteStart.npy",
+      "sha256": "3134327c89692781412a1aee6eb1b4c9e8ca630aa084bde6dbb7ec9279a589ac"
+    },
+    {
+      "contact_id": "enableWaterLock",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/enableWaterLock.npy",
+      "sha256": "7f56a9f895337b675fbeb6db114e205a8f2280556077b71a26334e520b8b30ed"
+    },
+    {
+      "contact_id": "findMyDevice",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/findMyDevice.npy",
+      "sha256": "7a406d2ef659cf391e2835459b60e14feaff049f276cff13fc4ecb2dcfa63b21"
+    },
+    {
+      "contact_id": "findPairedPhone",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/findPairedPhone.npy",
+      "sha256": "c2847056d9b0fc0f364ddffd0b64c5d5c1661238e66bb9d92478dacb0dd5e62c"
+    },
+    {
+      "contact_id": "flashLights",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/flashLights.npy",
+      "sha256": "ce3a4e7e2b6cd3f68d2bf354294d17a20f4046eb0d84928bb6511fa95dec5419"
+    },
+    {
+      "contact_id": "foldExteriorMirrors",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/foldExteriorMirrors.npy",
+      "sha256": "1dac7ca2563c3527c2fb228c395dbbc29825429899d42b100bba8926e503058f"
+    },
+    {
+      "contact_id": "getActiveAlerts",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/getActiveAlerts.npy",
+      "sha256": "c1ed169631d5033a892ff5ad8e81acc10491d5286773cd4df953b8ea38626384"
+    },
+    {
+      "contact_id": "getActivitySummary",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/getActivitySummary.npy",
+      "sha256": "179194f55e6da71088f5c83703ced04b608e2d04a6b04b27826c4e27f3febedb"
+    },
+    {
+      "contact_id": "getAirQuality",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/getAirQuality.npy",
+      "sha256": "8a7ce2c530127fba9ff0a3c49cf70bc372b00068e132145fba80bca407a9a745"
+    },
+    {
+      "contact_id": "getAirQuality_diag",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/getAirQuality_diag.npy",
+      "sha256": "782e7d01a898e9095e1cb076c863e8cbd97e852f7bb6805f85f9404f0fe4004f"
+    },
+    {
+      "contact_id": "getApplianceState",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/getApplianceState.npy",
+      "sha256": "0bb6e4c82759cb53860d3645885e772dff2c1c0d8e979146a2405732cdeb4e85"
+    },
+    {
+      "contact_id": "getApplianceStatus",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/getApplianceStatus.npy",
+      "sha256": "7c8a4ab1a079d43de1c5788266391079b61a810a4713f754dcc11b50866ce901"
+    },
+    {
+      "contact_id": "getBatteryHealth",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/getBatteryHealth.npy",
+      "sha256": "80b8a71947bb30cdc30055fba79263c2cdc8e447de80c0a25ec77004812b012e"
+    },
+    {
+      "contact_id": "getBatteryLevel",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/getBatteryLevel.npy",
+      "sha256": "ccc54c9703b2c60f07bd5618da61af48c6b7fc0bafad9d5910a553982bb8514b"
+    },
+    {
+      "contact_id": "getBatteryStatus",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/getBatteryStatus.npy",
+      "sha256": "17bdf478f45b7572d9a3bb991a4ecc6d6a01c9d553044085d197bddae7db742e"
+    },
+    {
+      "contact_id": "getBiometricData",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/getBiometricData.npy",
+      "sha256": "dfeee0ccfc88710536bcf89bc3b2886f5e772c9bb97b2ba36d64526c52219b53"
+    },
+    {
+      "contact_id": "getCameraEvent",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/getCameraEvent.npy",
+      "sha256": "e40611e46ab91908fe29d136591f5df33792009a2a28d0e51b63d668f21bf960"
+    },
+    {
+      "contact_id": "getCameraStream",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/getCameraStream.npy",
+      "sha256": "b9f3a928393eb1a2c0c8491654574fc8c67c4132bfc218f7350c064c8f12233e"
+    },
+    {
+      "contact_id": "getChargeState",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/getChargeState.npy",
+      "sha256": "c0a18a102bed3385d789a00e2dbc1dd480357c7109e4a0624926fba40f92aa6c"
+    },
+    {
+      "contact_id": "getChargingSession",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/getChargingSession.npy",
+      "sha256": "c6a667a8a67518037a6640b6afcb42842c7cfc701fea98c024d740250ea944fa"
+    },
+    {
+      "contact_id": "getClimateState",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/getClimateState.npy",
+      "sha256": "c4fa0270302ac76089fc3feae728dfcf7250ea1537527565ae85d838bfbc607e"
+    },
+    {
+      "contact_id": "getDeviceList",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/getDeviceList.npy",
+      "sha256": "a07a71841399e1522169362bb3440e8551aa62ab1e6fbfcc1fb6e241f81b3e03"
+    },
+    {
+      "contact_id": "getDoorStatus",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/getDoorStatus.npy",
+      "sha256": "5e0e108bafc2f5470f91fa0ec5214ed90ea254d4648c990bce2004ecb334c521"
+    },
+    {
+      "contact_id": "getEnergyConsumption",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/getEnergyConsumption.npy",
+      "sha256": "ff3cb92ad87b7e509567d8b8671cf73c72d9fcc4a7f7f7e965b0aa371629e880"
+    },
+    {
+      "contact_id": "getEnergyUsage",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/getEnergyUsage.npy",
+      "sha256": "bf1f555417e080323e09cfe0f3e31f0ee411a34f5fe8d33f98554ec8648f086e"
+    },
+    {
+      "contact_id": "getFilterLife",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/getFilterLife.npy",
+      "sha256": "f80b940105e304b8cdc442517e619757444f5e7c95619727e7923738fe76f272"
+    },
+    {
+      "contact_id": "getGearSelection",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/getGearSelection.npy",
+      "sha256": "99296f57464768bafa4427253af21f58ef8f92e6002ae62a643db43595f7aca6"
+    },
+    {
+      "contact_id": "getHRV",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/getHRV.npy",
+      "sha256": "ebca3b16fa66488f80061d19ac7a1969ec0d4fdeb1bf4971e2f3d72637a45478"
+    },
+    {
+      "contact_id": "getLightState",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/getLightState.npy",
+      "sha256": "0e1c0fb3b203636b863de251f0afb86c8d0b4a8b8f76d999e001667f2fdb8df7"
+    },
+    {
+      "contact_id": "getLocation",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/getLocation.npy",
+      "sha256": "8ecf88bc2a042b2ac988d2ba256c35bb7e704bfa039c9513e2d46d3b15813900"
+    },
+    {
+      "contact_id": "getLockState",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/getLockState.npy",
+      "sha256": "2c348f2bae9e10bd7f41bd4a3e088a4cd151f7a9d96e5259602dbf5167d3c862"
+    },
+    {
+      "contact_id": "getLockStatus",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/getLockStatus.npy",
+      "sha256": "ae52f5b31f9813207568e4dbaff370fbdc0b30e4eb75d121d9802e3dc5d4fc02"
+    },
+    {
+      "contact_id": "getNetworkHealth",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/getNetworkHealth.npy",
+      "sha256": "1f504a65c28bfb94c097514146d6823aa56a73073faeab32d1a5efe2aa664163"
+    },
+    {
+      "contact_id": "getOdometer",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/getOdometer.npy",
+      "sha256": "735c1fabddab6a0d5c4ff38b504f740fcb0dc99485eaa5e7ad964cd6e28b30f5"
+    },
+    {
+      "contact_id": "getRouteSummary",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/getRouteSummary.npy",
+      "sha256": "8d372a26c0e3d3ea02e5bd94472b995383ec8a7d16cd78e02697d461748b8fe4"
+    },
+    {
+      "contact_id": "getSensorState",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/getSensorState.npy",
+      "sha256": "9e2dbdcd498e2c5818c2099f5eb4c080b8e1667248cb26991c2265d92e21c862"
+    },
+    {
+      "contact_id": "getSentryStatus",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/getSentryStatus.npy",
+      "sha256": "996fa54e790599ecde17515f46eafeabdf7fae62676109746d431c7616af2c5f"
+    },
+    {
+      "contact_id": "getSleepSummary",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/getSleepSummary.npy",
+      "sha256": "fbc2f1256d69a85bdbeaa38910c925e051629cf9280a0dee1cc47e56667e85b3"
+    },
+    {
+      "contact_id": "getSoftwareUpdateStatus",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/getSoftwareUpdateStatus.npy",
+      "sha256": "6454f66e3d2003d264a6d13bc5bacfc034057f89a4068e547cc789479d6f588e"
+    },
+    {
+      "contact_id": "getThermostatState",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/getThermostatState.npy",
+      "sha256": "45b16569c6d2570e55947765c4860d68e21f0c8c5c4a8b4dca2df9896593cc5b"
+    },
+    {
+      "contact_id": "getTirePressures",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/getTirePressures.npy",
+      "sha256": "4317418531de0d9336da2241a048a57af865124a09b1137ccec774ce41e5dcf2"
+    },
+    {
+      "contact_id": "getVehicleInfo",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/getVehicleInfo.npy",
+      "sha256": "b19e653f48941cdbad3cdf23ba99409c35c5f114e12e3c94c16c747201caed93"
+    },
+    {
+      "contact_id": "honkHorn",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/honkHorn.npy",
+      "sha256": "c3577054075e6c65884a5056c0f7b75aeec12de9b3ba82a76a60a76fcdabd0ea"
+    },
+    {
+      "contact_id": "initiateAutoPark",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/initiateAutoPark.npy",
+      "sha256": "cc64fa4d0d554d1968a31601f04ac81047991e519a4f7dd8cb184010d86b487e"
+    },
+    {
+      "contact_id": "installApp",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/installApp.npy",
+      "sha256": "b49e0d0990c7feccb220a176309fbcb97b770f059d5e03c783cffee381009f7d"
+    },
+    {
+      "contact_id": "installSoftwareUpdate",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/installSoftwareUpdate.npy",
+      "sha256": "53d246ae43062d5686b7b94e0cbdd4908b9cc2ce6119714acad9b643595f9b81"
+    },
+    {
+      "contact_id": "launchInCarGaming",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/launchInCarGaming.npy",
+      "sha256": "3c024bb6187ebbc0922c1b6460104138dff7451519cd264ace2d9afda857fff6"
+    },
+    {
+      "contact_id": "openChargePortDoor",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/openChargePortDoor.npy",
+      "sha256": "9196b723db6fe918510b07744b05d2de3e24e016a7bf005800e67f45de97289e"
+    },
+    {
+      "contact_id": "openFrontTrunk",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/openFrontTrunk.npy",
+      "sha256": "ce6a269cb75ec765c8efafe8c2e6c379168f9c92c383fc1f690349371515b2f0"
+    },
+    {
+      "contact_id": "playMedia",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/playMedia.npy",
+      "sha256": "f1eb1bebd7c94a88833bc073fb36b2cd1ff2c66560bed12d2f58711a544ac903"
+    },
+    {
+      "contact_id": "rampBrightness",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/rampBrightness.npy",
+      "sha256": "d09d727bc9290ad4687f16eb14d14ccf4c895fb938790c2af2212ddfbb3c5e19"
+    },
+    {
+      "contact_id": "rebootDevice",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/rebootDevice.npy",
+      "sha256": "c951af03cf2e7085ec670d41233c2fff27d616bd3a67642f9e289e9d3bcb5604"
+    },
+    {
+      "contact_id": "resetFilterStatus",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/resetFilterStatus.npy",
+      "sha256": "6e9b12ce5f7ef7bd020b94f45191b4e80638ab14ec59837b71acc3039343e8e9"
+    },
+    {
+      "contact_id": "resetTPMSSensors",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/resetTPMSSensors.npy",
+      "sha256": "9ddf948a95d89d6e5d8e1d3dfa65f7c11c4e62e6bb1792103d9b309705b82ed4"
+    },
+    {
+      "contact_id": "restartDevice",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/restartDevice.npy",
+      "sha256": "a5f1ef49fe7508729bf8d346cc5e9fbe5121b9a37bfaf48d1431e86d8e63f5b8"
+    },
+    {
+      "contact_id": "runNetworkSpeedTest",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/runNetworkSpeedTest.npy",
+      "sha256": "4afcea215e6aa45f3ba63ae06dd642d48c8948f0fbda7cea391587b52ca803df"
+    },
+    {
+      "contact_id": "scheduleService",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/scheduleService.npy",
+      "sha256": "e29d2c9b2d8427ccef3801d71f3f60da6ffbc9efd193525d5602b252593cc533"
+    },
+    {
+      "contact_id": "searchPOI",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/searchPOI.npy",
+      "sha256": "4b79dec8560726a2c3859ca6f078806e82bc80fa8a438d35467ea89e176fc9e7"
+    },
+    {
+      "contact_id": "setAdaptiveLighting",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setAdaptiveLighting.npy",
+      "sha256": "a3df88e3b22d3eba0ef3c81567341a7024b63ea094dab651b01e3ad2b57acef3"
+    },
+    {
+      "contact_id": "setAirQualityMode",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setAirQualityMode.npy",
+      "sha256": "dd48053770158974d6dcd653ee1132698a9b42a5e54c08367e29edbd99e543de"
+    },
+    {
+      "contact_id": "setAlarm",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setAlarm.npy",
+      "sha256": "0983487def8bf05aa5e72272c133dcaec67eedc1174c774fc5f405357662f3fe"
+    },
+    {
+      "contact_id": "setAlwaysOnDisplay",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setAlwaysOnDisplay.npy",
+      "sha256": "5a60a4072bc9e503888d63e35038b93d52641545df7045952fea92159a76ff3c"
+    },
+    {
+      "contact_id": "setAmbientLighting",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setAmbientLighting.npy",
+      "sha256": "970ac4d2788fb5816a7a89b17ed30e39946b7758a1eeb4959e089cf35be1c86f"
+    },
+    {
+      "contact_id": "setApplianceMode",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setApplianceMode.npy",
+      "sha256": "f210814a687a0b170aa8130d9e3d3e4bda2212a6b832deded947cdcd615ea19f"
+    },
+    {
+      "contact_id": "setAudioVolume",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setAudioVolume.npy",
+      "sha256": "ae35c79006ac1b3b651810fabe653fabfb39ef8b218960d6a9ea6affc8b74c26"
+    },
+    {
+      "contact_id": "setAutonomousDriving",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setAutonomousDriving.npy",
+      "sha256": "dc2e2d518525cb73dd846f3d25b8b6ea64c9c1dbb43a47cedd5f779a4d59e6ca"
+    },
+    {
+      "contact_id": "setBrightness",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setBrightness.npy",
+      "sha256": "183dd53047a736a682fe0e9cb581cd81ddf7304947febd78b52782a1bb02ca66"
+    },
+    {
+      "contact_id": "setCabinOverheatProtection",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setCabinOverheatProtection.npy",
+      "sha256": "5a44a0ca7dfdeff45af9b1a684133cfcdb3bd540fb6408f3f37b6b7f0dce0707"
+    },
+    {
+      "contact_id": "setCampingMode",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setCampingMode.npy",
+      "sha256": "1a98fea09a5402af46e282866435d3f0c812ee2767a4cd459971872824b31889"
+    },
+    {
+      "contact_id": "setCargoState",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setCargoState.npy",
+      "sha256": "03f4848ddd6153477ff1f7d75ddec749681334403fd107a68f9e5dcfb6113de6"
+    },
+    {
+      "contact_id": "setChargeLimit",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setChargeLimit.npy",
+      "sha256": "8aedde994f62c5b01d7d05e99479ae31215b4b0c8cdfba3a8d5ed5c636385d1f"
+    },
+    {
+      "contact_id": "setChargingAmperage",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setChargingAmperage.npy",
+      "sha256": "27abbae95e47ea99e1a2c3572a4c354a29fad2e7ea05eec33a120710a13a88f4"
+    },
+    {
+      "contact_id": "setChargingLimit",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setChargingLimit.npy",
+      "sha256": "d8f1a7ef37f53edfb9097c255c079b96f400105edf2d839e7d5a0d7282398fcc"
+    },
+    {
+      "contact_id": "setClimate",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setClimate.npy",
+      "sha256": "999981adcbd07c7f2d2195dc1d545d409447692df603843b8d43b2cbd8163b8b"
+    },
+    {
+      "contact_id": "setColor",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setColor.npy",
+      "sha256": "6d326ad202958f057e188ba55181f8add95019a0d1d75d7dd908053367f533b2"
+    },
+    {
+      "contact_id": "setColorTemperature",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setColorTemperature.npy",
+      "sha256": "a2daee9c1697f5025bb763d02c07049ac98e53eaf5e270aca7a6183da45c4ff9"
+    },
+    {
+      "contact_id": "setCruiseSpeed",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setCruiseSpeed.npy",
+      "sha256": "3e07f016c3fc163dd739713927333578a5c7f23b5aa7a6e86c23c2f99f237325"
+    },
+    {
+      "contact_id": "setDefrost",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setDefrost.npy",
+      "sha256": "e44573c40aa8aeb114f46991f57322ade1864b02124891709d0608fdaee39662"
+    },
+    {
+      "contact_id": "setDestination",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setDestination.npy",
+      "sha256": "ad6272c5bbc80fe6034d2787c9b73937cd1a609b78b00582f397f0128890f870"
+    },
+    {
+      "contact_id": "setDoNotDisturb",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setDoNotDisturb.npy",
+      "sha256": "ca709ebba22d97dc06353fa7dff54fac322a4f3fd79538e864ae1a75d82e05a7"
+    },
+    {
+      "contact_id": "setDockState",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setDockState.npy",
+      "sha256": "b61e335f216df71cdcfcbc7c09669f457a531191eebfec33519cb32f7c953f61"
+    },
+    {
+      "contact_id": "setDrivingMode",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setDrivingMode.npy",
+      "sha256": "1f6e2bec594400b9c24b7689bf697def494a2f3a98339f137dd328080d5883d9"
+    },
+    {
+      "contact_id": "setEmissionsMode",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setEmissionsMode.npy",
+      "sha256": "b3e1956acf63d379406043aeb1422b83c1fd67ca1c0b763aff90c2a966b3678b"
+    },
+    {
+      "contact_id": "setExternalSpeakerOutput",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setExternalSpeakerOutput.npy",
+      "sha256": "203893e169581e64f27f29824a19658643b05ae03d02eee409310f9760f86490"
+    },
+    {
+      "contact_id": "setFanMode",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setFanMode.npy",
+      "sha256": "939d13244ad47fe174a3cb72b9d2a30791c1f492ce0c1806b668633fafb8563e"
+    },
+    {
+      "contact_id": "setFanSpeed",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setFanSpeed.npy",
+      "sha256": "de4b4566206170240f5104baddf886ce45540cea938d6b2a74c0196fd0413eb8"
+    },
+    {
+      "contact_id": "setFollowDistance",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setFollowDistance.npy",
+      "sha256": "2353808bc84b9db0c2206429ea9dabef34c2c0748708a27183097892c2ad8b39"
+    },
+    {
+      "contact_id": "setGarageDoor",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setGarageDoor.npy",
+      "sha256": "b1e2d6345871f656c230d2f9d97e8c9b9c06dccbca132a4a84639913510f707f"
+    },
+    {
+      "contact_id": "setGarageOpener",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setGarageOpener.npy",
+      "sha256": "73677d695c44fd4963ff4e0c76e5d1c4eaf02e784111b1cf794f50cfed4695e6"
+    },
+    {
+      "contact_id": "setGroupLightState",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setGroupLightState.npy",
+      "sha256": "c09be4dc48aa2d783eba5c699b6528055c021a21446d3e267882131c053525a7"
+    },
+    {
+      "contact_id": "setHapticStrength",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setHapticStrength.npy",
+      "sha256": "0fd36f60394bdb421e82c184a7df626c972dc1025ad09cc28474d81e59967e63"
+    },
+    {
+      "contact_id": "setHumidifierState",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setHumidifierState.npy",
+      "sha256": "89c0af3b924983d63d115922779ed43774c7f97f776e0b3288a0862cc50b9927"
+    },
+    {
+      "contact_id": "setHvacMode",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setHvacMode.npy",
+      "sha256": "71bc7ec70e1455e024db8f28b31c4afa3617a5f94ea52c46898916c94da9b104"
+    },
+    {
+      "contact_id": "setInputSource",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setInputSource.npy",
+      "sha256": "c19c445f0f62a5cc8ac9a11c1de7eacaf692fd89e0838478750b488e0ef4b5be"
+    },
+    {
+      "contact_id": "setLightState",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setLightState.npy",
+      "sha256": "10fa0b3fa8017a3e236c73019895b50a3d3b116012a97b20320dcb2c44bea4ab"
+    },
+    {
+      "contact_id": "setLighting",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setLighting.npy",
+      "sha256": "b17f4575bf0b591591c7c7994e06624dcdd535b2deb6299f2f1dae911a52a46d"
+    },
+    {
+      "contact_id": "setLockState",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setLockState.npy",
+      "sha256": "ad06ebd657eb70118cd5eb9cfb78453dee629a93c2ae7e16f5aeac9c4fe1bd22"
+    },
+    {
+      "contact_id": "setLockState_home",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setLockState_home.npy",
+      "sha256": "ee00f21128c51f9afb72ce67be376b12550cfe2a3583440521541e3649450b3f"
+    },
+    {
+      "contact_id": "setMediaSource",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setMediaSource.npy",
+      "sha256": "eab3beca699523a0af2457b3b91002c1cf6bb3b85385b975bd3ac35545eb2bce"
+    },
+    {
+      "contact_id": "setMirrorAngle",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setMirrorAngle.npy",
+      "sha256": "c81d06f3000b52e425ba50e6a65b03ba2e7597721c4f0d0326cba832033b851a"
+    },
+    {
+      "contact_id": "setPassengerQuietMode",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setPassengerQuietMode.npy",
+      "sha256": "7fe2490b48a1b8b9c86bb537b79c6d05f52f3517bcfd8f18708c3db5f795dc70"
+    },
+    {
+      "contact_id": "setPetComfortMode",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setPetComfortMode.npy",
+      "sha256": "d2af179aa68e902a27804ee4b7e23480c0094da040b47b2396b8e68d57a15371"
+    },
+    {
+      "contact_id": "setPowerState",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setPowerState.npy",
+      "sha256": "357c2e1c42f6d72da3b1ebd7d7973b655c432af1f7e53081c111b78965581d68"
+    },
+    {
+      "contact_id": "setRecirculation",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setRecirculation.npy",
+      "sha256": "d462a5e24734e584345228eff0ed4e6e818e22be38acfb2c32e07d894f73825e"
+    },
+    {
+      "contact_id": "setRegenerativeBraking",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setRegenerativeBraking.npy",
+      "sha256": "9a251e1dabd2fad639c91ce4bf431e715893515e45524a18b494d3b82fabf9af"
+    },
+    {
+      "contact_id": "setRomanceMode",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setRomanceMode.npy",
+      "sha256": "272c3ef7149e8a910d32c68aa0277b5947efefcc31b8c2f2b251d0176ed1f18b"
+    },
+    {
+      "contact_id": "setRoutePreferences",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setRoutePreferences.npy",
+      "sha256": "aa6ceb6a10649c2f192a3f71a4d27f25bd5171f7c485a10a81264ddf2d1d7a2e"
+    },
+    {
+      "contact_id": "setScheduledDeparture",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setScheduledDeparture.npy",
+      "sha256": "5e0b62f208f6b493d16ec39417fbaa86a54f0fa262935b5fe5d1500d4e2c2506"
+    },
+    {
+      "contact_id": "setSeatComfort",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setSeatComfort.npy",
+      "sha256": "f33fbf4abe0622ad1a70a7b72d6f6ac4da30d4be3121945230ac6ef400d85427"
+    },
+    {
+      "contact_id": "setSecureStorageAccess",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setSecureStorageAccess.npy",
+      "sha256": "7f43a2bb8909efdfa4b180ac380dd6a328757f1d4982c95dd4668c9f400daa36"
+    },
+    {
+      "contact_id": "setSecurityMode",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setSecurityMode.npy",
+      "sha256": "61904fc7156c5bae68705eb778ac88b55d5a1fc2ea2433914b99cda84f37e435"
+    },
+    {
+      "contact_id": "setSpeedLimitMode",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setSpeedLimitMode.npy",
+      "sha256": "b11be42a92457ef71bb489f2b090aa67a4cb2fa39adc0dfd6652cf0b1879bd71"
+    },
+    {
+      "contact_id": "setSteeringFeel",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setSteeringFeel.npy",
+      "sha256": "6a93d32c55d755e4a38ab5ba999a718b88c2c26f6227c74cae601e7593706f74"
+    },
+    {
+      "contact_id": "setSteeringWheelHeat",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setSteeringWheelHeat.npy",
+      "sha256": "31a3a41afb7ab582622089181db99ab2ff7ce1c20eabda8862eecb3bf677b7a2"
+    },
+    {
+      "contact_id": "setSunroofPosition",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setSunroofPosition.npy",
+      "sha256": "2981248c5d9bd9daa5d52bdb9e29a2b900f2f6dd57f6dde5e95ad0122f45fae9"
+    },
+    {
+      "contact_id": "setSurveillanceMode",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setSurveillanceMode.npy",
+      "sha256": "467e5310ea0fc3ad7505fcae2844e0d8878f9c1959811541e5973ea3f552ff3e"
+    },
+    {
+      "contact_id": "setTargetTemperature",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setTargetTemperature.npy",
+      "sha256": "c09a3999ea133bf695116e3ac8eede026a71f4f302032c6871b4612cb65f699a"
+    },
+    {
+      "contact_id": "setThermostatMode",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setThermostatMode.npy",
+      "sha256": "068e262ae8a68dd8990c85155017c0027c90e60df9dc7246e3f44901c75ebf58"
+    },
+    {
+      "contact_id": "setThermostatSchedule",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setThermostatSchedule.npy",
+      "sha256": "b07ba31945ee9f23e7a4b63895505a4d494174bd3aa9ec8c575737eb1c18f270"
+    },
+    {
+      "contact_id": "setValetMode",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setValetMode.npy",
+      "sha256": "9eae2e0ed6f964208dbd04b945ea496260500414982a0faff9f48920c1f0eb23"
+    },
+    {
+      "contact_id": "setVoiceGuidance",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setVoiceGuidance.npy",
+      "sha256": "8e437c88b24e162ac0fb848d508536c30931153689da19713bca25e5c3142252"
+    },
+    {
+      "contact_id": "setVolume",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setVolume.npy",
+      "sha256": "2289bfb5ec78c0253fd5376baf1112fea4252f4ba66800876b4e1276175329c4"
+    },
+    {
+      "contact_id": "setWaterValve",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setWaterValve.npy",
+      "sha256": "d8eac8609d9c84bc90ce67df2f0b2cdf65a61936e2aea6ce0f39030e05ce0ea9"
+    },
+    {
+      "contact_id": "setWindowPosition",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setWindowPosition.npy",
+      "sha256": "34b3407c41c0e1f88158d2aa84f11263b8d04457b2e7db431f773adea1be099d"
+    },
+    {
+      "contact_id": "setZoneTemperature",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/setZoneTemperature.npy",
+      "sha256": "3cdfbb2c0f3868d36d480c7c1ec7a0a4a1e1b1df43f660de2f68ee122ed3408a"
+    },
+    {
+      "contact_id": "startCharging",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/startCharging.npy",
+      "sha256": "78d37cf83cc7e2d6b44b5b2f212ec1fcdaeaba8be98fda04b4f10cb874e4d0dd"
+    },
+    {
+      "contact_id": "startCleaning",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/startCleaning.npy",
+      "sha256": "1ce8ab19640bbbbdca779c9b4c7948052286fe9361921f7b6b60ab91a4544da6"
+    },
+    {
+      "contact_id": "startLightShow",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/startLightShow.npy",
+      "sha256": "1dc3b4723eb9ca8604308bb4fb85727e9e6a624c09ef0c19151b5a5f56cf3902"
+    },
+    {
+      "contact_id": "startWorkout",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/startWorkout.npy",
+      "sha256": "96986f1e5d67fe3fdc3b0724e338657f1e20fe2c638f524247f68ab2b4416996"
+    },
+    {
+      "contact_id": "stopCharging",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/stopCharging.npy",
+      "sha256": "a12bd5ba0543db10cca6097d0d6199255bb213d6a624f647f831991797120d97"
+    },
+    {
+      "contact_id": "stopWorkout",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/stopWorkout.npy",
+      "sha256": "d758d3c0bf73e0b6209e1b7b5255c1164bcd4a5d4671d1028c39753da71d3393"
+    },
+    {
+      "contact_id": "streamCamera",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/streamCamera.npy",
+      "sha256": "251e022d9d8cea3e41a2760d2896aea954e2b4d6173c71386fc116a2df097b08"
+    },
+    {
+      "contact_id": "triggerBatteryPreconditioning",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/triggerBatteryPreconditioning.npy",
+      "sha256": "b71a6b0faa0d35ade6f2f01aead6b4ca9d5408aa99c414b78b553e4f2b678e9f"
+    },
+    {
+      "contact_id": "triggerRemoteParking",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/triggerRemoteParking.npy",
+      "sha256": "4c84914291caf36b6527a1a26ace5e0b6f7d49edb51bcc77aeca018df3ae500c"
+    },
+    {
+      "contact_id": "unlockChargeCable",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/unlockChargeCable.npy",
+      "sha256": "5b6c123b70461f7e1b0b8577ce5ca1cddc50c12e9a9cc9ac224a3339e75c016e"
+    },
+    {
+      "contact_id": "updateFirmware",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/updateFirmware.npy",
+      "sha256": "bf4081c9afec013d5ed63849e9b0724d4d1417b4df7e6c79a8b0d3340929f577"
+    },
+    {
+      "contact_id": "ventWindows",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/ventWindows.npy",
+      "sha256": "92126475398c95f100ce06e97e9b82209eeeadd1c14f90659dcc1aae8ebe6375"
+    },
+    {
+      "contact_id": "viewRemoteCamera",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/viewRemoteCamera.npy",
+      "sha256": "9d1253e4f1918c94516b3f9609a09eab90feeebbeb78e2763105d1709797a3b9"
+    },
+    {
+      "contact_id": "wiperServiceMode",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb2-552/text/wiperServiceMode.npy",
+      "sha256": "5a94fa5de7756f0b0606e562b615aa240d8dbe16bdec0ad7c5416229f96b3127"
+    }
+  ],
+  "entries_by_kind": {
+    "audio": 400,
+    "text": 152
+  },
+  "entry_count": 552,
+  "manifest_sha256": "8921b6f828a2037fd4e09574c588a56d6448789e7e54853994bd762e63029643",
+  "run_id": "SAEA-PROBE-pemb2-552",
+  "schema": "saea-pemb-embedding-manifest-summary-v1",
+  "source_manifest": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/derived/embeddings/SAEA-PROBE-pemb2-552/manifest.json",
+  "text_count": 152
+}

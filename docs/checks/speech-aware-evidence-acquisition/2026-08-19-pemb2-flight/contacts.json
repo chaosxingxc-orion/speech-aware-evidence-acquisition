@@ -1,0 +1,3870 @@
+{
+  "attempt_id": "attempt-20260820T002031Z-e816e2",
+  "contacts": [
+    {
+      "contact_id": "tier1_direct:000045",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.2150259017944336,
+      "started_at": "2026-08-20T00:22:38.689825+00:00"
+    },
+    {
+      "contact_id": "tier1_direct:000062",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.08199930191040039,
+      "started_at": "2026-08-20T00:22:38.929890+00:00"
+    },
+    {
+      "contact_id": "tier1_direct:000074",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.05928182601928711,
+      "started_at": "2026-08-20T00:22:39.028850+00:00"
+    },
+    {
+      "contact_id": "tier1_direct:000077",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.0715947151184082,
+      "started_at": "2026-08-20T00:22:39.106897+00:00"
+    },
+    {
+      "contact_id": "tier1_direct:000167",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.06562447547912598,
+      "started_at": "2026-08-20T00:22:39.195202+00:00"
+    },
+    {
+      "contact_id": "tier1_direct:000178",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.0639491081237793,
+      "started_at": "2026-08-20T00:22:39.278230+00:00"
+    },
+    {
+      "contact_id": "tier1_direct:000232",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.08276820182800293,
+      "started_at": "2026-08-20T00:22:39.356892+00:00"
+    },
+    {
+      "contact_id": "tier1_direct:000270",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.06311249732971191,
+      "started_at": "2026-08-20T00:22:39.470268+00:00"
+    },
+    {
+      "contact_id": "tier1_direct:000362",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.10255289077758789,
+      "started_at": "2026-08-20T00:22:39.555439+00:00"
+    },
+    {
+      "contact_id": "tier1_direct:000424",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.08133125305175781,
+      "started_at": "2026-08-20T00:22:39.678658+00:00"
+    },
+    {
+      "contact_id": "tier1_direct:000579",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.08046507835388184,
+      "started_at": "2026-08-20T00:22:39.779271+00:00"
+    },
+    {
+      "contact_id": "tier1_direct:000593",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.07269048690795898,
+      "started_at": "2026-08-20T00:22:39.882307+00:00"
+    },
+    {
+      "contact_id": "tier1_direct:000620",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.07961201667785645,
+      "started_at": "2026-08-20T00:22:39.981386+00:00"
+    },
+    {
+      "contact_id": "tier1_direct:000636",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.07321405410766602,
+      "started_at": "2026-08-20T00:22:40.082275+00:00"
+    },
+    {
+      "contact_id": "tier1_direct:001124",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.06416177749633789,
+      "started_at": "2026-08-20T00:22:40.183098+00:00"
+    },
+    {
+      "contact_id": "tier1_direct:001128",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.07236480712890625,
+      "started_at": "2026-08-20T00:22:40.287834+00:00"
+    },
+    {
+      "contact_id": "tier1_direct:001242",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.08842229843139648,
+      "started_at": "2026-08-20T00:22:40.394534+00:00"
+    },
+    {
+      "contact_id": "tier1_direct:001422",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.09157252311706543,
+      "started_at": "2026-08-20T00:22:40.510505+00:00"
+    },
+    {
+      "contact_id": "tier1_direct:001432",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.06976151466369629,
+      "started_at": "2026-08-20T00:22:40.626636+00:00"
+    },
+    {
+      "contact_id": "tier1_direct:001444",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.0713202953338623,
+      "started_at": "2026-08-20T00:22:40.716260+00:00"
+    },
+    {
+      "contact_id": "tier1_direct:001607",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.07616186141967773,
+      "started_at": "2026-08-20T00:22:40.805114+00:00"
+    },
+    {
+      "contact_id": "tier1_direct:001631",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.09421062469482422,
+      "started_at": "2026-08-20T00:22:40.898240+00:00"
+    },
+    {
+      "contact_id": "tier1_direct:001976",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.0689389705657959,
+      "started_at": "2026-08-20T00:22:41.009810+00:00"
+    },
+    {
+      "contact_id": "tier1_direct:002212",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.08248257637023926,
+      "started_at": "2026-08-20T00:22:41.095744+00:00"
+    },
+    {
+      "contact_id": "tier1_direct:002300",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.06022500991821289,
+      "started_at": "2026-08-20T00:22:41.199404+00:00"
+    },
+    {
+      "contact_id": "tier1_direct:002510",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.07328939437866211,
+      "started_at": "2026-08-20T00:22:41.277696+00:00"
+    },
+    {
+      "contact_id": "tier1_direct:002581",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.06367778778076172,
+      "started_at": "2026-08-20T00:22:41.368187+00:00"
+    },
+    {
+      "contact_id": "tier1_direct:002609",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.06780624389648438,
+      "started_at": "2026-08-20T00:22:41.452475+00:00"
+    },
+    {
+      "contact_id": "tier1_direct:002687",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.08328866958618164,
+      "started_at": "2026-08-20T00:22:41.545872+00:00"
+    },
+    {
+      "contact_id": "tier1_direct:002720",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.05909299850463867,
+      "started_at": "2026-08-20T00:22:41.643947+00:00"
+    },
+    {
+      "contact_id": "tier1_direct:002728",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.07320332527160645,
+      "started_at": "2026-08-20T00:22:41.740476+00:00"
+    },
+    {
+      "contact_id": "tier1_direct:002763",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.07363080978393555,
+      "started_at": "2026-08-20T00:22:41.830061+00:00"
+    },
+    {
+      "contact_id": "tier1_direct:003109",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.0720221996307373,
+      "started_at": "2026-08-20T00:22:41.924006+00:00"
+    },
+    {
+      "contact_id": "tier1_direct:003178",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.06921505928039551,
+      "started_at": "2026-08-20T00:22:42.023818+00:00"
+    },
+    {
+      "contact_id": "tier1_direct:003198",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.056287288665771484,
+      "started_at": "2026-08-20T00:22:42.116128+00:00"
+    },
+    {
+      "contact_id": "tier1_direct:003210",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.05948615074157715,
+      "started_at": "2026-08-20T00:22:42.189955+00:00"
+    },
+    {
+      "contact_id": "tier1_direct:003343",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.06112957000732422,
+      "started_at": "2026-08-20T00:22:42.270422+00:00"
+    },
+    {
+      "contact_id": "tier1_direct:003492",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.07213068008422852,
+      "started_at": "2026-08-20T00:22:42.358050+00:00"
+    },
+    {
+      "contact_id": "tier1_direct:003562",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.08798003196716309,
+      "started_at": "2026-08-20T00:22:42.449851+00:00"
+    },
+    {
+      "contact_id": "tier1_direct:003651",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.0706322193145752,
+      "started_at": "2026-08-20T00:22:42.553205+00:00"
+    },
+    {
+      "contact_id": "tier1_direct:003668",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.07483434677124023,
+      "started_at": "2026-08-20T00:22:42.643511+00:00"
+    },
+    {
+      "contact_id": "tier1_direct:003706",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.06354832649230957,
+      "started_at": "2026-08-20T00:22:42.736989+00:00"
+    },
+    {
+      "contact_id": "tier1_direct:003713",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.07609224319458008,
+      "started_at": "2026-08-20T00:22:42.815855+00:00"
+    },
+    {
+      "contact_id": "tier1_direct:003775",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.07252979278564453,
+      "started_at": "2026-08-20T00:22:42.918284+00:00"
+    },
+    {
+      "contact_id": "tier1_direct:004040",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.06424760818481445,
+      "started_at": "2026-08-20T00:22:43.011356+00:00"
+    },
+    {
+      "contact_id": "tier1_direct:004082",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.059336185455322266,
+      "started_at": "2026-08-20T00:22:43.095601+00:00"
+    },
+    {
+      "contact_id": "tier1_direct:004145",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.06290411949157715,
+      "started_at": "2026-08-20T00:22:43.168265+00:00"
+    },
+    {
+      "contact_id": "tier1_direct:004159",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.05930185317993164,
+      "started_at": "2026-08-20T00:22:43.251404+00:00"
+    },
+    {
+      "contact_id": "tier1_direct:004218",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.06470966339111328,
+      "started_at": "2026-08-20T00:22:43.328973+00:00"
+    },
+    {
+      "contact_id": "tier1_direct:004244",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.08663582801818848,
+      "started_at": "2026-08-20T00:22:43.411195+00:00"
+    },
+    {
+      "contact_id": "tier2_parametric:000045",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.08961009979248047,
+      "started_at": "2026-08-20T00:22:43.515059+00:00"
+    },
+    {
+      "contact_id": "tier2_parametric:000068",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.08922743797302246,
+      "started_at": "2026-08-20T00:22:43.626029+00:00"
+    },
+    {
+      "contact_id": "tier2_parametric:000132",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.12928175926208496,
+      "started_at": "2026-08-20T00:22:43.732775+00:00"
+    },
+    {
+      "contact_id": "tier2_parametric:000240",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.08583974838256836,
+      "started_at": "2026-08-20T00:22:43.879393+00:00"
+    },
+    {
+      "contact_id": "tier2_parametric:000247",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.08707237243652344,
+      "started_at": "2026-08-20T00:22:43.987796+00:00"
+    },
+    {
+      "contact_id": "tier2_parametric:000369",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.08927798271179199,
+      "started_at": "2026-08-20T00:22:44.092871+00:00"
+    },
+    {
+      "contact_id": "tier2_parametric:000421",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.1073000431060791,
+      "started_at": "2026-08-20T00:22:44.202446+00:00"
+    },
+    {
+      "contact_id": "tier2_parametric:000525",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.08660316467285156,
+      "started_at": "2026-08-20T00:22:44.327037+00:00"
+    },
+    {
+      "contact_id": "tier2_parametric:000568",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.10659265518188477,
+      "started_at": "2026-08-20T00:22:44.431179+00:00"
+    },
+    {
+      "contact_id": "tier2_parametric:000632",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.07004070281982422,
+      "started_at": "2026-08-20T00:22:44.551692+00:00"
+    },
+    {
+      "contact_id": "tier2_parametric:000695",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.0637047290802002,
+      "started_at": "2026-08-20T00:22:44.642883+00:00"
+    },
+    {
+      "contact_id": "tier2_parametric:000704",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.0670013427734375,
+      "started_at": "2026-08-20T00:22:44.727454+00:00"
+    },
+    {
+      "contact_id": "tier2_parametric:000713",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.06319546699523926,
+      "started_at": "2026-08-20T00:22:44.815126+00:00"
+    },
+    {
+      "contact_id": "tier2_parametric:000895",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.10012221336364746,
+      "started_at": "2026-08-20T00:22:44.911047+00:00"
+    },
+    {
+      "contact_id": "tier2_parametric:001004",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.08157491683959961,
+      "started_at": "2026-08-20T00:22:45.038472+00:00"
+    },
+    {
+      "contact_id": "tier2_parametric:001014",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.07660031318664551,
+      "started_at": "2026-08-20T00:22:45.143797+00:00"
+    },
+    {
+      "contact_id": "tier2_parametric:001365",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.09364008903503418,
+      "started_at": "2026-08-20T00:22:45.236731+00:00"
+    },
+    {
+      "contact_id": "tier2_parametric:001474",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.10130810737609863,
+      "started_at": "2026-08-20T00:22:45.350621+00:00"
+    },
+    {
+      "contact_id": "tier2_parametric:001644",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.09083962440490723,
+      "started_at": "2026-08-20T00:22:45.472652+00:00"
+    },
+    {
+      "contact_id": "tier2_parametric:001693",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.07196378707885742,
+      "started_at": "2026-08-20T00:22:45.576463+00:00"
+    },
+    {
+      "contact_id": "tier2_parametric:001720",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.10875678062438965,
+      "started_at": "2026-08-20T00:22:45.663888+00:00"
+    },
+    {
+      "contact_id": "tier2_parametric:001869",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.15374064445495605,
+      "started_at": "2026-08-20T00:22:45.792367+00:00"
+    },
+    {
+      "contact_id": "tier2_parametric:001972",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.09753251075744629,
+      "started_at": "2026-08-20T00:22:45.964977+00:00"
+    },
+    {
+      "contact_id": "tier2_parametric:002069",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.07548189163208008,
+      "started_at": "2026-08-20T00:22:46.076175+00:00"
+    },
+    {
+      "contact_id": "tier2_parametric:002197",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.07486963272094727,
+      "started_at": "2026-08-20T00:22:46.170125+00:00"
+    },
+    {
+      "contact_id": "tier2_parametric:002289",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.09344840049743652,
+      "started_at": "2026-08-20T00:22:46.262921+00:00"
+    },
+    {
+      "contact_id": "tier2_parametric:002334",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.07719206809997559,
+      "started_at": "2026-08-20T00:22:46.376763+00:00"
+    },
+    {
+      "contact_id": "tier2_parametric:002653",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.07144665718078613,
+      "started_at": "2026-08-20T00:22:46.473874+00:00"
+    },
+    {
+      "contact_id": "tier2_parametric:002787",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.08841419219970703,
+      "started_at": "2026-08-20T00:22:46.567370+00:00"
+    },
+    {
+      "contact_id": "tier2_parametric:003068",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.09851622581481934,
+      "started_at": "2026-08-20T00:22:46.679898+00:00"
+    },
+    {
+      "contact_id": "tier2_parametric:003115",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.07401156425476074,
+      "started_at": "2026-08-20T00:22:46.797030+00:00"
+    },
+    {
+      "contact_id": "tier2_parametric:003619",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.0870368480682373,
+      "started_at": "2026-08-20T00:22:46.887780+00:00"
+    },
+    {
+      "contact_id": "tier2_parametric:003631",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.093170166015625,
+      "started_at": "2026-08-20T00:22:46.991995+00:00"
+    },
+    {
+      "contact_id": "tier2_parametric:003650",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.10606026649475098,
+      "started_at": "2026-08-20T00:22:47.104071+00:00"
+    },
+    {
+      "contact_id": "tier2_parametric:003923",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.08665728569030762,
+      "started_at": "2026-08-20T00:22:47.228562+00:00"
+    },
+    {
+      "contact_id": "tier2_parametric:004217",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.07273626327514648,
+      "started_at": "2026-08-20T00:22:47.337147+00:00"
+    },
+    {
+      "contact_id": "tier2_parametric:004290",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.08766031265258789,
+      "started_at": "2026-08-20T00:22:47.427860+00:00"
+    },
+    {
+      "contact_id": "tier2_parametric:004516",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.10693812370300293,
+      "started_at": "2026-08-20T00:22:47.530658+00:00"
+    },
+    {
+      "contact_id": "tier2_parametric:004826",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.0937652587890625,
+      "started_at": "2026-08-20T00:22:47.651973+00:00"
+    },
+    {
+      "contact_id": "tier2_parametric:005385",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.09441757202148438,
+      "started_at": "2026-08-20T00:22:47.762931+00:00"
+    },
+    {
+      "contact_id": "tier2_parametric:005407",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.07698893547058105,
+      "started_at": "2026-08-20T00:22:47.870709+00:00"
+    },
+    {
+      "contact_id": "tier2_parametric:005677",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.10795211791992188,
+      "started_at": "2026-08-20T00:22:47.964388+00:00"
+    },
+    {
+      "contact_id": "tier2_parametric:005678",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.13400006294250488,
+      "started_at": "2026-08-20T00:22:48.092035+00:00"
+    },
+    {
+      "contact_id": "tier2_parametric:005732",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.07615876197814941,
+      "started_at": "2026-08-20T00:22:48.242797+00:00"
+    },
+    {
+      "contact_id": "tier2_parametric:005856",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.05876898765563965,
+      "started_at": "2026-08-20T00:22:48.335476+00:00"
+    },
+    {
+      "contact_id": "tier2_parametric:005859",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.08182644844055176,
+      "started_at": "2026-08-20T00:22:48.414021+00:00"
+    },
+    {
+      "contact_id": "tier2_parametric:005891",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.07439827919006348,
+      "started_at": "2026-08-20T00:22:48.515039+00:00"
+    },
+    {
+      "contact_id": "tier2_parametric:006028",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.08814263343811035,
+      "started_at": "2026-08-20T00:22:48.615305+00:00"
+    },
+    {
+      "contact_id": "tier2_parametric:006210",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.0722956657409668,
+      "started_at": "2026-08-20T00:22:48.718390+00:00"
+    },
+    {
+      "contact_id": "tier2_parametric:006317",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.08700108528137207,
+      "started_at": "2026-08-20T00:22:48.803915+00:00"
+    },
+    {
+      "contact_id": "tier3_multi_intent:000078",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.11055254936218262,
+      "started_at": "2026-08-20T00:22:48.910821+00:00"
+    },
+    {
+      "contact_id": "tier3_multi_intent:000259",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.10519766807556152,
+      "started_at": "2026-08-20T00:22:49.059658+00:00"
+    },
+    {
+      "contact_id": "tier3_multi_intent:000419",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.10789632797241211,
+      "started_at": "2026-08-20T00:22:49.178384+00:00"
+    },
+    {
+      "contact_id": "tier3_multi_intent:000427",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.09814190864562988,
+      "started_at": "2026-08-20T00:22:49.300862+00:00"
+    },
+    {
+      "contact_id": "tier3_multi_intent:000760",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.09007954597473145,
+      "started_at": "2026-08-20T00:22:49.413048+00:00"
+    },
+    {
+      "contact_id": "tier3_multi_intent:000855",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.11181163787841797,
+      "started_at": "2026-08-20T00:22:49.519119+00:00"
+    },
+    {
+      "contact_id": "tier3_multi_intent:000879",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.14500927925109863,
+      "started_at": "2026-08-20T00:22:49.644042+00:00"
+    },
+    {
+      "contact_id": "tier3_multi_intent:000924",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.09484100341796875,
+      "started_at": "2026-08-20T00:22:49.805589+00:00"
+    },
+    {
+      "contact_id": "tier3_multi_intent:000998",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.10742306709289551,
+      "started_at": "2026-08-20T00:22:49.914041+00:00"
+    },
+    {
+      "contact_id": "tier3_multi_intent:001251",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.12215495109558105,
+      "started_at": "2026-08-20T00:22:50.043720+00:00"
+    },
+    {
+      "contact_id": "tier3_multi_intent:001424",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.1298389434814453,
+      "started_at": "2026-08-20T00:22:50.182664+00:00"
+    },
+    {
+      "contact_id": "tier3_multi_intent:001487",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.18972373008728027,
+      "started_at": "2026-08-20T00:22:50.332872+00:00"
+    },
+    {
+      "contact_id": "tier3_multi_intent:001511",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.08271241188049316,
+      "started_at": "2026-08-20T00:22:50.561302+00:00"
+    },
+    {
+      "contact_id": "tier3_multi_intent:001562",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.14524221420288086,
+      "started_at": "2026-08-20T00:22:50.662538+00:00"
+    },
+    {
+      "contact_id": "tier3_multi_intent:001732",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.11830401420593262,
+      "started_at": "2026-08-20T00:22:50.830095+00:00"
+    },
+    {
+      "contact_id": "tier3_multi_intent:001914",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.12048625946044922,
+      "started_at": "2026-08-20T00:22:50.970966+00:00"
+    },
+    {
+      "contact_id": "tier3_multi_intent:002096",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.09808540344238281,
+      "started_at": "2026-08-20T00:22:51.116375+00:00"
+    },
+    {
+      "contact_id": "tier3_multi_intent:002103",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.08499932289123535,
+      "started_at": "2026-08-20T00:22:51.239635+00:00"
+    },
+    {
+      "contact_id": "tier3_multi_intent:002163",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.11069583892822266,
+      "started_at": "2026-08-20T00:22:51.341708+00:00"
+    },
+    {
+      "contact_id": "tier3_multi_intent:002166",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.11667108535766602,
+      "started_at": "2026-08-20T00:22:51.470838+00:00"
+    },
+    {
+      "contact_id": "tier3_multi_intent:002200",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.11385393142700195,
+      "started_at": "2026-08-20T00:22:51.606474+00:00"
+    },
+    {
+      "contact_id": "tier3_multi_intent:002264",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.15979743003845215,
+      "started_at": "2026-08-20T00:22:51.736422+00:00"
+    },
+    {
+      "contact_id": "tier3_multi_intent:002382",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.19787836074829102,
+      "started_at": "2026-08-20T00:22:51.917200+00:00"
+    },
+    {
+      "contact_id": "tier3_multi_intent:002405",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.07855582237243652,
+      "started_at": "2026-08-20T00:22:52.129099+00:00"
+    },
+    {
+      "contact_id": "tier3_multi_intent:002421",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.11355137825012207,
+      "started_at": "2026-08-20T00:22:52.224875+00:00"
+    },
+    {
+      "contact_id": "tier3_multi_intent:002490",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.12631845474243164,
+      "started_at": "2026-08-20T00:22:52.363161+00:00"
+    },
+    {
+      "contact_id": "tier3_multi_intent:002553",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.15068960189819336,
+      "started_at": "2026-08-20T00:22:52.506662+00:00"
+    },
+    {
+      "contact_id": "tier3_multi_intent:002560",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.12211346626281738,
+      "started_at": "2026-08-20T00:22:52.679321+00:00"
+    },
+    {
+      "contact_id": "tier3_multi_intent:002645",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.13684940338134766,
+      "started_at": "2026-08-20T00:22:52.821650+00:00"
+    },
+    {
+      "contact_id": "tier3_multi_intent:002651",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.10529470443725586,
+      "started_at": "2026-08-20T00:22:52.971672+00:00"
+    },
+    {
+      "contact_id": "tier3_multi_intent:002818",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.08731627464294434,
+      "started_at": "2026-08-20T00:22:53.095945+00:00"
+    },
+    {
+      "contact_id": "tier3_multi_intent:002915",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.10909366607666016,
+      "started_at": "2026-08-20T00:22:53.198383+00:00"
+    },
+    {
+      "contact_id": "tier3_multi_intent:002970",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.12245368957519531,
+      "started_at": "2026-08-20T00:22:53.327070+00:00"
+    },
+    {
+      "contact_id": "tier3_multi_intent:002986",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.12223291397094727,
+      "started_at": "2026-08-20T00:22:53.470002+00:00"
+    },
+    {
+      "contact_id": "tier3_multi_intent:002995",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.1059877872467041,
+      "started_at": "2026-08-20T00:22:53.611293+00:00"
+    },
+    {
+      "contact_id": "tier3_multi_intent:003058",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.2222440242767334,
+      "started_at": "2026-08-20T00:22:53.737898+00:00"
+    },
+    {
+      "contact_id": "tier3_multi_intent:003153",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.12763738632202148,
+      "started_at": "2026-08-20T00:22:53.980230+00:00"
+    },
+    {
+      "contact_id": "tier3_multi_intent:003220",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.09064126014709473,
+      "started_at": "2026-08-20T00:22:54.122546+00:00"
+    },
+    {
+      "contact_id": "tier3_multi_intent:003268",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.09557390213012695,
+      "started_at": "2026-08-20T00:22:54.236690+00:00"
+    },
+    {
+      "contact_id": "tier3_multi_intent:003469",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.11052846908569336,
+      "started_at": "2026-08-20T00:22:54.355515+00:00"
+    },
+    {
+      "contact_id": "tier3_multi_intent:003642",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.10011839866638184,
+      "started_at": "2026-08-20T00:22:54.493205+00:00"
+    },
+    {
+      "contact_id": "tier3_multi_intent:003740",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.11199164390563965,
+      "started_at": "2026-08-20T00:22:54.615512+00:00"
+    },
+    {
+      "contact_id": "tier3_multi_intent:003764",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.07814455032348633,
+      "started_at": "2026-08-20T00:22:54.748277+00:00"
+    },
+    {
+      "contact_id": "tier3_multi_intent:003816",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.11246705055236816,
+      "started_at": "2026-08-20T00:22:54.840092+00:00"
+    },
+    {
+      "contact_id": "tier3_multi_intent:003868",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.11077380180358887,
+      "started_at": "2026-08-20T00:22:54.976191+00:00"
+    },
+    {
+      "contact_id": "tier3_multi_intent:003973",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.09864664077758789,
+      "started_at": "2026-08-20T00:22:55.165104+00:00"
+    },
+    {
+      "contact_id": "tier3_multi_intent:003982",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.09810328483581543,
+      "started_at": "2026-08-20T00:22:55.295331+00:00"
+    },
+    {
+      "contact_id": "tier3_multi_intent:003994",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.12607359886169434,
+      "started_at": "2026-08-20T00:22:55.414490+00:00"
+    },
+    {
+      "contact_id": "tier3_multi_intent:004025",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.0827639102935791,
+      "started_at": "2026-08-20T00:22:55.558600+00:00"
+    },
+    {
+      "contact_id": "tier3_multi_intent:004291",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.1003262996673584,
+      "started_at": "2026-08-20T00:22:55.660584+00:00"
+    },
+    {
+      "contact_id": "tier4_implicit:000141",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.07363510131835938,
+      "started_at": "2026-08-20T00:22:55.781844+00:00"
+    },
+    {
+      "contact_id": "tier4_implicit:000216",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.07467865943908691,
+      "started_at": "2026-08-20T00:22:55.875592+00:00"
+    },
+    {
+      "contact_id": "tier4_implicit:000279",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.06474876403808594,
+      "started_at": "2026-08-20T00:22:55.973262+00:00"
+    },
+    {
+      "contact_id": "tier4_implicit:000469",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.07759380340576172,
+      "started_at": "2026-08-20T00:22:56.062920+00:00"
+    },
+    {
+      "contact_id": "tier4_implicit:000562",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.07877779006958008,
+      "started_at": "2026-08-20T00:22:56.156534+00:00"
+    },
+    {
+      "contact_id": "tier4_implicit:000655",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.10604977607727051,
+      "started_at": "2026-08-20T00:22:56.250744+00:00"
+    },
+    {
+      "contact_id": "tier4_implicit:000812",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.06755948066711426,
+      "started_at": "2026-08-20T00:22:56.372030+00:00"
+    },
+    {
+      "contact_id": "tier4_implicit:000900",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.06682157516479492,
+      "started_at": "2026-08-20T00:22:56.462165+00:00"
+    },
+    {
+      "contact_id": "tier4_implicit:001010",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.06493949890136719,
+      "started_at": "2026-08-20T00:22:56.545157+00:00"
+    },
+    {
+      "contact_id": "tier4_implicit:001034",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.06181740760803223,
+      "started_at": "2026-08-20T00:22:56.629548+00:00"
+    },
+    {
+      "contact_id": "tier4_implicit:001074",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.06674718856811523,
+      "started_at": "2026-08-20T00:22:56.710903+00:00"
+    },
+    {
+      "contact_id": "tier4_implicit:001148",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.11267590522766113,
+      "started_at": "2026-08-20T00:22:56.794743+00:00"
+    },
+    {
+      "contact_id": "tier4_implicit:001389",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.09647464752197266,
+      "started_at": "2026-08-20T00:22:56.924367+00:00"
+    },
+    {
+      "contact_id": "tier4_implicit:001409",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.0806877613067627,
+      "started_at": "2026-08-20T00:22:57.034780+00:00"
+    },
+    {
+      "contact_id": "tier4_implicit:001513",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.0721135139465332,
+      "started_at": "2026-08-20T00:22:57.136209+00:00"
+    },
+    {
+      "contact_id": "tier4_implicit:001541",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.08377480506896973,
+      "started_at": "2026-08-20T00:22:57.231957+00:00"
+    },
+    {
+      "contact_id": "tier4_implicit:001546",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.07261800765991211,
+      "started_at": "2026-08-20T00:22:57.337035+00:00"
+    },
+    {
+      "contact_id": "tier4_implicit:001628",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.08304762840270996,
+      "started_at": "2026-08-20T00:22:57.425360+00:00"
+    },
+    {
+      "contact_id": "tier4_implicit:001759",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.11294198036193848,
+      "started_at": "2026-08-20T00:22:57.534392+00:00"
+    },
+    {
+      "contact_id": "tier4_implicit:001855",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.08896636962890625,
+      "started_at": "2026-08-20T00:22:57.660779+00:00"
+    },
+    {
+      "contact_id": "tier4_implicit:002024",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.07265543937683105,
+      "started_at": "2026-08-20T00:22:57.765270+00:00"
+    },
+    {
+      "contact_id": "tier4_implicit:002046",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.09354591369628906,
+      "started_at": "2026-08-20T00:22:57.860485+00:00"
+    },
+    {
+      "contact_id": "tier4_implicit:002071",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.09057760238647461,
+      "started_at": "2026-08-20T00:22:57.976784+00:00"
+    },
+    {
+      "contact_id": "tier4_implicit:002119",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.09023571014404297,
+      "started_at": "2026-08-20T00:22:58.087040+00:00"
+    },
+    {
+      "contact_id": "tier4_implicit:002241",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.10353851318359375,
+      "started_at": "2026-08-20T00:22:58.199404+00:00"
+    },
+    {
+      "contact_id": "tier4_implicit:002314",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.08599066734313965,
+      "started_at": "2026-08-20T00:22:58.320029+00:00"
+    },
+    {
+      "contact_id": "tier4_implicit:002376",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.1005561351776123,
+      "started_at": "2026-08-20T00:22:58.436124+00:00"
+    },
+    {
+      "contact_id": "tier4_implicit:002412",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.0705411434173584,
+      "started_at": "2026-08-20T00:22:58.553220+00:00"
+    },
+    {
+      "contact_id": "tier4_implicit:002563",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.0671689510345459,
+      "started_at": "2026-08-20T00:22:58.637238+00:00"
+    },
+    {
+      "contact_id": "tier4_implicit:002649",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.08995890617370605,
+      "started_at": "2026-08-20T00:22:58.722717+00:00"
+    },
+    {
+      "contact_id": "tier4_implicit:002718",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.06416440010070801,
+      "started_at": "2026-08-20T00:22:58.830211+00:00"
+    },
+    {
+      "contact_id": "tier4_implicit:002719",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.06484174728393555,
+      "started_at": "2026-08-20T00:22:58.916325+00:00"
+    },
+    {
+      "contact_id": "tier4_implicit:002943",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.0958852767944336,
+      "started_at": "2026-08-20T00:22:59.002467+00:00"
+    },
+    {
+      "contact_id": "tier4_implicit:002987",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.07521367073059082,
+      "started_at": "2026-08-20T00:22:59.117172+00:00"
+    },
+    {
+      "contact_id": "tier4_implicit:003049",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.07736825942993164,
+      "started_at": "2026-08-20T00:22:59.223963+00:00"
+    },
+    {
+      "contact_id": "tier4_implicit:003079",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.07645750045776367,
+      "started_at": "2026-08-20T00:22:59.320519+00:00"
+    },
+    {
+      "contact_id": "tier4_implicit:003199",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.07143044471740723,
+      "started_at": "2026-08-20T00:22:59.415470+00:00"
+    },
+    {
+      "contact_id": "tier4_implicit:003312",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.0805213451385498,
+      "started_at": "2026-08-20T00:22:59.508659+00:00"
+    },
+    {
+      "contact_id": "tier4_implicit:003317",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.06873559951782227,
+      "started_at": "2026-08-20T00:22:59.606229+00:00"
+    },
+    {
+      "contact_id": "tier4_implicit:003370",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.08757257461547852,
+      "started_at": "2026-08-20T00:22:59.696971+00:00"
+    },
+    {
+      "contact_id": "tier4_implicit:003464",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.07874774932861328,
+      "started_at": "2026-08-20T00:22:59.805626+00:00"
+    },
+    {
+      "contact_id": "tier4_implicit:003473",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.1040501594543457,
+      "started_at": "2026-08-20T00:22:59.907822+00:00"
+    },
+    {
+      "contact_id": "tier4_implicit:003484",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.09216761589050293,
+      "started_at": "2026-08-20T00:23:00.029364+00:00"
+    },
+    {
+      "contact_id": "tier4_implicit:003523",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.06953310966491699,
+      "started_at": "2026-08-20T00:23:00.135500+00:00"
+    },
+    {
+      "contact_id": "tier4_implicit:003664",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.06340622901916504,
+      "started_at": "2026-08-20T00:23:00.228471+00:00"
+    },
+    {
+      "contact_id": "tier4_implicit:003734",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.0641031265258789,
+      "started_at": "2026-08-20T00:23:00.305443+00:00"
+    },
+    {
+      "contact_id": "tier4_implicit:003949",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.08788561820983887,
+      "started_at": "2026-08-20T00:23:00.387798+00:00"
+    },
+    {
+      "contact_id": "tier4_implicit:003979",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.12694621086120605,
+      "started_at": "2026-08-20T00:23:00.491529+00:00"
+    },
+    {
+      "contact_id": "tier4_implicit:004122",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.07037997245788574,
+      "started_at": "2026-08-20T00:23:00.641414+00:00"
+    },
+    {
+      "contact_id": "tier4_implicit:004273",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.08926510810852051,
+      "started_at": "2026-08-20T00:23:00.730975+00:00"
+    },
+    {
+      "contact_id": "tier5_needle:000060",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.14522457122802734,
+      "started_at": "2026-08-20T00:23:00.838494+00:00"
+    },
+    {
+      "contact_id": "tier5_needle:000061",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.2608344554901123,
+      "started_at": "2026-08-20T00:23:01.000847+00:00"
+    },
+    {
+      "contact_id": "tier5_needle:000151",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.23333525657653809,
+      "started_at": "2026-08-20T00:23:01.279988+00:00"
+    },
+    {
+      "contact_id": "tier5_needle:000171",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.2646620273590088,
+      "started_at": "2026-08-20T00:23:01.535244+00:00"
+    },
+    {
+      "contact_id": "tier5_needle:000241",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.25211119651794434,
+      "started_at": "2026-08-20T00:23:01.828027+00:00"
+    },
+    {
+      "contact_id": "tier5_needle:000285",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.24343228340148926,
+      "started_at": "2026-08-20T00:23:02.104190+00:00"
+    },
+    {
+      "contact_id": "tier5_needle:000534",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.20096230506896973,
+      "started_at": "2026-08-20T00:23:02.369427+00:00"
+    },
+    {
+      "contact_id": "tier5_needle:000537",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.2279682159423828,
+      "started_at": "2026-08-20T00:23:02.586672+00:00"
+    },
+    {
+      "contact_id": "tier5_needle:000595",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.2332289218902588,
+      "started_at": "2026-08-20T00:23:02.832052+00:00"
+    },
+    {
+      "contact_id": "tier5_needle:000757",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.1201622486114502,
+      "started_at": "2026-08-20T00:23:03.087690+00:00"
+    },
+    {
+      "contact_id": "tier5_needle:000976",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.23168611526489258,
+      "started_at": "2026-08-20T00:23:03.253128+00:00"
+    },
+    {
+      "contact_id": "tier5_needle:001059",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.22568011283874512,
+      "started_at": "2026-08-20T00:23:03.506359+00:00"
+    },
+    {
+      "contact_id": "tier5_needle:001248",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.26143407821655273,
+      "started_at": "2026-08-20T00:23:03.750814+00:00"
+    },
+    {
+      "contact_id": "tier5_needle:001296",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.2415151596069336,
+      "started_at": "2026-08-20T00:23:04.032375+00:00"
+    },
+    {
+      "contact_id": "tier5_needle:001323",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.2413945198059082,
+      "started_at": "2026-08-20T00:23:04.289509+00:00"
+    },
+    {
+      "contact_id": "tier5_needle:001368",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.20642662048339844,
+      "started_at": "2026-08-20T00:23:04.547291+00:00"
+    },
+    {
+      "contact_id": "tier5_needle:001430",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.24873733520507812,
+      "started_at": "2026-08-20T00:23:04.771046+00:00"
+    },
+    {
+      "contact_id": "tier5_needle:001458",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.22342729568481445,
+      "started_at": "2026-08-20T00:23:05.037892+00:00"
+    },
+    {
+      "contact_id": "tier5_needle:001532",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.12452292442321777,
+      "started_at": "2026-08-20T00:23:05.288742+00:00"
+    },
+    {
+      "contact_id": "tier5_needle:001656",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.29244399070739746,
+      "started_at": "2026-08-20T00:23:05.434625+00:00"
+    },
+    {
+      "contact_id": "tier5_needle:001679",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.25511598587036133,
+      "started_at": "2026-08-20T00:23:05.754892+00:00"
+    },
+    {
+      "contact_id": "tier5_needle:001687",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.14354681968688965,
+      "started_at": "2026-08-20T00:23:06.029265+00:00"
+    },
+    {
+      "contact_id": "tier5_needle:001719",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.24630117416381836,
+      "started_at": "2026-08-20T00:23:06.193359+00:00"
+    },
+    {
+      "contact_id": "tier5_needle:001795",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.22882342338562012,
+      "started_at": "2026-08-20T00:23:06.460371+00:00"
+    },
+    {
+      "contact_id": "tier5_needle:001930",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.1855614185333252,
+      "started_at": "2026-08-20T00:23:06.702692+00:00"
+    },
+    {
+      "contact_id": "tier5_needle:002007",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.24509835243225098,
+      "started_at": "2026-08-20T00:23:06.908242+00:00"
+    },
+    {
+      "contact_id": "tier5_needle:002054",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.22051000595092773,
+      "started_at": "2026-08-20T00:23:07.173729+00:00"
+    },
+    {
+      "contact_id": "tier5_needle:002215",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.2509474754333496,
+      "started_at": "2026-08-20T00:23:07.419423+00:00"
+    },
+    {
+      "contact_id": "tier5_needle:002284",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.23235392570495605,
+      "started_at": "2026-08-20T00:23:07.691125+00:00"
+    },
+    {
+      "contact_id": "tier5_needle:002396",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.26921987533569336,
+      "started_at": "2026-08-20T00:23:07.944950+00:00"
+    },
+    {
+      "contact_id": "tier5_needle:002428",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.2520298957824707,
+      "started_at": "2026-08-20T00:23:08.235954+00:00"
+    },
+    {
+      "contact_id": "tier5_needle:002546",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.259535551071167,
+      "started_at": "2026-08-20T00:23:08.507456+00:00"
+    },
+    {
+      "contact_id": "tier5_needle:002638",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.23746109008789062,
+      "started_at": "2026-08-20T00:23:08.785917+00:00"
+    },
+    {
+      "contact_id": "tier5_needle:002640",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.26923608779907227,
+      "started_at": "2026-08-20T00:23:09.059314+00:00"
+    },
+    {
+      "contact_id": "tier5_needle:002753",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 1.1121063232421875,
+      "started_at": "2026-08-20T00:23:09.342898+00:00"
+    },
+    {
+      "contact_id": "tier5_needle:003107",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.20848846435546875,
+      "started_at": "2026-08-20T00:23:10.474760+00:00"
+    },
+    {
+      "contact_id": "tier5_needle:003189",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.22204828262329102,
+      "started_at": "2026-08-20T00:23:10.698480+00:00"
+    },
+    {
+      "contact_id": "tier5_needle:003305",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.2548990249633789,
+      "started_at": "2026-08-20T00:23:10.956156+00:00"
+    },
+    {
+      "contact_id": "tier5_needle:003341",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.20964860916137695,
+      "started_at": "2026-08-20T00:23:11.232014+00:00"
+    },
+    {
+      "contact_id": "tier5_needle:003355",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.24653410911560059,
+      "started_at": "2026-08-20T00:23:11.462851+00:00"
+    },
+    {
+      "contact_id": "tier5_needle:003398",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.24331927299499512,
+      "started_at": "2026-08-20T00:23:11.728836+00:00"
+    },
+    {
+      "contact_id": "tier5_needle:003592",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.2297077178955078,
+      "started_at": "2026-08-20T00:23:11.988018+00:00"
+    },
+    {
+      "contact_id": "tier5_needle:003841",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.22458481788635254,
+      "started_at": "2026-08-20T00:23:12.247093+00:00"
+    },
+    {
+      "contact_id": "tier5_needle:003863",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.22593092918395996,
+      "started_at": "2026-08-20T00:23:12.497449+00:00"
+    },
+    {
+      "contact_id": "tier5_needle:003873",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.23990154266357422,
+      "started_at": "2026-08-20T00:23:12.743141+00:00"
+    },
+    {
+      "contact_id": "tier5_needle:003935",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.2310469150543213,
+      "started_at": "2026-08-20T00:23:13.002422+00:00"
+    },
+    {
+      "contact_id": "tier5_needle:003940",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.1438601016998291,
+      "started_at": "2026-08-20T00:23:13.253739+00:00"
+    },
+    {
+      "contact_id": "tier5_needle:004037",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.21105432510375977,
+      "started_at": "2026-08-20T00:23:13.416241+00:00"
+    },
+    {
+      "contact_id": "tier5_needle:004078",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.23871588706970215,
+      "started_at": "2026-08-20T00:23:13.648846+00:00"
+    },
+    {
+      "contact_id": "tier5_needle:004242",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.23214507102966309,
+      "started_at": "2026-08-20T00:23:13.910415+00:00"
+    },
+    {
+      "contact_id": "tier6_correction:000008",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.12149953842163086,
+      "started_at": "2026-08-20T00:23:14.163180+00:00"
+    },
+    {
+      "contact_id": "tier6_correction:000009",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.10870623588562012,
+      "started_at": "2026-08-20T00:23:14.299145+00:00"
+    },
+    {
+      "contact_id": "tier6_correction:000168",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.11835718154907227,
+      "started_at": "2026-08-20T00:23:14.424549+00:00"
+    },
+    {
+      "contact_id": "tier6_correction:000305",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.15898942947387695,
+      "started_at": "2026-08-20T00:23:14.567369+00:00"
+    },
+    {
+      "contact_id": "tier6_correction:000398",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.0977787971496582,
+      "started_at": "2026-08-20T00:23:14.746335+00:00"
+    },
+    {
+      "contact_id": "tier6_correction:000484",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.09603285789489746,
+      "started_at": "2026-08-20T00:23:14.868015+00:00"
+    },
+    {
+      "contact_id": "tier6_correction:000590",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.12953710556030273,
+      "started_at": "2026-08-20T00:23:14.990745+00:00"
+    },
+    {
+      "contact_id": "tier6_correction:000631",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.09927082061767578,
+      "started_at": "2026-08-20T00:23:15.138804+00:00"
+    },
+    {
+      "contact_id": "tier6_correction:000946",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.1109156608581543,
+      "started_at": "2026-08-20T00:23:15.252342+00:00"
+    },
+    {
+      "contact_id": "tier6_correction:001056",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.10891580581665039,
+      "started_at": "2026-08-20T00:23:15.379190+00:00"
+    },
+    {
+      "contact_id": "tier6_correction:001329",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.13608932495117188,
+      "started_at": "2026-08-20T00:23:15.509009+00:00"
+    },
+    {
+      "contact_id": "tier6_correction:001489",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.16251754760742188,
+      "started_at": "2026-08-20T00:23:15.665823+00:00"
+    },
+    {
+      "contact_id": "tier6_correction:001618",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.12531256675720215,
+      "started_at": "2026-08-20T00:23:15.845653+00:00"
+    },
+    {
+      "contact_id": "tier6_correction:001756",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.11414623260498047,
+      "started_at": "2026-08-20T00:23:15.995585+00:00"
+    },
+    {
+      "contact_id": "tier6_correction:001764",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.10375356674194336,
+      "started_at": "2026-08-20T00:23:16.130272+00:00"
+    },
+    {
+      "contact_id": "tier6_correction:001766",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.1153268814086914,
+      "started_at": "2026-08-20T00:23:16.252265+00:00"
+    },
+    {
+      "contact_id": "tier6_correction:001794",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.13535308837890625,
+      "started_at": "2026-08-20T00:23:16.384317+00:00"
+    },
+    {
+      "contact_id": "tier6_correction:001873",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.10181832313537598,
+      "started_at": "2026-08-20T00:23:16.545812+00:00"
+    },
+    {
+      "contact_id": "tier6_correction:002178",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.12993144989013672,
+      "started_at": "2026-08-20T00:23:16.668761+00:00"
+    },
+    {
+      "contact_id": "tier6_correction:002179",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.12737703323364258,
+      "started_at": "2026-08-20T00:23:16.812077+00:00"
+    },
+    {
+      "contact_id": "tier6_correction:002205",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.08762478828430176,
+      "started_at": "2026-08-20T00:23:16.980716+00:00"
+    },
+    {
+      "contact_id": "tier6_correction:002270",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.12183284759521484,
+      "started_at": "2026-08-20T00:23:17.097482+00:00"
+    },
+    {
+      "contact_id": "tier6_correction:002313",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.09217023849487305,
+      "started_at": "2026-08-20T00:23:17.237708+00:00"
+    },
+    {
+      "contact_id": "tier6_correction:002430",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.10381460189819336,
+      "started_at": "2026-08-20T00:23:17.350064+00:00"
+    },
+    {
+      "contact_id": "tier6_correction:002461",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.14412617683410645,
+      "started_at": "2026-08-20T00:23:17.471474+00:00"
+    },
+    {
+      "contact_id": "tier6_correction:002548",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.10526800155639648,
+      "started_at": "2026-08-20T00:23:17.630700+00:00"
+    },
+    {
+      "contact_id": "tier6_correction:002630",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.11716127395629883,
+      "started_at": "2026-08-20T00:23:17.753001+00:00"
+    },
+    {
+      "contact_id": "tier6_correction:002689",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.19971466064453125,
+      "started_at": "2026-08-20T00:23:17.891603+00:00"
+    },
+    {
+      "contact_id": "tier6_correction:002740",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.1079566478729248,
+      "started_at": "2026-08-20T00:23:18.105554+00:00"
+    },
+    {
+      "contact_id": "tier6_correction:002850",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.11134052276611328,
+      "started_at": "2026-08-20T00:23:18.227911+00:00"
+    },
+    {
+      "contact_id": "tier6_correction:002940",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.1571180820465088,
+      "started_at": "2026-08-20T00:23:18.364366+00:00"
+    },
+    {
+      "contact_id": "tier6_correction:002999",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.12050509452819824,
+      "started_at": "2026-08-20T00:23:18.543786+00:00"
+    },
+    {
+      "contact_id": "tier6_correction:003043",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.11106514930725098,
+      "started_at": "2026-08-20T00:23:18.682920+00:00"
+    },
+    {
+      "contact_id": "tier6_correction:003103",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.10801577568054199,
+      "started_at": "2026-08-20T00:23:18.818594+00:00"
+    },
+    {
+      "contact_id": "tier6_correction:003197",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.10217165946960449,
+      "started_at": "2026-08-20T00:23:18.947044+00:00"
+    },
+    {
+      "contact_id": "tier6_correction:003198",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.10508489608764648,
+      "started_at": "2026-08-20T00:23:19.063529+00:00"
+    },
+    {
+      "contact_id": "tier6_correction:003226",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.0986936092376709,
+      "started_at": "2026-08-20T00:23:19.188217+00:00"
+    },
+    {
+      "contact_id": "tier6_correction:003267",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.09705543518066406,
+      "started_at": "2026-08-20T00:23:19.322351+00:00"
+    },
+    {
+      "contact_id": "tier6_correction:003450",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.1235356330871582,
+      "started_at": "2026-08-20T00:23:19.453565+00:00"
+    },
+    {
+      "contact_id": "tier6_correction:003568",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.11418747901916504,
+      "started_at": "2026-08-20T00:23:19.605515+00:00"
+    },
+    {
+      "contact_id": "tier6_correction:003671",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.10322189331054688,
+      "started_at": "2026-08-20T00:23:19.738545+00:00"
+    },
+    {
+      "contact_id": "tier6_correction:003783",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.08584046363830566,
+      "started_at": "2026-08-20T00:23:19.862353+00:00"
+    },
+    {
+      "contact_id": "tier6_correction:003820",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.12514400482177734,
+      "started_at": "2026-08-20T00:23:19.970387+00:00"
+    },
+    {
+      "contact_id": "tier6_correction:003856",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.11620688438415527,
+      "started_at": "2026-08-20T00:23:20.123189+00:00"
+    },
+    {
+      "contact_id": "tier6_correction:003900",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.10118627548217773,
+      "started_at": "2026-08-20T00:23:20.262567+00:00"
+    },
+    {
+      "contact_id": "tier6_correction:004017",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.11525130271911621,
+      "started_at": "2026-08-20T00:23:20.388413+00:00"
+    },
+    {
+      "contact_id": "tier6_correction:004155",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.11259961128234863,
+      "started_at": "2026-08-20T00:23:20.525658+00:00"
+    },
+    {
+      "contact_id": "tier6_correction:004160",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.12119746208190918,
+      "started_at": "2026-08-20T00:23:20.658068+00:00"
+    },
+    {
+      "contact_id": "tier6_correction:004215",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.09634733200073242,
+      "started_at": "2026-08-20T00:23:20.801687+00:00"
+    },
+    {
+      "contact_id": "tier6_correction:004281",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.13986515998840332,
+      "started_at": "2026-08-20T00:23:20.919446+00:00"
+    },
+    {
+      "contact_id": "tier7_multiturn:000009",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.1256885528564453,
+      "started_at": "2026-08-20T00:23:21.093155+00:00"
+    },
+    {
+      "contact_id": "tier7_multiturn:000043",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.09349465370178223,
+      "started_at": "2026-08-20T00:23:21.243535+00:00"
+    },
+    {
+      "contact_id": "tier7_multiturn:000062",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.6709609031677246,
+      "started_at": "2026-08-20T00:23:21.361307+00:00"
+    },
+    {
+      "contact_id": "tier7_multiturn:000091",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.17398738861083984,
+      "started_at": "2026-08-20T00:23:22.046671+00:00"
+    },
+    {
+      "contact_id": "tier7_multiturn:000214",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.05626034736633301,
+      "started_at": "2026-08-20T00:23:22.237241+00:00"
+    },
+    {
+      "contact_id": "tier7_multiturn:000272",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.07797002792358398,
+      "started_at": "2026-08-20T00:23:22.313094+00:00"
+    },
+    {
+      "contact_id": "tier7_multiturn:000274",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.07596850395202637,
+      "started_at": "2026-08-20T00:23:22.416018+00:00"
+    },
+    {
+      "contact_id": "tier7_multiturn:000293",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.09650516510009766,
+      "started_at": "2026-08-20T00:23:22.512349+00:00"
+    },
+    {
+      "contact_id": "tier7_multiturn:000318",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.09344696998596191,
+      "started_at": "2026-08-20T00:23:22.630831+00:00"
+    },
+    {
+      "contact_id": "tier7_multiturn:000330",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.12549614906311035,
+      "started_at": "2026-08-20T00:23:22.739804+00:00"
+    },
+    {
+      "contact_id": "tier7_multiturn:000348",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.07809305191040039,
+      "started_at": "2026-08-20T00:23:22.878096+00:00"
+    },
+    {
+      "contact_id": "tier7_multiturn:000418",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.12201809883117676,
+      "started_at": "2026-08-20T00:23:22.983933+00:00"
+    },
+    {
+      "contact_id": "tier7_multiturn:000440",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.15045571327209473,
+      "started_at": "2026-08-20T00:23:23.120492+00:00"
+    },
+    {
+      "contact_id": "tier7_multiturn:000545",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.5498654842376709,
+      "started_at": "2026-08-20T00:23:23.292968+00:00"
+    },
+    {
+      "contact_id": "tier7_multiturn:000554",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.13394880294799805,
+      "started_at": "2026-08-20T00:23:23.861248+00:00"
+    },
+    {
+      "contact_id": "tier7_multiturn:000599",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.1910567283630371,
+      "started_at": "2026-08-20T00:23:24.016804+00:00"
+    },
+    {
+      "contact_id": "tier7_multiturn:000637",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.10375738143920898,
+      "started_at": "2026-08-20T00:23:24.225469+00:00"
+    },
+    {
+      "contact_id": "tier7_multiturn:000739",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.10165643692016602,
+      "started_at": "2026-08-20T00:23:24.343530+00:00"
+    },
+    {
+      "contact_id": "tier7_multiturn:000813",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.06747102737426758,
+      "started_at": "2026-08-20T00:23:24.462314+00:00"
+    },
+    {
+      "contact_id": "tier7_multiturn:000818",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.10636258125305176,
+      "started_at": "2026-08-20T00:23:24.547911+00:00"
+    },
+    {
+      "contact_id": "tier7_multiturn:001098",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.12755608558654785,
+      "started_at": "2026-08-20T00:23:24.678650+00:00"
+    },
+    {
+      "contact_id": "tier7_multiturn:001129",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.09282350540161133,
+      "started_at": "2026-08-20T00:23:24.821817+00:00"
+    },
+    {
+      "contact_id": "tier7_multiturn:001148",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.23180460929870605,
+      "started_at": "2026-08-20T00:23:24.931391+00:00"
+    },
+    {
+      "contact_id": "tier7_multiturn:001240",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.08141851425170898,
+      "started_at": "2026-08-20T00:23:25.181113+00:00"
+    },
+    {
+      "contact_id": "tier7_multiturn:001272",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.12961626052856445,
+      "started_at": "2026-08-20T00:23:25.283189+00:00"
+    },
+    {
+      "contact_id": "tier7_multiturn:001292",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.06852269172668457,
+      "started_at": "2026-08-20T00:23:25.429495+00:00"
+    },
+    {
+      "contact_id": "tier7_multiturn:001293",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.10172367095947266,
+      "started_at": "2026-08-20T00:23:25.528406+00:00"
+    },
+    {
+      "contact_id": "tier7_multiturn:001418",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.06350064277648926,
+      "started_at": "2026-08-20T00:23:25.670361+00:00"
+    },
+    {
+      "contact_id": "tier7_multiturn:001453",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.06577587127685547,
+      "started_at": "2026-08-20T00:23:25.757630+00:00"
+    },
+    {
+      "contact_id": "tier7_multiturn:001516",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.06450581550598145,
+      "started_at": "2026-08-20T00:23:25.849964+00:00"
+    },
+    {
+      "contact_id": "tier7_multiturn:001590",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.7262966632843018,
+      "started_at": "2026-08-20T00:23:25.939205+00:00"
+    },
+    {
+      "contact_id": "tier7_multiturn:001599",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.1321854591369629,
+      "started_at": "2026-08-20T00:23:26.700196+00:00"
+    },
+    {
+      "contact_id": "tier7_multiturn:001614",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.07452106475830078,
+      "started_at": "2026-08-20T00:23:26.851504+00:00"
+    },
+    {
+      "contact_id": "tier7_multiturn:001629",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.10306501388549805,
+      "started_at": "2026-08-20T00:23:26.945124+00:00"
+    },
+    {
+      "contact_id": "tier7_multiturn:001646",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.10133647918701172,
+      "started_at": "2026-08-20T00:23:27.066883+00:00"
+    },
+    {
+      "contact_id": "tier7_multiturn:001701",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.10583806037902832,
+      "started_at": "2026-08-20T00:23:27.182794+00:00"
+    },
+    {
+      "contact_id": "tier7_multiturn:001707",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.10203218460083008,
+      "started_at": "2026-08-20T00:23:27.311415+00:00"
+    },
+    {
+      "contact_id": "tier7_multiturn:001708",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.10444760322570801,
+      "started_at": "2026-08-20T00:23:27.437380+00:00"
+    },
+    {
+      "contact_id": "tier7_multiturn:001732",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.10163259506225586,
+      "started_at": "2026-08-20T00:23:27.558295+00:00"
+    },
+    {
+      "contact_id": "tier7_multiturn:001734",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.25845789909362793,
+      "started_at": "2026-08-20T00:23:27.696897+00:00"
+    },
+    {
+      "contact_id": "tier7_multiturn:001777",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.06702041625976562,
+      "started_at": "2026-08-20T00:23:27.972420+00:00"
+    },
+    {
+      "contact_id": "tier7_multiturn:001781",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.45249342918395996,
+      "started_at": "2026-08-20T00:23:28.077137+00:00"
+    },
+    {
+      "contact_id": "tier7_multiturn:001834",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.07536125183105469,
+      "started_at": "2026-08-20T00:23:28.547717+00:00"
+    },
+    {
+      "contact_id": "tier7_multiturn:001836",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.1807396411895752,
+      "started_at": "2026-08-20T00:23:28.643349+00:00"
+    },
+    {
+      "contact_id": "tier7_multiturn:001865",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.09650039672851562,
+      "started_at": "2026-08-20T00:23:28.845120+00:00"
+    },
+    {
+      "contact_id": "tier7_multiturn:001892",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.10118818283081055,
+      "started_at": "2026-08-20T00:23:28.960306+00:00"
+    },
+    {
+      "contact_id": "tier7_multiturn:001922",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.08629131317138672,
+      "started_at": "2026-08-20T00:23:29.082923+00:00"
+    },
+    {
+      "contact_id": "tier7_multiturn:002099",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.24352550506591797,
+      "started_at": "2026-08-20T00:23:29.187573+00:00"
+    },
+    {
+      "contact_id": "tier7_multiturn:002115",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.13394379615783691,
+      "started_at": "2026-08-20T00:23:29.451370+00:00"
+    },
+    {
+      "contact_id": "tier7_multiturn:002120",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.4507920742034912,
+      "started_at": "2026-08-20T00:23:29.626865+00:00"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000010",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.26072001457214355,
+      "started_at": "2026-08-20T00:23:30.095610+00:00"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000023",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.22394490242004395,
+      "started_at": "2026-08-20T00:23:30.375229+00:00"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000039",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.1287832260131836,
+      "started_at": "2026-08-20T00:23:30.621398+00:00"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000052",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.10863947868347168,
+      "started_at": "2026-08-20T00:23:30.767745+00:00"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000061",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.1391010284423828,
+      "started_at": "2026-08-20T00:23:30.899145+00:00"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000065",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.10565829277038574,
+      "started_at": "2026-08-20T00:23:31.053857+00:00"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000108",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.10523605346679688,
+      "started_at": "2026-08-20T00:23:31.173046+00:00"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000160",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.18943095207214355,
+      "started_at": "2026-08-20T00:23:31.296893+00:00"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000185",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.22643566131591797,
+      "started_at": "2026-08-20T00:23:31.505178+00:00"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000192",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.13220524787902832,
+      "started_at": "2026-08-20T00:23:31.749270+00:00"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000201",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.12056899070739746,
+      "started_at": "2026-08-20T00:23:31.898695+00:00"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000213",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.2084190845489502,
+      "started_at": "2026-08-20T00:23:32.035338+00:00"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000216",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.13608527183532715,
+      "started_at": "2026-08-20T00:23:32.260753+00:00"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000220",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.10644745826721191,
+      "started_at": "2026-08-20T00:23:32.416572+00:00"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000224",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.2203083038330078,
+      "started_at": "2026-08-20T00:23:32.539129+00:00"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000231",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.2279219627380371,
+      "started_at": "2026-08-20T00:23:32.788860+00:00"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000245",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.14910459518432617,
+      "started_at": "2026-08-20T00:23:33.038837+00:00"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000249",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.15965747833251953,
+      "started_at": "2026-08-20T00:23:33.203775+00:00"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000269",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.2989797592163086,
+      "started_at": "2026-08-20T00:23:33.391862+00:00"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000284",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.11976122856140137,
+      "started_at": "2026-08-20T00:23:33.705405+00:00"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000305",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.1548905372619629,
+      "started_at": "2026-08-20T00:23:33.851997+00:00"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000324",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.15079569816589355,
+      "started_at": "2026-08-20T00:23:34.026855+00:00"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000339",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.09135770797729492,
+      "started_at": "2026-08-20T00:23:34.211494+00:00"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000352",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.12686896324157715,
+      "started_at": "2026-08-20T00:23:34.329975+00:00"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000355",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.15374088287353516,
+      "started_at": "2026-08-20T00:23:34.474067+00:00"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000358",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.12660455703735352,
+      "started_at": "2026-08-20T00:23:34.644966+00:00"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000372",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.10935211181640625,
+      "started_at": "2026-08-20T00:23:34.804646+00:00"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000376",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.15938949584960938,
+      "started_at": "2026-08-20T00:23:34.941665+00:00"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000423",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.13559794425964355,
+      "started_at": "2026-08-20T00:23:35.115940+00:00"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000426",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.11147880554199219,
+      "started_at": "2026-08-20T00:23:35.273308+00:00"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000433",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.1036379337310791,
+      "started_at": "2026-08-20T00:23:35.407768+00:00"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000434",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.1258540153503418,
+      "started_at": "2026-08-20T00:23:35.532133+00:00"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000441",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.11532449722290039,
+      "started_at": "2026-08-20T00:23:35.675929+00:00"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000475",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.10910987854003906,
+      "started_at": "2026-08-20T00:23:35.808822+00:00"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000484",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.1256852149963379,
+      "started_at": "2026-08-20T00:23:35.936930+00:00"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000488",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.1008751392364502,
+      "started_at": "2026-08-20T00:23:36.096603+00:00"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000489",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.14034509658813477,
+      "started_at": "2026-08-20T00:23:36.229489+00:00"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000494",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.11750674247741699,
+      "started_at": "2026-08-20T00:23:36.395261+00:00"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000528",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.10644888877868652,
+      "started_at": "2026-08-20T00:23:36.543919+00:00"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000581",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.1341254711151123,
+      "started_at": "2026-08-20T00:23:36.684865+00:00"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000631",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.12528610229492188,
+      "started_at": "2026-08-20T00:23:36.862063+00:00"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000656",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.08605742454528809,
+      "started_at": "2026-08-20T00:23:37.008157+00:00"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000673",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.20147109031677246,
+      "started_at": "2026-08-20T00:23:37.126266+00:00"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000696",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.1391456127166748,
+      "started_at": "2026-08-20T00:23:37.342310+00:00"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000713",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.1635289192199707,
+      "started_at": "2026-08-20T00:23:37.496095+00:00"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000720",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.11414957046508789,
+      "started_at": "2026-08-20T00:23:37.677606+00:00"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000724",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.11891841888427734,
+      "started_at": "2026-08-20T00:23:37.808445+00:00"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000758",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.1188507080078125,
+      "started_at": "2026-08-20T00:23:37.944419+00:00"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000763",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.1399829387664795,
+      "started_at": "2026-08-20T00:23:38.078989+00:00"
+    },
+    {
+      "contact_id": "tier8_intent_blending:000772",
+      "dims": 2048,
+      "kind": "audio",
+      "latency_seconds": 0.1062469482421875,
+      "started_at": "2026-08-20T00:23:38.235743+00:00"
+    },
+    {
+      "contact_id": "setZoneTemperature",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.13606858253479004,
+      "started_at": "2026-08-20T00:23:38.351837+00:00"
+    },
+    {
+      "contact_id": "setFanSpeed",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.10402083396911621,
+      "started_at": "2026-08-20T00:23:38.497777+00:00"
+    },
+    {
+      "contact_id": "setHvacMode",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.10022425651550293,
+      "started_at": "2026-08-20T00:23:38.608974+00:00"
+    },
+    {
+      "contact_id": "setSeatComfort",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.142836332321167,
+      "started_at": "2026-08-20T00:23:38.724950+00:00"
+    },
+    {
+      "contact_id": "setSteeringWheelHeat",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.09626960754394531,
+      "started_at": "2026-08-20T00:23:38.875445+00:00"
+    },
+    {
+      "contact_id": "setPetComfortMode",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.11850905418395996,
+      "started_at": "2026-08-20T00:23:38.979227+00:00"
+    },
+    {
+      "contact_id": "setCampingMode",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.09025144577026367,
+      "started_at": "2026-08-20T00:23:39.106681+00:00"
+    },
+    {
+      "contact_id": "setAirQualityMode",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.10515069961547852,
+      "started_at": "2026-08-20T00:23:39.204327+00:00"
+    },
+    {
+      "contact_id": "setCabinOverheatProtection",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.11177682876586914,
+      "started_at": "2026-08-20T00:23:39.316525+00:00"
+    },
+    {
+      "contact_id": "ventWindows",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.07017087936401367,
+      "started_at": "2026-08-20T00:23:39.435517+00:00"
+    },
+    {
+      "contact_id": "setLockState",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.08123970031738281,
+      "started_at": "2026-08-20T00:23:39.512910+00:00"
+    },
+    {
+      "contact_id": "setWindowPosition",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.12294793128967285,
+      "started_at": "2026-08-20T00:23:39.608838+00:00"
+    },
+    {
+      "contact_id": "openFrontTrunk",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.07826471328735352,
+      "started_at": "2026-08-20T00:23:39.739843+00:00"
+    },
+    {
+      "contact_id": "setSecureStorageAccess",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.10342216491699219,
+      "started_at": "2026-08-20T00:23:39.830298+00:00"
+    },
+    {
+      "contact_id": "foldExteriorMirrors",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.09209895133972168,
+      "started_at": "2026-08-20T00:23:39.940747+00:00"
+    },
+    {
+      "contact_id": "setGarageOpener",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.08879756927490234,
+      "started_at": "2026-08-20T00:23:40.039806+00:00"
+    },
+    {
+      "contact_id": "setAutonomousDriving",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.09861516952514648,
+      "started_at": "2026-08-20T00:23:40.139335+00:00"
+    },
+    {
+      "contact_id": "setDrivingMode",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.09340023994445801,
+      "started_at": "2026-08-20T00:23:40.251577+00:00"
+    },
+    {
+      "contact_id": "setSteeringFeel",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.10302615165710449,
+      "started_at": "2026-08-20T00:23:40.355912+00:00"
+    },
+    {
+      "contact_id": "setRegenerativeBraking",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.10162758827209473,
+      "started_at": "2026-08-20T00:23:40.468324+00:00"
+    },
+    {
+      "contact_id": "triggerRemoteParking",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.09769654273986816,
+      "started_at": "2026-08-20T00:23:40.582119+00:00"
+    },
+    {
+      "contact_id": "initiateAutoPark",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.08538413047790527,
+      "started_at": "2026-08-20T00:23:40.686819+00:00"
+    },
+    {
+      "contact_id": "getBatteryStatus",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.07742786407470703,
+      "started_at": "2026-08-20T00:23:40.779007+00:00"
+    },
+    {
+      "contact_id": "setChargeLimit",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.09678769111633301,
+      "started_at": "2026-08-20T00:23:40.865820+00:00"
+    },
+    {
+      "contact_id": "setChargingAmperage",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.0982511043548584,
+      "started_at": "2026-08-20T00:23:40.986392+00:00"
+    },
+    {
+      "contact_id": "openChargePortDoor",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.07063436508178711,
+      "started_at": "2026-08-20T00:23:41.096469+00:00"
+    },
+    {
+      "contact_id": "setScheduledDeparture",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.08555412292480469,
+      "started_at": "2026-08-20T00:23:41.174287+00:00"
+    },
+    {
+      "contact_id": "triggerBatteryPreconditioning",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.0778954029083252,
+      "started_at": "2026-08-20T00:23:41.266840+00:00"
+    },
+    {
+      "contact_id": "setSurveillanceMode",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.07566332817077637,
+      "started_at": "2026-08-20T00:23:41.358239+00:00"
+    },
+    {
+      "contact_id": "setValetMode",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.10634565353393555,
+      "started_at": "2026-08-20T00:23:41.441612+00:00"
+    },
+    {
+      "contact_id": "setSpeedLimitMode",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.08887457847595215,
+      "started_at": "2026-08-20T00:23:41.560035+00:00"
+    },
+    {
+      "contact_id": "viewRemoteCamera",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.09568214416503906,
+      "started_at": "2026-08-20T00:23:41.655882+00:00"
+    },
+    {
+      "contact_id": "setAudioVolume",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.10507607460021973,
+      "started_at": "2026-08-20T00:23:41.758499+00:00"
+    },
+    {
+      "contact_id": "adjustVolume",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.10140395164489746,
+      "started_at": "2026-08-20T00:23:41.870775+00:00"
+    },
+    {
+      "contact_id": "setMediaSource",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.10186886787414551,
+      "started_at": "2026-08-20T00:23:41.979542+00:00"
+    },
+    {
+      "contact_id": "controlPlayback",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.0889887809753418,
+      "started_at": "2026-08-20T00:23:42.089012+00:00"
+    },
+    {
+      "contact_id": "setPassengerQuietMode",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.08655285835266113,
+      "started_at": "2026-08-20T00:23:42.185551+00:00"
+    },
+    {
+      "contact_id": "setExternalSpeakerOutput",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.07962274551391602,
+      "started_at": "2026-08-20T00:23:42.284906+00:00"
+    },
+    {
+      "contact_id": "launchInCarGaming",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.11056637763977051,
+      "started_at": "2026-08-20T00:23:42.372207+00:00"
+    },
+    {
+      "contact_id": "setAmbientLighting",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.11326456069946289,
+      "started_at": "2026-08-20T00:23:42.489767+00:00"
+    },
+    {
+      "contact_id": "setDestination",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.08296895027160645,
+      "started_at": "2026-08-20T00:23:42.610312+00:00"
+    },
+    {
+      "contact_id": "addTripStop",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.07622361183166504,
+      "started_at": "2026-08-20T00:23:42.705479+00:00"
+    },
+    {
+      "contact_id": "cancelNavigation",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.06599545478820801,
+      "started_at": "2026-08-20T00:23:42.797292+00:00"
+    },
+    {
+      "contact_id": "searchPOI",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.09438300132751465,
+      "started_at": "2026-08-20T00:23:42.870899+00:00"
+    },
+    {
+      "contact_id": "setRoutePreferences",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.12554121017456055,
+      "started_at": "2026-08-20T00:23:42.979295+00:00"
+    },
+    {
+      "contact_id": "setVoiceGuidance",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.0850074291229248,
+      "started_at": "2026-08-20T00:23:43.112163+00:00"
+    },
+    {
+      "contact_id": "getRouteSummary",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.06767678260803223,
+      "started_at": "2026-08-20T00:23:43.204295+00:00"
+    },
+    {
+      "contact_id": "getTirePressures",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.07028889656066895,
+      "started_at": "2026-08-20T00:23:43.279068+00:00"
+    },
+    {
+      "contact_id": "getBatteryHealth",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.06684660911560059,
+      "started_at": "2026-08-20T00:23:43.381974+00:00"
+    },
+    {
+      "contact_id": "getOdometer",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.05842256546020508,
+      "started_at": "2026-08-20T00:23:43.466533+00:00"
+    },
+    {
+      "contact_id": "getActiveAlerts",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.07991290092468262,
+      "started_at": "2026-08-20T00:23:43.531972+00:00"
+    },
+    {
+      "contact_id": "getEnergyConsumption",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.08455920219421387,
+      "started_at": "2026-08-20T00:23:43.619444+00:00"
+    },
+    {
+      "contact_id": "getLockStatus",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.0635075569152832,
+      "started_at": "2026-08-20T00:23:43.711079+00:00"
+    },
+    {
+      "contact_id": "getDoorStatus",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.11292481422424316,
+      "started_at": "2026-08-20T00:23:43.786371+00:00"
+    },
+    {
+      "contact_id": "getChargeState",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.06959891319274902,
+      "started_at": "2026-08-20T00:23:43.912926+00:00"
+    },
+    {
+      "contact_id": "getLocation",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.06226634979248047,
+      "started_at": "2026-08-20T00:23:43.995422+00:00"
+    },
+    {
+      "contact_id": "getGearSelection",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.07084083557128906,
+      "started_at": "2026-08-20T00:23:44.066965+00:00"
+    },
+    {
+      "contact_id": "getSentryStatus",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.05897164344787598,
+      "started_at": "2026-08-20T00:23:44.145165+00:00"
+    },
+    {
+      "contact_id": "scheduleService",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.08697128295898438,
+      "started_at": "2026-08-20T00:23:44.211275+00:00"
+    },
+    {
+      "contact_id": "installSoftwareUpdate",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 1.0422797203063965,
+      "started_at": "2026-08-20T00:23:44.305057+00:00"
+    },
+    {
+      "contact_id": "calibrateCameras",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.05922389030456543,
+      "started_at": "2026-08-20T00:23:45.364671+00:00"
+    },
+    {
+      "contact_id": "resetTPMSSensors",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.07074189186096191,
+      "started_at": "2026-08-20T00:23:45.435881+00:00"
+    },
+    {
+      "contact_id": "wiperServiceMode",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.07587623596191406,
+      "started_at": "2026-08-20T00:23:45.514353+00:00"
+    },
+    {
+      "contact_id": "setClimate",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.09272599220275879,
+      "started_at": "2026-08-20T00:23:45.608637+00:00"
+    },
+    {
+      "contact_id": "controlLocks",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.0937955379486084,
+      "started_at": "2026-08-20T00:23:45.708294+00:00"
+    },
+    {
+      "contact_id": "setChargingLimit",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.09746313095092773,
+      "started_at": "2026-08-20T00:23:45.813251+00:00"
+    },
+    {
+      "contact_id": "enableRemoteStart",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.0702352523803711,
+      "started_at": "2026-08-20T00:23:45.926695+00:00"
+    },
+    {
+      "contact_id": "startLightShow",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.08714938163757324,
+      "started_at": "2026-08-20T00:23:46.003804+00:00"
+    },
+    {
+      "contact_id": "setRomanceMode",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.07752084732055664,
+      "started_at": "2026-08-20T00:23:46.102461+00:00"
+    },
+    {
+      "contact_id": "setEmissionsMode",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.09270739555358887,
+      "started_at": "2026-08-20T00:23:46.194329+00:00"
+    },
+    {
+      "contact_id": "setLightState",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.0900731086730957,
+      "started_at": "2026-08-20T00:23:46.298902+00:00"
+    },
+    {
+      "contact_id": "setBrightness",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.10377955436706543,
+      "started_at": "2026-08-20T00:23:46.402680+00:00"
+    },
+    {
+      "contact_id": "setColor",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.11034393310546875,
+      "started_at": "2026-08-20T00:23:46.514036+00:00"
+    },
+    {
+      "contact_id": "setColorTemperature",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.10745477676391602,
+      "started_at": "2026-08-20T00:23:46.631906+00:00"
+    },
+    {
+      "contact_id": "setAdaptiveLighting",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.09754276275634766,
+      "started_at": "2026-08-20T00:23:46.753200+00:00"
+    },
+    {
+      "contact_id": "rampBrightness",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.10903429985046387,
+      "started_at": "2026-08-20T00:23:46.857819+00:00"
+    },
+    {
+      "contact_id": "setThermostatMode",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.09585714340209961,
+      "started_at": "2026-08-20T00:23:46.976164+00:00"
+    },
+    {
+      "contact_id": "setTargetTemperature",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.09044218063354492,
+      "started_at": "2026-08-20T00:23:47.079083+00:00"
+    },
+    {
+      "contact_id": "setFanMode",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.10425782203674316,
+      "started_at": "2026-08-20T00:23:47.179071+00:00"
+    },
+    {
+      "contact_id": "getAirQuality",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.08929967880249023,
+      "started_at": "2026-08-20T00:23:47.292786+00:00"
+    },
+    {
+      "contact_id": "setHumidifierState",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.10205721855163574,
+      "started_at": "2026-08-20T00:23:47.389203+00:00"
+    },
+    {
+      "contact_id": "setLockState_home",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.0819406509399414,
+      "started_at": "2026-08-20T00:23:47.500353+00:00"
+    },
+    {
+      "contact_id": "armSecuritySystem",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.09188342094421387,
+      "started_at": "2026-08-20T00:23:47.590910+00:00"
+    },
+    {
+      "contact_id": "getCameraStream",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.10511946678161621,
+      "started_at": "2026-08-20T00:23:47.690204+00:00"
+    },
+    {
+      "contact_id": "getCameraEvent",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.10772156715393066,
+      "started_at": "2026-08-20T00:23:47.802337+00:00"
+    },
+    {
+      "contact_id": "setGarageDoor",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.08796548843383789,
+      "started_at": "2026-08-20T00:23:47.917655+00:00"
+    },
+    {
+      "contact_id": "playMedia",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.0997922420501709,
+      "started_at": "2026-08-20T00:23:48.012968+00:00"
+    },
+    {
+      "contact_id": "controlPlayback_home",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.09582853317260742,
+      "started_at": "2026-08-20T00:23:48.124792+00:00"
+    },
+    {
+      "contact_id": "setVolume",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.0930335521697998,
+      "started_at": "2026-08-20T00:23:48.231666+00:00"
+    },
+    {
+      "contact_id": "castContent",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.07224392890930176,
+      "started_at": "2026-08-20T00:23:48.340454+00:00"
+    },
+    {
+      "contact_id": "setInputSource",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.1014251708984375,
+      "started_at": "2026-08-20T00:23:48.419675+00:00"
+    },
+    {
+      "contact_id": "startCleaning",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.09980297088623047,
+      "started_at": "2026-08-20T00:23:48.536424+00:00"
+    },
+    {
+      "contact_id": "setDockState",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.0897514820098877,
+      "started_at": "2026-08-20T00:23:48.645813+00:00"
+    },
+    {
+      "contact_id": "setApplianceMode",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.12916827201843262,
+      "started_at": "2026-08-20T00:23:48.746359+00:00"
+    },
+    {
+      "contact_id": "getApplianceStatus",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.08610367774963379,
+      "started_at": "2026-08-20T00:23:48.889891+00:00"
+    },
+    {
+      "contact_id": "setPowerState",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.08887267112731934,
+      "started_at": "2026-08-20T00:23:48.995015+00:00"
+    },
+    {
+      "contact_id": "getEnergyUsage",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.07334494590759277,
+      "started_at": "2026-08-20T00:23:49.097260+00:00"
+    },
+    {
+      "contact_id": "setWaterValve",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.08563590049743652,
+      "started_at": "2026-08-20T00:23:49.183481+00:00"
+    },
+    {
+      "contact_id": "activateScene",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.09007048606872559,
+      "started_at": "2026-08-20T00:23:49.276027+00:00"
+    },
+    {
+      "contact_id": "broadcastMessage",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.08275270462036133,
+      "started_at": "2026-08-20T00:23:49.378401+00:00"
+    },
+    {
+      "contact_id": "restartDevice",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.06482958793640137,
+      "started_at": "2026-08-20T00:23:49.468242+00:00"
+    },
+    {
+      "contact_id": "getNetworkHealth",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.07767963409423828,
+      "started_at": "2026-08-20T00:23:49.540211+00:00"
+    },
+    {
+      "contact_id": "getBatteryLevel",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.06863784790039062,
+      "started_at": "2026-08-20T00:23:49.629939+00:00"
+    },
+    {
+      "contact_id": "getAirQuality_diag",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.0842440128326416,
+      "started_at": "2026-08-20T00:23:49.710776+00:00"
+    },
+    {
+      "contact_id": "getFilterLife",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.09225320816040039,
+      "started_at": "2026-08-20T00:23:49.802336+00:00"
+    },
+    {
+      "contact_id": "getLockState",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.08707284927368164,
+      "started_at": "2026-08-20T00:23:49.905818+00:00"
+    },
+    {
+      "contact_id": "getThermostatState",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.07919192314147949,
+      "started_at": "2026-08-20T00:23:50.000434+00:00"
+    },
+    {
+      "contact_id": "getSensorState",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.08428359031677246,
+      "started_at": "2026-08-20T00:23:50.090572+00:00"
+    },
+    {
+      "contact_id": "getLightState",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.07946467399597168,
+      "started_at": "2026-08-20T00:23:50.184969+00:00"
+    },
+    {
+      "contact_id": "getApplianceState",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.06632566452026367,
+      "started_at": "2026-08-20T00:23:50.284116+00:00"
+    },
+    {
+      "contact_id": "rebootDevice",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.0676720142364502,
+      "started_at": "2026-08-20T00:23:50.371317+00:00"
+    },
+    {
+      "contact_id": "updateFirmware",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.07296013832092285,
+      "started_at": "2026-08-20T00:23:50.448075+00:00"
+    },
+    {
+      "contact_id": "calibrateThermostat",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.09839439392089844,
+      "started_at": "2026-08-20T00:23:50.538382+00:00"
+    },
+    {
+      "contact_id": "resetFilterStatus",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.07432341575622559,
+      "started_at": "2026-08-20T00:23:50.643924+00:00"
+    },
+    {
+      "contact_id": "runNetworkSpeedTest",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.07357501983642578,
+      "started_at": "2026-08-20T00:23:50.736845+00:00"
+    },
+    {
+      "contact_id": "setLighting",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.12761855125427246,
+      "started_at": "2026-08-20T00:23:50.824599+00:00"
+    },
+    {
+      "contact_id": "setSecurityMode",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.10220575332641602,
+      "started_at": "2026-08-20T00:23:50.961092+00:00"
+    },
+    {
+      "contact_id": "streamCamera",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.07271623611450195,
+      "started_at": "2026-08-20T00:23:51.071365+00:00"
+    },
+    {
+      "contact_id": "getBiometricData",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.11873102188110352,
+      "started_at": "2026-08-20T00:23:51.151359+00:00"
+    },
+    {
+      "contact_id": "getActivitySummary",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.09072041511535645,
+      "started_at": "2026-08-20T00:23:51.277694+00:00"
+    },
+    {
+      "contact_id": "startWorkout",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.09842467308044434,
+      "started_at": "2026-08-20T00:23:51.376295+00:00"
+    },
+    {
+      "contact_id": "setDoNotDisturb",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.10950231552124023,
+      "started_at": "2026-08-20T00:23:51.482195+00:00"
+    },
+    {
+      "contact_id": "setAlwaysOnDisplay",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.08056163787841797,
+      "started_at": "2026-08-20T00:23:51.605467+00:00"
+    },
+    {
+      "contact_id": "findPairedPhone",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.07269620895385742,
+      "started_at": "2026-08-20T00:23:51.695850+00:00"
+    },
+    {
+      "contact_id": "installApp",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.07586193084716797,
+      "started_at": "2026-08-20T00:23:51.776182+00:00"
+    },
+    {
+      "contact_id": "setHapticStrength",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.09242630004882812,
+      "started_at": "2026-08-20T00:23:51.859764+00:00"
+    },
+    {
+      "contact_id": "enableWaterLock",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.09551835060119629,
+      "started_at": "2026-08-20T00:23:51.965635+00:00"
+    },
+    {
+      "contact_id": "setMirrorAngle",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.11785697937011719,
+      "started_at": "2026-08-20T00:23:52.070429+00:00"
+    },
+    {
+      "contact_id": "findMyDevice",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.07778668403625488,
+      "started_at": "2026-08-20T00:23:52.201617+00:00"
+    },
+    {
+      "contact_id": "setDefrost",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.0924844741821289,
+      "started_at": "2026-08-20T00:23:52.286437+00:00"
+    },
+    {
+      "contact_id": "setRecirculation",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.07806587219238281,
+      "started_at": "2026-08-20T00:23:52.385708+00:00"
+    },
+    {
+      "contact_id": "getClimateState",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.059752702713012695,
+      "started_at": "2026-08-20T00:23:52.486306+00:00"
+    },
+    {
+      "contact_id": "unlockChargeCable",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.07362484931945801,
+      "started_at": "2026-08-20T00:23:52.573191+00:00"
+    },
+    {
+      "contact_id": "startCharging",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.05542135238647461,
+      "started_at": "2026-08-20T00:23:52.661542+00:00"
+    },
+    {
+      "contact_id": "stopCharging",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.06709861755371094,
+      "started_at": "2026-08-20T00:23:52.728308+00:00"
+    },
+    {
+      "contact_id": "getChargingSession",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.0740351676940918,
+      "started_at": "2026-08-20T00:23:52.809096+00:00"
+    },
+    {
+      "contact_id": "honkHorn",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.07354307174682617,
+      "started_at": "2026-08-20T00:23:52.890612+00:00"
+    },
+    {
+      "contact_id": "flashLights",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.06374406814575195,
+      "started_at": "2026-08-20T00:23:52.975890+00:00"
+    },
+    {
+      "contact_id": "setCargoState",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.0888209342956543,
+      "started_at": "2026-08-20T00:23:53.049026+00:00"
+    },
+    {
+      "contact_id": "setSunroofPosition",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.08524775505065918,
+      "started_at": "2026-08-20T00:23:53.145205+00:00"
+    },
+    {
+      "contact_id": "setCruiseSpeed",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.08448600769042969,
+      "started_at": "2026-08-20T00:23:53.241395+00:00"
+    },
+    {
+      "contact_id": "setFollowDistance",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.08099937438964844,
+      "started_at": "2026-08-20T00:23:53.332750+00:00"
+    },
+    {
+      "contact_id": "getVehicleInfo",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.06463265419006348,
+      "started_at": "2026-08-20T00:23:53.420928+00:00"
+    },
+    {
+      "contact_id": "getSoftwareUpdateStatus",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.06988644599914551,
+      "started_at": "2026-08-20T00:23:53.496358+00:00"
+    },
+    {
+      "contact_id": "getDeviceList",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.06295895576477051,
+      "started_at": "2026-08-20T00:23:53.576146+00:00"
+    },
+    {
+      "contact_id": "activateRoutine",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.08435559272766113,
+      "started_at": "2026-08-20T00:23:53.646338+00:00"
+    },
+    {
+      "contact_id": "setGroupLightState",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.11796402931213379,
+      "started_at": "2026-08-20T00:23:53.737885+00:00"
+    },
+    {
+      "contact_id": "setThermostatSchedule",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.09758663177490234,
+      "started_at": "2026-08-20T00:23:53.862873+00:00"
+    },
+    {
+      "contact_id": "stopWorkout",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.0579836368560791,
+      "started_at": "2026-08-20T00:23:53.967356+00:00"
+    },
+    {
+      "contact_id": "getSleepSummary",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.09359097480773926,
+      "started_at": "2026-08-20T00:23:54.036737+00:00"
+    },
+    {
+      "contact_id": "setAlarm",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.09188652038574219,
+      "started_at": "2026-08-20T00:23:54.137300+00:00"
+    },
+    {
+      "contact_id": "getHRV",
+      "dims": 2048,
+      "kind": "text",
+      "latency_seconds": 0.08725118637084961,
+      "started_at": "2026-08-20T00:23:54.236535+00:00"
+    }
+  ],
+  "run_id": "SAEA-PROBE-pemb2-552"
+}

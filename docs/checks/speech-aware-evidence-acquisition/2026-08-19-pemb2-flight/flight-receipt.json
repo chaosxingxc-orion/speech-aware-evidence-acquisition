@@ -1,0 +1,105 @@
+{
+  "attempt_id": "attempt-20260820T002031Z-e816e2",
+  "config_hash": "4aa5ad30e2aafdb6a18dfa3dba70dffab75e858da90a719d8b9037bde7ec700f",
+  "contact_failures": [],
+  "contact_latency_seconds_this_attempt": 66.00008416175842,
+  "contacts_flown_by_kind": {
+    "audio": 400,
+    "text": 152
+  },
+  "contacts_flown_this_attempt": 552,
+  "contacts_replayed_from_cache": 0,
+  "durable_actual": {
+    "audio_seconds": 2159.6880001519967,
+    "calls": 552
+  },
+  "embedding_dim": 2048,
+  "embedding_manifest_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/derived/embeddings/SAEA-PROBE-pemb2-552/manifest.json",
+  "error": null,
+  "gate_runtime_diagnostics": {
+    "gguf_fast_path_used": false,
+    "gguf_files_full_hashed": 2,
+    "gguf_files_total": 2
+  },
+  "gpu_hours_this_attempt": 0.025967861612637838,
+  "gpu_occupied_seconds_this_attempt": 93.48430180549622,
+  "latency_seconds_by_kind": {
+    "audio": 51.53770399093628,
+    "text": 14.462380170822144
+  },
+  "metered_audio_seconds_expected": 2159.688,
+  "n_audio_contacts_expected": 400,
+  "n_audio_vectors": 400,
+  "n_contacts_planned": 552,
+  "n_text_contacts_expected": 152,
+  "n_text_vectors": 152,
+  "planned_budgets": {
+    "gpu_hours": 0.5,
+    "model_calls": 552,
+    "speech_audio_seconds": 3000
+  },
+  "preregistration": "docs/readiness/2026-08-19-pemb-preregistration-REGISTERED.md",
+  "prior_durable_spend_before_this_attempt": {
+    "audio_seconds": 0.0,
+    "calls": 0
+  },
+  "protocol_hash": "b4f4d4884ebdadc26106fb56ed5327d787d931cdb4c19c1d8b046b22aabe63d7",
+  "registered_ceilings": {
+    "gpu_hours": 0.5,
+    "model_calls": 600,
+    "speech_audio_seconds": 3000
+  },
+  "run_id": "SAEA-PROBE-pemb2-552",
+  "run_key": "B",
+  "session": {
+    "argv": [
+      "/home/chao/llama.cpp-featcache/build/bin/llama-server",
+      "--host",
+      "127.0.0.1",
+      "--port",
+      "8091",
+      "-m",
+      "/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+      "--mmproj",
+      "/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/mmproj-Qwen3-Omni-30B-A3B-Instruct-bf16.gguf",
+      "-c",
+      "49152",
+      "-np",
+      "1",
+      "-fa",
+      "on",
+      "-ngl",
+      "999",
+      "-ctk",
+      "q8_0",
+      "-ctv",
+      "q8_0",
+      "--embedding",
+      "--pooling",
+      "mean"
+    ],
+    "binary_path": "llama.cpp-featcache/build/bin/llama-server",
+    "binary_sha256": "097c96ec5a3f576f378d4d5e103928bf070647fdcc1f015eacb839503e121c68",
+    "host": "127.0.0.1",
+    "model_files": [
+      {
+        "path": "models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+        "sha256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d"
+      },
+      {
+        "path": "models/qwen3-omni-30b-a3b-instruct-gguf-q4km/mmproj-Qwen3-Omni-30B-A3B-Instruct-bf16.gguf",
+        "sha256": "f0dfe825fb692d426362b1ac79678fc08daa4758f7151526cad110515f122883"
+      }
+    ],
+    "pid": 893,
+    "port": 8091,
+    "session_id": "SAEA-PROBE-pemb2-552-attempt-20260820T002031Z-e816e2",
+    "started_at": "2026-08-20T00:22:32.911637+00:00"
+  },
+  "split_identity_hash": "e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c",
+  "status": "COMPLETED",
+  "text_contact_audio_seconds_sentinel": 1e-09,
+  "tier": "embedding (encode+pool, ZERO generation, zero sampling seam)",
+  "umbrella_lock_sha256": "ad71f96732a2b69fb741b4fed4fe60fb1978dc23eb55522ce3943702f0801d1e",
+  "wall_seconds": 75.64798164367676
+}
