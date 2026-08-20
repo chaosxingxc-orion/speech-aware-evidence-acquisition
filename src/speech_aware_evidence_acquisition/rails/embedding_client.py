@@ -52,6 +52,34 @@ re-implemented): the constructor refuses any ``base_url`` that is not
 
 Zero live model contact in this module or its own test suite -- every test
 drives a fake ``post``/``get`` pair or :class:`MockEmbeddingClient`.
+
+EXTENSION (SAEA-PROBE-pemb3m-388, ``docs/readiness/
+2026-08-20-pemb3m-preregistration-REGISTERED.md``): P-EMB-3M's arm M4
+(CASCADE) points this SAME wire-protocol client at a DIFFERENT resident
+llama.cpp server -- ``qwen3-embedding-0.6b-gguf``, dim 1024, text-only
+(never ``embed_audio``) -- rather than the dim-2048 LCO server every prior
+caller (P-EMB-1/2, P-EMB-3L) used. Two new, OPTIONAL, backward-compatible
+constructor keywords carry that delta without touching a single existing
+call site's behaviour:
+
+- ``expected_dim`` (default :data:`EMBEDDING_DIM`, i.e. 2048): the dim every
+  returned vector is checked against (:func:`_assert_vector_legal`) --
+  overridden to 1024 for the M4 cascade client, never hand-typed elsewhere.
+- ``require_marker_verification`` (default ``True``): when ``False``,
+  :meth:`EmbeddingClient.verify_media_marker` becomes a no-op that marks the
+  client verified WITHOUT issuing a ``GET /props`` request or requiring an
+  ``expected_media_marker`` -- a text-only embedding server has no mmproj
+  and no media-marker concept to verify against; every audio-capable caller
+  (P-EMB-1/2, P-EMB-3L, P-EMB-3M's own M1) leaves this at its default and
+  gets the EXACT existing fail-closed marker-verification behaviour
+  unchanged. ``embed_audio`` itself is UNCHANGED and still unconditionally
+  requires ``self._expected_marker`` to be set; a caller that sets
+  ``require_marker_verification=False`` and then calls ``embed_audio`` gets
+  whatever (possibly ``None``-derived) marker string it configured -- this
+  client performs no additional guard there because M4, the only caller
+  that uses ``require_marker_verification=False``, never calls
+  ``embed_audio`` at all (module docstring of
+  ``rails.probes.pemb3m_flight``: M4 is text-text only).
 """
 
 from __future__ import annotations
@@ -120,13 +148,15 @@ def _iso(epoch_seconds: float) -> str:
     return datetime.fromtimestamp(epoch_seconds, tz=timezone.utc).isoformat()
 
 
-def _assert_vector_legal(values: Sequence[float], *, context: str) -> None:
-    """Fail-closed on dim != :data:`EMBEDDING_DIM` or any non-finite
-    (NaN/Inf) component -- never a soft flag."""
+def _assert_vector_legal(values: Sequence[float], *, context: str, expected_dim: int = EMBEDDING_DIM) -> None:
+    """Fail-closed on dim != ``expected_dim`` (default :data:`EMBEDDING_DIM`,
+    2048) or any non-finite (NaN/Inf) component -- never a soft flag.
+    ``expected_dim`` is the EXTENSION seam module docstring's own EXTENSION
+    paragraph describes (M4's qwen3-emb server is dim 1024, not 2048)."""
 
-    if len(values) != EMBEDDING_DIM:
+    if len(values) != expected_dim:
         raise EmbeddingClientError(
-            f"{context}: embedding dim {len(values)} != pinned {EMBEDDING_DIM}"
+            f"{context}: embedding dim {len(values)} != pinned {expected_dim}"
         )
     for index, value in enumerate(values):
         if not math.isfinite(value):
@@ -265,27 +295,39 @@ class EmbeddingClient:
         self,
         *,
         base_url: str,
-        expected_media_marker: str,
+        expected_media_marker: str | None = None,
         post: Callable[[str, bytes], bytes] | None = None,
         get: Callable[[str], bytes] | None = None,
         timeout_seconds: float = 60.0,
         now: Callable[[], float] = time.time,
+        expected_dim: int = EMBEDDING_DIM,
+        require_marker_verification: bool = True,
     ) -> None:
         try:
             require_loopback(base_url)
         except SessionError as error:
             raise EmbeddingClientError(str(error)) from error
-        if not isinstance(expected_media_marker, str) or not expected_media_marker:
+        if require_marker_verification and (
+            not isinstance(expected_media_marker, str) or not expected_media_marker
+        ):
             raise EmbeddingClientError("expected_media_marker must be a non-empty string")
+        if not isinstance(expected_dim, int) or isinstance(expected_dim, bool) or expected_dim <= 0:
+            raise EmbeddingClientError("expected_dim must be a positive integer")
         self._base_url = base_url.rstrip("/")
         self._expected_marker = expected_media_marker
         self._post = post or _default_post(timeout_seconds)
         self._get = get or _default_get(timeout_seconds)
         self._now = now
+        self._expected_dim = expected_dim
+        self._require_marker_verification = require_marker_verification
         self._marker_verified = False
         self._verified_props: Mapping[str, object] | None = None
         self._contacts: list[EmbeddingContact] = []
         self._closed = False
+
+    @property
+    def expected_dim(self) -> int:
+        return self._expected_dim
 
     @property
     def contacts(self) -> tuple[EmbeddingContact, ...]:
@@ -302,6 +344,15 @@ class EmbeddingClient:
         calling this again re-verifies rather than trusting the first
         result."""
 
+        if not self._require_marker_verification:
+            # EXTENSION (module docstring): a text-only server (M4's
+            # qwen3-emb) has no mmproj/media-marker concept -- no GET
+            # /props request is issued at all; every audio-capable caller
+            # leaves require_marker_verification at its True default and
+            # falls straight through to the unmodified branch below.
+            self._marker_verified = True
+            self._verified_props = {}
+            return self._verified_props
         raw = self._get(self._base_url + PROPS_ENDPOINT_PATH)
         try:
             props = json.loads(raw.decode("utf-8"))
@@ -388,7 +439,7 @@ class EmbeddingClient:
         raw = self._post(self._base_url + EMBEDDING_ENDPOINT_PATH, json.dumps(body).encode("utf-8"))
         latency = self._now() - started_wall
         values = _parse_embedding_response(raw, expected_count=1, context=context)[0]
-        _assert_vector_legal(values, context=context)
+        _assert_vector_legal(values, context=context, expected_dim=self._expected_dim)
         self._contacts.append(
             EmbeddingContact(
                 contact_id=contact_id,
@@ -461,13 +512,21 @@ class MockEmbeddingClient:
     :func:`deterministic_unit_vector` seeded on ``f"{kind}:{contact_id}"``,
     so distinct contacts never collide and a test can still control
     similarity structure by passing its own source); ``calls`` records every
-    ``(kind, contact_id)`` pair actually sent."""
+    ``(kind, contact_id)`` pair actually sent.
+
+    EXTENSION (P-EMB-3M, module docstring): ``expected_dim`` (default
+    :data:`EMBEDDING_DIM`) mirrors :class:`EmbeddingClient`'s own EXTENSION
+    seam -- M4's mock client is constructed with ``expected_dim=1024`` so
+    its default :func:`deterministic_unit_vector` source and its own
+    dim-legality check both use the qwen3-emb dim rather than the LCO
+    default."""
 
     vector_source: Callable[[str, str], Sequence[float]] | None = None
     calls: list[tuple[str, str]] = field(default_factory=list)
     prefixes: list[str] = field(default_factory=list)
     marker_verified: bool = False
     props: Mapping[str, object] = field(default_factory=lambda: {"media_marker": "<__media__>"})
+    expected_dim: int = EMBEDDING_DIM
 
     def verify_media_marker(self) -> Mapping[str, object]:
         self.marker_verified = True
@@ -489,8 +548,8 @@ class MockEmbeddingClient:
         if self.vector_source is not None:
             values = tuple(float(value) for value in self.vector_source(kind, contact_id))
         else:
-            values = deterministic_unit_vector(f"{kind}:{contact_id}")
-        _assert_vector_legal(values, context=f"mock {kind} contact {contact_id!r}")
+            values = deterministic_unit_vector(f"{kind}:{contact_id}", dims=self.expected_dim)
+        _assert_vector_legal(values, context=f"mock {kind} contact {contact_id!r}", expected_dim=self.expected_dim)
         return EmbeddingVector(contact_id=contact_id, kind=kind, values=values)
 
 

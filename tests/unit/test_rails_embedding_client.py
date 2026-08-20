@@ -414,3 +414,109 @@ def test_deterministic_unit_vector_is_l2_normalized():
 
 def test_deterministic_unit_vector_differs_across_seeds():
     assert deterministic_unit_vector("a") != deterministic_unit_vector("b")
+
+
+# ---------------------------------------------------------------------------
+# P-EMB-3M EXTENSION: expected_dim / require_marker_verification.
+# ---------------------------------------------------------------------------
+
+
+def _dim_vector(dim: int, seed: float = 1.0) -> list[float]:
+    values = [0.0] * dim
+    values[0] = seed
+    return values
+
+
+def test_expected_dim_defaults_to_embedding_dim():
+    transport = _FakeTransport()
+    client = _client(transport)
+    assert client.expected_dim == EMBEDDING_DIM
+
+
+def test_construction_refuses_non_positive_expected_dim():
+    transport = _FakeTransport()
+    with pytest.raises(EmbeddingClientError, match="expected_dim"):
+        EmbeddingClient(
+            base_url=_BASE_URL, expected_media_marker=_MARKER, post=transport.post, get=transport.get, expected_dim=0
+        )
+
+
+def test_embed_text_accepts_a_1024_dim_vector_when_expected_dim_is_1024():
+    transport = _FakeTransport(post_response=_pooled_response(_dim_vector(1024)), get_response=_props_response())
+    client = EmbeddingClient(
+        base_url=_BASE_URL,
+        expected_media_marker=_MARKER,
+        post=transport.post,
+        get=transport.get,
+        expected_dim=1024,
+    )
+    client.verify_media_marker()
+    vector = client.embed_text(contact_id="s1", text="hello")
+    assert vector.dims == 1024
+
+
+def test_embed_text_fails_closed_on_wrong_dim_for_a_non_default_expected_dim():
+    transport = _FakeTransport(post_response=_pooled_response(_dim_vector(2048)), get_response=_props_response())
+    client = EmbeddingClient(
+        base_url=_BASE_URL,
+        expected_media_marker=_MARKER,
+        post=transport.post,
+        get=transport.get,
+        expected_dim=1024,
+    )
+    client.verify_media_marker()
+    with pytest.raises(EmbeddingClientError, match="!= pinned 1024"):
+        client.embed_text(contact_id="s1", text="hello")
+
+
+def test_require_marker_verification_defaults_to_true_and_requires_a_marker():
+    transport = _FakeTransport()
+    with pytest.raises(EmbeddingClientError, match="expected_media_marker"):
+        EmbeddingClient(base_url=_BASE_URL, post=transport.post, get=transport.get)
+
+
+def test_require_marker_verification_false_never_issues_a_get_request():
+    transport = _FakeTransport(post_response=_pooled_response(_dim_vector(1024)))
+    client = EmbeddingClient(
+        base_url=_BASE_URL,
+        post=transport.post,
+        get=transport.get,
+        expected_dim=1024,
+        require_marker_verification=False,
+    )
+    props = client.verify_media_marker()
+    assert props == {}
+    assert client.marker_verified is True
+    assert transport.get_calls == []
+    vector = client.embed_text(contact_id="s1", text="hello")
+    assert vector.dims == 1024
+
+
+def test_require_marker_verification_false_still_requires_verify_media_marker_called_first():
+    transport = _FakeTransport(post_response=_pooled_response(_dim_vector(1024)))
+    client = EmbeddingClient(
+        base_url=_BASE_URL, post=transport.post, get=transport.get, expected_dim=1024, require_marker_verification=False
+    )
+    with pytest.raises(EmbeddingClientError, match="verify_media_marker"):
+        client.embed_text(contact_id="s1", text="hello")
+
+
+def test_mock_embedding_client_expected_dim_defaults_to_embedding_dim():
+    client = MockEmbeddingClient()
+    client.verify_media_marker()
+    vector = client.embed_text(contact_id="s1", text="hello")
+    assert vector.dims == EMBEDDING_DIM
+
+
+def test_mock_embedding_client_honors_a_non_default_expected_dim():
+    client = MockEmbeddingClient(expected_dim=1024)
+    client.verify_media_marker()
+    vector = client.embed_text(contact_id="s1", text="hello")
+    assert vector.dims == 1024
+
+
+def test_mock_embedding_client_fails_closed_when_vector_source_disagrees_with_expected_dim():
+    client = MockEmbeddingClient(expected_dim=1024, vector_source=lambda kind, cid: _dim_vector(EMBEDDING_DIM))
+    client.verify_media_marker()
+    with pytest.raises(EmbeddingClientError, match="!= pinned 1024"):
+        client.embed_text(contact_id="s1", text="hello")
