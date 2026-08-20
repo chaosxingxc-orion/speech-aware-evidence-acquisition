@@ -1,0 +1,33 @@
+start: 2026-08-20T05:47:45Z
+pinned build: /home/chao/llama.cpp-featcache/build/bin
+097c96ec5a3f576f378d4d5e103928bf070647fdcc1f015eacb839503e121c68  /home/chao/llama.cpp-featcache/build/bin/llama-server
+
+=== media marker literals in the pinned build ===
+  libmtmd.so: <__media__> 
+  libmtmd.so.0: <__media__> 
+  libmtmd.so.0.0.1: <__media__> 
+  libmtmd.so.0.0.2: <__media__> 
+  libmtmd.so.0.0.3: <__media__> 
+  libmtmd.so.0.0.4: <__media__> 
+  libmtmd.so.0.0.5: <__media__> 
+
+=== 'media_marker' /props field name present? ===
+  present in libllama-common.so
+  present in libllama-common.so.0
+  present in libllama-common.so.0.0.1
+  present in libllama-common.so.0.0.2
+  present in libllama-common.so.0.0.3
+  present in libllama-common.so.0.0.4
+  present in libllama-common.so.0.0.5
+  present in libllama-server-impl.so
+
+=== embedding-mode flags available in this build ===
+  --pooling {none,mean,cls,last,rank}     pooling type for embeddings, use model default if unspecified
+  --embd-normalize N                      normalisation for embeddings (default: 2) (-1=none, 0=max absolute
+  --embedding, --embeddings               restrict to only support embedding use case; use only with dedicated
+
+=== the two pooling values this sweep spawns must both be accepted ===
+  --pooling {none,mean,cls,last,rank}     pooling type for embeddings, use model default if unspecified
+                                          (env: LLAMA_ARG_POOLING)
+  -np,   --parallel N                     number of server slots (default: -1, -1 = auto)
+end: 2026-08-20T05:47:48Z

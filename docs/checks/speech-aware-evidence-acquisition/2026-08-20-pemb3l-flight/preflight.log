@@ -1,0 +1,86 @@
+start: 2026-08-20T05:49:35Z
+git HEAD: 339e8cef927b79155389b53c85377e0e02a775ae
+git status: 0 dirty entries
+bytecode under the frozen scoring package (D3 gate): 0
+feat cache: /home/chao/feat-cache/slurp-q4km
+orphan llama-server:
+  (none)
+llama-server binary sha256 (receipt pins 097c96ec...):
+097c96ec5a3f576f378d4d5e103928bf070647fdcc1f015eacb839503e121c68  /home/chao/llama.cpp-featcache/build/bin/llama-server
+repo module root: /mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/src/speech_aware_evidence_acquisition
+preregistration: docs/readiness/2026-08-20-pemb3l-preregistration-REGISTERED.md
+P-EMB-3L local construction sweep (3 arms, 2 sessions)
+run id: SAEA-PROBE-pemb3l-234
+data_root: /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+carrier_root (asset_dir slurp): /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/datasets/slurp
+ontology-miner guards (pslu parent + pemb_flight + pemb3l_flight self-source): PASS
+binding config sha256 (LIVE recompute): fa698d31699314ecc94a046b8de4c664f7ea35ccab858f248d93b235d3ef8b15
+binding config sha256 (pinned):         fa698d31699314ecc94a046b8de4c664f7ea35ccab858f248d93b235d3ef8b15
+binding config sha256: LIVE == pinned, verbatim -- PASS
+audio instruct prefix (EXACT, trailing space load-bearing): 'Represent this utterance for intent retrieval: '
+text  instruct prefix (EXACT, trailing space load-bearing): 'Represent this intent label for retrieval: '
+arm table (committed, frozen):
+  l1-last-bare         pooling=last  audio_prefix='' text_prefix='' -> manifest run_id 'SAEA-PROBE-pemb3l-234/l1-last-bare'
+  l2-last-instruct     pooling=last  audio_prefix='Represent this utterance for intent retrieval: ' text_prefix='Represent this intent label for retrieval: ' -> manifest run_id 'SAEA-PROBE-pemb3l-234/l2-last-instruct'
+  l3-mean-instruct     pooling=mean  audio_prefix='Represent this utterance for intent retrieval: ' text_prefix='Represent this intent label for retrieval: ' -> manifest run_id 'SAEA-PROBE-pemb3l-234/l3-mean-instruct'
+cited mean-bare comparator (NOT re-flown): 0.05
+split_identity_hash (pinned, machinery-checked): fc9de436eba5aba120ecf07ee112765cd4ac0609150e0aaf36f4d44c9c5b5ee5
+frozen manifest: n=60 seed=20260807
+frozen manifest hash == machinery pin, verbatim -- PASS
+devel split resolved: 8690 samples
+canonical scenario labels: 18 -> ['alarm', 'audio', 'calendar', 'cooking', 'datetime', 'email', 'general', 'iot', 'lists', 'music', 'news', 'play', 'qa', 'recommendation', 'social', 'takeaway', 'transport', 'weather']
+audio samples resolved: 60 (expect 60)
+canonical labels resolved: 18 (expect 18)
+media resolved: 60/60 present
+audio profile (one pass): total 182.259s, min 1.41s, mean 3.04s, max 6.21s
+media byte profile: min 27333 B, mean 57300 B, max 109923 B (base64 inflates ~4/3 on the wire)
+THREE-PASS metered audio (each arm re-embeds the SAME 60 clips): 3 x 182.259 = 546.778s
+pooled-sequence feasibility: longest clip 6.21s -> <= ~93 tokens at the P-EMB-2 worst-case chunk length (embedding mode forces n_batch=n_ubatch=512); the SAME 60 clips already flew inside 512 in the consumed P-EMB-1
+
+exposure rows matching run id 'SAEA-PROBE-pemb3l-234': 1
+  ledger['execution profile'] = 'bounded-discovery-probe'
+  ledger['split role'] = 'discovery'
+  ledger['split identity hash'] = 'fc9de436eba5aba120ecf07ee112765cd4ac0609150e0aaf36f4d44c9c5b5ee5'
+  ledger['consumed'] = 'no'
+  ledger['calls'] = '260'
+  ledger['speech audio seconds'] = '600'
+  ledger['gpu hours'] = '0.3'
+  budget cell 'calls': registered 260 >= planned 234 -- OK
+  budget cell 'speech audio seconds': registered 600 >= planned 600 -- OK
+  budget cell 'gpu hours': registered 0.3 >= planned 0.3 -- OK
+
+config_hash: 67091662a7c98389d787204b4fa282fba0a78f1d4690cf7c30c5e3d65a2df8a1
+protocol_hash: 289397270e1eb5389bf9f907e323984fed546e07b19984bc5cd9139d59290a7c
+base_url: http://127.0.0.1:8093
+server_env: {'LLAMA_MTMD_FEAT_CACHE_DIR': '/home/chao/feat-cache/slurp-q4km'}
+common server_args (NO --pooling; per-session argv below is what spawns): ['-c', '49152', '-np', '1', '-fa', 'on', '-ngl', '999', '-ctk', 'q8_0', '-ctv', 'q8_0', '--embedding']
+embedding dim (pinned): 2048
+session routing (2 sequential sessions, one per pooling mode):
+  session 'last' flies arms ['l1-last-bare', 'l2-last-instruct']
+    argv: ['-c', '49152', '-np', '1', '-fa', 'on', '-ngl', '999', '-ctk', 'q8_0', '-ctv', 'q8_0', '--embedding', '--pooling', 'last']
+  session 'mean' flies arms ['l3-mean-instruct']
+    argv: ['-c', '49152', '-np', '1', '-fa', 'on', '-ngl', '999', '-ctk', 'q8_0', '-ctv', 'q8_0', '--embedding', '--pooling', 'mean']
+ExecutionPlan validates: profile=bounded-discovery-probe role=discovery
+contact arithmetic: (60 audio + 18 text) x 3 arms = 234 <= plan ceiling 234 <= registered ceiling 260
+arm ids (flight order): ['l1-last-bare', 'l2-last-instruct', 'l3-mean-instruct']
+audio-seconds arithmetic (METERED, three passes): 546.778 <= plan ceiling 600
+
+LLAMA_MEDIA_MARKER pinned in this environment: '<__media__>'
+  (the VALUE is re-verified against EACH live server's GET /props at flight time, fail-closed -- this check proves only that the pin exists)
+coexistence guard: nothing answers on the generation port 8080 -- PASS
+embedding port 8093: free -- PASS
+
+=== run-total budget feasibility (sibling attempts count) ===
+prior durable spend on SAEA-PROBE-pemb3l-234: calls=0, audio_seconds=0.000
+headroom for a FRESH attempt: calls=234, audio_seconds=600.000
+this sweep needs: calls=234, metered audio_seconds=546.778
+prior spend is 0, as the registration's feasibility statement declares -- OK
+call headroom: sufficient for a full fresh attempt -- OK
+audio headroom: sufficient for a full fresh attempt -- OK
+
+environment SAEA_FEAT_CACHE_DIR: '/home/chao/feat-cache/slurp-q4km'
+resolved server_env feat cache:  '/home/chao/feat-cache/slurp-q4km'
+
+PRE-FLIGHT CLEAN
+preflight exit: 0
+end: 2026-08-20T06:03:20Z

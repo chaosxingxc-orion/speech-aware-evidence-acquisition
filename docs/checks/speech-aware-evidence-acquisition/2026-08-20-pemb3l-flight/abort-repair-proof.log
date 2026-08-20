@@ -1,0 +1,19 @@
+start: 2026-08-20T06:45:38Z
+py_compile exit: 0
+
+=== zombie-safe _pid_alive: spawn a child, kill it, and prove the repair ===
+child pid 783
+  alive while running                : True  (expect True)
+  raw os.kill(pid, 0) after SIGTERM   : True  (expect True -- this is the zombie that aborted attempt 1)
+  repaired _pid_alive after SIGTERM   : False  (expect False)
+  repaired _pid_alive, second call    : False  (expect False)
+zombie probe exit: 0
+
+=== arm_manifest_status against the REAL on-disk state (structural only) ===
+  l1-last-bare: complete=True entries=78 audio=60 text=18 npy=78 distinct=78
+  l2-last-instruct: complete=True entries=78 audio=60 text=18 npy=78 distinct=78
+  l3-mean-instruct: complete=False entries=None audio=None text=None npy=None distinct=None
+
+  expected: l1 and l2 complete=True (carried), l3 complete=False (still to fly)
+manifest status exit: 0
+end: 2026-08-20T06:45:47Z

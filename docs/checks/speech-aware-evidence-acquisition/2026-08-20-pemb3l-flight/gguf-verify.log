@@ -1,0 +1,20 @@
+=== runtime receipt pins (schema saea-runtime-receipt-v2) ===
+llama.cpp build commit: 5d9dfcb58ea860295da8fc93c7b5bed9e2c71151 | version: 5 (5d9dfcb58)
+binary pin: llama.cpp-featcache/build/bin/llama-server 097c96ec5a3f576f378d4d5e103928bf070647fdcc1f015eacb839503e121c68
+
+=== binary sha256 verification (ext4 copy vs receipt pin) ===
+binary /home/chao/llama.cpp-featcache/build/bin/llama-server
+  sha256 097c96ec5a3f576f378d4d5e103928bf070647fdcc1f015eacb839503e121c68
+  == receipt pin? True
+
+=== per-file GGUF sha256 verification (ext4 copies vs receipt pins) ===
+/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf
+  bytes 18557053952 (pin 18557053952, match=True)
+  sha256 0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d
+  == receipt pin? True
+/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/mmproj-Qwen3-Omni-30B-A3B-Instruct-bf16.gguf
+  bytes 2207465568 (pin 2207465568, match=True)
+  sha256 f0dfe825fb692d426362b1ac79678fc08daa4758f7151526cad110515f122883
+  == receipt pin? True
+
+BINARY+GGUF VERIFICATION: PASS

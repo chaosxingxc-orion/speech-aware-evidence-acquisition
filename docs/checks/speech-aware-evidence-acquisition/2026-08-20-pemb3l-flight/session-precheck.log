@@ -1,0 +1,44 @@
+start: 2026-08-20T05:47:00Z
+=== git ===
+339e8cef927b79155389b53c85377e0e02a775ae
+dirty entries: 0
+339e8ce build(pemb3l): local construction sweep - last/instruct arms + verdict delta
+=== python ===
+/home/chao/.venvs/speechrl/bin/python
+Python 3.12.3
+=== pyc under src (D3 gate) ===
+  *.pyc:       0
+  __pycache__: 0
+  under scoring package: 0
+=== resident llama-server (wave-2 PRECOMP holder must have yielded) ===
+  (none running)
+=== listening ports 8080 (generation) / 8093 (this flight) ===
+  (neither bound)
+=== GPU ===
+name, pstate, clocks.current.sm [MHz], clocks.max.sm [MHz], utilization.gpu [%], memory.used [MiB], memory.total [MiB], temperature.gpu, clocks_event_reasons.active
+NVIDIA GeForce RTX 5090 Laptop GPU, P5, 1200 MHz, 3090 MHz, 2 %, 114 MiB, 24463 MiB, 48, 0x0000000000000000
+=== GPU compute processes ===
+pid, process_name, used_gpu_memory [MiB]
+=== feature caches ===
+  /home/chao/feat-cache/slurp-q4km: 63 entries, 23M
+  /home/chao/feat-cache/audio2tool-q4km: 490 entries, 249M
+  /home/chao/feat-cache/q4km: 34350 entries, 26G
+=== model files (ext4) ===
+total 20277864
+-rwxr-xr-x 1 chao chao 18557053952 Aug 16 17:24 Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf
+-rwxr-xr-x 1 chao chao  2207465568 Aug 16 17:24 mmproj-Qwen3-Omni-30B-A3B-Instruct-bf16.gguf
+=== llama-server binary ===
+097c96ec5a3f576f378d4d5e103928bf070647fdcc1f015eacb839503e121c68  /home/chao/llama.cpp-featcache/build/bin/llama-server
+=== existing run/attempt dirs for this probe (expect absent) ===
+  runs/SAEA-PROBE-pemb3l-234:     
+  attempts/SAEA-PROBE-pemb3l-234: 
+=== derived/embeddings/SAEA-PROBE-pemb3l-234 (expect absent) ===
+  (absent)
+=== derived/embeddings siblings (consumed probes, must stay untouched) ===
+  SAEA-PROBE-pemb1-78
+  SAEA-PROBE-pemb2-552
+=== disk ===
+  Filesystem      Size  Used Avail Use% Mounted on
+  /dev/sdd       1007G  222G  735G  24% /
+  E:\             3.8T  1.3T  2.6T  33% /mnt/e
+PRECHECK DONE

@@ -1,0 +1,202 @@
+start: 2026-08-20T06:55:02Z
+run: SAEA-PROBE-pemb3l-234 attempt: attempt-20260820T065009Z-1361ad
+
+=== run dir ===
+total 3616
+drwxrwxrwx 1 chao chao    4096 Aug 20 02:53 .
+drwxrwxrwx 1 chao chao    4096 Aug 20 02:50 ..
+-rwxrwxrwx 1 chao chao    4404 Aug 20 02:50 SAEA-PROBE-pemb3l-234.config-values.json
+-rwxrwxrwx 1 chao chao     563 Aug 20 02:50 SAEA-PROBE-pemb3l-234.plan.json
+-rwxrwxrwx 1 chao chao    1687 Aug 20 02:53 SAEA-PROBE-pemb3l-234.session-mean.receipt.json
+-rwxrwxrwx 1 chao chao   44109 Aug 20 02:53 SAEA-PROBE-pemb3l-234.session-mean.server.log
+-rwxrwxrwx 1 chao chao   18903 Aug 20 02:53 contacts.json
+-rwxrwxrwx 1 chao chao    9461 Aug 20 02:53 flight-receipt.json
+-rwxrwxrwx 1 chao chao 3610899 Aug 20 02:53 vectors-l3-mean-instruct.jsonl
+
+=== flight receipt (operational fields) ===
+  run_id: SAEA-PROBE-pemb3l-234
+  probe: P-EMB-3L
+  attempt_id: attempt-20260820T065009Z-1361ad
+  status: COMPLETED
+  error: None
+  config_hash: 67091662a7c98389d787204b4fa282fba0a78f1d4690cf7c30c5e3d65a2df8a1
+  protocol_hash: 289397270e1eb5389bf9f907e323984fed546e07b19984bc5cd9139d59290a7c
+  split_identity_hash: fc9de436eba5aba120ecf07ee112765cd4ac0609150e0aaf36f4d44c9c5b5ee5
+  binding_config_sha256: fa698d31699314ecc94a046b8de4c664f7ea35ccab858f248d93b235d3ef8b15
+  umbrella_lock_sha256: 9064bde89d4248fd80c9c2f93c2a9c276a454eadbb1aa7d529671118961371b1
+  tier: embedding (encode+pool, ZERO generation, zero sampling seam)
+  embedding_dim: 2048
+  arm_order: ["l1-last-bare", "l2-last-instruct", "l3-mean-instruct"]
+  n_audio_contacts_expected_per_arm: 60
+  n_text_contacts_expected_per_arm: 18
+  n_contacts_expected_per_arm: 78
+  n_contacts_planned: 234
+  n_contacts_produced: 234
+  sweep_total_invariant_pass: True
+  metered_audio_seconds_expected_one_pass: 182.259
+  metered_audio_seconds_expected_sweep: 546.778
+  text_contact_audio_seconds_sentinel: 1e-09
+  wall_seconds: 23.542294025421143
+  gpu_occupied_seconds_this_attempt: 22.5771324634552
+  gpu_hours_this_attempt: 0.0062714256842931115
+  contacts_flown_this_attempt: 78
+  contacts_replayed_from_cache: 0
+  contact_failures: []
+  contacts_flown_by_kind: {"audio": 60, "text": 18}
+  durable_actual: {"audio_seconds": 182.25943751799974, "calls": 78}
+  prior_durable_spend_before_this_attempt: {"audio_seconds": 364.51887503599966, "calls": 156}
+  planned_budgets: {"gpu_hours": 0.3, "model_calls": 234, "speech_audio_seconds": 600}
+  registered_ceilings: {"gpu_hours": 0.3, "model_calls": 260, "speech_audio_seconds": 600}
+  latency_seconds_by_kind: {"audio": 6.887587785720825, "text": 0.5751018524169922}
+
+  === per arm ===
+  l1-last-bare:
+    manifest_run_id: 'SAEA-PROBE-pemb3l-234/l1-last-bare'
+    pooling_mode: 'last'
+    audio_prefix: ''
+    text_prefix: ''
+    session_key: 'last'
+    n_audio_vectors: 60
+    n_text_vectors: 18
+    n_contacts: 78
+    contacts_flown: 0
+    contacts_replayed: 0
+    wall_seconds: None
+    embedding_manifest_path: '/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/derived/embeddings/SAEA-PROBE-pemb3l-234/l1-last-bare/manifest.json'
+    flown_by_kind: null
+    contact_failures: []
+  l2-last-instruct:
+    manifest_run_id: 'SAEA-PROBE-pemb3l-234/l2-last-instruct'
+    pooling_mode: 'last'
+    audio_prefix: 'Represent this utterance for intent retrieval: '
+    text_prefix: 'Represent this intent label for retrieval: '
+    session_key: 'last'
+    n_audio_vectors: 60
+    n_text_vectors: 18
+    n_contacts: 78
+    contacts_flown: 0
+    contacts_replayed: 0
+    wall_seconds: None
+    embedding_manifest_path: '/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/derived/embeddings/SAEA-PROBE-pemb3l-234/l2-last-instruct/manifest.json'
+    flown_by_kind: null
+    contact_failures: []
+  l3-mean-instruct:
+    manifest_run_id: 'SAEA-PROBE-pemb3l-234/l3-mean-instruct'
+    pooling_mode: 'mean'
+    audio_prefix: 'Represent this utterance for intent retrieval: '
+    text_prefix: 'Represent this intent label for retrieval: '
+    session_key: 'mean'
+    n_audio_vectors: 60
+    n_text_vectors: 18
+    n_contacts: 78
+    contacts_flown: 78
+    contacts_replayed: 0
+    wall_seconds: 8.806962728500366
+    embedding_manifest_path: '/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/derived/embeddings/SAEA-PROBE-pemb3l-234/l3-mean-instruct/manifest.json'
+    flown_by_kind: {"audio": 60, "text": 18}
+    contact_failures: []
+
+  === per session ===
+  session 'last' (pooling 'last') arms ['l1-last-bare', 'l2-last-instruct']
+    NOT SPAWNED: every arm in this session was already complete on the data root (carried from an earlier attempt) -- no GPU, no contacts
+  session 'mean' (pooling 'mean') arms ['l3-mean-instruct']
+    pid 1403 port 8093 spawn 13.1s resident 22.6s
+    binary llama.cpp-featcache/build/bin/llama-server 097c96ec5a3f576f378d4d5e103928bf070647fdcc1f015eacb839503e121c68
+    argv: /home/chao/llama.cpp-featcache/build/bin/llama-server --host 127.0.0.1 --port 8093 -m /home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf --mmproj /home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/mmproj-Qwen3-Omni-30B-A3B-Instruct-bf16.gguf -c 49152 -np 1 -fa on -ngl 999 -ctk q8_0 -ctv q8_0 --embedding --pooling mean
+    model file: models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf 0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d
+    model file: models/qwen3-omni-30b-a3b-instruct-gguf-q4km/mmproj-Qwen3-Omni-30B-A3B-Instruct-bf16.gguf f0dfe825fb692d426362b1ac79678fc08daa4758f7151526cad110515f122883
+    teardown: {"escalated": false, "pid": 1403, "pid_alive_after": false, "port_reachable_after": false, "signal": "SIGTERM", "teardown_seconds": 0.5005559921264648}
+
+=== durable attempt file (state machine + actual spend) ===
+  /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/attempts/SAEA-PROBE-pemb3l-234/attempt-20260820T065009Z-1361ad.json
+    schema: saea-attempt-v1
+    run_id: SAEA-PROBE-pemb3l-234
+    attempt_id: attempt-20260820T065009Z-1361ad
+    carrier_lock_key: slurp
+    state: FINALIZED
+    reserved: {"audio_seconds": 600.0, "calls": 234}
+    actual: {"audio_seconds": 182.25943751799974, "calls": 78, "gpu_seconds": 22.5771324634552}
+
+=== embedding manifests, ONE PER ARM (STRUCTURAL: counts, dims, hash presence -- no vector is read) ===
+  sweep manifest root: /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/derived/embeddings/SAEA-PROBE-pemb3l-234
+  --- arm l1-last-bare ---
+    schema: saea-pemb-embeddings-manifest-v1
+    run_id: SAEA-PROBE-pemb3l-234/l1-last-bare
+    dims: 2048
+    audio_count: 60
+    text_count: 18
+    entries: 78; by kind {"audio": 60, "text": 18}
+    dim distribution: {"2048": 78}
+    distinct contact_id: 78
+    distinct sha256: 78 (all-identical vectors would collapse this)
+    .npy files present: 78/78
+    .npy byte sizes observed: [8320]
+  --- arm l2-last-instruct ---
+    schema: saea-pemb-embeddings-manifest-v1
+    run_id: SAEA-PROBE-pemb3l-234/l2-last-instruct
+    dims: 2048
+    audio_count: 60
+    text_count: 18
+    entries: 78; by kind {"audio": 60, "text": 18}
+    dim distribution: {"2048": 78}
+    distinct contact_id: 78
+    distinct sha256: 78 (all-identical vectors would collapse this)
+    .npy files present: 78/78
+    .npy byte sizes observed: [8320]
+  --- arm l3-mean-instruct ---
+    schema: saea-pemb-embeddings-manifest-v1
+    run_id: SAEA-PROBE-pemb3l-234/l3-mean-instruct
+    dims: 2048
+    audio_count: 60
+    text_count: 18
+    entries: 78; by kind {"audio": 60, "text": 18}
+    dim distribution: {"2048": 78}
+    distinct contact_id: 78
+    distinct sha256: 78 (all-identical vectors would collapse this)
+    .npy files present: 78/78
+    .npy byte sizes observed: [8320]
+
+  === cross-arm separation (STRUCTURAL ONLY: byte identity, never a comparison of values) ===
+    l1-last-bare vs l2-last-instruct: 0 byte-identical vector(s) shared (a construction that changed nothing would share all 78)
+    l1-last-bare vs l3-mean-instruct: 0 byte-identical vector(s) shared (a construction that changed nothing would share all 78)
+    l2-last-instruct vs l3-mean-instruct: 60 byte-identical vector(s) shared (a construction that changed nothing would share all 78)
+
+=== attempt artifact shapes (line/byte counts only; no vector component printed) ===
+  vectors-l3-mean-instruct.jsonl: 78 lines, 3610899 bytes
+  contacts.json: 629 lines, 18903 bytes
+
+=== feature cache AFTER the run ===
+campaign  /home/chao/feat-cache/slurp-q4km
+23M	/home/chao/feat-cache/slurp-q4km
+  entries: 63
+legacy /home/chao/feat-cache/q4km (MUST NOT BE TOUCHED)
+  entries: 34350
+other campaign caches
+  /home/chao/feat-cache/audio2tool-q4km: 490 entries
+
+=== server.log embedding-mode evidence, per session ===
+  --- SAEA-PROBE-pemb3l-234.session-mean.server.log ---
+    lines: 481
+      0.00.208.541 W srv  llama_server: embeddings enabled with n_batch (2048) > n_ubatch (512)
+      0.00.208.541 W srv  llama_server: setting n_batch = n_ubatch = 512 to avoid assertion failure
+      0.02.861.193 W llama_init_from_model: model default pooling_type is [-1], but [1] was specified
+      0.02.861.215 W llama_context: n_ctx_seq (49152) < n_ctx_train (65536) -- the full capacity of the model will not be utilized
+      0.03.477.280 I slot   load_model: id  0 | task -1 | new slot, n_ctx = 49152
+    'not marked as outputs' lines: 60
+
+=== GPU ===
+pstate, clocks.current.sm [MHz], clocks.max.sm [MHz], utilization.gpu [%], memory.used [MiB], temperature.gpu
+P5, 1200 MHz, 3090 MHz, 0 %, 114 MiB, 50
+
+=== resident llama-server check (both sessions must be gone) ===
+  none running
+ports 8080/8093:
+  (neither bound)
+
+=== exposure ledger row mentions (count only; consumed must stay 'no') ===
+1
+
+=== git tree ===
+  (clean)
+339e8ce build(pemb3l): local construction sweep - last/instruct arms + verdict delta
+POSTFLIGHT DONE

@@ -1,0 +1,913 @@
+0.00.243.010 I log_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+0.00.243.020 I device_info:
+0.00.382.465 I   - CUDA0   : NVIDIA GeForce RTX 5090 Laptop GPU (24462 MiB, 23119 MiB free)
+0.00.382.480 I   - CPU     : Intel(R) Core(TM) Ultra 9 275HX (56236 MiB, 56236 MiB free)
+0.00.382.567 I system_info: n_threads = 24 (n_threads_batch = 24) / 24 | CUDA : ARCHS = 1200 | USE_GRAPHS = 1 | PEER_MAX_BATCH_SIZE = 128 | BLACKWELL_NATIVE_FP4 = 1 | CPU : SSE3 = 1 | SSSE3 = 1 | AVX = 1 | AVX_VNNI = 1 | AVX2 = 1 | F16C = 1 | FMA = 1 | BMI2 = 1 | LLAMAFILE = 1 | OPENMP = 1 | REPACK = 1 | 
+0.00.382.575 W srv  llama_server: embeddings enabled with n_batch (2048) > n_ubatch (512)
+0.00.382.576 W srv  llama_server: setting n_batch = n_ubatch = 512 to avoid assertion failure
+0.00.382.652 I srv          init: using 23 threads for HTTP server
+0.00.382.901 I srv         start: binding port with default address family
+0.00.384.177 I srv  llama_server: loading model
+0.00.384.234 I srv    load_model: loading model '/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf'
+0.00.487.305 I srv    load_model: [mtmd] estimated worst-case memory usage of mmproj is 2940.29 MiB (took 103.03 ms)
+0.00.487.335 I common_init_result: fitting params to device memory ...
+0.00.487.335 I common_init_result: (for bugs during this step try to reproduce them with -fit off, or provide --verbose logs if the bug only occurs with -fit on)
+0.00.628.319 W common_fit_params: failed to fit params to free device memory: n_gpu_layers already set by user to 999, abort
+0.00.700.273 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden
+0.06.539.814 W llama_init_from_model: model default pooling_type is [-1], but [3] was specified
+0.06.539.838 W llama_context: n_ctx_seq (49152) < n_ctx_train (65536) -- the full capacity of the model will not be utilized
+0.06.621.029 I common_init_from_params: warming up the model with an empty run - please wait ... (--no-warmup to disable)
+0.06.737.265 W load_hparams: Qwen-VL models require at minimum 1024 image tokens to function correctly on grounding tasks
+0.06.737.272 W load_hparams: if you encounter problems with accuracy, try adding --image-min-tokens 1024
+0.06.737.272 W load_hparams: more info: https://github.com/ggml-org/llama.cpp/issues/16842
+
+0.07.458.199 W init_audio: audio input is in experimental stage and may have reduced quality:
+    https://github.com/ggml-org/llama.cpp/discussions/13759
+0.07.458.251 I srv    load_model: loaded multimodal model, '/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/mmproj-Qwen3-Omni-30B-A3B-Instruct-bf16.gguf'
+0.07.458.265 I srv    load_model: initializing slots, n_slots = 1
+0.07.527.697 W common_speculative_init: no implementations specified for speculative decoding
+0.07.527.708 I slot   load_model: id  0 | task -1 | new slot, n_ctx = 49152
+0.07.527.736 I srv    load_model: prompt cache is enabled, size limit: 8192 MiB
+0.07.527.736 I srv    load_model: use `--cache-ram 0` to disable the prompt cache
+0.07.527.736 I srv    load_model: for more info see https://github.com/ggml-org/llama.cpp/pull/16391
+0.07.527.736 I srv    load_model: context checkpoints enabled, max = 32, min spacing = 8192
+0.07.527.766 I srv          init: idle slots will be saved to prompt cache upon starting a new task
+0.07.533.210 I init: chat template, example_format: '<|im_start|>system
+You are a helpful assistant<|im_end|>
+<|im_start|>user
+Hello<|im_end|>
+<|im_start|>assistant
+Hi there<|im_end|>
+<|im_start|>user
+How are you?<|im_end|>
+<|im_start|>assistant
+'
+0.07.536.055 I srv          init: init: chat template, thinking = 1
+0.07.536.107 I srv  llama_server: model loaded
+0.07.536.112 I srv  llama_server: server is listening on http://127.0.0.1:8093
+0.07.536.117 I srv  update_slots: all slots are idle
+0.09.910.226 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = -1
+0.09.910.248 I slot launch_slot_: id  0 | task 0 | processing task, is_child = 0
+0.09.929.069 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.10.263.796 I slot process_mtmd: id  0 | task 0 | mtmd feat-cache HIT, chunk idx = 1
+0.10.279.890 I slot      release: id  0 | task 0 | stop processing: n_tokens = 41, truncated = 0
+0.10.279.907 I srv  update_slots: all slots are idle
+0.10.318.083 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98973804551
+0.10.318.092 I slot launch_slot_: id  0 | task 3 | processing task, is_child = 0
+0.10.319.401 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.10.366.954 I slot process_mtmd: id  0 | task 3 | mtmd feat-cache HIT, chunk idx = 1
+0.10.375.459 I slot      release: id  0 | task 3 | stop processing: n_tokens = 41, truncated = 0
+0.10.375.476 I srv  update_slots: all slots are idle
+0.10.521.776 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98973900118
+0.10.521.787 I slot launch_slot_: id  0 | task 5 | processing task, is_child = 0
+0.10.523.658 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.10.686.222 I slot process_mtmd: id  0 | task 5 | mtmd feat-cache HIT, chunk idx = 1
+0.10.696.129 I slot      release: id  0 | task 5 | stop processing: n_tokens = 80, truncated = 0
+0.10.696.153 I srv  update_slots: all slots are idle
+0.10.756.917 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98974220795
+0.10.756.927 I slot launch_slot_: id  0 | task 7 | processing task, is_child = 0
+0.10.758.859 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.10.829.832 I slot process_mtmd: id  0 | task 7 | mtmd feat-cache HIT, chunk idx = 1
+0.10.839.735 I slot      release: id  0 | task 7 | stop processing: n_tokens = 67, truncated = 0
+0.10.839.752 I srv  update_slots: all slots are idle
+0.11.023.403 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98974364394
+0.11.023.412 I slot launch_slot_: id  0 | task 9 | processing task, is_child = 0
+0.11.025.382 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.11.074.922 I slot process_mtmd: id  0 | task 9 | mtmd feat-cache HIT, chunk idx = 1
+0.11.083.632 I slot      release: id  0 | task 9 | stop processing: n_tokens = 41, truncated = 0
+0.11.083.654 I srv  update_slots: all slots are idle
+0.11.112.854 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98974608290
+0.11.112.864 I slot launch_slot_: id  0 | task 11 | processing task, is_child = 0
+0.11.114.194 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.11.159.443 I slot process_mtmd: id  0 | task 11 | mtmd feat-cache HIT, chunk idx = 1
+0.11.167.935 I slot      release: id  0 | task 11 | stop processing: n_tokens = 28, truncated = 0
+0.11.167.949 I srv  update_slots: all slots are idle
+0.11.230.013 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98974692594
+0.11.230.023 I slot launch_slot_: id  0 | task 13 | processing task, is_child = 0
+0.11.231.613 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.11.291.599 I slot process_mtmd: id  0 | task 13 | mtmd feat-cache HIT, chunk idx = 1
+0.11.305.915 I slot      release: id  0 | task 13 | stop processing: n_tokens = 54, truncated = 0
+0.11.305.930 I srv  update_slots: all slots are idle
+0.11.446.624 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98974830573
+0.11.446.635 I slot launch_slot_: id  0 | task 15 | processing task, is_child = 0
+0.11.447.613 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.11.489.931 I slot process_mtmd: id  0 | task 15 | mtmd feat-cache HIT, chunk idx = 1
+0.11.498.350 I slot      release: id  0 | task 15 | stop processing: n_tokens = 28, truncated = 0
+0.11.498.375 I srv  update_slots: all slots are idle
+0.11.523.660 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98975023017
+0.11.523.668 I slot launch_slot_: id  0 | task 17 | processing task, is_child = 0
+0.11.524.838 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.11.568.919 I slot process_mtmd: id  0 | task 17 | mtmd feat-cache HIT, chunk idx = 1
+0.11.577.386 I slot      release: id  0 | task 17 | stop processing: n_tokens = 28, truncated = 0
+0.11.577.399 I srv  update_slots: all slots are idle
+0.11.699.194 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98975102044
+0.11.699.212 I slot launch_slot_: id  0 | task 19 | processing task, is_child = 0
+0.11.700.592 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.11.751.641 I slot process_mtmd: id  0 | task 19 | mtmd feat-cache HIT, chunk idx = 1
+0.11.760.047 I slot      release: id  0 | task 19 | stop processing: n_tokens = 41, truncated = 0
+0.11.760.061 I srv  update_slots: all slots are idle
+0.11.847.699 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98975284705
+0.11.847.710 I slot launch_slot_: id  0 | task 21 | processing task, is_child = 0
+0.11.849.302 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.11.897.798 I slot process_mtmd: id  0 | task 21 | mtmd feat-cache HIT, chunk idx = 1
+0.11.906.353 I slot      release: id  0 | task 21 | stop processing: n_tokens = 41, truncated = 0
+0.11.906.369 I srv  update_slots: all slots are idle
+0.11.946.134 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98975431012
+0.11.946.144 I slot launch_slot_: id  0 | task 23 | processing task, is_child = 0
+0.11.948.023 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.12.012.533 I slot process_mtmd: id  0 | task 23 | mtmd feat-cache HIT, chunk idx = 1
+0.12.020.728 I slot      release: id  0 | task 23 | stop processing: n_tokens = 54, truncated = 0
+0.12.020.740 I srv  update_slots: all slots are idle
+0.12.105.492 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98975545385
+0.12.105.503 I slot launch_slot_: id  0 | task 25 | processing task, is_child = 0
+0.12.107.078 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.12.155.562 I slot process_mtmd: id  0 | task 25 | mtmd feat-cache HIT, chunk idx = 1
+0.12.163.559 I slot      release: id  0 | task 25 | stop processing: n_tokens = 41, truncated = 0
+0.12.163.619 I srv  update_slots: all slots are idle
+0.12.372.687 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98975688218
+0.12.372.697 I slot launch_slot_: id  0 | task 27 | processing task, is_child = 0
+0.12.373.874 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.12.423.503 I slot process_mtmd: id  0 | task 27 | mtmd feat-cache HIT, chunk idx = 1
+0.12.431.627 I slot      release: id  0 | task 27 | stop processing: n_tokens = 41, truncated = 0
+0.12.431.641 I srv  update_slots: all slots are idle
+0.12.498.267 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98975956285
+0.12.498.278 I slot launch_slot_: id  0 | task 29 | processing task, is_child = 0
+0.12.499.772 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.12.551.350 I slot process_mtmd: id  0 | task 29 | mtmd feat-cache HIT, chunk idx = 1
+0.12.559.707 I slot      release: id  0 | task 29 | stop processing: n_tokens = 41, truncated = 0
+0.12.559.724 I srv  update_slots: all slots are idle
+0.12.639.545 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98976084366
+0.12.639.557 I slot launch_slot_: id  0 | task 31 | processing task, is_child = 0
+0.12.640.841 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.12.683.391 I slot process_mtmd: id  0 | task 31 | mtmd feat-cache HIT, chunk idx = 1
+0.12.691.125 I slot      release: id  0 | task 31 | stop processing: n_tokens = 28, truncated = 0
+0.12.691.141 I srv  update_slots: all slots are idle
+0.12.724.966 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98976215784
+0.12.724.977 I slot launch_slot_: id  0 | task 33 | processing task, is_child = 0
+0.12.726.447 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.12.777.937 I slot process_mtmd: id  0 | task 33 | mtmd feat-cache HIT, chunk idx = 1
+0.12.786.213 I slot      release: id  0 | task 33 | stop processing: n_tokens = 41, truncated = 0
+0.12.786.227 I srv  update_slots: all slots are idle
+0.13.093.177 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98976310871
+0.13.093.189 I slot launch_slot_: id  0 | task 35 | processing task, is_child = 0
+0.13.094.884 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.13.154.669 I slot process_mtmd: id  0 | task 35 | mtmd feat-cache HIT, chunk idx = 1
+0.13.163.166 I slot      release: id  0 | task 35 | stop processing: n_tokens = 54, truncated = 0
+0.13.163.182 I srv  update_slots: all slots are idle
+0.13.196.184 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98976687826
+0.13.196.205 I slot launch_slot_: id  0 | task 37 | processing task, is_child = 0
+0.13.198.038 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.13.280.013 I slot process_mtmd: id  0 | task 37 | mtmd feat-cache HIT, chunk idx = 1
+0.13.288.836 I slot      release: id  0 | task 37 | stop processing: n_tokens = 80, truncated = 0
+0.13.288.851 I srv  update_slots: all slots are idle
+0.13.338.233 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98976813494
+0.13.338.240 I slot launch_slot_: id  0 | task 39 | processing task, is_child = 0
+0.13.339.711 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.13.381.895 I slot process_mtmd: id  0 | task 39 | mtmd feat-cache HIT, chunk idx = 1
+0.13.389.939 I slot      release: id  0 | task 39 | stop processing: n_tokens = 28, truncated = 0
+0.13.389.954 I srv  update_slots: all slots are idle
+0.13.593.236 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98976914598
+0.13.593.245 I slot launch_slot_: id  0 | task 41 | processing task, is_child = 0
+0.13.594.377 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.13.634.477 I slot process_mtmd: id  0 | task 41 | mtmd feat-cache HIT, chunk idx = 1
+0.13.642.523 I slot      release: id  0 | task 41 | stop processing: n_tokens = 28, truncated = 0
+0.13.642.537 I srv  update_slots: all slots are idle
+0.13.669.381 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98977167182
+0.13.669.390 I slot launch_slot_: id  0 | task 43 | processing task, is_child = 0
+0.13.670.772 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.13.722.363 I slot process_mtmd: id  0 | task 43 | mtmd feat-cache HIT, chunk idx = 1
+0.13.730.798 I slot      release: id  0 | task 43 | stop processing: n_tokens = 41, truncated = 0
+0.13.730.815 I srv  update_slots: all slots are idle
+0.13.791.154 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98977255457
+0.13.791.165 I slot launch_slot_: id  0 | task 45 | processing task, is_child = 0
+0.13.792.382 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.13.839.335 I slot process_mtmd: id  0 | task 45 | mtmd feat-cache HIT, chunk idx = 1
+0.13.847.091 I slot      release: id  0 | task 45 | stop processing: n_tokens = 41, truncated = 0
+0.13.847.107 I srv  update_slots: all slots are idle
+0.13.880.931 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98977371750
+0.13.880.942 I slot launch_slot_: id  0 | task 47 | processing task, is_child = 0
+0.13.881.933 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.13.945.919 I slot process_mtmd: id  0 | task 47 | mtmd feat-cache HIT, chunk idx = 1
+0.13.954.352 I slot      release: id  0 | task 47 | stop processing: n_tokens = 54, truncated = 0
+0.13.954.368 I srv  update_slots: all slots are idle
+0.14.199.283 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98977479010
+0.14.199.290 I slot launch_slot_: id  0 | task 49 | processing task, is_child = 0
+0.14.200.707 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.14.250.346 I slot process_mtmd: id  0 | task 49 | mtmd feat-cache HIT, chunk idx = 1
+0.14.258.703 I slot      release: id  0 | task 49 | stop processing: n_tokens = 41, truncated = 0
+0.14.258.720 I srv  update_slots: all slots are idle
+0.14.361.693 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98977783362
+0.14.361.703 I slot launch_slot_: id  0 | task 51 | processing task, is_child = 0
+0.14.362.862 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.14.414.755 I slot process_mtmd: id  0 | task 51 | mtmd feat-cache HIT, chunk idx = 1
+0.14.422.955 I slot      release: id  0 | task 51 | stop processing: n_tokens = 41, truncated = 0
+0.14.422.971 I srv  update_slots: all slots are idle
+0.14.449.828 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98977947614
+0.14.449.837 I slot launch_slot_: id  0 | task 53 | processing task, is_child = 0
+0.14.451.162 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.14.512.953 I slot process_mtmd: id  0 | task 53 | mtmd feat-cache HIT, chunk idx = 1
+0.14.521.427 I slot      release: id  0 | task 53 | stop processing: n_tokens = 54, truncated = 0
+0.14.521.448 I srv  update_slots: all slots are idle
+0.14.571.335 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98978046087
+0.14.571.365 I slot launch_slot_: id  0 | task 55 | processing task, is_child = 0
+0.14.573.668 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.14.695.513 I slot process_mtmd: id  0 | task 55 | mtmd feat-cache HIT, chunk idx = 1
+0.14.704.476 I slot      release: id  0 | task 55 | stop processing: n_tokens = 93, truncated = 0
+0.14.704.494 I srv  update_slots: all slots are idle
+0.14.733.679 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98978229136
+0.14.733.687 I slot launch_slot_: id  0 | task 57 | processing task, is_child = 0
+0.14.735.149 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.14.797.906 I slot process_mtmd: id  0 | task 57 | mtmd feat-cache HIT, chunk idx = 1
+0.14.806.507 I slot      release: id  0 | task 57 | stop processing: n_tokens = 54, truncated = 0
+0.14.806.522 I srv  update_slots: all slots are idle
+0.14.863.831 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98978331165
+0.14.863.842 I slot launch_slot_: id  0 | task 59 | processing task, is_child = 0
+0.14.865.246 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.14.930.092 I slot process_mtmd: id  0 | task 59 | mtmd feat-cache HIT, chunk idx = 1
+0.14.938.597 I slot      release: id  0 | task 59 | stop processing: n_tokens = 54, truncated = 0
+0.14.938.614 I srv  update_slots: all slots are idle
+0.14.969.975 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98978463255
+0.14.969.983 I slot launch_slot_: id  0 | task 61 | processing task, is_child = 0
+0.14.971.373 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.15.041.832 I slot process_mtmd: id  0 | task 61 | mtmd feat-cache HIT, chunk idx = 1
+0.15.050.867 I slot      release: id  0 | task 61 | stop processing: n_tokens = 54, truncated = 0
+0.15.050.884 I srv  update_slots: all slots are idle
+0.15.077.769 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98978575527
+0.15.077.778 I slot launch_slot_: id  0 | task 63 | processing task, is_child = 0
+0.15.079.219 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.15.132.642 I slot process_mtmd: id  0 | task 63 | mtmd feat-cache HIT, chunk idx = 1
+0.15.140.611 I slot      release: id  0 | task 63 | stop processing: n_tokens = 41, truncated = 0
+0.15.140.629 I srv  update_slots: all slots are idle
+0.15.173.380 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98978665270
+0.15.173.391 I slot launch_slot_: id  0 | task 65 | processing task, is_child = 0
+0.15.174.779 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.15.229.460 I slot process_mtmd: id  0 | task 65 | mtmd feat-cache HIT, chunk idx = 1
+0.15.237.585 I slot      release: id  0 | task 65 | stop processing: n_tokens = 41, truncated = 0
+0.15.237.601 I srv  update_slots: all slots are idle
+0.15.280.175 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98978762243
+0.15.280.184 I slot launch_slot_: id  0 | task 67 | processing task, is_child = 0
+0.15.281.414 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.15.322.185 I slot process_mtmd: id  0 | task 67 | mtmd feat-cache HIT, chunk idx = 1
+0.15.329.407 I slot      release: id  0 | task 67 | stop processing: n_tokens = 28, truncated = 0
+0.15.329.422 I srv  update_slots: all slots are idle
+0.15.360.815 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98978854065
+0.15.360.825 I slot launch_slot_: id  0 | task 69 | processing task, is_child = 0
+0.15.362.124 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.15.429.055 I slot process_mtmd: id  0 | task 69 | mtmd feat-cache HIT, chunk idx = 1
+0.15.437.587 I slot      release: id  0 | task 69 | stop processing: n_tokens = 54, truncated = 0
+0.15.437.602 I srv  update_slots: all slots are idle
+0.15.518.626 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98978962246
+0.15.518.636 I slot launch_slot_: id  0 | task 71 | processing task, is_child = 0
+0.15.520.405 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.15.569.557 I slot process_mtmd: id  0 | task 71 | mtmd feat-cache HIT, chunk idx = 1
+0.15.577.145 I slot      release: id  0 | task 71 | stop processing: n_tokens = 41, truncated = 0
+0.15.577.162 I srv  update_slots: all slots are idle
+0.15.874.627 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98979101805
+0.15.874.635 I slot launch_slot_: id  0 | task 73 | processing task, is_child = 0
+0.15.875.978 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.15.933.450 I slot process_mtmd: id  0 | task 73 | mtmd feat-cache HIT, chunk idx = 1
+0.15.943.041 I slot      release: id  0 | task 73 | stop processing: n_tokens = 54, truncated = 0
+0.15.943.059 I srv  update_slots: all slots are idle
+0.16.191.858 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98979467701
+0.16.191.865 I slot launch_slot_: id  0 | task 75 | processing task, is_child = 0
+0.16.193.214 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.16.241.116 I slot process_mtmd: id  0 | task 75 | mtmd feat-cache HIT, chunk idx = 1
+0.16.249.216 I slot      release: id  0 | task 75 | stop processing: n_tokens = 41, truncated = 0
+0.16.249.234 I srv  update_slots: all slots are idle
+0.16.332.651 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98979773875
+0.16.332.660 I slot launch_slot_: id  0 | task 77 | processing task, is_child = 0
+0.16.334.185 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.16.398.762 I slot process_mtmd: id  0 | task 77 | mtmd feat-cache HIT, chunk idx = 1
+0.16.407.203 I slot      release: id  0 | task 77 | stop processing: n_tokens = 67, truncated = 0
+0.16.407.218 I srv  update_slots: all slots are idle
+0.17.745.111 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98979931862
+0.17.745.119 I slot launch_slot_: id  0 | task 79 | processing task, is_child = 0
+0.17.746.291 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.17.794.263 I slot process_mtmd: id  0 | task 79 | mtmd feat-cache HIT, chunk idx = 1
+0.17.802.270 I slot      release: id  0 | task 79 | stop processing: n_tokens = 41, truncated = 0
+0.17.802.287 I srv  update_slots: all slots are idle
+0.17.829.316 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98980258685
+0.17.829.324 I slot launch_slot_: id  0 | task 81 | processing task, is_child = 0
+0.17.830.515 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.17.882.158 I slot process_mtmd: id  0 | task 81 | mtmd feat-cache HIT, chunk idx = 1
+0.17.890.416 I slot      release: id  0 | task 81 | stop processing: n_tokens = 41, truncated = 0
+0.17.890.433 I srv  update_slots: all slots are idle
+0.17.914.253 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98980346831
+0.17.914.262 I slot launch_slot_: id  0 | task 83 | processing task, is_child = 0
+0.17.915.214 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.17.983.106 I slot process_mtmd: id  0 | task 83 | mtmd feat-cache HIT, chunk idx = 1
+0.17.992.067 I slot      release: id  0 | task 83 | stop processing: n_tokens = 54, truncated = 0
+0.17.992.083 I srv  update_slots: all slots are idle
+0.18.135.405 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98980448482
+0.18.135.416 I slot launch_slot_: id  0 | task 85 | processing task, is_child = 0
+0.18.136.584 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.18.186.595 I slot process_mtmd: id  0 | task 85 | mtmd feat-cache HIT, chunk idx = 1
+0.18.201.147 I slot      release: id  0 | task 85 | stop processing: n_tokens = 41, truncated = 0
+0.18.201.164 I srv  update_slots: all slots are idle
+0.18.238.263 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98980657563
+0.18.238.271 I slot launch_slot_: id  0 | task 87 | processing task, is_child = 0
+0.18.239.493 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.18.295.560 I slot process_mtmd: id  0 | task 87 | mtmd feat-cache HIT, chunk idx = 1
+0.18.304.329 I slot      release: id  0 | task 87 | stop processing: n_tokens = 41, truncated = 0
+0.18.304.372 I srv  update_slots: all slots are idle
+0.18.340.675 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98980760763
+0.18.340.684 I slot launch_slot_: id  0 | task 89 | processing task, is_child = 0
+0.18.342.272 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.18.411.710 I slot process_mtmd: id  0 | task 89 | mtmd feat-cache HIT, chunk idx = 1
+0.18.420.446 I slot      release: id  0 | task 89 | stop processing: n_tokens = 67, truncated = 0
+0.18.420.465 I srv  update_slots: all slots are idle
+0.18.461.656 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98980876862
+0.18.461.663 I slot launch_slot_: id  0 | task 91 | processing task, is_child = 0
+0.18.463.125 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.18.525.398 I slot process_mtmd: id  0 | task 91 | mtmd feat-cache HIT, chunk idx = 1
+0.18.533.787 I slot      release: id  0 | task 91 | stop processing: n_tokens = 54, truncated = 0
+0.18.533.804 I srv  update_slots: all slots are idle
+0.18.591.300 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98980990202
+0.18.591.309 I slot launch_slot_: id  0 | task 93 | processing task, is_child = 0
+0.18.592.456 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.18.636.679 I slot process_mtmd: id  0 | task 93 | mtmd feat-cache HIT, chunk idx = 1
+0.18.644.683 I slot      release: id  0 | task 93 | stop processing: n_tokens = 28, truncated = 0
+0.18.644.698 I srv  update_slots: all slots are idle
+0.18.708.343 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98981101098
+0.18.708.352 I slot launch_slot_: id  0 | task 95 | processing task, is_child = 0
+0.18.710.253 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.18.787.235 I slot process_mtmd: id  0 | task 95 | mtmd feat-cache HIT, chunk idx = 1
+0.18.796.420 I slot      release: id  0 | task 95 | stop processing: n_tokens = 67, truncated = 0
+0.18.796.439 I srv  update_slots: all slots are idle
+0.18.932.909 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98981252835
+0.18.932.917 I slot launch_slot_: id  0 | task 97 | processing task, is_child = 0
+0.18.934.688 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.19.006.081 I slot process_mtmd: id  0 | task 97 | mtmd feat-cache HIT, chunk idx = 1
+0.19.015.179 I slot      release: id  0 | task 97 | stop processing: n_tokens = 67, truncated = 0
+0.19.015.196 I srv  update_slots: all slots are idle
+0.19.043.993 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98981471594
+0.19.044.003 I slot launch_slot_: id  0 | task 99 | processing task, is_child = 0
+0.19.045.386 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.19.109.384 I slot process_mtmd: id  0 | task 99 | mtmd feat-cache HIT, chunk idx = 1
+0.19.118.304 I slot      release: id  0 | task 99 | stop processing: n_tokens = 54, truncated = 0
+0.19.118.322 I srv  update_slots: all slots are idle
+0.19.242.655 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98981574719
+0.19.242.663 I slot launch_slot_: id  0 | task 101 | processing task, is_child = 0
+0.19.244.172 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.19.295.041 I slot process_mtmd: id  0 | task 101 | mtmd feat-cache HIT, chunk idx = 1
+0.19.303.988 I slot      release: id  0 | task 101 | stop processing: n_tokens = 41, truncated = 0
+0.19.304.005 I srv  update_slots: all slots are idle
+0.19.343.652 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98981760403
+0.19.343.664 I slot launch_slot_: id  0 | task 103 | processing task, is_child = 0
+0.19.345.044 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.19.406.936 I slot process_mtmd: id  0 | task 103 | mtmd feat-cache HIT, chunk idx = 1
+0.19.415.638 I slot      release: id  0 | task 103 | stop processing: n_tokens = 54, truncated = 0
+0.19.415.655 I srv  update_slots: all slots are idle
+0.19.452.322 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98981872054
+0.19.452.330 I slot launch_slot_: id  0 | task 105 | processing task, is_child = 0
+0.19.453.792 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.19.533.873 I slot process_mtmd: id  0 | task 105 | mtmd feat-cache HIT, chunk idx = 1
+0.19.543.842 I slot      release: id  0 | task 105 | stop processing: n_tokens = 67, truncated = 0
+0.19.543.859 I srv  update_slots: all slots are idle
+0.19.565.346 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98982000258
+0.19.565.353 I slot launch_slot_: id  0 | task 107 | processing task, is_child = 0
+0.19.566.732 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.19.631.803 I slot process_mtmd: id  0 | task 107 | mtmd feat-cache HIT, chunk idx = 1
+0.19.640.380 I slot      release: id  0 | task 107 | stop processing: n_tokens = 54, truncated = 0
+0.19.640.399 I srv  update_slots: all slots are idle
+0.19.860.040 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98982096796
+0.19.860.048 I slot launch_slot_: id  0 | task 109 | processing task, is_child = 0
+0.19.860.885 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.19.911.036 I slot process_mtmd: id  0 | task 109 | mtmd feat-cache HIT, chunk idx = 1
+0.19.919.370 I slot      release: id  0 | task 109 | stop processing: n_tokens = 41, truncated = 0
+0.19.919.389 I srv  update_slots: all slots are idle
+0.20.080.063 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98982375786
+0.20.080.072 I slot launch_slot_: id  0 | task 111 | processing task, is_child = 0
+0.20.081.741 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.20.159.305 I slot process_mtmd: id  0 | task 111 | mtmd feat-cache HIT, chunk idx = 1
+0.20.168.094 I slot      release: id  0 | task 111 | stop processing: n_tokens = 67, truncated = 0
+0.20.168.108 I srv  update_slots: all slots are idle
+0.20.321.283 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98982624509
+0.20.321.291 I slot launch_slot_: id  0 | task 113 | processing task, is_child = 0
+0.20.322.741 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.20.400.750 I slot process_mtmd: id  0 | task 113 | mtmd feat-cache HIT, chunk idx = 1
+0.20.410.722 I slot      release: id  0 | task 113 | stop processing: n_tokens = 80, truncated = 0
+0.20.410.740 I srv  update_slots: all slots are idle
+0.20.623.818 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98982867138
+0.20.623.831 I slot launch_slot_: id  0 | task 115 | processing task, is_child = 0
+0.20.624.637 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.20.675.547 I slot process_mtmd: id  0 | task 115 | mtmd feat-cache HIT, chunk idx = 1
+0.20.683.698 I slot      release: id  0 | task 115 | stop processing: n_tokens = 41, truncated = 0
+0.20.683.713 I srv  update_slots: all slots are idle
+0.20.713.464 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98983140113
+0.20.713.473 I slot launch_slot_: id  0 | task 117 | processing task, is_child = 0
+0.20.714.562 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.20.760.169 I slot process_mtmd: id  0 | task 117 | mtmd feat-cache HIT, chunk idx = 1
+0.20.768.822 I slot      release: id  0 | task 117 | stop processing: n_tokens = 28, truncated = 0
+0.20.768.841 I srv  update_slots: all slots are idle
+0.20.909.652 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98983225238
+0.20.909.665 I slot launch_slot_: id  0 | task 119 | processing task, is_child = 0
+0.20.911.090 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.20.952.519 I slot process_mtmd: id  0 | task 119 | mtmd feat-cache HIT, chunk idx = 1
+0.20.960.118 I slot      release: id  0 | task 119 | stop processing: n_tokens = 28, truncated = 0
+0.20.960.135 I srv  update_slots: all slots are idle
+0.21.162.229 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98983416535
+0.21.162.240 I slot launch_slot_: id  0 | task 121 | processing task, is_child = 0
+0.21.170.062 I slot      release: id  0 | task 121 | stop processing: n_tokens = 1, truncated = 0
+0.21.170.100 I srv  update_slots: all slots are idle
+0.21.251.821 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98983626496
+0.21.251.836 I slot launch_slot_: id  0 | task 123 | processing task, is_child = 0
+0.21.259.435 I slot      release: id  0 | task 123 | stop processing: n_tokens = 1, truncated = 0
+0.21.259.447 I srv  update_slots: all slots are idle
+0.21.312.216 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98983715851
+0.21.312.226 I slot launch_slot_: id  0 | task 125 | processing task, is_child = 0
+0.21.319.750 I slot      release: id  0 | task 125 | stop processing: n_tokens = 1, truncated = 0
+0.21.319.761 I srv  update_slots: all slots are idle
+0.21.344.816 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98983776166
+0.21.344.825 I slot launch_slot_: id  0 | task 127 | processing task, is_child = 0
+0.21.362.764 I slot      release: id  0 | task 127 | stop processing: n_tokens = 2, truncated = 0
+0.21.362.781 I srv  update_slots: all slots are idle
+0.21.388.456 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98983819181
+0.21.388.467 I slot launch_slot_: id  0 | task 129 | processing task, is_child = 0
+0.21.403.993 I slot      release: id  0 | task 129 | stop processing: n_tokens = 1, truncated = 0
+0.21.404.005 I srv  update_slots: all slots are idle
+0.21.594.116 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98983860408
+0.21.594.129 I slot launch_slot_: id  0 | task 131 | processing task, is_child = 0
+0.21.603.944 I slot      release: id  0 | task 131 | stop processing: n_tokens = 1, truncated = 0
+0.21.603.956 I srv  update_slots: all slots are idle
+0.21.678.205 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98984060360
+0.21.678.214 I slot launch_slot_: id  0 | task 133 | processing task, is_child = 0
+0.21.686.085 I slot      release: id  0 | task 133 | stop processing: n_tokens = 1, truncated = 0
+0.21.686.102 I srv  update_slots: all slots are idle
+0.21.698.628 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98984142507
+0.21.698.636 I slot launch_slot_: id  0 | task 135 | processing task, is_child = 0
+0.21.706.285 I slot      release: id  0 | task 135 | stop processing: n_tokens = 1, truncated = 0
+0.21.706.295 I srv  update_slots: all slots are idle
+0.21.723.136 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98984162700
+0.21.723.144 I slot launch_slot_: id  0 | task 137 | processing task, is_child = 0
+0.21.730.888 I slot      release: id  0 | task 137 | stop processing: n_tokens = 1, truncated = 0
+0.21.730.897 I srv  update_slots: all slots are idle
+0.21.795.848 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98984187303
+0.21.795.858 I slot launch_slot_: id  0 | task 139 | processing task, is_child = 0
+0.21.803.516 I slot      release: id  0 | task 139 | stop processing: n_tokens = 1, truncated = 0
+0.21.803.528 I srv  update_slots: all slots are idle
+0.21.827.034 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98984259932
+0.21.827.043 I slot launch_slot_: id  0 | task 141 | processing task, is_child = 0
+0.21.834.787 I slot      release: id  0 | task 141 | stop processing: n_tokens = 1, truncated = 0
+0.21.834.795 I srv  update_slots: all slots are idle
+0.21.888.977 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98984291202
+0.21.888.986 I slot launch_slot_: id  0 | task 143 | processing task, is_child = 0
+0.21.896.724 I slot      release: id  0 | task 143 | stop processing: n_tokens = 1, truncated = 0
+0.21.896.734 I srv  update_slots: all slots are idle
+0.21.912.142 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98984353140
+0.21.912.151 I slot launch_slot_: id  0 | task 145 | processing task, is_child = 0
+0.21.920.052 I slot      release: id  0 | task 145 | stop processing: n_tokens = 1, truncated = 0
+0.21.920.064 I srv  update_slots: all slots are idle
+0.21.989.571 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98984376467
+0.21.989.580 I slot launch_slot_: id  0 | task 147 | processing task, is_child = 0
+0.22.008.304 I slot      release: id  0 | task 147 | stop processing: n_tokens = 2, truncated = 0
+0.22.008.318 I srv  update_slots: all slots are idle
+0.22.037.479 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98984464720
+0.22.037.488 I slot launch_slot_: id  0 | task 149 | processing task, is_child = 0
+0.22.056.952 I slot      release: id  0 | task 149 | stop processing: n_tokens = 1, truncated = 0
+0.22.056.966 I srv  update_slots: all slots are idle
+0.22.210.297 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98984513368
+0.22.210.308 I slot launch_slot_: id  0 | task 151 | processing task, is_child = 0
+0.22.229.318 I slot      release: id  0 | task 151 | stop processing: n_tokens = 2, truncated = 0
+0.22.229.335 I srv  update_slots: all slots are idle
+0.22.253.530 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98984685735
+0.22.253.540 I slot launch_slot_: id  0 | task 153 | processing task, is_child = 0
+0.22.288.347 I slot      release: id  0 | task 153 | stop processing: n_tokens = 1, truncated = 0
+0.22.288.362 I srv  update_slots: all slots are idle
+0.22.315.614 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98984744763
+0.22.315.624 I slot launch_slot_: id  0 | task 155 | processing task, is_child = 0
+0.22.325.793 I slot      release: id  0 | task 155 | stop processing: n_tokens = 1, truncated = 0
+0.22.325.808 I srv  update_slots: all slots are idle
+0.24.938.540 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98984782209
+0.24.938.549 I slot launch_slot_: id  0 | task 157 | processing task, is_child = 0
+0.24.975.125 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.25.021.024 I slot process_mtmd: id  0 | task 157 | mtmd feat-cache HIT, chunk idx = 10
+0.25.029.031 I slot      release: id  0 | task 157 | stop processing: n_tokens = 50, truncated = 0
+0.25.029.044 I srv  update_slots: all slots are idle
+0.25.114.831 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.200 (> 0.100 thold), f_keep = 0.200
+0.25.114.839 I slot launch_slot_: id  0 | task 160 | processing task, is_child = 0
+0.25.114.890 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.25.158.409 I slot process_mtmd: id  0 | task 160 | mtmd feat-cache HIT, chunk idx = 10
+0.25.166.349 I slot      release: id  0 | task 160 | stop processing: n_tokens = 50, truncated = 0
+0.25.166.371 I srv  update_slots: all slots are idle
+0.25.205.183 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.112 (> 0.100 thold), f_keep = 0.200
+0.25.205.191 I slot launch_slot_: id  0 | task 162 | processing task, is_child = 0
+0.25.205.246 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.25.276.608 I slot process_mtmd: id  0 | task 162 | mtmd feat-cache HIT, chunk idx = 10
+0.25.285.143 I slot      release: id  0 | task 162 | stop processing: n_tokens = 89, truncated = 0
+0.25.285.167 I srv  update_slots: all slots are idle
+0.25.368.356 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.132 (> 0.100 thold), f_keep = 0.112
+0.25.368.373 I slot launch_slot_: id  0 | task 164 | processing task, is_child = 0
+0.25.368.435 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.25.433.973 I slot process_mtmd: id  0 | task 164 | mtmd feat-cache HIT, chunk idx = 10
+0.25.442.631 I slot      release: id  0 | task 164 | stop processing: n_tokens = 76, truncated = 0
+0.25.442.645 I srv  update_slots: all slots are idle
+0.25.553.995 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.200 (> 0.100 thold), f_keep = 0.132
+0.25.554.002 I slot launch_slot_: id  0 | task 166 | processing task, is_child = 0
+0.25.554.061 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.25.597.981 I slot process_mtmd: id  0 | task 166 | mtmd feat-cache HIT, chunk idx = 10
+0.25.605.922 I slot      release: id  0 | task 166 | stop processing: n_tokens = 50, truncated = 0
+0.25.605.937 I srv  update_slots: all slots are idle
+0.25.663.366 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.270 (> 0.100 thold), f_keep = 0.200
+0.25.663.373 I slot launch_slot_: id  0 | task 168 | processing task, is_child = 0
+0.25.663.430 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.25.701.236 I slot process_mtmd: id  0 | task 168 | mtmd feat-cache HIT, chunk idx = 10
+0.25.709.150 I slot      release: id  0 | task 168 | stop processing: n_tokens = 37, truncated = 0
+0.25.709.171 I srv  update_slots: all slots are idle
+0.25.822.628 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.159 (> 0.100 thold), f_keep = 0.270
+0.25.822.635 I slot launch_slot_: id  0 | task 170 | processing task, is_child = 0
+0.25.822.687 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.25.879.486 I slot process_mtmd: id  0 | task 170 | mtmd feat-cache HIT, chunk idx = 10
+0.25.888.103 I slot      release: id  0 | task 170 | stop processing: n_tokens = 63, truncated = 0
+0.25.888.118 I srv  update_slots: all slots are idle
+0.25.993.090 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.270 (> 0.100 thold), f_keep = 0.159
+0.25.993.099 I slot launch_slot_: id  0 | task 172 | processing task, is_child = 0
+0.25.993.156 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.26.031.402 I slot process_mtmd: id  0 | task 172 | mtmd feat-cache HIT, chunk idx = 10
+0.26.039.496 I slot      release: id  0 | task 172 | stop processing: n_tokens = 37, truncated = 0
+0.26.039.519 I srv  update_slots: all slots are idle
+0.26.084.247 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.270 (> 0.100 thold), f_keep = 0.270
+0.26.084.254 I slot launch_slot_: id  0 | task 174 | processing task, is_child = 0
+0.26.084.307 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.26.122.287 I slot process_mtmd: id  0 | task 174 | mtmd feat-cache HIT, chunk idx = 10
+0.26.130.199 I slot      release: id  0 | task 174 | stop processing: n_tokens = 37, truncated = 0
+0.26.130.216 I srv  update_slots: all slots are idle
+0.26.174.288 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.200 (> 0.100 thold), f_keep = 0.270
+0.26.174.297 I slot launch_slot_: id  0 | task 176 | processing task, is_child = 0
+0.26.174.354 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.26.220.129 I slot process_mtmd: id  0 | task 176 | mtmd feat-cache HIT, chunk idx = 10
+0.26.228.106 I slot      release: id  0 | task 176 | stop processing: n_tokens = 50, truncated = 0
+0.26.228.127 I srv  update_slots: all slots are idle
+0.26.268.444 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.200 (> 0.100 thold), f_keep = 0.200
+0.26.268.450 I slot launch_slot_: id  0 | task 178 | processing task, is_child = 0
+0.26.268.511 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.26.313.544 I slot process_mtmd: id  0 | task 178 | mtmd feat-cache HIT, chunk idx = 10
+0.26.322.028 I slot      release: id  0 | task 178 | stop processing: n_tokens = 50, truncated = 0
+0.26.322.045 I srv  update_slots: all slots are idle
+0.26.369.395 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.159 (> 0.100 thold), f_keep = 0.200
+0.26.369.403 I slot launch_slot_: id  0 | task 180 | processing task, is_child = 0
+0.26.369.460 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.26.423.591 I slot process_mtmd: id  0 | task 180 | mtmd feat-cache HIT, chunk idx = 10
+0.26.431.527 I slot      release: id  0 | task 180 | stop processing: n_tokens = 63, truncated = 0
+0.26.431.600 I srv  update_slots: all slots are idle
+0.26.516.199 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.200 (> 0.100 thold), f_keep = 0.159
+0.26.516.206 I slot launch_slot_: id  0 | task 182 | processing task, is_child = 0
+0.26.516.263 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.26.559.095 I slot process_mtmd: id  0 | task 182 | mtmd feat-cache HIT, chunk idx = 10
+0.26.566.988 I slot      release: id  0 | task 182 | stop processing: n_tokens = 50, truncated = 0
+0.26.567.002 I srv  update_slots: all slots are idle
+0.26.728.599 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.200 (> 0.100 thold), f_keep = 0.200
+0.26.728.608 I slot launch_slot_: id  0 | task 184 | processing task, is_child = 0
+0.26.728.664 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.26.771.730 I slot process_mtmd: id  0 | task 184 | mtmd feat-cache HIT, chunk idx = 10
+0.26.779.371 I slot      release: id  0 | task 184 | stop processing: n_tokens = 50, truncated = 0
+0.26.779.387 I srv  update_slots: all slots are idle
+0.26.840.347 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.200 (> 0.100 thold), f_keep = 0.200
+0.26.840.355 I slot launch_slot_: id  0 | task 186 | processing task, is_child = 0
+0.26.840.411 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.26.884.971 I slot process_mtmd: id  0 | task 186 | mtmd feat-cache HIT, chunk idx = 10
+0.26.892.603 I slot      release: id  0 | task 186 | stop processing: n_tokens = 50, truncated = 0
+0.26.892.618 I srv  update_slots: all slots are idle
+0.26.934.029 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.270 (> 0.100 thold), f_keep = 0.200
+0.26.934.040 I slot launch_slot_: id  0 | task 188 | processing task, is_child = 0
+0.26.934.101 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.26.973.289 I slot process_mtmd: id  0 | task 188 | mtmd feat-cache HIT, chunk idx = 10
+0.26.980.812 I slot      release: id  0 | task 188 | stop processing: n_tokens = 37, truncated = 0
+0.26.980.826 I srv  update_slots: all slots are idle
+0.27.010.142 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.200 (> 0.100 thold), f_keep = 0.270
+0.27.010.150 I slot launch_slot_: id  0 | task 190 | processing task, is_child = 0
+0.27.010.221 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.27.060.689 I slot process_mtmd: id  0 | task 190 | mtmd feat-cache HIT, chunk idx = 10
+0.27.068.361 I slot      release: id  0 | task 190 | stop processing: n_tokens = 50, truncated = 0
+0.27.068.376 I srv  update_slots: all slots are idle
+0.27.095.457 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.159 (> 0.100 thold), f_keep = 0.200
+0.27.095.466 I slot launch_slot_: id  0 | task 192 | processing task, is_child = 0
+0.27.095.522 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.27.154.385 I slot process_mtmd: id  0 | task 192 | mtmd feat-cache HIT, chunk idx = 10
+0.27.162.178 I slot      release: id  0 | task 192 | stop processing: n_tokens = 63, truncated = 0
+0.27.162.194 I srv  update_slots: all slots are idle
+0.27.331.885 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.112 (> 0.100 thold), f_keep = 0.159
+0.27.331.894 I slot launch_slot_: id  0 | task 194 | processing task, is_child = 0
+0.27.331.952 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.27.401.653 I slot process_mtmd: id  0 | task 194 | mtmd feat-cache HIT, chunk idx = 10
+0.27.409.752 I slot      release: id  0 | task 194 | stop processing: n_tokens = 89, truncated = 0
+0.27.409.769 I srv  update_slots: all slots are idle
+0.27.442.527 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.270 (> 0.100 thold), f_keep = 0.112
+0.27.442.536 I slot launch_slot_: id  0 | task 196 | processing task, is_child = 0
+0.27.442.591 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.27.483.659 I slot process_mtmd: id  0 | task 196 | mtmd feat-cache HIT, chunk idx = 10
+0.27.490.973 I slot      release: id  0 | task 196 | stop processing: n_tokens = 37, truncated = 0
+0.27.490.988 I srv  update_slots: all slots are idle
+0.27.555.999 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.270 (> 0.100 thold), f_keep = 0.270
+0.27.556.007 I slot launch_slot_: id  0 | task 198 | processing task, is_child = 0
+0.27.556.062 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.27.593.375 I slot process_mtmd: id  0 | task 198 | mtmd feat-cache HIT, chunk idx = 10
+0.27.600.707 I slot      release: id  0 | task 198 | stop processing: n_tokens = 37, truncated = 0
+0.27.600.719 I srv  update_slots: all slots are idle
+0.27.650.957 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.200 (> 0.100 thold), f_keep = 0.270
+0.27.650.967 I slot launch_slot_: id  0 | task 200 | processing task, is_child = 0
+0.27.651.022 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.27.695.998 I slot process_mtmd: id  0 | task 200 | mtmd feat-cache HIT, chunk idx = 10
+0.27.703.779 I slot      release: id  0 | task 200 | stop processing: n_tokens = 50, truncated = 0
+0.27.703.793 I srv  update_slots: all slots are idle
+0.27.827.267 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.200 (> 0.100 thold), f_keep = 0.200
+0.27.827.275 I slot launch_slot_: id  0 | task 202 | processing task, is_child = 0
+0.27.827.331 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.27.871.388 I slot process_mtmd: id  0 | task 202 | mtmd feat-cache HIT, chunk idx = 10
+0.27.879.035 I slot      release: id  0 | task 202 | stop processing: n_tokens = 50, truncated = 0
+0.27.879.054 I srv  update_slots: all slots are idle
+0.27.916.092 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.159 (> 0.100 thold), f_keep = 0.200
+0.27.916.101 I slot launch_slot_: id  0 | task 204 | processing task, is_child = 0
+0.27.916.157 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.27.971.552 I slot process_mtmd: id  0 | task 204 | mtmd feat-cache HIT, chunk idx = 10
+0.27.979.248 I slot      release: id  0 | task 204 | stop processing: n_tokens = 63, truncated = 0
+0.27.979.268 I srv  update_slots: all slots are idle
+0.28.016.689 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.200 (> 0.100 thold), f_keep = 0.159
+0.28.016.697 I slot launch_slot_: id  0 | task 206 | processing task, is_child = 0
+0.28.016.755 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.28.060.753 I slot process_mtmd: id  0 | task 206 | mtmd feat-cache HIT, chunk idx = 10
+0.28.068.154 I slot      release: id  0 | task 206 | stop processing: n_tokens = 50, truncated = 0
+0.28.068.167 I srv  update_slots: all slots are idle
+0.28.092.113 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.200 (> 0.100 thold), f_keep = 0.200
+0.28.092.121 I slot launch_slot_: id  0 | task 208 | processing task, is_child = 0
+0.28.092.175 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.28.138.698 I slot process_mtmd: id  0 | task 208 | mtmd feat-cache HIT, chunk idx = 10
+0.28.145.860 I slot      release: id  0 | task 208 | stop processing: n_tokens = 50, truncated = 0
+0.28.145.874 I srv  update_slots: all slots are idle
+0.28.262.868 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.159 (> 0.100 thold), f_keep = 0.200
+0.28.262.876 I slot launch_slot_: id  0 | task 210 | processing task, is_child = 0
+0.28.262.933 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.28.318.191 I slot process_mtmd: id  0 | task 210 | mtmd feat-cache HIT, chunk idx = 10
+0.28.325.766 I slot      release: id  0 | task 210 | stop processing: n_tokens = 63, truncated = 0
+0.28.325.780 I srv  update_slots: all slots are idle
+0.28.365.362 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 98990782181
+0.28.365.371 I slot launch_slot_: id  0 | task 212 | processing task, is_child = 0
+0.28.365.436 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.28.452.779 I slot process_mtmd: id  0 | task 212 | mtmd feat-cache HIT, chunk idx = 10
+0.28.461.157 I slot      release: id  0 | task 212 | stop processing: n_tokens = 102, truncated = 0
+0.28.461.175 I srv  update_slots: all slots are idle
+0.28.484.626 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.159 (> 0.100 thold), f_keep = 0.098
+0.28.484.633 I slot launch_slot_: id  0 | task 214 | processing task, is_child = 0
+0.28.484.699 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.28.544.220 I slot process_mtmd: id  0 | task 214 | mtmd feat-cache HIT, chunk idx = 10
+0.28.551.517 I slot      release: id  0 | task 214 | stop processing: n_tokens = 63, truncated = 0
+0.28.551.533 I srv  update_slots: all slots are idle
+0.28.571.841 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.159 (> 0.100 thold), f_keep = 0.159
+0.28.571.849 I slot launch_slot_: id  0 | task 216 | processing task, is_child = 0
+0.28.571.908 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.28.634.997 I slot process_mtmd: id  0 | task 216 | mtmd feat-cache HIT, chunk idx = 10
+0.28.642.947 I slot      release: id  0 | task 216 | stop processing: n_tokens = 63, truncated = 0
+0.28.642.963 I srv  update_slots: all slots are idle
+0.28.669.095 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.159 (> 0.100 thold), f_keep = 0.159
+0.28.669.102 I slot launch_slot_: id  0 | task 218 | processing task, is_child = 0
+0.28.669.158 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.28.724.222 I slot process_mtmd: id  0 | task 218 | mtmd feat-cache HIT, chunk idx = 10
+0.28.732.081 I slot      release: id  0 | task 218 | stop processing: n_tokens = 63, truncated = 0
+0.28.732.098 I srv  update_slots: all slots are idle
+0.28.767.011 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.200 (> 0.100 thold), f_keep = 0.159
+0.28.767.018 I slot launch_slot_: id  0 | task 220 | processing task, is_child = 0
+0.28.767.076 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.28.812.756 I slot process_mtmd: id  0 | task 220 | mtmd feat-cache HIT, chunk idx = 10
+0.28.820.644 I slot      release: id  0 | task 220 | stop processing: n_tokens = 50, truncated = 0
+0.28.820.660 I srv  update_slots: all slots are idle
+0.28.840.712 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.200 (> 0.100 thold), f_keep = 0.200
+0.28.840.719 I slot launch_slot_: id  0 | task 222 | processing task, is_child = 0
+0.28.840.775 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.28.886.078 I slot process_mtmd: id  0 | task 222 | mtmd feat-cache HIT, chunk idx = 10
+0.28.893.427 I slot      release: id  0 | task 222 | stop processing: n_tokens = 50, truncated = 0
+0.28.893.443 I srv  update_slots: all slots are idle
+0.28.948.554 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.270 (> 0.100 thold), f_keep = 0.200
+0.28.948.561 I slot launch_slot_: id  0 | task 224 | processing task, is_child = 0
+0.28.948.618 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.28.985.480 I slot process_mtmd: id  0 | task 224 | mtmd feat-cache HIT, chunk idx = 10
+0.28.992.492 I slot      release: id  0 | task 224 | stop processing: n_tokens = 37, truncated = 0
+0.28.992.507 I srv  update_slots: all slots are idle
+0.29.021.112 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.159 (> 0.100 thold), f_keep = 0.270
+0.29.021.120 I slot launch_slot_: id  0 | task 226 | processing task, is_child = 0
+0.29.021.176 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.29.095.313 I slot process_mtmd: id  0 | task 226 | mtmd feat-cache HIT, chunk idx = 10
+0.29.104.780 I slot      release: id  0 | task 226 | stop processing: n_tokens = 63, truncated = 0
+0.29.104.799 I srv  update_slots: all slots are idle
+0.29.269.333 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.200 (> 0.100 thold), f_keep = 0.159
+0.29.269.342 I slot launch_slot_: id  0 | task 228 | processing task, is_child = 0
+0.29.269.400 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.29.316.103 I slot process_mtmd: id  0 | task 228 | mtmd feat-cache HIT, chunk idx = 10
+0.29.323.798 I slot      release: id  0 | task 228 | stop processing: n_tokens = 50, truncated = 0
+0.29.323.813 I srv  update_slots: all slots are idle
+0.29.496.688 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.159 (> 0.100 thold), f_keep = 0.200
+0.29.496.695 I slot launch_slot_: id  0 | task 230 | processing task, is_child = 0
+0.29.496.750 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.29.554.363 I slot process_mtmd: id  0 | task 230 | mtmd feat-cache HIT, chunk idx = 10
+0.29.562.499 I slot      release: id  0 | task 230 | stop processing: n_tokens = 63, truncated = 0
+0.29.562.516 I srv  update_slots: all slots are idle
+0.29.621.638 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.200 (> 0.100 thold), f_keep = 0.159
+0.29.621.646 I slot launch_slot_: id  0 | task 232 | processing task, is_child = 0
+0.29.621.701 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.29.666.553 I slot process_mtmd: id  0 | task 232 | mtmd feat-cache HIT, chunk idx = 10
+0.29.674.328 I slot      release: id  0 | task 232 | stop processing: n_tokens = 50, truncated = 0
+0.29.674.343 I srv  update_slots: all slots are idle
+0.29.816.325 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.132 (> 0.100 thold), f_keep = 0.200
+0.29.816.333 I slot launch_slot_: id  0 | task 234 | processing task, is_child = 0
+0.29.816.392 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.29.879.215 I slot process_mtmd: id  0 | task 234 | mtmd feat-cache HIT, chunk idx = 10
+0.29.887.363 I slot      release: id  0 | task 234 | stop processing: n_tokens = 76, truncated = 0
+0.29.887.378 I srv  update_slots: all slots are idle
+0.30.010.008 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.200 (> 0.100 thold), f_keep = 0.132
+0.30.010.015 I slot launch_slot_: id  0 | task 236 | processing task, is_child = 0
+0.30.010.070 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.30.054.576 I slot process_mtmd: id  0 | task 236 | mtmd feat-cache HIT, chunk idx = 10
+0.30.062.125 I slot      release: id  0 | task 236 | stop processing: n_tokens = 50, truncated = 0
+0.30.062.140 I srv  update_slots: all slots are idle
+0.30.117.312 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.200 (> 0.100 thold), f_keep = 0.200
+0.30.117.318 I slot launch_slot_: id  0 | task 238 | processing task, is_child = 0
+0.30.117.378 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.30.162.886 I slot process_mtmd: id  0 | task 238 | mtmd feat-cache HIT, chunk idx = 10
+0.30.170.653 I slot      release: id  0 | task 238 | stop processing: n_tokens = 50, truncated = 0
+0.30.170.669 I srv  update_slots: all slots are idle
+0.30.206.946 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.159 (> 0.100 thold), f_keep = 0.200
+0.30.206.954 I slot launch_slot_: id  0 | task 240 | processing task, is_child = 0
+0.30.207.007 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.30.264.605 I slot process_mtmd: id  0 | task 240 | mtmd feat-cache HIT, chunk idx = 10
+0.30.272.207 I slot      release: id  0 | task 240 | stop processing: n_tokens = 63, truncated = 0
+0.30.272.231 I srv  update_slots: all slots are idle
+0.30.715.862 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.200 (> 0.100 thold), f_keep = 0.159
+0.30.715.869 I slot launch_slot_: id  0 | task 242 | processing task, is_child = 0
+0.30.715.931 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.30.761.619 I slot process_mtmd: id  0 | task 242 | mtmd feat-cache HIT, chunk idx = 10
+0.30.769.219 I slot      release: id  0 | task 242 | stop processing: n_tokens = 50, truncated = 0
+0.30.769.233 I srv  update_slots: all slots are idle
+0.30.794.753 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.200 (> 0.100 thold), f_keep = 0.200
+0.30.794.764 I slot launch_slot_: id  0 | task 244 | processing task, is_child = 0
+0.30.794.824 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.30.841.509 I slot process_mtmd: id  0 | task 244 | mtmd feat-cache HIT, chunk idx = 10
+0.30.849.313 I slot      release: id  0 | task 244 | stop processing: n_tokens = 50, truncated = 0
+0.30.849.328 I srv  update_slots: all slots are idle
+0.30.929.877 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.132 (> 0.100 thold), f_keep = 0.200
+0.30.929.886 I slot launch_slot_: id  0 | task 246 | processing task, is_child = 0
+0.30.929.943 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.30.994.316 I slot process_mtmd: id  0 | task 246 | mtmd feat-cache HIT, chunk idx = 10
+0.31.002.333 I slot      release: id  0 | task 246 | stop processing: n_tokens = 76, truncated = 0
+0.31.002.346 I srv  update_slots: all slots are idle
+0.31.242.743 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.159 (> 0.100 thold), f_keep = 0.132
+0.31.242.751 I slot launch_slot_: id  0 | task 248 | processing task, is_child = 0
+0.31.242.806 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.31.297.793 I slot process_mtmd: id  0 | task 248 | mtmd feat-cache HIT, chunk idx = 10
+0.31.305.495 I slot      release: id  0 | task 248 | stop processing: n_tokens = 63, truncated = 0
+0.31.305.508 I srv  update_slots: all slots are idle
+0.31.340.477 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.270 (> 0.100 thold), f_keep = 0.159
+0.31.340.484 I slot launch_slot_: id  0 | task 250 | processing task, is_child = 0
+0.31.340.542 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.31.381.407 I slot process_mtmd: id  0 | task 250 | mtmd feat-cache HIT, chunk idx = 10
+0.31.388.918 I slot      release: id  0 | task 250 | stop processing: n_tokens = 37, truncated = 0
+0.31.388.933 I srv  update_slots: all slots are idle
+0.31.432.728 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.132 (> 0.100 thold), f_keep = 0.270
+0.31.432.735 I slot launch_slot_: id  0 | task 252 | processing task, is_child = 0
+0.31.432.801 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.31.497.738 I slot process_mtmd: id  0 | task 252 | mtmd feat-cache HIT, chunk idx = 10
+0.31.505.448 I slot      release: id  0 | task 252 | stop processing: n_tokens = 76, truncated = 0
+0.31.505.462 I srv  update_slots: all slots are idle
+0.31.640.017 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.132 (> 0.100 thold), f_keep = 0.132
+0.31.640.024 I slot launch_slot_: id  0 | task 254 | processing task, is_child = 0
+0.31.640.082 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.31.707.334 I slot process_mtmd: id  0 | task 254 | mtmd feat-cache HIT, chunk idx = 10
+0.31.715.552 I slot      release: id  0 | task 254 | stop processing: n_tokens = 76, truncated = 0
+0.31.715.573 I srv  update_slots: all slots are idle
+0.31.776.383 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.159 (> 0.100 thold), f_keep = 0.132
+0.31.776.392 I slot launch_slot_: id  0 | task 256 | processing task, is_child = 0
+0.31.776.449 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.31.832.214 I slot process_mtmd: id  0 | task 256 | mtmd feat-cache HIT, chunk idx = 10
+0.31.839.502 I slot      release: id  0 | task 256 | stop processing: n_tokens = 63, truncated = 0
+0.31.839.523 I srv  update_slots: all slots are idle
+0.31.867.777 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.200 (> 0.100 thold), f_keep = 0.159
+0.31.867.785 I slot launch_slot_: id  0 | task 258 | processing task, is_child = 0
+0.31.867.849 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.31.917.469 I slot process_mtmd: id  0 | task 258 | mtmd feat-cache HIT, chunk idx = 10
+0.31.926.009 I slot      release: id  0 | task 258 | stop processing: n_tokens = 50, truncated = 0
+0.31.926.024 I srv  update_slots: all slots are idle
+0.32.096.501 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.159 (> 0.100 thold), f_keep = 0.200
+0.32.096.509 I slot launch_slot_: id  0 | task 260 | processing task, is_child = 0
+0.32.096.564 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.32.152.733 I slot process_mtmd: id  0 | task 260 | mtmd feat-cache HIT, chunk idx = 10
+0.32.160.544 I slot      release: id  0 | task 260 | stop processing: n_tokens = 63, truncated = 0
+0.32.160.561 I srv  update_slots: all slots are idle
+0.32.191.407 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.132 (> 0.100 thold), f_keep = 0.159
+0.32.191.415 I slot launch_slot_: id  0 | task 262 | processing task, is_child = 0
+0.32.191.489 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.32.268.257 I slot process_mtmd: id  0 | task 262 | mtmd feat-cache HIT, chunk idx = 10
+0.32.277.615 I slot      release: id  0 | task 262 | stop processing: n_tokens = 76, truncated = 0
+0.32.277.632 I srv  update_slots: all slots are idle
+0.32.305.047 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.159 (> 0.100 thold), f_keep = 0.132
+0.32.305.056 I slot launch_slot_: id  0 | task 264 | processing task, is_child = 0
+0.32.305.118 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.32.365.901 I slot process_mtmd: id  0 | task 264 | mtmd feat-cache HIT, chunk idx = 10
+0.32.374.434 I slot      release: id  0 | task 264 | stop processing: n_tokens = 63, truncated = 0
+0.32.374.451 I srv  update_slots: all slots are idle
+0.32.507.006 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.200 (> 0.100 thold), f_keep = 0.159
+0.32.507.014 I slot launch_slot_: id  0 | task 266 | processing task, is_child = 0
+0.32.507.073 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.32.554.886 I slot process_mtmd: id  0 | task 266 | mtmd feat-cache HIT, chunk idx = 10
+0.32.562.875 I slot      release: id  0 | task 266 | stop processing: n_tokens = 50, truncated = 0
+0.32.562.890 I srv  update_slots: all slots are idle
+0.32.642.767 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.132 (> 0.100 thold), f_keep = 0.200
+0.32.642.776 I slot launch_slot_: id  0 | task 268 | processing task, is_child = 0
+0.32.642.842 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.32.716.638 I slot process_mtmd: id  0 | task 268 | mtmd feat-cache HIT, chunk idx = 10
+0.32.725.995 I slot      release: id  0 | task 268 | stop processing: n_tokens = 76, truncated = 0
+0.32.726.016 I srv  update_slots: all slots are idle
+0.32.817.388 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.112 (> 0.100 thold), f_keep = 0.132
+0.32.817.396 I slot launch_slot_: id  0 | task 270 | processing task, is_child = 0
+0.32.817.464 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.32.894.777 I slot process_mtmd: id  0 | task 270 | mtmd feat-cache HIT, chunk idx = 10
+0.32.903.571 I slot      release: id  0 | task 270 | stop processing: n_tokens = 89, truncated = 0
+0.32.903.591 I srv  update_slots: all slots are idle
+0.33.018.617 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.200 (> 0.100 thold), f_keep = 0.112
+0.33.018.625 I slot launch_slot_: id  0 | task 272 | processing task, is_child = 0
+0.33.018.710 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.33.067.877 I slot process_mtmd: id  0 | task 272 | mtmd feat-cache HIT, chunk idx = 10
+0.33.076.352 I slot      release: id  0 | task 272 | stop processing: n_tokens = 50, truncated = 0
+0.33.076.369 I srv  update_slots: all slots are idle
+0.33.109.239 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.270 (> 0.100 thold), f_keep = 0.200
+0.33.109.246 I slot launch_slot_: id  0 | task 274 | processing task, is_child = 0
+0.33.109.308 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.33.164.884 I slot process_mtmd: id  0 | task 274 | mtmd feat-cache HIT, chunk idx = 10
+0.33.172.639 I slot      release: id  0 | task 274 | stop processing: n_tokens = 37, truncated = 0
+0.33.172.655 I srv  update_slots: all slots are idle
+0.33.255.215 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.270 (> 0.100 thold), f_keep = 0.270
+0.33.255.224 I slot launch_slot_: id  0 | task 276 | processing task, is_child = 0
+0.33.255.284 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.33.294.159 I slot process_mtmd: id  0 | task 276 | mtmd feat-cache HIT, chunk idx = 10
+0.33.301.606 I slot      release: id  0 | task 276 | stop processing: n_tokens = 37, truncated = 0
+0.33.301.622 I srv  update_slots: all slots are idle
+0.33.325.998 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.250 (> 0.100 thold), f_keep = 0.054
+0.33.326.007 I slot launch_slot_: id  0 | task 278 | processing task, is_child = 0
+0.33.355.526 I slot      release: id  0 | task 278 | stop processing: n_tokens = 8, truncated = 0
+0.33.355.545 I srv  update_slots: all slots are idle
+0.33.532.312 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.875 (> 0.100 thold), f_keep = 0.875
+0.33.532.323 I slot launch_slot_: id  0 | task 280 | processing task, is_child = 0
+0.33.547.574 I slot      release: id  0 | task 280 | stop processing: n_tokens = 8, truncated = 0
+0.33.547.603 I srv  update_slots: all slots are idle
+0.33.581.903 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.875 (> 0.100 thold), f_keep = 0.875
+0.33.581.914 I slot launch_slot_: id  0 | task 282 | processing task, is_child = 0
+0.33.591.995 I slot      release: id  0 | task 282 | stop processing: n_tokens = 8, truncated = 0
+0.33.592.009 I srv  update_slots: all slots are idle
+0.33.692.827 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.875 (> 0.100 thold), f_keep = 0.875
+0.33.692.837 I slot launch_slot_: id  0 | task 284 | processing task, is_child = 0
+0.33.700.523 I slot      release: id  0 | task 284 | stop processing: n_tokens = 8, truncated = 0
+0.33.700.532 I srv  update_slots: all slots are idle
+0.33.728.978 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.875 (> 0.100 thold), f_keep = 0.875
+0.33.728.987 I slot launch_slot_: id  0 | task 286 | processing task, is_child = 0
+0.33.736.629 I slot      release: id  0 | task 286 | stop processing: n_tokens = 8, truncated = 0
+0.33.736.649 I srv  update_slots: all slots are idle
+0.33.810.797 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.875 (> 0.100 thold), f_keep = 0.875
+0.33.810.806 I slot launch_slot_: id  0 | task 288 | processing task, is_child = 0
+0.33.818.127 I slot      release: id  0 | task 288 | stop processing: n_tokens = 8, truncated = 0
+0.33.818.136 I srv  update_slots: all slots are idle
+0.34.178.808 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.875 (> 0.100 thold), f_keep = 0.875
+0.34.178.819 I slot launch_slot_: id  0 | task 290 | processing task, is_child = 0
+0.34.186.498 I slot      release: id  0 | task 290 | stop processing: n_tokens = 8, truncated = 0
+0.34.186.515 I srv  update_slots: all slots are idle
+0.34.314.358 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.778 (> 0.100 thold), f_keep = 0.875
+0.34.314.379 I slot launch_slot_: id  0 | task 292 | processing task, is_child = 0
+0.34.332.746 I slot      release: id  0 | task 292 | stop processing: n_tokens = 9, truncated = 0
+0.34.332.762 I srv  update_slots: all slots are idle
+0.34.592.945 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.875 (> 0.100 thold), f_keep = 0.778
+0.34.592.964 I slot launch_slot_: id  0 | task 294 | processing task, is_child = 0
+0.34.608.841 I slot      release: id  0 | task 294 | stop processing: n_tokens = 8, truncated = 0
+0.34.608.856 I srv  update_slots: all slots are idle
+0.35.011.057 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.875 (> 0.100 thold), f_keep = 0.875
+0.35.011.068 I slot launch_slot_: id  0 | task 296 | processing task, is_child = 0
+0.35.020.521 I slot      release: id  0 | task 296 | stop processing: n_tokens = 8, truncated = 0
+0.35.020.530 I srv  update_slots: all slots are idle
+0.35.104.031 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.875 (> 0.100 thold), f_keep = 0.875
+0.35.104.040 I slot launch_slot_: id  0 | task 298 | processing task, is_child = 0
+0.35.111.851 I slot      release: id  0 | task 298 | stop processing: n_tokens = 8, truncated = 0
+0.35.111.860 I srv  update_slots: all slots are idle
+0.35.137.676 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.875 (> 0.100 thold), f_keep = 0.875
+0.35.137.685 I slot launch_slot_: id  0 | task 300 | processing task, is_child = 0
+0.35.145.879 I slot      release: id  0 | task 300 | stop processing: n_tokens = 8, truncated = 0
+0.35.145.890 I srv  update_slots: all slots are idle
+0.35.171.864 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.875 (> 0.100 thold), f_keep = 0.875
+0.35.171.875 I slot launch_slot_: id  0 | task 302 | processing task, is_child = 0
+0.35.180.026 I slot      release: id  0 | task 302 | stop processing: n_tokens = 8, truncated = 0
+0.35.180.044 I srv  update_slots: all slots are idle
+0.35.316.495 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.875 (> 0.100 thold), f_keep = 0.875
+0.35.316.508 I slot launch_slot_: id  0 | task 304 | processing task, is_child = 0
+0.35.325.459 I slot      release: id  0 | task 304 | stop processing: n_tokens = 8, truncated = 0
+0.35.325.475 I srv  update_slots: all slots are idle
+0.35.387.123 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.875 (> 0.100 thold), f_keep = 0.875
+0.35.387.136 I slot launch_slot_: id  0 | task 306 | processing task, is_child = 0
+0.35.394.951 I slot      release: id  0 | task 306 | stop processing: n_tokens = 8, truncated = 0
+0.35.394.961 I srv  update_slots: all slots are idle
+0.35.507.966 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.875 (> 0.100 thold), f_keep = 0.875
+0.35.507.984 I slot launch_slot_: id  0 | task 308 | processing task, is_child = 0
+0.35.515.888 I slot      release: id  0 | task 308 | stop processing: n_tokens = 8, truncated = 0
+0.35.515.900 I srv  update_slots: all slots are idle
+0.35.610.336 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.875 (> 0.100 thold), f_keep = 0.875
+0.35.610.346 I slot launch_slot_: id  0 | task 310 | processing task, is_child = 0
+0.35.617.925 I slot      release: id  0 | task 310 | stop processing: n_tokens = 8, truncated = 0
+0.35.617.943 I srv  update_slots: all slots are idle
+0.35.906.946 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.875 (> 0.100 thold), f_keep = 0.875
+0.35.906.958 I slot launch_slot_: id  0 | task 312 | processing task, is_child = 0
+0.35.914.549 I slot      release: id  0 | task 312 | stop processing: n_tokens = 8, truncated = 0
+0.35.914.560 I srv  update_slots: all slots are idle
+0.37.814.635 I srv    operator(): operator(): cleaning up before exit...

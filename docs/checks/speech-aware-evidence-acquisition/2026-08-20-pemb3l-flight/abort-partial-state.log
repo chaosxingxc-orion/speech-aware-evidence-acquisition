@@ -1,0 +1,37 @@
+start: 2026-08-20T06:42:23Z
+=== resident servers / ports / GPU ===
+  (none resident)
+  (neither 8080 nor 8093 bound)
+114 MiB, 2 %
+
+=== attempt files ===
+  attempt-20260820T062543Z-e91099.json
+    state: ABORTED
+    reserved: {"audio_seconds": 600.0, "calls": 234}
+    actual: {"audio_seconds": 364.51887503599966, "calls": 156, "gpu_seconds": 0.0}
+    failure_reason: P-EMB-3L sweep aborted: RuntimeError: teardown failed: pid 6099 alive=True, port 8093 reachable=False -- refusing to spawn the next session on top of a resident server (fail-closed)
+
+=== prior durable spend for the run (every state counts) ===
+  prior calls=156 audio_seconds=364.519
+  a fresh attempt flying ONLY l3 (78 / 182.259) would total 234 calls / 546.778 audio-s
+  plan ceiling 234 / 600 ; registered ceiling 260 / 600
+
+=== arm manifests on the data root (structural) ===
+  l1-last-bare: run_id='SAEA-PROBE-pemb3l-234/l1-last-bare' entries=78 by_kind={'audio': 60, 'text': 18} dims=2048 npy_present=78/78 distinct_sha256=78
+  l2-last-instruct: run_id='SAEA-PROBE-pemb3l-234/l2-last-instruct' entries=78 by_kind={'audio': 60, 'text': 18} dims=2048 npy_present=78/78 distinct_sha256=78
+  l3-mean-instruct: MANIFEST ABSENT (not yet flown)
+
+=== attempt-1 run dir (vector caches available for replay) ===
+  /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-pemb3l-234/attempt-20260820T062543Z-e91099/
+    total 7172
+    drwxrwxrwx 1 chao chao    4096 Aug 20 02:39 .
+    drwxrwxrwx 1 chao chao    4096 Aug 20 02:25 ..
+    -rwxrwxrwx 1 chao chao    4404 Aug 20 02:25 SAEA-PROBE-pemb3l-234.config-values.json
+    -rwxrwxrwx 1 chao chao     563 Aug 20 02:25 SAEA-PROBE-pemb3l-234.plan.json
+    -rwxrwxrwx 1 chao chao    1687 Aug 20 02:38 SAEA-PROBE-pemb3l-234.session-last.receipt.json
+    -rwxrwxrwx 1 chao chao   81301 Aug 20 02:38 SAEA-PROBE-pemb3l-234.session-last.server.log
+    -rwxrwxrwx 1 chao chao   37716 Aug 20 02:39 contacts.json
+    -rwxrwxrwx 1 chao chao    4058 Aug 20 02:39 flight-receipt.json
+    -rwxrwxrwx 1 chao chao 3595021 Aug 20 02:38 vectors-l1-last-bare.jsonl
+    -rwxrwxrwx 1 chao chao 3606781 Aug 20 02:38 vectors-l2-last-instruct.jsonl
+PARTIAL-STATE DONE

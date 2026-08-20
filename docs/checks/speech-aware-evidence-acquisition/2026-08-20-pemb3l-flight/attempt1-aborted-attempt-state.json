@@ -1,0 +1,17 @@
+{
+  "actual": {
+    "audio_seconds": 364.51887503599966,
+    "calls": 156,
+    "gpu_seconds": 0.0
+  },
+  "attempt_id": "attempt-20260820T062543Z-e91099",
+  "carrier_lock_key": "slurp",
+  "failure_reason": "P-EMB-3L sweep aborted: RuntimeError: teardown failed: pid 6099 alive=True, port 8093 reachable=False -- refusing to spawn the next session on top of a resident server (fail-closed)",
+  "reserved": {
+    "audio_seconds": 600.0,
+    "calls": 234
+  },
+  "run_id": "SAEA-PROBE-pemb3l-234",
+  "schema": "saea-attempt-v1",
+  "state": "ABORTED"
+}

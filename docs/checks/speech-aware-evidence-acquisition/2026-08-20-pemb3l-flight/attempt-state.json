@@ -1,0 +1,16 @@
+{
+  "actual": {
+    "audio_seconds": 182.25943751799974,
+    "calls": 78,
+    "gpu_seconds": 22.5771324634552
+  },
+  "attempt_id": "attempt-20260820T065009Z-1361ad",
+  "carrier_lock_key": "slurp",
+  "reserved": {
+    "audio_seconds": 600.0,
+    "calls": 234
+  },
+  "run_id": "SAEA-PROBE-pemb3l-234",
+  "schema": "saea-attempt-v1",
+  "state": "FINALIZED"
+}

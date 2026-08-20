@@ -1,0 +1,38 @@
+start: 2026-08-20T05:42:34Z
+load average: 0.93 2.58 2.66 1/393 606
+=== the failing test, 5 consecutive isolated runs ===
+--- run 1 ---
+.                                                                        [100%]
+1 passed in 2.98s
+run 1 exit: 0
+--- run 2 ---
+.                                                                        [100%]
+1 passed in 3.00s
+run 2 exit: 0
+--- run 3 ---
+.                                                                        [100%]
+1 passed in 3.04s
+run 3 exit: 0
+--- run 4 ---
+.                                                                        [100%]
+1 passed in 2.91s
+run 4 exit: 0
+--- run 5 ---
+.                                                                        [100%]
+1 passed in 22.08s
+run 5 exit: 0
+=== the whole spawn class ===
+.......                                                                  [100%]
+7 passed in 30.87s
+class exit: 0
+=== the whole session module ===
+...............................................ssssss................... [ 91%]
+.......                                                                  [100%]
+73 passed, 6 skipped in 37.23s
+module exit: 0
+=== the machinery this flight actually drives ===
+........................................................................ [ 83%]
+..............                                                           [100%]
+86 passed in 53.78s
+machinery exit: 0
+end: 2026-08-20T05:45:26Z

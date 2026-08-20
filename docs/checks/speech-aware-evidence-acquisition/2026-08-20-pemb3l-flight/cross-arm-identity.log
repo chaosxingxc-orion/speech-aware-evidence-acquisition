@@ -1,0 +1,27 @@
+start: 2026-08-20T06:56:03Z
+=== per-arm entry counts by kind ===
+  l1-last-bare: {'audio': 60, 'text': 18}
+  l2-last-instruct: {'audio': 60, 'text': 18}
+  l3-mean-instruct: {'audio': 60, 'text': 18}
+
+=== pairwise byte identity, SPLIT BY KIND (same contact_id compared) ===
+  l1-last-bare  vs  l2-last-instruct
+    audio vectors byte-identical: 0/60
+    text  vectors byte-identical: 0/18
+  l1-last-bare  vs  l3-mean-instruct
+    audio vectors byte-identical: 0/60
+    text  vectors byte-identical: 0/18
+  l2-last-instruct  vs  l3-mean-instruct
+    audio vectors byte-identical: 60/60
+    text  vectors byte-identical: 0/18
+
+=== server-log 'not marked as outputs' warning, this sweep vs the consumed P-EMB-1 ===
+  attempt-20260820T062543Z-e91099/SAEA-PROBE-pemb3l-234.session-last.server.log: 120 warning line(s)
+      0.09.929.069 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+      pooling_type line: 0.06.539.814 W llama_init_from_model: model default pooling_type is [-1], but [3] was specified
+  attempt-20260820T065009Z-1361ad/SAEA-PROBE-pemb3l-234.session-mean.server.log: 60 warning line(s)
+      0.05.058.253 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+      pooling_type line: 0.02.861.193 W llama_init_from_model: model default pooling_type is [-1], but [1] was specified
+  consumed P-EMB-1 (mean pooling, 60 audio contacts) postflight line:
+        'embeddings required but some input tokens were not marked as outputs' lines: 60
+end: 2026-08-20T06:56:03Z

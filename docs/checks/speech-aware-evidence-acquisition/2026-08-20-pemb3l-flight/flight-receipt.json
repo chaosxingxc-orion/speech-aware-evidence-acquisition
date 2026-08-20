@@ -1,0 +1,269 @@
+{
+  "arm_manifest_status_final": {
+    "l1-last-bare": {
+      "all_entries_declare_pinned_dim": true,
+      "audio_entries": 60,
+      "complete": true,
+      "distinct_vector_sha256": 78,
+      "entry_count": 78,
+      "manifest_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/derived/embeddings/SAEA-PROBE-pemb3l-234/l1-last-bare/manifest.json",
+      "manifest_present": true,
+      "manifest_run_id": "SAEA-PROBE-pemb3l-234/l1-last-bare",
+      "npy_present": 78,
+      "text_entries": 18
+    },
+    "l2-last-instruct": {
+      "all_entries_declare_pinned_dim": true,
+      "audio_entries": 60,
+      "complete": true,
+      "distinct_vector_sha256": 78,
+      "entry_count": 78,
+      "manifest_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/derived/embeddings/SAEA-PROBE-pemb3l-234/l2-last-instruct/manifest.json",
+      "manifest_present": true,
+      "manifest_run_id": "SAEA-PROBE-pemb3l-234/l2-last-instruct",
+      "npy_present": 78,
+      "text_entries": 18
+    },
+    "l3-mean-instruct": {
+      "all_entries_declare_pinned_dim": true,
+      "audio_entries": 60,
+      "complete": true,
+      "distinct_vector_sha256": 78,
+      "entry_count": 78,
+      "manifest_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/derived/embeddings/SAEA-PROBE-pemb3l-234/l3-mean-instruct/manifest.json",
+      "manifest_present": true,
+      "manifest_run_id": "SAEA-PROBE-pemb3l-234/l3-mean-instruct",
+      "npy_present": 78,
+      "text_entries": 18
+    }
+  },
+  "arm_order": [
+    "l1-last-bare",
+    "l2-last-instruct",
+    "l3-mean-instruct"
+  ],
+  "arms": {
+    "l1-last-bare": {
+      "arm_id": "l1-last-bare",
+      "audio_prefix": "",
+      "carried_from_earlier_attempt": true,
+      "contact_failures": [],
+      "contacts_flown": 0,
+      "contacts_replayed": 0,
+      "embedding_manifest_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/derived/embeddings/SAEA-PROBE-pemb3l-234/l1-last-bare/manifest.json",
+      "manifest_run_id": "SAEA-PROBE-pemb3l-234/l1-last-bare",
+      "manifest_status": {
+        "all_entries_declare_pinned_dim": true,
+        "audio_entries": 60,
+        "complete": true,
+        "distinct_vector_sha256": 78,
+        "entry_count": 78,
+        "manifest_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/derived/embeddings/SAEA-PROBE-pemb3l-234/l1-last-bare/manifest.json",
+        "manifest_present": true,
+        "manifest_run_id": "SAEA-PROBE-pemb3l-234/l1-last-bare",
+        "npy_present": 78,
+        "text_entries": 18
+      },
+      "n_audio_vectors": 60,
+      "n_contacts": 78,
+      "n_text_vectors": 18,
+      "pooling_mode": "last",
+      "session_key": "last",
+      "text_prefix": ""
+    },
+    "l2-last-instruct": {
+      "arm_id": "l2-last-instruct",
+      "audio_prefix": "Represent this utterance for intent retrieval: ",
+      "carried_from_earlier_attempt": true,
+      "contact_failures": [],
+      "contacts_flown": 0,
+      "contacts_replayed": 0,
+      "embedding_manifest_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/derived/embeddings/SAEA-PROBE-pemb3l-234/l2-last-instruct/manifest.json",
+      "manifest_run_id": "SAEA-PROBE-pemb3l-234/l2-last-instruct",
+      "manifest_status": {
+        "all_entries_declare_pinned_dim": true,
+        "audio_entries": 60,
+        "complete": true,
+        "distinct_vector_sha256": 78,
+        "entry_count": 78,
+        "manifest_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/derived/embeddings/SAEA-PROBE-pemb3l-234/l2-last-instruct/manifest.json",
+        "manifest_present": true,
+        "manifest_run_id": "SAEA-PROBE-pemb3l-234/l2-last-instruct",
+        "npy_present": 78,
+        "text_entries": 18
+      },
+      "n_audio_vectors": 60,
+      "n_contacts": 78,
+      "n_text_vectors": 18,
+      "pooling_mode": "last",
+      "session_key": "last",
+      "text_prefix": "Represent this intent label for retrieval: "
+    },
+    "l3-mean-instruct": {
+      "arm_id": "l3-mean-instruct",
+      "audio_prefix": "Represent this utterance for intent retrieval: ",
+      "carried_from_earlier_attempt": false,
+      "contact_failures": [],
+      "contacts_flown": 78,
+      "contacts_replayed": 0,
+      "embedding_manifest_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/derived/embeddings/SAEA-PROBE-pemb3l-234/l3-mean-instruct/manifest.json",
+      "flown_by_kind": {
+        "audio": 60,
+        "text": 18
+      },
+      "latency_seconds_by_kind": {
+        "audio": 6.887587785720825,
+        "text": 0.5751018524169922
+      },
+      "manifest_run_id": "SAEA-PROBE-pemb3l-234/l3-mean-instruct",
+      "n_audio_vectors": 60,
+      "n_contacts": 78,
+      "n_text_vectors": 18,
+      "pooling_mode": "mean",
+      "session_key": "mean",
+      "text_prefix": "Represent this intent label for retrieval: ",
+      "wall_seconds": 8.806962728500366
+    }
+  },
+  "arms_carried_from_earlier_attempts": [
+    "l1-last-bare",
+    "l2-last-instruct"
+  ],
+  "arms_flown_this_attempt": [
+    "l3-mean-instruct"
+  ],
+  "attempt_id": "attempt-20260820T065009Z-1361ad",
+  "binding_config_sha256": "fa698d31699314ecc94a046b8de4c664f7ea35ccab858f248d93b235d3ef8b15",
+  "config_hash": "67091662a7c98389d787204b4fa282fba0a78f1d4690cf7c30c5e3d65a2df8a1",
+  "contact_failures": [],
+  "contacts_flown_by_kind": {
+    "audio": 60,
+    "text": 18
+  },
+  "contacts_flown_this_attempt": 78,
+  "contacts_replayed_from_cache": 0,
+  "durable_actual": {
+    "audio_seconds": 182.25943751799974,
+    "calls": 78
+  },
+  "embedding_dim": 2048,
+  "error": null,
+  "gate_runtime_diagnostics": {
+    "gguf_fast_path_used": false,
+    "gguf_files_full_hashed": 2,
+    "gguf_files_total": 2
+  },
+  "gpu_hours_this_attempt": 0.0062714256842931115,
+  "gpu_occupied_seconds_this_attempt": 22.5771324634552,
+  "latency_seconds_by_kind": {
+    "audio": 6.887587785720825,
+    "text": 0.5751018524169922
+  },
+  "metered_audio_seconds_expected_one_pass": 182.259,
+  "metered_audio_seconds_expected_sweep": 546.778,
+  "n_audio_contacts_expected_per_arm": 60,
+  "n_contacts_expected_per_arm": 78,
+  "n_contacts_planned": 234,
+  "n_contacts_produced": 234,
+  "n_text_contacts_expected_per_arm": 18,
+  "planned_budgets": {
+    "gpu_hours": 0.3,
+    "model_calls": 234,
+    "speech_audio_seconds": 600
+  },
+  "preregistration": "docs/readiness/2026-08-20-pemb3l-preregistration-REGISTERED.md",
+  "prior_durable_spend_before_this_attempt": {
+    "audio_seconds": 364.51887503599966,
+    "calls": 156
+  },
+  "probe": "P-EMB-3L",
+  "protocol_hash": "289397270e1eb5389bf9f907e323984fed546e07b19984bc5cd9139d59290a7c",
+  "registered_ceilings": {
+    "gpu_hours": 0.3,
+    "model_calls": 260,
+    "speech_audio_seconds": 600
+  },
+  "run_id": "SAEA-PROBE-pemb3l-234",
+  "sessions": [
+    {
+      "arm_ids": [
+        "l1-last-bare",
+        "l2-last-instruct"
+      ],
+      "pooling_mode": "last",
+      "session_key": "last",
+      "skipped_all_arms_already_complete": true,
+      "spawned": false
+    },
+    {
+      "argv": [
+        "/home/chao/llama.cpp-featcache/build/bin/llama-server",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "8093",
+        "-m",
+        "/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+        "--mmproj",
+        "/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/mmproj-Qwen3-Omni-30B-A3B-Instruct-bf16.gguf",
+        "-c",
+        "49152",
+        "-np",
+        "1",
+        "-fa",
+        "on",
+        "-ngl",
+        "999",
+        "-ctk",
+        "q8_0",
+        "-ctv",
+        "q8_0",
+        "--embedding",
+        "--pooling",
+        "mean"
+      ],
+      "arm_ids": [
+        "l3-mean-instruct"
+      ],
+      "binary_path": "llama.cpp-featcache/build/bin/llama-server",
+      "binary_sha256": "097c96ec5a3f576f378d4d5e103928bf070647fdcc1f015eacb839503e121c68",
+      "contacts_flown": 78,
+      "contacts_replayed": 0,
+      "host": "127.0.0.1",
+      "model_files": [
+        {
+          "path": "models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+          "sha256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d"
+        },
+        {
+          "path": "models/qwen3-omni-30b-a3b-instruct-gguf-q4km/mmproj-Qwen3-Omni-30B-A3B-Instruct-bf16.gguf",
+          "sha256": "f0dfe825fb692d426362b1ac79678fc08daa4758f7151526cad110515f122883"
+        }
+      ],
+      "pid": 1403,
+      "pooling_mode": "mean",
+      "port": 8093,
+      "resident_seconds": 22.5771324634552,
+      "session_id": "SAEA-PROBE-pemb3l-234-attempt-20260820T065009Z-1361ad-mean",
+      "session_key": "mean",
+      "spawn_seconds": 13.056914567947388,
+      "spawned": true,
+      "started_at": "2026-08-20T06:53:25.359395+00:00",
+      "teardown": {
+        "escalated": false,
+        "pid": 1403,
+        "pid_alive_after": false,
+        "port_reachable_after": false,
+        "signal": "SIGTERM",
+        "teardown_seconds": 0.5005559921264648
+      }
+    }
+  ],
+  "split_identity_hash": "fc9de436eba5aba120ecf07ee112765cd4ac0609150e0aaf36f4d44c9c5b5ee5",
+  "status": "COMPLETED",
+  "sweep_total_invariant_pass": true,
+  "text_contact_audio_seconds_sentinel": 1e-09,
+  "tier": "embedding (encode+pool, ZERO generation, zero sampling seam)",
+  "umbrella_lock_sha256": "9064bde89d4248fd80c9c2f93c2a9c276a454eadbb1aa7d529671118961371b1",
+  "wall_seconds": 23.542294025421143
+}

@@ -1,0 +1,137 @@
+{
+  "config_hash": "67091662a7c98389d787204b4fa282fba0a78f1d4690cf7c30c5e3d65a2df8a1",
+  "protocol_hash": "289397270e1eb5389bf9f907e323984fed546e07b19984bc5cd9139d59290a7c",
+  "values": {
+    "arm": "fixed-legal-context",
+    "arms": [
+      {
+        "arm_id": "l1-last-bare",
+        "audio_prefix": "",
+        "pooling_mode": "last",
+        "text_prefix": ""
+      },
+      {
+        "arm_id": "l2-last-instruct",
+        "audio_prefix": "Represent this utterance for intent retrieval: ",
+        "pooling_mode": "last",
+        "text_prefix": "Represent this intent label for retrieval: "
+      },
+      {
+        "arm_id": "l3-mean-instruct",
+        "audio_prefix": "Represent this utterance for intent retrieval: ",
+        "pooling_mode": "mean",
+        "text_prefix": "Represent this intent label for retrieval: "
+      }
+    ],
+    "audio_contacts_per_arm": 60,
+    "audio_instruct_prefix": "Represent this utterance for intent retrieval: ",
+    "base_url": "http://127.0.0.1:8093",
+    "binding_config_schema": "saea-pemb3l-binding-config-v1",
+    "binding_config_sha256": "fa698d31699314ecc94a046b8de4c664f7ea35ccab858f248d93b235d3ef8b15",
+    "binding_config_sha256_recomputed": "fa698d31699314ecc94a046b8de4c664f7ea35ccab858f248d93b235d3ef8b15",
+    "carrier_lock_key": "slurp",
+    "cited_mean_bare_accuracy": 0.05,
+    "cited_mean_bare_provenance": "docs/readiness/2026-08-19-pemb1-verdict.md section 1 (consumed P-EMB-1, EMB-WEAK) -- NOT re-flown here",
+    "contacts_per_arm": 78,
+    "decoding_params": {
+      "max_tokens": 1024,
+      "seed": 20260803,
+      "temperature": 0
+    },
+    "embedding_dim": 2048,
+    "embedding_endpoint": "/embedding",
+    "flight_config_version": "pemb3l-launcher-v1 (no committed g0-binding config; see module docstring)",
+    "launcher": "scratchpad pemb3l/launch_pemb3l_flight.py (archived with the flight receipt)",
+    "media_marker_env": "LLAMA_MEDIA_MARKER",
+    "media_marker_props_field": "media_marker",
+    "model_lock_key": "qwen3-omni-30b-a3b-instruct-gguf-q4km",
+    "orchestrator": "rails.probes.pemb3l_flight.run_pemb3l_sweep_flight",
+    "preregistration": "docs/readiness/2026-08-20-pemb3l-preregistration-REGISTERED.md",
+    "probe": "P-EMB-3L",
+    "prompt_order": "evidence-first-system-v2",
+    "roster_table": "configs/probes/g0-binding/pslu-rosters-train-only.json",
+    "runtime_receipt": "receipts/runtime-q4km-featcache.json",
+    "sample_manifest": "configs/probes/g0-binding/pslu-sample-devel-n60.json",
+    "server_args": [
+      "-c",
+      "49152",
+      "-np",
+      "1",
+      "-fa",
+      "on",
+      "-ngl",
+      "999",
+      "-ctk",
+      "q8_0",
+      "-ctv",
+      "q8_0",
+      "--embedding"
+    ],
+    "server_env": {
+      "LLAMA_MTMD_FEAT_CACHE_DIR": "/home/chao/feat-cache/slurp-q4km"
+    },
+    "sessions": [
+      {
+        "arm_ids": [
+          "l1-last-bare",
+          "l2-last-instruct"
+        ],
+        "pooling_mode": "last",
+        "server_args": [
+          "-c",
+          "49152",
+          "-np",
+          "1",
+          "-fa",
+          "on",
+          "-ngl",
+          "999",
+          "-ctk",
+          "q8_0",
+          "-ctv",
+          "q8_0",
+          "--embedding",
+          "--pooling",
+          "last"
+        ],
+        "session_key": "last"
+      },
+      {
+        "arm_ids": [
+          "l3-mean-instruct"
+        ],
+        "pooling_mode": "mean",
+        "server_args": [
+          "-c",
+          "49152",
+          "-np",
+          "1",
+          "-fa",
+          "on",
+          "-ngl",
+          "999",
+          "-ctk",
+          "q8_0",
+          "-ctv",
+          "q8_0",
+          "--embedding",
+          "--pooling",
+          "mean"
+        ],
+        "session_key": "mean"
+      }
+    ],
+    "split_identity_hash": "fc9de436eba5aba120ecf07ee112765cd4ac0609150e0aaf36f4d44c9c5b5ee5",
+    "split_name": "devel",
+    "split_role": "discovery",
+    "stage": "2026-08-20 owner order: try the LOCAL omni model first, before the external-embedder survey concludes",
+    "status": "REGISTERED",
+    "text_contact_kind": "the 18 canonical SLURP scenario labels (bare in L1; instruct-prefixed in L2/L3)",
+    "text_contacts_per_arm": 18,
+    "text_instruct_prefix": "Represent this intent label for retrieval: ",
+    "tier": "embedding (encode+pool, ZERO generation)",
+    "timeout_seconds": 420.0,
+    "total_contacts": 234,
+    "transport": "llama-server"
+  }
+}
