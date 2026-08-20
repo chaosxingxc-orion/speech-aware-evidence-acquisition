@@ -1,0 +1,37 @@
+P-EMB-2 pinned offline read (docs/readiness/2026-08-19-pemb-preregistration-REGISTERED.md)
+==============================================================================
+
+manifest run_id: SAEA-PROBE-pemb2-552
+n_samples=400 n_registry_rows=152
+tool-wrong (183): n=183 recoveries=2 top1_accuracy=0.0109 top5_accuracy=0.0273
+tool-correct (217, non-degradation, informational): n=217 top1_accuracy=0.0046
+
+[EMB-CLOSED]
+  top-1 accuracy on the 183 tool-wrong ids = 0.0109 <= 0.1
+
+Confusion table over the 183 tool-wrong ids (gold -> predicted : count, top rows)
+  setColor -> stopCharging : 4
+  getAirQuality -> stopCharging : 3
+  getAirQuality_diag -> streamCamera : 3
+  setColor -> setHumidifierState : 3
+  setGroupLightState -> streamCamera : 3
+  setLighting -> stopCharging : 3
+  controlPlayback -> stopCharging : 2
+  enableWaterLock -> streamCamera : 2
+  getActivitySummary,installApp,startWorkout -> stopCharging : 2
+  getAirQuality -> getNetworkHealth : 2
+  getApplianceStatus -> getNetworkHealth : 2
+  getBiometricData -> stopCharging : 2
+  getThermostatState,setColor -> stopCharging : 2
+  installApp -> setHumidifierState : 2
+  setAlarm -> stopCharging : 2
+  setBrightness -> stopCharging : 2
+  setGarageDoor -> stopCharging : 2
+  setLighting -> getNetworkHealth : 2
+  setTargetTemperature -> setHumidifierState : 2
+  setThermostatMode -> setHvacMode : 2
+  activateRoutine -> stopCharging : 1
+  activateScene,setColor -> getNetworkHealth : 1
+  armSecuritySystem -> stopCharging : 1
+  broadcastMessage -> restartDevice : 1
+  broadcastMessage -> setHumidifierState : 1
