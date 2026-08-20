@@ -48,3 +48,33 @@ evaluator; the cosine matcher and manifest discipline reused verbatim) built and
 coordinator-reviewed BEFORE the read; exposure row `SAEA-PROBE-pemb3l-234` at registration
 (consumed=no); vectors on the data root, hashed manifests only in Git; gold scoring-side
 only; SLURP CC BY-NC 4.0 carried.
+
+## 6. Pre-read instrument amendment (2026-08-20, appended AFTER the flight landed and
+## BEFORE any result read; precedent: pkey §7, ptrap §6)
+
+Structural facts from the fly archive (`2026-08-20-pemb3l-flight/`, byte-identity checks
+only — no vector values compared, no accuracy computed):
+
+1. **On this build, `--pooling` changes only TEXT-side vectors.** Keyed on contact id,
+   L2-vs-L3 share all 60/60 audio vectors byte-for-byte while sharing 0/18 text vectors;
+   L1-vs-L2 and L1-vs-L3 share nothing (the prefix axis works on both sides). The server
+   line `embeddings required but some input tokens were not marked as outputs -> overriding`
+   fires exactly once per AUDIO contact and never for text (the consumed P-EMB-1 logged the
+   same rate), consistent with the build overriding audio-side pooling.
+2. **Interpretation scope, fixed before reading:** (a) the registered L2-vs-L3 contrast
+   identifies TEXT-side pooling sensitivity only; (b) §3's L3-vs-cited-mean-bare
+   common-mode comparison inherits the same text-side-only scope; (c) by the same
+   mechanism, L1's audio side is predicted byte-identical to the consumed P-EMB-1 audio
+   side (both bare; they differ only in pooling flag) — the read SHALL report this
+   structural check; if confirmed, the "mean vs last" audio contrast does not exist on
+   this build at all, and audio-side construction variation here spans ONLY the
+   instruction-prefix axis (L1 vs L2).
+3. **Verdict criteria in §3 are UNCHANGED** (absolute per-arm accuracy thresholds,
+   computable regardless). A LOCAL-EXHAUSTED verdict, if reached, is scoped to "the
+   constructions this build can actually express": audio ∈ {effective-pool bare,
+   effective-pool instructed} × text ∈ {last, mean} × {bare, instructed}.
+4. Launcher-side repair during the flight (machinery `rails/probes/pemb3l_flight.py` flew
+   unmodified): zombie-state PID liveness misread caused a fail-closed inter-session abort;
+   repaired with waitpid reaping + arm-level idempotence; proof in the archive
+   (`abort-repair-proof.log`). 234/234 contacts durably spent across the two attempts on
+   one plan (one config hash, one protocol hash); no contact re-flown.
