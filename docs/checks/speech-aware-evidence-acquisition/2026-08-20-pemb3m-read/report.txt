@@ -1,0 +1,19 @@
+P-EMB-3M pinned offline read (docs/readiness/2026-08-20-pemb3m-preregistration-REGISTERED.md)
+==============================================================================
+
+[m1-lco-primary] accuracy=0.0500 (3/60) top1_share=0.6000 positive_cosine_share=1.0000
+[m2-glap-control] accuracy=0.1333 (8/60) top1_share=0.1833 positive_cosine_share=0.7333
+[m3-clsp-control] DROPPED-DEPS (status=DROPPED-DEPS)
+[m4-cascade] accuracy=0.7500 (45/60) top1_share=0.1667 positive_cosine_share=1.0000
+
+pooling_override_present=False
+cascade_source_status=COMPLETE
+
+[M1] EMB-WEAK
+  M1 (LCO) accuracy 0.0500 <= 0.3 -- the dedicated-embedder hypothesis fails on this stack (clean pooling gate: model-level refutation)
+[M4] CASCADE-ROUTES
+  M4 (CASCADE) accuracy 0.7500 >= 0.65 -- the routing tier does not need audio embeddings at all; the ~89%-text-side pattern (P-KEY) extends to representation matching
+[CONTROL-ANOMALY] False
+  max(M2,M3)=0.1333 vs max(M1,M4)=0.7500, floor 0.3 -- not met
+
+[OVERALL] EMB-WEAK + CASCADE-ROUTES

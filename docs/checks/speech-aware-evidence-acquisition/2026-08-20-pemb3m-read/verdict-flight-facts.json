@@ -1,0 +1,2214 @@
+{
+  "arms": {
+    "m1-lco-primary": {
+      "accuracy": 0.05,
+      "arm_id": "m1-lco-primary",
+      "attractor": {
+        "n_labels_available": 18,
+        "n_labels_predicted": 5,
+        "n_predictions": 60,
+        "shares": [
+          {
+            "count": 36,
+            "label": "recommendation",
+            "share": 0.6
+          },
+          {
+            "count": 7,
+            "label": "datetime",
+            "share": 0.11666666666666667
+          },
+          {
+            "count": 7,
+            "label": "takeaway",
+            "share": 0.11666666666666667
+          },
+          {
+            "count": 6,
+            "label": "play",
+            "share": 0.1
+          },
+          {
+            "count": 4,
+            "label": "news",
+            "share": 0.06666666666666667
+          }
+        ],
+        "top1_share": 0.6,
+        "top2_share": 0.7166666666666667
+      },
+      "confusion": [
+        {
+          "count": 4,
+          "gold": "play",
+          "predicted": "recommendation"
+        },
+        {
+          "count": 3,
+          "gold": "calendar",
+          "predicted": "recommendation"
+        },
+        {
+          "count": 3,
+          "gold": "datetime",
+          "predicted": "recommendation"
+        },
+        {
+          "count": 3,
+          "gold": "qa",
+          "predicted": "recommendation"
+        },
+        {
+          "count": 3,
+          "gold": "transport",
+          "predicted": "recommendation"
+        },
+        {
+          "count": 3,
+          "gold": "weather",
+          "predicted": "recommendation"
+        },
+        {
+          "count": 2,
+          "gold": "alarm",
+          "predicted": "recommendation"
+        },
+        {
+          "count": 2,
+          "gold": "calendar",
+          "predicted": "news"
+        },
+        {
+          "count": 2,
+          "gold": "email",
+          "predicted": "recommendation"
+        },
+        {
+          "count": 2,
+          "gold": "iot",
+          "predicted": "recommendation"
+        },
+        {
+          "count": 2,
+          "gold": "music",
+          "predicted": "recommendation"
+        },
+        {
+          "count": 2,
+          "gold": "news",
+          "predicted": "recommendation"
+        },
+        {
+          "count": 2,
+          "gold": "play",
+          "predicted": "takeaway"
+        },
+        {
+          "count": 2,
+          "gold": "qa",
+          "predicted": "datetime"
+        },
+        {
+          "count": 2,
+          "gold": "recommendation",
+          "predicted": "recommendation"
+        },
+        {
+          "count": 2,
+          "gold": "social",
+          "predicted": "recommendation"
+        },
+        {
+          "count": 1,
+          "gold": "audio",
+          "predicted": "datetime"
+        },
+        {
+          "count": 1,
+          "gold": "calendar",
+          "predicted": "datetime"
+        },
+        {
+          "count": 1,
+          "gold": "calendar",
+          "predicted": "play"
+        },
+        {
+          "count": 1,
+          "gold": "calendar",
+          "predicted": "takeaway"
+        },
+        {
+          "count": 1,
+          "gold": "cooking",
+          "predicted": "recommendation"
+        },
+        {
+          "count": 1,
+          "gold": "cooking",
+          "predicted": "takeaway"
+        },
+        {
+          "count": 1,
+          "gold": "email",
+          "predicted": "datetime"
+        },
+        {
+          "count": 1,
+          "gold": "email",
+          "predicted": "takeaway"
+        },
+        {
+          "count": 1,
+          "gold": "general",
+          "predicted": "play"
+        },
+        {
+          "count": 1,
+          "gold": "general",
+          "predicted": "recommendation"
+        },
+        {
+          "count": 1,
+          "gold": "iot",
+          "predicted": "play"
+        },
+        {
+          "count": 1,
+          "gold": "lists",
+          "predicted": "play"
+        },
+        {
+          "count": 1,
+          "gold": "lists",
+          "predicted": "takeaway"
+        },
+        {
+          "count": 1,
+          "gold": "news",
+          "predicted": "datetime"
+        },
+        {
+          "count": 1,
+          "gold": "play",
+          "predicted": "play"
+        },
+        {
+          "count": 1,
+          "gold": "recommendation",
+          "predicted": "takeaway"
+        },
+        {
+          "count": 1,
+          "gold": "social",
+          "predicted": "news"
+        },
+        {
+          "count": 1,
+          "gold": "takeaway",
+          "predicted": "play"
+        },
+        {
+          "count": 1,
+          "gold": "takeaway",
+          "predicted": "recommendation"
+        },
+        {
+          "count": 1,
+          "gold": "transport",
+          "predicted": "datetime"
+        },
+        {
+          "count": 1,
+          "gold": "weather",
+          "predicted": "news"
+        }
+      ],
+      "cosine_sign_profile": {
+        "max_cosine": 0.10771885353640072,
+        "mean_cosine": 0.07069732027807014,
+        "min_cosine": 0.0400760824638817,
+        "n": 60,
+        "n_negative": 0,
+        "n_positive": 60,
+        "n_zero": 0,
+        "positive_share": 1.0
+      },
+      "dropped": false,
+      "manifest_run_id": "SAEA-PROBE-pemb3m-388/m1-lco-primary",
+      "n_correct": 3,
+      "n_labels": 18,
+      "n_samples": 60,
+      "predictions": [
+        {
+          "gold_scenario": "audio",
+          "predicted_scenario": "datetime",
+          "sample_id": "slurp:devel:000115:audio-1495375974",
+          "top1_correct": false,
+          "top1_cosine": 0.05042731716301175
+        },
+        {
+          "gold_scenario": "music",
+          "predicted_scenario": "recommendation",
+          "sample_id": "slurp:devel:000444:audio-1502891018-headset",
+          "top1_correct": false,
+          "top1_cosine": 0.08475645440102252
+        },
+        {
+          "gold_scenario": "datetime",
+          "predicted_scenario": "recommendation",
+          "sample_id": "slurp:devel:000943:audio-1434529860-headset",
+          "top1_correct": false,
+          "top1_cosine": 0.061337953449238786
+        },
+        {
+          "gold_scenario": "news",
+          "predicted_scenario": "recommendation",
+          "sample_id": "slurp:devel:001637:audio-1502195066-headset",
+          "top1_correct": false,
+          "top1_cosine": 0.0923040936634036
+        },
+        {
+          "gold_scenario": "iot",
+          "predicted_scenario": "recommendation",
+          "sample_id": "slurp:devel:002120:audio-1502218226",
+          "top1_correct": false,
+          "top1_cosine": 0.041960061821049964
+        },
+        {
+          "gold_scenario": "news",
+          "predicted_scenario": "datetime",
+          "sample_id": "slurp:devel:002992:audio-1489152746",
+          "top1_correct": false,
+          "top1_cosine": 0.05313406393491341
+        },
+        {
+          "gold_scenario": "weather",
+          "predicted_scenario": "recommendation",
+          "sample_id": "slurp:devel:003121:audio-1501696857-headset",
+          "top1_correct": false,
+          "top1_cosine": 0.08779510219076861
+        },
+        {
+          "gold_scenario": "weather",
+          "predicted_scenario": "news",
+          "sample_id": "slurp:devel:003309:audio-1501756265",
+          "top1_correct": false,
+          "top1_cosine": 0.057425292318852635
+        },
+        {
+          "gold_scenario": "play",
+          "predicted_scenario": "recommendation",
+          "sample_id": "slurp:devel:004134:audio-1500387396-headset",
+          "top1_correct": false,
+          "top1_cosine": 0.09402177952928858
+        },
+        {
+          "gold_scenario": "takeaway",
+          "predicted_scenario": "play",
+          "sample_id": "slurp:devel:004604:audio-1501759214",
+          "top1_correct": false,
+          "top1_cosine": 0.05844952494922892
+        },
+        {
+          "gold_scenario": "iot",
+          "predicted_scenario": "recommendation",
+          "sample_id": "slurp:devel:005025:audio-1500900618",
+          "top1_correct": false,
+          "top1_cosine": 0.055013673234161085
+        },
+        {
+          "gold_scenario": "datetime",
+          "predicted_scenario": "recommendation",
+          "sample_id": "slurp:devel:005028:audio-1502893878-headset",
+          "top1_correct": false,
+          "top1_cosine": 0.0949437725384697
+        },
+        {
+          "gold_scenario": "play",
+          "predicted_scenario": "recommendation",
+          "sample_id": "slurp:devel:005108:audio-1494422588-headset",
+          "top1_correct": false,
+          "top1_cosine": 0.09469653119957454
+        },
+        {
+          "gold_scenario": "datetime",
+          "predicted_scenario": "recommendation",
+          "sample_id": "slurp:devel:005359:audio-1497265137-headset",
+          "top1_correct": false,
+          "top1_cosine": 0.08823698013726276
+        },
+        {
+          "gold_scenario": "weather",
+          "predicted_scenario": "recommendation",
+          "sample_id": "slurp:devel:005453:audio-1490183633-headset",
+          "top1_correct": false,
+          "top1_cosine": 0.09230624703234366
+        },
+        {
+          "gold_scenario": "iot",
+          "predicted_scenario": "play",
+          "sample_id": "slurp:devel:005518:audio-1490203960",
+          "top1_correct": false,
+          "top1_cosine": 0.04758258807254237
+        },
+        {
+          "gold_scenario": "music",
+          "predicted_scenario": "recommendation",
+          "sample_id": "slurp:devel:005536:audio-1499090415-headset",
+          "top1_correct": false,
+          "top1_cosine": 0.09962486331436747
+        },
+        {
+          "gold_scenario": "alarm",
+          "predicted_scenario": "recommendation",
+          "sample_id": "slurp:devel:005541:audio--1504191543",
+          "top1_correct": false,
+          "top1_cosine": 0.10085056176317632
+        },
+        {
+          "gold_scenario": "alarm",
+          "predicted_scenario": "recommendation",
+          "sample_id": "slurp:devel:005567:audio-1497359684",
+          "top1_correct": false,
+          "top1_cosine": 0.05160151627857858
+        },
+        {
+          "gold_scenario": "play",
+          "predicted_scenario": "play",
+          "sample_id": "slurp:devel:005684:audio-1498577434",
+          "top1_correct": true,
+          "top1_cosine": 0.05698885831616981
+        },
+        {
+          "gold_scenario": "weather",
+          "predicted_scenario": "recommendation",
+          "sample_id": "slurp:devel:005743:audio-1501407405-headset",
+          "top1_correct": false,
+          "top1_cosine": 0.06608349185693567
+        },
+        {
+          "gold_scenario": "takeaway",
+          "predicted_scenario": "recommendation",
+          "sample_id": "slurp:devel:005770:audio-1495377172",
+          "top1_correct": false,
+          "top1_cosine": 0.07171533722093573
+        },
+        {
+          "gold_scenario": "news",
+          "predicted_scenario": "recommendation",
+          "sample_id": "slurp:devel:005943:audio-1499266055",
+          "top1_correct": false,
+          "top1_cosine": 0.06304580515954167
+        },
+        {
+          "gold_scenario": "general",
+          "predicted_scenario": "recommendation",
+          "sample_id": "slurp:devel:006603:audio-1502101512",
+          "top1_correct": false,
+          "top1_cosine": 0.10771885353640072
+        },
+        {
+          "gold_scenario": "calendar",
+          "predicted_scenario": "recommendation",
+          "sample_id": "slurp:devel:006751:audio-1501773837-headset",
+          "top1_correct": false,
+          "top1_cosine": 0.0866942106098192
+        },
+        {
+          "gold_scenario": "calendar",
+          "predicted_scenario": "news",
+          "sample_id": "slurp:devel:007374:audio-1498569508",
+          "top1_correct": false,
+          "top1_cosine": 0.05247944756582841
+        },
+        {
+          "gold_scenario": "calendar",
+          "predicted_scenario": "datetime",
+          "sample_id": "slurp:devel:007541:audio-1490202471",
+          "top1_correct": false,
+          "top1_cosine": 0.06300045925253982
+        },
+        {
+          "gold_scenario": "calendar",
+          "predicted_scenario": "recommendation",
+          "sample_id": "slurp:devel:007653:audio-1497438989-headset",
+          "top1_correct": false,
+          "top1_cosine": 0.06721570200985602
+        },
+        {
+          "gold_scenario": "calendar",
+          "predicted_scenario": "takeaway",
+          "sample_id": "slurp:devel:007852:audio-1494416109-headset",
+          "top1_correct": false,
+          "top1_cosine": 0.09091755789355994
+        },
+        {
+          "gold_scenario": "calendar",
+          "predicted_scenario": "recommendation",
+          "sample_id": "slurp:devel:008014:audio-1500899290",
+          "top1_correct": false,
+          "top1_cosine": 0.06346453605656203
+        },
+        {
+          "gold_scenario": "calendar",
+          "predicted_scenario": "play",
+          "sample_id": "slurp:devel:008047:audio-1498570919",
+          "top1_correct": false,
+          "top1_cosine": 0.05552289646272571
+        },
+        {
+          "gold_scenario": "calendar",
+          "predicted_scenario": "news",
+          "sample_id": "slurp:devel:008072:audio-1488986707",
+          "top1_correct": false,
+          "top1_cosine": 0.07394855919681576
+        },
+        {
+          "gold_scenario": "play",
+          "predicted_scenario": "takeaway",
+          "sample_id": "slurp:devel:009340:audio-1497882818-headset",
+          "top1_correct": false,
+          "top1_cosine": 0.06679426618674504
+        },
+        {
+          "gold_scenario": "play",
+          "predicted_scenario": "takeaway",
+          "sample_id": "slurp:devel:009518:audio-1495734594-headset",
+          "top1_correct": false,
+          "top1_cosine": 0.07872286354870194
+        },
+        {
+          "gold_scenario": "play",
+          "predicted_scenario": "recommendation",
+          "sample_id": "slurp:devel:009733:audio--1505407176",
+          "top1_correct": false,
+          "top1_cosine": 0.0661627123955658
+        },
+        {
+          "gold_scenario": "cooking",
+          "predicted_scenario": "takeaway",
+          "sample_id": "slurp:devel:010162:audio-1501765286",
+          "top1_correct": false,
+          "top1_cosine": 0.04709921831567102
+        },
+        {
+          "gold_scenario": "cooking",
+          "predicted_scenario": "recommendation",
+          "sample_id": "slurp:devel:010186:audio-1501415369-headset",
+          "top1_correct": false,
+          "top1_cosine": 0.07100981314630168
+        },
+        {
+          "gold_scenario": "lists",
+          "predicted_scenario": "takeaway",
+          "sample_id": "slurp:devel:010545:audio-1490006493",
+          "top1_correct": false,
+          "top1_cosine": 0.06275647631252197
+        },
+        {
+          "gold_scenario": "lists",
+          "predicted_scenario": "play",
+          "sample_id": "slurp:devel:010732:audio-1490184504",
+          "top1_correct": false,
+          "top1_cosine": 0.0400760824638817
+        },
+        {
+          "gold_scenario": "play",
+          "predicted_scenario": "recommendation",
+          "sample_id": "slurp:devel:011503:audio-1494514154",
+          "top1_correct": false,
+          "top1_cosine": 0.07677382726577936
+        },
+        {
+          "gold_scenario": "recommendation",
+          "predicted_scenario": "recommendation",
+          "sample_id": "slurp:devel:011654:audio-1501692977-headset",
+          "top1_correct": true,
+          "top1_cosine": 0.08523691918940893
+        },
+        {
+          "gold_scenario": "recommendation",
+          "predicted_scenario": "takeaway",
+          "sample_id": "slurp:devel:011693:audio-1498565017-headset",
+          "top1_correct": false,
+          "top1_cosine": 0.07546825871478575
+        },
+        {
+          "gold_scenario": "recommendation",
+          "predicted_scenario": "recommendation",
+          "sample_id": "slurp:devel:012076:audio-1501766742-headset",
+          "top1_correct": true,
+          "top1_cosine": 0.10569227529758035
+        },
+        {
+          "gold_scenario": "transport",
+          "predicted_scenario": "recommendation",
+          "sample_id": "slurp:devel:012253:audio-1488974202",
+          "top1_correct": false,
+          "top1_cosine": 0.08075140171797901
+        },
+        {
+          "gold_scenario": "transport",
+          "predicted_scenario": "datetime",
+          "sample_id": "slurp:devel:012478:audio-1498486426",
+          "top1_correct": false,
+          "top1_cosine": 0.048062732127237225
+        },
+        {
+          "gold_scenario": "transport",
+          "predicted_scenario": "recommendation",
+          "sample_id": "slurp:devel:012654:audio-1497860426-headset",
+          "top1_correct": false,
+          "top1_cosine": 0.07052025837728716
+        },
+        {
+          "gold_scenario": "transport",
+          "predicted_scenario": "recommendation",
+          "sample_id": "slurp:devel:012667:audio-1501751776-headset",
+          "top1_correct": false,
+          "top1_cosine": 0.10528558584810137
+        },
+        {
+          "gold_scenario": "general",
+          "predicted_scenario": "play",
+          "sample_id": "slurp:devel:013281:audio-1490354296-headset",
+          "top1_correct": false,
+          "top1_cosine": 0.08810192297362401
+        },
+        {
+          "gold_scenario": "qa",
+          "predicted_scenario": "recommendation",
+          "sample_id": "slurp:devel:013795:audio-1499266495",
+          "top1_correct": false,
+          "top1_cosine": 0.059015638770796804
+        },
+        {
+          "gold_scenario": "qa",
+          "predicted_scenario": "datetime",
+          "sample_id": "slurp:devel:014173:audio-1490291441",
+          "top1_correct": false,
+          "top1_cosine": 0.053635497204733734
+        },
+        {
+          "gold_scenario": "qa",
+          "predicted_scenario": "recommendation",
+          "sample_id": "slurp:devel:014263:audio-1501692486",
+          "top1_correct": false,
+          "top1_cosine": 0.05063789649813761
+        },
+        {
+          "gold_scenario": "qa",
+          "predicted_scenario": "datetime",
+          "sample_id": "slurp:devel:014397:audio-1497368809",
+          "top1_correct": false,
+          "top1_cosine": 0.040960601097059506
+        },
+        {
+          "gold_scenario": "qa",
+          "predicted_scenario": "recommendation",
+          "sample_id": "slurp:devel:014657:audio-1499695487",
+          "top1_correct": false,
+          "top1_cosine": 0.048254691760060094
+        },
+        {
+          "gold_scenario": "social",
+          "predicted_scenario": "recommendation",
+          "sample_id": "slurp:devel:015258:audio-1501777355-headset",
+          "top1_correct": false,
+          "top1_cosine": 0.07446459311253122
+        },
+        {
+          "gold_scenario": "social",
+          "predicted_scenario": "recommendation",
+          "sample_id": "slurp:devel:015375:audio-1501754418",
+          "top1_correct": false,
+          "top1_cosine": 0.07118183606232271
+        },
+        {
+          "gold_scenario": "social",
+          "predicted_scenario": "news",
+          "sample_id": "slurp:devel:015632:audio-1490021137-headset",
+          "top1_correct": false,
+          "top1_cosine": 0.06968765814223238
+        },
+        {
+          "gold_scenario": "email",
+          "predicted_scenario": "takeaway",
+          "sample_id": "slurp:devel:015805:audio-1489153743",
+          "top1_correct": false,
+          "top1_cosine": 0.05226530141035913
+        },
+        {
+          "gold_scenario": "email",
+          "predicted_scenario": "datetime",
+          "sample_id": "slurp:devel:016653:audio-1494513016",
+          "top1_correct": false,
+          "top1_cosine": 0.05534092326305804
+        },
+        {
+          "gold_scenario": "email",
+          "predicted_scenario": "recommendation",
+          "sample_id": "slurp:devel:016825:audio-1498573552-headset",
+          "top1_correct": false,
+          "top1_cosine": 0.08504709451147151
+        },
+        {
+          "gold_scenario": "email",
+          "predicted_scenario": "recommendation",
+          "sample_id": "slurp:devel:017009:audio-1502198805-headset",
+          "top1_correct": false,
+          "top1_cosine": 0.0875687788413282
+        }
+      ]
+    },
+    "m2-glap-control": {
+      "accuracy": 0.13333333333333333,
+      "arm_id": "m2-glap-control",
+      "attractor": {
+        "n_labels_available": 18,
+        "n_labels_predicted": 16,
+        "n_predictions": 60,
+        "shares": [
+          {
+            "count": 11,
+            "label": "iot",
+            "share": 0.18333333333333332
+          },
+          {
+            "count": 9,
+            "label": "music",
+            "share": 0.15
+          },
+          {
+            "count": 9,
+            "label": "qa",
+            "share": 0.15
+          },
+          {
+            "count": 5,
+            "label": "alarm",
+            "share": 0.08333333333333333
+          },
+          {
+            "count": 5,
+            "label": "transport",
+            "share": 0.08333333333333333
+          },
+          {
+            "count": 4,
+            "label": "weather",
+            "share": 0.06666666666666667
+          },
+          {
+            "count": 3,
+            "label": "datetime",
+            "share": 0.05
+          },
+          {
+            "count": 2,
+            "label": "email",
+            "share": 0.03333333333333333
+          },
+          {
+            "count": 2,
+            "label": "general",
+            "share": 0.03333333333333333
+          },
+          {
+            "count": 2,
+            "label": "lists",
+            "share": 0.03333333333333333
+          },
+          {
+            "count": 2,
+            "label": "play",
+            "share": 0.03333333333333333
+          },
+          {
+            "count": 2,
+            "label": "social",
+            "share": 0.03333333333333333
+          },
+          {
+            "count": 1,
+            "label": "audio",
+            "share": 0.016666666666666666
+          },
+          {
+            "count": 1,
+            "label": "cooking",
+            "share": 0.016666666666666666
+          },
+          {
+            "count": 1,
+            "label": "news",
+            "share": 0.016666666666666666
+          },
+          {
+            "count": 1,
+            "label": "takeaway",
+            "share": 0.016666666666666666
+          }
+        ],
+        "top1_share": 0.18333333333333332,
+        "top2_share": 0.3333333333333333
+      },
+      "confusion": [
+        {
+          "count": 3,
+          "gold": "qa",
+          "predicted": "qa"
+        },
+        {
+          "count": 2,
+          "gold": "calendar",
+          "predicted": "music"
+        },
+        {
+          "count": 2,
+          "gold": "calendar",
+          "predicted": "weather"
+        },
+        {
+          "count": 2,
+          "gold": "general",
+          "predicted": "iot"
+        },
+        {
+          "count": 2,
+          "gold": "news",
+          "predicted": "music"
+        },
+        {
+          "count": 2,
+          "gold": "play",
+          "predicted": "transport"
+        },
+        {
+          "count": 2,
+          "gold": "weather",
+          "predicted": "iot"
+        },
+        {
+          "count": 1,
+          "gold": "alarm",
+          "predicted": "alarm"
+        },
+        {
+          "count": 1,
+          "gold": "alarm",
+          "predicted": "qa"
+        },
+        {
+          "count": 1,
+          "gold": "audio",
+          "predicted": "alarm"
+        },
+        {
+          "count": 1,
+          "gold": "calendar",
+          "predicted": "alarm"
+        },
+        {
+          "count": 1,
+          "gold": "calendar",
+          "predicted": "datetime"
+        },
+        {
+          "count": 1,
+          "gold": "calendar",
+          "predicted": "email"
+        },
+        {
+          "count": 1,
+          "gold": "calendar",
+          "predicted": "iot"
+        },
+        {
+          "count": 1,
+          "gold": "cooking",
+          "predicted": "qa"
+        },
+        {
+          "count": 1,
+          "gold": "cooking",
+          "predicted": "transport"
+        },
+        {
+          "count": 1,
+          "gold": "datetime",
+          "predicted": "iot"
+        },
+        {
+          "count": 1,
+          "gold": "datetime",
+          "predicted": "qa"
+        },
+        {
+          "count": 1,
+          "gold": "datetime",
+          "predicted": "social"
+        },
+        {
+          "count": 1,
+          "gold": "email",
+          "predicted": "email"
+        },
+        {
+          "count": 1,
+          "gold": "email",
+          "predicted": "iot"
+        },
+        {
+          "count": 1,
+          "gold": "email",
+          "predicted": "music"
+        },
+        {
+          "count": 1,
+          "gold": "email",
+          "predicted": "weather"
+        },
+        {
+          "count": 1,
+          "gold": "iot",
+          "predicted": "iot"
+        },
+        {
+          "count": 1,
+          "gold": "iot",
+          "predicted": "social"
+        },
+        {
+          "count": 1,
+          "gold": "iot",
+          "predicted": "transport"
+        },
+        {
+          "count": 1,
+          "gold": "lists",
+          "predicted": "lists"
+        },
+        {
+          "count": 1,
+          "gold": "lists",
+          "predicted": "music"
+        },
+        {
+          "count": 1,
+          "gold": "music",
+          "predicted": "play"
+        },
+        {
+          "count": 1,
+          "gold": "music",
+          "predicted": "qa"
+        },
+        {
+          "count": 1,
+          "gold": "news",
+          "predicted": "datetime"
+        },
+        {
+          "count": 1,
+          "gold": "play",
+          "predicted": "alarm"
+        },
+        {
+          "count": 1,
+          "gold": "play",
+          "predicted": "cooking"
+        },
+        {
+          "count": 1,
+          "gold": "play",
+          "predicted": "general"
+        },
+        {
+          "count": 1,
+          "gold": "play",
+          "predicted": "iot"
+        },
+        {
+          "count": 1,
+          "gold": "play",
+          "predicted": "news"
+        },
+        {
+          "count": 1,
+          "gold": "qa",
+          "predicted": "music"
+        },
+        {
+          "count": 1,
+          "gold": "qa",
+          "predicted": "play"
+        },
+        {
+          "count": 1,
+          "gold": "recommendation",
+          "predicted": "audio"
+        },
+        {
+          "count": 1,
+          "gold": "recommendation",
+          "predicted": "music"
+        },
+        {
+          "count": 1,
+          "gold": "recommendation",
+          "predicted": "transport"
+        },
+        {
+          "count": 1,
+          "gold": "social",
+          "predicted": "lists"
+        },
+        {
+          "count": 1,
+          "gold": "social",
+          "predicted": "music"
+        },
+        {
+          "count": 1,
+          "gold": "social",
+          "predicted": "qa"
+        },
+        {
+          "count": 1,
+          "gold": "takeaway",
+          "predicted": "iot"
+        },
+        {
+          "count": 1,
+          "gold": "takeaway",
+          "predicted": "takeaway"
+        },
+        {
+          "count": 1,
+          "gold": "transport",
+          "predicted": "datetime"
+        },
+        {
+          "count": 1,
+          "gold": "transport",
+          "predicted": "iot"
+        },
+        {
+          "count": 1,
+          "gold": "transport",
+          "predicted": "qa"
+        },
+        {
+          "count": 1,
+          "gold": "transport",
+          "predicted": "weather"
+        },
+        {
+          "count": 1,
+          "gold": "weather",
+          "predicted": "alarm"
+        },
+        {
+          "count": 1,
+          "gold": "weather",
+          "predicted": "general"
+        }
+      ],
+      "cosine_sign_profile": {
+        "max_cosine": 0.1311623736235306,
+        "mean_cosine": 0.02230673076628377,
+        "min_cosine": -0.048569782391878515,
+        "n": 60,
+        "n_negative": 16,
+        "n_positive": 44,
+        "n_zero": 0,
+        "positive_share": 0.7333333333333333
+      },
+      "dropped": false,
+      "manifest_run_id": "SAEA-PROBE-pemb3m-388/m2-glap-control",
+      "n_correct": 8,
+      "n_labels": 18,
+      "n_samples": 60,
+      "predictions": [
+        {
+          "gold_scenario": "audio",
+          "predicted_scenario": "alarm",
+          "sample_id": "slurp:devel:000115:audio-1495375974",
+          "top1_correct": false,
+          "top1_cosine": 0.02062509387509095
+        },
+        {
+          "gold_scenario": "music",
+          "predicted_scenario": "qa",
+          "sample_id": "slurp:devel:000444:audio-1502891018-headset",
+          "top1_correct": false,
+          "top1_cosine": 0.0011588498733172458
+        },
+        {
+          "gold_scenario": "datetime",
+          "predicted_scenario": "iot",
+          "sample_id": "slurp:devel:000943:audio-1434529860-headset",
+          "top1_correct": false,
+          "top1_cosine": 0.004411991439430104
+        },
+        {
+          "gold_scenario": "news",
+          "predicted_scenario": "music",
+          "sample_id": "slurp:devel:001637:audio-1502195066-headset",
+          "top1_correct": false,
+          "top1_cosine": -0.048569782391878515
+        },
+        {
+          "gold_scenario": "iot",
+          "predicted_scenario": "transport",
+          "sample_id": "slurp:devel:002120:audio-1502218226",
+          "top1_correct": false,
+          "top1_cosine": 0.07512765582485903
+        },
+        {
+          "gold_scenario": "news",
+          "predicted_scenario": "datetime",
+          "sample_id": "slurp:devel:002992:audio-1489152746",
+          "top1_correct": false,
+          "top1_cosine": 0.06904673283900273
+        },
+        {
+          "gold_scenario": "weather",
+          "predicted_scenario": "iot",
+          "sample_id": "slurp:devel:003121:audio-1501696857-headset",
+          "top1_correct": false,
+          "top1_cosine": -0.01702891428500975
+        },
+        {
+          "gold_scenario": "weather",
+          "predicted_scenario": "general",
+          "sample_id": "slurp:devel:003309:audio-1501756265",
+          "top1_correct": false,
+          "top1_cosine": 0.015475862672753832
+        },
+        {
+          "gold_scenario": "play",
+          "predicted_scenario": "transport",
+          "sample_id": "slurp:devel:004134:audio-1500387396-headset",
+          "top1_correct": false,
+          "top1_cosine": 0.006531919805903613
+        },
+        {
+          "gold_scenario": "takeaway",
+          "predicted_scenario": "iot",
+          "sample_id": "slurp:devel:004604:audio-1501759214",
+          "top1_correct": false,
+          "top1_cosine": 0.0420991021258276
+        },
+        {
+          "gold_scenario": "iot",
+          "predicted_scenario": "social",
+          "sample_id": "slurp:devel:005025:audio-1500900618",
+          "top1_correct": false,
+          "top1_cosine": 0.1311623736235306
+        },
+        {
+          "gold_scenario": "datetime",
+          "predicted_scenario": "qa",
+          "sample_id": "slurp:devel:005028:audio-1502893878-headset",
+          "top1_correct": false,
+          "top1_cosine": -0.042165785743379675
+        },
+        {
+          "gold_scenario": "play",
+          "predicted_scenario": "cooking",
+          "sample_id": "slurp:devel:005108:audio-1494422588-headset",
+          "top1_correct": false,
+          "top1_cosine": -0.01838531779502162
+        },
+        {
+          "gold_scenario": "datetime",
+          "predicted_scenario": "social",
+          "sample_id": "slurp:devel:005359:audio-1497265137-headset",
+          "top1_correct": false,
+          "top1_cosine": 0.009533685695224822
+        },
+        {
+          "gold_scenario": "weather",
+          "predicted_scenario": "iot",
+          "sample_id": "slurp:devel:005453:audio-1490183633-headset",
+          "top1_correct": false,
+          "top1_cosine": -0.006464525389991077
+        },
+        {
+          "gold_scenario": "iot",
+          "predicted_scenario": "iot",
+          "sample_id": "slurp:devel:005518:audio-1490203960",
+          "top1_correct": true,
+          "top1_cosine": 0.10921882959742037
+        },
+        {
+          "gold_scenario": "music",
+          "predicted_scenario": "play",
+          "sample_id": "slurp:devel:005536:audio-1499090415-headset",
+          "top1_correct": false,
+          "top1_cosine": -0.02962815248156884
+        },
+        {
+          "gold_scenario": "alarm",
+          "predicted_scenario": "alarm",
+          "sample_id": "slurp:devel:005541:audio--1504191543",
+          "top1_correct": true,
+          "top1_cosine": 0.04196528923221753
+        },
+        {
+          "gold_scenario": "alarm",
+          "predicted_scenario": "qa",
+          "sample_id": "slurp:devel:005567:audio-1497359684",
+          "top1_correct": false,
+          "top1_cosine": 0.03648116862521457
+        },
+        {
+          "gold_scenario": "play",
+          "predicted_scenario": "transport",
+          "sample_id": "slurp:devel:005684:audio-1498577434",
+          "top1_correct": false,
+          "top1_cosine": 0.05225521716677317
+        },
+        {
+          "gold_scenario": "weather",
+          "predicted_scenario": "alarm",
+          "sample_id": "slurp:devel:005743:audio-1501407405-headset",
+          "top1_correct": false,
+          "top1_cosine": 0.023649361295663255
+        },
+        {
+          "gold_scenario": "takeaway",
+          "predicted_scenario": "takeaway",
+          "sample_id": "slurp:devel:005770:audio-1495377172",
+          "top1_correct": true,
+          "top1_cosine": -0.01269085863761554
+        },
+        {
+          "gold_scenario": "news",
+          "predicted_scenario": "music",
+          "sample_id": "slurp:devel:005943:audio-1499266055",
+          "top1_correct": false,
+          "top1_cosine": 0.011261814281723619
+        },
+        {
+          "gold_scenario": "general",
+          "predicted_scenario": "iot",
+          "sample_id": "slurp:devel:006603:audio-1502101512",
+          "top1_correct": false,
+          "top1_cosine": 0.026123709657046044
+        },
+        {
+          "gold_scenario": "calendar",
+          "predicted_scenario": "music",
+          "sample_id": "slurp:devel:006751:audio-1501773837-headset",
+          "top1_correct": false,
+          "top1_cosine": 0.002975892241413945
+        },
+        {
+          "gold_scenario": "calendar",
+          "predicted_scenario": "weather",
+          "sample_id": "slurp:devel:007374:audio-1498569508",
+          "top1_correct": false,
+          "top1_cosine": 0.014868213908109723
+        },
+        {
+          "gold_scenario": "calendar",
+          "predicted_scenario": "alarm",
+          "sample_id": "slurp:devel:007541:audio-1490202471",
+          "top1_correct": false,
+          "top1_cosine": 0.07542106836464421
+        },
+        {
+          "gold_scenario": "calendar",
+          "predicted_scenario": "email",
+          "sample_id": "slurp:devel:007653:audio-1497438989-headset",
+          "top1_correct": false,
+          "top1_cosine": 0.006756410292692083
+        },
+        {
+          "gold_scenario": "calendar",
+          "predicted_scenario": "iot",
+          "sample_id": "slurp:devel:007852:audio-1494416109-headset",
+          "top1_correct": false,
+          "top1_cosine": -0.033079148011051614
+        },
+        {
+          "gold_scenario": "calendar",
+          "predicted_scenario": "music",
+          "sample_id": "slurp:devel:008014:audio-1500899290",
+          "top1_correct": false,
+          "top1_cosine": 0.015925019445799538
+        },
+        {
+          "gold_scenario": "calendar",
+          "predicted_scenario": "weather",
+          "sample_id": "slurp:devel:008047:audio-1498570919",
+          "top1_correct": false,
+          "top1_cosine": 0.08246760804668296
+        },
+        {
+          "gold_scenario": "calendar",
+          "predicted_scenario": "datetime",
+          "sample_id": "slurp:devel:008072:audio-1488986707",
+          "top1_correct": false,
+          "top1_cosine": 0.0270710079906094
+        },
+        {
+          "gold_scenario": "play",
+          "predicted_scenario": "general",
+          "sample_id": "slurp:devel:009340:audio-1497882818-headset",
+          "top1_correct": false,
+          "top1_cosine": -0.003958608674261165
+        },
+        {
+          "gold_scenario": "play",
+          "predicted_scenario": "news",
+          "sample_id": "slurp:devel:009518:audio-1495734594-headset",
+          "top1_correct": false,
+          "top1_cosine": 0.022627971720222285
+        },
+        {
+          "gold_scenario": "play",
+          "predicted_scenario": "alarm",
+          "sample_id": "slurp:devel:009733:audio--1505407176",
+          "top1_correct": false,
+          "top1_cosine": -0.009501781171920607
+        },
+        {
+          "gold_scenario": "cooking",
+          "predicted_scenario": "transport",
+          "sample_id": "slurp:devel:010162:audio-1501765286",
+          "top1_correct": false,
+          "top1_cosine": 0.0025850283007053175
+        },
+        {
+          "gold_scenario": "cooking",
+          "predicted_scenario": "qa",
+          "sample_id": "slurp:devel:010186:audio-1501415369-headset",
+          "top1_correct": false,
+          "top1_cosine": -0.004792600869839033
+        },
+        {
+          "gold_scenario": "lists",
+          "predicted_scenario": "lists",
+          "sample_id": "slurp:devel:010545:audio-1490006493",
+          "top1_correct": true,
+          "top1_cosine": 0.04457891698852476
+        },
+        {
+          "gold_scenario": "lists",
+          "predicted_scenario": "music",
+          "sample_id": "slurp:devel:010732:audio-1490184504",
+          "top1_correct": false,
+          "top1_cosine": 0.04790352026000373
+        },
+        {
+          "gold_scenario": "play",
+          "predicted_scenario": "iot",
+          "sample_id": "slurp:devel:011503:audio-1494514154",
+          "top1_correct": false,
+          "top1_cosine": 0.030200119395753493
+        },
+        {
+          "gold_scenario": "recommendation",
+          "predicted_scenario": "transport",
+          "sample_id": "slurp:devel:011654:audio-1501692977-headset",
+          "top1_correct": false,
+          "top1_cosine": -0.04450141345428635
+        },
+        {
+          "gold_scenario": "recommendation",
+          "predicted_scenario": "music",
+          "sample_id": "slurp:devel:011693:audio-1498565017-headset",
+          "top1_correct": false,
+          "top1_cosine": 0.007634931611410195
+        },
+        {
+          "gold_scenario": "recommendation",
+          "predicted_scenario": "audio",
+          "sample_id": "slurp:devel:012076:audio-1501766742-headset",
+          "top1_correct": false,
+          "top1_cosine": 0.027720543752039365
+        },
+        {
+          "gold_scenario": "transport",
+          "predicted_scenario": "qa",
+          "sample_id": "slurp:devel:012253:audio-1488974202",
+          "top1_correct": false,
+          "top1_cosine": 0.053856916668064705
+        },
+        {
+          "gold_scenario": "transport",
+          "predicted_scenario": "weather",
+          "sample_id": "slurp:devel:012478:audio-1498486426",
+          "top1_correct": false,
+          "top1_cosine": 0.06243976227661413
+        },
+        {
+          "gold_scenario": "transport",
+          "predicted_scenario": "iot",
+          "sample_id": "slurp:devel:012654:audio-1497860426-headset",
+          "top1_correct": false,
+          "top1_cosine": -0.026322319396224054
+        },
+        {
+          "gold_scenario": "transport",
+          "predicted_scenario": "datetime",
+          "sample_id": "slurp:devel:012667:audio-1501751776-headset",
+          "top1_correct": false,
+          "top1_cosine": -0.003697747034317446
+        },
+        {
+          "gold_scenario": "general",
+          "predicted_scenario": "iot",
+          "sample_id": "slurp:devel:013281:audio-1490354296-headset",
+          "top1_correct": false,
+          "top1_cosine": 0.029301023379531065
+        },
+        {
+          "gold_scenario": "qa",
+          "predicted_scenario": "qa",
+          "sample_id": "slurp:devel:013795:audio-1499266495",
+          "top1_correct": true,
+          "top1_cosine": 0.060657523680400255
+        },
+        {
+          "gold_scenario": "qa",
+          "predicted_scenario": "play",
+          "sample_id": "slurp:devel:014173:audio-1490291441",
+          "top1_correct": false,
+          "top1_cosine": 0.052381990262568505
+        },
+        {
+          "gold_scenario": "qa",
+          "predicted_scenario": "qa",
+          "sample_id": "slurp:devel:014263:audio-1501692486",
+          "top1_correct": true,
+          "top1_cosine": 0.06329316140106146
+        },
+        {
+          "gold_scenario": "qa",
+          "predicted_scenario": "music",
+          "sample_id": "slurp:devel:014397:audio-1497368809",
+          "top1_correct": false,
+          "top1_cosine": 0.0261069689236496
+        },
+        {
+          "gold_scenario": "qa",
+          "predicted_scenario": "qa",
+          "sample_id": "slurp:devel:014657:audio-1499695487",
+          "top1_correct": true,
+          "top1_cosine": 0.011614064835919846
+        },
+        {
+          "gold_scenario": "social",
+          "predicted_scenario": "music",
+          "sample_id": "slurp:devel:015258:audio-1501777355-headset",
+          "top1_correct": false,
+          "top1_cosine": 0.030741551935248763
+        },
+        {
+          "gold_scenario": "social",
+          "predicted_scenario": "lists",
+          "sample_id": "slurp:devel:015375:audio-1501754418",
+          "top1_correct": false,
+          "top1_cosine": 0.06175783301488271
+        },
+        {
+          "gold_scenario": "social",
+          "predicted_scenario": "qa",
+          "sample_id": "slurp:devel:015632:audio-1490021137-headset",
+          "top1_correct": false,
+          "top1_cosine": -0.017645023930775085
+        },
+        {
+          "gold_scenario": "email",
+          "predicted_scenario": "email",
+          "sample_id": "slurp:devel:015805:audio-1489153743",
+          "top1_correct": true,
+          "top1_cosine": 0.10402283416703462
+        },
+        {
+          "gold_scenario": "email",
+          "predicted_scenario": "weather",
+          "sample_id": "slurp:devel:016653:audio-1494513016",
+          "top1_correct": false,
+          "top1_cosine": 0.014793030562114961
+        },
+        {
+          "gold_scenario": "email",
+          "predicted_scenario": "iot",
+          "sample_id": "slurp:devel:016825:audio-1498573552-headset",
+          "top1_correct": false,
+          "top1_cosine": 0.0185334629799838
+        },
+        {
+          "gold_scenario": "email",
+          "predicted_scenario": "music",
+          "sample_id": "slurp:devel:017009:audio-1502198805-headset",
+          "top1_correct": false,
+          "top1_cosine": -0.01752920879251794
+        }
+      ]
+    },
+    "m3-clsp-control": {
+      "accuracy": null,
+      "arm_id": "m3-clsp-control",
+      "attractor": null,
+      "confusion": [],
+      "cosine_sign_profile": null,
+      "dropped": true,
+      "manifest_run_id": null,
+      "n_correct": 0,
+      "n_labels": 0,
+      "n_samples": 0,
+      "predictions": []
+    },
+    "m4-cascade": {
+      "accuracy": 0.75,
+      "arm_id": "m4-cascade",
+      "attractor": {
+        "n_labels_available": 18,
+        "n_labels_predicted": 17,
+        "n_predictions": 60,
+        "shares": [
+          {
+            "count": 10,
+            "label": "play",
+            "share": 0.16666666666666666
+          },
+          {
+            "count": 7,
+            "label": "calendar",
+            "share": 0.11666666666666667
+          },
+          {
+            "count": 5,
+            "label": "iot",
+            "share": 0.08333333333333333
+          },
+          {
+            "count": 5,
+            "label": "takeaway",
+            "share": 0.08333333333333333
+          },
+          {
+            "count": 4,
+            "label": "datetime",
+            "share": 0.06666666666666667
+          },
+          {
+            "count": 4,
+            "label": "qa",
+            "share": 0.06666666666666667
+          },
+          {
+            "count": 4,
+            "label": "transport",
+            "share": 0.06666666666666667
+          },
+          {
+            "count": 3,
+            "label": "alarm",
+            "share": 0.05
+          },
+          {
+            "count": 3,
+            "label": "email",
+            "share": 0.05
+          },
+          {
+            "count": 3,
+            "label": "news",
+            "share": 0.05
+          },
+          {
+            "count": 3,
+            "label": "social",
+            "share": 0.05
+          },
+          {
+            "count": 3,
+            "label": "weather",
+            "share": 0.05
+          },
+          {
+            "count": 2,
+            "label": "cooking",
+            "share": 0.03333333333333333
+          },
+          {
+            "count": 1,
+            "label": "audio",
+            "share": 0.016666666666666666
+          },
+          {
+            "count": 1,
+            "label": "general",
+            "share": 0.016666666666666666
+          },
+          {
+            "count": 1,
+            "label": "lists",
+            "share": 0.016666666666666666
+          },
+          {
+            "count": 1,
+            "label": "recommendation",
+            "share": 0.016666666666666666
+          }
+        ],
+        "top1_share": 0.16666666666666666,
+        "top2_share": 0.2833333333333333
+      },
+      "confusion": [
+        {
+          "count": 7,
+          "gold": "play",
+          "predicted": "play"
+        },
+        {
+          "count": 5,
+          "gold": "calendar",
+          "predicted": "calendar"
+        },
+        {
+          "count": 4,
+          "gold": "qa",
+          "predicted": "qa"
+        },
+        {
+          "count": 4,
+          "gold": "transport",
+          "predicted": "transport"
+        },
+        {
+          "count": 3,
+          "gold": "email",
+          "predicted": "email"
+        },
+        {
+          "count": 3,
+          "gold": "iot",
+          "predicted": "iot"
+        },
+        {
+          "count": 3,
+          "gold": "social",
+          "predicted": "social"
+        },
+        {
+          "count": 3,
+          "gold": "weather",
+          "predicted": "weather"
+        },
+        {
+          "count": 2,
+          "gold": "alarm",
+          "predicted": "alarm"
+        },
+        {
+          "count": 2,
+          "gold": "cooking",
+          "predicted": "cooking"
+        },
+        {
+          "count": 2,
+          "gold": "datetime",
+          "predicted": "datetime"
+        },
+        {
+          "count": 2,
+          "gold": "music",
+          "predicted": "play"
+        },
+        {
+          "count": 2,
+          "gold": "news",
+          "predicted": "news"
+        },
+        {
+          "count": 2,
+          "gold": "takeaway",
+          "predicted": "takeaway"
+        },
+        {
+          "count": 1,
+          "gold": "audio",
+          "predicted": "audio"
+        },
+        {
+          "count": 1,
+          "gold": "calendar",
+          "predicted": "datetime"
+        },
+        {
+          "count": 1,
+          "gold": "calendar",
+          "predicted": "play"
+        },
+        {
+          "count": 1,
+          "gold": "calendar",
+          "predicted": "takeaway"
+        },
+        {
+          "count": 1,
+          "gold": "datetime",
+          "predicted": "calendar"
+        },
+        {
+          "count": 1,
+          "gold": "email",
+          "predicted": "calendar"
+        },
+        {
+          "count": 1,
+          "gold": "general",
+          "predicted": "alarm"
+        },
+        {
+          "count": 1,
+          "gold": "general",
+          "predicted": "iot"
+        },
+        {
+          "count": 1,
+          "gold": "lists",
+          "predicted": "lists"
+        },
+        {
+          "count": 1,
+          "gold": "lists",
+          "predicted": "takeaway"
+        },
+        {
+          "count": 1,
+          "gold": "news",
+          "predicted": "general"
+        },
+        {
+          "count": 1,
+          "gold": "qa",
+          "predicted": "datetime"
+        },
+        {
+          "count": 1,
+          "gold": "recommendation",
+          "predicted": "news"
+        },
+        {
+          "count": 1,
+          "gold": "recommendation",
+          "predicted": "recommendation"
+        },
+        {
+          "count": 1,
+          "gold": "recommendation",
+          "predicted": "takeaway"
+        },
+        {
+          "count": 1,
+          "gold": "weather",
+          "predicted": "iot"
+        }
+      ],
+      "cosine_sign_profile": {
+        "max_cosine": 0.7767496267424391,
+        "mean_cosine": 0.6029853846427412,
+        "min_cosine": 0.313279714536356,
+        "n": 60,
+        "n_negative": 0,
+        "n_positive": 60,
+        "n_zero": 0,
+        "positive_share": 1.0
+      },
+      "dropped": false,
+      "manifest_run_id": "SAEA-PROBE-pemb3m-388/m4-cascade",
+      "n_correct": 45,
+      "n_labels": 18,
+      "n_samples": 60,
+      "predictions": [
+        {
+          "gold_scenario": "audio",
+          "predicted_scenario": "audio",
+          "sample_id": "slurp:devel:000115:audio-1495375974",
+          "top1_correct": true,
+          "top1_cosine": 0.42315731565369236
+        },
+        {
+          "gold_scenario": "music",
+          "predicted_scenario": "play",
+          "sample_id": "slurp:devel:000444:audio-1502891018-headset",
+          "top1_correct": false,
+          "top1_cosine": 0.4382823105408285
+        },
+        {
+          "gold_scenario": "datetime",
+          "predicted_scenario": "datetime",
+          "sample_id": "slurp:devel:000943:audio-1434529860-headset",
+          "top1_correct": true,
+          "top1_cosine": 0.47491955612242737
+        },
+        {
+          "gold_scenario": "news",
+          "predicted_scenario": "news",
+          "sample_id": "slurp:devel:001637:audio-1502195066-headset",
+          "top1_correct": true,
+          "top1_cosine": 0.7311765122410662
+        },
+        {
+          "gold_scenario": "iot",
+          "predicted_scenario": "iot",
+          "sample_id": "slurp:devel:002120:audio-1502218226",
+          "top1_correct": true,
+          "top1_cosine": 0.672567047118129
+        },
+        {
+          "gold_scenario": "news",
+          "predicted_scenario": "news",
+          "sample_id": "slurp:devel:002992:audio-1489152746",
+          "top1_correct": true,
+          "top1_cosine": 0.7703336499030631
+        },
+        {
+          "gold_scenario": "weather",
+          "predicted_scenario": "weather",
+          "sample_id": "slurp:devel:003121:audio-1501696857-headset",
+          "top1_correct": true,
+          "top1_cosine": 0.7184073440823365
+        },
+        {
+          "gold_scenario": "weather",
+          "predicted_scenario": "weather",
+          "sample_id": "slurp:devel:003309:audio-1501756265",
+          "top1_correct": true,
+          "top1_cosine": 0.6826468629165816
+        },
+        {
+          "gold_scenario": "play",
+          "predicted_scenario": "play",
+          "sample_id": "slurp:devel:004134:audio-1500387396-headset",
+          "top1_correct": true,
+          "top1_cosine": 0.6719093441103895
+        },
+        {
+          "gold_scenario": "takeaway",
+          "predicted_scenario": "takeaway",
+          "sample_id": "slurp:devel:004604:audio-1501759214",
+          "top1_correct": true,
+          "top1_cosine": 0.7273245224171326
+        },
+        {
+          "gold_scenario": "iot",
+          "predicted_scenario": "iot",
+          "sample_id": "slurp:devel:005025:audio-1500900618",
+          "top1_correct": true,
+          "top1_cosine": 0.5588282828376188
+        },
+        {
+          "gold_scenario": "datetime",
+          "predicted_scenario": "calendar",
+          "sample_id": "slurp:devel:005028:audio-1502893878-headset",
+          "top1_correct": false,
+          "top1_cosine": 0.5236831885627363
+        },
+        {
+          "gold_scenario": "play",
+          "predicted_scenario": "play",
+          "sample_id": "slurp:devel:005108:audio-1494422588-headset",
+          "top1_correct": true,
+          "top1_cosine": 0.7326985020013316
+        },
+        {
+          "gold_scenario": "datetime",
+          "predicted_scenario": "datetime",
+          "sample_id": "slurp:devel:005359:audio-1497265137-headset",
+          "top1_correct": true,
+          "top1_cosine": 0.553765051732643
+        },
+        {
+          "gold_scenario": "weather",
+          "predicted_scenario": "iot",
+          "sample_id": "slurp:devel:005453:audio-1490183633-headset",
+          "top1_correct": false,
+          "top1_cosine": 0.5236263566554694
+        },
+        {
+          "gold_scenario": "iot",
+          "predicted_scenario": "iot",
+          "sample_id": "slurp:devel:005518:audio-1490203960",
+          "top1_correct": true,
+          "top1_cosine": 0.5655118791386172
+        },
+        {
+          "gold_scenario": "music",
+          "predicted_scenario": "play",
+          "sample_id": "slurp:devel:005536:audio-1499090415-headset",
+          "top1_correct": false,
+          "top1_cosine": 0.7191438483933446
+        },
+        {
+          "gold_scenario": "alarm",
+          "predicted_scenario": "alarm",
+          "sample_id": "slurp:devel:005541:audio--1504191543",
+          "top1_correct": true,
+          "top1_cosine": 0.7767496267424391
+        },
+        {
+          "gold_scenario": "alarm",
+          "predicted_scenario": "alarm",
+          "sample_id": "slurp:devel:005567:audio-1497359684",
+          "top1_correct": true,
+          "top1_cosine": 0.6763430432919105
+        },
+        {
+          "gold_scenario": "play",
+          "predicted_scenario": "play",
+          "sample_id": "slurp:devel:005684:audio-1498577434",
+          "top1_correct": true,
+          "top1_cosine": 0.6946135422241494
+        },
+        {
+          "gold_scenario": "weather",
+          "predicted_scenario": "weather",
+          "sample_id": "slurp:devel:005743:audio-1501407405-headset",
+          "top1_correct": true,
+          "top1_cosine": 0.7138778832573642
+        },
+        {
+          "gold_scenario": "takeaway",
+          "predicted_scenario": "takeaway",
+          "sample_id": "slurp:devel:005770:audio-1495377172",
+          "top1_correct": true,
+          "top1_cosine": 0.7603157972756098
+        },
+        {
+          "gold_scenario": "news",
+          "predicted_scenario": "general",
+          "sample_id": "slurp:devel:005943:audio-1499266055",
+          "top1_correct": false,
+          "top1_cosine": 0.6105029216246882
+        },
+        {
+          "gold_scenario": "general",
+          "predicted_scenario": "alarm",
+          "sample_id": "slurp:devel:006603:audio-1502101512",
+          "top1_correct": false,
+          "top1_cosine": 0.5088864268731152
+        },
+        {
+          "gold_scenario": "calendar",
+          "predicted_scenario": "calendar",
+          "sample_id": "slurp:devel:006751:audio-1501773837-headset",
+          "top1_correct": true,
+          "top1_cosine": 0.6026489258019679
+        },
+        {
+          "gold_scenario": "calendar",
+          "predicted_scenario": "calendar",
+          "sample_id": "slurp:devel:007374:audio-1498569508",
+          "top1_correct": true,
+          "top1_cosine": 0.5506698384319346
+        },
+        {
+          "gold_scenario": "calendar",
+          "predicted_scenario": "calendar",
+          "sample_id": "slurp:devel:007541:audio-1490202471",
+          "top1_correct": true,
+          "top1_cosine": 0.5622745609127772
+        },
+        {
+          "gold_scenario": "calendar",
+          "predicted_scenario": "calendar",
+          "sample_id": "slurp:devel:007653:audio-1497438989-headset",
+          "top1_correct": true,
+          "top1_cosine": 0.5404164558403426
+        },
+        {
+          "gold_scenario": "calendar",
+          "predicted_scenario": "play",
+          "sample_id": "slurp:devel:007852:audio-1494416109-headset",
+          "top1_correct": false,
+          "top1_cosine": 0.4421081126626324
+        },
+        {
+          "gold_scenario": "calendar",
+          "predicted_scenario": "calendar",
+          "sample_id": "slurp:devel:008014:audio-1500899290",
+          "top1_correct": true,
+          "top1_cosine": 0.7091831677185906
+        },
+        {
+          "gold_scenario": "calendar",
+          "predicted_scenario": "takeaway",
+          "sample_id": "slurp:devel:008047:audio-1498570919",
+          "top1_correct": false,
+          "top1_cosine": 0.5371924860167594
+        },
+        {
+          "gold_scenario": "calendar",
+          "predicted_scenario": "datetime",
+          "sample_id": "slurp:devel:008072:audio-1488986707",
+          "top1_correct": false,
+          "top1_cosine": 0.5603727583271603
+        },
+        {
+          "gold_scenario": "play",
+          "predicted_scenario": "play",
+          "sample_id": "slurp:devel:009340:audio-1497882818-headset",
+          "top1_correct": true,
+          "top1_cosine": 0.6140087435276596
+        },
+        {
+          "gold_scenario": "play",
+          "predicted_scenario": "play",
+          "sample_id": "slurp:devel:009518:audio-1495734594-headset",
+          "top1_correct": true,
+          "top1_cosine": 0.7252861394181175
+        },
+        {
+          "gold_scenario": "play",
+          "predicted_scenario": "play",
+          "sample_id": "slurp:devel:009733:audio--1505407176",
+          "top1_correct": true,
+          "top1_cosine": 0.45157005088708685
+        },
+        {
+          "gold_scenario": "cooking",
+          "predicted_scenario": "cooking",
+          "sample_id": "slurp:devel:010162:audio-1501765286",
+          "top1_correct": true,
+          "top1_cosine": 0.5988072986231133
+        },
+        {
+          "gold_scenario": "cooking",
+          "predicted_scenario": "cooking",
+          "sample_id": "slurp:devel:010186:audio-1501415369-headset",
+          "top1_correct": true,
+          "top1_cosine": 0.3758654907207709
+        },
+        {
+          "gold_scenario": "lists",
+          "predicted_scenario": "lists",
+          "sample_id": "slurp:devel:010545:audio-1490006493",
+          "top1_correct": true,
+          "top1_cosine": 0.6968858186019141
+        },
+        {
+          "gold_scenario": "lists",
+          "predicted_scenario": "takeaway",
+          "sample_id": "slurp:devel:010732:audio-1490184504",
+          "top1_correct": false,
+          "top1_cosine": 0.6718005485596895
+        },
+        {
+          "gold_scenario": "play",
+          "predicted_scenario": "play",
+          "sample_id": "slurp:devel:011503:audio-1494514154",
+          "top1_correct": true,
+          "top1_cosine": 0.5068098331613815
+        },
+        {
+          "gold_scenario": "recommendation",
+          "predicted_scenario": "takeaway",
+          "sample_id": "slurp:devel:011654:audio-1501692977-headset",
+          "top1_correct": false,
+          "top1_cosine": 0.6726406483102125
+        },
+        {
+          "gold_scenario": "recommendation",
+          "predicted_scenario": "news",
+          "sample_id": "slurp:devel:011693:audio-1498565017-headset",
+          "top1_correct": false,
+          "top1_cosine": 0.502509070336438
+        },
+        {
+          "gold_scenario": "recommendation",
+          "predicted_scenario": "recommendation",
+          "sample_id": "slurp:devel:012076:audio-1501766742-headset",
+          "top1_correct": true,
+          "top1_cosine": 0.6719168398498462
+        },
+        {
+          "gold_scenario": "transport",
+          "predicted_scenario": "transport",
+          "sample_id": "slurp:devel:012253:audio-1488974202",
+          "top1_correct": true,
+          "top1_cosine": 0.5912342414343015
+        },
+        {
+          "gold_scenario": "transport",
+          "predicted_scenario": "transport",
+          "sample_id": "slurp:devel:012478:audio-1498486426",
+          "top1_correct": true,
+          "top1_cosine": 0.582809376837875
+        },
+        {
+          "gold_scenario": "transport",
+          "predicted_scenario": "transport",
+          "sample_id": "slurp:devel:012654:audio-1497860426-headset",
+          "top1_correct": true,
+          "top1_cosine": 0.5953606251946243
+        },
+        {
+          "gold_scenario": "transport",
+          "predicted_scenario": "transport",
+          "sample_id": "slurp:devel:012667:audio-1501751776-headset",
+          "top1_correct": true,
+          "top1_cosine": 0.5598333053523395
+        },
+        {
+          "gold_scenario": "general",
+          "predicted_scenario": "iot",
+          "sample_id": "slurp:devel:013281:audio-1490354296-headset",
+          "top1_correct": false,
+          "top1_cosine": 0.5792930607217268
+        },
+        {
+          "gold_scenario": "qa",
+          "predicted_scenario": "qa",
+          "sample_id": "slurp:devel:013795:audio-1499266495",
+          "top1_correct": true,
+          "top1_cosine": 0.5678022410888632
+        },
+        {
+          "gold_scenario": "qa",
+          "predicted_scenario": "qa",
+          "sample_id": "slurp:devel:014173:audio-1490291441",
+          "top1_correct": true,
+          "top1_cosine": 0.5231225591498438
+        },
+        {
+          "gold_scenario": "qa",
+          "predicted_scenario": "qa",
+          "sample_id": "slurp:devel:014263:audio-1501692486",
+          "top1_correct": true,
+          "top1_cosine": 0.43910624797547204
+        },
+        {
+          "gold_scenario": "qa",
+          "predicted_scenario": "datetime",
+          "sample_id": "slurp:devel:014397:audio-1497368809",
+          "top1_correct": false,
+          "top1_cosine": 0.313279714536356
+        },
+        {
+          "gold_scenario": "qa",
+          "predicted_scenario": "qa",
+          "sample_id": "slurp:devel:014657:audio-1499695487",
+          "top1_correct": true,
+          "top1_cosine": 0.6435921223949516
+        },
+        {
+          "gold_scenario": "social",
+          "predicted_scenario": "social",
+          "sample_id": "slurp:devel:015258:audio-1501777355-headset",
+          "top1_correct": true,
+          "top1_cosine": 0.697597020298016
+        },
+        {
+          "gold_scenario": "social",
+          "predicted_scenario": "social",
+          "sample_id": "slurp:devel:015375:audio-1501754418",
+          "top1_correct": true,
+          "top1_cosine": 0.62706831242075
+        },
+        {
+          "gold_scenario": "social",
+          "predicted_scenario": "social",
+          "sample_id": "slurp:devel:015632:audio-1490021137-headset",
+          "top1_correct": true,
+          "top1_cosine": 0.591796985777847
+        },
+        {
+          "gold_scenario": "email",
+          "predicted_scenario": "calendar",
+          "sample_id": "slurp:devel:015805:audio-1489153743",
+          "top1_correct": false,
+          "top1_cosine": 0.5049976971245393
+        },
+        {
+          "gold_scenario": "email",
+          "predicted_scenario": "email",
+          "sample_id": "slurp:devel:016653:audio-1494513016",
+          "top1_correct": true,
+          "top1_cosine": 0.7430440823308616
+        },
+        {
+          "gold_scenario": "email",
+          "predicted_scenario": "email",
+          "sample_id": "slurp:devel:016825:audio-1498573552-headset",
+          "top1_correct": true,
+          "top1_cosine": 0.6365401239327202
+        },
+        {
+          "gold_scenario": "email",
+          "predicted_scenario": "email",
+          "sample_id": "slurp:devel:017009:audio-1502198805-headset",
+          "top1_correct": true,
+          "top1_cosine": 0.7604077585683053
+        }
+      ]
+    }
+  },
+  "cascade_source_status": "COMPLETE",
+  "control_import_status": {
+    "m1-lco-primary": "OK",
+    "m2-glap-control": "OK",
+    "m3-clsp-control": "DROPPED-RUNTIME-ERROR",
+    "m4-cascade": "OK"
+  },
+  "cross_arm_agreement": [
+    {
+      "agreement_rate": 0.016666666666666666,
+      "arm_a": "m1-lco-primary",
+      "arm_b": "m2-glap-control",
+      "n_agree": 1,
+      "n_common_samples": 60
+    },
+    {
+      "agreement_rate": 0.05,
+      "arm_a": "m1-lco-primary",
+      "arm_b": "m4-cascade",
+      "n_agree": 3,
+      "n_common_samples": 60
+    },
+    {
+      "agreement_rate": 0.18333333333333332,
+      "arm_a": "m2-glap-control",
+      "arm_b": "m4-cascade",
+      "n_agree": 11,
+      "n_common_samples": 60
+    }
+  ],
+  "flight_facts_applied": {
+    "jitter_vectors_supplied": true,
+    "m3_status": "DROPPED-RUNTIME-ERROR (transformers 5.12.1 vs pinned remote code 4.57.3)",
+    "note": "the shipped CLI hardcodes pooling_override_present=False, labels any missing arm DROPPED-DEPS and supplies no jitter pair; this document re-runs the SAME shipped pure functions with the flight's actual gate outcomes, and is the governing verdict per registration section 4",
+    "pooling_override_present": true,
+    "source": "docs/checks/speech-aware-evidence-acquisition/2026-08-20-pemb3m-flight/README.md gate (a)"
+  },
+  "jitter": {
+    "argmax_a": "audio",
+    "argmax_b": "play",
+    "argmax_stable": false,
+    "cosine": 0.9999006304344566,
+    "within_tolerance": true
+  },
+  "pooling_override_present": true,
+  "probe_id": "SAEA-PROBE-pemb3m-388",
+  "schema": "saea-pemb3m-read-v1",
+  "verdict": {
+    "control_anomaly": false,
+    "control_anomaly_detail": "max(M2,M3)=0.1333 vs max(M1,M4)=0.7500, floor 0.3 -- not met",
+    "m1_detail": "M1 (LCO) accuracy 0.0500 <= 0.3 -- POOLING-OVERRIDE-PRESENT fired on the pre-flight gate, so this refutation is SCOPED to the llama.cpp construction, never a model-level refutation",
+    "m1_label": "EMB-WEAK-SCOPED",
+    "m4_detail": "M4 (CASCADE) accuracy 0.7500 >= 0.65 -- the routing tier does not need audio embeddings at all; the ~89%-text-side pattern (P-KEY) extends to representation matching",
+    "m4_label": "CASCADE-ROUTES",
+    "overall": "EMB-WEAK-SCOPED + CASCADE-ROUTES"
+  }
+}
