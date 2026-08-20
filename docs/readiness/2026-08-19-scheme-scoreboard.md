@@ -7,7 +7,7 @@ across small-scale explorations. This document is the running consolidation: wha
 consistently works, what consistently fails, and the current best-scheme statement. Updated
 at every consumed read. (Registration/verdict docs remain the evidence of record.)
 
-## Current best-scheme statement (v2, 2026-08-20 — routing tier gains the cascade lever)
+## Current best-scheme statement (v3, 2026-08-20 — filling tier gains a targeting-free lever)
 
 **Two-tier architecture on the frozen core:**
 - **Routing tier (high-order semantics — intent, tool, QA candidate):** whole-utterance
@@ -26,8 +26,14 @@ at every consumed read. (Registration/verdict docs remain the evidence of record
   form-robust). CONSISTENT negatives: (1) word-level acoustic resonance — wrong entries
   echoing the core's own percept capture decode 29/32 (supply-side filtering duty);
   (2) in-context concrete values re-open injection (34→2→22 series); (3) blind replacing
-  supply on already-correct samples regresses 36/97 — **supply targeting is the open
-  problem**; (4) compositional failures (tier3+tier8) are supply-immune everywhere.
+  supply on already-correct samples regresses 36/97 — **supply targeting was the open
+  problem and is now ANSWERED by percept-keying (P-CORR-F): keying every emitted slot on the
+  core's own output needs no confidence gate, and makes blind replacement's failure mode
+  structurally unreachable (untouched samples get byte-identical prompts). The duty that
+  REPLACES it is supply-side FILTERING — the core admits wrong percept-keyed entries at 85.7%,
+  so supply precision is the whole safety margin**; (4) compositional failures (tier3+tier8)
+  are supply-immune everywhere; (5) percept-keying reaches only 67% of samples (20/60 emit
+  nothing keyable), so a keyed layer always needs a coverage layer beside it.
 - **Speech-as-knowledge (the goal's core question):** participation of acoustics in supply
   USE is PROVEN (P-TRAP); net VALUE of audio in the supply loop over self-transcription is
   unresolved (P-KEY I=+0.046, CI crossing zero; ~89% text-side realizable at L3).
@@ -35,8 +41,11 @@ at every consumed read. (Registration/verdict docs remain the evidence of record
   embeddings — **CLOSED for now (P-EMB-3M): every flown construction is refuted, the
   dedicated arm only scope-refuted behind a build defect, and the strongest candidate
   (nemotron) never flew**; the routing tier's cascade lever that replaced it is
-  text-mediated, (b) percept-aware supply filtering (designable), (c) corrective
-  confusable-pair supply (design queue).
+  text-mediated, (b) percept-aware supply filtering — **promoted from designable to REQUIRED
+  AND SPECIFIED (P-CORR-F): the core passes 85.7% of wrong percept-keyed entries through, so
+  the filter must sit OUTSIDE the frozen core**, (c) corrective percept-keyed supply —
+  **✅ WORKS (P-CORR-F CORRECTIVE-PERCEPT, consumed 2026-08-20): +0.0508 full-60 / +0.0753 on
+  the 40 mechanism-usable, driven by a 96.7%-vs-0.0% self-vs-cross percept gate**.
 
 ## Consistency ledger (per mechanism, across probes)
 
@@ -56,7 +65,7 @@ at every consumed read. (Registration/verdict docs remain the evidence of record
 | Routing by CASCADE (frozen-core self-transcript → dedicated TEXT embedder) | ✅ **CASCADE-ROUTES 1/1 (P-EMB-3M M4, consumed 2026-08-20)** — T0 self-transcripts (consumed P-KEY-2 artifacts) → `qwen3-embedding-0.6b-gguf` text↔text argmax cosine = **45/60 = 0.7500**, i.e. 2 samples below A1′r (0.7833) and 4 below FS-NONE (0.8167), **+40.683 over its own shuffle expectation**, 17/18 labels reachable with no attractor (top-1 share 0.1667), errors semantically adjacent (largest cell `music→play` 2), winning cosines 60/60 positive at mean **+0.6030**. Jitter-robust: the qwen3-emb repeat pair clears the declared ≥0.9999 tolerance (0.9999006) but its **argmax is NOT stable** on a null synthetic string (margin 0.000485); under the adversarial 2δ bound at most 5 scored correct predictions could flip → **40/60 = 0.6667, still above the 0.65 floor**. **Text-mediated, so NOT speech-native**: it extends the P-KEY ~89 %-text-side pattern to representation matching and inherits every transcription error. Its leverage is a label side that scales to 152 tool rows without prompt growth | `2026-08-20-pemb3m-verdict.md` |
 | Few-shot routing gain/bias | ❌ INERT-ish (P-FEW: Δ exactly 0.0000, CI [−.067,+.067]; skew costs −0.067 generic ICL noise, ZERO prior capture; equivalence not certified — band 0.05 < measured ±0.033×2 noise) | `162cca3` |
 | Router-confidence targeting | 🔜 P-TARGET **descoped to the routing tier** (2026-08-20 design analysis over consumed artifacts): the A2T gate simulation is NEGATIVE — no threshold on any measured decode-path signal (chars AUC 0.765, completion-tokens AUC 0.794, args) yields a positive net over the 217; best sweep result = supply nothing (net 0); blind supply = −28, reproducing V4. The 8 conversions sit inside the regression-densest length band — length separates regressors from non-regressors but NOT converters from regressors. Only positive rule is tier1-structural (+5): post-hoc, benchmark-label, non-deployable. Routing-tier signal is real (two-arm in-session disagreement precision 0.50, lift 2.73 re-confirmed) but structurally blind to the concentrated `play` cluster (flags 1 of 6; 5 errors are prompt-unanimous) → P-TARGET-P1 = closed-set routing + logprobs (60 calls; llama-server logprob usability unverified — feasibility check first; prior 0/17 earnings negative disclosed) | design dossier 2026-08-20; pemb2 synthesis §5.3 |
-| Corrective supply (percept-keyed) | 🔜 **P-CORR-F REGISTERED 2026-08-20** with a scope correction: the phonetic-confusable population is EMPTY on this carrier (0/37 pairs share a phonetic key); the real channel is TYPE-NAME collision (68/95 emitted slots use out-of-vocabulary types). Construction = gold-free L1 TYPE-LOOKUP: mean 1.02 entries/sample covers 36/89 gold slots, beating the A3 100-entry roster (29/89) at ~1% dose. Pre-declared: P-CORR-F is P-TRAP sign-flipped — recovery AND contamination both measured. Routing twin P-CORR-R (confusable-neighbourhood re-ask, disagreement-complementary: the two signals catch DISJOINT error populations) designs next | `2026-08-20-pcorrf-preregistration-REGISTERED.md` |
+| Corrective supply (percept-keyed) | ✅ **CORRECTIVE-PERCEPT 1/1 (P-CORR-F, consumed 2026-08-20)** — the filling tier's first TARGETING-FREE positive lever with a dose-matched control. Δ₁ = SLU-F1(W1 self) − SLU-F1(W2 cross) = **+0.0508**, 90% CI **[+0.0098, +0.0968]** on the registered full 60, and **+0.0753**, CI **[+0.0179, +0.1411]** on the 40 mechanism-usable samples (20/60 fly K=0 with **byte-identical W1/W2 prompts, verified 20/20**, so the mechanism denominator is 40 not 60). Arm SLU-F1 W1 **0.6588** / W2 0.6080 / W3 0.4336 / W4 0.6366. **THE PERCEPT GATE IS BINARY AND NEAR-TOTAL**: capture of supplied corrective entries = **96.7% self-percept vs 0.0% cross-percept** at identical dose and roster base, 100% for W3, and **95.1% keyed vs 11.9% retrieval-widened inside a single W4 prompt** — P-TRAP with the sign flipped exactly as pre-declared, isolated by three independent contrasts. **But the gate does not inspect correctness**: 12 of W1's 14 non-gold entries were emitted (**85.7%**), and the marginal effect over the dose-matched control is **+7 gold slots recovered against +12 spurious values emitted** (dual measurement W1 53/12, W2 46/0, W3 27/14, W4 48/18). F1 still rises because a type repair converts a simultaneous FP+FN into a TP (slot_f1_exact +0.0824). **Supply precision is therefore the entire safety margin** — W4's widening to 41% value precision gives back 0.0222. Q-2 **DOSE-INSUFFICIENT** (Δ₂ = −0.1625 vs pinned A3 0.5961) but only through the 33% zero-supply blind spot: restricted to K>0, Δ₂ = **−0.0380**, i.e. 1.5 entries/sample buys ~94% of a 100-entry roster where it acts. The roster's value is COVERAGE, not per-sample strength → keyed layer + coverage layer, not either. Guardrails clean (parse 1.0000, copy 0.0000 all arms). Carries a disclosure: **the byte-identical-resend floor is NOT 0.0000 on this stack** — 6 of 20 identical-prompt pairs diverged at temperature 0 / `-np 4` (aggregate 0.0072) | `2026-08-20-pcorrf-verdict.md` |
 
 ## Design queue (small probes, each ≤0.5 GPU-h, registered one at a time)
 
@@ -75,11 +84,23 @@ at every consumed read. (Registration/verdict docs remain the evidence of record
    2/183 with 400/400 negative cosines). It needs its own registration, exposure row and a
    T0-transcript source check over the 400 A2T ids. Queue order below is unchanged; P-CORR-F
    machinery is now unblocked.
-4. **P-CORR-F** — ✅ REGISTERED 2026-08-20 (scope-corrected to percept-keyed
-   TYPE/NORMALIZATION-corrective supply; see the consistency ledger row). Machinery after
-   P-EMB-3M's, now unblocked. **P-CORR-R** (routing twin) registers after P-CORR-F flies.
+4. **P-CORR-F** — ✅ **consumed 2026-08-20: CORRECTIVE-PERCEPT + DOSE-INSUFFICIENT**
+   (see the consistency ledger row and `2026-08-20-pcorrf-verdict.md`). **P-CORR-R** (routing
+   twin) is now unblocked and registers next, with four design constraints this read imposes:
+   (i) the core cannot arbitrate among supplied candidates — at 96.7% capture with no
+   correctness inspection, a confusable-neighbourhood MENU yields emissions, not a choice, so
+   P-CORR-R must arbitrate outside the core or supply exactly one candidate per slot;
+   (ii) percept-keying is a usable ON/OFF admission switch (96.7% keyed vs 11.9% unkeyed,
+   measured inside one prompt); (iii) pair the keyed layer with a coverage layer and report its
+   own K=0 population before any verdict; (iv) **P-CORR-R MUST fly an explicit
+   byte-identical-resend control arm** — its disagreement signal is a difference between two
+   responses, and this stack returned different responses to identical prompts on 6/20 pairs at
+   temperature 0, which would masquerade as disagreement.
 5. **P-TARGET-P1** — routing-tier logprob confidence only (A2T arm killed by the gate
-   simulation); registers after P-CORR-R.
+   simulation); registers after P-CORR-R. **Note from P-CORR-F**: the filling tier's targeting
+   gap that motivated part of this item is now closed by percept-keying; P-TARGET-P1 stays
+   routing-tier-scoped, and the filling tier's live successor question is supply-side
+   FILTERING (rejecting wrong percept-keyed entries before supply), not targeting.
 6. **P-STRIP-AUG** (V4's named confound) — stripped-augmenting vs stripped-replacing on the
    97 EM-correct ids: is the regression channel registry-loss or defaults-stripping?
 

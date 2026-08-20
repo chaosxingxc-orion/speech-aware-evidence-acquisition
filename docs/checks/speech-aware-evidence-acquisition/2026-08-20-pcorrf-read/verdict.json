@@ -1,0 +1,1757 @@
+{
+  "attempt_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-pcorrf-240/attempt-20260820T151845Z-88b2a5",
+  "dual_measurement": {
+    "W1": {
+      "contamination_total": 12,
+      "per_sample": [
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:000115:audio-1495375974"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:000444:audio-1502891018-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:000943:audio-1434529860-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:001637:audio-1502195066-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:002120:audio-1502218226"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:002992:audio-1489152746"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 2,
+          "sample_id": "slurp:devel:003121:audio-1501696857-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:003309:audio-1501756265"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:004134:audio-1500387396-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:004604:audio-1501759214"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:005025:audio-1500900618"
+        },
+        {
+          "contamination_count": 1,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:005028:audio-1502893878-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:005108:audio-1494422588-headset"
+        },
+        {
+          "contamination_count": 1,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:005359:audio-1497265137-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:005453:audio-1490183633-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:005518:audio-1490203960"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:005536:audio-1499090415-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:005541:audio--1504191543"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:005567:audio-1497359684"
+        },
+        {
+          "contamination_count": 3,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:005684:audio-1498577434"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:005743:audio-1501407405-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:005770:audio-1495377172"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:005943:audio-1499266055"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:006603:audio-1502101512"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:006751:audio-1501773837-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:007374:audio-1498569508"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:007541:audio-1490202471"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 2,
+          "sample_id": "slurp:devel:007653:audio-1497438989-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:007852:audio-1494416109-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:008014:audio-1500899290"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 2,
+          "sample_id": "slurp:devel:008047:audio-1498570919"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:008072:audio-1488986707"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:009340:audio-1497882818-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:009518:audio-1495734594-headset"
+        },
+        {
+          "contamination_count": 1,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:009733:audio--1505407176"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:010162:audio-1501765286"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:010186:audio-1501415369-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:010545:audio-1490006493"
+        },
+        {
+          "contamination_count": 1,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:010732:audio-1490184504"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:011503:audio-1494514154"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 2,
+          "sample_id": "slurp:devel:011654:audio-1501692977-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:011693:audio-1498565017-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:012076:audio-1501766742-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:012253:audio-1488974202"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 2,
+          "sample_id": "slurp:devel:012478:audio-1498486426"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 2,
+          "sample_id": "slurp:devel:012654:audio-1497860426-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:012667:audio-1501751776-headset"
+        },
+        {
+          "contamination_count": 1,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:013281:audio-1490354296-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:013795:audio-1499266495"
+        },
+        {
+          "contamination_count": 1,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:014173:audio-1490291441"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 2,
+          "sample_id": "slurp:devel:014263:audio-1501692486"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:014397:audio-1497368809"
+        },
+        {
+          "contamination_count": 2,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:014657:audio-1499695487"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:015258:audio-1501777355-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:015375:audio-1501754418"
+        },
+        {
+          "contamination_count": 1,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:015632:audio-1490021137-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 4,
+          "sample_id": "slurp:devel:015805:audio-1489153743"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:016653:audio-1494513016"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:016825:audio-1498573552-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:017009:audio-1502198805-headset"
+        }
+      ],
+      "recovery_total": 53
+    },
+    "W2": {
+      "contamination_total": 0,
+      "per_sample": [
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:000115:audio-1495375974"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:000444:audio-1502891018-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:000943:audio-1434529860-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:001637:audio-1502195066-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:002120:audio-1502218226"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:002992:audio-1489152746"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 2,
+          "sample_id": "slurp:devel:003121:audio-1501696857-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:003309:audio-1501756265"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:004134:audio-1500387396-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:004604:audio-1501759214"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:005025:audio-1500900618"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:005028:audio-1502893878-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:005108:audio-1494422588-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:005359:audio-1497265137-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:005453:audio-1490183633-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:005518:audio-1490203960"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:005536:audio-1499090415-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:005541:audio--1504191543"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:005567:audio-1497359684"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:005684:audio-1498577434"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:005743:audio-1501407405-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:005770:audio-1495377172"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:005943:audio-1499266055"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:006603:audio-1502101512"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:006751:audio-1501773837-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:007374:audio-1498569508"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:007541:audio-1490202471"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 2,
+          "sample_id": "slurp:devel:007653:audio-1497438989-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:007852:audio-1494416109-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:008014:audio-1500899290"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 2,
+          "sample_id": "slurp:devel:008047:audio-1498570919"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:008072:audio-1488986707"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:009340:audio-1497882818-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:009518:audio-1495734594-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:009733:audio--1505407176"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:010162:audio-1501765286"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:010186:audio-1501415369-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:010545:audio-1490006493"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:010732:audio-1490184504"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:011503:audio-1494514154"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 2,
+          "sample_id": "slurp:devel:011654:audio-1501692977-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:011693:audio-1498565017-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:012076:audio-1501766742-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:012253:audio-1488974202"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 2,
+          "sample_id": "slurp:devel:012478:audio-1498486426"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:012654:audio-1497860426-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:012667:audio-1501751776-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:013281:audio-1490354296-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:013795:audio-1499266495"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:014173:audio-1490291441"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:014263:audio-1501692486"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:014397:audio-1497368809"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:014657:audio-1499695487"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:015258:audio-1501777355-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:015375:audio-1501754418"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:015632:audio-1490021137-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 4,
+          "sample_id": "slurp:devel:015805:audio-1489153743"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:016653:audio-1494513016"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:016825:audio-1498573552-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:017009:audio-1502198805-headset"
+        }
+      ],
+      "recovery_total": 46
+    },
+    "W3": {
+      "contamination_total": 14,
+      "per_sample": [
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:000115:audio-1495375974"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:000444:audio-1502891018-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:000943:audio-1434529860-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:001637:audio-1502195066-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:002120:audio-1502218226"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:002992:audio-1489152746"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 2,
+          "sample_id": "slurp:devel:003121:audio-1501696857-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:003309:audio-1501756265"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:004134:audio-1500387396-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:004604:audio-1501759214"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:005025:audio-1500900618"
+        },
+        {
+          "contamination_count": 1,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:005028:audio-1502893878-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:005108:audio-1494422588-headset"
+        },
+        {
+          "contamination_count": 1,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:005359:audio-1497265137-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:005453:audio-1490183633-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:005518:audio-1490203960"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:005536:audio-1499090415-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 2,
+          "sample_id": "slurp:devel:005541:audio--1504191543"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:005567:audio-1497359684"
+        },
+        {
+          "contamination_count": 3,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:005684:audio-1498577434"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:005743:audio-1501407405-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:005770:audio-1495377172"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:005943:audio-1499266055"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:006603:audio-1502101512"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:006751:audio-1501773837-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:007374:audio-1498569508"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:007541:audio-1490202471"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:007653:audio-1497438989-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:007852:audio-1494416109-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:008014:audio-1500899290"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:008047:audio-1498570919"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:008072:audio-1488986707"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:009340:audio-1497882818-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:009518:audio-1495734594-headset"
+        },
+        {
+          "contamination_count": 1,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:009733:audio--1505407176"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:010162:audio-1501765286"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:010186:audio-1501415369-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:010545:audio-1490006493"
+        },
+        {
+          "contamination_count": 1,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:010732:audio-1490184504"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:011503:audio-1494514154"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:011654:audio-1501692977-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:011693:audio-1498565017-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:012076:audio-1501766742-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:012253:audio-1488974202"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:012478:audio-1498486426"
+        },
+        {
+          "contamination_count": 1,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:012654:audio-1497860426-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:012667:audio-1501751776-headset"
+        },
+        {
+          "contamination_count": 1,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:013281:audio-1490354296-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:013795:audio-1499266495"
+        },
+        {
+          "contamination_count": 1,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:014173:audio-1490291441"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 2,
+          "sample_id": "slurp:devel:014263:audio-1501692486"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:014397:audio-1497368809"
+        },
+        {
+          "contamination_count": 2,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:014657:audio-1499695487"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:015258:audio-1501777355-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:015375:audio-1501754418"
+        },
+        {
+          "contamination_count": 1,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:015632:audio-1490021137-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 4,
+          "sample_id": "slurp:devel:015805:audio-1489153743"
+        },
+        {
+          "contamination_count": 1,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:016653:audio-1494513016"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:016825:audio-1498573552-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:017009:audio-1502198805-headset"
+        }
+      ],
+      "recovery_total": 27
+    },
+    "W4": {
+      "contamination_total": 18,
+      "per_sample": [
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:000115:audio-1495375974"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:000444:audio-1502891018-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 2,
+          "sample_id": "slurp:devel:000943:audio-1434529860-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:001637:audio-1502195066-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:002120:audio-1502218226"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:002992:audio-1489152746"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 2,
+          "sample_id": "slurp:devel:003121:audio-1501696857-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:003309:audio-1501756265"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:004134:audio-1500387396-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:004604:audio-1501759214"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:005025:audio-1500900618"
+        },
+        {
+          "contamination_count": 1,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:005028:audio-1502893878-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:005108:audio-1494422588-headset"
+        },
+        {
+          "contamination_count": 1,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:005359:audio-1497265137-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:005453:audio-1490183633-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:005518:audio-1490203960"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:005536:audio-1499090415-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:005541:audio--1504191543"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:005567:audio-1497359684"
+        },
+        {
+          "contamination_count": 3,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:005684:audio-1498577434"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:005743:audio-1501407405-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:005770:audio-1495377172"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:005943:audio-1499266055"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:006603:audio-1502101512"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:006751:audio-1501773837-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:007374:audio-1498569508"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:007541:audio-1490202471"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 2,
+          "sample_id": "slurp:devel:007653:audio-1497438989-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:007852:audio-1494416109-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:008014:audio-1500899290"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 2,
+          "sample_id": "slurp:devel:008047:audio-1498570919"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:008072:audio-1488986707"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:009340:audio-1497882818-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:009518:audio-1495734594-headset"
+        },
+        {
+          "contamination_count": 1,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:009733:audio--1505407176"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:010162:audio-1501765286"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:010186:audio-1501415369-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:010545:audio-1490006493"
+        },
+        {
+          "contamination_count": 1,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:010732:audio-1490184504"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:011503:audio-1494514154"
+        },
+        {
+          "contamination_count": 1,
+          "recovery_count": 2,
+          "sample_id": "slurp:devel:011654:audio-1501692977-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:011693:audio-1498565017-headset"
+        },
+        {
+          "contamination_count": 4,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:012076:audio-1501766742-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:012253:audio-1488974202"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 2,
+          "sample_id": "slurp:devel:012478:audio-1498486426"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 2,
+          "sample_id": "slurp:devel:012654:audio-1497860426-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:012667:audio-1501751776-headset"
+        },
+        {
+          "contamination_count": 1,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:013281:audio-1490354296-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:013795:audio-1499266495"
+        },
+        {
+          "contamination_count": 2,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:014173:audio-1490291441"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:014263:audio-1501692486"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:014397:audio-1497368809"
+        },
+        {
+          "contamination_count": 2,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:014657:audio-1499695487"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:015258:audio-1501777355-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:015375:audio-1501754418"
+        },
+        {
+          "contamination_count": 1,
+          "recovery_count": 1,
+          "sample_id": "slurp:devel:015632:audio-1490021137-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 4,
+          "sample_id": "slurp:devel:015805:audio-1489153743"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:016653:audio-1494513016"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:016825:audio-1498573552-headset"
+        },
+        {
+          "contamination_count": 0,
+          "recovery_count": 0,
+          "sample_id": "slurp:devel:017009:audio-1502198805-headset"
+        }
+      ],
+      "recovery_total": 48
+    }
+  },
+  "flight_error": null,
+  "flight_status": "COMPLETED",
+  "guardrails": {
+    "W1": {
+      "copy_rate": 0.0,
+      "copy_records": 0,
+      "copy_records_total": 6061,
+      "empty_rate": 0.0,
+      "induced_substitution_total": 3,
+      "n_samples": 60,
+      "parse_rate": 1.0,
+      "scenario_breakdown": [
+        {
+          "n_samples": 2,
+          "scenario": "alarm",
+          "slu_f1": 0.4705882352941176
+        },
+        {
+          "n_samples": 1,
+          "scenario": "audio",
+          "slu_f1": 1.0
+        },
+        {
+          "n_samples": 8,
+          "scenario": "calendar",
+          "slu_f1": 0.7290167865707434
+        },
+        {
+          "n_samples": 2,
+          "scenario": "cooking",
+          "slu_f1": 0.5
+        },
+        {
+          "n_samples": 3,
+          "scenario": "datetime",
+          "slu_f1": 0.5579171094580234
+        },
+        {
+          "n_samples": 4,
+          "scenario": "email",
+          "slu_f1": 0.7058823529411765
+        },
+        {
+          "n_samples": 2,
+          "scenario": "general",
+          "slu_f1": 0.3333333333333333
+        },
+        {
+          "n_samples": 3,
+          "scenario": "iot",
+          "slu_f1": 0.5714285714285715
+        },
+        {
+          "n_samples": 2,
+          "scenario": "lists",
+          "slu_f1": 0.6233766233766233
+        },
+        {
+          "n_samples": 2,
+          "scenario": "music",
+          "slu_f1": 0.5
+        },
+        {
+          "n_samples": 3,
+          "scenario": "news",
+          "slu_f1": 1.0
+        },
+        {
+          "n_samples": 7,
+          "scenario": "play",
+          "slu_f1": 0.6666666666666666
+        },
+        {
+          "n_samples": 5,
+          "scenario": "qa",
+          "slu_f1": 0.7405541561712845
+        },
+        {
+          "n_samples": 3,
+          "scenario": "recommendation",
+          "slu_f1": 0.888888888888889
+        },
+        {
+          "n_samples": 3,
+          "scenario": "social",
+          "slu_f1": 0.6666666666666666
+        },
+        {
+          "n_samples": 2,
+          "scenario": "takeaway",
+          "slu_f1": 0.5060240963855421
+        },
+        {
+          "n_samples": 4,
+          "scenario": "transport",
+          "slu_f1": 0.6666666666666666
+        },
+        {
+          "n_samples": 4,
+          "scenario": "weather",
+          "slu_f1": 0.6807131280388979
+        }
+      ],
+      "slot_f1_exact": 0.6031746031746033,
+      "slu_f1": 0.6588247118494402
+    },
+    "W2": {
+      "copy_rate": 0.0,
+      "copy_records": 0,
+      "copy_records_total": 6061,
+      "empty_rate": 0.0,
+      "induced_substitution_total": 2,
+      "n_samples": 60,
+      "parse_rate": 1.0,
+      "scenario_breakdown": [
+        {
+          "n_samples": 2,
+          "scenario": "alarm",
+          "slu_f1": 0.4705882352941176
+        },
+        {
+          "n_samples": 1,
+          "scenario": "audio",
+          "slu_f1": 0.0
+        },
+        {
+          "n_samples": 8,
+          "scenario": "calendar",
+          "slu_f1": 0.7278620892883453
+        },
+        {
+          "n_samples": 2,
+          "scenario": "cooking",
+          "slu_f1": 0.3368421052631579
+        },
+        {
+          "n_samples": 3,
+          "scenario": "datetime",
+          "slu_f1": 0.6279904306220095
+        },
+        {
+          "n_samples": 4,
+          "scenario": "email",
+          "slu_f1": 0.7058823529411765
+        },
+        {
+          "n_samples": 2,
+          "scenario": "general",
+          "slu_f1": 0.5
+        },
+        {
+          "n_samples": 3,
+          "scenario": "iot",
+          "slu_f1": 0.5714285714285715
+        },
+        {
+          "n_samples": 2,
+          "scenario": "lists",
+          "slu_f1": 0.8
+        },
+        {
+          "n_samples": 2,
+          "scenario": "music",
+          "slu_f1": 0.5
+        },
+        {
+          "n_samples": 3,
+          "scenario": "news",
+          "slu_f1": 0.6666666666666666
+        },
+        {
+          "n_samples": 7,
+          "scenario": "play",
+          "slu_f1": 0.5
+        },
+        {
+          "n_samples": 5,
+          "scenario": "qa",
+          "slu_f1": 0.6179716237519707
+        },
+        {
+          "n_samples": 3,
+          "scenario": "recommendation",
+          "slu_f1": 0.75
+        },
+        {
+          "n_samples": 3,
+          "scenario": "social",
+          "slu_f1": 0.5185185185185185
+        },
+        {
+          "n_samples": 2,
+          "scenario": "takeaway",
+          "slu_f1": 0.5060240963855421
+        },
+        {
+          "n_samples": 4,
+          "scenario": "transport",
+          "slu_f1": 0.5882352941176471
+        },
+        {
+          "n_samples": 4,
+          "scenario": "weather",
+          "slu_f1": 0.6807131280388979
+        }
+      ],
+      "slot_f1_exact": 0.5208333333333333,
+      "slu_f1": 0.6079974557105028
+    },
+    "W3": {
+      "copy_rate": 0.0,
+      "copy_records": 0,
+      "copy_records_total": 61,
+      "empty_rate": 0.0,
+      "induced_substitution_total": 2,
+      "n_samples": 60,
+      "parse_rate": 1.0,
+      "scenario_breakdown": [
+        {
+          "n_samples": 2,
+          "scenario": "alarm",
+          "slu_f1": 0.6345609065155807
+        },
+        {
+          "n_samples": 1,
+          "scenario": "audio",
+          "slu_f1": 0.0
+        },
+        {
+          "n_samples": 8,
+          "scenario": "calendar",
+          "slu_f1": 0.5011950662084125
+        },
+        {
+          "n_samples": 2,
+          "scenario": "cooking",
+          "slu_f1": 0.5
+        },
+        {
+          "n_samples": 3,
+          "scenario": "datetime",
+          "slu_f1": 0.37700282752120645
+        },
+        {
+          "n_samples": 4,
+          "scenario": "email",
+          "slu_f1": 0.7139588100686499
+        },
+        {
+          "n_samples": 2,
+          "scenario": "general",
+          "slu_f1": 0.0
+        },
+        {
+          "n_samples": 3,
+          "scenario": "iot",
+          "slu_f1": 0.6666666666666666
+        },
+        {
+          "n_samples": 2,
+          "scenario": "lists",
+          "slu_f1": 0.3116883116883116
+        },
+        {
+          "n_samples": 2,
+          "scenario": "music",
+          "slu_f1": 0.0
+        },
+        {
+          "n_samples": 3,
+          "scenario": "news",
+          "slu_f1": 0.0
+        },
+        {
+          "n_samples": 7,
+          "scenario": "play",
+          "slu_f1": 0.3529411764705882
+        },
+        {
+          "n_samples": 5,
+          "scenario": "qa",
+          "slu_f1": 0.375
+        },
+        {
+          "n_samples": 3,
+          "scenario": "recommendation",
+          "slu_f1": 0.6666666666666665
+        },
+        {
+          "n_samples": 3,
+          "scenario": "social",
+          "slu_f1": 0.25
+        },
+        {
+          "n_samples": 2,
+          "scenario": "takeaway",
+          "slu_f1": 0.3333333333333333
+        },
+        {
+          "n_samples": 4,
+          "scenario": "transport",
+          "slu_f1": 0.27096774193548384
+        },
+        {
+          "n_samples": 4,
+          "scenario": "weather",
+          "slu_f1": 0.6713286713286714
+        }
+      ],
+      "slot_f1_exact": 0.34831460674157305,
+      "slu_f1": 0.43360054595631714
+    },
+    "W4": {
+      "copy_rate": 0.0,
+      "copy_records": 0,
+      "copy_records_total": 6120,
+      "empty_rate": 0.0,
+      "induced_substitution_total": 3,
+      "n_samples": 60,
+      "parse_rate": 1.0,
+      "scenario_breakdown": [
+        {
+          "n_samples": 2,
+          "scenario": "alarm",
+          "slu_f1": 0.4705882352941176
+        },
+        {
+          "n_samples": 1,
+          "scenario": "audio",
+          "slu_f1": 0.0
+        },
+        {
+          "n_samples": 8,
+          "scenario": "calendar",
+          "slu_f1": 0.7945954640501849
+        },
+        {
+          "n_samples": 2,
+          "scenario": "cooking",
+          "slu_f1": 0.0
+        },
+        {
+          "n_samples": 3,
+          "scenario": "datetime",
+          "slu_f1": 0.5571030640668524
+        },
+        {
+          "n_samples": 4,
+          "scenario": "email",
+          "slu_f1": 0.7139588100686499
+        },
+        {
+          "n_samples": 2,
+          "scenario": "general",
+          "slu_f1": 0.2692307692307693
+        },
+        {
+          "n_samples": 3,
+          "scenario": "iot",
+          "slu_f1": 0.5714285714285715
+        },
+        {
+          "n_samples": 2,
+          "scenario": "lists",
+          "slu_f1": 0.7384615384615384
+        },
+        {
+          "n_samples": 2,
+          "scenario": "music",
+          "slu_f1": 0.5
+        },
+        {
+          "n_samples": 3,
+          "scenario": "news",
+          "slu_f1": 1.0
+        },
+        {
+          "n_samples": 7,
+          "scenario": "play",
+          "slu_f1": 0.6478658536585367
+        },
+        {
+          "n_samples": 5,
+          "scenario": "qa",
+          "slu_f1": 0.631918323481999
+        },
+        {
+          "n_samples": 3,
+          "scenario": "recommendation",
+          "slu_f1": 0.7272727272727273
+        },
+        {
+          "n_samples": 3,
+          "scenario": "social",
+          "slu_f1": 0.7499999999999999
+        },
+        {
+          "n_samples": 2,
+          "scenario": "takeaway",
+          "slu_f1": 0.5060240963855421
+        },
+        {
+          "n_samples": 4,
+          "scenario": "transport",
+          "slu_f1": 0.6666666666666665
+        },
+        {
+          "n_samples": 4,
+          "scenario": "weather",
+          "slu_f1": 0.6807131280388979
+        }
+      ],
+      "slot_f1_exact": 0.544502617801047,
+      "slu_f1": 0.6366395673862216
+    }
+  },
+  "harness_defect_reasons": [],
+  "n_samples": 60,
+  "note": "gold-derived; scoring-side only; must never enter a runtime path",
+  "q1": {
+    "bootstrap": {
+      "ci_high": 0.0967846789699773,
+      "ci_level": 0.9,
+      "ci_low": 0.009823717551403526,
+      "n_replicates": 10000,
+      "point_estimate": 0.05082725613893746,
+      "seed": 20260807,
+      "sigma_hat": 0.026459585483926497
+    },
+    "corrective_inert": {
+      "clause_text": "the ENTIRE 90% bootstrap CI lies within [-0.03, +0.03]",
+      "detail": "CI=[+0.0098, +0.0968]",
+      "verdict": "not_met"
+    },
+    "corrective_percept": {
+      "clause_text": "Delta_1 >= +0.03 AND bootstrap CI lower bound > 0",
+      "detail": "delta1=+0.0508 (floor +0.03), CI=[+0.0098, +0.0968] (sigma_hat=0.0265)",
+      "verdict": "met"
+    },
+    "delta1": 0.05082725613893746,
+    "overall": "CORRECTIVE-PERCEPT"
+  },
+  "q2": {
+    "bootstrap": {
+      "ci_high": -0.08612408489198575,
+      "ci_level": 0.9,
+      "ci_low": -0.24029380895952596,
+      "n_replicates": 10000,
+      "point_estimate": -0.16252751208872673,
+      "seed": 20260807,
+      "sigma_hat": 0.04681435963079833
+    },
+    "cited_a3_slu_f1": 0.5961280580450439,
+    "cross_session_drift_bound": 0.013,
+    "delta2": -0.16252751208872673,
+    "dose_efficient": {
+      "clause_text": "Delta_2 >= -0.03 at <=4 entries/sample vs A3's 100",
+      "detail": "delta2=-0.1625 (floor -0.03), W3 mean entries/sample=1.0167 (max 4)",
+      "verdict": "not_met"
+    },
+    "dose_insufficient": {
+      "clause_text": "Delta_2 <= -0.10",
+      "detail": "delta2=-0.1625 (ceiling -0.10)",
+      "verdict": "met"
+    },
+    "overall": "DOSE-INSUFFICIENT",
+    "w3_entries_distribution": {
+      "k_zero_count": 20,
+      "max": 4,
+      "mean": 1.0166666666666666,
+      "min": 0,
+      "n_samples": 60
+    }
+  },
+  "reachability": {
+    "detail": "L1 K=0 samples (W1/W3, shared): 20/60. total gold slots across the frozen set: 8352. max attainable recovery = gold slots present in each arm's own supplied corrective-entry set (never conflated with the A3 base's own separately-cited ceiling): W1=37/8352; W2=0/8352; W3=37/8352; W4=39/8352",
+    "l1_k_zero_samples": 20,
+    "max_attainable_recovery_by_arm": {
+      "W1": 37,
+      "W2": 0,
+      "W3": 37,
+      "W4": 39
+    },
+    "per_arm_entry_count_distribution": {
+      "W1": {
+        "k_zero_count": 20,
+        "max": 4,
+        "mean": 1.0166666666666666,
+        "min": 0,
+        "n_samples": 60
+      },
+      "W2": {
+        "k_zero_count": 20,
+        "max": 4,
+        "mean": 1.0166666666666666,
+        "min": 0,
+        "n_samples": 60
+      },
+      "W3": {
+        "k_zero_count": 20,
+        "max": 4,
+        "mean": 1.0166666666666666,
+        "min": 0,
+        "n_samples": 60
+      },
+      "W4": {
+        "k_zero_count": 14,
+        "max": 7,
+        "mean": 2.0,
+        "min": 0,
+        "n_samples": 60
+      }
+    },
+    "total_gold_slots": 8352
+  },
+  "runtime_prohibited": true,
+  "schema": "saea-pcorrf-read-v1",
+  "w4_descriptive": {
+    "entries_distribution": {
+      "k_zero_count": 14,
+      "max": 7,
+      "mean": 2.0,
+      "min": 0,
+      "n_samples": 60
+    },
+    "note": "W4 carries no clause (registration verbatim)",
+    "slu_f1": 0.6366395673862216
+  }
+}

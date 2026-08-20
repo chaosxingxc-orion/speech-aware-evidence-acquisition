@@ -1,0 +1,33 @@
+P-CORR-F pinned offline read (docs/readiness/2026-08-20-pcorrf-preregistration-REGISTERED.md)
+==============================================================================
+
+attempt dir: /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-pcorrf-240/attempt-20260820T151845Z-88b2a5
+flight status: 'COMPLETED' (error=None)
+n_samples=60
+
+Mandatory pre-read reachability statement
+  L1 K=0 samples (W1/W3, shared): 20/60. total gold slots across the frozen set: 8352. max attainable recovery = gold slots present in each arm's own supplied corrective-entry set (never conflated with the A3 base's own separately-cited ceiling): W1=37/8352; W2=0/8352; W3=37/8352; W4=39/8352
+
+Q-1 mechanism: Delta_1=+0.0508, CI=[+0.0098, +0.0968]
+  CORRECTIVE-PERCEPT: [     MET] delta1=+0.0508 (floor +0.03), CI=[+0.0098, +0.0968] (sigma_hat=0.0265)
+  CORRECTIVE-INERT:   [ NOT_MET] CI=[+0.0098, +0.0968]
+  OVERALL: CORRECTIVE-PERCEPT
+
+Q-2 dose efficiency: Delta_2=-0.1625 (vs CITED A3 0.5961), CI=[-0.2403, -0.0861] (reported, non-gating); cross-session drift bound +/-0.013
+  DOSE-EFFICIENT:    [ NOT_MET] delta2=-0.1625 (floor -0.03), W3 mean entries/sample=1.0167 (max 4)
+  DOSE-INSUFFICIENT: [     MET] delta2=-0.1625 (ceiling -0.10)
+  OVERALL: DOSE-INSUFFICIENT
+
+W4 descriptive dose curve (no clause): SLU-F1=0.6366, mean entries/sample=2.0000 (max 7)
+
+Mandatory dual measurement (recovery / contamination, per arm)
+  W1: recovery=53 contamination=12
+  W2: recovery=46 contamination=0
+  W3: recovery=27 contamination=14
+  W4: recovery=48 contamination=18
+
+Guardrails (descriptive, never verdict-gating)
+  W1: slu_f1=0.6588 slot_f1_exact=0.6032 parse_rate=1.0000 copy_rate=0.0000 induced=3
+  W2: slu_f1=0.6080 slot_f1_exact=0.5208 parse_rate=1.0000 copy_rate=0.0000 induced=2
+  W3: slu_f1=0.4336 slot_f1_exact=0.3483 parse_rate=1.0000 copy_rate=0.0000 induced=2
+  W4: slu_f1=0.6366 slot_f1_exact=0.5445 parse_rate=1.0000 copy_rate=0.0000 induced=3
