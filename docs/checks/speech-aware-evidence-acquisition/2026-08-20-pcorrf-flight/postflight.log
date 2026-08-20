@@ -1,0 +1,110 @@
+start: 2026-08-20T15:41:34Z
+=== run dir ===
+total 11164
+drwxrwxrwx 1 chao chao    4096 Aug 20 11:40 .
+drwxrwxrwx 1 chao chao    4096 Aug 20 11:18 ..
+-rwxrwxrwx 1 chao chao    2913 Aug 20 11:18 SAEA-PROBE-pcorrf-240.config-values.json
+-rwxrwxrwx 1 chao chao     564 Aug 20 11:18 SAEA-PROBE-pcorrf-240.plan.json
+-rwxrwxrwx 1 chao chao 6626414 Aug 20 11:40 SAEA-PROBE-pcorrf-240.server.log
+-rwxrwxrwx 1 chao chao    1621 Aug 20 11:19 SAEA-PROBE-pcorrf-240.session-receipt.json
+-rwxrwxrwx 1 chao chao   67979 Aug 20 11:40 SAEA-PROBE-pcorrf-240.trace-manifest.json
+-rwxrwxrwx 1 chao chao  893618 Aug 20 11:40 SAEA-PROBE-pcorrf-240.trace.jsonl
+-rwxrwxrwx 1 chao chao   18954 Aug 20 11:18 corrective-binding-stats.json
+-rwxrwxrwx 1 chao chao   46334 Aug 20 11:18 corrective-binding.json
+-rwxrwxrwx 1 chao chao   77059 Aug 20 11:40 flight-receipt.json
+-rwxrwxrwx 1 chao chao 3551204 Aug 20 11:40 outputs.jsonl
+-rwxrwxrwx 1 chao chao  129834 Aug 20 11:40 responses.jsonl
+
+=== flight receipt (operational fields) ===
+  run_id: SAEA-PROBE-pcorrf-240
+  attempt_id: attempt-20260820T151845Z-88b2a5
+  status: COMPLETED
+  error: None
+  config_hash: abea45e994e0a73e3575c82c01eedb370469bb2885f7cf8e05e5dd3eb955ec37
+  protocol_hash: 4f540b24df430cbb80c4e1e9dc6c0ee09f61b698d1022ca39a50a750fdd7400e
+  config_protocol_hash: f198fb8eb6c9cbb109e0fb5dbd555c1e79321ba524d5cb4b421f95fc71d22cb7
+  binding_config_sha256: 4f540b24df430cbb80c4e1e9dc6c0ee09f61b698d1022ca39a50a750fdd7400e
+  split_identity_hash: fc9de436eba5aba120ecf07ee112765cd4ac0609150e0aaf36f4d44c9c5b5ee5
+  corrective_binding_hash: 3a461f694acdc46eca3ef69fe3f157be058343816157037c31972ac179f6830a
+  corrective_binding_document_hash: c2466b7e208f8ef5e2e9b76dccdeb58effa26c407a48ffaff38a74ce3cd6cb47
+  carried_from_attempt_id: None
+  carried_arms: []
+  carried_row_count: 0
+  n_samples: 60
+  n_cells_total: 240
+  n_requests_planned_this_attempt: 240
+  metered_audio_seconds_expected: 729.038
+  wall_seconds: 325.96327233314514
+  gpu_hours_this_attempt: 0.3627940488523907
+  requests_flown_this_attempt: 240
+  requests_replayed_from_cache: 0
+  request_failures: []
+  result_rows: 240
+  result_rows_by_arm: {'W1': 60, 'W2': 60, 'W3': 60, 'W4': 60}
+  requests_flown_by_arm: {'W1': 60, 'W2': 60, 'W3': 60, 'W4': 60}
+  corrective_entries_flown_by_arm: {'W1': 61, 'W2': 61, 'W3': 61, 'W4': 120}
+  planned_budgets: {"gpu_hours": 0.15, "model_calls": 240, "speech_audio_seconds": 730}
+  registered_ceilings: {"gpu_hours": 0.35, "model_calls": 260, "speech_audio_seconds": 1000}
+  session.binary_path: llama.cpp-featcache/build/bin/llama-server
+  session.binary_sha256: 097c96ec5a3f576f378d4d5e103928bf070647fdcc1f015eacb839503e121c68
+  session.argv: /home/chao/llama.cpp-featcache/build/bin/llama-server --host 127.0.0.1 --port 8080 -m /home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf --mmproj /home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/mmproj-Qwen3-Omni-30B-A3B-Instruct-bf16.gguf -c 49152 -np 4 -fa on -ngl 999 -ctk q8_0 -ctv q8_0
+  session.model_file: models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf 0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d
+  session.model_file: models/qwen3-omni-30b-a3b-instruct-gguf-q4km/mmproj-Qwen3-Omni-30B-A3B-Instruct-bf16.gguf f0dfe825fb692d426362b1ac79678fc08daa4758f7151526cad110515f122883
+  close_receipt.trace_manifest_hash: ab750515989bd8197143e5983a07d20af29521244ea2af3982e451e9c9f45f85
+  close_receipt.cost: {"audio_seconds_used": 729.0377500000003, "calls_used": 240, "completion_tokens_total": 15177, "latency_seconds_total": 228.98033101015608, "prompt_tokens_total": 142917, "tool_calls": 0, "umbrella_lock_sha256": "9064bde89d4248fd80c9c2f93c2a9c276a454eadbb1aa7d529671118961371b1"}
+  binding W1 K distribution: {"0": 20, "1": 25, "2": 10, "3": 4, "4": 1} | total 61 mean 1.0167 max 4 | K=0 20
+  binding W2 K distribution: {"0": 20, "1": 25, "2": 10, "3": 4, "4": 1} | total 61 mean 1.0167 max 4 | K=0 20
+  binding W3 K distribution: {"0": 20, "1": 25, "2": 10, "3": 4, "4": 1} | total 61 mean 1.0167 max 4 | K=0 20
+  binding W4 K distribution: {"0": 14, "1": 11, "2": 10, "3": 14, "4": 10, "7": 1} | total 120 mean 2.0 max 7 | K=0 14
+
+=== output artifact shapes (line counts + construction K only; response text NEVER read) ===
+  responses.jsonl: 240 lines, 129834 bytes
+  outputs.jsonl: 240 lines, 3551204 bytes
+  arm row counts: {"W1": 60, "W2": 60, "W3": 60, "W4": 60}
+  distinct (arm, sample_id) pairs: 240
+  W1 K distribution: {"0": 20, "1": 25, "2": 10, "3": 4, "4": 1} | corrective entries flown: 61
+  W2 K distribution: {"0": 20, "1": 25, "2": 10, "3": 4, "4": 1} | corrective entries flown: 61
+  W3 K distribution: {"0": 20, "1": 25, "2": 10, "3": 4, "4": 1} | corrective entries flown: 61
+  W4 K distribution: {"0": 14, "1": 11, "2": 10, "3": 14, "4": 10, "7": 1} | corrective entries flown: 120
+
+=== read guard: zero computed-result keys may be reported here ===
+  (this script prints arm / sample_id / k only; metrics and response_text are never opened)
+
+=== trace manifest status (operational) ===
+  SAEA-PROBE-pcorrf-240.trace-manifest.json
+    run_id: SAEA-PROBE-pcorrf-240
+
+=== feature cache AFTER flight (hits are proven by an untouched cache) ===
+campaign  /home/chao/feat-cache/slurp-q4km
+23M	/home/chao/feat-cache/slurp-q4km
+  entries: 63
+  dir mtime: 2026-08-17 21:08:20.452621618 -0400
+legacy /home/chao/feat-cache/q4km (MUST NOT BE TOUCHED)
+  entries: 34350
+  dir mtime: 2026-08-16 14:09:12.587865213 -0400
+audio2tool cache (MUST NOT BE TOUCHED by this SLURP flight)
+  entries: 490
+  dir mtime: 2026-08-19 12:10:52.730536662 -0400
+
+=== server.log encode-line evidence (featcache hits => zero encode lines) ===
+  server.log lines matching 'encoding audio': 0
+  server.log lines matching 'encoding': 0
+
+=== D3 gate: bytecode under the frozen scoring package ===
+0
+
+=== GPU ===
+pstate, clocks.current.sm [MHz], clocks.max.sm [MHz], utilization.gpu [%], memory.used [MiB], temperature.gpu, clocks_event_reasons.active
+P5, 1200 MHz, 3090 MHz, 0 %, 270 MiB, 53, 0x0000000000000000
+
+=== orphan llama-server check / ports ===
+  none running
+  ports 8080/8081 free
+
+=== exposure ledger row mentions (count only; consumed must stay 'no') ===
+1
+
+=== git tree ===
+  (clean)
+1faccd8 register(pemb4r): multi-model kNN retrieval routing - register-aligned keys, labels as values
+POSTFLIGHT DONE

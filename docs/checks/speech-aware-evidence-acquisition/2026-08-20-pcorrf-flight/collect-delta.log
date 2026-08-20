@@ -1,0 +1,7 @@
+start: 2026-08-20T15:43:00Z
+5c3e0fa collected: 3364 tests collected
+1faccd8 collected: 3364 tests collected
+=== diff between the two trees (should be the readiness doc only) ===
+ ...2026-08-20-pemb4r-preregistration-REGISTERED.md | 80 ++++++++++++++++++++++
+ 1 file changed, 80 insertions(+)
+COLLECT DELTA DONE

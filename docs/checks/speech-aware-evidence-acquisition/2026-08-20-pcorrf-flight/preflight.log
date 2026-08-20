@@ -1,0 +1,96 @@
+start: 2026-08-20T14:49:47Z
+git HEAD: 1faccd8e12b24976831940fdc7f56e9bdd2daa79
+git status: 0 dirty entries
+bytecode under the frozen scoring package (D3 gate): 0
+orphan llama-server:
+  (none)
+llama-server binary sha256 (receipt pins 097c96ec...):
+097c96ec5a3f576f378d4d5e103928bf070647fdcc1f015eacb839503e121c68  /home/chao/llama.cpp-featcache/build/bin/llama-server
+repo module root: /mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/src/speech_aware_evidence_acquisition
+data_root: /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+carrier_root (asset_dir slurp): /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/datasets/slurp
+
+=== legality guards (explicitly re-run; they also fire at import time) ===
+  OK: assert_never_calls_ontology_miner (pslu_flight, reused verbatim)
+  OK: _assert_this_module_never_calls_ontology_miner (pcorrf_flight source)
+  OK: assert_never_references_forbidden_gold_symbols (AST, guard 2)
+  OK: assert_binding_config_sha256 (arm table / seed / pool / L2b / legality pin)
+  binding_config_sha256: 4f540b24df430cbb80c4e1e9dc6c0ee09f61b698d1022ca39a50a750fdd7400e
+
+manifest: n=60 seed=20260807
+split_identity_hash (full, from binding JSON): fc9de436eba5aba120ecf07ee112765cd4ac0609150e0aaf36f4d44c9c5b5ee5
+split identity: manifest == machinery EXPECTED_SPLIT_IDENTITY_HASH verbatim -- PASS
+  machinery pin: fc9de436eba5aba120ecf07ee112765cd4ac0609150e0aaf36f4d44c9c5b5ee5
+arms: machinery PCORRF_ARMS == ['W1', 'W2', 'W3', 'W4']
+
+rosters: 18 scenarios, 55 global types, 100 full-roster entries, 18 derangement keys
+A3 packet: 100 items, dose n_items=100 (prereg: 100-entry roster)
+
+devel split resolved: 8690 samples
+frozen sample set selected: 60
+media resolved: 60/60 flac present
+total audio seconds: 182.26 (registration: 182.26), mean 3.04
+
+=== corrective binding (REGISTERED supply-content sourcing; zero model calls, zero gold) ===
+consumed A0 attempt dir: /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-pslu-n60/attempt-20260818T010218Z-4c97cb
+re-derived tri-derivation binding_hash: 3a461f694acdc46eca3ef69fe3f157be058343816157037c31972ac179f6830a
+reviewed   tri-derivation binding_hash: 3a461f694acdc46eca3ef69fe3f157be058343816157037c31972ac179f6830a
+re-derived document_hash: c2466b7e208f8ef5e2e9b76dccdeb58effa26c407a48ffaff38a74ce3cd6cb47
+reviewed   document_hash: c2466b7e208f8ef5e2e9b76dccdeb58effa26c407a48ffaff38a74ce3cd6cb47
+corrective binding reproducibility: PASS (deterministic from consumed A0 + train pool + seed)
+train pool: {"n_pairs": 4157, "n_types": 55, "n_values": 3961, "sha256": "fe372974b7047526212cb23799c457d5a5a10a1a116fa0fa413748038d0a6ef6"}
+A0 emitted (type, filler) slots total: 95
+  W1: K dist {"0": 20, "1": 25, "2": 10, "3": 4, "4": 1} | total 61 mean 1.0167 max 4 | K=0 20
+  W2: K dist {"0": 20, "1": 25, "2": 10, "3": 4, "4": 1} | total 61 mean 1.0167 max 4 | K=0 20
+  W3: K dist {"0": 20, "1": 25, "2": 10, "3": 4, "4": 1} | total 61 mean 1.0167 max 4 | K=0 20
+  W4: K dist {"0": 14, "1": 11, "2": 10, "3": 14, "4": 10, "7": 1} | total 120 mean 2.0 max 7 | K=0 14
+W2 length-matched to W1 on every sample: True
+W2 donor breadth: 30 distinct origins over 61 entries
+binding invariant OK: no sample violates [W2 fixed-point (origin_sample_id == target)]
+binding invariant OK: no sample violates [W4-added entry duplicates an L1 entry]
+L1 self-percept origin invariant (every entry's origin == its own target): True
+
+=== supply packet rendering dry run (shapes only; content never printed) ===
+  W1: 60 packets, 0 zero-supply (None), 6061 rendered items total (expected 6061)
+  W2: 60 packets, 0 zero-supply (None), 6061 rendered items total (expected 6061)
+  W3: 60 packets, 20 zero-supply (None), 61 rendered items total (expected 61)
+  W4: 60 packets, 0 zero-supply (None), 6120 rendered items total (expected 6120)
+
+legality declaration resolves: LegalityDeclaration(span_source='percept-keyed-type-lookup', reference_source='slurp-train-ontology', legality_tier='legal', evidence_materialization_id=None, oracle_lineage_materialization=False, declaration_warning=None)
+
+consumed source row SAEA-PROBE-pslu-n60: consumed=yes -- OK
+exposure rows matching run id 'SAEA-PROBE-pcorrf-240': 1
+  ledger['execution profile'] = 'bounded-discovery-probe'
+  ledger['split role'] = 'discovery'
+  ledger['split identity hash'] = 'fc9de436eba5aba120ecf07ee112765cd4ac0609150e0aaf36f4d44c9c5b5ee5'
+  ledger['consumed'] = 'no'
+  ledger['calls'] = '260'
+  ledger['speech audio seconds'] = '1000'
+  ledger['gpu hours'] = '0.35'
+  budget cell 'calls': registered 260 >= planned 240 -- OK
+  budget cell 'speech audio seconds': registered 1000 >= planned 730 -- OK
+  budget cell 'gpu hours': registered 0.35 >= planned 0.15 -- OK
+
+config_hash: abea45e994e0a73e3575c82c01eedb370469bb2885f7cf8e05e5dd3eb955ec37
+protocol_hash (flight, core.config.protocol_hash): f198fb8eb6c9cbb109e0fb5dbd555c1e79321ba524d5cb4b421f95fc71d22cb7
+server_env: {'LLAMA_MTMD_FEAT_CACHE_DIR': '/home/chao/feat-cache/slurp-q4km'}
+server_args: ['-c', '49152', '-np', '4', '-fa', 'on', '-ngl', '999', '-ctk', 'q8_0', '-ctv', 'q8_0']
+decoding_params: {'temperature': 0, 'seed': 20260803, 'max_tokens': 1024}
+machinery build_execution_plan validates: profile=bounded-discovery-probe role=discovery protocol_hash=4f540b24df430cbb80c4e1e9dc6c0ee09f61b698d1022ca39a50a750fdd7400e
+registered call arithmetic: 60 x 4 arms = 240 <= plan 240 <= registered ceiling 260
+audio-seconds arithmetic (METERED): 182.26 x 4 arms = 729.04 <= plan 730 <= ceiling 1000
+registered ceilings OK: calls 240<=260, audio 729.04<=1000, gpu 0.15<=0.35
+
+=== run-total budget feasibility (sibling attempts count) ===
+prior durable spend on SAEA-PROBE-pcorrf-240: calls=0, audio_seconds=0.00
+headroom for a FRESH attempt: calls=240, audio_seconds=730.00
+this flight needs: calls=240, metered audio_seconds=729.04
+call headroom: sufficient for a full fresh attempt -- OK
+audio headroom: sufficient for a full fresh attempt -- OK
+
+runs/SAEA-PROBE-pcorrf-240: (absent)
+attempts/SAEA-PROBE-pcorrf-240: (absent)
+
+PRE-FLIGHT CLEAN
+preflight exit: 0
+end: 2026-08-20T15:00:52Z

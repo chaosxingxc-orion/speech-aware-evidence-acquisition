@@ -1,0 +1,278 @@
+launcher: /mnt/c/Users/35686/AppData/Local/Temp/claude/D--chao-workspace-exploring-l4-intelligence-studies-speech-aware-evidence-acquisition/6d9f1834-68e9-41a7-bbcc-724898cf15a9/scratchpad/pcorrf/launch_pcorrf_flight.py
+wrapper pid: 662
+args: --run-dir /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-pcorrf-240 --binding-dir /mnt/c/Users/35686/AppData/Local/Temp/claude/D--chao-workspace-exploring-l4-intelligence-studies-speech-aware-evidence-acquisition/6d9f1834-68e9-41a7-bbcc-724898cf15a9/scratchpad/pcorrf
+feat cache: /home/chao/feat-cache/slurp-q4km
+start: 2026-08-20T15:03:47Z
+[15:04:06Z] corrective binding: tri-derivation hash 3a461f694acdc46eca3ef69fe3f157be058343816157037c31972ac179f6830a matches the reviewed manifest -- PASS
+[15:04:06Z] corrective binding: document hash c2466b7e208f8ef5e2e9b76dccdeb58effa26c407a48ffaff38a74ce3cd6cb47 matches the reviewed manifest -- PASS
+[15:04:06Z] binding_config_sha256: 4f540b24df430cbb80c4e1e9dc6c0ee09f61b698d1022ca39a50a750fdd7400e
+[15:04:06Z] corrective binding structure W1: K dist {"0": 20, "1": 25, "2": 10, "3": 4, "4": 1} total 61 mean 1.0167 max 4 K=0 20
+[15:04:06Z] corrective binding structure W2: K dist {"0": 20, "1": 25, "2": 10, "3": 4, "4": 1} total 61 mean 1.0167 max 4 K=0 20
+[15:04:06Z] corrective binding structure W3: K dist {"0": 20, "1": 25, "2": 10, "3": 4, "4": 1} total 61 mean 1.0167 max 4 K=0 20
+[15:04:06Z] corrective binding structure W4: K dist {"0": 14, "1": 11, "2": 10, "3": 14, "4": 10, "7": 1} total 120 mean 2.0 max 7 K=0 14
+[15:04:06Z] loading devel split (sha256 of every devel media file -- slow, model-free)
+[15:18:45Z] frozen sample set: 60 samples, one pass 182.26s audio
+[15:18:45Z] flight plan: 60 samples x 4 arms ('W1', 'W2', 'W3', 'W4') = 240 cells, 240 to issue (0 carried); base roster 100 entries
+[15:18:45Z] metered audio for a full flight: 729.04s (plan 730, ceiling 1000)
+[15:18:45Z] attempt attempt-20260820T151845Z-88b2a5 -> /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-pcorrf-240/attempt-20260820T151845Z-88b2a5
+[15:18:45Z] gate constructed (receipt receipts/runtime-q4km-featcache.json, model qwen3-omni-30b-a3b-instruct-gguf-q4km)
+[15:18:45Z] spawning llama-server (receipt-pinned binary, CHILD of this process)
+[15:19:07Z] session up: pid=1490 port=8080 (spawn+load 21.1s)
+[15:19:07Z] session argv: /home/chao/llama.cpp-featcache/build/bin/llama-server --host 127.0.0.1 --port 8080 -m /home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf --mmproj /home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/mmproj-Qwen3-Omni-30B-A3B-Instruct-bf16.gguf -c 49152 -np 4 -fa on -ngl 999 -ctk q8_0 -ctv q8_0
+[15:19:07Z]   model file: models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf sha256=0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d
+[15:19:07Z]   model file: models/qwen3-omni-30b-a3b-instruct-gguf-q4km/mmproj-Qwen3-Omni-30B-A3B-Instruct-bf16.gguf sha256=f0dfe825fb692d426362b1ac79678fc08daa4758f7151526cad110515f122883
+[15:35:06Z] FrozenCoreClient constructed (D2 arm fixed-legal-context); flight lock None
+[15:35:06Z] FLIGHT START: 240 requests over arms ('W1', 'W2', 'W3', 'W4'), ONE session (one model)
+[15:35:07Z] req 0001 [W1] ok   1.61s media=datasets/slurp/slurp_real/audio-1495375974.flac chars=176 | flown=1 35.7 req/min eta=6.7 min
+[15:35:09Z] req 0002 [W2] ok   1.18s media=datasets/slurp/slurp_real/audio-1495375974.flac chars=172 | flown=2 36.6 req/min eta=6.5 min
+[15:35:10Z] req 0003 [W3] ok   0.87s media=datasets/slurp/slurp_real/audio-1495375974.flac chars=172 | flown=3 43.2 req/min eta=5.5 min
+[15:35:11Z] req 0004 [W4] ok   1.15s media=datasets/slurp/slurp_real/audio-1495375974.flac chars=172 | flown=4 45.0 req/min eta=5.2 min
+[15:35:13Z] req 0005 [W1] ok   2.10s media=datasets/slurp/slurp_real/audio-1502891018-headset.flac chars=168 | flown=5 40.3 req/min eta=5.8 min
+[15:35:14Z] req 0006 [W2] ok   1.00s media=datasets/slurp/slurp_real/audio-1502891018-headset.flac chars=168 | flown=6 42.4 req/min eta=5.5 min
+[15:35:15Z] req 0007 [W3] ok   0.51s media=datasets/slurp/slurp_real/audio-1502891018-headset.flac chars=103 | flown=7 46.6 req/min eta=5.0 min
+[15:35:16Z] req 0008 [W4] ok   1.10s media=datasets/slurp/slurp_real/audio-1502891018-headset.flac chars=168 | flown=8 47.3 req/min eta=4.9 min
+[15:35:17Z] req 0009 [W1] ok   1.61s media=datasets/slurp/slurp_real/audio-1434529860-headset.flac chars=296 | flown=9 45.8 req/min eta=5.0 min
+[15:35:19Z] req 0010 [W2] ok   1.48s media=datasets/slurp/slurp_real/audio-1434529860-headset.flac chars=296 | flown=10 45.1 req/min eta=5.1 min
+[15:35:20Z] req 0011 [W3] ok   1.17s media=datasets/slurp/slurp_real/audio-1434529860-headset.flac chars=314 | flown=11 45.6 req/min eta=5.0 min
+[15:35:21Z] req 0012 [W4] ok   1.32s media=datasets/slurp/slurp_real/audio-1434529860-headset.flac chars=312 | flown=12 45.5 req/min eta=5.0 min
+[15:35:22Z] req 0013 [W1] ok   1.12s media=datasets/slurp/slurp_real/audio-1502195066-headset.flac chars=169 | flown=13 46.0 req/min eta=4.9 min
+[15:35:24Z] req 0014 [W2] ok   1.10s media=datasets/slurp/slurp_real/audio-1502195066-headset.flac chars=170 | flown=14 46.5 req/min eta=4.9 min
+[15:35:25Z] req 0015 [W3] ok   1.08s media=datasets/slurp/slurp_real/audio-1502195066-headset.flac chars=208 | flown=15 47.0 req/min eta=4.8 min
+[15:35:26Z] req 0016 [W4] ok   1.12s media=datasets/slurp/slurp_real/audio-1502195066-headset.flac chars=170 | flown=16 47.3 req/min eta=4.7 min
+[15:35:27Z] req 0017 [W1] ok   1.34s media=datasets/slurp/slurp_real/audio-1502218226.flac chars=218 | flown=17 47.0 req/min eta=4.7 min
+[15:35:29Z] req 0018 [W2] ok   1.25s media=datasets/slurp/slurp_real/audio-1502218226.flac chars=228 | flown=18 47.0 req/min eta=4.7 min
+[15:35:29Z] req 0019 [W3] ok   0.85s media=datasets/slurp/slurp_real/audio-1502218226.flac chars=163 | flown=19 47.8 req/min eta=4.6 min
+[15:35:31Z] req 0020 [W4] ok   1.16s media=datasets/slurp/slurp_real/audio-1502218226.flac chars=225 | flown=20 48.0 req/min eta=4.6 min
+[15:35:31Z] req 0021 [W1] ok   0.83s media=datasets/slurp/slurp_real/audio-1489152746.flac chars=160 | flown=21 48.7 req/min eta=4.5 min
+[15:35:32Z] req 0022 [W2] ok   1.01s media=datasets/slurp/slurp_real/audio-1489152746.flac chars=160 | flown=22 49.1 req/min eta=4.4 min
+[15:35:34Z] req 0023 [W3] ok   1.09s media=datasets/slurp/slurp_real/audio-1489152746.flac chars=172 | flown=23 49.3 req/min eta=4.4 min
+[15:35:35Z] req 0024 [W4] ok   1.08s media=datasets/slurp/slurp_real/audio-1489152746.flac chars=178 | flown=24 49.5 req/min eta=4.4 min
+[15:35:36Z] req 0025 [W1] ok   1.38s media=datasets/slurp/slurp_real/audio-1501696857-headset.flac chars=216 | flown=25 49.2 req/min eta=4.4 min
+[15:35:37Z] req 0026 [W2] ok   1.18s media=datasets/slurp/slurp_real/audio-1501696857-headset.flac chars=216 | flown=26 49.2 req/min eta=4.3 min
+[15:35:39Z] req 0027 [W3] ok   1.57s media=datasets/slurp/slurp_real/audio-1501696857-headset.flac chars=248 | flown=27 48.7 req/min eta=4.4 min
+[15:35:40Z] req 0028 [W4] ok   1.51s media=datasets/slurp/slurp_real/audio-1501696857-headset.flac chars=216 | flown=28 48.2 req/min eta=4.4 min
+[15:35:42Z] req 0029 [W1] ok   1.60s media=datasets/slurp/slurp_real/audio-1501756265.flac chars=176 | flown=29 47.7 req/min eta=4.4 min
+[15:35:44Z] req 0030 [W2] ok   1.72s media=datasets/slurp/slurp_real/audio-1501756265.flac chars=176 | flown=30 47.0 req/min eta=4.5 min
+[15:35:45Z] req 0031 [W3] ok   1.10s media=datasets/slurp/slurp_real/audio-1501756265.flac chars=171 | flown=31 47.2 req/min eta=4.4 min
+[15:35:46Z] req 0032 [W4] ok   1.42s media=datasets/slurp/slurp_real/audio-1501756265.flac chars=176 | flown=32 47.0 req/min eta=4.4 min
+[15:35:49Z] req 0033 [W1] ok   2.50s media=datasets/slurp/slurp_real/audio-1500387396-headset.flac chars=142 | flown=33 45.6 req/min eta=4.5 min
+[15:35:50Z] req 0034 [W2] ok   1.36s media=datasets/slurp/slurp_real/audio-1500387396-headset.flac chars=142 | flown=34 45.6 req/min eta=4.5 min
+[15:35:51Z] req 0035 [W3] ok   1.13s media=datasets/slurp/slurp_real/audio-1500387396-headset.flac chars=148 | flown=35 45.7 req/min eta=4.5 min
+[15:35:53Z] req 0036 [W4] ok   1.24s media=datasets/slurp/slurp_real/audio-1500387396-headset.flac chars=142 | flown=36 45.8 req/min eta=4.5 min
+[15:35:54Z] req 0037 [W1] ok   1.56s media=datasets/slurp/slurp_real/audio-1501759214.flac chars=249 | flown=37 45.5 req/min eta=4.5 min
+[15:35:56Z] req 0038 [W2] ok   1.68s media=datasets/slurp/slurp_real/audio-1501759214.flac chars=249 | flown=38 45.1 req/min eta=4.5 min
+[15:35:57Z] req 0039 [W3] ok   1.12s media=datasets/slurp/slurp_real/audio-1501759214.flac chars=179 | flown=39 45.3 req/min eta=4.4 min
+[15:35:59Z] req 0040 [W4] ok   1.69s media=datasets/slurp/slurp_real/audio-1501759214.flac chars=213 | flown=40 44.9 req/min eta=4.5 min
+[15:36:01Z] req 0041 [W1] ok   2.25s media=datasets/slurp/slurp_real/audio-1500900618.flac chars=153 | flown=41 44.1 req/min eta=4.5 min
+[15:36:04Z] req 0042 [W2] ok   2.40s media=datasets/slurp/slurp_real/audio-1500900618.flac chars=153 | flown=42 43.2 req/min eta=4.6 min
+[15:36:07Z] req 0043 [W3] ok   2.85s media=datasets/slurp/slurp_real/audio-1500900618.flac chars=153 | flown=43 42.1 req/min eta=4.7 min
+[15:36:09Z] req 0044 [W4] ok   2.18s media=datasets/slurp/slurp_real/audio-1500900618.flac chars=149 | flown=44 41.5 req/min eta=4.7 min
+[15:36:12Z] req 0045 [W1] ok   2.47s media=datasets/slurp/slurp_real/audio-1502893878-headset.flac chars=263 | flown=45 40.9 req/min eta=4.8 min
+[15:36:14Z] req 0046 [W2] ok   2.34s media=datasets/slurp/slurp_real/audio-1502893878-headset.flac chars=202 | flown=46 40.3 req/min eta=4.8 min
+[15:36:16Z] req 0047 [W3] ok   2.38s media=datasets/slurp/slurp_real/audio-1502893878-headset.flac chars=274 | flown=47 39.8 req/min eta=4.9 min
+[15:36:18Z] req 0048 [W4] ok   1.63s media=datasets/slurp/slurp_real/audio-1502893878-headset.flac chars=210 | flown=48 39.7 req/min eta=4.8 min
+[15:36:20Z] req 0049 [W1] ok   1.54s media=datasets/slurp/slurp_real/audio-1494422588-headset.flac chars=230 | flown=49 39.7 req/min eta=4.8 min
+[15:36:24Z] req 0050 [W2] ok   3.86s media=datasets/slurp/slurp_real/audio-1494422588-headset.flac chars=233 | flown=50 38.3 req/min eta=5.0 min
+[15:36:26Z] req 0051 [W3] ok   1.73s media=datasets/slurp/slurp_real/audio-1494422588-headset.flac chars=167 | flown=51 38.2 req/min eta=4.9 min
+[15:36:30Z] req 0052 [W4] ok   3.97s media=datasets/slurp/slurp_real/audio-1494422588-headset.flac chars=167 | flown=52 37.0 req/min eta=5.1 min
+[15:36:32Z] req 0053 [W1] ok   1.83s media=datasets/slurp/slurp_real/audio-1497265137-headset.flac chars=215 | flown=53 36.9 req/min eta=5.1 min
+[15:36:33Z] req 0054 [W2] ok   1.48s media=datasets/slurp/slurp_real/audio-1497265137-headset.flac chars=155 | flown=54 37.0 req/min eta=5.0 min
+[15:36:34Z] req 0055 [W3] ok   1.18s media=datasets/slurp/slurp_real/audio-1497265137-headset.flac chars=155 | flown=55 37.1 req/min eta=5.0 min
+[15:36:36Z] req 0056 [W4] ok   1.66s media=datasets/slurp/slurp_real/audio-1497265137-headset.flac chars=215 | flown=56 37.1 req/min eta=5.0 min
+[15:36:41Z] req 0057 [W1] ok   4.67s media=datasets/slurp/slurp_real/audio-1490183633-headset.flac chars=158 | flown=57 35.9 req/min eta=5.1 min
+[15:36:42Z] req 0058 [W2] ok   1.56s media=datasets/slurp/slurp_real/audio-1490183633-headset.flac chars=158 | flown=58 35.9 req/min eta=5.1 min
+[15:36:44Z] req 0059 [W3] ok   1.29s media=datasets/slurp/slurp_real/audio-1490183633-headset.flac chars=146 | flown=59 36.0 req/min eta=5.0 min
+[15:36:45Z] req 0060 [W4] ok   1.44s media=datasets/slurp/slurp_real/audio-1490183633-headset.flac chars=155 | flown=60 36.1 req/min eta=5.0 min
+[15:36:47Z] req 0061 [W1] ok   1.44s media=datasets/slurp/slurp_real/audio-1490203960.flac chars=178 | flown=61 36.2 req/min eta=4.9 min
+[15:36:48Z] req 0062 [W2] ok   1.40s media=datasets/slurp/slurp_real/audio-1490203960.flac chars=178 | flown=62 36.3 req/min eta=4.9 min
+[15:36:49Z] req 0063 [W3] ok   1.25s media=datasets/slurp/slurp_real/audio-1490203960.flac chars=172 | flown=63 36.4 req/min eta=4.9 min
+[15:36:51Z] req 0064 [W4] ok   1.84s media=datasets/slurp/slurp_real/audio-1490203960.flac chars=178 | flown=64 36.3 req/min eta=4.8 min
+[15:36:53Z] req 0065 [W1] ok   1.17s media=datasets/slurp/slurp_real/audio-1499090415-headset.flac chars=103 | flown=65 36.5 req/min eta=4.8 min
+[15:36:54Z] req 0066 [W2] ok   1.23s media=datasets/slurp/slurp_real/audio-1499090415-headset.flac chars=103 | flown=66 36.6 req/min eta=4.8 min
+[15:36:55Z] req 0067 [W3] ok   0.98s media=datasets/slurp/slurp_real/audio-1499090415-headset.flac chars=103 | flown=67 36.8 req/min eta=4.7 min
+[15:36:56Z] req 0068 [W4] ok   1.43s media=datasets/slurp/slurp_real/audio-1499090415-headset.flac chars=103 | flown=68 36.8 req/min eta=4.7 min
+[15:36:59Z] req 0069 [W1] ok   2.91s media=datasets/slurp/slurp_real/audio--1504191543.flac chars=250 | flown=69 36.4 req/min eta=4.7 min
+[15:37:01Z] req 0070 [W2] ok   1.63s media=datasets/slurp/slurp_real/audio--1504191543.flac chars=251 | flown=70 36.4 req/min eta=4.7 min
+[15:37:02Z] req 0071 [W3] ok   1.32s media=datasets/slurp/slurp_real/audio--1504191543.flac chars=237 | flown=71 36.5 req/min eta=4.6 min
+[15:37:04Z] req 0072 [W4] ok   1.74s media=datasets/slurp/slurp_real/audio--1504191543.flac chars=304 | flown=72 36.4 req/min eta=4.6 min
+[15:37:06Z] req 0073 [W1] ok   1.89s media=datasets/slurp/slurp_real/audio-1497359684.flac chars=283 | flown=73 36.4 req/min eta=4.6 min
+[15:37:08Z] req 0074 [W2] ok   1.89s media=datasets/slurp/slurp_real/audio-1497359684.flac chars=283 | flown=74 36.3 req/min eta=4.6 min
+[15:37:09Z] req 0075 [W3] ok   1.35s media=datasets/slurp/slurp_real/audio-1497359684.flac chars=219 | flown=75 36.4 req/min eta=4.5 min
+[15:37:11Z] req 0076 [W4] ok   1.71s media=datasets/slurp/slurp_real/audio-1497359684.flac chars=283 | flown=76 36.3 req/min eta=4.5 min
+[15:37:12Z] req 0077 [W1] ok   1.35s media=datasets/slurp/slurp_real/audio-1498577434.flac chars=152 | flown=77 36.4 req/min eta=4.5 min
+[15:37:14Z] req 0078 [W2] ok   1.29s media=datasets/slurp/slurp_real/audio-1498577434.flac chars=160 | flown=78 36.5 req/min eta=4.4 min
+[15:37:15Z] req 0079 [W3] ok   1.45s media=datasets/slurp/slurp_real/audio-1498577434.flac chars=272 | flown=79 36.5 req/min eta=4.4 min
+[15:37:17Z] req 0080 [W4] ok   1.30s media=datasets/slurp/slurp_real/audio-1498577434.flac chars=152 | flown=80 36.6 req/min eta=4.4 min
+[15:37:18Z] req 0081 [W1] ok   1.27s media=datasets/slurp/slurp_real/audio-1501407405-headset.flac chars=154 | flown=81 36.7 req/min eta=4.3 min
+[15:37:19Z] req 0082 [W2] ok   1.21s media=datasets/slurp/slurp_real/audio-1501407405-headset.flac chars=154 | flown=82 36.8 req/min eta=4.3 min
+[15:37:20Z] req 0083 [W3] ok   0.85s media=datasets/slurp/slurp_real/audio-1501407405-headset.flac chars=92 | flown=83 37.0 req/min eta=4.2 min
+[15:37:21Z] req 0084 [W4] ok   1.19s media=datasets/slurp/slurp_real/audio-1501407405-headset.flac chars=154 | flown=84 37.1 req/min eta=4.2 min
+[15:37:23Z] req 0085 [W1] ok   1.64s media=datasets/slurp/slurp_real/audio-1495377172.flac chars=277 | flown=85 37.1 req/min eta=4.2 min
+[15:37:25Z] req 0086 [W2] ok   1.57s media=datasets/slurp/slurp_real/audio-1495377172.flac chars=286 | flown=86 37.1 req/min eta=4.1 min
+[15:37:26Z] req 0087 [W3] ok   1.56s media=datasets/slurp/slurp_real/audio-1495377172.flac chars=215 | flown=87 37.1 req/min eta=4.1 min
+[15:37:28Z] req 0088 [W4] ok   1.58s media=datasets/slurp/slurp_real/audio-1495377172.flac chars=286 | flown=88 37.1 req/min eta=4.1 min
+[15:37:29Z] req 0089 [W1] ok   1.34s media=datasets/slurp/slurp_real/audio-1499266055.flac chars=178 | flown=89 37.2 req/min eta=4.1 min
+[15:37:31Z] req 0090 [W2] ok   1.39s media=datasets/slurp/slurp_real/audio-1499266055.flac chars=178 | flown=90 37.2 req/min eta=4.0 min
+[15:37:33Z] req 0091 [W3] ok   2.16s media=datasets/slurp/slurp_real/audio-1499266055.flac chars=206 | flown=91 37.1 req/min eta=4.0 min
+[15:37:34Z] req 0092 [W4] ok   1.33s media=datasets/slurp/slurp_real/audio-1499266055.flac chars=178 | flown=92 37.2 req/min eta=4.0 min
+[15:37:36Z] req 0093 [W1] ok   1.65s media=datasets/slurp/slurp_real/audio-1502101512.flac chars=233 | flown=93 37.1 req/min eta=4.0 min
+[15:37:37Z] req 0094 [W2] ok   1.62s media=datasets/slurp/slurp_real/audio-1502101512.flac chars=114 | flown=94 37.1 req/min eta=3.9 min
+[15:37:39Z] req 0095 [W3] ok   1.79s media=datasets/slurp/slurp_real/audio-1502101512.flac chars=303 | flown=95 37.1 req/min eta=3.9 min
+[15:37:41Z] req 0096 [W4] ok   1.24s media=datasets/slurp/slurp_real/audio-1502101512.flac chars=114 | flown=96 37.2 req/min eta=3.9 min
+[15:37:42Z] req 0097 [W1] ok   1.34s media=datasets/slurp/slurp_real/audio-1501773837-headset.flac chars=188 | flown=97 37.2 req/min eta=3.8 min
+[15:37:43Z] req 0098 [W2] ok   1.31s media=datasets/slurp/slurp_real/audio-1501773837-headset.flac chars=152 | flown=98 37.3 req/min eta=3.8 min
+[15:37:47Z] req 0099 [W3] ok   3.44s media=datasets/slurp/slurp_real/audio-1501773837-headset.flac chars=186 | flown=99 36.9 req/min eta=3.8 min
+[15:37:48Z] req 0100 [W4] ok   1.23s media=datasets/slurp/slurp_real/audio-1501773837-headset.flac chars=152 | flown=100 36.9 req/min eta=3.8 min
+[15:37:49Z] req 0101 [W1] ok   1.23s media=datasets/slurp/slurp_real/audio-1498569508.flac chars=156 | flown=101 37.0 req/min eta=3.8 min
+[15:37:52Z] req 0102 [W2] ok   2.26s media=datasets/slurp/slurp_real/audio-1498569508.flac chars=140 | flown=102 36.8 req/min eta=3.7 min
+[15:37:53Z] req 0103 [W3] ok   1.51s media=datasets/slurp/slurp_real/audio-1498569508.flac chars=174 | flown=103 36.8 req/min eta=3.7 min
+[15:37:54Z] req 0104 [W4] ok   0.95s media=datasets/slurp/slurp_real/audio-1498569508.flac chars=157 | flown=104 37.0 req/min eta=3.7 min
+[15:37:55Z] req 0105 [W1] ok   1.13s media=datasets/slurp/slurp_real/audio-1490202471.flac chars=238 | flown=105 37.1 req/min eta=3.6 min
+[15:37:57Z] req 0106 [W2] ok   1.19s media=datasets/slurp/slurp_real/audio-1490202471.flac chars=230 | flown=106 37.2 req/min eta=3.6 min
+[15:37:58Z] req 0107 [W3] ok   1.41s media=datasets/slurp/slurp_real/audio-1490202471.flac chars=225 | flown=107 37.2 req/min eta=3.6 min
+[15:37:59Z] req 0108 [W4] ok   1.17s media=datasets/slurp/slurp_real/audio-1490202471.flac chars=230 | flown=108 37.3 req/min eta=3.5 min
+[15:38:01Z] req 0109 [W1] ok   1.44s media=datasets/slurp/slurp_real/audio-1497438989-headset.flac chars=256 | flown=109 37.3 req/min eta=3.5 min
+[15:38:02Z] req 0110 [W2] ok   1.43s media=datasets/slurp/slurp_real/audio-1497438989-headset.flac chars=319 | flown=110 37.3 req/min eta=3.5 min
+[15:38:03Z] req 0111 [W3] ok   1.02s media=datasets/slurp/slurp_real/audio-1497438989-headset.flac chars=245 | flown=111 37.5 req/min eta=3.4 min
+[15:38:05Z] req 0112 [W4] ok   1.26s media=datasets/slurp/slurp_real/audio-1497438989-headset.flac chars=258 | flown=112 37.5 req/min eta=3.4 min
+[15:38:06Z] req 0113 [W1] ok   1.33s media=datasets/slurp/slurp_real/audio-1494416109-headset.flac chars=305 | flown=113 37.6 req/min eta=3.4 min
+[15:38:07Z] req 0114 [W2] ok   1.33s media=datasets/slurp/slurp_real/audio-1494416109-headset.flac chars=305 | flown=114 37.6 req/min eta=3.3 min
+[15:38:08Z] req 0115 [W3] ok   1.15s media=datasets/slurp/slurp_real/audio-1494416109-headset.flac chars=305 | flown=115 37.7 req/min eta=3.3 min
+[15:38:10Z] req 0116 [W4] ok   1.33s media=datasets/slurp/slurp_real/audio-1494416109-headset.flac chars=307 | flown=116 37.8 req/min eta=3.3 min
+[15:38:11Z] req 0117 [W1] ok   0.89s media=datasets/slurp/slurp_real/audio-1500899290.flac chars=150 | flown=117 37.9 req/min eta=3.2 min
+[15:38:12Z] req 0118 [W2] ok   1.33s media=datasets/slurp/slurp_real/audio-1500899290.flac chars=305 | flown=118 38.0 req/min eta=3.2 min
+[15:38:13Z] req 0119 [W3] ok   0.79s media=datasets/slurp/slurp_real/audio-1500899290.flac chars=205 | flown=119 38.1 req/min eta=3.2 min
+[15:38:14Z] req 0120 [W4] ok   0.90s media=datasets/slurp/slurp_real/audio-1500899290.flac chars=150 | flown=120 38.3 req/min eta=3.1 min
+[15:38:15Z] req 0121 [W1] ok   1.45s media=datasets/slurp/slurp_real/audio-1498570919.flac chars=329 | flown=121 38.3 req/min eta=3.1 min
+[15:38:17Z] req 0122 [W2] ok   1.42s media=datasets/slurp/slurp_real/audio-1498570919.flac chars=329 | flown=122 38.3 req/min eta=3.1 min
+[15:38:18Z] req 0123 [W3] ok   1.03s media=datasets/slurp/slurp_real/audio-1498570919.flac chars=271 | flown=123 38.4 req/min eta=3.0 min
+[15:38:19Z] req 0124 [W4] ok   1.23s media=datasets/slurp/slurp_real/audio-1498570919.flac chars=270 | flown=124 38.5 req/min eta=3.0 min
+[15:38:20Z] req 0125 [W1] ok   0.95s media=datasets/slurp/slurp_real/audio-1488986707.flac chars=175 | flown=125 38.6 req/min eta=3.0 min
+[15:38:21Z] req 0126 [W2] ok   0.94s media=datasets/slurp/slurp_real/audio-1488986707.flac chars=178 | flown=126 38.7 req/min eta=2.9 min
+[15:38:22Z] req 0127 [W3] ok   0.79s media=datasets/slurp/slurp_real/audio-1488986707.flac chars=196 | flown=127 38.9 req/min eta=2.9 min
+[15:38:23Z] req 0128 [W4] ok   1.12s media=datasets/slurp/slurp_real/audio-1488986707.flac chars=175 | flown=128 38.9 req/min eta=2.9 min
+[15:38:24Z] req 0129 [W1] ok   1.06s media=datasets/slurp/slurp_real/audio-1497882818-headset.flac chars=189 | flown=129 39.0 req/min eta=2.8 min
+[15:38:25Z] req 0130 [W2] ok   0.97s media=datasets/slurp/slurp_real/audio-1497882818-headset.flac chars=189 | flown=130 39.1 req/min eta=2.8 min
+[15:38:26Z] req 0131 [W3] ok   0.60s media=datasets/slurp/slurp_real/audio-1497882818-headset.flac chars=154 | flown=131 39.3 req/min eta=2.8 min
+[15:38:27Z] req 0132 [W4] ok   0.99s media=datasets/slurp/slurp_real/audio-1497882818-headset.flac chars=197 | flown=132 39.4 req/min eta=2.7 min
+[15:38:28Z] req 0133 [W1] ok   0.99s media=datasets/slurp/slurp_real/audio-1495734594-headset.flac chars=170 | flown=133 39.5 req/min eta=2.7 min
+[15:38:29Z] req 0134 [W2] ok   1.17s media=datasets/slurp/slurp_real/audio-1495734594-headset.flac chars=234 | flown=134 39.6 req/min eta=2.7 min
+[15:38:30Z] req 0135 [W3] ok   0.81s media=datasets/slurp/slurp_real/audio-1495734594-headset.flac chars=165 | flown=135 39.7 req/min eta=2.6 min
+[15:38:31Z] req 0136 [W4] ok   1.06s media=datasets/slurp/slurp_real/audio-1495734594-headset.flac chars=170 | flown=136 39.8 req/min eta=2.6 min
+[15:38:32Z] req 0137 [W1] ok   1.17s media=datasets/slurp/slurp_real/audio--1505407176.flac chars=184 | flown=137 39.8 req/min eta=2.6 min
+[15:38:33Z] req 0138 [W2] ok   1.36s media=datasets/slurp/slurp_real/audio--1505407176.flac chars=244 | flown=138 39.9 req/min eta=2.6 min
+[15:38:34Z] req 0139 [W3] ok   1.04s media=datasets/slurp/slurp_real/audio--1505407176.flac chars=272 | flown=139 39.9 req/min eta=2.5 min
+[15:38:36Z] req 0140 [W4] ok   1.41s media=datasets/slurp/slurp_real/audio--1505407176.flac chars=233 | flown=140 40.0 req/min eta=2.5 min
+[15:38:38Z] req 0141 [W1] ok   1.82s media=datasets/slurp/slurp_real/audio-1501765286.flac chars=167 | flown=141 39.9 req/min eta=2.5 min
+[15:38:39Z] req 0142 [W2] ok   1.32s media=datasets/slurp/slurp_real/audio-1501765286.flac chars=226 | flown=142 39.9 req/min eta=2.5 min
+[15:38:40Z] req 0143 [W3] ok   1.40s media=datasets/slurp/slurp_real/audio-1501765286.flac chars=174 | flown=143 39.9 req/min eta=2.4 min
+[15:38:41Z] req 0144 [W4] ok   0.91s media=datasets/slurp/slurp_real/audio-1501765286.flac chars=168 | flown=144 40.0 req/min eta=2.4 min
+[15:38:43Z] req 0145 [W1] ok   1.99s media=datasets/slurp/slurp_real/audio-1501415369-headset.flac chars=109 | flown=145 40.0 req/min eta=2.4 min
+[15:38:44Z] req 0146 [W2] ok   1.01s media=datasets/slurp/slurp_real/audio-1501415369-headset.flac chars=155 | flown=146 40.0 req/min eta=2.3 min
+[15:38:45Z] req 0147 [W3] ok   0.64s media=datasets/slurp/slurp_real/audio-1501415369-headset.flac chars=149 | flown=147 40.2 req/min eta=2.3 min
+[15:38:46Z] req 0148 [W4] ok   0.88s media=datasets/slurp/slurp_real/audio-1501415369-headset.flac chars=124 | flown=148 40.3 req/min eta=2.3 min
+[15:38:47Z] req 0149 [W1] ok   1.01s media=datasets/slurp/slurp_real/audio-1490006493.flac chars=160 | flown=149 40.4 req/min eta=2.3 min
+[15:38:48Z] req 0150 [W2] ok   1.00s media=datasets/slurp/slurp_real/audio-1490006493.flac chars=160 | flown=150 40.5 req/min eta=2.2 min
+[15:38:49Z] req 0151 [W3] ok   0.62s media=datasets/slurp/slurp_real/audio-1490006493.flac chars=155 | flown=151 40.6 req/min eta=2.2 min
+[15:38:50Z] req 0152 [W4] ok   0.97s media=datasets/slurp/slurp_real/audio-1490006493.flac chars=160 | flown=152 40.7 req/min eta=2.2 min
+[15:38:51Z] req 0153 [W1] ok   1.29s media=datasets/slurp/slurp_real/audio-1490184504.flac chars=255 | flown=153 40.7 req/min eta=2.1 min
+[15:38:52Z] req 0154 [W2] ok   1.46s media=datasets/slurp/slurp_real/audio-1490184504.flac chars=248 | flown=154 40.7 req/min eta=2.1 min
+[15:38:53Z] req 0155 [W3] ok   0.93s media=datasets/slurp/slurp_real/audio-1490184504.flac chars=235 | flown=155 40.8 req/min eta=2.1 min
+[15:38:55Z] req 0156 [W4] ok   1.15s media=datasets/slurp/slurp_real/audio-1490184504.flac chars=188 | flown=156 40.9 req/min eta=2.1 min
+[15:38:56Z] req 0157 [W1] ok   0.97s media=datasets/slurp/slurp_real/audio-1494514154.flac chars=158 | flown=157 41.0 req/min eta=2.0 min
+[15:38:56Z] req 0158 [W2] ok   0.75s media=datasets/slurp/slurp_real/audio-1494514154.flac chars=94 | flown=158 41.1 req/min eta=2.0 min
+[15:38:57Z] req 0159 [W3] ok   0.73s media=datasets/slurp/slurp_real/audio-1494514154.flac chars=150 | flown=159 41.2 req/min eta=2.0 min
+[15:38:58Z] req 0160 [W4] ok   0.98s media=datasets/slurp/slurp_real/audio-1494514154.flac chars=158 | flown=160 41.3 req/min eta=1.9 min
+[15:38:59Z] req 0161 [W1] ok   1.25s media=datasets/slurp/slurp_real/audio-1501692977-headset.flac chars=239 | flown=161 41.3 req/min eta=1.9 min
+[15:39:01Z] req 0162 [W2] ok   1.41s media=datasets/slurp/slurp_real/audio-1501692977-headset.flac chars=305 | flown=162 41.3 req/min eta=1.9 min
+[15:39:02Z] req 0163 [W3] ok   0.88s media=datasets/slurp/slurp_real/audio-1501692977-headset.flac chars=233 | flown=163 41.4 req/min eta=1.9 min
+[15:39:03Z] req 0164 [W4] ok   1.31s media=datasets/slurp/slurp_real/audio-1501692977-headset.flac chars=315 | flown=164 41.4 req/min eta=1.8 min
+[15:39:04Z] req 0165 [W1] ok   0.93s media=datasets/slurp/slurp_real/audio-1498565017-headset.flac chars=191 | flown=165 41.5 req/min eta=1.8 min
+[15:39:05Z] req 0166 [W2] ok   0.92s media=datasets/slurp/slurp_real/audio-1498565017-headset.flac chars=173 | flown=166 41.6 req/min eta=1.8 min
+[15:39:06Z] req 0167 [W3] ok   0.86s media=datasets/slurp/slurp_real/audio-1498565017-headset.flac chars=249 | flown=167 41.7 req/min eta=1.8 min
+[15:39:07Z] req 0168 [W4] ok   0.96s media=datasets/slurp/slurp_real/audio-1498565017-headset.flac chars=173 | flown=168 41.8 req/min eta=1.7 min
+[15:39:08Z] req 0169 [W1] ok   1.02s media=datasets/slurp/slurp_real/audio-1501766742-headset.flac chars=209 | flown=169 41.8 req/min eta=1.7 min
+[15:39:09Z] req 0170 [W2] ok   0.72s media=datasets/slurp/slurp_real/audio-1501766742-headset.flac chars=91 | flown=170 42.0 req/min eta=1.7 min
+[15:39:09Z] req 0171 [W3] ok   0.82s media=datasets/slurp/slurp_real/audio-1501766742-headset.flac chars=165 | flown=171 42.1 req/min eta=1.6 min
+[15:39:11Z] req 0172 [W4] ok   1.27s media=datasets/slurp/slurp_real/audio-1501766742-headset.flac chars=251 | flown=172 42.1 req/min eta=1.6 min
+[15:39:12Z] req 0173 [W1] ok   0.90s media=datasets/slurp/slurp_real/audio-1488974202.flac chars=164 | flown=173 42.2 req/min eta=1.6 min
+[15:39:13Z] req 0174 [W2] ok   1.01s media=datasets/slurp/slurp_real/audio-1488974202.flac chars=164 | flown=174 42.2 req/min eta=1.6 min
+[15:39:13Z] req 0175 [W3] ok   0.59s media=datasets/slurp/slurp_real/audio-1488974202.flac chars=173 | flown=175 42.4 req/min eta=1.5 min
+[15:39:14Z] req 0176 [W4] ok   0.84s media=datasets/slurp/slurp_real/audio-1488974202.flac chars=164 | flown=176 42.5 req/min eta=1.5 min
+[15:39:15Z] req 0177 [W1] ok   1.27s media=datasets/slurp/slurp_real/audio-1498486426.flac chars=232 | flown=177 42.5 req/min eta=1.5 min
+[15:39:18Z] req 0178 [W2] ok   2.34s media=datasets/slurp/slurp_real/audio-1498486426.flac chars=232 | flown=178 42.3 req/min eta=1.5 min
+[15:39:19Z] req 0179 [W3] ok   0.81s media=datasets/slurp/slurp_real/audio-1498486426.flac chars=228 | flown=179 42.4 req/min eta=1.4 min
+[15:39:20Z] req 0180 [W4] ok   1.23s media=datasets/slurp/slurp_real/audio-1498486426.flac chars=232 | flown=180 42.4 req/min eta=1.4 min
+[15:39:21Z] req 0181 [W1] ok   1.14s media=datasets/slurp/slurp_real/audio-1497860426-headset.flac chars=234 | flown=181 42.5 req/min eta=1.4 min
+[15:39:22Z] req 0182 [W2] ok   1.18s media=datasets/slurp/slurp_real/audio-1497860426-headset.flac chars=220 | flown=182 42.5 req/min eta=1.4 min
+[15:39:23Z] req 0183 [W3] ok   0.91s media=datasets/slurp/slurp_real/audio-1497860426-headset.flac chars=224 | flown=183 42.6 req/min eta=1.3 min
+[15:39:25Z] req 0184 [W4] ok   1.17s media=datasets/slurp/slurp_real/audio-1497860426-headset.flac chars=234 | flown=184 42.6 req/min eta=1.3 min
+[15:39:25Z] req 0185 [W1] ok   0.72s media=datasets/slurp/slurp_real/audio-1501751776-headset.flac chars=103 | flown=185 42.7 req/min eta=1.3 min
+[15:39:26Z] req 0186 [W2] ok   1.12s media=datasets/slurp/slurp_real/audio-1501751776-headset.flac chars=252 | flown=186 42.8 req/min eta=1.3 min
+[15:39:27Z] req 0187 [W3] ok   0.47s media=datasets/slurp/slurp_real/audio-1501751776-headset.flac chars=101 | flown=187 42.9 req/min eta=1.2 min
+[15:39:28Z] req 0188 [W4] ok   1.26s media=datasets/slurp/slurp_real/audio-1501751776-headset.flac chars=278 | flown=188 42.9 req/min eta=1.2 min
+[15:39:29Z] req 0189 [W1] ok   1.21s media=datasets/slurp/slurp_real/audio-1490354296-headset.flac chars=274 | flown=189 43.0 req/min eta=1.2 min
+[15:39:30Z] req 0190 [W2] ok   0.75s media=datasets/slurp/slurp_real/audio-1490354296-headset.flac chars=113 | flown=190 43.1 req/min eta=1.2 min
+[15:39:31Z] req 0191 [W3] ok   0.86s media=datasets/slurp/slurp_real/audio-1490354296-headset.flac chars=262 | flown=191 43.1 req/min eta=1.1 min
+[15:39:32Z] req 0192 [W4] ok   1.16s media=datasets/slurp/slurp_real/audio-1490354296-headset.flac chars=260 | flown=192 43.2 req/min eta=1.1 min
+[15:39:33Z] req 0193 [W1] ok   1.07s media=datasets/slurp/slurp_real/audio-1499266495.flac chars=204 | flown=193 43.2 req/min eta=1.1 min
+[15:39:35Z] req 0194 [W2] ok   1.07s media=datasets/slurp/slurp_real/audio-1499266495.flac chars=214 | flown=194 43.3 req/min eta=1.1 min
+[15:39:36Z] req 0195 [W3] ok   0.96s media=datasets/slurp/slurp_real/audio-1499266495.flac chars=246 | flown=195 43.3 req/min eta=1.0 min
+[15:39:37Z] req 0196 [W4] ok   1.19s media=datasets/slurp/slurp_real/audio-1499266495.flac chars=240 | flown=196 43.4 req/min eta=1.0 min
+[15:39:38Z] req 0197 [W1] ok   1.07s media=datasets/slurp/slurp_real/audio-1490291441.flac chars=194 | flown=197 43.4 req/min eta=1.0 min
+[15:39:39Z] req 0198 [W2] ok   1.18s media=datasets/slurp/slurp_real/audio-1490291441.flac chars=207 | flown=198 43.4 req/min eta=1.0 min
+[15:39:40Z] req 0199 [W3] ok   0.84s media=datasets/slurp/slurp_real/audio-1490291441.flac chars=236 | flown=199 43.5 req/min eta=0.9 min
+[15:39:41Z] req 0200 [W4] ok   1.24s media=datasets/slurp/slurp_real/audio-1490291441.flac chars=245 | flown=200 43.5 req/min eta=0.9 min
+[15:39:42Z] req 0201 [W1] ok   1.22s media=datasets/slurp/slurp_real/audio-1501692486.flac chars=253 | flown=201 43.6 req/min eta=0.9 min
+[15:39:44Z] req 0202 [W2] ok   1.19s media=datasets/slurp/slurp_real/audio-1501692486.flac chars=256 | flown=202 43.6 req/min eta=0.9 min
+[15:39:45Z] req 0203 [W3] ok   0.91s media=datasets/slurp/slurp_real/audio-1501692486.flac chars=256 | flown=203 43.6 req/min eta=0.8 min
+[15:39:46Z] req 0204 [W4] ok   1.29s media=datasets/slurp/slurp_real/audio-1501692486.flac chars=259 | flown=204 43.7 req/min eta=0.8 min
+[15:39:47Z] req 0205 [W1] ok   1.17s media=datasets/slurp/slurp_real/audio-1497368809.flac chars=197 | flown=205 43.7 req/min eta=0.8 min
+[15:39:48Z] req 0206 [W2] ok   1.13s media=datasets/slurp/slurp_real/audio-1497368809.flac chars=166 | flown=206 43.7 req/min eta=0.8 min
+[15:39:49Z] req 0207 [W3] ok   0.90s media=datasets/slurp/slurp_real/audio-1497368809.flac chars=202 | flown=207 43.8 req/min eta=0.8 min
+[15:39:50Z] req 0208 [W4] ok   1.25s media=datasets/slurp/slurp_real/audio-1497368809.flac chars=198 | flown=208 43.8 req/min eta=0.7 min
+[15:39:53Z] req 0209 [W1] ok   2.32s media=datasets/slurp/slurp_real/audio-1499695487.flac chars=120 | flown=209 43.6 req/min eta=0.7 min
+[15:39:54Z] req 0210 [W2] ok   1.48s media=datasets/slurp/slurp_real/audio-1499695487.flac chars=249 | flown=210 43.6 req/min eta=0.7 min
+[15:39:55Z] req 0211 [W3] ok   0.85s media=datasets/slurp/slurp_real/audio-1499695487.flac chars=173 | flown=211 43.7 req/min eta=0.7 min
+[15:39:57Z] req 0212 [W4] ok   1.31s media=datasets/slurp/slurp_real/audio-1499695487.flac chars=235 | flown=212 43.7 req/min eta=0.6 min
+[15:39:58Z] req 0213 [W1] ok   1.13s media=datasets/slurp/slurp_real/audio-1501777355-headset.flac chars=174 | flown=213 43.7 req/min eta=0.6 min
+[15:39:59Z] req 0214 [W2] ok   1.02s media=datasets/slurp/slurp_real/audio-1501777355-headset.flac chars=164 | flown=214 43.8 req/min eta=0.6 min
+[15:40:00Z] req 0215 [W3] ok   1.12s media=datasets/slurp/slurp_real/audio-1501777355-headset.flac chars=316 | flown=215 43.8 req/min eta=0.6 min
+[15:40:01Z] req 0216 [W4] ok   1.06s media=datasets/slurp/slurp_real/audio-1501777355-headset.flac chars=174 | flown=216 43.9 req/min eta=0.5 min
+[15:40:02Z] req 0217 [W1] ok   0.95s media=datasets/slurp/slurp_real/audio-1501754418.flac chars=167 | flown=217 43.9 req/min eta=0.5 min
+[15:40:03Z] req 0218 [W2] ok   1.15s media=datasets/slurp/slurp_real/audio-1501754418.flac chars=235 | flown=218 43.9 req/min eta=0.5 min
+[15:40:04Z] req 0219 [W3] ok   0.69s media=datasets/slurp/slurp_real/audio-1501754418.flac chars=174 | flown=219 44.0 req/min eta=0.5 min
+[15:40:05Z] req 0220 [W4] ok   0.86s media=datasets/slurp/slurp_real/audio-1501754418.flac chars=170 | flown=220 44.1 req/min eta=0.5 min
+[15:40:06Z] req 0221 [W1] ok   1.36s media=datasets/slurp/slurp_real/audio-1490021137-headset.flac chars=332 | flown=221 44.1 req/min eta=0.4 min
+[15:40:08Z] req 0222 [W2] ok   1.38s media=datasets/slurp/slurp_real/audio-1490021137-headset.flac chars=313 | flown=222 44.1 req/min eta=0.4 min
+[15:40:09Z] req 0223 [W3] ok   0.93s media=datasets/slurp/slurp_real/audio-1490021137-headset.flac chars=211 | flown=223 44.2 req/min eta=0.4 min
+[15:40:10Z] req 0224 [W4] ok   1.33s media=datasets/slurp/slurp_real/audio-1490021137-headset.flac chars=325 | flown=224 44.2 req/min eta=0.4 min
+[15:40:11Z] req 0225 [W1] ok   1.44s media=datasets/slurp/slurp_real/audio-1489153743.flac chars=364 | flown=225 44.1 req/min eta=0.3 min
+[15:40:13Z] req 0226 [W2] ok   1.58s media=datasets/slurp/slurp_real/audio-1489153743.flac chars=393 | flown=226 44.1 req/min eta=0.3 min
+[15:40:14Z] req 0227 [W3] ok   1.20s media=datasets/slurp/slurp_real/audio-1489153743.flac chars=298 | flown=227 44.1 req/min eta=0.3 min
+[15:40:16Z] req 0228 [W4] ok   1.31s media=datasets/slurp/slurp_real/audio-1489153743.flac chars=324 | flown=228 44.1 req/min eta=0.3 min
+[15:40:17Z] req 0229 [W1] ok   1.02s media=datasets/slurp/slurp_real/audio-1494513016.flac chars=196 | flown=229 44.2 req/min eta=0.2 min
+[15:40:18Z] req 0230 [W2] ok   1.03s media=datasets/slurp/slurp_real/audio-1494513016.flac chars=196 | flown=230 44.2 req/min eta=0.2 min
+[15:40:19Z] req 0231 [W3] ok   0.96s media=datasets/slurp/slurp_real/audio-1494513016.flac chars=221 | flown=231 44.3 req/min eta=0.2 min
+[15:40:20Z] req 0232 [W4] ok   1.07s media=datasets/slurp/slurp_real/audio-1494513016.flac chars=151 | flown=232 44.3 req/min eta=0.2 min
+[15:40:21Z] req 0233 [W1] ok   1.41s media=datasets/slurp/slurp_real/audio-1498573552-headset.flac chars=225 | flown=233 44.3 req/min eta=0.2 min
+[15:40:22Z] req 0234 [W2] ok   1.23s media=datasets/slurp/slurp_real/audio-1498573552-headset.flac chars=225 | flown=234 44.3 req/min eta=0.1 min
+[15:40:23Z] req 0235 [W3] ok   0.76s media=datasets/slurp/slurp_real/audio-1498573552-headset.flac chars=159 | flown=235 44.4 req/min eta=0.1 min
+[15:40:25Z] req 0236 [W4] ok   1.27s media=datasets/slurp/slurp_real/audio-1498573552-headset.flac chars=225 | flown=236 44.4 req/min eta=0.1 min
+[15:40:26Z] req 0237 [W1] ok   1.21s media=datasets/slurp/slurp_real/audio-1502198805-headset.flac chars=162 | flown=237 44.4 req/min eta=0.1 min
+[15:40:29Z] req 0238 [W2] ok   2.87s media=datasets/slurp/slurp_real/audio-1502198805-headset.flac chars=162 | flown=238 44.1 req/min eta=0.0 min
+[15:40:30Z] req 0239 [W3] ok   1.26s media=datasets/slurp/slurp_real/audio-1502198805-headset.flac chars=156 | flown=239 44.1 req/min eta=0.0 min
+[15:40:32Z] req 0240 [W4] ok   1.07s media=datasets/slurp/slurp_real/audio-1502198805-headset.flac chars=162 | flown=240 44.2 req/min eta=0.0 min
+[15:40:32Z] outputs.jsonl written: 240 rows (0 carried) -- NOT read by this launcher
+[15:40:32Z] per-arm row counts (flown this attempt): {"W1": 60, "W2": 60, "W3": 60, "W4": 60}
+[15:40:32Z] per-arm corrective-entry totals actually flown: {"W1": 61, "W2": 61, "W3": 61, "W4": 120}
+[15:40:32Z] client.close(): trace_manifest_hash=ab750515989bd8197143e5983a07d20af29521244ea2af3982e451e9c9f45f85
+[15:40:32Z] requests: flown=240 replayed=0 failures=0
+[15:40:32Z] flown by arm: {"W1": 60, "W2": 60, "W3": 60, "W4": 60}
+[15:40:32Z] mean latency by arm: {"W1": 1.448, "W2": 1.398, "W3": 1.136, "W4": 1.3}
+[15:40:32Z] cost: {"audio_seconds_used": 729.0377500000003, "calls_used": 240, "completion_tokens_total": 15177, "latency_seconds_total": 228.98033101015608, "prompt_tokens_total": 142917, "tool_calls": 0, "umbrella_lock_sha256": "9064bde89d4248fd80c9c2f93c2a9c276a454eadbb1aa7d529671118961371b1"}
+[15:40:32Z] wall: flight 5.4 min; GPU-occupied 21.8 min (0.363 h)
+[15:40:32Z] flight receipt: /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-pcorrf-240/attempt-20260820T151845Z-88b2a5/flight-receipt.json
+exit: 0 at 2026-08-20T15:40:32Z
+=== post-flight orphan check ===
+1490 /home/chao/llama.cpp-featcache/build/bin/llama-server --host 127.0.0.1 --port 8080 -m /home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf --mmproj /home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/mmproj-Qwen3-Omni-30B-A3B-Instruct-bf16.gguf -c 49152 -np 4 -fa on -ngl 999 -ctk q8_0 -ctv q8_0

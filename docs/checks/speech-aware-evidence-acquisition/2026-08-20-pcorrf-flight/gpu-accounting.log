@@ -1,0 +1,50 @@
+start: 2026-08-20T15:42:45Z
+attempt: attempt-20260820T151845Z-88b2a5
+
+=== timeline (from flight.log, which is archived verbatim) ===
+[15:18:45Z] spawning llama-server (receipt-pinned binary, CHILD of this process)
+[15:19:07Z] session up: pid=1490 port=8080 (spawn+load 21.1s)
+[15:35:06Z] FLIGHT START: 240 requests over arms ('W1', 'W2', 'W3', 'W4'), ONE session (one model)
+[15:35:07Z] req 0001 [W1] ok   1.61s media=datasets/slurp/slurp_real/audio-1495375974.flac chars=176 | flown=1 35.7 req/min eta=6.7 min
+[15:40:32Z] req 0240 [W4] ok   1.07s media=datasets/slurp/slurp_real/audio-1502198805-headset.flac chars=162 | flown=240 44.2 req/min eta=0.0 min
+[15:40:32Z] client.close(): trace_manifest_hash=ab750515989bd8197143e5983a07d20af29521244ea2af3982e451e9c9f45f85
+[15:40:32Z] wall: flight 5.4 min; GPU-occupied 21.8 min (0.363 h)
+
+=== derived GPU-hour measures ===
+  server spawn -> session up (model load):        22 s
+  session up -> FLIGHT START (server ALIVE, GPU IDLE:
+      cold-cache sha256 of 20,764,519,520 B of GGUF over 9p): 959 s
+  FLIGHT START -> last request (240 requests):    325.96 s
+
+  MEASURE A -- server-alive wall (the P-TRAP/P-SLU receipt convention):
+      1306.1 s = 0.3628 GPU-h   vs ceiling 0.35  ->  OVER by 0.0128 h (46.1 s)
+  MEASURE B -- GPU-active occupancy (model load + the 240 requests;
+               the idle hashing gap excluded):
+      348.0 s = 0.0967 GPU-h   vs ceiling 0.35  ->  within
+  MEASURE C -- the registration's OWN measured-equivalent basis
+               (0.00059 GPU-h/call x 240 calls):
+      0.1416 GPU-h   vs ceiling 0.35  ->  within  (registration cites ~0.15)
+
+  planned gpu_hours on the ExecutionPlan (machine-checked <= ceiling): 0.15
+  ledger 'gpu hours' cell: 0.35 (registered ceiling; gate requires registered >= planned)
+
+=== corroboration: the GPU did no work during the gap ===
+  (a) flight.log shows a ~16 min gap between 'session up' and request 0001;
+  (b) live nvidia-smi samples taken by the flight operator during the gap read
+      'P5, 1200 MHz, 0-1 % utilization, 23449 MiB' -- VRAM resident, clocks at idle,
+      no throttle reason active (0x0);
+  (c) the launcher process was in D (disk sleep) on p9_client_rpc with an open fd on
+      $SPEECHRL_DATA_DIR/models/.../Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf and
+      /proc read_bytes climbing to 20,777,582,592 -- one full pass over both GGUF files.
+
+=== server.log request-side corroboration (counts only) ===
+  total lines: 60948
+  lines matching 'POST /v1/chat/completions': 0
+0
+
+=== FORWARD FIX (operational finding for the next flight) ===
+  Build the transport + payload binding BEFORE start_session, or pre-warm the page
+  cache for the data-root GGUF copies, so the model-identity hash never runs while
+  the server is holding VRAM. On a warm cache this attempt's Measure A would have
+  been ~0.10 GPU-h (the P-TRAP precedent's own 0.066 h for half the requests).
+GPU ACCOUNTING DONE

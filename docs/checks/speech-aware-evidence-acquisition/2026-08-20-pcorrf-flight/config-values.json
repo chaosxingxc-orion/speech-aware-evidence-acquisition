@@ -1,0 +1,97 @@
+{
+  "config_hash": "abea45e994e0a73e3575c82c01eedb370469bb2885f7cf8e05e5dd3eb955ec37",
+  "config_protocol_hash": "f198fb8eb6c9cbb109e0fb5dbd555c1e79321ba524d5cb4b421f95fc71d22cb7",
+  "protocol_hash": "4f540b24df430cbb80c4e1e9dc6c0ee09f61b698d1022ca39a50a750fdd7400e",
+  "values": {
+    "arm": "fixed-legal-context",
+    "arm_n": 60,
+    "arms": [
+      "W1",
+      "W2",
+      "W3",
+      "W4"
+    ],
+    "base_url": "http://127.0.0.1:8080",
+    "binding_config": {
+      "arm_n": 60,
+      "arms": [
+        "W1",
+        "W2",
+        "W3",
+        "W4"
+      ],
+      "consumed_pslu_source": {
+        "arm": "A0",
+        "attempt_id": "attempt-20260818T010218Z-4c97cb",
+        "run_experiment_id": "SAEA-PROBE-pslu-n60"
+      },
+      "l2b": {
+        "k": 3,
+        "min_score": 0.7
+      },
+      "legality": {
+        "arm": "SAEA-PROBE-pcorrf-240",
+        "evidence_source": "corrective-supply",
+        "legality_tier": "legal",
+        "reference_source": "slurp-train-ontology",
+        "span_source": "percept-keyed-type-lookup"
+      },
+      "schema": "saea-pcorrf-binding-config-v1",
+      "seed": 20260807,
+      "split_identity_hash": "fc9de436eba5aba120ecf07ee112765cd4ac0609150e0aaf36f4d44c9c5b5ee5",
+      "train_pool": {
+        "n_pairs": 4157,
+        "n_types": 55,
+        "n_values": 3961,
+        "sha256": "fe372974b7047526212cb23799c457d5a5a10a1a116fa0fa413748038d0a6ef6"
+      }
+    },
+    "binding_config_sha256": "4f540b24df430cbb80c4e1e9dc6c0ee09f61b698d1022ca39a50a750fdd7400e",
+    "carrier_lock_key": "slurp",
+    "decoding_params": {
+      "max_tokens": 1024,
+      "seed": 20260803,
+      "temperature": 0
+    },
+    "launcher": "scratchpad pcorrf/launch_pcorrf_flight.py (archived with the flight receipt)",
+    "model_lock_key": "qwen3-omni-30b-a3b-instruct-gguf-q4km",
+    "orchestrator": "rails.probes.pcorrf_flight.run_pcorrf_flight",
+    "planned": {
+      "gpu_hours": 0.15,
+      "model_calls": 240,
+      "speech_audio_seconds": 730
+    },
+    "preregistration": "docs/readiness/2026-08-20-pcorrf-preregistration-REGISTERED.md",
+    "probe": "SAEA-PROBE-pcorrf-240",
+    "prompt_order": "evidence-first-system-v2",
+    "registered_ceilings": {
+      "gpu_hours": 0.35,
+      "model_calls": 260,
+      "speech_audio_seconds": 1000
+    },
+    "roster_table": "configs/probes/g0-binding/pslu-rosters-train-only.json",
+    "runtime_receipt": "receipts/runtime-q4km-featcache.json",
+    "sample_manifest": "configs/probes/g0-binding/pslu-sample-devel-n60.json",
+    "server_args": [
+      "-c",
+      "49152",
+      "-np",
+      "4",
+      "-fa",
+      "on",
+      "-ngl",
+      "999",
+      "-ctk",
+      "q8_0",
+      "-ctv",
+      "q8_0"
+    ],
+    "server_env": {
+      "LLAMA_MTMD_FEAT_CACHE_DIR": "/home/chao/feat-cache/slurp-q4km"
+    },
+    "split_name": "devel",
+    "status": "REGISTERED",
+    "timeout_seconds": 420.0,
+    "transport": "llama-server"
+  }
+}

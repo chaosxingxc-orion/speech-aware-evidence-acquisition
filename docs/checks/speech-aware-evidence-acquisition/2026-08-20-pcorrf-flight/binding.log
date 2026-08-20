@@ -1,0 +1,15 @@
+consumed A0 attempt: /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-pslu-n60/attempt-20260818T010218Z-4c97cb
+binding_config_sha256: 4f540b24df430cbb80c4e1e9dc6c0ee09f61b698d1022ca39a50a750fdd7400e
+binding_hash (tri-derivation): 3a461f694acdc46eca3ef69fe3f157be058343816157037c31972ac179f6830a
+document_hash: c2466b7e208f8ef5e2e9b76dccdeb58effa26c407a48ffaff38a74ce3cd6cb47
+samples: 60
+train pool: {"n_pairs": 4157, "n_types": 55, "n_values": 3961, "sha256": "fe372974b7047526212cb23799c457d5a5a10a1a116fa0fa413748038d0a6ef6"}
+A0 emitted slots total: 95
+W1: K distribution {"0": 20, "1": 25, "2": 10, "3": 4, "4": 1} | total 61 mean 1.0167 max 4 | K=0 samples 20
+W2: K distribution {"0": 20, "1": 25, "2": 10, "3": 4, "4": 1} | total 61 mean 1.0167 max 4 | K=0 samples 20
+W3: K distribution {"0": 20, "1": 25, "2": 10, "3": 4, "4": 1} | total 61 mean 1.0167 max 4 | K=0 samples 20
+W4: K distribution {"0": 14, "1": 11, "2": 10, "3": 14, "4": 10, "7": 1} | total 120 mean 2.0 max 7 | K=0 samples 14
+W2 length-matched to W1 on every sample: True
+W2 donor breadth: 30 distinct origin samples across 61 entries
+wrote /mnt/c/Users/35686/AppData/Local/Temp/claude/D--chao-workspace-exploring-l4-intelligence-studies-speech-aware-evidence-acquisition/6d9f1834-68e9-41a7-bbcc-724898cf15a9/scratchpad/pcorrf/corrective-binding.json and /mnt/c/Users/35686/AppData/Local/Temp/claude/D--chao-workspace-exploring-l4-intelligence-studies-speech-aware-evidence-acquisition/6d9f1834-68e9-41a7-bbcc-724898cf15a9/scratchpad/pcorrf/corrective-binding-stats.json
+BINDING DONE (zero model calls, zero gold)

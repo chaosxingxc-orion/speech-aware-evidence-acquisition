@@ -1,0 +1,49 @@
+start: 2026-08-20T14:34:30Z
+=== git ===
+1faccd8e12b24976831940fdc7f56e9bdd2daa79
+dirty entries: 0
+1faccd8 register(pemb4r): multi-model kNN retrieval routing - register-aligned keys, labels as values
+=== python ===
+/home/chao/.venvs/speechrl/bin/python
+Python 3.12.3
+=== pyc under src (D3 gate) ===
+  *.pyc:       0
+  __pycache__: 0
+  scoring pkg: 0
+=== orphan llama-server ===
+  (none running)
+=== ports 8080/8081 ===
+  (free)
+=== GPU ===
+name, pstate, clocks.current.sm [MHz], clocks.max.sm [MHz], utilization.gpu [%], memory.used [MiB], temperature.gpu, clocks_event_reasons.active
+NVIDIA GeForce RTX 5090 Laptop GPU, P5, 1200 MHz, 3090 MHz, 0 %, 134 MiB, 47, 0x0000000000000000
+=== feature caches ===
+  /home/chao/feat-cache/slurp-q4km: 63 entries, 23M, mtime 2026-08-17 21:08:20.452621618 -0400
+  /home/chao/feat-cache/audio2tool-q4km: 490 entries, 249M, mtime 2026-08-19 12:10:52.730536662 -0400
+  /home/chao/feat-cache/q4km: 34350 entries, 26G, mtime 2026-08-16 14:09:12.587865213 -0400
+=== model files ===
+total 20277864
+-rwxr-xr-x 1 chao chao 18557053952 Aug 16 17:24 Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf
+-rwxr-xr-x 1 chao chao  2207465568 Aug 16 17:24 mmproj-Qwen3-Omni-30B-A3B-Instruct-bf16.gguf
+=== consumed P-SLU A0 source attempt ===
+total 18280
+drwxrwxrwx 1 chao chao     4096 Aug 17 21:10 .
+drwxrwxrwx 1 chao chao     4096 Aug 17 21:02 ..
+-rwxrwxrwx 1 chao chao     1520 Aug 17 21:02 SAEA-PROBE-pslu-n60.config-values.json
+-rwxrwxrwx 1 chao chao      562 Aug 17 21:02 SAEA-PROBE-pslu-n60.plan.json
+-rwxrwxrwx 1 chao chao 14570202 Aug 17 21:10 SAEA-PROBE-pslu-n60.server.log
+-rwxrwxrwx 1 chao chao     1614 Aug 17 21:02 SAEA-PROBE-pslu-n60.session-receipt.json
+-rwxrwxrwx 1 chao chao   100608 Aug 17 21:10 SAEA-PROBE-pslu-n60.trace-manifest.json
+-rwxrwxrwx 1 chao chao  1020124 Aug 17 21:10 SAEA-PROBE-pslu-n60.trace.jsonl
+-rwxrwxrwx 1 chao chao    82691 Aug 17 21:10 flight-receipt.json
+-rwxrwxrwx 1 chao chao  2740921 Aug 17 21:10 outputs.jsonl
+-rwxrwxrwx 1 chao chao     4558 Aug 17 21:10 predicted-scenarios.json
+-rwxrwxrwx 1 chao chao   171833 Aug 17 21:10 responses.jsonl
+=== existing P-CORR-F run/attempt dirs (expect ABSENT) ===
+  runs/SAEA-PROBE-pcorrf-240: 
+  attempts/SAEA-PROBE-pcorrf-240: 
+=== disk ===
+  Filesystem      Size  Used Avail Use% Mounted on
+  /dev/sdd       1007G  223G  734G  24% /
+  E:\             3.8T  1.3T  2.6T  33% /mnt/e
+PRECHECK DONE
