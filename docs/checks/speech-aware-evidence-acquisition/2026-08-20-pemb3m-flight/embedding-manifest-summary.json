@@ -1,0 +1,1463 @@
+{
+  "m1-lco-primary": {
+    "dims": 2048,
+    "distinct_vector_sha256": 78,
+    "entries": [
+      {
+        "contact_id": "alarm",
+        "dims": 2048,
+        "sha256": "f3e2f3da3982a456bfef47c48b8402ea86b30b57f3cebfd54890fd8599bb1566",
+        "side": "label"
+      },
+      {
+        "contact_id": "audio",
+        "dims": 2048,
+        "sha256": "86942ca14cb88773f4086de8fd6fdb5978c8cca99027bab50cec7acca6960cdb",
+        "side": "label"
+      },
+      {
+        "contact_id": "calendar",
+        "dims": 2048,
+        "sha256": "6a45b7f3a371e4714c8ffdd85850e95107dd2ef1238dd2777497594274b4d3b8",
+        "side": "label"
+      },
+      {
+        "contact_id": "cooking",
+        "dims": 2048,
+        "sha256": "596a010389c7148f441d259d984e97f020f9358de810a9457fa21f00e1fd4ba9",
+        "side": "label"
+      },
+      {
+        "contact_id": "datetime",
+        "dims": 2048,
+        "sha256": "808e1f6cf6f3cc9b31eed9e6a7a90da847ee04a1da710150404baad0726f7d33",
+        "side": "label"
+      },
+      {
+        "contact_id": "email",
+        "dims": 2048,
+        "sha256": "98023a71ec4270cc8c0979ef0b02ad75a313b90709fd47672a7c2095e9c1feb8",
+        "side": "label"
+      },
+      {
+        "contact_id": "general",
+        "dims": 2048,
+        "sha256": "17dfd866e8f87ea21d28e858ee3bd1eeff85cce787c1393b13e5f883cfd0b4f5",
+        "side": "label"
+      },
+      {
+        "contact_id": "iot",
+        "dims": 2048,
+        "sha256": "c732bb1644f92b797a9412de22047be592c4823aba4145f2fa602bca3b6e7c21",
+        "side": "label"
+      },
+      {
+        "contact_id": "lists",
+        "dims": 2048,
+        "sha256": "1957f080f4c4541a3984cd4077589eeb0cf4dc6e1bf26d64c7976bc9d63d5cb3",
+        "side": "label"
+      },
+      {
+        "contact_id": "music",
+        "dims": 2048,
+        "sha256": "9da4a064a1fd07d77a77a16c26699ca6d0255f6bb906d54e3db28b5239c96836",
+        "side": "label"
+      },
+      {
+        "contact_id": "news",
+        "dims": 2048,
+        "sha256": "7aed7d277d59b4735ad160205d8b6bbb76bf452a9f3283a0a095841cd516ddee",
+        "side": "label"
+      },
+      {
+        "contact_id": "play",
+        "dims": 2048,
+        "sha256": "fc129073ea05c929ad6ac4fef6cf4a182d1f3244a4762f9ac03659d6406e7b72",
+        "side": "label"
+      },
+      {
+        "contact_id": "qa",
+        "dims": 2048,
+        "sha256": "1fd47eb4d491f8f01c27cbac9191bebe0778f477ba84b4f25ecc748bfa404284",
+        "side": "label"
+      },
+      {
+        "contact_id": "recommendation",
+        "dims": 2048,
+        "sha256": "614195be582b608e38aaf47b77ac4ed4e2cff77ab11586d74055854a9b806ecf",
+        "side": "label"
+      },
+      {
+        "contact_id": "social",
+        "dims": 2048,
+        "sha256": "5eb38ff3810f95853d1b98f184a8f7a3920a0ee026c9e2fcc2422387d3fe6c24",
+        "side": "label"
+      },
+      {
+        "contact_id": "takeaway",
+        "dims": 2048,
+        "sha256": "2a808774d8b26d5b8bbe7cf37e5ed6e6addc6e01cea4de264d8f45e433a3cdbf",
+        "side": "label"
+      },
+      {
+        "contact_id": "transport",
+        "dims": 2048,
+        "sha256": "98a3345a3c2fd22dc097064790b28adf9dac82b1cf03a277a2bf3960a41b26e2",
+        "side": "label"
+      },
+      {
+        "contact_id": "weather",
+        "dims": 2048,
+        "sha256": "96c4941c77ff044e75d9a36a4a87b3ddd0e6bc78182fec3015ef2d43568823fa",
+        "side": "label"
+      },
+      {
+        "contact_id": "slurp:devel:000115:audio-1495375974",
+        "dims": 2048,
+        "sha256": "df341e7bedac1cf2602d7196f71504f9e90c932e9408fd61b81304e0412f4c12",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:000444:audio-1502891018-headset",
+        "dims": 2048,
+        "sha256": "93c2220ba29a2437b4baf6aab0144eb912fcfb3743d2b26c404cf4eae1698e95",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:000943:audio-1434529860-headset",
+        "dims": 2048,
+        "sha256": "410fa3cdd80b1900b311b0a07b81577a6e4f88fd8d5335459517bf6a4ba22d17",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:001637:audio-1502195066-headset",
+        "dims": 2048,
+        "sha256": "db14a45e27cd7642d2f3fef806e320eaff0dcf1f2befb0090cf08bf2b6b059dd",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:002120:audio-1502218226",
+        "dims": 2048,
+        "sha256": "cc9f9c341931fbdec1c33771637424a2924dc7fb1651c3f6a585c9cfde71d68a",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:002992:audio-1489152746",
+        "dims": 2048,
+        "sha256": "955f5c9960fa8f2f916a981185f4c82fedac30fe4aab112ff586bec79df299f6",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:003121:audio-1501696857-headset",
+        "dims": 2048,
+        "sha256": "cf15c3ed42343426e7fc63ad642589ed4ab0ac34d391fd2a94d0cc8557954642",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:003309:audio-1501756265",
+        "dims": 2048,
+        "sha256": "97eb54b41b2ae327fb8147797020d86facf7a613656eeacb00a019dbbea1ae14",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:004134:audio-1500387396-headset",
+        "dims": 2048,
+        "sha256": "4392079a7e1c1a4b71e6ad1af7229a0a3fc89a58115cc3bdd1590991ad709a27",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:004604:audio-1501759214",
+        "dims": 2048,
+        "sha256": "980b4c2dc2bf7be558bddc8d908c5df0fda5290702e6543822b2f816f13961dd",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:005025:audio-1500900618",
+        "dims": 2048,
+        "sha256": "6d6cdd5d09355d515563ddfeda0b791d587767b07abbc0b9abd024f60d154221",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:005028:audio-1502893878-headset",
+        "dims": 2048,
+        "sha256": "495f968b60b3f65a97e361132c90a1e99cd7d213515f71cf5f8e48c7b3a2de10",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:005108:audio-1494422588-headset",
+        "dims": 2048,
+        "sha256": "8deb6f89d8f292bf112195858e220a70f334e3280ab5a5cab539fa03ccaa37a6",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:005359:audio-1497265137-headset",
+        "dims": 2048,
+        "sha256": "a471f1d16e330aca626747d9eec489579faa5765a0ee19ca520647688bb08fdc",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:005453:audio-1490183633-headset",
+        "dims": 2048,
+        "sha256": "e663350b463c7f477cf600e449aef2c58c1366a5ca1c4e12a15b64219a083c5d",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:005518:audio-1490203960",
+        "dims": 2048,
+        "sha256": "8c52d987ed7af5593e393e0cc9731055fc8f297035f8d41804fc26bdcb12f0d4",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:005536:audio-1499090415-headset",
+        "dims": 2048,
+        "sha256": "bcee8b22f945666dbe8f22fd7ba936677d209e39b6b583af04a37e24e327eedf",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:005541:audio--1504191543",
+        "dims": 2048,
+        "sha256": "8dd3cd58b0f6418b6a749409043b39e676f1b3fdefdc7a4a46b03bc6de08a9e9",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:005567:audio-1497359684",
+        "dims": 2048,
+        "sha256": "23a7c760446b01e42150af331370b7dba23ce46e856aee6b9c13bb48721c9ef6",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:005684:audio-1498577434",
+        "dims": 2048,
+        "sha256": "3a6dcf5eb8d140e83b9c092de003dd10e06602db579d5f5093951c5f610f0afa",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:005743:audio-1501407405-headset",
+        "dims": 2048,
+        "sha256": "b42714bd15e68f7a1d095201b6dd0cd9c63708154628a37b1a263c206c76b28b",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:005770:audio-1495377172",
+        "dims": 2048,
+        "sha256": "5b97588fafee1c85c59c262dd3ced696d0d4b38bf4544860023277b67de78093",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:005943:audio-1499266055",
+        "dims": 2048,
+        "sha256": "395cc55bb2ab4440cae86e3ee671b1fb2fcf01e569cff2e79673bfb1103829af",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:006603:audio-1502101512",
+        "dims": 2048,
+        "sha256": "ad71ec9c58b1e13a65005f33ba4925fe457f5de0677be219b812c05216408858",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:006751:audio-1501773837-headset",
+        "dims": 2048,
+        "sha256": "44a984e8f3f6623e69fae1c01b3511e733a99b974f1055d84b7fe4db6c5345d0",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:007374:audio-1498569508",
+        "dims": 2048,
+        "sha256": "e28d31febbc31eb8d0eab5cd664362d93b841d7a62e557c75e64d6eef348ff6d",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:007541:audio-1490202471",
+        "dims": 2048,
+        "sha256": "f242a0f7cd7ec850d9ac67b187f4293ed11da68a51712523157cf8dfda1f21e6",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:007653:audio-1497438989-headset",
+        "dims": 2048,
+        "sha256": "88ae72d623875056a282ffe1e1c3ebdec9a3f6352055168490556d0279e6653b",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:007852:audio-1494416109-headset",
+        "dims": 2048,
+        "sha256": "78c5778889c91ad08783f9950ad43f5592287a7f02bff8e7f16782afccf02948",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:008014:audio-1500899290",
+        "dims": 2048,
+        "sha256": "57f74b1a3122f409f01a60b478b2b3b4c00bc9322e092bb9b96558f374950cfc",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:008047:audio-1498570919",
+        "dims": 2048,
+        "sha256": "a7f928d1e0d24eb5b5ad996a490b5a8b653ed62bdd67245e0aaee575a3be3446",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:008072:audio-1488986707",
+        "dims": 2048,
+        "sha256": "dcc06a2b26b099646b0a889a49dd01bd3b2c2ebf60b5e15dd6c8ecdd26696527",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:009340:audio-1497882818-headset",
+        "dims": 2048,
+        "sha256": "388320e129b29fdb85cff89e5d2a6e1be429599cc66c253cd141ca1c5717f23b",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:009518:audio-1495734594-headset",
+        "dims": 2048,
+        "sha256": "75dfa4432fc0f23456f138071218163c72b1b0d638262585e319b6fdad018520",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:009733:audio--1505407176",
+        "dims": 2048,
+        "sha256": "52c9876312df24079c1b8f9bd2df89daa47d9c7327001ae24139a04d8974dcfa",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:010162:audio-1501765286",
+        "dims": 2048,
+        "sha256": "3a15cb1481b0adb8bb02d50f6e8ea6d659d7c8eb41333719164a62985754e8ae",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:010186:audio-1501415369-headset",
+        "dims": 2048,
+        "sha256": "d39e9ecdf6e0704a9d1714da95ea76353bfbc3c5314ea7c0bbf7a5f742603aa1",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:010545:audio-1490006493",
+        "dims": 2048,
+        "sha256": "ca85783a13f0727f6b02e50d3e02f128ebd5ed57e364809533c7fed11af76ba8",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:010732:audio-1490184504",
+        "dims": 2048,
+        "sha256": "bd83ca2a8e9fba2a08ee433672f2b8db4502b98dca5a7f13cfb595c429997a48",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:011503:audio-1494514154",
+        "dims": 2048,
+        "sha256": "32c62558371a49eaf14c29552d9d67b2183e9920ac696d71ad13a79f8fa15e3f",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:011654:audio-1501692977-headset",
+        "dims": 2048,
+        "sha256": "7ffaaced23c6ffca4c3ae3c4002ce705b6e22cb42abf2d7e1016154f4fa014d8",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:011693:audio-1498565017-headset",
+        "dims": 2048,
+        "sha256": "e750579bf8093e34bc84e62eb8df2f246e5bfb0acdfb4785245651197a876d3d",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:012076:audio-1501766742-headset",
+        "dims": 2048,
+        "sha256": "b429453670715f2f13337a22a6e47a19781a5ef94d62b05488810f1c3d9987e0",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:012253:audio-1488974202",
+        "dims": 2048,
+        "sha256": "03f4a31facb84c040fb645749120f354da0c9e0fd09d149568af21fbb67cbe6d",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:012478:audio-1498486426",
+        "dims": 2048,
+        "sha256": "4221f338c058cdfaf5312ea63f6f519c2ca47400d3e5f78fa37bac7541ef8843",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:012654:audio-1497860426-headset",
+        "dims": 2048,
+        "sha256": "7ea7be94ab9b4becbeccff978db424c198729d1d49e597bff0280e9137eb14bd",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:012667:audio-1501751776-headset",
+        "dims": 2048,
+        "sha256": "d47f9bdd88ec2d0a4c8ef23325e610f543d03bd056c6c75c830fe46efeb3738e",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:013281:audio-1490354296-headset",
+        "dims": 2048,
+        "sha256": "4c5223292249fd5809fc961393562eaafb1ab79e9be82463009a14a990cd4066",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:013795:audio-1499266495",
+        "dims": 2048,
+        "sha256": "dec0df4290f3da880d244c9b813b8cf710df396bb03a229e54f0df0b06ae1820",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:014173:audio-1490291441",
+        "dims": 2048,
+        "sha256": "f19036db528e47472db5ce5c446065351eff32170de4d2694a83cc2fb92ee3b0",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:014263:audio-1501692486",
+        "dims": 2048,
+        "sha256": "7c1efaa0f666d7d0edf55d83827fdcfd26883d1c09d62ca6fe39908973b2c8ab",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:014397:audio-1497368809",
+        "dims": 2048,
+        "sha256": "c024ce81a6c74620b51c4e31aea54e4be2c3234ae981522d45735791aac744a3",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:014657:audio-1499695487",
+        "dims": 2048,
+        "sha256": "89de5ff40328d87b6d3deaf4c3670073faf053fa34fa7fc1950addb75ad6f289",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:015258:audio-1501777355-headset",
+        "dims": 2048,
+        "sha256": "f6bb43ae4e9f07e4364be97b8cd8ab3c186850db8c9d5c206633d6cc18550b6b",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:015375:audio-1501754418",
+        "dims": 2048,
+        "sha256": "debbbf6099e1e87e0c91d3433d50301d9eb6023cbaccc0e3cfffa2c310c6ea44",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:015632:audio-1490021137-headset",
+        "dims": 2048,
+        "sha256": "db59b26986e1db9ca326f091d818e4546ca50eba96227d087dcfcc85493c0237",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:015805:audio-1489153743",
+        "dims": 2048,
+        "sha256": "9d036a7bb1fa246791780084242e8dbe794bce7eed79deb06b2f9c2e260049c1",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:016653:audio-1494513016",
+        "dims": 2048,
+        "sha256": "c6829cfe5b7191314a6eab6711122e62543971929983ee1353ae48df1794822f",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:016825:audio-1498573552-headset",
+        "dims": 2048,
+        "sha256": "ec2491697f975d100de682b103612b398dca5c326f8742f9c6c8e57b1d1e2a78",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:017009:audio-1502198805-headset",
+        "dims": 2048,
+        "sha256": "48b581d67877725dda843958a3ab48a42a355c46a341e33ed69e44501085ab41",
+        "side": "query"
+      }
+    ],
+    "entry_count": 78,
+    "jitter_count": 0,
+    "label_count": 18,
+    "manifest_path_on_data_root": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/derived/embeddings/SAEA-PROBE-pemb3m-388/m1-lco-primary/manifest.json",
+    "present": true,
+    "query_count": 60,
+    "run_id": "SAEA-PROBE-pemb3m-388/m1-lco-primary",
+    "schema": "saea-pemb3m-embeddings-manifest-v1"
+  },
+  "m2-glap-control": {
+    "dims": 1024,
+    "distinct_vector_sha256": 78,
+    "entries": [
+      {
+        "contact_id": "alarm",
+        "dims": 1024,
+        "sha256": "44c3cff0860552db735de32ce9eba33cfa5c540d1812f9b36b668f2c78eddc90",
+        "side": "label"
+      },
+      {
+        "contact_id": "audio",
+        "dims": 1024,
+        "sha256": "c9c805f317508e4688701065df1b6aec36b10327ee4dc2e70d7d4204133030f3",
+        "side": "label"
+      },
+      {
+        "contact_id": "calendar",
+        "dims": 1024,
+        "sha256": "d41771262ced6cb52e9b586f9f0d9f9136dcd666c3066842666522c5ab9b46d4",
+        "side": "label"
+      },
+      {
+        "contact_id": "cooking",
+        "dims": 1024,
+        "sha256": "f1fdcefb3a8f8636937fbc01e095429390ebdf2a4a15e2ddf309ad8fdc26931a",
+        "side": "label"
+      },
+      {
+        "contact_id": "datetime",
+        "dims": 1024,
+        "sha256": "edb8aa74a16dedac74ac6b3884fa628e108ad7d34a3ec3a4ce842b8f5b768451",
+        "side": "label"
+      },
+      {
+        "contact_id": "email",
+        "dims": 1024,
+        "sha256": "e5d64e670e9a2167475dcd4510b73d8b65ede029b5b8b79186e503d83f89b5bb",
+        "side": "label"
+      },
+      {
+        "contact_id": "general",
+        "dims": 1024,
+        "sha256": "81feecaa78c9567fdbb526bf69cde9a318b815e35cd0e88bd873691195202e62",
+        "side": "label"
+      },
+      {
+        "contact_id": "iot",
+        "dims": 1024,
+        "sha256": "72265c12956d3cb4bbcd043a335ca2ebe4b180b100774ab1c10a7a27eb975143",
+        "side": "label"
+      },
+      {
+        "contact_id": "lists",
+        "dims": 1024,
+        "sha256": "cf9faf6a5f0c219846f9ae435730594dbbe78ffd917e782ad86cb1709ce41120",
+        "side": "label"
+      },
+      {
+        "contact_id": "music",
+        "dims": 1024,
+        "sha256": "588b7825efabf8b9fe5d8ac5de06d32d6ce71c340a145fefd928d79c00552abe",
+        "side": "label"
+      },
+      {
+        "contact_id": "news",
+        "dims": 1024,
+        "sha256": "d633929f18c82493a6700b31c7f1182679845ad6321df9c33343526304a47d63",
+        "side": "label"
+      },
+      {
+        "contact_id": "play",
+        "dims": 1024,
+        "sha256": "5738568ceb664da042a49f69bc25a0306476866abee7eceefdd8f2381431f3e6",
+        "side": "label"
+      },
+      {
+        "contact_id": "qa",
+        "dims": 1024,
+        "sha256": "7975bdf4a170d473aa1920643b5b4fc0a20f5fed539c199c690c04b1fdf35210",
+        "side": "label"
+      },
+      {
+        "contact_id": "recommendation",
+        "dims": 1024,
+        "sha256": "53fca4286a8972831105072f42f449b470abac3eb5174366e142fbb4510f10ac",
+        "side": "label"
+      },
+      {
+        "contact_id": "social",
+        "dims": 1024,
+        "sha256": "a5cc98b427fa57b540e9166c270e52e7aaf3fbd41fe7f4a208e3e40d4e9de652",
+        "side": "label"
+      },
+      {
+        "contact_id": "takeaway",
+        "dims": 1024,
+        "sha256": "5be3847746d135d4edd3c5530687ec770cb5ed85bb7a78f840397b5b1030e6ff",
+        "side": "label"
+      },
+      {
+        "contact_id": "transport",
+        "dims": 1024,
+        "sha256": "f6a1b4e8aaddae493cc15a7814a28b01bfb6535f37461ca1040a1eac34de5549",
+        "side": "label"
+      },
+      {
+        "contact_id": "weather",
+        "dims": 1024,
+        "sha256": "2bd45e58a973f96ca133d01d87f07412a9d91b30dec33e66501ae7014ba07f5f",
+        "side": "label"
+      },
+      {
+        "contact_id": "slurp:devel:000115:audio-1495375974",
+        "dims": 1024,
+        "sha256": "0d134e9555950606ed6e7c8d5e3aa615fd367d09b6a7bcc5479aecba86dad087",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:000444:audio-1502891018-headset",
+        "dims": 1024,
+        "sha256": "7255ab24c247e90b8500aaac62e41f5710a4d5bbde9289ffafc8762b05f33d04",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:000943:audio-1434529860-headset",
+        "dims": 1024,
+        "sha256": "5068e4816b6647191e2e58f58726add0aa839cecadb0ee286808b19c6c7d6f84",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:001637:audio-1502195066-headset",
+        "dims": 1024,
+        "sha256": "411e4dee05955d3266cc5e8e29c5cc18583c5646a2e874930a928ff4fd3b1b3c",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:002120:audio-1502218226",
+        "dims": 1024,
+        "sha256": "e6deb0252b7530a7f2ab15b30014605ba1625d7cb812182fffc0f9f49378052f",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:002992:audio-1489152746",
+        "dims": 1024,
+        "sha256": "6a13dd903f7a7371e2b67a191625af5cac157b29b5a26b333dac90ba237c8fb5",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:003121:audio-1501696857-headset",
+        "dims": 1024,
+        "sha256": "e8eec7e91a9f3108a86ec1d667a14c165167ec67e4429cf11d0dea00134eddd0",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:003309:audio-1501756265",
+        "dims": 1024,
+        "sha256": "bae90a28e7d046617262c4966179bbc3011fa05856e1544cbbcfaad3acf001cb",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:004134:audio-1500387396-headset",
+        "dims": 1024,
+        "sha256": "559680539f9fbee72422aa47369df1c11bb969d473f0e6c17304407b394d3e7d",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:004604:audio-1501759214",
+        "dims": 1024,
+        "sha256": "5c0d8d7413ee5dfd6af372442f0ea0e515d2f8d4fca9e3b84cb11507cac617fa",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:005025:audio-1500900618",
+        "dims": 1024,
+        "sha256": "034c542258e30967b8a09937d8af1e4878ed5b0445c8cc1cf37b23fe978a2401",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:005028:audio-1502893878-headset",
+        "dims": 1024,
+        "sha256": "a673a1a1d198ad9adc4cc38ebb84e2419935b9a6d8e59e0b62bf5c0e95dddc72",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:005108:audio-1494422588-headset",
+        "dims": 1024,
+        "sha256": "36f1ed67e9c8756bc0d68aeafc3f175e59ef6676d9c5bc753a298ff8cd4a1b09",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:005359:audio-1497265137-headset",
+        "dims": 1024,
+        "sha256": "21d216b16b6777bb400d284e50e852b9c1c4ca53200fed379e9c278f38a187e6",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:005453:audio-1490183633-headset",
+        "dims": 1024,
+        "sha256": "ff1b02e9d30e604f8b86a576844c6266644dd6fdb8a7b70f3f10ef4e89933946",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:005518:audio-1490203960",
+        "dims": 1024,
+        "sha256": "7d2824938af7648e6c0d13e2a5cb3ac3335d59928d161fe05e05c2fb4727d2b9",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:005536:audio-1499090415-headset",
+        "dims": 1024,
+        "sha256": "72c1564ef2d05ae649e586eb07800e86dee1b8645f64ac91c644fe737bdc95bb",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:005541:audio--1504191543",
+        "dims": 1024,
+        "sha256": "f7a949e4566ddd72ba6a2b67f6509bd38a791d08a96d63d50256e5fd3df9c0ef",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:005567:audio-1497359684",
+        "dims": 1024,
+        "sha256": "ae02838154dfa87aeb3cc821a36241eafa0e340abd29279db34aab3e48ccc95a",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:005684:audio-1498577434",
+        "dims": 1024,
+        "sha256": "f10efbde94240117e8a8ac93fd247b482ae61195a74a31dbfe06e56be86bff28",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:005743:audio-1501407405-headset",
+        "dims": 1024,
+        "sha256": "a87204881591653f8d7963c3f3482a0316e22ede9332ba4349fa433ad44027b6",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:005770:audio-1495377172",
+        "dims": 1024,
+        "sha256": "9cdaabf39113262d8a52c278b1b0408a2e8a2baf5b79fd3deeca6b8571edbc42",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:005943:audio-1499266055",
+        "dims": 1024,
+        "sha256": "02c00ffe3a67999acbd6d0f6341a76eabc9b25c47d3ba18a636dbdd8d7cba525",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:006603:audio-1502101512",
+        "dims": 1024,
+        "sha256": "df86c56199e8354f1f3a5fb53eb1668da39ce73a126bcd83bd7cc558d591ab23",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:006751:audio-1501773837-headset",
+        "dims": 1024,
+        "sha256": "d2830efeabd310c27101580bbfd81b245f190eba1d6ba9730a2a39b2d9534927",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:007374:audio-1498569508",
+        "dims": 1024,
+        "sha256": "b01bd4a569d75e5369b3668522de3ae2515f75312a1e19ce31b586d151fceaad",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:007541:audio-1490202471",
+        "dims": 1024,
+        "sha256": "e67fe3e2b6ccaaeb716ca69a4f180e4ae73c1553c4e9d557b8dd4a9371eb70ff",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:007653:audio-1497438989-headset",
+        "dims": 1024,
+        "sha256": "5402fb418f001e0064b0992f71139d2af19bbe4c35b0f28c970511da02c021ca",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:007852:audio-1494416109-headset",
+        "dims": 1024,
+        "sha256": "ab4d5f20b9496c6def90d477f7d8cff93334f61628e11b07769b6d6f1c3f2280",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:008014:audio-1500899290",
+        "dims": 1024,
+        "sha256": "031f9a61a3eb5354ca1e1dc8800641c9878bbcd0b7fb14b92d5a9c0b96fdf4df",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:008047:audio-1498570919",
+        "dims": 1024,
+        "sha256": "cf4e99d5804b440417cb503da40e5e500025cf040f1ef2588af0c50ee3244e66",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:008072:audio-1488986707",
+        "dims": 1024,
+        "sha256": "f097eadd6d4b1738f3ced2fd95075147f772cac7ff6b241c243ae9acaa5ab9ea",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:009340:audio-1497882818-headset",
+        "dims": 1024,
+        "sha256": "b3d82192eaea47ab04008b5a19b7668cceae276247665a53d67a33d693b8824c",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:009518:audio-1495734594-headset",
+        "dims": 1024,
+        "sha256": "c5757b8062901038f6b62b8258bfbb3e294e3f5ed0226c8b36c6c82b7ed80b20",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:009733:audio--1505407176",
+        "dims": 1024,
+        "sha256": "f61c1eeab8bd143a98c26433852a3d694bb48ba4709e4131a7e7f1057044e4e0",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:010162:audio-1501765286",
+        "dims": 1024,
+        "sha256": "e45f9985df0f2c5a0110750b016cddb8ccfb9d72a248c605a15b0f34d43e7e9a",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:010186:audio-1501415369-headset",
+        "dims": 1024,
+        "sha256": "7ac9391483b80f0a8340f2c1b50a125ee3664fc75a71ee3fc8b5fbce88ed860e",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:010545:audio-1490006493",
+        "dims": 1024,
+        "sha256": "b72060cd6bbb57e84c394aa23c81830bbb96b2c9b85d16aa3f7154f6fb7c5845",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:010732:audio-1490184504",
+        "dims": 1024,
+        "sha256": "8167149b493dc292fe31fb363d2318663722a46cbd206e81966876db15f03dac",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:011503:audio-1494514154",
+        "dims": 1024,
+        "sha256": "4d245b8a8b45c73133d3fb46ad946a6fb98dfd4523365799da4d7b7bd33343a6",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:011654:audio-1501692977-headset",
+        "dims": 1024,
+        "sha256": "aac5d2776e381ccd336894c5cd3d9c87cc9323e1eedd6ec287d228878702f834",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:011693:audio-1498565017-headset",
+        "dims": 1024,
+        "sha256": "c834553fc568d66633c57f299bd57243bd4208358c0724c58ce53b1cf713c139",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:012076:audio-1501766742-headset",
+        "dims": 1024,
+        "sha256": "00232ddc8c913efcc58a51ea047523a970a03f6ddf8b07d58c458bb4b65197ef",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:012253:audio-1488974202",
+        "dims": 1024,
+        "sha256": "085b0338fbfbe30a0dd2b02b1b27543ad290b41d7e70385dc2e383287a7cf147",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:012478:audio-1498486426",
+        "dims": 1024,
+        "sha256": "fe75905fc51f4605a5c99c6a3d2b3e825d3f933022d1eabdcfbc38729d54a0ed",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:012654:audio-1497860426-headset",
+        "dims": 1024,
+        "sha256": "3f51904b291d89a041f09b857164c24318900131e0e5d9417dc3eed27ef88f28",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:012667:audio-1501751776-headset",
+        "dims": 1024,
+        "sha256": "31e6865915883a0c3ac950753351b4a15dbe6d1ef63e89365caa7c08504ef3a3",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:013281:audio-1490354296-headset",
+        "dims": 1024,
+        "sha256": "507170e3adce8b6ed686ca42301348fadc14308e6edb1ffa46c48aaf2dfb9a35",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:013795:audio-1499266495",
+        "dims": 1024,
+        "sha256": "759f2dff8cfed256ced0060b69573648ed3b95e8be6443b9aa150d7cc2e72a7b",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:014173:audio-1490291441",
+        "dims": 1024,
+        "sha256": "dfa0ac368a418003711a99768f31c990c4c0ab580c02e733d83010d6ec0116f1",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:014263:audio-1501692486",
+        "dims": 1024,
+        "sha256": "ecfa3d34e860947b14f2b73660bebecaa283e25a0dbe8adce098ec26889d3112",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:014397:audio-1497368809",
+        "dims": 1024,
+        "sha256": "b4a86ccfcc04ab06bf8dee2084b8ba3a56e1056808e789986e7ef9370160aa71",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:014657:audio-1499695487",
+        "dims": 1024,
+        "sha256": "ca0739cb6ed4be77d48ff1db6825c68d1d21e20683210fd89365f90e2d78c103",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:015258:audio-1501777355-headset",
+        "dims": 1024,
+        "sha256": "6c95dd015a48bc7abfdf63018348eedebac5a6f7a38a7764fb4673c65809eb69",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:015375:audio-1501754418",
+        "dims": 1024,
+        "sha256": "1a142845d7818dbc6970ca3deffb406c3f5bbc5779c977b42153fe7d0254fefe",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:015632:audio-1490021137-headset",
+        "dims": 1024,
+        "sha256": "6ec7831727370bdf78c60b5abf0b209a033d8016b83ce8d97991d705329becfb",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:015805:audio-1489153743",
+        "dims": 1024,
+        "sha256": "8e18be049eadbc293970d403cec86315b7a4f593c4491550661c53233bc37fbd",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:016653:audio-1494513016",
+        "dims": 1024,
+        "sha256": "3b0a5b73fa8897f6b88fc9350d78f604930a03ca79109e7487e05a1c88cc219a",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:016825:audio-1498573552-headset",
+        "dims": 1024,
+        "sha256": "8a8de2b1e4c724f6fc7531f79e0ae308ce941cc86396ab79b1d44c541d3eec24",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:017009:audio-1502198805-headset",
+        "dims": 1024,
+        "sha256": "14e791825e83569f9e51dfdd00881b964ea037999b1551ae5525de3260c01ef0",
+        "side": "query"
+      }
+    ],
+    "entry_count": 78,
+    "jitter_count": 0,
+    "label_count": 18,
+    "manifest_path_on_data_root": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/derived/embeddings/SAEA-PROBE-pemb3m-388/m2-glap-control/manifest.json",
+    "present": true,
+    "query_count": 60,
+    "run_id": "SAEA-PROBE-pemb3m-388/m2-glap-control",
+    "schema": "saea-pemb3m-embeddings-manifest-v1"
+  },
+  "m3-clsp-control": {
+    "present": false
+  },
+  "m4-cascade": {
+    "dims": 1024,
+    "distinct_vector_sha256": 80,
+    "entries": [
+      {
+        "contact_id": "m4-jitter-a",
+        "dims": 1024,
+        "sha256": "51d96723c65427e2d03c35cdab5e82d412fd14aa4aa7fc21107d72e36e090d7b",
+        "side": "jitter"
+      },
+      {
+        "contact_id": "m4-jitter-b",
+        "dims": 1024,
+        "sha256": "88e33f46e3edb832192dffb36fc84fea71711bb1e65b21ace674a07c994f346f",
+        "side": "jitter"
+      },
+      {
+        "contact_id": "alarm",
+        "dims": 1024,
+        "sha256": "57fd516cf1f7f11a5fc6861884cd5e026256a31fcc28b2b214d2fa2af575d4cc",
+        "side": "label"
+      },
+      {
+        "contact_id": "audio",
+        "dims": 1024,
+        "sha256": "1433a17dd869d1db85fe842e5ef3e6b7ead123df89e6a902aca34daa675f14a7",
+        "side": "label"
+      },
+      {
+        "contact_id": "calendar",
+        "dims": 1024,
+        "sha256": "791f430105f3dd380a5b9333be0c15b5dacf4cc478090206d602892052b97387",
+        "side": "label"
+      },
+      {
+        "contact_id": "cooking",
+        "dims": 1024,
+        "sha256": "2e7d49d93dd15bdcb5e4a5b64fa01ffc20c9fbe10775c201df7ab109a24d6293",
+        "side": "label"
+      },
+      {
+        "contact_id": "datetime",
+        "dims": 1024,
+        "sha256": "07d6c83a7a9f24e39fe8ec4e942accc0050c8efd1f8d6eb228104da6a57c10c5",
+        "side": "label"
+      },
+      {
+        "contact_id": "email",
+        "dims": 1024,
+        "sha256": "6605efd1725e109a3c68367c8b988776072f8fa74c795a9009d5ee65b55d508e",
+        "side": "label"
+      },
+      {
+        "contact_id": "general",
+        "dims": 1024,
+        "sha256": "f500fb7556e90543f61f26a2a45e49ae575349949f8a1901f48e202db2cd6baa",
+        "side": "label"
+      },
+      {
+        "contact_id": "iot",
+        "dims": 1024,
+        "sha256": "066d3609ba173ae893045237b7455a3016ce3070562385b52ff5f11af86708be",
+        "side": "label"
+      },
+      {
+        "contact_id": "lists",
+        "dims": 1024,
+        "sha256": "8f8af22270f0a78c8af454e1706438a7ffbfcb054e5a75af79ceea9f72c71ddc",
+        "side": "label"
+      },
+      {
+        "contact_id": "music",
+        "dims": 1024,
+        "sha256": "19578460624741641587cbbf98709cebcbd9e40083e23e65d36bb8aa11f6a466",
+        "side": "label"
+      },
+      {
+        "contact_id": "news",
+        "dims": 1024,
+        "sha256": "f70a4c6b076d06d0a80e5bb3d7c88397f91e4e31730501d1aecfdf48c3b31da4",
+        "side": "label"
+      },
+      {
+        "contact_id": "play",
+        "dims": 1024,
+        "sha256": "4fbf1ca6480c3cd21abf16ed5d18a43a053218fa50706f1ac72b3691d065b7ff",
+        "side": "label"
+      },
+      {
+        "contact_id": "qa",
+        "dims": 1024,
+        "sha256": "0609a31ec4bc2460306de7991297b744431125bd1c54abb64c40cfecf2d9dbd2",
+        "side": "label"
+      },
+      {
+        "contact_id": "recommendation",
+        "dims": 1024,
+        "sha256": "c479bc7340bf7297850b4e00e5d4e55ac2421c79cae5ad805da0729ca0695db6",
+        "side": "label"
+      },
+      {
+        "contact_id": "social",
+        "dims": 1024,
+        "sha256": "0c6e17228ba589aee681903be188fd6931aa5312c2f5f7322ef34535c5852a99",
+        "side": "label"
+      },
+      {
+        "contact_id": "takeaway",
+        "dims": 1024,
+        "sha256": "b03bcc9213f6a27d15db54ed858553eaf76e20cae76c1226e323b59e72ee1fec",
+        "side": "label"
+      },
+      {
+        "contact_id": "transport",
+        "dims": 1024,
+        "sha256": "e425e58bd47e3ccb60aad4521a4c0494a8a227aae5eae80c119fc4f50bce0943",
+        "side": "label"
+      },
+      {
+        "contact_id": "weather",
+        "dims": 1024,
+        "sha256": "0842343af2027af09d14a69f959683a9a17181f58d493ef8fea7873ab93c2a8c",
+        "side": "label"
+      },
+      {
+        "contact_id": "slurp:devel:000115:audio-1495375974",
+        "dims": 1024,
+        "sha256": "9ee5d11ed054b3a704704958bbc5671240debd63d505d3972617010db20e7837",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:000444:audio-1502891018-headset",
+        "dims": 1024,
+        "sha256": "5386f760b07d2d9af0413eaa589c5e2dac97e370a7d237853d9ae6db37d9fe81",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:000943:audio-1434529860-headset",
+        "dims": 1024,
+        "sha256": "4923325decd290f6faf1952365f4cbdf871286041590b7aecac4d6f694f653d6",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:001637:audio-1502195066-headset",
+        "dims": 1024,
+        "sha256": "2aec893429e2426aecba30982e939b503bdf625bdf68795f27d91aa03ca69921",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:002120:audio-1502218226",
+        "dims": 1024,
+        "sha256": "c508a144dcb87172e39139bafc562193ca611a360a24ebca3f0517006e6ac2f9",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:002992:audio-1489152746",
+        "dims": 1024,
+        "sha256": "fc3d0c4a7bfbb1e3308e70e42f15e09d085b09ea3aa1e437cdcb8e3c3bcd14c7",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:003121:audio-1501696857-headset",
+        "dims": 1024,
+        "sha256": "8172e9bd064f20575ff93caf68559a26f0fce09964b863e71d2bc9d5e4021e1c",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:003309:audio-1501756265",
+        "dims": 1024,
+        "sha256": "9a68e08f913ffef001e726ace23adcc2eae866cf734438e8917ef9868085eb21",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:004134:audio-1500387396-headset",
+        "dims": 1024,
+        "sha256": "887147b88d2dec02214eb12194242ea8d8516d5bdd552637c021d1c91cf80511",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:004604:audio-1501759214",
+        "dims": 1024,
+        "sha256": "36f5ff75163b0f6378a4d3faa864a0a13fa76a88979b5f7e9be04ce75ca8142b",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:005025:audio-1500900618",
+        "dims": 1024,
+        "sha256": "49ffa7c665aeaa3d24377b7e93c7338f0342fe3e123121ec83a63b4c8ce363af",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:005028:audio-1502893878-headset",
+        "dims": 1024,
+        "sha256": "335f6d5e5ee6ddd7b4900f999cc3d854b670c65dd348fa3b8344a25020a133c7",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:005108:audio-1494422588-headset",
+        "dims": 1024,
+        "sha256": "fe92933187e503a9e6a32a9bdb0949a63f0bfbc8a1d221db76d9b0e23f940c6c",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:005359:audio-1497265137-headset",
+        "dims": 1024,
+        "sha256": "a56454cc2d65d00b153dc12869e070bcecfcd9d4b200a56fdc6036f0dc0c1d07",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:005453:audio-1490183633-headset",
+        "dims": 1024,
+        "sha256": "d2ba6e743a9546cf5fa21229204aa25dc5d2ee7cbf5d0e453892b505bd4fd7d4",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:005518:audio-1490203960",
+        "dims": 1024,
+        "sha256": "552a835115a62b7c4b7e9465c45a8f45f8533b20305d5215b6a8155873e03d85",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:005536:audio-1499090415-headset",
+        "dims": 1024,
+        "sha256": "217d9eb5d912deff4796ffdcba8e164cd4743d48ab6eba44a41dc9ca273079a4",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:005541:audio--1504191543",
+        "dims": 1024,
+        "sha256": "0ee7b32484579d0e95cda39c617a385209c6c1bbf057b0ab9b243d109cfcd346",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:005567:audio-1497359684",
+        "dims": 1024,
+        "sha256": "e944b6aa449b6e36aac79249a93c67ce40299b8f434b51e3d35b62041b0b0c18",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:005684:audio-1498577434",
+        "dims": 1024,
+        "sha256": "2fb632b8febd1e1c61409b56591e1984b5dd9bde9ab6e7743721e0c6d9562812",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:005743:audio-1501407405-headset",
+        "dims": 1024,
+        "sha256": "bab74408b1eac337ca5f8e7d580b8be6c036da5ca5570351200252573464a3eb",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:005770:audio-1495377172",
+        "dims": 1024,
+        "sha256": "09ebb0f668afc2d1ac42e7978ee89cf87bc970c4fb3c7577b85740de8d9ab854",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:005943:audio-1499266055",
+        "dims": 1024,
+        "sha256": "a8981e81573a2b0c6435a8d87950c583958f42333232316121fc49747c154519",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:006603:audio-1502101512",
+        "dims": 1024,
+        "sha256": "60af948b7fc848001be4d9ea2bb80dd0799e8a368df07b2905ec6bb9b4fb01a1",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:006751:audio-1501773837-headset",
+        "dims": 1024,
+        "sha256": "02ba60c5ff5ef75aec99b3d0f1b57222f2ccb44c7cb69b51eec341475a95be6b",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:007374:audio-1498569508",
+        "dims": 1024,
+        "sha256": "20c30fdc7acbe6c0a673b476f034cd212454350050e98c888561ec4a2893047c",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:007541:audio-1490202471",
+        "dims": 1024,
+        "sha256": "9b45e0c146bb1a8d431b1613668585c454625b9f1ddfbf9fcf03af3994f103e4",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:007653:audio-1497438989-headset",
+        "dims": 1024,
+        "sha256": "343c91f3309b7dd7a36bc71877f0c0f89e4bd6fc50084b0865bad5063f1ff5b2",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:007852:audio-1494416109-headset",
+        "dims": 1024,
+        "sha256": "66d534392d9907bf6cfd6b5abbb588a3e8da189144a58d2c41d02b14cd24a011",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:008014:audio-1500899290",
+        "dims": 1024,
+        "sha256": "d8316de9ae97cd4e0ee0179e674cab53a135b4bdbcedb43544b9d258ff692e87",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:008047:audio-1498570919",
+        "dims": 1024,
+        "sha256": "5ac8d90eafacee91dc660fe75d55493ee944759073004e4cbdcad6d7f076a42f",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:008072:audio-1488986707",
+        "dims": 1024,
+        "sha256": "3e72ec4b6c28560c2c1dfaa15e0a8bc582b810ff96faf7b20b4b2f38aa6b6979",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:009340:audio-1497882818-headset",
+        "dims": 1024,
+        "sha256": "b2caf2637c60d9f425cf5669fa903db7cbd7c985535069d4a4bf5bb4d4088c6a",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:009518:audio-1495734594-headset",
+        "dims": 1024,
+        "sha256": "d9e02d2c93cc6a4595faa6772bf7067a9d512c0cf5eabb7f336356dda9306ef8",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:009733:audio--1505407176",
+        "dims": 1024,
+        "sha256": "dda723c9f28542901944e691f22163106f9868efe198d96ee7d87b6b8fb7ae13",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:010162:audio-1501765286",
+        "dims": 1024,
+        "sha256": "2ee1176feb721aacefc7414abf8646292b88e6d0516dd04f033fd2651a34c508",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:010186:audio-1501415369-headset",
+        "dims": 1024,
+        "sha256": "8a0e3cbfe1c2ae439cf6a90a2da7c80c5963085eaf67b048cedbc6ab2f9c926e",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:010545:audio-1490006493",
+        "dims": 1024,
+        "sha256": "75e90e2eed1d08ab667cdd96f94b6b4a58c4d5ac242391d79623bf0550609f5e",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:010732:audio-1490184504",
+        "dims": 1024,
+        "sha256": "778a5d95fdd92416e602dc99b2162de134f998f872caed73d6c6d3fd0b96a113",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:011503:audio-1494514154",
+        "dims": 1024,
+        "sha256": "0b1bdbf5bc8f524a53775c61de4cbe6acac646582c94ae2c906b67c09bbacf5b",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:011654:audio-1501692977-headset",
+        "dims": 1024,
+        "sha256": "51a7c4cc6c2fced4730547d02643279e935461f4f50d2b41a9282ecd40ac491a",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:011693:audio-1498565017-headset",
+        "dims": 1024,
+        "sha256": "618544ee13066eaf1734c99fb0df27a4e53a68a97f76982848cfd17e10219bb1",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:012076:audio-1501766742-headset",
+        "dims": 1024,
+        "sha256": "0e53a6ef86d7856f67669a5e141eeb47b229bd36df0695b7de6a8d887ddf5d06",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:012253:audio-1488974202",
+        "dims": 1024,
+        "sha256": "5152346331bd5e00a48cc1c320846287dcd09032e9959def5e5be1339d591f1a",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:012478:audio-1498486426",
+        "dims": 1024,
+        "sha256": "e93d771004288ed1bf6335b678f3e618dc2e99f1050865c92096a49791af64f5",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:012654:audio-1497860426-headset",
+        "dims": 1024,
+        "sha256": "81d1750b10e574925947fc5c3f2d90521786e85001f77414a0359123b4fd611e",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:012667:audio-1501751776-headset",
+        "dims": 1024,
+        "sha256": "a82e24d41960ca8fc04ea0f39b4c875e69ef1bd938b000b9d1b8efd8cf10831e",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:013281:audio-1490354296-headset",
+        "dims": 1024,
+        "sha256": "f194a5a84fa8d805edd9f70a596a4c1cf81dd633d0d4888183894f0726343a88",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:013795:audio-1499266495",
+        "dims": 1024,
+        "sha256": "c7fbe20c854d8b583db6097fb6920960918382b8eeb0e9cdd2073eddec03b596",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:014173:audio-1490291441",
+        "dims": 1024,
+        "sha256": "5991e142b95ff440b385a5d83277065927bf178650bb69a47e0e31af02164d22",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:014263:audio-1501692486",
+        "dims": 1024,
+        "sha256": "93195b6ed1a9fcc37cc7bd6e7ccfdf282d409cb8bcd3f46abc846d9056dad0ef",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:014397:audio-1497368809",
+        "dims": 1024,
+        "sha256": "c9fb906e65ce3643bb13aa341b7907331bf17b0d8990a45b8dee3c009367e044",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:014657:audio-1499695487",
+        "dims": 1024,
+        "sha256": "e9919bae71bf6c2ee9f895f43d96891ad046545d38175eca4fcbdfe3171625b2",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:015258:audio-1501777355-headset",
+        "dims": 1024,
+        "sha256": "f85293ac01e44c5c64e7c37d141a20998b60b63940a9f759912486919ace3df8",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:015375:audio-1501754418",
+        "dims": 1024,
+        "sha256": "3309e7d5fb996b0583e9b0fee3b9a89d8fb772fc2639c668e9d2c8a686caa714",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:015632:audio-1490021137-headset",
+        "dims": 1024,
+        "sha256": "94857ecc9e02a31299373d972a463575d6f73edd1523ff22e4df9b480df35707",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:015805:audio-1489153743",
+        "dims": 1024,
+        "sha256": "9dd2743ca4aabd2f892c7e178ec6b8a06cd20417aba048d0666fb3f32f898ff2",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:016653:audio-1494513016",
+        "dims": 1024,
+        "sha256": "7287c7acb29d249e9be6a9cf5d774624f903fe62b1d2c9e6aef121df9e0dca8a",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:016825:audio-1498573552-headset",
+        "dims": 1024,
+        "sha256": "f28ac5a02731f2d509638756b22e19214732b45558df68a51a3f6a74bcbd46d4",
+        "side": "query"
+      },
+      {
+        "contact_id": "slurp:devel:017009:audio-1502198805-headset",
+        "dims": 1024,
+        "sha256": "3b0d77d16fa171e9d4f899d77722475b02b90ec29b17a63c8d49b2864c517ec3",
+        "side": "query"
+      }
+    ],
+    "entry_count": 80,
+    "jitter_count": 2,
+    "label_count": 18,
+    "manifest_path_on_data_root": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/derived/embeddings/SAEA-PROBE-pemb3m-388/m4-cascade/manifest.json",
+    "present": true,
+    "query_count": 60,
+    "run_id": "SAEA-PROBE-pemb3m-388/m4-cascade",
+    "schema": "saea-pemb3m-embeddings-manifest-v1"
+  }
+}

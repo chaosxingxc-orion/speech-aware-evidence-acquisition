@@ -1,0 +1,192 @@
+{
+  "attempt_id": "attempt-20260820T110419Z-d6c576",
+  "binding_config_sha256": "307e6828b0a61ef445a5db20bb0ecf35c10e8b008b625b0fa66a9b5e125a6d3a",
+  "config_hash": "28125a5ac481ce19468a37e5b8e87caaa1ac2d92960079afedfea46ed5247278",
+  "gate_b_controls": {
+    "m2-glap-control": {
+      "arm_flyable": true,
+      "audio_detail": "one synthetic non-corpus audio embed succeeded (dim 1024)",
+      "audio_sanity_dims": 1024,
+      "audio_status": "OK",
+      "model_id": "glap",
+      "text_detail": "import + one sanity embed succeeded (dim 1024)",
+      "text_sanity_dims": 1024,
+      "text_status": "OK"
+    },
+    "m3-clsp-control": {
+      "arm_flyable": false,
+      "audio_detail": "the text side already reported DROPPED-RUNTIME-ERROR; no audio contact issued",
+      "audio_status": "SKIPPED-TEXT-SIDE-ALREADY-DROPPED",
+      "model_id": "clsp",
+      "text_detail": "AttributeError: 'CLSPModel' object has no attribute 'all_tied_weights_keys'",
+      "text_sanity_dims": null,
+      "text_status": "DROPPED-RUNTIME-ERROR"
+    }
+  },
+  "gate_b_entries": 1,
+  "gate_c_cascade_source": {
+    "registry_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-pkey2-338/attempt-20260819T111032Z-3109e8/transcript-registry.json",
+    "registry_sha256": "f8f6426aeb0eb84c33ad58b603cb36b8f420c3063149b6cd11a0b210d8774959",
+    "status": "COMPLETE",
+    "supplement_flown": false,
+    "supplement_required": false,
+    "transcript_count": 60
+  },
+  "gate_d_encode_only": {
+    "checked_modules": [
+      "speech_aware_evidence_acquisition.rails.embedding_client",
+      "speech_aware_evidence_acquisition.rails.local_encoder_client",
+      "speech_aware_evidence_acquisition.rails.probes.pemb3m_flight"
+    ],
+    "status": "PASS"
+  },
+  "gate_scope_note": "TOOL-contact flight: FrozenCoreGate._validate_runtime (q4km GGUF attestation) is deliberately NOT run -- the frozen core is never loaded. Every GGUF byte actually served is fully SHA-256'd above instead, and the llama.cpp binary is re-hashed fail-closed by core.session.start_session at every spawn.",
+  "gate_wav_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-pemb3m-388/attempt-20260820T110419Z-d6c576/gate-clip.wav",
+  "gate_wav_sha256": "dc87d1fd3e5e2b1716632351331a80a673491a237e8d11d267559bdca26341a5",
+  "gpu_occupied_seconds": 232.44514393806458,
+  "ledger_consumed_cell_at_takeoff": "no",
+  "model_file_measurements": {
+    "models/lco-embedding-omni-3b-gguf/LCO-Embedding-Omni-3B-Q8_0.gguf": {
+      "bytes": 3616087264,
+      "hash_seconds": 9.59,
+      "read_MB_per_s": 377.0,
+      "sha256": "53a9898bdb562ae599a81528a2935153457b82e7cac3aa5b10e5eecefc887d6a"
+    },
+    "models/lco-embedding-omni-3b-gguf/mmproj-LCO-Embedding-Omni-3b-F16.gguf": {
+      "bytes": 2622477952,
+      "hash_seconds": 6.89,
+      "read_MB_per_s": 380.6,
+      "sha256": "765beb616247081f53c9a0b7fed02b96981c5bad563209b5a47ca770f056a13a"
+    },
+    "models/qwen3-embedding-0.6b-gguf/Qwen3-Embedding-0.6B-Q8_0.gguf": {
+      "bytes": 639150592,
+      "hash_seconds": 3.5,
+      "read_MB_per_s": 182.9,
+      "sha256": "06507c7b42688469c4e7298b0a1e16deff06caf291cf0a5b278c308249c3e439"
+    }
+  },
+  "model_file_sha256": {
+    "models/lco-embedding-omni-3b-gguf/LCO-Embedding-Omni-3B-Q8_0.gguf": "53a9898bdb562ae599a81528a2935153457b82e7cac3aa5b10e5eecefc887d6a",
+    "models/lco-embedding-omni-3b-gguf/mmproj-LCO-Embedding-Omni-3b-F16.gguf": "765beb616247081f53c9a0b7fed02b96981c5bad563209b5a47ca770f056a13a",
+    "models/qwen3-embedding-0.6b-gguf/Qwen3-Embedding-0.6B-Q8_0.gguf": "06507c7b42688469c4e7298b0a1e16deff06caf291cf0a5b278c308249c3e439"
+  },
+  "one_pass_metered_audio_seconds": 182.259437,
+  "preflight_completed_at": "2026-08-20T11:05:32.643009+00:00",
+  "prior_durable_spend": {
+    "audio_seconds": 0.0,
+    "calls": 0
+  },
+  "props_lco_mean": {
+    "build_info": "b5-5d9dfcb58",
+    "media_marker": "<__media__>",
+    "model_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/models/lco-embedding-omni-3b-gguf/LCO-Embedding-Omni-3B-Q8_0.gguf"
+  },
+  "registered_ceilings": {
+    "gpu_hours": 0.5,
+    "model_calls": 440,
+    "speech_audio_seconds": 900
+  },
+  "sessions": [
+    {
+      "argv": [
+        "/home/chao/llama.cpp-featcache/build/bin/llama-server",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "8093",
+        "-m",
+        "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/models/lco-embedding-omni-3b-gguf/LCO-Embedding-Omni-3B-Q8_0.gguf",
+        "--mmproj",
+        "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/models/lco-embedding-omni-3b-gguf/mmproj-LCO-Embedding-Omni-3b-F16.gguf",
+        "--embedding",
+        "-ngl",
+        "999",
+        "-c",
+        "4096",
+        "--pooling",
+        "mean"
+      ],
+      "binary_path": "llama.cpp-featcache/build/bin/llama-server",
+      "binary_sha256": "097c96ec5a3f576f378d4d5e103928bf070647fdcc1f015eacb839503e121c68",
+      "contacts": 1,
+      "host": "127.0.0.1",
+      "model_files": [
+        {
+          "path": "models/lco-embedding-omni-3b-gguf/LCO-Embedding-Omni-3B-Q8_0.gguf",
+          "sha256": "53a9898bdb562ae599a81528a2935153457b82e7cac3aa5b10e5eecefc887d6a"
+        },
+        {
+          "path": "models/lco-embedding-omni-3b-gguf/mmproj-LCO-Embedding-Omni-3b-F16.gguf",
+          "sha256": "765beb616247081f53c9a0b7fed02b96981c5bad563209b5a47ca770f056a13a"
+        }
+      ],
+      "pid": 632,
+      "pooling_mode": "mean",
+      "port": 8093,
+      "resident_seconds": 232.45,
+      "server_key": "lco-mean",
+      "session_id": "SAEA-PROBE-pemb3m-388-attempt-20260820T110419Z-d6c576-lco-mean",
+      "spawn_seconds": 232.3,
+      "started_at": "2026-08-20T11:19:46.661300+00:00",
+      "teardown": {
+        "escalated": false,
+        "pid": 632,
+        "pid_alive_after": false,
+        "port_reachable_after": false,
+        "signal": "SIGTERM",
+        "teardown_seconds": 0.5005302429199219
+      }
+    }
+  ],
+  "study_commit": "d0ea848da77846f5357ed0b568c8945fd7ae6d47",
+  "umbrella_lock_crosscheck": {
+    "clsp": {
+      "files_count": 9,
+      "lifecycle": "LOCAL_CANDIDATE",
+      "lock_carries_per_file_sha256": false,
+      "revision": "UNRESOLVED_LOCAL_REVISION",
+      "size_bytes": 2897287869,
+      "source_id": "UNRESOLVED_LOCAL_SOURCE",
+      "source_kind": "observed-local",
+      "verified_against_lock": []
+    },
+    "glap": {
+      "files_count": 9,
+      "lifecycle": "LOCAL_CANDIDATE",
+      "lock_carries_per_file_sha256": false,
+      "revision": "UNRESOLVED_LOCAL_REVISION",
+      "size_bytes": 3426926767,
+      "source_id": "UNRESOLVED_LOCAL_SOURCE",
+      "source_kind": "observed-local",
+      "verified_against_lock": []
+    },
+    "lco-embedding-omni-3b-gguf": {
+      "files_count": 5,
+      "lifecycle": "LOCAL_CANDIDATE",
+      "lock_carries_per_file_sha256": false,
+      "revision": "UNRESOLVED_LOCAL_REVISION",
+      "size_bytes": 6238572624,
+      "source_id": "UNRESOLVED_LOCAL_SOURCE",
+      "source_kind": "observed-local",
+      "verified_against_lock": []
+    },
+    "qwen3-embedding-0.6b-gguf": {
+      "files_count": 1,
+      "lifecycle": "AUXILIARY",
+      "lock_carries_per_file_sha256": true,
+      "revision": "370f27d7550e0def9b39c1f16d3fbaa13aa67728",
+      "size_bytes": 639150592,
+      "source_id": "Qwen/Qwen3-Embedding-0.6B-GGUF",
+      "source_kind": "hf",
+      "verified_against_lock": [
+        {
+          "agree": true,
+          "filename": "Qwen3-Embedding-0.6B-Q8_0.gguf",
+          "lock_sha256": "06507c7b42688469c4e7298b0a1e16deff06caf291cf0a5b278c308249c3e439",
+          "measured": "06507c7b42688469c4e7298b0a1e16deff06caf291cf0a5b278c308249c3e439"
+        }
+      ]
+    }
+  },
+  "umbrella_lock_sha256": "9064bde89d4248fd80c9c2f93c2a9c276a454eadbb1aa7d529671118961371b1"
+}

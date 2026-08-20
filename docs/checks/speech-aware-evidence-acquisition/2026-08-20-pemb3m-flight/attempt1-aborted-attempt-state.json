@@ -1,0 +1,16 @@
+{
+  "actual": {
+    "audio_seconds": 4.000000003,
+    "calls": 5
+  },
+  "attempt_id": "attempt-20260820T110419Z-d6c576",
+  "carrier_lock_key": "slurp",
+  "failure_reason": "protocol amendment: llama.cpp clamps embedding-mode n_batch=n_ubatch=512, refusing LCO audio contacts at 1502 tokens; the LCO/qwen3-emb server recipe gains -b 4096 -ub 4096 -np 1, which changes the config/protocol hash this attempt's ExecutionPlan was bound to",
+  "reserved": {
+    "audio_seconds": 900.0,
+    "calls": 388
+  },
+  "run_id": "SAEA-PROBE-pemb3m-388",
+  "schema": "saea-attempt-v1",
+  "state": "ABORTED"
+}

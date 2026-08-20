@@ -1,0 +1,621 @@
+0.00.073.665 I log_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+0.00.073.671 I device_info:
+0.00.185.832 I   - CUDA0   : NVIDIA GeForce RTX 5090 Laptop GPU (24462 MiB, 23119 MiB free)
+0.00.185.847 I   - CPU     : Intel(R) Core(TM) Ultra 9 275HX (56236 MiB, 56236 MiB free)
+0.00.185.934 I system_info: n_threads = 24 (n_threads_batch = 24) / 24 | CUDA : ARCHS = 1200 | USE_GRAPHS = 1 | PEER_MAX_BATCH_SIZE = 128 | BLACKWELL_NATIVE_FP4 = 1 | CPU : SSE3 = 1 | SSSE3 = 1 | AVX = 1 | AVX_VNNI = 1 | AVX2 = 1 | F16C = 1 | FMA = 1 | BMI2 = 1 | LLAMAFILE = 1 | OPENMP = 1 | REPACK = 1 | 
+0.00.186.022 I srv          init: using 23 threads for HTTP server
+0.00.186.259 I srv         start: binding port with default address family
+0.00.187.461 I srv  llama_server: loading model
+0.00.187.515 I srv    load_model: loading model '/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/models/lco-embedding-omni-3b-gguf/LCO-Embedding-Omni-3B-Q8_0.gguf'
+0.00.281.643 I srv    load_model: [mtmd] estimated worst-case memory usage of mmproj is 3563.26 MiB (took 94.10 ms)
+0.00.281.673 I common_init_result: fitting params to device memory ...
+0.00.281.673 I common_init_result: (for bugs during this step try to reproduce them with -fit off, or provide --verbose logs if the bug only occurs with -fit on)
+0.00.675.512 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden
+0.13.501.462 W llama_init_from_model: model default pooling_type is [-1], but [3] was specified
+0.13.501.487 W llama_context: n_ctx_seq (4096) < n_ctx_train (32768) -- the full capacity of the model will not be utilized
+0.13.561.648 I common_init_from_params: warming up the model with an empty run - please wait ... (--no-warmup to disable)
+0.13.622.508 W load_hparams: Qwen-VL models require at minimum 1024 image tokens to function correctly on grounding tasks
+0.13.622.513 W load_hparams: if you encounter problems with accuracy, try adding --image-min-tokens 1024
+0.13.622.513 W load_hparams: more info: https://github.com/ggml-org/llama.cpp/issues/16842
+
+0.20.981.337 W warmup: *****************************************************************
+0.20.981.344 W warmup: WARNING: the CLIP graph uses unsupported operators by the backend
+0.20.981.344 W warmup:          the performance will be suboptimal                      
+0.20.981.344 W warmup:          list of unsupported ops (backend=CUDA0):
+0.20.981.345 W warmup:          POOL_1D: type = f32, ne = [750 1280 1 1]
+0.20.981.345 W warmup: flash attention is enabled
+0.20.981.345 W warmup: please report this on github as an issue
+0.20.981.345 W warmup: ref: https://github.com/ggml-org/llama.cpp/pull/16837#issuecomment-3461676118
+0.20.981.345 W warmup: *****************************************************************
+0.20.981.353 W init_audio: audio input is in experimental stage and may have reduced quality:
+    https://github.com/ggml-org/llama.cpp/discussions/13759
+0.20.981.395 I srv    load_model: loaded multimodal model, '/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/models/lco-embedding-omni-3b-gguf/mmproj-LCO-Embedding-Omni-3b-F16.gguf'
+0.20.981.408 I srv    load_model: initializing slots, n_slots = 1
+0.21.072.149 W common_speculative_init: no implementations specified for speculative decoding
+0.21.072.159 I slot   load_model: id  0 | task -1 | new slot, n_ctx = 4096
+0.21.072.225 I srv    load_model: prompt cache is enabled, size limit: 8192 MiB
+0.21.072.228 I srv    load_model: use `--cache-ram 0` to disable the prompt cache
+0.21.072.228 I srv    load_model: for more info see https://github.com/ggml-org/llama.cpp/pull/16391
+0.21.072.228 I srv    load_model: context checkpoints enabled, max = 32, min spacing = 8192
+0.21.072.249 I srv          init: idle slots will be saved to prompt cache upon starting a new task
+0.21.073.919 I init: chat template, example_format: '<|im_start|>system
+You are a helpful assistant<|im_end|>
+<|im_start|>user
+Hello<|im_end|>
+<|im_start|>assistant
+Hi there<|im_end|>
+<|im_start|>user
+How are you?<|im_end|>
+<|im_start|>assistant
+'
+0.21.074.593 I srv          init: init: chat template, thinking = 0
+0.21.074.631 I srv  llama_server: model loaded
+0.21.074.636 I srv  llama_server: server is listening on http://127.0.0.1:8093
+0.21.074.640 I srv  update_slots: all slots are idle
+0.25.885.897 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = -1
+0.25.885.919 I slot launch_slot_: id  0 | task 0 | processing task, is_child = 0
+0.25.965.053 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.26.366.541 I slot process_mtmd: id  0 | task 0 | mtmd feat-cache HIT, chunk idx = 1
+0.26.372.694 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.26.476.304 I slot process_mtmd: id  0 | task 0 | mtmd feat-cache HIT, chunk idx = 751
+0.26.488.373 I slot      release: id  0 | task 0 | stop processing: n_tokens = 1502, truncated = 0
+0.26.488.501 I srv  update_slots: all slots are idle
+0.26.536.072 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 1.000 (> 0.100 thold), f_keep = 1.000
+0.26.536.090 I slot launch_slot_: id  0 | task 3 | processing task, is_child = 0
+0.26.536.109 W slot   operator(): id  0 | task 3 | need to evaluate at least 1 token for each active slot (n_past = 1502, task.n_tokens() = 1502)
+0.26.536.109 W slot   operator(): id  0 | task 3 | n_past was set to 1501
+0.26.547.460 I slot      release: id  0 | task 3 | stop processing: n_tokens = 1502, truncated = 0
+0.26.547.476 I srv  update_slots: all slots are idle
+0.26.638.747 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117264096962
+0.26.638.757 I slot launch_slot_: id  0 | task 5 | processing task, is_child = 0
+0.26.638.869 I slot process_mtmd: id  0 | task 5 | encoding mtmd batch from idx = 1, n_chunks = 1
+0.26.762.131 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.26.859.948 I slot process_mtmd: id  0 | task 5 | encoding mtmd batch from idx = 751, n_chunks = 1
+0.26.942.105 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.27.056.807 I slot      release: id  0 | task 5 | stop processing: n_tokens = 1502, truncated = 0
+0.27.056.826 I srv  update_slots: all slots are idle
+0.27.164.170 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117264606310
+0.27.164.186 I slot launch_slot_: id  0 | task 7 | processing task, is_child = 0
+0.27.164.324 I slot process_mtmd: id  0 | task 7 | encoding mtmd batch from idx = 1, n_chunks = 1
+0.27.221.800 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.27.318.271 I slot process_mtmd: id  0 | task 7 | encoding mtmd batch from idx = 751, n_chunks = 1
+0.27.397.805 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.27.514.159 I slot      release: id  0 | task 7 | stop processing: n_tokens = 1502, truncated = 0
+0.27.514.178 I srv  update_slots: all slots are idle
+0.27.577.645 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117265063662
+0.27.577.657 I slot launch_slot_: id  0 | task 9 | processing task, is_child = 0
+0.27.577.760 I slot process_mtmd: id  0 | task 9 | encoding mtmd batch from idx = 1, n_chunks = 1
+0.27.640.184 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.27.741.670 I slot process_mtmd: id  0 | task 9 | encoding mtmd batch from idx = 751, n_chunks = 1
+0.27.812.394 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.27.926.960 I slot      release: id  0 | task 9 | stop processing: n_tokens = 1502, truncated = 0
+0.27.926.978 I srv  update_slots: all slots are idle
+0.27.982.474 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117265476463
+0.27.982.495 I slot launch_slot_: id  0 | task 11 | processing task, is_child = 0
+0.27.982.632 I slot process_mtmd: id  0 | task 11 | encoding mtmd batch from idx = 1, n_chunks = 1
+0.28.049.361 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.28.202.516 I slot process_mtmd: id  0 | task 11 | encoding mtmd batch from idx = 751, n_chunks = 1
+0.28.276.499 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.28.403.524 I slot      release: id  0 | task 11 | stop processing: n_tokens = 1502, truncated = 0
+0.28.403.541 I srv  update_slots: all slots are idle
+0.28.464.689 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117265953026
+0.28.464.702 I slot launch_slot_: id  0 | task 13 | processing task, is_child = 0
+0.28.464.811 I slot process_mtmd: id  0 | task 13 | encoding mtmd batch from idx = 1, n_chunks = 1
+0.28.525.053 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.28.635.687 I slot process_mtmd: id  0 | task 13 | encoding mtmd batch from idx = 751, n_chunks = 1
+0.28.704.990 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.28.829.634 I slot      release: id  0 | task 13 | stop processing: n_tokens = 1502, truncated = 0
+0.28.829.652 I srv  update_slots: all slots are idle
+0.28.889.688 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117266379137
+0.28.889.702 I slot launch_slot_: id  0 | task 15 | processing task, is_child = 0
+0.28.889.814 I slot process_mtmd: id  0 | task 15 | encoding mtmd batch from idx = 1, n_chunks = 1
+0.28.937.289 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.29.033.047 I slot process_mtmd: id  0 | task 15 | encoding mtmd batch from idx = 751, n_chunks = 1
+0.29.104.756 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.29.242.557 I slot      release: id  0 | task 15 | stop processing: n_tokens = 1502, truncated = 0
+0.29.242.586 I srv  update_slots: all slots are idle
+0.29.360.703 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117266792060
+0.29.360.724 I slot launch_slot_: id  0 | task 17 | processing task, is_child = 0
+0.29.360.850 I slot process_mtmd: id  0 | task 17 | encoding mtmd batch from idx = 1, n_chunks = 1
+0.29.415.173 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.29.507.560 I slot process_mtmd: id  0 | task 17 | encoding mtmd batch from idx = 751, n_chunks = 1
+0.29.579.470 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.29.687.679 I slot      release: id  0 | task 17 | stop processing: n_tokens = 1502, truncated = 0
+0.29.687.698 I srv  update_slots: all slots are idle
+0.29.749.012 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117267237182
+0.29.749.030 I slot launch_slot_: id  0 | task 19 | processing task, is_child = 0
+0.29.749.153 I slot process_mtmd: id  0 | task 19 | encoding mtmd batch from idx = 1, n_chunks = 1
+0.29.801.936 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.29.900.263 I slot process_mtmd: id  0 | task 19 | encoding mtmd batch from idx = 751, n_chunks = 1
+0.29.964.059 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.30.079.172 I slot      release: id  0 | task 19 | stop processing: n_tokens = 1502, truncated = 0
+0.30.079.209 I srv  update_slots: all slots are idle
+0.30.141.575 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117267628675
+0.30.141.591 I slot launch_slot_: id  0 | task 21 | processing task, is_child = 0
+0.30.141.729 I slot process_mtmd: id  0 | task 21 | encoding mtmd batch from idx = 1, n_chunks = 1
+0.30.221.452 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.30.363.755 I slot process_mtmd: id  0 | task 21 | encoding mtmd batch from idx = 751, n_chunks = 1
+0.30.442.490 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.30.561.727 I slot      release: id  0 | task 21 | stop processing: n_tokens = 1502, truncated = 0
+0.30.561.748 I srv  update_slots: all slots are idle
+0.30.648.778 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117268111229
+0.30.648.793 I slot launch_slot_: id  0 | task 23 | processing task, is_child = 0
+0.30.648.921 I slot process_mtmd: id  0 | task 23 | encoding mtmd batch from idx = 1, n_chunks = 1
+0.30.702.304 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.30.797.959 I slot process_mtmd: id  0 | task 23 | encoding mtmd batch from idx = 751, n_chunks = 1
+0.30.866.619 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.30.972.963 I slot      release: id  0 | task 23 | stop processing: n_tokens = 1502, truncated = 0
+0.30.972.982 I srv  update_slots: all slots are idle
+0.31.056.971 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117268522465
+0.31.056.980 I slot launch_slot_: id  0 | task 25 | processing task, is_child = 0
+0.31.057.077 I slot process_mtmd: id  0 | task 25 | encoding mtmd batch from idx = 1, n_chunks = 1
+0.31.106.667 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.31.206.940 I slot process_mtmd: id  0 | task 25 | encoding mtmd batch from idx = 751, n_chunks = 1
+0.31.280.897 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.31.407.844 I slot      release: id  0 | task 25 | stop processing: n_tokens = 1502, truncated = 0
+0.31.407.863 I srv  update_slots: all slots are idle
+0.31.473.759 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117268957346
+0.31.473.771 I slot launch_slot_: id  0 | task 27 | processing task, is_child = 0
+0.31.473.874 I slot process_mtmd: id  0 | task 27 | encoding mtmd batch from idx = 1, n_chunks = 1
+0.31.532.942 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.31.636.541 I slot process_mtmd: id  0 | task 27 | encoding mtmd batch from idx = 751, n_chunks = 1
+0.31.709.444 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.31.830.904 I slot      release: id  0 | task 27 | stop processing: n_tokens = 1502, truncated = 0
+0.31.830.922 I srv  update_slots: all slots are idle
+0.31.883.341 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117269380406
+0.31.883.351 I slot launch_slot_: id  0 | task 29 | processing task, is_child = 0
+0.31.883.449 I slot process_mtmd: id  0 | task 29 | encoding mtmd batch from idx = 1, n_chunks = 1
+0.31.940.338 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.32.040.287 I slot process_mtmd: id  0 | task 29 | encoding mtmd batch from idx = 751, n_chunks = 1
+0.32.103.156 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.32.217.852 I slot      release: id  0 | task 29 | stop processing: n_tokens = 1502, truncated = 0
+0.32.217.870 I srv  update_slots: all slots are idle
+0.32.273.506 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117269767354
+0.32.273.515 I slot launch_slot_: id  0 | task 31 | processing task, is_child = 0
+0.32.273.615 I slot process_mtmd: id  0 | task 31 | encoding mtmd batch from idx = 1, n_chunks = 1
+0.32.339.866 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.32.471.193 I slot process_mtmd: id  0 | task 31 | encoding mtmd batch from idx = 751, n_chunks = 1
+0.32.540.969 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.32.661.484 I slot      release: id  0 | task 31 | stop processing: n_tokens = 1502, truncated = 0
+0.32.661.503 I srv  update_slots: all slots are idle
+0.32.717.476 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117270210986
+0.32.717.486 I slot launch_slot_: id  0 | task 33 | processing task, is_child = 0
+0.32.717.583 I slot process_mtmd: id  0 | task 33 | encoding mtmd batch from idx = 1, n_chunks = 1
+0.32.772.902 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.32.877.697 I slot process_mtmd: id  0 | task 33 | encoding mtmd batch from idx = 751, n_chunks = 1
+0.32.946.369 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.33.059.726 I slot      release: id  0 | task 33 | stop processing: n_tokens = 1502, truncated = 0
+0.33.059.744 I srv  update_slots: all slots are idle
+0.33.110.280 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117270609229
+0.33.110.292 I slot launch_slot_: id  0 | task 35 | processing task, is_child = 0
+0.33.110.408 I slot process_mtmd: id  0 | task 35 | encoding mtmd batch from idx = 1, n_chunks = 1
+0.33.162.763 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.33.269.004 I slot process_mtmd: id  0 | task 35 | encoding mtmd batch from idx = 751, n_chunks = 1
+0.33.353.730 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.33.489.252 I slot      release: id  0 | task 35 | stop processing: n_tokens = 1502, truncated = 0
+0.33.489.277 I srv  update_slots: all slots are idle
+0.33.586.680 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117271038754
+0.33.586.692 I slot launch_slot_: id  0 | task 37 | processing task, is_child = 0
+0.33.586.795 I slot process_mtmd: id  0 | task 37 | encoding mtmd batch from idx = 1, n_chunks = 1
+0.33.638.529 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.33.737.143 I slot process_mtmd: id  0 | task 37 | encoding mtmd batch from idx = 751, n_chunks = 1
+0.33.807.801 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.33.921.193 I slot      release: id  0 | task 37 | stop processing: n_tokens = 1502, truncated = 0
+0.33.921.212 I srv  update_slots: all slots are idle
+0.33.977.285 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117271470695
+0.33.977.301 I slot launch_slot_: id  0 | task 39 | processing task, is_child = 0
+0.33.977.412 I slot process_mtmd: id  0 | task 39 | encoding mtmd batch from idx = 1, n_chunks = 1
+0.34.030.124 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.34.133.224 I slot process_mtmd: id  0 | task 39 | encoding mtmd batch from idx = 751, n_chunks = 1
+0.34.201.521 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.34.323.229 I slot      release: id  0 | task 39 | stop processing: n_tokens = 1502, truncated = 0
+0.34.323.246 I srv  update_slots: all slots are idle
+0.34.412.608 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117271872732
+0.34.412.617 I slot launch_slot_: id  0 | task 41 | processing task, is_child = 0
+0.34.412.715 I slot process_mtmd: id  0 | task 41 | encoding mtmd batch from idx = 1, n_chunks = 1
+0.34.477.512 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.34.600.726 I slot process_mtmd: id  0 | task 41 | encoding mtmd batch from idx = 751, n_chunks = 1
+0.34.667.252 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.34.793.201 I slot      release: id  0 | task 41 | stop processing: n_tokens = 1502, truncated = 0
+0.34.793.219 I srv  update_slots: all slots are idle
+0.34.850.063 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117272342703
+0.34.850.078 I slot launch_slot_: id  0 | task 43 | processing task, is_child = 0
+0.34.850.185 I slot process_mtmd: id  0 | task 43 | encoding mtmd batch from idx = 1, n_chunks = 1
+0.34.907.321 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.35.009.298 I slot process_mtmd: id  0 | task 43 | encoding mtmd batch from idx = 751, n_chunks = 1
+0.35.074.938 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.35.196.679 I slot      release: id  0 | task 43 | stop processing: n_tokens = 1502, truncated = 0
+0.35.196.698 I srv  update_slots: all slots are idle
+0.35.269.266 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117272746181
+0.35.269.281 I slot launch_slot_: id  0 | task 45 | processing task, is_child = 0
+0.35.269.392 I slot process_mtmd: id  0 | task 45 | encoding mtmd batch from idx = 1, n_chunks = 1
+0.35.325.996 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.35.439.175 I slot process_mtmd: id  0 | task 45 | encoding mtmd batch from idx = 751, n_chunks = 1
+0.35.516.665 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.35.638.167 I slot      release: id  0 | task 45 | stop processing: n_tokens = 1502, truncated = 0
+0.35.638.184 I srv  update_slots: all slots are idle
+0.35.695.549 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117273187670
+0.35.695.563 I slot launch_slot_: id  0 | task 47 | processing task, is_child = 0
+0.35.695.679 I slot process_mtmd: id  0 | task 47 | encoding mtmd batch from idx = 1, n_chunks = 1
+0.35.761.075 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.35.877.999 I slot process_mtmd: id  0 | task 47 | encoding mtmd batch from idx = 751, n_chunks = 1
+0.35.946.241 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.36.065.611 I slot      release: id  0 | task 47 | stop processing: n_tokens = 1502, truncated = 0
+0.36.065.630 I srv  update_slots: all slots are idle
+0.36.136.509 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117273615113
+0.36.136.526 I slot launch_slot_: id  0 | task 49 | processing task, is_child = 0
+0.36.136.640 I slot process_mtmd: id  0 | task 49 | encoding mtmd batch from idx = 1, n_chunks = 1
+0.36.200.262 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.36.316.902 I slot process_mtmd: id  0 | task 49 | encoding mtmd batch from idx = 751, n_chunks = 1
+0.36.393.530 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.36.522.706 I slot      release: id  0 | task 49 | stop processing: n_tokens = 1502, truncated = 0
+0.36.522.726 I srv  update_slots: all slots are idle
+0.36.655.299 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117274072209
+0.36.655.312 I slot launch_slot_: id  0 | task 51 | processing task, is_child = 0
+0.36.655.503 I slot process_mtmd: id  0 | task 51 | encoding mtmd batch from idx = 1, n_chunks = 1
+0.36.703.120 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.36.801.055 I slot process_mtmd: id  0 | task 51 | encoding mtmd batch from idx = 751, n_chunks = 1
+0.36.867.291 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.36.976.927 I slot      release: id  0 | task 51 | stop processing: n_tokens = 1502, truncated = 0
+0.36.976.944 I srv  update_slots: all slots are idle
+0.37.035.324 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117274526429
+0.37.035.334 I slot launch_slot_: id  0 | task 53 | processing task, is_child = 0
+0.37.035.436 I slot process_mtmd: id  0 | task 53 | encoding mtmd batch from idx = 1, n_chunks = 1
+0.37.083.713 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.37.190.788 I slot process_mtmd: id  0 | task 53 | encoding mtmd batch from idx = 751, n_chunks = 1
+0.37.262.101 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.37.386.295 I slot      release: id  0 | task 53 | stop processing: n_tokens = 1502, truncated = 0
+0.37.386.315 I srv  update_slots: all slots are idle
+0.37.437.058 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117274935798
+0.37.437.069 I slot launch_slot_: id  0 | task 55 | processing task, is_child = 0
+0.37.437.167 I slot process_mtmd: id  0 | task 55 | encoding mtmd batch from idx = 1, n_chunks = 1
+0.37.484.118 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.37.645.625 I slot process_mtmd: id  0 | task 55 | encoding mtmd batch from idx = 751, n_chunks = 1
+0.37.733.205 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.37.848.807 I slot      release: id  0 | task 55 | stop processing: n_tokens = 1502, truncated = 0
+0.37.848.824 I srv  update_slots: all slots are idle
+0.37.901.826 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117275398309
+0.37.901.835 I slot launch_slot_: id  0 | task 57 | processing task, is_child = 0
+0.37.901.933 I slot process_mtmd: id  0 | task 57 | encoding mtmd batch from idx = 1, n_chunks = 1
+0.37.968.403 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.38.065.109 I slot process_mtmd: id  0 | task 57 | encoding mtmd batch from idx = 751, n_chunks = 1
+0.38.129.445 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.38.245.793 I slot      release: id  0 | task 57 | stop processing: n_tokens = 1502, truncated = 0
+0.38.245.814 I srv  update_slots: all slots are idle
+0.38.305.285 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117275795296
+0.38.305.297 I slot launch_slot_: id  0 | task 59 | processing task, is_child = 0
+0.38.305.405 I slot process_mtmd: id  0 | task 59 | encoding mtmd batch from idx = 1, n_chunks = 1
+0.38.360.342 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.38.463.670 I slot process_mtmd: id  0 | task 59 | encoding mtmd batch from idx = 751, n_chunks = 1
+0.38.537.766 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.38.687.234 I slot      release: id  0 | task 59 | stop processing: n_tokens = 1502, truncated = 0
+0.38.687.254 I srv  update_slots: all slots are idle
+0.38.744.432 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117276236736
+0.38.744.443 I slot launch_slot_: id  0 | task 61 | processing task, is_child = 0
+0.38.744.550 I slot process_mtmd: id  0 | task 61 | encoding mtmd batch from idx = 1, n_chunks = 1
+0.38.804.508 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.38.924.011 I slot process_mtmd: id  0 | task 61 | encoding mtmd batch from idx = 751, n_chunks = 1
+0.38.999.576 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.39.114.102 I slot      release: id  0 | task 61 | stop processing: n_tokens = 1502, truncated = 0
+0.39.114.124 I srv  update_slots: all slots are idle
+0.39.181.392 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117276663605
+0.39.181.406 I slot launch_slot_: id  0 | task 63 | processing task, is_child = 0
+0.39.181.506 I slot process_mtmd: id  0 | task 63 | encoding mtmd batch from idx = 1, n_chunks = 1
+0.39.239.319 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.39.335.297 I slot process_mtmd: id  0 | task 63 | encoding mtmd batch from idx = 751, n_chunks = 1
+0.39.406.293 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.39.512.749 I slot      release: id  0 | task 63 | stop processing: n_tokens = 1502, truncated = 0
+0.39.512.768 I srv  update_slots: all slots are idle
+0.39.564.660 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117277062252
+0.39.564.671 I slot launch_slot_: id  0 | task 65 | processing task, is_child = 0
+0.39.564.772 I slot process_mtmd: id  0 | task 65 | encoding mtmd batch from idx = 1, n_chunks = 1
+0.39.629.304 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.39.744.128 I slot process_mtmd: id  0 | task 65 | encoding mtmd batch from idx = 751, n_chunks = 1
+0.39.814.950 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.39.949.226 I slot      release: id  0 | task 65 | stop processing: n_tokens = 1502, truncated = 0
+0.39.949.245 I srv  update_slots: all slots are idle
+0.40.010.798 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117277498729
+0.40.010.808 I slot launch_slot_: id  0 | task 67 | processing task, is_child = 0
+0.40.010.911 I slot process_mtmd: id  0 | task 67 | encoding mtmd batch from idx = 1, n_chunks = 1
+0.40.063.197 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.40.186.204 I slot process_mtmd: id  0 | task 67 | encoding mtmd batch from idx = 751, n_chunks = 1
+0.40.252.351 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.40.371.770 I slot      release: id  0 | task 67 | stop processing: n_tokens = 1502, truncated = 0
+0.40.371.792 I srv  update_slots: all slots are idle
+0.40.430.099 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117277921274
+0.40.430.109 I slot launch_slot_: id  0 | task 69 | processing task, is_child = 0
+0.40.430.213 I slot process_mtmd: id  0 | task 69 | encoding mtmd batch from idx = 1, n_chunks = 1
+0.40.481.833 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.40.595.958 I slot process_mtmd: id  0 | task 69 | encoding mtmd batch from idx = 751, n_chunks = 1
+0.40.668.629 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.40.802.788 I slot      release: id  0 | task 69 | stop processing: n_tokens = 1502, truncated = 0
+0.40.802.806 I srv  update_slots: all slots are idle
+0.40.871.586 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117278352290
+0.40.871.605 I slot launch_slot_: id  0 | task 71 | processing task, is_child = 0
+0.40.871.733 I slot process_mtmd: id  0 | task 71 | encoding mtmd batch from idx = 1, n_chunks = 1
+0.40.927.243 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.41.049.388 I slot process_mtmd: id  0 | task 71 | encoding mtmd batch from idx = 751, n_chunks = 1
+0.41.123.103 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.41.249.378 I slot      release: id  0 | task 71 | stop processing: n_tokens = 1502, truncated = 0
+0.41.249.397 I srv  update_slots: all slots are idle
+0.41.310.637 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117278798881
+0.41.310.650 I slot launch_slot_: id  0 | task 73 | processing task, is_child = 0
+0.41.310.756 I slot process_mtmd: id  0 | task 73 | encoding mtmd batch from idx = 1, n_chunks = 1
+0.41.365.881 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.41.464.437 I slot process_mtmd: id  0 | task 73 | encoding mtmd batch from idx = 751, n_chunks = 1
+0.41.532.699 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.41.655.010 I slot      release: id  0 | task 73 | stop processing: n_tokens = 1502, truncated = 0
+0.41.655.029 I srv  update_slots: all slots are idle
+0.41.703.079 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117279204513
+0.41.703.094 I slot launch_slot_: id  0 | task 75 | processing task, is_child = 0
+0.41.703.194 I slot process_mtmd: id  0 | task 75 | encoding mtmd batch from idx = 1, n_chunks = 1
+0.41.761.018 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.41.879.605 I slot process_mtmd: id  0 | task 75 | encoding mtmd batch from idx = 751, n_chunks = 1
+0.41.955.278 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.42.086.586 I slot      release: id  0 | task 75 | stop processing: n_tokens = 1502, truncated = 0
+0.42.086.606 I srv  update_slots: all slots are idle
+0.42.152.834 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117279636089
+0.42.152.846 I slot launch_slot_: id  0 | task 77 | processing task, is_child = 0
+0.42.152.979 I slot process_mtmd: id  0 | task 77 | encoding mtmd batch from idx = 1, n_chunks = 1
+0.42.217.377 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.42.326.917 I slot process_mtmd: id  0 | task 77 | encoding mtmd batch from idx = 751, n_chunks = 1
+0.42.396.522 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.42.508.944 I slot      release: id  0 | task 77 | stop processing: n_tokens = 1502, truncated = 0
+0.42.508.965 I srv  update_slots: all slots are idle
+0.42.555.824 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117280058447
+0.42.555.836 I slot launch_slot_: id  0 | task 79 | processing task, is_child = 0
+0.42.555.940 I slot process_mtmd: id  0 | task 79 | encoding mtmd batch from idx = 1, n_chunks = 1
+0.42.621.662 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.42.720.975 I slot process_mtmd: id  0 | task 79 | encoding mtmd batch from idx = 751, n_chunks = 1
+0.42.787.060 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.42.914.627 I slot      release: id  0 | task 79 | stop processing: n_tokens = 1502, truncated = 0
+0.42.914.648 I srv  update_slots: all slots are idle
+0.42.973.538 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117280464129
+0.42.973.550 I slot launch_slot_: id  0 | task 81 | processing task, is_child = 0
+0.42.973.662 I slot process_mtmd: id  0 | task 81 | encoding mtmd batch from idx = 1, n_chunks = 1
+0.43.037.168 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.43.169.547 I slot process_mtmd: id  0 | task 81 | encoding mtmd batch from idx = 751, n_chunks = 1
+0.43.239.083 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.43.365.890 I slot      release: id  0 | task 81 | stop processing: n_tokens = 1502, truncated = 0
+0.43.365.910 I srv  update_slots: all slots are idle
+0.43.416.313 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117280915393
+0.43.416.330 I slot launch_slot_: id  0 | task 83 | processing task, is_child = 0
+0.43.416.435 I slot process_mtmd: id  0 | task 83 | encoding mtmd batch from idx = 1, n_chunks = 1
+0.43.470.674 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.43.577.967 I slot process_mtmd: id  0 | task 83 | encoding mtmd batch from idx = 751, n_chunks = 1
+0.43.643.029 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.43.754.391 I slot      release: id  0 | task 83 | stop processing: n_tokens = 1502, truncated = 0
+0.43.754.415 I srv  update_slots: all slots are idle
+0.43.805.680 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117281303895
+0.43.805.699 I slot launch_slot_: id  0 | task 85 | processing task, is_child = 0
+0.43.805.820 I slot process_mtmd: id  0 | task 85 | encoding mtmd batch from idx = 1, n_chunks = 1
+0.43.864.083 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.43.979.841 I slot process_mtmd: id  0 | task 85 | encoding mtmd batch from idx = 751, n_chunks = 1
+0.44.055.734 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.44.195.055 I slot      release: id  0 | task 85 | stop processing: n_tokens = 1502, truncated = 0
+0.44.195.075 I srv  update_slots: all slots are idle
+0.44.245.860 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117281744558
+0.44.245.870 I slot launch_slot_: id  0 | task 87 | processing task, is_child = 0
+0.44.245.976 I slot process_mtmd: id  0 | task 87 | encoding mtmd batch from idx = 1, n_chunks = 1
+0.44.309.315 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.44.439.055 I slot process_mtmd: id  0 | task 87 | encoding mtmd batch from idx = 751, n_chunks = 1
+0.44.508.591 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.44.629.492 I slot      release: id  0 | task 87 | stop processing: n_tokens = 1502, truncated = 0
+0.44.629.513 I srv  update_slots: all slots are idle
+0.44.679.224 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117282178995
+0.44.679.236 I slot launch_slot_: id  0 | task 89 | processing task, is_child = 0
+0.44.679.344 I slot process_mtmd: id  0 | task 89 | encoding mtmd batch from idx = 1, n_chunks = 1
+0.44.745.389 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.44.844.613 I slot process_mtmd: id  0 | task 89 | encoding mtmd batch from idx = 751, n_chunks = 1
+0.44.920.690 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.45.032.432 I slot      release: id  0 | task 89 | stop processing: n_tokens = 1502, truncated = 0
+0.45.032.450 I srv  update_slots: all slots are idle
+0.45.089.302 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117282581935
+0.45.089.317 I slot launch_slot_: id  0 | task 91 | processing task, is_child = 0
+0.45.089.423 I slot process_mtmd: id  0 | task 91 | encoding mtmd batch from idx = 1, n_chunks = 1
+0.45.143.833 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.45.263.413 I slot process_mtmd: id  0 | task 91 | encoding mtmd batch from idx = 751, n_chunks = 1
+0.45.337.263 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.45.458.275 I slot      release: id  0 | task 91 | stop processing: n_tokens = 1502, truncated = 0
+0.45.458.293 I srv  update_slots: all slots are idle
+0.45.512.807 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117283007778
+0.45.512.822 I slot launch_slot_: id  0 | task 93 | processing task, is_child = 0
+0.45.512.937 I slot process_mtmd: id  0 | task 93 | encoding mtmd batch from idx = 1, n_chunks = 1
+0.46.528.982 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.46.658.161 I slot process_mtmd: id  0 | task 93 | encoding mtmd batch from idx = 751, n_chunks = 1
+0.46.732.602 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.46.853.400 I slot      release: id  0 | task 93 | stop processing: n_tokens = 1502, truncated = 0
+0.46.853.420 I srv  update_slots: all slots are idle
+0.46.906.122 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117283447469
+0.46.906.137 I slot launch_slot_: id  0 | task 95 | processing task, is_child = 0
+0.46.906.258 I slot process_mtmd: id  0 | task 95 | encoding mtmd batch from idx = 1, n_chunks = 1
+0.46.969.126 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.47.071.227 I slot process_mtmd: id  0 | task 95 | encoding mtmd batch from idx = 751, n_chunks = 1
+0.47.143.657 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.47.265.072 I slot      release: id  0 | task 95 | stop processing: n_tokens = 1502, truncated = 0
+0.47.265.091 I srv  update_slots: all slots are idle
+0.47.315.086 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117283859140
+0.47.315.096 I slot launch_slot_: id  0 | task 97 | processing task, is_child = 0
+0.47.315.206 I slot process_mtmd: id  0 | task 97 | encoding mtmd batch from idx = 1, n_chunks = 1
+0.47.372.295 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.47.467.114 I slot process_mtmd: id  0 | task 97 | encoding mtmd batch from idx = 751, n_chunks = 1
+0.47.544.741 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.47.658.799 I slot      release: id  0 | task 97 | stop processing: n_tokens = 1502, truncated = 0
+0.47.658.817 I srv  update_slots: all slots are idle
+0.47.712.960 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117284252867
+0.47.712.974 I slot launch_slot_: id  0 | task 99 | processing task, is_child = 0
+0.47.713.081 I slot process_mtmd: id  0 | task 99 | encoding mtmd batch from idx = 1, n_chunks = 1
+0.47.777.794 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.47.905.076 I slot process_mtmd: id  0 | task 99 | encoding mtmd batch from idx = 751, n_chunks = 1
+0.47.977.838 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.48.103.869 I slot      release: id  0 | task 99 | stop processing: n_tokens = 1502, truncated = 0
+0.48.103.887 I srv  update_slots: all slots are idle
+0.48.154.516 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117284697937
+0.48.154.526 I slot launch_slot_: id  0 | task 101 | processing task, is_child = 0
+0.48.154.628 I slot process_mtmd: id  0 | task 101 | encoding mtmd batch from idx = 1, n_chunks = 1
+0.48.209.680 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.48.320.423 I slot process_mtmd: id  0 | task 101 | encoding mtmd batch from idx = 751, n_chunks = 1
+0.48.396.030 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.48.523.935 I slot      release: id  0 | task 101 | stop processing: n_tokens = 1502, truncated = 0
+0.48.523.953 I srv  update_slots: all slots are idle
+0.48.575.032 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117285118003
+0.48.575.042 I slot launch_slot_: id  0 | task 103 | processing task, is_child = 0
+0.48.575.150 I slot process_mtmd: id  0 | task 103 | encoding mtmd batch from idx = 1, n_chunks = 1
+0.48.636.225 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.48.757.228 I slot process_mtmd: id  0 | task 103 | encoding mtmd batch from idx = 751, n_chunks = 1
+0.48.833.488 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.48.948.898 I slot      release: id  0 | task 103 | stop processing: n_tokens = 1502, truncated = 0
+0.48.948.918 I srv  update_slots: all slots are idle
+0.49.032.032 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117285542966
+0.49.032.046 I slot launch_slot_: id  0 | task 105 | processing task, is_child = 0
+0.49.032.154 I slot process_mtmd: id  0 | task 105 | encoding mtmd batch from idx = 1, n_chunks = 1
+0.49.086.934 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.49.183.275 I slot process_mtmd: id  0 | task 105 | encoding mtmd batch from idx = 751, n_chunks = 1
+0.49.257.820 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.49.380.910 I slot      release: id  0 | task 105 | stop processing: n_tokens = 1502, truncated = 0
+0.49.380.930 I srv  update_slots: all slots are idle
+0.49.437.174 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117285974979
+0.49.437.187 I slot launch_slot_: id  0 | task 107 | processing task, is_child = 0
+0.49.437.303 I slot process_mtmd: id  0 | task 107 | encoding mtmd batch from idx = 1, n_chunks = 1
+0.49.497.653 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.49.608.742 I slot process_mtmd: id  0 | task 107 | encoding mtmd batch from idx = 751, n_chunks = 1
+0.49.684.998 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.49.814.075 I slot      release: id  0 | task 107 | stop processing: n_tokens = 1502, truncated = 0
+0.49.814.101 I srv  update_slots: all slots are idle
+0.49.878.053 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117286408148
+0.49.878.063 I slot launch_slot_: id  0 | task 109 | processing task, is_child = 0
+0.49.878.165 I slot process_mtmd: id  0 | task 109 | encoding mtmd batch from idx = 1, n_chunks = 1
+0.49.935.972 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.50.040.178 I slot process_mtmd: id  0 | task 109 | encoding mtmd batch from idx = 751, n_chunks = 1
+0.50.105.845 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.50.222.940 I slot      release: id  0 | task 109 | stop processing: n_tokens = 1502, truncated = 0
+0.50.222.958 I srv  update_slots: all slots are idle
+0.50.270.151 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117286817009
+0.50.270.163 I slot launch_slot_: id  0 | task 111 | processing task, is_child = 0
+0.50.270.265 I slot process_mtmd: id  0 | task 111 | encoding mtmd batch from idx = 1, n_chunks = 1
+0.50.327.528 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.50.440.427 I slot process_mtmd: id  0 | task 111 | encoding mtmd batch from idx = 751, n_chunks = 1
+0.50.515.838 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.50.642.435 I slot      release: id  0 | task 111 | stop processing: n_tokens = 1502, truncated = 0
+0.50.642.456 I srv  update_slots: all slots are idle
+0.50.697.202 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117287236504
+0.50.697.219 I slot launch_slot_: id  0 | task 113 | processing task, is_child = 0
+0.50.697.332 I slot process_mtmd: id  0 | task 113 | encoding mtmd batch from idx = 1, n_chunks = 1
+0.50.759.022 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.50.881.572 I slot process_mtmd: id  0 | task 113 | encoding mtmd batch from idx = 751, n_chunks = 1
+0.50.952.003 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.51.076.060 I slot      release: id  0 | task 113 | stop processing: n_tokens = 1502, truncated = 0
+0.51.076.080 I srv  update_slots: all slots are idle
+0.51.133.954 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117287670130
+0.51.133.964 I slot launch_slot_: id  0 | task 115 | processing task, is_child = 0
+0.51.134.070 I slot process_mtmd: id  0 | task 115 | encoding mtmd batch from idx = 1, n_chunks = 1
+0.51.192.785 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.51.288.212 I slot process_mtmd: id  0 | task 115 | encoding mtmd batch from idx = 751, n_chunks = 1
+0.51.365.239 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.51.484.260 I slot      release: id  0 | task 115 | stop processing: n_tokens = 1502, truncated = 0
+0.51.484.279 I srv  update_slots: all slots are idle
+0.51.552.367 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117288078328
+0.51.552.378 I slot launch_slot_: id  0 | task 117 | processing task, is_child = 0
+0.51.552.485 I slot process_mtmd: id  0 | task 117 | encoding mtmd batch from idx = 1, n_chunks = 1
+0.51.608.575 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.51.721.660 I slot process_mtmd: id  0 | task 117 | encoding mtmd batch from idx = 751, n_chunks = 1
+0.51.799.359 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.51.929.364 I slot      release: id  0 | task 117 | stop processing: n_tokens = 1502, truncated = 0
+0.51.929.384 I srv  update_slots: all slots are idle
+0.51.974.975 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117288523432
+0.51.974.987 I slot launch_slot_: id  0 | task 119 | processing task, is_child = 0
+0.51.975.105 I slot process_mtmd: id  0 | task 119 | encoding mtmd batch from idx = 1, n_chunks = 1
+0.52.040.214 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.52.152.752 I slot process_mtmd: id  0 | task 119 | encoding mtmd batch from idx = 751, n_chunks = 1
+0.52.221.063 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.52.346.654 I slot      release: id  0 | task 119 | stop processing: n_tokens = 1502, truncated = 0
+0.52.346.675 I srv  update_slots: all slots are idle
+0.52.401.381 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117288940722
+0.52.401.398 I slot launch_slot_: id  0 | task 121 | processing task, is_child = 0
+0.52.401.505 I slot process_mtmd: id  0 | task 121 | encoding mtmd batch from idx = 1, n_chunks = 1
+0.52.458.788 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.52.576.577 I slot process_mtmd: id  0 | task 121 | encoding mtmd batch from idx = 751, n_chunks = 1
+0.52.652.019 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.52.783.864 I slot      release: id  0 | task 121 | stop processing: n_tokens = 1502, truncated = 0
+0.52.783.883 I srv  update_slots: all slots are idle
+0.52.829.926 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117289377933
+0.52.829.980 I slot launch_slot_: id  0 | task 123 | processing task, is_child = 0
+0.52.830.092 I slot process_mtmd: id  0 | task 123 | encoding mtmd batch from idx = 1, n_chunks = 1
+0.52.891.063 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.53.000.264 I slot process_mtmd: id  0 | task 123 | encoding mtmd batch from idx = 751, n_chunks = 1
+0.53.084.393 W init: embeddings required but some input tokens were not marked as outputs -> overriding
+0.53.201.816 I slot      release: id  0 | task 123 | stop processing: n_tokens = 1502, truncated = 0
+0.53.201.836 I srv  update_slots: all slots are idle
+0.53.243.406 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117289795885
+0.53.243.416 I slot launch_slot_: id  0 | task 125 | processing task, is_child = 0
+0.53.255.981 I slot      release: id  0 | task 125 | stop processing: n_tokens = 1, truncated = 0
+0.53.255.995 I srv  update_slots: all slots are idle
+0.53.298.665 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117289850048
+0.53.298.676 I slot launch_slot_: id  0 | task 127 | processing task, is_child = 0
+0.53.308.081 I slot      release: id  0 | task 127 | stop processing: n_tokens = 1, truncated = 0
+0.53.308.091 I srv  update_slots: all slots are idle
+0.53.321.801 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117289902148
+0.53.321.809 I slot launch_slot_: id  0 | task 129 | processing task, is_child = 0
+0.53.329.649 I slot      release: id  0 | task 129 | stop processing: n_tokens = 1, truncated = 0
+0.53.329.656 I srv  update_slots: all slots are idle
+0.53.351.107 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117289923715
+0.53.351.116 I slot launch_slot_: id  0 | task 131 | processing task, is_child = 0
+0.53.363.967 I slot      release: id  0 | task 131 | stop processing: n_tokens = 2, truncated = 0
+0.53.363.977 I srv  update_slots: all slots are idle
+0.53.421.766 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117289958034
+0.53.421.776 I slot launch_slot_: id  0 | task 133 | processing task, is_child = 0
+0.53.435.640 I slot      release: id  0 | task 133 | stop processing: n_tokens = 1, truncated = 0
+0.53.435.649 I srv  update_slots: all slots are idle
+0.53.448.159 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117290029706
+0.53.448.166 I slot launch_slot_: id  0 | task 135 | processing task, is_child = 0
+0.53.457.359 I slot      release: id  0 | task 135 | stop processing: n_tokens = 1, truncated = 0
+0.53.457.367 I srv  update_slots: all slots are idle
+0.53.500.152 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117290051425
+0.53.500.161 I slot launch_slot_: id  0 | task 137 | processing task, is_child = 0
+0.53.508.340 I slot      release: id  0 | task 137 | stop processing: n_tokens = 1, truncated = 0
+0.53.508.350 I srv  update_slots: all slots are idle
+0.53.526.098 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117290102407
+0.53.526.106 I slot launch_slot_: id  0 | task 139 | processing task, is_child = 0
+0.53.533.774 I slot      release: id  0 | task 139 | stop processing: n_tokens = 1, truncated = 0
+0.53.533.781 I srv  update_slots: all slots are idle
+0.53.571.470 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117290127840
+0.53.571.478 I slot launch_slot_: id  0 | task 141 | processing task, is_child = 0
+0.53.579.301 I slot      release: id  0 | task 141 | stop processing: n_tokens = 1, truncated = 0
+0.53.579.308 I srv  update_slots: all slots are idle
+0.53.590.643 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117290173367
+0.53.590.650 I slot launch_slot_: id  0 | task 143 | processing task, is_child = 0
+0.53.598.655 I slot      release: id  0 | task 143 | stop processing: n_tokens = 1, truncated = 0
+0.53.598.663 I srv  update_slots: all slots are idle
+0.53.659.761 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117290192722
+0.53.659.772 I slot launch_slot_: id  0 | task 145 | processing task, is_child = 0
+0.53.672.748 I slot      release: id  0 | task 145 | stop processing: n_tokens = 1, truncated = 0
+0.53.672.759 I srv  update_slots: all slots are idle
+0.53.686.422 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117290266815
+0.53.686.432 I slot launch_slot_: id  0 | task 147 | processing task, is_child = 0
+0.53.694.331 I slot      release: id  0 | task 147 | stop processing: n_tokens = 1, truncated = 0
+0.53.694.342 I srv  update_slots: all slots are idle
+0.53.705.245 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117290288398
+0.53.705.253 I slot launch_slot_: id  0 | task 149 | processing task, is_child = 0
+0.53.713.075 I slot      release: id  0 | task 149 | stop processing: n_tokens = 1, truncated = 0
+0.53.713.081 I srv  update_slots: all slots are idle
+0.53.746.831 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117290307141
+0.53.746.840 I slot launch_slot_: id  0 | task 151 | processing task, is_child = 0
+0.53.758.951 I slot      release: id  0 | task 151 | stop processing: n_tokens = 2, truncated = 0
+0.53.758.959 I srv  update_slots: all slots are idle
+0.53.776.316 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117290353017
+0.53.776.323 I slot launch_slot_: id  0 | task 153 | processing task, is_child = 0
+0.53.788.144 I slot      release: id  0 | task 153 | stop processing: n_tokens = 1, truncated = 0
+0.53.788.154 I srv  update_slots: all slots are idle
+0.53.817.921 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117290382211
+0.53.817.931 I slot launch_slot_: id  0 | task 155 | processing task, is_child = 0
+0.53.841.856 I slot      release: id  0 | task 155 | stop processing: n_tokens = 2, truncated = 0
+0.53.841.865 I srv  update_slots: all slots are idle
+0.53.856.139 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117290435922
+0.53.856.146 I slot launch_slot_: id  0 | task 157 | processing task, is_child = 0
+0.53.866.943 I slot      release: id  0 | task 157 | stop processing: n_tokens = 1, truncated = 0
+0.53.866.951 I srv  update_slots: all slots are idle
+0.53.881.687 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 117290461010
+0.53.881.694 I slot launch_slot_: id  0 | task 159 | processing task, is_child = 0
+0.53.890.213 I slot      release: id  0 | task 159 | stop processing: n_tokens = 1, truncated = 0
+0.53.890.222 I srv  update_slots: all slots are idle
+0.54.444.304 I srv    operator(): operator(): cleaning up before exit...

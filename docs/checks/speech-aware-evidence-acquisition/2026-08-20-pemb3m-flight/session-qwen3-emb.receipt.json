@@ -1,0 +1,41 @@
+{
+  "argv": [
+    "/home/chao/llama.cpp-featcache/build/bin/llama-server",
+    "--host",
+    "127.0.0.1",
+    "--port",
+    "8094",
+    "-m",
+    "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/models/qwen3-embedding-0.6b-gguf/Qwen3-Embedding-0.6B-Q8_0.gguf",
+    "--embedding",
+    "--pooling",
+    "last",
+    "-ngl",
+    "999",
+    "-c",
+    "4096",
+    "-b",
+    "4096",
+    "-ub",
+    "4096",
+    "-np",
+    "1"
+  ],
+  "binary_path": "llama.cpp-featcache/build/bin/llama-server",
+  "binary_sha256": "097c96ec5a3f576f378d4d5e103928bf070647fdcc1f015eacb839503e121c68",
+  "host": "127.0.0.1",
+  "model_files": [
+    {
+      "path": "models/qwen3-embedding-0.6b-gguf/Qwen3-Embedding-0.6B-Q8_0.gguf",
+      "sha256": "06507c7b42688469c4e7298b0a1e16deff06caf291cf0a5b278c308249c3e439"
+    }
+  ],
+  "pid": 1565,
+  "port": 8094,
+  "schema": "saea-session-receipt-v1",
+  "server_log_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-pemb3m-388/attempt-20260820T112943Z-410bdb/SAEA-PROBE-pemb3m-388.session-qwen3-emb.server.log",
+  "session_id": "SAEA-PROBE-pemb3m-388-attempt-20260820T112943Z-410bdb-qwen3-emb",
+  "started_at": "2026-08-20T12:03:59.025618+00:00",
+  "startup_stdout_sha256": "f27a099e790000966f5dba9eb0c6842cf1a621e72964d7ef4cfcd8ff5d4d4a54",
+  "study": "speech-aware-evidence-acquisition"
+}

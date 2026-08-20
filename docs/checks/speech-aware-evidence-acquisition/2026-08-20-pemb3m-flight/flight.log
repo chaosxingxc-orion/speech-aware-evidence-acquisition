@@ -1,0 +1,518 @@
+ATTEMPT_ID=attempt-20260820T110419Z-d6c576
+[11:04:19Z] P-EMB-3M preflight -- exposure row SAEA-PROBE-pemb3m-388, attempt attempt-20260820T110419Z-d6c576 -> /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-pemb3m-388/attempt-20260820T110419Z-d6c576
+[11:04:19Z] binding config sha256 verified + stable across recomputation: 307e6828b0a61ef445a5db20bb0ecf35c10e8b008b625b0fa66a9b5e125a6d3a
+[11:04:28Z] gguf models/lco-embedding-omni-3b-gguf/LCO-Embedding-Omni-3B-Q8_0.gguf: 3616087264 bytes sha256=53a9898bdb562ae599a81528a2935153457b82e7cac3aa5b10e5eecefc887d6a (9.6s, 377.0 MB/s)
+[11:04:35Z] gguf models/lco-embedding-omni-3b-gguf/mmproj-LCO-Embedding-Omni-3b-F16.gguf: 2622477952 bytes sha256=765beb616247081f53c9a0b7fed02b96981c5bad563209b5a47ca770f056a13a (6.9s, 380.6 MB/s)
+[11:04:39Z] gguf models/qwen3-embedding-0.6b-gguf/Qwen3-Embedding-0.6B-Q8_0.gguf: 639150592 bytes sha256=06507c7b42688469c4e7298b0a1e16deff06caf291cf0a5b278c308249c3e439 (3.5s, 182.9 MB/s)
+[11:04:39Z] lock binding lco-embedding-omni-3b-gguf: lifecycle='LOCAL_CANDIDATE' per-file-sha256=NO (LOCAL_CANDIDATE -- this flight self-pins)
+[11:04:39Z] lock binding qwen3-embedding-0.6b-gguf: lifecycle='AUXILIARY' per-file-sha256=yes -> 1 file(s) cross-checked AGREE
+[11:04:39Z] lock binding glap: lifecycle='LOCAL_CANDIDATE' per-file-sha256=NO (LOCAL_CANDIDATE -- this flight self-pins)
+[11:04:39Z] lock binding clsp: lifecycle='LOCAL_CANDIDATE' per-file-sha256=NO (LOCAL_CANDIDATE -- this flight self-pins)
+[11:04:39Z] config hash (= protocol hash): 28125a5ac481ce19468a37e5b8e87caaa1ac2d92960079afedfea46ed5247278
+[11:04:39Z] registered ceilings agree across ledger / machinery / launcher: {'model_calls': 440, 'speech_audio_seconds': 900, 'gpu_hours': 0.5}
+[11:04:39Z] gate: exposure pre-registration cross-check PASS (profile/split/identity/carrier/consumed/budgets)
+[11:04:39Z] gate: carrier scope PASS (slurp resolves to a speech-aware dataset entry)
+[11:04:39Z] gate: E0 closure + scoring freeze PASS (D1-D4 artifacts + frozen scoring-source hashes + no relocated bytecode)
+[11:04:39Z] gate: llama.cpp runtime libraries PASS (exact set, every file re-hashed)
+[11:04:39Z] umbrella lock sha256: 9064bde89d4248fd80c9c2f93c2a9c276a454eadbb1aa7d529671118961371b1
+[11:04:39Z] GATE (d) ENCODE-ONLY: PASS over ['speech_aware_evidence_acquisition.rails.embedding_client', 'speech_aware_evidence_acquisition.rails.local_encoder_client', 'speech_aware_evidence_acquisition.rails.probes.pemb3m_flight']
+[11:04:39Z] loading SLURP devel split (sha256 of every devel media file -- slow, model-free)
+[11:05:32Z] inputs: 60 audio samples, 18 canonical labels; one metered audio pass = 182.259s (3 audio arms -> 546.778s vs ceiling 900s)
+[11:05:32Z] GATE (c) CASCADE SOURCE: COMPLETE -- 60/60 T0 transcripts, registry sha256 f8f6426aeb0eb84c33ad58b603cb36b8f420c3063149b6cd11a0b210d8774959, supplement_required=False
+[11:05:32Z] synthetic gate clip written (64044 bytes, sha256 dc87d1fd3e5e2b1716632351331a80a673491a237e8d11d267559bdca26341a5) -- NON-CORPUS: no SLURP audio, no gold
+[11:05:32Z] prior durable spend on SAEA-PROBE-pemb3m-388: calls=0, audio_seconds=0.000000
+[11:05:32Z] attempt opened durably: attempt-20260820T110419Z-d6c576 (state OPENED)
+[11:05:32Z] PREFLIGHT COMPLETE -- zero contacts spent
+[11:05:32Z] STAGE preflight OK in 73.3s
+ATTEMPT_ID=attempt-20260820T110419Z-d6c576
+[11:05:51Z] GATE (b): control import feasibility + AUDIO-path sanity (attempt state OPENED)
+Loading weights:   0%|          | 0/552 [00:00<?, ?it/s]Loading weights:  16%|█▌        | 89/552 [00:00<00:00, 884.09it/s]Loading weights:  37%|███▋      | 205/552 [00:00<00:00, 1008.62it/s]Loading weights:  64%|██████▍   | 355/552 [00:00<00:00, 1227.50it/s]Loading weights: 100%|██████████| 552/552 [00:00<00:00, 1687.36it/s]
+[11:06:15Z] STAGE gate-b FAILED: RuntimeError: Expected all tensors to be on the same device, but got index is on cpu, different from other tensors on cuda:0 (when checking argument in method wrapper_CUDA__index_select)
+Traceback (most recent call last):
+  File "/mnt/c/Users/35686/AppData/Local/Temp/claude/D--chao-workspace-exploring-l4-intelligence-studies-speech-aware-evidence-acquisition/6d9f1834-68e9-41a7-bbcc-724898cf15a9/scratchpad/pemb3m/launch_pemb3m_flight.py", line 1570, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/mnt/c/Users/35686/AppData/Local/Temp/claude/D--chao-workspace-exploring-l4-intelligence-studies-speech-aware-evidence-acquisition/6d9f1834-68e9-41a7-bbcc-724898cf15a9/scratchpad/pemb3m/launch_pemb3m_flight.py", line 1560, in main
+    code = handlers[args.stage](args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/c/Users/35686/AppData/Local/Temp/claude/D--chao-workspace-exploring-l4-intelligence-studies-speech-aware-evidence-acquisition/6d9f1834-68e9-41a7-bbcc-724898cf15a9/scratchpad/pemb3m/launch_pemb3m_flight.py", line 867, in stage_gate_b
+    results = run_control_import_feasibility_gates(loaders=loaders)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/src/speech_aware_evidence_acquisition/rails/probes/pemb3m_flight.py", line 503, in run_control_import_feasibility_gates
+    arm_id: run_import_feasibility_gate(arm_id=arm_id, model_id=model_id, loader=loader)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/src/speech_aware_evidence_acquisition/rails/local_encoder_client.py", line 238, in run_import_feasibility_gate
+    vector = client.embed_text(contact_id=f"{arm_id}-sanity", text=sanity_text)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/src/speech_aware_evidence_acquisition/rails/local_encoder_client.py", line 136, in embed_text
+    return self._encode(kind="text", contact_id=contact_id, encode=lambda: self._encode_text_fn(text))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/src/speech_aware_evidence_acquisition/rails/local_encoder_client.py", line 150, in _encode
+    raw_values = encode()
+                 ^^^^^^^^
+  File "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/src/speech_aware_evidence_acquisition/rails/local_encoder_client.py", line 136, in <lambda>
+    return self._encode(kind="text", contact_id=contact_id, encode=lambda: self._encode_text_fn(text))
+                                                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/c/Users/35686/AppData/Local/Temp/claude/D--chao-workspace-exploring-l4-intelligence-studies-speech-aware-evidence-acquisition/6d9f1834-68e9-41a7-bbcc-724898cf15a9/scratchpad/pemb3m/control_loaders.py", line 121, in encode_text
+    vector = model.encode_text([text])
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/chao/.cache/huggingface/modules/transformers_modules/glap/46f94092f01233ac/modeling_glap.py", line 901, in encode_text
+    sentence_embeddings = self.text_encoder(padded_ids, padding_mask)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/chao/.venvs/speechrl/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/chao/.venvs/speechrl/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/chao/.cache/huggingface/modules/transformers_modules/glap/46f94092f01233ac/modeling_glap.py", line 493, in forward
+    seqs = self.encoder_frontend(token_ids)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/chao/.venvs/speechrl/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/chao/.venvs/speechrl/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/chao/.cache/huggingface/modules/transformers_modules/glap/46f94092f01233ac/modeling_glap.py", line 446, in forward
+    seqs = self.embed(token_ids)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/chao/.venvs/speechrl/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/chao/.venvs/speechrl/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/chao/.venvs/speechrl/lib/python3.12/site-packages/torch/nn/modules/sparse.py", line 192, in forward
+    return F.embedding(
+           ^^^^^^^^^^^^
+  File "/home/chao/.venvs/speechrl/lib/python3.12/site-packages/torch/nn/functional.py", line 2542, in embedding
+    return torch.embedding(weight, input, padding_idx, scale_grad_by_freq, sparse)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: Expected all tensors to be on the same device, but got index is on cpu, different from other tensors on cuda:0 (when checking argument in method wrapper_CUDA__index_select)
+[11:11:16Z] GATE (b): control import feasibility + AUDIO-path sanity (attempt state OPENED)
+[11:11:16Z] STAGE gate-b FAILED: NameError: name 'loaders' is not defined
+Traceback (most recent call last):
+  File "/mnt/c/Users/35686/AppData/Local/Temp/claude/D--chao-workspace-exploring-l4-intelligence-studies-speech-aware-evidence-acquisition/6d9f1834-68e9-41a7-bbcc-724898cf15a9/scratchpad/pemb3m/launch_pemb3m_flight.py", line 1617, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/mnt/c/Users/35686/AppData/Local/Temp/claude/D--chao-workspace-exploring-l4-intelligence-studies-speech-aware-evidence-acquisition/6d9f1834-68e9-41a7-bbcc-724898cf15a9/scratchpad/pemb3m/launch_pemb3m_flight.py", line 1607, in main
+    code = handlers[args.stage](args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/c/Users/35686/AppData/Local/Temp/claude/D--chao-workspace-exploring-l4-intelligence-studies-speech-aware-evidence-acquisition/6d9f1834-68e9-41a7-bbcc-724898cf15a9/scratchpad/pemb3m/launch_pemb3m_flight.py", line 899, in stage_gate_b
+    for arm_id, entry in loaders.items():
+                         ^^^^^^^
+NameError: name 'loaders' is not defined
+[11:13:52Z] GATE (b): control import feasibility + AUDIO-path sanity (attempt state OPENED)
+Loading weights:   0%|          | 0/552 [00:00<?, ?it/s]Loading weights:   8%|▊         | 43/552 [00:00<00:01, 360.87it/s]Loading weights:  16%|█▌        | 88/552 [00:00<00:01, 406.59it/s]Loading weights:  24%|██▍       | 133/552 [00:00<00:00, 420.37it/s]Loading weights:  32%|███▏      | 176/552 [00:00<00:00, 399.27it/s]Loading weights:  39%|███▉      | 217/552 [00:00<00:00, 370.01it/s]Loading weights:  48%|████▊     | 264/552 [00:00<00:00, 399.35it/s]Loading weights:  56%|█████▌    | 308/552 [00:00<00:00, 387.69it/s]Loading weights:  63%|██████▎   | 348/552 [00:00<00:00, 385.99it/s]Loading weights:  71%|███████   | 391/552 [00:01<00:00, 383.83it/s]Loading weights:  79%|███████▉  | 436/552 [00:01<00:00, 372.96it/s]Loading weights:  86%|████████▌ | 475/552 [00:01<00:00, 372.85it/s]Loading weights:  93%|█████████▎| 513/552 [00:01<00:00, 364.96it/s]Loading weights: 100%|██████████| 552/552 [00:01<00:00, 398.74it/s]
+/home/chao/.cache/huggingface/modules/transformers_modules/clsp/1cd6683d3f048a01/modular_clsp.py:1307: FutureWarning: `torch.cuda.amp.custom_fwd(args...)` is deprecated. Please use `torch.amp.custom_fwd(args..., device_type='cuda')` instead.
+  @custom_fwd
+/home/chao/.cache/huggingface/modules/transformers_modules/clsp/1cd6683d3f048a01/modular_clsp.py:1316: FutureWarning: `torch.cuda.amp.custom_bwd(args...)` is deprecated. Please use `torch.amp.custom_bwd(args..., device_type='cuda')` instead.
+  @custom_bwd
+/home/chao/.cache/huggingface/modules/transformers_modules/clsp/1cd6683d3f048a01/modular_clsp.py:1513: FutureWarning: `torch.cuda.amp.custom_fwd(args...)` is deprecated. Please use `torch.amp.custom_fwd(args..., device_type='cuda')` instead.
+  @custom_fwd
+/home/chao/.cache/huggingface/modules/transformers_modules/clsp/1cd6683d3f048a01/modular_clsp.py:1552: FutureWarning: `torch.cuda.amp.custom_bwd(args...)` is deprecated. Please use `torch.amp.custom_bwd(args..., device_type='cuda')` instead.
+  @custom_bwd
+Loading weights:   0%|          | 0/815 [00:00<?, ?it/s]Loading weights:   8%|▊         | 68/815 [00:00<00:01, 556.87it/s]Loading weights:  15%|█▌        | 125/815 [00:00<00:01, 502.35it/s]Loading weights:  23%|██▎       | 189/815 [00:00<00:01, 558.32it/s]Loading weights:  34%|███▍      | 276/815 [00:00<00:00, 667.16it/s]Loading weights: 100%|██████████| 815/815 [00:00<00:00, 1532.71it/s]
+[11:18:23Z] GATE (b) TEXT [m3-clsp-control]: DROPPED-RUNTIME-ERROR -- AttributeError: 'CLSPModel' object has no attribute 'all_tied_weights_keys'
+[11:18:23Z] GATE (b) TEXT [m2-glap-control] glap: OK -- import + one sanity embed succeeded (dim 1024)
+[11:18:24Z] GATE (b) AUDIO [m2-glap-control]: OK -- dim 1024
+[11:18:24Z] GATE (b) AUDIO [m3-clsp-control]: skipped -- text side already DROPPED-RUNTIME-ERROR
+[11:18:24Z] GATE (b) COMPLETE: flyable control arms = ['m2-glap-control'] (a dropped control never blocks M1/M4)
+[11:18:24Z] durable spend after gate (b): calls=4, audio_seconds=2.000000
+[11:18:24Z] STAGE gate-b OK in 272.9s
+ATTEMPT_ID=attempt-20260820T110419Z-d6c576
+[11:19:46Z] coexistence guard: nothing answers on the generation port 8080 -- PASS
+[11:19:46Z] spawning llama-server in EMBEDDING mode for 'lco-mean' on port 8093: ['--embedding', '-ngl', '999', '-c', '4096', '--pooling', 'mean']
+[11:23:38Z] session 'lco-mean' up: pid=632 port=8093 (spawn+load 232.3s)
+[11:23:38Z] session argv: /home/chao/llama.cpp-featcache/build/bin/llama-server --host 127.0.0.1 --port 8093 -m /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/models/lco-embedding-omni-3b-gguf/LCO-Embedding-Omni-3B-Q8_0.gguf --mmproj /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/models/lco-embedding-omni-3b-gguf/mmproj-LCO-Embedding-Omni-3b-F16.gguf --embedding -ngl 999 -c 4096 --pooling mean
+[11:23:38Z]   model file: models/lco-embedding-omni-3b-gguf/LCO-Embedding-Omni-3B-Q8_0.gguf sha256=53a9898bdb562ae599a81528a2935153457b82e7cac3aa5b10e5eecefc887d6a
+[11:23:38Z]   model file: models/lco-embedding-omni-3b-gguf/mmproj-LCO-Embedding-Omni-3b-F16.gguf sha256=765beb616247081f53c9a0b7fed02b96981c5bad563209b5a47ca770f056a13a
+[11:23:38Z] /props media_marker verified for lco-mean: '<__media__>'; pooling_type=None
+[11:23:39Z] session 'lco-mean' torn down after 232.4s resident
+[11:23:39Z] STAGE m1 FAILED: HTTPError: HTTP Error 500: Internal Server Error
+Traceback (most recent call last):
+  File "/mnt/c/Users/35686/AppData/Local/Temp/claude/D--chao-workspace-exploring-l4-intelligence-studies-speech-aware-evidence-acquisition/6d9f1834-68e9-41a7-bbcc-724898cf15a9/scratchpad/pemb3m/launch_pemb3m_flight.py", line 1622, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/mnt/c/Users/35686/AppData/Local/Temp/claude/D--chao-workspace-exploring-l4-intelligence-studies-speech-aware-evidence-acquisition/6d9f1834-68e9-41a7-bbcc-724898cf15a9/scratchpad/pemb3m/launch_pemb3m_flight.py", line 1612, in main
+    code = handlers[args.stage](args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/c/Users/35686/AppData/Local/Temp/claude/D--chao-workspace-exploring-l4-intelligence-studies-speech-aware-evidence-acquisition/6d9f1834-68e9-41a7-bbcc-724898cf15a9/scratchpad/pemb3m/launch_pemb3m_flight.py", line 1104, in stage_m1
+    vector = mean_client.embed_audio(contact_id="pooling-differ-gate", audio_bytes=gate_wav)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/src/speech_aware_evidence_acquisition/rails/embedding_client.py", line 424, in embed_audio
+    return self._send(contact_id=contact_id, kind="audio", body=body)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/src/speech_aware_evidence_acquisition/rails/embedding_client.py", line 439, in _send
+    raw = self._post(self._base_url + EMBEDDING_ENDPOINT_PATH, json.dumps(body).encode("utf-8"))
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/src/speech_aware_evidence_acquisition/rails/embedding_client.py", line 273, in post
+    with urllib.request.urlopen(request, timeout=timeout_seconds) as response:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 215, in urlopen
+    return opener.open(url, data, timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 521, in open
+    response = meth(req, response)
+               ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 630, in http_response
+    response = self.parent.error(
+               ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 559, in error
+    return self._call_chain(*args)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 492, in _call_chain
+    result = func(*args)
+             ^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 639, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 500: Internal Server Error
+ATTEMPT_ID=attempt-20260820T112943Z-410bdb
+[11:29:43Z] P-EMB-3M preflight -- exposure row SAEA-PROBE-pemb3m-388, attempt attempt-20260820T112943Z-410bdb -> /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-pemb3m-388/attempt-20260820T112943Z-410bdb
+[11:29:43Z] binding config sha256 verified + stable across recomputation: 307e6828b0a61ef445a5db20bb0ecf35c10e8b008b625b0fa66a9b5e125a6d3a
+[11:33:29Z] gguf models/lco-embedding-omni-3b-gguf/LCO-Embedding-Omni-3B-Q8_0.gguf: 3616087264 bytes sha256=53a9898bdb562ae599a81528a2935153457b82e7cac3aa5b10e5eecefc887d6a (225.5s, 16.0 MB/s)
+[11:35:54Z] gguf models/lco-embedding-omni-3b-gguf/mmproj-LCO-Embedding-Omni-3b-F16.gguf: 2622477952 bytes sha256=765beb616247081f53c9a0b7fed02b96981c5bad563209b5a47ca770f056a13a (145.5s, 18.0 MB/s)
+[11:36:32Z] gguf models/qwen3-embedding-0.6b-gguf/Qwen3-Embedding-0.6B-Q8_0.gguf: 639150592 bytes sha256=06507c7b42688469c4e7298b0a1e16deff06caf291cf0a5b278c308249c3e439 (37.4s, 17.1 MB/s)
+[11:36:32Z] lock binding lco-embedding-omni-3b-gguf: lifecycle='LOCAL_CANDIDATE' per-file-sha256=NO (LOCAL_CANDIDATE -- this flight self-pins)
+[11:36:32Z] lock binding qwen3-embedding-0.6b-gguf: lifecycle='AUXILIARY' per-file-sha256=yes -> 1 file(s) cross-checked AGREE
+[11:36:32Z] lock binding glap: lifecycle='LOCAL_CANDIDATE' per-file-sha256=NO (LOCAL_CANDIDATE -- this flight self-pins)
+[11:36:32Z] lock binding clsp: lifecycle='LOCAL_CANDIDATE' per-file-sha256=NO (LOCAL_CANDIDATE -- this flight self-pins)
+[11:36:32Z] config hash (= protocol hash): 3ae99c9a7c943d016781c88bb1a5d256f86a9369d7c80ad6b0592b637f8d15a4
+[11:36:32Z] registered ceilings agree across ledger / machinery / launcher: {'model_calls': 440, 'speech_audio_seconds': 900, 'gpu_hours': 0.5}
+[11:36:33Z] gate: exposure pre-registration cross-check PASS (profile/split/identity/carrier/consumed/budgets)
+[11:36:33Z] gate: carrier scope PASS (slurp resolves to a speech-aware dataset entry)
+[11:36:46Z] gate: E0 closure + scoring freeze PASS (D1-D4 artifacts + frozen scoring-source hashes + no relocated bytecode)
+[11:36:46Z] gate: llama.cpp runtime libraries PASS (exact set, every file re-hashed)
+[11:36:46Z] umbrella lock sha256: 9064bde89d4248fd80c9c2f93c2a9c276a454eadbb1aa7d529671118961371b1
+[11:36:47Z] GATE (d) ENCODE-ONLY: PASS over ['speech_aware_evidence_acquisition.rails.embedding_client', 'speech_aware_evidence_acquisition.rails.local_encoder_client', 'speech_aware_evidence_acquisition.rails.probes.pemb3m_flight']
+[11:36:48Z] loading SLURP devel split (sha256 of every devel media file -- slow, model-free)
+[11:51:27Z] inputs: 60 audio samples, 18 canonical labels; one metered audio pass = 182.259s (3 audio arms -> 546.778s vs ceiling 900s)
+[11:51:27Z] GATE (c) CASCADE SOURCE: COMPLETE -- 60/60 T0 transcripts, registry sha256 f8f6426aeb0eb84c33ad58b603cb36b8f420c3063149b6cd11a0b210d8774959, supplement_required=False
+[11:51:27Z] synthetic gate clip written (64044 bytes, sha256 dc87d1fd3e5e2b1716632351331a80a673491a237e8d11d267559bdca26341a5) -- NON-CORPUS: no SLURP audio, no gold
+[11:51:28Z] prior durable spend on SAEA-PROBE-pemb3m-388: calls=5, audio_seconds=4.000000
+[11:51:28Z] NOTE: a prior attempt on this run_id has durable spend; this attempt charges against the SAME plan ceiling
+[11:51:28Z] attempt opened durably: attempt-20260820T112943Z-410bdb (state OPENED)
+[11:51:28Z] PREFLIGHT COMPLETE -- zero contacts spent
+[11:51:28Z] STAGE preflight OK in 1304.9s
+ATTEMPT_ID=attempt-20260820T112943Z-410bdb
+[11:51:30Z] GATE (b): control import feasibility + AUDIO-path sanity (attempt state OPENED)
+Loading weights:   0%|          | 0/552 [00:00<?, ?it/s]Loading weights:  22%|██▏       | 122/552 [00:00<00:00, 1183.11it/s]Loading weights: 100%|██████████| 552/552 [00:00<00:00, 3334.94it/s]
+/home/chao/.cache/huggingface/modules/transformers_modules/clsp/1cd6683d3f048a01/modular_clsp.py:1307: FutureWarning: `torch.cuda.amp.custom_fwd(args...)` is deprecated. Please use `torch.amp.custom_fwd(args..., device_type='cuda')` instead.
+  @custom_fwd
+/home/chao/.cache/huggingface/modules/transformers_modules/clsp/1cd6683d3f048a01/modular_clsp.py:1316: FutureWarning: `torch.cuda.amp.custom_bwd(args...)` is deprecated. Please use `torch.amp.custom_bwd(args..., device_type='cuda')` instead.
+  @custom_bwd
+/home/chao/.cache/huggingface/modules/transformers_modules/clsp/1cd6683d3f048a01/modular_clsp.py:1513: FutureWarning: `torch.cuda.amp.custom_fwd(args...)` is deprecated. Please use `torch.amp.custom_fwd(args..., device_type='cuda')` instead.
+  @custom_fwd
+/home/chao/.cache/huggingface/modules/transformers_modules/clsp/1cd6683d3f048a01/modular_clsp.py:1552: FutureWarning: `torch.cuda.amp.custom_bwd(args...)` is deprecated. Please use `torch.amp.custom_bwd(args..., device_type='cuda')` instead.
+  @custom_bwd
+Loading weights:   0%|          | 0/815 [00:00<?, ?it/s]Loading weights:  20%|██        | 165/815 [00:00<00:00, 1631.98it/s]Loading weights:  40%|████      | 329/815 [00:00<00:00, 1464.45it/s]Loading weights: 100%|██████████| 815/815 [00:00<00:00, 3021.47it/s]
+[11:51:55Z] GATE (b) TEXT [m3-clsp-control]: DROPPED-RUNTIME-ERROR -- AttributeError: 'CLSPModel' object has no attribute 'all_tied_weights_keys'
+[11:51:55Z] GATE (b) TEXT [m2-glap-control] glap: OK -- import + one sanity embed succeeded (dim 1024)
+[11:51:56Z] GATE (b) AUDIO [m2-glap-control]: OK -- dim 1024
+[11:51:56Z] GATE (b) AUDIO [m3-clsp-control]: skipped -- text side already DROPPED-RUNTIME-ERROR
+[11:51:56Z] GATE (b) COMPLETE: flyable control arms = ['m2-glap-control'] (a dropped control never blocks M1/M4)
+[11:51:56Z] durable spend after gate (b): calls=2, audio_seconds=2.000000
+[11:51:56Z] STAGE gate-b OK in 25.8s
+ATTEMPT_ID=attempt-20260820T112943Z-410bdb
+[11:53:06Z] loading SLURP devel split (sha256 of every devel media file -- slow, model-free)
+[11:55:01Z] inputs ready in 115.4s (BEFORE any spawn -- not charged to GPU time)
+[11:55:01Z] coexistence guard: nothing answers on the generation port 8080 -- PASS
+[11:55:01Z] spawning llama-server in EMBEDDING mode for 'lco-mean' on port 8093: ['--embedding', '-ngl', '999', '-c', '4096', '-b', '4096', '-ub', '4096', '-np', '1', '--pooling', 'mean']
+[11:55:21Z] session 'lco-mean' up: pid=771 port=8093 (spawn+load 20.0s)
+[11:55:21Z] session argv: /home/chao/llama.cpp-featcache/build/bin/llama-server --host 127.0.0.1 --port 8093 -m /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/models/lco-embedding-omni-3b-gguf/LCO-Embedding-Omni-3B-Q8_0.gguf --mmproj /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/models/lco-embedding-omni-3b-gguf/mmproj-LCO-Embedding-Omni-3b-F16.gguf --embedding -ngl 999 -c 4096 -b 4096 -ub 4096 -np 1 --pooling mean
+[11:55:21Z]   model file: models/lco-embedding-omni-3b-gguf/LCO-Embedding-Omni-3B-Q8_0.gguf sha256=53a9898bdb562ae599a81528a2935153457b82e7cac3aa5b10e5eecefc887d6a
+[11:55:21Z]   model file: models/lco-embedding-omni-3b-gguf/mmproj-LCO-Embedding-Omni-3b-F16.gguf sha256=765beb616247081f53c9a0b7fed02b96981c5bad563209b5a47ca770f056a13a
+[11:55:21Z] /props media_marker verified for lco-mean: '<__media__>'; pooling_type=None
+[11:55:22Z] GATE (a) mean-pooled gate vector: dim 2048
+[11:55:22Z] session 'lco-mean' torn down after 20.9s resident
+[11:55:23Z] coexistence guard: nothing answers on the generation port 8080 -- PASS
+[11:55:23Z] spawning llama-server in EMBEDDING mode for 'lco-last' on port 8093: ['--embedding', '-ngl', '999', '-c', '4096', '-b', '4096', '-ub', '4096', '-np', '1', '--pooling', 'last']
+[11:55:48Z] session 'lco-last' up: pid=824 port=8093 (spawn+load 25.9s)
+[11:55:48Z] session argv: /home/chao/llama.cpp-featcache/build/bin/llama-server --host 127.0.0.1 --port 8093 -m /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/models/lco-embedding-omni-3b-gguf/LCO-Embedding-Omni-3B-Q8_0.gguf --mmproj /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/models/lco-embedding-omni-3b-gguf/mmproj-LCO-Embedding-Omni-3b-F16.gguf --embedding -ngl 999 -c 4096 -b 4096 -ub 4096 -np 1 --pooling last
+[11:55:48Z]   model file: models/lco-embedding-omni-3b-gguf/LCO-Embedding-Omni-3B-Q8_0.gguf sha256=53a9898bdb562ae599a81528a2935153457b82e7cac3aa5b10e5eecefc887d6a
+[11:55:48Z]   model file: models/lco-embedding-omni-3b-gguf/mmproj-LCO-Embedding-Omni-3b-F16.gguf sha256=765beb616247081f53c9a0b7fed02b96981c5bad563209b5a47ca770f056a13a
+[11:55:48Z] /props media_marker verified for lco-last: '<__media__>'; pooling_type=None
+[11:55:49Z] GATE (a) POOLING-DIFFER: BYTE-IDENTICAL -> POOLING-OVERRIDE-PRESENT (section 4 substitutes the scoped verdict names)
+[11:55:49Z] LCO repeat-call determinism sample: byte_identical=True
+[11:55:49Z] ARM START m1-lco-primary: LCO-3B --pooling last, bare content both sides -> 78 contacts, ZERO generation
+[11:55:49Z] [m1-lco-primary] media marker verified against the LIVE server's GET /props -- the env-pinned LLAMA_MEDIA_MARKER matches the server's own media_marker field (fail-closed; a missing field or a mismatched value would have refused)
+[11:55:49Z]   /props model_path: '/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/models/lco-embedding-omni-3b-gguf/LCO-Embedding-Omni-3B-Q8_0.gguf'
+[11:55:49Z]   /props build_info: 'b5-5d9dfcb58'
+[11:55:50Z] [m1-lco-primary] contact 0001 [audio] slurp:devel:000115:audio-1495375974 ok   0.46s dims=2048 | flown=1 119.4/min eta=0.6 min
+[11:55:50Z] [m1-lco-primary] contact 0002 [audio] slurp:devel:000444:audio-1502891018-headset ok   0.40s dims=2048 | flown=2 126.0/min eta=0.6 min
+[11:55:50Z] [m1-lco-primary] contact 0003 [audio] slurp:devel:000943:audio-1434529860-headset ok   0.39s dims=2048 | flown=3 131.9/min eta=0.6 min
+[11:55:51Z] [m1-lco-primary] contact 0004 [audio] slurp:devel:001637:audio-1502195066-headset ok   0.46s dims=2048 | flown=4 129.9/min eta=0.6 min
+[11:55:51Z] [m1-lco-primary] contact 0005 [audio] slurp:devel:002120:audio-1502218226 ok   0.40s dims=2048 | flown=5 132.3/min eta=0.6 min
+[11:55:52Z] [m1-lco-primary] contact 0006 [audio] slurp:devel:002992:audio-1489152746 ok   0.39s dims=2048 | flown=6 133.6/min eta=0.5 min
+[11:55:52Z] [m1-lco-primary] contact 0007 [audio] slurp:devel:003121:audio-1501696857-headset ok   0.37s dims=2048 | flown=7 134.4/min eta=0.5 min
+[11:55:53Z] [m1-lco-primary] contact 0008 [audio] slurp:devel:003309:audio-1501756265 ok   0.37s dims=2048 | flown=8 136.5/min eta=0.5 min
+[11:55:53Z] [m1-lco-primary] contact 0009 [audio] slurp:devel:004134:audio-1500387396-headset ok   0.46s dims=2048 | flown=9 135.0/min eta=0.5 min
+[11:55:54Z] [m1-lco-primary] contact 0010 [audio] slurp:devel:004604:audio-1501759214 ok   0.37s dims=2048 | flown=10 135.3/min eta=0.5 min
+[11:55:54Z] [m1-lco-primary] contact 0011 [audio] slurp:devel:005025:audio-1500900618 ok   0.39s dims=2048 | flown=11 136.2/min eta=0.5 min
+[11:55:54Z] [m1-lco-primary] contact 0012 [audio] slurp:devel:005028:audio-1502893878-headset ok   0.40s dims=2048 | flown=12 136.7/min eta=0.5 min
+[11:55:55Z] [m1-lco-primary] contact 0013 [audio] slurp:devel:005108:audio-1494422588-headset ok   0.37s dims=2048 | flown=13 137.9/min eta=0.5 min
+[11:55:55Z] [m1-lco-primary] contact 0014 [audio] slurp:devel:005359:audio-1497265137-headset ok   0.43s dims=2048 | flown=14 137.7/min eta=0.5 min
+[11:55:56Z] [m1-lco-primary] contact 0015 [audio] slurp:devel:005453:audio-1490183633-headset ok   0.38s dims=2048 | flown=15 138.5/min eta=0.5 min
+[11:55:56Z] [m1-lco-primary] contact 0016 [audio] slurp:devel:005518:audio-1490203960 ok   0.42s dims=2048 | flown=16 138.6/min eta=0.4 min
+[11:55:56Z] [m1-lco-primary] contact 0017 [audio] slurp:devel:005536:audio-1499090415-headset ok   0.37s dims=2048 | flown=17 138.6/min eta=0.4 min
+[11:55:57Z] [m1-lco-primary] contact 0018 [audio] slurp:devel:005541:audio--1504191543 ok   0.39s dims=2048 | flown=18 138.6/min eta=0.4 min
+[11:55:57Z] [m1-lco-primary] contact 0019 [audio] slurp:devel:005567:audio-1497359684 ok   0.42s dims=2048 | flown=19 138.5/min eta=0.4 min
+[11:55:58Z] [m1-lco-primary] contact 0020 [audio] slurp:devel:005684:audio-1498577434 ok   0.39s dims=2048 | flown=20 138.9/min eta=0.4 min
+[11:55:58Z] [m1-lco-primary] contact 0021 [audio] slurp:devel:005743:audio-1501407405-headset ok   0.40s dims=2048 | flown=21 138.8/min eta=0.4 min
+[11:55:59Z] [m1-lco-primary] contact 0022 [audio] slurp:devel:005770:audio-1495377172 ok   0.41s dims=2048 | flown=22 138.8/min eta=0.4 min
+[11:55:59Z] [m1-lco-primary] contact 0023 [audio] slurp:devel:005943:audio-1499266055 ok   0.43s dims=2048 | flown=23 138.5/min eta=0.4 min
+[11:56:00Z] [m1-lco-primary] contact 0024 [audio] slurp:devel:006603:audio-1502101512 ok   0.36s dims=2048 | flown=24 138.3/min eta=0.4 min
+[11:56:00Z] [m1-lco-primary] contact 0025 [audio] slurp:devel:006751:audio-1501773837-headset ok   0.39s dims=2048 | flown=25 138.6/min eta=0.4 min
+[11:56:00Z] [m1-lco-primary] contact 0026 [audio] slurp:devel:007374:audio-1498569508 ok   0.45s dims=2048 | flown=26 138.2/min eta=0.4 min
+[11:56:01Z] [m1-lco-primary] contact 0027 [audio] slurp:devel:007541:audio-1490202471 ok   0.38s dims=2048 | flown=27 138.7/min eta=0.4 min
+[11:56:01Z] [m1-lco-primary] contact 0028 [audio] slurp:devel:007653:audio-1497438989-headset ok   0.42s dims=2048 | flown=28 138.6/min eta=0.4 min
+[11:56:02Z] [m1-lco-primary] contact 0029 [audio] slurp:devel:007852:audio-1494416109-headset ok   0.41s dims=2048 | flown=29 138.5/min eta=0.4 min
+[11:56:02Z] [m1-lco-primary] contact 0030 [audio] slurp:devel:008014:audio-1500899290 ok   0.37s dims=2048 | flown=30 139.0/min eta=0.3 min
+[11:56:03Z] [m1-lco-primary] contact 0031 [audio] slurp:devel:008047:audio-1498570919 ok   0.42s dims=2048 | flown=31 138.9/min eta=0.3 min
+[11:56:03Z] [m1-lco-primary] contact 0032 [audio] slurp:devel:008072:audio-1488986707 ok   0.40s dims=2048 | flown=32 139.0/min eta=0.3 min
+[11:56:03Z] [m1-lco-primary] contact 0033 [audio] slurp:devel:009340:audio-1497882818-headset ok   0.41s dims=2048 | flown=33 138.8/min eta=0.3 min
+[11:56:04Z] [m1-lco-primary] contact 0034 [audio] slurp:devel:009518:audio-1495734594-headset ok   0.41s dims=2048 | flown=34 138.8/min eta=0.3 min
+[11:56:04Z] [m1-lco-primary] contact 0035 [audio] slurp:devel:009733:audio--1505407176 ok   0.38s dims=2048 | flown=35 139.1/min eta=0.3 min
+[11:56:05Z] [m1-lco-primary] contact 0036 [audio] slurp:devel:010162:audio-1501765286 ok   0.42s dims=2048 | flown=36 139.1/min eta=0.3 min
+[11:56:05Z] [m1-lco-primary] contact 0037 [audio] slurp:devel:010186:audio-1501415369-headset ok   0.40s dims=2048 | flown=37 139.2/min eta=0.3 min
+[11:56:05Z] [m1-lco-primary] contact 0038 [audio] slurp:devel:010545:audio-1490006493 ok   0.39s dims=2048 | flown=38 139.4/min eta=0.3 min
+[11:56:06Z] [m1-lco-primary] contact 0039 [audio] slurp:devel:010732:audio-1490184504 ok   0.43s dims=2048 | flown=39 139.3/min eta=0.3 min
+[11:56:06Z] [m1-lco-primary] contact 0040 [audio] slurp:devel:011503:audio-1494514154 ok   0.37s dims=2048 | flown=40 139.6/min eta=0.3 min
+[11:56:07Z] [m1-lco-primary] contact 0041 [audio] slurp:devel:011654:audio-1501692977-headset ok   0.42s dims=2048 | flown=41 139.5/min eta=0.3 min
+[11:56:07Z] [m1-lco-primary] contact 0042 [audio] slurp:devel:011693:audio-1498565017-headset ok   0.42s dims=2048 | flown=42 139.5/min eta=0.3 min
+[11:56:08Z] [m1-lco-primary] contact 0043 [audio] slurp:devel:012076:audio-1501766742-headset ok   0.39s dims=2048 | flown=43 139.7/min eta=0.3 min
+[11:56:08Z] [m1-lco-primary] contact 0044 [audio] slurp:devel:012253:audio-1488974202 ok   0.40s dims=2048 | flown=44 139.7/min eta=0.2 min
+[11:56:09Z] [m1-lco-primary] contact 0045 [audio] slurp:devel:012478:audio-1498486426 ok   1.38s dims=2048 | flown=45 133.1/min eta=0.2 min
+[11:56:10Z] [m1-lco-primary] contact 0046 [audio] slurp:devel:012654:audio-1497860426-headset ok   0.40s dims=2048 | flown=46 133.3/min eta=0.2 min
+[11:56:10Z] [m1-lco-primary] contact 0047 [audio] slurp:devel:012667:audio-1501751776-headset ok   0.38s dims=2048 | flown=47 133.6/min eta=0.2 min
+[11:56:11Z] [m1-lco-primary] contact 0048 [audio] slurp:devel:013281:audio-1490354296-headset ok   0.43s dims=2048 | flown=48 133.7/min eta=0.2 min
+[11:56:11Z] [m1-lco-primary] contact 0049 [audio] slurp:devel:013795:audio-1499266495 ok   0.41s dims=2048 | flown=49 133.9/min eta=0.2 min
+[11:56:12Z] [m1-lco-primary] contact 0050 [audio] slurp:devel:014173:audio-1490291441 ok   0.41s dims=2048 | flown=50 133.9/min eta=0.2 min
+[11:56:12Z] [m1-lco-primary] contact 0051 [audio] slurp:devel:014263:audio-1501692486 ok   0.38s dims=2048 | flown=51 134.1/min eta=0.2 min
+[11:56:12Z] [m1-lco-primary] contact 0052 [audio] slurp:devel:014397:audio-1497368809 ok   0.41s dims=2048 | flown=52 134.1/min eta=0.2 min
+[11:56:13Z] [m1-lco-primary] contact 0053 [audio] slurp:devel:014657:audio-1499695487 ok   0.38s dims=2048 | flown=53 134.4/min eta=0.2 min
+[11:56:13Z] [m1-lco-primary] contact 0054 [audio] slurp:devel:015258:audio-1501777355-headset ok   0.41s dims=2048 | flown=54 134.6/min eta=0.2 min
+[11:56:14Z] [m1-lco-primary] contact 0055 [audio] slurp:devel:015375:audio-1501754418 ok   0.41s dims=2048 | flown=55 134.6/min eta=0.2 min
+[11:56:14Z] [m1-lco-primary] contact 0056 [audio] slurp:devel:015632:audio-1490021137-headset ok   0.39s dims=2048 | flown=56 134.8/min eta=0.2 min
+[11:56:14Z] [m1-lco-primary] contact 0057 [audio] slurp:devel:015805:audio-1489153743 ok   0.41s dims=2048 | flown=57 134.8/min eta=0.2 min
+[11:56:15Z] [m1-lco-primary] contact 0058 [audio] slurp:devel:016653:audio-1494513016 ok   0.41s dims=2048 | flown=58 134.9/min eta=0.1 min
+[11:56:15Z] [m1-lco-primary] contact 0059 [audio] slurp:devel:016825:audio-1498573552-headset ok   0.42s dims=2048 | flown=59 135.0/min eta=0.1 min
+[11:56:16Z] [m1-lco-primary] contact 0060 [audio] slurp:devel:017009:audio-1502198805-headset ok   0.41s dims=2048 | flown=60 135.0/min eta=0.1 min
+[11:56:16Z] [m1-lco-primary] contact 0061 [text] alarm ok   0.01s dims=2048 | flown=61 137.1/min eta=0.1 min
+[11:56:16Z] [m1-lco-primary] contact 0062 [text] audio ok   0.01s dims=2048 | flown=62 139.1/min eta=0.1 min
+[11:56:16Z] [m1-lco-primary] contact 0063 [text] calendar ok   0.01s dims=2048 | flown=63 141.2/min eta=0.1 min
+[11:56:16Z] [m1-lco-primary] contact 0064 [text] cooking ok   0.01s dims=2048 | flown=64 143.3/min eta=0.1 min
+[11:56:16Z] [m1-lco-primary] contact 0065 [text] datetime ok   0.02s dims=2048 | flown=65 145.1/min eta=0.1 min
+[11:56:16Z] [m1-lco-primary] contact 0066 [text] email ok   0.01s dims=2048 | flown=66 147.1/min eta=0.1 min
+[11:56:16Z] [m1-lco-primary] contact 0067 [text] general ok   0.01s dims=2048 | flown=67 149.2/min eta=0.1 min
+[11:56:16Z] [m1-lco-primary] contact 0068 [text] iot ok   0.01s dims=2048 | flown=68 151.3/min eta=0.1 min
+[11:56:16Z] [m1-lco-primary] contact 0069 [text] lists ok   0.01s dims=2048 | flown=69 153.2/min eta=0.1 min
+[11:56:16Z] [m1-lco-primary] contact 0070 [text] music ok   0.01s dims=2048 | flown=70 155.1/min eta=0.1 min
+[11:56:16Z] [m1-lco-primary] contact 0071 [text] news ok   0.01s dims=2048 | flown=71 157.1/min eta=0.0 min
+[11:56:16Z] [m1-lco-primary] contact 0072 [text] play ok   0.01s dims=2048 | flown=72 159.2/min eta=0.0 min
+[11:56:16Z] [m1-lco-primary] contact 0073 [text] qa ok   0.01s dims=2048 | flown=73 161.3/min eta=0.0 min
+[11:56:16Z] [m1-lco-primary] contact 0074 [text] recommendation ok   0.01s dims=2048 | flown=74 163.3/min eta=0.0 min
+[11:56:16Z] [m1-lco-primary] contact 0075 [text] social ok   0.01s dims=2048 | flown=75 165.3/min eta=0.0 min
+[11:56:16Z] [m1-lco-primary] contact 0076 [text] takeaway ok   0.03s dims=2048 | flown=76 167.2/min eta=0.0 min
+[11:56:16Z] [m1-lco-primary] contact 0077 [text] transport ok   0.01s dims=2048 | flown=77 169.2/min eta=0.0 min
+[11:56:16Z] [m1-lco-primary] contact 0078 [text] weather ok   0.01s dims=2048 | flown=78 171.1/min eta=0.0 min
+[11:56:17Z] [m1-lco-primary] manifest written: /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/derived/embeddings/SAEA-PROBE-pemb3m-388/m1-lco-primary/manifest.json (NOT read back by this launcher)
+[11:56:17Z] ARM DONE m1-lco-primary: 27.4s, flown=78 replayed=0
+[11:56:18Z] session 'lco-last' torn down after 54.5s resident; cumulative GPU-occupied 0.0210 h
+[11:56:18Z] STAGE m1 OK in 191.9s
+ATTEMPT_ID=attempt-20260820T112943Z-410bdb
+[12:00:57Z] loading SLURP devel split (sha256 of every devel media file -- slow, model-free)
+[12:02:27Z] [m2-glap-control] loading the control model in-process (transformers, shared venv AS-IS)
+Loading weights:   0%|          | 0/552 [00:00<?, ?it/s]Loading weights:  32%|███▏      | 174/552 [00:00<00:00, 1737.93it/s]Loading weights: 100%|██████████| 552/552 [00:00<00:00, 4194.49it/s]
+[12:02:49Z] [m2-glap-control] model loaded in 21.7s
+[12:02:49Z] ARM START m2-glap-control: in-process control, bare content both sides -> 78 contacts
+[12:02:50Z] [m2-glap-control] contact 0001 [audio] slurp:devel:000115:audio-1495375974 ok   0.56s dims=1024 | flown=1 83.3/min eta=0.9 min
+[12:02:50Z] [m2-glap-control] contact 0002 [audio] slurp:devel:000444:audio-1502891018-headset ok   0.02s dims=1024 | flown=2 156.7/min eta=0.5 min
+[12:02:50Z] [m2-glap-control] contact 0003 [audio] slurp:devel:000943:audio-1434529860-headset ok   0.01s dims=1024 | flown=3 220.4/min eta=0.3 min
+[12:02:50Z] [m2-glap-control] contact 0004 [audio] slurp:devel:001637:audio-1502195066-headset ok   0.02s dims=1024 | flown=4 276.2/min eta=0.3 min
+[12:02:50Z] [m2-glap-control] contact 0005 [audio] slurp:devel:002120:audio-1502218226 ok   0.02s dims=1024 | flown=5 327.8/min eta=0.2 min
+[12:02:50Z] [m2-glap-control] contact 0006 [audio] slurp:devel:002992:audio-1489152746 ok   0.02s dims=1024 | flown=6 370.7/min eta=0.2 min
+[12:02:50Z] [m2-glap-control] contact 0007 [audio] slurp:devel:003121:audio-1501696857-headset ok   0.01s dims=1024 | flown=7 415.6/min eta=0.2 min
+[12:02:50Z] [m2-glap-control] contact 0008 [audio] slurp:devel:003309:audio-1501756265 ok   0.01s dims=1024 | flown=8 448.9/min eta=0.2 min
+[12:02:50Z] [m2-glap-control] contact 0009 [audio] slurp:devel:004134:audio-1500387396-headset ok   0.01s dims=1024 | flown=9 479.6/min eta=0.1 min
+[12:02:50Z] [m2-glap-control] contact 0010 [audio] slurp:devel:004604:audio-1501759214 ok   0.02s dims=1024 | flown=10 505.5/min eta=0.1 min
+[12:02:50Z] [m2-glap-control] contact 0011 [audio] slurp:devel:005025:audio-1500900618 ok   0.01s dims=1024 | flown=11 529.6/min eta=0.1 min
+[12:02:50Z] [m2-glap-control] contact 0012 [audio] slurp:devel:005028:audio-1502893878-headset ok   0.01s dims=1024 | flown=12 551.5/min eta=0.1 min
+[12:02:50Z] [m2-glap-control] contact 0013 [audio] slurp:devel:005108:audio-1494422588-headset ok   0.01s dims=1024 | flown=13 562.1/min eta=0.1 min
+[12:02:50Z] [m2-glap-control] contact 0014 [audio] slurp:devel:005359:audio-1497265137-headset ok   0.01s dims=1024 | flown=14 562.1/min eta=0.1 min
+[12:02:51Z] [m2-glap-control] contact 0015 [audio] slurp:devel:005453:audio-1490183633-headset ok   0.01s dims=1024 | flown=15 570.5/min eta=0.1 min
+[12:02:51Z] [m2-glap-control] contact 0016 [audio] slurp:devel:005518:audio-1490203960 ok   0.01s dims=1024 | flown=16 589.9/min eta=0.1 min
+[12:02:51Z] [m2-glap-control] contact 0017 [audio] slurp:devel:005536:audio-1499090415-headset ok   0.01s dims=1024 | flown=17 605.8/min eta=0.1 min
+[12:02:51Z] [m2-glap-control] contact 0018 [audio] slurp:devel:005541:audio--1504191543 ok   0.02s dims=1024 | flown=18 613.9/min eta=0.1 min
+[12:02:51Z] [m2-glap-control] contact 0019 [audio] slurp:devel:005567:audio-1497359684 ok   0.01s dims=1024 | flown=19 634.6/min eta=0.1 min
+[12:02:51Z] [m2-glap-control] contact 0020 [audio] slurp:devel:005684:audio-1498577434 ok   0.01s dims=1024 | flown=20 644.0/min eta=0.1 min
+[12:02:51Z] [m2-glap-control] contact 0021 [audio] slurp:devel:005743:audio-1501407405-headset ok   0.02s dims=1024 | flown=21 657.6/min eta=0.1 min
+[12:02:51Z] [m2-glap-control] contact 0022 [audio] slurp:devel:005770:audio-1495377172 ok   0.01s dims=1024 | flown=22 675.6/min eta=0.1 min
+[12:02:51Z] [m2-glap-control] contact 0023 [audio] slurp:devel:005943:audio-1499266055 ok   0.01s dims=1024 | flown=23 688.6/min eta=0.1 min
+[12:02:51Z] [m2-glap-control] contact 0024 [audio] slurp:devel:006603:audio-1502101512 ok   0.02s dims=1024 | flown=24 701.7/min eta=0.1 min
+[12:02:51Z] [m2-glap-control] contact 0025 [audio] slurp:devel:006751:audio-1501773837-headset ok   0.02s dims=1024 | flown=25 704.7/min eta=0.1 min
+[12:02:51Z] [m2-glap-control] contact 0026 [audio] slurp:devel:007374:audio-1498569508 ok   0.01s dims=1024 | flown=26 716.6/min eta=0.1 min
+[12:02:51Z] [m2-glap-control] contact 0027 [audio] slurp:devel:007541:audio-1490202471 ok   0.01s dims=1024 | flown=27 728.9/min eta=0.1 min
+[12:02:51Z] [m2-glap-control] contact 0028 [audio] slurp:devel:007653:audio-1497438989-headset ok   0.01s dims=1024 | flown=28 742.1/min eta=0.1 min
+[12:02:51Z] [m2-glap-control] contact 0029 [audio] slurp:devel:007852:audio-1494416109-headset ok   0.01s dims=1024 | flown=29 751.4/min eta=0.1 min
+[12:02:51Z] [m2-glap-control] contact 0030 [audio] slurp:devel:008014:audio-1500899290 ok   0.01s dims=1024 | flown=30 763.0/min eta=0.1 min
+[12:02:51Z] [m2-glap-control] contact 0031 [audio] slurp:devel:008047:audio-1498570919 ok   0.01s dims=1024 | flown=31 771.2/min eta=0.1 min
+[12:02:51Z] [m2-glap-control] contact 0032 [audio] slurp:devel:008072:audio-1488986707 ok   0.01s dims=1024 | flown=32 782.1/min eta=0.1 min
+[12:02:51Z] [m2-glap-control] contact 0033 [audio] slurp:devel:009340:audio-1497882818-headset ok   0.01s dims=1024 | flown=33 773.2/min eta=0.1 min
+[12:02:52Z] [m2-glap-control] contact 0034 [audio] slurp:devel:009518:audio-1495734594-headset ok   0.01s dims=1024 | flown=34 780.9/min eta=0.1 min
+[12:02:52Z] [m2-glap-control] contact 0035 [audio] slurp:devel:009733:audio--1505407176 ok   0.01s dims=1024 | flown=35 791.3/min eta=0.1 min
+[12:02:52Z] [m2-glap-control] contact 0036 [audio] slurp:devel:010162:audio-1501765286 ok   0.01s dims=1024 | flown=36 797.7/min eta=0.1 min
+[12:02:52Z] [m2-glap-control] contact 0037 [audio] slurp:devel:010186:audio-1501415369-headset ok   0.01s dims=1024 | flown=37 808.0/min eta=0.1 min
+[12:02:52Z] [m2-glap-control] contact 0038 [audio] slurp:devel:010545:audio-1490006493 ok   0.01s dims=1024 | flown=38 816.3/min eta=0.0 min
+[12:02:52Z] [m2-glap-control] contact 0039 [audio] slurp:devel:010732:audio-1490184504 ok   0.02s dims=1024 | flown=39 820.8/min eta=0.0 min
+[12:02:52Z] [m2-glap-control] contact 0040 [audio] slurp:devel:011503:audio-1494514154 ok   0.01s dims=1024 | flown=40 824.6/min eta=0.0 min
+[12:02:52Z] [m2-glap-control] contact 0041 [audio] slurp:devel:011654:audio-1501692977-headset ok   0.02s dims=1024 | flown=41 826.2/min eta=0.0 min
+[12:02:52Z] [m2-glap-control] contact 0042 [audio] slurp:devel:011693:audio-1498565017-headset ok   0.01s dims=1024 | flown=42 832.3/min eta=0.0 min
+[12:02:52Z] [m2-glap-control] contact 0043 [audio] slurp:devel:012076:audio-1501766742-headset ok   0.01s dims=1024 | flown=43 840.8/min eta=0.0 min
+[12:02:52Z] [m2-glap-control] contact 0044 [audio] slurp:devel:012253:audio-1488974202 ok   0.01s dims=1024 | flown=44 849.3/min eta=0.0 min
+[12:02:52Z] [m2-glap-control] contact 0045 [audio] slurp:devel:012478:audio-1498486426 ok   0.01s dims=1024 | flown=45 853.0/min eta=0.0 min
+[12:02:52Z] [m2-glap-control] contact 0046 [audio] slurp:devel:012654:audio-1497860426-headset ok   0.02s dims=1024 | flown=46 857.6/min eta=0.0 min
+[12:02:52Z] [m2-glap-control] contact 0047 [audio] slurp:devel:012667:audio-1501751776-headset ok   0.01s dims=1024 | flown=47 861.3/min eta=0.0 min
+[12:02:52Z] [m2-glap-control] contact 0048 [audio] slurp:devel:013281:audio-1490354296-headset ok   0.02s dims=1024 | flown=48 865.9/min eta=0.0 min
+[12:02:52Z] [m2-glap-control] contact 0049 [audio] slurp:devel:013795:audio-1499266495 ok   0.01s dims=1024 | flown=49 869.6/min eta=0.0 min
+[12:02:52Z] [m2-glap-control] contact 0050 [audio] slurp:devel:014173:audio-1490291441 ok   0.01s dims=1024 | flown=50 870.8/min eta=0.0 min
+[12:02:52Z] [m2-glap-control] contact 0051 [audio] slurp:devel:014263:audio-1501692486 ok   0.01s dims=1024 | flown=51 871.0/min eta=0.0 min
+[12:02:52Z] [m2-glap-control] contact 0052 [audio] slurp:devel:014397:audio-1497368809 ok   0.01s dims=1024 | flown=52 876.1/min eta=0.0 min
+[12:02:53Z] [m2-glap-control] contact 0053 [audio] slurp:devel:014657:audio-1499695487 ok   0.02s dims=1024 | flown=53 880.3/min eta=0.0 min
+[12:02:53Z] [m2-glap-control] contact 0054 [audio] slurp:devel:015258:audio-1501777355-headset ok   0.01s dims=1024 | flown=54 885.0/min eta=0.0 min
+[12:02:53Z] [m2-glap-control] contact 0055 [audio] slurp:devel:015375:audio-1501754418 ok   0.01s dims=1024 | flown=55 888.2/min eta=0.0 min
+[12:02:53Z] [m2-glap-control] contact 0056 [audio] slurp:devel:015632:audio-1490021137-headset ok   0.02s dims=1024 | flown=56 892.5/min eta=0.0 min
+[12:02:53Z] [m2-glap-control] contact 0057 [audio] slurp:devel:015805:audio-1489153743 ok   0.01s dims=1024 | flown=57 897.4/min eta=0.0 min
+[12:02:53Z] [m2-glap-control] contact 0058 [audio] slurp:devel:016653:audio-1494513016 ok   0.01s dims=1024 | flown=58 901.1/min eta=0.0 min
+[12:02:53Z] [m2-glap-control] contact 0059 [audio] slurp:devel:016825:audio-1498573552-headset ok   0.01s dims=1024 | flown=59 905.5/min eta=0.0 min
+[12:02:53Z] [m2-glap-control] contact 0060 [audio] slurp:devel:017009:audio-1502198805-headset ok   0.01s dims=1024 | flown=60 910.4/min eta=0.0 min
+[12:02:54Z] [m2-glap-control] contact 0061 [text] alarm ok   0.65s dims=1024 | flown=61 791.6/min eta=0.0 min
+[12:02:54Z] [m2-glap-control] contact 0062 [text] audio ok   0.40s dims=1024 | flown=62 737.8/min eta=0.0 min
+[12:02:54Z] [m2-glap-control] contact 0063 [text] calendar ok   0.38s dims=1024 | flown=63 694.7/min eta=0.0 min
+[12:02:55Z] [m2-glap-control] contact 0064 [text] cooking ok   0.38s dims=1024 | flown=64 657.4/min eta=0.0 min
+[12:02:55Z] [m2-glap-control] contact 0065 [text] datetime ok   0.50s dims=1024 | flown=65 613.2/min eta=0.0 min
+[12:02:56Z] [m2-glap-control] contact 0066 [text] email ok   0.41s dims=1024 | flown=66 584.1/min eta=0.0 min
+[12:02:56Z] [m2-glap-control] contact 0067 [text] general ok   0.35s dims=1024 | flown=67 562.2/min eta=0.0 min
+[12:02:56Z] [m2-glap-control] contact 0068 [text] iot ok   0.33s dims=1024 | flown=68 543.8/min eta=0.0 min
+[12:02:57Z] [m2-glap-control] contact 0069 [text] lists ok   0.43s dims=1024 | flown=69 520.7/min eta=0.0 min
+[12:02:57Z] [m2-glap-control] contact 0070 [text] music ok   0.38s dims=1024 | flown=70 503.4/min eta=0.0 min
+[12:02:58Z] [m2-glap-control] contact 0071 [text] news ok   0.42s dims=1024 | flown=71 485.4/min eta=0.0 min
+[12:02:58Z] [m2-glap-control] contact 0072 [text] play ok   0.45s dims=1024 | flown=72 467.5/min eta=0.0 min
+[12:02:59Z] [m2-glap-control] contact 0073 [text] qa ok   0.47s dims=1024 | flown=73 450.3/min eta=0.0 min
+[12:02:59Z] [m2-glap-control] contact 0074 [text] recommendation ok   0.49s dims=1024 | flown=74 434.1/min eta=0.0 min
+[12:03:00Z] [m2-glap-control] contact 0075 [text] social ok   0.42s dims=1024 | flown=75 422.0/min eta=0.0 min
+[12:03:00Z] [m2-glap-control] contact 0076 [text] takeaway ok   0.42s dims=1024 | flown=76 410.7/min eta=0.0 min
+[12:03:00Z] [m2-glap-control] contact 0077 [text] transport ok   0.43s dims=1024 | flown=77 399.8/min eta=0.0 min
+[12:03:01Z] [m2-glap-control] contact 0078 [text] weather ok   0.49s dims=1024 | flown=78 387.9/min eta=0.0 min
+[12:03:02Z] [m2-glap-control] manifest written: /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/derived/embeddings/SAEA-PROBE-pemb3m-388/m2-glap-control/manifest.json (NOT read back by this launcher)
+[12:03:02Z] ARM DONE m2-glap-control: 12.1s, flown=78 replayed=0
+[12:03:02Z] [m2-glap-control] GPU-occupied this arm 34.7s; cumulative 0.0306 h
+[12:03:02Z] [m3-clsp-control] NOT FLOWN: gate (b) reported text='DROPPED-RUNTIME-ERROR' audio='SKIPPED-TEXT-SIDE-ALREADY-DROPPED' -- a dropped control never blocks M1/M4
+[12:03:02Z] STAGE m23 OK in 125.3s
+ATTEMPT_ID=attempt-20260820T112943Z-410bdb
+[12:03:04Z] loading SLURP devel split (sha256 of every devel media file -- slow, model-free)
+[12:03:59Z] cascade source re-verified at M4 entry: COMPLETE, registry sha256 f8f6426aeb0eb84c33ad58b603cb36b8f420c3063149b6cd11a0b210d8774959
+[12:03:59Z] coexistence guard: nothing answers on the generation port 8080 -- PASS
+[12:03:59Z] spawning llama-server in EMBEDDING mode for 'qwen3-emb' on port 8094: ['--embedding', '--pooling', 'last', '-ngl', '999', '-c', '4096', '-b', '4096', '-ub', '4096', '-np', '1']
+[12:04:04Z] session 'qwen3-emb' up: pid=1565 port=8094 (spawn+load 5.0s)
+[12:04:04Z] session argv: /home/chao/llama.cpp-featcache/build/bin/llama-server --host 127.0.0.1 --port 8094 -m /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/models/qwen3-embedding-0.6b-gguf/Qwen3-Embedding-0.6B-Q8_0.gguf --embedding --pooling last -ngl 999 -c 4096 -b 4096 -ub 4096 -np 1
+[12:04:04Z]   model file: models/qwen3-embedding-0.6b-gguf/Qwen3-Embedding-0.6B-Q8_0.gguf sha256=06507c7b42688469c4e7298b0a1e16deff06caf291cf0a5b278c308249c3e439
+[12:04:04Z] /props for qwen3-emb (text-only, no media marker to verify): pooling_type=None media_marker='<__media__>'
+[12:04:04Z] M4 repeat-call determinism sample: dims=1024, byte_identical=False
+[12:04:04Z] ARM START m4-cascade: qwen3-emb text-text over the CONSUMED pkey2-338 T0 transcripts -> 78 contacts
+[12:04:04Z] [m4-cascade] media marker verified against the LIVE server's GET /props -- the env-pinned LLAMA_MEDIA_MARKER matches the server's own media_marker field (fail-closed; a missing field or a mismatched value would have refused)
+[12:04:04Z] [m4-cascade] contact 0001 [text] slurp:devel:000115:audio-1495375974 ok   0.01s dims=1024 | flown=1 1277.7/min eta=0.1 min
+[12:04:04Z] [m4-cascade] contact 0002 [text] slurp:devel:000444:audio-1502891018-headset ok   0.01s dims=1024 | flown=2 1726.1/min eta=0.0 min
+[12:04:04Z] [m4-cascade] contact 0003 [text] slurp:devel:000943:audio-1434529860-headset ok   0.03s dims=1024 | flown=3 1495.9/min eta=0.1 min
+[12:04:04Z] [m4-cascade] contact 0004 [text] slurp:devel:001637:audio-1502195066-headset ok   0.01s dims=1024 | flown=4 1597.5/min eta=0.0 min
+[12:04:04Z] [m4-cascade] contact 0005 [text] slurp:devel:002120:audio-1502218226 ok   0.01s dims=1024 | flown=5 1696.1/min eta=0.0 min
+[12:04:04Z] [m4-cascade] contact 0006 [text] slurp:devel:002992:audio-1489152746 ok   0.01s dims=1024 | flown=6 1748.8/min eta=0.0 min
+[12:04:04Z] [m4-cascade] contact 0007 [text] slurp:devel:003121:audio-1501696857-headset ok   0.01s dims=1024 | flown=7 1735.2/min eta=0.0 min
+[12:04:04Z] [m4-cascade] contact 0008 [text] slurp:devel:003309:audio-1501756265 ok   0.01s dims=1024 | flown=8 1813.7/min eta=0.0 min
+[12:04:04Z] [m4-cascade] contact 0009 [text] slurp:devel:004134:audio-1500387396-headset ok   0.01s dims=1024 | flown=9 1845.5/min eta=0.0 min
+[12:04:04Z] [m4-cascade] contact 0010 [text] slurp:devel:004604:audio-1501759214 ok   0.01s dims=1024 | flown=10 1900.3/min eta=0.0 min
+[12:04:04Z] [m4-cascade] contact 0011 [text] slurp:devel:005025:audio-1500900618 ok   0.01s dims=1024 | flown=11 1886.9/min eta=0.0 min
+[12:04:04Z] [m4-cascade] contact 0012 [text] slurp:devel:005028:audio-1502893878-headset ok   0.01s dims=1024 | flown=12 1892.9/min eta=0.0 min
+[12:04:04Z] [m4-cascade] contact 0013 [text] slurp:devel:005108:audio-1494422588-headset ok   0.01s dims=1024 | flown=13 1907.9/min eta=0.0 min
+[12:04:04Z] [m4-cascade] contact 0014 [text] slurp:devel:005359:audio-1497265137-headset ok   0.01s dims=1024 | flown=14 1915.9/min eta=0.0 min
+[12:04:04Z] [m4-cascade] contact 0015 [text] slurp:devel:005453:audio-1490183633-headset ok   0.02s dims=1024 | flown=15 1925.3/min eta=0.0 min
+[12:04:04Z] [m4-cascade] contact 0016 [text] slurp:devel:005518:audio-1490203960 ok   0.01s dims=1024 | flown=16 1918.8/min eta=0.0 min
+[12:04:04Z] [m4-cascade] contact 0017 [text] slurp:devel:005536:audio-1499090415-headset ok   0.01s dims=1024 | flown=17 1934.2/min eta=0.0 min
+[12:04:04Z] [m4-cascade] contact 0018 [text] slurp:devel:005541:audio--1504191543 ok   0.01s dims=1024 | flown=18 1940.7/min eta=0.0 min
+[12:04:04Z] [m4-cascade] contact 0019 [text] slurp:devel:005567:audio-1497359684 ok   0.01s dims=1024 | flown=19 1944.3/min eta=0.0 min
+[12:04:04Z] [m4-cascade] contact 0020 [text] slurp:devel:005684:audio-1498577434 ok   0.01s dims=1024 | flown=20 1951.9/min eta=0.0 min
+[12:04:04Z] [m4-cascade] contact 0021 [text] slurp:devel:005743:audio-1501407405-headset ok   0.01s dims=1024 | flown=21 1961.9/min eta=0.0 min
+[12:04:04Z] [m4-cascade] contact 0022 [text] slurp:devel:005770:audio-1495377172 ok   0.01s dims=1024 | flown=22 1954.3/min eta=0.0 min
+[12:04:04Z] [m4-cascade] contact 0023 [text] slurp:devel:005943:audio-1499266055 ok   0.01s dims=1024 | flown=23 1963.8/min eta=0.0 min
+[12:04:04Z] [m4-cascade] contact 0024 [text] slurp:devel:006603:audio-1502101512 ok   0.01s dims=1024 | flown=24 1979.4/min eta=0.0 min
+[12:04:04Z] [m4-cascade] contact 0025 [text] slurp:devel:006751:audio-1501773837-headset ok   0.01s dims=1024 | flown=25 1970.6/min eta=0.0 min
+[12:04:04Z] [m4-cascade] contact 0026 [text] slurp:devel:007374:audio-1498569508 ok   0.01s dims=1024 | flown=26 1958.3/min eta=0.0 min
+[12:04:04Z] [m4-cascade] contact 0027 [text] slurp:devel:007541:audio-1490202471 ok   0.01s dims=1024 | flown=27 1959.6/min eta=0.0 min
+[12:04:04Z] [m4-cascade] contact 0028 [text] slurp:devel:007653:audio-1497438989-headset ok   0.01s dims=1024 | flown=28 1960.2/min eta=0.0 min
+[12:04:05Z] [m4-cascade] contact 0029 [text] slurp:devel:007852:audio-1494416109-headset ok   0.01s dims=1024 | flown=29 1975.7/min eta=0.0 min
+[12:04:05Z] [m4-cascade] contact 0030 [text] slurp:devel:008014:audio-1500899290 ok   0.01s dims=1024 | flown=30 1977.4/min eta=0.0 min
+[12:04:05Z] [m4-cascade] contact 0031 [text] slurp:devel:008047:audio-1498570919 ok   0.01s dims=1024 | flown=31 1971.3/min eta=0.0 min
+[12:04:05Z] [m4-cascade] contact 0032 [text] slurp:devel:008072:audio-1488986707 ok   0.01s dims=1024 | flown=32 1977.8/min eta=0.0 min
+[12:04:05Z] [m4-cascade] contact 0033 [text] slurp:devel:009340:audio-1497882818-headset ok   0.01s dims=1024 | flown=33 1985.8/min eta=0.0 min
+[12:04:05Z] [m4-cascade] contact 0034 [text] slurp:devel:009518:audio-1495734594-headset ok   0.01s dims=1024 | flown=34 1974.9/min eta=0.0 min
+[12:04:05Z] [m4-cascade] contact 0035 [text] slurp:devel:009733:audio--1505407176 ok   0.01s dims=1024 | flown=35 1973.5/min eta=0.0 min
+[12:04:05Z] [m4-cascade] contact 0036 [text] slurp:devel:010162:audio-1501765286 ok   0.01s dims=1024 | flown=36 1973.2/min eta=0.0 min
+[12:04:05Z] [m4-cascade] contact 0037 [text] slurp:devel:010186:audio-1501415369-headset ok   0.01s dims=1024 | flown=37 1981.5/min eta=0.0 min
+[12:04:05Z] [m4-cascade] contact 0038 [text] slurp:devel:010545:audio-1490006493 ok   0.01s dims=1024 | flown=38 1993.5/min eta=0.0 min
+[12:04:05Z] [m4-cascade] contact 0039 [text] slurp:devel:010732:audio-1490184504 ok   0.01s dims=1024 | flown=39 1999.1/min eta=0.0 min
+[12:04:05Z] [m4-cascade] contact 0040 [text] slurp:devel:011503:audio-1494514154 ok   0.01s dims=1024 | flown=40 1993.1/min eta=0.0 min
+[12:04:05Z] [m4-cascade] contact 0041 [text] slurp:devel:011654:audio-1501692977-headset ok   0.01s dims=1024 | flown=41 1973.5/min eta=0.0 min
+[12:04:05Z] [m4-cascade] contact 0042 [text] slurp:devel:011693:audio-1498565017-headset ok   0.01s dims=1024 | flown=42 1893.9/min eta=0.0 min
+[12:04:05Z] [m4-cascade] contact 0043 [text] slurp:devel:012076:audio-1501766742-headset ok   0.01s dims=1024 | flown=43 1839.6/min eta=0.0 min
+[12:04:05Z] [m4-cascade] contact 0044 [text] slurp:devel:012253:audio-1488974202 ok   0.01s dims=1024 | flown=44 1852.6/min eta=0.0 min
+[12:04:05Z] [m4-cascade] contact 0045 [text] slurp:devel:012478:audio-1498486426 ok   0.02s dims=1024 | flown=45 1832.1/min eta=0.0 min
+[12:04:05Z] [m4-cascade] contact 0046 [text] slurp:devel:012654:audio-1497860426-headset ok   0.01s dims=1024 | flown=46 1843.1/min eta=0.0 min
+[12:04:05Z] [m4-cascade] contact 0047 [text] slurp:devel:012667:audio-1501751776-headset ok   0.01s dims=1024 | flown=47 1848.5/min eta=0.0 min
+[12:04:05Z] [m4-cascade] contact 0048 [text] slurp:devel:013281:audio-1490354296-headset ok   0.01s dims=1024 | flown=48 1850.6/min eta=0.0 min
+[12:04:05Z] [m4-cascade] contact 0049 [text] slurp:devel:013795:audio-1499266495 ok   0.01s dims=1024 | flown=49 1866.5/min eta=0.0 min
+[12:04:05Z] [m4-cascade] contact 0050 [text] slurp:devel:014173:audio-1490291441 ok   0.01s dims=1024 | flown=50 1864.8/min eta=0.0 min
+[12:04:05Z] [m4-cascade] contact 0051 [text] slurp:devel:014263:audio-1501692486 ok   0.01s dims=1024 | flown=51 1871.2/min eta=0.0 min
+[12:04:05Z] [m4-cascade] contact 0052 [text] slurp:devel:014397:audio-1497368809 ok   0.01s dims=1024 | flown=52 1871.5/min eta=0.0 min
+[12:04:05Z] [m4-cascade] contact 0053 [text] slurp:devel:014657:audio-1499695487 ok   0.01s dims=1024 | flown=53 1857.9/min eta=0.0 min
+[12:04:05Z] [m4-cascade] contact 0054 [text] slurp:devel:015258:audio-1501777355-headset ok   0.01s dims=1024 | flown=54 1854.8/min eta=0.0 min
+[12:04:05Z] [m4-cascade] contact 0055 [text] slurp:devel:015375:audio-1501754418 ok   0.01s dims=1024 | flown=55 1859.2/min eta=0.0 min
+[12:04:05Z] [m4-cascade] contact 0056 [text] slurp:devel:015632:audio-1490021137-headset ok   0.01s dims=1024 | flown=56 1867.3/min eta=0.0 min
+[12:04:05Z] [m4-cascade] contact 0057 [text] slurp:devel:015805:audio-1489153743 ok   0.02s dims=1024 | flown=57 1864.0/min eta=0.0 min
+[12:04:05Z] [m4-cascade] contact 0058 [text] slurp:devel:016653:audio-1494513016 ok   0.01s dims=1024 | flown=58 1865.7/min eta=0.0 min
+[12:04:06Z] [m4-cascade] contact 0059 [text] slurp:devel:016825:audio-1498573552-headset ok   0.01s dims=1024 | flown=59 1874.8/min eta=0.0 min
+[12:04:06Z] [m4-cascade] contact 0060 [text] slurp:devel:017009:audio-1502198805-headset ok   0.01s dims=1024 | flown=60 1877.4/min eta=0.0 min
+[12:04:06Z] [m4-cascade] contact 0061 [text] alarm ok   0.01s dims=1024 | flown=61 1882.4/min eta=0.0 min
+[12:04:06Z] [m4-cascade] contact 0062 [text] audio ok   0.01s dims=1024 | flown=62 1893.9/min eta=0.0 min
+[12:04:06Z] [m4-cascade] contact 0063 [text] calendar ok   0.00s dims=1024 | flown=63 1899.5/min eta=0.0 min
+[12:04:06Z] [m4-cascade] contact 0064 [text] cooking ok   0.01s dims=1024 | flown=64 1904.8/min eta=0.0 min
+[12:04:06Z] [m4-cascade] contact 0065 [text] datetime ok   0.01s dims=1024 | flown=65 1914.1/min eta=0.0 min
+[12:04:06Z] [m4-cascade] contact 0066 [text] email ok   0.01s dims=1024 | flown=66 1921.5/min eta=0.0 min
+[12:04:06Z] [m4-cascade] contact 0067 [text] general ok   0.00s dims=1024 | flown=67 1925.5/min eta=0.0 min
+[12:04:06Z] [m4-cascade] contact 0068 [text] iot ok   0.00s dims=1024 | flown=68 1938.9/min eta=0.0 min
+[12:04:06Z] [m4-cascade] contact 0069 [text] lists ok   0.00s dims=1024 | flown=69 1944.6/min eta=0.0 min
+[12:04:06Z] [m4-cascade] contact 0070 [text] music ok   0.00s dims=1024 | flown=70 1953.6/min eta=0.0 min
+[12:04:06Z] [m4-cascade] contact 0071 [text] news ok   0.00s dims=1024 | flown=71 1961.6/min eta=0.0 min
+[12:04:06Z] [m4-cascade] contact 0072 [text] play ok   0.00s dims=1024 | flown=72 1969.2/min eta=0.0 min
+[12:04:06Z] [m4-cascade] contact 0073 [text] qa ok   0.00s dims=1024 | flown=73 1976.3/min eta=0.0 min
+[12:04:06Z] [m4-cascade] contact 0074 [text] recommendation ok   0.01s dims=1024 | flown=74 1955.0/min eta=0.0 min
+[12:04:06Z] [m4-cascade] contact 0075 [text] social ok   0.01s dims=1024 | flown=75 1959.6/min eta=0.0 min
+[12:04:06Z] [m4-cascade] contact 0076 [text] takeaway ok   0.01s dims=1024 | flown=76 1958.9/min eta=0.0 min
+[12:04:06Z] [m4-cascade] contact 0077 [text] transport ok   0.01s dims=1024 | flown=77 1962.1/min eta=0.0 min
+[12:04:06Z] [m4-cascade] contact 0078 [text] weather ok   0.01s dims=1024 | flown=78 1957.2/min eta=0.0 min
+[12:04:07Z] [m4-cascade] manifest written: /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/derived/embeddings/SAEA-PROBE-pemb3m-388/m4-cascade/manifest.json (NOT read back by this launcher)
+[12:04:07Z] ARM DONE m4-cascade: 2.4s, flown=78 replayed=0
+[12:04:07Z] session 'qwen3-emb' torn down after 8.3s resident; cumulative GPU-occupied 0.0329 h
+[12:04:07Z] STAGE m4 OK in 63.3s
+ATTEMPT_ID=attempt-20260820T112943Z-410bdb
+[12:08:35Z]   m1-lco-primary: complete=True entries=78 npy=78 dims=2048
+[12:08:35Z]   m2-glap-control: complete=True entries=78 npy=78 dims=1024
+[12:08:35Z]   m3-clsp-control: complete=False (not flown)
+[12:08:35Z]   m4-cascade: complete=True entries=80 npy=80 dims=1024
+[12:08:35Z] sweep-total invariant (scored product on disk across flyable arms): 234 contacts, expected 234 -- PASS
+[12:08:35Z] attempt attempt-20260820T112943Z-410bdb FINALIZED
+[12:08:35Z] flight receipt: /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-pemb3m-388/attempt-20260820T112943Z-410bdb/flight-receipt.json
+[12:08:35Z] durable spend this attempt: calls=241, audio_seconds=372.519, gpu_hours=0.0329
+[12:08:35Z] vs registered ceilings: 241/440 calls, 372.5/900s audio, 0.0329/0.5 GPU-h
+[12:08:35Z] STAGE finalize OK in 0.4s
+ATTEMPT_ID=attempt-20260820T112943Z-410bdb

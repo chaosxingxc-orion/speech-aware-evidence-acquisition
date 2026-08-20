@@ -1,0 +1,14 @@
+{
+  "attempt_id": "attempt-20260820T110419Z-d6c576",
+  "carrier_lock_key": "slurp",
+  "execution_profile": "bounded-discovery-probe",
+  "planned_gpu_hours": 0.5,
+  "planned_model_calls": 388,
+  "planned_speech_audio_seconds": 900,
+  "protocol_hash": "28125a5ac481ce19468a37e5b8e87caaa1ac2d92960079afedfea46ed5247278",
+  "run_id": "SAEA-PROBE-pemb3m-388",
+  "schema": "saea-execution-plan-v1",
+  "split_identity_hash": "fc9de436eba5aba120ecf07ee112765cd4ac0609150e0aaf36f4d44c9c5b5ee5",
+  "split_role": "discovery",
+  "study": "speech-aware-evidence-acquisition"
+}

@@ -1,0 +1,74 @@
+0.00.686.522 I log_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+0.00.686.528 I device_info:
+0.00.952.077 I   - CUDA0   : NVIDIA GeForce RTX 5090 Laptop GPU (24462 MiB, 23119 MiB free)
+0.00.952.092 I   - CPU     : Intel(R) Core(TM) Ultra 9 275HX (56236 MiB, 56236 MiB free)
+0.00.952.726 I system_info: n_threads = 24 (n_threads_batch = 24) / 24 | CUDA : ARCHS = 1200 | USE_GRAPHS = 1 | PEER_MAX_BATCH_SIZE = 128 | BLACKWELL_NATIVE_FP4 = 1 | CPU : SSE3 = 1 | SSSE3 = 1 | AVX = 1 | AVX_VNNI = 1 | AVX2 = 1 | F16C = 1 | FMA = 1 | BMI2 = 1 | LLAMAFILE = 1 | OPENMP = 1 | REPACK = 1 | 
+0.00.952.735 W srv  llama_server: embeddings enabled with n_batch (2048) > n_ubatch (512)
+0.00.952.735 W srv  llama_server: setting n_batch = n_ubatch = 512 to avoid assertion failure
+0.00.952.736 I srv  llama_server: n_parallel is set to auto, using n_parallel = 4 and kv_unified = true
+0.00.953.381 I srv          init: using 23 threads for HTTP server
+0.00.953.602 I srv         start: binding port with default address family
+0.00.955.043 I srv  llama_server: loading model
+0.00.955.316 I srv    load_model: loading model '/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/models/lco-embedding-omni-3b-gguf/LCO-Embedding-Omni-3B-Q8_0.gguf'
+0.01.126.020 I srv    load_model: [mtmd] estimated worst-case memory usage of mmproj is 3563.26 MiB (took 170.68 ms)
+0.01.126.048 I common_init_result: fitting params to device memory ...
+0.01.126.048 I common_init_result: (for bugs during this step try to reproduce them with -fit off, or provide --verbose logs if the bug only occurs with -fit on)
+0.06.527.454 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden
+2.23.427.869 W llama_init_from_model: model default pooling_type is [-1], but [1] was specified
+2.23.427.891 W llama_context: n_ctx_seq (4096) < n_ctx_train (32768) -- the full capacity of the model will not be utilized
+2.23.440.004 I common_init_from_params: warming up the model with an empty run - please wait ... (--no-warmup to disable)
+2.23.548.828 W load_hparams: Qwen-VL models require at minimum 1024 image tokens to function correctly on grounding tasks
+2.23.548.834 W load_hparams: if you encounter problems with accuracy, try adding --image-min-tokens 1024
+2.23.548.834 W load_hparams: more info: https://github.com/ggml-org/llama.cpp/issues/16842
+
+3.48.669.607 W warmup: *****************************************************************
+3.48.669.613 W warmup: WARNING: the CLIP graph uses unsupported operators by the backend
+3.48.669.613 W warmup:          the performance will be suboptimal                      
+3.48.669.613 W warmup:          list of unsupported ops (backend=CUDA0):
+3.48.669.614 W warmup:          POOL_1D: type = f32, ne = [750 1280 1 1]
+3.48.669.614 W warmup: flash attention is enabled
+3.48.669.614 W warmup: please report this on github as an issue
+3.48.669.614 W warmup: ref: https://github.com/ggml-org/llama.cpp/pull/16837#issuecomment-3461676118
+3.48.669.615 W warmup: *****************************************************************
+3.48.669.622 W init_audio: audio input is in experimental stage and may have reduced quality:
+    https://github.com/ggml-org/llama.cpp/discussions/13759
+3.48.669.664 I srv    load_model: loaded multimodal model, '/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/models/lco-embedding-omni-3b-gguf/mmproj-LCO-Embedding-Omni-3b-F16.gguf'
+3.48.669.678 I srv    load_model: initializing slots, n_slots = 4
+3.48.762.140 W common_speculative_init: no implementations specified for speculative decoding
+3.48.762.148 I slot   load_model: id  0 | task -1 | new slot, n_ctx = 4096
+3.48.762.154 I slot   load_model: id  1 | task -1 | new slot, n_ctx = 4096
+3.48.762.154 I slot   load_model: id  2 | task -1 | new slot, n_ctx = 4096
+3.48.762.154 I slot   load_model: id  3 | task -1 | new slot, n_ctx = 4096
+3.48.762.182 I srv    load_model: prompt cache is enabled, size limit: 8192 MiB
+3.48.762.182 I srv    load_model: use `--cache-ram 0` to disable the prompt cache
+3.48.762.183 I srv    load_model: for more info see https://github.com/ggml-org/llama.cpp/pull/16391
+3.48.762.183 I srv    load_model: context checkpoints enabled, max = 32, min spacing = 8192
+3.48.763.169 I srv          init: idle slots will be saved to prompt cache and cleared upon starting a new task
+3.48.766.418 I init: chat template, example_format: '<|im_start|>system
+You are a helpful assistant<|im_end|>
+<|im_start|>user
+Hello<|im_end|>
+<|im_start|>assistant
+Hi there<|im_end|>
+<|im_start|>user
+How are you?<|im_end|>
+<|im_start|>assistant
+'
+3.48.767.119 I srv          init: init: chat template, thinking = 0
+3.48.767.176 I srv  llama_server: model loaded
+3.48.767.182 I srv  llama_server: server is listening on http://127.0.0.1:8093
+3.48.767.194 I srv  update_slots: all slots are idle
+3.52.154.202 I slot get_availabl: id  3 | task -1 | selected slot by LRU, t_last = -1
+3.52.154.222 I slot launch_slot_: id  3 | task 0 | processing task, is_child = 0
+3.52.154.223 I slot process_sing: id  0 | task -1 | saving idle slot to prompt cache
+3.52.154.225 I slot prompt_clear: id  0 | task -1 | clearing prompt with 0 tokens
+3.52.154.232 I slot process_sing: id  1 | task -1 | saving idle slot to prompt cache
+3.52.154.232 I slot prompt_clear: id  1 | task -1 | clearing prompt with 0 tokens
+3.52.154.233 I slot process_sing: id  2 | task -1 | saving idle slot to prompt cache
+3.52.154.233 I slot prompt_clear: id  2 | task -1 | clearing prompt with 0 tokens
+3.52.154.281 E srv    send_error: task id = 0, error: input (1502 tokens) is too large to process. increase the physical batch size (current batch size: 512)
+3.52.154.289 I slot      release: id  3 | task 0 | stop processing: n_tokens = 0, truncated = 0
+3.52.154.292 I srv  update_slots: all slots are idle
+3.52.154.324 W srv          stop: cancel task, id_task = 0
+3.52.154.353 I srv  update_slots: all slots are idle
+3.52.154.723 I srv    operator(): operator(): cleaning up before exit...

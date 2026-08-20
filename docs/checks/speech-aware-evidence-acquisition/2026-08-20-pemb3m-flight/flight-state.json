@@ -1,0 +1,426 @@
+{
+  "arms": {
+    "m1-lco-primary": {
+      "arm_id": "m1-lco-primary",
+      "contact_failures": [],
+      "contacts_flown": 78,
+      "contacts_replayed": 0,
+      "embedding_dim": 2048,
+      "embedding_manifest_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/derived/embeddings/SAEA-PROBE-pemb3m-388/m1-lco-primary/manifest.json",
+      "flown_by_kind": {
+        "audio": 60,
+        "text": 18
+      },
+      "latency_seconds_by_kind": {
+        "audio": 25.129,
+        "text": 0.216
+      },
+      "manifest_run_id": "SAEA-PROBE-pemb3m-388/m1-lco-primary",
+      "mean_latency_seconds_by_kind": {
+        "audio": 0.419,
+        "text": 0.012
+      },
+      "model_lock_key": "lco-embedding-omni-3b-gguf",
+      "n_contacts": 78,
+      "n_jitter_vectors": 0,
+      "n_label_vectors": 18,
+      "n_query_vectors": 60,
+      "server_key": "lco-last",
+      "wall_seconds": 27.35
+    },
+    "m2-glap-control": {
+      "arm_id": "m2-glap-control",
+      "contact_failures": [],
+      "contacts_flown": 78,
+      "contacts_replayed": 0,
+      "embedding_dim": 1024,
+      "embedding_manifest_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/derived/embeddings/SAEA-PROBE-pemb3m-388/m2-glap-control/manifest.json",
+      "flown_by_kind": {
+        "audio": 60,
+        "text": 18
+      },
+      "latency_seconds_by_kind": {
+        "audio": 1.43,
+        "text": 7.804
+      },
+      "manifest_run_id": "SAEA-PROBE-pemb3m-388/m2-glap-control",
+      "mean_latency_seconds_by_kind": {
+        "audio": 0.024,
+        "text": 0.434
+      },
+      "model_lock_key": "glap",
+      "n_contacts": 78,
+      "n_jitter_vectors": 0,
+      "n_label_vectors": 18,
+      "n_query_vectors": 60,
+      "server_key": "in-process",
+      "wall_seconds": 12.06
+    },
+    "m4-cascade": {
+      "arm_id": "m4-cascade",
+      "contact_failures": [],
+      "contacts_flown": 78,
+      "contacts_replayed": 0,
+      "embedding_dim": 1024,
+      "embedding_manifest_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/derived/embeddings/SAEA-PROBE-pemb3m-388/m4-cascade/manifest.json",
+      "flown_by_kind": {
+        "text": 78
+      },
+      "latency_seconds_by_kind": {
+        "text": 0.782
+      },
+      "manifest_run_id": "SAEA-PROBE-pemb3m-388/m4-cascade",
+      "mean_latency_seconds_by_kind": {
+        "text": 0.01
+      },
+      "model_lock_key": "qwen3-embedding-0.6b-gguf",
+      "n_contacts": 80,
+      "n_jitter_vectors": 2,
+      "n_label_vectors": 18,
+      "n_query_vectors": 60,
+      "server_key": "qwen3-emb",
+      "wall_seconds": 2.39
+    }
+  },
+  "attempt_id": "attempt-20260820T112943Z-410bdb",
+  "binding_config_sha256": "307e6828b0a61ef445a5db20bb0ecf35c10e8b008b625b0fa66a9b5e125a6d3a",
+  "config_hash": "3ae99c9a7c943d016781c88bb1a5d256f86a9369d7c80ad6b0592b637f8d15a4",
+  "gate_a_mean_vector_sha256": "e2be34651d671d20ed450aed7f4483e05ce3c5f0d3f38c426466ae7e84d74ead",
+  "gate_a_pooling_differ": {
+    "boots": 2,
+    "contacts": 2,
+    "dims": 2048,
+    "gate_clip": "synthetic 2s 440Hz sine, non-corpus",
+    "last_vector_sha256": "e2be34651d671d20ed450aed7f4483e05ce3c5f0d3f38c426466ae7e84d74ead",
+    "mean_vector_sha256": "e2be34651d671d20ed450aed7f4483e05ce3c5f0d3f38c426466ae7e84d74ead",
+    "pooling_override_present": true
+  },
+  "gate_b_controls": {
+    "m2-glap-control": {
+      "arm_flyable": true,
+      "audio_detail": "one synthetic non-corpus audio embed succeeded (dim 1024)",
+      "audio_sanity_dims": 1024,
+      "audio_status": "OK",
+      "model_id": "glap",
+      "text_detail": "import + one sanity embed succeeded (dim 1024)",
+      "text_sanity_dims": 1024,
+      "text_status": "OK"
+    },
+    "m3-clsp-control": {
+      "arm_flyable": false,
+      "audio_detail": "the text side already reported DROPPED-RUNTIME-ERROR; no audio contact issued",
+      "audio_status": "SKIPPED-TEXT-SIDE-ALREADY-DROPPED",
+      "model_id": "clsp",
+      "text_detail": "AttributeError: 'CLSPModel' object has no attribute 'all_tied_weights_keys'",
+      "text_sanity_dims": null,
+      "text_status": "DROPPED-RUNTIME-ERROR"
+    }
+  },
+  "gate_b_entries": 1,
+  "gate_c_cascade_source": {
+    "registry_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-pkey2-338/attempt-20260819T111032Z-3109e8/transcript-registry.json",
+    "registry_sha256": "f8f6426aeb0eb84c33ad58b603cb36b8f420c3063149b6cd11a0b210d8774959",
+    "status": "COMPLETE",
+    "supplement_flown": false,
+    "supplement_required": false,
+    "transcript_count": 60
+  },
+  "gate_d_encode_only": {
+    "checked_modules": [
+      "speech_aware_evidence_acquisition.rails.embedding_client",
+      "speech_aware_evidence_acquisition.rails.local_encoder_client",
+      "speech_aware_evidence_acquisition.rails.probes.pemb3m_flight"
+    ],
+    "status": "PASS"
+  },
+  "gate_scope_note": "TOOL-contact flight: FrozenCoreGate._validate_runtime (q4km GGUF attestation) is deliberately NOT run -- the frozen core is never loaded. Every GGUF byte actually served is fully SHA-256'd above instead, and the llama.cpp binary is re-hashed fail-closed by core.session.start_session at every spawn.",
+  "gate_wav_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-pemb3m-388/attempt-20260820T112943Z-410bdb/gate-clip.wav",
+  "gate_wav_sha256": "dc87d1fd3e5e2b1716632351331a80a673491a237e8d11d267559bdca26341a5",
+  "gpu_occupied_seconds": 118.44590544700623,
+  "lco_repeat_call_determinism": {
+    "byte_identical": true,
+    "contacts": 1,
+    "kind": "audio",
+    "note": "vector_a is the pooling-differ gate contact itself, reused as the first half of the pair; only one additional contact was spent. Cosine tolerance is analysis.pemb3m_read's job -- this flight records sha256 equality only.",
+    "server_session": "lco-last",
+    "vector_a_sha256": "e2be34651d671d20ed450aed7f4483e05ce3c5f0d3f38c426466ae7e84d74ead",
+    "vector_b_sha256": "e2be34651d671d20ed450aed7f4483e05ce3c5f0d3f38c426466ae7e84d74ead"
+  },
+  "ledger_consumed_cell_at_takeoff": "no",
+  "m4_repeat_call_determinism": {
+    "byte_identical": false,
+    "contacts": 2,
+    "dims": 1024,
+    "kind": "text",
+    "note": "persisted into M4's own manifest jitter side; the declared cosine >= 0.9999 tolerance (E-1 Mission C) is analysis.pemb3m_read's job, not this flight's",
+    "server_session": "qwen3-emb",
+    "vector_a_sha256": "f5ed542b49cb9ec45dedb4bbe7c6d63b04a41c1cdc62e4052c81004303f8a45e",
+    "vector_b_sha256": "961d229df8bf9e81bc919e8090f5f305247815f6dafe9641cc6bff21f04d7e5c"
+  },
+  "model_file_measurements": {
+    "models/lco-embedding-omni-3b-gguf/LCO-Embedding-Omni-3B-Q8_0.gguf": {
+      "bytes": 3616087264,
+      "hash_seconds": 225.47,
+      "read_MB_per_s": 16.0,
+      "sha256": "53a9898bdb562ae599a81528a2935153457b82e7cac3aa5b10e5eecefc887d6a"
+    },
+    "models/lco-embedding-omni-3b-gguf/mmproj-LCO-Embedding-Omni-3b-F16.gguf": {
+      "bytes": 2622477952,
+      "hash_seconds": 145.46,
+      "read_MB_per_s": 18.0,
+      "sha256": "765beb616247081f53c9a0b7fed02b96981c5bad563209b5a47ca770f056a13a"
+    },
+    "models/qwen3-embedding-0.6b-gguf/Qwen3-Embedding-0.6B-Q8_0.gguf": {
+      "bytes": 639150592,
+      "hash_seconds": 37.4,
+      "read_MB_per_s": 17.1,
+      "sha256": "06507c7b42688469c4e7298b0a1e16deff06caf291cf0a5b278c308249c3e439"
+    }
+  },
+  "model_file_sha256": {
+    "models/lco-embedding-omni-3b-gguf/LCO-Embedding-Omni-3B-Q8_0.gguf": "53a9898bdb562ae599a81528a2935153457b82e7cac3aa5b10e5eecefc887d6a",
+    "models/lco-embedding-omni-3b-gguf/mmproj-LCO-Embedding-Omni-3b-F16.gguf": "765beb616247081f53c9a0b7fed02b96981c5bad563209b5a47ca770f056a13a",
+    "models/qwen3-embedding-0.6b-gguf/Qwen3-Embedding-0.6B-Q8_0.gguf": "06507c7b42688469c4e7298b0a1e16deff06caf291cf0a5b278c308249c3e439"
+  },
+  "one_pass_metered_audio_seconds": 182.259437,
+  "preflight_completed_at": "2026-08-20T11:51:28.086883+00:00",
+  "prior_durable_spend": {
+    "audio_seconds": 4.000000003,
+    "calls": 5
+  },
+  "props_lco_last": {
+    "build_info": "b5-5d9dfcb58",
+    "media_marker": "<__media__>",
+    "model_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/models/lco-embedding-omni-3b-gguf/LCO-Embedding-Omni-3B-Q8_0.gguf"
+  },
+  "props_lco_mean": {
+    "build_info": "b5-5d9dfcb58",
+    "media_marker": "<__media__>",
+    "model_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/models/lco-embedding-omni-3b-gguf/LCO-Embedding-Omni-3B-Q8_0.gguf"
+  },
+  "props_qwen3_emb": {
+    "build_info": "b5-5d9dfcb58",
+    "media_marker": "<__media__>",
+    "model_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/models/qwen3-embedding-0.6b-gguf/Qwen3-Embedding-0.6B-Q8_0.gguf"
+  },
+  "registered_ceilings": {
+    "gpu_hours": 0.5,
+    "model_calls": 440,
+    "speech_audio_seconds": 900
+  },
+  "sessions": [
+    {
+      "argv": [
+        "/home/chao/llama.cpp-featcache/build/bin/llama-server",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "8093",
+        "-m",
+        "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/models/lco-embedding-omni-3b-gguf/LCO-Embedding-Omni-3B-Q8_0.gguf",
+        "--mmproj",
+        "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/models/lco-embedding-omni-3b-gguf/mmproj-LCO-Embedding-Omni-3b-F16.gguf",
+        "--embedding",
+        "-ngl",
+        "999",
+        "-c",
+        "4096",
+        "-b",
+        "4096",
+        "-ub",
+        "4096",
+        "-np",
+        "1",
+        "--pooling",
+        "mean"
+      ],
+      "binary_path": "llama.cpp-featcache/build/bin/llama-server",
+      "binary_sha256": "097c96ec5a3f576f378d4d5e103928bf070647fdcc1f015eacb839503e121c68",
+      "contacts": 1,
+      "host": "127.0.0.1",
+      "model_files": [
+        {
+          "path": "models/lco-embedding-omni-3b-gguf/LCO-Embedding-Omni-3B-Q8_0.gguf",
+          "sha256": "53a9898bdb562ae599a81528a2935153457b82e7cac3aa5b10e5eecefc887d6a"
+        },
+        {
+          "path": "models/lco-embedding-omni-3b-gguf/mmproj-LCO-Embedding-Omni-3b-F16.gguf",
+          "sha256": "765beb616247081f53c9a0b7fed02b96981c5bad563209b5a47ca770f056a13a"
+        }
+      ],
+      "pid": 771,
+      "pooling_mode": "mean",
+      "port": 8093,
+      "resident_seconds": 20.93,
+      "server_key": "lco-mean",
+      "session_id": "SAEA-PROBE-pemb3m-388-attempt-20260820T112943Z-410bdb-lco-mean",
+      "spawn_seconds": 20.04,
+      "started_at": "2026-08-20T11:55:01.561381+00:00",
+      "teardown": {
+        "escalated": false,
+        "pid": 771,
+        "pid_alive_after": false,
+        "port_reachable_after": false,
+        "signal": "SIGTERM",
+        "teardown_seconds": 0.5005664825439453
+      }
+    },
+    {
+      "argv": [
+        "/home/chao/llama.cpp-featcache/build/bin/llama-server",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "8093",
+        "-m",
+        "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/models/lco-embedding-omni-3b-gguf/LCO-Embedding-Omni-3B-Q8_0.gguf",
+        "--mmproj",
+        "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/models/lco-embedding-omni-3b-gguf/mmproj-LCO-Embedding-Omni-3b-F16.gguf",
+        "--embedding",
+        "-ngl",
+        "999",
+        "-c",
+        "4096",
+        "-b",
+        "4096",
+        "-ub",
+        "4096",
+        "-np",
+        "1",
+        "--pooling",
+        "last"
+      ],
+      "binary_path": "llama.cpp-featcache/build/bin/llama-server",
+      "binary_sha256": "097c96ec5a3f576f378d4d5e103928bf070647fdcc1f015eacb839503e121c68",
+      "contacts": 80,
+      "host": "127.0.0.1",
+      "model_files": [
+        {
+          "path": "models/lco-embedding-omni-3b-gguf/LCO-Embedding-Omni-3B-Q8_0.gguf",
+          "sha256": "53a9898bdb562ae599a81528a2935153457b82e7cac3aa5b10e5eecefc887d6a"
+        },
+        {
+          "path": "models/lco-embedding-omni-3b-gguf/mmproj-LCO-Embedding-Omni-3b-F16.gguf",
+          "sha256": "765beb616247081f53c9a0b7fed02b96981c5bad563209b5a47ca770f056a13a"
+        }
+      ],
+      "pid": 824,
+      "pooling_mode": "last",
+      "port": 8093,
+      "resident_seconds": 54.5,
+      "server_key": "lco-last",
+      "session_id": "SAEA-PROBE-pemb3m-388-attempt-20260820T112943Z-410bdb-lco-last",
+      "spawn_seconds": 25.88,
+      "started_at": "2026-08-20T11:55:23.019959+00:00",
+      "teardown": {
+        "escalated": false,
+        "pid": 824,
+        "pid_alive_after": false,
+        "port_reachable_after": false,
+        "signal": "SIGTERM",
+        "teardown_seconds": 0.5004780292510986
+      }
+    },
+    {
+      "argv": [
+        "/home/chao/llama.cpp-featcache/build/bin/llama-server",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "8094",
+        "-m",
+        "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/models/qwen3-embedding-0.6b-gguf/Qwen3-Embedding-0.6B-Q8_0.gguf",
+        "--embedding",
+        "--pooling",
+        "last",
+        "-ngl",
+        "999",
+        "-c",
+        "4096",
+        "-b",
+        "4096",
+        "-ub",
+        "4096",
+        "-np",
+        "1"
+      ],
+      "binary_path": "llama.cpp-featcache/build/bin/llama-server",
+      "binary_sha256": "097c96ec5a3f576f378d4d5e103928bf070647fdcc1f015eacb839503e121c68",
+      "contacts": 80,
+      "host": "127.0.0.1",
+      "model_files": [
+        {
+          "path": "models/qwen3-embedding-0.6b-gguf/Qwen3-Embedding-0.6B-Q8_0.gguf",
+          "sha256": "06507c7b42688469c4e7298b0a1e16deff06caf291cf0a5b278c308249c3e439"
+        }
+      ],
+      "pid": 1565,
+      "pooling_mode": "last",
+      "port": 8094,
+      "resident_seconds": 8.32,
+      "server_key": "qwen3-emb",
+      "session_id": "SAEA-PROBE-pemb3m-388-attempt-20260820T112943Z-410bdb-qwen3-emb",
+      "spawn_seconds": 5.03,
+      "started_at": "2026-08-20T12:03:59.025618+00:00",
+      "teardown": {
+        "escalated": false,
+        "pid": 1565,
+        "pid_alive_after": false,
+        "port_reachable_after": false,
+        "signal": "SIGTERM",
+        "teardown_seconds": 0.5004589557647705
+      }
+    }
+  ],
+  "study_commit": "d0ea848da77846f5357ed0b568c8945fd7ae6d47",
+  "umbrella_lock_crosscheck": {
+    "clsp": {
+      "files_count": 9,
+      "lifecycle": "LOCAL_CANDIDATE",
+      "lock_carries_per_file_sha256": false,
+      "revision": "UNRESOLVED_LOCAL_REVISION",
+      "size_bytes": 2897287869,
+      "source_id": "UNRESOLVED_LOCAL_SOURCE",
+      "source_kind": "observed-local",
+      "verified_against_lock": []
+    },
+    "glap": {
+      "files_count": 9,
+      "lifecycle": "LOCAL_CANDIDATE",
+      "lock_carries_per_file_sha256": false,
+      "revision": "UNRESOLVED_LOCAL_REVISION",
+      "size_bytes": 3426926767,
+      "source_id": "UNRESOLVED_LOCAL_SOURCE",
+      "source_kind": "observed-local",
+      "verified_against_lock": []
+    },
+    "lco-embedding-omni-3b-gguf": {
+      "files_count": 5,
+      "lifecycle": "LOCAL_CANDIDATE",
+      "lock_carries_per_file_sha256": false,
+      "revision": "UNRESOLVED_LOCAL_REVISION",
+      "size_bytes": 6238572624,
+      "source_id": "UNRESOLVED_LOCAL_SOURCE",
+      "source_kind": "observed-local",
+      "verified_against_lock": []
+    },
+    "qwen3-embedding-0.6b-gguf": {
+      "files_count": 1,
+      "lifecycle": "AUXILIARY",
+      "lock_carries_per_file_sha256": true,
+      "revision": "370f27d7550e0def9b39c1f16d3fbaa13aa67728",
+      "size_bytes": 639150592,
+      "source_id": "Qwen/Qwen3-Embedding-0.6B-GGUF",
+      "source_kind": "hf",
+      "verified_against_lock": [
+        {
+          "agree": true,
+          "filename": "Qwen3-Embedding-0.6B-Q8_0.gguf",
+          "lock_sha256": "06507c7b42688469c4e7298b0a1e16deff06caf291cf0a5b278c308249c3e439",
+          "measured": "06507c7b42688469c4e7298b0a1e16deff06caf291cf0a5b278c308249c3e439"
+        }
+      ]
+    }
+  },
+  "umbrella_lock_sha256": "9064bde89d4248fd80c9c2f93c2a9c276a454eadbb1aa7d529671118961371b1"
+}
