@@ -44,8 +44,8 @@ at every consumed read. (Registration/verdict docs remain the evidence of record
 | Closed-set decode routing viable | ✅ 2/2 (A1'r 0.7833; P-FEW FS-NONE 0.8167 — cross-session ±2 samples) | the routing tier's ONLY working lever |
 | Refusal evidence-gated (A2T) | ✅ 1/1 (V1) | 11/11 vs 2/11 — carrier-specific vs SLURP |
 | Label-level supply has NO resonance channel | ✅ 2/2 (P-FEW skew capture 0/59 incremental; P-EMB no audio→label signal) | the arc's founding premise, now evidenced |
-| Embedding routing — GENERATION-CORE pooled states | ❌ REFUTED 2/2 (P-EMB-1 EMB-WEAK 3/60 below chance, attractor collapse; P-EMB-2 EMB-CLOSED 2/183 at chance, 400/400 negative cosines; richer text made it WORSE) — SCOPE (owner correction 2026-08-20): this refutes only "free embeddings off the chat core's mmproj + mean pool"; it never tested a DEDICATED semantically-aligned embedding model | `6ebcaba`, `af99ebe` |
-| Embedding routing — DEDICATED omni-embedding model (pinned tool, charter retriever clause) | ⏳ P-EMB-3: selection survey dispatched 2026-08-20 (SONAR / CLAP-family / post-2025 omni embedders); smoke re-runs the same two constructions on the aligned space | selection ticket pending |
+| Embedding routing — GENERATION-CORE pooled states | ❌ REFUTED 3/3 (P-EMB-1 EMB-WEAK 3/60 below chance, attractor collapse; P-EMB-2 EMB-CLOSED 2/183 at chance, 400/400 negative cosines, richer text made it WORSE; P-EMB-3L LOCAL-EXHAUSTED — all three constructions 3/60 = 0.0500, the instruct prefix narrowing the reachable label set from 5 to 2) — SCOPE widened by P-EMB-3L: this now refutes EVERY training-free construction the pinned build can express (bare/instructed × the pooling flag), not only mean pool; it still never tested a DEDICATED semantically-aligned embedding model. BUILD DEFECT FOUND: `--pooling` is INERT on this build's audio side (L1 audio 60/60 byte-identical to consumed P-EMB-1), so last-token audio pooling was never actually tested | `6ebcaba`, `af99ebe`, `063c056` |
+| Embedding routing — DEDICATED omni-embedding model (pinned tool, charter retriever clause) | ⏳ **P-EMB-3M is now the routing-tier representation instrument** (promoted 2026-08-20 by P-EMB-3L's LOCAL-EXHAUSTED: the owner's local-first detour is closed, negatively, at 0.0500 on every arm). Selection survey 2026-08-20 + E-1 identity record; primary arm LCO-Embedding-Omni-3B GGUF (Apache-2.0, pinned-stack-native), GLAP/CLSP control-only, nemotron escalation. MUST pre-flight the pooling-override check (last vs mean must actually change AUDIO vectors) before spending a scored contact. Needs its own registration + exposure row | pemb3l verdict §6 |
 | Few-shot routing gain/bias | ❌ INERT-ish (P-FEW: Δ exactly 0.0000, CI [−.067,+.067]; skew costs −0.067 generic ICL noise, ZERO prior capture; equivalence not certified — band 0.05 < measured ±0.033×2 noise) | `162cca3` |
 | Router-confidence targeting | 🔜 P-TARGET redesign: DECODE-path signals only (cross-prompt disagreement 2.73× precision lift n=6 descriptive; label logprobs) — embedding-derived confidence refuted; the 183 stay excluded | pemb2 synthesis §5.3 |
 | Corrective confusable supply | 🔜 P-CORR — now the routing tier's remaining idea too (the decode router's errors are CONCENTRATED: 6/11 in one class `play`→music/audio/news) | design queue |
@@ -54,7 +54,11 @@ at every consumed read. (Registration/verdict docs remain the evidence of record
 
 1. **P-FEW** (registered, machinery in build) — routing few-shot gain + bias.
 2. **P-EMB-1** (SLURP scenario routing) + **P-EMB-2** (A2T tool routing, headline = recovery
-   on the 183 supply-unreachable ids) — after E-0 feasibility.
+   on the 183 supply-unreachable ids) — after E-0 feasibility. ✅ both consumed, both negative.
+   **P-EMB-3L** (local construction sweep, owner's local-first order) — ✅ consumed 2026-08-20,
+   **LOCAL-EXHAUSTED**: all three arms 3/60 = 0.0500, below chance; the local branch is closed and
+   may not be re-cut. **P-EMB-3M** (dedicated omni-embedding model) is the surviving successor —
+   see the consistency ledger's DEDICATED row for its carry-forwards; not yet registered.
 3. **P-TARGET** — router confidence as the supply-targeting signal (merges the two open
    problems); design after P-EMB reads.
 4. **P-CORR** (corrective confusable supply) — supply the CORRECT side of the core's own

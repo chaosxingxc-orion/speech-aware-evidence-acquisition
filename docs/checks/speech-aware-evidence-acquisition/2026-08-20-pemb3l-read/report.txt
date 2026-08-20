@@ -1,0 +1,13 @@
+P-EMB-3L pinned offline read (docs/readiness/2026-08-20-pemb3l-preregistration-REGISTERED.md)
+==============================================================================
+
+[l1-last-bare] accuracy=0.0500 (3/60) top1_share=0.4833 top2_share=0.9167 n_labels_predicted=5/18
+[l2-last-instruct] accuracy=0.0500 (3/60) top1_share=0.9333 top2_share=1.0000 n_labels_predicted=2/18
+[l3-mean-instruct] accuracy=0.0500 (3/60) top1_share=0.6333 top2_share=1.0000 n_labels_predicted=2/18
+
+cited mean-bare accuracy (P-EMB-1, consumed): 0.0500
+L3 (mean-instruct) accuracy: 0.0500
+L3 vs cited mean-bare delta: +0.0000
+
+[LOCAL-EXHAUSTED]
+  every arm's accuracy <= 0.15 (best: l3-mean-instruct=0.0500, margin 0.1000 below the ceiling; all: l1-last-bare=0.0500, l2-last-instruct=0.0500, l3-mean-instruct=0.0500) -- the local core's training-free constructions are exhausted; the external dedicated-embedder path becomes the routing-tier's representation instrument
