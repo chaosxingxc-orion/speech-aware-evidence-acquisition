@@ -1,0 +1,62 @@
+{
+  "config_hash": "d9a0c1a8874c961d60fe1b0cc6d9e222e6d91581c3c29101ffcb91197742f1bf",
+  "protocol_hash": "97cf0d66190febf2a0519befe0b5c4731ae373deabb7b90b6775ca5e05c984f0",
+  "values": {
+    "arm": "fixed-legal-context",
+    "audio_contacts": 60,
+    "base_url": "http://127.0.0.1:8091",
+    "carrier_lock_key": "slurp",
+    "decoding_params": {
+      "max_tokens": 1024,
+      "seed": 20260803,
+      "temperature": 0
+    },
+    "embedding_dim": 2048,
+    "embedding_endpoint": "/embedding",
+    "flight_config_version": "pemb-launcher-v1 (no committed g0-binding config; see module docstring)",
+    "instruct_prefix": "NONE on either side (E-0 binding decision: prefix dilution)",
+    "launcher": "scratchpad tri2/pemb/launch_pemb_flight.py (archived with the flight receipt)",
+    "media_marker_env": "LLAMA_MEDIA_MARKER",
+    "media_marker_props_field": "media_marker",
+    "model_lock_key": "qwen3-omni-30b-a3b-instruct-gguf-q4km",
+    "orchestrator": "rails.probes.pemb_flight.run_pemb1_flight",
+    "preregistration": "docs/readiness/2026-08-19-pemb-preregistration-REGISTERED.md",
+    "probe": "P-EMB",
+    "prompt_order": "evidence-first-system-v2",
+    "roster_table": "configs/probes/g0-binding/pslu-rosters-train-only.json",
+    "run_key": "A",
+    "runtime_receipt": "receipts/runtime-q4km-featcache.json",
+    "sample_manifest": "configs/probes/g0-binding/pslu-sample-devel-n60.json",
+    "server_args": [
+      "-c",
+      "49152",
+      "-np",
+      "1",
+      "-fa",
+      "on",
+      "-ngl",
+      "999",
+      "-ctk",
+      "q8_0",
+      "-ctv",
+      "q8_0",
+      "--embedding",
+      "--pooling",
+      "mean"
+    ],
+    "server_env": {
+      "LLAMA_MTMD_FEAT_CACHE_DIR": "/home/chao/feat-cache/slurp-q4km"
+    },
+    "split_identity_hash": "fc9de436eba5aba120ecf07ee112765cd4ac0609150e0aaf36f4d44c9c5b5ee5",
+    "split_name": "devel",
+    "split_role": "discovery",
+    "stage": "2026-08-19 second-arc design order, routing-tier scheme scoreboard v1",
+    "status": "REGISTERED",
+    "text_contact_kind": "the 18 canonical SLURP scenario labels, bare label strings",
+    "text_contacts": 18,
+    "tier": "embedding (encode+pool, ZERO generation)",
+    "timeout_seconds": 420.0,
+    "total_contacts": 78,
+    "transport": "llama-server"
+  }
+}

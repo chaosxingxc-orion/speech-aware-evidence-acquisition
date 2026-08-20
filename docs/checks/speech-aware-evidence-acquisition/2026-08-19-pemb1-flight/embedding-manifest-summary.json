@@ -1,0 +1,566 @@
+{
+  "audio_count": 60,
+  "dim_distribution": {
+    "2048": 78
+  },
+  "dims": 2048,
+  "distinct_vector_sha256": 78,
+  "entries": [
+    {
+      "contact_id": "slurp:devel:000115:audio-1495375974",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/audio/slurp_devel_000115_audio-1495375974.npy",
+      "sha256": "2b116e5626403b75a80bd7ea3061d5cb280cda4d6e1c3260809cd722cfc730ac"
+    },
+    {
+      "contact_id": "slurp:devel:000444:audio-1502891018-headset",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/audio/slurp_devel_000444_audio-1502891018-headset.npy",
+      "sha256": "8a102c85e02b582ebbd684eb61f5eed4a3682d861479a104b121506ebf6d26b0"
+    },
+    {
+      "contact_id": "slurp:devel:000943:audio-1434529860-headset",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/audio/slurp_devel_000943_audio-1434529860-headset.npy",
+      "sha256": "7d28e5b3fa0e2a5cdbb8a16520585b526ec57528951a552f9769b3b1ee3e06a6"
+    },
+    {
+      "contact_id": "slurp:devel:001637:audio-1502195066-headset",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/audio/slurp_devel_001637_audio-1502195066-headset.npy",
+      "sha256": "f61d74497052075f09c7a99fa2a36bd59bac5f43047a2affd69b59fb606edca6"
+    },
+    {
+      "contact_id": "slurp:devel:002120:audio-1502218226",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/audio/slurp_devel_002120_audio-1502218226.npy",
+      "sha256": "e00f62e4850bc1f91aaf24a71c9ee995831ee63af813701130d756c6ba15b90a"
+    },
+    {
+      "contact_id": "slurp:devel:002992:audio-1489152746",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/audio/slurp_devel_002992_audio-1489152746.npy",
+      "sha256": "9837b40be51cb06f00d641ce4b9728aa0a4f8724901cbed7ff09f4f80db0b39a"
+    },
+    {
+      "contact_id": "slurp:devel:003121:audio-1501696857-headset",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/audio/slurp_devel_003121_audio-1501696857-headset.npy",
+      "sha256": "020695b8bf0f63b9944aaf32903bf931c8c8f1f7b12ca585e67d815e55651974"
+    },
+    {
+      "contact_id": "slurp:devel:003309:audio-1501756265",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/audio/slurp_devel_003309_audio-1501756265.npy",
+      "sha256": "cce164a57bc160b3cf7affb414b3bbcdaa53520e493dd65be1d4872893363d38"
+    },
+    {
+      "contact_id": "slurp:devel:004134:audio-1500387396-headset",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/audio/slurp_devel_004134_audio-1500387396-headset.npy",
+      "sha256": "41d7338517224778d8299fe72ef78b76292958e835488262001f0792e3b6b746"
+    },
+    {
+      "contact_id": "slurp:devel:004604:audio-1501759214",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/audio/slurp_devel_004604_audio-1501759214.npy",
+      "sha256": "2184b1d1b7f837d5c2eafee67a391d14c968d1088391ef4f81ffddd5bfcdd9e7"
+    },
+    {
+      "contact_id": "slurp:devel:005025:audio-1500900618",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/audio/slurp_devel_005025_audio-1500900618.npy",
+      "sha256": "bfe384719ff21c0ec45f5f4f5d9ed0ce1fc87e03bdfb3656718ee6c0c04be1c2"
+    },
+    {
+      "contact_id": "slurp:devel:005028:audio-1502893878-headset",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/audio/slurp_devel_005028_audio-1502893878-headset.npy",
+      "sha256": "35818563ac024b631f05dacf25d1c4b14453fae1b7ee82ae8e19c82a2b3c4f6f"
+    },
+    {
+      "contact_id": "slurp:devel:005108:audio-1494422588-headset",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/audio/slurp_devel_005108_audio-1494422588-headset.npy",
+      "sha256": "36f8fdfc203acfd6a3c0e95225d4bc07f49062a6d4c6ec2a0c638adb83652d2a"
+    },
+    {
+      "contact_id": "slurp:devel:005359:audio-1497265137-headset",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/audio/slurp_devel_005359_audio-1497265137-headset.npy",
+      "sha256": "4e069de35beecc1587504b5553275d45a2dc0babb19b341f0e91d04004cdc216"
+    },
+    {
+      "contact_id": "slurp:devel:005453:audio-1490183633-headset",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/audio/slurp_devel_005453_audio-1490183633-headset.npy",
+      "sha256": "8cb0440030b6365f1fffe3a0b870bc94ea2620def27fbaff069c79dd9457c153"
+    },
+    {
+      "contact_id": "slurp:devel:005518:audio-1490203960",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/audio/slurp_devel_005518_audio-1490203960.npy",
+      "sha256": "3cf16bfcd98c00a857f4632b819f332a6d432a6a96e9fe0fd558db4195e9e7e2"
+    },
+    {
+      "contact_id": "slurp:devel:005536:audio-1499090415-headset",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/audio/slurp_devel_005536_audio-1499090415-headset.npy",
+      "sha256": "692c2550654f74b323f0dd01bf73f22d5bf53b69f86a0b3145a58bfdf31ded07"
+    },
+    {
+      "contact_id": "slurp:devel:005541:audio--1504191543",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/audio/slurp_devel_005541_audio--1504191543.npy",
+      "sha256": "5e44a6dba2ef0db58584ba79d5bc395a228617308af83b88963f99186393d5dc"
+    },
+    {
+      "contact_id": "slurp:devel:005567:audio-1497359684",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/audio/slurp_devel_005567_audio-1497359684.npy",
+      "sha256": "a185773cb03ea696c363839c3c0effdd5207d24b4900e269301eddeb49fe1522"
+    },
+    {
+      "contact_id": "slurp:devel:005684:audio-1498577434",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/audio/slurp_devel_005684_audio-1498577434.npy",
+      "sha256": "5bbd5c8b6ca8557ac6ae5f086a81bba57491f05a76558490a257791f6eae54ef"
+    },
+    {
+      "contact_id": "slurp:devel:005743:audio-1501407405-headset",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/audio/slurp_devel_005743_audio-1501407405-headset.npy",
+      "sha256": "39be11b01dbad48af2c1c0ad68317aa540d5a57f85673c79fbc0cfdfac0886ec"
+    },
+    {
+      "contact_id": "slurp:devel:005770:audio-1495377172",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/audio/slurp_devel_005770_audio-1495377172.npy",
+      "sha256": "dba8ab238865fb632bd46a5bb78a9b064d9e75165100e161e8726d3461b67c68"
+    },
+    {
+      "contact_id": "slurp:devel:005943:audio-1499266055",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/audio/slurp_devel_005943_audio-1499266055.npy",
+      "sha256": "00f75935dd56619c56506f2d7a385ed06aa040d8024aa154ed3b30e1098379ec"
+    },
+    {
+      "contact_id": "slurp:devel:006603:audio-1502101512",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/audio/slurp_devel_006603_audio-1502101512.npy",
+      "sha256": "7962ca4ef48fc71a64a0737fd45c2f6f0fa8215b95f8b14929976e0502fc6de1"
+    },
+    {
+      "contact_id": "slurp:devel:006751:audio-1501773837-headset",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/audio/slurp_devel_006751_audio-1501773837-headset.npy",
+      "sha256": "93041e70102bc5bcba6446df17539461061ef91e765fab417b88803d941e2846"
+    },
+    {
+      "contact_id": "slurp:devel:007374:audio-1498569508",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/audio/slurp_devel_007374_audio-1498569508.npy",
+      "sha256": "edcaa90e898a1c6363cc7bce2f4b9ee79108257501663030ec5777e1cab7b8a1"
+    },
+    {
+      "contact_id": "slurp:devel:007541:audio-1490202471",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/audio/slurp_devel_007541_audio-1490202471.npy",
+      "sha256": "504cb213e9b942686db10ee6d09c5ea64ca8033118f5f9b4b3eb3e34cccfca58"
+    },
+    {
+      "contact_id": "slurp:devel:007653:audio-1497438989-headset",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/audio/slurp_devel_007653_audio-1497438989-headset.npy",
+      "sha256": "670d3ef7841ab262a9c4ff0ffecf2e6a4545ec955aa7a553135b7775668ddcef"
+    },
+    {
+      "contact_id": "slurp:devel:007852:audio-1494416109-headset",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/audio/slurp_devel_007852_audio-1494416109-headset.npy",
+      "sha256": "695a4450123b4ca97473bda7a2863eb8bd9d13426ced13088f431b28a8e68bcb"
+    },
+    {
+      "contact_id": "slurp:devel:008014:audio-1500899290",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/audio/slurp_devel_008014_audio-1500899290.npy",
+      "sha256": "3acb7ce3b0242aee6397fe179cc3133200dd6bf00047d3111931fa2a29292698"
+    },
+    {
+      "contact_id": "slurp:devel:008047:audio-1498570919",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/audio/slurp_devel_008047_audio-1498570919.npy",
+      "sha256": "b9cbbe8d406c21db2210f3e8da1f9adbac91ab333694024148284b79daff4d7e"
+    },
+    {
+      "contact_id": "slurp:devel:008072:audio-1488986707",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/audio/slurp_devel_008072_audio-1488986707.npy",
+      "sha256": "fdb08fa0c0f83d153ece668f0fb6fb632af3cf3b629317276b26f094f0b7c0fb"
+    },
+    {
+      "contact_id": "slurp:devel:009340:audio-1497882818-headset",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/audio/slurp_devel_009340_audio-1497882818-headset.npy",
+      "sha256": "f3a01c5606c352f10ea8c2e6d55ba8d5ac36c8b7585a353d1cfa572cb950e627"
+    },
+    {
+      "contact_id": "slurp:devel:009518:audio-1495734594-headset",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/audio/slurp_devel_009518_audio-1495734594-headset.npy",
+      "sha256": "4c26758a72fcae9a537e508b0186f0b4013febad85e73a166e5b8becffb23b53"
+    },
+    {
+      "contact_id": "slurp:devel:009733:audio--1505407176",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/audio/slurp_devel_009733_audio--1505407176.npy",
+      "sha256": "b2f7afcbb067fc9fa0cea8faf80bfd0433f5ef57f7e4096cbdb29e9a0ea29446"
+    },
+    {
+      "contact_id": "slurp:devel:010162:audio-1501765286",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/audio/slurp_devel_010162_audio-1501765286.npy",
+      "sha256": "8d1f5aa7c9491ab578bd6270d5f504de83bb4148818f2c6a2e7450deb09b162e"
+    },
+    {
+      "contact_id": "slurp:devel:010186:audio-1501415369-headset",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/audio/slurp_devel_010186_audio-1501415369-headset.npy",
+      "sha256": "7ce7547890db0293e778cd9b78882bef02dbf5cef527770c90be0851c4f4dac8"
+    },
+    {
+      "contact_id": "slurp:devel:010545:audio-1490006493",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/audio/slurp_devel_010545_audio-1490006493.npy",
+      "sha256": "f6d10737a0a62f18f440f97a067f9992973e955a046f2564583cb2ffae731f13"
+    },
+    {
+      "contact_id": "slurp:devel:010732:audio-1490184504",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/audio/slurp_devel_010732_audio-1490184504.npy",
+      "sha256": "101c1752a89f49e7b06481c5ba6ef994a573a24f3567ccb62eeff3890e8856c0"
+    },
+    {
+      "contact_id": "slurp:devel:011503:audio-1494514154",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/audio/slurp_devel_011503_audio-1494514154.npy",
+      "sha256": "c5f2a0a513fc3655a68412a2bb3aa5dce7cea834b870ca94d43bebaa48b67aff"
+    },
+    {
+      "contact_id": "slurp:devel:011654:audio-1501692977-headset",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/audio/slurp_devel_011654_audio-1501692977-headset.npy",
+      "sha256": "ce6961b43bd74a784098f122566eae34511a290d507dfe14dae7d59831890382"
+    },
+    {
+      "contact_id": "slurp:devel:011693:audio-1498565017-headset",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/audio/slurp_devel_011693_audio-1498565017-headset.npy",
+      "sha256": "5a1c28af279909aabbcfadeec01eb7ee1c1aafaf2b47a4ee407e9feead8daabe"
+    },
+    {
+      "contact_id": "slurp:devel:012076:audio-1501766742-headset",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/audio/slurp_devel_012076_audio-1501766742-headset.npy",
+      "sha256": "f033a54882f45911b88ce7cc1429f4f67b98e05635d366d9f7040e37665a9097"
+    },
+    {
+      "contact_id": "slurp:devel:012253:audio-1488974202",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/audio/slurp_devel_012253_audio-1488974202.npy",
+      "sha256": "a4bb8ce3641a8c0ac8d7117bd98d577709f0dc32273ddf611206415aadfc63c4"
+    },
+    {
+      "contact_id": "slurp:devel:012478:audio-1498486426",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/audio/slurp_devel_012478_audio-1498486426.npy",
+      "sha256": "c9a37d8d9ca576f8d95e052a3bc96c4b363c0bb9dd146c3764f5f6be00587182"
+    },
+    {
+      "contact_id": "slurp:devel:012654:audio-1497860426-headset",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/audio/slurp_devel_012654_audio-1497860426-headset.npy",
+      "sha256": "0918e9756f5b29019dfab8433185d8547c0b6028beebf3e7645da248f85c3ddb"
+    },
+    {
+      "contact_id": "slurp:devel:012667:audio-1501751776-headset",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/audio/slurp_devel_012667_audio-1501751776-headset.npy",
+      "sha256": "15e4643d060342fcbac9518470618f889edcdefc745727bb30d90b32967f2e2f"
+    },
+    {
+      "contact_id": "slurp:devel:013281:audio-1490354296-headset",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/audio/slurp_devel_013281_audio-1490354296-headset.npy",
+      "sha256": "e613bc28a6a1b9eca617c9e2da28be442dc9266c6bb0f102e2ce96342b4cabe3"
+    },
+    {
+      "contact_id": "slurp:devel:013795:audio-1499266495",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/audio/slurp_devel_013795_audio-1499266495.npy",
+      "sha256": "95722488d50df39157195a47de67129cfc28e97ec31f0fe4d7efe35eccc3d0bf"
+    },
+    {
+      "contact_id": "slurp:devel:014173:audio-1490291441",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/audio/slurp_devel_014173_audio-1490291441.npy",
+      "sha256": "6bfda9694080c2e0c86d8be59eeb8ec42a69d747e714b137bd75a6e4077daf03"
+    },
+    {
+      "contact_id": "slurp:devel:014263:audio-1501692486",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/audio/slurp_devel_014263_audio-1501692486.npy",
+      "sha256": "12084f1918879f52301c310ab5a87db1bd2a24d1bc93b322b0abf52ecc2c67f0"
+    },
+    {
+      "contact_id": "slurp:devel:014397:audio-1497368809",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/audio/slurp_devel_014397_audio-1497368809.npy",
+      "sha256": "654d8df2405d911ebd6b51c77429a635865a7f343a6a9f8ce22c765951779aa3"
+    },
+    {
+      "contact_id": "slurp:devel:014657:audio-1499695487",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/audio/slurp_devel_014657_audio-1499695487.npy",
+      "sha256": "55f0c2f468f735dd4967627abd00ae7bbe43d0cf33ed948c20e0c8829ffb07d4"
+    },
+    {
+      "contact_id": "slurp:devel:015258:audio-1501777355-headset",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/audio/slurp_devel_015258_audio-1501777355-headset.npy",
+      "sha256": "3e15b0d6c6d9a576e689514b9a482003e0424932d7286318851704df96e13be6"
+    },
+    {
+      "contact_id": "slurp:devel:015375:audio-1501754418",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/audio/slurp_devel_015375_audio-1501754418.npy",
+      "sha256": "0853cd24aff9ff209ab4304c6f7e64c833cc8ac5c0539577403192429d6dbc98"
+    },
+    {
+      "contact_id": "slurp:devel:015632:audio-1490021137-headset",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/audio/slurp_devel_015632_audio-1490021137-headset.npy",
+      "sha256": "87904ee1dacdc3111a8227f98d31766bc7df0cbfbd2095608532b2bea88cd6fa"
+    },
+    {
+      "contact_id": "slurp:devel:015805:audio-1489153743",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/audio/slurp_devel_015805_audio-1489153743.npy",
+      "sha256": "5016fcfc50fd368c423c4034e20b1b489a329d31e94f74ac86cdf6a3cccdc1bc"
+    },
+    {
+      "contact_id": "slurp:devel:016653:audio-1494513016",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/audio/slurp_devel_016653_audio-1494513016.npy",
+      "sha256": "e49ac52e00f2c11a50e87540fb389c9abbac0f5365a2b9be69926d38ee911455"
+    },
+    {
+      "contact_id": "slurp:devel:016825:audio-1498573552-headset",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/audio/slurp_devel_016825_audio-1498573552-headset.npy",
+      "sha256": "f1c7937bca6c6ec3317c243cdfb58cc2c6e0799c7f327aec0b690b266d7f7053"
+    },
+    {
+      "contact_id": "slurp:devel:017009:audio-1502198805-headset",
+      "dims": 2048,
+      "kind": "audio",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/audio/slurp_devel_017009_audio-1502198805-headset.npy",
+      "sha256": "65be51cc3b6e176954ebaa085a07a5552b73b8a4087221c33724eaced8091ba8"
+    },
+    {
+      "contact_id": "alarm",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/text/alarm.npy",
+      "sha256": "284f77493d0f0d3f97af6e26f09edd54ae7ac0a07425b795d9212554c9678c51"
+    },
+    {
+      "contact_id": "audio",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/text/audio.npy",
+      "sha256": "4b6948e4ebfff55aac5d2519661227b01c836dabece3419923bd834157c77136"
+    },
+    {
+      "contact_id": "calendar",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/text/calendar.npy",
+      "sha256": "2e10e775fdb8e0eb915708631fd5bb483f41e7d8f0e2b65c10c16398fb5e4c94"
+    },
+    {
+      "contact_id": "cooking",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/text/cooking.npy",
+      "sha256": "ded3a7589c1e918fcb2d140f1b7d84a1b5a0429a133b4de3a3eb28bcd4ca394a"
+    },
+    {
+      "contact_id": "datetime",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/text/datetime.npy",
+      "sha256": "efe24d42f949fa4443497e1b627a810b452b7649875e0bc5d314772a4c4efded"
+    },
+    {
+      "contact_id": "email",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/text/email.npy",
+      "sha256": "6972e5526ef1285ee2fb53b6e90b9f5db0e3be25baf2770c7549e97fa28d042c"
+    },
+    {
+      "contact_id": "general",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/text/general.npy",
+      "sha256": "ca18cc97703d61149326c42957409d4c7415fdc0b835bef6cd409d055331be04"
+    },
+    {
+      "contact_id": "iot",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/text/iot.npy",
+      "sha256": "eec9394d218db86b11820766683c1933eb2a1bbb1ba7c56a2fdb5ae08b79223a"
+    },
+    {
+      "contact_id": "lists",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/text/lists.npy",
+      "sha256": "15e4f68e2fd68664cce9af5a3b77f289cca677f81bd05e5c1c7e297e8bf865c9"
+    },
+    {
+      "contact_id": "music",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/text/music.npy",
+      "sha256": "f59b37557351238b845505abaab1399d8acc8e0c95c0c8968cdc5149994b92da"
+    },
+    {
+      "contact_id": "news",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/text/news.npy",
+      "sha256": "c5c7e76d5d1a8e180512c9f9921e811354e2b080cc896f17ad2e785df94f240b"
+    },
+    {
+      "contact_id": "play",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/text/play.npy",
+      "sha256": "b8662d23ccd7acd32a2a217ef60c07ba128a34afeca788c0d6a96f36c70c0e17"
+    },
+    {
+      "contact_id": "qa",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/text/qa.npy",
+      "sha256": "bde9e61572651000efeb329012be392525fd535f06372ba5121374ccd28b0fa6"
+    },
+    {
+      "contact_id": "recommendation",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/text/recommendation.npy",
+      "sha256": "8366531d2400b9329120fa971e6b1b76746b8a018f33af6b5cf2489d802291fc"
+    },
+    {
+      "contact_id": "social",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/text/social.npy",
+      "sha256": "fa1f91e2613f6505a1806aea185a7418e0e4d5004e1c3f497be079f3fe7d98c2"
+    },
+    {
+      "contact_id": "takeaway",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/text/takeaway.npy",
+      "sha256": "84e52c99f5d82a0b183097a77c781fa6f76b9d53a87c9242706b097d29731c0c"
+    },
+    {
+      "contact_id": "transport",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/text/transport.npy",
+      "sha256": "fa4857bd7c543145c045c627364760e7da2b816948486988d7279c5619816a65"
+    },
+    {
+      "contact_id": "weather",
+      "dims": 2048,
+      "kind": "text",
+      "relpath": "derived/embeddings/SAEA-PROBE-pemb1-78/text/weather.npy",
+      "sha256": "cd3a278f15f069623dfd89da0a8827459af08a4600f761c2db4491f86f081102"
+    }
+  ],
+  "entries_by_kind": {
+    "audio": 60,
+    "text": 18
+  },
+  "entry_count": 78,
+  "manifest_sha256": "4369bff88423669a18fb11e40464bede85fbd6f12f5486be456947e94cc5f3ba",
+  "run_id": "SAEA-PROBE-pemb1-78",
+  "schema": "saea-pemb-embedding-manifest-summary-v1",
+  "source_manifest": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/derived/embeddings/SAEA-PROBE-pemb1-78/manifest.json",
+  "text_count": 18
+}
