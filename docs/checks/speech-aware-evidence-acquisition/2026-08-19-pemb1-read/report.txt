@@ -1,0 +1,46 @@
+P-EMB-1 pinned offline read (docs/readiness/2026-08-19-pemb-preregistration-REGISTERED.md)
+==============================================================================
+
+manifest run_id: SAEA-PROBE-pemb1-78
+n_samples=60 n_labels=18
+accuracy=0.0500 (3/60)
+
+[EMB-WEAK]
+  accuracy 0.0500 <= 0.3 -- bare cross-modal matching does not form a usable shared space on this core; the routing tier stays decode-based
+
+Confusion table (gold -> predicted : count)
+  calendar -> play : 6
+  play -> general : 4
+  qa -> general : 4
+  iot -> general : 3
+  transport -> play : 3
+  alarm -> general : 2
+  cooking -> play : 2
+  datetime -> general : 2
+  email -> general : 2
+  music -> play : 2
+  news -> general : 2
+  play -> play : 2
+  recommendation -> general : 2
+  social -> play : 2
+  weather -> general : 2
+  audio -> play : 1
+  calendar -> datetime : 1
+  calendar -> general : 1
+  datetime -> transport : 1
+  email -> play : 1
+  email -> transport : 1
+  general -> general : 1
+  general -> play : 1
+  lists -> general : 1
+  lists -> play : 1
+  news -> play : 1
+  play -> iot : 1
+  qa -> play : 1
+  recommendation -> play : 1
+  social -> general : 1
+  takeaway -> general : 1
+  takeaway -> play : 1
+  transport -> general : 1
+  weather -> play : 1
+  weather -> transport : 1
