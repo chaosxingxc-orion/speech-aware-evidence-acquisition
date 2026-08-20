@@ -1,0 +1,92 @@
+=== study tree ===
+1eeea14d4946b5f94b16772746a0d951b014fb05
+
+=== processes / ports / gpu ===
+no llama-server running
+ports 8080/8093/8094/8095 free
+clocks.current.sm [MHz], memory.used [MiB], utilization.gpu [%], pstate
+1200 MHz, 336 MiB, 0 %, P5
+
+=== feat caches ===
+716M	/home/chao/feat-cache/slurp-lco3b
+1.3G	/home/chao/feat-cache/slurp-lco7b
+23M	/home/chao/feat-cache/slurp-q4km
+
+=== run dir ===
+total 173528
+drwxrwxrwx 1 chao chao     4096 Aug 20 15:44 .
+drwxrwxrwx 1 chao chao     4096 Aug 20 14:18 ..
+-rwxrwxrwx 1 chao chao    16325 Aug 20 14:34 SAEA-PROBE-pemb4r-4100.config-values.json
+-rwxrwxrwx 1 chao chao      565 Aug 20 14:34 SAEA-PROBE-pemb4r-4100.plan.json
+-rwxrwxrwx 1 chao chao     1703 Aug 20 14:55 SAEA-PROBE-pemb4r-4100.session-lco3-last.receipt.json
+-rwxrwxrwx 1 chao chao   369732 Aug 20 14:58 SAEA-PROBE-pemb4r-4100.session-lco3-last.server.log
+-rwxrwxrwx 1 chao chao     1703 Aug 20 14:58 SAEA-PROBE-pemb4r-4100.session-lco3-mean.receipt.json
+-rwxrwxrwx 1 chao chao     5138 Aug 20 14:58 SAEA-PROBE-pemb4r-4100.session-lco3-mean.server.log
+-rwxrwxrwx 1 chao chao     1703 Aug 20 15:01 SAEA-PROBE-pemb4r-4100.session-lco7-last.receipt.json
+-rwxrwxrwx 1 chao chao   371528 Aug 20 15:05 SAEA-PROBE-pemb4r-4100.session-lco7-last.server.log
+-rwxrwxrwx 1 chao chao     1703 Aug 20 15:06 SAEA-PROBE-pemb4r-4100.session-lco7-mean.receipt.json
+-rwxrwxrwx 1 chao chao     5138 Aug 20 15:07 SAEA-PROBE-pemb4r-4100.session-lco7-mean.server.log
+-rwxrwxrwx 1 chao chao     1651 Aug 20 15:29 SAEA-PROBE-pemb4r-4100.session-q4km-core.receipt.json
+-rwxrwxrwx 1 chao chao     3913 Aug 20 15:29 SAEA-PROBE-pemb4r-4100.session-q4km-core.server.log
+-rwxrwxrwx 1 chao chao     1342 Aug 20 15:10 SAEA-PROBE-pemb4r-4100.session-qw.receipt.json
+-rwxrwxrwx 1 chao chao   324215 Aug 20 15:11 SAEA-PROBE-pemb4r-4100.session-qw.server.log
+-rwxrwxrwx 1 chao chao    42951 Aug 20 15:44 flight-receipt.json
+-rwxrwxrwx 1 chao chao    42551 Aug 20 15:34 flight-state.json
+-rwxrwxrwx 1 chao chao    45698 Aug 20 14:55 gate-c-lco3-last-vector.json
+-rwxrwxrwx 1 chao chao    45698 Aug 20 14:58 gate-c-lco3-mean-vector.json
+-rwxrwxrwx 1 chao chao    80507 Aug 20 15:01 gate-c-lco7-last-vector.json
+-rwxrwxrwx 1 chao chao    80507 Aug 20 15:07 gate-c-lco7-mean-vector.json
+-rwxrwxrwx 1 chao chao    64044 Aug 20 14:52 gate-clip.wav
+-rwxrwxrwx 1 chao chao    91410 Aug 20 14:55 lco3-jitter-vectors.json
+-rwxrwxrwx 1 chao chao   161028 Aug 20 15:01 lco7-jitter-vectors.json
+-rwxrwxrwx 1 chao chao    45428 Aug 20 15:10 qw-jitter-vectors.json
+-rwxrwxrwx 1 chao chao  1384695 Aug 20 15:20 vectors-a-glap.jsonl
+-rwxrwxrwx 1 chao chao  2762551 Aug 20 14:57 vectors-a-lco3.jsonl
+-rwxrwxrwx 1 chao chao  4848432 Aug 20 15:05 vectors-a-lco7.jsonl
+-rwxrwxrwx 1 chao chao 20812070 Aug 20 15:20 vectors-bank-glap.jsonl
+-rwxrwxrwx 1 chao chao 41743745 Aug 20 14:56 vectors-bank-lco3.jsonl
+-rwxrwxrwx 1 chao chao 73143294 Aug 20 15:03 vectors-bank-lco7.jsonl
+-rwxrwxrwx 1 chao chao 20683505 Aug 20 15:10 vectors-bank-qw.jsonl
+-rwxrwxrwx 1 chao chao  1398158 Aug 20 15:21 vectors-t-glap.jsonl
+-rwxrwxrwx 1 chao chao  2784804 Aug 20 14:58 vectors-t-lco3.jsonl
+-rwxrwxrwx 1 chao chao  4870130 Aug 20 15:05 vectors-t-lco7.jsonl
+-rwxrwxrwx 1 chao chao  1379821 Aug 20 15:11 vectors-t-qw.jsonl
+
+=== bank manifest ===
+rows: 900 seed: 20260807 sha256: 5f48895107d715a7eae2954fe56f833455d33df3d6527e3643a0b0c924f5b112
+pin match: True
+
+=== per-model bank vectors (sha256-verified on load) ===
+  lco3: 900 vectors, dim 2048
+  lco7: 900 vectors, dim 3584
+  glap: 900 vectors, dim 1024
+  qw: 900 vectors, dim 1024
+
+=== per-arm query vectors (sha256-verified on load) ===
+  a-lco3: 60 vectors, dim 2048
+  a-lco7: 60 vectors, dim 3584
+  a-glap: 60 vectors, dim 1024
+  t-lco3: 60 vectors, dim 2048
+  t-lco7: 60 vectors, dim 3584
+  t-glap: 60 vectors, dim 1024
+  t-qw: 60 vectors, dim 1024
+
+=== retrieval plan ===
+schema: saea-pemb4r-retrieval-plan-v1 | k_primary: 5 | winner: t-glap
+sha256: 7150c6b3410de4cc883da7f5ef0798dd80e4beaf253037594e99ff8cf5cea768
+arms in plan: ['a-glap', 'a-lco3', 'a-lco7', 't-glap', 't-lco3', 't-lco7', 't-qw']
+
+=== C-DECODE outputs (row COUNT only; no body is read here) ===
+absent
+
+=== flight receipt spine ===
+  status: COMPLETED-EMBEDDING-ARMS-C-DECODE-CEILING-BLOCKED
+  config_hash: 3a46eb469d82b46481c501e1293d740fcd2e83c318e94c122d5f279a8bfbecd4
+  protocol_hash: 3a46eb469d82b46481c501e1293d740fcd2e83c318e94c122d5f279a8bfbecd4
+  binding_config_sha256: a193f63422ae4c990911752f3d14f37400c57d73cc4908af84d698dd3ccce17a
+  arms_flown: ['a-glap', 'a-lco3', 'a-lco7', 't-glap', 't-lco3', 't-lco7', 't-qw']
+  n_vectors_produced: 4020
+  result_read: False
+  durable_actual: {"audio_seconds": 560.7783163439691, "calls": 4031, "gpu_hours": 0.2565867273012797, "gpu_seconds": 923.7122182846068}
+  gpu_accounting: {"ceiling_gpu_hours": 0.5, "gpu_active_hours": 0.2565867273012797, "measured_equivalent_hours": 0.1736761458714803, "server_alive_wall_hours": 0.34484598159790036}
+POSTFLIGHT DONE

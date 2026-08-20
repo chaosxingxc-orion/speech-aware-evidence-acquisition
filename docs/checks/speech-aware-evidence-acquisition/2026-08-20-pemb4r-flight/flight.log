@@ -1,0 +1,308 @@
+ATTEMPT_ID=attempt-20260820T181837Z-3e6c8f
+[18:18:37Z] P-EMB-4R preflight -- exposure row SAEA-PROBE-pemb4r-4100, attempt attempt-20260820T181837Z-3e6c8f -> /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-pemb4r-4100/attempt-20260820T181837Z-3e6c8f
+[18:18:37Z] guards: frozen-60-gold AST guard PASS; ontology-miner ban PASS
+[18:18:37Z] binding config sha256 verified + stable across recomputation: a193f63422ae4c990911752f3d14f37400c57d73cc4908af84d698dd3ccce17a
+[18:18:38Z] bank: 900 rows, seed 20260807, 50/scenario; double derivation BIT-IDENTICAL sha256=5f48895107d715a7eae2954fe56f833455d33df3d6527e3643a0b0c924f5b112 (matches the pinned pin); manifest -> /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/derived/embeddings/SAEA-PROBE-pemb4r-4100/bank/manifest.json
+[18:21:23Z] file models/lco-embedding-omni-3b-gguf/LCO-Embedding-Omni-3B-Q8_0.gguf: 3616087264 bytes sha256=53a9898bdb562ae599a81528a2935153457b82e7cac3aa5b10e5eecefc887d6a (164.7s, 22.0 MB/s)
+[18:23:21Z] file models/lco-embedding-omni-3b-gguf/mmproj-LCO-Embedding-Omni-3b-F16.gguf: 2622477952 bytes sha256=765beb616247081f53c9a0b7fed02b96981c5bad563209b5a47ca770f056a13a (118.5s, 22.1 MB/s)
+[18:29:29Z] file models/lco-embedding-omni-7b-gguf/LCO-Embedding-Omni-7B-Q8_0.gguf: 8098523968 bytes sha256=0ddf321421abc45dc8422b8a9744f7ea8cb7b01f98003d226865ab83fb93ff56 (367.6s, 22.0 MB/s)
+[18:31:30Z] file models/lco-embedding-omni-7b-gguf/mmproj-LCO-Embedding-Omni-7b-F16.gguf: 2642151136 bytes sha256=bd9e2c7ac1995a0f5dfab1fe824b50a33ee0d24a9807e68cc08cad1fb08595cc (121.0s, 21.8 MB/s)
+[18:31:58Z] file models/qwen3-embedding-0.6b-gguf/Qwen3-Embedding-0.6B-Q8_0.gguf: 639150592 bytes sha256=06507c7b42688469c4e7298b0a1e16deff06caf291cf0a5b278c308249c3e439 (28.3s, 22.6 MB/s)
+[18:34:36Z] file models/glap/model.safetensors: 3422036400 bytes sha256=ee8fd92bba30d03b4c31c624739b1599a222506f0e045cde7cb51c34e3223864 (157.6s, 21.7 MB/s)
+[18:34:43Z] gguf declared embedding_length[lco3] = 2048 (header read, no server)
+[18:34:46Z] gguf declared embedding_length[lco7] = 3584 (header read, no server)
+[18:34:50Z] gguf declared embedding_length[qw] = 1024 (header read, no server)
+[18:34:50Z] lock binding lco-embedding-omni-3b-gguf: lifecycle='LOCAL_CANDIDATE' per-file-sha256=NO (LOCAL_CANDIDATE -- this flight self-pins)
+[18:34:50Z] lock binding lco-embedding-omni-7b-gguf: lifecycle='LOCAL_CANDIDATE' per-file-sha256=NO (LOCAL_CANDIDATE -- this flight self-pins)
+[18:34:50Z] lock binding glap: lifecycle='LOCAL_CANDIDATE' per-file-sha256=NO (LOCAL_CANDIDATE -- this flight self-pins)
+[18:34:50Z] lock binding qwen3-embedding-0.6b-gguf: lifecycle='AUXILIARY' per-file-sha256=yes -> 1 file(s) cross-checked AGREE
+[18:34:50Z] config hash (= protocol hash): 3a46eb469d82b46481c501e1293d740fcd2e83c318e94c122d5f279a8bfbecd4
+[18:34:50Z] machinery build_execution_plan cross-check PASS (profile='bounded-discovery-probe', protocol_hash=a193f63422ae4c990911752f3d14f37400c57d73cc4908af84d698dd3ccce17a)
+[18:34:50Z] registered ceilings agree across ledger / machinery / launcher: {'model_calls': 4500, 'speech_audio_seconds': 700, 'gpu_hours': 0.5}
+[18:34:51Z] gate: exposure pre-registration cross-check PASS (profile/split/identity/carrier/consumed/budgets)
+[18:34:51Z] gate: carrier scope PASS (slurp resolves to a speech-aware dataset entry)
+[18:34:54Z] gate: E0 closure + scoring freeze PASS (D1-D4 artifacts + frozen scoring-source hashes + no relocated bytecode)
+[18:34:55Z] gate: llama.cpp runtime libraries PASS (exact set, every file re-hashed)
+[18:34:55Z] umbrella lock sha256: 9064bde89d4248fd80c9c2f93c2a9c276a454eadbb1aa7d529671118961371b1
+[18:34:55Z] GATE (d) ENCODE-ONLY: PASS over ['speech_aware_evidence_acquisition.rails.embedding_client', 'speech_aware_evidence_acquisition.rails.local_encoder_client', 'speech_aware_evidence_acquisition.rails.probes.pemb3m_flight', 'speech_aware_evidence_acquisition.rails.probes.pemb4r_flight']
+[18:34:56Z] loading SLURP devel split (sha256 of every devel media file -- slow, model-free)
+[18:52:35Z] inputs: 60 audio samples, 18 canonical labels; one metered audio pass = 182.259s (3 audio arms -> 546.778s vs plan 700s / ceiling 700s)
+[18:52:35Z] GATE (e) CASCADE/T0 SOURCE: COMPLETE -- 60/60 T0 transcripts, registry sha256 f8f6426aeb0eb84c33ad58b603cb36b8f420c3063149b6cd11a0b210d8774959, supplement_required=False
+[18:52:36Z] synthetic gate clip written (64044 bytes, sha256 dc87d1fd3e5e2b1716632351331a80a673491a237e8d11d267559bdca26341a5) -- NON-CORPUS: no SLURP audio, no gold
+[18:52:36Z] prior durable spend on SAEA-PROBE-pemb4r-4100: calls=0, audio_seconds=0.000000
+[18:52:36Z] attempt opened durably: attempt-20260820T181837Z-3e6c8f (state OPENED)
+[18:52:36Z] PREFLIGHT COMPLETE -- zero contacts spent
+[18:52:36Z] STAGE preflight OK in 2038.7s
+ATTEMPT_ID=attempt-20260820T181837Z-3e6c8f
+[18:53:11Z] loading SLURP devel split (sha256 of every devel media file -- slow, model-free)
+[18:54:41Z] inputs + bank ready in 89.8s (BEFORE any spawn -- not charged to GPU time)
+[18:54:41Z] [lco3] EmbeddingClient expected_dim = 2048 (GGUF-declared, gate-confirmed live)
+[18:54:41Z] coexistence guard: nothing answers on the generation port 8080 -- PASS
+[18:54:41Z] spawning llama-server in EMBEDDING mode for 'lco3-last' on port 8093: ['--embedding', '-ngl', '999', '-c', '4096', '-b', '4096', '-ub', '4096', '-np', '1', '--pooling', 'last']
+[18:55:22Z] session 'lco3-last' up: pid=3315 port=8093 (spawn+load 41.5s)
+[18:55:22Z] session argv: /home/chao/llama.cpp-featcache/build/bin/llama-server --host 127.0.0.1 --port 8093 -m /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/models/lco-embedding-omni-3b-gguf/LCO-Embedding-Omni-3B-Q8_0.gguf --mmproj /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/models/lco-embedding-omni-3b-gguf/mmproj-LCO-Embedding-Omni-3b-F16.gguf --embedding -ngl 999 -c 4096 -b 4096 -ub 4096 -np 1 --pooling last
+[18:55:22Z]   model file: models/lco-embedding-omni-3b-gguf/LCO-Embedding-Omni-3B-Q8_0.gguf sha256=53a9898bdb562ae599a81528a2935153457b82e7cac3aa5b10e5eecefc887d6a
+[18:55:22Z]   model file: models/lco-embedding-omni-3b-gguf/mmproj-LCO-Embedding-Omni-3b-F16.gguf sha256=765beb616247081f53c9a0b7fed02b96981c5bad563209b5a47ca770f056a13a
+[18:55:22Z] /props verified for lco3-last: media_marker='<__media__>' pooling_type=None
+[18:55:23Z] [lco3] repeat-call determinism sample: dims=2048 byte_identical=True
+[18:55:23Z] BANK START lco3: 900 TEXT contacts (bank row texts only; labels never embedded)
+[18:55:23Z] [bank:lco3] media marker verified against the LIVE server's GET /props -- the env-pinned LLAMA_MEDIA_MARKER matches the server's own media_marker field (fail-closed)
+[18:55:23Z] [bank:lco3] contact 0001/900 [text] bank-alarm-000 ok   0.02s dims=2048 | flown=1 884.9/min eta=1.0 min
+[18:55:23Z] [bank:lco3] contact 0002/900 [text] bank-alarm-001 ok   0.08s dims=2048 | flown=2 470.0/min eta=1.9 min
+[18:55:23Z] [bank:lco3] contact 0003/900 [text] bank-alarm-002 ok   0.03s dims=2048 | flown=3 589.0/min eta=1.5 min
+[18:55:33Z] [bank:lco3] contact 0100/900 [text] bank-audio-049 ok   0.01s dims=2048 | flown=100 609.6/min eta=1.3 min
+[18:55:44Z] [bank:lco3] contact 0200/900 [text] bank-cooking-049 ok   0.02s dims=2048 | flown=200 577.1/min eta=1.2 min
+[18:55:54Z] [bank:lco3] contact 0300/900 [text] bank-email-049 ok   0.02s dims=2048 | flown=300 588.4/min eta=1.0 min
+[18:56:03Z] [bank:lco3] contact 0400/900 [text] bank-iot-049 ok   0.01s dims=2048 | flown=400 608.0/min eta=0.8 min
+[18:56:14Z] [bank:lco3] contact 0500/900 [text] bank-music-049 ok   0.01s dims=2048 | flown=500 586.0/min eta=0.7 min
+[18:56:24Z] [bank:lco3] contact 0600/900 [text] bank-play-049 ok   0.02s dims=2048 | flown=600 590.6/min eta=0.5 min
+[18:56:34Z] [bank:lco3] contact 0700/900 [text] bank-recommendation-049 ok   0.02s dims=2048 | flown=700 589.8/min eta=0.3 min
+[18:56:44Z] [bank:lco3] contact 0800/900 [text] bank-takeaway-049 ok   0.02s dims=2048 | flown=800 595.2/min eta=0.2 min
+[18:56:52Z] [bank:lco3] contact 0900/900 [text] bank-weather-049 ok   0.02s dims=2048 | flown=900 609.2/min eta=0.0 min
+[18:57:30Z] BANK DONE lco3: 127.0s, flown=900 replayed=0
+[18:57:30Z] ARM START a-lco3: 60 AUDIO query contacts
+[18:57:30Z] [a-lco3] media marker verified against the LIVE server's GET /props -- the env-pinned LLAMA_MEDIA_MARKER matches the server's own media_marker field (fail-closed)
+[18:57:31Z] [a-lco3] contact 0001/60 [audio] slurp:devel:000115:audio-1495375974 ok   0.47s dims=2048 | flown=1 120.8/min eta=0.5 min
+[18:57:31Z] [a-lco3] contact 0002/60 [audio] slurp:devel:000444:audio-1502891018-headset ok   0.24s dims=2048 | flown=2 136.8/min eta=0.4 min
+[18:57:31Z] [a-lco3] contact 0003/60 [audio] slurp:devel:000943:audio-1434529860-headset ok   0.25s dims=2048 | flown=3 141.5/min eta=0.4 min
+[18:57:52Z] [a-lco3] contact 0060/60 [audio] slurp:devel:017009:audio-1502198805-headset ok   0.24s dims=2048 | flown=60 164.6/min eta=0.0 min
+[18:57:57Z] ARM DONE a-lco3: 27.1s, flown=60 replayed=0
+[18:57:57Z] ARM START t-lco3: 60 TEXT query contacts
+[18:57:57Z] [t-lco3] media marker verified against the LIVE server's GET /props -- the env-pinned LLAMA_MEDIA_MARKER matches the server's own media_marker field (fail-closed)
+[18:57:57Z] [t-lco3] contact 0001/60 [text] slurp:devel:000115:audio-1495375974 ok   0.02s dims=2048 | flown=1 421.2/min eta=0.1 min
+[18:57:58Z] [t-lco3] contact 0002/60 [text] slurp:devel:000444:audio-1502891018-headset ok   0.01s dims=2048 | flown=2 494.3/min eta=0.1 min
+[18:57:58Z] [t-lco3] contact 0003/60 [text] slurp:devel:000943:audio-1434529860-headset ok   0.02s dims=2048 | flown=3 460.7/min eta=0.1 min
+[18:58:02Z] [t-lco3] contact 0060/60 [text] slurp:devel:017009:audio-1502198805-headset ok   0.02s dims=2048 | flown=60 762.0/min eta=0.0 min
+[18:58:04Z] ARM DONE t-lco3: 6.9s, flown=60 replayed=0
+[18:58:05Z] session lco3-last torn down after 203.5s resident; cumulative GPU-active 0.0205 h (wall 0.0565 h, never gates)
+[18:58:05Z] coexistence guard: nothing answers on the generation port 8080 -- PASS
+[18:58:05Z] spawning llama-server in EMBEDDING mode for 'lco3-mean' on port 8093: ['--embedding', '-ngl', '999', '-c', '4096', '-b', '4096', '-ub', '4096', '-np', '1', '--pooling', 'mean']
+[18:58:46Z] session 'lco3-mean' up: pid=3749 port=8093 (spawn+load 41.3s)
+[18:58:46Z] session argv: /home/chao/llama.cpp-featcache/build/bin/llama-server --host 127.0.0.1 --port 8093 -m /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/models/lco-embedding-omni-3b-gguf/LCO-Embedding-Omni-3B-Q8_0.gguf --mmproj /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/models/lco-embedding-omni-3b-gguf/mmproj-LCO-Embedding-Omni-3b-F16.gguf --embedding -ngl 999 -c 4096 -b 4096 -ub 4096 -np 1 --pooling mean
+[18:58:46Z]   model file: models/lco-embedding-omni-3b-gguf/LCO-Embedding-Omni-3B-Q8_0.gguf sha256=53a9898bdb562ae599a81528a2935153457b82e7cac3aa5b10e5eecefc887d6a
+[18:58:46Z]   model file: models/lco-embedding-omni-3b-gguf/mmproj-LCO-Embedding-Omni-3b-F16.gguf sha256=765beb616247081f53c9a0b7fed02b96981c5bad563209b5a47ca770f056a13a
+[18:58:46Z] /props verified for lco3-mean: pooling_type=None
+[18:58:47Z] GATE (c) POOLING-DIFFER [lco3]: BYTE-IDENTICAL -> POOLING-OVERRIDE-PRESENT (this model's own arm verdicts stay stack-scoped)
+[18:58:48Z] session lco3-mean torn down after 42.2s resident; cumulative GPU-active 0.0323 h
+[18:58:48Z] durable spend after stage lco3: calls=1023, audio_seconds=188.259
+[18:58:48Z] STAGE lco3 OK in 336.8s
+ATTEMPT_ID=attempt-20260820T181837Z-3e6c8f
+[18:58:51Z] loading SLURP devel split (sha256 of every devel media file -- slow, model-free)
+[19:00:40Z] inputs + bank ready in 108.8s (BEFORE any spawn -- not charged to GPU time)
+[19:00:40Z] [lco7] EmbeddingClient expected_dim = 3584 (GGUF-declared, gate-confirmed live)
+[19:00:40Z] coexistence guard: nothing answers on the generation port 8080 -- PASS
+[19:00:40Z] spawning llama-server in EMBEDDING mode for 'lco7-last' on port 8095: ['--embedding', '-ngl', '999', '-c', '4096', '-b', '4096', '-ub', '4096', '-np', '1', '--pooling', 'last']
+[19:01:53Z] session 'lco7-last' up: pid=3936 port=8095 (spawn+load 72.8s)
+[19:01:53Z] session argv: /home/chao/llama.cpp-featcache/build/bin/llama-server --host 127.0.0.1 --port 8095 -m /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/models/lco-embedding-omni-7b-gguf/LCO-Embedding-Omni-7B-Q8_0.gguf --mmproj /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/models/lco-embedding-omni-7b-gguf/mmproj-LCO-Embedding-Omni-7b-F16.gguf --embedding -ngl 999 -c 4096 -b 4096 -ub 4096 -np 1 --pooling last
+[19:01:53Z]   model file: models/lco-embedding-omni-7b-gguf/LCO-Embedding-Omni-7B-Q8_0.gguf sha256=0ddf321421abc45dc8422b8a9744f7ea8cb7b01f98003d226865ab83fb93ff56
+[19:01:53Z]   model file: models/lco-embedding-omni-7b-gguf/mmproj-LCO-Embedding-Omni-7b-F16.gguf sha256=bd9e2c7ac1995a0f5dfab1fe824b50a33ee0d24a9807e68cc08cad1fb08595cc
+[19:01:53Z] GATE (a) LCO-7B SERVER SANITY: OK -- LCO-7B server sanity embed succeeded (measured dim 3584)
+[19:01:53Z] /props verified for lco7-last: media_marker='<__media__>' pooling_type=None
+[19:01:54Z] [lco7] repeat-call determinism sample: dims=3584 byte_identical=True
+[19:01:55Z] BANK START lco7: 900 TEXT contacts (bank row texts only; labels never embedded)
+[19:01:55Z] [bank:lco7] media marker verified against the LIVE server's GET /props -- the env-pinned LLAMA_MEDIA_MARKER matches the server's own media_marker field (fail-closed)
+[19:01:55Z] [bank:lco7] contact 0001/900 [text] bank-alarm-000 ok   0.02s dims=3584 | flown=1 1636.5/min eta=0.5 min
+[19:01:55Z] [bank:lco7] contact 0002/900 [text] bank-alarm-001 ok   0.02s dims=3584 | flown=2 1071.3/min eta=0.8 min
+[19:01:55Z] [bank:lco7] contact 0003/900 [text] bank-alarm-002 ok   0.02s dims=3584 | flown=3 673.5/min eta=1.3 min
+[19:02:06Z] [bank:lco7] contact 0100/900 [text] bank-audio-049 ok   0.02s dims=3584 | flown=100 510.2/min eta=1.6 min
+[19:02:18Z] [bank:lco7] contact 0200/900 [text] bank-cooking-049 ok   0.02s dims=3584 | flown=200 511.5/min eta=1.4 min
+[19:02:29Z] [bank:lco7] contact 0300/900 [text] bank-email-049 ok   0.02s dims=3584 | flown=300 525.8/min eta=1.1 min
+[19:02:36Z] [bank:lco7] contact 0400/900 [text] bank-iot-049 ok   0.02s dims=3584 | flown=400 582.3/min eta=0.9 min
+[19:02:46Z] [bank:lco7] contact 0500/900 [text] bank-music-049 ok   0.02s dims=3584 | flown=500 580.1/min eta=0.7 min
+[19:02:57Z] [bank:lco7] contact 0600/900 [text] bank-play-049 ok   0.02s dims=3584 | flown=600 575.0/min eta=0.5 min
+[19:03:09Z] [bank:lco7] contact 0700/900 [text] bank-recommendation-049 ok   0.02s dims=3584 | flown=700 564.5/min eta=0.4 min
+[19:03:22Z] [bank:lco7] contact 0800/900 [text] bank-takeaway-049 ok   0.02s dims=3584 | flown=800 546.3/min eta=0.2 min
+[19:03:35Z] [bank:lco7] contact 0900/900 [text] bank-weather-049 ok   0.02s dims=3584 | flown=900 539.7/min eta=0.0 min
+[19:04:12Z] BANK DONE lco7: 137.3s, flown=900 replayed=0
+[19:04:12Z] ARM START a-lco7: 60 AUDIO query contacts
+[19:04:12Z] [a-lco7] media marker verified against the LIVE server's GET /props -- the env-pinned LLAMA_MEDIA_MARKER matches the server's own media_marker field (fail-closed)
+[19:04:13Z] [a-lco7] contact 0001/60 [audio] slurp:devel:000115:audio-1495375974 ok   0.69s dims=3584 | flown=1 82.1/min eta=0.7 min
+[19:04:13Z] [a-lco7] contact 0002/60 [audio] slurp:devel:000444:audio-1502891018-headset ok   0.56s dims=3584 | flown=2 77.5/min eta=0.7 min
+[19:04:14Z] [a-lco7] contact 0003/60 [audio] slurp:devel:000943:audio-1434529860-headset ok   0.56s dims=3584 | flown=3 72.4/min eta=0.8 min
+[19:05:17Z] [a-lco7] contact 0060/60 [audio] slurp:devel:017009:audio-1502198805-headset ok   0.56s dims=3584 | flown=60 54.9/min eta=0.0 min
+[19:05:20Z] ARM DONE a-lco7: 67.7s, flown=60 replayed=0
+[19:05:20Z] ARM START t-lco7: 60 TEXT query contacts
+[19:05:20Z] [t-lco7] media marker verified against the LIVE server's GET /props -- the env-pinned LLAMA_MEDIA_MARKER matches the server's own media_marker field (fail-closed)
+[19:05:20Z] [t-lco7] contact 0001/60 [text] slurp:devel:000115:audio-1495375974 ok   0.03s dims=3584 | flown=1 1574.4/min eta=0.0 min
+[19:05:20Z] [t-lco7] contact 0002/60 [text] slurp:devel:000444:audio-1502891018-headset ok   0.02s dims=3584 | flown=2 711.8/min eta=0.1 min
+[19:05:20Z] [t-lco7] contact 0003/60 [text] slurp:devel:000943:audio-1434529860-headset ok   0.02s dims=3584 | flown=3 692.8/min eta=0.1 min
+[19:05:28Z] [t-lco7] contact 0060/60 [text] slurp:devel:017009:audio-1502198805-headset ok   0.02s dims=3584 | flown=60 454.2/min eta=0.0 min
+[19:05:35Z] ARM DONE t-lco7: 15.6s, flown=60 replayed=0
+[19:05:36Z] session lco7-last torn down after 295.5s resident; cumulative GPU-active 0.0696 h (wall 0.1503 h, never gates)
+[19:05:36Z] coexistence guard: nothing answers on the generation port 8080 -- PASS
+[19:05:36Z] spawning llama-server in EMBEDDING mode for 'lco7-mean' on port 8095: ['--embedding', '-ngl', '999', '-c', '4096', '-b', '4096', '-ub', '4096', '-np', '1', '--pooling', 'mean']
+[19:06:59Z] session 'lco7-mean' up: pid=4451 port=8095 (spawn+load 82.6s)
+[19:06:59Z] session argv: /home/chao/llama.cpp-featcache/build/bin/llama-server --host 127.0.0.1 --port 8095 -m /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/models/lco-embedding-omni-7b-gguf/LCO-Embedding-Omni-7B-Q8_0.gguf --mmproj /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/models/lco-embedding-omni-7b-gguf/mmproj-LCO-Embedding-Omni-7b-F16.gguf --embedding -ngl 999 -c 4096 -b 4096 -ub 4096 -np 1 --pooling mean
+[19:06:59Z]   model file: models/lco-embedding-omni-7b-gguf/LCO-Embedding-Omni-7B-Q8_0.gguf sha256=0ddf321421abc45dc8422b8a9744f7ea8cb7b01f98003d226865ab83fb93ff56
+[19:06:59Z]   model file: models/lco-embedding-omni-7b-gguf/mmproj-LCO-Embedding-Omni-7b-F16.gguf sha256=bd9e2c7ac1995a0f5dfab1fe824b50a33ee0d24a9807e68cc08cad1fb08595cc
+[19:06:59Z] /props verified for lco7-mean: pooling_type=None
+[19:07:00Z] GATE (c) POOLING-DIFFER [lco7]: BYTE-IDENTICAL -> POOLING-OVERRIDE-PRESENT (this model's own arm verdicts stay stack-scoped)
+[19:07:02Z] session lco7-mean torn down after 84.4s resident; cumulative GPU-active 0.0929 h
+[19:07:03Z] durable spend after stage lco7: calls=2047, audio_seconds=376.519
+[19:07:03Z] STAGE lco7 OK in 491.7s
+ATTEMPT_ID=attempt-20260820T181837Z-3e6c8f
+[19:09:31Z] loading SLURP devel split (sha256 of every devel media file -- slow, model-free)
+[19:10:25Z] inputs + bank ready in 53.9s (BEFORE any spawn)
+[19:10:25Z] coexistence guard: nothing answers on the generation port 8080 -- PASS
+[19:10:25Z] spawning llama-server in EMBEDDING mode for 'qw' on port 8094: ['--embedding', '--pooling', 'last', '-ngl', '999', '-c', '4096', '-b', '4096', '-ub', '4096', '-np', '1']
+[19:10:30Z] session 'qw' up: pid=757 port=8094 (spawn+load 5.0s)
+[19:10:30Z] session argv: /home/chao/llama.cpp-featcache/build/bin/llama-server --host 127.0.0.1 --port 8094 -m /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/models/qwen3-embedding-0.6b-gguf/Qwen3-Embedding-0.6B-Q8_0.gguf --embedding --pooling last -ngl 999 -c 4096 -b 4096 -ub 4096 -np 1
+[19:10:30Z]   model file: models/qwen3-embedding-0.6b-gguf/Qwen3-Embedding-0.6B-Q8_0.gguf sha256=06507c7b42688469c4e7298b0a1e16deff06caf291cf0a5b278c308249c3e439
+[19:10:30Z] /props for qw (text-only, no media marker to verify): pooling_type=None
+[19:10:30Z] [qw] repeat-call determinism sample: dims=1024 byte_identical=False
+[19:10:30Z] BANK START qw: 900 TEXT contacts (bank row texts only; labels never embedded)
+[19:10:30Z] [bank:qw] contact 0001/900 [text] bank-alarm-000 ok   0.01s dims=1024 | flown=1 1994.5/min eta=0.5 min
+[19:10:30Z] [bank:qw] contact 0002/900 [text] bank-alarm-001 ok   0.01s dims=1024 | flown=2 2193.7/min eta=0.4 min
+[19:10:30Z] [bank:qw] contact 0003/900 [text] bank-alarm-002 ok   0.01s dims=1024 | flown=3 2007.7/min eta=0.4 min
+[19:10:33Z] [bank:qw] contact 0100/900 [text] bank-audio-049 ok   0.01s dims=1024 | flown=100 2394.6/min eta=0.3 min
+[19:10:35Z] [bank:qw] contact 0200/900 [text] bank-cooking-049 ok   0.01s dims=1024 | flown=200 2328.4/min eta=0.3 min
+[19:10:38Z] [bank:qw] contact 0300/900 [text] bank-email-049 ok   0.01s dims=1024 | flown=300 2340.1/min eta=0.3 min
+[19:10:40Z] [bank:qw] contact 0400/900 [text] bank-iot-049 ok   0.01s dims=1024 | flown=400 2351.3/min eta=0.2 min
+[19:10:43Z] [bank:qw] contact 0500/900 [text] bank-music-049 ok   0.01s dims=1024 | flown=500 2360.2/min eta=0.2 min
+[19:10:47Z] [bank:qw] contact 0600/900 [text] bank-play-049 ok   0.01s dims=1024 | flown=600 2182.2/min eta=0.1 min
+[19:10:49Z] [bank:qw] contact 0700/900 [text] bank-recommendation-049 ok   0.01s dims=1024 | flown=700 2201.2/min eta=0.1 min
+[19:10:52Z] [bank:qw] contact 0800/900 [text] bank-takeaway-049 ok   0.01s dims=1024 | flown=800 2210.7/min eta=0.0 min
+[19:10:54Z] [bank:qw] contact 0900/900 [text] bank-weather-049 ok   0.01s dims=1024 | flown=900 2227.6/min eta=0.0 min
+[19:11:04Z] BANK DONE qw: 33.7s, flown=900 replayed=0
+[19:11:04Z] ARM START t-qw: 60 TEXT query contacts
+[19:11:04Z] [t-qw] contact 0001/60 [text] slurp:devel:000115:audio-1495375974 ok   0.02s dims=1024 | flown=1 1651.1/min eta=0.0 min
+[19:11:04Z] [t-qw] contact 0002/60 [text] slurp:devel:000444:audio-1502891018-headset ok   0.02s dims=1024 | flown=2 1845.0/min eta=0.0 min
+[19:11:04Z] [t-qw] contact 0003/60 [text] slurp:devel:000943:audio-1434529860-headset ok   0.02s dims=1024 | flown=3 1791.8/min eta=0.0 min
+[19:11:06Z] [t-qw] contact 0060/60 [text] slurp:devel:017009:audio-1502198805-headset ok   0.01s dims=1024 | flown=60 2119.8/min eta=0.0 min
+[19:11:06Z] ARM DONE t-qw: 2.3s, flown=60 replayed=0
+[19:11:07Z] session qw torn down after 41.2s resident; cumulative GPU-active 0.0971 h
+[19:11:07Z] durable spend after stage qw: calls=3009, audio_seconds=376.519
+[19:11:07Z] STAGE qw OK in 95.6s
+ATTEMPT_ID=attempt-20260820T181837Z-3e6c8f
+[19:11:08Z] loading SLURP devel split (sha256 of every devel media file -- slow, model-free)
+[19:12:04Z] inputs + bank ready in 55.5s
+Loading weights:   0%|          | 0/552 [00:00<?, ?it/s]Loading weights:  33%|███▎      | 180/552 [00:00<00:00, 1788.45it/s]Loading weights: 100%|██████████| 552/552 [00:00<00:00, 5103.88it/s]
+[19:12:22Z] [glap] model loaded in 18.6s
+[19:12:25Z] GATE (b) GLAP IMPORT + AUDIO-PATH SANITY: OK -- text+audio sanity succeeded (text dim 1024, audio dim 1024)
+[19:12:25Z] BANK START glap: 900 TEXT contacts (bank row texts only; labels never embedded)
+[19:12:25Z] [bank:glap] contact 0001/900 [text] bank-alarm-000 ok   0.75s dims=1024 | flown=1 77.5/min eta=11.6 min
+[19:12:26Z] [bank:glap] contact 0002/900 [text] bank-alarm-001 ok   0.53s dims=1024 | flown=2 90.9/min eta=9.9 min
+[19:12:26Z] [bank:glap] contact 0003/900 [text] bank-alarm-002 ok   0.45s dims=1024 | flown=3 100.6/min eta=8.9 min
+[19:13:19Z] [bank:glap] contact 0100/900 [text] bank-audio-049 ok   0.42s dims=1024 | flown=100 110.3/min eta=7.3 min
+[19:14:13Z] [bank:glap] contact 0200/900 [text] bank-cooking-049 ok   0.45s dims=1024 | flown=200 110.4/min eta=6.3 min
+[19:15:08Z] [bank:glap] contact 0300/900 [text] bank-email-049 ok   0.56s dims=1024 | flown=300 110.3/min eta=5.4 min
+[19:16:02Z] [bank:glap] contact 0400/900 [text] bank-iot-049 ok   0.51s dims=1024 | flown=400 110.5/min eta=4.5 min
+[19:16:55Z] [bank:glap] contact 0500/900 [text] bank-music-049 ok   0.49s dims=1024 | flown=500 111.2/min eta=3.6 min
+[19:17:49Z] [bank:glap] contact 0600/900 [text] bank-play-049 ok   0.46s dims=1024 | flown=600 111.0/min eta=2.7 min
+[19:18:41Z] [bank:glap] contact 0700/900 [text] bank-recommendation-049 ok   0.47s dims=1024 | flown=700 111.5/min eta=1.8 min
+[19:19:37Z] [bank:glap] contact 0800/900 [text] bank-takeaway-049 ok   0.54s dims=1024 | flown=800 111.1/min eta=0.9 min
+[19:20:30Z] [bank:glap] contact 0900/900 [text] bank-weather-049 ok   0.44s dims=1024 | flown=900 111.3/min eta=0.0 min
+[19:20:38Z] BANK DONE glap: 493.4s, flown=900 replayed=0
+[19:20:38Z] ARM START a-glap: 60 AUDIO query contacts
+[19:20:38Z] [a-glap] contact 0001/60 [audio] slurp:devel:000115:audio-1495375974 ok   0.02s dims=1024 | flown=1 1410.8/min eta=0.0 min
+[19:20:38Z] [a-glap] contact 0002/60 [audio] slurp:devel:000444:audio-1502891018-headset ok   0.01s dims=1024 | flown=2 1647.6/min eta=0.0 min
+[19:20:38Z] [a-glap] contact 0003/60 [audio] slurp:devel:000943:audio-1434529860-headset ok   0.01s dims=1024 | flown=3 1738.7/min eta=0.0 min
+[19:20:40Z] [a-glap] contact 0060/60 [audio] slurp:devel:017009:audio-1502198805-headset ok   0.01s dims=1024 | flown=60 1827.5/min eta=0.0 min
+[19:20:41Z] ARM DONE a-glap: 2.5s, flown=60 replayed=0
+[19:20:41Z] ARM START t-glap: 60 TEXT query contacts
+[19:20:41Z] [t-glap] contact 0001/60 [text] slurp:devel:000115:audio-1495375974 ok   0.56s dims=1024 | flown=1 102.6/min eta=0.6 min
+[19:20:42Z] [t-glap] contact 0002/60 [text] slurp:devel:000444:audio-1502891018-headset ok   0.40s dims=1024 | flown=2 119.9/min eta=0.5 min
+[19:20:42Z] [t-glap] contact 0003/60 [text] slurp:devel:000943:audio-1434529860-headset ok   0.43s dims=1024 | flown=3 124.2/min eta=0.5 min
+[19:21:09Z] [t-glap] contact 0060/60 [text] slurp:devel:017009:audio-1502198805-headset ok   0.50s dims=1024 | flown=60 126.0/min eta=0.0 min
+[19:21:15Z] ARM DONE t-glap: 34.8s, flown=60 replayed=0
+[19:21:16Z] [glap] in-process arm wall 551.6s (contact latency 518.7s); cumulative GPU-active 0.2504 h
+[19:21:16Z] durable spend after stage glap: calls=4031, audio_seconds=560.778
+[19:21:16Z] STAGE glap OK in 607.6s
+ATTEMPT_ID=attempt-20260820T181837Z-3e6c8f
+[19:21:55Z] retrieval: flyable arms ['a-lco3', 'a-lco7', 'a-glap', 't-lco3', 't-lco7', 't-glap', 't-qw']; dropped []
+[19:22:43Z]   bank vectors [lco3]: 900 rows, dim 2048
+[19:23:19Z]   bank vectors [lco7]: 900 rows, dim 3584
+[19:23:57Z]   bank vectors [glap]: 900 rows, dim 1024
+[19:24:43Z]   bank vectors [qw]: 900 rows, dim 1024
+[19:24:46Z]   retrieval [a-lco3]: 60 samples ranked against 900 bank rows in 0.2s
+[19:24:49Z]   retrieval [a-lco7]: 60 samples ranked against 900 bank rows in 0.3s
+[19:24:52Z]   retrieval [a-glap]: 60 samples ranked against 900 bank rows in 0.2s
+[19:24:54Z]   retrieval [t-lco3]: 60 samples ranked against 900 bank rows in 0.2s
+[19:24:57Z]   retrieval [t-lco7]: 60 samples ranked against 900 bank rows in 0.3s
+[19:25:00Z]   retrieval [t-glap]: 60 samples ranked against 900 bank rows in 0.2s
+[19:25:02Z]   retrieval [t-qw]: 60 samples ranked against 900 bank rows in 0.2s
+[19:25:02Z] retrieval plan written: /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/derived/embeddings/SAEA-PROBE-pemb4r-4100/retrieval-plan/retrieval_plan.json
+[19:25:02Z] retrieval plan sha256: 7150c6b3410de4cc883da7f5ef0798dd80e4beaf253037594e99ff8cf5cea768
+[19:25:02Z] winner arm (GOLD-FREE proxy, max mean_top1_cosine across all flown kNN arms (gold-free proxy; documented judgment call, ties broken by sorted arm_id)): t-glap
+[19:25:02Z]   [a-glap] mean_top1_cosine=0.128000 k5 candidate-set sizes={"2": 3, "3": 18, "4": 26, "5": 13}
+[19:25:02Z]   [a-lco3] mean_top1_cosine=0.169990 k5 candidate-set sizes={"2": 2, "3": 25, "4": 24, "5": 9}
+[19:25:02Z]   [a-lco7] mean_top1_cosine=0.275342 k5 candidate-set sizes={"2": 38, "3": 21, "5": 1}
+[19:25:02Z]   [t-glap] mean_top1_cosine=0.890102 k5 candidate-set sizes={"2": 3, "3": 13, "4": 24, "5": 20}
+[19:25:02Z]   [t-lco3] mean_top1_cosine=0.670924 k5 candidate-set sizes={"1": 6, "2": 5, "3": 23, "4": 14, "5": 12}
+[19:25:02Z]   [t-lco7] mean_top1_cosine=0.596432 k5 candidate-set sizes={"1": 11, "2": 13, "3": 25, "4": 10, "5": 1}
+[19:25:02Z]   [t-qw] mean_top1_cosine=0.758009 k5 candidate-set sizes={"1": 39, "2": 10, "3": 8, "4": 3}
+[19:25:02Z] RETRIEVAL PLAN COMPLETE -- zero contacts spent, zero gold loaded
+[19:25:02Z] STAGE retrieval OK in 188.0s
+ATTEMPT_ID=attempt-20260820T181837Z-3e6c8f
+[19:26:27Z] winner arm t-glap (query kind text); retrieval plan sha256 7150c6b3410de4cc883da7f5ef0798dd80e4beaf253037594e99ff8cf5cea768
+[19:26:27Z] coordinator pre-contact ruling recorded at 2026-08-20T19:09:12.462881+00:00 (before any generation contact):
+[19:26:27Z]   Coordinator pre-contact ruling 2026-08-20: if budget_forced fires, the registration's C-DECODE HELPS/HURTS clauses are NOT evaluable at the read (modality confound against the audio-modality FS-NONE comparator); C-DECODE then reports descriptively only. If the winner is a text arm, clauses evaluate as registered.
+[19:26:27Z] loading SLURP devel split (sha256 of every devel media file -- slow, model-free)
+[19:27:19Z] inputs ready in 52.2s (BEFORE any spawn)
+[19:27:19Z] winner arm 't-glap' is a TEXT arm and the modality it queried with is affordable (139.22s metered audio remaining, 185.30s needed); C-DECODE presents the SAME modality the winner's own query side used, per the machinery.
+[19:27:19Z] FORWARD RULE (P-CORR-F section 8): running the FULL frozen-core gate -- including the q4km GGUF attestation -- BEFORE any server is spawned, so model-identity hashing never runs while a session holds VRAM idle. This is minutes of cold 9p I/O and costs ZERO GPU time.
+[19:28:43Z] frozen-core gate PASS in 83.2s (umbrella lock sha256 9064bde89d4248fd80c9c2f93c2a9c276a454eadbb1aa7d529671118961371b1)
+[19:28:43Z] payload binding built (still pre-spawn)
+[19:28:43Z] spawning llama-server (receipt-pinned q4km binary, CHILD of this process)
+[19:29:05Z] session up: pid=889 port=8080 (spawn+load 22.3s)
+[19:29:05Z] session argv: /home/chao/llama.cpp-featcache/build/bin/llama-server --host 127.0.0.1 --port 8080 -m /home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf --mmproj /home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/mmproj-Qwen3-Omni-30B-A3B-Instruct-bf16.gguf -c 49152 -np 4 -fa on -ngl 999 -ctk q8_0 -ctv q8_0
+[19:29:05Z] generation parallelism: -np 4 (carried UNCHANGED from the committed fragment)
+[19:29:05Z]   model file: models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf sha256=0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d
+[19:29:05Z]   model file: models/qwen3-omni-30b-a3b-instruct-gguf-q4km/mmproj-Qwen3-Omni-30B-A3B-Instruct-bf16.gguf sha256=f0dfe825fb692d426362b1ac79678fc08daa4758f7151526cad110515f122883
+[19:29:06Z] session q4km-core torn down after 23.1s resident; cumulative GPU-active 0.2566 h
+[19:29:06Z] STAGE cdecode FAILED: FrozenCoreError: attempt accounting refused: attempt SAEA-PROBE-pemb4r-4100/attempt-20260820T181837Z-3e6c8f is already reserved or opened at /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/attempts/SAEA-PROBE-pemb4r-4100/attempt-20260820T181837Z-3e6c8f.json; a (run_id, attempt_id) pair is a one-time key -- a retry must mint a fresh attempt_id, never reuse this one
+Traceback (most recent call last):
+  File "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/src/speech_aware_evidence_acquisition/core/attempts/store.py", line 94, in open_attempt
+    os.link(tmp, path)
+FileExistsError: [Errno 17] File exists: '/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/attempts/SAEA-PROBE-pemb4r-4100/.attempt-20260820T181837Z-3e6c8f.json.reserving-690-143394464029883' -> '/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/attempts/SAEA-PROBE-pemb4r-4100/attempt-20260820T181837Z-3e6c8f.json'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/src/speech_aware_evidence_acquisition/core/model/lifecycle.py", line 151, in _open_gate_and_attempt
+    handle = store.open_attempt(
+             ^^^^^^^^^^^^^^^^^^^
+  File "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/src/speech_aware_evidence_acquisition/core/attempts/store.py", line 96, in open_attempt
+    raise AttemptError(
+speech_aware_evidence_acquisition.core.attempts.errors.AttemptError: attempt SAEA-PROBE-pemb4r-4100/attempt-20260820T181837Z-3e6c8f is already reserved or opened at /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/attempts/SAEA-PROBE-pemb4r-4100/attempt-20260820T181837Z-3e6c8f.json; a (run_id, attempt_id) pair is a one-time key -- a retry must mint a fresh attempt_id, never reuse this one
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/mnt/c/Users/35686/AppData/Local/Temp/claude/D--chao-workspace-exploring-l4-intelligence-studies-speech-aware-evidence-acquisition/6d9f1834-68e9-41a7-bbcc-724898cf15a9/scratchpad/pemb4r/launch_pemb4r_flight.py", line 2408, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/mnt/c/Users/35686/AppData/Local/Temp/claude/D--chao-workspace-exploring-l4-intelligence-studies-speech-aware-evidence-acquisition/6d9f1834-68e9-41a7-bbcc-724898cf15a9/scratchpad/pemb4r/launch_pemb4r_flight.py", line 2398, in main
+    code = handlers[args.stage](args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/c/Users/35686/AppData/Local/Temp/claude/D--chao-workspace-exploring-l4-intelligence-studies-speech-aware-evidence-acquisition/6d9f1834-68e9-41a7-bbcc-724898cf15a9/scratchpad/pemb4r/launch_pemb4r_flight.py", line 2036, in stage_cdecode
+    client = FrozenCoreClient(
+             ^^^^^^^^^^^^^^^^^
+  File "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/src/speech_aware_evidence_acquisition/rails/core_client.py", line 438, in __init__
+    self._adapter = FrozenCoreAdapter(
+                    ^^^^^^^^^^^^^^^^^^
+  File "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/src/speech_aware_evidence_acquisition/core/model/adapter.py", line 86, in __init__
+    lock_sha256, session_check, store, handle = self._open_gate_and_attempt(
+                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/src/speech_aware_evidence_acquisition/core/model/lifecycle.py", line 159, in _open_gate_and_attempt
+    raise FrozenCoreError(f"attempt accounting refused: {error}") from error
+speech_aware_evidence_acquisition.core.model.FrozenCoreError: attempt accounting refused: attempt SAEA-PROBE-pemb4r-4100/attempt-20260820T181837Z-3e6c8f is already reserved or opened at /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/attempts/SAEA-PROBE-pemb4r-4100/attempt-20260820T181837Z-3e6c8f.json; a (run_id, attempt_id) pair is a one-time key -- a retry must mint a fresh attempt_id, never reuse this one
+[19:37:50Z]   bank[lco3]: complete=True count=900 dims=2048
+[19:39:42Z]   bank[lco7]: complete=True count=900 dims=3584
+[19:41:31Z]   bank[glap]: complete=True count=900 dims=1024
+[19:43:24Z]   bank[qw]: complete=True count=900 dims=1024
+[19:43:32Z]   a-lco3: complete=True count=60 dims=2048
+[19:43:39Z]   a-lco7: complete=True count=60 dims=3584
+[19:43:48Z]   a-glap: complete=True count=60 dims=1024
+[19:43:55Z]   t-lco3: complete=True count=60 dims=2048
+[19:44:02Z]   t-lco7: complete=True count=60 dims=3584
+[19:44:10Z]   t-glap: complete=True count=60 dims=1024
+[19:44:18Z]   t-qw: complete=True count=60 dims=1024
+[19:44:18Z] sweep-total invariant: 4020 vectors on disk, expected 4020 -- PASS
+[19:44:18Z] GPU accounting (P-CORR-F section-8 basis): measured-equivalent 0.1737 h, GPU-active 0.2566 h, server-alive wall 0.3448 h (wall recorded, NEVER gates) -- ceiling 0.5 h
+[19:44:19Z] attempt attempt-20260820T181837Z-3e6c8f FINALIZED
+[19:44:19Z] flight receipt: /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-pemb4r-4100/attempt-20260820T181837Z-3e6c8f/flight-receipt.json
+[19:44:19Z] durable spend this attempt: calls=4031, audio_seconds=560.778, gpu_hours(active)=0.2566
+[19:44:19Z] vs registered ceilings: 4031/4500 calls, 560.8/700s audio, 0.2566/0.5 GPU-h (active), 0.1737 measured-equivalent, 0.3448 wall
+[19:44:19Z] STAGE finalize OK in 499.8s
+ATTEMPT_ID=attempt-20260820T181837Z-3e6c8f

@@ -1,0 +1,142 @@
+ls: cannot access '/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/derived/embeddings/SAEA-PROBE-pemb4r-4100': No such file or directory
+
+=== pemb4r attempts (expect ABSENT) ===
+ls: cannot access '/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/attempts/SAEA-PROBE-pemb4r-4100': No such file or directory
+
+=== any pemb4r trace anywhere under data root (find, maxdepth 6) ===
+
+=== models dir ===
+total 0
+drwxrwxrwx 1 chao chao 4096 Aug 20 01:50 .
+drwxrwxrwx 1 chao chao 4096 Aug 20 11:35 ..
+drwxrwxrwx 1 chao chao 4096 Jul  8 01:25 campplus-zh
+drwxrwxrwx 1 chao chao 4096 Jul  8 06:53 clap-htsat-unfused
+drwxrwxrwx 1 chao chao 4096 Jul  9 03:25 clsp
+drwxrwxrwx 1 chao chao 4096 Jul  9 03:44 dasheng
+drwxrwxrwx 1 chao chao 4096 Aug 18 21:12 diar-sortformer-4spk-v2
+drwxrwxrwx 1 chao chao 4096 Jul  8 04:06 emotion2vec-plus-large
+drwxrwxrwx 1 chao chao 4096 Jul  9 02:09 emotion2vec-s
+drwxrwxrwx 1 chao chao 4096 Jul  8 01:30 eres2netv2-zh
+drwxrwxrwx 1 chao chao 4096 Aug 10 14:06 gemma-4-e4b-it-gguf
+drwxrwxrwx 1 chao chao 4096 Jul  8 03:30 glap
+drwxrwxrwx 1 chao chao 4096 Jul  8 05:14 lco-embedding-omni-3b-gguf
+drwxrwxrwx 1 chao chao 4096 Jul  8 06:48 lco-embedding-omni-7b-gguf
+drwxrwxrwx 1 chao chao 4096 Jul  9 08:51 meralion-2-gguf
+drwxrwxrwx 1 chao chao 4096 Jul  8 04:24 meralion-speech-encoder-2
+drwxrwxrwx 1 chao chao 4096 Aug 10 14:22 minicpm-o-4_5-gguf
+drwxrwxrwx 1 chao chao 4096 Jun  9 22:33 nemotron3-nano-omni-nvfp4
+drwxrwxrwx 1 chao chao 4096 Jun 22 02:55 omni-embed-nemotron-3b
+drwxrwxrwx 1 chao chao 4096 Aug 20 01:55 qwen3-embedding-0.6b-gguf
+drwxrwxrwx 1 chao chao 4096 Aug  9 01:55 qwen3-omni-30b-a3b-instruct-gguf
+drwxrwxrwx 1 chao chao 4096 Aug  9 01:52 qwen3-omni-30b-a3b-instruct-gguf-q4km
+drwxrwxrwx 1 chao chao 4096 Jul  8 01:31 redimnet-b6
+drwxrwxrwx 1 chao chao 4096 Jul  9 21:02 sense
+drwxrwxrwx 1 chao chao 4096 Jul  9 02:58 sensevoice-small
+drwxrwxrwx 1 chao chao 4096 Aug 12 20:47 speech-tools
+drwxrwxrwx 1 chao chao 4096 Aug 10 13:50 voxtral-mini-3b-2507-gguf
+drwxrwxrwx 1 chao chao 4096 Jul  8 01:29 wavlm-base-plus
+drwxrwxrwx 1 chao chao 4096 Jul  8 03:03 wavlm-large
+
+=== LCO-3B files ===
+total 6092360
+drwxrwxrwx 1 chao chao       4096 Jul  8 05:14 .
+drwxrwxrwx 1 chao chao       4096 Aug 20 01:50 ..
+drwxrwxrwx 1 chao chao       4096 Jul  8 04:24 .hfd
+-rwxrwxrwx 1 chao chao 3616087264 Jul  8 05:14 LCO-Embedding-Omni-3B-Q8_0.gguf
+-rwxrwxrwx 1 chao chao       5946 Jul  8 04:24 README.md
+-rwxrwxrwx 1 chao chao 2622477952 Jul  8 04:56 mmproj-LCO-Embedding-Omni-3b-F16.gguf
+
+=== LCO-7B files ===
+total 10488952
+drwxrwxrwx 1 chao chao       4096 Jul  8 06:48 .
+drwxrwxrwx 1 chao chao       4096 Aug 20 01:50 ..
+drwxrwxrwx 1 chao chao       4096 Jul  8 05:14 .hfd
+-rwxrwxrwx 1 chao chao 8098523968 Jul  8 06:48 LCO-Embedding-Omni-7B-Q8_0.gguf
+-rwxrwxrwx 1 chao chao       7866 Jul  8 05:14 README.md
+-rwxrwxrwx 1 chao chao 2642151136 Jul  8 05:53 mmproj-LCO-Embedding-Omni-7b-F16.gguf
+
+=== qwen3-embedding files ===
+total 624172
+drwxrwxrwx 1 chao chao      4096 Aug 20 01:55 .
+drwxrwxrwx 1 chao chao      4096 Aug 20 01:50 ..
+drwxrwxrwx 1 chao chao      4096 Aug 20 01:50 .hfd
+-rwxrwxrwx 1 chao chao       688 Aug 20 01:55 .speechrl-asset.json
+-rwxrwxrwx 1 chao chao 639150592 Aug 20 01:55 Qwen3-Embedding-0.6B-Q8_0.gguf
+
+=== glap ===
+total 3346620
+drwxrwxrwx 1 chao chao       4096 Jul  8 03:30 .
+drwxrwxrwx 1 chao chao       4096 Aug 20 01:50 ..
+drwxrwxrwx 1 chao chao       4096 Jul  8 03:03 .hfd
+-rwxrwxrwx 1 chao chao       5699 Jul  8 03:03 README.md
+-rwxrwxrwx 1 chao chao        119 Jul  8 03:03 __init__.py
+-rwxrwxrwx 1 chao chao        609 Jul  8 03:03 config.json
+-rwxrwxrwx 1 chao chao       1635 Jul  8 03:03 configuration_glap.py
+-rwxrwxrwx 1 chao chao 3422036400 Jul  8 03:30 model.safetensors
+-rwxrwxrwx 1 chao chao      29858 Jul  8 03:03 modeling_glap.py
+-rwxrwxrwx 1 chao chao    4852054 Jul  8 03:03 sentencepiece.source.256000.model
+
+=== q4km core (C-DECODE) ===
+/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/models/qwen3-omni-30b-a3b-instruct-gguf:
+total 33878872
+drwxrwxrwx 1 chao chao        4096 Aug  9 01:55 .
+drwxrwxrwx 1 chao chao        4096 Aug 20 01:50 ..
+-rwxrwxrwx 1 chao chao 32484494336 Jun 25 05:53 Qwen3-Omni-30B-A3B-Instruct-Q8_0.gguf
+-rwxrwxrwx 1 chao chao  2207465568 Jun 25 06:03 mmproj-Qwen3-Omni-30B-A3B-Instruct-bf16.gguf
+
+/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/models/qwen3-omni-30b-a3b-instruct-gguf-q4km:
+total 20277856
+drwxrwxrwx 1 chao chao        4096 Aug  9 01:52 .
+drwxrwxrwx 1 chao chao        4096 Aug 20 01:50 ..
+-rwxrwxrwx 1 chao chao 18557053952 Aug  9 00:36 Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf
+-rwxrwxrwx 1 chao chao  2207465568 Aug  9 01:52 mmproj-Qwen3-Omni-30B-A3B-Instruct-bf16.gguf
+
+=== pkey2-338 transcript registry ===
+-rwxrwxrwx 1 chao chao 14656 Aug 19 07:36 /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-pkey2-338/attempt-20260819T111032Z-3109e8/transcript-registry.json
+f8f6426aeb0eb84c33ad58b603cb36b8f420c3063149b6cd11a0b210d8774959  /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-pkey2-338/attempt-20260819T111032Z-3109e8/transcript-registry.json
+
+=== llama.cpp runtime ===
+-rwxr-xr-x 1 chao chao 17920 Aug 11 20:20 /home/chao/llama.cpp-featcache/build/bin/llama-server
+
+=== ports 8080 8093 8094 8095 ===
+none listening
+
+=== llama-server processes ===
+no llama-server running
+
+=== feat-cache dirs ===
+total 4556
+drwxr-xr-x  7 chao chao    4096 Aug 20 06:06 .
+drwxr-x--- 44 chao chao   20480 Aug 18 22:11 ..
+drwxr-xr-x  2 chao chao 2809856 Aug 20 03:02 ami-q4km
+drwxr-xr-x  2 chao chao   32768 Aug 19 12:10 audio2tool-q4km
+drwxr-xr-x  2 chao chao 1773568 Aug 16 14:09 q4km
+drwxr-xr-x  2 chao chao   12288 Aug 20 07:56 slurp-lco3b
+drwxr-xr-x  2 chao chao    4096 Aug 17 21:08 slurp-q4km
+716M	/home/chao/feat-cache/slurp-lco3b
+
+=== disk free ===
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sdd       1007G  223G  734G  24% /
+E:\             3.8T  1.3T  2.6T  33% /mnt/e
+
+=== nvidia-smi ===
+clocks.current.sm [MHz], clocks.max.sm [MHz], memory.used [MiB], memory.total [MiB], utilization.gpu [%], pstate, temperature.gpu
+1200 MHz, 3090 MHz, 336 MiB, 24463 MiB, 0 %, P5, 42
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA GeForce RTX 5090 ...    On  |   00000000:02:00.0 Off |                  N/A |
+| N/A   42C    P5             12W /   70W |     336MiB /  24463MiB |      1%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+
+[exited with code 0]

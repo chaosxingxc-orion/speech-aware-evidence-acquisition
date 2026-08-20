@@ -1,0 +1,16 @@
+{
+  "actual": {
+    "audio_seconds": 560.7783163439691,
+    "calls": 4031,
+    "gpu_seconds": 923.7122182846068
+  },
+  "attempt_id": "attempt-20260820T181837Z-3e6c8f",
+  "carrier_lock_key": "slurp",
+  "reserved": {
+    "audio_seconds": 700.0,
+    "calls": 4100
+  },
+  "run_id": "SAEA-PROBE-pemb4r-4100",
+  "schema": "saea-attempt-v1",
+  "state": "FINALIZED"
+}

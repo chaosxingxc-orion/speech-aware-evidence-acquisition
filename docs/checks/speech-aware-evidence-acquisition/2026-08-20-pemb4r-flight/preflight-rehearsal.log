@@ -1,0 +1,121 @@
+temp root: /tmp/pemb4r-rehearsal-pr9_x27q
+[19:46:08Z] BANK START lco3: 900 TEXT contacts (bank row texts only; labels never embedded)
+[19:46:08Z] [bank:lco3] media marker verified against the LIVE server's GET /props -- the env-pinned LLAMA_MEDIA_MARKER matches the server's own media_marker field (fail-closed)
+[19:46:08Z] [bank:lco3] contact 0001/900 [text] bank-alarm-000 ok   0.00s dims=2048 | flown=1 32156.7/min eta=0.0 min
+[19:46:08Z] [bank:lco3] contact 0002/900 [text] bank-alarm-001 ok   0.00s dims=2048 | flown=2 37513.3/min eta=0.0 min
+[19:46:08Z] [bank:lco3] contact 0003/900 [text] bank-alarm-002 ok   0.00s dims=2048 | flown=3 39556.5/min eta=0.0 min
+[19:46:08Z] BANK DONE lco3: 0.2s, flown=12 replayed=0
+[19:46:08Z] ARM START a-lco3: 60 AUDIO query contacts
+[19:46:08Z] [a-lco3] media marker verified against the LIVE server's GET /props -- the env-pinned LLAMA_MEDIA_MARKER matches the server's own media_marker field (fail-closed)
+[19:46:08Z] [a-lco3] contact 0001/60 [audio] rehearsal-000 ok   0.00s dims=2048 | flown=1 666.9/min eta=0.1 min
+[19:46:08Z] [a-lco3] contact 0002/60 [audio] rehearsal-001 ok   0.00s dims=2048 | flown=2 1232.3/min eta=0.0 min
+[19:46:08Z] [a-lco3] contact 0003/60 [audio] rehearsal-002 ok   0.00s dims=2048 | flown=3 1703.1/min eta=0.0 min
+[19:46:08Z] [a-lco3] contact 0060/60 [audio] rehearsal-059 ok   0.00s dims=2048 | flown=60 20121.3/min eta=0.0 min
+[19:46:08Z] ARM DONE a-lco3: 0.2s, flown=60 replayed=0
+[19:46:08Z] ARM START t-lco3: 60 TEXT query contacts
+[19:46:08Z] [t-lco3] media marker verified against the LIVE server's GET /props -- the env-pinned LLAMA_MEDIA_MARKER matches the server's own media_marker field (fail-closed)
+[19:46:08Z] [t-lco3] contact 0001/60 [text] rehearsal-000 ok   0.00s dims=2048 | flown=1 8715.7/min eta=0.0 min
+[19:46:08Z] [t-lco3] contact 0002/60 [text] rehearsal-001 ok   0.00s dims=2048 | flown=2 11965.8/min eta=0.0 min
+[19:46:08Z] [t-lco3] contact 0003/60 [text] rehearsal-002 ok   0.00s dims=2048 | flown=3 16080.7/min eta=0.0 min
+[19:46:08Z] [t-lco3] contact 0060/60 [text] rehearsal-059 ok   0.00s dims=2048 | flown=60 49810.6/min eta=0.0 min
+[19:46:08Z] ARM DONE t-lco3: 0.1s, flown=60 replayed=0
+  lco3: flown=132 latency=0.055s
+[19:46:08Z] [bank:lco3] CARRIED: bank vectors already complete on the data root -- zero contacts
+[19:46:08Z] [a-lco3] CARRIED: query vectors already complete on the data root -- zero contacts
+[19:46:08Z] [t-lco3] CARRIED: query vectors already complete on the data root -- zero contacts
+  lco3: idempotence PASS (second pass flew 0)
+[19:46:08Z] BANK START qw: 900 TEXT contacts (bank row texts only; labels never embedded)
+[19:46:08Z] [bank:qw] media marker verified against the LIVE server's GET /props -- the env-pinned LLAMA_MEDIA_MARKER matches the server's own media_marker field (fail-closed)
+[19:46:08Z] [bank:qw] contact 0001/900 [text] bank-alarm-000 ok   0.00s dims=1024 | flown=1 63310.2/min eta=0.0 min
+[19:46:08Z] [bank:qw] contact 0002/900 [text] bank-alarm-001 ok   0.00s dims=1024 | flown=2 28004.0/min eta=0.0 min
+[19:46:08Z] [bank:qw] contact 0003/900 [text] bank-alarm-002 ok   0.00s dims=1024 | flown=3 22531.2/min eta=0.0 min
+[19:46:08Z] BANK DONE qw: 0.0s, flown=12 replayed=0
+[19:46:08Z] ARM START t-qw: 60 TEXT query contacts
+[19:46:08Z] [t-qw] media marker verified against the LIVE server's GET /props -- the env-pinned LLAMA_MEDIA_MARKER matches the server's own media_marker field (fail-closed)
+[19:46:08Z] [t-qw] contact 0001/60 [text] rehearsal-000 ok   0.00s dims=1024 | flown=1 71110.0/min eta=0.0 min
+[19:46:08Z] [t-qw] contact 0002/60 [text] rehearsal-001 ok   0.00s dims=1024 | flown=2 77600.4/min eta=0.0 min
+[19:46:08Z] [t-qw] contact 0003/60 [text] rehearsal-002 ok   0.00s dims=1024 | flown=3 79689.1/min eta=0.0 min
+[19:46:08Z] [t-qw] contact 0060/60 [text] rehearsal-059 ok   0.00s dims=1024 | flown=60 96674.5/min eta=0.0 min
+[19:46:08Z] ARM DONE t-qw: 0.0s, flown=60 replayed=0
+  qw: flown=72 latency=0.015s
+[19:46:08Z] [bank:qw] CARRIED: bank vectors already complete on the data root -- zero contacts
+[19:46:08Z] [t-qw] CARRIED: query vectors already complete on the data root -- zero contacts
+  qw: idempotence PASS (second pass flew 0)
+durable after sweeps: 204 calls, 6.0 audio-seconds
+call accounting PASS: 204
+retrieval plan: retrieval_plan.json sha256 406a7b0c9ef4afdb winner t-qw text
+   [a-lco3] mean_top1=0.034892 k5 sizes={2: 13, 3: 47}
+   [t-lco3] mean_top1=0.034033 k5 sizes={2: 10, 3: 50}
+   [t-qw] mean_top1=0.048449 k5 sizes={2: 13, 3: 47}
+c-decode rows: 60 | candidate-set sizes: {2: 13, 3: 47}
+c-decode mapping sample: {'predicted_raw': 'alarm', 'canonical_label': 'alarm', 'outcome': 'exact', 'fallback': False}
+[19:46:08Z] c-decode req 001/60 ok   0.00s chars=54 | flown=1 1358.0 req/min eta=0.0 min
+[19:46:08Z] c-decode req 002/60 ok   0.00s chars=54 | flown=2 2517.0 req/min eta=0.0 min
+[19:46:08Z] c-decode req 003/60 ok   0.00s chars=54 | flown=3 3539.7 req/min eta=0.0 min
+[19:46:08Z] c-decode req 004/60 ok   0.00s chars=54 | flown=4 4418.0 req/min eta=0.0 min
+[19:46:08Z] c-decode req 005/60 ok   0.00s chars=54 | flown=5 5196.4 req/min eta=0.0 min
+[19:46:08Z] c-decode req 006/60 ok   0.00s chars=54 | flown=6 5892.2 req/min eta=0.0 min
+[19:46:08Z] c-decode req 007/60 ok   0.00s chars=54 | flown=7 6503.6 req/min eta=0.0 min
+[19:46:08Z] c-decode req 008/60 ok   0.00s chars=54 | flown=8 7004.1 req/min eta=0.0 min
+[19:46:08Z] c-decode req 009/60 ok   0.00s chars=54 | flown=9 7490.1 req/min eta=0.0 min
+[19:46:08Z] c-decode req 010/60 ok   0.00s chars=54 | flown=10 8131.5 req/min eta=0.0 min
+[19:46:08Z] c-decode req 011/60 ok   0.00s chars=54 | flown=11 8544.6 req/min eta=0.0 min
+[19:46:08Z] c-decode req 012/60 ok   0.00s chars=54 | flown=12 9128.2 req/min eta=0.0 min
+[19:46:08Z] c-decode req 013/60 ok   0.00s chars=54 | flown=13 9500.1 req/min eta=0.0 min
+[19:46:08Z] c-decode req 014/60 ok   0.00s chars=54 | flown=14 9675.1 req/min eta=0.0 min
+[19:46:08Z] c-decode req 015/60 ok   0.00s chars=54 | flown=15 9756.2 req/min eta=0.0 min
+[19:46:08Z] c-decode req 016/60 ok   0.00s chars=54 | flown=16 10053.4 req/min eta=0.0 min
+[19:46:08Z] c-decode req 017/60 ok   0.00s chars=54 | flown=17 10321.8 req/min eta=0.0 min
+[19:46:08Z] c-decode req 018/60 ok   0.00s chars=54 | flown=18 10517.7 req/min eta=0.0 min
+[19:46:08Z] c-decode req 019/60 ok   0.00s chars=54 | flown=19 10741.8 req/min eta=0.0 min
+[19:46:08Z] c-decode req 020/60 ok   0.00s chars=54 | flown=20 10969.0 req/min eta=0.0 min
+[19:46:08Z] c-decode req 021/60 ok   0.00s chars=54 | flown=21 11157.6 req/min eta=0.0 min
+[19:46:08Z] c-decode req 022/60 ok   0.00s chars=54 | flown=22 11290.7 req/min eta=0.0 min
+[19:46:08Z] c-decode req 023/60 ok   0.00s chars=54 | flown=23 11445.2 req/min eta=0.0 min
+[19:46:09Z] c-decode req 024/60 ok   0.00s chars=54 | flown=24 11626.4 req/min eta=0.0 min
+[19:46:09Z] c-decode req 025/60 ok   0.00s chars=54 | flown=25 11810.9 req/min eta=0.0 min
+[19:46:09Z] c-decode req 026/60 ok   0.00s chars=54 | flown=26 11929.4 req/min eta=0.0 min
+[19:46:09Z] c-decode req 027/60 ok   0.00s chars=54 | flown=27 12061.1 req/min eta=0.0 min
+[19:46:09Z] c-decode req 028/60 ok   0.00s chars=54 | flown=28 12205.2 req/min eta=0.0 min
+[19:46:09Z] c-decode req 029/60 ok   0.00s chars=54 | flown=29 12346.9 req/min eta=0.0 min
+[19:46:09Z] c-decode req 030/60 ok   0.00s chars=54 | flown=30 12469.2 req/min eta=0.0 min
+[19:46:09Z] c-decode req 031/60 ok   0.00s chars=54 | flown=31 12792.1 req/min eta=0.0 min
+[19:46:09Z] c-decode req 032/60 ok   0.00s chars=54 | flown=32 13171.3 req/min eta=0.0 min
+[19:46:09Z] c-decode req 033/60 ok   0.00s chars=54 | flown=33 13383.9 req/min eta=0.0 min
+[19:46:09Z] c-decode req 034/60 ok   0.00s chars=54 | flown=34 13482.7 req/min eta=0.0 min
+[19:46:09Z] c-decode req 035/60 ok   0.00s chars=54 | flown=35 13580.0 req/min eta=0.0 min
+[19:46:09Z] c-decode req 036/60 ok   0.00s chars=54 | flown=36 13675.7 req/min eta=0.0 min
+[19:46:09Z] c-decode req 037/60 ok   0.00s chars=54 | flown=37 13518.2 req/min eta=0.0 min
+[19:46:09Z] c-decode req 038/60 ok   0.00s chars=54 | flown=38 13593.8 req/min eta=0.0 min
+[19:46:09Z] c-decode req 039/60 ok   0.00s chars=54 | flown=39 13686.5 req/min eta=0.0 min
+[19:46:09Z] c-decode req 040/60 ok   0.00s chars=54 | flown=40 13764.7 req/min eta=0.0 min
+[19:46:09Z] c-decode req 041/60 ok   0.00s chars=54 | flown=41 13875.4 req/min eta=0.0 min
+[19:46:09Z] c-decode req 042/60 ok   0.00s chars=54 | flown=42 14027.8 req/min eta=0.0 min
+[19:46:09Z] c-decode req 043/60 ok   0.00s chars=54 | flown=43 14095.6 req/min eta=0.0 min
+[19:46:09Z] c-decode req 044/60 ok   0.00s chars=54 | flown=44 14166.8 req/min eta=0.0 min
+[19:46:09Z] c-decode req 045/60 ok   0.00s chars=54 | flown=45 14229.8 req/min eta=0.0 min
+[19:46:09Z] c-decode req 046/60 ok   0.00s chars=54 | flown=46 14255.0 req/min eta=0.0 min
+[19:46:09Z] c-decode req 047/60 ok   0.00s chars=54 | flown=47 14307.3 req/min eta=0.0 min
+[19:46:09Z] c-decode req 048/60 ok   0.00s chars=54 | flown=48 14361.6 req/min eta=0.0 min
+[19:46:09Z] c-decode req 049/60 ok   0.00s chars=54 | flown=49 14426.2 req/min eta=0.0 min
+[19:46:09Z] c-decode req 050/60 ok   0.00s chars=54 | flown=50 14485.0 req/min eta=0.0 min
+[19:46:09Z] c-decode req 051/60 ok   0.00s chars=54 | flown=51 14484.3 req/min eta=0.0 min
+[19:46:09Z] c-decode req 052/60 ok   0.00s chars=54 | flown=52 14538.2 req/min eta=0.0 min
+[19:46:09Z] c-decode req 053/60 ok   0.00s chars=54 | flown=53 14588.1 req/min eta=0.0 min
+[19:46:09Z] c-decode req 054/60 ok   0.00s chars=54 | flown=54 14785.3 req/min eta=0.0 min
+[19:46:09Z] c-decode req 055/60 ok   0.00s chars=54 | flown=55 15037.1 req/min eta=0.0 min
+[19:46:09Z] c-decode req 056/60 ok   0.00s chars=54 | flown=56 15042.7 req/min eta=0.0 min
+[19:46:09Z] c-decode req 057/60 ok   0.00s chars=54 | flown=57 15202.6 req/min eta=0.0 min
+[19:46:09Z] c-decode req 058/60 ok   0.00s chars=54 | flown=58 15223.8 req/min eta=0.0 min
+[19:46:09Z] c-decode req 059/60 ok   0.00s chars=54 | flown=59 15264.3 req/min eta=0.0 min
+[19:46:09Z] c-decode req 060/60 ok   0.00s chars=54 | flown=60 15296.1 req/min eta=0.0 min
+proxy flown: 60 replayed: 0 rows: 60
+[19:46:09Z] replay 10/60 from cache
+[19:46:09Z] replay 20/60 from cache
+[19:46:09Z] replay 30/60 from cache
+[19:46:09Z] replay 40/60 from cache
+[19:46:09Z] replay 50/60 from cache
+[19:46:09Z] replay 60/60 from cache
+c-decode resume replay PASS: flown=0 replayed= 60
+gpu accounting: wall=0.2778h active=0.0417h measured-eq=0.0139h
+REHEARSAL DONE -- temp root removed; nothing touched the real data root

@@ -1,0 +1,45 @@
+== binding config ==
+computed : a193f63422ae4c990911752f3d14f37400c57d73cc4908af84d698dd3ccce17a
+stable   : True
+pinned   : a193f63422ae4c990911752f3d14f37400c57d73cc4908af84d698dd3ccce17a
+MATCH    : True
+
+== model bindings resolved from the umbrella lock ==
+  lco3  lco-embedding-omni-3b-gguf       lifecycle='LOCAL_CANDIDATE' files=5 size=6238572624 per_file_sha256=no
+  lco7  lco-embedding-omni-7b-gguf       lifecycle='LOCAL_CANDIDATE' files=5 size=10740684621 per_file_sha256=no
+  glap  glap                             lifecycle='LOCAL_CANDIDATE' files=9 size=3426926767 per_file_sha256=no
+  qw    qwen3-embedding-0.6b-gguf        lifecycle='AUXILIARY' files=1 size=639150592 per_file_sha256=yes
+
+== bank double derivation ==
+canonical labels: 18
+train pool loaded in 1.0s: 18 scenarios, 11514 candidates
+min per-label candidates: ('cooking', 211)
+derivation A sha256: 5f48895107d715a7eae2954fe56f833455d33df3d6527e3643a0b0c924f5b112
+derivation B sha256: 5f48895107d715a7eae2954fe56f833455d33df3d6527e3643a0b0c924f5b112
+BIT-IDENTICAL      : True
+pinned             : 5f48895107d715a7eae2954fe56f833455d33df3d6527e3643a0b0c924f5b112
+MATCH              : True
+rows: 900 seed: 20260807 per_scenario: 50
+sample row (text only, no label ever embedded): bank-alarm-000 'remove the alarm'
+
+== T0 registry pin ==
+relpath: runs/SAEA-PROBE-pkey2-338/attempt-20260819T111032Z-3109e8/transcript-registry.json
+exists : True
+sha256 : f8f6426aeb0eb84c33ad58b603cb36b8f420c3063149b6cd11a0b210d8774959
+pinned : f8f6426aeb0eb84c33ad58b603cb36b8f420c3063149b6cd11a0b210d8774959
+
+== ledger row ==
+rows found: 1
+consumed cell: no
+ledger ceilings: calls 4500 audio 700 gpu 0.5
+machinery ceilings: 4500 700 0.5
+
+== planned contacts ==
+bank 3600 audio-q 180 text-q 240 c-decode 60 gates<= 20 => plan 4100
+planned audio seconds: 547
+
+== run dir absence ==
+  runs/SAEA-PROBE-pemb4r-4100: exists=False
+  derived/embeddings/SAEA-PROBE-pemb4r-4100: exists=False
+  attempts/SAEA-PROBE-pemb4r-4100: exists=False
+BANK/BINDING CHECK DONE

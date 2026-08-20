@@ -1,0 +1,31 @@
+=== bash -n ===
+  ok env.sh
+  ok run_chain.sh
+  ok takeoff_state.sh
+  ok run_pytest.sh
+  ok syntax_check.sh
+  ok archive.sh
+  ok bank_binding_check.sh
+  ok probe_dims.sh
+
+=== python -m py_compile ===
+  ok (no .pyc written: PYTHONDONTWRITEBYTECODE=1)
+
+=== import + dry composition (no server, no weights, no contact) ===
+stages          : ('preflight', 'lco3', 'lco7', 'qw', 'glap', 'retrieval', 'cdecode', 'finalize')
+arms            : ('a-lco3', 'a-lco7', 'a-glap', 't-lco3', 't-lco7', 't-glap', 't-qw')
+models          : ('lco3', 'lco7', 'glap', 'qw')
+ports           : {'lco3': 8093, 'lco7': 8095, 'qw': 8094} generation 8080
+feat caches     : {'lco3': '/home/chao/feat-cache/slurp-lco3b', 'lco7': '/home/chao/feat-cache/slurp-lco7b'} core /home/chao/feat-cache/slurp-q4km
+gate contacts   : 12 {'lco7_server_sanity': 1, 'pooling_differ_lco3': 2, 'lco3_repeat_call_determinism': 1, 'pooling_differ_lco7': 2, 'lco7_repeat_call_determinism': 1, 'glap_text_sanity': 1, 'glap_audio_sanity': 1, 'qw_repeat_call_determinism': 2, 'c_decode_determinism_resend': 1}
+planned budgets : {'model_calls': 4100, 'speech_audio_seconds': 700, 'gpu_hours': 0.5}
+declared dims   : {'lco3': 2048, 'lco7': 3584, 'qw': 1024, 'glap': 1024}
+config hash (dry, placeholder hashes): b1a122ee8cbd65ca0fdccf8b2da598eb17a75af77011ec27c93cbfdc0f8b7bc3
+transport       : llama-server | core server_args: ['-c', '49152', '-np', '4', '-fa', 'on', '-ngl', '999', '-ctk', 'q8_0', '-ctv', 'q8_0']
+generation -np  : 4
+decoding params : {'temperature': 0, 'seed': 20260803, 'max_tokens': 1024}
+core feat cache : /home/chao/feat-cache/slurp-q4km
+machinery plan  : bounded-discovery-probe 4100 547 0.5
+protocol hash   : a193f63422ae4c990911752f3d14f37400c57d73cc4908af84d698dd3ccce17a
+gpu accounting  : wall never gates -- 9.9 h wall accepted at 0.4 h active / 0.2 h measured-equivalent
+SYNTAX CHECK DONE

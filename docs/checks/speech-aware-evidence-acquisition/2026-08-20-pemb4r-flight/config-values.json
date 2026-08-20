@@ -1,0 +1,477 @@
+{
+  "config_hash": "3a46eb469d82b46481c501e1293d740fcd2e83c318e94c122d5f279a8bfbecd4",
+  "values": {
+    "arm": "fixed-legal-context",
+    "arms": [
+      {
+        "arm_id": "a-glap",
+        "kind": "in-process-transformers",
+        "model": "glap",
+        "model_binding": {
+          "file_hashes": [],
+          "files_count": 9,
+          "lifecycle": "LOCAL_CANDIDATE",
+          "local_subdir": "models/glap",
+          "name": "glap",
+          "revision": "UNRESOLVED_LOCAL_REVISION",
+          "size_bytes": 3426926767,
+          "source_id": "UNRESOLVED_LOCAL_SOURCE",
+          "source_kind": "observed-local"
+        },
+        "model_lock_key": "glap",
+        "query_kind": "audio"
+      },
+      {
+        "arm_id": "a-lco3",
+        "kind": "llamacpp-server",
+        "model": "lco3",
+        "model_binding": {
+          "file_hashes": [],
+          "files_count": 5,
+          "lifecycle": "LOCAL_CANDIDATE",
+          "local_subdir": "models/lco-embedding-omni-3b-gguf",
+          "name": "lco-embedding-omni-3b-gguf",
+          "revision": "UNRESOLVED_LOCAL_REVISION",
+          "size_bytes": 6238572624,
+          "source_id": "UNRESOLVED_LOCAL_SOURCE",
+          "source_kind": "observed-local"
+        },
+        "model_lock_key": "lco-embedding-omni-3b-gguf",
+        "query_kind": "audio"
+      },
+      {
+        "arm_id": "a-lco7",
+        "kind": "llamacpp-server",
+        "model": "lco7",
+        "model_binding": {
+          "file_hashes": [],
+          "files_count": 5,
+          "lifecycle": "LOCAL_CANDIDATE",
+          "local_subdir": "models/lco-embedding-omni-7b-gguf",
+          "name": "lco-embedding-omni-7b-gguf",
+          "revision": "UNRESOLVED_LOCAL_REVISION",
+          "size_bytes": 10740684621,
+          "source_id": "UNRESOLVED_LOCAL_SOURCE",
+          "source_kind": "observed-local"
+        },
+        "model_lock_key": "lco-embedding-omni-7b-gguf",
+        "query_kind": "audio"
+      },
+      {
+        "arm_id": "t-glap",
+        "kind": "in-process-transformers",
+        "model": "glap",
+        "model_binding": {
+          "file_hashes": [],
+          "files_count": 9,
+          "lifecycle": "LOCAL_CANDIDATE",
+          "local_subdir": "models/glap",
+          "name": "glap",
+          "revision": "UNRESOLVED_LOCAL_REVISION",
+          "size_bytes": 3426926767,
+          "source_id": "UNRESOLVED_LOCAL_SOURCE",
+          "source_kind": "observed-local"
+        },
+        "model_lock_key": "glap",
+        "query_kind": "text"
+      },
+      {
+        "arm_id": "t-lco3",
+        "kind": "llamacpp-server",
+        "model": "lco3",
+        "model_binding": {
+          "file_hashes": [],
+          "files_count": 5,
+          "lifecycle": "LOCAL_CANDIDATE",
+          "local_subdir": "models/lco-embedding-omni-3b-gguf",
+          "name": "lco-embedding-omni-3b-gguf",
+          "revision": "UNRESOLVED_LOCAL_REVISION",
+          "size_bytes": 6238572624,
+          "source_id": "UNRESOLVED_LOCAL_SOURCE",
+          "source_kind": "observed-local"
+        },
+        "model_lock_key": "lco-embedding-omni-3b-gguf",
+        "query_kind": "text"
+      },
+      {
+        "arm_id": "t-lco7",
+        "kind": "llamacpp-server",
+        "model": "lco7",
+        "model_binding": {
+          "file_hashes": [],
+          "files_count": 5,
+          "lifecycle": "LOCAL_CANDIDATE",
+          "local_subdir": "models/lco-embedding-omni-7b-gguf",
+          "name": "lco-embedding-omni-7b-gguf",
+          "revision": "UNRESOLVED_LOCAL_REVISION",
+          "size_bytes": 10740684621,
+          "source_id": "UNRESOLVED_LOCAL_SOURCE",
+          "source_kind": "observed-local"
+        },
+        "model_lock_key": "lco-embedding-omni-7b-gguf",
+        "query_kind": "text"
+      },
+      {
+        "arm_id": "t-qw",
+        "kind": "llamacpp-server-text-only",
+        "model": "qw",
+        "model_binding": {
+          "file_hashes": [
+            {
+              "filename": "Qwen3-Embedding-0.6B-Q8_0.gguf",
+              "sha256": "06507c7b42688469c4e7298b0a1e16deff06caf291cf0a5b278c308249c3e439"
+            }
+          ],
+          "files_count": 1,
+          "lifecycle": "AUXILIARY",
+          "local_subdir": "models/qwen3-embedding-0.6b-gguf",
+          "name": "qwen3-embedding-0.6b-gguf",
+          "revision": "370f27d7550e0def9b39c1f16d3fbaa13aa67728",
+          "size_bytes": 639150592,
+          "source_id": "Qwen/Qwen3-Embedding-0.6B-GGUF",
+          "source_kind": "hf"
+        },
+        "model_lock_key": "qwen3-embedding-0.6b-gguf",
+        "query_kind": "text"
+      }
+    ],
+    "bank": {
+      "manifest_sha256": "5f48895107d715a7eae2954fe56f833455d33df3d6527e3643a0b0c924f5b112",
+      "n_scenarios": 18,
+      "per_scenario_n": 50,
+      "seed": 20260807,
+      "source": "SLURP train.jsonl TRAIN split via rails.probes.pfew_flight.load_train_demo_pool",
+      "total": 900,
+      "value_metadata_note": "each bank row's own gold_scenario is TRAIN-split VALUE metadata: never embedded, never rendered into an embedding request; only 'text' is ever passed to embed_text"
+    },
+    "base_url": "http://127.0.0.1:8080",
+    "binding_config_schema": "saea-pemb4r-binding-config-v1",
+    "binding_config_sha256": "a193f63422ae4c990911752f3d14f37400c57d73cc4908af84d698dd3ccce17a",
+    "binding_config_sha256_recomputed": "a193f63422ae4c990911752f3d14f37400c57d73cc4908af84d698dd3ccce17a",
+    "carrier_lock_key": "slurp",
+    "declared_embedding_length_by_model": {
+      "glap": 1024,
+      "lco3": 2048,
+      "lco7": 3584,
+      "qw": 1024
+    },
+    "decoding_params": {
+      "max_tokens": 1024,
+      "seed": 20260803,
+      "temperature": 0
+    },
+    "e1_identity_record": "docs/readiness/2026-08-20-e1-local-embedder-identity.md",
+    "embedder_servers": [
+      {
+        "gguf_files": [
+          {
+            "path": "models/lco-embedding-omni-3b-gguf/LCO-Embedding-Omni-3B-Q8_0.gguf",
+            "sha256": "53a9898bdb562ae599a81528a2935153457b82e7cac3aa5b10e5eecefc887d6a"
+          },
+          {
+            "path": "models/lco-embedding-omni-3b-gguf/mmproj-LCO-Embedding-Omni-3b-F16.gguf",
+            "sha256": "765beb616247081f53c9a0b7fed02b96981c5bad563209b5a47ca770f056a13a"
+          }
+        ],
+        "model": "lco3",
+        "model_lock_key": "lco-embedding-omni-3b-gguf",
+        "pooling_mode": "mean",
+        "port": 8093,
+        "recipe_source": "docs/readiness/2026-08-20-e1-local-embedder-identity.md Mission B",
+        "server_args": [
+          "--embedding",
+          "-ngl",
+          "999",
+          "-c",
+          "4096",
+          "-b",
+          "4096",
+          "-ub",
+          "4096",
+          "-np",
+          "1",
+          "--pooling",
+          "mean"
+        ],
+        "server_env": {
+          "LLAMA_MEDIA_MARKER": "<__media__>",
+          "LLAMA_MTMD_FEAT_CACHE_DIR": "/home/chao/feat-cache/slurp-lco3b"
+        },
+        "server_key": "lco3-mean"
+      },
+      {
+        "gguf_files": [
+          {
+            "path": "models/lco-embedding-omni-3b-gguf/LCO-Embedding-Omni-3B-Q8_0.gguf",
+            "sha256": "53a9898bdb562ae599a81528a2935153457b82e7cac3aa5b10e5eecefc887d6a"
+          },
+          {
+            "path": "models/lco-embedding-omni-3b-gguf/mmproj-LCO-Embedding-Omni-3b-F16.gguf",
+            "sha256": "765beb616247081f53c9a0b7fed02b96981c5bad563209b5a47ca770f056a13a"
+          }
+        ],
+        "model": "lco3",
+        "model_lock_key": "lco-embedding-omni-3b-gguf",
+        "pooling_mode": "last",
+        "port": 8093,
+        "recipe_source": "docs/readiness/2026-08-20-e1-local-embedder-identity.md Mission B",
+        "server_args": [
+          "--embedding",
+          "-ngl",
+          "999",
+          "-c",
+          "4096",
+          "-b",
+          "4096",
+          "-ub",
+          "4096",
+          "-np",
+          "1",
+          "--pooling",
+          "last"
+        ],
+        "server_env": {
+          "LLAMA_MEDIA_MARKER": "<__media__>",
+          "LLAMA_MTMD_FEAT_CACHE_DIR": "/home/chao/feat-cache/slurp-lco3b"
+        },
+        "server_key": "lco3-last"
+      },
+      {
+        "gguf_files": [
+          {
+            "path": "models/lco-embedding-omni-7b-gguf/LCO-Embedding-Omni-7B-Q8_0.gguf",
+            "sha256": "0ddf321421abc45dc8422b8a9744f7ea8cb7b01f98003d226865ab83fb93ff56"
+          },
+          {
+            "path": "models/lco-embedding-omni-7b-gguf/mmproj-LCO-Embedding-Omni-7b-F16.gguf",
+            "sha256": "bd9e2c7ac1995a0f5dfab1fe824b50a33ee0d24a9807e68cc08cad1fb08595cc"
+          }
+        ],
+        "model": "lco7",
+        "model_lock_key": "lco-embedding-omni-7b-gguf",
+        "pooling_mode": "mean",
+        "port": 8095,
+        "recipe_source": "docs/readiness/2026-08-20-e1-local-embedder-identity.md Mission B (same recipe, 7B weights)",
+        "server_args": [
+          "--embedding",
+          "-ngl",
+          "999",
+          "-c",
+          "4096",
+          "-b",
+          "4096",
+          "-ub",
+          "4096",
+          "-np",
+          "1",
+          "--pooling",
+          "mean"
+        ],
+        "server_env": {
+          "LLAMA_MEDIA_MARKER": "<__media__>",
+          "LLAMA_MTMD_FEAT_CACHE_DIR": "/home/chao/feat-cache/slurp-lco7b"
+        },
+        "server_key": "lco7-mean"
+      },
+      {
+        "gguf_files": [
+          {
+            "path": "models/lco-embedding-omni-7b-gguf/LCO-Embedding-Omni-7B-Q8_0.gguf",
+            "sha256": "0ddf321421abc45dc8422b8a9744f7ea8cb7b01f98003d226865ab83fb93ff56"
+          },
+          {
+            "path": "models/lco-embedding-omni-7b-gguf/mmproj-LCO-Embedding-Omni-7b-F16.gguf",
+            "sha256": "bd9e2c7ac1995a0f5dfab1fe824b50a33ee0d24a9807e68cc08cad1fb08595cc"
+          }
+        ],
+        "model": "lco7",
+        "model_lock_key": "lco-embedding-omni-7b-gguf",
+        "pooling_mode": "last",
+        "port": 8095,
+        "recipe_source": "docs/readiness/2026-08-20-e1-local-embedder-identity.md Mission B (same recipe, 7B weights)",
+        "server_args": [
+          "--embedding",
+          "-ngl",
+          "999",
+          "-c",
+          "4096",
+          "-b",
+          "4096",
+          "-ub",
+          "4096",
+          "-np",
+          "1",
+          "--pooling",
+          "last"
+        ],
+        "server_env": {
+          "LLAMA_MEDIA_MARKER": "<__media__>",
+          "LLAMA_MTMD_FEAT_CACHE_DIR": "/home/chao/feat-cache/slurp-lco7b"
+        },
+        "server_key": "lco7-last"
+      },
+      {
+        "gguf_files": [
+          {
+            "path": "models/qwen3-embedding-0.6b-gguf/Qwen3-Embedding-0.6B-Q8_0.gguf",
+            "sha256": "06507c7b42688469c4e7298b0a1e16deff06caf291cf0a5b278c308249c3e439"
+          }
+        ],
+        "model": "qw",
+        "model_lock_key": "qwen3-embedding-0.6b-gguf",
+        "pooling_mode": "last",
+        "port": 8094,
+        "recipe_source": "docs/readiness/2026-08-20-e1-local-embedder-identity.md Mission C",
+        "server_args": [
+          "--embedding",
+          "--pooling",
+          "last",
+          "-ngl",
+          "999",
+          "-c",
+          "4096",
+          "-b",
+          "4096",
+          "-ub",
+          "4096",
+          "-np",
+          "1"
+        ],
+        "server_env": {},
+        "server_key": "qw"
+      }
+    ],
+    "embedding_endpoint": "/embedding",
+    "feat_cache_dirs": {
+      "core": "/home/chao/feat-cache/slurp-q4km",
+      "lco3": "/home/chao/feat-cache/slurp-lco3b",
+      "lco7": "/home/chao/feat-cache/slurp-lco7b"
+    },
+    "flight_config_version": "pemb4r-launcher-v1 (no committed g0-binding config; see module docstring)",
+    "gate_contact_plan": {
+      "c_decode_determinism_resend": 1,
+      "glap_audio_sanity": 1,
+      "glap_text_sanity": 1,
+      "lco3_repeat_call_determinism": 1,
+      "lco7_repeat_call_determinism": 1,
+      "lco7_server_sanity": 1,
+      "pooling_differ_lco3": 2,
+      "pooling_differ_lco7": 2,
+      "qw_repeat_call_determinism": 2
+    },
+    "gate_contacts_max": 20,
+    "gate_wav": {
+      "amplitude": 0.5,
+      "corpus_audio": false,
+      "freq_hz": 440.0,
+      "sample_rate": 16000,
+      "seconds": 2.0,
+      "sha256": "dc87d1fd3e5e2b1716632351331a80a673491a237e8d11d267559bdca26341a5",
+      "synthetic": true
+    },
+    "generation_session": {
+      "decoding_params": {
+        "max_tokens": 1024,
+        "seed": 20260803,
+        "temperature": 0
+      },
+      "model_lock_key": "qwen3-omni-30b-a3b-instruct-gguf-q4km",
+      "parallelism_note": "-np is carried UNCHANGED from the committed fragment. The P-CORR-F pre-read resend finding (6/20 identical-prompt pairs diverged at -np 4) makes this number load-bearing evidence, so it is recorded rather than silently altered; altering it would also change the decode config the consumed P-FEW FS-NONE rows this flight's C-DECODE is paired against were produced under.",
+      "parallelism_np": "4",
+      "port": 8080,
+      "server_args": [
+        "-c",
+        "49152",
+        "-np",
+        "4",
+        "-fa",
+        "on",
+        "-ngl",
+        "999",
+        "-ctk",
+        "q8_0",
+        "-ctv",
+        "q8_0"
+      ],
+      "server_env": {
+        "LLAMA_MTMD_FEAT_CACHE_DIR": "/home/chao/feat-cache/slurp-q4km"
+      },
+      "server_key": "q4km-core"
+    },
+    "in_process_models": [
+      {
+        "device_placement_note": "GLAP's own encode_text builds its token tensors on CPU unconditionally and only moves the ENCODER OUTPUT onto the projection's device -- upstream's own split-device contract. The P-EMB-3M launcher's device-placement fix (model.text_encoder.to('cpu')) is carried verbatim; not one byte of the pinned remote code is edited.",
+        "kind": "in-process-transformers",
+        "model": "glap",
+        "model_lock_key": "glap",
+        "weights": {
+          "path": "models/glap/model.safetensors",
+          "sha256": "ee8fd92bba30d03b4c31c624739b1599a222506f0e045cde7cb51c34e3223864"
+        }
+      }
+    ],
+    "launcher": "scratchpad pemb4r/launch_pemb4r_flight.py (archived with the flight receipt)",
+    "media_marker_env": "LLAMA_MEDIA_MARKER",
+    "media_marker_props_field": "media_marker",
+    "model_lock_key": "qwen3-omni-30b-a3b-instruct-gguf-q4km",
+    "models": [
+      "lco3",
+      "lco7",
+      "glap",
+      "qw"
+    ],
+    "orchestrator": "rails.probes.pemb4r_flight",
+    "planned_audio_query_contacts": 180,
+    "planned_bank_contacts": 3600,
+    "planned_c_decode_contacts": 60,
+    "planned_gate_contacts": 12,
+    "planned_text_query_contacts": 240,
+    "prefix_note": "bare content on both sides, per the registration's own register-alignment design and the P-EMB-1 precedent -- in explicit contrast to P-EMB-3L's refuted instruct-prefix arms",
+    "prefixes": {
+      "audio_prefix": "",
+      "text_prefix": ""
+    },
+    "preregistration": "docs/readiness/2026-08-20-pemb4r-preregistration-REGISTERED.md",
+    "probe": "P-EMB-4R",
+    "prompt_order": "evidence-first-system-v2",
+    "query_n": 60,
+    "retrieval": {
+      "k_primary": 5,
+      "k_reported": [
+        1,
+        3
+      ],
+      "winner_selection_rule": "max mean_top1_cosine across all flown kNN arms (gold-free proxy; documented judgment call, ties broken by sorted arm_id)"
+    },
+    "roster_table": "configs/probes/g0-binding/pslu-rosters-train-only.json",
+    "run_id": "SAEA-PROBE-pemb4r-4100",
+    "runtime_receipt": "receipts/runtime-q4km-featcache.json",
+    "sample_manifest": "configs/probes/g0-binding/pslu-sample-devel-n60.json",
+    "server_args": [
+      "-c",
+      "49152",
+      "-np",
+      "4",
+      "-fa",
+      "on",
+      "-ngl",
+      "999",
+      "-ctk",
+      "q8_0",
+      "-ctv",
+      "q8_0"
+    ],
+    "server_env": {
+      "LLAMA_MTMD_FEAT_CACHE_DIR": "/home/chao/feat-cache/slurp-q4km"
+    },
+    "split_identity_hash": "fc9de436eba5aba120ecf07ee112765cd4ac0609150e0aaf36f4d44c9c5b5ee5",
+    "split_name": "devel",
+    "split_role": "discovery",
+    "status": "REGISTERED",
+    "t0_transcript_registry_relpath": "runs/SAEA-PROBE-pkey2-338/attempt-20260819T111032Z-3109e8/transcript-registry.json",
+    "t0_transcript_registry_sha256": "f8f6426aeb0eb84c33ad58b603cb36b8f420c3063149b6cd11a0b210d8774959",
+    "tier": "embedding (encode+pool, ZERO generation) for all seven kNN arms; generation ONLY for the registered C-DECODE arm on the pinned q4km core",
+    "timeout_seconds": 420.0,
+    "transport": "llama-server"
+  }
+}

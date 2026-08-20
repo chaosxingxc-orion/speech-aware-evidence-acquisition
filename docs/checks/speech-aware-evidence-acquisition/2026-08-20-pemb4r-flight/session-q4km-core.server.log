@@ -1,0 +1,49 @@
+0.00.069.167 I log_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+0.00.069.173 I device_info:
+0.00.197.662 I   - CUDA0   : NVIDIA GeForce RTX 5090 Laptop GPU (24462 MiB, 23119 MiB free)
+0.00.197.678 I   - CPU     : Intel(R) Core(TM) Ultra 9 275HX (56236 MiB, 56236 MiB free)
+0.00.197.778 I system_info: n_threads = 24 (n_threads_batch = 24) / 24 | CUDA : ARCHS = 1200 | USE_GRAPHS = 1 | PEER_MAX_BATCH_SIZE = 128 | BLACKWELL_NATIVE_FP4 = 1 | CPU : SSE3 = 1 | SSSE3 = 1 | AVX = 1 | AVX_VNNI = 1 | AVX2 = 1 | F16C = 1 | FMA = 1 | BMI2 = 1 | LLAMAFILE = 1 | OPENMP = 1 | REPACK = 1 | 
+0.00.197.857 I srv          init: using 23 threads for HTTP server
+0.00.198.066 I srv         start: binding port with default address family
+0.00.199.256 I srv  llama_server: loading model
+0.00.199.309 I srv    load_model: loading model '/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf'
+0.00.296.005 I srv    load_model: [mtmd] estimated worst-case memory usage of mmproj is 2940.29 MiB (took 96.67 ms)
+0.00.296.030 I common_init_result: fitting params to device memory ...
+0.00.296.030 I common_init_result: (for bugs during this step try to reproduce them with -fit off, or provide --verbose logs if the bug only occurs with -fit on)
+0.00.426.098 W common_fit_params: failed to fit params to free device memory: n_gpu_layers already set by user to 999, abort
+0.00.500.544 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden
+0.03.101.490 W llama_context: n_ctx_seq (12288) < n_ctx_train (65536) -- the full capacity of the model will not be utilized
+0.03.157.454 I common_init_from_params: warming up the model with an empty run - please wait ... (--no-warmup to disable)
+0.03.235.662 W load_hparams: Qwen-VL models require at minimum 1024 image tokens to function correctly on grounding tasks
+0.03.235.669 W load_hparams: if you encounter problems with accuracy, try adding --image-min-tokens 1024
+0.03.235.669 W load_hparams: more info: https://github.com/ggml-org/llama.cpp/issues/16842
+
+0.03.742.733 W init_audio: audio input is in experimental stage and may have reduced quality:
+    https://github.com/ggml-org/llama.cpp/discussions/13759
+0.03.742.784 I srv    load_model: loaded multimodal model, '/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/mmproj-Qwen3-Omni-30B-A3B-Instruct-bf16.gguf'
+0.03.742.797 I srv    load_model: initializing slots, n_slots = 4
+0.03.768.819 W common_speculative_init: no implementations specified for speculative decoding
+0.03.768.831 I slot   load_model: id  0 | task -1 | new slot, n_ctx = 12288
+0.03.768.841 I slot   load_model: id  1 | task -1 | new slot, n_ctx = 12288
+0.03.768.841 I slot   load_model: id  2 | task -1 | new slot, n_ctx = 12288
+0.03.768.841 I slot   load_model: id  3 | task -1 | new slot, n_ctx = 12288
+0.03.768.881 I srv    load_model: prompt cache is enabled, size limit: 8192 MiB
+0.03.768.881 I srv    load_model: use `--cache-ram 0` to disable the prompt cache
+0.03.768.882 I srv    load_model: for more info see https://github.com/ggml-org/llama.cpp/pull/16391
+0.03.768.882 I srv    load_model: context checkpoints enabled, max = 32, min spacing = 8192
+0.03.768.897 I srv          init: idle slots will be saved to prompt cache upon starting a new task
+0.03.773.628 I init: chat template, example_format: '<|im_start|>system
+You are a helpful assistant<|im_end|>
+<|im_start|>user
+Hello<|im_end|>
+<|im_start|>assistant
+Hi there<|im_end|>
+<|im_start|>user
+How are you?<|im_end|>
+<|im_start|>assistant
+'
+0.03.776.357 I srv          init: init: chat template, thinking = 1
+0.03.776.398 I srv  llama_server: model loaded
+0.03.776.404 I srv  llama_server: server is listening on http://127.0.0.1:8080
+0.03.776.408 I srv  update_slots: all slots are idle
+0.05.569.229 I srv    operator(): operator(): cleaning up before exit...

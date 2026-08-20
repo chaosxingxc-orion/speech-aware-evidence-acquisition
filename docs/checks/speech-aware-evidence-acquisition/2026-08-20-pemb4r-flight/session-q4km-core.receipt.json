@@ -1,0 +1,46 @@
+{
+  "argv": [
+    "/home/chao/llama.cpp-featcache/build/bin/llama-server",
+    "--host",
+    "127.0.0.1",
+    "--port",
+    "8080",
+    "-m",
+    "/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+    "--mmproj",
+    "/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/mmproj-Qwen3-Omni-30B-A3B-Instruct-bf16.gguf",
+    "-c",
+    "49152",
+    "-np",
+    "4",
+    "-fa",
+    "on",
+    "-ngl",
+    "999",
+    "-ctk",
+    "q8_0",
+    "-ctv",
+    "q8_0"
+  ],
+  "binary_path": "llama.cpp-featcache/build/bin/llama-server",
+  "binary_sha256": "097c96ec5a3f576f378d4d5e103928bf070647fdcc1f015eacb839503e121c68",
+  "host": "127.0.0.1",
+  "model_files": [
+    {
+      "path": "models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+      "sha256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d"
+    },
+    {
+      "path": "models/qwen3-omni-30b-a3b-instruct-gguf-q4km/mmproj-Qwen3-Omni-30B-A3B-Instruct-bf16.gguf",
+      "sha256": "f0dfe825fb692d426362b1ac79678fc08daa4758f7151526cad110515f122883"
+    }
+  ],
+  "pid": 889,
+  "port": 8080,
+  "schema": "saea-session-receipt-v1",
+  "server_log_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-pemb4r-4100/attempt-20260820T181837Z-3e6c8f/SAEA-PROBE-pemb4r-4100.session-q4km-core.server.log",
+  "session_id": "SAEA-PROBE-pemb4r-4100-attempt-20260820T181837Z-3e6c8f-q4km-core",
+  "started_at": "2026-08-20T19:29:00.620035+00:00",
+  "startup_stdout_sha256": "a2398b8b5db709c81001c1582a15676745c643af3280f9a4e3e0d9a708bde9b2",
+  "study": "speech-aware-evidence-acquisition"
+}

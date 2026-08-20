@@ -1,0 +1,1062 @@
+{
+  "attempt_id": "attempt-20260820T181837Z-3e6c8f",
+  "bank": {
+    "double_derivation_bit_identical": true,
+    "manifest_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/derived/embeddings/SAEA-PROBE-pemb4r-4100/bank/manifest.json",
+    "min_train_candidates_per_label": 211,
+    "per_scenario_n": 50,
+    "rows": 900,
+    "seed": 20260807,
+    "sha256": "5f48895107d715a7eae2954fe56f833455d33df3d6527e3643a0b0c924f5b112"
+  },
+  "binding_config_sha256": "a193f63422ae4c990911752f3d14f37400c57d73cc4908af84d698dd3ccce17a",
+  "c_decode_blocked": {
+    "action_taken": "REFUSED to fly, fail-closed. No partial C-DECODE was attempted: 45 of 60 requests would fit the headroom, but a truncated closed-set decode is a different experiment than the one registered and would poison the paired comparison. Everything else this flight owes -- all seven embedding arms, all four banks, and the gold-free retrieval plan -- is complete and landed.",
+    "arithmetic": {
+      "already_spent_audio_seconds": 560.7783163439691,
+      "c_decode_60_requests_seconds": 182.259437,
+      "c_decode_determinism_resend_seconds": 3.037657283333333,
+      "headroom_remaining_seconds": 139.2216836560309,
+      "one_metered_pass_seconds": 182.259437,
+      "over_by_seconds": 46.075410627302404,
+      "registered_ceiling_seconds": 700,
+      "requests_affordable_of_60": 45,
+      "total_if_c_decode_flies": 746.0754106273024
+    },
+    "blocker": "registered metered-audio ceiling",
+    "contacts_made": 0,
+    "coordinator_pre_contact_ruling": "Coordinator pre-contact ruling 2026-08-20: if budget_forced fires, the registration's C-DECODE HELPS/HURTS clauses are NOT evaluable at the read (modality confound against the audio-modality FS-NONE comparator); C-DECODE then reports descriptively only. If the winner is a text arm, clauses evaluate as registered.",
+    "evidence_of_zero_contacts": [
+      "c-decode-responses.jsonl absent from the run dir",
+      "c-decode-outputs.jsonl absent from the run dir",
+      "no 'c_decode' block in this flight state",
+      "the refusal came from FrozenCoreClient.__init__ (core.model.lifecycle._open_gate_and_attempt), strictly BEFORE any request could be built"
+    ],
+    "first_refusal": "FrozenCoreError: attempt accounting refused -- core.model.FrozenCoreAdapter opens its OWN durable attempt for plan.attempt_id (invariant I6, a one-time (run_id, attempt_id) key), and this attempt_id was already opened by the embedding preflight. Resolvable by minting a sibling attempt id for the C-DECODE plan; that is NOT the blocker below.",
+    "recorded_at": "2026-08-20T19:34:29.409592+00:00",
+    "registration_gap": "Registration section 5 reads 'Ceilings: <=4,500 calls; <=700 metered audio-seconds (3x182.26 planned); <=0.5 GPU-h.' 3x182.26 = 546.78 s is exactly the THREE audio embedding arms. The cost line never budgeted a metered pass for C-DECODE's own 60 frozen-core requests, which the machinery's accounting charges as a fourth pass. The ceiling and the arm set are therefore jointly unsatisfiable once all three audio arms fly -- a registration defect that can only surface at contact time.",
+    "retrieval_plan_sha256_for_followon": "7150c6b3410de4cc883da7f5ef0798dd80e4beaf253037594e99ff8cf5cea768",
+    "status": "NOT-FLOWN-CEILING-BLOCKED",
+    "what_would_unblock": "An owner/coordinator amendment raising the registered metered-audio ceiling to >= 747 s (4 x 182.259 + 14 s of synthetic non-corpus gate clips = 746.08 s), or an explicit re-registration of how a frozen-core text-only request meters speech audio. On the calls and GPU axes there is ample room: 4031/4500 calls and well under 0.5 GPU-h. C-DECODE would then fly as a follow-on against a FRESH sibling attempt id (which the FrozenCoreAdapter requires in any case), reusing this attempt's own retrieval plan by hash.",
+    "why": "rails.core_client.FrozenCoreClient.complete() resolves audio_seconds from the payload BINDING for the named sample, including on the text-only branch ('audio_seconds, sample_rate_hz = self._binding.sample_facts[sample_id]'), and core.model.adapter charges exactly that per request before the request leaves the process. A C-DECODE pass over the frozen 60 therefore meters a FULL corpus audio pass on EITHER modality -- the transcript modality does not reduce metered speech audio, because the request is still, honestly, about that bound sample's speech_ref. The budget-forced text-modality fallback the coordinator ratified cannot save the pass, and neither can the winner arm happening to be a text arm (it is: t-glap).",
+    "winner_arm_id_for_followon": "t-glap"
+  },
+  "c_decode_gate": {
+    "diagnostics": {
+      "gguf_fast_path_used": "False",
+      "gguf_files_full_hashed": "2",
+      "gguf_files_total": "2"
+    },
+    "full_hash": true,
+    "ran_before_spawn": true,
+    "seconds": 83.2,
+    "umbrella_lock_sha256": "9064bde89d4248fd80c9c2f93c2a9c276a454eadbb1aa7d529671118961371b1"
+  },
+  "c_decode_modality_decision": {
+    "budget_forced": false,
+    "c_decode_query_kind": "text",
+    "coordinator_pre_contact_ruling": "Coordinator pre-contact ruling 2026-08-20: if budget_forced fires, the registration's C-DECODE HELPS/HURTS clauses are NOT evaluable at the read (modality confound against the audio-modality FS-NONE comparator); C-DECODE then reports descriptively only. If the winner is a text arm, clauses evaluate as registered.",
+    "coordinator_pre_contact_ruling_recorded_at": "2026-08-20T19:09:12.462881+00:00",
+    "fs_none_comparator_modality": "audio",
+    "metered_audio_needed_for_audio_modality": 185.29709479166667,
+    "metered_audio_remaining": 139.2216836560309,
+    "metered_audio_used_before_c_decode": 560.7783163439691,
+    "modality_confound_note": "The CONSUMED P-FEW FS-NONE rows this probe's C-DECODE is paired against were produced on the AUDIO modality (rails.probes.pfew_flight uses SlurpAdapter.assemble_prompt for FS-NONE). Whenever C-DECODE runs on the transcript modality the pairing therefore mixes the retrieval-shrunk label space with a transcript-vs-audio observation change, independently of whether the budget-forced fallback fired. Recorded flight-side, before the contacts, as a fact for the read to carry; this flight evaluates nothing.",
+    "modality_matches_fs_none_comparator": false,
+    "read_consequence": "budget_forced did NOT fire -> the registration's C-DECODE clauses evaluate as registered",
+    "reason": "winner arm 't-glap' is a TEXT arm and the modality it queried with is affordable (139.22s metered audio remaining, 185.30s needed); C-DECODE presents the SAME modality the winner's own query side used, per the machinery.",
+    "superseded_by": "c_decode_blocked",
+    "superseded_note": "The 'metered_audio_needed_for_audio_modality' figure in this block assumed a text-modality C-DECODE request meters a negligible sentinel, as an EMBEDDING text contact does. That is wrong for a FROZEN-CORE request: core_client resolves audio_seconds from the sample binding on the text-only branch too. The corrected arithmetic is in c_decode_blocked, and no contact was made under the wrong figure -- the stage refused before building a single request.",
+    "winner_arm_id": "t-glap",
+    "winner_query_kind": "text"
+  },
+  "canonical_labels": [
+    "alarm",
+    "audio",
+    "calendar",
+    "cooking",
+    "datetime",
+    "email",
+    "general",
+    "iot",
+    "lists",
+    "music",
+    "news",
+    "play",
+    "qa",
+    "recommendation",
+    "social",
+    "takeaway",
+    "transport",
+    "weather"
+  ],
+  "config_hash": "3a46eb469d82b46481c501e1293d740fcd2e83c318e94c122d5f279a8bfbecd4",
+  "coordinator_pre_contact_ruling": {
+    "durable_spend_at_recording": null,
+    "issued_by": "coordinator",
+    "issued_during_stage": "post-lco7, pre-qw -- ZERO C-DECODE generation contacts existed",
+    "note": "Recorded VERBATIM at the coordinator's instruction. The cdecode stage refuses fail-closed unless this block is present and matches verbatim, so its presence in the flight receipt is the flight-side record that the ruling preceded every generation contact. The coordinator lands the matching registration amendment pre-read if budget_forced fires.",
+    "recorded_at": "2026-08-20T19:09:12.462881+00:00",
+    "text": "Coordinator pre-contact ruling 2026-08-20: if budget_forced fires, the registration's C-DECODE HELPS/HURTS clauses are NOT evaluable at the read (modality confound against the audio-modality FS-NONE comparator); C-DECODE then reports descriptively only. If the winner is a text arm, clauses evaluate as registered.",
+    "verbatim": true
+  },
+  "corrections": [
+    {
+      "corrected_at": "2026-08-20T19:54:58.634588+00:00",
+      "corrected_value": 0,
+      "field": "sessions[server_key='q4km-core'].contacts",
+      "reason": "The cdecode stage's teardown block passed extra={'contacts': QUERY_N + 1} -- a HARDCODED expectation of the full C-DECODE pass plus its determinism resend -- rather than the proxy's own measured `flown`, and that teardown runs in a `finally`, so the value was written even though the stage refused at FrozenCoreClient construction and issued ZERO requests. Corrected to the measured truth. Independently corroborated by session-q4km-core.server.log, which carries 0 'POST /v1/chat/completions' lines, and by the absence of c-decode-responses.jsonl / c-decode-outputs.jsonl.",
+      "recorded_value": 61,
+      "scope": "recorded METADATA only -- no contact, vector, hash, budget total or durable spend is touched; the durable attempt store never counted these 61 (actual calls stay 4031)."
+    }
+  ],
+  "declared_embedding_length_by_model": {
+    "glap": 1024,
+    "lco3": 2048,
+    "lco7": 3584,
+    "qw": 1024
+  },
+  "gate_a_lco7_sanity": {
+    "contacts": 1,
+    "declared_dim": 3584,
+    "declared_matches_measured": true,
+    "detail": "LCO-7B server sanity embed succeeded (measured dim 3584)",
+    "measured_dim": 3584,
+    "status": "OK"
+  },
+  "gate_b_glap": {
+    "contacts": 2,
+    "detail": "text+audio sanity succeeded (text dim 1024, audio dim 1024)",
+    "model_id": "glap",
+    "sanity_dims": 1024,
+    "status": "OK"
+  },
+  "gate_c_pooling_differ_lco3": {
+    "boots": 2,
+    "contacts": 2,
+    "dims": 2048,
+    "gate_clip": "synthetic 2s 440Hz sine, non-corpus",
+    "last_vector_sha256": "e2be34651d671d20ed450aed7f4483e05ce3c5f0d3f38c426466ae7e84d74ead",
+    "mean_vector_sha256": "e2be34651d671d20ed450aed7f4483e05ce3c5f0d3f38c426466ae7e84d74ead",
+    "model": "lco3",
+    "pooling_override_present": true,
+    "scope": {
+      "model": "lco3",
+      "pooling_override_present": true,
+      "scope_tag": "POOLING-OVERRIDE-PRESENT",
+      "scoped_arm_ids": [
+        "a-lco3",
+        "t-lco3"
+      ]
+    },
+    "sequential_boot_deviation": "run_pooling_differ_gate takes two LIVE clients at once (two resident sessions over the same weights); for LCO-7B that is ~2x12.6 GB against 23.1 GB free VRAM on this host. The archived P-EMB-3M precedent is carried instead: boot last, embed, tear down, boot mean, embed the SAME clip, tear down, byte-compare the persisted vectors. Identical computation, no concurrent VRAM."
+  },
+  "gate_c_pooling_differ_lco7": {
+    "boots": 2,
+    "contacts": 2,
+    "dims": 3584,
+    "gate_clip": "synthetic 2s 440Hz sine, non-corpus",
+    "last_vector_sha256": "bf9565f0f838b658eb27f4d39eb829a0070736eeef8f09e6e77f758308877231",
+    "mean_vector_sha256": "bf9565f0f838b658eb27f4d39eb829a0070736eeef8f09e6e77f758308877231",
+    "model": "lco7",
+    "pooling_override_present": true,
+    "scope": {
+      "model": "lco7",
+      "pooling_override_present": true,
+      "scope_tag": "POOLING-OVERRIDE-PRESENT",
+      "scoped_arm_ids": [
+        "a-lco7",
+        "t-lco7"
+      ]
+    },
+    "sequential_boot_deviation": "run_pooling_differ_gate takes two LIVE clients at once (two resident sessions over the same weights); for LCO-7B that is ~2x12.6 GB against 23.1 GB free VRAM on this host. The archived P-EMB-3M precedent is carried instead: boot last, embed, tear down, boot mean, embed the SAME clip, tear down, byte-compare the persisted vectors. Identical computation, no concurrent VRAM."
+  },
+  "gate_d_encode_only": {
+    "checked_modules": [
+      "speech_aware_evidence_acquisition.rails.embedding_client",
+      "speech_aware_evidence_acquisition.rails.local_encoder_client",
+      "speech_aware_evidence_acquisition.rails.probes.pemb3m_flight",
+      "speech_aware_evidence_acquisition.rails.probes.pemb4r_flight"
+    ],
+    "status": "PASS"
+  },
+  "gate_e_cascade_source": {
+    "registry_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-pkey2-338/attempt-20260819T111032Z-3109e8/transcript-registry.json",
+    "registry_sha256": "f8f6426aeb0eb84c33ad58b603cb36b8f420c3063149b6cd11a0b210d8774959",
+    "status": "COMPLETE",
+    "supplement_required": false,
+    "transcript_count": 60
+  },
+  "gate_scope_note": "The SEVEN embedding arms are TOOL contacts: FrozenCoreGate._validate_runtime (q4km GGUF attestation) is deliberately NOT run for them -- the frozen core is not loaded by any of them. Every embedder byte actually served is fully SHA-256'd in preflight instead, and the llama.cpp binary is re-hashed fail-closed by core.session.start_session at every spawn. C-DECODE IS a frozen-core contact and runs the FULL assert_model_touch_allowed, including the q4km GGUF attestation, BEFORE it spawns anything (the P-CORR-F section-8 forward rule).",
+  "gate_wav_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-pemb4r-4100/attempt-20260820T181837Z-3e6c8f/gate-clip.wav",
+  "gate_wav_sha256": "dc87d1fd3e5e2b1716632351331a80a673491a237e8d11d267559bdca26341a5",
+  "gpu_accounting_seconds": {
+    "contact": 625.2341251373291,
+    "load": 298.47809314727783,
+    "wall": 1241.4455337524414
+  },
+  "ledger_consumed_cell_at_takeoff": "no",
+  "machinery_execution_plan": {
+    "attempt_id": "attempt-20260820T181837Z-3e6c8f",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 0.5,
+    "planned_model_calls": 4100,
+    "planned_speech_audio_seconds": 547,
+    "protocol_hash": "a193f63422ae4c990911752f3d14f37400c57d73cc4908af84d698dd3ccce17a",
+    "run_id": "SAEA-PROBE-pemb4r-4100",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "fc9de436eba5aba120ecf07ee112765cd4ac0609150e0aaf36f4d44c9c5b5ee5",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "model_file_measurements": {
+    "models/glap/model.safetensors": {
+      "bytes": 3422036400,
+      "hash_seconds": 157.62,
+      "read_MB_per_s": 21.7,
+      "sha256": "ee8fd92bba30d03b4c31c624739b1599a222506f0e045cde7cb51c34e3223864"
+    },
+    "models/lco-embedding-omni-3b-gguf/LCO-Embedding-Omni-3B-Q8_0.gguf": {
+      "bytes": 3616087264,
+      "hash_seconds": 164.73,
+      "read_MB_per_s": 22.0,
+      "sha256": "53a9898bdb562ae599a81528a2935153457b82e7cac3aa5b10e5eecefc887d6a"
+    },
+    "models/lco-embedding-omni-3b-gguf/mmproj-LCO-Embedding-Omni-3b-F16.gguf": {
+      "bytes": 2622477952,
+      "hash_seconds": 118.49,
+      "read_MB_per_s": 22.1,
+      "sha256": "765beb616247081f53c9a0b7fed02b96981c5bad563209b5a47ca770f056a13a"
+    },
+    "models/lco-embedding-omni-7b-gguf/LCO-Embedding-Omni-7B-Q8_0.gguf": {
+      "bytes": 8098523968,
+      "hash_seconds": 367.61,
+      "read_MB_per_s": 22.0,
+      "sha256": "0ddf321421abc45dc8422b8a9744f7ea8cb7b01f98003d226865ab83fb93ff56"
+    },
+    "models/lco-embedding-omni-7b-gguf/mmproj-LCO-Embedding-Omni-7b-F16.gguf": {
+      "bytes": 2642151136,
+      "hash_seconds": 120.99,
+      "read_MB_per_s": 21.8,
+      "sha256": "bd9e2c7ac1995a0f5dfab1fe824b50a33ee0d24a9807e68cc08cad1fb08595cc"
+    },
+    "models/qwen3-embedding-0.6b-gguf/Qwen3-Embedding-0.6B-Q8_0.gguf": {
+      "bytes": 639150592,
+      "hash_seconds": 28.3,
+      "read_MB_per_s": 22.6,
+      "sha256": "06507c7b42688469c4e7298b0a1e16deff06caf291cf0a5b278c308249c3e439"
+    }
+  },
+  "model_file_sha256": {
+    "models/glap/model.safetensors": "ee8fd92bba30d03b4c31c624739b1599a222506f0e045cde7cb51c34e3223864",
+    "models/lco-embedding-omni-3b-gguf/LCO-Embedding-Omni-3B-Q8_0.gguf": "53a9898bdb562ae599a81528a2935153457b82e7cac3aa5b10e5eecefc887d6a",
+    "models/lco-embedding-omni-3b-gguf/mmproj-LCO-Embedding-Omni-3b-F16.gguf": "765beb616247081f53c9a0b7fed02b96981c5bad563209b5a47ca770f056a13a",
+    "models/lco-embedding-omni-7b-gguf/LCO-Embedding-Omni-7B-Q8_0.gguf": "0ddf321421abc45dc8422b8a9744f7ea8cb7b01f98003d226865ab83fb93ff56",
+    "models/lco-embedding-omni-7b-gguf/mmproj-LCO-Embedding-Omni-7b-F16.gguf": "bd9e2c7ac1995a0f5dfab1fe824b50a33ee0d24a9807e68cc08cad1fb08595cc",
+    "models/qwen3-embedding-0.6b-gguf/Qwen3-Embedding-0.6B-Q8_0.gguf": "06507c7b42688469c4e7298b0a1e16deff06caf291cf0a5b278c308249c3e439"
+  },
+  "one_pass_metered_audio_seconds": 182.259437,
+  "preflight_completed_at": "2026-08-20T18:52:36.118052+00:00",
+  "prior_durable_spend": {
+    "audio_seconds": 0.0,
+    "calls": 0
+  },
+  "props_lco3_last": {
+    "build_info": "b5-5d9dfcb58",
+    "media_marker": "<__media__>",
+    "model_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/models/lco-embedding-omni-3b-gguf/LCO-Embedding-Omni-3B-Q8_0.gguf"
+  },
+  "props_lco3_mean": {
+    "build_info": "b5-5d9dfcb58",
+    "media_marker": "<__media__>",
+    "model_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/models/lco-embedding-omni-3b-gguf/LCO-Embedding-Omni-3B-Q8_0.gguf"
+  },
+  "props_lco7_last": {
+    "build_info": "b5-5d9dfcb58",
+    "media_marker": "<__media__>",
+    "model_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/models/lco-embedding-omni-7b-gguf/LCO-Embedding-Omni-7B-Q8_0.gguf"
+  },
+  "props_lco7_mean": {
+    "build_info": "b5-5d9dfcb58",
+    "media_marker": "<__media__>",
+    "model_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/models/lco-embedding-omni-7b-gguf/LCO-Embedding-Omni-7B-Q8_0.gguf"
+  },
+  "props_qw": {
+    "build_info": "b5-5d9dfcb58",
+    "media_marker": "<__media__>",
+    "model_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/models/qwen3-embedding-0.6b-gguf/Qwen3-Embedding-0.6B-Q8_0.gguf"
+  },
+  "registered_ceilings": {
+    "gpu_hours": 0.5,
+    "model_calls": 4500,
+    "speech_audio_seconds": 700
+  },
+  "repeat_call_determinism_lco3": {
+    "byte_identical": true,
+    "contacts": 1,
+    "dims": 2048,
+    "kind": "audio",
+    "note": "vector_a is the pooling-differ gate contact itself, reused as the first half of the pair; only one additional contact was spent. Both vectors are persisted on the data root so analysis.pemb4r_read can derive the measured repeat-delta the registration's own argmax-stability statement needs; this flight records sha256 equality only and evaluates no tolerance.",
+    "server_session": "lco3-last",
+    "vector_a_sha256": "e2be34651d671d20ed450aed7f4483e05ce3c5f0d3f38c426466ae7e84d74ead",
+    "vector_b_sha256": "e2be34651d671d20ed450aed7f4483e05ce3c5f0d3f38c426466ae7e84d74ead"
+  },
+  "repeat_call_determinism_lco7": {
+    "byte_identical": true,
+    "contacts": 1,
+    "dims": 3584,
+    "kind": "audio",
+    "note": "vector_a is the pooling-differ gate contact itself, reused as the first half of the pair; only one additional contact was spent. Both vectors are persisted on the data root so analysis.pemb4r_read can derive the measured repeat-delta the registration's own argmax-stability statement needs; this flight records sha256 equality only and evaluates no tolerance.",
+    "server_session": "lco7-last",
+    "vector_a_sha256": "bf9565f0f838b658eb27f4d39eb829a0070736eeef8f09e6e77f758308877231",
+    "vector_b_sha256": "bf9565f0f838b658eb27f4d39eb829a0070736eeef8f09e6e77f758308877231"
+  },
+  "repeat_call_determinism_qw": {
+    "byte_identical": false,
+    "contacts": 2,
+    "dims": 1024,
+    "kind": "text",
+    "note": "E-1 Mission C established that qwen3-emb is NOT bit-exact across identical GPU calls; both vectors are persisted on the data root so the read can derive the measured repeat-delta. This flight records sha256 equality only.",
+    "server_session": "qw",
+    "vector_a_sha256": "f5ed542b49cb9ec45dedb4bbe7c6d63b04a41c1cdc62e4052c81004303f8a45e",
+    "vector_b_sha256": "961d229df8bf9e81bc919e8090f5f305247815f6dafe9641cc6bff21f04d7e5c"
+  },
+  "retrieval_plan": {
+    "arms_in_plan": [
+      "a-glap",
+      "a-lco3",
+      "a-lco7",
+      "t-glap",
+      "t-lco3",
+      "t-lco7",
+      "t-qw"
+    ],
+    "gold_free_note": "retrieval is a PURE function of already-flown vectors plus the bank's own TRAIN-split VALUE metadata; no devel gold is loaded anywhere in this stage, and nothing here is scored. analysis.pemb4r_read re-derives the SAME plan independently and compares it field-by-field rather than trusting this artifact.",
+    "k_primary": 5,
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/derived/embeddings/SAEA-PROBE-pemb4r-4100/retrieval-plan/retrieval_plan.json",
+    "per_arm_construction_stats": {
+      "a-glap": {
+        "candidate_set_size_distribution_k3": {
+          "1": 2,
+          "2": 23,
+          "3": 35
+        },
+        "candidate_set_size_distribution_k5": {
+          "2": 3,
+          "3": 18,
+          "4": 26,
+          "5": 13
+        },
+        "mean_candidate_set_size_k5": 3.816666666666667,
+        "mean_top1_cosine": 0.12800040077450583,
+        "n_samples": 60
+      },
+      "a-lco3": {
+        "candidate_set_size_distribution_k3": {
+          "2": 21,
+          "3": 39
+        },
+        "candidate_set_size_distribution_k5": {
+          "2": 2,
+          "3": 25,
+          "4": 24,
+          "5": 9
+        },
+        "mean_candidate_set_size_k5": 3.6666666666666665,
+        "mean_top1_cosine": 0.16998993941024393,
+        "n_samples": 60
+      },
+      "a-lco7": {
+        "candidate_set_size_distribution_k3": {
+          "1": 13,
+          "2": 44,
+          "3": 3
+        },
+        "candidate_set_size_distribution_k5": {
+          "2": 38,
+          "3": 21,
+          "5": 1
+        },
+        "mean_candidate_set_size_k5": 2.4,
+        "mean_top1_cosine": 0.27534195319257876,
+        "n_samples": 60
+      },
+      "t-glap": {
+        "candidate_set_size_distribution_k3": {
+          "1": 3,
+          "2": 16,
+          "3": 41
+        },
+        "candidate_set_size_distribution_k5": {
+          "2": 3,
+          "3": 13,
+          "4": 24,
+          "5": 20
+        },
+        "mean_candidate_set_size_k5": 4.016666666666667,
+        "mean_top1_cosine": 0.8901019169519233,
+        "n_samples": 60
+      },
+      "t-lco3": {
+        "candidate_set_size_distribution_k3": {
+          "1": 10,
+          "2": 22,
+          "3": 28
+        },
+        "candidate_set_size_distribution_k5": {
+          "1": 6,
+          "2": 5,
+          "3": 23,
+          "4": 14,
+          "5": 12
+        },
+        "mean_candidate_set_size_k5": 3.35,
+        "mean_top1_cosine": 0.6709244340847929,
+        "n_samples": 60
+      },
+      "t-lco7": {
+        "candidate_set_size_distribution_k3": {
+          "1": 18,
+          "2": 31,
+          "3": 11
+        },
+        "candidate_set_size_distribution_k5": {
+          "1": 11,
+          "2": 13,
+          "3": 25,
+          "4": 10,
+          "5": 1
+        },
+        "mean_candidate_set_size_k5": 2.6166666666666667,
+        "mean_top1_cosine": 0.5964321922047886,
+        "n_samples": 60
+      },
+      "t-qw": {
+        "candidate_set_size_distribution_k3": {
+          "1": 47,
+          "2": 12,
+          "3": 1
+        },
+        "candidate_set_size_distribution_k5": {
+          "1": 39,
+          "2": 10,
+          "3": 8,
+          "4": 3
+        },
+        "mean_candidate_set_size_k5": 1.5833333333333333,
+        "mean_top1_cosine": 0.7580092015952203,
+        "n_samples": 60
+      }
+    },
+    "schema": "saea-pemb4r-retrieval-plan-v1",
+    "sha256": "7150c6b3410de4cc883da7f5ef0798dd80e4beaf253037594e99ff8cf5cea768",
+    "winner_arm_id": "t-glap",
+    "winner_query_kind": "text",
+    "winner_selection_rule": "max mean_top1_cosine across all flown kNN arms (gold-free proxy; documented judgment call, ties broken by sorted arm_id)"
+  },
+  "sample_ids": [
+    "slurp:devel:000115:audio-1495375974",
+    "slurp:devel:000444:audio-1502891018-headset",
+    "slurp:devel:000943:audio-1434529860-headset",
+    "slurp:devel:001637:audio-1502195066-headset",
+    "slurp:devel:002120:audio-1502218226",
+    "slurp:devel:002992:audio-1489152746",
+    "slurp:devel:003121:audio-1501696857-headset",
+    "slurp:devel:003309:audio-1501756265",
+    "slurp:devel:004134:audio-1500387396-headset",
+    "slurp:devel:004604:audio-1501759214",
+    "slurp:devel:005025:audio-1500900618",
+    "slurp:devel:005028:audio-1502893878-headset",
+    "slurp:devel:005108:audio-1494422588-headset",
+    "slurp:devel:005359:audio-1497265137-headset",
+    "slurp:devel:005453:audio-1490183633-headset",
+    "slurp:devel:005518:audio-1490203960",
+    "slurp:devel:005536:audio-1499090415-headset",
+    "slurp:devel:005541:audio--1504191543",
+    "slurp:devel:005567:audio-1497359684",
+    "slurp:devel:005684:audio-1498577434",
+    "slurp:devel:005743:audio-1501407405-headset",
+    "slurp:devel:005770:audio-1495377172",
+    "slurp:devel:005943:audio-1499266055",
+    "slurp:devel:006603:audio-1502101512",
+    "slurp:devel:006751:audio-1501773837-headset",
+    "slurp:devel:007374:audio-1498569508",
+    "slurp:devel:007541:audio-1490202471",
+    "slurp:devel:007653:audio-1497438989-headset",
+    "slurp:devel:007852:audio-1494416109-headset",
+    "slurp:devel:008014:audio-1500899290",
+    "slurp:devel:008047:audio-1498570919",
+    "slurp:devel:008072:audio-1488986707",
+    "slurp:devel:009340:audio-1497882818-headset",
+    "slurp:devel:009518:audio-1495734594-headset",
+    "slurp:devel:009733:audio--1505407176",
+    "slurp:devel:010162:audio-1501765286",
+    "slurp:devel:010186:audio-1501415369-headset",
+    "slurp:devel:010545:audio-1490006493",
+    "slurp:devel:010732:audio-1490184504",
+    "slurp:devel:011503:audio-1494514154",
+    "slurp:devel:011654:audio-1501692977-headset",
+    "slurp:devel:011693:audio-1498565017-headset",
+    "slurp:devel:012076:audio-1501766742-headset",
+    "slurp:devel:012253:audio-1488974202",
+    "slurp:devel:012478:audio-1498486426",
+    "slurp:devel:012654:audio-1497860426-headset",
+    "slurp:devel:012667:audio-1501751776-headset",
+    "slurp:devel:013281:audio-1490354296-headset",
+    "slurp:devel:013795:audio-1499266495",
+    "slurp:devel:014173:audio-1490291441",
+    "slurp:devel:014263:audio-1501692486",
+    "slurp:devel:014397:audio-1497368809",
+    "slurp:devel:014657:audio-1499695487",
+    "slurp:devel:015258:audio-1501777355-headset",
+    "slurp:devel:015375:audio-1501754418",
+    "slurp:devel:015632:audio-1490021137-headset",
+    "slurp:devel:015805:audio-1489153743",
+    "slurp:devel:016653:audio-1494513016",
+    "slurp:devel:016825:audio-1498573552-headset",
+    "slurp:devel:017009:audio-1502198805-headset"
+  ],
+  "sessions": [
+    {
+      "argv": [
+        "/home/chao/llama.cpp-featcache/build/bin/llama-server",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "8093",
+        "-m",
+        "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/models/lco-embedding-omni-3b-gguf/LCO-Embedding-Omni-3B-Q8_0.gguf",
+        "--mmproj",
+        "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/models/lco-embedding-omni-3b-gguf/mmproj-LCO-Embedding-Omni-3b-F16.gguf",
+        "--embedding",
+        "-ngl",
+        "999",
+        "-c",
+        "4096",
+        "-b",
+        "4096",
+        "-ub",
+        "4096",
+        "-np",
+        "1",
+        "--pooling",
+        "last"
+      ],
+      "binary_path": "llama.cpp-featcache/build/bin/llama-server",
+      "binary_sha256": "097c96ec5a3f576f378d4d5e103928bf070647fdcc1f015eacb839503e121c68",
+      "contacts": 1022,
+      "host": "127.0.0.1",
+      "model_files": [
+        {
+          "path": "models/lco-embedding-omni-3b-gguf/LCO-Embedding-Omni-3B-Q8_0.gguf",
+          "sha256": "53a9898bdb562ae599a81528a2935153457b82e7cac3aa5b10e5eecefc887d6a"
+        },
+        {
+          "path": "models/lco-embedding-omni-3b-gguf/mmproj-LCO-Embedding-Omni-3b-F16.gguf",
+          "sha256": "765beb616247081f53c9a0b7fed02b96981c5bad563209b5a47ca770f056a13a"
+        }
+      ],
+      "pid": 3315,
+      "pooling_mode": "last",
+      "port": 8093,
+      "resident_seconds": 203.47,
+      "server_key": "lco3-last",
+      "session_id": "SAEA-PROBE-pemb4r-4100-attempt-20260820T181837Z-3e6c8f-lco3-last",
+      "spawn_seconds": 41.5,
+      "started_at": "2026-08-20T18:54:41.250109+00:00",
+      "teardown": {
+        "escalated": false,
+        "pid": 3315,
+        "pid_alive_after": false,
+        "port_reachable_after": false,
+        "signal": "SIGTERM",
+        "teardown_seconds": 0.500495195388794
+      }
+    },
+    {
+      "argv": [
+        "/home/chao/llama.cpp-featcache/build/bin/llama-server",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "8093",
+        "-m",
+        "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/models/lco-embedding-omni-3b-gguf/LCO-Embedding-Omni-3B-Q8_0.gguf",
+        "--mmproj",
+        "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/models/lco-embedding-omni-3b-gguf/mmproj-LCO-Embedding-Omni-3b-F16.gguf",
+        "--embedding",
+        "-ngl",
+        "999",
+        "-c",
+        "4096",
+        "-b",
+        "4096",
+        "-ub",
+        "4096",
+        "-np",
+        "1",
+        "--pooling",
+        "mean"
+      ],
+      "binary_path": "llama.cpp-featcache/build/bin/llama-server",
+      "binary_sha256": "097c96ec5a3f576f378d4d5e103928bf070647fdcc1f015eacb839503e121c68",
+      "contacts": 1,
+      "host": "127.0.0.1",
+      "model_files": [
+        {
+          "path": "models/lco-embedding-omni-3b-gguf/LCO-Embedding-Omni-3B-Q8_0.gguf",
+          "sha256": "53a9898bdb562ae599a81528a2935153457b82e7cac3aa5b10e5eecefc887d6a"
+        },
+        {
+          "path": "models/lco-embedding-omni-3b-gguf/mmproj-LCO-Embedding-Omni-3b-F16.gguf",
+          "sha256": "765beb616247081f53c9a0b7fed02b96981c5bad563209b5a47ca770f056a13a"
+        }
+      ],
+      "pid": 3749,
+      "pooling_mode": "mean",
+      "port": 8093,
+      "resident_seconds": 42.23,
+      "server_key": "lco3-mean",
+      "session_id": "SAEA-PROBE-pemb4r-4100-attempt-20260820T181837Z-3e6c8f-lco3-mean",
+      "spawn_seconds": 41.33,
+      "started_at": "2026-08-20T18:58:05.326443+00:00",
+      "teardown": {
+        "escalated": false,
+        "pid": 3749,
+        "pid_alive_after": false,
+        "port_reachable_after": false,
+        "signal": "SIGTERM",
+        "teardown_seconds": 0.500476598739624
+      }
+    },
+    {
+      "argv": [
+        "/home/chao/llama.cpp-featcache/build/bin/llama-server",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "8095",
+        "-m",
+        "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/models/lco-embedding-omni-7b-gguf/LCO-Embedding-Omni-7B-Q8_0.gguf",
+        "--mmproj",
+        "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/models/lco-embedding-omni-7b-gguf/mmproj-LCO-Embedding-Omni-7b-F16.gguf",
+        "--embedding",
+        "-ngl",
+        "999",
+        "-c",
+        "4096",
+        "-b",
+        "4096",
+        "-ub",
+        "4096",
+        "-np",
+        "1",
+        "--pooling",
+        "last"
+      ],
+      "binary_path": "llama.cpp-featcache/build/bin/llama-server",
+      "binary_sha256": "097c96ec5a3f576f378d4d5e103928bf070647fdcc1f015eacb839503e121c68",
+      "contacts": 1023,
+      "host": "127.0.0.1",
+      "model_files": [
+        {
+          "path": "models/lco-embedding-omni-7b-gguf/LCO-Embedding-Omni-7B-Q8_0.gguf",
+          "sha256": "0ddf321421abc45dc8422b8a9744f7ea8cb7b01f98003d226865ab83fb93ff56"
+        },
+        {
+          "path": "models/lco-embedding-omni-7b-gguf/mmproj-LCO-Embedding-Omni-7b-F16.gguf",
+          "sha256": "bd9e2c7ac1995a0f5dfab1fe824b50a33ee0d24a9807e68cc08cad1fb08595cc"
+        }
+      ],
+      "pid": 3936,
+      "pooling_mode": "last",
+      "port": 8095,
+      "resident_seconds": 295.46,
+      "server_key": "lco7-last",
+      "session_id": "SAEA-PROBE-pemb4r-4100-attempt-20260820T181837Z-3e6c8f-lco7-last",
+      "spawn_seconds": 72.77,
+      "started_at": "2026-08-20T19:00:40.291599+00:00",
+      "teardown": {
+        "escalated": false,
+        "pid": 3936,
+        "pid_alive_after": false,
+        "port_reachable_after": false,
+        "signal": "SIGTERM",
+        "teardown_seconds": 0.5046453475952148
+      }
+    },
+    {
+      "argv": [
+        "/home/chao/llama.cpp-featcache/build/bin/llama-server",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "8095",
+        "-m",
+        "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/models/lco-embedding-omni-7b-gguf/LCO-Embedding-Omni-7B-Q8_0.gguf",
+        "--mmproj",
+        "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/models/lco-embedding-omni-7b-gguf/mmproj-LCO-Embedding-Omni-7b-F16.gguf",
+        "--embedding",
+        "-ngl",
+        "999",
+        "-c",
+        "4096",
+        "-b",
+        "4096",
+        "-ub",
+        "4096",
+        "-np",
+        "1",
+        "--pooling",
+        "mean"
+      ],
+      "binary_path": "llama.cpp-featcache/build/bin/llama-server",
+      "binary_sha256": "097c96ec5a3f576f378d4d5e103928bf070647fdcc1f015eacb839503e121c68",
+      "contacts": 1,
+      "host": "127.0.0.1",
+      "model_files": [
+        {
+          "path": "models/lco-embedding-omni-7b-gguf/LCO-Embedding-Omni-7B-Q8_0.gguf",
+          "sha256": "0ddf321421abc45dc8422b8a9744f7ea8cb7b01f98003d226865ab83fb93ff56"
+        },
+        {
+          "path": "models/lco-embedding-omni-7b-gguf/mmproj-LCO-Embedding-Omni-7b-F16.gguf",
+          "sha256": "bd9e2c7ac1995a0f5dfab1fe824b50a33ee0d24a9807e68cc08cad1fb08595cc"
+        }
+      ],
+      "pid": 4451,
+      "pooling_mode": "mean",
+      "port": 8095,
+      "resident_seconds": 84.39,
+      "server_key": "lco7-mean",
+      "session_id": "SAEA-PROBE-pemb4r-4100-attempt-20260820T181837Z-3e6c8f-lco7-mean",
+      "spawn_seconds": 82.59,
+      "started_at": "2026-08-20T19:05:36.669051+00:00",
+      "teardown": {
+        "escalated": false,
+        "pid": 4451,
+        "pid_alive_after": false,
+        "port_reachable_after": false,
+        "signal": "SIGTERM",
+        "teardown_seconds": 0.5004663467407227
+      }
+    },
+    {
+      "argv": [
+        "/home/chao/llama.cpp-featcache/build/bin/llama-server",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "8094",
+        "-m",
+        "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/models/qwen3-embedding-0.6b-gguf/Qwen3-Embedding-0.6B-Q8_0.gguf",
+        "--embedding",
+        "--pooling",
+        "last",
+        "-ngl",
+        "999",
+        "-c",
+        "4096",
+        "-b",
+        "4096",
+        "-ub",
+        "4096",
+        "-np",
+        "1"
+      ],
+      "binary_path": "llama.cpp-featcache/build/bin/llama-server",
+      "binary_sha256": "097c96ec5a3f576f378d4d5e103928bf070647fdcc1f015eacb839503e121c68",
+      "contacts": 962,
+      "host": "127.0.0.1",
+      "model_files": [
+        {
+          "path": "models/qwen3-embedding-0.6b-gguf/Qwen3-Embedding-0.6B-Q8_0.gguf",
+          "sha256": "06507c7b42688469c4e7298b0a1e16deff06caf291cf0a5b278c308249c3e439"
+        }
+      ],
+      "pid": 757,
+      "pooling_mode": "last",
+      "port": 8094,
+      "resident_seconds": 41.19,
+      "server_key": "qw",
+      "session_id": "SAEA-PROBE-pemb4r-4100-attempt-20260820T181837Z-3e6c8f-qw",
+      "spawn_seconds": 5.03,
+      "started_at": "2026-08-20T19:10:25.544799+00:00",
+      "teardown": {
+        "escalated": false,
+        "pid": 757,
+        "pid_alive_after": false,
+        "port_reachable_after": false,
+        "signal": "SIGTERM",
+        "teardown_seconds": 0.500499963760376
+      }
+    },
+    {
+      "argv": [
+        "/home/chao/llama.cpp-featcache/build/bin/llama-server",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "8080",
+        "-m",
+        "/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+        "--mmproj",
+        "/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/mmproj-Qwen3-Omni-30B-A3B-Instruct-bf16.gguf",
+        "-c",
+        "49152",
+        "-np",
+        "4",
+        "-fa",
+        "on",
+        "-ngl",
+        "999",
+        "-ctk",
+        "q8_0",
+        "-ctv",
+        "q8_0"
+      ],
+      "binary_path": "llama.cpp-featcache/build/bin/llama-server",
+      "binary_sha256": "097c96ec5a3f576f378d4d5e103928bf070647fdcc1f015eacb839503e121c68",
+      "contacts": 0,
+      "contacts_note": "ZERO requests were issued on this session: the stage refused at FrozenCoreClient construction, before any request could be built. See `corrections` and section 6 of the archived README.",
+      "host": "127.0.0.1",
+      "kind": "generation",
+      "model_files": [
+        {
+          "path": "models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+          "sha256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d"
+        },
+        {
+          "path": "models/qwen3-omni-30b-a3b-instruct-gguf-q4km/mmproj-Qwen3-Omni-30B-A3B-Instruct-bf16.gguf",
+          "sha256": "f0dfe825fb692d426362b1ac79678fc08daa4758f7151526cad110515f122883"
+        }
+      ],
+      "pid": 889,
+      "port": 8080,
+      "resident_seconds": 23.06,
+      "server_key": "q4km-core",
+      "session_id": "SAEA-PROBE-pemb4r-4100-attempt-20260820T181837Z-3e6c8f-q4km-core",
+      "spawn_seconds": 22.34,
+      "started_at": "2026-08-20T19:29:00.620035+00:00",
+      "teardown": {
+        "escalated": false,
+        "pid": 889,
+        "pid_alive_after": false,
+        "port_reachable_after": false,
+        "signal": "SIGTERM",
+        "teardown_seconds": 0.5004494190216064
+      }
+    }
+  ],
+  "study_commit": "1eeea14d4946b5f94b16772746a0d951b014fb05",
+  "sweeps": {
+    "a-glap": {
+      "arm_id": "a-glap",
+      "contact_failures": [],
+      "contacts_flown": 60,
+      "contacts_replayed": 0,
+      "flown_by_kind": {
+        "audio": 60
+      },
+      "latency_seconds": 0.869,
+      "mean_latency_seconds": 0.0145,
+      "model": "glap",
+      "query_kind": "audio",
+      "server_key": "in-process",
+      "wall_seconds": 2.51
+    },
+    "a-lco3": {
+      "arm_id": "a-lco3",
+      "contact_failures": [],
+      "contacts_flown": 60,
+      "contacts_replayed": 0,
+      "flown_by_kind": {
+        "audio": 60
+      },
+      "latency_seconds": 15.266,
+      "mean_latency_seconds": 0.2544,
+      "model": "lco3",
+      "query_kind": "audio",
+      "server_key": "lco3-last",
+      "wall_seconds": 27.11
+    },
+    "a-lco7": {
+      "arm_id": "a-lco7",
+      "contact_failures": [],
+      "contacts_flown": 60,
+      "contacts_replayed": 0,
+      "flown_by_kind": {
+        "audio": 60
+      },
+      "latency_seconds": 37.485,
+      "mean_latency_seconds": 0.6247,
+      "model": "lco7",
+      "query_kind": "audio",
+      "server_key": "lco7-last",
+      "wall_seconds": 67.75
+    },
+    "bank:glap": {
+      "contact_failures": [],
+      "contacts_flown": 900,
+      "contacts_replayed": 0,
+      "flown_by_kind": {
+        "text": 900
+      },
+      "latency_seconds": 469.405,
+      "model": "glap",
+      "server_key": "in-process",
+      "wall_seconds": 493.4
+    },
+    "bank:lco3": {
+      "contact_failures": [],
+      "contacts_flown": 900,
+      "contacts_replayed": 0,
+      "flown_by_kind": {
+        "text": 900
+      },
+      "latency_seconds": 15.367,
+      "model": "lco3",
+      "server_key": "lco3-last",
+      "wall_seconds": 126.97
+    },
+    "bank:lco7": {
+      "contact_failures": [],
+      "contacts_flown": 900,
+      "contacts_replayed": 0,
+      "flown_by_kind": {
+        "text": 900
+      },
+      "latency_seconds": 21.064,
+      "model": "lco7",
+      "server_key": "lco7-last",
+      "wall_seconds": 137.26
+    },
+    "bank:qw": {
+      "contact_failures": [],
+      "contacts_flown": 900,
+      "contacts_replayed": 0,
+      "flown_by_kind": {
+        "text": 900
+      },
+      "latency_seconds": 9.682,
+      "model": "qw",
+      "server_key": "qw",
+      "wall_seconds": 33.73
+    },
+    "t-glap": {
+      "arm_id": "t-glap",
+      "contact_failures": [],
+      "contacts_flown": 60,
+      "contacts_replayed": 0,
+      "flown_by_kind": {
+        "text": 60
+      },
+      "latency_seconds": 27.596,
+      "mean_latency_seconds": 0.4599,
+      "model": "glap",
+      "query_kind": "text",
+      "server_key": "in-process",
+      "wall_seconds": 34.78
+    },
+    "t-lco3": {
+      "arm_id": "t-lco3",
+      "contact_failures": [],
+      "contacts_flown": 60,
+      "contacts_replayed": 0,
+      "flown_by_kind": {
+        "text": 60
+      },
+      "latency_seconds": 0.965,
+      "mean_latency_seconds": 0.0161,
+      "model": "lco3",
+      "query_kind": "text",
+      "server_key": "lco3-last",
+      "wall_seconds": 6.92
+    },
+    "t-lco7": {
+      "arm_id": "t-lco7",
+      "contact_failures": [],
+      "contacts_flown": 60,
+      "contacts_replayed": 0,
+      "flown_by_kind": {
+        "text": 60
+      },
+      "latency_seconds": 1.334,
+      "mean_latency_seconds": 0.0222,
+      "model": "lco7",
+      "query_kind": "text",
+      "server_key": "lco7-last",
+      "wall_seconds": 15.58
+    },
+    "t-qw": {
+      "arm_id": "t-qw",
+      "contact_failures": [],
+      "contacts_flown": 60,
+      "contacts_replayed": 0,
+      "flown_by_kind": {
+        "text": 60
+      },
+      "latency_seconds": 0.681,
+      "mean_latency_seconds": 0.0114,
+      "model": "qw",
+      "query_kind": "text",
+      "server_key": "qw",
+      "wall_seconds": 2.33
+    }
+  },
+  "umbrella_lock_crosscheck": {
+    "glap": {
+      "files_count": 9,
+      "lifecycle": "LOCAL_CANDIDATE",
+      "lock_carries_per_file_sha256": false,
+      "model": "glap",
+      "revision": "UNRESOLVED_LOCAL_REVISION",
+      "size_bytes": 3426926767,
+      "source_id": "UNRESOLVED_LOCAL_SOURCE",
+      "source_kind": "observed-local",
+      "verified_against_lock": []
+    },
+    "lco-embedding-omni-3b-gguf": {
+      "files_count": 5,
+      "lifecycle": "LOCAL_CANDIDATE",
+      "lock_carries_per_file_sha256": false,
+      "model": "lco3",
+      "revision": "UNRESOLVED_LOCAL_REVISION",
+      "size_bytes": 6238572624,
+      "source_id": "UNRESOLVED_LOCAL_SOURCE",
+      "source_kind": "observed-local",
+      "verified_against_lock": []
+    },
+    "lco-embedding-omni-7b-gguf": {
+      "files_count": 5,
+      "lifecycle": "LOCAL_CANDIDATE",
+      "lock_carries_per_file_sha256": false,
+      "model": "lco7",
+      "revision": "UNRESOLVED_LOCAL_REVISION",
+      "size_bytes": 10740684621,
+      "source_id": "UNRESOLVED_LOCAL_SOURCE",
+      "source_kind": "observed-local",
+      "verified_against_lock": []
+    },
+    "qwen3-embedding-0.6b-gguf": {
+      "files_count": 1,
+      "lifecycle": "AUXILIARY",
+      "lock_carries_per_file_sha256": true,
+      "model": "qw",
+      "revision": "370f27d7550e0def9b39c1f16d3fbaa13aa67728",
+      "size_bytes": 639150592,
+      "source_id": "Qwen/Qwen3-Embedding-0.6B-GGUF",
+      "source_kind": "hf",
+      "verified_against_lock": [
+        {
+          "agree": true,
+          "filename": "Qwen3-Embedding-0.6B-Q8_0.gguf",
+          "lock_sha256": "06507c7b42688469c4e7298b0a1e16deff06caf291cf0a5b278c308249c3e439",
+          "measured": "06507c7b42688469c4e7298b0a1e16deff06caf291cf0a5b278c308249c3e439"
+        }
+      ]
+    }
+  },
+  "umbrella_lock_sha256": "9064bde89d4248fd80c9c2f93c2a9c276a454eadbb1aa7d529671118961371b1"
+}

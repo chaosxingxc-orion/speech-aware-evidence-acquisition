@@ -1,0 +1,47 @@
+{
+  "argv": [
+    "/home/chao/llama.cpp-featcache/build/bin/llama-server",
+    "--host",
+    "127.0.0.1",
+    "--port",
+    "8095",
+    "-m",
+    "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/models/lco-embedding-omni-7b-gguf/LCO-Embedding-Omni-7B-Q8_0.gguf",
+    "--mmproj",
+    "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/models/lco-embedding-omni-7b-gguf/mmproj-LCO-Embedding-Omni-7b-F16.gguf",
+    "--embedding",
+    "-ngl",
+    "999",
+    "-c",
+    "4096",
+    "-b",
+    "4096",
+    "-ub",
+    "4096",
+    "-np",
+    "1",
+    "--pooling",
+    "last"
+  ],
+  "binary_path": "llama.cpp-featcache/build/bin/llama-server",
+  "binary_sha256": "097c96ec5a3f576f378d4d5e103928bf070647fdcc1f015eacb839503e121c68",
+  "host": "127.0.0.1",
+  "model_files": [
+    {
+      "path": "models/lco-embedding-omni-7b-gguf/LCO-Embedding-Omni-7B-Q8_0.gguf",
+      "sha256": "0ddf321421abc45dc8422b8a9744f7ea8cb7b01f98003d226865ab83fb93ff56"
+    },
+    {
+      "path": "models/lco-embedding-omni-7b-gguf/mmproj-LCO-Embedding-Omni-7b-F16.gguf",
+      "sha256": "bd9e2c7ac1995a0f5dfab1fe824b50a33ee0d24a9807e68cc08cad1fb08595cc"
+    }
+  ],
+  "pid": 3936,
+  "port": 8095,
+  "schema": "saea-session-receipt-v1",
+  "server_log_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-PROBE-pemb4r-4100/attempt-20260820T181837Z-3e6c8f/SAEA-PROBE-pemb4r-4100.session-lco7-last.server.log",
+  "session_id": "SAEA-PROBE-pemb4r-4100-attempt-20260820T181837Z-3e6c8f-lco7-last",
+  "started_at": "2026-08-20T19:00:40.291599+00:00",
+  "startup_stdout_sha256": "2b25f544134bee4c27c4e26e2e02f0effb2a0e839d637609d1625970899d6269",
+  "study": "speech-aware-evidence-acquisition"
+}
