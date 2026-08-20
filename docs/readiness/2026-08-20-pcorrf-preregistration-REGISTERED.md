@@ -103,3 +103,19 @@ One-shot read; pinned suite `analysis/pcorrf_read.py` built and coordinator-revi
 BEFORE the read; exposure row `SAEA-PROBE-pcorrf-240` at machinery landing (consumed=no);
 gold scoring-side only; SLURP CC BY-NC 4.0 carried; no test split; discovery-tier
 same-distribution n=60 — no superiority/generalization claim attaches.
+
+## 8. Pre-read accounting adjudication (coordinator, 2026-08-20, after landing, before
+## any result read — no result value was consulted)
+
+The flight receipt records three GPU figures: server-alive wall **0.3628 h** (exceeds the
+§6 ceiling number by 46.1 s), GPU-active occupancy **0.0967 h**, per-call
+measured-equivalent **0.1416 h**. The wall overshoot is fully attributed (three archived
+corroborations) to a 959 s cold-cache sha256 of the 20.76 GB GGUF set that ran AFTER
+server spawn while the GPU sat at 0–1% util — a launcher sequencing flaw, not compute.
+Ruling: §6's ceiling metric is the registration's own stated basis — the per-call
+measured-equivalent (its parenthetical "measured-equivalent ≈0.15") and GPU-active
+occupancy, consistent with the program's G1 latency-sum precedent; both are inside the
+ceiling, so the flight is NOT in breach. The wall figure stays on the record untouched.
+Forward rule for every successor flight: build transport + payload binding BEFORE
+spawning the server. This section is accounting-only and was written without reading any
+flown response.
