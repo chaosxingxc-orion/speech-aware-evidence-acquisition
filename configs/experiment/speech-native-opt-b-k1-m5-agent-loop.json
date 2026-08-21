@@ -1,8 +1,0 @@
-{
-  "experiment_id": "SAEA-SN-OPTB-K1M5-AGENT-LOOP",
-  "execution_profile": "bounded-discovery-probe",
-  "purpose": "Post-read OPT-B18 mechanics validation of the bounded M5 disagreement-triggered AgentLoop using the frozen K1 cards and original speech packet at every contact. This cell measures trajectory fidelity and optimization signals; it is not independent effectiveness evidence.",
-  "key_representation_id": "K1",
-  "matcher_policy_id": "M5",
-  "speech_native_contact_ceiling_per_task": 16
-}
