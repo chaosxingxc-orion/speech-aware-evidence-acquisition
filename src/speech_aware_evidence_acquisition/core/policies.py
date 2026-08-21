@@ -8,11 +8,15 @@ vocabulary never grows without a new D2 receipt.
 
 from __future__ import annotations
 
+from concurrent.futures import ThreadPoolExecutor
+from dataclasses import replace
+from queue import Queue
 from typing import Mapping, Sequence
 
 from ..data.loader import SampleRef
 from ..e0.d2_leakage import ARM_VISIBLE_FIELDS
 from .base import POLICIES, EvidenceItem, SampleContext, SampleOutcome
+from .tracing import set_current_trace_buffer
 
 
 class ArmError(RuntimeError):
@@ -30,6 +34,12 @@ def build_arm_payload(
     exemplar_bank: Sequence[Mapping[str, object]] | None = None,
     delta_candidates: Sequence[Mapping[str, object]] | None = None,
     allow_empty_evidence: bool = False,
+    speech_feature_parts: Sequence[Mapping[str, object]] | None = None,
+    speech_packet_sha256: str | None = None,
+    query_source: str | None = None,
+    key_representation_id: str | None = None,
+    matcher_policy_id: str | None = None,
+    mmproj_loaded: bool | None = None,
 ) -> dict[str, object]:
     if arm not in ARM_VISIBLE_FIELDS:
         raise ArmError(f"unknown arm {arm!r}; D2-frozen arms are {sorted(ARM_VISIBLE_FIELDS)}")
@@ -114,6 +124,78 @@ def build_arm_payload(
                 "field set; cannot attach delta candidates to this arm's payload"
             )
         payload["delta_candidates"] = [dict(item) for item in delta_candidates]
+    speech_fields = {
+        "speech_feature_parts",
+        "speech_packet_sha256",
+        "query_source",
+        "key_representation_id",
+        "matcher_policy_id",
+        "mmproj_loaded",
+    }
+    supplied_speech_values = (
+        speech_feature_parts,
+        speech_packet_sha256,
+        query_source,
+        key_representation_id,
+        matcher_policy_id,
+        mmproj_loaded,
+    )
+    if speech_fields <= set(arm_fields):
+        if not isinstance(speech_feature_parts, Sequence) or not speech_feature_parts:
+            raise ArmError("speech-feature arm requires at least one packet descriptor")
+        descriptors = [dict(part) for part in speech_feature_parts]
+        required_descriptor = {"packet_id", "sha256", "role"}
+        if any(set(part) != required_descriptor for part in descriptors):
+            raise ArmError(
+                "speech-feature packet descriptors must carry exact packet_id/sha256/role keys"
+            )
+        for part in descriptors:
+            packet_id = part["packet_id"]
+            packet_sha256 = part["sha256"]
+            if (
+                not isinstance(packet_id, str)
+                or not packet_id
+                or packet_id.startswith("/")
+                or "\\" in packet_id
+                or any(segment in {"", ".", ".."} for segment in packet_id.split("/"))
+                or not isinstance(packet_sha256, str)
+                or len(packet_sha256) != 64
+                or any(character not in "0123456789abcdef" for character in packet_sha256)
+            ):
+                raise ArmError(
+                    "speech-feature packet_id must be a normalized relative id and "
+                    "sha256 must be lowercase 64-hex"
+                )
+        if sum(part["role"] == "query" for part in descriptors) != 1:
+            raise ArmError("speech-feature arm requires exactly one query packet")
+        if any(part["role"] not in {"query", "key"} for part in descriptors):
+            raise ArmError("speech-feature packet role must be query or key")
+        for field, value in (
+            ("speech_packet_sha256", speech_packet_sha256),
+            ("key_representation_id", key_representation_id),
+            ("matcher_policy_id", matcher_policy_id),
+        ):
+            if not isinstance(value, str) or not value:
+                raise ArmError(f"speech-feature arm requires non-empty {field}")
+        query = next(part for part in descriptors if part["role"] == "query")
+        if query.get("sha256") != speech_packet_sha256:
+            raise ArmError("speech_packet_sha256 must equal the query packet descriptor hash")
+        if query_source != "speech_features":
+            raise ArmError("speech-feature arm query_source must be 'speech_features'")
+        if mmproj_loaded is not False:
+            raise ArmError("speech-feature arm must bind mmproj_loaded=false")
+        payload.update(
+            {
+                "speech_feature_parts": descriptors,
+                "speech_packet_sha256": speech_packet_sha256,
+                "query_source": query_source,
+                "key_representation_id": key_representation_id,
+                "matcher_policy_id": matcher_policy_id,
+                "mmproj_loaded": mmproj_loaded,
+            }
+        )
+    elif any(value is not None for value in supplied_speech_values):
+        raise ArmError(f"arm {arm!r} does not declare speech-feature fields")
     if set(payload) != set(ARM_VISIBLE_FIELDS[arm]):
         raise ArmError(
             f"arm {arm!r} builder produced a field set that diverges from the D2 freeze: "
@@ -123,10 +205,44 @@ def build_arm_payload(
 
 
 class FixedPolicy:
-    """One request per sample; the response is always admitted (R0 wiring)."""
+    """One request per sample; responses are always admitted (R0 wiring).
+
+    ``run_samples`` reuses the driver's existing sample-batch seam. It bounds
+    concurrent requests by the protocol-bound ``obs_batch_samples`` value,
+    routes each adapter trace to that sample's buffer, and preserves input
+    order regardless of request completion order.
+    """
 
     def run_sample(self, ctx: SampleContext) -> SampleOutcome:
         evidence = ctx.evidence if ctx.arm != "bare-core" else None
+        speech_kwargs: dict[str, object] = {}
+        allow_empty_evidence = False
+        if "speech_feature_parts" in ARM_VISIBLE_FIELDS[ctx.arm]:
+            config_values = ctx.extras.get("config_values", {})
+            if not isinstance(config_values, Mapping):
+                raise ArmError("speech-feature context config_values must be a mapping")
+            query = ctx.extras.get("speech_feature_query")
+            if not isinstance(query, Mapping) or set(query) != {
+                "packet_id",
+                "sha256",
+                "role",
+            }:
+                raise ArmError(
+                    "speech-feature context must carry an exact packet_id/sha256/role query"
+                )
+            allow_empty_evidence = config_values.get(
+                "allow_empty_speech_feature_evidence", False
+            )
+            if not isinstance(allow_empty_evidence, bool):
+                raise ArmError("allow_empty_speech_feature_evidence must be boolean")
+            speech_kwargs = {
+                "speech_feature_parts": [dict(query)],
+                "speech_packet_sha256": query["sha256"],
+                "query_source": "speech_features",
+                "key_representation_id": config_values.get("key_representation_id"),
+                "matcher_policy_id": config_values.get("matcher_policy_id"),
+                "mmproj_loaded": False,
+            }
         payload = build_arm_payload(
             ctx.arm,
             ctx.sample,
@@ -145,6 +261,8 @@ class FixedPolicy:
             # before "exemplar-context" -- mirroring reproduction.obs_loop's
             # own identical thread-through for its slice payloads.
             exemplar_bank=ctx.exemplar_bank,
+            allow_empty_evidence=allow_empty_evidence,
+            **speech_kwargs,
         )
         response = ctx.adapter.request(payload)
         ctx.sink.emit(
@@ -164,6 +282,78 @@ class FixedPolicy:
             # into the outputs row -- not itself a policy-behavior change.
             response_text_sha256=response.response_text_sha256,
         )
+
+    def run_samples(self, contexts: Sequence[SampleContext]) -> list[SampleOutcome]:
+        """Run whole-speech requests concurrently without changing semantics.
+
+        All contexts are validated before the first request. When the model
+        profile declares ``id_slot='per-sample'``, an in-flight request owns
+        one slot from a bounded pool and releases it only after the request
+        settles. Futures are read in input order after the entire pool has
+        settled, so the first failure in split order wins deterministically.
+        """
+
+        contexts = list(contexts)
+        if not contexts:
+            return []
+
+        batch_sizes: list[int] = []
+        for ctx in contexts:
+            config_values = ctx.extras.get("config_values", {})
+            if not isinstance(config_values, Mapping):
+                raise ArmError("fixed batch context config_values must be a mapping")
+            raw_batch_size = config_values.get("obs_batch_samples", 1)
+            if (
+                isinstance(raw_batch_size, bool)
+                or not isinstance(raw_batch_size, int)
+                or raw_batch_size < 1
+            ):
+                raise ArmError(
+                    "fixed batch obs_batch_samples must be an integer >= 1, "
+                    f"got {raw_batch_size!r}"
+                )
+            batch_sizes.append(raw_batch_size)
+            id_slot = ctx.decoding_params.get("id_slot")
+            if id_slot is not None and (
+                isinstance(id_slot, bool)
+                or not (
+                    (isinstance(id_slot, int) and id_slot >= 0)
+                    or id_slot == "per-sample"
+                )
+            ):
+                raise ArmError(
+                    "fixed batch decoding_params.id_slot must be a non-negative "
+                    f"integer or 'per-sample', got {id_slot!r}"
+                )
+        if len(set(batch_sizes)) != 1:
+            raise ArmError("fixed batch contexts disagree on obs_batch_samples")
+
+        batch_size = min(batch_sizes[0], len(contexts))
+        free_slots: Queue[int] = Queue(maxsize=batch_size)
+        for slot in range(batch_size):
+            free_slots.put(slot)
+
+        def one(ctx: SampleContext) -> SampleOutcome:
+            decoding_params = dict(ctx.decoding_params)
+            pinned_slot: int | None = None
+            if decoding_params.get("id_slot") == "per-sample":
+                pinned_slot = free_slots.get()
+                decoding_params["id_slot"] = pinned_slot
+            worker_ctx = replace(ctx, decoding_params=decoding_params)
+            set_current_trace_buffer(worker_ctx.sink)
+            try:
+                return self.run_sample(worker_ctx)
+            finally:
+                set_current_trace_buffer(None)
+                if pinned_slot is not None:
+                    free_slots.put(pinned_slot)
+
+        with ThreadPoolExecutor(
+            max_workers=batch_size,
+            thread_name_prefix="saea-fixed-sample",
+        ) as pool:
+            futures = [pool.submit(one, ctx) for ctx in contexts]
+        return [future.result() for future in futures]
 
 
 POLICIES.register("fixed", FixedPolicy())

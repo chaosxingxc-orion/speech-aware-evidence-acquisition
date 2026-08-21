@@ -51,6 +51,7 @@ import subprocess
 import sys
 import time
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 
@@ -76,6 +77,7 @@ from speech_aware_evidence_acquisition.core.session import (
     read_session_receipt,
     require_loopback,
     start_session,
+    stop_session,
     verify_against_runtime_receipt,
     write_session_receipt,
 )
@@ -162,6 +164,229 @@ def _canned_response():
             "usage": {"prompt_tokens": 1, "completion_tokens": 1},
         }
     ).encode()
+
+
+def test_stop_session_targets_only_the_reverified_receipt_pid(monkeypatch, tmp_path):
+    import signal
+    import speech_aware_evidence_acquisition.core.session.lifecycle as lifecycle_module
+
+    receipt = _session(pid=43210)
+    verified = []
+    signals = []
+    alive = iter((True, False))
+    monkeypatch.setattr(
+        lifecycle_module,
+        "assert_session_alive",
+        lambda actual, runtime, root: verified.append((actual, runtime, root)),
+    )
+    monkeypatch.setattr(lifecycle_module, "_pid_alive", lambda _pid: next(alive, False))
+    monkeypatch.setattr(
+        lifecycle_module.os,
+        "kill",
+        lambda pid, sent_signal: signals.append((pid, sent_signal)),
+    )
+    monkeypatch.setattr(lifecycle_module.time, "sleep", lambda _seconds: None)
+    output = tmp_path / "stop.json"
+    stopped = stop_session(
+        receipt,
+        runtime_receipt={"runtime": "pinned"},
+        runtime_root=tmp_path,
+        timeout_seconds=1.0,
+        poll_interval_seconds=0.01,
+        receipt_path=output,
+    )
+
+    assert verified == [(receipt, {"runtime": "pinned"}, tmp_path)]
+    assert signals == [(43210, signal.SIGTERM)]
+    assert stopped["session_id"] == receipt.session_id
+    assert stopped["pid"] == 43210
+    assert stopped["termination_signal"] == "SIGTERM"
+    assert len(stopped["session_receipt_sha256"]) == 64
+    assert len(stopped["runtime_receipt_sha256"]) == 64
+    assert json.loads(output.read_text(encoding="utf-8")) == stopped
+
+
+def test_stop_session_never_signals_when_identity_reverification_fails(monkeypatch, tmp_path):
+    import speech_aware_evidence_acquisition.core.session.lifecycle as lifecycle_module
+
+    receipt = _session(pid=43210)
+
+    def refuse(*_args):
+        raise SessionError("not the receipt-bound process")
+
+    monkeypatch.setattr(lifecycle_module, "assert_session_alive", refuse)
+    monkeypatch.setattr(
+        lifecycle_module.os,
+        "kill",
+        lambda *_args: pytest.fail("an unverified process must never be signalled"),
+    )
+    with pytest.raises(SessionError, match="receipt-bound"):
+        stop_session(
+            receipt,
+            runtime_receipt={"runtime": "pinned"},
+            runtime_root=tmp_path,
+        )
+
+
+def test_packet_promotion_requires_a_matching_preprocess_stop_chain(tmp_path):
+    from speech_aware_evidence_acquisition.core.driver.cli import (
+        _canonical_sha256,
+        _load_preprocess_stop_chain,
+    )
+
+    runtime = {
+        "role": "preprocess",
+        "llama_cpp": {
+            "binary_path": "llama.cpp/build/bin/llama-server",
+            "binary_sha256": "c" * 64,
+        },
+        "gguf_files": [
+            {"path": item.path, "sha256": item.sha256} for item in _model_files()
+        ],
+    }
+    session = SessionReceipt(
+        schema=SESSION_RECEIPT_SCHEMA_V2,
+        study=STUDY_SLUG,
+        session_id="preprocess-session",
+        binary_path="llama.cpp/build/bin/llama-server",
+        binary_sha256="c" * 64,
+        argv=("llama-server", "-m", "models/x/model.gguf", "--mmproj", "models/x/mmproj.gguf"),
+        pid=43210,
+        host="127.0.0.1",
+        port=8080,
+        model_files=_model_files(),
+        started_at="2026-08-21T00:00:00+00:00",
+        startup_stdout_sha256=hashlib.sha256(b"").hexdigest(),
+        role="preprocess",
+        server_env_keys=("LLAMA_MTMD_FEAT_CACHE_DIR",),
+    ).validate()
+    session_path = tmp_path / "session.json"
+    write_session_receipt(session_path, session)
+    stop = {
+        "schema": "saea-session-stop-receipt-v1",
+        "study": STUDY_SLUG,
+        "session_id": session.session_id,
+        "session_role": "preprocess",
+        "session_receipt_sha256": _canonical_sha256(session.as_json()),
+        "runtime_receipt_sha256": _canonical_sha256(runtime),
+        "pid": session.pid,
+        "termination_signal": "SIGTERM",
+        "forced": False,
+        "stopped_at": "2026-08-21T00:01:00+00:00",
+    }
+    stop_path = tmp_path / "stop.json"
+    stop_path.write_text(json.dumps(stop), encoding="utf-8")
+
+    loaded_session, loaded_stop = _load_preprocess_stop_chain(
+        session_receipt_path=session_path,
+        stop_receipt_path=stop_path,
+        runtime_receipt=runtime,
+    )
+    assert loaded_session == session
+    assert loaded_stop == stop
+
+    stop["runtime_receipt_sha256"] = "0" * 64
+    stop_path.write_text(json.dumps(stop), encoding="utf-8")
+    with pytest.raises(ValueError, match="does not match"):
+        _load_preprocess_stop_chain(
+            session_receipt_path=session_path,
+            stop_receipt_path=stop_path,
+            runtime_receipt=runtime,
+        )
+
+
+def test_packet_promotion_writes_a_complete_no_overwrite_handoff(
+    tmp_path, monkeypatch
+):
+    from speech_aware_evidence_acquisition.core.driver.cli import (
+        _cli_promote_speech_packets,
+    )
+
+    data_root = tmp_path / "data"
+    legacy_root = tmp_path / "legacy"
+    feature_root = tmp_path / "packets"
+    output = tmp_path / "promotion.json"
+    data_root.mkdir()
+    legacy_root.mkdir()
+    gate = SimpleNamespace(
+        runtime_view_sha256="1" * 64,
+        samples=(
+            SimpleNamespace(
+                packet_id="slurp/train/1",
+                media_relpath="datasets/slurp/one.flac",
+            ),
+        ),
+    )
+    runtime = {
+        "role": "preprocess",
+        "gguf_files": [
+            {"path": "models/decoder.gguf", "sha256": "2" * 64},
+            {"path": "models/mmproj.gguf", "sha256": "3" * 64},
+        ],
+    }
+    session = SimpleNamespace(
+        session_id="preprocess-session-1",
+        as_json=lambda: {"session_id": "preprocess-session-1"},
+    )
+    stop = {"stopped": True}
+    packet = SimpleNamespace(
+        packet_id="slurp/train/1",
+        packet_sha256="4" * 64,
+        audio_sha256="5" * 64,
+        decoder_gguf_sha256="2" * 64,
+        mmproj_sha256="3" * 64,
+    )
+    monkeypatch.setattr(
+        "speech_aware_evidence_acquisition.data.lock.data_root", lambda: data_root
+    )
+    monkeypatch.setattr(
+        "speech_aware_evidence_acquisition.data.slurp.load_slurp_engineering_gate",
+        lambda *_args, **_kwargs: gate,
+    )
+    monkeypatch.setattr(
+        "speech_aware_evidence_acquisition.core.session.load_runtime_receipt",
+        lambda _path: runtime,
+    )
+    monkeypatch.setattr(
+        "speech_aware_evidence_acquisition.core.driver.cli._load_preprocess_stop_chain",
+        lambda **_kwargs: (session, stop),
+    )
+    captured = {}
+
+    def materialize(**kwargs):
+        captured.update(kwargs)
+        return (packet,)
+
+    monkeypatch.setattr(
+        "speech_aware_evidence_acquisition.core.model."
+        "materialize_legacy_cached_speech_feature_packets",
+        materialize,
+    )
+    args = SimpleNamespace(
+        dataset="slurp-speech-native-eng-gate8",
+        runtime_receipt="receipts/runtime-q4km-preprocess.json",
+        session_receipt=str(tmp_path / "session.json"),
+        stop_receipt=str(tmp_path / "stop.json"),
+        legacy_cache_dir=str(legacy_root),
+        feature_root=str(feature_root),
+        expected_count=1,
+        expected_n_embd=2048,
+        workers=8,
+        receipt_output=str(output),
+    )
+
+    assert _cli_promote_speech_packets(args) == 0
+    receipt = json.loads(output.read_text(encoding="utf-8"))
+    assert receipt["schema"] == "saea-speech-packet-promotion-receipt-v1"
+    assert receipt["preprocess_session_receipt_sha256"] == hashlib.sha256(
+        b'{"session_id":"preprocess-session-1"}'
+    ).hexdigest()
+    assert receipt["count"] == 1
+    assert receipt["packets"][0]["packet_sha256"] == "4" * 64
+    assert captured["workers"] == 8
+
+    with pytest.raises(ValueError, match="already exists"):
+        _cli_promote_speech_packets(args)
 
 
 def _runtime_world(tmp_path):

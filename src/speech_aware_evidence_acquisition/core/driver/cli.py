@@ -1,4 +1,4 @@
-"""``saea-driver`` CLI: ``score`` / ``run`` / ``finalize`` / ``smoke`` subcommands.
+"""``saea-driver`` CLI for scoring, execution, finalization, and packet promotion.
 
 Split out of the former monolithic ``core/driver.py`` (R0 repair refactor
 stage 1, pure move, no behaviour change). The function-local
@@ -15,9 +15,11 @@ docstring explains what it does and why ``--dry-run`` is TEST-ONLY.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import sys
 from pathlib import Path
+from typing import Mapping
 
 from ...contracts import ExecutionPlan
 from ...e0.artifacts import REPO_ROOT
@@ -36,6 +38,181 @@ from ..resources import resolve_resource_sampler
 from ..scorers import score_bundle
 from .bundled import run_experiment_bundled
 from .smoke import _cli_smoke
+
+
+def _canonical_sha256(document: object) -> str:
+    encoded = json.dumps(
+        document,
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("utf-8")
+    return hashlib.sha256(encoded).hexdigest()
+
+
+def _load_preprocess_stop_chain(
+    *,
+    session_receipt_path: Path,
+    stop_receipt_path: Path,
+    runtime_receipt: Mapping[str, object],
+):
+    """Verify that the receipt-bound preprocessing process is stopped."""
+
+    from ..session import read_session_receipt, verify_against_runtime_receipt
+
+    session = read_session_receipt(session_receipt_path)
+    verify_against_runtime_receipt(session, runtime_receipt)
+    if session.role != "preprocess":
+        raise ValueError("speech packet promotion requires a preprocess session receipt")
+    try:
+        stop = json.loads(stop_receipt_path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as error:
+        raise ValueError(f"cannot read preprocess stop receipt {stop_receipt_path}: {error}") from error
+    required = {
+        "schema",
+        "study",
+        "session_id",
+        "session_role",
+        "session_receipt_sha256",
+        "runtime_receipt_sha256",
+        "pid",
+        "termination_signal",
+        "forced",
+        "stopped_at",
+    }
+    if not isinstance(stop, dict) or set(stop) != required:
+        raise ValueError(f"preprocess stop receipt must carry exact keys {sorted(required)}")
+    if (
+        stop["schema"] != "saea-session-stop-receipt-v1"
+        or stop["study"] != "speech-aware-evidence-acquisition"
+        or stop["session_role"] != "preprocess"
+        or stop["session_id"] != session.session_id
+        or stop["pid"] != session.pid
+        or stop["session_receipt_sha256"] != _canonical_sha256(session.as_json())
+        or stop["runtime_receipt_sha256"] != _canonical_sha256(runtime_receipt)
+    ):
+        raise ValueError("preprocess session/stop/runtime receipt chain does not match")
+    return session, stop
+
+
+def _cli_promote_speech_packets(args: argparse.Namespace) -> int:
+    """Promote an offline legacy featcache into audited packet directories."""
+
+    from ...data.lock import data_root
+    from ...data.slurp import load_slurp_engineering_gate
+    from ..model import materialize_legacy_cached_speech_feature_packets
+    from ..session import load_runtime_receipt
+
+    root = data_root()
+    legacy_cache_dir = Path(args.legacy_cache_dir)
+    feature_root = Path(args.feature_root)
+    receipt_output = Path(args.receipt_output)
+    if not legacy_cache_dir.is_absolute() or not feature_root.is_absolute():
+        raise ValueError("speech packet cache roots must be absolute paths")
+    if not legacy_cache_dir.is_dir():
+        raise ValueError(f"legacy speech featcache is unavailable: {legacy_cache_dir}")
+    legacy_cache_dir = legacy_cache_dir.resolve()
+    feature_root = feature_root.resolve()
+    receipt_output = receipt_output.resolve()
+    if legacy_cache_dir == feature_root:
+        raise ValueError("legacy featcache and speech feature root must be different")
+    if receipt_output.exists():
+        raise ValueError(f"speech packet promotion receipt already exists: {receipt_output}")
+    repo_resolved = REPO_ROOT.resolve()
+    for label, candidate in (
+        ("legacy featcache", legacy_cache_dir.resolve()),
+        ("speech feature root", feature_root.resolve()),
+        ("promotion receipt", receipt_output.resolve()),
+    ):
+        if candidate == repo_resolved or candidate.is_relative_to(repo_resolved):
+            raise ValueError(f"{label} must stay outside the Git repository")
+    if (
+        not isinstance(args.dataset, str)
+        or not args.dataset
+        or any(character not in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789._-" for character in args.dataset)
+        or args.dataset[0] in ".-"
+    ):
+        raise ValueError("speech packet dataset must be a plain config fragment name")
+    dataset_path = REPO_ROOT / "configs" / "dataset" / f"{args.dataset}.json"
+    gate = load_slurp_engineering_gate(
+        dataset_path,
+        data_root=root,
+        expected_count=args.expected_count,
+        workers=args.workers,
+    )
+    receipt_relative = Path(args.runtime_receipt)
+    if (
+        receipt_relative.is_absolute()
+        or "\\" in args.runtime_receipt
+        or any(part in ("", ".", "..") for part in receipt_relative.parts)
+    ):
+        raise ValueError("speech packet runtime receipt path is unsafe")
+    runtime_receipt_path = REPO_ROOT / "docs" / receipt_relative
+    runtime_receipt = load_runtime_receipt(runtime_receipt_path)
+    if runtime_receipt.get("role") != "preprocess":
+        raise ValueError("speech packet promotion requires a preprocess runtime receipt")
+    session, stop = _load_preprocess_stop_chain(
+        session_receipt_path=Path(args.session_receipt),
+        stop_receipt_path=Path(args.stop_receipt),
+        runtime_receipt=runtime_receipt,
+    )
+    gguf_files = runtime_receipt.get("gguf_files")
+    if not isinstance(gguf_files, list):
+        raise ValueError("preprocess runtime receipt gguf_files must be a list")
+    decoder = [entry for entry in gguf_files if "mmproj" not in Path(str(entry.get("path"))).name.lower()]
+    mmproj = [entry for entry in gguf_files if "mmproj" in Path(str(entry.get("path"))).name.lower()]
+    if len(decoder) != 1 or len(mmproj) != 1:
+        raise ValueError("preprocess runtime receipt must bind exactly one decoder and one mmproj")
+    packets = materialize_legacy_cached_speech_feature_packets(
+        feature_root=feature_root,
+        bindings=tuple(
+            {
+                "packet_id": sample.packet_id,
+                "audio_path": str(Path(root) / sample.media_relpath),
+            }
+            for sample in gate.samples
+        ),
+        legacy_cache_dir=legacy_cache_dir,
+        encoder_receipt_sha256=_canonical_sha256(runtime_receipt),
+        decoder_gguf_sha256=str(decoder[0].get("sha256")),
+        mmproj_sha256=str(mmproj[0].get("sha256")),
+        expected_n_embd=args.expected_n_embd,
+        causal_attention=True,
+        workers=args.workers,
+    )
+    receipt = {
+        "schema": "saea-speech-packet-promotion-receipt-v1",
+        "study": "speech-aware-evidence-acquisition",
+        "dataset_runtime_view_sha256": gate.runtime_view_sha256,
+        "preprocess_session_id": session.session_id,
+        "preprocess_session_receipt_sha256": _canonical_sha256(session.as_json()),
+        "preprocess_stop_receipt_sha256": _canonical_sha256(stop),
+        "runtime_receipt_sha256": _canonical_sha256(runtime_receipt),
+        "legacy_cache_dir": str(legacy_cache_dir),
+        "feature_root": str(feature_root),
+        "count": len(packets),
+        "packets": [
+            {
+                "packet_id": packet.packet_id,
+                "packet_sha256": packet.packet_sha256,
+                "audio_sha256": packet.audio_sha256,
+                "decoder_gguf_sha256": packet.decoder_gguf_sha256,
+                "mmproj_sha256": packet.mmproj_sha256,
+            }
+            for packet in packets
+        ],
+    }
+    output = receipt_output
+    output.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        with output.open("x", encoding="utf-8", newline="\n") as handle:
+            handle.write(
+                json.dumps(receipt, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
+            )
+    except FileExistsError as error:
+        raise ValueError(f"speech packet promotion receipt already exists: {output}") from error
+    print(json.dumps({"receipt": str(output), "count": len(packets)}, indent=2))
+    return 0
 
 
 def _cli_score(args: argparse.Namespace) -> int:
@@ -257,6 +434,29 @@ def main(argv: list[str] | None = None) -> int:
         help="MLflow tracking URI; omit to skip the (stubbable) MLflow upload entirely",
     )
     finalize.set_defaults(func=_cli_finalize)
+
+    promote = sub.add_parser(
+        "promote-speech-packets",
+        help=(
+            "model-free post-preprocess step: verify the targeted server stop receipt, "
+            "then promote legacy featcache entries into audited speech packets"
+        ),
+    )
+    promote.add_argument("--dataset", required=True)
+    promote.add_argument(
+        "--runtime-receipt",
+        default="receipts/runtime-q4km-preprocess.json",
+        help="path relative to the study docs directory",
+    )
+    promote.add_argument("--session-receipt", required=True)
+    promote.add_argument("--stop-receipt", required=True)
+    promote.add_argument("--legacy-cache-dir", required=True)
+    promote.add_argument("--feature-root", required=True)
+    promote.add_argument("--expected-count", type=int, default=8)
+    promote.add_argument("--expected-n-embd", type=int, default=2048)
+    promote.add_argument("--workers", type=int, default=8)
+    promote.add_argument("--receipt-output", required=True)
+    promote.set_defaults(func=_cli_promote_speech_packets)
 
     smoke = sub.add_parser(
         "smoke",

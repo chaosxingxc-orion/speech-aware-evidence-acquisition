@@ -65,15 +65,17 @@ mission's own gold-leak test checks.
 
 from __future__ import annotations
 
+import hashlib
 import json
+import math
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable, Mapping, Sequence
 
 from ..reproduction.slurp_scoring import SlotEntity
-from .loader import LoaderError
-from .lock import AssetResolutionError, lock_entry
+from .loader import LoaderError, SampleRef
+from .lock import REPO_ROOT, AssetResolutionError, lock_entry
 
 SLURP_LOCK_KEY = "slurp"
 
@@ -155,6 +157,29 @@ class SlurpTrainMaterial:
     action: str
     sentence: str
     recordings: tuple[SlurpTrainRecording, ...]
+
+
+@dataclass(frozen=True)
+class SlurpEngineeringSample:
+    """One label-free, byte-bound sample from an engineering gate view."""
+
+    sample_id: str
+    media_relpath: str
+    audio_sha256: str
+    audio_seconds: float
+    sample_rate_hz: int
+    packet_id: str
+
+
+@dataclass(frozen=True)
+class SlurpEngineeringGate:
+    """The verified label-free ENG-GATE8 view shared by rails and core."""
+
+    split_identity_hash: str
+    runtime_view_sha256: str
+    d1_media_supplement: str
+    d1_media_supplement_sha256: str
+    samples: tuple[SlurpEngineeringSample, ...]
 
 
 def _governed_roots(lock: Mapping[str, object], root: Path) -> tuple[str, Path, Path]:
@@ -389,6 +414,272 @@ def _missing_media_paths(
         ) as pool:
             exists = tuple(pool.map(probe, paths))
     return tuple(path for path, is_present in zip(paths, exists, strict=True) if not is_present)
+
+
+def _canonical_sha256(document: Mapping[str, object]) -> str:
+    payload = json.dumps(
+        document,
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("utf-8")
+    return hashlib.sha256(payload).hexdigest()
+
+
+def _probe_engineering_media(path: Path) -> tuple[str, float, int]:
+    import soundfile  # deferred: keep package import light
+
+    digest = hashlib.sha256()
+    try:
+        with Path(path).open("rb") as handle:
+            while chunk := handle.read(1024 * 1024):
+                digest.update(chunk)
+        info = soundfile.info(str(path))
+    except Exception as error:
+        raise LoaderError(f"cannot measure engineering speech media {path}: {error}") from error
+    if info.frames <= 0 or info.samplerate <= 0:
+        raise LoaderError(f"engineering speech media {path} has invalid header facts")
+    return digest.hexdigest(), float(info.frames / info.samplerate), int(info.samplerate)
+
+
+def load_slurp_engineering_gate(
+    path: Path,
+    *,
+    data_root: Path,
+    expected_count: int = 8,
+    workers: int = 8,
+    media_probe: Callable[[Path], tuple[str, float, int]] = _probe_engineering_media,
+) -> SlurpEngineeringGate:
+    """Verify the exact label-free ENG-GATE8 view and its live media bytes.
+
+    This is the single parser used by both the P-SLU rail and the generic
+    experiment driver's SLURP carrier. It reads no SLURP annotation file and
+    rejects any item field beyond the explicitly safe media identity set.
+    """
+
+    if (
+        isinstance(expected_count, bool)
+        or not isinstance(expected_count, int)
+        or expected_count <= 0
+    ):
+        raise LoaderError("engineering gate expected_count must be positive")
+    if isinstance(workers, bool) or not isinstance(workers, int) or not 1 <= workers <= 64:
+        raise LoaderError("engineering gate workers must be an integer in [1, 64]")
+    try:
+        document = json.loads(Path(path).read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as error:
+        raise LoaderError(f"cannot read speech-native engineering gate {path}: {error}") from error
+    required = {
+        "schema",
+        "study",
+        "status",
+        "carrier_lock_key",
+        "split_name",
+        "split_role",
+        "seed",
+        "split_identity_hash",
+        "source_binding_sha256",
+        "d1_media_supplement",
+        "d1_media_supplement_sha256",
+        "d1_manifest_sha256",
+        "count",
+        "audio_seconds_total",
+        "items",
+        "runtime_view_sha256",
+    }
+    if not isinstance(document, Mapping) or set(document) != required:
+        raise LoaderError(
+            f"speech-native engineering gate must carry exact keys {sorted(required)}"
+        )
+    if document["schema"] != "saea-speech-native-engineering-gate-view-v1":
+        raise LoaderError("speech-native engineering gate schema mismatch")
+    if (
+        document["study"] != "speech-aware-evidence-acquisition"
+        or document["carrier_lock_key"] != SLURP_LOCK_KEY
+        or document["split_name"] != "ENG-GATE8"
+        or document["split_role"] != "discovery"
+    ):
+        raise LoaderError("speech-native engineering gate identity mismatch")
+    items = document["items"]
+    if not isinstance(items, list) or len(items) != expected_count or document["count"] != len(items):
+        raise LoaderError(
+            f"speech-native engineering gate must carry exactly {expected_count} items"
+        )
+    item_keys = {
+        "sample_id",
+        "media_relpath",
+        "audio_sha256",
+        "audio_seconds",
+        "sample_rate_hz",
+        "packet_id",
+    }
+    if any(not isinstance(item, Mapping) or set(item) != item_keys for item in items):
+        raise LoaderError(
+            "speech-native engineering gate items must be label-free and carry "
+            f"exact keys {sorted(item_keys)}"
+        )
+    unsigned = {key: value for key, value in document.items() if key != "runtime_view_sha256"}
+    if document["runtime_view_sha256"] != _canonical_sha256(unsigned):
+        raise LoaderError("speech-native engineering gate runtime view SHA-256 mismatch")
+    for field in (
+        "split_identity_hash",
+        "source_binding_sha256",
+        "d1_media_supplement_sha256",
+        "d1_manifest_sha256",
+        "runtime_view_sha256",
+    ):
+        value = document[field]
+        if (
+            not isinstance(value, str)
+            or len(value) != 64
+            or any(ch not in "0123456789abcdef" for ch in value)
+        ):
+            raise LoaderError(f"speech-native engineering gate {field} is malformed")
+    supplement_path = document["d1_media_supplement"]
+    if (
+        not isinstance(supplement_path, str)
+        or not supplement_path
+        or "\\" in supplement_path
+        or Path(supplement_path).is_absolute()
+        or any(part in ("", ".", "..") for part in Path(supplement_path).parts)
+    ):
+        raise LoaderError("speech-native engineering gate D1 supplement path is unsafe")
+
+    root = Path(data_root).resolve(strict=True)
+    prepared: list[tuple[Mapping[str, object], Path]] = []
+    sample_ids: set[str] = set()
+    packet_ids: set[str] = set()
+    for item in items:
+        sample_id = item["sample_id"]
+        packet_id = item["packet_id"]
+        media_relpath = item["media_relpath"]
+        if (
+            not isinstance(sample_id, str)
+            or sample_id in sample_ids
+            or not sample_id.startswith("slurp:")
+            or not isinstance(packet_id, str)
+            or packet_id in packet_ids
+            or packet_id != sample_id.replace(":", "/")
+            or not isinstance(media_relpath, str)
+            or "\\" in media_relpath
+        ):
+            raise LoaderError("engineering gate sample/packet/media identity is malformed")
+        sample_ids.add(sample_id)
+        packet_ids.add(packet_id)
+        relative = Path(media_relpath)
+        if relative.is_absolute() or any(part in ("", ".", "..") for part in relative.parts):
+            raise LoaderError("engineering gate media path is unsafe")
+        try:
+            media_path = (root / relative).resolve(strict=True)
+        except OSError as error:
+            raise LoaderError(
+                f"engineering gate media {media_relpath!r} is unavailable: {error}"
+            ) from error
+        if not media_path.is_file() or not media_path.is_relative_to(root):
+            raise LoaderError("engineering gate media escapes the governed data root")
+        prepared.append((item, media_path))
+    worker_count = min(workers, len(prepared))
+    if worker_count == 1:
+        measured = tuple(media_probe(media_path) for _item, media_path in prepared)
+    else:
+        with ThreadPoolExecutor(
+            max_workers=worker_count,
+            thread_name_prefix="saea-eng-gate-media",
+        ) as pool:
+            measured = tuple(pool.map(media_probe, (entry[1] for entry in prepared)))
+    samples: list[SlurpEngineeringSample] = []
+    for (item, _media_path), facts in zip(prepared, measured, strict=True):
+        actual_sha256, actual_seconds, actual_rate = facts
+        expected_seconds = item["audio_seconds"]
+        expected_rate = item["sample_rate_hz"]
+        if actual_sha256 != item["audio_sha256"]:
+            raise LoaderError(f"engineering gate media hash drift for {item['sample_id']!r}")
+        if (
+            isinstance(expected_seconds, bool)
+            or not isinstance(expected_seconds, (int, float))
+            or not math.isfinite(expected_seconds)
+            or abs(float(expected_seconds) - float(actual_seconds)) > 1e-6
+            or isinstance(expected_rate, bool)
+            or not isinstance(expected_rate, int)
+            or expected_rate != actual_rate
+        ):
+            raise LoaderError(
+                f"engineering gate media header drift for {item['sample_id']!r}"
+            )
+        samples.append(
+            SlurpEngineeringSample(
+                sample_id=item["sample_id"],
+                media_relpath=item["media_relpath"],
+                audio_sha256=item["audio_sha256"],
+                audio_seconds=float(expected_seconds),
+                sample_rate_hz=expected_rate,
+                packet_id=item["packet_id"],
+            )
+        )
+    expected_total = document["audio_seconds_total"]
+    actual_total = sum(sample.audio_seconds for sample in samples)
+    if (
+        isinstance(expected_total, bool)
+        or not isinstance(expected_total, (int, float))
+        or abs(float(expected_total) - actual_total) > 1e-6
+    ):
+        raise LoaderError("speech-native engineering gate audio total mismatch")
+    return SlurpEngineeringGate(
+        split_identity_hash=document["split_identity_hash"],
+        runtime_view_sha256=document["runtime_view_sha256"],
+        d1_media_supplement=supplement_path,
+        d1_media_supplement_sha256=document["d1_media_supplement_sha256"],
+        samples=tuple(samples),
+    )
+
+
+def slurp_governed_carrier_root(lock: Mapping[str, object], root: Path) -> Path:
+    """Return the governed audio root, not SLURP's unrelated raw checkout."""
+
+    _relpath, audio_root, _metadata_dir = _governed_roots(lock, root)
+    return audio_root
+
+
+def load_slurp_engineering_carrier(
+    lock: Mapping[str, object],
+    root: Path,
+    *,
+    config_path: Path | None = None,
+    expected_count: int = 8,
+    workers: int = 8,
+) -> list[SampleRef]:
+    """Load only the committed label-free engineering view for core runs."""
+
+    gate_path = (
+        Path(config_path)
+        if config_path is not None
+        else REPO_ROOT / "configs" / "dataset" / "slurp-speech-native-eng-gate8.json"
+    )
+    gate = load_slurp_engineering_gate(
+        gate_path,
+        data_root=root,
+        expected_count=expected_count,
+        workers=workers,
+    )
+    carrier_root = slurp_governed_carrier_root(lock, root).resolve(strict=True)
+    data_root = Path(root).resolve(strict=True)
+    samples: list[SampleRef] = []
+    for sample in gate.samples:
+        resolved = (data_root / sample.media_relpath).resolve(strict=True)
+        if not resolved.is_relative_to(carrier_root):
+            raise LoaderError(
+                f"engineering sample {sample.sample_id!r} is outside the governed SLURP root"
+            )
+        samples.append(
+            SampleRef(
+                carrier_lock_key=SLURP_LOCK_KEY,
+                sample_id=sample.sample_id,
+                media_relpath=sample.media_relpath,
+                audio_seconds=sample.audio_seconds,
+                sample_rate_hz=sample.sample_rate_hz,
+            )
+        )
+    return samples
 
 
 def load_slurp_train_material(

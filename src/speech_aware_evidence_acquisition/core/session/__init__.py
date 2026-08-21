@@ -322,6 +322,7 @@ from .lifecycle import (  # noqa: E402
     attach_session,
     feat_cache_dir,
     start_session,
+    stop_session,
 )
 
 __all__ = [
@@ -347,6 +348,7 @@ __all__ = [
     "read_session_receipt",
     "require_loopback",
     "start_session",
+    "stop_session",
     "verify_against_runtime_receipt",
     "write_session_receipt",
     "_DRIVE_PREFIX",

@@ -1,0 +1,5 @@
+{
+  "experiment_id": "SAEA-ENG-GATE8",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "Eight-sample label-free mechanical equivalence gate for offline speech-feature preprocessing and mmproj-free inference; engineering validation only, no scientific result or claim."
+}

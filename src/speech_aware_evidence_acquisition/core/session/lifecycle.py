@@ -8,8 +8,10 @@ stage 1, pure move, no behaviour change).
 from __future__ import annotations
 
 import hashlib
+import json
 import os
 import queue
+import signal
 import subprocess
 import threading
 import time
@@ -20,6 +22,7 @@ from typing import Callable, Mapping, Sequence
 from ...contracts import STUDY_SLUG
 from . import SessionError, _bracketed, assert_session_alive, require_loopback
 from .paths import _resolve_under, _sha256_file
+from .process import _pid_alive, _verify_pid_runs_pinned_binary
 from .receipt import (
     SESSION_RECEIPT_SCHEMA,
     SESSION_RECEIPT_SCHEMA_V2,
@@ -543,6 +546,130 @@ def start_session(
     if receipt_path is not None:
         write_session_receipt(receipt_path, receipt)
     return receipt
+
+
+def _reap_stopped_child(pid: int) -> bool:
+    """Return true when this process reaped ``pid``; no-op off POSIX."""
+
+    if os.name == "nt" or not hasattr(os, "waitpid"):
+        return False
+    try:
+        waited, _status = os.waitpid(pid, os.WNOHANG)
+    except ChildProcessError:
+        return False
+    except OSError:
+        return False
+    return waited == pid
+
+
+def _write_stop_receipt(path: Path, document: Mapping[str, object]) -> None:
+    target = Path(path)
+    target.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        target.write_text(
+            json.dumps(document, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+            newline="\n",
+        )
+    except OSError as error:
+        raise SessionError(f"cannot write session stop receipt {target}: {error}") from error
+
+
+def _canonical_document_sha256(document: Mapping[str, object]) -> str:
+    encoded = json.dumps(
+        document,
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("utf-8")
+    return hashlib.sha256(encoded).hexdigest()
+
+
+def stop_session(
+    session: SessionReceipt,
+    *,
+    runtime_receipt: Mapping[str, object],
+    runtime_root: Path,
+    timeout_seconds: float = 30.0,
+    poll_interval_seconds: float = 0.1,
+    force_after_timeout: bool = False,
+    receipt_path: Path | None = None,
+) -> dict[str, object]:
+    """Stop only the live process proven by ``session`` and write a receipt.
+
+    Identity, process image, and listening-socket ownership are rechecked
+    immediately before SIGTERM. A timeout never widens the target: optional
+    SIGKILL is sent only after re-verifying that the still-live PID continues
+    to run the pinned binary. This replaces broad ``pkill llama-server``
+    cleanup in the two-stage speech packet workflow.
+    """
+
+    session.validate()
+    if (
+        isinstance(timeout_seconds, bool)
+        or not isinstance(timeout_seconds, (int, float))
+        or timeout_seconds <= 0
+        or isinstance(poll_interval_seconds, bool)
+        or not isinstance(poll_interval_seconds, (int, float))
+        or poll_interval_seconds <= 0
+    ):
+        raise SessionError("session stop timeout and poll interval must be positive numbers")
+    if not isinstance(force_after_timeout, bool):
+        raise SessionError("force_after_timeout must be boolean")
+    assert_session_alive(session, runtime_receipt, Path(runtime_root))
+    try:
+        os.kill(session.pid, signal.SIGTERM)
+    except OSError as error:
+        raise SessionError(
+            f"cannot signal receipt-bound session pid {session.pid}: {error}"
+        ) from error
+
+    termination_signal = "SIGTERM"
+    forced = False
+
+    def wait_until_stopped(seconds: float) -> bool:
+        deadline = time.monotonic() + seconds
+        while True:
+            if _reap_stopped_child(session.pid) or not _pid_alive(session.pid):
+                return True
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                return False
+            time.sleep(min(float(poll_interval_seconds), remaining))
+
+    stopped = wait_until_stopped(float(timeout_seconds))
+    if not stopped and force_after_timeout:
+        _verify_pid_runs_pinned_binary(session.pid, Path(runtime_root), runtime_receipt)
+        kill_signal = getattr(signal, "SIGKILL", signal.SIGTERM)
+        try:
+            os.kill(session.pid, kill_signal)
+        except OSError as error:
+            raise SessionError(
+                f"cannot force-stop receipt-bound session pid {session.pid}: {error}"
+            ) from error
+        termination_signal = "SIGKILL" if kill_signal != signal.SIGTERM else "SIGTERM"
+        forced = True
+        stopped = wait_until_stopped(min(float(timeout_seconds), 10.0))
+    if not stopped:
+        raise SessionError(
+            f"receipt-bound session pid {session.pid} did not stop within "
+            f"{timeout_seconds} seconds"
+        )
+    document: dict[str, object] = {
+        "schema": "saea-session-stop-receipt-v1",
+        "study": STUDY_SLUG,
+        "session_id": session.session_id,
+        "session_role": session.role,
+        "session_receipt_sha256": _canonical_document_sha256(session.as_json()),
+        "runtime_receipt_sha256": _canonical_document_sha256(runtime_receipt),
+        "pid": session.pid,
+        "termination_signal": termination_signal,
+        "forced": forced,
+        "stopped_at": _iso(time.time()),
+    }
+    if receipt_path is not None:
+        _write_stop_receipt(receipt_path, document)
+    return document
 
 
 def attach_session(

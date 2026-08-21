@@ -1,0 +1,11 @@
+{
+  "arm": "bare-core",
+  "policy": "fixed",
+  "evidence_source": "none",
+  "evidence_mismatch": false,
+  "obs_batch_samples": 8,
+  "scorers": [
+    "cost"
+  ],
+  "task_instruction": "Observe the complete speech signal for deterministic feature preprocessing. Respond with OK."
+}

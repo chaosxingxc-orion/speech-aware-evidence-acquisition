@@ -14,7 +14,7 @@ from __future__ import annotations
 import json
 import time
 from pathlib import Path
-from typing import Callable, Mapping
+from typing import Callable, Mapping, Sequence
 
 from ...contracts import ExecutionPlan
 from ...data.lock import asset_dir
@@ -47,7 +47,12 @@ from ..exemplars import (
 from ..instructions import resolve_task_instruction
 from ..legality import assert_legality_declaration_legal
 from ..resources import NullSampler, ResourceSampler, cpu_seconds_snapshot
-from ..model import FrozenCoreAdapter, SliceRegistry
+from ..model import (
+    FrozenCoreAdapter,
+    SliceRegistry,
+    load_speech_feature_packet_ids,
+    load_speech_packet_promotion_receipt,
+)
 from ..split_receipt import load_verified_split
 from ..tracing import DispatchingSink, TraceBuffer, TraceSink
 from .cost import _assemble_run_cost
@@ -67,6 +72,118 @@ def _sample_batch_size(values: Mapping[str, object]) -> int:
             f"got {raw!r}"
         )
     return raw
+
+
+def _speech_feature_queries(
+    values: Mapping[str, object], samples: Sequence[object]
+) -> dict[str, Mapping[str, str]]:
+    """Preflight formal query packets before an attempt is opened.
+
+    Packet ids come from the committed label-free dataset view; packet hashes
+    come from the post-preprocessing packet manifests. All packets are loaded
+    concurrently and bound to the decoder hash declared by the inference
+    model profile. The transport independently validates the same hashes on
+    every request.
+    """
+
+    if values.get("arm") != "speech-feature-query":
+        return {}
+    items = values.get("items")
+    if not isinstance(items, list):
+        raise CoreError("speech-feature-query requires dataset items")
+    by_sample: dict[str, Mapping[str, object]] = {}
+    for item in items:
+        if not isinstance(item, Mapping):
+            raise CoreError("speech-feature-query dataset item must be a mapping")
+        sample_id = item.get("sample_id")
+        packet_id = item.get("packet_id")
+        audio_sha256 = item.get("audio_sha256")
+        if (
+            not isinstance(sample_id, str)
+            or sample_id in by_sample
+            or not isinstance(packet_id, str)
+            or packet_id != sample_id.replace(":", "/")
+            or not isinstance(audio_sha256, str)
+            or len(audio_sha256) != 64
+        ):
+            raise CoreError("speech-feature-query dataset packet identity is malformed")
+        by_sample[sample_id] = item
+    sample_ids = [str(sample.sample_id) for sample in samples]
+    if set(by_sample) != set(sample_ids):
+        raise CoreError("speech-feature-query dataset items do not exactly match the split")
+    server_env = values.get("server_env")
+    if not isinstance(server_env, Mapping):
+        raise CoreError("speech-feature-query model profile requires server_env")
+    feature_root = server_env.get("LLAMA_SPEECH_FEATURE_ROOT")
+    decoder_sha256 = server_env.get("LLAMA_SPEECH_DECODER_SHA256")
+    if not isinstance(feature_root, str) or not Path(feature_root).is_absolute():
+        raise CoreError("speech-feature-query requires an absolute LLAMA_SPEECH_FEATURE_ROOT")
+    if (
+        not isinstance(decoder_sha256, str)
+        or len(decoder_sha256) != 64
+        or any(character not in "0123456789abcdef" for character in decoder_sha256)
+    ):
+        raise CoreError("speech-feature-query requires a lowercase decoder SHA-256")
+    promotion_path = values.get("speech_packet_promotion_receipt")
+    promotion_sha256 = values.get("speech_packet_promotion_receipt_sha256")
+    if (
+        not isinstance(promotion_path, str)
+        or not promotion_path
+        or not Path(promotion_path).is_absolute()
+        or not isinstance(promotion_sha256, str)
+    ):
+        raise CoreError(
+            "speech-feature-query requires an absolute, SHA-pinned promotion receipt"
+        )
+    promotion = load_speech_packet_promotion_receipt(
+        Path(promotion_path),
+        expected_sha256=promotion_sha256,
+        expected_feature_root=Path(feature_root),
+        expected_dataset_runtime_view_sha256=values.get("runtime_view_sha256"),
+    )
+    packets = load_speech_feature_packet_ids(
+        Path(feature_root),
+        [by_sample[sample_id]["packet_id"] for sample_id in sample_ids],
+        workers=min(_sample_batch_size(values), 64),
+        expected_decoder_gguf_sha256=decoder_sha256,
+    )
+    promoted_packets = promotion["packets"]
+    if not isinstance(promoted_packets, list):  # loader already proves this
+        raise CoreError("speech packet promotion receipt packets are malformed")
+    if len(promoted_packets) != len(sample_ids):
+        raise CoreError(
+            "speech packet promotion receipt does not exactly cover the split"
+        )
+    promoted_by_id = {
+        str(promoted["packet_id"]): promoted for promoted in promoted_packets
+    }
+    result: dict[str, Mapping[str, str]] = {}
+    for sample_id, packet in zip(sample_ids, packets, strict=True):
+        expected_promoted = {
+            "packet_id": packet.packet_id,
+            "packet_sha256": packet.packet_sha256,
+            "audio_sha256": packet.audio_sha256,
+            "decoder_gguf_sha256": packet.decoder_gguf_sha256,
+            "mmproj_sha256": packet.mmproj_sha256,
+        }
+        if promoted_by_id.get(packet.packet_id) != expected_promoted:
+            raise CoreError(
+                f"speech feature packet disagrees with promotion receipt for {sample_id!r}"
+            )
+        if packet.encoder_receipt_sha256 != promotion["runtime_receipt_sha256"]:
+            raise CoreError(
+                f"speech feature packet has a different preprocess receipt for {sample_id!r}"
+            )
+        if packet.audio_sha256 != by_sample[sample_id]["audio_sha256"]:
+            raise CoreError(
+                f"speech feature packet audio hash disagrees with dataset item {sample_id!r}"
+            )
+        result[sample_id] = {
+            "packet_id": packet.packet_id,
+            "sha256": packet.packet_sha256,
+            "role": "query",
+        }
+    return result
 
 
 def _emit_sample_preamble(
@@ -228,6 +345,7 @@ def run_experiment(
         samples = [s for s in loader(lock, root) if s.sample_id in sample_ids]
         if {s.sample_id for s in samples} != sample_ids:
             raise CoreError("split ids missing from the carrier's loaded samples")
+        speech_feature_query_by_sample = _speech_feature_queries(values, samples)
         # Acoustic exemplar banks (core.exemplars module docstring):
         # resolved HERE, right after `samples` becomes available -- same
         # "before any other per-run work" family as evidence_budget_bytes/
@@ -397,7 +515,12 @@ def run_experiment(
         # from exactly the verified split ids and the same loader's SampleRef
         # facts already used above to validate the carrier's loaded samples --
         # never from anything a payload later claims about itself.
-        carrier_root = asset_dir(lock, str(values["carrier_lock_key"]), root)
+        carrier_root_resolver = getattr(loader, "carrier_root", None)
+        carrier_root = (
+            carrier_root_resolver(lock, root)
+            if callable(carrier_root_resolver)
+            else asset_dir(lock, str(values["carrier_lock_key"]), root)
+        )
         binding = PayloadBindingContext(
             carrier_lock_key=str(values["carrier_lock_key"]),
             allowed_sample_ids=frozenset(sample_ids),
@@ -503,6 +626,15 @@ def run_experiment(
                     "run_dir": Path(run_dir),
                     "repo_root": Path(repo_root),
                     "config_values": values,
+                    **(
+                        {
+                            "speech_feature_query": speech_feature_query_by_sample[
+                                sample.sample_id
+                            ]
+                        }
+                        if sample.sample_id in speech_feature_query_by_sample
+                        else {}
+                    ),
                 },
             )
 
@@ -624,4 +756,3 @@ def run_experiment(
         trace_manifest_hash=manifest_hash,
         cost=cost,
     )
-

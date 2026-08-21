@@ -22,6 +22,9 @@ from . import FrozenCoreError
 from .paths import _normalized_relative_path, _resolve_confined
 
 SPEECH_FEATURE_PACKET_SCHEMA = "saea-speech-feature-packet-v1"
+SPEECH_PACKET_PROMOTION_RECEIPT_SCHEMA = (
+    "saea-speech-packet-promotion-receipt-v1"
+)
 PACKET_MANIFEST_NAME = "packet.json"
 _SHA256_LENGTH = 64
 _LEGACY_FEAT_HEADER = struct.Struct("<QQ")
@@ -382,6 +385,174 @@ def load_speech_feature_packets(
         thread_name_prefix="saea-speech-packet",
     ) as pool:
         return tuple(pool.map(load_one, normalized))
+
+
+def load_speech_feature_packet_ids(
+    feature_root: Path,
+    packet_ids: Sequence[object],
+    *,
+    workers: int = 8,
+    expected_decoder_gguf_sha256: str | None = None,
+) -> tuple[SpeechFeaturePacketV1, ...]:
+    """Discover fully validated packet hashes concurrently in input order.
+
+    The generic driver uses this preflight before opening a model attempt: a
+    committed label-free dataset view pins packet ids, while the packet
+    manifests created after preprocessing supply their content hashes. The
+    transport independently re-validates those hashes again on every send.
+    """
+
+    if isinstance(workers, bool) or not isinstance(workers, int) or not 1 <= workers <= 64:
+        raise FrozenCoreError("speech packet discovery workers must be an integer in [1, 64]")
+    normalized: list[str] = []
+    seen: set[str] = set()
+    for index, packet_id in enumerate(packet_ids):
+        value = _normalized_relative_path(packet_id, f"speech packet id {index}")
+        if value in seen:
+            raise FrozenCoreError(f"duplicate speech packet id {value!r}")
+        seen.add(value)
+        normalized.append(value)
+    if not normalized:
+        return ()
+
+    def load_one(packet_id: str) -> SpeechFeaturePacketV1:
+        return load_speech_feature_packet(
+            feature_root,
+            packet_id,
+            expected_decoder_gguf_sha256=expected_decoder_gguf_sha256,
+        )
+
+    worker_count = min(workers, len(normalized))
+    if worker_count == 1:
+        return tuple(load_one(packet_id) for packet_id in normalized)
+    with ThreadPoolExecutor(
+        max_workers=worker_count,
+        thread_name_prefix="saea-speech-discover",
+    ) as pool:
+        return tuple(pool.map(load_one, normalized))
+
+
+def load_speech_packet_promotion_receipt(
+    receipt_path: Path,
+    *,
+    expected_sha256: object,
+    expected_feature_root: Path,
+    expected_dataset_runtime_view_sha256: object,
+) -> Mapping[str, object]:
+    """Load the protocol-pinned hand-off from preprocessing to inference.
+
+    The receipt is written only after the receipt-bound preprocessing server
+    has stopped and every legacy featcache entry has been promoted. Formal
+    inference pins the receipt's file bytes in its composed config, then
+    independently compares every packet identity against the packet manifests.
+    """
+
+    path = Path(receipt_path)
+    if not path.is_absolute():
+        raise FrozenCoreError("speech packet promotion receipt path must be absolute")
+    try:
+        raw = path.read_bytes()
+        document = json.loads(raw.decode("utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as error:
+        raise FrozenCoreError(
+            f"cannot read speech packet promotion receipt {path}: {error}"
+        ) from error
+    if _sha256(raw) != _require_sha256(
+        expected_sha256, "speech packet promotion receipt sha256"
+    ):
+        raise FrozenCoreError("speech packet promotion receipt SHA-256 mismatch")
+    required = {
+        "schema",
+        "study",
+        "dataset_runtime_view_sha256",
+        "preprocess_session_id",
+        "preprocess_session_receipt_sha256",
+        "preprocess_stop_receipt_sha256",
+        "runtime_receipt_sha256",
+        "legacy_cache_dir",
+        "feature_root",
+        "count",
+        "packets",
+    }
+    if not isinstance(document, Mapping) or set(document) != required:
+        raise FrozenCoreError(
+            f"speech packet promotion receipt must have exact keys {sorted(required)}"
+        )
+    if (
+        document["schema"] != SPEECH_PACKET_PROMOTION_RECEIPT_SCHEMA
+        or document["study"] != "speech-aware-evidence-acquisition"
+    ):
+        raise FrozenCoreError("speech packet promotion receipt identity is invalid")
+    if (
+        not isinstance(document["preprocess_session_id"], str)
+        or not document["preprocess_session_id"]
+    ):
+        raise FrozenCoreError("preprocess_session_id must be a non-empty string")
+    for field in (
+        "dataset_runtime_view_sha256",
+        "preprocess_session_receipt_sha256",
+        "preprocess_stop_receipt_sha256",
+        "runtime_receipt_sha256",
+    ):
+        _require_sha256(document[field], field)
+    if document["dataset_runtime_view_sha256"] != _require_sha256(
+        expected_dataset_runtime_view_sha256,
+        "expected dataset runtime view sha256",
+    ):
+        raise FrozenCoreError(
+            "speech packet promotion receipt names a different dataset runtime view"
+        )
+    feature_root = Path(str(document["feature_root"]))
+    legacy_cache_dir = Path(str(document["legacy_cache_dir"]))
+    if (
+        not isinstance(document["feature_root"], str)
+        or not feature_root.is_absolute()
+        or feature_root != Path(expected_feature_root)
+        or not isinstance(document["legacy_cache_dir"], str)
+        or not legacy_cache_dir.is_absolute()
+        or legacy_cache_dir == feature_root
+    ):
+        raise FrozenCoreError("speech packet promotion cache roots are invalid")
+    count = document["count"]
+    packets = document["packets"]
+    if (
+        isinstance(count, bool)
+        or not isinstance(count, int)
+        or count <= 0
+        or not isinstance(packets, list)
+        or len(packets) != count
+    ):
+        raise FrozenCoreError("speech packet promotion count disagrees with packets")
+    packet_keys = {
+        "packet_id",
+        "packet_sha256",
+        "audio_sha256",
+        "decoder_gguf_sha256",
+        "mmproj_sha256",
+    }
+    seen: set[str] = set()
+    for index, packet in enumerate(packets):
+        if not isinstance(packet, Mapping) or set(packet) != packet_keys:
+            raise FrozenCoreError(
+                f"speech packet promotion item {index} must have exact keys "
+                f"{sorted(packet_keys)}"
+            )
+        packet_id = _normalized_relative_path(
+            packet["packet_id"], f"speech packet promotion item {index} packet_id"
+        )
+        if packet_id in seen:
+            raise FrozenCoreError(
+                f"duplicate speech packet promotion item {packet_id!r}"
+            )
+        seen.add(packet_id)
+        for field in (
+            "packet_sha256",
+            "audio_sha256",
+            "decoder_gguf_sha256",
+            "mmproj_sha256",
+        ):
+            _require_sha256(packet[field], f"speech packet promotion item {index} {field}")
+    return document
 
 
 def materialize_speech_feature_packet(

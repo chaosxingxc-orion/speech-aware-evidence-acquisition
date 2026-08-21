@@ -233,7 +233,7 @@ def _cli_smoke(args: argparse.Namespace) -> int:
     from ...data.lock import data_root, load_lock, umbrella_lock_path
     from ..base import TRANSPORTS
     from ..resources import resolve_resource_sampler
-    from ..session import load_runtime_receipt, start_session
+    from ..session import load_runtime_receipt, start_session, stop_session
 
     repo_root = Path(args.repo_root) if args.repo_root else REPO_ROOT
     if not args.dry_run and not args.runtime_root:
@@ -274,6 +274,9 @@ def _cli_smoke(args: argparse.Namespace) -> int:
         json.dumps(asdict(plan), indent=2, sort_keys=True), encoding="utf-8", newline="\n"
     )
     session_receipt_path = attempt_run_dir / f"{plan.run_id}.session-receipt.json"
+    session_stop_receipt_path = (
+        attempt_run_dir / f"{plan.run_id}.session-stop-receipt.json"
+    )
     # Task 1 (2026-08-09 finding): llama-server's own stdout/stderr used to
     # be captured for the startup window only, then thrown away -- hours of
     # server output were unrecoverable after exactly the kind of mid-run
@@ -340,12 +343,26 @@ def _cli_smoke(args: argparse.Namespace) -> int:
         json.loads(Path(args.ledger_cells).read_text(encoding="utf-8")) if args.ledger_cells else {}
     )
 
-    result = run_smoke(
-        composed, plan, gate, lock, root, attempt_run_dir, transport,
-        repo_root=repo_root, session_receipt_path=session_receipt_path,
-        plan_path=plan_path, tracking_uri=args.tracking_uri,
-        ledger_cells=ledger_cells, resource_sampler=sampler,
-    )
+    try:
+        result = run_smoke(
+            composed, plan, gate, lock, root, attempt_run_dir, transport,
+            repo_root=repo_root, session_receipt_path=session_receipt_path,
+            plan_path=plan_path, tracking_uri=args.tracking_uri,
+            ledger_cells=ledger_cells, resource_sampler=sampler,
+        )
+    finally:
+        # A smoke invocation owns the server process it starts. Always stop
+        # that exact receipt-bound PID, including after a failed run, so a
+        # preprocess session cannot keep mmproj resident when the later
+        # inference role starts. Dry-run has no process and remains a no-op.
+        if not args.dry_run:
+            stop_session(
+                session,
+                runtime_receipt=runtime_receipt,
+                runtime_root=Path(args.runtime_root),
+                force_after_timeout=True,
+                receipt_path=session_stop_receipt_path,
+            )
     print(
         json.dumps(
             {
@@ -354,6 +371,9 @@ def _cli_smoke(args: argparse.Namespace) -> int:
                 "dry_run": bool(args.dry_run),
                 "plan": str(result.plan_path),
                 "session_receipt": str(result.session_receipt_path),
+                "session_stop_receipt": (
+                    None if args.dry_run else str(session_stop_receipt_path)
+                ),
                 # None under --dry-run: no real server was ever spawned, so
                 # no server log exists (Task 1, 2026-08-09).
                 "server_log": None if args.dry_run else str(server_log_path),

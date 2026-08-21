@@ -1,6 +1,10 @@
 """Arm payload builder emits exactly the D2-frozen field sets; fixed policy runs one request."""
 
 import json
+import threading
+import time
+from dataclasses import replace
+from types import SimpleNamespace
 
 import pytest
 
@@ -10,8 +14,12 @@ from speech_aware_evidence_acquisition.core.base import (
     EvidenceItem,
     SampleContext,
 )
-from speech_aware_evidence_acquisition.core.policies import ArmError, build_arm_payload
-from speech_aware_evidence_acquisition.core.tracing import TraceSink
+from speech_aware_evidence_acquisition.core.policies import (
+    ArmError,
+    FixedPolicy,
+    build_arm_payload,
+)
+from speech_aware_evidence_acquisition.core.tracing import DispatchingSink, TraceSink
 from speech_aware_evidence_acquisition.data.loader import SampleRef
 from speech_aware_evidence_acquisition.e0.d2_leakage import ARM_VISIBLE_FIELDS
 
@@ -35,6 +43,155 @@ _EVIDENCE = [
     )
 ]
 _DECODING = {"temperature": 0, "seed": 20260803}
+
+
+class _MemorySink:
+    def __init__(self) -> None:
+        self.records = []
+
+    def emit(self, channel, record_id, payload):
+        self.records.append((channel, record_id, payload))
+
+
+class _ConcurrentAdapter:
+    def __init__(self, dispatching_sink) -> None:
+        self._sink = dispatching_sink
+        self._lock = threading.Lock()
+        self.active = 0
+        self.max_active = 0
+        self.active_slots = set()
+        self.seen_slots = []
+
+    def request(self, payload):
+        slot = payload["decoding_params"]["id_slot"]
+        with self._lock:
+            assert slot not in self.active_slots
+            self.active_slots.add(slot)
+            self.seen_slots.append(slot)
+            self.active += 1
+            self.max_active = max(self.max_active, self.active)
+        self._sink.emit("MODEL_REQUEST", f'{payload["request_id"]}/model', {})
+        time.sleep(0.03)
+        with self._lock:
+            self.active -= 1
+            self.active_slots.remove(slot)
+        digest = str(payload["request_id"])
+        return SimpleNamespace(
+            text=digest,
+            request_sha256=f"request-{digest}",
+            response_sha256=f"response-{digest}",
+            response_text_sha256=f"text-{digest}",
+        )
+
+
+def test_fixed_policy_batches_concurrently_with_slot_affinity_and_ordered_results():
+    fallback = _MemorySink()
+    adapter = _ConcurrentAdapter(DispatchingSink(fallback))
+    contexts = []
+    sinks = []
+    for index in range(5):
+        sink = _MemorySink()
+        sinks.append(sink)
+        contexts.append(
+            SampleContext(
+                sample=replace(_REF, sample_id=f"sample-{index}"),
+                evidence=[],
+                adapter=adapter,
+                sink=sink,
+                arm="bare-core",
+                task_instruction="Observe the speech.",
+                decoding_params={"temperature": 0, "id_slot": "per-sample"},
+                request_id_base=f"req-{index}",
+                extras={"config_values": {"obs_batch_samples": 2}},
+            )
+        )
+
+    outcomes = FixedPolicy().run_samples(contexts)
+
+    assert [outcome.sample_id for outcome in outcomes] == [
+        f"sample-{index}" for index in range(5)
+    ]
+    assert adapter.max_active == 2
+    assert set(adapter.seen_slots) == {0, 1}
+    assert fallback.records == []
+    for index, sink in enumerate(sinks):
+        assert [record_id for _, record_id, _ in sink.records] == [
+            f"req-{index}/model",
+            f"req-{index}/use",
+        ]
+
+
+def test_fixed_policy_builds_a_formal_speech_feature_query_without_raw_audio():
+    captured = []
+
+    class Adapter:
+        def request(self, payload):
+            captured.append(payload)
+            return SimpleNamespace(
+                text="key-001",
+                request_sha256="a" * 64,
+                response_sha256="b" * 64,
+                response_text_sha256="c" * 64,
+            )
+
+    sink = _MemorySink()
+    query = {
+        "packet_id": "slurp/train/001206/audio-1489503509",
+        "sha256": "d" * 64,
+        "role": "query",
+    }
+    ctx = SampleContext(
+        sample=_REF,
+        evidence=[],
+        adapter=Adapter(),
+        sink=sink,
+        arm="speech-feature-query",
+        task_instruction="Choose the compatible key id.",
+        decoding_params=_DECODING,
+        request_id_base="req-feature",
+        extras={
+            "speech_feature_query": query,
+            "config_values": {
+                "allow_empty_speech_feature_evidence": True,
+                "key_representation_id": "engineering-none-v1",
+                "matcher_policy_id": "engineering-equivalence-v1",
+            },
+        },
+    )
+
+    outcome = FixedPolicy().run_sample(ctx)
+
+    assert outcome.text == "key-001"
+    assert len(captured) == 1
+    payload = captured[0]
+    assert set(payload) == set(ARM_VISIBLE_FIELDS["speech-feature-query"])
+    assert payload["speech_feature_parts"] == [query]
+    assert payload["speech_packet_sha256"] == "d" * 64
+    assert payload["query_source"] == "speech_features"
+    assert payload["mmproj_loaded"] is False
+    assert payload["supplied_evidence"] == []
+    assert "input_audio" not in json.dumps(payload)
+
+
+def test_speech_feature_payload_refuses_malformed_packet_identity():
+    with pytest.raises(ArmError, match="packet_id.*sha256"):
+        build_arm_payload(
+            "speech-feature-query",
+            _REF,
+            "req-feature",
+            "Choose the compatible key id.",
+            _DECODING,
+            evidence=[],
+            allow_empty_evidence=True,
+            speech_feature_parts=[
+                {"packet_id": "", "sha256": "not-a-sha", "role": "query"}
+            ],
+            speech_packet_sha256="not-a-sha",
+            query_source="speech_features",
+            key_representation_id="engineering-none-v1",
+            matcher_policy_id="engineering-equivalence-v1",
+            mmproj_loaded=False,
+        )
 
 
 def test_bare_core_exact_fields():

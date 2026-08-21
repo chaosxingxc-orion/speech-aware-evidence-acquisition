@@ -2,6 +2,7 @@
 
 import hashlib
 import json
+from types import SimpleNamespace
 
 import pytest
 
@@ -18,16 +19,141 @@ from speech_aware_evidence_acquisition.core.driver import (
     run_experiment,
     run_experiment_bundled,
 )
+from speech_aware_evidence_acquisition.core.driver.run import _speech_feature_queries
 from speech_aware_evidence_acquisition.core.resources import NOT_AVAILABLE
 from speech_aware_evidence_acquisition.core.scorers import score_bundle
 from speech_aware_evidence_acquisition.data.lock import load_lock
-from speech_aware_evidence_acquisition.data.splits import discovery_split, freeze_splits
+from speech_aware_evidence_acquisition.data.splits import freeze_splits
 from speech_aware_evidence_acquisition.e0.artifacts import REPO_ROOT
 
 
 class _OpenGate:
     def assert_model_touch_allowed(self, plan):
         pass
+
+
+def _write_promotion_receipt(tmp_path, packets, *, dataset_sha256="c" * 64):
+    feature_root = tmp_path / "features"
+    feature_root.mkdir()
+    receipt = {
+        "schema": "saea-speech-packet-promotion-receipt-v1",
+        "study": "speech-aware-evidence-acquisition",
+        "dataset_runtime_view_sha256": dataset_sha256,
+        "preprocess_session_id": "preprocess-session-1",
+        "preprocess_session_receipt_sha256": "e" * 64,
+        "preprocess_stop_receipt_sha256": "f" * 64,
+        "runtime_receipt_sha256": "9" * 64,
+        "legacy_cache_dir": str((tmp_path / "legacy").resolve()),
+        "feature_root": str(feature_root.resolve()),
+        "count": len(packets),
+        "packets": packets,
+    }
+    path = tmp_path / "promotion.json"
+    raw = (json.dumps(receipt, indent=2, sort_keys=True) + "\n").encode()
+    path.write_bytes(raw)
+    return feature_root, path, hashlib.sha256(raw).hexdigest()
+
+
+def test_speech_feature_query_preflight_is_parallel_bound_and_ordered(tmp_path, monkeypatch):
+    samples = [SimpleNamespace(sample_id="slurp:train:1"), SimpleNamespace(sample_id="slurp:train:2")]
+    packets = [
+        SimpleNamespace(
+            packet_id="slurp/train/1",
+            packet_sha256="1" * 64,
+            audio_sha256="a" * 64,
+            decoder_gguf_sha256="d" * 64,
+            mmproj_sha256="f" * 64,
+            encoder_receipt_sha256="9" * 64,
+        ),
+        SimpleNamespace(
+            packet_id="slurp/train/2",
+            packet_sha256="2" * 64,
+            audio_sha256="b" * 64,
+            decoder_gguf_sha256="d" * 64,
+            mmproj_sha256="f" * 64,
+            encoder_receipt_sha256="9" * 64,
+        ),
+    ]
+    captured = {}
+
+    def load(root, packet_ids, **kwargs):
+        captured.update(root=root, packet_ids=list(packet_ids), kwargs=kwargs)
+        return tuple(packets)
+
+    monkeypatch.setattr(
+        "speech_aware_evidence_acquisition.core.driver.run.load_speech_feature_packet_ids",
+        load,
+    )
+    promoted = [
+        {
+            "packet_id": packet.packet_id,
+            "packet_sha256": packet.packet_sha256,
+            "audio_sha256": packet.audio_sha256,
+            "decoder_gguf_sha256": packet.decoder_gguf_sha256,
+            "mmproj_sha256": packet.mmproj_sha256,
+        }
+        for packet in packets
+    ]
+    feature_root, promotion_path, promotion_sha256 = _write_promotion_receipt(
+        tmp_path, promoted
+    )
+    values = {
+        "arm": "speech-feature-query",
+        "obs_batch_samples": 8,
+        "runtime_view_sha256": "c" * 64,
+        "speech_packet_promotion_receipt": str(promotion_path.resolve()),
+        "speech_packet_promotion_receipt_sha256": promotion_sha256,
+        "items": [
+            {
+                "sample_id": "slurp:train:1",
+                "packet_id": "slurp/train/1",
+                "audio_sha256": "a" * 64,
+            },
+            {
+                "sample_id": "slurp:train:2",
+                "packet_id": "slurp/train/2",
+                "audio_sha256": "b" * 64,
+            },
+        ],
+        "server_env": {
+            "LLAMA_SPEECH_FEATURE_ROOT": str(feature_root.resolve()),
+            "LLAMA_SPEECH_DECODER_SHA256": "d" * 64,
+        },
+    }
+
+    bindings = _speech_feature_queries(values, samples)
+
+    assert list(bindings) == ["slurp:train:1", "slurp:train:2"]
+    assert bindings["slurp:train:1"]["sha256"] == "1" * 64
+    assert captured["packet_ids"] == ["slurp/train/1", "slurp/train/2"]
+    assert captured["kwargs"] == {
+        "workers": 8,
+        "expected_decoder_gguf_sha256": "d" * 64,
+    }
+
+
+def test_speech_feature_query_preflight_requires_a_promotion_receipt(tmp_path):
+    values = {
+        "arm": "speech-feature-query",
+        "obs_batch_samples": 1,
+        "items": [
+            {
+                "sample_id": "slurp:train:1",
+                "packet_id": "slurp/train/1",
+                "audio_sha256": "a" * 64,
+            }
+        ],
+        "server_env": {
+            "LLAMA_SPEECH_FEATURE_ROOT": str(tmp_path.resolve()),
+            "LLAMA_SPEECH_DECODER_SHA256": "d" * 64,
+        },
+    }
+
+    with pytest.raises(CoreError, match="promotion receipt"):
+        _speech_feature_queries(
+            values,
+            [SimpleNamespace(sample_id="slurp:train:1")],
+        )
 
 
 def _composed(**overrides):
@@ -1306,37 +1432,12 @@ def test_run_experiment_aggregates_skipped_slices_across_samples(
 
 # ---------------------------------------------------------------------------
 # Sample-batched dispatch (owner directive 2026-08-08): obs_batch_samples > 1
-# routes through a batch-capable policy's run_samples with per-sample
+# routes through the production policy's run_samples with per-sample
 # TraceBuffers; outputs rows and trace blocks land in split-id order, byte-
 # identical per sample to the sequential path. The batch contract: the policy
 # sets the current trace buffer (core.tracing.set_current_trace_buffer) per
 # sample so the shared adapter's emissions route to that sample's buffer.
 # ---------------------------------------------------------------------------
-
-from speech_aware_evidence_acquisition.core.base import POLICIES  # noqa: E402
-from speech_aware_evidence_acquisition.core.policies import FixedPolicy  # noqa: E402
-from speech_aware_evidence_acquisition.core.tracing import (  # noqa: E402
-    set_current_trace_buffer,
-)
-
-
-class _BatchFixedPolicy(FixedPolicy):
-    """FixedPolicy plus the batch seam: per-sample contextvar routing, then
-    the exact per-sample logic -- the minimal honest batch-capable policy."""
-
-    def run_samples(self, contexts):
-        outcomes = []
-        for ctx in contexts:
-            set_current_trace_buffer(ctx.sink)
-            try:
-                outcomes.append(self.run_sample(ctx))
-            finally:
-                set_current_trace_buffer(None)
-        return outcomes
-
-
-POLICIES.register("fixed-batch-test", _BatchFixedPolicy())
-
 
 def _record_ids(run_dir, run_id="SAEA-E-000-driver"):
     raw = (run_dir / f"{run_id}.trace.jsonl").read_text(encoding="utf-8")
@@ -1374,7 +1475,7 @@ def test_batched_run_matches_sequential_rows_and_groups_trace_per_sample(
 
     sequential = run("fixed", "SAEA-E-000-seq", tmp_path / "seq", {})
     batched = run(
-        "fixed-batch-test",
+        "fixed",
         "SAEA-E-000-bat",
         tmp_path / "bat",
         {"obs_batch_samples": 2},
@@ -1396,29 +1497,29 @@ def test_batched_run_matches_sequential_rows_and_groups_trace_per_sample(
     assert batched_ids == sequential_ids  # per-sample grouping preserved
 
 
-def test_batching_a_sequential_only_policy_refuses(synthetic_world, tmp_path):
+def test_fixed_policy_is_batch_capable(synthetic_world, tmp_path):
     lock, repo_root = _frozen_world(synthetic_world, tmp_path)
     _, split_hash, _ = load_split(
         repo_root, "discovery", lock, synthetic_world.data_root
     )
-    composed = _composed(obs_batch_samples=2)  # policy "fixed": no run_samples
+    composed = _composed(obs_batch_samples=2)
     plan = _plan(
         split_hash,
         protocol_hash=protocol_hash(
             composed.config_hash, composed.values["arm"], split_hash
         ),
     )
-    with pytest.raises(CoreError, match="batch-capable"):
-        run_experiment(
-            composed=composed,
-            plan=plan,
-            gate=_OpenGate(),
-            lock=lock,
-            root=synthetic_world.data_root,
-            run_dir=tmp_path / "run",
-            transport=_transport,
-            repo_root=repo_root,
-        )
+    result = run_experiment(
+        composed=composed,
+        plan=plan,
+        gate=_OpenGate(),
+        lock=lock,
+        root=synthetic_world.data_root,
+        run_dir=tmp_path / "run",
+        transport=_transport,
+        repo_root=repo_root,
+    )
+    assert result.cost["calls_used"] == 3
 
 
 @pytest.mark.parametrize("bad", [0, -1, True, 1.5, "four"])
@@ -1764,8 +1865,6 @@ def test_run_experiment_resolves_exemplar_manifest_and_traces_provenance(
 # real, end-to-end path -- not a hand-built SampleContext -- accepts a mixed
 # empty/non-empty split under obs-replay-loop.
 # ---------------------------------------------------------------------------
-
-from array import array as _array  # noqa: E402
 
 from speech_aware_evidence_acquisition.reproduction import obs_loop, replay_loop  # noqa: E402
 

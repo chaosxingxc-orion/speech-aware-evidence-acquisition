@@ -1,0 +1,44 @@
+{
+  "carrier": "slurp",
+  "design": "Exact label-free ENG-GATE8 identity derived from the frozen speech-native train binding; engineering equivalence only, no scientific read.",
+  "items": [
+    {
+      "id": "slurp:train:001206:audio-1489503509",
+      "key": "slurp:slurp:train:001206:audio-1489503509"
+    },
+    {
+      "id": "slurp:train:001338:audio-1488986552",
+      "key": "slurp:slurp:train:001338:audio-1488986552"
+    },
+    {
+      "id": "slurp:train:000573:audio--1504195254-headset",
+      "key": "slurp:slurp:train:000573:audio--1504195254-headset"
+    },
+    {
+      "id": "slurp:train:004342:audio-1490195663",
+      "key": "slurp:slurp:train:004342:audio-1490195663"
+    },
+    {
+      "id": "slurp:train:007175:audio-1497555644-headset",
+      "key": "slurp:slurp:train:007175:audio-1497555644-headset"
+    },
+    {
+      "id": "slurp:train:008908:audio-1490281647",
+      "key": "slurp:slurp:train:008908:audio-1490281647"
+    },
+    {
+      "id": "slurp:train:010103:audio-1499690404-headset",
+      "key": "slurp:slurp:train:010103:audio-1499690404-headset"
+    },
+    {
+      "id": "slurp:train:010183:audio-1490262370-headset",
+      "key": "slurp:slurp:train:010183:audio-1490262370-headset"
+    }
+  ],
+  "probe": "speech-native-engineering-gate",
+  "seed": 20260821,
+  "source_runtime_view_sha256": "03eb3df91952f44d7d721cb7d3ef5de0a7a6cd145ad81029ee511324f309aef7",
+  "source_split_identity_hash": "571e35a64ab523856533a004d5c01d8643eda01498bca88550026f6b453dd7d8",
+  "split_identity_hash": "9a7762a28c02474cd482e8d4b7a7a298692163b184bfef072bf0bba53a1cb2e6",
+  "split_role": "discovery"
+}

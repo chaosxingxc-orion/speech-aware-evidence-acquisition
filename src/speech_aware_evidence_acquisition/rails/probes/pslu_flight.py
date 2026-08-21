@@ -52,14 +52,17 @@ from __future__ import annotations
 import ast
 import hashlib
 import json
-import math
-from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from pathlib import Path
 from types import MappingProxyType
 from typing import Callable, Mapping, Sequence
 
-from ...data.slurp import SlurpTrainMaterial
+from ...data.loader import LoaderError
+from ...data.slurp import (
+    SlurpTrainMaterial,
+    _probe_engineering_media,
+    load_slurp_engineering_gate,
+)
 from ...reproduction.slurp_scoring import parse_slu_response
 from ..adapters.slurp import SlurpAdapter, SlurpSample
 from ..consumption import ConsumptionTrace
@@ -101,22 +104,6 @@ class SpeechNativeEngineeringGate:
     samples: tuple[SpeechNativeEngineeringSample, ...]
 
 
-def _probe_engineering_media(path: Path) -> tuple[str, float, int]:
-    import soundfile  # deferred: keep package import light
-
-    digest = hashlib.sha256()
-    try:
-        with Path(path).open("rb") as handle:
-            while chunk := handle.read(1024 * 1024):
-                digest.update(chunk)
-        info = soundfile.info(str(path))
-    except Exception as error:
-        raise PsluFlightError(f"cannot measure engineering speech media {path}: {error}") from error
-    if info.frames <= 0 or info.samplerate <= 0:
-        raise PsluFlightError(f"engineering speech media {path} has invalid header facts")
-    return digest.hexdigest(), float(info.frames / info.samplerate), int(info.samplerate)
-
-
 def load_speech_native_engineering_gate(
     path: Path,
     *,
@@ -125,182 +112,37 @@ def load_speech_native_engineering_gate(
     workers: int = 8,
     media_probe: Callable[[Path], tuple[str, float, int]] = _probe_engineering_media,
 ) -> SpeechNativeEngineeringGate:
-    """Load the exact label-free ENG-GATE8 view and remeasure its media."""
+    """Load the shared label-free ENG-GATE8 view for the P-SLU rail."""
 
-    if (
-        isinstance(expected_count, bool)
-        or not isinstance(expected_count, int)
-        or expected_count <= 0
-    ):
-        raise PsluFlightError("engineering gate expected_count must be positive")
-    if isinstance(workers, bool) or not isinstance(workers, int) or not 1 <= workers <= 64:
-        raise PsluFlightError("engineering gate workers must be an integer in [1, 64]")
     try:
-        document = json.loads(Path(path).read_text(encoding="utf-8"))
-    except (OSError, UnicodeError, json.JSONDecodeError) as error:
-        raise PsluFlightError(f"cannot read speech-native engineering gate {path}: {error}") from error
-    required = {
-        "schema",
-        "study",
-        "status",
-        "carrier_lock_key",
-        "split_name",
-        "split_role",
-        "seed",
-        "split_identity_hash",
-        "source_binding_sha256",
-        "d1_media_supplement",
-        "d1_media_supplement_sha256",
-        "d1_manifest_sha256",
-        "count",
-        "audio_seconds_total",
-        "items",
-        "runtime_view_sha256",
-    }
-    if not isinstance(document, Mapping) or set(document) != required:
-        raise PsluFlightError(
-            f"speech-native engineering gate must carry exact keys {sorted(required)}"
+        gate = load_slurp_engineering_gate(
+            path,
+            data_root=data_root,
+            expected_count=expected_count,
+            workers=workers,
+            media_probe=media_probe,
         )
-    if document["schema"] != "saea-speech-native-engineering-gate-view-v1":
-        raise PsluFlightError("speech-native engineering gate schema mismatch")
-    if (
-        document["study"] != "speech-aware-evidence-acquisition"
-        or document["carrier_lock_key"] != "slurp"
-        or document["split_name"] != "ENG-GATE8"
-        or document["split_role"] != "discovery"
-    ):
-        raise PsluFlightError("speech-native engineering gate identity mismatch")
-    items = document["items"]
-    if not isinstance(items, list) or len(items) != expected_count or document["count"] != len(items):
-        raise PsluFlightError(
-            f"speech-native engineering gate must carry exactly {expected_count} items"
-        )
-    item_keys = {
-        "sample_id",
-        "media_relpath",
-        "audio_sha256",
-        "audio_seconds",
-        "sample_rate_hz",
-        "packet_id",
-    }
-    if any(not isinstance(item, Mapping) or set(item) != item_keys for item in items):
-        raise PsluFlightError(
-            "speech-native engineering gate items must be label-free and carry "
-            f"exact keys {sorted(item_keys)}"
-        )
-    unsigned = {key: value for key, value in document.items() if key != "runtime_view_sha256"}
-    if document["runtime_view_sha256"] != _binding_sha256(unsigned):
-        raise PsluFlightError("speech-native engineering gate runtime view SHA-256 mismatch")
-    for field in (
-        "split_identity_hash",
-        "source_binding_sha256",
-        "d1_media_supplement_sha256",
-        "d1_manifest_sha256",
-        "runtime_view_sha256",
-    ):
-        value = document[field]
-        if (
-            not isinstance(value, str)
-            or len(value) != 64
-            or any(ch not in "0123456789abcdef" for ch in value)
-        ):
-            raise PsluFlightError(f"speech-native engineering gate {field} is malformed")
-    supplement_path = document["d1_media_supplement"]
-    if (
-        not isinstance(supplement_path, str)
-        or not supplement_path
-        or "\\" in supplement_path
-        or Path(supplement_path).is_absolute()
-        or any(part in ("", ".", "..") for part in Path(supplement_path).parts)
-    ):
-        raise PsluFlightError("speech-native engineering gate D1 supplement path is unsafe")
-
-    root = Path(data_root).resolve(strict=True)
-    prepared: list[tuple[Mapping[str, object], Path]] = []
-    sample_ids: set[str] = set()
-    packet_ids: set[str] = set()
-    for item in items:
-        sample_id = item["sample_id"]
-        packet_id = item["packet_id"]
-        media_relpath = item["media_relpath"]
-        if (
-            not isinstance(sample_id, str)
-            or sample_id in sample_ids
-            or not isinstance(packet_id, str)
-            or packet_id in packet_ids
-            or packet_id != sample_id.replace(":", "/")
-            or not isinstance(media_relpath, str)
-            or "\\" in media_relpath
-        ):
-            raise PsluFlightError("engineering gate sample/packet/media identity is malformed")
-        sample_ids.add(sample_id)
-        packet_ids.add(packet_id)
-        relative = Path(media_relpath)
-        if relative.is_absolute() or any(part in ("", ".", "..") for part in relative.parts):
-            raise PsluFlightError("engineering gate media path is unsafe")
-        try:
-            media_path = (root / relative).resolve(strict=True)
-        except OSError as error:
-            raise PsluFlightError(
-                f"engineering gate media {media_relpath!r} is unavailable: {error}"
-            ) from error
-        if not media_path.is_file() or not media_path.is_relative_to(root):
-            raise PsluFlightError("engineering gate media escapes the governed data root")
-        prepared.append((item, media_path))
-    worker_count = min(workers, len(prepared))
-    if worker_count == 1:
-        measured = tuple(media_probe(media_path) for _item, media_path in prepared)
-    else:
-        with ThreadPoolExecutor(
-            max_workers=worker_count,
-            thread_name_prefix="saea-eng-gate-media",
-        ) as pool:
-            measured = tuple(pool.map(media_probe, (entry[1] for entry in prepared)))
-    samples: list[SpeechNativeEngineeringSample] = []
-    for (item, _media_path), facts in zip(prepared, measured, strict=True):
-        actual_sha256, actual_seconds, actual_rate = facts
-        expected_seconds = item["audio_seconds"]
-        expected_rate = item["sample_rate_hz"]
-        if actual_sha256 != item["audio_sha256"]:
-            raise PsluFlightError(f"engineering gate media hash drift for {item['sample_id']!r}")
-        if (
-            isinstance(expected_seconds, bool)
-            or not isinstance(expected_seconds, (int, float))
-            or not math.isfinite(expected_seconds)
-            or abs(float(expected_seconds) - float(actual_seconds)) > 1e-6
-            or isinstance(expected_rate, bool)
-            or not isinstance(expected_rate, int)
-            or expected_rate != actual_rate
-        ):
-            raise PsluFlightError(
-                f"engineering gate media header drift for {item['sample_id']!r}"
-            )
-        samples.append(
-            SpeechNativeEngineeringSample(
-                sample_id=item["sample_id"],
-                audio_ref=AudioRef(
-                    path=item["media_relpath"], sha256=item["audio_sha256"]
-                ).validate(),
-                audio_seconds=float(expected_seconds),
-                media_relpath=item["media_relpath"],
-                sample_rate_hz=expected_rate,
-                packet_id=item["packet_id"],
-            )
-        )
-    expected_total = document["audio_seconds_total"]
-    actual_total = sum(sample.audio_seconds for sample in samples)
-    if (
-        isinstance(expected_total, bool)
-        or not isinstance(expected_total, (int, float))
-        or abs(float(expected_total) - actual_total) > 1e-6
-    ):
-        raise PsluFlightError("speech-native engineering gate audio total mismatch")
+    except LoaderError as error:
+        raise PsluFlightError(str(error)) from error
     return SpeechNativeEngineeringGate(
-        split_identity_hash=document["split_identity_hash"],
-        runtime_view_sha256=document["runtime_view_sha256"],
-        d1_media_supplement=supplement_path,
-        d1_media_supplement_sha256=document["d1_media_supplement_sha256"],
-        samples=tuple(samples),
+        split_identity_hash=gate.split_identity_hash,
+        runtime_view_sha256=gate.runtime_view_sha256,
+        d1_media_supplement=gate.d1_media_supplement,
+        d1_media_supplement_sha256=gate.d1_media_supplement_sha256,
+        samples=tuple(
+            SpeechNativeEngineeringSample(
+                sample_id=sample.sample_id,
+                audio_ref=AudioRef(
+                    path=sample.media_relpath,
+                    sha256=sample.audio_sha256,
+                ).validate(),
+                audio_seconds=sample.audio_seconds,
+                media_relpath=sample.media_relpath,
+                sample_rate_hz=sample.sample_rate_hz,
+                packet_id=sample.packet_id,
+            )
+            for sample in gate.samples
+        ),
     )
 
 
