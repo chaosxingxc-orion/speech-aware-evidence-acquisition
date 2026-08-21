@@ -287,6 +287,152 @@ def test_m4_trace_policy_preserves_ensemble_and_order_identity():
     _assert_every_call_carries_query(client)
 
 
+def test_m4_uses_rotate_seven_and_falls_back_to_the_canonical_vote_on_a_tie():
+    cards = tuple(
+        KeyCardV1(
+            key_id=f"K{index:03d}",
+            definition=f"Definition {index}",
+            positive_examples=(f"Example {index}",),
+            contrastive_boundary=None,
+            value_label=f"label-{index}",
+        ).validate()
+        for index in range(1, 19)
+    )
+    client = _SpeechFeatureClient(
+        ['{"key_id":"K003"}', '{"key_id":"K002"}', '{"key_id":"K001"}']
+    )
+    result = run_speech_native_matcher(
+        core_client=client,
+        sample=_SpeechSample(),
+        query_descriptor=_QUERY_DESCRIPTOR,
+        key_cards=cards,
+        key_representation_id="K1",
+        matcher_policy_id="M4",
+        ensemble_base_policy_id="M1",
+    )
+
+    assert result.key_id == "K003"
+    rotate_text = client.calls[2][0][1]["content"][0]["text"]
+    assert rotate_text.startswith("K008\n")
+    _assert_every_call_carries_query(client)
+
+
+def test_m5_stops_when_listwise_and_canonical_retrieve_verify_agree():
+    client = _SpeechFeatureClient(
+        [
+            '{"key_id":"K001"}',
+            '{"key_ids":["K001","K002"]}',
+            '{"compatible":true,"confidence":90}',
+            '{"compatible":false,"confidence":10}',
+        ]
+    )
+    result = run_speech_native_matcher(
+        core_client=client,
+        sample=_SpeechSample(),
+        query_descriptor=_QUERY_DESCRIPTOR,
+        key_cards=_KEY_CARDS,
+        key_representation_id="K1",
+        matcher_policy_id="M5",
+        prompt_policy_id="speech-native-json-copy-v3",
+        top_k=2,
+    )
+
+    assert result.key_id == "K001"
+    assert result.calls == 4
+    assert result.agent_policy_id == "m1-m3-disagreement-escalation-v1"
+    assert result.agent_actions == (
+        "match:listwise-canonical",
+        "retrieve-verify:canonical",
+        "stop:agree",
+    )
+    assert result.agent_escalated is False
+    assert result.agent_vote_key_ids == ("K001", "K001")
+    assert all(":reverse:" not in kwargs["matcher_policy_id"] for _, kwargs in client.calls)
+    _assert_every_call_carries_query(client)
+
+
+def test_m5_escalates_disagreement_and_uses_m3_majority():
+    client = _SpeechFeatureClient(
+        [
+            '{"key_id":"K001"}',
+            '{"key_ids":["K002","K001"]}',
+            '{"compatible":true,"confidence":90}',
+            '{"compatible":false,"confidence":10}',
+            '{"key_ids":["K002","K001"]}',
+            '{"compatible":true,"confidence":90}',
+            '{"compatible":false,"confidence":10}',
+            '{"key_ids":["K001","K002"]}',
+            '{"compatible":true,"confidence":90}',
+            '{"compatible":false,"confidence":10}',
+        ]
+    )
+    result = run_speech_native_matcher(
+        core_client=client,
+        sample=_SpeechSample(),
+        query_descriptor=_QUERY_DESCRIPTOR,
+        key_cards=_KEY_CARDS,
+        key_representation_id="K1",
+        matcher_policy_id="M5",
+        prompt_policy_id="speech-native-json-copy-v3",
+        top_k=2,
+    )
+
+    assert result.key_id == "K002"
+    assert result.calls == 10
+    assert result.agent_escalated is True
+    assert result.agent_vote_key_ids == ("K001", "K002", "K002", "K001")
+    assert result.agent_actions == (
+        "match:listwise-canonical",
+        "retrieve-verify:canonical",
+        "escalate:disagreement",
+        "retrieve-verify:reverse",
+        "retrieve-verify:rotate-7",
+        "aggregate:m3-majority-canonical-tie",
+    )
+    _assert_every_call_carries_query(client)
+
+
+def test_m5_three_way_m3_tie_falls_back_to_canonical_m3_decision():
+    cards = (
+        *_KEY_CARDS,
+        KeyCardV1(
+            key_id="K003",
+            definition="Commands about calendar events.",
+            positive_examples=("add a meeting",),
+            contrastive_boundary="Do not use for alarms.",
+            value_label="calendar",
+        ).validate(),
+    )
+    responses = ['{"key_id":"K001"}']
+    for winner, others in (
+        ("K002", ("K001",)),
+        ("K003", ("K002",)),
+        ("K001", ("K003",)),
+    ):
+        responses.extend(
+            [
+                json.dumps({"key_ids": [winner, *others]}),
+                '{"compatible":true,"confidence":90}',
+                '{"compatible":false,"confidence":10}',
+            ]
+        )
+    client = _SpeechFeatureClient(responses)
+    result = run_speech_native_matcher(
+        core_client=client,
+        sample=_SpeechSample(),
+        query_descriptor=_QUERY_DESCRIPTOR,
+        key_cards=cards,
+        key_representation_id="K1",
+        matcher_policy_id="M5",
+        prompt_policy_id="speech-native-json-copy-v3",
+        top_k=2,
+    )
+
+    assert result.key_id == "K002"
+    assert result.agent_vote_key_ids == ("K001", "K002", "K003", "K001")
+    _assert_every_call_carries_query(client)
+
+
 def test_audio_key_mode_carries_ordered_key_packets_without_key_body_text():
     client = _SpeechFeatureClient(['{"key_id":"K001"}'])
     audio_keys = {
@@ -965,6 +1111,153 @@ def test_model_free_read_replays_disagreement_escalation_frontier(tmp_path):
         "K1-M1",
         "K1-M5-disagreement-escalation-v1",
     ]
+
+
+def test_model_free_read_reports_agent_loop_optimization_signals(tmp_path):
+    binding_path = REPO_ROOT / "configs/probes/g0-binding/speech-native-train-binding.json"
+    binding_sha256 = hashlib.sha256(binding_path.read_bytes()).hexdigest()
+    binding = json.loads(binding_path.read_text(encoding="utf-8"))
+    items = binding["splits"]["OPT-A36"]["items"]
+    key_by_label = {card["value_label"]: card["key_id"] for card in binding["key_cards"]}
+    labels = tuple(key_by_label)
+    attempt_dir = tmp_path / "m5"
+    attempt_dir.mkdir()
+    rows = []
+    for index, item in enumerate(items):
+        gold_label = item["value_label"]
+        gold_key = key_by_label[gold_label]
+        wrong_label = labels[(labels.index(gold_label) + 1) % len(labels)]
+        wrong_key = key_by_label[wrong_label]
+        if index == 0:
+            votes = [wrong_key, gold_key, gold_key, wrong_key]
+            final_key = gold_key
+            escalated = True
+        elif index == 1:
+            votes = [wrong_key, wrong_key]
+            final_key = wrong_key
+            escalated = False
+        elif index == 2:
+            votes = [gold_key, wrong_key, wrong_key, wrong_key]
+            final_key = wrong_key
+            escalated = True
+        else:
+            votes = [gold_key, gold_key]
+            final_key = gold_key
+            escalated = False
+        step_actions = [
+            "match:listwise-canonical",
+            "retrieve-verify:canonical",
+            *(
+                ["retrieve-verify:reverse", "retrieve-verify:rotate-7"]
+                if escalated
+                else []
+            ),
+        ]
+        agent_actions = [
+            "match:listwise-canonical",
+            "retrieve-verify:canonical",
+            *(
+                [
+                    "escalate:disagreement",
+                    "retrieve-verify:reverse",
+                    "retrieve-verify:rotate-7",
+                    "aggregate:m3-majority-canonical-tie",
+                ]
+                if escalated
+                else ["stop:agree"]
+            ),
+        ]
+        rows.append(
+            {
+                "schema": "saea-speech-native-decision-v1",
+                "sample_id": item["sample_id"],
+                "key_id": final_key,
+                "predicted_value_label": (
+                    gold_label if final_key == gold_key else wrong_label
+                ),
+                "top_key_ids": [votes[1]],
+                "calls": 10 if escalated else 4,
+                "parse_failure": False,
+                "agent_policy_id": "m1-m3-disagreement-escalation-v1",
+                "agent_actions": agent_actions,
+                "agent_escalated": escalated,
+                "agent_vote_key_ids": votes,
+                "agent_steps": [
+                    {
+                        "action_id": action_id,
+                        "key_id": vote,
+                        "top_key_ids": [] if step_index == 0 else [vote],
+                        "calls": 1 if step_index == 0 else 3,
+                        "parse_failure": False,
+                    }
+                    for step_index, (action_id, vote) in enumerate(
+                        zip(step_actions, votes, strict=True)
+                    )
+                ],
+            }
+        )
+    decisions = attempt_dir / "decisions.jsonl"
+    decisions.write_text(
+        "".join(json.dumps(row, sort_keys=True) + "\n" for row in rows),
+        encoding="utf-8",
+    )
+    (attempt_dir / "flight-receipt.json").write_text(
+        json.dumps(
+            {
+                "status": "COMPLETED",
+                "request_failures": [],
+                "split_identity_hash": "a" * 64,
+                "run_id": "run-m5",
+                "profile": {
+                    "key_representation_id": "K1",
+                    "matcher_policy_id": "M5",
+                    "matcher_prompt_policy_id": "speech-native-json-copy-v3",
+                    "matcher_verifier_policy_id": "speech-native-compatibility-v1",
+                    "mechanism_control_id": "matched",
+                    "key_order_ids": ["canonical"],
+                    "top_k": 3,
+                    "actual_contact_count": sum(row["calls"] for row in rows),
+                },
+                "decisions": {
+                    "path": decisions.name,
+                    "sha256": hashlib.sha256(decisions.read_bytes()).hexdigest(),
+                    "count": len(rows),
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    report = read_speech_native_predictions(
+        attempt_dirs=(attempt_dir,),
+        binding_path=binding_path,
+        binding_sha256=binding_sha256,
+        split_name="OPT-A36",
+    )
+    aggregate = report["aggregates"][0]
+    assert aggregate["cell_id"] == "K1-M5-k3-v3"
+    assert aggregate["correct"] == 34
+    assert aggregate["agent_loop_metrics"] == {
+        "policy_id": "m1-m3-disagreement-escalation-v1",
+        "stop_count": 34,
+        "escalation_count": 2,
+        "escalation_rate": 2 / 36,
+        "helpful_escalation_count": 1,
+        "harmful_escalation_count": 1,
+        "neutral_escalation_count": 0,
+        "recoverable_error_count": 1,
+        "missed_stop_error_count": 1,
+        "action_sensitive_escalation_count": 1,
+        "action_counts": {
+            "aggregate:m3-majority-canonical-tie": 2,
+            "escalate:disagreement": 2,
+            "match:listwise-canonical": 36,
+            "retrieve-verify:canonical": 36,
+            "retrieve-verify:reverse": 2,
+            "retrieve-verify:rotate-7": 2,
+            "stop:agree": 34,
+        },
+    }
 
 
 def _binding_material():

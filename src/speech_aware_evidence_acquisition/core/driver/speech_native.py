@@ -225,10 +225,12 @@ def read_speech_native_predictions(
         ):
             raise SpeechNativeProfileError("flight cell identity is malformed")
         cell_id = f"{key_representation_id}-{matcher_policy_id}"
-        if matcher_policy_id == "M3":
+        if matcher_policy_id in {"M3", "M5"}:
             top_k = profile.get("top_k")
             if isinstance(top_k, bool) or not isinstance(top_k, int) or top_k <= 0:
-                raise SpeechNativeProfileError("M3 flight receipt lacks a valid top_k")
+                raise SpeechNativeProfileError(
+                    f"{matcher_policy_id} flight receipt lacks a valid top_k"
+                )
             cell_id = f"{cell_id}-k{top_k}"
             prompt_policy_id = profile.get(
                 "matcher_prompt_policy_id", "speech-native-json-copy-v2"
@@ -239,7 +241,7 @@ def read_speech_native_predictions(
             }.get(prompt_policy_id)
             if prompt_suffix is None:
                 raise SpeechNativeProfileError(
-                    "M3 flight receipt has an unknown matcher prompt policy"
+                    f"{matcher_policy_id} flight receipt has an unknown matcher prompt policy"
                 )
             cell_id += prompt_suffix
             verifier_policy_id = profile.get(
@@ -251,7 +253,7 @@ def read_speech_native_predictions(
             }.get(verifier_policy_id)
             if verifier_suffix is None:
                 raise SpeechNativeProfileError(
-                    "M3 flight receipt has an unknown verifier policy"
+                    f"{matcher_policy_id} flight receipt has an unknown verifier policy"
                 )
             cell_id += verifier_suffix
         order_ids = profile.get("key_order_ids", ["canonical"])
@@ -309,6 +311,14 @@ def read_speech_native_predictions(
         calls_by_sample: dict[str, int | None] = {}
         parse_failures = 0
         top_k_reachable_count = 0
+        agent_escalation_count = 0
+        agent_helpful_escalation_count = 0
+        agent_harmful_escalation_count = 0
+        agent_neutral_escalation_count = 0
+        agent_recoverable_error_count = 0
+        agent_missed_stop_error_count = 0
+        agent_action_sensitive_count = 0
+        agent_action_counts: Counter[str] = Counter()
         for row in rows:
             if row.get("schema") != "saea-speech-native-decision-v1":
                 raise SpeechNativeProfileError("decision schema mismatch")
@@ -376,7 +386,7 @@ def read_speech_native_predictions(
                 or len(set(raw_top_key_ids)) != len(raw_top_key_ids)
             ):
                 raise SpeechNativeProfileError("decision top_key_ids are malformed")
-            if matcher_policy_id == "M3":
+            if matcher_policy_id in {"M3", "M5"}:
                 assert isinstance(top_k, int)
                 if len(raw_top_key_ids) > top_k:
                     raise SpeechNativeProfileError(
@@ -385,6 +395,86 @@ def read_speech_native_predictions(
                 top_k_reachable_count += int(
                     key_by_label[gold[sample_id]] in raw_top_key_ids
                 )
+            if matcher_policy_id == "M5":
+                agent_policy_id = row.get("agent_policy_id")
+                agent_actions = row.get("agent_actions")
+                agent_escalated = row.get("agent_escalated")
+                agent_votes = row.get("agent_vote_key_ids")
+                agent_steps = row.get("agent_steps")
+                if (
+                    agent_policy_id != "m1-m3-disagreement-escalation-v1"
+                    or not isinstance(agent_actions, list)
+                    or not agent_actions
+                    or not all(
+                        isinstance(action_id, str) and action_id
+                        for action_id in agent_actions
+                    )
+                    or not isinstance(agent_escalated, bool)
+                    or not isinstance(agent_votes, list)
+                    or len(agent_votes) != (4 if agent_escalated else 2)
+                    or not all(
+                        vote is None
+                        or isinstance(vote, str) and vote in label_by_key
+                        for vote in agent_votes
+                    )
+                    or not isinstance(agent_steps, list)
+                    or len(agent_steps) != len(agent_votes)
+                ):
+                    raise SpeechNativeProfileError("M5 agent trajectory is malformed")
+                expected_step_fields = {
+                    "action_id",
+                    "key_id",
+                    "top_key_ids",
+                    "calls",
+                    "parse_failure",
+                }
+                for step_index, step in enumerate(agent_steps):
+                    if (
+                        not isinstance(step, Mapping)
+                        or set(step) != expected_step_fields
+                        or step.get("key_id") != agent_votes[step_index]
+                        or not isinstance(step.get("action_id"), str)
+                        or isinstance(step.get("calls"), bool)
+                        or not isinstance(step.get("calls"), int)
+                        or int(step["calls"]) <= 0
+                        or not isinstance(step.get("parse_failure"), bool)
+                        or not isinstance(step.get("top_key_ids"), list)
+                    ):
+                        raise SpeechNativeProfileError(
+                            "M5 agent step summary is malformed"
+                        )
+                primary_vote = agent_votes[0]
+                primary_correct = (
+                    isinstance(primary_vote, str)
+                    and label_by_key[primary_vote] == gold[sample_id]
+                )
+                final_correct = correctness[sample_id]
+                candidate_correct = any(
+                    isinstance(vote, str)
+                    and label_by_key[vote] == gold[sample_id]
+                    for vote in agent_votes[1:]
+                )
+                agent_action_counts.update(agent_actions)
+                agent_escalation_count += int(agent_escalated)
+                agent_recoverable_error_count += int(
+                    not primary_correct and candidate_correct
+                )
+                agent_missed_stop_error_count += int(
+                    not agent_escalated and not final_correct
+                )
+                if agent_escalated:
+                    agent_helpful_escalation_count += int(
+                        not primary_correct and final_correct
+                    )
+                    agent_harmful_escalation_count += int(
+                        primary_correct and not final_correct
+                    )
+                    agent_neutral_escalation_count += int(
+                        primary_correct == final_correct
+                    )
+                    agent_action_sensitive_count += int(
+                        len({vote for vote in agent_votes[1:] if vote is not None}) > 1
+                    )
         if seen != set(gold):
             raise SpeechNativeProfileError("decision sample set does not equal the frozen split")
         if (
@@ -403,11 +493,30 @@ def read_speech_native_predictions(
                 "accuracy": correct / len(gold),
                 "parse_failure_count": parse_failures,
                 "top_k_reachable_count": (
-                    top_k_reachable_count if matcher_policy_id == "M3" else None
+                    top_k_reachable_count
+                    if matcher_policy_id in {"M3", "M5"}
+                    else None
                 ),
                 "top_k_reachability": (
                     top_k_reachable_count / len(gold)
-                    if matcher_policy_id == "M3"
+                    if matcher_policy_id in {"M3", "M5"}
+                    else None
+                ),
+                "agent_loop_metrics": (
+                    {
+                        "policy_id": "m1-m3-disagreement-escalation-v1",
+                        "stop_count": len(gold) - agent_escalation_count,
+                        "escalation_count": agent_escalation_count,
+                        "escalation_rate": agent_escalation_count / len(gold),
+                        "helpful_escalation_count": agent_helpful_escalation_count,
+                        "harmful_escalation_count": agent_harmful_escalation_count,
+                        "neutral_escalation_count": agent_neutral_escalation_count,
+                        "recoverable_error_count": agent_recoverable_error_count,
+                        "missed_stop_error_count": agent_missed_stop_error_count,
+                        "action_sensitive_escalation_count": agent_action_sensitive_count,
+                        "action_counts": dict(sorted(agent_action_counts.items())),
+                    }
+                    if matcher_policy_id == "M5"
                     else None
                 ),
                 "actual_contact_count": profile.get("actual_contact_count"),
@@ -1359,6 +1468,23 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
                     "top_key_ids": list(outcome.decision.top_key_ids),
                     "calls": outcome.decision.calls,
                     "parse_failure": outcome.decision.parse_failure,
+                    "agent_policy_id": outcome.decision.agent_policy_id,
+                    "agent_actions": list(outcome.decision.agent_actions),
+                    "agent_escalated": outcome.decision.agent_escalated,
+                    "agent_vote_key_ids": list(
+                        outcome.decision.agent_vote_key_ids
+                    ),
+                    "agent_steps": list(outcome.decision.agent_steps),
+                    "verifier_scores": {
+                        key_id: {
+                            "compatible": compatible,
+                            "confidence": confidence,
+                        }
+                        for key_id, (
+                            compatible,
+                            confidence,
+                        ) in outcome.decision.verifier_scores.items()
+                    },
                     "response_text_sha256": [
                         hashlib.sha256(text.encode("utf-8")).hexdigest()
                         for text in outcome.decision.raw_responses

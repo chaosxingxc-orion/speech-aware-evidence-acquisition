@@ -153,7 +153,7 @@ def load_speech_native_engineering_gate(
 
 
 SPEECH_NATIVE_KEY_REPRESENTATIONS = ("K0", "K1", "K2", "K3", "K4")
-SPEECH_NATIVE_MATCHER_POLICIES = ("M0", "M1", "M2", "M3", "M4")
+SPEECH_NATIVE_MATCHER_POLICIES = ("M0", "M1", "M2", "M3", "M4", "M5")
 SPEECH_NATIVE_PROMPT_POLICIES = (
     "speech-native-json-copy-v2",
     "speech-native-json-copy-v3",
@@ -262,6 +262,11 @@ class SpeechNativeDecision:
     raw_responses: tuple[str, ...]
     verifier_scores: Mapping[str, tuple[bool, float]]
     parse_failure: bool = False
+    agent_policy_id: str | None = None
+    agent_actions: tuple[str, ...] = ()
+    agent_escalated: bool = False
+    agent_vote_key_ids: tuple[str | None, ...] = ()
+    agent_steps: tuple[Mapping[str, object], ...] = ()
 
 
 @dataclass(frozen=True)
@@ -269,7 +274,7 @@ class SpeechNativeMatchTask:
     """One independently schedulable speech-native matcher decision.
 
     A worker owns one llama-server slot for the task's entire lifetime, so a
-    multi-contact M2/M3/M4 decision never migrates between slots.
+    multi-contact M2/M3/M4/M5 decision never migrates between slots.
     """
 
     task_id: str
@@ -313,6 +318,13 @@ def _validated_key_cards(key_cards: Sequence[KeyCardV1]) -> tuple[KeyCardV1, ...
     if len(set(labels)) != len(labels):
         raise PsluFlightError("speech-native key cards contain duplicate value_label values")
     return cards
+
+
+def _rotate_key_cards(
+    key_cards: tuple[KeyCardV1, ...], offset: int
+) -> tuple[KeyCardV1, ...]:
+    normalized = offset % len(key_cards)
+    return key_cards[normalized:] + key_cards[:normalized]
 
 
 def render_speech_native_keys(
@@ -470,7 +482,7 @@ def run_speech_native_matcher(
     ensemble_base_policy_id: str = "M1",
     _trace_matcher_policy_id: str | None = None,
 ) -> SpeechNativeDecision:
-    """Run one frozen-core speech-query decision under M0--M4.
+    """Run one frozen-core speech-query decision under M0--M5.
 
     Every local ``contact`` call reconstructs a two-message request carrying
     the original query packet. Generated factor text and verifier outputs may
@@ -493,7 +505,7 @@ def run_speech_native_matcher(
             f"unknown verifier policy {verifier_policy_id!r}; expected "
             f"{SPEECH_NATIVE_VERIFIER_POLICIES}"
         )
-    top_k_is_active = matcher_policy_id == "M3" or (
+    top_k_is_active = matcher_policy_id in {"M3", "M5"} or (
         matcher_policy_id == "M4" and ensemble_base_policy_id == "M3"
     )
     if top_k_is_active and (top_k <= 0 or top_k > len(cards)):
@@ -535,6 +547,11 @@ def run_speech_native_matcher(
         *,
         top_ids: tuple[str, ...] = (),
         scores: Mapping[str, tuple[bool, float]] = MappingProxyType({}),
+        agent_policy_id: str | None = None,
+        agent_actions: tuple[str, ...] = (),
+        agent_escalated: bool = False,
+        agent_vote_key_ids: tuple[str | None, ...] = (),
+        agent_steps: tuple[Mapping[str, object], ...] = (),
     ) -> SpeechNativeDecision:
         return SpeechNativeDecision(
             matcher_policy_id=matcher_policy_id,
@@ -546,42 +563,125 @@ def run_speech_native_matcher(
             raw_responses=tuple(raw_responses),
             verifier_scores=dict(scores),
             parse_failure=key_id is None,
+            agent_policy_id=agent_policy_id,
+            agent_actions=agent_actions,
+            agent_escalated=agent_escalated,
+            agent_vote_key_ids=agent_vote_key_ids,
+            agent_steps=agent_steps,
         )
+
+    def nested_decision(
+        policy_id: str,
+        ordering: tuple[KeyCardV1, ...],
+        trace_policy_id: str,
+    ) -> SpeechNativeDecision:
+        decision = run_speech_native_matcher(
+            core_client=core_client,
+            sample=sample,
+            query_descriptor=query_descriptor,
+            key_cards=ordering,
+            key_representation_id=key_representation_id,
+            matcher_policy_id=policy_id,
+            prompt_policy_id=prompt_policy_id,
+            verifier_policy_id=verifier_policy_id,
+            decoding_params=decoding_params,
+            top_k=top_k,
+            audio_key_bindings=audio_key_bindings,
+            _trace_matcher_policy_id=trace_policy_id,
+        )
+        raw_responses.extend(decision.raw_responses)
+        return decision
+
+    def agent_step(
+        action_id: str, decision: SpeechNativeDecision
+    ) -> Mapping[str, object]:
+        return {
+            "action_id": action_id,
+            "key_id": decision.key_id,
+            "top_key_ids": list(decision.top_key_ids),
+            "calls": decision.calls,
+            "parse_failure": decision.parse_failure,
+        }
 
     if matcher_policy_id == "M4":
         orderings = (
             cards,
             tuple(reversed(cards)),
-            cards[1:] + cards[:1],
+            _rotate_key_cards(cards, 7),
         )
-        decisions = []
+        decisions: list[SpeechNativeDecision] = []
         for order_index, ordering in enumerate(orderings):
             decisions.append(
-                run_speech_native_matcher(
-                core_client=core_client,
-                sample=sample,
-                query_descriptor=query_descriptor,
-                key_cards=ordering,
-                    key_representation_id=key_representation_id,
-                    matcher_policy_id=ensemble_base_policy_id,
-                    prompt_policy_id=prompt_policy_id,
-                    verifier_policy_id=verifier_policy_id,
-                decoding_params=decoding_params,
-                top_k=top_k,
-                audio_key_bindings=audio_key_bindings,
-                _trace_matcher_policy_id=(
-                    f"M4:{ensemble_base_policy_id}:order-{order_index}"
-                ),
+                nested_decision(
+                    ensemble_base_policy_id,
+                    ordering,
+                    f"M4:{ensemble_base_policy_id}:order-{order_index}",
+                )
             )
-            )
-        for decision in decisions:
-            raw_responses.extend(decision.raw_responses)
         votes = [decision.key_id for decision in decisions if decision.key_id is not None]
         if not votes:
             return finish(None)
         counts = {key_id: votes.count(key_id) for key_id in set(votes)}
-        winner = min(counts, key=lambda key_id: (-counts[key_id], key_id))
+        majority = next((key_id for key_id, count in counts.items() if count >= 2), None)
+        winner = majority if majority is not None else decisions[0].key_id
         return finish(winner)
+
+    if matcher_policy_id == "M5":
+        agent_policy_id = "m1-m3-disagreement-escalation-v1"
+        primary = nested_decision("M1", cards, "M5:M1:canonical")
+        canonical = nested_decision("M3", cards, "M5:M3:canonical")
+        initial_votes = (primary.key_id, canonical.key_id)
+        initial_steps = (
+            agent_step("match:listwise-canonical", primary),
+            agent_step("retrieve-verify:canonical", canonical),
+        )
+        if primary.key_id is not None and primary.key_id == canonical.key_id:
+            return finish(
+                primary.key_id,
+                top_ids=canonical.top_key_ids,
+                scores=canonical.verifier_scores,
+                agent_policy_id=agent_policy_id,
+                agent_actions=(
+                    "match:listwise-canonical",
+                    "retrieve-verify:canonical",
+                    "stop:agree",
+                ),
+                agent_vote_key_ids=initial_votes,
+                agent_steps=initial_steps,
+            )
+
+        reverse = nested_decision("M3", tuple(reversed(cards)), "M5:M3:reverse")
+        rotate = nested_decision(
+            "M3", _rotate_key_cards(cards, 7), "M5:M3:rotate-7"
+        )
+        m3_votes = (canonical.key_id, reverse.key_id, rotate.key_id)
+        valid_m3_votes = [key_id for key_id in m3_votes if key_id is not None]
+        counts = {
+            key_id: valid_m3_votes.count(key_id) for key_id in set(valid_m3_votes)
+        }
+        majority = next((key_id for key_id, count in counts.items() if count >= 2), None)
+        winner = majority if majority is not None else canonical.key_id
+        return finish(
+            winner,
+            top_ids=canonical.top_key_ids,
+            scores=canonical.verifier_scores,
+            agent_policy_id=agent_policy_id,
+            agent_actions=(
+                "match:listwise-canonical",
+                "retrieve-verify:canonical",
+                "escalate:disagreement",
+                "retrieve-verify:reverse",
+                "retrieve-verify:rotate-7",
+                "aggregate:m3-majority-canonical-tie",
+            ),
+            agent_escalated=True,
+            agent_vote_key_ids=(*initial_votes, reverse.key_id, rotate.key_id),
+            agent_steps=(
+                *initial_steps,
+                agent_step("retrieve-verify:reverse", reverse),
+                agent_step("retrieve-verify:rotate-7", rotate),
+            ),
+        )
 
     if matcher_policy_id == "M0":
         response = contact(
