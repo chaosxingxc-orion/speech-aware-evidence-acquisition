@@ -225,7 +225,18 @@ def _server_env(values: Mapping[str, object]) -> dict[str, str]:
         raise ValueError(
             f"model config server_env must be a mapping of str->str, got {type(raw).__name__}"
         )
-    return {str(key): str(value) for key, value in raw.items()}
+    resolved = {str(key): str(value) for key, value in raw.items()}
+    transport_root = values.get("speech_feature_root")
+    if transport_root is not None and (
+        not isinstance(transport_root, str)
+        or not transport_root
+        or resolved.get("LLAMA_SPEECH_FEATURE_ROOT") != transport_root
+    ):
+        raise ValueError(
+            "model config speech feature root must be identical for the transport "
+            "and LLAMA_SPEECH_FEATURE_ROOT server environment"
+        )
+    return resolved
 
 
 def _write_inference_process_audit(session: object, output: Path) -> Path | None:

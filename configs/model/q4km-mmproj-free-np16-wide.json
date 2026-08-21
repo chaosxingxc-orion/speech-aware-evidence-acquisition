@@ -26,6 +26,7 @@
     "id_slot": "per-sample"
   },
   "prompt_order": "speech-features-text-keys-v1",
+  "speech_feature_root": "/home/chao/feat-cache/slurp-q4km-packets",
   "server_env": {
     "LLAMA_SPEECH_FEATURE_ROOT": "/home/chao/feat-cache/slurp-q4km-packets",
     "LLAMA_SPEECH_DECODER_SHA256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d"

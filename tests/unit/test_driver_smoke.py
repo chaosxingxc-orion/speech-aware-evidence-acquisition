@@ -343,6 +343,29 @@ def test_inference_smoke_persists_the_live_mmproj_zero_audit_before_requests(
         _write_inference_process_audit(session, output)
 
 
+def test_speech_feature_server_root_cannot_drift_from_transport_root():
+    from speech_aware_evidence_acquisition.core.driver.smoke import _server_env
+
+    with pytest.raises(ValueError, match="speech feature root"):
+        _server_env(
+            {
+                "speech_feature_root": "/home/chao/packets-a",
+                "server_env": {
+                    "LLAMA_SPEECH_FEATURE_ROOT": "/home/chao/packets-b",
+                },
+            }
+        )
+
+    assert _server_env(
+        {
+            "speech_feature_root": "/home/chao/packets-a",
+            "server_env": {
+                "LLAMA_SPEECH_FEATURE_ROOT": "/home/chao/packets-a",
+            },
+        }
+    )["LLAMA_SPEECH_FEATURE_ROOT"] == "/home/chao/packets-a"
+
+
 def test_smoke_non_dry_run_reads_the_models_custom_runtime_receipt_path(
     synthetic_world, smoke_repo, tmp_path, monkeypatch
 ):
