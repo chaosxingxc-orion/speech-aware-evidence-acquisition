@@ -65,6 +65,14 @@ class TraceBuffer:
             sink.emit(channel, record_id, payload)
         self.records = []  # one-shot: a second flush replays nothing
 
+    def extend_from(self, child: "TraceBuffer") -> None:
+        """Merge one completed parallel contact buffer in caller-chosen order."""
+
+        if child is self or child.run_id != self.run_id:
+            raise ValueError("trace child must be distinct and share the parent run_id")
+        self.records.extend(child.records)
+        child.records = []
+
 
 class DispatchingSink:
     """The adapter-facing sink under batching: routes to the current task's

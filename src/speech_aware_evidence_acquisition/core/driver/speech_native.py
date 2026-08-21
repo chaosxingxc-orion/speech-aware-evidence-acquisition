@@ -256,6 +256,19 @@ def read_speech_native_predictions(
                     f"{matcher_policy_id} flight receipt has an unknown verifier policy"
                 )
             cell_id += verifier_suffix
+        agent_aggregator_id = profile.get(
+            "agent_aggregator_id", "m3-majority-canonical-tie-v1"
+        )
+        if matcher_policy_id == "M5":
+            aggregator_suffix = {
+                "m3-majority-canonical-tie-v1": "",
+                "m3-majority-primary-tie-v2": "-aggregate-primary-v2",
+            }.get(agent_aggregator_id)
+            if aggregator_suffix is None:
+                raise SpeechNativeProfileError(
+                    "M5 flight receipt has an unknown agent aggregator"
+                )
+            cell_id += aggregator_suffix
         order_ids = profile.get("key_order_ids", ["canonical"])
         if (
             not isinstance(order_ids, list)
@@ -319,6 +332,9 @@ def read_speech_native_predictions(
         agent_missed_stop_error_count = 0
         agent_action_sensitive_count = 0
         agent_action_counts: Counter[str] = Counter()
+        agent_primary_fallback_correct_count = 0
+        agent_primary_fallback_wrong_to_correct = 0
+        agent_primary_fallback_correct_to_wrong = 0
         for row in rows:
             if row.get("schema") != "saea-speech-native-decision-v1":
                 raise SpeechNativeProfileError("decision schema mismatch")
@@ -401,8 +417,12 @@ def read_speech_native_predictions(
                 agent_escalated = row.get("agent_escalated")
                 agent_votes = row.get("agent_vote_key_ids")
                 agent_steps = row.get("agent_steps")
+                row_aggregator_id = row.get(
+                    "agent_aggregator_id", "m3-majority-canonical-tie-v1"
+                )
                 if (
                     agent_policy_id != "m1-m3-disagreement-escalation-v1"
+                    or row_aggregator_id != agent_aggregator_id
                     or not isinstance(agent_actions, list)
                     or not agent_actions
                     or not all(
@@ -454,6 +474,19 @@ def read_speech_native_predictions(
                     and label_by_key[vote] == gold[sample_id]
                     for vote in agent_votes[1:]
                 )
+                m3_votes = [vote for vote in agent_votes[1:] if vote is not None]
+                m3_counts = Counter(m3_votes)
+                m3_majority = next(
+                    (vote for vote, count in m3_counts.items() if count >= 2),
+                    None,
+                )
+                primary_fallback_key = (
+                    m3_majority if m3_majority is not None else primary_vote
+                )
+                primary_fallback_correct = (
+                    isinstance(primary_fallback_key, str)
+                    and label_by_key[primary_fallback_key] == gold[sample_id]
+                )
                 agent_action_counts.update(agent_actions)
                 agent_escalation_count += int(agent_escalated)
                 agent_recoverable_error_count += int(
@@ -461,6 +494,15 @@ def read_speech_native_predictions(
                 )
                 agent_missed_stop_error_count += int(
                     not agent_escalated and not final_correct
+                )
+                agent_primary_fallback_correct_count += int(
+                    primary_fallback_correct
+                )
+                agent_primary_fallback_wrong_to_correct += int(
+                    not final_correct and primary_fallback_correct
+                )
+                agent_primary_fallback_correct_to_wrong += int(
+                    final_correct and not primary_fallback_correct
                 )
                 if agent_escalated:
                     agent_helpful_escalation_count += int(
@@ -505,6 +547,7 @@ def read_speech_native_predictions(
                 "agent_loop_metrics": (
                     {
                         "policy_id": "m1-m3-disagreement-escalation-v1",
+                        "aggregator_id": agent_aggregator_id,
                         "stop_count": len(gold) - agent_escalation_count,
                         "escalation_count": agent_escalation_count,
                         "escalation_rate": agent_escalation_count / len(gold),
@@ -515,6 +558,23 @@ def read_speech_native_predictions(
                         "missed_stop_error_count": agent_missed_stop_error_count,
                         "action_sensitive_escalation_count": agent_action_sensitive_count,
                         "action_counts": dict(sorted(agent_action_counts.items())),
+                        "counterfactual_aggregators": [
+                            {
+                                "aggregator_id": "m3-majority-primary-tie-v2",
+                                "discovery_status": "post-read-policy-discovery",
+                                "correct": agent_primary_fallback_correct_count,
+                                "count": len(gold),
+                                "accuracy": (
+                                    agent_primary_fallback_correct_count / len(gold)
+                                ),
+                                "wrong_to_correct_vs_observed": (
+                                    agent_primary_fallback_wrong_to_correct
+                                ),
+                                "correct_to_wrong_vs_observed": (
+                                    agent_primary_fallback_correct_to_wrong
+                                ),
+                            }
+                        ],
                     }
                     if matcher_policy_id == "M5"
                     else None
@@ -998,6 +1058,7 @@ def build_profile_tasks(
     verifier_policy_id: str = "speech-native-compatibility-v1",
     audio_key_bindings: Mapping[str, Mapping[str, str]] | None = None,
     mechanism_control_id: str = "matched",
+    agent_aggregator_id: str = "m3-majority-canonical-tie-v1",
 ) -> tuple[SpeechNativeMatchTask, ...]:
     """Build the registered maximum-card prompt tasks without reading labels."""
 
@@ -1051,6 +1112,7 @@ def build_profile_tasks(
                     decoding_params=dict(decoding_params),
                     top_k=top_k,
                     audio_key_bindings=audio_key_bindings,
+                    agent_aggregator_id=agent_aggregator_id,
                 )
             )
     return tuple(tasks)
@@ -1296,6 +1358,14 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
         raise SpeechNativeProfileError(
             "matcher_verifier_policy_id must be a non-empty string"
         )
+    agent_aggregator_id = values.get(
+        "speech_native_agent_aggregator_id",
+        "m3-majority-canonical-tie-v1",
+    )
+    if not isinstance(agent_aggregator_id, str) or not agent_aggregator_id:
+        raise SpeechNativeProfileError(
+            "speech_native_agent_aggregator_id must be a non-empty string"
+        )
     dispatch_granularity = values.get("speech_native_dispatch_granularity", "task")
     if dispatch_granularity not in {"task", "contact"}:
         raise SpeechNativeProfileError(
@@ -1321,6 +1391,7 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
         verifier_policy_id=verifier_policy_id,
         audio_key_bindings=audio_key_bindings,
         mechanism_control_id=mechanism_control_id,
+        agent_aggregator_id=agent_aggregator_id,
     )
     planned_contact_ceiling = len(tasks) * contact_ceiling
     if planned_contact_ceiling != plan.planned_model_calls:
@@ -1475,6 +1546,7 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
                         outcome.decision.agent_vote_key_ids
                     ),
                     "agent_steps": list(outcome.decision.agent_steps),
+                    "agent_aggregator_id": outcome.decision.agent_aggregator_id,
                     "verifier_scores": {
                         key_id: {
                             "compatible": compatible,
@@ -1512,6 +1584,7 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
             "matcher_policy_id": values["matcher_policy_id"],
             "matcher_prompt_policy_id": prompt_policy_id,
             "matcher_verifier_policy_id": verifier_policy_id,
+            "agent_aggregator_id": agent_aggregator_id,
             "dispatch_granularity": dispatch_granularity,
             "mechanism_control_id": mechanism_control_id,
             "query_mapping_sha256": _canonical_sha256(

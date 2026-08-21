@@ -433,6 +433,45 @@ def test_m5_three_way_m3_tie_falls_back_to_canonical_m3_decision():
     _assert_every_call_carries_query(client)
 
 
+def test_m5_primary_fallback_requires_m3_consensus_before_overriding_m1():
+    cards = (
+        *_KEY_CARDS,
+        KeyCardV1(
+            key_id="K003",
+            definition="Commands about calendar events.",
+            positive_examples=("add a meeting",),
+            contrastive_boundary="Do not use for alarms.",
+            value_label="calendar",
+        ).validate(),
+    )
+    responses = ['{"key_id":"K001"}']
+    for winner, other in (("K002", "K001"), ("K003", "K002"), ("K001", "K003")):
+        responses.extend(
+            [
+                json.dumps({"key_ids": [winner, other]}),
+                '{"compatible":true,"confidence":90}',
+                '{"compatible":false,"confidence":10}',
+            ]
+        )
+    client = _SpeechFeatureClient(responses)
+    result = run_speech_native_matcher(
+        core_client=client,
+        sample=_SpeechSample(),
+        query_descriptor=_QUERY_DESCRIPTOR,
+        key_cards=cards,
+        key_representation_id="K1",
+        matcher_policy_id="M5",
+        prompt_policy_id="speech-native-json-copy-v3",
+        top_k=2,
+        agent_aggregator_id="m3-majority-primary-tie-v2",
+    )
+
+    assert result.key_id == "K001"
+    assert result.agent_aggregator_id == "m3-majority-primary-tie-v2"
+    assert result.agent_actions[-1] == "aggregate:m3-majority-primary-tie"
+    _assert_every_call_carries_query(client)
+
+
 def test_audio_key_mode_carries_ordered_key_packets_without_key_body_text():
     client = _SpeechFeatureClient(['{"key_id":"K001"}'])
     audio_keys = {
@@ -596,6 +635,152 @@ def test_speech_native_contact_dispatch_queues_each_multistep_call_independently
         stage.endswith(":intent-factors") for stage in client.stages[:4]
     )
     assert all(outcome.slot_id == -1 for outcome in outcomes)
+
+
+def test_contact_dispatch_parallelizes_independent_m3_verifier_contacts():
+    class ParallelVerifierClient:
+        def __init__(self):
+            self.lock = threading.Lock()
+            self.active = 0
+            self.max_active = 0
+
+        def complete(self, messages, **kwargs):
+            stage = kwargs["matcher_policy_id"]
+            with self.lock:
+                self.active += 1
+                self.max_active = max(self.max_active, self.active)
+            time.sleep(0.02)
+            with self.lock:
+                self.active -= 1
+            if stage.endswith(":retrieve-top-2"):
+                return '{"key_ids":["K001","K002"]}'
+            if stage.endswith(":verify-K001"):
+                return '{"compatible":true,"confidence":90}'
+            if stage.endswith(":verify-K002"):
+                return '{"compatible":false,"confidence":10}'
+            raise AssertionError(stage)
+
+    task = SpeechNativeMatchTask(
+        task_id="task-0",
+        sample=_SpeechSample(),
+        query_descriptor=_QUERY_DESCRIPTOR,
+        key_cards=_KEY_CARDS,
+        key_representation_id="K1",
+        matcher_policy_id="M3",
+        prompt_policy_id="speech-native-json-copy-v3",
+        decoding_params={"temperature": 0, "id_slot": "per-sample"},
+        top_k=2,
+    )
+    client = ParallelVerifierClient()
+    outcomes = run_speech_native_match_tasks(
+        core_client=client,
+        tasks=(task,),
+        slot_count=2,
+        queue_depth=2,
+        dispatch_granularity="contact",
+    )
+
+    assert outcomes[0].decision.key_id == "K001"
+    assert client.max_active == 2
+
+
+def test_parallel_verifier_traces_merge_in_candidate_order(tmp_path):
+    run_id = "SAEA-E-TEST-parallel-verifier-trace"
+    sink = TraceSink(tmp_path / "trace", run_id)
+    dispatcher = DispatchingSink(sink)
+
+    class TracedVerifierClient:
+        def complete(self, messages, **kwargs):
+            stage = kwargs["matcher_policy_id"]
+            dispatcher.emit("MODEL_REQUEST", stage, {"stage": stage})
+            if stage.endswith(":retrieve-top-2"):
+                return '{"key_ids":["K001","K002"]}'
+            if stage.endswith(":verify-K001"):
+                time.sleep(0.02)
+                return '{"compatible":true,"confidence":90}'
+            if stage.endswith(":verify-K002"):
+                return '{"compatible":false,"confidence":10}'
+            raise AssertionError(stage)
+
+    task = SpeechNativeMatchTask(
+        task_id="task-0",
+        sample=_SpeechSample(),
+        query_descriptor=_QUERY_DESCRIPTOR,
+        key_cards=_KEY_CARDS,
+        key_representation_id="K1",
+        matcher_policy_id="M3",
+        prompt_policy_id="speech-native-json-copy-v3",
+        top_k=2,
+    )
+    run_speech_native_match_tasks(
+        core_client=TracedVerifierClient(),
+        tasks=(task,),
+        slot_count=2,
+        queue_depth=2,
+        dispatch_granularity="contact",
+        trace_run_id=run_id,
+        trace_flusher=lambda buffer: buffer.flush_into(sink),
+    )
+    sink.close()
+
+    rows = [
+        json.loads(line)
+        for line in (tmp_path / "trace" / f"{run_id}.trace.jsonl")
+        .read_text(encoding="utf-8")
+        .splitlines()
+    ]
+    assert [row["payload"]["stage"].rsplit(":", 1)[-1] for row in rows] == [
+        "retrieve-top-2",
+        "verify-K001",
+        "verify-K002",
+    ]
+
+
+def test_contact_dispatch_parallelizes_independent_m5_initial_branches():
+    class ParallelBranchClient:
+        def __init__(self):
+            self.lock = threading.Lock()
+            self.active = 0
+            self.max_active = 0
+
+        def complete(self, messages, **kwargs):
+            stage = kwargs["matcher_policy_id"]
+            with self.lock:
+                self.active += 1
+                self.max_active = max(self.max_active, self.active)
+            time.sleep(0.02)
+            with self.lock:
+                self.active -= 1
+            if stage.endswith(":listwise"):
+                return '{"key_id":"K001"}'
+            if stage.endswith(":retrieve-top-1"):
+                return '{"key_ids":["K001"]}'
+            if stage.endswith(":verify-K001"):
+                return '{"compatible":true,"confidence":90}'
+            raise AssertionError(stage)
+
+    task = SpeechNativeMatchTask(
+        task_id="task-0",
+        sample=_SpeechSample(),
+        query_descriptor=_QUERY_DESCRIPTOR,
+        key_cards=_KEY_CARDS,
+        key_representation_id="K1",
+        matcher_policy_id="M5",
+        prompt_policy_id="speech-native-json-copy-v3",
+        decoding_params={"temperature": 0, "id_slot": "per-sample"},
+        top_k=1,
+    )
+    client = ParallelBranchClient()
+    outcomes = run_speech_native_match_tasks(
+        core_client=client,
+        tasks=(task,),
+        slot_count=2,
+        queue_depth=2,
+        dispatch_granularity="contact",
+    )
+
+    assert outcomes[0].decision.key_id == "K001"
+    assert client.max_active == 2
 
 
 def test_speech_native_match_tasks_reject_queue_smaller_than_slot_pool():
@@ -1239,6 +1424,7 @@ def test_model_free_read_reports_agent_loop_optimization_signals(tmp_path):
     assert aggregate["correct"] == 34
     assert aggregate["agent_loop_metrics"] == {
         "policy_id": "m1-m3-disagreement-escalation-v1",
+        "aggregator_id": "m3-majority-canonical-tie-v1",
         "stop_count": 34,
         "escalation_count": 2,
         "escalation_rate": 2 / 36,
@@ -1257,6 +1443,17 @@ def test_model_free_read_reports_agent_loop_optimization_signals(tmp_path):
             "retrieve-verify:rotate-7": 2,
             "stop:agree": 34,
         },
+        "counterfactual_aggregators": [
+            {
+                "aggregator_id": "m3-majority-primary-tie-v2",
+                "discovery_status": "post-read-policy-discovery",
+                "correct": 34,
+                "count": 36,
+                "accuracy": 34 / 36,
+                "wrong_to_correct_vs_observed": 0,
+                "correct_to_wrong_vs_observed": 0,
+            }
+        ],
     }
 
 

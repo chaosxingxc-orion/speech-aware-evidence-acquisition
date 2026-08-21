@@ -162,6 +162,10 @@ SPEECH_NATIVE_VERIFIER_POLICIES = (
     "speech-native-compatibility-v1",
     "speech-native-contrastive-verifier-v2",
 )
+SPEECH_NATIVE_AGENT_AGGREGATORS = (
+    "m3-majority-canonical-tie-v1",
+    "m3-majority-primary-tie-v2",
+)
 SPEECH_NATIVE_SCENARIO_DEFINITIONS: Mapping[str, str] = MappingProxyType(
     {
         "alarm": "Commands that create, change, inspect, or remove alarms and wake-up reminders.",
@@ -267,6 +271,7 @@ class SpeechNativeDecision:
     agent_escalated: bool = False
     agent_vote_key_ids: tuple[str | None, ...] = ()
     agent_steps: tuple[Mapping[str, object], ...] = ()
+    agent_aggregator_id: str | None = None
 
 
 @dataclass(frozen=True)
@@ -291,6 +296,7 @@ class SpeechNativeMatchTask:
     top_k: int = 3
     audio_key_bindings: Mapping[str, Mapping[str, str]] | None = None
     ensemble_base_policy_id: str = "M1"
+    agent_aggregator_id: str = "m3-majority-canonical-tie-v1"
 
 
 @dataclass(frozen=True)
@@ -480,7 +486,9 @@ def run_speech_native_matcher(
     top_k: int = 3,
     audio_key_bindings: Mapping[str, Mapping[str, str]] | None = None,
     ensemble_base_policy_id: str = "M1",
+    agent_aggregator_id: str = "m3-majority-canonical-tie-v1",
     _trace_matcher_policy_id: str | None = None,
+    _trace_buffer: TraceBuffer | None = None,
 ) -> SpeechNativeDecision:
     """Run one frozen-core speech-query decision under M0--M5.
 
@@ -505,6 +513,11 @@ def run_speech_native_matcher(
             f"unknown verifier policy {verifier_policy_id!r}; expected "
             f"{SPEECH_NATIVE_VERIFIER_POLICIES}"
         )
+    if agent_aggregator_id not in SPEECH_NATIVE_AGENT_AGGREGATORS:
+        raise PsluFlightError(
+            f"unknown agent aggregator {agent_aggregator_id!r}; expected "
+            f"{SPEECH_NATIVE_AGENT_AGGREGATORS}"
+        )
     top_k_is_active = matcher_policy_id in {"M3", "M5"} or (
         matcher_policy_id == "M4" and ensemble_base_policy_id == "M3"
     )
@@ -514,12 +527,12 @@ def run_speech_native_matcher(
     allowed = set(by_key)
     raw_responses: list[str] = []
 
-    def contact(
+    def contact_request(
         stage: str,
         system_text: str,
         stage_cards: Sequence[KeyCardV1],
         key_text: str | None,
-    ) -> str:
+    ) -> tuple[tuple[Mapping[str, object], ...], dict[str, object]]:
         messages = _speech_feature_messages(
             system_text=system_text,
             query_descriptor=query_descriptor,
@@ -532,15 +545,49 @@ def run_speech_native_matcher(
                 else None
             ),
         )
-        response = core_client.complete(
-            messages,
-            decoding_params=decoding_params,
-            speech_feature_sample_id=sample.sample_id,
-            key_representation_id=key_representation_id,
-            matcher_policy_id=f"{_trace_matcher_policy_id or matcher_policy_id}:{stage}",
+        return messages, {
+            "decoding_params": decoding_params,
+            "speech_feature_sample_id": sample.sample_id,
+            "key_representation_id": key_representation_id,
+            "matcher_policy_id": (
+                f"{_trace_matcher_policy_id or matcher_policy_id}:{stage}"
+            ),
+        }
+
+    def contact(
+        stage: str,
+        system_text: str,
+        stage_cards: Sequence[KeyCardV1],
+        key_text: str | None,
+    ) -> str:
+        messages, kwargs = contact_request(
+            stage, system_text, stage_cards, key_text
         )
+        response = core_client.complete(messages, **kwargs)
         raw_responses.append(response)
         return response
+
+    def contact_many(
+        specifications: Sequence[
+            tuple[str, str, Sequence[KeyCardV1], str | None]
+        ],
+    ) -> tuple[str, ...]:
+        requests = tuple(
+            contact_request(stage, system_text, stage_cards, key_text)
+            for stage, system_text, stage_cards, key_text in specifications
+        )
+        batch_complete = getattr(core_client, "complete_many", None)
+        if callable(batch_complete):
+            responses = tuple(
+                batch_complete(requests, trace_parent=_trace_buffer)
+            )
+        else:
+            responses = tuple(
+                core_client.complete(messages, **kwargs)
+                for messages, kwargs in requests
+            )
+        raw_responses.extend(responses)
+        return responses
 
     def finish(
         key_id: str | None,
@@ -552,6 +599,7 @@ def run_speech_native_matcher(
         agent_escalated: bool = False,
         agent_vote_key_ids: tuple[str | None, ...] = (),
         agent_steps: tuple[Mapping[str, object], ...] = (),
+        decision_agent_aggregator_id: str | None = None,
     ) -> SpeechNativeDecision:
         return SpeechNativeDecision(
             matcher_policy_id=matcher_policy_id,
@@ -568,14 +616,16 @@ def run_speech_native_matcher(
             agent_escalated=agent_escalated,
             agent_vote_key_ids=agent_vote_key_ids,
             agent_steps=agent_steps,
+            agent_aggregator_id=decision_agent_aggregator_id,
         )
 
-    def nested_decision(
+    def run_nested_decision(
         policy_id: str,
         ordering: tuple[KeyCardV1, ...],
         trace_policy_id: str,
+        trace_buffer: TraceBuffer | None,
     ) -> SpeechNativeDecision:
-        decision = run_speech_native_matcher(
+        return run_speech_native_matcher(
             core_client=core_client,
             sample=sample,
             query_descriptor=query_descriptor,
@@ -588,9 +638,64 @@ def run_speech_native_matcher(
             top_k=top_k,
             audio_key_bindings=audio_key_bindings,
             _trace_matcher_policy_id=trace_policy_id,
+            _trace_buffer=trace_buffer,
+        )
+
+    def nested_decision(
+        policy_id: str,
+        ordering: tuple[KeyCardV1, ...],
+        trace_policy_id: str,
+    ) -> SpeechNativeDecision:
+        decision = run_nested_decision(
+            policy_id, ordering, trace_policy_id, _trace_buffer
         )
         raw_responses.extend(decision.raw_responses)
         return decision
+
+    def parallel_nested_decisions(
+        specifications: Sequence[tuple[str, tuple[KeyCardV1, ...], str]],
+    ) -> tuple[SpeechNativeDecision, ...]:
+        if not getattr(core_client, "supports_parallel_branches", False):
+            return tuple(
+                nested_decision(policy_id, ordering, trace_policy_id)
+                for policy_id, ordering, trace_policy_id in specifications
+            )
+        child_buffers = (
+            tuple(TraceBuffer(_trace_buffer.run_id) for _ in specifications)
+            if _trace_buffer is not None
+            else (None,) * len(specifications)
+        )
+
+        def invoke(
+            specification: tuple[str, tuple[KeyCardV1, ...], str],
+            child_buffer: TraceBuffer | None,
+        ) -> SpeechNativeDecision:
+            if child_buffer is not None:
+                set_current_trace_buffer(child_buffer)
+            try:
+                return run_nested_decision(*specification, child_buffer)
+            finally:
+                if child_buffer is not None:
+                    set_current_trace_buffer(None)
+
+        with ThreadPoolExecutor(
+            max_workers=len(specifications),
+            thread_name_prefix="saea-speech-native-branch",
+        ) as branch_pool:
+            futures = tuple(
+                branch_pool.submit(invoke, specification, child_buffer)
+                for specification, child_buffer in zip(
+                    specifications, child_buffers, strict=True
+                )
+            )
+            decisions = tuple(future.result() for future in futures)
+        if _trace_buffer is not None:
+            for child_buffer in child_buffers:
+                assert child_buffer is not None
+                _trace_buffer.extend_from(child_buffer)
+        for decision in decisions:
+            raw_responses.extend(decision.raw_responses)
+        return decisions
 
     def agent_step(
         action_id: str, decision: SpeechNativeDecision
@@ -609,15 +714,16 @@ def run_speech_native_matcher(
             tuple(reversed(cards)),
             _rotate_key_cards(cards, 7),
         )
-        decisions: list[SpeechNativeDecision] = []
-        for order_index, ordering in enumerate(orderings):
-            decisions.append(
-                nested_decision(
+        decisions = parallel_nested_decisions(
+            tuple(
+                (
                     ensemble_base_policy_id,
                     ordering,
                     f"M4:{ensemble_base_policy_id}:order-{order_index}",
                 )
+                for order_index, ordering in enumerate(orderings)
             )
+        )
         votes = [decision.key_id for decision in decisions if decision.key_id is not None]
         if not votes:
             return finish(None)
@@ -628,8 +734,12 @@ def run_speech_native_matcher(
 
     if matcher_policy_id == "M5":
         agent_policy_id = "m1-m3-disagreement-escalation-v1"
-        primary = nested_decision("M1", cards, "M5:M1:canonical")
-        canonical = nested_decision("M3", cards, "M5:M3:canonical")
+        primary, canonical = parallel_nested_decisions(
+            (
+                ("M1", cards, "M5:M1:canonical"),
+                ("M3", cards, "M5:M3:canonical"),
+            )
+        )
         initial_votes = (primary.key_id, canonical.key_id)
         initial_steps = (
             agent_step("match:listwise-canonical", primary),
@@ -648,11 +758,14 @@ def run_speech_native_matcher(
                 ),
                 agent_vote_key_ids=initial_votes,
                 agent_steps=initial_steps,
+                decision_agent_aggregator_id=agent_aggregator_id,
             )
 
-        reverse = nested_decision("M3", tuple(reversed(cards)), "M5:M3:reverse")
-        rotate = nested_decision(
-            "M3", _rotate_key_cards(cards, 7), "M5:M3:rotate-7"
+        reverse, rotate = parallel_nested_decisions(
+            (
+                ("M3", tuple(reversed(cards)), "M5:M3:reverse"),
+                ("M3", _rotate_key_cards(cards, 7), "M5:M3:rotate-7"),
+            )
         )
         m3_votes = (canonical.key_id, reverse.key_id, rotate.key_id)
         valid_m3_votes = [key_id for key_id in m3_votes if key_id is not None]
@@ -660,7 +773,17 @@ def run_speech_native_matcher(
             key_id: valid_m3_votes.count(key_id) for key_id in set(valid_m3_votes)
         }
         majority = next((key_id for key_id, count in counts.items() if count >= 2), None)
-        winner = majority if majority is not None else canonical.key_id
+        fallback = (
+            primary.key_id
+            if agent_aggregator_id == "m3-majority-primary-tie-v2"
+            else canonical.key_id
+        )
+        winner = majority if majority is not None else fallback
+        aggregate_action = (
+            "aggregate:m3-majority-primary-tie"
+            if agent_aggregator_id == "m3-majority-primary-tie-v2"
+            else "aggregate:m3-majority-canonical-tie"
+        )
         return finish(
             winner,
             top_ids=canonical.top_key_ids,
@@ -672,7 +795,7 @@ def run_speech_native_matcher(
                 "escalate:disagreement",
                 "retrieve-verify:reverse",
                 "retrieve-verify:rotate-7",
-                "aggregate:m3-majority-canonical-tie",
+                aggregate_action,
             ),
             agent_escalated=True,
             agent_vote_key_ids=(*initial_votes, reverse.key_id, rotate.key_id),
@@ -681,6 +804,7 @@ def run_speech_native_matcher(
                 agent_step("retrieve-verify:reverse", reverse),
                 agent_step("retrieve-verify:rotate-7", rotate),
             ),
+            decision_agent_aggregator_id=agent_aggregator_id,
         )
 
     if matcher_policy_id == "M0":
@@ -777,6 +901,7 @@ def run_speech_native_matcher(
     ):
         return finish(None, top_ids=top_ids)
     verifier_scores: dict[str, tuple[bool, float]] = {}
+    verifier_specifications = []
     for key_id in top_ids:
         card = by_key[key_id]
         verifier_instruction = (
@@ -791,12 +916,16 @@ def run_speech_native_matcher(
                 "from 0 to 100."
             )
         )
-        response = contact(
-            f"verify-{key_id}",
-            verifier_instruction,
-            (card,),
-            render_speech_native_keys((card,), key_representation_id),
+        verifier_specifications.append(
+            (
+                f"verify-{key_id}",
+                verifier_instruction,
+                (card,),
+                render_speech_native_keys((card,), key_representation_id),
+            )
         )
+    verifier_responses = contact_many(verifier_specifications)
+    for key_id, response in zip(top_ids, verifier_responses, strict=True):
         parsed = _compatibility(response)
         verifier_scores[key_id] = parsed if parsed is not None else (False, -1.0)
     compatible = [key_id for key_id in top_ids if verifier_scores[key_id][0]]
@@ -871,10 +1000,14 @@ def run_speech_native_match_tasks(
     )
 
     class ContactDispatchClient:
-        def complete(self, messages, **kwargs):
+        supports_parallel_branches = True
+
+        def _submit(self, messages, kwargs, trace_buffer=None):
             assert contact_pool is not None
 
             def invoke():
+                if trace_buffer is not None:
+                    set_current_trace_buffer(trace_buffer)
                 slot_id = slots.get()
                 try:
                     decoding_params = dict(kwargs.get("decoding_params") or {})
@@ -890,9 +1023,33 @@ def run_speech_native_match_tasks(
                     )
                 finally:
                     slots.put(slot_id)
+                    if trace_buffer is not None:
+                        set_current_trace_buffer(None)
 
             context = contextvars.copy_context()
-            return contact_pool.submit(context.run, invoke).result()
+            return contact_pool.submit(context.run, invoke)
+
+        def complete(self, messages, **kwargs):
+            return self._submit(messages, kwargs).result()
+
+        def complete_many(self, requests, *, trace_parent=None):
+            child_buffers = (
+                tuple(TraceBuffer(trace_parent.run_id) for _ in requests)
+                if trace_parent is not None
+                else (None,) * len(requests)
+            )
+            futures = tuple(
+                self._submit(messages, kwargs, child_buffer)
+                for (messages, kwargs), child_buffer in zip(
+                    requests, child_buffers, strict=True
+                )
+            )
+            responses = tuple(future.result() for future in futures)
+            if trace_parent is not None:
+                for child_buffer in child_buffers:
+                    assert child_buffer is not None
+                    trace_parent.extend_from(child_buffer)
+            return responses
 
     contact_client = ContactDispatchClient()
 
@@ -926,6 +1083,8 @@ def run_speech_native_match_tasks(
                 top_k=task.top_k,
                 audio_key_bindings=task.audio_key_bindings,
                 ensemble_base_policy_id=task.ensemble_base_policy_id,
+                agent_aggregator_id=task.agent_aggregator_id,
+                _trace_buffer=buffer,
             )
             return _BufferedSpeechNativeOutcome(
                 outcome=SpeechNativeMatchOutcome(
