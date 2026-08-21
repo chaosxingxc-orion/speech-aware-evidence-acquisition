@@ -18,7 +18,9 @@ from speech_aware_evidence_acquisition.core.model import SliceRegistry
 from speech_aware_evidence_acquisition.core.driver.speech_native import (
     build_profile_tasks,
     profile_timing_metrics,
+    read_speech_native_predictions,
 )
+from speech_aware_evidence_acquisition.e0.artifacts import REPO_ROOT
 from speech_aware_evidence_acquisition.core.tracing import DispatchingSink, TraceSink
 from speech_aware_evidence_acquisition.data.lock import load_lock
 from speech_aware_evidence_acquisition.data.slurp import (
@@ -131,6 +133,23 @@ def test_m1_selects_an_opaque_key_id_and_maps_label_deterministically():
     assert result.value_label == "email"
     assert result.calls == 1
     _assert_every_call_carries_query(client)
+
+
+def test_m1_canonicalizes_safe_zero_padding_without_exposing_a_fake_key_example():
+    client = _SpeechFeatureClient(['{"key_id":"K2"}'])
+    result = run_speech_native_matcher(
+        core_client=client,
+        sample=_SpeechSample(),
+        query_descriptor=_QUERY_DESCRIPTOR,
+        key_cards=_KEY_CARDS,
+        key_representation_id="K2",
+        matcher_policy_id="M1",
+    )
+    assert result.key_id == "K002"
+    assert result.value_label == "email"
+    system_text = client.calls[0][0][0]["content"]
+    assert "K000" not in system_text
+    assert "copied verbatim from a supplied key heading" in system_text
 
 
 def test_m2_reintroduces_the_same_speech_query_for_factor_and_selection_steps():
@@ -409,6 +428,77 @@ def test_profile_task_expansion_and_slot_metrics_are_deterministic():
         "slot_occupancy_pct": 100.0,
         "aggregate_tokens_per_second": 100.0,
     }
+
+
+def test_model_free_prediction_read_verifies_and_selects_the_better_cell(tmp_path):
+    binding_path = REPO_ROOT / "configs/probes/g0-binding/speech-native-train-binding.json"
+    binding_sha256 = hashlib.sha256(binding_path.read_bytes()).hexdigest()
+    binding = json.loads(binding_path.read_text(encoding="utf-8"))
+    items = binding["splits"]["OPT-A36"]["items"]
+    key_by_label = {card["value_label"]: card["key_id"] for card in binding["key_cards"]}
+
+    def write_cell(cell_id, *, make_first_wrong):
+        key_representation_id, matcher_policy_id = cell_id.split("-")
+        attempt_dir = tmp_path / cell_id
+        attempt_dir.mkdir()
+        rows = []
+        for index, item in enumerate(items):
+            key_id = key_by_label[item["value_label"]]
+            if index == 0 and make_first_wrong:
+                key_id = next(candidate for candidate in key_by_label.values() if candidate != key_id)
+            predicted = next(
+                card["value_label"] for card in binding["key_cards"] if card["key_id"] == key_id
+            )
+            rows.append(
+                {
+                    "schema": "saea-speech-native-decision-v1",
+                    "sample_id": item["sample_id"],
+                    "key_id": key_id,
+                    "predicted_value_label": predicted,
+                    "parse_failure": False,
+                }
+            )
+        decisions = attempt_dir / "decisions.jsonl"
+        decisions.write_text(
+            "".join(json.dumps(row, sort_keys=True) + "\n" for row in rows),
+            encoding="utf-8",
+        )
+        digest = hashlib.sha256(decisions.read_bytes()).hexdigest()
+        receipt = {
+            "status": "COMPLETED",
+            "request_failures": [],
+            "split_identity_hash": "a" * 64,
+            "run_id": f"run-{cell_id}",
+            "profile": {
+                "key_representation_id": key_representation_id,
+                "matcher_policy_id": matcher_policy_id,
+                "actual_contact_count": len(rows),
+            },
+            "decisions": {
+                "path": decisions.name,
+                "sha256": digest,
+                "count": len(rows),
+            },
+            "timing": {"aggregate_tokens_per_second": 100.0},
+        }
+        (attempt_dir / "flight-receipt.json").write_text(
+            json.dumps(receipt), encoding="utf-8"
+        )
+        return attempt_dir
+
+    baseline_dir = write_cell("K0-M1", make_first_wrong=True)
+    candidate_dir = write_cell("K2-M1", make_first_wrong=False)
+    report = read_speech_native_predictions(
+        attempt_dirs=(baseline_dir, candidate_dir),
+        binding_path=binding_path,
+        binding_sha256=binding_sha256,
+        split_name="OPT-A36",
+    )
+    assert report["selected_cell_id"] == "K2-M1"
+    candidate = next(item for item in report["aggregates"] if item["cell_id"] == "K2-M1")
+    assert candidate["correct"] == 36
+    assert candidate["wrong_to_correct_vs_baseline"] == 1
+    assert candidate["correct_to_wrong_vs_baseline"] == 0
 
 
 def _binding_material():

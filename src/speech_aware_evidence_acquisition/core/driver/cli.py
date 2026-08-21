@@ -38,7 +38,7 @@ from ..resources import resolve_resource_sampler
 from ..scorers import score_bundle
 from .bundled import run_experiment_bundled
 from .smoke import _cli_smoke
-from .speech_native import _cli_speech_native_profile
+from .speech_native import _cli_speech_native_profile, _cli_speech_native_read
 
 
 def _canonical_sha256(document: object) -> str:
@@ -539,6 +539,17 @@ def main(argv: list[str] | None = None) -> int:
         help="TEST-ONLY repository-root override; real flights omit it",
     )
     speech_profile.set_defaults(func=_cli_speech_native_profile)
+
+    speech_read = sub.add_parser(
+        "speech-native-read",
+        help="model-free read of hash-verified speech-native prediction flights",
+    )
+    speech_read.add_argument("--attempt-dir", action="append", required=True)
+    speech_read.add_argument("--binding", required=True)
+    speech_read.add_argument("--binding-sha256", required=True)
+    speech_read.add_argument("--split-name", required=True)
+    speech_read.add_argument("--output", required=True)
+    speech_read.set_defaults(func=_cli_speech_native_read)
 
     args = parser.parse_args(argv)
     return args.func(args)

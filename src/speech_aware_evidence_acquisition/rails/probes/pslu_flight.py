@@ -341,10 +341,21 @@ def _response_object(text: str) -> Mapping[str, object] | None:
     return document if isinstance(document, Mapping) else None
 
 
+def _canonical_key_id(key_id: object, allowed: set[str]) -> str | None:
+    if not isinstance(key_id, str):
+        return None
+    if key_id in allowed:
+        return key_id
+    if key_id.startswith("K") and key_id[1:].isdigit() and 1 <= len(key_id[1:]) <= 3:
+        canonical = f"K{int(key_id[1:]):03d}"
+        return canonical if canonical in allowed else None
+    return None
+
+
 def _selected_key_id(text: str, allowed: set[str]) -> str | None:
     document = _response_object(text)
     key_id = document.get("key_id") if document is not None else None
-    return key_id if isinstance(key_id, str) and key_id in allowed else None
+    return _canonical_key_id(key_id, allowed)
 
 
 def _selected_top_keys(text: str, allowed: set[str], top_k: int) -> tuple[str, ...]:
@@ -354,8 +365,9 @@ def _selected_top_keys(text: str, allowed: set[str], top_k: int) -> tuple[str, .
         return ()
     selected: list[str] = []
     for key_id in raw:
-        if isinstance(key_id, str) and key_id in allowed and key_id not in selected:
-            selected.append(key_id)
+        canonical = _canonical_key_id(key_id, allowed)
+        if canonical is not None and canonical not in selected:
+            selected.append(canonical)
         if len(selected) == top_k:
             break
     return tuple(selected)
@@ -550,11 +562,27 @@ def run_speech_native_matcher(
         return finish(key_id)
 
     if matcher_policy_id == "M1":
+        if key_representation_id == "K0":
+            response = contact(
+                "listwise-label",
+                "Match the spoken command to exactly one listed label. Return one JSON "
+                "object with exactly one field named label. Its string value must be "
+                "copied verbatim from the supplied label list.",
+                cards,
+                render_speech_native_keys(cards, key_representation_id),
+            )
+            document = _response_object(response)
+            label = document.get("label") if document is not None else None
+            key_id = next(
+                (card.key_id for card in cards if card.value_label == label), None
+            )
+            return finish(key_id)
         response = contact(
             "listwise",
             "Match the spoken command to exactly one opaque key. Use the speech signal and "
-            "the supplied key representations jointly. Respond only as "
-            '{"key_id":"K000"}.',
+            "the supplied key representations jointly. Return one JSON object with exactly "
+            "one field named key_id. Its string value must be copied verbatim from a supplied "
+            "key heading; do not invent or shorten an id.",
             cards,
             render_speech_native_keys(cards, key_representation_id),
         )
@@ -573,7 +601,8 @@ def run_speech_native_matcher(
             "factor-conditioned-selection",
             "Match the spoken command to exactly one opaque key. The prior semantic analysis "
             "below is advisory; re-evaluate it against the speech signal carried again in this "
-            "request. Respond only as {\"key_id\":\"K000\"}.",
+            "request. Return one JSON object with exactly one field named key_id. Its string "
+            "value must be copied verbatim from a supplied key heading.",
             cards,
             (
                 "Prior semantic analysis:\n"
@@ -587,7 +616,8 @@ def run_speech_native_matcher(
     retrieval = contact(
         f"retrieve-top-{top_k}",
         f"Retrieve the {top_k} most compatible opaque keys for the spoken command, best first. "
-        f"Respond only as {{\"key_ids\":[\"K000\"]}} with at most {top_k} ids.",
+        f"Return one JSON object with exactly one field named key_ids whose value is an array "
+        f"of at most {top_k} ids copied verbatim from supplied key headings.",
         cards,
         render_speech_native_keys(cards, key_representation_id),
     )
@@ -617,7 +647,8 @@ def run_speech_native_matcher(
     response = contact(
         "tie-arbitration",
         "Resolve the verifier tie by comparing the speech signal directly against only these "
-        "tied opaque keys. Respond only as {\"key_id\":\"K000\"}.",
+        "tied opaque keys. Return one JSON object with exactly one field named key_id whose "
+        "value is copied verbatim from a supplied key heading.",
         tied_cards,
         render_speech_native_keys(tied_cards, key_representation_id),
     )

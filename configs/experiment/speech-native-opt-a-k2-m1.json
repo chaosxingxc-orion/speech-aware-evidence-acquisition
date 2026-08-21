@@ -1,0 +1,7 @@
+{
+  "experiment_id": "SAEA-SN-OPTA-K2M1",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "OPT-A36 key-representation optimization cell K2 with listwise M1; frozen speech query and maintainable contrastive text cards.",
+  "key_representation_id": "K2",
+  "matcher_policy_id": "M1"
+}

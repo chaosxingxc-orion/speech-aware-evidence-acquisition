@@ -100,7 +100,7 @@ def _require_positive_int(values: Mapping[str, object], key: str) -> int:
     return value
 
 
-def _load_key_cards(path: Path, expected_sha256: str) -> tuple[KeyCardV1, ...]:
+def _load_binding_document(path: Path, expected_sha256: str) -> dict[str, object]:
     if _SHA256.fullmatch(expected_sha256) is None:
         raise SpeechNativeProfileError("speech-native binding SHA-256 is malformed")
     if _sha256_file(path) != expected_sha256:
@@ -116,6 +116,11 @@ def _load_key_cards(path: Path, expected_sha256: str) -> tuple[KeyCardV1, ...]:
     unsigned.pop("binding_sha256", None)
     if claimed != _canonical_sha256(unsigned):
         raise SpeechNativeProfileError("speech-native binding self-hash mismatch")
+    return document
+
+
+def _load_key_cards(path: Path, expected_sha256: str) -> tuple[KeyCardV1, ...]:
+    document = _load_binding_document(path, expected_sha256)
     raw_cards = document.get("key_cards")
     if not isinstance(raw_cards, list) or len(raw_cards) != 18:
         raise SpeechNativeProfileError("profile requires exactly 18 frozen key cards")
@@ -148,6 +153,197 @@ def _load_key_cards(path: Path, expected_sha256: str) -> tuple[KeyCardV1, ...]:
             ).validate()
         )
     return tuple(cards)
+
+
+def read_speech_native_predictions(
+    *,
+    attempt_dirs: Sequence[Path],
+    binding_path: Path,
+    binding_sha256: str,
+    split_name: str,
+) -> dict[str, object]:
+    """Score prediction-only flight artifacts after every server has stopped.
+
+    Gold labels enter only this model-free reader. Flight receipts and
+    decision rows are hash-verified before scoring; no runtime prompt or
+    trace is modified.
+    """
+
+    if not attempt_dirs:
+        raise SpeechNativeProfileError("speech-native read requires at least one attempt")
+    binding = _load_binding_document(binding_path, binding_sha256)
+    splits = binding.get("splits")
+    split = splits.get(split_name) if isinstance(splits, Mapping) else None
+    raw_items = split.get("items") if isinstance(split, Mapping) else None
+    if not isinstance(raw_items, list) or not raw_items:
+        raise SpeechNativeProfileError(f"binding lacks split {split_name!r}")
+    gold: dict[str, str] = {}
+    for item in raw_items:
+        if not isinstance(item, Mapping):
+            raise SpeechNativeProfileError("binding split item must be an object")
+        sample_id = item.get("sample_id")
+        value_label = item.get("value_label")
+        if (
+            not isinstance(sample_id, str)
+            or not isinstance(value_label, str)
+            or sample_id in gold
+        ):
+            raise SpeechNativeProfileError("binding split labels are malformed or duplicate")
+        gold[sample_id] = value_label
+
+    cards = _load_key_cards(binding_path, binding_sha256)
+    label_by_key = {card.key_id: card.value_label for card in cards}
+    aggregates: list[dict[str, object]] = []
+    correctness_by_cell: dict[str, dict[str, bool]] = {}
+    source_receipts: list[dict[str, str]] = []
+    for attempt_dir_value in attempt_dirs:
+        attempt_dir = Path(attempt_dir_value)
+        receipt_path = attempt_dir / "flight-receipt.json"
+        try:
+            receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+        except (OSError, UnicodeError, json.JSONDecodeError) as error:
+            raise SpeechNativeProfileError(f"cannot read flight receipt: {error}") from error
+        if (
+            not isinstance(receipt, dict)
+            or receipt.get("status") != "COMPLETED"
+            or receipt.get("request_failures") != []
+            or receipt.get("split_identity_hash") is None
+        ):
+            raise SpeechNativeProfileError("flight receipt is not a completed readable result")
+        profile = receipt.get("profile")
+        decisions_ref = receipt.get("decisions")
+        if not isinstance(profile, Mapping) or not isinstance(decisions_ref, Mapping):
+            raise SpeechNativeProfileError("flight receipt lacks prediction metadata")
+        key_representation_id = profile.get("key_representation_id")
+        matcher_policy_id = profile.get("matcher_policy_id")
+        if not isinstance(key_representation_id, str) or not isinstance(
+            matcher_policy_id, str
+        ):
+            raise SpeechNativeProfileError("flight cell identity is malformed")
+        cell_id = f"{key_representation_id}-{matcher_policy_id}"
+        if cell_id in correctness_by_cell:
+            raise SpeechNativeProfileError(f"duplicate flight cell {cell_id!r}")
+        decisions_name = decisions_ref.get("path")
+        decisions_sha256 = decisions_ref.get("sha256")
+        if (
+            not isinstance(decisions_name, str)
+            or Path(decisions_name).name != decisions_name
+            or not isinstance(decisions_sha256, str)
+            or _SHA256.fullmatch(decisions_sha256) is None
+        ):
+            raise SpeechNativeProfileError("flight decisions reference is malformed")
+        decisions_path = attempt_dir / decisions_name
+        if _sha256_file(decisions_path) != decisions_sha256:
+            raise SpeechNativeProfileError("flight decisions SHA-256 mismatch")
+        rows: list[Mapping[str, object]] = []
+        try:
+            with decisions_path.open("r", encoding="utf-8") as handle:
+                for line in handle:
+                    row = json.loads(line)
+                    if not isinstance(row, Mapping):
+                        raise SpeechNativeProfileError("decision row must be an object")
+                    rows.append(row)
+        except (OSError, UnicodeError, json.JSONDecodeError) as error:
+            raise SpeechNativeProfileError(f"cannot read decisions: {error}") from error
+        if len(rows) != decisions_ref.get("count") or len(rows) != len(gold):
+            raise SpeechNativeProfileError("decision count does not match receipt or split")
+        seen: set[str] = set()
+        correctness: dict[str, bool] = {}
+        parse_failures = 0
+        for row in rows:
+            if row.get("schema") != "saea-speech-native-decision-v1":
+                raise SpeechNativeProfileError("decision schema mismatch")
+            sample_id = row.get("sample_id")
+            if not isinstance(sample_id, str) or sample_id not in gold or sample_id in seen:
+                raise SpeechNativeProfileError("decision sample set is malformed")
+            seen.add(sample_id)
+            key_id = row.get("key_id")
+            predicted = row.get("predicted_value_label")
+            parse_failure = row.get("parse_failure")
+            if not isinstance(parse_failure, bool):
+                raise SpeechNativeProfileError("decision parse_failure must be boolean")
+            if key_id is None:
+                if predicted is not None or not parse_failure:
+                    raise SpeechNativeProfileError("empty decision mapping is inconsistent")
+            elif (
+                not isinstance(key_id, str)
+                or key_id not in label_by_key
+                or predicted != label_by_key[key_id]
+                or parse_failure
+            ):
+                raise SpeechNativeProfileError("decision key-to-label mapping is inconsistent")
+            parse_failures += int(parse_failure)
+            correctness[sample_id] = predicted == gold[sample_id]
+        if seen != set(gold):
+            raise SpeechNativeProfileError("decision sample set does not equal the frozen split")
+        correct = sum(correctness.values())
+        aggregates.append(
+            {
+                "cell_id": cell_id,
+                "correct": correct,
+                "count": len(gold),
+                "accuracy": correct / len(gold),
+                "parse_failure_count": parse_failures,
+                "actual_contact_count": profile.get("actual_contact_count"),
+                "aggregate_tokens_per_second": (
+                    receipt.get("timing", {}).get("aggregate_tokens_per_second")
+                    if isinstance(receipt.get("timing"), Mapping)
+                    else None
+                ),
+            }
+        )
+        correctness_by_cell[cell_id] = correctness
+        source_receipts.append(
+            {
+                "run_id": str(receipt.get("run_id")),
+                "flight_receipt_sha256": _sha256_file(receipt_path),
+                "decisions_sha256": decisions_sha256,
+            }
+        )
+
+    baseline_id = str(aggregates[0]["cell_id"])
+    baseline = correctness_by_cell[baseline_id]
+    pairwise: list[dict[str, object]] = []
+    for aggregate in aggregates:
+        cell_id = str(aggregate["cell_id"])
+        current = correctness_by_cell[cell_id]
+        wrong_to_correct = sum(
+            1 for sample_id in gold if not baseline[sample_id] and current[sample_id]
+        )
+        correct_to_wrong = sum(
+            1 for sample_id in gold if baseline[sample_id] and not current[sample_id]
+        )
+        aggregate["wrong_to_correct_vs_baseline"] = wrong_to_correct
+        aggregate["correct_to_wrong_vs_baseline"] = correct_to_wrong
+        pairwise.append(
+            {
+                "baseline_cell_id": baseline_id,
+                "cell_id": cell_id,
+                "wrong_to_correct": wrong_to_correct,
+                "correct_to_wrong": correct_to_wrong,
+                "net_change": wrong_to_correct - correct_to_wrong,
+            }
+        )
+    winner = min(
+        aggregates,
+        key=lambda item: (
+            -int(item["correct"]),
+            int(item["correct_to_wrong_vs_baseline"]),
+            int(item["parse_failure_count"]),
+            str(item["cell_id"]),
+        ),
+    )
+    return {
+        "schema": "saea-speech-native-read-v1",
+        "study": "speech-aware-evidence-acquisition",
+        "split_name": split_name,
+        "binding_file_sha256": binding_sha256,
+        "baseline_cell_id": baseline_id,
+        "aggregates": aggregates,
+        "pairwise": pairwise,
+        "selected_cell_id": winner["cell_id"],
+        "source_receipts": source_receipts,
+    }
 
 
 def _load_packet_bindings(
@@ -204,6 +400,7 @@ def build_profile_tasks(
     decoding_params: Mapping[str, object],
     key_representation_id: str,
     matcher_policy_id: str,
+    top_k: int = 3,
 ) -> tuple[SpeechNativeMatchTask, ...]:
     """Build the registered maximum-card prompt tasks without reading labels."""
 
@@ -228,6 +425,7 @@ def build_profile_tasks(
                     key_representation_id=key_representation_id,
                     matcher_policy_id=matcher_policy_id,
                     decoding_params=dict(decoding_params),
+                    top_k=top_k,
                 )
             )
     return tuple(tasks)
@@ -355,6 +553,19 @@ def _write_exclusive_json(path: Path, document: Mapping[str, object]) -> None:
         raise SpeechNativeProfileError(f"profile artifact already exists: {path}") from error
 
 
+def _write_exclusive_jsonl(path: Path, rows: Sequence[Mapping[str, object]]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        with path.open("x", encoding="utf-8", newline="\n") as handle:
+            for row in rows:
+                handle.write(
+                    json.dumps(row, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+                    + "\n"
+                )
+    except FileExistsError as error:
+        raise SpeechNativeProfileError(f"profile artifact already exists: {path}") from error
+
+
 def _cli_speech_native_profile(args: argparse.Namespace) -> int:
     repo_root = Path(args.repo_root) if args.repo_root else REPO_ROOT
     root = data_root()
@@ -416,6 +627,23 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
     slot_count = _require_positive_int(values, "profile_slot_count")
     geometry = _profile_geometry(values, slot_count)
     queue_multiplier = _require_positive_int(values, "profile_queue_depth_multiplier")
+    result_mode = values.get("speech_native_result_mode", "hash-only")
+    if result_mode not in {"hash-only", "predictions"}:
+        raise SpeechNativeProfileError(
+            "speech_native_result_mode must be 'hash-only' or 'predictions'"
+        )
+    contact_ceiling = values.get("speech_native_contact_ceiling_per_task", 1)
+    if (
+        isinstance(contact_ceiling, bool)
+        or not isinstance(contact_ceiling, int)
+        or contact_ceiling <= 0
+    ):
+        raise SpeechNativeProfileError(
+            "speech_native_contact_ceiling_per_task must be a positive integer"
+        )
+    top_k = values.get("speech_native_top_k", 3)
+    if isinstance(top_k, bool) or not isinstance(top_k, int) or top_k <= 0:
+        raise SpeechNativeProfileError("speech_native_top_k must be a positive integer")
     tasks = build_profile_tasks(
         samples=gate_view.samples,
         packet_bindings=packet_bindings,
@@ -424,10 +652,12 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
         decoding_params=values.get("decoding_params", {}),
         key_representation_id=_require_string(values, "key_representation_id"),
         matcher_policy_id=_require_string(values, "matcher_policy_id"),
+        top_k=top_k,
     )
-    if len(tasks) != plan.planned_model_calls:
+    planned_contact_ceiling = len(tasks) * contact_ceiling
+    if planned_contact_ceiling != plan.planned_model_calls:
         raise SpeechNativeProfileError(
-            f"profile expands to {len(tasks)} calls but plan registers "
+            f"profile expands to a {planned_contact_ceiling}-contact ceiling but plan registers "
             f"{plan.planned_model_calls}"
         )
 
@@ -451,6 +681,7 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
     audit_path = run_dir / f"{plan.run_id}.mmproj-audit.json"
     server_log_path = run_dir / f"{plan.run_id}.server.log"
     flight_receipt_path = run_dir / "flight-receipt.json"
+    decisions_path = run_dir / "decisions.jsonl"
     session = start_session(
         runtime_root=Path(args.runtime_root),
         data_root=root,
@@ -541,6 +772,34 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
     ):
         attempt.record_gpu_seconds(float(gpu_seconds))
     server_scan = _scan_server_log(server_log_path)
+    actual_contact_count = sum(outcome.decision.calls for outcome in outcomes)
+    if result_mode == "predictions" and failure is None:
+        task_by_id = {task.task_id: task for task in tasks}
+        _write_exclusive_jsonl(
+            decisions_path,
+            tuple(
+                {
+                    "schema": "saea-speech-native-decision-v1",
+                    "task_id": outcome.task_id,
+                    "sample_id": task_by_id[outcome.task_id].sample.sample_id,
+                    "speech_packet_sha256": task_by_id[outcome.task_id].query_descriptor[
+                        "sha256"
+                    ],
+                    "key_representation_id": outcome.decision.key_representation_id,
+                    "matcher_policy_id": outcome.decision.matcher_policy_id,
+                    "key_id": outcome.decision.key_id,
+                    "predicted_value_label": outcome.decision.value_label,
+                    "top_key_ids": list(outcome.decision.top_key_ids),
+                    "calls": outcome.decision.calls,
+                    "parse_failure": outcome.decision.parse_failure,
+                    "response_text_sha256": [
+                        hashlib.sha256(text.encode("utf-8")).hexdigest()
+                        for text in outcome.decision.raw_responses
+                    ],
+                }
+                for outcome in outcomes
+            ),
+        )
     receipt: dict[str, object] = {
         "schema": "saea-speech-native-profile-receipt-v1",
         "study": "speech-aware-evidence-acquisition",
@@ -559,6 +818,11 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
             "key_representation_id": values["key_representation_id"],
             "matcher_policy_id": values["matcher_policy_id"],
             "semantic_result_read": False,
+            "result_mode": result_mode,
+            "contact_ceiling_per_task": contact_ceiling,
+            "planned_contact_ceiling": planned_contact_ceiling,
+            "actual_contact_count": actual_contact_count,
+            "top_k": top_k,
             **geometry,
         },
         "resource": dict(resource_summary),
@@ -579,6 +843,13 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
         "request_failures": [] if failure is None else [f"{type(failure).__name__}: {failure}"],
         "close": close_summary,
     }
+    if decisions_path.is_file():
+        receipt["decisions"] = {
+            "path": decisions_path.name,
+            "sha256": _sha256_file(decisions_path),
+            "count": len(outcomes),
+            "contains_gold_labels": False,
+        }
     if close_summary is not None:
         cost = close_summary.get("cost", {})
         if not isinstance(cost, Mapping):
@@ -643,12 +914,14 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
     cost = close_summary["cost"]
     assert isinstance(cost, Mapping)
     if (
-        int(cost.get("calls_used", -1)) != len(tasks)
+        int(cost.get("calls_used", -1)) != actual_contact_count
+        or actual_contact_count < len(tasks)
+        or actual_contact_count > planned_contact_ceiling
         or receipt["request_failures"]
         or server_scan["oom_marker_hits"]
         or server_scan["host_spill_marker_hits"]
         or server_scan["runaway_marker_hits"]
-        or int(server_scan["mmproj_free_chunk_count"]) < len(tasks)
+        or int(server_scan["mmproj_free_chunk_count"]) < actual_contact_count
     ):
         attempt.mark_aborted("speech-native profile completion checks failed")
         raise SpeechNativeProfileError("profile completion checks failed; see flight receipt")
@@ -668,9 +941,34 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cli_speech_native_read(args: argparse.Namespace) -> int:
+    report = read_speech_native_predictions(
+        attempt_dirs=tuple(Path(path) for path in args.attempt_dir),
+        binding_path=Path(args.binding),
+        binding_sha256=args.binding_sha256,
+        split_name=args.split_name,
+    )
+    output = Path(args.output)
+    _write_exclusive_json(output, report)
+    print(
+        json.dumps(
+            {
+                "output": str(output),
+                "selected_cell_id": report["selected_cell_id"],
+                "aggregates": report["aggregates"],
+            },
+            indent=2,
+            sort_keys=True,
+        )
+    )
+    return 0
+
+
 __all__ = [
     "SpeechNativeProfileError",
     "_cli_speech_native_profile",
+    "_cli_speech_native_read",
     "build_profile_tasks",
     "profile_timing_metrics",
+    "read_speech_native_predictions",
 ]
