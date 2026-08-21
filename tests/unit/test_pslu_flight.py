@@ -472,6 +472,38 @@ def test_m5_primary_fallback_requires_m3_consensus_before_overriding_m1():
     _assert_every_call_carries_query(client)
 
 
+def test_m5_unanimous_policy_overrides_primary_only_with_all_three_m3_votes():
+    client = _SpeechFeatureClient(
+        [
+            '{"key_id":"K001"}',
+            *(
+                response
+                for _ in range(3)
+                for response in (
+                    '{"key_ids":["K002","K001"]}',
+                    '{"compatible":true,"confidence":90}',
+                    '{"compatible":false,"confidence":10}',
+                )
+            ),
+        ]
+    )
+    result = run_speech_native_matcher(
+        core_client=client,
+        sample=_SpeechSample(),
+        query_descriptor=_QUERY_DESCRIPTOR,
+        key_cards=_KEY_CARDS,
+        key_representation_id="K1",
+        matcher_policy_id="M5",
+        prompt_policy_id="speech-native-json-copy-v3",
+        top_k=2,
+        agent_aggregator_id="m3-unanimous-primary-fallback-v3",
+    )
+
+    assert result.key_id == "K002"
+    assert result.agent_actions[-1] == "aggregate:m3-unanimous-primary-fallback"
+    _assert_every_call_carries_query(client)
+
+
 def test_audio_key_mode_carries_ordered_key_packets_without_key_body_text():
     client = _SpeechFeatureClient(['{"key_id":"K001"}'])
     audio_keys = {
@@ -1455,7 +1487,16 @@ def test_model_free_read_reports_agent_loop_optimization_signals(tmp_path):
                 "accuracy": 34 / 36,
                 "wrong_to_correct_vs_observed": 0,
                 "correct_to_wrong_vs_observed": 0,
-            }
+            },
+            {
+                "aggregator_id": "m3-unanimous-primary-fallback-v3",
+                "discovery_status": "post-read-policy-discovery",
+                "correct": 33,
+                "count": 36,
+                "accuracy": 33 / 36,
+                "wrong_to_correct_vs_observed": 0,
+                "correct_to_wrong_vs_observed": 1,
+            },
         ],
     }
 

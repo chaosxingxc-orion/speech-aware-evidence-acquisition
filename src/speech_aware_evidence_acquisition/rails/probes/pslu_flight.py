@@ -165,6 +165,7 @@ SPEECH_NATIVE_VERIFIER_POLICIES = (
 SPEECH_NATIVE_AGENT_AGGREGATORS = (
     "m3-majority-canonical-tie-v1",
     "m3-majority-primary-tie-v2",
+    "m3-unanimous-primary-fallback-v3",
 )
 SPEECH_NATIVE_SCENARIO_DEFINITIONS: Mapping[str, str] = MappingProxyType(
     {
@@ -773,17 +774,26 @@ def run_speech_native_matcher(
             key_id: valid_m3_votes.count(key_id) for key_id in set(valid_m3_votes)
         }
         majority = next((key_id for key_id, count in counts.items() if count >= 2), None)
-        fallback = (
-            primary.key_id
-            if agent_aggregator_id == "m3-majority-primary-tie-v2"
-            else canonical.key_id
-        )
-        winner = majority if majority is not None else fallback
-        aggregate_action = (
-            "aggregate:m3-majority-primary-tie"
-            if agent_aggregator_id == "m3-majority-primary-tie-v2"
-            else "aggregate:m3-majority-canonical-tie"
-        )
+        if agent_aggregator_id == "m3-unanimous-primary-fallback-v3":
+            unanimous = (
+                valid_m3_votes[0]
+                if len(valid_m3_votes) == 3 and len(set(valid_m3_votes)) == 1
+                else None
+            )
+            winner = unanimous if unanimous is not None else primary.key_id
+            aggregate_action = "aggregate:m3-unanimous-primary-fallback"
+        else:
+            fallback = (
+                primary.key_id
+                if agent_aggregator_id == "m3-majority-primary-tie-v2"
+                else canonical.key_id
+            )
+            winner = majority if majority is not None else fallback
+            aggregate_action = (
+                "aggregate:m3-majority-primary-tie"
+                if agent_aggregator_id == "m3-majority-primary-tie-v2"
+                else "aggregate:m3-majority-canonical-tie"
+            )
         return finish(
             winner,
             top_ids=canonical.top_key_ids,

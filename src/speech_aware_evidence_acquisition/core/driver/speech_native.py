@@ -263,6 +263,7 @@ def read_speech_native_predictions(
             aggregator_suffix = {
                 "m3-majority-canonical-tie-v1": "",
                 "m3-majority-primary-tie-v2": "-aggregate-primary-v2",
+                "m3-unanimous-primary-fallback-v3": "-aggregate-unanimous-v3",
             }.get(agent_aggregator_id)
             if aggregator_suffix is None:
                 raise SpeechNativeProfileError(
@@ -336,6 +337,9 @@ def read_speech_native_predictions(
         agent_primary_fallback_correct_count = 0
         agent_primary_fallback_wrong_to_correct = 0
         agent_primary_fallback_correct_to_wrong = 0
+        agent_unanimous_fallback_correct_count = 0
+        agent_unanimous_fallback_wrong_to_correct = 0
+        agent_unanimous_fallback_correct_to_wrong = 0
         for row in rows:
             if row.get("schema") != "saea-speech-native-decision-v1":
                 raise SpeechNativeProfileError("decision schema mismatch")
@@ -488,6 +492,15 @@ def read_speech_native_predictions(
                     isinstance(primary_fallback_key, str)
                     and label_by_key[primary_fallback_key] == gold[sample_id]
                 )
+                unanimous_key = (
+                    m3_votes[0]
+                    if len(m3_votes) == 3 and len(set(m3_votes)) == 1
+                    else primary_vote
+                )
+                unanimous_fallback_correct = (
+                    isinstance(unanimous_key, str)
+                    and label_by_key[unanimous_key] == gold[sample_id]
+                )
                 agent_action_counts.update(agent_actions)
                 agent_primary_correct_count += int(primary_correct)
                 agent_escalation_count += int(agent_escalated)
@@ -505,6 +518,15 @@ def read_speech_native_predictions(
                 )
                 agent_primary_fallback_correct_to_wrong += int(
                     final_correct and not primary_fallback_correct
+                )
+                agent_unanimous_fallback_correct_count += int(
+                    unanimous_fallback_correct
+                )
+                agent_unanimous_fallback_wrong_to_correct += int(
+                    not final_correct and unanimous_fallback_correct
+                )
+                agent_unanimous_fallback_correct_to_wrong += int(
+                    final_correct and not unanimous_fallback_correct
                 )
                 if agent_escalated:
                     agent_helpful_escalation_count += int(
@@ -580,7 +602,22 @@ def read_speech_native_predictions(
                                 "correct_to_wrong_vs_observed": (
                                     agent_primary_fallback_correct_to_wrong
                                 ),
-                            }
+                            },
+                            {
+                                "aggregator_id": "m3-unanimous-primary-fallback-v3",
+                                "discovery_status": "post-read-policy-discovery",
+                                "correct": agent_unanimous_fallback_correct_count,
+                                "count": len(gold),
+                                "accuracy": (
+                                    agent_unanimous_fallback_correct_count / len(gold)
+                                ),
+                                "wrong_to_correct_vs_observed": (
+                                    agent_unanimous_fallback_wrong_to_correct
+                                ),
+                                "correct_to_wrong_vs_observed": (
+                                    agent_unanimous_fallback_correct_to_wrong
+                                ),
+                            },
                         ],
                     }
                     if matcher_policy_id == "M5"
