@@ -1,0 +1,8 @@
+{
+  "experiment_id": "SAEA-SN-OPTB-K1M3K3-V3-VERIFY2",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "OPT-B18 K1 retrieve-verify prompt optimization using the contrastive domain-and-operation verifier.",
+  "key_representation_id": "K1",
+  "matcher_policy_id": "M3",
+  "matcher_verifier_policy_id": "speech-native-contrastive-verifier-v2"
+}

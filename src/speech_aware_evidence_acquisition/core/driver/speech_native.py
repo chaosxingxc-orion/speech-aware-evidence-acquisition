@@ -196,6 +196,7 @@ def read_speech_native_predictions(
     key_by_label = {card.value_label: card.key_id for card in cards}
     aggregates: list[dict[str, object]] = []
     correctness_by_cell: dict[str, dict[str, bool]] = {}
+    predictions_by_cell: dict[str, dict[str, str | None]] = {}
     source_receipts: list[dict[str, str]] = []
     for attempt_dir_value in attempt_dirs:
         attempt_dir = Path(attempt_dir_value)
@@ -301,6 +302,8 @@ def read_speech_native_predictions(
             raise SpeechNativeProfileError("decision count does not match receipt or split")
         seen: set[str] = set()
         correctness: dict[str, bool] = {}
+        predictions: dict[str, str | None] = {}
+        query_by_target: dict[str, str] = {}
         parse_failures = 0
         top_k_reachable_count = 0
         for row in rows:
@@ -327,6 +330,29 @@ def read_speech_native_predictions(
                 raise SpeechNativeProfileError("decision key-to-label mapping is inconsistent")
             parse_failures += int(parse_failure)
             correctness[sample_id] = predicted == gold[sample_id]
+            predictions[sample_id] = predicted if isinstance(predicted, str) else None
+            query_sample_id = row.get("query_sample_id", sample_id)
+            row_control_id = row.get(
+                "mechanism_control_id", mechanism_control_id
+            )
+            if (
+                not isinstance(query_sample_id, str)
+                or query_sample_id not in gold
+                or row_control_id != mechanism_control_id
+            ):
+                raise SpeechNativeProfileError(
+                    "decision query/control binding is malformed"
+                )
+            if mechanism_control_id == "speech-swap-v1":
+                if query_sample_id == sample_id:
+                    raise SpeechNativeProfileError(
+                        "speech-swap decision contains a fixed point"
+                    )
+            elif query_sample_id != sample_id:
+                raise SpeechNativeProfileError(
+                    "matched decision does not use its target speech query"
+                )
+            query_by_target[sample_id] = query_sample_id
             raw_top_key_ids = row.get("top_key_ids", [])
             if (
                 not isinstance(raw_top_key_ids, list)
@@ -348,6 +374,13 @@ def read_speech_native_predictions(
                 )
         if seen != set(gold):
             raise SpeechNativeProfileError("decision sample set does not equal the frozen split")
+        if (
+            mechanism_control_id == "speech-swap-v1"
+            and set(query_by_target.values()) != set(gold)
+        ):
+            raise SpeechNativeProfileError(
+                "speech-swap decisions do not form a split permutation"
+            )
         correct = sum(correctness.values())
         aggregates.append(
             {
@@ -373,6 +406,7 @@ def read_speech_native_predictions(
             }
         )
         correctness_by_cell[cell_id] = correctness
+        predictions_by_cell[cell_id] = predictions
         source_receipts.append(
             {
                 "run_id": str(receipt.get("run_id")),
@@ -387,6 +421,7 @@ def read_speech_native_predictions(
     for aggregate in aggregates:
         cell_id = str(aggregate["cell_id"])
         current = correctness_by_cell[cell_id]
+        current_predictions = predictions_by_cell[cell_id]
         wrong_to_correct = sum(
             1 for sample_id in gold if not baseline[sample_id] and current[sample_id]
         )
@@ -402,6 +437,12 @@ def read_speech_native_predictions(
                 "wrong_to_correct": wrong_to_correct,
                 "correct_to_wrong": correct_to_wrong,
                 "net_change": wrong_to_correct - correct_to_wrong,
+                "prediction_disagreement_count": sum(
+                    1
+                    for sample_id in gold
+                    if current_predictions[sample_id]
+                    != predictions_by_cell[baseline_id][sample_id]
+                ),
             }
         )
     winner = min(

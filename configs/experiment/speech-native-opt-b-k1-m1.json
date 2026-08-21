@@ -1,0 +1,7 @@
+{
+  "experiment_id": "SAEA-SN-OPTB-K1M1",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "OPT-B18 K1 listwise M1 comparison cell with the original speech query and frozen text cards.",
+  "key_representation_id": "K1",
+  "matcher_policy_id": "M1"
+}

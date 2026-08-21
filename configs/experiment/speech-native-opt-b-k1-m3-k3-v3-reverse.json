@@ -1,0 +1,7 @@
+{
+  "experiment_id": "SAEA-SN-OPTB-K1M3K3-V3-REVERSE",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "OPT-B18 reverse-order K1 retrieve-verify order-stability cell using v3 exact top-3 retrieval and contact-level dispatch.",
+  "key_representation_id": "K1",
+  "matcher_policy_id": "M3"
+}

@@ -1,0 +1,8 @@
+{
+  "experiment_id": "SAEA-SN-OPTB-K1M3K3-V3-KEY-SHUFFLE",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "OPT-B18 key-text-shuffle mechanism control for the canonical K1 v3 top-3 candidate; key-id-to-label mapping remains fixed.",
+  "key_representation_id": "K1",
+  "matcher_policy_id": "M3",
+  "speech_native_mechanism_control_id": "key-text-shuffle-v1"
+}

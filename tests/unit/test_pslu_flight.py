@@ -729,14 +729,21 @@ def test_model_free_prediction_read_distinguishes_m3_top_k_cells(tmp_path):
         attempt_dir = tmp_path / f"m3-k{top_k}{suffix}"
         attempt_dir.mkdir()
         rows = []
-        for item in items:
+        for index, item in enumerate(items):
             key_id = key_by_label[item["value_label"]]
+            query_sample_id = (
+                items[(index + 1) % len(items)]["sample_id"]
+                if mechanism_control_id == "speech-swap-v1"
+                else item["sample_id"]
+            )
             rows.append(
                 {
                     "schema": "saea-speech-native-decision-v1",
                     "sample_id": item["sample_id"],
                     "key_id": key_id,
                     "predicted_value_label": item["value_label"],
+                    "query_sample_id": query_sample_id,
+                    "mechanism_control_id": mechanism_control_id,
                     "top_key_ids": [
                         key_id,
                         *[
