@@ -25,6 +25,8 @@ from ..base import SCORERS, TRANSPORTS
 from ..bundle import finalize_bundle, verify_bundle
 from ..config import (
     compose,
+    d1_media_supplement_relpath,
+    d1_media_supplement_sha256,
     model_lock_key,
     model_materialization_root,
     resolve_runtime_receipt_path,
@@ -114,6 +116,8 @@ def _cli_run(args: argparse.Namespace) -> int:
         runtime_receipt_relpath=receipt_relpath,
         expected_model_lock_key=model_lock_key(composed.values),
         model_root=(Path(configured_model_root) if configured_model_root is not None else None),
+        d1_media_supplement_relpath=d1_media_supplement_relpath(composed.values),
+        d1_media_supplement_sha256=d1_media_supplement_sha256(composed.values),
     )
     # R0 repair T5 (I5): the runtime receipt is the SAME committed file the
     # gate itself re-hashes. attach_session binds this run to a session

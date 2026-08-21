@@ -96,6 +96,11 @@ class FrozenCoreGate(
     #: carriers remain under ``data_root``; only runtime model-byte identity is
     #: resolved here. ``None`` preserves the historical canonical-root path.
     model_root: Path | None = None
+    #: Optional bounded D1 media successor. The immutable E0 D1 artifact is
+    #: never rewritten; these bytes are accepted only when their configured
+    #: digest and their own parent-D1 binding both verify.
+    d1_media_supplement: Path | None = None
+    d1_media_supplement_sha256: str | None = None
     #: WHICH pinned model this run declares -- ``_validate_runtime``
     #: (``gate_runtime.py``) asserts the runtime receipt's own
     #: ``model_lock_key`` equals THIS value (never a bare module constant),
@@ -125,6 +130,8 @@ class FrozenCoreGate(
         runtime_receipt_relpath: str = _DEFAULT_RUNTIME_RECEIPT_RELPATH,
         expected_model_lock_key: str = MODEL_LOCK_KEY,
         model_root: Path | None = None,
+        d1_media_supplement_relpath: str | None = None,
+        d1_media_supplement_sha256: str | None = None,
     ) -> "FrozenCoreGate":
         """The canonical production binding — the only gate a real run may use.
 
@@ -159,6 +166,13 @@ class FrozenCoreGate(
         """
 
         root = Path(repo_root)
+        if (d1_media_supplement_relpath is None) != (
+            d1_media_supplement_sha256 is None
+        ):
+            raise ValueError(
+                "d1_media_supplement_relpath and d1_media_supplement_sha256 "
+                "must be configured together"
+            )
         return cls(
             e0_receipt=root / "docs" / "receipts" / "e0-closure.json",
             runtime_receipt=root / "docs" / runtime_receipt_relpath,
@@ -168,6 +182,12 @@ class FrozenCoreGate(
             exposure_ledger=root / "docs" / "exposure-ledger.md",
             source_root=root,
             model_root=Path(model_root) if model_root is not None else None,
+            d1_media_supplement=(
+                root / "docs" / d1_media_supplement_relpath
+                if d1_media_supplement_relpath is not None
+                else None
+            ),
+            d1_media_supplement_sha256=d1_media_supplement_sha256,
             expected_model_lock_key=expected_model_lock_key,
         )
 

@@ -34,6 +34,7 @@ _FRAGMENT_NAME_PATTERN = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]*")
 # every fragment's top-level keys verbatim before hashing.
 DEFAULT_RUNTIME_RECEIPT_RELPATH = "receipts/runtime.json"
 _DRIVE_PREFIX = re.compile(r"^[A-Za-z]:")
+_SHA256 = re.compile(r"^[0-9a-f]{64}$")
 
 
 class ConfigError(RuntimeError):
@@ -138,6 +139,64 @@ def runtime_receipt_relpath(values: Mapping[str, object]) -> str:
     if any(part in ("", ".", "..") for part in value.split("/")):
         raise ConfigError(
             f"model config runtime_receipt contains an empty or traversal segment: {value!r}"
+        )
+    return value
+
+
+def _d1_media_supplement_pair(
+    values: Mapping[str, object],
+) -> tuple[object | None, object | None]:
+    path = values.get("d1_media_supplement")
+    digest = values.get("d1_media_supplement_sha256")
+    if (path is None) != (digest is None):
+        raise ConfigError(
+            "model config d1_media_supplement and d1_media_supplement_sha256 "
+            "must be configured together"
+        )
+    return path, digest
+
+
+def d1_media_supplement_relpath(values: Mapping[str, object]) -> str | None:
+    """Return the optional, protocol-bound D1 media supplement path.
+
+    Supplements are additive successors for a bounded carrier slice that was
+    outside the original immutable D1 closure. The path is relative to
+    ``<repo_root>/docs`` and is accepted only together with its exact SHA-256,
+    so selecting different bytes changes the composed protocol identity.
+    """
+
+    value, _digest = _d1_media_supplement_pair(values)
+    if value is None:
+        return None
+    if not isinstance(value, str) or not value:
+        raise ConfigError(
+            f"model config d1_media_supplement must be a non-empty string, got {value!r}"
+        )
+    if "\\" in value:
+        raise ConfigError(
+            f"model config d1_media_supplement must not contain a backslash: {value!r}"
+        )
+    if value.startswith("/") or _DRIVE_PREFIX.match(value):
+        raise ConfigError(
+            f"model config d1_media_supplement must be relative, got {value!r}"
+        )
+    if any(part in ("", ".", "..") for part in value.split("/")):
+        raise ConfigError(
+            "model config d1_media_supplement contains an empty or traversal "
+            f"segment: {value!r}"
+        )
+    return value
+
+
+def d1_media_supplement_sha256(values: Mapping[str, object]) -> str | None:
+    """Return the exact digest paired with :func:`d1_media_supplement_relpath`."""
+
+    _path, value = _d1_media_supplement_pair(values)
+    if value is None:
+        return None
+    if not isinstance(value, str) or _SHA256.fullmatch(value) is None:
+        raise ConfigError(
+            "model config d1_media_supplement_sha256 must be a lowercase 64-hex SHA-256"
         )
     return value
 

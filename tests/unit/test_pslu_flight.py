@@ -7,6 +7,9 @@ Engineering-only, zero live model contact -- every test drives a
 from __future__ import annotations
 
 import json
+import hashlib
+import threading
+import time
 from pathlib import Path
 
 import pytest
@@ -30,6 +33,7 @@ from speech_aware_evidence_acquisition.rails.probes.pslu_flight import (
     build_speech_native_binding,
     load_pslu_rosters,
     load_pslu_sample_manifest,
+    load_speech_native_engineering_gate,
     pslu_supply_packet,
     render_roster_entries,
     render_speech_native_keys,
@@ -252,6 +256,22 @@ def test_speech_native_binding_is_stratified_and_query_key_isolated():
     assert len(binding["splits"]["OPT-A36"]["items"]) == 4
     assert len(binding["splits"]["OPT-B18"]["items"]) == 2
     assert len(binding["splits"]["GATE18"]["items"]) == 2
+    engineering_gate = binding["engineering_gate"]
+    assert engineering_gate["name"] == "ENG-GATE8"
+    assert len(engineering_gate["items"]) == 4
+    assert all(
+        set(item) == {"sample_id", "media_relpath"}
+        for item in engineering_gate["items"]
+    )
+    assert engineering_gate["sample_ids"] == [
+        item["sample_id"] for item in binding["splits"]["OPT-A36"]["items"]
+    ]
+    assert engineering_gate["split_identity_hash"] == _binding_document_sha256(
+        {
+            key: engineering_gate[key]
+            for key in ("schema", "name", "seed", "sample_ids")
+        }
+    )
     assert len(binding["key_cards"]) == 2
     query_items = [
         item for split in binding["splits"].values() for item in split["items"]
@@ -270,6 +290,13 @@ def test_speech_native_binding_is_stratified_and_query_key_isolated():
     )
 
 
+def _binding_document_sha256(document):
+    import hashlib
+
+    raw = json.dumps(document, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    return hashlib.sha256(raw.encode("utf-8")).hexdigest()
+
+
 def test_speech_native_binding_is_byte_deterministic_for_the_same_seed():
     first = build_speech_native_binding(
         _binding_material(), seed=7, expected_scenarios=("alarm", "email")
@@ -286,6 +313,102 @@ def test_speech_native_binding_refuses_insufficient_isolated_material():
             _binding_material()[:8],
             seed=1,
             expected_scenarios=("alarm", "email"),
+        )
+
+
+def _write_engineering_gate_view(tmp_path):
+    media_root = tmp_path / "datasets/slurp/slurp_real"
+    media_root.mkdir(parents=True)
+    items = []
+    for index in range(4):
+        raw = f"speech-{index}".encode()
+        media_relpath = f"datasets/slurp/slurp_real/audio-{index}.flac"
+        (tmp_path / media_relpath).write_bytes(raw)
+        items.append(
+            {
+                "sample_id": f"slurp:train:{index:06d}:audio-{index}",
+                "media_relpath": media_relpath,
+                "audio_sha256": hashlib.sha256(raw).hexdigest(),
+                "audio_seconds": 1.25,
+                "sample_rate_hz": 16000,
+                "packet_id": f"slurp/train/{index:06d}/audio-{index}",
+            }
+        )
+    unsigned = {
+        "schema": "saea-speech-native-engineering-gate-view-v1",
+        "study": "speech-aware-evidence-acquisition",
+        "status": "MODEL-FREE, LABEL-FREE ENGINEERING INPUT; NOT AN EXPOSURE REGISTRATION",
+        "carrier_lock_key": "slurp",
+        "split_name": "ENG-GATE8",
+        "split_role": "discovery",
+        "seed": 7,
+        "split_identity_hash": "a" * 64,
+        "source_binding_sha256": "b" * 64,
+        "d1_media_supplement": "receipts/artifacts/d1.json",
+        "d1_media_supplement_sha256": "c" * 64,
+        "d1_manifest_sha256": "d" * 64,
+        "count": 4,
+        "audio_seconds_total": 5.0,
+        "items": items,
+    }
+    canonical = json.dumps(
+        unsigned, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+    ).encode("utf-8")
+    path = tmp_path / "gate.json"
+    path.write_text(
+        json.dumps(
+            {**unsigned, "runtime_view_sha256": hashlib.sha256(canonical).hexdigest()}
+        ),
+        encoding="utf-8",
+    )
+    return path
+
+
+def test_engineering_gate_loader_validates_media_in_parallel_without_gold(tmp_path):
+    path = _write_engineering_gate_view(tmp_path)
+    lock = threading.Lock()
+    active = 0
+    peak = 0
+
+    def media_probe(media_path):
+        nonlocal active, peak
+        with lock:
+            active += 1
+            peak = max(peak, active)
+        time.sleep(0.02)
+        try:
+            raw = media_path.read_bytes()
+            return hashlib.sha256(raw).hexdigest(), 1.25, 16000
+        finally:
+            with lock:
+                active -= 1
+
+    gate = load_speech_native_engineering_gate(
+        path,
+        data_root=tmp_path,
+        expected_count=4,
+        workers=3,
+        media_probe=media_probe,
+    )
+
+    assert len(gate.samples) == 4
+    assert 2 <= peak <= 3
+    assert gate.samples[0].packet_id == "slurp/train/000000/audio-0"
+    assert not hasattr(gate.samples[0], "scenario")
+    assert gate.d1_media_supplement_sha256 == "c" * 64
+
+
+def test_engineering_gate_loader_refuses_gold_fields_and_hash_drift(tmp_path):
+    path = _write_engineering_gate_view(tmp_path)
+    document = json.loads(path.read_text(encoding="utf-8"))
+    document["items"][0]["value_label"] = "alarm"
+    path.write_text(json.dumps(document), encoding="utf-8")
+    with pytest.raises(PsluFlightError, match="label-free"):
+        load_speech_native_engineering_gate(
+            path,
+            data_root=tmp_path,
+            expected_count=4,
+            media_probe=lambda _path: ("0" * 64, 1.25, 16000),
         )
 
 

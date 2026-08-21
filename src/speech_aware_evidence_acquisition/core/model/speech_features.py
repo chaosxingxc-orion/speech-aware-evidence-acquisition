@@ -655,3 +655,72 @@ def materialize_legacy_cached_speech_feature_packet(
         causal_attention=causal_attention,
         chunks=chunks,
     )
+
+
+def materialize_legacy_cached_speech_feature_packets(
+    *,
+    feature_root: Path,
+    bindings: Sequence[Mapping[str, object]],
+    legacy_cache_dir: Path,
+    encoder_receipt_sha256: str,
+    decoder_gguf_sha256: str,
+    mmproj_sha256: str,
+    expected_n_embd: int,
+    causal_attention: bool,
+    workers: int = 8,
+) -> tuple[SpeechFeaturePacketV1, ...]:
+    """Promote independent warm-cache entries concurrently in input order.
+
+    Each binding carries exactly ``packet_id`` and ``audio_path``. Validation
+    is completed for the whole batch before any worker starts, so duplicate
+    packet targets or malformed bindings cannot leave a partially promoted
+    batch. The per-item function remains the sole packet writer and retains
+    its no-overwrite and cache-miss refusal semantics.
+    """
+
+    if isinstance(workers, bool) or not isinstance(workers, int) or not 1 <= workers <= 64:
+        raise FrozenCoreError("speech packet materialization workers must be an integer in [1, 64]")
+    normalized: list[tuple[str, Path]] = []
+    seen: set[str] = set()
+    for index, binding in enumerate(bindings):
+        if not isinstance(binding, Mapping) or set(binding) != {"packet_id", "audio_path"}:
+            raise FrozenCoreError(
+                f"legacy speech packet binding {index} must carry exact packet_id/audio_path"
+            )
+        packet_id = _normalized_relative_path(
+            binding["packet_id"], f"legacy speech packet binding {index} packet_id"
+        )
+        if packet_id in seen:
+            raise FrozenCoreError(f"duplicate speech packet binding {packet_id!r}")
+        seen.add(packet_id)
+        audio_path = binding["audio_path"]
+        if not isinstance(audio_path, (str, os.PathLike)):
+            raise FrozenCoreError(
+                f"legacy speech packet binding {index} audio_path must be path-like"
+            )
+        normalized.append((packet_id, Path(audio_path)))
+    if not normalized:
+        return ()
+
+    def materialize_one(binding: tuple[str, Path]) -> SpeechFeaturePacketV1:
+        packet_id, audio_path = binding
+        return materialize_legacy_cached_speech_feature_packet(
+            feature_root=feature_root,
+            packet_id=packet_id,
+            audio_path=audio_path,
+            legacy_cache_dir=legacy_cache_dir,
+            encoder_receipt_sha256=encoder_receipt_sha256,
+            decoder_gguf_sha256=decoder_gguf_sha256,
+            mmproj_sha256=mmproj_sha256,
+            expected_n_embd=expected_n_embd,
+            causal_attention=causal_attention,
+        )
+
+    worker_count = min(workers, len(normalized))
+    if worker_count == 1:
+        return tuple(materialize_one(binding) for binding in normalized)
+    with ThreadPoolExecutor(
+        max_workers=worker_count,
+        thread_name_prefix="saea-speech-promote",
+    ) as pool:
+        return tuple(pool.map(materialize_one, normalized))

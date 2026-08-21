@@ -4,9 +4,18 @@ gate reusing core.legality's own either-field rule.
 
 from __future__ import annotations
 
+import struct
+import threading
+import time
+
 import pytest
 
 from speech_aware_evidence_acquisition.core.legality import LegalityError
+from speech_aware_evidence_acquisition.core.model import (
+    FrozenCoreError,
+    legacy_audio_feature_cache_key,
+    materialize_legacy_cached_speech_feature_packets,
+)
 from speech_aware_evidence_acquisition.rails import (
     AudioRef,
     ConsumptionOutcome,
@@ -30,6 +39,79 @@ from speech_aware_evidence_acquisition.rails import (
 
 _SHA_A = "a" * 64
 _SHA_B = "b" * 64
+
+
+def test_legacy_featcache_batch_promotion_is_parallel_and_ordered(tmp_path, monkeypatch):
+    from speech_aware_evidence_acquisition.core.model import speech_features
+
+    legacy = tmp_path / "legacy-cache"
+    legacy.mkdir()
+    bindings = []
+    for index in range(6):
+        audio = tmp_path / f"audio-{index}.flac"
+        audio.write_bytes(f"governed-audio-{index}".encode())
+        key = legacy_audio_feature_cache_key(audio.read_bytes())
+        features = struct.pack("<8f", *[float(index)] * 8)
+        (legacy / f"{key}_o0.feat").write_bytes(struct.pack("<QQ", 2, 4) + features)
+        bindings.append({"packet_id": f"slurp/train/s{index}", "audio_path": audio})
+
+    original = speech_features.materialize_legacy_cached_speech_feature_packet
+    lock = threading.Lock()
+    active = 0
+    peak = 0
+
+    def tracked_materializer(**kwargs):
+        nonlocal active, peak
+        with lock:
+            active += 1
+            peak = max(peak, active)
+        time.sleep(0.02)
+        try:
+            return original(**kwargs)
+        finally:
+            with lock:
+                active -= 1
+
+    monkeypatch.setattr(
+        speech_features,
+        "materialize_legacy_cached_speech_feature_packet",
+        tracked_materializer,
+    )
+    packets = materialize_legacy_cached_speech_feature_packets(
+        feature_root=tmp_path / "packets",
+        bindings=tuple(reversed(bindings)),
+        legacy_cache_dir=legacy,
+        encoder_receipt_sha256="1" * 64,
+        decoder_gguf_sha256="2" * 64,
+        mmproj_sha256="3" * 64,
+        expected_n_embd=4,
+        causal_attention=True,
+        workers=3,
+    )
+
+    assert [packet.packet_id for packet in packets] == [
+        binding["packet_id"] for binding in reversed(bindings)
+    ]
+    assert 2 <= peak <= 3
+
+
+def test_legacy_featcache_batch_promotion_refuses_duplicates_before_work(tmp_path):
+    audio = tmp_path / "audio.flac"
+    audio.write_bytes(b"governed-audio")
+    with pytest.raises(FrozenCoreError, match="duplicate speech packet"):
+        materialize_legacy_cached_speech_feature_packets(
+            feature_root=tmp_path / "packets",
+            bindings=(
+                {"packet_id": "slurp/train/s1", "audio_path": audio},
+                {"packet_id": "slurp/train/s1", "audio_path": audio},
+            ),
+            legacy_cache_dir=tmp_path / "legacy-cache",
+            encoder_receipt_sha256="1" * 64,
+            decoder_gguf_sha256="2" * 64,
+            mmproj_sha256="3" * 64,
+            expected_n_embd=4,
+            causal_attention=True,
+        )
 
 
 # ---------------------------------------------------------------------------

@@ -12,6 +12,7 @@ bound.
 
 import hashlib
 import json
+from dataclasses import replace
 
 import pytest
 
@@ -114,6 +115,79 @@ def test_sample_outside_d1_closure_is_refused(world):
     media.write_bytes(b"a-sample-d1-never-closed-over")
     with pytest.raises(GateClosed, match="no D1-recorded media identity"):
         gate.verify_media_identity(world.CARRIER, {"9999999": (relpath, 100.0)})
+
+
+def _supplemented_gate(world, *, parent_hash=None, recorded_relpath=None):
+    sample_id = "supplemented-train-sample"
+    relpath = recorded_relpath or "datasets/extra/train.flac"
+    raw = b"bounded-train-speech" * 100
+    media = world.data_root / "datasets/extra/train.flac"
+    media.parent.mkdir(parents=True, exist_ok=True)
+    media.write_bytes(raw)
+    d1_path = world.receipts / "e0" / "d1_identity.json"
+    manifest = [
+        {
+            "id": sample_id,
+            "media_relpath": relpath,
+            "bytes": len(raw),
+            "sha256": _sha(raw),
+            "audio_seconds": 1.25,
+            "sample_rate_hz": 16000,
+            "roles": ["query"],
+        }
+    ]
+    canonical_manifest = json.dumps(
+        manifest, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+    ).encode("utf-8")
+    supplement = {
+        "schema": "saea-d1-media-supplement-v1",
+        "study": "speech-aware-evidence-acquisition",
+        "carrier_lock_key": world.CARRIER,
+        "parent_d1_sha256": parent_hash or _sha(d1_path.read_bytes()),
+        "source_binding_sha256": "a" * 64,
+        "count": 1,
+        "ids_sha256": _sha(sample_id.encode("utf-8")),
+        "manifest": manifest,
+        "manifest_sha256": _sha(canonical_manifest),
+        "total_bytes": len(raw),
+    }
+    path = world.receipts / "d1-media-supplement.json"
+    path.write_text(json.dumps(supplement), encoding="utf-8")
+    return replace(
+        world.gate(),
+        d1_media_supplement=path,
+        d1_media_supplement_sha256=_sha(path.read_bytes()),
+    ), sample_id
+
+
+def test_d1_media_supplement_admits_only_its_exact_media_and_duration(world):
+    gate, sample_id = _supplemented_gate(world)
+    gate.verify_media_identity(
+        world.CARRIER,
+        {sample_id: ("datasets/extra/train.flac", 1.25)},
+    )
+    with pytest.raises(GateClosed, match="recorded duration"):
+        gate.verify_media_identity(
+            world.CARRIER,
+            {sample_id: ("datasets/extra/train.flac", 1.0)},
+        )
+
+
+def test_d1_media_supplement_is_bound_to_parent_d1_and_media_path(world):
+    gate, sample_id = _supplemented_gate(world, parent_hash="f" * 64)
+    with pytest.raises(GateClosed, match="parent D1"):
+        gate.verify_media_identity(
+            world.CARRIER,
+            {sample_id: ("datasets/extra/train.flac", 1.25)},
+        )
+    gate, sample_id = _supplemented_gate(
+        world, recorded_relpath="datasets/extra/different.flac"
+    )
+    with pytest.raises(GateClosed, match="media_relpath"):
+        gate.verify_media_identity(
+            world.CARRIER,
+            {sample_id: ("datasets/extra/train.flac", 1.25)},
+        )
 
 
 def test_conec_carrier_resolves_to_earnings21_media_identity(world):

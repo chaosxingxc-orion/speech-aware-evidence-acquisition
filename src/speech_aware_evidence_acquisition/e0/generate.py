@@ -3,6 +3,7 @@
 Usage (from the study repository root, WSL, speechrl venv)::
 
     python -m speech_aware_evidence_acquisition.e0.generate d1
+    python -m speech_aware_evidence_acquisition.e0.generate d1-media-supplement
     python -m speech_aware_evidence_acquisition.e0.generate d2
     python -m speech_aware_evidence_acquisition.e0.generate d3
     python -m speech_aware_evidence_acquisition.e0.generate d4
@@ -50,7 +51,11 @@ from .artifacts import (
     sha256_file,
     write_json_artifact,
 )
-from .d1_identity import build_d1
+from .d1_identity import (
+    build_d1,
+    build_d1_media_supplement,
+    build_speech_native_engineering_gate_view,
+)
 from .d2_leakage import build_d2
 from .d3_scoring import build_d3
 from .d4_trace import build_d4
@@ -184,7 +189,16 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="speech_aware_evidence_acquisition.e0.generate")
     parser.add_argument(
         "command",
-        choices=["d1", "d2", "d3", "d4", "close", "runtime", "verify"],
+        choices=[
+            "d1",
+            "d1-media-supplement",
+            "d2",
+            "d3",
+            "d4",
+            "close",
+            "runtime",
+            "verify",
+        ],
     )
     parser.add_argument("--receipts-dir", type=Path, default=DEFAULT_RECEIPTS_DIR)
     parser.add_argument("--lock", type=Path, default=None, help="umbrella datasets lock")
@@ -227,6 +241,39 @@ def main(argv: list[str] | None = None) -> int:
         ),
     )
     parser.add_argument(
+        "--binding",
+        type=Path,
+        default=None,
+        help=(
+            "speech-native binding for d1-media-supplement; defaults to the "
+            "committed train binding"
+        ),
+    )
+    parser.add_argument(
+        "--parent-d1",
+        type=Path,
+        default=None,
+        help=(
+            "immutable parent D1 artifact for d1-media-supplement; defaults "
+            "to <receipts-dir>/artifacts/d1-identity.json"
+        ),
+    )
+    parser.add_argument(
+        "--gate-view-out",
+        type=Path,
+        default=None,
+        help=(
+            "label-free ENG-GATE8 dataset config written with d1-media-supplement; "
+            "defaults to configs/dataset/slurp-speech-native-eng-gate8.json"
+        ),
+    )
+    parser.add_argument(
+        "--workers",
+        type=int,
+        default=16,
+        help="bounded media-validation workers for d1-media-supplement (default: 16)",
+    )
+    parser.add_argument(
         "--role",
         choices=["preprocess", "inference"],
         default=None,
@@ -248,6 +295,47 @@ def main(argv: list[str] | None = None) -> int:
             _write_deliverable(
                 receipts_dir, "d1-identity.json", build_d1(lock_path(), data_root())
             )
+        elif arguments.command == "d1-media-supplement":
+            binding_path = (
+                arguments.binding
+                or REPO_ROOT
+                / "configs"
+                / "probes"
+                / "g0-binding"
+                / "speech-native-train-binding.json"
+            ).resolve()
+            parent_d1_path = (
+                arguments.parent_d1
+                or receipts_dir / ARTIFACTS_SUBDIR / "d1-identity.json"
+            ).resolve()
+            document = build_d1_media_supplement(
+                binding_path=binding_path,
+                data_root=data_root(),
+                parent_d1_path=parent_d1_path,
+                workers=arguments.workers,
+            )
+            out = (
+                arguments.out
+                or receipts_dir
+                / ARTIFACTS_SUBDIR
+                / "d1-speech-native-train90.json"
+            ).resolve()
+            digest = write_json_artifact(out, document)
+            print(f"wrote {out} sha256={digest}")
+            view = build_speech_native_engineering_gate_view(
+                binding_path=binding_path,
+                supplement=document,
+                supplement_artifact_sha256=digest,
+            )
+            gate_view_out = (
+                arguments.gate_view_out
+                or REPO_ROOT
+                / "configs"
+                / "dataset"
+                / "slurp-speech-native-eng-gate8.json"
+            ).resolve()
+            view_digest = write_json_artifact(gate_view_out, view)
+            print(f"wrote {gate_view_out} sha256={view_digest}")
         elif arguments.command == "d2":
             _write_deliverable(receipts_dir, "d2-leakage.json", build_d2(lock_path()))
         elif arguments.command == "d3":

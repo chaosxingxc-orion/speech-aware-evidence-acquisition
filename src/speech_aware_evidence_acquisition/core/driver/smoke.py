@@ -61,6 +61,8 @@ from ..bundle import FinalizeResult, finalize_bundle
 from ..config import (
     ComposedConfig,
     compose,
+    d1_media_supplement_relpath,
+    d1_media_supplement_sha256,
     model_materialization_root,
     model_lock_key,
     protocol_hash as compute_protocol_hash,
@@ -310,6 +312,8 @@ def _cli_smoke(args: argparse.Namespace) -> int:
             runtime_receipt_relpath=runtime_receipt_relpath(composed.values),
             expected_model_lock_key=model_lock_key(composed.values),
             model_root=model_root,
+            d1_media_supplement_relpath=d1_media_supplement_relpath(composed.values),
+            d1_media_supplement_sha256=d1_media_supplement_sha256(composed.values),
         )
         session = start_session(
             runtime_root=Path(args.runtime_root),

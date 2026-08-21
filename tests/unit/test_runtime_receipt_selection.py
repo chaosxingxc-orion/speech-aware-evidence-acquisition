@@ -48,6 +48,30 @@ def test_for_study_repo_accepts_an_explicit_runtime_receipt_relpath(tmp_path):
     assert gate.source_root == default_gate.source_root
 
 
+def test_for_study_repo_accepts_an_optional_d1_media_supplement(tmp_path):
+    supplement = (
+        tmp_path
+        / "docs"
+        / "receipts"
+        / "artifacts"
+        / "d1-speech-native-train90.json"
+    )
+    gate = FrozenCoreGate.for_study_repo(
+        tmp_path,
+        tmp_path,
+        tmp_path,
+        d1_media_supplement_relpath=(
+            "receipts/artifacts/d1-speech-native-train90.json"
+        ),
+        d1_media_supplement_sha256="a" * 64,
+    )
+    assert gate.d1_media_supplement == supplement
+    assert gate.d1_media_supplement_sha256 == "a" * 64
+    assert FrozenCoreGate.for_study_repo(
+        tmp_path, tmp_path, tmp_path
+    ).d1_media_supplement is None
+
+
 def test_missing_default_runtime_receipt_fails_closed(tmp_path):
     path = tmp_path / "docs" / "receipts" / "runtime.json"
     with pytest.raises(SessionError, match="runtime.json"):
@@ -107,6 +131,8 @@ def _write_minimal_fragments(repo_root: Path) -> None:
         {
             "model_lock_key": "qwen3-omni-30b-a3b-instruct-gguf-q4km",
             "runtime_receipt": "receipts/runtime-alt-key.json",
+            "d1_media_supplement": "receipts/artifacts/d1-alt.json",
+            "d1_media_supplement_sha256": "c" * 64,
         },
     )
     (configs / "dataset" / "d.json").write_text(
@@ -211,3 +237,5 @@ def test_cli_run_passes_the_models_declared_model_lock_key_to_the_gate(
 
     assert captured["expected_model_lock_key"] == "qwen3-omni-30b-a3b-instruct-gguf-q4km"
     assert captured["runtime_receipt_relpath"] == "receipts/runtime-alt-key.json"
+    assert captured["d1_media_supplement_relpath"] == "receipts/artifacts/d1-alt.json"
+    assert captured["d1_media_supplement_sha256"] == "c" * 64

@@ -10,6 +10,8 @@ from speech_aware_evidence_acquisition.core.config import (
     ConfigError,
     compose,
     model_materialization_root,
+    d1_media_supplement_relpath,
+    d1_media_supplement_sha256,
     model_lock_key,
     protocol_hash,
     resolve_runtime_receipt_path,
@@ -238,6 +240,44 @@ def test_runtime_receipt_relpath_returns_the_explicit_value():
         runtime_receipt_relpath({"runtime_receipt": "receipts/runtime-q4km.json"})
         == "receipts/runtime-q4km.json"
     )
+
+
+def test_d1_media_supplement_relpath_is_optional_and_path_confined():
+    assert d1_media_supplement_relpath({}) is None
+    assert d1_media_supplement_sha256({}) is None
+    values = {
+        "d1_media_supplement": "receipts/artifacts/d1-speech-native-train90.json",
+        "d1_media_supplement_sha256": "a" * 64,
+    }
+    assert d1_media_supplement_relpath(
+        values
+    ) == "receipts/artifacts/d1-speech-native-train90.json"
+    assert d1_media_supplement_sha256(values) == "a" * 64
+
+
+@pytest.mark.parametrize(
+    "value",
+    ["", "/etc/passwd", "C:/outside.json", "../outside.json", "a\\b.json", 1],
+)
+def test_d1_media_supplement_relpath_refuses_unsafe_values(value):
+    with pytest.raises(ConfigError, match="d1_media_supplement"):
+        d1_media_supplement_relpath(
+            {"d1_media_supplement": value, "d1_media_supplement_sha256": "a" * 64}
+        )
+
+
+def test_d1_media_supplement_requires_a_paired_valid_hash():
+    with pytest.raises(ConfigError, match="must be configured together"):
+        d1_media_supplement_relpath(
+            {"d1_media_supplement": "receipts/artifacts/d1.json"}
+        )
+    with pytest.raises(ConfigError, match="64-hex"):
+        d1_media_supplement_sha256(
+            {
+                "d1_media_supplement": "receipts/artifacts/d1.json",
+                "d1_media_supplement_sha256": "bad",
+            }
+        )
 
 
 def test_model_materialization_root_defaults_to_canonical_data_root():

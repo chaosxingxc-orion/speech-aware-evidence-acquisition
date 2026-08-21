@@ -5,6 +5,8 @@ import json
 import os
 import shutil
 import subprocess
+import threading
+import time
 from pathlib import Path
 
 import pytest
@@ -22,7 +24,11 @@ from speech_aware_evidence_acquisition.e0.artifacts import (
     sha256_file,
     write_json_artifact,
 )
-from speech_aware_evidence_acquisition.e0.d1_identity import build_d1
+from speech_aware_evidence_acquisition.e0.d1_identity import (
+    build_d1,
+    build_d1_media_supplement,
+    build_speech_native_engineering_gate_view,
+)
 from speech_aware_evidence_acquisition.e0.d2_leakage import build_d2, excluded_lock_keys
 from speech_aware_evidence_acquisition.e0.d3_scoring import build_d3
 from speech_aware_evidence_acquisition.e0.d4_trace import build_d4
@@ -77,6 +83,152 @@ class TestD1:
         assert [entry["id"] for entry in audio2tool_media] == [AUDIO2TOOL_D1_SAMPLE_ID]
         assert len(audio2tool_media[0]["sha256"]) == 64
 
+
+class TestD1MediaSupplement:
+    @staticmethod
+    def _binding(tmp_path):
+        items = [
+            {
+                "sample_id": "slurp:train:000001:q1",
+                "media_relpath": "datasets/slurp/slurp_real/q1.flac",
+                "value_label": "alarm",
+            },
+            {
+                "sample_id": "slurp:train:000002:q2",
+                "media_relpath": "datasets/slurp/slurp_real/q2.flac",
+                "value_label": "audio",
+            },
+        ]
+        unsigned = {
+            "schema": "saea-speech-native-binding-v1",
+            "engineering_gate": {
+                "schema": "saea-speech-native-split-v1",
+                "name": "ENG-GATE8",
+                "seed": 7,
+                "sample_ids": [item["sample_id"] for item in items],
+                "split_identity_hash": "b" * 64,
+                "items": [
+                    {
+                        "sample_id": item["sample_id"],
+                        "media_relpath": item["media_relpath"],
+                    }
+                    for item in items
+                ],
+            },
+            "splits": {
+                "OPT-A36": {"items": items},
+                "OPT-B18": {"items": []},
+                "GATE18": {"items": []},
+            },
+            "key_material": [
+                {
+                    "audio_key_source_sample_id": "slurp:train:000003:k1",
+                    "sources": [
+                        {
+                            "sample_id": "slurp:train:000003:k1",
+                            "media_relpath": "datasets/slurp/slurp_real/k1.flac",
+                            "sentence": "text must not enter the supplement",
+                        }
+                    ],
+                }
+            ],
+        }
+        canonical = json.dumps(
+            unsigned, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+        ).encode("utf-8")
+        binding = {**unsigned, "binding_sha256": _sha(canonical)}
+        path = tmp_path / "binding.json"
+        path.write_text(json.dumps(binding), encoding="utf-8")
+        return path
+
+    def test_bounded_supplement_hashes_media_in_parallel_without_copying_text(self, tmp_path):
+        binding_path = self._binding(tmp_path)
+        data_root = tmp_path / "data"
+        media_root = data_root / "datasets/slurp/slurp_real"
+        media_root.mkdir(parents=True)
+        for sample in ("q1", "q2", "k1"):
+            (media_root / f"{sample}.flac").write_bytes(sample.encode() * 100)
+        parent_d1 = tmp_path / "d1-identity.json"
+        parent_d1.write_bytes(b"immutable-parent-d1")
+        lock = threading.Lock()
+        active = 0
+        peak = 0
+
+        def media_probe(path):
+            nonlocal active, peak
+            with lock:
+                active += 1
+                peak = max(peak, active)
+            time.sleep(0.02)
+            try:
+                raw = path.read_bytes()
+                return len(raw), _sha(raw), 1.25, 16000
+            finally:
+                with lock:
+                    active -= 1
+
+        supplement = build_d1_media_supplement(
+            binding_path=binding_path,
+            data_root=data_root,
+            parent_d1_path=parent_d1,
+            workers=3,
+            expected_query_count=2,
+            expected_audio_key_count=1,
+            media_probe=media_probe,
+        )
+
+        assert supplement["count"] == 3
+        assert 2 <= peak <= 3
+        by_id = {entry["id"]: entry for entry in supplement["manifest"]}
+        assert by_id["slurp:train:000001:q1"]["roles"] == ["query"]
+        assert by_id["slurp:train:000003:k1"]["roles"] == ["audio_key"]
+        assert "text must not enter" not in json.dumps(supplement)
+        assert supplement["parent_d1_sha256"] == _sha(parent_d1.read_bytes())
+        view = build_speech_native_engineering_gate_view(
+            binding_path=binding_path,
+            supplement=supplement,
+            supplement_artifact_sha256="c" * 64,
+        )
+        assert view["count"] == 2
+        assert view["split_identity_hash"] == "b" * 64
+        assert [item["packet_id"] for item in view["items"]] == [
+            "slurp/train/000001/q1",
+            "slurp/train/000002/q2",
+        ]
+        assert all(
+            set(item)
+            == {
+                "sample_id",
+                "media_relpath",
+                "audio_sha256",
+                "audio_seconds",
+                "sample_rate_hz",
+                "packet_id",
+            }
+            for item in view["items"]
+        )
+        assert "text must not enter" not in json.dumps(view)
+
+    def test_supplement_refuses_binding_hash_drift(self, tmp_path):
+        binding_path = self._binding(tmp_path)
+        document = json.loads(binding_path.read_text(encoding="utf-8"))
+        document["splits"]["OPT-A36"]["items"][0]["sample_id"] = (
+            "slurp:train:000004:changed"
+        )
+        binding_path.write_text(json.dumps(document), encoding="utf-8")
+        parent_d1 = tmp_path / "d1-identity.json"
+        parent_d1.write_bytes(b"immutable-parent-d1")
+        with pytest.raises(Exception, match="binding SHA-256"):
+            build_d1_media_supplement(
+                binding_path=binding_path,
+                data_root=tmp_path,
+                parent_d1_path=parent_d1,
+                expected_query_count=2,
+                expected_audio_key_count=1,
+            )
+
+
+class TestD1ClosureFailures(TestD1):
     def test_layer_drift_refuses_closure(self, synthetic_world):
         (synthetic_world.conec / "earnings21" / "contexts" / "extra_call.txt").write_text(
             "ctx", encoding="utf-8"

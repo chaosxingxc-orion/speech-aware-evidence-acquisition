@@ -8,6 +8,8 @@ rather than a bare/imported name.
 
 from __future__ import annotations
 
+import hashlib
+import json
 import math
 from typing import Mapping
 
@@ -38,6 +40,137 @@ class _MediaIdentityMixin(_D1IdentityLookupMixin):
     # docs/owner-decisions-pending.md for the residue this leaves).
     _MIN_PLAUSIBLE_KBPS = 4.0
     _MAX_PLAUSIBLE_KBPS = 512.0
+
+    def _d1_media_supplement_records(
+        self,
+        carrier_lock_key: str,
+        base_recorded: Mapping[str, tuple[int, str]],
+    ) -> dict[str, tuple[str, int, str, float, int]]:
+        path = self.d1_media_supplement
+        expected_digest = self.d1_media_supplement_sha256
+        if path is None and expected_digest is None:
+            return {}
+        if path is None or expected_digest is None or _SHA256.fullmatch(expected_digest) is None:
+            raise GateClosed(
+                "D1 media supplement path and lowercase 64-hex SHA-256 must be paired"
+            )
+        supplement_bytes, actual_digest = _contracts_pkg._measure_file(
+            path, "D1 media supplement"
+        )
+        if actual_digest != expected_digest:
+            raise GateClosed(
+                "D1 media supplement hash drift: configured "
+                f"{expected_digest[:12]}..., actual {actual_digest[:12]}..."
+            )
+        document = self._load(path, "D1 media supplement")
+        required = {
+            "schema",
+            "study",
+            "carrier_lock_key",
+            "parent_d1_sha256",
+            "source_binding_sha256",
+            "count",
+            "ids_sha256",
+            "manifest",
+            "manifest_sha256",
+            "total_bytes",
+        }
+        if set(document) != required:
+            raise GateClosed(
+                f"D1 media supplement must carry exact keys {sorted(required)}"
+            )
+        if document["schema"] != "saea-d1-media-supplement-v1":
+            raise GateClosed("D1 media supplement schema mismatch")
+        if document["study"] != "speech-aware-evidence-acquisition":
+            raise GateClosed("D1 media supplement study identity mismatch")
+        if document["carrier_lock_key"] != carrier_lock_key:
+            raise GateClosed(
+                "D1 media supplement carrier does not match the requested media carrier"
+            )
+        d1_path = self._d1_identity_artifact_path()
+        _base_bytes, base_digest = _contracts_pkg._measure_file(
+            d1_path, "parent D1 identity artifact"
+        )
+        if document["parent_d1_sha256"] != base_digest:
+            raise GateClosed("D1 media supplement parent D1 hash mismatch")
+        if not isinstance(document["source_binding_sha256"], str) or _SHA256.fullmatch(
+            document["source_binding_sha256"]
+        ) is None:
+            raise GateClosed("D1 media supplement source binding hash is malformed")
+        manifest = document["manifest"]
+        if not isinstance(manifest, list) or not manifest:
+            raise GateClosed("D1 media supplement manifest must be a non-empty list")
+        canonical = json.dumps(
+            manifest, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+        ).encode("utf-8")
+        if document["manifest_sha256"] != hashlib.sha256(canonical).hexdigest():
+            raise GateClosed("D1 media supplement manifest SHA-256 mismatch")
+        records: dict[str, tuple[str, int, str, float, int]] = {}
+        total_bytes = 0
+        for entry in manifest:
+            entry_keys = {
+                "id",
+                "media_relpath",
+                "bytes",
+                "sha256",
+                "audio_seconds",
+                "sample_rate_hz",
+                "roles",
+            }
+            if not isinstance(entry, Mapping) or set(entry) != entry_keys:
+                raise GateClosed(
+                    f"D1 media supplement entry must carry exact keys {sorted(entry_keys)}"
+                )
+            sample_id = entry["id"]
+            media_relpath = entry["media_relpath"]
+            media_bytes = entry["bytes"]
+            media_sha256 = entry["sha256"]
+            audio_seconds = entry["audio_seconds"]
+            sample_rate_hz = entry["sample_rate_hz"]
+            roles = entry["roles"]
+            if not isinstance(sample_id, str) or not sample_id or sample_id in records:
+                raise GateClosed("D1 media supplement sample ids must be non-empty and unique")
+            if sample_id in base_recorded:
+                raise GateClosed(
+                    f"D1 media supplement duplicates base D1 sample {sample_id!r}"
+                )
+            normalized_relpath = _safe_relative_path(
+                media_relpath, f"D1 media supplement {sample_id!r} media_relpath"
+            )
+            if (
+                isinstance(media_bytes, bool)
+                or not isinstance(media_bytes, int)
+                or media_bytes <= 0
+                or not isinstance(media_sha256, str)
+                or _SHA256.fullmatch(media_sha256) is None
+                or isinstance(audio_seconds, bool)
+                or not isinstance(audio_seconds, (int, float))
+                or not math.isfinite(audio_seconds)
+                or audio_seconds <= 0
+                or isinstance(sample_rate_hz, bool)
+                or not isinstance(sample_rate_hz, int)
+                or sample_rate_hz <= 0
+                or not isinstance(roles, list)
+                or not roles
+                or not all(role in {"query", "audio_key"} for role in roles)
+                or len(set(roles)) != len(roles)
+            ):
+                raise GateClosed(f"D1 media supplement entry is malformed: {entry!r}")
+            records[sample_id] = (
+                normalized_relpath,
+                media_bytes,
+                media_sha256,
+                float(audio_seconds),
+                sample_rate_hz,
+            )
+            total_bytes += media_bytes
+        ordered_ids = sorted(records)
+        ids_digest = hashlib.sha256("\n".join(ordered_ids).encode("utf-8")).hexdigest()
+        if document["count"] != len(records) or document["ids_sha256"] != ids_digest:
+            raise GateClosed("D1 media supplement count or ids SHA-256 mismatch")
+        if document["total_bytes"] != total_bytes or supplement_bytes <= 0:
+            raise GateClosed("D1 media supplement total_bytes mismatch")
+        return records
 
     def _assert_plausible_audio_seconds(
         self, sample_id: str, audio_seconds: object, media_bytes: int
@@ -177,6 +310,8 @@ class _MediaIdentityMixin(_D1IdentityLookupMixin):
                 raise GateClosed(f"D1 media manifest entry is malformed: {entry!r}")
             recorded[sample_id] = (rec_bytes, rec_sha)
 
+        supplemented = self._d1_media_supplement_records(identity_carrier, recorded)
+
         for sample_id, fact in media_facts.items():
             if (
                 not isinstance(sample_id, str)
@@ -188,14 +323,31 @@ class _MediaIdentityMixin(_D1IdentityLookupMixin):
                 )
             relpath, audio_seconds = fact
             d1_fact = recorded.get(sample_id)
-            if d1_fact is None:
+            supplement_fact = supplemented.get(sample_id)
+            if d1_fact is None and supplement_fact is None:
                 raise GateClosed(
                     f"sample {sample_id!r} (carrier {carrier_lock_key!r}) has no D1-recorded "
                     "media identity; a sample outside D1's identity closure can never be "
                     "sent to the frozen core"
                 )
-            rec_bytes, rec_sha = d1_fact
             relative = _safe_relative_path(relpath, f"media_facts[{sample_id!r}] media relpath")
+            if supplement_fact is not None:
+                recorded_relpath, rec_bytes, rec_sha, recorded_seconds, _sample_rate_hz = (
+                    supplement_fact
+                )
+                if relative != recorded_relpath:
+                    raise GateClosed(
+                        f"sample {sample_id!r} media_relpath {relative!r} disagrees with "
+                        f"the D1 supplement's {recorded_relpath!r}"
+                    )
+                if abs(float(audio_seconds) - recorded_seconds) > 1e-6:
+                    raise GateClosed(
+                        f"sample {sample_id!r} audio_seconds {audio_seconds!r} disagrees "
+                        f"with the D1 supplement's recorded duration {recorded_seconds!r}"
+                    )
+            else:
+                assert d1_fact is not None
+                rec_bytes, rec_sha = d1_fact
             resolved = _resolve_under(self.data_root, relative, f"media for sample {sample_id!r}")
             actual_bytes, actual_sha = _contracts_pkg._measure_file(
                 resolved, f"media for sample {sample_id!r}"
@@ -206,4 +358,5 @@ class _MediaIdentityMixin(_D1IdentityLookupMixin):
                     f"{rec_bytes} bytes / {rec_sha[:12]}..., the live file is now "
                     f"{actual_bytes} bytes / {actual_sha[:12]}...; model touch refused (I-4)"
                 )
-            self._assert_plausible_audio_seconds(sample_id, audio_seconds, rec_bytes)
+            if supplement_fact is None:
+                self._assert_plausible_audio_seconds(sample_id, audio_seconds, rec_bytes)

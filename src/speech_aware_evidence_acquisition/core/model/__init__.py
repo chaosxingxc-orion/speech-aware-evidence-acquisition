@@ -56,6 +56,7 @@ from .speech_features import (  # noqa: E402
     load_speech_feature_packet,
     load_speech_feature_packets,
     materialize_legacy_cached_speech_feature_packet,
+    materialize_legacy_cached_speech_feature_packets,
     materialize_speech_feature_packet,
 )
 
@@ -86,5 +87,6 @@ __all__ = [
     "load_speech_feature_packet",
     "load_speech_feature_packets",
     "materialize_legacy_cached_speech_feature_packet",
+    "materialize_legacy_cached_speech_feature_packets",
     "materialize_speech_feature_packet",
 ]
