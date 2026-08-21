@@ -8,6 +8,7 @@ from ..data.loader import load_earnings21, load_earnings22
 from ..data.slurp import (
     SLURP_LOCK_KEY,
     load_slurp_engineering_carrier,
+    load_slurp_speech_native_carrier,
     slurp_governed_carrier_root,
 )
 
@@ -23,6 +24,21 @@ class SlurpEngineeringCarrier:
 
     def __call__(self, lock, root):
         return load_slurp_engineering_carrier(lock, root)
+
+    def load_for_config(self, lock, root, *, dataset_path, values):
+        split_name = values.get("split_name")
+        count = values.get("count")
+        if not isinstance(split_name, str) or not split_name:
+            raise ValueError("SLURP speech-native dataset split_name must be non-empty")
+        if isinstance(count, bool) or not isinstance(count, int) or count <= 0:
+            raise ValueError("SLURP speech-native dataset count must be positive")
+        return load_slurp_speech_native_carrier(
+            lock,
+            root,
+            config_path=dataset_path,
+            expected_split_name=split_name,
+            expected_count=count,
+        )
 
     def carrier_root(self, lock, root):
         return slurp_governed_carrier_root(lock, root)

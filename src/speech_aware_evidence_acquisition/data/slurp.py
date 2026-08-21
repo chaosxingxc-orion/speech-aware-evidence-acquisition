@@ -447,10 +447,11 @@ def load_slurp_engineering_gate(
     *,
     data_root: Path,
     expected_count: int = 8,
+    expected_split_name: str = "ENG-GATE8",
     workers: int = 8,
     media_probe: Callable[[Path], tuple[str, float, int]] = _probe_engineering_media,
 ) -> SlurpEngineeringGate:
-    """Verify the exact label-free ENG-GATE8 view and its live media bytes.
+    """Verify one exact label-free speech-native view and its live media bytes.
 
     This is the single parser used by both the P-SLU rail and the generic
     experiment driver's SLURP carrier. It reads no SLURP annotation file and
@@ -465,6 +466,8 @@ def load_slurp_engineering_gate(
         raise LoaderError("engineering gate expected_count must be positive")
     if isinstance(workers, bool) or not isinstance(workers, int) or not 1 <= workers <= 64:
         raise LoaderError("engineering gate workers must be an integer in [1, 64]")
+    if not isinstance(expected_split_name, str) or not expected_split_name:
+        raise LoaderError("speech-native runtime view expected_split_name must be non-empty")
     try:
         document = json.loads(Path(path).read_text(encoding="utf-8"))
     except (OSError, UnicodeError, json.JSONDecodeError) as error:
@@ -491,12 +494,15 @@ def load_slurp_engineering_gate(
         raise LoaderError(
             f"speech-native engineering gate must carry exact keys {sorted(required)}"
         )
-    if document["schema"] != "saea-speech-native-engineering-gate-view-v1":
+    allowed_schemas = {"saea-speech-native-runtime-view-v1"}
+    if expected_split_name == "ENG-GATE8":
+        allowed_schemas.add("saea-speech-native-engineering-gate-view-v1")
+    if document["schema"] not in allowed_schemas:
         raise LoaderError("speech-native engineering gate schema mismatch")
     if (
         document["study"] != "speech-aware-evidence-acquisition"
         or document["carrier_lock_key"] != SLURP_LOCK_KEY
-        or document["split_name"] != "ENG-GATE8"
+        or document["split_name"] != expected_split_name
         or document["split_role"] != "discovery"
     ):
         raise LoaderError("speech-native engineering gate identity mismatch")
@@ -640,6 +646,34 @@ def slurp_governed_carrier_root(lock: Mapping[str, object], root: Path) -> Path:
     return audio_root
 
 
+def _speech_native_gate_sample_refs(
+    gate: SlurpEngineeringGate,
+    *,
+    lock: Mapping[str, object],
+    root: Path,
+) -> list[SampleRef]:
+    carrier_root = slurp_governed_carrier_root(lock, root).resolve(strict=True)
+    data_root = Path(root).resolve(strict=True)
+    samples: list[SampleRef] = []
+    for sample in gate.samples:
+        resolved = (data_root / sample.media_relpath).resolve(strict=True)
+        if not resolved.is_relative_to(carrier_root):
+            raise LoaderError(
+                f"speech-native sample {sample.sample_id!r} is outside the governed "
+                "SLURP root"
+            )
+        samples.append(
+            SampleRef(
+                carrier_lock_key=SLURP_LOCK_KEY,
+                sample_id=sample.sample_id,
+                media_relpath=sample.media_relpath,
+                audio_seconds=sample.audio_seconds,
+                sample_rate_hz=sample.sample_rate_hz,
+            )
+        )
+    return samples
+
+
 def load_slurp_engineering_carrier(
     lock: Mapping[str, object],
     root: Path,
@@ -661,25 +695,33 @@ def load_slurp_engineering_carrier(
         expected_count=expected_count,
         workers=workers,
     )
-    carrier_root = slurp_governed_carrier_root(lock, root).resolve(strict=True)
-    data_root = Path(root).resolve(strict=True)
-    samples: list[SampleRef] = []
-    for sample in gate.samples:
-        resolved = (data_root / sample.media_relpath).resolve(strict=True)
-        if not resolved.is_relative_to(carrier_root):
-            raise LoaderError(
-                f"engineering sample {sample.sample_id!r} is outside the governed SLURP root"
-            )
-        samples.append(
-            SampleRef(
-                carrier_lock_key=SLURP_LOCK_KEY,
-                sample_id=sample.sample_id,
-                media_relpath=sample.media_relpath,
-                audio_seconds=sample.audio_seconds,
-                sample_rate_hz=sample.sample_rate_hz,
-            )
-        )
-    return samples
+    return _speech_native_gate_sample_refs(gate, lock=lock, root=root)
+
+
+def load_slurp_speech_native_carrier(
+    lock: Mapping[str, object],
+    root: Path,
+    *,
+    config_path: Path,
+    expected_split_name: str,
+    expected_count: int,
+    workers: int = 16,
+) -> list[SampleRef]:
+    """Load a composed label-free speech-native dataset fragment.
+
+    This is the generalized path used by the experiment driver. The older
+    :func:`load_slurp_engineering_carrier` remains the no-argument compatibility
+    entry point for ENG-GATE8 and direct registry callers.
+    """
+
+    gate = load_slurp_engineering_gate(
+        Path(config_path),
+        data_root=root,
+        expected_count=expected_count,
+        expected_split_name=expected_split_name,
+        workers=workers,
+    )
+    return _speech_native_gate_sample_refs(gate, lock=lock, root=root)
 
 
 def load_slurp_train_material(

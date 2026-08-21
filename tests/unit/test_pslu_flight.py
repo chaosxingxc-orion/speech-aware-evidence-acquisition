@@ -398,6 +398,36 @@ def test_engineering_gate_loader_validates_media_in_parallel_without_gold(tmp_pa
     assert gate.d1_media_supplement_sha256 == "c" * 64
 
 
+def test_engineering_loader_accepts_generalized_runtime_view_for_named_split(tmp_path):
+    path = _write_engineering_gate_view(tmp_path)
+    document = json.loads(path.read_text(encoding="utf-8"))
+    unsigned = {key: value for key, value in document.items() if key != "runtime_view_sha256"}
+    unsigned["schema"] = "saea-speech-native-runtime-view-v1"
+    unsigned["split_name"] = "OPT-A36"
+    canonical = json.dumps(
+        unsigned, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+    ).encode("utf-8")
+    path.write_text(
+        json.dumps({**unsigned, "runtime_view_sha256": hashlib.sha256(canonical).hexdigest()}),
+        encoding="utf-8",
+    )
+
+    gate = load_speech_native_engineering_gate(
+        path,
+        data_root=tmp_path,
+        expected_count=4,
+        expected_split_name="OPT-A36",
+        media_probe=lambda media_path: (
+            hashlib.sha256(media_path.read_bytes()).hexdigest(),
+            1.25,
+            16000,
+        ),
+    )
+
+    assert len(gate.samples) == 4
+    assert gate.split_identity_hash == "a" * 64
+
+
 def test_engineering_gate_loader_refuses_gold_fields_and_hash_drift(tmp_path):
     path = _write_engineering_gate_view(tmp_path)
     document = json.loads(path.read_text(encoding="utf-8"))

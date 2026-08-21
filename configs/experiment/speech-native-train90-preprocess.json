@@ -1,0 +1,5 @@
+{
+  "experiment_id": "SAEA-TRAIN90-preprocess",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "Label-free offline feature preprocessing for the frozen 72-query speech-native train splits plus 18 isolated audio-key controls; engineering materialization only, with no semantic result read or scientific claim."
+}

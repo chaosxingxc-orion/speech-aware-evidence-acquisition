@@ -28,6 +28,8 @@ from speech_aware_evidence_acquisition.e0.d1_identity import (
     build_d1,
     build_d1_media_supplement,
     build_speech_native_engineering_gate_view,
+    build_speech_native_probe_receipt,
+    build_speech_native_runtime_view,
 )
 from speech_aware_evidence_acquisition.e0.d2_leakage import build_d2, excluded_lock_keys
 from speech_aware_evidence_acquisition.e0.d3_scoring import build_d3
@@ -99,14 +101,24 @@ class TestD1MediaSupplement:
                 "value_label": "audio",
             },
         ]
+        engineering_identity = {
+            "schema": "saea-speech-native-split-v1",
+            "name": "ENG-GATE8",
+            "seed": 7,
+            "sample_ids": [item["sample_id"] for item in items],
+        }
         unsigned = {
             "schema": "saea-speech-native-binding-v1",
             "engineering_gate": {
-                "schema": "saea-speech-native-split-v1",
-                "name": "ENG-GATE8",
-                "seed": 7,
-                "sample_ids": [item["sample_id"] for item in items],
-                "split_identity_hash": "b" * 64,
+                **engineering_identity,
+                "split_identity_hash": _sha(
+                    json.dumps(
+                        engineering_identity,
+                        ensure_ascii=False,
+                        sort_keys=True,
+                        separators=(",", ":"),
+                    ).encode("utf-8")
+                ),
                 "items": [
                     {
                         "sample_id": item["sample_id"],
@@ -190,7 +202,9 @@ class TestD1MediaSupplement:
             supplement_artifact_sha256="c" * 64,
         )
         assert view["count"] == 2
-        assert view["split_identity_hash"] == "b" * 64
+        assert view["split_identity_hash"] == json.loads(
+            binding_path.read_text(encoding="utf-8")
+        )["engineering_gate"]["split_identity_hash"]
         assert [item["packet_id"] for item in view["items"]] == [
             "slurp/train/000001/q1",
             "slurp/train/000002/q2",
@@ -226,6 +240,76 @@ class TestD1MediaSupplement:
                 expected_query_count=2,
                 expected_audio_key_count=1,
             )
+
+    def test_runtime_view_generalizes_existing_split_without_exposing_gold(self, tmp_path):
+        binding_path = self._binding(tmp_path)
+        binding = json.loads(binding_path.read_text(encoding="utf-8"))
+        split = binding["splits"]["OPT-A36"]
+        identity = {
+            "schema": "saea-speech-native-split-v1",
+            "name": "OPT-A36",
+            "seed": 7,
+            "sample_ids": [item["sample_id"] for item in split["items"]],
+        }
+        split.update(
+            {
+                **identity,
+                "split_identity_hash": _sha(
+                    json.dumps(
+                        identity,
+                        ensure_ascii=False,
+                        sort_keys=True,
+                        separators=(",", ":"),
+                    ).encode("utf-8")
+                ),
+            }
+        )
+        unsigned_binding = {
+            key: value for key, value in binding.items() if key != "binding_sha256"
+        }
+        binding["binding_sha256"] = _sha(
+            json.dumps(
+                unsigned_binding,
+                ensure_ascii=False,
+                sort_keys=True,
+                separators=(",", ":"),
+            ).encode("utf-8")
+        )
+        binding_path.write_text(json.dumps(binding), encoding="utf-8")
+        supplement = {
+            "source_binding_sha256": binding["binding_sha256"],
+            "manifest_sha256": "d" * 64,
+            "manifest": [
+                {
+                    "id": item["sample_id"],
+                    "media_relpath": item["media_relpath"],
+                    "sha256": str(index) * 64,
+                    "audio_seconds": 1.0,
+                    "sample_rate_hz": 16000,
+                }
+                for index, item in enumerate(split["items"], start=1)
+            ],
+        }
+
+        view = build_speech_native_runtime_view(
+            binding_path=binding_path,
+            supplement=supplement,
+            supplement_artifact_sha256="c" * 64,
+            selection_name="OPT-A36",
+            expected_count=2,
+        )
+        receipt = build_speech_native_probe_receipt(view)
+
+        assert view["schema"] == "saea-speech-native-runtime-view-v1"
+        assert view["split_name"] == "OPT-A36"
+        assert view["split_identity_hash"] == split["split_identity_hash"]
+        assert view["count"] == 2
+        serialized = json.dumps(view)
+        assert "value_label" not in serialized
+        assert "normalized_sentence" not in serialized
+        assert receipt["split_role"] == "discovery"
+        assert [item["id"] for item in receipt["items"]] == identity["sample_ids"]
+        assert receipt["source_runtime_view_sha256"] == view["runtime_view_sha256"]
 
 
 class TestD1ClosureFailures(TestD1):

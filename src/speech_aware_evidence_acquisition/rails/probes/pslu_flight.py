@@ -109,6 +109,7 @@ def load_speech_native_engineering_gate(
     *,
     data_root: Path,
     expected_count: int = 8,
+    expected_split_name: str = "ENG-GATE8",
     workers: int = 8,
     media_probe: Callable[[Path], tuple[str, float, int]] = _probe_engineering_media,
 ) -> SpeechNativeEngineeringGate:
@@ -119,6 +120,7 @@ def load_speech_native_engineering_gate(
             path,
             data_root=data_root,
             expected_count=expected_count,
+            expected_split_name=expected_split_name,
             workers=workers,
             media_probe=media_probe,
         )

@@ -342,7 +342,23 @@ def run_experiment(
         verified_split = _verify_split_for_run(composed, plan, lock, root, repo_root)
         sample_ids = set(verified_split.ids)
         loader = CARRIERS.resolve(str(values["carrier_lock_key"]))
-        samples = [s for s in loader(lock, root) if s.sample_id in sample_ids]
+        configured_loader = getattr(loader, "load_for_config", None)
+        if callable(configured_loader):
+            dataset_name = composed.fragments.get("dataset")
+            if not isinstance(dataset_name, str) or not dataset_name:
+                raise CoreError("composed config lacks its dataset fragment identity")
+            dataset_path = (
+                Path(repo_root) / "configs" / "dataset" / f"{dataset_name}.json"
+            )
+            carrier_samples = configured_loader(
+                lock,
+                root,
+                dataset_path=dataset_path,
+                values=values,
+            )
+        else:
+            carrier_samples = loader(lock, root)
+        samples = [s for s in carrier_samples if s.sample_id in sample_ids]
         if {s.sample_id for s in samples} != sample_ids:
             raise CoreError("split ids missing from the carrier's loaded samples")
         speech_feature_query_by_sample = _speech_feature_queries(values, samples)

@@ -283,14 +283,124 @@ def build_d1_media_supplement(
     }
 
 
-def build_speech_native_engineering_gate_view(
+_SPEECH_NATIVE_RUNTIME_COUNTS: Mapping[str, int] = {
+    "ENG-GATE8": 8,
+    "OPT-A36": 36,
+    "OPT-B18": 18,
+    "GATE18": 18,
+    "KEY18": 18,
+    "TRAIN90": 90,
+}
+
+
+def _speech_native_runtime_selection(
+    binding: Mapping[str, object], selection_name: str
+) -> tuple[list[Mapping[str, object]], int, str]:
+    if selection_name == "ENG-GATE8":
+        source = binding.get("engineering_gate")
+    elif selection_name in ("OPT-A36", "OPT-B18", "GATE18"):
+        splits = binding.get("splits")
+        source = splits.get(selection_name) if isinstance(splits, Mapping) else None
+    elif selection_name in ("KEY18", "TRAIN90"):
+        seed = binding.get("seed")
+        if isinstance(seed, bool) or not isinstance(seed, int):
+            raise IdentityError("speech-native binding seed is malformed")
+        selected: list[Mapping[str, object]] = []
+        if selection_name == "TRAIN90":
+            splits = binding.get("splits")
+            if not isinstance(splits, Mapping):
+                raise IdentityError("speech-native binding lacks scientific splits")
+            for split_name in ("OPT-A36", "OPT-B18", "GATE18"):
+                split = splits.get(split_name)
+                split_items = split.get("items") if isinstance(split, Mapping) else None
+                if not isinstance(split_items, list) or not all(
+                    isinstance(item, Mapping) for item in split_items
+                ):
+                    raise IdentityError(
+                        f"speech-native binding split {split_name!r} lacks items"
+                    )
+                selected.extend(split_items)
+        key_material = binding.get("key_material")
+        if not isinstance(key_material, list):
+            raise IdentityError("speech-native binding lacks key_material")
+        for key in key_material:
+            if not isinstance(key, Mapping):
+                raise IdentityError("speech-native key material entry is malformed")
+            sample_id = key.get("audio_key_source_sample_id")
+            sources = key.get("sources")
+            if not isinstance(sources, list):
+                raise IdentityError("speech-native key material sources are malformed")
+            matches = [
+                item
+                for item in sources
+                if isinstance(item, Mapping) and item.get("sample_id") == sample_id
+            ]
+            if len(matches) != 1:
+                raise IdentityError(
+                    f"audio key sample {sample_id!r} must resolve to exactly one source"
+                )
+            selected.append(matches[0])
+        sample_ids = [item.get("sample_id") for item in selected]
+        if not all(isinstance(sample_id, str) for sample_id in sample_ids):
+            raise IdentityError(f"speech-native selection {selection_name!r} has malformed ids")
+        if len(set(sample_ids)) != len(sample_ids):
+            raise IdentityError(f"speech-native selection {selection_name!r} has duplicate ids")
+        identity = {
+            "schema": "saea-speech-native-split-v1",
+            "name": selection_name,
+            "seed": seed,
+            "sample_ids": sample_ids,
+        }
+        return selected, seed, _canonical_sha256(identity)
+    else:
+        raise IdentityError(
+            f"unknown speech-native runtime selection {selection_name!r}; expected one of "
+            f"{sorted(_SPEECH_NATIVE_RUNTIME_COUNTS)}"
+        )
+
+    if not isinstance(source, Mapping):
+        raise IdentityError(f"speech-native binding lacks selection {selection_name!r}")
+    items = source.get("items")
+    sample_ids = source.get("sample_ids")
+    seed = source.get("seed")
+    if (
+        not isinstance(items, list)
+        or not all(isinstance(item, Mapping) for item in items)
+        or not isinstance(sample_ids, list)
+        or isinstance(seed, bool)
+        or not isinstance(seed, int)
+    ):
+        raise IdentityError(f"speech-native selection {selection_name!r} is malformed")
+    actual_ids = [item.get("sample_id") for item in items]
+    if actual_ids != sample_ids or not all(isinstance(sample_id, str) for sample_id in sample_ids):
+        raise IdentityError(
+            f"speech-native selection {selection_name!r} item order disagrees with sample_ids"
+        )
+    identity = {
+        "schema": "saea-speech-native-split-v1",
+        "name": selection_name,
+        "seed": seed,
+        "sample_ids": sample_ids,
+    }
+    split_identity_hash = _canonical_sha256(identity)
+    if source.get("split_identity_hash") != split_identity_hash:
+        raise IdentityError(
+            f"speech-native selection {selection_name!r} identity hash mismatch"
+        )
+    return items, seed, split_identity_hash
+
+
+def _build_speech_native_runtime_view(
     *,
     binding_path: Path,
     supplement: Mapping[str, object],
     supplement_artifact_sha256: str,
+    selection_name: str,
+    expected_count: int,
+    schema: str,
     supplement_relpath: str = "receipts/artifacts/d1-speech-native-train90.json",
 ) -> dict[str, object]:
-    """Derive the label-free ENG-GATE8 dataset config from frozen identities."""
+    """Derive one label-free runtime view from the frozen train binding."""
 
     binding, binding_sha256 = _load_verified_speech_native_binding(binding_path)
     if (
@@ -313,32 +423,38 @@ def build_speech_native_engineering_gate_view(
     }
     if len(by_id) != len(manifest):
         raise IdentityError("D1 supplement manifest ids are malformed or duplicated")
-    engineering = binding.get("engineering_gate")
-    if not isinstance(engineering, Mapping):
-        raise IdentityError("speech-native binding lacks ENG-GATE8")
-    source_items = engineering.get("items")
-    sample_ids = engineering.get("sample_ids")
-    if not isinstance(source_items, list) or not isinstance(sample_ids, list):
-        raise IdentityError("speech-native ENG-GATE8 items are malformed")
-    if [item.get("sample_id") for item in source_items if isinstance(item, Mapping)] != sample_ids:
-        raise IdentityError("speech-native ENG-GATE8 item order disagrees with sample_ids")
+    if isinstance(expected_count, bool) or not isinstance(expected_count, int) or expected_count <= 0:
+        raise IdentityError("speech-native runtime view expected_count must be positive")
+    source_items, seed, split_identity_hash = _speech_native_runtime_selection(
+        binding, selection_name
+    )
+    if len(source_items) != expected_count:
+        raise IdentityError(
+            f"speech-native selection {selection_name!r} carries {len(source_items)} items, "
+            f"expected {expected_count}"
+        )
     items: list[dict[str, object]] = []
     for item in source_items:
-        if not isinstance(item, Mapping) or set(item) != {"sample_id", "media_relpath"}:
-            raise IdentityError("speech-native ENG-GATE8 must be label-free")
-        sample_id = item["sample_id"]
+        sample_id = item.get("sample_id")
+        media_relpath = item.get("media_relpath")
         measured = by_id.get(sample_id)
         if not isinstance(sample_id, str) or not isinstance(measured, Mapping):
-            raise IdentityError(f"ENG-GATE8 sample {sample_id!r} lacks D1 supplement facts")
-        if measured.get("media_relpath") != item["media_relpath"]:
-            raise IdentityError(f"ENG-GATE8 sample {sample_id!r} media path drift")
+            raise IdentityError(
+                f"speech-native selection {selection_name!r} sample {sample_id!r} "
+                "lacks D1 supplement facts"
+            )
+        if not isinstance(media_relpath, str) or measured.get("media_relpath") != media_relpath:
+            raise IdentityError(
+                f"speech-native selection {selection_name!r} sample {sample_id!r} "
+                "media path drift"
+            )
         parts = sample_id.split(":")
         if len(parts) != 4 or parts[0:2] != ["slurp", "train"]:
-            raise IdentityError(f"ENG-GATE8 sample id is malformed: {sample_id!r}")
+            raise IdentityError(f"speech-native sample id is malformed: {sample_id!r}")
         items.append(
             {
                 "sample_id": sample_id,
-                "media_relpath": item["media_relpath"],
+                "media_relpath": media_relpath,
                 "audio_sha256": measured["sha256"],
                 "audio_seconds": measured["audio_seconds"],
                 "sample_rate_hz": measured["sample_rate_hz"],
@@ -346,14 +462,14 @@ def build_speech_native_engineering_gate_view(
             }
         )
     unsigned: dict[str, object] = {
-        "schema": "saea-speech-native-engineering-gate-view-v1",
+        "schema": schema,
         "study": "speech-aware-evidence-acquisition",
         "status": "MODEL-FREE, LABEL-FREE ENGINEERING INPUT; NOT AN EXPOSURE REGISTRATION",
         "carrier_lock_key": "slurp",
-        "split_name": "ENG-GATE8",
+        "split_name": selection_name,
         "split_role": "discovery",
-        "seed": engineering.get("seed"),
-        "split_identity_hash": engineering.get("split_identity_hash"),
+        "seed": seed,
+        "split_identity_hash": split_identity_hash,
         "source_binding_sha256": binding_sha256,
         "d1_media_supplement": supplement_relpath,
         "d1_media_supplement_sha256": supplement_artifact_sha256,
@@ -365,6 +481,105 @@ def build_speech_native_engineering_gate_view(
         "items": items,
     }
     return {**unsigned, "runtime_view_sha256": _canonical_sha256(unsigned)}
+
+
+def build_speech_native_runtime_view(
+    *,
+    binding_path: Path,
+    supplement: Mapping[str, object],
+    supplement_artifact_sha256: str,
+    selection_name: str,
+    expected_count: int | None = None,
+    supplement_relpath: str = "receipts/artifacts/d1-speech-native-train90.json",
+) -> dict[str, object]:
+    """Build a label-free runtime view for a scientific or preprocessing slice."""
+
+    count = _SPEECH_NATIVE_RUNTIME_COUNTS.get(selection_name) if expected_count is None else expected_count
+    if count is None:
+        raise IdentityError(f"unknown speech-native runtime selection {selection_name!r}")
+    return _build_speech_native_runtime_view(
+        binding_path=binding_path,
+        supplement=supplement,
+        supplement_artifact_sha256=supplement_artifact_sha256,
+        selection_name=selection_name,
+        expected_count=count,
+        schema="saea-speech-native-runtime-view-v1",
+        supplement_relpath=supplement_relpath,
+    )
+
+
+def build_speech_native_engineering_gate_view(
+    *,
+    binding_path: Path,
+    supplement: Mapping[str, object],
+    supplement_artifact_sha256: str,
+    supplement_relpath: str = "receipts/artifacts/d1-speech-native-train90.json",
+) -> dict[str, object]:
+    """Backward-compatible ENG-GATE8 view for historical configs and receipts."""
+
+    binding, _binding_sha256 = _load_verified_speech_native_binding(binding_path)
+    engineering = binding.get("engineering_gate")
+    engineering_items = engineering.get("items") if isinstance(engineering, Mapping) else None
+    if not isinstance(engineering_items, list) or not engineering_items:
+        raise IdentityError("speech-native binding lacks ENG-GATE8 items")
+    return _build_speech_native_runtime_view(
+        binding_path=binding_path,
+        supplement=supplement,
+        supplement_artifact_sha256=supplement_artifact_sha256,
+        selection_name="ENG-GATE8",
+        expected_count=len(engineering_items),
+        schema="saea-speech-native-engineering-gate-view-v1",
+        supplement_relpath=supplement_relpath,
+    )
+
+
+def build_speech_native_probe_receipt(
+    runtime_view: Mapping[str, object],
+) -> dict[str, object]:
+    """Bind one label-free runtime view into the existing probe-split format."""
+
+    unsigned = {
+        key: value for key, value in runtime_view.items() if key != "runtime_view_sha256"
+    }
+    runtime_view_sha256 = runtime_view.get("runtime_view_sha256")
+    if runtime_view_sha256 != _canonical_sha256(unsigned):
+        raise IdentityError("speech-native runtime view SHA-256 mismatch")
+    split_name = runtime_view.get("split_name")
+    items = runtime_view.get("items")
+    if (
+        not isinstance(split_name, str)
+        or split_name not in _SPEECH_NATIVE_RUNTIME_COUNTS
+        or not isinstance(items, list)
+        or not items
+    ):
+        raise IdentityError("speech-native runtime view cannot form a probe receipt")
+    receipt_items: list[dict[str, str]] = []
+    keys: list[str] = []
+    for item in items:
+        sample_id = item.get("sample_id") if isinstance(item, Mapping) else None
+        if not isinstance(sample_id, str):
+            raise IdentityError("speech-native runtime view has a malformed sample id")
+        key = f"slurp:{sample_id}"
+        receipt_items.append({"id": sample_id, "key": key})
+        keys.append(key)
+    if len(set(keys)) != len(keys):
+        raise IdentityError("speech-native runtime view has duplicate sample ids")
+    return {
+        "carrier": "slurp",
+        "design": (
+            f"Exact label-free {split_name} identity derived from the frozen "
+            "speech-native train binding; Stage-2 bounded discovery only."
+        ),
+        "items": receipt_items,
+        "probe": "speech-native-runtime-view",
+        "seed": runtime_view.get("seed"),
+        "source_runtime_view_sha256": runtime_view_sha256,
+        "source_split_identity_hash": runtime_view.get("split_identity_hash"),
+        "split_identity_hash": hashlib.sha256(
+            "\n".join(sorted(keys)).encode("utf-8")
+        ).hexdigest(),
+        "split_role": "discovery",
+    }
 
 
 def _verification_int(entry: Mapping[str, object], field: str) -> int | None:

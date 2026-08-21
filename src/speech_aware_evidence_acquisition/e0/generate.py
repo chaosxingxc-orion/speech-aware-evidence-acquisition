@@ -55,6 +55,8 @@ from .d1_identity import (
     build_d1,
     build_d1_media_supplement,
     build_speech_native_engineering_gate_view,
+    build_speech_native_probe_receipt,
+    build_speech_native_runtime_view,
 )
 from .d2_leakage import build_d2
 from .d3_scoring import build_d3
@@ -268,6 +270,25 @@ def main(argv: list[str] | None = None) -> int:
         ),
     )
     parser.add_argument(
+        "--runtime-views-dir",
+        type=Path,
+        default=None,
+        help=(
+            "directory for the TRAIN90/OPT-A36/OPT-B18/GATE18/KEY18 label-free "
+            "runtime views written with d1-media-supplement; defaults to "
+            "configs/dataset"
+        ),
+    )
+    parser.add_argument(
+        "--probe-receipts-dir",
+        type=Path,
+        default=None,
+        help=(
+            "directory for runtime-view probe split receipts written with "
+            "d1-media-supplement; defaults to docs/receipts/probe-samples"
+        ),
+    )
+    parser.add_argument(
         "--workers",
         type=int,
         default=16,
@@ -336,6 +357,43 @@ def main(argv: list[str] | None = None) -> int:
             ).resolve()
             view_digest = write_json_artifact(gate_view_out, view)
             print(f"wrote {gate_view_out} sha256={view_digest}")
+            runtime_views_dir = (
+                arguments.runtime_views_dir
+                or REPO_ROOT / "configs" / "dataset"
+            ).resolve()
+            probe_receipts_dir = (
+                arguments.probe_receipts_dir
+                or receipts_dir / "probe-samples"
+            ).resolve()
+            runtime_view_names = {
+                "TRAIN90": "slurp-speech-native-train90.json",
+                "OPT-A36": "slurp-speech-native-opt-a36.json",
+                "OPT-B18": "slurp-speech-native-opt-b18.json",
+                "GATE18": "slurp-speech-native-gate18.json",
+                "KEY18": "slurp-speech-native-key18.json",
+            }
+            for selection_name, filename in runtime_view_names.items():
+                runtime_view = build_speech_native_runtime_view(
+                    binding_path=binding_path,
+                    supplement=document,
+                    supplement_artifact_sha256=digest,
+                    selection_name=selection_name,
+                )
+                runtime_view_path = runtime_views_dir / filename
+                runtime_view_digest = write_json_artifact(
+                    runtime_view_path, runtime_view
+                )
+                print(
+                    f"wrote {runtime_view_path} sha256={runtime_view_digest}"
+                )
+                probe_receipt = build_speech_native_probe_receipt(runtime_view)
+                probe_receipt_path = probe_receipts_dir / f"{selection_name}.json"
+                probe_receipt_digest = write_json_artifact(
+                    probe_receipt_path, probe_receipt
+                )
+                print(
+                    f"wrote {probe_receipt_path} sha256={probe_receipt_digest}"
+                )
         elif arguments.command == "d2":
             _write_deliverable(receipts_dir, "d2-leakage.json", build_d2(lock_path()))
         elif arguments.command == "d3":

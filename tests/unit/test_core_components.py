@@ -31,6 +31,31 @@ def test_carriers_are_registered_and_load(synthetic_world):
     assert len(e21) == 3 and len(e22) == 12
 
 
+def test_slurp_carrier_loads_the_composed_dataset_view(monkeypatch, tmp_path):
+    captured = {}
+
+    def load_speech_native(lock, root, **kwargs):
+        captured.update(kwargs)
+        return ["configured-sample"]
+
+    monkeypatch.setattr(carriers, "load_slurp_speech_native_carrier", load_speech_native)
+    loader = CARRIERS.resolve("slurp")
+    dataset_path = tmp_path / "configs/dataset/slurp-speech-native-opt-a36.json"
+    result = loader.load_for_config(
+        {},
+        tmp_path,
+        dataset_path=dataset_path,
+        values={"split_name": "OPT-A36", "count": 36},
+    )
+
+    assert result == ["configured-sample"]
+    assert captured == {
+        "config_path": dataset_path,
+        "expected_split_name": "OPT-A36",
+        "expected_count": 36,
+    }
+
+
 def test_none_source_returns_empty(synthetic_world):
     lock = load_lock(synthetic_world.lock_path)
     assert (

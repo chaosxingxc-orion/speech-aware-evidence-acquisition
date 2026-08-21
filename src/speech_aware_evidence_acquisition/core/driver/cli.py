@@ -138,6 +138,7 @@ def _cli_promote_speech_packets(args: argparse.Namespace) -> int:
         dataset_path,
         data_root=root,
         expected_count=args.expected_count,
+        expected_split_name=getattr(args, "expected_split_name", "ENG-GATE8"),
         workers=args.workers,
     )
     receipt_relative = Path(args.runtime_receipt)
@@ -453,6 +454,11 @@ def main(argv: list[str] | None = None) -> int:
     promote.add_argument("--legacy-cache-dir", required=True)
     promote.add_argument("--feature-root", required=True)
     promote.add_argument("--expected-count", type=int, default=8)
+    promote.add_argument(
+        "--expected-split-name",
+        default="ENG-GATE8",
+        help="exact split_name expected in the selected label-free runtime view",
+    )
     promote.add_argument("--expected-n-embd", type=int, default=2048)
     promote.add_argument("--workers", type=int, default=8)
     promote.add_argument("--receipt-output", required=True)
