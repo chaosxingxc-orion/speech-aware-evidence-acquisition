@@ -930,6 +930,8 @@ class _FakeSampler:
     def __init__(self, gpu_seconds=12.5, peak_vram_mib=4096.0):
         self.start_calls = 0
         self.stop_calls = 0
+        self.begin_request_window_calls = 0
+        self.end_request_window_calls = 0
         self._gpu_seconds = gpu_seconds
         self._peak_vram_mib = peak_vram_mib
 
@@ -939,11 +941,20 @@ class _FakeSampler:
     def stop(self):
         self.stop_calls += 1
 
+    def begin_request_window(self):
+        self.begin_request_window_calls += 1
+
+    def end_request_window(self):
+        self.end_request_window_calls += 1
+
     def summary(self):
         return {
             "gpu_seconds": self._gpu_seconds,
             "peak_vram_mib": self._peak_vram_mib,
             "gpu_sampling_reason": None,
+            "request_gpu_utilization_median_pct": 96.0,
+            "request_gpu_utilization_p10_pct": 91.0,
+            "request_gpu_sample_count": 10,
         }
 
 
@@ -969,9 +980,14 @@ def test_run_experiment_cost_includes_injected_sampler_readings(synthetic_world,
     )
     assert sampler.start_calls == 1
     assert sampler.stop_calls == 1
+    assert sampler.begin_request_window_calls == 1
+    assert sampler.end_request_window_calls == 1
     cost = result.cost
     assert cost["gpu_seconds"] == 7.25
     assert cost["peak_vram_mib"] == 8192.0
+    assert cost["request_gpu_utilization_median_pct"] == 96.0
+    assert cost["request_gpu_utilization_p10_pct"] == 91.0
+    assert cost["request_gpu_sample_count"] == 10
     assert cost["gpu_sampling_reason"] is None
     assert cost["cost_unavailable_reason"] is None
     assert isinstance(cost["cpu_seconds"], float) and cost["cpu_seconds"] >= 0.0

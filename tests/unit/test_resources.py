@@ -31,6 +31,9 @@ def test_null_sampler_reports_not_available_with_its_reason():
     assert summary["gpu_seconds"] == NOT_AVAILABLE
     assert summary["peak_vram_mib"] == NOT_AVAILABLE
     assert summary["gpu_sampling_reason"] == "nvidia-smi not found on PATH"
+    assert summary["request_gpu_utilization_median_pct"] == NOT_AVAILABLE
+    assert summary["request_gpu_utilization_p10_pct"] == NOT_AVAILABLE
+    assert summary["request_gpu_sample_count"] == 0
 
 
 def test_null_sampler_start_stop_are_safe_no_ops():
@@ -110,6 +113,25 @@ def test_nvidia_smi_sampler_peak_vram_is_a_max_not_a_last_value():
     finally:
         sampler.stop()
     assert sampler.summary()["peak_vram_mib"] == 4000.0
+
+
+def test_nvidia_smi_sampler_reports_request_window_median_and_p10():
+    sampler = NvidiaSmiSampler(interval_seconds=10.0, runner=_fixed_runner(["5, 100"]))
+    sampler.start()
+    try:
+        sampler.begin_request_window()
+        sampler._record(90.0, 1000.0, 1.0)
+        sampler._record(40.0, 1200.0, 1.0)
+        sampler._record(100.0, 1100.0, 1.0)
+        sampler.end_request_window()
+        sampler._record(1.0, 900.0, 1.0)
+    finally:
+        sampler.stop()
+
+    summary = sampler.summary()
+    assert summary["request_gpu_utilization_median_pct"] == 90.0
+    assert summary["request_gpu_utilization_p10_pct"] == 40.0
+    assert summary["request_gpu_sample_count"] == 3
 
 
 # ---------------------------------------------------------------------------

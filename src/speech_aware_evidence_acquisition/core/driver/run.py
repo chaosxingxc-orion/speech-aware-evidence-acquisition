@@ -659,72 +659,80 @@ def run_experiment(
             )
 
         ordered_samples = sorted(samples, key=lambda s: s.sample_id)
-        with outputs_handle as outputs:
-            if batch_size == 1:
-                for index, sample in enumerate(ordered_samples, start=1):
-                    request_id_base = f"req-{index:04d}"
-                    evidence = evidence_by_sample.get(sample.sample_id, [])
-                    sample_evidence_bytes = _emit_sample_preamble(
-                        sink, request_id_base, sample, evidence,
-                        exemplar_manifest, exemplar_bank_by_sample.get(sample.sample_id),
-                    )
-                    supplied_evidence_bytes += sample_evidence_bytes
-                    ctx = _sample_context(sample, evidence, request_id_base, sink)
-                    outcome = policy.run_sample(ctx)
-                    if evidence and outcome.admitted:
-                        admitted_evidence_bytes += sample_evidence_bytes
-                    if outcome.saturated_slices:
-                        saturated_slice_total += outcome.saturated_slices
-                        saturated_sample_ids.append(outcome.sample_id)
-                    if outcome.skipped_slices:
-                        skipped_slice_total += outcome.skipped_slices
-                        skipped_sample_ids.append(outcome.sample_id)
-                    _write_row(outputs, request_id_base, sample, outcome)
-            else:
-                # Batch path (owner directive 2026-08-08): each sample's
-                # ENTIRE trace (driver preamble + policy records + the shared
-                # adapter's per-request records, routed by DispatchingSink)
-                # buffers in its own TraceBuffer; the policy's run_samples
-                # executes up to batch_size samples concurrently and returns
-                # outcomes aligned to the contexts (raising the FIRST failed
-                # sample's error in split-id order after all tasks settle);
-                # rows and trace blocks then land strictly in split-id order
-                # -- deterministic by construction, never completion order.
-                entries = []
-                for index, sample in enumerate(ordered_samples, start=1):
-                    request_id_base = f"req-{index:04d}"
-                    evidence = evidence_by_sample.get(sample.sample_id, [])
-                    buffer = TraceBuffer(plan.run_id)
-                    sample_evidence_bytes = _emit_sample_preamble(
-                        buffer, request_id_base, sample, evidence,
-                        exemplar_manifest, exemplar_bank_by_sample.get(sample.sample_id),
-                    )
-                    supplied_evidence_bytes += sample_evidence_bytes
-                    ctx = _sample_context(sample, evidence, request_id_base, buffer)
-                    entries.append(
-                        (sample, evidence, sample_evidence_bytes, buffer, ctx, request_id_base)
-                    )
-                outcomes = policy.run_samples([entry[4] for entry in entries])
-                if not isinstance(outcomes, list) or len(outcomes) != len(entries):
-                    raise CoreError(
-                        f"policy {values['policy']!r} run_samples returned "
-                        f"{type(outcomes).__name__} of length "
-                        f"{len(outcomes) if isinstance(outcomes, list) else 'n/a'} "
-                        f"for {len(entries)} samples; refusing a misaligned batch"
-                    )
-                for (sample, evidence, sample_evidence_bytes, buffer, ctx, request_id_base), outcome in zip(
-                    entries, outcomes
-                ):
-                    buffer.flush_into(sink)
-                    if evidence and outcome.admitted:
-                        admitted_evidence_bytes += sample_evidence_bytes
-                    if outcome.saturated_slices:
-                        saturated_slice_total += outcome.saturated_slices
-                        saturated_sample_ids.append(outcome.sample_id)
-                    if outcome.skipped_slices:
-                        skipped_slice_total += outcome.skipped_slices
-                        skipped_sample_ids.append(outcome.sample_id)
-                    _write_row(outputs, request_id_base, sample, outcome)
+        begin_request_window = getattr(sampler, "begin_request_window", None)
+        end_request_window = getattr(sampler, "end_request_window", None)
+        if callable(begin_request_window):
+            begin_request_window()
+        try:
+            with outputs_handle as outputs:
+                if batch_size == 1:
+                    for index, sample in enumerate(ordered_samples, start=1):
+                        request_id_base = f"req-{index:04d}"
+                        evidence = evidence_by_sample.get(sample.sample_id, [])
+                        sample_evidence_bytes = _emit_sample_preamble(
+                            sink, request_id_base, sample, evidence,
+                            exemplar_manifest, exemplar_bank_by_sample.get(sample.sample_id),
+                        )
+                        supplied_evidence_bytes += sample_evidence_bytes
+                        ctx = _sample_context(sample, evidence, request_id_base, sink)
+                        outcome = policy.run_sample(ctx)
+                        if evidence and outcome.admitted:
+                            admitted_evidence_bytes += sample_evidence_bytes
+                        if outcome.saturated_slices:
+                            saturated_slice_total += outcome.saturated_slices
+                            saturated_sample_ids.append(outcome.sample_id)
+                        if outcome.skipped_slices:
+                            skipped_slice_total += outcome.skipped_slices
+                            skipped_sample_ids.append(outcome.sample_id)
+                        _write_row(outputs, request_id_base, sample, outcome)
+                else:
+                    # Batch path (owner directive 2026-08-08): each sample's
+                    # ENTIRE trace (driver preamble + policy records + the shared
+                    # adapter's per-request records, routed by DispatchingSink)
+                    # buffers in its own TraceBuffer; the policy's run_samples
+                    # executes up to batch_size samples concurrently and returns
+                    # outcomes aligned to the contexts (raising the FIRST failed
+                    # sample's error in split-id order after all tasks settle);
+                    # rows and trace blocks then land strictly in split-id order
+                    # -- deterministic by construction, never completion order.
+                    entries = []
+                    for index, sample in enumerate(ordered_samples, start=1):
+                        request_id_base = f"req-{index:04d}"
+                        evidence = evidence_by_sample.get(sample.sample_id, [])
+                        buffer = TraceBuffer(plan.run_id)
+                        sample_evidence_bytes = _emit_sample_preamble(
+                            buffer, request_id_base, sample, evidence,
+                            exemplar_manifest, exemplar_bank_by_sample.get(sample.sample_id),
+                        )
+                        supplied_evidence_bytes += sample_evidence_bytes
+                        ctx = _sample_context(sample, evidence, request_id_base, buffer)
+                        entries.append(
+                            (sample, evidence, sample_evidence_bytes, buffer, ctx, request_id_base)
+                        )
+                    outcomes = policy.run_samples([entry[4] for entry in entries])
+                    if not isinstance(outcomes, list) or len(outcomes) != len(entries):
+                        raise CoreError(
+                            f"policy {values['policy']!r} run_samples returned "
+                            f"{type(outcomes).__name__} of length "
+                            f"{len(outcomes) if isinstance(outcomes, list) else 'n/a'} "
+                            f"for {len(entries)} samples; refusing a misaligned batch"
+                        )
+                    for (sample, evidence, sample_evidence_bytes, buffer, ctx, request_id_base), outcome in zip(
+                        entries, outcomes
+                    ):
+                        buffer.flush_into(sink)
+                        if evidence and outcome.admitted:
+                            admitted_evidence_bytes += sample_evidence_bytes
+                        if outcome.saturated_slices:
+                            saturated_slice_total += outcome.saturated_slices
+                            saturated_sample_ids.append(outcome.sample_id)
+                        if outcome.skipped_slices:
+                            skipped_slice_total += outcome.skipped_slices
+                            skipped_sample_ids.append(outcome.sample_id)
+                        _write_row(outputs, request_id_base, sample, outcome)
+        finally:
+            if callable(end_request_window):
+                end_request_window()
         manifest_hash = sink.close()
     finally:
         sampler.stop()

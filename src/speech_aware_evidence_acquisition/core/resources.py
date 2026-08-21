@@ -64,8 +64,10 @@ ever shelling out to a real ``nvidia-smi``:
 
 from __future__ import annotations
 
+import math
 import os
 import shutil
+import statistics
 import subprocess
 import threading
 import time
@@ -80,6 +82,10 @@ class ResourceSampler(Protocol):
     def start(self) -> None: ...
 
     def stop(self) -> None: ...
+
+    def begin_request_window(self) -> None: ...
+
+    def end_request_window(self) -> None: ...
 
     def summary(self) -> Mapping[str, object]: ...
 
@@ -98,11 +104,20 @@ class NullSampler:
     def stop(self) -> None:
         return None
 
+    def begin_request_window(self) -> None:
+        return None
+
+    def end_request_window(self) -> None:
+        return None
+
     def summary(self) -> dict[str, object]:
         return {
             "gpu_seconds": NOT_AVAILABLE,
             "peak_vram_mib": NOT_AVAILABLE,
             "gpu_sampling_reason": self._reason,
+            "request_gpu_utilization_median_pct": NOT_AVAILABLE,
+            "request_gpu_utilization_p10_pct": NOT_AVAILABLE,
+            "request_gpu_sample_count": 0,
         }
 
 
@@ -168,6 +183,8 @@ class NvidiaSmiSampler:
         self._gpu_seconds = 0.0
         self._peak_vram_mib = 0.0
         self._samples_taken = 0
+        self._request_window_active = False
+        self._request_utilization_samples: list[float] = []
         self._available = True
         self._reason: str | None = None
         self._stop_event = threading.Event()
@@ -192,9 +209,24 @@ class NvidiaSmiSampler:
 
     def _record(self, utilization: float, memory_used: float, elapsed: float) -> None:
         with self._lock:
-            self._gpu_seconds += elapsed * max(0.0, min(utilization, 100.0)) / 100.0
+            bounded_utilization = max(0.0, min(utilization, 100.0))
+            self._gpu_seconds += elapsed * bounded_utilization / 100.0
             self._peak_vram_mib = max(self._peak_vram_mib, memory_used)
             self._samples_taken += 1
+            if self._request_window_active:
+                self._request_utilization_samples.append(bounded_utilization)
+
+    def begin_request_window(self) -> None:
+        """Start collecting utilization distribution samples for requests only."""
+
+        with self._lock:
+            self._request_window_active = True
+
+    def end_request_window(self) -> None:
+        """Stop request-only utilization sampling without stopping run sampling."""
+
+        with self._lock:
+            self._request_window_active = False
 
     def _run_loop(self) -> None:
         last = time.monotonic()
@@ -235,11 +267,26 @@ class NvidiaSmiSampler:
                     "gpu_seconds": NOT_AVAILABLE,
                     "peak_vram_mib": NOT_AVAILABLE,
                     "gpu_sampling_reason": reason,
+                    "request_gpu_utilization_median_pct": NOT_AVAILABLE,
+                    "request_gpu_utilization_p10_pct": NOT_AVAILABLE,
+                    "request_gpu_sample_count": 0,
                 }
+            request_samples = sorted(self._request_utilization_samples)
+            request_sample_count = len(request_samples)
+            if request_samples:
+                request_median: float | str = float(statistics.median(request_samples))
+                nearest_rank_index = max(0, math.ceil(0.10 * request_sample_count) - 1)
+                request_p10: float | str = float(request_samples[nearest_rank_index])
+            else:
+                request_median = NOT_AVAILABLE
+                request_p10 = NOT_AVAILABLE
             return {
                 "gpu_seconds": self._gpu_seconds,
                 "peak_vram_mib": self._peak_vram_mib,
                 "gpu_sampling_reason": None,
+                "request_gpu_utilization_median_pct": request_median,
+                "request_gpu_utilization_p10_pct": request_p10,
+                "request_gpu_sample_count": request_sample_count,
             }
 
 
