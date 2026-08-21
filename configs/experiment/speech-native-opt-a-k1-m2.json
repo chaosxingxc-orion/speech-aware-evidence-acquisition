@@ -1,0 +1,7 @@
+{
+  "experiment_id": "SAEA-SN-OPTA-K1M2",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "OPT-A36 semantic-first M2 over the frozen K1 text cards; every stage carries the original speech query and no parameter is updated.",
+  "key_representation_id": "K1",
+  "matcher_policy_id": "M2"
+}

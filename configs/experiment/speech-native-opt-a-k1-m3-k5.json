@@ -1,0 +1,7 @@
+{
+  "experiment_id": "SAEA-SN-OPTA-K1M3K5",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "OPT-A36 retrieve-verify M3 over the frozen K1 text cards with top_k=5; every stage carries the original speech query and no parameter is updated.",
+  "key_representation_id": "K1",
+  "matcher_policy_id": "M3"
+}

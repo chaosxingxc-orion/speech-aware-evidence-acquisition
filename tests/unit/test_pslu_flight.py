@@ -437,7 +437,7 @@ def test_model_free_prediction_read_verifies_and_selects_the_better_cell(tmp_pat
     items = binding["splits"]["OPT-A36"]["items"]
     key_by_label = {card["value_label"]: card["key_id"] for card in binding["key_cards"]}
 
-    def write_cell(cell_id, *, make_first_wrong):
+    def write_cell(cell_id, *, make_first_wrong, top_k=3):
         key_representation_id, matcher_policy_id = cell_id.split("-")
         attempt_dir = tmp_path / cell_id
         attempt_dir.mkdir()
@@ -473,6 +473,7 @@ def test_model_free_prediction_read_verifies_and_selects_the_better_cell(tmp_pat
                 "key_representation_id": key_representation_id,
                 "matcher_policy_id": matcher_policy_id,
                 "actual_contact_count": len(rows),
+                "top_k": top_k,
             },
             "decisions": {
                 "path": decisions.name,
@@ -499,6 +500,69 @@ def test_model_free_prediction_read_verifies_and_selects_the_better_cell(tmp_pat
     assert candidate["correct"] == 36
     assert candidate["wrong_to_correct_vs_baseline"] == 1
     assert candidate["correct_to_wrong_vs_baseline"] == 0
+
+
+def test_model_free_prediction_read_distinguishes_m3_top_k_cells(tmp_path):
+    binding_path = REPO_ROOT / "configs/probes/g0-binding/speech-native-train-binding.json"
+    binding_sha256 = hashlib.sha256(binding_path.read_bytes()).hexdigest()
+    binding = json.loads(binding_path.read_text(encoding="utf-8"))
+    items = binding["splits"]["OPT-A36"]["items"]
+    key_by_label = {card["value_label"]: card["key_id"] for card in binding["key_cards"]}
+
+    def write_cell(top_k):
+        attempt_dir = tmp_path / f"m3-k{top_k}"
+        attempt_dir.mkdir()
+        rows = []
+        for item in items:
+            key_id = key_by_label[item["value_label"]]
+            rows.append(
+                {
+                    "schema": "saea-speech-native-decision-v1",
+                    "sample_id": item["sample_id"],
+                    "key_id": key_id,
+                    "predicted_value_label": item["value_label"],
+                    "parse_failure": False,
+                }
+            )
+        decisions = attempt_dir / "decisions.jsonl"
+        decisions.write_text(
+            "".join(json.dumps(row, sort_keys=True) + "\n" for row in rows),
+            encoding="utf-8",
+        )
+        (attempt_dir / "flight-receipt.json").write_text(
+            json.dumps(
+                {
+                    "status": "COMPLETED",
+                    "request_failures": [],
+                    "split_identity_hash": "a" * 64,
+                    "run_id": f"run-m3-k{top_k}",
+                    "profile": {
+                        "key_representation_id": "K1",
+                        "matcher_policy_id": "M3",
+                        "top_k": top_k,
+                        "actual_contact_count": len(rows),
+                    },
+                    "decisions": {
+                        "path": decisions.name,
+                        "sha256": hashlib.sha256(decisions.read_bytes()).hexdigest(),
+                        "count": len(rows),
+                    },
+                }
+            ),
+            encoding="utf-8",
+        )
+        return attempt_dir
+
+    report = read_speech_native_predictions(
+        attempt_dirs=(write_cell(3), write_cell(5)),
+        binding_path=binding_path,
+        binding_sha256=binding_sha256,
+        split_name="OPT-A36",
+    )
+    assert [item["cell_id"] for item in report["aggregates"]] == [
+        "K1-M3-k3",
+        "K1-M3-k5",
+    ]
 
 
 def _binding_material():

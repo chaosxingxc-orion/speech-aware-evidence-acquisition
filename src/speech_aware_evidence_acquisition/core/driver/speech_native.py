@@ -221,6 +221,11 @@ def read_speech_native_predictions(
         ):
             raise SpeechNativeProfileError("flight cell identity is malformed")
         cell_id = f"{key_representation_id}-{matcher_policy_id}"
+        if matcher_policy_id == "M3":
+            top_k = profile.get("top_k")
+            if isinstance(top_k, bool) or not isinstance(top_k, int) or top_k <= 0:
+                raise SpeechNativeProfileError("M3 flight receipt lacks a valid top_k")
+            cell_id = f"{cell_id}-k{top_k}"
         if cell_id in correctness_by_cell:
             raise SpeechNativeProfileError(f"duplicate flight cell {cell_id!r}")
         decisions_name = decisions_ref.get("path")

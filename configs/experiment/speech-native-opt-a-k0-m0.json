@@ -1,0 +1,7 @@
+{
+  "experiment_id": "SAEA-SN-OPTA-K0M0",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "OPT-A36 direct speech-classification baseline M0; frozen speech query, 18 label-name choices, and no parameter update.",
+  "key_representation_id": "K0",
+  "matcher_policy_id": "M0"
+}
