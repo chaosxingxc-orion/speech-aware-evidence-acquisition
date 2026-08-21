@@ -1,0 +1,16 @@
+{
+  "arm": "speech-feature-query",
+  "policy": "fixed",
+  "evidence_source": "none",
+  "evidence_mismatch": false,
+  "obs_batch_samples": 8,
+  "allow_empty_speech_feature_evidence": true,
+  "key_representation_id": "engineering-none-v1",
+  "matcher_policy_id": "engineering-equivalence-v1",
+  "speech_packet_promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets/ENG-GATE8-promotion.json",
+  "speech_packet_promotion_receipt_sha256": "ba2a3c7da05deba3fdca2b96b91039cfe4028eaf33dfcf05df0a88b70c63428b",
+  "scorers": [
+    "cost"
+  ],
+  "task_instruction": "Inspect the complete speech-feature query. Respond with OK."
+}
