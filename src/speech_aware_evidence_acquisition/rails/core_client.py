@@ -47,6 +47,7 @@ retrieval-shaped arm would always leave that field meaninglessly unset.
 from __future__ import annotations
 
 import hashlib
+import threading
 import time
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field
@@ -59,7 +60,7 @@ from ..core.base import PayloadBindingContext
 from ..core.flight_lock import read_flight_lock
 from ..core.model import FrozenCoreAdapter, SliceRegistry, load_speech_feature_packets
 from ..core.model.slices import SliceRecord
-from ..core.tracing import TraceSink
+from ..core.tracing import DispatchingSink, TraceBuffer, TraceSink
 from ..e0.d2_leakage import ARM_VISIBLE_FIELDS
 from .errors import RailsError
 
@@ -522,13 +523,14 @@ class FrozenCoreClient:
         # RunSummary.flight_lock.
         self._flight_lock = read_flight_lock(Path(binding.data_root))
         self._sink = TraceSink(Path(run_dir), plan.run_id)
+        self._dispatching_sink = DispatchingSink(self._sink)
         self._slice_registry = slice_registry
         self._adapter = FrozenCoreAdapter(
             gate=gate,
             plan=plan,
             arm=arm,
             transport=transport,
-            sink=self._sink,
+            sink=self._dispatching_sink,
             binding=binding,
             slice_registry=slice_registry,
         )
@@ -544,6 +546,7 @@ class FrozenCoreClient:
         self._slice_facts: dict[str, tuple[float, int]] = {}
         self._request_counter = 0
         self._timings: list[RequestTiming] = []
+        self._state_lock = threading.Lock()
         self._closed = False
         self._speech_feature_root: Path | None = None
         self._speech_packet_bindings: dict[str, dict[str, str]] = {}
@@ -634,7 +637,25 @@ class FrozenCoreClient:
 
     @property
     def timings(self) -> tuple[RequestTiming, ...]:
-        return tuple(self._timings)
+        with self._state_lock:
+            return tuple(self._timings)
+
+    def flush_trace_buffer(self, buffer: TraceBuffer) -> None:
+        """Flush one completed parallel task into the owned trace sink.
+
+        The caller chooses flush order after worker completion. Adapter
+        emissions are routed into the task-local buffer by
+        :class:`DispatchingSink`, so no worker writes the shared file.
+        """
+
+        if not isinstance(buffer, TraceBuffer) or buffer.run_id != self._plan.run_id:
+            raise FrozenCoreClientError(
+                "trace buffer must be a TraceBuffer bound to this client's run_id"
+            )
+        with self._state_lock:
+            if self._closed:
+                raise FrozenCoreClientError("trace buffer cannot be flushed after close()")
+            buffer.flush_into(self._sink)
 
     def register_slice(self, record: SliceRecord) -> None:
         """Register a runtime-derived media variant (e.g. a silence-swap
@@ -779,8 +800,9 @@ class FrozenCoreClient:
             audio_seconds, sample_rate_hz = self._slice_facts.get(
                 media_relpath, self._binding.sample_facts[sample_id]
             )
-        self._request_counter += 1
-        request_id = f"{self._request_id_prefix}-{self._request_counter:04d}"
+        with self._state_lock:
+            self._request_counter += 1
+            request_id = f"{self._request_id_prefix}-{self._request_counter:04d}"
         # Every rails "text" content part becomes one supplied-evidence item
         # (module docstring): rails flattens a SupplyPacket to prompt-level
         # text before assemble_prompt ever runs, so per-item EvidenceItem
@@ -834,14 +856,15 @@ class FrozenCoreClient:
             )
         started_at = _iso(self._now())
         response = self._adapter.request(payload)
-        self._timings.append(
-            RequestTiming(
-                request_id=request_id,
-                sample_id=sample_id,
-                started_at=started_at,
-                latency_seconds=response.latency_seconds,
+        with self._state_lock:
+            self._timings.append(
+                RequestTiming(
+                    request_id=request_id,
+                    sample_id=sample_id,
+                    started_at=started_at,
+                    latency_seconds=response.latency_seconds,
+                )
             )
-        )
         return response.text
 
     def close(self) -> dict[str, object]:
@@ -859,16 +882,19 @@ class FrozenCoreClient:
 
         if self._closed:
             raise FrozenCoreClientError("close() called twice")
-        self._closed = True
-        manifest_hash = self._sink.close()
+        with self._state_lock:
+            self._closed = True
+            manifest_hash = self._sink.close()
+            request_count = self._request_counter
+            timings = [timing.as_json() for timing in self._timings]
         return {
             "run_id": self._plan.run_id,
             "arm": self._arm,
             "trace_manifest_hash": manifest_hash,
             "cost": self._adapter.cost_summary(),
             "flight_lock": self._flight_lock,
-            "request_count": self._request_counter,
-            "timings": [timing.as_json() for timing in self._timings],
+            "request_count": request_count,
+            "timings": timings,
         }
 
 

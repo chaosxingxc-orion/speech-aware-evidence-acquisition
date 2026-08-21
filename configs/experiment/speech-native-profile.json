@@ -1,0 +1,5 @@
+{
+  "experiment_id": "SAEA-SN-PROFILE",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "Engineering-only comparison of three decoder-only llama.cpp concurrency profiles on the same eight speech-feature queries and maximum-length frozen text-key prompt; no semantic result read."
+}

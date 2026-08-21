@@ -38,6 +38,7 @@ from ..resources import resolve_resource_sampler
 from ..scorers import score_bundle
 from .bundled import run_experiment_bundled
 from .smoke import _cli_smoke
+from .speech_native import _cli_speech_native_profile
 
 
 def _canonical_sha256(document: object) -> str:
@@ -515,6 +516,29 @@ def main(argv: list[str] | None = None) -> int:
         ),
     )
     smoke.set_defaults(func=_cli_smoke)
+
+    speech_profile = sub.add_parser(
+        "speech-native-profile",
+        help=(
+            "engineering-only mmproj-free speech-native GPU profile through the "
+            "existing session/gate/attempt/trace machinery"
+        ),
+    )
+    speech_profile.add_argument("--model", required=True)
+    speech_profile.add_argument("--dataset", required=True)
+    speech_profile.add_argument("--baseline", required=True)
+    speech_profile.add_argument("--experiment", required=True)
+    speech_profile.add_argument("--plan", required=True)
+    speech_profile.add_argument("--run-dir", required=True)
+    speech_profile.add_argument("--runtime-root", required=True)
+    speech_profile.add_argument("--host", default="127.0.0.1")
+    speech_profile.add_argument("--port", type=int, default=8080)
+    speech_profile.add_argument(
+        "--repo-root",
+        default=None,
+        help="TEST-ONLY repository-root override; real flights omit it",
+    )
+    speech_profile.set_defaults(func=_cli_speech_native_profile)
 
     args = parser.parse_args(argv)
     return args.func(args)

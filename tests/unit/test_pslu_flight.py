@@ -15,6 +15,11 @@ from pathlib import Path
 import pytest
 
 from speech_aware_evidence_acquisition.core.model import SliceRegistry
+from speech_aware_evidence_acquisition.core.driver.speech_native import (
+    build_profile_tasks,
+    profile_timing_metrics,
+)
+from speech_aware_evidence_acquisition.core.tracing import DispatchingSink, TraceSink
 from speech_aware_evidence_acquisition.data.lock import load_lock
 from speech_aware_evidence_acquisition.data.slurp import (
     SlurpTrainMaterial,
@@ -41,6 +46,8 @@ from speech_aware_evidence_acquisition.rails.probes.pslu_flight import (
     run_pslu_flight,
     select_pslu_samples,
     run_speech_native_matcher,
+    SpeechNativeMatchTask,
+    run_speech_native_match_tasks,
 )
 from speech_aware_evidence_acquisition.rails.silence_swap import build_silence_swap_slice
 
@@ -217,6 +224,191 @@ def test_audio_key_mode_carries_ordered_key_packets_without_key_body_text():
     assert all(part["role"] == "key" for part in key_parts)
     text = "\n".join(part["text"] for part in parts if part.get("type") == "text")
     assert "wake me at six" not in text
+
+
+def test_speech_native_match_tasks_keep_multistep_slot_affinity_and_flush_in_task_order(
+    tmp_path,
+):
+    run_id = "SAEA-E-TEST-speech-native-batch"
+    sink = TraceSink(tmp_path / "trace", run_id)
+    dispatcher = DispatchingSink(sink)
+
+    class ConcurrentClient:
+        def __init__(self):
+            self.lock = threading.Lock()
+            self.active = 0
+            self.max_active = 0
+            self.calls_by_sample = {}
+            self.sequence = 0
+
+        def complete(self, messages, **kwargs):
+            sample_id = kwargs["speech_feature_sample_id"]
+            slot = kwargs["decoding_params"]["id_slot"]
+            with self.lock:
+                self.active += 1
+                self.max_active = max(self.max_active, self.active)
+                self.calls_by_sample.setdefault(sample_id, []).append(slot)
+                self.sequence += 1
+                sequence = self.sequence
+            dispatcher.emit(
+                "OBS",
+                f"batch-{sequence:04d}/obs",
+                {"obs_sample_id": sample_id},
+            )
+            time.sleep(0.02 if sample_id.endswith("0") else 0.005)
+            with self.lock:
+                self.active -= 1
+            if kwargs["matcher_policy_id"].endswith(":intent-factors"):
+                return '{"factors":["domain"],"summary":"command"}'
+            return '{"key_id":"K001"}'
+
+    class Sample:
+        def __init__(self, sample_id):
+            self.sample_id = sample_id
+
+    tasks = tuple(
+        SpeechNativeMatchTask(
+            task_id=f"task-{index}",
+            sample=Sample(f"sample-{index}"),
+            query_descriptor={
+                "packet_id": f"slurp/train/query-{index}",
+                "sha256": f"{index + 1:x}" * 64,
+                "role": "query",
+            },
+            key_cards=_KEY_CARDS,
+            key_representation_id="K2",
+            matcher_policy_id="M2",
+            decoding_params={"temperature": 0, "id_slot": "per-sample"},
+        )
+        for index in range(4)
+    )
+    client = ConcurrentClient()
+    outcomes = run_speech_native_match_tasks(
+        core_client=client,
+        tasks=tasks,
+        slot_count=2,
+        queue_depth=2,
+        trace_run_id=run_id,
+        trace_flusher=lambda buffer: buffer.flush_into(sink),
+    )
+    sink.close()
+
+    assert [outcome.task_id for outcome in outcomes] == [task.task_id for task in tasks]
+    assert all(outcome.decision.value_label == "alarm" for outcome in outcomes)
+    assert client.max_active == 2
+    assert all(len(set(slots)) == 1 for slots in client.calls_by_sample.values())
+    trace_rows = [
+        json.loads(line)
+        for line in (tmp_path / "trace" / f"{run_id}.trace.jsonl")
+        .read_text(encoding="utf-8")
+        .splitlines()
+    ]
+    assert [row["payload"]["obs_sample_id"] for row in trace_rows] == [
+        sample_id
+        for sample_id in (f"sample-{index}" for index in range(4))
+        for _ in range(2)
+    ]
+
+
+def test_speech_native_match_tasks_reject_queue_smaller_than_slot_pool():
+    with pytest.raises(PsluFlightError, match="queue_depth must be at least slot_count"):
+        run_speech_native_match_tasks(
+            core_client=object(),
+            tasks=(),
+            slot_count=2,
+            queue_depth=1,
+        )
+
+
+def test_speech_native_match_tasks_never_retry_a_failed_task():
+    class FailingClient:
+        def __init__(self):
+            self.calls = []
+
+        def complete(self, messages, **kwargs):
+            sample_id = kwargs["speech_feature_sample_id"]
+            self.calls.append(sample_id)
+            if sample_id == "sample-fail":
+                raise RuntimeError("registered one-shot failure")
+            return '{"key_id":"K001"}'
+
+    class Sample:
+        def __init__(self, sample_id):
+            self.sample_id = sample_id
+
+    tasks = tuple(
+        SpeechNativeMatchTask(
+            task_id=sample_id,
+            sample=Sample(sample_id),
+            query_descriptor={
+                "packet_id": f"slurp/train/{sample_id}",
+                "sha256": digest,
+                "role": "query",
+            },
+            key_cards=_KEY_CARDS,
+            key_representation_id="K2",
+            matcher_policy_id="M1",
+            decoding_params={"id_slot": "per-sample"},
+        )
+        for sample_id, digest in (("sample-ok", "a" * 64), ("sample-fail", "b" * 64))
+    )
+    client = FailingClient()
+    with pytest.raises(RuntimeError, match="registered one-shot failure"):
+        run_speech_native_match_tasks(
+            core_client=client,
+            tasks=tasks,
+            slot_count=2,
+            queue_depth=2,
+        )
+    assert sorted(client.calls) == ["sample-fail", "sample-ok"]
+
+
+def test_profile_task_expansion_and_slot_metrics_are_deterministic():
+    class Sample:
+        def __init__(self, sample_id):
+            self.sample_id = sample_id
+
+    samples = (Sample("s1"), Sample("s2"))
+    bindings = {
+        "s1": {"packet_id": "slurp/train/s1", "sha256": "a" * 64},
+        "s2": {"packet_id": "slurp/train/s2", "sha256": "b" * 64},
+    }
+    tasks = build_profile_tasks(
+        samples=samples,
+        packet_bindings=bindings,
+        key_cards=_KEY_CARDS,
+        order_ids=("canonical", "reverse"),
+        decoding_params={"temperature": 0, "id_slot": "per-sample"},
+        key_representation_id="K2",
+        matcher_policy_id="M1",
+    )
+    assert [task.task_id for task in tasks] == [
+        "canonical:s1",
+        "canonical:s2",
+        "reverse:s1",
+        "reverse:s2",
+    ]
+    assert [card.key_id for card in tasks[2].key_cards] == ["K002", "K001"]
+    metrics = profile_timing_metrics(
+        (
+            {
+                "started_at": "2026-08-21T12:00:00+00:00",
+                "latency_seconds": 2.0,
+            },
+            {
+                "started_at": "2026-08-21T12:00:00+00:00",
+                "latency_seconds": 2.0,
+            },
+        ),
+        slot_count=2,
+        prompt_tokens=180,
+        completion_tokens=20,
+    )
+    assert metrics == {
+        "request_window_seconds": 2.0,
+        "slot_occupancy_pct": 100.0,
+        "aggregate_tokens_per_second": 100.0,
+    }
 
 
 def _binding_material():

@@ -52,8 +52,10 @@ from __future__ import annotations
 import ast
 import hashlib
 import json
-from dataclasses import dataclass
+from concurrent.futures import FIRST_COMPLETED, Future, ThreadPoolExecutor, wait
+from dataclasses import dataclass, field
 from pathlib import Path
+from queue import Queue
 from types import MappingProxyType
 from typing import Callable, Mapping, Sequence
 
@@ -64,6 +66,7 @@ from ...data.slurp import (
     load_slurp_engineering_gate,
 )
 from ...reproduction.slurp_scoring import parse_slu_response
+from ...core.tracing import TraceBuffer, set_current_trace_buffer
 from ..adapters.slurp import SlurpAdapter, SlurpSample
 from ..consumption import ConsumptionTrace
 from ..obs import AudioRef
@@ -250,6 +253,40 @@ class SpeechNativeDecision:
     raw_responses: tuple[str, ...]
     verifier_scores: Mapping[str, tuple[bool, float]]
     parse_failure: bool = False
+
+
+@dataclass(frozen=True)
+class SpeechNativeMatchTask:
+    """One independently schedulable speech-native matcher decision.
+
+    A worker owns one llama-server slot for the task's entire lifetime, so a
+    multi-contact M2/M3/M4 decision never migrates between slots.
+    """
+
+    task_id: str
+    sample: object
+    query_descriptor: Mapping[str, str]
+    key_cards: tuple[KeyCardV1, ...]
+    key_representation_id: str
+    matcher_policy_id: str
+    decoding_params: Mapping[str, object] = field(default_factory=dict)
+    top_k: int = 3
+    audio_key_bindings: Mapping[str, Mapping[str, str]] | None = None
+    ensemble_base_policy_id: str = "M1"
+
+
+@dataclass(frozen=True)
+class SpeechNativeMatchOutcome:
+    task_id: str
+    slot_id: int
+    decision: SpeechNativeDecision
+
+
+@dataclass(frozen=True)
+class _BufferedSpeechNativeOutcome:
+    outcome: SpeechNativeMatchOutcome | None
+    buffer: TraceBuffer | None
+    error: BaseException | None
 
 
 def _validated_key_cards(key_cards: Sequence[KeyCardV1]) -> tuple[KeyCardV1, ...]:
@@ -586,6 +623,128 @@ def run_speech_native_matcher(
     )
     key_id = _selected_key_id(response, set(tied))
     return finish(key_id, top_ids=top_ids, scores=verifier_scores)
+
+
+def run_speech_native_match_tasks(
+    *,
+    core_client,
+    tasks: Sequence[SpeechNativeMatchTask],
+    slot_count: int,
+    queue_depth: int,
+    trace_run_id: str | None = None,
+    trace_flusher: Callable[[TraceBuffer], None] | None = None,
+) -> tuple[SpeechNativeMatchOutcome, ...]:
+    """Run matcher tasks with bounded rolling concurrency and slot affinity.
+
+    ``queue_depth`` counts active plus waiting futures. Each worker leases one
+    numeric llama-server slot before the first matcher contact and releases it
+    only after the whole M1/M2/M3/M4 decision settles. Results and trace
+    buffers are recovered in the registered input order, independent of
+    completion timing. No failed task is retried.
+    """
+
+    if isinstance(slot_count, bool) or not isinstance(slot_count, int) or slot_count <= 0:
+        raise PsluFlightError("slot_count must be a positive integer")
+    if isinstance(queue_depth, bool) or not isinstance(queue_depth, int):
+        raise PsluFlightError("queue_depth must be an integer")
+    if queue_depth < slot_count:
+        raise PsluFlightError("queue_depth must be at least slot_count")
+    if (trace_run_id is None) != (trace_flusher is None):
+        raise PsluFlightError(
+            "trace_run_id and trace_flusher must be supplied together or both omitted"
+        )
+    ordered_tasks = tuple(tasks)
+    task_ids = [task.task_id for task in ordered_tasks]
+    if any(not isinstance(task_id, str) or not task_id for task_id in task_ids):
+        raise PsluFlightError("speech-native task_id values must be non-empty strings")
+    if len(set(task_ids)) != len(task_ids):
+        raise PsluFlightError("speech-native task_id values must be unique")
+    if not ordered_tasks:
+        return ()
+
+    slots: Queue[int] = Queue(maxsize=slot_count)
+    for slot_id in range(slot_count):
+        slots.put(slot_id)
+
+    def one(task: SpeechNativeMatchTask) -> _BufferedSpeechNativeOutcome:
+        slot_id = slots.get()
+        buffer = TraceBuffer(trace_run_id) if trace_run_id is not None else None
+        if buffer is not None:
+            set_current_trace_buffer(buffer)
+        try:
+            decoding_params = dict(task.decoding_params)
+            requested_slot = decoding_params.get("id_slot")
+            if requested_slot not in (None, "per-sample", "per-task"):
+                raise PsluFlightError(
+                    "parallel speech-native tasks require decoding_params.id_slot to be "
+                    "absent, 'per-sample', or 'per-task' before dispatch"
+                )
+            decoding_params["id_slot"] = slot_id
+            decision = run_speech_native_matcher(
+                core_client=core_client,
+                sample=task.sample,
+                query_descriptor=task.query_descriptor,
+                key_cards=task.key_cards,
+                key_representation_id=task.key_representation_id,
+                matcher_policy_id=task.matcher_policy_id,
+                decoding_params=decoding_params,
+                top_k=task.top_k,
+                audio_key_bindings=task.audio_key_bindings,
+                ensemble_base_policy_id=task.ensemble_base_policy_id,
+            )
+            return _BufferedSpeechNativeOutcome(
+                outcome=SpeechNativeMatchOutcome(
+                    task_id=task.task_id,
+                    slot_id=slot_id,
+                    decision=decision,
+                ),
+                buffer=buffer,
+                error=None,
+            )
+        except BaseException as error:  # preserve one-shot traces before raising
+            return _BufferedSpeechNativeOutcome(
+                outcome=None,
+                buffer=buffer,
+                error=error,
+            )
+        finally:
+            if buffer is not None:
+                set_current_trace_buffer(None)
+            slots.put(slot_id)
+
+    buffered: list[_BufferedSpeechNativeOutcome | None] = [None] * len(ordered_tasks)
+    next_index = 0
+    futures: dict[Future[_BufferedSpeechNativeOutcome], int] = {}
+    with ThreadPoolExecutor(
+        max_workers=min(slot_count, len(ordered_tasks)),
+        thread_name_prefix="saea-speech-native",
+    ) as pool:
+        while next_index < min(queue_depth, len(ordered_tasks)):
+            futures[pool.submit(one, ordered_tasks[next_index])] = next_index
+            next_index += 1
+        while futures:
+            done, _ = wait(tuple(futures), return_when=FIRST_COMPLETED)
+            for future in done:
+                index = futures.pop(future)
+                buffered[index] = future.result()
+            while next_index < len(ordered_tasks) and len(futures) < queue_depth:
+                futures[pool.submit(one, ordered_tasks[next_index])] = next_index
+                next_index += 1
+
+    settled = tuple(result for result in buffered if result is not None)
+    if len(settled) != len(ordered_tasks):  # defensive: every future assigns once
+        raise PsluFlightError("parallel speech-native dispatcher lost a task outcome")
+    if trace_flusher is not None:
+        for result in settled:
+            assert result.buffer is not None
+            trace_flusher(result.buffer)
+    for result in settled:
+        if result.error is not None:
+            raise result.error
+    outcomes = tuple(result.outcome for result in settled)
+    if any(outcome is None for outcome in outcomes):  # defensive after error loop
+        raise PsluFlightError("parallel speech-native task lacks a completed outcome")
+    return tuple(outcome for outcome in outcomes if outcome is not None)
 
 
 def _binding_rank(seed: int, purpose: str, *parts: str) -> str:
@@ -1282,6 +1441,8 @@ __all__ = [
     "SpeechNativeEngineeringGate",
     "SpeechNativeEngineeringSample",
     "SpeechNativeDecision",
+    "SpeechNativeMatchOutcome",
+    "SpeechNativeMatchTask",
     "assert_never_calls_ontology_miner",
     "build_speech_native_binding",
     "load_pslu_rosters",
@@ -1293,6 +1454,7 @@ __all__ = [
     "render_type_vocabulary",
     "run_pslu_flight",
     "run_speech_native_matcher",
+    "run_speech_native_match_tasks",
     "select_pslu_samples",
 ]
 
