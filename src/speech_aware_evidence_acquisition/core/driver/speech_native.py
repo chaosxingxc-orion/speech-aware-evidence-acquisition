@@ -226,6 +226,18 @@ def read_speech_native_predictions(
             if isinstance(top_k, bool) or not isinstance(top_k, int) or top_k <= 0:
                 raise SpeechNativeProfileError("M3 flight receipt lacks a valid top_k")
             cell_id = f"{cell_id}-k{top_k}"
+            prompt_policy_id = profile.get(
+                "matcher_prompt_policy_id", "speech-native-json-copy-v2"
+            )
+            prompt_suffix = {
+                "speech-native-json-copy-v2": "",
+                "speech-native-json-copy-v3": "-v3",
+            }.get(prompt_policy_id)
+            if prompt_suffix is None:
+                raise SpeechNativeProfileError(
+                    "M3 flight receipt has an unknown matcher prompt policy"
+                )
+            cell_id += prompt_suffix
         if cell_id in correctness_by_cell:
             raise SpeechNativeProfileError(f"duplicate flight cell {cell_id!r}")
         decisions_name = decisions_ref.get("path")
@@ -406,6 +418,7 @@ def build_profile_tasks(
     key_representation_id: str,
     matcher_policy_id: str,
     top_k: int = 3,
+    prompt_policy_id: str = "speech-native-json-copy-v2",
 ) -> tuple[SpeechNativeMatchTask, ...]:
     """Build the registered maximum-card prompt tasks without reading labels."""
 
@@ -429,6 +442,7 @@ def build_profile_tasks(
                     key_cards=ordered_cards,
                     key_representation_id=key_representation_id,
                     matcher_policy_id=matcher_policy_id,
+                    prompt_policy_id=prompt_policy_id,
                     decoding_params=dict(decoding_params),
                     top_k=top_k,
                 )
@@ -649,6 +663,13 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
     top_k = values.get("speech_native_top_k", 3)
     if isinstance(top_k, bool) or not isinstance(top_k, int) or top_k <= 0:
         raise SpeechNativeProfileError("speech_native_top_k must be a positive integer")
+    prompt_policy_id = values.get(
+        "matcher_prompt_policy_id", "speech-native-json-copy-v2"
+    )
+    if not isinstance(prompt_policy_id, str) or not prompt_policy_id:
+        raise SpeechNativeProfileError(
+            "matcher_prompt_policy_id must be a non-empty string"
+        )
     tasks = build_profile_tasks(
         samples=gate_view.samples,
         packet_bindings=packet_bindings,
@@ -658,6 +679,7 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
         key_representation_id=_require_string(values, "key_representation_id"),
         matcher_policy_id=_require_string(values, "matcher_policy_id"),
         top_k=top_k,
+        prompt_policy_id=prompt_policy_id,
     )
     planned_contact_ceiling = len(tasks) * contact_ceiling
     if planned_contact_ceiling != plan.planned_model_calls:
@@ -822,6 +844,7 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
             "key_order_ids": list(raw_order_ids),
             "key_representation_id": values["key_representation_id"],
             "matcher_policy_id": values["matcher_policy_id"],
+            "matcher_prompt_policy_id": prompt_policy_id,
             "semantic_result_read": False,
             "result_mode": result_mode,
             "contact_ceiling_per_task": contact_ceiling,

@@ -1,0 +1,7 @@
+{
+  "experiment_id": "SAEA-SN-OPTA-K1M3K3-V3",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "OPT-A36 retrieve-verify M3 top_k=3 local prompt optimization with exact candidate cardinality, bounded fenced-JSON parsing, and a 64-token output cap; every stage carries the original speech query.",
+  "key_representation_id": "K1",
+  "matcher_policy_id": "M3"
+}

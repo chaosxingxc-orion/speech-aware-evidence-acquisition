@@ -153,6 +153,10 @@ def load_speech_native_engineering_gate(
 
 SPEECH_NATIVE_KEY_REPRESENTATIONS = ("K0", "K1", "K2", "K3", "K4")
 SPEECH_NATIVE_MATCHER_POLICIES = ("M0", "M1", "M2", "M3", "M4")
+SPEECH_NATIVE_PROMPT_POLICIES = (
+    "speech-native-json-copy-v2",
+    "speech-native-json-copy-v3",
+)
 SPEECH_NATIVE_SCENARIO_DEFINITIONS: Mapping[str, str] = MappingProxyType(
     {
         "alarm": "Commands that create, change, inspect, or remove alarms and wake-up reminders.",
@@ -269,6 +273,7 @@ class SpeechNativeMatchTask:
     key_cards: tuple[KeyCardV1, ...]
     key_representation_id: str
     matcher_policy_id: str
+    prompt_policy_id: str = "speech-native-json-copy-v2"
     decoding_params: Mapping[str, object] = field(default_factory=dict)
     top_k: int = 3
     audio_key_bindings: Mapping[str, Mapping[str, str]] | None = None
@@ -334,8 +339,16 @@ def render_speech_native_keys(
 
 
 def _response_object(text: str) -> Mapping[str, object] | None:
+    candidate = text.strip()
+    lines = candidate.splitlines()
+    if (
+        len(lines) >= 3
+        and lines[0].strip().lower() == "```json"
+        and lines[-1].strip() == "```"
+    ):
+        candidate = "\n".join(lines[1:-1]).strip()
     try:
-        document = json.loads(text.strip())
+        document = json.loads(candidate)
     except (json.JSONDecodeError, UnicodeError):
         return None
     return document if isinstance(document, Mapping) else None
@@ -441,6 +454,7 @@ def run_speech_native_matcher(
     key_cards: Sequence[KeyCardV1],
     key_representation_id: str,
     matcher_policy_id: str,
+    prompt_policy_id: str = "speech-native-json-copy-v2",
     decoding_params: Mapping[str, object] | None = None,
     top_k: int = 3,
     audio_key_bindings: Mapping[str, Mapping[str, str]] | None = None,
@@ -459,6 +473,11 @@ def run_speech_native_matcher(
         raise PsluFlightError(
             f"unknown matcher policy {matcher_policy_id!r}; expected "
             f"{SPEECH_NATIVE_MATCHER_POLICIES}"
+        )
+    if prompt_policy_id not in SPEECH_NATIVE_PROMPT_POLICIES:
+        raise PsluFlightError(
+            f"unknown prompt policy {prompt_policy_id!r}; expected "
+            f"{SPEECH_NATIVE_PROMPT_POLICIES}"
         )
     top_k_is_active = matcher_policy_id == "M3" or (
         matcher_policy_id == "M4" and ensemble_base_policy_id == "M3"
@@ -529,8 +548,9 @@ def run_speech_native_matcher(
                 sample=sample,
                 query_descriptor=query_descriptor,
                 key_cards=ordering,
-                key_representation_id=key_representation_id,
-                matcher_policy_id=ensemble_base_policy_id,
+                    key_representation_id=key_representation_id,
+                    matcher_policy_id=ensemble_base_policy_id,
+                    prompt_policy_id=prompt_policy_id,
                 decoding_params=decoding_params,
                 top_k=top_k,
                 audio_key_bindings=audio_key_bindings,
@@ -613,17 +633,34 @@ def run_speech_native_matcher(
         )
         return finish(_selected_key_id(response, allowed))
 
+    retrieval_instruction = (
+        f"Retrieve exactly {top_k} distinct opaque keys for the spoken command, ranked "
+        "from most to least compatible. Return a single-line JSON object with exactly "
+        f"one field named key_ids whose value is an array of exactly {top_k} ids copied "
+        "verbatim from supplied key headings. Do not use Markdown or code fences and do "
+        "not add any other text."
+        if prompt_policy_id == "speech-native-json-copy-v3"
+        else (
+            f"Retrieve the {top_k} most compatible opaque keys for the spoken command, "
+            f"best first. Return one JSON object with exactly one field named key_ids "
+            f"whose value is an array of at most {top_k} ids copied verbatim from supplied "
+            "key headings."
+        )
+    )
     retrieval = contact(
         f"retrieve-top-{top_k}",
-        f"Retrieve the {top_k} most compatible opaque keys for the spoken command, best first. "
-        f"Return one JSON object with exactly one field named key_ids whose value is an array "
-        f"of at most {top_k} ids copied verbatim from supplied key headings.",
+        retrieval_instruction,
         cards,
         render_speech_native_keys(cards, key_representation_id),
     )
     top_ids = _selected_top_keys(retrieval, allowed, top_k)
     if not top_ids:
         return finish(None)
+    if (
+        prompt_policy_id == "speech-native-json-copy-v3"
+        and len(top_ids) != top_k
+    ):
+        return finish(None, top_ids=top_ids)
     verifier_scores: dict[str, tuple[bool, float]] = {}
     for key_id in top_ids:
         card = by_key[key_id]
@@ -718,6 +755,7 @@ def run_speech_native_match_tasks(
                 key_cards=task.key_cards,
                 key_representation_id=task.key_representation_id,
                 matcher_policy_id=task.matcher_policy_id,
+                prompt_policy_id=task.prompt_policy_id,
                 decoding_params=decoding_params,
                 top_k=task.top_k,
                 audio_key_bindings=task.audio_key_bindings,

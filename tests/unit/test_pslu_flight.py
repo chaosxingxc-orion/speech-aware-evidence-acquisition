@@ -175,10 +175,10 @@ def test_m2_reintroduces_the_same_speech_query_for_factor_and_selection_steps():
 def test_m3_verifies_each_retrieved_candidate_and_arbitrates_only_a_tie():
     client = _SpeechFeatureClient(
         [
-            '{"key_ids":["K001","K002"]}',
-            '{"compatible":true,"confidence":80}',
-            '{"compatible":true,"confidence":80}',
-            '{"key_id":"K002"}',
+            '```json\n{"key_ids":["K001","K002"]}\n```',
+            '```json\n{"compatible":true,"confidence":80}\n```',
+            '```json\n{"compatible":true,"confidence":80}\n```',
+            '```json\n{"key_id":"K002"}\n```',
         ]
     )
     result = run_speech_native_matcher(
@@ -194,6 +194,48 @@ def test_m3_verifies_each_retrieved_candidate_and_arbitrates_only_a_tie():
     assert result.calls == 4
     assert result.top_key_ids == ("K001", "K002")
     _assert_every_call_carries_query(client)
+
+
+def test_m3_v3_requires_exact_distinct_keys_without_markdown_fences():
+    client = _SpeechFeatureClient(
+        [
+            '{"key_ids":["K001","K002"]}',
+            '{"compatible":true,"confidence":90}',
+            '{"compatible":false,"confidence":10}',
+        ]
+    )
+    result = run_speech_native_matcher(
+        core_client=client,
+        sample=_SpeechSample(),
+        query_descriptor=_QUERY_DESCRIPTOR,
+        key_cards=_KEY_CARDS,
+        key_representation_id="K2",
+        matcher_policy_id="M3",
+        prompt_policy_id="speech-native-json-copy-v3",
+        top_k=2,
+    )
+    retrieval_prompt = client.calls[0][0][0]["content"]
+    assert "exactly 2 distinct" in retrieval_prompt
+    assert "single-line JSON" in retrieval_prompt
+    assert "Do not use Markdown or code fences" in retrieval_prompt
+    assert result.key_id == "K001"
+
+
+def test_m3_v3_rejects_an_incomplete_retrieval_list_without_retrying():
+    client = _SpeechFeatureClient(['{"key_ids":["K001"]}'])
+    result = run_speech_native_matcher(
+        core_client=client,
+        sample=_SpeechSample(),
+        query_descriptor=_QUERY_DESCRIPTOR,
+        key_cards=_KEY_CARDS,
+        key_representation_id="K2",
+        matcher_policy_id="M3",
+        prompt_policy_id="speech-native-json-copy-v3",
+        top_k=2,
+    )
+    assert result.key_id is None
+    assert result.parse_failure is True
+    assert result.calls == 1
 
 
 def test_m4_trace_policy_preserves_ensemble_and_order_identity():
@@ -509,8 +551,9 @@ def test_model_free_prediction_read_distinguishes_m3_top_k_cells(tmp_path):
     items = binding["splits"]["OPT-A36"]["items"]
     key_by_label = {card["value_label"]: card["key_id"] for card in binding["key_cards"]}
 
-    def write_cell(top_k):
-        attempt_dir = tmp_path / f"m3-k{top_k}"
+    def write_cell(top_k, prompt_policy_id="speech-native-json-copy-v2"):
+        suffix = "-v3" if prompt_policy_id.endswith("-v3") else ""
+        attempt_dir = tmp_path / f"m3-k{top_k}{suffix}"
         attempt_dir.mkdir()
         rows = []
         for item in items:
@@ -539,6 +582,7 @@ def test_model_free_prediction_read_distinguishes_m3_top_k_cells(tmp_path):
                     "profile": {
                         "key_representation_id": "K1",
                         "matcher_policy_id": "M3",
+                        "matcher_prompt_policy_id": prompt_policy_id,
                         "top_k": top_k,
                         "actual_contact_count": len(rows),
                     },
@@ -554,7 +598,11 @@ def test_model_free_prediction_read_distinguishes_m3_top_k_cells(tmp_path):
         return attempt_dir
 
     report = read_speech_native_predictions(
-        attempt_dirs=(write_cell(3), write_cell(5)),
+        attempt_dirs=(
+            write_cell(3),
+            write_cell(5),
+            write_cell(3, "speech-native-json-copy-v3"),
+        ),
         binding_path=binding_path,
         binding_sha256=binding_sha256,
         split_name="OPT-A36",
@@ -562,6 +610,7 @@ def test_model_free_prediction_read_distinguishes_m3_top_k_cells(tmp_path):
     assert [item["cell_id"] for item in report["aggregates"]] == [
         "K1-M3-k3",
         "K1-M3-k5",
+        "K1-M3-k3-v3",
     ]
 
 
