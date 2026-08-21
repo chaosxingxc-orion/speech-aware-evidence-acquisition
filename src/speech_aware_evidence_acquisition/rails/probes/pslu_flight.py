@@ -50,12 +50,14 @@ same roster text, same instruction.
 from __future__ import annotations
 
 import ast
+import hashlib
 import json
 from dataclasses import dataclass
 from pathlib import Path
 from types import MappingProxyType
 from typing import Mapping, Sequence
 
+from ...data.slurp import SlurpTrainMaterial
 from ...reproduction.slurp_scoring import parse_slu_response
 from ..adapters.slurp import SlurpAdapter, SlurpSample
 from ..consumption import ConsumptionTrace
@@ -73,6 +75,695 @@ _FORBIDDEN_ONTOLOGY_SYMBOL = "load_slurp_ontology"
 class PsluFlightError(RuntimeError):
     """A P-SLU flight input is malformed, a roster table fails its own
     load-time legality checks, or the ontology-miner import guard tripped."""
+
+
+SPEECH_NATIVE_KEY_REPRESENTATIONS = ("K0", "K1", "K2", "K3", "K4")
+SPEECH_NATIVE_MATCHER_POLICIES = ("M0", "M1", "M2", "M3", "M4")
+SPEECH_NATIVE_SCENARIO_DEFINITIONS: Mapping[str, str] = MappingProxyType(
+    {
+        "alarm": "Commands that create, change, inspect, or remove alarms and wake-up reminders.",
+        "audio": "Commands that control audio volume, muting, or the active audio device.",
+        "calendar": "Commands that create, change, inspect, or remove calendar events.",
+        "cooking": "Commands asking for recipes, ingredients, cooking steps, or cooking timers.",
+        "datetime": "Commands asking for the current date, time, day, or time in another place.",
+        "email": "Commands that read, search, compose, send, or manage email messages.",
+        "general": "General assistant-control commands and requests that do not fit a specialist domain.",
+        "iot": "Commands that inspect or control connected home devices, lights, heating, or appliances.",
+        "lists": "Commands that create, inspect, change, or remove shopping and task list entries.",
+        "music": "Commands about songs, artists, albums, playlists, and music playback choices.",
+        "news": "Commands asking for news reports, headlines, or updates on current events.",
+        "play": "Commands that start, pause, resume, stop, or navigate playable media.",
+        "qa": "Open factual questions seeking an answer rather than a device or service action.",
+        "recommendation": "Commands asking the assistant to recommend an option, place, or activity.",
+        "social": "Commands that read, compose, send, or manage social and instant messages.",
+        "takeaway": "Commands for finding, ordering, or tracking prepared food for delivery or pickup.",
+        "transport": "Commands about routes, traffic, travel duration, public transit, or vehicle travel.",
+        "weather": "Commands asking for weather conditions, forecasts, temperature, rain, or wind.",
+    }
+)
+SPEECH_NATIVE_SCENARIO_CONTRASTS: Mapping[str, str] = MappingProxyType(
+    {
+        "alarm": "Exclude calendar appointments and generic time questions.",
+        "audio": "Exclude choosing music content and generic play or pause operations.",
+        "calendar": "Exclude wake-up alarms and task-list entries.",
+        "cooking": "Exclude restaurant delivery and general factual questions.",
+        "datetime": "Exclude alarms, calendar events, and weather forecasts.",
+        "email": "Exclude social or instant messages.",
+        "general": "Use a specialist key whenever a specific domain is expressed.",
+        "iot": "Exclude media playback and non-device factual questions.",
+        "lists": "Exclude calendar events and reminders implemented as alarms.",
+        "music": "Exclude pure volume control and generic media transport controls.",
+        "news": "Exclude weather forecasts and open-domain factual questions.",
+        "play": "Exclude selecting music content and changing audio volume.",
+        "qa": "Exclude recommendations and commands that operate a service or device.",
+        "recommendation": "Exclude direct factual questions and explicit takeaway orders.",
+        "social": "Exclude email messages.",
+        "takeaway": "Exclude cooking instructions and general place recommendations.",
+        "transport": "Exclude weather and generic time questions.",
+        "weather": "Exclude news, transport status, and generic date or time questions.",
+    }
+)
+
+
+@dataclass(frozen=True)
+class KeyCardV1:
+    """One opaque routing key and its train-only maintainable text card.
+
+    ``value_label`` is deterministic post-model metadata. Renderers never
+    expose it for K1/K2/K3/K4; the frozen core selects ``key_id`` and the
+    caller performs the final mapping after the response.
+    """
+
+    key_id: str
+    definition: str
+    positive_examples: tuple[str, ...]
+    contrastive_boundary: str | None
+    value_label: str
+
+    def validate(self) -> "KeyCardV1":
+        if not self.key_id.startswith("K") or not self.key_id[1:].isdigit():
+            raise PsluFlightError(f"invalid opaque key_id {self.key_id!r}")
+        if not self.definition.strip():
+            raise PsluFlightError(f"key {self.key_id}: definition must be non-empty")
+        if not self.positive_examples or any(not item.strip() for item in self.positive_examples):
+            raise PsluFlightError(
+                f"key {self.key_id}: positive_examples must be non-empty strings"
+            )
+        if self.contrastive_boundary is not None and not self.contrastive_boundary.strip():
+            raise PsluFlightError(
+                f"key {self.key_id}: contrastive_boundary must be non-empty or None"
+            )
+        if not self.value_label.strip():
+            raise PsluFlightError(f"key {self.key_id}: value_label must be non-empty")
+        return self
+
+    def as_json(self) -> dict[str, object]:
+        self.validate()
+        return {
+            "key_id": self.key_id,
+            "definition": self.definition,
+            "positive_examples": list(self.positive_examples),
+            "contrastive_boundary": self.contrastive_boundary,
+            "value_label": self.value_label,
+        }
+
+
+@dataclass(frozen=True)
+class SpeechNativeDecision:
+    matcher_policy_id: str
+    key_representation_id: str
+    key_id: str | None
+    value_label: str | None
+    top_key_ids: tuple[str, ...]
+    calls: int
+    raw_responses: tuple[str, ...]
+    verifier_scores: Mapping[str, tuple[bool, float]]
+    parse_failure: bool = False
+
+
+def _validated_key_cards(key_cards: Sequence[KeyCardV1]) -> tuple[KeyCardV1, ...]:
+    cards = tuple(card.validate() for card in key_cards)
+    if not cards:
+        raise PsluFlightError("speech-native matching requires at least one key card")
+    key_ids = [card.key_id for card in cards]
+    labels = [card.value_label for card in cards]
+    if len(set(key_ids)) != len(key_ids):
+        raise PsluFlightError("speech-native key cards contain duplicate key_id values")
+    if len(set(labels)) != len(labels):
+        raise PsluFlightError("speech-native key cards contain duplicate value_label values")
+    return cards
+
+
+def render_speech_native_keys(
+    key_cards: Sequence[KeyCardV1], key_representation_id: str
+) -> str:
+    """Render only the matcher-visible portion of K0/K1/K2/K3/K4.
+
+    K3 carries no semantic key body: the short order declaration is needed
+    solely to associate each following audio packet with its opaque id.
+    """
+
+    cards = _validated_key_cards(key_cards)
+    if key_representation_id not in SPEECH_NATIVE_KEY_REPRESENTATIONS:
+        raise PsluFlightError(
+            f"unknown key representation {key_representation_id!r}; expected "
+            f"{SPEECH_NATIVE_KEY_REPRESENTATIONS}"
+        )
+    if key_representation_id == "K0":
+        return "Candidate labels: " + ", ".join(card.value_label for card in cards)
+    if key_representation_id == "K3":
+        return "Audio key packet order: " + ", ".join(card.key_id for card in cards)
+    blocks: list[str] = []
+    for card in cards:
+        block = (
+            f"{card.key_id}\nDefinition: {card.definition}\n"
+            f"Positive examples: {' | '.join(card.positive_examples)}"
+        )
+        if key_representation_id in {"K2", "K4"} and card.contrastive_boundary:
+            block += f"\nContrastive boundary: {card.contrastive_boundary}"
+        blocks.append(block)
+    return "\n\n".join(blocks)
+
+
+def _response_object(text: str) -> Mapping[str, object] | None:
+    try:
+        document = json.loads(text.strip())
+    except (json.JSONDecodeError, UnicodeError):
+        return None
+    return document if isinstance(document, Mapping) else None
+
+
+def _selected_key_id(text: str, allowed: set[str]) -> str | None:
+    document = _response_object(text)
+    key_id = document.get("key_id") if document is not None else None
+    return key_id if isinstance(key_id, str) and key_id in allowed else None
+
+
+def _selected_top_keys(text: str, allowed: set[str], top_k: int) -> tuple[str, ...]:
+    document = _response_object(text)
+    raw = document.get("key_ids") if document is not None else None
+    if not isinstance(raw, list):
+        return ()
+    selected: list[str] = []
+    for key_id in raw:
+        if isinstance(key_id, str) and key_id in allowed and key_id not in selected:
+            selected.append(key_id)
+        if len(selected) == top_k:
+            break
+    return tuple(selected)
+
+
+def _compatibility(text: str) -> tuple[bool, float] | None:
+    document = _response_object(text)
+    if document is None or not isinstance(document.get("compatible"), bool):
+        return None
+    confidence = document.get("confidence")
+    if isinstance(confidence, bool) or not isinstance(confidence, (int, float)):
+        return None
+    score = float(confidence)
+    if score < 0.0 or score > 100.0:
+        return None
+    return bool(document["compatible"]), score
+
+
+def _speech_feature_messages(
+    *,
+    system_text: str,
+    query_descriptor: Mapping[str, str],
+    key_text: str | None,
+    key_cards: Sequence[KeyCardV1],
+    key_representation_id: str,
+    audio_key_bindings: Mapping[str, Mapping[str, str]] | None,
+) -> tuple[Mapping[str, object], ...]:
+    required = {"packet_id", "sha256", "role"}
+    if set(query_descriptor) != required or query_descriptor.get("role") != "query":
+        raise PsluFlightError("query_descriptor must carry exact packet_id/sha256/role=query")
+    content: list[Mapping[str, object]] = []
+    if key_text:
+        content.append({"type": "text", "text": key_text})
+    content.append(
+        {"type": "input_speech_features", "speech_features": dict(query_descriptor)}
+    )
+    if key_representation_id in {"K3", "K4"}:
+        if audio_key_bindings is None or set(audio_key_bindings) != {
+            card.key_id for card in key_cards
+        }:
+            raise PsluFlightError(
+                f"{key_representation_id} requires one audio key binding per key card"
+            )
+        for card in key_cards:
+            binding = audio_key_bindings[card.key_id]
+            if not isinstance(binding, Mapping) or set(binding) != {"packet_id", "sha256"}:
+                raise PsluFlightError(
+                    f"audio key binding {card.key_id!r} must carry exact packet_id/sha256"
+                )
+            content.append(
+                {
+                    "type": "input_speech_features",
+                    "speech_features": {
+                        "packet_id": binding["packet_id"],
+                        "sha256": binding["sha256"],
+                        "role": "key",
+                    },
+                }
+            )
+    return (
+        {"role": "system", "content": system_text},
+        {"role": "user", "content": content},
+    )
+
+
+def run_speech_native_matcher(
+    *,
+    core_client,
+    sample,
+    query_descriptor: Mapping[str, str],
+    key_cards: Sequence[KeyCardV1],
+    key_representation_id: str,
+    matcher_policy_id: str,
+    decoding_params: Mapping[str, object] | None = None,
+    top_k: int = 3,
+    audio_key_bindings: Mapping[str, Mapping[str, str]] | None = None,
+    ensemble_base_policy_id: str = "M1",
+    _trace_matcher_policy_id: str | None = None,
+) -> SpeechNativeDecision:
+    """Run one frozen-core speech-query decision under M0--M4.
+
+    Every local ``contact`` call reconstructs a two-message request carrying
+    the original query packet. Generated factor text and verifier outputs may
+    condition later calls, but never replace the speech query.
+    """
+
+    cards = _validated_key_cards(key_cards)
+    if matcher_policy_id not in SPEECH_NATIVE_MATCHER_POLICIES:
+        raise PsluFlightError(
+            f"unknown matcher policy {matcher_policy_id!r}; expected "
+            f"{SPEECH_NATIVE_MATCHER_POLICIES}"
+        )
+    top_k_is_active = matcher_policy_id == "M3" or (
+        matcher_policy_id == "M4" and ensemble_base_policy_id == "M3"
+    )
+    if top_k_is_active and (top_k <= 0 or top_k > len(cards)):
+        raise PsluFlightError(f"top_k must be in [1, {len(cards)}], got {top_k}")
+    by_key = {card.key_id: card for card in cards}
+    allowed = set(by_key)
+    raw_responses: list[str] = []
+
+    def contact(
+        stage: str,
+        system_text: str,
+        stage_cards: Sequence[KeyCardV1],
+        key_text: str | None,
+    ) -> str:
+        messages = _speech_feature_messages(
+            system_text=system_text,
+            query_descriptor=query_descriptor,
+            key_text=key_text,
+            key_cards=stage_cards,
+            key_representation_id=key_representation_id,
+            audio_key_bindings=(
+                {card.key_id: audio_key_bindings[card.key_id] for card in stage_cards}
+                if audio_key_bindings is not None
+                else None
+            ),
+        )
+        response = core_client.complete(
+            messages,
+            decoding_params=decoding_params,
+            speech_feature_sample_id=sample.sample_id,
+            key_representation_id=key_representation_id,
+            matcher_policy_id=f"{_trace_matcher_policy_id or matcher_policy_id}:{stage}",
+        )
+        raw_responses.append(response)
+        return response
+
+    def finish(
+        key_id: str | None,
+        *,
+        top_ids: tuple[str, ...] = (),
+        scores: Mapping[str, tuple[bool, float]] = MappingProxyType({}),
+    ) -> SpeechNativeDecision:
+        return SpeechNativeDecision(
+            matcher_policy_id=matcher_policy_id,
+            key_representation_id=key_representation_id,
+            key_id=key_id,
+            value_label=by_key[key_id].value_label if key_id in by_key else None,
+            top_key_ids=top_ids,
+            calls=len(raw_responses),
+            raw_responses=tuple(raw_responses),
+            verifier_scores=dict(scores),
+            parse_failure=key_id is None,
+        )
+
+    if matcher_policy_id == "M4":
+        orderings = (
+            cards,
+            tuple(reversed(cards)),
+            cards[1:] + cards[:1],
+        )
+        decisions = []
+        for order_index, ordering in enumerate(orderings):
+            decisions.append(
+                run_speech_native_matcher(
+                core_client=core_client,
+                sample=sample,
+                query_descriptor=query_descriptor,
+                key_cards=ordering,
+                key_representation_id=key_representation_id,
+                matcher_policy_id=ensemble_base_policy_id,
+                decoding_params=decoding_params,
+                top_k=top_k,
+                audio_key_bindings=audio_key_bindings,
+                _trace_matcher_policy_id=(
+                    f"M4:{ensemble_base_policy_id}:order-{order_index}"
+                ),
+            )
+            )
+        for decision in decisions:
+            raw_responses.extend(decision.raw_responses)
+        votes = [decision.key_id for decision in decisions if decision.key_id is not None]
+        if not votes:
+            return finish(None)
+        counts = {key_id: votes.count(key_id) for key_id in set(votes)}
+        winner = min(counts, key=lambda key_id: (-counts[key_id], key_id))
+        return finish(winner)
+
+    if matcher_policy_id == "M0":
+        response = contact(
+            "direct-label",
+            "Classify the spoken command into exactly one listed label. Respond only as "
+            '{"label":"..."}.',
+            cards,
+            render_speech_native_keys(cards, "K0"),
+        )
+        document = _response_object(response)
+        label = document.get("label") if document is not None else None
+        key_id = next((card.key_id for card in cards if card.value_label == label), None)
+        return finish(key_id)
+
+    if matcher_policy_id == "M1":
+        response = contact(
+            "listwise",
+            "Match the spoken command to exactly one opaque key. Use the speech signal and "
+            "the supplied key representations jointly. Respond only as "
+            '{"key_id":"K000"}.',
+            cards,
+            render_speech_native_keys(cards, key_representation_id),
+        )
+        return finish(_selected_key_id(response, allowed))
+
+    if matcher_policy_id == "M2":
+        factors = contact(
+            "intent-factors",
+            "Analyze the speech directly without transcribing it. Identify intent factors such "
+            "as domain, requested operation, target, and contrastive cues. Respond only as "
+            '{"factors":["..."],"summary":"..."}.',
+            (),
+            None,
+        )
+        response = contact(
+            "factor-conditioned-selection",
+            "Match the spoken command to exactly one opaque key. The prior semantic analysis "
+            "below is advisory; re-evaluate it against the speech signal carried again in this "
+            "request. Respond only as {\"key_id\":\"K000\"}.",
+            cards,
+            (
+                "Prior semantic analysis:\n"
+                + factors
+                + "\n\nKeys:\n"
+                + render_speech_native_keys(cards, key_representation_id)
+            ),
+        )
+        return finish(_selected_key_id(response, allowed))
+
+    retrieval = contact(
+        f"retrieve-top-{top_k}",
+        f"Retrieve the {top_k} most compatible opaque keys for the spoken command, best first. "
+        f"Respond only as {{\"key_ids\":[\"K000\"]}} with at most {top_k} ids.",
+        cards,
+        render_speech_native_keys(cards, key_representation_id),
+    )
+    top_ids = _selected_top_keys(retrieval, allowed, top_k)
+    if not top_ids:
+        return finish(None)
+    verifier_scores: dict[str, tuple[bool, float]] = {}
+    for key_id in top_ids:
+        card = by_key[key_id]
+        response = contact(
+            f"verify-{key_id}",
+            "Judge whether the spoken command is compatible with this one candidate key. "
+            "Respond only as {\"compatible\":true,\"confidence\":0}, with confidence from "
+            "0 to 100.",
+            (card,),
+            render_speech_native_keys((card,), key_representation_id),
+        )
+        parsed = _compatibility(response)
+        verifier_scores[key_id] = parsed if parsed is not None else (False, -1.0)
+    compatible = [key_id for key_id in top_ids if verifier_scores[key_id][0]]
+    pool = compatible or list(top_ids)
+    best_score = max(verifier_scores[key_id][1] for key_id in pool)
+    tied = [key_id for key_id in pool if verifier_scores[key_id][1] == best_score]
+    if len(tied) == 1:
+        return finish(tied[0], top_ids=top_ids, scores=verifier_scores)
+    tied_cards = tuple(by_key[key_id] for key_id in tied)
+    response = contact(
+        "tie-arbitration",
+        "Resolve the verifier tie by comparing the speech signal directly against only these "
+        "tied opaque keys. Respond only as {\"key_id\":\"K000\"}.",
+        tied_cards,
+        render_speech_native_keys(tied_cards, key_representation_id),
+    )
+    key_id = _selected_key_id(response, set(tied))
+    return finish(key_id, top_ids=top_ids, scores=verifier_scores)
+
+
+def _binding_rank(seed: int, purpose: str, *parts: str) -> str:
+    text = "|".join((str(seed), purpose, *parts))
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+def _normalized_sentence(sentence: str) -> str:
+    return " ".join(sentence.casefold().split())
+
+
+def _binding_sha256(document: Mapping[str, object]) -> str:
+    raw = json.dumps(
+        document, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+    ).encode("utf-8")
+    return hashlib.sha256(raw).hexdigest()
+
+
+def build_speech_native_binding(
+    material: Sequence[SlurpTrainMaterial],
+    *,
+    seed: int,
+    expected_scenarios: Sequence[str] = tuple(SPEECH_NATIVE_SCENARIO_DEFINITIONS),
+    opt_a_per_scenario: int = 2,
+    opt_b_per_scenario: int = 1,
+    gate_per_scenario: int = 1,
+    key_examples_per_scenario: int = 5,
+) -> dict[str, object]:
+    """Bind the small speech-native train partitions and their key cards.
+
+    Selection is hash-ranked and therefore invariant to input iteration
+    order. Query speakers are unique across all three optimization/gate
+    splits. Key material excludes every query speaker, sample id, utterance
+    and normalized sentence; the returned audit block rechecks all four
+    disjointness claims before the document can be emitted.
+    """
+
+    if isinstance(seed, bool) or not isinstance(seed, int):
+        raise PsluFlightError("speech-native binding seed must be an integer")
+    counts = (opt_a_per_scenario, opt_b_per_scenario, gate_per_scenario)
+    if any(isinstance(count, bool) or not isinstance(count, int) or count <= 0 for count in counts):
+        raise PsluFlightError("speech-native query counts must be positive integers")
+    if (
+        isinstance(key_examples_per_scenario, bool)
+        or not isinstance(key_examples_per_scenario, int)
+        or key_examples_per_scenario <= 0
+    ):
+        raise PsluFlightError("key_examples_per_scenario must be a positive integer")
+    scenarios = tuple(expected_scenarios)
+    if not scenarios or len(set(scenarios)) != len(scenarios):
+        raise PsluFlightError("expected_scenarios must be non-empty and unique")
+    unknown_definitions = set(scenarios) - set(SPEECH_NATIVE_SCENARIO_DEFINITIONS)
+    if unknown_definitions:
+        raise PsluFlightError(
+            f"speech-native scenarios lack canonical definitions: {sorted(unknown_definitions)}"
+        )
+    by_scenario: dict[str, list[SlurpTrainMaterial]] = {scenario: [] for scenario in scenarios}
+    for entry in material:
+        if entry.scenario in by_scenario:
+            by_scenario[entry.scenario].append(entry)
+    missing = [scenario for scenario in scenarios if not by_scenario[scenario]]
+    if missing:
+        raise PsluFlightError(f"insufficient train material for scenarios {missing}")
+
+    query_total = sum(counts)
+    query_by_scenario: dict[str, list[dict[str, str]]] = {}
+    query_speakers: set[str] = set()
+    query_samples: set[str] = set()
+    query_utterances: set[str] = set()
+    query_sentences: set[str] = set()
+    for scenario in scenarios:
+        candidates = [
+            (entry, recording)
+            for entry in by_scenario[scenario]
+            for recording in entry.recordings
+        ]
+        candidates.sort(
+            key=lambda pair: _binding_rank(
+                seed,
+                "query",
+                scenario,
+                pair[0].utterance_id,
+                pair[1].sample_id,
+            )
+        )
+        selected: list[dict[str, str]] = []
+        local_utterances: set[str] = set()
+        local_sentences: set[str] = set()
+        for entry, recording in candidates:
+            normalized = _normalized_sentence(entry.sentence)
+            if (
+                entry.utterance_id in local_utterances
+                or normalized in local_sentences
+                or recording.speaker_id in query_speakers
+            ):
+                continue
+            selected.append(
+                {
+                    "sample_id": recording.sample_id,
+                    "utterance_id": entry.utterance_id,
+                    "media_relpath": recording.media_relpath,
+                    "speaker_id": recording.speaker_id,
+                    "normalized_sentence": normalized,
+                    "value_label": scenario,
+                }
+            )
+            local_utterances.add(entry.utterance_id)
+            local_sentences.add(normalized)
+            query_speakers.add(recording.speaker_id)
+            if len(selected) == query_total:
+                break
+        if len(selected) != query_total:
+            raise PsluFlightError(
+                f"insufficient speaker-isolated train queries for {scenario!r}: "
+                f"needed {query_total}, found {len(selected)}"
+            )
+        query_by_scenario[scenario] = selected
+        query_samples.update(item["sample_id"] for item in selected)
+        query_utterances.update(item["utterance_id"] for item in selected)
+        query_sentences.update(item["normalized_sentence"] for item in selected)
+
+    split_items: dict[str, list[dict[str, str]]] = {
+        "OPT-A36": [],
+        "OPT-B18": [],
+        "GATE18": [],
+    }
+    for scenario in scenarios:
+        selected = query_by_scenario[scenario]
+        a_end = opt_a_per_scenario
+        b_end = a_end + opt_b_per_scenario
+        split_items["OPT-A36"].extend(selected[:a_end])
+        split_items["OPT-B18"].extend(selected[a_end:b_end])
+        split_items["GATE18"].extend(selected[b_end:])
+
+    key_cards: list[dict[str, object]] = []
+    key_material: list[dict[str, object]] = []
+    key_speakers: set[str] = set()
+    key_samples: set[str] = set()
+    key_utterances: set[str] = set()
+    key_sentences: set[str] = set()
+    for key_index, scenario in enumerate(scenarios, start=1):
+        candidates = [
+            (entry, recording)
+            for entry in by_scenario[scenario]
+            for recording in entry.recordings
+        ]
+        candidates.sort(
+            key=lambda pair: _binding_rank(
+                seed,
+                "key",
+                scenario,
+                pair[0].utterance_id,
+                pair[1].sample_id,
+            )
+        )
+        sources: list[dict[str, str]] = []
+        local_utterances: set[str] = set()
+        for entry, recording in candidates:
+            normalized = _normalized_sentence(entry.sentence)
+            if (
+                recording.speaker_id in query_speakers
+                or recording.sample_id in query_samples
+                or entry.utterance_id in query_utterances
+                or normalized in query_sentences
+                or entry.utterance_id in local_utterances
+                or normalized in key_sentences
+            ):
+                continue
+            sources.append(
+                {
+                    "sample_id": recording.sample_id,
+                    "utterance_id": entry.utterance_id,
+                    "media_relpath": recording.media_relpath,
+                    "speaker_id": recording.speaker_id,
+                    "sentence": entry.sentence,
+                    "normalized_sentence": normalized,
+                }
+            )
+            local_utterances.add(entry.utterance_id)
+            key_speakers.add(recording.speaker_id)
+            key_samples.add(recording.sample_id)
+            key_utterances.add(entry.utterance_id)
+            key_sentences.add(normalized)
+            if len(sources) == key_examples_per_scenario:
+                break
+        if len(sources) != key_examples_per_scenario:
+            raise PsluFlightError(
+                f"insufficient query-isolated key examples for {scenario!r}: needed "
+                f"{key_examples_per_scenario}, found {len(sources)}"
+            )
+        key_id = f"K{key_index:03d}"
+        card = KeyCardV1(
+            key_id=key_id,
+            definition=SPEECH_NATIVE_SCENARIO_DEFINITIONS[scenario],
+            positive_examples=tuple(source["sentence"] for source in sources),
+            contrastive_boundary=SPEECH_NATIVE_SCENARIO_CONTRASTS[scenario],
+            value_label=scenario,
+        ).validate()
+        key_cards.append(card.as_json())
+        key_material.append(
+            {
+                "key_id": key_id,
+                "sources": sources,
+                "audio_key_source_sample_id": sources[0]["sample_id"],
+            }
+        )
+
+    if not query_speakers.isdisjoint(key_speakers):
+        raise PsluFlightError("query/key speaker isolation failed")
+    if not query_samples.isdisjoint(key_samples):
+        raise PsluFlightError("query/key audio isolation failed")
+    if not query_utterances.isdisjoint(key_utterances):
+        raise PsluFlightError("query/key utterance isolation failed")
+    if not query_sentences.isdisjoint(key_sentences):
+        raise PsluFlightError("query/key text isolation failed")
+
+    split_documents: dict[str, object] = {}
+    for split_name, items in split_items.items():
+        ordered = sorted(items, key=lambda item: (item["value_label"], item["sample_id"]))
+        identity = {
+            "schema": "saea-speech-native-split-v1",
+            "name": split_name,
+            "seed": seed,
+            "sample_ids": [item["sample_id"] for item in ordered],
+        }
+        split_documents[split_name] = {
+            **identity,
+            "split_identity_hash": _binding_sha256(identity),
+            "items": ordered,
+        }
+    unsigned: dict[str, object] = {
+        "schema": "saea-speech-native-binding-v1",
+        "status": "MODEL-FREE BINDING; NOT AN EXPOSURE REGISTRATION",
+        "seed": seed,
+        "source_split": "SLURP train real speech only",
+        "splits": split_documents,
+        "key_cards": key_cards,
+        "key_material": key_material,
+        "isolation_audit": {
+            "query_sample_count": len(query_samples),
+            "query_speaker_count": len(query_speakers),
+            "key_example_count": len(key_samples),
+            "query_key_sample_overlap": 0,
+            "query_key_utterance_overlap": 0,
+            "query_key_normalized_sentence_overlap": 0,
+            "query_key_speaker_overlap": 0,
+        },
+    }
+    return {**unsigned, "binding_sha256": _binding_sha256(unsigned)}
 
 
 # ---------------------------------------------------------------------------
@@ -475,6 +1166,7 @@ def run_pslu_flight(
 
 
 __all__ = [
+    "KeyCardV1",
     "PSLU_ARMS",
     "PSLU_PHASE1_ARM",
     "PSLU_PHASE2_ARMS",
@@ -483,13 +1175,21 @@ __all__ = [
     "PsluFlightSummary",
     "PsluRosters",
     "PsluSampleManifest",
+    "SPEECH_NATIVE_KEY_REPRESENTATIONS",
+    "SPEECH_NATIVE_MATCHER_POLICIES",
+    "SPEECH_NATIVE_SCENARIO_CONTRASTS",
+    "SPEECH_NATIVE_SCENARIO_DEFINITIONS",
+    "SpeechNativeDecision",
     "assert_never_calls_ontology_miner",
+    "build_speech_native_binding",
     "load_pslu_rosters",
     "load_pslu_sample_manifest",
     "pslu_supply_packet",
     "render_roster_entries",
+    "render_speech_native_keys",
     "render_type_vocabulary",
     "run_pslu_flight",
+    "run_speech_native_matcher",
     "select_pslu_samples",
 ]
 

@@ -11,6 +11,7 @@ import pytest
 
 from speech_aware_evidence_acquisition.contracts import (
     MODEL_LOCK_KEY,
+    RUNTIME_RECEIPT_SCHEMA_V3,
     ExecutionPlan,
     FrozenCoreGate,
     GateClosed,
@@ -430,6 +431,63 @@ class TestRuntimeReceiptGenerator:
             "llama.cpp/build/bin/libfake-impl.so"
         ]
 
+    def test_v3_inference_receipt_binds_decoder_only(self, synthetic_world, tmp_path):
+        runtime_root = self._llama_checkout(tmp_path)
+        self._with_models(synthetic_world)
+        receipt = build_runtime_receipt(
+            synthetic_world.lock_path,
+            synthetic_world.data_root,
+            runtime_root,
+            role="inference",
+        )
+        assert receipt["schema"] == RUNTIME_RECEIPT_SCHEMA_V3
+        assert receipt["role"] == "inference"
+        assert [Path(entry["path"]).name for entry in receipt["gguf_files"]] == [
+            "model.gguf"
+        ]
+
+    def test_receipt_hashes_an_explicit_model_materialization_root(
+        self, synthetic_world, tmp_path
+    ):
+        runtime_root = self._llama_checkout(tmp_path)
+        self._with_models(synthetic_world)
+        materialization_root = tmp_path / "fast-ext4"
+        canonical_subdir = Path("models") / MODEL_LOCK_KEY
+        shutil.copytree(
+            synthetic_world.data_root / canonical_subdir,
+            materialization_root / canonical_subdir,
+        )
+        shutil.rmtree(synthetic_world.data_root / canonical_subdir)
+
+        receipt = build_runtime_receipt(
+            synthetic_world.lock_path,
+            synthetic_world.data_root,
+            runtime_root,
+            model_root=materialization_root,
+            role="inference",
+        )
+
+        assert receipt["gguf_files"][0]["path"] == (
+            f"models/{MODEL_LOCK_KEY}/model.gguf"
+        )
+        assert receipt["gguf_files"][0]["sha256"] == _sha(b"gguf-one")
+
+    def test_v3_preprocess_receipt_binds_decoder_and_mmproj(self, synthetic_world, tmp_path):
+        runtime_root = self._llama_checkout(tmp_path)
+        self._with_models(synthetic_world)
+        receipt = build_runtime_receipt(
+            synthetic_world.lock_path,
+            synthetic_world.data_root,
+            runtime_root,
+            role="preprocess",
+        )
+        assert receipt["schema"] == RUNTIME_RECEIPT_SCHEMA_V3
+        assert receipt["role"] == "preprocess"
+        assert {Path(entry["path"]).name for entry in receipt["gguf_files"]} == {
+            "model.gguf",
+            "mmproj.gguf",
+        }
+
     def test_stale_build_from_other_commit_refused(self, synthetic_world, tmp_path):
         runtime_root = self._llama_checkout(tmp_path)
         self._with_models(synthetic_world)
@@ -595,3 +653,28 @@ class TestRuntimeReceiptGenerator:
         assert default_path.is_file()
         receipt = json.loads(default_path.read_text(encoding="utf-8"))
         assert receipt["model_lock_key"] == MODEL_LOCK_KEY
+
+    def test_cli_runtime_command_can_bind_the_existing_named_llama_checkout(
+        self, synthetic_world, tmp_path, monkeypatch
+    ):
+        from speech_aware_evidence_acquisition.e0.generate import main as generate_main
+
+        monkeypatch.setenv("SPEECHRL_DATA_DIR", str(synthetic_world.data_root))
+        runtime_root = self._llama_checkout(tmp_path)
+        (runtime_root / "llama.cpp").rename(runtime_root / "llama.cpp-featcache")
+        self._with_models(synthetic_world)
+        out_path = tmp_path / "runtime-inference.json"
+        exit_code = generate_main(
+            [
+                "runtime",
+                "--lock", str(synthetic_world.lock_path),
+                "--runtime-root", str(runtime_root),
+                "--llama-dir-name", "llama.cpp-featcache",
+                "--role", "inference",
+                "--out", str(out_path),
+            ]
+        )
+        assert exit_code == 0
+        receipt = json.loads(out_path.read_text(encoding="utf-8"))
+        assert receipt["role"] == "inference"
+        assert receipt["llama_cpp"]["binary_path"].startswith("llama.cpp-featcache/")

@@ -6,6 +6,8 @@ documents and flight facts, never a real model/server contact.
 
 from __future__ import annotations
 
+import json
+
 import pytest
 
 from speech_aware_evidence_acquisition.analysis import pemb4r_read as r
@@ -369,3 +371,47 @@ def test_sweep_report_to_json_and_render_do_not_raise():
     assert payload["schema"] == r.REPORT_SCHEMA
     rendered = r.render_sweep_report(report)
     assert "OVERALL" in rendered
+
+
+def test_model_free_closure_records_owner_cancellation_of_c_decode():
+    document = _full_retrieval_plan_document()
+    gold = {"s1": "iot", "s2": "weather"}
+    report = r.build_pemb4r_sweep_report(
+        retrieval_plan_document=document,
+        gold_scenarios=gold,
+        c_decode_status=r.C_DECODE_CANCELED_OWNER_20260821,
+    )
+
+    payload = r.sweep_report_to_json(report)
+    assert report.verdict.c_decode is None
+    assert payload["verdict"]["c_decode_status"] == r.C_DECODE_CANCELED_OWNER_20260821
+    assert "CANCELED-BY-OWNER" in r.render_sweep_report(report)
+
+
+def test_repeat_delta_is_derived_from_persisted_vector_pairs(tmp_path):
+    (tmp_path / "lco3-jitter-vectors.json").write_text(
+        json.dumps({"a": [1.0, 0.0], "b": [1.0, 0.0]}), encoding="utf-8"
+    )
+    (tmp_path / "lco7-jitter-vectors.json").write_text(
+        json.dumps({"a": [0.0, 1.0], "b": [0.0, 1.0]}), encoding="utf-8"
+    )
+    (tmp_path / "qw-jitter-vectors.json").write_text(
+        json.dumps({"a": [1.0, 0.0], "b": [0.0, 1.0]}), encoding="utf-8"
+    )
+
+    deltas = r.load_repeat_delta_by_model(tmp_path)
+
+    assert deltas == {flight.MODEL_LCO3: 0.0, flight.MODEL_LCO7: 0.0, flight.MODEL_QW: 1.0}
+
+
+def test_flight_facts_are_reused_from_the_landed_state():
+    state = {
+        "gate_c_pooling_differ_lco3": {"pooling_override_present": True},
+        "gate_c_pooling_differ_lco7": {"pooling_override_present": False},
+        "sweeps": {arm_id: {"arm_id": arm_id} for arm_id in flight.ARM_IDS},
+    }
+
+    dropped, pooling = r.flight_facts_from_state(state)
+
+    assert dropped == {}
+    assert pooling == {flight.MODEL_LCO3: True, flight.MODEL_LCO7: False}

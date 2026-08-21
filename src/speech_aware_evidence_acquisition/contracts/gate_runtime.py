@@ -30,7 +30,7 @@ import speech_aware_evidence_acquisition.contracts as _contracts_pkg
 
 from .errors import GateClosed
 from .gate_runtime_gguf import _GgufIdentityMixin
-from .identifiers import RUNTIME_RECEIPT_SCHEMA, _SHA256
+from .identifiers import RUNTIME_RECEIPT_SCHEMA, RUNTIME_RECEIPT_SCHEMA_V3, _SHA256
 from .receipts import _resolve_under, _safe_relative_path
 
 _REPORTED_BUILD = re.compile(r"\(([0-9a-f]{7,40})\)")
@@ -152,7 +152,18 @@ class _RuntimeValidationMixin(_GgufIdentityMixin):
         """
 
         runtime = self._load(self.runtime_receipt, "runtime receipt")
-        self._require_schema(runtime, RUNTIME_RECEIPT_SCHEMA, "runtime receipt")
+        schema = runtime.get("schema")
+        if schema not in {RUNTIME_RECEIPT_SCHEMA, RUNTIME_RECEIPT_SCHEMA_V3}:
+            raise GateClosed(
+                "runtime receipt schema mismatch: expected "
+                f"{RUNTIME_RECEIPT_SCHEMA!r} or {RUNTIME_RECEIPT_SCHEMA_V3!r}, "
+                f"found {schema!r}"
+            )
+        if runtime.get("study") != _contracts_pkg.STUDY_SLUG:
+            raise GateClosed(
+                "runtime receipt study identity mismatch: expected "
+                f"{_contracts_pkg.STUDY_SLUG!r}, found {runtime.get('study')!r}"
+            )
         expected_keys = {
             "schema",
             "study",
@@ -161,6 +172,14 @@ class _RuntimeValidationMixin(_GgufIdentityMixin):
             "gguf_files",
             "runtime_libraries",
         }
+        role = "legacy"
+        if schema == RUNTIME_RECEIPT_SCHEMA_V3:
+            expected_keys.add("role")
+            role = runtime.get("role")
+            if role not in {"preprocess", "inference"}:
+                raise GateClosed(
+                    "runtime receipt v3 role must be 'preprocess' or 'inference'"
+                )
         if set(runtime) != expected_keys:
             raise GateClosed(f"runtime receipt must have exact keys {sorted(expected_keys)}")
         if runtime["model_lock_key"] != self.expected_model_lock_key:
@@ -174,17 +193,35 @@ class _RuntimeValidationMixin(_GgufIdentityMixin):
         files = runtime["gguf_files"]
         if not isinstance(files, list) or not files:
             raise GateClosed("runtime receipt lacks a non-empty gguf_files list")
-        if len(files) != lock_entry["files"]:
+        if role != "inference" and len(files) != lock_entry["files"]:
             raise GateClosed(
                 f"runtime receipt declares {len(files)} model files but the lock freezes "
                 f"{lock_entry['files']}; extra or missing model files are refused"
             )
+        if role == "inference":
+            if any(
+                isinstance(entry, Mapping)
+                and "mmproj" in Path(str(entry.get("path", ""))).name.lower()
+                for entry in files
+            ):
+                raise GateClosed("inference runtime receipt must exclude mmproj")
+        elif role == "preprocess" and not any(
+            isinstance(entry, Mapping)
+            and "mmproj" in Path(str(entry.get("path", ""))).name.lower()
+            for entry in files
+        ):
+            raise GateClosed("preprocess runtime receipt must bind mmproj")
         # R0 repair refactor stage 2 (part C): the per-file cheap/full
         # identity loop over `files` lives in `_GgufIdentityMixin.
         # _verify_gguf_files` (gate_runtime_gguf.py) now -- see this class's
         # own module docstring for why the split is behaviour-preserving.
         self._verify_gguf_files(
-            files, lock_entry, subdir, full_hash=full_hash, diagnostics=diagnostics
+            files,
+            lock_entry,
+            subdir,
+            full_hash=full_hash,
+            diagnostics=diagnostics,
+            require_lock_totals=role != "inference",
         )
 
         build = runtime["llama_cpp"]

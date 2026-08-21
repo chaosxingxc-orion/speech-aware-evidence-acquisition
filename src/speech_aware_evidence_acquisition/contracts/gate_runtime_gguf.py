@@ -47,6 +47,7 @@ class _GgufIdentityMixin:
         *,
         full_hash: bool | None,
         diagnostics: dict[str, object] | None,
+        require_lock_totals: bool = True,
     ) -> None:
         """Verify every entry in ``files`` against ``lock_entry``'s frozen
         totals, honoring the cheap-identity fast path / full-rehash policy
@@ -75,7 +76,8 @@ class _GgufIdentityMixin:
             if resolved_full_hash is not None
             else receipt_sha256 not in _contracts_pkg._SESSION_FULL_HASH_DONE
         )
-        cache_path = Path(self.data_root) / RUNTIME_IDENTITY_CACHE_FILENAME
+        materialization_root = Path(self.model_root or self.data_root)
+        cache_path = materialization_root / RUNTIME_IDENTITY_CACHE_FILENAME
         cached_entries = (
             None if do_full else _contracts_pkg._load_identity_cache(cache_path, receipt_sha256)
         )
@@ -106,7 +108,7 @@ class _GgufIdentityMixin:
                 or _SHA256.fullmatch(recorded_sha) is None
             ):
                 raise GateClosed(f"{label} lacks valid bytes/sha256")
-            resolved = _resolve_under(self.data_root, relative, f"{label}.path")
+            resolved = _resolve_under(materialization_root, relative, f"{label}.path")
 
             cheap = _contracts_pkg._cheap_file_identity(resolved, f"{label}.path")
             cached_entry = cached_entries.get(relative) if cached_entries is not None else None
@@ -151,7 +153,7 @@ class _GgufIdentityMixin:
                 full_hashed_count += 1
             new_cache_entries[relative] = cheap
             total_bytes += actual_bytes
-        if total_bytes != lock_entry["size_bytes"]:
+        if require_lock_totals and total_bytes != lock_entry["size_bytes"]:
             raise GateClosed(
                 f"model files total {total_bytes} bytes but the lock freezes "
                 f"{lock_entry['size_bytes']}; model touch refused"

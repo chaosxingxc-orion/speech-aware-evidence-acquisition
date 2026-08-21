@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import struct
 import wave
 from dataclasses import dataclass
 from pathlib import Path
@@ -18,6 +19,10 @@ import pytest
 from speech_aware_evidence_acquisition.contracts import ExecutionPlan, ExecutionScopeError
 from speech_aware_evidence_acquisition.core.config import protocol_hash
 from speech_aware_evidence_acquisition.core.model.slices import SliceRecord
+from speech_aware_evidence_acquisition.core.model import (
+    SpeechFeatureChunkData,
+    materialize_speech_feature_packet,
+)
 from speech_aware_evidence_acquisition.rails import (
     DEFAULT_RAILS_ARM,
     AudioRef,
@@ -158,6 +163,56 @@ def _supplied_messages(media_relpath: str, *texts: str):
     )
 
 
+def _speech_feature_world(world: _World, tmp_path: Path):
+    feature_root = tmp_path / "features"
+    packets = {}
+    bindings = {}
+    for sample in world.samples:
+        packet = materialize_speech_feature_packet(
+            feature_root=feature_root,
+            packet_id=f"slurp/train/{sample.sample_id}",
+            audio_sha256=sample.audio_ref.sha256,
+            encoder_receipt_sha256="e" * 64,
+            decoder_gguf_sha256="d" * 64,
+            mmproj_sha256="f" * 64,
+            position_mode="mrope_1d",
+            causal_attention=True,
+            chunks=(
+                SpeechFeatureChunkData(
+                    n_tokens=2,
+                    n_pos=2,
+                    n_embd=4,
+                    feature_bytes=struct.pack("<8f", *range(8)),
+                    position_bytes=struct.pack("<8i", 0, 1, 0, 1, 0, 1, 0, 1),
+                ),
+            ),
+        )
+        packets[sample.sample_id] = packet
+        bindings[sample.sample_id] = {
+            "packet_id": packet.packet_id,
+            "sha256": packet.packet_sha256,
+        }
+    return feature_root, packets["s1"], bindings
+
+
+def _speech_feature_messages(packet, *texts: str):
+    content = [{"type": "text", "text": text} for text in texts]
+    content.append(
+        {
+            "type": "input_speech_features",
+            "speech_features": {
+                "packet_id": packet.packet_id,
+                "sha256": packet.packet_sha256,
+                "role": "query",
+            },
+        }
+    )
+    return (
+        {"role": "system", "content": "Choose exactly one opaque key id."},
+        {"role": "user", "content": content},
+    )
+
+
 # ---------------------------------------------------------------------------
 # build_payload_binding
 # ---------------------------------------------------------------------------
@@ -227,6 +282,114 @@ def test_default_arm_is_fixed_legal_context(tmp_path):
     world = _World(tmp_path)
     client, _, _ = _client(world, tmp_path)
     assert client.arm == DEFAULT_RAILS_ARM == "fixed-legal-context"
+
+
+def test_speech_feature_arm_builds_audited_packet_payload_on_existing_adapter(tmp_path):
+    world = _World(tmp_path)
+    feature_root, packet, bindings = _speech_feature_world(world, tmp_path)
+    client, _, transport = _client(
+        world,
+        tmp_path,
+        arm="speech-feature-query",
+        speech_feature_root=feature_root,
+        speech_packet_bindings=bindings,
+    )
+    text = client.complete(
+        _speech_feature_messages(packet, "key-001: turn a light on"),
+        speech_feature_sample_id="s1",
+        key_representation_id="k1-text-card-v1",
+        matcher_policy_id="m1-listwise-v1",
+    )
+    assert text == "ok"
+    payload = transport.calls[0]
+    assert payload["speech_feature_parts"] == [
+        {"packet_id": packet.packet_id, "sha256": packet.packet_sha256, "role": "query"}
+    ]
+    assert payload["query_source"] == "speech_features"
+    assert payload["key_representation_id"] == "k1-text-card-v1"
+    assert payload["matcher_policy_id"] == "m1-listwise-v1"
+    assert payload["mmproj_loaded"] is False
+    assert payload["media_relpath"] == world.media_relpath("s1")
+
+
+def test_speech_feature_construction_uses_one_bounded_batch_validation(tmp_path, monkeypatch):
+    from speech_aware_evidence_acquisition.rails import core_client as client_module
+
+    world = _World(tmp_path)
+    feature_root, _, bindings = _speech_feature_world(world, tmp_path)
+    original = client_module.load_speech_feature_packets
+    calls = []
+
+    def tracked_loader(root, descriptors, **kwargs):
+        calls.append((root, tuple(descriptors), kwargs))
+        return original(root, descriptors, **kwargs)
+
+    monkeypatch.setattr(client_module, "load_speech_feature_packets", tracked_loader)
+    _client(
+        world,
+        tmp_path,
+        arm="speech-feature-query",
+        speech_feature_root=feature_root,
+        speech_packet_bindings=bindings,
+    )
+
+    assert len(calls) == 1
+    assert calls[0][0] == feature_root.resolve()
+    assert calls[0][2]["workers"] == 8
+    assert [descriptor["packet_id"] for descriptor in calls[0][1]] == [
+        bindings[sample_id]["packet_id"] for sample_id in sorted(bindings)
+    ]
+
+
+def test_speech_feature_arm_refuses_raw_audio_or_unbound_query_packet(tmp_path):
+    world = _World(tmp_path)
+    feature_root, packet, bindings = _speech_feature_world(world, tmp_path)
+    client, _, _ = _client(
+        world,
+        tmp_path,
+        arm="speech-feature-query",
+        speech_feature_root=feature_root,
+        speech_packet_bindings=bindings,
+    )
+    with pytest.raises(FrozenCoreClientError, match="must not carry input_audio"):
+        client.complete(
+            _zero_supply_messages(world.media_relpath("s1")),
+            speech_feature_sample_id="s1",
+            key_representation_id="k1",
+            matcher_policy_id="m1",
+        )
+    forged = _speech_feature_messages(packet)
+    forged[1]["content"][0]["speech_features"]["packet_id"] = "slurp/train/other"
+    with pytest.raises(FrozenCoreClientError, match="bound packet"):
+        client.complete(
+            forged,
+            speech_feature_sample_id="s1",
+            key_representation_id="k1",
+            matcher_policy_id="m1",
+        )
+
+
+def test_speech_feature_arm_requires_packet_on_every_decision_call(tmp_path):
+    world = _World(tmp_path)
+    feature_root, _, bindings = _speech_feature_world(world, tmp_path)
+    client, _, _ = _client(
+        world,
+        tmp_path,
+        arm="speech-feature-query",
+        speech_feature_root=feature_root,
+        speech_packet_bindings=bindings,
+    )
+    messages = (
+        {"role": "system", "content": "Choose one key."},
+        {"role": "user", "content": [{"type": "text", "text": "key-001"}]},
+    )
+    with pytest.raises(FrozenCoreClientError, match="exactly one query packet"):
+        client.complete(
+            messages,
+            speech_feature_sample_id="s1",
+            key_representation_id="k1",
+            matcher_policy_id="m2-step-2",
+        )
 
 
 # ---------------------------------------------------------------------------

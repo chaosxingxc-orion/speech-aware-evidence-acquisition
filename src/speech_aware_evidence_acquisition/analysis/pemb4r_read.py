@@ -6,7 +6,11 @@ pfew_read`` (built and coordinator-reviewed BEFORE the read, per this
 probe's own discipline section 6): scores the flight's own already-written
 ``retrieval_plan.json`` (:mod:`rails.probes.pemb4r_flight`'s own flight-side,
 GOLD-FREE artifact) against SCORING-SIDE-ONLY devel gold, and separately
-scores C-DECODE's own responses.
+scores C-DECODE's own responses when such responses are explicitly supplied.
+The 2026-08-21 owner amendment canceled C-DECODE before any generation
+contact and authorized the existing seven-arm vector read to close this
+probe model-free. The report therefore carries an explicit cancellation
+status; a missing C-DECODE comparison is never left ambiguous.
 
 **Explicit-input discipline** (mission instruction, restated here as this
 module's own architectural commitment): every function in this module is a
@@ -78,7 +82,7 @@ from pathlib import Path
 from typing import Mapping, Sequence
 
 from ..rails.probes import pemb4r_flight as flight
-from ..rails.probes.pemb4r_flight import ARMS_BY_ID, AUDIO_ARM_IDS, MODEL_GLAP, MODEL_LCO3, MODEL_LCO7, TEXT_ARM_IDS
+from ..rails.probes.pemb4r_flight import ARMS_BY_ID, AUDIO_ARM_IDS, MODEL_LCO3, MODEL_LCO7, TEXT_ARM_IDS
 from .pemb_read import ConfusionCell, PembReadError, build_confusion_table
 
 REPORT_SCHEMA = "saea-pemb4r-read-v1"
@@ -97,6 +101,8 @@ CITED_AUDIO_VS_LABEL_FLOOR = (0.0500, 0.1333)
 
 C_DECODE_HELPS_MIN_NET = 3
 C_DECODE_HURTS_MAX_NET = -3
+C_DECODE_NOT_PROVIDED = "NOT-PROVIDED"
+C_DECODE_CANCELED_OWNER_20260821 = "CANCELED-BY-OWNER-2026-08-21"
 
 # The consumed P-FEW attempt (registration section 4: "the consumed FS-NONE
 # rows"), verdict docs/readiness/2026-08-19-pfew-verdict.md: FS-NONE
@@ -113,6 +119,69 @@ class Pemb4rReadError(RuntimeError):
     """A retrieval-plan/manifest input is malformed, an id-set mismatch is
     detected, or a harness-defect fail-closed check tripped -- never raised
     for an ordinary, structurally clean read."""
+
+
+def load_repeat_delta_by_model(flight_run_dir: Path) -> dict[str, float]:
+    """Derive cosine-distance noise floors from the landed repeat pairs."""
+
+    filenames = {
+        flight.MODEL_LCO3: "lco3-jitter-vectors.json",
+        flight.MODEL_LCO7: "lco7-jitter-vectors.json",
+        flight.MODEL_QW: "qw-jitter-vectors.json",
+    }
+    result: dict[str, float] = {}
+    for model, filename in filenames.items():
+        path = Path(flight_run_dir) / filename
+        try:
+            document = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, UnicodeError, json.JSONDecodeError) as error:
+            raise Pemb4rReadError(f"cannot read repeat-call pair {path}: {error}") from error
+        if not isinstance(document, Mapping) or set(document) != {"a", "b"}:
+            raise Pemb4rReadError(f"{path}: repeat-call pair must have exact a/b keys")
+        a = document["a"]
+        b = document["b"]
+        if (
+            not isinstance(a, list)
+            or not isinstance(b, list)
+            or not a
+            or len(a) != len(b)
+            or any(
+                isinstance(value, bool) or not isinstance(value, (int, float))
+                for value in [*a, *b]
+            )
+        ):
+            raise Pemb4rReadError(
+                f"{path}: repeat-call vectors are malformed or dimension-mismatched"
+            )
+        result[model] = max(0.0, 1.0 - flight._cosine(a, b))
+    return result
+
+
+def flight_facts_from_state(
+    state: Mapping[str, object],
+) -> tuple[dict[str, str], dict[str, bool]]:
+    """Reuse explicit pooling and completed-arm facts from flight state."""
+
+    pooling: dict[str, bool] = {}
+    for model in (flight.MODEL_LCO3, flight.MODEL_LCO7):
+        field = f"gate_c_pooling_differ_{model}"
+        gate = state.get(field)
+        if not isinstance(gate, Mapping) or not isinstance(
+            gate.get("pooling_override_present"), bool
+        ):
+            raise Pemb4rReadError(
+                f"flight state lacks a valid {field}.pooling_override_present fact"
+            )
+        pooling[model] = gate["pooling_override_present"]
+    sweeps = state.get("sweeps")
+    if not isinstance(sweeps, Mapping):
+        raise Pemb4rReadError("flight state lacks a sweeps mapping")
+    dropped = {
+        arm_id: "NOT-FLOWN: no completed sweep in the landed flight state"
+        for arm_id in flight.ARM_IDS
+        if arm_id not in sweeps
+    }
+    return dropped, pooling
 
 
 # ---------------------------------------------------------------------------
@@ -164,6 +233,28 @@ def verify_retrieval_plan_document(
             if tuple(row.get("dedup_labels_k1", ())) != recomputed_row.dedup_labels_k1:
                 mismatches.append(f"{arm_id}/{sample_id}: dedup_labels_k1 mismatch")
     return (len(mismatches) == 0, tuple(mismatches))
+
+
+def verify_landed_retrieval_plan(
+    root: Path, retrieval_plan_document: Mapping[str, object]
+) -> tuple[bool, tuple[str, ...]]:
+    """Load existing vector manifests through the flight's own verified
+    loaders and independently re-derive the retrieval plan."""
+
+    bank = flight.load_bank_manifest(root)
+    bank_labels = {entry.bank_id: entry.gold_scenario for entry in bank.entries}
+    bank_vectors = {
+        model: flight.load_bank_vectors(root, model).vectors for model in flight.MODELS
+    }
+    query_vectors = {
+        arm_id: flight.load_query_vectors(root, arm_id).vectors for arm_id in flight.ARM_IDS
+    }
+    return verify_retrieval_plan_document(
+        retrieval_plan_document,
+        bank_vectors_by_model=bank_vectors,
+        bank_labels=bank_labels,
+        query_vectors_by_arm=query_vectors,
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -552,6 +643,7 @@ class Pemb4rVerdict:
     knn_beats_label_match: bool
     knn_beats_label_match_detail: str
     c_decode: CDecodePairedComparison | None
+    c_decode_status: str
     overall: str
 
 
@@ -562,7 +654,12 @@ def evaluate_pemb4r_verdict(
     all_arm_accuracies: Mapping[str, float | None],
     pooling_override_present_by_model: Mapping[str, bool],
     c_decode: CDecodePairedComparison | None,
+    c_decode_status: str = C_DECODE_NOT_PROVIDED,
 ) -> Pemb4rVerdict:
+    if c_decode is not None and c_decode_status != C_DECODE_NOT_PROVIDED:
+        raise Pemb4rReadError(
+            "C-DECODE cannot be both evaluated and assigned a non-default status"
+        )
     per_audio_findings: dict[str, tuple[str, ...]] = {}
     per_audio_detail: dict[str, str] = {}
     for arm_id in AUDIO_ARM_IDS:
@@ -597,6 +694,7 @@ def evaluate_pemb4r_verdict(
         knn_beats_label_match=knn_beats,
         knn_beats_label_match_detail=knn_beats_detail,
         c_decode=c_decode,
+        c_decode_status=c_decode_status,
         overall=overall,
     )
 
@@ -625,6 +723,7 @@ def build_pemb4r_sweep_report(
     repeat_delta_by_model: Mapping[str, float] | None = None,
     c_decode_correct_by_sample: Mapping[str, bool] | None = None,
     cited_fs_none_correct_by_sample: Mapping[str, bool] | None = None,
+    c_decode_status: str = C_DECODE_NOT_PROVIDED,
     retrieval_plan_verification: tuple[bool, tuple[str, ...]] | None = None,
 ) -> Pemb4rSweepReport:
     """Pure function of its inputs (module docstring). Every "flight fact"
@@ -660,6 +759,8 @@ def build_pemb4r_sweep_report(
     text_accuracies = {arm_id: arm_reports[arm_id].vote_accuracy_k5 for arm_id in TEXT_ARM_IDS}
     all_accuracies = {arm_id: report.vote_accuracy_k5 for arm_id, report in arm_reports.items()}
 
+    if not isinstance(c_decode_status, str) or not c_decode_status:
+        raise Pemb4rReadError("c_decode_status must be a non-empty string")
     c_decode_comparison: CDecodePairedComparison | None = None
     if c_decode_correct_by_sample is not None and cited_fs_none_correct_by_sample is not None:
         c_decode_comparison = evaluate_c_decode_vs_cited_fs_none(c_decode_correct_by_sample, cited_fs_none_correct_by_sample)
@@ -670,6 +771,7 @@ def build_pemb4r_sweep_report(
         all_arm_accuracies=all_accuracies,
         pooling_override_present_by_model=pooling_override_present_by_model,
         c_decode=c_decode_comparison,
+        c_decode_status=c_decode_status,
     )
 
     verified, mismatches = retrieval_plan_verification if retrieval_plan_verification is not None else (False, ("not verified -- caller supplied no vectors to re-derive against",))
@@ -767,6 +869,7 @@ def sweep_report_to_json(report: Pemb4rSweepReport) -> dict[str, object]:
                     "detail": verdict.c_decode.detail,
                 }
             ),
+            "c_decode_status": verdict.c_decode_status,
             "overall": verdict.overall,
         },
     }
@@ -818,6 +921,8 @@ def render_sweep_report(report: Pemb4rSweepReport) -> str:
     if verdict.c_decode is not None:
         lines.append(f"[C-DECODE] {verdict.c_decode.verdict}")
         lines.append(f"  {verdict.c_decode.detail}")
+    else:
+        lines.append(f"[C-DECODE] {verdict.c_decode_status}")
     lines.append("")
     lines.append(f"[OVERALL] {verdict.overall}")
     return "\n".join(lines)
@@ -849,6 +954,18 @@ def _cli_parser():
         "--pooling-override-json", type=Path, default=None, help="model -> pooling_override_present bool, explicit flight facts"
     )
     parser.add_argument("--repeat-delta-json", type=Path, default=None, help="model -> measured repeat-call cosine delta")
+    parser.add_argument(
+        "--flight-state",
+        type=Path,
+        default=None,
+        help="landed flight-state.json; defaults to the committed P-EMB-4R archive",
+    )
+    parser.add_argument(
+        "--flight-run-dir",
+        type=Path,
+        default=None,
+        help="landed attempt directory containing repeat-call vectors",
+    )
     return parser
 
 
@@ -894,9 +1011,24 @@ def main(argv: list[str] | None = None) -> int:
         sample_manifest_path = args.sample_manifest or (repo_root / "configs/probes/g0-binding/pslu-sample-devel-n60.json")
         gold = gold_scenarios_for_run_a(lock, root, repo_root=repo_root, sample_manifest_path=sample_manifest_path)
         retrieval_plan_document = flight.load_retrieval_plan(root)
-        dropped_arms = _load_json_or_empty(args.dropped_arms_json)
-        pooling_override = _load_json_or_empty(args.pooling_override_json)
-        repeat_delta = _load_json_or_empty(args.repeat_delta_json)
+        flight_state_path = args.flight_state or (
+            repo_root
+            / "docs/checks/speech-aware-evidence-acquisition/2026-08-20-pemb4r-flight/flight-state.json"
+        )
+        flight_state = json.loads(Path(flight_state_path).read_text(encoding="utf-8"))
+        if not isinstance(flight_state, Mapping):
+            raise Pemb4rReadError(f"{flight_state_path}: flight state must be a JSON object")
+        state_dropped_arms, state_pooling_override = flight_facts_from_state(flight_state)
+        dropped_arms = _load_json_or_empty(args.dropped_arms_json) or state_dropped_arms
+        pooling_override = _load_json_or_empty(args.pooling_override_json) or state_pooling_override
+        attempt_id = flight_state.get("attempt_id")
+        if not isinstance(attempt_id, str) or not attempt_id:
+            raise Pemb4rReadError(f"{flight_state_path}: flight state lacks attempt_id")
+        flight_run_dir = args.flight_run_dir or (root / "runs" / flight.PROBE_ID / attempt_id)
+        repeat_delta = _load_json_or_empty(args.repeat_delta_json) or load_repeat_delta_by_model(
+            flight_run_dir
+        )
+        retrieval_verification = verify_landed_retrieval_plan(root, retrieval_plan_document)
 
         report = build_pemb4r_sweep_report(
             retrieval_plan_document=retrieval_plan_document,
@@ -904,6 +1036,8 @@ def main(argv: list[str] | None = None) -> int:
             dropped_arms=dropped_arms,
             pooling_override_present_by_model=pooling_override,
             repeat_delta_by_model=repeat_delta,
+            c_decode_status=C_DECODE_CANCELED_OWNER_20260821,
+            retrieval_plan_verification=retrieval_verification,
         )
         document = sweep_report_to_json(report)
         rendered = render_sweep_report(report)
@@ -928,6 +1062,8 @@ __all__ = [
     "CITED_A1R_ACCURACY",
     "CITED_AUDIO_VS_LABEL_FLOOR",
     "CITED_FS_NONE_ACCURACY",
+    "C_DECODE_CANCELED_OWNER_20260821",
+    "C_DECODE_NOT_PROVIDED",
     "CITED_M4_LABEL_MATCH_ACCURACY",
     "CONSUMED_PFEW_ATTEMPT_ID",
     "CONSUMED_PFEW_RUN_EXPERIMENT_ID",
@@ -957,9 +1093,12 @@ __all__ = [
     "evaluate_c_decode_vs_cited_fs_none",
     "evaluate_knn_beats_label_match",
     "evaluate_pemb4r_verdict",
+    "flight_facts_from_state",
+    "load_repeat_delta_by_model",
     "main",
     "majority_vote_label",
     "render_sweep_report",
     "sweep_report_to_json",
     "verify_retrieval_plan_document",
+    "verify_landed_retrieval_plan",
 ]

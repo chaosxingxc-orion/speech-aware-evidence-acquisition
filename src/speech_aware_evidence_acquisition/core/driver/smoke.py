@@ -61,6 +61,7 @@ from ..bundle import FinalizeResult, finalize_bundle
 from ..config import (
     ComposedConfig,
     compose,
+    model_materialization_root,
     model_lock_key,
     protocol_hash as compute_protocol_hash,
     resolve_runtime_receipt_path,
@@ -300,12 +301,15 @@ def _cli_smoke(args: argparse.Namespace) -> int:
         # model_lock_key's own docstring; contracts.FrozenCoreGate.
         # expected_model_lock_key).
         runtime_receipt = load_runtime_receipt(resolve_runtime_receipt_path(repo_root, composed.values))
+        configured_model_root = model_materialization_root(composed.values)
+        model_root = Path(configured_model_root) if configured_model_root is not None else None
         gate = FrozenCoreGate.for_study_repo(
             repo_root,
             root,
             Path(args.runtime_root),
             runtime_receipt_relpath=runtime_receipt_relpath(composed.values),
             expected_model_lock_key=model_lock_key(composed.values),
+            model_root=model_root,
         )
         session = start_session(
             runtime_root=Path(args.runtime_root),
@@ -318,6 +322,8 @@ def _cli_smoke(args: argparse.Namespace) -> int:
             extra_env=_server_env(composed.values),
             receipt_path=session_receipt_path,
             server_log_path=server_log_path,
+            role=runtime_receipt.get("role", "legacy"),
+            model_root=model_root,
         )
         transport_factory = TRANSPORTS.resolve(str(composed.values["transport"]))
         transport = transport_factory(

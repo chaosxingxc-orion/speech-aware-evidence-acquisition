@@ -1,0 +1,62 @@
+P-EMB-4R pinned offline read (docs/readiness/2026-08-20-pemb4r-preregistration-REGISTERED.md)
+====================================================================================
+
+chance=0.0556 CITED: FS-NONE=0.8167 A1'r=0.7833 M4-label-match=0.75 audio-vs-label-floor=(0.05, 0.1333)
+
+retrieval_plan_verified=True (0 mismatch(es))
+
+Mandatory pre-verdict reachability -- per-arm recall@1/3/5 (mechanical ceiling)
+  [a-lco3] vote_acc(K5)=0.1500 recall@1=0.1833 recall@3=0.3000 recall@5=0.3000 within_jitter_noise=0
+  [a-lco7] vote_acc(K5)=0.1167 recall@1=0.1167 recall@3=0.1500 recall@5=0.2000 within_jitter_noise=0
+  [a-glap] vote_acc(K5)=0.3167 recall@1=0.3167 recall@3=0.5167 recall@5=0.5667 within_jitter_noise=0
+  [t-lco3] vote_acc(K5)=0.5500 recall@1=0.5167 recall@3=0.7000 recall@5=0.7833 within_jitter_noise=0
+  [t-lco7] vote_acc(K5)=0.5667 recall@1=0.6333 recall@3=0.7333 recall@5=0.8667 within_jitter_noise=0
+  [t-glap] vote_acc(K5)=0.2167 recall@1=0.2500 recall@3=0.4333 recall@5=0.5167 within_jitter_noise=0
+  [t-qw] vote_acc(K5)=0.8667 recall@1=0.8500 recall@3=0.9167 recall@5=0.9333 within_jitter_noise=2
+
+Cross-arm agreement
+  a-glap vs a-lco3: 5/60 (0.0833)
+  a-glap vs a-lco7: 3/60 (0.0500)
+  a-glap vs t-glap: 12/60 (0.2000)
+  a-glap vs t-lco3: 12/60 (0.2000)
+  a-glap vs t-lco7: 15/60 (0.2500)
+  a-glap vs t-qw: 21/60 (0.3500)
+  a-lco3 vs a-lco7: 18/60 (0.3000)
+  a-lco3 vs t-glap: 3/60 (0.0500)
+  a-lco3 vs t-lco3: 7/60 (0.1167)
+  a-lco3 vs t-lco7: 13/60 (0.2167)
+  a-lco3 vs t-qw: 9/60 (0.1500)
+  a-lco7 vs t-glap: 0/60 (0.0000)
+  a-lco7 vs t-lco3: 2/60 (0.0333)
+  a-lco7 vs t-lco7: 1/60 (0.0167)
+  a-lco7 vs t-qw: 8/60 (0.1333)
+  t-glap vs t-lco3: 16/60 (0.2667)
+  t-glap vs t-lco7: 13/60 (0.2167)
+  t-glap vs t-qw: 14/60 (0.2333)
+  t-lco3 vs t-lco7: 24/60 (0.4000)
+  t-lco3 vs t-qw: 30/60 (0.5000)
+  t-lco7 vs t-qw: 36/60 (0.6000)
+
+Feasibility matrix
+  [FLYABLE-NOW] a-lco3: flown this attempt
+  [FLYABLE-NOW] a-lco7: flown this attempt
+  [FLYABLE-NOW] a-glap: flown this attempt
+  [FLYABLE-NOW] t-lco3: flown this attempt
+  [FLYABLE-NOW] t-lco7: flown this attempt
+  [FLYABLE-NOW] t-glap: flown this attempt
+  [FLYABLE-NOW] t-qw: flown this attempt
+  [ENVIRONMENT-GATED] omni-embed-nemotron-3b: NC license + a pinned transformers branch (registration section 3) -- never flown by this probe
+  [ENVIRONMENT-GATED] clsp: transformers 5.12 incompatibility (registration section 3) -- never flown by this probe
+
+Per-audio-arm findings
+  [a-lco3] (none) -- a-lco3 (lco3) vote accuracy(K=5) 0.1500 -- SCOPED (POOLING-OVERRIDE-PRESENT on this stack, never a model-level claim)
+  [a-lco7] (none) -- a-lco7 (lco7) vote accuracy(K=5) 0.1167 -- SCOPED (POOLING-OVERRIDE-PRESENT on this stack, never a model-level claim)
+  [a-glap] ['REGISTER-RESCUE'] -- a-glap (glap) vote accuracy(K=5) 0.3167
+
+[AUDIO-CONTENT-ABSENT] False
+  max(audio)=0.3167 (ceiling 0.15), best_text=0.8667 (floor 0.65) -- not met
+[KNN-BEATS-LABEL-MATCH] True
+  best arm t-qw vote accuracy(K=5) 0.8667 vs CITED M4 label-match 0.7500 -- FIRED
+[C-DECODE] CANCELED-BY-OWNER-2026-08-21
+
+[OVERALL] REGISTER-RESCUE(a-glap) + KNN-BEATS-LABEL-MATCH

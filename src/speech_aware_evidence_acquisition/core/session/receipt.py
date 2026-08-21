@@ -21,6 +21,7 @@ from . import SessionError, _LOOPBACK_LITERALS
 from .paths import _safe_relative
 
 SESSION_RECEIPT_SCHEMA = "saea-session-receipt-v1"
+SESSION_RECEIPT_SCHEMA_V2 = "saea-session-receipt-v2"
 
 _SHA256 = re.compile(r"[0-9a-f]{64}\Z")
 
@@ -72,11 +73,26 @@ class SessionReceipt:
     # combined stdout/stderr to be persisted to -- never independently
     # re-derived here.
     server_log_path: str | None = None
+    # V2 makes the two-stage speech-feature boundary explicit. Historical
+    # V1 receipts remain byte-compatible and read as ``legacy``.
+    role: str = "legacy"
+    server_env_keys: tuple[str, ...] = ()
 
     def validate(self) -> "SessionReceipt":
-        if self.schema != SESSION_RECEIPT_SCHEMA:
+        if self.schema not in (SESSION_RECEIPT_SCHEMA, SESSION_RECEIPT_SCHEMA_V2):
             raise SessionError(
-                f"session receipt schema must be {SESSION_RECEIPT_SCHEMA!r}, got {self.schema!r}"
+                "session receipt schema must be "
+                f"{SESSION_RECEIPT_SCHEMA!r} or {SESSION_RECEIPT_SCHEMA_V2!r}, "
+                f"got {self.schema!r}"
+            )
+        if self.schema == SESSION_RECEIPT_SCHEMA and self.role != "legacy":
+            raise SessionError("session receipt v1 role must be 'legacy'")
+        if self.schema == SESSION_RECEIPT_SCHEMA_V2 and self.role not in {
+            "preprocess",
+            "inference",
+        }:
+            raise SessionError(
+                "session receipt v2 role must be 'preprocess' or 'inference'"
             )
         if self.study != STUDY_SLUG:
             raise SessionError(f"session receipt study must be {STUDY_SLUG!r}, got {self.study!r}")
@@ -122,10 +138,41 @@ class SessionReceipt:
             not isinstance(self.server_log_path, str) or not self.server_log_path.strip()
         ):
             raise SessionError("session server_log_path must be a non-empty string or None")
+        if (
+            not isinstance(self.server_env_keys, tuple)
+            or not all(isinstance(key, str) and key for key in self.server_env_keys)
+            or len(set(self.server_env_keys)) != len(self.server_env_keys)
+        ):
+            raise SessionError(
+                "session server_env_keys must be a tuple of unique non-empty strings"
+            )
+        if self.role == "inference":
+            forbidden_argv = [
+                part
+                for part in self.argv
+                if "mmproj" in part.lower() and part != "--no-mmproj"
+            ]
+            if forbidden_argv:
+                raise SessionError(
+                    "inference session argv must not mention mmproj artifacts or flags: "
+                    f"{forbidden_argv!r}"
+                )
+            if "--no-mmproj" not in self.argv:
+                raise SessionError("inference session argv must include explicit --no-mmproj")
+            if any("mmproj" in Path(entry.path).name.lower() for entry in self.model_files):
+                raise SessionError("inference session model_files must not contain mmproj")
+            if "LLAMA_MTMD_FEAT_CACHE_DIR" in self.server_env_keys:
+                raise SessionError(
+                    "inference session must not set LLAMA_MTMD_FEAT_CACHE_DIR"
+                )
+        if self.role == "preprocess" and not any(
+            "mmproj" in Path(entry.path).name.lower() for entry in self.model_files
+        ):
+            raise SessionError("preprocess session must bind an mmproj model file")
         return self
 
     def as_json(self) -> dict[str, object]:
-        return {
+        document: dict[str, object] = {
             "schema": self.schema,
             "study": self.study,
             "session_id": self.session_id,
@@ -140,6 +187,10 @@ class SessionReceipt:
             "startup_stdout_sha256": self.startup_stdout_sha256,
             "server_log_path": self.server_log_path,
         }
+        if self.schema == SESSION_RECEIPT_SCHEMA_V2:
+            document["role"] = self.role
+            document["server_env_keys"] = list(self.server_env_keys)
+        return document
 
     @staticmethod
     def from_json(document: Mapping[str, object]) -> "SessionReceipt":
@@ -150,6 +201,8 @@ class SessionReceipt:
             "pid", "host", "port", "model_files", "started_at", "startup_stdout_sha256",
             "server_log_path",
         }
+        if document.get("schema") == SESSION_RECEIPT_SCHEMA_V2:
+            required |= {"role", "server_env_keys"}
         if set(document) != required:
             raise SessionError(
                 f"session receipt must have exact keys {sorted(required)}, got {sorted(document)}"
@@ -160,6 +213,9 @@ class SessionReceipt:
         model_files = document["model_files"]
         if not isinstance(model_files, list):
             raise SessionError("session receipt model_files must be a list")
+        server_env_keys = document.get("server_env_keys", [])
+        if not isinstance(server_env_keys, list):
+            raise SessionError("session receipt server_env_keys must be a list")
         refs = []
         for entry in model_files:
             if not isinstance(entry, Mapping) or set(entry) != {"path", "sha256"}:
@@ -181,6 +237,8 @@ class SessionReceipt:
             started_at=document["started_at"],
             startup_stdout_sha256=document["startup_stdout_sha256"],
             server_log_path=document["server_log_path"],
+            role=document.get("role", "legacy"),
+            server_env_keys=tuple(server_env_keys),
         ).validate()
 
 
@@ -278,7 +336,14 @@ def verify_against_runtime_receipt(
             f"{session.binary_path!r}:{session.binary_sha256[:12]}... does not match the "
             f"runtime receipt's pinned binary {pinned_path!r}:{pinned_sha[:12]}...; refused (I5)"
         )
-    pinned_files = {(entry.path, entry.sha256) for entry in _pinned_model_files(runtime_receipt)}
+    pinned_refs = _pinned_model_files(runtime_receipt)
+    if session.role == "inference":
+        pinned_refs = tuple(
+            entry
+            for entry in pinned_refs
+            if "mmproj" not in Path(entry.path).name.lower()
+        )
+    pinned_files = {(entry.path, entry.sha256) for entry in pinned_refs}
     session_files = {(entry.path, entry.sha256) for entry in session.model_files}
     if session_files != pinned_files:
         raise SessionError(

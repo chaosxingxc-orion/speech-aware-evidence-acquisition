@@ -714,6 +714,26 @@ class SlurpWorld:
             (self.metadata_dir / name).write_text(
                 "\n".join(json.dumps(record) for record in records) + "\n", encoding="utf-8"
             )
+        speaker_by_file = {
+            "audio-101-headset.flac": "speaker-devel-a",
+            "audio-101.flac": "speaker-devel-a",
+            "audio-102.flac": "speaker-devel-b",
+            "audio-201.flac": "speaker-test-a",
+            "audio-301.flac": "speaker-train-a",
+            "audio-302.flac": "speaker-train-b",
+            "audio-401-synth.flac": "speaker-synthetic-a",
+        }
+        metadata = {
+            str(index): {
+                "recordings": {
+                    filename: {"usrid": speaker_id, "status": "correct"}
+                }
+            }
+            for index, (filename, speaker_id) in enumerate(speaker_by_file.items())
+        }
+        (self.metadata_dir / "metadata.json").write_text(
+            json.dumps(metadata), encoding="utf-8"
+        )
         real_dir = self.audio_root / "slurp_real"
         for filename in ("audio-101-headset.flac", "audio-101.flac", "audio-102.flac", "audio-201.flac", "audio-301.flac", "audio-302.flac"):
             _write_flac(real_dir / filename)

@@ -23,7 +23,13 @@ from ...contracts import ExecutionPlan
 from ...e0.artifacts import REPO_ROOT
 from ..base import SCORERS, TRANSPORTS
 from ..bundle import finalize_bundle, verify_bundle
-from ..config import compose, model_lock_key, resolve_runtime_receipt_path, runtime_receipt_relpath
+from ..config import (
+    compose,
+    model_lock_key,
+    model_materialization_root,
+    resolve_runtime_receipt_path,
+    runtime_receipt_relpath,
+)
 from ..resources import resolve_resource_sampler
 from ..scorers import score_bundle
 from .bundled import run_experiment_bundled
@@ -100,12 +106,14 @@ def _cli_run(args: argparse.Namespace) -> int:
     # with a different model's receipt (core.config.model_lock_key's own
     # docstring; contracts.FrozenCoreGate.expected_model_lock_key).
     receipt_relpath = runtime_receipt_relpath(composed.values)
+    configured_model_root = model_materialization_root(composed.values)
     gate = FrozenCoreGate.for_study_repo(
         REPO_ROOT,
         root,
         runtime_root,
         runtime_receipt_relpath=receipt_relpath,
         expected_model_lock_key=model_lock_key(composed.values),
+        model_root=(Path(configured_model_root) if configured_model_root is not None else None),
     )
     # R0 repair T5 (I5): the runtime receipt is the SAME committed file the
     # gate itself re-hashes. attach_session binds this run to a session

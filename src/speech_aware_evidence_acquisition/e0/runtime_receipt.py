@@ -17,7 +17,12 @@ import re
 import subprocess
 from pathlib import Path
 
-from ..contracts import MODEL_LOCK_KEY, RUNTIME_RECEIPT_SCHEMA, STUDY_SLUG
+from ..contracts import (
+    MODEL_LOCK_KEY,
+    RUNTIME_RECEIPT_SCHEMA,
+    RUNTIME_RECEIPT_SCHEMA_V3,
+    STUDY_SLUG,
+)
 from ..data.lock import load_lock, lock_entry
 from .artifacts import ArtifactError, sha256_file
 
@@ -68,6 +73,8 @@ def build_runtime_receipt(
     llama_dir_name: str = "llama.cpp",
     binary_relpath: str = "build/bin/llama-server",
     model_lock_key: str = MODEL_LOCK_KEY,
+    role: str | None = None,
+    model_root: Path | None = None,
 ) -> dict[str, object]:
     """Build a runtime receipt for ``model_lock_key`` (default: the frozen
     Q8_0 :data:`~..contracts.MODEL_LOCK_KEY`).
@@ -83,6 +90,8 @@ def build_runtime_receipt(
     equality check at gate-open time -- see ``gate_runtime.py``.
     """
 
+    if role not in {None, "preprocess", "inference"}:
+        raise ArtifactError("runtime receipt role must be preprocess, inference, or None")
     lock = load_lock(lock_path)
     entry = lock_entry(lock, model_lock_key)
     subdir = str(entry.get("local_subdir", "")).rstrip("/")
@@ -91,7 +100,8 @@ def build_runtime_receipt(
     if not subdir or not isinstance(expected_files, int) or not isinstance(expected_bytes, int):
         raise ArtifactError(f"lock entry {model_lock_key!r} lacks subdir/files/size_bytes")
 
-    model_dir = Path(data_root) / subdir
+    materialization_root = Path(model_root) if model_root is not None else Path(data_root)
+    model_dir = materialization_root / subdir
     if not model_dir.is_dir():
         raise ArtifactError(f"model directory missing: {model_dir}")
     model_files = sorted(path for path in model_dir.iterdir() if path.is_file())
@@ -164,8 +174,22 @@ def build_runtime_receipt(
             "be the inference runtime"
         )
 
-    return {
-        "schema": RUNTIME_RECEIPT_SCHEMA,
+    receipt_files = gguf_entries
+    if role == "inference":
+        receipt_files = [
+            entry
+            for entry in gguf_entries
+            if "mmproj" not in Path(str(entry["path"])).name.lower()
+        ]
+        if not receipt_files:
+            raise ArtifactError("inference runtime receipt found no decoder GGUF")
+    if role == "preprocess" and not any(
+        "mmproj" in Path(str(entry["path"])).name.lower() for entry in receipt_files
+    ):
+        raise ArtifactError("preprocess runtime receipt found no mmproj GGUF")
+
+    receipt: dict[str, object] = {
+        "schema": RUNTIME_RECEIPT_SCHEMA if role is None else RUNTIME_RECEIPT_SCHEMA_V3,
         "study": STUDY_SLUG,
         "model_lock_key": model_lock_key,
         "llama_cpp": {
@@ -175,6 +199,9 @@ def build_runtime_receipt(
             "binary_bytes": binary.stat().st_size,
             "binary_sha256": sha256_file(binary),
         },
-        "gguf_files": gguf_entries,
+        "gguf_files": receipt_files,
         "runtime_libraries": library_entries,
     }
+    if role is not None:
+        receipt["role"] = role
+    return receipt

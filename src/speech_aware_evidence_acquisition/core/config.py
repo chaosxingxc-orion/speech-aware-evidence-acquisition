@@ -159,6 +159,37 @@ def model_lock_key(values: Mapping[str, object]) -> str:
     return value
 
 
+def model_materialization_root(values: Mapping[str, object]) -> str | None:
+    """Return the explicit root holding lock-relative model bytes.
+
+    The canonical dataset root remains the default when the model fragment
+    omits this key.  A configured value is a POSIX absolute path because all
+    formal inference runs execute inside WSL2; relative paths, traversal,
+    repeated separators, backslashes and non-string values are refused before
+    they can select a different host file by accident.
+    """
+
+    value = values.get("model_materialization_root")
+    if value is None:
+        return None
+    if not isinstance(value, str) or not value:
+        raise ConfigError(
+            "model config model_materialization_root must be a non-empty POSIX "
+            f"absolute path, got {value!r}"
+        )
+    if not value.startswith("/") or "\\" in value:
+        raise ConfigError(
+            "model config model_materialization_root must be a POSIX absolute "
+            f"path, got {value!r}"
+        )
+    if any(part in ("", ".", "..") for part in value[1:].split("/")):
+        raise ConfigError(
+            "model config model_materialization_root contains an empty or "
+            f"traversal segment: {value!r}"
+        )
+    return value
+
+
 def resolve_runtime_receipt_path(repo_root: Path, values: Mapping[str, object]) -> Path:
     """The absolute path a composed config's ``runtime_receipt`` key names,
     under ``<repo_root>/docs/`` -- the one place every caller (driver smoke,

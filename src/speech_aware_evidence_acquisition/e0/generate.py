@@ -93,7 +93,10 @@ def _runtime(
     runtime_root: Path,
     *,
     model_lock_key: str = MODEL_LOCK_KEY,
+    llama_dir_name: str = "llama.cpp",
     out: Path | None = None,
+    role: str | None = None,
+    model_root: Path | None = None,
 ) -> None:
     """Build and write a runtime receipt for ``model_lock_key`` (default: the
     frozen Q8_0 key) to ``out`` (default: ``<receipts_dir>/runtime.json``,
@@ -103,7 +106,15 @@ def _runtime(
     qwen3-omni-30b-a3b-instruct-gguf-q4km --out docs/receipts/runtime-q4km.json``)
     without ever touching the default Q8_0 receipt."""
 
-    receipt = build_runtime_receipt(lock_path, root, runtime_root, model_lock_key=model_lock_key)
+    receipt = build_runtime_receipt(
+        lock_path,
+        root,
+        runtime_root,
+        llama_dir_name=llama_dir_name,
+        model_lock_key=model_lock_key,
+        role=role,
+        model_root=model_root,
+    )
     path = out if out is not None else receipts_dir / "runtime.json"
     digest = write_json_artifact(path, receipt)
     print(f"wrote {path} sha256={digest}")
@@ -179,6 +190,23 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--lock", type=Path, default=None, help="umbrella datasets lock")
     parser.add_argument("--runtime-root", type=Path, default=None)
     parser.add_argument(
+        "--llama-dir-name",
+        default="llama.cpp",
+        help=(
+            "checkout directory directly under --runtime-root (runtime command only); "
+            "use the existing named featcache checkout without a symlink or copied build"
+        ),
+    )
+    parser.add_argument(
+        "--model-root",
+        type=Path,
+        default=None,
+        help=(
+            "root containing the lock-relative model directory (runtime command "
+            "only); use the verified WSL ext4 mirror instead of the dataset root"
+        ),
+    )
+    parser.add_argument(
         "--model-lock-key",
         default=MODEL_LOCK_KEY,
         help=(
@@ -196,6 +224,15 @@ def main(argv: list[str] | None = None) -> int:
             "<receipts-dir>/runtime.json. Pass e.g. docs/receipts/runtime-q4km.json "
             "alongside --model-lock-key to write a second model's receipt without "
             "touching the default Q8_0 receipt"
+        ),
+    )
+    parser.add_argument(
+        "--role",
+        choices=["preprocess", "inference"],
+        default=None,
+        help=(
+            "runtime receipt role (runtime command only). preprocess binds decoder and "
+            "mmproj; inference binds decoder only. Omit for the historical v2 receipt"
         ),
     )
     arguments = parser.parse_args(argv)
@@ -232,7 +269,14 @@ def main(argv: list[str] | None = None) -> int:
                     data_root(),
                     runtime_root,
                     model_lock_key=arguments.model_lock_key,
+                    llama_dir_name=arguments.llama_dir_name,
                     out=arguments.out,
+                    role=arguments.role,
+                    model_root=(
+                        arguments.model_root.expanduser().resolve()
+                        if arguments.model_root is not None
+                        else None
+                    ),
                 )
             else:
                 _verify(receipts_dir, lock_path(), data_root(), runtime_root)

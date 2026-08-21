@@ -1,4 +1,9 @@
-# Feature-cache directory convention
+# Feature-cache and speech-packet directory convention
+
+This document distinguishes two artifacts with different trust and runtime
+roles. A legacy ``.feat`` cache is an encoder-side preprocessing accelerator.
+A ``SpeechFeaturePacketV1`` tree is the audited decoder input used by formal
+mmproj-free inference. They must never be treated as interchangeable.
 
 The llama.cpp mtmd feature-cache patch
 (`docs/patches/2026-08-11-mtmd-feature-cache.diff`) keys a persistent,
@@ -89,3 +94,40 @@ read/write traffic (see the ext4-first model-mirror rationale in
 `core/session/lifecycle.py` for the same class of finding against GGUF
 reloads); a feature cache is precisely that traffic pattern — one small
 file per audio chunk, read or written on nearly every decode step.
+
+## Formal mmproj-free handoff
+
+The SLURP Q4_K_M preprocessing and inference roots are deliberately separate:
+
+```
+/home/chao/feat-cache/slurp-q4km/          # legacy preprocessing cache
+/home/chao/feat-cache/slurp-q4km-packets/  # formal packet handoff
+```
+
+The preprocessing process may load the pinned decoder and mmproj, populate or
+reuse ``slurp-q4km``, and promote each required recording into a complete
+``SpeechFeaturePacketV1`` under ``slurp-q4km-packets``. It must finish and exit
+before formal inference starts. A missing legacy entry fails closed during
+model-free promotion; promotion never silently encodes a cache miss.
+
+The formal server loads the decoder from the fast ext4 model root
+``/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km`` and is launched
+with the exact ``--no-mmproj`` boundary. Its environment contains
+``LLAMA_SPEECH_FEATURE_ROOT`` and ``LLAMA_SPEECH_DECODER_SHA256`` only. It must
+not contain ``LLAMA_MTMD_FEAT_CACHE_DIR`` and therefore cannot consult or
+populate the preprocessing cache.
+
+## Bounded validation concurrency
+
+Independent small-file checks are intentionally concurrent. SLURP train-media
+existence checks use a bounded 16-worker pool, and packet manifest/chunk
+validation uses a bounded 8-worker pool. Both collect results in input order
+and propagate the first input-ordered failure, so concurrency does not alter a
+binding or weaken fail-closed behavior.
+
+A standard SHA-256 over one GGUF is sequential by definition. The decoder's
+full digest is therefore computed as one stream and retained through the
+receipt-bound identity cache for eligible repeated checks. Concurrently
+reading the decoder and mmproj from the same device is not used as a proxy for
+faster validation: it can increase device contention and cannot accelerate the
+single decoder digest required by formal inference.

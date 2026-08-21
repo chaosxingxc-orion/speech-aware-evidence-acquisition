@@ -55,6 +55,7 @@ from ..base import TRANSPORTS
 from ..session import SessionError, SessionReceipt, assert_session_alive, require_loopback
 from . import FrozenCoreError
 from .paths import _normalized_relative_path, _resolve_confined
+from .speech_features import load_speech_feature_packets
 
 
 def _default_post(timeout_seconds: float) -> Callable[[str, bytes], bytes]:
@@ -165,6 +166,7 @@ class LlamaServerTransport:
         timeout_seconds: float = 300.0,
         post: Callable[[str, bytes], bytes] | None = None,
         prompt_order: str = "system-instruction-v1",
+        feature_root: Path | None = None,
     ) -> None:
         # Prompt ordering is part of the request's identity: the bytes the
         # model sees change with it, so it is a MODEL-CONFIG field (inside the
@@ -189,11 +191,12 @@ class LlamaServerTransport:
             "system-instruction-v1",
             "evidence-first-system-v2",
             "evidence-first-system-v3",
+            "speech-features-text-keys-v1",
         ):
             raise SessionError(
                 f"unknown prompt_order {prompt_order!r}; allowed: "
                 "'system-instruction-v1', 'evidence-first-system-v2', "
-                "'evidence-first-system-v3'"
+                "'evidence-first-system-v3', 'speech-features-text-keys-v1'"
             )
         self._prompt_order = prompt_order
         # R0 repair T5 (I5): there is no "no session" transport, mirroring the
@@ -222,6 +225,26 @@ class LlamaServerTransport:
         self._session = session
         self._runtime_receipt = runtime_receipt
         self._runtime_root = Path(runtime_root)
+        self._feature_root = Path(feature_root) if feature_root is not None else None
+        if self._prompt_order == "speech-features-text-keys-v1":
+            if session.role != "inference":
+                raise SessionError(
+                    "speech-features-text-keys-v1 requires a decoder-only inference session"
+                )
+            if self._feature_root is None:
+                raise SessionError(
+                    "speech-features-text-keys-v1 requires a fixed feature_root"
+                )
+            try:
+                self._feature_root = self._feature_root.resolve(strict=True)
+            except OSError as error:
+                raise SessionError(
+                    f"speech feature_root is unavailable: {self._feature_root}: {error}"
+                ) from error
+            if not self._feature_root.is_dir():
+                raise SessionError(
+                    f"speech feature_root must be a directory: {self._feature_root}"
+                )
         # R0 repair T5 fix-1/fix-2 (I5, reviewer-flagged CRITICAL gap): full
         # liveness+PROCESS-IDENTITY re-verification, not merely a declared-
         # value comparison -- at construction AND (see __call__) on every
@@ -265,9 +288,11 @@ class LlamaServerTransport:
         # is the SAME confinement rail every exemplar-bank / delta-candidate
         # media item below goes through, never a target-audio-only special
         # case.
-        _, audio_part = _load_audio_part(
-            self._data_root, payload["media_relpath"], "transport media_relpath"
-        )
+        audio_part = None
+        if self._prompt_order != "speech-features-text-keys-v1":
+            _, audio_part = _load_audio_part(
+                self._data_root, payload["media_relpath"], "transport media_relpath"
+            )
         # Prefix-cache-friendly order (see module docstring, 2026-08-09,
         # measured): stable evidence text FIRST, variable audio LAST -- the
         # evidence formatting string and per-field iteration order
@@ -277,7 +302,90 @@ class LlamaServerTransport:
         for field in ("supplied_evidence", "retrieved_evidence"):
             for item in payload.get(field, []):  # type: ignore[union-attr]
                 evidence_texts.append(f"[evidence {item['evidence_id']}] {item['content']}")
-        if self._prompt_order == "evidence-first-system-v2":
+        if self._prompt_order == "speech-features-text-keys-v1":
+            if payload.get("query_source") != "speech_features":
+                raise FrozenCoreError(
+                    "speech feature request query_source must be 'speech_features'"
+                )
+            if payload.get("mmproj_loaded") is not False:
+                raise FrozenCoreError("formal speech feature request must bind mmproj_loaded=false")
+            for field in ("key_representation_id", "matcher_policy_id"):
+                value = payload.get(field)
+                if not isinstance(value, str) or not value:
+                    raise FrozenCoreError(
+                        f"formal speech feature request {field} must be a non-empty string"
+                    )
+            descriptors = payload.get("speech_feature_parts")
+            if not isinstance(descriptors, list) or not descriptors:
+                raise FrozenCoreError(
+                    "formal speech feature request must carry speech_feature_parts"
+                )
+            feature_parts: list[dict[str, object]] = []
+            query_count = 0
+            decoder_hashes = {
+                entry.sha256
+                for entry in self._session.model_files
+                if "mmproj" not in Path(entry.path).name.lower()
+            }
+            if len(decoder_hashes) != 1:
+                raise FrozenCoreError(
+                    "inference session must bind exactly one decoder identity for packets"
+                )
+            decoder_sha256 = next(iter(decoder_hashes))
+            validated_descriptors: list[dict[str, str]] = []
+            for index, descriptor in enumerate(descriptors):
+                required = {"packet_id", "sha256", "role"}
+                if not isinstance(descriptor, Mapping) or set(descriptor) != required:
+                    raise FrozenCoreError(
+                        f"speech_feature_parts[{index}] must have exact keys "
+                        f"{sorted(required)}"
+                    )
+                role = descriptor["role"]
+                if role not in {"query", "key"}:
+                    raise FrozenCoreError(
+                        f"speech_feature_parts[{index}] role must be 'query' or 'key'"
+                    )
+                query_count += int(role == "query")
+                validated_descriptors.append(dict(descriptor))
+                feature_parts.append(
+                    {
+                        "type": "input_speech_features",
+                        "speech_features": dict(descriptor),
+                    }
+                )
+            load_speech_feature_packets(
+                self._feature_root,
+                tuple(
+                    {
+                        "packet_id": descriptor["packet_id"],
+                        "sha256": descriptor["sha256"],
+                    }
+                    for descriptor in validated_descriptors
+                ),
+                workers=8,
+                expected_decoder_gguf_sha256=decoder_sha256,
+            )
+            if query_count != 1:
+                raise FrozenCoreError(
+                    "formal speech feature request must carry exactly one query packet"
+                )
+            query_sha256 = next(
+                descriptor["sha256"]
+                for descriptor in descriptors
+                if descriptor["role"] == "query"
+            )
+            if payload.get("speech_packet_sha256") != query_sha256:
+                raise FrozenCoreError(
+                    "speech_packet_sha256 must equal the actual query packet hash"
+                )
+            content = [
+                {"type": "text", "text": text} for text in evidence_texts
+            ] + feature_parts
+            messages = [
+                {"role": "system", "content": payload["task_instruction"]},
+                {"role": "user", "content": content},
+            ]
+        elif self._prompt_order == "evidence-first-system-v2":
             # Stable-first order: [system: evidence…, instruction(+tail at its
             # end)][user: audio]. The evidence formatting strings are
             # byte-identical to v1; only their position moves.
@@ -411,6 +519,11 @@ def _llama_server_factory(
         runtime_root,
         float(values.get("timeout_seconds", 300.0)),
         prompt_order=str(values.get("prompt_order", "system-instruction-v1")),
+        feature_root=(
+            Path(str(values["speech_feature_root"]))
+            if "speech_feature_root" in values
+            else None
+        ),
     )
 
 

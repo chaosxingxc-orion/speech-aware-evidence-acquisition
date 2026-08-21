@@ -7,7 +7,7 @@ across small-scale explorations. This document is the running consolidation: wha
 consistently works, what consistently fails, and the current best-scheme statement. Updated
 at every consumed read. (Registration/verdict docs remain the evidence of record.)
 
-## Current best-scheme statement (v3, 2026-08-20 — filling tier gains a targeting-free lever)
+## Current best-scheme statement (v4, 2026-08-21 — register alignment measured; decoder-joint path remains open)
 
 **Two-tier architecture on the frozen core:**
 - **Routing tier (high-order semantics — intent, tool, QA candidate):** whole-utterance
@@ -17,9 +17,12 @@ at every consumed read. (Registration/verdict docs remain the evidence of record
   (A2 +0.29 of A1's +0.46). **SECOND WORKING LEVER (2026-08-20, P-EMB-3M M4): cascade
   routing** — frozen-core self-transcript → dedicated text embedder → argmax cosine,
   0.7500 on the same 60, within 2 samples of decode routing and scaling to a large label
-  side without prompt growth; text-mediated, so it is not a speech-native lever. AUDIO
-  embedding routing is refuted on every construction flown (chat-core 3/3, dedicated
-  LCO scoped 1/1); the best audio-side number in the program is a CONTROL at 0.1333.
+  side without prompt growth; text-mediated, so it is not a speech-native lever. P-EMB-4R
+  removes the former blanket audio-embedding refutation: register-aligned GLAP
+  utterance-to-utterance kNN reaches 0.3167 and fires REGISTER-RESCUE, while LCO-3B/7B
+  remain weak at 0.1500/0.1167 under the pooling override. The rescued signal is still far
+  below direct speech classification (0.8167) and does not qualify independent pooled
+  embedding/kNN as the main method.
 - **Filling tier (low-order semantics — slot/argument values):** decode-path generation
   governed by the supply law. CONSISTENT positives: elicitation-bank supply (values or
   stripped structure) converts MISSING-type failures (L3 +0.42/+0.44; L5 [8,10]/120,
@@ -37,11 +40,13 @@ at every consumed read. (Registration/verdict docs remain the evidence of record
 - **Speech-as-knowledge (the goal's core question):** participation of acoustics in supply
   USE is PROVEN (P-TRAP); net VALUE of audio in the supply loop over self-transcription is
   unresolved (P-KEY I=+0.046, CI crossing zero; ~89% text-side realizable at L3).
-  The scheme's speech-native lever is therefore currently: (a) routing-tier audio
-  embeddings — **CLOSED for now (P-EMB-3M): every flown construction is refuted, the
-  dedicated arm only scope-refuted behind a build defect, and the strongest candidate
-  (nemotron) never flew**; the routing tier's cascade lever that replaced it is
-  text-mediated, (b) percept-aware supply filtering — **promoted from designable to REQUIRED
+  The scheme's speech-native lever is therefore currently: (a) routing-tier speech
+  representations — **independent pooled embedding/kNN is insufficient, not universally
+  content-absent (P-EMB-4R): GLAP register alignment rescues a weak 0.3167 signal, LCO remains
+  scoped and weak, and neither tests joint frozen-decoder matching**; the next method keeps
+  the original speech features in every decision call and matches them jointly against
+  maintainable text keys inside the frozen decoder, while the strong cascade result remains
+  diagnostic-only because it is text-mediated, (b) percept-aware supply filtering — **promoted from designable to REQUIRED
   AND SPECIFIED (P-CORR-F): the core passes 85.7% of wrong percept-keyed entries through, so
   the filter must sit OUTSIDE the frozen core**, (c) corrective percept-keyed supply —
   **✅ WORKS (P-CORR-F CORRECTIVE-PERCEPT, consumed 2026-08-20): +0.0508 full-60 / +0.0753 on
@@ -62,6 +67,7 @@ at every consumed read. (Registration/verdict docs remain the evidence of record
 | Label-level supply has NO resonance channel | ✅ 2/2 (P-FEW skew capture 0/59 incremental; P-EMB no audio→label signal) | the arc's founding premise, now evidenced |
 | Embedding routing — GENERATION-CORE pooled states | ❌ REFUTED 3/3 (P-EMB-1 EMB-WEAK 3/60 below chance, attractor collapse; P-EMB-2 EMB-CLOSED 2/183 at chance, 400/400 negative cosines, richer text made it WORSE; P-EMB-3L LOCAL-EXHAUSTED — all three constructions 3/60 = 0.0500, the instruct prefix narrowing the reachable label set from 5 to 2) — SCOPE widened by P-EMB-3L: this now refutes EVERY training-free construction the pinned build can express (bare/instructed × the pooling flag), not only mean pool; it never tested a DEDICATED semantically-aligned embedding model — P-EMB-3M has now done so, see the next row. BUILD DEFECT FOUND: `--pooling` is INERT on this build's audio side (L1 audio 60/60 byte-identical to consumed P-EMB-1), so last-token audio pooling was never actually tested — **and P-EMB-3M reproduced the same defect on LCO, so it is a property of the build, not of one model** | `6ebcaba`, `af99ebe`, `063c056` |
 | Embedding routing — DEDICATED omni-embedding model, AUDIO side (pinned tool, charter retriever clause) | ❌ **EMB-WEAK-SCOPED 1/1 (P-EMB-3M, consumed 2026-08-20)** — LCO-Embedding-Omni-3B GGUF returned **3/60 = 0.0500**, below uniform chance, below its own shuffle expectation (3 vs 3.283), 5/18 labels reachable with 60 % of the mass on `recommendation` and `calendar` never predicted; 60/60 winning cosines positive but near-orthogonal (mean +0.0707), median top-1/top-2 margin 0.00737. **SCOPED, NOT model-level**: the pre-flight POOLING-DIFFER gate fired `POOLING-OVERRIDE-PRESENT` (two LCO boots, `--pooling mean` vs `last`, byte-identical audio vectors), reproducing the P-EMB-3L build defect on a second, entirely different model — LCO is a last-token-pooling model that this build never ran in last-token pooling. Control GLAP (audio-TYPE) reached **0.1333 with 16/18 labels and +4.750 over its own shuffle expectation** — the first audio-side arm to beat that baseline, still far under the 0.30 floor, and a control. **CONTROL-ANOMALY did NOT fire (0.1333 vs 0.7500), but against GLAP alone**: the CLSP speaking-STYLE control was DROPPED-RUNTIME-ERROR (transformers 5.12.1 vs pinned 4.57.3) and the style confound is untested. UNTESTED: nemotron escalation (the only candidate with measured audio-content retrieval, NC license + pinned transformers branch), CLSP re-entry, and any non-llama.cpp LCO stack — all environment changes | `2026-08-20-pemb3m-verdict.md` |
+| Register-aligned utterance-to-utterance kNN | ⚠️ **WEAK RESCUE, NOT AN EFFECTIVE METHOD (P-EMB-4R, consumed 2026-08-21)** — A-GLAP reaches **19/60 = 0.3167** and recall@5 0.5667, firing the registered REGISTER-RESCUE clause and disproving the blanket claim that every audio embedding construction is content-absent. A-LCO3/A-LCO7 remain weak at 0.1500/0.1167 and pooling-override scoped. The best speech arm remains 30 correct samples below FS-NONE (49/60). T-QW reaches **52/60 = 0.8667** with recall@5 0.9333, proving the utterance-text key space is strong after text mediation, but it is not speech-native. C-DECODE was canceled before the read and made zero contacts. The branch conclusion is limited to independent pooled embedding/cosine/kNN; joint speech-feature × text-key decoder matching remains untested. | `2026-08-21-pemb4r-verdict.md` |
 | Routing by CASCADE (frozen-core self-transcript → dedicated TEXT embedder) | ✅ **CASCADE-ROUTES 1/1 (P-EMB-3M M4, consumed 2026-08-20)** — T0 self-transcripts (consumed P-KEY-2 artifacts) → `qwen3-embedding-0.6b-gguf` text↔text argmax cosine = **45/60 = 0.7500**, i.e. 2 samples below A1′r (0.7833) and 4 below FS-NONE (0.8167), **+40.683 over its own shuffle expectation**, 17/18 labels reachable with no attractor (top-1 share 0.1667), errors semantically adjacent (largest cell `music→play` 2), winning cosines 60/60 positive at mean **+0.6030**. Jitter-robust: the qwen3-emb repeat pair clears the declared ≥0.9999 tolerance (0.9999006) but its **argmax is NOT stable** on a null synthetic string (margin 0.000485); under the adversarial 2δ bound at most 5 scored correct predictions could flip → **40/60 = 0.6667, still above the 0.65 floor**. **Text-mediated, so NOT speech-native**: it extends the P-KEY ~89 %-text-side pattern to representation matching and inherits every transcription error. Its leverage is a label side that scales to 152 tool rows without prompt growth | `2026-08-20-pemb3m-verdict.md` |
 | Few-shot routing gain/bias | ❌ INERT-ish (P-FEW: Δ exactly 0.0000, CI [−.067,+.067]; skew costs −0.067 generic ICL noise, ZERO prior capture; equivalence not certified — band 0.05 < measured ±0.033×2 noise) | `162cca3` |
 | Router-confidence targeting | 🔜 P-TARGET **descoped to the routing tier** (2026-08-20 design analysis over consumed artifacts): the A2T gate simulation is NEGATIVE — no threshold on any measured decode-path signal (chars AUC 0.765, completion-tokens AUC 0.794, args) yields a positive net over the 217; best sweep result = supply nothing (net 0); blind supply = −28, reproducing V4. The 8 conversions sit inside the regression-densest length band — length separates regressors from non-regressors but NOT converters from regressors. Only positive rule is tier1-structural (+5): post-hoc, benchmark-label, non-deployable. Routing-tier signal is real (two-arm in-session disagreement precision 0.50, lift 2.73 re-confirmed) but structurally blind to the concentrated `play` cluster (flags 1 of 6; 5 errors are prompt-unanimous) → P-TARGET-P1 = closed-set routing + logprobs (60 calls; llama-server logprob usability unverified — feasibility check first; prior 0/17 earnings negative disclosed) | design dossier 2026-08-20; pemb2 synthesis §5.3 |
@@ -84,6 +90,11 @@ at every consumed read. (Registration/verdict docs remain the evidence of record
    2/183 with 400/400 negative cosines). It needs its own registration, exposure row and a
    T0-transcript source check over the 400 A2T ids. Queue order below is unchanged; P-CORR-F
    machinery is now unblocked.
+   **P-EMB-4R** — ✅ consumed 2026-08-21: **REGISTER-RESCUE(a-glap) +
+   KNN-BEATS-LABEL-MATCH**, with C-DECODE canceled. Register alignment exposes a weak
+   speech-side signal but does not close the gap to direct speech classification; the
+   independent pooled kNN branch is no longer the main successor. The open successor is
+   decoder-joint speech-feature query × text-key matching under the frozen-core boundary.
 4. **P-CORR-F** — ✅ **consumed 2026-08-20: CORRECTIVE-PERCEPT + DOSE-INSUFFICIENT**
    (see the consistency ledger row and `2026-08-20-pcorrf-verdict.md`). **P-CORR-R** (routing
    twin) is now unblocked and registers next, with four design constraints this read imposes:

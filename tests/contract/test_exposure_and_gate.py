@@ -6,11 +6,12 @@ from pathlib import Path
 import pytest
 
 import hashlib
+import shutil
+from dataclasses import replace
 
 from speech_aware_evidence_acquisition.contracts import (
     E0_RECEIPT_SCHEMA,
     MODEL_LOCK_KEY,
-    ExecutionPlan,
     ExecutionScopeError,
     ExposureSchemaError,
     FrozenCoreGate,
@@ -411,6 +412,39 @@ def test_gate_refuses_schema_or_identity_mismatch(world):
 def test_gate_refuses_lock_total_size_mismatch(world):
     world.lock["models"][0]["size_bytes"] += 1
     with pytest.raises(GateClosed, match="total"):
+        world.gate().assert_model_touch_allowed(world.plan())
+
+
+def test_gate_accepts_v3_inference_receipt_without_mmproj(world):
+    world.runtime["schema"] = "saea-runtime-receipt-v3"
+    world.runtime["role"] = "inference"
+    world.runtime["gguf_files"] = [
+        entry
+        for entry in world.runtime["gguf_files"]
+        if "mmproj" not in Path(entry["path"]).name.lower()
+    ]
+    world.gate().assert_model_touch_allowed(world.plan())
+
+
+def test_gate_verifies_the_explicit_model_materialization_root(world, tmp_path):
+    gate = world.gate()
+    model_root = tmp_path / "fast-ext4"
+    shutil.copytree(world.data_root / world.SUBDIR, model_root / world.SUBDIR)
+    (world.data_root / world.SUBDIR / "model-q8_0.gguf").write_bytes(b"slow-copy-drift")
+
+    replace(gate, model_root=model_root).assert_model_touch_allowed(world.plan())
+
+
+def test_gate_does_not_fall_back_when_explicit_model_root_is_missing(world, tmp_path):
+    gate = replace(world.gate(), model_root=tmp_path / "missing-fast-root")
+    with pytest.raises(GateClosed, match="gguf_files"):
+        gate.assert_model_touch_allowed(world.plan())
+
+
+def test_gate_refuses_mmproj_in_v3_inference_receipt(world):
+    world.runtime["schema"] = "saea-runtime-receipt-v3"
+    world.runtime["role"] = "inference"
+    with pytest.raises(GateClosed, match="must exclude mmproj"):
         world.gate().assert_model_touch_allowed(world.plan())
 
 

@@ -149,6 +149,7 @@ def _bracketed(host: str) -> str:
 from .paths import _DRIVE_PREFIX, _resolve_under, _safe_relative, _sha256_file  # noqa: E402
 from .receipt import (  # noqa: E402
     SESSION_RECEIPT_SCHEMA,
+    SESSION_RECEIPT_SCHEMA_V2,
     STUDY_SLUG,
     ModelFileRef,
     SessionReceipt,
@@ -162,9 +163,11 @@ from .receipt import (  # noqa: E402
     write_session_receipt,
 )
 from .process import (  # noqa: E402
+    MM_PROJ_AUDIT_SCHEMA,
     _pid_alive,
     _process_image_path,
     _verify_pid_runs_pinned_binary,
+    audit_mmproj_free_inference,
 )
 from .sockets import (  # noqa: E402
     _PROC_NET_TCP_LISTEN_STATE,
@@ -330,11 +333,14 @@ __all__ = [
     "FEAT_CACHE_DIR_DEFAULT",
     "FEAT_CACHE_DIR_ENV",
     "SESSION_RECEIPT_SCHEMA",
+    "SESSION_RECEIPT_SCHEMA_V2",
     "STUDY_SLUG",
     "ModelFileRef",
+    "MM_PROJ_AUDIT_SCHEMA",
     "SessionError",
     "SessionReceipt",
     "assert_session_alive",
+    "audit_mmproj_free_inference",
     "attach_session",
     "feat_cache_dir",
     "load_runtime_receipt",

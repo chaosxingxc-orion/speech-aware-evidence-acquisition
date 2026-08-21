@@ -46,6 +46,18 @@ from .transport import (  # noqa: E402
     _default_post,
     _llama_server_factory,
 )
+from .speech_features import (  # noqa: E402
+    PACKET_MANIFEST_NAME,
+    SPEECH_FEATURE_PACKET_SCHEMA,
+    SpeechFeatureChunkData,
+    SpeechFeatureChunkV1,
+    SpeechFeaturePacketV1,
+    legacy_audio_feature_cache_key,
+    load_speech_feature_packet,
+    load_speech_feature_packets,
+    materialize_legacy_cached_speech_feature_packet,
+    materialize_speech_feature_packet,
+)
 
 __all__ = [
     "ALLOWED_DECODING_KEYS",
@@ -57,6 +69,11 @@ __all__ = [
     "PARENT_DURATION_TOLERANCE_SECONDS",
     "SliceRecord",
     "SliceRegistry",
+    "PACKET_MANIFEST_NAME",
+    "SPEECH_FEATURE_PACKET_SCHEMA",
+    "SpeechFeatureChunkData",
+    "SpeechFeatureChunkV1",
+    "SpeechFeaturePacketV1",
     "_AttemptLifecycleMixin",
     "_DRIVE_PREFIX",
     "_PayloadBindingMixin",
@@ -65,4 +82,9 @@ __all__ = [
     "_llama_server_factory",
     "_normalized_relative_path",
     "_resolve_confined",
+    "legacy_audio_feature_cache_key",
+    "load_speech_feature_packet",
+    "load_speech_feature_packets",
+    "materialize_legacy_cached_speech_feature_packet",
+    "materialize_speech_feature_packet",
 ]

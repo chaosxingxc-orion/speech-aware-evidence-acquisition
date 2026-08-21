@@ -9,6 +9,7 @@ from speech_aware_evidence_acquisition.core.config import (
     ComposedConfig,
     ConfigError,
     compose,
+    model_materialization_root,
     model_lock_key,
     protocol_hash,
     resolve_runtime_receipt_path,
@@ -237,6 +238,25 @@ def test_runtime_receipt_relpath_returns_the_explicit_value():
         runtime_receipt_relpath({"runtime_receipt": "receipts/runtime-q4km.json"})
         == "receipts/runtime-q4km.json"
     )
+
+
+def test_model_materialization_root_defaults_to_canonical_data_root():
+    assert model_materialization_root({}) is None
+
+
+def test_model_materialization_root_accepts_an_explicit_posix_absolute_root():
+    assert model_materialization_root(
+        {"model_materialization_root": "/home/chao"}
+    ) == "/home/chao"
+
+
+@pytest.mark.parametrize(
+    "value",
+    ["", "home/chao", "/home/../slow", "/home//chao", "C:\\models", 7],
+)
+def test_model_materialization_root_refuses_ambiguous_or_unsafe_values(value):
+    with pytest.raises(ConfigError, match="model_materialization_root"):
+        model_materialization_root({"model_materialization_root": value})
 
 
 @pytest.mark.parametrize(

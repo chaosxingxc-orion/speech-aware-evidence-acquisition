@@ -92,6 +92,10 @@ class FrozenCoreGate(
     runtime_root: Path
     exposure_ledger: Path
     source_root: Path
+    #: Optional alternate root holding the lock-relative GGUF paths. Dataset
+    #: carriers remain under ``data_root``; only runtime model-byte identity is
+    #: resolved here. ``None`` preserves the historical canonical-root path.
+    model_root: Path | None = None
     #: WHICH pinned model this run declares -- ``_validate_runtime``
     #: (``gate_runtime.py``) asserts the runtime receipt's own
     #: ``model_lock_key`` equals THIS value (never a bare module constant),
@@ -120,6 +124,7 @@ class FrozenCoreGate(
         *,
         runtime_receipt_relpath: str = _DEFAULT_RUNTIME_RECEIPT_RELPATH,
         expected_model_lock_key: str = MODEL_LOCK_KEY,
+        model_root: Path | None = None,
     ) -> "FrozenCoreGate":
         """The canonical production binding — the only gate a real run may use.
 
@@ -162,6 +167,7 @@ class FrozenCoreGate(
             runtime_root=Path(runtime_root),
             exposure_ledger=root / "docs" / "exposure-ledger.md",
             source_root=root,
+            model_root=Path(model_root) if model_root is not None else None,
             expected_model_lock_key=expected_model_lock_key,
         )
 

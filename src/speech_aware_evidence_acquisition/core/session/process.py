@@ -18,7 +18,9 @@ from typing import Mapping
 
 from . import SessionError
 from .paths import _resolve_under, _sha256_file
-from .receipt import _pinned_binary
+from .receipt import SessionReceipt, _pinned_binary
+
+MM_PROJ_AUDIT_SCHEMA = "saea-mmproj-free-process-audit-v1"
 
 if os.name == "nt":  # pragma: sys-platform
     import ctypes
@@ -143,3 +145,82 @@ def _verify_pid_runs_pinned_binary(
             f"{actual_sha[:12]}... but the runtime receipt pins {pinned_sha[:12]}...; "
             "refused (I5)"
         )
+
+
+def audit_mmproj_free_inference(
+    session: SessionReceipt,
+    *,
+    proc_root: Path = Path("/proc"),
+) -> dict[str, object]:
+    """Fail closed unless a live-process filesystem audit has zero mmproj hits.
+
+    The explicit ``--no-mmproj`` switch is the sole allowed occurrence of the
+    substring in argv. Any mmproj artifact or other flag in the receipt argv,
+    live ``cmdline``, memory maps, or open-file targets is a failure. Formal
+    inference records the returned mapping alongside its session receipt.
+    """
+
+    session.validate()
+    if session.role != "inference":
+        raise SessionError("mmproj-free process audit requires an inference session")
+    process_root = Path(proc_root) / str(session.pid)
+    cmdline_path = process_root / "cmdline"
+    maps_path = process_root / "maps"
+    fd_path = process_root / "fd"
+    try:
+        live_argv = tuple(
+            part.decode("utf-8", "strict")
+            for part in cmdline_path.read_bytes().split(b"\0")
+            if part
+        )
+        map_lines = tuple(maps_path.read_text(encoding="utf-8").splitlines())
+        fd_entries = tuple(fd_path.iterdir())
+    except (OSError, UnicodeError) as error:
+        raise SessionError(
+            f"cannot audit inference pid {session.pid} through {process_root}: {error}"
+        ) from error
+
+    def argv_hits(parts: tuple[str, ...]) -> list[str]:
+        return [
+            part
+            for part in parts
+            if "mmproj" in part.lower() and part != "--no-mmproj"
+        ]
+
+    receipt_argv_hits = argv_hits(session.argv)
+    live_argv_hits = argv_hits(live_argv)
+    maps_hits = [line for line in map_lines if "mmproj" in line.lower()]
+    open_file_hits: list[str] = []
+    for entry in fd_entries:
+        try:
+            target = os.readlink(entry)
+        except OSError as error:
+            raise SessionError(
+                f"cannot resolve open file {entry} while auditing inference: {error}"
+            ) from error
+        if "mmproj" in target.lower():
+            open_file_hits.append(target)
+    hit_count = (
+        len(receipt_argv_hits)
+        + len(live_argv_hits)
+        + len(maps_hits)
+        + len(open_file_hits)
+    )
+    if hit_count:
+        raise SessionError(
+            "inference process audit found an mmproj hit: "
+            f"receipt_argv={receipt_argv_hits!r}, live_argv={live_argv_hits!r}, "
+            f"maps={maps_hits!r}, open_files={open_file_hits!r}"
+        )
+    return {
+        "schema": MM_PROJ_AUDIT_SCHEMA,
+        "session_id": session.session_id,
+        "pid": session.pid,
+        "role": session.role,
+        "mmproj_loaded": False,
+        "mmproj_hit_count": 0,
+        "receipt_argv_checked": True,
+        "live_argv_checked": True,
+        "process_maps_checked": True,
+        "open_files_checked": True,
+    }

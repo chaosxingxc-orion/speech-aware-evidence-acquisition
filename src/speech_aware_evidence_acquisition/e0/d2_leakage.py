@@ -136,6 +136,30 @@ ARM_VISIBLE_FIELDS: dict[str, tuple[str, ...]] = {
         "exemplar_bank",
         "delta_candidates",
     ),
+    # Formal decoder-only speech-feature requests. This is a new arm rather
+    # than a mutation of any historical allowlist: raw media metadata remains
+    # bound for split identity and metering, while the transport consumes only
+    # the packet references and refuses raw input_audio in this mode.
+    "speech-feature-query": (
+        "request_id",
+        "carrier_lock_key",
+        "sample_id",
+        "speech_ref",
+        "media_relpath",
+        "audio_seconds",
+        "sample_rate_hz",
+        "task_instruction",
+        "history",
+        "decoding_params",
+        "supplied_evidence",
+        "evidence_provenance",
+        "speech_feature_parts",
+        "speech_packet_sha256",
+        "query_source",
+        "key_representation_id",
+        "matcher_policy_id",
+        "mmproj_loaded",
+    ),
 }
 
 

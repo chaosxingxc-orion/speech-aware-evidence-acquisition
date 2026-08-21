@@ -48,6 +48,7 @@ from __future__ import annotations
 
 import hashlib
 import time
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
@@ -56,7 +57,7 @@ from typing import Callable, Mapping, Protocol, Sequence, runtime_checkable
 from ..contracts import ExecutionPlan, assert_execution_scope
 from ..core.base import PayloadBindingContext
 from ..core.flight_lock import read_flight_lock
-from ..core.model import FrozenCoreAdapter, SliceRegistry
+from ..core.model import FrozenCoreAdapter, SliceRegistry, load_speech_feature_packets
 from ..core.model.slices import SliceRecord
 from ..core.tracing import TraceSink
 from ..e0.d2_leakage import ARM_VISIBLE_FIELDS
@@ -88,6 +89,9 @@ class CoreClient(Protocol):
         *,
         decoding_params: Mapping[str, object] | None = None,
         text_only_sample_id: str | None = None,
+        speech_feature_sample_id: str | None = None,
+        key_representation_id: str | None = None,
+        matcher_policy_id: str | None = None,
     ) -> str: ...
 
 
@@ -112,6 +116,9 @@ class MockCoreClient:
         *,
         decoding_params: Mapping[str, object] | None = None,
         text_only_sample_id: str | None = None,
+        speech_feature_sample_id: str | None = None,
+        key_representation_id: str | None = None,
+        matcher_policy_id: str | None = None,
     ) -> str:
         # text_only_sample_id is accepted (never validated -- this is a mock,
         # zero real invariants live here by design, module docstring) purely
@@ -154,6 +161,17 @@ _SUPPORTED_ARM_FIELDS = frozenset(
         "decoding_params",
         "supplied_evidence",
         "evidence_provenance",
+    }
+)
+
+_SPEECH_FEATURE_ARM_FIELDS = _SUPPORTED_ARM_FIELDS | frozenset(
+    {
+        "speech_feature_parts",
+        "speech_packet_sha256",
+        "query_source",
+        "key_representation_id",
+        "matcher_policy_id",
+        "mmproj_loaded",
     }
 )
 
@@ -370,6 +388,73 @@ def _parse_rails_messages(
     return task_instruction, media_relpath, supply_texts
 
 
+def _parse_speech_feature_messages(
+    messages: Sequence[Mapping[str, object]],
+) -> tuple[str, list[str], list[dict[str, str]]]:
+    """Parse the formal packet-reference content extension.
+
+    Exactly one query packet is mandatory. Any additional packet is an
+    explicitly marked key. Raw audio and caller-supplied arrays are refused;
+    the descriptor vocabulary is the exact id/hash/role triple.
+    """
+
+    if len(messages) != 2:
+        raise FrozenCoreClientError(
+            f"FrozenCoreClient expects exactly 2 messages (system, user), got {len(messages)}"
+        )
+    system_message, user_message = messages
+    if not isinstance(system_message, Mapping) or system_message.get("role") != "system":
+        raise FrozenCoreClientError("messages[0] must be a mapping with role 'system'")
+    task_instruction = system_message.get("content")
+    if not isinstance(task_instruction, str) or not task_instruction:
+        raise FrozenCoreClientError("system message content must be a non-empty string")
+    if not isinstance(user_message, Mapping) or user_message.get("role") != "user":
+        raise FrozenCoreClientError("messages[1] must be a mapping with role 'user'")
+    content = user_message.get("content")
+    if not isinstance(content, Sequence) or isinstance(content, (str, bytes)):
+        raise FrozenCoreClientError("user message content must be a list of content parts")
+    supply_texts: list[str] = []
+    descriptors: list[dict[str, str]] = []
+    for index, part in enumerate(content):
+        if not isinstance(part, Mapping) or "type" not in part:
+            raise FrozenCoreClientError(
+                f"user content[{index}] must be a mapping with a 'type' key"
+            )
+        part_type = part["type"]
+        if part_type == "input_audio":
+            raise FrozenCoreClientError(
+                "speech-feature request must not carry input_audio; preprocessing must "
+                "materialize every packet before inference"
+            )
+        if part_type == "text":
+            text = part.get("text")
+            if not isinstance(text, str) or not text:
+                raise FrozenCoreClientError("text content part must carry non-empty text")
+            supply_texts.append(text)
+            continue
+        if part_type != "input_speech_features":
+            raise FrozenCoreClientError(f"unsupported content part type {part_type!r}")
+        speech_features = part.get("speech_features")
+        required = {"packet_id", "sha256", "role"}
+        if not isinstance(speech_features, Mapping) or set(speech_features) != required:
+            raise FrozenCoreClientError(
+                f"input_speech_features must carry exact keys {sorted(required)}"
+            )
+        if speech_features["role"] not in {"query", "key"}:
+            raise FrozenCoreClientError("speech feature role must be 'query' or 'key'")
+        if not all(
+            isinstance(speech_features[field], str) and speech_features[field]
+            for field in required
+        ):
+            raise FrozenCoreClientError("speech feature descriptor values must be non-empty strings")
+        descriptors.append(dict(speech_features))
+    if sum(part["role"] == "query" for part in descriptors) != 1:
+        raise FrozenCoreClientError(
+            "speech-feature request must carry exactly one query packet"
+        )
+    return task_instruction, supply_texts, descriptors
+
+
 class FrozenCoreClient:
     """The REAL ``CoreClient``: delegates every :meth:`complete` call to a
     ``core.model.FrozenCoreAdapter`` it owns (module docstring).
@@ -409,6 +494,8 @@ class FrozenCoreClient:
         slice_registry: SliceRegistry | None = None,
         request_id_prefix: str = "rails",
         now: Callable[[], float] = time.time,
+        speech_feature_root: Path | None = None,
+        speech_packet_bindings: Mapping[str, Mapping[str, str]] | None = None,
     ) -> None:
         plan.validate()
         assert_execution_scope(plan.execution_profile)
@@ -416,7 +503,8 @@ class FrozenCoreClient:
             raise FrozenCoreClientError(
                 f"unknown D2 arm {arm!r}; D2-frozen arms are {sorted(ARM_VISIBLE_FIELDS)}"
             )
-        if set(ARM_VISIBLE_FIELDS[arm]) != _SUPPORTED_ARM_FIELDS:
+        arm_fields = frozenset(ARM_VISIBLE_FIELDS[arm])
+        if arm_fields not in {_SUPPORTED_ARM_FIELDS, _SPEECH_FEATURE_ARM_FIELDS}:
             raise FrozenCoreClientError(
                 f"FrozenCoreClient only builds payloads for the field set "
                 f"{sorted(_SUPPORTED_ARM_FIELDS)} (D2 arm {DEFAULT_RAILS_ARM!r}); arm "
@@ -457,6 +545,84 @@ class FrozenCoreClient:
         self._request_counter = 0
         self._timings: list[RequestTiming] = []
         self._closed = False
+        self._speech_feature_root: Path | None = None
+        self._speech_packet_bindings: dict[str, dict[str, str]] = {}
+        self._speech_decoder_gguf_sha256: str | None = None
+        self._speech_n_embd: int | None = None
+        if arm_fields == _SPEECH_FEATURE_ARM_FIELDS:
+            if speech_feature_root is None or speech_packet_bindings is None:
+                raise FrozenCoreClientError(
+                    "speech-feature-query requires speech_feature_root and complete "
+                    "speech_packet_bindings"
+                )
+            try:
+                root = Path(speech_feature_root).resolve(strict=True)
+            except OSError as error:
+                raise FrozenCoreClientError(
+                    f"speech_feature_root is unavailable: {error}"
+                ) from error
+            if not root.is_dir():
+                raise FrozenCoreClientError("speech_feature_root must be a directory")
+            if set(speech_packet_bindings) != set(binding.allowed_sample_ids):
+                raise FrozenCoreClientError(
+                    "speech_packet_bindings must materialize every target sample before inference"
+                )
+            verified: dict[str, dict[str, str]] = {}
+            ordered_sample_ids = tuple(sorted(speech_packet_bindings))
+            ordered_descriptors: list[dict[str, object]] = []
+            for sample_id in ordered_sample_ids:
+                descriptor = speech_packet_bindings[sample_id]
+                if not isinstance(descriptor, Mapping) or set(descriptor) != {
+                    "packet_id",
+                    "sha256",
+                }:
+                    raise FrozenCoreClientError(
+                        f"speech packet binding for {sample_id!r} must have exact "
+                        "packet_id/sha256 keys"
+                    )
+                ordered_descriptors.append(dict(descriptor))
+            packets = load_speech_feature_packets(
+                root,
+                tuple(ordered_descriptors),
+                workers=8,
+            )
+
+            def audio_sha256(sample_id: str) -> str:
+                audio_path = Path(binding.data_root) / binding.media_relpaths[sample_id]
+                return hashlib.sha256(audio_path.read_bytes()).hexdigest()
+
+            with ThreadPoolExecutor(
+                max_workers=min(8, len(ordered_sample_ids)),
+                thread_name_prefix="saea-speech-audio",
+            ) as pool:
+                audio_sha256s = tuple(pool.map(audio_sha256, ordered_sample_ids))
+            for sample_id, packet, audio_digest in zip(
+                ordered_sample_ids, packets, audio_sha256s, strict=True
+            ):
+                if packet.audio_sha256 != audio_digest:
+                    raise FrozenCoreClientError(
+                        f"speech packet bound to {sample_id!r} does not match its audio bytes"
+                    )
+                verified[sample_id] = {
+                    "packet_id": packet.packet_id,
+                    "sha256": packet.packet_sha256,
+                }
+            decoder_hashes = {packet.decoder_gguf_sha256 for packet in packets}
+            dimensions = {
+                chunk.n_embd for packet in packets for chunk in packet.chunks
+            }
+            if len(decoder_hashes) != 1 or len(dimensions) != 1:
+                raise FrozenCoreClientError(
+                    "speech packet bindings must share one decoder identity and dimension"
+                )
+            self._speech_feature_root = root
+            self._speech_packet_bindings = verified
+            self._speech_decoder_gguf_sha256 = next(iter(decoder_hashes))
+            self._speech_n_embd = next(iter(dimensions))
+        elif speech_feature_root is not None or speech_packet_bindings is not None:
+            raise FrozenCoreClientError(
+                "speech feature bindings are only valid for the speech-feature-query arm"
+            )
 
     @property
     def arm(self) -> str:
@@ -493,6 +659,9 @@ class FrozenCoreClient:
         *,
         decoding_params: Mapping[str, object] | None = None,
         text_only_sample_id: str | None = None,
+        speech_feature_sample_id: str | None = None,
+        key_representation_id: str | None = None,
+        matcher_policy_id: str | None = None,
     ) -> str:
         """The abort's own root cause, repaired (attempt-1 accounting,
         docs/readiness/2026-08-18-pkey-preregistration-REGISTERED.md section
@@ -525,7 +694,60 @@ class FrozenCoreClient:
 
         if self._closed:
             raise FrozenCoreClientError("complete() called after close()")
-        if text_only_sample_id is not None:
+        speech_feature_parts: list[dict[str, str]] | None = None
+        if speech_feature_sample_id is not None:
+            if text_only_sample_id is not None:
+                raise FrozenCoreClientError(
+                    "speech_feature_sample_id and text_only_sample_id are mutually exclusive"
+                )
+            if self._arm != "speech-feature-query":
+                raise FrozenCoreClientError(
+                    "speech_feature_sample_id requires the speech-feature-query arm"
+                )
+            if not isinstance(speech_feature_sample_id, str) or not speech_feature_sample_id:
+                raise FrozenCoreClientError(
+                    "speech_feature_sample_id must be a non-empty string"
+                )
+            if not isinstance(key_representation_id, str) or not key_representation_id:
+                raise FrozenCoreClientError("key_representation_id must be a non-empty string")
+            if not isinstance(matcher_policy_id, str) or not matcher_policy_id:
+                raise FrozenCoreClientError("matcher_policy_id must be a non-empty string")
+            task_instruction, supply_texts, speech_feature_parts = (
+                _parse_speech_feature_messages(messages)
+            )
+            sample_id = speech_feature_sample_id
+            expected_query = self._speech_packet_bindings.get(sample_id)
+            if expected_query is None:
+                raise FrozenCoreClientError(
+                    f"speech_feature_sample_id {sample_id!r} is not bound to this client"
+                )
+            actual_query = next(
+                part for part in speech_feature_parts if part["role"] == "query"
+            )
+            if {
+                "packet_id": actual_query["packet_id"],
+                "sha256": actual_query["sha256"],
+            } != expected_query:
+                raise FrozenCoreClientError(
+                    f"query packet does not match the bound packet for sample {sample_id!r}"
+                )
+            assert self._speech_feature_root is not None
+            load_speech_feature_packets(
+                self._speech_feature_root,
+                tuple(
+                    {
+                        "packet_id": descriptor["packet_id"],
+                        "sha256": descriptor["sha256"],
+                    }
+                    for descriptor in speech_feature_parts
+                ),
+                workers=8,
+                expected_decoder_gguf_sha256=self._speech_decoder_gguf_sha256,
+                expected_n_embd=self._speech_n_embd,
+            )
+            media_relpath = self._binding.media_relpaths[sample_id]
+            audio_seconds, sample_rate_hz = self._binding.sample_facts[sample_id]
+        elif text_only_sample_id is not None:
             if not isinstance(text_only_sample_id, str) or not text_only_sample_id:
                 raise FrozenCoreClientError("text_only_sample_id must be a non-empty string")
             task_instruction, _, supply_texts = _parse_rails_messages(messages, text_only=True)
@@ -538,6 +760,11 @@ class FrozenCoreClient:
             media_relpath = self._binding.media_relpaths[sample_id]
             audio_seconds, sample_rate_hz = self._binding.sample_facts[sample_id]
         else:
+            if self._arm == "speech-feature-query":
+                raise FrozenCoreClientError(
+                    "speech-feature-query requires speech_feature_sample_id and a query "
+                    "packet on every decision call"
+                )
             task_instruction, media_relpath, supply_texts = _parse_rails_messages(messages)
             sample_id = self._reverse_media_index.get(media_relpath)
             if sample_id is None:
@@ -591,6 +818,20 @@ class FrozenCoreClient:
             "supplied_evidence": supplied_evidence,
             "evidence_provenance": evidence_provenance,
         }
+        if speech_feature_parts is not None:
+            query_part = next(
+                part for part in speech_feature_parts if part["role"] == "query"
+            )
+            payload.update(
+                {
+                    "speech_feature_parts": speech_feature_parts,
+                    "speech_packet_sha256": query_part["sha256"],
+                    "query_source": "speech_features",
+                    "key_representation_id": key_representation_id,
+                    "matcher_policy_id": matcher_policy_id,
+                    "mmproj_loaded": False,
+                }
+            )
         started_at = _iso(self._now())
         response = self._adapter.request(payload)
         self._timings.append(

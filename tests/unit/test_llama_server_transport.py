@@ -9,8 +9,11 @@ import hashlib
 import json
 import os
 import shutil
+import struct
 import subprocess
 import sys
+import threading
+import time
 
 import pytest
 
@@ -19,11 +22,19 @@ from speech_aware_evidence_acquisition.core.base import EvidenceItem
 from speech_aware_evidence_acquisition.core.model import (
     FrozenCoreError,
     LlamaServerTransport,
+    SpeechFeatureChunkData,
+    legacy_audio_feature_cache_key,
+    load_speech_feature_packet,
+    load_speech_feature_packets,
+    materialize_legacy_cached_speech_feature_packet,
+    materialize_speech_feature_packet,
 )
 from speech_aware_evidence_acquisition.core.policies import build_arm_payload
 from speech_aware_evidence_acquisition.core.session import (
     SESSION_RECEIPT_SCHEMA,
+    SESSION_RECEIPT_SCHEMA_V2,
     ModelFileRef,
+    SessionError,
     SessionReceipt,
 )
 from speech_aware_evidence_acquisition.data.loader import SampleRef
@@ -213,6 +224,36 @@ def _fake_session(*, host="127.0.0.1", port=None):
     )
 
 
+def _fake_inference_session(*, host="127.0.0.1", port=None):
+    if port is None:
+        port = _live["port"]
+    return SessionReceipt(
+        schema=SESSION_RECEIPT_SCHEMA_V2,
+        study=STUDY_SLUG,
+        session_id="test-inference-session",
+        binary_path=_BINARY_PATH,
+        binary_sha256=_live["binary_sha256"],
+        argv=(
+            _BINARY_PATH,
+            "--host",
+            host,
+            "--port",
+            str(port),
+            "-m",
+            _MODEL_FILES[0].path,
+            "--no-mmproj",
+        ),
+        pid=_live["pid"],
+        host=host,
+        port=port,
+        model_files=(_MODEL_FILES[0],),
+        started_at="2026-08-21T00:00:00+00:00",
+        startup_stdout_sha256=hashlib.sha256(b"").hexdigest(),
+        role="inference",
+        server_env_keys=(),
+    )
+
+
 def _transport(
     base_url, data_root, *, post, session=None, runtime_receipt=None, runtime_root=None, **kwargs
 ):
@@ -256,6 +297,28 @@ def _canned_response():
     ).encode()
 
 
+def _materialize_packet(feature_root, packet_id="slurp/train/s1"):
+    return materialize_speech_feature_packet(
+        feature_root=feature_root,
+        packet_id=packet_id,
+        audio_sha256="a" * 64,
+        encoder_receipt_sha256="e" * 64,
+        decoder_gguf_sha256=_MODEL_FILES[0].sha256,
+        mmproj_sha256=_MODEL_FILES[1].sha256,
+        position_mode="mrope_1d",
+        causal_attention=True,
+        chunks=(
+            SpeechFeatureChunkData(
+                n_tokens=2,
+                n_pos=2,
+                n_embd=4,
+                feature_bytes=struct.pack("<8f", *range(8)),
+                position_bytes=struct.pack("<8i", 0, 1, 0, 1, 0, 1, 0, 1),
+            ),
+        ),
+    )
+
+
 def test_body_mapping_and_response_projection(tmp_path):
     captured = {}
 
@@ -283,6 +346,314 @@ def test_body_mapping_and_response_projection(tmp_path):
     assert audio_part["type"] == "input_audio"
     assert audio_part["input_audio"]["format"] == "mp3"
     assert base64.b64decode(audio_part["input_audio"]["data"]) == b"fake-mp3-bytes"
+
+
+def test_speech_feature_prompt_order_sends_packet_reference_without_raw_audio(tmp_path):
+    feature_root = tmp_path / "features"
+    packet = _materialize_packet(feature_root)
+    captured = {}
+
+    def fake_post(url, body):
+        captured["body"] = json.loads(body)
+        return _canned_response()
+
+    transport = _transport(
+        _base_url(),
+        tmp_path,
+        post=fake_post,
+        session=_fake_inference_session(),
+        prompt_order="speech-features-text-keys-v1",
+        feature_root=feature_root,
+    )
+    payload = _boundary_payload(
+        tmp_path,
+        task_instruction="Choose exactly one opaque key id.",
+        supplied_evidence=[
+            {"evidence_id": "key-001", "content": "Turn a light on."}
+        ],
+        speech_feature_parts=[
+            {
+                "packet_id": "slurp/train/s1",
+                "sha256": packet.packet_sha256,
+                "role": "query",
+            }
+        ],
+        speech_packet_sha256=packet.packet_sha256,
+        query_source="speech_features",
+        key_representation_id="k1-text-card-v1",
+        matcher_policy_id="m1-listwise-v1",
+        mmproj_loaded=False,
+    )
+    transport(json.dumps(payload).encode())
+    parts = captured["body"]["messages"][1]["content"]
+    assert parts[0] == {"type": "text", "text": "[evidence key-001] Turn a light on."}
+    assert parts[1] == {
+        "type": "input_speech_features",
+        "speech_features": {
+            "packet_id": "slurp/train/s1",
+            "sha256": packet.packet_sha256,
+            "role": "query",
+        },
+    }
+    assert all(part["type"] != "input_audio" for part in parts)
+
+
+def test_speech_feature_transport_batch_validates_query_and_key_packets(
+    tmp_path, monkeypatch
+):
+    from speech_aware_evidence_acquisition.core.model import transport as transport_module
+
+    feature_root = tmp_path / "features"
+    query = _materialize_packet(feature_root, "slurp/train/query")
+    key = _materialize_packet(feature_root, "slurp/train/key")
+    original = transport_module.load_speech_feature_packets
+    calls = []
+
+    def tracked_loader(root, bindings, **kwargs):
+        calls.append((root, tuple(bindings), kwargs))
+        return original(root, bindings, **kwargs)
+
+    monkeypatch.setattr(transport_module, "load_speech_feature_packets", tracked_loader)
+    transport = _transport(
+        _base_url(),
+        tmp_path,
+        post=lambda u, b: _canned_response(),
+        session=_fake_inference_session(),
+        prompt_order="speech-features-text-keys-v1",
+        feature_root=feature_root,
+    )
+    payload = _boundary_payload(
+        tmp_path,
+        speech_feature_parts=[
+            {"packet_id": query.packet_id, "sha256": query.packet_sha256, "role": "query"},
+            {"packet_id": key.packet_id, "sha256": key.packet_sha256, "role": "key"},
+        ],
+        speech_packet_sha256=query.packet_sha256,
+        query_source="speech_features",
+        key_representation_id="k3-audio-key-v1",
+        matcher_policy_id="m1-listwise-v1",
+        mmproj_loaded=False,
+    )
+
+    transport(json.dumps(payload).encode())
+
+    assert len(calls) == 1
+    assert calls[0][2]["workers"] == 8
+    assert [binding["packet_id"] for binding in calls[0][1]] == [
+        query.packet_id,
+        key.packet_id,
+    ]
+
+
+def test_speech_feature_prompt_order_requires_inference_session_and_fixed_root(tmp_path):
+    with pytest.raises(SessionError, match="inference session"):
+        _transport(
+            _base_url(),
+            tmp_path,
+            post=lambda u, b: _canned_response(),
+            prompt_order="speech-features-text-keys-v1",
+            feature_root=tmp_path / "features",
+        )
+    with pytest.raises(SessionError, match="feature_root"):
+        _transport(
+            _base_url(),
+            tmp_path,
+            post=lambda u, b: _canned_response(),
+            session=_fake_inference_session(),
+            prompt_order="speech-features-text-keys-v1",
+        )
+
+
+def test_speech_feature_transport_fails_closed_on_corruption_and_inline_arrays(tmp_path):
+    feature_root = tmp_path / "features"
+    packet = _materialize_packet(feature_root)
+    transport = _transport(
+        _base_url(),
+        tmp_path,
+        post=lambda u, b: _canned_response(),
+        session=_fake_inference_session(),
+        prompt_order="speech-features-text-keys-v1",
+        feature_root=feature_root,
+    )
+    payload = _boundary_payload(
+        tmp_path,
+        query_source="speech_features",
+        key_representation_id="k1-text-card-v1",
+        matcher_policy_id="m1-listwise-v1",
+        mmproj_loaded=False,
+        speech_packet_sha256=packet.packet_sha256,
+        speech_feature_parts=[
+            {
+                "packet_id": "slurp/train/s1",
+                "sha256": packet.packet_sha256,
+                "role": "query",
+                "values": [0.0, 1.0],
+            }
+        ],
+    )
+    with pytest.raises(FrozenCoreError, match="exact keys"):
+        transport(json.dumps(payload).encode())
+
+    feature_file = feature_root / "slurp/train/s1/chunks/0000.f32"
+    feature_file.write_bytes(b"corrupt")
+    payload["speech_feature_parts"] = [
+        {
+            "packet_id": "slurp/train/s1",
+            "sha256": packet.packet_sha256,
+            "role": "query",
+        }
+    ]
+    with pytest.raises(FrozenCoreError, match="feature bytes"):
+        transport(json.dumps(payload).encode())
+
+
+def test_speech_feature_packet_loader_rejects_escape_model_and_dimension_mismatch(tmp_path):
+    feature_root = tmp_path / "features"
+    packet = _materialize_packet(feature_root)
+    with pytest.raises(FrozenCoreError, match="traversal"):
+        load_speech_feature_packet(feature_root, "../outside")
+    with pytest.raises(FrozenCoreError, match="different decoder"):
+        load_speech_feature_packet(
+            feature_root,
+            packet.packet_id,
+            expected_decoder_gguf_sha256="c" * 64,
+        )
+    with pytest.raises(FrozenCoreError, match="n_embd"):
+        load_speech_feature_packet(
+            feature_root,
+            packet.packet_id,
+            expected_n_embd=8,
+        )
+
+
+def test_speech_feature_packet_batch_validation_is_parallel_and_ordered(tmp_path, monkeypatch):
+    from speech_aware_evidence_acquisition.core.model import speech_features
+
+    feature_root = tmp_path / "features"
+    packets = tuple(
+        _materialize_packet(feature_root, f"slurp/train/s{index}")
+        for index in range(6)
+    )
+    original = speech_features.load_speech_feature_packet
+    lock = threading.Lock()
+    active = 0
+    peak = 0
+
+    def tracked_loader(*args, **kwargs):
+        nonlocal active, peak
+        with lock:
+            active += 1
+            peak = max(peak, active)
+        time.sleep(0.02)
+        try:
+            return original(*args, **kwargs)
+        finally:
+            with lock:
+                active -= 1
+
+    monkeypatch.setattr(speech_features, "load_speech_feature_packet", tracked_loader)
+    loaded = load_speech_feature_packets(
+        feature_root,
+        tuple(
+            {"packet_id": packet.packet_id, "sha256": packet.packet_sha256}
+            for packet in reversed(packets)
+        ),
+        workers=3,
+        expected_decoder_gguf_sha256=_MODEL_FILES[0].sha256,
+        expected_n_embd=4,
+    )
+
+    assert [packet.packet_id for packet in loaded] == [
+        packet.packet_id for packet in reversed(packets)
+    ]
+    assert 2 <= peak <= 3
+
+
+def test_speech_feature_packet_materialization_is_idempotent_but_never_overwrites(tmp_path):
+    feature_root = tmp_path / "features"
+    packet = _materialize_packet(feature_root)
+    assert _materialize_packet(feature_root).packet_sha256 == packet.packet_sha256
+    with pytest.raises(FrozenCoreError, match="different source/model metadata"):
+        materialize_speech_feature_packet(
+            feature_root=feature_root,
+            packet_id=packet.packet_id,
+            audio_sha256="b" * 64,
+            encoder_receipt_sha256="e" * 64,
+            decoder_gguf_sha256=_MODEL_FILES[0].sha256,
+            mmproj_sha256=_MODEL_FILES[1].sha256,
+            position_mode="mrope_1d",
+            causal_attention=True,
+            chunks=(
+                SpeechFeatureChunkData(
+                    n_tokens=2,
+                    n_pos=2,
+                    n_embd=4,
+                    feature_bytes=struct.pack("<8f", *range(8)),
+                    position_bytes=struct.pack("<8i", 0, 1, 0, 1, 0, 1, 0, 1),
+                ),
+            ),
+        )
+
+
+def test_existing_legacy_featcache_is_promoted_without_reencoding(tmp_path):
+    audio = tmp_path / "audio.flac"
+    audio.write_bytes(b"existing-governed-audio")
+    legacy = tmp_path / "legacy-cache"
+    legacy.mkdir()
+    key = legacy_audio_feature_cache_key(audio.read_bytes())
+    features = struct.pack("<8f", *[float(i) for i in range(8)])
+    (legacy / f"{key}_o0.feat").write_bytes(struct.pack("<QQ", 2, 4) + features)
+
+    packet = materialize_legacy_cached_speech_feature_packet(
+        feature_root=tmp_path / "packets",
+        packet_id="slurp/devel/example",
+        audio_path=audio,
+        legacy_cache_dir=legacy,
+        encoder_receipt_sha256="1" * 64,
+        decoder_gguf_sha256="2" * 64,
+        mmproj_sha256="3" * 64,
+        expected_n_embd=4,
+        causal_attention=True,
+    )
+
+    assert packet.audio_sha256 == hashlib.sha256(audio.read_bytes()).hexdigest()
+    assert len(packet.chunks) == 1
+    assert packet.chunks[0].n_tokens == packet.chunks[0].n_pos == 2
+    packet_dir = tmp_path / "packets" / "slurp" / "devel" / "example"
+    assert (packet_dir / packet.chunks[0].feature_relpath).read_bytes() == features
+    assert struct.unpack(
+        "<8i", (packet_dir / packet.chunks[0].position_relpath).read_bytes()
+    ) == (0, 1, 0, 1, 0, 1, 0, 1)
+
+
+def test_legacy_featcache_promotion_refuses_gaps_and_wrong_decoder_dimension(tmp_path):
+    audio = tmp_path / "audio.flac"
+    audio.write_bytes(b"existing-governed-audio")
+    legacy = tmp_path / "legacy-cache"
+    legacy.mkdir()
+    key = legacy_audio_feature_cache_key(audio.read_bytes())
+    (legacy / f"{key}_o1.feat").write_bytes(
+        struct.pack("<QQ", 2, 4) + struct.pack("<8f", *([0.0] * 8))
+    )
+    kwargs = dict(
+        feature_root=tmp_path / "packets",
+        packet_id="slurp/devel/example",
+        audio_path=audio,
+        legacy_cache_dir=legacy,
+        encoder_receipt_sha256="1" * 64,
+        decoder_gguf_sha256="2" * 64,
+        mmproj_sha256="3" * 64,
+        expected_n_embd=4,
+        causal_attention=True,
+    )
+    with pytest.raises(FrozenCoreError, match="ordinal zero"):
+        materialize_legacy_cached_speech_feature_packet(**kwargs)
+
+    (legacy / f"{key}_o0.feat").write_bytes(
+        struct.pack("<QQ", 2, 5) + struct.pack("<10f", *([0.0] * 10))
+    )
+    with pytest.raises(FrozenCoreError, match="decoder dimension"):
+        materialize_legacy_cached_speech_feature_packet(**kwargs)
 
 
 def test_prompt_order_v2_moves_evidence_into_system_ahead_of_instruction(tmp_path):

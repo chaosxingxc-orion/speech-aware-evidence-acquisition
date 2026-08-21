@@ -1,5 +1,598 @@
+diff --git a/tools/mtmd/mtmd.cpp b/tools/mtmd/mtmd.cpp
+index 724538b58..1c5e19ab7 100644
+--- a/tools/mtmd/mtmd.cpp
++++ b/tools/mtmd/mtmd.cpp
+@@ -141,6 +141,7 @@ using mtmd_image_tokens_ptr = std::unique_ptr<mtmd_image_tokens>;
+
+ struct mtmd_audio_tokens {
+     uint32_t n_tokens = 0; // number of tokens
++    llama_pos n_pos = 0; // zero means the historical n_tokens behavior
+     clip_image_f32_batch batch_f32; // preprocessed image patches
+     std::string id; // optional user-defined ID, useful for KV cache tracking
+
+@@ -157,6 +158,7 @@ struct mtmd_audio_tokens {
+     mtmd_audio_tokens clone() {
+         return mtmd_audio_tokens{
+             n_tokens,
++            n_pos,
+             batch_f32.clone(),
+             id
+         };
+@@ -1834,13 +1836,34 @@ size_t mtmd_input_chunk_get_n_tokens(const mtmd_input_chunk * chunk) {
+     }
+ }
+
++mtmd_input_chunk * mtmd_input_chunk_init_audio_placeholder(
++        size_t n_tokens,
++        llama_pos n_pos,
++        const char * id) {
++    if (n_tokens == 0 || n_pos <= 0 || id == nullptr || id[0] == '\0') {
++        return nullptr;
++    }
++    mtmd_input_chunk * chunk = new mtmd_input_chunk{
++        MTMD_INPUT_CHUNK_TYPE_AUDIO,
++        {},
++        nullptr,
++        mtmd_audio_tokens_ptr(new mtmd_audio_tokens()),
++    };
++    chunk->tokens_audio->n_tokens = n_tokens;
++    chunk->tokens_audio->n_pos = n_pos;
++    chunk->tokens_audio->id = id;
++    return chunk;
++}
++
+ llama_pos mtmd_input_chunk_get_n_pos(const mtmd_input_chunk * chunk) {
+     if (chunk->type == MTMD_INPUT_CHUNK_TYPE_TEXT) {
+         return chunk->tokens_text.size();
+     } else if (chunk->type == MTMD_INPUT_CHUNK_TYPE_IMAGE) {
+         return mtmd_image_tokens_get_n_pos(chunk->tokens_image.get());
+     } else if (chunk->type == MTMD_INPUT_CHUNK_TYPE_AUDIO) {
+-        return chunk->tokens_audio->n_tokens;
++        return chunk->tokens_audio->n_pos > 0
++            ? chunk->tokens_audio->n_pos
++            : chunk->tokens_audio->n_tokens;
+     } else {
+         GGML_ABORT("invalid chunk type");
+     }
+diff --git a/tools/mtmd/mtmd.h b/tools/mtmd/mtmd.h
+index 25d51ef58..5ab877ba3 100644
+--- a/tools/mtmd/mtmd.h
++++ b/tools/mtmd/mtmd.h
+@@ -225,6 +225,16 @@ MTMD_API const char *               mtmd_input_chunk_get_id          (const mtmd
+ // number of temporal positions (equals to max(t,h,w) for M-RoPE; equals to n_tokens otherwise)
+ MTMD_API llama_pos                  mtmd_input_chunk_get_n_pos       (const mtmd_input_chunk * chunk);
+
++// Construct an audio-shaped placeholder for a decoder embedding supplied
++// outside mtmd. The returned chunk owns no raw audio and must never be sent
++// to mtmd_batch_encode; it exists only so callers can reuse the established
++// text/media token ordering and KV-cache bookkeeping before decoding the
++// supplied embedding through llama_batch.
++MTMD_API mtmd_input_chunk * mtmd_input_chunk_init_audio_placeholder(
++        size_t n_tokens,
++        llama_pos n_pos,
++        const char * id);
++
+ // in case you want to use custom logic to handle the chunk (i.e. KV cache management)
+ // you can move the chunk ownership to your own code by copying it
+ // remember to free the chunk when you are done with it
+diff --git a/tools/server/CMakeLists.txt b/tools/server/CMakeLists.txt
+index 47bb582c3..971561aee 100644
+--- a/tools/server/CMakeLists.txt
++++ b/tools/server/CMakeLists.txt
+@@ -19,6 +19,7 @@ add_library(${TARGET} STATIC
+     server-tools.h
+     server-schema.cpp
+     server-schema.h
++    ${CMAKE_SOURCE_DIR}/examples/gguf-hash/deps/sha256/sha256.c
+ )
+
+ if (BUILD_SHARED_LIBS)
+@@ -27,6 +28,8 @@ endif()
+
+ target_include_directories(${TARGET} PRIVATE ../mtmd)
+ target_include_directories(${TARGET} PRIVATE ${CMAKE_SOURCE_DIR})
++target_include_directories(${TARGET} PRIVATE ${CMAKE_SOURCE_DIR}/examples/gguf-hash/deps/sha256)
++target_include_directories(${TARGET} PRIVATE ${CMAKE_SOURCE_DIR}/examples/gguf-hash/deps)
+ target_link_libraries(${TARGET} PUBLIC llama-common mtmd ${CMAKE_THREAD_LIBS_INIT})
+
+ # llama-server-impl: server logic, reusable by app
+diff --git a/tools/server/server-common.cpp b/tools/server/server-common.cpp
+index ac291d359..e7c75aec8 100644
+--- a/tools/server/server-common.cpp
++++ b/tools/server/server-common.cpp
+@@ -9,10 +9,20 @@
+
+ #include "server-common.h"
+
++extern "C" {
++#include "sha256.h"
++}
++
++#include <algorithm>
++#include <cstring>
++#include <filesystem>
+ #include <random>
+ #include <sstream>
+ #include <fstream>
+ #include <limits>
++#include <mutex>
++#include <set>
++#include <unordered_map>
+
+ json format_error_response(const std::string & message, const enum error_type type) {
+     std::string type_str;
+@@ -723,6 +733,344 @@ server_tokens process_mtmd_prompt(mtmd_context * mctx, const std::string & promp
+     return result;
+ }
+
++namespace {
++
++namespace fs = std::filesystem;
++
++std::mutex g_speech_feature_mutex;
++std::unordered_map<std::string, server_speech_feature_chunk_ptr> g_speech_feature_chunks;
++
++std::string sha256_hex(const uint8_t * data, size_t size) {
++    unsigned char digest[SHA256_DIGEST_SIZE];
++    sha256_hash(digest, data, size);
++    static constexpr char hex[] = "0123456789abcdef";
++    std::string result(SHA256_DIGEST_SIZE * 2, '0');
++    for (size_t i = 0; i < SHA256_DIGEST_SIZE; ++i) {
++        result[i * 2]     = hex[digest[i] >> 4];
++        result[i * 2 + 1] = hex[digest[i] & 0x0f];
++    }
++    return result;
++}
++
++std::string sha256_hex(const std::vector<uint8_t> & data) {
++    return sha256_hex(data.data(), data.size());
++}
++
++bool is_lower_sha256(const std::string & value) {
++    return value.size() == SHA256_DIGEST_SIZE * 2 &&
++        std::all_of(value.begin(), value.end(), [](unsigned char ch) {
++            return (ch >= '0' && ch <= '9') || (ch >= 'a' && ch <= 'f');
++        });
++}
++
++void require_lower_sha256(const json & document, const char * field) {
++    if (!document.contains(field) || !document.at(field).is_string() ||
++            !is_lower_sha256(document.at(field).get<std::string>())) {
++        throw std::invalid_argument(std::string(field) + " must be a lowercase 64-hex SHA-256");
++    }
++}
++
++void require_exact_keys(const json & document, const std::set<std::string> & expected, const char * subject) {
++    if (!document.is_object()) {
++        throw std::invalid_argument(std::string(subject) + " must be an object");
++    }
++    std::set<std::string> actual;
++    for (const auto & item : document.items()) {
++        actual.insert(item.key());
++    }
++    if (actual != expected) {
++        throw std::invalid_argument(std::string(subject) + " has unexpected or missing keys");
++    }
++}
++
++int32_t require_positive_i32(const json & document, const char * field) {
++    if (!document.contains(field) || !document.at(field).is_number_integer()) {
++        throw std::invalid_argument(std::string(field) + " must be a positive integer");
++    }
++    const int64_t value = document.at(field).get<int64_t>();
++    if (value <= 0 || value > std::numeric_limits<int32_t>::max()) {
++        throw std::invalid_argument(std::string(field) + " must fit a positive int32");
++    }
++    return static_cast<int32_t>(value);
++}
++
++std::string require_normalized_relative_path(const json & value, const char * subject) {
++    if (!value.is_string() || value.get_ref<const std::string &>().empty()) {
++        throw std::invalid_argument(std::string(subject) + " must be a non-empty string");
++    }
++    const std::string path_string = value.get<std::string>();
++    if (path_string.find('\\') != std::string::npos || path_string.find(':') != std::string::npos) {
++        throw std::invalid_argument(std::string(subject) + " must use a confined POSIX-style relative path");
++    }
++    const fs::path path(path_string);
++    if (path.is_absolute() || path.has_root_name() || path.has_root_directory() ||
++            path.lexically_normal().generic_string() != path_string) {
++        throw std::invalid_argument(std::string(subject) + " must be a normalized relative path");
++    }
++    for (const auto & component : path) {
++        if (component.empty() || component == "." || component == "..") {
++            throw std::invalid_argument(std::string(subject) + " contains a forbidden path component");
++        }
++    }
++    return path_string;
++}
++
++bool path_has_prefix(const fs::path & root, const fs::path & candidate) {
++    auto root_it = root.begin();
++    auto candidate_it = candidate.begin();
++    while (root_it != root.end() && candidate_it != candidate.end() && *root_it == *candidate_it) {
++        ++root_it;
++        ++candidate_it;
++    }
++    return root_it == root.end();
++}
++
++fs::path resolve_existing_confined(const fs::path & root, const std::string & relative, const char * subject) {
++    std::error_code ec;
++    const fs::path resolved = fs::canonical(root / relative, ec);
++    if (ec || !path_has_prefix(root, resolved)) {
++        throw std::invalid_argument(std::string(subject) + " does not resolve inside LLAMA_SPEECH_FEATURE_ROOT");
++    }
++    return resolved;
++}
++
++std::vector<uint8_t> read_binary_file(const fs::path & path, const char * subject) {
++    std::ifstream stream(path, std::ios::binary | std::ios::ate);
++    if (!stream) {
++        throw std::invalid_argument(std::string("cannot open ") + subject);
++    }
++    const std::streamsize size = stream.tellg();
++    if (size < 0) {
++        throw std::invalid_argument(std::string("cannot size ") + subject);
++    }
++    std::vector<uint8_t> bytes(static_cast<size_t>(size));
++    stream.seekg(0, std::ios::beg);
++    if (size > 0 && !stream.read(reinterpret_cast<char *>(bytes.data()), size)) {
++        throw std::invalid_argument(std::string("cannot read ") + subject);
++    }
++    return bytes;
++}
++
++std::vector<server_speech_feature_chunk_ptr> load_speech_feature_packet(
++        const fs::path & root,
++        const json & descriptor,
++        int32_t expected_n_embd,
++        const std::string & expected_decoder_sha256) {
++    static const std::set<std::string> descriptor_keys = {"packet_id", "sha256", "role"};
++    static const std::set<std::string> packet_keys = {
++        "schema", "packet_id", "audio_sha256", "encoder_receipt_sha256",
++        "decoder_gguf_sha256", "mmproj_sha256", "position_mode",
++        "causal_attention", "chunks", "packet_sha256"
++    };
++    static const std::set<std::string> chunk_keys = {
++        "ordinal", "n_tokens", "n_pos", "n_embd", "dtype",
++        "feature_relpath", "feature_sha256", "position_relpath", "position_sha256"
++    };
++
++    require_exact_keys(descriptor, descriptor_keys, "speech feature descriptor");
++    const std::string packet_id = require_normalized_relative_path(descriptor.at("packet_id"), "packet_id");
++    require_lower_sha256(descriptor, "sha256");
++    if (!descriptor.at("role").is_string() ||
++            (descriptor.at("role") != "query" && descriptor.at("role") != "key")) {
++        throw std::invalid_argument("speech feature role must be query or key");
++    }
++
++    const fs::path packet_dir = resolve_existing_confined(root, packet_id, "speech feature packet");
++    if (!fs::is_directory(packet_dir)) {
++        throw std::invalid_argument("speech feature packet must resolve to a directory");
++    }
++    const fs::path manifest_path = resolve_existing_confined(packet_dir, "packet.json", "speech feature manifest");
++    const auto manifest_bytes = read_binary_file(manifest_path, "speech feature manifest");
++    json document;
++    try {
++        document = json::parse(manifest_bytes.begin(), manifest_bytes.end());
++    } catch (const std::exception & error) {
++        throw std::invalid_argument(std::string("invalid speech feature manifest JSON: ") + error.what());
++    }
++    require_exact_keys(document, packet_keys, "speech feature packet manifest");
++    if (!document.at("schema").is_string() || document.at("schema") != "saea-speech-feature-packet-v1") {
++        throw std::invalid_argument("unsupported speech feature packet schema");
++    }
++    if (!document.at("packet_id").is_string() || document.at("packet_id") != packet_id) {
++        throw std::invalid_argument("speech feature manifest packet_id disagrees with request");
++    }
++    for (const char * field : {
++            "audio_sha256", "encoder_receipt_sha256", "decoder_gguf_sha256",
++            "mmproj_sha256", "packet_sha256"}) {
++        require_lower_sha256(document, field);
++    }
++    if (document.at("decoder_gguf_sha256") != expected_decoder_sha256) {
++        throw std::invalid_argument("speech feature packet is bound to a different decoder GGUF");
++    }
++    if (document.at("packet_sha256") != descriptor.at("sha256")) {
++        throw std::invalid_argument("speech feature packet hash disagrees with request");
++    }
++    if (!document.at("position_mode").is_string() || document.at("position_mode") != "mrope_1d") {
++        throw std::invalid_argument("speech feature position_mode must be mrope_1d");
++    }
++    if (!document.at("causal_attention").is_boolean()) {
++        throw std::invalid_argument("speech feature causal_attention must be boolean");
++    }
++    if (!document.at("chunks").is_array() || document.at("chunks").empty()) {
++        throw std::invalid_argument("speech feature packet must contain chunks");
++    }
++
++    nlohmann::json canonical = nlohmann::json::parse(document.dump());
++    canonical.erase("packet_sha256");
++    const std::string canonical_bytes = canonical.dump();
++    const std::string calculated_packet_sha = sha256_hex(
++        reinterpret_cast<const uint8_t *>(canonical_bytes.data()), canonical_bytes.size());
++    if (calculated_packet_sha != document.at("packet_sha256").get<std::string>()) {
++        throw std::invalid_argument("speech feature packet canonical SHA-256 mismatch");
++    }
++
++    const bool causal_attention = document.at("causal_attention").get<bool>();
++    const std::string packet_sha = document.at("packet_sha256").get<std::string>();
++    std::vector<server_speech_feature_chunk_ptr> loaded;
++    loaded.reserve(document.at("chunks").size());
++    for (size_t ordinal = 0; ordinal < document.at("chunks").size(); ++ordinal) {
++        const json & chunk_json = document.at("chunks").at(ordinal);
++        require_exact_keys(chunk_json, chunk_keys, "speech feature chunk");
++        if (!chunk_json.at("ordinal").is_number_integer() ||
++                chunk_json.at("ordinal").get<int64_t>() != static_cast<int64_t>(ordinal)) {
++            throw std::invalid_argument("speech feature chunk ordinals must be contiguous from zero");
++        }
++        const int32_t n_tokens = require_positive_i32(chunk_json, "n_tokens");
++        const int32_t n_pos = require_positive_i32(chunk_json, "n_pos");
++        const int32_t n_embd = require_positive_i32(chunk_json, "n_embd");
++        if (n_pos != n_tokens) {
++            throw std::invalid_argument("SpeechFeaturePacketV1 currently requires n_pos == n_tokens");
++        }
++        if (n_embd != expected_n_embd) {
++            throw std::invalid_argument("speech feature n_embd does not match the decoder");
++        }
++        if (!chunk_json.at("dtype").is_string() || chunk_json.at("dtype") != "float32") {
++            throw std::invalid_argument("SpeechFeaturePacketV1 permits float32 only");
++        }
++        require_lower_sha256(chunk_json, "feature_sha256");
++        require_lower_sha256(chunk_json, "position_sha256");
++        const std::string feature_relpath = require_normalized_relative_path(
++            chunk_json.at("feature_relpath"), "feature_relpath");
++        const std::string position_relpath = require_normalized_relative_path(
++            chunk_json.at("position_relpath"), "position_relpath");
++        const auto feature_bytes = read_binary_file(
++            resolve_existing_confined(packet_dir, feature_relpath, "speech feature bytes"),
++            "speech feature bytes");
++        const auto position_bytes = read_binary_file(
++            resolve_existing_confined(packet_dir, position_relpath, "speech feature positions"),
++            "speech feature positions");
++        const size_t n_feature_values = static_cast<size_t>(n_tokens) * static_cast<size_t>(n_embd);
++        const size_t n_position_values = static_cast<size_t>(n_tokens) * 4;
++        if (feature_bytes.size() != n_feature_values * sizeof(float) ||
++                position_bytes.size() != n_position_values * sizeof(int32_t)) {
++            throw std::invalid_argument("speech feature chunk byte length disagrees with its dimensions");
++        }
++        if (sha256_hex(feature_bytes) != chunk_json.at("feature_sha256").get<std::string>() ||
++                sha256_hex(position_bytes) != chunk_json.at("position_sha256").get<std::string>()) {
++            throw std::invalid_argument("speech feature chunk SHA-256 mismatch");
++        }
++
++        auto chunk = std::make_shared<server_speech_feature_chunk>();
++        chunk->id = "saea-sf:" + packet_sha + ":" + std::to_string(ordinal);
++        chunk->n_tokens = n_tokens;
++        chunk->n_pos = n_pos;
++        chunk->n_embd = n_embd;
++        chunk->causal_attention = causal_attention;
++        chunk->embd.resize(n_feature_values);
++        std::memcpy(chunk->embd.data(), feature_bytes.data(), feature_bytes.size());
++        chunk->positions.resize(n_position_values);
++        static_assert(sizeof(llama_pos) == sizeof(int32_t), "SpeechFeaturePacketV1 positions require int32 llama_pos");
++        std::memcpy(chunk->positions.data(), position_bytes.data(), position_bytes.size());
++        loaded.push_back(std::move(chunk));
++    }
++    return loaded;
++}
++
++} // namespace
++
++server_speech_feature_chunk_ptr server_speech_feature_find(const std::string & id) {
++    std::lock_guard<std::mutex> lock(g_speech_feature_mutex);
++    const auto found = g_speech_feature_chunks.find(id);
++    return found == g_speech_feature_chunks.end() ? nullptr : found->second;
++}
++
++server_tokens process_speech_feature_prompt(
++        const llama_vocab * vocab,
++        const std::string & prompt,
++        const json & descriptors,
++        int32_t expected_n_embd) {
++    if (!descriptors.is_array() || descriptors.empty()) {
++        throw std::invalid_argument("speech_feature_descriptors must be a non-empty array");
++    }
++    const char * root_env = std::getenv("LLAMA_SPEECH_FEATURE_ROOT");
++    if (root_env == nullptr || root_env[0] == '\0') {
++        throw std::invalid_argument("LLAMA_SPEECH_FEATURE_ROOT is required for speech feature requests");
++    }
++    std::error_code ec;
++    const fs::path root = fs::canonical(root_env, ec);
++    if (ec || !fs::is_directory(root)) {
++        throw std::invalid_argument("LLAMA_SPEECH_FEATURE_ROOT must name an existing directory");
++    }
++    const char * decoder_sha_env = std::getenv("LLAMA_SPEECH_DECODER_SHA256");
++    if (decoder_sha_env == nullptr || !is_lower_sha256(decoder_sha_env)) {
++        throw std::invalid_argument(
++            "LLAMA_SPEECH_DECODER_SHA256 must bind speech packets to the loaded decoder");
++    }
++
++    std::vector<std::vector<server_speech_feature_chunk_ptr>> packets;
++    packets.reserve(descriptors.size());
++    for (const auto & descriptor : descriptors) {
++        packets.push_back(load_speech_feature_packet(
++            root, descriptor, expected_n_embd, decoder_sha_env));
++    }
++    {
++        std::lock_guard<std::mutex> lock(g_speech_feature_mutex);
++        for (const auto & packet : packets) {
++            for (const auto & chunk : packet) {
++                g_speech_feature_chunks[chunk->id] = chunk;
++            }
++        }
++    }
++
++    server_tokens result(llama_tokens{}, true);
++    if (llama_vocab_get_add_bos(vocab)) {
++        result.push_back(llama_vocab_bos(vocab));
++    }
++    const std::string marker = get_media_marker();
++    size_t text_start = 0;
++    size_t descriptor_index = 0;
++    while (true) {
++        const size_t marker_pos = prompt.find(marker, text_start);
++        const size_t text_end = marker_pos == std::string::npos ? prompt.size() : marker_pos;
++        const auto text_tokens = common_tokenize(vocab, prompt.substr(text_start, text_end - text_start), false, true);
++        for (llama_token token : text_tokens) {
++            result.push_back(token);
++        }
++        if (marker_pos == std::string::npos) {
++            break;
++        }
++        if (descriptor_index >= packets.size()) {
++            throw std::invalid_argument("prompt contains more media markers than speech feature descriptors");
++        }
++        for (const auto & admitted : packets[descriptor_index++]) {
++            mtmd::input_chunk_ptr placeholder(mtmd_input_chunk_init_audio_placeholder(
++                admitted->n_tokens, admitted->n_pos, admitted->id.c_str()));
++            if (!placeholder) {
++                throw std::runtime_error("failed to construct speech feature placeholder");
++            }
++            result.push_back(placeholder.get());
++        }
++        text_start = marker_pos + marker.size();
++    }
++    if (descriptor_index != packets.size()) {
++        throw std::invalid_argument("prompt contains fewer media markers than speech feature descriptors");
++    }
++    if (llama_vocab_get_add_eos(vocab)) {
++        result.push_back(llama_vocab_eos(vocab));
++    }
++    return result;
++}
++
+ /**
+  * break the input "prompt" object into multiple prompt if needed, then tokenize them
+  * use tokenize_input_prompts() if the input could be an array.
+@@ -907,6 +1255,7 @@ json oaicompat_chat_params_parse(
+     std::vector<raw_buffer> & out_files)
+ {
+     json llama_params;
++    json speech_feature_descriptors = json::array();
+
+     auto tools = json_value(body, "tools", json());
+     auto has_tools = tools.is_array() && !tools.empty();
+@@ -1011,6 +1360,33 @@ json oaicompat_chat_params_parse(
+                 p["text"] = get_media_marker();
+                 p.erase("input_audio");
+
++            } else if (type == "input_speech_features") {
++                if (!p.contains("speech_features") || !p.at("speech_features").is_object()) {
++                    throw std::invalid_argument("input_speech_features requires a speech_features object");
++                }
++                const json descriptor = p.at("speech_features");
++                const std::set<std::string> expected = {"packet_id", "sha256", "role"};
++                std::set<std::string> actual;
++                for (const auto & item : descriptor.items()) {
++                    actual.insert(item.key());
++                }
++                if (actual != expected) {
++                    throw std::invalid_argument("speech_features must have exact packet_id/sha256/role keys");
++                }
++                for (const char * field : {"packet_id", "sha256", "role"}) {
++                    if (!descriptor.at(field).is_string() || descriptor.at(field).get<std::string>().empty()) {
++                        throw std::invalid_argument(std::string("speech_features.") + field + " must be a non-empty string");
++                    }
++                }
++                const std::string feature_role = descriptor.at("role").get<std::string>();
++                if (feature_role != "query" && feature_role != "key") {
++                    throw std::invalid_argument("speech_features.role must be query or key");
++                }
++                speech_feature_descriptors.push_back(descriptor);
++                p["type"] = "media_marker";
++                p["text"] = get_media_marker();
++                p.erase("speech_features");
++
+             } else if (type == "input_video") {
+                 if (!opt.allow_video) {
+                     throw std::runtime_error("video input is not supported - hint: if this is unexpected, you may need to provide the mmproj");
+@@ -1030,6 +1406,18 @@ json oaicompat_chat_params_parse(
+             }
+         }
+     }
++    if (!speech_feature_descriptors.empty()) {
++        size_t n_query = 0;
++        for (const auto & descriptor : speech_feature_descriptors) {
++            n_query += descriptor.at("role") == "query" ? 1 : 0;
++        }
++        if (n_query != 1) {
++            throw std::invalid_argument("speech feature request must contain exactly one query packet");
++        }
++        if (!out_files.empty()) {
++            throw std::invalid_argument("speech feature request must not also carry raw media");
++        }
++    }
+
+     auto caps = common_chat_templates_get_caps(opt.tmpls.get());
+
+@@ -1092,6 +1480,9 @@ json oaicompat_chat_params_parse(
+
+     llama_params["chat_format"] = static_cast<int>(chat_params.format);
+     llama_params["prompt"]      = chat_params.prompt;
++    if (!speech_feature_descriptors.empty()) {
++        llama_params["speech_feature_descriptors"] = speech_feature_descriptors;
++    }
+     if (!chat_params.grammar.empty()) {
+         llama_params["grammar"]      = chat_params.grammar;
+         llama_params["grammar_type"] = std::string("tool_calls");
+diff --git a/tools/server/server-common.h b/tools/server/server-common.h
+index c0eaec6b0..74809e74c 100644
+--- a/tools/server/server-common.h
++++ b/tools/server/server-common.h
+@@ -12,6 +12,7 @@
+ #include <string>
+ #include <vector>
+ #include <cinttypes>
++#include <memory>
+
+ using json = nlohmann::ordered_json;
+
+@@ -31,6 +32,24 @@ using json = nlohmann::ordered_json;
+
+ using raw_buffer = std::vector<uint8_t>;
+
++struct server_speech_feature_chunk {
++    std::string id;
++    int32_t n_tokens;
++    llama_pos n_pos;
++    int32_t n_embd;
++    bool causal_attention;
++    std::vector<float> embd;
++    // Four contiguous M-RoPE axes, each with n_tokens relative positions.
++    std::vector<llama_pos> positions;
++};
++
++using server_speech_feature_chunk_ptr = std::shared_ptr<const server_speech_feature_chunk>;
++
++// Look up a chunk already admitted by process_speech_feature_prompt. The
++// shared pointer keeps the bytes alive across concurrent slots and prompt
++// cache copies without any mmproj context.
++server_speech_feature_chunk_ptr server_speech_feature_find(const std::string & id);
++
+ template <typename T>
+ static T json_value(const json & body, const std::string & key, const T & default_value) {
+     // Fallback null to default value
+@@ -259,6 +278,16 @@ size_t validate_utf8(const std::string& text);
+ // if is_placeholder is true, the media chunk will be treated as placeholder for counting tokens; the output tokens are not usable for actual inference (e.g. for submitting a task to server_queue)
+ server_tokens process_mtmd_prompt(mtmd_context * mctx, const std::string & prompt, const std::vector<raw_buffer> & files, bool is_placeholder = false);
+
++// Decoder-only counterpart to process_mtmd_prompt. Descriptors are resolved
++// under LLAMA_SPEECH_FEATURE_ROOT, every packet and chunk hash is verified,
++// and each media marker in prompt is replaced by the packet's ordered audio
++// placeholder chunks. No raw audio or mmproj context is accepted.
++server_tokens process_speech_feature_prompt(
++        const llama_vocab * vocab,
++        const std::string & prompt,
++        const json & descriptors,
++        int32_t expected_n_embd);
++
+ /**
+  * break the input "prompt" object into multiple prompt if needed, then tokenize them
+  * this supports these cases:
 diff --git a/tools/server/server-context.cpp b/tools/server/server-context.cpp
-index 39b7eb218..e369822f0 100644
+index 39b7eb218..b51a1afce 100644
 --- a/tools/server/server-context.cpp
 +++ b/tools/server/server-context.cpp
 @@ -1,4 +1,11 @@
@@ -14,10 +607,71 @@ index 39b7eb218..e369822f0 100644
  #include "server-chat.h"
  #include "server-common.h"
  #include "server-http.h"
-@@ -701,10 +708,110 @@ struct server_slot {
+@@ -696,15 +703,170 @@ struct server_slot {
+     // returns 0 on success
+     // caller need to update prompt.tokens after a successful call to keep track of the processing progress
+     int process_mtmd_chunk(size_t idx, size_t & n_tokens_out) {
+-        GGML_ASSERT(mctx);
+         const auto & input_tokens = task->tokens;
          const auto & chunk = input_tokens.find_chunk(idx);
++        const char * chunk_id = mtmd_input_chunk_get_id(chunk.get());
++        if (chunk_id != nullptr) {
++            if (const auto supplied = server_speech_feature_find(chunk_id)) {
++                if (supplied->n_tokens != static_cast<int32_t>(mtmd_input_chunk_get_n_tokens(chunk.get())) ||
++                        supplied->n_pos != mtmd_input_chunk_get_n_pos(chunk.get())) {
++                    SLT_ERR(*this, "%s\n", "speech feature placeholder shape disagrees with admitted packet");
++                    return -1;
++                }
++                const int32_t n_batch = llama_n_batch(ctx_tgt);
++                const llama_pos base_pos = prompt.tokens.pos_next();
++                const bool use_non_causal = !supplied->causal_attention;
++                if (use_non_causal) {
++                    llama_set_causal_attn(ctx_tgt, false);
++                }
++                for (int32_t offset = 0; offset < supplied->n_tokens; offset += n_batch) {
++                    const int32_t n_tokens_batch = std::min(n_batch, supplied->n_tokens - offset);
++                    std::vector<llama_pos> positions(static_cast<size_t>(n_tokens_batch) * 4);
++                    for (int axis = 0; axis < 4; ++axis) {
++                        for (int32_t i = 0; i < n_tokens_batch; ++i) {
++                            positions[static_cast<size_t>(axis) * n_tokens_batch + i] =
++                                base_pos + supplied->positions[static_cast<size_t>(axis) * supplied->n_tokens + offset + i];
++                        }
++                    }
++                    std::vector<int32_t> n_seq_id(n_tokens_batch, 1);
++                    std::vector<llama_seq_id *> seq_ids(n_tokens_batch);
++                    std::vector<int8_t> logits(n_tokens_batch, false);
++                    llama_seq_id seq_id = id;
++                    std::fill(seq_ids.begin(), seq_ids.end(), &seq_id);
++                    llama_batch batch = {
++                        /* n_tokens */ n_tokens_batch,
++                        /* token    */ nullptr,
++                        /* embd     */ const_cast<float *>(supplied->embd.data()) + static_cast<size_t>(offset) * supplied->n_embd,
++                        /* pos      */ positions.data(),
++                        /* n_seq_id */ n_seq_id.data(),
++                        /* seq_id   */ seq_ids.data(),
++                        /* logits   */ logits.data(),
++                    };
++                    const int32_t decode_result = llama_decode(ctx_tgt, batch);
++                    if (decode_result != 0 || !common_speculative_process(spec, batch)) {
++                        if (use_non_causal) {
++                            llama_set_causal_attn(ctx_tgt, true);
++                        }
++                        SLT_ERR(*this, "failed to decode supplied speech feature chunk, res = %d\n", decode_result);
++                        return -1;
++                    }
++                }
++                if (use_non_causal) {
++                    llama_set_causal_attn(ctx_tgt, true);
++                }
++                n_tokens_out = supplied->n_tokens;
++                SLT_INF(*this, "decoded mmproj-free speech feature chunk, n_tokens = %d\n", supplied->n_tokens);
++                return 0;
++            }
++        }
++
++        GGML_ASSERT(mctx);
          int32_t res = 0;
- 
+
 +        // ==== SAEA feature cache (2026-08-11): audio features keyed by the
 +        // chunk's FNV content hash; RAM layer + LLAMA_MTMD_FEAT_CACHE_DIR
 +        // persistence. A hit decodes from the cached embd and skips the
@@ -125,10 +779,10 @@ index 39b7eb218..e369822f0 100644
                      void * cb_data = spec;
                      static auto cb = [](llama_batch batch, void * user_data) {
                          common_speculative * spec = static_cast<common_speculative *>(user_data);
-@@ -748,6 +855,31 @@ struct server_slot {
+@@ -748,6 +910,31 @@ struct server_slot {
              return res;
          }
- 
+
 +        // SAEA feature cache: decode this chunk from a cached embd and skip
 +        // the encoder entirely (RAM layer, then LLAMA_MTMD_FEAT_CACHE_DIR).
 +        if (const std::vector<float> * cached = feat_validate ? nullptr : feat_load(chunk.get(), idx)) {
@@ -157,3 +811,24 @@ index 39b7eb218..e369822f0 100644
          // otherwise, the batch is either uninitialized or is used up
          // we need to create & encode a new batch
          mbatch.reset(mtmd_batch_init(mctx));
+@@ -4079,7 +4266,19 @@ std::unique_ptr<server_res_generator> server_routes::handle_completions_impl(
+         // process prompt
+         std::vector<server_tokens> inputs;
+
+-        if (res_type != TASK_RESPONSE_TYPE_NONE && ctx_server.mctx != nullptr) {
++        if (data.contains("speech_feature_descriptors")) {
++            if (ctx_server.mctx != nullptr) {
++                throw std::invalid_argument("speech feature inference requires a decoder-only --no-mmproj server");
++            }
++            if (!prompt.is_string()) {
++                throw std::invalid_argument("speech feature inference requires a rendered string prompt");
++            }
++            inputs.push_back(process_speech_feature_prompt(
++                ctx_server.vocab,
++                prompt.get<std::string>(),
++                data.at("speech_feature_descriptors"),
++                meta->model_n_embd_inp));
++        } else if (res_type != TASK_RESPONSE_TYPE_NONE && ctx_server.mctx != nullptr) {
+             // This is the case used by OAI compatible chat path with MTMD. TODO It can be moved to the path below.
+             inputs.push_back(process_mtmd_prompt(ctx_server.mctx, prompt.get<std::string>(), files));
+         } else {

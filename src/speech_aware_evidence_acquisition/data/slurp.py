@@ -66,9 +66,10 @@ mission's own gold-leak test checks.
 from __future__ import annotations
 
 import json
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Mapping
+from typing import Callable, Mapping, Sequence
 
 from ..reproduction.slurp_scoring import SlotEntity
 from .loader import LoaderError
@@ -129,6 +130,31 @@ class SlurpOntology:
     scenarios: tuple[str, ...]
     actions: tuple[str, ...]
     entity_types: Mapping[str, tuple[str, ...]]
+
+
+@dataclass(frozen=True)
+class SlurpTrainRecording:
+    """One real train recording with the speaker identity needed for
+    query/key isolation during model-free split binding."""
+
+    sample_id: str
+    media_relpath: str
+    speaker_id: str
+
+
+@dataclass(frozen=True)
+class SlurpTrainMaterial:
+    """One train utterance's key-card text and natural recordings.
+
+    This type is for offline binding only. Query inference continues to use
+    :class:`SlurpRecord`, which deliberately carries no reference sentence.
+    """
+
+    utterance_id: str
+    scenario: str
+    action: str
+    sentence: str
+    recordings: tuple[SlurpTrainRecording, ...]
 
 
 def _governed_roots(lock: Mapping[str, object], root: Path) -> tuple[str, Path, Path]:
@@ -303,6 +329,152 @@ def _read_jsonl(path: Path) -> list[Mapping[str, object]]:
     return documents
 
 
+def _slurp_speaker_index(metadata_dir: Path) -> Mapping[str, str]:
+    path = metadata_dir / "metadata.json"
+    try:
+        document = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as error:
+        raise LoaderError(f"cannot read SLURP speaker metadata {path}: {error}") from error
+    if not isinstance(document, Mapping):
+        raise LoaderError(f"SLURP speaker metadata {path} must be an object")
+    speakers: dict[str, str] = {}
+    for entry in document.values():
+        if not isinstance(entry, Mapping):
+            continue
+        recordings = entry.get("recordings")
+        if not isinstance(recordings, Mapping):
+            continue
+        for filename, recording in recordings.items():
+            if not isinstance(filename, str) or not isinstance(recording, Mapping):
+                continue
+            speaker_id = recording.get("usrid")
+            if not isinstance(speaker_id, str) or not speaker_id:
+                continue
+            previous = speakers.get(filename)
+            if previous is not None and previous != speaker_id:
+                raise LoaderError(
+                    f"SLURP recording {filename!r} has conflicting speaker identities"
+                )
+            speakers[filename] = speaker_id
+    if not speakers:
+        raise LoaderError(f"SLURP speaker metadata {path} resolved no speaker identity records")
+    return speakers
+
+
+def _missing_media_paths(
+    paths: Sequence[Path],
+    *,
+    workers: int = 16,
+    probe: Callable[[Path], bool] = Path.is_file,
+) -> tuple[Path, ...]:
+    """Return missing paths in input order using bounded parallel metadata I/O.
+
+    File existence checks are independent and release the GIL while waiting on
+    the filesystem. A small bounded pool therefore removes the avoidable
+    serialization cost of validating SLURP material across filesystem mounts
+    without changing selection order or failure semantics.
+    """
+
+    if isinstance(workers, bool) or not isinstance(workers, int) or not 1 <= workers <= 64:
+        raise ValueError("media validation workers must be an integer in [1, 64]")
+    if not paths:
+        return ()
+    worker_count = min(workers, len(paths))
+    if worker_count == 1:
+        exists = tuple(probe(path) for path in paths)
+    else:
+        with ThreadPoolExecutor(
+            max_workers=worker_count,
+            thread_name_prefix="saea-slurp-media",
+        ) as pool:
+            exists = tuple(pool.map(probe, paths))
+    return tuple(path for path, is_present in zip(paths, exists, strict=True) if not is_present)
+
+
+def load_slurp_train_material(
+    lock: Mapping[str, object],
+    root: Path,
+    *,
+    media_validation_workers: int = 16,
+) -> tuple[SlurpTrainMaterial, ...]:
+    """Load real ``train.jsonl`` text/audio/speaker provenance for binding.
+
+    The function never reads ``train_synthetic`` and never exposes this text
+    through the runtime query loader. Every listed recording must resolve to
+    a speaker in the governed release's ``metadata.json`` and to an existing
+    natural-audio file.
+    """
+
+    audio_root_relpath, audio_root, metadata_dir = _governed_roots(lock, root)
+    metadata_path = metadata_dir / _SPLIT_FILES["train"]
+    if not metadata_path.is_file():
+        raise LoaderError(f"SLURP train metadata file missing: {metadata_path}")
+    speakers = _slurp_speaker_index(metadata_dir)
+    audio_dir = audio_root / _AUDIO_SUBDIR_FOR_SPLIT["train"]
+    audio_dir_relpath = f"{audio_root_relpath}/{_AUDIO_SUBDIR_FOR_SPLIT['train']}"
+    material: list[SlurpTrainMaterial] = []
+    media_paths: list[Path] = []
+    for line_no, raw in enumerate(_read_jsonl(metadata_path), start=1):
+        context = f"SLURP train.jsonl line {line_no}"
+        slurp_id = raw.get("slurp_id")
+        scenario = raw.get("scenario")
+        action = raw.get("action")
+        sentence = raw.get("sentence")
+        if isinstance(slurp_id, bool) or not isinstance(slurp_id, int):
+            raise LoaderError(f"{context}: slurp_id must be an int")
+        if not isinstance(scenario, str) or not scenario:
+            raise LoaderError(f"{context}: scenario must be a non-empty string")
+        if not isinstance(action, str) or not action:
+            raise LoaderError(f"{context}: action must be a non-empty string")
+        if not isinstance(sentence, str) or not sentence.strip():
+            raise LoaderError(f"{context}: sentence must be a non-empty string")
+        raw_recordings = raw.get("recordings")
+        if not isinstance(raw_recordings, list) or not raw_recordings:
+            raise LoaderError(f"{context}: recordings must be a non-empty list")
+        recordings: list[SlurpTrainRecording] = []
+        for raw_recording in raw_recordings:
+            if not isinstance(raw_recording, Mapping):
+                raise LoaderError(f"{context}: recording entry must be an object")
+            filename = _validate_recording_filename(raw_recording.get("file"), context)
+            speaker_id = speakers.get(filename)
+            if speaker_id is None:
+                raise LoaderError(
+                    f"{context}: recording {filename!r} lacks governed speaker identity"
+                )
+            media_path = audio_dir / filename
+            media_paths.append(media_path)
+            recordings.append(
+                SlurpTrainRecording(
+                    sample_id=(
+                        f"slurp:train:{slurp_id:06d}:{filename[: -len('.flac')]}"
+                    ),
+                    media_relpath=f"{audio_dir_relpath}/{filename}",
+                    speaker_id=speaker_id,
+                )
+            )
+        material.append(
+            SlurpTrainMaterial(
+                utterance_id=str(slurp_id),
+                scenario=scenario,
+                action=action,
+                sentence=sentence.strip(),
+                recordings=tuple(sorted(recordings, key=lambda item: item.sample_id)),
+            )
+        )
+    if not material:
+        raise LoaderError("SLURP train material resolved to zero utterances")
+    missing_paths = _missing_media_paths(
+        media_paths,
+        workers=media_validation_workers,
+    )
+    if missing_paths:
+        raise LoaderError(
+            "SLURP train material media validation failed: "
+            f"{len(missing_paths)} file(s) missing; first missing path: {missing_paths[0]}"
+        )
+    return tuple(sorted(material, key=lambda item: (item.scenario, item.utterance_id)))
+
+
 def load_slurp_split(
     lock: Mapping[str, object],
     root: Path,
@@ -446,7 +618,10 @@ __all__ = [
     "SLURP_LOCK_KEY",
     "SlurpOntology",
     "SlurpRecord",
+    "SlurpTrainMaterial",
+    "SlurpTrainRecording",
     "load_slurp_ontology",
     "load_slurp_split",
+    "load_slurp_train_material",
     "render_slurp_ontology",
 ]

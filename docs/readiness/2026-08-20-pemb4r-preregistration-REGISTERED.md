@@ -106,3 +106,24 @@ T0 transcripts are consumed pkey2 artifacts (cited, not re-generated).
 4. **Read note.** `t-glap` is in-process and has no measured repeat-δ; the read derives
    margin context from the persisted lco3/lco7/qw jitter pairs and reports the winner's
    jitter gap honestly.
+
+## 8. Pre-read owner amendment (2026-08-21; C-DECODE canceled)
+
+This amendment was recorded after all seven embedding arms and the gold-free retrieval
+plan landed, before the registered one-shot read, and after the flight receipt proved that
+C-DECODE made zero generation contacts. It supersedes section 7's instruction to fly a
+successor C-DECODE attempt.
+
+1. **Cancel C-DECODE.** No successor generation attempt is authorized. The registered
+   one-shot read consumes only the already-landed vector manifests and retrieval plan and
+   remains entirely model-free.
+2. **Preserve the existing read machinery.** `analysis/pemb4r_read.py` remains the only
+   read path. Its report records `CANCELED-BY-OWNER-2026-08-21` explicitly rather than
+   treating the absent comparison as missing data.
+3. **Constrain the conclusion.** The resulting verdict closes only the independently
+   pooled embedding/cosine/kNN family represented by the seven flown arms. It must not be
+   generalized to speech-native use of the frozen Omni decoder, joint speech-feature and
+   text-key matching, or any end-to-end decoder-conditioned method.
+4. **No replacement cascade.** The cancellation does not authorize a transcript-only
+   query, a text cascade, another embedding model, or any additional model contact as a
+   substitute within P-EMB-4R.

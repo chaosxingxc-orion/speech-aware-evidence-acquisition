@@ -13,22 +13,30 @@ import pytest
 
 from speech_aware_evidence_acquisition.core.model import SliceRegistry
 from speech_aware_evidence_acquisition.data.lock import load_lock
+from speech_aware_evidence_acquisition.data.slurp import (
+    SlurpTrainMaterial,
+    SlurpTrainRecording,
+)
 from speech_aware_evidence_acquisition.rails import MockCoreClient
 from speech_aware_evidence_acquisition.rails.adapters.slurp import SlurpAdapter
 from speech_aware_evidence_acquisition.rails.probes.pslu_flight import (
+    KeyCardV1,
     PSLU_ARMS,
     PsluFlightError,
     PsluRosters,
     PsluSampleManifest,
     _source_references_ontology_miner,
     assert_never_calls_ontology_miner,
+    build_speech_native_binding,
     load_pslu_rosters,
     load_pslu_sample_manifest,
     pslu_supply_packet,
     render_roster_entries,
+    render_speech_native_keys,
     render_type_vocabulary,
     run_pslu_flight,
     select_pslu_samples,
+    run_speech_native_matcher,
 )
 from speech_aware_evidence_acquisition.rails.silence_swap import build_silence_swap_slice
 
@@ -41,6 +49,244 @@ _ROSTERS = PsluRosters(
     full_roster=(("house_place", "kitchen"), ("time", "six")),
     derangement={"iot": "email", "email": "iot"},
 )
+
+_KEY_CARDS = (
+    KeyCardV1(
+        key_id="K001",
+        definition="Commands that create, change, inspect, or remove alarms.",
+        positive_examples=("wake me at six", "cancel my morning alarm"),
+        contrastive_boundary="Do not use for calendar appointments.",
+        value_label="alarm",
+    ).validate(),
+    KeyCardV1(
+        key_id="K002",
+        definition="Commands about email messages and mailboxes.",
+        positive_examples=("read my new email", "send an email to Alex"),
+        contrastive_boundary="Do not use for social messages.",
+        value_label="email",
+    ).validate(),
+)
+
+
+class _SpeechFeatureClient:
+    def __init__(self, responses):
+        self._responses = iter(responses)
+        self.calls = []
+
+    def complete(self, messages, **kwargs):
+        self.calls.append((messages, kwargs))
+        return next(self._responses)
+
+
+class _SpeechSample:
+    sample_id = "slurp:train:000001:audio-1"
+
+
+_QUERY_DESCRIPTOR = {"packet_id": "slurp/train/query", "sha256": "a" * 64, "role": "query"}
+
+
+def _assert_every_call_carries_query(client):
+    for messages, kwargs in client.calls:
+        parts = messages[1]["content"]
+        queries = [
+            part["speech_features"]
+            for part in parts
+            if part.get("type") == "input_speech_features"
+            and part["speech_features"]["role"] == "query"
+        ]
+        assert queries == [_QUERY_DESCRIPTOR]
+        assert kwargs["speech_feature_sample_id"] == _SpeechSample.sample_id
+
+
+def test_key_card_rendering_never_exposes_value_label_for_text_cards():
+    rendered = render_speech_native_keys(_KEY_CARDS, "K2")
+    assert "K001" in rendered and "wake me at six" in rendered
+    assert "calendar appointments" in rendered
+    assert "value_label" not in rendered
+    assert '"alarm"' not in rendered
+
+
+def test_m1_selects_an_opaque_key_id_and_maps_label_deterministically():
+    client = _SpeechFeatureClient(['{"key_id":"K002"}'])
+    result = run_speech_native_matcher(
+        core_client=client,
+        sample=_SpeechSample(),
+        query_descriptor=_QUERY_DESCRIPTOR,
+        key_cards=_KEY_CARDS,
+        key_representation_id="K2",
+        matcher_policy_id="M1",
+    )
+    assert result.key_id == "K002"
+    assert result.value_label == "email"
+    assert result.calls == 1
+    _assert_every_call_carries_query(client)
+
+
+def test_m2_reintroduces_the_same_speech_query_for_factor_and_selection_steps():
+    client = _SpeechFeatureClient(
+        [
+            '{"factors":["message medium"],"summary":"mail command"}',
+            '{"key_id":"K002"}',
+        ]
+    )
+    result = run_speech_native_matcher(
+        core_client=client,
+        sample=_SpeechSample(),
+        query_descriptor=_QUERY_DESCRIPTOR,
+        key_cards=_KEY_CARDS,
+        key_representation_id="K2",
+        matcher_policy_id="M2",
+    )
+    assert result.value_label == "email"
+    assert result.calls == 2
+    _assert_every_call_carries_query(client)
+
+
+def test_m3_verifies_each_retrieved_candidate_and_arbitrates_only_a_tie():
+    client = _SpeechFeatureClient(
+        [
+            '{"key_ids":["K001","K002"]}',
+            '{"compatible":true,"confidence":80}',
+            '{"compatible":true,"confidence":80}',
+            '{"key_id":"K002"}',
+        ]
+    )
+    result = run_speech_native_matcher(
+        core_client=client,
+        sample=_SpeechSample(),
+        query_descriptor=_QUERY_DESCRIPTOR,
+        key_cards=_KEY_CARDS,
+        key_representation_id="K2",
+        matcher_policy_id="M3",
+        top_k=2,
+    )
+    assert result.key_id == "K002"
+    assert result.calls == 4
+    assert result.top_key_ids == ("K001", "K002")
+    _assert_every_call_carries_query(client)
+
+
+def test_m4_trace_policy_preserves_ensemble_and_order_identity():
+    client = _SpeechFeatureClient(
+        ['{"key_id":"K001"}', '{"key_id":"K002"}', '{"key_id":"K001"}']
+    )
+    result = run_speech_native_matcher(
+        core_client=client,
+        sample=_SpeechSample(),
+        query_descriptor=_QUERY_DESCRIPTOR,
+        key_cards=_KEY_CARDS,
+        key_representation_id="K2",
+        matcher_policy_id="M4",
+        ensemble_base_policy_id="M1",
+    )
+
+    assert result.key_id == "K001"
+    assert [kwargs["matcher_policy_id"] for _, kwargs in client.calls] == [
+        "M4:M1:order-0:listwise",
+        "M4:M1:order-1:listwise",
+        "M4:M1:order-2:listwise",
+    ]
+    _assert_every_call_carries_query(client)
+
+
+def test_audio_key_mode_carries_ordered_key_packets_without_key_body_text():
+    client = _SpeechFeatureClient(['{"key_id":"K001"}'])
+    audio_keys = {
+        "K001": {"packet_id": "slurp/train/key-1", "sha256": "b" * 64},
+        "K002": {"packet_id": "slurp/train/key-2", "sha256": "c" * 64},
+    }
+    run_speech_native_matcher(
+        core_client=client,
+        sample=_SpeechSample(),
+        query_descriptor=_QUERY_DESCRIPTOR,
+        key_cards=_KEY_CARDS,
+        key_representation_id="K3",
+        matcher_policy_id="M1",
+        audio_key_bindings=audio_keys,
+    )
+    parts = client.calls[0][0][1]["content"]
+    key_parts = [part["speech_features"] for part in parts if part.get("type") == "input_speech_features"][1:]
+    assert [part["packet_id"] for part in key_parts] == [
+        "slurp/train/key-1",
+        "slurp/train/key-2",
+    ]
+    assert all(part["role"] == "key" for part in key_parts)
+    text = "\n".join(part["text"] for part in parts if part.get("type") == "text")
+    assert "wake me at six" not in text
+
+
+def _binding_material():
+    material = []
+    for scenario_index, scenario in enumerate(("alarm", "email")):
+        for item_index in range(12):
+            speaker = f"speaker-{scenario_index}-{item_index}"
+            sample_id = f"slurp:train:{scenario_index:02d}{item_index:04d}:audio-{scenario_index}-{item_index}"
+            material.append(
+                SlurpTrainMaterial(
+                    utterance_id=f"{scenario_index:02d}{item_index:04d}",
+                    scenario=scenario,
+                    action="act",
+                    sentence=f"unique {scenario} example {item_index}",
+                    recordings=(
+                        SlurpTrainRecording(
+                            sample_id=sample_id,
+                            media_relpath=f"datasets/slurp/slurp_real/audio-{scenario_index}-{item_index}.flac",
+                            speaker_id=speaker,
+                        ),
+                    ),
+                )
+            )
+    return tuple(material)
+
+
+def test_speech_native_binding_is_stratified_and_query_key_isolated():
+    binding = build_speech_native_binding(
+        _binding_material(),
+        seed=20260821,
+        expected_scenarios=("alarm", "email"),
+        opt_a_per_scenario=2,
+        opt_b_per_scenario=1,
+        gate_per_scenario=1,
+        key_examples_per_scenario=5,
+    )
+    assert len(binding["splits"]["OPT-A36"]["items"]) == 4
+    assert len(binding["splits"]["OPT-B18"]["items"]) == 2
+    assert len(binding["splits"]["GATE18"]["items"]) == 2
+    assert len(binding["key_cards"]) == 2
+    query_items = [
+        item for split in binding["splits"].values() for item in split["items"]
+    ]
+    key_sources = [
+        source for key in binding["key_material"] for source in key["sources"]
+    ]
+    assert {item["speaker_id"] for item in query_items}.isdisjoint(
+        source["speaker_id"] for source in key_sources
+    )
+    assert {item["sample_id"] for item in query_items}.isdisjoint(
+        source["sample_id"] for source in key_sources
+    )
+    assert {item["normalized_sentence"] for item in query_items}.isdisjoint(
+        source["normalized_sentence"] for source in key_sources
+    )
+
+
+def test_speech_native_binding_is_byte_deterministic_for_the_same_seed():
+    first = build_speech_native_binding(
+        _binding_material(), seed=7, expected_scenarios=("alarm", "email")
+    )
+    second = build_speech_native_binding(
+        reversed(_binding_material()), seed=7, expected_scenarios=("alarm", "email")
+    )
+    assert json.dumps(first, sort_keys=True) == json.dumps(second, sort_keys=True)
+
+
+def test_speech_native_binding_refuses_insufficient_isolated_material():
+    with pytest.raises(PsluFlightError, match="insufficient"):
+        build_speech_native_binding(
+            _binding_material()[:8],
+            seed=1,
+            expected_scenarios=("alarm", "email"),
+        )
 
 
 def _adapter(slurp_world) -> SlurpAdapter:

@@ -64,11 +64,13 @@ from speech_aware_evidence_acquisition.core.session import (
     FEAT_CACHE_DIR_DEFAULT,
     FEAT_CACHE_DIR_ENV,
     SESSION_RECEIPT_SCHEMA,
+    SESSION_RECEIPT_SCHEMA_V2,
     ModelFileRef,
     SessionError,
     SessionReceipt,
     _model_file_argv,
     _resolve_model_file_source,
+    audit_mmproj_free_inference,
     attach_session,
     feat_cache_dir,
     read_session_receipt,
@@ -118,6 +120,36 @@ def _session(**overrides):
         model_files=_model_files(),
         started_at="2026-08-05T00:00:00+00:00",
         startup_stdout_sha256=hashlib.sha256(b"").hexdigest(),
+    )
+    base.update(overrides)
+    return SessionReceipt(**base)
+
+
+def _inference_session(**overrides):
+    base = dict(
+        schema=SESSION_RECEIPT_SCHEMA_V2,
+        study=STUDY_SLUG,
+        session_id="test-inference-session-1",
+        binary_path="llama.cpp/build/bin/llama-server",
+        binary_sha256="c" * 64,
+        argv=(
+            "llama-server",
+            "--host",
+            "127.0.0.1",
+            "--port",
+            "8080",
+            "-m",
+            "models/x/model.gguf",
+            "--no-mmproj",
+        ),
+        pid=os.getpid(),
+        host="127.0.0.1",
+        port=8080,
+        model_files=(_model_files()[0],),
+        started_at="2026-08-21T00:00:00+00:00",
+        startup_stdout_sha256=hashlib.sha256(b"").hexdigest(),
+        role="inference",
+        server_env_keys=(),
     )
     base.update(overrides)
     return SessionReceipt(**base)
@@ -560,6 +592,24 @@ def test_model_file_argv_prefers_ext4_for_both_main_and_mmproj(tmp_path, monkeyp
     ]
 
 
+def test_model_file_argv_uses_explicit_materialization_root_without_legacy_fallback(tmp_path):
+    data_root = tmp_path / "slow-data"
+    model_root = tmp_path / "fast-models"
+    relative = Path("models") / "x" / "model.gguf"
+    (model_root / relative).parent.mkdir(parents=True)
+    (model_root / relative).write_bytes(b"fast-main")
+    entry = ModelFileRef(path=relative.as_posix(), sha256=_sha(b"fast-main"))
+
+    argv = _model_file_argv(
+        data_root,
+        (entry,),
+        role="inference",
+        model_root=model_root,
+    )
+
+    assert argv == ["-m", str((model_root / relative).resolve()), "--no-mmproj"]
+
+
 # ---------------------------------------------------------------------------
 # require_loopback -- probe 1 (non-loopback base_url refused).
 # ---------------------------------------------------------------------------
@@ -596,6 +646,73 @@ def test_valid_session_receipt_round_trips_through_json(tmp_path):
     path = tmp_path / "runs" / "session.json"
     write_session_receipt(path, receipt)
     assert read_session_receipt(path) == receipt
+
+
+def test_inference_session_receipt_round_trips_and_binds_decoder_only(tmp_path):
+    receipt = _inference_session().validate()
+    path = tmp_path / "inference-session.json"
+    write_session_receipt(path, receipt)
+    assert read_session_receipt(path) == receipt
+    assert receipt.role == "inference"
+    assert [entry.path for entry in receipt.model_files] == ["models/x/model.gguf"]
+
+
+def test_inference_session_refuses_mmproj_argv_or_featcache_environment():
+    with pytest.raises(SessionError, match="must not mention mmproj"):
+        _inference_session(argv=("llama-server", "--mmproj", "models/x/mmproj.gguf")).validate()
+    with pytest.raises(SessionError, match="LLAMA_MTMD_FEAT_CACHE_DIR"):
+        _inference_session(server_env_keys=("LLAMA_MTMD_FEAT_CACHE_DIR",)).validate()
+
+
+def test_inference_model_argv_excludes_mmproj_and_adds_explicit_disable(tmp_path):
+    data_root = tmp_path / "data"
+    for entry in _model_files():
+        path = data_root / entry.path
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(b"placeholder")
+    argv = _model_file_argv(data_root, _model_files(), role="inference")
+    assert argv == ["-m", str(data_root / "models/x/model.gguf"), "--no-mmproj"]
+    assert "--mmproj" not in argv
+
+
+def test_inference_session_matches_decoder_subset_of_legacy_runtime_receipt():
+    runtime = {
+        "llama_cpp": {
+            "binary_path": "llama.cpp/build/bin/llama-server",
+            "binary_sha256": "c" * 64,
+        },
+        "gguf_files": [
+            {"path": entry.path, "sha256": entry.sha256} for entry in _model_files()
+        ],
+    }
+    assert verify_against_runtime_receipt(_inference_session(), runtime).role == "inference"
+
+
+def test_inference_process_audit_proves_zero_mmproj_hits(tmp_path):
+    session = _inference_session(pid=321)
+    process_root = tmp_path / "proc" / "321"
+    (process_root / "fd").mkdir(parents=True)
+    (process_root / "cmdline").write_bytes(b"llama-server\0--no-mmproj\0-m\0model.gguf\0")
+    (process_root / "maps").write_text(
+        "00400000-00401000 r-xp 00000000 00:00 0 /runtime/llama-server\n",
+        encoding="utf-8",
+    )
+    audit = audit_mmproj_free_inference(session, proc_root=tmp_path / "proc")
+    assert audit["mmproj_loaded"] is False
+    assert audit["mmproj_hit_count"] == 0
+
+
+def test_inference_process_audit_fails_on_mapped_or_open_mmproj(tmp_path):
+    session = _inference_session(pid=322)
+    process_root = tmp_path / "proc" / "322"
+    (process_root / "fd").mkdir(parents=True)
+    (process_root / "cmdline").write_bytes(b"llama-server\0--no-mmproj\0")
+    (process_root / "maps").write_text(
+        "00400000-00401000 r--p 00000000 00:00 0 /models/mmproj.gguf\n",
+        encoding="utf-8",
+    )
+    with pytest.raises(SessionError, match="mmproj hit"):
+        audit_mmproj_free_inference(session, proc_root=tmp_path / "proc")
 
 
 def test_session_receipt_refuses_non_loopback_host():

@@ -22,6 +22,7 @@ from . import SessionError, _bracketed, assert_session_alive, require_loopback
 from .paths import _resolve_under, _sha256_file
 from .receipt import (
     SESSION_RECEIPT_SCHEMA,
+    SESSION_RECEIPT_SCHEMA_V2,
     ModelFileRef,
     SessionReceipt,
     _pinned_binary,
@@ -184,7 +185,13 @@ def _resolve_model_file_source(
     return _resolve_under(data_root, entry.path, "runtime gguf_files path", must_exist=True)
 
 
-def _model_file_argv(data_root: Path, model_files: tuple[ModelFileRef, ...]) -> list[str]:
+def _model_file_argv(
+    data_root: Path,
+    model_files: tuple[ModelFileRef, ...],
+    *,
+    role: str = "legacy",
+    model_root: Path | None = None,
+) -> list[str]:
     """Build ``-m <main>`` / ``--mmproj <mmproj>`` flags from the runtime
     receipt's GGUF set, classifying by filename (the real receipt's two
     entries are the main Q8_0 shard and an ``mmproj-``-prefixed file). Each
@@ -197,13 +204,33 @@ def _model_file_argv(data_root: Path, model_files: tuple[ModelFileRef, ...]) -> 
 
     mmproj = [entry for entry in model_files if "mmproj" in Path(entry.path).name.lower()]
     primary = [entry for entry in model_files if entry not in mmproj]
+    if role not in {"legacy", "preprocess", "inference"}:
+        raise SessionError(f"unknown session role {role!r}")
+    if not primary:
+        raise SessionError("runtime receipt has no decoder GGUF")
+    if role == "preprocess" and not mmproj:
+        raise SessionError("preprocess session requires a runtime-receipt-pinned mmproj")
     argv: list[str] = []
+
+    def resolve(entry: ModelFileRef) -> Path:
+        if model_root is not None:
+            return _resolve_under(
+                Path(model_root),
+                entry.path,
+                "runtime gguf_files path",
+                must_exist=True,
+            )
+        return _resolve_model_file_source(data_root, entry)
+
     for entry in primary:
-        resolved = _resolve_model_file_source(data_root, entry)
+        resolved = resolve(entry)
         argv.extend(["-m", str(resolved)])
-    for entry in mmproj:
-        resolved = _resolve_model_file_source(data_root, entry)
-        argv.extend(["--mmproj", str(resolved)])
+    if role == "inference":
+        argv.append("--no-mmproj")
+    else:
+        for entry in mmproj:
+            resolved = resolve(entry)
+            argv.extend(["--mmproj", str(resolved)])
     return argv
 
 
@@ -392,6 +419,8 @@ def start_session(
     ready_poll_interval_seconds: float = DEFAULT_READY_POLL_INTERVAL_SECONDS,
     http_get_status: Callable[[str, float], int] | None = None,
     server_log_path: Path | None = None,
+    role: str = "legacy",
+    model_root: Path | None = None,
 ) -> SessionReceipt:
     """Spawn the runtime-receipt-pinned llama.cpp binary and return the
     :class:`SessionReceipt` that binds this run to the EXACT process it
@@ -429,7 +458,27 @@ def start_session(
             "verified it; I5)"
         )
     model_files = _pinned_model_files(runtime_receipt)
-    model_argv = _model_file_argv(Path(data_root), model_files)
+    model_argv = _model_file_argv(
+        Path(data_root), model_files, role=role, model_root=model_root
+    )
+    if role == "inference":
+        forbidden_extra = [part for part in extra_argv if "mmproj" in part.lower()]
+        if forbidden_extra:
+            raise SessionError(
+                "inference extra_argv must not mention mmproj; --no-mmproj is injected "
+                f"by start_session: {forbidden_extra!r}"
+            )
+        if extra_env and "LLAMA_MTMD_FEAT_CACHE_DIR" in extra_env:
+            raise SessionError(
+                "inference extra_env must not set LLAMA_MTMD_FEAT_CACHE_DIR"
+            )
+        session_model_files = tuple(
+            entry
+            for entry in model_files
+            if "mmproj" not in Path(entry.path).name.lower()
+        )
+    else:
+        session_model_files = model_files
     argv = [str(binary), "--host", host, "--port", str(port), *model_argv, *list(extra_argv)]
 
     started_wall = now()
@@ -467,7 +516,11 @@ def start_session(
             startup_stdout_tail=stdout_bytes,
         )
     receipt = SessionReceipt(
-        schema=SESSION_RECEIPT_SCHEMA,
+        schema=(
+            SESSION_RECEIPT_SCHEMA
+            if role == "legacy"
+            else SESSION_RECEIPT_SCHEMA_V2
+        ),
         study=STUDY_SLUG,
         session_id=session_id,
         binary_path=pinned_path,
@@ -476,7 +529,7 @@ def start_session(
         pid=process.pid,
         host=host,
         port=port,
-        model_files=model_files,
+        model_files=session_model_files,
         started_at=_iso(started_wall),
         startup_stdout_sha256=hashlib.sha256(stdout_bytes).hexdigest(),
         # Recorded regardless of whether the writer actually managed to open
@@ -484,6 +537,8 @@ def start_session(
         # location, so an operator who finds it missing learns that the log
         # write failed, rather than finding no path recorded at all.
         server_log_path=str(server_log_path) if server_log_path is not None else None,
+        role=role,
+        server_env_keys=(tuple(sorted(extra_env or {})) if role != "legacy" else ()),
     ).validate()
     if receipt_path is not None:
         write_session_receipt(receipt_path, receipt)
