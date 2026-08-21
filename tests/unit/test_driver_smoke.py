@@ -308,6 +308,41 @@ def test_smoke_requires_runtime_root_unless_dry_run(
         )
 
 
+def test_inference_smoke_persists_the_live_mmproj_zero_audit_before_requests(
+    tmp_path, monkeypatch
+):
+    from types import SimpleNamespace
+
+    from speech_aware_evidence_acquisition.core.driver.smoke import (
+        _write_inference_process_audit,
+    )
+
+    session = SimpleNamespace(role="inference", session_id="inference-1", pid=42)
+    expected = {
+        "schema": "saea-mmproj-free-process-audit-v1",
+        "session_id": "inference-1",
+        "pid": 42,
+        "role": "inference",
+        "mmproj_loaded": False,
+        "mmproj_hit_count": 0,
+        "receipt_argv_checked": True,
+        "live_argv_checked": True,
+        "process_maps_checked": True,
+        "open_files_checked": True,
+    }
+    monkeypatch.setattr(
+        "speech_aware_evidence_acquisition.core.session.audit_mmproj_free_inference",
+        lambda actual: expected if actual is session else pytest.fail("wrong session"),
+    )
+    output = tmp_path / "mmproj-audit.json"
+
+    assert _write_inference_process_audit(session, output) == output
+    assert json.loads(output.read_text(encoding="utf-8")) == expected
+
+    with pytest.raises(FileExistsError):
+        _write_inference_process_audit(session, output)
+
+
 def test_smoke_non_dry_run_reads_the_models_custom_runtime_receipt_path(
     synthetic_world, smoke_repo, tmp_path, monkeypatch
 ):

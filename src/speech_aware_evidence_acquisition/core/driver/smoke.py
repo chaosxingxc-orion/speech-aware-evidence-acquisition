@@ -228,6 +228,21 @@ def _server_env(values: Mapping[str, object]) -> dict[str, str]:
     return {str(key): str(value) for key, value in raw.items()}
 
 
+def _write_inference_process_audit(session: object, output: Path) -> Path | None:
+    """Persist the live zero-mmproj proof before the first inference request."""
+
+    if getattr(session, "role", None) != "inference":
+        return None
+    from ..session import audit_mmproj_free_inference
+
+    audit = audit_mmproj_free_inference(session)
+    target = Path(output)
+    target.parent.mkdir(parents=True, exist_ok=True)
+    with target.open("x", encoding="utf-8", newline="\n") as handle:
+        handle.write(json.dumps(audit, ensure_ascii=False, indent=2, sort_keys=True) + "\n")
+    return target
+
+
 def _cli_smoke(args: argparse.Namespace) -> int:
     from ...contracts import FrozenCoreGate
     from ...data.lock import data_root, load_lock, umbrella_lock_path
@@ -277,6 +292,8 @@ def _cli_smoke(args: argparse.Namespace) -> int:
     session_stop_receipt_path = (
         attempt_run_dir / f"{plan.run_id}.session-stop-receipt.json"
     )
+    process_audit_output_path = attempt_run_dir / f"{plan.run_id}.mmproj-audit.json"
+    process_audit_path: Path | None = None
     # Task 1 (2026-08-09 finding): llama-server's own stdout/stderr used to
     # be captured for the startup window only, then thrown away -- hours of
     # server output were unrecoverable after exactly the kind of mid-run
@@ -332,12 +349,25 @@ def _cli_smoke(args: argparse.Namespace) -> int:
             role=runtime_receipt.get("role", "legacy"),
             model_root=model_root,
         )
-        transport_factory = TRANSPORTS.resolve(str(composed.values["transport"]))
-        transport = transport_factory(
-            composed.values, root, session=session,
-            runtime_receipt=runtime_receipt, runtime_root=Path(args.runtime_root),
-        )
-        sampler = resolve_resource_sampler()
+        try:
+            process_audit_path = _write_inference_process_audit(
+                session, process_audit_output_path
+            )
+            transport_factory = TRANSPORTS.resolve(str(composed.values["transport"]))
+            transport = transport_factory(
+                composed.values, root, session=session,
+                runtime_receipt=runtime_receipt, runtime_root=Path(args.runtime_root),
+            )
+            sampler = resolve_resource_sampler()
+        except BaseException:
+            stop_session(
+                session,
+                runtime_receipt=runtime_receipt,
+                runtime_root=Path(args.runtime_root),
+                force_after_timeout=True,
+                receipt_path=session_stop_receipt_path,
+            )
+            raise
 
     ledger_cells = (
         json.loads(Path(args.ledger_cells).read_text(encoding="utf-8")) if args.ledger_cells else {}
@@ -373,6 +403,9 @@ def _cli_smoke(args: argparse.Namespace) -> int:
                 "session_receipt": str(result.session_receipt_path),
                 "session_stop_receipt": (
                     None if args.dry_run else str(session_stop_receipt_path)
+                ),
+                "mmproj_audit": (
+                    str(process_audit_path) if process_audit_path is not None else None
                 ),
                 # None under --dry-run: no real server was ever spawned, so
                 # no server log exists (Task 1, 2026-08-09).
