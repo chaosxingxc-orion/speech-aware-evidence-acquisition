@@ -1,0 +1,8 @@
+{
+  "experiment_id": "SAEA-SN-OPTB-K1M1-KEY-SHUFFLE",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "OPT-B18 visible-text key-shuffle mechanism control for the provisional canonical K1 listwise M1 winner.",
+  "key_representation_id": "K1",
+  "matcher_policy_id": "M1",
+  "speech_native_mechanism_control_id": "key-text-shuffle-v1"
+}

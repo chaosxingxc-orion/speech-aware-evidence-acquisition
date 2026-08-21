@@ -1,0 +1,7 @@
+{
+  "experiment_id": "SAEA-SN-OPTB-K1M1-REVERSE",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "OPT-B18 reverse-order K1 listwise M1 control for the provisional simple text-key winner.",
+  "key_representation_id": "K1",
+  "matcher_policy_id": "M1"
+}

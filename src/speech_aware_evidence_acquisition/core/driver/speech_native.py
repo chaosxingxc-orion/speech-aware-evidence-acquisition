@@ -10,6 +10,7 @@ hashed in process and never copied into the profile receipt.
 from __future__ import annotations
 
 import argparse
+from collections import Counter
 import hashlib
 import json
 import math
@@ -415,6 +416,81 @@ def read_speech_native_predictions(
             }
         )
 
+    aggregate_by_cell = {str(item["cell_id"]): item for item in aggregates}
+    canonical_cells = tuple(predictions_by_cell)
+    for base_cell_id in canonical_cells:
+        if "-order-" in base_cell_id or "-control-" in base_cell_id:
+            continue
+        ordered_source_ids = (
+            base_cell_id,
+            f"{base_cell_id}-order-reverse",
+            f"{base_cell_id}-order-rotate-7",
+        )
+        if not all(source_id in predictions_by_cell for source_id in ordered_source_ids):
+            continue
+        ensemble_prefix = re.sub(r"-M(?:1|3)", "-M4", base_cell_id, count=1)
+        ensemble_cell_id = f"{ensemble_prefix}-order-ensemble-v1"
+        if ensemble_cell_id in predictions_by_cell:
+            raise SpeechNativeProfileError(
+                f"duplicate order-ensemble cell {ensemble_cell_id!r}"
+            )
+        ensemble_predictions: dict[str, str | None] = {}
+        tie_break_count = 0
+        order_disagreement_count = 0
+        for sample_id in gold:
+            votes = tuple(
+                predictions_by_cell[source_id][sample_id]
+                for source_id in ordered_source_ids
+            )
+            order_disagreement_count += int(len(set(votes)) > 1)
+            counts = Counter(vote for vote in votes if vote is not None)
+            majority = next(
+                (label for label, count in counts.items() if count >= 2),
+                None,
+            )
+            if majority is None:
+                tie_break_count += 1
+                majority = votes[0]
+            ensemble_predictions[sample_id] = majority
+        ensemble_correctness = {
+            sample_id: prediction == gold[sample_id]
+            for sample_id, prediction in ensemble_predictions.items()
+        }
+        source_contact_counts = tuple(
+            aggregate_by_cell[source_id].get("actual_contact_count")
+            for source_id in ordered_source_ids
+        )
+        actual_contact_count = (
+            sum(int(value) for value in source_contact_counts)
+            if all(isinstance(value, int) and not isinstance(value, bool) for value in source_contact_counts)
+            else None
+        )
+        for source_id in ordered_source_ids:
+            aggregate_by_cell[source_id]["order_disagreement_count"] = (
+                order_disagreement_count
+            )
+        ensemble_aggregate: dict[str, object] = {
+            "cell_id": ensemble_cell_id,
+            "correct": sum(ensemble_correctness.values()),
+            "count": len(gold),
+            "accuracy": sum(ensemble_correctness.values()) / len(gold),
+            "parse_failure_count": sum(
+                prediction is None for prediction in ensemble_predictions.values()
+            ),
+            "top_k_reachable_count": None,
+            "top_k_reachability": None,
+            "actual_contact_count": actual_contact_count,
+            "aggregate_tokens_per_second": None,
+            "source_cell_ids": list(ordered_source_ids),
+            "order_disagreement_count": order_disagreement_count,
+            "tie_break_count": tie_break_count,
+            "tie_break_policy_id": "canonical-on-no-majority-v1",
+        }
+        aggregates.append(ensemble_aggregate)
+        aggregate_by_cell[ensemble_cell_id] = ensemble_aggregate
+        correctness_by_cell[ensemble_cell_id] = ensemble_correctness
+        predictions_by_cell[ensemble_cell_id] = ensemble_predictions
+
     baseline_id = str(aggregates[0]["cell_id"])
     baseline = correctness_by_cell[baseline_id]
     pairwise: list[dict[str, object]] = []
@@ -445,12 +521,61 @@ def read_speech_native_predictions(
                 ),
             }
         )
+    cell_ids = tuple(predictions_by_cell)
+    cell_pairwise = [
+        {
+            "left_cell_id": left_cell_id,
+            "right_cell_id": right_cell_id,
+            "prediction_disagreement_count": sum(
+                predictions_by_cell[left_cell_id][sample_id]
+                != predictions_by_cell[right_cell_id][sample_id]
+                for sample_id in gold
+            ),
+        }
+        for left_index, left_cell_id in enumerate(cell_ids)
+        for right_cell_id in cell_ids[left_index + 1 :]
+    ]
+    mechanism_controls: list[dict[str, object]] = []
+    for control_cell_id in cell_ids:
+        marker = "-control-"
+        if marker not in control_cell_id:
+            continue
+        base_cell_id, control_id = control_cell_id.split(marker, 1)
+        if base_cell_id not in correctness_by_cell:
+            raise SpeechNativeProfileError(
+                f"mechanism control {control_cell_id!r} lacks matched base cell"
+            )
+        base_correct = sum(correctness_by_cell[base_cell_id].values())
+        control_correct = sum(correctness_by_cell[control_cell_id].values())
+        mechanism_controls.append(
+            {
+                "base_cell_id": base_cell_id,
+                "control_cell_id": control_cell_id,
+                "control_id": control_id,
+                "correct_drop": base_correct - control_correct,
+                "accuracy_drop": (base_correct - control_correct) / len(gold),
+                "prediction_disagreement_count": sum(
+                    predictions_by_cell[base_cell_id][sample_id]
+                    != predictions_by_cell[control_cell_id][sample_id]
+                    for sample_id in gold
+                ),
+            }
+        )
+
+    selectable = [item for item in aggregates if "-control-" not in str(item["cell_id"])]
     winner = min(
-        aggregates,
+        selectable,
         key=lambda item: (
             -int(item["correct"]),
             int(item["correct_to_wrong_vs_baseline"]),
             int(item["parse_failure_count"]),
+            int(item.get("order_disagreement_count", len(gold) + 1)),
+            (
+                int(item["actual_contact_count"])
+                if isinstance(item.get("actual_contact_count"), int)
+                and not isinstance(item.get("actual_contact_count"), bool)
+                else math.inf
+            ),
             str(item["cell_id"]),
         ),
     )
@@ -462,6 +587,9 @@ def read_speech_native_predictions(
         "baseline_cell_id": baseline_id,
         "aggregates": aggregates,
         "pairwise": pairwise,
+        "cell_pairwise": cell_pairwise,
+        "mechanism_controls": mechanism_controls,
+        "selection_policy_id": "accuracy-regression-parse-order-cost-v1",
         "selected_cell_id": winner["cell_id"],
         "source_receipts": source_receipts,
     }

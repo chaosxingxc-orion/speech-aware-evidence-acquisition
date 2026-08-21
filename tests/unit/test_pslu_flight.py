@@ -701,6 +701,14 @@ def test_model_free_prediction_read_verifies_and_selects_the_better_cell(tmp_pat
     assert candidate["correct"] == 36
     assert candidate["wrong_to_correct_vs_baseline"] == 1
     assert candidate["correct_to_wrong_vs_baseline"] == 0
+    assert report["cell_pairwise"] == [
+        {
+            "left_cell_id": "K0-M1",
+            "right_cell_id": "K2-M1",
+            "prediction_disagreement_count": 1,
+        }
+    ]
+    assert report["selection_policy_id"] == "accuracy-regression-parse-order-cost-v1"
 
 
 def test_model_free_prediction_read_distinguishes_m3_top_k_cells(tmp_path):
@@ -801,6 +809,11 @@ def test_model_free_prediction_read_distinguishes_m3_top_k_cells(tmp_path):
             write_cell(
                 3,
                 "speech-native-json-copy-v3",
+                order_id="rotate-7",
+            ),
+            write_cell(
+                3,
+                "speech-native-json-copy-v3",
                 verifier_policy_id="speech-native-contrastive-verifier-v2",
             ),
             write_cell(
@@ -818,13 +831,24 @@ def test_model_free_prediction_read_distinguishes_m3_top_k_cells(tmp_path):
         "K1-M3-k5",
         "K1-M3-k3-v3",
         "K1-M3-k3-v3-order-reverse",
+        "K1-M3-k3-v3-order-rotate-7",
         "K1-M3-k3-v3-verify-contrastive-v2",
         "K1-M3-k3-v3-control-speech-swap-v1",
+        "K1-M4-k3-v3-order-ensemble-v1",
     ]
     assert all(
         item["top_k_reachable_count"] == 36
         for item in report["aggregates"]
+        if item["cell_id"] != "K1-M4-k3-v3-order-ensemble-v1"
     )
+    ensemble = report["aggregates"][-1]
+    assert ensemble["correct"] == 36
+    assert ensemble["source_cell_ids"] == [
+        "K1-M3-k3-v3",
+        "K1-M3-k3-v3-order-reverse",
+        "K1-M3-k3-v3-order-rotate-7",
+    ]
+    assert ensemble["tie_break_count"] == 0
 
 
 def _binding_material():
