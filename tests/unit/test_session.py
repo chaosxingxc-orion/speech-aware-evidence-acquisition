@@ -179,6 +179,9 @@ def test_stop_session_targets_only_the_reverified_receipt_pid(monkeypatch, tmp_p
         "assert_session_alive",
         lambda actual, runtime, root: verified.append((actual, runtime, root)),
     )
+    monkeypatch.setattr(
+        lifecycle_module, "verify_against_runtime_receipt", lambda *_args: None
+    )
     monkeypatch.setattr(lifecycle_module, "_pid_alive", lambda _pid: next(alive, False))
     monkeypatch.setattr(
         lifecycle_module.os,
@@ -214,6 +217,10 @@ def test_stop_session_never_signals_when_identity_reverification_fails(monkeypat
     def refuse(*_args):
         raise SessionError("not the receipt-bound process")
 
+    monkeypatch.setattr(
+        lifecycle_module, "verify_against_runtime_receipt", lambda *_args: None
+    )
+    monkeypatch.setattr(lifecycle_module, "_pid_alive", lambda _pid: True)
     monkeypatch.setattr(lifecycle_module, "assert_session_alive", refuse)
     monkeypatch.setattr(
         lifecycle_module.os,
@@ -226,6 +233,42 @@ def test_stop_session_never_signals_when_identity_reverification_fails(monkeypat
             runtime_receipt={"runtime": "pinned"},
             runtime_root=tmp_path,
         )
+
+
+def test_stop_session_records_an_already_exited_owned_process(monkeypatch, tmp_path):
+    import speech_aware_evidence_acquisition.core.session.lifecycle as lifecycle_module
+
+    receipt = _session(pid=43210)
+    verified = []
+    monkeypatch.setattr(lifecycle_module, "_pid_alive", lambda _pid: False)
+    monkeypatch.setattr(
+        lifecycle_module,
+        "verify_against_runtime_receipt",
+        lambda actual, runtime: verified.append((actual, runtime)),
+    )
+    monkeypatch.setattr(
+        lifecycle_module,
+        "assert_session_alive",
+        lambda *_args: pytest.fail("an exited process cannot pass a live-process audit"),
+    )
+    monkeypatch.setattr(
+        lifecycle_module.os,
+        "kill",
+        lambda *_args: pytest.fail("an exited process must not be signalled"),
+    )
+    output = tmp_path / "already-exited.json"
+
+    stopped = stop_session(
+        receipt,
+        runtime_receipt={"runtime": "pinned"},
+        runtime_root=tmp_path,
+        receipt_path=output,
+    )
+
+    assert verified == [(receipt, {"runtime": "pinned"})]
+    assert stopped["termination_signal"] == "ALREADY_EXITED"
+    assert stopped["forced"] is False
+    assert json.loads(output.read_text(encoding="utf-8")) == stopped
 
 
 def test_packet_promotion_requires_a_matching_preprocess_stop_chain(tmp_path):

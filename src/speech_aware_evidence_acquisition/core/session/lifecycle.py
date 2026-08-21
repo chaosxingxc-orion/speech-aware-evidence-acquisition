@@ -31,6 +31,7 @@ from .receipt import (
     _pinned_binary,
     _pinned_model_files,
     read_session_receipt,
+    verify_against_runtime_receipt,
     write_session_receipt,
 )
 
@@ -595,13 +596,16 @@ def stop_session(
     force_after_timeout: bool = False,
     receipt_path: Path | None = None,
 ) -> dict[str, object]:
-    """Stop only the live process proven by ``session`` and write a receipt.
+    """Stop only the process proven by ``session`` and write a receipt.
 
     Identity, process image, and listening-socket ownership are rechecked
     immediately before SIGTERM. A timeout never widens the target: optional
     SIGKILL is sent only after re-verifying that the still-live PID continues
-    to run the pinned binary. This replaces broad ``pkill llama-server``
-    cleanup in the two-stage speech packet workflow.
+    to run the pinned binary. If the receipt-bound child has already exited,
+    its declared runtime identity is still verified and the durable outcome is
+    ``ALREADY_EXITED``; cleanup never masks the original server failure. This
+    replaces broad ``pkill llama-server`` cleanup in the two-stage speech
+    packet workflow.
     """
 
     session.validate()
@@ -616,7 +620,32 @@ def stop_session(
         raise SessionError("session stop timeout and poll interval must be positive numbers")
     if not isinstance(force_after_timeout, bool):
         raise SessionError("force_after_timeout must be boolean")
-    assert_session_alive(session, runtime_receipt, Path(runtime_root))
+    def finish(termination_signal: str, forced: bool) -> dict[str, object]:
+        document: dict[str, object] = {
+            "schema": "saea-session-stop-receipt-v1",
+            "study": STUDY_SLUG,
+            "session_id": session.session_id,
+            "session_role": session.role,
+            "session_receipt_sha256": _canonical_document_sha256(session.as_json()),
+            "runtime_receipt_sha256": _canonical_document_sha256(runtime_receipt),
+            "pid": session.pid,
+            "termination_signal": termination_signal,
+            "forced": forced,
+            "stopped_at": _iso(time.time()),
+        }
+        if receipt_path is not None:
+            _write_stop_receipt(receipt_path, document)
+        return document
+
+    verify_against_runtime_receipt(session, runtime_receipt)
+    if not _pid_alive(session.pid):
+        return finish("ALREADY_EXITED", False)
+    try:
+        assert_session_alive(session, runtime_receipt, Path(runtime_root))
+    except SessionError:
+        if _pid_alive(session.pid):
+            raise
+        return finish("ALREADY_EXITED", False)
     try:
         os.kill(session.pid, signal.SIGTERM)
     except OSError as error:
@@ -655,21 +684,7 @@ def stop_session(
             f"receipt-bound session pid {session.pid} did not stop within "
             f"{timeout_seconds} seconds"
         )
-    document: dict[str, object] = {
-        "schema": "saea-session-stop-receipt-v1",
-        "study": STUDY_SLUG,
-        "session_id": session.session_id,
-        "session_role": session.role,
-        "session_receipt_sha256": _canonical_document_sha256(session.as_json()),
-        "runtime_receipt_sha256": _canonical_document_sha256(runtime_receipt),
-        "pid": session.pid,
-        "termination_signal": termination_signal,
-        "forced": forced,
-        "stopped_at": _iso(time.time()),
-    }
-    if receipt_path is not None:
-        _write_stop_receipt(receipt_path, document)
-    return document
+    return finish(termination_signal, forced)
 
 
 def attach_session(
