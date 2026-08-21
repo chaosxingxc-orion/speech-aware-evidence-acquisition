@@ -193,6 +193,7 @@ def read_speech_native_predictions(
 
     cards = _load_key_cards(binding_path, binding_sha256)
     label_by_key = {card.key_id: card.value_label for card in cards}
+    key_by_label = {card.value_label: card.key_id for card in cards}
     aggregates: list[dict[str, object]] = []
     correctness_by_cell: dict[str, dict[str, bool]] = {}
     source_receipts: list[dict[str, str]] = []
@@ -238,6 +239,40 @@ def read_speech_native_predictions(
                     "M3 flight receipt has an unknown matcher prompt policy"
                 )
             cell_id += prompt_suffix
+            verifier_policy_id = profile.get(
+                "matcher_verifier_policy_id", "speech-native-compatibility-v1"
+            )
+            verifier_suffix = {
+                "speech-native-compatibility-v1": "",
+                "speech-native-contrastive-verifier-v2": "-verify-contrastive-v2",
+            }.get(verifier_policy_id)
+            if verifier_suffix is None:
+                raise SpeechNativeProfileError(
+                    "M3 flight receipt has an unknown verifier policy"
+                )
+            cell_id += verifier_suffix
+        order_ids = profile.get("key_order_ids", ["canonical"])
+        if (
+            not isinstance(order_ids, list)
+            or len(order_ids) != 1
+            or not isinstance(order_ids[0], str)
+        ):
+            raise SpeechNativeProfileError(
+                "prediction flight must carry exactly one key order"
+            )
+        if order_ids[0] != "canonical":
+            cell_id += f"-order-{order_ids[0]}"
+        mechanism_control_id = profile.get("mechanism_control_id", "matched")
+        control_suffix = {
+            "matched": "",
+            "speech-swap-v1": "-control-speech-swap-v1",
+            "key-text-shuffle-v1": "-control-key-text-shuffle-v1",
+        }.get(mechanism_control_id)
+        if control_suffix is None:
+            raise SpeechNativeProfileError(
+                "flight receipt has an unknown mechanism control"
+            )
+        cell_id += control_suffix
         if cell_id in correctness_by_cell:
             raise SpeechNativeProfileError(f"duplicate flight cell {cell_id!r}")
         decisions_name = decisions_ref.get("path")
@@ -267,6 +302,7 @@ def read_speech_native_predictions(
         seen: set[str] = set()
         correctness: dict[str, bool] = {}
         parse_failures = 0
+        top_k_reachable_count = 0
         for row in rows:
             if row.get("schema") != "saea-speech-native-decision-v1":
                 raise SpeechNativeProfileError("decision schema mismatch")
@@ -291,6 +327,25 @@ def read_speech_native_predictions(
                 raise SpeechNativeProfileError("decision key-to-label mapping is inconsistent")
             parse_failures += int(parse_failure)
             correctness[sample_id] = predicted == gold[sample_id]
+            raw_top_key_ids = row.get("top_key_ids", [])
+            if (
+                not isinstance(raw_top_key_ids, list)
+                or not all(
+                    isinstance(top_key_id, str) and top_key_id in label_by_key
+                    for top_key_id in raw_top_key_ids
+                )
+                or len(set(raw_top_key_ids)) != len(raw_top_key_ids)
+            ):
+                raise SpeechNativeProfileError("decision top_key_ids are malformed")
+            if matcher_policy_id == "M3":
+                assert isinstance(top_k, int)
+                if len(raw_top_key_ids) > top_k:
+                    raise SpeechNativeProfileError(
+                        "decision top_key_ids exceed the registered top_k"
+                    )
+                top_k_reachable_count += int(
+                    key_by_label[gold[sample_id]] in raw_top_key_ids
+                )
         if seen != set(gold):
             raise SpeechNativeProfileError("decision sample set does not equal the frozen split")
         correct = sum(correctness.values())
@@ -301,6 +356,14 @@ def read_speech_native_predictions(
                 "count": len(gold),
                 "accuracy": correct / len(gold),
                 "parse_failure_count": parse_failures,
+                "top_k_reachable_count": (
+                    top_k_reachable_count if matcher_policy_id == "M3" else None
+                ),
+                "top_k_reachability": (
+                    top_k_reachable_count / len(gold)
+                    if matcher_policy_id == "M3"
+                    else None
+                ),
                 "actual_contact_count": profile.get("actual_contact_count"),
                 "aggregate_tokens_per_second": (
                     receipt.get("timing", {}).get("aggregate_tokens_per_second")
@@ -363,10 +426,9 @@ def read_speech_native_predictions(
     }
 
 
-def _load_packet_bindings(
+def _load_packet_index(
     receipt_path: Path,
     expected_sha256: str,
-    samples: Sequence[object],
 ) -> dict[str, dict[str, str]]:
     if _SHA256.fullmatch(expected_sha256) is None:
         raise SpeechNativeProfileError("packet promotion receipt SHA-256 is malformed")
@@ -397,6 +459,15 @@ def _load_packet_bindings(
         ):
             raise SpeechNativeProfileError("packet receipt contains malformed or duplicate ids")
         by_packet_id[packet_id] = {"packet_id": packet_id, "sha256": packet_sha256}
+    return by_packet_id
+
+
+def _load_packet_bindings(
+    receipt_path: Path,
+    expected_sha256: str,
+    samples: Sequence[object],
+) -> dict[str, dict[str, str]]:
+    by_packet_id = _load_packet_index(receipt_path, expected_sha256)
     bindings: dict[str, dict[str, str]] = {}
     for sample in samples:
         descriptor = by_packet_id.get(sample.packet_id)
@@ -406,6 +477,67 @@ def _load_packet_bindings(
             )
         bindings[sample.sample_id] = descriptor
     return bindings
+
+
+def _packet_id_from_sample_id(sample_id: object) -> str:
+    if not isinstance(sample_id, str):
+        raise SpeechNativeProfileError("audio-key source sample id must be a string")
+    parts = sample_id.split(":")
+    if len(parts) != 4 or parts[0] != "slurp" or parts[1] != "train":
+        raise SpeechNativeProfileError("audio-key source sample id is malformed")
+    return "/".join(parts)
+
+
+def _build_audio_key_bindings(
+    binding: Mapping[str, object],
+    packet_index: Mapping[str, Mapping[str, str]],
+    key_cards: Sequence[KeyCardV1],
+) -> dict[str, dict[str, str]]:
+    raw_material = binding.get("key_material")
+    if not isinstance(raw_material, list):
+        raise SpeechNativeProfileError("speech-native binding lacks key material")
+    source_by_key: dict[str, str] = {}
+    for item in raw_material:
+        if not isinstance(item, Mapping):
+            raise SpeechNativeProfileError("speech-native key material must be objects")
+        key_id = item.get("key_id")
+        if not isinstance(key_id, str) or key_id in source_by_key:
+            raise SpeechNativeProfileError("speech-native key material ids are malformed")
+        source_by_key[key_id] = _packet_id_from_sample_id(
+            item.get("audio_key_source_sample_id")
+        )
+    expected_keys = {card.key_id for card in key_cards}
+    if set(source_by_key) != expected_keys:
+        raise SpeechNativeProfileError("audio-key material does not match frozen key cards")
+    bindings: dict[str, dict[str, str]] = {}
+    for key_id in sorted(expected_keys):
+        descriptor = packet_index.get(source_by_key[key_id])
+        if (
+            not isinstance(descriptor, Mapping)
+            or set(descriptor) != {"packet_id", "sha256"}
+        ):
+            raise SpeechNativeProfileError(
+                f"audio-key packet is not materialized for {key_id!r}"
+            )
+        bindings[key_id] = {
+            "packet_id": str(descriptor["packet_id"]),
+            "sha256": str(descriptor["sha256"]),
+        }
+    return bindings
+
+
+def _shuffle_key_text(key_cards: tuple[KeyCardV1, ...]) -> tuple[KeyCardV1, ...]:
+    donors = key_cards[1:] + key_cards[:1]
+    return tuple(
+        KeyCardV1(
+            key_id=target.key_id,
+            definition=donor.definition,
+            positive_examples=donor.positive_examples,
+            contrastive_boundary=donor.contrastive_boundary,
+            value_label=target.value_label,
+        ).validate()
+        for target, donor in zip(key_cards, donors, strict=True)
+    )
 
 
 def build_profile_tasks(
@@ -419,32 +551,62 @@ def build_profile_tasks(
     matcher_policy_id: str,
     top_k: int = 3,
     prompt_policy_id: str = "speech-native-json-copy-v2",
+    verifier_policy_id: str = "speech-native-compatibility-v1",
+    audio_key_bindings: Mapping[str, Mapping[str, str]] | None = None,
+    mechanism_control_id: str = "matched",
 ) -> tuple[SpeechNativeMatchTask, ...]:
     """Build the registered maximum-card prompt tasks without reading labels."""
 
+    if mechanism_control_id not in {
+        "matched",
+        "speech-swap-v1",
+        "key-text-shuffle-v1",
+    }:
+        raise SpeechNativeProfileError("unknown speech-native mechanism control")
+    frozen_samples = tuple(samples)
+    if mechanism_control_id == "speech-swap-v1" and len(frozen_samples) < 2:
+        raise SpeechNativeProfileError("speech-swap control requires at least two samples")
+    controlled_cards = key_cards
+    if mechanism_control_id == "key-text-shuffle-v1":
+        if key_representation_id not in {"K1", "K2", "K4"}:
+            raise SpeechNativeProfileError(
+                "key-text shuffle requires a text-bearing key representation"
+            )
+        controlled_cards = _shuffle_key_text(key_cards)
+    source_samples = (
+        frozen_samples[1:] + frozen_samples[:1]
+        if mechanism_control_id == "speech-swap-v1"
+        else frozen_samples
+    )
     tasks: list[SpeechNativeMatchTask] = []
     for order_id in order_ids:
         builder = _ORDER_BUILDERS.get(order_id)
         if builder is None:
             raise SpeechNativeProfileError(f"unknown profile key order {order_id!r}")
-        ordered_cards = builder(key_cards)
-        for sample in samples:
-            descriptor = packet_bindings.get(sample.sample_id)
+        ordered_cards = builder(controlled_cards)
+        for target_sample, source_sample in zip(
+            frozen_samples, source_samples, strict=True
+        ):
+            descriptor = packet_bindings.get(source_sample.sample_id)
             if descriptor is None:
                 raise SpeechNativeProfileError(
-                    f"profile sample {sample.sample_id!r} lacks a packet binding"
+                    f"profile sample {source_sample.sample_id!r} lacks a packet binding"
                 )
             tasks.append(
                 SpeechNativeMatchTask(
-                    task_id=f"{order_id}:{sample.sample_id}",
-                    sample=sample,
+                    task_id=f"{order_id}:{target_sample.sample_id}",
+                    sample=source_sample,
+                    scoring_sample_id=target_sample.sample_id,
+                    mechanism_control_id=mechanism_control_id,
                     query_descriptor={**descriptor, "role": "query"},
                     key_cards=ordered_cards,
                     key_representation_id=key_representation_id,
                     matcher_policy_id=matcher_policy_id,
                     prompt_policy_id=prompt_policy_id,
+                    verifier_policy_id=verifier_policy_id,
                     decoding_params=dict(decoding_params),
                     top_k=top_k,
+                    audio_key_bindings=audio_key_bindings,
                 )
             )
     return tuple(tasks)
@@ -626,8 +788,10 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
         repo_root.resolve()
     ):
         raise SpeechNativeProfileError("speech-native binding must stay under the repository")
+    binding_sha256 = _require_string(values, "speech_native_binding_file_sha256")
+    binding_document = _load_binding_document(binding_path, binding_sha256)
     key_cards = _load_key_cards(
-        binding_path, _require_string(values, "speech_native_binding_file_sha256")
+        binding_path, binding_sha256
     )
     packet_receipt_path = Path(_require_string(values, "speech_packet_promotion_receipt"))
     packet_bindings = _load_packet_bindings(
@@ -635,6 +799,17 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
         _require_string(values, "speech_packet_promotion_receipt_sha256"),
         gate_view.samples,
     )
+    key_representation_id = _require_string(values, "key_representation_id")
+    audio_key_bindings = None
+    if key_representation_id in {"K3", "K4"}:
+        audio_key_bindings = _build_audio_key_bindings(
+            binding_document,
+            _load_packet_index(
+                packet_receipt_path,
+                _require_string(values, "speech_packet_promotion_receipt_sha256"),
+            ),
+            key_cards,
+        )
     feature_root = Path(_require_string(values, "speech_feature_root"))
     if packet_receipt_path.parent.resolve() != feature_root.resolve():
         raise SpeechNativeProfileError("packet promotion receipt must live at speech_feature_root")
@@ -670,16 +845,38 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
         raise SpeechNativeProfileError(
             "matcher_prompt_policy_id must be a non-empty string"
         )
+    verifier_policy_id = values.get(
+        "matcher_verifier_policy_id", "speech-native-compatibility-v1"
+    )
+    if not isinstance(verifier_policy_id, str) or not verifier_policy_id:
+        raise SpeechNativeProfileError(
+            "matcher_verifier_policy_id must be a non-empty string"
+        )
+    dispatch_granularity = values.get("speech_native_dispatch_granularity", "task")
+    if dispatch_granularity not in {"task", "contact"}:
+        raise SpeechNativeProfileError(
+            "speech_native_dispatch_granularity must be 'task' or 'contact'"
+        )
+    mechanism_control_id = values.get("speech_native_mechanism_control_id", "matched")
+    if mechanism_control_id not in {
+        "matched",
+        "speech-swap-v1",
+        "key-text-shuffle-v1",
+    }:
+        raise SpeechNativeProfileError("unknown speech-native mechanism control")
     tasks = build_profile_tasks(
         samples=gate_view.samples,
         packet_bindings=packet_bindings,
         key_cards=key_cards,
         order_ids=raw_order_ids,
         decoding_params=values.get("decoding_params", {}),
-        key_representation_id=_require_string(values, "key_representation_id"),
+        key_representation_id=key_representation_id,
         matcher_policy_id=_require_string(values, "matcher_policy_id"),
         top_k=top_k,
         prompt_policy_id=prompt_policy_id,
+        verifier_policy_id=verifier_policy_id,
+        audio_key_bindings=audio_key_bindings,
+        mechanism_control_id=mechanism_control_id,
     )
     planned_contact_ceiling = len(tasks) * contact_ceiling
     if planned_contact_ceiling != plan.planned_model_calls:
@@ -765,6 +962,7 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
             tasks=tasks,
             slot_count=slot_count,
             queue_depth=slot_count * queue_multiplier,
+            dispatch_granularity=dispatch_granularity,
             trace_run_id=plan.run_id,
             trace_flusher=client.flush_trace_buffer,
         )
@@ -808,7 +1006,14 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
                 {
                     "schema": "saea-speech-native-decision-v1",
                     "task_id": outcome.task_id,
-                    "sample_id": task_by_id[outcome.task_id].sample.sample_id,
+                    "sample_id": (
+                        task_by_id[outcome.task_id].scoring_sample_id
+                        or task_by_id[outcome.task_id].sample.sample_id
+                    ),
+                    "query_sample_id": task_by_id[outcome.task_id].sample.sample_id,
+                    "mechanism_control_id": task_by_id[
+                        outcome.task_id
+                    ].mechanism_control_id,
                     "speech_packet_sha256": task_by_id[outcome.task_id].query_descriptor[
                         "sha256"
                     ],
@@ -845,6 +1050,25 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
             "key_representation_id": values["key_representation_id"],
             "matcher_policy_id": values["matcher_policy_id"],
             "matcher_prompt_policy_id": prompt_policy_id,
+            "matcher_verifier_policy_id": verifier_policy_id,
+            "dispatch_granularity": dispatch_granularity,
+            "mechanism_control_id": mechanism_control_id,
+            "query_mapping_sha256": _canonical_sha256(
+                {
+                    (task.scoring_sample_id or task.sample.sample_id): task.sample.sample_id
+                    for task in tasks
+                }
+            ),
+            "key_text_mapping_sha256": (
+                _canonical_sha256(
+                    {
+                        card.key_id: key_cards[(index + 1) % len(key_cards)].key_id
+                        for index, card in enumerate(key_cards)
+                    }
+                )
+                if mechanism_control_id == "key-text-shuffle-v1"
+                else None
+            ),
             "semantic_result_read": False,
             "result_mode": result_mode,
             "contact_ceiling_per_task": contact_ceiling,

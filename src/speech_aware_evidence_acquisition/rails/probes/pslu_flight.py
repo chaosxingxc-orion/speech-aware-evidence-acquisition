@@ -50,6 +50,7 @@ same roster text, same instruction.
 from __future__ import annotations
 
 import ast
+import contextvars
 import hashlib
 import json
 from concurrent.futures import FIRST_COMPLETED, Future, ThreadPoolExecutor, wait
@@ -156,6 +157,10 @@ SPEECH_NATIVE_MATCHER_POLICIES = ("M0", "M1", "M2", "M3", "M4")
 SPEECH_NATIVE_PROMPT_POLICIES = (
     "speech-native-json-copy-v2",
     "speech-native-json-copy-v3",
+)
+SPEECH_NATIVE_VERIFIER_POLICIES = (
+    "speech-native-compatibility-v1",
+    "speech-native-contrastive-verifier-v2",
 )
 SPEECH_NATIVE_SCENARIO_DEFINITIONS: Mapping[str, str] = MappingProxyType(
     {
@@ -273,7 +278,10 @@ class SpeechNativeMatchTask:
     key_cards: tuple[KeyCardV1, ...]
     key_representation_id: str
     matcher_policy_id: str
+    scoring_sample_id: str | None = None
+    mechanism_control_id: str = "matched"
     prompt_policy_id: str = "speech-native-json-copy-v2"
+    verifier_policy_id: str = "speech-native-compatibility-v1"
     decoding_params: Mapping[str, object] = field(default_factory=dict)
     top_k: int = 3
     audio_key_bindings: Mapping[str, Mapping[str, str]] | None = None
@@ -455,6 +463,7 @@ def run_speech_native_matcher(
     key_representation_id: str,
     matcher_policy_id: str,
     prompt_policy_id: str = "speech-native-json-copy-v2",
+    verifier_policy_id: str = "speech-native-compatibility-v1",
     decoding_params: Mapping[str, object] | None = None,
     top_k: int = 3,
     audio_key_bindings: Mapping[str, Mapping[str, str]] | None = None,
@@ -478,6 +487,11 @@ def run_speech_native_matcher(
         raise PsluFlightError(
             f"unknown prompt policy {prompt_policy_id!r}; expected "
             f"{SPEECH_NATIVE_PROMPT_POLICIES}"
+        )
+    if verifier_policy_id not in SPEECH_NATIVE_VERIFIER_POLICIES:
+        raise PsluFlightError(
+            f"unknown verifier policy {verifier_policy_id!r}; expected "
+            f"{SPEECH_NATIVE_VERIFIER_POLICIES}"
         )
     top_k_is_active = matcher_policy_id == "M3" or (
         matcher_policy_id == "M4" and ensemble_base_policy_id == "M3"
@@ -551,6 +565,7 @@ def run_speech_native_matcher(
                     key_representation_id=key_representation_id,
                     matcher_policy_id=ensemble_base_policy_id,
                     prompt_policy_id=prompt_policy_id,
+                    verifier_policy_id=verifier_policy_id,
                 decoding_params=decoding_params,
                 top_k=top_k,
                 audio_key_bindings=audio_key_bindings,
@@ -664,11 +679,21 @@ def run_speech_native_matcher(
     verifier_scores: dict[str, tuple[bool, float]] = {}
     for key_id in top_ids:
         card = by_key[key_id]
+        verifier_instruction = (
+            "Judge whether the spoken command matches both the domain and requested "
+            "operation of this one candidate key. Reject a merely related topic when "
+            "the requested operation differs. Respond only as "
+            '{"compatible":true,"confidence":0}, with confidence from 0 to 100.'
+            if verifier_policy_id == "speech-native-contrastive-verifier-v2"
+            else (
+                "Judge whether the spoken command is compatible with this one candidate "
+                'key. Respond only as {"compatible":true,"confidence":0}, with confidence '
+                "from 0 to 100."
+            )
+        )
         response = contact(
             f"verify-{key_id}",
-            "Judge whether the spoken command is compatible with this one candidate key. "
-            "Respond only as {\"compatible\":true,\"confidence\":0}, with confidence from "
-            "0 to 100.",
+            verifier_instruction,
             (card,),
             render_speech_native_keys((card,), key_representation_id),
         )
@@ -699,16 +724,16 @@ def run_speech_native_match_tasks(
     tasks: Sequence[SpeechNativeMatchTask],
     slot_count: int,
     queue_depth: int,
+    dispatch_granularity: str = "task",
     trace_run_id: str | None = None,
     trace_flusher: Callable[[TraceBuffer], None] | None = None,
 ) -> tuple[SpeechNativeMatchOutcome, ...]:
-    """Run matcher tasks with bounded rolling concurrency and slot affinity.
+    """Run matcher tasks with bounded rolling concurrency.
 
-    ``queue_depth`` counts active plus waiting futures. Each worker leases one
-    numeric llama-server slot before the first matcher contact and releases it
-    only after the whole M1/M2/M3/M4 decision settles. Results and trace
-    buffers are recovered in the registered input order, independent of
-    completion timing. No failed task is retried.
+    ``dispatch_granularity='task'`` preserves historical whole-decision slot
+    affinity. ``'contact'`` queues every matcher contact independently while
+    keeping each task's semantic stages sequential. Results and trace buffers
+    are recovered in registered input order. No failed task is retried.
     """
 
     if isinstance(slot_count, bool) or not isinstance(slot_count, int) or slot_count <= 0:
@@ -717,6 +742,8 @@ def run_speech_native_match_tasks(
         raise PsluFlightError("queue_depth must be an integer")
     if queue_depth < slot_count:
         raise PsluFlightError("queue_depth must be at least slot_count")
+    if dispatch_granularity not in {"task", "contact"}:
+        raise PsluFlightError("dispatch_granularity must be 'task' or 'contact'")
     if (trace_run_id is None) != (trace_flusher is None):
         raise PsluFlightError(
             "trace_run_id and trace_flusher must be supplied together or both omitted"
@@ -734,28 +761,67 @@ def run_speech_native_match_tasks(
     for slot_id in range(slot_count):
         slots.put(slot_id)
 
+    contact_pool = (
+        ThreadPoolExecutor(
+            max_workers=slot_count,
+            thread_name_prefix="saea-speech-native-contact",
+        )
+        if dispatch_granularity == "contact"
+        else None
+    )
+
+    class ContactDispatchClient:
+        def complete(self, messages, **kwargs):
+            assert contact_pool is not None
+
+            def invoke():
+                slot_id = slots.get()
+                try:
+                    decoding_params = dict(kwargs.get("decoding_params") or {})
+                    requested_slot = decoding_params.get("id_slot")
+                    if requested_slot not in (None, "per-sample", "per-task"):
+                        raise PsluFlightError(
+                            "contact-dispatched decoding_params.id_slot must be absent, "
+                            "'per-sample', or 'per-task'"
+                        )
+                    decoding_params["id_slot"] = slot_id
+                    return core_client.complete(
+                        messages, **{**kwargs, "decoding_params": decoding_params}
+                    )
+                finally:
+                    slots.put(slot_id)
+
+            context = contextvars.copy_context()
+            return contact_pool.submit(context.run, invoke).result()
+
+    contact_client = ContactDispatchClient()
+
     def one(task: SpeechNativeMatchTask) -> _BufferedSpeechNativeOutcome:
-        slot_id = slots.get()
+        slot_id = slots.get() if dispatch_granularity == "task" else -1
         buffer = TraceBuffer(trace_run_id) if trace_run_id is not None else None
         if buffer is not None:
             set_current_trace_buffer(buffer)
         try:
             decoding_params = dict(task.decoding_params)
-            requested_slot = decoding_params.get("id_slot")
-            if requested_slot not in (None, "per-sample", "per-task"):
-                raise PsluFlightError(
-                    "parallel speech-native tasks require decoding_params.id_slot to be "
-                    "absent, 'per-sample', or 'per-task' before dispatch"
-                )
-            decoding_params["id_slot"] = slot_id
+            if dispatch_granularity == "task":
+                requested_slot = decoding_params.get("id_slot")
+                if requested_slot not in (None, "per-sample", "per-task"):
+                    raise PsluFlightError(
+                        "parallel speech-native tasks require decoding_params.id_slot to be "
+                        "absent, 'per-sample', or 'per-task' before dispatch"
+                    )
+                decoding_params["id_slot"] = slot_id
             decision = run_speech_native_matcher(
-                core_client=core_client,
+                core_client=(
+                    core_client if dispatch_granularity == "task" else contact_client
+                ),
                 sample=task.sample,
                 query_descriptor=task.query_descriptor,
                 key_cards=task.key_cards,
                 key_representation_id=task.key_representation_id,
                 matcher_policy_id=task.matcher_policy_id,
                 prompt_policy_id=task.prompt_policy_id,
+                verifier_policy_id=task.verifier_policy_id,
                 decoding_params=decoding_params,
                 top_k=task.top_k,
                 audio_key_bindings=task.audio_key_bindings,
@@ -779,13 +845,17 @@ def run_speech_native_match_tasks(
         finally:
             if buffer is not None:
                 set_current_trace_buffer(None)
-            slots.put(slot_id)
+            if dispatch_granularity == "task":
+                slots.put(slot_id)
 
     buffered: list[_BufferedSpeechNativeOutcome | None] = [None] * len(ordered_tasks)
     next_index = 0
     futures: dict[Future[_BufferedSpeechNativeOutcome], int] = {}
     with ThreadPoolExecutor(
-        max_workers=min(slot_count, len(ordered_tasks)),
+        max_workers=min(
+            slot_count if dispatch_granularity == "task" else queue_depth,
+            len(ordered_tasks),
+        ),
         thread_name_prefix="saea-speech-native",
     ) as pool:
         while next_index < min(queue_depth, len(ordered_tasks)):
@@ -799,6 +869,8 @@ def run_speech_native_match_tasks(
             while next_index < len(ordered_tasks) and len(futures) < queue_depth:
                 futures[pool.submit(one, ordered_tasks[next_index])] = next_index
                 next_index += 1
+    if contact_pool is not None:
+        contact_pool.shutdown(wait=True)
 
     settled = tuple(result for result in buffered if result is not None)
     if len(settled) != len(ordered_tasks):  # defensive: every future assigns once

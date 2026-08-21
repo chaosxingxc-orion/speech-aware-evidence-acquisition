@@ -16,6 +16,7 @@ import pytest
 
 from speech_aware_evidence_acquisition.core.model import SliceRegistry
 from speech_aware_evidence_acquisition.core.driver.speech_native import (
+    _build_audio_key_bindings,
     build_profile_tasks,
     profile_timing_metrics,
     read_speech_native_predictions,
@@ -238,6 +239,31 @@ def test_m3_v3_rejects_an_incomplete_retrieval_list_without_retrying():
     assert result.calls == 1
 
 
+def test_m3_contrastive_verifier_policy_tightens_candidate_compatibility_prompt():
+    client = _SpeechFeatureClient(
+        [
+            '{"key_ids":["K001","K002"]}',
+            '{"compatible":true,"confidence":90}',
+            '{"compatible":false,"confidence":10}',
+        ]
+    )
+    result = run_speech_native_matcher(
+        core_client=client,
+        sample=_SpeechSample(),
+        query_descriptor=_QUERY_DESCRIPTOR,
+        key_cards=_KEY_CARDS,
+        key_representation_id="K2",
+        matcher_policy_id="M3",
+        prompt_policy_id="speech-native-json-copy-v3",
+        verifier_policy_id="speech-native-contrastive-verifier-v2",
+        top_k=2,
+    )
+    verifier_prompt = client.calls[1][0][0]["content"]
+    assert "both the domain and requested operation" in verifier_prompt
+    assert "merely related topic" in verifier_prompt
+    assert result.key_id == "K001"
+
+
 def test_m4_trace_policy_preserves_ensemble_and_order_identity():
     client = _SpeechFeatureClient(
         ['{"key_id":"K001"}', '{"key_id":"K002"}', '{"key_id":"K001"}']
@@ -371,6 +397,61 @@ def test_speech_native_match_tasks_keep_multistep_slot_affinity_and_flush_in_tas
     ]
 
 
+def test_speech_native_contact_dispatch_queues_each_multistep_call_independently():
+    class ContactClient:
+        def __init__(self):
+            self.lock = threading.Lock()
+            self.active = 0
+            self.max_active = 0
+            self.stages = []
+
+        def complete(self, messages, **kwargs):
+            with self.lock:
+                self.active += 1
+                self.max_active = max(self.max_active, self.active)
+                self.stages.append(kwargs["matcher_policy_id"])
+            time.sleep(0.01)
+            with self.lock:
+                self.active -= 1
+            if kwargs["matcher_policy_id"].endswith(":intent-factors"):
+                return '{"factors":["domain"],"summary":"command"}'
+            return '{"key_id":"K001"}'
+
+    class Sample:
+        def __init__(self, sample_id):
+            self.sample_id = sample_id
+
+    tasks = tuple(
+        SpeechNativeMatchTask(
+            task_id=f"task-{index}",
+            sample=Sample(f"sample-{index}"),
+            query_descriptor={
+                "packet_id": f"slurp/train/query-{index}",
+                "sha256": f"{index + 1:x}" * 64,
+                "role": "query",
+            },
+            key_cards=_KEY_CARDS,
+            key_representation_id="K2",
+            matcher_policy_id="M2",
+            decoding_params={"temperature": 0, "id_slot": "per-sample"},
+        )
+        for index in range(4)
+    )
+    client = ContactClient()
+    outcomes = run_speech_native_match_tasks(
+        core_client=client,
+        tasks=tasks,
+        slot_count=2,
+        queue_depth=4,
+        dispatch_granularity="contact",
+    )
+    assert client.max_active == 2
+    assert all(
+        stage.endswith(":intent-factors") for stage in client.stages[:4]
+    )
+    assert all(outcome.slot_id == -1 for outcome in outcomes)
+
+
 def test_speech_native_match_tasks_reject_queue_smaller_than_slot_pool():
     with pytest.raises(PsluFlightError, match="queue_depth must be at least slot_count"):
         run_speech_native_match_tasks(
@@ -472,6 +553,84 @@ def test_profile_task_expansion_and_slot_metrics_are_deterministic():
     }
 
 
+def test_profile_tasks_build_label_blind_speech_swap_and_key_text_shuffle_controls():
+    class Sample:
+        def __init__(self, sample_id):
+            self.sample_id = sample_id
+
+    samples = tuple(Sample(f"s{index}") for index in range(3))
+    bindings = {
+        sample.sample_id: {
+            "packet_id": f"slurp/train/{sample.sample_id}",
+            "sha256": f"{index + 1:x}" * 64,
+        }
+        for index, sample in enumerate(samples)
+    }
+    swapped = build_profile_tasks(
+        samples=samples,
+        packet_bindings=bindings,
+        key_cards=_KEY_CARDS,
+        order_ids=("canonical",),
+        decoding_params={},
+        key_representation_id="K1",
+        matcher_policy_id="M1",
+        mechanism_control_id="speech-swap-v1",
+    )
+    assert [task.scoring_sample_id for task in swapped] == ["s0", "s1", "s2"]
+    assert [task.sample.sample_id for task in swapped] == ["s1", "s2", "s0"]
+
+    shuffled = build_profile_tasks(
+        samples=samples,
+        packet_bindings=bindings,
+        key_cards=_KEY_CARDS,
+        order_ids=("canonical",),
+        decoding_params={},
+        key_representation_id="K1",
+        matcher_policy_id="M1",
+        mechanism_control_id="key-text-shuffle-v1",
+    )
+    first_cards = shuffled[0].key_cards
+    assert [card.key_id for card in first_cards] == ["K001", "K002"]
+    assert [card.value_label for card in first_cards] == ["alarm", "email"]
+    assert first_cards[0].definition == _KEY_CARDS[1].definition
+    assert first_cards[1].definition == _KEY_CARDS[0].definition
+
+
+def test_audio_key_bindings_resolve_frozen_key_sources_from_packet_index():
+    binding = {
+        "key_material": [
+            {
+                "key_id": "K001",
+                "audio_key_source_sample_id": "slurp:train:000001:audio-1",
+            },
+            {
+                "key_id": "K002",
+                "audio_key_source_sample_id": "slurp:train:000002:audio-2",
+            },
+        ]
+    }
+    packet_index = {
+        "slurp/train/000001/audio-1": {
+            "packet_id": "slurp/train/000001/audio-1",
+            "sha256": "a" * 64,
+        },
+        "slurp/train/000002/audio-2": {
+            "packet_id": "slurp/train/000002/audio-2",
+            "sha256": "b" * 64,
+        },
+    }
+    assert _build_audio_key_bindings(binding, packet_index, _KEY_CARDS) == {
+        "K001": {
+            "packet_id": "slurp/train/000001/audio-1",
+            "sha256": "a" * 64,
+        },
+        "K002": {
+            "packet_id": "slurp/train/000002/audio-2",
+            "sha256": "b" * 64,
+        },
+    }
+
+
 def test_model_free_prediction_read_verifies_and_selects_the_better_cell(tmp_path):
     binding_path = REPO_ROOT / "configs/probes/g0-binding/speech-native-train-binding.json"
     binding_sha256 = hashlib.sha256(binding_path.read_bytes()).hexdigest()
@@ -551,8 +710,22 @@ def test_model_free_prediction_read_distinguishes_m3_top_k_cells(tmp_path):
     items = binding["splits"]["OPT-A36"]["items"]
     key_by_label = {card["value_label"]: card["key_id"] for card in binding["key_cards"]}
 
-    def write_cell(top_k, prompt_policy_id="speech-native-json-copy-v2"):
-        suffix = "-v3" if prompt_policy_id.endswith("-v3") else ""
+    def write_cell(
+        top_k,
+        prompt_policy_id="speech-native-json-copy-v2",
+        order_id="canonical",
+        verifier_policy_id="speech-native-compatibility-v1",
+        mechanism_control_id="matched",
+    ):
+        suffix = "-".join(
+            value
+            for value in (
+                "v3" if prompt_policy_id.endswith("-v3") else "v2",
+                order_id,
+                verifier_policy_id.rsplit("-", 1)[-1],
+                mechanism_control_id,
+            )
+        )
         attempt_dir = tmp_path / f"m3-k{top_k}{suffix}"
         attempt_dir.mkdir()
         rows = []
@@ -564,6 +737,14 @@ def test_model_free_prediction_read_distinguishes_m3_top_k_cells(tmp_path):
                     "sample_id": item["sample_id"],
                     "key_id": key_id,
                     "predicted_value_label": item["value_label"],
+                    "top_key_ids": [
+                        key_id,
+                        *[
+                            candidate
+                            for candidate in key_by_label.values()
+                            if candidate != key_id
+                        ][: top_k - 1],
+                    ],
                     "parse_failure": False,
                 }
             )
@@ -583,6 +764,9 @@ def test_model_free_prediction_read_distinguishes_m3_top_k_cells(tmp_path):
                         "key_representation_id": "K1",
                         "matcher_policy_id": "M3",
                         "matcher_prompt_policy_id": prompt_policy_id,
+                        "matcher_verifier_policy_id": verifier_policy_id,
+                        "mechanism_control_id": mechanism_control_id,
+                        "key_order_ids": [order_id],
                         "top_k": top_k,
                         "actual_contact_count": len(rows),
                     },
@@ -602,6 +786,21 @@ def test_model_free_prediction_read_distinguishes_m3_top_k_cells(tmp_path):
             write_cell(3),
             write_cell(5),
             write_cell(3, "speech-native-json-copy-v3"),
+            write_cell(
+                3,
+                "speech-native-json-copy-v3",
+                order_id="reverse",
+            ),
+            write_cell(
+                3,
+                "speech-native-json-copy-v3",
+                verifier_policy_id="speech-native-contrastive-verifier-v2",
+            ),
+            write_cell(
+                3,
+                "speech-native-json-copy-v3",
+                mechanism_control_id="speech-swap-v1",
+            ),
         ),
         binding_path=binding_path,
         binding_sha256=binding_sha256,
@@ -611,7 +810,14 @@ def test_model_free_prediction_read_distinguishes_m3_top_k_cells(tmp_path):
         "K1-M3-k3",
         "K1-M3-k5",
         "K1-M3-k3-v3",
+        "K1-M3-k3-v3-order-reverse",
+        "K1-M3-k3-v3-verify-contrastive-v2",
+        "K1-M3-k3-v3-control-speech-swap-v1",
     ]
+    assert all(
+        item["top_k_reachable_count"] == 36
+        for item in report["aggregates"]
+    )
 
 
 def _binding_material():
