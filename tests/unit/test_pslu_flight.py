@@ -851,6 +851,122 @@ def test_model_free_prediction_read_distinguishes_m3_top_k_cells(tmp_path):
     assert ensemble["tie_break_count"] == 0
 
 
+def test_model_free_read_replays_disagreement_escalation_frontier(tmp_path):
+    binding_path = REPO_ROOT / "configs/probes/g0-binding/speech-native-train-binding.json"
+    binding_sha256 = hashlib.sha256(binding_path.read_bytes()).hexdigest()
+    binding = json.loads(binding_path.read_text(encoding="utf-8"))
+    items = binding["splits"]["OPT-A36"]["items"]
+    key_by_label = {card["value_label"]: card["key_id"] for card in binding["key_cards"]}
+    labels = tuple(key_by_label)
+
+    def write_cell(matcher_policy_id, *, order_id="canonical", wrong_offset=None):
+        attempt_dir = tmp_path / f"{matcher_policy_id}-{order_id}"
+        attempt_dir.mkdir()
+        rows = []
+        for index, item in enumerate(items):
+            predicted = item["value_label"]
+            calls = 1 if matcher_policy_id == "M1" else 4
+            if index == 0 and matcher_policy_id == "M3" and order_id == "rotate-7":
+                calls += 1
+            if index == 0 and wrong_offset is not None:
+                predicted = labels[(labels.index(predicted) + wrong_offset) % len(labels)]
+            key_id = key_by_label[predicted]
+            gold_key_id = key_by_label[item["value_label"]]
+            rows.append(
+                {
+                    "schema": "saea-speech-native-decision-v1",
+                    "sample_id": item["sample_id"],
+                    "key_id": key_id,
+                    "predicted_value_label": predicted,
+                    "top_key_ids": (
+                        []
+                        if matcher_policy_id == "M1"
+                        else [
+                            gold_key_id,
+                            *[
+                                candidate
+                                for candidate in key_by_label.values()
+                                if candidate != gold_key_id
+                            ][:2],
+                        ]
+                    ),
+                    "calls": calls,
+                    "parse_failure": False,
+                }
+            )
+        decisions = attempt_dir / "decisions.jsonl"
+        decisions.write_text(
+            "".join(json.dumps(row, sort_keys=True) + "\n" for row in rows),
+            encoding="utf-8",
+        )
+        (attempt_dir / "flight-receipt.json").write_text(
+            json.dumps(
+                {
+                    "status": "COMPLETED",
+                    "request_failures": [],
+                    "split_identity_hash": "a" * 64,
+                    "run_id": f"run-{matcher_policy_id}-{order_id}",
+                    "profile": {
+                        "key_representation_id": "K1",
+                        "matcher_policy_id": matcher_policy_id,
+                        "matcher_prompt_policy_id": "speech-native-json-copy-v3",
+                        "matcher_verifier_policy_id": "speech-native-compatibility-v1",
+                        "mechanism_control_id": "matched",
+                        "key_order_ids": [order_id],
+                        "top_k": 3,
+                        "actual_contact_count": sum(row["calls"] for row in rows),
+                    },
+                    "decisions": {
+                        "path": decisions.name,
+                        "sha256": hashlib.sha256(decisions.read_bytes()).hexdigest(),
+                        "count": len(rows),
+                    },
+                }
+            ),
+            encoding="utf-8",
+        )
+        return attempt_dir
+
+    report = read_speech_native_predictions(
+        attempt_dirs=(
+            write_cell("M1", wrong_offset=1),
+            write_cell("M3", wrong_offset=2),
+            write_cell("M3", order_id="reverse"),
+            write_cell("M3", order_id="rotate-7", wrong_offset=None),
+        ),
+        binding_path=binding_path,
+        binding_sha256=binding_sha256,
+        split_name="OPT-A36",
+    )
+    assert report["adaptive_policies"] == [
+        {
+            "policy_id": "K1-M5-disagreement-escalation-v1",
+            "discovery_status": "post-read-policy-discovery",
+            "correct": 36,
+            "count": 36,
+            "accuracy": 1.0,
+            "actual_contact_count": 189,
+            "stop_agree_count": 35,
+            "escalation_count": 1,
+            "wrong_to_correct_vs_primary": 1,
+            "correct_to_wrong_vs_primary": 0,
+            "parse_failure_count": 0,
+            "source_cell_ids": [
+                "K1-M1",
+                "K1-M3-k3-v3",
+                "K1-M3-k3-v3-order-reverse",
+                "K1-M3-k3-v3-order-rotate-7",
+            ],
+            "escalation_policy_id": "m1-m3-disagree-v1",
+            "escalation_aggregator_id": "m3-majority-canonical-tie-v1",
+        }
+    ]
+    assert [item["policy_id"] for item in report["accuracy_cost_frontier"]] == [
+        "K1-M1",
+        "K1-M5-disagreement-escalation-v1",
+    ]
+
+
 def _binding_material():
     material = []
     for scenario_index, scenario in enumerate(("alarm", "email")):

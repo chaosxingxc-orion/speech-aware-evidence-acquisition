@@ -198,6 +198,7 @@ def read_speech_native_predictions(
     aggregates: list[dict[str, object]] = []
     correctness_by_cell: dict[str, dict[str, bool]] = {}
     predictions_by_cell: dict[str, dict[str, str | None]] = {}
+    calls_by_cell: dict[str, dict[str, int | None]] = {}
     source_receipts: list[dict[str, str]] = []
     for attempt_dir_value in attempt_dirs:
         attempt_dir = Path(attempt_dir_value)
@@ -305,6 +306,7 @@ def read_speech_native_predictions(
         correctness: dict[str, bool] = {}
         predictions: dict[str, str | None] = {}
         query_by_target: dict[str, str] = {}
+        calls_by_sample: dict[str, int | None] = {}
         parse_failures = 0
         top_k_reachable_count = 0
         for row in rows:
@@ -332,6 +334,16 @@ def read_speech_native_predictions(
             parse_failures += int(parse_failure)
             correctness[sample_id] = predicted == gold[sample_id]
             predictions[sample_id] = predicted if isinstance(predicted, str) else None
+            raw_calls = row.get("calls")
+            if raw_calls is not None and (
+                isinstance(raw_calls, bool)
+                or not isinstance(raw_calls, int)
+                or raw_calls <= 0
+            ):
+                raise SpeechNativeProfileError(
+                    "decision calls must be a positive integer when present"
+                )
+            calls_by_sample[sample_id] = raw_calls
             query_sample_id = row.get("query_sample_id", sample_id)
             row_control_id = row.get(
                 "mechanism_control_id", mechanism_control_id
@@ -408,6 +420,7 @@ def read_speech_native_predictions(
         )
         correctness_by_cell[cell_id] = correctness
         predictions_by_cell[cell_id] = predictions
+        calls_by_cell[cell_id] = calls_by_sample
         source_receipts.append(
             {
                 "run_id": str(receipt.get("run_id")),
@@ -435,6 +448,7 @@ def read_speech_native_predictions(
                 f"duplicate order-ensemble cell {ensemble_cell_id!r}"
             )
         ensemble_predictions: dict[str, str | None] = {}
+        ensemble_calls: dict[str, int | None] = {}
         tie_break_count = 0
         order_disagreement_count = 0
         for sample_id in gold:
@@ -452,6 +466,18 @@ def read_speech_native_predictions(
                 tie_break_count += 1
                 majority = votes[0]
             ensemble_predictions[sample_id] = majority
+            source_calls = tuple(
+                calls_by_cell[source_id][sample_id]
+                for source_id in ordered_source_ids
+            )
+            ensemble_calls[sample_id] = (
+                sum(int(value) for value in source_calls)
+                if all(
+                    isinstance(value, int) and not isinstance(value, bool)
+                    for value in source_calls
+                )
+                else None
+            )
         ensemble_correctness = {
             sample_id: prediction == gold[sample_id]
             for sample_id, prediction in ensemble_predictions.items()
@@ -490,6 +516,88 @@ def read_speech_native_predictions(
         aggregate_by_cell[ensemble_cell_id] = ensemble_aggregate
         correctness_by_cell[ensemble_cell_id] = ensemble_correctness
         predictions_by_cell[ensemble_cell_id] = ensemble_predictions
+        calls_by_cell[ensemble_cell_id] = ensemble_calls
+
+    adaptive_policies: list[dict[str, object]] = []
+    adaptive_source_ids = (
+        "K1-M1",
+        "K1-M3-k3-v3",
+        "K1-M3-k3-v3-order-reverse",
+        "K1-M3-k3-v3-order-rotate-7",
+    )
+    adaptive_ensemble_id = "K1-M4-k3-v3-order-ensemble-v1"
+    if all(source_id in predictions_by_cell for source_id in adaptive_source_ids) and (
+        adaptive_ensemble_id in predictions_by_cell
+    ):
+        adaptive_predictions: dict[str, str | None] = {}
+        actual_contact_count = 0
+        stop_agree_count = 0
+        escalation_count = 0
+        calls_complete = True
+        primary_id, critic_id, reverse_id, rotate_id = adaptive_source_ids
+        for sample_id in gold:
+            primary_prediction = predictions_by_cell[primary_id][sample_id]
+            critic_prediction = predictions_by_cell[critic_id][sample_id]
+            escalated = (
+                primary_prediction is None
+                or critic_prediction is None
+                or primary_prediction != critic_prediction
+            )
+            if escalated:
+                escalation_count += 1
+                prediction = predictions_by_cell[adaptive_ensemble_id][sample_id]
+            else:
+                stop_agree_count += 1
+                prediction = primary_prediction
+            adaptive_predictions[sample_id] = prediction
+            required_ids = (
+                adaptive_source_ids
+                if escalated
+                else (primary_id, critic_id)
+            )
+            sample_calls = tuple(
+                calls_by_cell[source_id][sample_id] for source_id in required_ids
+            )
+            if all(
+                isinstance(value, int) and not isinstance(value, bool)
+                for value in sample_calls
+            ):
+                actual_contact_count += sum(int(value) for value in sample_calls)
+            else:
+                calls_complete = False
+        primary_correctness = correctness_by_cell[primary_id]
+        adaptive_correctness = {
+            sample_id: prediction == gold[sample_id]
+            for sample_id, prediction in adaptive_predictions.items()
+        }
+        adaptive_policies.append(
+            {
+                "policy_id": "K1-M5-disagreement-escalation-v1",
+                "discovery_status": "post-read-policy-discovery",
+                "correct": sum(adaptive_correctness.values()),
+                "count": len(gold),
+                "accuracy": sum(adaptive_correctness.values()) / len(gold),
+                "actual_contact_count": actual_contact_count if calls_complete else None,
+                "stop_agree_count": stop_agree_count,
+                "escalation_count": escalation_count,
+                "wrong_to_correct_vs_primary": sum(
+                    not primary_correctness[sample_id]
+                    and adaptive_correctness[sample_id]
+                    for sample_id in gold
+                ),
+                "correct_to_wrong_vs_primary": sum(
+                    primary_correctness[sample_id]
+                    and not adaptive_correctness[sample_id]
+                    for sample_id in gold
+                ),
+                "parse_failure_count": sum(
+                    prediction is None for prediction in adaptive_predictions.values()
+                ),
+                "source_cell_ids": list(adaptive_source_ids),
+                "escalation_policy_id": "m1-m3-disagree-v1",
+                "escalation_aggregator_id": "m3-majority-canonical-tie-v1",
+            }
+        )
 
     baseline_id = str(aggregates[0]["cell_id"])
     baseline = correctness_by_cell[baseline_id]
@@ -579,6 +687,61 @@ def read_speech_native_predictions(
             str(item["cell_id"]),
         ),
     )
+    accuracy_cost_candidates: list[dict[str, object]] = []
+    for cell_id in ("K1-M1", "K1-M3-k3-v3", adaptive_ensemble_id):
+        item = aggregate_by_cell.get(cell_id)
+        if item is not None:
+            accuracy_cost_candidates.append(
+                {
+                    "policy_id": cell_id,
+                    "correct": item["correct"],
+                    "count": item["count"],
+                    "accuracy": item["accuracy"],
+                    "actual_contact_count": item["actual_contact_count"],
+                    "parse_failure_count": item["parse_failure_count"],
+                    "discovery_status": "observed-cell",
+                }
+            )
+    accuracy_cost_candidates.extend(adaptive_policies)
+
+    def dominates(left: Mapping[str, object], right: Mapping[str, object]) -> bool:
+        left_calls = left.get("actual_contact_count")
+        right_calls = right.get("actual_contact_count")
+        if not isinstance(left_calls, int) or not isinstance(right_calls, int):
+            return False
+        left_correct = int(left["correct"])
+        right_correct = int(right["correct"])
+        left_failures = int(left["parse_failure_count"])
+        right_failures = int(right["parse_failure_count"])
+        return (
+            left_correct >= right_correct
+            and left_calls <= right_calls
+            and left_failures <= right_failures
+            and (
+                left_correct > right_correct
+                or left_calls < right_calls
+                or left_failures < right_failures
+            )
+        )
+
+    accuracy_cost_frontier = sorted(
+        (
+            candidate
+            for candidate in accuracy_cost_candidates
+            if not any(
+                dominates(other, candidate)
+                for other in accuracy_cost_candidates
+                if other is not candidate
+            )
+        ),
+        key=lambda item: (
+            int(item["actual_contact_count"])
+            if isinstance(item.get("actual_contact_count"), int)
+            else math.inf,
+            -int(item["correct"]),
+            str(item["policy_id"]),
+        ),
+    )
     return {
         "schema": "saea-speech-native-read-v1",
         "study": "speech-aware-evidence-acquisition",
@@ -589,6 +752,9 @@ def read_speech_native_predictions(
         "pairwise": pairwise,
         "cell_pairwise": cell_pairwise,
         "mechanism_controls": mechanism_controls,
+        "adaptive_policies": adaptive_policies,
+        "accuracy_cost_candidates": accuracy_cost_candidates,
+        "accuracy_cost_frontier": accuracy_cost_frontier,
         "selection_policy_id": "accuracy-regression-parse-order-cost-v1",
         "selected_cell_id": winner["cell_id"],
         "source_receipts": source_receipts,
