@@ -1425,6 +1425,9 @@ def test_model_free_read_reports_agent_loop_optimization_signals(tmp_path):
     assert aggregate["agent_loop_metrics"] == {
         "policy_id": "m1-m3-disagreement-escalation-v1",
         "aggregator_id": "m3-majority-canonical-tie-v1",
+        "primary_correct": 34,
+        "primary_accuracy": 34 / 36,
+        "final_minus_primary_correct": 0,
         "stop_count": 34,
         "escalation_count": 2,
         "escalation_rate": 2 / 36,

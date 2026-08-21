@@ -1,0 +1,7 @@
+{
+  "experiment_id": "SAEA-SN-GATE-K0M0",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "Unread GATE18 direct speech classification baseline using the frozen 18-label K0 representation and the same explicit llama.cpp batch profile as the frozen AgentLoop candidate.",
+  "key_representation_id": "K0",
+  "matcher_policy_id": "M0"
+}

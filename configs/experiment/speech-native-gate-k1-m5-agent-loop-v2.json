@@ -1,0 +1,8 @@
+{
+  "experiment_id": "SAEA-SN-GATE-K1M5-AGENT-LOOP-V2",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "Unread GATE18 evaluation of the frozen speech-native M5 AgentLoop. The controller stops on M1/M3 agreement, escalates disagreement to reverse and rotate-7 M3 branches, and overrides M1 only with an M3 majority.",
+  "key_representation_id": "K1",
+  "matcher_policy_id": "M5",
+  "speech_native_agent_aggregator_id": "m3-majority-primary-tie-v2"
+}

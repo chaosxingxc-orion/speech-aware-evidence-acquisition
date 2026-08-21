@@ -332,6 +332,7 @@ def read_speech_native_predictions(
         agent_missed_stop_error_count = 0
         agent_action_sensitive_count = 0
         agent_action_counts: Counter[str] = Counter()
+        agent_primary_correct_count = 0
         agent_primary_fallback_correct_count = 0
         agent_primary_fallback_wrong_to_correct = 0
         agent_primary_fallback_correct_to_wrong = 0
@@ -488,6 +489,7 @@ def read_speech_native_predictions(
                     and label_by_key[primary_fallback_key] == gold[sample_id]
                 )
                 agent_action_counts.update(agent_actions)
+                agent_primary_correct_count += int(primary_correct)
                 agent_escalation_count += int(agent_escalated)
                 agent_recoverable_error_count += int(
                     not primary_correct and candidate_correct
@@ -548,6 +550,11 @@ def read_speech_native_predictions(
                     {
                         "policy_id": "m1-m3-disagreement-escalation-v1",
                         "aggregator_id": agent_aggregator_id,
+                        "primary_correct": agent_primary_correct_count,
+                        "primary_accuracy": agent_primary_correct_count / len(gold),
+                        "final_minus_primary_correct": (
+                            correct - agent_primary_correct_count
+                        ),
                         "stop_count": len(gold) - agent_escalation_count,
                         "escalation_count": agent_escalation_count,
                         "escalation_rate": agent_escalation_count / len(gold),
