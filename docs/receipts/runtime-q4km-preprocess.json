@@ -14,9 +14,9 @@
   "llama_cpp": {
     "binary_bytes": 17920,
     "binary_path": "llama.cpp-featcache/build/bin/llama-server",
-    "binary_sha256": "7f76f25127717690ca579ce0c7c40b620ba2cbdc4e8708a5c06ef59131bfb1f3",
-    "build_commit": "9c0659e6eae31ea51b924643d7f89f13c8846ccf",
-    "reported_build": "version: 7 (9c0659e6e)"
+    "binary_sha256": "d0b42ace8d8e02dc772a0e4a1e1667068b3ad799b1ca4c98c741cf89d58404f2",
+    "build_commit": "04ccc72a2207347ca76161b93fd9d846dd0a8675",
+    "reported_build": "version: 8 (04ccc72a2)"
   },
   "model_lock_key": "qwen3-omni-30b-a3b-instruct-gguf-q4km",
   "role": "preprocess",
@@ -24,17 +24,17 @@
     {
       "bytes": 913472,
       "path": "llama.cpp-featcache/build/bin/libggml-base.so",
-      "sha256": "bca43a35b3d9ac614cc20f48e0d9f8045d6d2af36d1a0c9917064f69a29da352"
+      "sha256": "e4cd3885beea74c6adf9c7086711402d8c2b73d1cd2475cb64abfff64440a3d4"
     },
     {
       "bytes": 913472,
       "path": "llama.cpp-featcache/build/bin/libggml-base.so.0",
-      "sha256": "bca43a35b3d9ac614cc20f48e0d9f8045d6d2af36d1a0c9917064f69a29da352"
+      "sha256": "e4cd3885beea74c6adf9c7086711402d8c2b73d1cd2475cb64abfff64440a3d4"
     },
     {
       "bytes": 913472,
       "path": "llama.cpp-featcache/build/bin/libggml-base.so.0.15.2",
-      "sha256": "bca43a35b3d9ac614cc20f48e0d9f8045d6d2af36d1a0c9917064f69a29da352"
+      "sha256": "e4cd3885beea74c6adf9c7086711402d8c2b73d1cd2475cb64abfff64440a3d4"
     },
     {
       "bytes": 1114656,
@@ -84,12 +84,12 @@
     {
       "bytes": 5715912,
       "path": "llama.cpp-featcache/build/bin/libllama-common.so",
-      "sha256": "e09774ffd4d51a077a35b0ab4e89789475ae98fd49391720aa290aace304d206"
+      "sha256": "cb831707b24ec8a83aefcb596a777c57bd893ee4bea175d649f30b64d8fe4160"
     },
     {
       "bytes": 5715912,
       "path": "llama.cpp-featcache/build/bin/libllama-common.so.0",
-      "sha256": "e09774ffd4d51a077a35b0ab4e89789475ae98fd49391720aa290aace304d206"
+      "sha256": "cb831707b24ec8a83aefcb596a777c57bd893ee4bea175d649f30b64d8fe4160"
     },
     {
       "bytes": 5715912,
@@ -127,9 +127,14 @@
       "sha256": "e09774ffd4d51a077a35b0ab4e89789475ae98fd49391720aa290aace304d206"
     },
     {
-      "bytes": 4178624,
+      "bytes": 5715912,
+      "path": "llama.cpp-featcache/build/bin/libllama-common.so.0.0.8",
+      "sha256": "cb831707b24ec8a83aefcb596a777c57bd893ee4bea175d649f30b64d8fe4160"
+    },
+    {
+      "bytes": 4178832,
       "path": "llama.cpp-featcache/build/bin/libllama-server-impl.so",
-      "sha256": "5da8e82f91ce559dcba61dd38945982a69fc2df5fd0119e7f7f833d9bfc9bb9e"
+      "sha256": "ea14faf21ff8789cc871b4a4759b33101018ef6db586cbab964040c94488c9c7"
     },
     {
       "bytes": 3871904,
@@ -177,6 +182,11 @@
       "sha256": "f324a4fa641eb81ec043cbe36e1010368a0e58cb44aaeb4ef10a803e12258dfc"
     },
     {
+      "bytes": 3871904,
+      "path": "llama.cpp-featcache/build/bin/libllama.so.0.0.8",
+      "sha256": "f324a4fa641eb81ec043cbe36e1010368a0e58cb44aaeb4ef10a803e12258dfc"
+    },
+    {
       "bytes": 1429096,
       "path": "llama.cpp-featcache/build/bin/libmtmd.so",
       "sha256": "ffac155277bf50fc82d57201f1c130a97dd142d3eb039030a21e099fd718fc22"
@@ -219,6 +229,11 @@
     {
       "bytes": 1429096,
       "path": "llama.cpp-featcache/build/bin/libmtmd.so.0.0.7",
+      "sha256": "ffac155277bf50fc82d57201f1c130a97dd142d3eb039030a21e099fd718fc22"
+    },
+    {
+      "bytes": 1429096,
+      "path": "llama.cpp-featcache/build/bin/libmtmd.so.0.0.8",
       "sha256": "ffac155277bf50fc82d57201f1c130a97dd142d3eb039030a21e099fd718fc22"
     }
   ],
