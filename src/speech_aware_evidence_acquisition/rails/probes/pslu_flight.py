@@ -153,7 +153,7 @@ def load_speech_native_engineering_gate(
 
 
 SPEECH_NATIVE_KEY_REPRESENTATIONS = ("K0", "K1", "K2", "K3", "K4")
-SPEECH_NATIVE_MATCHER_POLICIES = ("M0", "M1", "M2", "M3", "M4")
+SPEECH_NATIVE_MATCHER_POLICIES = ("M0", "M1", "M2", "M3", "M4", "M5")
 SPEECH_NATIVE_PROMPT_POLICIES = (
     "speech-native-json-copy-v2",
     "speech-native-json-copy-v3",
@@ -228,11 +228,16 @@ class KeyCardV1:
             raise PsluFlightError(f"invalid opaque key_id {self.key_id!r}")
         if not self.definition.strip():
             raise PsluFlightError(f"key {self.key_id}: definition must be non-empty")
-        if not self.positive_examples or any(not item.strip() for item in self.positive_examples):
+        if not self.positive_examples or any(
+            not item.strip() for item in self.positive_examples
+        ):
             raise PsluFlightError(
                 f"key {self.key_id}: positive_examples must be non-empty strings"
             )
-        if self.contrastive_boundary is not None and not self.contrastive_boundary.strip():
+        if (
+            self.contrastive_boundary is not None
+            and not self.contrastive_boundary.strip()
+        ):
             raise PsluFlightError(
                 f"key {self.key_id}: contrastive_boundary must be non-empty or None"
             )
@@ -262,6 +267,11 @@ class SpeechNativeDecision:
     raw_responses: tuple[str, ...]
     verifier_scores: Mapping[str, tuple[bool, float]]
     parse_failure: bool = False
+    agent_policy_id: str | None = None
+    agent_actions: tuple[str, ...] = ()
+    agent_escalated: bool = False
+    agent_vote_key_ids: tuple[str | None, ...] = ()
+    agent_steps: tuple[Mapping[str, object], ...] = ()
 
 
 @dataclass(frozen=True)
@@ -269,7 +279,7 @@ class SpeechNativeMatchTask:
     """One independently schedulable speech-native matcher decision.
 
     A worker owns one llama-server slot for the task's entire lifetime, so a
-    multi-contact M2/M3/M4 decision never migrates between slots.
+    multi-contact M2/M3/M4/M5 decision never migrates between slots.
     """
 
     task_id: str
@@ -311,8 +321,17 @@ def _validated_key_cards(key_cards: Sequence[KeyCardV1]) -> tuple[KeyCardV1, ...
     if len(set(key_ids)) != len(key_ids):
         raise PsluFlightError("speech-native key cards contain duplicate key_id values")
     if len(set(labels)) != len(labels):
-        raise PsluFlightError("speech-native key cards contain duplicate value_label values")
+        raise PsluFlightError(
+            "speech-native key cards contain duplicate value_label values"
+        )
     return cards
+
+
+def _rotate_key_cards(
+    key_cards: tuple[KeyCardV1, ...], offset: int
+) -> tuple[KeyCardV1, ...]:
+    normalized = offset % len(key_cards)
+    return key_cards[normalized:] + key_cards[:normalized]
 
 
 def render_speech_native_keys(
@@ -418,7 +437,9 @@ def _speech_feature_messages(
 ) -> tuple[Mapping[str, object], ...]:
     required = {"packet_id", "sha256", "role"}
     if set(query_descriptor) != required or query_descriptor.get("role") != "query":
-        raise PsluFlightError("query_descriptor must carry exact packet_id/sha256/role=query")
+        raise PsluFlightError(
+            "query_descriptor must carry exact packet_id/sha256/role=query"
+        )
     content: list[Mapping[str, object]] = []
     if key_text:
         content.append({"type": "text", "text": key_text})
@@ -434,7 +455,10 @@ def _speech_feature_messages(
             )
         for card in key_cards:
             binding = audio_key_bindings[card.key_id]
-            if not isinstance(binding, Mapping) or set(binding) != {"packet_id", "sha256"}:
+            if not isinstance(binding, Mapping) or set(binding) != {
+                "packet_id",
+                "sha256",
+            }:
                 raise PsluFlightError(
                     f"audio key binding {card.key_id!r} must carry exact packet_id/sha256"
                 )
@@ -470,7 +494,7 @@ def run_speech_native_matcher(
     ensemble_base_policy_id: str = "M1",
     _trace_matcher_policy_id: str | None = None,
 ) -> SpeechNativeDecision:
-    """Run one frozen-core speech-query decision under M0--M4.
+    """Run one frozen-core speech-query decision under M0--M5.
 
     Every local ``contact`` call reconstructs a two-message request carrying
     the original query packet. Generated factor text and verifier outputs may
@@ -493,7 +517,7 @@ def run_speech_native_matcher(
             f"unknown verifier policy {verifier_policy_id!r}; expected "
             f"{SPEECH_NATIVE_VERIFIER_POLICIES}"
         )
-    top_k_is_active = matcher_policy_id == "M3" or (
+    top_k_is_active = matcher_policy_id in {"M3", "M5"} or (
         matcher_policy_id == "M4" and ensemble_base_policy_id == "M3"
     )
     if top_k_is_active and (top_k <= 0 or top_k > len(cards)):
@@ -535,6 +559,11 @@ def run_speech_native_matcher(
         *,
         top_ids: tuple[str, ...] = (),
         scores: Mapping[str, tuple[bool, float]] = MappingProxyType({}),
+        agent_policy_id: str | None = None,
+        agent_actions: tuple[str, ...] = (),
+        agent_escalated: bool = False,
+        agent_vote_key_ids: tuple[str | None, ...] = (),
+        agent_steps: tuple[Mapping[str, object], ...] = (),
     ) -> SpeechNativeDecision:
         return SpeechNativeDecision(
             matcher_policy_id=matcher_policy_id,
@@ -546,42 +575,129 @@ def run_speech_native_matcher(
             raw_responses=tuple(raw_responses),
             verifier_scores=dict(scores),
             parse_failure=key_id is None,
+            agent_policy_id=agent_policy_id,
+            agent_actions=agent_actions,
+            agent_escalated=agent_escalated,
+            agent_vote_key_ids=agent_vote_key_ids,
+            agent_steps=agent_steps,
         )
+
+    def nested_decision(
+        policy_id: str,
+        ordering: tuple[KeyCardV1, ...],
+        trace_policy_id: str,
+    ) -> SpeechNativeDecision:
+        decision = run_speech_native_matcher(
+            core_client=core_client,
+            sample=sample,
+            query_descriptor=query_descriptor,
+            key_cards=ordering,
+            key_representation_id=key_representation_id,
+            matcher_policy_id=policy_id,
+            prompt_policy_id=prompt_policy_id,
+            verifier_policy_id=verifier_policy_id,
+            decoding_params=decoding_params,
+            top_k=top_k,
+            audio_key_bindings=audio_key_bindings,
+            _trace_matcher_policy_id=trace_policy_id,
+        )
+        raw_responses.extend(decision.raw_responses)
+        return decision
+
+    def agent_step(
+        action_id: str, decision: SpeechNativeDecision
+    ) -> Mapping[str, object]:
+        return {
+            "action_id": action_id,
+            "key_id": decision.key_id,
+            "top_key_ids": list(decision.top_key_ids),
+            "calls": decision.calls,
+            "parse_failure": decision.parse_failure,
+        }
 
     if matcher_policy_id == "M4":
         orderings = (
             cards,
             tuple(reversed(cards)),
-            cards[1:] + cards[:1],
+            _rotate_key_cards(cards, 7),
         )
-        decisions = []
+        decisions: list[SpeechNativeDecision] = []
         for order_index, ordering in enumerate(orderings):
             decisions.append(
-                run_speech_native_matcher(
-                core_client=core_client,
-                sample=sample,
-                query_descriptor=query_descriptor,
-                key_cards=ordering,
-                    key_representation_id=key_representation_id,
-                    matcher_policy_id=ensemble_base_policy_id,
-                    prompt_policy_id=prompt_policy_id,
-                    verifier_policy_id=verifier_policy_id,
-                decoding_params=decoding_params,
-                top_k=top_k,
-                audio_key_bindings=audio_key_bindings,
-                _trace_matcher_policy_id=(
-                    f"M4:{ensemble_base_policy_id}:order-{order_index}"
-                ),
+                nested_decision(
+                    ensemble_base_policy_id,
+                    ordering,
+                    f"M4:{ensemble_base_policy_id}:order-{order_index}",
+                )
             )
-            )
-        for decision in decisions:
-            raw_responses.extend(decision.raw_responses)
-        votes = [decision.key_id for decision in decisions if decision.key_id is not None]
+        votes = [
+            decision.key_id for decision in decisions if decision.key_id is not None
+        ]
         if not votes:
             return finish(None)
         counts = {key_id: votes.count(key_id) for key_id in set(votes)}
-        winner = min(counts, key=lambda key_id: (-counts[key_id], key_id))
+        majority = next(
+            (key_id for key_id, count in counts.items() if count >= 2), None
+        )
+        winner = majority if majority is not None else decisions[0].key_id
         return finish(winner)
+
+    if matcher_policy_id == "M5":
+        agent_policy_id = "m1-m3-disagreement-escalation-v1"
+        primary = nested_decision("M1", cards, "M5:M1:canonical")
+        canonical = nested_decision("M3", cards, "M5:M3:canonical")
+        initial_votes = (primary.key_id, canonical.key_id)
+        initial_steps = (
+            agent_step("match:listwise-canonical", primary),
+            agent_step("retrieve-verify:canonical", canonical),
+        )
+        if primary.key_id is not None and primary.key_id == canonical.key_id:
+            return finish(
+                primary.key_id,
+                top_ids=canonical.top_key_ids,
+                scores=canonical.verifier_scores,
+                agent_policy_id=agent_policy_id,
+                agent_actions=(
+                    "match:listwise-canonical",
+                    "retrieve-verify:canonical",
+                    "stop:agree",
+                ),
+                agent_vote_key_ids=initial_votes,
+                agent_steps=initial_steps,
+            )
+
+        reverse = nested_decision("M3", tuple(reversed(cards)), "M5:M3:reverse")
+        rotate = nested_decision("M3", _rotate_key_cards(cards, 7), "M5:M3:rotate-7")
+        m3_votes = (canonical.key_id, reverse.key_id, rotate.key_id)
+        valid_m3_votes = [key_id for key_id in m3_votes if key_id is not None]
+        counts = {
+            key_id: valid_m3_votes.count(key_id) for key_id in set(valid_m3_votes)
+        }
+        majority = next(
+            (key_id for key_id, count in counts.items() if count >= 2), None
+        )
+        winner = majority if majority is not None else canonical.key_id
+        return finish(
+            winner,
+            top_ids=canonical.top_key_ids,
+            scores=canonical.verifier_scores,
+            agent_policy_id=agent_policy_id,
+            agent_actions=(
+                "match:listwise-canonical",
+                "retrieve-verify:canonical",
+                "escalate:disagreement",
+                "retrieve-verify:reverse",
+                "retrieve-verify:rotate-7",
+                "aggregate:m3-majority-canonical-tie",
+            ),
+            agent_escalated=True,
+            agent_vote_key_ids=(*initial_votes, reverse.key_id, rotate.key_id),
+            agent_steps=(
+                *initial_steps,
+                agent_step("retrieve-verify:reverse", reverse),
+                agent_step("retrieve-verify:rotate-7", rotate),
+            ),
+        )
 
     if matcher_policy_id == "M0":
         response = contact(
@@ -593,7 +709,9 @@ def run_speech_native_matcher(
         )
         document = _response_object(response)
         label = document.get("label") if document is not None else None
-        key_id = next((card.key_id for card in cards if card.value_label == label), None)
+        key_id = next(
+            (card.key_id for card in cards if card.value_label == label), None
+        )
         return finish(key_id)
 
     if matcher_policy_id == "M1":
@@ -671,10 +789,7 @@ def run_speech_native_matcher(
     top_ids = _selected_top_keys(retrieval, allowed, top_k)
     if not top_ids:
         return finish(None)
-    if (
-        prompt_policy_id == "speech-native-json-copy-v3"
-        and len(top_ids) != top_k
-    ):
+    if prompt_policy_id == "speech-native-json-copy-v3" and len(top_ids) != top_k:
         return finish(None, top_ids=top_ids)
     verifier_scores: dict[str, tuple[bool, float]] = {}
     for key_id in top_ids:
@@ -736,7 +851,11 @@ def run_speech_native_match_tasks(
     are recovered in registered input order. No failed task is retried.
     """
 
-    if isinstance(slot_count, bool) or not isinstance(slot_count, int) or slot_count <= 0:
+    if (
+        isinstance(slot_count, bool)
+        or not isinstance(slot_count, int)
+        or slot_count <= 0
+    ):
         raise PsluFlightError("slot_count must be a positive integer")
     if isinstance(queue_depth, bool) or not isinstance(queue_depth, int):
         raise PsluFlightError("queue_depth must be an integer")
@@ -926,7 +1045,10 @@ def build_speech_native_binding(
     if isinstance(seed, bool) or not isinstance(seed, int):
         raise PsluFlightError("speech-native binding seed must be an integer")
     counts = (opt_a_per_scenario, opt_b_per_scenario, gate_per_scenario)
-    if any(isinstance(count, bool) or not isinstance(count, int) or count <= 0 for count in counts):
+    if any(
+        isinstance(count, bool) or not isinstance(count, int) or count <= 0
+        for count in counts
+    ):
         raise PsluFlightError("speech-native query counts must be positive integers")
     if (
         isinstance(key_examples_per_scenario, bool)
@@ -942,7 +1064,9 @@ def build_speech_native_binding(
         raise PsluFlightError(
             f"speech-native scenarios lack canonical definitions: {sorted(unknown_definitions)}"
         )
-    by_scenario: dict[str, list[SlurpTrainMaterial]] = {scenario: [] for scenario in scenarios}
+    by_scenario: dict[str, list[SlurpTrainMaterial]] = {
+        scenario: [] for scenario in scenarios
+    }
     for entry in material:
         if entry.scenario in by_scenario:
             by_scenario[entry.scenario].append(entry)
@@ -1104,7 +1228,9 @@ def build_speech_native_binding(
 
     split_documents: dict[str, object] = {}
     for split_name, items in split_items.items():
-        ordered = sorted(items, key=lambda item: (item["value_label"], item["sample_id"]))
+        ordered = sorted(
+            items, key=lambda item: (item["value_label"], item["sample_id"])
+        )
         identity = {
             "schema": "saea-speech-native-split-v1",
             "name": split_name,
@@ -1244,13 +1370,18 @@ def load_pslu_rosters(path: Path) -> PsluRosters:
 
     document = json.loads(Path(path).read_text(encoding="utf-8"))
     if document.get("probe") != _PROBE_ID:
-        raise PsluFlightError(f"{path}: probe must be {_PROBE_ID!r}, got {document.get('probe')!r}")
+        raise PsluFlightError(
+            f"{path}: probe must be {_PROBE_ID!r}, got {document.get('probe')!r}"
+        )
     if document.get("legality_tier") != _LEGAL_TIER:
         raise PsluFlightError(
             f"{path}: legality_tier must be {_LEGAL_TIER!r}, got {document.get('legality_tier')!r}"
         )
     refused = document.get("train_synthetic_refused")
-    if not isinstance(refused, Mapping) or refused.get("train_jsonl_overlap_with_devel") != 0:
+    if (
+        not isinstance(refused, Mapping)
+        or refused.get("train_jsonl_overlap_with_devel") != 0
+    ):
         raise PsluFlightError(
             f"{path}: train_synthetic_refused.train_jsonl_overlap_with_devel must be 0"
         )
@@ -1264,7 +1395,9 @@ def load_pslu_rosters(path: Path) -> PsluRosters:
         full_roster = tuple(
             (str(t), str(v)) for t, v in arms["A3_full_ontology_dose_capped"]["roster"]
         )
-        derangement = {str(k): str(v) for k, v in arms["A4_deranged"]["mapping"].items()}
+        derangement = {
+            str(k): str(v) for k, v in arms["A4_deranged"]["mapping"].items()
+        }
     except (KeyError, TypeError, ValueError) as error:
         raise PsluFlightError(f"{path}: malformed roster table: {error}") from error
     if not scenario_rosters or not global_types or not full_roster or not derangement:
@@ -1293,7 +1426,9 @@ class PsluSampleManifest:
 def load_pslu_sample_manifest(path: Path) -> PsluSampleManifest:
     document = json.loads(Path(path).read_text(encoding="utf-8"))
     if document.get("probe") != _PROBE_ID:
-        raise PsluFlightError(f"{path}: probe must be {_PROBE_ID!r}, got {document.get('probe')!r}")
+        raise PsluFlightError(
+            f"{path}: probe must be {_PROBE_ID!r}, got {document.get('probe')!r}"
+        )
     items = document.get("items")
     if not isinstance(items, list) or not items:
         raise PsluFlightError(f"{path}: no items")
@@ -1309,7 +1444,9 @@ def load_pslu_sample_manifest(path: Path) -> PsluSampleManifest:
         raise PsluFlightError(f"{path}: seed must be an integer")
     if len(set(sample_ids)) != len(sample_ids):
         raise PsluFlightError(f"{path}: duplicate sample_id in items")
-    return PsluSampleManifest(sample_ids=sample_ids, split_identity_hash=split_identity_hash, seed=seed)
+    return PsluSampleManifest(
+        sample_ids=sample_ids, split_identity_hash=split_identity_hash, seed=seed
+    )
 
 
 def select_pslu_samples(
@@ -1356,7 +1493,10 @@ def _roster_packet(arm: str, entries: Sequence[tuple[str, str]]) -> SupplyPacket
 
 def _type_vocabulary_packet(arm: str, types: Sequence[str]) -> SupplyPacket:
     prompt_block = render_type_vocabulary(types)
-    items = tuple(SupplyItem(item_id=f"{arm}-{index:03d}", text=t) for index, t in enumerate(types))
+    items = tuple(
+        SupplyItem(item_id=f"{arm}-{index:03d}", text=t)
+        for index, t in enumerate(types)
+    )
     return SupplyPacket(
         form=SupplyForm.ROSTER,
         dose=SupplyDose(n_items=len(types), token_count=len(prompt_block.split())),
@@ -1384,7 +1524,9 @@ def pslu_supply_packet(
             raise PsluFlightError(f"no A1 roster for scenario {scenario!r}")
         return _roster_packet(arm, entries)
     if arm == "A1p":
-        entries = rosters.scenario_rosters.get(scenario) if scenario is not None else None
+        entries = (
+            rosters.scenario_rosters.get(scenario) if scenario is not None else None
+        )
         if entries is None:
             # Module docstring: an unparsed/unknown phase-1 prediction falls
             # back to the scenario-agnostic A2 roster -- NEVER to gold.
@@ -1396,13 +1538,19 @@ def pslu_supply_packet(
         return _roster_packet(arm, rosters.full_roster)
     if arm == "A4":
         if scenario is None:
-            raise PsluFlightError("A4 requires the sample's own gold scenario for its derangement key")
+            raise PsluFlightError(
+                "A4 requires the sample's own gold scenario for its derangement key"
+            )
         deranged_scenario = rosters.derangement.get(scenario)
         if deranged_scenario is None:
-            raise PsluFlightError(f"no A4 derangement mapping for scenario {scenario!r}")
+            raise PsluFlightError(
+                f"no A4 derangement mapping for scenario {scenario!r}"
+            )
         entries = rosters.scenario_rosters.get(deranged_scenario)
         if entries is None:
-            raise PsluFlightError(f"no A1 roster for deranged scenario {deranged_scenario!r}")
+            raise PsluFlightError(
+                f"no A1 roster for deranged scenario {deranged_scenario!r}"
+            )
         return _roster_packet(arm, entries)
     raise PsluFlightError(f"unknown P-SLU arm {arm!r}; known arms are {PSLU_ARMS}")
 
@@ -1496,10 +1644,12 @@ def run_pslu_flight(
     for sample in samples:
         messages = adapter.assemble_prompt(sample, None)
         response_text = core_client.complete(messages, decoding_params=decoding_params)
-        predicted_scenario, _predicted_action, _predicted_entities, parsed = parse_slu_response(
-            response_text
+        predicted_scenario, _predicted_action, _predicted_entities, parsed = (
+            parse_slu_response(response_text)
         )
-        predicted_scenario_by_sample_id[sample.sample_id] = predicted_scenario if parsed else None
+        predicted_scenario_by_sample_id[sample.sample_id] = (
+            predicted_scenario if parsed else None
+        )
         metrics = adapter.score(sample, response_text)
         consumption = adapter.extract_consumption(sample, None, response_text)
         results.append(
@@ -1524,7 +1674,9 @@ def run_pslu_flight(
             )
             supply = pslu_supply_packet(arm, scenario=scenario, rosters=rosters)
             messages = adapter.assemble_prompt(sample, supply)
-            response_text = core_client.complete(messages, decoding_params=decoding_params)
+            response_text = core_client.complete(
+                messages, decoding_params=decoding_params
+            )
             metrics = adapter.score(sample, response_text)
             consumption = adapter.extract_consumption(sample, supply, response_text)
             results.append(
@@ -1538,9 +1690,13 @@ def run_pslu_flight(
                 )
             )
             if arm == "A1p":
-                silence_media_relpath = silence_swap_media_relpaths.get(sample.sample_id)
+                silence_media_relpath = silence_swap_media_relpaths.get(
+                    sample.sample_id
+                )
                 if silence_media_relpath is not None:
-                    silence_messages = _swap_audio_media_relpath(messages, silence_media_relpath)
+                    silence_messages = _swap_audio_media_relpath(
+                        messages, silence_media_relpath
+                    )
                     silence_response_text = core_client.complete(
                         silence_messages, decoding_params=decoding_params
                     )
@@ -1561,7 +1717,8 @@ def run_pslu_flight(
                     )
 
     return PsluFlightSummary(
-        results=tuple(results), predicted_scenario_by_sample_id=predicted_scenario_by_sample_id
+        results=tuple(results),
+        predicted_scenario_by_sample_id=predicted_scenario_by_sample_id,
     )
 
 

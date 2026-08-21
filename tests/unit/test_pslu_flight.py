@@ -52,7 +52,9 @@ from speech_aware_evidence_acquisition.rails.probes.pslu_flight import (
     SpeechNativeMatchTask,
     run_speech_native_match_tasks,
 )
-from speech_aware_evidence_acquisition.rails.silence_swap import build_silence_swap_slice
+from speech_aware_evidence_acquisition.rails.silence_swap import (
+    build_silence_swap_slice,
+)
 
 _ROSTERS = PsluRosters(
     scenario_rosters={
@@ -96,7 +98,11 @@ class _SpeechSample:
     sample_id = "slurp:train:000001:audio-1"
 
 
-_QUERY_DESCRIPTOR = {"packet_id": "slurp/train/query", "sha256": "a" * 64, "role": "query"}
+_QUERY_DESCRIPTOR = {
+    "packet_id": "slurp/train/query",
+    "sha256": "a" * 64,
+    "role": "query",
+}
 
 
 def _assert_every_call_carries_query(client):
@@ -287,6 +293,154 @@ def test_m4_trace_policy_preserves_ensemble_and_order_identity():
     _assert_every_call_carries_query(client)
 
 
+def test_m4_uses_rotate_seven_and_falls_back_to_the_canonical_vote_on_a_tie():
+    cards = tuple(
+        KeyCardV1(
+            key_id=f"K{index:03d}",
+            definition=f"Definition {index}",
+            positive_examples=(f"Example {index}",),
+            contrastive_boundary=None,
+            value_label=f"label-{index}",
+        ).validate()
+        for index in range(1, 19)
+    )
+    client = _SpeechFeatureClient(
+        ['{"key_id":"K003"}', '{"key_id":"K002"}', '{"key_id":"K001"}']
+    )
+    result = run_speech_native_matcher(
+        core_client=client,
+        sample=_SpeechSample(),
+        query_descriptor=_QUERY_DESCRIPTOR,
+        key_cards=cards,
+        key_representation_id="K1",
+        matcher_policy_id="M4",
+        ensemble_base_policy_id="M1",
+    )
+
+    assert result.key_id == "K003"
+    rotate_text = client.calls[2][0][1]["content"][0]["text"]
+    assert rotate_text.startswith("K008\n")
+    _assert_every_call_carries_query(client)
+
+
+def test_m5_stops_when_listwise_and_canonical_retrieve_verify_agree():
+    client = _SpeechFeatureClient(
+        [
+            '{"key_id":"K001"}',
+            '{"key_ids":["K001","K002"]}',
+            '{"compatible":true,"confidence":90}',
+            '{"compatible":false,"confidence":10}',
+        ]
+    )
+    result = run_speech_native_matcher(
+        core_client=client,
+        sample=_SpeechSample(),
+        query_descriptor=_QUERY_DESCRIPTOR,
+        key_cards=_KEY_CARDS,
+        key_representation_id="K1",
+        matcher_policy_id="M5",
+        prompt_policy_id="speech-native-json-copy-v3",
+        top_k=2,
+    )
+
+    assert result.key_id == "K001"
+    assert result.calls == 4
+    assert result.agent_policy_id == "m1-m3-disagreement-escalation-v1"
+    assert result.agent_actions == (
+        "match:listwise-canonical",
+        "retrieve-verify:canonical",
+        "stop:agree",
+    )
+    assert result.agent_escalated is False
+    assert result.agent_vote_key_ids == ("K001", "K001")
+    assert all(
+        ":reverse:" not in kwargs["matcher_policy_id"] for _, kwargs in client.calls
+    )
+    _assert_every_call_carries_query(client)
+
+
+def test_m5_escalates_disagreement_and_uses_m3_majority():
+    client = _SpeechFeatureClient(
+        [
+            '{"key_id":"K001"}',
+            '{"key_ids":["K002","K001"]}',
+            '{"compatible":true,"confidence":90}',
+            '{"compatible":false,"confidence":10}',
+            '{"key_ids":["K002","K001"]}',
+            '{"compatible":true,"confidence":90}',
+            '{"compatible":false,"confidence":10}',
+            '{"key_ids":["K001","K002"]}',
+            '{"compatible":true,"confidence":90}',
+            '{"compatible":false,"confidence":10}',
+        ]
+    )
+    result = run_speech_native_matcher(
+        core_client=client,
+        sample=_SpeechSample(),
+        query_descriptor=_QUERY_DESCRIPTOR,
+        key_cards=_KEY_CARDS,
+        key_representation_id="K1",
+        matcher_policy_id="M5",
+        prompt_policy_id="speech-native-json-copy-v3",
+        top_k=2,
+    )
+
+    assert result.key_id == "K002"
+    assert result.calls == 10
+    assert result.agent_escalated is True
+    assert result.agent_vote_key_ids == ("K001", "K002", "K002", "K001")
+    assert result.agent_actions == (
+        "match:listwise-canonical",
+        "retrieve-verify:canonical",
+        "escalate:disagreement",
+        "retrieve-verify:reverse",
+        "retrieve-verify:rotate-7",
+        "aggregate:m3-majority-canonical-tie",
+    )
+    _assert_every_call_carries_query(client)
+
+
+def test_m5_three_way_m3_tie_falls_back_to_canonical_m3_decision():
+    cards = (
+        *_KEY_CARDS,
+        KeyCardV1(
+            key_id="K003",
+            definition="Commands about calendar events.",
+            positive_examples=("add a meeting",),
+            contrastive_boundary="Do not use for alarms.",
+            value_label="calendar",
+        ).validate(),
+    )
+    responses = ['{"key_id":"K001"}']
+    for winner, others in (
+        ("K002", ("K001",)),
+        ("K003", ("K002",)),
+        ("K001", ("K003",)),
+    ):
+        responses.extend(
+            [
+                json.dumps({"key_ids": [winner, *others]}),
+                '{"compatible":true,"confidence":90}',
+                '{"compatible":false,"confidence":10}',
+            ]
+        )
+    client = _SpeechFeatureClient(responses)
+    result = run_speech_native_matcher(
+        core_client=client,
+        sample=_SpeechSample(),
+        query_descriptor=_QUERY_DESCRIPTOR,
+        key_cards=cards,
+        key_representation_id="K1",
+        matcher_policy_id="M5",
+        prompt_policy_id="speech-native-json-copy-v3",
+        top_k=2,
+    )
+
+    assert result.key_id == "K002"
+    assert result.agent_vote_key_ids == ("K001", "K002", "K003", "K001")
+    _assert_every_call_carries_query(client)
+
+
 def test_audio_key_mode_carries_ordered_key_packets_without_key_body_text():
     client = _SpeechFeatureClient(['{"key_id":"K001"}'])
     audio_keys = {
@@ -303,7 +457,11 @@ def test_audio_key_mode_carries_ordered_key_packets_without_key_body_text():
         audio_key_bindings=audio_keys,
     )
     parts = client.calls[0][0][1]["content"]
-    key_parts = [part["speech_features"] for part in parts if part.get("type") == "input_speech_features"][1:]
+    key_parts = [
+        part["speech_features"]
+        for part in parts
+        if part.get("type") == "input_speech_features"
+    ][1:]
     assert [part["packet_id"] for part in key_parts] == [
         "slurp/train/key-1",
         "slurp/train/key-2",
@@ -446,14 +604,14 @@ def test_speech_native_contact_dispatch_queues_each_multistep_call_independently
         dispatch_granularity="contact",
     )
     assert client.max_active == 2
-    assert all(
-        stage.endswith(":intent-factors") for stage in client.stages[:4]
-    )
+    assert all(stage.endswith(":intent-factors") for stage in client.stages[:4])
     assert all(outcome.slot_id == -1 for outcome in outcomes)
 
 
 def test_speech_native_match_tasks_reject_queue_smaller_than_slot_pool():
-    with pytest.raises(PsluFlightError, match="queue_depth must be at least slot_count"):
+    with pytest.raises(
+        PsluFlightError, match="queue_depth must be at least slot_count"
+    ):
         run_speech_native_match_tasks(
             core_client=object(),
             tasks=(),
@@ -632,11 +790,15 @@ def test_audio_key_bindings_resolve_frozen_key_sources_from_packet_index():
 
 
 def test_model_free_prediction_read_verifies_and_selects_the_better_cell(tmp_path):
-    binding_path = REPO_ROOT / "configs/probes/g0-binding/speech-native-train-binding.json"
+    binding_path = (
+        REPO_ROOT / "configs/probes/g0-binding/speech-native-train-binding.json"
+    )
     binding_sha256 = hashlib.sha256(binding_path.read_bytes()).hexdigest()
     binding = json.loads(binding_path.read_text(encoding="utf-8"))
     items = binding["splits"]["OPT-A36"]["items"]
-    key_by_label = {card["value_label"]: card["key_id"] for card in binding["key_cards"]}
+    key_by_label = {
+        card["value_label"]: card["key_id"] for card in binding["key_cards"]
+    }
 
     def write_cell(cell_id, *, make_first_wrong, top_k=3):
         key_representation_id, matcher_policy_id = cell_id.split("-")
@@ -646,9 +808,15 @@ def test_model_free_prediction_read_verifies_and_selects_the_better_cell(tmp_pat
         for index, item in enumerate(items):
             key_id = key_by_label[item["value_label"]]
             if index == 0 and make_first_wrong:
-                key_id = next(candidate for candidate in key_by_label.values() if candidate != key_id)
+                key_id = next(
+                    candidate
+                    for candidate in key_by_label.values()
+                    if candidate != key_id
+                )
             predicted = next(
-                card["value_label"] for card in binding["key_cards"] if card["key_id"] == key_id
+                card["value_label"]
+                for card in binding["key_cards"]
+                if card["key_id"] == key_id
             )
             rows.append(
                 {
@@ -697,7 +865,9 @@ def test_model_free_prediction_read_verifies_and_selects_the_better_cell(tmp_pat
         split_name="OPT-A36",
     )
     assert report["selected_cell_id"] == "K2-M1"
-    candidate = next(item for item in report["aggregates"] if item["cell_id"] == "K2-M1")
+    candidate = next(
+        item for item in report["aggregates"] if item["cell_id"] == "K2-M1"
+    )
     assert candidate["correct"] == 36
     assert candidate["wrong_to_correct_vs_baseline"] == 1
     assert candidate["correct_to_wrong_vs_baseline"] == 0
@@ -712,11 +882,15 @@ def test_model_free_prediction_read_verifies_and_selects_the_better_cell(tmp_pat
 
 
 def test_model_free_prediction_read_distinguishes_m3_top_k_cells(tmp_path):
-    binding_path = REPO_ROOT / "configs/probes/g0-binding/speech-native-train-binding.json"
+    binding_path = (
+        REPO_ROOT / "configs/probes/g0-binding/speech-native-train-binding.json"
+    )
     binding_sha256 = hashlib.sha256(binding_path.read_bytes()).hexdigest()
     binding = json.loads(binding_path.read_text(encoding="utf-8"))
     items = binding["splits"]["OPT-A36"]["items"]
-    key_by_label = {card["value_label"]: card["key_id"] for card in binding["key_cards"]}
+    key_by_label = {
+        card["value_label"]: card["key_id"] for card in binding["key_cards"]
+    }
 
     def write_cell(
         top_k,
@@ -852,11 +1026,15 @@ def test_model_free_prediction_read_distinguishes_m3_top_k_cells(tmp_path):
 
 
 def test_model_free_read_replays_disagreement_escalation_frontier(tmp_path):
-    binding_path = REPO_ROOT / "configs/probes/g0-binding/speech-native-train-binding.json"
+    binding_path = (
+        REPO_ROOT / "configs/probes/g0-binding/speech-native-train-binding.json"
+    )
     binding_sha256 = hashlib.sha256(binding_path.read_bytes()).hexdigest()
     binding = json.loads(binding_path.read_text(encoding="utf-8"))
     items = binding["splits"]["OPT-A36"]["items"]
-    key_by_label = {card["value_label"]: card["key_id"] for card in binding["key_cards"]}
+    key_by_label = {
+        card["value_label"]: card["key_id"] for card in binding["key_cards"]
+    }
     labels = tuple(key_by_label)
 
     def write_cell(matcher_policy_id, *, order_id="canonical", wrong_offset=None):
@@ -869,7 +1047,9 @@ def test_model_free_read_replays_disagreement_escalation_frontier(tmp_path):
             if index == 0 and matcher_policy_id == "M3" and order_id == "rotate-7":
                 calls += 1
             if index == 0 and wrong_offset is not None:
-                predicted = labels[(labels.index(predicted) + wrong_offset) % len(labels)]
+                predicted = labels[
+                    (labels.index(predicted) + wrong_offset) % len(labels)
+                ]
             key_id = key_by_label[predicted]
             gold_key_id = key_by_label[item["value_label"]]
             rows.append(
@@ -967,6 +1147,157 @@ def test_model_free_read_replays_disagreement_escalation_frontier(tmp_path):
     ]
 
 
+def test_model_free_read_reports_agent_loop_optimization_signals(tmp_path):
+    binding_path = (
+        REPO_ROOT / "configs/probes/g0-binding/speech-native-train-binding.json"
+    )
+    binding_sha256 = hashlib.sha256(binding_path.read_bytes()).hexdigest()
+    binding = json.loads(binding_path.read_text(encoding="utf-8"))
+    items = binding["splits"]["OPT-A36"]["items"]
+    key_by_label = {
+        card["value_label"]: card["key_id"] for card in binding["key_cards"]
+    }
+    labels = tuple(key_by_label)
+    attempt_dir = tmp_path / "m5"
+    attempt_dir.mkdir()
+    rows = []
+    for index, item in enumerate(items):
+        gold_label = item["value_label"]
+        gold_key = key_by_label[gold_label]
+        wrong_label = labels[(labels.index(gold_label) + 1) % len(labels)]
+        wrong_key = key_by_label[wrong_label]
+        if index == 0:
+            votes = [wrong_key, gold_key, gold_key, wrong_key]
+            final_key = gold_key
+            escalated = True
+        elif index == 1:
+            votes = [wrong_key, wrong_key]
+            final_key = wrong_key
+            escalated = False
+        elif index == 2:
+            votes = [gold_key, wrong_key, wrong_key, wrong_key]
+            final_key = wrong_key
+            escalated = True
+        else:
+            votes = [gold_key, gold_key]
+            final_key = gold_key
+            escalated = False
+        step_actions = [
+            "match:listwise-canonical",
+            "retrieve-verify:canonical",
+            *(
+                ["retrieve-verify:reverse", "retrieve-verify:rotate-7"]
+                if escalated
+                else []
+            ),
+        ]
+        agent_actions = [
+            "match:listwise-canonical",
+            "retrieve-verify:canonical",
+            *(
+                [
+                    "escalate:disagreement",
+                    "retrieve-verify:reverse",
+                    "retrieve-verify:rotate-7",
+                    "aggregate:m3-majority-canonical-tie",
+                ]
+                if escalated
+                else ["stop:agree"]
+            ),
+        ]
+        rows.append(
+            {
+                "schema": "saea-speech-native-decision-v1",
+                "sample_id": item["sample_id"],
+                "key_id": final_key,
+                "predicted_value_label": (
+                    gold_label if final_key == gold_key else wrong_label
+                ),
+                "top_key_ids": [votes[1]],
+                "calls": 10 if escalated else 4,
+                "parse_failure": False,
+                "agent_policy_id": "m1-m3-disagreement-escalation-v1",
+                "agent_actions": agent_actions,
+                "agent_escalated": escalated,
+                "agent_vote_key_ids": votes,
+                "agent_steps": [
+                    {
+                        "action_id": action_id,
+                        "key_id": vote,
+                        "top_key_ids": [] if step_index == 0 else [vote],
+                        "calls": 1 if step_index == 0 else 3,
+                        "parse_failure": False,
+                    }
+                    for step_index, (action_id, vote) in enumerate(
+                        zip(step_actions, votes, strict=True)
+                    )
+                ],
+            }
+        )
+    decisions = attempt_dir / "decisions.jsonl"
+    decisions.write_text(
+        "".join(json.dumps(row, sort_keys=True) + "\n" for row in rows),
+        encoding="utf-8",
+    )
+    (attempt_dir / "flight-receipt.json").write_text(
+        json.dumps(
+            {
+                "status": "COMPLETED",
+                "request_failures": [],
+                "split_identity_hash": "a" * 64,
+                "run_id": "run-m5",
+                "profile": {
+                    "key_representation_id": "K1",
+                    "matcher_policy_id": "M5",
+                    "matcher_prompt_policy_id": "speech-native-json-copy-v3",
+                    "matcher_verifier_policy_id": "speech-native-compatibility-v1",
+                    "mechanism_control_id": "matched",
+                    "key_order_ids": ["canonical"],
+                    "top_k": 3,
+                    "actual_contact_count": sum(row["calls"] for row in rows),
+                },
+                "decisions": {
+                    "path": decisions.name,
+                    "sha256": hashlib.sha256(decisions.read_bytes()).hexdigest(),
+                    "count": len(rows),
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    report = read_speech_native_predictions(
+        attempt_dirs=(attempt_dir,),
+        binding_path=binding_path,
+        binding_sha256=binding_sha256,
+        split_name="OPT-A36",
+    )
+    aggregate = report["aggregates"][0]
+    assert aggregate["cell_id"] == "K1-M5-k3-v3"
+    assert aggregate["correct"] == 34
+    assert aggregate["agent_loop_metrics"] == {
+        "policy_id": "m1-m3-disagreement-escalation-v1",
+        "stop_count": 34,
+        "escalation_count": 2,
+        "escalation_rate": 2 / 36,
+        "helpful_escalation_count": 1,
+        "harmful_escalation_count": 1,
+        "neutral_escalation_count": 0,
+        "recoverable_error_count": 1,
+        "missed_stop_error_count": 1,
+        "action_sensitive_escalation_count": 1,
+        "action_counts": {
+            "aggregate:m3-majority-canonical-tie": 2,
+            "escalate:disagreement": 2,
+            "match:listwise-canonical": 36,
+            "retrieve-verify:canonical": 36,
+            "retrieve-verify:reverse": 2,
+            "retrieve-verify:rotate-7": 2,
+            "stop:agree": 34,
+        },
+    }
+
+
 def _binding_material():
     material = []
     for scenario_index, scenario in enumerate(("alarm", "email")):
@@ -1015,10 +1346,7 @@ def test_speech_native_binding_is_stratified_and_query_key_isolated():
         item["sample_id"] for item in binding["splits"]["OPT-A36"]["items"]
     ]
     assert engineering_gate["split_identity_hash"] == _binding_document_sha256(
-        {
-            key: engineering_gate[key]
-            for key in ("schema", "name", "seed", "sample_ids")
-        }
+        {key: engineering_gate[key] for key in ("schema", "name", "seed", "sample_ids")}
     )
     assert len(binding["key_cards"]) == 2
     query_items = [
@@ -1041,7 +1369,9 @@ def test_speech_native_binding_is_stratified_and_query_key_isolated():
 def _binding_document_sha256(document):
     import hashlib
 
-    raw = json.dumps(document, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    raw = json.dumps(
+        document, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+    )
     return hashlib.sha256(raw.encode("utf-8")).hexdigest()
 
 
@@ -1149,14 +1479,18 @@ def test_engineering_gate_loader_validates_media_in_parallel_without_gold(tmp_pa
 def test_engineering_loader_accepts_generalized_runtime_view_for_named_split(tmp_path):
     path = _write_engineering_gate_view(tmp_path)
     document = json.loads(path.read_text(encoding="utf-8"))
-    unsigned = {key: value for key, value in document.items() if key != "runtime_view_sha256"}
+    unsigned = {
+        key: value for key, value in document.items() if key != "runtime_view_sha256"
+    }
     unsigned["schema"] = "saea-speech-native-runtime-view-v1"
     unsigned["split_name"] = "OPT-A36"
     canonical = json.dumps(
         unsigned, ensure_ascii=False, sort_keys=True, separators=(",", ":")
     ).encode("utf-8")
     path.write_text(
-        json.dumps({**unsigned, "runtime_view_sha256": hashlib.sha256(canonical).hexdigest()}),
+        json.dumps(
+            {**unsigned, "runtime_view_sha256": hashlib.sha256(canonical).hexdigest()}
+        ),
         encoding="utf-8",
     )
 
@@ -1229,7 +1563,9 @@ def _write_roster_table(path: Path, **overrides) -> None:
             "A2_global_type_vocabulary": {
                 "types": ["house_place", "device_type", "email_folder", "time"]
             },
-            "A3_full_ontology_dose_capped": {"roster": [["house_place", "kitchen"], ["time", "six"]]},
+            "A3_full_ontology_dose_capped": {
+                "roster": [["house_place", "kitchen"], ["time", "six"]]
+            },
             "A4_deranged": {"mapping": {"iot": "email", "email": "iot"}},
         },
     }
@@ -1241,8 +1577,16 @@ def test_load_pslu_rosters_happy_path(tmp_path):
     path = tmp_path / "rosters.json"
     _write_roster_table(path)
     rosters = load_pslu_rosters(path)
-    assert rosters.scenario_rosters["iot"] == (("house_place", "kitchen"), ("device_type", "light"))
-    assert rosters.global_types == ("house_place", "device_type", "email_folder", "time")
+    assert rosters.scenario_rosters["iot"] == (
+        ("house_place", "kitchen"),
+        ("device_type", "light"),
+    )
+    assert rosters.global_types == (
+        "house_place",
+        "device_type",
+        "email_folder",
+        "time",
+    )
     assert rosters.full_roster == (("house_place", "kitchen"), ("time", "six"))
     assert rosters.derangement == {"iot": "email", "email": "iot"}
 
@@ -1263,7 +1607,9 @@ def test_load_pslu_rosters_rejects_non_legal_tier(tmp_path):
 
 def test_load_pslu_rosters_rejects_nonzero_devel_overlap(tmp_path):
     path = tmp_path / "rosters.json"
-    _write_roster_table(path, train_synthetic_refused={"train_jsonl_overlap_with_devel": 5})
+    _write_roster_table(
+        path, train_synthetic_refused={"train_jsonl_overlap_with_devel": 5}
+    )
     with pytest.raises(PsluFlightError, match="overlap_with_devel"):
         load_pslu_rosters(path)
 
@@ -1274,7 +1620,10 @@ def test_load_pslu_rosters_against_the_real_binding_table():
 
     path = (
         Path(__file__).resolve().parents[2]
-        / "configs" / "probes" / "g0-binding" / "pslu-rosters-train-only.json"
+        / "configs"
+        / "probes"
+        / "g0-binding"
+        / "pslu-rosters-train-only.json"
     )
     rosters = load_pslu_rosters(path)
     assert "iot" in rosters.scenario_rosters
@@ -1306,7 +1655,10 @@ def test_load_pslu_sample_manifest_happy_path(tmp_path):
     path = tmp_path / "manifest.json"
     _write_sample_manifest(path)
     manifest = load_pslu_sample_manifest(path)
-    assert manifest.sample_ids == ("slurp:devel:000102:audio-102", "slurp:devel:000101:audio-101")
+    assert manifest.sample_ids == (
+        "slurp:devel:000102:audio-102",
+        "slurp:devel:000101:audio-101",
+    )
     assert manifest.seed == 20260807
     assert manifest.split_identity_hash == "a" * 64
 
@@ -1324,7 +1676,10 @@ def test_load_pslu_sample_manifest_rejects_duplicate_ids(tmp_path):
 def test_load_pslu_sample_manifest_against_the_real_binding_table():
     path = (
         Path(__file__).resolve().parents[2]
-        / "configs" / "probes" / "g0-binding" / "pslu-sample-devel-n60.json"
+        / "configs"
+        / "probes"
+        / "g0-binding"
+        / "pslu-sample-devel-n60.json"
     )
     manifest = load_pslu_sample_manifest(path)
     assert len(manifest.sample_ids) == 60
@@ -1336,7 +1691,9 @@ def test_load_pslu_sample_manifest_against_the_real_binding_table():
 
 def test_select_pslu_samples_filters_and_reorders(slurp_world):
     adapter = _adapter(slurp_world)
-    all_devel = adapter.load_split("devel")  # sorted by sample_id: 101, 101-headset, 102
+    all_devel = adapter.load_split(
+        "devel"
+    )  # sorted by sample_id: 101, 101-headset, 102
     manifest = PsluSampleManifest(
         sample_ids=("slurp:devel:000102:audio-102", "slurp:devel:000101:audio-101"),
         split_identity_hash="a" * 64,
@@ -1349,7 +1706,9 @@ def test_select_pslu_samples_filters_and_reorders(slurp_world):
 def test_select_pslu_samples_raises_on_a_missing_id(slurp_world):
     adapter = _adapter(slurp_world)
     all_devel = adapter.load_split("devel")
-    manifest = PsluSampleManifest(sample_ids=("bogus-id",), split_identity_hash="a" * 64, seed=1)
+    manifest = PsluSampleManifest(
+        sample_ids=("bogus-id",), split_identity_hash="a" * 64, seed=1
+    )
     with pytest.raises(PsluFlightError, match="not present in the loaded split"):
         select_pslu_samples(all_devel, manifest)
 
@@ -1406,7 +1765,9 @@ def test_a3_is_the_full_dose_capped_roster():
 
 def test_a4_uses_the_deranged_partners_roster():
     packet = pslu_supply_packet("A4", scenario="iot", rosters=_ROSTERS)
-    assert packet.prompt_block == "email_folder=inbox"  # iot's deranged partner is email
+    assert (
+        packet.prompt_block == "email_folder=inbox"
+    )  # iot's deranged partner is email
 
 
 def test_a4_without_a_scenario_raises():
@@ -1467,7 +1828,9 @@ def _flight_world(slurp_world):
 def _responder(s_iot):
     def responder(messages):
         content = messages[1]["content"]
-        is_phase1 = len(content) == 1  # A0 sends audio only, every other arm prepends text
+        is_phase1 = (
+            len(content) == 1
+        )  # A0 sends audio only, every other arm prepends text
         if is_phase1:
             # Deliberately WRONG for s_iot (gold "iot") -- proves A1' reads
             # the phase-1 prediction, never the gold scenario.
@@ -1481,12 +1844,23 @@ def test_run_pslu_flight_produces_a0_then_five_phase2_arms_per_sample(slurp_worl
     adapter, s_iot, s_email = _flight_world(slurp_world)
     client = MockCoreClient(responder=_responder(s_iot))
 
-    summary = run_pslu_flight(adapter=adapter, core_client=client, samples=[s_iot, s_email], rosters=_ROSTERS)
+    summary = run_pslu_flight(
+        adapter=adapter, core_client=client, samples=[s_iot, s_email], rosters=_ROSTERS
+    )
 
     assert [r.arm for r in summary.results] == [
-        "A0", "A0",
-        "A1", "A1p", "A2", "A3", "A4",
-        "A1", "A1p", "A2", "A3", "A4",
+        "A0",
+        "A0",
+        "A1",
+        "A1p",
+        "A2",
+        "A3",
+        "A4",
+        "A1",
+        "A1p",
+        "A2",
+        "A3",
+        "A4",
     ]
     assert len(client.calls) == 12
     assert set(PSLU_ARMS) == {"A0", "A1", "A1p", "A2", "A3", "A4"}
@@ -1496,26 +1870,40 @@ def test_run_pslu_flight_a1_prime_reads_the_phase1_prediction_not_gold(slurp_wor
     adapter, s_iot, s_email = _flight_world(slurp_world)
     client = MockCoreClient(responder=_responder(s_iot))
 
-    summary = run_pslu_flight(adapter=adapter, core_client=client, samples=[s_iot, s_email], rosters=_ROSTERS)
+    summary = run_pslu_flight(
+        adapter=adapter, core_client=client, samples=[s_iot, s_email], rosters=_ROSTERS
+    )
 
-    assert summary.predicted_scenario_by_sample_id[s_iot.sample_id] == "email"  # wrong, as scripted
-    assert summary.predicted_scenario_by_sample_id[s_email.sample_id] == "email"  # right
+    assert (
+        summary.predicted_scenario_by_sample_id[s_iot.sample_id] == "email"
+    )  # wrong, as scripted
+    assert (
+        summary.predicted_scenario_by_sample_id[s_email.sample_id] == "email"
+    )  # right
 
-    a1_iot = next(r for r in summary.results if r.arm == "A1" and r.sample_id == s_iot.sample_id)
+    a1_iot = next(
+        r for r in summary.results if r.arm == "A1" and r.sample_id == s_iot.sample_id
+    )
     a1p_iot = next(
-        r for r in summary.results if r.arm == "A1p" and r.sample_id == s_iot.sample_id and not r.silence_swapped
+        r
+        for r in summary.results
+        if r.arm == "A1p" and r.sample_id == s_iot.sample_id and not r.silence_swapped
     )
     a1_text = a1_iot.messages[1]["content"][0]["text"]
     a1p_text = a1p_iot.messages[1]["content"][0]["text"]
     assert a1_text == "house_place=kitchen; device_type=light"  # A1: gold "iot" roster
-    assert a1p_text == "email_folder=inbox"  # A1': predicted "email" roster -- differs from A1
+    assert (
+        a1p_text == "email_folder=inbox"
+    )  # A1': predicted "email" roster -- differs from A1
     assert a1_text != a1p_text
 
 
 def test_run_pslu_flight_phase1_row_carries_whether_it_parsed(slurp_world):
     adapter, s_iot, s_email = _flight_world(slurp_world)
     client = MockCoreClient(responder=_responder(s_iot))
-    summary = run_pslu_flight(adapter=adapter, core_client=client, samples=[s_iot, s_email], rosters=_ROSTERS)
+    summary = run_pslu_flight(
+        adapter=adapter, core_client=client, samples=[s_iot, s_email], rosters=_ROSTERS
+    )
     a0_rows = [r for r in summary.results if r.arm == "A0"]
     assert all(row.phase1_scenario_parsed is True for row in a0_rows)
     phase2_rows = [r for r in summary.results if r.arm != "A0"]
@@ -1566,11 +1954,14 @@ def test_run_pslu_flight_silence_swap_adds_one_extra_a1p_row(slurp_world):
     assert swapped[0].arm == "A1p"
     assert swapped[0].sample_id == s_iot.sample_id
     assert swapped[0].messages[1]["content"][-1] == {
-        "type": "input_audio", "media_relpath": silence_relpath,
+        "type": "input_audio",
+        "media_relpath": silence_relpath,
     }
     # The roster text is UNCHANGED by the swap -- only the audio changes.
     normal_a1p = next(
-        r for r in summary.results if r.arm == "A1p" and r.sample_id == s_iot.sample_id and not r.silence_swapped
+        r
+        for r in summary.results
+        if r.arm == "A1p" and r.sample_id == s_iot.sample_id and not r.silence_swapped
     )
     assert swapped[0].messages[1]["content"][0] == normal_a1p.messages[1]["content"][0]
 
@@ -1578,7 +1969,9 @@ def test_run_pslu_flight_silence_swap_adds_one_extra_a1p_row(slurp_world):
 def test_run_pslu_flight_rejects_empty_samples(slurp_world):
     adapter, s_iot, _ = _flight_world(slurp_world)
     with pytest.raises(PsluFlightError, match="at least one sample"):
-        run_pslu_flight(adapter=adapter, core_client=MockCoreClient(), samples=(), rosters=_ROSTERS)
+        run_pslu_flight(
+            adapter=adapter, core_client=MockCoreClient(), samples=(), rosters=_ROSTERS
+        )
 
 
 def test_run_pslu_flight_rejects_unknown_silence_swap_sample_ids(slurp_world):
