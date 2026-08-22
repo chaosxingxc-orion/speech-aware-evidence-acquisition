@@ -2370,6 +2370,72 @@ def test_m9_reader_reconstructs_fail_closed_mechanism_trajectories(
     assert trajectory["reranked_key_ids"] == ("K001",)
 
 
+def test_m9_reader_accepts_legacy_partial_rerank_failure_flag():
+    result = run_speech_native_matcher(
+        core_client=_M9FactorGraphClient(invalid_rerank=True),
+        sample=_SpeechSample(),
+        query_descriptor=_QUERY_DESCRIPTOR,
+        key_cards=_KEY_CARDS,
+        key_representation_id="K1",
+        matcher_policy_id="M9",
+        prompt_policy_id="speech-native-json-copy-v4",
+        agent_policy_id="speech-conditioned-factor-graph-action-support-v1",
+        agent_aggregator_id="factor-graph-primary-control-v1",
+        decision_graph=_decision_graph_fixture(),
+        top_k=2,
+    )
+    steps = [dict(step) for step in result.agent_steps]
+    steps[-1]["parse_failure"] = False
+    row = {
+        "key_id": result.key_id,
+        "top_key_ids": list(result.top_key_ids),
+        "calls": result.calls,
+        "agent_policy_id": result.agent_policy_id,
+        "agent_aggregator_id": result.agent_aggregator_id,
+        "agent_escalated": result.agent_escalated,
+        "agent_actions": list(result.agent_actions),
+        "agent_vote_key_ids": list(result.agent_vote_key_ids),
+        "agent_steps": steps,
+        "verifier_scores": {},
+    }
+    trajectory = _parse_m9_factor_graph_trajectory(
+        row=row,
+        sample_id="sample-legacy-partial",
+        speaker_id="speaker-legacy-partial",
+        gold_key_id="K002",
+        top_k=2,
+        visible_card_by_key={card.key_id: card for card in _KEY_CARDS},
+        decision_graph=_decision_graph_fixture(),
+    )
+    assert trajectory["termination"] == "invalid-factor-rerank"
+    assert trajectory["mechanism_failure"] is True
+
+
+def test_m9_contact_dispatch_marks_partial_rerank_as_parse_failure():
+    task = SpeechNativeMatchTask(
+        task_id="m9-partial-rerank",
+        sample=_SpeechSample(),
+        query_descriptor=_QUERY_DESCRIPTOR,
+        key_cards=_KEY_CARDS,
+        key_representation_id="K1",
+        matcher_policy_id="M9",
+        prompt_policy_id="speech-native-json-copy-v4",
+        top_k=2,
+        decision_graph=_decision_graph_fixture(),
+        agent_policy_id="speech-conditioned-factor-graph-action-support-v1",
+        agent_aggregator_id="factor-graph-primary-control-v1",
+    )
+    outcome = run_speech_native_match_tasks(
+        core_client=_M9FactorGraphClient(invalid_rerank=True),
+        tasks=(task,),
+        slot_count=1,
+        queue_depth=1,
+        dispatch_granularity="contact",
+    )[0]
+    assert outcome.decision.agent_actions[-1] == "backtrack:invalid-factor-rerank"
+    assert outcome.decision.agent_steps[-1]["parse_failure"] is True
+
+
 def test_m9_reader_reconstructs_graph_state_and_action_support():
     result = run_speech_native_matcher(
         core_client=_M9FactorGraphClient(),
