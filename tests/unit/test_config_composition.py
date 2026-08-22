@@ -529,6 +529,53 @@ def test_speech_native_np16_wide_batch_profile_changes_only_batch_geometry():
     }
 
 
+def test_speech_native_np16_ngram_profile_adds_only_target_verified_drafting():
+    """The engine hypothesis keeps the frozen target profile fixed and caps
+    one sampled token plus seven target-verified drafts at the CUDA batch limit."""
+
+    from speech_aware_evidence_acquisition.e0.artifacts import REPO_ROOT
+
+    model_dir = REPO_ROOT / "configs" / "model"
+    base = json.loads(
+        (model_dir / "q4km-mmproj-free-speech-native-np16-max64.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    candidate = json.loads(
+        (
+            model_dir
+            / "q4km-mmproj-free-speech-native-np16-ngram24-draft7-max64.json"
+        ).read_text(encoding="utf-8")
+    )
+
+    speculative_args = [
+        "--spec-type",
+        "ngram-mod",
+        "--spec-ngram-mod-n-match",
+        "24",
+        "--spec-ngram-mod-n-min",
+        "1",
+        "--spec-ngram-mod-n-max",
+        "7",
+    ]
+    assert candidate["server_args"] == [*base["server_args"], *speculative_args]
+    assert candidate["profile_slot_count"] == base["profile_slot_count"] == 16
+    assert candidate["decoding_params"] == base["decoding_params"]
+    assert 16 * (1 + 7) == 128
+    assert not {
+        "-md",
+        "--model-draft",
+        "--spec-draft-model",
+        "--spec-draft-model-url",
+        "--spec-draft-model-hf",
+    }.intersection(candidate["server_args"])
+    assert {
+        key: value for key, value in candidate.items() if key != "server_args"
+    } == {
+        key: value for key, value in base.items() if key != "server_args"
+    }
+
+
 # ---------------------------------------------------------------------------
 # model_lock_key: the composed config's own declaration of WHICH pinned model
 # this run is for -- the same declaration `runtime_receipt_relpath` already

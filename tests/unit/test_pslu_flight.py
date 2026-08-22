@@ -17,6 +17,7 @@ from types import SimpleNamespace
 import pytest
 
 from speech_aware_evidence_acquisition.core.model import SliceRegistry
+from speech_aware_evidence_acquisition.core.resources import NOT_AVAILABLE
 from speech_aware_evidence_acquisition.core.driver.speech_native import (
     audit_speech_native_action_support,
     _assert_reusable_session_profile,
@@ -299,6 +300,11 @@ def test_server_log_scan_is_scoped_to_current_attempt_window(tmp_path):
     assert scan["prompt_eval_tokens_total"] == 0
     assert scan["one_token_prompt_eval_count"] == 0
     assert scan["prompt_cache_skip_count"] == 0
+    assert scan["speculative_draft_record_count"] == 0
+    assert scan["speculative_draft_generated_tokens_total"] == 0
+    assert scan["speculative_draft_accepted_tokens_total"] == 0
+    assert scan["speculative_draft_acceptance_ratio_pct"] == NOT_AVAILABLE
+    assert scan["speculative_mean_acceptance_length_median"] == NOT_AVAILABLE
 
 
 def test_server_log_scan_records_actual_prompt_work_and_cache_reuse(tmp_path):
@@ -320,6 +326,51 @@ prompt eval time = 8.00 ms / 740 tokens
     assert scan["prompt_eval_tokens_median"] == 740.0
     assert scan["one_token_prompt_eval_count"] == 1
     assert scan["prompt_cache_skip_count"] == 2
+
+
+def test_server_log_scan_records_target_verified_speculative_work(tmp_path):
+    log = tmp_path / "resident-server.log"
+    old = (
+        "draft acceptance = 1.00000 (    7 accepted /     7 generated), "
+        "mean acceptance length =  8.00, acceptance rate per position = (1.000)\n"
+    )
+    current = """\
+draft acceptance = 0.44444 (    4 accepted /     9 generated), mean acceptance length =  2.33, acceptance rate per position = (0.800, 0.400)
+draft acceptance = 1.00000 (    6 accepted /     6 generated), mean acceptance length =  4.00, acceptance rate per position = (1.000, 1.000)
+"""
+    log.write_text(old + current, encoding="utf-8")
+
+    scan = _scan_server_log(log, start_offset=len(old.encode("utf-8")))
+
+    assert scan["speculative_draft_record_count"] == 2
+    assert scan["speculative_draft_generated_tokens_total"] == 15
+    assert scan["speculative_draft_accepted_tokens_total"] == 10
+    assert scan["speculative_draft_acceptance_ratio_pct"] == pytest.approx(
+        66.66666666666667
+    )
+    assert scan["speculative_mean_acceptance_length_median"] == 3.165
+
+
+@pytest.mark.parametrize(
+    "line",
+    (
+        "draft acceptance = unavailable\n",
+        "draft acceptance = 1.20000 (    6 accepted /     5 generated), "
+        "mean acceptance length =  4.00\n",
+        "draft acceptance = 0.50000 (    4 accepted /     9 generated), "
+        "mean acceptance length =  2.33\n",
+    ),
+)
+def test_server_log_scan_rejects_untrustworthy_speculative_statistics(
+    tmp_path, line
+):
+    log = tmp_path / "resident-server.log"
+    log.write_text(line, encoding="utf-8")
+
+    with pytest.raises(
+        SpeechNativeProfileError, match="speculative draft statistics"
+    ):
+        _scan_server_log(log)
 
 
 def test_evaluated_work_metrics_do_not_count_cached_declared_tokens_as_compute():

@@ -90,6 +90,11 @@ _RUNAWAY_MARKERS = ("truncated = 1", "context shift", "slot context shift")
 _PROMPT_EVAL_TIMING = re.compile(
     r"prompt eval time\s*=\s*[0-9.]+\s*ms\s*/\s*(\d+)\s+tokens"
 )
+_SPECULATIVE_DRAFT_TIMING = re.compile(
+    r"draft acceptance\s*=\s*([0-9]+(?:\.[0-9]+)?)\s*"
+    r"\(\s*(\d+)\s+accepted\s*/\s*(\d+)\s+generated\s*\),\s*"
+    r"mean acceptance length\s*=\s*([0-9]+(?:\.[0-9]+)?)"
+)
 _SERVER_LOG_CLOCK = re.compile(rb"^(\d+)\.(\d+)\.(\d+)\.(\d+) ")
 _SERVER_SLOT_LAUNCH = re.compile(
     rb"\bslot\s+launch_slot_: id\s+(\d+) \| task\s+(-?\d+)"
@@ -8490,6 +8495,40 @@ def _scan_server_log(
     prompt_eval_tokens = [
         int(match.group(1)) for match in _PROMPT_EVAL_TIMING.finditer(text)
     ]
+    draft_matches = list(_SPECULATIVE_DRAFT_TIMING.finditer(text))
+    if text.count("draft acceptance") != len(draft_matches):
+        raise SpeechNativeProfileError(
+            "server log speculative draft statistics are incomplete"
+        )
+    draft_generated: list[int] = []
+    draft_accepted: list[int] = []
+    draft_mean_acceptance_lengths: list[float] = []
+    for match in draft_matches:
+        reported_ratio = float(match.group(1))
+        accepted = int(match.group(2))
+        generated = int(match.group(3))
+        mean_acceptance_length = float(match.group(4))
+        if (
+            generated <= 0
+            or accepted > generated
+            or reported_ratio > 1.0
+            or mean_acceptance_length < 1.0
+            or not math.isclose(
+                reported_ratio,
+                accepted / generated,
+                rel_tol=0.0,
+                abs_tol=5.1e-6,
+            )
+        ):
+            raise SpeechNativeProfileError(
+                "server log speculative draft statistics are inconsistent"
+            )
+        draft_generated.append(generated)
+        draft_accepted.append(accepted)
+        draft_mean_acceptance_lengths.append(mean_acceptance_length)
+
+    draft_generated_total = sum(draft_generated)
+    draft_accepted_total = sum(draft_accepted)
 
     return {
         "oom_marker_hits": hits(_OOM_MARKERS),
@@ -8510,6 +8549,19 @@ def _scan_server_log(
         ),
         "prompt_cache_skip_count": text.count(
             "prompt is already in the cache, skipping"
+        ),
+        "speculative_draft_record_count": len(draft_matches),
+        "speculative_draft_generated_tokens_total": draft_generated_total,
+        "speculative_draft_accepted_tokens_total": draft_accepted_total,
+        "speculative_draft_acceptance_ratio_pct": (
+            100.0 * draft_accepted_total / draft_generated_total
+            if draft_generated_total
+            else NOT_AVAILABLE
+        ),
+        "speculative_mean_acceptance_length_median": (
+            float(statistics.median(draft_mean_acceptance_lengths))
+            if draft_mean_acceptance_lengths
+            else NOT_AVAILABLE
         ),
     }
 
