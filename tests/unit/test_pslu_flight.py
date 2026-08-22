@@ -1689,6 +1689,7 @@ def test_contact_dispatch_parallelizes_independent_m5_initial_branches():
     class ParallelBranchClient:
         def __init__(self):
             self.lock = threading.Lock()
+            self.initial_barrier = threading.Barrier(2)
             self.active = 0
             self.max_active = 0
 
@@ -1697,6 +1698,8 @@ def test_contact_dispatch_parallelizes_independent_m5_initial_branches():
             with self.lock:
                 self.active += 1
                 self.max_active = max(self.max_active, self.active)
+            if stage.endswith((":listwise", ":retrieve-top-1")):
+                self.initial_barrier.wait(timeout=1)
             time.sleep(0.02)
             with self.lock:
                 self.active -= 1
