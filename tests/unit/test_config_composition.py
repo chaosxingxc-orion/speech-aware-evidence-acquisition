@@ -457,6 +457,40 @@ def test_speech_native_np24_profile_preserves_context_budget_and_batch_shape():
     assert "LLAMA_MTMD_FEAT_CACHE_DIR" not in values["server_env"]
 
 
+def test_speech_native_np16_wide_batch_profile_changes_only_batch_geometry():
+    """The saturated-window successor keeps np16/context/science fixed and
+    changes only llama.cpp logical and physical batch ceilings."""
+
+    from speech_aware_evidence_acquisition.e0.artifacts import REPO_ROOT
+
+    model_dir = REPO_ROOT / "configs" / "model"
+    base = json.loads(
+        (model_dir / "q4km-mmproj-free-speech-native-np16-max64.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    wide = json.loads(
+        (
+            model_dir
+            / "q4km-mmproj-free-speech-native-np16-b4096-ub1024-max64.json"
+        ).read_text(encoding="utf-8")
+    )
+
+    expected_args = list(base["server_args"])
+    expected_args[expected_args.index("2048")] = "4096"
+    expected_args[expected_args.index("512")] = "1024"
+    assert wide["server_args"] == expected_args
+    assert wide["profile_slot_count"] == base["profile_slot_count"] == 16
+    assert wide["decoding_params"] == base["decoding_params"]
+    assert wide["speech_feature_root"] == base["speech_feature_root"]
+    assert wide["server_env"] == base["server_env"]
+    assert {
+        key: value for key, value in wide.items() if key != "server_args"
+    } == {
+        key: value for key, value in base.items() if key != "server_args"
+    }
+
+
 # ---------------------------------------------------------------------------
 # model_lock_key: the composed config's own declaration of WHICH pinned model
 # this run is for -- the same declaration `runtime_receipt_relpath` already
