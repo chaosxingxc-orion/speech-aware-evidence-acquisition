@@ -806,6 +806,32 @@ def materialize_legacy_cached_speech_feature_packet(
     online encoding.
     """
 
+    audio_sha256, chunks = _prepare_legacy_cached_speech_feature_packet(
+        audio_path=audio_path,
+        legacy_cache_dir=legacy_cache_dir,
+        expected_n_embd=expected_n_embd,
+    )
+    return materialize_speech_feature_packet(
+        feature_root=feature_root,
+        packet_id=packet_id,
+        audio_sha256=audio_sha256,
+        encoder_receipt_sha256=encoder_receipt_sha256,
+        decoder_gguf_sha256=decoder_gguf_sha256,
+        mmproj_sha256=mmproj_sha256,
+        position_mode="mrope_1d",
+        causal_attention=causal_attention,
+        chunks=chunks,
+    )
+
+
+def _prepare_legacy_cached_speech_feature_packet(
+    *,
+    audio_path: Path,
+    legacy_cache_dir: Path,
+    expected_n_embd: int,
+) -> tuple[str, tuple[SpeechFeatureChunkData, ...]]:
+    """Read and validate one governed audio/cache pair without writing a packet."""
+
     try:
         audio_bytes = Path(audio_path).read_bytes()
     except OSError as error:
@@ -815,17 +841,7 @@ def materialize_legacy_cached_speech_feature_packet(
         legacy_cache_dir=Path(legacy_cache_dir),
         expected_n_embd=expected_n_embd,
     )
-    return materialize_speech_feature_packet(
-        feature_root=feature_root,
-        packet_id=packet_id,
-        audio_sha256=_sha256(audio_bytes),
-        encoder_receipt_sha256=encoder_receipt_sha256,
-        decoder_gguf_sha256=decoder_gguf_sha256,
-        mmproj_sha256=mmproj_sha256,
-        position_mode="mrope_1d",
-        causal_attention=causal_attention,
-        chunks=chunks,
-    )
+    return _sha256(audio_bytes), chunks
 
 
 def materialize_legacy_cached_speech_feature_packets(
@@ -842,11 +858,10 @@ def materialize_legacy_cached_speech_feature_packets(
 ) -> tuple[SpeechFeaturePacketV1, ...]:
     """Promote independent warm-cache entries concurrently in input order.
 
-    Each binding carries exactly ``packet_id`` and ``audio_path``. Validation
-    is completed for the whole batch before any worker starts, so duplicate
-    packet targets or malformed bindings cannot leave a partially promoted
-    batch. The per-item function remains the sole packet writer and retains
-    its no-overwrite and cache-miss refusal semantics.
+    Each binding carries exactly ``packet_id`` and ``audio_path``. Binding and
+    cache validation is completed for the whole batch before packet writing
+    starts, so a missing or malformed cache entry cannot leave a partially
+    promoted batch. Both phases run concurrently and preserve input order.
     """
 
     if isinstance(workers, bool) or not isinstance(workers, int) or not 1 <= workers <= 64:
@@ -873,25 +888,40 @@ def materialize_legacy_cached_speech_feature_packets(
     if not normalized:
         return ()
 
-    def materialize_one(binding: tuple[str, Path]) -> SpeechFeaturePacketV1:
+    def prepare_one(
+        binding: tuple[str, Path],
+    ) -> tuple[str, str, tuple[SpeechFeatureChunkData, ...]]:
         packet_id, audio_path = binding
-        return materialize_legacy_cached_speech_feature_packet(
-            feature_root=feature_root,
-            packet_id=packet_id,
+        audio_sha256, chunks = _prepare_legacy_cached_speech_feature_packet(
             audio_path=audio_path,
             legacy_cache_dir=legacy_cache_dir,
+            expected_n_embd=expected_n_embd,
+        )
+        return packet_id, audio_sha256, chunks
+
+    def materialize_one(
+        prepared: tuple[str, str, tuple[SpeechFeatureChunkData, ...]],
+    ) -> SpeechFeaturePacketV1:
+        packet_id, audio_sha256, chunks = prepared
+        return materialize_speech_feature_packet(
+            feature_root=feature_root,
+            packet_id=packet_id,
+            audio_sha256=audio_sha256,
             encoder_receipt_sha256=encoder_receipt_sha256,
             decoder_gguf_sha256=decoder_gguf_sha256,
             mmproj_sha256=mmproj_sha256,
-            expected_n_embd=expected_n_embd,
+            position_mode="mrope_1d",
             causal_attention=causal_attention,
+            chunks=chunks,
         )
 
     worker_count = min(workers, len(normalized))
     if worker_count == 1:
-        return tuple(materialize_one(binding) for binding in normalized)
+        prepared = tuple(prepare_one(binding) for binding in normalized)
+        return tuple(materialize_one(item) for item in prepared)
     with ThreadPoolExecutor(
         max_workers=worker_count,
         thread_name_prefix="saea-speech-promote",
     ) as pool:
-        return tuple(pool.map(materialize_one, normalized))
+        prepared = tuple(pool.map(prepare_one, normalized))
+        return tuple(pool.map(materialize_one, prepared))

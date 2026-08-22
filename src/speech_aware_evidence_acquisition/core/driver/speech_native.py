@@ -1084,16 +1084,18 @@ def read_speech_native_predictions(
             if profile_agent_policy_id == "m1-m3-full-branch-explorer-v1":
                 cell_id += "-agent-full-branch-v1"
         elif matcher_policy_id == "M6":
+            grounded_policy_suffix = {
+                "knowledge-grounded-semantic-refinement-full-action-v1": "-grounded-v1",
+                _M6_SCHEMA_V2_POLICY_ID: "-grounded-schema-v2",
+            }.get(profile_agent_policy_id)
             if (
-                profile_agent_policy_id
-                != "knowledge-grounded-semantic-refinement-full-action-v1"
-                or agent_aggregator_id
-                != "grounded-refined-primary-fallback-v1"
+                grounded_policy_suffix is None
+                or agent_aggregator_id != "grounded-refined-primary-fallback-v1"
             ):
                 raise SpeechNativeProfileError(
                     "M6 flight receipt has an unknown grounded policy identity"
                 )
-            cell_id += "-grounded-v1"
+            cell_id += grounded_policy_suffix
         order_ids = profile.get("key_order_ids", ["canonical"])
         if (
             not isinstance(order_ids, list)

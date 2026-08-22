@@ -3005,7 +3005,22 @@ def test_model_free_read_accepts_complete_full_branch_action_support(tmp_path):
     assert episodic["mean_contacts"] == 4.0
 
 
-def test_model_free_read_reports_grounded_semantic_refinement_actions(tmp_path):
+@pytest.mark.parametrize(
+    ("agent_policy_id", "cell_suffix"),
+    (
+        (
+            "knowledge-grounded-semantic-refinement-full-action-v1",
+            "grounded-v1",
+        ),
+        (
+            "knowledge-grounded-semantic-refinement-schema-v2",
+            "grounded-schema-v2",
+        ),
+    ),
+)
+def test_model_free_read_reports_grounded_semantic_refinement_actions(
+    tmp_path, agent_policy_id, cell_suffix
+):
     binding_path = REPO_ROOT / "configs/probes/g0-binding/speech-native-train-binding.json"
     binding_sha256 = hashlib.sha256(binding_path.read_bytes()).hexdigest()
     binding = json.loads(binding_path.read_text(encoding="utf-8"))
@@ -3076,9 +3091,7 @@ def test_model_free_read_reports_grounded_semantic_refinement_actions(tmp_path):
                 "verifier_scores": verifier_scores,
                 "calls": 7,
                 "parse_failure": False,
-                "agent_policy_id": (
-                    "knowledge-grounded-semantic-refinement-full-action-v1"
-                ),
+                "agent_policy_id": agent_policy_id,
                 "agent_actions": [
                     "match:speech-only-primary",
                     "retrieve:speech-only",
@@ -3145,9 +3158,7 @@ def test_model_free_read_reports_grounded_semantic_refinement_actions(tmp_path):
                     "matcher_verifier_policy_id": (
                         "speech-native-contrastive-verifier-v2"
                     ),
-                    "agent_policy_id": (
-                        "knowledge-grounded-semantic-refinement-full-action-v1"
-                    ),
+                    "agent_policy_id": agent_policy_id,
                     "agent_aggregator_id": (
                         "grounded-refined-primary-fallback-v1"
                     ),
@@ -3175,12 +3186,12 @@ def test_model_free_read_reports_grounded_semantic_refinement_actions(tmp_path):
 
     aggregate = report["aggregates"][0]
     assert aggregate["cell_id"] == (
-        "K1-M6-k3-v3-verify-contrastive-v2-grounded-v1"
+        f"K1-M6-k3-v3-verify-contrastive-v2-{cell_suffix}"
     )
     assert aggregate["correct"] == 35
     assert aggregate["top_k_reachable_count"] == 36
     assert aggregate["agent_loop_metrics"] == {
-        "policy_id": "knowledge-grounded-semantic-refinement-full-action-v1",
+        "policy_id": agent_policy_id,
         "aggregator_id": "grounded-refined-primary-fallback-v1",
         "primary_correct": 35,
         "primary_accuracy": 35 / 36,

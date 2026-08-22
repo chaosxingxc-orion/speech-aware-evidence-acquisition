@@ -55,12 +55,12 @@ def test_legacy_featcache_batch_promotion_is_parallel_and_ordered(tmp_path, monk
         (legacy / f"{key}_o0.feat").write_bytes(struct.pack("<QQ", 2, 4) + features)
         bindings.append({"packet_id": f"slurp/train/s{index}", "audio_path": audio})
 
-    original = speech_features.materialize_legacy_cached_speech_feature_packet
+    original = speech_features._prepare_legacy_cached_speech_feature_packet
     lock = threading.Lock()
     active = 0
     peak = 0
 
-    def tracked_materializer(**kwargs):
+    def tracked_preflight(**kwargs):
         nonlocal active, peak
         with lock:
             active += 1
@@ -74,8 +74,8 @@ def test_legacy_featcache_batch_promotion_is_parallel_and_ordered(tmp_path, monk
 
     monkeypatch.setattr(
         speech_features,
-        "materialize_legacy_cached_speech_feature_packet",
-        tracked_materializer,
+        "_prepare_legacy_cached_speech_feature_packet",
+        tracked_preflight,
     )
     packets = materialize_legacy_cached_speech_feature_packets(
         feature_root=tmp_path / "packets",
@@ -112,6 +112,37 @@ def test_legacy_featcache_batch_promotion_refuses_duplicates_before_work(tmp_pat
             expected_n_embd=4,
             causal_attention=True,
         )
+
+
+def test_legacy_featcache_batch_promotion_preflights_all_caches_before_writing(tmp_path):
+    legacy = tmp_path / "legacy-cache"
+    legacy.mkdir()
+    valid_audio = tmp_path / "valid.flac"
+    valid_audio.write_bytes(b"governed-valid-audio")
+    missing_audio = tmp_path / "missing.flac"
+    missing_audio.write_bytes(b"governed-missing-audio")
+    key = legacy_audio_feature_cache_key(valid_audio.read_bytes())
+    features = struct.pack("<8f", *[1.0] * 8)
+    (legacy / f"{key}_o0.feat").write_bytes(struct.pack("<QQ", 2, 4) + features)
+    feature_root = tmp_path / "packets"
+
+    with pytest.raises(FrozenCoreError, match="has no ordinal zero"):
+        materialize_legacy_cached_speech_feature_packets(
+            feature_root=feature_root,
+            bindings=(
+                {"packet_id": "slurp/train/valid", "audio_path": valid_audio},
+                {"packet_id": "slurp/train/missing", "audio_path": missing_audio},
+            ),
+            legacy_cache_dir=legacy,
+            encoder_receipt_sha256="1" * 64,
+            decoder_gguf_sha256="2" * 64,
+            mmproj_sha256="3" * 64,
+            expected_n_embd=4,
+            causal_attention=True,
+            workers=2,
+        )
+
+    assert not feature_root.exists()
 
 
 # ---------------------------------------------------------------------------
