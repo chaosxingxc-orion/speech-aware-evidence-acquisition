@@ -2266,6 +2266,110 @@ def test_m8_global_ready_frontier_admits_all_initial_nodes_before_pairwise_child
     assert len(initial_prefix) == 8
 
 
+def _m9_match_tasks(count=4):
+    return tuple(
+        SpeechNativeMatchTask(
+            task_id=f"m9-global-{index}",
+            sample=type(
+                "Sample", (), {"sample_id": f"m9-global-sample-{index}"}
+            )(),
+            query_descriptor={
+                "packet_id": f"slurp/train/m9-global-sample-{index}",
+                "sha256": f"{index + 1:064x}",
+                "role": "query",
+            },
+            key_cards=_KEY_CARDS,
+            key_representation_id="K1",
+            matcher_policy_id="M9",
+            prompt_policy_id="speech-native-json-copy-v4",
+            top_k=2,
+            agent_policy_id="speech-conditioned-factor-graph-action-support-v1",
+            agent_aggregator_id="factor-graph-primary-control-v1",
+            decision_graph=_decision_graph_fixture(),
+        )
+        for index in range(count)
+    )
+
+
+def test_m9_contact_dispatch_uses_one_global_request_executor(monkeypatch):
+    real_executor = pslu_module.ThreadPoolExecutor
+    prefixes = []
+
+    class RecordingExecutor:
+        def __init__(self, *args, **kwargs):
+            prefixes.append(kwargs.get("thread_name_prefix"))
+            self.delegate = real_executor(*args, **kwargs)
+
+        def submit(self, *args, **kwargs):
+            return self.delegate.submit(*args, **kwargs)
+
+        def shutdown(self, *args, **kwargs):
+            return self.delegate.shutdown(*args, **kwargs)
+
+        def __enter__(self):
+            self.delegate.__enter__()
+            return self
+
+        def __exit__(self, *args):
+            return self.delegate.__exit__(*args)
+
+    monkeypatch.setattr(pslu_module, "ThreadPoolExecutor", RecordingExecutor)
+
+    outcomes = run_speech_native_match_tasks(
+        core_client=_M9FactorGraphClient(),
+        tasks=_m9_match_tasks(),
+        slot_count=2,
+        queue_depth=4,
+        dispatch_granularity="contact",
+    )
+
+    assert len(outcomes) == 4
+    assert all(outcome.decision.calls == 6 for outcome in outcomes)
+    assert prefixes == ["saea-speech-native-contact"]
+
+
+def test_m9_global_ready_frontier_batches_initial_contacts_before_graph_children():
+    class FrontierClient(_M9FactorGraphClient):
+        def __init__(self):
+            super().__init__()
+            self.lock = threading.Lock()
+            self.active = 0
+            self.max_active = 0
+
+        def complete(self, messages, **kwargs):
+            with self.lock:
+                self.active += 1
+                self.max_active = max(self.max_active, self.active)
+            try:
+                time.sleep(0.002)
+                return super().complete(messages, **kwargs)
+            finally:
+                with self.lock:
+                    self.active -= 1
+
+    client = FrontierClient()
+    outcomes = run_speech_native_match_tasks(
+        core_client=client,
+        tasks=_m9_match_tasks(),
+        slot_count=2,
+        queue_depth=2,
+        dispatch_granularity="contact",
+    )
+
+    assert len(outcomes) == 4
+    assert client.max_active == 2
+    stages = [kwargs["matcher_policy_id"] for _messages, kwargs in client.calls]
+    first_graph_child = next(
+        index for index, stage in enumerate(stages) if stage.endswith(":link-factors")
+    )
+    initial_prefix = client.calls[:first_graph_child]
+    assert {
+        kwargs["speech_feature_sample_id"] for _messages, kwargs in initial_prefix
+    } == {f"m9-global-sample-{index}" for index in range(4)}
+    assert len(initial_prefix) == 8
+    _assert_every_call_carries_query(client)
+
+
 def test_contact_dispatch_runs_m7_verifier_wave_as_one_batched_ready_stage():
     class ParallelM7Client(_M7BatchClient):
         def __init__(self):
