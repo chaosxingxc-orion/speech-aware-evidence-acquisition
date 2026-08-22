@@ -132,6 +132,8 @@ The current adaptive run fails the full-load gate because rare escalation create
 
 If the adaptive serving policy still has an unavoidable short tail after A0, report steady-state and tail utilization separately; do not redefine the registered whole-window gate after reading results.
 
+If all three registered np geometries fail mechanically while their stable waves reach high utilization, permit one label-blind scheduler rescue after semantic read: keep np16 and every scientific byte fixed, raise the task queue to `8×np` so all 108 exposed X108 tasks can contribute ready contacts across stage boundaries, and inspect only mechanical serving fields. This cell cannot change or corroborate the scientific result. If it also fails the original whole-window thresholds, stop live profiling and refactor the existing dispatcher into an explicit global stage-ready state machine before any validation-gate contact.
+
 ## Claim boundary
 
 The strongest current claim is:

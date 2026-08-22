@@ -1,0 +1,26 @@
+{
+  "arm": "speech-feature-query",
+  "policy": "fixed",
+  "evidence_source": "none",
+  "evidence_mismatch": false,
+  "obs_batch_samples": 1,
+  "allow_empty_speech_feature_evidence": false,
+  "speech_packet_promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-x108-04ccc72a/DISCOVERY-X108-promotion.json",
+  "speech_packet_promotion_receipt_sha256": "6b396735aa8b4812795ffcc3c9d47ee07ba137f4842c1217b42440a7c5cca37b",
+  "speech_native_binding": "configs/probes/g0-binding/speech-native-train-binding-x108.json",
+  "speech_native_binding_file_sha256": "34860b5204f5bfc5ecc6452b9d228942787a5590d61b8b53598d9fba26be5985",
+  "profile_key_order_ids": [
+    "canonical"
+  ],
+  "profile_queue_depth_multiplier": 8,
+  "profile_validation_workers": 16,
+  "speech_native_result_mode": "predictions",
+  "speech_native_contact_ceiling_per_task": 16,
+  "speech_native_top_k": 3,
+  "speech_native_dispatch_granularity": "contact",
+  "matcher_prompt_policy_id": "speech-native-json-copy-v3",
+  "scorers": [
+    "cost"
+  ],
+  "task_instruction": "Match the original speech-feature query against the frozen candidate representation. Gold labels and reference transcripts are unavailable at runtime."
+}
