@@ -166,6 +166,7 @@ SPEECH_NATIVE_MATCHER_POLICIES = (
     "M6",
     "M7",
     "M8",
+    "M9",
 )
 SPEECH_NATIVE_PROMPT_POLICIES = (
     "speech-native-json-copy-v2",
@@ -183,6 +184,7 @@ SPEECH_NATIVE_AGENT_AGGREGATORS = (
     "grounded-refined-primary-fallback-v1",
     "action-support-primary-control-v1",
     "pairwise-boundary-primary-control-v1",
+    "factor-graph-primary-control-v1",
 )
 SPEECH_NATIVE_AGENT_POLICIES = (
     "m1-m3-disagreement-escalation-v1",
@@ -192,6 +194,7 @@ SPEECH_NATIVE_AGENT_POLICIES = (
     "knowledge-grounded-semantic-refinement-schema-v3",
     "knowledge-grounded-multistate-action-support-v1",
     "speech-conditioned-pairwise-boundary-support-v1",
+    "speech-conditioned-factor-graph-action-support-v1",
 )
 SPEECH_NATIVE_SCENARIO_DEFINITIONS: Mapping[str, str] = MappingProxyType(
     {
@@ -549,6 +552,166 @@ class FactorLinkStateV1:
     factor_ids: tuple[str, ...]
     boundary_id: str | None
 
+    def as_json(self) -> dict[str, object]:
+        return {
+            "factor_ids": list(self.factor_ids),
+            "boundary_id": self.boundary_id or "NONE",
+        }
+
+
+@dataclass(frozen=True)
+class DecisionGraphExpansionV1:
+    key_ids: tuple[str, ...]
+    distance_by_key: Mapping[str, int]
+
+
+def expand_decision_graph_candidates(
+    *,
+    graph: DecisionGraphV1,
+    initial_key_ids: Sequence[str],
+    state: FactorLinkStateV1,
+    cap: int,
+) -> DecisionGraphExpansionV1:
+    """Expand selected graph evidence with deterministic distance/rank ties."""
+
+    if isinstance(cap, bool) or not isinstance(cap, int) or cap <= 0:
+        raise PsluFlightError("decision graph expansion cap must be positive")
+    initial = tuple(initial_key_ids)
+    if not initial or len(set(initial)) != len(initial) or len(initial) > cap:
+        raise PsluFlightError(
+            "decision graph expansion requires unique initial keys within the cap"
+        )
+    factors_by_id = {factor.factor_id: factor for factor in graph.factors}
+    boundaries_by_id = {
+        boundary.boundary_id: boundary for boundary in graph.boundaries
+    }
+    known_keys = {
+        key_id for factor in graph.factors for key_id in factor.key_ids
+    }
+    unknown_initial = set(initial) - known_keys
+    if unknown_initial:
+        raise PsluFlightError(
+            f"decision graph expansion references unknown initial keys {sorted(unknown_initial)}"
+        )
+    if (
+        not state.factor_ids
+        or len(set(state.factor_ids)) != len(state.factor_ids)
+        or any(factor_id not in factors_by_id for factor_id in state.factor_ids)
+    ):
+        raise PsluFlightError("decision graph expansion received invalid factor ids")
+    if state.boundary_id is not None and state.boundary_id not in boundaries_by_id:
+        raise PsluFlightError("decision graph expansion received an invalid boundary id")
+    ordered = list(initial)
+    distance_by_key: dict[str, int] = {key_id: 0 for key_id in initial}
+    for factor_id in state.factor_ids:
+        for key_id in factors_by_id[factor_id].key_ids:
+            if key_id not in distance_by_key:
+                distance_by_key[key_id] = 1
+                ordered.append(key_id)
+    if state.boundary_id is not None:
+        boundary = boundaries_by_id[state.boundary_id]
+        for key_id in (boundary.left_key_id, boundary.right_key_id):
+            if key_id not in distance_by_key:
+                distance_by_key[key_id] = 1
+                ordered.append(key_id)
+    selected = tuple(ordered[:cap])
+    return DecisionGraphExpansionV1(
+        key_ids=selected,
+        distance_by_key={key_id: distance_by_key[key_id] for key_id in selected},
+    )
+
+
+def decision_boundary_path(
+    *,
+    graph: DecisionGraphV1,
+    source_key_id: str,
+    target_key_id: str,
+    max_edges: int,
+) -> tuple[str, ...]:
+    """Return the first graph-order boundary path within a small hop cap."""
+
+    if (
+        isinstance(max_edges, bool)
+        or not isinstance(max_edges, int)
+        or max_edges <= 0
+    ):
+        raise PsluFlightError("decision boundary path max_edges must be positive")
+    known_keys = {
+        key_id for factor in graph.factors for key_id in factor.key_ids
+    }
+    if source_key_id not in known_keys or target_key_id not in known_keys:
+        raise PsluFlightError("decision boundary path endpoints must be known keys")
+    if source_key_id == target_key_id:
+        return ()
+    frontier: deque[tuple[str, tuple[str, ...], frozenset[str]]] = deque(
+        ((source_key_id, (), frozenset((source_key_id,))),)
+    )
+    while frontier:
+        key_id, path, visited = frontier.popleft()
+        if len(path) >= max_edges:
+            continue
+        for boundary in graph.boundaries:
+            if boundary.left_key_id == key_id:
+                neighbor = boundary.right_key_id
+            elif boundary.right_key_id == key_id:
+                neighbor = boundary.left_key_id
+            else:
+                continue
+            if neighbor in visited:
+                continue
+            next_path = (*path, boundary.boundary_id)
+            if neighbor == target_key_id:
+                return next_path
+            frontier.append((neighbor, next_path, visited | {neighbor}))
+    return ()
+
+
+def render_factor_link_state(
+    *, graph: DecisionGraphV1, state: FactorLinkStateV1
+) -> str:
+    """Render only ids selected by the factor-link action."""
+
+    factors_by_id = {factor.factor_id: factor for factor in graph.factors}
+    boundaries_by_id = {
+        boundary.boundary_id: boundary for boundary in graph.boundaries
+    }
+    if (
+        not state.factor_ids
+        or any(factor_id not in factors_by_id for factor_id in state.factor_ids)
+        or len(set(state.factor_ids)) != len(state.factor_ids)
+    ):
+        raise PsluFlightError("factor-link state contains invalid factor ids")
+    if state.boundary_id is not None and state.boundary_id not in boundaries_by_id:
+        raise PsluFlightError("factor-link state contains an invalid boundary id")
+    lines = ["Selected factor nodes:"]
+    for factor_id in state.factor_ids:
+        factor = factors_by_id[factor_id]
+        lines.extend(
+            (
+                f"[{factor.factor_id}] kind={factor.kind}",
+                f"Statement: {factor.statement}",
+                f"Linked keys: {','.join(factor.key_ids)}",
+            )
+        )
+    lines.append("Selected boundary edge:")
+    if state.boundary_id is None:
+        lines.append("NONE")
+    else:
+        boundary = boundaries_by_id[state.boundary_id]
+        lines.extend(
+            (
+                f"[{boundary.boundary_id}] endpoints="
+                f"{boundary.left_key_id},{boundary.right_key_id}",
+                f"{boundary.left_key_id} factors: "
+                f"{','.join(boundary.left_factor_ids)}",
+                f"{boundary.left_key_id} exclusion: {boundary.left_exclusion}",
+                f"{boundary.right_key_id} factors: "
+                f"{','.join(boundary.right_factor_ids)}",
+                f"{boundary.right_key_id} exclusion: {boundary.right_exclusion}",
+            )
+        )
+    return "\n".join(lines)
+
 
 def render_decision_graph_neighborhood(
     *,
@@ -742,6 +905,7 @@ class SpeechNativeMatchTask:
     decoding_params: Mapping[str, object] = field(default_factory=dict)
     top_k: int = 3
     audio_key_bindings: Mapping[str, Mapping[str, str]] | None = None
+    decision_graph: DecisionGraphV1 | None = None
     ensemble_base_policy_id: str = "M1"
     agent_policy_id: str = "m1-m3-disagreement-escalation-v1"
     agent_aggregator_id: str = "m3-majority-canonical-tie-v1"
@@ -1173,6 +1337,7 @@ def run_speech_native_matcher(
     decoding_params: Mapping[str, object] | None = None,
     top_k: int = 3,
     audio_key_bindings: Mapping[str, Mapping[str, str]] | None = None,
+    decision_graph: DecisionGraphV1 | None = None,
     ensemble_base_policy_id: str = "M1",
     agent_policy_id: str = "m1-m3-disagreement-escalation-v1",
     agent_aggregator_id: str = "m3-majority-canonical-tie-v1",
@@ -1258,7 +1423,21 @@ def run_speech_native_matcher(
         raise PsluFlightError("M8 requires maintainable K1 text keys at the profile boundary")
     if matcher_policy_id == "M8" and prompt_policy_id != "speech-native-json-copy-v4":
         raise PsluFlightError("M8 requires the schema-constrained JSON-copy v4 prompt policy")
-    top_k_is_active = matcher_policy_id in {"M3", "M5", "M6", "M7", "M8"} or (
+    if matcher_policy_id == "M9" and (
+        agent_policy_id != "speech-conditioned-factor-graph-action-support-v1"
+        or agent_aggregator_id != "factor-graph-primary-control-v1"
+    ):
+        raise PsluFlightError("M9 requires the factor-graph support policy and control")
+    if matcher_policy_id == "M9" and key_representation_id != "K1":
+        raise PsluFlightError("M9 requires maintainable K1 text keys")
+    if matcher_policy_id == "M9" and prompt_policy_id != "speech-native-json-copy-v4":
+        raise PsluFlightError("M9 requires the schema-constrained JSON-copy v4 prompt policy")
+    if matcher_policy_id == "M9" and decision_graph is None:
+        raise PsluFlightError("M9 requires one DecisionGraphV1")
+    if matcher_policy_id == "M9":
+        assert decision_graph is not None
+        decision_graph.validate(cards)
+    top_k_is_active = matcher_policy_id in {"M3", "M5", "M6", "M7", "M8", "M9"} or (
         matcher_policy_id == "M4" and ensemble_base_policy_id == "M3"
     )
     if top_k_is_active and (top_k <= 0 or top_k > len(cards)):
@@ -1415,6 +1594,7 @@ def run_speech_native_matcher(
             decoding_params=decoding_params,
             top_k=top_k,
             audio_key_bindings=audio_key_bindings,
+            decision_graph=decision_graph,
             agent_policy_id=agent_policy_id,
             _trace_matcher_policy_id=trace_policy_id,
             _trace_buffer=trace_buffer,
@@ -1866,6 +2046,351 @@ def run_speech_native_matcher(
             agent_escalated=True,
             agent_vote_key_ids=(primary_key_id, *support_votes),
             agent_steps=initial_steps + tuple(comparison_steps),
+            decision_agent_aggregator_id=agent_aggregator_id,
+        )
+
+    if matcher_policy_id == "M9":
+        assert decision_graph is not None
+        primary_instruction = (
+            "Match the spoken command to exactly one opaque key. Use the speech signal and "
+            "the supplied K1 text cards jointly. Return only the selected key_id."
+        )
+        retrieval_instruction = (
+            f"Retrieve exactly {top_k} distinct opaque keys for the spoken command, ranked "
+            "from most to least compatible. Use the speech signal and supplied K1 text "
+            "cards jointly. Return only the ordered key_ids."
+        )
+        initial_responses = contact_many_with_overrides(
+            (
+                (
+                    "primary-listwise",
+                    primary_instruction,
+                    cards,
+                    render_speech_native_keys(cards, "K1"),
+                    {
+                        "response_format": _key_choice_response_format(
+                            name="speech_native_primary_key_choice",
+                            key_ids=tuple(card.key_id for card in cards),
+                        )
+                    },
+                ),
+                (
+                    f"speech-retrieve-top-{top_k}",
+                    retrieval_instruction,
+                    cards,
+                    render_speech_native_keys(cards, "K1"),
+                    {
+                        "response_format": _top_key_choice_response_format(
+                            key_ids=tuple(card.key_id for card in cards),
+                            top_k=top_k,
+                        )
+                    },
+                ),
+            )
+        )
+        primary_key_id = _selected_key_id(initial_responses[0], allowed)
+        initial_top_ids = _selected_top_keys(initial_responses[1], allowed, top_k)
+        initial_steps: tuple[Mapping[str, object], ...] = (
+            {
+                "action_id": "match:speech-only-primary",
+                "key_id": primary_key_id,
+                "top_key_ids": [],
+                "calls": 1,
+                "parse_failure": primary_key_id is None,
+            },
+            {
+                "action_id": "retrieve:speech-only",
+                "key_id": initial_top_ids[0] if initial_top_ids else None,
+                "top_key_ids": list(initial_top_ids),
+                "calls": 1,
+                "parse_failure": len(initial_top_ids) != top_k,
+            },
+        )
+        if primary_key_id is None or len(initial_top_ids) != top_k:
+            return finish(
+                primary_key_id,
+                top_ids=initial_top_ids,
+                agent_policy_id=agent_policy_id,
+                agent_actions=(
+                    "match:speech-only-primary",
+                    "retrieve:speech-only",
+                    "backtrack:invalid-initial-factor-support",
+                ),
+                agent_escalated=True,
+                agent_vote_key_ids=(primary_key_id,),
+                agent_steps=initial_steps,
+                decision_agent_aggregator_id=agent_aggregator_id,
+            )
+
+        initial_cards = tuple(by_key[key_id] for key_id in initial_top_ids)
+        graph_text = render_decision_graph_neighborhood(
+            graph=decision_graph,
+            key_cards=cards,
+            candidate_key_ids=initial_top_ids,
+        )
+        factor_response = contact(
+            "link-factors",
+            "Select two through five existing factor ids that are directly supported by "
+            "the spoken command, plus at most one existing boundary id when it captures "
+            "the unresolved distinction. Return only the registered ids. Do not generate "
+            "a paraphrase, rationale, or free-form semantic field.",
+            initial_cards,
+            "Initial key cards:\n"
+            + render_speech_native_keys(initial_cards, "K1")
+            + "\n\nReachable decision graph:\n"
+            + graph_text,
+            decoding_overrides={
+                "response_format": factor_link_response_format(
+                    graph=decision_graph,
+                    key_cards=cards,
+                    candidate_key_ids=initial_top_ids,
+                )
+            },
+        )
+        factor_state = parse_factor_link_state(
+            factor_response,
+            graph=decision_graph,
+            key_cards=cards,
+            candidate_key_ids=initial_top_ids,
+        )
+        if factor_state is None:
+            return finish(
+                primary_key_id,
+                top_ids=initial_top_ids,
+                agent_policy_id=agent_policy_id,
+                agent_actions=(
+                    "match:speech-only-primary",
+                    "retrieve:speech-only",
+                    "link:knowledge-factors",
+                    "backtrack:invalid-factor-link-state",
+                ),
+                agent_escalated=True,
+                agent_vote_key_ids=(primary_key_id,),
+                agent_steps=(
+                    *initial_steps,
+                    {
+                        "action_id": "link:knowledge-factors",
+                        "key_id": None,
+                        "top_key_ids": list(initial_top_ids),
+                        "calls": 1,
+                        "parse_failure": True,
+                    },
+                ),
+                decision_agent_aggregator_id=agent_aggregator_id,
+            )
+
+        expanded = expand_decision_graph_candidates(
+            graph=decision_graph,
+            initial_key_ids=initial_top_ids,
+            state=factor_state,
+            cap=min(6, len(cards)),
+        )
+        expanded_cards = tuple(by_key[key_id] for key_id in expanded.key_ids)
+        rerank_top_k = min(3, len(expanded_cards))
+        factor_state_text = render_factor_link_state(
+            graph=decision_graph, state=factor_state
+        )
+        rerank_response = contact(
+            f"factor-rerank-top-{rerank_top_k}",
+            f"Rank exactly {rerank_top_k} opaque keys for the spoken command. The selected "
+            "knowledge factors are advisory evidence; re-evaluate them against the speech "
+            "signal carried in this request. Return only the ordered key_ids.",
+            expanded_cards,
+            factor_state_text
+            + "\n\nExpanded key cards:\n"
+            + render_speech_native_keys(expanded_cards, "K1"),
+            decoding_overrides={
+                "response_format": _top_key_choice_response_format(
+                    key_ids=expanded.key_ids,
+                    top_k=rerank_top_k,
+                )
+            },
+        )
+        reranked_ids = _selected_top_keys(
+            rerank_response, set(expanded.key_ids), rerank_top_k
+        )
+        factor_step: Mapping[str, object] = {
+            "action_id": "link:knowledge-factors",
+            "key_id": None,
+            "top_key_ids": list(initial_top_ids),
+            "calls": 1,
+            "parse_failure": False,
+            "factor_link_state": {
+                "factor_ids": list(factor_state.factor_ids),
+                "boundary_id": factor_state.boundary_id,
+            },
+        }
+        expansion_step: Mapping[str, object] = {
+            "action_id": "tool:expand-factor-graph",
+            "key_id": None,
+            "top_key_ids": list(initial_top_ids),
+            "calls": 0,
+            "parse_failure": False,
+            "expanded_key_ids": list(expanded.key_ids),
+            "distance_by_key": dict(expanded.distance_by_key),
+        }
+        rerank_step: Mapping[str, object] = {
+            "action_id": "rerank:speech-plus-factor-state",
+            "key_id": reranked_ids[0] if reranked_ids else None,
+            "top_key_ids": list(reranked_ids),
+            "calls": 1,
+            "parse_failure": len(reranked_ids) != rerank_top_k,
+        }
+        common_steps = (*initial_steps, factor_step, expansion_step, rerank_step)
+        if len(reranked_ids) != rerank_top_k:
+            return finish(
+                primary_key_id,
+                top_ids=reranked_ids,
+                agent_policy_id=agent_policy_id,
+                agent_actions=(
+                    "match:speech-only-primary",
+                    "retrieve:speech-only",
+                    "link:knowledge-factors",
+                    "tool:expand-factor-graph",
+                    "rerank:speech-plus-factor-state",
+                    "backtrack:invalid-factor-rerank",
+                ),
+                agent_escalated=True,
+                agent_vote_key_ids=(primary_key_id,),
+                agent_steps=common_steps,
+                decision_agent_aggregator_id=agent_aggregator_id,
+            )
+
+        rerank_key_id = reranked_ids[0]
+        if rerank_key_id == primary_key_id:
+            return finish(
+                primary_key_id,
+                top_ids=reranked_ids,
+                agent_policy_id=agent_policy_id,
+                agent_actions=(
+                    "match:speech-only-primary",
+                    "retrieve:speech-only",
+                    "link:knowledge-factors",
+                    "tool:expand-factor-graph",
+                    "rerank:speech-plus-factor-state",
+                    "stop:primary-rerank-agree",
+                    "select:retain-primary-for-support",
+                ),
+                agent_escalated=True,
+                agent_vote_key_ids=(primary_key_id, rerank_key_id),
+                agent_steps=common_steps,
+                decision_agent_aggregator_id=agent_aggregator_id,
+            )
+
+        boundary_path = decision_boundary_path(
+            graph=decision_graph,
+            source_key_id=primary_key_id,
+            target_key_id=rerank_key_id,
+            max_edges=2,
+        )
+        if not boundary_path:
+            return finish(
+                primary_key_id,
+                top_ids=reranked_ids,
+                agent_policy_id=agent_policy_id,
+                agent_actions=(
+                    "match:speech-only-primary",
+                    "retrieve:speech-only",
+                    "link:knowledge-factors",
+                    "tool:expand-factor-graph",
+                    "rerank:speech-plus-factor-state",
+                    "backtrack:no-boundary-path",
+                    "select:retain-primary-for-support",
+                ),
+                agent_escalated=True,
+                agent_vote_key_ids=(primary_key_id, rerank_key_id),
+                agent_steps=common_steps,
+                decision_agent_aggregator_id=agent_aggregator_id,
+            )
+
+        boundaries_by_id = {
+            boundary.boundary_id: boundary
+            for boundary in decision_graph.boundaries
+        }
+        path_lines = ["Boundary path:"]
+        for boundary_id in boundary_path:
+            boundary = boundaries_by_id[boundary_id]
+            path_lines.extend(
+                (
+                    f"[{boundary.boundary_id}] endpoints="
+                    f"{boundary.left_key_id},{boundary.right_key_id}",
+                    f"{boundary.left_key_id} factors: "
+                    f"{','.join(boundary.left_factor_ids)}",
+                    f"{boundary.left_key_id} exclusion: {boundary.left_exclusion}",
+                    f"{boundary.right_key_id} factors: "
+                    f"{','.join(boundary.right_factor_ids)}",
+                    f"{boundary.right_key_id} exclusion: {boundary.right_exclusion}",
+                )
+            )
+        boundary_text = factor_state_text + "\n\n" + "\n".join(path_lines)
+        pair_ids = (primary_key_id, rerank_key_id)
+        response_format = _key_choice_response_format(
+            name="speech_native_factor_boundary_choice",
+            key_ids=pair_ids,
+        )
+        boundary_requests = []
+        for order_id, ordered_ids in (
+            ("ab", pair_ids),
+            ("ba", tuple(reversed(pair_ids))),
+        ):
+            ordered_cards = tuple(by_key[key_id] for key_id in ordered_ids)
+            boundary_requests.append(
+                (
+                    f"boundary-rank-1-{order_id}",
+                    "Choose which of exactly two opaque keys better matches the spoken "
+                    "command. Use the selected factor nodes and registered boundary path as "
+                    "advisory evidence, but resolve conflicts from the speech signal. Treat "
+                    "card order as irrelevant and return only key_id.",
+                    ordered_cards,
+                    boundary_text
+                    + "\n\nCandidate key cards:\n"
+                    + render_speech_native_keys(ordered_cards, "K1"),
+                    {"response_format": response_format},
+                )
+            )
+        boundary_responses = contact_many_with_overrides(tuple(boundary_requests))
+        boundary_votes = tuple(
+            _selected_key_id(response, set(pair_ids))
+            for response in boundary_responses
+        )
+        return finish(
+            primary_key_id,
+            top_ids=reranked_ids,
+            agent_policy_id=agent_policy_id,
+            agent_actions=(
+                "match:speech-only-primary",
+                "retrieve:speech-only",
+                "link:knowledge-factors",
+                "tool:expand-factor-graph",
+                "rerank:speech-plus-factor-state",
+                "compare:boundary-ab",
+                "compare:boundary-ba",
+                "select:retain-primary-for-support",
+            ),
+            agent_escalated=True,
+            agent_vote_key_ids=(
+                primary_key_id,
+                rerank_key_id,
+                *boundary_votes,
+            ),
+            agent_steps=(
+                *common_steps,
+                {
+                    "action_id": "compare:factor-boundary",
+                    "key_id": None,
+                    "top_key_ids": [primary_key_id, rerank_key_id],
+                    "calls": 2,
+                    "parse_failure": any(vote is None for vote in boundary_votes),
+                    "boundary_path_ids": list(boundary_path),
+                    "ab_key_id": boundary_votes[0],
+                    "ba_key_id": boundary_votes[1],
+                    "causal_parent_ids": [
+                        "link:knowledge-factors",
+                        "tool:expand-factor-graph",
+                        "rerank:speech-plus-factor-state",
+                    ],
+                },
+            ),
             decision_agent_aggregator_id=agent_aggregator_id,
         )
 
@@ -3624,6 +4149,7 @@ def run_speech_native_match_tasks(
                 decoding_params=decoding_params,
                 top_k=task.top_k,
                 audio_key_bindings=task.audio_key_bindings,
+                decision_graph=task.decision_graph,
                 ensemble_base_policy_id=task.ensemble_base_policy_id,
                 agent_policy_id=task.agent_policy_id,
                 agent_aggregator_id=task.agent_aggregator_id,
@@ -4623,6 +5149,7 @@ def run_pslu_flight(
 __all__ = [
     "DecisionBoundaryV1",
     "DecisionFactorV1",
+    "DecisionGraphExpansionV1",
     "DecisionGraphNeighborhoodV1",
     "DecisionGraphV1",
     "FactorLinkStateV1",
@@ -4649,6 +5176,8 @@ __all__ = [
     "SpeechNativeMatchTask",
     "assert_never_calls_ontology_miner",
     "build_speech_native_binding",
+    "decision_boundary_path",
+    "expand_decision_graph_candidates",
     "extend_speech_native_binding",
     "factor_link_response_format",
     "load_pslu_rosters",
@@ -4658,6 +5187,7 @@ __all__ = [
     "parse_factor_link_state",
     "parse_grounded_query_state",
     "render_decision_graph_neighborhood",
+    "render_factor_link_state",
     "render_roster_entries",
     "render_speech_native_keys",
     "render_type_vocabulary",
