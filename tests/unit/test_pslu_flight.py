@@ -3321,6 +3321,60 @@ def test_speech_native_successor_groups_repeated_speakers_within_one_split():
     }
 
 
+def test_speech_native_successor_can_audit_parent_query_speaker_overlap():
+    base = build_speech_native_binding(
+        _binding_material(),
+        seed=20260821,
+        expected_scenarios=("alarm", "email"),
+        opt_a_per_scenario=2,
+        opt_b_per_scenario=1,
+        gate_per_scenario=1,
+        key_examples_per_scenario=5,
+    )
+    parent_speaker = base["splits"]["OPT-A36"]["items"][0]["speaker_id"]
+    extension_material = tuple(
+        SlurpTrainMaterial(
+            utterance_id=f"overlap-{scenario}",
+            scenario=scenario,
+            action="act",
+            sentence=f"new isolated {scenario} command",
+            recordings=(
+                SlurpTrainRecording(
+                    sample_id=f"slurp:train:overlap-{scenario}:audio",
+                    media_relpath=f"datasets/slurp/slurp_real/overlap-{scenario}.flac",
+                    speaker_id=parent_speaker,
+                ),
+            ),
+        )
+        for scenario in ("alarm", "email")
+    )
+
+    with pytest.raises(PsluFlightError, match="insufficient isolated extension"):
+        extend_speech_native_binding(
+            base,
+            extension_material,
+            seed=20260823,
+            split_name="GATE-C2",
+            per_scenario=1,
+            expected_scenarios=("alarm", "email"),
+        )
+
+    successor = extend_speech_native_binding(
+        base,
+        extension_material,
+        seed=20260823,
+        split_name="GATE-C2",
+        per_scenario=1,
+        expected_scenarios=("alarm", "email"),
+        isolate_parent_query_speakers=False,
+    )
+
+    audit = successor["extension_audit"]
+    assert audit["parent_query_speaker_isolation"] is False
+    assert audit["parent_query_speaker_overlap_count"] == 1
+    assert successor["isolation_audit"]["query_key_speaker_overlap"] == 0
+
+
 def test_speech_native_binding_is_stratified_and_query_key_isolated():
     binding = build_speech_native_binding(
         _binding_material(),

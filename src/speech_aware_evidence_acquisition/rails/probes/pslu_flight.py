@@ -2431,12 +2431,17 @@ def extend_speech_native_binding(
     split_name: str,
     per_scenario: int,
     expected_scenarios: Sequence[str] = tuple(SPEECH_NATIVE_SCENARIO_DEFINITIONS),
+    isolate_parent_query_speakers: bool = True,
 ) -> dict[str, object]:
     """Add one isolated discovery split without changing frozen key material.
 
     The successor preserves every existing split and key byte. Candidate
-    queries exclude all historical query and key-example speech, utterances,
-    normalized text, and speakers before deterministic hash ranking.
+    queries always exclude historical query and key-example speech,
+    utterances, and normalized text, plus every key-example speaker. Parent
+    query speakers are also excluded by default. A caller may explicitly
+    retain only that final overlap after proving a fully speaker-isolated
+    extension infeasible; the successor then records the exact overlap count
+    and still preserves strict query/key speaker isolation.
     """
 
     if isinstance(seed, bool) or not isinstance(seed, int):
@@ -2455,6 +2460,10 @@ def extend_speech_native_binding(
         or per_scenario <= 0
     ):
         raise PsluFlightError("speech-native extension per_scenario must be positive")
+    if not isinstance(isolate_parent_query_speakers, bool):
+        raise PsluFlightError(
+            "speech-native parent-query speaker isolation flag must be boolean"
+        )
     if not isinstance(base_binding, Mapping):
         raise PsluFlightError("speech-native parent binding must be an object")
     parent_sha256 = base_binding.get("binding_sha256")
@@ -2487,12 +2496,17 @@ def extend_speech_native_binding(
     forbidden_utterances: set[str] = set()
     forbidden_speakers: set[str] = set()
     forbidden_sentences: set[str] = set()
+    parent_query_speakers: set[str] = set()
 
-    def exclude(item: Mapping[str, object], context: str) -> None:
+    def exclude(
+        item: Mapping[str, object],
+        context: str,
+        *,
+        include_speaker: bool,
+    ) -> str:
         fields = {
             "sample_id": forbidden_samples,
             "utterance_id": forbidden_utterances,
-            "speaker_id": forbidden_speakers,
             "normalized_sentence": forbidden_sentences,
         }
         for field_name, destination in fields.items():
@@ -2502,6 +2516,12 @@ def extend_speech_native_binding(
                     f"speech-native {context} lacks {field_name}"
                 )
             destination.add(value)
+        speaker_id = item.get("speaker_id")
+        if not isinstance(speaker_id, str) or not speaker_id:
+            raise PsluFlightError(f"speech-native {context} lacks speaker_id")
+        if include_speaker:
+            forbidden_speakers.add(speaker_id)
+        return speaker_id
 
     for existing_name, split in raw_splits.items():
         items = split.get("items") if isinstance(split, Mapping) else None
@@ -2510,7 +2530,13 @@ def extend_speech_native_binding(
         for item in items:
             if not isinstance(item, Mapping):
                 raise PsluFlightError("speech-native parent query item is malformed")
-            exclude(item, f"parent split {existing_name!r}")
+            parent_query_speakers.add(
+                exclude(
+                    item,
+                    f"parent split {existing_name!r}",
+                    include_speaker=isolate_parent_query_speakers,
+                )
+            )
     key_samples: set[str] = set()
     key_utterances: set[str] = set()
     key_speakers: set[str] = set()
@@ -2522,7 +2548,7 @@ def extend_speech_native_binding(
         for source in sources:
             if not isinstance(source, Mapping):
                 raise PsluFlightError("speech-native parent key source is malformed")
-            exclude(source, "parent key source")
+            exclude(source, "parent key source", include_speaker=True)
             key_samples.add(str(source["sample_id"]))
             key_utterances.add(str(source["utterance_id"]))
             key_speakers.add(str(source["speaker_id"]))
@@ -2590,6 +2616,11 @@ def extend_speech_native_binding(
     ordered = sorted(
         selected_items, key=lambda item: (item["value_label"], item["sample_id"])
     )
+    parent_query_speaker_overlap = selected_speakers & parent_query_speakers
+    if isolate_parent_query_speakers and parent_query_speaker_overlap:
+        raise PsluFlightError(
+            "speech-native isolated extension overlaps a parent query speaker"
+        )
     identity = {
         "schema": "saea-speech-native-split-v1",
         "name": split_name,
@@ -2615,16 +2646,22 @@ def extend_speech_native_binding(
                 "query_count": len(ordered),
                 "excluded_parent_query_count": len(forbidden_samples - key_samples),
                 "excluded_key_example_count": len(key_samples),
+                "parent_query_speaker_isolation": isolate_parent_query_speakers,
+                "parent_query_speaker_overlap_count": len(
+                    parent_query_speaker_overlap
+                ),
             },
             "isolation_audit": {
                 "query_sample_count": len(forbidden_samples - key_samples) + len(ordered),
-                "query_speaker_count": len(forbidden_speakers - key_speakers)
-                + len(selected_speakers),
+                "query_speaker_count": len(parent_query_speakers | selected_speakers),
                 "key_example_count": len(key_samples),
                 "query_key_sample_overlap": 0,
                 "query_key_utterance_overlap": 0,
                 "query_key_normalized_sentence_overlap": 0,
                 "query_key_speaker_overlap": 0,
+                "parent_extension_query_speaker_overlap": len(
+                    parent_query_speaker_overlap
+                ),
             },
         }
     )
