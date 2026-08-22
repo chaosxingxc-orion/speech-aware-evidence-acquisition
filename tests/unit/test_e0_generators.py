@@ -311,6 +311,85 @@ class TestD1MediaSupplement:
         assert [item["id"] for item in receipt["items"]] == identity["sample_ids"]
         assert receipt["source_runtime_view_sha256"] == view["runtime_view_sha256"]
 
+    def test_supplement_and_runtime_view_accept_successor_discovery_split(self, tmp_path):
+        binding_path = self._binding(tmp_path)
+        binding = json.loads(binding_path.read_text(encoding="utf-8"))
+        extension_items = [
+            {
+                "sample_id": f"slurp:train:00000{index}:x{index}",
+                "media_relpath": f"datasets/slurp/slurp_real/x{index}.flac",
+                "value_label": "alarm",
+            }
+            for index in (4, 5)
+        ]
+        identity = {
+            "schema": "saea-speech-native-split-v1",
+            "name": "DISCOVERY-X2",
+            "seed": 11,
+            "sample_ids": [item["sample_id"] for item in extension_items],
+        }
+        binding["splits"]["DISCOVERY-X2"] = {
+            **identity,
+            "split_identity_hash": _sha(
+                json.dumps(
+                    identity,
+                    ensure_ascii=False,
+                    sort_keys=True,
+                    separators=(",", ":"),
+                ).encode("utf-8")
+            ),
+            "items": extension_items,
+        }
+        unsigned = {
+            key: value for key, value in binding.items() if key != "binding_sha256"
+        }
+        binding["binding_sha256"] = _sha(
+            json.dumps(
+                unsigned,
+                ensure_ascii=False,
+                sort_keys=True,
+                separators=(",", ":"),
+            ).encode("utf-8")
+        )
+        binding_path.write_text(json.dumps(binding), encoding="utf-8")
+        data_root = tmp_path / "data"
+        media_root = data_root / "datasets/slurp/slurp_real"
+        media_root.mkdir(parents=True)
+        for sample in ("q1", "q2", "x4", "x5", "k1"):
+            (media_root / f"{sample}.flac").write_bytes(sample.encode() * 100)
+        parent_d1 = tmp_path / "d1-identity.json"
+        parent_d1.write_bytes(b"immutable-parent-d1")
+
+        def media_probe(path):
+            raw = path.read_bytes()
+            return len(raw), _sha(raw), 1.25, 16000
+
+        supplement = build_d1_media_supplement(
+            binding_path=binding_path,
+            data_root=data_root,
+            parent_d1_path=parent_d1,
+            workers=2,
+            expected_query_count=4,
+            expected_audio_key_count=1,
+            media_probe=media_probe,
+        )
+        view = build_speech_native_runtime_view(
+            binding_path=binding_path,
+            supplement=supplement,
+            supplement_artifact_sha256="c" * 64,
+            selection_name="DISCOVERY-X2",
+            expected_count=2,
+            supplement_relpath="receipts/artifacts/d1-speech-native-x2.json",
+        )
+        receipt = build_speech_native_probe_receipt(view)
+
+        assert supplement["count"] == 5
+        assert view["split_name"] == "DISCOVERY-X2"
+        assert view["d1_media_supplement"] == (
+            "receipts/artifacts/d1-speech-native-x2.json"
+        )
+        assert receipt["split_role"] == "discovery"
+
 
 class TestD1ClosureFailures(TestD1):
     def test_layer_drift_refuses_closure(self, synthetic_world):

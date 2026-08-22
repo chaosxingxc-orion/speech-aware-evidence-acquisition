@@ -1,0 +1,5 @@
+{
+  "experiment_id": "SAEA-DISCOVERY-X108-preprocess",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "Label-free offline feature preprocessing for the frozen DISCOVERY-X108 SLURP train view. Materialize speech features only; do not read generated text, labels, transcripts, or task accuracy."
+}

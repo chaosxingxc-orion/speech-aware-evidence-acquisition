@@ -166,7 +166,7 @@ def build_d1_media_supplement(
     if not isinstance(splits, Mapping):
         raise IdentityError("speech-native binding lacks scientific splits")
     query_ids: set[str] = set()
-    for split_name in ("OPT-A36", "OPT-B18", "GATE18"):
+    for split_name in sorted(splits):
         split = splits.get(split_name)
         items = split.get("items") if isinstance(split, Mapping) else None
         if not isinstance(items, list):
@@ -290,6 +290,7 @@ _SPEECH_NATIVE_RUNTIME_COUNTS: Mapping[str, int] = {
     "GATE18": 18,
     "KEY18": 18,
     "TRAIN90": 90,
+    "DISCOVERY-X108": 108,
 }
 
 
@@ -298,9 +299,6 @@ def _speech_native_runtime_selection(
 ) -> tuple[list[Mapping[str, object]], int, str]:
     if selection_name == "ENG-GATE8":
         source = binding.get("engineering_gate")
-    elif selection_name in ("OPT-A36", "OPT-B18", "GATE18"):
-        splits = binding.get("splits")
-        source = splits.get(selection_name) if isinstance(splits, Mapping) else None
     elif selection_name in ("KEY18", "TRAIN90"):
         seed = binding.get("seed")
         if isinstance(seed, bool) or not isinstance(seed, int):
@@ -353,10 +351,8 @@ def _speech_native_runtime_selection(
         }
         return selected, seed, _canonical_sha256(identity)
     else:
-        raise IdentityError(
-            f"unknown speech-native runtime selection {selection_name!r}; expected one of "
-            f"{sorted(_SPEECH_NATIVE_RUNTIME_COUNTS)}"
-        )
+        splits = binding.get("splits")
+        source = splits.get(selection_name) if isinstance(splits, Mapping) else None
 
     if not isinstance(source, Mapping):
         raise IdentityError(f"speech-native binding lacks selection {selection_name!r}")
@@ -548,7 +544,11 @@ def build_speech_native_probe_receipt(
     items = runtime_view.get("items")
     if (
         not isinstance(split_name, str)
-        or split_name not in _SPEECH_NATIVE_RUNTIME_COUNTS
+        or not split_name
+        or any(
+            character not in "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-"
+            for character in split_name
+        )
         or not isinstance(items, list)
         or not items
     ):

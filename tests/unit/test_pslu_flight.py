@@ -40,6 +40,7 @@ from speech_aware_evidence_acquisition.rails.probes.pslu_flight import (
     _source_references_ontology_miner,
     assert_never_calls_ontology_miner,
     build_speech_native_binding,
+    extend_speech_native_binding,
     load_pslu_rosters,
     load_pslu_sample_manifest,
     load_speech_native_engineering_gate,
@@ -1711,7 +1712,7 @@ def test_model_free_read_accepts_complete_full_branch_action_support(tmp_path):
 def _binding_material():
     material = []
     for scenario_index, scenario in enumerate(("alarm", "email")):
-        for item_index in range(12):
+        for item_index in range(24):
             speaker = f"speaker-{scenario_index}-{item_index}"
             sample_id = f"slurp:train:{scenario_index:02d}{item_index:04d}:audio-{scenario_index}-{item_index}"
             material.append(
@@ -1730,6 +1731,98 @@ def _binding_material():
                 )
             )
     return tuple(material)
+
+
+def test_speech_native_successor_binding_preserves_keys_and_adds_isolated_split():
+    material = _binding_material()
+    base = build_speech_native_binding(
+        material,
+        seed=20260821,
+        expected_scenarios=("alarm", "email"),
+        opt_a_per_scenario=2,
+        opt_b_per_scenario=1,
+        gate_per_scenario=1,
+        key_examples_per_scenario=5,
+    )
+    successor = extend_speech_native_binding(
+        base,
+        material,
+        seed=20260822,
+        split_name="DISCOVERY-X12",
+        per_scenario=6,
+        expected_scenarios=("alarm", "email"),
+    )
+
+    assert successor["key_cards"] == base["key_cards"]
+    assert successor["key_material"] == base["key_material"]
+    assert {
+        name: successor["splits"][name] for name in base["splits"]
+    } == base["splits"]
+    extension = successor["splits"]["DISCOVERY-X12"]
+    assert len(extension["items"]) == 12
+    assert successor["parent_binding_sha256"] == base["binding_sha256"]
+
+    old_items = [
+        item for split in base["splits"].values() for item in split["items"]
+    ]
+    key_sources = [
+        source for key in base["key_material"] for source in key["sources"]
+    ]
+    for field in (
+        "sample_id",
+        "utterance_id",
+        "speaker_id",
+        "normalized_sentence",
+    ):
+        excluded = {item[field] for item in (*old_items, *key_sources)}
+        selected = {item[field] for item in extension["items"]}
+        assert selected.isdisjoint(excluded)
+    assert successor["isolation_audit"]["query_sample_count"] == 20
+    assert successor["isolation_audit"]["query_key_speaker_overlap"] == 0
+
+
+def test_speech_native_successor_groups_repeated_speakers_within_one_split():
+    base = build_speech_native_binding(
+        _binding_material(),
+        seed=20260821,
+        expected_scenarios=("alarm", "email"),
+        opt_a_per_scenario=2,
+        opt_b_per_scenario=1,
+        gate_per_scenario=1,
+        key_examples_per_scenario=5,
+    )
+    extension_material = tuple(
+        SlurpTrainMaterial(
+            utterance_id=f"ext-{scenario}-{index}",
+            scenario=scenario,
+            action="act",
+            sentence=f"new isolated {scenario} command {index}",
+            recordings=(
+                SlurpTrainRecording(
+                    sample_id=f"slurp:train:ext-{scenario}-{index}:audio-{index}",
+                    media_relpath=f"datasets/slurp/slurp_real/ext-{scenario}-{index}.flac",
+                    speaker_id="extension-shared-speaker",
+                ),
+            ),
+        )
+        for scenario in ("alarm", "email")
+        for index in range(6)
+    )
+
+    successor = extend_speech_native_binding(
+        base,
+        extension_material,
+        seed=20260822,
+        split_name="DISCOVERY-X12",
+        per_scenario=6,
+        expected_scenarios=("alarm", "email"),
+    )
+
+    extension = successor["splits"]["DISCOVERY-X12"]
+    assert len(extension["items"]) == 12
+    assert {item["speaker_id"] for item in extension["items"]} == {
+        "extension-shared-speaker"
+    }
 
 
 def test_speech_native_binding_is_stratified_and_query_key_isolated():

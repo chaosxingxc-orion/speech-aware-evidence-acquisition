@@ -96,7 +96,7 @@ Use speaker-isolated cross-validation across the exposed discovery queries. Repo
 
 Do not expand by default. Expand only if the completed A0/A1 read cannot support a relative controller conclusion because the best admissible policy differs from M1 by fewer than three cases, the direction is not reproduced across at least two speaker-isolated folds, or fewer than five queries expose a helpful-or-harmful branch outcome.
 
-If any trigger holds, freeze `DISCOVERY-X108`: six unused SLURP train queries per scenario, at least 108 queries total, isolated from all key material, OPT-A36, OPT-B18, consumed GATE18, and the future validation gate by utterance, audio, and speaker. Materialize its speech packets offline into the WSL ext4 feature root before starting the mmproj-free server. Run the same full-action policy-support rollout; do not introduce a new prompt, key representation, model, or action after reading it. `DISCOVERY-X108` remains discovery data and cannot serve as validation evidence.
+If any trigger holds, freeze `DISCOVERY-X108`: six unused SLURP train queries per scenario, at least 108 queries total, isolated from all key material, OPT-A36, OPT-B18, consumed GATE18, and the future validation gate by utterance, audio, and speaker. Speaker isolation is across these sets; repeated utterances from one speaker inside `DISCOVERY-X108` are allowed and must stay in the same policy-analysis fold. Materialize its speech packets offline into the WSL ext4 feature root before starting the mmproj-free server. Run the same full-action policy-support rollout; do not introduce a new prompt, key representation, model, or action after reading it. `DISCOVERY-X108` remains discovery data and cannot serve as validation evidence.
 
 ### A2 — new unread train gate
 

@@ -1,0 +1,2803 @@
+{
+  "binding_sha256": "4c42c3a7d6cd1e8592e8d44df718524490fdc26eea51cddd7c13a36a8e7a400f",
+  "engineering_gate": {
+    "items": [
+      {
+        "media_relpath": "datasets/slurp/slurp_real/audio-1489503509.flac",
+        "sample_id": "slurp:train:001206:audio-1489503509"
+      },
+      {
+        "media_relpath": "datasets/slurp/slurp_real/audio-1488986552.flac",
+        "sample_id": "slurp:train:001338:audio-1488986552"
+      },
+      {
+        "media_relpath": "datasets/slurp/slurp_real/audio--1504195254-headset.flac",
+        "sample_id": "slurp:train:000573:audio--1504195254-headset"
+      },
+      {
+        "media_relpath": "datasets/slurp/slurp_real/audio-1490195663.flac",
+        "sample_id": "slurp:train:004342:audio-1490195663"
+      },
+      {
+        "media_relpath": "datasets/slurp/slurp_real/audio-1497555644-headset.flac",
+        "sample_id": "slurp:train:007175:audio-1497555644-headset"
+      },
+      {
+        "media_relpath": "datasets/slurp/slurp_real/audio-1490281647.flac",
+        "sample_id": "slurp:train:008908:audio-1490281647"
+      },
+      {
+        "media_relpath": "datasets/slurp/slurp_real/audio-1499690404-headset.flac",
+        "sample_id": "slurp:train:010103:audio-1499690404-headset"
+      },
+      {
+        "media_relpath": "datasets/slurp/slurp_real/audio-1490262370-headset.flac",
+        "sample_id": "slurp:train:010183:audio-1490262370-headset"
+      }
+    ],
+    "name": "ENG-GATE8",
+    "sample_ids": [
+      "slurp:train:001206:audio-1489503509",
+      "slurp:train:001338:audio-1488986552",
+      "slurp:train:000573:audio--1504195254-headset",
+      "slurp:train:004342:audio-1490195663",
+      "slurp:train:007175:audio-1497555644-headset",
+      "slurp:train:008908:audio-1490281647",
+      "slurp:train:010103:audio-1499690404-headset",
+      "slurp:train:010183:audio-1490262370-headset"
+    ],
+    "schema": "saea-speech-native-split-v1",
+    "seed": 20260821,
+    "split_identity_hash": "571e35a64ab523856533a004d5c01d8643eda01498bca88550026f6b453dd7d8"
+  },
+  "extension_audit": {
+    "excluded_key_example_count": 90,
+    "excluded_parent_query_count": 72,
+    "per_scenario": 6,
+    "query_count": 108,
+    "seed": 20260822,
+    "split_name": "DISCOVERY-X108"
+  },
+  "isolation_audit": {
+    "key_example_count": 90,
+    "query_key_normalized_sentence_overlap": 0,
+    "query_key_sample_overlap": 0,
+    "query_key_speaker_overlap": 0,
+    "query_key_utterance_overlap": 0,
+    "query_sample_count": 180,
+    "query_speaker_count": 95
+  },
+  "key_cards": [
+    {
+      "contrastive_boundary": "Exclude calendar appointments and generic time questions.",
+      "definition": "Commands that create, change, inspect, or remove alarms and wake-up reminders.",
+      "key_id": "K001",
+      "positive_examples": [
+        "please set an alarm at six am",
+        "show me my alarms",
+        "remove alarm if any",
+        "teach children to never answer the door when home alone",
+        "cancel my eight am alarm"
+      ],
+      "value_label": "alarm"
+    },
+    {
+      "contrastive_boundary": "Exclude choosing music content and generic play or pause operations.",
+      "definition": "Commands that control audio volume, muting, or the active audio device.",
+      "key_id": "K002",
+      "positive_examples": [
+        "hey turn the volume high",
+        "raise the volume of the speakers",
+        "turn the volume off",
+        "volume louder please",
+        "mute"
+      ],
+      "value_label": "audio"
+    },
+    {
+      "contrastive_boundary": "Exclude wake-up alarms and task-list entries.",
+      "definition": "Commands that create, change, inspect, or remove calendar events.",
+      "key_id": "K003",
+      "positive_examples": [
+        "how many meetings do i have today from nine to five pm",
+        "delete next event",
+        "set reminder for date night with husband next friday",
+        "what's the name of the event",
+        "open calendar"
+      ],
+      "value_label": "calendar"
+    },
+    {
+      "contrastive_boundary": "Exclude restaurant delivery and general factual questions.",
+      "definition": "Commands asking for recipes, ingredients, cooking steps, or cooking timers.",
+      "key_id": "K004",
+      "positive_examples": [
+        "how long will it take to finish cooking my meal",
+        "what is a good substitute for butter",
+        "tell me the recipe for yellow rice",
+        "show me cooking websites",
+        "how long should i boil the eggs"
+      ],
+      "value_label": "cooking"
+    },
+    {
+      "contrastive_boundary": "Exclude alarms, calendar events, and weather forecasts.",
+      "definition": "Commands asking for the current date, time, day, or time in another place.",
+      "key_id": "K005",
+      "positive_examples": [
+        "switch to los angeles time",
+        "what is the time difference between here and dakar",
+        "change mountain standard to pacific",
+        "tell me what time it is right now",
+        "current time please"
+      ],
+      "value_label": "datetime"
+    },
+    {
+      "contrastive_boundary": "Exclude social or instant messages.",
+      "definition": "Commands that read, search, compose, send, or manage email messages.",
+      "key_id": "K006",
+      "positive_examples": [
+        "check email from john",
+        "read me the last email from stefan and oil change",
+        "i need to send an email to michael",
+        "between ten pm to nine am all emails received is to be replied to",
+        "what's his number"
+      ],
+      "value_label": "email"
+    },
+    {
+      "contrastive_boundary": "Use a specialist key whenever a specific domain is expressed.",
+      "definition": "General assistant-control commands and requests that do not fit a specialist domain.",
+      "key_id": "K007",
+      "positive_examples": [
+        "what is the meaning of life",
+        "plan me a holiday trip",
+        "olly i am tired",
+        "what is my astrology report for today",
+        "let me know when charges hit my credit card"
+      ],
+      "value_label": "general"
+    },
+    {
+      "contrastive_boundary": "Exclude media playback and non-device factual questions.",
+      "definition": "Commands that inspect or control connected home devices, lights, heating, or appliances.",
+      "key_id": "K008",
+      "positive_examples": [
+        "change the lights to red",
+        "turn all lights off during the day",
+        "turn the lights up",
+        "dim the lights",
+        "i can't see let's make it brighter"
+      ],
+      "value_label": "iot"
+    },
+    {
+      "contrastive_boundary": "Exclude calendar events and reminders implemented as alarms.",
+      "definition": "Commands that create, inspect, change, or remove shopping and task list entries.",
+      "key_id": "K009",
+      "positive_examples": [
+        "list things on my list",
+        "take joe of the list",
+        "can you please update me on my lists",
+        "can you remove the last list for me",
+        "forget this list"
+      ],
+      "value_label": "lists"
+    },
+    {
+      "contrastive_boundary": "Exclude pure volume control and generic media transport controls.",
+      "definition": "Commands about songs, artists, albums, playlists, and music playback choices.",
+      "key_id": "K010",
+      "positive_examples": [
+        "what is this song",
+        "i like the background song",
+        "please save this song to my favorites",
+        "please keep everything i have on this song",
+        "review"
+      ],
+      "value_label": "music"
+    },
+    {
+      "contrastive_boundary": "Exclude weather forecasts and open-domain factual questions.",
+      "definition": "Commands asking for news reports, headlines, or updates on current events.",
+      "key_id": "K011",
+      "positive_examples": [
+        "whats going on in japan",
+        "i'd like news on donald trump",
+        "fire in columbus ohio",
+        "news updates",
+        "tell me about blank"
+      ],
+      "value_label": "news"
+    },
+    {
+      "contrastive_boundary": "Exclude selecting music content and changing audio volume.",
+      "definition": "Commands that start, pause, resume, stop, or navigate playable media.",
+      "key_id": "K012",
+      "positive_examples": [
+        "go to the next episode",
+        "play last reason podcast",
+        "aib podcast on kashmirstart it",
+        "play some country music",
+        "play classical channel in sirius"
+      ],
+      "value_label": "play"
+    },
+    {
+      "contrastive_boundary": "Exclude recommendations and commands that operate a service or device.",
+      "definition": "Open factual questions seeking an answer rather than a device or service action.",
+      "key_id": "K013",
+      "positive_examples": [
+        "what is the longest river in spain",
+        "when was albert einstein born",
+        "show me popular exchange rates",
+        "what is the point of a banana",
+        "when was frank sinatra born"
+      ],
+      "value_label": "qa"
+    },
+    {
+      "contrastive_boundary": "Exclude direct factual questions and explicit takeaway orders.",
+      "definition": "Commands asking the assistant to recommend an option, place, or activity.",
+      "key_id": "K014",
+      "positive_examples": [
+        "find events near by",
+        "what bands are playing close by",
+        "what events are happening in los angeles",
+        "where can i get something to eat by the art museum",
+        "what is there to do in new york city"
+      ],
+      "value_label": "recommendation"
+    },
+    {
+      "contrastive_boundary": "Exclude email messages.",
+      "definition": "Commands that read, compose, send, or manage social and instant messages.",
+      "key_id": "K015",
+      "positive_examples": [
+        "tweet my complaint to @nsa",
+        "hello can you give the contact details for a particular service centre",
+        "write a complaint to best buy",
+        "tweet to the bbb that burger king is too expensive",
+        "will you please post this to my facebook i love you"
+      ],
+      "value_label": "social"
+    },
+    {
+      "contrastive_boundary": "Exclude cooking instructions and general place recommendations.",
+      "definition": "Commands for finding, ordering, or tracking prepared food for delivery or pickup.",
+      "key_id": "K016",
+      "positive_examples": [
+        "order a pizza from pizza express",
+        "does chinese deliver",
+        "can i order takeaway from spanish place",
+        "please see if chili's has delivery",
+        "check the status of my order"
+      ],
+      "value_label": "takeaway"
+    },
+    {
+      "contrastive_boundary": "Exclude weather and generic time questions.",
+      "definition": "Commands about routes, traffic, travel duration, public transit, or vehicle travel.",
+      "key_id": "K017",
+      "positive_examples": [
+        "book a taxi to start from here",
+        "i need a taxi to pick me up at the house and take me downtown",
+        "can you call an uber for me",
+        "book a train for me",
+        "tell me all the distance locations and times"
+      ],
+      "value_label": "transport"
+    },
+    {
+      "contrastive_boundary": "Exclude news, transport status, and generic date or time questions.",
+      "definition": "Commands asking for weather conditions, forecasts, temperature, rain, or wind.",
+      "key_id": "K018",
+      "positive_examples": [
+        "is it hot outside right now im hawaii",
+        "please find today's forecast",
+        "is it going to snow today",
+        "is it going to be hot in two hours",
+        "can you let me know the weather of alabama tomorrow"
+      ],
+      "value_label": "weather"
+    }
+  ],
+  "key_material": [
+    {
+      "audio_key_source_sample_id": "slurp:train:003985:audio--1506521731",
+      "key_id": "K001",
+      "sources": [
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio--1506521731.flac",
+          "normalized_sentence": "please set an alarm at six am",
+          "sample_id": "slurp:train:003985:audio--1506521731",
+          "sentence": "please set an alarm at six am",
+          "speaker_id": "FE-495",
+          "utterance_id": "3985"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1497267884-headset.flac",
+          "normalized_sentence": "show me my alarms",
+          "sample_id": "slurp:train:001633:audio-1497267884-headset",
+          "sentence": "show me my alarms",
+          "speaker_id": "FO-179",
+          "utterance_id": "1633"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1497191704-headset.flac",
+          "normalized_sentence": "remove alarm if any",
+          "sample_id": "slurp:train:005115:audio-1497191704-headset",
+          "sentence": "remove alarm if any",
+          "speaker_id": "MO-142",
+          "utterance_id": "5115"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1490704981-headset.flac",
+          "normalized_sentence": "teach children to never answer the door when home alone",
+          "sample_id": "slurp:train:004584:audio-1490704981-headset",
+          "sentence": "teach children to never answer the door when home alone",
+          "speaker_id": "ME-151",
+          "utterance_id": "4584"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1497023717.flac",
+          "normalized_sentence": "cancel my eight am alarm",
+          "sample_id": "slurp:train:000561:audio-1497023717",
+          "sentence": "cancel my eight am alarm",
+          "speaker_id": "FO-171",
+          "utterance_id": "561"
+        }
+      ]
+    },
+    {
+      "audio_key_source_sample_id": "slurp:train:005580:audio-1490107960",
+      "key_id": "K002",
+      "sources": [
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1490107960.flac",
+          "normalized_sentence": "hey turn the volume high",
+          "sample_id": "slurp:train:005580:audio-1490107960",
+          "sentence": "hey turn the volume high",
+          "speaker_id": "MO-142",
+          "utterance_id": "5580"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1501415236.flac",
+          "normalized_sentence": "raise the volume of the speakers",
+          "sample_id": "slurp:train:004341:audio-1501415236",
+          "sentence": "raise the volume of the speakers",
+          "speaker_id": "FO-438",
+          "utterance_id": "4341"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1434528838-headset.flac",
+          "normalized_sentence": "turn the volume off",
+          "sample_id": "slurp:train:003073:audio-1434528838-headset",
+          "sentence": "turn the volume off",
+          "speaker_id": "ME-218",
+          "utterance_id": "3073"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1488969470.flac",
+          "normalized_sentence": "volume louder please",
+          "sample_id": "slurp:train:000600:audio-1488969470",
+          "sentence": "volume louder please",
+          "speaker_id": "FO-122",
+          "utterance_id": "600"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1494606275-headset.flac",
+          "normalized_sentence": "mute",
+          "sample_id": "slurp:train:000316:audio-1494606275-headset",
+          "sentence": "mute",
+          "speaker_id": "UNK-331",
+          "utterance_id": "316"
+        }
+      ]
+    },
+    {
+      "audio_key_source_sample_id": "slurp:train:007590:audio-1490359340",
+      "key_id": "K003",
+      "sources": [
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1490359340.flac",
+          "normalized_sentence": "how many meetings do i have today from nine to five pm",
+          "sample_id": "slurp:train:007590:audio-1490359340",
+          "sentence": "how many meetings do i have today from nine to five pm",
+          "speaker_id": "ME-354",
+          "utterance_id": "7590"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1497439489-headset.flac",
+          "normalized_sentence": "delete next event",
+          "sample_id": "slurp:train:006996:audio-1497439489-headset",
+          "sentence": "delete next event",
+          "speaker_id": "MO-190",
+          "utterance_id": "6996"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1488971253.flac",
+          "normalized_sentence": "set reminder for date night with husband next friday",
+          "sample_id": "slurp:train:007602:audio-1488971253",
+          "sentence": "set reminder for date night with husband next friday",
+          "speaker_id": "FO-122",
+          "utterance_id": "7602"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1497029599-headset.flac",
+          "normalized_sentence": "what's the name of the event",
+          "sample_id": "slurp:train:006777:audio-1497029599-headset",
+          "sentence": "what's the name of the event",
+          "speaker_id": "MO-142",
+          "utterance_id": "6777"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1434535172.flac",
+          "normalized_sentence": "open calendar",
+          "sample_id": "slurp:train:007088:audio-1434535172",
+          "sentence": "open calendar",
+          "speaker_id": "ME-220",
+          "utterance_id": "7088"
+        }
+      ]
+    },
+    {
+      "audio_key_source_sample_id": "slurp:train:010230:audio-1500036487",
+      "key_id": "K004",
+      "sources": [
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1500036487.flac",
+          "normalized_sentence": "how long will it take to finish cooking my meal",
+          "sample_id": "slurp:train:010230:audio-1500036487",
+          "sentence": "how long will it take to finish cooking my meal",
+          "speaker_id": "FO-419",
+          "utterance_id": "10230"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1494606050.flac",
+          "normalized_sentence": "what is a good substitute for butter",
+          "sample_id": "slurp:train:010187:audio-1494606050",
+          "sentence": "what is a good substitute for butter",
+          "speaker_id": "UNK-331",
+          "utterance_id": "10187"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1488992302.flac",
+          "normalized_sentence": "tell me the recipe for yellow rice",
+          "sample_id": "slurp:train:010035:audio-1488992302",
+          "sentence": "tell me the recipe for yellow rice",
+          "speaker_id": "FE-128",
+          "utterance_id": "10035"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1490705916-headset.flac",
+          "normalized_sentence": "show me cooking websites",
+          "sample_id": "slurp:train:010136:audio-1490705916-headset",
+          "sentence": "show me cooking websites",
+          "speaker_id": "ME-151",
+          "utterance_id": "10136"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1500039323.flac",
+          "normalized_sentence": "how long should i boil the eggs",
+          "sample_id": "slurp:train:009911:audio-1500039323",
+          "sentence": "how long should i boil the eggs",
+          "speaker_id": "FO-420",
+          "utterance_id": "9911"
+        }
+      ]
+    },
+    {
+      "audio_key_source_sample_id": "slurp:train:005932:audio-1492784374",
+      "key_id": "K005",
+      "sources": [
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1492784374.flac",
+          "normalized_sentence": "switch to los angeles time",
+          "sample_id": "slurp:train:005932:audio-1492784374",
+          "sentence": "switch to los angeles time",
+          "speaker_id": "UNK-323",
+          "utterance_id": "5932"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1488974067.flac",
+          "normalized_sentence": "what is the time difference between here and dakar",
+          "sample_id": "slurp:train:003288:audio-1488974067",
+          "sentence": "what is the time difference between here and dakar",
+          "speaker_id": "FO-124",
+          "utterance_id": "3288"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1490960259.flac",
+          "normalized_sentence": "change mountain standard to pacific",
+          "sample_id": "slurp:train:004213:audio-1490960259",
+          "sentence": "change mountain standard to pacific",
+          "speaker_id": "FO-158",
+          "utterance_id": "4213"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1500036596.flac",
+          "normalized_sentence": "tell me what time it is right now",
+          "sample_id": "slurp:train:000886:audio-1500036596",
+          "sentence": "tell me what time it is right now",
+          "speaker_id": "FO-420",
+          "utterance_id": "886"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1501751630-headset.flac",
+          "normalized_sentence": "current time please",
+          "sample_id": "slurp:train:002482:audio-1501751630-headset",
+          "sentence": "current time please",
+          "speaker_id": "FE-452",
+          "utterance_id": "2482"
+        }
+      ]
+    },
+    {
+      "audio_key_source_sample_id": "slurp:train:017180:audio-1497369179",
+      "key_id": "K006",
+      "sources": [
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1497369179.flac",
+          "normalized_sentence": "check email from john",
+          "sample_id": "slurp:train:017180:audio-1497369179",
+          "sentence": "check email from john",
+          "speaker_id": "MO-185",
+          "utterance_id": "17180"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1488634540.flac",
+          "normalized_sentence": "read me the last email from stefan and oil change",
+          "sample_id": "slurp:train:015751:audio-1488634540",
+          "sentence": "read me the last email from stefan and oil change",
+          "speaker_id": "MO-051",
+          "utterance_id": "15751"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio--1506078366-headset.flac",
+          "normalized_sentence": "i need to send an email to michael",
+          "sample_id": "slurp:train:016996:audio--1506078366-headset",
+          "sentence": "i need to send an email to michael",
+          "speaker_id": "MO-494",
+          "utterance_id": "16996"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio--1506521065.flac",
+          "normalized_sentence": "between ten pm to nine am all emails received is to be replied to",
+          "sample_id": "slurp:train:016116:audio--1506521065",
+          "sentence": "between ten pm to nine am all emails received is to be replied to",
+          "speaker_id": "FE-495",
+          "utterance_id": "16116"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1498568565-headset.flac",
+          "normalized_sentence": "what's his number",
+          "sample_id": "slurp:train:015772:audio-1498568565-headset",
+          "sentence": "what's his number",
+          "speaker_id": "FE-368",
+          "utterance_id": "15772"
+        }
+      ]
+    },
+    {
+      "audio_key_source_sample_id": "slurp:train:013141:audio-1501752287",
+      "key_id": "K007",
+      "sources": [
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1501752287.flac",
+          "normalized_sentence": "what is the meaning of life",
+          "sample_id": "slurp:train:013141:audio-1501752287",
+          "sentence": "what is the meaning of life",
+          "speaker_id": "FE-452",
+          "utterance_id": "13141"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1490106263-headset.flac",
+          "normalized_sentence": "plan me a holiday trip",
+          "sample_id": "slurp:train:013184:audio-1490106263-headset",
+          "sentence": "plan me a holiday trip",
+          "speaker_id": "UNK-343",
+          "utterance_id": "13184"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1488969966.flac",
+          "normalized_sentence": "olly i am tired",
+          "sample_id": "slurp:train:006299:audio-1488969966",
+          "sentence": "olly i am tired",
+          "speaker_id": "FO-122",
+          "utterance_id": "6299"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1497264708-headset.flac",
+          "normalized_sentence": "what is my astrology report for today",
+          "sample_id": "slurp:train:013251:audio-1497264708-headset",
+          "sentence": "what is my astrology report for today",
+          "speaker_id": "FE-178",
+          "utterance_id": "13251"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1501751420-headset.flac",
+          "normalized_sentence": "let me know when charges hit my credit card",
+          "sample_id": "slurp:train:013453:audio-1501751420-headset",
+          "sentence": "let me know when charges hit my credit card",
+          "speaker_id": "FE-452",
+          "utterance_id": "13453"
+        }
+      ]
+    },
+    {
+      "audio_key_source_sample_id": "slurp:train:003776:audio-1501752733-headset",
+      "key_id": "K008",
+      "sources": [
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1501752733-headset.flac",
+          "normalized_sentence": "change the lights to red",
+          "sample_id": "slurp:train:003776:audio-1501752733-headset",
+          "sentence": "change the lights to red",
+          "speaker_id": "FE-452",
+          "utterance_id": "3776"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1488973766.flac",
+          "normalized_sentence": "turn all lights off during the day",
+          "sample_id": "slurp:train:001648:audio-1488973766",
+          "sentence": "turn all lights off during the day",
+          "speaker_id": "FO-124",
+          "utterance_id": "1648"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1490706084-headset.flac",
+          "normalized_sentence": "turn the lights up",
+          "sample_id": "slurp:train:002371:audio-1490706084-headset",
+          "sentence": "turn the lights up",
+          "speaker_id": "ME-151",
+          "utterance_id": "2371"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1497367838.flac",
+          "normalized_sentence": "dim the lights",
+          "sample_id": "slurp:train:000160:audio-1497367838",
+          "sentence": "dim the lights",
+          "speaker_id": "MO-185",
+          "utterance_id": "160"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1434539767.flac",
+          "normalized_sentence": "i can't see let's make it brighter",
+          "sample_id": "slurp:train:003518:audio-1434539767",
+          "sentence": "i can't see let's make it brighter",
+          "speaker_id": "MO-222",
+          "utterance_id": "3518"
+        }
+      ]
+    },
+    {
+      "audio_key_source_sample_id": "slurp:train:010448:audio-1492782836",
+      "key_id": "K009",
+      "sources": [
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1492782836.flac",
+          "normalized_sentence": "list things on my list",
+          "sample_id": "slurp:train:010448:audio-1492782836",
+          "sentence": "list things on my list",
+          "speaker_id": "UNK-323",
+          "utterance_id": "10448"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1497439045.flac",
+          "normalized_sentence": "take joe of the list",
+          "sample_id": "slurp:train:010725:audio-1497439045",
+          "sentence": "take joe of the list",
+          "speaker_id": "MO-190",
+          "utterance_id": "10725"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1494422520-headset.flac",
+          "normalized_sentence": "can you please update me on my lists",
+          "sample_id": "slurp:train:010841:audio-1494422520-headset",
+          "sentence": "can you please update me on my lists",
+          "speaker_id": "UNK-328",
+          "utterance_id": "10841"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1501693743-headset.flac",
+          "normalized_sentence": "can you remove the last list for me",
+          "sample_id": "slurp:train:010917:audio-1501693743-headset",
+          "sentence": "can you remove the last list for me",
+          "speaker_id": "FO-445",
+          "utterance_id": "10917"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1490201789.flac",
+          "normalized_sentence": "forget this list",
+          "sample_id": "slurp:train:010781:audio-1490201789",
+          "sentence": "forget this list",
+          "speaker_id": "FE-348",
+          "utterance_id": "10781"
+        }
+      ]
+    },
+    {
+      "audio_key_source_sample_id": "slurp:train:000223:audio-1488560641",
+      "key_id": "K010",
+      "sources": [
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1488560641.flac",
+          "normalized_sentence": "what is this song",
+          "sample_id": "slurp:train:000223:audio-1488560641",
+          "sentence": "what is this song",
+          "speaker_id": "MO-044",
+          "utterance_id": "223"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1497518118-headset.flac",
+          "normalized_sentence": "i like the background song",
+          "sample_id": "slurp:train:000948:audio-1497518118-headset",
+          "sentence": "i like the background song",
+          "speaker_id": "UNK-225",
+          "utterance_id": "948"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1500899700.flac",
+          "normalized_sentence": "please save this song to my favorites",
+          "sample_id": "slurp:train:001054:audio-1500899700",
+          "sentence": "please save this song to my favorites",
+          "speaker_id": "MO-423",
+          "utterance_id": "1054"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1494607410.flac",
+          "normalized_sentence": "please keep everything i have on this song",
+          "sample_id": "slurp:train:003716:audio-1494607410",
+          "sentence": "please keep everything i have on this song",
+          "speaker_id": "UNK-331",
+          "utterance_id": "3716"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1490203449.flac",
+          "normalized_sentence": "review",
+          "sample_id": "slurp:train:004873:audio-1490203449",
+          "sentence": "review",
+          "speaker_id": "FE-348",
+          "utterance_id": "4873"
+        }
+      ]
+    },
+    {
+      "audio_key_source_sample_id": "slurp:train:004884:audio-1490107051-headset",
+      "key_id": "K011",
+      "sources": [
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1490107051-headset.flac",
+          "normalized_sentence": "whats going on in japan",
+          "sample_id": "slurp:train:004884:audio-1490107051-headset",
+          "sentence": "whats going on in japan",
+          "speaker_id": "MO-142",
+          "utterance_id": "4884"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1497619926.flac",
+          "normalized_sentence": "i'd like news on donald trump",
+          "sample_id": "slurp:train:005865:audio-1497619926",
+          "sentence": "i'd like news on donald trump",
+          "speaker_id": "FO-231",
+          "utterance_id": "5865"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1502302596.flac",
+          "normalized_sentence": "fire in columbus ohio",
+          "sample_id": "slurp:train:004676:audio-1502302596",
+          "sentence": "fire in columbus ohio",
+          "speaker_id": "FO-122",
+          "utterance_id": "4676"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1497264345-headset.flac",
+          "normalized_sentence": "news updates",
+          "sample_id": "slurp:train:004022:audio-1497264345-headset",
+          "sentence": "news updates",
+          "speaker_id": "FE-178",
+          "utterance_id": "4022"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1488984862.flac",
+          "normalized_sentence": "tell me about blank",
+          "sample_id": "slurp:train:002640:audio-1488984862",
+          "sentence": "tell me about blank",
+          "speaker_id": "FO-126",
+          "utterance_id": "2640"
+        }
+      ]
+    },
+    {
+      "audio_key_source_sample_id": "slurp:train:011299:audio-1501753698",
+      "key_id": "K012",
+      "sources": [
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1501753698.flac",
+          "normalized_sentence": "go to the next episode",
+          "sample_id": "slurp:train:011299:audio-1501753698",
+          "sentence": "go to the next episode",
+          "speaker_id": "FE-452",
+          "utterance_id": "11299"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1500899563.flac",
+          "normalized_sentence": "play last reason podcast",
+          "sample_id": "slurp:train:011301:audio-1500899563",
+          "sentence": "play last reason podcast",
+          "speaker_id": "FO-425",
+          "utterance_id": "11301"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1492785051.flac",
+          "normalized_sentence": "aib podcast on kashmirstart it",
+          "sample_id": "slurp:train:011362:audio-1492785051",
+          "sentence": "aib podcast on kashmirstart it",
+          "speaker_id": "UNK-323",
+          "utterance_id": "11362"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio--1506079186.flac",
+          "normalized_sentence": "play some country music",
+          "sample_id": "slurp:train:009419:audio--1506079186",
+          "sentence": "play some country music",
+          "speaker_id": "MO-494",
+          "utterance_id": "9419"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1497558532-headset.flac",
+          "normalized_sentence": "play classical channel in sirius",
+          "sample_id": "slurp:train:009422:audio-1497558532-headset",
+          "sentence": "play classical channel in sirius",
+          "speaker_id": "FO-229",
+          "utterance_id": "9422"
+        }
+      ]
+    },
+    {
+      "audio_key_source_sample_id": "slurp:train:014908:audio-1500035525",
+      "key_id": "K013",
+      "sources": [
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1500035525.flac",
+          "normalized_sentence": "what is the longest river in spain",
+          "sample_id": "slurp:train:014908:audio-1500035525",
+          "sentence": "what is the longest river in spain",
+          "speaker_id": "FO-420",
+          "utterance_id": "14908"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1497191671.flac",
+          "normalized_sentence": "when was albert einstein born",
+          "sample_id": "slurp:train:014856:audio-1497191671",
+          "sentence": "when was albert einstein born",
+          "speaker_id": "MO-142",
+          "utterance_id": "14856"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1501753586-headset.flac",
+          "normalized_sentence": "show me popular exchange rates",
+          "sample_id": "slurp:train:014005:audio-1501753586-headset",
+          "sentence": "show me popular exchange rates",
+          "speaker_id": "FE-452",
+          "utterance_id": "14005"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1490703465-headset.flac",
+          "normalized_sentence": "what is the point of a banana",
+          "sample_id": "slurp:train:013958:audio-1490703465-headset",
+          "sentence": "what is the point of a banana",
+          "speaker_id": "ME-151",
+          "utterance_id": "13958"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1501692532.flac",
+          "normalized_sentence": "when was frank sinatra born",
+          "sample_id": "slurp:train:013001:audio-1501692532",
+          "sentence": "when was frank sinatra born",
+          "speaker_id": "FO-445",
+          "utterance_id": "13001"
+        }
+      ]
+    },
+    {
+      "audio_key_source_sample_id": "slurp:train:011578:audio-1501752978-headset",
+      "key_id": "K014",
+      "sources": [
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1501752978-headset.flac",
+          "normalized_sentence": "find events near by",
+          "sample_id": "slurp:train:011578:audio-1501752978-headset",
+          "sentence": "find events near by",
+          "speaker_id": "FE-452",
+          "utterance_id": "11578"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1499697765.flac",
+          "normalized_sentence": "what bands are playing close by",
+          "sample_id": "slurp:train:011571:audio-1499697765",
+          "sentence": "what bands are playing close by",
+          "speaker_id": "MO-418",
+          "utterance_id": "11571"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1497437434.flac",
+          "normalized_sentence": "what events are happening in los angeles",
+          "sample_id": "slurp:train:011929:audio-1497437434",
+          "sentence": "what events are happening in los angeles",
+          "speaker_id": "MO-190",
+          "utterance_id": "11929"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1500388375-headset.flac",
+          "normalized_sentence": "where can i get something to eat by the art museum",
+          "sample_id": "slurp:train:012049:audio-1500388375-headset",
+          "sentence": "where can i get something to eat by the art museum",
+          "speaker_id": "MO-422",
+          "utterance_id": "12049"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1434527652-headset.flac",
+          "normalized_sentence": "what is there to do in new york city",
+          "sample_id": "slurp:train:011763:audio-1434527652-headset",
+          "sentence": "what is there to do in new york city",
+          "speaker_id": "ME-218",
+          "utterance_id": "11763"
+        }
+      ]
+    },
+    {
+      "audio_key_source_sample_id": "slurp:train:015660:audio-1498564423-headset",
+      "key_id": "K015",
+      "sources": [
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1498564423-headset.flac",
+          "normalized_sentence": "tweet my complaint to @nsa",
+          "sample_id": "slurp:train:015660:audio-1498564423-headset",
+          "sentence": "tweet my complaint to @nsa",
+          "speaker_id": "FE-248",
+          "utterance_id": "15660"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1497265195-headset.flac",
+          "normalized_sentence": "hello can you give the contact details for a particular service centre",
+          "sample_id": "slurp:train:015687:audio-1497265195-headset",
+          "sentence": "hello can you give the contact details for a particular service centre",
+          "speaker_id": "FE-178",
+          "utterance_id": "15687"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1501754047-headset.flac",
+          "normalized_sentence": "write a complaint to best buy",
+          "sample_id": "slurp:train:015493:audio-1501754047-headset",
+          "sentence": "write a complaint to best buy",
+          "speaker_id": "FE-452",
+          "utterance_id": "15493"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1499694109-headset.flac",
+          "normalized_sentence": "tweet to the bbb that burger king is too expensive",
+          "sample_id": "slurp:train:015683:audio-1499694109-headset",
+          "sentence": "tweet to the bbb that burger king is too expensive",
+          "speaker_id": "ME-414",
+          "utterance_id": "15683"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1501689734-headset.flac",
+          "normalized_sentence": "will you please post this to my facebook i love you",
+          "sample_id": "slurp:train:015270:audio-1501689734-headset",
+          "sentence": "will you please post this to my facebook i love you",
+          "speaker_id": "FO-444",
+          "utterance_id": "15270"
+        }
+      ]
+    },
+    {
+      "audio_key_source_sample_id": "slurp:train:000305:audio-1488637803",
+      "key_id": "K016",
+      "sources": [
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1488637803.flac",
+          "normalized_sentence": "order a pizza from pizza express",
+          "sample_id": "slurp:train:000305:audio-1488637803",
+          "sentence": "order a pizza from pizza express",
+          "speaker_id": "MO-055",
+          "utterance_id": "305"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1499694051-headset.flac",
+          "normalized_sentence": "does chinese deliver",
+          "sample_id": "slurp:train:003017:audio-1499694051-headset",
+          "sentence": "does chinese deliver",
+          "speaker_id": "ME-414",
+          "utterance_id": "3017"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1434535096.flac",
+          "normalized_sentence": "can i order takeaway from spanish place",
+          "sample_id": "slurp:train:000200:audio-1434535096",
+          "sentence": "can i order takeaway from spanish place",
+          "speaker_id": "ME-220",
+          "utterance_id": "200"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1499691914-headset.flac",
+          "normalized_sentence": "please see if chili's has delivery",
+          "sample_id": "slurp:train:002866:audio-1499691914-headset",
+          "sentence": "please see if chili's has delivery",
+          "speaker_id": "ME-414",
+          "utterance_id": "2866"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1497558651-headset.flac",
+          "normalized_sentence": "check the status of my order",
+          "sample_id": "slurp:train:004517:audio-1497558651-headset",
+          "sentence": "check the status of my order",
+          "speaker_id": "FO-229",
+          "utterance_id": "4517"
+        }
+      ]
+    },
+    {
+      "audio_key_source_sample_id": "slurp:train:012418:audio-1501608833",
+      "key_id": "K017",
+      "sources": [
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1501608833.flac",
+          "normalized_sentence": "book a taxi to start from here",
+          "sample_id": "slurp:train:012418:audio-1501608833",
+          "sentence": "book a taxi to start from here",
+          "speaker_id": "MO-442",
+          "utterance_id": "12418"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1434540370-headset.flac",
+          "normalized_sentence": "i need a taxi to pick me up at the house and take me downtown",
+          "sample_id": "slurp:train:012632:audio-1434540370-headset",
+          "sentence": "i need a taxi to pick me up at the house and take me downtown",
+          "speaker_id": "MO-222",
+          "utterance_id": "12632"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1501753970.flac",
+          "normalized_sentence": "can you call an uber for me",
+          "sample_id": "slurp:train:012494:audio-1501753970",
+          "sentence": "can you call an uber for me",
+          "speaker_id": "FE-452",
+          "utterance_id": "12494"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1490106651.flac",
+          "normalized_sentence": "book a train for me",
+          "sample_id": "slurp:train:012139:audio-1490106651",
+          "sentence": "book a train for me",
+          "speaker_id": "UNK-343",
+          "utterance_id": "12139"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio--1506520694.flac",
+          "normalized_sentence": "tell me all the distance locations and times",
+          "sample_id": "slurp:train:012597:audio--1506520694",
+          "sentence": "tell me all the distance locations and times",
+          "speaker_id": "FE-495",
+          "utterance_id": "12597"
+        }
+      ]
+    },
+    {
+      "audio_key_source_sample_id": "slurp:train:003979:audio-1501753735-headset",
+      "key_id": "K018",
+      "sources": [
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1501753735-headset.flac",
+          "normalized_sentence": "is it hot outside right now im hawaii",
+          "sample_id": "slurp:train:003979:audio-1501753735-headset",
+          "sentence": "is it hot outside right now im hawaii",
+          "speaker_id": "FE-452",
+          "utterance_id": "3979"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1490203675-headset.flac",
+          "normalized_sentence": "please find today's forecast",
+          "sample_id": "slurp:train:006152:audio-1490203675-headset",
+          "sentence": "please find today's forecast",
+          "speaker_id": "FE-348",
+          "utterance_id": "6152"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1501754148-headset.flac",
+          "normalized_sentence": "is it going to snow today",
+          "sample_id": "slurp:train:001019:audio-1501754148-headset",
+          "sentence": "is it going to snow today",
+          "speaker_id": "FE-452",
+          "utterance_id": "1019"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1501752764.flac",
+          "normalized_sentence": "is it going to be hot in two hours",
+          "sample_id": "slurp:train:005432:audio-1501752764",
+          "sentence": "is it going to be hot in two hours",
+          "speaker_id": "FE-452",
+          "utterance_id": "5432"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1498568968-headset.flac",
+          "normalized_sentence": "can you let me know the weather of alabama tomorrow",
+          "sample_id": "slurp:train:007354:audio-1498568968-headset",
+          "sentence": "can you let me know the weather of alabama tomorrow",
+          "speaker_id": "FE-368",
+          "utterance_id": "7354"
+        }
+      ]
+    }
+  ],
+  "parent_binding_sha256": "4b0f73f2efdcc817d382b5285c0171ceebe4a8ccad0782cb88151ffc869533f0",
+  "schema": "saea-speech-native-binding-v1",
+  "seed": 20260821,
+  "source_split": "SLURP train real speech only",
+  "splits": {
+    "DISCOVERY-X108": {
+      "items": [
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1490967090-headset.flac",
+          "normalized_sentence": "wake me up at nine am on friday",
+          "sample_id": "slurp:train:000001:audio-1490967090-headset",
+          "speaker_id": "MO-164",
+          "utterance_id": "1",
+          "value_label": "alarm"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1488542417.flac",
+          "normalized_sentence": "set an alarm for two hours from now",
+          "sample_id": "slurp:train:000002:audio-1488542417",
+          "speaker_id": "MO-030",
+          "utterance_id": "2",
+          "value_label": "alarm"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1489497869.flac",
+          "normalized_sentence": "set my alarm please",
+          "sample_id": "slurp:train:000941:audio-1489497869",
+          "speaker_id": "ME-138",
+          "utterance_id": "941",
+          "value_label": "alarm"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1489154566.flac",
+          "normalized_sentence": "set the alarm tone",
+          "sample_id": "slurp:train:001626:audio-1489154566",
+          "speaker_id": "FO-133",
+          "utterance_id": "1626",
+          "value_label": "alarm"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1489152582.flac",
+          "normalized_sentence": "delete my six am alarm",
+          "sample_id": "slurp:train:003152:audio-1489152582",
+          "speaker_id": "FO-133",
+          "utterance_id": "3152",
+          "value_label": "alarm"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1497360159.flac",
+          "normalized_sentence": "what time is my alarm set for tomorrow morning",
+          "sample_id": "slurp:train:004079:audio-1497360159",
+          "speaker_id": "FO-184",
+          "utterance_id": "4079",
+          "value_label": "alarm"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1498647004.flac",
+          "normalized_sentence": "stop",
+          "sample_id": "slurp:train:000005:audio-1498647004",
+          "speaker_id": "MO-371",
+          "utterance_id": "5",
+          "value_label": "audio"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1499361361.flac",
+          "normalized_sentence": "decrease the volume to ten percent",
+          "sample_id": "slurp:train:000750:audio-1499361361",
+          "speaker_id": "ME-376",
+          "utterance_id": "750",
+          "value_label": "audio"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1489497921.flac",
+          "normalized_sentence": "go silent for a day",
+          "sample_id": "slurp:train:002853:audio-1489497921",
+          "speaker_id": "ME-138",
+          "utterance_id": "2853",
+          "value_label": "audio"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1502462031.flac",
+          "normalized_sentence": "stop it",
+          "sample_id": "slurp:train:003983:audio-1502462031",
+          "speaker_id": "FO-474",
+          "utterance_id": "3983",
+          "value_label": "audio"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1502462019-headset.flac",
+          "normalized_sentence": "please speak up",
+          "sample_id": "slurp:train:004395:audio-1502462019-headset",
+          "speaker_id": "FO-474",
+          "utterance_id": "4395",
+          "value_label": "audio"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1502462271-headset.flac",
+          "normalized_sentence": "don't respond for fifty seconds",
+          "sample_id": "slurp:train:006065:audio-1502462271-headset",
+          "speaker_id": "FO-474",
+          "utterance_id": "6065",
+          "value_label": "audio"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1488537575.flac",
+          "normalized_sentence": "add event for this evening meeting with jake",
+          "sample_id": "slurp:train:006788:audio-1488537575",
+          "speaker_id": "MO-030",
+          "utterance_id": "6788",
+          "value_label": "calendar"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1490105565-headset.flac",
+          "normalized_sentence": "cancel the event valentine's day from the calendar",
+          "sample_id": "slurp:train:007019:audio-1490105565-headset",
+          "speaker_id": "UNK-342",
+          "utterance_id": "7019",
+          "value_label": "calendar"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1490105689.flac",
+          "normalized_sentence": "do i have a meeting tomorrow",
+          "sample_id": "slurp:train:007818:audio-1490105689",
+          "speaker_id": "UNK-342",
+          "utterance_id": "7818",
+          "value_label": "calendar"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1496230157.flac",
+          "normalized_sentence": "what is happening today between three and four pm",
+          "sample_id": "slurp:train:007899:audio-1496230157",
+          "speaker_id": "UNK-340",
+          "utterance_id": "7899",
+          "value_label": "calendar"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1502300523.flac",
+          "normalized_sentence": "what's on for the fourteenth afternoon that i could go with the two year old twins",
+          "sample_id": "slurp:train:007989:audio-1502300523",
+          "speaker_id": "MO-467",
+          "utterance_id": "7989",
+          "value_label": "calendar"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1497358983.flac",
+          "normalized_sentence": "remind me at the time of the event",
+          "sample_id": "slurp:train:009057:audio-1497358983",
+          "speaker_id": "FO-184",
+          "utterance_id": "9057",
+          "value_label": "calendar"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1488542397.flac",
+          "normalized_sentence": "what ingredients do i need for tomato soup",
+          "sample_id": "slurp:train:009913:audio-1488542397",
+          "speaker_id": "MO-030",
+          "utterance_id": "9913",
+          "value_label": "cooking"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1488537987.flac",
+          "normalized_sentence": "whats the recipe for pasta sauce",
+          "sample_id": "slurp:train:009919:audio-1488537987",
+          "speaker_id": "MO-030",
+          "utterance_id": "9919",
+          "value_label": "cooking"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1488549904.flac",
+          "normalized_sentence": "how much time do i have to boil an egg",
+          "sample_id": "slurp:train:009925:audio-1488549904",
+          "speaker_id": "MO-036",
+          "utterance_id": "9925",
+          "value_label": "cooking"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1489155022.flac",
+          "normalized_sentence": "how do i steam rice",
+          "sample_id": "slurp:train:009960:audio-1489155022",
+          "speaker_id": "FO-133",
+          "utterance_id": "9960",
+          "value_label": "cooking"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1494415305-headset.flac",
+          "normalized_sentence": "olly show the method to prepare icecream",
+          "sample_id": "slurp:train:010007:audio-1494415305-headset",
+          "speaker_id": "UNK-325",
+          "utterance_id": "10007",
+          "value_label": "cooking"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1489497091.flac",
+          "normalized_sentence": "i want to know the procedure of making thanksgiving turkey in five sentences",
+          "sample_id": "slurp:train:010014:audio-1489497091",
+          "speaker_id": "ME-138",
+          "utterance_id": "10014",
+          "value_label": "cooking"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1488550795.flac",
+          "normalized_sentence": "tell me the time in g. m. t. plus five",
+          "sample_id": "slurp:train:000049:audio-1488550795",
+          "speaker_id": "MO-036",
+          "utterance_id": "49",
+          "value_label": "datetime"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1490967482.flac",
+          "normalized_sentence": "what's the time",
+          "sample_id": "slurp:train:000270:audio-1490967482",
+          "speaker_id": "MO-164",
+          "utterance_id": "270",
+          "value_label": "datetime"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1500418130.flac",
+          "normalized_sentence": "tell me the date and the time",
+          "sample_id": "slurp:train:000464:audio-1500418130",
+          "speaker_id": "MO-424",
+          "utterance_id": "464",
+          "value_label": "datetime"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1499361727.flac",
+          "normalized_sentence": "what is the time in india right now",
+          "sample_id": "slurp:train:000487:audio-1499361727",
+          "speaker_id": "ME-376",
+          "utterance_id": "487",
+          "value_label": "datetime"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1489153760.flac",
+          "normalized_sentence": "is today the fourth or the fifth",
+          "sample_id": "slurp:train:002613:audio-1489153760",
+          "speaker_id": "FO-133",
+          "utterance_id": "2613",
+          "value_label": "datetime"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1490967828.flac",
+          "normalized_sentence": "what time is it in england",
+          "sample_id": "slurp:train:004351:audio-1490967828",
+          "speaker_id": "MO-164",
+          "utterance_id": "4351",
+          "value_label": "datetime"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1488991054.flac",
+          "normalized_sentence": "did i received any emails from kevin and what did he say",
+          "sample_id": "slurp:train:015801:audio-1488991054",
+          "speaker_id": "FO-129",
+          "utterance_id": "15801",
+          "value_label": "email"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1497261757.flac",
+          "normalized_sentence": "reply to john stating that i will attend the party",
+          "sample_id": "slurp:train:016058:audio-1497261757",
+          "speaker_id": "UNK-177",
+          "utterance_id": "16058",
+          "value_label": "email"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1489498467.flac",
+          "normalized_sentence": "send email to nancy about tomorrow's work party details",
+          "sample_id": "slurp:train:016209:audio-1489498467",
+          "speaker_id": "ME-138",
+          "utterance_id": "16209",
+          "value_label": "email"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1488973720.flac",
+          "normalized_sentence": "email to my family saying i love you all",
+          "sample_id": "slurp:train:016267:audio-1488973720",
+          "speaker_id": "FO-123",
+          "utterance_id": "16267",
+          "value_label": "email"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1488989642.flac",
+          "normalized_sentence": "can you see if john has replied to my email yet",
+          "sample_id": "slurp:train:016392:audio-1488989642",
+          "speaker_id": "FO-129",
+          "utterance_id": "16392",
+          "value_label": "email"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1498167640.flac",
+          "normalized_sentence": "check my email",
+          "sample_id": "slurp:train:016561:audio-1498167640",
+          "speaker_id": "UNK-244",
+          "utterance_id": "16561",
+          "value_label": "email"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1490967673-headset.flac",
+          "normalized_sentence": "tell me a good joke",
+          "sample_id": "slurp:train:000121:audio-1490967673-headset",
+          "speaker_id": "MO-164",
+          "utterance_id": "121",
+          "value_label": "general"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1490967817-headset.flac",
+          "normalized_sentence": "hey olly what's up",
+          "sample_id": "slurp:train:001392:audio-1490967817-headset",
+          "speaker_id": "MO-164",
+          "utterance_id": "1392",
+          "value_label": "general"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1488989396.flac",
+          "normalized_sentence": "a priest walks into a bar",
+          "sample_id": "slurp:train:003363:audio-1488989396",
+          "speaker_id": "FO-129",
+          "utterance_id": "3363",
+          "value_label": "general"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1488537828.flac",
+          "normalized_sentence": "whats going on today",
+          "sample_id": "slurp:train:006186:audio-1488537828",
+          "speaker_id": "MO-030",
+          "utterance_id": "6186",
+          "value_label": "general"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1499362071.flac",
+          "normalized_sentence": "start a small chart",
+          "sample_id": "slurp:train:006592:audio-1499362071",
+          "speaker_id": "ME-376",
+          "utterance_id": "6592",
+          "value_label": "general"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1488990420.flac",
+          "normalized_sentence": "tell me more about the concert on friday's night",
+          "sample_id": "slurp:train:006718:audio-1488990420",
+          "speaker_id": "FO-129",
+          "utterance_id": "6718",
+          "value_label": "general"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1497492525.flac",
+          "normalized_sentence": "slightly raise the light",
+          "sample_id": "slurp:train:000645:audio-1497492525",
+          "speaker_id": "UNK-197",
+          "utterance_id": "645",
+          "value_label": "iot"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1489152406.flac",
+          "normalized_sentence": "can you please turn off the lights in this room",
+          "sample_id": "slurp:train:000977:audio-1489152406",
+          "speaker_id": "FO-133",
+          "utterance_id": "977",
+          "value_label": "iot"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1499361386.flac",
+          "normalized_sentence": "brighten the light at seventy percent",
+          "sample_id": "slurp:train:001899:audio-1499361386",
+          "speaker_id": "ME-376",
+          "utterance_id": "1899",
+          "value_label": "iot"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1490105592-headset.flac",
+          "normalized_sentence": "olly make coffee at six am",
+          "sample_id": "slurp:train:002286:audio-1490105592-headset",
+          "speaker_id": "UNK-342",
+          "utterance_id": "2286",
+          "value_label": "iot"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1488989112.flac",
+          "normalized_sentence": "change color of the light to red outside the house",
+          "sample_id": "slurp:train:003240:audio-1488989112",
+          "speaker_id": "FO-129",
+          "utterance_id": "3240",
+          "value_label": "iot"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1497261715.flac",
+          "normalized_sentence": "power up the vacuum",
+          "sample_id": "slurp:train:003753:audio-1497261715",
+          "speaker_id": "UNK-177",
+          "utterance_id": "3753",
+          "value_label": "iot"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1488537546.flac",
+          "normalized_sentence": "create a new to do list",
+          "sample_id": "slurp:train:010435:audio-1488537546",
+          "speaker_id": "MO-030",
+          "utterance_id": "10435",
+          "value_label": "lists"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1490105736.flac",
+          "normalized_sentence": "olly what do i need to get done today",
+          "sample_id": "slurp:train:010553:audio-1490105736",
+          "speaker_id": "UNK-342",
+          "utterance_id": "10553",
+          "value_label": "lists"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1489153955.flac",
+          "normalized_sentence": "tell me the name of my lists",
+          "sample_id": "slurp:train:010762:audio-1489153955",
+          "speaker_id": "FO-133",
+          "utterance_id": "10762",
+          "value_label": "lists"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1489152868.flac",
+          "normalized_sentence": "remove ashley from the wedding invite list",
+          "sample_id": "slurp:train:010771:audio-1489152868",
+          "speaker_id": "FO-133",
+          "utterance_id": "10771",
+          "value_label": "lists"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1489154629.flac",
+          "normalized_sentence": "delete apples from my grocery list",
+          "sample_id": "slurp:train:010810:audio-1489154629",
+          "speaker_id": "FO-133",
+          "utterance_id": "10810",
+          "value_label": "lists"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1490966873-headset.flac",
+          "normalized_sentence": "create new list",
+          "sample_id": "slurp:train:011034:audio-1490966873-headset",
+          "speaker_id": "MO-164",
+          "utterance_id": "11034",
+          "value_label": "lists"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1488974791.flac",
+          "normalized_sentence": "tell me the name of the song",
+          "sample_id": "slurp:train:000137:audio-1488974791",
+          "speaker_id": "FO-123",
+          "utterance_id": "137",
+          "value_label": "music"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1488991764.flac",
+          "normalized_sentence": "enable shuffle",
+          "sample_id": "slurp:train:000153:audio-1488991764",
+          "speaker_id": "FO-129",
+          "utterance_id": "153",
+          "value_label": "music"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1488975753.flac",
+          "normalized_sentence": "olly what music do i usually like after work",
+          "sample_id": "slurp:train:000255:audio-1488975753",
+          "speaker_id": "FO-123",
+          "utterance_id": "255",
+          "value_label": "music"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1498646633-headset.flac",
+          "normalized_sentence": "save the last radio stations of the last month",
+          "sample_id": "slurp:train:002241:audio-1498646633-headset",
+          "speaker_id": "MO-371",
+          "utterance_id": "2241",
+          "value_label": "music"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1489499040-headset.flac",
+          "normalized_sentence": "i like to be it",
+          "sample_id": "slurp:train:002738:audio-1489499040-headset",
+          "speaker_id": "ME-138",
+          "utterance_id": "2738",
+          "value_label": "music"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1502461967.flac",
+          "normalized_sentence": "put the last song on repeat",
+          "sample_id": "slurp:train:005067:audio-1502461967",
+          "speaker_id": "FO-474",
+          "utterance_id": "5067",
+          "value_label": "music"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1489497033-headset.flac",
+          "normalized_sentence": "any death news in times of india",
+          "sample_id": "slurp:train:000386:audio-1489497033-headset",
+          "speaker_id": "ME-138",
+          "utterance_id": "386",
+          "value_label": "news"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1488974275.flac",
+          "normalized_sentence": "can to play ccn news for me",
+          "sample_id": "slurp:train:001369:audio-1488974275",
+          "speaker_id": "FO-123",
+          "utterance_id": "1369",
+          "value_label": "news"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1489152756.flac",
+          "normalized_sentence": "is there any breaking news from cnn",
+          "sample_id": "slurp:train:002568:audio-1489152756",
+          "speaker_id": "FO-133",
+          "utterance_id": "2568",
+          "value_label": "news"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1498646930-headset.flac",
+          "normalized_sentence": "what is the entrapreneur saying about homelessness in the seattle times article",
+          "sample_id": "slurp:train:002666:audio-1498646930-headset",
+          "speaker_id": "MO-371",
+          "utterance_id": "2666",
+          "value_label": "news"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1489154041.flac",
+          "normalized_sentence": "olly front page news articles please",
+          "sample_id": "slurp:train:003038:audio-1489154041",
+          "speaker_id": "FO-133",
+          "utterance_id": "3038",
+          "value_label": "news"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1499362017.flac",
+          "normalized_sentence": "whats the news about in africa",
+          "sample_id": "slurp:train:004885:audio-1499362017",
+          "speaker_id": "ME-376",
+          "utterance_id": "4885",
+          "value_label": "news"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1490105925-headset.flac",
+          "normalized_sentence": "play my jazz playlist",
+          "sample_id": "slurp:train:000139:audio-1490105925-headset",
+          "speaker_id": "UNK-342",
+          "utterance_id": "139",
+          "value_label": "play"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1489152687.flac",
+          "normalized_sentence": "go to pandora find twenty one pilots radio play please",
+          "sample_id": "slurp:train:000818:audio-1489152687",
+          "speaker_id": "FO-133",
+          "utterance_id": "818",
+          "value_label": "play"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1489498919.flac",
+          "normalized_sentence": "i just love adele please play my most played songs of her after this track",
+          "sample_id": "slurp:train:003133:audio-1489498919",
+          "speaker_id": "ME-138",
+          "utterance_id": "3133",
+          "value_label": "play"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1499361211.flac",
+          "normalized_sentence": "start audio book the two towers",
+          "sample_id": "slurp:train:009803:audio-1499361211",
+          "speaker_id": "ME-376",
+          "utterance_id": "9803",
+          "value_label": "play"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1490967094.flac",
+          "normalized_sentence": "start the poker game",
+          "sample_id": "slurp:train:010329:audio-1490967094",
+          "speaker_id": "MO-164",
+          "utterance_id": "10329",
+          "value_label": "play"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1489497513-headset.flac",
+          "normalized_sentence": "start the podcast application",
+          "sample_id": "slurp:train:011354:audio-1489497513-headset",
+          "speaker_id": "ME-138",
+          "utterance_id": "11354",
+          "value_label": "play"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1489154396.flac",
+          "normalized_sentence": "i've got dollars for the month how much can i spend every day this month",
+          "sample_id": "slurp:train:013311:audio-1489154396",
+          "speaker_id": "FO-133",
+          "utterance_id": "13311",
+          "value_label": "qa"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1497358776.flac",
+          "normalized_sentence": "is leonardo married",
+          "sample_id": "slurp:train:013606:audio-1497358776",
+          "speaker_id": "FO-184",
+          "utterance_id": "13606",
+          "value_label": "qa"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1497030702-headset.flac",
+          "normalized_sentence": "show me current exchange rate between euros and other currencies",
+          "sample_id": "slurp:train:014006:audio-1497030702-headset",
+          "speaker_id": "MO-116",
+          "utterance_id": "14006",
+          "value_label": "qa"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1490966917-headset.flac",
+          "normalized_sentence": "where is south asia located",
+          "sample_id": "slurp:train:014638:audio-1490966917-headset",
+          "speaker_id": "MO-164",
+          "utterance_id": "14638",
+          "value_label": "qa"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1499362202.flac",
+          "normalized_sentence": "what is the definition for the word pontificate",
+          "sample_id": "slurp:train:014760:audio-1499362202",
+          "speaker_id": "ME-376",
+          "utterance_id": "14760",
+          "value_label": "qa"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1502300480-headset.flac",
+          "normalized_sentence": "tell me when will indians economy touch that of americas",
+          "sample_id": "slurp:train:014944:audio-1502300480-headset",
+          "speaker_id": "MO-467",
+          "utterance_id": "14944",
+          "value_label": "qa"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1488991582.flac",
+          "normalized_sentence": "is there any event around",
+          "sample_id": "slurp:train:011574:audio-1488991582",
+          "speaker_id": "FO-129",
+          "utterance_id": "11574",
+          "value_label": "recommendation"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1488536920.flac",
+          "normalized_sentence": "tell me interesting events around",
+          "sample_id": "slurp:train:011575:audio-1488536920",
+          "speaker_id": "MO-030",
+          "utterance_id": "11575",
+          "value_label": "recommendation"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1489498831.flac",
+          "normalized_sentence": "where is a petrol station in five mile radius",
+          "sample_id": "slurp:train:011581:audio-1489498831",
+          "speaker_id": "ME-138",
+          "utterance_id": "11581",
+          "value_label": "recommendation"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1502461774-headset.flac",
+          "normalized_sentence": "when does olive garden close today",
+          "sample_id": "slurp:train:011725:audio-1502461774-headset",
+          "speaker_id": "FO-474",
+          "utterance_id": "11725",
+          "value_label": "recommendation"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1497261785-headset.flac",
+          "normalized_sentence": "whats going on in cincinnati",
+          "sample_id": "slurp:train:011748:audio-1497261785-headset",
+          "speaker_id": "UNK-177",
+          "utterance_id": "11748",
+          "value_label": "recommendation"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1488992045.flac",
+          "normalized_sentence": "what bands are playing in town this weekend",
+          "sample_id": "slurp:train:011842:audio-1488992045",
+          "speaker_id": "FO-129",
+          "utterance_id": "11842",
+          "value_label": "recommendation"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1488549636.flac",
+          "normalized_sentence": "do i have new likes",
+          "sample_id": "slurp:train:015139:audio-1488549636",
+          "speaker_id": "MO-036",
+          "utterance_id": "15139",
+          "value_label": "social"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1488991474.flac",
+          "normalized_sentence": "may i know what is trending in facebook",
+          "sample_id": "slurp:train:015159:audio-1488991474",
+          "speaker_id": "FO-129",
+          "utterance_id": "15159",
+          "value_label": "social"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1490967615.flac",
+          "normalized_sentence": "can anyone tell me what's you guys discussing",
+          "sample_id": "slurp:train:015255:audio-1490967615",
+          "speaker_id": "MO-164",
+          "utterance_id": "15255",
+          "value_label": "social"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1496230387-headset.flac",
+          "normalized_sentence": "is there any new vegan news on facebook",
+          "sample_id": "slurp:train:015347:audio-1496230387-headset",
+          "speaker_id": "UNK-340",
+          "utterance_id": "15347",
+          "value_label": "social"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1490966897.flac",
+          "normalized_sentence": "tweet terrible service",
+          "sample_id": "slurp:train:015415:audio-1490966897",
+          "speaker_id": "MO-164",
+          "utterance_id": "15415",
+          "value_label": "social"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1502300368-headset.flac",
+          "normalized_sentence": "tweet this sick today",
+          "sample_id": "slurp:train:015679:audio-1502300368-headset",
+          "speaker_id": "MO-467",
+          "utterance_id": "15679",
+          "value_label": "social"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1488540675.flac",
+          "normalized_sentence": "olly list most rated delivery options for chinese food",
+          "sample_id": "slurp:train:000051:audio-1488540675",
+          "speaker_id": "MO-030",
+          "utterance_id": "51",
+          "value_label": "takeaway"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1488905475.flac",
+          "normalized_sentence": "order a takeaway sandwich and soup from the italian's",
+          "sample_id": "slurp:train:000308:audio-1488905475",
+          "speaker_id": "MO-116",
+          "utterance_id": "308",
+          "value_label": "takeaway"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1502462219-headset.flac",
+          "normalized_sentence": "food order from grubhub",
+          "sample_id": "slurp:train:000877:audio-1502462219-headset",
+          "speaker_id": "FO-474",
+          "utterance_id": "877",
+          "value_label": "takeaway"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1497030387.flac",
+          "normalized_sentence": "order chinese food",
+          "sample_id": "slurp:train:002630:audio-1497030387",
+          "speaker_id": "MO-116",
+          "utterance_id": "2630",
+          "value_label": "takeaway"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1500418498.flac",
+          "normalized_sentence": "what mexican restaurants are there nearby for takeout",
+          "sample_id": "slurp:train:004626:audio-1500418498",
+          "speaker_id": "MO-424",
+          "utterance_id": "4626",
+          "value_label": "takeaway"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1497030808-headset.flac",
+          "normalized_sentence": "get us spaghetti from pizza hut",
+          "sample_id": "slurp:train:005987:audio-1497030808-headset",
+          "speaker_id": "MO-116",
+          "utterance_id": "5987",
+          "value_label": "takeaway"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1488552101.flac",
+          "normalized_sentence": "schedule an uber in twenty minutes to tesco on fifth street",
+          "sample_id": "slurp:train:012122:audio-1488552101",
+          "speaker_id": "MO-036",
+          "utterance_id": "12122",
+          "value_label": "transport"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1488540901.flac",
+          "normalized_sentence": "book me a ticket for a train to new york from boston in two days from now",
+          "sample_id": "slurp:train:012129:audio-1488540901",
+          "speaker_id": "MO-030",
+          "utterance_id": "12129",
+          "value_label": "transport"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1488537540.flac",
+          "normalized_sentence": "schedule a journey to las vegas by train",
+          "sample_id": "slurp:train:012130:audio-1488537540",
+          "speaker_id": "MO-030",
+          "utterance_id": "12130",
+          "value_label": "transport"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1488538226.flac",
+          "normalized_sentence": "book me a return trip from edinburgh to london by train",
+          "sample_id": "slurp:train:012131:audio-1488538226",
+          "speaker_id": "MO-030",
+          "utterance_id": "12131",
+          "value_label": "transport"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1489153128.flac",
+          "normalized_sentence": "olly find me the cheapest train ticket to spain",
+          "sample_id": "slurp:train:012538:audio-1489153128",
+          "speaker_id": "FO-133",
+          "utterance_id": "12538",
+          "value_label": "transport"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1494000559-headset.flac",
+          "normalized_sentence": "olly get me a train ticket to atlanta",
+          "sample_id": "slurp:train:012591:audio-1494000559-headset",
+          "speaker_id": "UNK-324",
+          "utterance_id": "12591",
+          "value_label": "transport"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1489153315.flac",
+          "normalized_sentence": "am i going to have to worry about the snowplows burying my car in the driveway tuesday",
+          "sample_id": "slurp:train:002616:audio-1489153315",
+          "speaker_id": "FO-133",
+          "utterance_id": "2616",
+          "value_label": "weather"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1491104756.flac",
+          "normalized_sentence": "how is weather on such and such day",
+          "sample_id": "slurp:train:002916:audio-1491104756",
+          "speaker_id": "UNK-163",
+          "utterance_id": "2916",
+          "value_label": "weather"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1488974428.flac",
+          "normalized_sentence": "please tell me the weather",
+          "sample_id": "slurp:train:003012:audio-1488974428",
+          "speaker_id": "FO-123",
+          "utterance_id": "3012",
+          "value_label": "weather"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1499360918.flac",
+          "normalized_sentence": "will it rain in toronto next tuesday",
+          "sample_id": "slurp:train:004414:audio-1499360918",
+          "speaker_id": "ME-376",
+          "utterance_id": "4414",
+          "value_label": "weather"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1490966811.flac",
+          "normalized_sentence": "alexa should i wear sunscreen today",
+          "sample_id": "slurp:train:005845:audio-1490966811",
+          "speaker_id": "MO-164",
+          "utterance_id": "5845",
+          "value_label": "weather"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1497616396-headset.flac",
+          "normalized_sentence": "what is the average temperature in march for pennsylvania and how does that compare to the last ten years",
+          "sample_id": "slurp:train:014351:audio-1497616396-headset",
+          "speaker_id": "FO-230",
+          "utterance_id": "14351",
+          "value_label": "weather"
+        }
+      ],
+      "name": "DISCOVERY-X108",
+      "sample_ids": [
+        "slurp:train:000001:audio-1490967090-headset",
+        "slurp:train:000002:audio-1488542417",
+        "slurp:train:000941:audio-1489497869",
+        "slurp:train:001626:audio-1489154566",
+        "slurp:train:003152:audio-1489152582",
+        "slurp:train:004079:audio-1497360159",
+        "slurp:train:000005:audio-1498647004",
+        "slurp:train:000750:audio-1499361361",
+        "slurp:train:002853:audio-1489497921",
+        "slurp:train:003983:audio-1502462031",
+        "slurp:train:004395:audio-1502462019-headset",
+        "slurp:train:006065:audio-1502462271-headset",
+        "slurp:train:006788:audio-1488537575",
+        "slurp:train:007019:audio-1490105565-headset",
+        "slurp:train:007818:audio-1490105689",
+        "slurp:train:007899:audio-1496230157",
+        "slurp:train:007989:audio-1502300523",
+        "slurp:train:009057:audio-1497358983",
+        "slurp:train:009913:audio-1488542397",
+        "slurp:train:009919:audio-1488537987",
+        "slurp:train:009925:audio-1488549904",
+        "slurp:train:009960:audio-1489155022",
+        "slurp:train:010007:audio-1494415305-headset",
+        "slurp:train:010014:audio-1489497091",
+        "slurp:train:000049:audio-1488550795",
+        "slurp:train:000270:audio-1490967482",
+        "slurp:train:000464:audio-1500418130",
+        "slurp:train:000487:audio-1499361727",
+        "slurp:train:002613:audio-1489153760",
+        "slurp:train:004351:audio-1490967828",
+        "slurp:train:015801:audio-1488991054",
+        "slurp:train:016058:audio-1497261757",
+        "slurp:train:016209:audio-1489498467",
+        "slurp:train:016267:audio-1488973720",
+        "slurp:train:016392:audio-1488989642",
+        "slurp:train:016561:audio-1498167640",
+        "slurp:train:000121:audio-1490967673-headset",
+        "slurp:train:001392:audio-1490967817-headset",
+        "slurp:train:003363:audio-1488989396",
+        "slurp:train:006186:audio-1488537828",
+        "slurp:train:006592:audio-1499362071",
+        "slurp:train:006718:audio-1488990420",
+        "slurp:train:000645:audio-1497492525",
+        "slurp:train:000977:audio-1489152406",
+        "slurp:train:001899:audio-1499361386",
+        "slurp:train:002286:audio-1490105592-headset",
+        "slurp:train:003240:audio-1488989112",
+        "slurp:train:003753:audio-1497261715",
+        "slurp:train:010435:audio-1488537546",
+        "slurp:train:010553:audio-1490105736",
+        "slurp:train:010762:audio-1489153955",
+        "slurp:train:010771:audio-1489152868",
+        "slurp:train:010810:audio-1489154629",
+        "slurp:train:011034:audio-1490966873-headset",
+        "slurp:train:000137:audio-1488974791",
+        "slurp:train:000153:audio-1488991764",
+        "slurp:train:000255:audio-1488975753",
+        "slurp:train:002241:audio-1498646633-headset",
+        "slurp:train:002738:audio-1489499040-headset",
+        "slurp:train:005067:audio-1502461967",
+        "slurp:train:000386:audio-1489497033-headset",
+        "slurp:train:001369:audio-1488974275",
+        "slurp:train:002568:audio-1489152756",
+        "slurp:train:002666:audio-1498646930-headset",
+        "slurp:train:003038:audio-1489154041",
+        "slurp:train:004885:audio-1499362017",
+        "slurp:train:000139:audio-1490105925-headset",
+        "slurp:train:000818:audio-1489152687",
+        "slurp:train:003133:audio-1489498919",
+        "slurp:train:009803:audio-1499361211",
+        "slurp:train:010329:audio-1490967094",
+        "slurp:train:011354:audio-1489497513-headset",
+        "slurp:train:013311:audio-1489154396",
+        "slurp:train:013606:audio-1497358776",
+        "slurp:train:014006:audio-1497030702-headset",
+        "slurp:train:014638:audio-1490966917-headset",
+        "slurp:train:014760:audio-1499362202",
+        "slurp:train:014944:audio-1502300480-headset",
+        "slurp:train:011574:audio-1488991582",
+        "slurp:train:011575:audio-1488536920",
+        "slurp:train:011581:audio-1489498831",
+        "slurp:train:011725:audio-1502461774-headset",
+        "slurp:train:011748:audio-1497261785-headset",
+        "slurp:train:011842:audio-1488992045",
+        "slurp:train:015139:audio-1488549636",
+        "slurp:train:015159:audio-1488991474",
+        "slurp:train:015255:audio-1490967615",
+        "slurp:train:015347:audio-1496230387-headset",
+        "slurp:train:015415:audio-1490966897",
+        "slurp:train:015679:audio-1502300368-headset",
+        "slurp:train:000051:audio-1488540675",
+        "slurp:train:000308:audio-1488905475",
+        "slurp:train:000877:audio-1502462219-headset",
+        "slurp:train:002630:audio-1497030387",
+        "slurp:train:004626:audio-1500418498",
+        "slurp:train:005987:audio-1497030808-headset",
+        "slurp:train:012122:audio-1488552101",
+        "slurp:train:012129:audio-1488540901",
+        "slurp:train:012130:audio-1488537540",
+        "slurp:train:012131:audio-1488538226",
+        "slurp:train:012538:audio-1489153128",
+        "slurp:train:012591:audio-1494000559-headset",
+        "slurp:train:002616:audio-1489153315",
+        "slurp:train:002916:audio-1491104756",
+        "slurp:train:003012:audio-1488974428",
+        "slurp:train:004414:audio-1499360918",
+        "slurp:train:005845:audio-1490966811",
+        "slurp:train:014351:audio-1497616396-headset"
+      ],
+      "schema": "saea-speech-native-split-v1",
+      "seed": 20260822,
+      "split_identity_hash": "85a2f0ffd9044466473e7f8ff7c594d601dcfe72bd83bdef5586decf884bb0c8"
+    },
+    "GATE18": {
+      "items": [
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1494548666-headset.flac",
+          "normalized_sentence": "let me know about the alarms you set",
+          "sample_id": "slurp:train:005981:audio-1494548666-headset",
+          "speaker_id": "UNK-330",
+          "utterance_id": "5981",
+          "value_label": "alarm"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio--1505406807.flac",
+          "normalized_sentence": "i need to mute the speaker",
+          "sample_id": "slurp:train:003792:audio--1505406807",
+          "speaker_id": "FO-493",
+          "utterance_id": "3792",
+          "value_label": "audio"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1489674372.flac",
+          "normalized_sentence": "schedule a chat with adam on thursday afternoon",
+          "sample_id": "slurp:train:006730:audio-1489674372",
+          "speaker_id": "ME-143",
+          "utterance_id": "6730",
+          "value_label": "calendar"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1501156119-headset.flac",
+          "normalized_sentence": "how do you make cookies",
+          "sample_id": "slurp:train:010139:audio-1501156119-headset",
+          "speaker_id": "MO-433",
+          "utterance_id": "10139",
+          "value_label": "cooking"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1502891680-headset.flac",
+          "normalized_sentence": "if it is noon in virginia what time is it in california",
+          "sample_id": "slurp:train:000394:audio-1502891680-headset",
+          "speaker_id": "FO-475",
+          "utterance_id": "394",
+          "value_label": "datetime"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1502890239-headset.flac",
+          "normalized_sentence": "can you reply to the email",
+          "sample_id": "slurp:train:017114:audio-1502890239-headset",
+          "speaker_id": "FO-462",
+          "utterance_id": "17114",
+          "value_label": "email"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1490368103-headset.flac",
+          "normalized_sentence": "are we friends",
+          "sample_id": "slurp:train:006598:audio-1490368103-headset",
+          "speaker_id": "MO-355",
+          "utterance_id": "6598",
+          "value_label": "general"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1502308700-headset.flac",
+          "normalized_sentence": "lighten the light",
+          "sample_id": "slurp:train:000288:audio-1502308700-headset",
+          "speaker_id": "MO-465",
+          "utterance_id": "288",
+          "value_label": "iot"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio--1505324885.flac",
+          "normalized_sentence": "how many events on my list",
+          "sample_id": "slurp:train:010441:audio--1505324885",
+          "speaker_id": "ME-492",
+          "utterance_id": "10441",
+          "value_label": "lists"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1490109138-headset.flac",
+          "normalized_sentence": "who sings this song",
+          "sample_id": "slurp:train:000927:audio-1490109138-headset",
+          "speaker_id": "FE-344",
+          "utterance_id": "927",
+          "value_label": "music"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1495734500.flac",
+          "normalized_sentence": "can i get a list of the news from the wall street journal",
+          "sample_id": "slurp:train:002390:audio-1495734500",
+          "speaker_id": "UNK-336",
+          "utterance_id": "2390",
+          "value_label": "news"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1499697197.flac",
+          "normalized_sentence": "play all third day",
+          "sample_id": "slurp:train:004959:audio-1499697197",
+          "speaker_id": "FO-405",
+          "utterance_id": "4959",
+          "value_label": "play"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1498566161-headset.flac",
+          "normalized_sentence": "what city was elvis born",
+          "sample_id": "slurp:train:014208:audio-1498566161-headset",
+          "speaker_id": "FE-250",
+          "utterance_id": "14208",
+          "value_label": "qa"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1497269860-headset.flac",
+          "normalized_sentence": "can you suggest a good drama for me to watch",
+          "sample_id": "slurp:train:011931:audio-1497269860-headset",
+          "speaker_id": "FO-180",
+          "utterance_id": "11931",
+          "value_label": "recommendation"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1497438275-headset.flac",
+          "normalized_sentence": "wish all my friends of facebook good morning",
+          "sample_id": "slurp:train:015605:audio-1497438275-headset",
+          "speaker_id": "MO-189",
+          "utterance_id": "15605",
+          "value_label": "social"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1499265461.flac",
+          "normalized_sentence": "is there a takeaway in chipotle restaurant",
+          "sample_id": "slurp:train:005769:audio-1499265461",
+          "speaker_id": "MO-375",
+          "utterance_id": "5769",
+          "value_label": "takeaway"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1488554908.flac",
+          "normalized_sentence": "how to get to cracow before noon by train",
+          "sample_id": "slurp:train:012128:audio-1488554908",
+          "speaker_id": "MO-038",
+          "utterance_id": "12128",
+          "value_label": "transport"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1489152110.flac",
+          "normalized_sentence": "what is the temperature today",
+          "sample_id": "slurp:train:000739:audio-1489152110",
+          "speaker_id": "ME-132",
+          "utterance_id": "739",
+          "value_label": "weather"
+        }
+      ],
+      "name": "GATE18",
+      "sample_ids": [
+        "slurp:train:005981:audio-1494548666-headset",
+        "slurp:train:003792:audio--1505406807",
+        "slurp:train:006730:audio-1489674372",
+        "slurp:train:010139:audio-1501156119-headset",
+        "slurp:train:000394:audio-1502891680-headset",
+        "slurp:train:017114:audio-1502890239-headset",
+        "slurp:train:006598:audio-1490368103-headset",
+        "slurp:train:000288:audio-1502308700-headset",
+        "slurp:train:010441:audio--1505324885",
+        "slurp:train:000927:audio-1490109138-headset",
+        "slurp:train:002390:audio-1495734500",
+        "slurp:train:004959:audio-1499697197",
+        "slurp:train:014208:audio-1498566161-headset",
+        "slurp:train:011931:audio-1497269860-headset",
+        "slurp:train:015605:audio-1497438275-headset",
+        "slurp:train:005769:audio-1499265461",
+        "slurp:train:012128:audio-1488554908",
+        "slurp:train:000739:audio-1489152110"
+      ],
+      "schema": "saea-speech-native-split-v1",
+      "seed": 20260821,
+      "split_identity_hash": "ef998f7858d108b380dfd43b27478b7b91d22d9a2fbff8d9c023f04af87ff1b6"
+    },
+    "OPT-A36": {
+      "items": [
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1489503509.flac",
+          "normalized_sentence": "disable my three pm alarm",
+          "sample_id": "slurp:train:001206:audio-1489503509",
+          "speaker_id": "FO-139",
+          "utterance_id": "1206",
+          "value_label": "alarm"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1488986552.flac",
+          "normalized_sentence": "what alarms do i have scheduled for tomorrow",
+          "sample_id": "slurp:train:001338:audio-1488986552",
+          "speaker_id": "MO-127",
+          "utterance_id": "1338",
+          "value_label": "alarm"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio--1504195254-headset.flac",
+          "normalized_sentence": "increase volume",
+          "sample_id": "slurp:train:000573:audio--1504195254-headset",
+          "speaker_id": "FO-488",
+          "utterance_id": "573",
+          "value_label": "audio"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1490195663.flac",
+          "normalized_sentence": "lower the volume of the speakers",
+          "sample_id": "slurp:train:004342:audio-1490195663",
+          "speaker_id": "FE-146",
+          "utterance_id": "4342",
+          "value_label": "audio"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1497555644-headset.flac",
+          "normalized_sentence": "remove",
+          "sample_id": "slurp:train:007175:audio-1497555644-headset",
+          "speaker_id": "FO-228",
+          "utterance_id": "7175",
+          "value_label": "calendar"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1490281647.flac",
+          "normalized_sentence": "fine",
+          "sample_id": "slurp:train:008908:audio-1490281647",
+          "speaker_id": "FO-350",
+          "utterance_id": "8908",
+          "value_label": "calendar"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1499690404-headset.flac",
+          "normalized_sentence": "take me to a video of how to cook spaghetti",
+          "sample_id": "slurp:train:010103:audio-1499690404-headset",
+          "speaker_id": "FO-413",
+          "utterance_id": "10103",
+          "value_label": "cooking"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1490262370-headset.flac",
+          "normalized_sentence": "what are jalapenos",
+          "sample_id": "slurp:train:010183:audio-1490262370-headset",
+          "speaker_id": "FE-349",
+          "utterance_id": "10183",
+          "value_label": "cooking"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1500979543.flac",
+          "normalized_sentence": "what day is it",
+          "sample_id": "slurp:train:000463:audio-1500979543",
+          "speaker_id": "FE-426",
+          "utterance_id": "463",
+          "value_label": "datetime"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1494418441-headset.flac",
+          "normalized_sentence": "change this time to ist",
+          "sample_id": "slurp:train:001284:audio-1494418441-headset",
+          "speaker_id": "UNK-326",
+          "utterance_id": "1284",
+          "value_label": "datetime"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1502375410-headset.flac",
+          "normalized_sentence": "add rebecca green to my list of favorite contacts",
+          "sample_id": "slurp:train:015976:audio-1502375410-headset",
+          "speaker_id": "ME-473",
+          "utterance_id": "15976",
+          "value_label": "email"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1490182441-headset.flac",
+          "normalized_sentence": "is there any email from my contacts",
+          "sample_id": "slurp:train:016997:audio-1490182441-headset",
+          "speaker_id": "ME-345",
+          "utterance_id": "16997",
+          "value_label": "email"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1490019231.flac",
+          "normalized_sentence": "can you tell me who create you",
+          "sample_id": "slurp:train:013414:audio-1490019231",
+          "speaker_id": "FE-141",
+          "utterance_id": "13414",
+          "value_label": "general"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1490290759.flac",
+          "normalized_sentence": "will a two thousand and fifteen fiesta be worth anything in three years",
+          "sample_id": "slurp:train:014931:audio-1490290759",
+          "speaker_id": "ME-352",
+          "utterance_id": "14931",
+          "value_label": "general"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1501765404.flac",
+          "normalized_sentence": "can you please turn off the wemo plug socket",
+          "sample_id": "slurp:train:004768:audio-1501765404",
+          "speaker_id": "FE-454",
+          "utterance_id": "4768",
+          "value_label": "iot"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1497450105.flac",
+          "normalized_sentence": "vacuum living room",
+          "sample_id": "slurp:train:004945:audio-1497450105",
+          "speaker_id": "MO-191",
+          "utterance_id": "4945",
+          "value_label": "iot"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1495377161-headset.flac",
+          "normalized_sentence": "erase this list",
+          "sample_id": "slurp:train:010694:audio-1495377161-headset",
+          "speaker_id": "UNK-335",
+          "utterance_id": "10694",
+          "value_label": "lists"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1490103442.flac",
+          "normalized_sentence": "get eggs on the list",
+          "sample_id": "slurp:train:010903:audio-1490103442",
+          "speaker_id": "FE-149",
+          "utterance_id": "10903",
+          "value_label": "lists"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1498570769-headset.flac",
+          "normalized_sentence": "what playlist is on shuffle",
+          "sample_id": "slurp:train:004989:audio-1498570769-headset",
+          "speaker_id": "FE-249",
+          "utterance_id": "4989",
+          "value_label": "music"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1499244389.flac",
+          "normalized_sentence": "i love the eternal voice of the singer she is my favourite",
+          "sample_id": "slurp:train:005878:audio-1499244389",
+          "speaker_id": "MO-374",
+          "utterance_id": "5878",
+          "value_label": "music"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1498757066-headset.flac",
+          "normalized_sentence": "what is latest on the recent events happening right now",
+          "sample_id": "slurp:train:003850:audio-1498757066-headset",
+          "speaker_id": "FO-372",
+          "utterance_id": "3850",
+          "value_label": "news"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio--1505323837-headset.flac",
+          "normalized_sentence": "olly please read me today's news",
+          "sample_id": "slurp:train:005086:audio--1505323837-headset",
+          "speaker_id": "FE-491",
+          "utterance_id": "5086",
+          "value_label": "news"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1490019266.flac",
+          "normalized_sentence": "play me a radio channel for trance music",
+          "sample_id": "slurp:train:009226:audio-1490019266",
+          "speaker_id": "ME-147",
+          "utterance_id": "9226",
+          "value_label": "play"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1497872343-headset.flac",
+          "normalized_sentence": "play for me the game candy crush",
+          "sample_id": "slurp:train:010354:audio-1497872343-headset",
+          "speaker_id": "FE-235",
+          "utterance_id": "10354",
+          "value_label": "play"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1490181691-headset.flac",
+          "normalized_sentence": "where is the grand canyon",
+          "sample_id": "slurp:train:013747:audio-1490181691-headset",
+          "speaker_id": "FE-145",
+          "utterance_id": "13747",
+          "value_label": "qa"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1501151732.flac",
+          "normalized_sentence": "how far does my dollar go in japan",
+          "sample_id": "slurp:train:013916:audio-1501151732",
+          "speaker_id": "MO-431",
+          "utterance_id": "13916",
+          "value_label": "qa"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1494418700.flac",
+          "normalized_sentence": "where is the nearest smoke shop",
+          "sample_id": "slurp:train:011656:audio-1494418700",
+          "speaker_id": "UNK-327",
+          "utterance_id": "11656",
+          "value_label": "recommendation"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1496266147.flac",
+          "normalized_sentence": "olly recommend a wine tasting event this weekend in chicago",
+          "sample_id": "slurp:train:011757:audio-1496266147",
+          "speaker_id": "UNK-341",
+          "utterance_id": "11757",
+          "value_label": "recommendation"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1501172960-headset.flac",
+          "normalized_sentence": "can you put this on facebook",
+          "sample_id": "slurp:train:015658:audio-1501172960-headset",
+          "speaker_id": "ME-434",
+          "utterance_id": "15658",
+          "value_label": "social"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1494513395.flac",
+          "normalized_sentence": "tweet a complaint to comcast",
+          "sample_id": "slurp:train:015727:audio-1494513395",
+          "speaker_id": "UNK-329",
+          "utterance_id": "15727",
+          "value_label": "social"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1497860937-headset.flac",
+          "normalized_sentence": "place order of one pizza",
+          "sample_id": "slurp:train:000670:audio-1497860937-headset",
+          "speaker_id": "FO-232",
+          "utterance_id": "670",
+          "value_label": "takeaway"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1492781311-headset.flac",
+          "normalized_sentence": "tell me when taco bell can deliver my dinner",
+          "sample_id": "slurp:train:002909:audio-1492781311-headset",
+          "speaker_id": "UNK-322",
+          "utterance_id": "2909",
+          "value_label": "takeaway"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1490357152-headset.flac",
+          "normalized_sentence": "reserve train tickets",
+          "sample_id": "slurp:train:012140:audio-1490357152-headset",
+          "speaker_id": "FE-353",
+          "utterance_id": "12140",
+          "value_label": "transport"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1501687070-headset.flac",
+          "normalized_sentence": "how is my commute",
+          "sample_id": "slurp:train:012142:audio-1501687070-headset",
+          "speaker_id": "FE-443",
+          "utterance_id": "12142",
+          "value_label": "transport"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1490801089-headset.flac",
+          "normalized_sentence": "please tell me if there is going to be snow this weekend",
+          "sample_id": "slurp:train:001543:audio-1490801089-headset",
+          "speaker_id": "FO-152",
+          "utterance_id": "1543",
+          "value_label": "weather"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1434530986-headset.flac",
+          "normalized_sentence": "what will be weather for tomorrow in mumbai",
+          "sample_id": "slurp:train:003800:audio-1434530986-headset",
+          "speaker_id": "FO-219",
+          "utterance_id": "3800",
+          "value_label": "weather"
+        }
+      ],
+      "name": "OPT-A36",
+      "sample_ids": [
+        "slurp:train:001206:audio-1489503509",
+        "slurp:train:001338:audio-1488986552",
+        "slurp:train:000573:audio--1504195254-headset",
+        "slurp:train:004342:audio-1490195663",
+        "slurp:train:007175:audio-1497555644-headset",
+        "slurp:train:008908:audio-1490281647",
+        "slurp:train:010103:audio-1499690404-headset",
+        "slurp:train:010183:audio-1490262370-headset",
+        "slurp:train:000463:audio-1500979543",
+        "slurp:train:001284:audio-1494418441-headset",
+        "slurp:train:015976:audio-1502375410-headset",
+        "slurp:train:016997:audio-1490182441-headset",
+        "slurp:train:013414:audio-1490019231",
+        "slurp:train:014931:audio-1490290759",
+        "slurp:train:004768:audio-1501765404",
+        "slurp:train:004945:audio-1497450105",
+        "slurp:train:010694:audio-1495377161-headset",
+        "slurp:train:010903:audio-1490103442",
+        "slurp:train:004989:audio-1498570769-headset",
+        "slurp:train:005878:audio-1499244389",
+        "slurp:train:003850:audio-1498757066-headset",
+        "slurp:train:005086:audio--1505323837-headset",
+        "slurp:train:009226:audio-1490019266",
+        "slurp:train:010354:audio-1497872343-headset",
+        "slurp:train:013747:audio-1490181691-headset",
+        "slurp:train:013916:audio-1501151732",
+        "slurp:train:011656:audio-1494418700",
+        "slurp:train:011757:audio-1496266147",
+        "slurp:train:015658:audio-1501172960-headset",
+        "slurp:train:015727:audio-1494513395",
+        "slurp:train:000670:audio-1497860937-headset",
+        "slurp:train:002909:audio-1492781311-headset",
+        "slurp:train:012140:audio-1490357152-headset",
+        "slurp:train:012142:audio-1501687070-headset",
+        "slurp:train:001543:audio-1490801089-headset",
+        "slurp:train:003800:audio-1434530986-headset"
+      ],
+      "schema": "saea-speech-native-split-v1",
+      "seed": 20260821,
+      "split_identity_hash": "e9131b611234cb1e49145e32d0afdb61a54b2e10c45a542856f128354faa3b74"
+    },
+    "OPT-B18": {
+      "items": [
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1488985916.flac",
+          "normalized_sentence": "set an alarm for this eight hundred pm this evening",
+          "sample_id": "slurp:train:007865:audio-1488985916",
+          "speaker_id": "FO-125",
+          "utterance_id": "7865",
+          "value_label": "alarm"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1501774428.flac",
+          "normalized_sentence": "turn up the volume on the music",
+          "sample_id": "slurp:train:004267:audio-1501774428",
+          "speaker_id": "ME-144",
+          "utterance_id": "4267",
+          "value_label": "audio"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1501689780-headset.flac",
+          "normalized_sentence": "cancel sam's party",
+          "sample_id": "slurp:train:007251:audio-1501689780-headset",
+          "speaker_id": "ME-369",
+          "utterance_id": "7251",
+          "value_label": "calendar"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1497886091.flac",
+          "normalized_sentence": "what is good way to cook eggs",
+          "sample_id": "slurp:train:010108:audio-1497886091",
+          "speaker_id": "FO-234",
+          "utterance_id": "10108",
+          "value_label": "cooking"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1502100355-headset.flac",
+          "normalized_sentence": "what time is it in the eastern half of the us right now",
+          "sample_id": "slurp:train:003722:audio-1502100355-headset",
+          "speaker_id": "FO-460",
+          "utterance_id": "3722",
+          "value_label": "datetime"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1501756329.flac",
+          "normalized_sentence": "reply to anthony's email",
+          "sample_id": "slurp:train:017155:audio-1501756329",
+          "speaker_id": "FE-448",
+          "utterance_id": "17155",
+          "value_label": "email"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1499088783.flac",
+          "normalized_sentence": "i am tired",
+          "sample_id": "slurp:train:006298:audio-1499088783",
+          "speaker_id": "ME-373",
+          "utterance_id": "6298",
+          "value_label": "general"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1497866882-headset.flac",
+          "normalized_sentence": "turn the lights down",
+          "sample_id": "slurp:train:000664:audio-1497866882-headset",
+          "speaker_id": "FO-233",
+          "utterance_id": "664",
+          "value_label": "iot"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1490955134.flac",
+          "normalized_sentence": "what kind of lists do i have saved",
+          "sample_id": "slurp:train:010948:audio-1490955134",
+          "speaker_id": "MO-156",
+          "utterance_id": "10948",
+          "value_label": "lists"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1495370836.flac",
+          "normalized_sentence": "who's this song by",
+          "sample_id": "slurp:train:004045:audio-1495370836",
+          "speaker_id": "UNK-334",
+          "utterance_id": "4045",
+          "value_label": "music"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1490370363.flac",
+          "normalized_sentence": "what is happening in the world",
+          "sample_id": "slurp:train:000293:audio-1490370363",
+          "speaker_id": "FO-150",
+          "utterance_id": "293",
+          "value_label": "news"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1490200081-headset.flac",
+          "normalized_sentence": "i would like to hear rush limbaugh on i heart radio",
+          "sample_id": "slurp:train:009638:audio-1490200081-headset",
+          "speaker_id": "FE-347",
+          "utterance_id": "9638",
+          "value_label": "play"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1490009117-headset.flac",
+          "normalized_sentence": "how tall is channin tatum",
+          "sample_id": "slurp:train:013195:audio-1490009117-headset",
+          "speaker_id": "ME-140",
+          "utterance_id": "13195",
+          "value_label": "qa"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1502218101.flac",
+          "normalized_sentence": "are there any pharmacy store nearby",
+          "sample_id": "slurp:train:011934:audio-1502218101",
+          "speaker_id": "MO-463",
+          "utterance_id": "11934",
+          "value_label": "recommendation"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1501698033-headset.flac",
+          "normalized_sentence": "tweet error log to samsung",
+          "sample_id": "slurp:train:015515:audio-1501698033-headset",
+          "speaker_id": "MO-446",
+          "utterance_id": "15515",
+          "value_label": "social"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1490288438-headset.flac",
+          "normalized_sentence": "will the restaurant deliver the order",
+          "sample_id": "slurp:train:005403:audio-1490288438-headset",
+          "speaker_id": "FE-351",
+          "utterance_id": "5403",
+          "value_label": "takeaway"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1434542055.flac",
+          "normalized_sentence": "hail taxi",
+          "sample_id": "slurp:train:012297:audio-1434542055",
+          "speaker_id": "ME-223",
+          "utterance_id": "12297",
+          "value_label": "transport"
+        },
+        {
+          "media_relpath": "datasets/slurp/slurp_real/audio-1502113517-headset.flac",
+          "normalized_sentence": "yes or no tomorrows temperature is to be hot",
+          "sample_id": "slurp:train:001685:audio-1502113517-headset",
+          "speaker_id": "FO-461",
+          "utterance_id": "1685",
+          "value_label": "weather"
+        }
+      ],
+      "name": "OPT-B18",
+      "sample_ids": [
+        "slurp:train:007865:audio-1488985916",
+        "slurp:train:004267:audio-1501774428",
+        "slurp:train:007251:audio-1501689780-headset",
+        "slurp:train:010108:audio-1497886091",
+        "slurp:train:003722:audio-1502100355-headset",
+        "slurp:train:017155:audio-1501756329",
+        "slurp:train:006298:audio-1499088783",
+        "slurp:train:000664:audio-1497866882-headset",
+        "slurp:train:010948:audio-1490955134",
+        "slurp:train:004045:audio-1495370836",
+        "slurp:train:000293:audio-1490370363",
+        "slurp:train:009638:audio-1490200081-headset",
+        "slurp:train:013195:audio-1490009117-headset",
+        "slurp:train:011934:audio-1502218101",
+        "slurp:train:015515:audio-1501698033-headset",
+        "slurp:train:005403:audio-1490288438-headset",
+        "slurp:train:012297:audio-1434542055",
+        "slurp:train:001685:audio-1502113517-headset"
+      ],
+      "schema": "saea-speech-native-split-v1",
+      "seed": 20260821,
+      "split_identity_hash": "9610b8e38d36cad754c18dcf244a6be89b431e054d6844eabae62b8120d50aa1"
+    }
+  },
+  "status": "MODEL-FREE SUCCESSOR BINDING; NOT AN EXPOSURE REGISTRATION"
+}

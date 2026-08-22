@@ -53,6 +53,7 @@ import ast
 import contextvars
 import hashlib
 import json
+from copy import deepcopy
 from concurrent.futures import FIRST_COMPLETED, Future, ThreadPoolExecutor, wait
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -1455,6 +1456,217 @@ def build_speech_native_binding(
     return {**unsigned, "binding_sha256": _binding_sha256(unsigned)}
 
 
+def extend_speech_native_binding(
+    base_binding: Mapping[str, object],
+    material: Sequence[SlurpTrainMaterial],
+    *,
+    seed: int,
+    split_name: str,
+    per_scenario: int,
+    expected_scenarios: Sequence[str] = tuple(SPEECH_NATIVE_SCENARIO_DEFINITIONS),
+) -> dict[str, object]:
+    """Add one isolated discovery split without changing frozen key material.
+
+    The successor preserves every existing split and key byte. Candidate
+    queries exclude all historical query and key-example speech, utterances,
+    normalized text, and speakers before deterministic hash ranking.
+    """
+
+    if isinstance(seed, bool) or not isinstance(seed, int):
+        raise PsluFlightError("speech-native extension seed must be an integer")
+    if (
+        not isinstance(split_name, str)
+        or not split_name
+        or any(character not in "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-" for character in split_name)
+    ):
+        raise PsluFlightError(
+            "speech-native extension split_name must use uppercase letters, digits, and dashes"
+        )
+    if (
+        isinstance(per_scenario, bool)
+        or not isinstance(per_scenario, int)
+        or per_scenario <= 0
+    ):
+        raise PsluFlightError("speech-native extension per_scenario must be positive")
+    if not isinstance(base_binding, Mapping):
+        raise PsluFlightError("speech-native parent binding must be an object")
+    parent_sha256 = base_binding.get("binding_sha256")
+    parent_unsigned = {
+        key: value for key, value in base_binding.items() if key != "binding_sha256"
+    }
+    if parent_sha256 != _binding_sha256(parent_unsigned):
+        raise PsluFlightError("speech-native parent binding self-hash mismatch")
+    raw_splits = base_binding.get("splits")
+    raw_cards = base_binding.get("key_cards")
+    raw_key_material = base_binding.get("key_material")
+    if (
+        not isinstance(raw_splits, Mapping)
+        or split_name in raw_splits
+        or not isinstance(raw_cards, list)
+        or not isinstance(raw_key_material, list)
+    ):
+        raise PsluFlightError("speech-native parent binding cannot accept the extension")
+    scenarios = tuple(expected_scenarios)
+    card_labels = tuple(
+        card.get("value_label") if isinstance(card, Mapping) else None
+        for card in raw_cards
+    )
+    if not scenarios or len(set(scenarios)) != len(scenarios) or card_labels != scenarios:
+        raise PsluFlightError(
+            "speech-native extension scenarios must match the frozen key-card order"
+        )
+
+    forbidden_samples: set[str] = set()
+    forbidden_utterances: set[str] = set()
+    forbidden_speakers: set[str] = set()
+    forbidden_sentences: set[str] = set()
+
+    def exclude(item: Mapping[str, object], context: str) -> None:
+        fields = {
+            "sample_id": forbidden_samples,
+            "utterance_id": forbidden_utterances,
+            "speaker_id": forbidden_speakers,
+            "normalized_sentence": forbidden_sentences,
+        }
+        for field_name, destination in fields.items():
+            value = item.get(field_name)
+            if not isinstance(value, str) or not value:
+                raise PsluFlightError(
+                    f"speech-native {context} lacks {field_name}"
+                )
+            destination.add(value)
+
+    for existing_name, split in raw_splits.items():
+        items = split.get("items") if isinstance(split, Mapping) else None
+        if not isinstance(existing_name, str) or not isinstance(items, list):
+            raise PsluFlightError("speech-native parent split is malformed")
+        for item in items:
+            if not isinstance(item, Mapping):
+                raise PsluFlightError("speech-native parent query item is malformed")
+            exclude(item, f"parent split {existing_name!r}")
+    key_samples: set[str] = set()
+    key_utterances: set[str] = set()
+    key_speakers: set[str] = set()
+    key_sentences: set[str] = set()
+    for key in raw_key_material:
+        sources = key.get("sources") if isinstance(key, Mapping) else None
+        if not isinstance(sources, list):
+            raise PsluFlightError("speech-native parent key material is malformed")
+        for source in sources:
+            if not isinstance(source, Mapping):
+                raise PsluFlightError("speech-native parent key source is malformed")
+            exclude(source, "parent key source")
+            key_samples.add(str(source["sample_id"]))
+            key_utterances.add(str(source["utterance_id"]))
+            key_speakers.add(str(source["speaker_id"]))
+            key_sentences.add(str(source["normalized_sentence"]))
+
+    by_scenario: dict[str, list[SlurpTrainMaterial]] = {
+        scenario: [] for scenario in scenarios
+    }
+    for entry in material:
+        if entry.scenario in by_scenario:
+            by_scenario[entry.scenario].append(entry)
+    selected_items: list[dict[str, str]] = []
+    selected_speakers: set[str] = set()
+    for scenario in scenarios:
+        candidates = [
+            (entry, recording)
+            for entry in by_scenario[scenario]
+            for recording in entry.recordings
+        ]
+        candidates.sort(
+            key=lambda pair: _binding_rank(
+                seed,
+                split_name,
+                scenario,
+                pair[0].utterance_id,
+                pair[1].sample_id,
+            )
+        )
+        selected_for_scenario: list[dict[str, str]] = []
+        local_utterances: set[str] = set()
+        local_sentences: set[str] = set()
+        for entry, recording in candidates:
+            normalized = _normalized_sentence(entry.sentence)
+            if (
+                recording.sample_id in forbidden_samples
+                or entry.utterance_id in forbidden_utterances
+                or recording.speaker_id in forbidden_speakers
+                or normalized in forbidden_sentences
+                or entry.utterance_id in local_utterances
+                or normalized in local_sentences
+            ):
+                continue
+            selected_for_scenario.append(
+                {
+                    "sample_id": recording.sample_id,
+                    "utterance_id": entry.utterance_id,
+                    "media_relpath": recording.media_relpath,
+                    "speaker_id": recording.speaker_id,
+                    "normalized_sentence": normalized,
+                    "value_label": scenario,
+                }
+            )
+            selected_speakers.add(recording.speaker_id)
+            local_utterances.add(entry.utterance_id)
+            local_sentences.add(normalized)
+            if len(selected_for_scenario) == per_scenario:
+                break
+        if len(selected_for_scenario) != per_scenario:
+            raise PsluFlightError(
+                f"insufficient isolated extension queries for {scenario!r}: needed "
+                f"{per_scenario}, found {len(selected_for_scenario)}"
+            )
+        selected_items.extend(selected_for_scenario)
+
+    ordered = sorted(
+        selected_items, key=lambda item: (item["value_label"], item["sample_id"])
+    )
+    identity = {
+        "schema": "saea-speech-native-split-v1",
+        "name": split_name,
+        "seed": seed,
+        "sample_ids": [item["sample_id"] for item in ordered],
+    }
+    successor_unsigned = deepcopy(parent_unsigned)
+    successor_splits = deepcopy(dict(raw_splits))
+    successor_splits[split_name] = {
+        **identity,
+        "split_identity_hash": _binding_sha256(identity),
+        "items": ordered,
+    }
+    successor_unsigned.update(
+        {
+            "status": "MODEL-FREE SUCCESSOR BINDING; NOT AN EXPOSURE REGISTRATION",
+            "splits": successor_splits,
+            "parent_binding_sha256": parent_sha256,
+            "extension_audit": {
+                "split_name": split_name,
+                "seed": seed,
+                "per_scenario": per_scenario,
+                "query_count": len(ordered),
+                "excluded_parent_query_count": len(forbidden_samples - key_samples),
+                "excluded_key_example_count": len(key_samples),
+            },
+            "isolation_audit": {
+                "query_sample_count": len(forbidden_samples - key_samples) + len(ordered),
+                "query_speaker_count": len(forbidden_speakers - key_speakers)
+                + len(selected_speakers),
+                "key_example_count": len(key_samples),
+                "query_key_sample_overlap": 0,
+                "query_key_utterance_overlap": 0,
+                "query_key_normalized_sentence_overlap": 0,
+                "query_key_speaker_overlap": 0,
+            },
+        }
+    )
+    return {
+        **successor_unsigned,
+        "binding_sha256": _binding_sha256(successor_unsigned),
+    }
+
+
 # ---------------------------------------------------------------------------
 # The ontology-miner call guard (module docstring).
 # ---------------------------------------------------------------------------
@@ -1876,6 +2088,7 @@ __all__ = [
     "SpeechNativeMatchTask",
     "assert_never_calls_ontology_miner",
     "build_speech_native_binding",
+    "extend_speech_native_binding",
     "load_pslu_rosters",
     "load_pslu_sample_manifest",
     "load_speech_native_engineering_gate",
