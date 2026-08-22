@@ -33,6 +33,8 @@ from speech_aware_evidence_acquisition.core.driver.speech_native import (
     _evaluate_m9_factor_graph_action_support,
     _evaluate_m10_candidate_evidence_action_support,
     _evaluate_m11_adaptive_evidence_gap,
+    _evaluate_m11_oof_action_advantage_policy,
+    _m11_reader_contract_from_values,
     _load_decision_graph,
     _parse_m9_factor_graph_trajectory,
     _parse_m10_candidate_evidence_trajectory,
@@ -3365,6 +3367,226 @@ def test_m11_reader_preserves_the_versioned_key_conditioned_policy_identity():
     assert trajectory["policy_id"] == "speech-conditioned-adaptive-evidence-gap-v2"
     metrics = _evaluate_m11_adaptive_evidence_gap((trajectory,))
     assert metrics["policy_id"] == "speech-conditioned-adaptive-evidence-gap-v2"
+
+
+def _m11_policy_trajectory(
+    index,
+    *,
+    primary="K001",
+    retrieval="K001",
+    action="K001",
+    boundary="K001",
+    gold="K001",
+    boundary_id="B001",
+    speaker_id=None,
+    factor_kinds=("operation", "entity"),
+):
+    """Build one already-recorded M11 trajectory for model-free policy tests."""
+
+    return {
+        "policy_id": "speech-conditioned-adaptive-evidence-gap-v2",
+        "sample_id": f"sample-{index:03d}",
+        "speaker_id": speaker_id or f"speaker-{index % 9}",
+        "gold_key_id": gold,
+        "primary_key_id": primary,
+        "initial_top_key_ids": (primary, "K002", "K003"),
+        "retrieval_key_id": retrieval,
+        "action_key_id": action,
+        "new_factor_ids": ("F001", "F002"),
+        "new_factor_kinds": factor_kinds,
+        "new_boundary_id": boundary_id,
+        "boundary_ab_key_id": boundary if boundary_id is not None else None,
+        "boundary_ba_key_id": boundary if boundary_id is not None else None,
+        "boundary_stable_key_id": boundary if boundary_id is not None else None,
+        "termination": (
+            "pair-boundary-compared"
+            if boundary_id is not None
+            else "no-registered-pair-boundary"
+        ),
+        "mechanism_failure": False,
+        "total_calls": 5 if boundary_id is not None else 3,
+    }
+
+
+def _m11_information_complete_support_fixture():
+    rows = []
+    for index in range(108):
+        if index < 8:
+            rows.append(
+                _m11_policy_trajectory(
+                    index,
+                    retrieval="K002",
+                    action="K002",
+                    boundary="K002",
+                    gold="K002",
+                )
+            )
+        elif index < 12:
+            rows.append(
+                _m11_policy_trajectory(
+                    index,
+                    retrieval="K003",
+                    action="K003",
+                    boundary="K002",
+                    gold="K002",
+                )
+            )
+        elif index < 30:
+            rows.append(
+                _m11_policy_trajectory(
+                    index,
+                    retrieval="K003",
+                    action="K003",
+                    boundary="K001",
+                    factor_kinds=("operation", "target"),
+                )
+            )
+        else:
+            rows.append(
+                _m11_policy_trajectory(
+                    index,
+                    boundary_id=None,
+                )
+            )
+    return tuple(rows)
+
+
+def test_m11_information_gate_freezes_support_before_oof_policy_selection():
+    metrics = _evaluate_m11_adaptive_evidence_gap(
+        _m11_information_complete_support_fixture(),
+        enable_training_free_controller=True,
+    )
+
+    assert metrics["support_gate_passed"] is True
+    assert metrics["boundary_incremental_helpful_action_count"] == 4
+    assert metrics["boundary_stable_non_primary_action_count"] == 12
+    controller = metrics["training_free_controller"]
+    assert controller["policy_id"] == "speaker-grouped-oof-information-advantage-v1"
+    assert controller["wrong_to_correct_vs_primary"] == 12
+    assert controller["correct_to_wrong_vs_primary"] == 0
+    assert controller["mean_estimated_calls"] < controller["full_acquisition_mean_calls"]
+    assert controller["promotion_checks"]["mean_calls_below_full_acquisition"] is True
+    assert controller["promotion_gate_passed"] is True
+
+
+def test_m11_support_does_not_enable_post_hoc_policy_without_pinned_reader():
+    metrics = _evaluate_m11_adaptive_evidence_gap(
+        _m11_information_complete_support_fixture()
+    )
+
+    assert metrics["support_gate_passed"] is True
+    assert metrics["training_free_controller"] == {
+        "status": "deferred-reader-contract-not-preregistered",
+        "policy_id": "speaker-grouped-oof-information-advantage-v1",
+    }
+
+
+def test_m11_reader_contract_rejects_threshold_drift():
+    valid = {
+        "speech_native_training_free_reader_policy_id": (
+            "speaker-grouped-oof-information-advantage-v1"
+        ),
+        "speech_native_training_free_reader_contract": {
+            "support_minimum_query_count": 100,
+            "support_minimum_top_k_reachable": 100,
+            "support_minimum_action_variable_queries": 24,
+            "support_minimum_adaptive_boundary_queries": 18,
+            "support_minimum_boundary_non_primary_actions": 12,
+            "support_minimum_incremental_boundary_repairs": 3,
+            "support_minimum_oracle_gain": 6,
+            "support_maximum_mechanism_failures": 0,
+            "oof_fold_count": 3,
+            "oof_minimum_state_support": 5,
+            "oof_minimum_changed_prediction_support": 3,
+            "oof_minimum_helpful_transitions": 2,
+            "oof_minimum_estimated_net_gain": 2,
+            "oof_maximum_harmful_transitions": 0,
+            "promotion_minimum_net_gain": 3,
+            "promotion_minimum_positive_folds": 2,
+            "promotion_minimum_worst_fold_delta": 0,
+            "promotion_maximum_harmful_transitions": 1,
+            "promotion_minimum_action_rate": 0.05,
+            "promotion_maximum_action_rate": 0.5,
+            "promotion_requires_lower_mean_calls": True,
+        },
+    }
+    policy_id, contract = _m11_reader_contract_from_values(valid, "M11")
+    drifted = {
+        **valid,
+        "speech_native_training_free_reader_contract": {
+            **valid["speech_native_training_free_reader_contract"],
+            "oof_maximum_harmful_transitions": 1,
+        },
+    }
+
+    assert policy_id == "speaker-grouped-oof-information-advantage-v1"
+    assert contract == valid["speech_native_training_free_reader_contract"]
+    with pytest.raises(SpeechNativeProfileError, match="reader contract"):
+        _m11_reader_contract_from_values(drifted, "M11")
+
+
+def test_m11_oof_policy_never_uses_held_out_fold_rewards_to_choose_its_actions():
+    rows = _m11_information_complete_support_fixture()
+    first = _evaluate_m11_oof_action_advantage_policy(rows)
+    held_out_fold = first["action_audit"][0]["fold_id"]
+    changed = tuple(
+        {
+            **row,
+            "gold_key_id": (
+                "K003"
+                if audit["fold_id"] == held_out_fold
+                else row["gold_key_id"]
+            ),
+        }
+        for row, audit in zip(rows, first["action_audit"], strict=True)
+    )
+
+    second = _evaluate_m11_oof_action_advantage_policy(changed)
+
+    first_actions = {
+        row["sample_id"]: row["selected_action_id"]
+        for row in first["action_audit"]
+        if row["fold_id"] == held_out_fold
+    }
+    second_actions = {
+        row["sample_id"]: row["selected_action_id"]
+        for row in second["action_audit"]
+        if row["fold_id"] == held_out_fold
+    }
+    assert second_actions == first_actions
+
+
+def test_m11_oof_policy_retains_primary_when_training_memory_contains_harm():
+    rows = tuple(
+        _m11_policy_trajectory(
+            index,
+            boundary=("K002" if index % 2 == 0 else "K003"),
+            gold=("K002" if index % 2 == 0 else "K001"),
+            speaker_id=f"speaker-{index // 2}",
+        )
+        for index in range(18)
+    )
+
+    controller = _evaluate_m11_oof_action_advantage_policy(rows)
+
+    assert controller["action_count"] == 0
+    assert controller["correct_delta_vs_primary"] == 0
+    assert {row["selection_reason"] for row in controller["action_audit"]} == {
+        "retain:no-zero-harm-positive-advantage-action"
+    }
+
+
+def test_m11_reader_defers_controller_when_information_support_is_too_small():
+    metrics = _evaluate_m11_adaptive_evidence_gap(
+        _m11_information_complete_support_fixture()[:36]
+    )
+
+    assert metrics["support_gate_passed"] is False
+    assert metrics["support_checks"]["query_count_at_least_100"] is False
+    assert metrics["training_free_controller"] == {
+        "status": "deferred-support-gate-failed",
+        "policy_id": "speaker-grouped-oof-information-advantage-v1",
+    }
 
 
 def _write_m11_engineering_action_audit_fixture(tmp_path):

@@ -636,6 +636,32 @@ def test_information_complete_e108_m11_composes_on_the_resident_np16_service():
     assert values["speech_native_agent_aggregator_id"] == (
         "adaptive-evidence-gap-primary-control-v1"
     )
+    assert values["speech_native_training_free_reader_policy_id"] == (
+        "speaker-grouped-oof-information-advantage-v1"
+    )
+    assert values["speech_native_training_free_reader_contract"] == {
+        "support_minimum_query_count": 100,
+        "support_minimum_top_k_reachable": 100,
+        "support_minimum_action_variable_queries": 24,
+        "support_minimum_adaptive_boundary_queries": 18,
+        "support_minimum_boundary_non_primary_actions": 12,
+        "support_minimum_incremental_boundary_repairs": 3,
+        "support_minimum_oracle_gain": 6,
+        "support_maximum_mechanism_failures": 0,
+        "oof_fold_count": 3,
+        "oof_minimum_state_support": 5,
+        "oof_minimum_changed_prediction_support": 3,
+        "oof_minimum_helpful_transitions": 2,
+        "oof_minimum_estimated_net_gain": 2,
+        "oof_maximum_harmful_transitions": 0,
+        "promotion_minimum_net_gain": 3,
+        "promotion_minimum_positive_folds": 2,
+        "promotion_minimum_worst_fold_delta": 0,
+        "promotion_maximum_harmful_transitions": 1,
+        "promotion_minimum_action_rate": 0.05,
+        "promotion_maximum_action_rate": 0.5,
+        "promotion_requires_lower_mean_calls": True,
+    }
     context_per_slot = 65536 // values["profile_slot_count"]
     conservative_prompt_ceiling = 1873 + 169 + 294
     assert context_per_slot - conservative_prompt_ceiling == 1760
