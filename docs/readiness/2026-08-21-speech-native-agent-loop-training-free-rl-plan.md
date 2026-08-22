@@ -2,7 +2,7 @@
 
 Date: 2026-08-21
 
-Status: bounded discovery only; FINAL60 is blocked
+Status: bounded discovery only; no controller is frozen; GATE-C36 and FINAL60 are blocked
 
 ## Decision
 
@@ -16,6 +16,12 @@ This is not an AgentLoop success result. It is evidence that the external contro
 - A model-free counterfactual policy requiring unanimous M3-order support scores 16/18 on the exposed GATE trajectories, versus 15/18 for the observed majority policy. This is post-read discovery and requires new validation.
 
 Do not contact FINAL60. Do not claim that AgentLoop improves task accuracy. Do not discard the speech-native text-key hypothesis.
+
+### DISCOVERY-X108 outcome
+
+The preregistered expansion is complete. On 108 speaker-grouped discovery queries, K1-M1 scores 89/108 and the unanimous-fallback AgentLoop scores 90/108, with two wrong-to-correct and one correct-to-wrong changes. The one-case gain occurs in only one of three speaker-grouped folds; the other folds are unchanged. The preregistered out-of-fold contextual policy scores 87/108, with zero wrong-to-correct and two correct-to-wrong changes, and is rejected.
+
+The action space is nevertheless non-degenerate: 31 queries are action-sensitive, seven observable states have reward spread, seven primary errors are recoverable by a recorded action, canonical top-3 reachability is 99/108, and the diagnostic action oracle is 96/108. These are optimization-headroom measurements, not a deployable policy. Freeze no controller, do not construct GATE-C36, and do not contact FINAL60.
 
 ## Research boundary
 
@@ -134,10 +140,12 @@ If the adaptive serving policy still has an unavoidable short tail after A0, rep
 
 If all three registered np geometries fail mechanically while their stable waves reach high utilization, permit one label-blind scheduler rescue after semantic read: keep np16 and every scientific byte fixed, raise the task queue to `8×np` so all 108 exposed X108 tasks can contribute ready contacts across stage boundaries, and inspect only mechanical serving fields. This cell cannot change or corroborate the scientific result. If it also fails the original whole-window thresholds, stop live profiling and refactor the existing dispatcher into an explicit global stage-ready state machine before any validation-gate contact.
 
+The q128 rescue and the first global-branch refactor are complete and both fail the unchanged whole-window gate. The global-branch run completes 108/108 decisions and 1,599 contacts with zero request, parse, OOM, host-spill, runaway, or mmproj failure. Slot occupancy reaches 90.57 percent, but request-active GPU median/P10 is 89/60 percent and aggregate throughput is 1,209.47 tokens/s. The process audit records zero mmproj hits. Stop live profiling. The next engineering change must be model-free: replace blocking branch jobs with a persistent dependency-aware stage DAG whose ready queue applies bounded backpressure while preserving retrieval-before-verification causality and deterministic trace order. Revalidate it with tests and replay before preregistering any further model contact.
+
 ## Claim boundary
 
 The strongest current claim is:
 
-> On one unread 18-query train gate, frozen speech-feature queries matched against maintainable text keys through the frozen Omni decoder outperform direct speech classification by one case at the embedded M1 decision level. The tested AgentLoop does not preserve that gain, but its logged actions produce distinct positive, negative, and neutral outcomes that support bounded training-free controller optimization.
+> Frozen speech-feature queries can be matched directly against maintainable text keys through the frozen Omni decoder without loading mmproj at inference. One unread 18-query train gate shows a one-case K1-M1 gain over direct speech classification, while the larger 108-query discovery rollout shows only a one-case AgentLoop gain that is not reproduced across speaker-grouped folds. Logged actions expose seven recoverable primary errors and a seven-case diagnostic oracle gap, so training-free controller optimization remains technically motivated, but no controller is validated or ready for a new gate.
 
 Do not claim final superiority, generalization, or a validated AgentLoop improvement.
