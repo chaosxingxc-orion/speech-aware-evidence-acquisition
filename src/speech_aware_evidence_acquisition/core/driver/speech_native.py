@@ -77,6 +77,17 @@ _HOST_SPILL_MARKERS = (
     "host buffer fallback",
 )
 _RUNAWAY_MARKERS = ("truncated = 1", "context shift", "slot context shift")
+_SPEECH_NATIVE_KEY_IDS = frozenset(f"K{index:03d}" for index in range(1, 19))
+_M6_SCHEMA_V2_POLICY_ID = "knowledge-grounded-semantic-refinement-schema-v2"
+_M6_AGGREGATOR_ID = "grounded-refined-primary-fallback-v1"
+_M6_SUCCESS_ACTIONS = (
+    "match:speech-only-primary",
+    "retrieve:speech-only",
+    "build:grounded-query-state",
+    "retrieve:speech-plus-grounded-state",
+    "verify:speech-plus-grounded-state",
+    "select:refined-primary-fallback",
+)
 _SPEAKER_FOLD_POLICY_ID = "speaker-grouped-3fold-sha256-load-balanced-v1"
 _CONTEXTUAL_ACTION_IDS = (
     "primary",
@@ -2570,6 +2581,375 @@ def _profile_completion_issues(
     return tuple(issues)
 
 
+def _load_pinned_json_object(
+    path: Path, *, expected_sha256: str, artifact_name: str
+) -> dict[str, object]:
+    if _SHA256.fullmatch(expected_sha256) is None:
+        raise SpeechNativeProfileError(f"{artifact_name} expected SHA-256 is malformed")
+    if not Path(path).is_file() or _sha256_file(Path(path)) != expected_sha256:
+        raise SpeechNativeProfileError(f"{artifact_name} SHA-256 mismatch")
+    try:
+        document = json.loads(Path(path).read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as error:
+        raise SpeechNativeProfileError(f"cannot read {artifact_name}: {error}") from error
+    if not isinstance(document, dict):
+        raise SpeechNativeProfileError(f"{artifact_name} must be a JSON object")
+    return document
+
+
+def audit_speech_native_action_support(
+    *,
+    attempt_dir: Path,
+    attempt_record_path: Path,
+    attempt_record_sha256: str,
+    flight_receipt_sha256: str,
+    decisions_sha256: str,
+    trace_sha256: str,
+) -> dict[str, object]:
+    """Read only M6 action structure from one narrowly admitted aborted attempt.
+
+    This audit never opens a split binding and never interprets value labels or
+    correctness. It exists to decide whether the frozen grounded loop creates a
+    non-degenerate action space worth testing on a fresh, unread train gate.
+    """
+
+    attempt_dir = Path(attempt_dir)
+    flight = _load_pinned_json_object(
+        attempt_dir / "flight-receipt.json",
+        expected_sha256=flight_receipt_sha256,
+        artifact_name="action-audit flight receipt",
+    )
+    run_id = flight.get("run_id")
+    attempt_id = flight.get("attempt_id")
+    if (
+        not isinstance(run_id, str)
+        or not run_id
+        or not isinstance(attempt_id, str)
+        or not attempt_id
+        or flight.get("status") != "COMPLETED"
+        or flight.get("request_failures") != []
+    ):
+        raise SpeechNativeProfileError(
+            "action-audit flight is not a mechanically completed source"
+        )
+    attempt_record = _load_pinned_json_object(
+        Path(attempt_record_path),
+        expected_sha256=attempt_record_sha256,
+        artifact_name="action-audit durable attempt record",
+    )
+    if (
+        attempt_record.get("run_id") != run_id
+        or attempt_record.get("attempt_id") != attempt_id
+        or attempt_record.get("state") != "ABORTED"
+        or attempt_record.get("failure_reason")
+        != "speech-native profile completion checks failed"
+    ):
+        raise SpeechNativeProfileError(
+            "action audit admits only the legacy completion-gate abort state"
+        )
+
+    profile = flight.get("profile")
+    decisions_ref = flight.get("decisions")
+    if (
+        not isinstance(profile, Mapping)
+        or profile.get("matcher_policy_id") != "M6"
+        or profile.get("agent_policy_id") != _M6_SCHEMA_V2_POLICY_ID
+        or profile.get("agent_aggregator_id") != _M6_AGGREGATOR_ID
+        or profile.get("mechanism_control_id") != "matched"
+        or profile.get("top_k") != 3
+        or not isinstance(decisions_ref, Mapping)
+        or decisions_ref.get("contains_gold_labels") is not False
+    ):
+        raise SpeechNativeProfileError(
+            "action audit requires the matched M6 schema-v2 prediction-only cell"
+        )
+    decisions_name = decisions_ref.get("path")
+    if (
+        not isinstance(decisions_name, str)
+        or not decisions_name
+        or Path(decisions_name).name != decisions_name
+    ):
+        raise SpeechNativeProfileError("action-audit decision path is unsafe")
+    decisions_path = attempt_dir / decisions_name
+    if (
+        _SHA256.fullmatch(decisions_sha256) is None
+        or decisions_ref.get("sha256") != decisions_sha256
+        or not decisions_path.is_file()
+        or _sha256_file(decisions_path) != decisions_sha256
+    ):
+        raise SpeechNativeProfileError("action-audit decisions SHA-256 mismatch")
+    try:
+        decision_rows = tuple(
+            json.loads(line)
+            for line in decisions_path.read_text(encoding="utf-8").splitlines()
+            if line.strip()
+        )
+    except (OSError, UnicodeError, json.JSONDecodeError) as error:
+        raise SpeechNativeProfileError(
+            f"cannot read action-audit decisions: {error}"
+        ) from error
+    task_count = profile.get("task_count")
+    if (
+        isinstance(task_count, bool)
+        or not isinstance(task_count, int)
+        or task_count <= 0
+        or len(decision_rows) != task_count
+        or decisions_ref.get("count") != task_count
+    ):
+        raise SpeechNativeProfileError("action-audit decision count is inconsistent")
+
+    expected_packet_sha256: dict[str, str] = {}
+    calls_distribution: Counter[int] = Counter()
+    action_sensitive_count = 0
+    ranked_retrieval_change_count = 0
+    candidate_set_change_count = 0
+    top1_change_count = 0
+    seen_samples: set[str] = set()
+    contact_count = 0
+    for row in decision_rows:
+        if not isinstance(row, Mapping):
+            raise SpeechNativeProfileError("action-audit decision row is not an object")
+        sample_id = row.get("sample_id")
+        query_sample_id = row.get("query_sample_id")
+        packet_sha256 = row.get("speech_packet_sha256")
+        calls = row.get("calls")
+        votes = row.get("agent_vote_key_ids")
+        steps = row.get("agent_steps")
+        actions = row.get("agent_actions")
+        if (
+            row.get("schema") != "saea-speech-native-decision-v1"
+            or not isinstance(sample_id, str)
+            or not sample_id
+            or sample_id in seen_samples
+            or query_sample_id != sample_id
+            or not isinstance(packet_sha256, str)
+            or _SHA256.fullmatch(packet_sha256) is None
+            or row.get("mechanism_control_id") != "matched"
+            or row.get("key_representation_id") != "K1"
+            or row.get("matcher_policy_id") != "M6"
+            or row.get("parse_failure") is not False
+            or row.get("agent_policy_id") != _M6_SCHEMA_V2_POLICY_ID
+            or row.get("agent_aggregator_id") != _M6_AGGREGATOR_ID
+            or row.get("agent_escalated") is not True
+            or not isinstance(actions, list)
+            or tuple(actions) != _M6_SUCCESS_ACTIONS
+        ):
+            raise SpeechNativeProfileError("action-audit M6 decision identity is malformed")
+        if (
+            isinstance(calls, bool)
+            or not isinstance(calls, int)
+            or calls not in {7, 8}
+            or not isinstance(votes, list)
+            or len(votes) != 2
+            or not all(vote in _SPEECH_NATIVE_KEY_IDS for vote in votes)
+            or row.get("key_id") != votes[1]
+            or not isinstance(steps, list)
+            or len(steps) != 4
+        ):
+            raise SpeechNativeProfileError("action-audit M6 action trajectory is malformed")
+        expected_step_actions = (
+            "match:speech-only-primary",
+            "retrieve:speech-only",
+            "build:grounded-query-state",
+            "retrieve-and-verify:speech-plus-grounded-state",
+        )
+        for step, expected_action in zip(steps, expected_step_actions, strict=True):
+            if (
+                not isinstance(step, Mapping)
+                or step.get("action_id") != expected_action
+                or step.get("parse_failure") is not False
+                or isinstance(step.get("calls"), bool)
+                or not isinstance(step.get("calls"), int)
+                or int(step["calls"]) <= 0
+                or not isinstance(step.get("top_key_ids"), list)
+                or not all(
+                    key_id in _SPEECH_NATIVE_KEY_IDS
+                    for key_id in step.get("top_key_ids", [])
+                )
+            ):
+                raise SpeechNativeProfileError("action-audit M6 step is malformed")
+        initial_ids = tuple(steps[1]["top_key_ids"])
+        refined_ids = tuple(steps[3]["top_key_ids"])
+        state_document = steps[2].get("grounded_query_state")
+        if (
+            len(initial_ids) != 3
+            or len(set(initial_ids)) != 3
+            or len(refined_ids) != 3
+            or len(set(refined_ids)) != 3
+            or not isinstance(state_document, Mapping)
+            or state_document.get("candidate_key_ids") != list(initial_ids)
+            or steps[0].get("key_id") != votes[0]
+            or steps[1].get("key_id") is not None
+            or steps[2].get("key_id") is not None
+            or steps[3].get("key_id") != votes[1]
+            or row.get("top_key_ids") != list(refined_ids)
+            or steps[3].get("verifier_scores") != row.get("verifier_scores")
+            or sum(int(step["calls"]) for step in steps) != calls
+        ):
+            raise SpeechNativeProfileError(
+                "action-audit grounded retrieval transition is malformed"
+            )
+        response_hashes = row.get("response_text_sha256")
+        if (
+            not isinstance(response_hashes, list)
+            or len(response_hashes) != calls
+            or not all(
+                isinstance(value, str) and _SHA256.fullmatch(value) is not None
+                for value in response_hashes
+            )
+        ):
+            raise SpeechNativeProfileError("action-audit response hashes are malformed")
+        seen_samples.add(sample_id)
+        expected_packet_sha256[query_sample_id] = packet_sha256
+        contact_count += calls
+        calls_distribution[calls] += 1
+        action_sensitive_count += int(votes[0] != votes[1])
+        ranked_retrieval_change_count += int(initial_ids != refined_ids)
+        candidate_set_change_count += int(set(initial_ids) != set(refined_ids))
+        top1_change_count += int(initial_ids[0] != refined_ids[0])
+
+    actual_contact_count = profile.get("actual_contact_count")
+    planned_contact_ceiling = profile.get("planned_contact_ceiling")
+    actual_usage = attempt_record.get("actual")
+    close = flight.get("close")
+    cost = close.get("cost") if isinstance(close, Mapping) else None
+    if (
+        actual_contact_count != contact_count
+        or not isinstance(actual_usage, Mapping)
+        or actual_usage.get("calls") != contact_count
+        or not isinstance(cost, Mapping)
+        or cost.get("calls_used") != contact_count
+        or isinstance(planned_contact_ceiling, bool)
+        or not isinstance(planned_contact_ceiling, int)
+    ):
+        raise SpeechNativeProfileError("action-audit contact accounting is inconsistent")
+
+    trace_path = attempt_dir / f"{run_id}.trace.jsonl"
+    if (
+        _SHA256.fullmatch(trace_sha256) is None
+        or not trace_path.is_file()
+        or _sha256_file(trace_path) != trace_sha256
+    ):
+        raise SpeechNativeProfileError("action-audit trace SHA-256 mismatch")
+    expected_queries: dict[str, Mapping[str, str]] = {}
+    try:
+        with trace_path.open("r", encoding="utf-8") as handle:
+            for line in handle:
+                record = json.loads(line)
+                if record.get("channel") != "MODEL_REQUEST":
+                    continue
+                envelope = record.get("payload")
+                payload = envelope.get("payload") if isinstance(envelope, Mapping) else None
+                if not isinstance(payload, Mapping):
+                    continue
+                sample_id = payload.get("sample_id")
+                parts = payload.get("speech_feature_parts")
+                query_parts = (
+                    [
+                        dict(part)
+                        for part in parts
+                        if isinstance(part, Mapping) and part.get("role") == "query"
+                    ]
+                    if isinstance(parts, list)
+                    else []
+                )
+                if (
+                    not isinstance(sample_id, str)
+                    or sample_id not in expected_packet_sha256
+                    or len(query_parts) != 1
+                    or query_parts[0].get("sha256")
+                    != expected_packet_sha256[sample_id]
+                ):
+                    continue
+                previous = expected_queries.get(sample_id)
+                if previous is not None and dict(previous) != query_parts[0]:
+                    raise SpeechNativeProfileError(
+                        "action-audit trace has conflicting speech-query carriage"
+                    )
+                expected_queries[sample_id] = query_parts[0]
+    except (OSError, UnicodeError, json.JSONDecodeError) as error:
+        raise SpeechNativeProfileError(
+            f"cannot inspect action-audit speech-query carriage: {error}"
+        ) from error
+    if set(expected_queries) != set(expected_packet_sha256):
+        raise SpeechNativeProfileError("action-audit trace speech-query carriage is incomplete")
+    trace_usage = _trace_usage_summary(trace_path)
+    trace_speech_query = _trace_speech_query_summary(
+        trace_path, expected_queries=expected_queries
+    )
+
+    process_audit_sha256 = flight.get("process_audit_sha256")
+    if not isinstance(process_audit_sha256, str):
+        raise SpeechNativeProfileError("action-audit process receipt SHA-256 is missing")
+    process_audit = _load_pinned_json_object(
+        attempt_dir / f"{run_id}.mmproj-audit.json",
+        expected_sha256=process_audit_sha256,
+        artifact_name="action-audit mmproj process audit",
+    )
+    if (
+        process_audit.get("mmproj_loaded") is not False
+        or process_audit.get("mmproj_hit_count") != 0
+    ):
+        raise SpeechNativeProfileError("action-audit source loaded mmproj")
+    server_scan = flight.get("server_log_scan")
+    if not isinstance(server_scan, Mapping):
+        raise SpeechNativeProfileError("action-audit server log scan is missing")
+    completion_issues = _profile_completion_issues(
+        calls_used=contact_count,
+        actual_contact_count=contact_count,
+        task_count=task_count,
+        planned_contact_ceiling=planned_contact_ceiling,
+        request_failure_count=0,
+        server_scan=server_scan,
+        trace_usage=trace_usage,
+        trace_speech_query=trace_speech_query,
+    )
+    if completion_issues:
+        raise SpeechNativeProfileError(
+            "action-audit source has nonlegacy completion defects: "
+            + "; ".join(completion_issues)
+        )
+    marker_count = server_scan.get("mmproj_free_chunk_count")
+    if isinstance(marker_count, bool) or not isinstance(marker_count, int):
+        raise SpeechNativeProfileError("action-audit feature-log count is malformed")
+    return {
+        "schema": "saea-speech-native-action-support-audit-v1",
+        "study": "speech-aware-evidence-acquisition",
+        "run_id": run_id,
+        "attempt_id": attempt_id,
+        "source_attempt_state": "ABORTED",
+        "source_terminal_reason": "legacy-resident-prompt-cache-log-count-gate",
+        "effectiveness_eligible": False,
+        "gold_read": False,
+        "decision_count": task_count,
+        "contact_count": contact_count,
+        "valid_speech_query_contact_count": trace_speech_query[
+            "valid_speech_query_count"
+        ],
+        "grounded_state_valid_count": task_count,
+        "backtrack_count": 0,
+        "action_sensitive_count": action_sensitive_count,
+        "action_sensitive_rate": action_sensitive_count / task_count,
+        "action_support_threshold": 3,
+        "action_support_threshold_met": action_sensitive_count >= 3,
+        "initial_to_refined_ranked_change_count": ranked_retrieval_change_count,
+        "initial_to_refined_candidate_set_change_count": candidate_set_change_count,
+        "initial_to_refined_top1_change_count": top1_change_count,
+        "calls_distribution": {
+            str(calls): count for calls, count in sorted(calls_distribution.items())
+        },
+        "legacy_feature_log_marker_count": marker_count,
+        "legacy_feature_log_marker_deficit": contact_count - marker_count,
+        "source_sha256": {
+            "attempt_record": attempt_record_sha256,
+            "flight_receipt": flight_receipt_sha256,
+            "decisions": decisions_sha256,
+            "trace": trace_sha256,
+            "process_audit": process_audit_sha256,
+        },
+    }
+
+
 def _read_live_process_environment(
     pid: int, *, proc_root: Path = Path("/proc")
 ) -> dict[str, str]:
@@ -3335,6 +3715,35 @@ def _cli_speech_native_read(args: argparse.Namespace) -> int:
                 "output": str(output),
                 "selected_cell_id": report["selected_cell_id"],
                 "aggregates": report["aggregates"],
+            },
+            indent=2,
+            sort_keys=True,
+        )
+    )
+    return 0
+
+
+def _cli_speech_native_action_audit(args: argparse.Namespace) -> int:
+    report = audit_speech_native_action_support(
+        attempt_dir=Path(args.attempt_dir),
+        attempt_record_path=Path(args.attempt_record),
+        attempt_record_sha256=args.attempt_record_sha256,
+        flight_receipt_sha256=args.flight_receipt_sha256,
+        decisions_sha256=args.decisions_sha256,
+        trace_sha256=args.trace_sha256,
+    )
+    output = Path(args.output)
+    _write_exclusive_json(output, report)
+    print(
+        json.dumps(
+            {
+                "output": str(output),
+                "action_sensitive_count": report["action_sensitive_count"],
+                "action_support_threshold_met": report[
+                    "action_support_threshold_met"
+                ],
+                "gold_read": False,
+                "effectiveness_eligible": False,
             },
             indent=2,
             sort_keys=True,

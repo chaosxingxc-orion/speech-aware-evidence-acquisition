@@ -38,7 +38,11 @@ from ..resources import resolve_resource_sampler
 from ..scorers import score_bundle
 from .bundled import run_experiment_bundled
 from .smoke import _cli_smoke
-from .speech_native import _cli_speech_native_profile, _cli_speech_native_read
+from .speech_native import (
+    _cli_speech_native_action_audit,
+    _cli_speech_native_profile,
+    _cli_speech_native_read,
+)
 
 
 def _canonical_sha256(document: object) -> str:
@@ -550,6 +554,22 @@ def main(argv: list[str] | None = None) -> int:
         help="TEST-ONLY repository-root override; real flights omit it",
     )
     speech_profile.set_defaults(func=_cli_speech_native_profile)
+
+    speech_action_audit = sub.add_parser(
+        "speech-native-action-audit",
+        help=(
+            "model-free, gold-free structural M6 action audit for the narrowly "
+            "admitted legacy resident-cache completion-gate abort"
+        ),
+    )
+    speech_action_audit.add_argument("--attempt-dir", required=True)
+    speech_action_audit.add_argument("--attempt-record", required=True)
+    speech_action_audit.add_argument("--attempt-record-sha256", required=True)
+    speech_action_audit.add_argument("--flight-receipt-sha256", required=True)
+    speech_action_audit.add_argument("--decisions-sha256", required=True)
+    speech_action_audit.add_argument("--trace-sha256", required=True)
+    speech_action_audit.add_argument("--output", required=True)
+    speech_action_audit.set_defaults(func=_cli_speech_native_action_audit)
 
     speech_read = sub.add_parser(
         "speech-native-read",

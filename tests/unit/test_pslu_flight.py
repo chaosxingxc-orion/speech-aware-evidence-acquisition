@@ -16,6 +16,7 @@ import pytest
 
 from speech_aware_evidence_acquisition.core.model import SliceRegistry
 from speech_aware_evidence_acquisition.core.driver.speech_native import (
+    audit_speech_native_action_support,
     _assert_reusable_session_profile,
     _evaluate_training_free_contextual_policy,
     _evaluate_training_free_episodic_policy,
@@ -394,6 +395,247 @@ def test_profile_completion_rejects_missing_trace_speech_query():
     )
 
     assert "trace speech-query carriage is incomplete" in issues
+
+
+_M6_SUCCESS_ACTIONS = [
+    "match:speech-only-primary",
+    "retrieve:speech-only",
+    "build:grounded-query-state",
+    "retrieve:speech-plus-grounded-state",
+    "verify:speech-plus-grounded-state",
+    "select:refined-primary-fallback",
+]
+
+
+def _m6_action_audit_row(index, *, primary_key_id, refined_key_id):
+    sample_id = f"slurp:train:audit-{index}"
+    packet_sha256 = f"{index + 1:064x}"
+    initial_ids = [primary_key_id, "K003", "K004"]
+    refined_ids = [refined_key_id, "K003", "K004"]
+    scores = {
+        key_id: {"compatible": key_id == refined_key_id, "confidence": 90}
+        for key_id in refined_ids
+    }
+    return {
+        "schema": "saea-speech-native-decision-v1",
+        "task_id": f"canonical:{sample_id}",
+        "sample_id": sample_id,
+        "query_sample_id": sample_id,
+        "mechanism_control_id": "matched",
+        "speech_packet_sha256": packet_sha256,
+        "key_representation_id": "K1",
+        "matcher_policy_id": "M6",
+        "key_id": refined_key_id,
+        "predicted_value_label": "must-not-enter-audit-output",
+        "top_key_ids": refined_ids,
+        "calls": 7,
+        "parse_failure": False,
+        "agent_policy_id": "knowledge-grounded-semantic-refinement-schema-v2",
+        "agent_actions": _M6_SUCCESS_ACTIONS,
+        "agent_escalated": True,
+        "agent_vote_key_ids": [primary_key_id, refined_key_id],
+        "agent_steps": [
+            {
+                "action_id": "match:speech-only-primary",
+                "key_id": primary_key_id,
+                "top_key_ids": [primary_key_id],
+                "calls": 1,
+                "parse_failure": False,
+            },
+            {
+                "action_id": "retrieve:speech-only",
+                "key_id": None,
+                "top_key_ids": initial_ids,
+                "calls": 1,
+                "parse_failure": False,
+            },
+            {
+                "action_id": "build:grounded-query-state",
+                "key_id": None,
+                "top_key_ids": initial_ids,
+                "calls": 1,
+                "parse_failure": False,
+                "grounded_query_state": {
+                    "candidate_key_ids": initial_ids,
+                    "domain": "home",
+                    "operation": "control",
+                    "target": "device",
+                    "constraints": [],
+                    "exclusions": [],
+                    "unresolved_ambiguity": "none",
+                    "evidence": [],
+                },
+            },
+            {
+                "action_id": "retrieve-and-verify:speech-plus-grounded-state",
+                "key_id": refined_key_id,
+                "top_key_ids": refined_ids,
+                "calls": 4,
+                "parse_failure": False,
+                "verifier_scores": scores,
+            },
+        ],
+        "agent_aggregator_id": "grounded-refined-primary-fallback-v1",
+        "verifier_scores": scores,
+        "response_text_sha256": [f"{index + 10 + offset:064x}" for offset in range(7)],
+    }
+
+
+def _write_m6_action_audit_fixture(tmp_path):
+    attempt_dir = tmp_path / "attempt"
+    attempt_dir.mkdir()
+    rows = (
+        _m6_action_audit_row(0, primary_key_id="K001", refined_key_id="K002"),
+        _m6_action_audit_row(1, primary_key_id="K002", refined_key_id="K002"),
+    )
+    decisions = attempt_dir / "decisions.jsonl"
+    decisions.write_text(
+        "".join(json.dumps(row) + "\n" for row in rows), encoding="utf-8"
+    )
+    trace_rows = []
+    for row in rows:
+        descriptor = {
+            "packet_id": row["query_sample_id"].replace(":", "/"),
+            "sha256": row["speech_packet_sha256"],
+            "role": "query",
+        }
+        for contact_index in range(row["calls"]):
+            trace_rows.extend(
+                (
+                    {
+                        "channel": "MODEL_REQUEST",
+                        "payload": {
+                            "payload": {
+                                "request_id": f"{row['sample_id']}-{contact_index}",
+                                "sample_id": row["query_sample_id"],
+                                "query_source": "speech_features",
+                                "mmproj_loaded": False,
+                                "speech_packet_sha256": row["speech_packet_sha256"],
+                                "speech_feature_parts": [descriptor],
+                            }
+                        },
+                    },
+                    {
+                        "channel": "MODEL_RESPONSE",
+                        "payload": {
+                            "usage": {"prompt_tokens": 10, "completion_tokens": 2}
+                        },
+                    },
+                    {"channel": "COST", "payload": {"calls": 1}},
+                )
+            )
+    trace = attempt_dir / "SAEA-SN-AUDIT.trace.jsonl"
+    trace.write_text(
+        "".join(json.dumps(row) + "\n" for row in trace_rows), encoding="utf-8"
+    )
+    process_audit = attempt_dir / "SAEA-SN-AUDIT.mmproj-audit.json"
+    process_audit.write_text(
+        json.dumps(
+            {
+                "schema": "saea-inference-process-audit-v1",
+                "role": "inference",
+                "pid": 123,
+                "mmproj_loaded": False,
+                "mmproj_hit_count": 0,
+                "mmproj_hits": [],
+            }
+        ),
+        encoding="utf-8",
+    )
+    receipt = {
+        "schema": "saea-speech-native-profile-receipt-v1",
+        "study": "speech-aware-evidence-acquisition",
+        "status": "COMPLETED",
+        "run_id": "SAEA-SN-AUDIT",
+        "attempt_id": "attempt-audit-001",
+        "request_failures": [],
+        "profile": {
+            "matcher_policy_id": "M6",
+            "agent_policy_id": "knowledge-grounded-semantic-refinement-schema-v2",
+            "agent_aggregator_id": "grounded-refined-primary-fallback-v1",
+            "mechanism_control_id": "matched",
+            "task_count": 2,
+            "actual_contact_count": 14,
+            "planned_contact_ceiling": 16,
+            "top_k": 3,
+        },
+        "decisions": {
+            "path": decisions.name,
+            "sha256": hashlib.sha256(decisions.read_bytes()).hexdigest(),
+            "count": 2,
+            "contains_gold_labels": False,
+        },
+        "server_log_scan": {
+            "oom_marker_hits": [],
+            "host_spill_marker_hits": [],
+            "runaway_marker_hits": [],
+            "mmproj_free_chunk_count": 13,
+        },
+        "process_audit_sha256": hashlib.sha256(process_audit.read_bytes()).hexdigest(),
+        "close": {"cost": {"calls_used": 14}},
+    }
+    flight = attempt_dir / "flight-receipt.json"
+    flight.write_text(json.dumps(receipt), encoding="utf-8")
+    attempt_record = tmp_path / "attempt-record.json"
+    attempt_record.write_text(
+        json.dumps(
+            {
+                "schema": "saea-attempt-v1",
+                "run_id": "SAEA-SN-AUDIT",
+                "attempt_id": "attempt-audit-001",
+                "state": "ABORTED",
+                "failure_reason": "speech-native profile completion checks failed",
+                "actual": {"calls": 14, "audio_seconds": 1.0, "gpu_seconds": 2.0},
+                "reserved": {"calls": 16, "audio_seconds": 2.0},
+                "carrier_lock_key": "slurp",
+            }
+        ),
+        encoding="utf-8",
+    )
+    return attempt_dir, attempt_record, flight, decisions, trace
+
+
+def test_action_support_audit_is_structural_only_and_counts_policy_changes(tmp_path):
+    attempt_dir, attempt_record, flight, decisions, trace = (
+        _write_m6_action_audit_fixture(tmp_path)
+    )
+    report = audit_speech_native_action_support(
+        attempt_dir=attempt_dir,
+        attempt_record_path=attempt_record,
+        attempt_record_sha256=hashlib.sha256(attempt_record.read_bytes()).hexdigest(),
+        flight_receipt_sha256=hashlib.sha256(flight.read_bytes()).hexdigest(),
+        decisions_sha256=hashlib.sha256(decisions.read_bytes()).hexdigest(),
+        trace_sha256=hashlib.sha256(trace.read_bytes()).hexdigest(),
+    )
+    assert report["source_attempt_state"] == "ABORTED"
+    assert report["effectiveness_eligible"] is False
+    assert report["gold_read"] is False
+    assert report["decision_count"] == 2
+    assert report["valid_speech_query_contact_count"] == 14
+    assert report["grounded_state_valid_count"] == 2
+    assert report["action_sensitive_count"] == 1
+    assert report["initial_to_refined_top1_change_count"] == 1
+    assert report["calls_distribution"] == {"7": 2}
+    serialized = json.dumps(report, sort_keys=True)
+    assert "must-not-enter-audit-output" not in serialized
+    assert "correct" not in serialized
+
+
+def test_action_support_audit_rejects_nonmatching_trace_packet(tmp_path):
+    attempt_dir, attempt_record, flight, decisions, trace = (
+        _write_m6_action_audit_fixture(tmp_path)
+    )
+    text = trace.read_text(encoding="utf-8")
+    trace.write_text(text.replace(f"{1:064x}", f"{99:064x}", 1), encoding="utf-8")
+    with pytest.raises(Exception, match="speech-query carriage"):
+        audit_speech_native_action_support(
+            attempt_dir=attempt_dir,
+            attempt_record_path=attempt_record,
+            attempt_record_sha256=hashlib.sha256(attempt_record.read_bytes()).hexdigest(),
+            flight_receipt_sha256=hashlib.sha256(flight.read_bytes()).hexdigest(),
+            decisions_sha256=hashlib.sha256(decisions.read_bytes()).hexdigest(),
+            trace_sha256=hashlib.sha256(trace.read_bytes()).hexdigest(),
+        )
 
 
 class _SpeechFeatureClient:
