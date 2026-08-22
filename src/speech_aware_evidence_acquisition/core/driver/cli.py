@@ -22,7 +22,10 @@ from pathlib import Path
 from typing import Mapping
 
 from ...contracts import ExecutionPlan
-from ...e0.artifacts import REPO_ROOT
+from ...data.lock import data_root, load_lock, umbrella_lock_path
+from ...data.slurp import load_slurp_train_material
+from ...e0.artifacts import REPO_ROOT, write_json_artifact
+from ...rails.probes.pslu_flight import extend_speech_native_binding
 from ..base import SCORERS, TRANSPORTS
 from ..bundle import finalize_bundle, verify_bundle
 from ..config import (
@@ -218,6 +221,58 @@ def _cli_promote_speech_packets(args: argparse.Namespace) -> int:
     except FileExistsError as error:
         raise ValueError(f"speech packet promotion receipt already exists: {output}") from error
     print(json.dumps({"receipt": str(output), "count": len(packets)}, indent=2))
+    return 0
+
+
+def _cli_extend_speech_native_binding(args: argparse.Namespace) -> int:
+    """Extend the frozen train binding through the existing selector."""
+
+    parent_path = Path(args.parent_binding).resolve()
+    output_path = Path(args.output).resolve()
+    if output_path.exists():
+        raise ValueError(f"speech-native binding output already exists: {output_path}")
+    try:
+        parent = json.loads(parent_path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as error:
+        raise ValueError(
+            f"cannot read speech-native parent binding {parent_path}: {error}"
+        ) from error
+    if not isinstance(parent, Mapping):
+        raise ValueError("speech-native parent binding must be a JSON object")
+    material = load_slurp_train_material(
+        load_lock(umbrella_lock_path()),
+        data_root(),
+        media_validation_workers=args.workers,
+    )
+    successor = extend_speech_native_binding(
+        parent,
+        material,
+        seed=args.seed,
+        split_name=args.split_name,
+        per_scenario=args.per_scenario,
+        isolate_parent_query_speakers=(
+            not args.allow_parent_query_speaker_overlap
+        ),
+    )
+    artifact_sha256 = write_json_artifact(output_path, successor)
+    extension_audit = successor.get("extension_audit")
+    if not isinstance(extension_audit, Mapping):
+        raise ValueError("speech-native successor lacks its extension audit")
+    print(
+        json.dumps(
+            {
+                "output": str(output_path),
+                "artifact_sha256": artifact_sha256,
+                "binding_sha256": successor.get("binding_sha256"),
+                "query_count": extension_audit.get("query_count"),
+                "parent_query_speaker_overlap_count": extension_audit.get(
+                    "parent_query_speaker_overlap_count"
+                ),
+            },
+            indent=2,
+            sort_keys=True,
+        )
+    )
     return 0
 
 
@@ -468,6 +523,29 @@ def main(argv: list[str] | None = None) -> int:
     promote.add_argument("--workers", type=int, default=8)
     promote.add_argument("--receipt-output", required=True)
     promote.set_defaults(func=_cli_promote_speech_packets)
+
+    extend_binding = sub.add_parser(
+        "extend-speech-native-binding",
+        help=(
+            "model-free binding extension through the existing deterministic "
+            "speech-native selector"
+        ),
+    )
+    extend_binding.add_argument("--parent-binding", required=True)
+    extend_binding.add_argument("--output", required=True)
+    extend_binding.add_argument("--seed", type=int, required=True)
+    extend_binding.add_argument("--split-name", required=True)
+    extend_binding.add_argument("--per-scenario", type=int, required=True)
+    extend_binding.add_argument("--workers", type=int, default=16)
+    extend_binding.add_argument(
+        "--allow-parent-query-speaker-overlap",
+        action="store_true",
+        help=(
+            "retain exact historical-query speaker overlap after a strict attempt "
+            "has proved infeasible; query/key speaker isolation remains mandatory"
+        ),
+    )
+    extend_binding.set_defaults(func=_cli_extend_speech_native_binding)
 
     smoke = sub.add_parser(
         "smoke",

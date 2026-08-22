@@ -41,6 +41,7 @@ from speech_aware_evidence_acquisition.core.driver.speech_native import (
     read_speech_native_predictions,
 )
 from speech_aware_evidence_acquisition.core.driver import (
+    cli as driver_cli_module,
     speech_native as speech_native_module,
 )
 from speech_aware_evidence_acquisition.contracts import STUDY_SLUG
@@ -6085,6 +6086,110 @@ def test_speech_native_successor_binding_preserves_keys_and_adds_isolated_split(
         assert selected.isdisjoint(excluded)
     assert successor["isolation_audit"]["query_sample_count"] == 20
     assert successor["isolation_audit"]["query_key_speaker_overlap"] == 0
+
+
+def test_binding_extension_cli_reuses_frozen_builder(monkeypatch, tmp_path, capsys):
+    parent = tmp_path / "parent-binding.json"
+    parent.write_text('{"binding_sha256":"parent"}', encoding="utf-8")
+    output = tmp_path / "successor-binding.json"
+    material = _binding_material()
+    captured = {}
+
+    monkeypatch.setattr(driver_cli_module, "load_lock", lambda _path: {"lock": True})
+    monkeypatch.setattr(driver_cli_module, "umbrella_lock_path", lambda: tmp_path)
+    monkeypatch.setattr(driver_cli_module, "data_root", lambda: tmp_path)
+    monkeypatch.setattr(
+        driver_cli_module,
+        "load_slurp_train_material",
+        lambda lock, root, *, media_validation_workers: (
+            captured.update(
+                {
+                    "lock": lock,
+                    "root": root,
+                    "workers": media_validation_workers,
+                }
+            )
+            or material
+        ),
+    )
+
+    def fake_extend(base, loaded_material, **kwargs):
+        captured.update(
+            {
+                "base": base,
+                "material": loaded_material,
+                "extension": kwargs,
+            }
+        )
+        return {
+            "binding_sha256": "a" * 64,
+            "extension_audit": {
+                "query_count": 12,
+                "parent_query_speaker_overlap_count": 3,
+            },
+        }
+
+    monkeypatch.setattr(
+        driver_cli_module, "extend_speech_native_binding", fake_extend
+    )
+    exit_code = driver_cli_module.main(
+        [
+            "extend-speech-native-binding",
+            "--parent-binding",
+            str(parent),
+            "--output",
+            str(output),
+            "--seed",
+            "20260826",
+            "--split-name",
+            "EVIDENCE-E12",
+            "--per-scenario",
+            "6",
+            "--workers",
+            "8",
+            "--allow-parent-query-speaker-overlap",
+        ]
+    )
+
+    assert exit_code == 0
+    assert json.loads(output.read_text(encoding="utf-8"))["binding_sha256"] == (
+        "a" * 64
+    )
+    assert captured["workers"] == 8
+    assert captured["material"] == material
+    assert captured["extension"] == {
+        "seed": 20260826,
+        "split_name": "EVIDENCE-E12",
+        "per_scenario": 6,
+        "isolate_parent_query_speakers": False,
+    }
+    summary = json.loads(capsys.readouterr().out)
+    assert summary["query_count"] == 12
+    assert summary["parent_query_speaker_overlap_count"] == 3
+
+
+def test_binding_extension_cli_refuses_existing_output(monkeypatch, tmp_path):
+    parent = tmp_path / "parent-binding.json"
+    parent.write_text('{"binding_sha256":"parent"}', encoding="utf-8")
+    output = tmp_path / "successor-binding.json"
+    output.write_text("do not replace", encoding="utf-8")
+
+    with pytest.raises(ValueError, match="already exists"):
+        driver_cli_module.main(
+            [
+                "extend-speech-native-binding",
+                "--parent-binding",
+                str(parent),
+                "--output",
+                str(output),
+                "--seed",
+                "20260826",
+                "--split-name",
+                "EVIDENCE-E12",
+                "--per-scenario",
+                "6",
+            ]
+        )
 
 
 def test_speech_native_successor_groups_repeated_speakers_within_one_split():
