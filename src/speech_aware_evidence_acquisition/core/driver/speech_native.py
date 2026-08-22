@@ -2221,7 +2221,7 @@ def _parse_m9_factor_graph_trajectory(
         and set(rerank_step) == base_fields
         and rerank_step.get("action_id") == "rerank:speech-plus-factor-state"
         and rerank_step.get("calls") == 1
-        and rerank_step.get("parse_failure") is True
+        and isinstance(rerank_step.get("parse_failure"), bool)
         and isinstance(reranked_raw, list)
         and len(reranked_raw) < expected_rerank_count
         and len(set(reranked_raw)) == len(reranked_raw)

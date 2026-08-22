@@ -3898,7 +3898,8 @@ def run_speech_native_match_tasks(
                     "key_id": state.reranked_ids[0] if state.reranked_ids else None,
                     "top_key_ids": list(state.reranked_ids),
                     "calls": 1,
-                    "parse_failure": not state.reranked_ids,
+                    "parse_failure": len(state.reranked_ids)
+                    != min(3, len(state.expansion.key_ids)),
                 },
             )
 
