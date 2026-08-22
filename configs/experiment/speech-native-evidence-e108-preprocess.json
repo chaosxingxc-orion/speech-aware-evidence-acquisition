@@ -1,0 +1,5 @@
+{
+  "experiment_id": "SAEA-SN-EVIDENCE-E108-PREPROCESS",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "Label-free offline feature preprocessing for the fresh EVIDENCE-E108 train view. Keep the decoder-only inference service resident, populate only the legacy speech feature cache through the separate preprocessing sidecar, and never inspect generated text, labels, reference transcripts, or task accuracy."
+}

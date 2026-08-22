@@ -1,0 +1,11 @@
+{
+  "experiment_id": "SAEA-SN-EVIDENCE-E108-K1M10-CANDIDATE-EVIDENCE-ACTION-SUPPORT",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "Fresh E108 action-support probe for candidate-local evidence acquisition. Every model contact carries the original speech packet; loop-produced factor and boundary ids may condition later retrieval, while the online decision retains the speech-only primary and records bounded training-free control actions without parameter updates or transcript queries.",
+  "key_representation_id": "K1",
+  "matcher_policy_id": "M10",
+  "speech_native_decision_graph": "configs/knowledge/slurp-scenario-factor-graph-v1.json",
+  "speech_native_decision_graph_file_sha256": "f7eecf9b9decdf1f971d448d2fa374046c35d319c19cd81ef4546cb0b9da5a15",
+  "speech_native_agent_policy_id": "speech-conditioned-candidate-evidence-action-support-v1",
+  "speech_native_agent_aggregator_id": "candidate-evidence-primary-control-v1"
+}
