@@ -2969,6 +2969,75 @@ def test_m11_retrieves_pair_boundary_only_for_an_observed_evidence_gap():
     _assert_every_call_carries_query(client)
 
 
+def test_m11_contact_dispatch_interleaves_new_evidence_before_root_backlog():
+    class ConcurrentM11Client(_M11AdaptiveEvidenceClient):
+        def __init__(self):
+            super().__init__()
+            self.lock = threading.Lock()
+            self.active = 0
+            self.max_active = 0
+            self.stage_order = []
+
+        def complete(self, messages, **kwargs):
+            stage = kwargs["matcher_policy_id"]
+            with self.lock:
+                self.active += 1
+                self.max_active = max(self.max_active, self.active)
+                self.stage_order.append(stage)
+            try:
+                time.sleep(0.005)
+                return super().complete(messages, **kwargs)
+            finally:
+                with self.lock:
+                    self.active -= 1
+
+    tasks = tuple(
+        SpeechNativeMatchTask(
+            task_id=f"m11-{index}",
+            sample=type("Sample", (), {"sample_id": f"m11-sample-{index}"})(),
+            query_descriptor={
+                "packet_id": f"slurp/train/m11-sample-{index}",
+                "sha256": f"{index + 1:064x}",
+                "role": "query",
+            },
+            key_cards=_KEY_CARDS,
+            key_representation_id="K1",
+            matcher_policy_id="M11",
+            prompt_policy_id="speech-native-json-copy-v4",
+            top_k=2,
+            decision_graph=_decision_graph_fixture(),
+            agent_policy_id="speech-conditioned-adaptive-evidence-gap-v1",
+            agent_aggregator_id="adaptive-evidence-gap-primary-control-v1",
+        )
+        for index in range(4)
+    )
+    client = ConcurrentM11Client()
+    outcomes = run_speech_native_match_tasks(
+        core_client=client,
+        tasks=tasks,
+        slot_count=2,
+        queue_depth=8,
+        dispatch_granularity="contact",
+    )
+
+    assert len(outcomes) == 4
+    assert client.max_active == 2
+    assert all(outcome.decision.calls == 5 for outcome in outcomes)
+    initial_positions = [
+        index
+        for index, stage in enumerate(client.stage_order)
+        if stage.endswith(":primary-listwise")
+        or stage.endswith(":speech-retrieve-top-2")
+    ]
+    first_evidence_position = next(
+        index
+        for index, stage in enumerate(client.stage_order)
+        if stage.endswith(":candidate-action-state")
+    )
+    assert first_evidence_position < max(initial_positions)
+    assert all(outcome.decision.key_id == "K001" for outcome in outcomes)
+
+
 def _m11_decision_row(result, *, sample_id="sample-1", task_id=None):
     return {
         "schema": "saea-speech-native-decision-v1",
