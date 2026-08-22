@@ -33,6 +33,7 @@ from speech_aware_evidence_acquisition.core.driver.speech_native import (
     _evaluate_m9_factor_graph_action_support,
     _evaluate_m10_candidate_evidence_action_support,
     _evaluate_m11_adaptive_evidence_gap,
+    _evaluate_m11_memory_holdout_action_advantage_policy,
     _evaluate_m11_oof_action_advantage_policy,
     _m11_reader_contract_from_values,
     _load_decision_graph,
@@ -3555,6 +3556,106 @@ def test_m11_oof_policy_never_uses_held_out_fold_rewards_to_choose_its_actions()
         if row["fold_id"] == held_out_fold
     }
     assert second_actions == first_actions
+
+
+def _m11_speaker_isolated_holdout_fixture():
+    return tuple(
+        {
+            **row,
+            "sample_id": f"holdout-{index:03d}",
+            "speaker_id": f"holdout-speaker-{index:03d}",
+        }
+        for index, row in enumerate(_m11_information_complete_support_fixture())
+    )
+
+
+def test_m11_memory_holdout_policy_never_uses_holdout_rewards_to_choose_actions():
+    memory = _m11_information_complete_support_fixture()
+    holdout = _m11_speaker_isolated_holdout_fixture()
+
+    first = _evaluate_m11_memory_holdout_action_advantage_policy(memory, holdout)
+    changed = tuple({**row, "gold_key_id": "K003"} for row in holdout)
+    second = _evaluate_m11_memory_holdout_action_advantage_policy(memory, changed)
+
+    assert first["status"] == "evaluated-discovery-memory-to-unread-holdout"
+    assert first["reward_scope"] == "discovery-memory-only"
+    assert first["memory_query_count"] == 108
+    assert first["holdout_query_count"] == 108
+    assert first["sample_identity_overlap_count"] == 0
+    assert first["speaker_identity_overlap_count"] == 0
+    assert first["memory_support_gate_passed"] is True
+    assert first["memory_promotion_gate_passed"] is True
+    assert second["action_audit"] == first["action_audit"]
+
+
+def test_m11_memory_holdout_policy_actions_depend_on_discovery_rewards():
+    boundary_memory = _m11_information_complete_support_fixture()
+    action_memory = tuple(
+        {
+            **row,
+            **(
+                {
+                    "retrieval_key_id": "K003",
+                    "action_key_id": "K003",
+                    "boundary_ab_key_id": "K002",
+                    "boundary_ba_key_id": "K002",
+                    "boundary_stable_key_id": "K002",
+                    "gold_key_id": "K003" if index < 8 else "K002",
+                }
+                if index < 12
+                else {}
+            ),
+        }
+        for index, row in enumerate(boundary_memory)
+    )
+    holdout = _m11_speaker_isolated_holdout_fixture()
+
+    boundary_policy = _evaluate_m11_memory_holdout_action_advantage_policy(
+        boundary_memory, holdout
+    )
+    action_policy = _evaluate_m11_memory_holdout_action_advantage_policy(
+        action_memory, holdout
+    )
+
+    boundary_actions = {
+        row["sample_id"]: row["selected_action_id"]
+        for row in boundary_policy["action_audit"]
+    }
+    action_actions = {
+        row["sample_id"]: row["selected_action_id"]
+        for row in action_policy["action_audit"]
+    }
+    assert boundary_actions != action_actions
+    assert boundary_actions["holdout-000"] == "acquire-boundary-stable"
+    assert action_actions["holdout-000"] == "select-retrieval-top1"
+
+
+def test_m11_memory_holdout_policy_does_not_open_holdout_rewards_before_memory_gate():
+    memory = _m11_information_complete_support_fixture()[:36]
+    holdout_without_rewards = tuple(
+        {key: value for key, value in row.items() if key != "gold_key_id"}
+        for row in _m11_speaker_isolated_holdout_fixture()
+    )
+
+    evaluation = _evaluate_m11_memory_holdout_action_advantage_policy(
+        memory, holdout_without_rewards
+    )
+
+    assert evaluation["status"] == "deferred-discovery-memory-gate-failed"
+    assert evaluation["memory_support_gate_passed"] is False
+    assert evaluation["holdout_rewards_read"] is False
+    assert evaluation["action_audit"] == []
+
+
+@pytest.mark.parametrize("overlap_kind", ("sample", "speaker"))
+def test_m11_memory_holdout_policy_rejects_identity_overlap(overlap_kind):
+    memory = _m11_information_complete_support_fixture()
+    holdout = list(_m11_speaker_isolated_holdout_fixture())
+    overlap_field = "sample_id" if overlap_kind == "sample" else "speaker_id"
+    holdout[0] = {**holdout[0], overlap_field: memory[0][overlap_field]}
+
+    with pytest.raises(SpeechNativeProfileError, match=f"{overlap_kind} identity"):
+        _evaluate_m11_memory_holdout_action_advantage_policy(memory, tuple(holdout))
 
 
 def test_m11_oof_policy_retains_primary_when_training_memory_contains_harm():

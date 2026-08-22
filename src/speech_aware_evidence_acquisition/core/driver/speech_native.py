@@ -146,6 +146,7 @@ _M11_KEY_CONDITIONED_POLICY_ID = "speech-conditioned-adaptive-evidence-gap-v2"
 _M11_POLICY_IDS = frozenset({_M11_POLICY_ID, _M11_KEY_CONDITIONED_POLICY_ID})
 _M11_AGGREGATOR_ID = "adaptive-evidence-gap-primary-control-v1"
 _M11_OOF_POLICY_ID = "speaker-grouped-oof-information-advantage-v1"
+_M11_MEMORY_HOLDOUT_EVALUATION_ID = "discovery-memory-to-speaker-unseen-holdout-v1"
 _M11_OOF_ACTION_IDS = (
     "select-retrieval-top1",
     "select-candidate-action-state",
@@ -3427,22 +3428,133 @@ def _m11_preboundary_state(
     )
 
 
-def _evaluate_m11_oof_action_advantage_policy(
-    trajectories: Sequence[Mapping[str, object]],
+def _select_m11_action_from_reward_memory(
+    trajectory: Mapping[str, object],
+    reward_memory: Sequence[Mapping[str, object]],
+    *,
+    insufficient_support_reason: str,
 ) -> dict[str, object]:
-    """Cross-fit a conservative external action policy over frozen M11 traces.
+    """Select one M11 action without reading the evaluated trajectory reward."""
 
-    State and available action predictions are fixed before reward is read.  For
-    each held-out speaker fold, only the other two folds may contribute reward
-    memory.  A non-primary action requires five matching training states, three
-    observed changed predictions, two helpful transitions, net gain of two, and
-    zero harmful transitions.  Exact graph state backs off once to a relative
-    state; thresholds never back off.
-    """
+    exact_state = _m11_preboundary_state(trajectory, exact=True)
+    coarse_state = _m11_preboundary_state(trajectory, exact=False)
+    exact_matches = tuple(
+        row
+        for row in reward_memory
+        if _m11_preboundary_state(row, exact=True) == exact_state
+    )
+    if len(exact_matches) >= _M11_READER_CONTRACT_V1["oof_minimum_state_support"]:
+        memory = exact_matches
+        state_tier = "exact"
+    else:
+        memory = tuple(
+            row
+            for row in reward_memory
+            if _m11_preboundary_state(row, exact=False) == coarse_state
+        )
+        state_tier = "coarse"
+
+    candidate_statistics: list[dict[str, object]] = []
+    qualified: list[dict[str, object]] = []
+    if len(memory) >= _M11_READER_CONTRACT_V1["oof_minimum_state_support"] and not bool(
+        trajectory["mechanism_failure"]
+    ):
+        for action_rank, action_id in enumerate(_M11_OOF_ACTION_IDS):
+            if not _m11_action_available(trajectory, action_id):
+                continue
+            support = tuple(
+                row for row in memory if _m11_action_available(row, action_id)
+            )
+            changed = sum(
+                _m11_action_prediction(row, action_id) != row["primary_key_id"]
+                for row in support
+            )
+            helpful = sum(
+                row["primary_key_id"] != row["gold_key_id"]
+                and _m11_action_prediction(row, action_id) == row["gold_key_id"]
+                for row in support
+            )
+            harmful = sum(
+                row["primary_key_id"] == row["gold_key_id"]
+                and _m11_action_prediction(row, action_id) != row["gold_key_id"]
+                for row in support
+            )
+            net_gain = helpful - harmful
+            qualifies = (
+                len(support) >= _M11_READER_CONTRACT_V1["oof_minimum_state_support"]
+                and changed
+                >= _M11_READER_CONTRACT_V1["oof_minimum_changed_prediction_support"]
+                and helpful
+                >= _M11_READER_CONTRACT_V1["oof_minimum_helpful_transitions"]
+                and net_gain
+                >= _M11_READER_CONTRACT_V1["oof_minimum_estimated_net_gain"]
+                and harmful
+                <= _M11_READER_CONTRACT_V1["oof_maximum_harmful_transitions"]
+            )
+            statistics = {
+                "action_id": action_id,
+                "support_count": len(support),
+                "changed_prediction_count": changed,
+                "helpful_transition_count": helpful,
+                "harmful_transition_count": harmful,
+                "estimated_net_gain": net_gain,
+                "estimated_calls": _M11_OOF_ACTION_CALLS[action_id],
+                "qualified": qualifies,
+                "action_rank": action_rank,
+            }
+            candidate_statistics.append(statistics)
+            if qualifies:
+                qualified.append(statistics)
+
+    selected_action = "retain-primary"
+    selection_reason = "retain:no-zero-harm-positive-advantage-action"
+    if len(memory) < _M11_READER_CONTRACT_V1["oof_minimum_state_support"]:
+        selection_reason = insufficient_support_reason
+    elif bool(trajectory["mechanism_failure"]):
+        selection_reason = "retain:mechanism-failure"
+    elif qualified:
+        best = min(
+            qualified,
+            key=lambda row: (
+                -int(row["estimated_net_gain"]),
+                -int(row["helpful_transition_count"]),
+                int(row["estimated_calls"]),
+                int(row["action_rank"]),
+            ),
+        )
+        selected_action = str(best["action_id"])
+        selection_reason = f"select:{state_tier}-zero-harm-positive-advantage"
+    selected_prediction = _m11_action_prediction(trajectory, selected_action)
+    return {
+        "sample_id": str(trajectory["sample_id"]),
+        "state_schema": "m11-preboundary-relative-state-v1",
+        "state_tier": state_tier,
+        "training_state_match_count": len(memory),
+        "selected_action_id": selected_action,
+        "selected_key_id": selected_prediction,
+        "selection_reason": selection_reason,
+        "estimated_calls": _M11_OOF_ACTION_CALLS[selected_action],
+        "candidate_statistics": candidate_statistics,
+    }
+
+
+def _score_m11_action_selections(
+    trajectories: Sequence[Mapping[str, object]],
+    selections: Sequence[Mapping[str, object]],
+    *,
+    status: str,
+    reward_scope: str,
+    speaker_fold_role: str,
+    assignments: Mapping[str, str] | None = None,
+) -> dict[str, object]:
+    """Score already-frozen M11 actions after action-time inputs are closed."""
 
     frozen = tuple(trajectories)
-    if not frozen:
-        raise SpeechNativeProfileError("M11 OOF policy requires trajectories")
+    selected = tuple(selections)
+    if not frozen or len(frozen) != len(selected):
+        raise SpeechNativeProfileError(
+            "M11 action scoring requires one selection per trajectory"
+        )
     fold_trajectories = tuple(
         {
             "speaker_id": str(item["speaker_id"]),
@@ -3455,130 +3567,24 @@ def _evaluate_m11_oof_action_advantage_policy(
         for item in frozen
     )
     validated_folds = _validate_training_free_trajectories(fold_trajectories)
-    assignments = _speaker_grouped_fold_assignments(validated_folds)
-    selected_predictions: list[str] = []
-    selected_actions: list[str] = []
-    selected_calls: list[int] = []
-    action_audit: list[dict[str, object]] = []
+    fold_assignments = (
+        dict(assignments)
+        if assignments is not None
+        else _speaker_grouped_fold_assignments(validated_folds)
+    )
+    if set(fold_assignments) != {str(item["speaker_id"]) for item in frozen}:
+        raise SpeechNativeProfileError("M11 speaker-fold assignments are incomplete")
 
-    for index, item in enumerate(frozen):
-        fold_id = assignments[str(item["speaker_id"])]
-        train = tuple(
-            other
-            for other in frozen
-            if assignments[str(other["speaker_id"])] != fold_id
-        )
-        exact_state = _m11_preboundary_state(item, exact=True)
-        coarse_state = _m11_preboundary_state(item, exact=False)
-        exact_matches = tuple(
-            other
-            for other in train
-            if _m11_preboundary_state(other, exact=True) == exact_state
-        )
-        if len(exact_matches) >= _M11_READER_CONTRACT_V1["oof_minimum_state_support"]:
-            memory = exact_matches
-            state_tier = "exact"
-        else:
-            memory = tuple(
-                other
-                for other in train
-                if _m11_preboundary_state(other, exact=False) == coarse_state
-            )
-            state_tier = "coarse"
-
-        candidate_statistics: list[dict[str, object]] = []
-        qualified: list[dict[str, object]] = []
-        if (
-            len(memory) >= _M11_READER_CONTRACT_V1["oof_minimum_state_support"]
-            and not bool(item["mechanism_failure"])
-        ):
-            for action_rank, action_id in enumerate(_M11_OOF_ACTION_IDS):
-                if not _m11_action_available(item, action_id):
-                    continue
-                support = tuple(
-                    row for row in memory if _m11_action_available(row, action_id)
-                )
-                changed = sum(
-                    _m11_action_prediction(row, action_id) != row["primary_key_id"]
-                    for row in support
-                )
-                helpful = sum(
-                    row["primary_key_id"] != row["gold_key_id"]
-                    and _m11_action_prediction(row, action_id) == row["gold_key_id"]
-                    for row in support
-                )
-                harmful = sum(
-                    row["primary_key_id"] == row["gold_key_id"]
-                    and _m11_action_prediction(row, action_id) != row["gold_key_id"]
-                    for row in support
-                )
-                net_gain = helpful - harmful
-                qualifies = (
-                    len(support)
-                    >= _M11_READER_CONTRACT_V1["oof_minimum_state_support"]
-                    and changed
-                    >= _M11_READER_CONTRACT_V1[
-                        "oof_minimum_changed_prediction_support"
-                    ]
-                    and helpful
-                    >= _M11_READER_CONTRACT_V1["oof_minimum_helpful_transitions"]
-                    and net_gain
-                    >= _M11_READER_CONTRACT_V1["oof_minimum_estimated_net_gain"]
-                    and harmful
-                    <= _M11_READER_CONTRACT_V1["oof_maximum_harmful_transitions"]
-                )
-                statistics = {
-                    "action_id": action_id,
-                    "support_count": len(support),
-                    "changed_prediction_count": changed,
-                    "helpful_transition_count": helpful,
-                    "harmful_transition_count": harmful,
-                    "estimated_net_gain": net_gain,
-                    "estimated_calls": _M11_OOF_ACTION_CALLS[action_id],
-                    "qualified": qualifies,
-                    "action_rank": action_rank,
-                }
-                candidate_statistics.append(statistics)
-                if qualifies:
-                    qualified.append(statistics)
-
-        selected_action = "retain-primary"
-        selection_reason = "retain:no-zero-harm-positive-advantage-action"
-        if len(memory) < _M11_READER_CONTRACT_V1["oof_minimum_state_support"]:
-            selection_reason = "retain:insufficient-oof-state-support"
-        elif bool(item["mechanism_failure"]):
-            selection_reason = "retain:mechanism-failure"
-        elif qualified:
-            best = min(
-                qualified,
-                key=lambda row: (
-                    -int(row["estimated_net_gain"]),
-                    -int(row["helpful_transition_count"]),
-                    int(row["estimated_calls"]),
-                    int(row["action_rank"]),
-                ),
-            )
-            selected_action = str(best["action_id"])
-            selection_reason = f"select:{state_tier}-zero-harm-positive-advantage"
-        selected_prediction = _m11_action_prediction(item, selected_action)
-        selected_predictions.append(selected_prediction)
-        selected_actions.append(selected_action)
-        selected_calls.append(_M11_OOF_ACTION_CALLS[selected_action])
-        action_audit.append(
-            {
-                "sample_id": str(item["sample_id"]),
-                "fold_id": fold_id,
-                "state_schema": "m11-preboundary-relative-state-v1",
-                "state_tier": state_tier,
-                "training_state_match_count": len(memory),
-                "selected_action_id": selected_action,
-                "selected_key_id": selected_prediction,
-                "selection_reason": selection_reason,
-                "estimated_calls": _M11_OOF_ACTION_CALLS[selected_action],
-                "candidate_statistics": candidate_statistics,
-            }
-        )
-
+    selected_predictions = [str(row["selected_key_id"]) for row in selected]
+    selected_actions = [str(row["selected_action_id"]) for row in selected]
+    selected_calls = [int(row["estimated_calls"]) for row in selected]
+    action_audit = [
+        {
+            **dict(row),
+            "fold_id": fold_assignments[str(item["speaker_id"])],
+        }
+        for row, item in zip(selected, frozen, strict=True)
+    ]
     primary_correct = sum(
         item["primary_key_id"] == item["gold_key_id"] for item in frozen
     )
@@ -3603,7 +3609,7 @@ def _evaluate_m11_oof_action_advantage_policy(
     action_rate = action_count / len(frozen)
     folds = _speaker_fold_metrics(
         validated_folds,
-        assignments=assignments,
+        assignments=fold_assignments,
         predictions=selected_predictions,
     )
     positive_folds = sum(int(fold["correct_delta_vs_primary"] > 0) for fold in folds)
@@ -3622,8 +3628,7 @@ def _evaluate_m11_oof_action_advantage_policy(
             >= _M11_READER_CONTRACT_V1["promotion_minimum_positive_folds"]
         ),
         "worst_fold_delta_nonnegative": (
-            worst_fold
-            >= _M11_READER_CONTRACT_V1["promotion_minimum_worst_fold_delta"]
+            worst_fold >= _M11_READER_CONTRACT_V1["promotion_minimum_worst_fold_delta"]
         ),
         "correct_to_wrong_at_most_1": (
             correct_to_wrong
@@ -3639,16 +3644,15 @@ def _evaluate_m11_oof_action_advantage_policy(
         ),
     }
     return {
-        "status": "evaluated-after-support-gate",
+        "status": status,
         "policy_id": _M11_OOF_POLICY_ID,
         "state_schema": "m11-preboundary-relative-state-v1",
         "speaker_fold_policy_id": _SPEAKER_FOLD_POLICY_ID,
+        "speaker_fold_role": speaker_fold_role,
         "label_blind_at_action_time": True,
-        "reward_scope": "other-two-speaker-folds-only",
+        "reward_scope": reward_scope,
         "reader_contract": dict(_M11_READER_CONTRACT_V1),
-        "minimum_state_support": _M11_READER_CONTRACT_V1[
-            "oof_minimum_state_support"
-        ],
+        "minimum_state_support": _M11_READER_CONTRACT_V1["oof_minimum_state_support"],
         "minimum_changed_prediction_support": _M11_READER_CONTRACT_V1[
             "oof_minimum_changed_prediction_support"
         ],
@@ -3678,6 +3682,165 @@ def _evaluate_m11_oof_action_advantage_policy(
         "promotion_gate_passed": all(promotion_checks.values()),
         "action_audit": action_audit,
     }
+
+
+def _evaluate_m11_oof_action_advantage_policy(
+    trajectories: Sequence[Mapping[str, object]],
+) -> dict[str, object]:
+    """Cross-fit a conservative external action policy over frozen M11 traces.
+
+    State and available action predictions are fixed before reward is read.  For
+    each held-out speaker fold, only the other two folds may contribute reward
+    memory.  A non-primary action requires five matching training states, three
+    observed changed predictions, two helpful transitions, net gain of two, and
+    zero harmful transitions.  Exact graph state backs off once to a relative
+    state; thresholds never back off.
+    """
+
+    frozen = tuple(trajectories)
+    if not frozen:
+        raise SpeechNativeProfileError("M11 OOF policy requires trajectories")
+    fold_trajectories = tuple(
+        {
+            "speaker_id": str(item["speaker_id"]),
+            "gold_key_id": str(item["gold_key_id"]),
+            "primary_key_id": str(item["primary_key_id"]),
+            "canonical_key_id": None,
+            "reverse_key_id": None,
+            "rotate_key_id": None,
+        }
+        for item in frozen
+    )
+    validated_folds = _validate_training_free_trajectories(fold_trajectories)
+    assignments = _speaker_grouped_fold_assignments(validated_folds)
+    selections: list[dict[str, object]] = []
+    for item in frozen:
+        fold_id = assignments[str(item["speaker_id"])]
+        train = tuple(
+            other
+            for other in frozen
+            if assignments[str(other["speaker_id"])] != fold_id
+        )
+        selections.append(
+            _select_m11_action_from_reward_memory(
+                item,
+                train,
+                insufficient_support_reason=("retain:insufficient-oof-state-support"),
+            )
+        )
+    return _score_m11_action_selections(
+        frozen,
+        selections,
+        status="evaluated-after-support-gate",
+        reward_scope="other-two-speaker-folds-only",
+        speaker_fold_role="reward-exclusion-and-evaluation",
+        assignments=assignments,
+    )
+
+
+def _evaluate_m11_memory_holdout_action_advantage_policy(
+    discovery_memory: Sequence[Mapping[str, object]],
+    holdout_trajectories: Sequence[Mapping[str, object]],
+) -> dict[str, object]:
+    """Apply a discovery-qualified M11 reader to a speaker-unseen holdout.
+
+    Discovery labels may define action advantage. Holdout labels are read only
+    after every action and selected key are frozen from discovery rewards plus
+    the holdout trajectory's pre-boundary state.
+    """
+
+    memory = tuple(discovery_memory)
+    holdout = tuple(holdout_trajectories)
+    if not memory or not holdout:
+        raise SpeechNativeProfileError(
+            "M11 memory-holdout evaluation requires both trajectory sets"
+        )
+    for role, rows in (("discovery memory", memory), ("holdout", holdout)):
+        policy_ids = {row.get("policy_id") for row in rows}
+        if len(policy_ids) != 1 or next(iter(policy_ids)) not in _M11_POLICY_IDS:
+            raise SpeechNativeProfileError(
+                f"M11 {role} trajectories mix policy identities"
+            )
+    if memory[0].get("policy_id") != holdout[0].get("policy_id"):
+        raise SpeechNativeProfileError(
+            "M11 memory and holdout policy identities differ"
+        )
+
+    memory_samples = tuple(str(row["sample_id"]) for row in memory)
+    holdout_samples = tuple(str(row["sample_id"]) for row in holdout)
+    if len(set(memory_samples)) != len(memory_samples) or len(
+        set(holdout_samples)
+    ) != len(holdout_samples):
+        raise SpeechNativeProfileError(
+            "M11 memory-holdout sample identity is duplicated"
+        )
+    sample_overlap = set(memory_samples) & set(holdout_samples)
+    if sample_overlap:
+        raise SpeechNativeProfileError(
+            "M11 memory-holdout sample identity overlap is forbidden"
+        )
+    memory_speakers = {str(row["speaker_id"]) for row in memory}
+    holdout_speakers = {str(row["speaker_id"]) for row in holdout}
+    speaker_overlap = memory_speakers & holdout_speakers
+    if speaker_overlap:
+        raise SpeechNativeProfileError(
+            "M11 memory-holdout speaker identity overlap is forbidden"
+        )
+
+    memory_information = _evaluate_m11_adaptive_evidence_gap(
+        memory,
+        enable_training_free_controller=True,
+    )
+    memory_controller = memory_information["training_free_controller"]
+    if not isinstance(memory_controller, Mapping):
+        raise SpeechNativeProfileError("M11 discovery controller is malformed")
+    memory_support_passed = bool(memory_information["support_gate_passed"])
+    memory_promotion_passed = bool(memory_controller.get("promotion_gate_passed"))
+    common = {
+        "evaluation_policy_id": _M11_MEMORY_HOLDOUT_EVALUATION_ID,
+        "memory_query_count": len(memory),
+        "holdout_query_count": len(holdout),
+        "sample_identity_overlap_count": 0,
+        "speaker_identity_overlap_count": 0,
+        "memory_support_gate_passed": memory_support_passed,
+        "memory_promotion_gate_passed": memory_promotion_passed,
+    }
+    if not memory_support_passed or not memory_promotion_passed:
+        return {
+            "status": "deferred-discovery-memory-gate-failed",
+            "policy_id": _M11_OOF_POLICY_ID,
+            "reward_scope": "discovery-memory-only",
+            "label_blind_at_action_time": True,
+            "holdout_rewards_read": False,
+            "action_audit": [],
+            **common,
+        }
+
+    selections = tuple(
+        _select_m11_action_from_reward_memory(
+            item,
+            memory,
+            insufficient_support_reason=(
+                "retain:insufficient-discovery-memory-state-support"
+            ),
+        )
+        for item in holdout
+    )
+    result = _score_m11_action_selections(
+        holdout,
+        selections,
+        status="evaluated-discovery-memory-to-unread-holdout",
+        reward_scope="discovery-memory-only",
+        speaker_fold_role="evaluation-only",
+    )
+    result.update(
+        {
+            "holdout_rewards_read": True,
+            "holdout_rewards_read_after_action_freeze": True,
+            **common,
+        }
+    )
+    return result
 
 
 def _evaluate_m11_adaptive_evidence_gap(
