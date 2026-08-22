@@ -66,6 +66,15 @@ _HOST_SPILL_MARKERS = (
     "host buffer fallback",
 )
 _RUNAWAY_MARKERS = ("truncated = 1", "context shift", "slot context shift")
+_SPEAKER_FOLD_POLICY_ID = "speaker-grouped-3fold-sha256-load-balanced-v1"
+_CONTEXTUAL_ACTION_IDS = (
+    "primary",
+    "m3-unanimous-primary-fallback",
+    "m3-majority-primary-fallback",
+    "canonical-primary-fallback",
+    "reverse-primary-fallback",
+    "rotate-primary-fallback",
+)
 
 
 class SpeechNativeProfileError(RuntimeError):
@@ -87,17 +96,11 @@ def _canonical_sha256(document: object) -> str:
     return hashlib.sha256(raw).hexdigest()
 
 
-def _evaluate_training_free_agent_policies(
+def _validate_training_free_trajectories(
     trajectories: Sequence[Mapping[str, str | None]],
-) -> list[dict[str, object]]:
-    """Enumerate the preregisterable controller rules over full action logs.
-
-    This is an offline, model-free policy evaluator. Gold is used only as the
-    reward after every frozen-core action has already been recorded. The
-    returned rules update no model, prompt, retriever, or verifier parameter.
-    """
-
+) -> tuple[Mapping[str, str | None], ...]:
     required = {
+        "speaker_id",
         "gold_key_id",
         "primary_key_id",
         "canonical_key_id",
@@ -110,41 +113,130 @@ def _evaluate_training_free_agent_policies(
             "training-free policy search requires at least one trajectory"
         )
     for trajectory in frozen:
-        if set(trajectory) != required or not isinstance(
-            trajectory.get("gold_key_id"), str
+        if (
+            set(trajectory) != required
+            or not isinstance(trajectory.get("speaker_id"), str)
+            or not trajectory.get("speaker_id")
+            or not isinstance(trajectory.get("gold_key_id"), str)
         ):
             raise SpeechNativeProfileError(
                 "training-free policy trajectory is malformed"
             )
         if any(
             value is not None and not isinstance(value, str)
-            for value in trajectory.values()
+            for key, value in trajectory.items()
+            if key != "speaker_id"
         ):
             raise SpeechNativeProfileError(
                 "training-free policy trajectory contains a malformed key id"
             )
+    if len({str(item["speaker_id"]) for item in frozen}) < 3:
+        raise SpeechNativeProfileError(
+            "training-free policy search requires at least three speakers"
+        )
+    return frozen
+
+
+def _speaker_grouped_fold_assignments(
+    trajectories: Sequence[Mapping[str, str | None]],
+) -> dict[str, str]:
+    """Assign intact speaker groups to three deterministic balanced folds."""
+
+    counts = Counter(str(item["speaker_id"]) for item in trajectories)
+    ranked = sorted(
+        counts,
+        key=lambda speaker_id: (
+            -counts[speaker_id],
+            hashlib.sha256(speaker_id.encode("utf-8")).hexdigest(),
+            speaker_id,
+        ),
+    )
+    sizes = [0, 0, 0]
+    assignments: dict[str, str] = {}
+    for speaker_id in ranked:
+        fold_index = min(range(3), key=lambda index: (sizes[index], index))
+        assignments[speaker_id] = f"fold-{fold_index}"
+        sizes[fold_index] += counts[speaker_id]
+    return assignments
+
+
+def _speaker_fold_metrics(
+    trajectories: Sequence[Mapping[str, str | None]],
+    *,
+    assignments: Mapping[str, str],
+    predictions: Sequence[str | None],
+) -> list[dict[str, object]]:
+    rows: list[dict[str, object]] = []
+    for fold_index in range(3):
+        fold_id = f"fold-{fold_index}"
+        indices = [
+            index
+            for index, trajectory in enumerate(trajectories)
+            if assignments[str(trajectory["speaker_id"])] == fold_id
+        ]
+        if not indices:
+            raise SpeechNativeProfileError(
+                "speaker-grouped policy analysis produced an empty fold"
+            )
+        correct = sum(
+            predictions[index] == trajectories[index]["gold_key_id"]
+            for index in indices
+        )
+        primary_correct = sum(
+            trajectories[index]["primary_key_id"]
+            == trajectories[index]["gold_key_id"]
+            for index in indices
+        )
+        rows.append(
+            {
+                "fold_id": fold_id,
+                "speaker_count": len(
+                    {str(trajectories[index]["speaker_id"]) for index in indices}
+                ),
+                "count": len(indices),
+                "correct": correct,
+                "accuracy": correct / len(indices),
+                "primary_correct": primary_correct,
+                "primary_accuracy": primary_correct / len(indices),
+                "correct_delta_vs_primary": correct - primary_correct,
+            }
+        )
+    return rows
+
+
+def _m3_aggregate(
+    trajectory: Mapping[str, str | None], mode: str
+) -> str | None:
+    primary = trajectory["primary_key_id"]
+    votes = [
+        trajectory["canonical_key_id"],
+        trajectory["reverse_key_id"],
+        trajectory["rotate_key_id"],
+    ]
+    valid = [vote for vote in votes if vote is not None]
+    if mode == "majority":
+        counts = Counter(valid)
+        return next((vote for vote, count in counts.items() if count >= 2), primary)
+    if mode == "unanimous":
+        return valid[0] if len(valid) == 3 and len(set(valid)) == 1 else primary
+    raise SpeechNativeProfileError(f"unknown training-free aggregate mode {mode!r}")
+
+
+def _evaluate_training_free_agent_policies(
+    trajectories: Sequence[Mapping[str, str | None]],
+) -> list[dict[str, object]]:
+    """Enumerate preregistered controller rules over full action logs.
+
+    This is an offline, model-free policy evaluator. Gold is used only as the
+    reward after every frozen-core action has already been recorded. The
+    returned rules update no model, prompt, retriever, or verifier parameter.
+    """
+
+    frozen = _validate_training_free_trajectories(trajectories)
+    assignments = _speaker_grouped_fold_assignments(frozen)
 
     def aggregate(trajectory: Mapping[str, str | None], mode: str) -> str | None:
-        primary = trajectory["primary_key_id"]
-        votes = [
-            trajectory["canonical_key_id"],
-            trajectory["reverse_key_id"],
-            trajectory["rotate_key_id"],
-        ]
-        valid = [vote for vote in votes if vote is not None]
-        if mode == "majority":
-            counts = Counter(valid)
-            return next(
-                (vote for vote, count in counts.items() if count >= 2),
-                primary,
-            )
-        if mode == "unanimous":
-            return (
-                valid[0]
-                if len(valid) == 3 and len(set(valid)) == 1
-                else primary
-            )
-        raise SpeechNativeProfileError(f"unknown training-free aggregate mode {mode!r}")
+        return _m3_aggregate(trajectory, mode)
 
     policy_specs = (
         ("trigger-never__primary-v1", "never", "primary"),
@@ -167,6 +259,7 @@ def _evaluate_training_free_agent_policies(
         wrong_to_correct = 0
         correct_to_wrong = 0
         branch_actions = 0
+        predictions: list[str | None] = []
         for trajectory in frozen:
             primary = trajectory["primary_key_id"]
             gold = trajectory["gold_key_id"]
@@ -180,11 +273,17 @@ def _evaluate_training_free_agent_policies(
                 if mode == "primary" or not run_branch
                 else aggregate(trajectory, mode)
             )
+            predictions.append(prediction)
             primary_correct = primary == gold
             final_correct = prediction == gold
             correct += int(final_correct)
             wrong_to_correct += int(not primary_correct and final_correct)
             correct_to_wrong += int(primary_correct and not final_correct)
+        speaker_folds = _speaker_fold_metrics(
+            frozen,
+            assignments=assignments,
+            predictions=predictions,
+        )
         rows.append(
             {
                 "policy_id": policy_id,
@@ -195,9 +294,245 @@ def _evaluate_training_free_agent_policies(
                 "correct_to_wrong_vs_primary": correct_to_wrong,
                 "branch_action_count": branch_actions,
                 "branch_action_rate": branch_actions / len(frozen),
+                "speaker_fold_policy_id": _SPEAKER_FOLD_POLICY_ID,
+                "speaker_folds": speaker_folds,
+                "positive_delta_fold_count": sum(
+                    int(fold["correct_delta_vs_primary"] > 0)
+                    for fold in speaker_folds
+                ),
+                "nonnegative_delta_fold_count": sum(
+                    int(fold["correct_delta_vs_primary"] >= 0)
+                    for fold in speaker_folds
+                ),
+                "worst_fold_accuracy": min(
+                    float(fold["accuracy"]) for fold in speaker_folds
+                ),
+                "worst_fold_delta_vs_primary": min(
+                    int(fold["correct_delta_vs_primary"])
+                    for fold in speaker_folds
+                ),
             }
         )
     return rows
+
+
+def _contextual_state_id(trajectory: Mapping[str, str | None]) -> str:
+    primary = trajectory["primary_key_id"]
+    canonical = trajectory["canonical_key_id"]
+    votes = [
+        canonical,
+        trajectory["reverse_key_id"],
+        trajectory["rotate_key_id"],
+    ]
+    valid = [vote for vote in votes if vote is not None]
+    counts = Counter(valid)
+    majority = next((vote for vote, count in counts.items() if count >= 2), None)
+    if len(valid) == 3 and len(set(valid)) == 1:
+        consensus = "unanimous"
+    elif majority is not None:
+        consensus = "majority"
+    elif valid:
+        consensus = "split"
+    else:
+        consensus = "missing"
+    primary_canonical = (
+        "missing"
+        if canonical is None
+        else "same"
+        if canonical == primary
+        else "different"
+    )
+    primary_majority = (
+        "none" if majority is None else "same" if majority == primary else "different"
+    )
+    return (
+        f"primary-canonical-{primary_canonical}__m3-{consensus}__"
+        f"primary-majority-{primary_majority}__valid-{len(valid)}"
+    )
+
+
+def _contextual_action_predictions(
+    trajectory: Mapping[str, str | None],
+) -> dict[str, str | None]:
+    primary = trajectory["primary_key_id"]
+    return {
+        "primary": primary,
+        "m3-unanimous-primary-fallback": _m3_aggregate(trajectory, "unanimous"),
+        "m3-majority-primary-fallback": _m3_aggregate(trajectory, "majority"),
+        "canonical-primary-fallback": trajectory["canonical_key_id"] or primary,
+        "reverse-primary-fallback": trajectory["reverse_key_id"] or primary,
+        "rotate-primary-fallback": trajectory["rotate_key_id"] or primary,
+    }
+
+
+def _evaluate_training_free_contextual_policy(
+    trajectories: Sequence[Mapping[str, str | None]],
+) -> dict[str, object]:
+    """Cross-fit a finite observable-state action policy without model updates.
+
+    Speaker groups define three folds. For each held-out fold, state-to-action
+    choices are learned only from the other two folds. A non-primary action
+    requires at least three training examples in the state and a strict reward
+    gain over the primary action; otherwise the conservative primary action is
+    used. The per-query action oracle is diagnostic headroom, never a policy.
+    """
+
+    frozen = _validate_training_free_trajectories(trajectories)
+    assignments = _speaker_grouped_fold_assignments(frozen)
+    states = [_contextual_state_id(item) for item in frozen]
+    action_predictions = [_contextual_action_predictions(item) for item in frozen]
+    oof_predictions: list[str | None] = [None] * len(frozen)
+    fold_rules: dict[str, list[dict[str, object]]] = {}
+    oof_action_counts: Counter[str] = Counter()
+
+    for fold_index in range(3):
+        fold_id = f"fold-{fold_index}"
+        train_indices = [
+            index
+            for index, item in enumerate(frozen)
+            if assignments[str(item["speaker_id"])] != fold_id
+        ]
+        test_indices = [
+            index
+            for index, item in enumerate(frozen)
+            if assignments[str(item["speaker_id"])] == fold_id
+        ]
+        rules: dict[str, str] = {}
+        audit_rules: list[dict[str, object]] = []
+        for state_id in sorted(set(states[index] for index in train_indices)):
+            state_indices = [index for index in train_indices if states[index] == state_id]
+            correct_by_action = {
+                action_id: sum(
+                    action_predictions[index][action_id]
+                    == frozen[index]["gold_key_id"]
+                    for index in state_indices
+                )
+                for action_id in _CONTEXTUAL_ACTION_IDS
+            }
+            primary_correct = correct_by_action["primary"]
+            best_correct = max(correct_by_action.values())
+            action_id = "primary"
+            if len(state_indices) >= 3 and best_correct > primary_correct:
+                action_id = next(
+                    candidate
+                    for candidate in _CONTEXTUAL_ACTION_IDS
+                    if correct_by_action[candidate] == best_correct
+                )
+            rules[state_id] = action_id
+            audit_rules.append(
+                {
+                    "state_id": state_id,
+                    "train_count": len(state_indices),
+                    "selected_action_id": action_id,
+                    "selected_action_correct": correct_by_action[action_id],
+                    "primary_correct": primary_correct,
+                }
+            )
+        fold_rules[fold_id] = audit_rules
+        for index in test_indices:
+            action_id = rules.get(states[index], "primary")
+            oof_action_counts[action_id] += 1
+            oof_predictions[index] = action_predictions[index][action_id]
+
+    speaker_folds = _speaker_fold_metrics(
+        frozen,
+        assignments=assignments,
+        predictions=oof_predictions,
+    )
+    primary_correct = sum(
+        item["primary_key_id"] == item["gold_key_id"] for item in frozen
+    )
+    correct = sum(
+        prediction == item["gold_key_id"]
+        for prediction, item in zip(oof_predictions, frozen, strict=True)
+    )
+    wrong_to_correct = sum(
+        item["primary_key_id"] != item["gold_key_id"]
+        and prediction == item["gold_key_id"]
+        for prediction, item in zip(oof_predictions, frozen, strict=True)
+    )
+    correct_to_wrong = sum(
+        item["primary_key_id"] == item["gold_key_id"]
+        and prediction != item["gold_key_id"]
+        for prediction, item in zip(oof_predictions, frozen, strict=True)
+    )
+    state_action_support: list[dict[str, object]] = []
+    reward_spread_state_count = 0
+    prediction_variable_state_count = 0
+    for state_id in sorted(set(states)):
+        indices = [index for index, state in enumerate(states) if state == state_id]
+        correct_by_action = {
+            action_id: sum(
+                action_predictions[index][action_id] == frozen[index]["gold_key_id"]
+                for index in indices
+            )
+            for action_id in _CONTEXTUAL_ACTION_IDS
+        }
+        reward_spread = max(correct_by_action.values()) - min(correct_by_action.values())
+        reward_spread_state_count += int(reward_spread > 0)
+        prediction_variable_state_count += int(
+            any(
+                len(
+                    {
+                        action_predictions[index][action_id]
+                        for action_id in _CONTEXTUAL_ACTION_IDS
+                    }
+                )
+                > 1
+                for index in indices
+            )
+        )
+        state_action_support.append(
+            {
+                "state_id": state_id,
+                "count": len(indices),
+                "correct_by_action": correct_by_action,
+                "reward_spread": reward_spread,
+            }
+        )
+    action_oracle_correct = sum(
+        any(
+            prediction == item["gold_key_id"]
+            for prediction in action_predictions[index].values()
+        )
+        for index, item in enumerate(frozen)
+    )
+    return {
+        "policy_id": "speaker-grouped-oof-observable-state-action-v1",
+        "speaker_fold_policy_id": _SPEAKER_FOLD_POLICY_ID,
+        "count": len(frozen),
+        "correct": correct,
+        "accuracy": correct / len(frozen),
+        "primary_correct": primary_correct,
+        "primary_accuracy": primary_correct / len(frozen),
+        "wrong_to_correct_vs_primary": wrong_to_correct,
+        "correct_to_wrong_vs_primary": correct_to_wrong,
+        "positive_delta_fold_count": sum(
+            int(fold["correct_delta_vs_primary"] > 0) for fold in speaker_folds
+        ),
+        "nonnegative_delta_fold_count": sum(
+            int(fold["correct_delta_vs_primary"] >= 0) for fold in speaker_folds
+        ),
+        "worst_fold_accuracy": min(float(fold["accuracy"]) for fold in speaker_folds),
+        "worst_fold_delta_vs_primary": min(
+            int(fold["correct_delta_vs_primary"]) for fold in speaker_folds
+        ),
+        "oof_action_counts": dict(sorted(oof_action_counts.items())),
+        "speaker_folds": [
+            {**fold, "learned_state_actions": fold_rules[str(fold["fold_id"])]}
+            for fold in speaker_folds
+        ],
+        "speaker_fold_assignments": [
+            {"speaker_id": speaker_id, "fold_id": assignments[speaker_id]}
+            for speaker_id in sorted(assignments)
+        ],
+        "state_action_support": state_action_support,
+        "prediction_variable_state_count": prediction_variable_state_count,
+        "reward_spread_state_count": reward_spread_state_count,
+        "action_oracle_correct": action_oracle_correct,
+        "action_oracle_headroom_vs_primary": action_oracle_correct - primary_correct,
+        "action_oracle_status": "diagnostic-only-not-an-admissible-controller",
+    }
 
 
 def _require_string(values: Mapping[str, object], key: str) -> str:
@@ -292,18 +627,25 @@ def read_speech_native_predictions(
     if not isinstance(raw_items, list) or not raw_items:
         raise SpeechNativeProfileError(f"binding lacks split {split_name!r}")
     gold: dict[str, str] = {}
+    speaker_by_sample: dict[str, str] = {}
     for item in raw_items:
         if not isinstance(item, Mapping):
             raise SpeechNativeProfileError("binding split item must be an object")
         sample_id = item.get("sample_id")
         value_label = item.get("value_label")
+        speaker_id = item.get("speaker_id")
         if (
             not isinstance(sample_id, str)
             or not isinstance(value_label, str)
+            or not isinstance(speaker_id, str)
+            or not speaker_id
             or sample_id in gold
         ):
-            raise SpeechNativeProfileError("binding split labels are malformed or duplicate")
+            raise SpeechNativeProfileError(
+                "binding split labels/speakers are malformed or duplicate"
+            )
         gold[sample_id] = value_label
+        speaker_by_sample[sample_id] = speaker_id
 
     cards = _load_key_cards(binding_path, binding_sha256)
     label_by_key = {card.key_id: card.value_label for card in cards}
@@ -686,6 +1028,7 @@ def read_speech_native_predictions(
                     )
                     agent_full_trajectories.append(
                         {
+                            "speaker_id": speaker_by_sample[sample_id],
                             "gold_key_id": key_by_label[gold[sample_id]],
                             "primary_key_id": agent_votes[0],
                             "canonical_key_id": agent_votes[1],
@@ -793,6 +1136,13 @@ def read_speech_native_predictions(
                                 ),
                                 "training_free_policy_frontier": (
                                     _evaluate_training_free_agent_policies(
+                                        agent_full_trajectories
+                                    )
+                                    if agent_full_branch_count == len(gold)
+                                    else None
+                                ),
+                                "training_free_contextual_policy": (
+                                    _evaluate_training_free_contextual_policy(
                                         agent_full_trajectories
                                     )
                                     if agent_full_branch_count == len(gold)

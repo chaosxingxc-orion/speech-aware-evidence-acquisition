@@ -1,0 +1,9 @@
+{
+  "experiment_id": "SAEA-SN-DISCOVERY-X108-K1M5-FULL-BRANCH",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "DISCOVERY-X108 full-action rollout for speaker-grouped training-free controller evaluation. Record M1 plus canonical, reverse, and rotate-7 M3 actions for every speech query using the already frozen K1 prompts, keys, model, and action set. This is policy discovery, not validation evidence.",
+  "key_representation_id": "K1",
+  "matcher_policy_id": "M5",
+  "speech_native_agent_policy_id": "m1-m3-full-branch-explorer-v1",
+  "speech_native_agent_aggregator_id": "m3-unanimous-primary-fallback-v3"
+}

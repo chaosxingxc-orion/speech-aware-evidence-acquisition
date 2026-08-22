@@ -92,11 +92,15 @@ Use exhaustive enumeration for the initial finite family. Use contextual bandits
 
 Use speaker-isolated cross-validation across the exposed discovery queries. Report mean accuracy, worst-fold accuracy, correct-to-wrong, helpful/harmful/neutral action counts, action coverage, and cost. A policy with no action variation or no reward spread is not optimization-ready.
 
+Before any `DISCOVERY-X108` result is read, freeze the following model-free evaluator. Assign intact speaker groups to three folds by descending group size, SHA-256 speaker rank, and greedy lowest-fold load. Evaluate the finite trigger/aggregator family in every fold. In parallel, cross-fit `speaker-grouped-oof-observable-state-action-v1`: derive state only from primary/canonical agreement, M3 consensus, primary/majority agreement, and valid-vote count; compare primary, unanimous fallback, majority fallback, and the three order-specific predictions. For each held-out fold, learn the state action from the other two folds only. Require at least three training trajectories in a state and a strict correct-count gain over primary before selecting a non-primary action; otherwise use primary. Report out-of-fold accuracy and regressions, per-fold deltas, action counts, state reward spread, prediction variation, and a diagnostic per-query action oracle. The oracle is headroom evidence only and can never be frozen as a controller.
+
 ### A1x — conditional 100+ sample expansion
 
 Do not expand by default. Expand only if the completed A0/A1 read cannot support a relative controller conclusion because the best admissible policy differs from M1 by fewer than three cases, the direction is not reproduced across at least two speaker-isolated folds, or fewer than five queries expose a helpful-or-harmful branch outcome.
 
 If any trigger holds, freeze `DISCOVERY-X108`: six unused SLURP train queries per scenario, at least 108 queries total, isolated from all key material, OPT-A36, OPT-B18, consumed GATE18, and the future validation gate by utterance, audio, and speaker. Speaker isolation is across these sets; repeated utterances from one speaker inside `DISCOVERY-X108` are allowed and must stay in the same policy-analysis fold. Materialize its speech packets offline into the WSL ext4 feature root before starting the mmproj-free server. Run the same full-action policy-support rollout; do not introduce a new prompt, key representation, model, or action after reading it. `DISCOVERY-X108` remains discovery data and cannot serve as validation evidence.
+
+The A0 read activated A1x: the best enumerated policy changed M1 by zero cases and only two queries carried a helpful or harmful full-branch outcome. `DISCOVERY-X108` is therefore the single authorized expansion. Its 108 packets must be promoted and validated in parallel before the inference server starts; sample count must not expand again during this stage.
 
 ### A2 — new unread train gate
 

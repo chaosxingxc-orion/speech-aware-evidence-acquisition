@@ -16,6 +16,7 @@ import pytest
 
 from speech_aware_evidence_acquisition.core.model import SliceRegistry
 from speech_aware_evidence_acquisition.core.driver.speech_native import (
+    _evaluate_training_free_contextual_policy,
     _build_audio_key_bindings,
     _evaluate_training_free_agent_policies,
     build_profile_tasks,
@@ -970,6 +971,7 @@ def test_training_free_policy_search_uses_complete_action_support():
     frontier = _evaluate_training_free_agent_policies(
         (
                 {
+                    "speaker_id": "speaker-a",
                     "gold_key_id": "K001",
                     "primary_key_id": "K001",
                     "canonical_key_id": "K001",
@@ -977,6 +979,7 @@ def test_training_free_policy_search_uses_complete_action_support():
                 "rotate_key_id": "K002",
             },
             {
+                "speaker_id": "speaker-b",
                 "gold_key_id": "K002",
                 "primary_key_id": "K001",
                 "canonical_key_id": "K002",
@@ -984,6 +987,7 @@ def test_training_free_policy_search_uses_complete_action_support():
                 "rotate_key_id": "K002",
             },
             {
+                "speaker_id": "speaker-c",
                 "gold_key_id": "K003",
                 "primary_key_id": "K003",
                 "canonical_key_id": "K003",
@@ -991,6 +995,7 @@ def test_training_free_policy_search_uses_complete_action_support():
                 "rotate_key_id": "K002",
             },
             {
+                "speaker_id": "speaker-d",
                 "gold_key_id": "K002",
                 "primary_key_id": "K001",
                 "canonical_key_id": "K002",
@@ -1001,20 +1006,89 @@ def test_training_free_policy_search_uses_complete_action_support():
     )
 
     by_policy = {row["policy_id"]: row for row in frontier}
-    assert by_policy["trigger-disagreement__m3-majority-primary-v1"] == {
-        "policy_id": "trigger-disagreement__m3-majority-primary-v1",
-        "correct": 4,
-        "count": 4,
-        "accuracy": 1.0,
-        "wrong_to_correct_vs_primary": 2,
-        "correct_to_wrong_vs_primary": 0,
-        "branch_action_count": 2,
-        "branch_action_rate": 0.5,
-    }
+    disagreement = by_policy["trigger-disagreement__m3-majority-primary-v1"]
+    assert disagreement["correct"] == 4
+    assert disagreement["count"] == 4
+    assert disagreement["accuracy"] == 1.0
+    assert disagreement["wrong_to_correct_vs_primary"] == 2
+    assert disagreement["correct_to_wrong_vs_primary"] == 0
+    assert disagreement["branch_action_count"] == 2
+    assert disagreement["branch_action_rate"] == 0.5
+    assert disagreement["speaker_fold_policy_id"] == (
+        "speaker-grouped-3fold-sha256-load-balanced-v1"
+    )
+    assert sum(fold["count"] for fold in disagreement["speaker_folds"]) == 4
+    assert sum(fold["speaker_count"] for fold in disagreement["speaker_folds"]) == 4
+    assert disagreement["positive_delta_fold_count"] >= 1
     assert by_policy["trigger-never__primary-v1"]["correct"] == 2
     assert by_policy["trigger-always__m3-majority-primary-v1"][
         "correct_to_wrong_vs_primary"
     ] == 2
+
+
+def test_training_free_contextual_policy_is_speaker_grouped_and_out_of_fold():
+    trajectories = []
+    for index in range(9):
+        trajectories.append(
+            {
+                "speaker_id": f"speaker-{index}",
+                "gold_key_id": "K002",
+                "primary_key_id": "K001",
+                "canonical_key_id": "K002",
+                "reverse_key_id": "K002",
+                "rotate_key_id": "K002",
+            }
+        )
+
+    evaluation = _evaluate_training_free_contextual_policy(tuple(trajectories))
+
+    assert evaluation["policy_id"] == (
+        "speaker-grouped-oof-observable-state-action-v1"
+    )
+    assert evaluation["correct"] == 9
+    assert evaluation["primary_correct"] == 0
+    assert evaluation["wrong_to_correct_vs_primary"] == 9
+    assert evaluation["correct_to_wrong_vs_primary"] == 0
+    assert evaluation["action_oracle_correct"] == 9
+    assert evaluation["action_oracle_headroom_vs_primary"] == 9
+    assert evaluation["reward_spread_state_count"] == 1
+    assert evaluation["oof_action_counts"] == {
+        "m3-unanimous-primary-fallback": 9
+    }
+    assert len(evaluation["speaker_folds"]) == 3
+    assert sum(fold["count"] for fold in evaluation["speaker_folds"]) == 9
+    assert all(
+        fold["correct_delta_vs_primary"] > 0
+        for fold in evaluation["speaker_folds"]
+    )
+
+
+def test_training_free_contextual_policy_keeps_repeated_speaker_in_one_fold():
+    trajectories = tuple(
+        {
+            "speaker_id": "shared-speaker" if index < 3 else f"speaker-{index}",
+            "gold_key_id": "K001",
+            "primary_key_id": "K001",
+            "canonical_key_id": "K001",
+            "reverse_key_id": "K001",
+            "rotate_key_id": "K001",
+        }
+        for index in range(8)
+    )
+
+    evaluation = _evaluate_training_free_contextual_policy(trajectories)
+    assignments = {
+        item["speaker_id"]: item["fold_id"]
+        for item in evaluation["speaker_fold_assignments"]
+    }
+
+    assert assignments["shared-speaker"] in {"fold-0", "fold-1", "fold-2"}
+    shared_fold = next(
+        fold
+        for fold in evaluation["speaker_folds"]
+        if fold["fold_id"] == assignments["shared-speaker"]
+    )
+    assert shared_fold["count"] >= 3
 
 
 def test_profile_tasks_build_label_blind_speech_swap_and_key_text_shuffle_controls():
