@@ -25,7 +25,12 @@ from ...contracts import ExecutionPlan
 from ...data.lock import data_root, load_lock, umbrella_lock_path
 from ...data.slurp import load_slurp_train_material
 from ...e0.artifacts import REPO_ROOT, write_json_artifact
-from ...rails.probes.pslu_flight import extend_speech_native_binding
+from ...rails.probes.pslu_flight import (
+    SPEECH_NATIVE_KNOWLEDGE_POLICY_ID,
+    build_data_derived_decision_graph,
+    extend_speech_native_binding,
+    refine_speech_native_binding_knowledge,
+)
 from ..base import SCORERS, TRANSPORTS
 from ..bundle import finalize_bundle, verify_bundle
 from ..config import (
@@ -71,11 +76,15 @@ def _load_preprocess_stop_chain(
     session = read_session_receipt(session_receipt_path)
     verify_against_runtime_receipt(session, runtime_receipt)
     if session.role != "preprocess":
-        raise ValueError("speech packet promotion requires a preprocess session receipt")
+        raise ValueError(
+            "speech packet promotion requires a preprocess session receipt"
+        )
     try:
         stop = json.loads(stop_receipt_path.read_text(encoding="utf-8"))
     except (OSError, UnicodeError, json.JSONDecodeError) as error:
-        raise ValueError(f"cannot read preprocess stop receipt {stop_receipt_path}: {error}") from error
+        raise ValueError(
+            f"cannot read preprocess stop receipt {stop_receipt_path}: {error}"
+        ) from error
     required = {
         "schema",
         "study",
@@ -89,7 +98,9 @@ def _load_preprocess_stop_chain(
         "stopped_at",
     }
     if not isinstance(stop, dict) or set(stop) != required:
-        raise ValueError(f"preprocess stop receipt must carry exact keys {sorted(required)}")
+        raise ValueError(
+            f"preprocess stop receipt must carry exact keys {sorted(required)}"
+        )
     if (
         stop["schema"] != "saea-session-stop-receipt-v1"
         or stop["study"] != "speech-aware-evidence-acquisition"
@@ -125,7 +136,9 @@ def _cli_promote_speech_packets(args: argparse.Namespace) -> int:
     if legacy_cache_dir == feature_root:
         raise ValueError("legacy featcache and speech feature root must be different")
     if receipt_output.exists():
-        raise ValueError(f"speech packet promotion receipt already exists: {receipt_output}")
+        raise ValueError(
+            f"speech packet promotion receipt already exists: {receipt_output}"
+        )
     repo_resolved = REPO_ROOT.resolve()
     for label, candidate in (
         ("legacy featcache", legacy_cache_dir.resolve()),
@@ -137,7 +150,11 @@ def _cli_promote_speech_packets(args: argparse.Namespace) -> int:
     if (
         not isinstance(args.dataset, str)
         or not args.dataset
-        or any(character not in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789._-" for character in args.dataset)
+        or any(
+            character
+            not in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789._-"
+            for character in args.dataset
+        )
         or args.dataset[0] in ".-"
     ):
         raise ValueError("speech packet dataset must be a plain config fragment name")
@@ -159,7 +176,9 @@ def _cli_promote_speech_packets(args: argparse.Namespace) -> int:
     runtime_receipt_path = REPO_ROOT / "docs" / receipt_relative
     runtime_receipt = load_runtime_receipt(runtime_receipt_path)
     if runtime_receipt.get("role") != "preprocess":
-        raise ValueError("speech packet promotion requires a preprocess runtime receipt")
+        raise ValueError(
+            "speech packet promotion requires a preprocess runtime receipt"
+        )
     session, stop = _load_preprocess_stop_chain(
         session_receipt_path=Path(args.session_receipt),
         stop_receipt_path=Path(args.stop_receipt),
@@ -168,10 +187,20 @@ def _cli_promote_speech_packets(args: argparse.Namespace) -> int:
     gguf_files = runtime_receipt.get("gguf_files")
     if not isinstance(gguf_files, list):
         raise ValueError("preprocess runtime receipt gguf_files must be a list")
-    decoder = [entry for entry in gguf_files if "mmproj" not in Path(str(entry.get("path"))).name.lower()]
-    mmproj = [entry for entry in gguf_files if "mmproj" in Path(str(entry.get("path"))).name.lower()]
+    decoder = [
+        entry
+        for entry in gguf_files
+        if "mmproj" not in Path(str(entry.get("path"))).name.lower()
+    ]
+    mmproj = [
+        entry
+        for entry in gguf_files
+        if "mmproj" in Path(str(entry.get("path"))).name.lower()
+    ]
     if len(decoder) != 1 or len(mmproj) != 1:
-        raise ValueError("preprocess runtime receipt must bind exactly one decoder and one mmproj")
+        raise ValueError(
+            "preprocess runtime receipt must bind exactly one decoder and one mmproj"
+        )
     packets = materialize_legacy_cached_speech_feature_packets(
         feature_root=feature_root,
         bindings=tuple(
@@ -219,18 +248,29 @@ def _cli_promote_speech_packets(args: argparse.Namespace) -> int:
                 json.dumps(receipt, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
             )
     except FileExistsError as error:
-        raise ValueError(f"speech packet promotion receipt already exists: {output}") from error
+        raise ValueError(
+            f"speech packet promotion receipt already exists: {output}"
+        ) from error
     print(json.dumps({"receipt": str(output), "count": len(packets)}, indent=2))
     return 0
 
 
 def _cli_extend_speech_native_binding(args: argparse.Namespace) -> int:
-    """Extend the frozen train binding through the existing selector."""
+    """Build a split and/or knowledge successor with the existing selector."""
 
     parent_path = Path(args.parent_binding).resolve()
-    output_path = Path(args.output).resolve()
-    if output_path.exists():
+    output_path = Path(args.output).resolve() if args.output is not None else None
+    graph_output_path = (
+        Path(args.decision_graph_output).resolve()
+        if args.decision_graph_output is not None
+        else None
+    )
+    if output_path is not None and output_path.exists():
         raise ValueError(f"speech-native binding output already exists: {output_path}")
+    if graph_output_path is not None and graph_output_path.exists():
+        raise ValueError(
+            f"speech-native decision graph output already exists: {graph_output_path}"
+        )
     try:
         parent = json.loads(parent_path.read_text(encoding="utf-8"))
     except (OSError, UnicodeError, json.JSONDecodeError) as error:
@@ -239,35 +279,97 @@ def _cli_extend_speech_native_binding(args: argparse.Namespace) -> int:
         ) from error
     if not isinstance(parent, Mapping):
         raise ValueError("speech-native parent binding must be a JSON object")
+    split_requested = args.split_name is not None or args.per_scenario is not None
+    if (args.split_name is None) != (args.per_scenario is None):
+        raise ValueError(
+            "speech-native split extension requires both --split-name and "
+            "--per-scenario"
+        )
+    binding_successor_requested = split_requested or args.knowledge_policy is not None
+    if not binding_successor_requested and graph_output_path is None:
+        raise ValueError(
+            "speech-native binding needs a split extension or knowledge refinement"
+        )
+    if binding_successor_requested and output_path is None:
+        raise ValueError("speech-native split or knowledge successor requires --output")
+    if (
+        graph_output_path is not None
+        and args.knowledge_policy is None
+        and not isinstance(parent.get("knowledge_revision"), Mapping)
+    ):
+        raise ValueError(
+            "speech-native decision graph requires an existing or requested "
+            "data-derived knowledge refinement"
+        )
+
     material = load_slurp_train_material(
         load_lock(umbrella_lock_path()),
         data_root(),
         media_validation_workers=args.workers,
     )
-    successor = extend_speech_native_binding(
-        parent,
-        material,
-        seed=args.seed,
-        split_name=args.split_name,
-        per_scenario=args.per_scenario,
-        isolate_parent_query_speakers=(
-            not args.allow_parent_query_speaker_overlap
-        ),
+
+    successor = dict(parent)
+    if split_requested:
+        successor = extend_speech_native_binding(
+            successor,
+            material,
+            seed=args.seed,
+            split_name=args.split_name,
+            per_scenario=args.per_scenario,
+            isolate_parent_query_speakers=(not args.allow_parent_query_speaker_overlap),
+        )
+    if args.knowledge_policy is not None:
+        successor = refine_speech_native_binding_knowledge(
+            successor,
+            material,
+            seed=args.seed,
+            policy_id=args.knowledge_policy,
+        )
+    graph_artifact_sha256 = None
+    if graph_output_path is not None:
+        graph = build_data_derived_decision_graph(
+            successor,
+            material,
+            graph_id=args.decision_graph_id,
+            maximum_boundaries=args.maximum_boundaries,
+        )
+        graph_artifact_sha256 = write_json_artifact(graph_output_path, graph.as_json())
+    artifact_sha256 = (
+        write_json_artifact(output_path, successor) if output_path is not None else None
     )
-    artifact_sha256 = write_json_artifact(output_path, successor)
     extension_audit = successor.get("extension_audit")
-    if not isinstance(extension_audit, Mapping):
+    knowledge_revision = successor.get("knowledge_revision")
+    if split_requested and not isinstance(extension_audit, Mapping):
         raise ValueError("speech-native successor lacks its extension audit")
+    if args.knowledge_policy is not None and not isinstance(
+        knowledge_revision, Mapping
+    ):
+        raise ValueError("speech-native successor lacks its knowledge revision")
     print(
         json.dumps(
             {
-                "output": str(output_path),
+                "output": str(output_path) if output_path is not None else None,
                 "artifact_sha256": artifact_sha256,
                 "binding_sha256": successor.get("binding_sha256"),
-                "query_count": extension_audit.get("query_count"),
-                "parent_query_speaker_overlap_count": extension_audit.get(
-                    "parent_query_speaker_overlap_count"
+                "query_count": (
+                    extension_audit.get("query_count")
+                    if isinstance(extension_audit, Mapping)
+                    else None
                 ),
+                "parent_query_speaker_overlap_count": (
+                    extension_audit.get("parent_query_speaker_overlap_count")
+                    if isinstance(extension_audit, Mapping)
+                    else None
+                ),
+                "knowledge_policy_id": (
+                    knowledge_revision.get("policy_id")
+                    if isinstance(knowledge_revision, Mapping)
+                    else None
+                ),
+                "decision_graph_output": (
+                    str(graph_output_path) if graph_output_path is not None else None
+                ),
+                "decision_graph_artifact_sha256": graph_artifact_sha256,
             },
             indent=2,
             sort_keys=True,
@@ -301,7 +403,9 @@ def _cli_score(args: argparse.Namespace) -> int:
                 {
                     "manifest": str(Path(args.manifest)),
                     "verified": True,
-                    "scores": {name: result["aggregate"] for name, result in results.items()},
+                    "scores": {
+                        name: result["aggregate"] for name, result in results.items()
+                    },
                 },
                 indent=2,
                 sort_keys=True,
@@ -319,7 +423,11 @@ def _cli_score(args: argparse.Namespace) -> int:
         scores = SCORERS.resolve(name.strip())(Path(args.outputs), lock, root)
         print(
             json.dumps(
-                {"verified": False, "scorer": name.strip(), "aggregate": scores["aggregate"]},
+                {
+                    "verified": False,
+                    "scorer": name.strip(),
+                    "aggregate": scores["aggregate"],
+                },
                 indent=2,
                 sort_keys=True,
             )
@@ -334,7 +442,9 @@ def _cli_run(args: argparse.Namespace) -> int:
 
     lock = load_lock(umbrella_lock_path())
     root = data_root()
-    composed = compose(REPO_ROOT, args.model, args.dataset, args.baseline, args.experiment)
+    composed = compose(
+        REPO_ROOT, args.model, args.dataset, args.baseline, args.experiment
+    )
     plan = ExecutionPlan(**json.loads(Path(args.plan).read_text(encoding="utf-8")))
     runtime_root = Path(args.runtime_root)
     # R0.2 second-model plumbing: the model fragment's own optional
@@ -353,7 +463,9 @@ def _cli_run(args: argparse.Namespace) -> int:
         runtime_root,
         runtime_receipt_relpath=receipt_relpath,
         expected_model_lock_key=model_lock_key(composed.values),
-        model_root=(Path(configured_model_root) if configured_model_root is not None else None),
+        model_root=(
+            Path(configured_model_root) if configured_model_root is not None else None
+        ),
         d1_media_supplement_relpath=d1_media_supplement_relpath(composed.values),
         d1_media_supplement_sha256=d1_media_supplement_sha256(composed.values),
     )
@@ -365,9 +477,13 @@ def _cli_run(args: argparse.Namespace) -> int:
     # started out of band is only usable if it can PROVE it is the
     # receipt-pinned process, never merely because its base_url matches the
     # config.
-    runtime_receipt = load_runtime_receipt(resolve_runtime_receipt_path(REPO_ROOT, composed.values))
+    runtime_receipt = load_runtime_receipt(
+        resolve_runtime_receipt_path(REPO_ROOT, composed.values)
+    )
     session = attach_session(
-        Path(args.session_receipt), runtime_receipt=runtime_receipt, runtime_root=runtime_root
+        Path(args.session_receipt),
+        runtime_receipt=runtime_receipt,
+        runtime_root=runtime_root,
     )
     transport_factory = TRANSPORTS.resolve(str(composed.values["transport"]))
     transport = transport_factory(
@@ -387,7 +503,13 @@ def _cli_run(args: argparse.Namespace) -> int:
     # own NullSampler default instead, so a real nvidia-smi is only ever
     # touched by an actual live run through this CLI.
     manifest_path = run_experiment_bundled(
-        composed, plan, gate, lock, root, Path(args.run_dir), transport,
+        composed,
+        plan,
+        gate,
+        lock,
+        root,
+        Path(args.run_dir),
+        transport,
         session_receipt_path=Path(args.session_receipt),
         resource_sampler=resolve_resource_sampler(),
     )
@@ -452,7 +574,9 @@ def main(argv: list[str] | None = None) -> int:
         ),
     )
     score.add_argument(
-        "--scorers", default="asr-wer", help="comma-separated scorer names (--outputs mode only)"
+        "--scorers",
+        default="asr-wer",
+        help="comma-separated scorer names (--outputs mode only)",
     )
     score.set_defaults(func=_cli_score)
     run = sub.add_parser("run", help="gate-enforced live run (requires a plan file)")
@@ -480,7 +604,9 @@ def main(argv: list[str] | None = None) -> int:
             "attempt FINALIZED (R0 repair T6, invariant I7)"
         ),
     )
-    finalize.add_argument("--manifest", required=True, help="path to a run-manifest.json")
+    finalize.add_argument(
+        "--manifest", required=True, help="path to a run-manifest.json"
+    )
     finalize.add_argument(
         "--ledger-cells",
         default=None,
@@ -532,10 +658,33 @@ def main(argv: list[str] | None = None) -> int:
         ),
     )
     extend_binding.add_argument("--parent-binding", required=True)
-    extend_binding.add_argument("--output", required=True)
+    extend_binding.add_argument(
+        "--output",
+        help="binding successor output; omit only for graph-only generation",
+    )
     extend_binding.add_argument("--seed", type=int, required=True)
-    extend_binding.add_argument("--split-name", required=True)
-    extend_binding.add_argument("--per-scenario", type=int, required=True)
+    extend_binding.add_argument("--split-name")
+    extend_binding.add_argument("--per-scenario", type=int)
+    extend_binding.add_argument(
+        "--knowledge-policy",
+        choices=(SPEECH_NATIVE_KNOWLEDGE_POLICY_ID,),
+        help=(
+            "replace key material with query-isolated action-complete knowledge "
+            "derived model-free from SLURP train"
+        ),
+    )
+    extend_binding.add_argument(
+        "--decision-graph-output",
+        help=(
+            "optional paired DecisionGraphV1 output derived from the same isolated "
+            "SLURP train corpus"
+        ),
+    )
+    extend_binding.add_argument(
+        "--decision-graph-id",
+        default="slurp-data-derived-decision-graph-v2",
+    )
+    extend_binding.add_argument("--maximum-boundaries", type=int, default=30)
     extend_binding.add_argument("--workers", type=int, default=16)
     extend_binding.add_argument(
         "--allow-parent-query-speaker-overlap",
@@ -566,32 +715,39 @@ def main(argv: list[str] | None = None) -> int:
         help="Stage-2 execution profile (default: bounded-discovery-probe)",
     )
     smoke.add_argument(
-        "--planned-model-calls", type=int, required=True,
+        "--planned-model-calls",
+        type=int,
+        required=True,
         help="finite positive integer; no numeric ceiling since the 2026-08-06 owner amendment",
     )
     smoke.add_argument("--planned-gpu-hours", type=float, required=True)
     smoke.add_argument("--planned-speech-audio-seconds", type=int, required=True)
     smoke.add_argument(
-        "--run-dir", required=True,
+        "--run-dir",
+        required=True,
         help="STABLE parent directory; a fresh attempt_id subdirectory is created every run",
     )
     smoke.add_argument(
-        "--runtime-root", default=None,
+        "--runtime-root",
+        default=None,
         help="required unless --dry-run; see docs/runbooks/2026-08-05-r0-smoke.md preconditions",
     )
     smoke.add_argument("--host", default="127.0.0.1")
     smoke.add_argument("--port", type=int, default=8090)
     smoke.add_argument(
-        "--tracking-uri", required=True,
+        "--tracking-uri",
+        required=True,
         help="explicit local MLflow tracking URI; smoke never silently skips the upload",
     )
     smoke.add_argument("--ledger-cells", default=None)
     smoke.add_argument(
-        "--repo-root", default=None,
+        "--repo-root",
+        default=None,
         help="TEST-ONLY override of the study repo root; real operator usage should never pass this",
     )
     smoke.add_argument(
-        "--dry-run", action="store_true",
+        "--dry-run",
+        action="store_true",
         help=(
             "TEST-ONLY: fake transport + no-op gate + a synthetic session receipt, never a "
             "real model touch; never pass this for a real smoke"
@@ -636,7 +792,7 @@ def main(argv: list[str] | None = None) -> int:
     speech_action_audit = sub.add_parser(
         "speech-native-action-audit",
         help=(
-            "model-free, gold-free structural action audit for finalized M7/M8 "
+            "model-free, gold-free structural action audit for finalized M7--M11 "
             "support flights and the admitted legacy M6 completion-gate abort"
         ),
     )

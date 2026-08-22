@@ -27,9 +27,11 @@ from speech_aware_evidence_acquisition.core.driver.speech_native import (
     _evaluate_training_free_agent_policies,
     _evaluate_m9_factor_graph_action_support,
     _evaluate_m10_candidate_evidence_action_support,
+    _evaluate_m11_adaptive_evidence_gap,
     _load_decision_graph,
     _parse_m9_factor_graph_trajectory,
     _parse_m10_candidate_evidence_trajectory,
+    _parse_m11_adaptive_evidence_gap_trajectory,
     _profile_completion_issues,
     _release_speech_native_session,
     _scan_server_log,
@@ -74,6 +76,7 @@ from speech_aware_evidence_acquisition.rails.probes.pslu_flight import (
     PsluSampleManifest,
     _source_references_ontology_miner,
     assert_never_calls_ontology_miner,
+    build_data_derived_decision_graph,
     build_speech_native_binding,
     candidate_counterevidence_response_format,
     candidate_support_response_format,
@@ -81,6 +84,7 @@ from speech_aware_evidence_acquisition.rails.probes.pslu_flight import (
     expand_decision_graph_candidates,
     expand_decision_graph_neighborhood,
     extend_speech_native_binding,
+    refine_speech_native_binding_knowledge,
     load_pslu_rosters,
     load_pslu_sample_manifest,
     load_speech_native_engineering_gate,
@@ -1503,9 +1507,7 @@ def _write_m10_action_audit_fixture(tmp_path):
                                 "sample_id": row["query_sample_id"],
                                 "query_source": "speech_features",
                                 "mmproj_loaded": False,
-                                "speech_packet_sha256": row[
-                                    "speech_packet_sha256"
-                                ],
+                                "speech_packet_sha256": row["speech_packet_sha256"],
                                 "speech_feature_parts": [descriptor],
                             }
                         },
@@ -1563,9 +1565,7 @@ def _write_m10_action_audit_fixture(tmp_path):
             "runaway_marker_hits": [],
             "mmproj_free_chunk_count": 0,
         },
-        "process_audit_sha256": hashlib.sha256(
-            process_audit.read_bytes()
-        ).hexdigest(),
+        "process_audit_sha256": hashlib.sha256(process_audit.read_bytes()).hexdigest(),
         "close": {"cost": {"calls_used": contact_count}},
     }
     flight = attempt_dir / "flight-receipt.json"
@@ -2825,6 +2825,393 @@ def test_m9_invalid_factor_ids_fail_closed_to_primary_without_rerank():
     assert result.agent_actions[-1] == "backtrack:invalid-factor-link-state"
     assert len(client.calls) == 3
     _assert_every_call_carries_query(client)
+
+
+class _M11AdaptiveEvidenceClient:
+    def __init__(self, *, agree=False):
+        self.agree = agree
+        self.calls = []
+
+    def complete(self, messages, **kwargs):
+        self.calls.append((messages, kwargs))
+        stage = kwargs["matcher_policy_id"]
+        if stage.endswith(":primary-listwise"):
+            return '{"key_id":"K001"}'
+        if stage.endswith(":speech-retrieve-top-2"):
+            return (
+                '{"key_ids":["K001","K002"]}'
+                if self.agree
+                else '{"key_ids":["K002","K001"]}'
+            )
+        if stage.endswith(":candidate-action-state"):
+            return (
+                '{"key_id":"K001","factor_ids":["F001","F002"]}'
+                if self.agree
+                else '{"key_id":"K002","factor_ids":["F003","F004"]}'
+            )
+        if stage.endswith(":boundary-ab") or stage.endswith(":boundary-ba"):
+            return '{"key_id":"K002"}'
+        raise AssertionError(stage)
+
+    def complete_many(self, requests, *, trace_parent=None):
+        del trace_parent
+        return tuple(self.complete(messages, **kwargs) for messages, kwargs in requests)
+
+
+def test_m11_stops_when_primary_retrieval_and_action_state_are_complete():
+    client = _M11AdaptiveEvidenceClient(agree=True)
+    result = run_speech_native_matcher(
+        core_client=client,
+        sample=_SpeechSample(),
+        query_descriptor=_QUERY_DESCRIPTOR,
+        key_cards=_KEY_CARDS,
+        key_representation_id="K1",
+        matcher_policy_id="M11",
+        prompt_policy_id="speech-native-json-copy-v4",
+        agent_policy_id="speech-conditioned-adaptive-evidence-gap-v1",
+        agent_aggregator_id="adaptive-evidence-gap-primary-control-v1",
+        decision_graph=_decision_graph_fixture(),
+        top_k=2,
+    )
+
+    assert result.key_id == "K001"
+    assert result.calls == 3
+    assert result.agent_escalated is False
+    assert result.agent_vote_key_ids == ("K001", "K001", "K001")
+    assert result.agent_actions[-1] == "stop:complete-consistent-state"
+    assert result.agent_steps[-1]["factor_ids"] == ["F001", "F002"]
+    assert result.agent_steps[-1]["new_knowledge_ids"] == ["F001", "F002"]
+    assert not any("boundary-" in call[1]["matcher_policy_id"] for call in client.calls)
+    _assert_every_call_carries_query(client)
+
+
+def test_m11_retrieves_pair_boundary_only_for_an_observed_evidence_gap():
+    client = _M11AdaptiveEvidenceClient()
+    result = run_speech_native_matcher(
+        core_client=client,
+        sample=_SpeechSample(),
+        query_descriptor=_QUERY_DESCRIPTOR,
+        key_cards=_KEY_CARDS,
+        key_representation_id="K1",
+        matcher_policy_id="M11",
+        prompt_policy_id="speech-native-json-copy-v4",
+        agent_policy_id="speech-conditioned-adaptive-evidence-gap-v1",
+        agent_aggregator_id="adaptive-evidence-gap-primary-control-v1",
+        decision_graph=_decision_graph_fixture(),
+        top_k=2,
+    )
+
+    assert result.key_id == "K001"
+    assert result.top_key_ids == ("K002", "K001")
+    assert result.calls == 5
+    assert result.agent_escalated is True
+    assert result.agent_vote_key_ids == (
+        "K001",
+        "K002",
+        "K002",
+        "K002",
+        "K002",
+    )
+    assert result.agent_actions == (
+        "match:speech-only-primary",
+        "retrieve:speech-only",
+        "link:candidate-action-state",
+        "retrieve:pair-boundary:B001",
+        "compare:boundary-ab",
+        "compare:boundary-ba",
+        "select:retain-primary-for-support",
+    )
+    boundary_step = result.agent_steps[-1]
+    assert boundary_step["boundary_id"] == "B001"
+    assert boundary_step["new_knowledge_ids"] == ["B001"]
+    assert boundary_step["information_gap"] == "candidate-disagreement"
+    assert boundary_step["ab_key_id"] == "K002"
+    assert boundary_step["ba_key_id"] == "K002"
+    assert all(
+        "transcript" not in json.dumps(messages).lower()
+        for messages, _kwargs in client.calls
+    )
+    _assert_every_call_carries_query(client)
+
+
+def _m11_decision_row(result, *, sample_id="sample-1", task_id=None):
+    return {
+        "schema": "saea-speech-native-decision-v1",
+        "task_id": task_id or f"canonical:{sample_id}",
+        "sample_id": sample_id,
+        "query_sample_id": sample_id,
+        "speech_packet_sha256": "1" * 64,
+        "mechanism_control_id": "matched",
+        "key_representation_id": "K1",
+        "matcher_policy_id": "M11",
+        "key_id": result.key_id,
+        "predicted_value_label": result.value_label,
+        "top_key_ids": list(result.top_key_ids),
+        "verifier_scores": {},
+        "calls": result.calls,
+        "parse_failure": result.parse_failure,
+        "agent_policy_id": result.agent_policy_id,
+        "agent_actions": list(result.agent_actions),
+        "agent_escalated": result.agent_escalated,
+        "agent_vote_key_ids": list(result.agent_vote_key_ids),
+        "agent_steps": list(result.agent_steps),
+        "agent_aggregator_id": result.agent_aggregator_id,
+        "response_text_sha256": [f"{index + 1:064x}" for index in range(result.calls)],
+    }
+
+
+def test_m11_reader_reconstructs_information_gain_and_action_space():
+    result = run_speech_native_matcher(
+        core_client=_M11AdaptiveEvidenceClient(),
+        sample=_SpeechSample(),
+        query_descriptor=_QUERY_DESCRIPTOR,
+        key_cards=_KEY_CARDS,
+        key_representation_id="K1",
+        matcher_policy_id="M11",
+        prompt_policy_id="speech-native-json-copy-v4",
+        agent_policy_id="speech-conditioned-adaptive-evidence-gap-v1",
+        agent_aggregator_id="adaptive-evidence-gap-primary-control-v1",
+        decision_graph=_decision_graph_fixture(),
+        top_k=2,
+    )
+    trajectory = _parse_m11_adaptive_evidence_gap_trajectory(
+        row=_m11_decision_row(result),
+        sample_id="sample-1",
+        speaker_id="speaker-1",
+        gold_key_id="K002",
+        top_k=2,
+        visible_card_by_key={card.key_id: card for card in _KEY_CARDS},
+        decision_graph=_decision_graph_fixture(),
+    )
+
+    assert trajectory["primary_key_id"] == "K001"
+    assert trajectory["retrieval_key_id"] == "K002"
+    assert trajectory["action_key_id"] == "K002"
+    assert trajectory["new_factor_ids"] == ("F003", "F004")
+    assert trajectory["new_boundary_id"] == "B001"
+    assert trajectory["boundary_stable_key_id"] == "K002"
+    assert trajectory["total_calls"] == 5
+
+    metrics = _evaluate_m11_adaptive_evidence_gap((trajectory,))
+    assert metrics["primary_correct"] == 0
+    assert metrics["retrieval_top1_correct"] == 1
+    assert metrics["action_state_correct"] == 1
+    assert metrics["boundary_stable_correct"] == 1
+    assert metrics["oracle_gain_vs_primary"] == 1
+    assert metrics["new_knowledge_query_count"] == 1
+    assert metrics["adaptive_boundary_query_count"] == 1
+    assert metrics["final_minus_primary_correct"] == 0
+
+
+def _write_m11_engineering_action_audit_fixture(tmp_path):
+    attempt_dir = tmp_path / "m11-attempt"
+    attempt_dir.mkdir()
+    graph_path = (
+        REPO_ROOT / "configs/knowledge/slurp-data-derived-decision-graph-v2.json"
+    )
+    graph_sha256 = hashlib.sha256(graph_path.read_bytes()).hexdigest()
+    audit_cards = tuple(
+        KeyCardV1(
+            key_id=f"K{index:03d}",
+            definition="Audit-only opaque key definition.",
+            positive_examples=("Audit-only example.",),
+            contrastive_boundary=None,
+            value_label=f"audit-{index:03d}",
+        ).validate()
+        for index in range(1, 19)
+    )
+    graph = _load_decision_graph(
+        graph_path,
+        expected_sha256=graph_sha256,
+        key_cards=audit_cards,
+    )
+    operation_factor_id = next(
+        factor.factor_id
+        for factor in graph.factors
+        if factor.kind == "operation" and "K003" in factor.key_ids
+    )
+
+    class AuditM11Client:
+        def complete(self, messages, **kwargs):
+            del messages
+            stage = kwargs["matcher_policy_id"]
+            if stage.endswith(":primary-listwise"):
+                return '{"key_id":"K001"}'
+            if stage.endswith(":speech-retrieve-top-3"):
+                return '{"key_ids":["K003","K001","K005"]}'
+            if stage.endswith(":candidate-action-state"):
+                return json.dumps(
+                    {"key_id": "K003", "factor_ids": [operation_factor_id]}
+                )
+            if stage.endswith(":boundary-ab") or stage.endswith(":boundary-ba"):
+                return '{"key_id":"K003"}'
+            raise AssertionError(stage)
+
+        def complete_many(self, requests, *, trace_parent=None):
+            del trace_parent
+            return tuple(
+                self.complete(messages, **kwargs) for messages, kwargs in requests
+            )
+
+    result = run_speech_native_matcher(
+        core_client=AuditM11Client(),
+        sample=_SpeechSample(),
+        query_descriptor=_QUERY_DESCRIPTOR,
+        key_cards=audit_cards,
+        key_representation_id="K1",
+        matcher_policy_id="M11",
+        prompt_policy_id="speech-native-json-copy-v4",
+        agent_policy_id="speech-conditioned-adaptive-evidence-gap-v1",
+        agent_aggregator_id="adaptive-evidence-gap-primary-control-v1",
+        decision_graph=graph,
+        top_k=3,
+    )
+    assert result.calls == 5
+    order_ids = ("canonical", "reverse", "rotate-1", "rotate-7")
+    rows = []
+    for order_id in order_ids:
+        for index in range(8):
+            sample_id = f"slurp:train:{index:06d}:audio-{index}"
+            row = _m11_decision_row(
+                result,
+                sample_id=sample_id,
+                task_id=f"{order_id}:{sample_id}",
+            )
+            row["speech_packet_sha256"] = f"{index + 1:064x}"
+            row["predicted_value_label"] = "must-not-enter-audit-output"
+            row["response_text_sha256"] = [
+                f"{60000 + len(rows) * result.calls + offset:064x}"
+                for offset in range(result.calls)
+            ]
+            rows.append(row)
+    decisions = attempt_dir / "decisions.jsonl"
+    decisions.write_text(
+        "".join(json.dumps(row) + "\n" for row in rows), encoding="utf-8"
+    )
+    trace_rows = []
+    for row in rows:
+        descriptor = {
+            "packet_id": row["query_sample_id"].replace(":", "/"),
+            "sha256": row["speech_packet_sha256"],
+            "role": "query",
+        }
+        for contact_index in range(row["calls"]):
+            trace_rows.extend(
+                (
+                    {
+                        "channel": "MODEL_REQUEST",
+                        "payload": {
+                            "payload": {
+                                "request_id": f"{row['task_id']}-{contact_index}",
+                                "sample_id": row["query_sample_id"],
+                                "query_source": "speech_features",
+                                "mmproj_loaded": False,
+                                "speech_packet_sha256": row["speech_packet_sha256"],
+                                "speech_feature_parts": [descriptor],
+                            }
+                        },
+                    },
+                    {
+                        "channel": "MODEL_RESPONSE",
+                        "payload": {
+                            "usage": {"prompt_tokens": 10, "completion_tokens": 2}
+                        },
+                    },
+                    {"channel": "COST", "payload": {"calls": 1}},
+                )
+            )
+    run_id = "SAEA-SN-M11-ENGINEERING-AUDIT"
+    trace = attempt_dir / f"{run_id}.trace.jsonl"
+    trace.write_text(
+        "".join(json.dumps(row) + "\n" for row in trace_rows), encoding="utf-8"
+    )
+    process_audit = attempt_dir / f"{run_id}.mmproj-audit.json"
+    process_audit.write_text(
+        json.dumps({"mmproj_loaded": False, "mmproj_hit_count": 0}),
+        encoding="utf-8",
+    )
+    contact_count = len(rows) * result.calls
+    receipt = {
+        "status": "COMPLETED",
+        "run_id": run_id,
+        "attempt_id": "attempt-m11-audit-001",
+        "request_failures": [],
+        "profile": {
+            "key_representation_id": "K1",
+            "matcher_policy_id": "M11",
+            "agent_policy_id": "speech-conditioned-adaptive-evidence-gap-v1",
+            "agent_aggregator_id": "adaptive-evidence-gap-primary-control-v1",
+            "mechanism_control_id": "matched",
+            "top_k": 3,
+            "task_count": len(rows),
+            "key_order_ids": list(order_ids),
+            "actual_contact_count": contact_count,
+            "planned_contact_ceiling": contact_count,
+            "contact_ceiling_per_task": 5,
+            "decision_graph_id": graph.graph_id,
+            "decision_graph_path": graph_path.relative_to(REPO_ROOT).as_posix(),
+            "decision_graph_file_sha256": graph_sha256,
+        },
+        "decisions": {
+            "path": decisions.name,
+            "sha256": hashlib.sha256(decisions.read_bytes()).hexdigest(),
+            "count": len(rows),
+            "contains_gold_labels": False,
+        },
+        "server_log_scan": {
+            "oom_marker_hits": [],
+            "host_spill_marker_hits": [],
+            "runaway_marker_hits": [],
+            "mmproj_free_chunk_count": 0,
+        },
+        "process_audit_sha256": hashlib.sha256(process_audit.read_bytes()).hexdigest(),
+        "close": {"cost": {"calls_used": contact_count}},
+    }
+    flight = attempt_dir / "flight-receipt.json"
+    flight.write_text(json.dumps(receipt), encoding="utf-8")
+    attempt_record = tmp_path / "m11-attempt-record.json"
+    attempt_record.write_text(
+        json.dumps(
+            {
+                "run_id": receipt["run_id"],
+                "attempt_id": receipt["attempt_id"],
+                "state": "FINALIZED",
+                "actual": {
+                    "calls": contact_count,
+                    "audio_seconds": 1.0,
+                    "gpu_seconds": 2.0,
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+    return attempt_dir, attempt_record, flight, decisions, trace
+
+
+def test_action_support_audit_accepts_m11_batched_orders_without_reading_gold(tmp_path):
+    attempt_dir, attempt_record, flight, decisions, trace = (
+        _write_m11_engineering_action_audit_fixture(tmp_path)
+    )
+    report = audit_speech_native_action_support(
+        attempt_dir=attempt_dir,
+        attempt_record_path=attempt_record,
+        attempt_record_sha256=hashlib.sha256(attempt_record.read_bytes()).hexdigest(),
+        flight_receipt_sha256=hashlib.sha256(flight.read_bytes()).hexdigest(),
+        decisions_sha256=hashlib.sha256(decisions.read_bytes()).hexdigest(),
+        trace_sha256=hashlib.sha256(trace.read_bytes()).hexdigest(),
+    )
+
+    assert report["schema"] == "saea-speech-native-adaptive-evidence-gap-audit-v1"
+    assert report["gold_read"] is False
+    assert report["decision_count"] == 32
+    assert report["key_order_count"] == 4
+    assert report["contact_count"] == 160
+    assert report["valid_speech_query_contact_count"] == 160
+    assert report["adaptive_boundary_query_count"] == 32
+    assert report["action_variable_query_count"] == 32
+    assert report["mechanism_failure_count"] == 0
+    assert report["calls_distribution"] == {"5": 32}
+    assert "must-not-enter-audit-output" not in json.dumps(report, sort_keys=True)
 
 
 @pytest.mark.parametrize(
@@ -4707,9 +5094,7 @@ def test_m10_profile_tasks_reuse_the_pinned_decision_graph():
     graph = _decision_graph_fixture()
     tasks = build_profile_tasks(
         samples=(type("Sample", (), {"sample_id": "s1"})(),),
-        packet_bindings={
-            "s1": {"packet_id": "slurp/train/s1", "sha256": "a" * 64}
-        },
+        packet_bindings={"s1": {"packet_id": "slurp/train/s1", "sha256": "a" * 64}},
         key_cards=_KEY_CARDS,
         order_ids=("canonical",),
         decoding_params={"temperature": 0},
@@ -4719,6 +5104,25 @@ def test_m10_profile_tasks_reuse_the_pinned_decision_graph():
         top_k=2,
         agent_policy_id="speech-conditioned-candidate-evidence-action-support-v1",
         agent_aggregator_id="candidate-evidence-primary-control-v1",
+        decision_graph=graph,
+    )
+    assert tasks[0].decision_graph == graph
+
+
+def test_m11_profile_tasks_reuse_the_data_derived_decision_graph():
+    graph = _decision_graph_fixture()
+    tasks = build_profile_tasks(
+        samples=(type("Sample", (), {"sample_id": "s1"})(),),
+        packet_bindings={"s1": {"packet_id": "slurp/train/s1", "sha256": "a" * 64}},
+        key_cards=_KEY_CARDS,
+        order_ids=("canonical",),
+        decoding_params={"temperature": 0},
+        key_representation_id="K1",
+        matcher_policy_id="M11",
+        prompt_policy_id="speech-native-json-copy-v4",
+        top_k=2,
+        agent_policy_id="speech-conditioned-adaptive-evidence-gap-v1",
+        agent_aggregator_id="adaptive-evidence-gap-primary-control-v1",
         decision_graph=graph,
     )
     assert tasks[0].decision_graph == graph
@@ -6044,6 +6448,232 @@ def _binding_material():
     return tuple(material)
 
 
+def _knowledge_refinement_material():
+    action_sentences = {
+        "alarm": {
+            "set": "set an alarm for six",
+            "query": "show my active alarms",
+            "remove": "cancel my morning alarm",
+        },
+        "email": {
+            "query": "read my newest email",
+            "sendemail": "send an email to alex",
+            "querycontact": "find alex in my email contacts",
+            "addcontact": "add alex to my email contacts",
+        },
+    }
+    material = []
+    item_index = 0
+    for scenario, actions in action_sentences.items():
+        for action, sentence in actions.items():
+            for replica in range(8):
+                item_index += 1
+                utterance_id = f"knowledge-{item_index:04d}"
+                material.append(
+                    SlurpTrainMaterial(
+                        utterance_id=utterance_id,
+                        scenario=scenario,
+                        action=action,
+                        sentence=f"{sentence} example {replica}",
+                        recordings=(
+                            SlurpTrainRecording(
+                                sample_id=(
+                                    f"slurp:train:{item_index:06d}:"
+                                    f"audio-knowledge-{item_index}"
+                                ),
+                                media_relpath=(
+                                    "datasets/slurp/slurp_real/"
+                                    f"audio-knowledge-{item_index}.flac"
+                                ),
+                                speaker_id=f"knowledge-speaker-{item_index}",
+                            ),
+                        ),
+                    )
+                )
+    material.extend(
+        (
+            SlurpTrainMaterial(
+                utterance_id="knowledge-noise-alarm",
+                scenario="alarm",
+                action="remove",
+                sentence="teach children to never answer the door when home alone",
+                recordings=(
+                    SlurpTrainRecording(
+                        sample_id="slurp:train:990001:audio-noise-alarm",
+                        media_relpath="datasets/slurp/slurp_real/audio-noise-alarm.flac",
+                        speaker_id="knowledge-noise-speaker-alarm",
+                    ),
+                ),
+            ),
+            SlurpTrainMaterial(
+                utterance_id="knowledge-noise-email",
+                scenario="email",
+                action="querycontact",
+                sentence="what is his number",
+                recordings=(
+                    SlurpTrainRecording(
+                        sample_id="slurp:train:990002:audio-noise-email",
+                        media_relpath="datasets/slurp/slurp_real/audio-noise-email.flac",
+                        speaker_id="knowledge-noise-speaker-email",
+                    ),
+                ),
+            ),
+        )
+    )
+    return tuple(material)
+
+
+def test_speech_native_knowledge_refinement_is_data_derived_and_isolated():
+    material = _knowledge_refinement_material()
+    base = build_speech_native_binding(
+        material,
+        seed=20260821,
+        expected_scenarios=("alarm", "email"),
+        opt_a_per_scenario=2,
+        opt_b_per_scenario=1,
+        gate_per_scenario=1,
+        key_examples_per_scenario=5,
+    )
+
+    successor = refine_speech_native_binding_knowledge(
+        base,
+        material,
+        seed=20260827,
+        expected_scenarios=("alarm", "email"),
+        key_examples_per_scenario=5,
+    )
+
+    assert successor["splits"] == base["splits"]
+    assert successor["engineering_gate"] == base["engineering_gate"]
+    assert successor["knowledge_parent_binding_sha256"] == base["binding_sha256"]
+    assert successor["binding_sha256"] == _binding_document_sha256(
+        {key: value for key, value in successor.items() if key != "binding_sha256"}
+    )
+    assert successor["knowledge_revision"]["policy_id"] == (
+        "slurp-action-stratified-specificity-v1"
+    )
+    assert successor["knowledge_revision"]["query_excluded_corpus_utterances"] > 0
+
+    material_by_utterance = {entry.utterance_id: entry for entry in material}
+    expected_actions = {
+        "alarm": {"set", "query", "remove"},
+        "email": {"query", "sendemail", "querycontact", "addcontact"},
+    }
+    labels_by_key = {
+        card["key_id"]: card["value_label"] for card in successor["key_cards"]
+    }
+    for card in successor["key_cards"]:
+        assert "Dataset-derived action facets:" in card["definition"]
+        assert len(card["positive_examples"]) == 5
+        assert "teach children" not in " ".join(card["positive_examples"])
+        assert "what is his number" not in card["positive_examples"]
+    for key in successor["key_material"]:
+        scenario = labels_by_key[key["key_id"]]
+        selected_actions = {
+            material_by_utterance[source["utterance_id"]].action
+            for source in key["sources"]
+        }
+        assert selected_actions == expected_actions[scenario]
+
+    query_items = [
+        item for split in successor["splits"].values() for item in split["items"]
+    ]
+    key_sources = [
+        source for key in successor["key_material"] for source in key["sources"]
+    ]
+    for field in ("sample_id", "utterance_id", "speaker_id", "normalized_sentence"):
+        assert {item[field] for item in query_items}.isdisjoint(
+            source[field] for source in key_sources
+        )
+
+    repeated = refine_speech_native_binding_knowledge(
+        base,
+        reversed(material),
+        seed=20260827,
+        expected_scenarios=("alarm", "email"),
+        key_examples_per_scenario=5,
+    )
+    assert json.dumps(successor, sort_keys=True) == json.dumps(repeated, sort_keys=True)
+
+
+def test_data_derived_decision_graph_uses_remaining_train_actions_and_pair_signal():
+    material = _knowledge_refinement_material()
+    base = build_speech_native_binding(
+        material,
+        seed=20260821,
+        expected_scenarios=("alarm", "email"),
+        opt_a_per_scenario=2,
+        opt_b_per_scenario=1,
+        gate_per_scenario=1,
+        key_examples_per_scenario=5,
+    )
+    knowledge = refine_speech_native_binding_knowledge(
+        base,
+        material,
+        seed=20260827,
+        expected_scenarios=("alarm", "email"),
+        key_examples_per_scenario=5,
+    )
+
+    graph = build_data_derived_decision_graph(
+        knowledge,
+        material,
+        graph_id="slurp-data-derived-decision-graph-v2",
+        expected_scenarios=("alarm", "email"),
+        maximum_boundaries=1,
+    )
+
+    cards = tuple(
+        KeyCardV1(
+            key_id=raw["key_id"],
+            definition=raw["definition"],
+            positive_examples=tuple(raw["positive_examples"]),
+            contrastive_boundary=raw["contrastive_boundary"],
+            value_label=raw["value_label"],
+        )
+        for raw in knowledge["key_cards"]
+    )
+    assert graph.validate(cards) is graph
+    assert graph.graph_id == "slurp-data-derived-decision-graph-v2"
+    assert len(graph.boundaries) == 1
+    assert {(factor.kind, factor.key_ids) for factor in graph.factors} >= {
+        ("target", ("K001",)),
+        ("target", ("K002",)),
+    }
+    action_provenance = {
+        provenance
+        for factor in graph.factors
+        if factor.kind == "operation"
+        for provenance in factor.provenance_ids
+    }
+    assert {
+        "slurp-train-action:alarm:set",
+        "slurp-train-action:alarm:query",
+        "slurp-train-action:alarm:remove",
+        "slurp-train-action:email:query",
+        "slurp-train-action:email:sendemail",
+        "slurp-train-action:email:querycontact",
+        "slurp-train-action:email:addcontact",
+    } <= action_provenance
+    boundary = graph.boundaries[0]
+    assert {boundary.left_key_id, boundary.right_key_id} == {"K001", "K002"}
+    assert any(
+        provenance.startswith("slurp-train-pair-signal:")
+        for provenance in boundary.provenance_ids
+    )
+    assert "instead expresses" in boundary.left_exclusion
+    assert "instead expresses" in boundary.right_exclusion
+
+    repeated = build_data_derived_decision_graph(
+        knowledge,
+        reversed(material),
+        graph_id="slurp-data-derived-decision-graph-v2",
+        expected_scenarios=("alarm", "email"),
+        maximum_boundaries=1,
+    )
+    assert graph.as_json() == repeated.as_json()
+
+
 def test_speech_native_successor_binding_preserves_keys_and_adds_isolated_split():
     material = _binding_material()
     base = build_speech_native_binding(
@@ -6129,9 +6759,7 @@ def test_binding_extension_cli_reuses_frozen_builder(monkeypatch, tmp_path, caps
             },
         }
 
-    monkeypatch.setattr(
-        driver_cli_module, "extend_speech_native_binding", fake_extend
-    )
+    monkeypatch.setattr(driver_cli_module, "extend_speech_native_binding", fake_extend)
     exit_code = driver_cli_module.main(
         [
             "extend-speech-native-binding",
@@ -6166,6 +6794,236 @@ def test_binding_extension_cli_reuses_frozen_builder(monkeypatch, tmp_path, caps
     summary = json.loads(capsys.readouterr().out)
     assert summary["query_count"] == 12
     assert summary["parent_query_speaker_overlap_count"] == 3
+
+
+def test_binding_extension_cli_reuses_selector_for_knowledge_only_successor(
+    monkeypatch, tmp_path, capsys
+):
+    parent = tmp_path / "parent-binding.json"
+    parent.write_text('{"binding_sha256":"parent"}', encoding="utf-8")
+    output = tmp_path / "knowledge-binding.json"
+    material = _knowledge_refinement_material()
+    captured = {}
+
+    monkeypatch.setattr(driver_cli_module, "load_lock", lambda _path: {"lock": True})
+    monkeypatch.setattr(driver_cli_module, "umbrella_lock_path", lambda: tmp_path)
+    monkeypatch.setattr(driver_cli_module, "data_root", lambda: tmp_path)
+    monkeypatch.setattr(
+        driver_cli_module,
+        "load_slurp_train_material",
+        lambda lock, root, *, media_validation_workers: material,
+    )
+
+    def fake_refine(base, loaded_material, **kwargs):
+        captured.update(
+            {"base": base, "material": loaded_material, "refinement": kwargs}
+        )
+        return {
+            "binding_sha256": "b" * 64,
+            "knowledge_revision": {
+                "policy_id": "slurp-action-stratified-specificity-v1",
+                "key_count": 18,
+            },
+        }
+
+    monkeypatch.setattr(
+        driver_cli_module,
+        "refine_speech_native_binding_knowledge",
+        fake_refine,
+    )
+    exit_code = driver_cli_module.main(
+        [
+            "extend-speech-native-binding",
+            "--parent-binding",
+            str(parent),
+            "--output",
+            str(output),
+            "--seed",
+            "20260827",
+            "--knowledge-policy",
+            "slurp-action-stratified-specificity-v1",
+            "--workers",
+            "8",
+        ]
+    )
+
+    assert exit_code == 0
+    assert json.loads(output.read_text(encoding="utf-8"))["binding_sha256"] == (
+        "b" * 64
+    )
+    assert captured["base"] == {"binding_sha256": "parent"}
+    assert captured["material"] == material
+    assert captured["refinement"] == {
+        "seed": 20260827,
+        "policy_id": "slurp-action-stratified-specificity-v1",
+    }
+    summary = json.loads(capsys.readouterr().out)
+    assert summary["query_count"] is None
+    assert summary["knowledge_policy_id"] == ("slurp-action-stratified-specificity-v1")
+
+
+def test_binding_extension_cli_emits_graph_from_same_knowledge_successor(
+    monkeypatch, tmp_path, capsys
+):
+    parent = tmp_path / "parent-binding.json"
+    parent.write_text('{"binding_sha256":"parent"}', encoding="utf-8")
+    output = tmp_path / "knowledge-binding.json"
+    graph_output = tmp_path / "knowledge-graph.json"
+    material = _knowledge_refinement_material()
+    knowledge = {
+        "binding_sha256": "b" * 64,
+        "knowledge_revision": {
+            "policy_id": "slurp-action-stratified-specificity-v1",
+            "key_count": 18,
+        },
+    }
+    captured = {}
+
+    monkeypatch.setattr(driver_cli_module, "load_lock", lambda _path: {"lock": True})
+    monkeypatch.setattr(driver_cli_module, "umbrella_lock_path", lambda: tmp_path)
+    monkeypatch.setattr(driver_cli_module, "data_root", lambda: tmp_path)
+    monkeypatch.setattr(
+        driver_cli_module,
+        "load_slurp_train_material",
+        lambda lock, root, *, media_validation_workers: material,
+    )
+    monkeypatch.setattr(
+        driver_cli_module,
+        "refine_speech_native_binding_knowledge",
+        lambda base, loaded_material, **kwargs: knowledge,
+    )
+
+    class FakeGraph:
+        def as_json(self):
+            return {
+                "schema": "saea-decision-graph-v1",
+                "graph_id": "slurp-data-derived-decision-graph-v2",
+                "factors": [],
+                "boundaries": [],
+            }
+
+    def fake_build(successor, loaded_material, **kwargs):
+        captured.update(
+            {
+                "successor": successor,
+                "material": loaded_material,
+                "graph": kwargs,
+            }
+        )
+        return FakeGraph()
+
+    monkeypatch.setattr(
+        driver_cli_module,
+        "build_data_derived_decision_graph",
+        fake_build,
+    )
+    exit_code = driver_cli_module.main(
+        [
+            "extend-speech-native-binding",
+            "--parent-binding",
+            str(parent),
+            "--output",
+            str(output),
+            "--seed",
+            "20260827",
+            "--knowledge-policy",
+            "slurp-action-stratified-specificity-v1",
+            "--decision-graph-output",
+            str(graph_output),
+            "--maximum-boundaries",
+            "27",
+        ]
+    )
+
+    assert exit_code == 0
+    assert captured == {
+        "successor": knowledge,
+        "material": material,
+        "graph": {
+            "graph_id": "slurp-data-derived-decision-graph-v2",
+            "maximum_boundaries": 27,
+        },
+    }
+    assert json.loads(graph_output.read_text(encoding="utf-8"))["graph_id"] == (
+        "slurp-data-derived-decision-graph-v2"
+    )
+    summary = json.loads(capsys.readouterr().out)
+    assert summary["decision_graph_output"] == str(graph_output.resolve())
+    assert len(summary["decision_graph_artifact_sha256"]) == 64
+
+
+def test_binding_extension_cli_allows_graph_only_from_existing_knowledge(
+    monkeypatch, tmp_path, capsys
+):
+    parent = tmp_path / "knowledge-binding.json"
+    knowledge = {
+        "binding_sha256": "b" * 64,
+        "knowledge_revision": {"policy_id": "slurp-action-stratified-specificity-v1"},
+    }
+    parent.write_text(json.dumps(knowledge), encoding="utf-8")
+    graph_output = tmp_path / "knowledge-graph.json"
+    material = _knowledge_refinement_material()
+
+    monkeypatch.setattr(driver_cli_module, "load_lock", lambda _path: {"lock": True})
+    monkeypatch.setattr(driver_cli_module, "umbrella_lock_path", lambda: tmp_path)
+    monkeypatch.setattr(driver_cli_module, "data_root", lambda: tmp_path)
+    monkeypatch.setattr(
+        driver_cli_module,
+        "load_slurp_train_material",
+        lambda lock, root, *, media_validation_workers: material,
+    )
+
+    class FakeGraph:
+        def as_json(self):
+            return {
+                "schema": "saea-decision-graph-v1",
+                "graph_id": "slurp-data-derived-decision-graph-v2",
+                "factors": [],
+                "boundaries": [],
+            }
+
+    monkeypatch.setattr(
+        driver_cli_module,
+        "build_data_derived_decision_graph",
+        lambda successor, loaded_material, **kwargs: FakeGraph(),
+    )
+    exit_code = driver_cli_module.main(
+        [
+            "extend-speech-native-binding",
+            "--parent-binding",
+            str(parent),
+            "--seed",
+            "20260827",
+            "--decision-graph-output",
+            str(graph_output),
+        ]
+    )
+
+    assert exit_code == 0
+    assert graph_output.is_file()
+    summary = json.loads(capsys.readouterr().out)
+    assert summary["output"] is None
+    assert summary["artifact_sha256"] is None
+
+
+def test_binding_extension_cli_requires_one_extension_or_knowledge_operation(
+    tmp_path,
+):
+    parent = tmp_path / "parent-binding.json"
+    parent.write_text('{"binding_sha256":"parent"}', encoding="utf-8")
+
+    with pytest.raises(ValueError, match="split extension or knowledge refinement"):
+        driver_cli_module.main(
+            [
+                "extend-speech-native-binding",
+                "--parent-binding",
+                str(parent),
+                "--output",
+                str(tmp_path / "unused.json"),
+                "--seed",
+                "20260827",
+            ]
+        )
 
 
 def test_binding_extension_cli_refuses_existing_output(monkeypatch, tmp_path):

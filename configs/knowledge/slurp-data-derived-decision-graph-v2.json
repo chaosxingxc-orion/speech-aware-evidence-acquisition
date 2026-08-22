@@ -1,0 +1,1589 @@
+{
+  "boundaries": [
+    {
+      "boundary_id": "B001",
+      "left_exclusion": "Do not choose this side when the speech instead expresses commands that create, change, inspect, or remove calendar events.",
+      "left_factor_ids": [
+        "F001",
+        "F019",
+        "F020",
+        "F021"
+      ],
+      "left_key_id": "K001",
+      "provenance_ids": [
+        "slurp-train-pair-signal:alarm:calendar:lexical-0.26888594:action-0.51520476",
+        "key-card:K001:definition",
+        "key-card:K003:definition"
+      ],
+      "right_exclusion": "Do not choose this side when the speech instead expresses commands that create, change, inspect, or remove alarms and wake-up reminders.",
+      "right_factor_ids": [
+        "F003",
+        "F026",
+        "F027",
+        "F028"
+      ],
+      "right_key_id": "K003"
+    },
+    {
+      "boundary_id": "B002",
+      "left_exclusion": "Do not choose this side when the speech instead expresses open factual questions seeking an answer rather than a device or service action.",
+      "left_factor_ids": [
+        "F007",
+        "F037",
+        "F038",
+        "F039"
+      ],
+      "left_key_id": "K007",
+      "provenance_ids": [
+        "slurp-train-pair-signal:general:qa:lexical-0.38547038:action-0.00000000",
+        "key-card:K007:definition",
+        "key-card:K013:definition"
+      ],
+      "right_exclusion": "Do not choose this side when the speech instead expresses general assistant-control commands and requests that do not fit a specialist domain.",
+      "right_factor_ids": [
+        "F013",
+        "F062",
+        "F063",
+        "F064",
+        "F065",
+        "F066"
+      ],
+      "right_key_id": "K013"
+    },
+    {
+      "boundary_id": "B003",
+      "left_exclusion": "Do not choose this side when the speech instead expresses commands that start, pause, resume, stop, or navigate playable media.",
+      "left_factor_ids": [
+        "F010",
+        "F052",
+        "F053",
+        "F054",
+        "F055"
+      ],
+      "left_key_id": "K010",
+      "provenance_ids": [
+        "slurp-train-pair-signal:music:play:lexical-0.30841566:action-0.00000000",
+        "key-card:K010:definition",
+        "key-card:K012:definition"
+      ],
+      "right_exclusion": "Do not choose this side when the speech instead expresses commands about songs, artists, albums, playlists, and music playback choices.",
+      "right_factor_ids": [
+        "F012",
+        "F057",
+        "F058",
+        "F059",
+        "F060",
+        "F061"
+      ],
+      "right_key_id": "K012"
+    },
+    {
+      "boundary_id": "B004",
+      "left_exclusion": "Do not choose this side when the speech instead expresses general assistant-control commands and requests that do not fit a specialist domain.",
+      "left_factor_ids": [
+        "F004",
+        "F029",
+        "F030"
+      ],
+      "left_key_id": "K004",
+      "provenance_ids": [
+        "slurp-train-pair-signal:cooking:general:lexical-0.29357062:action-0.00000000",
+        "key-card:K004:definition",
+        "key-card:K007:definition"
+      ],
+      "right_exclusion": "Do not choose this side when the speech instead expresses commands asking for recipes, ingredients, cooking steps, or cooking timers.",
+      "right_factor_ids": [
+        "F007",
+        "F037",
+        "F038",
+        "F039"
+      ],
+      "right_key_id": "K007"
+    },
+    {
+      "boundary_id": "B005",
+      "left_exclusion": "Do not choose this side when the speech instead expresses commands asking for weather conditions, forecasts, temperature, rain, or wind.",
+      "left_factor_ids": [
+        "F007",
+        "F037",
+        "F038",
+        "F039"
+      ],
+      "left_key_id": "K007",
+      "provenance_ids": [
+        "slurp-train-pair-signal:general:weather:lexical-0.29020382:action-0.00000000",
+        "key-card:K007:definition",
+        "key-card:K018:definition"
+      ],
+      "right_exclusion": "Do not choose this side when the speech instead expresses general assistant-control commands and requests that do not fit a specialist domain.",
+      "right_factor_ids": [
+        "F018",
+        "F078"
+      ],
+      "right_key_id": "K018"
+    },
+    {
+      "boundary_id": "B006",
+      "left_exclusion": "Do not choose this side when the speech instead expresses open factual questions seeking an answer rather than a device or service action.",
+      "left_factor_ids": [
+        "F004",
+        "F029",
+        "F030"
+      ],
+      "left_key_id": "K004",
+      "provenance_ids": [
+        "slurp-train-pair-signal:cooking:qa:lexical-0.27627964:action-0.00000000",
+        "key-card:K004:definition",
+        "key-card:K013:definition"
+      ],
+      "right_exclusion": "Do not choose this side when the speech instead expresses commands asking for recipes, ingredients, cooking steps, or cooking timers.",
+      "right_factor_ids": [
+        "F013",
+        "F062",
+        "F063",
+        "F064",
+        "F065",
+        "F066"
+      ],
+      "right_key_id": "K013"
+    },
+    {
+      "boundary_id": "B007",
+      "left_exclusion": "Do not choose this side when the speech instead expresses commands asking the assistant to recommend an option, place, or activity.",
+      "left_factor_ids": [
+        "F007",
+        "F037",
+        "F038",
+        "F039"
+      ],
+      "left_key_id": "K007",
+      "provenance_ids": [
+        "slurp-train-pair-signal:general:recommendation:lexical-0.26986512:action-0.00000000",
+        "key-card:K007:definition",
+        "key-card:K014:definition"
+      ],
+      "right_exclusion": "Do not choose this side when the speech instead expresses general assistant-control commands and requests that do not fit a specialist domain.",
+      "right_factor_ids": [
+        "F014",
+        "F067",
+        "F068",
+        "F069"
+      ],
+      "right_key_id": "K014"
+    },
+    {
+      "boundary_id": "B008",
+      "left_exclusion": "Do not choose this side when the speech instead expresses commands about routes, traffic, travel duration, public transit, or vehicle travel.",
+      "left_factor_ids": [
+        "F005",
+        "F031",
+        "F032"
+      ],
+      "left_key_id": "K005",
+      "provenance_ids": [
+        "slurp-train-pair-signal:datetime:transport:lexical-0.19385819:action-0.05730530",
+        "key-card:K005:definition",
+        "key-card:K017:definition"
+      ],
+      "right_exclusion": "Do not choose this side when the speech instead expresses commands asking for the current date, time, day, or time in another place.",
+      "right_factor_ids": [
+        "F017",
+        "F074",
+        "F075",
+        "F076",
+        "F077"
+      ],
+      "right_key_id": "K017"
+    },
+    {
+      "boundary_id": "B009",
+      "left_exclusion": "Do not choose this side when the speech instead expresses commands that create, inspect, change, or remove shopping and task list entries.",
+      "left_factor_ids": [
+        "F003",
+        "F026",
+        "F027",
+        "F028"
+      ],
+      "left_key_id": "K003",
+      "provenance_ids": [
+        "slurp-train-pair-signal:calendar:lists:lexical-0.13561063:action-0.16045058",
+        "key-card:K003:definition",
+        "key-card:K009:definition"
+      ],
+      "right_exclusion": "Do not choose this side when the speech instead expresses commands that create, change, inspect, or remove calendar events.",
+      "right_factor_ids": [
+        "F009",
+        "F049",
+        "F050",
+        "F051"
+      ],
+      "right_key_id": "K009"
+    },
+    {
+      "boundary_id": "B010",
+      "left_exclusion": "Do not choose this side when the speech instead expresses general assistant-control commands and requests that do not fit a specialist domain.",
+      "left_factor_ids": [
+        "F003",
+        "F026",
+        "F027",
+        "F028"
+      ],
+      "left_key_id": "K003",
+      "provenance_ids": [
+        "slurp-train-pair-signal:calendar:general:lexical-0.21352785:action-0.00000000",
+        "key-card:K003:definition",
+        "key-card:K007:definition"
+      ],
+      "right_exclusion": "Do not choose this side when the speech instead expresses commands that create, change, inspect, or remove calendar events.",
+      "right_factor_ids": [
+        "F007",
+        "F037",
+        "F038",
+        "F039"
+      ],
+      "right_key_id": "K007"
+    },
+    {
+      "boundary_id": "B011",
+      "left_exclusion": "Do not choose this side when the speech instead expresses commands asking for the current date, time, day, or time in another place.",
+      "left_factor_ids": [
+        "F003",
+        "F026",
+        "F027",
+        "F028"
+      ],
+      "left_key_id": "K003",
+      "provenance_ids": [
+        "slurp-train-pair-signal:calendar:datetime:lexical-0.18812544:action-0.04678864",
+        "key-card:K003:definition",
+        "key-card:K005:definition"
+      ],
+      "right_exclusion": "Do not choose this side when the speech instead expresses commands that create, change, inspect, or remove calendar events.",
+      "right_factor_ids": [
+        "F005",
+        "F031",
+        "F032"
+      ],
+      "right_key_id": "K005"
+    },
+    {
+      "boundary_id": "B012",
+      "left_exclusion": "Do not choose this side when the speech instead expresses commands asking for weather conditions, forecasts, temperature, rain, or wind.",
+      "left_factor_ids": [
+        "F005",
+        "F031",
+        "F032"
+      ],
+      "left_key_id": "K005",
+      "provenance_ids": [
+        "slurp-train-pair-signal:datetime:weather:lexical-0.14028027:action-0.12218049",
+        "key-card:K005:definition",
+        "key-card:K018:definition"
+      ],
+      "right_exclusion": "Do not choose this side when the speech instead expresses commands asking for the current date, time, day, or time in another place.",
+      "right_factor_ids": [
+        "F018",
+        "F078"
+      ],
+      "right_key_id": "K018"
+    },
+    {
+      "boundary_id": "B013",
+      "left_exclusion": "Do not choose this side when the speech instead expresses general assistant-control commands and requests that do not fit a specialist domain.",
+      "left_factor_ids": [
+        "F005",
+        "F031",
+        "F032"
+      ],
+      "left_key_id": "K005",
+      "provenance_ids": [
+        "slurp-train-pair-signal:datetime:general:lexical-0.20021662:action-0.00000000",
+        "key-card:K005:definition",
+        "key-card:K007:definition"
+      ],
+      "right_exclusion": "Do not choose this side when the speech instead expresses commands asking for the current date, time, day, or time in another place.",
+      "right_factor_ids": [
+        "F007",
+        "F037",
+        "F038",
+        "F039"
+      ],
+      "right_key_id": "K007"
+    },
+    {
+      "boundary_id": "B014",
+      "left_exclusion": "Do not choose this side when the speech instead expresses commands asking the assistant to recommend an option, place, or activity.",
+      "left_factor_ids": [
+        "F003",
+        "F026",
+        "F027",
+        "F028"
+      ],
+      "left_key_id": "K003",
+      "provenance_ids": [
+        "slurp-train-pair-signal:calendar:recommendation:lexical-0.19954765:action-0.00000000",
+        "key-card:K003:definition",
+        "key-card:K014:definition"
+      ],
+      "right_exclusion": "Do not choose this side when the speech instead expresses commands that create, change, inspect, or remove calendar events.",
+      "right_factor_ids": [
+        "F014",
+        "F067",
+        "F068",
+        "F069"
+      ],
+      "right_key_id": "K014"
+    },
+    {
+      "boundary_id": "B015",
+      "left_exclusion": "Do not choose this side when the speech instead expresses commands that inspect or control connected home devices, lights, heating, or appliances.",
+      "left_factor_ids": [
+        "F002",
+        "F022",
+        "F023",
+        "F024",
+        "F025"
+      ],
+      "left_key_id": "K002",
+      "provenance_ids": [
+        "slurp-train-pair-signal:audio:iot:lexical-0.19053780:action-0.00000000",
+        "key-card:K002:definition",
+        "key-card:K008:definition"
+      ],
+      "right_exclusion": "Do not choose this side when the speech instead expresses commands that control audio volume, muting, or the active audio device.",
+      "right_factor_ids": [
+        "F008",
+        "F040",
+        "F041",
+        "F042",
+        "F043",
+        "F044",
+        "F045",
+        "F046",
+        "F047",
+        "F048"
+      ],
+      "right_key_id": "K008"
+    },
+    {
+      "boundary_id": "B016",
+      "left_exclusion": "Do not choose this side when the speech instead expresses commands asking for weather conditions, forecasts, temperature, rain, or wind.",
+      "left_factor_ids": [
+        "F003",
+        "F026",
+        "F027",
+        "F028"
+      ],
+      "left_key_id": "K003",
+      "provenance_ids": [
+        "slurp-train-pair-signal:calendar:weather:lexical-0.16075379:action-0.04678864",
+        "key-card:K003:definition",
+        "key-card:K018:definition"
+      ],
+      "right_exclusion": "Do not choose this side when the speech instead expresses commands that create, change, inspect, or remove calendar events.",
+      "right_factor_ids": [
+        "F018",
+        "F078"
+      ],
+      "right_key_id": "K018"
+    },
+    {
+      "boundary_id": "B017",
+      "left_exclusion": "Do not choose this side when the speech instead expresses commands asking for weather conditions, forecasts, temperature, rain, or wind.",
+      "left_factor_ids": [
+        "F011",
+        "F056"
+      ],
+      "left_key_id": "K011",
+      "provenance_ids": [
+        "slurp-train-pair-signal:news:weather:lexical-0.10440999:action-0.14028130",
+        "key-card:K011:definition",
+        "key-card:K018:definition"
+      ],
+      "right_exclusion": "Do not choose this side when the speech instead expresses commands asking for news reports, headlines, or updates on current events.",
+      "right_factor_ids": [
+        "F018",
+        "F078"
+      ],
+      "right_key_id": "K018"
+    },
+    {
+      "boundary_id": "B018",
+      "left_exclusion": "Do not choose this side when the speech instead expresses commands for finding, ordering, or tracking prepared food for delivery or pickup.",
+      "left_factor_ids": [
+        "F014",
+        "F067",
+        "F068",
+        "F069"
+      ],
+      "left_key_id": "K014",
+      "provenance_ids": [
+        "slurp-train-pair-signal:recommendation:takeaway:lexical-0.17001424:action-0.00000000",
+        "key-card:K014:definition",
+        "key-card:K016:definition"
+      ],
+      "right_exclusion": "Do not choose this side when the speech instead expresses commands asking the assistant to recommend an option, place, or activity.",
+      "right_factor_ids": [
+        "F016",
+        "F072",
+        "F073"
+      ],
+      "right_key_id": "K016"
+    },
+    {
+      "boundary_id": "B019",
+      "left_exclusion": "Do not choose this side when the speech instead expresses commands about routes, traffic, travel duration, public transit, or vehicle travel.",
+      "left_factor_ids": [
+        "F007",
+        "F037",
+        "F038",
+        "F039"
+      ],
+      "left_key_id": "K007",
+      "provenance_ids": [
+        "slurp-train-pair-signal:general:transport:lexical-0.16713280:action-0.00000000",
+        "key-card:K007:definition",
+        "key-card:K017:definition"
+      ],
+      "right_exclusion": "Do not choose this side when the speech instead expresses general assistant-control commands and requests that do not fit a specialist domain.",
+      "right_factor_ids": [
+        "F017",
+        "F074",
+        "F075",
+        "F076",
+        "F077"
+      ],
+      "right_key_id": "K017"
+    },
+    {
+      "boundary_id": "B020",
+      "left_exclusion": "Do not choose this side when the speech instead expresses commands asking for news reports, headlines, or updates on current events.",
+      "left_factor_ids": [
+        "F007",
+        "F037",
+        "F038",
+        "F039"
+      ],
+      "left_key_id": "K007",
+      "provenance_ids": [
+        "slurp-train-pair-signal:general:news:lexical-0.16567161:action-0.00000000",
+        "key-card:K007:definition",
+        "key-card:K011:definition"
+      ],
+      "right_exclusion": "Do not choose this side when the speech instead expresses general assistant-control commands and requests that do not fit a specialist domain.",
+      "right_factor_ids": [
+        "F011",
+        "F056"
+      ],
+      "right_key_id": "K011"
+    },
+    {
+      "boundary_id": "B021",
+      "left_exclusion": "Do not choose this side when the speech instead expresses general assistant-control commands and requests that do not fit a specialist domain.",
+      "left_factor_ids": [
+        "F006",
+        "F033",
+        "F034",
+        "F035",
+        "F036"
+      ],
+      "left_key_id": "K006",
+      "provenance_ids": [
+        "slurp-train-pair-signal:email:general:lexical-0.16465344:action-0.00000000",
+        "key-card:K006:definition",
+        "key-card:K007:definition"
+      ],
+      "right_exclusion": "Do not choose this side when the speech instead expresses commands that read, search, compose, send, or manage email messages.",
+      "right_factor_ids": [
+        "F007",
+        "F037",
+        "F038",
+        "F039"
+      ],
+      "right_key_id": "K007"
+    },
+    {
+      "boundary_id": "B022",
+      "left_exclusion": "Do not choose this side when the speech instead expresses commands asking for weather conditions, forecasts, temperature, rain, or wind.",
+      "left_factor_ids": [
+        "F017",
+        "F074",
+        "F075",
+        "F076",
+        "F077"
+      ],
+      "left_key_id": "K017",
+      "provenance_ids": [
+        "slurp-train-pair-signal:transport:weather:lexical-0.12578907:action-0.05730530",
+        "key-card:K017:definition",
+        "key-card:K018:definition"
+      ],
+      "right_exclusion": "Do not choose this side when the speech instead expresses commands about routes, traffic, travel duration, public transit, or vehicle travel.",
+      "right_factor_ids": [
+        "F018",
+        "F078"
+      ],
+      "right_key_id": "K018"
+    },
+    {
+      "boundary_id": "B023",
+      "left_exclusion": "Do not choose this side when the speech instead expresses commands asking the assistant to recommend an option, place, or activity.",
+      "left_factor_ids": [
+        "F013",
+        "F062",
+        "F063",
+        "F064",
+        "F065",
+        "F066"
+      ],
+      "left_key_id": "K013",
+      "provenance_ids": [
+        "slurp-train-pair-signal:qa:recommendation:lexical-0.15604200:action-0.00000000",
+        "key-card:K013:definition",
+        "key-card:K014:definition"
+      ],
+      "right_exclusion": "Do not choose this side when the speech instead expresses open factual questions seeking an answer rather than a device or service action.",
+      "right_factor_ids": [
+        "F014",
+        "F067",
+        "F068",
+        "F069"
+      ],
+      "right_key_id": "K014"
+    },
+    {
+      "boundary_id": "B024",
+      "left_exclusion": "Do not choose this side when the speech instead expresses commands about routes, traffic, travel duration, public transit, or vehicle travel.",
+      "left_factor_ids": [
+        "F013",
+        "F062",
+        "F063",
+        "F064",
+        "F065",
+        "F066"
+      ],
+      "left_key_id": "K013",
+      "provenance_ids": [
+        "slurp-train-pair-signal:qa:transport:lexical-0.15358151:action-0.00000000",
+        "key-card:K013:definition",
+        "key-card:K017:definition"
+      ],
+      "right_exclusion": "Do not choose this side when the speech instead expresses open factual questions seeking an answer rather than a device or service action.",
+      "right_factor_ids": [
+        "F017",
+        "F074",
+        "F075",
+        "F076",
+        "F077"
+      ],
+      "right_key_id": "K017"
+    },
+    {
+      "boundary_id": "B025",
+      "left_exclusion": "Do not choose this side when the speech instead expresses commands about routes, traffic, travel duration, public transit, or vehicle travel.",
+      "left_factor_ids": [
+        "F003",
+        "F026",
+        "F027",
+        "F028"
+      ],
+      "left_key_id": "K003",
+      "provenance_ids": [
+        "slurp-train-pair-signal:calendar:transport:lexical-0.12538604:action-0.04678864",
+        "key-card:K003:definition",
+        "key-card:K017:definition"
+      ],
+      "right_exclusion": "Do not choose this side when the speech instead expresses commands that create, change, inspect, or remove calendar events.",
+      "right_factor_ids": [
+        "F017",
+        "F074",
+        "F075",
+        "F076",
+        "F077"
+      ],
+      "right_key_id": "K017"
+    },
+    {
+      "boundary_id": "B026",
+      "left_exclusion": "Do not choose this side when the speech instead expresses commands asking for weather conditions, forecasts, temperature, rain, or wind.",
+      "left_factor_ids": [
+        "F014",
+        "F067",
+        "F068",
+        "F069"
+      ],
+      "left_key_id": "K014",
+      "provenance_ids": [
+        "slurp-train-pair-signal:recommendation:weather:lexical-0.15008998:action-0.00000000",
+        "key-card:K014:definition",
+        "key-card:K018:definition"
+      ],
+      "right_exclusion": "Do not choose this side when the speech instead expresses commands asking the assistant to recommend an option, place, or activity.",
+      "right_factor_ids": [
+        "F018",
+        "F078"
+      ],
+      "right_key_id": "K018"
+    },
+    {
+      "boundary_id": "B027",
+      "left_exclusion": "Do not choose this side when the speech instead expresses commands that read, search, compose, send, or manage email messages.",
+      "left_factor_ids": [
+        "F003",
+        "F026",
+        "F027",
+        "F028"
+      ],
+      "left_key_id": "K003",
+      "provenance_ids": [
+        "slurp-train-pair-signal:calendar:email:lexical-0.12463271:action-0.04678864",
+        "key-card:K003:definition",
+        "key-card:K006:definition"
+      ],
+      "right_exclusion": "Do not choose this side when the speech instead expresses commands that create, change, inspect, or remove calendar events.",
+      "right_factor_ids": [
+        "F006",
+        "F033",
+        "F034",
+        "F035",
+        "F036"
+      ],
+      "right_key_id": "K006"
+    },
+    {
+      "boundary_id": "B028",
+      "left_exclusion": "Do not choose this side when the speech instead expresses commands that create, inspect, change, or remove shopping and task list entries.",
+      "left_factor_ids": [
+        "F001",
+        "F019",
+        "F020",
+        "F021"
+      ],
+      "left_key_id": "K001",
+      "provenance_ids": [
+        "slurp-train-pair-signal:alarm:lists:lexical-0.05872907:action-0.16807710",
+        "key-card:K001:definition",
+        "key-card:K009:definition"
+      ],
+      "right_exclusion": "Do not choose this side when the speech instead expresses commands that create, change, inspect, or remove alarms and wake-up reminders.",
+      "right_factor_ids": [
+        "F009",
+        "F049",
+        "F050",
+        "F051"
+      ],
+      "right_key_id": "K009"
+    },
+    {
+      "boundary_id": "B029",
+      "left_exclusion": "Do not choose this side when the speech instead expresses commands about routes, traffic, travel duration, public transit, or vehicle travel.",
+      "left_factor_ids": [
+        "F014",
+        "F067",
+        "F068",
+        "F069"
+      ],
+      "left_key_id": "K014",
+      "provenance_ids": [
+        "slurp-train-pair-signal:recommendation:transport:lexical-0.14890209:action-0.00000000",
+        "key-card:K014:definition",
+        "key-card:K017:definition"
+      ],
+      "right_exclusion": "Do not choose this side when the speech instead expresses commands asking the assistant to recommend an option, place, or activity.",
+      "right_factor_ids": [
+        "F017",
+        "F074",
+        "F075",
+        "F076",
+        "F077"
+      ],
+      "right_key_id": "K017"
+    },
+    {
+      "boundary_id": "B030",
+      "left_exclusion": "Do not choose this side when the speech instead expresses commands that read, compose, send, or manage social and instant messages.",
+      "left_factor_ids": [
+        "F006",
+        "F033",
+        "F034",
+        "F035",
+        "F036"
+      ],
+      "left_key_id": "K006",
+      "provenance_ids": [
+        "slurp-train-pair-signal:email:social:lexical-0.12643197:action-0.03885909",
+        "key-card:K006:definition",
+        "key-card:K015:definition"
+      ],
+      "right_exclusion": "Do not choose this side when the speech instead expresses commands that read, search, compose, send, or manage email messages.",
+      "right_factor_ids": [
+        "F015",
+        "F070",
+        "F071"
+      ],
+      "right_key_id": "K015"
+    }
+  ],
+  "factors": [
+    {
+      "factor_id": "F001",
+      "key_ids": [
+        "K001"
+      ],
+      "kind": "target",
+      "provenance_ids": [
+        "key-card:K001:definition"
+      ],
+      "statement": "Commands that create, change, inspect, or remove alarms and wake-up reminders."
+    },
+    {
+      "factor_id": "F002",
+      "key_ids": [
+        "K002"
+      ],
+      "kind": "target",
+      "provenance_ids": [
+        "key-card:K002:definition"
+      ],
+      "statement": "Commands that control audio volume, muting, or the active audio device."
+    },
+    {
+      "factor_id": "F003",
+      "key_ids": [
+        "K003"
+      ],
+      "kind": "target",
+      "provenance_ids": [
+        "key-card:K003:definition"
+      ],
+      "statement": "Commands that create, change, inspect, or remove calendar events."
+    },
+    {
+      "factor_id": "F004",
+      "key_ids": [
+        "K004"
+      ],
+      "kind": "target",
+      "provenance_ids": [
+        "key-card:K004:definition"
+      ],
+      "statement": "Commands asking for recipes, ingredients, cooking steps, or cooking timers."
+    },
+    {
+      "factor_id": "F005",
+      "key_ids": [
+        "K005"
+      ],
+      "kind": "target",
+      "provenance_ids": [
+        "key-card:K005:definition"
+      ],
+      "statement": "Commands asking for the current date, time, day, or time in another place."
+    },
+    {
+      "factor_id": "F006",
+      "key_ids": [
+        "K006"
+      ],
+      "kind": "target",
+      "provenance_ids": [
+        "key-card:K006:definition"
+      ],
+      "statement": "Commands that read, search, compose, send, or manage email messages."
+    },
+    {
+      "factor_id": "F007",
+      "key_ids": [
+        "K007"
+      ],
+      "kind": "target",
+      "provenance_ids": [
+        "key-card:K007:definition"
+      ],
+      "statement": "General assistant-control commands and requests that do not fit a specialist domain."
+    },
+    {
+      "factor_id": "F008",
+      "key_ids": [
+        "K008"
+      ],
+      "kind": "target",
+      "provenance_ids": [
+        "key-card:K008:definition"
+      ],
+      "statement": "Commands that inspect or control connected home devices, lights, heating, or appliances."
+    },
+    {
+      "factor_id": "F009",
+      "key_ids": [
+        "K009"
+      ],
+      "kind": "target",
+      "provenance_ids": [
+        "key-card:K009:definition"
+      ],
+      "statement": "Commands that create, inspect, change, or remove shopping and task list entries."
+    },
+    {
+      "factor_id": "F010",
+      "key_ids": [
+        "K010"
+      ],
+      "kind": "target",
+      "provenance_ids": [
+        "key-card:K010:definition"
+      ],
+      "statement": "Commands about songs, artists, albums, playlists, and music playback choices."
+    },
+    {
+      "factor_id": "F011",
+      "key_ids": [
+        "K011"
+      ],
+      "kind": "target",
+      "provenance_ids": [
+        "key-card:K011:definition"
+      ],
+      "statement": "Commands asking for news reports, headlines, or updates on current events."
+    },
+    {
+      "factor_id": "F012",
+      "key_ids": [
+        "K012"
+      ],
+      "kind": "target",
+      "provenance_ids": [
+        "key-card:K012:definition"
+      ],
+      "statement": "Commands that start, pause, resume, stop, or navigate playable media."
+    },
+    {
+      "factor_id": "F013",
+      "key_ids": [
+        "K013"
+      ],
+      "kind": "target",
+      "provenance_ids": [
+        "key-card:K013:definition"
+      ],
+      "statement": "Open factual questions seeking an answer rather than a device or service action."
+    },
+    {
+      "factor_id": "F014",
+      "key_ids": [
+        "K014"
+      ],
+      "kind": "target",
+      "provenance_ids": [
+        "key-card:K014:definition"
+      ],
+      "statement": "Commands asking the assistant to recommend an option, place, or activity."
+    },
+    {
+      "factor_id": "F015",
+      "key_ids": [
+        "K015"
+      ],
+      "kind": "target",
+      "provenance_ids": [
+        "key-card:K015:definition"
+      ],
+      "statement": "Commands that read, compose, send, or manage social and instant messages."
+    },
+    {
+      "factor_id": "F016",
+      "key_ids": [
+        "K016"
+      ],
+      "kind": "target",
+      "provenance_ids": [
+        "key-card:K016:definition"
+      ],
+      "statement": "Commands for finding, ordering, or tracking prepared food for delivery or pickup."
+    },
+    {
+      "factor_id": "F017",
+      "key_ids": [
+        "K017"
+      ],
+      "kind": "target",
+      "provenance_ids": [
+        "key-card:K017:definition"
+      ],
+      "statement": "Commands about routes, traffic, travel duration, public transit, or vehicle travel."
+    },
+    {
+      "factor_id": "F018",
+      "key_ids": [
+        "K018"
+      ],
+      "kind": "target",
+      "provenance_ids": [
+        "key-card:K018:definition"
+      ],
+      "statement": "Commands asking for weather conditions, forecasts, temperature, rain, or wind."
+    },
+    {
+      "factor_id": "F019",
+      "key_ids": [
+        "K001"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:alarm:query"
+      ],
+      "statement": "inspect existing alarms"
+    },
+    {
+      "factor_id": "F020",
+      "key_ids": [
+        "K001"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:alarm:remove"
+      ],
+      "statement": "cancel or remove an alarm"
+    },
+    {
+      "factor_id": "F021",
+      "key_ids": [
+        "K001"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:alarm:set"
+      ],
+      "statement": "create or change an alarm"
+    },
+    {
+      "factor_id": "F022",
+      "key_ids": [
+        "K002"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:audio:volume_down"
+      ],
+      "statement": "decrease audio volume"
+    },
+    {
+      "factor_id": "F023",
+      "key_ids": [
+        "K002"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:audio:volume_mute"
+      ],
+      "statement": "mute or unmute audio"
+    },
+    {
+      "factor_id": "F024",
+      "key_ids": [
+        "K002"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:audio:volume_other"
+      ],
+      "statement": "set or inspect another volume state"
+    },
+    {
+      "factor_id": "F025",
+      "key_ids": [
+        "K002"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:audio:volume_up"
+      ],
+      "statement": "increase audio volume"
+    },
+    {
+      "factor_id": "F026",
+      "key_ids": [
+        "K003"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:calendar:query"
+      ],
+      "statement": "inspect calendar events or schedules"
+    },
+    {
+      "factor_id": "F027",
+      "key_ids": [
+        "K003"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:calendar:remove"
+      ],
+      "statement": "cancel or remove a calendar event"
+    },
+    {
+      "factor_id": "F028",
+      "key_ids": [
+        "K003"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:calendar:set"
+      ],
+      "statement": "create or change a calendar event"
+    },
+    {
+      "factor_id": "F029",
+      "key_ids": [
+        "K004"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:cooking:query"
+      ],
+      "statement": "ask another cooking-related question"
+    },
+    {
+      "factor_id": "F030",
+      "key_ids": [
+        "K004"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:cooking:recipe"
+      ],
+      "statement": "request a recipe or cooking procedure"
+    },
+    {
+      "factor_id": "F031",
+      "key_ids": [
+        "K005"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:datetime:convert"
+      ],
+      "statement": "convert between times or timezones"
+    },
+    {
+      "factor_id": "F032",
+      "key_ids": [
+        "K005"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:datetime:query"
+      ],
+      "statement": "ask for a date, day, time, or timezone"
+    },
+    {
+      "factor_id": "F033",
+      "key_ids": [
+        "K006"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:email:addcontact"
+      ],
+      "statement": "add an email contact"
+    },
+    {
+      "factor_id": "F034",
+      "key_ids": [
+        "K006"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:email:query"
+      ],
+      "statement": "read or search email"
+    },
+    {
+      "factor_id": "F035",
+      "key_ids": [
+        "K006"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:email:querycontact"
+      ],
+      "statement": "look up an email contact"
+    },
+    {
+      "factor_id": "F036",
+      "key_ids": [
+        "K006"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:email:sendemail"
+      ],
+      "statement": "compose, reply to, or send email"
+    },
+    {
+      "factor_id": "F037",
+      "key_ids": [
+        "K007"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:general:greet"
+      ],
+      "statement": "handle a greeting"
+    },
+    {
+      "factor_id": "F038",
+      "key_ids": [
+        "K007"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:general:joke"
+      ],
+      "statement": "tell or discuss a joke"
+    },
+    {
+      "factor_id": "F039",
+      "key_ids": [
+        "K007"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:general:quirky"
+      ],
+      "statement": "handle an open-ended assistant request without a stable specialist target"
+    },
+    {
+      "factor_id": "F040",
+      "key_ids": [
+        "K008"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:iot:cleaning"
+      ],
+      "statement": "operate a connected cleaning appliance"
+    },
+    {
+      "factor_id": "F041",
+      "key_ids": [
+        "K008"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:iot:coffee"
+      ],
+      "statement": "operate a connected coffee appliance"
+    },
+    {
+      "factor_id": "F042",
+      "key_ids": [
+        "K008"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:iot:hue_lightchange"
+      ],
+      "statement": "change a connected light's color or state"
+    },
+    {
+      "factor_id": "F043",
+      "key_ids": [
+        "K008"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:iot:hue_lightdim"
+      ],
+      "statement": "dim a connected light"
+    },
+    {
+      "factor_id": "F044",
+      "key_ids": [
+        "K008"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:iot:hue_lightoff"
+      ],
+      "statement": "turn a connected light off"
+    },
+    {
+      "factor_id": "F045",
+      "key_ids": [
+        "K008"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:iot:hue_lighton"
+      ],
+      "statement": "turn a connected light on"
+    },
+    {
+      "factor_id": "F046",
+      "key_ids": [
+        "K008"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:iot:hue_lightup"
+      ],
+      "statement": "brighten a connected light"
+    },
+    {
+      "factor_id": "F047",
+      "key_ids": [
+        "K008"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:iot:wemo_off"
+      ],
+      "statement": "turn a connected Wemo device off"
+    },
+    {
+      "factor_id": "F048",
+      "key_ids": [
+        "K008"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:iot:wemo_on"
+      ],
+      "statement": "turn a connected Wemo device on"
+    },
+    {
+      "factor_id": "F049",
+      "key_ids": [
+        "K009"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:lists:createoradd"
+      ],
+      "statement": "create a list or add a list item"
+    },
+    {
+      "factor_id": "F050",
+      "key_ids": [
+        "K009"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:lists:query"
+      ],
+      "statement": "inspect a shopping or task list"
+    },
+    {
+      "factor_id": "F051",
+      "key_ids": [
+        "K009"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:lists:remove"
+      ],
+      "statement": "remove a list or list item"
+    },
+    {
+      "factor_id": "F052",
+      "key_ids": [
+        "K010"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:music:dislikeness"
+      ],
+      "statement": "dislike music content"
+    },
+    {
+      "factor_id": "F053",
+      "key_ids": [
+        "K010"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:music:likeness"
+      ],
+      "statement": "like, save, or favorite music content"
+    },
+    {
+      "factor_id": "F054",
+      "key_ids": [
+        "K010"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:music:query"
+      ],
+      "statement": "identify or inspect music content"
+    },
+    {
+      "factor_id": "F055",
+      "key_ids": [
+        "K010"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:music:settings"
+      ],
+      "statement": "change a music preference or setting"
+    },
+    {
+      "factor_id": "F056",
+      "key_ids": [
+        "K011"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:news:query"
+      ],
+      "statement": "request news or a current-event update"
+    },
+    {
+      "factor_id": "F057",
+      "key_ids": [
+        "K012"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:play:audiobook"
+      ],
+      "statement": "play or navigate an audiobook"
+    },
+    {
+      "factor_id": "F058",
+      "key_ids": [
+        "K012"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:play:game"
+      ],
+      "statement": "start or play a game"
+    },
+    {
+      "factor_id": "F059",
+      "key_ids": [
+        "K012"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:play:music"
+      ],
+      "statement": "play selected music"
+    },
+    {
+      "factor_id": "F060",
+      "key_ids": [
+        "K012"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:play:podcasts"
+      ],
+      "statement": "play or navigate a podcast"
+    },
+    {
+      "factor_id": "F061",
+      "key_ids": [
+        "K012"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:play:radio"
+      ],
+      "statement": "play a radio station or channel"
+    },
+    {
+      "factor_id": "F062",
+      "key_ids": [
+        "K013"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:qa:currency"
+      ],
+      "statement": "ask for currency or exchange-rate information"
+    },
+    {
+      "factor_id": "F063",
+      "key_ids": [
+        "K013"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:qa:definition"
+      ],
+      "statement": "ask for a definition"
+    },
+    {
+      "factor_id": "F064",
+      "key_ids": [
+        "K013"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:qa:factoid"
+      ],
+      "statement": "ask an open factual question"
+    },
+    {
+      "factor_id": "F065",
+      "key_ids": [
+        "K013"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:qa:maths"
+      ],
+      "statement": "ask for a mathematical result"
+    },
+    {
+      "factor_id": "F066",
+      "key_ids": [
+        "K013"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:qa:stock"
+      ],
+      "statement": "ask for stock information"
+    },
+    {
+      "factor_id": "F067",
+      "key_ids": [
+        "K014"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:recommendation:events"
+      ],
+      "statement": "request an event recommendation"
+    },
+    {
+      "factor_id": "F068",
+      "key_ids": [
+        "K014"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:recommendation:locations"
+      ],
+      "statement": "request a place recommendation"
+    },
+    {
+      "factor_id": "F069",
+      "key_ids": [
+        "K014"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:recommendation:movies"
+      ],
+      "statement": "request a movie recommendation"
+    },
+    {
+      "factor_id": "F070",
+      "key_ids": [
+        "K015"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:social:post"
+      ],
+      "statement": "compose or publish a social post"
+    },
+    {
+      "factor_id": "F071",
+      "key_ids": [
+        "K015"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:social:query"
+      ],
+      "statement": "read or inspect social messages or activity"
+    },
+    {
+      "factor_id": "F072",
+      "key_ids": [
+        "K016"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:takeaway:order"
+      ],
+      "statement": "place or track a prepared-food order"
+    },
+    {
+      "factor_id": "F073",
+      "key_ids": [
+        "K016"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:takeaway:query"
+      ],
+      "statement": "find prepared-food delivery or pickup options"
+    },
+    {
+      "factor_id": "F074",
+      "key_ids": [
+        "K017"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:transport:query"
+      ],
+      "statement": "inspect routes, transit, or travel status"
+    },
+    {
+      "factor_id": "F075",
+      "key_ids": [
+        "K017"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:transport:taxi"
+      ],
+      "statement": "request or book a taxi"
+    },
+    {
+      "factor_id": "F076",
+      "key_ids": [
+        "K017"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:transport:ticket"
+      ],
+      "statement": "find or book a transport ticket"
+    },
+    {
+      "factor_id": "F077",
+      "key_ids": [
+        "K017"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:transport:traffic"
+      ],
+      "statement": "inspect road traffic"
+    },
+    {
+      "factor_id": "F078",
+      "key_ids": [
+        "K018"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:weather:query"
+      ],
+      "statement": "request weather conditions or a forecast"
+    }
+  ],
+  "graph_id": "slurp-data-derived-decision-graph-v2",
+  "schema": "saea-decision-graph-v1"
+}
