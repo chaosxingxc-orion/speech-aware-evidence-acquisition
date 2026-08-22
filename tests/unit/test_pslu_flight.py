@@ -445,7 +445,7 @@ def _m6_action_audit_row(index, *, primary_key_id, refined_key_id):
             },
             {
                 "action_id": "retrieve:speech-only",
-                "key_id": None,
+                "key_id": initial_ids[0],
                 "top_key_ids": initial_ids,
                 "calls": 1,
                 "parse_failure": False,

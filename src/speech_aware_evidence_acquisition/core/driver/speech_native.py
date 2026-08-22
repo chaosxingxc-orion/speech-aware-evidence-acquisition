@@ -2779,7 +2779,7 @@ def audit_speech_native_action_support(
             or not isinstance(state_document, Mapping)
             or state_document.get("candidate_key_ids") != list(initial_ids)
             or steps[0].get("key_id") != votes[0]
-            or steps[1].get("key_id") is not None
+            or steps[1].get("key_id") != initial_ids[0]
             or steps[2].get("key_id") is not None
             or steps[3].get("key_id") != votes[1]
             or row.get("top_key_ids") != list(refined_ids)
