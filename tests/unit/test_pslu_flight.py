@@ -42,6 +42,7 @@ from speech_aware_evidence_acquisition.core.driver.speech_native import (
     _cli_speech_native_action_audit,
     build_profile_tasks,
     profile_gpu_eligibility,
+    profile_server_slot_event_gpu_metrics,
     profile_saturated_gpu_metrics,
     profile_timing_metrics,
     read_speech_native_predictions,
@@ -5535,7 +5536,7 @@ def test_new_gpu_admission_rejects_historical_http_concurrency_proxy():
 
     assert eligibility["saturation_source_is_server_slots"] is False
     assert eligibility["server_slot_sample_coverage_is_complete"] is False
-    assert eligibility["server_slot_probe_failures_are_zero"] is False
+    assert eligibility["server_slot_measurement_failures_are_zero"] is False
 
 
 def test_new_gpu_admission_accepts_only_a_complete_exact_slot_metric():
@@ -5554,6 +5555,122 @@ def test_new_gpu_admission_accepts_only_a_complete_exact_slot_metric():
     )
 
     assert eligibility
+    assert all(eligibility.values())
+
+
+def test_server_slot_event_metrics_pair_gpu_samples_without_http_probe_skew(tmp_path):
+    first_line = "0.00.050.000 I log_info: startup\n"
+    log_path = tmp_path / "server.log"
+    log_path.write_text(
+        first_line
+        + "0.01.000.000 I slot launch_slot_: id  0 | task 101 | processing task\n"
+        + "0.01.100.000 I slot launch_slot_: id  1 | task 102 | processing task\n"
+        + "0.02.000.000 I slot      release: id  0 | task 101 | stop processing\n"
+        + "0.03.000.000 I slot      release: id  1 | task 102 | stop processing\n",
+        encoding="utf-8",
+    )
+    epoch = 1_787_313_600.0
+    resource = {
+        "request_gpu_samples": [
+            {"sampled_at_unix_seconds": epoch + 1.05, "utilization_pct": 80.0},
+            {"sampled_at_unix_seconds": epoch + 1.50, "utilization_pct": 96.0},
+            {"sampled_at_unix_seconds": epoch + 2.50, "utilization_pct": 60.0},
+        ]
+    }
+
+    assert profile_server_slot_event_gpu_metrics(
+        server_log_path=log_path,
+        server_log_start_offset=len(first_line.encode("utf-8")),
+        session_started_at="2026-08-21T12:00:00+00:00",
+        resource_summary=resource,
+        slot_count=2,
+        expected_contact_count=2,
+    ) == {
+        "saturation_source": "llama-server-slot-events-v1",
+        "minimum_active_requests": 2,
+        "sample_count": 1,
+        "sample_fraction_pct": 100.0 / 3.0,
+        "utilization_median_pct": 96.0,
+        "utilization_p10_pct": 96.0,
+        "server_slot_sample_count": 3,
+        "server_slot_sample_coverage_pct": 100.0,
+        "server_slot_measurement_failure_count": 0,
+        "server_slot_clock_alignment_upper_bound_milliseconds": 50.0,
+        "server_slot_occupancy_mean_pct": 200.0 / 3.0,
+        "server_slot_event_count": 4,
+        "server_slot_launch_count": 2,
+        "server_slot_release_count": 2,
+    }
+
+
+def test_server_slot_event_metrics_refuse_an_unbalanced_lifecycle(tmp_path):
+    first_line = "0.00.050.000 I log_info: startup\n"
+    log_path = tmp_path / "server.log"
+    log_path.write_text(
+        first_line
+        + "0.01.000.000 I slot launch_slot_: id  0 | task 101 | processing task\n",
+        encoding="utf-8",
+    )
+
+    with pytest.raises(SpeechNativeProfileError, match="unbalanced"):
+        profile_server_slot_event_gpu_metrics(
+            server_log_path=log_path,
+            server_log_start_offset=len(first_line.encode("utf-8")),
+            session_started_at="2026-08-21T12:00:00+00:00",
+            resource_summary={"request_gpu_samples": []},
+            slot_count=2,
+            expected_contact_count=1,
+        )
+
+
+def test_server_slot_event_metrics_stop_at_the_attempt_log_boundary(tmp_path):
+    first_line = "0.00.050.000 I log_info: startup\n"
+    attempt_lines = (
+        "0.01.000.000 I slot launch_slot_: id  0 | task 101 | processing task\n"
+        "0.02.000.000 I slot      release: id  0 | task 101 | stop processing\n"
+    )
+    later_line = (
+        "0.04.000.000 I slot launch_slot_: id  1 | task 999 | processing task\n"
+    )
+    log_path = tmp_path / "server.log"
+    log_path.write_text(first_line + attempt_lines + later_line, encoding="utf-8")
+
+    result = profile_server_slot_event_gpu_metrics(
+        server_log_path=log_path,
+        server_log_start_offset=len(first_line.encode("utf-8")),
+        server_log_end_offset=len((first_line + attempt_lines).encode("utf-8")),
+        session_started_at="2026-08-21T12:00:00+00:00",
+        resource_summary={
+            "request_gpu_samples": [
+                {
+                    "sampled_at_unix_seconds": 1_787_313_601.5,
+                    "utilization_pct": 95.0,
+                }
+            ]
+        },
+        slot_count=2,
+        expected_contact_count=1,
+    )
+
+    assert result["server_slot_launch_count"] == 1
+    assert result["server_slot_release_count"] == 1
+
+
+def test_gpu_admission_accepts_a_balanced_server_event_timeline():
+    eligibility = profile_gpu_eligibility(
+        {
+            "saturation_source": "llama-server-slot-events-v1",
+            "server_slot_sample_coverage_pct": 100.0,
+            "server_slot_measurement_failure_count": 0,
+            "server_slot_clock_alignment_upper_bound_milliseconds": 70.0,
+            "sample_count": 30,
+            "sample_fraction_pct": 60.0,
+            "utilization_median_pct": 95.0,
+            "utilization_p10_pct": 90.0,
+            "server_slot_occupancy_mean_pct": 90.0,
+        }
+    )
+
     assert all(eligibility.values())
 
 

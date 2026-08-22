@@ -10,6 +10,7 @@ hashed in process and never copied into the profile receipt.
 from __future__ import annotations
 
 import argparse
+from bisect import bisect_right
 from collections import Counter
 import hashlib
 import json
@@ -88,6 +89,13 @@ _HOST_SPILL_MARKERS = (
 _RUNAWAY_MARKERS = ("truncated = 1", "context shift", "slot context shift")
 _PROMPT_EVAL_TIMING = re.compile(
     r"prompt eval time\s*=\s*[0-9.]+\s*ms\s*/\s*(\d+)\s+tokens"
+)
+_SERVER_LOG_CLOCK = re.compile(rb"^(\d+)\.(\d+)\.(\d+)\.(\d+) ")
+_SERVER_SLOT_LAUNCH = re.compile(
+    rb"\bslot\s+launch_slot_: id\s+(\d+) \| task\s+(-?\d+)"
+)
+_SERVER_SLOT_RELEASE = re.compile(
+    rb"\bslot\s+release: id\s+(\d+) \| task\s+(-?\d+)"
 )
 _SPEECH_NATIVE_KEY_IDS = frozenset(f"K{index:03d}" for index in range(1, 19))
 _M6_SCHEMA_V2_POLICY_ID = "knowledge-grounded-semantic-refinement-schema-v2"
@@ -5652,25 +5660,34 @@ def profile_gpu_eligibility(
             and float(value) >= threshold
         )
 
-    failure_count = saturated_gpu.get("server_slot_probe_failure_count")
-    maximum_skew = saturated_gpu.get("server_slot_gpu_skew_max_milliseconds")
+    source = saturated_gpu.get("saturation_source")
+    if source == "llama-server-slot-events-v1":
+        failure_count = saturated_gpu.get("server_slot_measurement_failure_count")
+        maximum_clock_error = saturated_gpu.get(
+            "server_slot_clock_alignment_upper_bound_milliseconds"
+        )
+    else:
+        failure_count = saturated_gpu.get("server_slot_probe_failure_count")
+        maximum_clock_error = saturated_gpu.get(
+            "server_slot_gpu_skew_max_milliseconds"
+        )
     return {
         "saturation_source_is_server_slots": (
-            saturated_gpu.get("saturation_source") == "llama-server-slots-v1"
+            source in {"llama-server-slots-v1", "llama-server-slot-events-v1"}
         ),
         "server_slot_sample_coverage_is_complete": at_least(
             "server_slot_sample_coverage_pct", 100.0
         ),
-        "server_slot_probe_failures_are_zero": (
+        "server_slot_measurement_failures_are_zero": (
             isinstance(failure_count, int)
             and not isinstance(failure_count, bool)
             and failure_count == 0
         ),
-        "server_slot_gpu_skew_at_most_500_ms": (
-            isinstance(maximum_skew, (int, float))
-            and not isinstance(maximum_skew, bool)
-            and math.isfinite(float(maximum_skew))
-            and float(maximum_skew) <= 500.0
+        "server_slot_clock_binding_at_most_500_ms": (
+            isinstance(maximum_clock_error, (int, float))
+            and not isinstance(maximum_clock_error, bool)
+            and math.isfinite(float(maximum_clock_error))
+            and float(maximum_clock_error) <= 500.0
         ),
         "saturated_gpu_sample_count_at_least_30": at_least("sample_count", 30),
         "saturated_gpu_sample_fraction_at_least_60": at_least(
@@ -5685,6 +5702,203 @@ def profile_gpu_eligibility(
         "server_slot_occupancy_at_least_90": at_least(
             "server_slot_occupancy_mean_pct", 90.0
         ),
+    }
+
+
+def profile_server_slot_event_gpu_metrics(
+    *,
+    server_log_path: Path,
+    server_log_start_offset: int,
+    session_started_at: str,
+    resource_summary: Mapping[str, object],
+    slot_count: int,
+    expected_contact_count: int,
+    server_log_end_offset: int | None = None,
+) -> dict[str, int | float | str]:
+    """Pair GPU samples with llama-server's native slot lifecycle events.
+
+    The server writes launch/release events on its own timeline while the GPU
+    sampler runs independently. Replaying those events removes the blocking
+    ``nvidia-smi -> GET /slots`` dependency and its load-dependent HTTP skew.
+    The session receipt's pre-spawn wall timestamp anchors the server's elapsed
+    log clock; the first log timestamp is a conservative upper bound on that
+    clock-alignment error.
+    """
+
+    for name, value in (
+        ("server_log_start_offset", server_log_start_offset),
+        ("slot_count", slot_count),
+        ("expected_contact_count", expected_contact_count),
+    ):
+        if isinstance(value, bool) or not isinstance(value, int) or value < 0:
+            raise SpeechNativeProfileError(f"{name} must be a non-negative integer")
+    if slot_count <= 0:
+        raise SpeechNativeProfileError("slot_count must be a positive integer")
+    try:
+        session_epoch = datetime.fromisoformat(session_started_at).timestamp()
+    except (TypeError, ValueError) as error:
+        raise SpeechNativeProfileError(
+            "session_started_at is not an ISO-8601 timestamp"
+        ) from error
+    try:
+        log_bytes = Path(server_log_path).read_bytes()
+    except OSError as error:
+        raise SpeechNativeProfileError(
+            f"cannot read profile server log: {error}"
+        ) from error
+    if server_log_end_offset is None:
+        server_log_end_offset = len(log_bytes)
+    if (
+        isinstance(server_log_end_offset, bool)
+        or not isinstance(server_log_end_offset, int)
+        or server_log_end_offset < server_log_start_offset
+        or server_log_end_offset > len(log_bytes)
+    ):
+        raise SpeechNativeProfileError("server log end offset is outside the log")
+    log_bytes = log_bytes[:server_log_end_offset]
+    if server_log_start_offset > len(log_bytes):
+        raise SpeechNativeProfileError("server log start offset exceeds the log size")
+
+    active_tasks: dict[int, int] = {}
+    start_active_tasks: dict[int, int] | None = None
+    event_times: list[float] = []
+    event_active_counts: list[int] = []
+    launch_count = 0
+    release_count = 0
+    first_elapsed_seconds: float | None = None
+    previous_elapsed_seconds = -1.0
+    byte_offset = 0
+    for raw_line in log_bytes.splitlines(keepends=True):
+        line_end = byte_offset + len(raw_line)
+        if byte_offset < server_log_start_offset < line_end:
+            raise SpeechNativeProfileError(
+                "server log start offset falls inside a log line"
+            )
+        in_attempt = byte_offset >= server_log_start_offset
+        if in_attempt and start_active_tasks is None:
+            start_active_tasks = dict(active_tasks)
+        clock_match = _SERVER_LOG_CLOCK.match(raw_line)
+        launch_match = _SERVER_SLOT_LAUNCH.search(raw_line)
+        release_match = _SERVER_SLOT_RELEASE.search(raw_line)
+        if launch_match is not None or release_match is not None:
+            if clock_match is None:
+                raise SpeechNativeProfileError("server slot event lacks a log clock")
+            minute, second, millisecond, microsecond = (
+                int(part) for part in clock_match.groups()
+            )
+            if second >= 60 or millisecond >= 1000 or microsecond >= 1000:
+                raise SpeechNativeProfileError("server log clock is malformed")
+            elapsed_seconds = (
+                minute * 60.0
+                + second
+                + millisecond / 1000.0
+                + microsecond / 1_000_000.0
+            )
+            if elapsed_seconds < previous_elapsed_seconds:
+                raise SpeechNativeProfileError("server log clock moved backwards")
+            previous_elapsed_seconds = elapsed_seconds
+            if first_elapsed_seconds is None:
+                first_elapsed_seconds = elapsed_seconds
+            if launch_match is not None:
+                slot_id, task_id = (int(part) for part in launch_match.groups())
+                if slot_id >= slot_count or slot_id in active_tasks:
+                    raise SpeechNativeProfileError(
+                        "server slot launch lifecycle is unbalanced"
+                    )
+                active_tasks[slot_id] = task_id
+                if in_attempt:
+                    launch_count += 1
+            else:
+                assert release_match is not None
+                slot_id, task_id = (int(part) for part in release_match.groups())
+                if active_tasks.get(slot_id) != task_id:
+                    raise SpeechNativeProfileError(
+                        "server slot release lifecycle is unbalanced"
+                    )
+                del active_tasks[slot_id]
+                if in_attempt:
+                    release_count += 1
+            if in_attempt:
+                event_times.append(session_epoch + elapsed_seconds)
+                event_active_counts.append(len(active_tasks))
+        elif clock_match is not None and first_elapsed_seconds is None:
+            minute, second, millisecond, microsecond = (
+                int(part) for part in clock_match.groups()
+            )
+            first_elapsed_seconds = (
+                minute * 60.0
+                + second
+                + millisecond / 1000.0
+                + microsecond / 1_000_000.0
+            )
+        byte_offset = line_end
+    if start_active_tasks is None:
+        start_active_tasks = dict(active_tasks)
+    if (
+        start_active_tasks
+        or active_tasks
+        or launch_count != expected_contact_count
+        or release_count != expected_contact_count
+    ):
+        raise SpeechNativeProfileError(
+            "server slot event lifecycle is unbalanced or contact-incomplete"
+        )
+    if first_elapsed_seconds is None:
+        raise SpeechNativeProfileError("server log has no timestamped record")
+
+    raw_samples = resource_summary.get("request_gpu_samples")
+    if not isinstance(raw_samples, list) or not raw_samples:
+        raise SpeechNativeProfileError("request GPU sample timeline is unavailable")
+    minimum_active = max(1, math.ceil(slot_count * 0.90))
+    saturated_utilization: list[float] = []
+    slot_occupancy: list[float] = []
+    for sample in raw_samples:
+        if not isinstance(sample, Mapping):
+            raise SpeechNativeProfileError("request GPU sample is malformed")
+        sampled_at = sample.get("sampled_at_unix_seconds")
+        utilization = sample.get("utilization_pct")
+        if (
+            isinstance(sampled_at, bool)
+            or not isinstance(sampled_at, (int, float))
+            or not math.isfinite(float(sampled_at))
+            or isinstance(utilization, bool)
+            or not isinstance(utilization, (int, float))
+            or not math.isfinite(float(utilization))
+        ):
+            raise SpeechNativeProfileError("request GPU sample is malformed")
+        event_index = bisect_right(event_times, float(sampled_at)) - 1
+        busy_slots = event_active_counts[event_index] if event_index >= 0 else 0
+        slot_occupancy.append(100.0 * busy_slots / slot_count)
+        if busy_slots >= minimum_active:
+            saturated_utilization.append(float(utilization))
+
+    sample_count = len(saturated_utilization)
+    if saturated_utilization:
+        ordered = sorted(saturated_utilization)
+        median: float | str = float(statistics.median(ordered))
+        p10: float | str = float(
+            ordered[max(0, math.ceil(0.10 * len(ordered)) - 1)]
+        )
+    else:
+        median = NOT_AVAILABLE
+        p10 = NOT_AVAILABLE
+    return {
+        "saturation_source": "llama-server-slot-events-v1",
+        "minimum_active_requests": minimum_active,
+        "sample_count": sample_count,
+        "sample_fraction_pct": 100.0 * sample_count / len(raw_samples),
+        "utilization_median_pct": median,
+        "utilization_p10_pct": p10,
+        "server_slot_sample_count": len(raw_samples),
+        "server_slot_sample_coverage_pct": 100.0,
+        "server_slot_measurement_failure_count": 0,
+        "server_slot_clock_alignment_upper_bound_milliseconds": (
+            first_elapsed_seconds * 1000.0
+        ),
+        "server_slot_occupancy_mean_pct": statistics.fmean(slot_occupancy),
+        "server_slot_event_count": len(event_times),
+        "server_slot_launch_count": launch_count,
+        "server_slot_release_count": release_count,
     }
 
 
@@ -8238,7 +8452,12 @@ def _release_speech_native_session(
     )
 
 
-def _scan_server_log(path: Path, *, start_offset: int = 0) -> dict[str, object]:
+def _scan_server_log(
+    path: Path,
+    *,
+    start_offset: int = 0,
+    end_offset: int | None = None,
+) -> dict[str, object]:
     if (
         isinstance(start_offset, bool)
         or not isinstance(start_offset, int)
@@ -8247,10 +8466,19 @@ def _scan_server_log(path: Path, *, start_offset: int = 0) -> dict[str, object]:
         raise SpeechNativeProfileError(
             "server log start_offset must be a non-negative integer"
         )
+    if end_offset is not None and (
+        isinstance(end_offset, bool)
+        or not isinstance(end_offset, int)
+        or end_offset < start_offset
+    ):
+        raise SpeechNativeProfileError(
+            "server log end_offset must be at least start_offset"
+        )
     try:
         with path.open("rb") as handle:
             handle.seek(start_offset)
-            text = handle.read().decode("utf-8", "replace").casefold()
+            read_size = None if end_offset is None else end_offset - start_offset
+            text = handle.read(read_size).decode("utf-8", "replace").casefold()
     except OSError as error:
         raise SpeechNativeProfileError(
             f"cannot read profile server log: {error}"
@@ -8710,9 +8938,7 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
         source_session_receipt_sha256 = source_hash_before
     client: FrozenCoreClient | None = None
     close_summary: dict[str, object] | None = None
-    sampler = resolve_resource_sampler(
-        slots_url=f"{str(values['base_url']).rstrip('/')}/slots"
-    )
+    sampler = resolve_resource_sampler()
     resource_summary: Mapping[str, object] = {}
     outcomes = ()
     failure: BaseException | None = None
@@ -8788,8 +9014,16 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
         and not isinstance(gpu_seconds, bool)
     ):
         attempt.record_gpu_seconds(float(gpu_seconds))
+    try:
+        server_log_end_offset = active_server_log_path.stat().st_size
+    except OSError as error:
+        raise SpeechNativeProfileError(
+            f"cannot stat completed speech-native server log: {error}"
+        ) from error
     server_scan = _scan_server_log(
-        active_server_log_path, start_offset=server_log_start_offset
+        active_server_log_path,
+        start_offset=server_log_start_offset,
+        end_offset=server_log_end_offset,
     )
     actual_contact_count = sum(outcome.decision.calls for outcome in outcomes)
     if result_mode == "predictions" and failure is None:
@@ -8913,6 +9147,7 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
             "source_session_receipt_sha256": source_session_receipt_sha256,
             "server_log_path": str(active_server_log_path),
             "server_log_start_offset": server_log_start_offset,
+            "server_log_end_offset": server_log_end_offset,
         },
         "packet_promotion_receipt_sha256": _sha256_file(packet_receipt_path),
         "binding_file_sha256": _sha256_file(binding_path),
@@ -8983,10 +9218,14 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
                 contact_count=actual_contact_count,
             )
             receipt["evaluated_work"] = evaluated_work
-            saturated_gpu = profile_saturated_gpu_metrics(
-                timing_rows=timing_rows,
+            saturated_gpu = profile_server_slot_event_gpu_metrics(
+                server_log_path=active_server_log_path,
+                server_log_start_offset=server_log_start_offset,
+                server_log_end_offset=server_log_end_offset,
+                session_started_at=session.started_at,
                 resource_summary=resource_summary,
                 slot_count=slot_count,
+                expected_contact_count=actual_contact_count,
             )
             receipt["saturated_gpu"] = saturated_gpu
             receipt["eligibility"] = {
