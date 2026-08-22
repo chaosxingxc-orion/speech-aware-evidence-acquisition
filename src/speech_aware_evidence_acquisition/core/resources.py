@@ -33,7 +33,7 @@ ever shelling out to a real ``nvidia-smi``:
      undercount is negligible regardless -- simplicity and one fewer failure
      mode inside shutdown won the tradeoff.
   2. *Device-wide, not process-scoped, single device.* ``utilization.gpu``/
-     ``memory.used`` are ``nvidia-smi``'s DEVICE totals (every process on that
+  ``memory.used`` are ``nvidia-smi``'s DEVICE totals (every process on that
      GPU), not this run's share alone -- there is no per-process attribution
      here. ``device_index`` (default ``0``) pins WHICH device is queried
      (``--id=<device_index>``), removing the earlier ambiguity of "whichever
@@ -42,6 +42,12 @@ ever shelling out to a real ``nvidia-smi``:
      study's documented single-GPU dev box (``CLAUDE.md``: one RTX 5090); a
      shared or multi-tenant GPU host would need real per-process attribution
      this module does not attempt.
+  3. *Optional exact server-slot binding.* Speech-native profiles pass the
+     receipt-bound llama-server ``/slots`` URL. Each request-window GPU sample
+     is then paired with the number of rows whose strict boolean
+     ``is_processing`` field is true, plus both timestamps and their skew.
+     Slot-probe failure is recorded independently and never disables the GPU
+     sampler; the profile admission gate decides whether coverage is adequate.
 - :class:`NullSampler` records the literal ``NOT_AVAILABLE`` plus a reason
   string and touches nothing. It is both the explicit "no sampling" choice
   and what :class:`NvidiaSmiSampler` itself degrades to, on the FIRST
@@ -64,6 +70,7 @@ ever shelling out to a real ``nvidia-smi``:
 
 from __future__ import annotations
 
+import json
 import math
 import os
 import shutil
@@ -71,6 +78,7 @@ import statistics
 import subprocess
 import threading
 import time
+import urllib.request
 from typing import Callable, Mapping, Protocol
 
 NOT_AVAILABLE = "NOT_AVAILABLE"
@@ -120,6 +128,10 @@ class NullSampler:
             "request_gpu_utilization_p10_pct": NOT_AVAILABLE,
             "request_gpu_sample_count": 0,
             "request_gpu_samples": [],
+            "server_slot_sampling_configured": False,
+            "server_slot_sampling_reason": NOT_AVAILABLE,
+            "server_slot_probe_failure_count": 0,
+            "server_slot_sample_count": 0,
         }
 
 
@@ -148,6 +160,18 @@ def _default_runner(device_index: int) -> Callable[[str, float], str]:
     return runner
 
 
+def _default_slot_runner(url: str, timeout_seconds: float) -> str:
+    """Read llama-server's local slot state without adding a dependency."""
+
+    request = urllib.request.Request(
+        url,
+        headers={"Accept": "application/json"},
+        method="GET",
+    )
+    with urllib.request.urlopen(request, timeout=timeout_seconds) as response:
+        return response.read().decode("utf-8")
+
+
 class NvidiaSmiSampler:
     """Background-thread ``nvidia-smi`` poller.
 
@@ -169,6 +193,8 @@ class NvidiaSmiSampler:
         device_index: int = 0,
         runner: Callable[[str, float], str] | None = None,
         timeout_seconds: float = 5.0,
+        slots_url: str | None = None,
+        slot_runner: Callable[[str, float], str] | None = None,
     ) -> None:
         if not isinstance(interval_seconds, (int, float)) or interval_seconds <= 0:
             raise ValueError("interval_seconds must be a positive number")
@@ -176,18 +202,30 @@ class NvidiaSmiSampler:
             raise ValueError("timeout_seconds must be a positive number")
         if isinstance(device_index, bool) or not isinstance(device_index, int) or device_index < 0:
             raise ValueError(f"device_index must be a non-negative integer, got {device_index!r}")
+        if slots_url is not None and (
+            not isinstance(slots_url, str) or not slots_url.strip()
+        ):
+            raise ValueError("slots_url must be a non-empty string when configured")
+        if slots_url is None and slot_runner is not None:
+            raise ValueError("slot_runner requires slots_url")
         self._interval_seconds = float(interval_seconds)
         self._binary = binary
         self._device_index = device_index
         self._runner = runner or _default_runner(device_index)
         self._timeout_seconds = float(timeout_seconds)
+        self._slots_url = slots_url
+        self._slot_runner = (
+            slot_runner or _default_slot_runner if slots_url is not None else None
+        )
         self._lock = threading.Lock()
         self._gpu_seconds = 0.0
         self._peak_vram_mib = 0.0
         self._samples_taken = 0
         self._request_window_active = False
         self._request_utilization_samples: list[float] = []
-        self._request_gpu_samples: list[dict[str, float]] = []
+        self._request_gpu_samples: list[dict[str, object]] = []
+        self._server_slot_sampling_reason: str | None = None
+        self._server_slot_probe_failure_count = 0
         self._available = True
         self._reason: str | None = None
         self._stop_event = threading.Event()
@@ -210,8 +248,66 @@ class NvidiaSmiSampler:
             return False, 0.0, 0.0
         return True, utilization, memory_used
 
-    def _record(self, utilization: float, memory_used: float, elapsed: float) -> None:
-        sampled_at = time.time()
+    def _poll_server_slots_once(self) -> dict[str, int | float] | None:
+        """Return one strict llama-server ``/slots`` snapshot.
+
+        Slot sampling is an independent diagnostic. A malformed or unavailable
+        endpoint is recorded but never disables the GPU sampler itself.
+        """
+
+        if self._slots_url is None or self._slot_runner is None:
+            return None
+        try:
+            raw = self._slot_runner(self._slots_url, self._timeout_seconds)
+            rows = json.loads(raw)
+            if not isinstance(rows, list) or not rows:
+                raise ValueError("/slots response must be a non-empty list")
+            slot_ids: set[int] = set()
+            busy_slots = 0
+            for row in rows:
+                if not isinstance(row, Mapping):
+                    raise ValueError("/slots row must be an object")
+                slot_id = row.get("id")
+                is_processing = row.get("is_processing")
+                if (
+                    isinstance(slot_id, bool)
+                    or not isinstance(slot_id, int)
+                    or slot_id < 0
+                    or slot_id in slot_ids
+                ):
+                    raise ValueError("/slots row has an invalid or duplicate id")
+                if not isinstance(is_processing, bool):
+                    raise ValueError("/slots row lacks boolean is_processing")
+                slot_ids.add(slot_id)
+                busy_slots += int(is_processing)
+            return {
+                "server_slot_sampled_at_unix_seconds": time.time(),
+                "server_busy_slots": busy_slots,
+                "server_total_slots": len(rows),
+            }
+        except Exception as error:  # noqa: BLE001 -- diagnostic failure stays isolated
+            with self._lock:
+                self._server_slot_probe_failure_count += 1
+                if self._server_slot_sampling_reason is None:
+                    self._server_slot_sampling_reason = (
+                        f"llama-server slot sampling failed: {error}"
+                    )
+            return None
+
+    def _record(
+        self,
+        utilization: float,
+        memory_used: float,
+        elapsed: float,
+        *,
+        sampled_at_unix_seconds: float | None = None,
+        server_slot_snapshot: Mapping[str, int | float] | None = None,
+    ) -> None:
+        sampled_at = (
+            time.time()
+            if sampled_at_unix_seconds is None
+            else float(sampled_at_unix_seconds)
+        )
         with self._lock:
             bounded_utilization = max(0.0, min(utilization, 100.0))
             self._gpu_seconds += elapsed * bounded_utilization / 100.0
@@ -219,13 +315,20 @@ class NvidiaSmiSampler:
             self._samples_taken += 1
             if self._request_window_active:
                 self._request_utilization_samples.append(bounded_utilization)
-                self._request_gpu_samples.append(
-                    {
-                        "sampled_at_unix_seconds": sampled_at,
-                        "utilization_pct": bounded_utilization,
-                        "memory_used_mib": memory_used,
-                    }
-                )
+                sample: dict[str, object] = {
+                    "sampled_at_unix_seconds": sampled_at,
+                    "utilization_pct": bounded_utilization,
+                    "memory_used_mib": memory_used,
+                }
+                if server_slot_snapshot is not None:
+                    slot_sampled_at = float(
+                        server_slot_snapshot["server_slot_sampled_at_unix_seconds"]
+                    )
+                    sample.update(server_slot_snapshot)
+                    sample["server_slot_gpu_skew_milliseconds"] = (
+                        abs(slot_sampled_at - sampled_at) * 1000.0
+                    )
+                self._request_gpu_samples.append(sample)
 
     def begin_request_window(self) -> None:
         """Start collecting utilization distribution samples for requests only."""
@@ -248,7 +351,19 @@ class NvidiaSmiSampler:
             last = now
             if not ok:
                 return
-            self._record(utilization, memory_used, elapsed)
+            sampled_at = time.time()
+            with self._lock:
+                request_window_active = self._request_window_active
+            server_slot_snapshot = (
+                self._poll_server_slots_once() if request_window_active else None
+            )
+            self._record(
+                utilization,
+                memory_used,
+                elapsed,
+                sampled_at_unix_seconds=sampled_at,
+                server_slot_snapshot=server_slot_snapshot,
+            )
 
     def start(self) -> None:
         if self._thread is not None:
@@ -282,6 +397,10 @@ class NvidiaSmiSampler:
                     "request_gpu_utilization_p10_pct": NOT_AVAILABLE,
                     "request_gpu_sample_count": 0,
                     "request_gpu_samples": [],
+                    "server_slot_sampling_configured": self._slots_url is not None,
+                    "server_slot_sampling_reason": self._server_slot_sampling_reason,
+                    "server_slot_probe_failure_count": self._server_slot_probe_failure_count,
+                    "server_slot_sample_count": 0,
                 }
             request_samples = sorted(self._request_utilization_samples)
             request_sample_count = len(request_samples)
@@ -292,6 +411,9 @@ class NvidiaSmiSampler:
             else:
                 request_median = NOT_AVAILABLE
                 request_p10 = NOT_AVAILABLE
+            server_slot_sample_count = sum(
+                "server_busy_slots" in sample for sample in self._request_gpu_samples
+            )
             return {
                 "gpu_seconds": self._gpu_seconds,
                 "peak_vram_mib": self._peak_vram_mib,
@@ -300,13 +422,21 @@ class NvidiaSmiSampler:
                 "request_gpu_utilization_p10_pct": request_p10,
                 "request_gpu_sample_count": request_sample_count,
                 "request_gpu_samples": [dict(sample) for sample in self._request_gpu_samples],
+                "server_slot_sampling_configured": self._slots_url is not None,
+                "server_slot_sampling_reason": self._server_slot_sampling_reason,
+                "server_slot_probe_failure_count": self._server_slot_probe_failure_count,
+                "server_slot_sample_count": server_slot_sample_count,
             }
 
 
 def resolve_resource_sampler(
-    *, binary: str = "nvidia-smi", interval_seconds: float = 1.0, device_index: int = 0
+    *,
+    binary: str = "nvidia-smi",
+    interval_seconds: float = 1.0,
+    device_index: int = 0,
+    slots_url: str | None = None,
 ) -> ResourceSampler:
-    """The seam a REAL live run uses (``core.driver._cli_run`` only): a real
+    """The seam a REAL live run uses: a real
     :class:`NvidiaSmiSampler` if ``binary`` resolves on ``PATH``, else a
     :class:`NullSampler` recording why (I8 deviation discipline -- never
     silently omit the field). Every other caller of ``core.driver.
@@ -317,7 +447,9 @@ def resolve_resource_sampler(
 
     ``device_index`` defaults to ``0`` (the study's documented single-GPU dev
     box); pass a different index only if a future host genuinely has more
-    than one device and this run should be attributed to a specific one."""
+    than one device and this run should be attributed to a specific one.
+    ``slots_url`` enables the independent exact-slot timeline used by the
+    speech-native engineering gate; generic runs leave it unset."""
 
     resolved_binary = shutil.which(binary)
     if (
@@ -335,6 +467,7 @@ def resolve_resource_sampler(
         binary=resolved_binary,
         interval_seconds=interval_seconds,
         device_index=device_index,
+        slots_url=slots_url,
     )
 
 

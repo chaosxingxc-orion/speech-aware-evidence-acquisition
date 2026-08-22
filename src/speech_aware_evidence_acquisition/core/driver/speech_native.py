@@ -5437,7 +5437,7 @@ def profile_timing_metrics(
     prompt_tokens: int,
     completion_tokens: int,
 ) -> dict[str, float]:
-    """Derive request-window throughput and mean slot occupancy."""
+    """Derive throughput and a client-side request-concurrency proxy."""
 
     if not timings:
         raise SpeechNativeProfileError("profile produced no request timings")
@@ -5475,35 +5475,52 @@ def profile_saturated_gpu_metrics(
     resource_summary: Mapping[str, object],
     slot_count: int,
 ) -> dict[str, int | float | str]:
-    """Measure GPU utilization only while the request DAG can fill the service.
+    """Measure GPU utilization while llama-server slots are truly busy.
 
-    The full request-window distribution and end-to-end slot occupancy remain
-    separate diagnostics. This view excludes only mechanically identified DAG
-    drain samples: a sample is saturated when at least 90 percent of the
-    configured slots have a live request at that exact timestamp.
+    New profiles use receipt-bound ``/slots`` snapshots captured beside each
+    GPU sample. Historical receipts lack those fields, so their former HTTP
+    interval reconstruction remains readable under an explicit legacy source;
+    :func:`profile_gpu_eligibility` never admits that proxy for a new run.
     """
 
     if isinstance(slot_count, bool) or not isinstance(slot_count, int) or slot_count <= 0:
         raise SpeechNativeProfileError("slot_count must be a positive integer")
-    intervals: list[tuple[float, float]] = []
-    for timing in timing_rows:
-        started_at = timing.get("started_at")
-        latency = timing.get("latency_seconds")
-        if (
-            not isinstance(started_at, str)
-            or isinstance(latency, bool)
-            or not isinstance(latency, (int, float))
-            or not math.isfinite(float(latency))
-            or float(latency) < 0
-        ):
-            raise SpeechNativeProfileError("profile timing row is malformed")
-        start = datetime.fromisoformat(started_at).timestamp()
-        intervals.append((start, start + float(latency)))
     raw_samples = resource_summary.get("request_gpu_samples")
     if not isinstance(raw_samples, list):
         raise SpeechNativeProfileError("request GPU sample timeline is unavailable")
     minimum_active = max(1, math.ceil(slot_count * 0.90))
     saturated_utilization: list[float] = []
+    exact_configured = resource_summary.get("server_slot_sampling_configured") is True
+    exact_fields = {
+        "server_busy_slots",
+        "server_total_slots",
+        "server_slot_sampled_at_unix_seconds",
+        "server_slot_gpu_skew_milliseconds",
+    }
+    exact_present = any(
+        isinstance(sample, Mapping) and any(field in sample for field in exact_fields)
+        for sample in raw_samples
+    )
+    use_server_slots = exact_configured or exact_present
+    slot_occupancy: list[float] = []
+    slot_skews: list[float] = []
+
+    intervals: list[tuple[float, float]] = []
+    if not use_server_slots:
+        for timing in timing_rows:
+            started_at = timing.get("started_at")
+            latency = timing.get("latency_seconds")
+            if (
+                not isinstance(started_at, str)
+                or isinstance(latency, bool)
+                or not isinstance(latency, (int, float))
+                or not math.isfinite(float(latency))
+                or float(latency) < 0
+            ):
+                raise SpeechNativeProfileError("profile timing row is malformed")
+            start = datetime.fromisoformat(started_at).timestamp()
+            intervals.append((start, start + float(latency)))
+
     for sample in raw_samples:
         if not isinstance(sample, Mapping):
             raise SpeechNativeProfileError("request GPU sample is malformed")
@@ -5518,9 +5535,55 @@ def profile_saturated_gpu_metrics(
             or not math.isfinite(float(utilization))
         ):
             raise SpeechNativeProfileError("request GPU sample is malformed")
-        active = sum(start <= float(sampled_at) < end for start, end in intervals)
-        if active >= minimum_active:
-            saturated_utilization.append(float(utilization))
+        if use_server_slots:
+            present_fields = exact_fields.intersection(sample)
+            if not present_fields:
+                continue
+            if present_fields != exact_fields:
+                raise SpeechNativeProfileError("server slot sample is incomplete")
+            busy_slots = sample.get("server_busy_slots")
+            total_slots = sample.get("server_total_slots")
+            slot_sampled_at = sample.get("server_slot_sampled_at_unix_seconds")
+            skew = sample.get("server_slot_gpu_skew_milliseconds")
+            if (
+                isinstance(busy_slots, bool)
+                or not isinstance(busy_slots, int)
+                or isinstance(total_slots, bool)
+                or not isinstance(total_slots, int)
+                or total_slots <= 0
+                or busy_slots < 0
+                or busy_slots > total_slots
+                or isinstance(slot_sampled_at, bool)
+                or not isinstance(slot_sampled_at, (int, float))
+                or not math.isfinite(float(slot_sampled_at))
+                or isinstance(skew, bool)
+                or not isinstance(skew, (int, float))
+                or not math.isfinite(float(skew))
+                or float(skew) < 0
+            ):
+                raise SpeechNativeProfileError("server slot sample is malformed")
+            reconstructed_skew = abs(float(slot_sampled_at) - float(sampled_at)) * 1000.0
+            if not math.isclose(
+                reconstructed_skew,
+                float(skew),
+                rel_tol=0.0,
+                abs_tol=0.001,
+            ):
+                raise SpeechNativeProfileError(
+                    "server slot sample timestamp and GPU skew disagree"
+                )
+            if total_slots != slot_count:
+                raise SpeechNativeProfileError(
+                    "server slot count does not match the profile slot count"
+                )
+            slot_occupancy.append(100.0 * busy_slots / total_slots)
+            slot_skews.append(float(skew))
+            if busy_slots >= minimum_active:
+                saturated_utilization.append(float(utilization))
+        else:
+            active = sum(start <= float(sampled_at) < end for start, end in intervals)
+            if active >= minimum_active:
+                saturated_utilization.append(float(utilization))
     sample_count = len(saturated_utilization)
     sample_fraction = (
         100.0 * sample_count / len(raw_samples) if raw_samples else 0.0
@@ -5532,12 +5595,96 @@ def profile_saturated_gpu_metrics(
         ordered = sorted(saturated_utilization)
         median = float(statistics.median(ordered))
         p10 = float(ordered[max(0, math.ceil(0.10 * len(ordered)) - 1)])
-    return {
+    result: dict[str, int | float | str] = {
+        "saturation_source": (
+            "llama-server-slots-v1"
+            if use_server_slots
+            else "client-http-intervals-v1"
+        ),
         "minimum_active_requests": minimum_active,
         "sample_count": sample_count,
         "sample_fraction_pct": sample_fraction,
         "utilization_median_pct": median,
         "utilization_p10_pct": p10,
+    }
+    if use_server_slots:
+        raw_failures = resource_summary.get("server_slot_probe_failure_count", 0)
+        if (
+            isinstance(raw_failures, bool)
+            or not isinstance(raw_failures, int)
+            or raw_failures < 0
+        ):
+            raise SpeechNativeProfileError("server slot failure count is malformed")
+        slot_sample_count = len(slot_occupancy)
+        result.update(
+            {
+                "server_slot_sample_count": slot_sample_count,
+                "server_slot_sample_coverage_pct": (
+                    100.0 * slot_sample_count / len(raw_samples)
+                    if raw_samples
+                    else 0.0
+                ),
+                "server_slot_probe_failure_count": raw_failures,
+                "server_slot_gpu_skew_max_milliseconds": (
+                    max(slot_skews) if slot_skews else NOT_AVAILABLE
+                ),
+                "server_slot_occupancy_mean_pct": (
+                    statistics.fmean(slot_occupancy)
+                    if slot_occupancy
+                    else NOT_AVAILABLE
+                ),
+            }
+        )
+    return result
+
+
+def profile_gpu_eligibility(
+    saturated_gpu: Mapping[str, object],
+) -> dict[str, bool]:
+    """Apply the prospective, exact-slot GPU admission gate."""
+
+    def at_least(field: str, threshold: float) -> bool:
+        value = saturated_gpu.get(field)
+        return (
+            isinstance(value, (int, float))
+            and not isinstance(value, bool)
+            and math.isfinite(float(value))
+            and float(value) >= threshold
+        )
+
+    failure_count = saturated_gpu.get("server_slot_probe_failure_count")
+    maximum_skew = saturated_gpu.get("server_slot_gpu_skew_max_milliseconds")
+    return {
+        "saturation_source_is_server_slots": (
+            saturated_gpu.get("saturation_source") == "llama-server-slots-v1"
+        ),
+        "server_slot_sample_coverage_is_complete": at_least(
+            "server_slot_sample_coverage_pct", 100.0
+        ),
+        "server_slot_probe_failures_are_zero": (
+            isinstance(failure_count, int)
+            and not isinstance(failure_count, bool)
+            and failure_count == 0
+        ),
+        "server_slot_gpu_skew_at_most_500_ms": (
+            isinstance(maximum_skew, (int, float))
+            and not isinstance(maximum_skew, bool)
+            and math.isfinite(float(maximum_skew))
+            and float(maximum_skew) <= 500.0
+        ),
+        "saturated_gpu_sample_count_at_least_30": at_least("sample_count", 30),
+        "saturated_gpu_sample_fraction_at_least_60": at_least(
+            "sample_fraction_pct", 60.0
+        ),
+        "saturated_gpu_median_at_least_95": at_least(
+            "utilization_median_pct", 95.0
+        ),
+        "saturated_gpu_p10_at_least_90": at_least(
+            "utilization_p10_pct", 90.0
+        ),
+        "server_slot_occupancy_at_least_90": at_least(
+            "server_slot_occupancy_mean_pct", 90.0
+        ),
     }
 
 
@@ -8563,7 +8710,9 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
         source_session_receipt_sha256 = source_hash_before
     client: FrozenCoreClient | None = None
     close_summary: dict[str, object] | None = None
-    sampler = resolve_resource_sampler()
+    sampler = resolve_resource_sampler(
+        slots_url=f"{str(values['base_url']).rstrip('/')}/slots"
+    )
     resource_summary: Mapping[str, object] = {}
     outcomes = ()
     failure: BaseException | None = None
@@ -8840,10 +8989,6 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
                 slot_count=slot_count,
             )
             receipt["saturated_gpu"] = saturated_gpu
-            saturated_median = saturated_gpu["utilization_median_pct"]
-            saturated_p10 = saturated_gpu["utilization_p10_pct"]
-            saturated_count = saturated_gpu["sample_count"]
-            saturated_fraction = saturated_gpu["sample_fraction_pct"]
             receipt["eligibility"] = {
                 "maximum_prompt_fits_one_slot": (
                     trace_usage["max_prompt_tokens"]
@@ -8854,27 +8999,7 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
                 "zero_oom_markers": not server_scan["oom_marker_hits"],
                 "zero_host_spill_markers": not server_scan["host_spill_marker_hits"],
                 "zero_runaway_markers": not server_scan["runaway_marker_hits"],
-                "saturated_gpu_sample_count_at_least_30": (
-                    isinstance(saturated_count, int)
-                    and not isinstance(saturated_count, bool)
-                    and saturated_count >= 30
-                ),
-                "saturated_gpu_sample_fraction_at_least_60": (
-                    isinstance(saturated_fraction, (int, float))
-                    and not isinstance(saturated_fraction, bool)
-                    and float(saturated_fraction) >= 60.0
-                ),
-                "saturated_gpu_median_at_least_95": (
-                    isinstance(saturated_median, (int, float))
-                    and not isinstance(saturated_median, bool)
-                    and float(saturated_median) >= 95.0
-                ),
-                "saturated_gpu_p10_at_least_90": (
-                    isinstance(saturated_p10, (int, float))
-                    and not isinstance(saturated_p10, bool)
-                    and float(saturated_p10) >= 90.0
-                ),
-                "slot_occupancy_at_least_90": timing["slot_occupancy_pct"] >= 90.0,
+                **profile_gpu_eligibility(saturated_gpu),
                 "prompt_eval_records_match_contacts": evaluated_work[
                     "prompt_eval_record_count_matches_contacts"
                 ],

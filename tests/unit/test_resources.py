@@ -163,6 +163,96 @@ def test_nvidia_smi_sampler_persists_auditable_request_sample_timeline(monkeypat
     ]
 
 
+def test_nvidia_smi_sampler_binds_llama_server_busy_slots_to_gpu_samples():
+    slot_payload = (
+        '[{"id": 0, "is_processing": true}, '
+        '{"id": 1, "is_processing": false}]'
+    )
+    sampler = NvidiaSmiSampler(
+        interval_seconds=10.0,
+        runner=_fixed_runner(["96, 21000"]),
+        slots_url="http://127.0.0.1:8080/slots",
+        slot_runner=lambda url, timeout_seconds: slot_payload,
+    )
+    sampler.start()
+    try:
+        sampler.begin_request_window()
+        slot_snapshot = sampler._poll_server_slots_once()
+        sampler._record(
+            96.0,
+            21000.0,
+            1.0,
+            sampled_at_unix_seconds=1_776_000_000.25,
+            server_slot_snapshot=slot_snapshot,
+        )
+    finally:
+        sampler.stop()
+
+    summary = sampler.summary()
+    assert summary["server_slot_sampling_configured"] is True
+    assert summary["server_slot_sampling_reason"] is None
+    assert summary["server_slot_probe_failure_count"] == 0
+    assert summary["server_slot_sample_count"] == 1
+    sample = summary["request_gpu_samples"][0]
+    assert sample["server_busy_slots"] == 1
+    assert sample["server_total_slots"] == 2
+    assert isinstance(sample["server_slot_sampled_at_unix_seconds"], float)
+    assert isinstance(sample["server_slot_gpu_skew_milliseconds"], float)
+
+
+def test_background_sampler_collects_server_slots_during_the_request_window():
+    slot_payload = (
+        '[{"id": 0, "is_processing": true}, '
+        '{"id": 1, "is_processing": true}]'
+    )
+    sampler = NvidiaSmiSampler(
+        interval_seconds=0.01,
+        runner=_fixed_runner(["96, 21000"]),
+        slots_url="http://127.0.0.1:8080/slots",
+        slot_runner=lambda url, timeout_seconds: slot_payload,
+    )
+    sampler.start()
+    try:
+        sampler.begin_request_window()
+        time.sleep(0.06)
+        sampler.end_request_window()
+    finally:
+        sampler.stop()
+
+    summary = sampler.summary()
+    assert summary["request_gpu_sample_count"] >= 2
+    assert summary["server_slot_sample_count"] == summary["request_gpu_sample_count"]
+    assert all(
+        sample["server_busy_slots"] == 2
+        for sample in summary["request_gpu_samples"]
+    )
+
+
+def test_malformed_slot_response_does_not_disable_gpu_sampling():
+    sampler = NvidiaSmiSampler(
+        interval_seconds=10.0,
+        runner=_fixed_runner(["96, 21000"]),
+        slots_url="http://127.0.0.1:8080/slots",
+        slot_runner=lambda url, timeout_seconds: "not-json",
+    )
+    sampler.start()
+    try:
+        sampler.begin_request_window()
+        assert sampler._poll_server_slots_once() is None
+        sampler._record(96.0, 21000.0, 1.0)
+    finally:
+        sampler.stop()
+
+    summary = sampler.summary()
+    assert summary["gpu_sampling_reason"] is None
+    assert summary["gpu_seconds"] == 0.96
+    assert summary["server_slot_sampling_configured"] is True
+    assert summary["server_slot_probe_failure_count"] == 1
+    assert "slot sampling failed" in summary["server_slot_sampling_reason"]
+    assert summary["server_slot_sample_count"] == 0
+    assert "server_busy_slots" not in summary["request_gpu_samples"][0]
+
+
 # ---------------------------------------------------------------------------
 # NvidiaSmiSampler: fail-safe degradation to NOT_AVAILABLE, never a crash.
 # ---------------------------------------------------------------------------
@@ -328,6 +418,21 @@ def test_resolve_resource_sampler_passes_device_index_through(monkeypatch):
     sampler = resolve_resource_sampler(binary="nvidia-smi", device_index=3)
     assert isinstance(sampler, NvidiaSmiSampler)
     assert sampler._device_index == 3  # never started -- no real nvidia-smi touched
+
+
+def test_resolve_resource_sampler_passes_the_llama_server_slots_url(monkeypatch):
+    import speech_aware_evidence_acquisition.core.resources as resources_module
+
+    monkeypatch.setattr(
+        resources_module.shutil, "which", lambda binary: f"/usr/bin/{binary}"
+    )
+    sampler = resolve_resource_sampler(
+        binary="nvidia-smi",
+        slots_url="http://127.0.0.1:8080/slots",
+    )
+
+    assert isinstance(sampler, NvidiaSmiSampler)
+    assert sampler._slots_url == "http://127.0.0.1:8080/slots"
 
 
 # ---------------------------------------------------------------------------

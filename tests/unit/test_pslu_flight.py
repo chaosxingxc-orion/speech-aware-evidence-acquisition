@@ -41,6 +41,7 @@ from speech_aware_evidence_acquisition.core.driver.speech_native import (
     SpeechNativeProfileError,
     _cli_speech_native_action_audit,
     build_profile_tasks,
+    profile_gpu_eligibility,
     profile_saturated_gpu_metrics,
     profile_timing_metrics,
     read_speech_native_predictions,
@@ -5388,12 +5389,172 @@ def test_saturated_gpu_metrics_exclude_dependency_drain_without_hiding_occupancy
         resource_summary=resource,
         slot_count=2,
     ) == {
+        "saturation_source": "client-http-intervals-v1",
         "minimum_active_requests": 2,
         "sample_count": 3,
         "sample_fraction_pct": 75.0,
         "utilization_median_pct": 96.0,
         "utilization_p10_pct": 92.0,
     }
+
+
+def test_saturated_gpu_metrics_use_server_slots_instead_of_live_http_requests():
+    timings = tuple(
+        {
+            "started_at": "2026-08-21T12:00:00+00:00",
+            "latency_seconds": 4.0,
+        }
+        for _ in range(2)
+    )
+    resource = {
+        "server_slot_sampling_configured": True,
+        "server_slot_sampling_reason": None,
+        "server_slot_probe_failure_count": 0,
+        "request_gpu_samples": [
+            {
+                "sampled_at_unix_seconds": 1.0,
+                "utilization_pct": 100.0,
+                "server_busy_slots": 1,
+                "server_total_slots": 2,
+                "server_slot_sampled_at_unix_seconds": 1.005,
+                "server_slot_gpu_skew_milliseconds": 5.0,
+            },
+            {
+                "sampled_at_unix_seconds": 2.0,
+                "utilization_pct": 96.0,
+                "server_busy_slots": 2,
+                "server_total_slots": 2,
+                "server_slot_sampled_at_unix_seconds": 2.006,
+                "server_slot_gpu_skew_milliseconds": 6.0,
+            },
+            {
+                "sampled_at_unix_seconds": 3.0,
+                "utilization_pct": 92.0,
+                "server_busy_slots": 2,
+                "server_total_slots": 2,
+                "server_slot_sampled_at_unix_seconds": 3.004,
+                "server_slot_gpu_skew_milliseconds": 4.0,
+            },
+            {
+                "sampled_at_unix_seconds": 4.0,
+                "utilization_pct": 10.0,
+                "server_busy_slots": 0,
+                "server_total_slots": 2,
+                "server_slot_sampled_at_unix_seconds": 4.003,
+                "server_slot_gpu_skew_milliseconds": 3.0,
+            },
+        ],
+    }
+
+    assert profile_saturated_gpu_metrics(
+        timing_rows=timings,
+        resource_summary=resource,
+        slot_count=2,
+    ) == {
+        "saturation_source": "llama-server-slots-v1",
+        "minimum_active_requests": 2,
+        "sample_count": 2,
+        "sample_fraction_pct": 50.0,
+        "utilization_median_pct": 94.0,
+        "utilization_p10_pct": 92.0,
+        "server_slot_sample_count": 4,
+        "server_slot_sample_coverage_pct": 100.0,
+        "server_slot_probe_failure_count": 0,
+        "server_slot_gpu_skew_max_milliseconds": 6.0,
+        "server_slot_occupancy_mean_pct": 62.5,
+    }
+
+
+def test_server_slot_metric_refuses_a_profile_slot_count_mismatch():
+    resource = {
+        "server_slot_sampling_configured": True,
+        "server_slot_probe_failure_count": 0,
+        "request_gpu_samples": [
+            {
+                "sampled_at_unix_seconds": 1.0,
+                "utilization_pct": 100.0,
+                "server_busy_slots": 2,
+                "server_total_slots": 3,
+                "server_slot_sampled_at_unix_seconds": 1.001,
+                "server_slot_gpu_skew_milliseconds": 1.0,
+            }
+        ],
+    }
+
+    with pytest.raises(SpeechNativeProfileError, match="slot count"):
+        profile_saturated_gpu_metrics(
+            timing_rows=(),
+            resource_summary=resource,
+            slot_count=2,
+        )
+
+
+def test_server_slot_metric_refuses_a_missing_slot_timestamp():
+    resource = {
+        "server_slot_sampling_configured": True,
+        "server_slot_probe_failure_count": 0,
+        "request_gpu_samples": [
+            {
+                "sampled_at_unix_seconds": 1.0,
+                "utilization_pct": 100.0,
+                "server_busy_slots": 2,
+                "server_total_slots": 2,
+                "server_slot_gpu_skew_milliseconds": 1.0,
+            }
+        ],
+    }
+
+    with pytest.raises(SpeechNativeProfileError, match="incomplete"):
+        profile_saturated_gpu_metrics(
+            timing_rows=(),
+            resource_summary=resource,
+            slot_count=2,
+        )
+
+
+def test_new_gpu_admission_rejects_historical_http_concurrency_proxy():
+    fallback_metric = profile_saturated_gpu_metrics(
+        timing_rows=(
+            {
+                "started_at": "2026-08-21T12:00:00+00:00",
+                "latency_seconds": 3.0,
+            },
+        ),
+        resource_summary={
+            "request_gpu_samples": [
+                {
+                    "sampled_at_unix_seconds": 1_787_313_600.5,
+                    "utilization_pct": 100.0,
+                }
+            ]
+        },
+        slot_count=1,
+    )
+
+    eligibility = profile_gpu_eligibility(fallback_metric)
+
+    assert eligibility["saturation_source_is_server_slots"] is False
+    assert eligibility["server_slot_sample_coverage_is_complete"] is False
+    assert eligibility["server_slot_probe_failures_are_zero"] is False
+
+
+def test_new_gpu_admission_accepts_only_a_complete_exact_slot_metric():
+    eligibility = profile_gpu_eligibility(
+        {
+            "saturation_source": "llama-server-slots-v1",
+            "server_slot_sample_coverage_pct": 100.0,
+            "server_slot_probe_failure_count": 0,
+            "server_slot_gpu_skew_max_milliseconds": 10.0,
+            "sample_count": 30,
+            "sample_fraction_pct": 60.0,
+            "utilization_median_pct": 95.0,
+            "utilization_p10_pct": 90.0,
+            "server_slot_occupancy_mean_pct": 90.0,
+        }
+    )
+
+    assert eligibility
+    assert all(eligibility.values())
 
 
 def test_decision_graph_artifact_is_hash_pinned_and_enters_profile_tasks(tmp_path):
