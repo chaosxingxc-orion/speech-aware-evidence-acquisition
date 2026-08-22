@@ -28,10 +28,13 @@ from ...rails.probes.pslu_flight import (
     DecisionBoundaryV1,
     DecisionFactorV1,
     DecisionGraphV1,
+    FactorLinkStateV1,
     KeyCardV1,
     PsluFlightError,
     SpeechNativeMatchTask,
     load_speech_native_engineering_gate,
+    decision_boundary_path,
+    expand_decision_graph_candidates,
     parse_grounded_query_state,
     run_speech_native_match_tasks,
 )
@@ -108,6 +111,15 @@ _M7_SUCCESS_ACTIONS = (
 )
 _M8_POLICY_ID = "speech-conditioned-pairwise-boundary-support-v1"
 _M8_AGGREGATOR_ID = "pairwise-boundary-primary-control-v1"
+_M9_POLICY_ID = "speech-conditioned-factor-graph-action-support-v1"
+_M9_AGGREGATOR_ID = "factor-graph-primary-control-v1"
+_M9_COMMON_ACTIONS = (
+    "match:speech-only-primary",
+    "retrieve:speech-only",
+    "link:knowledge-factors",
+    "tool:expand-factor-graph",
+    "rerank:speech-plus-factor-state",
+)
 _SPEAKER_FOLD_POLICY_ID = "speaker-grouped-3fold-sha256-load-balanced-v1"
 _CONTEXTUAL_ACTION_IDS = (
     "primary",
@@ -2020,6 +2032,383 @@ def _evaluate_m8_pairwise_action_support(
             "worst_fold_delta_vs_primary": worst_fold,
             "promotion_checks": promotion_checks,
             "qualified": all(promotion_checks.values()),
+        },
+    }
+
+
+def _parse_m9_factor_graph_trajectory(
+    *,
+    row: Mapping[str, object],
+    sample_id: str,
+    speaker_id: str,
+    gold_key_id: str,
+    top_k: int,
+    visible_card_by_key: Mapping[str, KeyCardV1],
+    decision_graph: DecisionGraphV1,
+) -> dict[str, object]:
+    """Reconstruct one graph traversal without trusting derived row fields."""
+
+    primary_key_id = row.get("key_id")
+    actions = row.get("agent_actions")
+    votes = row.get("agent_vote_key_ids")
+    steps = row.get("agent_steps")
+    if (
+        row.get("agent_policy_id") != _M9_POLICY_ID
+        or row.get("agent_aggregator_id") != _M9_AGGREGATOR_ID
+        or row.get("agent_escalated") is not True
+        or not isinstance(primary_key_id, str)
+        or primary_key_id not in visible_card_by_key
+        or not isinstance(actions, list)
+        or not isinstance(votes, list)
+        or not isinstance(steps, list)
+        or row.get("verifier_scores") != {}
+    ):
+        raise SpeechNativeProfileError("M9 factor-graph trajectory identity is malformed")
+    decision_graph.validate(tuple(visible_card_by_key.values()))
+    base_fields = {
+        "action_id",
+        "key_id",
+        "top_key_ids",
+        "calls",
+        "parse_failure",
+    }
+    if (
+        len(steps) < 5
+        or not isinstance(steps[0], Mapping)
+        or set(steps[0]) != base_fields
+        or steps[0].get("action_id") != "match:speech-only-primary"
+        or steps[0].get("key_id") != primary_key_id
+        or steps[0].get("top_key_ids") != []
+        or steps[0].get("calls") != 1
+        or steps[0].get("parse_failure") is not False
+        or not isinstance(steps[1], Mapping)
+        or set(steps[1]) != base_fields
+        or steps[1].get("action_id") != "retrieve:speech-only"
+        or steps[1].get("calls") != 1
+        or steps[1].get("parse_failure") is not False
+    ):
+        raise SpeechNativeProfileError("M9 initial graph stages are malformed")
+    initial_top_raw = steps[1].get("top_key_ids")
+    if (
+        not isinstance(initial_top_raw, list)
+        or len(initial_top_raw) != top_k
+        or len(set(initial_top_raw)) != top_k
+        or not all(
+            isinstance(key_id, str) and key_id in visible_card_by_key
+            for key_id in initial_top_raw
+        )
+        or steps[1].get("key_id") != initial_top_raw[0]
+    ):
+        raise SpeechNativeProfileError("M9 initial retrieval is malformed")
+    initial_top_ids = tuple(initial_top_raw)
+
+    factor_step = steps[2]
+    factor_fields = base_fields | {"factor_link_state"}
+    if (
+        not isinstance(factor_step, Mapping)
+        or set(factor_step) != factor_fields
+        or factor_step.get("action_id") != "link:knowledge-factors"
+        or factor_step.get("key_id") is not None
+        or tuple(factor_step.get("top_key_ids", [])) != initial_top_ids
+        or factor_step.get("calls") != 1
+        or factor_step.get("parse_failure") is not False
+    ):
+        raise SpeechNativeProfileError("M9 factor-link stage is malformed")
+    raw_factor_state = factor_step.get("factor_link_state")
+    if not isinstance(raw_factor_state, Mapping) or set(raw_factor_state) != {
+        "factor_ids",
+        "boundary_id",
+    }:
+        raise SpeechNativeProfileError("M9 factor-link state is malformed")
+    raw_factor_ids = raw_factor_state.get("factor_ids")
+    boundary_id = raw_factor_state.get("boundary_id")
+    neighborhood = decision_graph.neighborhood(initial_top_ids)
+    if (
+        not isinstance(raw_factor_ids, list)
+        or not 2 <= len(raw_factor_ids) <= 5
+        or len(set(raw_factor_ids)) != len(raw_factor_ids)
+        or not all(
+            isinstance(factor_id, str)
+            and factor_id in set(neighborhood.factor_ids)
+            for factor_id in raw_factor_ids
+        )
+        or (
+            boundary_id is not None
+            and (
+                not isinstance(boundary_id, str)
+                or boundary_id not in set(neighborhood.boundary_ids)
+            )
+        )
+    ):
+        raise SpeechNativeProfileError("M9 factor-link state is outside its neighborhood")
+    factor_state = FactorLinkStateV1(
+        factor_ids=tuple(raw_factor_ids), boundary_id=boundary_id
+    )
+    expected_expansion = expand_decision_graph_candidates(
+        graph=decision_graph,
+        initial_key_ids=initial_top_ids,
+        state=factor_state,
+        cap=min(6, len(visible_card_by_key)),
+    )
+    expansion_step = steps[3]
+    expansion_fields = base_fields | {"expanded_key_ids", "distance_by_key"}
+    if (
+        not isinstance(expansion_step, Mapping)
+        or set(expansion_step) != expansion_fields
+        or expansion_step.get("action_id") != "tool:expand-factor-graph"
+        or expansion_step.get("key_id") is not None
+        or tuple(expansion_step.get("top_key_ids", [])) != initial_top_ids
+        or expansion_step.get("calls") != 0
+        or expansion_step.get("parse_failure") is not False
+        or tuple(expansion_step.get("expanded_key_ids", []))
+        != expected_expansion.key_ids
+        or expansion_step.get("distance_by_key")
+        != dict(expected_expansion.distance_by_key)
+    ):
+        raise SpeechNativeProfileError("M9 deterministic graph expansion is malformed")
+
+    rerank_step = steps[4]
+    reranked_raw = row.get("top_key_ids")
+    expected_rerank_count = min(3, len(expected_expansion.key_ids))
+    if (
+        not isinstance(rerank_step, Mapping)
+        or set(rerank_step) != base_fields
+        or rerank_step.get("action_id") != "rerank:speech-plus-factor-state"
+        or rerank_step.get("calls") != 1
+        or rerank_step.get("parse_failure") is not False
+        or not isinstance(reranked_raw, list)
+        or len(reranked_raw) != expected_rerank_count
+        or len(set(reranked_raw)) != expected_rerank_count
+        or not all(key_id in expected_expansion.key_ids for key_id in reranked_raw)
+        or tuple(rerank_step.get("top_key_ids", [])) != tuple(reranked_raw)
+        or rerank_step.get("key_id") != reranked_raw[0]
+    ):
+        raise SpeechNativeProfileError("M9 factor rerank stage is malformed")
+    reranked_ids = tuple(reranked_raw)
+    rerank_key_id = reranked_ids[0]
+    common_actions = tuple(actions[: len(_M9_COMMON_ACTIONS)])
+    if common_actions != _M9_COMMON_ACTIONS:
+        raise SpeechNativeProfileError("M9 graph action prefix is malformed")
+
+    boundary_ab: str | None = None
+    boundary_ba: str | None = None
+    boundary_path: tuple[str, ...] = ()
+    termination = ""
+    mechanism_failure = False
+    if rerank_key_id == primary_key_id:
+        expected_actions = (
+            *_M9_COMMON_ACTIONS,
+            "stop:primary-rerank-agree",
+            "select:retain-primary-for-support",
+        )
+        if tuple(actions) != expected_actions or len(steps) != 5 or votes != [
+            primary_key_id,
+            rerank_key_id,
+        ]:
+            raise SpeechNativeProfileError("M9 agreement termination is malformed")
+        termination = "primary-rerank-agree"
+    else:
+        expected_path = decision_boundary_path(
+            graph=decision_graph,
+            source_key_id=primary_key_id,
+            target_key_id=rerank_key_id,
+            max_edges=2,
+        )
+        if expected_path:
+            expected_actions = (
+                *_M9_COMMON_ACTIONS,
+                "compare:boundary-ab",
+                "compare:boundary-ba",
+                "select:retain-primary-for-support",
+            )
+            comparison_fields = base_fields | {
+                "boundary_path_ids",
+                "ab_key_id",
+                "ba_key_id",
+                "causal_parent_ids",
+            }
+            if (
+                tuple(actions) != expected_actions
+                or len(steps) != 6
+                or row.get("calls") != 6
+                or len(votes) != 4
+                or votes[0] != primary_key_id
+                or votes[1] != rerank_key_id
+                or not isinstance(steps[5], Mapping)
+                or set(steps[5]) != comparison_fields
+                or steps[5].get("action_id") != "compare:factor-boundary"
+                or steps[5].get("key_id") is not None
+                or steps[5].get("top_key_ids")
+                != [primary_key_id, rerank_key_id]
+                or steps[5].get("calls") != 2
+                or steps[5].get("parse_failure") is not False
+                or tuple(steps[5].get("boundary_path_ids", [])) != expected_path
+                or steps[5].get("causal_parent_ids")
+                != [
+                    "link:knowledge-factors",
+                    "tool:expand-factor-graph",
+                    "rerank:speech-plus-factor-state",
+                ]
+            ):
+                raise SpeechNativeProfileError("M9 boundary comparison is malformed")
+            pair = {primary_key_id, rerank_key_id}
+            boundary_ab = steps[5].get("ab_key_id")  # type: ignore[assignment]
+            boundary_ba = steps[5].get("ba_key_id")  # type: ignore[assignment]
+            if (
+                boundary_ab not in pair
+                or boundary_ba not in pair
+                or votes[2:] != [boundary_ab, boundary_ba]
+            ):
+                raise SpeechNativeProfileError("M9 boundary votes are unbound")
+            boundary_path = expected_path
+            termination = "boundary-compared"
+        else:
+            expected_actions = (
+                *_M9_COMMON_ACTIONS,
+                "backtrack:no-boundary-path",
+                "select:retain-primary-for-support",
+            )
+            if (
+                tuple(actions) != expected_actions
+                or len(steps) != 5
+                or votes != [primary_key_id, rerank_key_id]
+            ):
+                raise SpeechNativeProfileError("M9 no-path backtrack is malformed")
+            termination = "no-boundary-path"
+            mechanism_failure = True
+    expected_calls = 6 if termination == "boundary-compared" else 4
+    if row.get("calls") != expected_calls:
+        raise SpeechNativeProfileError("M9 contact accounting is malformed")
+    boundary_stable = boundary_ab if boundary_ab == boundary_ba else None
+    return {
+        "sample_id": sample_id,
+        "speaker_id": speaker_id,
+        "gold_key_id": gold_key_id,
+        "primary_key_id": primary_key_id,
+        "initial_top_key_ids": initial_top_ids,
+        "factor_ids": factor_state.factor_ids,
+        "selected_boundary_id": factor_state.boundary_id,
+        "expanded_key_ids": expected_expansion.key_ids,
+        "reranked_key_ids": reranked_ids,
+        "boundary_path_ids": boundary_path,
+        "boundary_ab_key_id": boundary_ab,
+        "boundary_ba_key_id": boundary_ba,
+        "boundary_stable_key_id": boundary_stable,
+        "termination": termination,
+        "mechanism_failure": mechanism_failure,
+        "total_calls": expected_calls,
+    }
+
+
+def _evaluate_m9_factor_graph_action_support(
+    trajectories: Sequence[Mapping[str, object]],
+) -> dict[str, object]:
+    """Measure action support; do not optimize a controller before the gate."""
+
+    frozen = tuple(trajectories)
+    if not frozen:
+        raise SpeechNativeProfileError("M9 factor-graph read requires trajectories")
+    primary_correct = sum(
+        item["primary_key_id"] == item["gold_key_id"] for item in frozen
+    )
+    initial_reachable = sum(
+        item["gold_key_id"] in item["initial_top_key_ids"] for item in frozen
+    )
+    expanded_reachable = sum(
+        item["gold_key_id"] in item["expanded_key_ids"] for item in frozen
+    )
+    rerank_reachable = sum(
+        item["gold_key_id"] in item["reranked_key_ids"] for item in frozen
+    )
+    family_predictions: dict[str, list[str]] = {
+        "factor-rerank": [str(item["reranked_key_ids"][0]) for item in frozen],
+        "boundary-stable": [
+            str(item["boundary_stable_key_id"])
+            if item["boundary_stable_key_id"] is not None
+            else str(item["primary_key_id"])
+            for item in frozen
+        ],
+    }
+    family_metrics: dict[str, dict[str, object]] = {}
+    for family_id, predictions in family_predictions.items():
+        helpful_sample_ids = [
+            str(item["sample_id"])
+            for prediction, item in zip(predictions, frozen, strict=True)
+            if item["primary_key_id"] != item["gold_key_id"]
+            and prediction == item["gold_key_id"]
+        ]
+        harmful_sample_ids = [
+            str(item["sample_id"])
+            for prediction, item in zip(predictions, frozen, strict=True)
+            if item["primary_key_id"] == item["gold_key_id"]
+            and prediction != item["gold_key_id"]
+        ]
+        family_metrics[family_id] = {
+            "correct": sum(
+                prediction == item["gold_key_id"]
+                for prediction, item in zip(predictions, frozen, strict=True)
+            ),
+            "action_query_count": sum(
+                prediction != item["primary_key_id"]
+                for prediction, item in zip(predictions, frozen, strict=True)
+            ),
+            "helpful_action_count": len(helpful_sample_ids),
+            "harmful_action_count": len(harmful_sample_ids),
+            "helpful_sample_ids": helpful_sample_ids,
+            "harmful_sample_ids": harmful_sample_ids,
+        }
+    action_variable_count = sum(
+        any(
+            predictions[index] != item["primary_key_id"]
+            for predictions in family_predictions.values()
+        )
+        for index, item in enumerate(frozen)
+    )
+    oracle_correct = sum(
+        item["gold_key_id"]
+        in {
+            item["primary_key_id"],
+            family_predictions["factor-rerank"][index],
+            family_predictions["boundary-stable"][index],
+        }
+        for index, item in enumerate(frozen)
+    )
+    mechanism_failure_count = sum(bool(item["mechanism_failure"]) for item in frozen)
+    support_checks = {
+        "query_count_at_least_100": len(frozen) >= 100,
+        "action_variable_query_count_at_least_27": action_variable_count >= 27,
+        "oracle_gain_vs_primary_at_least_8": oracle_correct - primary_correct >= 8,
+        "two_non_primary_families_have_three_helpful_actions": sum(
+            int(metrics["helpful_action_count"]) >= 3
+            for metrics in family_metrics.values()
+        )
+        >= 2,
+        "expanded_reachability_not_below_initial_top_k": (
+            expanded_reachable >= initial_reachable
+        ),
+        "mechanism_failure_count_zero": mechanism_failure_count == 0,
+    }
+    return {
+        "policy_id": _M9_POLICY_ID,
+        "aggregator_id": _M9_AGGREGATOR_ID,
+        "query_count": len(frozen),
+        "primary_correct": primary_correct,
+        "primary_accuracy": primary_correct / len(frozen),
+        "final_minus_primary_correct": 0,
+        "initial_top_k_reachable_count": initial_reachable,
+        "expanded_reachable_count": expanded_reachable,
+        "rerank_reachable_count": rerank_reachable,
+        "action_variable_query_count": action_variable_count,
+        "oracle_correct": oracle_correct,
+        "oracle_gain_vs_primary": oracle_correct - primary_correct,
+        "oracle_status": "diagnostic-only-not-an-admissible-controller",
+        "mechanism_failure_count": mechanism_failure_count,
+        "action_families": family_metrics,
+        "support_checks": support_checks,
+        "support_gate_passed": all(support_checks.values()),
+        "training_free_controller": {
+            "status": "deferred-until-support-gate-passes",
+            "candidate_policy_family": "out-of-fold-nonparametric-trajectory-control",
         },
     }
 
