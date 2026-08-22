@@ -1861,6 +1861,124 @@ def test_m8_contact_dispatch_replays_heterogeneous_pairwise_dags_at_full_slots()
         )
 
 
+def test_m8_contact_dispatch_uses_one_global_request_executor(monkeypatch):
+    real_executor = pslu_module.ThreadPoolExecutor
+    prefixes = []
+
+    class RecordingExecutor:
+        def __init__(self, *args, **kwargs):
+            prefixes.append(kwargs.get("thread_name_prefix"))
+            self.delegate = real_executor(*args, **kwargs)
+
+        def submit(self, *args, **kwargs):
+            return self.delegate.submit(*args, **kwargs)
+
+        def shutdown(self, *args, **kwargs):
+            return self.delegate.shutdown(*args, **kwargs)
+
+        def __enter__(self):
+            self.delegate.__enter__()
+            return self
+
+        def __exit__(self, *args):
+            return self.delegate.__exit__(*args)
+
+    monkeypatch.setattr(pslu_module, "ThreadPoolExecutor", RecordingExecutor)
+    tasks = tuple(
+        SpeechNativeMatchTask(
+            task_id=f"m8-global-{index}",
+            sample=type("Sample", (), {"sample_id": f"m8-global-sample-{index}"})(),
+            query_descriptor={
+                "packet_id": f"slurp/train/m8-global-sample-{index}",
+                "sha256": f"{index + 1:064x}",
+                "role": "query",
+            },
+            key_cards=_KEY_CARDS,
+            key_representation_id="K1",
+            matcher_policy_id="M8",
+            prompt_policy_id="speech-native-json-copy-v4",
+            top_k=2,
+            agent_policy_id="speech-conditioned-pairwise-boundary-support-v1",
+            agent_aggregator_id="pairwise-boundary-primary-control-v1",
+        )
+        for index in range(4)
+    )
+
+    outcomes = run_speech_native_match_tasks(
+        core_client=_M8PairwiseClient(),
+        tasks=tasks,
+        slot_count=2,
+        queue_depth=4,
+        dispatch_granularity="contact",
+    )
+
+    assert len(outcomes) == 4
+    assert prefixes == ["saea-speech-native-contact"]
+
+
+def test_m8_global_ready_frontier_admits_all_initial_nodes_before_pairwise_children():
+    class FrontierClient:
+        def __init__(self):
+            self.lock = threading.Lock()
+            self.calls = []
+
+        def complete(self, messages, **kwargs):
+            del messages
+            stage = kwargs["matcher_policy_id"]
+            sample_id = kwargs["speech_feature_sample_id"]
+            with self.lock:
+                self.calls.append((sample_id, stage))
+            time.sleep(0.002)
+            if stage.endswith(":primary-listwise"):
+                return '{"key_id":"K001"}'
+            if stage.endswith(":speech-retrieve-top-2"):
+                return '{"key_ids":["K001","K002"]}'
+            if ":pairwise-" in stage:
+                return '{"key_id":"K001"}'
+            raise AssertionError(stage)
+
+    tasks = tuple(
+        SpeechNativeMatchTask(
+            task_id=f"frontier-{index}",
+            sample=type("Sample", (), {"sample_id": f"frontier-sample-{index}"})(),
+            query_descriptor={
+                "packet_id": f"slurp/train/frontier-sample-{index}",
+                "sha256": f"{index + 1:064x}",
+                "role": "query",
+            },
+            key_cards=_KEY_CARDS,
+            key_representation_id="K1",
+            matcher_policy_id="M8",
+            prompt_policy_id="speech-native-json-copy-v4",
+            top_k=2,
+            agent_policy_id="speech-conditioned-pairwise-boundary-support-v1",
+            agent_aggregator_id="pairwise-boundary-primary-control-v1",
+        )
+        for index in range(4)
+    )
+    client = FrontierClient()
+
+    outcomes = run_speech_native_match_tasks(
+        core_client=client,
+        tasks=tasks,
+        slot_count=2,
+        queue_depth=2,
+        dispatch_granularity="contact",
+    )
+
+    assert len(outcomes) == 4
+    first_pairwise_index = next(
+        index
+        for index, (_sample_id, stage) in enumerate(client.calls)
+        if ":pairwise-" in stage
+    )
+    initial_prefix = client.calls[:first_pairwise_index]
+    assert {sample_id for sample_id, _stage in initial_prefix} == {
+        f"frontier-sample-{index}" for index in range(4)
+    }
+    assert len(initial_prefix) == 8
+
+
 def test_contact_dispatch_runs_m7_verifier_wave_as_one_batched_ready_stage():
     class ParallelM7Client(_M7BatchClient):
         def __init__(self):
