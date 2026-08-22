@@ -2427,6 +2427,149 @@ def _trace_usage_summary(path: Path) -> dict[str, int]:
     }
 
 
+def _trace_speech_query_summary(
+    path: Path,
+    *,
+    expected_queries: Mapping[str, Mapping[str, str]],
+) -> dict[str, int]:
+    """Verify that every traced model request carries its bound speech query."""
+
+    frozen_expected: dict[str, dict[str, str]] = {}
+    for sample_id, descriptor in expected_queries.items():
+        expected = dict(descriptor)
+        if (
+            not isinstance(sample_id, str)
+            or not sample_id
+            or set(expected) != {"packet_id", "sha256", "role"}
+            or expected.get("role") != "query"
+            or not isinstance(expected.get("packet_id"), str)
+            or not expected["packet_id"]
+            or not isinstance(expected.get("sha256"), str)
+            or _SHA256.fullmatch(expected["sha256"]) is None
+        ):
+            raise SpeechNativeProfileError(
+                "cannot verify trace against a malformed expected speech query"
+            )
+        frozen_expected[sample_id] = expected
+
+    counts = Counter(
+        {
+            "model_request_count": 0,
+            "valid_speech_query_count": 0,
+            "invalid_speech_query_count": 0,
+            "unknown_sample_id_count": 0,
+            "query_source_failure_count": 0,
+            "mmproj_flag_failure_count": 0,
+            "packet_binding_failure_count": 0,
+        }
+    )
+    try:
+        with Path(path).open("r", encoding="utf-8") as handle:
+            for line in handle:
+                record = json.loads(line)
+                if record.get("channel") != "MODEL_REQUEST":
+                    continue
+                counts["model_request_count"] += 1
+                envelope = record.get("payload", {})
+                payload = (
+                    envelope.get("payload", {})
+                    if isinstance(envelope, Mapping)
+                    else {}
+                )
+                if not isinstance(payload, Mapping):
+                    payload = {}
+                sample_id = payload.get("sample_id")
+                expected = (
+                    frozen_expected.get(sample_id)
+                    if isinstance(sample_id, str)
+                    else None
+                )
+                source_valid = payload.get("query_source") == "speech_features"
+                mmproj_valid = payload.get("mmproj_loaded") is False
+                if not source_valid:
+                    counts["query_source_failure_count"] += 1
+                if not mmproj_valid:
+                    counts["mmproj_flag_failure_count"] += 1
+                if expected is None:
+                    counts["unknown_sample_id_count"] += 1
+
+                parts = payload.get("speech_feature_parts")
+                query_parts = (
+                    [
+                        dict(part)
+                        for part in parts
+                        if isinstance(part, Mapping) and part.get("role") == "query"
+                    ]
+                    if isinstance(parts, list)
+                    else []
+                )
+                binding_valid = (
+                    expected is not None
+                    and payload.get("speech_packet_sha256") == expected["sha256"]
+                    and query_parts == [expected]
+                )
+                if not binding_valid:
+                    counts["packet_binding_failure_count"] += 1
+                if source_valid and mmproj_valid and binding_valid:
+                    counts["valid_speech_query_count"] += 1
+                else:
+                    counts["invalid_speech_query_count"] += 1
+    except (OSError, UnicodeError, json.JSONDecodeError, TypeError, ValueError) as error:
+        raise SpeechNativeProfileError(
+            f"cannot verify profile trace speech-query carriage: {error}"
+        ) from error
+    return dict(counts)
+
+
+def _profile_completion_issues(
+    *,
+    calls_used: int,
+    actual_contact_count: int,
+    task_count: int,
+    planned_contact_ceiling: int,
+    request_failure_count: int,
+    server_scan: Mapping[str, object],
+    trace_usage: Mapping[str, object],
+    trace_speech_query: Mapping[str, object],
+) -> tuple[str, ...]:
+    """Return fail-closed completion defects using trace carriage as primary proof."""
+
+    issues: list[str] = []
+    if calls_used != actual_contact_count:
+        issues.append("cost calls do not equal decision contacts")
+    if actual_contact_count < task_count:
+        issues.append("actual contacts are fewer than matcher tasks")
+    if actual_contact_count > planned_contact_ceiling:
+        issues.append("actual contacts exceed the registered ceiling")
+    if request_failure_count:
+        issues.append("request failures were recorded")
+    for field, message in (
+        ("oom_marker_hits", "server log contains OOM markers"),
+        ("host_spill_marker_hits", "server log contains host-spill markers"),
+        ("runaway_marker_hits", "server log contains runaway markers"),
+    ):
+        if server_scan.get(field):
+            issues.append(message)
+    if any(
+        int(trace_usage.get(field, -1)) != actual_contact_count
+        for field in (
+            "model_request_count",
+            "model_response_count",
+            "cost_record_count",
+        )
+    ):
+        issues.append("trace request, response, and cost counts are incomplete")
+    if (
+        int(trace_speech_query.get("model_request_count", -1))
+        != actual_contact_count
+        or int(trace_speech_query.get("valid_speech_query_count", -1))
+        != actual_contact_count
+        or int(trace_speech_query.get("invalid_speech_query_count", -1)) != 0
+    ):
+        issues.append("trace speech-query carriage is incomplete")
+    return tuple(issues)
+
+
 def _read_live_process_environment(
     pid: int, *, proc_root: Path = Path("/proc")
 ) -> dict[str, str]:
@@ -3065,6 +3208,9 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
             "count": len(outcomes),
             "contains_gold_labels": False,
         }
+    trace_usage: Mapping[str, object] = {}
+    trace_speech_query: Mapping[str, object] = {}
+    completion_issues: tuple[str, ...] = ()
     if close_summary is not None:
         cost = close_summary.get("cost", {})
         if not isinstance(cost, Mapping):
@@ -3074,6 +3220,21 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
         if trace_path.is_file():
             trace_usage = _trace_usage_summary(trace_path)
             receipt["trace_usage"] = trace_usage
+            expected_queries: dict[str, Mapping[str, str]] = {}
+            for task in tasks:
+                sample_id = task.sample.sample_id
+                descriptor = dict(task.query_descriptor)
+                previous = expected_queries.get(sample_id)
+                if previous is not None and dict(previous) != descriptor:
+                    raise SpeechNativeProfileError(
+                        "one query sample is bound to conflicting speech packets"
+                    )
+                expected_queries[sample_id] = descriptor
+            trace_speech_query = _trace_speech_query_summary(
+                trace_path,
+                expected_queries=expected_queries,
+            )
+            receipt["trace_speech_query"] = trace_speech_query
             receipt["trace_sha256"] = _sha256_file(trace_path)
         receipt["trace_manifest_sha256"] = _sha256_file(
             run_dir / f"{plan.run_id}.trace-manifest.json"
@@ -3113,6 +3274,21 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
             eligibility = receipt["eligibility"]
             assert isinstance(eligibility, Mapping)
             receipt["eligible"] = all(bool(value) for value in eligibility.values())
+        if failure is None:
+            completion_issues = _profile_completion_issues(
+                calls_used=int(cost.get("calls_used", -1)),
+                actual_contact_count=actual_contact_count,
+                task_count=len(tasks),
+                planned_contact_ceiling=planned_contact_ceiling,
+                request_failure_count=len(receipt["request_failures"]),
+                server_scan=server_scan,
+                trace_usage=trace_usage,
+                trace_speech_query=trace_speech_query,
+            )
+            receipt["completion_issues"] = list(completion_issues)
+    elif failure is None:
+        completion_issues = ("profile close summary is missing",)
+        receipt["completion_issues"] = list(completion_issues)
     _write_exclusive_json(flight_receipt_path, receipt)
 
     if failure is not None:
@@ -3125,19 +3301,7 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
         raise SpeechNativeProfileError(
             "profile completed without opening its durable attempt accounting record"
         )
-    assert close_summary is not None
-    cost = close_summary["cost"]
-    assert isinstance(cost, Mapping)
-    if (
-        int(cost.get("calls_used", -1)) != actual_contact_count
-        or actual_contact_count < len(tasks)
-        or actual_contact_count > planned_contact_ceiling
-        or receipt["request_failures"]
-        or server_scan["oom_marker_hits"]
-        or server_scan["host_spill_marker_hits"]
-        or server_scan["runaway_marker_hits"]
-        or int(server_scan["mmproj_free_chunk_count"]) < actual_contact_count
-    ):
+    if completion_issues:
         attempt.mark_aborted("speech-native profile completion checks failed")
         raise SpeechNativeProfileError("profile completion checks failed; see flight receipt")
     attempt.mark_finalized()

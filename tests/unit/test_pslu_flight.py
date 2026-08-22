@@ -21,8 +21,10 @@ from speech_aware_evidence_acquisition.core.driver.speech_native import (
     _evaluate_training_free_episodic_policy,
     _build_audio_key_bindings,
     _evaluate_training_free_agent_policies,
+    _profile_completion_issues,
     _release_speech_native_session,
     _scan_server_log,
+    _trace_speech_query_summary,
     build_profile_tasks,
     profile_timing_metrics,
     read_speech_native_predictions,
@@ -249,6 +251,149 @@ def test_server_log_scan_is_scoped_to_current_attempt_window(tmp_path):
 
     assert scan["oom_marker_hits"] == []
     assert scan["mmproj_free_chunk_count"] == 2
+
+
+def test_trace_speech_query_summary_accepts_exact_query_with_audio_key(tmp_path):
+    trace = tmp_path / "trace.jsonl"
+    expected_query = {
+        "packet_id": "slurp/train/query",
+        "sha256": "a" * 64,
+        "role": "query",
+    }
+    rows = (
+        {
+            "channel": "MODEL_REQUEST",
+            "payload": {
+                "payload": {
+                    "sample_id": "slurp:train:query",
+                    "query_source": "speech_features",
+                    "mmproj_loaded": False,
+                    "speech_packet_sha256": "a" * 64,
+                    "speech_feature_parts": [
+                        expected_query,
+                        {
+                            "packet_id": "slurp/train/key",
+                            "sha256": "b" * 64,
+                            "role": "key",
+                        },
+                    ],
+                }
+            },
+        },
+        {"channel": "MODEL_RESPONSE", "payload": {}},
+    )
+    trace.write_text(
+        "".join(json.dumps(row) + "\n" for row in rows), encoding="utf-8"
+    )
+
+    summary = _trace_speech_query_summary(
+        trace,
+        expected_queries={"slurp:train:query": expected_query},
+    )
+
+    assert summary == {
+        "model_request_count": 1,
+        "valid_speech_query_count": 1,
+        "invalid_speech_query_count": 0,
+        "unknown_sample_id_count": 0,
+        "query_source_failure_count": 0,
+        "mmproj_flag_failure_count": 0,
+        "packet_binding_failure_count": 0,
+    }
+
+
+def test_trace_speech_query_summary_rejects_wrong_packet_binding(tmp_path):
+    trace = tmp_path / "trace.jsonl"
+    expected_query = {
+        "packet_id": "slurp/train/query",
+        "sha256": "a" * 64,
+        "role": "query",
+    }
+    trace.write_text(
+        json.dumps(
+            {
+                "channel": "MODEL_REQUEST",
+                "payload": {
+                    "payload": {
+                        "sample_id": "slurp:train:query",
+                        "query_source": "speech_features",
+                        "mmproj_loaded": False,
+                        "speech_packet_sha256": "b" * 64,
+                        "speech_feature_parts": [
+                            {**expected_query, "sha256": "b" * 64}
+                        ],
+                    }
+                },
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+    summary = _trace_speech_query_summary(
+        trace,
+        expected_queries={"slurp:train:query": expected_query},
+    )
+
+    assert summary["valid_speech_query_count"] == 0
+    assert summary["invalid_speech_query_count"] == 1
+    assert summary["packet_binding_failure_count"] == 1
+
+
+def test_profile_completion_uses_trace_carriage_not_auxiliary_log_count():
+    issues = _profile_completion_issues(
+        calls_used=2,
+        actual_contact_count=2,
+        task_count=1,
+        planned_contact_ceiling=2,
+        request_failure_count=0,
+        server_scan={
+            "oom_marker_hits": [],
+            "host_spill_marker_hits": [],
+            "runaway_marker_hits": [],
+            "mmproj_free_chunk_count": 1,
+        },
+        trace_usage={
+            "model_request_count": 2,
+            "model_response_count": 2,
+            "cost_record_count": 2,
+        },
+        trace_speech_query={
+            "model_request_count": 2,
+            "valid_speech_query_count": 2,
+            "invalid_speech_query_count": 0,
+        },
+    )
+
+    assert issues == ()
+
+
+def test_profile_completion_rejects_missing_trace_speech_query():
+    issues = _profile_completion_issues(
+        calls_used=2,
+        actual_contact_count=2,
+        task_count=1,
+        planned_contact_ceiling=2,
+        request_failure_count=0,
+        server_scan={
+            "oom_marker_hits": [],
+            "host_spill_marker_hits": [],
+            "runaway_marker_hits": [],
+            "mmproj_free_chunk_count": 2,
+        },
+        trace_usage={
+            "model_request_count": 2,
+            "model_response_count": 2,
+            "cost_record_count": 2,
+        },
+        trace_speech_query={
+            "model_request_count": 2,
+            "valid_speech_query_count": 1,
+            "invalid_speech_query_count": 1,
+        },
+    )
+
+    assert "trace speech-query carriage is incomplete" in issues
 
 
 class _SpeechFeatureClient:
