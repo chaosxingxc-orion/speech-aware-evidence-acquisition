@@ -3594,6 +3594,636 @@ def run_speech_native_match_tasks(
             if result.outcome is not None
         )
 
+    m9_global = dispatch_granularity == "contact" and all(
+        task.matcher_policy_id == "M9" for task in ordered_tasks
+    )
+    if m9_global:
+        @dataclass
+        class M9TaskState:
+            task_index: int
+            cards: tuple[KeyCardV1, ...]
+            graph: DecisionGraphV1
+            responses: dict[int, str] = field(default_factory=dict)
+            trace_buffers: dict[int, TraceBuffer] = field(default_factory=dict)
+            primary_key_id: str | None = None
+            top_ids: tuple[str, ...] = ()
+            factor_state: FactorLinkStateV1 | None = None
+            expansion: DecisionGraphExpansionV1 | None = None
+            reranked_ids: tuple[str, ...] = ()
+            boundary_path: tuple[str, ...] = ()
+            boundary_votes: dict[str, str | None] = field(default_factory=dict)
+            child_scheduled: bool = False
+            decision: SpeechNativeDecision | None = None
+            error: BaseException | None = None
+
+        @dataclass(frozen=True)
+        class M9Contact:
+            task_index: int
+            stage_index: int
+            stage_kind: str
+            order_id: str | None
+            messages: tuple[Mapping[str, object], ...]
+            kwargs: Mapping[str, object]
+            trace_buffer: TraceBuffer | None
+
+            @property
+            def sort_key(self) -> tuple[int, int]:
+                return self.task_index, self.stage_index
+
+        states_list: list[M9TaskState] = []
+        for task_index, task in enumerate(ordered_tasks):
+            cards = _validated_key_cards(task.key_cards)
+            if task.key_representation_id != "K1":
+                raise PsluFlightError("M9 requires maintainable K1 text keys")
+            if task.prompt_policy_id != "speech-native-json-copy-v4":
+                raise PsluFlightError(
+                    "M9 requires the schema-constrained JSON-copy v4 prompt policy"
+                )
+            if (
+                task.agent_policy_id
+                != "speech-conditioned-factor-graph-action-support-v1"
+                or task.agent_aggregator_id != "factor-graph-primary-control-v1"
+            ):
+                raise PsluFlightError(
+                    "M9 requires the factor-graph support policy and control"
+                )
+            if task.decision_graph is None:
+                raise PsluFlightError("M9 requires one DecisionGraphV1")
+            task.decision_graph.validate(cards)
+            if task.top_k <= 0 or task.top_k > len(cards):
+                raise PsluFlightError(
+                    f"top_k must be in [1, {len(cards)}], got {task.top_k}"
+                )
+            states_list.append(
+                M9TaskState(
+                    task_index=task_index,
+                    cards=cards,
+                    graph=task.decision_graph,
+                )
+            )
+        states = tuple(states_list)
+
+        def m9_contact_node(
+            state: M9TaskState,
+            *,
+            stage_index: int,
+            stage_kind: str,
+            stage: str,
+            system_text: str,
+            stage_cards: Sequence[KeyCardV1],
+            key_text: str,
+            response_format: Mapping[str, object],
+            order_id: str | None = None,
+        ) -> M9Contact:
+            task = ordered_tasks[state.task_index]
+            messages = _speech_feature_messages(
+                system_text=system_text,
+                query_descriptor=task.query_descriptor,
+                key_text=key_text,
+                key_cards=stage_cards,
+                key_representation_id="K1",
+                audio_key_bindings=None,
+            )
+            trace_buffer = (
+                TraceBuffer(trace_run_id) if trace_run_id is not None else None
+            )
+            if trace_buffer is not None:
+                state.trace_buffers[stage_index] = trace_buffer
+            decoding_params = dict(task.decoding_params)
+            decoding_params["response_format"] = response_format
+            return M9Contact(
+                task_index=state.task_index,
+                stage_index=stage_index,
+                stage_kind=stage_kind,
+                order_id=order_id,
+                messages=messages,
+                kwargs={
+                    "decoding_params": decoding_params,
+                    "speech_feature_sample_id": task.sample.sample_id,
+                    "key_representation_id": "K1",
+                    "matcher_policy_id": f"M9:{stage}",
+                },
+                trace_buffer=trace_buffer,
+            )
+
+        def m9_initial_nodes(state: M9TaskState) -> tuple[M9Contact, M9Contact]:
+            task = ordered_tasks[state.task_index]
+            key_ids = tuple(card.key_id for card in state.cards)
+            rendered = render_speech_native_keys(state.cards, "K1")
+            return (
+                m9_contact_node(
+                    state,
+                    stage_index=0,
+                    stage_kind="primary",
+                    stage="primary-listwise",
+                    system_text=(
+                        "Match the spoken command to exactly one opaque key. Use the speech "
+                        "signal and the supplied K1 text cards jointly. Return only the "
+                        "selected key_id."
+                    ),
+                    stage_cards=state.cards,
+                    key_text=rendered,
+                    response_format=_key_choice_response_format(
+                        name="speech_native_primary_key_choice",
+                        key_ids=key_ids,
+                    ),
+                ),
+                m9_contact_node(
+                    state,
+                    stage_index=1,
+                    stage_kind="retrieval",
+                    stage=f"speech-retrieve-top-{task.top_k}",
+                    system_text=(
+                        f"Retrieve exactly {task.top_k} distinct opaque keys for the spoken "
+                        "command, ranked from most to least compatible. Use the speech signal "
+                        "and supplied K1 text cards jointly. Return only the ordered key_ids."
+                    ),
+                    stage_cards=state.cards,
+                    key_text=rendered,
+                    response_format=_top_key_choice_response_format(
+                        key_ids=key_ids,
+                        top_k=task.top_k,
+                    ),
+                ),
+            )
+
+        def m9_initial_steps(
+            state: M9TaskState,
+        ) -> tuple[Mapping[str, object], ...]:
+            task = ordered_tasks[state.task_index]
+            return (
+                {
+                    "action_id": "match:speech-only-primary",
+                    "key_id": state.primary_key_id,
+                    "top_key_ids": [],
+                    "calls": 1,
+                    "parse_failure": state.primary_key_id is None,
+                },
+                {
+                    "action_id": "retrieve:speech-only",
+                    "key_id": state.top_ids[0] if state.top_ids else None,
+                    "top_key_ids": list(state.top_ids),
+                    "calls": 1,
+                    "parse_failure": len(state.top_ids) != task.top_k,
+                },
+            )
+
+        def finish_m9(
+            state: M9TaskState,
+            *,
+            top_ids: tuple[str, ...],
+            actions: tuple[str, ...],
+            votes: tuple[str | None, ...],
+            steps: tuple[Mapping[str, object], ...],
+        ) -> None:
+            task = ordered_tasks[state.task_index]
+            labels = {card.key_id: card.value_label for card in state.cards}
+            state.decision = SpeechNativeDecision(
+                matcher_policy_id="M9",
+                key_representation_id="K1",
+                key_id=state.primary_key_id,
+                value_label=labels.get(state.primary_key_id),
+                top_key_ids=top_ids,
+                calls=len(state.responses),
+                raw_responses=tuple(
+                    state.responses[index] for index in sorted(state.responses)
+                ),
+                verifier_scores={},
+                parse_failure=state.primary_key_id is None,
+                agent_policy_id=task.agent_policy_id,
+                agent_actions=actions,
+                agent_escalated=True,
+                agent_vote_key_ids=votes,
+                agent_steps=steps,
+                agent_aggregator_id=task.agent_aggregator_id,
+            )
+
+        def m9_link_node(state: M9TaskState) -> M9Contact:
+            initial_cards = tuple(
+                card for key_id in state.top_ids for card in state.cards
+                if card.key_id == key_id
+            )
+            graph_text = render_decision_graph_neighborhood(
+                graph=state.graph,
+                key_cards=state.cards,
+                candidate_key_ids=state.top_ids,
+            )
+            return m9_contact_node(
+                state,
+                stage_index=2,
+                stage_kind="link",
+                stage="link-factors",
+                system_text=(
+                    "Select two through five existing factor ids that are directly supported "
+                    "by the spoken command, plus at most one existing boundary id when it "
+                    "captures the unresolved distinction. Return only the registered ids. "
+                    "Do not generate a paraphrase, rationale, or free-form semantic field."
+                ),
+                stage_cards=initial_cards,
+                key_text=(
+                    "Initial key cards:\n"
+                    + render_speech_native_keys(initial_cards, "K1")
+                    + "\n\nReachable decision graph:\n"
+                    + graph_text
+                ),
+                response_format=factor_link_response_format(
+                    graph=state.graph,
+                    key_cards=state.cards,
+                    candidate_key_ids=state.top_ids,
+                ),
+            )
+
+        def m9_rerank_node(state: M9TaskState) -> M9Contact:
+            assert state.factor_state is not None
+            assert state.expansion is not None
+            expanded_cards = tuple(
+                card for key_id in state.expansion.key_ids for card in state.cards
+                if card.key_id == key_id
+            )
+            rerank_top_k = min(3, len(expanded_cards))
+            return m9_contact_node(
+                state,
+                stage_index=3,
+                stage_kind="rerank",
+                stage=f"factor-rerank-top-{rerank_top_k}",
+                system_text=(
+                    f"Rank exactly {rerank_top_k} opaque keys for the spoken command. The "
+                    "selected knowledge factors are advisory evidence; re-evaluate them "
+                    "against the speech signal carried in this request. Return only the "
+                    "ordered key_ids."
+                ),
+                stage_cards=expanded_cards,
+                key_text=(
+                    render_factor_link_state(
+                        graph=state.graph, state=state.factor_state
+                    )
+                    + "\n\nExpanded key cards:\n"
+                    + render_speech_native_keys(expanded_cards, "K1")
+                ),
+                response_format=_top_key_choice_response_format(
+                    key_ids=state.expansion.key_ids,
+                    top_k=rerank_top_k,
+                ),
+            )
+
+        def m9_factor_steps(
+            state: M9TaskState,
+        ) -> tuple[Mapping[str, object], ...]:
+            assert state.factor_state is not None
+            assert state.expansion is not None
+            return (
+                *m9_initial_steps(state),
+                {
+                    "action_id": "link:knowledge-factors",
+                    "key_id": None,
+                    "top_key_ids": list(state.top_ids),
+                    "calls": 1,
+                    "parse_failure": False,
+                    "factor_link_state": {
+                        "factor_ids": list(state.factor_state.factor_ids),
+                        "boundary_id": state.factor_state.boundary_id,
+                    },
+                },
+                {
+                    "action_id": "tool:expand-factor-graph",
+                    "key_id": None,
+                    "top_key_ids": list(state.top_ids),
+                    "calls": 0,
+                    "parse_failure": False,
+                    "expanded_key_ids": list(state.expansion.key_ids),
+                    "distance_by_key": dict(state.expansion.distance_by_key),
+                },
+                {
+                    "action_id": "rerank:speech-plus-factor-state",
+                    "key_id": state.reranked_ids[0] if state.reranked_ids else None,
+                    "top_key_ids": list(state.reranked_ids),
+                    "calls": 1,
+                    "parse_failure": not state.reranked_ids,
+                },
+            )
+
+        def m9_boundary_nodes(
+            state: M9TaskState,
+        ) -> tuple[M9Contact, M9Contact]:
+            assert state.primary_key_id is not None
+            assert state.reranked_ids
+            assert state.factor_state is not None
+            pair_ids = (state.primary_key_id, state.reranked_ids[0])
+            by_key = {card.key_id: card for card in state.cards}
+            boundaries_by_id = {
+                boundary.boundary_id: boundary
+                for boundary in state.graph.boundaries
+            }
+            path_lines = ["Boundary path:"]
+            for boundary_id in state.boundary_path:
+                boundary = boundaries_by_id[boundary_id]
+                path_lines.extend(
+                    (
+                        f"[{boundary.boundary_id}] endpoints="
+                        f"{boundary.left_key_id},{boundary.right_key_id}",
+                        f"{boundary.left_key_id} factors: "
+                        f"{','.join(boundary.left_factor_ids)}",
+                        f"{boundary.left_key_id} exclusion: {boundary.left_exclusion}",
+                        f"{boundary.right_key_id} factors: "
+                        f"{','.join(boundary.right_factor_ids)}",
+                        f"{boundary.right_key_id} exclusion: {boundary.right_exclusion}",
+                    )
+                )
+            key_text_prefix = (
+                render_factor_link_state(
+                    graph=state.graph, state=state.factor_state
+                )
+                + "\n\n"
+                + "\n".join(path_lines)
+                + "\n\nCandidate key cards:\n"
+            )
+            response_format = _key_choice_response_format(
+                name="speech_native_factor_boundary_choice",
+                key_ids=pair_ids,
+            )
+            nodes = []
+            for stage_index, (order_id, ordered_ids) in enumerate(
+                (("ab", pair_ids), ("ba", tuple(reversed(pair_ids)))), start=4
+            ):
+                ordered_cards = tuple(by_key[key_id] for key_id in ordered_ids)
+                nodes.append(
+                    m9_contact_node(
+                        state,
+                        stage_index=stage_index,
+                        stage_kind="boundary",
+                        stage=f"boundary-rank-1-{order_id}",
+                        system_text=(
+                            "Choose which of exactly two opaque keys better matches the "
+                            "spoken command. Use the selected factor nodes and registered "
+                            "boundary path as advisory evidence, but resolve conflicts from "
+                            "the speech signal. Treat card order as irrelevant and return "
+                            "only key_id."
+                        ),
+                        stage_cards=ordered_cards,
+                        key_text=(
+                            key_text_prefix
+                            + render_speech_native_keys(ordered_cards, "K1")
+                        ),
+                        response_format=response_format,
+                        order_id=order_id,
+                    )
+                )
+            return tuple(nodes)  # type: ignore[return-value]
+
+        ready: deque[M9Contact] = deque(
+            node for state in states for node in m9_initial_nodes(state)
+        )
+        pending: dict[Future, M9Contact] = {}
+        try:
+            while ready or pending:
+                while ready and len(pending) < queue_depth:
+                    node = ready.popleft()
+                    state = states[node.task_index]
+                    if state.error is not None or state.decision is not None:
+                        continue
+                    future = contact_client._submit(
+                        node.messages, dict(node.kwargs), node.trace_buffer
+                    )
+                    pending[future] = node
+                if not pending:
+                    if ready:
+                        continue
+                    break
+                done, _not_done = wait(tuple(pending), return_when=FIRST_COMPLETED)
+                for future in sorted(done, key=lambda item: pending[item].sort_key):
+                    node = pending.pop(future)
+                    state = states[node.task_index]
+                    try:
+                        response = future.result()
+                    except BaseException as error:
+                        if state.error is None:
+                            state.error = error
+                        continue
+                    if state.error is not None or state.decision is not None:
+                        continue
+                    state.responses[node.stage_index] = response
+                    task = ordered_tasks[state.task_index]
+                    allowed = {card.key_id for card in state.cards}
+                    if node.stage_kind in {"primary", "retrieval"}:
+                        if not {0, 1}.issubset(state.responses):
+                            continue
+                        state.primary_key_id = _selected_key_id(
+                            state.responses[0], allowed
+                        )
+                        state.top_ids = _selected_top_keys(
+                            state.responses[1], allowed, task.top_k
+                        )
+                        if (
+                            state.primary_key_id is None
+                            or len(state.top_ids) != task.top_k
+                        ):
+                            finish_m9(
+                                state,
+                                top_ids=state.top_ids,
+                                actions=(
+                                    "match:speech-only-primary",
+                                    "retrieve:speech-only",
+                                    "backtrack:invalid-initial-factor-support",
+                                ),
+                                votes=(state.primary_key_id,),
+                                steps=m9_initial_steps(state),
+                            )
+                        elif not state.child_scheduled:
+                            state.child_scheduled = True
+                            ready.append(m9_link_node(state))
+                        continue
+                    if node.stage_kind == "link":
+                        state.factor_state = parse_factor_link_state(
+                            response,
+                            graph=state.graph,
+                            key_cards=state.cards,
+                            candidate_key_ids=state.top_ids,
+                        )
+                        if state.factor_state is None:
+                            finish_m9(
+                                state,
+                                top_ids=state.top_ids,
+                                actions=(
+                                    "match:speech-only-primary",
+                                    "retrieve:speech-only",
+                                    "link:knowledge-factors",
+                                    "backtrack:invalid-factor-link-state",
+                                ),
+                                votes=(state.primary_key_id,),
+                                steps=(
+                                    *m9_initial_steps(state),
+                                    {
+                                        "action_id": "link:knowledge-factors",
+                                        "key_id": None,
+                                        "top_key_ids": list(state.top_ids),
+                                        "calls": 1,
+                                        "parse_failure": True,
+                                    },
+                                ),
+                            )
+                            continue
+                        state.expansion = expand_decision_graph_candidates(
+                            graph=state.graph,
+                            initial_key_ids=state.top_ids,
+                            state=state.factor_state,
+                            cap=min(6, len(state.cards)),
+                        )
+                        ready.append(m9_rerank_node(state))
+                        continue
+                    if node.stage_kind == "rerank":
+                        assert state.expansion is not None
+                        rerank_top_k = min(3, len(state.expansion.key_ids))
+                        state.reranked_ids = _selected_top_keys(
+                            response, set(state.expansion.key_ids), rerank_top_k
+                        )
+                        common_actions = (
+                            "match:speech-only-primary",
+                            "retrieve:speech-only",
+                            "link:knowledge-factors",
+                            "tool:expand-factor-graph",
+                            "rerank:speech-plus-factor-state",
+                        )
+                        steps = m9_factor_steps(state)
+                        if len(state.reranked_ids) != rerank_top_k:
+                            finish_m9(
+                                state,
+                                top_ids=state.reranked_ids,
+                                actions=(*common_actions, "backtrack:invalid-factor-rerank"),
+                                votes=(state.primary_key_id,),
+                                steps=steps,
+                            )
+                            continue
+                        rerank_key_id = state.reranked_ids[0]
+                        if rerank_key_id == state.primary_key_id:
+                            finish_m9(
+                                state,
+                                top_ids=state.reranked_ids,
+                                actions=(
+                                    *common_actions,
+                                    "stop:primary-rerank-agree",
+                                    "select:retain-primary-for-support",
+                                ),
+                                votes=(state.primary_key_id, rerank_key_id),
+                                steps=steps,
+                            )
+                            continue
+                        assert state.primary_key_id is not None
+                        state.boundary_path = decision_boundary_path(
+                            graph=state.graph,
+                            source_key_id=state.primary_key_id,
+                            target_key_id=rerank_key_id,
+                            max_edges=2,
+                        )
+                        if not state.boundary_path:
+                            finish_m9(
+                                state,
+                                top_ids=state.reranked_ids,
+                                actions=(
+                                    *common_actions,
+                                    "backtrack:no-boundary-path",
+                                    "select:retain-primary-for-support",
+                                ),
+                                votes=(state.primary_key_id, rerank_key_id),
+                                steps=steps,
+                            )
+                            continue
+                        ready.extend(m9_boundary_nodes(state))
+                        continue
+                    if node.stage_kind == "boundary":
+                        assert node.order_id is not None
+                        assert state.primary_key_id is not None
+                        state.boundary_votes[node.order_id] = _selected_key_id(
+                            response,
+                            {state.primary_key_id, state.reranked_ids[0]},
+                        )
+                        if set(state.boundary_votes) != {"ab", "ba"}:
+                            continue
+                        boundary_votes = (
+                            state.boundary_votes["ab"],
+                            state.boundary_votes["ba"],
+                        )
+                        finish_m9(
+                            state,
+                            top_ids=state.reranked_ids,
+                            actions=(
+                                "match:speech-only-primary",
+                                "retrieve:speech-only",
+                                "link:knowledge-factors",
+                                "tool:expand-factor-graph",
+                                "rerank:speech-plus-factor-state",
+                                "compare:boundary-ab",
+                                "compare:boundary-ba",
+                                "select:retain-primary-for-support",
+                            ),
+                            votes=(
+                                state.primary_key_id,
+                                state.reranked_ids[0],
+                                *boundary_votes,
+                            ),
+                            steps=(
+                                *m9_factor_steps(state),
+                                {
+                                    "action_id": "compare:factor-boundary",
+                                    "key_id": None,
+                                    "top_key_ids": [
+                                        state.primary_key_id,
+                                        state.reranked_ids[0],
+                                    ],
+                                    "calls": 2,
+                                    "parse_failure": any(
+                                        vote is None for vote in boundary_votes
+                                    ),
+                                    "boundary_path_ids": list(state.boundary_path),
+                                    "ab_key_id": boundary_votes[0],
+                                    "ba_key_id": boundary_votes[1],
+                                    "causal_parent_ids": [
+                                        "link:knowledge-factors",
+                                        "tool:expand-factor-graph",
+                                        "rerank:speech-plus-factor-state",
+                                    ],
+                                },
+                            ),
+                        )
+                        continue
+                    raise PsluFlightError(f"unknown M9 DAG stage {node.stage_kind!r}")
+        finally:
+            assert contact_pool is not None
+            contact_pool.shutdown(wait=True)
+
+        buffered_outcomes: list[_BufferedSpeechNativeOutcome] = []
+        for state in states:
+            combined = TraceBuffer(trace_run_id) if trace_run_id is not None else None
+            if combined is not None:
+                for stage_index in sorted(state.trace_buffers):
+                    combined.extend_from(state.trace_buffers[stage_index])
+            if state.error is None and state.decision is None:
+                state.error = PsluFlightError("global M9 DAG did not settle one task")
+            buffered_outcomes.append(
+                _BufferedSpeechNativeOutcome(
+                    outcome=(
+                        SpeechNativeMatchOutcome(
+                            task_id=ordered_tasks[state.task_index].task_id,
+                            slot_id=-1,
+                            decision=state.decision,
+                        )
+                        if state.decision is not None
+                        else None
+                    ),
+                    buffer=combined,
+                    error=state.error,
+                )
+            )
+        if trace_flusher is not None:
+            for result in buffered_outcomes:
+                assert result.buffer is not None
+                trace_flusher(result.buffer)
+        for result in buffered_outcomes:
+            if result.error is not None:
+                raise result.error
+        return tuple(
+            result.outcome for result in buffered_outcomes if result.outcome is not None
+        )
+
     full_branch_global = dispatch_granularity == "contact" and all(
         task.matcher_policy_id == "M5"
         and task.agent_policy_id == "m1-m3-full-branch-explorer-v1"
