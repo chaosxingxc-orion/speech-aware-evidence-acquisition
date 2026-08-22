@@ -7409,6 +7409,62 @@ def _knowledge_refinement_material():
     return tuple(material)
 
 
+def _residual_information_material():
+    query_seen = {"alarm": 0, "email": 0}
+    material = []
+    for entry in _knowledge_refinement_material():
+        if entry.action == "query" and query_seen[entry.scenario] < 8:
+            query_seen[entry.scenario] += 1
+            entry = replace(entry, entity_types=())
+        material.append(entry)
+    return tuple(material)
+
+
+def _action_complete_knowledge_material():
+    actions = {
+        "alarm": ("set", "query", "remove"),
+        "iot": (
+            "cleaning",
+            "coffee",
+            "hue_lightchange",
+            "hue_lightdim",
+            "hue_lightoff",
+            "hue_lighton",
+            "hue_lightup",
+            "wemo_off",
+            "wemo_on",
+        ),
+    }
+    material = []
+    item_index = 0
+    for scenario, scenario_actions in actions.items():
+        for action in scenario_actions:
+            for replica in range(8):
+                item_index += 1
+                material.append(
+                    SlurpTrainMaterial(
+                        utterance_id=f"complete-{item_index:04d}",
+                        scenario=scenario,
+                        action=action,
+                        sentence=f"{scenario} {action} example {replica}",
+                        recordings=(
+                            SlurpTrainRecording(
+                                sample_id=(
+                                    f"slurp:train:{item_index:06d}:"
+                                    f"audio-complete-{item_index}"
+                                ),
+                                media_relpath=(
+                                    "datasets/slurp/slurp_real/"
+                                    f"audio-complete-{item_index}.flac"
+                                ),
+                                speaker_id=f"complete-speaker-{item_index}",
+                            ),
+                        ),
+                    )
+                )
+    return tuple(material)
+
+
 def test_speech_native_knowledge_refinement_is_data_derived_and_isolated():
     material = _knowledge_refinement_material()
     base = build_speech_native_binding(
@@ -7480,6 +7536,69 @@ def test_speech_native_knowledge_refinement_is_data_derived_and_isolated():
         key_examples_per_scenario=5,
     )
     assert json.dumps(successor, sort_keys=True) == json.dumps(repeated, sort_keys=True)
+
+
+def test_action_complete_knowledge_policy_adds_one_example_for_every_train_action():
+    material = _action_complete_knowledge_material()
+    base = build_speech_native_binding(
+        material,
+        seed=20260821,
+        expected_scenarios=("alarm", "iot"),
+        opt_a_per_scenario=2,
+        opt_b_per_scenario=1,
+        gate_per_scenario=1,
+        key_examples_per_scenario=5,
+    )
+
+    successor = refine_speech_native_binding_knowledge(
+        base,
+        material,
+        seed=20260828,
+        policy_id="slurp-action-complete-specificity-v2",
+        expected_scenarios=("alarm", "iot"),
+        key_examples_per_scenario=5,
+    )
+
+    assert successor["knowledge_revision"]["policy_id"] == (
+        "slurp-action-complete-specificity-v2"
+    )
+    material_by_utterance = {entry.utterance_id: entry for entry in material}
+    labels_by_key = {
+        card["key_id"]: card["value_label"] for card in successor["key_cards"]
+    }
+    action_sets = {
+        labels_by_key[key["key_id"]]: {
+            material_by_utterance[source["utterance_id"]].action
+            for source in key["sources"]
+        }
+        for key in successor["key_material"]
+    }
+    assert action_sets["alarm"] == {"set", "query", "remove"}
+    assert action_sets["iot"] == {
+        "cleaning",
+        "coffee",
+        "hue_lightchange",
+        "hue_lightdim",
+        "hue_lightoff",
+        "hue_lighton",
+        "hue_lightup",
+        "wemo_off",
+        "wemo_on",
+    }
+    iot_key = next(
+        key
+        for key in successor["knowledge_revision"]["keys"]
+        if key["value_label"] == "iot"
+    )
+    assert iot_key["covered_action_mass"] == 1.0
+    assert iot_key["missing_example_actions"] == []
+    assert len(iot_key["selected_source_sample_ids"]) == 9
+    assert successor["knowledge_revision"]["minimum_examples_per_key"] == 5
+    assert successor["knowledge_revision"]["maximum_examples_per_key"] == 9
+    assert sorted(
+        successor["knowledge_revision"]["example_count_by_key"].values()
+    ) == [5, 9]
+    assert "examples_per_key" not in successor["knowledge_revision"]
 
 
 def test_data_derived_decision_graph_uses_remaining_train_actions_and_pair_signal():
@@ -7634,6 +7753,70 @@ def test_shared_action_entity_graph_covers_the_actual_ambiguity_and_entity_signa
     assert graph.as_json() == repeated.as_json()
 
 
+def test_signature_lexical_graph_adds_new_pair_specific_train_prototypes():
+    material = _residual_information_material()
+    base = build_speech_native_binding(
+        material,
+        seed=20260821,
+        expected_scenarios=("alarm", "email"),
+        opt_a_per_scenario=2,
+        opt_b_per_scenario=1,
+        gate_per_scenario=1,
+        key_examples_per_scenario=5,
+    )
+    knowledge = refine_speech_native_binding_knowledge(
+        base,
+        material,
+        seed=20260827,
+        policy_id="slurp-action-complete-specificity-v2",
+        expected_scenarios=("alarm", "email"),
+        key_examples_per_scenario=5,
+    )
+
+    graph = build_data_derived_decision_graph(
+        knowledge,
+        material,
+        graph_id="slurp-signature-lexical-decision-graph-v4",
+        expected_scenarios=("alarm", "email"),
+        maximum_boundaries=1,
+        boundary_policy_id="shared-signature-lexical-boundaries-v3",
+    )
+
+    assert len(graph.boundaries) == 1
+    boundary = graph.boundaries[0]
+    assert any(
+        item.startswith(
+            "slurp-train-signature-lexical:alarm:email:query:none:support-"
+        )
+        for item in boundary.provenance_ids
+    )
+    assert "Train-derived prototype supporting K002" in boundary.left_exclusion
+    assert "Train-derived prototype supporting K001" in boundary.right_exclusion
+    assert "show my active alarms" in boundary.right_exclusion
+    assert "read my newest email" in boundary.left_exclusion
+
+    audit = build_speech_native_information_audit(
+        knowledge,
+        material,
+        graph,
+        expected_scenarios=("alarm", "email"),
+    )
+    assert audit["admission"]["status"] == "admitted"
+    assert audit["knowledge_supply"]["signature_lexical_pair_coverage"] == {
+        "covered": 1,
+        "required": 1,
+    }
+    repeated = build_data_derived_decision_graph(
+        knowledge,
+        reversed(material),
+        graph_id="slurp-signature-lexical-decision-graph-v4",
+        expected_scenarios=("alarm", "email"),
+        maximum_boundaries=1,
+        boundary_policy_id="shared-signature-lexical-boundaries-v3",
+    )
+    assert graph.as_json() == repeated.as_json()
+
+
 def test_shared_action_entity_graph_fails_without_discriminative_entity_information():
     material = tuple(
         replace(entry, entity_types=("shared_entity",))
@@ -7670,14 +7853,7 @@ def test_shared_action_entity_graph_fails_without_discriminative_entity_informat
 
 
 def test_information_audit_blocks_entity_only_knowledge_with_residual_ambiguity():
-    query_seen = {"alarm": 0, "email": 0}
-    material_items = []
-    for entry in _knowledge_refinement_material():
-        if entry.action == "query" and query_seen[entry.scenario] < 8:
-            query_seen[entry.scenario] += 1
-            entry = replace(entry, entity_types=())
-        material_items.append(entry)
-    material = tuple(material_items)
+    material = _residual_information_material()
     base = build_speech_native_binding(
         material,
         seed=20260821,
@@ -7733,14 +7909,7 @@ def test_information_audit_blocks_entity_only_knowledge_with_residual_ambiguity(
 
 
 def test_information_audit_admits_complete_pair_specific_lexical_supply():
-    query_seen = {"alarm": 0, "email": 0}
-    material_items = []
-    for entry in _knowledge_refinement_material():
-        if entry.action == "query" and query_seen[entry.scenario] < 8:
-            query_seen[entry.scenario] += 1
-            entry = replace(entry, entity_types=())
-        material_items.append(entry)
-    material = tuple(material_items)
+    material = _residual_information_material()
     base = build_speech_native_binding(
         material,
         seed=20260821,

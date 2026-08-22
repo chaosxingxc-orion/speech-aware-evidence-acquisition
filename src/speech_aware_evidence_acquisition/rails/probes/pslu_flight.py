@@ -252,9 +252,17 @@ SPEECH_NATIVE_SCENARIO_CONTRASTS: Mapping[str, str] = MappingProxyType(
 )
 
 SPEECH_NATIVE_KNOWLEDGE_POLICY_ID = "slurp-action-stratified-specificity-v1"
+SPEECH_NATIVE_INFORMATION_COMPLETE_KNOWLEDGE_POLICY_ID = (
+    "slurp-action-complete-specificity-v2"
+)
+SPEECH_NATIVE_KNOWLEDGE_POLICY_IDS = (
+    SPEECH_NATIVE_KNOWLEDGE_POLICY_ID,
+    SPEECH_NATIVE_INFORMATION_COMPLETE_KNOWLEDGE_POLICY_ID,
+)
 SPEECH_NATIVE_BOUNDARY_POLICY_IDS = (
     "ranked-pair-signal-v1",
     "shared-action-entity-boundaries-v2",
+    "shared-signature-lexical-boundaries-v3",
 )
 _STABLE_SHARED_ACTION_MIN_SUPPORT = 5
 _DISCRIMINATIVE_ENTITY_MIN_SUPPORT = 2
@@ -6896,7 +6904,7 @@ def refine_speech_native_binding_knowledge(
 
     if isinstance(seed, bool) or not isinstance(seed, int):
         raise PsluFlightError("speech-native knowledge seed must be an integer")
-    if policy_id != SPEECH_NATIVE_KNOWLEDGE_POLICY_ID:
+    if policy_id not in SPEECH_NATIVE_KNOWLEDGE_POLICY_IDS:
         raise PsluFlightError(
             f"unsupported speech-native knowledge policy {policy_id!r}"
         )
@@ -7116,7 +7124,12 @@ def refine_speech_native_binding_knowledge(
                 return True
             return False
 
-        for action in ranked_actions[:key_examples_per_scenario]:
+        actions_requiring_examples = (
+            ranked_actions
+            if policy_id == SPEECH_NATIVE_INFORMATION_COMPLETE_KNOWLEDGE_POLICY_ID
+            else ranked_actions[:key_examples_per_scenario]
+        )
+        for action in actions_requiring_examples:
             if not select_one(action):
                 raise PsluFlightError(
                     f"no isolated knowledge prototype for {scenario!r}/{action!r}"
@@ -7124,10 +7137,10 @@ def refine_speech_native_binding_knowledge(
         while len(selected) < key_examples_per_scenario:
             if not select_one(None):
                 break
-        if len(selected) != key_examples_per_scenario:
+        if len(selected) < key_examples_per_scenario:
             raise PsluFlightError(
                 f"insufficient isolated knowledge examples for {scenario!r}: needed "
-                f"{key_examples_per_scenario}, found {len(selected)}"
+                f"at least {key_examples_per_scenario}, found {len(selected)}"
             )
 
         selected_actions = {entry.action for entry, _recording, _score in selected}
@@ -7212,19 +7225,33 @@ def refine_speech_native_binding_knowledge(
     successor["key_cards"] = key_cards
     successor["key_material"] = key_material
     successor["knowledge_parent_binding_sha256"] = claimed_sha256
-    successor["knowledge_revision"] = {
+    knowledge_revision: dict[str, object] = {
         "schema": "saea-speech-native-knowledge-revision-v1",
         "policy_id": policy_id,
         "seed": seed,
         "source_split": "SLURP train real speech only",
         "query_excluded_corpus_utterances": corpus_count,
         "key_count": len(key_cards),
-        "examples_per_key": key_examples_per_scenario,
         "selection_signal": (
             "smoothed scenario-vs-rest unigram/bigram lift with length penalty"
         ),
         "keys": revision_keys,
     }
+    if policy_id == SPEECH_NATIVE_KNOWLEDGE_POLICY_ID:
+        knowledge_revision["examples_per_key"] = key_examples_per_scenario
+    else:
+        example_count_by_key = {
+            str(key["key_id"]): len(key["selected_source_sample_ids"])
+            for key in revision_keys
+        }
+        knowledge_revision.update(
+            {
+                "minimum_examples_per_key": key_examples_per_scenario,
+                "maximum_examples_per_key": max(example_count_by_key.values()),
+                "example_count_by_key": example_count_by_key,
+            }
+        )
+    successor["knowledge_revision"] = knowledge_revision
     successor["isolation_audit"] = {
         "query_sample_count": len(query_samples),
         "query_speaker_count": len(query_speakers),
@@ -7318,7 +7345,7 @@ def build_data_derived_decision_graph(
     revision = knowledge_binding.get("knowledge_revision")
     if (
         not isinstance(revision, Mapping)
-        or revision.get("policy_id") != SPEECH_NATIVE_KNOWLEDGE_POLICY_ID
+        or revision.get("policy_id") not in SPEECH_NATIVE_KNOWLEDGE_POLICY_IDS
     ):
         raise PsluFlightError(
             "data-derived graph requires the action-stratified knowledge successor"
@@ -7675,6 +7702,67 @@ def build_data_derived_decision_graph(
                 f"{maximum_boundaries}"
             )
 
+        signature_material: dict[
+            tuple[str, str, tuple[str, ...]], list[SlurpTrainMaterial]
+        ] = defaultdict(list)
+        for entry in corpus:
+            signature_material[
+                (
+                    entry.scenario,
+                    entry.action,
+                    tuple(sorted(set(entry.entity_types))),
+                )
+            ].append(entry)
+        visible_sentences = {
+            scenario: {
+                _normalized_sentence(example)
+                for example in cards_by_scenario[scenario].positive_examples
+            }
+            for scenario in scenarios
+        }
+
+        def lexical_prototype(
+            primary: Sequence[SlurpTrainMaterial],
+            other: Sequence[SlurpTrainMaterial],
+            *,
+            scenario: str,
+        ) -> SlurpTrainMaterial:
+            primary_counts: Counter[str] = Counter()
+            other_counts: Counter[str] = Counter()
+            for entry in primary:
+                primary_counts.update(_knowledge_features(entry.sentence))
+            for entry in other:
+                other_counts.update(_knowledge_features(entry.sentence))
+
+            def score(entry: SlurpTrainMaterial) -> float:
+                lifts = sorted(
+                    (
+                        math.log2(
+                            ((primary_counts[feature] + 0.5) / (len(primary) + 1.0))
+                            / ((other_counts[feature] + 0.5) / (len(other) + 1.0))
+                        )
+                        for feature in _knowledge_features(entry.sentence)
+                    ),
+                    reverse=True,
+                )
+                return sum(value for value in lifts[:3] if value > 0.0)
+
+            candidates = [
+                entry
+                for entry in primary
+                if _normalized_sentence(entry.sentence)
+                not in visible_sentences[scenario]
+            ]
+            if not candidates:
+                raise PsluFlightError(
+                    "signature lexical boundary lacks a prototype not already "
+                    f"visible in key examples for {scenario!r}"
+                )
+            return sorted(
+                candidates,
+                key=lambda entry: (-score(entry), entry.utterance_id),
+            )[0]
+
         def render_entity_types(
             evidence: tuple[EntityRateEvidence, ...],
         ) -> str:
@@ -7687,6 +7775,103 @@ def build_data_derived_decision_graph(
             left_card = cards_by_scenario[left]
             right_card = cards_by_scenario[right]
             action_text = ", ".join(shared_actions)
+            lexical_provenance: tuple[str, ...] = ()
+            left_lexical_exclusion = ""
+            right_lexical_exclusion = ""
+            if boundary_policy_id == "shared-signature-lexical-boundaries-v3":
+                residual_signatures: list[
+                    tuple[
+                        int,
+                        int,
+                        str,
+                        tuple[str, ...],
+                        tuple[SlurpTrainMaterial, ...],
+                        tuple[SlurpTrainMaterial, ...],
+                    ]
+                ] = []
+                for action in shared_actions:
+                    entity_signatures = {
+                        signature
+                        for scenario, candidate_action, signature in signature_material
+                        if scenario == left and candidate_action == action
+                    } & {
+                        signature
+                        for scenario, candidate_action, signature in signature_material
+                        if scenario == right and candidate_action == action
+                    }
+                    for entity_signature in entity_signatures:
+                        left_entries = tuple(
+                            signature_material[(left, action, entity_signature)]
+                        )
+                        right_entries = tuple(
+                            signature_material[(right, action, entity_signature)]
+                        )
+                        if (
+                            len(left_entries) < _STABLE_SHARED_ACTION_MIN_SUPPORT
+                            or len(right_entries) < _STABLE_SHARED_ACTION_MIN_SUPPORT
+                        ):
+                            continue
+                        residual_signatures.append(
+                            (
+                                min(len(left_entries), len(right_entries)),
+                                len(left_entries) + len(right_entries),
+                                action,
+                                entity_signature,
+                                left_entries,
+                                right_entries,
+                            )
+                        )
+                if not residual_signatures:
+                    raise PsluFlightError(
+                        "signature lexical boundary lacks a stable residual "
+                        f"signature for {left}/{right}"
+                    )
+                (
+                    _minimum_support,
+                    _total_support,
+                    lexical_action,
+                    lexical_entities,
+                    left_entries,
+                    right_entries,
+                ) = sorted(
+                    residual_signatures,
+                    key=lambda item: (-item[0], -item[1], item[2], item[3]),
+                )[0]
+                left_prototype = lexical_prototype(
+                    left_entries,
+                    right_entries,
+                    scenario=left,
+                )
+                right_prototype = lexical_prototype(
+                    right_entries,
+                    left_entries,
+                    scenario=right,
+                )
+                entity_signature_text = (
+                    ", ".join(item.replace("_", " ") for item in lexical_entities)
+                    if lexical_entities
+                    else "none"
+                )
+                entity_signature_id = (
+                    "+".join(lexical_entities) if lexical_entities else "none"
+                )
+                left_lexical_exclusion = (
+                    f' Train-derived prototype supporting {right_card.key_id} for '
+                    f"shared action {lexical_action} and entity types "
+                    f'{entity_signature_text}: "{right_prototype.sentence}".'
+                )
+                right_lexical_exclusion = (
+                    f' Train-derived prototype supporting {left_card.key_id} for '
+                    f"shared action {lexical_action} and entity types "
+                    f'{entity_signature_text}: "{left_prototype.sentence}".'
+                )
+                lexical_provenance = (
+                    f"slurp-train-signature-lexical:{left}:{right}:"
+                    f"{lexical_action}:{entity_signature_id}:"
+                    f"support-{len(left_entries)}-{len(right_entries)}:"
+                    f"prototypes-{left_prototype.utterance_id}-"
+                    f"{right_prototype.utterance_id}",
+                )
             boundaries.append(
                 DecisionBoundaryV1(
                     boundary_id=f"B{len(boundaries) + 1:03d}",
@@ -7711,12 +7896,14 @@ def build_data_derived_decision_graph(
                         f"({action_text}) when the speech instead refers to entity "
                         "categories at least 5x more prevalent for the other key: "
                         f"{render_entity_types(right_evidence)}."
+                        + left_lexical_exclusion
                     ),
                     right_exclusion=(
                         "Do not choose this side for shared operation evidence "
                         f"({action_text}) when the speech instead refers to entity "
                         "categories at least 5x more prevalent for the other key: "
                         f"{render_entity_types(left_evidence)}."
+                        + right_lexical_exclusion
                     ),
                     provenance_ids=(
                         f"slurp-train-stable-shared-actions:{left}:{right}:"
@@ -7733,6 +7920,7 @@ def build_data_derived_decision_graph(
                             f"prevalence-{prevalence:.8f}:ratio-{rate_ratio:.8f}"
                             for entity_type, count, other_count, prevalence, rate_ratio in right_evidence
                         ),
+                        *lexical_provenance,
                         f"key-card:{left_card.key_id}:definition",
                         f"key-card:{right_card.key_id}:definition",
                     ),
@@ -7779,7 +7967,7 @@ def build_speech_native_information_audit(
     revision = knowledge_binding.get("knowledge_revision")
     if (
         not isinstance(revision, Mapping)
-        or revision.get("policy_id") != SPEECH_NATIVE_KNOWLEDGE_POLICY_ID
+        or revision.get("policy_id") not in SPEECH_NATIVE_KNOWLEDGE_POLICY_IDS
     ):
         raise PsluFlightError(
             "information audit requires the action-stratified knowledge successor"
@@ -8822,7 +9010,9 @@ __all__ = [
     "SPEECH_NATIVE_AGENT_POLICIES",
     "SPEECH_NATIVE_ACTION_FACET_DESCRIPTIONS",
     "SPEECH_NATIVE_BOUNDARY_POLICY_IDS",
+    "SPEECH_NATIVE_INFORMATION_COMPLETE_KNOWLEDGE_POLICY_ID",
     "SPEECH_NATIVE_KNOWLEDGE_POLICY_ID",
+    "SPEECH_NATIVE_KNOWLEDGE_POLICY_IDS",
     "SPEECH_NATIVE_SCENARIO_CONTRASTS",
     "SPEECH_NATIVE_SCENARIO_DEFINITIONS",
     "SpeechNativeEngineeringGate",

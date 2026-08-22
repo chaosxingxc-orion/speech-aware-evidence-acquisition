@@ -27,7 +27,7 @@ from ...data.slurp import load_slurp_train_material
 from ...e0.artifacts import REPO_ROOT, write_json_artifact
 from ...rails.probes.pslu_flight import (
     SPEECH_NATIVE_BOUNDARY_POLICY_IDS,
-    SPEECH_NATIVE_KNOWLEDGE_POLICY_ID,
+    SPEECH_NATIVE_KNOWLEDGE_POLICY_IDS,
     build_data_derived_decision_graph,
     build_speech_native_information_audit,
     extend_speech_native_binding,
@@ -718,7 +718,7 @@ def main(argv: list[str] | None = None) -> int:
     extend_binding.add_argument("--per-scenario", type=int)
     extend_binding.add_argument(
         "--knowledge-policy",
-        choices=(SPEECH_NATIVE_KNOWLEDGE_POLICY_ID,),
+        choices=SPEECH_NATIVE_KNOWLEDGE_POLICY_IDS,
         help=(
             "replace key material with query-isolated action-complete knowledge "
             "derived model-free from SLURP train"
