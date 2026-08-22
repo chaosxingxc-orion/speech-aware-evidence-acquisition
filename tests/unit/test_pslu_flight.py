@@ -1096,6 +1096,271 @@ def test_action_support_audit_accepts_complete_m8_without_reading_gold(tmp_path)
     assert "must-not-enter-audit-output" not in json.dumps(report, sort_keys=True)
 
 
+def _write_m9_action_audit_fixture(tmp_path):
+    attempt_dir = tmp_path / "m9-attempt"
+    attempt_dir.mkdir()
+    graph_path = REPO_ROOT / "configs/knowledge/slurp-scenario-factor-graph-v1.json"
+    graph_sha256 = hashlib.sha256(graph_path.read_bytes()).hexdigest()
+    audit_cards = tuple(
+        KeyCardV1(
+            key_id=f"K{index:03d}",
+            definition="Audit-only opaque key definition.",
+            positive_examples=("Audit-only example.",),
+            contrastive_boundary=None,
+            value_label=f"audit-{index:03d}",
+        ).validate()
+        for index in range(1, 19)
+    )
+    graph = _load_decision_graph(
+        graph_path,
+        expected_sha256=graph_sha256,
+        key_cards=audit_cards,
+    )
+    initial_top = ("K001", "K003", "K005", "K009")
+    state = FactorLinkStateV1(
+        factor_ids=("F009", "F011"), boundary_id="B001"
+    )
+    expansion = expand_decision_graph_candidates(
+        graph=graph,
+        initial_key_ids=initial_top,
+        state=state,
+        cap=6,
+    )
+    reranked = ("K003", "K001", "K005")
+    boundary_path = decision_boundary_path(
+        graph=graph,
+        source_key_id="K001",
+        target_key_id="K003",
+        max_edges=2,
+    )
+    assert boundary_path == ("B001",)
+    rows = []
+    for index in range(108):
+        sample_id = f"slurp:train:{index:06d}:audio-{index}"
+        packet_sha256 = f"{index + 1:064x}"
+        rows.append(
+            {
+                "schema": "saea-speech-native-decision-v1",
+                "sample_id": sample_id,
+                "query_sample_id": sample_id,
+                "speech_packet_sha256": packet_sha256,
+                "mechanism_control_id": "matched",
+                "key_representation_id": "K1",
+                "matcher_policy_id": "M9",
+                "key_id": "K001",
+                "predicted_value_label": "must-not-enter-audit-output",
+                "top_key_ids": list(reranked),
+                "verifier_scores": {},
+                "calls": 6,
+                "parse_failure": False,
+                "agent_policy_id": "speech-conditioned-factor-graph-action-support-v1",
+                "agent_actions": [
+                    "match:speech-only-primary",
+                    "retrieve:speech-only",
+                    "link:knowledge-factors",
+                    "tool:expand-factor-graph",
+                    "rerank:speech-plus-factor-state",
+                    "compare:boundary-ab",
+                    "compare:boundary-ba",
+                    "select:retain-primary-for-support",
+                ],
+                "agent_escalated": True,
+                "agent_vote_key_ids": ["K001", "K003", "K003", "K003"],
+                "agent_steps": [
+                    {
+                        "action_id": "match:speech-only-primary",
+                        "key_id": "K001",
+                        "top_key_ids": [],
+                        "calls": 1,
+                        "parse_failure": False,
+                    },
+                    {
+                        "action_id": "retrieve:speech-only",
+                        "key_id": "K001",
+                        "top_key_ids": list(initial_top),
+                        "calls": 1,
+                        "parse_failure": False,
+                    },
+                    {
+                        "action_id": "link:knowledge-factors",
+                        "key_id": None,
+                        "top_key_ids": list(initial_top),
+                        "calls": 1,
+                        "parse_failure": False,
+                        "factor_link_state": {
+                            "factor_ids": list(state.factor_ids),
+                            "boundary_id": state.boundary_id,
+                        },
+                    },
+                    {
+                        "action_id": "tool:expand-factor-graph",
+                        "key_id": None,
+                        "top_key_ids": list(initial_top),
+                        "calls": 0,
+                        "parse_failure": False,
+                        "expanded_key_ids": list(expansion.key_ids),
+                        "distance_by_key": dict(expansion.distance_by_key),
+                    },
+                    {
+                        "action_id": "rerank:speech-plus-factor-state",
+                        "key_id": "K003",
+                        "top_key_ids": list(reranked),
+                        "calls": 1,
+                        "parse_failure": False,
+                    },
+                    {
+                        "action_id": "compare:factor-boundary",
+                        "key_id": None,
+                        "top_key_ids": ["K001", "K003"],
+                        "calls": 2,
+                        "parse_failure": False,
+                        "boundary_path_ids": list(boundary_path),
+                        "ab_key_id": "K003",
+                        "ba_key_id": "K003",
+                        "causal_parent_ids": [
+                            "link:knowledge-factors",
+                            "tool:expand-factor-graph",
+                            "rerank:speech-plus-factor-state",
+                        ],
+                    },
+                ],
+                "agent_aggregator_id": "factor-graph-primary-control-v1",
+                "response_text_sha256": [
+                    f"{40000 + index * 6 + offset:064x}" for offset in range(6)
+                ],
+            }
+        )
+    decisions = attempt_dir / "decisions.jsonl"
+    decisions.write_text(
+        "".join(json.dumps(row) + "\n" for row in rows), encoding="utf-8"
+    )
+    trace_rows = []
+    for row in rows:
+        descriptor = {
+            "packet_id": row["query_sample_id"].replace(":", "/"),
+            "sha256": row["speech_packet_sha256"],
+            "role": "query",
+        }
+        for contact_index in range(row["calls"]):
+            trace_rows.extend(
+                (
+                    {
+                        "channel": "MODEL_REQUEST",
+                        "payload": {
+                            "payload": {
+                                "request_id": f"{row['sample_id']}-{contact_index}",
+                                "sample_id": row["query_sample_id"],
+                                "query_source": "speech_features",
+                                "mmproj_loaded": False,
+                                "speech_packet_sha256": row["speech_packet_sha256"],
+                                "speech_feature_parts": [descriptor],
+                            }
+                        },
+                    },
+                    {
+                        "channel": "MODEL_RESPONSE",
+                        "payload": {
+                            "usage": {"prompt_tokens": 10, "completion_tokens": 2}
+                        },
+                    },
+                    {"channel": "COST", "payload": {"calls": 1}},
+                )
+            )
+    run_id = "SAEA-SN-M9-AUDIT"
+    trace = attempt_dir / f"{run_id}.trace.jsonl"
+    trace.write_text(
+        "".join(json.dumps(row) + "\n" for row in trace_rows), encoding="utf-8"
+    )
+    process_audit = attempt_dir / f"{run_id}.mmproj-audit.json"
+    process_audit.write_text(
+        json.dumps({"mmproj_loaded": False, "mmproj_hit_count": 0}),
+        encoding="utf-8",
+    )
+    contact_count = 108 * 6
+    receipt = {
+        "status": "COMPLETED",
+        "run_id": run_id,
+        "attempt_id": "attempt-m9-audit-001",
+        "request_failures": [],
+        "profile": {
+            "key_representation_id": "K1",
+            "matcher_policy_id": "M9",
+            "agent_policy_id": "speech-conditioned-factor-graph-action-support-v1",
+            "agent_aggregator_id": "factor-graph-primary-control-v1",
+            "mechanism_control_id": "matched",
+            "top_k": 4,
+            "task_count": 108,
+            "actual_contact_count": contact_count,
+            "planned_contact_ceiling": contact_count,
+            "decision_graph_id": graph.graph_id,
+            "decision_graph_path": graph_path.relative_to(REPO_ROOT).as_posix(),
+            "decision_graph_file_sha256": graph_sha256,
+        },
+        "decisions": {
+            "path": decisions.name,
+            "sha256": hashlib.sha256(decisions.read_bytes()).hexdigest(),
+            "count": 108,
+            "contains_gold_labels": False,
+        },
+        "server_log_scan": {
+            "oom_marker_hits": [],
+            "host_spill_marker_hits": [],
+            "runaway_marker_hits": [],
+            "mmproj_free_chunk_count": 0,
+        },
+        "process_audit_sha256": hashlib.sha256(process_audit.read_bytes()).hexdigest(),
+        "close": {"cost": {"calls_used": contact_count}},
+    }
+    flight = attempt_dir / "flight-receipt.json"
+    flight.write_text(json.dumps(receipt), encoding="utf-8")
+    attempt_record = tmp_path / "m9-attempt-record.json"
+    attempt_record.write_text(
+        json.dumps(
+            {
+                "run_id": receipt["run_id"],
+                "attempt_id": receipt["attempt_id"],
+                "state": "FINALIZED",
+                "actual": {
+                    "calls": contact_count,
+                    "audio_seconds": 1.0,
+                    "gpu_seconds": 2.0,
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+    return attempt_dir, attempt_record, flight, decisions, trace
+
+
+def test_action_support_audit_accepts_complete_m9_without_reading_gold(tmp_path):
+    attempt_dir, attempt_record, flight, decisions, trace = (
+        _write_m9_action_audit_fixture(tmp_path)
+    )
+    report = audit_speech_native_action_support(
+        attempt_dir=attempt_dir,
+        attempt_record_path=attempt_record,
+        attempt_record_sha256=hashlib.sha256(attempt_record.read_bytes()).hexdigest(),
+        flight_receipt_sha256=hashlib.sha256(flight.read_bytes()).hexdigest(),
+        decisions_sha256=hashlib.sha256(decisions.read_bytes()).hexdigest(),
+        trace_sha256=hashlib.sha256(trace.read_bytes()).hexdigest(),
+    )
+    assert report["schema"] == "saea-speech-native-factor-graph-action-audit-v1"
+    assert report["source_attempt_state"] == "FINALIZED"
+    assert report["gold_read"] is False
+    assert report["effectiveness_read_authorized"] is True
+    assert report["decision_count"] == 108
+    assert report["contact_count"] == 648
+    assert report["valid_speech_query_contact_count"] == 648
+    assert report["factor_rerank_non_primary_query_count"] == 108
+    assert report["boundary_stable_non_primary_query_count"] == 108
+    assert report["action_variable_query_count"] == 108
+    assert report["mechanism_failure_count"] == 0
+    assert report["decision_graph_file_sha256"] == hashlib.sha256(
+        (REPO_ROOT / "configs/knowledge/slurp-scenario-factor-graph-v1.json").read_bytes()
+    ).hexdigest()
+    assert "must-not-enter-audit-output" not in json.dumps(report, sort_keys=True)
+
+
 class _SpeechFeatureClient:
     def __init__(self, responses):
         self._responses = iter(responses)
