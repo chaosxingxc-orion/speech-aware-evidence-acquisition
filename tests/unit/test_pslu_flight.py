@@ -6,6 +6,7 @@ Engineering-only, zero live model contact -- every test drives a
 
 from __future__ import annotations
 
+from collections import Counter
 import json
 import hashlib
 import sys
@@ -7870,6 +7871,55 @@ def _residual_information_material():
     return tuple(material)
 
 
+def _multi_residual_information_material():
+    """Expose two stable action/entity residuals for the same scenario pair."""
+
+    query_seen = {"alarm": 0, "email": 0}
+    material = []
+    for entry in _knowledge_refinement_material():
+        if entry.action == "query":
+            signature = () if query_seen[entry.scenario] < 8 else ("shared_slot",)
+            query_seen[entry.scenario] += 1
+            entry = replace(entry, entity_types=signature)
+        material.append(entry)
+    for scenario in ("alarm", "email"):
+        signature_replica_counts = (
+            ("none", 4),
+            ("shared_slot", 4),
+            (f"{scenario}_exclusive", 8),
+        )
+        for signature_name, replica_count in signature_replica_counts:
+            for replica in range(replica_count):
+                index = len(material) + 1
+                material.append(
+                    SlurpTrainMaterial(
+                        utterance_id=f"multi-residual-{index:04d}",
+                        scenario=scenario,
+                        action="query",
+                        sentence=(
+                            f"inspect {scenario} {signature_name} residual {replica}"
+                        ),
+                        recordings=(
+                            SlurpTrainRecording(
+                                sample_id=(
+                                    f"slurp:train:{index:06d}:"
+                                    f"audio-multi-residual-{index}"
+                                ),
+                                media_relpath=(
+                                    "datasets/slurp/slurp_real/"
+                                    f"audio-multi-residual-{index}.flac"
+                                ),
+                                speaker_id=f"multi-residual-speaker-{index}",
+                            ),
+                        ),
+                        entity_types=(
+                            () if signature_name == "none" else (signature_name,)
+                        ),
+                    )
+                )
+    return tuple(material)
+
+
 def _action_complete_knowledge_material():
     actions = {
         "alarm": ("set", "query", "remove"),
@@ -8267,6 +8317,259 @@ def test_signature_lexical_graph_adds_new_pair_specific_train_prototypes():
     assert graph.as_json() == repeated.as_json()
 
 
+def test_information_audit_blocks_pair_complete_but_relation_incomplete_supply():
+    material = _multi_residual_information_material()
+    base = build_speech_native_binding(
+        material,
+        seed=20260821,
+        expected_scenarios=("alarm", "email"),
+        opt_a_per_scenario=2,
+        opt_b_per_scenario=1,
+        gate_per_scenario=1,
+        key_examples_per_scenario=5,
+    )
+    knowledge = refine_speech_native_binding_knowledge(
+        base,
+        material,
+        seed=20260827,
+        policy_id="slurp-action-complete-specificity-v2",
+        expected_scenarios=("alarm", "email"),
+        key_examples_per_scenario=5,
+    )
+    graph = build_data_derived_decision_graph(
+        knowledge,
+        material,
+        graph_id="slurp-signature-lexical-decision-graph-v4",
+        expected_scenarios=("alarm", "email"),
+        maximum_boundaries=1,
+        boundary_policy_id="shared-signature-lexical-boundaries-v3",
+    )
+
+    audit = build_speech_native_information_audit(
+        knowledge,
+        material,
+        graph,
+        expected_scenarios=("alarm", "email"),
+    )
+
+    assert audit["residual_ambiguity"]["residual_signature_pair_count"] == 1
+    assert audit["residual_ambiguity"]["residual_signature_relation_count"] == 2
+    assert audit["knowledge_supply"]["signature_lexical_pair_coverage"] == {
+        "covered": 1,
+        "required": 1,
+    }
+    assert audit["knowledge_supply"]["signature_lexical_relation_coverage"] == {
+        "covered": 1,
+        "required": 2,
+    }
+    assert audit["admission"]["status"] == "blocked"
+    assert "residual_signature_lexical_supply" in audit["admission"][
+        "failed_checks"
+    ]
+
+
+def test_complete_signature_policy_supplies_every_relation_inside_one_boundary():
+    material = _multi_residual_information_material()
+    base = build_speech_native_binding(
+        material,
+        seed=20260821,
+        expected_scenarios=("alarm", "email"),
+        opt_a_per_scenario=2,
+        opt_b_per_scenario=1,
+        gate_per_scenario=1,
+        key_examples_per_scenario=5,
+    )
+    knowledge = refine_speech_native_binding_knowledge(
+        base,
+        material,
+        seed=20260827,
+        policy_id="slurp-action-complete-specificity-v2",
+        expected_scenarios=("alarm", "email"),
+        key_examples_per_scenario=5,
+    )
+
+    graph = build_data_derived_decision_graph(
+        knowledge,
+        material,
+        graph_id="slurp-signature-complete-decision-graph-v5",
+        expected_scenarios=("alarm", "email"),
+        maximum_boundaries=1,
+        boundary_policy_id="shared-signature-complete-boundaries-v4",
+    )
+    lexical_relations = [
+        item
+        for item in graph.boundaries[0].provenance_ids
+        if item.startswith("slurp-train-signature-lexical-v4:")
+    ]
+    assert len(graph.boundaries) == 1
+    assert len(lexical_relations) == 2
+    assert any(":query:none:" in item for item in lexical_relations)
+    assert any(":query:shared_slot:" in item for item in lexical_relations)
+    assert "Train-derived lexical cues supporting K001" in (
+        graph.boundaries[0].right_exclusion
+    )
+    assert "Train-derived lexical cues supporting K002" in (
+        graph.boundaries[0].left_exclusion
+    )
+
+    audit = build_speech_native_information_audit(
+        knowledge,
+        material,
+        graph,
+        expected_scenarios=("alarm", "email"),
+    )
+    assert audit["knowledge_supply"]["signature_lexical_relation_coverage"] == {
+        "covered": 2,
+        "required": 2,
+    }
+    heldout = audit["knowledge_supply"]["signature_lexical_heldout_validation"]
+    assert heldout["validated_relation_count"] == 2
+    assert heldout["bilateral_signal_relation_count"] == 2
+    assert heldout["crossfit_cue_signal_relation_count"] == 2
+    assert heldout["required_relation_count"] == 2
+    assert all(row["bilateral_heldout_signal"] for row in heldout["relations"])
+    assert all(
+        row["crossfit_lexical_cue_balanced_accuracy"] >= 0.5
+        for row in heldout["relations"]
+    )
+    assert audit["admission"]["status"] == "admitted"
+
+    repeated = build_data_derived_decision_graph(
+        knowledge,
+        reversed(material),
+        graph_id="slurp-signature-complete-decision-graph-v5",
+        expected_scenarios=("alarm", "email"),
+        maximum_boundaries=1,
+        boundary_policy_id="shared-signature-complete-boundaries-v4",
+    )
+    assert graph.as_json() == repeated.as_json()
+
+
+def test_information_audit_blocks_lexical_relations_without_heldout_signal():
+    counters: Counter[tuple[str, tuple[str, ...]]] = Counter()
+    material = []
+    for entry in _multi_residual_information_material():
+        signature = tuple(sorted(set(entry.entity_types)))
+        if entry.action == "query" and signature in {(), ("shared_slot",)}:
+            index = counters[(entry.scenario, signature)]
+            counters[(entry.scenario, signature)] += 1
+            signature_id = "none" if not signature else "shared-slot"
+            entry = replace(
+                entry,
+                sentence=f"inspect shared {signature_id} residual variant {index}",
+            )
+        material.append(entry)
+    material = tuple(material)
+    base = build_speech_native_binding(
+        material,
+        seed=20260821,
+        expected_scenarios=("alarm", "email"),
+        opt_a_per_scenario=2,
+        opt_b_per_scenario=1,
+        gate_per_scenario=1,
+        key_examples_per_scenario=5,
+    )
+    knowledge = refine_speech_native_binding_knowledge(
+        base,
+        material,
+        seed=20260827,
+        policy_id="slurp-action-complete-specificity-v2",
+        expected_scenarios=("alarm", "email"),
+        key_examples_per_scenario=5,
+    )
+    graph = build_data_derived_decision_graph(
+        knowledge,
+        material,
+        graph_id="slurp-signature-complete-decision-graph-v5",
+        expected_scenarios=("alarm", "email"),
+        maximum_boundaries=1,
+        boundary_policy_id="shared-signature-complete-boundaries-v4",
+    )
+
+    audit = build_speech_native_information_audit(
+        knowledge,
+        material,
+        graph,
+        expected_scenarios=("alarm", "email"),
+    )
+
+    assert audit["knowledge_supply"]["signature_lexical_relation_coverage"] == {
+        "covered": 2,
+        "required": 2,
+    }
+    heldout = audit["knowledge_supply"]["signature_lexical_heldout_validation"]
+    assert heldout["bilateral_signal_relation_count"] < 2
+    assert heldout["crossfit_cue_signal_relation_count"] < 2
+    assert audit["checks"]["residual_signature_lexical_heldout_signal"] is False
+    assert audit["checks"]["residual_signature_discriminative_supply"] is False
+    assert audit["diagnostics"][
+        "residual_signature_lexical_crossfit_cue_signal"
+    ] is False
+    assert audit["admission"]["status"] == "blocked"
+    assert "residual_signature_lexical_heldout_signal" in audit["admission"][
+        "failed_checks"
+    ]
+    assert "residual_signature_discriminative_supply" in audit["admission"][
+        "failed_checks"
+    ]
+
+
+def test_dataset_semantic_boundary_supply_is_bilateral_and_source_bound():
+    material = tuple(
+        SlurpTrainMaterial(
+            utterance_id=utterance_id,
+            scenario=scenario,
+            action="query",
+            sentence=sentence,
+            recordings=(),
+            entity_types=("event_name",),
+        )
+        for utterance_id, scenario, sentence in (
+            ("cal-1", "calendar", "what time is my meeting"),
+            ("cal-2", "calendar", "when is my next appointment"),
+            ("cal-3", "calendar", "show my calendar event"),
+            ("dt-1", "datetime", "when is halloween"),
+            ("dt-2", "datetime", "what day is christmas"),
+            ("dt-3", "datetime", "when is the next holiday"),
+        )
+    )
+
+    supply = pslu_module._dataset_semantic_boundary_supply(
+        material,
+        left="calendar",
+        right="datetime",
+        left_key_id="K003",
+        right_key_id="K005",
+    )
+
+    assert "public or named event" in supply.left_exclusion
+    assert "stored or scheduled calendar item" in supply.right_exclusion
+    assert supply.provenance_ids == (
+        "slurp-train-semantic-boundary-v1:calendar:datetime:calendar:"
+        "sources-cal-1+cal-2+cal-3",
+        "slurp-train-semantic-boundary-v1:calendar:datetime:datetime:"
+        "sources-dt-1+dt-2+dt-3",
+    )
+    boundary = DecisionBoundaryV1(
+        boundary_id="B001",
+        left_key_id="K003",
+        right_key_id="K005",
+        left_factor_ids=("F001",),
+        right_factor_ids=("F002",),
+        left_exclusion=supply.left_exclusion,
+        right_exclusion=supply.right_exclusion,
+        provenance_ids=supply.provenance_ids,
+    )
+    assert pslu_module._semantic_boundary_present(boundary, supply) is True
+    assert (
+        pslu_module._semantic_boundary_present(
+            replace(boundary, left_exclusion="provenance without semantic text"),
+            supply,
+        )
+        is False
+    )
+
+
 def test_shared_action_entity_graph_fails_without_discriminative_entity_information():
     material = tuple(
         replace(entry, entity_types=("shared_entity",))
@@ -8358,7 +8661,7 @@ def test_information_audit_blocks_entity_only_knowledge_with_residual_ambiguity(
     ]
 
 
-def test_information_audit_admits_complete_pair_specific_lexical_supply():
+def test_information_audit_rejects_provenance_without_actual_lexical_supply():
     material = _residual_information_material()
     base = build_speech_native_binding(
         material,
@@ -8406,19 +8709,14 @@ def test_information_audit_admits_complete_pair_specific_lexical_supply():
         expected_scenarios=("alarm", "email"),
     )
 
-    assert audit["knowledge_supply"]["signature_lexical_pair_coverage"] == {
-        "covered": 1,
+    assert audit["knowledge_supply"]["signature_lexical_relation_coverage"] == {
+        "covered": 0,
         "required": 1,
     }
-    assert audit["admission"] == {
-        "status": "admitted",
-        "failed_checks": [],
-        "new_model_contact_authorized": False,
-        "reason": (
-            "The model-free information gate is complete; a separate execution "
-            "plan and exposure registration are still required."
-        ),
-    }
+    assert audit["admission"]["status"] == "blocked"
+    assert "residual_signature_lexical_supply" in audit["admission"][
+        "failed_checks"
+    ]
 
 
 def test_speech_native_successor_binding_preserves_keys_and_adds_isolated_split():

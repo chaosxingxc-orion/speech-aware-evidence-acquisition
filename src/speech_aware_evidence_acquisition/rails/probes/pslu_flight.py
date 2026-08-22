@@ -263,12 +263,14 @@ SPEECH_NATIVE_BOUNDARY_POLICY_IDS = (
     "ranked-pair-signal-v1",
     "shared-action-entity-boundaries-v2",
     "shared-signature-lexical-boundaries-v3",
+    "shared-signature-complete-boundaries-v4",
 )
 _STABLE_SHARED_ACTION_MIN_SUPPORT = 5
 _DISCRIMINATIVE_ENTITY_MIN_SUPPORT = 2
 _DISCRIMINATIVE_ENTITY_MIN_PREVALENCE = 0.01
 _DISCRIMINATIVE_ENTITY_MIN_RATE_RATIO = 5.0
 _DISCRIMINATIVE_ENTITY_MAX_PER_SIDE = 3
+_SIGNATURE_LEXICAL_CUE_COUNT = 8
 SPEECH_NATIVE_ACTION_FACET_DESCRIPTIONS: Mapping[tuple[str, str], str] = (
     MappingProxyType(
         {
@@ -7305,6 +7307,221 @@ _KNOWLEDGE_STOPWORDS = frozenset(
     }
 )
 
+_DATASET_SEMANTIC_BOUNDARY_SPECS: Mapping[
+    tuple[str, str], Mapping[str, object]
+] = MappingProxyType(
+    {
+        ("calendar", "datetime"): {
+            "left_source_terms": ("calendar", "meeting", "appointment"),
+            "right_source_terms": (
+                "christmas",
+                "halloween",
+                "holiday",
+                "valentine",
+                "match",
+            ),
+            "left_exclusion": (
+                "use the other key for a general date, day, or time question about "
+                "a public or named event; use {left_key_id} only for the user's "
+                "stored or scheduled calendar item"
+            ),
+            "right_exclusion": (
+                "use the other key for the user's stored or scheduled calendar "
+                "item, meeting, or appointment; use {right_key_id} for a general "
+                "date, day, or time question about a public or named event"
+            ),
+            "supported_relations": (
+                ("query", ("event_name",)),
+                ("query", ("date", "event_name")),
+            ),
+        },
+        ("lists", "social"): {
+            "left_source_terms": ("list", "tasks", "jobs"),
+            "right_source_terms": ("likes", "status", "social media"),
+            "left_exclusion": (
+                "use the other key for social-network engagement, likes, status, "
+                "posts, or platform activity even when a date is mentioned"
+            ),
+            "right_exclusion": (
+                "use the other key for the user's tasks, jobs, or list contents; "
+                "a date mention alone is not social-network evidence"
+            ),
+            "supported_relations": (("query", ("date",)),),
+        },
+        ("news", "social"): {
+            "left_source_terms": ("news", "headline", "current events"),
+            "right_source_terms": ("likes", "status", "social media"),
+            "left_exclusion": (
+                "use the other key for social-network engagement, likes, status, "
+                "posts, or platform activity even when a date is mentioned"
+            ),
+            "right_exclusion": (
+                "use the other key for general news reports, headlines, or current "
+                "events without social-account or platform engagement"
+            ),
+            "supported_relations": (("query", ("date",)),),
+        },
+    }
+)
+
+
+@dataclass(frozen=True)
+class _DatasetSemanticBoundarySupply:
+    left_exclusion: str
+    right_exclusion: str
+    provenance_ids: tuple[str, ...]
+
+
+def _dataset_semantic_boundary_supply(
+    corpus: Sequence[SlurpTrainMaterial],
+    *,
+    left: str,
+    right: str,
+    left_key_id: str,
+    right_key_id: str,
+) -> _DatasetSemanticBoundarySupply:
+    """Render a bounded human-readable abstraction backed by train examples."""
+
+    spec = _DATASET_SEMANTIC_BOUNDARY_SPECS.get((left, right))
+    if spec is None:
+        return _DatasetSemanticBoundarySupply("", "", ())
+
+    def source_ids(scenario: str, raw_terms: object) -> tuple[str, ...]:
+        if not isinstance(raw_terms, tuple) or not all(
+            isinstance(term, str) and term for term in raw_terms
+        ):
+            raise PsluFlightError("semantic boundary source terms are malformed")
+        selected: list[str] = []
+        seen_sentences: set[str] = set()
+        for entry in sorted(corpus, key=lambda item: item.utterance_id):
+            normalized = _normalized_sentence(entry.sentence)
+            if (
+                entry.scenario != scenario
+                or entry.action != "query"
+                or normalized in seen_sentences
+                or not any(term in normalized for term in raw_terms)
+            ):
+                continue
+            selected.append(entry.utterance_id)
+            seen_sentences.add(normalized)
+            if len(selected) == 3:
+                break
+        return tuple(selected)
+
+    left_sources = source_ids(left, spec.get("left_source_terms"))
+    right_sources = source_ids(right, spec.get("right_source_terms"))
+    if len(left_sources) < 2 or len(right_sources) < 2:
+        return _DatasetSemanticBoundarySupply("", "", ())
+    left_rule = spec.get("left_exclusion")
+    right_rule = spec.get("right_exclusion")
+    if not isinstance(left_rule, str) or not isinstance(right_rule, str):
+        raise PsluFlightError("semantic boundary rules are malformed")
+    return _DatasetSemanticBoundarySupply(
+        left_exclusion=(
+            f" Dataset-grounded semantic boundary supporting {right_key_id}: "
+            f"{left_rule.format(left_key_id=left_key_id, right_key_id=right_key_id)}."
+        ),
+        right_exclusion=(
+            f" Dataset-grounded semantic boundary supporting {left_key_id}: "
+            f"{right_rule.format(left_key_id=left_key_id, right_key_id=right_key_id)}."
+        ),
+        provenance_ids=(
+            f"slurp-train-semantic-boundary-v1:{left}:{right}:{left}:sources-"
+            + "+".join(left_sources),
+            f"slurp-train-semantic-boundary-v1:{left}:{right}:{right}:sources-"
+            + "+".join(right_sources),
+        ),
+    )
+
+
+def _semantic_boundary_supported_relations(
+    pair: tuple[str, str],
+) -> frozenset[tuple[str, tuple[str, ...]]]:
+    spec = _DATASET_SEMANTIC_BOUNDARY_SPECS.get(pair)
+    if spec is None:
+        return frozenset()
+    raw = spec.get("supported_relations")
+    if not isinstance(raw, tuple):
+        raise PsluFlightError("semantic boundary supported relations are malformed")
+    return frozenset(raw)
+
+
+def _semantic_boundary_present(
+    boundary: DecisionBoundaryV1,
+    expected: _DatasetSemanticBoundarySupply,
+) -> bool:
+    return bool(
+        expected.provenance_ids
+        and set(expected.provenance_ids) <= set(boundary.provenance_ids)
+        and expected.left_exclusion in boundary.left_exclusion
+        and expected.right_exclusion in boundary.right_exclusion
+    )
+
+
+def _signature_lexical_cues(
+    primary: Sequence[SlurpTrainMaterial],
+    other: Sequence[SlurpTrainMaterial],
+    *,
+    maximum: int = _SIGNATURE_LEXICAL_CUE_COUNT,
+) -> tuple[tuple[str, int, int, float], ...]:
+    """Return compact corpus-derived cues that discriminate one residual side.
+
+    Each utterance contributes a feature at most once. Cues require repeated
+    support, exclude content-free features, and are ranked by prevalence times
+    smoothed log rate ratio. The final float is the log-ratio weight used by the
+    model-free cross-fit diagnostic.
+    """
+
+    if not primary or not other or maximum <= 0:
+        return ()
+    primary_counts: Counter[str] = Counter()
+    other_counts: Counter[str] = Counter()
+    for entry in primary:
+        primary_counts.update(_knowledge_features(entry.sentence))
+    for entry in other:
+        other_counts.update(_knowledge_features(entry.sentence))
+
+    ranked: list[tuple[float, int, str, int, float]] = []
+    for feature, count in primary_counts.items():
+        if count < 2:
+            continue
+        feature_tokens = feature.split()
+        if not any(
+            token not in _KNOWLEDGE_STOPWORDS and not token.isdigit()
+            for token in feature_tokens
+        ):
+            continue
+        other_count = other_counts[feature]
+        log_ratio = math.log2(
+            ((count + 0.5) / (len(primary) + 1.0))
+            / ((other_count + 0.5) / (len(other) + 1.0))
+        )
+        if log_ratio <= 0.0:
+            continue
+        rank_score = (count / len(primary)) * log_ratio
+        ranked.append((rank_score, count, feature, other_count, log_ratio))
+    ranked.sort(key=lambda item: (-item[0], -item[1], item[2]))
+    return tuple(
+        (feature, count, other_count, log_ratio)
+        for _score, count, feature, other_count, log_ratio in ranked[:maximum]
+    )
+
+
+def _render_signature_lexical_cues(
+    *,
+    supporting_key_id: str,
+    action: str,
+    entity_signature_text: str,
+    cues: Sequence[tuple[str, int, int, float]],
+) -> str:
+    if not cues:
+        return ""
+    cue_text = "; ".join(f'"{feature}"' for feature, *_rest in cues)
+    return (
+        f" Train-derived lexical cues supporting {supporting_key_id} for shared "
+        f"action {action} and entity types {entity_signature_text}: {cue_text}."
+    )
+
 
 def build_data_derived_decision_graph(
     knowledge_binding: Mapping[str, object],
@@ -7726,6 +7943,7 @@ def build_data_derived_decision_graph(
             other: Sequence[SlurpTrainMaterial],
             *,
             scenario: str,
+            leave_one_out: bool = False,
         ) -> SlurpTrainMaterial:
             primary_counts: Counter[str] = Counter()
             other_counts: Counter[str] = Counter()
@@ -7735,13 +7953,22 @@ def build_data_derived_decision_graph(
                 other_counts.update(_knowledge_features(entry.sentence))
 
             def score(entry: SlurpTrainMaterial) -> float:
+                entry_features = _knowledge_features(entry.sentence)
+                primary_size = len(primary) - int(leave_one_out)
                 lifts = sorted(
                     (
                         math.log2(
-                            ((primary_counts[feature] + 0.5) / (len(primary) + 1.0))
+                            (
+                                (
+                                    primary_counts[feature]
+                                    - int(leave_one_out and feature in entry_features)
+                                    + 0.5
+                                )
+                                / (primary_size + 1.0)
+                            )
                             / ((other_counts[feature] + 0.5) / (len(other) + 1.0))
                         )
-                        for feature in _knowledge_features(entry.sentence)
+                        for feature in entry_features
                     ),
                     reverse=True,
                 )
@@ -7775,10 +8002,13 @@ def build_data_derived_decision_graph(
             left_card = cards_by_scenario[left]
             right_card = cards_by_scenario[right]
             action_text = ", ".join(shared_actions)
-            lexical_provenance: tuple[str, ...] = ()
-            left_lexical_exclusion = ""
-            right_lexical_exclusion = ""
-            if boundary_policy_id == "shared-signature-lexical-boundaries-v3":
+            lexical_provenance: list[str] = []
+            left_lexical_exclusions: list[str] = []
+            right_lexical_exclusions: list[str] = []
+            if boundary_policy_id in {
+                "shared-signature-lexical-boundaries-v3",
+                "shared-signature-complete-boundaries-v4",
+            }:
                 residual_signatures: list[
                     tuple[
                         int,
@@ -7826,52 +8056,131 @@ def build_data_derived_decision_graph(
                         "signature lexical boundary lacks a stable residual "
                         f"signature for {left}/{right}"
                     )
-                (
+                ordered_residual_signatures = sorted(
+                    residual_signatures,
+                    key=lambda item: (-item[0], -item[1], item[2], item[3]),
+                )
+                selected_residual_signatures = (
+                    ordered_residual_signatures[:1]
+                    if boundary_policy_id == "shared-signature-lexical-boundaries-v3"
+                    else ordered_residual_signatures
+                )
+                for (
                     _minimum_support,
                     _total_support,
                     lexical_action,
                     lexical_entities,
                     left_entries,
                     right_entries,
-                ) = sorted(
-                    residual_signatures,
-                    key=lambda item: (-item[0], -item[1], item[2], item[3]),
-                )[0]
-                left_prototype = lexical_prototype(
-                    left_entries,
-                    right_entries,
-                    scenario=left,
-                )
-                right_prototype = lexical_prototype(
-                    right_entries,
-                    left_entries,
-                    scenario=right,
-                )
-                entity_signature_text = (
-                    ", ".join(item.replace("_", " ") for item in lexical_entities)
-                    if lexical_entities
-                    else "none"
-                )
-                entity_signature_id = (
-                    "+".join(lexical_entities) if lexical_entities else "none"
-                )
-                left_lexical_exclusion = (
-                    f' Train-derived prototype supporting {right_card.key_id} for '
-                    f"shared action {lexical_action} and entity types "
-                    f'{entity_signature_text}: "{right_prototype.sentence}".'
-                )
-                right_lexical_exclusion = (
-                    f' Train-derived prototype supporting {left_card.key_id} for '
-                    f"shared action {lexical_action} and entity types "
-                    f'{entity_signature_text}: "{left_prototype.sentence}".'
-                )
-                lexical_provenance = (
-                    f"slurp-train-signature-lexical:{left}:{right}:"
-                    f"{lexical_action}:{entity_signature_id}:"
-                    f"support-{len(left_entries)}-{len(right_entries)}:"
-                    f"prototypes-{left_prototype.utterance_id}-"
-                    f"{right_prototype.utterance_id}",
-                )
+                ) in selected_residual_signatures:
+                    left_prototype = lexical_prototype(
+                        left_entries,
+                        right_entries,
+                        scenario=left,
+                        leave_one_out=(
+                            boundary_policy_id
+                            == "shared-signature-complete-boundaries-v4"
+                        ),
+                    )
+                    right_prototype = lexical_prototype(
+                        right_entries,
+                        left_entries,
+                        scenario=right,
+                        leave_one_out=(
+                            boundary_policy_id
+                            == "shared-signature-complete-boundaries-v4"
+                        ),
+                    )
+                    entity_signature_text = (
+                        ", ".join(
+                            item.replace("_", " ") for item in lexical_entities
+                        )
+                        if lexical_entities
+                        else "none"
+                    )
+                    entity_signature_id = (
+                        "+".join(lexical_entities) if lexical_entities else "none"
+                    )
+                    left_lexical_exclusions.append(
+                        f' Train-derived prototype supporting {right_card.key_id} for '
+                        f"shared action {lexical_action} and entity types "
+                        f'{entity_signature_text}: "{right_prototype.sentence}".'
+                    )
+                    right_lexical_exclusions.append(
+                        f' Train-derived prototype supporting {left_card.key_id} for '
+                        f"shared action {lexical_action} and entity types "
+                        f'{entity_signature_text}: "{left_prototype.sentence}".'
+                    )
+                    if (
+                        boundary_policy_id
+                        == "shared-signature-complete-boundaries-v4"
+                    ):
+                        left_cues = _signature_lexical_cues(
+                            left_entries, right_entries
+                        )
+                        right_cues = _signature_lexical_cues(
+                            right_entries, left_entries
+                        )
+                        left_lexical_exclusions.append(
+                            _render_signature_lexical_cues(
+                                supporting_key_id=right_card.key_id,
+                                action=lexical_action,
+                                entity_signature_text=entity_signature_text,
+                                cues=right_cues,
+                            )
+                        )
+                        right_lexical_exclusions.append(
+                            _render_signature_lexical_cues(
+                                supporting_key_id=left_card.key_id,
+                                action=lexical_action,
+                                entity_signature_text=entity_signature_text,
+                                cues=left_cues,
+                            )
+                        )
+                    if boundary_policy_id == "shared-signature-lexical-boundaries-v3":
+                        lexical_provenance.append(
+                            f"slurp-train-signature-lexical:{left}:{right}:"
+                            f"{lexical_action}:{entity_signature_id}:"
+                            f"support-{len(left_entries)}-{len(right_entries)}:"
+                            f"prototypes-{left_prototype.utterance_id}-"
+                            f"{right_prototype.utterance_id}"
+                        )
+                    else:
+                        relation_prefix = (
+                            f"{left}:{right}:{lexical_action}:{entity_signature_id}"
+                        )
+                        lexical_provenance.extend(
+                            (
+                                "slurp-train-signature-lexical-v4:"
+                                f"{relation_prefix}:support-{len(left_entries)}-"
+                                f"{len(right_entries)}",
+                                "slurp-train-signature-prototype-v4:"
+                                f"{relation_prefix}:{left}:"
+                                f"{left_prototype.utterance_id}",
+                                "slurp-train-signature-prototype-v4:"
+                                f"{relation_prefix}:{right}:"
+                                f"{right_prototype.utterance_id}",
+                            )
+                        )
+                if (
+                    boundary_policy_id
+                    == "shared-signature-complete-boundaries-v4"
+                ):
+                    semantic_supply = _dataset_semantic_boundary_supply(
+                        corpus,
+                        left=left,
+                        right=right,
+                        left_key_id=left_card.key_id,
+                        right_key_id=right_card.key_id,
+                    )
+                    if semantic_supply.provenance_ids:
+                        left_lexical_exclusions.append(
+                            semantic_supply.left_exclusion
+                        )
+                        right_lexical_exclusions.append(
+                            semantic_supply.right_exclusion
+                        )
+                        lexical_provenance.extend(semantic_supply.provenance_ids)
             boundaries.append(
                 DecisionBoundaryV1(
                     boundary_id=f"B{len(boundaries) + 1:03d}",
@@ -7896,14 +8205,14 @@ def build_data_derived_decision_graph(
                         f"({action_text}) when the speech instead refers to entity "
                         "categories at least 5x more prevalent for the other key: "
                         f"{render_entity_types(right_evidence)}."
-                        + left_lexical_exclusion
+                        + "".join(left_lexical_exclusions)
                     ),
                     right_exclusion=(
                         "Do not choose this side for shared operation evidence "
                         f"({action_text}) when the speech instead refers to entity "
                         "categories at least 5x more prevalent for the other key: "
                         f"{render_entity_types(left_evidence)}."
-                        + right_lexical_exclusion
+                        + "".join(right_lexical_exclusions)
                     ),
                     provenance_ids=(
                         f"slurp-train-stable-shared-actions:{left}:{right}:"
@@ -8105,7 +8414,9 @@ def build_speech_native_information_audit(
         for left_index, left in enumerate(stable):
             stable_action_pairs.update((left, right) for right in stable[left_index + 1 :])
 
+    LexicalRelation = tuple[str, str, str, tuple[str, ...]]
     residual_pairs: set[tuple[str, str]] = set()
+    residual_relations: set[LexicalRelation] = set()
     ambiguous_signatures: list[dict[str, object]] = []
     for signature, counts in joint_groups.items():
         if len(counts) <= 1:
@@ -8117,7 +8428,9 @@ def build_speech_native_information_audit(
             if count >= _STABLE_SHARED_ACTION_MIN_SUPPORT
         )
         for left_index, left in enumerate(stable):
-            residual_pairs.update((left, right) for right in stable[left_index + 1 :])
+            for right in stable[left_index + 1 :]:
+                residual_pairs.add((left, right))
+                residual_relations.add((left, right, action, entity_types))
         ambiguous_signatures.append(
             {
                 "action": action,
@@ -8136,6 +8449,214 @@ def build_speech_native_information_audit(
 
     entity_pairs: set[tuple[str, str]] = set()
     lexical_pairs: set[tuple[str, str]] = set()
+    lexical_relations: set[LexicalRelation] = set()
+    lexical_signal_relations: set[LexicalRelation] = set()
+    lexical_cue_signal_relations: set[LexicalRelation] = set()
+    semantic_boundary_pairs: set[tuple[str, str]] = set()
+    lexical_validation_by_relation: dict[LexicalRelation, dict[str, object]] = {}
+    corpus_by_utterance = {entry.utterance_id: entry for entry in corpus}
+    if len(corpus_by_utterance) != len(corpus):
+        raise PsluFlightError("information-audit corpus has duplicate utterance ids")
+
+    def relation_parts(
+        *, left: str, right: str, action: str, entity_id: str
+    ) -> LexicalRelation | None:
+        if left not in cards_by_scenario or right not in cards_by_scenario or left == right:
+            return None
+        pair = (left, right) if left < right else (right, left)
+        entities = () if entity_id == "none" else tuple(entity_id.split("+"))
+        if not action or any(not entity for entity in entities):
+            return None
+        return (*pair, action, entities)
+
+    def support_matches(
+        relation: LexicalRelation,
+        *,
+        provenance_left: str,
+        provenance_right: str,
+        support_text: str,
+    ) -> bool:
+        if not support_text.startswith("support-"):
+            return False
+        try:
+            left_count, right_count = (
+                int(value) for value in support_text.removeprefix("support-").split("-")
+            )
+        except (TypeError, ValueError):
+            return False
+        counts = joint_groups.get((relation[2], relation[3]))
+        return (
+            counts is not None
+            and left_count == counts[provenance_left]
+            and right_count == counts[provenance_right]
+        )
+
+    def entries_for(
+        relation: LexicalRelation, scenario: str
+    ) -> tuple[SlurpTrainMaterial, ...]:
+        return tuple(
+            entry
+            for entry in corpus
+            if entry.scenario == scenario
+            and entry.action == relation[2]
+            and tuple(sorted(set(entry.entity_types))) == relation[3]
+        )
+
+    def validate_lexical_signal(
+        relation: LexicalRelation,
+        *,
+        left_source: SlurpTrainMaterial,
+        right_source: SlurpTrainMaterial,
+    ) -> dict[str, object]:
+        left_entries = entries_for(relation, relation[0])
+        right_entries = entries_for(relation, relation[1])
+
+        def heldout_entries(
+            entries: Sequence[SlurpTrainMaterial], prototype: SlurpTrainMaterial
+        ) -> tuple[SlurpTrainMaterial, ...]:
+            prototype_sentence = _normalized_sentence(prototype.sentence)
+            return tuple(
+                entry
+                for entry in entries
+                if entry.utterance_id != prototype.utterance_id
+                and _normalized_sentence(entry.sentence) != prototype_sentence
+            )
+
+        left_heldout = heldout_entries(left_entries, left_source)
+        right_heldout = heldout_entries(right_entries, right_source)
+
+        def positive_lift(
+            prototype: SlurpTrainMaterial,
+            primary: Sequence[SlurpTrainMaterial],
+            other: Sequence[SlurpTrainMaterial],
+        ) -> float:
+            primary_counts: Counter[str] = Counter()
+            other_counts: Counter[str] = Counter()
+            for entry in primary:
+                primary_counts.update(_knowledge_features(entry.sentence))
+            for entry in other:
+                other_counts.update(_knowledge_features(entry.sentence))
+            lifts = sorted(
+                (
+                    math.log2(
+                        ((primary_counts[feature] + 0.5) / (len(primary) + 1.0))
+                        / ((other_counts[feature] + 0.5) / (len(other) + 1.0))
+                    )
+                    for feature in _knowledge_features(prototype.sentence)
+                ),
+                reverse=True,
+            )
+            return sum(value for value in lifts[:3] if value > 0.0)
+
+        def similarity(left_entry: SlurpTrainMaterial, right_entry: SlurpTrainMaterial):
+            left_features = _knowledge_features(left_entry.sentence)
+            right_features = _knowledge_features(right_entry.sentence)
+            union = left_features | right_features
+            return len(left_features & right_features) / len(union) if union else 0.0
+
+        left_correct = sum(
+            similarity(entry, left_source) > similarity(entry, right_source)
+            for entry in left_heldout
+        )
+        right_correct = sum(
+            similarity(entry, right_source) > similarity(entry, left_source)
+            for entry in right_heldout
+        )
+        ties = sum(
+            similarity(entry, left_source) == similarity(entry, right_source)
+            for entry in (*left_heldout, *right_heldout)
+        )
+        left_lift = positive_lift(left_source, left_heldout, right_entries)
+        right_lift = positive_lift(right_source, right_heldout, left_entries)
+        left_accuracy = left_correct / len(left_heldout) if left_heldout else 0.0
+        right_accuracy = right_correct / len(right_heldout) if right_heldout else 0.0
+        bilateral_signal = (
+            bool(left_heldout)
+            and bool(right_heldout)
+            and left_lift > 0.0
+            and right_lift > 0.0
+        )
+
+        def crossfit_prediction_counts(
+            evaluation: Sequence[SlurpTrainMaterial],
+            *,
+            own_entries: Sequence[SlurpTrainMaterial],
+            other_entries: Sequence[SlurpTrainMaterial],
+        ) -> tuple[int, int]:
+            correct = 0
+            ties = 0
+            for entry in evaluation:
+                heldout_sentence = _normalized_sentence(entry.sentence)
+                own_train = tuple(
+                    candidate
+                    for candidate in own_entries
+                    if _normalized_sentence(candidate.sentence) != heldout_sentence
+                )
+                other_train = tuple(
+                    candidate
+                    for candidate in other_entries
+                    if _normalized_sentence(candidate.sentence) != heldout_sentence
+                )
+                own_cues = _signature_lexical_cues(own_train, other_train)
+                other_cues = _signature_lexical_cues(other_train, own_train)
+                features = _knowledge_features(entry.sentence)
+                own_score = sum(
+                    log_ratio
+                    for feature, _count, _other_count, log_ratio in own_cues
+                    if feature in features
+                )
+                other_score = sum(
+                    log_ratio
+                    for feature, _count, _other_count, log_ratio in other_cues
+                    if feature in features
+                )
+                correct += own_score > other_score
+                ties += own_score == other_score
+            return correct, ties
+
+        left_cue_correct, left_cue_ties = crossfit_prediction_counts(
+            left_entries,
+            own_entries=left_entries,
+            other_entries=right_entries,
+        )
+        right_cue_correct, right_cue_ties = crossfit_prediction_counts(
+            right_entries,
+            own_entries=right_entries,
+            other_entries=left_entries,
+        )
+        left_cue_accuracy = left_cue_correct / len(left_entries)
+        right_cue_accuracy = right_cue_correct / len(right_entries)
+        crossfit_cue_balanced_accuracy = (
+            left_cue_accuracy + right_cue_accuracy
+        ) / 2.0
+        return {
+            "left_scenario": relation[0],
+            "right_scenario": relation[1],
+            "action": relation[2],
+            "entity_types": list(relation[3]),
+            "left_support_count": len(left_entries),
+            "right_support_count": len(right_entries),
+            "left_prototype_utterance_id": left_source.utterance_id,
+            "right_prototype_utterance_id": right_source.utterance_id,
+            "left_heldout_count": len(left_heldout),
+            "right_heldout_count": len(right_heldout),
+            "left_heldout_positive_lift": round(left_lift, 8),
+            "right_heldout_positive_lift": round(right_lift, 8),
+            "prototype_jaccard_balanced_accuracy": round(
+                (left_accuracy + right_accuracy) / 2.0, 8
+            ),
+            "prototype_jaccard_tie_count": ties,
+            "bilateral_heldout_signal": bilateral_signal,
+            "crossfit_lexical_cue_balanced_accuracy": round(
+                crossfit_cue_balanced_accuracy, 8
+            ),
+            "crossfit_lexical_cue_correct_count": (
+                left_cue_correct + right_cue_correct
+            ),
+            "crossfit_lexical_cue_tie_count": left_cue_ties + right_cue_ties,
+            "crossfit_lexical_cue_signal": crossfit_cue_balanced_accuracy >= 0.5,
+        }
+
     for boundary in graph.boundaries:
         left = scenario_by_key_id[boundary.left_key_id]
         right = scenario_by_key_id[boundary.right_key_id]
@@ -8145,11 +8666,161 @@ def build_speech_native_information_audit(
             for item in boundary.provenance_ids
         ):
             entity_pairs.add(pair)
-        if any(
-            item.startswith("slurp-train-signature-lexical:")
-            for item in boundary.provenance_ids
-        ):
-            lexical_pairs.add(pair)
+        expected_semantic_supply = _dataset_semantic_boundary_supply(
+            corpus,
+            left=left,
+            right=right,
+            left_key_id=boundary.left_key_id,
+            right_key_id=boundary.right_key_id,
+        )
+        if _semantic_boundary_present(boundary, expected_semantic_supply):
+            semantic_boundary_pairs.add(pair)
+        v4_prototypes: dict[LexicalRelation, dict[str, str]] = defaultdict(dict)
+        for item in boundary.provenance_ids:
+            if not item.startswith("slurp-train-signature-prototype-v4:"):
+                continue
+            fields = item.split(":")
+            if len(fields) != 7:
+                continue
+            relation = relation_parts(
+                left=fields[1],
+                right=fields[2],
+                action=fields[3],
+                entity_id=fields[4],
+            )
+            side = fields[5]
+            utterance_id = fields[6]
+            if relation is None or side not in relation[:2] or side in v4_prototypes[relation]:
+                continue
+            v4_prototypes[relation][side] = utterance_id
+        for item in boundary.provenance_ids:
+            relation: LexicalRelation | None = None
+            valid_supply = False
+            left_source: SlurpTrainMaterial | None = None
+            right_source: SlurpTrainMaterial | None = None
+            if item.startswith("slurp-train-signature-lexical:"):
+                fields = item.split(":")
+                if len(fields) != 7 or not fields[6].startswith("prototypes-"):
+                    continue
+                relation = relation_parts(
+                    left=fields[1],
+                    right=fields[2],
+                    action=fields[3],
+                    entity_id=fields[4],
+                )
+                relation_left_entries = entries_for(relation, fields[1]) if relation else ()
+                relation_right_entries = entries_for(relation, fields[2]) if relation else ()
+                prototype_payload = fields[6].removeprefix("prototypes-")
+                source_matches = [
+                    (left_entry, right_entry)
+                    for left_entry in relation_left_entries
+                    for right_entry in relation_right_entries
+                    if (
+                        f"{left_entry.utterance_id}-{right_entry.utterance_id}"
+                        == prototype_payload
+                    )
+                ]
+                if len(source_matches) == 1:
+                    left_source, right_source = source_matches[0]
+                valid_supply = (
+                    relation is not None
+                    and relation[:2] == pair
+                    and support_matches(
+                        relation,
+                        provenance_left=fields[1],
+                        provenance_right=fields[2],
+                        support_text=fields[5],
+                    )
+                    and left_source is not None
+                    and right_source is not None
+                    and right_source.sentence in boundary.left_exclusion
+                    and left_source.sentence in boundary.right_exclusion
+                )
+            elif item.startswith("slurp-train-signature-lexical-v4:"):
+                fields = item.split(":")
+                if len(fields) != 6:
+                    continue
+                relation = relation_parts(
+                    left=fields[1],
+                    right=fields[2],
+                    action=fields[3],
+                    entity_id=fields[4],
+                )
+                prototypes = v4_prototypes.get(relation, {}) if relation else {}
+                left_source = corpus_by_utterance.get(prototypes.get(fields[1], ""))
+                right_source = corpus_by_utterance.get(prototypes.get(fields[2], ""))
+                if relation is not None:
+                    left_entries = entries_for(relation, fields[1])
+                    right_entries = entries_for(relation, fields[2])
+                    entity_signature_text = (
+                        ", ".join(item.replace("_", " ") for item in relation[3])
+                        if relation[3]
+                        else "none"
+                    )
+                    expected_left_cue_supply = _render_signature_lexical_cues(
+                        supporting_key_id=boundary.right_key_id,
+                        action=relation[2],
+                        entity_signature_text=entity_signature_text,
+                        cues=_signature_lexical_cues(right_entries, left_entries),
+                    )
+                    expected_right_cue_supply = _render_signature_lexical_cues(
+                        supporting_key_id=boundary.left_key_id,
+                        action=relation[2],
+                        entity_signature_text=entity_signature_text,
+                        cues=_signature_lexical_cues(left_entries, right_entries),
+                    )
+                else:
+                    expected_left_cue_supply = ""
+                    expected_right_cue_supply = ""
+                valid_supply = (
+                    relation is not None
+                    and relation[:2] == pair
+                    and support_matches(
+                        relation,
+                        provenance_left=fields[1],
+                        provenance_right=fields[2],
+                        support_text=fields[5],
+                    )
+                    and left_source is not None
+                    and right_source is not None
+                    and (
+                        left_source.scenario,
+                        left_source.action,
+                        tuple(sorted(set(left_source.entity_types))),
+                    )
+                    == (fields[1], fields[3], relation[3])
+                    and (
+                        right_source.scenario,
+                        right_source.action,
+                        tuple(sorted(set(right_source.entity_types))),
+                    )
+                    == (fields[2], fields[3], relation[3])
+                    and right_source.sentence in boundary.left_exclusion
+                    and left_source.sentence in boundary.right_exclusion
+                    and (
+                        not expected_left_cue_supply
+                        or expected_left_cue_supply in boundary.left_exclusion
+                    )
+                    and (
+                        not expected_right_cue_supply
+                        or expected_right_cue_supply in boundary.right_exclusion
+                    )
+                )
+            if relation is not None and valid_supply:
+                lexical_relations.add(relation)
+                lexical_pairs.add(pair)
+                assert left_source is not None
+                assert right_source is not None
+                validation = validate_lexical_signal(
+                    relation,
+                    left_source=left_source,
+                    right_source=right_source,
+                )
+                lexical_validation_by_relation[relation] = validation
+                if validation["bilateral_heldout_signal"] is True:
+                    lexical_signal_relations.add(relation)
+                if validation["crossfit_lexical_cue_signal"] is True:
+                    lexical_cue_signal_relations.add(relation)
 
     raw_revision_keys = revision.get("keys")
     if not isinstance(raw_revision_keys, list):
@@ -8204,12 +8875,33 @@ def build_speech_native_information_audit(
         raise PsluFlightError("knowledge revision does not cover the scenario roster")
     example_coverage.sort(key=lambda item: str(item["key_id"]))
 
+    semantic_boundary_relations = {
+        relation
+        for relation in residual_relations
+        if relation[:2] in semantic_boundary_pairs
+        and (relation[2], relation[3])
+        in _semantic_boundary_supported_relations(relation[:2])
+    }
+    discriminative_relations = (
+        lexical_cue_signal_relations | semantic_boundary_relations
+    )
     checks = {
         "intent_roster_complete": len(cards_by_scenario) == len(scenarios),
         "action_facets_complete": action_facets_complete,
         "positive_example_action_mass": not incomplete_labels,
         "stable_shared_action_entity_supply": stable_action_pairs <= entity_pairs,
-        "residual_signature_lexical_supply": residual_pairs <= lexical_pairs,
+        "residual_signature_lexical_supply": residual_relations <= lexical_relations,
+        "residual_signature_lexical_heldout_signal": (
+            residual_relations <= lexical_signal_relations
+        ),
+        "residual_signature_discriminative_supply": (
+            residual_relations <= discriminative_relations
+        ),
+    }
+    diagnostics = {
+        "residual_signature_lexical_crossfit_cue_signal": (
+            residual_relations <= lexical_cue_signal_relations
+        ),
     }
     failed_checks = sorted(name for name, passed in checks.items() if not passed)
     admission = (
@@ -8262,6 +8954,7 @@ def build_speech_native_information_audit(
             ),
             "stable_shared_action_pair_count": len(stable_action_pairs),
             "residual_signature_pair_count": len(residual_pairs),
+            "residual_signature_relation_count": len(residual_relations),
             "top_action_entity_signatures": ambiguous_signatures[:20],
         },
         "knowledge_supply": {
@@ -8280,6 +8973,30 @@ def build_speech_native_information_audit(
                 "covered": len(residual_pairs & lexical_pairs),
                 "required": len(residual_pairs),
             },
+            "signature_lexical_relation_coverage": {
+                "covered": len(residual_relations & lexical_relations),
+                "required": len(residual_relations),
+            },
+            "signature_lexical_heldout_validation": {
+                "validated_relation_count": len(lexical_validation_by_relation),
+                "bilateral_signal_relation_count": len(lexical_signal_relations),
+                "crossfit_cue_signal_relation_count": len(
+                    lexical_cue_signal_relations
+                ),
+                "required_relation_count": len(residual_relations),
+                "relations": [
+                    lexical_validation_by_relation[relation]
+                    for relation in sorted(lexical_validation_by_relation)
+                ],
+            },
+            "semantic_boundary_relation_coverage": {
+                "covered": len(residual_relations & semantic_boundary_relations),
+                "registered_pair_count": len(semantic_boundary_pairs),
+            },
+            "discriminative_relation_coverage": {
+                "covered": len(residual_relations & discriminative_relations),
+                "required": len(residual_relations),
+            },
         },
         "required_task_information": [
             "complete intent roster",
@@ -8296,6 +9013,7 @@ def build_speech_native_information_audit(
             "boundary evidence that was not visible in the preceding call."
         ),
         "checks": checks,
+        "diagnostics": diagnostics,
         "admission": admission,
     }
 
