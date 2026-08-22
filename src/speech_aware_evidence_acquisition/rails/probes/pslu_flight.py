@@ -252,6 +252,15 @@ SPEECH_NATIVE_SCENARIO_CONTRASTS: Mapping[str, str] = MappingProxyType(
 )
 
 SPEECH_NATIVE_KNOWLEDGE_POLICY_ID = "slurp-action-stratified-specificity-v1"
+SPEECH_NATIVE_BOUNDARY_POLICY_IDS = (
+    "ranked-pair-signal-v1",
+    "shared-action-entity-boundaries-v2",
+)
+_STABLE_SHARED_ACTION_MIN_SUPPORT = 5
+_DISCRIMINATIVE_ENTITY_MIN_SUPPORT = 2
+_DISCRIMINATIVE_ENTITY_MIN_PREVALENCE = 0.01
+_DISCRIMINATIVE_ENTITY_MIN_RATE_RATIO = 5.0
+_DISCRIMINATIVE_ENTITY_MAX_PER_SIDE = 3
 SPEECH_NATIVE_ACTION_FACET_DESCRIPTIONS: Mapping[tuple[str, str], str] = (
     MappingProxyType(
         {
@@ -7277,15 +7286,18 @@ def build_data_derived_decision_graph(
     graph_id: str,
     expected_scenarios: Sequence[str] = tuple(SPEECH_NATIVE_SCENARIO_DEFINITIONS),
     maximum_boundaries: int = 30,
+    boundary_policy_id: str = "ranked-pair-signal-v1",
 ) -> DecisionGraphV1:
-    """Build action-complete factors and ranked pair boundaries from SLURP train.
+    """Build action-complete factors and versioned boundaries from SLURP train.
 
     The graph consumes the same query-isolated corpus as the knowledge
     successor.  Target statements stay maintainable English, action factors
-    are admitted only when observed in train, and pair boundaries are ranked
-    by model-free lexical and action-distribution overlap.  The ranking uses no
-    model outputs, rewards, held-out labels, reference transcript at runtime,
-    or devel/test material.
+    are admitted only when observed in train, and the historical policy ranks
+    pair boundaries by model-free lexical and action-distribution overlap. The
+    shared-action policy instead covers every stably operation-ambiguous pair
+    and supplies bounded train-derived entity-rate asymmetry without
+    truncation. Neither policy uses model outputs, rewards, held-out labels,
+    reference transcripts at runtime, or devel/test material.
     """
 
     if (
@@ -7294,6 +7306,10 @@ def build_data_derived_decision_graph(
         or maximum_boundaries <= 0
     ):
         raise PsluFlightError("maximum_boundaries must be a positive integer")
+    if boundary_policy_id not in SPEECH_NATIVE_BOUNDARY_POLICY_IDS:
+        raise PsluFlightError(
+            "boundary_policy_id must name one registered decision-graph policy"
+        )
     claimed_sha256 = knowledge_binding.get("binding_sha256")
     unsigned = dict(knowledge_binding)
     unsigned.pop("binding_sha256", None)
@@ -7384,10 +7400,23 @@ def build_data_derived_decision_graph(
         raise PsluFlightError(f"data-derived graph corpus lacks scenarios {missing}")
 
     action_counts: dict[str, Counter[str]] = defaultdict(Counter)
+    entity_types_by_scenario_action: dict[
+        tuple[str, str], Counter[str]
+    ] = defaultdict(Counter)
     lexical_counts: dict[str, Counter[str]] = defaultdict(Counter)
     document_frequency: Counter[str] = Counter()
     for entry in corpus:
         action_counts[entry.scenario][entry.action] += 1
+        if any(
+            not isinstance(entity_type, str) or not entity_type
+            for entity_type in entry.entity_types
+        ):
+            raise PsluFlightError(
+                "data-derived graph corpus contains a malformed entity type"
+            )
+        entity_types_by_scenario_action[(entry.scenario, entry.action)].update(
+            set(entry.entity_types)
+        )
         tokens = {
             token
             for token in _KNOWLEDGE_TOKEN.findall(entry.sentence.casefold())
@@ -7454,6 +7483,7 @@ def build_data_derived_decision_graph(
     factors: list[DecisionFactorV1] = []
     target_factor_by_scenario: dict[str, str] = {}
     operation_factors_by_scenario: dict[str, list[str]] = defaultdict(list)
+    operation_factor_by_scenario_action: dict[tuple[str, str], str] = {}
     for scenario in scenarios:
         factor_id = f"F{len(factors) + 1:03d}"
         target_factor_by_scenario[scenario] = factor_id
@@ -7472,6 +7502,7 @@ def build_data_derived_decision_graph(
         for action in sorted(action_counts[scenario]):
             factor_id = f"F{len(factors) + 1:03d}"
             operation_factors_by_scenario[scenario].append(factor_id)
+            operation_factor_by_scenario_action[(scenario, action)] = factor_id
             factors.append(
                 DecisionFactorV1(
                     factor_id=factor_id,
@@ -7491,46 +7522,222 @@ def build_data_derived_decision_graph(
             action = action_overlap(left, right)
             combined = 0.65 * lexical + 0.35 * action
             pair_signals.append((combined, lexical, action, left, right))
-    ranked_pairs = sorted(
-        pair_signals,
-        key=lambda item: (-item[0], -item[1], -item[2], item[3], item[4]),
-    )[: min(maximum_boundaries, len(pair_signals))]
-
     boundaries: list[DecisionBoundaryV1] = []
-    for _combined, lexical, action, left, right in ranked_pairs:
-        left_card = cards_by_scenario[left]
-        right_card = cards_by_scenario[right]
-        boundaries.append(
-            DecisionBoundaryV1(
-                boundary_id=f"B{len(boundaries) + 1:03d}",
-                left_key_id=left_card.key_id,
-                right_key_id=right_card.key_id,
-                left_factor_ids=(
-                    target_factor_by_scenario[left],
-                    *operation_factors_by_scenario[left],
-                ),
-                right_factor_ids=(
-                    target_factor_by_scenario[right],
-                    *operation_factors_by_scenario[right],
-                ),
-                left_exclusion=(
-                    "Do not choose this side when the speech instead expresses "
-                    + SPEECH_NATIVE_SCENARIO_DEFINITIONS[right].rstrip(".").casefold()
-                    + "."
-                ),
-                right_exclusion=(
-                    "Do not choose this side when the speech instead expresses "
-                    + SPEECH_NATIVE_SCENARIO_DEFINITIONS[left].rstrip(".").casefold()
-                    + "."
-                ),
-                provenance_ids=(
-                    f"slurp-train-pair-signal:{left}:{right}:"
-                    f"lexical-{lexical:.8f}:action-{action:.8f}",
-                    f"key-card:{left_card.key_id}:definition",
-                    f"key-card:{right_card.key_id}:definition",
-                ),
+    if boundary_policy_id == "ranked-pair-signal-v1":
+        ranked_pairs = sorted(
+            pair_signals,
+            key=lambda item: (-item[0], -item[1], -item[2], item[3], item[4]),
+        )[: min(maximum_boundaries, len(pair_signals))]
+        for _combined, lexical, action, left, right in ranked_pairs:
+            left_card = cards_by_scenario[left]
+            right_card = cards_by_scenario[right]
+            boundaries.append(
+                DecisionBoundaryV1(
+                    boundary_id=f"B{len(boundaries) + 1:03d}",
+                    left_key_id=left_card.key_id,
+                    right_key_id=right_card.key_id,
+                    left_factor_ids=(
+                        target_factor_by_scenario[left],
+                        *operation_factors_by_scenario[left],
+                    ),
+                    right_factor_ids=(
+                        target_factor_by_scenario[right],
+                        *operation_factors_by_scenario[right],
+                    ),
+                    left_exclusion=(
+                        "Do not choose this side when the speech instead expresses "
+                        + SPEECH_NATIVE_SCENARIO_DEFINITIONS[right].rstrip(".").casefold()
+                        + "."
+                    ),
+                    right_exclusion=(
+                        "Do not choose this side when the speech instead expresses "
+                        + SPEECH_NATIVE_SCENARIO_DEFINITIONS[left].rstrip(".").casefold()
+                        + "."
+                    ),
+                    provenance_ids=(
+                        f"slurp-train-pair-signal:{left}:{right}:"
+                        f"lexical-{lexical:.8f}:action-{action:.8f}",
+                        f"key-card:{left_card.key_id}:definition",
+                        f"key-card:{right_card.key_id}:definition",
+                    ),
+                )
             )
-        )
+    else:
+        EntityRateEvidence = tuple[str, int, int, float, float]
+
+        def discriminative_entity_types(
+            primary_counts: Counter[str],
+            other_counts: Counter[str],
+            *,
+            primary_total: int,
+            other_total: int,
+        ) -> tuple[EntityRateEvidence, ...]:
+            ranked: list[tuple[float, EntityRateEvidence]] = []
+            for entity_type, count in primary_counts.items():
+                prevalence = count / primary_total
+                other_count = other_counts[entity_type]
+                rate_ratio = (
+                    ((count + 1.0) / (primary_total + 2.0))
+                    / ((other_count + 1.0) / (other_total + 2.0))
+                )
+                if (
+                    count < _DISCRIMINATIVE_ENTITY_MIN_SUPPORT
+                    or prevalence < _DISCRIMINATIVE_ENTITY_MIN_PREVALENCE
+                    or rate_ratio < _DISCRIMINATIVE_ENTITY_MIN_RATE_RATIO
+                ):
+                    continue
+                evidence = (
+                    entity_type,
+                    count,
+                    other_count,
+                    prevalence,
+                    rate_ratio,
+                )
+                information_score = prevalence * math.log2(rate_ratio)
+                ranked.append((information_score, evidence))
+            return tuple(
+                evidence
+                for _score, evidence in sorted(
+                    ranked,
+                    key=lambda item: (-item[0], -item[1][1], item[1][0]),
+                )[:_DISCRIMINATIVE_ENTITY_MAX_PER_SIDE]
+            )
+
+        shared_pairs: list[
+            tuple[
+                str,
+                str,
+                tuple[str, ...],
+                tuple[EntityRateEvidence, ...],
+                tuple[EntityRateEvidence, ...],
+            ]
+        ] = []
+        for left_index, left in enumerate(scenarios):
+            for right in scenarios[left_index + 1 :]:
+                shared_actions = tuple(
+                    sorted(
+                        action
+                        for action in set(action_counts[left])
+                        & set(action_counts[right])
+                        if action_counts[left][action]
+                        >= _STABLE_SHARED_ACTION_MIN_SUPPORT
+                        and action_counts[right][action]
+                        >= _STABLE_SHARED_ACTION_MIN_SUPPORT
+                    )
+                )
+                if not shared_actions:
+                    continue
+                left_entity_counts = sum(
+                    (
+                        entity_types_by_scenario_action[(left, action)]
+                        for action in shared_actions
+                    ),
+                    Counter(),
+                )
+                right_entity_counts = sum(
+                    (
+                        entity_types_by_scenario_action[(right, action)]
+                        for action in shared_actions
+                    ),
+                    Counter(),
+                )
+                left_total = sum(
+                    action_counts[left][action] for action in shared_actions
+                )
+                right_total = sum(
+                    action_counts[right][action] for action in shared_actions
+                )
+                left_evidence = discriminative_entity_types(
+                    left_entity_counts,
+                    right_entity_counts,
+                    primary_total=left_total,
+                    other_total=right_total,
+                )
+                right_evidence = discriminative_entity_types(
+                    right_entity_counts,
+                    left_entity_counts,
+                    primary_total=right_total,
+                    other_total=left_total,
+                )
+                if not left_evidence or not right_evidence:
+                    raise PsluFlightError(
+                        "shared-action boundary lacks bilateral supported entity "
+                        "asymmetry: "
+                        f"{left}/{right} actions={list(shared_actions)}"
+                    )
+                shared_pairs.append(
+                    (left, right, shared_actions, left_evidence, right_evidence)
+                )
+        if len(shared_pairs) > maximum_boundaries:
+            raise PsluFlightError(
+                "shared-action boundary policy refuses truncation: "
+                f"requires {len(shared_pairs)} boundaries but maximum_boundaries="
+                f"{maximum_boundaries}"
+            )
+
+        def render_entity_types(
+            evidence: tuple[EntityRateEvidence, ...],
+        ) -> str:
+            return ", ".join(
+                entity_type.replace("_", " ")
+                for entity_type, _count, _other_count, _prevalence, _ratio in evidence
+            )
+
+        for left, right, shared_actions, left_evidence, right_evidence in shared_pairs:
+            left_card = cards_by_scenario[left]
+            right_card = cards_by_scenario[right]
+            action_text = ", ".join(shared_actions)
+            boundaries.append(
+                DecisionBoundaryV1(
+                    boundary_id=f"B{len(boundaries) + 1:03d}",
+                    left_key_id=left_card.key_id,
+                    right_key_id=right_card.key_id,
+                    left_factor_ids=(
+                        target_factor_by_scenario[left],
+                        *(
+                            operation_factor_by_scenario_action[(left, action)]
+                            for action in shared_actions
+                        ),
+                    ),
+                    right_factor_ids=(
+                        target_factor_by_scenario[right],
+                        *(
+                            operation_factor_by_scenario_action[(right, action)]
+                            for action in shared_actions
+                        ),
+                    ),
+                    left_exclusion=(
+                        "Do not choose this side for shared operation evidence "
+                        f"({action_text}) when the speech instead refers to entity "
+                        "categories at least 5x more prevalent for the other key: "
+                        f"{render_entity_types(right_evidence)}."
+                    ),
+                    right_exclusion=(
+                        "Do not choose this side for shared operation evidence "
+                        f"({action_text}) when the speech instead refers to entity "
+                        "categories at least 5x more prevalent for the other key: "
+                        f"{render_entity_types(left_evidence)}."
+                    ),
+                    provenance_ids=(
+                        f"slurp-train-stable-shared-actions:{left}:{right}:"
+                        + ",".join(shared_actions),
+                        *(
+                            f"slurp-train-entity-rate:{left}:{right}:{left}:"
+                            f"{entity_type}:count-{count}:other-{other_count}:"
+                            f"prevalence-{prevalence:.8f}:ratio-{rate_ratio:.8f}"
+                            for entity_type, count, other_count, prevalence, rate_ratio in left_evidence
+                        ),
+                        *(
+                            f"slurp-train-entity-rate:{left}:{right}:{right}:"
+                            f"{entity_type}:count-{count}:other-{other_count}:"
+                            f"prevalence-{prevalence:.8f}:ratio-{rate_ratio:.8f}"
+                            for entity_type, count, other_count, prevalence, rate_ratio in right_evidence
+                        ),
+                        f"key-card:{left_card.key_id}:definition",
+                        f"key-card:{right_card.key_id}:definition",
+                    ),
+                )
+            )
 
     graph = DecisionGraphV1(
         graph_id=graph_id,
@@ -8249,6 +8456,7 @@ __all__ = [
     "SPEECH_NATIVE_MATCHER_POLICIES",
     "SPEECH_NATIVE_AGENT_POLICIES",
     "SPEECH_NATIVE_ACTION_FACET_DESCRIPTIONS",
+    "SPEECH_NATIVE_BOUNDARY_POLICY_IDS",
     "SPEECH_NATIVE_KNOWLEDGE_POLICY_ID",
     "SPEECH_NATIVE_SCENARIO_CONTRASTS",
     "SPEECH_NATIVE_SCENARIO_DEFINITIONS",

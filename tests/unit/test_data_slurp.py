@@ -10,9 +10,12 @@ explicit opt-in.
 
 from __future__ import annotations
 
+import json
 import threading
 import time
 from pathlib import Path
+
+import pytest
 
 from speech_aware_evidence_acquisition.data.lock import load_lock
 from speech_aware_evidence_acquisition.data.slurp import (
@@ -83,6 +86,8 @@ def test_train_material_exposes_auditable_text_audio_and_speaker_provenance(slur
     material = load_slurp_train_material(lock, slurp_world.data_root)
     assert [entry.scenario for entry in material] == ["iot", "weather"]
     assert material[0].sentence == "dim the lights in the kitchen"
+    assert material[0].entity_types == ("house_place",)
+    assert material[1].entity_types == ()
     assert material[0].recordings[0].sample_id == "slurp:train:000301:audio-301"
     assert material[0].recordings[0].speaker_id == "speaker-train-a"
     assert material[0].recordings[0].media_relpath.endswith("/slurp_real/audio-301.flac")
@@ -92,7 +97,22 @@ def test_train_material_refuses_missing_speaker_identity(slurp_world):
     lock = load_lock(slurp_world.lock_path)
     metadata_path = slurp_world.metadata_dir / "metadata.json"
     metadata_path.write_text("{}", encoding="utf-8")
-    import pytest
-
     with pytest.raises(Exception, match="speaker identity"):
+        load_slurp_train_material(lock, slurp_world.data_root)
+
+
+def test_train_material_refuses_a_malformed_entity_type(slurp_world):
+    lock = load_lock(slurp_world.lock_path)
+    metadata_path = slurp_world.metadata_dir / "train.jsonl"
+    rows = [
+        json.loads(line)
+        for line in metadata_path.read_text(encoding="utf-8").splitlines()
+    ]
+    rows[0]["entities"] = [{"span": [5], "type": ""}]
+    metadata_path.write_text(
+        "\n".join(json.dumps(row) for row in rows) + "\n",
+        encoding="utf-8",
+    )
+
+    with pytest.raises(Exception, match="entity type"):
         load_slurp_train_material(lock, slurp_world.data_root)

@@ -10,6 +10,7 @@ import json
 import hashlib
 import threading
 import time
+from dataclasses import replace
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -6809,7 +6810,7 @@ def _knowledge_refinement_material():
     item_index = 0
     for scenario, actions in action_sentences.items():
         for action, sentence in actions.items():
-            for replica in range(8):
+            for replica in range(16):
                 item_index += 1
                 utterance_id = f"knowledge-{item_index:04d}"
                 material.append(
@@ -6830,6 +6831,22 @@ def _knowledge_refinement_material():
                                 ),
                                 speaker_id=f"knowledge-speaker-{item_index}",
                             ),
+                        ),
+                        entity_types=(
+                            ("time",)
+                            if scenario == "alarm" and action == "query"
+                            else (
+                                ("email_folder", "person")
+                                if scenario == "email" and action == "query"
+                                else ()
+                            )
+                        )
+                        + (
+                            ("time",)
+                            if scenario == "email"
+                            and action == "query"
+                            and replica == 0
+                            else ()
                         ),
                     )
                 )
@@ -6964,6 +6981,7 @@ def test_data_derived_decision_graph_uses_remaining_train_actions_and_pair_signa
         graph_id="slurp-data-derived-decision-graph-v2",
         expected_scenarios=("alarm", "email"),
         maximum_boundaries=1,
+        boundary_policy_id="ranked-pair-signal-v1",
     )
 
     cards = tuple(
@@ -7013,8 +7031,116 @@ def test_data_derived_decision_graph_uses_remaining_train_actions_and_pair_signa
         graph_id="slurp-data-derived-decision-graph-v2",
         expected_scenarios=("alarm", "email"),
         maximum_boundaries=1,
+        boundary_policy_id="ranked-pair-signal-v1",
     )
     assert graph.as_json() == repeated.as_json()
+
+
+def test_shared_action_entity_graph_covers_the_actual_ambiguity_and_entity_signal():
+    material = _knowledge_refinement_material()
+    base = build_speech_native_binding(
+        material,
+        seed=20260821,
+        expected_scenarios=("alarm", "email"),
+        opt_a_per_scenario=2,
+        opt_b_per_scenario=1,
+        gate_per_scenario=1,
+        key_examples_per_scenario=5,
+    )
+    knowledge = refine_speech_native_binding_knowledge(
+        base,
+        material,
+        seed=20260827,
+        expected_scenarios=("alarm", "email"),
+        key_examples_per_scenario=5,
+    )
+
+    graph = build_data_derived_decision_graph(
+        knowledge,
+        material,
+        graph_id="slurp-shared-action-entity-decision-graph-v3",
+        expected_scenarios=("alarm", "email"),
+        maximum_boundaries=1,
+        boundary_policy_id="shared-action-entity-boundaries-v2",
+    )
+
+    assert len(graph.boundaries) == 1
+    boundary = graph.boundaries[0]
+    assert "slurp-train-stable-shared-actions:alarm:email:query" in (
+        boundary.provenance_ids
+    )
+    assert any(
+        provenance.startswith(
+            "slurp-train-entity-rate:alarm:email:alarm:time:"
+        )
+        for provenance in boundary.provenance_ids
+    )
+    assert any(
+        provenance.startswith(
+            "slurp-train-entity-rate:alarm:email:email:email_folder:"
+        )
+        for provenance in boundary.provenance_ids
+    )
+    assert "at least 5x more prevalent" in boundary.left_exclusion
+    assert "email folder" in boundary.left_exclusion
+    assert "person" in boundary.left_exclusion
+    assert "time" in boundary.right_exclusion
+    factors_by_id = {factor.factor_id: factor for factor in graph.factors}
+    assert {
+        factors_by_id[factor_id].provenance_ids[0]
+        for factor_id in boundary.left_factor_ids
+        if factors_by_id[factor_id].kind == "operation"
+    } == {"slurp-train-action:alarm:query"}
+    assert {
+        factors_by_id[factor_id].provenance_ids[0]
+        for factor_id in boundary.right_factor_ids
+        if factors_by_id[factor_id].kind == "operation"
+    } == {"slurp-train-action:email:query"}
+
+    repeated = build_data_derived_decision_graph(
+        knowledge,
+        reversed(material),
+        graph_id="slurp-shared-action-entity-decision-graph-v3",
+        expected_scenarios=("alarm", "email"),
+        maximum_boundaries=1,
+        boundary_policy_id="shared-action-entity-boundaries-v2",
+    )
+    assert graph.as_json() == repeated.as_json()
+
+
+def test_shared_action_entity_graph_fails_without_discriminative_entity_information():
+    material = tuple(
+        replace(entry, entity_types=("shared_entity",))
+        if entry.action == "query"
+        else entry
+        for entry in _knowledge_refinement_material()
+    )
+    base = build_speech_native_binding(
+        material,
+        seed=20260821,
+        expected_scenarios=("alarm", "email"),
+        opt_a_per_scenario=2,
+        opt_b_per_scenario=1,
+        gate_per_scenario=1,
+        key_examples_per_scenario=5,
+    )
+    knowledge = refine_speech_native_binding_knowledge(
+        base,
+        material,
+        seed=20260827,
+        expected_scenarios=("alarm", "email"),
+        key_examples_per_scenario=5,
+    )
+
+    with pytest.raises(PsluFlightError, match="entity asymmetry"):
+        build_data_derived_decision_graph(
+            knowledge,
+            material,
+            graph_id="slurp-shared-action-entity-decision-graph-v3",
+            expected_scenarios=("alarm", "email"),
+            maximum_boundaries=1,
+            boundary_policy_id="shared-action-entity-boundaries-v2",
+        )
 
 
 def test_speech_native_successor_binding_preserves_keys_and_adds_isolated_split():
@@ -7240,7 +7366,7 @@ def test_binding_extension_cli_emits_graph_from_same_knowledge_successor(
         def as_json(self):
             return {
                 "schema": "saea-decision-graph-v1",
-                "graph_id": "slurp-data-derived-decision-graph-v2",
+                "graph_id": "slurp-shared-action-entity-decision-graph-v3",
                 "factors": [],
                 "boundaries": [],
             }
@@ -7273,6 +7399,10 @@ def test_binding_extension_cli_emits_graph_from_same_knowledge_successor(
             "slurp-action-stratified-specificity-v1",
             "--decision-graph-output",
             str(graph_output),
+            "--decision-graph-id",
+            "slurp-shared-action-entity-decision-graph-v3",
+            "--boundary-policy",
+            "shared-action-entity-boundaries-v2",
             "--maximum-boundaries",
             "27",
         ]
@@ -7283,12 +7413,13 @@ def test_binding_extension_cli_emits_graph_from_same_knowledge_successor(
         "successor": knowledge,
         "material": material,
         "graph": {
-            "graph_id": "slurp-data-derived-decision-graph-v2",
+            "graph_id": "slurp-shared-action-entity-decision-graph-v3",
             "maximum_boundaries": 27,
+            "boundary_policy_id": "shared-action-entity-boundaries-v2",
         },
     }
     assert json.loads(graph_output.read_text(encoding="utf-8"))["graph_id"] == (
-        "slurp-data-derived-decision-graph-v2"
+        "slurp-shared-action-entity-decision-graph-v3"
     )
     summary = json.loads(capsys.readouterr().out)
     assert summary["decision_graph_output"] == str(graph_output.resolve())

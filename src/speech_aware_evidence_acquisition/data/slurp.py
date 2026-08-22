@@ -157,6 +157,7 @@ class SlurpTrainMaterial:
     action: str
     sentence: str
     recordings: tuple[SlurpTrainRecording, ...]
+    entity_types: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -761,6 +762,12 @@ def load_slurp_train_material(
             raise LoaderError(f"{context}: action must be a non-empty string")
         if not isinstance(sentence, str) or not sentence.strip():
             raise LoaderError(f"{context}: sentence must be a non-empty string")
+        raw_entities = raw.get("entities")
+        if not isinstance(raw_entities, list):
+            raise LoaderError(f"{context}: entities must be a list")
+        entity_types = tuple(
+            sorted({_entity_type(entity, context) for entity in raw_entities})
+        )
         raw_recordings = raw.get("recordings")
         if not isinstance(raw_recordings, list) or not raw_recordings:
             raise LoaderError(f"{context}: recordings must be a non-empty list")
@@ -792,6 +799,7 @@ def load_slurp_train_material(
                 action=action,
                 sentence=sentence.strip(),
                 recordings=tuple(sorted(recordings, key=lambda item: item.sample_id)),
+                entity_types=entity_types,
             )
         )
     if not material:

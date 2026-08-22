@@ -1,0 +1,2239 @@
+{
+  "boundaries": [
+    {
+      "boundary_id": "B001",
+      "left_exclusion": "Do not choose this side for shared operation evidence (query, remove, set) when the speech instead refers to entity categories at least 5x more prevalent for the other key: event name, person, place name.",
+      "left_factor_ids": [
+        "F001",
+        "F019",
+        "F020",
+        "F021"
+      ],
+      "left_key_id": "K001",
+      "provenance_ids": [
+        "slurp-train-stable-shared-actions:alarm:calendar:query,remove,set",
+        "slurp-train-entity-rate:alarm:calendar:alarm:alarm_type:count-8:other-0:prevalence-0.02222222:ratio-41.27071823",
+        "slurp-train-entity-rate:alarm:calendar:calendar:event_name:count-829:other-22:prevalence-0.50000000:ratio-7.86956522",
+        "slurp-train-entity-rate:alarm:calendar:calendar:person:count-171:other-0:prevalence-0.10313631:ratio-37.50843373",
+        "slurp-train-entity-rate:alarm:calendar:calendar:place_name:count-62:other-0:prevalence-0.03739445:ratio-13.73855422",
+        "key-card:K001:definition",
+        "key-card:K003:definition"
+      ],
+      "right_exclusion": "Do not choose this side for shared operation evidence (query, remove, set) when the speech instead refers to entity categories at least 5x more prevalent for the other key: alarm type.",
+      "right_factor_ids": [
+        "F003",
+        "F026",
+        "F027",
+        "F028"
+      ],
+      "right_key_id": "K003"
+    },
+    {
+      "boundary_id": "B002",
+      "left_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: place name, time zone.",
+      "left_factor_ids": [
+        "F001",
+        "F019"
+      ],
+      "left_key_id": "K001",
+      "provenance_ids": [
+        "slurp-train-stable-shared-actions:alarm:datetime:query",
+        "slurp-train-entity-rate:alarm:datetime:alarm:timeofday:count-12:other-1:prevalence-0.09836066:ratio-17.08870968",
+        "slurp-train-entity-rate:alarm:datetime:alarm:alarm_type:count-2:other-0:prevalence-0.01639344:ratio-7.88709677",
+        "slurp-train-entity-rate:alarm:datetime:datetime:place_name:count-109:other-0:prevalence-0.33641975:ratio-41.84049080",
+        "slurp-train-entity-rate:alarm:datetime:datetime:time_zone:count-22:other-0:prevalence-0.06790123:ratio-8.74846626",
+        "key-card:K001:definition",
+        "key-card:K005:definition"
+      ],
+      "right_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: timeofday, alarm type.",
+      "right_factor_ids": [
+        "F005",
+        "F032"
+      ],
+      "right_key_id": "K005"
+    },
+    {
+      "boundary_id": "B003",
+      "left_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: person, relation, email folder.",
+      "left_factor_ids": [
+        "F001",
+        "F019"
+      ],
+      "left_key_id": "K001",
+      "provenance_ids": [
+        "slurp-train-stable-shared-actions:alarm:email:query",
+        "slurp-train-entity-rate:alarm:email:alarm:timeofday:count-12:other-2:prevalence-0.09836066:ratio-14.01344086",
+        "slurp-train-entity-rate:alarm:email:alarm:alarm_type:count-2:other-0:prevalence-0.01639344:ratio-9.70161290",
+        "slurp-train-entity-rate:alarm:email:email:person:count-118:other-0:prevalence-0.29573935:ratio-36.79800499",
+        "slurp-train-entity-rate:alarm:email:email:relation:count-33:other-0:prevalence-0.08270677:ratio-10.51371571",
+        "slurp-train-entity-rate:alarm:email:email:email_folder:count-31:other-0:prevalence-0.07769424:ratio-9.89526185",
+        "key-card:K001:definition",
+        "key-card:K006:definition"
+      ],
+      "right_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: timeofday, alarm type.",
+      "right_factor_ids": [
+        "F006",
+        "F034"
+      ],
+      "right_key_id": "K006"
+    },
+    {
+      "boundary_id": "B004",
+      "left_exclusion": "Do not choose this side for shared operation evidence (query, remove) when the speech instead refers to entity categories at least 5x more prevalent for the other key: list name.",
+      "left_factor_ids": [
+        "F001",
+        "F019",
+        "F020"
+      ],
+      "left_key_id": "K001",
+      "provenance_ids": [
+        "slurp-train-stable-shared-actions:alarm:lists:query,remove",
+        "slurp-train-entity-rate:alarm:lists:alarm:time:count-31:other-0:prevalence-0.16145833:ratio-56.57731959",
+        "slurp-train-entity-rate:alarm:lists:alarm:timeofday:count-21:other-2:prevalence-0.10937500:ratio-12.96563574",
+        "slurp-train-entity-rate:alarm:lists:alarm:alarm_type:count-6:other-0:prevalence-0.03125000:ratio-12.37628866",
+        "slurp-train-entity-rate:alarm:lists:lists:list_name:count-107:other-0:prevalence-0.31378299:ratio-61.08454810",
+        "key-card:K001:definition",
+        "key-card:K009:definition"
+      ],
+      "right_exclusion": "Do not choose this side for shared operation evidence (query, remove) when the speech instead refers to entity categories at least 5x more prevalent for the other key: time, timeofday, alarm type.",
+      "right_factor_ids": [
+        "F009",
+        "F050",
+        "F051"
+      ],
+      "right_key_id": "K009"
+    },
+    {
+      "boundary_id": "B005",
+      "left_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: artist name, music genre.",
+      "left_factor_ids": [
+        "F001",
+        "F019"
+      ],
+      "left_key_id": "K001",
+      "provenance_ids": [
+        "slurp-train-stable-shared-actions:alarm:music:query",
+        "slurp-train-entity-rate:alarm:music:alarm:date:count-26:other-4:prevalence-0.21311475:ratio-6.18387097",
+        "slurp-train-entity-rate:alarm:music:alarm:time:count-11:other-0:prevalence-0.09016393:ratio-13.74193548",
+        "slurp-train-entity-rate:alarm:music:music:artist_name:count-9:other-0:prevalence-0.06428571:ratio-8.73239437",
+        "slurp-train-entity-rate:alarm:music:music:music_genre:count-5:other-0:prevalence-0.03571429:ratio-5.23943662",
+        "key-card:K001:definition",
+        "key-card:K010:definition"
+      ],
+      "right_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: date, time.",
+      "right_factor_ids": [
+        "F010",
+        "F054"
+      ],
+      "right_key_id": "K010"
+    },
+    {
+      "boundary_id": "B006",
+      "left_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: news topic, media type, place name.",
+      "left_factor_ids": [
+        "F001",
+        "F019"
+      ],
+      "left_key_id": "K001",
+      "provenance_ids": [
+        "slurp-train-stable-shared-actions:alarm:news:query",
+        "slurp-train-entity-rate:alarm:news:alarm:timeofday:count-12:other-3:prevalence-0.09836066:ratio-12.44959677",
+        "slurp-train-entity-rate:alarm:news:alarm:time:count-11:other-6:prevalence-0.09016393:ratio-6.56682028",
+        "slurp-train-entity-rate:alarm:news:alarm:alarm_type:count-2:other-0:prevalence-0.01639344:ratio-11.49193548",
+        "slurp-train-entity-rate:alarm:news:news:news_topic:count-169:other-0:prevalence-0.35729387:ratio-44.37894737",
+        "slurp-train-entity-rate:alarm:news:news:media_type:count-118:other-0:prevalence-0.24947146:ratio-31.06526316",
+        "slurp-train-entity-rate:alarm:news:news:place_name:count-63:other-0:prevalence-0.13319239:ratio-16.70736842",
+        "key-card:K001:definition",
+        "key-card:K011:definition"
+      ],
+      "right_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: timeofday, time, alarm type.",
+      "right_factor_ids": [
+        "F011",
+        "F056"
+      ],
+      "right_key_id": "K011"
+    },
+    {
+      "boundary_id": "B007",
+      "left_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: media type, person, relation.",
+      "left_factor_ids": [
+        "F001",
+        "F019"
+      ],
+      "left_key_id": "K001",
+      "provenance_ids": [
+        "slurp-train-stable-shared-actions:alarm:social:query",
+        "slurp-train-entity-rate:alarm:social:alarm:timeofday:count-12:other-0:prevalence-0.09836066:ratio-10.69354839",
+        "slurp-train-entity-rate:alarm:social:social:media_type:count-61:other-0:prevalence-0.61000000:ratio-75.37254902",
+        "slurp-train-entity-rate:alarm:social:social:person:count-11:other-0:prevalence-0.11000000:ratio-14.58823529",
+        "slurp-train-entity-rate:alarm:social:social:relation:count-5:other-0:prevalence-0.05000000:ratio-7.29411765",
+        "key-card:K001:definition",
+        "key-card:K015:definition"
+      ],
+      "right_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: timeofday.",
+      "right_factor_ids": [
+        "F015",
+        "F071"
+      ],
+      "right_key_id": "K015"
+    },
+    {
+      "boundary_id": "B008",
+      "left_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: order type, business name, business type.",
+      "left_factor_ids": [
+        "F001",
+        "F019"
+      ],
+      "left_key_id": "K001",
+      "provenance_ids": [
+        "slurp-train-stable-shared-actions:alarm:takeaway:query",
+        "slurp-train-entity-rate:alarm:takeaway:alarm:date:count-26:other-0:prevalence-0.21311475:ratio-24.16935484",
+        "slurp-train-entity-rate:alarm:takeaway:alarm:timeofday:count-12:other-1:prevalence-0.09836066:ratio-5.81854839",
+        "slurp-train-entity-rate:alarm:takeaway:alarm:time:count-11:other-1:prevalence-0.09016393:ratio-5.37096774",
+        "slurp-train-entity-rate:alarm:takeaway:takeaway:order_type:count-61:other-0:prevalence-0.55963303:ratio-69.26126126",
+        "slurp-train-entity-rate:alarm:takeaway:takeaway:business_name:count-35:other-0:prevalence-0.32110092:ratio-40.21621622",
+        "slurp-train-entity-rate:alarm:takeaway:takeaway:business_type:count-25:other-0:prevalence-0.22935780:ratio-29.04504505",
+        "key-card:K001:definition",
+        "key-card:K016:definition"
+      ],
+      "right_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: date, timeofday, time.",
+      "right_factor_ids": [
+        "F016",
+        "F073"
+      ],
+      "right_key_id": "K016"
+    },
+    {
+      "boundary_id": "B009",
+      "left_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: place name, transport type.",
+      "left_factor_ids": [
+        "F001",
+        "F019"
+      ],
+      "left_key_id": "K001",
+      "provenance_ids": [
+        "slurp-train-stable-shared-actions:alarm:transport:query",
+        "slurp-train-entity-rate:alarm:transport:alarm:alarm_type:count-2:other-0:prevalence-0.01639344:ratio-5.39516129",
+        "slurp-train-entity-rate:alarm:transport:transport:place_name:count-142:other-0:prevalence-0.64253394:ratio-79.51569507",
+        "slurp-train-entity-rate:alarm:transport:transport:transport_type:count-128:other-0:prevalence-0.57918552:ratio-71.73094170",
+        "key-card:K001:definition",
+        "key-card:K017:definition"
+      ],
+      "right_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: alarm type.",
+      "right_factor_ids": [
+        "F017",
+        "F074"
+      ],
+      "right_key_id": "K017"
+    },
+    {
+      "boundary_id": "B010",
+      "left_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: weather descriptor, place name.",
+      "left_factor_ids": [
+        "F001",
+        "F019"
+      ],
+      "left_key_id": "K001",
+      "provenance_ids": [
+        "slurp-train-stable-shared-actions:alarm:weather:query",
+        "slurp-train-entity-rate:alarm:weather:alarm:alarm_type:count-2:other-0:prevalence-0.01639344:ratio-13.18548387",
+        "slurp-train-entity-rate:alarm:weather:weather:weather_descriptor:count-292:other-0:prevalence-0.53775322:ratio-66.66422018",
+        "slurp-train-entity-rate:alarm:weather:weather:place_name:count-113:other-0:prevalence-0.20810313:ratio-25.93761468",
+        "key-card:K001:definition",
+        "key-card:K018:definition"
+      ],
+      "right_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: alarm type.",
+      "right_factor_ids": [
+        "F018",
+        "F078"
+      ],
+      "right_key_id": "K018"
+    },
+    {
+      "boundary_id": "B011",
+      "left_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: place name, time zone.",
+      "left_factor_ids": [
+        "F003",
+        "F026"
+      ],
+      "left_key_id": "K003",
+      "provenance_ids": [
+        "slurp-train-stable-shared-actions:calendar:datetime:query",
+        "slurp-train-entity-rate:calendar:datetime:calendar:event_name:count-213:other-15:prevalence-0.38517179:ratio-7.85630631",
+        "slurp-train-entity-rate:calendar:datetime:calendar:person:count-22:other-0:prevalence-0.03978300:ratio-13.50990991",
+        "slurp-train-entity-rate:calendar:datetime:calendar:timeofday:count-27:other-1:prevalence-0.04882459:ratio-8.22342342",
+        "slurp-train-entity-rate:calendar:datetime:datetime:place_name:count-109:other-9:prevalence-0.33641975:ratio-18.72699387",
+        "slurp-train-entity-rate:calendar:datetime:datetime:time_zone:count-22:other-0:prevalence-0.06790123:ratio-39.15644172",
+        "key-card:K003:definition",
+        "key-card:K005:definition"
+      ],
+      "right_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: event name, person, timeofday.",
+      "right_factor_ids": [
+        "F005",
+        "F032"
+      ],
+      "right_key_id": "K005"
+    },
+    {
+      "boundary_id": "B012",
+      "left_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: person, email folder.",
+      "left_factor_ids": [
+        "F003",
+        "F026"
+      ],
+      "left_key_id": "K003",
+      "provenance_ids": [
+        "slurp-train-stable-shared-actions:calendar:email:query",
+        "slurp-train-entity-rate:calendar:email:calendar:event_name:count-213:other-5:prevalence-0.38517179:ratio-25.76996997",
+        "slurp-train-entity-rate:calendar:email:calendar:date:count-288:other-30:prevalence-0.52079566:ratio-6.73577448",
+        "slurp-train-entity-rate:calendar:email:calendar:timeofday:count-27:other-2:prevalence-0.04882459:ratio-6.74354354",
+        "slurp-train-entity-rate:calendar:email:email:person:count-118:other-22:prevalence-0.29573935:ratio-7.16090209",
+        "slurp-train-entity-rate:calendar:email:email:email_folder:count-31:other-0:prevalence-0.07769424:ratio-44.28927681",
+        "key-card:K003:definition",
+        "key-card:K006:definition"
+      ],
+      "right_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: event name, date, timeofday.",
+      "right_factor_ids": [
+        "F006",
+        "F034"
+      ],
+      "right_key_id": "K006"
+    },
+    {
+      "boundary_id": "B013",
+      "left_exclusion": "Do not choose this side for shared operation evidence (query, remove) when the speech instead refers to entity categories at least 5x more prevalent for the other key: list name.",
+      "left_factor_ids": [
+        "F003",
+        "F026",
+        "F027"
+      ],
+      "left_key_id": "K003",
+      "provenance_ids": [
+        "slurp-train-stable-shared-actions:calendar:lists:query,remove",
+        "slurp-train-entity-rate:calendar:lists:calendar:event_name:count-314:other-1:prevalence-0.36639440:ratio-62.88998836",
+        "slurp-train-entity-rate:calendar:lists:calendar:date:count-393:other-26:prevalence-0.45857643:ratio-5.82684431",
+        "slurp-train-entity-rate:calendar:lists:calendar:time:count-88:other-0:prevalence-0.10268378:ratio-35.53783469",
+        "slurp-train-entity-rate:calendar:lists:lists:list_name:count-107:other-3:prevalence-0.31378299:ratio-67.61807580",
+        "key-card:K003:definition",
+        "key-card:K009:definition"
+      ],
+      "right_exclusion": "Do not choose this side for shared operation evidence (query, remove) when the speech instead refers to entity categories at least 5x more prevalent for the other key: event name, date, time.",
+      "right_factor_ids": [
+        "F009",
+        "F050",
+        "F051"
+      ],
+      "right_key_id": "K009"
+    },
+    {
+      "boundary_id": "B014",
+      "left_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: artist name, music genre, song name.",
+      "left_factor_ids": [
+        "F003",
+        "F026"
+      ],
+      "left_key_id": "K003",
+      "provenance_ids": [
+        "slurp-train-stable-shared-actions:calendar:music:query",
+        "slurp-train-entity-rate:calendar:music:calendar:event_name:count-213:other-0:prevalence-0.38517179:ratio-54.75315315",
+        "slurp-train-entity-rate:calendar:music:calendar:date:count-288:other-4:prevalence-0.52079566:ratio-14.78846847",
+        "slurp-train-entity-rate:calendar:music:calendar:time:count-63:other-0:prevalence-0.11392405:ratio-16.37477477",
+        "slurp-train-entity-rate:calendar:music:music:artist_name:count-9:other-0:prevalence-0.06428571:ratio-39.08450704",
+        "slurp-train-entity-rate:calendar:music:music:music_genre:count-5:other-0:prevalence-0.03571429:ratio-23.45070423",
+        "slurp-train-entity-rate:calendar:music:music:song_name:count-2:other-0:prevalence-0.01428571:ratio-11.72535211",
+        "key-card:K003:definition",
+        "key-card:K010:definition"
+      ],
+      "right_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: event name, date, time.",
+      "right_factor_ids": [
+        "F010",
+        "F054"
+      ],
+      "right_key_id": "K010"
+    },
+    {
+      "boundary_id": "B015",
+      "left_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: news topic, media type, place name.",
+      "left_factor_ids": [
+        "F003",
+        "F026"
+      ],
+      "left_key_id": "K003",
+      "provenance_ids": [
+        "slurp-train-stable-shared-actions:calendar:news:query",
+        "slurp-train-entity-rate:calendar:news:calendar:event_name:count-213:other-0:prevalence-0.38517179:ratio-183.15315315",
+        "slurp-train-entity-rate:calendar:news:calendar:time:count-63:other-6:prevalence-0.11392405:ratio-7.82496782",
+        "slurp-train-entity-rate:calendar:news:calendar:timeofday:count-27:other-3:prevalence-0.04882459:ratio-5.99099099",
+        "slurp-train-entity-rate:calendar:news:news:news_topic:count-169:other-0:prevalence-0.35729387:ratio-198.63157895",
+        "slurp-train-entity-rate:calendar:news:news:media_type:count-118:other-0:prevalence-0.24947146:ratio-139.04210526",
+        "slurp-train-entity-rate:calendar:news:news:place_name:count-63:other-9:prevalence-0.13319239:ratio-7.47789474",
+        "key-card:K003:definition",
+        "key-card:K011:definition"
+      ],
+      "right_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: event name, time, timeofday.",
+      "right_factor_ids": [
+        "F011",
+        "F056"
+      ],
+      "right_key_id": "K011"
+    },
+    {
+      "boundary_id": "B016",
+      "left_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: media type.",
+      "left_factor_ids": [
+        "F003",
+        "F026"
+      ],
+      "left_key_id": "K003",
+      "provenance_ids": [
+        "slurp-train-stable-shared-actions:calendar:social:query",
+        "slurp-train-entity-rate:calendar:social:calendar:event_name:count-213:other-2:prevalence-0.38517179:ratio-13.10990991",
+        "slurp-train-entity-rate:calendar:social:calendar:timeofday:count-27:other-0:prevalence-0.04882459:ratio-5.14594595",
+        "slurp-train-entity-rate:calendar:social:social:media_type:count-61:other-0:prevalence-0.61000000:ratio-337.35294118",
+        "key-card:K003:definition",
+        "key-card:K015:definition"
+      ],
+      "right_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: event name, timeofday.",
+      "right_factor_ids": [
+        "F015",
+        "F071"
+      ],
+      "right_key_id": "K015"
+    },
+    {
+      "boundary_id": "B017",
+      "left_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: order type, business name, business type.",
+      "left_factor_ids": [
+        "F003",
+        "F026"
+      ],
+      "left_key_id": "K003",
+      "provenance_ids": [
+        "slurp-train-stable-shared-actions:calendar:takeaway:query",
+        "slurp-train-entity-rate:calendar:takeaway:calendar:date:count-288:other-0:prevalence-0.52079566:ratio-57.80000000",
+        "slurp-train-entity-rate:calendar:takeaway:calendar:event_name:count-213:other-1:prevalence-0.38517179:ratio-21.40000000",
+        "slurp-train-entity-rate:calendar:takeaway:calendar:time:count-63:other-1:prevalence-0.11392405:ratio-6.40000000",
+        "slurp-train-entity-rate:calendar:takeaway:takeaway:order_type:count-61:other-0:prevalence-0.55963303:ratio-310.00000000",
+        "slurp-train-entity-rate:calendar:takeaway:takeaway:business_name:count-35:other-1:prevalence-0.32110092:ratio-90.00000000",
+        "slurp-train-entity-rate:calendar:takeaway:takeaway:business_type:count-25:other-0:prevalence-0.22935780:ratio-130.00000000",
+        "key-card:K003:definition",
+        "key-card:K016:definition"
+      ],
+      "right_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: date, event name, time.",
+      "right_factor_ids": [
+        "F016",
+        "F073"
+      ],
+      "right_key_id": "K016"
+    },
+    {
+      "boundary_id": "B018",
+      "left_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: transport type, place name, business name.",
+      "left_factor_ids": [
+        "F003",
+        "F026"
+      ],
+      "left_key_id": "K003",
+      "provenance_ids": [
+        "slurp-train-stable-shared-actions:calendar:transport:query",
+        "slurp-train-entity-rate:calendar:transport:calendar:event_name:count-213:other-1:prevalence-0.38517179:ratio-42.99279279",
+        "slurp-train-entity-rate:calendar:transport:transport:transport_type:count-128:other-0:prevalence-0.57918552:ratio-321.05381166",
+        "slurp-train-entity-rate:calendar:transport:transport:place_name:count-142:other-9:prevalence-0.64253394:ratio-35.58968610",
+        "slurp-train-entity-rate:calendar:transport:transport:business_name:count-7:other-1:prevalence-0.03167421:ratio-9.95515695",
+        "key-card:K003:definition",
+        "key-card:K017:definition"
+      ],
+      "right_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: event name.",
+      "right_factor_ids": [
+        "F017",
+        "F074"
+      ],
+      "right_key_id": "K017"
+    },
+    {
+      "boundary_id": "B019",
+      "left_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: weather descriptor, place name.",
+      "left_factor_ids": [
+        "F003",
+        "F026"
+      ],
+      "left_key_id": "K003",
+      "provenance_ids": [
+        "slurp-train-stable-shared-actions:calendar:weather:query",
+        "slurp-train-entity-rate:calendar:weather:calendar:event_name:count-213:other-3:prevalence-0.38517179:ratio-52.53603604",
+        "slurp-train-entity-rate:calendar:weather:calendar:person:count-22:other-0:prevalence-0.03978300:ratio-22.58558559",
+        "slurp-train-entity-rate:calendar:weather:calendar:relation:count-13:other-0:prevalence-0.02350814:ratio-13.74774775",
+        "slurp-train-entity-rate:calendar:weather:weather:weather_descriptor:count-292:other-0:prevalence-0.53775322:ratio-298.37614679",
+        "slurp-train-entity-rate:calendar:weather:weather:place_name:count-113:other-9:prevalence-0.20810313:ratio-11.60917431",
+        "key-card:K003:definition",
+        "key-card:K018:definition"
+      ],
+      "right_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: event name, person, relation.",
+      "right_factor_ids": [
+        "F018",
+        "F078"
+      ],
+      "right_key_id": "K018"
+    },
+    {
+      "boundary_id": "B020",
+      "left_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: person, relation, email folder.",
+      "left_factor_ids": [
+        "F005",
+        "F032"
+      ],
+      "left_key_id": "K005",
+      "provenance_ids": [
+        "slurp-train-stable-shared-actions:datetime:email:query",
+        "slurp-train-entity-rate:datetime:email:datetime:place_name:count-109:other-0:prevalence-0.33641975:ratio-135.30674847",
+        "slurp-train-entity-rate:datetime:email:datetime:time_zone:count-22:other-0:prevalence-0.06790123:ratio-28.29141104",
+        "slurp-train-entity-rate:datetime:email:email:person:count-118:other-0:prevalence-0.29573935:ratio-96.74314214",
+        "slurp-train-entity-rate:datetime:email:email:relation:count-33:other-0:prevalence-0.08270677:ratio-27.64089776",
+        "slurp-train-entity-rate:datetime:email:email:email_folder:count-31:other-0:prevalence-0.07769424:ratio-26.01496259",
+        "key-card:K005:definition",
+        "key-card:K006:definition"
+      ],
+      "right_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: place name, time zone.",
+      "right_factor_ids": [
+        "F006",
+        "F034"
+      ],
+      "right_key_id": "K006"
+    },
+    {
+      "boundary_id": "B021",
+      "left_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: list name.",
+      "left_factor_ids": [
+        "F005",
+        "F032"
+      ],
+      "left_key_id": "K005",
+      "provenance_ids": [
+        "slurp-train-stable-shared-actions:datetime:lists:query",
+        "slurp-train-entity-rate:datetime:lists:datetime:place_name:count-109:other-0:prevalence-0.33641975:ratio-63.77300613",
+        "slurp-train-entity-rate:datetime:lists:datetime:time_zone:count-22:other-0:prevalence-0.06790123:ratio-13.33435583",
+        "slurp-train-entity-rate:datetime:lists:datetime:event_name:count-15:other-0:prevalence-0.04629630:ratio-9.27607362",
+        "slurp-train-entity-rate:datetime:lists:lists:list_name:count-46:other-0:prevalence-0.24598930:ratio-81.06878307",
+        "key-card:K005:definition",
+        "key-card:K009:definition"
+      ],
+      "right_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: place name, time zone, event name.",
+      "right_factor_ids": [
+        "F009",
+        "F050"
+      ],
+      "right_key_id": "K009"
+    },
+    {
+      "boundary_id": "B022",
+      "left_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: artist name, music genre, person.",
+      "left_factor_ids": [
+        "F005",
+        "F032"
+      ],
+      "left_key_id": "K005",
+      "provenance_ids": [
+        "slurp-train-stable-shared-actions:datetime:music:query",
+        "slurp-train-entity-rate:datetime:music:datetime:place_name:count-109:other-0:prevalence-0.33641975:ratio-47.91411043",
+        "slurp-train-entity-rate:datetime:music:datetime:date:count-108:other-4:prevalence-0.33333333:ratio-9.49570552",
+        "slurp-train-entity-rate:datetime:music:datetime:time_zone:count-22:other-0:prevalence-0.06790123:ratio-10.01840491",
+        "slurp-train-entity-rate:datetime:music:music:artist_name:count-9:other-0:prevalence-0.06428571:ratio-22.95774648",
+        "slurp-train-entity-rate:datetime:music:music:music_genre:count-5:other-0:prevalence-0.03571429:ratio-13.77464789",
+        "slurp-train-entity-rate:datetime:music:music:person:count-2:other-0:prevalence-0.01428571:ratio-6.88732394",
+        "key-card:K005:definition",
+        "key-card:K010:definition"
+      ],
+      "right_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: place name, date, time zone.",
+      "right_factor_ids": [
+        "F010",
+        "F054"
+      ],
+      "right_key_id": "K010"
+    },
+    {
+      "boundary_id": "B023",
+      "left_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: news topic, media type, person.",
+      "left_factor_ids": [
+        "F005",
+        "F032"
+      ],
+      "left_key_id": "K005",
+      "provenance_ids": [
+        "slurp-train-stable-shared-actions:datetime:news:query",
+        "slurp-train-entity-rate:datetime:news:datetime:time_zone:count-22:other-0:prevalence-0.06790123:ratio-33.51226994",
+        "slurp-train-entity-rate:datetime:news:datetime:event_name:count-15:other-0:prevalence-0.04629630:ratio-23.31288344",
+        "slurp-train-entity-rate:datetime:news:news:news_topic:count-169:other-0:prevalence-0.35729387:ratio-116.67368421",
+        "slurp-train-entity-rate:datetime:news:news:media_type:count-118:other-0:prevalence-0.24947146:ratio-81.67157895",
+        "slurp-train-entity-rate:datetime:news:news:person:count-22:other-0:prevalence-0.04651163:ratio-15.78526316",
+        "key-card:K005:definition",
+        "key-card:K011:definition"
+      ],
+      "right_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: time zone, event name.",
+      "right_factor_ids": [
+        "F011",
+        "F056"
+      ],
+      "right_key_id": "K011"
+    },
+    {
+      "boundary_id": "B024",
+      "left_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: media type, person, relation.",
+      "left_factor_ids": [
+        "F005",
+        "F032"
+      ],
+      "left_key_id": "K005",
+      "provenance_ids": [
+        "slurp-train-stable-shared-actions:datetime:social:query",
+        "slurp-train-entity-rate:datetime:social:datetime:place_name:count-109:other-0:prevalence-0.33641975:ratio-34.41717791",
+        "slurp-train-entity-rate:datetime:social:datetime:time_zone:count-22:other-0:prevalence-0.06790123:ratio-7.19631902",
+        "slurp-train-entity-rate:datetime:social:social:media_type:count-61:other-0:prevalence-0.61000000:ratio-198.15686275",
+        "slurp-train-entity-rate:datetime:social:social:person:count-11:other-0:prevalence-0.11000000:ratio-38.35294118",
+        "slurp-train-entity-rate:datetime:social:social:relation:count-5:other-0:prevalence-0.05000000:ratio-19.17647059",
+        "key-card:K005:definition",
+        "key-card:K015:definition"
+      ],
+      "right_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: place name, time zone.",
+      "right_factor_ids": [
+        "F015",
+        "F071"
+      ],
+      "right_key_id": "K015"
+    },
+    {
+      "boundary_id": "B025",
+      "left_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: order type, business name, business type.",
+      "left_factor_ids": [
+        "F005",
+        "F032"
+      ],
+      "left_key_id": "K005",
+      "provenance_ids": [
+        "slurp-train-stable-shared-actions:datetime:takeaway:query",
+        "slurp-train-entity-rate:datetime:takeaway:datetime:date:count-108:other-0:prevalence-0.33333333:ratio-37.11349693",
+        "slurp-train-entity-rate:datetime:takeaway:datetime:place_name:count-109:other-1:prevalence-0.33641975:ratio-18.72699387",
+        "slurp-train-entity-rate:datetime:takeaway:datetime:time_zone:count-22:other-0:prevalence-0.06790123:ratio-7.83128834",
+        "slurp-train-entity-rate:datetime:takeaway:takeaway:order_type:count-61:other-0:prevalence-0.55963303:ratio-182.09009009",
+        "slurp-train-entity-rate:datetime:takeaway:takeaway:business_name:count-35:other-0:prevalence-0.32110092:ratio-105.72972973",
+        "slurp-train-entity-rate:datetime:takeaway:takeaway:business_type:count-25:other-0:prevalence-0.22935780:ratio-76.36036036",
+        "key-card:K005:definition",
+        "key-card:K016:definition"
+      ],
+      "right_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: date, place name, time zone.",
+      "right_factor_ids": [
+        "F016",
+        "F073"
+      ],
+      "right_key_id": "K016"
+    },
+    {
+      "boundary_id": "B026",
+      "left_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: transport type, business name, transport name.",
+      "left_factor_ids": [
+        "F005",
+        "F032"
+      ],
+      "left_key_id": "K005",
+      "provenance_ids": [
+        "slurp-train-stable-shared-actions:datetime:transport:query",
+        "slurp-train-entity-rate:datetime:transport:datetime:time_zone:count-22:other-0:prevalence-0.06790123:ratio-15.73312883",
+        "slurp-train-entity-rate:datetime:transport:datetime:event_name:count-15:other-1:prevalence-0.04629630:ratio-5.47239264",
+        "slurp-train-entity-rate:datetime:transport:transport:transport_type:count-128:other-0:prevalence-0.57918552:ratio-188.58295964",
+        "slurp-train-entity-rate:datetime:transport:transport:business_name:count-7:other-0:prevalence-0.03167421:ratio-11.69506726",
+        "slurp-train-entity-rate:datetime:transport:transport:transport_name:count-5:other-0:prevalence-0.02262443:ratio-8.77130045",
+        "key-card:K005:definition",
+        "key-card:K017:definition"
+      ],
+      "right_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: time zone, event name.",
+      "right_factor_ids": [
+        "F017",
+        "F074"
+      ],
+      "right_key_id": "K017"
+    },
+    {
+      "boundary_id": "B027",
+      "left_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: weather descriptor, timeofday.",
+      "left_factor_ids": [
+        "F005",
+        "F032"
+      ],
+      "left_key_id": "K005",
+      "provenance_ids": [
+        "slurp-train-stable-shared-actions:datetime:weather:query",
+        "slurp-train-entity-rate:datetime:weather:datetime:time_zone:count-22:other-0:prevalence-0.06790123:ratio-38.45092025",
+        "slurp-train-entity-rate:datetime:weather:datetime:event_name:count-15:other-3:prevalence-0.04629630:ratio-6.68711656",
+        "slurp-train-entity-rate:datetime:weather:weather:weather_descriptor:count-292:other-0:prevalence-0.53775322:ratio-175.26238532",
+        "slurp-train-entity-rate:datetime:weather:weather:timeofday:count-37:other-1:prevalence-0.06813996:ratio-11.36513761",
+        "key-card:K005:definition",
+        "key-card:K018:definition"
+      ],
+      "right_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: time zone, event name.",
+      "right_factor_ids": [
+        "F018",
+        "F078"
+      ],
+      "right_key_id": "K018"
+    },
+    {
+      "boundary_id": "B028",
+      "left_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: list name.",
+      "left_factor_ids": [
+        "F006",
+        "F034"
+      ],
+      "left_key_id": "K006",
+      "provenance_ids": [
+        "slurp-train-stable-shared-actions:email:lists:query",
+        "slurp-train-entity-rate:email:lists:email:person:count-118:other-1:prevalence-0.29573935:ratio-28.04364090",
+        "slurp-train-entity-rate:email:lists:email:relation:count-33:other-0:prevalence-0.08270677:ratio-16.02493766",
+        "slurp-train-entity-rate:email:lists:email:email_folder:count-31:other-0:prevalence-0.07769424:ratio-15.08229426",
+        "slurp-train-entity-rate:email:lists:lists:list_name:count-46:other-0:prevalence-0.24598930:ratio-99.71957672",
+        "key-card:K006:definition",
+        "key-card:K009:definition"
+      ],
+      "right_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: person, relation, email folder.",
+      "right_factor_ids": [
+        "F009",
+        "F050"
+      ],
+      "right_key_id": "K009"
+    },
+    {
+      "boundary_id": "B029",
+      "left_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: artist name, music genre, song name.",
+      "left_factor_ids": [
+        "F006",
+        "F034"
+      ],
+      "left_key_id": "K006",
+      "provenance_ids": [
+        "slurp-train-stable-shared-actions:email:music:query",
+        "slurp-train-entity-rate:email:music:email:person:count-118:other-2:prevalence-0.29573935:ratio-14.04655029",
+        "slurp-train-entity-rate:email:music:email:relation:count-33:other-0:prevalence-0.08270677:ratio-12.03990025",
+        "slurp-train-entity-rate:email:music:email:email_folder:count-31:other-0:prevalence-0.07769424:ratio-11.33167082",
+        "slurp-train-entity-rate:email:music:music:artist_name:count-9:other-0:prevalence-0.06428571:ratio-28.23943662",
+        "slurp-train-entity-rate:email:music:music:music_genre:count-5:other-0:prevalence-0.03571429:ratio-16.94366197",
+        "slurp-train-entity-rate:email:music:music:song_name:count-2:other-0:prevalence-0.01428571:ratio-8.47183099",
+        "key-card:K006:definition",
+        "key-card:K010:definition"
+      ],
+      "right_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: person, relation, email folder.",
+      "right_factor_ids": [
+        "F010",
+        "F054"
+      ],
+      "right_key_id": "K010"
+    },
+    {
+      "boundary_id": "B030",
+      "left_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: news topic, media type, place name.",
+      "left_factor_ids": [
+        "F006",
+        "F034"
+      ],
+      "left_key_id": "K006",
+      "provenance_ids": [
+        "slurp-train-stable-shared-actions:email:news:query",
+        "slurp-train-entity-rate:email:news:email:person:count-118:other-22:prevalence-0.29573935:ratio-6.12869999",
+        "slurp-train-entity-rate:email:news:email:relation:count-33:other-0:prevalence-0.08270677:ratio-40.27431421",
+        "slurp-train-entity-rate:email:news:email:email_folder:count-31:other-0:prevalence-0.07769424:ratio-37.90523691",
+        "slurp-train-entity-rate:email:news:news:news_topic:count-169:other-0:prevalence-0.35729387:ratio-143.51578947",
+        "slurp-train-entity-rate:email:news:news:media_type:count-118:other-0:prevalence-0.24947146:ratio-100.46105263",
+        "slurp-train-entity-rate:email:news:news:place_name:count-63:other-0:prevalence-0.13319239:ratio-54.02947368",
+        "key-card:K006:definition",
+        "key-card:K011:definition"
+      ],
+      "right_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: person, relation, email folder.",
+      "right_factor_ids": [
+        "F011",
+        "F056"
+      ],
+      "right_key_id": "K011"
+    },
+    {
+      "boundary_id": "B031",
+      "left_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: media type.",
+      "left_factor_ids": [
+        "F006",
+        "F034"
+      ],
+      "left_key_id": "K006",
+      "provenance_ids": [
+        "slurp-train-stable-shared-actions:email:social:query",
+        "slurp-train-entity-rate:email:social:email:email_folder:count-31:other-0:prevalence-0.07769424:ratio-8.13965087",
+        "slurp-train-entity-rate:email:social:social:media_type:count-61:other-0:prevalence-0.61000000:ratio-243.74509804",
+        "key-card:K006:definition",
+        "key-card:K015:definition"
+      ],
+      "right_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: email folder.",
+      "right_factor_ids": [
+        "F015",
+        "F071"
+      ],
+      "right_key_id": "K015"
+    },
+    {
+      "boundary_id": "B032",
+      "left_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: order type, business name, business type.",
+      "left_factor_ids": [
+        "F006",
+        "F034"
+      ],
+      "left_key_id": "K006",
+      "provenance_ids": [
+        "slurp-train-stable-shared-actions:email:takeaway:query",
+        "slurp-train-entity-rate:email:takeaway:email:person:count-118:other-1:prevalence-0.29573935:ratio-16.47007481",
+        "slurp-train-entity-rate:email:takeaway:email:relation:count-33:other-0:prevalence-0.08270677:ratio-9.41147132",
+        "slurp-train-entity-rate:email:takeaway:email:email_folder:count-31:other-0:prevalence-0.07769424:ratio-8.85785536",
+        "slurp-train-entity-rate:email:takeaway:takeaway:order_type:count-61:other-0:prevalence-0.55963303:ratio-223.98198198",
+        "slurp-train-entity-rate:email:takeaway:takeaway:business_name:count-35:other-4:prevalence-0.32110092:ratio-26.01081081",
+        "slurp-train-entity-rate:email:takeaway:takeaway:business_type:count-25:other-0:prevalence-0.22935780:ratio-93.92792793",
+        "key-card:K006:definition",
+        "key-card:K016:definition"
+      ],
+      "right_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: person, relation, email folder.",
+      "right_factor_ids": [
+        "F016",
+        "F073"
+      ],
+      "right_key_id": "K016"
+    },
+    {
+      "boundary_id": "B033",
+      "left_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: place name, transport type, transport name.",
+      "left_factor_ids": [
+        "F006",
+        "F034"
+      ],
+      "left_key_id": "K006",
+      "provenance_ids": [
+        "slurp-train-stable-shared-actions:email:transport:query",
+        "slurp-train-entity-rate:email:transport:email:person:count-118:other-1:prevalence-0.29573935:ratio-33.08852868",
+        "slurp-train-entity-rate:email:transport:email:email_folder:count-31:other-0:prevalence-0.07769424:ratio-17.79551122",
+        "slurp-train-entity-rate:email:transport:email:relation:count-33:other-1:prevalence-0.08270677:ratio-9.45386534",
+        "slurp-train-entity-rate:email:transport:transport:place_name:count-142:other-0:prevalence-0.64253394:ratio-257.14349776",
+        "slurp-train-entity-rate:email:transport:transport:transport_type:count-128:other-0:prevalence-0.57918552:ratio-231.96860987",
+        "slurp-train-entity-rate:email:transport:transport:transport_name:count-5:other-0:prevalence-0.02262443:ratio-10.78923767",
+        "key-card:K006:definition",
+        "key-card:K017:definition"
+      ],
+      "right_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: person, email folder, relation.",
+      "right_factor_ids": [
+        "F017",
+        "F074"
+      ],
+      "right_key_id": "K017"
+    },
+    {
+      "boundary_id": "B034",
+      "left_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: weather descriptor, place name, date.",
+      "left_factor_ids": [
+        "F006",
+        "F034"
+      ],
+      "left_key_id": "K006",
+      "provenance_ids": [
+        "slurp-train-stable-shared-actions:email:weather:query",
+        "slurp-train-entity-rate:email:weather:email:person:count-118:other-0:prevalence-0.29573935:ratio-161.73316708",
+        "slurp-train-entity-rate:email:weather:email:relation:count-33:other-0:prevalence-0.08270677:ratio-46.20947631",
+        "slurp-train-entity-rate:email:weather:email:email_folder:count-31:other-0:prevalence-0.07769424:ratio-43.49127182",
+        "slurp-train-entity-rate:email:weather:weather:weather_descriptor:count-292:other-0:prevalence-0.53775322:ratio-215.58348624",
+        "slurp-train-entity-rate:email:weather:weather:place_name:count-113:other-0:prevalence-0.20810313:ratio-83.87889908",
+        "slurp-train-entity-rate:email:weather:weather:date:count-250:other-30:prevalence-0.46040516:ratio-5.95744303",
+        "key-card:K006:definition",
+        "key-card:K018:definition"
+      ],
+      "right_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: person, relation, email folder.",
+      "right_factor_ids": [
+        "F018",
+        "F078"
+      ],
+      "right_key_id": "K018"
+    },
+    {
+      "boundary_id": "B035",
+      "left_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: artist name.",
+      "left_factor_ids": [
+        "F009",
+        "F050"
+      ],
+      "left_key_id": "K009",
+      "provenance_ids": [
+        "slurp-train-stable-shared-actions:lists:music:query",
+        "slurp-train-entity-rate:lists:music:lists:list_name:count-46:other-0:prevalence-0.24598930:ratio-35.31216931",
+        "slurp-train-entity-rate:lists:music:music:artist_name:count-9:other-0:prevalence-0.06428571:ratio-13.30985915",
+        "key-card:K009:definition",
+        "key-card:K010:definition"
+      ],
+      "right_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: list name.",
+      "right_factor_ids": [
+        "F010",
+        "F054"
+      ],
+      "right_key_id": "K010"
+    },
+    {
+      "boundary_id": "B036",
+      "left_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: news topic, media type, place name.",
+      "left_factor_ids": [
+        "F009",
+        "F050"
+      ],
+      "left_key_id": "K009",
+      "provenance_ids": [
+        "slurp-train-stable-shared-actions:lists:news:query",
+        "slurp-train-entity-rate:lists:news:lists:list_name:count-46:other-0:prevalence-0.24598930:ratio-118.12169312",
+        "slurp-train-entity-rate:lists:news:news:news_topic:count-169:other-0:prevalence-0.35729387:ratio-67.64210526",
+        "slurp-train-entity-rate:lists:news:news:media_type:count-118:other-0:prevalence-0.24947146:ratio-47.34947368",
+        "slurp-train-entity-rate:lists:news:news:place_name:count-63:other-0:prevalence-0.13319239:ratio-25.46526316",
+        "key-card:K009:definition",
+        "key-card:K011:definition"
+      ],
+      "right_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: list name.",
+      "right_factor_ids": [
+        "F011",
+        "F056"
+      ],
+      "right_key_id": "K011"
+    },
+    {
+      "boundary_id": "B037",
+      "left_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: media type, person, relation.",
+      "left_factor_ids": [
+        "F009",
+        "F050"
+      ],
+      "left_key_id": "K009",
+      "provenance_ids": [
+        "slurp-train-stable-shared-actions:lists:social:query",
+        "slurp-train-entity-rate:lists:social:lists:list_name:count-46:other-0:prevalence-0.24598930:ratio-25.36507937",
+        "slurp-train-entity-rate:lists:social:social:media_type:count-61:other-0:prevalence-0.61000000:ratio-114.88235294",
+        "slurp-train-entity-rate:lists:social:social:person:count-11:other-1:prevalence-0.11000000:ratio-11.11764706",
+        "slurp-train-entity-rate:lists:social:social:relation:count-5:other-0:prevalence-0.05000000:ratio-11.11764706",
+        "key-card:K009:definition",
+        "key-card:K015:definition"
+      ],
+      "right_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: list name.",
+      "right_factor_ids": [
+        "F015",
+        "F071"
+      ],
+      "right_key_id": "K015"
+    },
+    {
+      "boundary_id": "B038",
+      "left_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: order type, business name, business type.",
+      "left_factor_ids": [
+        "F009",
+        "F050"
+      ],
+      "left_key_id": "K009",
+      "provenance_ids": [
+        "slurp-train-stable-shared-actions:lists:takeaway:query",
+        "slurp-train-entity-rate:lists:takeaway:lists:list_name:count-46:other-0:prevalence-0.24598930:ratio-27.60317460",
+        "slurp-train-entity-rate:lists:takeaway:lists:date:count-20:other-0:prevalence-0.10695187:ratio-12.33333333",
+        "slurp-train-entity-rate:lists:takeaway:takeaway:order_type:count-61:other-0:prevalence-0.55963303:ratio-105.56756757",
+        "slurp-train-entity-rate:lists:takeaway:takeaway:business_name:count-35:other-1:prevalence-0.32110092:ratio-30.64864865",
+        "slurp-train-entity-rate:lists:takeaway:takeaway:business_type:count-25:other-0:prevalence-0.22935780:ratio-44.27027027",
+        "key-card:K009:definition",
+        "key-card:K016:definition"
+      ],
+      "right_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: list name, date.",
+      "right_factor_ids": [
+        "F016",
+        "F073"
+      ],
+      "right_key_id": "K016"
+    },
+    {
+      "boundary_id": "B039",
+      "left_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: place name, transport type, time.",
+      "left_factor_ids": [
+        "F009",
+        "F050"
+      ],
+      "left_key_id": "K009",
+      "provenance_ids": [
+        "slurp-train-stable-shared-actions:lists:transport:query",
+        "slurp-train-entity-rate:lists:transport:lists:list_name:count-46:other-0:prevalence-0.24598930:ratio-55.45502646",
+        "slurp-train-entity-rate:lists:transport:transport:place_name:count-142:other-0:prevalence-0.64253394:ratio-121.19730942",
+        "slurp-train-entity-rate:lists:transport:transport:transport_type:count-128:other-0:prevalence-0.57918552:ratio-109.33183857",
+        "slurp-train-entity-rate:lists:transport:transport:time:count-13:other-0:prevalence-0.05882353:ratio-11.86547085",
+        "key-card:K009:definition",
+        "key-card:K017:definition"
+      ],
+      "right_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: list name.",
+      "right_factor_ids": [
+        "F017",
+        "F074"
+      ],
+      "right_key_id": "K017"
+    },
+    {
+      "boundary_id": "B040",
+      "left_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: weather descriptor, place name, timeofday.",
+      "left_factor_ids": [
+        "F009",
+        "F050"
+      ],
+      "left_key_id": "K009",
+      "provenance_ids": [
+        "slurp-train-stable-shared-actions:lists:weather:query",
+        "slurp-train-entity-rate:lists:weather:lists:list_name:count-46:other-0:prevalence-0.24598930:ratio-135.52910053",
+        "slurp-train-entity-rate:lists:weather:weather:weather_descriptor:count-292:other-0:prevalence-0.53775322:ratio-101.60917431",
+        "slurp-train-entity-rate:lists:weather:weather:place_name:count-113:other-0:prevalence-0.20810313:ratio-39.53394495",
+        "slurp-train-entity-rate:lists:weather:weather:timeofday:count-37:other-1:prevalence-0.06813996:ratio-6.58899083",
+        "key-card:K009:definition",
+        "key-card:K018:definition"
+      ],
+      "right_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: list name.",
+      "right_factor_ids": [
+        "F018",
+        "F078"
+      ],
+      "right_key_id": "K018"
+    },
+    {
+      "boundary_id": "B041",
+      "left_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: news topic, media type, place name.",
+      "left_factor_ids": [
+        "F010",
+        "F054"
+      ],
+      "left_key_id": "K010",
+      "provenance_ids": [
+        "slurp-train-stable-shared-actions:music:news:query",
+        "slurp-train-entity-rate:music:news:music:artist_name:count-9:other-0:prevalence-0.06428571:ratio-33.45070423",
+        "slurp-train-entity-rate:music:news:music:music_genre:count-5:other-0:prevalence-0.03571429:ratio-20.07042254",
+        "slurp-train-entity-rate:music:news:music:song_name:count-2:other-0:prevalence-0.01428571:ratio-10.03521127",
+        "slurp-train-entity-rate:music:news:news:news_topic:count-169:other-0:prevalence-0.35729387:ratio-50.82105263",
+        "slurp-train-entity-rate:music:news:news:media_type:count-118:other-1:prevalence-0.24947146:ratio-17.78736842",
+        "slurp-train-entity-rate:music:news:news:place_name:count-63:other-0:prevalence-0.13319239:ratio-19.13263158",
+        "key-card:K010:definition",
+        "key-card:K011:definition"
+      ],
+      "right_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: artist name, music genre, song name.",
+      "right_factor_ids": [
+        "F011",
+        "F056"
+      ],
+      "right_key_id": "K011"
+    },
+    {
+      "boundary_id": "B042",
+      "left_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: media type, date, person.",
+      "left_factor_ids": [
+        "F010",
+        "F054"
+      ],
+      "left_key_id": "K010",
+      "provenance_ids": [
+        "slurp-train-stable-shared-actions:music:social:query",
+        "slurp-train-entity-rate:music:social:music:artist_name:count-9:other-0:prevalence-0.06428571:ratio-7.18309859",
+        "slurp-train-entity-rate:music:social:social:media_type:count-61:other-1:prevalence-0.61000000:ratio-43.15686275",
+        "slurp-train-entity-rate:music:social:social:date:count-18:other-4:prevalence-0.18000000:ratio-5.29019608",
+        "slurp-train-entity-rate:music:social:social:person:count-11:other-2:prevalence-0.11000000:ratio-5.56862745",
+        "key-card:K010:definition",
+        "key-card:K015:definition"
+      ],
+      "right_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: artist name.",
+      "right_factor_ids": [
+        "F015",
+        "F071"
+      ],
+      "right_key_id": "K015"
+    },
+    {
+      "boundary_id": "B043",
+      "left_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: order type, business name, business type.",
+      "left_factor_ids": [
+        "F010",
+        "F054"
+      ],
+      "left_key_id": "K010",
+      "provenance_ids": [
+        "slurp-train-stable-shared-actions:music:takeaway:query",
+        "slurp-train-entity-rate:music:takeaway:music:artist_name:count-9:other-0:prevalence-0.06428571:ratio-7.81690141",
+        "slurp-train-entity-rate:music:takeaway:takeaway:order_type:count-61:other-0:prevalence-0.55963303:ratio-79.31531532",
+        "slurp-train-entity-rate:music:takeaway:takeaway:business_name:count-35:other-0:prevalence-0.32110092:ratio-46.05405405",
+        "slurp-train-entity-rate:music:takeaway:takeaway:business_type:count-25:other-0:prevalence-0.22935780:ratio-33.26126126",
+        "key-card:K010:definition",
+        "key-card:K016:definition"
+      ],
+      "right_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: artist name.",
+      "right_factor_ids": [
+        "F016",
+        "F073"
+      ],
+      "right_key_id": "K016"
+    },
+    {
+      "boundary_id": "B044",
+      "left_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: place name, transport type, time.",
+      "left_factor_ids": [
+        "F010",
+        "F054"
+      ],
+      "left_key_id": "K010",
+      "provenance_ids": [
+        "slurp-train-stable-shared-actions:music:transport:query",
+        "slurp-train-entity-rate:music:transport:music:artist_name:count-9:other-0:prevalence-0.06428571:ratio-15.70422535",
+        "slurp-train-entity-rate:music:transport:music:music_genre:count-5:other-0:prevalence-0.03571429:ratio-9.42253521",
+        "slurp-train-entity-rate:music:transport:transport:place_name:count-142:other-0:prevalence-0.64253394:ratio-91.05829596",
+        "slurp-train-entity-rate:music:transport:transport:transport_type:count-128:other-0:prevalence-0.57918552:ratio-82.14349776",
+        "slurp-train-entity-rate:music:transport:transport:time:count-13:other-0:prevalence-0.05882353:ratio-8.91479821",
+        "key-card:K010:definition",
+        "key-card:K017:definition"
+      ],
+      "right_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: artist name, music genre.",
+      "right_factor_ids": [
+        "F017",
+        "F074"
+      ],
+      "right_key_id": "K017"
+    },
+    {
+      "boundary_id": "B045",
+      "left_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: weather descriptor, date, place name.",
+      "left_factor_ids": [
+        "F010",
+        "F054"
+      ],
+      "left_key_id": "K010",
+      "provenance_ids": [
+        "slurp-train-stable-shared-actions:music:weather:query",
+        "slurp-train-entity-rate:music:weather:music:artist_name:count-9:other-0:prevalence-0.06428571:ratio-38.38028169",
+        "slurp-train-entity-rate:music:weather:music:music_genre:count-5:other-0:prevalence-0.03571429:ratio-23.02816901",
+        "slurp-train-entity-rate:music:weather:music:person:count-2:other-0:prevalence-0.01428571:ratio-11.51408451",
+        "slurp-train-entity-rate:music:weather:weather:weather_descriptor:count-292:other-0:prevalence-0.53775322:ratio-76.34128440",
+        "slurp-train-entity-rate:music:weather:weather:date:count-250:other-4:prevalence-0.46040516:ratio-13.07963303",
+        "slurp-train-entity-rate:music:weather:weather:place_name:count-113:other-0:prevalence-0.20810313:ratio-29.70275229",
+        "key-card:K010:definition",
+        "key-card:K018:definition"
+      ],
+      "right_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: artist name, music genre, person.",
+      "right_factor_ids": [
+        "F018",
+        "F078"
+      ],
+      "right_key_id": "K018"
+    },
+    {
+      "boundary_id": "B046",
+      "left_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: relation, event name.",
+      "left_factor_ids": [
+        "F011",
+        "F056"
+      ],
+      "left_key_id": "K011",
+      "provenance_ids": [
+        "slurp-train-stable-shared-actions:news:social:query",
+        "slurp-train-entity-rate:news:social:news:news_topic:count-169:other-1:prevalence-0.35729387:ratio-18.25263158",
+        "slurp-train-entity-rate:news:social:news:place_name:count-63:other-0:prevalence-0.13319239:ratio-13.74315789",
+        "slurp-train-entity-rate:news:social:social:relation:count-5:other-0:prevalence-0.05000000:ratio-27.94117647",
+        "slurp-train-entity-rate:news:social:social:event_name:count-2:other-0:prevalence-0.02000000:ratio-13.97058824",
+        "key-card:K011:definition",
+        "key-card:K015:definition"
+      ],
+      "right_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: news topic, place name.",
+      "right_factor_ids": [
+        "F015",
+        "F071"
+      ],
+      "right_key_id": "K015"
+    },
+    {
+      "boundary_id": "B047",
+      "left_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: order type, business name, business type.",
+      "left_factor_ids": [
+        "F011",
+        "F056"
+      ],
+      "left_key_id": "K011",
+      "provenance_ids": [
+        "slurp-train-stable-shared-actions:news:takeaway:query",
+        "slurp-train-entity-rate:news:takeaway:news:news_topic:count-169:other-0:prevalence-0.35729387:ratio-39.72631579",
+        "slurp-train-entity-rate:news:takeaway:news:media_type:count-118:other-0:prevalence-0.24947146:ratio-27.80842105",
+        "slurp-train-entity-rate:news:takeaway:news:date:count-57:other-0:prevalence-0.12050740:ratio-13.55368421",
+        "slurp-train-entity-rate:news:takeaway:takeaway:order_type:count-61:other-0:prevalence-0.55963303:ratio-265.31531532",
+        "slurp-train-entity-rate:news:takeaway:takeaway:business_name:count-35:other-0:prevalence-0.32110092:ratio-154.05405405",
+        "slurp-train-entity-rate:news:takeaway:takeaway:business_type:count-25:other-0:prevalence-0.22935780:ratio-111.26126126",
+        "key-card:K011:definition",
+        "key-card:K016:definition"
+      ],
+      "right_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: news topic, media type, date.",
+      "right_factor_ids": [
+        "F016",
+        "F073"
+      ],
+      "right_key_id": "K016"
+    },
+    {
+      "boundary_id": "B048",
+      "left_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: transport type, business name, transport name.",
+      "left_factor_ids": [
+        "F011",
+        "F056"
+      ],
+      "left_key_id": "K011",
+      "provenance_ids": [
+        "slurp-train-stable-shared-actions:news:transport:query",
+        "slurp-train-entity-rate:news:transport:news:news_topic:count-169:other-0:prevalence-0.35729387:ratio-79.81052632",
+        "slurp-train-entity-rate:news:transport:news:media_type:count-118:other-0:prevalence-0.24947146:ratio-55.86736842",
+        "slurp-train-entity-rate:news:transport:news:person:count-22:other-1:prevalence-0.04651163:ratio-5.39894737",
+        "slurp-train-entity-rate:news:transport:transport:transport_type:count-128:other-1:prevalence-0.57918552:ratio-137.38789238",
+        "slurp-train-entity-rate:news:transport:transport:business_name:count-7:other-0:prevalence-0.03167421:ratio-17.04035874",
+        "slurp-train-entity-rate:news:transport:transport:transport_name:count-5:other-0:prevalence-0.02262443:ratio-12.78026906",
+        "key-card:K011:definition",
+        "key-card:K017:definition"
+      ],
+      "right_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: news topic, media type, person.",
+      "right_factor_ids": [
+        "F017",
+        "F074"
+      ],
+      "right_key_id": "K017"
+    },
+    {
+      "boundary_id": "B049",
+      "left_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: weather descriptor, timeofday.",
+      "left_factor_ids": [
+        "F011",
+        "F056"
+      ],
+      "left_key_id": "K011",
+      "provenance_ids": [
+        "slurp-train-stable-shared-actions:news:weather:query",
+        "slurp-train-entity-rate:news:weather:news:news_topic:count-169:other-0:prevalence-0.35729387:ratio-195.05263158",
+        "slurp-train-entity-rate:news:weather:news:media_type:count-118:other-0:prevalence-0.24947146:ratio-136.53684211",
+        "slurp-train-entity-rate:news:weather:news:person:count-22:other-0:prevalence-0.04651163:ratio-26.38947368",
+        "slurp-train-entity-rate:news:weather:weather:weather_descriptor:count-292:other-0:prevalence-0.53775322:ratio-255.36697248",
+        "slurp-train-entity-rate:news:weather:weather:timeofday:count-37:other-3:prevalence-0.06813996:ratio-8.27981651",
+        "key-card:K011:definition",
+        "key-card:K018:definition"
+      ],
+      "right_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: news topic, media type, person.",
+      "right_factor_ids": [
+        "F018",
+        "F078"
+      ],
+      "right_key_id": "K018"
+    },
+    {
+      "boundary_id": "B050",
+      "left_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: order type, business name, business type.",
+      "left_factor_ids": [
+        "F015",
+        "F071"
+      ],
+      "left_key_id": "K015",
+      "provenance_ids": [
+        "slurp-train-stable-shared-actions:social:takeaway:query",
+        "slurp-train-entity-rate:social:takeaway:social:media_type:count-61:other-0:prevalence-0.61000000:ratio-67.47058824",
+        "slurp-train-entity-rate:social:takeaway:social:date:count-18:other-0:prevalence-0.18000000:ratio-20.67647059",
+        "slurp-train-entity-rate:social:takeaway:social:person:count-11:other-1:prevalence-0.11000000:ratio-6.52941176",
+        "slurp-train-entity-rate:social:takeaway:takeaway:order_type:count-61:other-0:prevalence-0.55963303:ratio-56.97297297",
+        "slurp-train-entity-rate:social:takeaway:takeaway:business_name:count-35:other-0:prevalence-0.32110092:ratio-33.08108108",
+        "slurp-train-entity-rate:social:takeaway:takeaway:business_type:count-25:other-0:prevalence-0.22935780:ratio-23.89189189",
+        "key-card:K015:definition",
+        "key-card:K016:definition"
+      ],
+      "right_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: media type, date, person.",
+      "right_factor_ids": [
+        "F016",
+        "F073"
+      ],
+      "right_key_id": "K016"
+    },
+    {
+      "boundary_id": "B051",
+      "left_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: place name, transport type.",
+      "left_factor_ids": [
+        "F015",
+        "F071"
+      ],
+      "left_key_id": "K015",
+      "provenance_ids": [
+        "slurp-train-stable-shared-actions:social:transport:query",
+        "slurp-train-entity-rate:social:transport:social:media_type:count-61:other-0:prevalence-0.61000000:ratio-135.54901961",
+        "slurp-train-entity-rate:social:transport:social:person:count-11:other-1:prevalence-0.11000000:ratio-13.11764706",
+        "slurp-train-entity-rate:social:transport:social:relation:count-5:other-1:prevalence-0.05000000:ratio-6.55882353",
+        "slurp-train-entity-rate:social:transport:transport:place_name:count-142:other-0:prevalence-0.64253394:ratio-65.40807175",
+        "slurp-train-entity-rate:social:transport:transport:transport_type:count-128:other-0:prevalence-0.57918552:ratio-59.00448430",
+        "key-card:K015:definition",
+        "key-card:K017:definition"
+      ],
+      "right_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: media type, person, relation.",
+      "right_factor_ids": [
+        "F017",
+        "F074"
+      ],
+      "right_key_id": "K017"
+    },
+    {
+      "boundary_id": "B052",
+      "left_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: weather descriptor, place name, timeofday.",
+      "left_factor_ids": [
+        "F015",
+        "F071"
+      ],
+      "left_key_id": "K015",
+      "provenance_ids": [
+        "slurp-train-stable-shared-actions:social:weather:query",
+        "slurp-train-entity-rate:social:weather:social:media_type:count-61:other-0:prevalence-0.61000000:ratio-331.27450980",
+        "slurp-train-entity-rate:social:weather:social:person:count-11:other-0:prevalence-0.11000000:ratio-64.11764706",
+        "slurp-train-entity-rate:social:weather:social:relation:count-5:other-0:prevalence-0.05000000:ratio-32.05882353",
+        "slurp-train-entity-rate:social:weather:weather:weather_descriptor:count-292:other-0:prevalence-0.53775322:ratio-54.83669725",
+        "slurp-train-entity-rate:social:weather:weather:place_name:count-113:other-0:prevalence-0.20810313:ratio-21.33577982",
+        "slurp-train-entity-rate:social:weather:weather:timeofday:count-37:other-0:prevalence-0.06813996:ratio-7.11192661",
+        "key-card:K015:definition",
+        "key-card:K018:definition"
+      ],
+      "right_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: media type, person, relation.",
+      "right_factor_ids": [
+        "F018",
+        "F078"
+      ],
+      "right_key_id": "K018"
+    },
+    {
+      "boundary_id": "B053",
+      "left_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: transport type, place name, date.",
+      "left_factor_ids": [
+        "F016",
+        "F073"
+      ],
+      "left_key_id": "K016",
+      "provenance_ids": [
+        "slurp-train-stable-shared-actions:takeaway:transport:query",
+        "slurp-train-entity-rate:takeaway:transport:takeaway:order_type:count-61:other-0:prevalence-0.55963303:ratio-124.55855856",
+        "slurp-train-entity-rate:takeaway:transport:takeaway:business_name:count-35:other-7:prevalence-0.32110092:ratio-9.04054054",
+        "slurp-train-entity-rate:takeaway:transport:takeaway:business_type:count-25:other-3:prevalence-0.22935780:ratio-13.05855856",
+        "slurp-train-entity-rate:takeaway:transport:transport:transport_type:count-128:other-0:prevalence-0.57918552:ratio-64.21076233",
+        "slurp-train-entity-rate:takeaway:transport:transport:place_name:count-142:other-1:prevalence-0.64253394:ratio-35.58968610",
+        "slurp-train-entity-rate:takeaway:transport:transport:date:count-29:other-0:prevalence-0.13122172:ratio-14.93273543",
+        "key-card:K016:definition",
+        "key-card:K017:definition"
+      ],
+      "right_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: order type, business name, business type.",
+      "right_factor_ids": [
+        "F017",
+        "F074"
+      ],
+      "right_key_id": "K017"
+    },
+    {
+      "boundary_id": "B054",
+      "left_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: weather descriptor, date, place name.",
+      "left_factor_ids": [
+        "F016",
+        "F073"
+      ],
+      "left_key_id": "K016",
+      "provenance_ids": [
+        "slurp-train-stable-shared-actions:takeaway:weather:query",
+        "slurp-train-entity-rate:takeaway:weather:takeaway:order_type:count-61:other-0:prevalence-0.55963303:ratio-304.41441441",
+        "slurp-train-entity-rate:takeaway:weather:takeaway:business_name:count-35:other-0:prevalence-0.32110092:ratio-176.75675676",
+        "slurp-train-entity-rate:takeaway:weather:takeaway:business_type:count-25:other-0:prevalence-0.22935780:ratio-127.65765766",
+        "slurp-train-entity-rate:takeaway:weather:weather:weather_descriptor:count-292:other-0:prevalence-0.53775322:ratio-59.67522936",
+        "slurp-train-entity-rate:takeaway:weather:weather:date:count-250:other-0:prevalence-0.46040516:ratio-51.12110092",
+        "slurp-train-entity-rate:takeaway:weather:weather:place_name:count-113:other-1:prevalence-0.20810313:ratio-11.60917431",
+        "key-card:K016:definition",
+        "key-card:K018:definition"
+      ],
+      "right_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: order type, business name, business type.",
+      "right_factor_ids": [
+        "F018",
+        "F078"
+      ],
+      "right_key_id": "K018"
+    },
+    {
+      "boundary_id": "B055",
+      "left_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: weather descriptor.",
+      "left_factor_ids": [
+        "F017",
+        "F074"
+      ],
+      "left_key_id": "K017",
+      "provenance_ids": [
+        "slurp-train-stable-shared-actions:transport:weather:query",
+        "slurp-train-entity-rate:transport:weather:transport:transport_type:count-128:other-0:prevalence-0.57918552:ratio-315.26905830",
+        "slurp-train-entity-rate:transport:weather:transport:business_name:count-7:other-0:prevalence-0.03167421:ratio-19.55156951",
+        "slurp-train-entity-rate:transport:weather:transport:transport_name:count-5:other-0:prevalence-0.02262443:ratio-14.66367713",
+        "slurp-train-entity-rate:transport:weather:weather:weather_descriptor:count-292:other-0:prevalence-0.53775322:ratio-119.88807339",
+        "key-card:K017:definition",
+        "key-card:K018:definition"
+      ],
+      "right_exclusion": "Do not choose this side for shared operation evidence (query) when the speech instead refers to entity categories at least 5x more prevalent for the other key: transport type, business name, transport name.",
+      "right_factor_ids": [
+        "F018",
+        "F078"
+      ],
+      "right_key_id": "K018"
+    }
+  ],
+  "factors": [
+    {
+      "factor_id": "F001",
+      "key_ids": [
+        "K001"
+      ],
+      "kind": "target",
+      "provenance_ids": [
+        "key-card:K001:definition"
+      ],
+      "statement": "Commands that create, change, inspect, or remove alarms and wake-up reminders."
+    },
+    {
+      "factor_id": "F002",
+      "key_ids": [
+        "K002"
+      ],
+      "kind": "target",
+      "provenance_ids": [
+        "key-card:K002:definition"
+      ],
+      "statement": "Commands that control audio volume, muting, or the active audio device."
+    },
+    {
+      "factor_id": "F003",
+      "key_ids": [
+        "K003"
+      ],
+      "kind": "target",
+      "provenance_ids": [
+        "key-card:K003:definition"
+      ],
+      "statement": "Commands that create, change, inspect, or remove calendar events."
+    },
+    {
+      "factor_id": "F004",
+      "key_ids": [
+        "K004"
+      ],
+      "kind": "target",
+      "provenance_ids": [
+        "key-card:K004:definition"
+      ],
+      "statement": "Commands asking for recipes, ingredients, cooking steps, or cooking timers."
+    },
+    {
+      "factor_id": "F005",
+      "key_ids": [
+        "K005"
+      ],
+      "kind": "target",
+      "provenance_ids": [
+        "key-card:K005:definition"
+      ],
+      "statement": "Commands asking for the current date, time, day, or time in another place."
+    },
+    {
+      "factor_id": "F006",
+      "key_ids": [
+        "K006"
+      ],
+      "kind": "target",
+      "provenance_ids": [
+        "key-card:K006:definition"
+      ],
+      "statement": "Commands that read, search, compose, send, or manage email messages."
+    },
+    {
+      "factor_id": "F007",
+      "key_ids": [
+        "K007"
+      ],
+      "kind": "target",
+      "provenance_ids": [
+        "key-card:K007:definition"
+      ],
+      "statement": "General assistant-control commands and requests that do not fit a specialist domain."
+    },
+    {
+      "factor_id": "F008",
+      "key_ids": [
+        "K008"
+      ],
+      "kind": "target",
+      "provenance_ids": [
+        "key-card:K008:definition"
+      ],
+      "statement": "Commands that inspect or control connected home devices, lights, heating, or appliances."
+    },
+    {
+      "factor_id": "F009",
+      "key_ids": [
+        "K009"
+      ],
+      "kind": "target",
+      "provenance_ids": [
+        "key-card:K009:definition"
+      ],
+      "statement": "Commands that create, inspect, change, or remove shopping and task list entries."
+    },
+    {
+      "factor_id": "F010",
+      "key_ids": [
+        "K010"
+      ],
+      "kind": "target",
+      "provenance_ids": [
+        "key-card:K010:definition"
+      ],
+      "statement": "Commands about songs, artists, albums, playlists, and music playback choices."
+    },
+    {
+      "factor_id": "F011",
+      "key_ids": [
+        "K011"
+      ],
+      "kind": "target",
+      "provenance_ids": [
+        "key-card:K011:definition"
+      ],
+      "statement": "Commands asking for news reports, headlines, or updates on current events."
+    },
+    {
+      "factor_id": "F012",
+      "key_ids": [
+        "K012"
+      ],
+      "kind": "target",
+      "provenance_ids": [
+        "key-card:K012:definition"
+      ],
+      "statement": "Commands that start, pause, resume, stop, or navigate playable media."
+    },
+    {
+      "factor_id": "F013",
+      "key_ids": [
+        "K013"
+      ],
+      "kind": "target",
+      "provenance_ids": [
+        "key-card:K013:definition"
+      ],
+      "statement": "Open factual questions seeking an answer rather than a device or service action."
+    },
+    {
+      "factor_id": "F014",
+      "key_ids": [
+        "K014"
+      ],
+      "kind": "target",
+      "provenance_ids": [
+        "key-card:K014:definition"
+      ],
+      "statement": "Commands asking the assistant to recommend an option, place, or activity."
+    },
+    {
+      "factor_id": "F015",
+      "key_ids": [
+        "K015"
+      ],
+      "kind": "target",
+      "provenance_ids": [
+        "key-card:K015:definition"
+      ],
+      "statement": "Commands that read, compose, send, or manage social and instant messages."
+    },
+    {
+      "factor_id": "F016",
+      "key_ids": [
+        "K016"
+      ],
+      "kind": "target",
+      "provenance_ids": [
+        "key-card:K016:definition"
+      ],
+      "statement": "Commands for finding, ordering, or tracking prepared food for delivery or pickup."
+    },
+    {
+      "factor_id": "F017",
+      "key_ids": [
+        "K017"
+      ],
+      "kind": "target",
+      "provenance_ids": [
+        "key-card:K017:definition"
+      ],
+      "statement": "Commands about routes, traffic, travel duration, public transit, or vehicle travel."
+    },
+    {
+      "factor_id": "F018",
+      "key_ids": [
+        "K018"
+      ],
+      "kind": "target",
+      "provenance_ids": [
+        "key-card:K018:definition"
+      ],
+      "statement": "Commands asking for weather conditions, forecasts, temperature, rain, or wind."
+    },
+    {
+      "factor_id": "F019",
+      "key_ids": [
+        "K001"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:alarm:query"
+      ],
+      "statement": "inspect existing alarms"
+    },
+    {
+      "factor_id": "F020",
+      "key_ids": [
+        "K001"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:alarm:remove"
+      ],
+      "statement": "cancel or remove an alarm"
+    },
+    {
+      "factor_id": "F021",
+      "key_ids": [
+        "K001"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:alarm:set"
+      ],
+      "statement": "create or change an alarm"
+    },
+    {
+      "factor_id": "F022",
+      "key_ids": [
+        "K002"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:audio:volume_down"
+      ],
+      "statement": "decrease audio volume"
+    },
+    {
+      "factor_id": "F023",
+      "key_ids": [
+        "K002"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:audio:volume_mute"
+      ],
+      "statement": "mute or unmute audio"
+    },
+    {
+      "factor_id": "F024",
+      "key_ids": [
+        "K002"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:audio:volume_other"
+      ],
+      "statement": "set or inspect another volume state"
+    },
+    {
+      "factor_id": "F025",
+      "key_ids": [
+        "K002"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:audio:volume_up"
+      ],
+      "statement": "increase audio volume"
+    },
+    {
+      "factor_id": "F026",
+      "key_ids": [
+        "K003"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:calendar:query"
+      ],
+      "statement": "inspect calendar events or schedules"
+    },
+    {
+      "factor_id": "F027",
+      "key_ids": [
+        "K003"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:calendar:remove"
+      ],
+      "statement": "cancel or remove a calendar event"
+    },
+    {
+      "factor_id": "F028",
+      "key_ids": [
+        "K003"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:calendar:set"
+      ],
+      "statement": "create or change a calendar event"
+    },
+    {
+      "factor_id": "F029",
+      "key_ids": [
+        "K004"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:cooking:query"
+      ],
+      "statement": "ask another cooking-related question"
+    },
+    {
+      "factor_id": "F030",
+      "key_ids": [
+        "K004"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:cooking:recipe"
+      ],
+      "statement": "request a recipe or cooking procedure"
+    },
+    {
+      "factor_id": "F031",
+      "key_ids": [
+        "K005"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:datetime:convert"
+      ],
+      "statement": "convert between times or timezones"
+    },
+    {
+      "factor_id": "F032",
+      "key_ids": [
+        "K005"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:datetime:query"
+      ],
+      "statement": "ask for a date, day, time, or timezone"
+    },
+    {
+      "factor_id": "F033",
+      "key_ids": [
+        "K006"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:email:addcontact"
+      ],
+      "statement": "add an email contact"
+    },
+    {
+      "factor_id": "F034",
+      "key_ids": [
+        "K006"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:email:query"
+      ],
+      "statement": "read or search email"
+    },
+    {
+      "factor_id": "F035",
+      "key_ids": [
+        "K006"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:email:querycontact"
+      ],
+      "statement": "look up an email contact"
+    },
+    {
+      "factor_id": "F036",
+      "key_ids": [
+        "K006"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:email:sendemail"
+      ],
+      "statement": "compose, reply to, or send email"
+    },
+    {
+      "factor_id": "F037",
+      "key_ids": [
+        "K007"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:general:greet"
+      ],
+      "statement": "handle a greeting"
+    },
+    {
+      "factor_id": "F038",
+      "key_ids": [
+        "K007"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:general:joke"
+      ],
+      "statement": "tell or discuss a joke"
+    },
+    {
+      "factor_id": "F039",
+      "key_ids": [
+        "K007"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:general:quirky"
+      ],
+      "statement": "handle an open-ended assistant request without a stable specialist target"
+    },
+    {
+      "factor_id": "F040",
+      "key_ids": [
+        "K008"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:iot:cleaning"
+      ],
+      "statement": "operate a connected cleaning appliance"
+    },
+    {
+      "factor_id": "F041",
+      "key_ids": [
+        "K008"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:iot:coffee"
+      ],
+      "statement": "operate a connected coffee appliance"
+    },
+    {
+      "factor_id": "F042",
+      "key_ids": [
+        "K008"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:iot:hue_lightchange"
+      ],
+      "statement": "change a connected light's color or state"
+    },
+    {
+      "factor_id": "F043",
+      "key_ids": [
+        "K008"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:iot:hue_lightdim"
+      ],
+      "statement": "dim a connected light"
+    },
+    {
+      "factor_id": "F044",
+      "key_ids": [
+        "K008"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:iot:hue_lightoff"
+      ],
+      "statement": "turn a connected light off"
+    },
+    {
+      "factor_id": "F045",
+      "key_ids": [
+        "K008"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:iot:hue_lighton"
+      ],
+      "statement": "turn a connected light on"
+    },
+    {
+      "factor_id": "F046",
+      "key_ids": [
+        "K008"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:iot:hue_lightup"
+      ],
+      "statement": "brighten a connected light"
+    },
+    {
+      "factor_id": "F047",
+      "key_ids": [
+        "K008"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:iot:wemo_off"
+      ],
+      "statement": "turn a connected Wemo device off"
+    },
+    {
+      "factor_id": "F048",
+      "key_ids": [
+        "K008"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:iot:wemo_on"
+      ],
+      "statement": "turn a connected Wemo device on"
+    },
+    {
+      "factor_id": "F049",
+      "key_ids": [
+        "K009"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:lists:createoradd"
+      ],
+      "statement": "create a list or add a list item"
+    },
+    {
+      "factor_id": "F050",
+      "key_ids": [
+        "K009"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:lists:query"
+      ],
+      "statement": "inspect a shopping or task list"
+    },
+    {
+      "factor_id": "F051",
+      "key_ids": [
+        "K009"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:lists:remove"
+      ],
+      "statement": "remove a list or list item"
+    },
+    {
+      "factor_id": "F052",
+      "key_ids": [
+        "K010"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:music:dislikeness"
+      ],
+      "statement": "dislike music content"
+    },
+    {
+      "factor_id": "F053",
+      "key_ids": [
+        "K010"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:music:likeness"
+      ],
+      "statement": "like, save, or favorite music content"
+    },
+    {
+      "factor_id": "F054",
+      "key_ids": [
+        "K010"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:music:query"
+      ],
+      "statement": "identify or inspect music content"
+    },
+    {
+      "factor_id": "F055",
+      "key_ids": [
+        "K010"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:music:settings"
+      ],
+      "statement": "change a music preference or setting"
+    },
+    {
+      "factor_id": "F056",
+      "key_ids": [
+        "K011"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:news:query"
+      ],
+      "statement": "request news or a current-event update"
+    },
+    {
+      "factor_id": "F057",
+      "key_ids": [
+        "K012"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:play:audiobook"
+      ],
+      "statement": "play or navigate an audiobook"
+    },
+    {
+      "factor_id": "F058",
+      "key_ids": [
+        "K012"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:play:game"
+      ],
+      "statement": "start or play a game"
+    },
+    {
+      "factor_id": "F059",
+      "key_ids": [
+        "K012"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:play:music"
+      ],
+      "statement": "play selected music"
+    },
+    {
+      "factor_id": "F060",
+      "key_ids": [
+        "K012"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:play:podcasts"
+      ],
+      "statement": "play or navigate a podcast"
+    },
+    {
+      "factor_id": "F061",
+      "key_ids": [
+        "K012"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:play:radio"
+      ],
+      "statement": "play a radio station or channel"
+    },
+    {
+      "factor_id": "F062",
+      "key_ids": [
+        "K013"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:qa:currency"
+      ],
+      "statement": "ask for currency or exchange-rate information"
+    },
+    {
+      "factor_id": "F063",
+      "key_ids": [
+        "K013"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:qa:definition"
+      ],
+      "statement": "ask for a definition"
+    },
+    {
+      "factor_id": "F064",
+      "key_ids": [
+        "K013"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:qa:factoid"
+      ],
+      "statement": "ask an open factual question"
+    },
+    {
+      "factor_id": "F065",
+      "key_ids": [
+        "K013"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:qa:maths"
+      ],
+      "statement": "ask for a mathematical result"
+    },
+    {
+      "factor_id": "F066",
+      "key_ids": [
+        "K013"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:qa:stock"
+      ],
+      "statement": "ask for stock information"
+    },
+    {
+      "factor_id": "F067",
+      "key_ids": [
+        "K014"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:recommendation:events"
+      ],
+      "statement": "request an event recommendation"
+    },
+    {
+      "factor_id": "F068",
+      "key_ids": [
+        "K014"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:recommendation:locations"
+      ],
+      "statement": "request a place recommendation"
+    },
+    {
+      "factor_id": "F069",
+      "key_ids": [
+        "K014"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:recommendation:movies"
+      ],
+      "statement": "request a movie recommendation"
+    },
+    {
+      "factor_id": "F070",
+      "key_ids": [
+        "K015"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:social:post"
+      ],
+      "statement": "compose or publish a social post"
+    },
+    {
+      "factor_id": "F071",
+      "key_ids": [
+        "K015"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:social:query"
+      ],
+      "statement": "read or inspect social messages or activity"
+    },
+    {
+      "factor_id": "F072",
+      "key_ids": [
+        "K016"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:takeaway:order"
+      ],
+      "statement": "place or track a prepared-food order"
+    },
+    {
+      "factor_id": "F073",
+      "key_ids": [
+        "K016"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:takeaway:query"
+      ],
+      "statement": "find prepared-food delivery or pickup options"
+    },
+    {
+      "factor_id": "F074",
+      "key_ids": [
+        "K017"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:transport:query"
+      ],
+      "statement": "inspect routes, transit, or travel status"
+    },
+    {
+      "factor_id": "F075",
+      "key_ids": [
+        "K017"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:transport:taxi"
+      ],
+      "statement": "request or book a taxi"
+    },
+    {
+      "factor_id": "F076",
+      "key_ids": [
+        "K017"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:transport:ticket"
+      ],
+      "statement": "find or book a transport ticket"
+    },
+    {
+      "factor_id": "F077",
+      "key_ids": [
+        "K017"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:transport:traffic"
+      ],
+      "statement": "inspect road traffic"
+    },
+    {
+      "factor_id": "F078",
+      "key_ids": [
+        "K018"
+      ],
+      "kind": "operation",
+      "provenance_ids": [
+        "slurp-train-action:weather:query"
+      ],
+      "statement": "request weather conditions or a forecast"
+    }
+  ],
+  "graph_id": "slurp-shared-action-entity-decision-graph-v3",
+  "schema": "saea-decision-graph-v1"
+}

@@ -26,6 +26,7 @@ from ...data.lock import data_root, load_lock, umbrella_lock_path
 from ...data.slurp import load_slurp_train_material
 from ...e0.artifacts import REPO_ROOT, write_json_artifact
 from ...rails.probes.pslu_flight import (
+    SPEECH_NATIVE_BOUNDARY_POLICY_IDS,
     SPEECH_NATIVE_KNOWLEDGE_POLICY_ID,
     build_data_derived_decision_graph,
     extend_speech_native_binding,
@@ -332,6 +333,7 @@ def _cli_extend_speech_native_binding(args: argparse.Namespace) -> int:
             material,
             graph_id=args.decision_graph_id,
             maximum_boundaries=args.maximum_boundaries,
+            boundary_policy_id=args.boundary_policy,
         )
         graph_artifact_sha256 = write_json_artifact(graph_output_path, graph.as_json())
     artifact_sha256 = (
@@ -685,6 +687,15 @@ def main(argv: list[str] | None = None) -> int:
         default="slurp-data-derived-decision-graph-v2",
     )
     extend_binding.add_argument("--maximum-boundaries", type=int, default=30)
+    extend_binding.add_argument(
+        "--boundary-policy",
+        choices=SPEECH_NATIVE_BOUNDARY_POLICY_IDS,
+        default="ranked-pair-signal-v1",
+        help=(
+            "versioned boundary builder; shared-action entity boundaries refuse "
+            "maximum-boundaries truncation"
+        ),
+    )
     extend_binding.add_argument("--workers", type=int, default=16)
     extend_binding.add_argument(
         "--allow-parent-query-speaker-overlap",
