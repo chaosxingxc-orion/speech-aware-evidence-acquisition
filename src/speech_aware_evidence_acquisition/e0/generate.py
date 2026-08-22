@@ -289,6 +289,49 @@ def main(argv: list[str] | None = None) -> int:
         ),
     )
     parser.add_argument(
+        "--expected-query-count",
+        type=int,
+        default=72,
+        help=(
+            "total distinct query samples in --binding for d1-media-supplement; "
+            "default 72 preserves the original train binding"
+        ),
+    )
+    parser.add_argument(
+        "--selection-name",
+        default=None,
+        help=(
+            "optional additional split name from --binding to materialize as one "
+            "label-free runtime view"
+        ),
+    )
+    parser.add_argument(
+        "--selection-count",
+        type=int,
+        default=None,
+        help="expected item count for --selection-name",
+    )
+    parser.add_argument(
+        "--selection-view-out",
+        type=Path,
+        default=None,
+        help="output path for the optional additional runtime view",
+    )
+    parser.add_argument(
+        "--selection-probe-out",
+        type=Path,
+        default=None,
+        help="output path for the optional additional probe receipt",
+    )
+    parser.add_argument(
+        "--supplement-relpath",
+        default="receipts/artifacts/d1-speech-native-train90.json",
+        help=(
+            "repository-relative D1 supplement path embedded in generated runtime "
+            "views; default preserves historical output"
+        ),
+    )
+    parser.add_argument(
         "--workers",
         type=int,
         default=16,
@@ -334,6 +377,7 @@ def main(argv: list[str] | None = None) -> int:
                 data_root=data_root(),
                 parent_d1_path=parent_d1_path,
                 workers=arguments.workers,
+                expected_query_count=arguments.expected_query_count,
             )
             out = (
                 arguments.out
@@ -347,6 +391,7 @@ def main(argv: list[str] | None = None) -> int:
                 binding_path=binding_path,
                 supplement=document,
                 supplement_artifact_sha256=digest,
+                supplement_relpath=arguments.supplement_relpath,
             )
             gate_view_out = (
                 arguments.gate_view_out
@@ -378,6 +423,7 @@ def main(argv: list[str] | None = None) -> int:
                     supplement=document,
                     supplement_artifact_sha256=digest,
                     selection_name=selection_name,
+                    supplement_relpath=arguments.supplement_relpath,
                 )
                 runtime_view_path = runtime_views_dir / filename
                 runtime_view_digest = write_json_artifact(
@@ -393,6 +439,43 @@ def main(argv: list[str] | None = None) -> int:
                 )
                 print(
                     f"wrote {probe_receipt_path} sha256={probe_receipt_digest}"
+                )
+            selection_arguments = (
+                arguments.selection_name,
+                arguments.selection_count,
+                arguments.selection_view_out,
+                arguments.selection_probe_out,
+            )
+            if any(value is not None for value in selection_arguments):
+                if any(value is None for value in selection_arguments):
+                    raise ArtifactError(
+                        "--selection-name, --selection-count, --selection-view-out, "
+                        "and --selection-probe-out must be supplied together"
+                    )
+                additional_view = build_speech_native_runtime_view(
+                    binding_path=binding_path,
+                    supplement=document,
+                    supplement_artifact_sha256=digest,
+                    selection_name=arguments.selection_name,
+                    expected_count=arguments.selection_count,
+                    supplement_relpath=arguments.supplement_relpath,
+                )
+                additional_view_path = arguments.selection_view_out.resolve()
+                additional_view_digest = write_json_artifact(
+                    additional_view_path, additional_view
+                )
+                print(
+                    f"wrote {additional_view_path} sha256={additional_view_digest}"
+                )
+                additional_probe = build_speech_native_probe_receipt(
+                    additional_view
+                )
+                additional_probe_path = arguments.selection_probe_out.resolve()
+                additional_probe_digest = write_json_artifact(
+                    additional_probe_path, additional_probe
+                )
+                print(
+                    f"wrote {additional_probe_path} sha256={additional_probe_digest}"
                 )
         elif arguments.command == "d2":
             _write_deliverable(receipts_dir, "d2-leakage.json", build_d2(lock_path()))
