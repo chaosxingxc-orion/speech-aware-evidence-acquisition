@@ -2665,7 +2665,7 @@ def read_speech_native_predictions(
         ):
             raise SpeechNativeProfileError("flight cell identity is malformed")
         cell_id = f"{key_representation_id}-{matcher_policy_id}"
-        if matcher_policy_id in {"M3", "M5", "M6", "M7", "M8"}:
+        if matcher_policy_id in {"M3", "M5", "M6", "M7", "M8", "M9"}:
             top_k = profile.get("top_k")
             if isinstance(top_k, bool) or not isinstance(top_k, int) or top_k <= 0:
                 raise SpeechNativeProfileError(
@@ -2757,6 +2757,47 @@ def read_speech_native_predictions(
                     "M8 flight receipt has an unknown pairwise identity"
                 )
             cell_id += "-pairwise-boundary-support-v1"
+        elif matcher_policy_id == "M9":
+            if (
+                profile_agent_policy_id != _M9_POLICY_ID
+                or agent_aggregator_id != _M9_AGGREGATOR_ID
+                or key_representation_id != "K1"
+                or profile.get("decision_graph_id")
+                != "slurp-scenario-factor-graph-v1"
+            ):
+                raise SpeechNativeProfileError(
+                    "M9 flight receipt has an unknown factor-graph identity"
+                )
+            cell_id += "-factor-graph-support-v1"
+        profile_decision_graph: DecisionGraphV1 | None = None
+        if matcher_policy_id == "M9":
+            graph_relpath = profile.get("decision_graph_path")
+            graph_sha256 = profile.get("decision_graph_file_sha256")
+            if (
+                not isinstance(graph_relpath, str)
+                or not graph_relpath
+                or not isinstance(graph_sha256, str)
+            ):
+                raise SpeechNativeProfileError(
+                    "M9 flight receipt lacks its pinned decision graph"
+                )
+            graph_path = (REPO_ROOT / graph_relpath).resolve()
+            if (
+                graph_path == REPO_ROOT.resolve()
+                or not graph_path.is_relative_to(REPO_ROOT.resolve())
+            ):
+                raise SpeechNativeProfileError(
+                    "M9 decision graph path escapes the repository"
+                )
+            profile_decision_graph = _load_decision_graph(
+                graph_path,
+                expected_sha256=graph_sha256,
+                key_cards=cards,
+            )
+            if profile_decision_graph.graph_id != profile.get("decision_graph_id"):
+                raise SpeechNativeProfileError(
+                    "M9 decision graph identity does not match its artifact"
+                )
         order_ids = profile.get("key_order_ids", ["canonical"])
         if (
             not isinstance(order_ids, list)
@@ -2847,6 +2888,7 @@ def read_speech_native_predictions(
         grounded_semantic_trajectories: list[dict[str, object]] = []
         multistate_trajectories: list[dict[str, object]] = []
         pairwise_trajectories: list[dict[str, object]] = []
+        factor_graph_trajectories: list[dict[str, object]] = []
         for row in rows:
             if row.get("schema") != "saea-speech-native-decision-v1":
                 raise SpeechNativeProfileError("decision schema mismatch")
@@ -2914,7 +2956,7 @@ def read_speech_native_predictions(
                 or len(set(raw_top_key_ids)) != len(raw_top_key_ids)
             ):
                 raise SpeechNativeProfileError("decision top_key_ids are malformed")
-            if matcher_policy_id in {"M3", "M5", "M6", "M7", "M8"}:
+            if matcher_policy_id in {"M3", "M5", "M6", "M7", "M8", "M9"}:
                 assert isinstance(top_k, int)
                 if len(raw_top_key_ids) > top_k:
                     raise SpeechNativeProfileError(
@@ -3436,6 +3478,34 @@ def read_speech_native_predictions(
                 raw_actions = row.get("agent_actions")
                 assert isinstance(raw_actions, list)
                 agent_action_counts.update(raw_actions)
+            elif matcher_policy_id == "M9":
+                assert isinstance(top_k, int)
+                assert profile_decision_graph is not None
+                trajectory = _parse_m9_factor_graph_trajectory(
+                    row=row,
+                    sample_id=sample_id,
+                    speaker_id=speaker_by_sample[sample_id],
+                    gold_key_id=key_by_label[gold[sample_id]],
+                    top_k=top_k,
+                    visible_card_by_key=visible_card_by_key,
+                    decision_graph=profile_decision_graph,
+                )
+                factor_graph_trajectories.append(trajectory)
+                agent_primary_correct_count += int(
+                    trajectory["primary_key_id"] == trajectory["gold_key_id"]
+                )
+                agent_action_sensitive_count += int(
+                    trajectory["reranked_key_ids"][0]
+                    != trajectory["primary_key_id"]
+                    or (
+                        trajectory["boundary_stable_key_id"] is not None
+                        and trajectory["boundary_stable_key_id"]
+                        != trajectory["primary_key_id"]
+                    )
+                )
+                raw_actions = row.get("agent_actions")
+                assert isinstance(raw_actions, list)
+                agent_action_counts.update(raw_actions)
         if seen != set(gold):
             raise SpeechNativeProfileError("decision sample set does not equal the frozen split")
         if (
@@ -3476,6 +3546,15 @@ def read_speech_native_predictions(
             pairwise_metrics = _evaluate_m8_pairwise_action_support(
                 pairwise_trajectories
             )
+        factor_graph_metrics: dict[str, object] | None = None
+        if matcher_policy_id == "M9":
+            if len(factor_graph_trajectories) != len(gold):
+                raise SpeechNativeProfileError(
+                    "M9 factor-graph trajectory count is incomplete"
+                )
+            factor_graph_metrics = _evaluate_m9_factor_graph_action_support(
+                factor_graph_trajectories
+            )
         aggregates.append(
             {
                 "cell_id": cell_id,
@@ -3485,12 +3564,12 @@ def read_speech_native_predictions(
                 "parse_failure_count": parse_failures,
                 "top_k_reachable_count": (
                     top_k_reachable_count
-                    if matcher_policy_id in {"M3", "M5", "M6", "M7", "M8"}
+                    if matcher_policy_id in {"M3", "M5", "M6", "M7", "M8", "M9"}
                     else None
                 ),
                 "top_k_reachability": (
                     top_k_reachable_count / len(gold)
-                    if matcher_policy_id in {"M3", "M5", "M6", "M7", "M8"}
+                    if matcher_policy_id in {"M3", "M5", "M6", "M7", "M8", "M9"}
                     else None
                 ),
                 "agent_loop_metrics": (
@@ -3658,7 +3737,11 @@ def read_speech_native_predictions(
                             else (
                                 pairwise_metrics
                                 if matcher_policy_id == "M8"
-                                else None
+                                else (
+                                    factor_graph_metrics
+                                    if matcher_policy_id == "M9"
+                                    else None
+                                )
                             )
                         )
                     )
@@ -6172,6 +6255,11 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
             "matcher_policy_id": values["matcher_policy_id"],
             "decision_graph_id": (
                 decision_graph.graph_id if decision_graph is not None else None
+            ),
+            "decision_graph_path": (
+                decision_graph_path.relative_to(repo_root.resolve()).as_posix()
+                if decision_graph_path is not None
+                else None
             ),
             "decision_graph_file_sha256": decision_graph_file_sha256,
             "matcher_prompt_policy_id": prompt_policy_id,
