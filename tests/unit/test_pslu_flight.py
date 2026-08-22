@@ -49,6 +49,10 @@ from speech_aware_evidence_acquisition.data.slurp import (
 from speech_aware_evidence_acquisition.rails import MockCoreClient
 from speech_aware_evidence_acquisition.rails.adapters.slurp import SlurpAdapter
 from speech_aware_evidence_acquisition.rails.probes.pslu_flight import (
+    DecisionBoundaryV1,
+    DecisionFactorV1,
+    DecisionGraphV1,
+    FactorLinkStateV1,
     KeyCardV1,
     PSLU_ARMS,
     PsluFlightError,
@@ -62,6 +66,9 @@ from speech_aware_evidence_acquisition.rails.probes.pslu_flight import (
     load_pslu_sample_manifest,
     load_speech_native_engineering_gate,
     pslu_supply_packet,
+    factor_link_response_format,
+    parse_factor_link_state,
+    render_decision_graph_neighborhood,
     render_roster_entries,
     render_speech_native_keys,
     render_type_vocabulary,
@@ -1118,6 +1125,158 @@ def test_key_card_rendering_never_exposes_value_label_for_text_cards():
     assert "calendar appointments" in rendered
     assert "value_label" not in rendered
     assert '"alarm"' not in rendered
+
+
+def _decision_graph_fixture() -> DecisionGraphV1:
+    return DecisionGraphV1(
+        graph_id="slurp-scenario-factor-graph-v1",
+        factors=(
+            DecisionFactorV1(
+                factor_id="F001",
+                kind="domain",
+                statement="The request concerns time management.",
+                key_ids=("K001",),
+                provenance_ids=("key-card:K001:definition",),
+            ),
+            DecisionFactorV1(
+                factor_id="F002",
+                kind="operation",
+                statement="The request creates or changes an alert.",
+                key_ids=("K001",),
+                provenance_ids=("key-card:K001:example:1",),
+            ),
+            DecisionFactorV1(
+                factor_id="F003",
+                kind="domain",
+                statement="The request concerns written communication.",
+                key_ids=("K002",),
+                provenance_ids=("key-card:K002:definition",),
+            ),
+            DecisionFactorV1(
+                factor_id="F004",
+                kind="operation",
+                statement="The request reads or sends a message.",
+                key_ids=("K002",),
+                provenance_ids=("key-card:K002:example:1",),
+            ),
+        ),
+        boundaries=(
+            DecisionBoundaryV1(
+                boundary_id="B001",
+                left_key_id="K001",
+                right_key_id="K002",
+                left_factor_ids=("F002",),
+                right_factor_ids=("F004",),
+                left_exclusion="Do not select this side for written messages.",
+                right_exclusion="Do not select this side for timed alerts.",
+                provenance_ids=(
+                    "key-card:K001:contrastive-boundary",
+                    "key-card:K002:contrastive-boundary",
+                ),
+            ),
+        ),
+    ).validate(_KEY_CARDS)
+
+
+def test_decision_graph_validates_coverage_and_renders_one_hop_without_labels():
+    graph = _decision_graph_fixture()
+
+    neighborhood = graph.neighborhood(("K001",))
+    assert neighborhood.key_ids == ("K001", "K002")
+    assert neighborhood.factor_ids == ("F001", "F002", "F004")
+    assert neighborhood.boundary_ids == ("B001",)
+
+    rendered = render_decision_graph_neighborhood(
+        graph=graph,
+        key_cards=_KEY_CARDS,
+        candidate_key_ids=("K001",),
+    )
+    assert "[F001]" in rendered
+    assert "[F004]" in rendered
+    assert "[B001] endpoints=K001,K002" in rendered
+    assert "value_label" not in rendered
+    assert '"alarm"' not in rendered
+    assert '"email"' not in rendered
+
+
+def test_decision_graph_rejects_unknown_key_and_wrong_boundary_factor_side():
+    graph = _decision_graph_fixture()
+    bad_factor = DecisionFactorV1(
+        factor_id="F005",
+        kind="target",
+        statement="An unreachable target.",
+        key_ids=("K999",),
+        provenance_ids=("task-ontology:target",),
+    )
+    with pytest.raises(PsluFlightError, match="unknown key"):
+        DecisionGraphV1(
+            graph_id=graph.graph_id,
+            factors=(*graph.factors, bad_factor),
+            boundaries=graph.boundaries,
+        ).validate(_KEY_CARDS)
+
+    boundary = graph.boundaries[0]
+    with pytest.raises(PsluFlightError, match="left factor"):
+        DecisionGraphV1(
+            graph_id=graph.graph_id,
+            factors=graph.factors,
+            boundaries=(
+                DecisionBoundaryV1(
+                    boundary_id=boundary.boundary_id,
+                    left_key_id=boundary.left_key_id,
+                    right_key_id=boundary.right_key_id,
+                    left_factor_ids=("F004",),
+                    right_factor_ids=boundary.right_factor_ids,
+                    left_exclusion=boundary.left_exclusion,
+                    right_exclusion=boundary.right_exclusion,
+                    provenance_ids=boundary.provenance_ids,
+                ),
+            ),
+        ).validate(_KEY_CARDS)
+
+
+def test_factor_link_schema_and_parser_accept_only_neighborhood_ids():
+    graph = _decision_graph_fixture()
+    response_format = factor_link_response_format(
+        graph=graph,
+        key_cards=_KEY_CARDS,
+        candidate_key_ids=("K001",),
+    )
+    schema = response_format["json_schema"]["schema"]
+    assert schema["properties"]["factor_ids"]["items"]["enum"] == [
+        "F001",
+        "F002",
+        "F004",
+    ]
+    assert schema["properties"]["boundary_id"]["enum"] == ["NONE", "B001"]
+
+    state = parse_factor_link_state(
+        '{"factor_ids":["F001","F002"],"boundary_id":"B001"}',
+        graph=graph,
+        key_cards=_KEY_CARDS,
+        candidate_key_ids=("K001",),
+    )
+    assert state == FactorLinkStateV1(
+        factor_ids=("F001", "F002"), boundary_id="B001"
+    )
+
+    invalid_responses = (
+        '{"factor_ids":["F001"],"boundary_id":"B001"}',
+        '{"factor_ids":["F001","F001"],"boundary_id":"B001"}',
+        '{"factor_ids":["F001","F999"],"boundary_id":"B001"}',
+        '{"factor_ids":["F001","F002"],"boundary_id":"B999"}',
+        '{"factor_ids":["F001","F002"],"boundary_id":"NONE","summary":"x"}',
+    )
+    for response in invalid_responses:
+        assert (
+            parse_factor_link_state(
+                response,
+                graph=graph,
+                key_cards=_KEY_CARDS,
+                candidate_key_ids=("K001",),
+            )
+            is None
+        )
 
 
 def test_m0_schema_v4_constrains_the_final_label_at_llama_server_boundary():
