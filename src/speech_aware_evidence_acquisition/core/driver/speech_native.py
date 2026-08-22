@@ -1120,6 +1120,11 @@ def read_speech_native_predictions(
                 "flight receipt has an unknown mechanism control"
             )
         cell_id += control_suffix
+        visible_card_by_key = card_by_key
+        if mechanism_control_id == "key-text-shuffle-v1":
+            visible_card_by_key = {
+                card.key_id: card for card in _shuffle_key_text(cards)
+            }
         if cell_id in correctness_by_cell:
             raise SpeechNativeProfileError(f"duplicate flight cell {cell_id!r}")
         decisions_name = decisions_ref.get("path")
@@ -1564,7 +1569,7 @@ def read_speech_native_predictions(
                                 separators=(",", ":"),
                             ),
                             candidate_key_ids=initial_top_ids,
-                            cards_by_key=card_by_key,
+                                cards_by_key=visible_card_by_key,
                             key_representation_id="K2",
                         )
                         if parsed_state is None or state_step.get("parse_failure"):

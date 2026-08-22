@@ -18,6 +18,7 @@ from speech_aware_evidence_acquisition.core.model import SliceRegistry
 from speech_aware_evidence_acquisition.core.driver.speech_native import (
     audit_speech_native_action_support,
     _assert_reusable_session_profile,
+    _canonical_sha256,
     _evaluate_training_free_contextual_policy,
     _evaluate_training_free_episodic_policy,
     _build_audio_key_bindings,
@@ -3125,30 +3126,56 @@ def test_model_free_read_accepts_complete_full_branch_action_support(tmp_path):
 
 
 @pytest.mark.parametrize(
-    ("agent_policy_id", "cell_suffix"),
+    ("agent_policy_id", "cell_suffix", "mechanism_control_id"),
     (
         (
             "knowledge-grounded-semantic-refinement-full-action-v1",
             "grounded-v1",
+            "matched",
         ),
         (
             "knowledge-grounded-semantic-refinement-schema-v2",
             "grounded-schema-v2",
+            "matched",
         ),
         (
             "knowledge-grounded-semantic-refinement-schema-v3",
             "grounded-schema-v3",
+            "matched",
+        ),
+        (
+            "knowledge-grounded-semantic-refinement-schema-v3",
+            "grounded-schema-v3-control-key-text-shuffle-v1",
+            "key-text-shuffle-v1",
         ),
     ),
 )
 def test_model_free_read_reports_grounded_semantic_refinement_actions(
-    tmp_path, agent_policy_id, cell_suffix
+    tmp_path, agent_policy_id, cell_suffix, mechanism_control_id
 ):
     binding_path = REPO_ROOT / "configs/probes/g0-binding/speech-native-train-binding.json"
     binding_sha256 = hashlib.sha256(binding_path.read_bytes()).hexdigest()
     binding = json.loads(binding_path.read_text(encoding="utf-8"))
     items = binding["splits"]["OPT-A36"]["items"]
     cards = {card["key_id"]: card for card in binding["key_cards"]}
+    ordered_cards = tuple(binding["key_cards"])
+    visible_cards = (
+        {
+            target["key_id"]: {
+                **target,
+                "definition": donor["definition"],
+                "positive_examples": donor["positive_examples"],
+                "contrastive_boundary": donor["contrastive_boundary"],
+            }
+            for target, donor in zip(
+                ordered_cards,
+                ordered_cards[1:] + ordered_cards[:1],
+                strict=True,
+            )
+        }
+        if mechanism_control_id == "key-text-shuffle-v1"
+        else cards
+    )
     key_by_label = {card["value_label"]: card["key_id"] for card in cards.values()}
     labels = tuple(key_by_label)
     attempt_dir = tmp_path / "m6-grounded"
@@ -3191,7 +3218,7 @@ def test_model_free_read_reports_grounded_semantic_refinement_actions(
                 {
                     "key_id": key_id,
                     "field": "definition",
-                    "quote": cards[key_id]["definition"],
+                    "quote": visible_cards[key_id]["definition"],
                 }
                 for key_id in initial_top
             ],
@@ -3285,7 +3312,19 @@ def test_model_free_read_reports_grounded_semantic_refinement_actions(
                     "agent_aggregator_id": (
                         "grounded-refined-primary-fallback-v1"
                     ),
-                    "mechanism_control_id": "matched",
+                    "mechanism_control_id": mechanism_control_id,
+                    "key_text_mapping_sha256": (
+                        _canonical_sha256(
+                            {
+                                card["key_id"]: ordered_cards[
+                                    (index + 1) % len(ordered_cards)
+                                ]["key_id"]
+                                for index, card in enumerate(ordered_cards)
+                            }
+                        )
+                        if mechanism_control_id == "key-text-shuffle-v1"
+                        else None
+                    ),
                     "key_order_ids": ["canonical"],
                     "top_k": 3,
                     "actual_contact_count": sum(row["calls"] for row in rows),
@@ -3300,16 +3339,47 @@ def test_model_free_read_reports_grounded_semantic_refinement_actions(
         encoding="utf-8",
     )
 
+    attempt_dirs = (attempt_dir,)
+    if mechanism_control_id == "key-text-shuffle-v1":
+        matched_dir = tmp_path / "m6-grounded-matched"
+        matched_dir.mkdir()
+        matched_rows = json.loads(json.dumps(rows))
+        for row in matched_rows:
+            for evidence in row["agent_steps"][2]["grounded_query_state"]["evidence"]:
+                evidence["quote"] = cards[evidence["key_id"]]["definition"]
+        matched_decisions = matched_dir / "decisions.jsonl"
+        matched_decisions.write_text(
+            "".join(json.dumps(row, sort_keys=True) + "\n" for row in matched_rows),
+            encoding="utf-8",
+        )
+        matched_receipt = json.loads(
+            (attempt_dir / "flight-receipt.json").read_text(encoding="utf-8")
+        )
+        matched_receipt["run_id"] = "run-m6-grounded-matched"
+        matched_receipt["profile"]["mechanism_control_id"] = "matched"
+        matched_receipt["profile"]["key_text_mapping_sha256"] = None
+        matched_receipt["decisions"]["sha256"] = hashlib.sha256(
+            matched_decisions.read_bytes()
+        ).hexdigest()
+        (matched_dir / "flight-receipt.json").write_text(
+            json.dumps(matched_receipt),
+            encoding="utf-8",
+        )
+        attempt_dirs = (matched_dir, attempt_dir)
+
     report = read_speech_native_predictions(
-        attempt_dirs=(attempt_dir,),
+        attempt_dirs=attempt_dirs,
         binding_path=binding_path,
         binding_sha256=binding_sha256,
         split_name="OPT-A36",
     )
 
-    aggregate = report["aggregates"][0]
+    expected_cell_id = f"K1-M6-k3-v3-verify-contrastive-v2-{cell_suffix}"
+    aggregate = next(
+        item for item in report["aggregates"] if item["cell_id"] == expected_cell_id
+    )
     assert aggregate["cell_id"] == (
-        f"K1-M6-k3-v3-verify-contrastive-v2-{cell_suffix}"
+        expected_cell_id
     )
     assert aggregate["correct"] == 35
     assert aggregate["top_k_reachable_count"] == 36
