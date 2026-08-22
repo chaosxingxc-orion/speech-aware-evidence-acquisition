@@ -1,0 +1,10 @@
+{
+  "experiment_id": "SAEA-SN-EFFECT-C108-K1M6-GROUNDED-SCHEMA-V2-KEY-SHUFFLE",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "Unread EFFECT-C108 label-blind key-text-shuffle control for the frozen schema-v2 AgentLoop.",
+  "key_representation_id": "K1",
+  "matcher_policy_id": "M6",
+  "speech_native_agent_policy_id": "knowledge-grounded-semantic-refinement-schema-v2",
+  "speech_native_agent_aggregator_id": "grounded-refined-primary-fallback-v1",
+  "speech_native_mechanism_control_id": "key-text-shuffle-v1"
+}
