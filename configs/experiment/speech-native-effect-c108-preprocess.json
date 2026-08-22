@@ -1,0 +1,5 @@
+{
+  "experiment_id": "SAEA-SN-EFFECT-C108-PREPROCESS",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "Label-free offline feature preprocessing for the frozen EFFECT-C108 train view. Keep the receipt-pinned decoder-only inference service resident; materialize features only and never read generated text, labels, transcripts, or task accuracy."
+}
