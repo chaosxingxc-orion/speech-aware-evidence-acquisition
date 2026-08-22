@@ -1,0 +1,7 @@
+{
+  "experiment_id": "SAEA-SN-EFFECT-C108-K0M0-SCHEMA-V4",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "Unread EFFECT-C108 direct speech baseline successor. Keep the original K0 classification prompt and constrain only the final label field with a llama.cpp JSON Schema over the frozen label list.",
+  "key_representation_id": "K0",
+  "matcher_policy_id": "M0"
+}
