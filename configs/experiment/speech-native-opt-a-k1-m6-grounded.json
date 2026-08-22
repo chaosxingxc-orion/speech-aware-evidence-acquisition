@@ -1,0 +1,9 @@
+{
+  "experiment_id": "SAEA-SN-OPTA-K1M6-GROUNDED",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "Post-read OPT-A36 action-support probe for knowledge-grounded semantic query refinement. Keep K1 for full-library retrieval, expand only the first top-3 through the frozen K2 contrastive fields, carry the original speech packet on every contact, and record speech-primary versus refined actions without parameter updates.",
+  "key_representation_id": "K1",
+  "matcher_policy_id": "M6",
+  "speech_native_agent_policy_id": "knowledge-grounded-semantic-refinement-full-action-v1",
+  "speech_native_agent_aggregator_id": "grounded-refined-primary-fallback-v1"
+}

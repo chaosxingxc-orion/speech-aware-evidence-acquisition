@@ -178,6 +178,140 @@ def test_m2_reintroduces_the_same_speech_query_for_factor_and_selection_steps():
     _assert_every_call_carries_query(client)
 
 
+def test_m6_refines_retrieval_with_a_knowledge_grounded_semantic_state():
+    grounded_state = {
+        "candidate_key_ids": ["K001", "K002"],
+        "domain": "email",
+        "operation": "read",
+        "target": "message",
+        "constraints": [],
+        "exclusions": ["social messages"],
+        "unresolved_ambiguity": "none",
+        "evidence": [
+            {
+                "key_id": "K001",
+                "field": "definition",
+                "quote": "Commands that create, change, inspect, or remove alarms.",
+            },
+            {
+                "key_id": "K002",
+                "field": "contrastive_boundary",
+                "quote": "Do not use for social messages.",
+            },
+        ],
+    }
+    client = _SpeechFeatureClient(
+        [
+            '{"key_id":"K001"}',
+            '{"key_ids":["K001","K002"]}',
+            json.dumps(grounded_state),
+            '{"key_ids":["K002","K001"]}',
+            '{"compatible":true,"confidence":90}',
+            '{"compatible":false,"confidence":20}',
+        ]
+    )
+
+    result = run_speech_native_matcher(
+        core_client=client,
+        sample=_SpeechSample(),
+        query_descriptor=_QUERY_DESCRIPTOR,
+        key_cards=_KEY_CARDS,
+        key_representation_id="K1",
+        matcher_policy_id="M6",
+        prompt_policy_id="speech-native-json-copy-v3",
+        verifier_policy_id="speech-native-contrastive-verifier-v2",
+        agent_policy_id="knowledge-grounded-semantic-refinement-full-action-v1",
+        agent_aggregator_id="grounded-refined-primary-fallback-v1",
+        decoding_params={"temperature": 0, "max_tokens": 64},
+        top_k=2,
+    )
+
+    assert result.key_id == "K002"
+    assert result.value_label == "email"
+    assert result.top_key_ids == ("K002", "K001")
+    assert result.calls == 6
+    assert result.agent_vote_key_ids == ("K001", "K002")
+    assert result.agent_actions == (
+        "match:speech-only-primary",
+        "retrieve:speech-only",
+        "build:grounded-query-state",
+        "retrieve:speech-plus-grounded-state",
+        "verify:speech-plus-grounded-state",
+        "select:refined-primary-fallback",
+    )
+    refined_text = "\n".join(
+        part["text"]
+        for part in client.calls[3][0][1]["content"]
+        if part.get("type") == "text"
+    )
+    assert '"operation":"read"' in refined_text
+    assert "Keys:" in refined_text
+    state_builder_text = "\n".join(
+        part["text"]
+        for part in client.calls[2][0][1]["content"]
+        if part.get("type") == "text"
+    )
+    assert "Contrastive boundary: Do not use for social messages." in state_builder_text
+    assert client.calls[2][1]["decoding_params"]["max_tokens"] == 512
+    assert all(
+        kwargs["decoding_params"]["max_tokens"] == 64
+        for index, (_messages, kwargs) in enumerate(client.calls)
+        if index != 2
+    )
+    _assert_every_call_carries_query(client)
+
+
+def test_m6_fails_closed_to_speech_primary_when_grounding_quote_is_invented():
+    invalid_state = {
+        "candidate_key_ids": ["K001", "K002"],
+        "domain": "email",
+        "operation": "send",
+        "target": "message",
+        "constraints": [],
+        "exclusions": [],
+        "unresolved_ambiguity": "none",
+        "evidence": [
+            {
+                "key_id": "K001",
+                "field": "definition",
+                "quote": "This text is absent from the key card.",
+            },
+            {
+                "key_id": "K002",
+                "field": "definition",
+                "quote": "Commands about email messages and mailboxes.",
+            },
+        ],
+    }
+    client = _SpeechFeatureClient(
+        [
+            '{"key_id":"K001"}',
+            '{"key_ids":["K001","K002"]}',
+            json.dumps(invalid_state),
+        ]
+    )
+
+    result = run_speech_native_matcher(
+        core_client=client,
+        sample=_SpeechSample(),
+        query_descriptor=_QUERY_DESCRIPTOR,
+        key_cards=_KEY_CARDS,
+        key_representation_id="K1",
+        matcher_policy_id="M6",
+        prompt_policy_id="speech-native-json-copy-v3",
+        agent_policy_id="knowledge-grounded-semantic-refinement-full-action-v1",
+        agent_aggregator_id="grounded-refined-primary-fallback-v1",
+        top_k=2,
+    )
+
+    assert result.key_id == "K001"
+    assert result.calls == 3
+    assert result.parse_failure is False
+    assert result.agent_vote_key_ids == ("K001", None)
+    assert result.agent_actions[-1] == "backtrack:invalid-grounding"
+    _assert_every_call_carries_query(client)
+
+
 def test_m3_verifies_each_retrieved_candidate_and_arbitrates_only_a_tie():
     client = _SpeechFeatureClient(
         [
@@ -2256,6 +2390,206 @@ def test_model_free_read_accepts_complete_full_branch_action_support(tmp_path):
     assert episodic["correct_to_wrong_vs_primary"] == 0
     assert episodic["oof_action_counts"] == {"primary": 36}
     assert episodic["mean_contacts"] == 4.0
+
+
+def test_model_free_read_reports_grounded_semantic_refinement_actions(tmp_path):
+    binding_path = REPO_ROOT / "configs/probes/g0-binding/speech-native-train-binding.json"
+    binding_sha256 = hashlib.sha256(binding_path.read_bytes()).hexdigest()
+    binding = json.loads(binding_path.read_text(encoding="utf-8"))
+    items = binding["splits"]["OPT-A36"]["items"]
+    cards = {card["key_id"]: card for card in binding["key_cards"]}
+    key_by_label = {card["value_label"]: card["key_id"] for card in cards.values()}
+    labels = tuple(key_by_label)
+    attempt_dir = tmp_path / "m6-grounded"
+    attempt_dir.mkdir()
+    rows = []
+    for index, item in enumerate(items):
+        gold_label = item["value_label"]
+        gold_key = key_by_label[gold_label]
+        wrong_label = labels[(labels.index(gold_label) + 1) % len(labels)]
+        wrong_key = key_by_label[wrong_label]
+        primary_key = wrong_key if index == 0 else gold_key
+        refined_key = wrong_key if index == 1 else gold_key
+        initial_top = [
+            primary_key,
+            *[
+                key_id
+                for key_id in key_by_label.values()
+                if key_id != primary_key
+            ][:2],
+        ]
+        refined_top = [
+            refined_key,
+            *[
+                key_id
+                for key_id in key_by_label.values()
+                if key_id != refined_key
+            ][:2],
+        ]
+        if gold_key not in refined_top:
+            refined_top[-1] = gold_key
+        state = {
+            "candidate_key_ids": initial_top,
+            "domain": "bounded-domain",
+            "operation": "bounded-operation",
+            "target": "bounded-target",
+            "constraints": [],
+            "exclusions": [],
+            "unresolved_ambiguity": "none",
+            "evidence": [
+                {
+                    "key_id": key_id,
+                    "field": "definition",
+                    "quote": cards[key_id]["definition"],
+                }
+                for key_id in initial_top
+            ],
+        }
+        verifier_scores = {
+            key_id: {
+                "compatible": key_id == refined_key,
+                "confidence": 90.0 if key_id == refined_key else 20.0,
+            }
+            for key_id in refined_top
+        }
+        predicted_label = cards[refined_key]["value_label"]
+        rows.append(
+            {
+                "schema": "saea-speech-native-decision-v1",
+                "sample_id": item["sample_id"],
+                "key_id": refined_key,
+                "predicted_value_label": predicted_label,
+                "top_key_ids": refined_top,
+                "verifier_scores": verifier_scores,
+                "calls": 7,
+                "parse_failure": False,
+                "agent_policy_id": (
+                    "knowledge-grounded-semantic-refinement-full-action-v1"
+                ),
+                "agent_actions": [
+                    "match:speech-only-primary",
+                    "retrieve:speech-only",
+                    "build:grounded-query-state",
+                    "retrieve:speech-plus-grounded-state",
+                    "verify:speech-plus-grounded-state",
+                    "select:refined-primary-fallback",
+                ],
+                "agent_escalated": True,
+                "agent_vote_key_ids": [primary_key, refined_key],
+                "agent_steps": [
+                    {
+                        "action_id": "match:speech-only-primary",
+                        "key_id": primary_key,
+                        "top_key_ids": [],
+                        "calls": 1,
+                        "parse_failure": False,
+                    },
+                    {
+                        "action_id": "retrieve:speech-only",
+                        "key_id": initial_top[0],
+                        "top_key_ids": initial_top,
+                        "calls": 1,
+                        "parse_failure": False,
+                    },
+                    {
+                        "action_id": "build:grounded-query-state",
+                        "key_id": None,
+                        "top_key_ids": initial_top,
+                        "calls": 1,
+                        "parse_failure": False,
+                        "grounded_query_state": state,
+                    },
+                    {
+                        "action_id": (
+                            "retrieve-and-verify:speech-plus-grounded-state"
+                        ),
+                        "key_id": refined_key,
+                        "top_key_ids": refined_top,
+                        "calls": 4,
+                        "parse_failure": False,
+                        "verifier_scores": verifier_scores,
+                    },
+                ],
+                "agent_aggregator_id": "grounded-refined-primary-fallback-v1",
+            }
+        )
+    decisions = attempt_dir / "decisions.jsonl"
+    decisions.write_text(
+        "".join(json.dumps(row, sort_keys=True) + "\n" for row in rows),
+        encoding="utf-8",
+    )
+    (attempt_dir / "flight-receipt.json").write_text(
+        json.dumps(
+            {
+                "status": "COMPLETED",
+                "request_failures": [],
+                "split_identity_hash": "a" * 64,
+                "run_id": "run-m6-grounded",
+                "profile": {
+                    "key_representation_id": "K1",
+                    "matcher_policy_id": "M6",
+                    "matcher_prompt_policy_id": "speech-native-json-copy-v3",
+                    "matcher_verifier_policy_id": (
+                        "speech-native-contrastive-verifier-v2"
+                    ),
+                    "agent_policy_id": (
+                        "knowledge-grounded-semantic-refinement-full-action-v1"
+                    ),
+                    "agent_aggregator_id": (
+                        "grounded-refined-primary-fallback-v1"
+                    ),
+                    "mechanism_control_id": "matched",
+                    "key_order_ids": ["canonical"],
+                    "top_k": 3,
+                    "actual_contact_count": sum(row["calls"] for row in rows),
+                },
+                "decisions": {
+                    "path": decisions.name,
+                    "sha256": hashlib.sha256(decisions.read_bytes()).hexdigest(),
+                    "count": len(rows),
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    report = read_speech_native_predictions(
+        attempt_dirs=(attempt_dir,),
+        binding_path=binding_path,
+        binding_sha256=binding_sha256,
+        split_name="OPT-A36",
+    )
+
+    aggregate = report["aggregates"][0]
+    assert aggregate["cell_id"] == (
+        "K1-M6-k3-v3-verify-contrastive-v2-grounded-v1"
+    )
+    assert aggregate["correct"] == 35
+    assert aggregate["top_k_reachable_count"] == 36
+    assert aggregate["agent_loop_metrics"] == {
+        "policy_id": "knowledge-grounded-semantic-refinement-full-action-v1",
+        "aggregator_id": "grounded-refined-primary-fallback-v1",
+        "primary_correct": 35,
+        "primary_accuracy": 35 / 36,
+        "final_minus_primary_correct": 0,
+        "grounded_state_valid_count": 36,
+        "grounded_state_valid_rate": 1.0,
+        "backtrack_count": 0,
+        "refined_change_count": 2,
+        "helpful_refinement_count": 1,
+        "harmful_refinement_count": 1,
+        "neutral_refinement_count": 34,
+        "recoverable_error_count": 1,
+        "action_sensitive_count": 2,
+        "action_counts": {
+            "build:grounded-query-state": 36,
+            "match:speech-only-primary": 36,
+            "retrieve:speech-only": 36,
+            "retrieve:speech-plus-grounded-state": 36,
+            "select:refined-primary-fallback": 36,
+            "verify:speech-plus-grounded-state": 36,
+        },
+    }
 
 
 def _binding_material():

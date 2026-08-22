@@ -155,7 +155,7 @@ def load_speech_native_engineering_gate(
 
 
 SPEECH_NATIVE_KEY_REPRESENTATIONS = ("K0", "K1", "K2", "K3", "K4")
-SPEECH_NATIVE_MATCHER_POLICIES = ("M0", "M1", "M2", "M3", "M4", "M5")
+SPEECH_NATIVE_MATCHER_POLICIES = ("M0", "M1", "M2", "M3", "M4", "M5", "M6")
 SPEECH_NATIVE_PROMPT_POLICIES = (
     "speech-native-json-copy-v2",
     "speech-native-json-copy-v3",
@@ -168,10 +168,12 @@ SPEECH_NATIVE_AGENT_AGGREGATORS = (
     "m3-majority-canonical-tie-v1",
     "m3-majority-primary-tie-v2",
     "m3-unanimous-primary-fallback-v3",
+    "grounded-refined-primary-fallback-v1",
 )
 SPEECH_NATIVE_AGENT_POLICIES = (
     "m1-m3-disagreement-escalation-v1",
     "m1-m3-full-branch-explorer-v1",
+    "knowledge-grounded-semantic-refinement-full-action-v1",
 )
 SPEECH_NATIVE_SCENARIO_DEFINITIONS: Mapping[str, str] = MappingProxyType(
     {
@@ -259,6 +261,44 @@ class KeyCardV1:
             "positive_examples": list(self.positive_examples),
             "contrastive_boundary": self.contrastive_boundary,
             "value_label": self.value_label,
+        }
+
+
+@dataclass(frozen=True)
+class GroundedEvidenceV1:
+    """One mechanically verifiable citation into a retrieved text key."""
+
+    key_id: str
+    field: str
+    quote: str
+
+    def as_json(self) -> dict[str, str]:
+        return {"key_id": self.key_id, "field": self.field, "quote": self.quote}
+
+
+@dataclass(frozen=True)
+class GroundedQueryStateV1:
+    """A bounded semantic query state whose evidence is copied from text keys."""
+
+    candidate_key_ids: tuple[str, ...]
+    domain: str
+    operation: str
+    target: str
+    constraints: tuple[str, ...]
+    exclusions: tuple[str, ...]
+    unresolved_ambiguity: str
+    evidence: tuple[GroundedEvidenceV1, ...]
+
+    def as_json(self) -> dict[str, object]:
+        return {
+            "candidate_key_ids": list(self.candidate_key_ids),
+            "domain": self.domain,
+            "operation": self.operation,
+            "target": self.target,
+            "constraints": list(self.constraints),
+            "exclusions": list(self.exclusions),
+            "unresolved_ambiguity": self.unresolved_ambiguity,
+            "evidence": [item.as_json() for item in self.evidence],
         }
 
 
@@ -435,6 +475,115 @@ def _compatibility(text: str) -> tuple[bool, float] | None:
     return bool(document["compatible"]), score
 
 
+def parse_grounded_query_state(
+    text: str,
+    *,
+    candidate_key_ids: tuple[str, ...],
+    cards_by_key: Mapping[str, KeyCardV1],
+    key_representation_id: str,
+) -> GroundedQueryStateV1 | None:
+    """Parse a bounded state and verify every cited quote against visible key text."""
+
+    document = _response_object(text)
+    required = {
+        "candidate_key_ids",
+        "domain",
+        "operation",
+        "target",
+        "constraints",
+        "exclusions",
+        "unresolved_ambiguity",
+        "evidence",
+    }
+    if document is None or set(document) != required:
+        return None
+    raw_candidates = document.get("candidate_key_ids")
+    if raw_candidates != list(candidate_key_ids):
+        return None
+
+    def bounded_text(value: object, *, maximum: int = 160) -> str | None:
+        if not isinstance(value, str):
+            return None
+        normalized = " ".join(value.split())
+        return normalized if normalized and len(normalized) <= maximum else None
+
+    scalar_values = tuple(
+        bounded_text(document.get(field))
+        for field in ("domain", "operation", "target", "unresolved_ambiguity")
+    )
+    if any(value is None for value in scalar_values):
+        return None
+
+    def bounded_list(value: object) -> tuple[str, ...] | None:
+        if not isinstance(value, list) or len(value) > 5:
+            return None
+        parsed = tuple(bounded_text(item) for item in value)
+        if any(item is None for item in parsed):
+            return None
+        return tuple(item for item in parsed if item is not None)
+
+    constraints = bounded_list(document.get("constraints"))
+    exclusions = bounded_list(document.get("exclusions"))
+    if constraints is None or exclusions is None:
+        return None
+    raw_evidence = document.get("evidence")
+    if (
+        not isinstance(raw_evidence, list)
+        or not candidate_key_ids
+        or not len(candidate_key_ids) <= len(raw_evidence) <= 2 * len(candidate_key_ids)
+    ):
+        return None
+    visible_fields = {"definition", "positive_examples"}
+    if key_representation_id == "K2":
+        visible_fields.add("contrastive_boundary")
+    evidence: list[GroundedEvidenceV1] = []
+    for item in raw_evidence:
+        if not isinstance(item, Mapping) or set(item) != {"key_id", "field", "quote"}:
+            return None
+        key_id = item.get("key_id")
+        field_name = item.get("field")
+        quote = bounded_text(item.get("quote"), maximum=240)
+        if (
+            key_id not in candidate_key_ids
+            or field_name not in visible_fields
+            or quote is None
+        ):
+            return None
+        card = cards_by_key[str(key_id)]
+        if field_name == "definition":
+            sources = (card.definition,)
+        elif field_name == "positive_examples":
+            sources = card.positive_examples
+        else:
+            sources = (
+                (card.contrastive_boundary or "")
+                if field_name == "contrastive_boundary"
+                else ""
+            ,)
+        if not any(quote in source for source in sources):
+            return None
+        evidence.append(
+            GroundedEvidenceV1(
+                key_id=str(key_id), field=str(field_name), quote=quote
+            )
+        )
+    if {item.key_id for item in evidence} != set(candidate_key_ids):
+        return None
+    domain, operation, target, ambiguity = scalar_values
+    assert domain is not None and operation is not None and target is not None
+    assert ambiguity is not None
+    return GroundedQueryStateV1(
+        candidate_key_ids=candidate_key_ids,
+        domain=domain,
+        operation=operation,
+        target=target,
+        constraints=constraints,
+        exclusions=exclusions,
+        unresolved_ambiguity=ambiguity,
+        evidence=tuple(evidence),
+    )
+
+
 def _speech_feature_messages(
     *,
     system_text: str,
@@ -501,7 +650,7 @@ def run_speech_native_matcher(
     _trace_matcher_policy_id: str | None = None,
     _trace_buffer: TraceBuffer | None = None,
 ) -> SpeechNativeDecision:
-    """Run one frozen-core speech-query decision under M0--M5.
+    """Run one frozen-core speech-query decision under M0--M6.
 
     Every local ``contact`` call reconstructs a two-message request carrying
     the original query packet. Generated factor text and verifier outputs may
@@ -534,7 +683,31 @@ def run_speech_native_matcher(
             f"unknown agent policy {agent_policy_id!r}; expected "
             f"{SPEECH_NATIVE_AGENT_POLICIES}"
         )
-    top_k_is_active = matcher_policy_id in {"M3", "M5"} or (
+    m5_policies = {
+        "m1-m3-disagreement-escalation-v1",
+        "m1-m3-full-branch-explorer-v1",
+    }
+    m5_aggregators = {
+        "m3-majority-canonical-tie-v1",
+        "m3-majority-primary-tie-v2",
+        "m3-unanimous-primary-fallback-v3",
+    }
+    if matcher_policy_id == "M5" and (
+        agent_policy_id not in m5_policies
+        or agent_aggregator_id not in m5_aggregators
+    ):
+        raise PsluFlightError("M5 requires an M1/M3 agent policy and aggregator")
+    if matcher_policy_id == "M6" and (
+        agent_policy_id
+        != "knowledge-grounded-semantic-refinement-full-action-v1"
+        or agent_aggregator_id != "grounded-refined-primary-fallback-v1"
+    ):
+        raise PsluFlightError("M6 requires the grounded semantic policy and aggregator")
+    if matcher_policy_id == "M6" and key_representation_id not in {"K1", "K2"}:
+        raise PsluFlightError("M6 supports maintainable text keys K1/K2 only")
+    if matcher_policy_id == "M6" and prompt_policy_id != "speech-native-json-copy-v3":
+        raise PsluFlightError("M6 requires the strict JSON-copy v3 prompt policy")
+    top_k_is_active = matcher_policy_id in {"M3", "M5", "M6"} or (
         matcher_policy_id == "M4" and ensemble_base_policy_id == "M3"
     )
     if top_k_is_active and (top_k <= 0 or top_k > len(cards)):
@@ -548,6 +721,8 @@ def run_speech_native_matcher(
         system_text: str,
         stage_cards: Sequence[KeyCardV1],
         key_text: str | None,
+        *,
+        decoding_overrides: Mapping[str, object] | None = None,
     ) -> tuple[tuple[Mapping[str, object], ...], dict[str, object]]:
         messages = _speech_feature_messages(
             system_text=system_text,
@@ -561,8 +736,11 @@ def run_speech_native_matcher(
                 else None
             ),
         )
+        request_decoding_params = dict(decoding_params or {})
+        if decoding_overrides is not None:
+            request_decoding_params.update(decoding_overrides)
         return messages, {
-            "decoding_params": decoding_params,
+            "decoding_params": request_decoding_params,
             "speech_feature_sample_id": sample.sample_id,
             "key_representation_id": key_representation_id,
             "matcher_policy_id": (
@@ -575,9 +753,15 @@ def run_speech_native_matcher(
         system_text: str,
         stage_cards: Sequence[KeyCardV1],
         key_text: str | None,
+        *,
+        decoding_overrides: Mapping[str, object] | None = None,
     ) -> str:
         messages, kwargs = contact_request(
-            stage, system_text, stage_cards, key_text
+            stage,
+            system_text,
+            stage_cards,
+            key_text,
+            decoding_overrides=decoding_overrides,
         )
         response = core_client.complete(messages, **kwargs)
         raw_responses.append(response)
@@ -904,6 +1088,230 @@ def run_speech_native_matcher(
             ),
         )
         return finish(_selected_key_id(response, allowed))
+
+    if matcher_policy_id == "M6":
+        policy_id = "knowledge-grounded-semantic-refinement-full-action-v1"
+        aggregator_id = "grounded-refined-primary-fallback-v1"
+        state_key_representation_id = "K2"
+        primary = nested_decision("M1", cards, "M6:M1:primary")
+        retrieval_instruction = (
+            f"Retrieve exactly {top_k} distinct opaque keys for the spoken command, "
+            "ranked from most to least compatible. Return a single-line JSON object with "
+            f"exactly one field named key_ids whose value is an array of exactly {top_k} "
+            "ids copied verbatim from supplied key headings. Do not use Markdown or code "
+            "fences and do not add any other text."
+        )
+        initial_response = contact(
+            f"speech-retrieve-top-{top_k}",
+            retrieval_instruction,
+            cards,
+            render_speech_native_keys(cards, key_representation_id),
+        )
+        initial_top_ids = _selected_top_keys(initial_response, allowed, top_k)
+
+        def backtrack(
+            action_id: str,
+            *,
+            state: GroundedQueryStateV1 | None = None,
+            state_contacted: bool = False,
+        ) -> SpeechNativeDecision:
+            actions = (
+                "match:speech-only-primary",
+                "retrieve:speech-only",
+                *(("build:grounded-query-state",) if state_contacted else ()),
+                action_id,
+            )
+            steps: tuple[Mapping[str, object], ...] = (
+                agent_step("match:speech-only-primary", primary),
+                {
+                    "action_id": "retrieve:speech-only",
+                    "key_id": initial_top_ids[0] if initial_top_ids else None,
+                    "top_key_ids": list(initial_top_ids),
+                    "calls": 1,
+                    "parse_failure": len(initial_top_ids) != top_k,
+                },
+            )
+            if state_contacted:
+                steps += (
+                    {
+                        "action_id": "build:grounded-query-state",
+                        "key_id": None,
+                        "top_key_ids": list(initial_top_ids),
+                        "calls": 1,
+                        "parse_failure": state is None,
+                    },
+                )
+            return finish(
+                primary.key_id,
+                top_ids=initial_top_ids,
+                agent_policy_id=policy_id,
+                agent_actions=actions,
+                agent_escalated=True,
+                agent_vote_key_ids=(primary.key_id, None),
+                agent_steps=steps,
+                decision_agent_aggregator_id=aggregator_id,
+            )
+
+        if len(initial_top_ids) != top_k:
+            return backtrack("backtrack:invalid-initial-retrieval")
+        initial_cards = tuple(by_key[key_id] for key_id in initial_top_ids)
+        state_response = contact(
+            "build-grounded-query-state",
+            "Build a knowledge-grounded semantic query state for the spoken command. "
+            "Use only the retrieved key cards and the speech signal carried in this "
+            "request. Do not transcribe or paraphrase the utterance. Return one bare JSON "
+            "object with exactly these fields: candidate_key_ids, domain, operation, "
+            "target, constraints, exclusions, unresolved_ambiguity, and evidence. Copy "
+            "candidate_key_ids in the supplied order. constraints and exclusions are arrays "
+            "of at most five short strings. evidence is an array of objects with exactly "
+            "key_id, field, and quote; cite every candidate at least once, use only visible "
+            "fields, and copy each quote exactly from that key card.",
+            initial_cards,
+            "Retrieved key cards:\n"
+            + render_speech_native_keys(
+                initial_cards, state_key_representation_id
+            ),
+            decoding_overrides={"max_tokens": 512},
+        )
+        state = parse_grounded_query_state(
+            state_response,
+            candidate_key_ids=initial_top_ids,
+            cards_by_key=by_key,
+            key_representation_id=state_key_representation_id,
+        )
+        if state is None:
+            return backtrack(
+                "backtrack:invalid-grounding", state_contacted=True
+            )
+        state_json = json.dumps(
+            state.as_json(),
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        )
+        refined_response = contact(
+            f"grounded-retrieve-top-{top_k}",
+            retrieval_instruction
+            + " The validated grounded query state is advisory. Re-evaluate it against the "
+            "speech signal and search the complete key collection, including keys outside "
+            "the first retrieval.",
+            cards,
+            "Validated grounded query state:\n"
+            + state_json
+            + "\n\nKeys:\n"
+            + render_speech_native_keys(cards, key_representation_id),
+        )
+        refined_top_ids = _selected_top_keys(refined_response, allowed, top_k)
+        if len(refined_top_ids) != top_k:
+            return backtrack(
+                "backtrack:invalid-refined-retrieval",
+                state=state,
+                state_contacted=True,
+            )
+        verifier_specifications = []
+        for key_id in refined_top_ids:
+            card = by_key[key_id]
+            verifier_instruction = (
+                "Judge whether the spoken command matches both the domain and requested "
+                "operation of this one candidate key. The grounded query state is advisory; "
+                "reject it when it conflicts with the speech signal. Reject a merely related "
+                "topic when the requested operation differs. Respond only as "
+                '{"compatible":true,"confidence":0}, with confidence from 0 to 100.'
+            )
+            verifier_specifications.append(
+                (
+                    f"grounded-verify-{key_id}",
+                    verifier_instruction,
+                    (card,),
+                    "Validated grounded query state:\n"
+                    + state_json
+                    + "\n\nCandidate key:\n"
+                    + render_speech_native_keys((card,), key_representation_id),
+                )
+            )
+        verifier_responses = contact_many(verifier_specifications)
+        verifier_scores: dict[str, tuple[bool, float]] = {}
+        for key_id, response in zip(
+            refined_top_ids, verifier_responses, strict=True
+        ):
+            parsed = _compatibility(response)
+            verifier_scores[key_id] = parsed if parsed is not None else (False, -1.0)
+        compatible = [
+            key_id for key_id in refined_top_ids if verifier_scores[key_id][0]
+        ]
+        pool = compatible or list(refined_top_ids)
+        best_score = max(verifier_scores[key_id][1] for key_id in pool)
+        tied = [
+            key_id for key_id in pool if verifier_scores[key_id][1] == best_score
+        ]
+        refined_key_id: str | None
+        if len(tied) == 1:
+            refined_key_id = tied[0]
+        else:
+            tied_cards = tuple(by_key[key_id] for key_id in tied)
+            tie_response = contact(
+                "grounded-tie-arbitration",
+                "Resolve the verifier tie by comparing the speech signal directly against "
+                "only these tied opaque keys. The grounded state is advisory. Return one "
+                "JSON object with exactly one field named key_id whose value is copied "
+                "verbatim from a supplied key heading.",
+                tied_cards,
+                "Validated grounded query state:\n"
+                + state_json
+                + "\n\nTied keys:\n"
+                + render_speech_native_keys(tied_cards, key_representation_id),
+            )
+            refined_key_id = _selected_key_id(tie_response, set(tied))
+        winner = refined_key_id or primary.key_id
+        return finish(
+            winner,
+            top_ids=refined_top_ids,
+            scores=verifier_scores,
+            agent_policy_id=policy_id,
+            agent_actions=(
+                "match:speech-only-primary",
+                "retrieve:speech-only",
+                "build:grounded-query-state",
+                "retrieve:speech-plus-grounded-state",
+                "verify:speech-plus-grounded-state",
+                "select:refined-primary-fallback",
+            ),
+            agent_escalated=True,
+            agent_vote_key_ids=(primary.key_id, refined_key_id),
+            agent_steps=(
+                agent_step("match:speech-only-primary", primary),
+                {
+                    "action_id": "retrieve:speech-only",
+                    "key_id": initial_top_ids[0],
+                    "top_key_ids": list(initial_top_ids),
+                    "calls": 1,
+                    "parse_failure": False,
+                },
+                {
+                    "action_id": "build:grounded-query-state",
+                    "key_id": None,
+                    "top_key_ids": list(initial_top_ids),
+                    "calls": 1,
+                    "parse_failure": False,
+                    "grounded_query_state": state.as_json(),
+                },
+                {
+                    "action_id": "retrieve-and-verify:speech-plus-grounded-state",
+                    "key_id": refined_key_id,
+                    "top_key_ids": list(refined_top_ids),
+                    "calls": 1 + len(verifier_responses),
+                    "parse_failure": refined_key_id is None,
+                    "verifier_scores": {
+                        key_id: {
+                            "compatible": score[0],
+                            "confidence": score[1],
+                        }
+                        for key_id, score in verifier_scores.items()
+                    },
+                },
+            ),
+            decision_agent_aggregator_id=aggregator_id,
+        )
 
     retrieval_instruction = (
         f"Retrieve exactly {top_k} distinct opaque keys for the spoken command, ranked "
@@ -2595,6 +3003,8 @@ def run_pslu_flight(
 
 __all__ = [
     "KeyCardV1",
+    "GroundedEvidenceV1",
+    "GroundedQueryStateV1",
     "PSLU_ARMS",
     "PSLU_PHASE1_ARM",
     "PSLU_PHASE2_ARMS",
@@ -2620,6 +3030,7 @@ __all__ = [
     "load_pslu_sample_manifest",
     "load_speech_native_engineering_gate",
     "pslu_supply_packet",
+    "parse_grounded_query_state",
     "render_roster_entries",
     "render_speech_native_keys",
     "render_type_vocabulary",

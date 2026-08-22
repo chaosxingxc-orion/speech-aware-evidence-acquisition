@@ -28,6 +28,7 @@ from ...rails.probes.pslu_flight import (
     KeyCardV1,
     SpeechNativeMatchTask,
     load_speech_native_engineering_gate,
+    parse_grounded_query_state,
     run_speech_native_match_tasks,
 )
 from ..attempts import AttemptStore
@@ -971,6 +972,7 @@ def read_speech_native_predictions(
         speaker_by_sample[sample_id] = speaker_id
 
     cards = _load_key_cards(binding_path, binding_sha256)
+    card_by_key = {card.key_id: card for card in cards}
     label_by_key = {card.key_id: card.value_label for card in cards}
     key_by_label = {card.value_label: card.key_id for card in cards}
     aggregates: list[dict[str, object]] = []
@@ -1003,7 +1005,7 @@ def read_speech_native_predictions(
         ):
             raise SpeechNativeProfileError("flight cell identity is malformed")
         cell_id = f"{key_representation_id}-{matcher_policy_id}"
-        if matcher_policy_id in {"M3", "M5"}:
+        if matcher_policy_id in {"M3", "M5", "M6"}:
             top_k = profile.get("top_k")
             if isinstance(top_k, bool) or not isinstance(top_k, int) or top_k <= 0:
                 raise SpeechNativeProfileError(
@@ -1060,6 +1062,17 @@ def read_speech_native_predictions(
             cell_id += aggregator_suffix
             if profile_agent_policy_id == "m1-m3-full-branch-explorer-v1":
                 cell_id += "-agent-full-branch-v1"
+        elif matcher_policy_id == "M6":
+            if (
+                profile_agent_policy_id
+                != "knowledge-grounded-semantic-refinement-full-action-v1"
+                or agent_aggregator_id
+                != "grounded-refined-primary-fallback-v1"
+            ):
+                raise SpeechNativeProfileError(
+                    "M6 flight receipt has an unknown grounded policy identity"
+                )
+            cell_id += "-grounded-v1"
         order_ids = profile.get("key_order_ids", ["canonical"])
         if (
             not isinstance(order_ids, list)
@@ -1137,6 +1150,9 @@ def read_speech_native_predictions(
         agent_branch_neutral_count = 0
         agent_full_trajectories: list[dict[str, str | None]] = []
         agent_full_episodic_trajectories: list[dict[str, object]] = []
+        grounded_state_valid_count = 0
+        grounded_backtrack_count = 0
+        grounded_refined_change_count = 0
         for row in rows:
             if row.get("schema") != "saea-speech-native-decision-v1":
                 raise SpeechNativeProfileError("decision schema mismatch")
@@ -1204,7 +1220,7 @@ def read_speech_native_predictions(
                 or len(set(raw_top_key_ids)) != len(raw_top_key_ids)
             ):
                 raise SpeechNativeProfileError("decision top_key_ids are malformed")
-            if matcher_policy_id in {"M3", "M5"}:
+            if matcher_policy_id in {"M3", "M5", "M6"}:
                 assert isinstance(top_k, int)
                 if len(raw_top_key_ids) > top_k:
                     raise SpeechNativeProfileError(
@@ -1422,6 +1438,209 @@ def read_speech_native_predictions(
                     agent_neutral_escalation_count += int(
                         primary_correct == final_correct
                     )
+            elif matcher_policy_id == "M6":
+                row_agent_policy_id = row.get("agent_policy_id")
+                row_aggregator_id = row.get("agent_aggregator_id")
+                agent_actions = row.get("agent_actions")
+                agent_escalated = row.get("agent_escalated")
+                agent_votes = row.get("agent_vote_key_ids")
+                agent_steps = row.get("agent_steps")
+                if (
+                    row_agent_policy_id != profile_agent_policy_id
+                    or row_aggregator_id != agent_aggregator_id
+                    or not isinstance(agent_actions, list)
+                    or len(agent_actions) < 3
+                    or not all(
+                        isinstance(action_id, str) and action_id
+                        for action_id in agent_actions
+                    )
+                    or agent_escalated is not True
+                    or not isinstance(agent_votes, list)
+                    or len(agent_votes) != 2
+                    or not all(
+                        vote is None
+                        or isinstance(vote, str) and vote in label_by_key
+                        for vote in agent_votes
+                    )
+                    or not isinstance(agent_steps, list)
+                    or not 2 <= len(agent_steps) <= 4
+                ):
+                    raise SpeechNativeProfileError(
+                        "M6 grounded agent trajectory is malformed"
+                    )
+                base_step_fields = {
+                    "action_id",
+                    "key_id",
+                    "top_key_ids",
+                    "calls",
+                    "parse_failure",
+                }
+                for step in agent_steps:
+                    if (
+                        not isinstance(step, Mapping)
+                        or not base_step_fields.issubset(step)
+                        or step.get("key_id") is not None
+                        and step.get("key_id") not in label_by_key
+                        or not isinstance(step.get("action_id"), str)
+                        or isinstance(step.get("calls"), bool)
+                        or not isinstance(step.get("calls"), int)
+                        or int(step["calls"]) <= 0
+                        or not isinstance(step.get("parse_failure"), bool)
+                        or not isinstance(step.get("top_key_ids"), list)
+                        or not all(
+                            isinstance(top_key_id, str)
+                            and top_key_id in label_by_key
+                            for top_key_id in step.get("top_key_ids", [])
+                        )
+                        or len(set(step.get("top_key_ids", [])))
+                        != len(step.get("top_key_ids", []))
+                    ):
+                        raise SpeechNativeProfileError(
+                            "M6 grounded agent step is malformed"
+                        )
+                if (
+                    set(agent_steps[0]) != base_step_fields
+                    or agent_steps[0].get("action_id")
+                    != "match:speech-only-primary"
+                    or agent_steps[0].get("key_id") != agent_votes[0]
+                    or set(agent_steps[1]) != base_step_fields
+                    or agent_steps[1].get("action_id") != "retrieve:speech-only"
+                ):
+                    raise SpeechNativeProfileError(
+                        "M6 primary or initial retrieval step is malformed"
+                    )
+                initial_top_ids = tuple(agent_steps[1]["top_key_ids"])
+                if len(initial_top_ids) > int(top_k):
+                    raise SpeechNativeProfileError(
+                        "M6 initial retrieval exceeds registered top_k"
+                    )
+                state_valid = False
+                if len(agent_steps) >= 3:
+                    state_step = agent_steps[2]
+                    if state_step.get("action_id") != "build:grounded-query-state":
+                        raise SpeechNativeProfileError(
+                            "M6 grounded state step identity is malformed"
+                        )
+                    state_document = state_step.get("grounded_query_state")
+                    if state_document is not None:
+                        if set(state_step) != base_step_fields | {
+                            "grounded_query_state"
+                        }:
+                            raise SpeechNativeProfileError(
+                                "M6 grounded state step has unexpected fields"
+                            )
+                        parsed_state = parse_grounded_query_state(
+                            json.dumps(
+                                state_document,
+                                ensure_ascii=False,
+                                sort_keys=True,
+                                separators=(",", ":"),
+                            ),
+                            candidate_key_ids=initial_top_ids,
+                            cards_by_key=card_by_key,
+                            key_representation_id="K2",
+                        )
+                        if parsed_state is None or state_step.get("parse_failure"):
+                            raise SpeechNativeProfileError(
+                                "M6 grounded query state fails citation validation"
+                            )
+                        state_valid = True
+                    elif (
+                        set(state_step) != base_step_fields
+                        or state_step.get("parse_failure") is not True
+                    ):
+                        raise SpeechNativeProfileError(
+                            "M6 invalid state step does not fail closed"
+                        )
+                success_actions = [
+                    "match:speech-only-primary",
+                    "retrieve:speech-only",
+                    "build:grounded-query-state",
+                    "retrieve:speech-plus-grounded-state",
+                    "verify:speech-plus-grounded-state",
+                    "select:refined-primary-fallback",
+                ]
+                backtracked = agent_actions[-1].startswith("backtrack:")
+                if backtracked:
+                    if (
+                        agent_votes[1] is not None
+                        or key_id != agent_votes[0]
+                        or len(agent_steps) not in {2, 3}
+                    ):
+                        raise SpeechNativeProfileError(
+                            "M6 backtrack does not preserve the speech primary"
+                        )
+                else:
+                    if (
+                        agent_actions != success_actions
+                        or len(agent_steps) != 4
+                        or not state_valid
+                        or set(agent_steps[3])
+                        != base_step_fields | {"verifier_scores"}
+                        or agent_steps[3].get("action_id")
+                        != "retrieve-and-verify:speech-plus-grounded-state"
+                        or agent_steps[3].get("key_id") != agent_votes[1]
+                        or tuple(agent_steps[3].get("top_key_ids", []))
+                        != tuple(raw_top_key_ids)
+                    ):
+                        raise SpeechNativeProfileError(
+                            "M6 refined retrieval step is malformed"
+                        )
+                    step_scores = agent_steps[3].get("verifier_scores")
+                    if step_scores != row.get("verifier_scores") or not isinstance(
+                        step_scores, Mapping
+                    ):
+                        raise SpeechNativeProfileError(
+                            "M6 verifier score copies are inconsistent"
+                        )
+                    for score_key_id, score_document in step_scores.items():
+                        if (
+                            score_key_id not in raw_top_key_ids
+                            or not isinstance(score_document, Mapping)
+                            or set(score_document) != {"compatible", "confidence"}
+                            or not isinstance(score_document.get("compatible"), bool)
+                            or isinstance(score_document.get("confidence"), bool)
+                            or not isinstance(
+                                score_document.get("confidence"), (int, float)
+                            )
+                            or not -1.0
+                            <= float(score_document["confidence"])
+                            <= 100.0
+                        ):
+                            raise SpeechNativeProfileError(
+                                "M6 verifier score is malformed"
+                            )
+                primary_vote = agent_votes[0]
+                refined_vote = agent_votes[1]
+                primary_correct = (
+                    isinstance(primary_vote, str)
+                    and label_by_key[primary_vote] == gold[sample_id]
+                )
+                refined_correct = (
+                    isinstance(refined_vote, str)
+                    and label_by_key[refined_vote] == gold[sample_id]
+                )
+                final_correct = correctness[sample_id]
+                agent_action_counts.update(agent_actions)
+                agent_primary_correct_count += int(primary_correct)
+                agent_escalation_count += 1
+                agent_helpful_escalation_count += int(
+                    not primary_correct and final_correct
+                )
+                agent_harmful_escalation_count += int(
+                    primary_correct and not final_correct
+                )
+                agent_neutral_escalation_count += int(
+                    primary_correct == final_correct
+                )
+                agent_recoverable_error_count += int(
+                    not primary_correct and refined_correct
+                )
+                changed = refined_vote is not None and refined_vote != primary_vote
+                agent_action_sensitive_count += int(changed)
+                grounded_refined_change_count += int(changed)
+                grounded_state_valid_count += int(state_valid)
+                grounded_backtrack_count += int(backtracked)
         if seen != set(gold):
             raise SpeechNativeProfileError("decision sample set does not equal the frozen split")
         if (
@@ -1441,12 +1660,12 @@ def read_speech_native_predictions(
                 "parse_failure_count": parse_failures,
                 "top_k_reachable_count": (
                     top_k_reachable_count
-                    if matcher_policy_id in {"M3", "M5"}
+                    if matcher_policy_id in {"M3", "M5", "M6"}
                     else None
                 ),
                 "top_k_reachability": (
                     top_k_reachable_count / len(gold)
-                    if matcher_policy_id in {"M3", "M5"}
+                    if matcher_policy_id in {"M3", "M5", "M6"}
                     else None
                 ),
                 "agent_loop_metrics": (
@@ -1538,7 +1757,49 @@ def read_speech_native_predictions(
                         ),
                     }
                     if matcher_policy_id == "M5"
-                    else None
+                    else (
+                        {
+                            "policy_id": profile_agent_policy_id,
+                            "aggregator_id": agent_aggregator_id,
+                            "primary_correct": agent_primary_correct_count,
+                            "primary_accuracy": (
+                                agent_primary_correct_count / len(gold)
+                            ),
+                            "final_minus_primary_correct": (
+                                correct - agent_primary_correct_count
+                            ),
+                            "grounded_state_valid_count": (
+                                grounded_state_valid_count
+                            ),
+                            "grounded_state_valid_rate": (
+                                grounded_state_valid_count / len(gold)
+                            ),
+                            "backtrack_count": grounded_backtrack_count,
+                            "refined_change_count": (
+                                grounded_refined_change_count
+                            ),
+                            "helpful_refinement_count": (
+                                agent_helpful_escalation_count
+                            ),
+                            "harmful_refinement_count": (
+                                agent_harmful_escalation_count
+                            ),
+                            "neutral_refinement_count": (
+                                agent_neutral_escalation_count
+                            ),
+                            "recoverable_error_count": (
+                                agent_recoverable_error_count
+                            ),
+                            "action_sensitive_count": (
+                                agent_action_sensitive_count
+                            ),
+                            "action_counts": dict(
+                                sorted(agent_action_counts.items())
+                            ),
+                        }
+                        if matcher_policy_id == "M6"
+                        else None
+                    )
                 ),
                 "actual_contact_count": profile.get("actual_contact_count"),
                 "aggregate_tokens_per_second": (
