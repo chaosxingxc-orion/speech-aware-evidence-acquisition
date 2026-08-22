@@ -159,6 +159,7 @@ SPEECH_NATIVE_MATCHER_POLICIES = ("M0", "M1", "M2", "M3", "M4", "M5", "M6")
 SPEECH_NATIVE_PROMPT_POLICIES = (
     "speech-native-json-copy-v2",
     "speech-native-json-copy-v3",
+    "speech-native-json-copy-v4",
 )
 SPEECH_NATIVE_VERIFIER_POLICIES = (
     "speech-native-compatibility-v1",
@@ -1115,12 +1116,34 @@ def run_speech_native_matcher(
         )
 
     if matcher_policy_id == "M0":
+        direct_label_overrides = None
+        if prompt_policy_id == "speech-native-json-copy-v4":
+            direct_label_overrides = {
+                "response_format": {
+                    "type": "json_schema",
+                    "json_schema": {
+                        "name": "direct_label_choice",
+                        "strict": True,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "label": {
+                                    "enum": [card.value_label for card in cards]
+                                }
+                            },
+                            "required": ["label"],
+                            "additionalProperties": False,
+                        },
+                    },
+                }
+            }
         response = contact(
             "direct-label",
             "Classify the spoken command into exactly one listed label. Respond only as "
             '{"label":"..."}.',
             cards,
             render_speech_native_keys(cards, "K0"),
+            decoding_overrides=direct_label_overrides,
         )
         document = _response_object(response)
         label = document.get("label") if document is not None else None

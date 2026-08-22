@@ -679,6 +679,37 @@ def test_key_card_rendering_never_exposes_value_label_for_text_cards():
     assert '"alarm"' not in rendered
 
 
+def test_m0_schema_v4_constrains_the_final_label_at_llama_server_boundary():
+    client = _SpeechFeatureClient(['{"label":"email"}'])
+    result = run_speech_native_matcher(
+        core_client=client,
+        sample=_SpeechSample(),
+        query_descriptor=_QUERY_DESCRIPTOR,
+        key_cards=_KEY_CARDS,
+        key_representation_id="K0",
+        matcher_policy_id="M0",
+        prompt_policy_id="speech-native-json-copy-v4",
+    )
+
+    assert result.key_id == "K002"
+    assert result.value_label == "email"
+    response_format = client.calls[0][1]["decoding_params"]["response_format"]
+    assert response_format == {
+        "type": "json_schema",
+        "json_schema": {
+            "name": "direct_label_choice",
+            "strict": True,
+            "schema": {
+                "type": "object",
+                "properties": {"label": {"enum": ["alarm", "email"]}},
+                "required": ["label"],
+                "additionalProperties": False,
+            },
+        },
+    }
+    _assert_every_call_carries_query(client)
+
+
 def test_m1_selects_an_opaque_key_id_and_maps_label_deterministically():
     client = _SpeechFeatureClient(['{"key_id":"K002"}'])
     result = run_speech_native_matcher(
