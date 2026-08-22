@@ -1,0 +1,27 @@
+{
+  "arm": "speech-feature-query",
+  "policy": "fixed",
+  "evidence_source": "none",
+  "evidence_mismatch": false,
+  "obs_batch_samples": 1,
+  "allow_empty_speech_feature_evidence": false,
+  "speech_packet_promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/FACTOR-D108-promotion.json",
+  "speech_packet_promotion_receipt_sha256": "665ff1c54301e195ca0d18fb7e778f0f618d1b91377922dc45ae6e610eb46204",
+  "speech_native_binding": "configs/probes/g0-binding/speech-native-train-binding-factor-d108.json",
+  "speech_native_binding_file_sha256": "3cb9c097d88467a4454a3930cd643850062b87c384f8ce76026eaa021bdc355e",
+  "profile_key_order_ids": [
+    "canonical"
+  ],
+  "profile_queue_depth_multiplier": 8,
+  "profile_validation_workers": 16,
+  "speech_native_result_mode": "predictions",
+  "speech_native_contact_ceiling_per_task": 6,
+  "speech_native_top_k": 4,
+  "speech_native_dispatch_granularity": "contact",
+  "matcher_prompt_policy_id": "speech-native-json-copy-v4",
+  "matcher_verifier_policy_id": "speech-native-compatibility-v1",
+  "scorers": [
+    "cost"
+  ],
+  "task_instruction": "Run the frozen speech-conditioned factor-graph action-support loop over maintainable K1 text keys. Every model contact must carry the original speech packet. Retain the speech-only primary online while logging factor-rerank and boundary-stable actions for a separate one-shot support read."
+}

@@ -1,0 +1,11 @@
+{
+  "experiment_id": "SAEA-SN-FACTOR-D108-K1M9-FACTOR-GRAPH-ACTION-SUPPORT",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "Fresh D108 action-support probe for the frozen speech-conditioned factor graph. The online result retains the speech-only primary; factor reranking and boundary-stable alternatives expose a bounded training-free control space without parameter updates or transcript queries.",
+  "key_representation_id": "K1",
+  "matcher_policy_id": "M9",
+  "speech_native_decision_graph": "configs/knowledge/slurp-scenario-factor-graph-v1.json",
+  "speech_native_decision_graph_file_sha256": "f7eecf9b9decdf1f971d448d2fa374046c35d319c19cd81ef4546cb0b9da5a15",
+  "speech_native_agent_policy_id": "speech-conditioned-factor-graph-action-support-v1",
+  "speech_native_agent_aggregator_id": "factor-graph-primary-control-v1"
+}
