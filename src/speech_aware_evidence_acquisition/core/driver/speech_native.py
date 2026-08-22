@@ -147,6 +147,7 @@ _M11_POLICY_IDS = frozenset({_M11_POLICY_ID, _M11_KEY_CONDITIONED_POLICY_ID})
 _M11_AGGREGATOR_ID = "adaptive-evidence-gap-primary-control-v1"
 _M11_OOF_POLICY_ID = "speaker-grouped-oof-information-advantage-v1"
 _M11_MEMORY_HOLDOUT_EVALUATION_ID = "discovery-memory-to-speaker-unseen-holdout-v1"
+_M11_INFORMATION_FLOW_SCHEMA = "m11-information-flow-v1"
 _M11_OOF_ACTION_IDS = (
     "select-retrieval-top1",
     "select-candidate-action-state",
@@ -3142,6 +3143,33 @@ def _parse_m11_adaptive_evidence_gap_trajectory(
     ):
         raise SpeechNativeProfileError("M11 initial retrieval is malformed")
     initial_top_ids = tuple(initial_top_raw)
+    candidate_factor_supply_ids = tuple(
+        factor.factor_id
+        for factor in decision_graph.factors
+        if any(key_id in initial_top_ids for key_id in factor.key_ids)
+    )
+
+    def information_flow(
+        *,
+        selected_factor_ids: Sequence[str] = (),
+        boundary_id: str | None = None,
+    ) -> dict[str, object]:
+        selected = tuple(selected_factor_ids)
+        if not set(selected).issubset(candidate_factor_supply_ids):
+            raise SpeechNativeProfileError(
+                "M11 selected factor state was not supplied to the candidate action"
+            )
+        return {
+            "schema": _M11_INFORMATION_FLOW_SCHEMA,
+            "observation_source": "speech_features",
+            "candidate_factor_supply_ids": candidate_factor_supply_ids,
+            "model_selected_factor_ids": selected,
+            "model_selected_state_is_external_supply": False,
+            "incremental_boundary_supply_ids": (
+                (boundary_id,) if boundary_id is not None else ()
+            ),
+        }
+
     base_actions = (
         "match:speech-only-primary",
         "retrieve:speech-only",
@@ -3206,6 +3234,7 @@ def _parse_m11_adaptive_evidence_gap_trajectory(
             "termination": "invalid-candidate-action-state",
             "mechanism_failure": True,
             "total_calls": 3,
+            "information_flow": information_flow(),
         }
     assert isinstance(action_key_id, str)
     assert isinstance(raw_factor_ids, list)
@@ -3239,6 +3268,7 @@ def _parse_m11_adaptive_evidence_gap_trajectory(
             "termination": "complete-consistent-state",
             "mechanism_failure": False,
             "total_calls": 3,
+            "information_flow": information_flow(selected_factor_ids=factor_ids),
         }
 
     challenger_key_id = (
@@ -3280,6 +3310,7 @@ def _parse_m11_adaptive_evidence_gap_trajectory(
             "termination": "no-registered-pair-boundary",
             "mechanism_failure": False,
             "total_calls": 3,
+            "information_flow": information_flow(selected_factor_ids=factor_ids),
         }
 
     boundary_fields = {
@@ -3357,6 +3388,10 @@ def _parse_m11_adaptive_evidence_gap_trajectory(
         ),
         "mechanism_failure": comparison_failed,
         "total_calls": 5,
+        "information_flow": information_flow(
+            selected_factor_ids=factor_ids,
+            boundary_id=boundary.boundary_id,
+        ),
     }
 
 
@@ -3843,6 +3878,114 @@ def _evaluate_m11_memory_holdout_action_advantage_policy(
     return result
 
 
+def _validated_m11_information_flow(
+    trajectory: Mapping[str, object],
+) -> dict[str, tuple[str, ...] | str | bool]:
+    """Validate the canonical OBS/ORG/SUPPLY split reconstructed for one row."""
+
+    flow = trajectory.get("information_flow")
+    expected_fields = {
+        "schema",
+        "observation_source",
+        "candidate_factor_supply_ids",
+        "model_selected_factor_ids",
+        "model_selected_state_is_external_supply",
+        "incremental_boundary_supply_ids",
+    }
+    if not isinstance(flow, Mapping) or set(flow) != expected_fields:
+        raise SpeechNativeProfileError("M11 information-flow ledger is malformed")
+
+    def identifiers(field: str, *, allow_empty: bool) -> tuple[str, ...]:
+        raw = flow.get(field)
+        if (
+            not isinstance(raw, (list, tuple))
+            or (not allow_empty and not raw)
+            or not all(isinstance(value, str) and value for value in raw)
+            or len(set(raw)) != len(raw)
+        ):
+            raise SpeechNativeProfileError(
+                f"M11 information-flow {field} is malformed"
+            )
+        return tuple(raw)
+
+    supplied = identifiers("candidate_factor_supply_ids", allow_empty=False)
+    selected = identifiers("model_selected_factor_ids", allow_empty=True)
+    boundaries = identifiers("incremental_boundary_supply_ids", allow_empty=True)
+    expected_selected = tuple(str(value) for value in trajectory["new_factor_ids"])
+    expected_boundary = (
+        (str(trajectory["new_boundary_id"]),)
+        if trajectory["new_boundary_id"] is not None
+        else ()
+    )
+    if (
+        flow.get("schema") != _M11_INFORMATION_FLOW_SCHEMA
+        or flow.get("observation_source") != "speech_features"
+        or flow.get("model_selected_state_is_external_supply") is not False
+        or not set(selected).issubset(supplied)
+        or selected != expected_selected
+        or boundaries != expected_boundary
+    ):
+        raise SpeechNativeProfileError(
+            "M11 information-flow ledger contradicts the recorded trajectory"
+        )
+    return {
+        "schema": _M11_INFORMATION_FLOW_SCHEMA,
+        "observation_source": "speech_features",
+        "candidate_factor_supply_ids": supplied,
+        "model_selected_factor_ids": selected,
+        "model_selected_state_is_external_supply": False,
+        "incremental_boundary_supply_ids": boundaries,
+    }
+
+
+def _m11_marginal_transition_metrics(
+    trajectories: Sequence[Mapping[str, object]],
+    flows: Sequence[Mapping[str, object]],
+    *,
+    supply_field: str,
+    before_field: str,
+    after_field: str,
+    attribution_scope: str,
+) -> dict[str, object]:
+    """Describe observed state transitions without claiming isolated causality."""
+
+    eligible: list[tuple[Mapping[str, object], str, str]] = []
+    unresolved_count = 0
+    for trajectory, flow in zip(trajectories, flows, strict=True):
+        if not flow[supply_field]:
+            continue
+        before = trajectory.get(before_field)
+        after = trajectory.get(after_field)
+        if not isinstance(before, str) or not isinstance(after, str):
+            unresolved_count += 1
+            continue
+        eligible.append((trajectory, before, after))
+    helpful = [
+        str(trajectory["sample_id"])
+        for trajectory, before, after in eligible
+        if before != trajectory["gold_key_id"]
+        and after == trajectory["gold_key_id"]
+    ]
+    harmful = [
+        str(trajectory["sample_id"])
+        for trajectory, before, after in eligible
+        if before == trajectory["gold_key_id"]
+        and after != trajectory["gold_key_id"]
+    ]
+    return {
+        "attribution_scope": attribution_scope,
+        "eligible_count": len(eligible),
+        "unresolved_count": unresolved_count,
+        "changed_prediction_count": sum(before != after for _, before, after in eligible),
+        "helpful_transition_count": len(helpful),
+        "harmful_transition_count": len(harmful),
+        "neutral_transition_count": len(eligible) - len(helpful) - len(harmful),
+        "estimated_net_gain": len(helpful) - len(harmful),
+        "helpful_sample_ids": helpful,
+        "harmful_sample_ids": harmful,
+    }
+
+
 def _evaluate_m11_adaptive_evidence_gap(
     trajectories: Sequence[Mapping[str, object]],
     *,
@@ -3861,6 +4004,9 @@ def _evaluate_m11_adaptive_evidence_gap(
             "M11 adaptive evidence-gap read mixes policy identities"
         )
     policy_id = next(iter(policy_ids))
+    information_flows = tuple(
+        _validated_m11_information_flow(item) for item in frozen
+    )
     primary_correct = sum(
         item["primary_key_id"] == item["gold_key_id"] for item in frozen
     )
@@ -3942,6 +4088,53 @@ def _evaluate_m11_adaptive_evidence_gap(
         and item["boundary_stable_key_id"] == item["gold_key_id"]
         for item in frozen
     )
+    information_flow = {
+        "schema": _M11_INFORMATION_FLOW_SCHEMA,
+        "factor_supply_query_count": sum(
+            bool(flow["candidate_factor_supply_ids"])
+            for flow in information_flows
+        ),
+        "factor_supply_id_reference_count": sum(
+            len(flow["candidate_factor_supply_ids"])
+            for flow in information_flows
+        ),
+        "factor_selection_query_count": sum(
+            bool(flow["model_selected_factor_ids"])
+            for flow in information_flows
+        ),
+        "factor_selection_id_reference_count": sum(
+            len(flow["model_selected_factor_ids"])
+            for flow in information_flows
+        ),
+        "boundary_supply_query_count": sum(
+            bool(flow["incremental_boundary_supply_ids"])
+            for flow in information_flows
+        ),
+        "boundary_supply_id_reference_count": sum(
+            len(flow["incremental_boundary_supply_ids"])
+            for flow in information_flows
+        ),
+        "generated_state_external_supply_count": sum(
+            bool(flow["model_selected_state_is_external_supply"])
+            for flow in information_flows
+        ),
+        "factor_supply_transition": _m11_marginal_transition_metrics(
+            frozen,
+            information_flows,
+            supply_field="candidate_factor_supply_ids",
+            before_field="retrieval_key_id",
+            after_field="action_key_id",
+            attribution_scope="factor-supply-plus-speech-reobservation",
+        ),
+        "boundary_supply_transition": _m11_marginal_transition_metrics(
+            frozen,
+            information_flows,
+            supply_field="incremental_boundary_supply_ids",
+            before_field="action_key_id",
+            after_field="boundary_stable_key_id",
+            attribution_scope="boundary-supply-plus-pairwise-comparison",
+        ),
+    }
     support_checks = {
         "query_count_at_least_100": (
             len(frozen) >= _M11_READER_CONTRACT_V1["support_minimum_query_count"]
@@ -4029,6 +4222,7 @@ def _evaluate_m11_adaptive_evidence_gap(
             str(calls): count for calls, count in sorted(calls_distribution.items())
         },
         "action_families": family_metrics,
+        "information_flow": information_flow,
         "support_gate_id": "m11-information-support-gate-v1",
         "reader_contract": dict(_M11_READER_CONTRACT_V1),
         "support_checks": support_checks,
@@ -8314,6 +8508,13 @@ def _audit_m11_adaptive_evidence_gap(
     adaptive_boundary_count = 0
     mechanism_failure_count = 0
     factor_knowledge_event_count = 0
+    factor_supply_query_count = 0
+    factor_supply_id_reference_count = 0
+    factor_selection_query_count = 0
+    factor_selection_id_reference_count = 0
+    boundary_supply_query_count = 0
+    boundary_supply_id_reference_count = 0
+    generated_state_external_supply_count = 0
     for row in rows:
         if not isinstance(row, Mapping):
             raise SpeechNativeProfileError(
@@ -8368,6 +8569,7 @@ def _audit_m11_adaptive_evidence_gap(
             visible_card_by_key=visible_card_by_key,
             decision_graph=decision_graph,
         )
+        information_flow = _validated_m11_information_flow(trajectory)
         calls = int(trajectory["total_calls"])
         if (
             row.get("calls") != calls
@@ -8388,6 +8590,27 @@ def _audit_m11_adaptive_evidence_gap(
         contact_count += calls
         adaptive_boundary_count += int(trajectory["new_boundary_id"] is not None)
         factor_knowledge_event_count += int(bool(trajectory["new_factor_ids"]))
+        factor_supply_query_count += int(
+            bool(information_flow["candidate_factor_supply_ids"])
+        )
+        factor_supply_id_reference_count += len(
+            information_flow["candidate_factor_supply_ids"]
+        )
+        factor_selection_query_count += int(
+            bool(information_flow["model_selected_factor_ids"])
+        )
+        factor_selection_id_reference_count += len(
+            information_flow["model_selected_factor_ids"]
+        )
+        boundary_supply_query_count += int(
+            bool(information_flow["incremental_boundary_supply_ids"])
+        )
+        boundary_supply_id_reference_count += len(
+            information_flow["incremental_boundary_supply_ids"]
+        )
+        generated_state_external_supply_count += int(
+            bool(information_flow["model_selected_state_is_external_supply"])
+        )
         action_variable_count += int(
             trajectory["retrieval_key_id"] != trajectory["primary_key_id"]
             or trajectory["action_key_id"] not in {None, trajectory["primary_key_id"]}
@@ -8524,7 +8747,10 @@ def _audit_m11_adaptive_evidence_gap(
         raise SpeechNativeProfileError(
             "M11 action-audit completion defects: " + "; ".join(completion_issues)
         )
-    engineering_gate_passed = mechanism_failure_count == 0
+    engineering_gate_passed = (
+        mechanism_failure_count == 0
+        and generated_state_external_supply_count == 0
+    )
     return {
         "schema": "saea-speech-native-adaptive-evidence-gap-audit-v1",
         "study": "speech-aware-evidence-acquisition",
@@ -8551,6 +8777,20 @@ def _audit_m11_adaptive_evidence_gap(
         "engineering_gate_passed": engineering_gate_passed,
         "calls_distribution": {
             str(calls): count for calls, count in sorted(calls_distribution.items())
+        },
+        "information_flow": {
+            "schema": _M11_INFORMATION_FLOW_SCHEMA,
+            "factor_supply_query_count": factor_supply_query_count,
+            "factor_supply_id_reference_count": factor_supply_id_reference_count,
+            "factor_selection_query_count": factor_selection_query_count,
+            "factor_selection_id_reference_count": (
+                factor_selection_id_reference_count
+            ),
+            "boundary_supply_query_count": boundary_supply_query_count,
+            "boundary_supply_id_reference_count": boundary_supply_id_reference_count,
+            "generated_state_external_supply_count": (
+                generated_state_external_supply_count
+            ),
         },
         "source_sha256": {
             "attempt_record": attempt_record_sha256,

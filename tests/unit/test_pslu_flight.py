@@ -3330,6 +3330,14 @@ def test_m11_reader_reconstructs_information_gain_and_action_space():
     assert trajectory["new_boundary_id"] == "B001"
     assert trajectory["boundary_stable_key_id"] == "K002"
     assert trajectory["total_calls"] == 5
+    assert trajectory["information_flow"] == {
+        "schema": "m11-information-flow-v1",
+        "observation_source": "speech_features",
+        "candidate_factor_supply_ids": ("F001", "F002", "F003", "F004"),
+        "model_selected_factor_ids": ("F003", "F004"),
+        "model_selected_state_is_external_supply": False,
+        "incremental_boundary_supply_ids": ("B001",),
+    }
 
     metrics = _evaluate_m11_adaptive_evidence_gap((trajectory,))
     assert metrics["primary_correct"] == 0
@@ -3340,6 +3348,10 @@ def test_m11_reader_reconstructs_information_gain_and_action_space():
     assert metrics["new_knowledge_query_count"] == 1
     assert metrics["adaptive_boundary_query_count"] == 1
     assert metrics["final_minus_primary_correct"] == 0
+    assert metrics["information_flow"]["factor_supply_query_count"] == 1
+    assert metrics["information_flow"]["factor_selection_query_count"] == 1
+    assert metrics["information_flow"]["boundary_supply_query_count"] == 1
+    assert metrics["information_flow"]["generated_state_external_supply_count"] == 0
 
 
 def test_m11_reader_preserves_the_versioned_key_conditioned_policy_identity():
@@ -3385,6 +3397,7 @@ def _m11_policy_trajectory(
 ):
     """Build one already-recorded M11 trajectory for model-free policy tests."""
 
+    factor_ids = ("F001", "F002")
     return {
         "policy_id": "speech-conditioned-adaptive-evidence-gap-v2",
         "sample_id": f"sample-{index:03d}",
@@ -3394,7 +3407,7 @@ def _m11_policy_trajectory(
         "initial_top_key_ids": (primary, "K002", "K003"),
         "retrieval_key_id": retrieval,
         "action_key_id": action,
-        "new_factor_ids": ("F001", "F002"),
+        "new_factor_ids": factor_ids,
         "new_factor_kinds": factor_kinds,
         "new_boundary_id": boundary_id,
         "boundary_ab_key_id": boundary if boundary_id is not None else None,
@@ -3407,6 +3420,16 @@ def _m11_policy_trajectory(
         ),
         "mechanism_failure": False,
         "total_calls": 5 if boundary_id is not None else 3,
+        "information_flow": {
+            "schema": "m11-information-flow-v1",
+            "observation_source": "speech_features",
+            "candidate_factor_supply_ids": factor_ids,
+            "model_selected_factor_ids": factor_ids,
+            "model_selected_state_is_external_supply": False,
+            "incremental_boundary_supply_ids": (
+                (boundary_id,) if boundary_id is not None else ()
+            ),
+        },
     }
 
 
@@ -3469,6 +3492,93 @@ def test_m11_information_gate_freezes_support_before_oof_policy_selection():
     assert controller["mean_estimated_calls"] < controller["full_acquisition_mean_calls"]
     assert controller["promotion_checks"]["mean_calls_below_full_acquisition"] is True
     assert controller["promotion_gate_passed"] is True
+
+
+def test_m11_information_flow_attributes_factor_and_boundary_marginal_transitions():
+    rows = (
+        _m11_policy_trajectory(
+            0,
+            retrieval="K003",
+            action="K003",
+            boundary="K002",
+            gold="K002",
+        ),
+        _m11_policy_trajectory(
+            1,
+            retrieval="K001",
+            action="K001",
+            boundary="K002",
+            gold="K001",
+        ),
+        {
+            **_m11_policy_trajectory(
+                2,
+                retrieval="K001",
+                action="K002",
+                boundary="K003",
+                gold="K002",
+            ),
+            "boundary_stable_key_id": None,
+        },
+    )
+
+    metrics = _evaluate_m11_adaptive_evidence_gap(rows)
+    flow = metrics["information_flow"]
+
+    assert flow["factor_supply_transition"] == {
+        "attribution_scope": "factor-supply-plus-speech-reobservation",
+        "eligible_count": 3,
+        "unresolved_count": 0,
+        "changed_prediction_count": 1,
+        "helpful_transition_count": 1,
+        "harmful_transition_count": 0,
+        "neutral_transition_count": 2,
+        "estimated_net_gain": 1,
+        "helpful_sample_ids": ["sample-002"],
+        "harmful_sample_ids": [],
+    }
+    assert flow["boundary_supply_transition"] == {
+        "attribution_scope": "boundary-supply-plus-pairwise-comparison",
+        "eligible_count": 2,
+        "unresolved_count": 1,
+        "changed_prediction_count": 2,
+        "helpful_transition_count": 1,
+        "harmful_transition_count": 1,
+        "neutral_transition_count": 0,
+        "estimated_net_gain": 0,
+        "helpful_sample_ids": ["sample-000"],
+        "harmful_sample_ids": ["sample-001"],
+    }
+
+
+@pytest.mark.parametrize(
+    "flow_override",
+    (
+        {"model_selected_state_is_external_supply": True},
+        {
+            "candidate_factor_supply_ids": ("F001",),
+            "model_selected_factor_ids": ("F001", "F002"),
+        },
+    ),
+)
+def test_m11_information_flow_rejects_false_external_supply_claims(flow_override):
+    row = _m11_policy_trajectory(
+        0,
+        retrieval="K001",
+        action="K002",
+        boundary="K002",
+        gold="K002",
+    )
+    corrupted = {
+        **row,
+        "information_flow": {**row["information_flow"], **flow_override},
+    }
+
+    with pytest.raises(
+        SpeechNativeProfileError,
+        match="information-flow ledger contradicts",
+    ):
+        _evaluate_m11_adaptive_evidence_gap((corrupted,))
 
 
 def test_m11_support_does_not_enable_post_hoc_policy_without_pinned_reader():
@@ -3899,6 +4009,22 @@ def test_action_support_audit_accepts_m11_batched_orders_without_reading_gold(tm
     assert report["action_variable_query_count"] == 32
     assert report["mechanism_failure_count"] == 0
     assert report["calls_distribution"] == {"5": 32}
+    assert report["information_flow"] == {
+        "schema": "m11-information-flow-v1",
+        "factor_supply_query_count": 32,
+        "factor_supply_id_reference_count": report["information_flow"][
+            "factor_supply_id_reference_count"
+        ],
+        "factor_selection_query_count": 32,
+        "factor_selection_id_reference_count": 32,
+        "boundary_supply_query_count": 32,
+        "boundary_supply_id_reference_count": 32,
+        "generated_state_external_supply_count": 0,
+    }
+    assert (
+        report["information_flow"]["factor_supply_id_reference_count"]
+        > report["information_flow"]["factor_selection_id_reference_count"]
+    )
     assert "must-not-enter-audit-output" not in json.dumps(report, sort_keys=True)
 
 
