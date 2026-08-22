@@ -1,0 +1,5 @@
+{
+  "experiment_id": "SAEA-SN-FACTOR-D108-PREPROCESS",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "Label-free offline feature preprocessing for the fresh FACTOR-D108 train view. Keep the decoder-only inference service resident, populate only the legacy speech feature cache, and never inspect generated text, labels, reference transcripts, or task accuracy."
+}
