@@ -457,6 +457,44 @@ def test_speech_native_np24_profile_preserves_context_budget_and_batch_shape():
     assert "LLAMA_MTMD_FEAT_CACHE_DIR" not in values["server_env"]
 
 
+def test_speech_native_np32_profile_is_terminal_decode_width_candidate():
+    """The terminal slot-width candidate maximizes decode batching while the
+    measured M11 prompt and registered completion ceiling still fit a slot."""
+
+    from speech_aware_evidence_acquisition.e0.artifacts import REPO_ROOT
+
+    model_dir = REPO_ROOT / "configs" / "model"
+    base = json.loads(
+        (model_dir / "q4km-mmproj-free-speech-native-np16-max64.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    candidate = json.loads(
+        (model_dir / "q4km-mmproj-free-speech-native-np32-max64.json").read_text(
+            encoding="utf-8"
+        )
+    )
+
+    expected_args = list(base["server_args"])
+    parallel_index = expected_args.index("-np") + 1
+    expected_args[parallel_index] = "32"
+    assert candidate["server_args"] == expected_args
+    assert candidate["profile_slot_count"] == 32
+    assert candidate["decoding_params"] == base["decoding_params"]
+    context_per_slot = 65536 // candidate["profile_slot_count"]
+    assert context_per_slot == 2048
+    assert context_per_slot - (1873 + candidate["decoding_params"]["max_tokens"]) == 111
+    assert {
+        key: value
+        for key, value in candidate.items()
+        if key not in {"server_args", "profile_slot_count"}
+    } == {
+        key: value
+        for key, value in base.items()
+        if key not in {"server_args", "profile_slot_count"}
+    }
+
+
 def test_speech_native_np16_wide_batch_profile_changes_only_batch_geometry():
     """The saturated-window successor keeps np16/context/science fixed and
     changes only llama.cpp logical and physical batch ceilings."""
