@@ -412,6 +412,7 @@ def _m6_action_audit_row(index, *, primary_key_id, refined_key_id):
     packet_sha256 = f"{index + 1:064x}"
     initial_ids = [primary_key_id, "K003", "K004"]
     refined_ids = [refined_key_id, "K003", "K004"]
+    calls = 8 if index == 1 else 7
     scores = {
         key_id: {"compatible": key_id == refined_key_id, "confidence": 90}
         for key_id in refined_ids
@@ -428,7 +429,7 @@ def _m6_action_audit_row(index, *, primary_key_id, refined_key_id):
         "key_id": refined_key_id,
         "predicted_value_label": "must-not-enter-audit-output",
         "top_key_ids": refined_ids,
-        "calls": 7,
+        "calls": calls,
         "parse_failure": False,
         "agent_policy_id": "knowledge-grounded-semantic-refinement-schema-v2",
         "agent_actions": _M6_SUCCESS_ACTIONS,
@@ -477,7 +478,9 @@ def _m6_action_audit_row(index, *, primary_key_id, refined_key_id):
         ],
         "agent_aggregator_id": "grounded-refined-primary-fallback-v1",
         "verifier_scores": scores,
-        "response_text_sha256": [f"{index + 10 + offset:064x}" for offset in range(7)],
+        "response_text_sha256": [
+            f"{index + 10 + offset:064x}" for offset in range(calls)
+        ],
     }
 
 
@@ -555,7 +558,7 @@ def _write_m6_action_audit_fixture(tmp_path):
             "agent_aggregator_id": "grounded-refined-primary-fallback-v1",
             "mechanism_control_id": "matched",
             "task_count": 2,
-            "actual_contact_count": 14,
+            "actual_contact_count": 15,
             "planned_contact_ceiling": 16,
             "top_k": 3,
         },
@@ -569,10 +572,10 @@ def _write_m6_action_audit_fixture(tmp_path):
             "oom_marker_hits": [],
             "host_spill_marker_hits": [],
             "runaway_marker_hits": [],
-            "mmproj_free_chunk_count": 13,
+            "mmproj_free_chunk_count": 14,
         },
         "process_audit_sha256": hashlib.sha256(process_audit.read_bytes()).hexdigest(),
-        "close": {"cost": {"calls_used": 14}},
+        "close": {"cost": {"calls_used": 15}},
     }
     flight = attempt_dir / "flight-receipt.json"
     flight.write_text(json.dumps(receipt), encoding="utf-8")
@@ -585,7 +588,7 @@ def _write_m6_action_audit_fixture(tmp_path):
                 "attempt_id": "attempt-audit-001",
                 "state": "ABORTED",
                 "failure_reason": "speech-native profile completion checks failed",
-                "actual": {"calls": 14, "audio_seconds": 1.0, "gpu_seconds": 2.0},
+                "actual": {"calls": 15, "audio_seconds": 1.0, "gpu_seconds": 2.0},
                 "reserved": {"calls": 16, "audio_seconds": 2.0},
                 "carrier_lock_key": "slurp",
             }
@@ -611,11 +614,11 @@ def test_action_support_audit_is_structural_only_and_counts_policy_changes(tmp_p
     assert report["effectiveness_eligible"] is False
     assert report["gold_read"] is False
     assert report["decision_count"] == 2
-    assert report["valid_speech_query_contact_count"] == 14
+    assert report["valid_speech_query_contact_count"] == 15
     assert report["grounded_state_valid_count"] == 2
     assert report["action_sensitive_count"] == 1
     assert report["initial_to_refined_top1_change_count"] == 1
-    assert report["calls_distribution"] == {"7": 2}
+    assert report["calls_distribution"] == {"7": 1, "8": 1}
     serialized = json.dumps(report, sort_keys=True)
     assert "must-not-enter-audit-output" not in serialized
     assert "correct" not in serialized

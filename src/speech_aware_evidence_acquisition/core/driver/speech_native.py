@@ -2784,7 +2784,7 @@ def audit_speech_native_action_support(
             or steps[3].get("key_id") != votes[1]
             or row.get("top_key_ids") != list(refined_ids)
             or steps[3].get("verifier_scores") != row.get("verifier_scores")
-            or sum(int(step["calls"]) for step in steps) != calls
+            or tuple(int(step["calls"]) for step in steps) != (1, 1, 1, 4)
         ):
             raise SpeechNativeProfileError(
                 "action-audit grounded retrieval transition is malformed"
