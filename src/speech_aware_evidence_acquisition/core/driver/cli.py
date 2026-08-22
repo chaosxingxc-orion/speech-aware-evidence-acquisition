@@ -558,8 +558,8 @@ def main(argv: list[str] | None = None) -> int:
     speech_action_audit = sub.add_parser(
         "speech-native-action-audit",
         help=(
-            "model-free, gold-free structural action audit for finalized M7 "
-            "multistate flights and the admitted legacy M6 completion-gate abort"
+            "model-free, gold-free structural action audit for finalized M7/M8 "
+            "support flights and the admitted legacy M6 completion-gate abort"
         ),
     )
     speech_action_audit.add_argument("--attempt-dir", required=True)
