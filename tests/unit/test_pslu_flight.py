@@ -862,6 +862,130 @@ def test_contact_dispatch_parallelizes_independent_m5_initial_branches():
     assert client.max_active == 2
 
 
+def test_full_branch_contact_dispatch_schedules_all_four_branches_globally():
+    class FullBranchClient:
+        def __init__(self):
+            self.lock = threading.Lock()
+            self.active = 0
+            self.max_active = 0
+            self.stages = []
+
+        def complete(self, messages, **kwargs):
+            stage = kwargs["matcher_policy_id"]
+            with self.lock:
+                self.active += 1
+                self.max_active = max(self.max_active, self.active)
+                self.stages.append(stage)
+            time.sleep(0.02)
+            with self.lock:
+                self.active -= 1
+            if stage.endswith(":listwise"):
+                return '{"key_id":"K001"}'
+            if stage.endswith(":retrieve-top-1"):
+                key_id = "K002" if ":reverse:" in stage else "K001"
+                return json.dumps({"key_ids": [key_id]})
+            if ":verify-" in stage:
+                return '{"compatible":true,"confidence":90}'
+            raise AssertionError(stage)
+
+    task = SpeechNativeMatchTask(
+        task_id="task-0",
+        sample=_SpeechSample(),
+        query_descriptor=_QUERY_DESCRIPTOR,
+        key_cards=_KEY_CARDS,
+        key_representation_id="K1",
+        matcher_policy_id="M5",
+        prompt_policy_id="speech-native-json-copy-v3",
+        decoding_params={"temperature": 0, "id_slot": "per-sample"},
+        top_k=1,
+        agent_policy_id="m1-m3-full-branch-explorer-v1",
+        agent_aggregator_id="m3-unanimous-primary-fallback-v3",
+    )
+    client = FullBranchClient()
+
+    outcomes = run_speech_native_match_tasks(
+        core_client=client,
+        tasks=(task,),
+        slot_count=4,
+        queue_depth=4,
+        dispatch_granularity="contact",
+    )
+
+    decision = outcomes[0].decision
+    assert client.max_active == 4
+    assert decision.key_id == "K001"
+    assert decision.calls == 7
+    assert decision.agent_vote_key_ids == ("K001", "K001", "K002", "K001")
+    assert decision.agent_actions == (
+        "match:listwise-canonical",
+        "retrieve-verify:canonical",
+        "explore:full-branch",
+        "retrieve-verify:reverse",
+        "retrieve-verify:rotate-7",
+        "aggregate:m3-unanimous-primary-fallback",
+    )
+    assert all(outcome.slot_id == -1 for outcome in outcomes)
+
+
+def test_global_full_branch_traces_merge_in_registered_branch_order(tmp_path):
+    run_id = "SAEA-E-TEST-global-full-branch-trace"
+    sink = TraceSink(tmp_path / "trace", run_id)
+    dispatcher = DispatchingSink(sink)
+
+    class TracedFullBranchClient:
+        def complete(self, messages, **kwargs):
+            stage = kwargs["matcher_policy_id"]
+            dispatcher.emit("MODEL_REQUEST", stage, {"stage": stage})
+            if stage.endswith(":listwise"):
+                time.sleep(0.03)
+                return '{"key_id":"K001"}'
+            if stage.endswith(":retrieve-top-1"):
+                key_id = "K002" if ":reverse:" in stage else "K001"
+                return json.dumps({"key_ids": [key_id]})
+            if ":verify-" in stage:
+                return '{"compatible":true,"confidence":90}'
+            raise AssertionError(stage)
+
+    task = SpeechNativeMatchTask(
+        task_id="task-0",
+        sample=_SpeechSample(),
+        query_descriptor=_QUERY_DESCRIPTOR,
+        key_cards=_KEY_CARDS,
+        key_representation_id="K1",
+        matcher_policy_id="M5",
+        prompt_policy_id="speech-native-json-copy-v3",
+        top_k=1,
+        agent_policy_id="m1-m3-full-branch-explorer-v1",
+        agent_aggregator_id="m3-unanimous-primary-fallback-v3",
+    )
+    run_speech_native_match_tasks(
+        core_client=TracedFullBranchClient(),
+        tasks=(task,),
+        slot_count=4,
+        queue_depth=4,
+        dispatch_granularity="contact",
+        trace_run_id=run_id,
+        trace_flusher=lambda buffer: buffer.flush_into(sink),
+    )
+    sink.close()
+
+    rows = [
+        json.loads(line)
+        for line in (tmp_path / "trace" / f"{run_id}.trace.jsonl")
+        .read_text(encoding="utf-8")
+        .splitlines()
+    ]
+    assert [row["payload"]["stage"] for row in rows] == [
+        "M5:M1:canonical:listwise",
+        "M5:M3:canonical:retrieve-top-1",
+        "M5:M3:canonical:verify-K001",
+        "M5:M3:reverse:retrieve-top-1",
+        "M5:M3:reverse:verify-K002",
+        "M5:M3:rotate-7:retrieve-top-1",
+        "M5:M3:rotate-7:verify-K001",
+    ]
+
+
 def test_speech_native_match_tasks_reject_queue_smaller_than_slot_pool():
     with pytest.raises(PsluFlightError, match="queue_depth must be at least slot_count"):
         run_speech_native_match_tasks(

@@ -1083,6 +1083,232 @@ def run_speech_native_match_tasks(
 
     contact_client = ContactDispatchClient()
 
+    full_branch_global = dispatch_granularity == "contact" and all(
+        task.matcher_policy_id == "M5"
+        and task.agent_policy_id == "m1-m3-full-branch-explorer-v1"
+        for task in ordered_tasks
+    )
+    if full_branch_global:
+        branch_kinds = (
+            ("M1", "canonical", "M5:M1:canonical"),
+            ("M3", "canonical", "M5:M3:canonical"),
+            ("M3", "reverse", "M5:M3:reverse"),
+            ("M3", "rotate-7", "M5:M3:rotate-7"),
+        )
+        branch_specs = tuple(
+            (task_index, branch_index, policy_id, order_id, trace_policy_id)
+            for task_index in range(len(ordered_tasks))
+            for branch_index, (policy_id, order_id, trace_policy_id) in enumerate(
+                branch_kinds
+            )
+        )
+
+        def branch_cards(
+            task: SpeechNativeMatchTask, order_id: str
+        ) -> tuple[KeyCardV1, ...]:
+            if order_id == "canonical":
+                return task.key_cards
+            if order_id == "reverse":
+                return tuple(reversed(task.key_cards))
+            if order_id == "rotate-7":
+                return _rotate_key_cards(task.key_cards, 7)
+            raise PsluFlightError(f"unknown full-branch order {order_id!r}")
+
+        def one_branch(specification):
+            task_index, _branch_index, policy_id, order_id, trace_policy_id = (
+                specification
+            )
+            task = ordered_tasks[task_index]
+            buffer = TraceBuffer(trace_run_id) if trace_run_id is not None else None
+            if buffer is not None:
+                set_current_trace_buffer(buffer)
+            try:
+                decision = run_speech_native_matcher(
+                    core_client=contact_client,
+                    sample=task.sample,
+                    query_descriptor=task.query_descriptor,
+                    key_cards=branch_cards(task, order_id),
+                    key_representation_id=task.key_representation_id,
+                    matcher_policy_id=policy_id,
+                    prompt_policy_id=task.prompt_policy_id,
+                    verifier_policy_id=task.verifier_policy_id,
+                    decoding_params=dict(task.decoding_params),
+                    top_k=task.top_k,
+                    audio_key_bindings=task.audio_key_bindings,
+                    agent_policy_id=task.agent_policy_id,
+                    _trace_matcher_policy_id=trace_policy_id,
+                    _trace_buffer=buffer,
+                )
+                return decision, buffer, None
+            except BaseException as error:  # preserve every one-shot branch trace
+                return None, buffer, error
+            finally:
+                if buffer is not None:
+                    set_current_trace_buffer(None)
+
+        branch_results: list[
+            tuple[SpeechNativeDecision | None, TraceBuffer | None, BaseException | None]
+            | None
+        ] = [None] * len(branch_specs)
+        try:
+            with ThreadPoolExecutor(
+                max_workers=min(queue_depth, len(branch_specs)),
+                thread_name_prefix="saea-speech-native-global-branch",
+            ) as branch_pool:
+                futures = {
+                    branch_pool.submit(one_branch, specification): index
+                    for index, specification in enumerate(branch_specs)
+                }
+                for future, index in tuple(futures.items()):
+                    branch_results[index] = future.result()
+        finally:
+            assert contact_pool is not None
+            contact_pool.shutdown(wait=True)
+
+        settled_branches = tuple(
+            result for result in branch_results if result is not None
+        )
+        if len(settled_branches) != len(branch_specs):
+            raise PsluFlightError("global full-branch dispatcher lost a branch outcome")
+
+        buffered_outcomes: list[_BufferedSpeechNativeOutcome] = []
+        for task_index, task in enumerate(ordered_tasks):
+            start = task_index * len(branch_kinds)
+            task_results = settled_branches[start : start + len(branch_kinds)]
+            combined_buffer = (
+                TraceBuffer(trace_run_id) if trace_run_id is not None else None
+            )
+            if combined_buffer is not None:
+                for _decision, branch_buffer, _error in task_results:
+                    assert branch_buffer is not None
+                    combined_buffer.extend_from(branch_buffer)
+            first_error = next(
+                (error for _decision, _buffer, error in task_results if error is not None),
+                None,
+            )
+            decisions = tuple(
+                decision
+                for decision, _buffer, _error in task_results
+                if decision is not None
+            )
+            if first_error is not None or len(decisions) != len(branch_kinds):
+                buffered_outcomes.append(
+                    _BufferedSpeechNativeOutcome(
+                        outcome=None,
+                        buffer=combined_buffer,
+                        error=first_error
+                        or PsluFlightError("full-branch task lacks a branch decision"),
+                    )
+                )
+                continue
+            primary, canonical, reverse, rotate = decisions
+            votes = (canonical.key_id, reverse.key_id, rotate.key_id)
+            valid_votes = [key_id for key_id in votes if key_id is not None]
+            counts = {
+                key_id: valid_votes.count(key_id) for key_id in set(valid_votes)
+            }
+            majority = next(
+                (key_id for key_id, count in counts.items() if count >= 2),
+                None,
+            )
+            if task.agent_aggregator_id == "m3-unanimous-primary-fallback-v3":
+                unanimous = (
+                    valid_votes[0]
+                    if len(valid_votes) == 3 and len(set(valid_votes)) == 1
+                    else None
+                )
+                winner = unanimous if unanimous is not None else primary.key_id
+                aggregate_action = "aggregate:m3-unanimous-primary-fallback"
+            else:
+                fallback = (
+                    primary.key_id
+                    if task.agent_aggregator_id == "m3-majority-primary-tie-v2"
+                    else canonical.key_id
+                )
+                winner = majority if majority is not None else fallback
+                aggregate_action = (
+                    "aggregate:m3-majority-primary-tie"
+                    if task.agent_aggregator_id == "m3-majority-primary-tie-v2"
+                    else "aggregate:m3-majority-canonical-tie"
+                )
+            label_by_key = {
+                card.key_id: card.value_label for card in task.key_cards
+            }
+
+            def step(action_id: str, decision: SpeechNativeDecision):
+                return {
+                    "action_id": action_id,
+                    "key_id": decision.key_id,
+                    "top_key_ids": list(decision.top_key_ids),
+                    "calls": decision.calls,
+                    "parse_failure": decision.parse_failure,
+                }
+
+            decision = SpeechNativeDecision(
+                matcher_policy_id="M5",
+                key_representation_id=task.key_representation_id,
+                key_id=winner,
+                value_label=label_by_key.get(winner),
+                top_key_ids=canonical.top_key_ids,
+                calls=sum(item.calls for item in decisions),
+                raw_responses=tuple(
+                    response
+                    for item in decisions
+                    for response in item.raw_responses
+                ),
+                verifier_scores=canonical.verifier_scores,
+                parse_failure=winner is None,
+                agent_policy_id=task.agent_policy_id,
+                agent_actions=(
+                    "match:listwise-canonical",
+                    "retrieve-verify:canonical",
+                    "explore:full-branch",
+                    "retrieve-verify:reverse",
+                    "retrieve-verify:rotate-7",
+                    aggregate_action,
+                ),
+                agent_escalated=(
+                    primary.key_id is None or primary.key_id != canonical.key_id
+                ),
+                agent_vote_key_ids=(
+                    primary.key_id,
+                    canonical.key_id,
+                    reverse.key_id,
+                    rotate.key_id,
+                ),
+                agent_steps=(
+                    step("match:listwise-canonical", primary),
+                    step("retrieve-verify:canonical", canonical),
+                    step("retrieve-verify:reverse", reverse),
+                    step("retrieve-verify:rotate-7", rotate),
+                ),
+                agent_aggregator_id=task.agent_aggregator_id,
+            )
+            buffered_outcomes.append(
+                _BufferedSpeechNativeOutcome(
+                    outcome=SpeechNativeMatchOutcome(
+                        task_id=task.task_id,
+                        slot_id=-1,
+                        decision=decision,
+                    ),
+                    buffer=combined_buffer,
+                    error=None,
+                )
+            )
+
+        if trace_flusher is not None:
+            for result in buffered_outcomes:
+                assert result.buffer is not None
+                trace_flusher(result.buffer)
+        for result in buffered_outcomes:
+            if result.error is not None:
+                raise result.error
+        return tuple(
+            result.outcome
+            for result in buffered_outcomes
+            if result.outcome is not None
+        )
+
     def one(task: SpeechNativeMatchTask) -> _BufferedSpeechNativeOutcome:
         slot_id = slots.get() if dispatch_granularity == "task" else -1
         buffer = TraceBuffer(trace_run_id) if trace_run_id is not None else None
