@@ -21,6 +21,7 @@ from speech_aware_evidence_acquisition.core.driver.speech_native import (
     _canonical_sha256,
     _evaluate_training_free_contextual_policy,
     _evaluate_training_free_episodic_policy,
+    _evaluate_training_free_grounded_semantic_policy,
     _build_audio_key_bindings,
     _evaluate_training_free_agent_policies,
     _profile_completion_issues,
@@ -2424,6 +2425,84 @@ def test_training_free_episodic_policy_rejects_neighbors_with_observed_harm():
     assert evaluation["oof_action_counts"] == {"primary": 9}
 
 
+def _grounded_semantic_trajectory(
+    index, *, primary_correct, refined_correct, semantic_cluster="alarm schedule"
+):
+    primary_key = "K001"
+    refined_key = "K002"
+    gold_key = primary_key if primary_correct else refined_key
+    if not refined_correct:
+        refined_key = "K003" if not primary_correct else "K002"
+    words = semantic_cluster.split()
+    return {
+        "sample_id": f"sample-{index:02d}",
+        "speaker_id": f"speaker-{index:02d}",
+        "gold_key_id": gold_key,
+        "primary_key_id": primary_key,
+        "refined_key_id": refined_key,
+        "initial_top_key_ids": (primary_key, refined_key, "K004"),
+        "refined_top_key_ids": (refined_key, primary_key, "K004"),
+        "verifier_scores": {
+            refined_key: (True, 90.0),
+            primary_key: (False, 40.0),
+            "K004": (False, 20.0),
+        },
+        "grounded_query_state": {
+            "domain": words[0],
+            "operation": words[-1],
+            "target": "weekday",
+            "constraints": ["morning"],
+            "exclusions": ["cancel"],
+            "unresolved_ambiguity": "none",
+        },
+        "total_calls": 7,
+    }
+
+
+def test_training_free_grounded_semantic_policy_accepts_supported_helpful_memory():
+    trajectories = tuple(
+        _grounded_semantic_trajectory(
+            index,
+            primary_correct=False,
+            refined_correct=True,
+        )
+        for index in range(12)
+    )
+
+    evaluation = _evaluate_training_free_grounded_semantic_policy(trajectories)
+
+    assert evaluation["policy_id"] == (
+        "speaker-grouped-oof-grounded-semantic-action-advantage-v1"
+    )
+    assert evaluation["correct"] == 12
+    assert evaluation["primary_correct"] == 0
+    assert evaluation["wrong_to_correct_vs_primary"] == 12
+    assert evaluation["correct_to_wrong_vs_primary"] == 0
+    assert evaluation["oof_action_counts"] == {"accept_refined": 12}
+    assert evaluation["positive_delta_fold_count"] == 3
+    assert evaluation["mean_realized_contacts"] == 7.0
+
+
+def test_training_free_grounded_semantic_policy_rejects_memory_with_harm():
+    trajectories = tuple(
+        _grounded_semantic_trajectory(
+            index,
+            primary_correct=True,
+            refined_correct=False,
+        )
+        for index in range(12)
+    )
+
+    evaluation = _evaluate_training_free_grounded_semantic_policy(trajectories)
+
+    assert evaluation["correct"] == 12
+    assert evaluation["primary_correct"] == 12
+    assert evaluation["wrong_to_correct_vs_primary"] == 0
+    assert evaluation["correct_to_wrong_vs_primary"] == 0
+    assert evaluation["oof_action_counts"] == {"retain_primary": 12}
+    assert evaluation["action_oracle_correct"] == 12
+
+
 def test_profile_tasks_build_label_blind_speech_swap_and_key_text_shuffle_controls():
     class Sample:
         def __init__(self, sample_id):
@@ -3422,6 +3501,18 @@ def test_model_free_read_reports_grounded_semantic_refinement_actions(
     assert metrics["worst_fold_delta_vs_primary"] == min(
         fold["correct_delta_vs_primary"] for fold in folds
     )
+    if (
+        agent_policy_id == "knowledge-grounded-semantic-refinement-schema-v3"
+        and mechanism_control_id == "matched"
+    ):
+        policy = metrics["training_free_grounded_semantic_policy"]
+        assert policy["correct"] == 35
+        assert policy["primary_correct"] == 35
+        assert policy["wrong_to_correct_vs_primary"] == 0
+        assert policy["correct_to_wrong_vs_primary"] == 0
+        assert policy["action_variable_count"] == 2
+        assert policy["oof_action_counts"] == {"retain_primary": 36}
+        assert policy["promotion_gate_passed"] is False
 
 
 def _binding_material():

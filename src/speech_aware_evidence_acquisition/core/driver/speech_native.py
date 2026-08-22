@@ -881,6 +881,415 @@ def _evaluate_training_free_episodic_policy(
     }
 
 
+_GROUNDED_SEMANTIC_REQUIRED_FIELDS = {
+    "sample_id",
+    "speaker_id",
+    "gold_key_id",
+    "primary_key_id",
+    "refined_key_id",
+    "initial_top_key_ids",
+    "refined_top_key_ids",
+    "verifier_scores",
+    "grounded_query_state",
+    "total_calls",
+}
+_GROUNDED_SEMANTIC_STATE_FIELDS = {
+    "domain",
+    "operation",
+    "target",
+    "constraints",
+    "exclusions",
+    "unresolved_ambiguity",
+}
+_GROUNDED_SEMANTIC_STATE_WEIGHTS = (2, 2, 1, 1, 1, 1, 1, 1, 1)
+_GROUNDED_SEMANTIC_NEIGHBOR_COUNT = 5
+_GROUNDED_SEMANTIC_MIN_SUPPORT = 3
+_GROUNDED_SEMANTIC_MIN_NET_GAIN = 1
+_GROUNDED_SEMANTIC_MAX_HARM = 0
+_GROUNDED_SEMANTIC_LEXICAL_WEIGHT = 4.0
+_GROUNDED_SEMANTIC_TOKEN = re.compile(r"[a-z0-9]+")
+
+
+def _validate_grounded_semantic_trajectories(
+    trajectories: Sequence[Mapping[str, object]],
+) -> tuple[Mapping[str, object], ...]:
+    frozen = tuple(trajectories)
+    if not frozen:
+        raise SpeechNativeProfileError(
+            "grounded semantic policy requires at least one trajectory"
+        )
+    for trajectory in frozen:
+        if set(trajectory) != _GROUNDED_SEMANTIC_REQUIRED_FIELDS:
+            raise SpeechNativeProfileError(
+                "grounded semantic policy trajectory is malformed"
+            )
+        if any(
+            not isinstance(trajectory.get(field), str) or not trajectory.get(field)
+            for field in (
+                "sample_id",
+                "speaker_id",
+                "gold_key_id",
+                "primary_key_id",
+                "refined_key_id",
+            )
+        ):
+            raise SpeechNativeProfileError(
+                "grounded semantic policy identity is malformed"
+            )
+        for field in ("initial_top_key_ids", "refined_top_key_ids"):
+            value = trajectory.get(field)
+            if (
+                not isinstance(value, (list, tuple))
+                or not value
+                or not all(isinstance(key_id, str) and key_id for key_id in value)
+                or len(set(value)) != len(value)
+            ):
+                raise SpeechNativeProfileError(
+                    "grounded semantic policy top-key list is malformed"
+                )
+        scores = trajectory.get("verifier_scores")
+        if not isinstance(scores, Mapping):
+            raise SpeechNativeProfileError(
+                "grounded semantic policy verifier scores are malformed"
+            )
+        for key_id, raw_score in scores.items():
+            if (
+                not isinstance(key_id, str)
+                or not isinstance(raw_score, (list, tuple))
+                or len(raw_score) != 2
+                or not isinstance(raw_score[0], bool)
+                or isinstance(raw_score[1], bool)
+                or not isinstance(raw_score[1], (int, float))
+                or not 0.0 <= float(raw_score[1]) <= 100.0
+            ):
+                raise SpeechNativeProfileError(
+                    "grounded semantic policy verifier score is malformed"
+                )
+        state = trajectory.get("grounded_query_state")
+        if (
+            not isinstance(state, Mapping)
+            or set(state) != _GROUNDED_SEMANTIC_STATE_FIELDS
+        ):
+            raise SpeechNativeProfileError("grounded semantic query state is malformed")
+        if any(
+            not isinstance(state.get(field), str) or not state.get(field)
+            for field in (
+                "domain",
+                "operation",
+                "target",
+                "unresolved_ambiguity",
+            )
+        ):
+            raise SpeechNativeProfileError(
+                "grounded semantic query scalar is malformed"
+            )
+        for field in ("constraints", "exclusions"):
+            value = state.get(field)
+            if not isinstance(value, (list, tuple)) or not all(
+                isinstance(item, str) and item for item in value
+            ):
+                raise SpeechNativeProfileError(
+                    "grounded semantic query list is malformed"
+                )
+        total_calls = trajectory.get("total_calls")
+        if (
+            isinstance(total_calls, bool)
+            or not isinstance(total_calls, int)
+            or total_calls <= 0
+        ):
+            raise SpeechNativeProfileError(
+                "grounded semantic policy contact cost is malformed"
+            )
+    if len({str(item["speaker_id"]) for item in frozen}) < 3:
+        raise SpeechNativeProfileError(
+            "grounded semantic policy requires at least three speakers"
+        )
+    return frozen
+
+
+def _grounded_semantic_tokens(trajectory: Mapping[str, object]) -> frozenset[str]:
+    state = trajectory["grounded_query_state"]
+    assert isinstance(state, Mapping)
+    values: list[str] = [
+        str(state[field])
+        for field in ("domain", "operation", "target", "unresolved_ambiguity")
+    ]
+    for field in ("constraints", "exclusions"):
+        raw_values = state[field]
+        assert isinstance(raw_values, (list, tuple))
+        values.extend(str(value) for value in raw_values)
+    return frozenset(_GROUNDED_SEMANTIC_TOKEN.findall(" ".join(values).lower()))
+
+
+def _grounded_semantic_state(trajectory: Mapping[str, object]) -> tuple[str, ...]:
+    primary = str(trajectory["primary_key_id"])
+    refined = str(trajectory["refined_key_id"])
+    initial_top = tuple(str(value) for value in trajectory["initial_top_key_ids"])
+    refined_top = tuple(str(value) for value in trajectory["refined_top_key_ids"])
+    raw_scores = trajectory["verifier_scores"]
+    assert isinstance(raw_scores, Mapping)
+    scores = {
+        str(key_id): (bool(raw[0]), float(raw[1])) for key_id, raw in raw_scores.items()
+    }
+
+    def compatibility(key_id: str) -> str:
+        score = scores.get(key_id)
+        if score is None:
+            return "missing"
+        return "yes" if score[0] else "no"
+
+    selected = scores.get(refined)
+    if selected is None:
+        margin_bucket = "missing"
+    else:
+        alternatives = [
+            score[1] for key_id, score in scores.items() if key_id != refined
+        ]
+        margin = selected[1] - max(alternatives) if alternatives else 100.0
+        if margin < 0:
+            margin_bucket = "negative"
+        elif margin == 0:
+            margin_bucket = "tie"
+        elif margin <= 10:
+            margin_bucket = "narrow"
+        elif margin <= 30:
+            margin_bucket = "medium"
+        else:
+            margin_bucket = "wide"
+    primary_rank = (
+        str(refined_top.index(primary) + 1) if primary in refined_top else "0"
+    )
+    overlap = str(min(len(set(initial_top) & set(refined_top)), 3))
+    compatible_count = str(min(sum(int(score[0]) for score in scores.values()), 3))
+    return (
+        primary,
+        refined,
+        "same" if primary == refined else "different",
+        primary_rank,
+        overlap,
+        compatible_count,
+        compatibility(refined),
+        compatibility(primary),
+        margin_bucket,
+    )
+
+
+def _grounded_semantic_jaccard(left: frozenset[str], right: frozenset[str]) -> float:
+    union = left | right
+    return len(left & right) / len(union) if union else 1.0
+
+
+def _grounded_semantic_distance(
+    left_state: tuple[str, ...],
+    left_tokens: frozenset[str],
+    right_state: tuple[str, ...],
+    right_tokens: frozenset[str],
+) -> float:
+    discrete = sum(
+        weight * int(left_value != right_value)
+        for weight, left_value, right_value in zip(
+            _GROUNDED_SEMANTIC_STATE_WEIGHTS,
+            left_state,
+            right_state,
+            strict=True,
+        )
+    )
+    return discrete + _GROUNDED_SEMANTIC_LEXICAL_WEIGHT * (
+        1.0 - _grounded_semantic_jaccard(left_tokens, right_tokens)
+    )
+
+
+def _evaluate_training_free_grounded_semantic_policy(
+    trajectories: Sequence[Mapping[str, object]],
+) -> dict[str, object]:
+    """Cross-fit a late grounded-refinement action policy without model updates."""
+
+    frozen = _validate_grounded_semantic_trajectories(trajectories)
+    assignments = _speaker_grouped_fold_assignments(frozen)
+    states = [_grounded_semantic_state(item) for item in frozen]
+    tokens = [_grounded_semantic_tokens(item) for item in frozen]
+    predictions: list[str | None] = [None] * len(frozen)
+    actions: list[str | None] = [None] * len(frozen)
+    memory_audit: list[dict[str, object]] = []
+
+    for fold_index in range(3):
+        fold_id = f"fold-{fold_index}"
+        train_indices = [
+            index
+            for index, item in enumerate(frozen)
+            if assignments[str(item["speaker_id"])] != fold_id
+            and item["primary_key_id"] != item["refined_key_id"]
+        ]
+        test_indices = [
+            index
+            for index, item in enumerate(frozen)
+            if assignments[str(item["speaker_id"])] == fold_id
+        ]
+        for index in test_indices:
+            primary = str(frozen[index]["primary_key_id"])
+            refined = str(frozen[index]["refined_key_id"])
+            ranked: list[tuple[float, str, int]] = []
+            if primary != refined:
+                ranked = sorted(
+                    (
+                        (
+                            _grounded_semantic_distance(
+                                states[index],
+                                tokens[index],
+                                states[train_index],
+                                tokens[train_index],
+                            ),
+                            str(frozen[train_index]["sample_id"]),
+                            train_index,
+                        )
+                        for train_index in train_indices
+                    ),
+                    key=lambda item: (item[0], item[1]),
+                )[:_GROUNDED_SEMANTIC_NEIGHBOR_COUNT]
+            neighbors = [item[2] for item in ranked]
+            helpful = sum(
+                frozen[neighbor]["primary_key_id"] != frozen[neighbor]["gold_key_id"]
+                and frozen[neighbor]["refined_key_id"]
+                == frozen[neighbor]["gold_key_id"]
+                for neighbor in neighbors
+            )
+            harmful = sum(
+                frozen[neighbor]["primary_key_id"] == frozen[neighbor]["gold_key_id"]
+                and frozen[neighbor]["refined_key_id"]
+                != frozen[neighbor]["gold_key_id"]
+                for neighbor in neighbors
+            )
+            net_gain = helpful - harmful
+            accept = (
+                primary != refined
+                and len(neighbors) >= _GROUNDED_SEMANTIC_MIN_SUPPORT
+                and net_gain >= _GROUNDED_SEMANTIC_MIN_NET_GAIN
+                and harmful <= _GROUNDED_SEMANTIC_MAX_HARM
+            )
+            action_id = "accept_refined" if accept else "retain_primary"
+            actions[index] = action_id
+            predictions[index] = refined if accept else primary
+            memory_audit.append(
+                {
+                    "sample_id": str(frozen[index]["sample_id"]),
+                    "fold_id": fold_id,
+                    "state_sha256": _canonical_sha256(
+                        {
+                            "discrete": states[index],
+                            "semantic_tokens": sorted(tokens[index]),
+                        }
+                    ),
+                    "action_id": action_id,
+                    "neighbor_count": len(neighbors),
+                    "helpful_neighbor_count": helpful,
+                    "harmful_neighbor_count": harmful,
+                    "estimated_net_gain": net_gain,
+                    "neighbors": [
+                        {
+                            "sample_id": sample_id,
+                            "distance": distance,
+                            "semantic_jaccard": _grounded_semantic_jaccard(
+                                tokens[index], tokens[neighbor]
+                            ),
+                        }
+                        for distance, sample_id, neighbor in ranked
+                    ],
+                }
+            )
+
+    if any(prediction is None for prediction in predictions) or any(
+        action is None for action in actions
+    ):
+        raise SpeechNativeProfileError(
+            "grounded semantic policy left a held-out trajectory unevaluated"
+        )
+    assignments_by_speaker = {
+        speaker_id: assignments[speaker_id] for speaker_id in sorted(assignments)
+    }
+    speaker_folds = _speaker_fold_metrics(
+        frozen,
+        assignments=assignments_by_speaker,
+        predictions=predictions,
+    )
+    primary_correct = sum(
+        item["primary_key_id"] == item["gold_key_id"] for item in frozen
+    )
+    correct = sum(
+        prediction == item["gold_key_id"]
+        for prediction, item in zip(predictions, frozen, strict=True)
+    )
+    wrong_to_correct = sum(
+        item["primary_key_id"] != item["gold_key_id"]
+        and prediction == item["gold_key_id"]
+        for prediction, item in zip(predictions, frozen, strict=True)
+    )
+    correct_to_wrong = sum(
+        item["primary_key_id"] == item["gold_key_id"]
+        and prediction != item["gold_key_id"]
+        for prediction, item in zip(predictions, frozen, strict=True)
+    )
+    action_counts = Counter(str(action) for action in actions)
+    accept_count = action_counts["accept_refined"]
+    positive_fold_count = sum(
+        int(fold["correct_delta_vs_primary"] > 0) for fold in speaker_folds
+    )
+    worst_fold_delta = min(
+        int(fold["correct_delta_vs_primary"]) for fold in speaker_folds
+    )
+    accept_rate = accept_count / len(frozen)
+    promotion_checks = {
+        "net_gain_at_least_3": correct - primary_correct >= 3,
+        "positive_fold_count_at_least_2": positive_fold_count >= 2,
+        "worst_fold_delta_nonnegative": worst_fold_delta >= 0,
+        "correct_to_wrong_zero": correct_to_wrong == 0,
+        "action_rate_between_0_05_and_0_50": 0.05 <= accept_rate <= 0.50,
+    }
+    action_oracle_correct = sum(
+        item["primary_key_id"] == item["gold_key_id"]
+        or item["refined_key_id"] == item["gold_key_id"]
+        for item in frozen
+    )
+    return {
+        "policy_id": "speaker-grouped-oof-grounded-semantic-action-advantage-v1",
+        "speaker_fold_policy_id": _SPEAKER_FOLD_POLICY_ID,
+        "count": len(frozen),
+        "correct": correct,
+        "accuracy": correct / len(frozen),
+        "primary_correct": primary_correct,
+        "primary_accuracy": primary_correct / len(frozen),
+        "wrong_to_correct_vs_primary": wrong_to_correct,
+        "correct_to_wrong_vs_primary": correct_to_wrong,
+        "oof_action_counts": dict(sorted(action_counts.items())),
+        "non_primary_action_rate": accept_rate,
+        "positive_delta_fold_count": positive_fold_count,
+        "nonnegative_delta_fold_count": sum(
+            int(fold["correct_delta_vs_primary"] >= 0) for fold in speaker_folds
+        ),
+        "worst_fold_delta_vs_primary": worst_fold_delta,
+        "speaker_folds": speaker_folds,
+        "mean_realized_contacts": sum(int(item["total_calls"]) for item in frozen)
+        / len(frozen),
+        "action_variable_count": sum(
+            item["primary_key_id"] != item["refined_key_id"] for item in frozen
+        ),
+        "action_oracle_correct": action_oracle_correct,
+        "action_oracle_headroom_vs_primary": action_oracle_correct - primary_correct,
+        "action_oracle_status": "diagnostic-only-not-an-admissible-controller",
+        "memory_policy": {
+            "neighbor_count": _GROUNDED_SEMANTIC_NEIGHBOR_COUNT,
+            "minimum_support": _GROUNDED_SEMANTIC_MIN_SUPPORT,
+            "minimum_net_gain": _GROUNDED_SEMANTIC_MIN_NET_GAIN,
+            "maximum_observed_harm": _GROUNDED_SEMANTIC_MAX_HARM,
+            "discrete_state_weights": list(_GROUNDED_SEMANTIC_STATE_WEIGHTS),
+            "semantic_jaccard_weight": _GROUNDED_SEMANTIC_LEXICAL_WEIGHT,
+            "late_action_only": True,
+        },
+        "promotion_checks": promotion_checks,
+        "promotion_gate_passed": all(promotion_checks.values()),
+        "memory_audit": sorted(memory_audit, key=lambda item: str(item["sample_id"])),
+    }
+
+
 def _require_string(values: Mapping[str, object], key: str) -> str:
     value = values.get(key)
     if not isinstance(value, str) or not value:
@@ -1185,6 +1594,7 @@ def read_speech_native_predictions(
         grounded_refined_change_count = 0
         grounded_fold_trajectories: list[dict[str, str | None]] = []
         grounded_final_predictions: list[str | None] = []
+        grounded_semantic_trajectories: list[dict[str, object]] = []
         for row in rows:
             if row.get("schema") != "saea-speech-native-decision-v1":
                 raise SpeechNativeProfileError("decision schema mismatch")
@@ -1688,6 +2098,39 @@ def read_speech_native_predictions(
                 grounded_final_predictions.append(
                     key_id if isinstance(key_id, str) else None
                 )
+                if (
+                    profile_agent_policy_id == _M6_SCHEMA_V3_POLICY_ID
+                    and mechanism_control_id == "matched"
+                    and not backtracked
+                    and isinstance(primary_vote, str)
+                    and isinstance(refined_vote, str)
+                    and isinstance(state_document, Mapping)
+                    and isinstance(step_scores, Mapping)
+                    and isinstance(raw_calls, int)
+                ):
+                    grounded_semantic_trajectories.append(
+                        {
+                            "sample_id": sample_id,
+                            "speaker_id": speaker_by_sample[sample_id],
+                            "gold_key_id": key_by_label[gold[sample_id]],
+                            "primary_key_id": primary_vote,
+                            "refined_key_id": refined_vote,
+                            "initial_top_key_ids": initial_top_ids,
+                            "refined_top_key_ids": tuple(raw_top_key_ids),
+                            "verifier_scores": {
+                                score_key_id: (
+                                    bool(score_document["compatible"]),
+                                    float(score_document["confidence"]),
+                                )
+                                for score_key_id, score_document in step_scores.items()
+                            },
+                            "grounded_query_state": {
+                                field: state_document[field]
+                                for field in _GROUNDED_SEMANTIC_STATE_FIELDS
+                            },
+                            "total_calls": raw_calls,
+                        }
+                    )
         if seen != set(gold):
             raise SpeechNativeProfileError("decision sample set does not equal the frozen split")
         if (
@@ -1868,6 +2311,21 @@ def read_speech_native_predictions(
                             ),
                             "action_counts": dict(
                                 sorted(agent_action_counts.items())
+                            ),
+                            **(
+                                {
+                                    "training_free_grounded_semantic_policy": (
+                                        _evaluate_training_free_grounded_semantic_policy(
+                                            grounded_semantic_trajectories
+                                        )
+                                        if len(grounded_semantic_trajectories)
+                                        == len(gold)
+                                        else None
+                                    )
+                                }
+                                if profile_agent_policy_id == _M6_SCHEMA_V3_POLICY_ID
+                                and mechanism_control_id == "matched"
+                                else {}
                             ),
                         }
                         if matcher_policy_id == "M6"
