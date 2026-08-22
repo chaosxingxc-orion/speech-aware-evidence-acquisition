@@ -534,6 +534,17 @@ def main(argv: list[str] | None = None) -> int:
     speech_profile.add_argument("--host", default="127.0.0.1")
     speech_profile.add_argument("--port", type=int, default=8080)
     speech_profile.add_argument(
+        "--session-receipt",
+        default=None,
+        help=(
+            "attach to an already-resident receipt-pinned inference server; its "
+            "binary, decoder, full launch argv, configured environment, process, "
+            "socket, and mmproj-free state are reverified for this attempt, and "
+            "the server remains resident after the attempt. Omit only for the "
+            "legacy attempt-owned start/stop lifecycle"
+        ),
+    )
+    speech_profile.add_argument(
         "--repo-root",
         default=None,
         help="TEST-ONLY repository-root override; real flights omit it",

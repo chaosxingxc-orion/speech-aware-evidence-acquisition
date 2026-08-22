@@ -18,7 +18,7 @@ import re
 from dataclasses import asdict
 from datetime import datetime
 from pathlib import Path
-from typing import Mapping, Sequence
+from typing import Callable, Mapping, Sequence
 
 from ...contracts import ExecutionPlan
 from ...data.lock import asset_dir, data_root, load_lock, umbrella_lock_path
@@ -44,7 +44,17 @@ from ..config import (
     runtime_receipt_relpath,
 )
 from ..resources import resolve_resource_sampler
-from ..session import load_runtime_receipt, start_session, stop_session
+from ..session import (
+    SessionError,
+    SessionReceipt,
+    _model_file_argv,
+    _pinned_model_files,
+    attach_session,
+    load_runtime_receipt,
+    start_session,
+    stop_session,
+    write_session_receipt,
+)
 from .run import load_split
 from .smoke import _server_args, _server_env, _write_inference_process_audit
 
@@ -2417,9 +2427,120 @@ def _trace_usage_summary(path: Path) -> dict[str, int]:
     }
 
 
-def _scan_server_log(path: Path) -> dict[str, object]:
+def _read_live_process_environment(
+    pid: int, *, proc_root: Path = Path("/proc")
+) -> dict[str, str]:
+    path = Path(proc_root) / str(pid) / "environ"
     try:
-        text = path.read_text(encoding="utf-8", errors="replace").casefold()
+        raw_entries = path.read_bytes().split(b"\0")
+    except OSError as error:
+        raise SessionError(
+            f"cannot read resident session environment through {path}: {error}"
+        ) from error
+    environment: dict[str, str] = {}
+    try:
+        for raw in raw_entries:
+            if not raw:
+                continue
+            key, separator, value = raw.partition(b"=")
+            if not separator or not key:
+                raise UnicodeError("environment entry lacks a non-empty key")
+            decoded_key = key.decode("utf-8", "strict")
+            if decoded_key in environment:
+                raise UnicodeError(f"duplicate environment key {decoded_key!r}")
+            environment[decoded_key] = value.decode("utf-8", "strict")
+    except UnicodeError as error:
+        raise SessionError(
+            f"cannot decode resident session environment through {path}: {error}"
+        ) from error
+    return environment
+
+
+def _assert_reusable_session_profile(
+    session: SessionReceipt,
+    *,
+    host: str,
+    port: int,
+    model_argv: Sequence[str],
+    server_args: Sequence[str],
+    server_env: Mapping[str, str],
+    live_environment: Mapping[str, str] | None = None,
+) -> SessionReceipt:
+    """Fail closed unless a resident inference service has this exact profile."""
+
+    session.validate()
+    if session.role != "inference":
+        raise SessionError("speech-native reuse requires an inference session")
+    expected_argv = (
+        session.argv[0],
+        "--host",
+        host,
+        "--port",
+        str(port),
+        *tuple(model_argv),
+        *tuple(server_args),
+    )
+    if session.argv != expected_argv:
+        raise SessionError(
+            "resident session launch argv differs from the composed speech-native "
+            "serving profile; model reload is required"
+        )
+    expected_env_keys = tuple(sorted(server_env))
+    if session.server_env_keys != expected_env_keys:
+        raise SessionError(
+            "resident session environment keys differ from the composed speech-native "
+            "serving profile; model reload is required"
+        )
+    observed_environment = (
+        dict(live_environment)
+        if live_environment is not None
+        else _read_live_process_environment(session.pid)
+    )
+    mismatches = {
+        key: {
+            "expected": expected,
+            "observed": observed_environment.get(key),
+        }
+        for key, expected in server_env.items()
+        if observed_environment.get(key) != expected
+    }
+    if mismatches:
+        raise SessionError(
+            "resident session server environment differs from the composed "
+            f"speech-native serving profile: {mismatches!r}"
+        )
+    return session
+
+
+def _release_speech_native_session(
+    session: SessionReceipt,
+    *,
+    owns_process: bool,
+    runtime_receipt: Mapping[str, object],
+    runtime_root: Path,
+    receipt_path: Path,
+    stop: Callable[..., Mapping[str, object]] = stop_session,
+) -> Mapping[str, object] | None:
+    """Stop only an attempt-owned server; attached resident services survive."""
+
+    if not owns_process:
+        return None
+    return stop(
+        session,
+        runtime_receipt=runtime_receipt,
+        runtime_root=Path(runtime_root),
+        force_after_timeout=True,
+        receipt_path=Path(receipt_path),
+    )
+
+
+def _scan_server_log(path: Path, *, start_offset: int = 0) -> dict[str, object]:
+    if isinstance(start_offset, bool) or not isinstance(start_offset, int) or start_offset < 0:
+        raise SpeechNativeProfileError("server log start_offset must be a non-negative integer")
+    try:
+        with path.open("rb") as handle:
+            handle.seek(start_offset)
+            text = handle.read().decode("utf-8", "replace").casefold()
     except OSError as error:
         raise SpeechNativeProfileError(f"cannot read profile server log: {error}") from error
 
@@ -2651,23 +2772,86 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
     session_receipt_path = run_dir / f"{plan.run_id}.session-receipt.json"
     stop_receipt_path = run_dir / f"{plan.run_id}.session-stop-receipt.json"
     audit_path = run_dir / f"{plan.run_id}.mmproj-audit.json"
-    server_log_path = run_dir / f"{plan.run_id}.server.log"
+    attempt_server_log_path = run_dir / f"{plan.run_id}.server.log"
     flight_receipt_path = run_dir / "flight-receipt.json"
     decisions_path = run_dir / "decisions.jsonl"
-    session = start_session(
-        runtime_root=Path(args.runtime_root),
-        data_root=root,
-        runtime_receipt=runtime_receipt,
-        host=args.host,
-        port=args.port,
-        session_id=f"{plan.run_id}-{plan.attempt_id}",
-        extra_argv=_server_args(values),
-        extra_env=_server_env(values),
-        receipt_path=session_receipt_path,
-        server_log_path=server_log_path,
-        role=runtime_receipt.get("role", "legacy"),
-        model_root=model_root,
-    )
+    runtime_root = Path(args.runtime_root)
+    server_args = _server_args(values)
+    server_env = _server_env(values)
+    role = runtime_receipt.get("role", "legacy")
+    source_session_receipt = getattr(args, "session_receipt", None)
+    source_session_receipt_sha256: str | None = None
+    owns_session_process = source_session_receipt is None
+    if source_session_receipt is None:
+        session = start_session(
+            runtime_root=runtime_root,
+            data_root=root,
+            runtime_receipt=runtime_receipt,
+            host=args.host,
+            port=args.port,
+            session_id=f"{plan.run_id}-{plan.attempt_id}",
+            extra_argv=server_args,
+            extra_env=server_env,
+            receipt_path=session_receipt_path,
+            server_log_path=attempt_server_log_path,
+            role=role,
+            model_root=model_root,
+        )
+        active_server_log_path = attempt_server_log_path
+        server_log_start_offset = 0
+    else:
+        source_path = Path(source_session_receipt).resolve()
+        source_hash_before = _sha256_file(source_path)
+        session = attach_session(
+            source_path,
+            runtime_receipt=runtime_receipt,
+            runtime_root=runtime_root,
+        )
+        source_hash_after = _sha256_file(source_path)
+        if source_hash_after != source_hash_before:
+            raise SpeechNativeProfileError(
+                "resident session receipt changed while it was being attached"
+            )
+        model_argv = _model_file_argv(
+            root,
+            _pinned_model_files(runtime_receipt),
+            role=str(role),
+            model_root=model_root,
+        )
+        _assert_reusable_session_profile(
+            session,
+            host=args.host,
+            port=args.port,
+            model_argv=model_argv,
+            server_args=server_args,
+            server_env=server_env,
+        )
+        if session.server_log_path is None:
+            raise SpeechNativeProfileError(
+                "resident speech-native service must persist a server log"
+            )
+        active_server_log_path = Path(session.server_log_path)
+        prior_server_scan = _scan_server_log(active_server_log_path)
+        if any(
+            prior_server_scan[field]
+            for field in (
+                "oom_marker_hits",
+                "host_spill_marker_hits",
+                "runaway_marker_hits",
+            )
+        ):
+            raise SpeechNativeProfileError(
+                "resident speech-native service log contains a prior fatal marker; "
+                "restart the service before reuse"
+            )
+        try:
+            server_log_start_offset = active_server_log_path.stat().st_size
+        except OSError as error:
+            raise SpeechNativeProfileError(
+                f"cannot stat resident speech-native server log: {error}"
+            ) from error
+        write_session_receipt(session_receipt_path, session)
+        source_session_receipt_sha256 = source_hash_before
     client: FrozenCoreClient | None = None
     close_summary: dict[str, object] | None = None
     sampler = resolve_resource_sampler()
@@ -2727,11 +2911,11 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
             except BaseException as close_error:
                 if failure is None:
                     failure = close_error
-        stop_session(
+        _release_speech_native_session(
             session,
+            owns_process=owns_session_process,
             runtime_receipt=runtime_receipt,
-            runtime_root=Path(args.runtime_root),
-            force_after_timeout=True,
+            runtime_root=runtime_root,
             receipt_path=stop_receipt_path,
         )
 
@@ -2744,7 +2928,9 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
         and not isinstance(gpu_seconds, bool)
     ):
         attempt.record_gpu_seconds(float(gpu_seconds))
-    server_scan = _scan_server_log(server_log_path)
+    server_scan = _scan_server_log(
+        active_server_log_path, start_offset=server_log_start_offset
+    )
     actual_contact_count = sum(outcome.decision.calls for outcome in outcomes)
     if result_mode == "predictions" and failure is None:
         task_by_id = {task.task_id: task for task in tasks}
@@ -2849,7 +3035,16 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
         "server_log_scan": server_scan,
         "process_audit_sha256": _sha256_file(audit_path),
         "session_receipt_sha256": _sha256_file(session_receipt_path),
-        "session_stop_receipt_sha256": _sha256_file(stop_receipt_path),
+        "session_stop_receipt_sha256": (
+            _sha256_file(stop_receipt_path) if stop_receipt_path.is_file() else None
+        ),
+        "session_lifecycle": {
+            "mode": "attempt-owned" if owns_session_process else "resident-attached",
+            "resident_reused": not owns_session_process,
+            "source_session_receipt_sha256": source_session_receipt_sha256,
+            "server_log_path": str(active_server_log_path),
+            "server_log_start_offset": server_log_start_offset,
+        },
         "packet_promotion_receipt_sha256": _sha256_file(packet_receipt_path),
         "binding_file_sha256": _sha256_file(binding_path),
         "response_text_sha256": [

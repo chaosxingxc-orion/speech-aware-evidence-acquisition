@@ -16,13 +16,23 @@ import pytest
 
 from speech_aware_evidence_acquisition.core.model import SliceRegistry
 from speech_aware_evidence_acquisition.core.driver.speech_native import (
+    _assert_reusable_session_profile,
     _evaluate_training_free_contextual_policy,
     _evaluate_training_free_episodic_policy,
     _build_audio_key_bindings,
     _evaluate_training_free_agent_policies,
+    _release_speech_native_session,
+    _scan_server_log,
     build_profile_tasks,
     profile_timing_metrics,
     read_speech_native_predictions,
+)
+from speech_aware_evidence_acquisition.contracts import STUDY_SLUG
+from speech_aware_evidence_acquisition.core.session import (
+    SESSION_RECEIPT_SCHEMA_V2,
+    ModelFileRef,
+    SessionError,
+    SessionReceipt,
 )
 from speech_aware_evidence_acquisition.e0.artifacts import REPO_ROOT
 from speech_aware_evidence_acquisition.core.tracing import DispatchingSink, TraceSink
@@ -85,6 +95,160 @@ _KEY_CARDS = (
         value_label="email",
     ).validate(),
 )
+
+
+def _resident_inference_session(**overrides):
+    values = {
+        "schema": SESSION_RECEIPT_SCHEMA_V2,
+        "study": STUDY_SLUG,
+        "session_id": "speech-native-resident-service",
+        "binary_path": "llama.cpp/build/bin/llama-server",
+        "binary_sha256": "a" * 64,
+        "argv": (
+            "/runtime/llama.cpp/build/bin/llama-server",
+            "--host",
+            "127.0.0.1",
+            "--port",
+            "8080",
+            "-m",
+            "/models/decoder.gguf",
+            "--no-mmproj",
+            "-c",
+            "65536",
+            "-np",
+            "16",
+        ),
+        "pid": 12345,
+        "host": "127.0.0.1",
+        "port": 8080,
+        "model_files": (
+            ModelFileRef(path="models/decoder.gguf", sha256="b" * 64),
+        ),
+        "started_at": "2026-08-22T00:00:00+00:00",
+        "startup_stdout_sha256": "c" * 64,
+        "server_log_path": "/runs/services/speech-native/server.log",
+        "role": "inference",
+        "server_env_keys": (
+            "LLAMA_SPEECH_DECODER_SHA256",
+            "LLAMA_SPEECH_FEATURE_ROOT",
+        ),
+    }
+    values.update(overrides)
+    return SessionReceipt(**values).validate()
+
+
+def test_reusable_session_profile_accepts_exact_argv_and_environment():
+    session = _resident_inference_session()
+
+    assert (
+        _assert_reusable_session_profile(
+            session,
+            host="127.0.0.1",
+            port=8080,
+            model_argv=("-m", "/models/decoder.gguf", "--no-mmproj"),
+            server_args=("-c", "65536", "-np", "16"),
+            server_env={
+                "LLAMA_SPEECH_DECODER_SHA256": "decoder-sha",
+                "LLAMA_SPEECH_FEATURE_ROOT": "/features/slurp",
+            },
+            live_environment={
+                "LLAMA_SPEECH_DECODER_SHA256": "decoder-sha",
+                "LLAMA_SPEECH_FEATURE_ROOT": "/features/slurp",
+            },
+        )
+        is session
+    )
+
+
+def test_reusable_session_profile_refuses_different_batch_geometry():
+    session = _resident_inference_session()
+
+    with pytest.raises(SessionError, match="launch argv"):
+        _assert_reusable_session_profile(
+            session,
+            host="127.0.0.1",
+            port=8080,
+            model_argv=("-m", "/models/decoder.gguf", "--no-mmproj"),
+            server_args=("-c", "65536", "-np", "10"),
+            server_env={
+                "LLAMA_SPEECH_DECODER_SHA256": "decoder-sha",
+                "LLAMA_SPEECH_FEATURE_ROOT": "/features/slurp",
+            },
+            live_environment={
+                "LLAMA_SPEECH_DECODER_SHA256": "decoder-sha",
+                "LLAMA_SPEECH_FEATURE_ROOT": "/features/slurp",
+            },
+        )
+
+
+def test_reusable_session_profile_refuses_different_feature_root():
+    session = _resident_inference_session()
+
+    with pytest.raises(SessionError, match="server environment"):
+        _assert_reusable_session_profile(
+            session,
+            host="127.0.0.1",
+            port=8080,
+            model_argv=("-m", "/models/decoder.gguf", "--no-mmproj"),
+            server_args=("-c", "65536", "-np", "16"),
+            server_env={
+                "LLAMA_SPEECH_DECODER_SHA256": "decoder-sha",
+                "LLAMA_SPEECH_FEATURE_ROOT": "/features/slurp",
+            },
+            live_environment={
+                "LLAMA_SPEECH_DECODER_SHA256": "decoder-sha",
+                "LLAMA_SPEECH_FEATURE_ROOT": "/features/other",
+            },
+        )
+
+
+def test_attached_session_release_does_not_stop_resident_server(tmp_path):
+    stopped = []
+
+    result = _release_speech_native_session(
+        _resident_inference_session(),
+        owns_process=False,
+        runtime_receipt={"runtime": "pinned"},
+        runtime_root=tmp_path,
+        receipt_path=tmp_path / "must-not-exist.json",
+        stop=lambda *args, **kwargs: stopped.append((args, kwargs)),
+    )
+
+    assert result is None
+    assert stopped == []
+    assert not (tmp_path / "must-not-exist.json").exists()
+
+
+def test_owned_session_release_stops_exact_process(tmp_path):
+    stopped = []
+
+    result = _release_speech_native_session(
+        _resident_inference_session(),
+        owns_process=True,
+        runtime_receipt={"runtime": "pinned"},
+        runtime_root=tmp_path,
+        receipt_path=tmp_path / "stop.json",
+        stop=lambda session, **kwargs: stopped.append((session, kwargs)) or {"stopped": True},
+    )
+
+    assert result == {"stopped": True}
+    assert stopped[0][0].session_id == "speech-native-resident-service"
+    assert stopped[0][1]["force_after_timeout"] is True
+
+
+def test_server_log_scan_is_scoped_to_current_attempt_window(tmp_path):
+    log = tmp_path / "resident-server.log"
+    old = "CUDA error out of memory\ndecoded mmproj-free speech feature chunk\n"
+    current = (
+        "decoded mmproj-free speech feature chunk\n"
+        "decoded mmproj-free speech feature chunk\n"
+    )
+    log.write_text(old + current, encoding="utf-8")
+
+    scan = _scan_server_log(log, start_offset=len(old.encode("utf-8")))
+
+    assert scan["oom_marker_hits"] == []
+    assert scan["mmproj_free_chunk_count"] == 2
 
 
 class _SpeechFeatureClient:
