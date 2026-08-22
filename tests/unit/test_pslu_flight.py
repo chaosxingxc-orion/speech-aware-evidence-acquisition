@@ -8292,6 +8292,47 @@ def test_speech_native_scale_capacity_audit_accounts_for_cumulative_memory_and_h
     ] == 1.0
     assert audit["checks"]["cumulative_memory_action_complete"] is True
     assert audit["checks"]["cumulative_memory_scenario_action_complete"] is True
+    assert audit["agentloop_actionability"]["stable_action_pair_count"] == 1
+    assert audit["agentloop_actionability"]["residual_signature_pair_count"] == 1
+    assert audit["allocations"]["cumulative_memory"][
+        "stable_shared_action_query_count"
+    ] == 6
+    assert audit["allocations"]["cumulative_memory"][
+        "residual_shared_signature_query_count"
+    ] == 6
+    assert audit["allocations"]["cumulative_memory"][
+        "entity_free_stable_action_query_count"
+    ] == 6
+    assert audit["allocations"]["cumulative_memory"][
+        "stable_action_pair_bilateral_coverage"
+    ] == {"covered": 1, "required": 1}
+    assert audit["allocations"]["cumulative_memory"][
+        "residual_signature_pair_bilateral_coverage"
+    ] == {"covered": 1, "required": 1}
+    assert audit["allocations"]["cumulative_memory"][
+        "residual_signature_pair_minimum_side_support"
+    ] == {
+        "minimum": 3,
+        "pairs_at_least_2": 1,
+        "pairs_at_least_3": 1,
+        "pairs_at_least_5": 0,
+        "required": 1,
+    }
+    assert audit["allocation_policy"][
+        "new_memory_prioritizes_residual_pair_completion"
+    ] is True
+    assert audit["allocation_policy"]["id"] == (
+        "speaker-unseen-holdout-residual-support-memory-v4"
+    )
+    assert audit["allocation_policy"][
+        "new_memory_prioritizes_residual_pair_minimum_support"
+    ] is True
+    assert audit["checks"][
+        "cumulative_memory_stable_action_pair_complete"
+    ] is True
+    assert audit["checks"][
+        "cumulative_memory_residual_signature_pair_complete"
+    ] is True
     assert audit["admission"]["status"] == "feasible"
     assert audit["admission"]["new_model_contact_authorized"] is False
     serialized = json.dumps(audit, sort_keys=True)

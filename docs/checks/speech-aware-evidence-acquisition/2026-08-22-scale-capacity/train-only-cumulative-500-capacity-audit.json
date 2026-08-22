@@ -5,6 +5,14 @@
     "reason": "The aggregate train-only ladder is feasible; exact identities remain unfrozen and require a later owner-approved registration.",
     "status": "feasible"
   },
+  "agentloop_actionability": {
+    "interpretation": "Stable shared actions expose a candidate boundary action. Exact shared action-plus-entity signatures mark residual cases where entity extraction alone cannot resolve the label.",
+    "minimum_bilateral_train_support": 5,
+    "residual_boundary_scenario_pair_count": 55,
+    "residual_signature_pair_count": 108,
+    "stable_action_pair_count": 59,
+    "stable_boundary_scenario_pair_count": 55
+  },
   "allocation_policy": {
     "holdout_prioritizes_unseen_speakers": true,
     "holdout_quota_by_scenario": {
@@ -28,7 +36,9 @@
       "weather": 8
     },
     "holdout_reserved_before_new_memory": true,
-    "id": "speaker-unseen-holdout-information-balanced-memory-v2",
+    "id": "speaker-unseen-holdout-residual-support-memory-v4",
+    "new_memory_prioritizes_residual_pair_completion": true,
+    "new_memory_prioritizes_residual_pair_minimum_support": true,
     "new_memory_prioritizes_unseen_action_then_signature": true,
     "new_memory_quota_by_scenario": {
       "alarm": 14,
@@ -56,6 +66,7 @@
     "available_pool": {
       "action_count": 46,
       "action_entity_signature_count": 729,
+      "entity_free_stable_action_query_count": 5048,
       "per_scenario": {
         "alarm": {
           "action_count": 3,
@@ -149,19 +160,44 @@
         }
       },
       "query_count": 36695,
+      "residual_shared_signature_query_count": 9906,
+      "residual_signature_pair_bilateral_coverage": {
+        "covered": 108,
+        "required": 108
+      },
+      "residual_signature_pair_minimum_side_support": {
+        "minimum": 13,
+        "pairs_at_least_2": 108,
+        "pairs_at_least_3": 108,
+        "pairs_at_least_5": 108,
+        "required": 108
+      },
       "scenario_count": 18,
       "shared_action_entity_query_count": 11780,
       "speaker_count": 128,
+      "stable_action_pair_bilateral_coverage": {
+        "covered": 59,
+        "required": 59
+      },
+      "stable_action_pair_minimum_side_support": {
+        "minimum": 301,
+        "pairs_at_least_2": 59,
+        "pairs_at_least_3": 59,
+        "pairs_at_least_5": 59,
+        "required": 59
+      },
+      "stable_shared_action_query_count": 15642,
       "without_entities_count": 13185,
       "without_entities_rate": 0.35931326
     },
     "cumulative_memory": {
       "action_count": 46,
-      "action_entity_signature_count": 286,
+      "action_entity_signature_count": 171,
+      "entity_free_stable_action_query_count": 84,
       "per_scenario": {
         "alarm": {
           "action_count": 3,
-          "action_entity_signature_count": 20,
+          "action_entity_signature_count": 15,
           "query_count": 20
         },
         "audio": {
@@ -171,7 +207,7 @@
         },
         "calendar": {
           "action_count": 3,
-          "action_entity_signature_count": 20,
+          "action_entity_signature_count": 17,
           "query_count": 20
         },
         "cooking": {
@@ -181,12 +217,12 @@
         },
         "datetime": {
           "action_count": 2,
-          "action_entity_signature_count": 17,
+          "action_entity_signature_count": 7,
           "query_count": 20
         },
         "email": {
           "action_count": 4,
-          "action_entity_signature_count": 19,
+          "action_entity_signature_count": 7,
           "query_count": 20
         },
         "general": {
@@ -201,17 +237,17 @@
         },
         "lists": {
           "action_count": 3,
-          "action_entity_signature_count": 20,
+          "action_entity_signature_count": 7,
           "query_count": 20
         },
         "music": {
           "action_count": 4,
-          "action_entity_signature_count": 17,
+          "action_entity_signature_count": 5,
           "query_count": 20
         },
         "news": {
           "action_count": 1,
-          "action_entity_signature_count": 17,
+          "action_entity_signature_count": 7,
           "query_count": 20
         },
         "play": {
@@ -231,35 +267,60 @@
         },
         "social": {
           "action_count": 2,
-          "action_entity_signature_count": 17,
+          "action_entity_signature_count": 4,
           "query_count": 20
         },
         "takeaway": {
           "action_count": 2,
-          "action_entity_signature_count": 20,
+          "action_entity_signature_count": 6,
           "query_count": 20
         },
         "transport": {
           "action_count": 4,
-          "action_entity_signature_count": 19,
+          "action_entity_signature_count": 6,
           "query_count": 20
         },
         "weather": {
           "action_count": 1,
-          "action_entity_signature_count": 19,
+          "action_entity_signature_count": 7,
           "query_count": 20
         }
       },
       "query_count": 360,
+      "residual_shared_signature_query_count": 182,
+      "residual_signature_pair_bilateral_coverage": {
+        "covered": 108,
+        "required": 108
+      },
+      "residual_signature_pair_minimum_side_support": {
+        "minimum": 1,
+        "pairs_at_least_2": 83,
+        "pairs_at_least_3": 71,
+        "pairs_at_least_5": 49,
+        "required": 108
+      },
       "scenario_count": 18,
-      "shared_action_entity_query_count": 89,
+      "shared_action_entity_query_count": 188,
       "speaker_count": 77,
-      "without_entities_count": 74,
-      "without_entities_rate": 0.20555556
+      "stable_action_pair_bilateral_coverage": {
+        "covered": 59,
+        "required": 59
+      },
+      "stable_action_pair_minimum_side_support": {
+        "minimum": 4,
+        "pairs_at_least_2": 59,
+        "pairs_at_least_3": 59,
+        "pairs_at_least_5": 56,
+        "required": 59
+      },
+      "stable_shared_action_query_count": 197,
+      "without_entities_count": 133,
+      "without_entities_rate": 0.36944444
     },
     "existing_memory": {
       "action_count": 30,
       "action_entity_signature_count": 65,
+      "entity_free_stable_action_query_count": 15,
       "per_scenario": {
         "alarm": {
           "action_count": 3,
@@ -353,15 +414,40 @@
         }
       },
       "query_count": 108,
+      "residual_shared_signature_query_count": 32,
+      "residual_signature_pair_bilateral_coverage": {
+        "covered": 29,
+        "required": 108
+      },
+      "residual_signature_pair_minimum_side_support": {
+        "minimum": 0,
+        "pairs_at_least_2": 7,
+        "pairs_at_least_3": 0,
+        "pairs_at_least_5": 0,
+        "required": 108
+      },
       "scenario_count": 18,
       "shared_action_entity_query_count": 37,
       "speaker_count": 57,
+      "stable_action_pair_bilateral_coverage": {
+        "covered": 59,
+        "required": 59
+      },
+      "stable_action_pair_minimum_side_support": {
+        "minimum": 1,
+        "pairs_at_least_2": 40,
+        "pairs_at_least_3": 15,
+        "pairs_at_least_5": 3,
+        "required": 59
+      },
+      "stable_shared_action_query_count": 47,
       "without_entities_count": 45,
       "without_entities_rate": 0.41666667
     },
     "holdout": {
       "action_count": 30,
       "action_entity_signature_count": 74,
+      "entity_free_stable_action_query_count": 27,
       "per_scenario": {
         "alarm": {
           "action_count": 3,
@@ -455,19 +541,44 @@
         }
       },
       "query_count": 140,
+      "residual_shared_signature_query_count": 44,
+      "residual_signature_pair_bilateral_coverage": {
+        "covered": 54,
+        "required": 108
+      },
+      "residual_signature_pair_minimum_side_support": {
+        "minimum": 0,
+        "pairs_at_least_2": 18,
+        "pairs_at_least_3": 3,
+        "pairs_at_least_5": 0,
+        "required": 108
+      },
       "scenario_count": 18,
       "shared_action_entity_query_count": 47,
       "speaker_count": 37,
+      "stable_action_pair_bilateral_coverage": {
+        "covered": 59,
+        "required": 59
+      },
+      "stable_action_pair_minimum_side_support": {
+        "minimum": 2,
+        "pairs_at_least_2": 59,
+        "pairs_at_least_3": 30,
+        "pairs_at_least_5": 3,
+        "required": 59
+      },
+      "stable_shared_action_query_count": 60,
       "without_entities_count": 60,
       "without_entities_rate": 0.42857143
     },
     "new_memory": {
-      "action_count": 43,
-      "action_entity_signature_count": 230,
+      "action_count": 35,
+      "action_entity_signature_count": 118,
+      "entity_free_stable_action_query_count": 69,
       "per_scenario": {
         "alarm": {
           "action_count": 3,
-          "action_entity_signature_count": 14,
+          "action_entity_signature_count": 10,
           "query_count": 14
         },
         "audio": {
@@ -477,7 +588,7 @@
         },
         "calendar": {
           "action_count": 3,
-          "action_entity_signature_count": 14,
+          "action_entity_signature_count": 12,
           "query_count": 14
         },
         "cooking": {
@@ -487,12 +598,12 @@
         },
         "datetime": {
           "action_count": 2,
-          "action_entity_signature_count": 14,
+          "action_entity_signature_count": 7,
           "query_count": 14
         },
         "email": {
-          "action_count": 4,
-          "action_entity_signature_count": 14,
+          "action_count": 2,
+          "action_entity_signature_count": 4,
           "query_count": 14
         },
         "general": {
@@ -506,18 +617,18 @@
           "query_count": 14
         },
         "lists": {
-          "action_count": 3,
-          "action_entity_signature_count": 14,
+          "action_count": 2,
+          "action_entity_signature_count": 3,
           "query_count": 14
         },
         "music": {
-          "action_count": 4,
-          "action_entity_signature_count": 14,
+          "action_count": 3,
+          "action_entity_signature_count": 3,
           "query_count": 14
         },
         "news": {
           "action_count": 1,
-          "action_entity_signature_count": 14,
+          "action_entity_signature_count": 5,
           "query_count": 14
         },
         "play": {
@@ -536,38 +647,64 @@
           "query_count": 14
         },
         "social": {
-          "action_count": 2,
-          "action_entity_signature_count": 14,
+          "action_count": 1,
+          "action_entity_signature_count": 2,
           "query_count": 14
         },
         "takeaway": {
-          "action_count": 2,
-          "action_entity_signature_count": 14,
+          "action_count": 1,
+          "action_entity_signature_count": 1,
           "query_count": 14
         },
         "transport": {
-          "action_count": 3,
-          "action_entity_signature_count": 14,
+          "action_count": 1,
+          "action_entity_signature_count": 2,
           "query_count": 14
         },
         "weather": {
           "action_count": 1,
-          "action_entity_signature_count": 14,
+          "action_entity_signature_count": 5,
           "query_count": 14
         }
       },
       "query_count": 252,
+      "residual_shared_signature_query_count": 150,
+      "residual_signature_pair_bilateral_coverage": {
+        "covered": 98,
+        "required": 108
+      },
+      "residual_signature_pair_minimum_side_support": {
+        "minimum": 0,
+        "pairs_at_least_2": 82,
+        "pairs_at_least_3": 52,
+        "pairs_at_least_5": 16,
+        "required": 108
+      },
       "scenario_count": 18,
-      "shared_action_entity_query_count": 52,
-      "speaker_count": 66,
-      "without_entities_count": 29,
-      "without_entities_rate": 0.11507937
+      "shared_action_entity_query_count": 151,
+      "speaker_count": 69,
+      "stable_action_pair_bilateral_coverage": {
+        "covered": 59,
+        "required": 59
+      },
+      "stable_action_pair_minimum_side_support": {
+        "minimum": 1,
+        "pairs_at_least_2": 57,
+        "pairs_at_least_3": 56,
+        "pairs_at_least_5": 55,
+        "required": 59
+      },
+      "stable_shared_action_query_count": 150,
+      "without_entities_count": 88,
+      "without_entities_rate": 0.34920635
     }
   },
   "checks": {
     "complete_scenario_roster": true,
     "cumulative_memory_action_complete": true,
+    "cumulative_memory_residual_signature_pair_complete": true,
     "cumulative_memory_scenario_action_complete": true,
+    "cumulative_memory_stable_action_pair_complete": true,
     "holdout_capacity": true,
     "memory_holdout_speaker_disjoint": true,
     "new_memory_capacity": true,
@@ -577,7 +714,7 @@
   "information_interpretation": {
     "cumulative_memory_action_coverage_rate": 1.0,
     "cumulative_memory_scenario_action_coverage_rate": 1.0,
-    "cumulative_memory_shared_signature_query_count": 89,
+    "cumulative_memory_shared_signature_query_count": 188,
     "holdout_shared_signature_query_count": 47,
     "rule": "The memory adds decision evidence only through train-derived key and boundary information. Generated loop state may denoise speech but is not counted as new label information."
   },

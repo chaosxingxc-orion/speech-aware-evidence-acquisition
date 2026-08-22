@@ -8783,6 +8783,71 @@ def audit_speech_native_scale_capacity(
     new_memory_count = memory_query_count - len(memory_items)
     new_memory_quotas = balanced_quotas(new_memory_count, "scale-memory-quota")
 
+    shared_signature_scenarios: dict[tuple[str, tuple[str, ...]], set[str]] = (
+        defaultdict(set)
+    )
+    for candidate in candidates:
+        shared_signature_scenarios[
+            (candidate.action, candidate.entity_types)
+        ].add(candidate.scenario)
+    shared_signatures = {
+        signature
+        for signature, labels in shared_signature_scenarios.items()
+        if len(labels) > 1
+    }
+    unique_candidate_utterances = {
+        (
+            candidate.utterance,
+            candidate.scenario,
+            candidate.action,
+            candidate.entity_types,
+        )
+        for candidate in candidates
+    }
+    action_scenario_counts: dict[str, Counter[str]] = defaultdict(Counter)
+    signature_scenario_counts: dict[
+        tuple[str, tuple[str, ...]], Counter[str]
+    ] = defaultdict(Counter)
+    for _utterance, scenario, action, entity_types in unique_candidate_utterances:
+        action_scenario_counts[action][scenario] += 1
+        signature_scenario_counts[(action, entity_types)][scenario] += 1
+
+    stable_action_pairs: set[tuple[str, str, str]] = set()
+    for action, counts in action_scenario_counts.items():
+        stable_scenarios = sorted(
+            scenario
+            for scenario, count in counts.items()
+            if count >= _STABLE_SHARED_ACTION_MIN_SUPPORT
+        )
+        for left_index, left in enumerate(stable_scenarios):
+            stable_action_pairs.update(
+                (left, right, action) for right in stable_scenarios[left_index + 1 :]
+            )
+    residual_signature_pairs: set[
+        tuple[str, str, str, tuple[str, ...]]
+    ] = set()
+    for (action, entity_types), counts in signature_scenario_counts.items():
+        stable_scenarios = sorted(
+            scenario
+            for scenario, count in counts.items()
+            if count >= _STABLE_SHARED_ACTION_MIN_SUPPORT
+        )
+        for left_index, left in enumerate(stable_scenarios):
+            residual_signature_pairs.update(
+                (left, right, action, entity_types)
+                for right in stable_scenarios[left_index + 1 :]
+            )
+    stable_action_sides = {
+        (scenario, action)
+        for left, right, action in stable_action_pairs
+        for scenario in (left, right)
+    }
+    residual_signature_sides = {
+        (scenario, action, entity_types)
+        for left, right, action, entity_types in residual_signature_pairs
+        for scenario in (left, right)
+    }
+
     def select(
         pool: Sequence[_SpeechNativeCapacityCandidate],
         quotas: Mapping[str, int],
@@ -8792,12 +8857,82 @@ def audit_speech_native_scale_capacity(
         initial_observations: Sequence[Mapping[str, object]] = (),
         information_balanced: bool = False,
         speaker_balanced: bool = False,
+        residual_pair_balanced: bool = False,
     ) -> tuple[_SpeechNativeCapacityCandidate, ...]:
         selected: list[_SpeechNativeCapacityCandidate] = []
         used_samples: set[str] = set()
         used_utterances: set[str] = set()
         used_texts: set[str] = set()
         used_speakers: set[str] = set()
+        seen_scenario_signatures = {
+            (
+                str(item["scenario"]),
+                str(item["action"]),
+                tuple(item["entity_types"]),
+            )
+            for item in initial_observations
+        }
+        seen_scenario_signature_counts = Counter(
+            (
+                str(item["scenario"]),
+                str(item["action"]),
+                tuple(item["entity_types"]),
+            )
+            for item in initial_observations
+        )
+
+        def residual_completion_gain(
+            candidate: _SpeechNativeCapacityCandidate,
+        ) -> int:
+            side = (
+                candidate.scenario,
+                candidate.action,
+                candidate.entity_types,
+            )
+            if side in seen_scenario_signatures:
+                return 0
+            return sum(
+                (
+                    left == candidate.scenario
+                    and action == candidate.action
+                    and entity_types == candidate.entity_types
+                    and (right, action, entity_types) in seen_scenario_signatures
+                )
+                or (
+                    right == candidate.scenario
+                    and action == candidate.action
+                    and entity_types == candidate.entity_types
+                    and (left, action, entity_types) in seen_scenario_signatures
+                )
+                for left, right, action, entity_types in residual_signature_pairs
+            )
+
+        def residual_minimum_support_gain(
+            candidate: _SpeechNativeCapacityCandidate,
+        ) -> int:
+            gain = 0
+            for left, right, action, entity_types in residual_signature_pairs:
+                if (
+                    action != candidate.action
+                    or entity_types != candidate.entity_types
+                    or candidate.scenario not in (left, right)
+                ):
+                    continue
+                left_count = seen_scenario_signature_counts[
+                    (left, action, entity_types)
+                ]
+                right_count = seen_scenario_signature_counts[
+                    (right, action, entity_types)
+                ]
+                before = min(left_count, right_count)
+                if candidate.scenario == left:
+                    left_count += 1
+                else:
+                    right_count += 1
+                after = min(left_count, right_count)
+                gain += int(before < 5 and after > before)
+            return gain
+
         for scenario in scenarios:
             available = [
                 candidate
@@ -8831,6 +8966,34 @@ def audit_speech_native_scale_capacity(
                     key=lambda item: (
                         int(speaker_balanced and item.speaker in used_speakers),
                         int(information_balanced and item.action in seen_actions),
+                        -(
+                            residual_completion_gain(item)
+                            if residual_pair_balanced
+                            else 0
+                        ),
+                        int(
+                            residual_pair_balanced
+                            and (
+                                item.scenario,
+                                item.action,
+                                item.entity_types,
+                            )
+                            not in residual_signature_sides
+                        ),
+                        int(
+                            residual_pair_balanced
+                            and (
+                                item.scenario,
+                                item.action,
+                                item.entity_types,
+                            )
+                            in seen_scenario_signatures
+                        ),
+                        -(
+                            residual_minimum_support_gain(item)
+                            if residual_pair_balanced
+                            else 0
+                        ),
                         int(
                             information_balanced
                             and (item.action, item.entity_types) in seen_signatures
@@ -8853,6 +9016,12 @@ def audit_speech_native_scale_capacity(
                 used_speakers.add(candidate.speaker)
                 seen_actions.add(candidate.action)
                 seen_signatures.add((candidate.action, candidate.entity_types))
+                seen_scenario_signatures.add(
+                    (candidate.scenario, candidate.action, candidate.entity_types)
+                )
+                seen_scenario_signature_counts[
+                    (candidate.scenario, candidate.action, candidate.entity_types)
+                ] += 1
                 count += 1
         return tuple(selected)
 
@@ -8893,20 +9062,8 @@ def audit_speech_native_scale_capacity(
         forbidden_speakers=holdout_speakers,
         initial_observations=existing_observations,
         information_balanced=True,
+        residual_pair_balanced=True,
     )
-
-    shared_signature_scenarios: dict[tuple[str, tuple[str, ...]], set[str]] = (
-        defaultdict(set)
-    )
-    for candidate in candidates:
-        shared_signature_scenarios[
-            (candidate.action, candidate.entity_types)
-        ].add(candidate.scenario)
-    shared_signatures = {
-        signature
-        for signature, labels in shared_signature_scenarios.items()
-        if len(labels) > 1
-    }
 
     def candidate_observation(
         candidate: _SpeechNativeCapacityCandidate,
@@ -8938,6 +9095,63 @@ def audit_speech_native_scale_capacity(
                 ),
             }
         no_entities = sum(not tuple(item["entity_types"]) for item in observations)
+        observed_scenario_actions = {
+            (str(item["scenario"]), str(item["action"])) for item in observations
+        }
+        observed_scenario_signatures = {
+            (
+                str(item["scenario"]),
+                str(item["action"]),
+                tuple(item["entity_types"]),
+            )
+            for item in observations
+        }
+        scenario_action_counts = Counter(
+            (str(item["scenario"]), str(item["action"]))
+            for item in observations
+        )
+        scenario_signature_counts = Counter(
+            (
+                str(item["scenario"]),
+                str(item["action"]),
+                tuple(item["entity_types"]),
+            )
+            for item in observations
+        )
+        stable_pair_support = tuple(
+            min(
+                scenario_action_counts[(left, action)],
+                scenario_action_counts[(right, action)],
+            )
+            for left, right, action in stable_action_pairs
+        )
+        residual_pair_support = tuple(
+            min(
+                scenario_signature_counts[(left, action, entity_types)],
+                scenario_signature_counts[(right, action, entity_types)],
+            )
+            for left, right, action, entity_types in residual_signature_pairs
+        )
+
+        def support_summary(values: Sequence[int]) -> dict[str, int]:
+            return {
+                "minimum": min(values) if values else 0,
+                "pairs_at_least_2": sum(value >= 2 for value in values),
+                "pairs_at_least_3": sum(value >= 3 for value in values),
+                "pairs_at_least_5": sum(value >= 5 for value in values),
+                "required": len(values),
+            }
+
+        stable_bilateral = sum(
+            (left, action) in observed_scenario_actions
+            and (right, action) in observed_scenario_actions
+            for left, right, action in stable_action_pairs
+        )
+        residual_bilateral = sum(
+            (left, action, entity_types) in observed_scenario_signatures
+            and (right, action, entity_types) in observed_scenario_signatures
+            for left, right, action, entity_types in residual_signature_pairs
+        )
         return {
             "query_count": len(observations),
             "speaker_count": len({str(item["speaker"]) for item in observations}),
@@ -8948,6 +9162,40 @@ def audit_speech_native_scale_capacity(
                 (str(item["action"]), tuple(item["entity_types"]))
                 in shared_signatures
                 for item in observations
+            ),
+            "stable_shared_action_query_count": sum(
+                (str(item["scenario"]), str(item["action"]))
+                in stable_action_sides
+                for item in observations
+            ),
+            "residual_shared_signature_query_count": sum(
+                (
+                    str(item["scenario"]),
+                    str(item["action"]),
+                    tuple(item["entity_types"]),
+                )
+                in residual_signature_sides
+                for item in observations
+            ),
+            "entity_free_stable_action_query_count": sum(
+                not tuple(item["entity_types"])
+                and (str(item["scenario"]), str(item["action"]))
+                in stable_action_sides
+                for item in observations
+            ),
+            "stable_action_pair_bilateral_coverage": {
+                "covered": stable_bilateral,
+                "required": len(stable_action_pairs),
+            },
+            "residual_signature_pair_bilateral_coverage": {
+                "covered": residual_bilateral,
+                "required": len(residual_signature_pairs),
+            },
+            "stable_action_pair_minimum_side_support": support_summary(
+                stable_pair_support
+            ),
+            "residual_signature_pair_minimum_side_support": support_summary(
+                residual_pair_support
             ),
             "without_entities_count": no_entities,
             "without_entities_rate": (
@@ -8973,6 +9221,17 @@ def audit_speech_native_scale_capacity(
         (str(item["scenario"]), str(item["action"]))
         for item in cumulative_memory_observations
     }
+    existing_memory_summary = summarize(existing_observations)
+    new_memory_summary = summarize(new_memory_observations)
+    cumulative_memory_summary = summarize(cumulative_memory_observations)
+    holdout_summary = summarize(holdout_observations)
+    available_pool_summary = summarize(candidate_observations)
+    cumulative_stable_coverage = cumulative_memory_summary[
+        "stable_action_pair_bilateral_coverage"
+    ]
+    cumulative_residual_coverage = cumulative_memory_summary[
+        "residual_signature_pair_bilateral_coverage"
+    ]
 
     new_memory_speakers = {candidate.speaker for candidate in new_memory}
     memory_speakers = existing_memory_speakers | new_memory_speakers
@@ -8993,6 +9252,16 @@ def audit_speech_native_scale_capacity(
         ),
         "cumulative_memory_scenario_action_complete": (
             cumulative_memory_scenario_actions == available_scenario_actions
+        ),
+        "cumulative_memory_stable_action_pair_complete": (
+            isinstance(cumulative_stable_coverage, Mapping)
+            and cumulative_stable_coverage.get("covered")
+            == cumulative_stable_coverage.get("required")
+        ),
+        "cumulative_memory_residual_signature_pair_complete": (
+            isinstance(cumulative_residual_coverage, Mapping)
+            and cumulative_residual_coverage.get("covered")
+            == cumulative_residual_coverage.get("required")
         ),
         "complete_scenario_roster": (
             len(holdout) == holdout_query_count
@@ -9034,21 +9303,42 @@ def audit_speech_native_scale_capacity(
             "action_entity_signature_count": len(shared_signature_scenarios),
             "shared_action_entity_signature_count": len(shared_signatures),
         },
+        "agentloop_actionability": {
+            "minimum_bilateral_train_support": _STABLE_SHARED_ACTION_MIN_SUPPORT,
+            "stable_action_pair_count": len(stable_action_pairs),
+            "stable_boundary_scenario_pair_count": len(
+                {(left, right) for left, right, _action in stable_action_pairs}
+            ),
+            "residual_signature_pair_count": len(residual_signature_pairs),
+            "residual_boundary_scenario_pair_count": len(
+                {
+                    (left, right)
+                    for left, right, _action, _entity_types in residual_signature_pairs
+                }
+            ),
+            "interpretation": (
+                "Stable shared actions expose a candidate boundary action. Exact "
+                "shared action-plus-entity signatures mark residual cases where "
+                "entity extraction alone cannot resolve the label."
+            ),
+        },
         "allocation_policy": {
-            "id": "speaker-unseen-holdout-information-balanced-memory-v2",
+            "id": "speaker-unseen-holdout-residual-support-memory-v4",
             "holdout_reserved_before_new_memory": True,
             "study_wide_speaker_unseen_holdout_preferred": True,
             "holdout_prioritizes_unseen_speakers": True,
             "new_memory_prioritizes_unseen_action_then_signature": True,
+            "new_memory_prioritizes_residual_pair_completion": True,
+            "new_memory_prioritizes_residual_pair_minimum_support": True,
             "holdout_quota_by_scenario": holdout_quotas,
             "new_memory_quota_by_scenario": new_memory_quotas,
         },
         "allocations": {
-            "existing_memory": summarize(existing_observations),
-            "new_memory": summarize(new_memory_observations),
-            "cumulative_memory": summarize(cumulative_memory_observations),
-            "holdout": summarize(holdout_observations),
-            "available_pool": summarize(candidate_observations),
+            "existing_memory": existing_memory_summary,
+            "new_memory": new_memory_summary,
+            "cumulative_memory": cumulative_memory_summary,
+            "holdout": holdout_summary,
+            "available_pool": available_pool_summary,
         },
         "isolation": {
             "memory_holdout_speaker_overlap_count": len(
@@ -9090,10 +9380,10 @@ def audit_speech_native_scale_capacity(
             )
             if candidates
             else 0.0,
-            "cumulative_memory_shared_signature_query_count": summarize(
-                cumulative_memory_observations
-            )["shared_action_entity_query_count"],
-            "holdout_shared_signature_query_count": summarize(holdout_observations)[
+            "cumulative_memory_shared_signature_query_count": (
+                cumulative_memory_summary["shared_action_entity_query_count"]
+            ),
+            "holdout_shared_signature_query_count": holdout_summary[
                 "shared_action_entity_query_count"
             ],
         },
