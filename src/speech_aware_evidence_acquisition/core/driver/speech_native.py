@@ -87,6 +87,119 @@ def _canonical_sha256(document: object) -> str:
     return hashlib.sha256(raw).hexdigest()
 
 
+def _evaluate_training_free_agent_policies(
+    trajectories: Sequence[Mapping[str, str | None]],
+) -> list[dict[str, object]]:
+    """Enumerate the preregisterable controller rules over full action logs.
+
+    This is an offline, model-free policy evaluator. Gold is used only as the
+    reward after every frozen-core action has already been recorded. The
+    returned rules update no model, prompt, retriever, or verifier parameter.
+    """
+
+    required = {
+        "gold_key_id",
+        "primary_key_id",
+        "canonical_key_id",
+        "reverse_key_id",
+        "rotate_key_id",
+    }
+    frozen = tuple(trajectories)
+    if not frozen:
+        raise SpeechNativeProfileError(
+            "training-free policy search requires at least one trajectory"
+        )
+    for trajectory in frozen:
+        if set(trajectory) != required or not isinstance(
+            trajectory.get("gold_key_id"), str
+        ):
+            raise SpeechNativeProfileError(
+                "training-free policy trajectory is malformed"
+            )
+        if any(
+            value is not None and not isinstance(value, str)
+            for value in trajectory.values()
+        ):
+            raise SpeechNativeProfileError(
+                "training-free policy trajectory contains a malformed key id"
+            )
+
+    def aggregate(trajectory: Mapping[str, str | None], mode: str) -> str | None:
+        primary = trajectory["primary_key_id"]
+        votes = [
+            trajectory["canonical_key_id"],
+            trajectory["reverse_key_id"],
+            trajectory["rotate_key_id"],
+        ]
+        valid = [vote for vote in votes if vote is not None]
+        if mode == "majority":
+            counts = Counter(valid)
+            return next(
+                (vote for vote, count in counts.items() if count >= 2),
+                primary,
+            )
+        if mode == "unanimous":
+            return (
+                valid[0]
+                if len(valid) == 3 and len(set(valid)) == 1
+                else primary
+            )
+        raise SpeechNativeProfileError(f"unknown training-free aggregate mode {mode!r}")
+
+    policy_specs = (
+        ("trigger-never__primary-v1", "never", "primary"),
+        (
+            "trigger-disagreement__m3-majority-primary-v1",
+            "disagreement",
+            "majority",
+        ),
+        (
+            "trigger-disagreement__m3-unanimous-primary-v1",
+            "disagreement",
+            "unanimous",
+        ),
+        ("trigger-always__m3-majority-primary-v1", "always", "majority"),
+        ("trigger-always__m3-unanimous-primary-v1", "always", "unanimous"),
+    )
+    rows: list[dict[str, object]] = []
+    for policy_id, trigger, mode in policy_specs:
+        correct = 0
+        wrong_to_correct = 0
+        correct_to_wrong = 0
+        branch_actions = 0
+        for trajectory in frozen:
+            primary = trajectory["primary_key_id"]
+            gold = trajectory["gold_key_id"]
+            run_branch = trigger == "always" or (
+                trigger == "disagreement"
+                and primary != trajectory["canonical_key_id"]
+            )
+            branch_actions += int(run_branch)
+            prediction = (
+                primary
+                if mode == "primary" or not run_branch
+                else aggregate(trajectory, mode)
+            )
+            primary_correct = primary == gold
+            final_correct = prediction == gold
+            correct += int(final_correct)
+            wrong_to_correct += int(not primary_correct and final_correct)
+            correct_to_wrong += int(primary_correct and not final_correct)
+        rows.append(
+            {
+                "policy_id": policy_id,
+                "correct": correct,
+                "count": len(frozen),
+                "accuracy": correct / len(frozen),
+                "wrong_to_correct_vs_primary": wrong_to_correct,
+                "correct_to_wrong_vs_primary": correct_to_wrong,
+                "branch_action_count": branch_actions,
+                "branch_action_rate": branch_actions / len(frozen),
+            }
+        )
+    return rows
+
+
 def _require_string(values: Mapping[str, object], key: str) -> str:
     value = values.get(key)
     if not isinstance(value, str) or not value:
@@ -259,7 +372,17 @@ def read_speech_native_predictions(
         agent_aggregator_id = profile.get(
             "agent_aggregator_id", "m3-majority-canonical-tie-v1"
         )
+        profile_agent_policy_id = profile.get(
+            "agent_policy_id", "m1-m3-disagreement-escalation-v1"
+        )
         if matcher_policy_id == "M5":
+            if profile_agent_policy_id not in {
+                "m1-m3-disagreement-escalation-v1",
+                "m1-m3-full-branch-explorer-v1",
+            }:
+                raise SpeechNativeProfileError(
+                    "M5 flight receipt has an unknown agent policy"
+                )
             aggregator_suffix = {
                 "m3-majority-canonical-tie-v1": "",
                 "m3-majority-primary-tie-v2": "-aggregate-primary-v2",
@@ -270,6 +393,8 @@ def read_speech_native_predictions(
                     "M5 flight receipt has an unknown agent aggregator"
                 )
             cell_id += aggregator_suffix
+            if profile_agent_policy_id == "m1-m3-full-branch-explorer-v1":
+                cell_id += "-agent-full-branch-v1"
         order_ids = profile.get("key_order_ids", ["canonical"])
         if (
             not isinstance(order_ids, list)
@@ -340,6 +465,12 @@ def read_speech_native_predictions(
         agent_unanimous_fallback_correct_count = 0
         agent_unanimous_fallback_wrong_to_correct = 0
         agent_unanimous_fallback_correct_to_wrong = 0
+        agent_full_branch_count = 0
+        agent_wrong_agreement_count = 0
+        agent_branch_helpful_count = 0
+        agent_branch_harmful_count = 0
+        agent_branch_neutral_count = 0
+        agent_full_trajectories: list[dict[str, str | None]] = []
         for row in rows:
             if row.get("schema") != "saea-speech-native-decision-v1":
                 raise SpeechNativeProfileError("decision schema mismatch")
@@ -417,7 +548,7 @@ def read_speech_native_predictions(
                     key_by_label[gold[sample_id]] in raw_top_key_ids
                 )
             if matcher_policy_id == "M5":
-                agent_policy_id = row.get("agent_policy_id")
+                row_agent_policy_id = row.get("agent_policy_id")
                 agent_actions = row.get("agent_actions")
                 agent_escalated = row.get("agent_escalated")
                 agent_votes = row.get("agent_vote_key_ids")
@@ -426,7 +557,7 @@ def read_speech_native_predictions(
                     "agent_aggregator_id", "m3-majority-canonical-tie-v1"
                 )
                 if (
-                    agent_policy_id != "m1-m3-disagreement-escalation-v1"
+                    row_agent_policy_id != profile_agent_policy_id
                     or row_aggregator_id != agent_aggregator_id
                     or not isinstance(agent_actions, list)
                     or not agent_actions
@@ -436,7 +567,14 @@ def read_speech_native_predictions(
                     )
                     or not isinstance(agent_escalated, bool)
                     or not isinstance(agent_votes, list)
-                    or len(agent_votes) != (4 if agent_escalated else 2)
+                    or len(agent_votes)
+                    != (
+                        4
+                        if profile_agent_policy_id
+                        == "m1-m3-full-branch-explorer-v1"
+                        or agent_escalated
+                        else 2
+                    )
                     or not all(
                         vote is None
                         or isinstance(vote, str) and vote in label_by_key
@@ -504,6 +642,11 @@ def read_speech_native_predictions(
                 agent_action_counts.update(agent_actions)
                 agent_primary_correct_count += int(primary_correct)
                 agent_escalation_count += int(agent_escalated)
+                branch_executed = len(agent_votes) == 4
+                agent_full_branch_count += int(branch_executed)
+                agent_wrong_agreement_count += int(
+                    primary_vote == agent_votes[1] and not primary_correct
+                )
                 agent_recoverable_error_count += int(
                     not primary_correct and candidate_correct
                 )
@@ -528,6 +671,28 @@ def read_speech_native_predictions(
                 agent_unanimous_fallback_correct_to_wrong += int(
                     final_correct and not unanimous_fallback_correct
                 )
+                if branch_executed:
+                    agent_branch_helpful_count += int(
+                        not primary_correct and final_correct
+                    )
+                    agent_branch_harmful_count += int(
+                        primary_correct and not final_correct
+                    )
+                    agent_branch_neutral_count += int(
+                        primary_correct == final_correct
+                    )
+                    agent_action_sensitive_count += int(
+                        len({vote for vote in agent_votes[1:] if vote is not None}) > 1
+                    )
+                    agent_full_trajectories.append(
+                        {
+                            "gold_key_id": key_by_label[gold[sample_id]],
+                            "primary_key_id": agent_votes[0],
+                            "canonical_key_id": agent_votes[1],
+                            "reverse_key_id": agent_votes[2],
+                            "rotate_key_id": agent_votes[3],
+                        }
+                    )
                 if agent_escalated:
                     agent_helpful_escalation_count += int(
                         not primary_correct and final_correct
@@ -537,9 +702,6 @@ def read_speech_native_predictions(
                     )
                     agent_neutral_escalation_count += int(
                         primary_correct == final_correct
-                    )
-                    agent_action_sensitive_count += int(
-                        len({vote for vote in agent_votes[1:] if vote is not None}) > 1
                     )
         if seen != set(gold):
             raise SpeechNativeProfileError("decision sample set does not equal the frozen split")
@@ -570,7 +732,7 @@ def read_speech_native_predictions(
                 ),
                 "agent_loop_metrics": (
                     {
-                        "policy_id": "m1-m3-disagreement-escalation-v1",
+                        "policy_id": profile_agent_policy_id,
                         "aggregator_id": agent_aggregator_id,
                         "primary_correct": agent_primary_correct_count,
                         "primary_accuracy": agent_primary_correct_count / len(gold),
@@ -619,6 +781,28 @@ def read_speech_native_predictions(
                                 ),
                             },
                         ],
+                        **(
+                            {
+                                "full_branch_count": agent_full_branch_count,
+                                "wrong_agreement_count": agent_wrong_agreement_count,
+                                "branch_helpful_count": agent_branch_helpful_count,
+                                "branch_harmful_count": agent_branch_harmful_count,
+                                "branch_neutral_count": agent_branch_neutral_count,
+                                "action_support_complete": (
+                                    agent_full_branch_count == len(gold)
+                                ),
+                                "training_free_policy_frontier": (
+                                    _evaluate_training_free_agent_policies(
+                                        agent_full_trajectories
+                                    )
+                                    if agent_full_branch_count == len(gold)
+                                    else None
+                                ),
+                            }
+                            if profile_agent_policy_id
+                            == "m1-m3-full-branch-explorer-v1"
+                            else {}
+                        ),
                     }
                     if matcher_policy_id == "M5"
                     else None
@@ -1102,6 +1286,7 @@ def build_profile_tasks(
     verifier_policy_id: str = "speech-native-compatibility-v1",
     audio_key_bindings: Mapping[str, Mapping[str, str]] | None = None,
     mechanism_control_id: str = "matched",
+    agent_policy_id: str = "m1-m3-disagreement-escalation-v1",
     agent_aggregator_id: str = "m3-majority-canonical-tie-v1",
 ) -> tuple[SpeechNativeMatchTask, ...]:
     """Build the registered maximum-card prompt tasks without reading labels."""
@@ -1156,6 +1341,7 @@ def build_profile_tasks(
                     decoding_params=dict(decoding_params),
                     top_k=top_k,
                     audio_key_bindings=audio_key_bindings,
+                    agent_policy_id=agent_policy_id,
                     agent_aggregator_id=agent_aggregator_id,
                 )
             )
@@ -1410,6 +1596,14 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
         raise SpeechNativeProfileError(
             "speech_native_agent_aggregator_id must be a non-empty string"
         )
+    agent_policy_id = values.get(
+        "speech_native_agent_policy_id",
+        "m1-m3-disagreement-escalation-v1",
+    )
+    if not isinstance(agent_policy_id, str) or not agent_policy_id:
+        raise SpeechNativeProfileError(
+            "speech_native_agent_policy_id must be a non-empty string"
+        )
     dispatch_granularity = values.get("speech_native_dispatch_granularity", "task")
     if dispatch_granularity not in {"task", "contact"}:
         raise SpeechNativeProfileError(
@@ -1435,6 +1629,7 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
         verifier_policy_id=verifier_policy_id,
         audio_key_bindings=audio_key_bindings,
         mechanism_control_id=mechanism_control_id,
+        agent_policy_id=agent_policy_id,
         agent_aggregator_id=agent_aggregator_id,
     )
     planned_contact_ceiling = len(tasks) * contact_ceiling
@@ -1628,6 +1823,7 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
             "matcher_policy_id": values["matcher_policy_id"],
             "matcher_prompt_policy_id": prompt_policy_id,
             "matcher_verifier_policy_id": verifier_policy_id,
+            "agent_policy_id": agent_policy_id,
             "agent_aggregator_id": agent_aggregator_id,
             "dispatch_granularity": dispatch_granularity,
             "mechanism_control_id": mechanism_control_id,

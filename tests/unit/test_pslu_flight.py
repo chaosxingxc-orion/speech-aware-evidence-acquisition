@@ -17,6 +17,7 @@ import pytest
 from speech_aware_evidence_acquisition.core.model import SliceRegistry
 from speech_aware_evidence_acquisition.core.driver.speech_native import (
     _build_audio_key_bindings,
+    _evaluate_training_free_agent_policies,
     build_profile_tasks,
     profile_timing_metrics,
     read_speech_native_predictions,
@@ -348,6 +349,50 @@ def test_m5_stops_when_listwise_and_canonical_retrieve_verify_agree():
     assert result.agent_escalated is False
     assert result.agent_vote_key_ids == ("K001", "K001")
     assert all(":reverse:" not in kwargs["matcher_policy_id"] for _, kwargs in client.calls)
+    _assert_every_call_carries_query(client)
+
+
+def test_m5_full_branch_explorer_records_counterfactual_actions_even_on_agreement():
+    client = _SpeechFeatureClient(
+        [
+            '{"key_id":"K001"}',
+            '{"key_ids":["K001","K002"]}',
+            '{"compatible":true,"confidence":90}',
+            '{"compatible":false,"confidence":10}',
+            '{"key_ids":["K002","K001"]}',
+            '{"compatible":true,"confidence":90}',
+            '{"compatible":false,"confidence":10}',
+            '{"key_ids":["K001","K002"]}',
+            '{"compatible":true,"confidence":90}',
+            '{"compatible":false,"confidence":10}',
+        ]
+    )
+    result = run_speech_native_matcher(
+        core_client=client,
+        sample=_SpeechSample(),
+        query_descriptor=_QUERY_DESCRIPTOR,
+        key_cards=_KEY_CARDS,
+        key_representation_id="K1",
+        matcher_policy_id="M5",
+        prompt_policy_id="speech-native-json-copy-v3",
+        top_k=2,
+        agent_policy_id="m1-m3-full-branch-explorer-v1",
+        agent_aggregator_id="m3-unanimous-primary-fallback-v3",
+    )
+
+    assert result.key_id == "K001"
+    assert result.calls == 10
+    assert result.agent_policy_id == "m1-m3-full-branch-explorer-v1"
+    assert result.agent_escalated is False
+    assert result.agent_vote_key_ids == ("K001", "K001", "K002", "K001")
+    assert result.agent_actions == (
+        "match:listwise-canonical",
+        "retrieve-verify:canonical",
+        "explore:full-branch",
+        "retrieve-verify:reverse",
+        "retrieve-verify:rotate-7",
+        "aggregate:m3-unanimous-primary-fallback",
+    )
     _assert_every_call_carries_query(client)
 
 
@@ -886,6 +931,7 @@ def test_profile_task_expansion_and_slot_metrics_are_deterministic():
         decoding_params={"temperature": 0, "id_slot": "per-sample"},
         key_representation_id="K2",
         matcher_policy_id="M1",
+        agent_policy_id="m1-m3-full-branch-explorer-v1",
     )
     assert [task.task_id for task in tasks] == [
         "canonical:s1",
@@ -894,6 +940,9 @@ def test_profile_task_expansion_and_slot_metrics_are_deterministic():
         "reverse:s2",
     ]
     assert [card.key_id for card in tasks[2].key_cards] == ["K002", "K001"]
+    assert all(
+        task.agent_policy_id == "m1-m3-full-branch-explorer-v1" for task in tasks
+    )
     metrics = profile_timing_metrics(
         (
             {
@@ -914,6 +963,57 @@ def test_profile_task_expansion_and_slot_metrics_are_deterministic():
         "slot_occupancy_pct": 100.0,
         "aggregate_tokens_per_second": 100.0,
     }
+
+
+def test_training_free_policy_search_uses_complete_action_support():
+    frontier = _evaluate_training_free_agent_policies(
+        (
+                {
+                    "gold_key_id": "K001",
+                    "primary_key_id": "K001",
+                    "canonical_key_id": "K001",
+                "reverse_key_id": "K002",
+                "rotate_key_id": "K002",
+            },
+            {
+                "gold_key_id": "K002",
+                "primary_key_id": "K001",
+                "canonical_key_id": "K002",
+                "reverse_key_id": "K002",
+                "rotate_key_id": "K002",
+            },
+            {
+                "gold_key_id": "K003",
+                "primary_key_id": "K003",
+                "canonical_key_id": "K003",
+                "reverse_key_id": "K002",
+                "rotate_key_id": "K002",
+            },
+            {
+                "gold_key_id": "K002",
+                "primary_key_id": "K001",
+                "canonical_key_id": "K002",
+                "reverse_key_id": "K002",
+                "rotate_key_id": "K003",
+            },
+        )
+    )
+
+    by_policy = {row["policy_id"]: row for row in frontier}
+    assert by_policy["trigger-disagreement__m3-majority-primary-v1"] == {
+        "policy_id": "trigger-disagreement__m3-majority-primary-v1",
+        "correct": 4,
+        "count": 4,
+        "accuracy": 1.0,
+        "wrong_to_correct_vs_primary": 2,
+        "correct_to_wrong_vs_primary": 0,
+        "branch_action_count": 2,
+        "branch_action_rate": 0.5,
+    }
+    assert by_policy["trigger-never__primary-v1"]["correct"] == 2
+    assert by_policy["trigger-always__m3-majority-primary-v1"][
+        "correct_to_wrong_vs_primary"
+    ] == 2
 
 
 def test_profile_tasks_build_label_blind_speech_swap_and_key_text_shuffle_controls():
@@ -1499,6 +1599,113 @@ def test_model_free_read_reports_agent_loop_optimization_signals(tmp_path):
             },
         ],
     }
+
+
+def test_model_free_read_accepts_complete_full_branch_action_support(tmp_path):
+    binding_path = REPO_ROOT / "configs/probes/g0-binding/speech-native-train-binding.json"
+    binding_sha256 = hashlib.sha256(binding_path.read_bytes()).hexdigest()
+    binding = json.loads(binding_path.read_text(encoding="utf-8"))
+    items = binding["splits"]["OPT-A36"]["items"]
+    key_by_label = {card["value_label"]: card["key_id"] for card in binding["key_cards"]}
+    attempt_dir = tmp_path / "m5-full"
+    attempt_dir.mkdir()
+    rows = []
+    for item in items:
+        gold_label = item["value_label"]
+        gold_key = key_by_label[gold_label]
+        votes = [gold_key] * 4
+        rows.append(
+            {
+                "schema": "saea-speech-native-decision-v1",
+                "sample_id": item["sample_id"],
+                "key_id": gold_key,
+                "predicted_value_label": gold_label,
+                "top_key_ids": [gold_key],
+                "calls": 10,
+                "parse_failure": False,
+                "agent_policy_id": "m1-m3-full-branch-explorer-v1",
+                "agent_actions": [
+                    "match:listwise-canonical",
+                    "retrieve-verify:canonical",
+                    "explore:full-branch",
+                    "retrieve-verify:reverse",
+                    "retrieve-verify:rotate-7",
+                    "aggregate:m3-unanimous-primary-fallback",
+                ],
+                "agent_escalated": False,
+                "agent_vote_key_ids": votes,
+                "agent_steps": [
+                    {
+                        "action_id": action_id,
+                        "key_id": gold_key,
+                        "top_key_ids": [] if step_index == 0 else [gold_key],
+                        "calls": 1 if step_index == 0 else 3,
+                        "parse_failure": False,
+                    }
+                    for step_index, action_id in enumerate(
+                        (
+                            "match:listwise-canonical",
+                            "retrieve-verify:canonical",
+                            "retrieve-verify:reverse",
+                            "retrieve-verify:rotate-7",
+                        )
+                    )
+                ],
+                "agent_aggregator_id": "m3-unanimous-primary-fallback-v3",
+            }
+        )
+    decisions = attempt_dir / "decisions.jsonl"
+    decisions.write_text(
+        "".join(json.dumps(row, sort_keys=True) + "\n" for row in rows),
+        encoding="utf-8",
+    )
+    (attempt_dir / "flight-receipt.json").write_text(
+        json.dumps(
+            {
+                "status": "COMPLETED",
+                "request_failures": [],
+                "split_identity_hash": "a" * 64,
+                "run_id": "run-m5-full",
+                "profile": {
+                    "key_representation_id": "K1",
+                    "matcher_policy_id": "M5",
+                    "matcher_prompt_policy_id": "speech-native-json-copy-v3",
+                    "matcher_verifier_policy_id": "speech-native-compatibility-v1",
+                    "agent_policy_id": "m1-m3-full-branch-explorer-v1",
+                    "agent_aggregator_id": "m3-unanimous-primary-fallback-v3",
+                    "mechanism_control_id": "matched",
+                    "key_order_ids": ["canonical"],
+                    "top_k": 3,
+                    "actual_contact_count": sum(row["calls"] for row in rows),
+                },
+                "decisions": {
+                    "path": decisions.name,
+                    "sha256": hashlib.sha256(decisions.read_bytes()).hexdigest(),
+                    "count": len(rows),
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    report = read_speech_native_predictions(
+        attempt_dirs=(attempt_dir,),
+        binding_path=binding_path,
+        binding_sha256=binding_sha256,
+        split_name="OPT-A36",
+    )
+    aggregate = report["aggregates"][0]
+    assert aggregate["cell_id"] == (
+        "K1-M5-k3-v3-aggregate-unanimous-v3-agent-full-branch-v1"
+    )
+    metrics = aggregate["agent_loop_metrics"]
+    assert metrics["full_branch_count"] == 36
+    assert metrics["action_support_complete"] is True
+    assert metrics["wrong_agreement_count"] == 0
+    assert all(
+        policy["correct"] == 36
+        for policy in metrics["training_free_policy_frontier"]
+    )
 
 
 def _binding_material():

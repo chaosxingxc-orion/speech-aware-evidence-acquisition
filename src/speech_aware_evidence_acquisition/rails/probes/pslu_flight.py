@@ -167,6 +167,10 @@ SPEECH_NATIVE_AGENT_AGGREGATORS = (
     "m3-majority-primary-tie-v2",
     "m3-unanimous-primary-fallback-v3",
 )
+SPEECH_NATIVE_AGENT_POLICIES = (
+    "m1-m3-disagreement-escalation-v1",
+    "m1-m3-full-branch-explorer-v1",
+)
 SPEECH_NATIVE_SCENARIO_DEFINITIONS: Mapping[str, str] = MappingProxyType(
     {
         "alarm": "Commands that create, change, inspect, or remove alarms and wake-up reminders.",
@@ -297,6 +301,7 @@ class SpeechNativeMatchTask:
     top_k: int = 3
     audio_key_bindings: Mapping[str, Mapping[str, str]] | None = None
     ensemble_base_policy_id: str = "M1"
+    agent_policy_id: str = "m1-m3-disagreement-escalation-v1"
     agent_aggregator_id: str = "m3-majority-canonical-tie-v1"
 
 
@@ -487,6 +492,7 @@ def run_speech_native_matcher(
     top_k: int = 3,
     audio_key_bindings: Mapping[str, Mapping[str, str]] | None = None,
     ensemble_base_policy_id: str = "M1",
+    agent_policy_id: str = "m1-m3-disagreement-escalation-v1",
     agent_aggregator_id: str = "m3-majority-canonical-tie-v1",
     _trace_matcher_policy_id: str | None = None,
     _trace_buffer: TraceBuffer | None = None,
@@ -518,6 +524,11 @@ def run_speech_native_matcher(
         raise PsluFlightError(
             f"unknown agent aggregator {agent_aggregator_id!r}; expected "
             f"{SPEECH_NATIVE_AGENT_AGGREGATORS}"
+        )
+    if agent_policy_id not in SPEECH_NATIVE_AGENT_POLICIES:
+        raise PsluFlightError(
+            f"unknown agent policy {agent_policy_id!r}; expected "
+            f"{SPEECH_NATIVE_AGENT_POLICIES}"
         )
     top_k_is_active = matcher_policy_id in {"M3", "M5"} or (
         matcher_policy_id == "M4" and ensemble_base_policy_id == "M3"
@@ -638,6 +649,7 @@ def run_speech_native_matcher(
             decoding_params=decoding_params,
             top_k=top_k,
             audio_key_bindings=audio_key_bindings,
+            agent_policy_id=agent_policy_id,
             _trace_matcher_policy_id=trace_policy_id,
             _trace_buffer=trace_buffer,
         )
@@ -734,7 +746,6 @@ def run_speech_native_matcher(
         return finish(winner)
 
     if matcher_policy_id == "M5":
-        agent_policy_id = "m1-m3-disagreement-escalation-v1"
         primary, canonical = parallel_nested_decisions(
             (
                 ("M1", cards, "M5:M1:canonical"),
@@ -746,7 +757,11 @@ def run_speech_native_matcher(
             agent_step("match:listwise-canonical", primary),
             agent_step("retrieve-verify:canonical", canonical),
         )
-        if primary.key_id is not None and primary.key_id == canonical.key_id:
+        initial_agreement = (
+            primary.key_id is not None and primary.key_id == canonical.key_id
+        )
+        full_branch = agent_policy_id == "m1-m3-full-branch-explorer-v1"
+        if initial_agreement and not full_branch:
             return finish(
                 primary.key_id,
                 top_ids=canonical.top_key_ids,
@@ -802,12 +817,16 @@ def run_speech_native_matcher(
             agent_actions=(
                 "match:listwise-canonical",
                 "retrieve-verify:canonical",
-                "escalate:disagreement",
+                (
+                    "explore:full-branch"
+                    if full_branch
+                    else "escalate:disagreement"
+                ),
                 "retrieve-verify:reverse",
                 "retrieve-verify:rotate-7",
                 aggregate_action,
             ),
-            agent_escalated=True,
+            agent_escalated=not initial_agreement,
             agent_vote_key_ids=(*initial_votes, reverse.key_id, rotate.key_id),
             agent_steps=(
                 *initial_steps,
@@ -1093,6 +1112,7 @@ def run_speech_native_match_tasks(
                 top_k=task.top_k,
                 audio_key_bindings=task.audio_key_bindings,
                 ensemble_base_policy_id=task.ensemble_base_policy_id,
+                agent_policy_id=task.agent_policy_id,
                 agent_aggregator_id=task.agent_aggregator_id,
                 _trace_buffer=buffer,
             )
@@ -1846,6 +1866,7 @@ __all__ = [
     "PsluSampleManifest",
     "SPEECH_NATIVE_KEY_REPRESENTATIONS",
     "SPEECH_NATIVE_MATCHER_POLICIES",
+    "SPEECH_NATIVE_AGENT_POLICIES",
     "SPEECH_NATIVE_SCENARIO_CONTRASTS",
     "SPEECH_NATIVE_SCENARIO_DEFINITIONS",
     "SpeechNativeEngineeringGate",

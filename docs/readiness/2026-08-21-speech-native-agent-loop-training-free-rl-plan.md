@@ -21,6 +21,8 @@ Do not contact FINAL60. Do not claim that AgentLoop improves task accuracy. Do n
 
 Treat the frozen Omni decoder and text-key matcher as the environment. Optimize only the external controller over versioned discrete actions. Never update Omni, mmproj, embedding, retriever, verifier, or prompt-model parameters. Do not add a second answering model. Every model action must carry the original speech packet again.
 
+Run every preprocessing, model-contact, resource-monitoring, and model-free read command inside WSL2. Use the native WSL workspace and ext4 feature/run roots; never launch an experiment from the Windows checkout or through a `/mnt/*` working directory. The Windows checkout may carry reviewed source changes, but it is not an execution environment.
+
 This boundary borrows the environment/controller separation from SPARKLE, but rejects its learned proxy model because this repository forbids a task-trained second model. Adaptive-RAG also demonstrates why retrieval depth should depend on query state, but its trained complexity classifier is out of scope. PromptAgent supports search over discrete prompt states and actions with MCTS; here the search object is the controller policy rather than Omni parameters. AgentFly motivates non-gradient policy adaptation through memory, but only its non-parametric memory variant is admissible here.
 
 Primary references:
@@ -90,9 +92,17 @@ Use exhaustive enumeration for the initial finite family. Use contextual bandits
 
 Use speaker-isolated cross-validation across the exposed discovery queries. Report mean accuracy, worst-fold accuracy, correct-to-wrong, helpful/harmful/neutral action counts, action coverage, and cost. A policy with no action variation or no reward spread is not optimization-ready.
 
+### A1x — conditional 100+ sample expansion
+
+Do not expand by default. Expand only if the completed A0/A1 read cannot support a relative controller conclusion because the best admissible policy differs from M1 by fewer than three cases, the direction is not reproduced across at least two speaker-isolated folds, or fewer than five queries expose a helpful-or-harmful branch outcome.
+
+If any trigger holds, freeze `DISCOVERY-X108`: six unused SLURP train queries per scenario, at least 108 queries total, isolated from all key material, OPT-A36, OPT-B18, consumed GATE18, and the future validation gate by utterance, audio, and speaker. Materialize its speech packets offline into the WSL ext4 feature root before starting the mmproj-free server. Run the same full-action policy-support rollout; do not introduce a new prompt, key representation, model, or action after reading it. `DISCOVERY-X108` remains discovery data and cannot serve as validation evidence.
+
 ### A2 — new unread train gate
 
 After A1 freezes one policy, draw one new small GATE-C18 from unused SLURP train material with query/key/speaker isolation. Preprocess its packets offline before inference, then run direct M0 and the frozen policy once. Do not reuse GATE18 as validation.
+
+If A1x is activated, increase this unread gate to GATE-C36 so the larger discovery search is not followed by a weaker 18-query validation. Keep the gate train-only, speaker-isolated, one-shot, and unread until every controller rule is frozen.
 
 The frozen policy qualifies only if all conditions hold:
 
