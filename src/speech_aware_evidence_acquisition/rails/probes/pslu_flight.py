@@ -702,11 +702,7 @@ def render_factor_link_state(
             (
                 f"[{boundary.boundary_id}] endpoints="
                 f"{boundary.left_key_id},{boundary.right_key_id}",
-                f"{boundary.left_key_id} factors: "
-                f"{','.join(boundary.left_factor_ids)}",
                 f"{boundary.left_key_id} exclusion: {boundary.left_exclusion}",
-                f"{boundary.right_key_id} factors: "
-                f"{','.join(boundary.right_factor_ids)}",
                 f"{boundary.right_key_id} exclusion: {boundary.right_exclusion}",
             )
         )
