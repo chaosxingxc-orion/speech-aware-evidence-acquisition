@@ -2073,7 +2073,7 @@ def _parse_m9_factor_graph_trajectory(
         "parse_failure",
     }
     if (
-        len(steps) < 5
+        len(steps) < 3
         or not isinstance(steps[0], Mapping)
         or set(steps[0]) != base_fields
         or steps[0].get("action_id") != "match:speech-only-primary"
@@ -2104,6 +2104,49 @@ def _parse_m9_factor_graph_trajectory(
 
     factor_step = steps[2]
     factor_fields = base_fields | {"factor_link_state"}
+    invalid_factor_actions = (
+        "match:speech-only-primary",
+        "retrieve:speech-only",
+        "link:knowledge-factors",
+        "backtrack:invalid-factor-link-state",
+    )
+    if (
+        isinstance(factor_step, Mapping)
+        and set(factor_step) == base_fields
+        and factor_step.get("action_id") == "link:knowledge-factors"
+        and factor_step.get("key_id") is None
+        and tuple(factor_step.get("top_key_ids", [])) == initial_top_ids
+        and factor_step.get("calls") == 1
+        and factor_step.get("parse_failure") is True
+    ):
+        if (
+            tuple(actions) != invalid_factor_actions
+            or len(steps) != 3
+            or votes != [primary_key_id]
+            or row.get("top_key_ids") != list(initial_top_ids)
+            or row.get("calls") != 3
+        ):
+            raise SpeechNativeProfileError(
+                "M9 invalid factor-link termination is malformed"
+            )
+        return {
+            "sample_id": sample_id,
+            "speaker_id": speaker_id,
+            "gold_key_id": gold_key_id,
+            "primary_key_id": primary_key_id,
+            "initial_top_key_ids": initial_top_ids,
+            "factor_ids": (),
+            "selected_boundary_id": None,
+            "expanded_key_ids": initial_top_ids,
+            "reranked_key_ids": (primary_key_id,),
+            "boundary_path_ids": (),
+            "boundary_ab_key_id": None,
+            "boundary_ba_key_id": None,
+            "boundary_stable_key_id": None,
+            "termination": "invalid-factor-link-state",
+            "mechanism_failure": True,
+            "total_calls": 3,
+        }
     if (
         not isinstance(factor_step, Mapping)
         or set(factor_step) != factor_fields
@@ -2170,6 +2213,52 @@ def _parse_m9_factor_graph_trajectory(
     rerank_step = steps[4]
     reranked_raw = row.get("top_key_ids")
     expected_rerank_count = min(3, len(expected_expansion.key_ids))
+    common_actions = tuple(actions[: len(_M9_COMMON_ACTIONS)])
+    if common_actions != _M9_COMMON_ACTIONS:
+        raise SpeechNativeProfileError("M9 graph action prefix is malformed")
+    invalid_rerank = (
+        isinstance(rerank_step, Mapping)
+        and set(rerank_step) == base_fields
+        and rerank_step.get("action_id") == "rerank:speech-plus-factor-state"
+        and rerank_step.get("calls") == 1
+        and rerank_step.get("parse_failure") is True
+        and isinstance(reranked_raw, list)
+        and len(reranked_raw) < expected_rerank_count
+        and len(set(reranked_raw)) == len(reranked_raw)
+        and all(key_id in expected_expansion.key_ids for key_id in reranked_raw)
+        and tuple(rerank_step.get("top_key_ids", [])) == tuple(reranked_raw)
+        and rerank_step.get("key_id")
+        == (reranked_raw[0] if reranked_raw else None)
+    )
+    if invalid_rerank:
+        expected_actions = (*_M9_COMMON_ACTIONS, "backtrack:invalid-factor-rerank")
+        if (
+            tuple(actions) != expected_actions
+            or len(steps) != 5
+            or votes != [primary_key_id]
+            or row.get("calls") != 4
+        ):
+            raise SpeechNativeProfileError(
+                "M9 invalid factor-rerank termination is malformed"
+            )
+        return {
+            "sample_id": sample_id,
+            "speaker_id": speaker_id,
+            "gold_key_id": gold_key_id,
+            "primary_key_id": primary_key_id,
+            "initial_top_key_ids": initial_top_ids,
+            "factor_ids": factor_state.factor_ids,
+            "selected_boundary_id": factor_state.boundary_id,
+            "expanded_key_ids": expected_expansion.key_ids,
+            "reranked_key_ids": (primary_key_id,),
+            "boundary_path_ids": (),
+            "boundary_ab_key_id": None,
+            "boundary_ba_key_id": None,
+            "boundary_stable_key_id": None,
+            "termination": "invalid-factor-rerank",
+            "mechanism_failure": True,
+            "total_calls": 4,
+        }
     if (
         not isinstance(rerank_step, Mapping)
         or set(rerank_step) != base_fields
@@ -2186,9 +2275,6 @@ def _parse_m9_factor_graph_trajectory(
         raise SpeechNativeProfileError("M9 factor rerank stage is malformed")
     reranked_ids = tuple(reranked_raw)
     rerank_key_id = reranked_ids[0]
-    common_actions = tuple(actions[: len(_M9_COMMON_ACTIONS)])
-    if common_actions != _M9_COMMON_ACTIONS:
-        raise SpeechNativeProfileError("M9 graph action prefix is malformed")
 
     boundary_ab: str | None = None
     boundary_ba: str | None = None
@@ -5422,7 +5508,7 @@ def _audit_m9_factor_graph_action_support(
         calls = trajectory["total_calls"]
         if (
             row.get("calls") != calls
-            or calls not in {4, 6}
+            or calls not in {3, 4, 6}
             or len(response_hashes) != calls
             or not all(
                 isinstance(value, str) and _SHA256.fullmatch(value) is not None
