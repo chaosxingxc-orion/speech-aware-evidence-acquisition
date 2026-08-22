@@ -5061,7 +5061,12 @@ def _cli_speech_native_action_audit(args: argparse.Namespace) -> int:
                     "action_support_threshold_met"
                 ],
                 "gold_read": False,
-                "effectiveness_eligible": False,
+                "effectiveness_eligible": report.get(
+                    "effectiveness_eligible", False
+                ),
+                "effectiveness_read_authorized": report.get(
+                    "effectiveness_read_authorized", False
+                ),
             },
             indent=2,
             sort_keys=True,
