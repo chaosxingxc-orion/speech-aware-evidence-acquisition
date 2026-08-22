@@ -162,6 +162,8 @@ The resulting local state is `SpeechAgentStateV2 = {speech_packet_sha256, initia
 
 Before reading any schema-v2 action vote, run the preregistered gold-free structural audit. It requires the exact four source hashes in the exposure ledger, the exact legacy completion-gate abort reason, 269/269 trace-carriage validity, zero mmproj/process failures, four structurally valid M6 steps per decision, and no split binding. At least three primary-versus-refined changes permits one fresh unread train-only effectiveness gate; fewer than three rejects the topology without reading correctness.
 
+The structural audit passes exactly at the frozen threshold. It verifies 269/269 sample-bound speech-query contacts, 36/36 valid grounded states, zero label or gold access, and three primary-versus-refined action changes. Grounded refinement changes the initial candidate ranking on 10/36 queries, the candidate set on 2/36, and top-1 on 4/36. Nineteen trajectories use seven contacts and 17 use the registered optional eighth tie-arbitration contact. This is action-support evidence only: the source attempt remains `ABORTED`, `effectiveness_eligible=false`, and no prediction has been compared with gold. Freeze schema v2 and proceed only through a fresh unread train-only effectiveness gate.
+
 ### A2 — new unread train gate
 
 After A1 freezes one policy, draw one new small GATE-C18 from unused SLURP train material with query/key/speaker isolation. Preprocess its packets offline before inference, then run direct M0 and the frozen policy once. Do not reuse GATE18 as validation.
