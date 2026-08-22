@@ -272,21 +272,51 @@ def _cli_smoke(args: argparse.Namespace) -> int:
         repo_root, str(composed.values["split_name"]), lock, root
     )
 
-    attempt_id = fresh_attempt_id()
-    plan = ExecutionPlan(
-        run_id=args.run_id,
-        execution_profile=args.execution_profile,
-        carrier_lock_key=str(composed.values["carrier_lock_key"]),
-        split_role=split_role,
-        split_identity_hash=split_hash,
-        planned_model_calls=args.planned_model_calls,
-        planned_gpu_hours=args.planned_gpu_hours,
-        planned_speech_audio_seconds=args.planned_speech_audio_seconds,
-        protocol_hash=compute_protocol_hash(
+    expected_plan_values = {
+        "run_id": args.run_id,
+        "execution_profile": args.execution_profile,
+        "carrier_lock_key": str(composed.values["carrier_lock_key"]),
+        "split_role": split_role,
+        "split_identity_hash": split_hash,
+        "planned_model_calls": args.planned_model_calls,
+        "planned_gpu_hours": args.planned_gpu_hours,
+        "planned_speech_audio_seconds": args.planned_speech_audio_seconds,
+        "protocol_hash": compute_protocol_hash(
             composed.config_hash, str(composed.values["arm"]), split_hash
         ),
-        attempt_id=attempt_id,
-    ).validate()
+    }
+    if args.plan is None:
+        attempt_id = fresh_attempt_id()
+        plan = ExecutionPlan(
+            **expected_plan_values,
+            attempt_id=attempt_id,
+        ).validate()
+    else:
+        try:
+            plan_document = json.loads(Path(args.plan).read_text(encoding="utf-8"))
+            plan = ExecutionPlan(**plan_document).validate()
+        except (OSError, UnicodeError, json.JSONDecodeError, TypeError) as error:
+            raise SystemExit(
+                f"smoke: cannot read preregistered plan {args.plan!r}: {error}"
+            ) from error
+        mismatches = {
+            field_name: {
+                "expected": expected_value,
+                "actual": getattr(plan, field_name),
+            }
+            for field_name, expected_value in expected_plan_values.items()
+            if getattr(plan, field_name) != expected_value
+        }
+        if mismatches:
+            raise SystemExit(
+                "smoke: preregistered plan disagrees with the composed runtime "
+                f"contract: {json.dumps(mismatches, sort_keys=True)}"
+            )
+        if plan.attempt_id is None:
+            raise SystemExit(
+                "smoke: preregistered plan must carry one explicit attempt_id"
+            )
+        attempt_id = plan.attempt_id
 
     # A fresh attempt_id (above) always names a brand-new attempt directory
     # here too -- no operator ever needs to invent a fresh --run-dir by hand
@@ -294,7 +324,12 @@ def _cli_smoke(args: argparse.Namespace) -> int:
     # STABLE parent an operator points at once, this attempt's own
     # subdirectory is always new.
     attempt_run_dir = Path(args.run_dir) / attempt_id
-    attempt_run_dir.mkdir(parents=True, exist_ok=True)
+    if args.plan is not None and attempt_run_dir.exists():
+        raise SystemExit(
+            "smoke: preregistered attempt directory already exists; refusing plan reuse: "
+            f"{attempt_run_dir}"
+        )
+    attempt_run_dir.mkdir(parents=True, exist_ok=args.plan is None)
     plan_path = attempt_run_dir / f"{plan.run_id}.plan.json"
     plan_path.write_text(
         json.dumps(asdict(plan), indent=2, sort_keys=True), encoding="utf-8", newline="\n"

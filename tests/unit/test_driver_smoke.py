@@ -22,7 +22,9 @@ from pathlib import Path
 import pytest
 
 import speech_aware_evidence_acquisition.core  # noqa: F401 (populate registries)
+from speech_aware_evidence_acquisition.core.config import compose, protocol_hash
 from speech_aware_evidence_acquisition.core.driver import main as driver_main
+from speech_aware_evidence_acquisition.core.driver.run import load_split
 from speech_aware_evidence_acquisition.core.session import SessionError
 from speech_aware_evidence_acquisition.data.lock import load_lock
 from speech_aware_evidence_acquisition.data.splits import freeze_splits
@@ -278,6 +280,87 @@ def test_smoke_dry_run_never_reuses_an_attempt_across_two_invocations(
     assert payload_1["manifest"] != payload_2["manifest"]
     assert Path(payload_1["manifest"]).is_file()
     assert Path(payload_2["manifest"]).is_file()
+
+
+def test_smoke_uses_one_preregistered_plan_without_changing_its_attempt_identity(
+    synthetic_world, smoke_repo, tmp_path, capsys, monkeypatch
+):
+    lock, repo_root = smoke_repo
+    monkeypatch.setenv("SPEECHRL_DATA_DIR", str(synthetic_world.data_root))
+    monkeypatch.setattr(
+        "speech_aware_evidence_acquisition.data.lock.umbrella_lock_path",
+        lambda *a, **k: synthetic_world.lock_path,
+    )
+    monkeypatch.setitem(sys.modules, "mlflow", _MlflowStub())
+    composed = compose(
+        repo_root,
+        "test-model",
+        "test-dataset",
+        "test-baseline",
+        "test-experiment",
+    )
+    _ids, split_hash, split_role = load_split(
+        repo_root, "discovery", lock, synthetic_world.data_root
+    )
+    run_id = "SAEA-E-000-smoke-preregistered"
+    plan = {
+        "attempt_id": "attempt-20260822T000000Z-prereg",
+        "carrier_lock_key": "earnings21-original",
+        "execution_profile": "bounded-discovery-probe",
+        "planned_gpu_hours": 1.0,
+        "planned_model_calls": 10,
+        "planned_speech_audio_seconds": 1000,
+        "protocol_hash": protocol_hash(composed.config_hash, "bare-core", split_hash),
+        "run_id": run_id,
+        "schema": "saea-execution-plan-v1",
+        "split_identity_hash": split_hash,
+        "split_role": split_role,
+        "study": "speech-aware-evidence-acquisition",
+    }
+    source_plan = tmp_path / "preregistered-plan.json"
+    source_plan.write_text(
+        json.dumps(plan, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
+    ledger_cells = tmp_path / "preregistered-ledger-cells.json"
+    ledger_cells.write_text(json.dumps(_HUMAN_LEDGER_CELLS), encoding="utf-8")
+
+    exit_code = driver_main(
+        [
+            "smoke",
+            "--model",
+            "test-model",
+            "--dataset",
+            "test-dataset",
+            "--baseline",
+            "test-baseline",
+            "--experiment",
+            "test-experiment",
+            "--run-id",
+            run_id,
+            "--planned-model-calls",
+            "10",
+            "--planned-gpu-hours",
+            "1.0",
+            "--planned-speech-audio-seconds",
+            "1000",
+            "--plan",
+            str(source_plan),
+            "--run-dir",
+            str(tmp_path / "smoke-runs"),
+            "--tracking-uri",
+            str(tmp_path / "mlruns"),
+            "--ledger-cells",
+            str(ledger_cells),
+            "--repo-root",
+            str(repo_root),
+            "--dry-run",
+        ]
+    )
+    payload = json.loads(capsys.readouterr().out)
+
+    assert exit_code == 0
+    assert payload["attempt_id"] == plan["attempt_id"]
+    assert json.loads(Path(payload["plan"]).read_text(encoding="utf-8")) == plan
 
 
 def test_smoke_requires_runtime_root_unless_dry_run(

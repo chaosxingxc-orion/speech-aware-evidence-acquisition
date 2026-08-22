@@ -790,6 +790,14 @@ def main(argv: list[str] | None = None) -> int:
     smoke.add_argument("--planned-gpu-hours", type=float, required=True)
     smoke.add_argument("--planned-speech-audio-seconds", type=int, required=True)
     smoke.add_argument(
+        "--plan",
+        default=None,
+        help=(
+            "optional preregistered ExecutionPlan; when supplied, smoke verifies "
+            "every computed identity and budget field and uses its exact attempt_id"
+        ),
+    )
+    smoke.add_argument(
         "--run-dir",
         required=True,
         help="STABLE parent directory; a fresh attempt_id subdirectory is created every run",
