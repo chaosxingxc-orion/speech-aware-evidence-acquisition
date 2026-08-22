@@ -24,10 +24,12 @@ from speech_aware_evidence_acquisition.core.driver.speech_native import (
     _evaluate_training_free_grounded_semantic_policy,
     _build_audio_key_bindings,
     _evaluate_training_free_agent_policies,
+    _load_decision_graph,
     _profile_completion_issues,
     _release_speech_native_session,
     _scan_server_log,
     _trace_speech_query_summary,
+    SpeechNativeProfileError,
     build_profile_tasks,
     profile_timing_metrics,
     read_speech_native_predictions,
@@ -3696,6 +3698,46 @@ def test_profile_task_expansion_and_slot_metrics_are_deterministic():
         "slot_occupancy_pct": 100.0,
         "aggregate_tokens_per_second": 100.0,
     }
+
+
+def test_decision_graph_artifact_is_hash_pinned_and_enters_profile_tasks(tmp_path):
+    graph = _decision_graph_fixture()
+    graph_path = tmp_path / "decision-graph.json"
+    graph_path.write_text(
+        json.dumps(graph.as_json(), sort_keys=True) + "\n", encoding="utf-8"
+    )
+    graph_sha256 = hashlib.sha256(graph_path.read_bytes()).hexdigest()
+
+    loaded = _load_decision_graph(
+        graph_path,
+        expected_sha256=graph_sha256,
+        key_cards=_KEY_CARDS,
+    )
+    tasks = build_profile_tasks(
+        samples=(type("Sample", (), {"sample_id": "s1"})(),),
+        packet_bindings={
+            "s1": {"packet_id": "slurp/train/s1", "sha256": "a" * 64}
+        },
+        key_cards=_KEY_CARDS,
+        order_ids=("canonical",),
+        decoding_params={"temperature": 0},
+        key_representation_id="K1",
+        matcher_policy_id="M9",
+        prompt_policy_id="speech-native-json-copy-v4",
+        top_k=2,
+        agent_policy_id="speech-conditioned-factor-graph-action-support-v1",
+        agent_aggregator_id="factor-graph-primary-control-v1",
+        decision_graph=loaded,
+    )
+
+    assert loaded == graph
+    assert tasks[0].decision_graph == graph
+    with pytest.raises(SpeechNativeProfileError, match="SHA-256 mismatch"):
+        _load_decision_graph(
+            graph_path,
+            expected_sha256="0" * 64,
+            key_cards=_KEY_CARDS,
+        )
 
 
 def test_training_free_policy_search_uses_complete_action_support():
