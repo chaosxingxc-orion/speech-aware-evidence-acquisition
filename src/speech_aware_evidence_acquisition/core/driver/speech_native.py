@@ -6887,14 +6887,18 @@ def _cli_speech_native_action_audit(args: argparse.Namespace) -> int:
     )
     output = Path(args.output)
     _write_exclusive_json(output, report)
+    action_sensitive_count = report.get("action_sensitive_count")
+    if action_sensitive_count is None:
+        action_sensitive_count = report["action_variable_query_count"]
+    action_support_threshold_met = report.get("action_support_threshold_met")
+    if action_support_threshold_met is None:
+        action_support_threshold_met = report["action_variable_threshold_met"]
     print(
         json.dumps(
             {
                 "output": str(output),
-                "action_sensitive_count": report["action_sensitive_count"],
-                "action_support_threshold_met": report[
-                    "action_support_threshold_met"
-                ],
+                "action_sensitive_count": action_sensitive_count,
+                "action_support_threshold_met": action_support_threshold_met,
                 "gold_read": False,
                 "effectiveness_eligible": report.get(
                     "effectiveness_eligible", False
