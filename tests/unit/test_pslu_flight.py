@@ -61,6 +61,8 @@ from speech_aware_evidence_acquisition.rails.probes.pslu_flight import (
     _source_references_ontology_miner,
     assert_never_calls_ontology_miner,
     build_speech_native_binding,
+    decision_boundary_path,
+    expand_decision_graph_candidates,
     extend_speech_native_binding,
     load_pslu_rosters,
     load_pslu_sample_manifest,
@@ -69,6 +71,7 @@ from speech_aware_evidence_acquisition.rails.probes.pslu_flight import (
     factor_link_response_format,
     parse_factor_link_state,
     render_decision_graph_neighborhood,
+    render_factor_link_state,
     render_roster_entries,
     render_speech_native_keys,
     render_type_vocabulary,
@@ -1279,6 +1282,33 @@ def test_factor_link_schema_and_parser_accept_only_neighborhood_ids():
         )
 
 
+def test_factor_graph_candidate_expansion_and_boundary_path_are_deterministic():
+    graph = _decision_graph_fixture()
+    state = FactorLinkStateV1(
+        factor_ids=("F003", "F004"), boundary_id="B001"
+    )
+
+    expanded = expand_decision_graph_candidates(
+        graph=graph,
+        initial_key_ids=("K001",),
+        state=state,
+        cap=2,
+    )
+    assert expanded.key_ids == ("K001", "K002")
+    assert expanded.distance_by_key == {"K001": 0, "K002": 1}
+    assert decision_boundary_path(
+        graph=graph,
+        source_key_id="K001",
+        target_key_id="K002",
+        max_edges=2,
+    ) == ("B001",)
+
+    rendered = render_factor_link_state(graph=graph, state=state)
+    assert "[F003]" in rendered and "[F004]" in rendered
+    assert "[B001] endpoints=K001,K002" in rendered
+    assert "F001" not in rendered and "F002" not in rendered
+
+
 def test_m0_schema_v4_constrains_the_final_label_at_llama_server_boundary():
     client = _SpeechFeatureClient(['{"label":"email"}'])
     result = run_speech_native_matcher(
@@ -1914,6 +1944,104 @@ def test_m8_marks_order_disagreement_as_no_supported_action():
     assert result.key_id == "K001"
     assert result.agent_vote_key_ids == ("K001", None, "K002")
     assert result.agent_steps[2]["k1_stable_key_id"] is None
+
+
+class _M9FactorGraphClient:
+    def __init__(self, *, invalid_factor_state=False):
+        self.invalid_factor_state = invalid_factor_state
+        self.calls = []
+
+    def complete(self, messages, **kwargs):
+        self.calls.append((messages, kwargs))
+        stage = kwargs["matcher_policy_id"]
+        if stage.endswith(":primary-listwise"):
+            return '{"key_id":"K001"}'
+        if stage.endswith(":speech-retrieve-top-2"):
+            return '{"key_ids":["K001","K002"]}'
+        if stage.endswith(":link-factors"):
+            if self.invalid_factor_state:
+                return '{"factor_ids":["F999"],"boundary_id":"B001"}'
+            return '{"factor_ids":["F003","F004"],"boundary_id":"B001"}'
+        if stage.endswith(":factor-rerank-top-2"):
+            return '{"key_ids":["K002","K001"]}'
+        if ":boundary-rank-1-" in stage:
+            return '{"key_id":"K002"}'
+        raise AssertionError(stage)
+
+    def complete_many(self, requests, *, trace_parent=None):
+        del trace_parent
+        return tuple(
+            self.complete(messages, **kwargs) for messages, kwargs in requests
+        )
+
+
+def test_m9_runs_speech_conditioned_factor_graph_loop_and_retains_primary():
+    client = _M9FactorGraphClient()
+    result = run_speech_native_matcher(
+        core_client=client,
+        sample=_SpeechSample(),
+        query_descriptor=_QUERY_DESCRIPTOR,
+        key_cards=_KEY_CARDS,
+        key_representation_id="K1",
+        matcher_policy_id="M9",
+        prompt_policy_id="speech-native-json-copy-v4",
+        agent_policy_id="speech-conditioned-factor-graph-action-support-v1",
+        agent_aggregator_id="factor-graph-primary-control-v1",
+        decision_graph=_decision_graph_fixture(),
+        decoding_params={"temperature": 0, "max_tokens": 64},
+        top_k=2,
+    )
+
+    assert result.key_id == "K001"
+    assert result.top_key_ids == ("K002", "K001")
+    assert result.calls == 6
+    assert result.agent_vote_key_ids == ("K001", "K002", "K002", "K002")
+    assert result.agent_actions == (
+        "match:speech-only-primary",
+        "retrieve:speech-only",
+        "link:knowledge-factors",
+        "tool:expand-factor-graph",
+        "rerank:speech-plus-factor-state",
+        "compare:boundary-ab",
+        "compare:boundary-ba",
+        "select:retain-primary-for-support",
+    )
+    factor_step = result.agent_steps[2]
+    assert factor_step["factor_link_state"] == {
+        "factor_ids": ["F003", "F004"],
+        "boundary_id": "B001",
+    }
+    assert result.agent_steps[3]["expanded_key_ids"] == ["K001", "K002"]
+    link_format = client.calls[2][1]["decoding_params"]["response_format"]
+    assert link_format["json_schema"]["schema"]["additionalProperties"] is False
+    assert all(
+        "transcript" not in json.dumps(messages).lower()
+        for messages, _kwargs in client.calls
+    )
+    _assert_every_call_carries_query(client)
+
+
+def test_m9_invalid_factor_ids_fail_closed_to_primary_without_rerank():
+    client = _M9FactorGraphClient(invalid_factor_state=True)
+    result = run_speech_native_matcher(
+        core_client=client,
+        sample=_SpeechSample(),
+        query_descriptor=_QUERY_DESCRIPTOR,
+        key_cards=_KEY_CARDS,
+        key_representation_id="K1",
+        matcher_policy_id="M9",
+        prompt_policy_id="speech-native-json-copy-v4",
+        agent_policy_id="speech-conditioned-factor-graph-action-support-v1",
+        agent_aggregator_id="factor-graph-primary-control-v1",
+        decision_graph=_decision_graph_fixture(),
+        top_k=2,
+    )
+
+    assert result.key_id == "K001"
+    assert result.calls == 3
+    assert result.agent_actions[-1] == "backtrack:invalid-factor-link-state"
+    assert len(client.calls) == 3
+    _assert_every_call_carries_query(client)
 
 
 def test_m8_contact_dispatch_replays_heterogeneous_pairwise_dags_at_full_slots():
