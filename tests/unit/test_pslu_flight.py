@@ -476,6 +476,65 @@ def test_m6_fails_closed_to_speech_primary_when_grounding_quote_is_invented():
     _assert_every_call_carries_query(client)
 
 
+def test_m6_schema_v2_prompt_makes_the_grounded_state_contract_explicit():
+    grounded_state = {
+        "candidate_key_ids": ["K001", "K002"],
+        "domain": "email",
+        "operation": "read",
+        "target": "message",
+        "constraints": [],
+        "exclusions": [],
+        "unresolved_ambiguity": "none",
+        "evidence": [
+            {
+                "key_id": "K001",
+                "field": "definition",
+                "quote": "Commands that create, change, inspect, or remove alarms.",
+            },
+            {
+                "key_id": "K002",
+                "field": "positive_examples",
+                "quote": "read my new email",
+            },
+        ],
+    }
+    client = _SpeechFeatureClient(
+        [
+            '{"key_id":"K001"}',
+            '{"key_ids":["K001","K002"]}',
+            json.dumps(grounded_state),
+            '{"key_ids":["K002","K001"]}',
+            '{"compatible":true,"confidence":90}',
+            '{"compatible":false,"confidence":20}',
+        ]
+    )
+
+    result = run_speech_native_matcher(
+        core_client=client,
+        sample=_SpeechSample(),
+        query_descriptor=_QUERY_DESCRIPTOR,
+        key_cards=_KEY_CARDS,
+        key_representation_id="K1",
+        matcher_policy_id="M6",
+        prompt_policy_id="speech-native-json-copy-v3",
+        verifier_policy_id="speech-native-contrastive-verifier-v2",
+        agent_policy_id="knowledge-grounded-semantic-refinement-schema-v2",
+        agent_aggregator_id="grounded-refined-primary-fallback-v1",
+        decoding_params={"temperature": 0, "max_tokens": 64},
+        top_k=2,
+    )
+
+    instruction = client.calls[2][0][0]["content"]
+    assert result.agent_policy_id == "knowledge-grounded-semantic-refinement-schema-v2"
+    assert 'candidate_key_ids must be exactly ["K001","K002"]' in instruction
+    assert "domain, operation, target, and unresolved_ambiguity must each be" in instruction
+    assert "a non-empty JSON string" in instruction
+    assert "exactly one evidence object for each candidate" in instruction
+    assert "definition, positive_examples, or contrastive_boundary" in instruction
+    assert "never include the | separator" in instruction
+    _assert_every_call_carries_query(client)
+
+
 def test_m3_verifies_each_retrieved_candidate_and_arbitrates_only_a_tie():
     client = _SpeechFeatureClient(
         [

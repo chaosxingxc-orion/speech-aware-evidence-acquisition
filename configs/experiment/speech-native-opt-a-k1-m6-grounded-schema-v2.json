@@ -1,0 +1,9 @@
+{
+  "experiment_id": "SAEA-SN-OPTA-K1M6-GROUNDED-SCHEMA-V2",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "Local prompt-contract repair after the first OPT-A36 M6 cell produced zero citation-valid states. Keep every scientific input, speech contact, key card, action, fallback, and runtime profile fixed; make only the grounded-state JSON types, candidate order, evidence cardinality, field enum, and single-source quote rules explicit.",
+  "key_representation_id": "K1",
+  "matcher_policy_id": "M6",
+  "speech_native_agent_policy_id": "knowledge-grounded-semantic-refinement-schema-v2",
+  "speech_native_agent_aggregator_id": "grounded-refined-primary-fallback-v1"
+}

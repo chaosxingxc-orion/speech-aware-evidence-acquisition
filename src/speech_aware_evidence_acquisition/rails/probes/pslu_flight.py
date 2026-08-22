@@ -174,6 +174,7 @@ SPEECH_NATIVE_AGENT_POLICIES = (
     "m1-m3-disagreement-escalation-v1",
     "m1-m3-full-branch-explorer-v1",
     "knowledge-grounded-semantic-refinement-full-action-v1",
+    "knowledge-grounded-semantic-refinement-schema-v2",
 )
 SPEECH_NATIVE_SCENARIO_DEFINITIONS: Mapping[str, str] = MappingProxyType(
     {
@@ -697,9 +698,12 @@ def run_speech_native_matcher(
         or agent_aggregator_id not in m5_aggregators
     ):
         raise PsluFlightError("M5 requires an M1/M3 agent policy and aggregator")
+    m6_policies = {
+        "knowledge-grounded-semantic-refinement-full-action-v1",
+        "knowledge-grounded-semantic-refinement-schema-v2",
+    }
     if matcher_policy_id == "M6" and (
-        agent_policy_id
-        != "knowledge-grounded-semantic-refinement-full-action-v1"
+        agent_policy_id not in m6_policies
         or agent_aggregator_id != "grounded-refined-primary-fallback-v1"
     ):
         raise PsluFlightError("M6 requires the grounded semantic policy and aggregator")
@@ -1090,7 +1094,7 @@ def run_speech_native_matcher(
         return finish(_selected_key_id(response, allowed))
 
     if matcher_policy_id == "M6":
-        policy_id = "knowledge-grounded-semantic-refinement-full-action-v1"
+        policy_id = agent_policy_id
         aggregator_id = "grounded-refined-primary-fallback-v1"
         state_key_representation_id = "K2"
         primary = nested_decision("M1", cards, "M6:M1:primary")
@@ -1155,17 +1159,45 @@ def run_speech_native_matcher(
         if len(initial_top_ids) != top_k:
             return backtrack("backtrack:invalid-initial-retrieval")
         initial_cards = tuple(by_key[key_id] for key_id in initial_top_ids)
+        candidate_json = json.dumps(
+            list(initial_top_ids),
+            ensure_ascii=False,
+            separators=(",", ":"),
+        )
+        if agent_policy_id == "knowledge-grounded-semantic-refinement-schema-v2":
+            state_instruction = (
+                "Build a knowledge-grounded semantic query state for the spoken command. "
+                "Use only the retrieved key cards and the speech signal carried in this "
+                "request. Do not transcribe or paraphrase the utterance. Return one bare "
+                "JSON object without Markdown or code fences and with exactly these fields: "
+                "candidate_key_ids, domain, operation, target, constraints, exclusions, "
+                "unresolved_ambiguity, and evidence. candidate_key_ids must be exactly "
+                f"{candidate_json}. domain, operation, target, and unresolved_ambiguity "
+                "must each be a non-empty JSON string; use the string unspecified or none "
+                "instead of null, true, or false. constraints and exclusions must be arrays "
+                "of at most five non-empty JSON strings. evidence must contain exactly one "
+                "evidence object for each candidate, in the same candidate order. Every "
+                "evidence object must have exactly key_id, field, and quote. field must be "
+                "exactly definition, positive_examples, or contrastive_boundary. quote must "
+                "be copied exactly from the named field of that same key. When field is "
+                "positive_examples, copy from exactly one example and never include the | "
+                "separator or combine examples."
+            )
+        else:
+            state_instruction = (
+                "Build a knowledge-grounded semantic query state for the spoken command. "
+                "Use only the retrieved key cards and the speech signal carried in this "
+                "request. Do not transcribe or paraphrase the utterance. Return one bare JSON "
+                "object with exactly these fields: candidate_key_ids, domain, operation, "
+                "target, constraints, exclusions, unresolved_ambiguity, and evidence. Copy "
+                "candidate_key_ids in the supplied order. constraints and exclusions are arrays "
+                "of at most five short strings. evidence is an array of objects with exactly "
+                "key_id, field, and quote; cite every candidate at least once, use only visible "
+                "fields, and copy each quote exactly from that key card."
+            )
         state_response = contact(
             "build-grounded-query-state",
-            "Build a knowledge-grounded semantic query state for the spoken command. "
-            "Use only the retrieved key cards and the speech signal carried in this "
-            "request. Do not transcribe or paraphrase the utterance. Return one bare JSON "
-            "object with exactly these fields: candidate_key_ids, domain, operation, "
-            "target, constraints, exclusions, unresolved_ambiguity, and evidence. Copy "
-            "candidate_key_ids in the supplied order. constraints and exclusions are arrays "
-            "of at most five short strings. evidence is an array of objects with exactly "
-            "key_id, field, and quote; cite every candidate at least once, use only visible "
-            "fields, and copy each quote exactly from that key card.",
+            state_instruction,
             initial_cards,
             "Retrieved key cards:\n"
             + render_speech_native_keys(
