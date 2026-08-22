@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import json
 import hashlib
+import sys
 import threading
 import time
 from dataclasses import replace
@@ -28,6 +29,7 @@ from speech_aware_evidence_acquisition.core.driver.speech_native import (
     _evaluate_training_free_grounded_semantic_policy,
     _build_audio_key_bindings,
     _evaluate_training_free_agent_policies,
+    _inspect_gguf_moe_metadata,
     _evaluate_m9_factor_graph_action_support,
     _evaluate_m10_candidate_evidence_action_support,
     _evaluate_m11_adaptive_evidence_gap,
@@ -5895,6 +5897,28 @@ def test_cuda_graph_engine_audit_cli_writes_a_receipt_bound_model_free_report(
         report["inputs"]["session_receipt_sha256"]
         == hashlib.sha256(session_path.read_bytes()).hexdigest()
     )
+
+
+def test_gguf_engine_inspection_keeps_expert_used_count(tmp_path, monkeypatch):
+    fields = {
+        "general.architecture": SimpleNamespace(contents=lambda: "qwen3vlmoe"),
+        "qwen3vlmoe.expert_count": SimpleNamespace(contents=lambda: 128),
+        "qwen3vlmoe.expert_used_count": SimpleNamespace(contents=lambda: 8),
+    }
+    reader = SimpleNamespace(
+        fields=fields,
+        tensors=[SimpleNamespace(name="blk.0.ffn_gate_exps.weight", tensor_type=12)],
+    )
+    fake_gguf = SimpleNamespace(
+        GGUFReader=lambda path, mode: reader,
+        GGMLQuantizationType=lambda value: SimpleNamespace(name="Q4_K"),
+    )
+    monkeypatch.setitem(sys.modules, "gguf", fake_gguf)
+
+    metadata, tensor_types = _inspect_gguf_moe_metadata(tmp_path / "decoder.gguf")
+
+    assert metadata["qwen3vlmoe.expert_used_count"] == 8
+    assert tensor_types == ("Q4_K",)
 
 
 def test_decision_graph_artifact_is_hash_pinned_and_enters_profile_tasks(tmp_path):

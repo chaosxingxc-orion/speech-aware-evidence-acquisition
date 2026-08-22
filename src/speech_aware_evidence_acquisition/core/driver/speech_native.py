@@ -8909,7 +8909,9 @@ def _inspect_gguf_moe_metadata(
         ) from error
     metadata: dict[str, object] = {}
     for key, field in reader.fields.items():
-        if key == "general.architecture" or "expert_count" in key:
+        if key == "general.architecture" or key.endswith(
+            (".expert_count", ".expert_used_count")
+        ):
             metadata[key] = field.contents()
     expert_types: list[str] = []
     for tensor in reader.tensors:
