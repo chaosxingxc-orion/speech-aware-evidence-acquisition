@@ -167,6 +167,7 @@ SPEECH_NATIVE_MATCHER_POLICIES = (
     "M7",
     "M8",
     "M9",
+    "M10",
 )
 SPEECH_NATIVE_PROMPT_POLICIES = (
     "speech-native-json-copy-v2",
@@ -185,6 +186,7 @@ SPEECH_NATIVE_AGENT_AGGREGATORS = (
     "action-support-primary-control-v1",
     "pairwise-boundary-primary-control-v1",
     "factor-graph-primary-control-v1",
+    "candidate-evidence-primary-control-v1",
 )
 SPEECH_NATIVE_AGENT_POLICIES = (
     "m1-m3-disagreement-escalation-v1",
@@ -195,6 +197,7 @@ SPEECH_NATIVE_AGENT_POLICIES = (
     "knowledge-grounded-multistate-action-support-v1",
     "speech-conditioned-pairwise-boundary-support-v1",
     "speech-conditioned-factor-graph-action-support-v1",
+    "speech-conditioned-candidate-evidence-action-support-v1",
 )
 SPEECH_NATIVE_SCENARIO_DEFINITIONS: Mapping[str, str] = MappingProxyType(
     {
@@ -262,11 +265,16 @@ class KeyCardV1:
             raise PsluFlightError(f"invalid opaque key_id {self.key_id!r}")
         if not self.definition.strip():
             raise PsluFlightError(f"key {self.key_id}: definition must be non-empty")
-        if not self.positive_examples or any(not item.strip() for item in self.positive_examples):
+        if not self.positive_examples or any(
+            not item.strip() for item in self.positive_examples
+        ):
             raise PsluFlightError(
                 f"key {self.key_id}: positive_examples must be non-empty strings"
             )
-        if self.contrastive_boundary is not None and not self.contrastive_boundary.strip():
+        if (
+            self.contrastive_boundary is not None
+            and not self.contrastive_boundary.strip()
+        ):
             raise PsluFlightError(
                 f"key {self.key_id}: contrastive_boundary must be non-empty or None"
             )
@@ -297,9 +305,7 @@ def _is_numbered_id(value: object, prefix: str) -> bool:
     )
 
 
-def _validate_provenance_ids(
-    provenance_ids: tuple[str, ...], *, context: str
-) -> None:
+def _validate_provenance_ids(provenance_ids: tuple[str, ...], *, context: str) -> None:
     if (
         not provenance_ids
         or len(set(provenance_ids)) != len(provenance_ids)
@@ -468,9 +474,7 @@ class DecisionGraphV1:
             factor.factor_id: factor.validate(allowed_key_ids)
             for factor in self.factors
         }
-        covered_keys = {
-            key_id for factor in self.factors for key_id in factor.key_ids
-        }
+        covered_keys = {key_id for factor in self.factors for key_id in factor.key_ids}
         missing_keys = allowed_key_ids - covered_keys
         if missing_keys:
             raise PsluFlightError(
@@ -509,9 +513,7 @@ class DecisionGraphV1:
             raise PsluFlightError(
                 "decision graph candidates must be non-empty and unique"
             )
-        known_keys = {
-            key_id for factor in self.factors for key_id in factor.key_ids
-        }
+        known_keys = {key_id for factor in self.factors for key_id in factor.key_ids}
         unknown = set(candidates) - known_keys
         if unknown:
             raise PsluFlightError(
@@ -520,8 +522,7 @@ class DecisionGraphV1:
         incident = tuple(
             boundary
             for boundary in self.boundaries
-            if boundary.left_key_id in candidates
-            or boundary.right_key_id in candidates
+            if boundary.left_key_id in candidates or boundary.right_key_id in candidates
         )
         expanded_keys = list(candidates)
         for boundary in incident:
@@ -565,6 +566,88 @@ class DecisionGraphExpansionV1:
     distance_by_key: Mapping[str, int]
 
 
+@dataclass(frozen=True)
+class CandidateSupportStateV1:
+    compatible: bool
+    confidence: int
+    factor_ids: tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class CandidateCounterevidenceStateV1:
+    contradicted: bool
+    confidence: int
+    boundary_ids: tuple[str, ...]
+
+
+def _candidate_factor_ids(
+    graph: DecisionGraphV1, candidate_key_id: str
+) -> tuple[str, ...]:
+    factor_ids = tuple(
+        factor.factor_id
+        for factor in graph.factors
+        if candidate_key_id in factor.key_ids
+    )
+    if not factor_ids:
+        raise PsluFlightError(
+            f"candidate evidence has no factors for key {candidate_key_id!r}"
+        )
+    return factor_ids
+
+
+def _candidate_boundary_ids(
+    graph: DecisionGraphV1, candidate_key_id: str
+) -> tuple[str, ...]:
+    known_keys = {key_id for factor in graph.factors for key_id in factor.key_ids}
+    if candidate_key_id not in known_keys:
+        raise PsluFlightError(
+            f"candidate evidence references unknown key {candidate_key_id!r}"
+        )
+    return tuple(
+        boundary.boundary_id
+        for boundary in graph.boundaries
+        if candidate_key_id in {boundary.left_key_id, boundary.right_key_id}
+    )
+
+
+def expand_decision_graph_neighborhood(
+    *,
+    graph: DecisionGraphV1,
+    initial_key_ids: Sequence[str],
+    cap: int,
+) -> DecisionGraphExpansionV1:
+    """Expand all one-hop factor and boundary neighbors deterministically."""
+
+    if isinstance(cap, bool) or not isinstance(cap, int) or cap <= 0:
+        raise PsluFlightError("candidate evidence expansion cap must be positive")
+    initial = tuple(initial_key_ids)
+    if not initial or len(set(initial)) != len(initial) or len(initial) > cap:
+        raise PsluFlightError(
+            "candidate evidence expansion requires unique initial keys within the cap"
+        )
+    known_keys = {key_id for factor in graph.factors for key_id in factor.key_ids}
+    unknown = set(initial) - known_keys
+    if unknown:
+        raise PsluFlightError(
+            f"candidate evidence expansion references unknown keys {sorted(unknown)}"
+        )
+    neighbors: set[str] = set()
+    initial_set = set(initial)
+    for factor in graph.factors:
+        if initial_set.intersection(factor.key_ids):
+            neighbors.update(factor.key_ids)
+    for boundary in graph.boundaries:
+        if boundary.left_key_id in initial_set or boundary.right_key_id in initial_set:
+            neighbors.update((boundary.left_key_id, boundary.right_key_id))
+    ordered = (*initial, *sorted(neighbors - initial_set))[:cap]
+    return DecisionGraphExpansionV1(
+        key_ids=tuple(ordered),
+        distance_by_key={
+            key_id: 0 if key_id in initial_set else 1 for key_id in ordered
+        },
+    )
+
+
 def expand_decision_graph_candidates(
     *,
     graph: DecisionGraphV1,
@@ -582,12 +665,8 @@ def expand_decision_graph_candidates(
             "decision graph expansion requires unique initial keys within the cap"
         )
     factors_by_id = {factor.factor_id: factor for factor in graph.factors}
-    boundaries_by_id = {
-        boundary.boundary_id: boundary for boundary in graph.boundaries
-    }
-    known_keys = {
-        key_id for factor in graph.factors for key_id in factor.key_ids
-    }
+    boundaries_by_id = {boundary.boundary_id: boundary for boundary in graph.boundaries}
+    known_keys = {key_id for factor in graph.factors for key_id in factor.key_ids}
     unknown_initial = set(initial) - known_keys
     if unknown_initial:
         raise PsluFlightError(
@@ -600,7 +679,9 @@ def expand_decision_graph_candidates(
     ):
         raise PsluFlightError("decision graph expansion received invalid factor ids")
     if state.boundary_id is not None and state.boundary_id not in boundaries_by_id:
-        raise PsluFlightError("decision graph expansion received an invalid boundary id")
+        raise PsluFlightError(
+            "decision graph expansion received an invalid boundary id"
+        )
     ordered = list(initial)
     distance_by_key: dict[str, int] = {key_id: 0 for key_id in initial}
     for factor_id in state.factor_ids:
@@ -630,15 +711,9 @@ def decision_boundary_path(
 ) -> tuple[str, ...]:
     """Return the first graph-order boundary path within a small hop cap."""
 
-    if (
-        isinstance(max_edges, bool)
-        or not isinstance(max_edges, int)
-        or max_edges <= 0
-    ):
+    if isinstance(max_edges, bool) or not isinstance(max_edges, int) or max_edges <= 0:
         raise PsluFlightError("decision boundary path max_edges must be positive")
-    known_keys = {
-        key_id for factor in graph.factors for key_id in factor.key_ids
-    }
+    known_keys = {key_id for factor in graph.factors for key_id in factor.key_ids}
     if source_key_id not in known_keys or target_key_id not in known_keys:
         raise PsluFlightError("decision boundary path endpoints must be known keys")
     if source_key_id == target_key_id:
@@ -672,9 +747,7 @@ def render_factor_link_state(
     """Render only ids selected by the factor-link action."""
 
     factors_by_id = {factor.factor_id: factor for factor in graph.factors}
-    boundaries_by_id = {
-        boundary.boundary_id: boundary for boundary in graph.boundaries
-    }
+    boundaries_by_id = {boundary.boundary_id: boundary for boundary in graph.boundaries}
     if (
         not state.factor_ids
         or any(factor_id not in factors_by_id for factor_id in state.factor_ids)
@@ -720,9 +793,7 @@ def render_decision_graph_neighborhood(
     graph.validate(key_cards)
     neighborhood = graph.neighborhood(candidate_key_ids)
     factors_by_id = {factor.factor_id: factor for factor in graph.factors}
-    boundaries_by_id = {
-        boundary.boundary_id: boundary for boundary in graph.boundaries
-    }
+    boundaries_by_id = {boundary.boundary_id: boundary for boundary in graph.boundaries}
     lines = [f"Decision graph: {graph.graph_id}", "Factor nodes:"]
     for factor_id in neighborhood.factor_ids:
         factor = factors_by_id[factor_id]
@@ -742,8 +813,7 @@ def render_decision_graph_neighborhood(
             (
                 f"[{boundary.boundary_id}] endpoints="
                 f"{boundary.left_key_id},{boundary.right_key_id}",
-                f"{boundary.left_key_id} factors: "
-                f"{','.join(boundary.left_factor_ids)}",
+                f"{boundary.left_key_id} factors: {','.join(boundary.left_factor_ids)}",
                 f"{boundary.left_key_id} exclusion: {boundary.left_exclusion}",
                 f"{boundary.right_key_id} factors: "
                 f"{','.join(boundary.right_factor_ids)}",
@@ -780,9 +850,7 @@ def factor_link_response_format(
                         "maxItems": min(5, len(neighborhood.factor_ids)),
                         "uniqueItems": True,
                     },
-                    "boundary_id": {
-                        "enum": ["NONE", *neighborhood.boundary_ids]
-                    },
+                    "boundary_id": {"enum": ["NONE", *neighborhood.boundary_ids]},
                 },
                 "required": ["factor_ids", "boundary_id"],
                 "additionalProperties": False,
@@ -819,6 +887,255 @@ def parse_factor_link_state(
         factor_ids=tuple(factor_ids),
         boundary_id=None if boundary_id == "NONE" else boundary_id,
     )
+
+
+def candidate_support_response_format(
+    *, graph: DecisionGraphV1, candidate_key_id: str
+) -> dict[str, object]:
+    factor_ids = _candidate_factor_ids(graph, candidate_key_id)
+    return {
+        "type": "json_schema",
+        "json_schema": {
+            "name": "speech_native_candidate_support",
+            "strict": True,
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "compatible": {"type": "boolean"},
+                    "confidence": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 100,
+                    },
+                    "factor_ids": {
+                        "type": "array",
+                        "items": {"enum": list(factor_ids)},
+                        "minItems": 1,
+                        "maxItems": min(3, len(factor_ids)),
+                        "uniqueItems": True,
+                    },
+                },
+                "required": ["compatible", "confidence", "factor_ids"],
+                "additionalProperties": False,
+            },
+        },
+    }
+
+
+def parse_candidate_support_state(
+    text: str,
+    *,
+    graph: DecisionGraphV1,
+    candidate_key_id: str,
+) -> CandidateSupportStateV1 | None:
+    allowed_factor_ids = set(_candidate_factor_ids(graph, candidate_key_id))
+    document = _response_object(text)
+    if document is None or set(document) != {
+        "compatible",
+        "confidence",
+        "factor_ids",
+    }:
+        return None
+    compatible = document.get("compatible")
+    confidence = document.get("confidence")
+    factor_ids = document.get("factor_ids")
+    if (
+        not isinstance(compatible, bool)
+        or isinstance(confidence, bool)
+        or not isinstance(confidence, int)
+        or not 0 <= confidence <= 100
+        or not isinstance(factor_ids, list)
+        or not 1 <= len(factor_ids) <= min(3, len(allowed_factor_ids))
+        or len(set(factor_ids)) != len(factor_ids)
+        or not all(
+            isinstance(factor_id, str) and factor_id in allowed_factor_ids
+            for factor_id in factor_ids
+        )
+    ):
+        return None
+    return CandidateSupportStateV1(
+        compatible=compatible,
+        confidence=confidence,
+        factor_ids=tuple(factor_ids),
+    )
+
+
+def candidate_counterevidence_response_format(
+    *, graph: DecisionGraphV1, candidate_key_id: str
+) -> dict[str, object]:
+    boundary_ids = _candidate_boundary_ids(graph, candidate_key_id)
+    boundary_items: dict[str, object] = (
+        {"enum": list(boundary_ids)} if boundary_ids else {"type": "string"}
+    )
+    return {
+        "type": "json_schema",
+        "json_schema": {
+            "name": "speech_native_candidate_counterevidence",
+            "strict": True,
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "contradicted": {"type": "boolean"},
+                    "confidence": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 100,
+                    },
+                    "boundary_ids": {
+                        "type": "array",
+                        "items": boundary_items,
+                        "minItems": 0,
+                        "maxItems": min(2, len(boundary_ids)),
+                        "uniqueItems": True,
+                    },
+                },
+                "required": ["contradicted", "confidence", "boundary_ids"],
+                "additionalProperties": False,
+            },
+        },
+    }
+
+
+def parse_candidate_counterevidence_state(
+    text: str,
+    *,
+    graph: DecisionGraphV1,
+    candidate_key_id: str,
+) -> CandidateCounterevidenceStateV1 | None:
+    allowed_boundary_ids = set(_candidate_boundary_ids(graph, candidate_key_id))
+    document = _response_object(text)
+    if document is None or set(document) != {
+        "contradicted",
+        "confidence",
+        "boundary_ids",
+    }:
+        return None
+    contradicted = document.get("contradicted")
+    confidence = document.get("confidence")
+    boundary_ids = document.get("boundary_ids")
+    if (
+        not isinstance(contradicted, bool)
+        or isinstance(confidence, bool)
+        or not isinstance(confidence, int)
+        or not 0 <= confidence <= 100
+        or not isinstance(boundary_ids, list)
+        or len(boundary_ids) > min(2, len(allowed_boundary_ids))
+        or len(set(boundary_ids)) != len(boundary_ids)
+        or not all(
+            isinstance(boundary_id, str) and boundary_id in allowed_boundary_ids
+            for boundary_id in boundary_ids
+        )
+    ):
+        return None
+    return CandidateCounterevidenceStateV1(
+        contradicted=contradicted,
+        confidence=confidence,
+        boundary_ids=tuple(boundary_ids),
+    )
+
+
+def _render_candidate_factor_context(
+    *, graph: DecisionGraphV1, candidate_key_id: str
+) -> str:
+    allowed = set(_candidate_factor_ids(graph, candidate_key_id))
+    lines = [f"Candidate {candidate_key_id} factor nodes:"]
+    for factor in graph.factors:
+        if factor.factor_id in allowed:
+            lines.extend(
+                (
+                    f"[{factor.factor_id}] kind={factor.kind}",
+                    f"Statement: {factor.statement}",
+                )
+            )
+    return "\n".join(lines)
+
+
+def _render_candidate_boundary_context(
+    *, graph: DecisionGraphV1, candidate_key_id: str
+) -> str:
+    allowed = set(_candidate_boundary_ids(graph, candidate_key_id))
+    lines = [f"Candidate {candidate_key_id} hard-negative boundaries:"]
+    if not allowed:
+        lines.append("NONE")
+    for boundary in graph.boundaries:
+        if boundary.boundary_id not in allowed:
+            continue
+        lines.extend(
+            (
+                f"[{boundary.boundary_id}] endpoints="
+                f"{boundary.left_key_id},{boundary.right_key_id}",
+                f"{boundary.left_key_id} exclusion: {boundary.left_exclusion}",
+                f"{boundary.right_key_id} exclusion: {boundary.right_exclusion}",
+            )
+        )
+    return "\n".join(lines)
+
+
+def _render_candidate_reconciliation_state(
+    *,
+    graph: DecisionGraphV1,
+    candidate_key_id: str,
+    support: CandidateSupportStateV1,
+    counterevidence: CandidateCounterevidenceStateV1,
+) -> str:
+    factors_by_id = {factor.factor_id: factor for factor in graph.factors}
+    boundaries_by_id = {boundary.boundary_id: boundary for boundary in graph.boundaries}
+    lines = [
+        f"Candidate: {candidate_key_id}",
+        f"Support compatible: {str(support.compatible).lower()}",
+        f"Support confidence: {support.confidence}",
+        "Selected support factors:",
+    ]
+    for factor_id in support.factor_ids:
+        factor = factors_by_id[factor_id]
+        lines.extend((f"[{factor_id}] kind={factor.kind}", factor.statement))
+    lines.extend(
+        (
+            f"Counterevidence contradicted: "
+            f"{str(counterevidence.contradicted).lower()}",
+            f"Counterevidence confidence: {counterevidence.confidence}",
+            "Selected counterevidence boundaries:",
+        )
+    )
+    if not counterevidence.boundary_ids:
+        lines.append("NONE")
+    for boundary_id in counterevidence.boundary_ids:
+        boundary = boundaries_by_id[boundary_id]
+        lines.extend(
+            (
+                f"[{boundary_id}] endpoints="
+                f"{boundary.left_key_id},{boundary.right_key_id}",
+                f"{boundary.left_key_id} exclusion: {boundary.left_exclusion}",
+                f"{boundary.right_key_id} exclusion: {boundary.right_exclusion}",
+            )
+        )
+    return "\n".join(lines)
+
+
+def _candidate_reconciliation_response_format() -> dict[str, object]:
+    return {
+        "type": "json_schema",
+        "json_schema": {
+            "name": "speech_native_candidate_reconciliation",
+            "strict": True,
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "action": {"enum": ["retain_primary", "accept_candidate"]}
+                },
+                "required": ["action"],
+                "additionalProperties": False,
+            },
+        },
+    }
+
+
+def _parse_candidate_reconciliation(text: str) -> str | None:
+    document = _response_object(text)
+    if document is None or set(document) != {"action"}:
+        return None
+    action = document.get("action")
+    return action if action in {"retain_primary", "accept_candidate"} else None
 
 
 @dataclass(frozen=True)
@@ -930,7 +1247,9 @@ def _validated_key_cards(key_cards: Sequence[KeyCardV1]) -> tuple[KeyCardV1, ...
     if len(set(key_ids)) != len(key_ids):
         raise PsluFlightError("speech-native key cards contain duplicate key_id values")
     if len(set(labels)) != len(labels):
-        raise PsluFlightError("speech-native key cards contain duplicate value_label values")
+        raise PsluFlightError(
+            "speech-native key cards contain duplicate value_label values"
+        )
     return cards
 
 
@@ -1116,14 +1435,12 @@ def parse_grounded_query_state(
             sources = (
                 (card.contrastive_boundary or "")
                 if field_name == "contrastive_boundary"
-                else ""
-            ,)
+                else "",
+            )
         if not any(quote in source for source in sources):
             return None
         evidence.append(
-            GroundedEvidenceV1(
-                key_id=str(key_id), field=str(field_name), quote=quote
-            )
+            GroundedEvidenceV1(key_id=str(key_id), field=str(field_name), quote=quote)
         )
     if {item.key_id for item in evidence} != set(candidate_key_ids):
         return None
@@ -1284,7 +1601,9 @@ def _speech_feature_messages(
 ) -> tuple[Mapping[str, object], ...]:
     required = {"packet_id", "sha256", "role"}
     if set(query_descriptor) != required or query_descriptor.get("role") != "query":
-        raise PsluFlightError("query_descriptor must carry exact packet_id/sha256/role=query")
+        raise PsluFlightError(
+            "query_descriptor must carry exact packet_id/sha256/role=query"
+        )
     content: list[Mapping[str, object]] = []
     if key_text:
         content.append({"type": "text", "text": key_text})
@@ -1300,7 +1619,10 @@ def _speech_feature_messages(
             )
         for card in key_cards:
             binding = audio_key_bindings[card.key_id]
-            if not isinstance(binding, Mapping) or set(binding) != {"packet_id", "sha256"}:
+            if not isinstance(binding, Mapping) or set(binding) != {
+                "packet_id",
+                "sha256",
+            }:
                 raise PsluFlightError(
                     f"audio key binding {card.key_id!r} must carry exact packet_id/sha256"
                 )
@@ -1340,7 +1662,7 @@ def run_speech_native_matcher(
     _trace_matcher_policy_id: str | None = None,
     _trace_buffer: TraceBuffer | None = None,
 ) -> SpeechNativeDecision:
-    """Run one frozen-core speech-query decision under M0--M8.
+    """Run one frozen-core speech-query decision under M0--M10.
 
     Every local ``contact`` call reconstructs a two-message request carrying
     the original query packet. Generated factor text and verifier outputs may
@@ -1383,8 +1705,7 @@ def run_speech_native_matcher(
         "m3-unanimous-primary-fallback-v3",
     }
     if matcher_policy_id == "M5" and (
-        agent_policy_id not in m5_policies
-        or agent_aggregator_id not in m5_aggregators
+        agent_policy_id not in m5_policies or agent_aggregator_id not in m5_aggregators
     ):
         raise PsluFlightError("M5 requires an M1/M3 agent policy and aggregator")
     m6_policies = {
@@ -1405,7 +1726,9 @@ def run_speech_native_matcher(
         agent_policy_id != "knowledge-grounded-multistate-action-support-v1"
         or agent_aggregator_id != "action-support-primary-control-v1"
     ):
-        raise PsluFlightError("M7 requires the multistate action-support policy and control")
+        raise PsluFlightError(
+            "M7 requires the multistate action-support policy and control"
+        )
     if matcher_policy_id == "M7" and key_representation_id not in {"K1", "K2"}:
         raise PsluFlightError("M7 supports maintainable text keys K1/K2 only")
     if matcher_policy_id == "M7" and prompt_policy_id != "speech-native-json-copy-v3":
@@ -1414,11 +1737,17 @@ def run_speech_native_matcher(
         agent_policy_id != "speech-conditioned-pairwise-boundary-support-v1"
         or agent_aggregator_id != "pairwise-boundary-primary-control-v1"
     ):
-        raise PsluFlightError("M8 requires the pairwise-boundary support policy and control")
+        raise PsluFlightError(
+            "M8 requires the pairwise-boundary support policy and control"
+        )
     if matcher_policy_id == "M8" and key_representation_id != "K1":
-        raise PsluFlightError("M8 requires maintainable K1 text keys at the profile boundary")
+        raise PsluFlightError(
+            "M8 requires maintainable K1 text keys at the profile boundary"
+        )
     if matcher_policy_id == "M8" and prompt_policy_id != "speech-native-json-copy-v4":
-        raise PsluFlightError("M8 requires the schema-constrained JSON-copy v4 prompt policy")
+        raise PsluFlightError(
+            "M8 requires the schema-constrained JSON-copy v4 prompt policy"
+        )
     if matcher_policy_id == "M9" and (
         agent_policy_id != "speech-conditioned-factor-graph-action-support-v1"
         or agent_aggregator_id != "factor-graph-primary-control-v1"
@@ -1427,15 +1756,41 @@ def run_speech_native_matcher(
     if matcher_policy_id == "M9" and key_representation_id != "K1":
         raise PsluFlightError("M9 requires maintainable K1 text keys")
     if matcher_policy_id == "M9" and prompt_policy_id != "speech-native-json-copy-v4":
-        raise PsluFlightError("M9 requires the schema-constrained JSON-copy v4 prompt policy")
+        raise PsluFlightError(
+            "M9 requires the schema-constrained JSON-copy v4 prompt policy"
+        )
     if matcher_policy_id == "M9" and decision_graph is None:
         raise PsluFlightError("M9 requires one DecisionGraphV1")
     if matcher_policy_id == "M9":
         assert decision_graph is not None
         decision_graph.validate(cards)
-    top_k_is_active = matcher_policy_id in {"M3", "M5", "M6", "M7", "M8", "M9"} or (
-        matcher_policy_id == "M4" and ensemble_base_policy_id == "M3"
-    )
+    if matcher_policy_id == "M10" and (
+        agent_policy_id != "speech-conditioned-candidate-evidence-action-support-v1"
+        or agent_aggregator_id != "candidate-evidence-primary-control-v1"
+    ):
+        raise PsluFlightError(
+            "M10 requires the candidate-evidence support policy and control"
+        )
+    if matcher_policy_id == "M10" and key_representation_id != "K1":
+        raise PsluFlightError("M10 requires maintainable K1 text keys")
+    if matcher_policy_id == "M10" and prompt_policy_id != "speech-native-json-copy-v4":
+        raise PsluFlightError(
+            "M10 requires the schema-constrained JSON-copy v4 prompt policy"
+        )
+    if matcher_policy_id == "M10" and decision_graph is None:
+        raise PsluFlightError("M10 requires one DecisionGraphV1")
+    if matcher_policy_id == "M10":
+        assert decision_graph is not None
+        decision_graph.validate(cards)
+    top_k_is_active = matcher_policy_id in {
+        "M3",
+        "M5",
+        "M6",
+        "M7",
+        "M8",
+        "M9",
+        "M10",
+    } or (matcher_policy_id == "M4" and ensemble_base_policy_id == "M3")
     if top_k_is_active and (top_k <= 0 or top_k > len(cards)):
         raise PsluFlightError(f"top_k must be in [1, {len(cards)}], got {top_k}")
     by_key = {card.key_id: card for card in cards}
@@ -1534,9 +1889,7 @@ def run_speech_native_matcher(
         return responses
 
     def contact_many(
-        specifications: Sequence[
-            tuple[str, str, Sequence[KeyCardV1], str | None]
-        ],
+        specifications: Sequence[tuple[str, str, Sequence[KeyCardV1], str | None]],
     ) -> tuple[str, ...]:
         return contact_many_with_overrides(
             tuple((*specification, None) for specification in specifications)
@@ -1679,11 +2032,15 @@ def run_speech_native_matcher(
                 for order_index, ordering in enumerate(orderings)
             )
         )
-        votes = [decision.key_id for decision in decisions if decision.key_id is not None]
+        votes = [
+            decision.key_id for decision in decisions if decision.key_id is not None
+        ]
         if not votes:
             return finish(None)
         counts = {key_id: votes.count(key_id) for key_id in set(votes)}
-        majority = next((key_id for key_id, count in counts.items() if count >= 2), None)
+        majority = next(
+            (key_id for key_id, count in counts.items() if count >= 2), None
+        )
         winner = majority if majority is not None else decisions[0].key_id
         return finish(winner)
 
@@ -1730,7 +2087,9 @@ def run_speech_native_matcher(
         counts = {
             key_id: valid_m3_votes.count(key_id) for key_id in set(valid_m3_votes)
         }
-        majority = next((key_id for key_id, count in counts.items() if count >= 2), None)
+        majority = next(
+            (key_id for key_id, count in counts.items() if count >= 2), None
+        )
         if agent_aggregator_id == "m3-unanimous-primary-fallback-v3":
             unanimous = (
                 valid_m3_votes[0]
@@ -1759,11 +2118,7 @@ def run_speech_native_matcher(
             agent_actions=(
                 "match:listwise-canonical",
                 "retrieve-verify:canonical",
-                (
-                    "explore:full-branch"
-                    if full_branch
-                    else "escalate:disagreement"
-                ),
+                ("explore:full-branch" if full_branch else "escalate:disagreement"),
                 "retrieve-verify:reverse",
                 "retrieve-verify:rotate-7",
                 aggregate_action,
@@ -1790,9 +2145,7 @@ def run_speech_native_matcher(
                         "schema": {
                             "type": "object",
                             "properties": {
-                                "label": {
-                                    "enum": [card.value_label for card in cards]
-                                }
+                                "label": {"enum": [card.value_label for card in cards]}
                             },
                             "required": ["label"],
                             "additionalProperties": False,
@@ -1810,7 +2163,9 @@ def run_speech_native_matcher(
         )
         document = _response_object(response)
         label = document.get("label") if document is not None else None
-        key_id = next((card.key_id for card in cards if card.value_label == label), None)
+        key_id = next(
+            (card.key_id for card in cards if card.value_label == label), None
+        )
         return finish(key_id)
 
     if matcher_policy_id == "M1":
@@ -1969,18 +2324,14 @@ def run_speech_native_matcher(
                             "spoken command. Compare the speech signal directly against both "
                             "cards. Treat card order as irrelevant and return only key_id.",
                             ordered_cards,
-                            render_speech_native_keys(
-                                ordered_cards, representation_id
-                            ),
+                            render_speech_native_keys(ordered_cards, representation_id),
                             {"response_format": response_format},
                         )
                     )
                     pairwise_owners.append((rank, representation_id, order_id))
         pairwise_responses = contact_many_with_overrides(tuple(pairwise_requests))
         parsed_votes: dict[tuple[int, str, str], str | None] = {}
-        for owner, response in zip(
-            pairwise_owners, pairwise_responses, strict=True
-        ):
+        for owner, response in zip(pairwise_owners, pairwise_responses, strict=True):
             challenger_key_id = challengers[owner[0] - 1]
             parsed_votes[owner] = _selected_key_id(
                 response, {primary_key_id, challenger_key_id}
@@ -1994,14 +2345,10 @@ def run_speech_native_matcher(
             k2_ab = parsed_votes[(rank, "K2", "ab")]
             k2_ba = parsed_votes[(rank, "K2", "ba")]
             k1_stable = (
-                challenger_key_id
-                if k1_ab == k1_ba == challenger_key_id
-                else None
+                challenger_key_id if k1_ab == k1_ba == challenger_key_id else None
             )
             k2_stable = (
-                challenger_key_id
-                if k2_ab == k2_ba == challenger_key_id
-                else None
+                challenger_key_id if k2_ab == k2_ba == challenger_key_id else None
             )
             support_votes.extend((k1_stable, k2_stable))
             comparison_steps.append(
@@ -2300,8 +2647,7 @@ def run_speech_native_matcher(
             )
 
         boundaries_by_id = {
-            boundary.boundary_id: boundary
-            for boundary in decision_graph.boundaries
+            boundary.boundary_id: boundary for boundary in decision_graph.boundaries
         }
         path_lines = ["Boundary path:"]
         for boundary_id in boundary_path:
@@ -2346,8 +2692,7 @@ def run_speech_native_matcher(
             )
         boundary_responses = contact_many_with_overrides(tuple(boundary_requests))
         boundary_votes = tuple(
-            _selected_key_id(response, set(pair_ids))
-            for response in boundary_responses
+            _selected_key_id(response, set(pair_ids)) for response in boundary_responses
         )
         return finish(
             primary_key_id,
@@ -2387,6 +2732,311 @@ def run_speech_native_matcher(
                     ],
                 },
             ),
+            decision_agent_aggregator_id=agent_aggregator_id,
+        )
+
+    if matcher_policy_id == "M10":
+        assert decision_graph is not None
+        key_ids = tuple(card.key_id for card in cards)
+        rendered_keys = render_speech_native_keys(cards, "K1")
+        initial_responses = contact_many_with_overrides(
+            (
+                (
+                    "primary-listwise",
+                    "Match the spoken command to exactly one opaque key. Use the speech "
+                    "signal and supplied K1 text cards jointly. Return only key_id.",
+                    cards,
+                    rendered_keys,
+                    {
+                        "response_format": _key_choice_response_format(
+                            name="speech_native_primary_key_choice",
+                            key_ids=key_ids,
+                        )
+                    },
+                ),
+                (
+                    f"speech-retrieve-top-{top_k}",
+                    f"Retrieve exactly {top_k} distinct opaque keys for the spoken "
+                    "command, ranked from most to least compatible. Use the speech signal "
+                    "and supplied K1 text cards jointly. Return only the ordered key_ids.",
+                    cards,
+                    rendered_keys,
+                    {
+                        "response_format": _top_key_choice_response_format(
+                            key_ids=key_ids,
+                            top_k=top_k,
+                        )
+                    },
+                ),
+            )
+        )
+        primary_key_id = _selected_key_id(initial_responses[0], allowed)
+        initial_top_ids = _selected_top_keys(initial_responses[1], allowed, top_k)
+        initial_steps: tuple[Mapping[str, object], ...] = (
+            {
+                "action_id": "match:speech-only-primary",
+                "key_id": primary_key_id,
+                "top_key_ids": [],
+                "calls": 1,
+                "parse_failure": primary_key_id is None,
+            },
+            {
+                "action_id": "retrieve:speech-only",
+                "key_id": initial_top_ids[0] if initial_top_ids else None,
+                "top_key_ids": list(initial_top_ids),
+                "calls": 1,
+                "parse_failure": len(initial_top_ids) != top_k,
+            },
+        )
+        if primary_key_id is None or len(initial_top_ids) != top_k:
+            return finish(
+                primary_key_id,
+                top_ids=initial_top_ids,
+                agent_policy_id=agent_policy_id,
+                agent_actions=(
+                    "match:speech-only-primary",
+                    "retrieve:speech-only",
+                    "backtrack:invalid-initial-candidate-evidence",
+                ),
+                agent_escalated=True,
+                agent_vote_key_ids=(primary_key_id,),
+                agent_steps=initial_steps,
+                decision_agent_aggregator_id=agent_aggregator_id,
+            )
+
+        expansion = expand_decision_graph_neighborhood(
+            graph=decision_graph,
+            initial_key_ids=initial_top_ids,
+            cap=min(6, len(cards)),
+        )
+        expansion_step: Mapping[str, object] = {
+            "action_id": "tool:expand-candidate-neighborhood",
+            "key_id": None,
+            "top_key_ids": list(initial_top_ids),
+            "calls": 0,
+            "parse_failure": False,
+            "expanded_key_ids": list(expansion.key_ids),
+            "distance_by_key": dict(expansion.distance_by_key),
+        }
+        evidence_requests: list[
+            tuple[
+                str,
+                str,
+                Sequence[KeyCardV1],
+                str,
+                Mapping[str, object],
+            ]
+        ] = []
+        for candidate_key_id in expansion.key_ids:
+            candidate_card = by_key[candidate_key_id]
+            evidence_requests.extend(
+                (
+                    (
+                        f"support-{candidate_key_id}",
+                        "Judge whether this candidate's domain and operation are supported "
+                        "by the spoken command. Select only registered factor ids that the "
+                        "speech supports. Return no rationale or transcript.",
+                        (candidate_card,),
+                        "Candidate key card:\n"
+                        + render_speech_native_keys((candidate_card,), "K2")
+                        + "\n\n"
+                        + _render_candidate_factor_context(
+                            graph=decision_graph,
+                            candidate_key_id=candidate_key_id,
+                        ),
+                        {
+                            "response_format": candidate_support_response_format(
+                                graph=decision_graph,
+                                candidate_key_id=candidate_key_id,
+                            )
+                        },
+                    ),
+                    (
+                        f"counterevidence-{candidate_key_id}",
+                        "Search for speech evidence that contradicts this candidate by "
+                        "using only the registered hard-negative boundaries. Select only "
+                        "request-local boundary ids. Return no rationale or transcript.",
+                        (candidate_card,),
+                        "Candidate key card:\n"
+                        + render_speech_native_keys((candidate_card,), "K2")
+                        + "\n\n"
+                        + _render_candidate_boundary_context(
+                            graph=decision_graph,
+                            candidate_key_id=candidate_key_id,
+                        ),
+                        {
+                            "response_format": (
+                                candidate_counterevidence_response_format(
+                                    graph=decision_graph,
+                                    candidate_key_id=candidate_key_id,
+                                )
+                            )
+                        },
+                    ),
+                )
+            )
+        evidence_responses = contact_many_with_overrides(tuple(evidence_requests))
+        support_by_key: dict[str, CandidateSupportStateV1 | None] = {}
+        counterevidence_by_key: dict[str, CandidateCounterevidenceStateV1 | None] = {}
+        evidence_steps: list[Mapping[str, object]] = []
+        evidence_actions: list[str] = []
+        for index, candidate_key_id in enumerate(expansion.key_ids):
+            support = parse_candidate_support_state(
+                evidence_responses[index * 2],
+                graph=decision_graph,
+                candidate_key_id=candidate_key_id,
+            )
+            counterevidence = parse_candidate_counterevidence_state(
+                evidence_responses[index * 2 + 1],
+                graph=decision_graph,
+                candidate_key_id=candidate_key_id,
+            )
+            support_by_key[candidate_key_id] = support
+            counterevidence_by_key[candidate_key_id] = counterevidence
+            evidence_actions.extend(
+                (
+                    f"acquire:support:{candidate_key_id}",
+                    f"seek:counterevidence:{candidate_key_id}",
+                )
+            )
+            evidence_steps.append(
+                {
+                    "action_id": f"acquire:candidate-evidence:{candidate_key_id}",
+                    "candidate_key_id": candidate_key_id,
+                    "support_compatible": (
+                        support.compatible if support is not None else None
+                    ),
+                    "support_confidence": (
+                        support.confidence if support is not None else None
+                    ),
+                    "support_factor_ids": (
+                        list(support.factor_ids) if support is not None else []
+                    ),
+                    "counterevidence_contradicted": (
+                        counterevidence.contradicted
+                        if counterevidence is not None
+                        else None
+                    ),
+                    "counterevidence_confidence": (
+                        counterevidence.confidence
+                        if counterevidence is not None
+                        else None
+                    ),
+                    "counterevidence_boundary_ids": (
+                        list(counterevidence.boundary_ids)
+                        if counterevidence is not None
+                        else []
+                    ),
+                    "calls": 2,
+                    "parse_failure": support is None or counterevidence is None,
+                    "causal_parent_ids": [
+                        "retrieve:speech-only",
+                        "tool:expand-candidate-neighborhood",
+                    ],
+                }
+            )
+        common_actions = (
+            "match:speech-only-primary",
+            "retrieve:speech-only",
+            "tool:expand-candidate-neighborhood",
+            *evidence_actions,
+        )
+        common_steps = (*initial_steps, expansion_step, *evidence_steps)
+        if any(step["parse_failure"] for step in evidence_steps):
+            return finish(
+                primary_key_id,
+                top_ids=expansion.key_ids,
+                agent_policy_id=agent_policy_id,
+                agent_actions=(
+                    *common_actions,
+                    "backtrack:invalid-candidate-evidence",
+                ),
+                agent_escalated=True,
+                agent_vote_key_ids=(primary_key_id,),
+                agent_steps=common_steps,
+                decision_agent_aggregator_id=agent_aggregator_id,
+            )
+
+        challenger_ids = tuple(
+            key_id for key_id in expansion.key_ids if key_id != primary_key_id
+        )
+        reconciliation_requests = []
+        for candidate_key_id in challenger_ids:
+            support = support_by_key[candidate_key_id]
+            counterevidence = counterevidence_by_key[candidate_key_id]
+            assert support is not None and counterevidence is not None
+            pair_cards = (by_key[primary_key_id], by_key[candidate_key_id])
+            reconciliation_requests.append(
+                (
+                    f"reconcile-{candidate_key_id}",
+                    "Choose whether the candidate evidence justifies replacing the "
+                    "speech-only primary. Re-evaluate the enum-bound semantic state against "
+                    "the original speech carried in this request. Return only action.",
+                    pair_cards,
+                    _render_candidate_reconciliation_state(
+                        graph=decision_graph,
+                        candidate_key_id=candidate_key_id,
+                        support=support,
+                        counterevidence=counterevidence,
+                    )
+                    + "\n\nPrimary and candidate key cards:\n"
+                    + render_speech_native_keys(pair_cards, "K2"),
+                    {"response_format": (_candidate_reconciliation_response_format())},
+                )
+            )
+        reconciliation_responses = contact_many_with_overrides(
+            tuple(reconciliation_requests)
+        )
+        reconciliation_steps: list[Mapping[str, object]] = []
+        reconciliation_actions: list[str] = []
+        votes: list[str | None] = [primary_key_id]
+        for candidate_key_id, response in zip(
+            challenger_ids, reconciliation_responses, strict=True
+        ):
+            selected_action = _parse_candidate_reconciliation(response)
+            support = support_by_key[candidate_key_id]
+            counterevidence = counterevidence_by_key[candidate_key_id]
+            assert support is not None and counterevidence is not None
+            reconciliation_actions.append(f"reconcile:{candidate_key_id}")
+            selected_key_id = (
+                candidate_key_id
+                if selected_action == "accept_candidate"
+                else primary_key_id
+                if selected_action == "retain_primary"
+                else None
+            )
+            votes.append(selected_key_id)
+            reconciliation_steps.append(
+                {
+                    "action_id": f"reconcile:candidate:{candidate_key_id}",
+                    "candidate_key_id": candidate_key_id,
+                    "selected_action": selected_action,
+                    "key_id": selected_key_id,
+                    "selected_factor_ids": list(support.factor_ids),
+                    "selected_boundary_ids": list(counterevidence.boundary_ids),
+                    "calls": 1,
+                    "parse_failure": selected_action is None,
+                    "causal_parent_ids": [
+                        f"acquire:candidate-evidence:{candidate_key_id}"
+                    ],
+                }
+            )
+        return finish(
+            primary_key_id,
+            top_ids=expansion.key_ids,
+            agent_policy_id=agent_policy_id,
+            agent_actions=(
+                *common_actions,
+                *reconciliation_actions,
+                (
+                    "backtrack:invalid-candidate-reconciliation"
+                    if any(step["parse_failure"] for step in reconciliation_steps)
+                    else "select:retain-primary-for-support"
+                ),
+            ),
+            agent_escalated=True,
+            agent_vote_key_ids=tuple(votes),
+            agent_steps=(*common_steps, *reconciliation_steps),
             decision_agent_aggregator_id=agent_aggregator_id,
         )
 
@@ -2573,16 +3223,12 @@ def run_speech_native_matcher(
             retrievable, retrieval_responses, strict=True
         ):
             record["calls"] = int(record["calls"]) + 1
-            refined_top_ids = _selected_top_keys(
-                retrieval_response, allowed, top_k
-            )
+            refined_top_ids = _selected_top_keys(retrieval_response, allowed, top_k)
             record["top_key_ids"] = refined_top_ids
             if len(refined_top_ids) != top_k:
                 record["parse_failure"] = True
 
-        verifier_requests: list[
-            tuple[str, str, Sequence[KeyCardV1], str | None]
-        ] = []
+        verifier_requests: list[tuple[str, str, Sequence[KeyCardV1], str | None]] = []
         verifier_owners: list[tuple[dict[str, object], str]] = []
         for record in branch_records:
             refined_top_ids = record["top_key_ids"]
@@ -2640,14 +3286,10 @@ def run_speech_native_matcher(
                 or len(scores) != top_k
             ):
                 continue
-            compatible = [
-                key_id for key_id in refined_top_ids if scores[key_id][0]
-            ]
+            compatible = [key_id for key_id in refined_top_ids if scores[key_id][0]]
             pool = compatible or list(refined_top_ids)
             best_score = max(scores[key_id][1] for key_id in pool)
-            tied = tuple(
-                key_id for key_id in pool if scores[key_id][1] == best_score
-            )
+            tied = tuple(key_id for key_id in pool if scores[key_id][1] == best_score)
             if len(tied) == 1:
                 record["key_id"] = tied[0]
             else:
@@ -2844,9 +3486,7 @@ def run_speech_native_matcher(
             state_instruction,
             initial_cards,
             "Retrieved key cards:\n"
-            + render_speech_native_keys(
-                initial_cards, state_key_representation_id
-            ),
+            + render_speech_native_keys(initial_cards, state_key_representation_id),
             decoding_overrides=state_decoding_overrides,
         )
         state = parse_grounded_query_state(
@@ -2856,9 +3496,7 @@ def run_speech_native_matcher(
             key_representation_id=state_key_representation_id,
         )
         if state is None:
-            return backtrack(
-                "backtrack:invalid-grounding", state_contacted=True
-            )
+            return backtrack("backtrack:invalid-grounding", state_contacted=True)
         state_json = json.dumps(
             state.as_json(),
             ensure_ascii=False,
@@ -2907,9 +3545,7 @@ def run_speech_native_matcher(
             )
         verifier_responses = contact_many(verifier_specifications)
         verifier_scores: dict[str, tuple[bool, float]] = {}
-        for key_id, response in zip(
-            refined_top_ids, verifier_responses, strict=True
-        ):
+        for key_id, response in zip(refined_top_ids, verifier_responses, strict=True):
             parsed = _compatibility(response)
             verifier_scores[key_id] = parsed if parsed is not None else (False, -1.0)
         compatible = [
@@ -2917,9 +3553,7 @@ def run_speech_native_matcher(
         ]
         pool = compatible or list(refined_top_ids)
         best_score = max(verifier_scores[key_id][1] for key_id in pool)
-        tied = [
-            key_id for key_id in pool if verifier_scores[key_id][1] == best_score
-        ]
+        tied = [key_id for key_id in pool if verifier_scores[key_id][1] == best_score]
         refined_key_id: str | None
         if len(tied) == 1:
             refined_key_id = tied[0]
@@ -3012,10 +3646,7 @@ def run_speech_native_matcher(
     top_ids = _selected_top_keys(retrieval, allowed, top_k)
     if not top_ids:
         return finish(None)
-    if (
-        prompt_policy_id == "speech-native-json-copy-v3"
-        and len(top_ids) != top_k
-    ):
+    if prompt_policy_id == "speech-native-json-copy-v3" and len(top_ids) != top_k:
         return finish(None, top_ids=top_ids)
     verifier_scores: dict[str, tuple[bool, float]] = {}
     verifier_specifications = []
@@ -3084,7 +3715,11 @@ def run_speech_native_match_tasks(
     contact or task is retried.
     """
 
-    if isinstance(slot_count, bool) or not isinstance(slot_count, int) or slot_count <= 0:
+    if (
+        isinstance(slot_count, bool)
+        or not isinstance(slot_count, int)
+        or slot_count <= 0
+    ):
         raise PsluFlightError("slot_count must be a positive integer")
     if isinstance(queue_depth, bool) or not isinstance(queue_depth, int):
         raise PsluFlightError("queue_depth must be an integer")
@@ -3184,6 +3819,7 @@ def run_speech_native_match_tasks(
         task.matcher_policy_id == "M8" for task in ordered_tasks
     )
     if m8_global:
+
         @dataclass
         class M8TaskState:
             task_index: int
@@ -3236,8 +3872,7 @@ def run_speech_native_match_tasks(
             if (
                 task.agent_policy_id
                 != "speech-conditioned-pairwise-boundary-support-v1"
-                or task.agent_aggregator_id
-                != "pairwise-boundary-primary-control-v1"
+                or task.agent_aggregator_id != "pairwise-boundary-primary-control-v1"
             ):
                 raise PsluFlightError(
                     "M8 requires the pairwise-boundary support policy and control"
@@ -3262,9 +3897,7 @@ def run_speech_native_match_tasks(
             messages = _speech_feature_messages(
                 system_text=system_text,
                 query_descriptor=task.query_descriptor,
-                key_text=render_speech_native_keys(
-                    stage_cards, key_representation_id
-                ),
+                key_text=render_speech_native_keys(stage_cards, key_representation_id),
                 key_cards=stage_cards,
                 key_representation_id=key_representation_id,
                 audio_key_bindings=None,
@@ -3405,9 +4038,7 @@ def run_speech_native_match_tasks(
             else:
                 comparison_steps: list[Mapping[str, object]] = []
                 support_votes: list[str | None] = []
-                for rank, challenger_key_id in enumerate(
-                    state.challengers, start=1
-                ):
+                for rank, challenger_key_id in enumerate(state.challengers, start=1):
                     k1_ab = state.parsed_votes[(rank, "K1", "ab")]
                     k1_ba = state.parsed_votes[(rank, "K1", "ba")]
                     k2_ab = state.parsed_votes[(rank, "K2", "ab")]
@@ -3425,9 +4056,7 @@ def run_speech_native_match_tasks(
                     support_votes.extend((k1_stable, k2_stable))
                     comparison_steps.append(
                         {
-                            "action_id": (
-                                f"compare:pairwise-boundary-rank-{rank}"
-                            ),
+                            "action_id": (f"compare:pairwise-boundary-rank-{rank}"),
                             "rank": rank,
                             "primary_key_id": state.primary_key_id,
                             "challenger_key_id": challenger_key_id,
@@ -3439,8 +4068,7 @@ def run_speech_native_match_tasks(
                             "k2_stable_key_id": k2_stable,
                             "calls": 4,
                             "parse_failure": any(
-                                vote is None
-                                for vote in (k1_ab, k1_ba, k2_ab, k2_ba)
+                                vote is None for vote in (k1_ab, k1_ba, k2_ab, k2_ba)
                             ),
                             "causal_parent_ids": [
                                 "match:speech-only-primary",
@@ -3551,9 +4179,7 @@ def run_speech_native_match_tasks(
                         if len(state.parsed_votes) == len(state.pairwise_owners):
                             finish_m8(state)
                         continue
-                    raise PsluFlightError(
-                        f"unknown M8 DAG stage {node.stage_kind!r}"
-                    )
+                    raise PsluFlightError(f"unknown M8 DAG stage {node.stage_kind!r}")
         finally:
             assert contact_pool is not None
             contact_pool.shutdown(wait=True)
@@ -3589,15 +4215,14 @@ def run_speech_native_match_tasks(
             if result.error is not None:
                 raise result.error
         return tuple(
-            result.outcome
-            for result in buffered_outcomes
-            if result.outcome is not None
+            result.outcome for result in buffered_outcomes if result.outcome is not None
         )
 
     m9_global = dispatch_granularity == "contact" and all(
         task.matcher_policy_id == "M9" for task in ordered_tasks
     )
     if m9_global:
+
         @dataclass
         class M9TaskState:
             task_index: int
@@ -3800,7 +4425,9 @@ def run_speech_native_match_tasks(
 
         def m9_link_node(state: M9TaskState) -> M9Contact:
             initial_cards = tuple(
-                card for key_id in state.top_ids for card in state.cards
+                card
+                for key_id in state.top_ids
+                for card in state.cards
                 if card.key_id == key_id
             )
             graph_text = render_decision_graph_neighborhood(
@@ -3837,7 +4464,9 @@ def run_speech_native_match_tasks(
             assert state.factor_state is not None
             assert state.expansion is not None
             expanded_cards = tuple(
-                card for key_id in state.expansion.key_ids for card in state.cards
+                card
+                for key_id in state.expansion.key_ids
+                for card in state.cards
                 if card.key_id == key_id
             )
             rerank_top_k = min(3, len(expanded_cards))
@@ -3912,8 +4541,7 @@ def run_speech_native_match_tasks(
             pair_ids = (state.primary_key_id, state.reranked_ids[0])
             by_key = {card.key_id: card for card in state.cards}
             boundaries_by_id = {
-                boundary.boundary_id: boundary
-                for boundary in state.graph.boundaries
+                boundary.boundary_id: boundary for boundary in state.graph.boundaries
             }
             path_lines = ["Boundary path:"]
             for boundary_id in state.boundary_path:
@@ -3931,9 +4559,7 @@ def run_speech_native_match_tasks(
                     )
                 )
             key_text_prefix = (
-                render_factor_link_state(
-                    graph=state.graph, state=state.factor_state
-                )
+                render_factor_link_state(graph=state.graph, state=state.factor_state)
                 + "\n\n"
                 + "\n".join(path_lines)
                 + "\n\nCandidate key cards:\n"
@@ -4089,7 +4715,10 @@ def run_speech_native_match_tasks(
                             finish_m9(
                                 state,
                                 top_ids=state.reranked_ids,
-                                actions=(*common_actions, "backtrack:invalid-factor-rerank"),
+                                actions=(
+                                    *common_actions,
+                                    "backtrack:invalid-factor-rerank",
+                                ),
                                 votes=(state.primary_key_id,),
                                 steps=steps,
                             )
@@ -4267,9 +4896,7 @@ def run_speech_native_match_tasks(
             responses: dict[int, str] = field(default_factory=dict)
             trace_buffers: dict[int, TraceBuffer] = field(default_factory=dict)
             top_ids: tuple[str, ...] = ()
-            verifier_scores: dict[str, tuple[bool, float]] = field(
-                default_factory=dict
-            )
+            verifier_scores: dict[str, tuple[bool, float]] = field(default_factory=dict)
             tied_ids: tuple[str, ...] = ()
             decision: SpeechNativeDecision | None = None
             error: BaseException | None = None
@@ -4455,17 +5082,13 @@ def run_speech_native_match_tasks(
                 stage=f"verify-{key_id}",
                 system_text=instruction,
                 stage_cards=(card,),
-                key_text=render_speech_native_keys(
-                    (card,), task.key_representation_id
-                ),
+                key_text=render_speech_native_keys((card,), task.key_representation_id),
                 key_id=key_id,
             )
 
         def tie_node(state: DagBranchState) -> DagContact:
             task = ordered_tasks[state.task_index]
-            cards = tuple(
-                card for card in state.cards if card.key_id in state.tied_ids
-            )
+            cards = tuple(card for card in state.cards if card.key_id in state.tied_ids)
             return contact_node(
                 state,
                 stage_index=1 + len(state.top_ids),
@@ -4477,9 +5100,7 @@ def run_speech_native_match_tasks(
                     "named key_id whose value is copied verbatim from a supplied key heading."
                 ),
                 stage_cards=cards,
-                key_text=render_speech_native_keys(
-                    cards, task.key_representation_id
-                ),
+                key_text=render_speech_native_keys(cards, task.key_representation_id),
             )
 
         ready: deque[DagContact] = deque(
@@ -4621,7 +5242,11 @@ def run_speech_native_match_tasks(
                     assert branch_buffer is not None
                     combined_buffer.extend_from(branch_buffer)
             first_error = next(
-                (error for _decision, _buffer, error in task_results if error is not None),
+                (
+                    error
+                    for _decision, _buffer, error in task_results
+                    if error is not None
+                ),
                 None,
             )
             decisions = tuple(
@@ -4642,9 +5267,7 @@ def run_speech_native_match_tasks(
             primary, canonical, reverse, rotate = decisions
             votes = (canonical.key_id, reverse.key_id, rotate.key_id)
             valid_votes = [key_id for key_id in votes if key_id is not None]
-            counts = {
-                key_id: valid_votes.count(key_id) for key_id in set(valid_votes)
-            }
+            counts = {key_id: valid_votes.count(key_id) for key_id in set(valid_votes)}
             majority = next(
                 (key_id for key_id, count in counts.items() if count >= 2),
                 None,
@@ -4669,9 +5292,7 @@ def run_speech_native_match_tasks(
                     if task.agent_aggregator_id == "m3-majority-primary-tie-v2"
                     else "aggregate:m3-majority-canonical-tie"
                 )
-            label_by_key = {
-                card.key_id: card.value_label for card in task.key_cards
-            }
+            label_by_key = {card.key_id: card.value_label for card in task.key_cards}
 
             def step(action_id: str, decision: SpeechNativeDecision):
                 return {
@@ -4690,9 +5311,7 @@ def run_speech_native_match_tasks(
                 top_key_ids=canonical.top_key_ids,
                 calls=sum(item.calls for item in decisions),
                 raw_responses=tuple(
-                    response
-                    for item in decisions
-                    for response in item.raw_responses
+                    response for item in decisions for response in item.raw_responses
                 ),
                 verifier_scores=canonical.verifier_scores,
                 parse_failure=winner is None,
@@ -4742,9 +5361,7 @@ def run_speech_native_match_tasks(
             if result.error is not None:
                 raise result.error
         return tuple(
-            result.outcome
-            for result in buffered_outcomes
-            if result.outcome is not None
+            result.outcome for result in buffered_outcomes if result.outcome is not None
         )
 
     def one(task: SpeechNativeMatchTask) -> _BufferedSpeechNativeOutcome:
@@ -4824,8 +5441,7 @@ def run_speech_native_match_tasks(
                 index = futures.pop(future)
                 buffered[index] = future.result()
             while (
-                next_index < len(ordered_tasks)
-                and len(futures) < query_admission_depth
+                next_index < len(ordered_tasks) and len(futures) < query_admission_depth
             ):
                 futures[pool.submit(one, ordered_tasks[next_index])] = next_index
                 next_index += 1
@@ -4886,7 +5502,10 @@ def build_speech_native_binding(
     if isinstance(seed, bool) or not isinstance(seed, int):
         raise PsluFlightError("speech-native binding seed must be an integer")
     counts = (opt_a_per_scenario, opt_b_per_scenario, gate_per_scenario)
-    if any(isinstance(count, bool) or not isinstance(count, int) or count <= 0 for count in counts):
+    if any(
+        isinstance(count, bool) or not isinstance(count, int) or count <= 0
+        for count in counts
+    ):
         raise PsluFlightError("speech-native query counts must be positive integers")
     if (
         isinstance(key_examples_per_scenario, bool)
@@ -4902,7 +5521,9 @@ def build_speech_native_binding(
         raise PsluFlightError(
             f"speech-native scenarios lack canonical definitions: {sorted(unknown_definitions)}"
         )
-    by_scenario: dict[str, list[SlurpTrainMaterial]] = {scenario: [] for scenario in scenarios}
+    by_scenario: dict[str, list[SlurpTrainMaterial]] = {
+        scenario: [] for scenario in scenarios
+    }
     for entry in material:
         if entry.scenario in by_scenario:
             by_scenario[entry.scenario].append(entry)
@@ -5064,7 +5685,9 @@ def build_speech_native_binding(
 
     split_documents: dict[str, object] = {}
     for split_name, items in split_items.items():
-        ordered = sorted(items, key=lambda item: (item["value_label"], item["sample_id"]))
+        ordered = sorted(
+            items, key=lambda item: (item["value_label"], item["sample_id"])
+        )
         identity = {
             "schema": "saea-speech-native-split-v1",
             "name": split_name,
@@ -5152,7 +5775,10 @@ def extend_speech_native_binding(
     if (
         not isinstance(split_name, str)
         or not split_name
-        or any(character not in "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-" for character in split_name)
+        or any(
+            character not in "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-"
+            for character in split_name
+        )
     ):
         raise PsluFlightError(
             "speech-native extension split_name must use uppercase letters, digits, and dashes"
@@ -5184,13 +5810,19 @@ def extend_speech_native_binding(
         or not isinstance(raw_cards, list)
         or not isinstance(raw_key_material, list)
     ):
-        raise PsluFlightError("speech-native parent binding cannot accept the extension")
+        raise PsluFlightError(
+            "speech-native parent binding cannot accept the extension"
+        )
     scenarios = tuple(expected_scenarios)
     card_labels = tuple(
         card.get("value_label") if isinstance(card, Mapping) else None
         for card in raw_cards
     )
-    if not scenarios or len(set(scenarios)) != len(scenarios) or card_labels != scenarios:
+    if (
+        not scenarios
+        or len(set(scenarios)) != len(scenarios)
+        or card_labels != scenarios
+    ):
         raise PsluFlightError(
             "speech-native extension scenarios must match the frozen key-card order"
         )
@@ -5215,9 +5847,7 @@ def extend_speech_native_binding(
         for field_name, destination in fields.items():
             value = item.get(field_name)
             if not isinstance(value, str) or not value:
-                raise PsluFlightError(
-                    f"speech-native {context} lacks {field_name}"
-                )
+                raise PsluFlightError(f"speech-native {context} lacks {field_name}")
             destination.add(value)
         speaker_id = item.get("speaker_id")
         if not isinstance(speaker_id, str) or not speaker_id:
@@ -5350,12 +5980,11 @@ def extend_speech_native_binding(
                 "excluded_parent_query_count": len(forbidden_samples - key_samples),
                 "excluded_key_example_count": len(key_samples),
                 "parent_query_speaker_isolation": isolate_parent_query_speakers,
-                "parent_query_speaker_overlap_count": len(
-                    parent_query_speaker_overlap
-                ),
+                "parent_query_speaker_overlap_count": len(parent_query_speaker_overlap),
             },
             "isolation_audit": {
-                "query_sample_count": len(forbidden_samples - key_samples) + len(ordered),
+                "query_sample_count": len(forbidden_samples - key_samples)
+                + len(ordered),
                 "query_speaker_count": len(parent_query_speakers | selected_speakers),
                 "key_example_count": len(key_samples),
                 "query_key_sample_overlap": 0,
@@ -5452,13 +6081,18 @@ def load_pslu_rosters(path: Path) -> PsluRosters:
 
     document = json.loads(Path(path).read_text(encoding="utf-8"))
     if document.get("probe") != _PROBE_ID:
-        raise PsluFlightError(f"{path}: probe must be {_PROBE_ID!r}, got {document.get('probe')!r}")
+        raise PsluFlightError(
+            f"{path}: probe must be {_PROBE_ID!r}, got {document.get('probe')!r}"
+        )
     if document.get("legality_tier") != _LEGAL_TIER:
         raise PsluFlightError(
             f"{path}: legality_tier must be {_LEGAL_TIER!r}, got {document.get('legality_tier')!r}"
         )
     refused = document.get("train_synthetic_refused")
-    if not isinstance(refused, Mapping) or refused.get("train_jsonl_overlap_with_devel") != 0:
+    if (
+        not isinstance(refused, Mapping)
+        or refused.get("train_jsonl_overlap_with_devel") != 0
+    ):
         raise PsluFlightError(
             f"{path}: train_synthetic_refused.train_jsonl_overlap_with_devel must be 0"
         )
@@ -5472,7 +6106,9 @@ def load_pslu_rosters(path: Path) -> PsluRosters:
         full_roster = tuple(
             (str(t), str(v)) for t, v in arms["A3_full_ontology_dose_capped"]["roster"]
         )
-        derangement = {str(k): str(v) for k, v in arms["A4_deranged"]["mapping"].items()}
+        derangement = {
+            str(k): str(v) for k, v in arms["A4_deranged"]["mapping"].items()
+        }
     except (KeyError, TypeError, ValueError) as error:
         raise PsluFlightError(f"{path}: malformed roster table: {error}") from error
     if not scenario_rosters or not global_types or not full_roster or not derangement:
@@ -5501,7 +6137,9 @@ class PsluSampleManifest:
 def load_pslu_sample_manifest(path: Path) -> PsluSampleManifest:
     document = json.loads(Path(path).read_text(encoding="utf-8"))
     if document.get("probe") != _PROBE_ID:
-        raise PsluFlightError(f"{path}: probe must be {_PROBE_ID!r}, got {document.get('probe')!r}")
+        raise PsluFlightError(
+            f"{path}: probe must be {_PROBE_ID!r}, got {document.get('probe')!r}"
+        )
     items = document.get("items")
     if not isinstance(items, list) or not items:
         raise PsluFlightError(f"{path}: no items")
@@ -5517,7 +6155,9 @@ def load_pslu_sample_manifest(path: Path) -> PsluSampleManifest:
         raise PsluFlightError(f"{path}: seed must be an integer")
     if len(set(sample_ids)) != len(sample_ids):
         raise PsluFlightError(f"{path}: duplicate sample_id in items")
-    return PsluSampleManifest(sample_ids=sample_ids, split_identity_hash=split_identity_hash, seed=seed)
+    return PsluSampleManifest(
+        sample_ids=sample_ids, split_identity_hash=split_identity_hash, seed=seed
+    )
 
 
 def select_pslu_samples(
@@ -5564,7 +6204,10 @@ def _roster_packet(arm: str, entries: Sequence[tuple[str, str]]) -> SupplyPacket
 
 def _type_vocabulary_packet(arm: str, types: Sequence[str]) -> SupplyPacket:
     prompt_block = render_type_vocabulary(types)
-    items = tuple(SupplyItem(item_id=f"{arm}-{index:03d}", text=t) for index, t in enumerate(types))
+    items = tuple(
+        SupplyItem(item_id=f"{arm}-{index:03d}", text=t)
+        for index, t in enumerate(types)
+    )
     return SupplyPacket(
         form=SupplyForm.ROSTER,
         dose=SupplyDose(n_items=len(types), token_count=len(prompt_block.split())),
@@ -5592,7 +6235,9 @@ def pslu_supply_packet(
             raise PsluFlightError(f"no A1 roster for scenario {scenario!r}")
         return _roster_packet(arm, entries)
     if arm == "A1p":
-        entries = rosters.scenario_rosters.get(scenario) if scenario is not None else None
+        entries = (
+            rosters.scenario_rosters.get(scenario) if scenario is not None else None
+        )
         if entries is None:
             # Module docstring: an unparsed/unknown phase-1 prediction falls
             # back to the scenario-agnostic A2 roster -- NEVER to gold.
@@ -5604,13 +6249,19 @@ def pslu_supply_packet(
         return _roster_packet(arm, rosters.full_roster)
     if arm == "A4":
         if scenario is None:
-            raise PsluFlightError("A4 requires the sample's own gold scenario for its derangement key")
+            raise PsluFlightError(
+                "A4 requires the sample's own gold scenario for its derangement key"
+            )
         deranged_scenario = rosters.derangement.get(scenario)
         if deranged_scenario is None:
-            raise PsluFlightError(f"no A4 derangement mapping for scenario {scenario!r}")
+            raise PsluFlightError(
+                f"no A4 derangement mapping for scenario {scenario!r}"
+            )
         entries = rosters.scenario_rosters.get(deranged_scenario)
         if entries is None:
-            raise PsluFlightError(f"no A1 roster for deranged scenario {deranged_scenario!r}")
+            raise PsluFlightError(
+                f"no A1 roster for deranged scenario {deranged_scenario!r}"
+            )
         return _roster_packet(arm, entries)
     raise PsluFlightError(f"unknown P-SLU arm {arm!r}; known arms are {PSLU_ARMS}")
 
@@ -5704,10 +6355,12 @@ def run_pslu_flight(
     for sample in samples:
         messages = adapter.assemble_prompt(sample, None)
         response_text = core_client.complete(messages, decoding_params=decoding_params)
-        predicted_scenario, _predicted_action, _predicted_entities, parsed = parse_slu_response(
-            response_text
+        predicted_scenario, _predicted_action, _predicted_entities, parsed = (
+            parse_slu_response(response_text)
         )
-        predicted_scenario_by_sample_id[sample.sample_id] = predicted_scenario if parsed else None
+        predicted_scenario_by_sample_id[sample.sample_id] = (
+            predicted_scenario if parsed else None
+        )
         metrics = adapter.score(sample, response_text)
         consumption = adapter.extract_consumption(sample, None, response_text)
         results.append(
@@ -5732,7 +6385,9 @@ def run_pslu_flight(
             )
             supply = pslu_supply_packet(arm, scenario=scenario, rosters=rosters)
             messages = adapter.assemble_prompt(sample, supply)
-            response_text = core_client.complete(messages, decoding_params=decoding_params)
+            response_text = core_client.complete(
+                messages, decoding_params=decoding_params
+            )
             metrics = adapter.score(sample, response_text)
             consumption = adapter.extract_consumption(sample, supply, response_text)
             results.append(
@@ -5746,9 +6401,13 @@ def run_pslu_flight(
                 )
             )
             if arm == "A1p":
-                silence_media_relpath = silence_swap_media_relpaths.get(sample.sample_id)
+                silence_media_relpath = silence_swap_media_relpaths.get(
+                    sample.sample_id
+                )
                 if silence_media_relpath is not None:
-                    silence_messages = _swap_audio_media_relpath(messages, silence_media_relpath)
+                    silence_messages = _swap_audio_media_relpath(
+                        messages, silence_media_relpath
+                    )
                     silence_response_text = core_client.complete(
                         silence_messages, decoding_params=decoding_params
                     )
@@ -5769,11 +6428,14 @@ def run_pslu_flight(
                     )
 
     return PsluFlightSummary(
-        results=tuple(results), predicted_scenario_by_sample_id=predicted_scenario_by_sample_id
+        results=tuple(results),
+        predicted_scenario_by_sample_id=predicted_scenario_by_sample_id,
     )
 
 
 __all__ = [
+    "CandidateCounterevidenceStateV1",
+    "CandidateSupportStateV1",
     "DecisionBoundaryV1",
     "DecisionFactorV1",
     "DecisionGraphExpansionV1",
@@ -5803,14 +6465,19 @@ __all__ = [
     "SpeechNativeMatchTask",
     "assert_never_calls_ontology_miner",
     "build_speech_native_binding",
+    "candidate_counterevidence_response_format",
+    "candidate_support_response_format",
     "decision_boundary_path",
     "expand_decision_graph_candidates",
+    "expand_decision_graph_neighborhood",
     "extend_speech_native_binding",
     "factor_link_response_format",
     "load_pslu_rosters",
     "load_pslu_sample_manifest",
     "load_speech_native_engineering_gate",
     "pslu_supply_packet",
+    "parse_candidate_counterevidence_state",
+    "parse_candidate_support_state",
     "parse_factor_link_state",
     "parse_grounded_query_state",
     "render_decision_graph_neighborhood",
