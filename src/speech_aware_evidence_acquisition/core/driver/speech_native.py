@@ -8770,7 +8770,9 @@ def _cli_speech_native_action_audit(args: argparse.Namespace) -> int:
         action_sensitive_count = report["action_variable_query_count"]
     action_support_threshold_met = report.get("action_support_threshold_met")
     if action_support_threshold_met is None:
-        action_support_threshold_met = report["action_variable_threshold_met"]
+        action_support_threshold_met = report.get("action_variable_threshold_met")
+    if action_support_threshold_met is None:
+        action_support_threshold_met = report["engineering_gate_passed"]
     print(
         json.dumps(
             {

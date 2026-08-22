@@ -1646,6 +1646,41 @@ def test_action_audit_cli_summarizes_m9_field_names(monkeypatch, tmp_path, capsy
     assert summary["action_support_threshold_met"] is False
 
 
+def test_action_audit_cli_summarizes_m11_engineering_gate(
+    monkeypatch, tmp_path, capsys
+):
+    report = {
+        "schema": "saea-speech-native-adaptive-evidence-gap-audit-v1",
+        "action_variable_query_count": 21,
+        "engineering_gate_passed": True,
+        "gold_read": False,
+        "effectiveness_read_authorized": True,
+    }
+    monkeypatch.setattr(
+        speech_native_module,
+        "audit_speech_native_action_support",
+        lambda **kwargs: report,
+    )
+    output = tmp_path / "audit.json"
+    result = _cli_speech_native_action_audit(
+        SimpleNamespace(
+            attempt_dir=str(tmp_path / "attempt"),
+            attempt_record=str(tmp_path / "attempt.json"),
+            attempt_record_sha256="a" * 64,
+            flight_receipt_sha256="b" * 64,
+            decisions_sha256="c" * 64,
+            trace_sha256="d" * 64,
+            output=str(output),
+        )
+    )
+
+    summary = json.loads(capsys.readouterr().out)
+    assert result == 0
+    assert summary["action_sensitive_count"] == 21
+    assert summary["action_support_threshold_met"] is True
+    assert summary["effectiveness_read_authorized"] is True
+
+
 class _SpeechFeatureClient:
     def __init__(self, responses):
         self._responses = iter(responses)
