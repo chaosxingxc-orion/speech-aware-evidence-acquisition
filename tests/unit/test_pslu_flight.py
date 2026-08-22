@@ -56,6 +56,8 @@ from speech_aware_evidence_acquisition.data.slurp import (
 from speech_aware_evidence_acquisition.rails import MockCoreClient
 from speech_aware_evidence_acquisition.rails.adapters.slurp import SlurpAdapter
 from speech_aware_evidence_acquisition.rails.probes.pslu_flight import (
+    CandidateCounterevidenceStateV1,
+    CandidateSupportStateV1,
     DecisionBoundaryV1,
     DecisionFactorV1,
     DecisionGraphV1,
@@ -68,14 +70,19 @@ from speech_aware_evidence_acquisition.rails.probes.pslu_flight import (
     _source_references_ontology_miner,
     assert_never_calls_ontology_miner,
     build_speech_native_binding,
+    candidate_counterevidence_response_format,
+    candidate_support_response_format,
     decision_boundary_path,
     expand_decision_graph_candidates,
+    expand_decision_graph_neighborhood,
     extend_speech_native_binding,
     load_pslu_rosters,
     load_pslu_sample_manifest,
     load_speech_native_engineering_gate,
     pslu_supply_packet,
     factor_link_response_format,
+    parse_candidate_counterevidence_state,
+    parse_candidate_support_state,
     parse_factor_link_state,
     render_decision_graph_neighborhood,
     render_factor_link_state,
@@ -1585,6 +1592,58 @@ def test_factor_link_schema_and_parser_accept_only_neighborhood_ids():
         )
 
 
+def test_candidate_evidence_expansion_and_dynamic_ids_are_graph_bound():
+    graph = _decision_graph_fixture()
+    expansion = expand_decision_graph_neighborhood(
+        graph=graph,
+        initial_key_ids=("K001",),
+        cap=2,
+    )
+    assert expansion.key_ids == ("K001", "K002")
+    assert expansion.distance_by_key == {"K001": 0, "K002": 1}
+
+    support_format = candidate_support_response_format(
+        graph=graph,
+        candidate_key_id="K001",
+    )
+    support_enum = support_format["json_schema"]["schema"]["properties"][
+        "factor_ids"
+    ]["items"]["enum"]
+    assert support_enum == ["F001", "F002"]
+    assert parse_candidate_support_state(
+        '{"compatible":true,"confidence":91,"factor_ids":["F001","F002"]}',
+        graph=graph,
+        candidate_key_id="K001",
+    ) == CandidateSupportStateV1(
+        compatible=True,
+        confidence=91,
+        factor_ids=("F001", "F002"),
+    )
+    assert parse_candidate_support_state(
+        '{"compatible":true,"confidence":91,"factor_ids":["F004"]}',
+        graph=graph,
+        candidate_key_id="K001",
+    ) is None
+
+    counter_format = candidate_counterevidence_response_format(
+        graph=graph,
+        candidate_key_id="K001",
+    )
+    boundary_enum = counter_format["json_schema"]["schema"]["properties"][
+        "boundary_ids"
+    ]["items"]["enum"]
+    assert boundary_enum == ["B001"]
+    assert parse_candidate_counterevidence_state(
+        '{"contradicted":false,"confidence":86,"boundary_ids":["B001"]}',
+        graph=graph,
+        candidate_key_id="K001",
+    ) == CandidateCounterevidenceStateV1(
+        contradicted=False,
+        confidence=86,
+        boundary_ids=("B001",),
+    )
+
+
 def test_factor_graph_candidate_expansion_and_boundary_path_are_deterministic():
     graph = _decision_graph_fixture()
     state = FactorLinkStateV1(
@@ -1610,6 +1669,65 @@ def test_factor_graph_candidate_expansion_and_boundary_path_are_deterministic():
     assert "[F003]" in rendered and "[F004]" in rendered
     assert "[B001] endpoints=K001,K002" in rendered
     assert "F001" not in rendered and "F002" not in rendered
+
+
+class _M10CandidateEvidenceClient:
+    def __init__(self):
+        self.calls = []
+
+    def complete(self, messages, **kwargs):
+        self.calls.append((messages, kwargs))
+        stage = kwargs["matcher_policy_id"]
+        if stage.endswith(":primary-listwise"):
+            return '{"key_id":"K001"}'
+        if stage.endswith(":speech-retrieve-top-2"):
+            return '{"key_ids":["K001","K002"]}'
+        if stage.endswith(":support-K001"):
+            return '{"compatible":true,"confidence":93,"factor_ids":["F001","F002"]}'
+        if stage.endswith(":support-K002"):
+            return '{"compatible":true,"confidence":84,"factor_ids":["F003","F004"]}'
+        if stage.endswith(":counterevidence-K001"):
+            return '{"contradicted":false,"confidence":88,"boundary_ids":["B001"]}'
+        if stage.endswith(":counterevidence-K002"):
+            return '{"contradicted":false,"confidence":82,"boundary_ids":["B001"]}'
+        if stage.endswith(":reconcile-K002"):
+            return '{"action":"accept_candidate"}'
+        raise AssertionError(stage)
+
+
+def test_m10_candidate_evidence_loop_keeps_speech_and_primary_control():
+    client = _M10CandidateEvidenceClient()
+    result = run_speech_native_matcher(
+        core_client=client,
+        sample=_SpeechSample(),
+        query_descriptor=_QUERY_DESCRIPTOR,
+        key_cards=_KEY_CARDS,
+        key_representation_id="K1",
+        matcher_policy_id="M10",
+        prompt_policy_id="speech-native-json-copy-v4",
+        agent_policy_id="speech-conditioned-candidate-evidence-action-support-v1",
+        agent_aggregator_id="candidate-evidence-primary-control-v1",
+        decision_graph=_decision_graph_fixture(),
+        top_k=2,
+    )
+    assert result.key_id == "K001"
+    assert result.top_key_ids == ("K001", "K002")
+    assert result.calls == 7
+    assert result.agent_vote_key_ids == ("K001", "K002")
+    assert result.agent_actions[-1] == "select:retain-primary-for-support"
+    evidence_steps = [
+        step
+        for step in result.agent_steps
+        if str(step["action_id"]).startswith("acquire:candidate-evidence:")
+    ]
+    assert len(evidence_steps) == 2
+    assert evidence_steps[1]["support_factor_ids"] == ["F003", "F004"]
+    assert evidence_steps[1]["counterevidence_boundary_ids"] == ["B001"]
+    reconcile = result.agent_steps[-1]
+    assert reconcile["action_id"] == "reconcile:candidate:K002"
+    assert reconcile["selected_action"] == "accept_candidate"
+    assert reconcile["selected_factor_ids"] == ["F003", "F004"]
+    _assert_every_call_carries_query(client)
 
 
 def test_m0_schema_v4_constrains_the_final_label_at_llama_server_boundary():
