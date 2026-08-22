@@ -2216,8 +2216,9 @@ def test_m8_marks_order_disagreement_as_no_supported_action():
 
 
 class _M9FactorGraphClient:
-    def __init__(self, *, invalid_factor_state=False):
+    def __init__(self, *, invalid_factor_state=False, invalid_rerank=False):
         self.invalid_factor_state = invalid_factor_state
+        self.invalid_rerank = invalid_rerank
         self.calls = []
 
     def complete(self, messages, **kwargs):
@@ -2232,6 +2233,8 @@ class _M9FactorGraphClient:
                 return '{"factor_ids":["F999"],"boundary_id":"B001"}'
             return '{"factor_ids":["F003","F004"],"boundary_id":"B001"}'
         if stage.endswith(":factor-rerank-top-2"):
+            if self.invalid_rerank:
+                return '{"key_ids":["K002"]}'
             return '{"key_ids":["K002","K001"]}'
         if ":boundary-rank-1-" in stage:
             return '{"key_id":"K002"}'
@@ -2311,6 +2314,60 @@ def test_m9_invalid_factor_ids_fail_closed_to_primary_without_rerank():
     assert result.agent_actions[-1] == "backtrack:invalid-factor-link-state"
     assert len(client.calls) == 3
     _assert_every_call_carries_query(client)
+
+
+@pytest.mark.parametrize(
+    ("client", "expected_termination", "expected_calls"),
+    [
+        (
+            _M9FactorGraphClient(invalid_factor_state=True),
+            "invalid-factor-link-state",
+            3,
+        ),
+        (_M9FactorGraphClient(invalid_rerank=True), "invalid-factor-rerank", 4),
+    ],
+)
+def test_m9_reader_reconstructs_fail_closed_mechanism_trajectories(
+    client, expected_termination, expected_calls
+):
+    result = run_speech_native_matcher(
+        core_client=client,
+        sample=_SpeechSample(),
+        query_descriptor=_QUERY_DESCRIPTOR,
+        key_cards=_KEY_CARDS,
+        key_representation_id="K1",
+        matcher_policy_id="M9",
+        prompt_policy_id="speech-native-json-copy-v4",
+        agent_policy_id="speech-conditioned-factor-graph-action-support-v1",
+        agent_aggregator_id="factor-graph-primary-control-v1",
+        decision_graph=_decision_graph_fixture(),
+        top_k=2,
+    )
+    row = {
+        "key_id": result.key_id,
+        "top_key_ids": list(result.top_key_ids),
+        "calls": result.calls,
+        "agent_policy_id": result.agent_policy_id,
+        "agent_aggregator_id": result.agent_aggregator_id,
+        "agent_escalated": result.agent_escalated,
+        "agent_actions": list(result.agent_actions),
+        "agent_vote_key_ids": list(result.agent_vote_key_ids),
+        "agent_steps": list(result.agent_steps),
+        "verifier_scores": {},
+    }
+    trajectory = _parse_m9_factor_graph_trajectory(
+        row=row,
+        sample_id="sample-failure",
+        speaker_id="speaker-failure",
+        gold_key_id="K002",
+        top_k=2,
+        visible_card_by_key={card.key_id: card for card in _KEY_CARDS},
+        decision_graph=_decision_graph_fixture(),
+    )
+    assert trajectory["termination"] == expected_termination
+    assert trajectory["total_calls"] == expected_calls
+    assert trajectory["mechanism_failure"] is True
+    assert trajectory["reranked_key_ids"] == ("K001",)
 
 
 def test_m9_reader_reconstructs_graph_state_and_action_support():
