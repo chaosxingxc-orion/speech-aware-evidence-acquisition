@@ -25,7 +25,11 @@ from ...data.lock import asset_dir, data_root, load_lock, umbrella_lock_path
 from ...e0.artifacts import REPO_ROOT
 from ...rails import FrozenCoreClient, build_payload_binding
 from ...rails.probes.pslu_flight import (
+    DecisionBoundaryV1,
+    DecisionFactorV1,
+    DecisionGraphV1,
     KeyCardV1,
+    PsluFlightError,
     SpeechNativeMatchTask,
     load_speech_native_engineering_gate,
     parse_grounded_query_state,
@@ -2089,6 +2093,112 @@ def _load_key_cards(path: Path, expected_sha256: str) -> tuple[KeyCardV1, ...]:
     return tuple(cards)
 
 
+def _load_decision_graph(
+    path: Path,
+    *,
+    expected_sha256: str,
+    key_cards: Sequence[KeyCardV1],
+) -> DecisionGraphV1:
+    """Load one strict, file-hash-pinned knowledge graph artifact."""
+
+    artifact_path = Path(path)
+    if _SHA256.fullmatch(expected_sha256) is None:
+        raise SpeechNativeProfileError("decision graph SHA-256 is malformed")
+    if not artifact_path.is_file() or _sha256_file(artifact_path) != expected_sha256:
+        raise SpeechNativeProfileError("decision graph file SHA-256 mismatch")
+    try:
+        document = json.loads(artifact_path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as error:
+        raise SpeechNativeProfileError(f"cannot read decision graph: {error}") from error
+    if not isinstance(document, dict) or set(document) != {
+        "schema",
+        "graph_id",
+        "factors",
+        "boundaries",
+    }:
+        raise SpeechNativeProfileError("decision graph has unexpected top-level fields")
+    if document.get("schema") != "saea-decision-graph-v1":
+        raise SpeechNativeProfileError("decision graph schema is unsupported")
+    raw_factors = document.get("factors")
+    raw_boundaries = document.get("boundaries")
+    if not isinstance(raw_factors, list) or not isinstance(raw_boundaries, list):
+        raise SpeechNativeProfileError("decision graph nodes and edges must be arrays")
+
+    def string_tuple(value: object, *, field_name: str) -> tuple[str, ...]:
+        if not isinstance(value, list) or not all(
+            isinstance(item, str) for item in value
+        ):
+            raise SpeechNativeProfileError(
+                f"decision graph {field_name} must be a string array"
+            )
+        return tuple(value)
+
+    factors: list[DecisionFactorV1] = []
+    for raw in raw_factors:
+        if not isinstance(raw, dict) or set(raw) != {
+            "factor_id",
+            "kind",
+            "statement",
+            "key_ids",
+            "provenance_ids",
+        }:
+            raise SpeechNativeProfileError(
+                "decision graph factor has unexpected fields"
+            )
+        factors.append(
+            DecisionFactorV1(
+                factor_id=str(raw["factor_id"]),
+                kind=str(raw["kind"]),
+                statement=str(raw["statement"]),
+                key_ids=string_tuple(raw["key_ids"], field_name="factor key_ids"),
+                provenance_ids=string_tuple(
+                    raw["provenance_ids"], field_name="factor provenance_ids"
+                ),
+            )
+        )
+    boundaries: list[DecisionBoundaryV1] = []
+    for raw in raw_boundaries:
+        if not isinstance(raw, dict) or set(raw) != {
+            "boundary_id",
+            "left_key_id",
+            "right_key_id",
+            "left_factor_ids",
+            "right_factor_ids",
+            "left_exclusion",
+            "right_exclusion",
+            "provenance_ids",
+        }:
+            raise SpeechNativeProfileError(
+                "decision graph boundary has unexpected fields"
+            )
+        boundaries.append(
+            DecisionBoundaryV1(
+                boundary_id=str(raw["boundary_id"]),
+                left_key_id=str(raw["left_key_id"]),
+                right_key_id=str(raw["right_key_id"]),
+                left_factor_ids=string_tuple(
+                    raw["left_factor_ids"], field_name="boundary left_factor_ids"
+                ),
+                right_factor_ids=string_tuple(
+                    raw["right_factor_ids"], field_name="boundary right_factor_ids"
+                ),
+                left_exclusion=str(raw["left_exclusion"]),
+                right_exclusion=str(raw["right_exclusion"]),
+                provenance_ids=string_tuple(
+                    raw["provenance_ids"], field_name="boundary provenance_ids"
+                ),
+            )
+        )
+    try:
+        return DecisionGraphV1(
+            graph_id=str(document["graph_id"]),
+            factors=tuple(factors),
+            boundaries=tuple(boundaries),
+        ).validate(key_cards)
+    except PsluFlightError as error:
+        raise SpeechNativeProfileError(f"decision graph is invalid: {error}") from error
+
+
 def read_speech_native_predictions(
     *,
     attempt_dirs: Sequence[Path],
@@ -3642,6 +3752,7 @@ def build_profile_tasks(
     prompt_policy_id: str = "speech-native-json-copy-v2",
     verifier_policy_id: str = "speech-native-compatibility-v1",
     audio_key_bindings: Mapping[str, Mapping[str, str]] | None = None,
+    decision_graph: DecisionGraphV1 | None = None,
     mechanism_control_id: str = "matched",
     agent_policy_id: str = "m1-m3-disagreement-escalation-v1",
     agent_aggregator_id: str = "m3-majority-canonical-tie-v1",
@@ -3654,6 +3765,12 @@ def build_profile_tasks(
         "key-text-shuffle-v1",
     }:
         raise SpeechNativeProfileError("unknown speech-native mechanism control")
+    if matcher_policy_id == "M9" and decision_graph is None:
+        raise SpeechNativeProfileError("M9 profile tasks require a decision graph")
+    if matcher_policy_id != "M9" and decision_graph is not None:
+        raise SpeechNativeProfileError(
+            "decision graph may only enter M9 profile tasks"
+        )
     frozen_samples = tuple(samples)
     if mechanism_control_id == "speech-swap-v1" and len(frozen_samples) < 2:
         raise SpeechNativeProfileError("speech-swap control requires at least two samples")
@@ -3698,6 +3815,7 @@ def build_profile_tasks(
                     decoding_params=dict(decoding_params),
                     top_k=top_k,
                     audio_key_bindings=audio_key_bindings,
+                    decision_graph=decision_graph,
                     agent_policy_id=agent_policy_id,
                     agent_aggregator_id=agent_aggregator_id,
                 )
