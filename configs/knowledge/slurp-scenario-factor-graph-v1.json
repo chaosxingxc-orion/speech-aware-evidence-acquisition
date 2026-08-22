@@ -1,0 +1,502 @@
+{
+  "schema": "saea-decision-graph-v1",
+  "graph_id": "slurp-scenario-factor-graph-v1",
+  "factors": [
+    {
+      "factor_id": "F001",
+      "kind": "domain",
+      "statement": "The request concerns time, scheduling, or a time-bound personal commitment.",
+      "key_ids": ["K001", "K003", "K005"],
+      "provenance_ids": ["key-card:K001:definition", "key-card:K003:definition", "key-card:K005:definition"]
+    },
+    {
+      "factor_id": "F002",
+      "kind": "operation",
+      "statement": "The request organizes, inspects, changes, or removes a stored personal item.",
+      "key_ids": ["K001", "K003", "K009"],
+      "provenance_ids": ["key-card:K001:definition", "key-card:K003:definition", "key-card:K009:definition"]
+    },
+    {
+      "factor_id": "F003",
+      "kind": "domain",
+      "statement": "The request concerns audible media, listening, or playback behavior.",
+      "key_ids": ["K002", "K010", "K012"],
+      "provenance_ids": ["key-card:K002:definition", "key-card:K010:definition", "key-card:K012:definition"]
+    },
+    {
+      "factor_id": "F004",
+      "kind": "domain",
+      "statement": "The request concerns composing, sending, reading, or managing a message.",
+      "key_ids": ["K006", "K015"],
+      "provenance_ids": ["key-card:K006:definition", "key-card:K015:definition"]
+    },
+    {
+      "factor_id": "F005",
+      "kind": "domain",
+      "statement": "The request concerns food preparation or prepared food service.",
+      "key_ids": ["K004", "K016"],
+      "provenance_ids": ["key-card:K004:definition", "key-card:K016:definition"]
+    },
+    {
+      "factor_id": "F006",
+      "kind": "operation",
+      "statement": "The user seeks information, an update, an answer, or a suggested option.",
+      "key_ids": ["K005", "K007", "K011", "K013", "K014", "K018"],
+      "provenance_ids": ["key-card:K005:definition", "key-card:K007:definition", "key-card:K011:definition", "key-card:K013:definition", "key-card:K014:definition", "key-card:K018:definition"]
+    },
+    {
+      "factor_id": "F007",
+      "kind": "domain",
+      "statement": "The request concerns a connected home device, appliance, light, or environmental control.",
+      "key_ids": ["K008"],
+      "provenance_ids": ["key-card:K008:definition"]
+    },
+    {
+      "factor_id": "F008",
+      "kind": "domain",
+      "statement": "The request concerns a journey, route, traffic, transit, taxi, or travel duration.",
+      "key_ids": ["K017"],
+      "provenance_ids": ["key-card:K017:definition"]
+    },
+    {
+      "factor_id": "F009",
+      "kind": "target",
+      "statement": "The target is a wake-up alarm or alarm reminder.",
+      "key_ids": ["K001"],
+      "provenance_ids": ["key-card:K001:definition", "key-card:K001:examples"]
+    },
+    {
+      "factor_id": "F010",
+      "kind": "target",
+      "statement": "The target is volume, mute state, or the active audio output device.",
+      "key_ids": ["K002"],
+      "provenance_ids": ["key-card:K002:definition", "key-card:K002:examples"]
+    },
+    {
+      "factor_id": "F011",
+      "kind": "target",
+      "statement": "The target is a calendar event, appointment, or meeting.",
+      "key_ids": ["K003"],
+      "provenance_ids": ["key-card:K003:definition", "key-card:K003:examples"]
+    },
+    {
+      "factor_id": "F012",
+      "kind": "target",
+      "statement": "The target is a recipe, ingredient, cooking step, substitution, or cooking duration.",
+      "key_ids": ["K004"],
+      "provenance_ids": ["key-card:K004:definition", "key-card:K004:examples"]
+    },
+    {
+      "factor_id": "F013",
+      "kind": "target",
+      "statement": "The target is the current date, current time, day, timezone, or time difference.",
+      "key_ids": ["K005"],
+      "provenance_ids": ["key-card:K005:definition", "key-card:K005:examples"]
+    },
+    {
+      "factor_id": "F014",
+      "kind": "target",
+      "statement": "The target is an email message or email mailbox.",
+      "key_ids": ["K006"],
+      "provenance_ids": ["key-card:K006:definition", "key-card:K006:examples"]
+    },
+    {
+      "factor_id": "F015",
+      "kind": "constraint",
+      "statement": "No specialist domain is clearly expressed, so a general assistant action may be appropriate.",
+      "key_ids": ["K007"],
+      "provenance_ids": ["key-card:K007:definition", "key-card:K007:boundary"]
+    },
+    {
+      "factor_id": "F016",
+      "kind": "target",
+      "statement": "The target is a connected home device, light, thermostat, or appliance state.",
+      "key_ids": ["K008"],
+      "provenance_ids": ["key-card:K008:definition", "key-card:K008:examples"]
+    },
+    {
+      "factor_id": "F017",
+      "kind": "target",
+      "statement": "The target is a shopping list, task list, or an entry stored in a list.",
+      "key_ids": ["K009"],
+      "provenance_ids": ["key-card:K009:definition", "key-card:K009:examples"]
+    },
+    {
+      "factor_id": "F018",
+      "kind": "target",
+      "statement": "The target is a song, artist, album, playlist, favorite, or music choice.",
+      "key_ids": ["K010"],
+      "provenance_ids": ["key-card:K010:definition", "key-card:K010:examples"]
+    },
+    {
+      "factor_id": "F019",
+      "kind": "target",
+      "statement": "The target is a news report, headline, current event, or news update.",
+      "key_ids": ["K011"],
+      "provenance_ids": ["key-card:K011:definition", "key-card:K011:examples"]
+    },
+    {
+      "factor_id": "F020",
+      "kind": "target",
+      "statement": "The target is an already playable media item, episode, channel, or playback session.",
+      "key_ids": ["K012"],
+      "provenance_ids": ["key-card:K012:definition", "key-card:K012:examples"]
+    },
+    {
+      "factor_id": "F021",
+      "kind": "target",
+      "statement": "The target is an open factual question whose answer is a fact rather than an action.",
+      "key_ids": ["K013"],
+      "provenance_ids": ["key-card:K013:definition", "key-card:K013:examples"]
+    },
+    {
+      "factor_id": "F022",
+      "kind": "target",
+      "statement": "The target is a recommended place, event, activity, or option.",
+      "key_ids": ["K014"],
+      "provenance_ids": ["key-card:K014:definition", "key-card:K014:examples"]
+    },
+    {
+      "factor_id": "F023",
+      "kind": "target",
+      "statement": "The target is a social post, instant message, tweet, or social messaging channel.",
+      "key_ids": ["K015"],
+      "provenance_ids": ["key-card:K015:definition", "key-card:K015:examples"]
+    },
+    {
+      "factor_id": "F024",
+      "kind": "target",
+      "statement": "The target is a prepared-food delivery or pickup order and its status.",
+      "key_ids": ["K016"],
+      "provenance_ids": ["key-card:K016:definition", "key-card:K016:examples"]
+    },
+    {
+      "factor_id": "F025",
+      "kind": "target",
+      "statement": "The target is a route, taxi, train, traffic condition, distance, or travel duration.",
+      "key_ids": ["K017"],
+      "provenance_ids": ["key-card:K017:definition", "key-card:K017:examples"]
+    },
+    {
+      "factor_id": "F026",
+      "kind": "target",
+      "statement": "The target is weather, temperature, rain, snow, wind, or a forecast.",
+      "key_ids": ["K018"],
+      "provenance_ids": ["key-card:K018:definition", "key-card:K018:examples"]
+    },
+    {
+      "factor_id": "F027",
+      "kind": "operation",
+      "statement": "The user asks to create, change, cancel, delete, or otherwise mutate stored state.",
+      "key_ids": ["K001", "K003", "K008", "K009"],
+      "provenance_ids": ["task-ontology:mutating-operation"]
+    },
+    {
+      "factor_id": "F028",
+      "kind": "operation",
+      "statement": "The user asks to inspect, read, search, show, or review existing state.",
+      "key_ids": ["K001", "K003", "K006", "K009", "K015"],
+      "provenance_ids": ["task-ontology:inspection-operation"]
+    },
+    {
+      "factor_id": "F029",
+      "kind": "operation",
+      "statement": "The operation changes loudness, mute state, or audio output rather than choosing content.",
+      "key_ids": ["K002"],
+      "provenance_ids": ["key-card:K002:boundary"]
+    },
+    {
+      "factor_id": "F030",
+      "kind": "operation",
+      "statement": "The operation identifies, saves, or chooses music content rather than changing volume.",
+      "key_ids": ["K010"],
+      "provenance_ids": ["key-card:K010:boundary"]
+    },
+    {
+      "factor_id": "F031",
+      "kind": "operation",
+      "statement": "The operation starts, pauses, resumes, stops, or navigates playable media.",
+      "key_ids": ["K012"],
+      "provenance_ids": ["key-card:K012:definition"]
+    },
+    {
+      "factor_id": "F032",
+      "kind": "operation",
+      "statement": "The operation requests cooking knowledge or assistance preparing food.",
+      "key_ids": ["K004"],
+      "provenance_ids": ["key-card:K004:definition"]
+    },
+    {
+      "factor_id": "F033",
+      "kind": "operation",
+      "statement": "The operation asks for a present date or time fact and does not create a scheduled item.",
+      "key_ids": ["K005"],
+      "provenance_ids": ["key-card:K005:boundary"]
+    },
+    {
+      "factor_id": "F034",
+      "kind": "operation",
+      "statement": "The operation communicates through a named messaging channel.",
+      "key_ids": ["K006", "K015"],
+      "provenance_ids": ["task-ontology:messaging-operation"]
+    },
+    {
+      "factor_id": "F035",
+      "kind": "operation",
+      "statement": "The operation requests reporting about a current event or headline.",
+      "key_ids": ["K011"],
+      "provenance_ids": ["key-card:K011:definition"]
+    },
+    {
+      "factor_id": "F036",
+      "kind": "operation",
+      "statement": "The operation requests a direct factual answer, not a recommendation or service action.",
+      "key_ids": ["K013"],
+      "provenance_ids": ["key-card:K013:boundary"]
+    },
+    {
+      "factor_id": "F037",
+      "kind": "operation",
+      "statement": "The operation asks the assistant to recommend or discover a suitable option.",
+      "key_ids": ["K014"],
+      "provenance_ids": ["key-card:K014:definition"]
+    },
+    {
+      "factor_id": "F038",
+      "kind": "operation",
+      "statement": "The operation finds, places, or tracks a prepared-food order.",
+      "key_ids": ["K016"],
+      "provenance_ids": ["key-card:K016:definition"]
+    },
+    {
+      "factor_id": "F039",
+      "kind": "operation",
+      "statement": "The operation plans, books, or evaluates physical travel.",
+      "key_ids": ["K017"],
+      "provenance_ids": ["key-card:K017:definition"]
+    },
+    {
+      "factor_id": "F040",
+      "kind": "operation",
+      "statement": "The operation requests current or future atmospheric conditions.",
+      "key_ids": ["K018"],
+      "provenance_ids": ["key-card:K018:definition"]
+    },
+    {
+      "factor_id": "F041",
+      "kind": "operation",
+      "statement": "The operation is a broad assistant request without a stable specialist service target.",
+      "key_ids": ["K007"],
+      "provenance_ids": ["key-card:K007:definition"]
+    },
+    {
+      "factor_id": "F042",
+      "kind": "operation",
+      "statement": "The operation directly inspects or controls a physical connected-device state.",
+      "key_ids": ["K008"],
+      "provenance_ids": ["key-card:K008:definition"]
+    }
+  ],
+  "boundaries": [
+    {
+      "boundary_id": "B001",
+      "left_key_id": "K001",
+      "right_key_id": "K003",
+      "left_factor_ids": ["F009", "F027"],
+      "right_factor_ids": ["F011", "F027"],
+      "left_exclusion": "Do not choose this side for an appointment or calendar event.",
+      "right_exclusion": "Do not choose this side for a wake-up alarm.",
+      "provenance_ids": ["key-card:K001:boundary", "key-card:K003:boundary"]
+    },
+    {
+      "boundary_id": "B002",
+      "left_key_id": "K001",
+      "right_key_id": "K005",
+      "left_factor_ids": ["F009"],
+      "right_factor_ids": ["F013", "F033"],
+      "left_exclusion": "Do not choose this side for a question about the current time.",
+      "right_exclusion": "Do not choose this side when the user creates or changes an alarm.",
+      "provenance_ids": ["key-card:K001:boundary", "key-card:K005:boundary"]
+    },
+    {
+      "boundary_id": "B003",
+      "left_key_id": "K001",
+      "right_key_id": "K009",
+      "left_factor_ids": ["F009", "F002"],
+      "right_factor_ids": ["F017", "F002"],
+      "left_exclusion": "Do not choose this side for a shopping-list or task-list entry.",
+      "right_exclusion": "Do not choose this side for a wake-up alarm.",
+      "provenance_ids": ["key-card:K001:boundary", "key-card:K009:boundary"]
+    },
+    {
+      "boundary_id": "B004",
+      "left_key_id": "K002",
+      "right_key_id": "K010",
+      "left_factor_ids": ["F010", "F029"],
+      "right_factor_ids": ["F018", "F030"],
+      "left_exclusion": "Do not choose this side for selecting a song, artist, album, or playlist.",
+      "right_exclusion": "Do not choose this side for volume or mute control.",
+      "provenance_ids": ["key-card:K002:boundary", "key-card:K010:boundary"]
+    },
+    {
+      "boundary_id": "B005",
+      "left_key_id": "K002",
+      "right_key_id": "K012",
+      "left_factor_ids": ["F010", "F029"],
+      "right_factor_ids": ["F020", "F031"],
+      "left_exclusion": "Do not choose this side for starting, stopping, or navigating media.",
+      "right_exclusion": "Do not choose this side for changing volume or mute state.",
+      "provenance_ids": ["key-card:K002:boundary", "key-card:K012:boundary"]
+    },
+    {
+      "boundary_id": "B006",
+      "left_key_id": "K010",
+      "right_key_id": "K012",
+      "left_factor_ids": ["F018", "F030"],
+      "right_factor_ids": ["F020", "F031"],
+      "left_exclusion": "Do not choose this side for a pure pause, resume, stop, or navigation operation.",
+      "right_exclusion": "Do not choose this side when the defining request is a music-content choice.",
+      "provenance_ids": ["key-card:K010:boundary", "key-card:K012:boundary"]
+    },
+    {
+      "boundary_id": "B007",
+      "left_key_id": "K003",
+      "right_key_id": "K009",
+      "left_factor_ids": ["F011", "F002"],
+      "right_factor_ids": ["F017", "F002"],
+      "left_exclusion": "Do not choose this side for a shopping or task list.",
+      "right_exclusion": "Do not choose this side for a dated appointment or meeting.",
+      "provenance_ids": ["key-card:K003:boundary", "key-card:K009:boundary"]
+    },
+    {
+      "boundary_id": "B008",
+      "left_key_id": "K004",
+      "right_key_id": "K016",
+      "left_factor_ids": ["F012", "F032"],
+      "right_factor_ids": ["F024", "F038"],
+      "left_exclusion": "Do not choose this side for placing or tracking a prepared-food order.",
+      "right_exclusion": "Do not choose this side for recipes, ingredients, or cooking steps.",
+      "provenance_ids": ["key-card:K004:boundary", "key-card:K016:boundary"]
+    },
+    {
+      "boundary_id": "B009",
+      "left_key_id": "K004",
+      "right_key_id": "K014",
+      "left_factor_ids": ["F012", "F032"],
+      "right_factor_ids": ["F022", "F037"],
+      "left_exclusion": "Do not choose this side for recommending a place or activity.",
+      "right_exclusion": "Do not choose this side for a recipe or cooking procedure.",
+      "provenance_ids": ["key-card:K004:boundary", "key-card:K014:boundary"]
+    },
+    {
+      "boundary_id": "B010",
+      "left_key_id": "K005",
+      "right_key_id": "K018",
+      "left_factor_ids": ["F013", "F033"],
+      "right_factor_ids": ["F026", "F040"],
+      "left_exclusion": "Do not choose this side for temperature, rain, wind, or a forecast.",
+      "right_exclusion": "Do not choose this side for a generic date, time, or timezone question.",
+      "provenance_ids": ["key-card:K005:boundary", "key-card:K018:boundary"]
+    },
+    {
+      "boundary_id": "B011",
+      "left_key_id": "K005",
+      "right_key_id": "K017",
+      "left_factor_ids": ["F013", "F033"],
+      "right_factor_ids": ["F025", "F039"],
+      "left_exclusion": "Do not choose this side for a route, traffic, transit, or travel-duration request.",
+      "right_exclusion": "Do not choose this side for a generic current-time or timezone question.",
+      "provenance_ids": ["key-card:K005:boundary", "key-card:K017:boundary"]
+    },
+    {
+      "boundary_id": "B012",
+      "left_key_id": "K006",
+      "right_key_id": "K015",
+      "left_factor_ids": ["F014", "F034", "F028"],
+      "right_factor_ids": ["F023", "F034", "F028"],
+      "left_exclusion": "Do not choose this side for a social post or instant message.",
+      "right_exclusion": "Do not choose this side for an email mailbox or email message.",
+      "provenance_ids": ["key-card:K006:boundary", "key-card:K015:boundary"]
+    },
+    {
+      "boundary_id": "B013",
+      "left_key_id": "K007",
+      "right_key_id": "K013",
+      "left_factor_ids": ["F015", "F041"],
+      "right_factor_ids": ["F021", "F036"],
+      "left_exclusion": "Do not choose this side when a direct factual answer is clearly requested.",
+      "right_exclusion": "Do not choose this side for broad assistant control without a factual target.",
+      "provenance_ids": ["key-card:K007:boundary", "key-card:K013:boundary"]
+    },
+    {
+      "boundary_id": "B014",
+      "left_key_id": "K007",
+      "right_key_id": "K014",
+      "left_factor_ids": ["F015", "F041"],
+      "right_factor_ids": ["F022", "F037"],
+      "left_exclusion": "Do not choose this side when the user requests a recommendation.",
+      "right_exclusion": "Do not choose this side for broad assistant control without an option-selection target.",
+      "provenance_ids": ["key-card:K007:boundary", "key-card:K014:boundary"]
+    },
+    {
+      "boundary_id": "B015",
+      "left_key_id": "K011",
+      "right_key_id": "K013",
+      "left_factor_ids": ["F019", "F035"],
+      "right_factor_ids": ["F021", "F036"],
+      "left_exclusion": "Do not choose this side for a timeless factual question.",
+      "right_exclusion": "Do not choose this side when the requested answer is a current-event report.",
+      "provenance_ids": ["key-card:K011:boundary", "key-card:K013:boundary"]
+    },
+    {
+      "boundary_id": "B016",
+      "left_key_id": "K011",
+      "right_key_id": "K018",
+      "left_factor_ids": ["F019", "F035"],
+      "right_factor_ids": ["F026", "F040"],
+      "left_exclusion": "Do not choose this side for atmospheric conditions or a forecast.",
+      "right_exclusion": "Do not choose this side for news headlines or current-event reporting.",
+      "provenance_ids": ["key-card:K011:boundary", "key-card:K018:boundary"]
+    },
+    {
+      "boundary_id": "B017",
+      "left_key_id": "K013",
+      "right_key_id": "K014",
+      "left_factor_ids": ["F021", "F036"],
+      "right_factor_ids": ["F022", "F037"],
+      "left_exclusion": "Do not choose this side when the user asks which option should be selected.",
+      "right_exclusion": "Do not choose this side when the user asks for a direct factual answer.",
+      "provenance_ids": ["key-card:K013:boundary", "key-card:K014:boundary"]
+    },
+    {
+      "boundary_id": "B018",
+      "left_key_id": "K014",
+      "right_key_id": "K016",
+      "left_factor_ids": ["F022", "F037"],
+      "right_factor_ids": ["F024", "F038"],
+      "left_exclusion": "Do not choose this side for an explicit prepared-food order or delivery status.",
+      "right_exclusion": "Do not choose this side for a recommendation without an order action.",
+      "provenance_ids": ["key-card:K014:boundary", "key-card:K016:boundary"]
+    },
+    {
+      "boundary_id": "B019",
+      "left_key_id": "K017",
+      "right_key_id": "K018",
+      "left_factor_ids": ["F025", "F039"],
+      "right_factor_ids": ["F026", "F040"],
+      "left_exclusion": "Do not choose this side for a pure weather condition or forecast.",
+      "right_exclusion": "Do not choose this side for routing, traffic, transit, or vehicle travel.",
+      "provenance_ids": ["key-card:K017:boundary", "key-card:K018:boundary"]
+    },
+    {
+      "boundary_id": "B020",
+      "left_key_id": "K008",
+      "right_key_id": "K012",
+      "left_factor_ids": ["F016", "F042"],
+      "right_factor_ids": ["F020", "F031"],
+      "left_exclusion": "Do not choose this side for media playback without a connected-device target.",
+      "right_exclusion": "Do not choose this side for direct control of a home device or appliance.",
+      "provenance_ids": ["key-card:K008:boundary", "key-card:K012:boundary"]
+    }
+  ]
+}
