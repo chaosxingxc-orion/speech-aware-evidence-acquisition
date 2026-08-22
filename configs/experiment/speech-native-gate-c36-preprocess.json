@@ -1,0 +1,5 @@
+{
+  "experiment_id": "SAEA-SN-GATE-C36-PREPROCESS",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "Label-free offline feature preprocessing for the frozen GATE-C36 train view. Use a CPU-only sidecar so the receipt-pinned decoder-only inference service remains resident on the GPU; materialize features only and never read generated text, labels, transcripts, or task accuracy."
+}
