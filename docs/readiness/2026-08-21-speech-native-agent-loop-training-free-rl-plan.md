@@ -2,7 +2,7 @@
 
 Date: 2026-08-21
 
-Status: bounded discovery only; no controller is frozen; GATE-C36 and FINAL60 are blocked
+Status: bounded discovery only; schema-v2 action topology is frozen for GATE-C36 construction; no controller is validated and FINAL60 remains blocked
 
 ## Decision
 
@@ -166,20 +166,20 @@ The structural audit passes exactly at the frozen threshold. It verifies 269/269
 
 ### A2 — new unread train gate
 
-After A1 freezes one policy, draw one new small GATE-C18 from unused SLURP train material with query/key/speaker isolation. Preprocess its packets offline before inference, then run direct M0 and the frozen policy once. Do not reuse GATE18 as validation.
+Freeze `GATE-C36` before opening any new train item. Extend the committed X108 successor binding with seed `20260823`, split name `GATE-C36`, and exactly two unused queries per scenario. The extension must preserve every key byte and exclude all parent queries, key examples, speakers, utterances, normalized sentences, and audio identities. Materialize or promote all 36 packets offline before contact; prefer the existing WSL feature store and keep the resident decoder loaded. A missing packet fails closed and never authorizes online mmproj loading.
 
-If A1x is activated, increase this unread gate to GATE-C36 so the larger discovery search is not followed by a weaker 18-query validation. Keep the gate train-only, speaker-isolated, one-shot, and unread until every controller rule is frozen.
+Run four preregistered cells through the same receipt-pinned always-on np16 decoder without reading any prediction between cells: direct matched M0, matched schema-v2 M6, schema-v2 M6 with the deterministic speech derangement, and schema-v2 M6 with deterministic key-text shuffle. The matched M6 trajectory contains the same-run K1-M1 primary, so do not run a redundant standalone M1 cell. Every M6 contact, including state construction, retrieval, verification, and tie arbitration, carries the selected speech packet. Use the existing stage-DAG dispatcher, queue depth 64, the unchanged K1/K2 cards, top-k three, strict citation parser, seven-contact nominal and eight-contact worst-case policy, and zero retries. The control mappings, plan hashes, packet identities, and all four attempt ids must be frozen before the first contact.
 
-The frozen policy qualifies only if all conditions hold:
+Read all four cells once and together only after each cell records 36/36 completed decisions, exact speech-query trace carriage on every contact, 36/36 valid grounded states for each M6 cell, zero request/parse/OOM/spill/runaway/mmproj failure, and a healthy unchanged resident-service PID. The matched topology supplies positive AgentLoop evidence only if all conditions hold:
 
-- final accuracy is at least M1 and strictly above same-run M0;
-- correct-to-wrong relative to M1 is zero;
-- no parse failure;
-- at least one non-stop action occurs, unless every M1 decision is correct;
-- the policy saves contacts relative to full expansion;
-- the mmproj audit remains zero.
+- matched M6 is at least two correct decisions above its embedded M1 primary;
+- wrong-to-correct relative to M1 is at least two and correct-to-wrong is zero;
+- matched M6 is strictly above same-run M0;
+- at least two decisions are action-sensitive;
+- matched M6 exceeds speech-swap M6 by at least 8/36 and key-text-shuffle M6 by at least 6/36;
+- mean matched M6 contacts remain below the existing full-branch M5 expansion.
 
-Only after A2 qualifies may the owner decide whether FINAL60 is still an appropriate bounded discovery read.
+Reject this frozen AgentLoop topology if matched M6 is at least two decisions below M1 or makes at least two correct-to-wrong changes. If the paired M6-minus-M1 delta is in `{-1, 0, +1}` with at most one correct-to-wrong change, record `RELATIVE-EVIDENCE-UNDERPOWERED` rather than success or failure and activate exactly one already-frozen expansion: `EFFECT-C108`, seed `20260824`, six additional unused train queries per scenario, drawn as an isolated successor of the GATE-C36 binding. EFFECT-C108 must keep the same model, service profile, keys, prompts, parser, action topology, controls, and reader; it may not be redesigned after GATE-C36 is read. Require net gain at least 3/108 over embedded M1, positive delta in at least two of three speaker-grouped folds, worst-fold delta at least zero, at most one correct-to-wrong change, zero parse failures, matched-minus-speech-swap at least 24/108, and matched-minus-key-shuffle at least 18/108 before promotion. This conditional 100-plus stage is the owner's authorized response to insufficient relative evidence; it is not a reason to touch test or FINAL60. D500 remains separately blocked.
 
 ## Progressive scale ladder
 
