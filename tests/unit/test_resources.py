@@ -134,6 +134,35 @@ def test_nvidia_smi_sampler_reports_request_window_median_and_p10():
     assert summary["request_gpu_sample_count"] == 3
 
 
+def test_nvidia_smi_sampler_persists_auditable_request_sample_timeline(monkeypatch):
+    import speech_aware_evidence_acquisition.core.resources as resources_module
+
+    monkeypatch.setattr(resources_module.time, "time", lambda: 1_776_000_000.25)
+    sampler = NvidiaSmiSampler(interval_seconds=10.0, runner=_fixed_runner(["5, 100"]))
+    sampler.start()
+    try:
+        sampler.begin_request_window()
+        sampler._record(96.0, 21000.0, 1.0)
+        sampler._record(42.0, 21500.0, 1.0)
+        sampler.end_request_window()
+        sampler._record(1.0, 19000.0, 1.0)
+    finally:
+        sampler.stop()
+
+    assert sampler.summary()["request_gpu_samples"] == [
+        {
+            "sampled_at_unix_seconds": 1_776_000_000.25,
+            "utilization_pct": 96.0,
+            "memory_used_mib": 21000.0,
+        },
+        {
+            "sampled_at_unix_seconds": 1_776_000_000.25,
+            "utilization_pct": 42.0,
+            "memory_used_mib": 21500.0,
+        },
+    ]
+
+
 # ---------------------------------------------------------------------------
 # NvidiaSmiSampler: fail-safe degradation to NOT_AVAILABLE, never a crash.
 # ---------------------------------------------------------------------------

@@ -118,6 +118,7 @@ class NullSampler:
             "request_gpu_utilization_median_pct": NOT_AVAILABLE,
             "request_gpu_utilization_p10_pct": NOT_AVAILABLE,
             "request_gpu_sample_count": 0,
+            "request_gpu_samples": [],
         }
 
 
@@ -185,6 +186,7 @@ class NvidiaSmiSampler:
         self._samples_taken = 0
         self._request_window_active = False
         self._request_utilization_samples: list[float] = []
+        self._request_gpu_samples: list[dict[str, float]] = []
         self._available = True
         self._reason: str | None = None
         self._stop_event = threading.Event()
@@ -208,6 +210,7 @@ class NvidiaSmiSampler:
         return True, utilization, memory_used
 
     def _record(self, utilization: float, memory_used: float, elapsed: float) -> None:
+        sampled_at = time.time()
         with self._lock:
             bounded_utilization = max(0.0, min(utilization, 100.0))
             self._gpu_seconds += elapsed * bounded_utilization / 100.0
@@ -215,6 +218,13 @@ class NvidiaSmiSampler:
             self._samples_taken += 1
             if self._request_window_active:
                 self._request_utilization_samples.append(bounded_utilization)
+                self._request_gpu_samples.append(
+                    {
+                        "sampled_at_unix_seconds": sampled_at,
+                        "utilization_pct": bounded_utilization,
+                        "memory_used_mib": memory_used,
+                    }
+                )
 
     def begin_request_window(self) -> None:
         """Start collecting utilization distribution samples for requests only."""
@@ -270,6 +280,7 @@ class NvidiaSmiSampler:
                     "request_gpu_utilization_median_pct": NOT_AVAILABLE,
                     "request_gpu_utilization_p10_pct": NOT_AVAILABLE,
                     "request_gpu_sample_count": 0,
+                    "request_gpu_samples": [],
                 }
             request_samples = sorted(self._request_utilization_samples)
             request_sample_count = len(request_samples)
@@ -287,6 +298,7 @@ class NvidiaSmiSampler:
                 "request_gpu_utilization_median_pct": request_median,
                 "request_gpu_utilization_p10_pct": request_p10,
                 "request_gpu_sample_count": request_sample_count,
+                "request_gpu_samples": [dict(sample) for sample in self._request_gpu_samples],
             }
 
 

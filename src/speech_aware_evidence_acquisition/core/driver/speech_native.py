@@ -15,6 +15,7 @@ import hashlib
 import json
 import math
 import re
+import statistics
 from dataclasses import asdict
 from datetime import datetime
 from pathlib import Path
@@ -51,7 +52,7 @@ from ..config import (
     resolve_runtime_receipt_path,
     runtime_receipt_relpath,
 )
-from ..resources import resolve_resource_sampler
+from ..resources import NOT_AVAILABLE, resolve_resource_sampler
 from ..session import (
     SessionError,
     SessionReceipt,
@@ -5448,6 +5449,78 @@ def profile_timing_metrics(
     }
 
 
+def profile_saturated_gpu_metrics(
+    *,
+    timing_rows: Sequence[Mapping[str, object]],
+    resource_summary: Mapping[str, object],
+    slot_count: int,
+) -> dict[str, int | float | str]:
+    """Measure GPU utilization only while the request DAG can fill the service.
+
+    The full request-window distribution and end-to-end slot occupancy remain
+    separate diagnostics. This view excludes only mechanically identified DAG
+    drain samples: a sample is saturated when at least 90 percent of the
+    configured slots have a live request at that exact timestamp.
+    """
+
+    if isinstance(slot_count, bool) or not isinstance(slot_count, int) or slot_count <= 0:
+        raise SpeechNativeProfileError("slot_count must be a positive integer")
+    intervals: list[tuple[float, float]] = []
+    for timing in timing_rows:
+        started_at = timing.get("started_at")
+        latency = timing.get("latency_seconds")
+        if (
+            not isinstance(started_at, str)
+            or isinstance(latency, bool)
+            or not isinstance(latency, (int, float))
+            or not math.isfinite(float(latency))
+            or float(latency) < 0
+        ):
+            raise SpeechNativeProfileError("profile timing row is malformed")
+        start = datetime.fromisoformat(started_at).timestamp()
+        intervals.append((start, start + float(latency)))
+    raw_samples = resource_summary.get("request_gpu_samples")
+    if not isinstance(raw_samples, list):
+        raise SpeechNativeProfileError("request GPU sample timeline is unavailable")
+    minimum_active = max(1, math.ceil(slot_count * 0.90))
+    saturated_utilization: list[float] = []
+    for sample in raw_samples:
+        if not isinstance(sample, Mapping):
+            raise SpeechNativeProfileError("request GPU sample is malformed")
+        sampled_at = sample.get("sampled_at_unix_seconds")
+        utilization = sample.get("utilization_pct")
+        if (
+            isinstance(sampled_at, bool)
+            or not isinstance(sampled_at, (int, float))
+            or not math.isfinite(float(sampled_at))
+            or isinstance(utilization, bool)
+            or not isinstance(utilization, (int, float))
+            or not math.isfinite(float(utilization))
+        ):
+            raise SpeechNativeProfileError("request GPU sample is malformed")
+        active = sum(start <= float(sampled_at) < end for start, end in intervals)
+        if active >= minimum_active:
+            saturated_utilization.append(float(utilization))
+    sample_count = len(saturated_utilization)
+    sample_fraction = (
+        100.0 * sample_count / len(raw_samples) if raw_samples else 0.0
+    )
+    if not saturated_utilization:
+        median: float | str = NOT_AVAILABLE
+        p10: float | str = NOT_AVAILABLE
+    else:
+        ordered = sorted(saturated_utilization)
+        median = float(statistics.median(ordered))
+        p10 = float(ordered[max(0, math.ceil(0.10 * len(ordered)) - 1)])
+    return {
+        "minimum_active_requests": minimum_active,
+        "sample_count": sample_count,
+        "sample_fraction_pct": sample_fraction,
+        "utilization_median_pct": median,
+        "utilization_p10_pct": p10,
+    }
+
+
 def _trace_usage_summary(path: Path) -> dict[str, int]:
     request_count = 0
     response_count = 0
@@ -8656,8 +8729,16 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
                 completion_tokens=int(cost.get("completion_tokens_total", 0)),
             )
             receipt["timing"] = timing
-            median_util = resource_summary.get("request_gpu_utilization_median_pct")
-            p10_util = resource_summary.get("request_gpu_utilization_p10_pct")
+            saturated_gpu = profile_saturated_gpu_metrics(
+                timing_rows=timing_rows,
+                resource_summary=resource_summary,
+                slot_count=slot_count,
+            )
+            receipt["saturated_gpu"] = saturated_gpu
+            saturated_median = saturated_gpu["utilization_median_pct"]
+            saturated_p10 = saturated_gpu["utilization_p10_pct"]
+            saturated_count = saturated_gpu["sample_count"]
+            saturated_fraction = saturated_gpu["sample_fraction_pct"]
             receipt["eligibility"] = {
                 "maximum_prompt_fits_one_slot": (
                     trace_usage["max_prompt_tokens"]
@@ -8668,15 +8749,25 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
                 "zero_oom_markers": not server_scan["oom_marker_hits"],
                 "zero_host_spill_markers": not server_scan["host_spill_marker_hits"],
                 "zero_runaway_markers": not server_scan["runaway_marker_hits"],
-                "gpu_median_at_least_95": (
-                    isinstance(median_util, (int, float))
-                    and not isinstance(median_util, bool)
-                    and float(median_util) >= 95.0
+                "saturated_gpu_sample_count_at_least_30": (
+                    isinstance(saturated_count, int)
+                    and not isinstance(saturated_count, bool)
+                    and saturated_count >= 30
                 ),
-                "gpu_p10_at_least_90": (
-                    isinstance(p10_util, (int, float))
-                    and not isinstance(p10_util, bool)
-                    and float(p10_util) >= 90.0
+                "saturated_gpu_sample_fraction_at_least_60": (
+                    isinstance(saturated_fraction, (int, float))
+                    and not isinstance(saturated_fraction, bool)
+                    and float(saturated_fraction) >= 60.0
+                ),
+                "saturated_gpu_median_at_least_95": (
+                    isinstance(saturated_median, (int, float))
+                    and not isinstance(saturated_median, bool)
+                    and float(saturated_median) >= 95.0
+                ),
+                "saturated_gpu_p10_at_least_90": (
+                    isinstance(saturated_p10, (int, float))
+                    and not isinstance(saturated_p10, bool)
+                    and float(saturated_p10) >= 90.0
                 ),
                 "slot_occupancy_at_least_90": timing["slot_occupancy_pct"] >= 90.0,
             }

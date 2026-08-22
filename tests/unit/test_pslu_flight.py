@@ -39,6 +39,7 @@ from speech_aware_evidence_acquisition.core.driver.speech_native import (
     SpeechNativeProfileError,
     _cli_speech_native_action_audit,
     build_profile_tasks,
+    profile_saturated_gpu_metrics,
     profile_timing_metrics,
     read_speech_native_predictions,
 )
@@ -5153,6 +5154,44 @@ def test_profile_task_expansion_and_slot_metrics_are_deterministic():
         "request_window_seconds": 2.0,
         "slot_occupancy_pct": 100.0,
         "aggregate_tokens_per_second": 100.0,
+    }
+
+
+def test_saturated_gpu_metrics_exclude_dependency_drain_without_hiding_occupancy():
+    timings = (
+        {
+            "started_at": "2026-08-21T12:00:00+00:00",
+            "latency_seconds": 3.0,
+        },
+        {
+            "started_at": "2026-08-21T12:00:00+00:00",
+            "latency_seconds": 3.0,
+        },
+        {
+            "started_at": "2026-08-21T12:00:02+00:00",
+            "latency_seconds": 2.0,
+        },
+    )
+    epoch = 1_787_313_600.0  # 2026-08-21T12:00:00+00:00
+    resource = {
+        "request_gpu_samples": [
+            {"sampled_at_unix_seconds": epoch + 0.5, "utilization_pct": 100.0},
+            {"sampled_at_unix_seconds": epoch + 1.5, "utilization_pct": 96.0},
+            {"sampled_at_unix_seconds": epoch + 2.5, "utilization_pct": 92.0},
+            {"sampled_at_unix_seconds": epoch + 3.5, "utilization_pct": 10.0},
+        ]
+    }
+
+    assert profile_saturated_gpu_metrics(
+        timing_rows=timings,
+        resource_summary=resource,
+        slot_count=2,
+    ) == {
+        "minimum_active_requests": 2,
+        "sample_count": 3,
+        "sample_fraction_pct": 75.0,
+        "utilization_median_pct": 96.0,
+        "utilization_p10_pct": 92.0,
     }
 
 
