@@ -2279,6 +2279,420 @@ def run_speech_native_match_tasks(
 
     contact_client = ContactDispatchClient()
 
+    m8_global = dispatch_granularity == "contact" and all(
+        task.matcher_policy_id == "M8" for task in ordered_tasks
+    )
+    if m8_global:
+        @dataclass
+        class M8TaskState:
+            task_index: int
+            cards: tuple[KeyCardV1, ...]
+            responses: dict[int, str] = field(default_factory=dict)
+            trace_buffers: dict[int, TraceBuffer] = field(default_factory=dict)
+            primary_key_id: str | None = None
+            top_ids: tuple[str, ...] = ()
+            challengers: tuple[str, ...] = ()
+            pairwise_owners: dict[int, tuple[int, str, str]] = field(
+                default_factory=dict
+            )
+            parsed_votes: dict[tuple[int, str, str], str | None] = field(
+                default_factory=dict
+            )
+            pairwise_scheduled: bool = False
+            decision: SpeechNativeDecision | None = None
+            error: BaseException | None = None
+
+        @dataclass(frozen=True)
+        class M8Contact:
+            task_index: int
+            stage_index: int
+            stage_kind: str
+            messages: tuple[Mapping[str, object], ...]
+            kwargs: Mapping[str, object]
+            trace_buffer: TraceBuffer | None
+
+            @property
+            def sort_key(self) -> tuple[int, int]:
+                return self.task_index, self.stage_index
+
+        states: tuple[M8TaskState, ...] = tuple(
+            M8TaskState(
+                task_index=task_index,
+                cards=_validated_key_cards(task.key_cards),
+            )
+            for task_index, task in enumerate(ordered_tasks)
+        )
+        for state in states:
+            task = ordered_tasks[state.task_index]
+            if task.key_representation_id != "K1":
+                raise PsluFlightError(
+                    "M8 requires maintainable K1 text keys at the profile boundary"
+                )
+            if task.prompt_policy_id != "speech-native-json-copy-v4":
+                raise PsluFlightError(
+                    "M8 requires the schema-constrained JSON-copy v4 prompt policy"
+                )
+            if (
+                task.agent_policy_id
+                != "speech-conditioned-pairwise-boundary-support-v1"
+                or task.agent_aggregator_id
+                != "pairwise-boundary-primary-control-v1"
+            ):
+                raise PsluFlightError(
+                    "M8 requires the pairwise-boundary support policy and control"
+                )
+            if task.top_k <= 0 or task.top_k > len(state.cards):
+                raise PsluFlightError(
+                    f"top_k must be in [1, {len(state.cards)}], got {task.top_k}"
+                )
+
+        def m8_contact_node(
+            state: M8TaskState,
+            *,
+            stage_index: int,
+            stage_kind: str,
+            stage: str,
+            system_text: str,
+            stage_cards: Sequence[KeyCardV1],
+            key_representation_id: str,
+            response_format: Mapping[str, object],
+        ) -> M8Contact:
+            task = ordered_tasks[state.task_index]
+            messages = _speech_feature_messages(
+                system_text=system_text,
+                query_descriptor=task.query_descriptor,
+                key_text=render_speech_native_keys(
+                    stage_cards, key_representation_id
+                ),
+                key_cards=stage_cards,
+                key_representation_id=key_representation_id,
+                audio_key_bindings=None,
+            )
+            trace_buffer = (
+                TraceBuffer(trace_run_id) if trace_run_id is not None else None
+            )
+            if trace_buffer is not None:
+                state.trace_buffers[stage_index] = trace_buffer
+            decoding_params = dict(task.decoding_params)
+            decoding_params["response_format"] = response_format
+            return M8Contact(
+                task_index=state.task_index,
+                stage_index=stage_index,
+                stage_kind=stage_kind,
+                messages=messages,
+                kwargs={
+                    "decoding_params": decoding_params,
+                    "speech_feature_sample_id": task.sample.sample_id,
+                    "key_representation_id": key_representation_id,
+                    "matcher_policy_id": f"M8:{stage}",
+                },
+                trace_buffer=trace_buffer,
+            )
+
+        def m8_initial_nodes(state: M8TaskState) -> tuple[M8Contact, M8Contact]:
+            task = ordered_tasks[state.task_index]
+            key_ids = tuple(card.key_id for card in state.cards)
+            return (
+                m8_contact_node(
+                    state,
+                    stage_index=0,
+                    stage_kind="primary",
+                    stage="primary-listwise",
+                    system_text=(
+                        "Match the spoken command to exactly one opaque key. Use the speech "
+                        "signal and the supplied K1 text cards jointly. Return only the "
+                        "selected key_id."
+                    ),
+                    stage_cards=state.cards,
+                    key_representation_id="K1",
+                    response_format=_key_choice_response_format(
+                        name="speech_native_primary_key_choice",
+                        key_ids=key_ids,
+                    ),
+                ),
+                m8_contact_node(
+                    state,
+                    stage_index=1,
+                    stage_kind="retrieval",
+                    stage=f"speech-retrieve-top-{task.top_k}",
+                    system_text=(
+                        f"Retrieve exactly {task.top_k} distinct opaque keys for the spoken "
+                        "command, ranked from most to least compatible. Use the speech signal "
+                        "and supplied K1 text cards jointly. Return only the ordered key_ids."
+                    ),
+                    stage_cards=state.cards,
+                    key_representation_id="K1",
+                    response_format=_top_key_choice_response_format(
+                        key_ids=key_ids,
+                        top_k=task.top_k,
+                    ),
+                ),
+            )
+
+        def m8_pairwise_nodes(state: M8TaskState) -> tuple[M8Contact, ...]:
+            assert state.primary_key_id is not None
+            by_key = {card.key_id: card for card in state.cards}
+            nodes: list[M8Contact] = []
+            stage_index = 2
+            for rank, challenger_key_id in enumerate(state.challengers, start=1):
+                pair_ids = (state.primary_key_id, challenger_key_id)
+                response_format = _key_choice_response_format(
+                    name="speech_native_pairwise_key_choice",
+                    key_ids=pair_ids,
+                )
+                for representation_id in ("K1", "K2"):
+                    for order_id, ordered_ids in (
+                        ("ab", pair_ids),
+                        ("ba", tuple(reversed(pair_ids))),
+                    ):
+                        state.pairwise_owners[stage_index] = (
+                            rank,
+                            representation_id,
+                            order_id,
+                        )
+                        nodes.append(
+                            m8_contact_node(
+                                state,
+                                stage_index=stage_index,
+                                stage_kind="pairwise",
+                                stage=(
+                                    f"pairwise-{representation_id}-rank-{rank}-{order_id}"
+                                ),
+                                system_text=(
+                                    "Choose which of exactly two opaque keys better matches "
+                                    "the spoken command. Compare the speech signal directly "
+                                    "against both cards. Treat card order as irrelevant and "
+                                    "return only key_id."
+                                ),
+                                stage_cards=tuple(
+                                    by_key[key_id] for key_id in ordered_ids
+                                ),
+                                key_representation_id=representation_id,
+                                response_format=response_format,
+                            )
+                        )
+                        stage_index += 1
+            return tuple(nodes)
+
+        def finish_m8(state: M8TaskState) -> None:
+            task = ordered_tasks[state.task_index]
+            labels = {card.key_id: card.value_label for card in state.cards}
+            initial_steps: tuple[Mapping[str, object], ...] = (
+                {
+                    "action_id": "match:speech-only-primary",
+                    "key_id": state.primary_key_id,
+                    "top_key_ids": [],
+                    "calls": 1,
+                    "parse_failure": state.primary_key_id is None,
+                },
+                {
+                    "action_id": "retrieve:speech-only",
+                    "key_id": state.top_ids[0] if state.top_ids else None,
+                    "top_key_ids": list(state.top_ids),
+                    "calls": 1,
+                    "parse_failure": len(state.top_ids) != task.top_k,
+                },
+            )
+            if state.primary_key_id is None or len(state.top_ids) != task.top_k:
+                actions = (
+                    "match:speech-only-primary",
+                    "retrieve:speech-only",
+                    "backtrack:invalid-initial-pairwise-support",
+                )
+                votes = (state.primary_key_id,)
+                steps = initial_steps
+            else:
+                comparison_steps: list[Mapping[str, object]] = []
+                support_votes: list[str | None] = []
+                for rank, challenger_key_id in enumerate(
+                    state.challengers, start=1
+                ):
+                    k1_ab = state.parsed_votes[(rank, "K1", "ab")]
+                    k1_ba = state.parsed_votes[(rank, "K1", "ba")]
+                    k2_ab = state.parsed_votes[(rank, "K2", "ab")]
+                    k2_ba = state.parsed_votes[(rank, "K2", "ba")]
+                    k1_stable = (
+                        challenger_key_id
+                        if k1_ab == k1_ba == challenger_key_id
+                        else None
+                    )
+                    k2_stable = (
+                        challenger_key_id
+                        if k2_ab == k2_ba == challenger_key_id
+                        else None
+                    )
+                    support_votes.extend((k1_stable, k2_stable))
+                    comparison_steps.append(
+                        {
+                            "action_id": (
+                                f"compare:pairwise-boundary-rank-{rank}"
+                            ),
+                            "rank": rank,
+                            "primary_key_id": state.primary_key_id,
+                            "challenger_key_id": challenger_key_id,
+                            "k1_ab_key_id": k1_ab,
+                            "k1_ba_key_id": k1_ba,
+                            "k1_stable_key_id": k1_stable,
+                            "k2_ab_key_id": k2_ab,
+                            "k2_ba_key_id": k2_ba,
+                            "k2_stable_key_id": k2_stable,
+                            "calls": 4,
+                            "parse_failure": any(
+                                vote is None
+                                for vote in (k1_ab, k1_ba, k2_ab, k2_ba)
+                            ),
+                            "causal_parent_ids": [
+                                "match:speech-only-primary",
+                                "retrieve:speech-only",
+                            ],
+                        }
+                    )
+                actions = (
+                    "match:speech-only-primary",
+                    "retrieve:speech-only",
+                    *(
+                        f"compare:pairwise-boundary-rank-{rank}"
+                        for rank in range(1, len(state.challengers) + 1)
+                    ),
+                    "select:retain-primary-for-support",
+                )
+                votes = (state.primary_key_id, *support_votes)
+                steps = initial_steps + tuple(comparison_steps)
+            state.decision = SpeechNativeDecision(
+                matcher_policy_id="M8",
+                key_representation_id=task.key_representation_id,
+                key_id=state.primary_key_id,
+                value_label=labels.get(state.primary_key_id),
+                top_key_ids=state.top_ids,
+                calls=len(state.responses),
+                raw_responses=tuple(
+                    state.responses[index] for index in sorted(state.responses)
+                ),
+                verifier_scores={},
+                parse_failure=state.primary_key_id is None,
+                agent_policy_id=task.agent_policy_id,
+                agent_actions=actions,
+                agent_escalated=True,
+                agent_vote_key_ids=votes,
+                agent_steps=steps,
+                agent_aggregator_id=task.agent_aggregator_id,
+            )
+
+        ready: deque[M8Contact] = deque(
+            node for state in states for node in m8_initial_nodes(state)
+        )
+        pending: dict[Future, M8Contact] = {}
+        try:
+            while ready or pending:
+                while ready and len(pending) < queue_depth:
+                    node = ready.popleft()
+                    state = states[node.task_index]
+                    if state.error is not None or state.decision is not None:
+                        continue
+                    future = contact_client._submit(
+                        node.messages, dict(node.kwargs), node.trace_buffer
+                    )
+                    pending[future] = node
+                if not pending:
+                    if ready:
+                        continue
+                    break
+                done, _not_done = wait(tuple(pending), return_when=FIRST_COMPLETED)
+                for future in sorted(done, key=lambda item: pending[item].sort_key):
+                    node = pending.pop(future)
+                    state = states[node.task_index]
+                    try:
+                        response = future.result()
+                    except BaseException as error:
+                        if state.error is None:
+                            state.error = error
+                        continue
+                    if state.error is not None:
+                        continue
+                    state.responses[node.stage_index] = response
+                    task = ordered_tasks[state.task_index]
+                    allowed = {card.key_id for card in state.cards}
+                    if node.stage_kind in {"primary", "retrieval"}:
+                        if not {0, 1}.issubset(state.responses):
+                            continue
+                        state.primary_key_id = _selected_key_id(
+                            state.responses[0], allowed
+                        )
+                        state.top_ids = _selected_top_keys(
+                            state.responses[1], allowed, task.top_k
+                        )
+                        if (
+                            state.primary_key_id is None
+                            or len(state.top_ids) != task.top_k
+                        ):
+                            finish_m8(state)
+                            continue
+                        state.challengers = tuple(
+                            key_id
+                            for key_id in state.top_ids
+                            if key_id != state.primary_key_id
+                        )
+                        if not state.pairwise_scheduled:
+                            state.pairwise_scheduled = True
+                            children = m8_pairwise_nodes(state)
+                            if children:
+                                ready.extend(children)
+                            else:
+                                finish_m8(state)
+                        continue
+                    if node.stage_kind == "pairwise":
+                        owner = state.pairwise_owners[node.stage_index]
+                        challenger_key_id = state.challengers[owner[0] - 1]
+                        state.parsed_votes[owner] = _selected_key_id(
+                            response,
+                            {state.primary_key_id, challenger_key_id},
+                        )
+                        if len(state.parsed_votes) == len(state.pairwise_owners):
+                            finish_m8(state)
+                        continue
+                    raise PsluFlightError(
+                        f"unknown M8 DAG stage {node.stage_kind!r}"
+                    )
+        finally:
+            assert contact_pool is not None
+            contact_pool.shutdown(wait=True)
+
+        buffered_outcomes: list[_BufferedSpeechNativeOutcome] = []
+        for state in states:
+            combined = TraceBuffer(trace_run_id) if trace_run_id is not None else None
+            if combined is not None:
+                for stage_index in sorted(state.trace_buffers):
+                    combined.extend_from(state.trace_buffers[stage_index])
+            if state.error is None and state.decision is None:
+                state.error = PsluFlightError("global M8 DAG did not settle one task")
+            buffered_outcomes.append(
+                _BufferedSpeechNativeOutcome(
+                    outcome=(
+                        SpeechNativeMatchOutcome(
+                            task_id=ordered_tasks[state.task_index].task_id,
+                            slot_id=-1,
+                            decision=state.decision,
+                        )
+                        if state.decision is not None
+                        else None
+                    ),
+                    buffer=combined,
+                    error=state.error,
+                )
+            )
+        if trace_flusher is not None:
+            for result in buffered_outcomes:
+                assert result.buffer is not None
+                trace_flusher(result.buffer)
+        for result in buffered_outcomes:
+            if result.error is not None:
+                raise result.error
+        return tuple(
+            result.outcome
+            for result in buffered_outcomes
+            if result.outcome is not None
+        )
+
     full_branch_global = dispatch_granularity == "contact" and all(
         task.matcher_policy_id == "M5"
         and task.agent_policy_id == "m1-m3-full-branch-explorer-v1"
