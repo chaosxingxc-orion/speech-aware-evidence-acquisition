@@ -1,0 +1,27 @@
+{
+  "arm": "speech-feature-query",
+  "policy": "fixed",
+  "evidence_source": "none",
+  "evidence_mismatch": false,
+  "obs_batch_samples": 1,
+  "allow_empty_speech_feature_evidence": false,
+  "speech_packet_promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/EFFECT-C108-promotion.json",
+  "speech_packet_promotion_receipt_sha256": "a5ec9edaaa3ba510f43f96cf91e3bb529234632f2f773d79c70ae7bfcaca67e7",
+  "speech_native_binding": "configs/probes/g0-binding/speech-native-train-binding-effect-c108.json",
+  "speech_native_binding_file_sha256": "41b74dd54292199ac6fdb55905edcbe965708ef7578a7b786625077269f48dc5",
+  "profile_key_order_ids": [
+    "canonical"
+  ],
+  "profile_queue_depth_multiplier": 8,
+  "profile_validation_workers": 16,
+  "speech_native_result_mode": "predictions",
+  "speech_native_contact_ceiling_per_task": 14,
+  "speech_native_top_k": 3,
+  "speech_native_dispatch_granularity": "contact",
+  "matcher_prompt_policy_id": "speech-native-json-copy-v4",
+  "matcher_verifier_policy_id": "speech-native-compatibility-v1",
+  "scorers": [
+    "cost"
+  ],
+  "task_instruction": "Run speech-conditioned pairwise boundary support over K1 and K2 text cards with AB/BA position controls. Every decision retains the speech-only primary, every contact carries the original speech packet, and gold labels and reference transcripts remain unavailable at runtime."
+}

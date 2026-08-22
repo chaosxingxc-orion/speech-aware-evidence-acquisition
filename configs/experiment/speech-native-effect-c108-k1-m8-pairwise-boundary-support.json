@@ -1,0 +1,9 @@
+{
+  "experiment_id": "SAEA-SN-EFFECT-C108-K1M8-PAIRWISE-BOUNDARY-SUPPORT",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "Matched C108 action-support probe for a frozen speech-conditioned pairwise boundary loop. The online result retains the speech-only primary while K1/K2 and AB/BA challenger actions are logged for one-shot training-free controller analysis.",
+  "key_representation_id": "K1",
+  "matcher_policy_id": "M8",
+  "speech_native_agent_policy_id": "speech-conditioned-pairwise-boundary-support-v1",
+  "speech_native_agent_aggregator_id": "pairwise-boundary-primary-control-v1"
+}

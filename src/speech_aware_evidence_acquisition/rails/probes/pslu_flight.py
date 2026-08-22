@@ -59,6 +59,7 @@ from concurrent.futures import FIRST_COMPLETED, Future, ThreadPoolExecutor, wait
 from dataclasses import dataclass, field
 from pathlib import Path
 from queue import Queue
+from threading import BoundedSemaphore
 from types import MappingProxyType
 from typing import Callable, Mapping, Sequence
 
@@ -155,7 +156,17 @@ def load_speech_native_engineering_gate(
 
 
 SPEECH_NATIVE_KEY_REPRESENTATIONS = ("K0", "K1", "K2", "K3", "K4")
-SPEECH_NATIVE_MATCHER_POLICIES = ("M0", "M1", "M2", "M3", "M4", "M5", "M6", "M7")
+SPEECH_NATIVE_MATCHER_POLICIES = (
+    "M0",
+    "M1",
+    "M2",
+    "M3",
+    "M4",
+    "M5",
+    "M6",
+    "M7",
+    "M8",
+)
 SPEECH_NATIVE_PROMPT_POLICIES = (
     "speech-native-json-copy-v2",
     "speech-native-json-copy-v3",
@@ -171,6 +182,7 @@ SPEECH_NATIVE_AGENT_AGGREGATORS = (
     "m3-unanimous-primary-fallback-v3",
     "grounded-refined-primary-fallback-v1",
     "action-support-primary-control-v1",
+    "pairwise-boundary-primary-control-v1",
 )
 SPEECH_NATIVE_AGENT_POLICIES = (
     "m1-m3-disagreement-escalation-v1",
@@ -179,6 +191,7 @@ SPEECH_NATIVE_AGENT_POLICIES = (
     "knowledge-grounded-semantic-refinement-schema-v2",
     "knowledge-grounded-semantic-refinement-schema-v3",
     "knowledge-grounded-multistate-action-support-v1",
+    "speech-conditioned-pairwise-boundary-support-v1",
 )
 SPEECH_NATIVE_SCENARIO_DEFINITIONS: Mapping[str, str] = MappingProxyType(
     {
@@ -673,6 +686,53 @@ def _grounded_query_state_response_format(
     }
 
 
+def _key_choice_response_format(
+    *, name: str, key_ids: Sequence[str]
+) -> dict[str, object]:
+    """Constrain one frozen-core response to one supplied opaque key id."""
+
+    return {
+        "type": "json_schema",
+        "json_schema": {
+            "name": name,
+            "strict": True,
+            "schema": {
+                "type": "object",
+                "properties": {"key_id": {"enum": list(key_ids)}},
+                "required": ["key_id"],
+                "additionalProperties": False,
+            },
+        },
+    }
+
+
+def _top_key_choice_response_format(
+    *, key_ids: Sequence[str], top_k: int
+) -> dict[str, object]:
+    """Constrain one retrieval response to an exact-size opaque-key array."""
+
+    return {
+        "type": "json_schema",
+        "json_schema": {
+            "name": "speech_native_top_key_choice",
+            "strict": True,
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "key_ids": {
+                        "type": "array",
+                        "items": {"enum": list(key_ids)},
+                        "minItems": top_k,
+                        "maxItems": top_k,
+                    }
+                },
+                "required": ["key_ids"],
+                "additionalProperties": False,
+            },
+        },
+    }
+
+
 def _speech_feature_messages(
     *,
     system_text: str,
@@ -739,7 +799,7 @@ def run_speech_native_matcher(
     _trace_matcher_policy_id: str | None = None,
     _trace_buffer: TraceBuffer | None = None,
 ) -> SpeechNativeDecision:
-    """Run one frozen-core speech-query decision under M0--M7.
+    """Run one frozen-core speech-query decision under M0--M8.
 
     Every local ``contact`` call reconstructs a two-message request carrying
     the original query packet. Generated factor text and verifier outputs may
@@ -809,7 +869,16 @@ def run_speech_native_matcher(
         raise PsluFlightError("M7 supports maintainable text keys K1/K2 only")
     if matcher_policy_id == "M7" and prompt_policy_id != "speech-native-json-copy-v3":
         raise PsluFlightError("M7 requires the strict JSON-copy v3 prompt policy")
-    top_k_is_active = matcher_policy_id in {"M3", "M5", "M6", "M7"} or (
+    if matcher_policy_id == "M8" and (
+        agent_policy_id != "speech-conditioned-pairwise-boundary-support-v1"
+        or agent_aggregator_id != "pairwise-boundary-primary-control-v1"
+    ):
+        raise PsluFlightError("M8 requires the pairwise-boundary support policy and control")
+    if matcher_policy_id == "M8" and key_representation_id != "K1":
+        raise PsluFlightError("M8 requires maintainable K1 text keys at the profile boundary")
+    if matcher_policy_id == "M8" and prompt_policy_id != "speech-native-json-copy-v4":
+        raise PsluFlightError("M8 requires the schema-constrained JSON-copy v4 prompt policy")
+    top_k_is_active = matcher_policy_id in {"M3", "M5", "M6", "M7", "M8"} or (
         matcher_policy_id == "M4" and ensemble_base_policy_id == "M3"
     )
     if top_k_is_active and (top_k <= 0 or top_k > len(cards)):
@@ -1239,6 +1308,186 @@ def run_speech_native_matcher(
             ),
         )
         return finish(_selected_key_id(response, allowed))
+
+    if matcher_policy_id == "M8":
+        primary_instruction = (
+            "Match the spoken command to exactly one opaque key. Use the speech signal and "
+            "the supplied K1 text cards jointly. Return only the selected key_id."
+        )
+        retrieval_instruction = (
+            f"Retrieve exactly {top_k} distinct opaque keys for the spoken command, ranked "
+            "from most to least compatible. Use the speech signal and supplied K1 text "
+            "cards jointly. Return only the ordered key_ids."
+        )
+        initial_responses = contact_many_with_overrides(
+            (
+                (
+                    "primary-listwise",
+                    primary_instruction,
+                    cards,
+                    render_speech_native_keys(cards, "K1"),
+                    {
+                        "response_format": _key_choice_response_format(
+                            name="speech_native_primary_key_choice",
+                            key_ids=tuple(card.key_id for card in cards),
+                        )
+                    },
+                ),
+                (
+                    f"speech-retrieve-top-{top_k}",
+                    retrieval_instruction,
+                    cards,
+                    render_speech_native_keys(cards, "K1"),
+                    {
+                        "response_format": _top_key_choice_response_format(
+                            key_ids=tuple(card.key_id for card in cards),
+                            top_k=top_k,
+                        )
+                    },
+                ),
+            )
+        )
+        primary_key_id = _selected_key_id(initial_responses[0], allowed)
+        initial_top_ids = _selected_top_keys(initial_responses[1], allowed, top_k)
+        initial_steps: tuple[Mapping[str, object], ...] = (
+            {
+                "action_id": "match:speech-only-primary",
+                "key_id": primary_key_id,
+                "top_key_ids": [],
+                "calls": 1,
+                "parse_failure": primary_key_id is None,
+            },
+            {
+                "action_id": "retrieve:speech-only",
+                "key_id": initial_top_ids[0] if initial_top_ids else None,
+                "top_key_ids": list(initial_top_ids),
+                "calls": 1,
+                "parse_failure": len(initial_top_ids) != top_k,
+            },
+        )
+        if primary_key_id is None or len(initial_top_ids) != top_k:
+            return finish(
+                primary_key_id,
+                top_ids=initial_top_ids,
+                agent_policy_id=agent_policy_id,
+                agent_actions=(
+                    "match:speech-only-primary",
+                    "retrieve:speech-only",
+                    "backtrack:invalid-initial-pairwise-support",
+                ),
+                agent_escalated=True,
+                agent_vote_key_ids=(primary_key_id,),
+                agent_steps=initial_steps,
+                decision_agent_aggregator_id=agent_aggregator_id,
+            )
+
+        challengers = tuple(
+            key_id for key_id in initial_top_ids if key_id != primary_key_id
+        )
+        pairwise_requests: list[
+            tuple[
+                str,
+                str,
+                Sequence[KeyCardV1],
+                str | None,
+                Mapping[str, object] | None,
+            ]
+        ] = []
+        pairwise_owners: list[tuple[int, str, str]] = []
+        for rank, challenger_key_id in enumerate(challengers, start=1):
+            pair_ids = (primary_key_id, challenger_key_id)
+            response_format = _key_choice_response_format(
+                name="speech_native_pairwise_key_choice",
+                key_ids=pair_ids,
+            )
+            for representation_id in ("K1", "K2"):
+                for order_id, ordered_ids in (
+                    ("ab", pair_ids),
+                    ("ba", tuple(reversed(pair_ids))),
+                ):
+                    ordered_cards = tuple(by_key[key_id] for key_id in ordered_ids)
+                    pairwise_requests.append(
+                        (
+                            f"pairwise-{representation_id}-rank-{rank}-{order_id}",
+                            "Choose which of exactly two opaque keys better matches the "
+                            "spoken command. Compare the speech signal directly against both "
+                            "cards. Treat card order as irrelevant and return only key_id.",
+                            ordered_cards,
+                            render_speech_native_keys(
+                                ordered_cards, representation_id
+                            ),
+                            {"response_format": response_format},
+                        )
+                    )
+                    pairwise_owners.append((rank, representation_id, order_id))
+        pairwise_responses = contact_many_with_overrides(tuple(pairwise_requests))
+        parsed_votes: dict[tuple[int, str, str], str | None] = {}
+        for owner, response in zip(
+            pairwise_owners, pairwise_responses, strict=True
+        ):
+            challenger_key_id = challengers[owner[0] - 1]
+            parsed_votes[owner] = _selected_key_id(
+                response, {primary_key_id, challenger_key_id}
+            )
+
+        comparison_steps: list[Mapping[str, object]] = []
+        support_votes: list[str | None] = []
+        for rank, challenger_key_id in enumerate(challengers, start=1):
+            k1_ab = parsed_votes[(rank, "K1", "ab")]
+            k1_ba = parsed_votes[(rank, "K1", "ba")]
+            k2_ab = parsed_votes[(rank, "K2", "ab")]
+            k2_ba = parsed_votes[(rank, "K2", "ba")]
+            k1_stable = (
+                challenger_key_id
+                if k1_ab == k1_ba == challenger_key_id
+                else None
+            )
+            k2_stable = (
+                challenger_key_id
+                if k2_ab == k2_ba == challenger_key_id
+                else None
+            )
+            support_votes.extend((k1_stable, k2_stable))
+            comparison_steps.append(
+                {
+                    "action_id": f"compare:pairwise-boundary-rank-{rank}",
+                    "rank": rank,
+                    "primary_key_id": primary_key_id,
+                    "challenger_key_id": challenger_key_id,
+                    "k1_ab_key_id": k1_ab,
+                    "k1_ba_key_id": k1_ba,
+                    "k1_stable_key_id": k1_stable,
+                    "k2_ab_key_id": k2_ab,
+                    "k2_ba_key_id": k2_ba,
+                    "k2_stable_key_id": k2_stable,
+                    "calls": 4,
+                    "parse_failure": any(
+                        vote is None for vote in (k1_ab, k1_ba, k2_ab, k2_ba)
+                    ),
+                    "causal_parent_ids": [
+                        "match:speech-only-primary",
+                        "retrieve:speech-only",
+                    ],
+                }
+            )
+        return finish(
+            primary_key_id,
+            top_ids=initial_top_ids,
+            agent_policy_id=agent_policy_id,
+            agent_actions=(
+                "match:speech-only-primary",
+                "retrieve:speech-only",
+                *(
+                    f"compare:pairwise-boundary-rank-{rank}"
+                    for rank in range(1, len(challengers) + 1)
+                ),
+                "select:retain-primary-for-support",
+            ),
+            agent_escalated=True,
+            agent_vote_key_ids=(primary_key_id, *support_votes),
+            agent_steps=initial_steps + tuple(comparison_steps),
+            decision_agent_aggregator_id=agent_aggregator_id,
+        )
 
     if matcher_policy_id == "M7":
         state_policy_ids = (
@@ -1967,6 +2216,7 @@ def run_speech_native_match_tasks(
         if dispatch_granularity == "contact"
         else None
     )
+    contact_backlog = BoundedSemaphore(queue_depth)
 
     class ContactDispatchClient:
         supports_parallel_branches = True
@@ -1996,7 +2246,14 @@ def run_speech_native_match_tasks(
                         set_current_trace_buffer(None)
 
             context = contextvars.copy_context()
-            return contact_pool.submit(context.run, invoke)
+            contact_backlog.acquire()
+            try:
+                future = contact_pool.submit(context.run, invoke)
+            except BaseException:
+                contact_backlog.release()
+                raise
+            future.add_done_callback(lambda _future: contact_backlog.release())
+            return future
 
         def complete(self, messages, **kwargs):
             return self._submit(messages, kwargs).result()
@@ -2602,14 +2859,16 @@ def run_speech_native_match_tasks(
     buffered: list[_BufferedSpeechNativeOutcome | None] = [None] * len(ordered_tasks)
     next_index = 0
     futures: dict[Future[_BufferedSpeechNativeOutcome], int] = {}
+    query_admission_depth = min(
+        slot_count if dispatch_granularity == "task" else slot_count * 4,
+        queue_depth,
+        len(ordered_tasks),
+    )
     with ThreadPoolExecutor(
-        max_workers=min(
-            slot_count if dispatch_granularity == "task" else queue_depth,
-            len(ordered_tasks),
-        ),
+        max_workers=query_admission_depth,
         thread_name_prefix="saea-speech-native",
     ) as pool:
-        while next_index < min(queue_depth, len(ordered_tasks)):
+        while next_index < query_admission_depth:
             futures[pool.submit(one, ordered_tasks[next_index])] = next_index
             next_index += 1
         while futures:
@@ -2617,7 +2876,10 @@ def run_speech_native_match_tasks(
             for future in done:
                 index = futures.pop(future)
                 buffered[index] = future.result()
-            while next_index < len(ordered_tasks) and len(futures) < queue_depth:
+            while (
+                next_index < len(ordered_tasks)
+                and len(futures) < query_admission_depth
+            ):
                 futures[pool.submit(one, ordered_tasks[next_index])] = next_index
                 next_index += 1
     if contact_pool is not None:

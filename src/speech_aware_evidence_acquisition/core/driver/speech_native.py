@@ -102,6 +102,8 @@ _M7_SUCCESS_ACTIONS = (
     *tuple(f"explore:{policy_id}" for policy_id in _M7_STATE_POLICY_IDS),
     "select:retain-primary-for-support",
 )
+_M8_POLICY_ID = "speech-conditioned-pairwise-boundary-support-v1"
+_M8_AGGREGATOR_ID = "pairwise-boundary-primary-control-v1"
 _SPEAKER_FOLD_POLICY_ID = "speaker-grouped-3fold-sha256-load-balanced-v1"
 _CONTEXTUAL_ACTION_IDS = (
     "primary",
@@ -1673,6 +1675,351 @@ def _evaluate_m7_multistate_action_support(
     }
 
 
+def _m8_success_actions(challenger_count: int) -> tuple[str, ...]:
+    return (
+        "match:speech-only-primary",
+        "retrieve:speech-only",
+        *tuple(
+            f"compare:pairwise-boundary-rank-{rank}"
+            for rank in range(1, challenger_count + 1)
+        ),
+        "select:retain-primary-for-support",
+    )
+
+
+def _parse_m8_pairwise_trajectory(
+    *,
+    row: Mapping[str, object],
+    sample_id: str,
+    speaker_id: str,
+    gold_key_id: str,
+    initial_top_ids: tuple[str, ...],
+    top_k: int,
+    visible_card_by_key: Mapping[str, KeyCardV1],
+) -> dict[str, object]:
+    """Validate one complete order-controlled K1/K2 pairwise trajectory."""
+
+    primary_key_id = row.get("key_id")
+    challengers = tuple(
+        key_id for key_id in initial_top_ids if key_id != primary_key_id
+    )
+    votes = row.get("agent_vote_key_ids")
+    steps = row.get("agent_steps")
+    actions = row.get("agent_actions")
+    if (
+        row.get("agent_policy_id") != _M8_POLICY_ID
+        or row.get("agent_aggregator_id") != _M8_AGGREGATOR_ID
+        or row.get("agent_escalated") is not True
+        or not isinstance(actions, list)
+        or tuple(actions) != _m8_success_actions(len(challengers))
+    ):
+        raise SpeechNativeProfileError("M8 pairwise-support identity is malformed")
+    if (
+        not isinstance(primary_key_id, str)
+        or primary_key_id not in visible_card_by_key
+        or not 1 <= len(challengers) <= top_k
+        or not isinstance(votes, list)
+        or len(votes) != 1 + 2 * len(challengers)
+        or votes[0] != primary_key_id
+        or not all(
+            vote is None
+            or isinstance(vote, str) and vote in visible_card_by_key
+            for vote in votes
+        )
+        or not isinstance(steps, list)
+        or len(steps) != 2 + len(challengers)
+        or row.get("verifier_scores") != {}
+    ):
+        raise SpeechNativeProfileError("M8 pairwise-support trajectory is malformed")
+    base_fields = {
+        "action_id",
+        "key_id",
+        "top_key_ids",
+        "calls",
+        "parse_failure",
+    }
+    if (
+        not isinstance(steps[0], Mapping)
+        or set(steps[0]) != base_fields
+        or steps[0].get("action_id") != "match:speech-only-primary"
+        or steps[0].get("key_id") != primary_key_id
+        or steps[0].get("top_key_ids") != []
+        or steps[0].get("calls") != 1
+        or steps[0].get("parse_failure") is not False
+        or not isinstance(steps[1], Mapping)
+        or set(steps[1]) != base_fields
+        or steps[1].get("action_id") != "retrieve:speech-only"
+        or steps[1].get("key_id") != initial_top_ids[0]
+        or tuple(steps[1].get("top_key_ids", [])) != initial_top_ids
+        or steps[1].get("calls") != 1
+        or steps[1].get("parse_failure") is not False
+    ):
+        raise SpeechNativeProfileError("M8 initial action-support stages are malformed")
+
+    comparison_fields = {
+        "action_id",
+        "rank",
+        "primary_key_id",
+        "challenger_key_id",
+        "k1_ab_key_id",
+        "k1_ba_key_id",
+        "k1_stable_key_id",
+        "k2_ab_key_id",
+        "k2_ba_key_id",
+        "k2_stable_key_id",
+        "calls",
+        "parse_failure",
+        "causal_parent_ids",
+    }
+    comparisons: list[dict[str, object]] = []
+    for rank, challenger_key_id in enumerate(challengers, start=1):
+        step = steps[rank + 1]
+        pair = {primary_key_id, challenger_key_id}
+        if (
+            not isinstance(step, Mapping)
+            or set(step) != comparison_fields
+            or step.get("action_id") != f"compare:pairwise-boundary-rank-{rank}"
+            or step.get("rank") != rank
+            or step.get("primary_key_id") != primary_key_id
+            or step.get("challenger_key_id") != challenger_key_id
+            or step.get("calls") != 4
+            or step.get("parse_failure") is not False
+            or step.get("causal_parent_ids")
+            != ["match:speech-only-primary", "retrieve:speech-only"]
+        ):
+            raise SpeechNativeProfileError("M8 pairwise comparison identity is malformed")
+        raw_pair_votes = tuple(
+            step.get(field)
+            for field in (
+                "k1_ab_key_id",
+                "k1_ba_key_id",
+                "k2_ab_key_id",
+                "k2_ba_key_id",
+            )
+        )
+        if not all(vote in pair for vote in raw_pair_votes):
+            raise SpeechNativeProfileError("M8 pairwise vote is outside its key pair")
+        k1_stable = (
+            challenger_key_id
+            if raw_pair_votes[0] == raw_pair_votes[1] == challenger_key_id
+            else None
+        )
+        k2_stable = (
+            challenger_key_id
+            if raw_pair_votes[2] == raw_pair_votes[3] == challenger_key_id
+            else None
+        )
+        if (
+            step.get("k1_stable_key_id") != k1_stable
+            or step.get("k2_stable_key_id") != k2_stable
+            or votes[1 + 2 * (rank - 1)] != k1_stable
+            or votes[2 + 2 * (rank - 1)] != k2_stable
+        ):
+            raise SpeechNativeProfileError("M8 stable challenger support is inconsistent")
+        comparisons.append(
+            {
+                "rank": rank,
+                "challenger_key_id": challenger_key_id,
+                "k1_ab_key_id": raw_pair_votes[0],
+                "k1_ba_key_id": raw_pair_votes[1],
+                "k1_stable_key_id": k1_stable,
+                "k2_ab_key_id": raw_pair_votes[2],
+                "k2_ba_key_id": raw_pair_votes[3],
+                "k2_stable_key_id": k2_stable,
+            }
+        )
+    expected_calls = 2 + 4 * len(challengers)
+    if row.get("calls") != expected_calls or expected_calls not in {10, 14}:
+        raise SpeechNativeProfileError("M8 contact accounting is malformed")
+    return {
+        "sample_id": sample_id,
+        "speaker_id": speaker_id,
+        "gold_key_id": gold_key_id,
+        "primary_key_id": primary_key_id,
+        "initial_top_key_ids": initial_top_ids,
+        "comparisons": tuple(comparisons),
+        "total_calls": expected_calls,
+    }
+
+
+def _evaluate_m8_pairwise_action_support(
+    trajectories: Sequence[Mapping[str, object]],
+) -> dict[str, object]:
+    """Read M8 support and apply the preregistered label-blind controller."""
+
+    frozen = tuple(trajectories)
+    if not frozen:
+        raise SpeechNativeProfileError("M8 pairwise-support read requires trajectories")
+    fold_trajectories = tuple(
+        {
+            "speaker_id": str(item["speaker_id"]),
+            "gold_key_id": str(item["gold_key_id"]),
+            "primary_key_id": str(item["primary_key_id"]),
+            "canonical_key_id": None,
+            "reverse_key_id": None,
+            "rotate_key_id": None,
+        }
+        for item in frozen
+    )
+    validated_folds = _validate_training_free_trajectories(fold_trajectories)
+    assignments = _speaker_grouped_fold_assignments(validated_folds)
+    primary_correct = sum(
+        item["primary_key_id"] == item["gold_key_id"] for item in frozen
+    )
+
+    representation_metrics: dict[str, dict[str, object]] = {}
+    representation_predictions: dict[str, list[str]] = {}
+    for representation_id in ("K1", "K2"):
+        field = f"{representation_id.casefold()}_stable_key_id"
+        predictions: list[str] = []
+        action_query_count = 0
+        helpful = harmful = 0
+        for item in frozen:
+            primary = str(item["primary_key_id"])
+            gold = str(item["gold_key_id"])
+            comparisons = item["comparisons"]
+            assert isinstance(comparisons, tuple)
+            selected = next(
+                (
+                    str(comparison[field])
+                    for comparison in comparisons
+                    if comparison[field] is not None
+                ),
+                primary,
+            )
+            predictions.append(selected)
+            action_query_count += int(selected != primary)
+            helpful += int(primary != gold and selected == gold)
+            harmful += int(primary == gold and selected != gold)
+        representation_predictions[representation_id] = predictions
+        correct = sum(
+            prediction == item["gold_key_id"]
+            for prediction, item in zip(predictions, frozen, strict=True)
+        )
+        representation_metrics[representation_id] = {
+            "selector_policy_id": "first-ranked-stable-challenger-v1",
+            "correct": correct,
+            "accuracy": correct / len(frozen),
+            "stable_non_primary_query_count": action_query_count,
+            "helpful_action_count": helpful,
+            "harmful_action_count": harmful,
+        }
+
+    oracle_correct = 0
+    controller_predictions: list[str] = []
+    controller_reasons: Counter[str] = Counter()
+    for item in frozen:
+        primary = str(item["primary_key_id"])
+        gold = str(item["gold_key_id"])
+        comparisons = item["comparisons"]
+        assert isinstance(comparisons, tuple)
+        supported = {
+            str(comparison[field])
+            for comparison in comparisons
+            for field in ("k1_stable_key_id", "k2_stable_key_id")
+            if comparison[field] is not None
+        }
+        oracle_correct += int(primary == gold or gold in supported)
+        rank_one = comparisons[0]
+        challenger = str(rank_one["challenger_key_id"])
+        all_four = all(
+            rank_one[field] == challenger
+            for field in (
+                "k1_ab_key_id",
+                "k1_ba_key_id",
+                "k2_ab_key_id",
+                "k2_ba_key_id",
+            )
+        )
+        selected = challenger if all_four else primary
+        controller_predictions.append(selected)
+        controller_reasons[
+            "select:rank-one-four-way-consensus"
+            if all_four
+            else "retain:no-rank-one-four-way-consensus"
+        ] += 1
+
+    controller_correct = sum(
+        prediction == item["gold_key_id"]
+        for prediction, item in zip(controller_predictions, frozen, strict=True)
+    )
+    wrong_to_correct = sum(
+        item["primary_key_id"] != item["gold_key_id"]
+        and prediction == item["gold_key_id"]
+        for prediction, item in zip(controller_predictions, frozen, strict=True)
+    )
+    correct_to_wrong = sum(
+        item["primary_key_id"] == item["gold_key_id"]
+        and prediction != item["gold_key_id"]
+        for prediction, item in zip(controller_predictions, frozen, strict=True)
+    )
+    action_count = sum(
+        prediction != item["primary_key_id"]
+        for prediction, item in zip(controller_predictions, frozen, strict=True)
+    )
+    folds = _speaker_fold_metrics(
+        validated_folds,
+        assignments=assignments,
+        predictions=controller_predictions,
+    )
+    positive_folds = sum(int(fold["correct_delta_vs_primary"] > 0) for fold in folds)
+    worst_fold = min(int(fold["correct_delta_vs_primary"]) for fold in folds)
+    action_rate = action_count / len(frozen)
+    k1 = representation_metrics["K1"]
+    k2 = representation_metrics["K2"]
+    support_checks = {
+        "k2_stable_non_primary_query_count_at_least_24": (
+            int(k2["stable_non_primary_query_count"]) >= 24
+        ),
+        "oracle_gain_vs_primary_at_least_7": oracle_correct - primary_correct >= 7,
+        "k2_helpful_at_least_k1_plus_2": (
+            int(k2["helpful_action_count"])
+            >= int(k1["helpful_action_count"]) + 2
+        ),
+        "k2_harmful_no_more_than_k1": (
+            int(k2["harmful_action_count"]) <= int(k1["harmful_action_count"])
+        ),
+    }
+    promotion_checks = {
+        "net_gain_at_least_3": controller_correct - primary_correct >= 3,
+        "positive_fold_count_at_least_2": positive_folds >= 2,
+        "worst_fold_delta_nonnegative": worst_fold >= 0,
+        "correct_to_wrong_zero": correct_to_wrong == 0,
+        "action_rate_between_0_05_and_0_50": 0.05 <= action_rate <= 0.50,
+    }
+    return {
+        "policy_id": _M8_POLICY_ID,
+        "aggregator_id": _M8_AGGREGATOR_ID,
+        "primary_correct": primary_correct,
+        "primary_accuracy": primary_correct / len(frozen),
+        "final_minus_primary_correct": 0,
+        "representations": representation_metrics,
+        "oracle_correct": oracle_correct,
+        "oracle_gain_vs_primary": oracle_correct - primary_correct,
+        "oracle_status": "diagnostic-only-not-an-admissible-controller",
+        "support_checks": support_checks,
+        "support_gate_passed": all(support_checks.values()),
+        "consistency_controller": {
+            "policy_id": "rank-one-k1-k2-ab-ba-consensus-v1",
+            "label_blind_at_action_time": True,
+            "correct": controller_correct,
+            "accuracy": controller_correct / len(frozen),
+            "correct_delta_vs_primary": controller_correct - primary_correct,
+            "wrong_to_correct_vs_primary": wrong_to_correct,
+            "correct_to_wrong_vs_primary": correct_to_wrong,
+            "action_count": action_count,
+            "action_rate": action_rate,
+            "action_reasons": dict(sorted(controller_reasons.items())),
+            "speaker_fold_policy_id": _SPEAKER_FOLD_POLICY_ID,
+            "speaker_folds_vs_primary": folds,
+            "positive_delta_fold_count": positive_folds,
+            "worst_fold_delta_vs_primary": worst_fold,
+            "promotion_checks": promotion_checks,
+            "qualified": all(promotion_checks.values()),
+        },
+    }
+
+
 def _require_string(values: Mapping[str, object], key: str) -> str:
     value = values.get(key)
     if not isinstance(value, str) or not value:
@@ -1749,11 +2096,11 @@ def read_speech_native_predictions(
     binding_sha256: str,
     split_name: str,
 ) -> dict[str, object]:
-    """Score prediction-only flight artifacts after every server has stopped.
+    """Score prediction-only flights after each attempt is finalized.
 
     Gold labels enter only this model-free reader. Flight receipts and
-    decision rows are hash-verified before scoring; no runtime prompt or
-    trace is modified.
+    decision rows are hash-verified before scoring; the resident frozen-core
+    service may remain online and is neither contacted nor modified.
     """
 
     if not attempt_dirs:
@@ -1819,7 +2166,7 @@ def read_speech_native_predictions(
         ):
             raise SpeechNativeProfileError("flight cell identity is malformed")
         cell_id = f"{key_representation_id}-{matcher_policy_id}"
-        if matcher_policy_id in {"M3", "M5", "M6", "M7"}:
+        if matcher_policy_id in {"M3", "M5", "M6", "M7", "M8"}:
             top_k = profile.get("top_k")
             if isinstance(top_k, bool) or not isinstance(top_k, int) or top_k <= 0:
                 raise SpeechNativeProfileError(
@@ -1832,6 +2179,7 @@ def read_speech_native_predictions(
             prompt_suffix = {
                 "speech-native-json-copy-v2": "",
                 "speech-native-json-copy-v3": "-v3",
+                "speech-native-json-copy-v4": "-v4",
             }.get(prompt_policy_id)
             if prompt_suffix is None:
                 raise SpeechNativeProfileError(
@@ -1900,6 +2248,16 @@ def read_speech_native_predictions(
                     "M7 flight receipt has an unknown multistate identity"
                 )
             cell_id += "-multistate-support-v1"
+        elif matcher_policy_id == "M8":
+            if (
+                profile_agent_policy_id != _M8_POLICY_ID
+                or agent_aggregator_id != _M8_AGGREGATOR_ID
+                or key_representation_id != "K1"
+            ):
+                raise SpeechNativeProfileError(
+                    "M8 flight receipt has an unknown pairwise identity"
+                )
+            cell_id += "-pairwise-boundary-support-v1"
         order_ids = profile.get("key_order_ids", ["canonical"])
         if (
             not isinstance(order_ids, list)
@@ -1989,6 +2347,7 @@ def read_speech_native_predictions(
         grounded_final_predictions: list[str | None] = []
         grounded_semantic_trajectories: list[dict[str, object]] = []
         multistate_trajectories: list[dict[str, object]] = []
+        pairwise_trajectories: list[dict[str, object]] = []
         for row in rows:
             if row.get("schema") != "saea-speech-native-decision-v1":
                 raise SpeechNativeProfileError("decision schema mismatch")
@@ -2056,7 +2415,7 @@ def read_speech_native_predictions(
                 or len(set(raw_top_key_ids)) != len(raw_top_key_ids)
             ):
                 raise SpeechNativeProfileError("decision top_key_ids are malformed")
-            if matcher_policy_id in {"M3", "M5", "M6", "M7"}:
+            if matcher_policy_id in {"M3", "M5", "M6", "M7", "M8"}:
                 assert isinstance(top_k, int)
                 if len(raw_top_key_ids) > top_k:
                     raise SpeechNativeProfileError(
@@ -2551,6 +2910,33 @@ def read_speech_native_predictions(
                 raw_actions = row.get("agent_actions")
                 assert isinstance(raw_actions, list)
                 agent_action_counts.update(raw_actions)
+            elif matcher_policy_id == "M8":
+                assert isinstance(top_k, int)
+                trajectory = _parse_m8_pairwise_trajectory(
+                    row=row,
+                    sample_id=sample_id,
+                    speaker_id=speaker_by_sample[sample_id],
+                    gold_key_id=key_by_label[gold[sample_id]],
+                    initial_top_ids=tuple(raw_top_key_ids),
+                    top_k=top_k,
+                    visible_card_by_key=visible_card_by_key,
+                )
+                pairwise_trajectories.append(trajectory)
+                agent_primary_correct_count += int(
+                    trajectory["primary_key_id"] == trajectory["gold_key_id"]
+                )
+                comparisons = trajectory["comparisons"]
+                assert isinstance(comparisons, tuple)
+                agent_action_sensitive_count += int(
+                    any(
+                        comparison["k1_stable_key_id"] is not None
+                        or comparison["k2_stable_key_id"] is not None
+                        for comparison in comparisons
+                    )
+                )
+                raw_actions = row.get("agent_actions")
+                assert isinstance(raw_actions, list)
+                agent_action_counts.update(raw_actions)
         if seen != set(gold):
             raise SpeechNativeProfileError("decision sample set does not equal the frozen split")
         if (
@@ -2582,6 +2968,15 @@ def read_speech_native_predictions(
             multistate_metrics = _evaluate_m7_multistate_action_support(
                 multistate_trajectories
             )
+        pairwise_metrics: dict[str, object] | None = None
+        if matcher_policy_id == "M8":
+            if len(pairwise_trajectories) != len(gold):
+                raise SpeechNativeProfileError(
+                    "M8 pairwise-support trajectory count is incomplete"
+                )
+            pairwise_metrics = _evaluate_m8_pairwise_action_support(
+                pairwise_trajectories
+            )
         aggregates.append(
             {
                 "cell_id": cell_id,
@@ -2591,12 +2986,12 @@ def read_speech_native_predictions(
                 "parse_failure_count": parse_failures,
                 "top_k_reachable_count": (
                     top_k_reachable_count
-                    if matcher_policy_id in {"M3", "M5", "M6", "M7"}
+                    if matcher_policy_id in {"M3", "M5", "M6", "M7", "M8"}
                     else None
                 ),
                 "top_k_reachability": (
                     top_k_reachable_count / len(gold)
-                    if matcher_policy_id in {"M3", "M5", "M6", "M7"}
+                    if matcher_policy_id in {"M3", "M5", "M6", "M7", "M8"}
                     else None
                 ),
                 "agent_loop_metrics": (
@@ -2761,7 +3156,11 @@ def read_speech_native_predictions(
                         else (
                             multistate_metrics
                             if matcher_policy_id == "M7"
-                            else None
+                            else (
+                                pairwise_metrics
+                                if matcher_policy_id == "M8"
+                                else None
+                            )
                         )
                     )
                 ),
@@ -3904,6 +4303,385 @@ def _audit_m7_multistate_action_support(
     }
 
 
+def _audit_m8_pairwise_action_support(
+    *,
+    attempt_dir: Path,
+    flight: Mapping[str, object],
+    attempt_record: Mapping[str, object],
+    attempt_record_sha256: str,
+    flight_receipt_sha256: str,
+    decisions_sha256: str,
+    trace_sha256: str,
+) -> dict[str, object]:
+    """Admit a complete C108 M8 trajectory without opening split labels."""
+
+    run_id = str(flight["run_id"])
+    attempt_id = str(flight["attempt_id"])
+    profile = flight.get("profile")
+    decisions_ref = flight.get("decisions")
+    if (
+        attempt_record.get("run_id") != run_id
+        or attempt_record.get("attempt_id") != attempt_id
+        or attempt_record.get("state") != "FINALIZED"
+    ):
+        raise SpeechNativeProfileError(
+            "M8 action audit requires a finalized durable attempt"
+        )
+    if (
+        not isinstance(profile, Mapping)
+        or profile.get("matcher_policy_id") != "M8"
+        or profile.get("key_representation_id") != "K1"
+        or profile.get("agent_policy_id") != _M8_POLICY_ID
+        or profile.get("agent_aggregator_id") != _M8_AGGREGATOR_ID
+        or profile.get("mechanism_control_id") != "matched"
+        or profile.get("top_k") != 3
+        or profile.get("task_count") != 108
+        or not isinstance(decisions_ref, Mapping)
+        or decisions_ref.get("contains_gold_labels") is not False
+    ):
+        raise SpeechNativeProfileError(
+            "M8 action audit requires the finalized matched C108 pairwise cell"
+        )
+    decisions_name = decisions_ref.get("path")
+    if (
+        not isinstance(decisions_name, str)
+        or Path(decisions_name).name != decisions_name
+        or _SHA256.fullmatch(decisions_sha256) is None
+        or decisions_ref.get("sha256") != decisions_sha256
+    ):
+        raise SpeechNativeProfileError("M8 action-audit decisions reference is malformed")
+    decisions_path = attempt_dir / decisions_name
+    if not decisions_path.is_file() or _sha256_file(decisions_path) != decisions_sha256:
+        raise SpeechNativeProfileError("M8 action-audit decisions SHA-256 mismatch")
+    try:
+        rows = tuple(
+            json.loads(line)
+            for line in decisions_path.read_text(encoding="utf-8").splitlines()
+            if line.strip()
+        )
+    except (OSError, UnicodeError, json.JSONDecodeError) as error:
+        raise SpeechNativeProfileError(
+            f"cannot read M8 action-audit decisions: {error}"
+        ) from error
+    if len(rows) != 108 or decisions_ref.get("count") != 108:
+        raise SpeechNativeProfileError("M8 action-audit decision count is inconsistent")
+
+    expected_packet_sha256: dict[str, str] = {}
+    calls_distribution: Counter[int] = Counter()
+    contact_count = 0
+    action_sensitive_count = 0
+    k1_stable_query_count = 0
+    k2_stable_query_count = 0
+    four_way_consensus_count = 0
+    k1_order_disagreement_count = 0
+    k2_order_disagreement_count = 0
+    comparison_count = 0
+    for row in rows:
+        if not isinstance(row, Mapping):
+            raise SpeechNativeProfileError("M8 action-audit decision row is not an object")
+        sample_id = row.get("sample_id")
+        query_sample_id = row.get("query_sample_id")
+        packet_sha256 = row.get("speech_packet_sha256")
+        primary_key_id = row.get("key_id")
+        initial_top_ids = row.get("top_key_ids")
+        steps = row.get("agent_steps")
+        votes = row.get("agent_vote_key_ids")
+        actions = row.get("agent_actions")
+        if (
+            row.get("schema") != "saea-speech-native-decision-v1"
+            or not isinstance(sample_id, str)
+            or not sample_id
+            or sample_id in expected_packet_sha256
+            or query_sample_id != sample_id
+            or not isinstance(packet_sha256, str)
+            or _SHA256.fullmatch(packet_sha256) is None
+            or row.get("mechanism_control_id") != "matched"
+            or row.get("matcher_policy_id") != "M8"
+            or row.get("key_representation_id") != "K1"
+            or row.get("parse_failure") is not False
+            or row.get("agent_policy_id") != _M8_POLICY_ID
+            or row.get("agent_aggregator_id") != _M8_AGGREGATOR_ID
+            or row.get("agent_escalated") is not True
+            or primary_key_id not in _SPEECH_NATIVE_KEY_IDS
+            or row.get("verifier_scores") != {}
+            or not isinstance(initial_top_ids, list)
+            or len(initial_top_ids) != 3
+            or len(set(initial_top_ids)) != 3
+            or not all(key_id in _SPEECH_NATIVE_KEY_IDS for key_id in initial_top_ids)
+            or not isinstance(steps, list)
+            or not isinstance(votes, list)
+            or not isinstance(actions, list)
+        ):
+            raise SpeechNativeProfileError("M8 action-audit decision identity is malformed")
+        challengers = tuple(
+            key_id for key_id in initial_top_ids if key_id != primary_key_id
+        )
+        if (
+            not 2 <= len(challengers) <= 3
+            or tuple(actions) != _m8_success_actions(len(challengers))
+            or len(steps) != 2 + len(challengers)
+            or len(votes) != 1 + 2 * len(challengers)
+            or votes[0] != primary_key_id
+            or row.get("predicted_value_label") is None
+        ):
+            raise SpeechNativeProfileError("M8 action-audit trajectory is malformed")
+        base_fields = {
+            "action_id",
+            "key_id",
+            "top_key_ids",
+            "calls",
+            "parse_failure",
+        }
+        if (
+            not isinstance(steps[0], Mapping)
+            or set(steps[0]) != base_fields
+            or steps[0].get("action_id") != "match:speech-only-primary"
+            or steps[0].get("key_id") != primary_key_id
+            or steps[0].get("top_key_ids") != []
+            or steps[0].get("calls") != 1
+            or steps[0].get("parse_failure") is not False
+            or not isinstance(steps[1], Mapping)
+            or set(steps[1]) != base_fields
+            or steps[1].get("action_id") != "retrieve:speech-only"
+            or steps[1].get("key_id") != initial_top_ids[0]
+            or steps[1].get("top_key_ids") != initial_top_ids
+            or steps[1].get("calls") != 1
+            or steps[1].get("parse_failure") is not False
+        ):
+            raise SpeechNativeProfileError("M8 action-audit initial stages are malformed")
+        comparison_fields = {
+            "action_id",
+            "rank",
+            "primary_key_id",
+            "challenger_key_id",
+            "k1_ab_key_id",
+            "k1_ba_key_id",
+            "k1_stable_key_id",
+            "k2_ab_key_id",
+            "k2_ba_key_id",
+            "k2_stable_key_id",
+            "calls",
+            "parse_failure",
+            "causal_parent_ids",
+        }
+        row_has_action = False
+        row_has_k1 = False
+        row_has_k2 = False
+        for rank, challenger_key_id in enumerate(challengers, start=1):
+            step = steps[rank + 1]
+            pair = {primary_key_id, challenger_key_id}
+            if (
+                not isinstance(step, Mapping)
+                or set(step) != comparison_fields
+                or step.get("action_id")
+                != f"compare:pairwise-boundary-rank-{rank}"
+                or step.get("rank") != rank
+                or step.get("primary_key_id") != primary_key_id
+                or step.get("challenger_key_id") != challenger_key_id
+                or step.get("calls") != 4
+                or step.get("parse_failure") is not False
+                or step.get("causal_parent_ids")
+                != ["match:speech-only-primary", "retrieve:speech-only"]
+            ):
+                raise SpeechNativeProfileError(
+                    "M8 action-audit pairwise identity is malformed"
+                )
+            pair_votes = tuple(
+                step.get(field)
+                for field in (
+                    "k1_ab_key_id",
+                    "k1_ba_key_id",
+                    "k2_ab_key_id",
+                    "k2_ba_key_id",
+                )
+            )
+            if not all(vote in pair for vote in pair_votes):
+                raise SpeechNativeProfileError(
+                    "M8 action-audit pairwise vote is unbound"
+                )
+            k1_stable = (
+                challenger_key_id
+                if pair_votes[0] == pair_votes[1] == challenger_key_id
+                else None
+            )
+            k2_stable = (
+                challenger_key_id
+                if pair_votes[2] == pair_votes[3] == challenger_key_id
+                else None
+            )
+            if (
+                step.get("k1_stable_key_id") != k1_stable
+                or step.get("k2_stable_key_id") != k2_stable
+                or votes[1 + 2 * (rank - 1)] != k1_stable
+                or votes[2 + 2 * (rank - 1)] != k2_stable
+            ):
+                raise SpeechNativeProfileError(
+                    "M8 action-audit stable support is inconsistent"
+                )
+            row_has_k1 = row_has_k1 or k1_stable is not None
+            row_has_k2 = row_has_k2 or k2_stable is not None
+            row_has_action = row_has_action or k1_stable is not None or k2_stable is not None
+            if rank == 1:
+                four_way_consensus_count += int(
+                    all(vote == challenger_key_id for vote in pair_votes)
+                )
+            k1_order_disagreement_count += int(pair_votes[0] != pair_votes[1])
+            k2_order_disagreement_count += int(pair_votes[2] != pair_votes[3])
+            comparison_count += 1
+        calls = row.get("calls")
+        expected_calls = 2 + 4 * len(challengers)
+        response_hashes = row.get("response_text_sha256")
+        if (
+            calls != expected_calls
+            or expected_calls not in {10, 14}
+            or not isinstance(response_hashes, list)
+            or len(response_hashes) != expected_calls
+            or not all(
+                isinstance(value, str) and _SHA256.fullmatch(value) is not None
+                for value in response_hashes
+            )
+        ):
+            raise SpeechNativeProfileError("M8 action-audit contact accounting is malformed")
+        expected_packet_sha256[sample_id] = packet_sha256
+        calls_distribution[expected_calls] += 1
+        contact_count += expected_calls
+        action_sensitive_count += int(row_has_action)
+        k1_stable_query_count += int(row_has_k1)
+        k2_stable_query_count += int(row_has_k2)
+
+    actual_usage = attempt_record.get("actual")
+    close = flight.get("close")
+    cost = close.get("cost") if isinstance(close, Mapping) else None
+    if (
+        profile.get("actual_contact_count") != contact_count
+        or profile.get("planned_contact_ceiling") != 1512
+        or not isinstance(actual_usage, Mapping)
+        or actual_usage.get("calls") != contact_count
+        or not isinstance(cost, Mapping)
+        or cost.get("calls_used") != contact_count
+    ):
+        raise SpeechNativeProfileError("M8 action-audit durable accounting is inconsistent")
+
+    trace_path = attempt_dir / f"{run_id}.trace.jsonl"
+    if (
+        _SHA256.fullmatch(trace_sha256) is None
+        or not trace_path.is_file()
+        or _sha256_file(trace_path) != trace_sha256
+    ):
+        raise SpeechNativeProfileError("M8 action-audit trace SHA-256 mismatch")
+    expected_queries: dict[str, Mapping[str, str]] = {}
+    try:
+        with trace_path.open("r", encoding="utf-8") as handle:
+            for line in handle:
+                record = json.loads(line)
+                if record.get("channel") != "MODEL_REQUEST":
+                    continue
+                envelope = record.get("payload")
+                payload = envelope.get("payload") if isinstance(envelope, Mapping) else None
+                if not isinstance(payload, Mapping):
+                    continue
+                sample_id = payload.get("sample_id")
+                parts = payload.get("speech_feature_parts")
+                query_parts = (
+                    [
+                        dict(part)
+                        for part in parts
+                        if isinstance(part, Mapping) and part.get("role") == "query"
+                    ]
+                    if isinstance(parts, list)
+                    else []
+                )
+                if (
+                    not isinstance(sample_id, str)
+                    or sample_id not in expected_packet_sha256
+                    or len(query_parts) != 1
+                    or query_parts[0].get("sha256")
+                    != expected_packet_sha256[sample_id]
+                ):
+                    continue
+                previous = expected_queries.get(sample_id)
+                if previous is not None and dict(previous) != query_parts[0]:
+                    raise SpeechNativeProfileError(
+                        "M8 action-audit trace has conflicting speech-query carriage"
+                    )
+                expected_queries[sample_id] = query_parts[0]
+    except (OSError, UnicodeError, json.JSONDecodeError) as error:
+        raise SpeechNativeProfileError(
+            f"cannot inspect M8 action-audit speech-query carriage: {error}"
+        ) from error
+    if set(expected_queries) != set(expected_packet_sha256):
+        raise SpeechNativeProfileError(
+            "M8 action-audit trace speech-query carriage is incomplete"
+        )
+    trace_usage = _trace_usage_summary(trace_path)
+    trace_speech_query = _trace_speech_query_summary(
+        trace_path, expected_queries=expected_queries
+    )
+    process_audit_sha256 = flight.get("process_audit_sha256")
+    if not isinstance(process_audit_sha256, str):
+        raise SpeechNativeProfileError("M8 action-audit process receipt is missing")
+    process_audit = _load_pinned_json_object(
+        attempt_dir / f"{run_id}.mmproj-audit.json",
+        expected_sha256=process_audit_sha256,
+        artifact_name="M8 action-audit mmproj process audit",
+    )
+    if (
+        process_audit.get("mmproj_loaded") is not False
+        or process_audit.get("mmproj_hit_count") != 0
+    ):
+        raise SpeechNativeProfileError("M8 action-audit source loaded mmproj")
+    server_scan = flight.get("server_log_scan")
+    if not isinstance(server_scan, Mapping):
+        raise SpeechNativeProfileError("M8 action-audit server scan is missing")
+    completion_issues = _profile_completion_issues(
+        calls_used=contact_count,
+        actual_contact_count=contact_count,
+        task_count=108,
+        planned_contact_ceiling=1512,
+        request_failure_count=0,
+        server_scan=server_scan,
+        trace_usage=trace_usage,
+        trace_speech_query=trace_speech_query,
+    )
+    if completion_issues:
+        raise SpeechNativeProfileError(
+            "M8 action-audit completion defects: " + "; ".join(completion_issues)
+        )
+    return {
+        "schema": "saea-speech-native-pairwise-action-support-audit-v1",
+        "study": "speech-aware-evidence-acquisition",
+        "run_id": run_id,
+        "attempt_id": attempt_id,
+        "source_attempt_state": "FINALIZED",
+        "effectiveness_read_authorized": True,
+        "gold_read": False,
+        "decision_count": 108,
+        "contact_count": contact_count,
+        "valid_speech_query_contact_count": trace_speech_query[
+            "valid_speech_query_count"
+        ],
+        "pairwise_comparison_count": comparison_count,
+        "action_sensitive_count": action_sensitive_count,
+        "k1_stable_non_primary_query_count": k1_stable_query_count,
+        "k2_stable_non_primary_query_count": k2_stable_query_count,
+        "four_way_consensus_query_count": four_way_consensus_count,
+        "k1_order_disagreement_count": k1_order_disagreement_count,
+        "k2_order_disagreement_count": k2_order_disagreement_count,
+        "action_support_threshold": 24,
+        "action_support_threshold_met": k2_stable_query_count >= 24,
+        "calls_distribution": {
+            str(calls): count for calls, count in sorted(calls_distribution.items())
+        },
+        "source_sha256": {
+            "attempt_record": attempt_record_sha256,
+            "flight_receipt": flight_receipt_sha256,
+            "decisions": decisions_sha256,
+            "trace": trace_sha256,
+            "process_audit": process_audit_sha256,
+        },
+    }
+
+
 def audit_speech_native_action_support(
     *,
     attempt_dir: Path,
@@ -3947,6 +4725,16 @@ def audit_speech_native_action_support(
     profile = flight.get("profile")
     if isinstance(profile, Mapping) and profile.get("matcher_policy_id") == "M7":
         return _audit_m7_multistate_action_support(
+            attempt_dir=attempt_dir,
+            flight=flight,
+            attempt_record=attempt_record,
+            attempt_record_sha256=attempt_record_sha256,
+            flight_receipt_sha256=flight_receipt_sha256,
+            decisions_sha256=decisions_sha256,
+            trace_sha256=trace_sha256,
+        )
+    if isinstance(profile, Mapping) and profile.get("matcher_policy_id") == "M8":
+        return _audit_m8_pairwise_action_support(
             attempt_dir=attempt_dir,
             flight=flight,
             attempt_record=attempt_record,

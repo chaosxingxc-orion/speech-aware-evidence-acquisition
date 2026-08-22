@@ -874,6 +874,214 @@ def test_action_support_audit_accepts_complete_m7_without_reading_gold(tmp_path)
     assert "must-not-enter-audit-output" not in json.dumps(report, sort_keys=True)
 
 
+def _write_m8_action_audit_fixture(tmp_path):
+    attempt_dir = tmp_path / "m8-attempt"
+    attempt_dir.mkdir()
+    rows = []
+    initial_top = ["K001", "K002", "K003"]
+    challengers = initial_top[1:]
+    for index in range(108):
+        sample_id = f"slurp:train:{index:06d}:audio-{index}"
+        packet_sha256 = f"{index + 1:064x}"
+        comparison_steps = []
+        support_votes = ["K001"]
+        for rank, challenger_key in enumerate(challengers, start=1):
+            k1_vote = "K001"
+            k2_vote = challenger_key if index == 0 and rank == 1 else "K001"
+            k1_stable = None
+            k2_stable = challenger_key if index == 0 and rank == 1 else None
+            support_votes.extend((k1_stable, k2_stable))
+            comparison_steps.append(
+                {
+                    "action_id": f"compare:pairwise-boundary-rank-{rank}",
+                    "rank": rank,
+                    "primary_key_id": "K001",
+                    "challenger_key_id": challenger_key,
+                    "k1_ab_key_id": k1_vote,
+                    "k1_ba_key_id": k1_vote,
+                    "k1_stable_key_id": k1_stable,
+                    "k2_ab_key_id": k2_vote,
+                    "k2_ba_key_id": k2_vote,
+                    "k2_stable_key_id": k2_stable,
+                    "calls": 4,
+                    "parse_failure": False,
+                    "causal_parent_ids": [
+                        "match:speech-only-primary",
+                        "retrieve:speech-only",
+                    ],
+                }
+            )
+        rows.append(
+            {
+                "schema": "saea-speech-native-decision-v1",
+                "sample_id": sample_id,
+                "query_sample_id": sample_id,
+                "speech_packet_sha256": packet_sha256,
+                "mechanism_control_id": "matched",
+                "key_representation_id": "K1",
+                "matcher_policy_id": "M8",
+                "key_id": "K001",
+                "predicted_value_label": "must-not-enter-audit-output",
+                "top_key_ids": initial_top,
+                "verifier_scores": {},
+                "calls": 10,
+                "parse_failure": False,
+                "agent_policy_id": "speech-conditioned-pairwise-boundary-support-v1",
+                "agent_actions": [
+                    "match:speech-only-primary",
+                    "retrieve:speech-only",
+                    "compare:pairwise-boundary-rank-1",
+                    "compare:pairwise-boundary-rank-2",
+                    "select:retain-primary-for-support",
+                ],
+                "agent_escalated": True,
+                "agent_vote_key_ids": support_votes,
+                "agent_steps": [
+                    {
+                        "action_id": "match:speech-only-primary",
+                        "key_id": "K001",
+                        "top_key_ids": [],
+                        "calls": 1,
+                        "parse_failure": False,
+                    },
+                    {
+                        "action_id": "retrieve:speech-only",
+                        "key_id": "K001",
+                        "top_key_ids": initial_top,
+                        "calls": 1,
+                        "parse_failure": False,
+                    },
+                    *comparison_steps,
+                ],
+                "agent_aggregator_id": "pairwise-boundary-primary-control-v1",
+                "response_text_sha256": [
+                    f"{30000 + index * 10 + offset:064x}" for offset in range(10)
+                ],
+            }
+        )
+    decisions = attempt_dir / "decisions.jsonl"
+    decisions.write_text(
+        "".join(json.dumps(row) + "\n" for row in rows), encoding="utf-8"
+    )
+    trace_rows = []
+    for row in rows:
+        descriptor = {
+            "packet_id": row["query_sample_id"].replace(":", "/"),
+            "sha256": row["speech_packet_sha256"],
+            "role": "query",
+        }
+        for contact_index in range(row["calls"]):
+            trace_rows.extend(
+                (
+                    {
+                        "channel": "MODEL_REQUEST",
+                        "payload": {
+                            "payload": {
+                                "request_id": f"{row['sample_id']}-{contact_index}",
+                                "sample_id": row["query_sample_id"],
+                                "query_source": "speech_features",
+                                "mmproj_loaded": False,
+                                "speech_packet_sha256": row["speech_packet_sha256"],
+                                "speech_feature_parts": [descriptor],
+                            }
+                        },
+                    },
+                    {
+                        "channel": "MODEL_RESPONSE",
+                        "payload": {
+                            "usage": {"prompt_tokens": 10, "completion_tokens": 2}
+                        },
+                    },
+                    {"channel": "COST", "payload": {"calls": 1}},
+                )
+            )
+    trace = attempt_dir / "SAEA-SN-M8-AUDIT.trace.jsonl"
+    trace.write_text(
+        "".join(json.dumps(row) + "\n" for row in trace_rows), encoding="utf-8"
+    )
+    process_audit = attempt_dir / "SAEA-SN-M8-AUDIT.mmproj-audit.json"
+    process_audit.write_text(
+        json.dumps({"mmproj_loaded": False, "mmproj_hit_count": 0}),
+        encoding="utf-8",
+    )
+    contact_count = 108 * 10
+    receipt = {
+        "status": "COMPLETED",
+        "run_id": "SAEA-SN-M8-AUDIT",
+        "attempt_id": "attempt-m8-audit-001",
+        "request_failures": [],
+        "profile": {
+            "key_representation_id": "K1",
+            "matcher_policy_id": "M8",
+            "agent_policy_id": "speech-conditioned-pairwise-boundary-support-v1",
+            "agent_aggregator_id": "pairwise-boundary-primary-control-v1",
+            "mechanism_control_id": "matched",
+            "top_k": 3,
+            "task_count": 108,
+            "actual_contact_count": contact_count,
+            "planned_contact_ceiling": 108 * 14,
+        },
+        "decisions": {
+            "path": decisions.name,
+            "sha256": hashlib.sha256(decisions.read_bytes()).hexdigest(),
+            "count": 108,
+            "contains_gold_labels": False,
+        },
+        "server_log_scan": {
+            "oom_marker_hits": [],
+            "host_spill_marker_hits": [],
+            "runaway_marker_hits": [],
+            "mmproj_free_chunk_count": 0,
+        },
+        "process_audit_sha256": hashlib.sha256(process_audit.read_bytes()).hexdigest(),
+        "close": {"cost": {"calls_used": contact_count}},
+    }
+    flight = attempt_dir / "flight-receipt.json"
+    flight.write_text(json.dumps(receipt), encoding="utf-8")
+    attempt_record = tmp_path / "m8-attempt-record.json"
+    attempt_record.write_text(
+        json.dumps(
+            {
+                "run_id": receipt["run_id"],
+                "attempt_id": receipt["attempt_id"],
+                "state": "FINALIZED",
+                "actual": {
+                    "calls": contact_count,
+                    "audio_seconds": 1.0,
+                    "gpu_seconds": 2.0,
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+    return attempt_dir, attempt_record, flight, decisions, trace
+
+
+def test_action_support_audit_accepts_complete_m8_without_reading_gold(tmp_path):
+    attempt_dir, attempt_record, flight, decisions, trace = (
+        _write_m8_action_audit_fixture(tmp_path)
+    )
+    report = audit_speech_native_action_support(
+        attempt_dir=attempt_dir,
+        attempt_record_path=attempt_record,
+        attempt_record_sha256=hashlib.sha256(attempt_record.read_bytes()).hexdigest(),
+        flight_receipt_sha256=hashlib.sha256(flight.read_bytes()).hexdigest(),
+        decisions_sha256=hashlib.sha256(decisions.read_bytes()).hexdigest(),
+        trace_sha256=hashlib.sha256(trace.read_bytes()).hexdigest(),
+    )
+    assert report["source_attempt_state"] == "FINALIZED"
+    assert report["gold_read"] is False
+    assert report["effectiveness_read_authorized"] is True
+    assert report["decision_count"] == 108
+    assert report["pairwise_comparison_count"] == 216
+    assert report["valid_speech_query_contact_count"] == 1080
+    assert report["action_sensitive_count"] == 1
+    assert report["k1_stable_non_primary_query_count"] == 0
+    assert report["k2_stable_non_primary_query_count"] == 1
+    assert report["action_support_threshold_met"] is False
+    assert "must-not-enter-audit-output" not in json.dumps(report, sort_keys=True)
+
+
 class _SpeechFeatureClient:
     def __init__(self, responses):
         self._responses = iter(responses)
@@ -1428,6 +1636,229 @@ def test_m7_fails_one_invalid_state_branch_closed_without_canceling_siblings():
     assert result.agent_steps[2]["key_id"] == "K002"
     assert result.agent_steps[4]["key_id"] == "K001"
     _assert_every_call_carries_query(client)
+
+
+class _M8PairwiseClient:
+    def __init__(self, *, unstable_k1=False):
+        self.unstable_k1 = unstable_k1
+        self.calls = []
+        self.batch_sizes = []
+
+    def complete(self, messages, **kwargs):
+        self.calls.append((messages, kwargs))
+        stage = kwargs["matcher_policy_id"]
+        if stage.endswith(":primary-listwise"):
+            return '{"key_id":"K001"}'
+        if stage.endswith(":speech-retrieve-top-2"):
+            return '{"key_ids":["K001","K002"]}'
+        if ":pairwise-K1-rank-1-ab" in stage:
+            return '{"key_id":"K002"}'
+        if ":pairwise-K1-rank-1-ba" in stage:
+            return '{"key_id":"K001"}' if self.unstable_k1 else '{"key_id":"K002"}'
+        if ":pairwise-K2-rank-1-" in stage:
+            return '{"key_id":"K002"}'
+        raise AssertionError(stage)
+
+    def complete_many(self, requests, *, trace_parent=None):
+        del trace_parent
+        self.batch_sizes.append(len(requests))
+        return tuple(
+            self.complete(messages, **kwargs) for messages, kwargs in requests
+        )
+
+
+def test_m8_batches_order_controlled_k1_k2_pairwise_support_and_retains_primary():
+    client = _M8PairwiseClient()
+
+    result = run_speech_native_matcher(
+        core_client=client,
+        sample=_SpeechSample(),
+        query_descriptor=_QUERY_DESCRIPTOR,
+        key_cards=_KEY_CARDS,
+        key_representation_id="K1",
+        matcher_policy_id="M8",
+        prompt_policy_id="speech-native-json-copy-v4",
+        agent_policy_id="speech-conditioned-pairwise-boundary-support-v1",
+        agent_aggregator_id="pairwise-boundary-primary-control-v1",
+        decoding_params={"temperature": 0, "max_tokens": 64},
+        top_k=2,
+    )
+
+    assert result.key_id == "K001"
+    assert result.calls == 6
+    assert result.top_key_ids == ("K001", "K002")
+    assert result.agent_vote_key_ids == ("K001", "K002", "K002")
+    assert result.agent_actions == (
+        "match:speech-only-primary",
+        "retrieve:speech-only",
+        "compare:pairwise-boundary-rank-1",
+        "select:retain-primary-for-support",
+    )
+    assert client.batch_sizes == [2, 4]
+    comparison = result.agent_steps[2]
+    assert comparison == {
+        "action_id": "compare:pairwise-boundary-rank-1",
+        "rank": 1,
+        "primary_key_id": "K001",
+        "challenger_key_id": "K002",
+        "k1_ab_key_id": "K002",
+        "k1_ba_key_id": "K002",
+        "k1_stable_key_id": "K002",
+        "k2_ab_key_id": "K002",
+        "k2_ba_key_id": "K002",
+        "k2_stable_key_id": "K002",
+        "calls": 4,
+        "parse_failure": False,
+        "causal_parent_ids": [
+            "match:speech-only-primary",
+            "retrieve:speech-only",
+        ],
+    }
+    pairwise_calls = client.calls[2:]
+    assert [
+        kwargs["matcher_policy_id"].rsplit("-", 1)[-1]
+        for _messages, kwargs in pairwise_calls
+    ] == ["ab", "ba", "ab", "ba"]
+    assert all(
+        kwargs["decoding_params"]["response_format"]["json_schema"]["schema"]
+        ["properties"]["key_id"]["enum"]
+        == ["K001", "K002"]
+        for _messages, kwargs in pairwise_calls
+    )
+    rendered_pairs = [
+        next(
+            part["text"]
+            for part in messages[1]["content"]
+            if part.get("type") == "text"
+        )
+        for messages, _kwargs in pairwise_calls
+    ]
+    assert "Contrastive boundary:" not in rendered_pairs[0]
+    assert "Contrastive boundary:" in rendered_pairs[2]
+    _assert_every_call_carries_query(client)
+
+
+def test_m8_marks_order_disagreement_as_no_supported_action():
+    result = run_speech_native_matcher(
+        core_client=_M8PairwiseClient(unstable_k1=True),
+        sample=_SpeechSample(),
+        query_descriptor=_QUERY_DESCRIPTOR,
+        key_cards=_KEY_CARDS,
+        key_representation_id="K1",
+        matcher_policy_id="M8",
+        prompt_policy_id="speech-native-json-copy-v4",
+        agent_policy_id="speech-conditioned-pairwise-boundary-support-v1",
+        agent_aggregator_id="pairwise-boundary-primary-control-v1",
+        top_k=2,
+    )
+
+    assert result.key_id == "K001"
+    assert result.agent_vote_key_ids == ("K001", None, "K002")
+    assert result.agent_steps[2]["k1_stable_key_id"] is None
+
+
+def test_m8_contact_dispatch_replays_heterogeneous_pairwise_dags_at_full_slots():
+    extra_cards = (
+        KeyCardV1(
+            key_id="K003",
+            definition="Commands about calendar events.",
+            positive_examples=("show my calendar",),
+            contrastive_boundary="Do not use for alarms.",
+            value_label="calendar",
+        ).validate(),
+        KeyCardV1(
+            key_id="K004",
+            definition="Commands about current weather.",
+            positive_examples=("will it rain",),
+            contrastive_boundary="Do not use for calendar events.",
+            value_label="weather",
+        ).validate(),
+    )
+    cards = (*_KEY_CARDS, *extra_cards)
+
+    class HeterogeneousPairwiseClient:
+        def __init__(self):
+            self.lock = threading.Lock()
+            self.active = 0
+            self.max_active = 0
+            self.calls = []
+
+        def complete(self, messages, **kwargs):
+            stage = kwargs["matcher_policy_id"]
+            sample_id = kwargs["speech_feature_sample_id"]
+            sample_index = int(sample_id.rsplit("-", 1)[-1])
+            with self.lock:
+                self.active += 1
+                self.max_active = max(self.max_active, self.active)
+                self.calls.append((messages, kwargs))
+            try:
+                if stage.endswith(":primary-listwise"):
+                    time.sleep(0.002)
+                    return '{"key_id":"K001"}'
+                if stage.endswith(":speech-retrieve-top-3"):
+                    time.sleep(0.010)
+                    top_ids = (
+                        ["K001", "K002", "K003"]
+                        if sample_index % 2 == 0
+                        else ["K002", "K003", "K004"]
+                    )
+                    return json.dumps({"key_ids": top_ids})
+                if ":pairwise-K1-" in stage:
+                    time.sleep(0.003)
+                    return '{"key_id":"K001"}'
+                if ":pairwise-K2-" in stage:
+                    time.sleep(0.007)
+                    return '{"key_id":"K001"}'
+                raise AssertionError(stage)
+            finally:
+                with self.lock:
+                    self.active -= 1
+
+    tasks = tuple(
+        SpeechNativeMatchTask(
+            task_id=f"m8-replay-{index}",
+            sample=type("Sample", (), {"sample_id": f"m8-sample-{index}"})(),
+            query_descriptor={
+                "packet_id": f"slurp/train/m8-sample-{index}",
+                "sha256": f"{index + 1:064x}",
+                "role": "query",
+            },
+            key_cards=cards,
+            key_representation_id="K1",
+            matcher_policy_id="M8",
+            prompt_policy_id="speech-native-json-copy-v4",
+            top_k=3,
+            agent_policy_id="speech-conditioned-pairwise-boundary-support-v1",
+            agent_aggregator_id="pairwise-boundary-primary-control-v1",
+        )
+        for index in range(12)
+    )
+    client = HeterogeneousPairwiseClient()
+
+    outcomes = run_speech_native_match_tasks(
+        core_client=client,
+        tasks=tasks,
+        slot_count=4,
+        queue_depth=8,
+        dispatch_granularity="contact",
+    )
+
+    assert client.max_active == 4
+    assert [outcome.decision.calls for outcome in outcomes] == [
+        10 if index % 2 == 0 else 14 for index in range(12)
+    ]
+    assert len(client.calls) == 144
+    for messages, kwargs in client.calls:
+        query_parts = [
+            part["speech_features"]
+            for part in messages[1]["content"]
+            if part.get("type") == "input_speech_features"
+            and part["speech_features"]["role"] == "query"
+        ]
+        assert len(query_parts) == 1
+        assert query_parts[0]["packet_id"].endswith(
+            kwargs["speech_feature_sample_id"]
+        )
 
 
 def test_contact_dispatch_runs_m7_verifier_wave_as_one_batched_ready_stage():
@@ -2370,6 +2801,84 @@ def test_full_branch_stage_dag_bounds_submitted_contacts_by_queue_depth(monkeypa
 
     outcomes = run_speech_native_match_tasks(
         core_client=FullBranchClient(),
+        tasks=tasks,
+        slot_count=2,
+        queue_depth=4,
+        dispatch_granularity="contact",
+    )
+
+    contact_executor = next(
+        item for item in instances if item.prefix == "saea-speech-native-contact"
+    )
+    assert len(outcomes) == 4
+    assert contact_executor.max_pending <= 4
+
+
+def test_generic_contact_dispatch_bounds_submitted_contacts_by_queue_depth(monkeypatch):
+    real_executor = pslu_module.ThreadPoolExecutor
+    instances = []
+
+    class TrackingExecutor:
+        def __init__(self, *args, **kwargs):
+            self.prefix = kwargs.get("thread_name_prefix")
+            self.delegate = real_executor(*args, **kwargs)
+            self.lock = threading.Lock()
+            self.pending = 0
+            self.max_pending = 0
+            instances.append(self)
+
+        def submit(self, *args, **kwargs):
+            with self.lock:
+                self.pending += 1
+                self.max_pending = max(self.max_pending, self.pending)
+            future = self.delegate.submit(*args, **kwargs)
+
+            def complete(_future):
+                with self.lock:
+                    self.pending -= 1
+
+            future.add_done_callback(complete)
+            return future
+
+        def shutdown(self, *args, **kwargs):
+            return self.delegate.shutdown(*args, **kwargs)
+
+        def __enter__(self):
+            self.delegate.__enter__()
+            return self
+
+        def __exit__(self, *args):
+            return self.delegate.__exit__(*args)
+
+    class SlowM7Client(_M7BatchClient):
+        def complete(self, messages, **kwargs):
+            time.sleep(0.005)
+            return super().complete(messages, **kwargs)
+
+    monkeypatch.setattr(pslu_module, "ThreadPoolExecutor", TrackingExecutor)
+    tasks = tuple(
+        SpeechNativeMatchTask(
+            task_id=f"m7-task-{index}",
+            sample=type("Sample", (), {"sample_id": f"m7-sample-{index}"})(),
+            query_descriptor={
+                "packet_id": f"slurp/train/m7-sample-{index}",
+                "sha256": f"{index + 1:064x}",
+                "role": "query",
+            },
+            key_cards=_KEY_CARDS,
+            key_representation_id="K1",
+            matcher_policy_id="M7",
+            prompt_policy_id="speech-native-json-copy-v3",
+            verifier_policy_id="speech-native-contrastive-verifier-v2",
+            top_k=2,
+            agent_policy_id="knowledge-grounded-multistate-action-support-v1",
+            agent_aggregator_id="action-support-primary-control-v1",
+        )
+        for index in range(4)
+    )
+
+    outcomes = run_speech_native_match_tasks(
+        core_client=SlowM7Client(),
         tasks=tasks,
         slot_count=2,
         queue_depth=4,
@@ -4898,6 +5407,162 @@ def test_model_free_read_reports_m7_multistate_action_support_and_safe_consensus
     ]
     controller = metrics["consistency_controller"]
     assert controller["correct"] == 36
+    assert controller["correct_delta_vs_primary"] == 1
+    assert controller["wrong_to_correct_vs_primary"] == 1
+    assert controller["correct_to_wrong_vs_primary"] == 0
+    assert controller["action_count"] == 1
+    assert controller["qualified"] is False
+
+
+def test_model_free_read_reports_m8_pairwise_boundary_support(tmp_path):
+    binding_path = REPO_ROOT / "configs/probes/g0-binding/speech-native-train-binding.json"
+    binding_sha256 = hashlib.sha256(binding_path.read_bytes()).hexdigest()
+    binding = json.loads(binding_path.read_text(encoding="utf-8"))
+    items = binding["splits"]["OPT-A36"]["items"]
+    cards = {card["key_id"]: card for card in binding["key_cards"]}
+    key_by_label = {card["value_label"]: card["key_id"] for card in cards.values()}
+    label_by_key = {key_id: card["value_label"] for key_id, card in cards.items()}
+    all_key_ids = tuple(cards)
+    rows = []
+    for index, item in enumerate(items):
+        gold_key = key_by_label[item["value_label"]]
+        wrong_key = all_key_ids[(all_key_ids.index(gold_key) + 1) % len(all_key_ids)]
+        primary_key = wrong_key if index < 4 else gold_key
+        initial_top = list(
+            dict.fromkeys((primary_key, gold_key, wrong_key, *all_key_ids))
+        )[:3]
+        challengers = [key_id for key_id in initial_top if key_id != primary_key]
+        comparison_steps = []
+        support_votes = [primary_key]
+        for rank, challenger_key in enumerate(challengers, start=1):
+            k1_supports = index == 0 and rank == 1 and challenger_key == gold_key
+            k2_supports = index < 3 and rank == 1 and challenger_key == gold_key
+            k1_vote = challenger_key if k1_supports else primary_key
+            k2_vote = challenger_key if k2_supports else primary_key
+            k1_stable = challenger_key if k1_supports else None
+            k2_stable = challenger_key if k2_supports else None
+            support_votes.extend((k1_stable, k2_stable))
+            comparison_steps.append(
+                {
+                    "action_id": f"compare:pairwise-boundary-rank-{rank}",
+                    "rank": rank,
+                    "primary_key_id": primary_key,
+                    "challenger_key_id": challenger_key,
+                    "k1_ab_key_id": k1_vote,
+                    "k1_ba_key_id": k1_vote,
+                    "k1_stable_key_id": k1_stable,
+                    "k2_ab_key_id": k2_vote,
+                    "k2_ba_key_id": k2_vote,
+                    "k2_stable_key_id": k2_stable,
+                    "calls": 4,
+                    "parse_failure": False,
+                    "causal_parent_ids": [
+                        "match:speech-only-primary",
+                        "retrieve:speech-only",
+                    ],
+                }
+            )
+        rows.append(
+            {
+                "schema": "saea-speech-native-decision-v1",
+                "sample_id": item["sample_id"],
+                "key_id": primary_key,
+                "predicted_value_label": label_by_key[primary_key],
+                "top_key_ids": initial_top,
+                "verifier_scores": {},
+                "calls": 2 + 4 * len(challengers),
+                "parse_failure": False,
+                "agent_policy_id": "speech-conditioned-pairwise-boundary-support-v1",
+                "agent_actions": [
+                    "match:speech-only-primary",
+                    "retrieve:speech-only",
+                    *[
+                        f"compare:pairwise-boundary-rank-{rank}"
+                        for rank in range(1, len(challengers) + 1)
+                    ],
+                    "select:retain-primary-for-support",
+                ],
+                "agent_escalated": True,
+                "agent_vote_key_ids": support_votes,
+                "agent_steps": [
+                    {
+                        "action_id": "match:speech-only-primary",
+                        "key_id": primary_key,
+                        "top_key_ids": [],
+                        "calls": 1,
+                        "parse_failure": False,
+                    },
+                    {
+                        "action_id": "retrieve:speech-only",
+                        "key_id": initial_top[0],
+                        "top_key_ids": initial_top,
+                        "calls": 1,
+                        "parse_failure": False,
+                    },
+                    *comparison_steps,
+                ],
+                "agent_aggregator_id": "pairwise-boundary-primary-control-v1",
+            }
+        )
+
+    attempt_dir = tmp_path / "m8-pairwise"
+    attempt_dir.mkdir()
+    decisions = attempt_dir / "decisions.jsonl"
+    decisions.write_text(
+        "".join(json.dumps(row, sort_keys=True) + "\n" for row in rows),
+        encoding="utf-8",
+    )
+    (attempt_dir / "flight-receipt.json").write_text(
+        json.dumps(
+            {
+                "status": "COMPLETED",
+                "request_failures": [],
+                "split_identity_hash": "a" * 64,
+                "run_id": "run-m8-pairwise",
+                "profile": {
+                    "key_representation_id": "K1",
+                    "matcher_policy_id": "M8",
+                    "matcher_prompt_policy_id": "speech-native-json-copy-v4",
+                    "matcher_verifier_policy_id": "speech-native-compatibility-v1",
+                    "agent_policy_id": "speech-conditioned-pairwise-boundary-support-v1",
+                    "agent_aggregator_id": "pairwise-boundary-primary-control-v1",
+                    "mechanism_control_id": "matched",
+                    "key_order_ids": ["canonical"],
+                    "top_k": 3,
+                    "actual_contact_count": sum(row["calls"] for row in rows),
+                },
+                "decisions": {
+                    "path": decisions.name,
+                    "sha256": hashlib.sha256(decisions.read_bytes()).hexdigest(),
+                    "count": len(rows),
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    report = read_speech_native_predictions(
+        attempt_dirs=(attempt_dir,),
+        binding_path=binding_path,
+        binding_sha256=binding_sha256,
+        split_name="OPT-A36",
+    )
+
+    aggregate = report["aggregates"][0]
+    assert aggregate["cell_id"] == (
+        "K1-M8-k3-v4-pairwise-boundary-support-v1"
+    )
+    assert aggregate["correct"] == 32
+    metrics = aggregate["agent_loop_metrics"]
+    assert metrics["primary_correct"] == 32
+    assert metrics["representations"]["K1"]["helpful_action_count"] == 1
+    assert metrics["representations"]["K2"]["helpful_action_count"] == 3
+    assert metrics["representations"]["K2"]["stable_non_primary_query_count"] == 3
+    assert metrics["oracle_correct"] == 35
+    assert metrics["oracle_gain_vs_primary"] == 3
+    assert metrics["support_gate_passed"] is False
+    controller = metrics["consistency_controller"]
+    assert controller["correct"] == 33
     assert controller["correct_delta_vs_primary"] == 1
     assert controller["wrong_to_correct_vs_primary"] == 1
     assert controller["correct_to_wrong_vs_primary"] == 0
