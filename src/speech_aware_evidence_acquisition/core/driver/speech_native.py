@@ -79,6 +79,7 @@ _HOST_SPILL_MARKERS = (
 _RUNAWAY_MARKERS = ("truncated = 1", "context shift", "slot context shift")
 _SPEECH_NATIVE_KEY_IDS = frozenset(f"K{index:03d}" for index in range(1, 19))
 _M6_SCHEMA_V2_POLICY_ID = "knowledge-grounded-semantic-refinement-schema-v2"
+_M6_SCHEMA_V3_POLICY_ID = "knowledge-grounded-semantic-refinement-schema-v3"
 _M6_AGGREGATOR_ID = "grounded-refined-primary-fallback-v1"
 _M6_SUCCESS_ACTIONS = (
     "match:speech-only-primary",
@@ -1087,6 +1088,7 @@ def read_speech_native_predictions(
             grounded_policy_suffix = {
                 "knowledge-grounded-semantic-refinement-full-action-v1": "-grounded-v1",
                 _M6_SCHEMA_V2_POLICY_ID: "-grounded-schema-v2",
+                _M6_SCHEMA_V3_POLICY_ID: "-grounded-schema-v3",
             }.get(profile_agent_policy_id)
             if (
                 grounded_policy_suffix is None

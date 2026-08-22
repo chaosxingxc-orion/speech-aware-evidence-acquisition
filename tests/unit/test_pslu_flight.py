@@ -925,6 +925,94 @@ def test_m6_schema_v2_prompt_makes_the_grounded_state_contract_explicit():
     _assert_every_call_carries_query(client)
 
 
+def test_m6_schema_v3_constrains_grounded_state_at_llama_server_boundary():
+    grounded_state = {
+        "candidate_key_ids": ["K001", "K002"],
+        "domain": "email",
+        "operation": "read",
+        "target": "message",
+        "constraints": [],
+        "exclusions": [],
+        "unresolved_ambiguity": "none",
+        "evidence": [
+            {
+                "key_id": "K001",
+                "field": "definition",
+                "quote": "Commands that create, change, inspect, or remove alarms.",
+            },
+            {
+                "key_id": "K002",
+                "field": "positive_examples",
+                "quote": "read my new email",
+            },
+        ],
+    }
+    client = _SpeechFeatureClient(
+        [
+            '{"key_id":"K001"}',
+            '{"key_ids":["K001","K002"]}',
+            json.dumps(grounded_state),
+            '{"key_ids":["K002","K001"]}',
+            '{"compatible":true,"confidence":90}',
+            '{"compatible":false,"confidence":20}',
+        ]
+    )
+
+    result = run_speech_native_matcher(
+        core_client=client,
+        sample=_SpeechSample(),
+        query_descriptor=_QUERY_DESCRIPTOR,
+        key_cards=_KEY_CARDS,
+        key_representation_id="K1",
+        matcher_policy_id="M6",
+        prompt_policy_id="speech-native-json-copy-v3",
+        verifier_policy_id="speech-native-contrastive-verifier-v2",
+        agent_policy_id="knowledge-grounded-semantic-refinement-schema-v3",
+        agent_aggregator_id="grounded-refined-primary-fallback-v1",
+        decoding_params={"temperature": 0, "max_tokens": 64},
+        top_k=2,
+    )
+
+    assert result.agent_policy_id == "knowledge-grounded-semantic-refinement-schema-v3"
+    state_params = client.calls[2][1]["decoding_params"]
+    response_format = state_params["response_format"]
+    assert response_format["type"] == "json_schema"
+    schema = response_format["json_schema"]["schema"]
+    assert schema["type"] == "object"
+    assert schema["additionalProperties"] is False
+    assert schema["properties"]["candidate_key_ids"] == {
+        "type": "array",
+        "prefixItems": [{"const": "K001"}, {"const": "K002"}],
+        "minItems": 2,
+        "maxItems": 2,
+    }
+    evidence = schema["properties"]["evidence"]
+    assert evidence["minItems"] == evidence["maxItems"] == 2
+    first_alternatives = evidence["prefixItems"][0]["anyOf"]
+    assert {
+        alternative["properties"]["field"]["const"]
+        for alternative in first_alternatives
+    } == {"definition", "positive_examples", "contrastive_boundary"}
+    assert all(
+        alternative["properties"]["key_id"] == {"const": "K001"}
+        for alternative in first_alternatives
+    )
+    positive = next(
+        alternative
+        for alternative in first_alternatives
+        if alternative["properties"]["field"]["const"] == "positive_examples"
+    )
+    assert positive["properties"]["quote"] == {
+        "enum": ["wake me at six", "cancel my morning alarm"]
+    }
+    assert all(
+        "response_format" not in kwargs["decoding_params"]
+        for index, (_messages, kwargs) in enumerate(client.calls)
+        if index != 2
+    )
+    _assert_every_call_carries_query(client)
+
+
 def test_m3_verifies_each_retrieved_candidate_and_arbitrates_only_a_tie():
     client = _SpeechFeatureClient(
         [
@@ -3015,6 +3103,10 @@ def test_model_free_read_accepts_complete_full_branch_action_support(tmp_path):
         (
             "knowledge-grounded-semantic-refinement-schema-v2",
             "grounded-schema-v2",
+        ),
+        (
+            "knowledge-grounded-semantic-refinement-schema-v3",
+            "grounded-schema-v3",
         ),
     ),
 )

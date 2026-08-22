@@ -154,6 +154,32 @@ class FrozenCoreAdapter(_PayloadBindingMixin, _AttemptLifecycleMixin):
                         "executor did not (slot affinity is resolved by the ojw batch "
                         "path, reproduction/ojw/runner.py)"
                     )
+            if "response_format" in decoding_params:
+                response_format = decoding_params["response_format"]
+                if not isinstance(response_format, Mapping):
+                    raise FrozenCoreError(
+                        "decoding_params response_format must be a mapping"
+                    )
+                response_type = response_format.get("type")
+                if response_type == "json_object":
+                    schema = response_format.get("schema", {})
+                    if not isinstance(schema, Mapping):
+                        raise FrozenCoreError(
+                            "json_object response_format schema must be a mapping"
+                        )
+                elif response_type == "json_schema":
+                    wrapper = response_format.get("json_schema")
+                    if not isinstance(wrapper, Mapping) or not isinstance(
+                        wrapper.get("schema"), Mapping
+                    ):
+                        raise FrozenCoreError(
+                            "json_schema response_format must contain a mapping schema"
+                        )
+                else:
+                    raise FrozenCoreError(
+                        "decoding_params response_format type must be json_object or "
+                        "json_schema"
+                    )
         assert_information_boundary(dict(payload))
         audio_seconds = payload["audio_seconds"]
         if (

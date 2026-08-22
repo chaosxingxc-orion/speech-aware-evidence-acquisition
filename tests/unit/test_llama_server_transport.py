@@ -890,6 +890,35 @@ def test_decoding_params_cannot_override_constructed_messages(tmp_path):
         transport(json.dumps(payload).encode())
 
 
+def test_response_format_is_forwarded_without_replacing_messages(tmp_path):
+    response_format = {
+        "type": "json_schema",
+        "json_schema": {
+            "name": "key_choice",
+            "strict": True,
+            "schema": {
+                "type": "object",
+                "properties": {"key_id": {"const": "K001"}},
+                "required": ["key_id"],
+                "additionalProperties": False,
+            },
+        },
+    }
+
+    def fake_post(url, body):
+        request = json.loads(body)
+        assert request["response_format"] == response_format
+        assert len(request["messages"]) == 2
+        assert request["messages"][1]["content"][-1]["type"] == "input_audio"
+        return _canned_response()
+
+    transport = _transport(_base_url(), tmp_path, post=fake_post)
+    payload = _boundary_payload(
+        tmp_path, decoding_params={"response_format": response_format}
+    )
+    transport(json.dumps(payload).encode())
+
+
 def test_malformed_usage_value_raises_frozen_core_error(tmp_path):
     response = json.dumps(
         {

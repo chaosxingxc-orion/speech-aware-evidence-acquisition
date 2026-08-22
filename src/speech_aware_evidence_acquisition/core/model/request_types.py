@@ -26,6 +26,11 @@ ALLOWED_DECODING_KEYS = frozenset(
         "max_tokens",
         "presence_penalty",
         "frequency_penalty",
+        # llama-server's OpenAI-compatible schema-constrained decoding. The
+        # adapter validates the wrapper shape before the transport forwards it;
+        # callers cannot use this key to replace messages, model identity, or
+        # streaming behavior.
+        "response_format",
         # llama-server slot pinning (SAEA-BENCH-idslot-q4km, 2026-08-11): an
         # integer here pins the request to one server slot so a sample's
         # stable evidence prefix stays in that slot's KV instead of being

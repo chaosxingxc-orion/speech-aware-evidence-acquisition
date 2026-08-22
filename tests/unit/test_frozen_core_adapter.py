@@ -444,6 +444,37 @@ def test_decoding_params_unknown_key_refused(tmp_path):
         adapter.request(_payload(decoding_params={"logit_bias": {"1": 10}}))
 
 
+def test_decoding_params_response_format_mapping_admitted(tmp_path):
+    adapter, _ = _adapter(tmp_path)
+    response = adapter.request(
+        _payload(
+            decoding_params={
+                "temperature": 0,
+                "response_format": {
+                    "type": "json_schema",
+                    "json_schema": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {"key_id": {"const": "K001"}},
+                            "required": ["key_id"],
+                            "additionalProperties": False,
+                        }
+                    },
+                },
+            }
+        )
+    )
+    assert response.text == "hello world"
+
+
+def test_decoding_params_response_format_non_mapping_refused(tmp_path):
+    adapter, _ = _adapter(tmp_path)
+    with pytest.raises(FrozenCoreError, match="response_format"):
+        adapter.request(
+            _payload(decoding_params={"temperature": 0, "response_format": "json"})
+        )
+
+
 def test_decoding_params_id_slot_integer_admitted(tmp_path):
     """Slot affinity (2026-08-11): an executor-resolved integer id_slot is a
     legal decoding key — the request goes through the choke point."""

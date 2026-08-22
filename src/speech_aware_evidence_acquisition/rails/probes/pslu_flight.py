@@ -175,6 +175,7 @@ SPEECH_NATIVE_AGENT_POLICIES = (
     "m1-m3-full-branch-explorer-v1",
     "knowledge-grounded-semantic-refinement-full-action-v1",
     "knowledge-grounded-semantic-refinement-schema-v2",
+    "knowledge-grounded-semantic-refinement-schema-v3",
 )
 SPEECH_NATIVE_SCENARIO_DEFINITIONS: Mapping[str, str] = MappingProxyType(
     {
@@ -585,6 +586,90 @@ def parse_grounded_query_state(
     )
 
 
+def _grounded_query_state_response_format(
+    *,
+    candidate_key_ids: tuple[str, ...],
+    cards_by_key: Mapping[str, KeyCardV1],
+    key_representation_id: str,
+) -> dict[str, object]:
+    """Build a llama-server JSON schema that can only emit parser-valid citations."""
+
+    def evidence_alternatives(key_id: str) -> list[dict[str, object]]:
+        card = cards_by_key[key_id]
+        sources: list[tuple[str, tuple[str, ...]]] = [
+            ("definition", (card.definition,)),
+            ("positive_examples", card.positive_examples),
+        ]
+        if key_representation_id == "K2" and card.contrastive_boundary:
+            sources.append(("contrastive_boundary", (card.contrastive_boundary,)))
+        return [
+            {
+                "type": "object",
+                "properties": {
+                    "key_id": {"const": key_id},
+                    "field": {"const": field_name},
+                    "quote": {"enum": list(quotes)},
+                },
+                "required": ["key_id", "field", "quote"],
+                "additionalProperties": False,
+            }
+            for field_name, quotes in sources
+        ]
+
+    scalar = {"type": "string", "minLength": 1, "maxLength": 160}
+    bounded_list = {
+        "type": "array",
+        "items": {"type": "string", "minLength": 1, "maxLength": 160},
+        "maxItems": 5,
+    }
+    count = len(candidate_key_ids)
+    schema = {
+        "type": "object",
+        "properties": {
+            "candidate_key_ids": {
+                "type": "array",
+                "prefixItems": [{"const": key_id} for key_id in candidate_key_ids],
+                "minItems": count,
+                "maxItems": count,
+            },
+            "domain": scalar,
+            "operation": scalar,
+            "target": scalar,
+            "constraints": bounded_list,
+            "exclusions": bounded_list,
+            "unresolved_ambiguity": scalar,
+            "evidence": {
+                "type": "array",
+                "prefixItems": [
+                    {"anyOf": evidence_alternatives(key_id)}
+                    for key_id in candidate_key_ids
+                ],
+                "minItems": count,
+                "maxItems": count,
+            },
+        },
+        "required": [
+            "candidate_key_ids",
+            "domain",
+            "operation",
+            "target",
+            "constraints",
+            "exclusions",
+            "unresolved_ambiguity",
+            "evidence",
+        ],
+        "additionalProperties": False,
+    }
+    return {
+        "type": "json_schema",
+        "json_schema": {
+            "name": "grounded_query_state",
+            "strict": True,
+            "schema": schema,
+        },
+    }
+
+
 def _speech_feature_messages(
     *,
     system_text: str,
@@ -701,6 +786,7 @@ def run_speech_native_matcher(
     m6_policies = {
         "knowledge-grounded-semantic-refinement-full-action-v1",
         "knowledge-grounded-semantic-refinement-schema-v2",
+        "knowledge-grounded-semantic-refinement-schema-v3",
     }
     if matcher_policy_id == "M6" and (
         agent_policy_id not in m6_policies
@@ -1164,7 +1250,10 @@ def run_speech_native_matcher(
             ensure_ascii=False,
             separators=(",", ":"),
         )
-        if agent_policy_id == "knowledge-grounded-semantic-refinement-schema-v2":
+        if agent_policy_id in {
+            "knowledge-grounded-semantic-refinement-schema-v2",
+            "knowledge-grounded-semantic-refinement-schema-v3",
+        }:
             state_instruction = (
                 "Build a knowledge-grounded semantic query state for the spoken command. "
                 "Use only the retrieved key cards and the speech signal carried in this "
@@ -1195,6 +1284,15 @@ def run_speech_native_matcher(
                 "key_id, field, and quote; cite every candidate at least once, use only visible "
                 "fields, and copy each quote exactly from that key card."
             )
+        state_decoding_overrides: dict[str, object] = {"max_tokens": 512}
+        if agent_policy_id == "knowledge-grounded-semantic-refinement-schema-v3":
+            state_decoding_overrides["response_format"] = (
+                _grounded_query_state_response_format(
+                    candidate_key_ids=initial_top_ids,
+                    cards_by_key=by_key,
+                    key_representation_id=state_key_representation_id,
+                )
+            )
         state_response = contact(
             "build-grounded-query-state",
             state_instruction,
@@ -1203,7 +1301,7 @@ def run_speech_native_matcher(
             + render_speech_native_keys(
                 initial_cards, state_key_representation_id
             ),
-            decoding_overrides={"max_tokens": 512},
+            decoding_overrides=state_decoding_overrides,
         )
         state = parse_grounded_query_state(
             state_response,
