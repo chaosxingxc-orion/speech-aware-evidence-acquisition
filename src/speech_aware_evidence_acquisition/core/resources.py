@@ -74,6 +74,7 @@ import time
 from typing import Callable, Mapping, Protocol
 
 NOT_AVAILABLE = "NOT_AVAILABLE"
+WSL_NVIDIA_SMI = "/usr/lib/wsl/lib/nvidia-smi"
 
 
 class ResourceSampler(Protocol):
@@ -318,9 +319,23 @@ def resolve_resource_sampler(
     box); pass a different index only if a future host genuinely has more
     than one device and this run should be attributed to a specific one."""
 
-    if shutil.which(binary) is None:
+    resolved_binary = shutil.which(binary)
+    if (
+        resolved_binary is None
+        and binary == "nvidia-smi"
+        and os.path.isfile(WSL_NVIDIA_SMI)
+        and os.access(WSL_NVIDIA_SMI, os.X_OK)
+    ):
+        # WSL exposes the host GPU bridge here, but fail-closed experiment
+        # launchers may intentionally supply a minimal PATH that omits it.
+        resolved_binary = WSL_NVIDIA_SMI
+    if resolved_binary is None:
         return NullSampler(f"{binary!r} not found on PATH; GPU/VRAM sampling unavailable")
-    return NvidiaSmiSampler(binary=binary, interval_seconds=interval_seconds, device_index=device_index)
+    return NvidiaSmiSampler(
+        binary=resolved_binary,
+        interval_seconds=interval_seconds,
+        device_index=device_index,
+    )
 
 
 def cpu_seconds_snapshot() -> float:

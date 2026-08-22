@@ -361,6 +361,29 @@ def test_resolve_resource_sampler_returns_real_sampler_when_binary_present(monke
     # "nvidia-smi" and violate "never call nvidia-smi in tests".
 
 
+def test_resolve_resource_sampler_uses_the_wsl_gpu_binary_when_path_is_minimal(monkeypatch):
+    """WSL exposes ``nvidia-smi`` outside common fail-closed runtime PATHs."""
+
+    import speech_aware_evidence_acquisition.core.resources as resources_module
+
+    monkeypatch.setattr(resources_module.shutil, "which", lambda binary: None)
+    monkeypatch.setattr(
+        resources_module.os.path,
+        "isfile",
+        lambda path: path == "/usr/lib/wsl/lib/nvidia-smi",
+    )
+    monkeypatch.setattr(
+        resources_module.os,
+        "access",
+        lambda path, mode: path == "/usr/lib/wsl/lib/nvidia-smi" and mode == resources_module.os.X_OK,
+    )
+
+    sampler = resolve_resource_sampler(binary="nvidia-smi")
+
+    assert isinstance(sampler, NvidiaSmiSampler)
+    assert sampler._binary == "/usr/lib/wsl/lib/nvidia-smi"
+
+
 # ---------------------------------------------------------------------------
 # cpu_seconds_snapshot: standard-library os.times() wrapper.
 # ---------------------------------------------------------------------------
