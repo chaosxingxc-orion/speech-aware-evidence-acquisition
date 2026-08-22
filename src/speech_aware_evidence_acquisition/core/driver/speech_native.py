@@ -86,6 +86,9 @@ _HOST_SPILL_MARKERS = (
     "host buffer fallback",
 )
 _RUNAWAY_MARKERS = ("truncated = 1", "context shift", "slot context shift")
+_PROMPT_EVAL_TIMING = re.compile(
+    r"prompt eval time\s*=\s*[0-9.]+\s*ms\s*/\s*(\d+)\s+tokens"
+)
 _SPEECH_NATIVE_KEY_IDS = frozenset(f"K{index:03d}" for index in range(1, 19))
 _M6_SCHEMA_V2_POLICY_ID = "knowledge-grounded-semantic-refinement-schema-v2"
 _M6_SCHEMA_V3_POLICY_ID = "knowledge-grounded-semantic-refinement-schema-v3"
@@ -8092,6 +8095,10 @@ def _scan_server_log(path: Path, *, start_offset: int = 0) -> dict[str, object]:
     def hits(markers: Sequence[str]) -> list[str]:
         return [marker for marker in markers if marker in text]
 
+    prompt_eval_tokens = [
+        int(match.group(1)) for match in _PROMPT_EVAL_TIMING.finditer(text)
+    ]
+
     return {
         "oom_marker_hits": hits(_OOM_MARKERS),
         "host_spill_marker_hits": hits(_HOST_SPILL_MARKERS),
@@ -8099,6 +8106,79 @@ def _scan_server_log(path: Path, *, start_offset: int = 0) -> dict[str, object]:
         "mmproj_free_chunk_count": text.count(
             "decoded mmproj-free speech feature chunk"
         ),
+        "prompt_eval_record_count": len(prompt_eval_tokens),
+        "prompt_eval_tokens_total": sum(prompt_eval_tokens),
+        "prompt_eval_tokens_median": (
+            float(statistics.median(prompt_eval_tokens))
+            if prompt_eval_tokens
+            else NOT_AVAILABLE
+        ),
+        "one_token_prompt_eval_count": sum(
+            token_count == 1 for token_count in prompt_eval_tokens
+        ),
+        "prompt_cache_skip_count": text.count(
+            "prompt is already in the cache, skipping"
+        ),
+    }
+
+
+def profile_evaluated_work_metrics(
+    *,
+    server_scan: Mapping[str, object],
+    declared_prompt_tokens: int,
+    completion_tokens: int,
+    wall_seconds: float,
+    contact_count: int,
+) -> dict[str, object]:
+    """Report actual llama.cpp prompt work instead of cache-inflated input work."""
+
+    for name, value in (
+        ("declared_prompt_tokens", declared_prompt_tokens),
+        ("completion_tokens", completion_tokens),
+        ("contact_count", contact_count),
+    ):
+        if isinstance(value, bool) or not isinstance(value, int) or value < 0:
+            raise SpeechNativeProfileError(f"{name} must be a non-negative integer")
+    if (
+        isinstance(wall_seconds, bool)
+        or not isinstance(wall_seconds, (int, float))
+        or wall_seconds <= 0
+    ):
+        raise SpeechNativeProfileError("wall_seconds must be a positive number")
+
+    def non_negative_scan_integer(field: str) -> int:
+        value = server_scan.get(field)
+        if isinstance(value, bool) or not isinstance(value, int) or value < 0:
+            raise SpeechNativeProfileError(
+                f"server log scan {field} must be a non-negative integer"
+            )
+        return value
+
+    record_count = non_negative_scan_integer("prompt_eval_record_count")
+    evaluated_prompt_tokens = non_negative_scan_integer("prompt_eval_tokens_total")
+    one_token_count = non_negative_scan_integer("one_token_prompt_eval_count")
+    cache_skip_count = non_negative_scan_integer("prompt_cache_skip_count")
+    prompt_ratio: float | str = (
+        100.0 * evaluated_prompt_tokens / declared_prompt_tokens
+        if declared_prompt_tokens
+        else NOT_AVAILABLE
+    )
+    one_token_fraction: float | str = (
+        100.0 * one_token_count / contact_count if contact_count else NOT_AVAILABLE
+    )
+    return {
+        "declared_prompt_tokens": declared_prompt_tokens,
+        "evaluated_prompt_tokens": evaluated_prompt_tokens,
+        "prompt_evaluation_ratio_pct": prompt_ratio,
+        "prompt_eval_record_count": record_count,
+        "prompt_eval_record_count_matches_contacts": record_count == contact_count,
+        "one_token_prompt_eval_count": one_token_count,
+        "one_token_prompt_eval_fraction_pct": one_token_fraction,
+        "prompt_cache_skip_count": cache_skip_count,
+        "actual_evaluated_tokens_per_second": (
+            evaluated_prompt_tokens + completion_tokens
+        )
+        / float(wall_seconds),
     }
 
 
@@ -8729,6 +8809,14 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
                 completion_tokens=int(cost.get("completion_tokens_total", 0)),
             )
             receipt["timing"] = timing
+            evaluated_work = profile_evaluated_work_metrics(
+                server_scan=server_scan,
+                declared_prompt_tokens=int(cost.get("prompt_tokens_total", 0)),
+                completion_tokens=int(cost.get("completion_tokens_total", 0)),
+                wall_seconds=float(timing["request_window_seconds"]),
+                contact_count=actual_contact_count,
+            )
+            receipt["evaluated_work"] = evaluated_work
             saturated_gpu = profile_saturated_gpu_metrics(
                 timing_rows=timing_rows,
                 resource_summary=resource_summary,
@@ -8770,6 +8858,31 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
                     and float(saturated_p10) >= 90.0
                 ),
                 "slot_occupancy_at_least_90": timing["slot_occupancy_pct"] >= 90.0,
+                "prompt_eval_records_match_contacts": evaluated_work[
+                    "prompt_eval_record_count_matches_contacts"
+                ],
+                "prompt_evaluation_ratio_at_least_90": (
+                    isinstance(
+                        evaluated_work["prompt_evaluation_ratio_pct"],
+                        (int, float),
+                    )
+                    and not isinstance(
+                        evaluated_work["prompt_evaluation_ratio_pct"], bool
+                    )
+                    and float(evaluated_work["prompt_evaluation_ratio_pct"])
+                    >= 90.0
+                ),
+                "one_token_prompt_eval_fraction_at_most_5": (
+                    isinstance(
+                        evaluated_work["one_token_prompt_eval_fraction_pct"],
+                        (int, float),
+                    )
+                    and not isinstance(
+                        evaluated_work["one_token_prompt_eval_fraction_pct"], bool
+                    )
+                    and float(evaluated_work["one_token_prompt_eval_fraction_pct"])
+                    <= 5.0
+                ),
             }
             eligibility = receipt["eligibility"]
             assert isinstance(eligibility, Mapping)

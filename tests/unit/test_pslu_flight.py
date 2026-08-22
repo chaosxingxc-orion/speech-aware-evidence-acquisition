@@ -35,6 +35,7 @@ from speech_aware_evidence_acquisition.core.driver.speech_native import (
     _profile_completion_issues,
     _release_speech_native_session,
     _scan_server_log,
+    profile_evaluated_work_metrics,
     _trace_speech_query_summary,
     SpeechNativeProfileError,
     _cli_speech_native_action_audit,
@@ -290,6 +291,59 @@ def test_server_log_scan_is_scoped_to_current_attempt_window(tmp_path):
 
     assert scan["oom_marker_hits"] == []
     assert scan["mmproj_free_chunk_count"] == 2
+    assert scan["prompt_eval_record_count"] == 0
+    assert scan["prompt_eval_tokens_total"] == 0
+    assert scan["one_token_prompt_eval_count"] == 0
+    assert scan["prompt_cache_skip_count"] == 0
+
+
+def test_server_log_scan_records_actual_prompt_work_and_cache_reuse(tmp_path):
+    log = tmp_path / "resident-server.log"
+    old = "prompt eval time = 10.00 ms / 999 tokens\n"
+    current = """\
+prompt eval time = 20.00 ms / 1870 tokens
+prompt is already in the cache, skipping
+prompt eval time = 1.00 ms / 1 tokens
+prompt is already in the cache, skipping
+prompt eval time = 8.00 ms / 740 tokens
+"""
+    log.write_text(old + current, encoding="utf-8")
+
+    scan = _scan_server_log(log, start_offset=len(old.encode("utf-8")))
+
+    assert scan["prompt_eval_record_count"] == 3
+    assert scan["prompt_eval_tokens_total"] == 2611
+    assert scan["prompt_eval_tokens_median"] == 740.0
+    assert scan["one_token_prompt_eval_count"] == 1
+    assert scan["prompt_cache_skip_count"] == 2
+
+
+def test_evaluated_work_metrics_do_not_count_cached_declared_tokens_as_compute():
+    metrics = profile_evaluated_work_metrics(
+        server_scan={
+            "prompt_eval_record_count": 3,
+            "prompt_eval_tokens_total": 2611,
+            "prompt_eval_tokens_median": 740.0,
+            "one_token_prompt_eval_count": 1,
+            "prompt_cache_skip_count": 2,
+        },
+        declared_prompt_tokens=3000,
+        completion_tokens=89,
+        wall_seconds=2.0,
+        contact_count=3,
+    )
+
+    assert metrics == {
+        "declared_prompt_tokens": 3000,
+        "evaluated_prompt_tokens": 2611,
+        "prompt_evaluation_ratio_pct": pytest.approx(87.03333333333333),
+        "prompt_eval_record_count": 3,
+        "prompt_eval_record_count_matches_contacts": True,
+        "one_token_prompt_eval_count": 1,
+        "one_token_prompt_eval_fraction_pct": pytest.approx(33.333333333333336),
+        "prompt_cache_skip_count": 2,
+        "actual_evaluated_tokens_per_second": 1350.0,
+    }
 
 
 def test_trace_speech_query_summary_accepts_exact_query_with_audio_key(tmp_path):
