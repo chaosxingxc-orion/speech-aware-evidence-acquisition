@@ -3313,7 +3313,8 @@ def test_model_free_read_reports_grounded_semantic_refinement_actions(
     )
     assert aggregate["correct"] == 35
     assert aggregate["top_k_reachable_count"] == 36
-    assert aggregate["agent_loop_metrics"] == {
+    metrics = aggregate["agent_loop_metrics"]
+    expected_metrics = {
         "policy_id": agent_policy_id,
         "aggregator_id": "grounded-refined-primary-fallback-v1",
         "primary_correct": 35,
@@ -3337,6 +3338,20 @@ def test_model_free_read_reports_grounded_semantic_refinement_actions(
             "verify:speech-plus-grounded-state": 36,
         },
     }
+    assert {key: metrics[key] for key in expected_metrics} == expected_metrics
+    assert metrics["speaker_fold_policy_id"] == (
+        "speaker-grouped-3fold-sha256-load-balanced-v1"
+    )
+    folds = metrics["speaker_folds_vs_primary"]
+    assert len(folds) == 3
+    assert sum(fold["count"] for fold in folds) == 36
+    assert sum(fold["correct_delta_vs_primary"] for fold in folds) == 0
+    assert metrics["positive_delta_fold_count"] == sum(
+        fold["correct_delta_vs_primary"] > 0 for fold in folds
+    )
+    assert metrics["worst_fold_delta_vs_primary"] == min(
+        fold["correct_delta_vs_primary"] for fold in folds
+    )
 
 
 def _binding_material():

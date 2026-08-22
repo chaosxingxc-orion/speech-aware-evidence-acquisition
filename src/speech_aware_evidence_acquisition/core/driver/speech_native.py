@@ -1178,6 +1178,8 @@ def read_speech_native_predictions(
         grounded_state_valid_count = 0
         grounded_backtrack_count = 0
         grounded_refined_change_count = 0
+        grounded_fold_trajectories: list[dict[str, str | None]] = []
+        grounded_final_predictions: list[str | None] = []
         for row in rows:
             if row.get("schema") != "saea-speech-native-decision-v1":
                 raise SpeechNativeProfileError("decision schema mismatch")
@@ -1666,6 +1668,21 @@ def read_speech_native_predictions(
                 grounded_refined_change_count += int(changed)
                 grounded_state_valid_count += int(state_valid)
                 grounded_backtrack_count += int(backtracked)
+                grounded_fold_trajectories.append(
+                    {
+                        "speaker_id": speaker_by_sample[sample_id],
+                        "gold_key_id": key_by_label[gold[sample_id]],
+                        "primary_key_id": (
+                            primary_vote if isinstance(primary_vote, str) else None
+                        ),
+                        "canonical_key_id": None,
+                        "reverse_key_id": None,
+                        "rotate_key_id": None,
+                    }
+                )
+                grounded_final_predictions.append(
+                    key_id if isinstance(key_id, str) else None
+                )
         if seen != set(gold):
             raise SpeechNativeProfileError("decision sample set does not equal the frozen split")
         if (
@@ -1676,6 +1693,18 @@ def read_speech_native_predictions(
                 "speech-swap decisions do not form a split permutation"
             )
         correct = sum(correctness.values())
+        grounded_speaker_folds: list[dict[str, object]] = []
+        if matcher_policy_id == "M6":
+            frozen_grounded_folds = _validate_training_free_trajectories(
+                grounded_fold_trajectories
+            )
+            grounded_speaker_folds = _speaker_fold_metrics(
+                frozen_grounded_folds,
+                assignments=_speaker_grouped_fold_assignments(
+                    frozen_grounded_folds
+                ),
+                predictions=grounded_final_predictions,
+            )
         aggregates.append(
             {
                 "cell_id": cell_id,
@@ -1792,6 +1821,20 @@ def read_speech_native_predictions(
                             ),
                             "final_minus_primary_correct": (
                                 correct - agent_primary_correct_count
+                            ),
+                            "speaker_fold_policy_id": _SPEAKER_FOLD_POLICY_ID,
+                            "speaker_folds_vs_primary": grounded_speaker_folds,
+                            "positive_delta_fold_count": sum(
+                                int(fold["correct_delta_vs_primary"] > 0)
+                                for fold in grounded_speaker_folds
+                            ),
+                            "nonnegative_delta_fold_count": sum(
+                                int(fold["correct_delta_vs_primary"] >= 0)
+                                for fold in grounded_speaker_folds
+                            ),
+                            "worst_fold_delta_vs_primary": min(
+                                int(fold["correct_delta_vs_primary"])
+                                for fold in grounded_speaker_folds
                             ),
                             "grounded_state_valid_count": (
                                 grounded_state_valid_count
