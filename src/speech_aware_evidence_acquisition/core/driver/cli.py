@@ -28,6 +28,7 @@ from ...e0.artifacts import REPO_ROOT, write_json_artifact
 from ...rails.probes.pslu_flight import (
     SPEECH_NATIVE_BOUNDARY_POLICY_IDS,
     SPEECH_NATIVE_KNOWLEDGE_POLICY_IDS,
+    audit_speech_native_scale_capacity,
     build_data_derived_decision_graph,
     build_speech_native_information_audit,
     extend_speech_native_binding,
@@ -273,6 +274,11 @@ def _cli_extend_speech_native_binding(args: argparse.Namespace) -> int:
         if args.information_audit_output is not None
         else None
     )
+    scale_capacity_audit_output_path = (
+        Path(args.scale_capacity_audit_output).resolve()
+        if args.scale_capacity_audit_output is not None
+        else None
+    )
     if output_path is not None and output_path.exists():
         raise ValueError(f"speech-native binding output already exists: {output_path}")
     if graph_output_path is not None and graph_output_path.exists():
@@ -286,6 +292,14 @@ def _cli_extend_speech_native_binding(args: argparse.Namespace) -> int:
         raise ValueError(
             "speech-native information audit output already exists: "
             f"{information_audit_output_path}"
+        )
+    if (
+        scale_capacity_audit_output_path is not None
+        and scale_capacity_audit_output_path.exists()
+    ):
+        raise ValueError(
+            "speech-native scale capacity audit output already exists: "
+            f"{scale_capacity_audit_output_path}"
         )
     try:
         parent = json.loads(parent_path.read_text(encoding="utf-8"))
@@ -302,10 +316,29 @@ def _cli_extend_speech_native_binding(args: argparse.Namespace) -> int:
             "--per-scenario"
         )
     binding_successor_requested = split_requested or args.knowledge_policy is not None
+    capacity_values = (
+        args.existing_memory_split,
+        args.cumulative_query_count,
+        args.memory_query_count,
+        args.holdout_query_count,
+    )
+    capacity_requested = (
+        scale_capacity_audit_output_path is not None
+        or any(value is not None for value in capacity_values)
+    )
+    if capacity_requested and (
+        scale_capacity_audit_output_path is None
+        or any(value is None for value in capacity_values)
+    ):
+        raise ValueError(
+            "speech-native scale capacity audit requires its output, existing "
+            "memory split, cumulative count, memory count, and holdout count"
+        )
     if (
         not binding_successor_requested
         and graph_output_path is None
         and information_audit_output_path is None
+        and not capacity_requested
     ):
         raise ValueError(
             "speech-native binding needs a split extension or knowledge refinement"
@@ -348,6 +381,8 @@ def _cli_extend_speech_native_binding(args: argparse.Namespace) -> int:
     graph_artifact_sha256 = None
     information_audit_artifact_sha256 = None
     information_audit_status = None
+    scale_capacity_audit_artifact_sha256 = None
+    scale_capacity_status = None
     if graph_output_path is not None or information_audit_output_path is not None:
         graph = build_data_derived_decision_graph(
             successor,
@@ -376,6 +411,31 @@ def _cli_extend_speech_native_binding(args: argparse.Namespace) -> int:
             ):
                 raise ValueError("speech-native information audit lacks admission")
             information_audit_status = admission["status"]
+    if capacity_requested:
+        assert scale_capacity_audit_output_path is not None
+        assert args.existing_memory_split is not None
+        assert args.cumulative_query_count is not None
+        assert args.memory_query_count is not None
+        assert args.holdout_query_count is not None
+        scale_capacity_audit = audit_speech_native_scale_capacity(
+            successor,
+            material,
+            seed=args.seed,
+            existing_memory_split_name=args.existing_memory_split,
+            cumulative_query_count=args.cumulative_query_count,
+            memory_query_count=args.memory_query_count,
+            holdout_query_count=args.holdout_query_count,
+        )
+        scale_capacity_audit_artifact_sha256 = write_json_artifact(
+            scale_capacity_audit_output_path,
+            scale_capacity_audit,
+        )
+        capacity_admission = scale_capacity_audit.get("admission")
+        if not isinstance(capacity_admission, Mapping) or not isinstance(
+            capacity_admission.get("status"), str
+        ):
+            raise ValueError("speech-native scale capacity audit lacks admission")
+        scale_capacity_status = capacity_admission["status"]
     artifact_sha256 = (
         write_json_artifact(output_path, successor) if output_path is not None else None
     )
@@ -421,6 +481,15 @@ def _cli_extend_speech_native_binding(args: argparse.Namespace) -> int:
                     information_audit_artifact_sha256
                 ),
                 "information_audit_status": information_audit_status,
+                "scale_capacity_audit_output": (
+                    str(scale_capacity_audit_output_path)
+                    if scale_capacity_audit_output_path is not None
+                    else None
+                ),
+                "scale_capacity_audit_artifact_sha256": (
+                    scale_capacity_audit_artifact_sha256
+                ),
+                "scale_capacity_status": scale_capacity_status,
             },
             indent=2,
             sort_keys=True,
@@ -753,6 +822,17 @@ def main(argv: list[str] | None = None) -> int:
         ),
     )
     extend_binding.add_argument("--workers", type=int, default=16)
+    extend_binding.add_argument(
+        "--scale-capacity-audit-output",
+        help=(
+            "aggregate-only 100-to-500 ladder capacity audit; does not emit or "
+            "freeze new query identities"
+        ),
+    )
+    extend_binding.add_argument("--existing-memory-split")
+    extend_binding.add_argument("--cumulative-query-count", type=int)
+    extend_binding.add_argument("--memory-query-count", type=int)
+    extend_binding.add_argument("--holdout-query-count", type=int)
     extend_binding.add_argument(
         "--allow-parent-query-speaker-overlap",
         action="store_true",

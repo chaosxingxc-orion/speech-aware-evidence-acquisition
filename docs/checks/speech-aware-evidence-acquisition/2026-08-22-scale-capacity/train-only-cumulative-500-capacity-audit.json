@@ -1,0 +1,625 @@
+{
+  "admission": {
+    "failed_checks": [],
+    "new_model_contact_authorized": false,
+    "reason": "The aggregate train-only ladder is feasible; exact identities remain unfrozen and require a later owner-approved registration.",
+    "status": "feasible"
+  },
+  "allocation_policy": {
+    "holdout_prioritizes_unseen_speakers": true,
+    "holdout_quota_by_scenario": {
+      "alarm": 8,
+      "audio": 8,
+      "calendar": 8,
+      "cooking": 8,
+      "datetime": 8,
+      "email": 7,
+      "general": 7,
+      "iot": 8,
+      "lists": 8,
+      "music": 8,
+      "news": 7,
+      "play": 8,
+      "qa": 8,
+      "recommendation": 8,
+      "social": 8,
+      "takeaway": 7,
+      "transport": 8,
+      "weather": 8
+    },
+    "holdout_reserved_before_new_memory": true,
+    "id": "speaker-unseen-holdout-information-balanced-memory-v2",
+    "new_memory_prioritizes_unseen_action_then_signature": true,
+    "new_memory_quota_by_scenario": {
+      "alarm": 14,
+      "audio": 14,
+      "calendar": 14,
+      "cooking": 14,
+      "datetime": 14,
+      "email": 14,
+      "general": 14,
+      "iot": 14,
+      "lists": 14,
+      "music": 14,
+      "news": 14,
+      "play": 14,
+      "qa": 14,
+      "recommendation": 14,
+      "social": 14,
+      "takeaway": 14,
+      "transport": 14,
+      "weather": 14
+    },
+    "study_wide_speaker_unseen_holdout_preferred": true
+  },
+  "allocations": {
+    "available_pool": {
+      "action_count": 46,
+      "action_entity_signature_count": 729,
+      "per_scenario": {
+        "alarm": {
+          "action_count": 3,
+          "action_entity_signature_count": 41,
+          "query_count": 1749
+        },
+        "audio": {
+          "action_count": 4,
+          "action_entity_signature_count": 17,
+          "query_count": 1698
+        },
+        "calendar": {
+          "action_count": 3,
+          "action_entity_signature_count": 141,
+          "query_count": 5397
+        },
+        "cooking": {
+          "action_count": 2,
+          "action_entity_signature_count": 16,
+          "query_count": 484
+        },
+        "datetime": {
+          "action_count": 2,
+          "action_entity_signature_count": 19,
+          "query_count": 1297
+        },
+        "email": {
+          "action_count": 4,
+          "action_entity_signature_count": 72,
+          "query_count": 2864
+        },
+        "general": {
+          "action_count": 3,
+          "action_entity_signature_count": 35,
+          "query_count": 1930
+        },
+        "iot": {
+          "action_count": 9,
+          "action_entity_signature_count": 51,
+          "query_count": 2520
+        },
+        "lists": {
+          "action_count": 3,
+          "action_entity_signature_count": 31,
+          "query_count": 1637
+        },
+        "music": {
+          "action_count": 4,
+          "action_entity_signature_count": 28,
+          "query_count": 922
+        },
+        "news": {
+          "action_count": 1,
+          "action_entity_signature_count": 25,
+          "query_count": 1503
+        },
+        "play": {
+          "action_count": 5,
+          "action_entity_signature_count": 97,
+          "query_count": 5123
+        },
+        "qa": {
+          "action_count": 5,
+          "action_entity_signature_count": 29,
+          "query_count": 3326
+        },
+        "recommendation": {
+          "action_count": 3,
+          "action_entity_signature_count": 53,
+          "query_count": 1156
+        },
+        "social": {
+          "action_count": 2,
+          "action_entity_signature_count": 33,
+          "query_count": 971
+        },
+        "takeaway": {
+          "action_count": 2,
+          "action_entity_signature_count": 39,
+          "query_count": 681
+        },
+        "transport": {
+          "action_count": 4,
+          "action_entity_signature_count": 82,
+          "query_count": 1693
+        },
+        "weather": {
+          "action_count": 1,
+          "action_entity_signature_count": 23,
+          "query_count": 1744
+        }
+      },
+      "query_count": 36695,
+      "scenario_count": 18,
+      "shared_action_entity_query_count": 11780,
+      "speaker_count": 128,
+      "without_entities_count": 13185,
+      "without_entities_rate": 0.35931326
+    },
+    "cumulative_memory": {
+      "action_count": 46,
+      "action_entity_signature_count": 286,
+      "per_scenario": {
+        "alarm": {
+          "action_count": 3,
+          "action_entity_signature_count": 20,
+          "query_count": 20
+        },
+        "audio": {
+          "action_count": 4,
+          "action_entity_signature_count": 17,
+          "query_count": 20
+        },
+        "calendar": {
+          "action_count": 3,
+          "action_entity_signature_count": 20,
+          "query_count": 20
+        },
+        "cooking": {
+          "action_count": 2,
+          "action_entity_signature_count": 14,
+          "query_count": 20
+        },
+        "datetime": {
+          "action_count": 2,
+          "action_entity_signature_count": 17,
+          "query_count": 20
+        },
+        "email": {
+          "action_count": 4,
+          "action_entity_signature_count": 19,
+          "query_count": 20
+        },
+        "general": {
+          "action_count": 3,
+          "action_entity_signature_count": 18,
+          "query_count": 20
+        },
+        "iot": {
+          "action_count": 9,
+          "action_entity_signature_count": 18,
+          "query_count": 20
+        },
+        "lists": {
+          "action_count": 3,
+          "action_entity_signature_count": 20,
+          "query_count": 20
+        },
+        "music": {
+          "action_count": 4,
+          "action_entity_signature_count": 17,
+          "query_count": 20
+        },
+        "news": {
+          "action_count": 1,
+          "action_entity_signature_count": 17,
+          "query_count": 20
+        },
+        "play": {
+          "action_count": 5,
+          "action_entity_signature_count": 19,
+          "query_count": 20
+        },
+        "qa": {
+          "action_count": 5,
+          "action_entity_signature_count": 18,
+          "query_count": 20
+        },
+        "recommendation": {
+          "action_count": 3,
+          "action_entity_signature_count": 19,
+          "query_count": 20
+        },
+        "social": {
+          "action_count": 2,
+          "action_entity_signature_count": 17,
+          "query_count": 20
+        },
+        "takeaway": {
+          "action_count": 2,
+          "action_entity_signature_count": 20,
+          "query_count": 20
+        },
+        "transport": {
+          "action_count": 4,
+          "action_entity_signature_count": 19,
+          "query_count": 20
+        },
+        "weather": {
+          "action_count": 1,
+          "action_entity_signature_count": 19,
+          "query_count": 20
+        }
+      },
+      "query_count": 360,
+      "scenario_count": 18,
+      "shared_action_entity_query_count": 89,
+      "speaker_count": 77,
+      "without_entities_count": 74,
+      "without_entities_rate": 0.20555556
+    },
+    "existing_memory": {
+      "action_count": 30,
+      "action_entity_signature_count": 65,
+      "per_scenario": {
+        "alarm": {
+          "action_count": 3,
+          "action_entity_signature_count": 6,
+          "query_count": 6
+        },
+        "audio": {
+          "action_count": 4,
+          "action_entity_signature_count": 4,
+          "query_count": 6
+        },
+        "calendar": {
+          "action_count": 3,
+          "action_entity_signature_count": 6,
+          "query_count": 6
+        },
+        "cooking": {
+          "action_count": 1,
+          "action_entity_signature_count": 1,
+          "query_count": 6
+        },
+        "datetime": {
+          "action_count": 1,
+          "action_entity_signature_count": 3,
+          "query_count": 6
+        },
+        "email": {
+          "action_count": 3,
+          "action_entity_signature_count": 5,
+          "query_count": 6
+        },
+        "general": {
+          "action_count": 2,
+          "action_entity_signature_count": 4,
+          "query_count": 6
+        },
+        "iot": {
+          "action_count": 3,
+          "action_entity_signature_count": 4,
+          "query_count": 6
+        },
+        "lists": {
+          "action_count": 3,
+          "action_entity_signature_count": 6,
+          "query_count": 6
+        },
+        "music": {
+          "action_count": 2,
+          "action_entity_signature_count": 3,
+          "query_count": 6
+        },
+        "news": {
+          "action_count": 1,
+          "action_entity_signature_count": 3,
+          "query_count": 6
+        },
+        "play": {
+          "action_count": 3,
+          "action_entity_signature_count": 5,
+          "query_count": 6
+        },
+        "qa": {
+          "action_count": 2,
+          "action_entity_signature_count": 4,
+          "query_count": 6
+        },
+        "recommendation": {
+          "action_count": 3,
+          "action_entity_signature_count": 5,
+          "query_count": 6
+        },
+        "social": {
+          "action_count": 2,
+          "action_entity_signature_count": 3,
+          "query_count": 6
+        },
+        "takeaway": {
+          "action_count": 2,
+          "action_entity_signature_count": 6,
+          "query_count": 6
+        },
+        "transport": {
+          "action_count": 4,
+          "action_entity_signature_count": 5,
+          "query_count": 6
+        },
+        "weather": {
+          "action_count": 1,
+          "action_entity_signature_count": 5,
+          "query_count": 6
+        }
+      },
+      "query_count": 108,
+      "scenario_count": 18,
+      "shared_action_entity_query_count": 37,
+      "speaker_count": 57,
+      "without_entities_count": 45,
+      "without_entities_rate": 0.41666667
+    },
+    "holdout": {
+      "action_count": 30,
+      "action_entity_signature_count": 74,
+      "per_scenario": {
+        "alarm": {
+          "action_count": 3,
+          "action_entity_signature_count": 5,
+          "query_count": 8
+        },
+        "audio": {
+          "action_count": 3,
+          "action_entity_signature_count": 4,
+          "query_count": 8
+        },
+        "calendar": {
+          "action_count": 3,
+          "action_entity_signature_count": 7,
+          "query_count": 8
+        },
+        "cooking": {
+          "action_count": 1,
+          "action_entity_signature_count": 4,
+          "query_count": 8
+        },
+        "datetime": {
+          "action_count": 2,
+          "action_entity_signature_count": 4,
+          "query_count": 8
+        },
+        "email": {
+          "action_count": 3,
+          "action_entity_signature_count": 5,
+          "query_count": 7
+        },
+        "general": {
+          "action_count": 1,
+          "action_entity_signature_count": 2,
+          "query_count": 7
+        },
+        "iot": {
+          "action_count": 4,
+          "action_entity_signature_count": 7,
+          "query_count": 8
+        },
+        "lists": {
+          "action_count": 3,
+          "action_entity_signature_count": 5,
+          "query_count": 8
+        },
+        "music": {
+          "action_count": 2,
+          "action_entity_signature_count": 3,
+          "query_count": 8
+        },
+        "news": {
+          "action_count": 1,
+          "action_entity_signature_count": 5,
+          "query_count": 7
+        },
+        "play": {
+          "action_count": 4,
+          "action_entity_signature_count": 6,
+          "query_count": 8
+        },
+        "qa": {
+          "action_count": 2,
+          "action_entity_signature_count": 3,
+          "query_count": 8
+        },
+        "recommendation": {
+          "action_count": 3,
+          "action_entity_signature_count": 8,
+          "query_count": 8
+        },
+        "social": {
+          "action_count": 2,
+          "action_entity_signature_count": 4,
+          "query_count": 8
+        },
+        "takeaway": {
+          "action_count": 2,
+          "action_entity_signature_count": 6,
+          "query_count": 7
+        },
+        "transport": {
+          "action_count": 3,
+          "action_entity_signature_count": 7,
+          "query_count": 8
+        },
+        "weather": {
+          "action_count": 1,
+          "action_entity_signature_count": 5,
+          "query_count": 8
+        }
+      },
+      "query_count": 140,
+      "scenario_count": 18,
+      "shared_action_entity_query_count": 47,
+      "speaker_count": 37,
+      "without_entities_count": 60,
+      "without_entities_rate": 0.42857143
+    },
+    "new_memory": {
+      "action_count": 43,
+      "action_entity_signature_count": 230,
+      "per_scenario": {
+        "alarm": {
+          "action_count": 3,
+          "action_entity_signature_count": 14,
+          "query_count": 14
+        },
+        "audio": {
+          "action_count": 3,
+          "action_entity_signature_count": 14,
+          "query_count": 14
+        },
+        "calendar": {
+          "action_count": 3,
+          "action_entity_signature_count": 14,
+          "query_count": 14
+        },
+        "cooking": {
+          "action_count": 2,
+          "action_entity_signature_count": 13,
+          "query_count": 14
+        },
+        "datetime": {
+          "action_count": 2,
+          "action_entity_signature_count": 14,
+          "query_count": 14
+        },
+        "email": {
+          "action_count": 4,
+          "action_entity_signature_count": 14,
+          "query_count": 14
+        },
+        "general": {
+          "action_count": 3,
+          "action_entity_signature_count": 14,
+          "query_count": 14
+        },
+        "iot": {
+          "action_count": 9,
+          "action_entity_signature_count": 14,
+          "query_count": 14
+        },
+        "lists": {
+          "action_count": 3,
+          "action_entity_signature_count": 14,
+          "query_count": 14
+        },
+        "music": {
+          "action_count": 4,
+          "action_entity_signature_count": 14,
+          "query_count": 14
+        },
+        "news": {
+          "action_count": 1,
+          "action_entity_signature_count": 14,
+          "query_count": 14
+        },
+        "play": {
+          "action_count": 5,
+          "action_entity_signature_count": 14,
+          "query_count": 14
+        },
+        "qa": {
+          "action_count": 4,
+          "action_entity_signature_count": 14,
+          "query_count": 14
+        },
+        "recommendation": {
+          "action_count": 3,
+          "action_entity_signature_count": 14,
+          "query_count": 14
+        },
+        "social": {
+          "action_count": 2,
+          "action_entity_signature_count": 14,
+          "query_count": 14
+        },
+        "takeaway": {
+          "action_count": 2,
+          "action_entity_signature_count": 14,
+          "query_count": 14
+        },
+        "transport": {
+          "action_count": 3,
+          "action_entity_signature_count": 14,
+          "query_count": 14
+        },
+        "weather": {
+          "action_count": 1,
+          "action_entity_signature_count": 14,
+          "query_count": 14
+        }
+      },
+      "query_count": 252,
+      "scenario_count": 18,
+      "shared_action_entity_query_count": 52,
+      "speaker_count": 66,
+      "without_entities_count": 29,
+      "without_entities_rate": 0.11507937
+    }
+  },
+  "checks": {
+    "complete_scenario_roster": true,
+    "cumulative_memory_action_complete": true,
+    "cumulative_memory_scenario_action_complete": true,
+    "holdout_capacity": true,
+    "memory_holdout_speaker_disjoint": true,
+    "new_memory_capacity": true,
+    "query_key_speaker_disjoint": true,
+    "stage_identity_disjoint": true
+  },
+  "information_interpretation": {
+    "cumulative_memory_action_coverage_rate": 1.0,
+    "cumulative_memory_scenario_action_coverage_rate": 1.0,
+    "cumulative_memory_shared_signature_query_count": 89,
+    "holdout_shared_signature_query_count": 47,
+    "rule": "The memory adds decision evidence only through train-derived key and boundary information. Generated loop state may denoise speech but is not counted as new label information."
+  },
+  "isolation": {
+    "holdout_historical_nonmemory_speaker_overlap_count": 0,
+    "memory_holdout_speaker_overlap_count": 0,
+    "query_key_speaker_overlap_count": 0,
+    "stage_identity_overlap_count": 0
+  },
+  "query_isolated_capacity": {
+    "action_count": 46,
+    "action_entity_signature_count": 729,
+    "recording_count": 36695,
+    "scenario_count": 18,
+    "shared_action_entity_signature_count": 54,
+    "speaker_count": 128,
+    "utterance_count": 9764
+  },
+  "schema": "saea-speech-native-scale-capacity-audit-v1",
+  "source": {
+    "binding_sha256": "b7bca06170b44234975ae97df2c6e648d8a97edaf93058dbc2ce21620e288ceb",
+    "existing_memory_split": "EVIDENCE-E108",
+    "key_example_count": 94,
+    "key_speaker_count": 33,
+    "new_identity_fields_emitted": false,
+    "registered_query_count": 540,
+    "registered_query_speaker_count": 95,
+    "seed": 20260823,
+    "split": "SLURP train real speech only"
+  },
+  "status": "MODEL-FREE AGGREGATE AUDIT; NOT AN EXPOSURE REGISTRATION",
+  "study_wide_speaker_unseen_holdout": {
+    "allocated_query_count": 140,
+    "feasible": true,
+    "interpretation": "The holdout can be speaker-unseen relative to every registered query.",
+    "target_query_count": 140
+  },
+  "targets": {
+    "cumulative_query_count": 500,
+    "existing_memory_query_count": 108,
+    "holdout_query_count": 140,
+    "memory_query_count": 360,
+    "new_memory_query_count": 252
+  }
+}

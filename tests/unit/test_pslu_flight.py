@@ -91,6 +91,7 @@ from speech_aware_evidence_acquisition.rails.probes.pslu_flight import (
     build_data_derived_decision_graph,
     build_speech_native_information_audit,
     build_speech_native_binding,
+    audit_speech_native_scale_capacity,
     candidate_action_state_response_format,
     candidate_counterevidence_response_format,
     candidate_support_response_format,
@@ -8237,6 +8238,212 @@ def test_speech_native_successor_binding_preserves_keys_and_adds_isolated_split(
     assert successor["isolation_audit"]["query_key_speaker_overlap"] == 0
 
 
+def test_speech_native_scale_capacity_audit_accounts_for_cumulative_memory_and_holdout():
+    material = _binding_material()
+    base = build_speech_native_binding(
+        material,
+        seed=20260821,
+        expected_scenarios=("alarm", "email"),
+        opt_a_per_scenario=2,
+        opt_b_per_scenario=1,
+        gate_per_scenario=1,
+        key_examples_per_scenario=5,
+    )
+    evidence = extend_speech_native_binding(
+        base,
+        material,
+        seed=20260822,
+        split_name="EVIDENCE-E4",
+        per_scenario=2,
+        expected_scenarios=("alarm", "email"),
+    )
+
+    audit = audit_speech_native_scale_capacity(
+        evidence,
+        material,
+        seed=20260823,
+        existing_memory_split_name="EVIDENCE-E4",
+        cumulative_query_count=10,
+        memory_query_count=6,
+        holdout_query_count=4,
+        expected_scenarios=("alarm", "email"),
+    )
+
+    assert audit["schema"] == "saea-speech-native-scale-capacity-audit-v1"
+    assert audit["targets"] == {
+        "cumulative_query_count": 10,
+        "memory_query_count": 6,
+        "existing_memory_query_count": 4,
+        "new_memory_query_count": 2,
+        "holdout_query_count": 4,
+    }
+    assert audit["allocations"]["new_memory"]["query_count"] == 2
+    assert audit["allocations"]["holdout"]["query_count"] == 4
+    assert audit["allocations"]["cumulative_memory"]["query_count"] == 6
+    assert audit["isolation"]["memory_holdout_speaker_overlap_count"] == 0
+    assert audit["isolation"]["query_key_speaker_overlap_count"] == 0
+    assert audit["study_wide_speaker_unseen_holdout"]["feasible"] is True
+    assert audit["isolation"]["holdout_historical_nonmemory_speaker_overlap_count"] == 0
+    assert audit["information_interpretation"][
+        "cumulative_memory_action_coverage_rate"
+    ] == 1.0
+    assert audit["information_interpretation"][
+        "cumulative_memory_scenario_action_coverage_rate"
+    ] == 1.0
+    assert audit["checks"]["cumulative_memory_action_complete"] is True
+    assert audit["checks"]["cumulative_memory_scenario_action_complete"] is True
+    assert audit["admission"]["status"] == "feasible"
+    assert audit["admission"]["new_model_contact_authorized"] is False
+    serialized = json.dumps(audit, sort_keys=True)
+    for forbidden_field in (
+        '"sample_id"',
+        '"utterance_id"',
+        '"speaker_id"',
+        '"normalized_sentence"',
+        '"media_relpath"',
+    ):
+        assert forbidden_field not in serialized
+
+
+def test_speech_native_scale_capacity_audit_blocks_an_infeasible_holdout_without_ids():
+    material = _binding_material()
+    base = build_speech_native_binding(
+        material,
+        seed=20260821,
+        expected_scenarios=("alarm", "email"),
+        opt_a_per_scenario=2,
+        opt_b_per_scenario=1,
+        gate_per_scenario=1,
+        key_examples_per_scenario=5,
+    )
+    evidence = extend_speech_native_binding(
+        base,
+        material,
+        seed=20260822,
+        split_name="EVIDENCE-E4",
+        per_scenario=2,
+        expected_scenarios=("alarm", "email"),
+    )
+
+    audit = audit_speech_native_scale_capacity(
+        evidence,
+        material,
+        seed=20260823,
+        existing_memory_split_name="EVIDENCE-E4",
+        cumulative_query_count=40,
+        memory_query_count=10,
+        holdout_query_count=30,
+        expected_scenarios=("alarm", "email"),
+    )
+
+    assert audit["admission"]["status"] == "blocked"
+    assert "holdout_capacity" in audit["admission"]["failed_checks"]
+    assert audit["admission"]["new_model_contact_authorized"] is False
+    assert '"sample_id"' not in json.dumps(audit, sort_keys=True)
+
+
+def test_speech_native_scale_capacity_audit_separates_stage_and_study_speakers():
+    material = _binding_material()
+    base = build_speech_native_binding(
+        material,
+        seed=20260821,
+        expected_scenarios=("alarm", "email"),
+        opt_a_per_scenario=2,
+        opt_b_per_scenario=1,
+        gate_per_scenario=1,
+        key_examples_per_scenario=5,
+    )
+    evidence = extend_speech_native_binding(
+        base,
+        material,
+        seed=20260822,
+        split_name="EVIDENCE-E4",
+        per_scenario=2,
+        expected_scenarios=("alarm", "email"),
+    )
+    registered_utterances = {
+        item["utterance_id"]
+        for split in evidence["splits"].values()
+        for item in split["items"]
+    }
+    historical_nonmemory_speakers = [
+        item["speaker_id"]
+        for split_name, split in evidence["splits"].items()
+        if split_name != "EVIDENCE-E4"
+        for item in split["items"]
+    ]
+    remapped = []
+    remap_index = 0
+    for entry in material:
+        if entry.utterance_id in registered_utterances:
+            remapped.append(entry)
+            continue
+        speaker = historical_nonmemory_speakers[
+            remap_index % len(historical_nonmemory_speakers)
+        ]
+        remap_index += 1
+        remapped.append(
+            SlurpTrainMaterial(
+                utterance_id=entry.utterance_id,
+                scenario=entry.scenario,
+                action=entry.action,
+                sentence=entry.sentence,
+                recordings=tuple(
+                    SlurpTrainRecording(
+                        sample_id=recording.sample_id,
+                        media_relpath=recording.media_relpath,
+                        speaker_id=speaker,
+                    )
+                    for recording in entry.recordings
+                ),
+                entity_types=entry.entity_types,
+            )
+        )
+
+    audit = audit_speech_native_scale_capacity(
+        evidence,
+        tuple(remapped),
+        seed=20260823,
+        existing_memory_split_name="EVIDENCE-E4",
+        cumulative_query_count=8,
+        memory_query_count=6,
+        holdout_query_count=2,
+        expected_scenarios=("alarm", "email"),
+    )
+
+    assert audit["admission"]["status"] == "feasible"
+    assert audit["study_wide_speaker_unseen_holdout"]["feasible"] is False
+    assert audit["isolation"]["memory_holdout_speaker_overlap_count"] == 0
+    assert audit["isolation"][
+        "holdout_historical_nonmemory_speaker_overlap_count"
+    ] > 0
+
+
+def test_speech_native_scale_capacity_audit_rejects_inconsistent_targets():
+    material = _binding_material()
+    base = build_speech_native_binding(
+        material,
+        seed=20260821,
+        expected_scenarios=("alarm", "email"),
+        opt_a_per_scenario=2,
+        opt_b_per_scenario=1,
+        gate_per_scenario=1,
+        key_examples_per_scenario=5,
+    )
+
+    with pytest.raises(PsluFlightError, match="must equal memory plus holdout"):
+        audit_speech_native_scale_capacity(
+            base,
+            material,
+            seed=20260823,
+            existing_memory_split_name="OPT-A36",
+            cumulative_query_count=11,
+            memory_query_count=6,
+            holdout_query_count=4,
+            expected_scenarios=("alarm", "email"),
+        )
+
+
 def test_binding_extension_cli_reuses_frozen_builder(monkeypatch, tmp_path, capsys):
     parent = tmp_path / "parent-binding.json"
     parent.write_text('{"binding_sha256":"parent"}', encoding="utf-8")
@@ -8313,6 +8520,85 @@ def test_binding_extension_cli_reuses_frozen_builder(monkeypatch, tmp_path, caps
     summary = json.loads(capsys.readouterr().out)
     assert summary["query_count"] == 12
     assert summary["parent_query_speaker_overlap_count"] == 3
+
+
+def test_binding_extension_cli_reuses_loader_for_scale_capacity_audit(
+    monkeypatch, tmp_path, capsys
+):
+    parent = tmp_path / "parent-binding.json"
+    parent.write_text('{"binding_sha256":"parent"}', encoding="utf-8")
+    output = tmp_path / "scale-capacity-audit.json"
+    material = _binding_material()
+    captured = {}
+
+    monkeypatch.setattr(driver_cli_module, "load_lock", lambda _path: {"lock": True})
+    monkeypatch.setattr(driver_cli_module, "umbrella_lock_path", lambda: tmp_path)
+    monkeypatch.setattr(driver_cli_module, "data_root", lambda: tmp_path)
+    monkeypatch.setattr(
+        driver_cli_module,
+        "load_slurp_train_material",
+        lambda lock, root, *, media_validation_workers: material,
+    )
+
+    def fake_audit(base, loaded_material, **kwargs):
+        captured.update(
+            {
+                "base": base,
+                "material": loaded_material,
+                "capacity": kwargs,
+            }
+        )
+        return {
+            "schema": "saea-speech-native-scale-capacity-audit-v1",
+            "admission": {"status": "feasible"},
+        }
+
+    monkeypatch.setattr(
+        driver_cli_module,
+        "audit_speech_native_scale_capacity",
+        fake_audit,
+    )
+    exit_code = driver_cli_module.main(
+        [
+            "extend-speech-native-binding",
+            "--parent-binding",
+            str(parent),
+            "--seed",
+            "20260823",
+            "--scale-capacity-audit-output",
+            str(output),
+            "--existing-memory-split",
+            "EVIDENCE-E108",
+            "--cumulative-query-count",
+            "500",
+            "--memory-query-count",
+            "360",
+            "--holdout-query-count",
+            "140",
+            "--workers",
+            "8",
+        ]
+    )
+
+    assert exit_code == 0
+    assert captured == {
+        "base": {"binding_sha256": "parent"},
+        "material": material,
+        "capacity": {
+            "seed": 20260823,
+            "existing_memory_split_name": "EVIDENCE-E108",
+            "cumulative_query_count": 500,
+            "memory_query_count": 360,
+            "holdout_query_count": 140,
+        },
+    }
+    assert json.loads(output.read_text(encoding="utf-8"))["admission"] == {
+        "status": "feasible"
+    }
+    summary = json.loads(capsys.readouterr().out)
+    assert summary["scale_capacity_audit_output"] == str(output.resolve())
+    assert len(summary["scale_capacity_audit_artifact_sha256"]) == 64
+    assert summary["scale_capacity_status"] == "feasible"
 
 
 def test_binding_extension_cli_reuses_selector_for_knowledge_only_successor(

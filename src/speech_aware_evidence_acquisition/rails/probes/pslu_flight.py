@@ -8554,6 +8554,565 @@ def extend_speech_native_binding(
     }
 
 
+@dataclass(frozen=True)
+class _SpeechNativeCapacityCandidate:
+    scenario: str
+    action: str
+    entity_types: tuple[str, ...]
+    sample: str
+    utterance: str
+    speaker: str
+    normalized_text: str
+
+
+def audit_speech_native_scale_capacity(
+    base_binding: Mapping[str, object],
+    material: Sequence[SlurpTrainMaterial],
+    *,
+    seed: int,
+    existing_memory_split_name: str,
+    cumulative_query_count: int,
+    memory_query_count: int,
+    holdout_query_count: int,
+    expected_scenarios: Sequence[str] = tuple(SPEECH_NATIVE_SCENARIO_DEFINITIONS),
+) -> dict[str, object]:
+    """Audit a cumulative memory/holdout ladder without exposing new identities.
+
+    The audit performs a deterministic hypothetical allocation, but emits only
+    aggregate counts. It reserves the holdout before allocating new discovery
+    memory and keeps every holdout speaker out of both the existing and new
+    memory. Study-wide historical-query speaker isolation is evaluated as a
+    stricter diagnostic because it can be infeasible after earlier bounded
+    discovery flights; it is never silently conflated with the mandatory
+    within-stage speaker-grouped holdout.
+    """
+
+    integer_values = {
+        "seed": seed,
+        "cumulative_query_count": cumulative_query_count,
+        "memory_query_count": memory_query_count,
+        "holdout_query_count": holdout_query_count,
+    }
+    for name, value in integer_values.items():
+        if isinstance(value, bool) or not isinstance(value, int):
+            raise PsluFlightError(f"speech-native scale {name} must be an integer")
+    if seed < 0:
+        raise PsluFlightError("speech-native scale seed must be non-negative")
+    if any(
+        value <= 0
+        for name, value in integer_values.items()
+        if name != "seed"
+    ):
+        raise PsluFlightError("speech-native scale query targets must be positive")
+    if cumulative_query_count != memory_query_count + holdout_query_count:
+        raise PsluFlightError(
+            "speech-native cumulative query count must equal memory plus holdout"
+        )
+    if not isinstance(existing_memory_split_name, str) or not existing_memory_split_name:
+        raise PsluFlightError("speech-native existing memory split name must be non-empty")
+    if not isinstance(base_binding, Mapping):
+        raise PsluFlightError("speech-native scale parent binding must be an object")
+    claimed_sha256 = base_binding.get("binding_sha256")
+    unsigned = {key: value for key, value in base_binding.items() if key != "binding_sha256"}
+    if claimed_sha256 != _binding_sha256(unsigned):
+        raise PsluFlightError("speech-native scale parent binding self-hash mismatch")
+
+    scenarios = tuple(expected_scenarios)
+    raw_cards = base_binding.get("key_cards")
+    raw_splits = base_binding.get("splits")
+    raw_keys = base_binding.get("key_material")
+    if (
+        not scenarios
+        or len(set(scenarios)) != len(scenarios)
+        or not isinstance(raw_cards, list)
+        or not isinstance(raw_splits, Mapping)
+        or not isinstance(raw_keys, list)
+    ):
+        raise PsluFlightError("speech-native scale binding roster is malformed")
+    card_labels = tuple(
+        card.get("value_label") if isinstance(card, Mapping) else None
+        for card in raw_cards
+    )
+    if card_labels != scenarios:
+        raise PsluFlightError(
+            "speech-native scale scenarios must match the frozen key-card order"
+        )
+    memory_split = raw_splits.get(existing_memory_split_name)
+    memory_items = memory_split.get("items") if isinstance(memory_split, Mapping) else None
+    if not isinstance(memory_items, list) or not memory_items:
+        raise PsluFlightError("speech-native existing memory split is missing or malformed")
+    if len(memory_items) >= memory_query_count:
+        raise PsluFlightError(
+            "speech-native memory target must exceed the existing memory split"
+        )
+
+    def required_text(item: Mapping[str, object], field_name: str, context: str) -> str:
+        value = item.get(field_name)
+        if not isinstance(value, str) or not value:
+            raise PsluFlightError(f"speech-native {context} lacks {field_name}")
+        return value
+
+    registered_samples: set[str] = set()
+    registered_utterances: set[str] = set()
+    registered_speakers: set[str] = set()
+    registered_texts: set[str] = set()
+    for split_name, split in raw_splits.items():
+        items = split.get("items") if isinstance(split, Mapping) else None
+        if not isinstance(split_name, str) or not isinstance(items, list):
+            raise PsluFlightError("speech-native scale query split is malformed")
+        for item in items:
+            if not isinstance(item, Mapping):
+                raise PsluFlightError("speech-native scale query item is malformed")
+            registered_samples.add(required_text(item, "sample_id", "query item"))
+            registered_utterances.add(required_text(item, "utterance_id", "query item"))
+            registered_speakers.add(required_text(item, "speaker_id", "query item"))
+            registered_texts.add(
+                required_text(item, "normalized_sentence", "query item")
+            )
+
+    key_samples: set[str] = set()
+    key_utterances: set[str] = set()
+    key_speakers: set[str] = set()
+    key_texts: set[str] = set()
+    for key in raw_keys:
+        sources = key.get("sources") if isinstance(key, Mapping) else None
+        if not isinstance(sources, list):
+            raise PsluFlightError("speech-native scale key material is malformed")
+        for source in sources:
+            if not isinstance(source, Mapping):
+                raise PsluFlightError("speech-native scale key source is malformed")
+            key_samples.add(required_text(source, "sample_id", "key source"))
+            key_utterances.add(required_text(source, "utterance_id", "key source"))
+            key_speakers.add(required_text(source, "speaker_id", "key source"))
+            key_texts.add(
+                required_text(source, "normalized_sentence", "key source")
+            )
+
+    material_by_utterance: dict[str, SlurpTrainMaterial] = {}
+    for entry in material:
+        if entry.utterance_id in material_by_utterance:
+            raise PsluFlightError("speech-native scale material repeats an utterance")
+        if (
+            not entry.utterance_id
+            or not entry.scenario
+            or not entry.action
+            or not entry.sentence
+            or any(not entity_type for entity_type in entry.entity_types)
+        ):
+            raise PsluFlightError("speech-native scale material is malformed")
+        material_by_utterance[entry.utterance_id] = entry
+
+    def observation_from_item(item: object) -> dict[str, object]:
+        if not isinstance(item, Mapping):
+            raise PsluFlightError("speech-native scale memory item is malformed")
+        utterance = required_text(item, "utterance_id", "memory item")
+        scenario = required_text(item, "value_label", "memory item")
+        speaker = required_text(item, "speaker_id", "memory item")
+        sample = required_text(item, "sample_id", "memory item")
+        normalized = required_text(item, "normalized_sentence", "memory item")
+        entry = material_by_utterance.get(utterance)
+        if (
+            entry is None
+            or entry.scenario != scenario
+            or _normalized_sentence(entry.sentence) != normalized
+            or not any(
+                recording.sample_id == sample and recording.speaker_id == speaker
+                for recording in entry.recordings
+            )
+        ):
+            raise PsluFlightError(
+                "speech-native existing memory item does not match train material"
+            )
+        return {
+            "scenario": scenario,
+            "action": entry.action,
+            "entity_types": tuple(sorted(set(entry.entity_types))),
+            "speaker": speaker,
+        }
+
+    existing_observations = tuple(observation_from_item(item) for item in memory_items)
+    existing_memory_speakers = {
+        str(observation["speaker"]) for observation in existing_observations
+    }
+
+    candidates: list[_SpeechNativeCapacityCandidate] = []
+    for entry in material:
+        normalized = _normalized_sentence(entry.sentence)
+        if (
+            entry.scenario not in scenarios
+            or entry.utterance_id in registered_utterances
+            or normalized in registered_texts
+            or entry.utterance_id in key_utterances
+            or normalized in key_texts
+        ):
+            continue
+        entities = tuple(sorted(set(entry.entity_types)))
+        for recording in entry.recordings:
+            if (
+                recording.sample_id in registered_samples
+                or recording.sample_id in key_samples
+                or recording.speaker_id in key_speakers
+            ):
+                continue
+            candidates.append(
+                _SpeechNativeCapacityCandidate(
+                    scenario=entry.scenario,
+                    action=entry.action,
+                    entity_types=entities,
+                    sample=recording.sample_id,
+                    utterance=entry.utterance_id,
+                    speaker=recording.speaker_id,
+                    normalized_text=normalized,
+                )
+            )
+
+    def balanced_quotas(total: int, purpose: str) -> dict[str, int]:
+        base, remainder = divmod(total, len(scenarios))
+        bonus = set(
+            sorted(
+                scenarios,
+                key=lambda scenario: _binding_rank(seed, purpose, scenario),
+            )[:remainder]
+        )
+        return {
+            scenario: base + int(scenario in bonus)
+            for scenario in scenarios
+        }
+
+    holdout_quotas = balanced_quotas(holdout_query_count, "scale-holdout-quota")
+    new_memory_count = memory_query_count - len(memory_items)
+    new_memory_quotas = balanced_quotas(new_memory_count, "scale-memory-quota")
+
+    def select(
+        pool: Sequence[_SpeechNativeCapacityCandidate],
+        quotas: Mapping[str, int],
+        purpose: str,
+        *,
+        forbidden_speakers: set[str],
+        initial_observations: Sequence[Mapping[str, object]] = (),
+        information_balanced: bool = False,
+        speaker_balanced: bool = False,
+    ) -> tuple[_SpeechNativeCapacityCandidate, ...]:
+        selected: list[_SpeechNativeCapacityCandidate] = []
+        used_samples: set[str] = set()
+        used_utterances: set[str] = set()
+        used_texts: set[str] = set()
+        used_speakers: set[str] = set()
+        for scenario in scenarios:
+            available = [
+                candidate
+                for candidate in pool
+                if candidate.scenario == scenario
+                and candidate.speaker not in forbidden_speakers
+            ]
+            seen_actions = {
+                str(item["action"])
+                for item in initial_observations
+                if item["scenario"] == scenario
+            }
+            seen_signatures = {
+                (str(item["action"]), tuple(item["entity_types"]))
+                for item in initial_observations
+                if item["scenario"] == scenario
+            }
+            count = 0
+            while count < quotas[scenario]:
+                remaining = [
+                    candidate
+                    for candidate in available
+                    if candidate.sample not in used_samples
+                    and candidate.utterance not in used_utterances
+                    and candidate.normalized_text not in used_texts
+                ]
+                if not remaining:
+                    break
+                candidate = min(
+                    remaining,
+                    key=lambda item: (
+                        int(speaker_balanced and item.speaker in used_speakers),
+                        int(information_balanced and item.action in seen_actions),
+                        int(
+                            information_balanced
+                            and (item.action, item.entity_types) in seen_signatures
+                        ),
+                        _binding_rank(
+                            seed,
+                            purpose,
+                            scenario,
+                            item.action,
+                            "+".join(item.entity_types),
+                            item.utterance,
+                            item.sample,
+                        ),
+                    ),
+                )
+                selected.append(candidate)
+                used_samples.add(candidate.sample)
+                used_utterances.add(candidate.utterance)
+                used_texts.add(candidate.normalized_text)
+                used_speakers.add(candidate.speaker)
+                seen_actions.add(candidate.action)
+                seen_signatures.add((candidate.action, candidate.entity_types))
+                count += 1
+        return tuple(selected)
+
+    strict_holdout = select(
+        candidates,
+        holdout_quotas,
+        "scale-strict-study-holdout",
+        forbidden_speakers=registered_speakers,
+        speaker_balanced=True,
+    )
+    stage_holdout = select(
+        candidates,
+        holdout_quotas,
+        "scale-stage-holdout",
+        forbidden_speakers=existing_memory_speakers,
+        speaker_balanced=True,
+    )
+    holdout = (
+        strict_holdout
+        if len(strict_holdout) == holdout_query_count
+        else stage_holdout
+    )
+    holdout_speakers = {candidate.speaker for candidate in holdout}
+    holdout_samples = {candidate.sample for candidate in holdout}
+    holdout_utterances = {candidate.utterance for candidate in holdout}
+    holdout_texts = {candidate.normalized_text for candidate in holdout}
+    memory_pool = tuple(
+        candidate
+        for candidate in candidates
+        if candidate.sample not in holdout_samples
+        and candidate.utterance not in holdout_utterances
+        and candidate.normalized_text not in holdout_texts
+    )
+    new_memory = select(
+        memory_pool,
+        new_memory_quotas,
+        "scale-new-memory",
+        forbidden_speakers=holdout_speakers,
+        initial_observations=existing_observations,
+        information_balanced=True,
+    )
+
+    shared_signature_scenarios: dict[tuple[str, tuple[str, ...]], set[str]] = (
+        defaultdict(set)
+    )
+    for candidate in candidates:
+        shared_signature_scenarios[
+            (candidate.action, candidate.entity_types)
+        ].add(candidate.scenario)
+    shared_signatures = {
+        signature
+        for signature, labels in shared_signature_scenarios.items()
+        if len(labels) > 1
+    }
+
+    def candidate_observation(
+        candidate: _SpeechNativeCapacityCandidate,
+    ) -> dict[str, object]:
+        return {
+            "scenario": candidate.scenario,
+            "action": candidate.action,
+            "entity_types": candidate.entity_types,
+            "speaker": candidate.speaker,
+        }
+
+    def summarize(observations: Sequence[Mapping[str, object]]) -> dict[str, object]:
+        actions = {str(item["action"]) for item in observations}
+        signatures = {
+            (str(item["action"]), tuple(item["entity_types"]))
+            for item in observations
+        }
+        per_scenario: dict[str, object] = {}
+        for scenario in scenarios:
+            subset = [item for item in observations if item["scenario"] == scenario]
+            per_scenario[scenario] = {
+                "query_count": len(subset),
+                "action_count": len({str(item["action"]) for item in subset}),
+                "action_entity_signature_count": len(
+                    {
+                        (str(item["action"]), tuple(item["entity_types"]))
+                        for item in subset
+                    }
+                ),
+            }
+        no_entities = sum(not tuple(item["entity_types"]) for item in observations)
+        return {
+            "query_count": len(observations),
+            "speaker_count": len({str(item["speaker"]) for item in observations}),
+            "scenario_count": len({str(item["scenario"]) for item in observations}),
+            "action_count": len(actions),
+            "action_entity_signature_count": len(signatures),
+            "shared_action_entity_query_count": sum(
+                (str(item["action"]), tuple(item["entity_types"]))
+                in shared_signatures
+                for item in observations
+            ),
+            "without_entities_count": no_entities,
+            "without_entities_rate": (
+                round(no_entities / len(observations), 8) if observations else 0.0
+            ),
+            "per_scenario": per_scenario,
+        }
+
+    holdout_observations = tuple(candidate_observation(item) for item in holdout)
+    new_memory_observations = tuple(
+        candidate_observation(item) for item in new_memory
+    )
+    cumulative_memory_observations = existing_observations + new_memory_observations
+    candidate_observations = tuple(candidate_observation(item) for item in candidates)
+    available_actions = {candidate.action for candidate in candidates}
+    cumulative_memory_actions = {
+        str(item["action"]) for item in cumulative_memory_observations
+    }
+    available_scenario_actions = {
+        (candidate.scenario, candidate.action) for candidate in candidates
+    }
+    cumulative_memory_scenario_actions = {
+        (str(item["scenario"]), str(item["action"]))
+        for item in cumulative_memory_observations
+    }
+
+    new_memory_speakers = {candidate.speaker for candidate in new_memory}
+    memory_speakers = existing_memory_speakers | new_memory_speakers
+    query_key_speaker_overlap = memory_speakers & key_speakers | holdout_speakers & key_speakers
+    stage_identity_overlap_count = len(
+        (holdout_samples & {candidate.sample for candidate in new_memory})
+        | (holdout_utterances & {candidate.utterance for candidate in new_memory})
+        | (holdout_texts & {candidate.normalized_text for candidate in new_memory})
+    )
+    checks = {
+        "holdout_capacity": len(holdout) == holdout_query_count,
+        "new_memory_capacity": len(new_memory) == new_memory_count,
+        "memory_holdout_speaker_disjoint": not (memory_speakers & holdout_speakers),
+        "query_key_speaker_disjoint": not query_key_speaker_overlap,
+        "stage_identity_disjoint": stage_identity_overlap_count == 0,
+        "cumulative_memory_action_complete": (
+            cumulative_memory_actions == available_actions
+        ),
+        "cumulative_memory_scenario_action_complete": (
+            cumulative_memory_scenario_actions == available_scenario_actions
+        ),
+        "complete_scenario_roster": (
+            len(holdout) == holdout_query_count
+            and len(new_memory) == new_memory_count
+            and {item.scenario for item in holdout} == set(scenarios)
+            and {item.scenario for item in new_memory} == set(scenarios)
+        ),
+    }
+    failed_checks = sorted(name for name, passed in checks.items() if not passed)
+    status = "feasible" if not failed_checks else "blocked"
+
+    return {
+        "schema": "saea-speech-native-scale-capacity-audit-v1",
+        "status": "MODEL-FREE AGGREGATE AUDIT; NOT AN EXPOSURE REGISTRATION",
+        "source": {
+            "binding_sha256": claimed_sha256,
+            "split": "SLURP train real speech only",
+            "seed": seed,
+            "existing_memory_split": existing_memory_split_name,
+            "registered_query_count": len(registered_samples),
+            "registered_query_speaker_count": len(registered_speakers),
+            "key_example_count": len(key_samples),
+            "key_speaker_count": len(key_speakers),
+            "new_identity_fields_emitted": False,
+        },
+        "targets": {
+            "cumulative_query_count": cumulative_query_count,
+            "memory_query_count": memory_query_count,
+            "existing_memory_query_count": len(memory_items),
+            "new_memory_query_count": new_memory_count,
+            "holdout_query_count": holdout_query_count,
+        },
+        "query_isolated_capacity": {
+            "recording_count": len(candidates),
+            "utterance_count": len({candidate.utterance for candidate in candidates}),
+            "speaker_count": len({candidate.speaker for candidate in candidates}),
+            "scenario_count": len({candidate.scenario for candidate in candidates}),
+            "action_count": len({candidate.action for candidate in candidates}),
+            "action_entity_signature_count": len(shared_signature_scenarios),
+            "shared_action_entity_signature_count": len(shared_signatures),
+        },
+        "allocation_policy": {
+            "id": "speaker-unseen-holdout-information-balanced-memory-v2",
+            "holdout_reserved_before_new_memory": True,
+            "study_wide_speaker_unseen_holdout_preferred": True,
+            "holdout_prioritizes_unseen_speakers": True,
+            "new_memory_prioritizes_unseen_action_then_signature": True,
+            "holdout_quota_by_scenario": holdout_quotas,
+            "new_memory_quota_by_scenario": new_memory_quotas,
+        },
+        "allocations": {
+            "existing_memory": summarize(existing_observations),
+            "new_memory": summarize(new_memory_observations),
+            "cumulative_memory": summarize(cumulative_memory_observations),
+            "holdout": summarize(holdout_observations),
+            "available_pool": summarize(candidate_observations),
+        },
+        "isolation": {
+            "memory_holdout_speaker_overlap_count": len(
+                memory_speakers & holdout_speakers
+            ),
+            "query_key_speaker_overlap_count": len(query_key_speaker_overlap),
+            "stage_identity_overlap_count": stage_identity_overlap_count,
+            "holdout_historical_nonmemory_speaker_overlap_count": len(
+                (holdout_speakers & registered_speakers) - existing_memory_speakers
+            ),
+        },
+        "study_wide_speaker_unseen_holdout": {
+            "feasible": len(strict_holdout) == holdout_query_count,
+            "allocated_query_count": len(strict_holdout),
+            "target_query_count": holdout_query_count,
+            "interpretation": (
+                "The holdout can be speaker-unseen relative to every registered query."
+                if len(strict_holdout) == holdout_query_count
+                else "The holdout cannot be claimed speaker-unseen relative to every "
+                "historical query; only the within-stage grouped claim is admissible."
+            ),
+        },
+        "information_interpretation": {
+            "rule": (
+                "The memory adds decision evidence only through train-derived key and "
+                "boundary information. Generated loop state may denoise speech but is "
+                "not counted as new label information."
+            ),
+            "cumulative_memory_action_coverage_rate": round(
+                len(cumulative_memory_actions) / len(available_actions),
+                8,
+            )
+            if candidates
+            else 0.0,
+            "cumulative_memory_scenario_action_coverage_rate": round(
+                len(cumulative_memory_scenario_actions)
+                / len(available_scenario_actions),
+                8,
+            )
+            if candidates
+            else 0.0,
+            "cumulative_memory_shared_signature_query_count": summarize(
+                cumulative_memory_observations
+            )["shared_action_entity_query_count"],
+            "holdout_shared_signature_query_count": summarize(holdout_observations)[
+                "shared_action_entity_query_count"
+            ],
+        },
+        "checks": checks,
+        "admission": {
+            "status": status,
+            "failed_checks": failed_checks,
+            "new_model_contact_authorized": False,
+            "reason": (
+                "The aggregate train-only ladder is feasible; exact identities remain "
+                "unfrozen and require a later owner-approved registration."
+                if status == "feasible"
+                else "The aggregate train-only ladder is infeasible under the "
+                "mandatory within-stage isolation constraints."
+            ),
+        },
+    }
+
+
 # ---------------------------------------------------------------------------
 # The ontology-miner call guard (module docstring).
 # ---------------------------------------------------------------------------
@@ -9021,6 +9580,7 @@ __all__ = [
     "SpeechNativeMatchOutcome",
     "SpeechNativeMatchTask",
     "assert_never_calls_ontology_miner",
+    "audit_speech_native_scale_capacity",
     "build_data_derived_decision_graph",
     "build_speech_native_information_audit",
     "build_speech_native_binding",
