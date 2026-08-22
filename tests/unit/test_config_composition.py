@@ -576,6 +576,71 @@ def test_speech_native_np16_ngram_profile_adds_only_target_verified_drafting():
     }
 
 
+def test_information_complete_e108_m11_composes_on_the_resident_np16_service():
+    """The 108-query action-support successor pins only promoted speech packets,
+    action-complete text keys, and the admitted residual-boundary graph."""
+
+    from speech_aware_evidence_acquisition.e0.artifacts import REPO_ROOT
+
+    composed = compose(
+        REPO_ROOT,
+        "q4km-mmproj-free-speech-native-np16-max64",
+        "slurp-speech-native-evidence-e108",
+        "speech-native-evidence-e108-information-complete-m11",
+        "speech-native-evidence-e108-k1-m11-information-complete-action-support",
+    )
+    values = composed.values
+
+    assert values["server_args"] == [
+        "-c", "65536", "-np", "16", "-b", "2048", "-ub", "512",
+        "-fa", "on", "-ngl", "999", "-ctk", "q8_0", "-ctv", "q8_0",
+    ]
+    assert values["server_env"] == {
+        "LLAMA_SPEECH_FEATURE_ROOT": (
+            "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a"
+        ),
+        "LLAMA_SPEECH_DECODER_SHA256": (
+            "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d"
+        ),
+    }
+    assert values["speech_packet_promotion_receipt"].endswith(
+        "/EVIDENCE-E108-promotion.json"
+    )
+    assert values["speech_packet_promotion_receipt_sha256"] == (
+        "4aafd75ab86734159e39d8dedfc3ec12346d75d683119984c7b1aece761c1555"
+    )
+    assert values["speech_native_binding"] == (
+        "configs/probes/g0-binding/"
+        "speech-native-train-binding-evidence-e108-information-complete-knowledge.json"
+    )
+    assert values["speech_native_binding_file_sha256"] == (
+        "a2ccd4b004ce2e31329bf7b69ce0ebb9cff642eec2d25cde8087ffc679203dfe"
+    )
+    assert values["speech_native_decision_graph"] == (
+        "configs/knowledge/slurp-signature-lexical-decision-graph-v4.json"
+    )
+    assert values["speech_native_decision_graph_file_sha256"] == (
+        "5c858eed0f909ea75b9340646a4444aa13cf3882c35d3e79d04e394fed0d2b64"
+    )
+    assert values["profile_key_order_ids"] == ["canonical"]
+    assert values["profile_queue_depth_multiplier"] == 4
+    assert values["profile_validation_workers"] == 16
+    assert values["speech_native_dispatch_granularity"] == "contact"
+    assert values["speech_native_contact_ceiling_per_task"] == 5
+    assert values["speech_native_top_k"] == 3
+    assert values["key_representation_id"] == "K1"
+    assert values["matcher_policy_id"] == "M11"
+    assert values["speech_native_agent_policy_id"] == (
+        "speech-conditioned-adaptive-evidence-gap-v2"
+    )
+    assert values["speech_native_agent_aggregator_id"] == (
+        "adaptive-evidence-gap-primary-control-v1"
+    )
+    context_per_slot = 65536 // values["profile_slot_count"]
+    conservative_prompt_ceiling = 1873 + 169 + 294
+    assert context_per_slot - conservative_prompt_ceiling == 1760
+
+
 # ---------------------------------------------------------------------------
 # model_lock_key: the composed config's own declaration of WHICH pinned model
 # this run is for -- the same declaration `runtime_receipt_relpath` already

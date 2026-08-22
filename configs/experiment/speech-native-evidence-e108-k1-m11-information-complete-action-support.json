@@ -1,0 +1,11 @@
+{
+  "experiment_id": "SAEA-SN-EVIDENCE-E108-K1M11-INFORMATION-COMPLETE-ACTION-SUPPORT",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "Fresh 108-query train discovery probe for information-complete speech-native AgentLoop action support. The frozen decoder jointly matches each original speech feature query against maintainable action-complete text keys. A later contact receives enum-bound speech-conditioned factor ids and one registered train-derived pair boundary only when candidate disagreement identifies a missing-information gap. The online decision remains the speech-only primary; counterfactual actions are logged for later training-free system control without parameter updates, transcript queries, or generated-text-only retrieval.",
+  "key_representation_id": "K1",
+  "matcher_policy_id": "M11",
+  "speech_native_decision_graph": "configs/knowledge/slurp-signature-lexical-decision-graph-v4.json",
+  "speech_native_decision_graph_file_sha256": "5c858eed0f909ea75b9340646a4444aa13cf3882c35d3e79d04e394fed0d2b64",
+  "speech_native_agent_policy_id": "speech-conditioned-adaptive-evidence-gap-v2",
+  "speech_native_agent_aggregator_id": "adaptive-evidence-gap-primary-control-v1"
+}
