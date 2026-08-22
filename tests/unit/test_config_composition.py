@@ -428,6 +428,35 @@ def test_q4km_repo_fragment_composes_with_the_expected_runtime_selection():
     assert base_composed.config_hash != composed.config_hash
 
 
+def test_speech_native_np24_profile_preserves_context_budget_and_batch_shape():
+    """The one-time resident-profile candidate increases request slots without
+    increasing total KV context or weakening the measured M11 prompt margin."""
+
+    from speech_aware_evidence_acquisition.e0.artifacts import REPO_ROOT
+
+    path = (
+        REPO_ROOT
+        / "configs"
+        / "model"
+        / "q4km-mmproj-free-speech-native-np24-max64.json"
+    )
+    values = json.loads(path.read_text(encoding="utf-8"))
+
+    assert values["server_args"] == [
+        "-c", "65536", "-np", "24", "-b", "2048", "-ub", "512",
+        "-fa", "on", "-ngl", "999", "-ctk", "q8_0", "-ctv", "q8_0",
+    ]
+    assert values["profile_slot_count"] == 24
+    assert values["decoding_params"]["max_tokens"] == 64
+    context_per_slot = 65536 // values["profile_slot_count"]
+    assert context_per_slot == 2730
+    assert context_per_slot - (1873 + values["decoding_params"]["max_tokens"]) == 793
+    assert values["speech_feature_root"] == (
+        "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a"
+    )
+    assert "LLAMA_MTMD_FEAT_CACHE_DIR" not in values["server_env"]
+
+
 # ---------------------------------------------------------------------------
 # model_lock_key: the composed config's own declaration of WHICH pinned model
 # this run is for -- the same declaration `runtime_receipt_relpath` already
