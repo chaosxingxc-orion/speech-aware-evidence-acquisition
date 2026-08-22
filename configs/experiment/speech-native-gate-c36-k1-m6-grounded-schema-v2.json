@@ -1,0 +1,9 @@
+{
+  "experiment_id": "SAEA-SN-GATE-C36-K1M6-GROUNDED-SCHEMA-V2",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "Unread GATE-C36 matched evaluation of the frozen schema-v2 AgentLoop. Every action keeps the original speech packet while generated grounded text may refine retrieval over maintainable text keys.",
+  "key_representation_id": "K1",
+  "matcher_policy_id": "M6",
+  "speech_native_agent_policy_id": "knowledge-grounded-semantic-refinement-schema-v2",
+  "speech_native_agent_aggregator_id": "grounded-refined-primary-fallback-v1"
+}
