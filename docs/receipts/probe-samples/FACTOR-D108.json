@@ -1,0 +1,444 @@
+{
+  "carrier": "slurp",
+  "design": "Exact label-free FACTOR-D108 identity derived from the frozen speech-native train binding; Stage-2 bounded discovery only.",
+  "items": [
+    {
+      "id": "slurp:train:000095:audio-1502462134",
+      "key": "slurp:slurp:train:000095:audio-1502462134"
+    },
+    {
+      "id": "slurp:train:000202:audio-1488554596",
+      "key": "slurp:slurp:train:000202:audio-1488554596"
+    },
+    {
+      "id": "slurp:train:003760:audio--1504192597-headset",
+      "key": "slurp:slurp:train:003760:audio--1504192597-headset"
+    },
+    {
+      "id": "slurp:train:003770:audio--1504192506-headset",
+      "key": "slurp:slurp:train:003770:audio--1504192506-headset"
+    },
+    {
+      "id": "slurp:train:004122:audio-1497887008-headset",
+      "key": "slurp:slurp:train:004122:audio-1497887008-headset"
+    },
+    {
+      "id": "slurp:train:004718:audio--1504194748-headset",
+      "key": "slurp:slurp:train:004718:audio--1504194748-headset"
+    },
+    {
+      "id": "slurp:train:000458:audio-1497884535",
+      "key": "slurp:slurp:train:000458:audio-1497884535"
+    },
+    {
+      "id": "slurp:train:001986:audio--1504192456-headset",
+      "key": "slurp:slurp:train:001986:audio--1504192456-headset"
+    },
+    {
+      "id": "slurp:train:002894:audio--1505407264-headset",
+      "key": "slurp:slurp:train:002894:audio--1505407264-headset"
+    },
+    {
+      "id": "slurp:train:003583:audio-1502892982-headset",
+      "key": "slurp:slurp:train:003583:audio-1502892982-headset"
+    },
+    {
+      "id": "slurp:train:005392:audio-1502309431-headset",
+      "key": "slurp:slurp:train:005392:audio-1502309431-headset"
+    },
+    {
+      "id": "slurp:train:005842:audio-1499688434",
+      "key": "slurp:slurp:train:005842:audio-1499688434"
+    },
+    {
+      "id": "slurp:train:007173:audio-1494513641-headset",
+      "key": "slurp:slurp:train:007173:audio-1494513641-headset"
+    },
+    {
+      "id": "slurp:train:007832:audio-1495734471",
+      "key": "slurp:slurp:train:007832:audio-1495734471"
+    },
+    {
+      "id": "slurp:train:008629:audio-1497860269",
+      "key": "slurp:slurp:train:008629:audio-1497860269"
+    },
+    {
+      "id": "slurp:train:008738:audio-1434543152",
+      "key": "slurp:slurp:train:008738:audio-1434543152"
+    },
+    {
+      "id": "slurp:train:008920:audio-1502101178",
+      "key": "slurp:slurp:train:008920:audio-1502101178"
+    },
+    {
+      "id": "slurp:train:009162:audio-1500978576-headset",
+      "key": "slurp:slurp:train:009162:audio-1500978576-headset"
+    },
+    {
+      "id": "slurp:train:009985:audio-1501774450-headset",
+      "key": "slurp:slurp:train:009985:audio-1501774450-headset"
+    },
+    {
+      "id": "slurp:train:009995:audio-1502217974-headset",
+      "key": "slurp:slurp:train:009995:audio-1502217974-headset"
+    },
+    {
+      "id": "slurp:train:010071:audio-1501151348",
+      "key": "slurp:slurp:train:010071:audio-1501151348"
+    },
+    {
+      "id": "slurp:train:010089:audio-1498567009-headset",
+      "key": "slurp:slurp:train:010089:audio-1498567009-headset"
+    },
+    {
+      "id": "slurp:train:010121:audio-1497862441",
+      "key": "slurp:slurp:train:010121:audio-1497862441"
+    },
+    {
+      "id": "slurp:train:010239:audio-1497870100-headset",
+      "key": "slurp:slurp:train:010239:audio-1497870100-headset"
+    },
+    {
+      "id": "slurp:train:000214:audio-1490021923",
+      "key": "slurp:slurp:train:000214:audio-1490021923"
+    },
+    {
+      "id": "slurp:train:000754:audio-1488985445",
+      "key": "slurp:slurp:train:000754:audio-1488985445"
+    },
+    {
+      "id": "slurp:train:001233:audio-1497865065",
+      "key": "slurp:slurp:train:001233:audio-1497865065"
+    },
+    {
+      "id": "slurp:train:002410:audio-1434531009-headset",
+      "key": "slurp:slurp:train:002410:audio-1434531009-headset"
+    },
+    {
+      "id": "slurp:train:002676:audio-1498574058",
+      "key": "slurp:slurp:train:002676:audio-1498574058"
+    },
+    {
+      "id": "slurp:train:004846:audio-1501697450-headset",
+      "key": "slurp:slurp:train:004846:audio-1501697450-headset"
+    },
+    {
+      "id": "slurp:train:015788:audio-1490183784-headset",
+      "key": "slurp:slurp:train:015788:audio-1490183784-headset"
+    },
+    {
+      "id": "slurp:train:015871:audio-1497862085",
+      "key": "slurp:slurp:train:015871:audio-1497862085"
+    },
+    {
+      "id": "slurp:train:016076:audio-1495377485-headset",
+      "key": "slurp:slurp:train:016076:audio-1495377485-headset"
+    },
+    {
+      "id": "slurp:train:016202:audio-1489498773",
+      "key": "slurp:slurp:train:016202:audio-1489498773"
+    },
+    {
+      "id": "slurp:train:016227:audio-1499689828",
+      "key": "slurp:slurp:train:016227:audio-1499689828"
+    },
+    {
+      "id": "slurp:train:016661:audio-1490182793-headset",
+      "key": "slurp:slurp:train:016661:audio-1490182793-headset"
+    },
+    {
+      "id": "slurp:train:006182:audio-1501767974",
+      "key": "slurp:slurp:train:006182:audio-1501767974"
+    },
+    {
+      "id": "slurp:train:006235:audio-1501692356",
+      "key": "slurp:slurp:train:006235:audio-1501692356"
+    },
+    {
+      "id": "slurp:train:006442:audio-1502101005-headset",
+      "key": "slurp:slurp:train:006442:audio-1502101005-headset"
+    },
+    {
+      "id": "slurp:train:006627:audio-1501753695",
+      "key": "slurp:slurp:train:006627:audio-1501753695"
+    },
+    {
+      "id": "slurp:train:006669:audio-1501697533-headset",
+      "key": "slurp:slurp:train:006669:audio-1501697533-headset"
+    },
+    {
+      "id": "slurp:train:014869:audio-1501690201",
+      "key": "slurp:slurp:train:014869:audio-1501690201"
+    },
+    {
+      "id": "slurp:train:001974:audio-1490356638-headset",
+      "key": "slurp:slurp:train:001974:audio-1490356638-headset"
+    },
+    {
+      "id": "slurp:train:002463:audio-1498646353-headset",
+      "key": "slurp:slurp:train:002463:audio-1498646353-headset"
+    },
+    {
+      "id": "slurp:train:002727:audio-1490957931-headset",
+      "key": "slurp:slurp:train:002727:audio-1490957931-headset"
+    },
+    {
+      "id": "slurp:train:002945:audio-1490200302-headset",
+      "key": "slurp:slurp:train:002945:audio-1490200302-headset"
+    },
+    {
+      "id": "slurp:train:003299:audio-1490800240-headset",
+      "key": "slurp:slurp:train:003299:audio-1490800240-headset"
+    },
+    {
+      "id": "slurp:train:004555:audio-1502377029-headset",
+      "key": "slurp:slurp:train:004555:audio-1502377029-headset"
+    },
+    {
+      "id": "slurp:train:007742:audio-1497869414",
+      "key": "slurp:slurp:train:007742:audio-1497869414"
+    },
+    {
+      "id": "slurp:train:010446:audio-1490956744",
+      "key": "slurp:slurp:train:010446:audio-1490956744"
+    },
+    {
+      "id": "slurp:train:010504:audio-1498574024-headset",
+      "key": "slurp:slurp:train:010504:audio-1498574024-headset"
+    },
+    {
+      "id": "slurp:train:010643:audio-1489673617-headset",
+      "key": "slurp:slurp:train:010643:audio-1489673617-headset"
+    },
+    {
+      "id": "slurp:train:010919:audio-1490958088-headset",
+      "key": "slurp:slurp:train:010919:audio-1490958088-headset"
+    },
+    {
+      "id": "slurp:train:010963:audio-1497556046-headset",
+      "key": "slurp:slurp:train:010963:audio-1497556046-headset"
+    },
+    {
+      "id": "slurp:train:000079:audio-1502375299",
+      "key": "slurp:slurp:train:000079:audio-1502375299"
+    },
+    {
+      "id": "slurp:train:003371:audio-1502098927-headset",
+      "key": "slurp:slurp:train:003371:audio-1502098927-headset"
+    },
+    {
+      "id": "slurp:train:003820:audio-1495732940-headset",
+      "key": "slurp:slurp:train:003820:audio-1495732940-headset"
+    },
+    {
+      "id": "slurp:train:004279:audio-1495733538",
+      "key": "slurp:slurp:train:004279:audio-1495733538"
+    },
+    {
+      "id": "slurp:train:005023:audio-1502375475-headset",
+      "key": "slurp:slurp:train:005023:audio-1502375475-headset"
+    },
+    {
+      "id": "slurp:train:005991:audio-1497450809",
+      "key": "slurp:slurp:train:005991:audio-1497450809"
+    },
+    {
+      "id": "slurp:train:000384:audio-1488988497",
+      "key": "slurp:slurp:train:000384:audio-1488988497"
+    },
+    {
+      "id": "slurp:train:001185:audio-1502199542",
+      "key": "slurp:slurp:train:001185:audio-1502199542"
+    },
+    {
+      "id": "slurp:train:002394:audio-1490291779-headset",
+      "key": "slurp:slurp:train:002394:audio-1490291779-headset"
+    },
+    {
+      "id": "slurp:train:003216:audio-1490286796",
+      "key": "slurp:slurp:train:003216:audio-1490286796"
+    },
+    {
+      "id": "slurp:train:005222:audio-1501151669-headset",
+      "key": "slurp:slurp:train:005222:audio-1501151669-headset"
+    },
+    {
+      "id": "slurp:train:014352:audio-1502218586-headset",
+      "key": "slurp:slurp:train:014352:audio-1502218586-headset"
+    },
+    {
+      "id": "slurp:train:001875:audio-1490262483",
+      "key": "slurp:slurp:train:001875:audio-1490262483"
+    },
+    {
+      "id": "slurp:train:005940:audio-1502895022",
+      "key": "slurp:slurp:train:005940:audio-1502895022"
+    },
+    {
+      "id": "slurp:train:009289:audio-1499265686",
+      "key": "slurp:slurp:train:009289:audio-1499265686"
+    },
+    {
+      "id": "slurp:train:010258:audio-1497436577",
+      "key": "slurp:slurp:train:010258:audio-1497436577"
+    },
+    {
+      "id": "slurp:train:011291:audio-1494415711-headset",
+      "key": "slurp:slurp:train:011291:audio-1494415711-headset"
+    },
+    {
+      "id": "slurp:train:011461:audio-1502377748",
+      "key": "slurp:slurp:train:011461:audio-1502377748"
+    },
+    {
+      "id": "slurp:train:013432:audio-1501768260",
+      "key": "slurp:slurp:train:013432:audio-1501768260"
+    },
+    {
+      "id": "slurp:train:013566:audio-1490967513",
+      "key": "slurp:slurp:train:013566:audio-1490967513"
+    },
+    {
+      "id": "slurp:train:013999:audio-1501778493",
+      "key": "slurp:slurp:train:013999:audio-1501778493"
+    },
+    {
+      "id": "slurp:train:014050:audio-1490183845",
+      "key": "slurp:slurp:train:014050:audio-1490183845"
+    },
+    {
+      "id": "slurp:train:014569:audio-1492780088",
+      "key": "slurp:slurp:train:014569:audio-1492780088"
+    },
+    {
+      "id": "slurp:train:014890:audio-1502309966",
+      "key": "slurp:slurp:train:014890:audio-1502309966"
+    },
+    {
+      "id": "slurp:train:011565:audio-1488554701",
+      "key": "slurp:slurp:train:011565:audio-1488554701"
+    },
+    {
+      "id": "slurp:train:011576:audio-1490199666",
+      "key": "slurp:slurp:train:011576:audio-1490199666"
+    },
+    {
+      "id": "slurp:train:011584:audio-1502895594-headset",
+      "key": "slurp:slurp:train:011584:audio-1502895594-headset"
+    },
+    {
+      "id": "slurp:train:011637:audio-1502113355",
+      "key": "slurp:slurp:train:011637:audio-1502113355"
+    },
+    {
+      "id": "slurp:train:012029:audio-1498564774",
+      "key": "slurp:slurp:train:012029:audio-1498564774"
+    },
+    {
+      "id": "slurp:train:012097:audio-1499360762",
+      "key": "slurp:slurp:train:012097:audio-1499360762"
+    },
+    {
+      "id": "slurp:train:015310:audio-1502195737-headset",
+      "key": "slurp:slurp:train:015310:audio-1502195737-headset"
+    },
+    {
+      "id": "slurp:train:015398:audio-1498570121-headset",
+      "key": "slurp:slurp:train:015398:audio-1498570121-headset"
+    },
+    {
+      "id": "slurp:train:015590:audio-1494511786",
+      "key": "slurp:slurp:train:015590:audio-1494511786"
+    },
+    {
+      "id": "slurp:train:015608:audio-1501152832-headset",
+      "key": "slurp:slurp:train:015608:audio-1501152832-headset"
+    },
+    {
+      "id": "slurp:train:015611:audio-1502377728",
+      "key": "slurp:slurp:train:015611:audio-1502377728"
+    },
+    {
+      "id": "slurp:train:015691:audio-1499265902-headset",
+      "key": "slurp:slurp:train:015691:audio-1499265902-headset"
+    },
+    {
+      "id": "slurp:train:001232:audio-1490008083-headset",
+      "key": "slurp:slurp:train:001232:audio-1490008083-headset"
+    },
+    {
+      "id": "slurp:train:002036:audio-1501690386",
+      "key": "slurp:slurp:train:002036:audio-1501690386"
+    },
+    {
+      "id": "slurp:train:003048:audio-1434541274-headset",
+      "key": "slurp:slurp:train:003048:audio-1434541274-headset"
+    },
+    {
+      "id": "slurp:train:004038:audio-1499265818",
+      "key": "slurp:slurp:train:004038:audio-1499265818"
+    },
+    {
+      "id": "slurp:train:004064:audio-1497450889",
+      "key": "slurp:slurp:train:004064:audio-1497450889"
+    },
+    {
+      "id": "slurp:train:004394:audio-1498568819-headset",
+      "key": "slurp:slurp:train:004394:audio-1498568819-headset"
+    },
+    {
+      "id": "slurp:train:012124:audio-1490798822-headset",
+      "key": "slurp:slurp:train:012124:audio-1490798822-headset"
+    },
+    {
+      "id": "slurp:train:012143:audio-1490005889-headset",
+      "key": "slurp:slurp:train:012143:audio-1490005889-headset"
+    },
+    {
+      "id": "slurp:train:012241:audio-1498572723-headset",
+      "key": "slurp:slurp:train:012241:audio-1498572723-headset"
+    },
+    {
+      "id": "slurp:train:012560:audio-1498572869",
+      "key": "slurp:slurp:train:012560:audio-1498572869"
+    },
+    {
+      "id": "slurp:train:012830:audio-1497885898",
+      "key": "slurp:slurp:train:012830:audio-1497885898"
+    },
+    {
+      "id": "slurp:train:012860:audio-1501765648",
+      "key": "slurp:slurp:train:012860:audio-1501765648"
+    },
+    {
+      "id": "slurp:train:000791:audio-1495378082-headset",
+      "key": "slurp:slurp:train:000791:audio-1495378082-headset"
+    },
+    {
+      "id": "slurp:train:000825:audio-1490370522-headset",
+      "key": "slurp:slurp:train:000825:audio-1490370522-headset"
+    },
+    {
+      "id": "slurp:train:002998:audio-1498564834-headset",
+      "key": "slurp:slurp:train:002998:audio-1498564834-headset"
+    },
+    {
+      "id": "slurp:train:003783:audio-1502215765-headset",
+      "key": "slurp:slurp:train:003783:audio-1502215765-headset"
+    },
+    {
+      "id": "slurp:train:005669:audio-1499266417-headset",
+      "key": "slurp:slurp:train:005669:audio-1499266417-headset"
+    },
+    {
+      "id": "slurp:train:005778:audio-1497880454",
+      "key": "slurp:slurp:train:005778:audio-1497880454"
+    }
+  ],
+  "probe": "speech-native-runtime-view",
+  "seed": 20260825,
+  "source_runtime_view_sha256": "1017b1bd39a3f2ec478051b88c976699b7450de037057b77a682ac6a3877560d",
+  "source_split_identity_hash": "458b1aefe679dc84a8822c52d50d95f37be4cf6805b278f74c74a61174167187",
+  "split_identity_hash": "6cc953d3329c7518473f876b819f77c35a1a5610341dac0bec61b9d2bb465a90",
+  "split_role": "discovery"
+}
