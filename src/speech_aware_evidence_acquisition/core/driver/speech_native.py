@@ -128,6 +128,8 @@ _M9_COMMON_ACTIONS = (
 _M10_POLICY_ID = "speech-conditioned-candidate-evidence-action-support-v1"
 _M10_AGGREGATOR_ID = "candidate-evidence-primary-control-v1"
 _M11_POLICY_ID = "speech-conditioned-adaptive-evidence-gap-v1"
+_M11_KEY_CONDITIONED_POLICY_ID = "speech-conditioned-adaptive-evidence-gap-v2"
+_M11_POLICY_IDS = frozenset({_M11_POLICY_ID, _M11_KEY_CONDITIONED_POLICY_ID})
 _M11_AGGREGATOR_ID = "adaptive-evidence-gap-primary-control-v1"
 _SPEAKER_FOLD_POLICY_ID = "speaker-grouped-3fold-sha256-load-balanced-v1"
 _CONTEXTUAL_ACTION_IDS = (
@@ -3012,11 +3014,12 @@ def _parse_m11_adaptive_evidence_gap_trajectory(
     """Reconstruct one M11 trajectory from exact graph-bound state transitions."""
 
     primary_key_id = row.get("key_id")
+    policy_id = row.get("agent_policy_id")
     actions = row.get("agent_actions")
     votes = row.get("agent_vote_key_ids")
     steps = row.get("agent_steps")
     if (
-        row.get("agent_policy_id") != _M11_POLICY_ID
+        policy_id not in _M11_POLICY_IDS
         or row.get("agent_aggregator_id") != _M11_AGGREGATOR_ID
         or not isinstance(primary_key_id, str)
         or primary_key_id not in visible_card_by_key
@@ -3116,6 +3119,7 @@ def _parse_m11_adaptive_evidence_gap_trajectory(
                 "M11 invalid candidate-action termination is malformed"
             )
         return {
+            "policy_id": policy_id,
             "sample_id": sample_id,
             "speaker_id": speaker_id,
             "gold_key_id": gold_key_id,
@@ -3146,6 +3150,7 @@ def _parse_m11_adaptive_evidence_gap_trajectory(
         ):
             raise SpeechNativeProfileError("M11 consistent stop is malformed")
         return {
+            "policy_id": policy_id,
             "sample_id": sample_id,
             "speaker_id": speaker_id,
             "gold_key_id": gold_key_id,
@@ -3185,6 +3190,7 @@ def _parse_m11_adaptive_evidence_gap_trajectory(
         ):
             raise SpeechNativeProfileError("M11 no-boundary stop is malformed")
         return {
+            "policy_id": policy_id,
             "sample_id": sample_id,
             "speaker_id": speaker_id,
             "gold_key_id": gold_key_id,
@@ -3256,6 +3262,7 @@ def _parse_m11_adaptive_evidence_gap_trajectory(
         ab_key_id if not comparison_failed and ab_key_id == ba_key_id else None
     )
     return {
+        "policy_id": policy_id,
         "sample_id": sample_id,
         "speaker_id": speaker_id,
         "gold_key_id": gold_key_id,
@@ -3288,6 +3295,12 @@ def _evaluate_m11_adaptive_evidence_gap(
         raise SpeechNativeProfileError(
             "M11 adaptive evidence-gap read requires trajectories"
         )
+    policy_ids = {item.get("policy_id") for item in frozen}
+    if len(policy_ids) != 1 or next(iter(policy_ids)) not in _M11_POLICY_IDS:
+        raise SpeechNativeProfileError(
+            "M11 adaptive evidence-gap read mixes policy identities"
+        )
+    policy_id = next(iter(policy_ids))
     primary_correct = sum(
         item["primary_key_id"] == item["gold_key_id"] for item in frozen
     )
@@ -3355,7 +3368,7 @@ def _evaluate_m11_adaptive_evidence_gap(
     mechanism_failure_count = sum(bool(item["mechanism_failure"]) for item in frozen)
     calls_distribution = Counter(int(item["total_calls"]) for item in frozen)
     return {
-        "policy_id": _M11_POLICY_ID,
+        "policy_id": policy_id,
         "aggregator_id": _M11_AGGREGATOR_ID,
         "query_count": len(frozen),
         "primary_correct": primary_correct,
@@ -3783,7 +3796,7 @@ def read_speech_native_predictions(
             cell_id += "-candidate-evidence-support-v1"
         elif matcher_policy_id == "M11":
             if (
-                profile_agent_policy_id != _M11_POLICY_ID
+                profile_agent_policy_id not in _M11_POLICY_IDS
                 or agent_aggregator_id != _M11_AGGREGATOR_ID
                 or key_representation_id != "K1"
                 or profile.get("decision_graph_id")
@@ -3792,7 +3805,11 @@ def read_speech_native_predictions(
                 raise SpeechNativeProfileError(
                     "M11 flight receipt has an unknown adaptive evidence-gap identity"
                 )
-            cell_id += "-adaptive-evidence-gap-v1"
+            cell_id += (
+                "-adaptive-evidence-gap-v2"
+                if profile_agent_policy_id == _M11_KEY_CONDITIONED_POLICY_ID
+                else "-adaptive-evidence-gap-v1"
+            )
         profile_decision_graph: DecisionGraphV1 | None = None
         if matcher_policy_id in {"M9", "M10", "M11"}:
             graph_relpath = profile.get("decision_graph_path")
@@ -7200,7 +7217,7 @@ def _audit_m11_adaptive_evidence_gap(
     if (
         profile.get("matcher_policy_id") != "M11"
         or profile.get("key_representation_id") != "K1"
-        or profile.get("agent_policy_id") != _M11_POLICY_ID
+        or profile.get("agent_policy_id") not in _M11_POLICY_IDS
         or profile.get("agent_aggregator_id") != _M11_AGGREGATOR_ID
         or profile.get("mechanism_control_id") != "matched"
         or isinstance(task_count, bool)

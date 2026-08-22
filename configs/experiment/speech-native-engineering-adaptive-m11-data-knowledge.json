@@ -1,11 +1,11 @@
 {
   "experiment_id": "SAEA-SN-ENG-GATE8-K1M11-ADAPTIVE-DATA-KNOWLEDGE",
   "execution_profile": "bounded-discovery-probe",
-  "purpose": "Eight-sample label-blind engineering gate for the adaptive speech-native AgentLoop. Validate exact-id parsing, adaptive three-or-five-contact stopping, new-knowledge accounting, global contact batching, original-speech carriage, and mmproj-free resident inference before any fresh E108 scientific contact.",
+  "purpose": "Label-blind engineering gate for the adaptive speech-native AgentLoop. Bind each generated key to only its registered factors in the llama.cpp grammar, require an operation factor first, and validate exact-id parsing, adaptive three-or-five-contact stopping, new-knowledge accounting, global contact batching, original-speech carriage, and mmproj-free resident inference before any fresh E108 scientific contact.",
   "key_representation_id": "K1",
   "matcher_policy_id": "M11",
   "speech_native_decision_graph": "configs/knowledge/slurp-data-derived-decision-graph-v2.json",
   "speech_native_decision_graph_file_sha256": "c8bf25bacf0344a1c47fdb8659900636d8f669dec768d3580aae409de9533abb",
-  "speech_native_agent_policy_id": "speech-conditioned-adaptive-evidence-gap-v1",
+  "speech_native_agent_policy_id": "speech-conditioned-adaptive-evidence-gap-v2",
   "speech_native_agent_aggregator_id": "adaptive-evidence-gap-primary-control-v1"
 }

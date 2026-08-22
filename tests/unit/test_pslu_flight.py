@@ -80,6 +80,7 @@ from speech_aware_evidence_acquisition.rails.probes.pslu_flight import (
     assert_never_calls_ontology_miner,
     build_data_derived_decision_graph,
     build_speech_native_binding,
+    candidate_action_state_response_format,
     candidate_counterevidence_response_format,
     candidate_support_response_format,
     decision_boundary_path,
@@ -2948,6 +2949,67 @@ class _M11AdaptiveEvidenceClient:
         return tuple(self.complete(messages, **kwargs) for messages, kwargs in requests)
 
 
+def test_m11_key_conditioned_action_schema_binds_operation_factors_to_each_key():
+    response_format = candidate_action_state_response_format(
+        graph=_decision_graph_fixture(),
+        candidate_key_ids=("K001", "K002"),
+        key_conditioned=True,
+    )
+
+    schema = response_format["json_schema"]["schema"]
+    assert "oneOf" in schema
+    branches = {
+        branch["properties"]["key_id"]["const"]: branch
+        for branch in schema["oneOf"]
+    }
+    assert set(branches) == {"K001", "K002"}
+    assert branches["K001"]["properties"]["factor_ids"]["prefixItems"] == [
+        {"enum": ["F002"]}
+    ]
+    assert branches["K001"]["properties"]["factor_ids"]["items"] == {
+        "enum": ["F001", "F002"]
+    }
+    assert branches["K002"]["properties"]["factor_ids"]["prefixItems"] == [
+        {"enum": ["F004"]}
+    ]
+    assert branches["K002"]["properties"]["factor_ids"]["items"] == {
+        "enum": ["F003", "F004"]
+    }
+
+
+def test_m11_v2_pushes_key_factor_binding_into_the_llama_cpp_grammar():
+    client = _M11AdaptiveEvidenceClient(agree=True)
+    result = run_speech_native_matcher(
+        core_client=client,
+        sample=_SpeechSample(),
+        query_descriptor=_QUERY_DESCRIPTOR,
+        key_cards=_KEY_CARDS,
+        key_representation_id="K1",
+        matcher_policy_id="M11",
+        prompt_policy_id="speech-native-json-copy-v4",
+        agent_policy_id="speech-conditioned-adaptive-evidence-gap-v2",
+        agent_aggregator_id="adaptive-evidence-gap-primary-control-v1",
+        decision_graph=_decision_graph_fixture(),
+        top_k=2,
+    )
+
+    action_messages, action_kwargs = next(
+        (messages, kwargs)
+        for messages, kwargs in client.calls
+        if kwargs["matcher_policy_id"].endswith(":candidate-action-state")
+    )
+    schema = action_kwargs["decoding_params"]["response_format"]["json_schema"][
+        "schema"
+    ]
+    assert "oneOf" in schema
+    assert "first factor id must be an operation" in json.dumps(
+        action_messages
+    ).lower()
+    assert result.calls == 3
+    assert result.agent_policy_id == "speech-conditioned-adaptive-evidence-gap-v2"
+    _assert_every_call_carries_query(client)
+
+
 def test_m11_stops_when_primary_retrieval_and_action_state_are_complete():
     client = _M11AdaptiveEvidenceClient(agree=True)
     result = run_speech_native_matcher(
@@ -3093,6 +3155,61 @@ def test_m11_contact_dispatch_interleaves_new_evidence_before_root_backlog():
     assert all(outcome.decision.key_id == "K001" for outcome in outcomes)
 
 
+def test_m11_contact_dispatch_preserves_the_v2_key_conditioned_grammar():
+    tasks = tuple(
+        SpeechNativeMatchTask(
+            task_id=f"m11-v2-{index}",
+            sample=type("Sample", (), {"sample_id": f"m11-v2-sample-{index}"})(),
+            query_descriptor={
+                "packet_id": f"slurp/train/m11-v2-sample-{index}",
+                "sha256": f"{index + 1:064x}",
+                "role": "query",
+            },
+            key_cards=_KEY_CARDS,
+            key_representation_id="K1",
+            matcher_policy_id="M11",
+            prompt_policy_id="speech-native-json-copy-v4",
+            top_k=2,
+            decision_graph=_decision_graph_fixture(),
+            agent_policy_id="speech-conditioned-adaptive-evidence-gap-v2",
+            agent_aggregator_id="adaptive-evidence-gap-primary-control-v1",
+        )
+        for index in range(2)
+    )
+    client = _M11AdaptiveEvidenceClient(agree=True)
+
+    outcomes = run_speech_native_match_tasks(
+        core_client=client,
+        tasks=tasks,
+        slot_count=2,
+        queue_depth=4,
+        dispatch_granularity="contact",
+    )
+
+    action_formats = [
+        kwargs["decoding_params"]["response_format"]
+        for _messages, kwargs in client.calls
+        if kwargs["matcher_policy_id"].endswith(":candidate-action-state")
+    ]
+    assert len(action_formats) == 2
+    assert all("oneOf" in item["json_schema"]["schema"] for item in action_formats)
+    assert all(outcome.decision.calls == 3 for outcome in outcomes)
+    assert all(
+        outcome.decision.agent_policy_id
+        == "speech-conditioned-adaptive-evidence-gap-v2"
+        for outcome in outcomes
+    )
+    for messages, _kwargs in client.calls:
+        query_parts = [
+            part["speech_features"]
+            for part in messages[1]["content"]
+            if part.get("type") == "input_speech_features"
+            and part["speech_features"]["role"] == "query"
+        ]
+        assert len(query_parts) == 1
+        assert query_parts[0]["packet_id"].startswith("slurp/train/m11-v2-sample-")
+
+
 def _m11_decision_row(result, *, sample_id="sample-1", task_id=None):
     return {
         "schema": "saea-speech-native-decision-v1",
@@ -3160,6 +3277,35 @@ def test_m11_reader_reconstructs_information_gain_and_action_space():
     assert metrics["new_knowledge_query_count"] == 1
     assert metrics["adaptive_boundary_query_count"] == 1
     assert metrics["final_minus_primary_correct"] == 0
+
+
+def test_m11_reader_preserves_the_versioned_key_conditioned_policy_identity():
+    result = run_speech_native_matcher(
+        core_client=_M11AdaptiveEvidenceClient(agree=True),
+        sample=_SpeechSample(),
+        query_descriptor=_QUERY_DESCRIPTOR,
+        key_cards=_KEY_CARDS,
+        key_representation_id="K1",
+        matcher_policy_id="M11",
+        prompt_policy_id="speech-native-json-copy-v4",
+        agent_policy_id="speech-conditioned-adaptive-evidence-gap-v2",
+        agent_aggregator_id="adaptive-evidence-gap-primary-control-v1",
+        decision_graph=_decision_graph_fixture(),
+        top_k=2,
+    )
+    trajectory = _parse_m11_adaptive_evidence_gap_trajectory(
+        row=_m11_decision_row(result),
+        sample_id="sample-1",
+        speaker_id="speaker-1",
+        gold_key_id="K001",
+        top_k=2,
+        visible_card_by_key={card.key_id: card for card in _KEY_CARDS},
+        decision_graph=_decision_graph_fixture(),
+    )
+
+    assert trajectory["policy_id"] == "speech-conditioned-adaptive-evidence-gap-v2"
+    metrics = _evaluate_m11_adaptive_evidence_gap((trajectory,))
+    assert metrics["policy_id"] == "speech-conditioned-adaptive-evidence-gap-v2"
 
 
 def _write_m11_engineering_action_audit_fixture(tmp_path):

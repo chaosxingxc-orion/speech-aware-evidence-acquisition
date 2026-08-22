@@ -204,6 +204,7 @@ SPEECH_NATIVE_AGENT_POLICIES = (
     "speech-conditioned-factor-graph-action-support-v1",
     "speech-conditioned-candidate-evidence-action-support-v1",
     "speech-conditioned-adaptive-evidence-gap-v1",
+    "speech-conditioned-adaptive-evidence-gap-v2",
 )
 SPEECH_NATIVE_SCENARIO_DEFINITIONS: Mapping[str, str] = MappingProxyType(
     {
@@ -973,7 +974,10 @@ def parse_factor_link_state(
 
 
 def candidate_action_state_response_format(
-    *, graph: DecisionGraphV1, candidate_key_ids: Sequence[str]
+    *,
+    graph: DecisionGraphV1,
+    candidate_key_ids: Sequence[str],
+    key_conditioned: bool = False,
 ) -> dict[str, object]:
     candidates = tuple(candidate_key_ids)
     if not candidates or len(set(candidates)) != len(candidates):
@@ -990,6 +994,59 @@ def candidate_action_state_response_format(
     )
     if not factor_ids:
         raise PsluFlightError("candidate action state lacks factor knowledge")
+    if key_conditioned:
+        factors_by_key = {
+            key_id: tuple(
+                factor.factor_id for factor in graph.factors if key_id in factor.key_ids
+            )
+            for key_id in candidates
+        }
+        operations_by_key = {
+            key_id: tuple(
+                factor.factor_id
+                for factor in graph.factors
+                if key_id in factor.key_ids and factor.kind == "operation"
+            )
+            for key_id in candidates
+        }
+        missing_operations = tuple(
+            key_id for key_id in candidates if not operations_by_key[key_id]
+        )
+        if missing_operations:
+            raise PsluFlightError(
+                "key-conditioned candidate action state lacks operation factors for "
+                + ",".join(missing_operations)
+            )
+        return {
+            "type": "json_schema",
+            "json_schema": {
+                "name": "speech_native_candidate_action_state_v2",
+                "strict": True,
+                "schema": {
+                    "oneOf": [
+                        {
+                            "type": "object",
+                            "properties": {
+                                "key_id": {"const": key_id},
+                                "factor_ids": {
+                                    "type": "array",
+                                    "prefixItems": [
+                                        {"enum": list(operations_by_key[key_id])}
+                                    ],
+                                    "items": {"enum": list(factors_by_key[key_id])},
+                                    "minItems": 1,
+                                    "maxItems": min(3, len(factors_by_key[key_id])),
+                                    "uniqueItems": True,
+                                },
+                            },
+                            "required": ["key_id", "factor_ids"],
+                            "additionalProperties": False,
+                        }
+                        for key_id in candidates
+                    ]
+                },
+            },
+        }
     return {
         "type": "json_schema",
         "json_schema": {
@@ -1993,7 +2050,11 @@ def run_speech_native_matcher(
         assert decision_graph is not None
         decision_graph.validate(cards)
     if matcher_policy_id == "M11" and (
-        agent_policy_id != "speech-conditioned-adaptive-evidence-gap-v1"
+        agent_policy_id
+        not in {
+            "speech-conditioned-adaptive-evidence-gap-v1",
+            "speech-conditioned-adaptive-evidence-gap-v2",
+        }
         or agent_aggregator_id != "adaptive-evidence-gap-primary-control-v1"
     ):
         raise PsluFlightError(
@@ -3041,8 +3102,15 @@ def run_speech_native_matcher(
             "candidate-action-state",
             "Re-observe the original speech while using only the retrieved candidate "
             "cards and their registered task factors. Select the best candidate and one "
-            "to three factor ids supported by the speech. Return no rationale, summary, "
-            "or free-form text.",
+            "to three factor ids supported by the speech. "
+            + (
+                "The first factor id must be an operation factor registered to the "
+                "selected key. "
+                if agent_policy_id
+                == "speech-conditioned-adaptive-evidence-gap-v2"
+                else ""
+            )
+            + "Return no rationale, summary, or free-form text.",
             candidate_cards,
             render_speech_native_keys(candidate_cards, "K1")
             + "\n\n"
@@ -3054,6 +3122,10 @@ def run_speech_native_matcher(
                 "response_format": candidate_action_state_response_format(
                     graph=decision_graph,
                     candidate_key_ids=initial_top_ids,
+                    key_conditioned=(
+                        agent_policy_id
+                        == "speech-conditioned-adaptive-evidence-gap-v2"
+                    ),
                 )
             },
         )
@@ -4334,7 +4406,11 @@ def run_speech_native_match_tasks(
                     "M11 requires the schema-constrained JSON-copy v4 prompt policy"
                 )
             if (
-                task.agent_policy_id != "speech-conditioned-adaptive-evidence-gap-v1"
+                task.agent_policy_id
+                not in {
+                    "speech-conditioned-adaptive-evidence-gap-v1",
+                    "speech-conditioned-adaptive-evidence-gap-v2",
+                }
                 or task.agent_aggregator_id
                 != "adaptive-evidence-gap-primary-control-v1"
             ):
@@ -4521,6 +4597,7 @@ def run_speech_native_match_tasks(
             )
 
         def m11_action_node(state: M11TaskState) -> M11Contact:
+            task = ordered_tasks[state.task_index]
             by_key = {card.key_id: card for card in state.cards}
             candidate_cards = tuple(by_key[key_id] for key_id in state.top_ids)
             return m11_contact_node(
@@ -4532,7 +4609,14 @@ def run_speech_native_match_tasks(
                     "Re-observe the original speech while using only the retrieved "
                     "candidate cards and their registered task factors. Select the best "
                     "candidate and one to three factor ids supported by the speech. "
-                    "Return no rationale, summary, or free-form text."
+                    + (
+                        "The first factor id must be an operation factor registered to "
+                        "the selected key. "
+                        if task.agent_policy_id
+                        == "speech-conditioned-adaptive-evidence-gap-v2"
+                        else ""
+                    )
+                    + "Return no rationale, summary, or free-form text."
                 ),
                 stage_cards=candidate_cards,
                 key_text=(
@@ -4546,6 +4630,10 @@ def run_speech_native_match_tasks(
                 response_format=candidate_action_state_response_format(
                     graph=state.graph,
                     candidate_key_ids=state.top_ids,
+                    key_conditioned=(
+                        task.agent_policy_id
+                        == "speech-conditioned-adaptive-evidence-gap-v2"
+                    ),
                 ),
             )
 
