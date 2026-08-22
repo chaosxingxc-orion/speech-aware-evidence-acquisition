@@ -1,0 +1,9 @@
+{
+  "experiment_id": "SAEA-SN-EFFECT-C108-K1M7-MULTISTATE-ACTION-SUPPORT",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "Matched C108 action-support probe for a frozen three-state speech-native AgentLoop. The online result retains the speech-only primary while all branch actions are logged for one-shot training-free controller analysis.",
+  "key_representation_id": "K1",
+  "matcher_policy_id": "M7",
+  "speech_native_agent_policy_id": "knowledge-grounded-multistate-action-support-v1",
+  "speech_native_agent_aggregator_id": "action-support-primary-control-v1"
+}

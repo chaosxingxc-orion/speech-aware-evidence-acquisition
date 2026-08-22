@@ -155,7 +155,7 @@ def load_speech_native_engineering_gate(
 
 
 SPEECH_NATIVE_KEY_REPRESENTATIONS = ("K0", "K1", "K2", "K3", "K4")
-SPEECH_NATIVE_MATCHER_POLICIES = ("M0", "M1", "M2", "M3", "M4", "M5", "M6")
+SPEECH_NATIVE_MATCHER_POLICIES = ("M0", "M1", "M2", "M3", "M4", "M5", "M6", "M7")
 SPEECH_NATIVE_PROMPT_POLICIES = (
     "speech-native-json-copy-v2",
     "speech-native-json-copy-v3",
@@ -170,6 +170,7 @@ SPEECH_NATIVE_AGENT_AGGREGATORS = (
     "m3-majority-primary-tie-v2",
     "m3-unanimous-primary-fallback-v3",
     "grounded-refined-primary-fallback-v1",
+    "action-support-primary-control-v1",
 )
 SPEECH_NATIVE_AGENT_POLICIES = (
     "m1-m3-disagreement-escalation-v1",
@@ -177,6 +178,7 @@ SPEECH_NATIVE_AGENT_POLICIES = (
     "knowledge-grounded-semantic-refinement-full-action-v1",
     "knowledge-grounded-semantic-refinement-schema-v2",
     "knowledge-grounded-semantic-refinement-schema-v3",
+    "knowledge-grounded-multistate-action-support-v1",
 )
 SPEECH_NATIVE_SCENARIO_DEFINITIONS: Mapping[str, str] = MappingProxyType(
     {
@@ -737,7 +739,7 @@ def run_speech_native_matcher(
     _trace_matcher_policy_id: str | None = None,
     _trace_buffer: TraceBuffer | None = None,
 ) -> SpeechNativeDecision:
-    """Run one frozen-core speech-query decision under M0--M6.
+    """Run one frozen-core speech-query decision under M0--M7.
 
     Every local ``contact`` call reconstructs a two-message request carrying
     the original query packet. Generated factor text and verifier outputs may
@@ -798,7 +800,16 @@ def run_speech_native_matcher(
         raise PsluFlightError("M6 supports maintainable text keys K1/K2 only")
     if matcher_policy_id == "M6" and prompt_policy_id != "speech-native-json-copy-v3":
         raise PsluFlightError("M6 requires the strict JSON-copy v3 prompt policy")
-    top_k_is_active = matcher_policy_id in {"M3", "M5", "M6"} or (
+    if matcher_policy_id == "M7" and (
+        agent_policy_id != "knowledge-grounded-multistate-action-support-v1"
+        or agent_aggregator_id != "action-support-primary-control-v1"
+    ):
+        raise PsluFlightError("M7 requires the multistate action-support policy and control")
+    if matcher_policy_id == "M7" and key_representation_id not in {"K1", "K2"}:
+        raise PsluFlightError("M7 supports maintainable text keys K1/K2 only")
+    if matcher_policy_id == "M7" and prompt_policy_id != "speech-native-json-copy-v3":
+        raise PsluFlightError("M7 requires the strict JSON-copy v3 prompt policy")
+    top_k_is_active = matcher_policy_id in {"M3", "M5", "M6", "M7"} or (
         matcher_policy_id == "M4" and ensemble_base_policy_id == "M3"
     )
     if top_k_is_active and (top_k <= 0 or top_k > len(cards)):
@@ -858,20 +869,38 @@ def run_speech_native_matcher(
         raw_responses.append(response)
         return response
 
-    def contact_many(
+    def contact_many_with_overrides(
         specifications: Sequence[
-            tuple[str, str, Sequence[KeyCardV1], str | None]
+            tuple[
+                str,
+                str,
+                Sequence[KeyCardV1],
+                str | None,
+                Mapping[str, object] | None,
+            ]
         ],
     ) -> tuple[str, ...]:
+        if not specifications:
+            return ()
         requests = tuple(
-            contact_request(stage, system_text, stage_cards, key_text)
-            for stage, system_text, stage_cards, key_text in specifications
+            contact_request(
+                stage,
+                system_text,
+                stage_cards,
+                key_text,
+                decoding_overrides=decoding_overrides,
+            )
+            for (
+                stage,
+                system_text,
+                stage_cards,
+                key_text,
+                decoding_overrides,
+            ) in specifications
         )
         batch_complete = getattr(core_client, "complete_many", None)
         if callable(batch_complete):
-            responses = tuple(
-                batch_complete(requests, trace_parent=_trace_buffer)
-            )
+            responses = tuple(batch_complete(requests, trace_parent=_trace_buffer))
         else:
             responses = tuple(
                 core_client.complete(messages, **kwargs)
@@ -879,6 +908,15 @@ def run_speech_native_matcher(
             )
         raw_responses.extend(responses)
         return responses
+
+    def contact_many(
+        specifications: Sequence[
+            tuple[str, str, Sequence[KeyCardV1], str | None]
+        ],
+    ) -> tuple[str, ...]:
+        return contact_many_with_overrides(
+            tuple((*specification, None) for specification in specifications)
+        )
 
     def finish(
         key_id: str | None,
@@ -1201,6 +1239,341 @@ def run_speech_native_matcher(
             ),
         )
         return finish(_selected_key_id(response, allowed))
+
+    if matcher_policy_id == "M7":
+        state_policy_ids = (
+            "balanced-evidence-v1",
+            "primary-challenge-v1",
+            "retrieval-gap-v1",
+        )
+        primary_instruction = (
+            "Match the spoken command to exactly one opaque key. Use the speech signal and "
+            "the supplied key representations jointly. Return one JSON object with exactly "
+            "one field named key_id. Its string value must be copied verbatim from a supplied "
+            "key heading; do not invent or shorten an id."
+        )
+        retrieval_instruction = (
+            f"Retrieve exactly {top_k} distinct opaque keys for the spoken command, "
+            "ranked from most to least compatible. Return a single-line JSON object with "
+            f"exactly one field named key_ids whose value is an array of exactly {top_k} "
+            "ids copied verbatim from supplied key headings. Do not use Markdown or code "
+            "fences and do not add any other text."
+        )
+        initial_responses = contact_many(
+            (
+                (
+                    "primary-listwise",
+                    primary_instruction,
+                    cards,
+                    render_speech_native_keys(cards, key_representation_id),
+                ),
+                (
+                    f"speech-retrieve-top-{top_k}",
+                    retrieval_instruction,
+                    cards,
+                    render_speech_native_keys(cards, key_representation_id),
+                ),
+            )
+        )
+        primary_key_id = _selected_key_id(initial_responses[0], allowed)
+        initial_top_ids = _selected_top_keys(initial_responses[1], allowed, top_k)
+        initial_steps: tuple[Mapping[str, object], ...] = (
+            {
+                "action_id": "match:speech-only-primary",
+                "key_id": primary_key_id,
+                "top_key_ids": [],
+                "calls": 1,
+                "parse_failure": primary_key_id is None,
+            },
+            {
+                "action_id": "retrieve:speech-only",
+                "key_id": initial_top_ids[0] if initial_top_ids else None,
+                "top_key_ids": list(initial_top_ids),
+                "calls": 1,
+                "parse_failure": len(initial_top_ids) != top_k,
+            },
+        )
+        if primary_key_id is None or len(initial_top_ids) != top_k:
+            return finish(
+                primary_key_id,
+                top_ids=initial_top_ids,
+                agent_policy_id=agent_policy_id,
+                agent_actions=(
+                    "match:speech-only-primary",
+                    "retrieve:speech-only",
+                    "backtrack:invalid-initial-action-support",
+                ),
+                agent_escalated=True,
+                agent_vote_key_ids=(primary_key_id, None, None, None),
+                agent_steps=initial_steps,
+                decision_agent_aggregator_id=agent_aggregator_id,
+            )
+
+        initial_cards = tuple(by_key[key_id] for key_id in initial_top_ids)
+        candidate_json = json.dumps(
+            list(initial_top_ids), ensure_ascii=False, separators=(",", ":")
+        )
+        state_schema_instruction = (
+            "Return one bare JSON object without Markdown or code fences and with exactly "
+            "these fields: candidate_key_ids, domain, operation, target, constraints, "
+            "exclusions, unresolved_ambiguity, and evidence. candidate_key_ids must be "
+            f"exactly {candidate_json}. domain, operation, target, and unresolved_ambiguity "
+            "must each be a non-empty JSON string; use the string unspecified or none "
+            "instead of null, true, or false. constraints and exclusions must be arrays "
+            "of at most five non-empty JSON strings. evidence must contain exactly one "
+            "evidence object for each candidate, in the same candidate order. Every "
+            "evidence object must have exactly key_id, field, and quote. field must be "
+            "exactly definition, positive_examples, or contrastive_boundary. quote must "
+            "be copied exactly from the named field of that same key. When field is "
+            "positive_examples, copy from exactly one example and never include the | "
+            "separator or combine examples."
+        )
+        state_objectives = {
+            "balanced-evidence-v1": (
+                "Extract the most direct domain, operation, target, constraints, exclusions, "
+                "and unresolved candidate boundary supported jointly by the speech signal "
+                "and retrieved cards. Do not force a change from the speech-only primary."
+            ),
+            "primary-challenge-v1": (
+                f"Try to falsify the opaque speech-only primary {primary_key_id} without "
+                "forcing a change. Record operation cues that support or contradict it, use "
+                "exclusions for conflicting cues, and name the exact candidate boundary in "
+                "unresolved_ambiguity."
+            ),
+            "retrieval-gap-v1": (
+                "Assume the initial top-k may have omitted the correct key. Extract the "
+                "speech-grounded domain, operation, target, and requirements that a missing "
+                "key would need while citing only the visible candidates as boundaries. Do "
+                "not invent a missing key id and do not transcribe the utterance."
+            ),
+        }
+        state_responses = contact_many_with_overrides(
+            tuple(
+                (
+                    f"state-{state_policy_id}",
+                    "Build a knowledge-grounded semantic query state for the spoken command. "
+                    "Use only the retrieved key cards and the speech signal carried in this "
+                    "request. Do not transcribe or paraphrase the utterance. "
+                    + state_objectives[state_policy_id]
+                    + " "
+                    + state_schema_instruction,
+                    initial_cards,
+                    "Retrieved key cards:\n"
+                    + render_speech_native_keys(initial_cards, "K2"),
+                    {
+                        "max_tokens": 512,
+                        "response_format": _grounded_query_state_response_format(
+                            candidate_key_ids=initial_top_ids,
+                            cards_by_key=by_key,
+                            key_representation_id="K2",
+                        ),
+                    },
+                )
+                for state_policy_id in state_policy_ids
+            )
+        )
+        branch_records: list[dict[str, object]] = []
+        for state_policy_id, state_response in zip(
+            state_policy_ids, state_responses, strict=True
+        ):
+            state = parse_grounded_query_state(
+                state_response,
+                candidate_key_ids=initial_top_ids,
+                cards_by_key=by_key,
+                key_representation_id="K2",
+            )
+            branch_records.append(
+                {
+                    "state_policy_id": state_policy_id,
+                    "state": state,
+                    "top_key_ids": (),
+                    "verifier_scores": {},
+                    "key_id": None,
+                    "calls": 1,
+                    "parse_failure": state is None,
+                }
+            )
+
+        retrievable = [
+            record for record in branch_records if record["state"] is not None
+        ]
+        retrieval_responses = contact_many(
+            tuple(
+                (
+                    f"grounded-retrieve-{record['state_policy_id']}-top-{top_k}",
+                    retrieval_instruction
+                    + " The validated grounded query state is advisory. Re-evaluate it "
+                    "against the speech signal and search the complete key collection, "
+                    "including keys outside the first retrieval.",
+                    cards,
+                    "Validated grounded query state:\n"
+                    + json.dumps(
+                        record["state"].as_json(),
+                        ensure_ascii=False,
+                        sort_keys=True,
+                        separators=(",", ":"),
+                    )
+                    + "\n\nKeys:\n"
+                    + render_speech_native_keys(cards, key_representation_id),
+                )
+                for record in retrievable
+            )
+        )
+        for record, retrieval_response in zip(
+            retrievable, retrieval_responses, strict=True
+        ):
+            record["calls"] = int(record["calls"]) + 1
+            refined_top_ids = _selected_top_keys(
+                retrieval_response, allowed, top_k
+            )
+            record["top_key_ids"] = refined_top_ids
+            if len(refined_top_ids) != top_k:
+                record["parse_failure"] = True
+
+        verifier_requests: list[
+            tuple[str, str, Sequence[KeyCardV1], str | None]
+        ] = []
+        verifier_owners: list[tuple[dict[str, object], str]] = []
+        for record in branch_records:
+            refined_top_ids = record["top_key_ids"]
+            if record["parse_failure"] or not isinstance(refined_top_ids, tuple):
+                continue
+            state = record["state"]
+            assert isinstance(state, GroundedQueryStateV1)
+            state_json = json.dumps(
+                state.as_json(),
+                ensure_ascii=False,
+                sort_keys=True,
+                separators=(",", ":"),
+            )
+            for key_id in refined_top_ids:
+                verifier_requests.append(
+                    (
+                        f"grounded-verify-{record['state_policy_id']}-{key_id}",
+                        "Judge whether the spoken command matches both the domain and "
+                        "requested operation of this one candidate key. The grounded query "
+                        "state is advisory; reject it when it conflicts with the speech "
+                        "signal. Reject a merely related topic when the requested operation "
+                        "differs. Respond only as "
+                        '{"compatible":true,"confidence":0}, with confidence from 0 to 100.',
+                        (by_key[key_id],),
+                        "Validated grounded query state:\n"
+                        + state_json
+                        + "\n\nCandidate key:\n"
+                        + render_speech_native_keys(
+                            (by_key[key_id],), key_representation_id
+                        ),
+                    )
+                )
+                verifier_owners.append((record, key_id))
+        verifier_responses = contact_many(tuple(verifier_requests))
+        for (record, key_id), verifier_response in zip(
+            verifier_owners, verifier_responses, strict=True
+        ):
+            record["calls"] = int(record["calls"]) + 1
+            parsed = _compatibility(verifier_response)
+            if parsed is None:
+                record["parse_failure"] = True
+            else:
+                scores = record["verifier_scores"]
+                assert isinstance(scores, dict)
+                scores[key_id] = parsed
+
+        tied_records: list[tuple[dict[str, object], tuple[str, ...]]] = []
+        for record in branch_records:
+            refined_top_ids = record["top_key_ids"]
+            scores = record["verifier_scores"]
+            if (
+                record["parse_failure"]
+                or not isinstance(refined_top_ids, tuple)
+                or not isinstance(scores, dict)
+                or len(scores) != top_k
+            ):
+                continue
+            compatible = [
+                key_id for key_id in refined_top_ids if scores[key_id][0]
+            ]
+            pool = compatible or list(refined_top_ids)
+            best_score = max(scores[key_id][1] for key_id in pool)
+            tied = tuple(
+                key_id for key_id in pool if scores[key_id][1] == best_score
+            )
+            if len(tied) == 1:
+                record["key_id"] = tied[0]
+            else:
+                tied_records.append((record, tied))
+
+        tie_responses = contact_many(
+            tuple(
+                (
+                    f"grounded-tie-{record['state_policy_id']}",
+                    "Resolve the verifier tie by comparing the speech signal directly against "
+                    "only these tied opaque keys. The grounded state is advisory. Return one "
+                    "JSON object with exactly one field named key_id whose value is copied "
+                    "verbatim from a supplied key heading.",
+                    tuple(by_key[key_id] for key_id in tied),
+                    "Tied keys:\n"
+                    + render_speech_native_keys(
+                        tuple(by_key[key_id] for key_id in tied),
+                        key_representation_id,
+                    ),
+                )
+                for record, tied in tied_records
+            )
+        )
+        for (record, tied), tie_response in zip(
+            tied_records, tie_responses, strict=True
+        ):
+            record["calls"] = int(record["calls"]) + 1
+            record["key_id"] = _selected_key_id(tie_response, set(tied))
+            if record["key_id"] is None:
+                record["parse_failure"] = True
+
+        branch_steps = tuple(
+            {
+                "action_id": f"explore:{record['state_policy_id']}",
+                "state_policy_id": record["state_policy_id"],
+                "key_id": record["key_id"],
+                "top_key_ids": list(record["top_key_ids"]),
+                "calls": record["calls"],
+                "parse_failure": record["parse_failure"],
+                "grounded_query_state": (
+                    record["state"].as_json()
+                    if isinstance(record["state"], GroundedQueryStateV1)
+                    else None
+                ),
+                "verifier_scores": {
+                    key_id: {
+                        "compatible": score[0],
+                        "confidence": score[1],
+                    }
+                    for key_id, score in record["verifier_scores"].items()
+                },
+                "causal_parent_ids": [
+                    "match:speech-only-primary",
+                    "retrieve:speech-only",
+                ],
+            }
+            for record in branch_records
+        )
+        return finish(
+            primary_key_id,
+            top_ids=initial_top_ids,
+            agent_policy_id=agent_policy_id,
+            agent_actions=(
+                "match:speech-only-primary",
+                "retrieve:speech-only",
+                *(f"explore:{state_policy_id}" for state_policy_id in state_policy_ids),
+                "select:retain-primary-for-support",
+            ),
+            agent_escalated=True,
+            agent_vote_key_ids=(
+                primary_key_id,
+                *(record["key_id"] for record in branch_records),
+            ),
+            agent_steps=initial_steps + branch_steps,
+            decision_agent_aggregator_id=agent_aggregator_id,
+        )
 
     if matcher_policy_id == "M6":
         policy_id = agent_policy_id

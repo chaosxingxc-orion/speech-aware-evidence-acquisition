@@ -643,6 +643,237 @@ def test_action_support_audit_rejects_nonmatching_trace_packet(tmp_path):
         )
 
 
+def _write_m7_action_audit_fixture(tmp_path):
+    attempt_dir = tmp_path / "m7-attempt"
+    attempt_dir.mkdir()
+    rows = []
+    state_policy_ids = (
+        "balanced-evidence-v1",
+        "primary-challenge-v1",
+        "retrieval-gap-v1",
+    )
+    for index in range(108):
+        sample_id = f"slurp:train:{index:06d}:audio-{index}"
+        packet_sha256 = f"{index + 1:064x}"
+        primary_key = "K001"
+        branch_key = "K002" if index == 0 else primary_key
+        initial_top = ["K001", "K002", "K003"]
+        scores = {
+            key_id: {
+                "compatible": key_id == branch_key,
+                "confidence": 90.0 if key_id == branch_key else 10.0,
+            }
+            for key_id in initial_top
+        }
+        branches = [
+            {
+                "action_id": f"explore:{state_policy_id}",
+                "state_policy_id": state_policy_id,
+                "key_id": branch_key,
+                "top_key_ids": initial_top,
+                "calls": 5,
+                "parse_failure": False,
+                "grounded_query_state": {
+                    "candidate_key_ids": initial_top,
+                    "domain": "home",
+                    "operation": "control",
+                    "target": "device",
+                    "constraints": [],
+                    "exclusions": [],
+                    "unresolved_ambiguity": "none",
+                    "evidence": [
+                        {
+                            "key_id": key_id,
+                            "field": "definition",
+                            "quote": f"frozen definition for {key_id}",
+                        }
+                        for key_id in initial_top
+                    ],
+                },
+                "verifier_scores": scores,
+                "causal_parent_ids": [
+                    "match:speech-only-primary",
+                    "retrieve:speech-only",
+                ],
+            }
+            for state_policy_id in state_policy_ids
+        ]
+        rows.append(
+            {
+                "schema": "saea-speech-native-decision-v1",
+                "sample_id": sample_id,
+                "query_sample_id": sample_id,
+                "speech_packet_sha256": packet_sha256,
+                "mechanism_control_id": "matched",
+                "key_representation_id": "K1",
+                "matcher_policy_id": "M7",
+                "key_id": primary_key,
+                "predicted_value_label": "must-not-enter-audit-output",
+                "top_key_ids": initial_top,
+                "verifier_scores": {},
+                "calls": 17,
+                "parse_failure": False,
+                "agent_policy_id": "knowledge-grounded-multistate-action-support-v1",
+                "agent_actions": [
+                    "match:speech-only-primary",
+                    "retrieve:speech-only",
+                    *[f"explore:{policy_id}" for policy_id in state_policy_ids],
+                    "select:retain-primary-for-support",
+                ],
+                "agent_escalated": True,
+                "agent_vote_key_ids": [
+                    primary_key,
+                    branch_key,
+                    branch_key,
+                    branch_key,
+                ],
+                "agent_steps": [
+                    {
+                        "action_id": "match:speech-only-primary",
+                        "key_id": primary_key,
+                        "top_key_ids": [],
+                        "calls": 1,
+                        "parse_failure": False,
+                    },
+                    {
+                        "action_id": "retrieve:speech-only",
+                        "key_id": initial_top[0],
+                        "top_key_ids": initial_top,
+                        "calls": 1,
+                        "parse_failure": False,
+                    },
+                    *branches,
+                ],
+                "agent_aggregator_id": "action-support-primary-control-v1",
+                "response_text_sha256": [
+                    f"{10000 + index * 20 + offset:064x}" for offset in range(17)
+                ],
+            }
+        )
+    decisions = attempt_dir / "decisions.jsonl"
+    decisions.write_text(
+        "".join(json.dumps(row) + "\n" for row in rows),
+        encoding="utf-8",
+    )
+    trace_rows = []
+    for row in rows:
+        descriptor = {
+            "packet_id": row["query_sample_id"].replace(":", "/"),
+            "sha256": row["speech_packet_sha256"],
+            "role": "query",
+        }
+        for contact_index in range(row["calls"]):
+            trace_rows.extend(
+                (
+                    {
+                        "channel": "MODEL_REQUEST",
+                        "payload": {
+                            "payload": {
+                                "request_id": f"{row['sample_id']}-{contact_index}",
+                                "sample_id": row["query_sample_id"],
+                                "query_source": "speech_features",
+                                "mmproj_loaded": False,
+                                "speech_packet_sha256": row["speech_packet_sha256"],
+                                "speech_feature_parts": [descriptor],
+                            }
+                        },
+                    },
+                    {
+                        "channel": "MODEL_RESPONSE",
+                        "payload": {
+                            "usage": {"prompt_tokens": 10, "completion_tokens": 2}
+                        },
+                    },
+                    {"channel": "COST", "payload": {"calls": 1}},
+                )
+            )
+    trace = attempt_dir / "SAEA-SN-M7-AUDIT.trace.jsonl"
+    trace.write_text(
+        "".join(json.dumps(row) + "\n" for row in trace_rows),
+        encoding="utf-8",
+    )
+    process_audit = attempt_dir / "SAEA-SN-M7-AUDIT.mmproj-audit.json"
+    process_audit.write_text(
+        json.dumps({"mmproj_loaded": False, "mmproj_hit_count": 0}),
+        encoding="utf-8",
+    )
+    contact_count = 108 * 17
+    receipt = {
+        "status": "COMPLETED",
+        "run_id": "SAEA-SN-M7-AUDIT",
+        "attempt_id": "attempt-m7-audit-001",
+        "request_failures": [],
+        "profile": {
+            "key_representation_id": "K1",
+            "matcher_policy_id": "M7",
+            "agent_policy_id": "knowledge-grounded-multistate-action-support-v1",
+            "agent_aggregator_id": "action-support-primary-control-v1",
+            "mechanism_control_id": "matched",
+            "top_k": 3,
+            "task_count": 108,
+            "actual_contact_count": contact_count,
+            "planned_contact_ceiling": 108 * 20,
+        },
+        "decisions": {
+            "path": decisions.name,
+            "sha256": hashlib.sha256(decisions.read_bytes()).hexdigest(),
+            "count": 108,
+            "contains_gold_labels": False,
+        },
+        "server_log_scan": {
+            "oom_marker_hits": [],
+            "host_spill_marker_hits": [],
+            "runaway_marker_hits": [],
+            "mmproj_free_chunk_count": 0,
+        },
+        "process_audit_sha256": hashlib.sha256(process_audit.read_bytes()).hexdigest(),
+        "close": {"cost": {"calls_used": contact_count}},
+    }
+    flight = attempt_dir / "flight-receipt.json"
+    flight.write_text(json.dumps(receipt), encoding="utf-8")
+    attempt_record = tmp_path / "m7-attempt-record.json"
+    attempt_record.write_text(
+        json.dumps(
+            {
+                "run_id": receipt["run_id"],
+                "attempt_id": receipt["attempt_id"],
+                "state": "FINALIZED",
+                "actual": {
+                    "calls": contact_count,
+                    "audio_seconds": 1.0,
+                    "gpu_seconds": 2.0,
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+    return attempt_dir, attempt_record, flight, decisions, trace
+
+
+def test_action_support_audit_accepts_complete_m7_without_reading_gold(tmp_path):
+    attempt_dir, attempt_record, flight, decisions, trace = (
+        _write_m7_action_audit_fixture(tmp_path)
+    )
+    report = audit_speech_native_action_support(
+        attempt_dir=attempt_dir,
+        attempt_record_path=attempt_record,
+        attempt_record_sha256=hashlib.sha256(attempt_record.read_bytes()).hexdigest(),
+        flight_receipt_sha256=hashlib.sha256(flight.read_bytes()).hexdigest(),
+        decisions_sha256=hashlib.sha256(decisions.read_bytes()).hexdigest(),
+        trace_sha256=hashlib.sha256(trace.read_bytes()).hexdigest(),
+    )
+    assert report["source_attempt_state"] == "FINALIZED"
+    assert report["gold_read"] is False
+    assert report["effectiveness_read_authorized"] is True
+    assert report["decision_count"] == 108
+    assert report["grounded_state_valid_count"] == 324
+    assert report["refined_retrieval_count"] == 324
+    assert report["verifier_score_count"] == 972
+    assert report["valid_speech_query_contact_count"] == 1836
+    assert report["action_sensitive_count"] == 1
+    assert "must-not-enter-audit-output" not in json.dumps(report, sort_keys=True)
+
+
 class _SpeechFeatureClient:
     def __init__(self, responses):
         self._responses = iter(responses)
@@ -1043,6 +1274,212 @@ def test_m6_schema_v3_constrains_grounded_state_at_llama_server_boundary():
         for index, (_messages, kwargs) in enumerate(client.calls)
         if index != 2
     )
+    _assert_every_call_carries_query(client)
+
+
+def _m7_grounded_state(state_policy_id):
+    return {
+        "candidate_key_ids": ["K001", "K002"],
+        "domain": "email",
+        "operation": state_policy_id,
+        "target": "message",
+        "constraints": [],
+        "exclusions": ["social messages"],
+        "unresolved_ambiguity": "alarm versus email operation",
+        "evidence": [
+            {
+                "key_id": "K001",
+                "field": "definition",
+                "quote": "Commands that create, change, inspect, or remove alarms.",
+            },
+            {
+                "key_id": "K002",
+                "field": "contrastive_boundary",
+                "quote": "Do not use for social messages.",
+            },
+        ],
+    }
+
+
+class _M7BatchClient:
+    def __init__(self, *, invalid_state_policy_id=None):
+        self.invalid_state_policy_id = invalid_state_policy_id
+        self.calls = []
+        self.batch_sizes = []
+
+    def complete(self, messages, **kwargs):
+        self.calls.append((messages, kwargs))
+        stage = kwargs["matcher_policy_id"]
+        if stage.endswith(":primary-listwise"):
+            return '{"key_id":"K001"}'
+        if stage.endswith(":speech-retrieve-top-2"):
+            return '{"key_ids":["K001","K002"]}'
+        if ":state-" in stage:
+            state_policy_id = stage.split(":state-", 1)[1]
+            document = _m7_grounded_state(state_policy_id)
+            if state_policy_id == self.invalid_state_policy_id:
+                document["evidence"][0]["quote"] = "invented evidence"
+            return json.dumps(document)
+        if ":grounded-retrieve-" in stage:
+            return (
+                '{"key_ids":["K001","K002"]}'
+                if "retrieval-gap-v1" in stage
+                else '{"key_ids":["K002","K001"]}'
+            )
+        if ":grounded-verify-" in stage:
+            key_id = stage.rsplit("-", 1)[-1]
+            selects_primary = "retrieval-gap-v1" in stage
+            compatible = key_id == ("K001" if selects_primary else "K002")
+            confidence = 90 if compatible else 10
+            return json.dumps(
+                {"compatible": compatible, "confidence": confidence}
+            )
+        raise AssertionError(stage)
+
+    def complete_many(self, requests, *, trace_parent=None):
+        del trace_parent
+        self.batch_sizes.append(len(requests))
+        return tuple(
+            self.complete(messages, **kwargs) for messages, kwargs in requests
+        )
+
+
+def test_m7_batches_three_counterfactual_state_branches_and_retains_primary():
+    client = _M7BatchClient()
+
+    result = run_speech_native_matcher(
+        core_client=client,
+        sample=_SpeechSample(),
+        query_descriptor=_QUERY_DESCRIPTOR,
+        key_cards=_KEY_CARDS,
+        key_representation_id="K1",
+        matcher_policy_id="M7",
+        prompt_policy_id="speech-native-json-copy-v3",
+        verifier_policy_id="speech-native-contrastive-verifier-v2",
+        agent_policy_id="knowledge-grounded-multistate-action-support-v1",
+        agent_aggregator_id="action-support-primary-control-v1",
+        decoding_params={"temperature": 0, "max_tokens": 64},
+        top_k=2,
+    )
+
+    assert result.key_id == "K001"
+    assert result.calls == 14
+    assert result.parse_failure is False
+    assert result.agent_vote_key_ids == ("K001", "K002", "K002", "K001")
+    assert result.agent_actions == (
+        "match:speech-only-primary",
+        "retrieve:speech-only",
+        "explore:balanced-evidence-v1",
+        "explore:primary-challenge-v1",
+        "explore:retrieval-gap-v1",
+        "select:retain-primary-for-support",
+    )
+    assert client.batch_sizes == [2, 3, 3, 6]
+    branches = result.agent_steps[2:]
+    assert [branch["state_policy_id"] for branch in branches] == [
+        "balanced-evidence-v1",
+        "primary-challenge-v1",
+        "retrieval-gap-v1",
+    ]
+    assert [branch["calls"] for branch in branches] == [4, 4, 4]
+    assert all(branch["parse_failure"] is False for branch in branches)
+    assert all(
+        branch["causal_parent_ids"]
+        == ["match:speech-only-primary", "retrieve:speech-only"]
+        for branch in branches
+    )
+    assert all(
+        kwargs["decoding_params"]["max_tokens"] == 512
+        and "response_format" in kwargs["decoding_params"]
+        for _messages, kwargs in client.calls
+        if ":state-" in kwargs["matcher_policy_id"]
+    )
+    _assert_every_call_carries_query(client)
+
+
+def test_m7_fails_one_invalid_state_branch_closed_without_canceling_siblings():
+    client = _M7BatchClient(invalid_state_policy_id="primary-challenge-v1")
+
+    result = run_speech_native_matcher(
+        core_client=client,
+        sample=_SpeechSample(),
+        query_descriptor=_QUERY_DESCRIPTOR,
+        key_cards=_KEY_CARDS,
+        key_representation_id="K1",
+        matcher_policy_id="M7",
+        prompt_policy_id="speech-native-json-copy-v3",
+        verifier_policy_id="speech-native-contrastive-verifier-v2",
+        agent_policy_id="knowledge-grounded-multistate-action-support-v1",
+        agent_aggregator_id="action-support-primary-control-v1",
+        top_k=2,
+    )
+
+    assert result.key_id == "K001"
+    assert result.calls == 11
+    assert result.parse_failure is False
+    assert result.agent_vote_key_ids == ("K001", "K002", None, "K001")
+    assert client.batch_sizes == [2, 3, 2, 4]
+    failed = result.agent_steps[3]
+    assert failed["state_policy_id"] == "primary-challenge-v1"
+    assert failed["grounded_query_state"] is None
+    assert failed["key_id"] is None
+    assert failed["calls"] == 1
+    assert failed["parse_failure"] is True
+    assert result.agent_steps[2]["key_id"] == "K002"
+    assert result.agent_steps[4]["key_id"] == "K001"
+    _assert_every_call_carries_query(client)
+
+
+def test_contact_dispatch_runs_m7_verifier_wave_as_one_batched_ready_stage():
+    class ParallelM7Client(_M7BatchClient):
+        def __init__(self):
+            super().__init__()
+            self.lock = threading.Lock()
+            self.active = 0
+            self.max_active = 0
+            self.verifier_barrier = threading.Barrier(6)
+
+        def complete(self, messages, **kwargs):
+            stage = kwargs["matcher_policy_id"]
+            with self.lock:
+                self.active += 1
+                self.max_active = max(self.max_active, self.active)
+            if ":grounded-verify-" in stage:
+                self.verifier_barrier.wait(timeout=1)
+            try:
+                return super().complete(messages, **kwargs)
+            finally:
+                with self.lock:
+                    self.active -= 1
+
+    task = SpeechNativeMatchTask(
+        task_id="task-0",
+        sample=_SpeechSample(),
+        query_descriptor=_QUERY_DESCRIPTOR,
+        key_cards=_KEY_CARDS,
+        key_representation_id="K1",
+        matcher_policy_id="M7",
+        prompt_policy_id="speech-native-json-copy-v3",
+        verifier_policy_id="speech-native-contrastive-verifier-v2",
+        decoding_params={"temperature": 0, "max_tokens": 64},
+        top_k=2,
+        agent_policy_id="knowledge-grounded-multistate-action-support-v1",
+        agent_aggregator_id="action-support-primary-control-v1",
+    )
+    client = ParallelM7Client()
+
+    outcomes = run_speech_native_match_tasks(
+        core_client=client,
+        tasks=(task,),
+        slot_count=6,
+        queue_depth=6,
+        dispatch_granularity="contact",
+    )
+
+    assert outcomes[0].decision.key_id == "K001"
+    assert outcomes[0].decision.calls == 14
+    assert outcomes[0].slot_id == -1
+    assert client.max_active == 6
     _assert_every_call_carries_query(client)
 
 
@@ -4289,3 +4726,180 @@ def test_run_pslu_flight_rejects_unknown_silence_swap_sample_ids(slurp_world):
             rosters=_ROSTERS,
             silence_swap_media_relpaths={"bogus-sample-id": "x.wav"},
         )
+
+
+def test_model_free_read_reports_m7_multistate_action_support_and_safe_consensus(
+    tmp_path,
+):
+    binding_path = REPO_ROOT / "configs/probes/g0-binding/speech-native-train-binding.json"
+    binding_sha256 = hashlib.sha256(binding_path.read_bytes()).hexdigest()
+    binding = json.loads(binding_path.read_text(encoding="utf-8"))
+    items = binding["splits"]["OPT-A36"]["items"]
+    cards = {card["key_id"]: card for card in binding["key_cards"]}
+    key_by_label = {card["value_label"]: card["key_id"] for card in cards.values()}
+    label_by_key = {key_id: card["value_label"] for key_id, card in cards.items()}
+    all_key_ids = tuple(cards)
+    state_policy_ids = (
+        "balanced-evidence-v1",
+        "primary-challenge-v1",
+        "retrieval-gap-v1",
+    )
+    rows = []
+    for index, item in enumerate(items):
+        gold_key = key_by_label[item["value_label"]]
+        wrong_key = all_key_ids[(all_key_ids.index(gold_key) + 1) % len(all_key_ids)]
+        primary_key = wrong_key if index == 0 else gold_key
+        initial_top = list(dict.fromkeys((primary_key, gold_key, wrong_key, *all_key_ids)))[:3]
+        branch_key = gold_key if index == 0 else wrong_key if index == 1 else primary_key
+        branch_top = list(dict.fromkeys((branch_key, *initial_top, *all_key_ids)))[:3]
+        branch_steps = []
+        for state_policy_id in state_policy_ids:
+            state = {
+                "candidate_key_ids": initial_top,
+                "domain": "personal productivity",
+                "operation": "manage a requested item",
+                "target": "requested object",
+                "constraints": [],
+                "exclusions": [],
+                "unresolved_ambiguity": "none",
+                "evidence": [
+                    {
+                        "key_id": key_id,
+                        "field": "definition",
+                        "quote": cards[key_id]["definition"],
+                    }
+                    for key_id in initial_top
+                ],
+            }
+            selected_confidence = 25.0 if index == 1 else 90.0
+            verifier_scores = {
+                key_id: {
+                    "compatible": key_id == branch_key,
+                    "confidence": selected_confidence if key_id == branch_key else 10.0,
+                }
+                for key_id in branch_top
+            }
+            branch_steps.append(
+                {
+                    "action_id": f"explore:{state_policy_id}",
+                    "state_policy_id": state_policy_id,
+                    "key_id": branch_key,
+                    "top_key_ids": branch_top,
+                    "calls": 5,
+                    "parse_failure": False,
+                    "grounded_query_state": state,
+                    "verifier_scores": verifier_scores,
+                    "causal_parent_ids": [
+                        "match:speech-only-primary",
+                        "retrieve:speech-only",
+                    ],
+                }
+            )
+        rows.append(
+            {
+                "schema": "saea-speech-native-decision-v1",
+                "sample_id": item["sample_id"],
+                "key_id": primary_key,
+                "predicted_value_label": label_by_key[primary_key],
+                "top_key_ids": initial_top,
+                "verifier_scores": {},
+                "calls": 17,
+                "parse_failure": False,
+                "agent_policy_id": "knowledge-grounded-multistate-action-support-v1",
+                "agent_actions": [
+                    "match:speech-only-primary",
+                    "retrieve:speech-only",
+                    "explore:balanced-evidence-v1",
+                    "explore:primary-challenge-v1",
+                    "explore:retrieval-gap-v1",
+                    "select:retain-primary-for-support",
+                ],
+                "agent_escalated": True,
+                "agent_vote_key_ids": [primary_key, branch_key, branch_key, branch_key],
+                "agent_steps": [
+                    {
+                        "action_id": "match:speech-only-primary",
+                        "key_id": primary_key,
+                        "top_key_ids": [],
+                        "calls": 1,
+                        "parse_failure": False,
+                    },
+                    {
+                        "action_id": "retrieve:speech-only",
+                        "key_id": initial_top[0],
+                        "top_key_ids": initial_top,
+                        "calls": 1,
+                        "parse_failure": False,
+                    },
+                    *branch_steps,
+                ],
+                "agent_aggregator_id": "action-support-primary-control-v1",
+            }
+        )
+
+    attempt_dir = tmp_path / "m7-multistate"
+    attempt_dir.mkdir()
+    decisions = attempt_dir / "decisions.jsonl"
+    decisions.write_text(
+        "".join(json.dumps(row, sort_keys=True) + "\n" for row in rows),
+        encoding="utf-8",
+    )
+    (attempt_dir / "flight-receipt.json").write_text(
+        json.dumps(
+            {
+                "status": "COMPLETED",
+                "request_failures": [],
+                "split_identity_hash": "a" * 64,
+                "run_id": "run-m7-multistate",
+                "profile": {
+                    "key_representation_id": "K1",
+                    "matcher_policy_id": "M7",
+                    "matcher_prompt_policy_id": "speech-native-json-copy-v3",
+                    "matcher_verifier_policy_id": "speech-native-contrastive-verifier-v2",
+                    "agent_policy_id": "knowledge-grounded-multistate-action-support-v1",
+                    "agent_aggregator_id": "action-support-primary-control-v1",
+                    "mechanism_control_id": "matched",
+                    "key_order_ids": ["canonical"],
+                    "top_k": 3,
+                    "actual_contact_count": sum(row["calls"] for row in rows),
+                },
+                "decisions": {
+                    "path": decisions.name,
+                    "sha256": hashlib.sha256(decisions.read_bytes()).hexdigest(),
+                    "count": len(rows),
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    report = read_speech_native_predictions(
+        attempt_dirs=(attempt_dir,),
+        binding_path=binding_path,
+        binding_sha256=binding_sha256,
+        split_name="OPT-A36",
+    )
+
+    aggregate = report["aggregates"][0]
+    assert aggregate["cell_id"] == (
+        "K1-M7-k3-v3-verify-contrastive-v2-multistate-support-v1"
+    )
+    assert aggregate["correct"] == 35
+    metrics = aggregate["agent_loop_metrics"]
+    assert metrics["primary_correct"] == 35
+    assert metrics["action_variable_query_count"] == 2
+    assert metrics["oracle_correct"] == 36
+    assert metrics["oracle_gain_vs_primary"] == 1
+    assert metrics["support_gate_passed"] is False
+    assert [branch["selected_correct"] for branch in metrics["branch_policies"]] == [
+        35,
+        35,
+        35,
+    ]
+    controller = metrics["consistency_controller"]
+    assert controller["correct"] == 36
+    assert controller["correct_delta_vs_primary"] == 1
+    assert controller["wrong_to_correct_vs_primary"] == 1
+    assert controller["correct_to_wrong_vs_primary"] == 0
+    assert controller["action_count"] == 1
+    assert controller["qualified"] is False
