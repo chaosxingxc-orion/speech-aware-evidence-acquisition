@@ -535,6 +535,329 @@ def _evaluate_training_free_contextual_policy(
     }
 
 
+_EPISODIC_REQUIRED_FIELDS = {
+    "sample_id",
+    "speaker_id",
+    "gold_key_id",
+    "primary_key_id",
+    "canonical_key_id",
+    "reverse_key_id",
+    "rotate_key_id",
+    "canonical_top_key_ids",
+    "canonical_verifier_scores",
+    "primary_calls",
+    "canonical_calls",
+    "reverse_calls",
+    "rotate_calls",
+}
+_EPISODIC_STATE_WEIGHTS = (2, 2, 1, 1, 1, 1, 1)
+_EPISODIC_NEIGHBOR_COUNT = 9
+_EPISODIC_MIN_SUPPORT = 5
+_EPISODIC_MAX_DISTANCE = 3
+_EPISODIC_MIN_NET_GAIN = 2
+_EPISODIC_MAX_HARM = 0
+
+
+def _validate_episodic_trajectories(
+    trajectories: Sequence[Mapping[str, object]],
+) -> tuple[Mapping[str, object], ...]:
+    frozen = tuple(trajectories)
+    if not frozen:
+        raise SpeechNativeProfileError(
+            "episodic policy search requires at least one trajectory"
+        )
+    for trajectory in frozen:
+        if set(trajectory) != _EPISODIC_REQUIRED_FIELDS:
+            raise SpeechNativeProfileError("episodic policy trajectory is malformed")
+        if any(
+            not isinstance(trajectory.get(field), str) or not trajectory.get(field)
+            for field in ("sample_id", "speaker_id", "gold_key_id")
+        ):
+            raise SpeechNativeProfileError(
+                "episodic policy trajectory identity is malformed"
+            )
+        if any(
+            value is not None and not isinstance(value, str)
+            for value in (
+                trajectory.get("primary_key_id"),
+                trajectory.get("canonical_key_id"),
+                trajectory.get("reverse_key_id"),
+                trajectory.get("rotate_key_id"),
+            )
+        ):
+            raise SpeechNativeProfileError(
+                "episodic policy trajectory action prediction is malformed"
+            )
+        top_ids = trajectory.get("canonical_top_key_ids")
+        if (
+            not isinstance(top_ids, (list, tuple))
+            or not all(isinstance(key_id, str) and key_id for key_id in top_ids)
+            or len(set(top_ids)) != len(top_ids)
+        ):
+            raise SpeechNativeProfileError(
+                "episodic policy trajectory top-key list is malformed"
+            )
+        scores = trajectory.get("canonical_verifier_scores")
+        if not isinstance(scores, Mapping):
+            raise SpeechNativeProfileError(
+                "episodic policy trajectory verifier scores are malformed"
+            )
+        for key_id, raw_score in scores.items():
+            if (
+                not isinstance(key_id, str)
+                or not isinstance(raw_score, (list, tuple))
+                or len(raw_score) != 2
+                or not isinstance(raw_score[0], bool)
+                or isinstance(raw_score[1], bool)
+                or not isinstance(raw_score[1], (int, float))
+                or not -1.0 <= float(raw_score[1]) <= 100.0
+            ):
+                raise SpeechNativeProfileError(
+                    "episodic policy trajectory verifier score is malformed"
+                )
+        for field in (
+            "primary_calls",
+            "canonical_calls",
+            "reverse_calls",
+            "rotate_calls",
+        ):
+            value = trajectory.get(field)
+            if isinstance(value, bool) or not isinstance(value, int) or value <= 0:
+                raise SpeechNativeProfileError(
+                    "episodic policy trajectory contact cost is malformed"
+                )
+    return frozen
+
+
+def _episodic_state(trajectory: Mapping[str, object]) -> tuple[str, ...]:
+    primary = trajectory["primary_key_id"]
+    canonical = trajectory["canonical_key_id"]
+    top_ids = tuple(trajectory["canonical_top_key_ids"])
+    scores = trajectory["canonical_verifier_scores"]
+    assert isinstance(scores, Mapping)
+    primary_rank = (
+        str(top_ids.index(primary) + 1) if primary is not None and primary in top_ids else "0"
+    )
+    parsed_scores = {
+        str(key_id): (bool(raw[0]), float(raw[1]))
+        for key_id, raw in scores.items()
+    }
+    compatible_count = sum(int(value[0]) for value in parsed_scores.values())
+    selected = parsed_scores.get(str(canonical)) if canonical is not None else None
+    selected_compatible = (
+        "missing" if selected is None else "yes" if selected[0] else "no"
+    )
+    if selected is None:
+        margin_bucket = "missing"
+    else:
+        comparison = [
+            value[1]
+            for key_id, value in parsed_scores.items()
+            if key_id != canonical and value[0] == selected[0]
+        ]
+        margin = selected[1] - max(comparison) if comparison else 100.0
+        margin_bucket = "tie" if margin <= 0 else "narrow" if margin <= 10 else "wide"
+    return (
+        str(primary),
+        str(canonical),
+        "same" if primary == canonical else "different",
+        primary_rank,
+        str(min(compatible_count, 3)),
+        selected_compatible,
+        margin_bucket,
+    )
+
+
+def _episodic_distance(left: tuple[str, ...], right: tuple[str, ...]) -> int:
+    return sum(
+        weight * int(left_value != right_value)
+        for weight, left_value, right_value in zip(
+            _EPISODIC_STATE_WEIGHTS, left, right, strict=True
+        )
+    )
+
+
+def _episodic_action_contacts(
+    trajectory: Mapping[str, object], action_id: str
+) -> int:
+    initial = int(trajectory["primary_calls"]) + int(trajectory["canonical_calls"])
+    if action_id in {"primary", "canonical-primary-fallback"}:
+        return initial
+    return initial + int(trajectory["reverse_calls"]) + int(
+        trajectory["rotate_calls"]
+    )
+
+
+def _evaluate_training_free_episodic_policy(
+    trajectories: Sequence[Mapping[str, object]],
+) -> dict[str, object]:
+    """Cross-fit a conservative non-parametric external action policy.
+
+    The memory contains only structured runtime telemetry and complete
+    discovery action outcomes. For each held-out speaker fold, the policy
+    retrieves nearby training states, estimates every recorded action's paired
+    advantage over the primary action, and permits a non-primary action only
+    with at least five neighbors, net gain of two, and zero observed harm. It
+    never modifies model logits, weights, prompts, or speech features.
+    """
+
+    frozen = _validate_episodic_trajectories(trajectories)
+    assignments = _speaker_grouped_fold_assignments(frozen)
+    states = [_episodic_state(item) for item in frozen]
+    action_predictions = [_contextual_action_predictions(item) for item in frozen]
+    oof_predictions: list[str | None] = [None] * len(frozen)
+    oof_contacts = [0] * len(frozen)
+    oof_action_counts: Counter[str] = Counter()
+    memory_audit: list[dict[str, object]] = []
+
+    for fold_index in range(3):
+        fold_id = f"fold-{fold_index}"
+        train_indices = [
+            index
+            for index, item in enumerate(frozen)
+            if assignments[str(item["speaker_id"])] != fold_id
+        ]
+        test_indices = [
+            index
+            for index, item in enumerate(frozen)
+            if assignments[str(item["speaker_id"])] == fold_id
+        ]
+        for index in test_indices:
+            ranked = sorted(
+                (
+                    (_episodic_distance(states[index], states[train_index]), train_index)
+                    for train_index in train_indices
+                ),
+                key=lambda item: (
+                    item[0],
+                    str(frozen[item[1]]["sample_id"]),
+                ),
+            )
+            neighbors = [
+                train_index
+                for distance, train_index in ranked
+                if distance <= _EPISODIC_MAX_DISTANCE
+            ][:_EPISODIC_NEIGHBOR_COUNT]
+            selected_action = "primary"
+            selected_rank = (-1, -1, float("-inf"))
+            action_audit: list[dict[str, object]] = []
+            for action_id in _CONTEXTUAL_ACTION_IDS:
+                helpful = sum(
+                    action_predictions[neighbor]["primary"]
+                    != frozen[neighbor]["gold_key_id"]
+                    and action_predictions[neighbor][action_id]
+                    == frozen[neighbor]["gold_key_id"]
+                    for neighbor in neighbors
+                )
+                harmful = sum(
+                    action_predictions[neighbor]["primary"]
+                    == frozen[neighbor]["gold_key_id"]
+                    and action_predictions[neighbor][action_id]
+                    != frozen[neighbor]["gold_key_id"]
+                    for neighbor in neighbors
+                )
+                net_gain = helpful - harmful
+                mean_contacts = (
+                    sum(
+                        _episodic_action_contacts(frozen[neighbor], action_id)
+                        for neighbor in neighbors
+                    )
+                    / len(neighbors)
+                    if neighbors
+                    else math.inf
+                )
+                action_audit.append(
+                    {
+                        "action_id": action_id,
+                        "support": len(neighbors),
+                        "helpful": helpful,
+                        "harmful": harmful,
+                        "net_gain": net_gain,
+                        "mean_contacts": mean_contacts,
+                    }
+                )
+                admissible = (
+                    action_id != "primary"
+                    and len(neighbors) >= _EPISODIC_MIN_SUPPORT
+                    and net_gain >= _EPISODIC_MIN_NET_GAIN
+                    and harmful <= _EPISODIC_MAX_HARM
+                )
+                candidate_rank = (net_gain, -harmful, -mean_contacts)
+                if admissible and candidate_rank > selected_rank:
+                    selected_action = action_id
+                    selected_rank = candidate_rank
+            oof_action_counts[selected_action] += 1
+            oof_predictions[index] = action_predictions[index][selected_action]
+            oof_contacts[index] = _episodic_action_contacts(
+                frozen[index], selected_action
+            )
+            memory_audit.append(
+                {
+                    "sample_id": frozen[index]["sample_id"],
+                    "fold_id": fold_id,
+                    "selected_action_id": selected_action,
+                    "neighbor_count": len(neighbors),
+                    "nearest_distance": ranked[0][0] if ranked else None,
+                    "action_estimates": action_audit,
+                }
+            )
+
+    speaker_folds = _speaker_fold_metrics(
+        frozen,
+        assignments=assignments,
+        predictions=oof_predictions,
+    )
+    primary_correct = sum(
+        item["primary_key_id"] == item["gold_key_id"] for item in frozen
+    )
+    correct = sum(
+        prediction == item["gold_key_id"]
+        for prediction, item in zip(oof_predictions, frozen, strict=True)
+    )
+    wrong_to_correct = sum(
+        item["primary_key_id"] != item["gold_key_id"]
+        and prediction == item["gold_key_id"]
+        for prediction, item in zip(oof_predictions, frozen, strict=True)
+    )
+    correct_to_wrong = sum(
+        item["primary_key_id"] == item["gold_key_id"]
+        and prediction != item["gold_key_id"]
+        for prediction, item in zip(oof_predictions, frozen, strict=True)
+    )
+    return {
+        "policy_id": "speaker-grouped-oof-episodic-action-advantage-v2",
+        "speaker_fold_policy_id": _SPEAKER_FOLD_POLICY_ID,
+        "count": len(frozen),
+        "correct": correct,
+        "accuracy": correct / len(frozen),
+        "primary_correct": primary_correct,
+        "primary_accuracy": primary_correct / len(frozen),
+        "wrong_to_correct_vs_primary": wrong_to_correct,
+        "correct_to_wrong_vs_primary": correct_to_wrong,
+        "positive_delta_fold_count": sum(
+            int(fold["correct_delta_vs_primary"] > 0) for fold in speaker_folds
+        ),
+        "nonnegative_delta_fold_count": sum(
+            int(fold["correct_delta_vs_primary"] >= 0) for fold in speaker_folds
+        ),
+        "worst_fold_delta_vs_primary": min(
+            int(fold["correct_delta_vs_primary"]) for fold in speaker_folds
+        ),
+        "oof_action_counts": dict(sorted(oof_action_counts.items())),
+        "mean_contacts": sum(oof_contacts) / len(frozen),
+        "speaker_folds": speaker_folds,
+        "memory_policy": {
+            "neighbor_count": _EPISODIC_NEIGHBOR_COUNT,
+            "minimum_support": _EPISODIC_MIN_SUPPORT,
+            "maximum_state_distance": _EPISODIC_MAX_DISTANCE,
+            "minimum_net_gain": _EPISODIC_MIN_NET_GAIN,
+            "maximum_observed_harm": _EPISODIC_MAX_HARM,
+            "state_weights": list(_EPISODIC_STATE_WEIGHTS),
+        },
+        "memory_audit": sorted(memory_audit, key=lambda item: str(item["sample_id"])),
+    }
+
+
 def _require_string(values: Mapping[str, object], key: str) -> str:
     value = values.get(key)
     if not isinstance(value, str) or not value:
@@ -813,6 +1136,7 @@ def read_speech_native_predictions(
         agent_branch_harmful_count = 0
         agent_branch_neutral_count = 0
         agent_full_trajectories: list[dict[str, str | None]] = []
+        agent_full_episodic_trajectories: list[dict[str, object]] = []
         for row in rows:
             if row.get("schema") != "saea-speech-native-decision-v1":
                 raise SpeechNativeProfileError("decision schema mismatch")
@@ -944,10 +1268,43 @@ def read_speech_native_predictions(
                         or int(step["calls"]) <= 0
                         or not isinstance(step.get("parse_failure"), bool)
                         or not isinstance(step.get("top_key_ids"), list)
+                        or not all(
+                            isinstance(top_key_id, str)
+                            and top_key_id in label_by_key
+                            for top_key_id in step.get("top_key_ids", [])
+                        )
+                        or len(set(step.get("top_key_ids", [])))
+                        != len(step.get("top_key_ids", []))
                     ):
                         raise SpeechNativeProfileError(
                             "M5 agent step summary is malformed"
                         )
+                raw_verifier_scores = row.get("verifier_scores", {})
+                if not isinstance(raw_verifier_scores, Mapping):
+                    raise SpeechNativeProfileError(
+                        "M5 canonical verifier scores are malformed"
+                    )
+                canonical_verifier_scores: dict[str, tuple[bool, float]] = {}
+                for score_key_id, score_document in raw_verifier_scores.items():
+                    if (
+                        not isinstance(score_key_id, str)
+                        or score_key_id not in label_by_key
+                        or not isinstance(score_document, Mapping)
+                        or set(score_document) != {"compatible", "confidence"}
+                        or not isinstance(score_document.get("compatible"), bool)
+                        or isinstance(score_document.get("confidence"), bool)
+                        or not isinstance(score_document.get("confidence"), (int, float))
+                        or not -1.0
+                        <= float(score_document["confidence"])
+                        <= 100.0
+                    ):
+                        raise SpeechNativeProfileError(
+                            "M5 canonical verifier score is malformed"
+                        )
+                    canonical_verifier_scores[score_key_id] = (
+                        bool(score_document["compatible"]),
+                        float(score_document["confidence"]),
+                    )
                 primary_vote = agent_votes[0]
                 primary_correct = (
                     isinstance(primary_vote, str)
@@ -1034,6 +1391,25 @@ def read_speech_native_predictions(
                             "canonical_key_id": agent_votes[1],
                             "reverse_key_id": agent_votes[2],
                             "rotate_key_id": agent_votes[3],
+                        }
+                    )
+                    agent_full_episodic_trajectories.append(
+                        {
+                            "sample_id": sample_id,
+                            "speaker_id": speaker_by_sample[sample_id],
+                            "gold_key_id": key_by_label[gold[sample_id]],
+                            "primary_key_id": agent_votes[0],
+                            "canonical_key_id": agent_votes[1],
+                            "reverse_key_id": agent_votes[2],
+                            "rotate_key_id": agent_votes[3],
+                            "canonical_top_key_ids": tuple(
+                                agent_steps[1]["top_key_ids"]
+                            ),
+                            "canonical_verifier_scores": canonical_verifier_scores,
+                            "primary_calls": int(agent_steps[0]["calls"]),
+                            "canonical_calls": int(agent_steps[1]["calls"]),
+                            "reverse_calls": int(agent_steps[2]["calls"]),
+                            "rotate_calls": int(agent_steps[3]["calls"]),
                         }
                     )
                 if agent_escalated:
@@ -1144,6 +1520,13 @@ def read_speech_native_predictions(
                                 "training_free_contextual_policy": (
                                     _evaluate_training_free_contextual_policy(
                                         agent_full_trajectories
+                                    )
+                                    if agent_full_branch_count == len(gold)
+                                    else None
+                                ),
+                                "training_free_episodic_policy": (
+                                    _evaluate_training_free_episodic_policy(
+                                        agent_full_episodic_trajectories
                                     )
                                     if agent_full_branch_count == len(gold)
                                     else None

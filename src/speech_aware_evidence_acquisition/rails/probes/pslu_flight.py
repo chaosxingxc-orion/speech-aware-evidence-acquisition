@@ -53,6 +53,7 @@ import ast
 import contextvars
 import hashlib
 import json
+from collections import deque
 from copy import deepcopy
 from concurrent.futures import FIRST_COMPLETED, Future, ThreadPoolExecutor, wait
 from dataclasses import dataclass, field
@@ -284,8 +285,10 @@ class SpeechNativeDecision:
 class SpeechNativeMatchTask:
     """One independently schedulable speech-native matcher decision.
 
-    A worker owns one llama-server slot for the task's entire lifetime, so a
-    multi-contact M2/M3/M4/M5 decision never migrates between slots.
+    Task dispatch preserves historical whole-decision slot affinity. Contact
+    dispatch assigns each model contact independently, so a multi-contact
+    decision may migrate between llama-server slots while every contact keeps
+    the same speech packet and trace attribution.
     """
 
     task_id: str
@@ -990,9 +993,11 @@ def run_speech_native_match_tasks(
     """Run matcher tasks with bounded rolling concurrency.
 
     ``dispatch_granularity='task'`` preserves historical whole-decision slot
-    affinity. ``'contact'`` queues every matcher contact independently while
-    keeping each task's semantic stages sequential. Results and trace buffers
-    are recovered in registered input order. No failed task is retried.
+    affinity. ``'contact'`` queues every matcher contact independently. The
+    full-branch M5 path is a bounded dependency DAG: retrieval completion makes
+    verifier contacts ready without blocking a branch worker. Results and trace
+    buffers are recovered in registered task, branch, and stage order. No failed
+    contact or task is retried.
     """
 
     if isinstance(slot_count, bool) or not isinstance(slot_count, int) or slot_count <= 0:
@@ -1114,62 +1119,358 @@ def run_speech_native_match_tasks(
                 return _rotate_key_cards(task.key_cards, 7)
             raise PsluFlightError(f"unknown full-branch order {order_id!r}")
 
-        def one_branch(specification):
-            task_index, _branch_index, policy_id, order_id, trace_policy_id = (
-                specification
+        @dataclass
+        class DagBranchState:
+            task_index: int
+            branch_index: int
+            policy_id: str
+            order_id: str
+            trace_policy_id: str
+            cards: tuple[KeyCardV1, ...]
+            responses: dict[int, str] = field(default_factory=dict)
+            trace_buffers: dict[int, TraceBuffer] = field(default_factory=dict)
+            top_ids: tuple[str, ...] = ()
+            verifier_scores: dict[str, tuple[bool, float]] = field(
+                default_factory=dict
             )
-            task = ordered_tasks[task_index]
-            buffer = TraceBuffer(trace_run_id) if trace_run_id is not None else None
-            if buffer is not None:
-                set_current_trace_buffer(buffer)
-            try:
-                decision = run_speech_native_matcher(
-                    core_client=contact_client,
-                    sample=task.sample,
-                    query_descriptor=task.query_descriptor,
-                    key_cards=branch_cards(task, order_id),
-                    key_representation_id=task.key_representation_id,
-                    matcher_policy_id=policy_id,
-                    prompt_policy_id=task.prompt_policy_id,
-                    verifier_policy_id=task.verifier_policy_id,
-                    decoding_params=dict(task.decoding_params),
-                    top_k=task.top_k,
-                    audio_key_bindings=task.audio_key_bindings,
-                    agent_policy_id=task.agent_policy_id,
-                    _trace_matcher_policy_id=trace_policy_id,
-                    _trace_buffer=buffer,
-                )
-                return decision, buffer, None
-            except BaseException as error:  # preserve every one-shot branch trace
-                return None, buffer, error
-            finally:
-                if buffer is not None:
-                    set_current_trace_buffer(None)
+            tied_ids: tuple[str, ...] = ()
+            decision: SpeechNativeDecision | None = None
+            error: BaseException | None = None
 
-        branch_results: list[
-            tuple[SpeechNativeDecision | None, TraceBuffer | None, BaseException | None]
-            | None
-        ] = [None] * len(branch_specs)
+        @dataclass(frozen=True)
+        class DagContact:
+            task_index: int
+            branch_index: int
+            stage_index: int
+            stage_kind: str
+            key_id: str | None
+            messages: tuple[Mapping[str, object], ...]
+            kwargs: Mapping[str, object]
+            trace_buffer: TraceBuffer | None
+
+            @property
+            def sort_key(self) -> tuple[int, int, int]:
+                return self.task_index, self.branch_index, self.stage_index
+
+        states = tuple(
+            DagBranchState(
+                task_index=task_index,
+                branch_index=branch_index,
+                policy_id=policy_id,
+                order_id=order_id,
+                trace_policy_id=trace_policy_id,
+                cards=branch_cards(ordered_tasks[task_index], order_id),
+            )
+            for task_index, branch_index, policy_id, order_id, trace_policy_id in branch_specs
+        )
+        state_by_pair = {
+            (state.task_index, state.branch_index): state for state in states
+        }
+
+        def contact_node(
+            state: DagBranchState,
+            *,
+            stage_index: int,
+            stage_kind: str,
+            stage: str,
+            system_text: str,
+            stage_cards: Sequence[KeyCardV1],
+            key_text: str | None,
+            key_id: str | None = None,
+        ) -> DagContact:
+            task = ordered_tasks[state.task_index]
+            messages = _speech_feature_messages(
+                system_text=system_text,
+                query_descriptor=task.query_descriptor,
+                key_text=key_text,
+                key_cards=stage_cards,
+                key_representation_id=task.key_representation_id,
+                audio_key_bindings=(
+                    {
+                        card.key_id: task.audio_key_bindings[card.key_id]
+                        for card in stage_cards
+                    }
+                    if task.audio_key_bindings is not None
+                    else None
+                ),
+            )
+            trace_buffer = (
+                TraceBuffer(trace_run_id) if trace_run_id is not None else None
+            )
+            if trace_buffer is not None:
+                state.trace_buffers[stage_index] = trace_buffer
+            return DagContact(
+                task_index=state.task_index,
+                branch_index=state.branch_index,
+                stage_index=stage_index,
+                stage_kind=stage_kind,
+                key_id=key_id,
+                messages=messages,
+                kwargs={
+                    "decoding_params": dict(task.decoding_params),
+                    "speech_feature_sample_id": task.sample.sample_id,
+                    "key_representation_id": task.key_representation_id,
+                    "matcher_policy_id": f"{state.trace_policy_id}:{stage}",
+                },
+                trace_buffer=trace_buffer,
+            )
+
+        def finish_branch(
+            state: DagBranchState,
+            key_id: str | None,
+            *,
+            top_ids: tuple[str, ...] = (),
+            scores: Mapping[str, tuple[bool, float]] = MappingProxyType({}),
+        ) -> None:
+            task = ordered_tasks[state.task_index]
+            labels = {card.key_id: card.value_label for card in state.cards}
+            state.decision = SpeechNativeDecision(
+                matcher_policy_id=state.policy_id,
+                key_representation_id=task.key_representation_id,
+                key_id=key_id,
+                value_label=labels.get(key_id),
+                top_key_ids=top_ids,
+                calls=len(state.responses),
+                raw_responses=tuple(
+                    state.responses[index] for index in sorted(state.responses)
+                ),
+                verifier_scores=dict(scores),
+                parse_failure=key_id is None,
+                agent_policy_id=task.agent_policy_id,
+            )
+
+        def m1_node(state: DagBranchState) -> DagContact:
+            task = ordered_tasks[state.task_index]
+            label_mode = task.key_representation_id == "K0"
+            return contact_node(
+                state,
+                stage_index=0,
+                stage_kind="m1",
+                stage="listwise-label" if label_mode else "listwise",
+                system_text=(
+                    "Match the spoken command to exactly one listed label. Return one JSON "
+                    "object with exactly one field named label. Its string value must be "
+                    "copied verbatim from the supplied label list."
+                    if label_mode
+                    else (
+                        "Match the spoken command to exactly one opaque key. Use the speech "
+                        "signal and the supplied key representations jointly. Return one JSON "
+                        "object with exactly one field named key_id. Its string value must be "
+                        "copied verbatim from a supplied key heading; do not invent or shorten "
+                        "an id."
+                    )
+                ),
+                stage_cards=state.cards,
+                key_text=render_speech_native_keys(
+                    state.cards, task.key_representation_id
+                ),
+            )
+
+        def retrieval_node(state: DagBranchState) -> DagContact:
+            task = ordered_tasks[state.task_index]
+            instruction = (
+                f"Retrieve exactly {task.top_k} distinct opaque keys for the spoken command, "
+                "ranked from most to least compatible. Return a single-line JSON object with "
+                f"exactly one field named key_ids whose value is an array of exactly {task.top_k} "
+                "ids copied verbatim from supplied key headings. Do not use Markdown or code "
+                "fences and do not add any other text."
+                if task.prompt_policy_id == "speech-native-json-copy-v3"
+                else (
+                    f"Retrieve the {task.top_k} most compatible opaque keys for the spoken "
+                    f"command, best first. Return one JSON object with exactly one field named "
+                    f"key_ids whose value is an array of at most {task.top_k} ids copied verbatim "
+                    "from supplied key headings."
+                )
+            )
+            return contact_node(
+                state,
+                stage_index=0,
+                stage_kind="retrieval",
+                stage=f"retrieve-top-{task.top_k}",
+                system_text=instruction,
+                stage_cards=state.cards,
+                key_text=render_speech_native_keys(
+                    state.cards, task.key_representation_id
+                ),
+            )
+
+        def verifier_node(
+            state: DagBranchState, key_id: str, stage_index: int
+        ) -> DagContact:
+            task = ordered_tasks[state.task_index]
+            card = next(card for card in state.cards if card.key_id == key_id)
+            instruction = (
+                "Judge whether the spoken command matches both the domain and requested "
+                "operation of this one candidate key. Reject a merely related topic when "
+                "the requested operation differs. Respond only as "
+                '{"compatible":true,"confidence":0}, with confidence from 0 to 100.'
+                if task.verifier_policy_id == "speech-native-contrastive-verifier-v2"
+                else (
+                    "Judge whether the spoken command is compatible with this one candidate "
+                    'key. Respond only as {"compatible":true,"confidence":0}, with confidence '
+                    "from 0 to 100."
+                )
+            )
+            return contact_node(
+                state,
+                stage_index=stage_index,
+                stage_kind="verifier",
+                stage=f"verify-{key_id}",
+                system_text=instruction,
+                stage_cards=(card,),
+                key_text=render_speech_native_keys(
+                    (card,), task.key_representation_id
+                ),
+                key_id=key_id,
+            )
+
+        def tie_node(state: DagBranchState) -> DagContact:
+            task = ordered_tasks[state.task_index]
+            cards = tuple(
+                card for card in state.cards if card.key_id in state.tied_ids
+            )
+            return contact_node(
+                state,
+                stage_index=1 + len(state.top_ids),
+                stage_kind="tie",
+                stage="tie-arbitration",
+                system_text=(
+                    "Resolve the verifier tie by comparing the speech signal directly against "
+                    "only these tied opaque keys. Return one JSON object with exactly one field "
+                    "named key_id whose value is copied verbatim from a supplied key heading."
+                ),
+                stage_cards=cards,
+                key_text=render_speech_native_keys(
+                    cards, task.key_representation_id
+                ),
+            )
+
+        ready: deque[DagContact] = deque(
+            m1_node(state) if state.policy_id == "M1" else retrieval_node(state)
+            for state in states
+        )
+        pending: dict[Future, DagContact] = {}
         try:
-            with ThreadPoolExecutor(
-                max_workers=min(queue_depth, len(branch_specs)),
-                thread_name_prefix="saea-speech-native-global-branch",
-            ) as branch_pool:
-                futures = {
-                    branch_pool.submit(one_branch, specification): index
-                    for index, specification in enumerate(branch_specs)
-                }
-                for future, index in tuple(futures.items()):
-                    branch_results[index] = future.result()
+            while ready or pending:
+                while ready and len(pending) < queue_depth:
+                    node = ready.popleft()
+                    future = contact_client._submit(
+                        node.messages, dict(node.kwargs), node.trace_buffer
+                    )
+                    pending[future] = node
+                if not pending:
+                    raise PsluFlightError(
+                        "full-branch stage DAG has unfinished work but no pending contacts"
+                    )
+                done, _not_done = wait(tuple(pending), return_when=FIRST_COMPLETED)
+                completed = sorted(done, key=lambda item: pending[item].sort_key)
+                for future in completed:
+                    node = pending.pop(future)
+                    state = state_by_pair[(node.task_index, node.branch_index)]
+                    try:
+                        response = future.result()
+                    except BaseException as error:
+                        if state.error is None:
+                            state.error = error
+                        continue
+                    state.responses[node.stage_index] = response
+                    task = ordered_tasks[state.task_index]
+                    allowed = {card.key_id for card in state.cards}
+                    if node.stage_kind == "m1":
+                        if task.key_representation_id == "K0":
+                            document = _response_object(response)
+                            label = (
+                                document.get("label") if document is not None else None
+                            )
+                            selected = next(
+                                (
+                                    card.key_id
+                                    for card in state.cards
+                                    if card.value_label == label
+                                ),
+                                None,
+                            )
+                        else:
+                            selected = _selected_key_id(response, allowed)
+                        finish_branch(state, selected)
+                        continue
+                    if node.stage_kind == "retrieval":
+                        state.top_ids = _selected_top_keys(
+                            response, allowed, task.top_k
+                        )
+                        if not state.top_ids or (
+                            task.prompt_policy_id == "speech-native-json-copy-v3"
+                            and len(state.top_ids) != task.top_k
+                        ):
+                            finish_branch(state, None, top_ids=state.top_ids)
+                            continue
+                        ready.extend(
+                            verifier_node(state, key_id, 1 + index)
+                            for index, key_id in enumerate(state.top_ids)
+                        )
+                        continue
+                    if node.stage_kind == "verifier":
+                        assert node.key_id is not None
+                        parsed = _compatibility(response)
+                        state.verifier_scores[node.key_id] = (
+                            parsed if parsed is not None else (False, -1.0)
+                        )
+                        if len(state.verifier_scores) != len(state.top_ids):
+                            continue
+                        compatible = [
+                            key_id
+                            for key_id in state.top_ids
+                            if state.verifier_scores[key_id][0]
+                        ]
+                        pool = compatible or list(state.top_ids)
+                        best_score = max(
+                            state.verifier_scores[key_id][1] for key_id in pool
+                        )
+                        state.tied_ids = tuple(
+                            key_id
+                            for key_id in pool
+                            if state.verifier_scores[key_id][1] == best_score
+                        )
+                        if len(state.tied_ids) == 1:
+                            finish_branch(
+                                state,
+                                state.tied_ids[0],
+                                top_ids=state.top_ids,
+                                scores=state.verifier_scores,
+                            )
+                        else:
+                            ready.append(tie_node(state))
+                        continue
+                    if node.stage_kind == "tie":
+                        selected = _selected_key_id(response, set(state.tied_ids))
+                        finish_branch(
+                            state,
+                            selected,
+                            top_ids=state.top_ids,
+                            scores=state.verifier_scores,
+                        )
+                        continue
+                    raise PsluFlightError(
+                        f"unknown full-branch DAG stage {node.stage_kind!r}"
+                    )
         finally:
             assert contact_pool is not None
             contact_pool.shutdown(wait=True)
 
-        settled_branches = tuple(
-            result for result in branch_results if result is not None
-        )
-        if len(settled_branches) != len(branch_specs):
-            raise PsluFlightError("global full-branch dispatcher lost a branch outcome")
+        branch_results: list[
+            tuple[SpeechNativeDecision | None, TraceBuffer | None, BaseException | None]
+        ] = []
+        for state in states:
+            combined = TraceBuffer(trace_run_id) if trace_run_id is not None else None
+            if combined is not None:
+                for stage_index in sorted(state.trace_buffers):
+                    combined.extend_from(state.trace_buffers[stage_index])
+            if state.error is None and state.decision is None:
+                state.error = PsluFlightError(
+                    "full-branch stage DAG did not settle one branch"
+                )
+            branch_results.append((state.decision, combined, state.error))
+        settled_branches = tuple(branch_results)
 
         buffered_outcomes: list[_BufferedSpeechNativeOutcome] = []
         for task_index, task in enumerate(ordered_tasks):

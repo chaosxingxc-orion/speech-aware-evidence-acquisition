@@ -17,6 +17,7 @@ import pytest
 from speech_aware_evidence_acquisition.core.model import SliceRegistry
 from speech_aware_evidence_acquisition.core.driver.speech_native import (
     _evaluate_training_free_contextual_policy,
+    _evaluate_training_free_episodic_policy,
     _build_audio_key_bindings,
     _evaluate_training_free_agent_policies,
     build_profile_tasks,
@@ -55,6 +56,7 @@ from speech_aware_evidence_acquisition.rails.probes.pslu_flight import (
     SpeechNativeMatchTask,
     run_speech_native_match_tasks,
 )
+from speech_aware_evidence_acquisition.rails.probes import pslu_flight as pslu_module
 from speech_aware_evidence_acquisition.rails.silence_swap import build_silence_swap_slice
 
 _ROSTERS = PsluRosters(
@@ -869,6 +871,7 @@ def test_full_branch_contact_dispatch_schedules_all_four_branches_globally():
             self.active = 0
             self.max_active = 0
             self.stages = []
+            self.calls = []
 
         def complete(self, messages, **kwargs):
             stage = kwargs["matcher_policy_id"]
@@ -876,6 +879,7 @@ def test_full_branch_contact_dispatch_schedules_all_four_branches_globally():
                 self.active += 1
                 self.max_active = max(self.max_active, self.active)
                 self.stages.append(stage)
+                self.calls.append((messages, kwargs))
             time.sleep(0.02)
             with self.lock:
                 self.active -= 1
@@ -925,6 +929,226 @@ def test_full_branch_contact_dispatch_schedules_all_four_branches_globally():
         "aggregate:m3-unanimous-primary-fallback",
     )
     assert all(outcome.slot_id == -1 for outcome in outcomes)
+    _assert_every_call_carries_query(client)
+
+
+def test_full_branch_contact_dispatch_uses_one_persistent_executor(monkeypatch):
+    real_executor = pslu_module.ThreadPoolExecutor
+    prefixes = []
+
+    class RecordingExecutor:
+        def __init__(self, *args, **kwargs):
+            prefixes.append(kwargs.get("thread_name_prefix"))
+            self.delegate = real_executor(*args, **kwargs)
+
+        def submit(self, *args, **kwargs):
+            return self.delegate.submit(*args, **kwargs)
+
+        def shutdown(self, *args, **kwargs):
+            return self.delegate.shutdown(*args, **kwargs)
+
+        def __enter__(self):
+            self.delegate.__enter__()
+            return self
+
+        def __exit__(self, *args):
+            return self.delegate.__exit__(*args)
+
+    class FullBranchClient:
+        def complete(self, messages, **kwargs):
+            stage = kwargs["matcher_policy_id"]
+            if stage.endswith(":listwise"):
+                return '{"key_id":"K001"}'
+            if stage.endswith(":retrieve-top-1"):
+                return '{"key_ids":["K001"]}'
+            if ":verify-" in stage:
+                return '{"compatible":true,"confidence":90}'
+            raise AssertionError(stage)
+
+    monkeypatch.setattr(pslu_module, "ThreadPoolExecutor", RecordingExecutor)
+    task = SpeechNativeMatchTask(
+        task_id="task-0",
+        sample=_SpeechSample(),
+        query_descriptor=_QUERY_DESCRIPTOR,
+        key_cards=_KEY_CARDS,
+        key_representation_id="K1",
+        matcher_policy_id="M5",
+        prompt_policy_id="speech-native-json-copy-v3",
+        top_k=1,
+        agent_policy_id="m1-m3-full-branch-explorer-v1",
+        agent_aggregator_id="m3-unanimous-primary-fallback-v3",
+    )
+
+    outcomes = run_speech_native_match_tasks(
+        core_client=FullBranchClient(),
+        tasks=(task,),
+        slot_count=4,
+        queue_depth=4,
+        dispatch_granularity="contact",
+    )
+
+    assert outcomes[0].decision.key_id == "K001"
+    assert prefixes == ["saea-speech-native-contact"]
+
+
+def test_full_branch_stage_dag_bounds_submitted_contacts_by_queue_depth(monkeypatch):
+    real_executor = pslu_module.ThreadPoolExecutor
+    instances = []
+
+    class TrackingExecutor:
+        def __init__(self, *args, **kwargs):
+            self.prefix = kwargs.get("thread_name_prefix")
+            self.delegate = real_executor(*args, **kwargs)
+            self.lock = threading.Lock()
+            self.pending = 0
+            self.max_pending = 0
+            instances.append(self)
+
+        def submit(self, *args, **kwargs):
+            with self.lock:
+                self.pending += 1
+                self.max_pending = max(self.max_pending, self.pending)
+            future = self.delegate.submit(*args, **kwargs)
+
+            def complete(_future):
+                with self.lock:
+                    self.pending -= 1
+
+            future.add_done_callback(complete)
+            return future
+
+        def shutdown(self, *args, **kwargs):
+            return self.delegate.shutdown(*args, **kwargs)
+
+        def __enter__(self):
+            self.delegate.__enter__()
+            return self
+
+        def __exit__(self, *args):
+            return self.delegate.__exit__(*args)
+
+    class FullBranchClient:
+        def complete(self, messages, **kwargs):
+            stage = kwargs["matcher_policy_id"]
+            time.sleep(0.005)
+            if stage.endswith(":listwise"):
+                return '{"key_id":"K001"}'
+            if stage.endswith(":retrieve-top-2"):
+                return '{"key_ids":["K001","K002"]}'
+            if ":verify-" in stage:
+                return '{"compatible":true,"confidence":90}'
+            return '{"key_id":"K001"}'
+
+    monkeypatch.setattr(pslu_module, "ThreadPoolExecutor", TrackingExecutor)
+    tasks = tuple(
+        SpeechNativeMatchTask(
+            task_id=f"task-{index}",
+            sample=type("Sample", (), {"sample_id": f"sample-{index}"})(),
+            query_descriptor={
+                "packet_id": f"slurp/train/sample-{index}",
+                "sha256": f"{index + 1:x}" * 64,
+                "role": "query",
+            },
+            key_cards=_KEY_CARDS,
+            key_representation_id="K1",
+            matcher_policy_id="M5",
+            prompt_policy_id="speech-native-json-copy-v3",
+            top_k=2,
+            agent_policy_id="m1-m3-full-branch-explorer-v1",
+            agent_aggregator_id="m3-unanimous-primary-fallback-v3",
+        )
+        for index in range(4)
+    )
+
+    outcomes = run_speech_native_match_tasks(
+        core_client=FullBranchClient(),
+        tasks=tasks,
+        slot_count=2,
+        queue_depth=4,
+        dispatch_granularity="contact",
+    )
+
+    contact_executor = next(
+        item for item in instances if item.prefix == "saea-speech-native-contact"
+    )
+    assert len(outcomes) == 4
+    assert contact_executor.max_pending <= 4
+
+
+def test_full_branch_stage_dag_replay_fills_all_slots_across_stage_transitions():
+    class LatencyReplayClient:
+        def __init__(self):
+            self.lock = threading.Lock()
+            self.active = 0
+            self.max_active = 0
+            self.calls = []
+
+        def complete(self, messages, **kwargs):
+            with self.lock:
+                self.active += 1
+                self.max_active = max(self.max_active, self.active)
+                self.calls.append((messages, kwargs))
+            try:
+                time.sleep(0.003)
+                stage = kwargs["matcher_policy_id"]
+                if stage.endswith(":listwise"):
+                    return '{"key_id":"K001"}'
+                if stage.endswith(":retrieve-top-2"):
+                    return '{"key_ids":["K001","K002"]}'
+                if ":verify-K001" in stage:
+                    return '{"compatible":true,"confidence":90}'
+                if ":verify-K002" in stage:
+                    return '{"compatible":false,"confidence":20}'
+                raise AssertionError(stage)
+            finally:
+                with self.lock:
+                    self.active -= 1
+
+    tasks = tuple(
+        SpeechNativeMatchTask(
+            task_id=f"replay-{index}",
+            sample=type("Sample", (), {"sample_id": f"replay-sample-{index}"})(),
+            query_descriptor={
+                "packet_id": f"slurp/train/replay-sample-{index}",
+                "sha256": f"{index + 1:064x}",
+                "role": "query",
+            },
+            key_cards=_KEY_CARDS,
+            key_representation_id="K1",
+            matcher_policy_id="M5",
+            prompt_policy_id="speech-native-json-copy-v3",
+            top_k=2,
+            agent_policy_id="m1-m3-full-branch-explorer-v1",
+            agent_aggregator_id="m3-unanimous-primary-fallback-v3",
+        )
+        for index in range(12)
+    )
+    client = LatencyReplayClient()
+
+    outcomes = run_speech_native_match_tasks(
+        core_client=client,
+        tasks=tasks,
+        slot_count=4,
+        queue_depth=8,
+        dispatch_granularity="contact",
+    )
+
+    assert len(outcomes) == 12
+    assert client.max_active == 4
+    assert all(outcome.decision.key_id == "K001" for outcome in outcomes)
+    assert all(outcome.decision.calls == 10 for outcome in outcomes)
+    assert len(client.calls) == 120
+    for messages, kwargs in client.calls:
+        query_parts = [
+            part["speech_features"]
+            for part in messages[1]["content"]
+            if part.get("type") == "input_speech_features"
+            and part["speech_features"]["role"] == "query"
+        ]
+        assert len(query_parts) == 1
+        assert query_parts[0]["packet_id"].endswith(
+            kwargs["speech_feature_sample_id"]
+        )
 
 
 def test_global_full_branch_traces_merge_in_registered_branch_order(tmp_path):
@@ -984,6 +1208,53 @@ def test_global_full_branch_traces_merge_in_registered_branch_order(tmp_path):
         "M5:M3:rotate-7:retrieve-top-1",
         "M5:M3:rotate-7:verify-K001",
     ]
+
+
+def test_full_branch_stage_dag_never_retries_a_failed_contact():
+    class FailingFullBranchClient:
+        def __init__(self):
+            self.calls = []
+            self.stage_counts = {}
+
+        def complete(self, messages, **kwargs):
+            stage = kwargs["matcher_policy_id"]
+            self.calls.append((messages, kwargs))
+            self.stage_counts[stage] = self.stage_counts.get(stage, 0) + 1
+            if stage == "M5:M3:reverse:verify-K001":
+                raise RuntimeError("registered verifier failure")
+            if stage.endswith(":listwise"):
+                return '{"key_id":"K001"}'
+            if stage.endswith(":retrieve-top-1"):
+                return '{"key_ids":["K001"]}'
+            if ":verify-" in stage:
+                return '{"compatible":true,"confidence":90}'
+            raise AssertionError(stage)
+
+    task = SpeechNativeMatchTask(
+        task_id="task-0",
+        sample=_SpeechSample(),
+        query_descriptor=_QUERY_DESCRIPTOR,
+        key_cards=_KEY_CARDS,
+        key_representation_id="K1",
+        matcher_policy_id="M5",
+        prompt_policy_id="speech-native-json-copy-v3",
+        top_k=1,
+        agent_policy_id="m1-m3-full-branch-explorer-v1",
+        agent_aggregator_id="m3-unanimous-primary-fallback-v3",
+    )
+    client = FailingFullBranchClient()
+
+    with pytest.raises(RuntimeError, match="registered verifier failure"):
+        run_speech_native_match_tasks(
+            core_client=client,
+            tasks=(task,),
+            slot_count=4,
+            queue_depth=4,
+            dispatch_granularity="contact",
+        )
+
+    assert client.stage_counts["M5:M3:reverse:verify-K001"] == 1
+    _assert_every_call_carries_query(client)
 
 
 def test_speech_native_match_tasks_reject_queue_smaller_than_slot_pool():
@@ -1213,6 +1484,77 @@ def test_training_free_contextual_policy_keeps_repeated_speaker_in_one_fold():
         if fold["fold_id"] == assignments["shared-speaker"]
     )
     assert shared_fold["count"] >= 3
+
+
+def _episodic_trajectory(index, *, primary_correct, candidate_correct):
+    primary_key = "K001"
+    candidate_key = "K002"
+    gold_key = primary_key if primary_correct else candidate_key
+    if not candidate_correct:
+        candidate_key = "K003" if not primary_correct else "K002"
+    return {
+        "sample_id": f"sample-{index}",
+        "speaker_id": f"speaker-{index}",
+        "gold_key_id": gold_key,
+        "primary_key_id": primary_key,
+        "canonical_key_id": candidate_key,
+        "reverse_key_id": candidate_key,
+        "rotate_key_id": candidate_key,
+        "canonical_top_key_ids": (candidate_key, primary_key),
+        "canonical_verifier_scores": {
+            candidate_key: (True, 90.0),
+            primary_key: (False, 80.0),
+        },
+        "primary_calls": 1,
+        "canonical_calls": 3,
+        "reverse_calls": 3,
+        "rotate_calls": 3,
+    }
+
+
+def test_training_free_episodic_policy_retrieves_action_advantage_out_of_fold():
+    trajectories = tuple(
+        _episodic_trajectory(
+            index,
+            primary_correct=False,
+            candidate_correct=True,
+        )
+        for index in range(12)
+    )
+
+    evaluation = _evaluate_training_free_episodic_policy(trajectories)
+
+    assert evaluation["policy_id"] == (
+        "speaker-grouped-oof-episodic-action-advantage-v2"
+    )
+    assert evaluation["correct"] == 12
+    assert evaluation["primary_correct"] == 0
+    assert evaluation["wrong_to_correct_vs_primary"] == 12
+    assert evaluation["correct_to_wrong_vs_primary"] == 0
+    assert evaluation["positive_delta_fold_count"] == 3
+    assert evaluation["oof_action_counts"] == {
+        "canonical-primary-fallback": 12
+    }
+    assert evaluation["mean_contacts"] == 4.0
+
+
+def test_training_free_episodic_policy_rejects_neighbors_with_observed_harm():
+    trajectories = tuple(
+        _episodic_trajectory(
+            index,
+            primary_correct=index < 6,
+            candidate_correct=index >= 6,
+        )
+        for index in range(9)
+    )
+
+    evaluation = _evaluate_training_free_episodic_policy(trajectories)
+
+    assert evaluation["correct"] == 6
+    assert evaluation["primary_correct"] == 6
+    assert evaluation["wrong_to_correct_vs_primary"] == 0
+    assert evaluation["correct_to_wrong_vs_primary"] == 0
+    assert evaluation["oof_action_counts"] == {"primary": 9}
 
 
 def test_profile_tasks_build_label_blind_speech_swap_and_key_text_shuffle_controls():
@@ -1820,6 +2162,9 @@ def test_model_free_read_accepts_complete_full_branch_action_support(tmp_path):
                 "key_id": gold_key,
                 "predicted_value_label": gold_label,
                 "top_key_ids": [gold_key],
+                "verifier_scores": {
+                    gold_key: {"compatible": True, "confidence": 90.0}
+                },
                 "calls": 10,
                 "parse_failure": False,
                 "agent_policy_id": "m1-m3-full-branch-explorer-v1",
@@ -1905,6 +2250,12 @@ def test_model_free_read_accepts_complete_full_branch_action_support(tmp_path):
         policy["correct"] == 36
         for policy in metrics["training_free_policy_frontier"]
     )
+    episodic = metrics["training_free_episodic_policy"]
+    assert episodic["correct"] == 36
+    assert episodic["primary_correct"] == 36
+    assert episodic["correct_to_wrong_vs_primary"] == 0
+    assert episodic["oof_action_counts"] == {"primary": 36}
+    assert episodic["mean_contacts"] == 4.0
 
 
 def _binding_material():
