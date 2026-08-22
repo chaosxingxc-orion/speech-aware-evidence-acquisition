@@ -23,6 +23,23 @@ The preregistered expansion is complete. On 108 speaker-grouped discovery querie
 
 The action space is nevertheless non-degenerate: 31 queries are action-sensitive, seven observable states have reward spread, seven primary errors are recoverable by a recorded action, canonical top-3 reachability is 99/108, and the diagnostic action oracle is 96/108. These are optimization-headroom measurements, not a deployable policy. Freeze no controller, do not construct GATE-C36, and do not contact FINAL60.
 
+### Knowledge-grounded semantic refinement interpretation
+
+The owner premise is that decision-relevant information must be represented in the knowledge base. Treat a failure of that premise as a key-construction defect, not as a retrieval defect. Each maintainable text key must therefore expose the discriminative domain, operation, target, constraints, positive evidence, and contrastive exclusions needed to separate it from its nearest competing keys. Add an offline discovery-only oracle-pair coverage check before blaming the controller: present the frozen speech query with the gold key and a preregistered hard negative, and measure whether the frozen core can select the gold key. Gold remains outside runtime and the result only diagnoses whether key material is adequate.
+
+The existing M2 already tests ungrounded semantic augmentation. It first creates free-form intent factors from speech and then carries both the factors and the original speech packet into key selection. On OPT-A36 it scores 28/36, equal to M1; relative to direct M0 it repairs four errors and regresses one, while M1 repairs three and regresses none. Semantic text is therefore action-sensitive but not yet net-beneficial. The next semantic action must ground the generated state in retrieved knowledge rather than asking the core to invent an unconstrained summary before seeing the key space.
+
+Define the next loop as follows:
+
+1. `RETRIEVE_SPEECH`: carry the original speech packet and retrieve a broad top-k from all text keys.
+2. `BUILD_GROUNDED_QUERY_STATE`: carry the same speech packet plus only the retrieved key cards; return a strict `GroundedQueryStateV1` with candidate key ids, domain, operation, target, constraints, exclusions, unresolved ambiguity, and cited source fields. Do not request or retain a transcript.
+3. `REFINE_WITH_SPEECH_AND_STATE`: carry the same speech packet, the structured state, and the complete text-key collection; retrieve again rather than selecting only from the first candidates.
+4. `VERIFY_OR_BACKTRACK`: compare the refined candidates against the speech. Keep the first speech-only decision when the semantic state is malformed, unsupported by cited key fields, unstable under key order, or in conflict with direct speech evidence.
+
+The generated state is advisory evidence, never a replacement query. Every model contact must carry the original speech packet. Use the same frozen Omni core for all steps, and keep the deterministic `key_id -> value_label` mapping outside the model.
+
+Training-free RL operates over the external decisions `STOP_SPEECH_ONLY`, `BUILD_GROUNDED_STATE`, `REFINE_TOP_3`, `REFINE_TOP_5`, `CONTRAST_TOP_2`, and `BACKTRACK_TO_SPEECH`. Runtime state may include first-round key ids, verifier compatibility and margins, cross-order disagreement, structured-field presence, cited-field validity, first/second-round overlap, and cumulative contact cost. Logged discovery reward may use correctness, regressions, malformed-state penalties, and contact cost; gold never enters runtime. Required controls are semantic-state shuffle, semantic-only without speech, drop-semantic replay, speech derangement, and key-text shuffle. A gain that survives only the semantic-only arm is a text-cascade result and is inadmissible.
+
 ## Research boundary
 
 Treat the frozen Omni decoder and text-key matcher as the environment. Optimize only the external controller over versioned discrete actions. Never update Omni, mmproj, embedding, retriever, verifier, or prompt-model parameters. Do not add a second answering model. Every model action must carry the original speech packet again.
@@ -38,6 +55,13 @@ Primary references:
 - [PromptAgent: Strategic Planning with Language Models Enables Expert-level Prompt Optimization](https://arxiv.org/abs/2310.16427)
 - [AgentFly: Fine-tuning LLM Agents without Fine-tuning LLMs](https://arxiv.org/abs/2508.16153)
 - [Language Agent Tree Search Unifies Reasoning, Acting, and Planning in Language Models](https://openreview.net/forum?id=njwv9BsGHF)
+- [JitRL: Training-Free Test-Time Reinforcement Learning](https://arxiv.org/abs/2601.18510)
+- [Budget-Aware Evaluation of Active Retrieval-Augmented Generation](https://arxiv.org/abs/2607.24010)
+- [AudioToolAgent: Agentic Audio Understanding](https://arxiv.org/abs/2510.02995)
+- [DuplexSLA: A Duplex Speech-Language-Action Model](https://arxiv.org/abs/2605.20755)
+- [llama.cpp continuous batching and slot behavior](https://github.com/ggml-org/llama.cpp/discussions/8567)
+
+JitRL motivates a non-parametric memory of state, discrete action, and observed return, but this study does not alter logits or use a second model evaluator. Budget-aware active RAG motivates reporting marginal correctness relative to the no-refinement speech baseline together with realized action rate, harm rate, and cost. AudioToolAgent and DuplexSLA provide architectural evidence for iterative and concurrent tool/action scheduling, but their extra models, transcript-centered orchestration, training, or test-mini tuning are outside this repository's boundary. Only their control-loop and scheduling abstractions are reused.
 
 ## Controller model
 
@@ -108,6 +132,16 @@ If any trigger holds, freeze `DISCOVERY-X108`: six unused SLURP train queries pe
 
 The A0 read activated A1x: the best enumerated policy changed M1 by zero cases and only two queries carried a helpful or harmful full-branch outcome. `DISCOVERY-X108` is therefore the single authorized expansion. Its 108 packets must be promoted and validated in parallel before the inference server starts; sample count must not expand again during this stage.
 
+### A1b — frozen post-read episodic action evaluator
+
+The first X108 read exposed seven recoverable errors but rejected the preregistered coarse contextual policy. Before a second model-free read of the same sealed decisions, freeze `speaker-grouped-oof-episodic-action-advantage-v2`. It uses only runtime-legal telemetry already present in the decision file: M1 and canonical M3 key ids, their relation, the M1 rank in canonical top-k, compatible-candidate count, selected-candidate compatibility, verifier-margin bucket, and contact costs. It retrieves at most nine training-fold states at weighted Hamming distance at most three. A non-primary action requires at least five neighbors, estimated net gain at least two, and zero observed harmful transitions. Speaker groups remain intact in deterministic three-fold out-of-fold evaluation. The available actions are M1, unanimous/majority fallback, and canonical/reverse/rotate fallback. Report action counts, fold deltas, wrong-to-correct, correct-to-wrong, mean contacts, and the complete neighbor/action audit.
+
+This evaluator is post-read method development. Its registered model-free read is `SAEA-SN-DISCOVERY-X108-EPISODIC-READ/attempt-20260822T073000Z-12a001`. It can reject the action family or justify a future validation candidate, but it cannot independently validate a controller, reopen GATE-C36, or contact FINAL60. It performs zero model calls and never reads a new split.
+
+### A1c — knowledge-grounded semantic action support
+
+Do not treat the old free-form M2 as the final semantic-refinement test. Refactor the existing matcher and stage-DAG dispatcher to support the four-stage grounded loop specified above; do not add a standalone experiment script. First exercise it on already-exposed OPT-A36 with full action logging and the required semantic controls. Freeze the state schema, prompts, top-k values, backtrack rule, and contact ceiling before contact. If it does not produce at least three action-sensitive cases or does not improve the discovery action oracle, revise key construction or the state schema locally rather than expanding samples.
+
 ### A2 — new unread train gate
 
 After A1 freezes one policy, draw one new small GATE-C18 from unused SLURP train material with query/key/speaker isolation. Preprocess its packets offline before inference, then run direct M0 and the frozen policy once. Do not reuse GATE18 as validation.
@@ -125,6 +159,14 @@ The frozen policy qualifies only if all conditions hold:
 
 Only after A2 qualifies may the owner decide whether FINAL60 is still an appropriate bounded discovery read.
 
+## Progressive scale ladder
+
+The current 108-query rollout already satisfies the owner's permission to expand beyond 100 when smaller evidence is underpowered. Do not expand again merely to increase GPU utilization or narrow a confidence interval around a non-improving policy.
+
+1. `D108 — action qualification`: a single preregistered out-of-fold external policy may request promotion only with net correct gain at least 3/108 over M1, positive delta in at least two of three speaker folds, worst-fold delta at least zero, at most one correct-to-wrong transition, zero parse failures, non-primary action rate between 5 and 50 percent, and fewer mean contacts than full expansion. Existing unanimous and coarse contextual policies do not pass.
+2. `D500 — bounded train-only development`: this requires an explicit owner-approved successor contract. Use 360 speaker-isolated train queries for policy memory/calibration and keep 140 train queries as an unread internal holdout. Freeze keys, prompts, action set, thresholds, cost coefficients, and packet identities before reading the 140. Promote only if the holdout is net positive, correct-to-wrong is at most one percent, direction is nonnegative across preregistered speaker/scenario strata, all mechanism controls pass, and cost remains below full expansion.
+3. `V1000+ — baseline lock`: this is Stage-3 paper-scale work and is prohibited in this repository. It requires `OWNER_GO_AND_PAPER_EXECUTION_CONTRACT` and a standalone `papers/<slug>` carrier. Test remains untouched during optimization. Only a stable gain on a 1,000-plus preregistered validation cohort may lock a large-scale engineering baseline; it still does not by itself establish final superiority or generalization.
+
 ## GPU execution requirement
 
 The current adaptive run fails the full-load gate because rare escalation creates a thin tail. Do not increase the sample set to manufacture utilization.
@@ -141,6 +183,8 @@ If the adaptive serving policy still has an unavoidable short tail after A0, rep
 If all three registered np geometries fail mechanically while their stable waves reach high utilization, permit one label-blind scheduler rescue after semantic read: keep np16 and every scientific byte fixed, raise the task queue to `8×np` so all 108 exposed X108 tasks can contribute ready contacts across stage boundaries, and inspect only mechanical serving fields. This cell cannot change or corroborate the scientific result. If it also fails the original whole-window thresholds, stop live profiling and refactor the existing dispatcher into an explicit global stage-ready state machine before any validation-gate contact.
 
 The q128 rescue and the first global-branch refactor are complete and both fail the unchanged whole-window gate. The global-branch run completes 108/108 decisions and 1,599 contacts with zero request, parse, OOM, host-spill, runaway, or mmproj failure. Slot occupancy reaches 90.57 percent, but request-active GPU median/P10 is 89/60 percent and aggregate throughput is 1,209.47 tokens/s. The process audit records zero mmproj hits. Stop live profiling. The next engineering change must be model-free: replace blocking branch jobs with a persistent dependency-aware stage DAG whose ready queue applies bounded backpressure while preserving retrieval-before-verification causality and deterministic trace order. Revalidate it with tests and replay before preregistering any further model contact.
+
+The explicit stage DAG is now implemented in the existing dispatcher. It uses one persistent contact executor, admits ready nodes only up to queue depth, creates verifier nodes only after retrieval completion, carries the original speech packet in every node, propagates a failed contact without retry, and merges traces deterministically by task, branch, and stage. A model-free latency replay completes 12 tasks and 120 contacts, reaches all four simulated slots across stage transitions, and loses no outcome. The complete WSL regression passes. This closes the code/replay prerequisite but does not authorize another live GPU profile; any such contact still needs a new exposure row and must keep semantic bytes isolated.
 
 ## Claim boundary
 
