@@ -5466,6 +5466,38 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
         raise SpeechNativeProfileError(
             "speech_native_agent_policy_id must be a non-empty string"
         )
+    matcher_policy_id = _require_string(values, "matcher_policy_id")
+    decision_graph = None
+    decision_graph_path: Path | None = None
+    decision_graph_file_sha256: str | None = None
+    if matcher_policy_id == "M9":
+        graph_relpath = _require_string(values, "speech_native_decision_graph")
+        decision_graph_path = (repo_root / graph_relpath).resolve()
+        if (
+            decision_graph_path == repo_root.resolve()
+            or not decision_graph_path.is_relative_to(repo_root.resolve())
+        ):
+            raise SpeechNativeProfileError(
+                "speech-native decision graph must stay under the repository"
+            )
+        decision_graph_file_sha256 = _require_string(
+            values, "speech_native_decision_graph_file_sha256"
+        )
+        decision_graph = _load_decision_graph(
+            decision_graph_path,
+            expected_sha256=decision_graph_file_sha256,
+            key_cards=key_cards,
+        )
+    elif any(
+        key in values
+        for key in (
+            "speech_native_decision_graph",
+            "speech_native_decision_graph_file_sha256",
+        )
+    ):
+        raise SpeechNativeProfileError(
+            "decision graph configuration may only enter an M9 profile"
+        )
     dispatch_granularity = values.get("speech_native_dispatch_granularity", "task")
     if dispatch_granularity not in {"task", "contact"}:
         raise SpeechNativeProfileError(
@@ -5485,11 +5517,12 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
         order_ids=raw_order_ids,
         decoding_params=values.get("decoding_params", {}),
         key_representation_id=key_representation_id,
-        matcher_policy_id=_require_string(values, "matcher_policy_id"),
+        matcher_policy_id=matcher_policy_id,
         top_k=top_k,
         prompt_policy_id=prompt_policy_id,
         verifier_policy_id=verifier_policy_id,
         audio_key_bindings=audio_key_bindings,
+        decision_graph=decision_graph,
         mechanism_control_id=mechanism_control_id,
         agent_policy_id=agent_policy_id,
         agent_aggregator_id=agent_aggregator_id,
@@ -5748,6 +5781,10 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
             "key_order_ids": list(raw_order_ids),
             "key_representation_id": values["key_representation_id"],
             "matcher_policy_id": values["matcher_policy_id"],
+            "decision_graph_id": (
+                decision_graph.graph_id if decision_graph is not None else None
+            ),
+            "decision_graph_file_sha256": decision_graph_file_sha256,
             "matcher_prompt_policy_id": prompt_policy_id,
             "matcher_verifier_policy_id": verifier_policy_id,
             "agent_policy_id": agent_policy_id,
