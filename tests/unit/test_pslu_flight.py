@@ -4468,6 +4468,27 @@ def test_decision_graph_artifact_is_hash_pinned_and_enters_profile_tasks(tmp_pat
         )
 
 
+def test_m10_profile_tasks_reuse_the_pinned_decision_graph():
+    graph = _decision_graph_fixture()
+    tasks = build_profile_tasks(
+        samples=(type("Sample", (), {"sample_id": "s1"})(),),
+        packet_bindings={
+            "s1": {"packet_id": "slurp/train/s1", "sha256": "a" * 64}
+        },
+        key_cards=_KEY_CARDS,
+        order_ids=("canonical",),
+        decoding_params={"temperature": 0},
+        key_representation_id="K1",
+        matcher_policy_id="M10",
+        prompt_policy_id="speech-native-json-copy-v4",
+        top_k=2,
+        agent_policy_id="speech-conditioned-candidate-evidence-action-support-v1",
+        agent_aggregator_id="candidate-evidence-primary-control-v1",
+        decision_graph=graph,
+    )
+    assert tasks[0].decision_graph == graph
+
+
 def test_training_free_policy_search_uses_complete_action_support():
     frontier = _evaluate_training_free_agent_policies(
         (
