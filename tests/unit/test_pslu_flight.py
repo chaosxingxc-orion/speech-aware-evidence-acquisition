@@ -21,6 +21,7 @@ from speech_aware_evidence_acquisition.core.resources import NOT_AVAILABLE
 from speech_aware_evidence_acquisition.core.driver.speech_native import (
     audit_speech_native_action_support,
     _assert_reusable_session_profile,
+    _audit_cuda_graph_moe_compatibility,
     _canonical_sha256,
     _evaluate_training_free_contextual_policy,
     _evaluate_training_free_episodic_policy,
@@ -41,6 +42,7 @@ from speech_aware_evidence_acquisition.core.driver.speech_native import (
     _trace_speech_query_summary,
     SpeechNativeProfileError,
     _cli_speech_native_action_audit,
+    _cli_speech_native_engine_audit,
     build_profile_tasks,
     profile_gpu_eligibility,
     profile_server_slot_event_gpu_metrics,
@@ -5723,6 +5725,176 @@ def test_gpu_admission_accepts_a_balanced_server_event_timeline():
     )
 
     assert all(eligibility.values())
+
+
+def _cuda_graph_engine_audit_inputs(*, slot_count=16, expert_types=("Q4_K", "Q6_K")):
+    binary_sha256 = "a" * 64
+    decoder_sha256 = "b" * 64
+    build_commit = "c" * 40
+    runtime = {
+        "schema": "saea-runtime-receipt-v3",
+        "role": "inference",
+        "llama_cpp": {
+            "binary_sha256": binary_sha256,
+            "build_commit": build_commit,
+        },
+        "gguf_files": [{"path": "models/decoder.gguf", "sha256": decoder_sha256}],
+    }
+    session = {
+        "schema": "saea-session-receipt-v2",
+        "role": "inference",
+        "binary_sha256": binary_sha256,
+        "argv": [
+            "llama-server",
+            "-m",
+            "/data/models/decoder.gguf",
+            "--no-mmproj",
+            "-np",
+            str(slot_count),
+        ],
+        "model_files": [{"path": "models/decoder.gguf", "sha256": decoder_sha256}],
+    }
+    return {
+        "runtime_receipt": runtime,
+        "session_receipt": session,
+        "checkout_commit": build_commit,
+        "server_log_text": (
+            "CUDA0 : NVIDIA GeForce RTX 5090 Laptop GPU "
+            "| CUDA : ARCHS = 1200 | USE_GRAPHS = 1 |\n"
+        ),
+        "gguf_metadata": {
+            "general.architecture": "qwen3vlmoe",
+            "qwen3vlmoe.expert_count": 128,
+            "qwen3vlmoe.expert_used_count": 8,
+        },
+        "expert_tensor_types": expert_types,
+        "mmvq_header_text": "#define MMVQ_MAX_BATCH_SIZE 8\n",
+        "mmvq_source_text": (
+            "if (cc == GGML_CUDA_CC_VOLTA || "
+            "cc >= GGML_CUDA_CC_ADA_LOVELACE) {\n"
+            "    return MMVQ_MAX_BATCH_SIZE;\n"
+            "}\n"
+        ),
+        "cuda_source_text": (
+            "if (node->op == GGML_OP_MUL_MAT_ID) {\n"
+            "  const int mmvq_mmid_max = get_mmvq_mmid_max_batch("
+            "node->src[0]->type, cc);\n"
+            "  if (!ggml_is_quantized(node->src[0]->type) || "
+            "node->ne[2] > mmvq_mmid_max) {\n"
+            "    use_cuda_graph = false;\n"
+            "  }\n"
+            "}\n"
+        ),
+    }
+
+
+def test_cuda_graph_engine_audit_closes_np16_on_blackwell_quantized_moe():
+    report = _audit_cuda_graph_moe_compatibility(**_cuda_graph_engine_audit_inputs())
+
+    assert report["schema"] == "saea-speech-native-engine-compatibility-audit-v1"
+    assert report["hardware"]["cuda_compute_arch"] == 1200
+    assert report["model"]["expert_count"] == 128
+    assert report["engine"]["mmvq_moe_max_batch_size"] == 8
+    assert report["profile"]["slot_count"] == 16
+    assert report["profile"]["full_slot_decode_exceeds_graph_limit"] is True
+    assert report["decision"]["current_binary_profile_search_closed"] is True
+    assert report["decision"]["live_contact_authorized"] is False
+
+
+def test_cuda_graph_engine_audit_does_not_claim_np8_exceeds_the_static_limit():
+    report = _audit_cuda_graph_moe_compatibility(
+        **_cuda_graph_engine_audit_inputs(slot_count=8)
+    )
+
+    assert report["profile"]["full_slot_decode_exceeds_graph_limit"] is False
+    assert report["decision"]["current_binary_profile_search_closed"] is False
+    assert report["decision"]["live_contact_authorized"] is False
+
+
+def test_cuda_graph_engine_audit_treats_unquantized_expert_weights_as_no_graph_path():
+    report = _audit_cuda_graph_moe_compatibility(
+        **_cuda_graph_engine_audit_inputs(expert_types=("Q4_K", "F32"))
+    )
+
+    assert report["engine"]["effective_moe_graph_batch_limit"] == 0
+    assert report["profile"]["full_slot_decode_exceeds_graph_limit"] is True
+
+
+def test_cuda_graph_engine_audit_fails_closed_on_source_contract_drift():
+    inputs = _cuda_graph_engine_audit_inputs()
+    inputs["cuda_source_text"] = "use_cuda_graph = true;\n"
+
+    with pytest.raises(SpeechNativeProfileError, match="MUL_MAT_ID CUDA graph guard"):
+        _audit_cuda_graph_moe_compatibility(**inputs)
+
+
+def test_cuda_graph_engine_audit_fails_closed_on_receipt_commit_mismatch():
+    inputs = _cuda_graph_engine_audit_inputs()
+    inputs["checkout_commit"] = "d" * 40
+
+    with pytest.raises(SpeechNativeProfileError, match="checkout commit"):
+        _audit_cuda_graph_moe_compatibility(**inputs)
+
+
+def test_cuda_graph_engine_audit_cli_writes_a_receipt_bound_model_free_report(
+    tmp_path, monkeypatch
+):
+    inputs = _cuda_graph_engine_audit_inputs()
+    runtime_path = tmp_path / "runtime.json"
+    session_path = tmp_path / "session.json"
+    server_log_path = tmp_path / "server.log"
+    source_root = tmp_path / "llama.cpp"
+    output_path = tmp_path / "audit.json"
+    model_path = tmp_path / "decoder.gguf"
+    model_path.write_bytes(b"not-read-by-test")
+    inputs["session_receipt"]["argv"][2] = str(model_path)
+    inputs["session_receipt"]["server_log_path"] = str(server_log_path)
+    runtime_path.write_text(json.dumps(inputs["runtime_receipt"]), encoding="utf-8")
+    session_path.write_text(json.dumps(inputs["session_receipt"]), encoding="utf-8")
+    server_log_path.write_text(inputs["server_log_text"], encoding="utf-8")
+    (source_root / "ggml/src/ggml-cuda").mkdir(parents=True)
+    (source_root / "ggml/src/ggml-cuda/mmvq.cuh").write_text(
+        inputs["mmvq_header_text"], encoding="utf-8"
+    )
+    (source_root / "ggml/src/ggml-cuda/mmvq.cu").write_text(
+        inputs["mmvq_source_text"], encoding="utf-8"
+    )
+    (source_root / "ggml/src/ggml-cuda/ggml-cuda.cu").write_text(
+        inputs["cuda_source_text"], encoding="utf-8"
+    )
+    monkeypatch.setattr(
+        speech_native_module,
+        "_inspect_gguf_moe_metadata",
+        lambda path: (inputs["gguf_metadata"], inputs["expert_tensor_types"]),
+    )
+    monkeypatch.setattr(
+        speech_native_module.subprocess,
+        "run",
+        lambda *args, **kwargs: SimpleNamespace(
+            stdout=inputs["checkout_commit"] + "\n"
+        ),
+    )
+
+    result = _cli_speech_native_engine_audit(
+        SimpleNamespace(
+            runtime_receipt=str(runtime_path),
+            session_receipt=str(session_path),
+            llama_cpp_root=str(source_root),
+            output=str(output_path),
+        )
+    )
+
+    assert result == 0
+    report = json.loads(output_path.read_text(encoding="utf-8"))
+    assert report["decision"]["current_binary_profile_search_closed"] is True
+    assert (
+        report["inputs"]["runtime_receipt_sha256"]
+        == hashlib.sha256(runtime_path.read_bytes()).hexdigest()
+    )
+    assert (
+        report["inputs"]["session_receipt_sha256"]
+        == hashlib.sha256(session_path.read_bytes()).hexdigest()
+    )
 
 
 def test_decision_graph_artifact_is_hash_pinned_and_enters_profile_tasks(tmp_path):

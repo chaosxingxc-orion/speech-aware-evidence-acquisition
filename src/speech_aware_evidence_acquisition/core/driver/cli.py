@@ -49,6 +49,7 @@ from .bundled import run_experiment_bundled
 from .smoke import _cli_smoke
 from .speech_native import (
     _cli_speech_native_action_audit,
+    _cli_speech_native_engine_audit,
     _cli_speech_native_profile,
     _cli_speech_native_read,
 )
@@ -815,6 +816,19 @@ def main(argv: list[str] | None = None) -> int:
     speech_action_audit.add_argument("--trace-sha256", required=True)
     speech_action_audit.add_argument("--output", required=True)
     speech_action_audit.set_defaults(func=_cli_speech_native_action_audit)
+
+    speech_engine_audit = sub.add_parser(
+        "speech-native-engine-audit",
+        help=(
+            "model-free receipt-bound audit of the pinned llama.cpp MoE/CUDA-graph "
+            "decode-width boundary"
+        ),
+    )
+    speech_engine_audit.add_argument("--runtime-receipt", required=True)
+    speech_engine_audit.add_argument("--session-receipt", required=True)
+    speech_engine_audit.add_argument("--llama-cpp-root", required=True)
+    speech_engine_audit.add_argument("--output", required=True)
+    speech_engine_audit.set_defaults(func=_cli_speech_native_engine_audit)
 
     speech_read = sub.add_parser(
         "speech-native-read",

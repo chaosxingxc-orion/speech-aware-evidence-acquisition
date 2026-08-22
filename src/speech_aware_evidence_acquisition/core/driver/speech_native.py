@@ -17,6 +17,7 @@ import json
 import math
 import re
 import statistics
+import subprocess
 from dataclasses import asdict
 from datetime import datetime
 from pathlib import Path
@@ -8626,6 +8627,217 @@ def profile_evaluated_work_metrics(
     }
 
 
+def _audit_cuda_graph_moe_compatibility(
+    *,
+    runtime_receipt: Mapping[str, object],
+    session_receipt: Mapping[str, object],
+    checkout_commit: str,
+    server_log_text: str,
+    gguf_metadata: Mapping[str, object],
+    expert_tensor_types: Sequence[str],
+    mmvq_header_text: str,
+    mmvq_source_text: str,
+    cuda_source_text: str,
+) -> dict[str, object]:
+    """Bind the current MoE decode width to llama.cpp's CUDA-graph guard.
+
+    This is a static, model-free audit. It deliberately does not infer that a
+    live workload used a particular batch width; native slot events remain the
+    authority for that dynamic fact. The audit only proves whether a full-slot
+    decode batch can use the pinned source's quantized MoE CUDA-graph path.
+    """
+
+    if runtime_receipt.get("schema") != "saea-runtime-receipt-v3":
+        raise SpeechNativeProfileError("engine audit requires runtime receipt v3")
+    if runtime_receipt.get("role") != "inference":
+        raise SpeechNativeProfileError(
+            "engine audit requires an inference runtime receipt"
+        )
+    if session_receipt.get("schema") != "saea-session-receipt-v2":
+        raise SpeechNativeProfileError("engine audit requires session receipt v2")
+    if session_receipt.get("role") != "inference":
+        raise SpeechNativeProfileError(
+            "engine audit requires an inference session receipt"
+        )
+
+    llama_cpp = runtime_receipt.get("llama_cpp")
+    if not isinstance(llama_cpp, Mapping):
+        raise SpeechNativeProfileError("runtime receipt llama_cpp binding is malformed")
+    runtime_commit = llama_cpp.get("build_commit")
+    if (
+        not isinstance(runtime_commit, str)
+        or re.fullmatch(r"[0-9a-f]{40}", runtime_commit) is None
+    ):
+        raise SpeechNativeProfileError("runtime receipt build commit is malformed")
+    if checkout_commit != runtime_commit:
+        raise SpeechNativeProfileError(
+            "llama.cpp checkout commit differs from runtime receipt"
+        )
+    runtime_binary_sha256 = llama_cpp.get("binary_sha256")
+    if (
+        not isinstance(runtime_binary_sha256, str)
+        or _SHA256.fullmatch(runtime_binary_sha256) is None
+        or session_receipt.get("binary_sha256") != runtime_binary_sha256
+    ):
+        raise SpeechNativeProfileError("session binary differs from runtime receipt")
+
+    def model_bindings(
+        document: Mapping[str, object], field: str
+    ) -> set[tuple[str, str]]:
+        rows = document.get(field)
+        if not isinstance(rows, list) or not rows:
+            raise SpeechNativeProfileError(f"engine audit {field} is malformed")
+        bindings: set[tuple[str, str]] = set()
+        for row in rows:
+            if not isinstance(row, Mapping):
+                raise SpeechNativeProfileError(f"engine audit {field} row is malformed")
+            path = row.get("path")
+            sha256 = row.get("sha256")
+            if (
+                not isinstance(path, str)
+                or not path
+                or not isinstance(sha256, str)
+                or _SHA256.fullmatch(sha256) is None
+            ):
+                raise SpeechNativeProfileError(f"engine audit {field} row is malformed")
+            bindings.add((Path(path).name, sha256))
+        return bindings
+
+    if model_bindings(runtime_receipt, "gguf_files") != model_bindings(
+        session_receipt, "model_files"
+    ):
+        raise SpeechNativeProfileError(
+            "session model files differ from runtime receipt"
+        )
+
+    argv = session_receipt.get("argv")
+    if not isinstance(argv, list) or not all(isinstance(item, str) for item in argv):
+        raise SpeechNativeProfileError("session argv is malformed")
+    if "--no-mmproj" not in argv or "--mmproj" in argv:
+        raise SpeechNativeProfileError("engine audit session is not mmproj-free")
+    slot_count: int | None = None
+    for option in ("-np", "--parallel"):
+        if option in argv:
+            try:
+                slot_count = int(argv[argv.index(option) + 1])
+            except (ValueError, IndexError) as error:
+                raise SpeechNativeProfileError(
+                    "session slot count is malformed"
+                ) from error
+            break
+    if slot_count is None or slot_count <= 0:
+        raise SpeechNativeProfileError("session argv has no positive slot count")
+
+    arch_match = re.search(r"\bARCHS\s*=\s*(\d+)\b", server_log_text)
+    graph_match = re.search(r"\bUSE_GRAPHS\s*=\s*([01])\b", server_log_text)
+    gpu_match = re.search(r"CUDA0\s*:\s*([^\n|(]+)", server_log_text)
+    if arch_match is None or graph_match is None or gpu_match is None:
+        raise SpeechNativeProfileError("server log lacks CUDA architecture evidence")
+    cuda_arch = int(arch_match.group(1))
+    if cuda_arch < 890:
+        raise SpeechNativeProfileError(
+            "engine audit currently supports only Ada-or-newer NVIDIA GPUs"
+        )
+    if graph_match.group(1) != "1":
+        raise SpeechNativeProfileError(
+            "receipt-bound build does not enable CUDA graphs"
+        )
+
+    architecture = gguf_metadata.get("general.architecture")
+    if not isinstance(architecture, str) or not architecture.endswith("moe"):
+        raise SpeechNativeProfileError("GGUF architecture is not a receipt-bound MoE")
+    expert_count = gguf_metadata.get(f"{architecture}.expert_count")
+    expert_used_count = gguf_metadata.get(f"{architecture}.expert_used_count")
+    if (
+        isinstance(expert_count, bool)
+        or not isinstance(expert_count, int)
+        or expert_count <= 0
+        or isinstance(expert_used_count, bool)
+        or not isinstance(expert_used_count, int)
+        or expert_used_count <= 0
+        or expert_used_count > expert_count
+    ):
+        raise SpeechNativeProfileError("GGUF MoE expert metadata is malformed")
+
+    normalized_types = tuple(sorted(set(expert_tensor_types)))
+    if not normalized_types or not all(
+        isinstance(tensor_type, str) and tensor_type for tensor_type in normalized_types
+    ):
+        raise SpeechNativeProfileError("GGUF expert tensor types are malformed")
+    quantized_prefixes = ("Q", "IQ", "TQ", "MXFP", "NVFP")
+    unquantized_types = tuple(
+        tensor_type
+        for tensor_type in normalized_types
+        if not tensor_type.startswith(quantized_prefixes)
+    )
+
+    max_batch_match = re.search(
+        r"#define\s+MMVQ_MAX_BATCH_SIZE\s+(\d+)", mmvq_header_text
+    )
+    if max_batch_match is None:
+        raise SpeechNativeProfileError("MMVQ maximum batch size is not source-bound")
+    mmvq_max_batch = int(max_batch_match.group(1))
+    if mmvq_max_batch <= 0:
+        raise SpeechNativeProfileError("MMVQ maximum batch size must be positive")
+    if (
+        "cc >= GGML_CUDA_CC_ADA_LOVELACE" not in mmvq_source_text
+        or "return MMVQ_MAX_BATCH_SIZE" not in mmvq_source_text
+    ):
+        raise SpeechNativeProfileError("Ada/Blackwell MMVQ source branch is missing")
+    guard_patterns = (
+        r"node->op\s*==\s*GGML_OP_MUL_MAT_ID",
+        r"!\s*ggml_is_quantized\(node->src\[0\]->type\)",
+        r"node->ne\[2\]\s*>\s*mmvq_mmid_max",
+        r"use_cuda_graph\s*=\s*false",
+    )
+    if not all(re.search(pattern, cuda_source_text) for pattern in guard_patterns):
+        raise SpeechNativeProfileError(
+            "MUL_MAT_ID CUDA graph guard is missing or changed"
+        )
+
+    effective_limit = 0 if unquantized_types else mmvq_max_batch
+    exceeds_limit = slot_count > effective_limit
+    return {
+        "schema": "saea-speech-native-engine-compatibility-audit-v1",
+        "runtime": {
+            "build_commit": runtime_commit,
+            "binary_sha256": runtime_binary_sha256,
+            "mmproj_free": True,
+        },
+        "hardware": {
+            "gpu_name": gpu_match.group(1).strip(),
+            "cuda_compute_arch": cuda_arch,
+            "cuda_graphs_compiled": True,
+        },
+        "model": {
+            "architecture": architecture,
+            "expert_count": expert_count,
+            "expert_used_count": expert_used_count,
+            "expert_weight_tensor_types": list(normalized_types),
+            "unquantized_expert_weight_tensor_types": list(unquantized_types),
+        },
+        "engine": {
+            "mmvq_moe_max_batch_size": mmvq_max_batch,
+            "effective_moe_graph_batch_limit": effective_limit,
+            "mul_mat_id_graph_guard_present": True,
+            "ada_blackwell_mmvq_branch_present": True,
+        },
+        "profile": {
+            "slot_count": slot_count,
+            "full_slot_decode_exceeds_graph_limit": exceeds_limit,
+        },
+        "decision": {
+            "current_binary_profile_search_closed": exceeds_limit,
+            "live_contact_authorized": False,
+            "required_change": (
+                "receipt-bound engine equivalence improvement"
+                if exceeds_limit
+                else "dynamic shape-stability evidence"
+            ),
+        },
+    }
+
+
 def _profile_geometry(values: Mapping[str, object], slot_count: int) -> dict[str, int]:
     args = _server_args(values)
     try:
@@ -8676,6 +8888,138 @@ def _write_exclusive_jsonl(path: Path, rows: Sequence[Mapping[str, object]]) -> 
         raise SpeechNativeProfileError(
             f"profile artifact already exists: {path}"
         ) from error
+
+
+def _inspect_gguf_moe_metadata(
+    path: Path,
+) -> tuple[dict[str, object], tuple[str, ...]]:
+    """Read only GGUF metadata and expert tensor descriptors, never tensor bytes."""
+
+    try:
+        from gguf import GGMLQuantizationType, GGUFReader
+    except ImportError as error:
+        raise SpeechNativeProfileError(
+            "engine audit requires the receipt-pinned llama.cpp gguf Python package"
+        ) from error
+    try:
+        reader = GGUFReader(str(path), "r")
+    except Exception as error:
+        raise SpeechNativeProfileError(
+            f"cannot inspect receipt-bound GGUF: {path}"
+        ) from error
+    metadata: dict[str, object] = {}
+    for key, field in reader.fields.items():
+        if key == "general.architecture" or "expert_count" in key:
+            metadata[key] = field.contents()
+    expert_types: list[str] = []
+    for tensor in reader.tensors:
+        if tensor.name.endswith("_exps.weight"):
+            try:
+                expert_types.append(GGMLQuantizationType(tensor.tensor_type).name)
+            except ValueError as error:
+                raise SpeechNativeProfileError(
+                    f"unknown GGUF expert tensor type: {tensor.tensor_type}"
+                ) from error
+    return metadata, tuple(expert_types)
+
+
+def _cli_speech_native_engine_audit(args: argparse.Namespace) -> int:
+    """Produce a model-free, receipt-bound MoE/CUDA-graph compatibility audit."""
+
+    runtime_path = Path(args.runtime_receipt)
+    session_path = Path(args.session_receipt)
+    source_root = Path(args.llama_cpp_root)
+    try:
+        runtime_receipt = json.loads(runtime_path.read_text(encoding="utf-8"))
+        session_receipt = json.loads(session_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as error:
+        raise SpeechNativeProfileError("cannot read engine-audit receipts") from error
+    if not isinstance(runtime_receipt, Mapping) or not isinstance(
+        session_receipt, Mapping
+    ):
+        raise SpeechNativeProfileError("engine-audit receipts must be JSON objects")
+
+    server_log_value = session_receipt.get("server_log_path")
+    argv = session_receipt.get("argv")
+    if not isinstance(server_log_value, str) or not isinstance(argv, list):
+        raise SpeechNativeProfileError("session receipt lacks engine-audit paths")
+    try:
+        model_index = argv.index("-m")
+        model_path = Path(argv[model_index + 1])
+    except (ValueError, IndexError, TypeError) as error:
+        raise SpeechNativeProfileError(
+            "session receipt has no decoder model path"
+        ) from error
+
+    source_paths = {
+        "cuda_source": source_root / "ggml/src/ggml-cuda/ggml-cuda.cu",
+        "mmvq_source": source_root / "ggml/src/ggml-cuda/mmvq.cu",
+        "mmvq_header": source_root / "ggml/src/ggml-cuda/mmvq.cuh",
+    }
+    try:
+        source_text = {
+            key: path.read_text(encoding="utf-8") for key, path in source_paths.items()
+        }
+        server_log_text = Path(server_log_value).read_text(
+            encoding="utf-8", errors="replace"
+        )
+    except OSError as error:
+        raise SpeechNativeProfileError(
+            "cannot read engine-audit source evidence"
+        ) from error
+    try:
+        checkout = subprocess.run(
+            ["git", "rev-parse", "HEAD"],
+            cwd=source_root,
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.strip()
+    except (OSError, subprocess.CalledProcessError) as error:
+        raise SpeechNativeProfileError(
+            "cannot bind llama.cpp checkout commit"
+        ) from error
+
+    gguf_metadata, expert_types = _inspect_gguf_moe_metadata(model_path)
+    report = _audit_cuda_graph_moe_compatibility(
+        runtime_receipt=runtime_receipt,
+        session_receipt=session_receipt,
+        checkout_commit=checkout,
+        server_log_text=server_log_text,
+        gguf_metadata=gguf_metadata,
+        expert_tensor_types=expert_types,
+        mmvq_header_text=source_text["mmvq_header"],
+        mmvq_source_text=source_text["mmvq_source"],
+        cuda_source_text=source_text["cuda_source"],
+    )
+    report["inputs"] = {
+        "runtime_receipt_path": str(runtime_path),
+        "runtime_receipt_sha256": _sha256_file(runtime_path),
+        "session_receipt_path": str(session_path),
+        "session_receipt_sha256": _sha256_file(session_path),
+        "server_log_path": server_log_value,
+        "server_log_sha256": _sha256_file(Path(server_log_value)),
+        "model_path": str(model_path),
+        "source_files": {
+            key: {"path": str(path), "sha256": _sha256_file(path)}
+            for key, path in source_paths.items()
+        },
+    }
+    output = Path(args.output)
+    _write_exclusive_json(output, report)
+    print(
+        json.dumps(
+            {
+                "output": str(output),
+                "profile": report["profile"],
+                "decision": report["decision"],
+                "model_contact": False,
+            },
+            indent=2,
+            sort_keys=True,
+        )
+    )
+    return 0
 
 
 def _cli_speech_native_profile(args: argparse.Namespace) -> int:
@@ -9431,6 +9775,7 @@ def _cli_speech_native_action_audit(args: argparse.Namespace) -> int:
 
 __all__ = [
     "SpeechNativeProfileError",
+    "_cli_speech_native_engine_audit",
     "_cli_speech_native_profile",
     "_cli_speech_native_read",
     "build_profile_tasks",
