@@ -87,6 +87,7 @@ from speech_aware_evidence_acquisition.rails.probes.pslu_flight import (
     _source_references_ontology_miner,
     assert_never_calls_ontology_miner,
     build_data_derived_decision_graph,
+    build_speech_native_information_audit,
     build_speech_native_binding,
     candidate_action_state_response_format,
     candidate_counterevidence_response_format,
@@ -7668,6 +7669,139 @@ def test_shared_action_entity_graph_fails_without_discriminative_entity_informat
         )
 
 
+def test_information_audit_blocks_entity_only_knowledge_with_residual_ambiguity():
+    query_seen = {"alarm": 0, "email": 0}
+    material_items = []
+    for entry in _knowledge_refinement_material():
+        if entry.action == "query" and query_seen[entry.scenario] < 8:
+            query_seen[entry.scenario] += 1
+            entry = replace(entry, entity_types=())
+        material_items.append(entry)
+    material = tuple(material_items)
+    base = build_speech_native_binding(
+        material,
+        seed=20260821,
+        expected_scenarios=("alarm", "email"),
+        opt_a_per_scenario=2,
+        opt_b_per_scenario=1,
+        gate_per_scenario=1,
+        key_examples_per_scenario=5,
+    )
+    knowledge = refine_speech_native_binding_knowledge(
+        base,
+        material,
+        seed=20260827,
+        expected_scenarios=("alarm", "email"),
+        key_examples_per_scenario=5,
+    )
+    graph = build_data_derived_decision_graph(
+        knowledge,
+        material,
+        graph_id="slurp-shared-action-entity-decision-graph-v3",
+        expected_scenarios=("alarm", "email"),
+        maximum_boundaries=1,
+        boundary_policy_id="shared-action-entity-boundaries-v2",
+    )
+
+    audit = build_speech_native_information_audit(
+        knowledge,
+        material,
+        graph,
+        expected_scenarios=("alarm", "email"),
+    )
+
+    assert audit["schema"] == "saea-speech-native-information-audit-v1"
+    assert audit["source"]["query_isolated_train_utterance_count"] > 0
+    assert audit["label_space"]["scenario_count"] == 2
+    layers = audit["information_layers"]
+    assert layers["action_plus_entity_signature"]["majority_oracle_accuracy"] >= (
+        layers["action"]["majority_oracle_accuracy"]
+    )
+    assert audit["residual_ambiguity"]["stable_shared_action_pair_count"] == 1
+    assert audit["knowledge_supply"]["entity_boundary_pair_coverage"] == {
+        "covered": 1,
+        "required": 1,
+    }
+    assert audit["knowledge_supply"]["signature_lexical_pair_coverage"] == {
+        "covered": 0,
+        "required": 1,
+    }
+    assert audit["admission"]["status"] == "blocked"
+    assert "residual_signature_lexical_supply" in audit["admission"][
+        "failed_checks"
+    ]
+
+
+def test_information_audit_admits_complete_pair_specific_lexical_supply():
+    query_seen = {"alarm": 0, "email": 0}
+    material_items = []
+    for entry in _knowledge_refinement_material():
+        if entry.action == "query" and query_seen[entry.scenario] < 8:
+            query_seen[entry.scenario] += 1
+            entry = replace(entry, entity_types=())
+        material_items.append(entry)
+    material = tuple(material_items)
+    base = build_speech_native_binding(
+        material,
+        seed=20260821,
+        expected_scenarios=("alarm", "email"),
+        opt_a_per_scenario=2,
+        opt_b_per_scenario=1,
+        gate_per_scenario=1,
+        key_examples_per_scenario=5,
+    )
+    knowledge = refine_speech_native_binding_knowledge(
+        base,
+        material,
+        seed=20260827,
+        expected_scenarios=("alarm", "email"),
+        key_examples_per_scenario=5,
+    )
+    graph = build_data_derived_decision_graph(
+        knowledge,
+        material,
+        graph_id="slurp-shared-action-entity-decision-graph-v3",
+        expected_scenarios=("alarm", "email"),
+        maximum_boundaries=1,
+        boundary_policy_id="shared-action-entity-boundaries-v2",
+    )
+    boundary = graph.boundaries[0]
+    lexical_graph = replace(
+        graph,
+        boundaries=(
+            replace(
+                boundary,
+                provenance_ids=boundary.provenance_ids
+                + (
+                    "slurp-train-signature-lexical:alarm:email:query:"
+                    "none:support-16-16",
+                ),
+            ),
+        ),
+    )
+
+    audit = build_speech_native_information_audit(
+        knowledge,
+        material,
+        lexical_graph,
+        expected_scenarios=("alarm", "email"),
+    )
+
+    assert audit["knowledge_supply"]["signature_lexical_pair_coverage"] == {
+        "covered": 1,
+        "required": 1,
+    }
+    assert audit["admission"] == {
+        "status": "admitted",
+        "failed_checks": [],
+        "new_model_contact_authorized": False,
+        "reason": (
+            "The model-free information gate is complete; a separate execution "
+            "plan and exposure registration are still required."
+        ),
+    }
+
+
 def test_speech_native_successor_binding_preserves_keys_and_adds_isolated_split():
     material = _binding_material()
     base = build_speech_native_binding(
@@ -8003,6 +8137,97 @@ def test_binding_extension_cli_allows_graph_only_from_existing_knowledge(
     summary = json.loads(capsys.readouterr().out)
     assert summary["output"] is None
     assert summary["artifact_sha256"] is None
+
+
+def test_binding_extension_cli_reuses_existing_loader_for_information_audit(
+    monkeypatch, tmp_path, capsys
+):
+    parent = tmp_path / "knowledge-binding.json"
+    knowledge = {
+        "binding_sha256": "b" * 64,
+        "knowledge_revision": {"policy_id": "slurp-action-stratified-specificity-v1"},
+    }
+    parent.write_text(json.dumps(knowledge), encoding="utf-8")
+    audit_output = tmp_path / "information-audit.json"
+    material = _knowledge_refinement_material()
+    captured = {}
+
+    monkeypatch.setattr(driver_cli_module, "load_lock", lambda _path: {"lock": True})
+    monkeypatch.setattr(driver_cli_module, "umbrella_lock_path", lambda: tmp_path)
+    monkeypatch.setattr(driver_cli_module, "data_root", lambda: tmp_path)
+    monkeypatch.setattr(
+        driver_cli_module,
+        "load_slurp_train_material",
+        lambda lock, root, *, media_validation_workers: material,
+    )
+
+    class FakeGraph:
+        graph_id = "slurp-shared-action-entity-decision-graph-v3"
+
+        def as_json(self):
+            return {
+                "schema": "saea-decision-graph-v1",
+                "graph_id": self.graph_id,
+                "factors": [],
+                "boundaries": [],
+            }
+
+    graph = FakeGraph()
+    monkeypatch.setattr(
+        driver_cli_module,
+        "build_data_derived_decision_graph",
+        lambda successor, loaded_material, **kwargs: graph,
+    )
+
+    def fake_audit(successor, loaded_material, loaded_graph):
+        captured.update(
+            {
+                "successor": successor,
+                "material": loaded_material,
+                "graph": loaded_graph,
+            }
+        )
+        return {
+            "schema": "saea-speech-native-information-audit-v1",
+            "admission": {"status": "blocked"},
+        }
+
+    monkeypatch.setattr(
+        driver_cli_module,
+        "build_speech_native_information_audit",
+        fake_audit,
+    )
+    exit_code = driver_cli_module.main(
+        [
+            "extend-speech-native-binding",
+            "--parent-binding",
+            str(parent),
+            "--seed",
+            "20260827",
+            "--information-audit-output",
+            str(audit_output),
+            "--decision-graph-id",
+            "slurp-shared-action-entity-decision-graph-v3",
+            "--boundary-policy",
+            "shared-action-entity-boundaries-v2",
+            "--maximum-boundaries",
+            "1",
+        ]
+    )
+
+    assert exit_code == 0
+    assert captured == {
+        "successor": knowledge,
+        "material": material,
+        "graph": graph,
+    }
+    assert json.loads(audit_output.read_text(encoding="utf-8"))["admission"] == {
+        "status": "blocked"
+    }
+    summary = json.loads(capsys.readouterr().out)
+    assert summary["information_audit_output"] == str(audit_output.resolve())
+    assert len(summary["information_audit_artifact_sha256"]) == 64
+    assert summary["information_audit_status"] == "blocked"
 
 
 def test_binding_extension_cli_requires_one_extension_or_knowledge_operation(

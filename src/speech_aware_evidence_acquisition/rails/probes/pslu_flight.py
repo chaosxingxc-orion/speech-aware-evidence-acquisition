@@ -7747,6 +7747,371 @@ def build_data_derived_decision_graph(
     return graph.validate(tuple(cards_by_scenario[scenario] for scenario in scenarios))
 
 
+def build_speech_native_information_audit(
+    knowledge_binding: Mapping[str, object],
+    material: Sequence[SlurpTrainMaterial],
+    graph: DecisionGraphV1,
+    *,
+    expected_scenarios: Sequence[str] = tuple(SPEECH_NATIVE_SCENARIO_DEFINITIONS),
+    minimum_example_action_mass: float = 0.95,
+) -> dict[str, object]:
+    """Audit task information and knowledge supply without model contact.
+
+    The audit measures empirical scenario information in train-only action and
+    entity-type signatures. Generated semantic state is not counted as new
+    information: it may reorganize speech evidence, but only retrieved,
+    registered knowledge can add evidence that was absent from a prior call.
+    """
+
+    if (
+        isinstance(minimum_example_action_mass, bool)
+        or not isinstance(minimum_example_action_mass, (int, float))
+        or not 0.0 < float(minimum_example_action_mass) <= 1.0
+    ):
+        raise PsluFlightError(
+            "minimum_example_action_mass must be a number in (0, 1]"
+        )
+    claimed_sha256 = knowledge_binding.get("binding_sha256")
+    unsigned = dict(knowledge_binding)
+    unsigned.pop("binding_sha256", None)
+    if claimed_sha256 != _binding_sha256(unsigned):
+        raise PsluFlightError("knowledge binding self-hash mismatch")
+    revision = knowledge_binding.get("knowledge_revision")
+    if (
+        not isinstance(revision, Mapping)
+        or revision.get("policy_id") != SPEECH_NATIVE_KNOWLEDGE_POLICY_ID
+    ):
+        raise PsluFlightError(
+            "information audit requires the action-stratified knowledge successor"
+        )
+
+    scenarios = tuple(expected_scenarios)
+    if not scenarios or len(set(scenarios)) != len(scenarios):
+        raise PsluFlightError("information-audit scenarios must be non-empty and unique")
+    raw_cards = knowledge_binding.get("key_cards")
+    if not isinstance(raw_cards, list):
+        raise PsluFlightError("knowledge binding lacks key cards")
+    cards_by_scenario: dict[str, KeyCardV1] = {}
+    scenario_by_key_id: dict[str, str] = {}
+    for raw in raw_cards:
+        if not isinstance(raw, Mapping):
+            raise PsluFlightError("knowledge key card must be an object")
+        examples = raw.get("positive_examples")
+        if not isinstance(examples, list) or not all(
+            isinstance(example, str) for example in examples
+        ):
+            raise PsluFlightError("knowledge key card examples must be strings")
+        card = KeyCardV1(
+            key_id=str(raw.get("key_id")),
+            definition=str(raw.get("definition")),
+            positive_examples=tuple(examples),
+            contrastive_boundary=(
+                str(raw["contrastive_boundary"])
+                if raw.get("contrastive_boundary") is not None
+                else None
+            ),
+            value_label=str(raw.get("value_label")),
+        ).validate()
+        if card.value_label in cards_by_scenario or card.key_id in scenario_by_key_id:
+            raise PsluFlightError("knowledge key cards contain duplicate labels or ids")
+        cards_by_scenario[card.value_label] = card
+        scenario_by_key_id[card.key_id] = card.value_label
+    if set(cards_by_scenario) != set(scenarios):
+        raise PsluFlightError("knowledge key cards do not match audit scenarios")
+    graph.validate(tuple(cards_by_scenario[scenario] for scenario in scenarios))
+
+    raw_splits = knowledge_binding.get("splits")
+    if not isinstance(raw_splits, Mapping) or not raw_splits:
+        raise PsluFlightError("knowledge binding lacks query splits")
+    query_utterances: set[str] = set()
+    query_sentences: set[str] = set()
+    for raw_split in raw_splits.values():
+        if not isinstance(raw_split, Mapping) or not isinstance(
+            raw_split.get("items"), list
+        ):
+            raise PsluFlightError("knowledge query split is malformed")
+        for raw_item in raw_split["items"]:
+            if not isinstance(raw_item, Mapping):
+                raise PsluFlightError("knowledge query item is malformed")
+            utterance_id = raw_item.get("utterance_id")
+            normalized_sentence = raw_item.get("normalized_sentence")
+            if (
+                not isinstance(utterance_id, str)
+                or not utterance_id
+                or not isinstance(normalized_sentence, str)
+                or not normalized_sentence
+            ):
+                raise PsluFlightError("knowledge query identity is malformed")
+            query_utterances.add(utterance_id)
+            query_sentences.add(normalized_sentence)
+    corpus = tuple(
+        entry
+        for entry in sorted(
+            material, key=lambda item: (item.scenario, item.utterance_id)
+        )
+        if entry.scenario in cards_by_scenario
+        and entry.utterance_id not in query_utterances
+        and _normalized_sentence(entry.sentence) not in query_sentences
+    )
+    if not corpus or {entry.scenario for entry in corpus} != set(scenarios):
+        raise PsluFlightError(
+            "information-audit corpus lacks the complete query-isolated roster"
+        )
+    if any(
+        any(not isinstance(entity_type, str) or not entity_type for entity_type in entry.entity_types)
+        for entry in corpus
+    ):
+        raise PsluFlightError("information-audit corpus has malformed entity types")
+
+    def entropy(counts: Counter[str]) -> float:
+        total = sum(counts.values())
+        return (
+            -sum(
+                (count / total) * math.log2(count / total)
+                for count in counts.values()
+            )
+            if total
+            else 0.0
+        )
+
+    scenario_counts = Counter(entry.scenario for entry in corpus)
+    scenario_entropy = entropy(scenario_counts)
+
+    def summarize(signatures: Sequence[object]):
+        groups: dict[object, Counter[str]] = defaultdict(Counter)
+        for entry, signature in zip(corpus, signatures, strict=True):
+            groups[signature][entry.scenario] += 1
+        conditional = sum(
+            sum(counts.values()) / len(corpus) * entropy(counts)
+            for counts in groups.values()
+        )
+        ambiguous = tuple(counts for counts in groups.values() if len(counts) > 1)
+        ambiguous_count = sum(sum(counts.values()) for counts in ambiguous)
+        return {
+            "value_count": len(groups),
+            "mutual_information_bits": round(scenario_entropy - conditional, 8),
+            "conditional_scenario_entropy_bits": round(conditional, 8),
+            "majority_oracle_accuracy": round(
+                sum(max(counts.values()) for counts in groups.values()) / len(corpus),
+                8,
+            ),
+            "ambiguous_value_count": len(ambiguous),
+            "ambiguous_utterance_count": ambiguous_count,
+            "ambiguous_utterance_rate": round(ambiguous_count / len(corpus), 8),
+        }, groups
+
+    actions = tuple(entry.action for entry in corpus)
+    entities = tuple(tuple(sorted(set(entry.entity_types))) for entry in corpus)
+    joint = tuple(zip(actions, entities, strict=True))
+    action_layer, action_groups = summarize(actions)
+    entity_layer, _ = summarize(entities)
+    joint_layer, joint_groups = summarize(joint)
+
+    stable_action_pairs: set[tuple[str, str]] = set()
+    for counts in action_groups.values():
+        stable = sorted(
+            scenario
+            for scenario, count in counts.items()
+            if count >= _STABLE_SHARED_ACTION_MIN_SUPPORT
+        )
+        for left_index, left in enumerate(stable):
+            stable_action_pairs.update((left, right) for right in stable[left_index + 1 :])
+
+    residual_pairs: set[tuple[str, str]] = set()
+    ambiguous_signatures: list[dict[str, object]] = []
+    for signature, counts in joint_groups.items():
+        if len(counts) <= 1:
+            continue
+        action, entity_types = signature
+        stable = sorted(
+            scenario
+            for scenario, count in counts.items()
+            if count >= _STABLE_SHARED_ACTION_MIN_SUPPORT
+        )
+        for left_index, left in enumerate(stable):
+            residual_pairs.update((left, right) for right in stable[left_index + 1 :])
+        ambiguous_signatures.append(
+            {
+                "action": action,
+                "entity_types": list(entity_types),
+                "utterance_count": sum(counts.values()),
+                "scenario_counts": dict(sorted(counts.items())),
+            }
+        )
+    ambiguous_signatures.sort(
+        key=lambda item: (
+            -int(item["utterance_count"]),
+            str(item["action"]),
+            tuple(item["entity_types"]),
+        )
+    )
+
+    entity_pairs: set[tuple[str, str]] = set()
+    lexical_pairs: set[tuple[str, str]] = set()
+    for boundary in graph.boundaries:
+        left = scenario_by_key_id[boundary.left_key_id]
+        right = scenario_by_key_id[boundary.right_key_id]
+        pair = (left, right) if left < right else (right, left)
+        if any(
+            item.startswith("slurp-train-stable-shared-actions:")
+            for item in boundary.provenance_ids
+        ):
+            entity_pairs.add(pair)
+        if any(
+            item.startswith("slurp-train-signature-lexical:")
+            for item in boundary.provenance_ids
+        ):
+            lexical_pairs.add(pair)
+
+    raw_revision_keys = revision.get("keys")
+    if not isinstance(raw_revision_keys, list):
+        raise PsluFlightError("knowledge revision lacks per-key coverage")
+    example_coverage: list[dict[str, object]] = []
+    incomplete_labels: list[str] = []
+    revision_labels: set[str] = set()
+    action_facets_complete = True
+    for raw_key in raw_revision_keys:
+        if not isinstance(raw_key, Mapping):
+            raise PsluFlightError("knowledge revision key coverage is malformed")
+        label = raw_key.get("value_label")
+        key_id = raw_key.get("key_id")
+        mass = raw_key.get("covered_action_mass")
+        action_counts = raw_key.get("dataset_action_counts")
+        missing_actions = raw_key.get("missing_example_actions")
+        needed = raw_key.get("examples_needed_for_95pct_action_mass")
+        if (
+            not isinstance(label, str)
+            or label not in cards_by_scenario
+            or not isinstance(key_id, str)
+            or key_id != cards_by_scenario[label].key_id
+            or isinstance(mass, bool)
+            or not isinstance(mass, (int, float))
+            or not isinstance(action_counts, Mapping)
+            or not isinstance(missing_actions, list)
+            or not all(isinstance(action, str) for action in missing_actions)
+            or isinstance(needed, bool)
+            or not isinstance(needed, int)
+        ):
+            raise PsluFlightError("knowledge revision key coverage is malformed")
+        revision_labels.add(label)
+        action_facets_complete = action_facets_complete and all(
+            isinstance(action, str)
+            and (label, action) in SPEECH_NATIVE_ACTION_FACET_DESCRIPTIONS
+            for action in action_counts
+        )
+        meets_minimum = float(mass) >= float(minimum_example_action_mass)
+        if not meets_minimum:
+            incomplete_labels.append(label)
+        example_coverage.append(
+            {
+                "key_id": key_id,
+                "value_label": label,
+                "covered_action_mass": round(float(mass), 8),
+                "missing_example_actions": sorted(missing_actions),
+                "examples_needed_for_95pct_action_mass": needed,
+                "meets_minimum": meets_minimum,
+            }
+        )
+    if revision_labels != set(scenarios):
+        raise PsluFlightError("knowledge revision does not cover the scenario roster")
+    example_coverage.sort(key=lambda item: str(item["key_id"]))
+
+    checks = {
+        "intent_roster_complete": len(cards_by_scenario) == len(scenarios),
+        "action_facets_complete": action_facets_complete,
+        "positive_example_action_mass": not incomplete_labels,
+        "stable_shared_action_entity_supply": stable_action_pairs <= entity_pairs,
+        "residual_signature_lexical_supply": residual_pairs <= lexical_pairs,
+    }
+    failed_checks = sorted(name for name, passed in checks.items() if not passed)
+    admission = (
+        {
+            "status": "blocked",
+            "failed_checks": failed_checks,
+            "new_model_contact_authorized": False,
+            "reason": (
+                "The query-isolated train corpus identifies decision-relevant "
+                "information that the current knowledge supply does not yet expose."
+            ),
+        }
+        if failed_checks
+        else {
+            "status": "admitted",
+            "failed_checks": [],
+            "new_model_contact_authorized": False,
+            "reason": (
+                "The model-free information gate is complete; a separate execution "
+                "plan and exposure registration are still required."
+            ),
+        }
+    )
+    without_entities = sum(not signature for signature in entities)
+    return {
+        "schema": "saea-speech-native-information-audit-v1",
+        "source": {
+            "binding_sha256": claimed_sha256,
+            "knowledge_policy_id": revision.get("policy_id"),
+            "decision_graph_id": graph.graph_id,
+            "source_split": "SLURP train real speech only",
+            "query_isolated": True,
+            "query_utterance_count": len(query_utterances),
+            "query_isolated_train_utterance_count": len(corpus),
+        },
+        "label_space": {
+            "scenario_count": len(scenarios),
+            "scenario_entropy_bits": round(scenario_entropy, 8),
+            "scenarios": list(scenarios),
+        },
+        "information_layers": {
+            "action": action_layer,
+            "entity_signature": entity_layer,
+            "action_plus_entity_signature": joint_layer,
+        },
+        "residual_ambiguity": {
+            "utterances_without_entities": without_entities,
+            "utterances_without_entities_rate": round(
+                without_entities / len(corpus), 8
+            ),
+            "stable_shared_action_pair_count": len(stable_action_pairs),
+            "residual_signature_pair_count": len(residual_pairs),
+            "top_action_entity_signatures": ambiguous_signatures[:20],
+        },
+        "knowledge_supply": {
+            "intent_roster_count": len(cards_by_scenario),
+            "action_facets_complete": action_facets_complete,
+            "minimum_positive_example_action_mass": float(
+                minimum_example_action_mass
+            ),
+            "positive_example_coverage": example_coverage,
+            "incomplete_positive_example_labels": sorted(incomplete_labels),
+            "entity_boundary_pair_coverage": {
+                "covered": len(stable_action_pairs & entity_pairs),
+                "required": len(stable_action_pairs),
+            },
+            "signature_lexical_pair_coverage": {
+                "covered": len(residual_pairs & lexical_pairs),
+                "required": len(residual_pairs),
+            },
+        },
+        "required_task_information": [
+            "complete intent roster",
+            "intent definition and contrastive boundary",
+            "speech-derived operation",
+            "speech-derived target or domain",
+            "entity type signature when present",
+            "pair-specific lexical evidence for residual shared signatures",
+        ],
+        "agent_loop_information_rule": (
+            "A generated semantic state may denoise or reorganize the original "
+            "speech observation but does not add label information by itself. A "
+            "later retrieval is useful only when it supplies registered train-derived "
+            "boundary evidence that was not visible in the preceding call."
+        ),
+        "checks": checks,
+        "admission": admission,
+    }
+
+
 def extend_speech_native_binding(
     base_binding: Mapping[str, object],
     material: Sequence[SlurpTrainMaterial],
@@ -8467,6 +8832,7 @@ __all__ = [
     "SpeechNativeMatchTask",
     "assert_never_calls_ontology_miner",
     "build_data_derived_decision_graph",
+    "build_speech_native_information_audit",
     "build_speech_native_binding",
     "candidate_counterevidence_response_format",
     "candidate_action_state_response_format",

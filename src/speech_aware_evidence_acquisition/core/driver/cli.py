@@ -29,6 +29,7 @@ from ...rails.probes.pslu_flight import (
     SPEECH_NATIVE_BOUNDARY_POLICY_IDS,
     SPEECH_NATIVE_KNOWLEDGE_POLICY_ID,
     build_data_derived_decision_graph,
+    build_speech_native_information_audit,
     extend_speech_native_binding,
     refine_speech_native_binding_knowledge,
 )
@@ -267,11 +268,24 @@ def _cli_extend_speech_native_binding(args: argparse.Namespace) -> int:
         if args.decision_graph_output is not None
         else None
     )
+    information_audit_output_path = (
+        Path(args.information_audit_output).resolve()
+        if args.information_audit_output is not None
+        else None
+    )
     if output_path is not None and output_path.exists():
         raise ValueError(f"speech-native binding output already exists: {output_path}")
     if graph_output_path is not None and graph_output_path.exists():
         raise ValueError(
             f"speech-native decision graph output already exists: {graph_output_path}"
+        )
+    if (
+        information_audit_output_path is not None
+        and information_audit_output_path.exists()
+    ):
+        raise ValueError(
+            "speech-native information audit output already exists: "
+            f"{information_audit_output_path}"
         )
     try:
         parent = json.loads(parent_path.read_text(encoding="utf-8"))
@@ -288,14 +302,18 @@ def _cli_extend_speech_native_binding(args: argparse.Namespace) -> int:
             "--per-scenario"
         )
     binding_successor_requested = split_requested or args.knowledge_policy is not None
-    if not binding_successor_requested and graph_output_path is None:
+    if (
+        not binding_successor_requested
+        and graph_output_path is None
+        and information_audit_output_path is None
+    ):
         raise ValueError(
             "speech-native binding needs a split extension or knowledge refinement"
         )
     if binding_successor_requested and output_path is None:
         raise ValueError("speech-native split or knowledge successor requires --output")
     if (
-        graph_output_path is not None
+        (graph_output_path is not None or information_audit_output_path is not None)
         and args.knowledge_policy is None
         and not isinstance(parent.get("knowledge_revision"), Mapping)
     ):
@@ -328,7 +346,9 @@ def _cli_extend_speech_native_binding(args: argparse.Namespace) -> int:
             policy_id=args.knowledge_policy,
         )
     graph_artifact_sha256 = None
-    if graph_output_path is not None:
+    information_audit_artifact_sha256 = None
+    information_audit_status = None
+    if graph_output_path is not None or information_audit_output_path is not None:
         graph = build_data_derived_decision_graph(
             successor,
             material,
@@ -336,7 +356,26 @@ def _cli_extend_speech_native_binding(args: argparse.Namespace) -> int:
             maximum_boundaries=args.maximum_boundaries,
             boundary_policy_id=args.boundary_policy,
         )
-        graph_artifact_sha256 = write_json_artifact(graph_output_path, graph.as_json())
+        if graph_output_path is not None:
+            graph_artifact_sha256 = write_json_artifact(
+                graph_output_path, graph.as_json()
+            )
+        if information_audit_output_path is not None:
+            information_audit = build_speech_native_information_audit(
+                successor,
+                material,
+                graph,
+            )
+            information_audit_artifact_sha256 = write_json_artifact(
+                information_audit_output_path,
+                information_audit,
+            )
+            admission = information_audit.get("admission")
+            if not isinstance(admission, Mapping) or not isinstance(
+                admission.get("status"), str
+            ):
+                raise ValueError("speech-native information audit lacks admission")
+            information_audit_status = admission["status"]
     artifact_sha256 = (
         write_json_artifact(output_path, successor) if output_path is not None else None
     )
@@ -373,6 +412,15 @@ def _cli_extend_speech_native_binding(args: argparse.Namespace) -> int:
                     str(graph_output_path) if graph_output_path is not None else None
                 ),
                 "decision_graph_artifact_sha256": graph_artifact_sha256,
+                "information_audit_output": (
+                    str(information_audit_output_path)
+                    if information_audit_output_path is not None
+                    else None
+                ),
+                "information_audit_artifact_sha256": (
+                    information_audit_artifact_sha256
+                ),
+                "information_audit_status": information_audit_status,
             },
             indent=2,
             sort_keys=True,
@@ -686,6 +734,13 @@ def main(argv: list[str] | None = None) -> int:
     extend_binding.add_argument(
         "--decision-graph-id",
         default="slurp-data-derived-decision-graph-v2",
+    )
+    extend_binding.add_argument(
+        "--information-audit-output",
+        help=(
+            "optional query-isolated, model-free task-information audit built "
+            "through the same SLURP loader and decision-graph policy"
+        ),
     )
     extend_binding.add_argument("--maximum-boundaries", type=int, default=30)
     extend_binding.add_argument(
