@@ -26,8 +26,10 @@ from speech_aware_evidence_acquisition.core.driver.speech_native import (
     _build_audio_key_bindings,
     _evaluate_training_free_agent_policies,
     _evaluate_m9_factor_graph_action_support,
+    _evaluate_m10_candidate_evidence_action_support,
     _load_decision_graph,
     _parse_m9_factor_graph_trajectory,
+    _parse_m10_candidate_evidence_trajectory,
     _profile_completion_issues,
     _release_speech_native_session,
     _scan_server_log,
@@ -1738,6 +1740,57 @@ def test_m10_candidate_evidence_loop_keeps_speech_and_primary_control():
     assert reconcile["selected_action"] == "accept_candidate"
     assert reconcile["selected_factor_ids"] == ["F003", "F004"]
     _assert_every_call_carries_query(client)
+
+
+def test_m10_reader_reconstructs_evidence_actions_and_oracle_support():
+    result = run_speech_native_matcher(
+        core_client=_M10CandidateEvidenceClient(),
+        sample=_SpeechSample(),
+        query_descriptor=_QUERY_DESCRIPTOR,
+        key_cards=_KEY_CARDS,
+        key_representation_id="K1",
+        matcher_policy_id="M10",
+        prompt_policy_id="speech-native-json-copy-v4",
+        agent_policy_id="speech-conditioned-candidate-evidence-action-support-v1",
+        agent_aggregator_id="candidate-evidence-primary-control-v1",
+        decision_graph=_decision_graph_fixture(),
+        top_k=2,
+    )
+    row = {
+        "key_id": result.key_id,
+        "top_key_ids": list(result.top_key_ids),
+        "calls": result.calls,
+        "agent_policy_id": result.agent_policy_id,
+        "agent_aggregator_id": result.agent_aggregator_id,
+        "agent_escalated": result.agent_escalated,
+        "agent_actions": list(result.agent_actions),
+        "agent_vote_key_ids": list(result.agent_vote_key_ids),
+        "agent_steps": list(result.agent_steps),
+        "verifier_scores": {},
+    }
+    trajectory = _parse_m10_candidate_evidence_trajectory(
+        row=row,
+        sample_id="sample-m10",
+        speaker_id="speaker-m10",
+        gold_key_id="K002",
+        top_k=2,
+        visible_card_by_key={card.key_id: card for card in _KEY_CARDS},
+        decision_graph=_decision_graph_fixture(),
+    )
+    assert trajectory["primary_key_id"] == "K001"
+    assert trajectory["expanded_key_ids"] == ("K001", "K002")
+    assert trajectory["supported_action_key_ids"] == ("K001", "K002")
+    assert trajectory["dual_evidence_action_key_ids"] == ("K001", "K002")
+    assert trajectory["reconciled_action_key_ids"] == ("K002",)
+    assert trajectory["mechanism_failure"] is False
+
+    metrics = _evaluate_m10_candidate_evidence_action_support((trajectory,))
+    assert metrics["primary_correct"] == 0
+    assert metrics["action_variable_query_count"] == 1
+    assert metrics["oracle_correct"] == 1
+    assert metrics["oracle_gain_vs_primary"] == 1
+    assert metrics["action_families"]["reconciled"]["helpful_action_count"] == 1
+    assert metrics["support_gate_passed"] is False
 
 
 def test_m10_contact_dispatch_batches_candidate_evidence_across_tasks():
