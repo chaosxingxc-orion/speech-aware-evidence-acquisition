@@ -2367,7 +2367,17 @@ def test_m9_global_ready_frontier_batches_initial_contacts_before_graph_children
         kwargs["speech_feature_sample_id"] for _messages, kwargs in initial_prefix
     } == {f"m9-global-sample-{index}" for index in range(4)}
     assert len(initial_prefix) == 8
-    _assert_every_call_carries_query(client)
+    for messages, kwargs in client.calls:
+        queries = [
+            part["speech_features"]
+            for part in messages[1]["content"]
+            if part.get("type") == "input_speech_features"
+            and part["speech_features"]["role"] == "query"
+        ]
+        assert len(queries) == 1
+        assert queries[0]["packet_id"].endswith(
+            kwargs["speech_feature_sample_id"]
+        )
 
 
 def test_contact_dispatch_runs_m7_verifier_wave_as_one_batched_ready_stage():
