@@ -24,7 +24,9 @@ from speech_aware_evidence_acquisition.core.driver.speech_native import (
     _evaluate_training_free_grounded_semantic_policy,
     _build_audio_key_bindings,
     _evaluate_training_free_agent_policies,
+    _evaluate_m9_factor_graph_action_support,
     _load_decision_graph,
+    _parse_m9_factor_graph_trajectory,
     _profile_completion_issues,
     _release_speech_native_session,
     _scan_server_log,
@@ -2044,6 +2046,72 @@ def test_m9_invalid_factor_ids_fail_closed_to_primary_without_rerank():
     assert result.agent_actions[-1] == "backtrack:invalid-factor-link-state"
     assert len(client.calls) == 3
     _assert_every_call_carries_query(client)
+
+
+def test_m9_reader_reconstructs_graph_state_and_action_support():
+    result = run_speech_native_matcher(
+        core_client=_M9FactorGraphClient(),
+        sample=_SpeechSample(),
+        query_descriptor=_QUERY_DESCRIPTOR,
+        key_cards=_KEY_CARDS,
+        key_representation_id="K1",
+        matcher_policy_id="M9",
+        prompt_policy_id="speech-native-json-copy-v4",
+        agent_policy_id="speech-conditioned-factor-graph-action-support-v1",
+        agent_aggregator_id="factor-graph-primary-control-v1",
+        decision_graph=_decision_graph_fixture(),
+        top_k=2,
+    )
+    row = {
+        "key_id": result.key_id,
+        "top_key_ids": list(result.top_key_ids),
+        "calls": result.calls,
+        "agent_policy_id": result.agent_policy_id,
+        "agent_aggregator_id": result.agent_aggregator_id,
+        "agent_escalated": result.agent_escalated,
+        "agent_actions": list(result.agent_actions),
+        "agent_vote_key_ids": list(result.agent_vote_key_ids),
+        "agent_steps": list(result.agent_steps),
+        "verifier_scores": {},
+    }
+
+    trajectory = _parse_m9_factor_graph_trajectory(
+        row=row,
+        sample_id="sample-1",
+        speaker_id="speaker-1",
+        gold_key_id="K002",
+        top_k=2,
+        visible_card_by_key={card.key_id: card for card in _KEY_CARDS},
+        decision_graph=_decision_graph_fixture(),
+    )
+    metrics = _evaluate_m9_factor_graph_action_support((trajectory,))
+
+    assert trajectory["initial_top_key_ids"] == ("K001", "K002")
+    assert trajectory["expanded_key_ids"] == ("K001", "K002")
+    assert trajectory["reranked_key_ids"] == ("K002", "K001")
+    assert trajectory["boundary_stable_key_id"] == "K002"
+    assert metrics["primary_correct"] == 0
+    assert metrics["oracle_correct"] == 1
+    assert metrics["initial_top_k_reachable_count"] == 1
+    assert metrics["expanded_reachable_count"] == 1
+    assert metrics["action_families"]["factor-rerank"]["helpful_action_count"] == 1
+    assert metrics["action_families"]["boundary-stable"]["helpful_action_count"] == 1
+    assert metrics["support_gate_passed"] is False
+
+    broken = dict(row)
+    broken_steps = [dict(step) for step in row["agent_steps"]]
+    broken_steps[3]["expanded_key_ids"] = ["K002", "K001"]
+    broken["agent_steps"] = broken_steps
+    with pytest.raises(SpeechNativeProfileError, match="expansion"):
+        _parse_m9_factor_graph_trajectory(
+            row=broken,
+            sample_id="sample-1",
+            speaker_id="speaker-1",
+            gold_key_id="K002",
+            top_k=2,
+            visible_card_by_key={card.key_id: card for card in _KEY_CARDS},
+            decision_graph=_decision_graph_fixture(),
+        )
 
 
 def test_m8_contact_dispatch_replays_heterogeneous_pairwise_dags_at_full_slots():
