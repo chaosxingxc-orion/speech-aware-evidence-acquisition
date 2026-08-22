@@ -282,6 +282,386 @@ class KeyCardV1:
         }
 
 
+_DECISION_FACTOR_KINDS = ("domain", "operation", "target", "constraint")
+
+
+def _is_numbered_id(value: object, prefix: str) -> bool:
+    return (
+        isinstance(value, str)
+        and value.startswith(prefix)
+        and len(value) > len(prefix)
+        and value[len(prefix) :].isdigit()
+    )
+
+
+def _validate_provenance_ids(
+    provenance_ids: tuple[str, ...], *, context: str
+) -> None:
+    if (
+        not provenance_ids
+        or len(set(provenance_ids)) != len(provenance_ids)
+        or any(not isinstance(item, str) or not item.strip() for item in provenance_ids)
+    ):
+        raise PsluFlightError(
+            f"{context} provenance_ids must be unique non-empty strings"
+        )
+
+
+@dataclass(frozen=True)
+class DecisionFactorV1:
+    """One maintainable, query-selectable knowledge factor."""
+
+    factor_id: str
+    kind: str
+    statement: str
+    key_ids: tuple[str, ...]
+    provenance_ids: tuple[str, ...]
+
+    def validate(self, allowed_key_ids: set[str]) -> "DecisionFactorV1":
+        if not _is_numbered_id(self.factor_id, "F"):
+            raise PsluFlightError(f"invalid decision factor_id {self.factor_id!r}")
+        if self.kind not in _DECISION_FACTOR_KINDS:
+            raise PsluFlightError(
+                f"factor {self.factor_id}: kind must be one of {_DECISION_FACTOR_KINDS}"
+            )
+        if not isinstance(self.statement, str) or not self.statement.strip():
+            raise PsluFlightError(
+                f"factor {self.factor_id}: statement must be non-empty"
+            )
+        if (
+            not self.key_ids
+            or len(set(self.key_ids)) != len(self.key_ids)
+            or any(not isinstance(key_id, str) or not key_id for key_id in self.key_ids)
+        ):
+            raise PsluFlightError(
+                f"factor {self.factor_id}: key_ids must be unique non-empty strings"
+            )
+        unknown = set(self.key_ids) - allowed_key_ids
+        if unknown:
+            raise PsluFlightError(
+                f"factor {self.factor_id} references unknown key ids {sorted(unknown)}"
+            )
+        _validate_provenance_ids(
+            self.provenance_ids, context=f"factor {self.factor_id}"
+        )
+        return self
+
+    def as_json(self) -> dict[str, object]:
+        return {
+            "factor_id": self.factor_id,
+            "kind": self.kind,
+            "statement": self.statement,
+            "key_ids": list(self.key_ids),
+            "provenance_ids": list(self.provenance_ids),
+        }
+
+
+@dataclass(frozen=True)
+class DecisionBoundaryV1:
+    """One directed rendering of an unordered hard-negative key boundary."""
+
+    boundary_id: str
+    left_key_id: str
+    right_key_id: str
+    left_factor_ids: tuple[str, ...]
+    right_factor_ids: tuple[str, ...]
+    left_exclusion: str
+    right_exclusion: str
+    provenance_ids: tuple[str, ...]
+
+    def validate(
+        self,
+        *,
+        allowed_key_ids: set[str],
+        factors_by_id: Mapping[str, DecisionFactorV1],
+    ) -> "DecisionBoundaryV1":
+        if not _is_numbered_id(self.boundary_id, "B"):
+            raise PsluFlightError(f"invalid decision boundary_id {self.boundary_id!r}")
+        if (
+            self.left_key_id == self.right_key_id
+            or self.left_key_id not in allowed_key_ids
+            or self.right_key_id not in allowed_key_ids
+        ):
+            raise PsluFlightError(
+                f"boundary {self.boundary_id}: endpoints must be two distinct known keys"
+            )
+        for side, key_id, factor_ids in (
+            ("left", self.left_key_id, self.left_factor_ids),
+            ("right", self.right_key_id, self.right_factor_ids),
+        ):
+            if not factor_ids or len(set(factor_ids)) != len(factor_ids):
+                raise PsluFlightError(
+                    f"boundary {self.boundary_id}: {side} factor ids must be non-empty and unique"
+                )
+            for factor_id in factor_ids:
+                factor = factors_by_id.get(factor_id)
+                if factor is None or key_id not in factor.key_ids:
+                    raise PsluFlightError(
+                        f"boundary {self.boundary_id}: {side} factor {factor_id!r} "
+                        f"does not support endpoint {key_id}"
+                    )
+        if (
+            not isinstance(self.left_exclusion, str)
+            or not self.left_exclusion.strip()
+            or not isinstance(self.right_exclusion, str)
+            or not self.right_exclusion.strip()
+        ):
+            raise PsluFlightError(
+                f"boundary {self.boundary_id}: exclusions must be non-empty strings"
+            )
+        _validate_provenance_ids(
+            self.provenance_ids, context=f"boundary {self.boundary_id}"
+        )
+        return self
+
+    def as_json(self) -> dict[str, object]:
+        return {
+            "boundary_id": self.boundary_id,
+            "left_key_id": self.left_key_id,
+            "right_key_id": self.right_key_id,
+            "left_factor_ids": list(self.left_factor_ids),
+            "right_factor_ids": list(self.right_factor_ids),
+            "left_exclusion": self.left_exclusion,
+            "right_exclusion": self.right_exclusion,
+            "provenance_ids": list(self.provenance_ids),
+        }
+
+
+@dataclass(frozen=True)
+class DecisionGraphNeighborhoodV1:
+    key_ids: tuple[str, ...]
+    factor_ids: tuple[str, ...]
+    boundary_ids: tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class DecisionGraphV1:
+    """A small, hashable factor graph over opaque routing keys."""
+
+    graph_id: str
+    factors: tuple[DecisionFactorV1, ...]
+    boundaries: tuple[DecisionBoundaryV1, ...]
+
+    def validate(self, key_cards: Sequence[KeyCardV1]) -> "DecisionGraphV1":
+        cards = _validated_key_cards(key_cards)
+        allowed_key_ids = {card.key_id for card in cards}
+        if (
+            not isinstance(self.graph_id, str)
+            or not self.graph_id
+            or any(
+                character not in "abcdefghijklmnopqrstuvwxyz0123456789-"
+                for character in self.graph_id
+            )
+        ):
+            raise PsluFlightError(
+                "decision graph_id must use lowercase letters, digits, and dashes"
+            )
+        if not self.factors:
+            raise PsluFlightError("decision graph must contain factor nodes")
+        factor_ids = [factor.factor_id for factor in self.factors]
+        if len(set(factor_ids)) != len(factor_ids):
+            raise PsluFlightError("decision graph contains duplicate factor ids")
+        factors_by_id = {
+            factor.factor_id: factor.validate(allowed_key_ids)
+            for factor in self.factors
+        }
+        covered_keys = {
+            key_id for factor in self.factors for key_id in factor.key_ids
+        }
+        missing_keys = allowed_key_ids - covered_keys
+        if missing_keys:
+            raise PsluFlightError(
+                f"decision graph lacks factor coverage for keys {sorted(missing_keys)}"
+            )
+        boundary_ids = [boundary.boundary_id for boundary in self.boundaries]
+        if len(set(boundary_ids)) != len(boundary_ids):
+            raise PsluFlightError("decision graph contains duplicate boundary ids")
+        boundary_pairs: set[frozenset[str]] = set()
+        for boundary in self.boundaries:
+            boundary.validate(
+                allowed_key_ids=allowed_key_ids,
+                factors_by_id=factors_by_id,
+            )
+            pair = frozenset((boundary.left_key_id, boundary.right_key_id))
+            if pair in boundary_pairs:
+                raise PsluFlightError(
+                    "decision graph contains a duplicate unordered boundary pair"
+                )
+            boundary_pairs.add(pair)
+        return self
+
+    def as_json(self) -> dict[str, object]:
+        return {
+            "schema": "saea-decision-graph-v1",
+            "graph_id": self.graph_id,
+            "factors": [factor.as_json() for factor in self.factors],
+            "boundaries": [boundary.as_json() for boundary in self.boundaries],
+        }
+
+    def neighborhood(
+        self, candidate_key_ids: Sequence[str]
+    ) -> DecisionGraphNeighborhoodV1:
+        candidates = tuple(candidate_key_ids)
+        if not candidates or len(set(candidates)) != len(candidates):
+            raise PsluFlightError(
+                "decision graph candidates must be non-empty and unique"
+            )
+        known_keys = {
+            key_id for factor in self.factors for key_id in factor.key_ids
+        }
+        unknown = set(candidates) - known_keys
+        if unknown:
+            raise PsluFlightError(
+                f"decision graph neighborhood references unknown keys {sorted(unknown)}"
+            )
+        incident = tuple(
+            boundary
+            for boundary in self.boundaries
+            if boundary.left_key_id in candidates
+            or boundary.right_key_id in candidates
+        )
+        expanded_keys = list(candidates)
+        for boundary in incident:
+            for key_id in (boundary.left_key_id, boundary.right_key_id):
+                if key_id not in expanded_keys:
+                    expanded_keys.append(key_id)
+        required_factor_ids = {
+            factor.factor_id
+            for factor in self.factors
+            if any(key_id in candidates for key_id in factor.key_ids)
+        }
+        for boundary in incident:
+            required_factor_ids.update(boundary.left_factor_ids)
+            required_factor_ids.update(boundary.right_factor_ids)
+        return DecisionGraphNeighborhoodV1(
+            key_ids=tuple(expanded_keys),
+            factor_ids=tuple(
+                factor.factor_id
+                for factor in self.factors
+                if factor.factor_id in required_factor_ids
+            ),
+            boundary_ids=tuple(boundary.boundary_id for boundary in incident),
+        )
+
+
+@dataclass(frozen=True)
+class FactorLinkStateV1:
+    factor_ids: tuple[str, ...]
+    boundary_id: str | None
+
+
+def render_decision_graph_neighborhood(
+    *,
+    graph: DecisionGraphV1,
+    key_cards: Sequence[KeyCardV1],
+    candidate_key_ids: Sequence[str],
+) -> str:
+    """Render one auditable graph neighborhood without label metadata."""
+
+    graph.validate(key_cards)
+    neighborhood = graph.neighborhood(candidate_key_ids)
+    factors_by_id = {factor.factor_id: factor for factor in graph.factors}
+    boundaries_by_id = {
+        boundary.boundary_id: boundary for boundary in graph.boundaries
+    }
+    lines = [f"Decision graph: {graph.graph_id}", "Factor nodes:"]
+    for factor_id in neighborhood.factor_ids:
+        factor = factors_by_id[factor_id]
+        lines.extend(
+            (
+                f"[{factor.factor_id}] kind={factor.kind}",
+                f"Statement: {factor.statement}",
+                f"Linked keys: {','.join(factor.key_ids)}",
+            )
+        )
+    lines.append("Boundary edges:")
+    if not neighborhood.boundary_ids:
+        lines.append("NONE")
+    for boundary_id in neighborhood.boundary_ids:
+        boundary = boundaries_by_id[boundary_id]
+        lines.extend(
+            (
+                f"[{boundary.boundary_id}] endpoints="
+                f"{boundary.left_key_id},{boundary.right_key_id}",
+                f"{boundary.left_key_id} factors: "
+                f"{','.join(boundary.left_factor_ids)}",
+                f"{boundary.left_key_id} exclusion: {boundary.left_exclusion}",
+                f"{boundary.right_key_id} factors: "
+                f"{','.join(boundary.right_factor_ids)}",
+                f"{boundary.right_key_id} exclusion: {boundary.right_exclusion}",
+            )
+        )
+    return "\n".join(lines)
+
+
+def factor_link_response_format(
+    *,
+    graph: DecisionGraphV1,
+    key_cards: Sequence[KeyCardV1],
+    candidate_key_ids: Sequence[str],
+) -> dict[str, object]:
+    graph.validate(key_cards)
+    neighborhood = graph.neighborhood(candidate_key_ids)
+    if len(neighborhood.factor_ids) < 2:
+        raise PsluFlightError(
+            "factor-link neighborhood must expose at least two factor ids"
+        )
+    return {
+        "type": "json_schema",
+        "json_schema": {
+            "name": "speech_native_factor_link_state",
+            "strict": True,
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "factor_ids": {
+                        "type": "array",
+                        "items": {"enum": list(neighborhood.factor_ids)},
+                        "minItems": 2,
+                        "maxItems": min(5, len(neighborhood.factor_ids)),
+                        "uniqueItems": True,
+                    },
+                    "boundary_id": {
+                        "enum": ["NONE", *neighborhood.boundary_ids]
+                    },
+                },
+                "required": ["factor_ids", "boundary_id"],
+                "additionalProperties": False,
+            },
+        },
+    }
+
+
+def parse_factor_link_state(
+    text: str,
+    *,
+    graph: DecisionGraphV1,
+    key_cards: Sequence[KeyCardV1],
+    candidate_key_ids: Sequence[str],
+) -> FactorLinkStateV1 | None:
+    graph.validate(key_cards)
+    neighborhood = graph.neighborhood(candidate_key_ids)
+    document = _response_object(text)
+    if document is None or set(document) != {"factor_ids", "boundary_id"}:
+        return None
+    factor_ids = document.get("factor_ids")
+    boundary_id = document.get("boundary_id")
+    if (
+        not isinstance(factor_ids, list)
+        or not 2 <= len(factor_ids) <= min(5, len(neighborhood.factor_ids))
+        or any(not isinstance(factor_id, str) for factor_id in factor_ids)
+        or len(set(factor_ids)) != len(factor_ids)
+        or not set(factor_ids).issubset(neighborhood.factor_ids)
+        or not isinstance(boundary_id, str)
+        or boundary_id not in {"NONE", *neighborhood.boundary_ids}
+    ):
+        return None
+    return FactorLinkStateV1(
+        factor_ids=tuple(factor_ids),
+        boundary_id=None if boundary_id == "NONE" else boundary_id,
+    )
+
+
 @dataclass(frozen=True)
 class GroundedEvidenceV1:
     """One mechanically verifiable citation into a retrieved text key."""
@@ -4241,6 +4621,11 @@ def run_pslu_flight(
 
 
 __all__ = [
+    "DecisionBoundaryV1",
+    "DecisionFactorV1",
+    "DecisionGraphNeighborhoodV1",
+    "DecisionGraphV1",
+    "FactorLinkStateV1",
     "KeyCardV1",
     "GroundedEvidenceV1",
     "GroundedQueryStateV1",
@@ -4265,11 +4650,14 @@ __all__ = [
     "assert_never_calls_ontology_miner",
     "build_speech_native_binding",
     "extend_speech_native_binding",
+    "factor_link_response_format",
     "load_pslu_rosters",
     "load_pslu_sample_manifest",
     "load_speech_native_engineering_gate",
     "pslu_supply_packet",
+    "parse_factor_link_state",
     "parse_grounded_query_state",
+    "render_decision_graph_neighborhood",
     "render_roster_entries",
     "render_speech_native_keys",
     "render_type_vocabulary",
