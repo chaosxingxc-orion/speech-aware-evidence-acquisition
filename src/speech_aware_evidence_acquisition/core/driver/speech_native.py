@@ -35,6 +35,7 @@ from ...rails.probes.pslu_flight import (
     load_speech_native_engineering_gate,
     decision_boundary_path,
     expand_decision_graph_candidates,
+    expand_decision_graph_neighborhood,
     parse_grounded_query_state,
     run_speech_native_match_tasks,
 )
@@ -120,6 +121,8 @@ _M9_COMMON_ACTIONS = (
     "tool:expand-factor-graph",
     "rerank:speech-plus-factor-state",
 )
+_M10_POLICY_ID = "speech-conditioned-candidate-evidence-action-support-v1"
+_M10_AGGREGATOR_ID = "candidate-evidence-primary-control-v1"
 _SPEAKER_FOLD_POLICY_ID = "speaker-grouped-3fold-sha256-load-balanced-v1"
 _CONTEXTUAL_ACTION_IDS = (
     "primary",
@@ -2499,6 +2502,493 @@ def _evaluate_m9_factor_graph_action_support(
     }
 
 
+def _parse_m10_candidate_evidence_trajectory(
+    *,
+    row: Mapping[str, object],
+    sample_id: str,
+    speaker_id: str,
+    gold_key_id: str,
+    top_k: int,
+    visible_card_by_key: Mapping[str, KeyCardV1],
+    decision_graph: DecisionGraphV1,
+) -> dict[str, object]:
+    """Reconstruct one candidate-evidence loop from exact graph-bound fields."""
+
+    primary_key_id = row.get("key_id")
+    actions = row.get("agent_actions")
+    votes = row.get("agent_vote_key_ids")
+    steps = row.get("agent_steps")
+    if (
+        row.get("agent_policy_id") != _M10_POLICY_ID
+        or row.get("agent_aggregator_id") != _M10_AGGREGATOR_ID
+        or row.get("agent_escalated") is not True
+        or not isinstance(primary_key_id, str)
+        or primary_key_id not in visible_card_by_key
+        or not isinstance(actions, list)
+        or not isinstance(votes, list)
+        or not isinstance(steps, list)
+        or row.get("verifier_scores") != {}
+        or len(steps) < 3
+    ):
+        raise SpeechNativeProfileError(
+            "M10 candidate-evidence trajectory identity is malformed"
+        )
+    decision_graph.validate(tuple(visible_card_by_key.values()))
+    base_fields = {
+        "action_id",
+        "key_id",
+        "top_key_ids",
+        "calls",
+        "parse_failure",
+    }
+    if (
+        not isinstance(steps[0], Mapping)
+        or set(steps[0]) != base_fields
+        or steps[0].get("action_id") != "match:speech-only-primary"
+        or steps[0].get("key_id") != primary_key_id
+        or steps[0].get("top_key_ids") != []
+        or steps[0].get("calls") != 1
+        or steps[0].get("parse_failure") is not False
+        or not isinstance(steps[1], Mapping)
+        or set(steps[1]) != base_fields
+        or steps[1].get("action_id") != "retrieve:speech-only"
+        or steps[1].get("calls") != 1
+        or steps[1].get("parse_failure") is not False
+    ):
+        raise SpeechNativeProfileError("M10 initial stages are malformed")
+    initial_top_raw = steps[1].get("top_key_ids")
+    if (
+        not isinstance(initial_top_raw, list)
+        or len(initial_top_raw) != top_k
+        or len(set(initial_top_raw)) != top_k
+        or not all(
+            isinstance(key_id, str) and key_id in visible_card_by_key
+            for key_id in initial_top_raw
+        )
+        or steps[1].get("key_id") != initial_top_raw[0]
+    ):
+        raise SpeechNativeProfileError("M10 initial retrieval is malformed")
+    initial_top_ids = tuple(initial_top_raw)
+    expected_expansion = expand_decision_graph_neighborhood(
+        graph=decision_graph,
+        initial_key_ids=initial_top_ids,
+        cap=min(6, len(visible_card_by_key)),
+    )
+    expansion_step = steps[2]
+    expansion_fields = base_fields | {"expanded_key_ids", "distance_by_key"}
+    if (
+        not isinstance(expansion_step, Mapping)
+        or set(expansion_step) != expansion_fields
+        or expansion_step.get("action_id")
+        != "tool:expand-candidate-neighborhood"
+        or expansion_step.get("key_id") is not None
+        or tuple(expansion_step.get("top_key_ids", [])) != initial_top_ids
+        or expansion_step.get("calls") != 0
+        or expansion_step.get("parse_failure") is not False
+        or tuple(expansion_step.get("expanded_key_ids", []))
+        != expected_expansion.key_ids
+        or expansion_step.get("distance_by_key")
+        != dict(expected_expansion.distance_by_key)
+        or row.get("top_key_ids") != list(expected_expansion.key_ids)
+    ):
+        raise SpeechNativeProfileError(
+            "M10 deterministic candidate expansion is malformed"
+        )
+
+    factor_ids_by_key = {
+        key_id: {
+            factor.factor_id
+            for factor in decision_graph.factors
+            if key_id in factor.key_ids
+        }
+        for key_id in expected_expansion.key_ids
+    }
+    boundary_ids_by_key = {
+        key_id: {
+            boundary.boundary_id
+            for boundary in decision_graph.boundaries
+            if key_id in {boundary.left_key_id, boundary.right_key_id}
+        }
+        for key_id in expected_expansion.key_ids
+    }
+    evidence_fields = {
+        "action_id",
+        "candidate_key_id",
+        "support_compatible",
+        "support_confidence",
+        "support_factor_ids",
+        "counterevidence_contradicted",
+        "counterevidence_confidence",
+        "counterevidence_boundary_ids",
+        "calls",
+        "parse_failure",
+        "causal_parent_ids",
+    }
+    evidence_states: list[dict[str, object]] = []
+    mechanism_failure = False
+    evidence_start = 3
+    evidence_stop = evidence_start + len(expected_expansion.key_ids)
+    if len(steps) < evidence_stop:
+        raise SpeechNativeProfileError("M10 candidate evidence is incomplete")
+    for offset, candidate_key_id in enumerate(expected_expansion.key_ids):
+        step = steps[evidence_start + offset]
+        if (
+            not isinstance(step, Mapping)
+            or set(step) != evidence_fields
+            or step.get("action_id")
+            != f"acquire:candidate-evidence:{candidate_key_id}"
+            or step.get("candidate_key_id") != candidate_key_id
+            or step.get("calls") != 2
+            or step.get("causal_parent_ids")
+            != [
+                "retrieve:speech-only",
+                "tool:expand-candidate-neighborhood",
+            ]
+            or not isinstance(step.get("parse_failure"), bool)
+        ):
+            raise SpeechNativeProfileError("M10 candidate evidence step is malformed")
+        parse_failure = bool(step["parse_failure"])
+        support_compatible = step.get("support_compatible")
+        support_confidence = step.get("support_confidence")
+        support_factor_ids = step.get("support_factor_ids")
+        contradicted = step.get("counterevidence_contradicted")
+        counter_confidence = step.get("counterevidence_confidence")
+        boundary_ids = step.get("counterevidence_boundary_ids")
+        valid_support = (
+            isinstance(support_compatible, bool)
+            and isinstance(support_confidence, int)
+            and not isinstance(support_confidence, bool)
+            and 0 <= support_confidence <= 100
+            and isinstance(support_factor_ids, list)
+            and 1 <= len(support_factor_ids) <= 3
+            and len(set(support_factor_ids)) == len(support_factor_ids)
+            and all(
+                isinstance(factor_id, str)
+                and factor_id in factor_ids_by_key[candidate_key_id]
+                for factor_id in support_factor_ids
+            )
+        )
+        valid_counter = (
+            isinstance(contradicted, bool)
+            and isinstance(counter_confidence, int)
+            and not isinstance(counter_confidence, bool)
+            and 0 <= counter_confidence <= 100
+            and isinstance(boundary_ids, list)
+            and len(boundary_ids) <= 2
+            and len(set(boundary_ids)) == len(boundary_ids)
+            and all(
+                isinstance(boundary_id, str)
+                and boundary_id in boundary_ids_by_key[candidate_key_id]
+                for boundary_id in boundary_ids
+            )
+        )
+        if parse_failure:
+            mechanism_failure = True
+        elif not valid_support or not valid_counter:
+            raise SpeechNativeProfileError(
+                "M10 parse-complete candidate evidence is invalid"
+            )
+        evidence_states.append(
+            {
+                "candidate_key_id": candidate_key_id,
+                "support_compatible": (
+                    support_compatible if valid_support else False
+                ),
+                "support_confidence": support_confidence if valid_support else -1,
+                "support_factor_ids": (
+                    tuple(support_factor_ids) if valid_support else ()
+                ),
+                "counterevidence_contradicted": (
+                    contradicted if valid_counter else True
+                ),
+                "counterevidence_confidence": (
+                    counter_confidence if valid_counter else -1
+                ),
+                "counterevidence_boundary_ids": (
+                    tuple(boundary_ids) if valid_counter else ()
+                ),
+                "parse_failure": parse_failure,
+            }
+        )
+
+    base_actions = (
+        "match:speech-only-primary",
+        "retrieve:speech-only",
+        "tool:expand-candidate-neighborhood",
+        *tuple(
+            action
+            for key_id in expected_expansion.key_ids
+            for action in (
+                f"acquire:support:{key_id}",
+                f"seek:counterevidence:{key_id}",
+            )
+        ),
+    )
+    challenger_ids = tuple(
+        key_id
+        for key_id in expected_expansion.key_ids
+        if key_id != primary_key_id
+    )
+    reconciliation_states: list[dict[str, object]] = []
+    if mechanism_failure:
+        if (
+            tuple(actions) != (*base_actions, "backtrack:invalid-candidate-evidence")
+            or len(steps) != evidence_stop
+            or votes != [primary_key_id]
+        ):
+            raise SpeechNativeProfileError(
+                "M10 invalid evidence backtrack is malformed"
+            )
+    else:
+        reconciliation_fields = {
+            "action_id",
+            "candidate_key_id",
+            "selected_action",
+            "key_id",
+            "selected_factor_ids",
+            "selected_boundary_ids",
+            "calls",
+            "parse_failure",
+            "causal_parent_ids",
+        }
+        if len(steps) != evidence_stop + len(challenger_ids):
+            raise SpeechNativeProfileError("M10 reconciliation count is malformed")
+        for offset, candidate_key_id in enumerate(challenger_ids):
+            step = steps[evidence_stop + offset]
+            evidence = evidence_states[
+                expected_expansion.key_ids.index(candidate_key_id)
+            ]
+            if (
+                not isinstance(step, Mapping)
+                or set(step) != reconciliation_fields
+                or step.get("action_id")
+                != f"reconcile:candidate:{candidate_key_id}"
+                or step.get("candidate_key_id") != candidate_key_id
+                or step.get("selected_factor_ids")
+                != list(evidence["support_factor_ids"])
+                or step.get("selected_boundary_ids")
+                != list(evidence["counterevidence_boundary_ids"])
+                or step.get("calls") != 1
+                or step.get("causal_parent_ids")
+                != [f"acquire:candidate-evidence:{candidate_key_id}"]
+                or not isinstance(step.get("parse_failure"), bool)
+            ):
+                raise SpeechNativeProfileError(
+                    "M10 candidate reconciliation is malformed"
+                )
+            selected_action = step.get("selected_action")
+            parse_failure = bool(step["parse_failure"])
+            selected_key_id = step.get("key_id")
+            if parse_failure:
+                if selected_action is not None or selected_key_id is not None:
+                    raise SpeechNativeProfileError(
+                        "M10 failed reconciliation exposes an action"
+                    )
+                mechanism_failure = True
+            elif selected_action not in {
+                "retain_primary",
+                "accept_candidate",
+            } or selected_key_id != (
+                candidate_key_id
+                if selected_action == "accept_candidate"
+                else primary_key_id
+            ):
+                raise SpeechNativeProfileError(
+                    "M10 reconciliation selection is invalid"
+                )
+            reconciliation_states.append(
+                {
+                    "candidate_key_id": candidate_key_id,
+                    "selected_action": selected_action,
+                    "selected_key_id": selected_key_id,
+                    "parse_failure": parse_failure,
+                }
+            )
+        terminal_action = (
+            "backtrack:invalid-candidate-reconciliation"
+            if mechanism_failure
+            else "select:retain-primary-for-support"
+        )
+        expected_actions = (
+            *base_actions,
+            *tuple(f"reconcile:{key_id}" for key_id in challenger_ids),
+            terminal_action,
+        )
+        expected_votes = [
+            primary_key_id,
+            *(item["selected_key_id"] for item in reconciliation_states),
+        ]
+        if tuple(actions) != expected_actions or votes != expected_votes:
+            raise SpeechNativeProfileError("M10 action or vote sequence is malformed")
+
+    expected_calls = 2 + 2 * len(expected_expansion.key_ids)
+    if not any(item["parse_failure"] for item in evidence_states):
+        expected_calls += len(challenger_ids)
+    if row.get("calls") != expected_calls:
+        raise SpeechNativeProfileError("M10 contact accounting is malformed")
+    supported = tuple(
+        str(item["candidate_key_id"])
+        for item in evidence_states
+        if item["support_compatible"]
+    )
+    dual_evidence = tuple(
+        str(item["candidate_key_id"])
+        for item in evidence_states
+        if item["support_compatible"]
+        and not item["counterevidence_contradicted"]
+    )
+    reconciled = tuple(
+        str(item["candidate_key_id"])
+        for item in reconciliation_states
+        if item["selected_action"] == "accept_candidate"
+    )
+    return {
+        "sample_id": sample_id,
+        "speaker_id": speaker_id,
+        "gold_key_id": gold_key_id,
+        "primary_key_id": primary_key_id,
+        "initial_top_key_ids": initial_top_ids,
+        "expanded_key_ids": expected_expansion.key_ids,
+        "distance_by_key": dict(expected_expansion.distance_by_key),
+        "evidence_states": tuple(evidence_states),
+        "reconciliation_states": tuple(reconciliation_states),
+        "supported_action_key_ids": supported,
+        "dual_evidence_action_key_ids": dual_evidence,
+        "reconciled_action_key_ids": reconciled,
+        "mechanism_failure": mechanism_failure,
+        "total_calls": expected_calls,
+    }
+
+
+def _evaluate_m10_candidate_evidence_action_support(
+    trajectories: Sequence[Mapping[str, object]],
+) -> dict[str, object]:
+    """Measure candidate-level action support before policy optimization."""
+
+    frozen = tuple(trajectories)
+    if not frozen:
+        raise SpeechNativeProfileError("M10 candidate-evidence read requires trajectories")
+    primary_correct = sum(
+        item["primary_key_id"] == item["gold_key_id"] for item in frozen
+    )
+    initial_reachable = sum(
+        item["gold_key_id"] in item["initial_top_key_ids"] for item in frozen
+    )
+    expanded_reachable = sum(
+        item["gold_key_id"] in item["expanded_key_ids"] for item in frozen
+    )
+    family_fields = {
+        "support-only": "supported_action_key_ids",
+        "dual-evidence": "dual_evidence_action_key_ids",
+        "reconciled": "reconciled_action_key_ids",
+    }
+    family_predictions: dict[str, list[str]] = {}
+    for family_id, field in family_fields.items():
+        predictions: list[str] = []
+        for item in frozen:
+            primary = str(item["primary_key_id"])
+            candidates = tuple(
+                str(key_id) for key_id in item[field] if key_id != primary
+            )
+            predictions.append(candidates[0] if candidates else primary)
+        family_predictions[family_id] = predictions
+    family_metrics: dict[str, dict[str, object]] = {}
+    for family_id, predictions in family_predictions.items():
+        helpful_sample_ids = [
+            str(item["sample_id"])
+            for prediction, item in zip(predictions, frozen, strict=True)
+            if item["primary_key_id"] != item["gold_key_id"]
+            and prediction == item["gold_key_id"]
+        ]
+        harmful_sample_ids = [
+            str(item["sample_id"])
+            for prediction, item in zip(predictions, frozen, strict=True)
+            if item["primary_key_id"] == item["gold_key_id"]
+            and prediction != item["gold_key_id"]
+        ]
+        family_metrics[family_id] = {
+            "correct": sum(
+                prediction == item["gold_key_id"]
+                for prediction, item in zip(predictions, frozen, strict=True)
+            ),
+            "action_query_count": sum(
+                prediction != item["primary_key_id"]
+                for prediction, item in zip(predictions, frozen, strict=True)
+            ),
+            "helpful_action_count": len(helpful_sample_ids),
+            "harmful_action_count": len(harmful_sample_ids),
+            "helpful_sample_ids": helpful_sample_ids,
+            "harmful_sample_ids": harmful_sample_ids,
+        }
+    action_sets = []
+    for item in frozen:
+        primary = str(item["primary_key_id"])
+        action_sets.append(
+            {
+                str(key_id)
+                for field in family_fields.values()
+                for key_id in item[field]
+                if key_id != primary
+            }
+        )
+    action_variable_count = sum(bool(action_set) for action_set in action_sets)
+    oracle_correct = sum(
+        item["primary_key_id"] == item["gold_key_id"]
+        or item["gold_key_id"] in action_set
+        for item, action_set in zip(frozen, action_sets, strict=True)
+    )
+    supported_primary_error_count = sum(
+        item["primary_key_id"] != item["gold_key_id"]
+        and item["gold_key_id"] in action_set
+        for item, action_set in zip(frozen, action_sets, strict=True)
+    )
+    mechanism_failure_count = sum(bool(item["mechanism_failure"]) for item in frozen)
+    support_checks = {
+        "query_count_at_least_100": len(frozen) >= 100,
+        "expanded_reachability_not_below_initial_top_k": (
+            expanded_reachable >= initial_reachable
+        ),
+        "expanded_reachable_count_at_least_100": expanded_reachable >= 100,
+        "action_variable_query_count_at_least_24": action_variable_count >= 24,
+        "oracle_gain_vs_primary_at_least_6": oracle_correct - primary_correct >= 6,
+        "model_supported_primary_error_count_at_least_6": (
+            supported_primary_error_count >= 6
+        ),
+        "support_only_helpful_actions_at_least_3": (
+            int(family_metrics["support-only"]["helpful_action_count"]) >= 3
+        ),
+        "dual_or_reconciled_helpful_actions_at_least_3": max(
+            int(family_metrics["dual-evidence"]["helpful_action_count"]),
+            int(family_metrics["reconciled"]["helpful_action_count"]),
+        )
+        >= 3,
+        "mechanism_failure_count_zero": mechanism_failure_count == 0,
+    }
+    return {
+        "policy_id": _M10_POLICY_ID,
+        "aggregator_id": _M10_AGGREGATOR_ID,
+        "query_count": len(frozen),
+        "primary_correct": primary_correct,
+        "primary_accuracy": primary_correct / len(frozen),
+        "final_minus_primary_correct": 0,
+        "initial_top_k_reachable_count": initial_reachable,
+        "expanded_reachable_count": expanded_reachable,
+        "action_variable_query_count": action_variable_count,
+        "model_supported_primary_error_count": supported_primary_error_count,
+        "oracle_correct": oracle_correct,
+        "oracle_gain_vs_primary": oracle_correct - primary_correct,
+        "oracle_status": "diagnostic-only-not-an-admissible-controller",
+        "mechanism_failure_count": mechanism_failure_count,
+        "action_families": family_metrics,
+        "support_checks": support_checks,
+        "support_gate_passed": all(support_checks.values()),
+        "training_free_controller": {
+            "status": "deferred-until-support-gate-passes",
+            "candidate_policy_family": "out-of-fold-nonparametric-trajectory-control",
+        },
+    }
+
+
 def _require_string(values: Mapping[str, object], key: str) -> str:
     value = values.get(key)
     if not isinstance(value, str) or not value:
@@ -2751,7 +3241,7 @@ def read_speech_native_predictions(
         ):
             raise SpeechNativeProfileError("flight cell identity is malformed")
         cell_id = f"{key_representation_id}-{matcher_policy_id}"
-        if matcher_policy_id in {"M3", "M5", "M6", "M7", "M8", "M9"}:
+        if matcher_policy_id in {"M3", "M5", "M6", "M7", "M8", "M9", "M10"}:
             top_k = profile.get("top_k")
             if isinstance(top_k, bool) or not isinstance(top_k, int) or top_k <= 0:
                 raise SpeechNativeProfileError(
@@ -2855,8 +3345,20 @@ def read_speech_native_predictions(
                     "M9 flight receipt has an unknown factor-graph identity"
                 )
             cell_id += "-factor-graph-support-v1"
+        elif matcher_policy_id == "M10":
+            if (
+                profile_agent_policy_id != _M10_POLICY_ID
+                or agent_aggregator_id != _M10_AGGREGATOR_ID
+                or key_representation_id != "K1"
+                or profile.get("decision_graph_id")
+                != "slurp-scenario-factor-graph-v1"
+            ):
+                raise SpeechNativeProfileError(
+                    "M10 flight receipt has an unknown candidate-evidence identity"
+                )
+            cell_id += "-candidate-evidence-support-v1"
         profile_decision_graph: DecisionGraphV1 | None = None
-        if matcher_policy_id == "M9":
+        if matcher_policy_id in {"M9", "M10"}:
             graph_relpath = profile.get("decision_graph_path")
             graph_sha256 = profile.get("decision_graph_file_sha256")
             if (
@@ -2865,7 +3367,7 @@ def read_speech_native_predictions(
                 or not isinstance(graph_sha256, str)
             ):
                 raise SpeechNativeProfileError(
-                    "M9 flight receipt lacks its pinned decision graph"
+                    f"{matcher_policy_id} flight receipt lacks its pinned decision graph"
                 )
             graph_path = (REPO_ROOT / graph_relpath).resolve()
             if (
@@ -2873,7 +3375,7 @@ def read_speech_native_predictions(
                 or not graph_path.is_relative_to(REPO_ROOT.resolve())
             ):
                 raise SpeechNativeProfileError(
-                    "M9 decision graph path escapes the repository"
+                    f"{matcher_policy_id} decision graph path escapes the repository"
                 )
             profile_decision_graph = _load_decision_graph(
                 graph_path,
@@ -2882,7 +3384,7 @@ def read_speech_native_predictions(
             )
             if profile_decision_graph.graph_id != profile.get("decision_graph_id"):
                 raise SpeechNativeProfileError(
-                    "M9 decision graph identity does not match its artifact"
+                    f"{matcher_policy_id} decision graph identity does not match its artifact"
                 )
         order_ids = profile.get("key_order_ids", ["canonical"])
         if (
@@ -2975,6 +3477,7 @@ def read_speech_native_predictions(
         multistate_trajectories: list[dict[str, object]] = []
         pairwise_trajectories: list[dict[str, object]] = []
         factor_graph_trajectories: list[dict[str, object]] = []
+        candidate_evidence_trajectories: list[dict[str, object]] = []
         for row in rows:
             if row.get("schema") != "saea-speech-native-decision-v1":
                 raise SpeechNativeProfileError("decision schema mismatch")
@@ -3042,9 +3545,18 @@ def read_speech_native_predictions(
                 or len(set(raw_top_key_ids)) != len(raw_top_key_ids)
             ):
                 raise SpeechNativeProfileError("decision top_key_ids are malformed")
-            if matcher_policy_id in {"M3", "M5", "M6", "M7", "M8", "M9"}:
+            if matcher_policy_id in {
+                "M3",
+                "M5",
+                "M6",
+                "M7",
+                "M8",
+                "M9",
+                "M10",
+            }:
                 assert isinstance(top_k, int)
-                if len(raw_top_key_ids) > top_k:
+                maximum_returned_keys = 6 if matcher_policy_id == "M10" else top_k
+                if len(raw_top_key_ids) > maximum_returned_keys:
                     raise SpeechNativeProfileError(
                         "decision top_key_ids exceed the registered top_k"
                     )
@@ -3537,6 +4049,37 @@ def read_speech_native_predictions(
                 raw_actions = row.get("agent_actions")
                 assert isinstance(raw_actions, list)
                 agent_action_counts.update(raw_actions)
+            elif matcher_policy_id == "M10":
+                assert isinstance(top_k, int)
+                assert profile_decision_graph is not None
+                trajectory = _parse_m10_candidate_evidence_trajectory(
+                    row=row,
+                    sample_id=sample_id,
+                    speaker_id=speaker_by_sample[sample_id],
+                    gold_key_id=key_by_label[gold[sample_id]],
+                    top_k=top_k,
+                    visible_card_by_key=visible_card_by_key,
+                    decision_graph=profile_decision_graph,
+                )
+                candidate_evidence_trajectories.append(trajectory)
+                agent_primary_correct_count += int(
+                    trajectory["primary_key_id"] == trajectory["gold_key_id"]
+                )
+                primary = trajectory["primary_key_id"]
+                agent_action_sensitive_count += int(
+                    any(
+                        key_id != primary
+                        for field in (
+                            "supported_action_key_ids",
+                            "dual_evidence_action_key_ids",
+                            "reconciled_action_key_ids",
+                        )
+                        for key_id in trajectory[field]
+                    )
+                )
+                raw_actions = row.get("agent_actions")
+                assert isinstance(raw_actions, list)
+                agent_action_counts.update(raw_actions)
             elif matcher_policy_id == "M8":
                 assert isinstance(top_k, int)
                 trajectory = _parse_m8_pairwise_trajectory(
@@ -3641,6 +4184,17 @@ def read_speech_native_predictions(
             factor_graph_metrics = _evaluate_m9_factor_graph_action_support(
                 factor_graph_trajectories
             )
+        candidate_evidence_metrics: dict[str, object] | None = None
+        if matcher_policy_id == "M10":
+            if len(candidate_evidence_trajectories) != len(gold):
+                raise SpeechNativeProfileError(
+                    "M10 candidate-evidence trajectory count is incomplete"
+                )
+            candidate_evidence_metrics = (
+                _evaluate_m10_candidate_evidence_action_support(
+                    candidate_evidence_trajectories
+                )
+            )
         aggregates.append(
             {
                 "cell_id": cell_id,
@@ -3650,12 +4204,14 @@ def read_speech_native_predictions(
                 "parse_failure_count": parse_failures,
                 "top_k_reachable_count": (
                     top_k_reachable_count
-                    if matcher_policy_id in {"M3", "M5", "M6", "M7", "M8", "M9"}
+                    if matcher_policy_id
+                    in {"M3", "M5", "M6", "M7", "M8", "M9", "M10"}
                     else None
                 ),
                 "top_k_reachability": (
                     top_k_reachable_count / len(gold)
-                    if matcher_policy_id in {"M3", "M5", "M6", "M7", "M8", "M9"}
+                    if matcher_policy_id
+                    in {"M3", "M5", "M6", "M7", "M8", "M9", "M10"}
                     else None
                 ),
                 "agent_loop_metrics": (
@@ -3826,7 +4382,11 @@ def read_speech_native_predictions(
                                 else (
                                     factor_graph_metrics
                                     if matcher_policy_id == "M9"
-                                    else None
+                                    else (
+                                        candidate_evidence_metrics
+                                        if matcher_policy_id == "M10"
+                                        else None
+                                    )
                                 )
                             )
                         )
@@ -4323,11 +4883,13 @@ def build_profile_tasks(
         "key-text-shuffle-v1",
     }:
         raise SpeechNativeProfileError("unknown speech-native mechanism control")
-    if matcher_policy_id == "M9" and decision_graph is None:
-        raise SpeechNativeProfileError("M9 profile tasks require a decision graph")
-    if matcher_policy_id != "M9" and decision_graph is not None:
+    if matcher_policy_id in {"M9", "M10"} and decision_graph is None:
         raise SpeechNativeProfileError(
-            "decision graph may only enter M9 profile tasks"
+            f"{matcher_policy_id} profile tasks require a decision graph"
+        )
+    if matcher_policy_id not in {"M9", "M10"} and decision_graph is not None:
+        raise SpeechNativeProfileError(
+            "decision graph may only enter M9/M10 profile tasks"
         )
     frozen_samples = tuple(samples)
     if mechanism_control_id == "speech-swap-v1" and len(frozen_samples) < 2:
@@ -5677,6 +6239,333 @@ def _audit_m9_factor_graph_action_support(
     }
 
 
+def _audit_m10_candidate_evidence_action_support(
+    *,
+    attempt_dir: Path,
+    flight: Mapping[str, object],
+    attempt_record: Mapping[str, object],
+    attempt_record_sha256: str,
+    flight_receipt_sha256: str,
+    decisions_sha256: str,
+    trace_sha256: str,
+) -> dict[str, object]:
+    """Admit a complete M10 trajectory without opening its split binding."""
+
+    run_id = str(flight["run_id"])
+    attempt_id = str(flight["attempt_id"])
+    profile = flight.get("profile")
+    decisions_ref = flight.get("decisions")
+    if (
+        attempt_record.get("run_id") != run_id
+        or attempt_record.get("attempt_id") != attempt_id
+        or attempt_record.get("state") != "FINALIZED"
+    ):
+        raise SpeechNativeProfileError(
+            "M10 action audit requires a finalized durable attempt"
+        )
+    if (
+        not isinstance(profile, Mapping)
+        or profile.get("matcher_policy_id") != "M10"
+        or profile.get("key_representation_id") != "K1"
+        or profile.get("agent_policy_id") != _M10_POLICY_ID
+        or profile.get("agent_aggregator_id") != _M10_AGGREGATOR_ID
+        or profile.get("mechanism_control_id") != "matched"
+        or profile.get("top_k") != 4
+        or profile.get("task_count") != 108
+        or profile.get("planned_contact_ceiling") != 2160
+        or not isinstance(decisions_ref, Mapping)
+        or decisions_ref.get("contains_gold_labels") is not False
+    ):
+        raise SpeechNativeProfileError(
+            "M10 action audit requires the finalized matched D108 candidate-evidence cell"
+        )
+
+    graph_relpath = profile.get("decision_graph_path")
+    graph_sha256 = profile.get("decision_graph_file_sha256")
+    graph_id = profile.get("decision_graph_id")
+    if (
+        not isinstance(graph_relpath, str)
+        or not graph_relpath
+        or "\\" in graph_relpath
+        or Path(graph_relpath).is_absolute()
+        or any(part in {"", ".", ".."} for part in Path(graph_relpath).parts)
+        or not isinstance(graph_sha256, str)
+        or _SHA256.fullmatch(graph_sha256) is None
+        or not isinstance(graph_id, str)
+        or not graph_id
+    ):
+        raise SpeechNativeProfileError("M10 action-audit graph reference is malformed")
+    graph_path = (REPO_ROOT / graph_relpath).resolve()
+    if graph_path == REPO_ROOT.resolve() or not graph_path.is_relative_to(
+        REPO_ROOT.resolve()
+    ):
+        raise SpeechNativeProfileError("M10 action-audit graph escapes the repository")
+    audit_cards = tuple(
+        KeyCardV1(
+            key_id=key_id,
+            definition="Gold-free audit placeholder definition.",
+            positive_examples=("Gold-free audit placeholder example.",),
+            contrastive_boundary=None,
+            value_label=f"audit-only-{key_id}",
+        ).validate()
+        for key_id in _SPEECH_NATIVE_KEY_IDS
+    )
+    decision_graph = _load_decision_graph(
+        graph_path,
+        expected_sha256=graph_sha256,
+        key_cards=audit_cards,
+    )
+    if decision_graph.graph_id != graph_id:
+        raise SpeechNativeProfileError("M10 action-audit graph id is inconsistent")
+    visible_card_by_key = {card.key_id: card for card in audit_cards}
+
+    decisions_name = decisions_ref.get("path")
+    if (
+        not isinstance(decisions_name, str)
+        or Path(decisions_name).name != decisions_name
+        or _SHA256.fullmatch(decisions_sha256) is None
+        or decisions_ref.get("sha256") != decisions_sha256
+    ):
+        raise SpeechNativeProfileError("M10 action-audit decisions reference is malformed")
+    decisions_path = attempt_dir / decisions_name
+    if not decisions_path.is_file() or _sha256_file(decisions_path) != decisions_sha256:
+        raise SpeechNativeProfileError("M10 action-audit decisions SHA-256 mismatch")
+    try:
+        rows = tuple(
+            json.loads(line)
+            for line in decisions_path.read_text(encoding="utf-8").splitlines()
+            if line.strip()
+        )
+    except (OSError, UnicodeError, json.JSONDecodeError) as error:
+        raise SpeechNativeProfileError(
+            f"cannot read M10 action-audit decisions: {error}"
+        ) from error
+    if len(rows) != 108 or decisions_ref.get("count") != 108:
+        raise SpeechNativeProfileError("M10 action-audit decision count is inconsistent")
+
+    expected_packet_sha256: dict[str, str] = {}
+    calls_distribution: Counter[int] = Counter()
+    expanded_size_distribution: Counter[int] = Counter()
+    contact_count = 0
+    evidence_contact_count = 0
+    reconciliation_contact_count = 0
+    support_non_primary_count = 0
+    dual_non_primary_count = 0
+    reconciled_non_primary_count = 0
+    action_variable_count = 0
+    mechanism_failure_count = 0
+    for row in rows:
+        if not isinstance(row, Mapping):
+            raise SpeechNativeProfileError("M10 action-audit decision row is not an object")
+        sample_id = row.get("sample_id")
+        query_sample_id = row.get("query_sample_id")
+        packet_sha256 = row.get("speech_packet_sha256")
+        response_hashes = row.get("response_text_sha256")
+        if (
+            row.get("schema") != "saea-speech-native-decision-v1"
+            or not isinstance(sample_id, str)
+            or not sample_id
+            or sample_id in expected_packet_sha256
+            or query_sample_id != sample_id
+            or not isinstance(packet_sha256, str)
+            or _SHA256.fullmatch(packet_sha256) is None
+            or row.get("mechanism_control_id") != "matched"
+            or row.get("key_representation_id") != "K1"
+            or row.get("matcher_policy_id") != "M10"
+            or row.get("parse_failure") is not False
+            or not isinstance(row.get("predicted_value_label"), str)
+            or not row.get("predicted_value_label")
+            or not isinstance(response_hashes, list)
+        ):
+            raise SpeechNativeProfileError("M10 action-audit decision identity is malformed")
+        trajectory = _parse_m10_candidate_evidence_trajectory(
+            row=row,
+            sample_id=sample_id,
+            speaker_id="gold-free-audit",
+            gold_key_id="gold-not-opened",
+            top_k=4,
+            visible_card_by_key=visible_card_by_key,
+            decision_graph=decision_graph,
+        )
+        calls = int(trajectory["total_calls"])
+        if (
+            row.get("calls") != calls
+            or not 10 <= calls <= 20
+            or len(response_hashes) != calls
+            or not all(
+                isinstance(value, str) and _SHA256.fullmatch(value) is not None
+                for value in response_hashes
+            )
+        ):
+            raise SpeechNativeProfileError("M10 action-audit contact accounting is malformed")
+        primary = trajectory["primary_key_id"]
+        family_fields = (
+            "supported_action_key_ids",
+            "dual_evidence_action_key_ids",
+            "reconciled_action_key_ids",
+        )
+        non_primary_sets = [
+            {key_id for key_id in trajectory[field] if key_id != primary}
+            for field in family_fields
+        ]
+        expanded_size = len(trajectory["expanded_key_ids"])
+        challenger_count = len(
+            [
+                key_id
+                for key_id in trajectory["expanded_key_ids"]
+                if key_id != primary
+            ]
+        )
+        expected_packet_sha256[sample_id] = packet_sha256
+        calls_distribution[calls] += 1
+        expanded_size_distribution[expanded_size] += 1
+        contact_count += calls
+        evidence_contact_count += 2 * expanded_size
+        reconciliation_contact_count += challenger_count
+        support_non_primary_count += int(bool(non_primary_sets[0]))
+        dual_non_primary_count += int(bool(non_primary_sets[1]))
+        reconciled_non_primary_count += int(bool(non_primary_sets[2]))
+        action_variable_count += int(any(non_primary_sets))
+        mechanism_failure_count += int(bool(trajectory["mechanism_failure"]))
+
+    actual_usage = attempt_record.get("actual")
+    close = flight.get("close")
+    cost = close.get("cost") if isinstance(close, Mapping) else None
+    if (
+        profile.get("actual_contact_count") != contact_count
+        or not isinstance(actual_usage, Mapping)
+        or actual_usage.get("calls") != contact_count
+        or not isinstance(cost, Mapping)
+        or cost.get("calls_used") != contact_count
+    ):
+        raise SpeechNativeProfileError("M10 action-audit durable accounting is inconsistent")
+
+    trace_path = attempt_dir / f"{run_id}.trace.jsonl"
+    if (
+        _SHA256.fullmatch(trace_sha256) is None
+        or not trace_path.is_file()
+        or _sha256_file(trace_path) != trace_sha256
+    ):
+        raise SpeechNativeProfileError("M10 action-audit trace SHA-256 mismatch")
+    expected_queries: dict[str, Mapping[str, str]] = {}
+    try:
+        with trace_path.open("r", encoding="utf-8") as handle:
+            for line in handle:
+                record = json.loads(line)
+                if record.get("channel") != "MODEL_REQUEST":
+                    continue
+                envelope = record.get("payload")
+                payload = envelope.get("payload") if isinstance(envelope, Mapping) else None
+                if not isinstance(payload, Mapping):
+                    continue
+                trace_sample_id = payload.get("sample_id")
+                parts = payload.get("speech_feature_parts")
+                query_parts = (
+                    [
+                        dict(part)
+                        for part in parts
+                        if isinstance(part, Mapping) and part.get("role") == "query"
+                    ]
+                    if isinstance(parts, list)
+                    else []
+                )
+                if (
+                    not isinstance(trace_sample_id, str)
+                    or trace_sample_id not in expected_packet_sha256
+                    or len(query_parts) != 1
+                    or query_parts[0].get("sha256")
+                    != expected_packet_sha256[trace_sample_id]
+                ):
+                    continue
+                previous = expected_queries.get(trace_sample_id)
+                if previous is not None and dict(previous) != query_parts[0]:
+                    raise SpeechNativeProfileError(
+                        "M10 action-audit trace has conflicting speech-query carriage"
+                    )
+                expected_queries[trace_sample_id] = query_parts[0]
+    except (OSError, UnicodeError, json.JSONDecodeError) as error:
+        raise SpeechNativeProfileError(
+            f"cannot inspect M10 action-audit speech-query carriage: {error}"
+        ) from error
+    if set(expected_queries) != set(expected_packet_sha256):
+        raise SpeechNativeProfileError(
+            "M10 action-audit trace speech-query carriage is incomplete"
+        )
+    trace_usage = _trace_usage_summary(trace_path)
+    trace_speech_query = _trace_speech_query_summary(
+        trace_path, expected_queries=expected_queries
+    )
+    process_audit_sha256 = flight.get("process_audit_sha256")
+    if not isinstance(process_audit_sha256, str):
+        raise SpeechNativeProfileError("M10 action-audit process receipt is missing")
+    process_audit = _load_pinned_json_object(
+        attempt_dir / f"{run_id}.mmproj-audit.json",
+        expected_sha256=process_audit_sha256,
+        artifact_name="M10 action-audit mmproj process audit",
+    )
+    if (
+        process_audit.get("mmproj_loaded") is not False
+        or process_audit.get("mmproj_hit_count") != 0
+    ):
+        raise SpeechNativeProfileError("M10 action-audit source loaded mmproj")
+    server_scan = flight.get("server_log_scan")
+    if not isinstance(server_scan, Mapping):
+        raise SpeechNativeProfileError("M10 action-audit server scan is missing")
+    completion_issues = _profile_completion_issues(
+        calls_used=contact_count,
+        actual_contact_count=contact_count,
+        task_count=108,
+        planned_contact_ceiling=2160,
+        request_failure_count=0,
+        server_scan=server_scan,
+        trace_usage=trace_usage,
+        trace_speech_query=trace_speech_query,
+    )
+    if completion_issues:
+        raise SpeechNativeProfileError(
+            "M10 action-audit completion defects: " + "; ".join(completion_issues)
+        )
+    return {
+        "schema": "saea-speech-native-candidate-evidence-action-audit-v1",
+        "study": "speech-aware-evidence-acquisition",
+        "run_id": run_id,
+        "attempt_id": attempt_id,
+        "source_attempt_state": "FINALIZED",
+        "effectiveness_read_authorized": True,
+        "gold_read": False,
+        "decision_count": 108,
+        "contact_count": contact_count,
+        "valid_speech_query_contact_count": trace_speech_query[
+            "valid_speech_query_count"
+        ],
+        "decision_graph_id": decision_graph.graph_id,
+        "decision_graph_file_sha256": graph_sha256,
+        "evidence_contact_count": evidence_contact_count,
+        "reconciliation_contact_count": reconciliation_contact_count,
+        "support_non_primary_query_count": support_non_primary_count,
+        "dual_non_primary_query_count": dual_non_primary_count,
+        "reconciled_non_primary_query_count": reconciled_non_primary_count,
+        "action_variable_query_count": action_variable_count,
+        "action_variable_threshold": 24,
+        "action_variable_threshold_met": action_variable_count >= 24,
+        "mechanism_failure_count": mechanism_failure_count,
+        "calls_distribution": {
+            str(calls): count for calls, count in sorted(calls_distribution.items())
+        },
+        "expanded_size_distribution": {
+            str(size): count
+            for size, count in sorted(expanded_size_distribution.items())
+        },
+        "source_sha256": {
+            "attempt_record": attempt_record_sha256,
+            "flight_receipt": flight_receipt_sha256,
+            "decisions": decisions_sha256,
+            "trace": trace_sha256,
+            "process_audit": process_audit_sha256,
+        },
+    }
+
+
 def audit_speech_native_action_support(
     *,
     attempt_dir: Path,
@@ -5740,6 +6629,16 @@ def audit_speech_native_action_support(
         )
     if isinstance(profile, Mapping) and profile.get("matcher_policy_id") == "M9":
         return _audit_m9_factor_graph_action_support(
+            attempt_dir=attempt_dir,
+            flight=flight,
+            attempt_record=attempt_record,
+            attempt_record_sha256=attempt_record_sha256,
+            flight_receipt_sha256=flight_receipt_sha256,
+            decisions_sha256=decisions_sha256,
+            trace_sha256=trace_sha256,
+        )
+    if isinstance(profile, Mapping) and profile.get("matcher_policy_id") == "M10":
+        return _audit_m10_candidate_evidence_action_support(
             attempt_dir=attempt_dir,
             flight=flight,
             attempt_record=attempt_record,
@@ -6357,7 +7256,7 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
     decision_graph = None
     decision_graph_path: Path | None = None
     decision_graph_file_sha256: str | None = None
-    if matcher_policy_id == "M9":
+    if matcher_policy_id in {"M9", "M10"}:
         graph_relpath = _require_string(values, "speech_native_decision_graph")
         decision_graph_path = (repo_root / graph_relpath).resolve()
         if (
@@ -6383,7 +7282,7 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
         )
     ):
         raise SpeechNativeProfileError(
-            "decision graph configuration may only enter an M9 profile"
+            "decision graph configuration may only enter an M9/M10 profile"
         )
     dispatch_granularity = values.get("speech_native_dispatch_granularity", "task")
     if dispatch_granularity not in {"task", "contact"}:
