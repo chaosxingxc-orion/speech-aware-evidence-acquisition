@@ -13,6 +13,7 @@ from speech_aware_evidence_acquisition.contracts import (
     ExecutionScopeError,
     FrozenCoreGate,
     assert_execution_scope,
+    assert_wsl_execution_environment,
 )
 
 
@@ -69,6 +70,32 @@ def test_paper_scale_profiles_are_always_refused_with_the_gate_token(profile):
 def test_unknown_or_forged_profiles_fail_closed(profile):
     with pytest.raises(ExecutionScopeError):
         assert_execution_scope(profile)
+
+
+@pytest.mark.parametrize(
+    ("os_name", "kernel_release"),
+    [
+        ("nt", "10.0.26100"),
+        ("posix", "6.8.0-64-generic"),
+        ("posix", "5.15.0-linuxkit"),
+    ],
+)
+def test_formal_execution_refuses_windows_and_non_wsl_linux(os_name, kernel_release):
+    with pytest.raises(ExecutionScopeError, match="WSL2"):
+        assert_wsl_execution_environment(os_name=os_name, kernel_release=kernel_release)
+
+
+@pytest.mark.parametrize(
+    "kernel_release",
+    [
+        "6.6.87.2-microsoft-standard-WSL2",
+        "5.15.153.1-MICROSOFT-standard-WSL2",
+    ],
+)
+def test_formal_execution_accepts_only_the_wsl2_compute_authority(kernel_release):
+    assert assert_wsl_execution_environment(
+        os_name="posix", kernel_release=kernel_release
+    ) == "wsl2"
 
 
 def test_model_touch_refuses_out_of_scope_plans_before_reading_any_receipt(tmp_path):

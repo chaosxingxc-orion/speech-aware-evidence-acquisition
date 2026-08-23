@@ -19,7 +19,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Callable, Mapping, Sequence
 
-from ...contracts import STUDY_SLUG
+from ...contracts import STUDY_SLUG, assert_wsl_execution_environment
 from . import SessionError, _bracketed, assert_session_alive, require_loopback
 from .paths import _resolve_under, _sha256_file
 from .process import _pid_alive, _verify_pid_runs_pinned_binary
@@ -449,6 +449,7 @@ def start_session(
     simply lost (module docstring at ``_ServerLogWriter``).
     """
 
+    assert_wsl_execution_environment()
     require_loopback(f"http://{_bracketed(host)}:{port}")
     pinned_path, pinned_sha = _pinned_binary(runtime_receipt)
     binary = _resolve_under(runtime_root, pinned_path, "runtime llama_cpp.binary_path", must_exist=True)

@@ -120,6 +120,7 @@ from .plan import (
     ExecutionPlan,
     _PAPER_SCALE_MARKERS,
     assert_execution_scope,
+    assert_wsl_execution_environment,
 )
 from .receipts import (
     _DRIVE_PREFIX,
@@ -162,6 +163,7 @@ __all__ = [
     "TraceRecord",
     "assert_execution_scope",
     "assert_information_boundary",
+    "assert_wsl_execution_environment",
     "general_audio_deny_lock_keys",
     "validate_exposure_claim",
     "_ALL_LEDGER_COLUMNS",

@@ -55,7 +55,12 @@ from types import SimpleNamespace
 
 import pytest
 
-from speech_aware_evidence_acquisition.contracts import STUDY_SLUG, ExecutionPlan
+from speech_aware_evidence_acquisition.contracts import (
+    STUDY_SLUG,
+    ExecutionPlan,
+    ExecutionScopeError,
+)
+from speech_aware_evidence_acquisition.core.session import lifecycle as session_lifecycle
 from speech_aware_evidence_acquisition.core.base import PayloadBindingContext
 from speech_aware_evidence_acquisition.core.model import FrozenCoreAdapter, LlamaServerTransport
 from speech_aware_evidence_acquisition.core.session import (
@@ -2114,6 +2119,36 @@ class TestServerLogWriter:
     os.name == "nt", reason="POSIX shell-script fake executable required for a real spawn"
 )
 class TestStartSessionSpawn:
+    def test_spawn_refuses_outside_wsl_before_any_process_or_asset_access(
+        self, tmp_path, monkeypatch
+    ):
+        popen_called = False
+
+        def refuse_non_wsl():
+            raise ExecutionScopeError("formal execution requires WSL2")
+
+        def forbidden_popen(*args, **kwargs):
+            nonlocal popen_called
+            popen_called = True
+            raise AssertionError("popen must not run outside WSL2")
+
+        monkeypatch.setattr(
+            session_lifecycle,
+            "assert_wsl_execution_environment",
+            refuse_non_wsl,
+        )
+        with pytest.raises(ExecutionScopeError, match="WSL2"):
+            start_session(
+                runtime_root=tmp_path / "missing-runtime",
+                data_root=tmp_path / "missing-data",
+                runtime_receipt={},
+                host="127.0.0.1",
+                port=18080,
+                session_id="must-not-start",
+                popen=forbidden_popen,
+            )
+        assert popen_called is False
+
     def _fake_binary_world(self, tmp_path, *, sleep_seconds=5):
         runtime_root = tmp_path / "runtime"
         data_root = tmp_path / "data"

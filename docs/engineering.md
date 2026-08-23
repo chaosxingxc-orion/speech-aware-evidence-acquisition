@@ -111,6 +111,13 @@ umbrella wiki.
   boundary blocklist alone is necessary, not sufficient. Canonical binding:
   `FrozenCoreGate.for_study_repo`.
 - Compute: WSL2 Ubuntu-24.04, RTX 5090 (sm_120), `~/.venvs/speechrl` Python 3.12.
+  WSL2 is the sole formal execution authority for experiments, data validation,
+  tests, server lifecycle, and model contact. Native Windows is restricted to
+  Git/status synchronization and must never run a duplicate experiment or test.
+  `contracts.assert_wsl_execution_environment` enforces this boundary before a
+  formal model touch, and `core.session.start_session` enforces it before loading
+  or spawning llama.cpp. Native Linux and containers also fail closed because
+  they are not the receipt-bound WSL2 compute environment.
 
 ## Carriers
 

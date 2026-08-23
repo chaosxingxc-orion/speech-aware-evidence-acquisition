@@ -7,6 +7,8 @@ pure move, no behaviour change).
 from __future__ import annotations
 
 import math
+import os
+import platform
 from dataclasses import dataclass
 
 from .errors import ExecutionScopeError
@@ -23,6 +25,37 @@ _PAPER_SCALE_MARKERS = ("paper", "confirmatory", "production")
 
 EXECUTION_PLAN_SCHEMA = "saea-execution-plan-v1"
 STAGE2_SPLIT_ROLES = frozenset({"discovery", "dev"})
+
+
+def assert_wsl_execution_environment(
+    *,
+    os_name: str | None = None,
+    kernel_release: str | None = None,
+) -> str:
+    """Require the repository's sole formal execution authority: WSL2.
+
+    Windows is a source-control synchronization surface only. Native Windows,
+    native Linux, containers, and compatibility layers must never perform a
+    formal model touch for this study. Optional arguments make the platform
+    decision independently testable; production callers always omit them and
+    therefore use the running kernel identity.
+    """
+
+    resolved_os_name = os.name if os_name is None else os_name
+    resolved_kernel_release = (
+        platform.release() if kernel_release is None else kernel_release
+    )
+    normalized_release = resolved_kernel_release.casefold()
+    if (
+        resolved_os_name != "posix"
+        or "microsoft-standard-wsl2" not in normalized_release
+    ):
+        raise ExecutionScopeError(
+            "formal execution requires the WSL2 compute authority; native Windows "
+            "is restricted to Git/status synchronization and no experiment or model "
+            "contact may run there"
+        )
+    return "wsl2"
 
 
 def assert_execution_scope(profile: object) -> str:

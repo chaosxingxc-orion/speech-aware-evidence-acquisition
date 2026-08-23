@@ -27,7 +27,7 @@ from .gate_exposure import _ExposureAndCarrierMixin
 from .gate_identity import _MediaReferenceIdentityMixin
 from .gate_runtime import _RuntimeValidationMixin
 from .identifiers import MODEL_LOCK_KEY, STUDY_SLUG
-from .plan import MODEL_TOUCH_PROFILES, ExecutionPlan
+from .plan import MODEL_TOUCH_PROFILES, ExecutionPlan, assert_wsl_execution_environment
 
 
 @dataclass(frozen=True)
@@ -261,6 +261,7 @@ class FrozenCoreGate(
                 f"execution profile {plan.execution_profile!r} does not authorize a model "
                 f"touch; model-facing Stage-2 profiles are {sorted(MODEL_TOUCH_PROFILES)}"
             )
+        assert_wsl_execution_environment()
         lock, lock_sha256 = self._load_lock_with_hash()
         self._require_exposure_preregistration(plan, lock)
         self._resolve_carrier_dataset_entry(plan.carrier_lock_key, lock)
