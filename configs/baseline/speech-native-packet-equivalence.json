@@ -4,6 +4,7 @@
   "evidence_source": "none",
   "evidence_mismatch": false,
   "obs_batch_samples": 8,
+  "profile_validation_workers": 16,
   "allow_empty_speech_feature_evidence": true,
   "key_representation_id": "engineering-none-v1",
   "matcher_policy_id": "engineering-equivalence-v1",

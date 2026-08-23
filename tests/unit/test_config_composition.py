@@ -576,6 +576,22 @@ def test_speech_native_np16_ngram_profile_adds_only_target_verified_drafting():
     }
 
 
+def test_engineering_packet_equivalence_uses_parallel_packet_validation():
+    """The label-free gate must validate cached packets in parallel."""
+
+    from speech_aware_evidence_acquisition.e0.artifacts import REPO_ROOT
+
+    composed = compose(
+        REPO_ROOT,
+        "q4km-mmproj-free-speech-native-np16-speech-batch-26802-eng",
+        "slurp-speech-native-eng-gate8",
+        "speech-native-packet-equivalence",
+        "speech-native-engineering-gate",
+    )
+
+    assert composed.values["profile_validation_workers"] == 16
+
+
 def test_information_complete_e108_m11_composes_on_the_resident_np16_service():
     """The 108-query action-support successor pins only promoted speech packets,
     action-complete text keys, and the admitted residual-boundary graph."""
