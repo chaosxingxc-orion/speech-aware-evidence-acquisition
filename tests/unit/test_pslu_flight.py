@@ -3288,6 +3288,7 @@ def test_m11_prompt_enumerator_reuses_the_contact_batched_runtime_path():
         decision_graph=_decision_graph_fixture(),
         top_k=2,
         key_order_ids=("canonical",),
+        request_layout_id="slot-affine-speech-prefix-v1",
     )
 
     by_stage = Counter(envelope["stage_kind"] for envelope in envelopes)
@@ -3315,6 +3316,9 @@ def test_m11_prompt_enumerator_reuses_the_contact_batched_runtime_path():
         ]
         assert len(query_parts) == 1
         assert query_parts[0]["role"] == "query"
+        assert envelope["messages"][1]["content"][0]["type"] == (
+            "input_speech_features"
+        )
         rendered = json.dumps(envelope, sort_keys=True)
         assert '"value_label"' not in rendered
         assert "Candidate labels:" not in rendered
@@ -4636,6 +4640,7 @@ def test_m9_contact_dispatch_marks_partial_rerank_as_parse_failure():
         key_representation_id="K1",
         matcher_policy_id="M9",
         prompt_policy_id="speech-native-json-copy-v4",
+        request_layout_id="slot-affine-speech-prefix-v1",
         top_k=2,
         decision_graph=_decision_graph_fixture(),
         agent_policy_id="speech-conditioned-factor-graph-action-support-v1",
@@ -5125,6 +5130,58 @@ def test_m3_verifies_each_retrieved_candidate_and_arbitrates_only_a_tie():
     _assert_every_call_carries_query(client)
 
 
+def test_slot_affine_speech_prefix_layout_keeps_query_before_dynamic_agent_state():
+    client = _SpeechFeatureClient(
+        [
+            '{"key_ids":["K001","K002"]}',
+            '{"compatible":true,"confidence":90}',
+            '{"compatible":false,"confidence":10}',
+        ]
+    )
+
+    result = run_speech_native_matcher(
+        core_client=client,
+        sample=_SpeechSample(),
+        query_descriptor=_QUERY_DESCRIPTOR,
+        key_cards=_KEY_CARDS,
+        key_representation_id="K2",
+        matcher_policy_id="M3",
+        request_layout_id="slot-affine-speech-prefix-v1",
+        top_k=2,
+    )
+
+    assert result.key_id == "K001"
+    assert len(client.calls) == 3
+    system_messages = {messages[0]["content"] for messages, _kwargs in client.calls}
+    assert len(system_messages) == 1
+    for messages, _kwargs in client.calls:
+        parts = messages[1]["content"]
+        assert parts[0] == {
+            "type": "input_speech_features",
+            "speech_features": _QUERY_DESCRIPTOR,
+        }
+        assert parts[-1]["type"] == "text"
+        assert parts[-1]["text"].startswith("Task instruction:\n")
+    _assert_every_call_carries_query(client)
+
+
+def test_speech_native_matcher_rejects_unknown_request_layout_before_contact():
+    client = _SpeechFeatureClient(['{"key_id":"K001"}'])
+
+    with pytest.raises(PsluFlightError, match="unknown request layout"):
+        run_speech_native_matcher(
+            core_client=client,
+            sample=_SpeechSample(),
+            query_descriptor=_QUERY_DESCRIPTOR,
+            key_cards=_KEY_CARDS,
+            key_representation_id="K1",
+            matcher_policy_id="M1",
+            request_layout_id="unregistered-layout",
+        )
+
+    assert client.calls == []
+
+
 def test_m3_v3_requires_exact_distinct_keys_without_markdown_fences():
     client = _SpeechFeatureClient(
         [
@@ -5526,6 +5583,9 @@ def test_speech_native_match_tasks_keep_multistep_slot_affinity_and_flush_in_tas
         def complete(self, messages, **kwargs):
             sample_id = kwargs["speech_feature_sample_id"]
             slot = kwargs["decoding_params"]["id_slot"]
+            assert messages[1]["content"][0]["speech_features"]["packet_id"] == (
+                f"slurp/train/query-{sample_id.removeprefix('sample-')}"
+            )
             with self.lock:
                 self.active += 1
                 self.max_active = max(self.max_active, self.active)
@@ -5560,6 +5620,7 @@ def test_speech_native_match_tasks_keep_multistep_slot_affinity_and_flush_in_tas
             key_cards=_KEY_CARDS,
             key_representation_id="K2",
             matcher_policy_id="M2",
+            request_layout_id="slot-affine-speech-prefix-v1",
             decoding_params={"temperature": 0, "id_slot": "per-sample"},
         )
         for index in range(4)
@@ -7127,6 +7188,7 @@ def test_decision_graph_artifact_is_hash_pinned_and_enters_profile_tasks(tmp_pat
         key_representation_id="K1",
         matcher_policy_id="M9",
         prompt_policy_id="speech-native-json-copy-v4",
+        request_layout_id="slot-affine-speech-prefix-v1",
         top_k=2,
         agent_policy_id="speech-conditioned-factor-graph-action-support-v1",
         agent_aggregator_id="factor-graph-primary-control-v1",
@@ -7135,6 +7197,7 @@ def test_decision_graph_artifact_is_hash_pinned_and_enters_profile_tasks(tmp_pat
 
     assert loaded == graph
     assert tasks[0].decision_graph == graph
+    assert tasks[0].request_layout_id == "slot-affine-speech-prefix-v1"
     with pytest.raises(SpeechNativeProfileError, match="SHA-256 mismatch"):
         _load_decision_graph(
             graph_path,

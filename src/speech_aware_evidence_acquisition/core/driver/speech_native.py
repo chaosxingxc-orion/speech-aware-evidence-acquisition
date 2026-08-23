@@ -39,6 +39,7 @@ from ...rails.probes.pslu_flight import (
     FactorLinkStateV1,
     KeyCardV1,
     PsluFlightError,
+    SPEECH_NATIVE_REQUEST_LAYOUTS,
     SpeechNativeMatchTask,
     load_speech_native_engineering_gate,
     decision_boundary_path,
@@ -6199,6 +6200,7 @@ def build_profile_tasks(
     matcher_policy_id: str,
     top_k: int = 3,
     prompt_policy_id: str = "speech-native-json-copy-v2",
+    request_layout_id: str = "legacy-key-speech-v1",
     verifier_policy_id: str = "speech-native-compatibility-v1",
     audio_key_bindings: Mapping[str, Mapping[str, str]] | None = None,
     decision_graph: DecisionGraphV1 | None = None,
@@ -6214,6 +6216,10 @@ def build_profile_tasks(
         "key-text-shuffle-v1",
     }:
         raise SpeechNativeProfileError("unknown speech-native mechanism control")
+    if request_layout_id not in SPEECH_NATIVE_REQUEST_LAYOUTS:
+        raise SpeechNativeProfileError(
+            f"unknown speech-native request layout {request_layout_id!r}"
+        )
     if matcher_policy_id in {"M9", "M10", "M11"} and decision_graph is None:
         raise SpeechNativeProfileError(
             f"{matcher_policy_id} profile tasks require a decision graph"
@@ -6264,6 +6270,7 @@ def build_profile_tasks(
                     key_representation_id=key_representation_id,
                     matcher_policy_id=matcher_policy_id,
                     prompt_policy_id=prompt_policy_id,
+                    request_layout_id=request_layout_id,
                     verifier_policy_id=verifier_policy_id,
                     decoding_params=dict(decoding_params),
                     top_k=top_k,
@@ -6282,6 +6289,7 @@ def _enumerate_m11_prompt_envelopes(
     decision_graph: DecisionGraphV1,
     top_k: int,
     key_order_ids: Sequence[str],
+    request_layout_id: str = "legacy-key-speech-v1",
 ) -> tuple[dict[str, object], ...]:
     """Exercise the real contact-batched M11 constructor without a model.
 
@@ -6387,6 +6395,7 @@ def _enumerate_m11_prompt_envelopes(
                 key_representation_id="K1",
                 matcher_policy_id="M11",
                 prompt_policy_id="speech-native-json-copy-v4",
+                request_layout_id=request_layout_id,
                 top_k=top_k,
                 decision_graph=decision_graph,
                 agent_policy_id="speech-conditioned-adaptive-evidence-gap-v2",
@@ -6916,6 +6925,7 @@ def _validate_m11_prompt_fit_for_profile(
     packet_count: int,
     context_tokens_per_slot: int,
     maximum_completion_tokens: int,
+    request_layout_id: str = "legacy-key-speech-v1",
 ) -> Mapping[str, object]:
     """Bind an M11 prompt-fit receipt to one formal resident profile."""
 
@@ -6932,6 +6942,7 @@ def _validate_m11_prompt_fit_for_profile(
         decision_graph=decision_graph,
         top_k=top_k,
         key_order_ids=key_order_ids,
+        request_layout_id=request_layout_id,
     )
     return _load_m11_prompt_fit_receipt(
         path=path,
@@ -11037,6 +11048,13 @@ def _cli_speech_native_prompt_audit(args: argparse.Namespace) -> int:
     slot_count = _require_positive_int(values, "profile_slot_count")
     geometry = _profile_geometry(values, slot_count)
     top_k = _require_positive_int(values, "speech_native_top_k")
+    request_layout_id = values.get(
+        "speech_native_request_layout_id", "legacy-key-speech-v1"
+    )
+    if request_layout_id not in SPEECH_NATIVE_REQUEST_LAYOUTS:
+        raise SpeechNativeProfileError(
+            f"unknown speech-native request layout {request_layout_id!r}"
+        )
     raw_order_ids = values.get("profile_key_order_ids")
     if (
         not isinstance(raw_order_ids, list)
@@ -11187,6 +11205,7 @@ def _cli_speech_native_prompt_audit(args: argparse.Namespace) -> int:
         decision_graph=decision_graph,
         top_k=top_k,
         key_order_ids=tuple(raw_order_ids),
+        request_layout_id=request_layout_id,
     )
 
     def count_one(envelope: Mapping[str, object]) -> tuple[str, int]:
@@ -11231,6 +11250,7 @@ def _cli_speech_native_prompt_audit(args: argparse.Namespace) -> int:
             "decision_graph_id": decision_graph.graph_id,
             "decision_graph_path": graph_path.relative_to(repo_root).as_posix(),
             "decision_graph_file_sha256": graph_sha256,
+            "request_layout_id": request_layout_id,
             "packet_promotion_receipt_sha256": promotion_sha256,
             "validated_packet_count": len(packets),
             "maximum_speech_packet": {
@@ -11417,6 +11437,13 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
         raise SpeechNativeProfileError(
             "matcher_prompt_policy_id must be a non-empty string"
         )
+    request_layout_id = values.get(
+        "speech_native_request_layout_id", "legacy-key-speech-v1"
+    )
+    if request_layout_id not in SPEECH_NATIVE_REQUEST_LAYOUTS:
+        raise SpeechNativeProfileError(
+            f"unknown speech-native request layout {request_layout_id!r}"
+        )
     verifier_policy_id = values.get(
         "matcher_verifier_policy_id", "speech-native-compatibility-v1"
     )
@@ -11497,6 +11524,7 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
         matcher_policy_id=matcher_policy_id,
         top_k=top_k,
         prompt_policy_id=prompt_policy_id,
+        request_layout_id=request_layout_id,
         verifier_policy_id=verifier_policy_id,
         audio_key_bindings=audio_key_bindings,
         decision_graph=decision_graph,
@@ -11639,6 +11667,7 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
             packet_count=len(gate_view.samples),
             context_tokens_per_slot=geometry["context_tokens_per_slot"],
             maximum_completion_tokens=prompt_fit_maximum_completion_tokens,
+            request_layout_id=request_layout_id,
         )
     client: FrozenCoreClient | None = None
     close_summary: dict[str, object] | None = None
@@ -11823,6 +11852,7 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
                 else None
             ),
             "matcher_prompt_policy_id": prompt_policy_id,
+            "request_layout_id": request_layout_id,
             "matcher_verifier_policy_id": verifier_policy_id,
             "agent_policy_id": agent_policy_id,
             "agent_aggregator_id": agent_aggregator_id,

@@ -179,6 +179,15 @@ SPEECH_NATIVE_PROMPT_POLICIES = (
     "speech-native-json-copy-v3",
     "speech-native-json-copy-v4",
 )
+SPEECH_NATIVE_REQUEST_LAYOUTS = (
+    "legacy-key-speech-v1",
+    "slot-affine-speech-prefix-v1",
+)
+SPEECH_NATIVE_STABLE_SYSTEM_TEXT = (
+    "Use the frozen speech observation and supplied knowledge to execute the final task "
+    "instruction. Treat the speech observation as the primary query, keep opaque key ids "
+    "exact, and return only the requested response shape."
+)
 SPEECH_NATIVE_VERIFIER_POLICIES = (
     "speech-native-compatibility-v1",
     "speech-native-contrastive-verifier-v2",
@@ -1501,6 +1510,7 @@ class SpeechNativeMatchTask:
     scoring_sample_id: str | None = None
     mechanism_control_id: str = "matched"
     prompt_policy_id: str = "speech-native-json-copy-v2"
+    request_layout_id: str = "legacy-key-speech-v1"
     verifier_policy_id: str = "speech-native-compatibility-v1"
     decoding_params: Mapping[str, object] = field(default_factory=dict)
     top_k: int = 3
@@ -1885,18 +1895,28 @@ def _speech_feature_messages(
     key_cards: Sequence[KeyCardV1],
     key_representation_id: str,
     audio_key_bindings: Mapping[str, Mapping[str, str]] | None,
+    request_layout_id: str,
 ) -> tuple[Mapping[str, object], ...]:
+    if request_layout_id not in SPEECH_NATIVE_REQUEST_LAYOUTS:
+        raise PsluFlightError(
+            f"unknown request layout {request_layout_id!r}; expected "
+            f"{SPEECH_NATIVE_REQUEST_LAYOUTS}"
+        )
     required = {"packet_id", "sha256", "role"}
     if set(query_descriptor) != required or query_descriptor.get("role") != "query":
         raise PsluFlightError(
             "query_descriptor must carry exact packet_id/sha256/role=query"
         )
+    query_part = {
+        "type": "input_speech_features",
+        "speech_features": dict(query_descriptor),
+    }
     content: list[Mapping[str, object]] = []
-    if key_text:
+    if request_layout_id == "legacy-key-speech-v1" and key_text:
         content.append({"type": "text", "text": key_text})
-    content.append(
-        {"type": "input_speech_features", "speech_features": dict(query_descriptor)}
-    )
+    content.append(query_part)
+    if request_layout_id == "slot-affine-speech-prefix-v1" and key_text:
+        content.append({"type": "text", "text": key_text})
     if key_representation_id in {"K3", "K4"}:
         if audio_key_bindings is None or set(audio_key_bindings) != {
             card.key_id for card in key_cards
@@ -1923,8 +1943,19 @@ def _speech_feature_messages(
                     },
                 }
             )
+    if request_layout_id == "slot-affine-speech-prefix-v1":
+        content.append(
+            {"type": "text", "text": f"Task instruction:\n{system_text}"}
+        )
     return (
-        {"role": "system", "content": system_text},
+        {
+            "role": "system",
+            "content": (
+                SPEECH_NATIVE_STABLE_SYSTEM_TEXT
+                if request_layout_id == "slot-affine-speech-prefix-v1"
+                else system_text
+            ),
+        },
         {"role": "user", "content": content},
     )
 
@@ -1938,6 +1969,7 @@ def run_speech_native_matcher(
     key_representation_id: str,
     matcher_policy_id: str,
     prompt_policy_id: str = "speech-native-json-copy-v2",
+    request_layout_id: str = "legacy-key-speech-v1",
     verifier_policy_id: str = "speech-native-compatibility-v1",
     decoding_params: Mapping[str, object] | None = None,
     top_k: int = 3,
@@ -1966,6 +1998,11 @@ def run_speech_native_matcher(
         raise PsluFlightError(
             f"unknown prompt policy {prompt_policy_id!r}; expected "
             f"{SPEECH_NATIVE_PROMPT_POLICIES}"
+        )
+    if request_layout_id not in SPEECH_NATIVE_REQUEST_LAYOUTS:
+        raise PsluFlightError(
+            f"unknown request layout {request_layout_id!r}; expected "
+            f"{SPEECH_NATIVE_REQUEST_LAYOUTS}"
         )
     if verifier_policy_id not in SPEECH_NATIVE_VERIFIER_POLICIES:
         raise PsluFlightError(
@@ -2126,6 +2163,7 @@ def run_speech_native_matcher(
                 if audio_key_bindings is not None
                 else None
             ),
+            request_layout_id=request_layout_id,
         )
         request_decoding_params = dict(decoding_params or {})
         if decoding_overrides is not None:
@@ -2249,6 +2287,7 @@ def run_speech_native_matcher(
             key_representation_id=key_representation_id,
             matcher_policy_id=policy_id,
             prompt_policy_id=prompt_policy_id,
+            request_layout_id=request_layout_id,
             verifier_policy_id=verifier_policy_id,
             decoding_params=decoding_params,
             top_k=top_k,
@@ -4473,6 +4512,7 @@ def run_speech_native_match_tasks(
                 key_cards=stage_cards,
                 key_representation_id="K1",
                 audio_key_bindings=None,
+                request_layout_id=task.request_layout_id,
             )
             trace_buffer = (
                 TraceBuffer(trace_run_id) if trace_run_id is not None else None
@@ -5028,6 +5068,7 @@ def run_speech_native_match_tasks(
                 key_cards=stage_cards,
                 key_representation_id=key_representation_id,
                 audio_key_bindings=None,
+                request_layout_id=task.request_layout_id,
             )
             trace_buffer = (
                 TraceBuffer(trace_run_id) if trace_run_id is not None else None
@@ -5435,6 +5476,7 @@ def run_speech_native_match_tasks(
                 key_cards=stage_cards,
                 key_representation_id="K1",
                 audio_key_bindings=None,
+                request_layout_id=task.request_layout_id,
             )
             trace_buffer = (
                 TraceBuffer(trace_run_id) if trace_run_id is not None else None
@@ -6084,6 +6126,7 @@ def run_speech_native_match_tasks(
                     if task.audio_key_bindings is not None
                     else None
                 ),
+                request_layout_id=task.request_layout_id,
             )
             trace_buffer = (
                 TraceBuffer(trace_run_id) if trace_run_id is not None else None
@@ -6516,6 +6559,7 @@ def run_speech_native_match_tasks(
                 key_representation_id=task.key_representation_id,
                 matcher_policy_id=task.matcher_policy_id,
                 prompt_policy_id=task.prompt_policy_id,
+                request_layout_id=task.request_layout_id,
                 verifier_policy_id=task.verifier_policy_id,
                 decoding_params=decoding_params,
                 top_k=task.top_k,
