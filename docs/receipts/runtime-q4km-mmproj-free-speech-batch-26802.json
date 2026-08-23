@@ -1,0 +1,157 @@
+{
+  "gguf_files": [
+    {
+      "bytes": 18557053952,
+      "path": "models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+      "sha256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d"
+    }
+  ],
+  "llama_cpp": {
+    "binary_bytes": 17920,
+    "binary_path": "llama.cpp-featcache-speech-batch-26802/build/bin/llama-server",
+    "binary_sha256": "8b6137ba3c030409e5b18ed1d3cbff384ddb2950f113d4249b9abd8b5934675c",
+    "build_commit": "18132234c53d4ec1e08665dde74de4f0bc452f69",
+    "reported_build": "version: 10 (18132234c)"
+  },
+  "model_lock_key": "qwen3-omni-30b-a3b-instruct-gguf-q4km",
+  "role": "inference",
+  "runtime_libraries": [
+    {
+      "bytes": 913472,
+      "path": "llama.cpp-featcache-speech-batch-26802/build/bin/libggml-base.so",
+      "sha256": "6d3dc5fb5ade6b9f4ce745a5e2fd911f92266e81e4a8d5bd7e360281b027f7a2"
+    },
+    {
+      "bytes": 913472,
+      "path": "llama.cpp-featcache-speech-batch-26802/build/bin/libggml-base.so.0",
+      "sha256": "6d3dc5fb5ade6b9f4ce745a5e2fd911f92266e81e4a8d5bd7e360281b027f7a2"
+    },
+    {
+      "bytes": 913472,
+      "path": "llama.cpp-featcache-speech-batch-26802/build/bin/libggml-base.so.0.15.2",
+      "sha256": "6d3dc5fb5ade6b9f4ce745a5e2fd911f92266e81e4a8d5bd7e360281b027f7a2"
+    },
+    {
+      "bytes": 1114656,
+      "path": "llama.cpp-featcache-speech-batch-26802/build/bin/libggml-cpu.so",
+      "sha256": "4021ebb0358735a0909b9f2785cd1e582080d8ff69c1b1754f52f5453a475b09"
+    },
+    {
+      "bytes": 1114656,
+      "path": "llama.cpp-featcache-speech-batch-26802/build/bin/libggml-cpu.so.0",
+      "sha256": "4021ebb0358735a0909b9f2785cd1e582080d8ff69c1b1754f52f5453a475b09"
+    },
+    {
+      "bytes": 1114656,
+      "path": "llama.cpp-featcache-speech-batch-26802/build/bin/libggml-cpu.so.0.15.2",
+      "sha256": "4021ebb0358735a0909b9f2785cd1e582080d8ff69c1b1754f52f5453a475b09"
+    },
+    {
+      "bytes": 75737216,
+      "path": "llama.cpp-featcache-speech-batch-26802/build/bin/libggml-cuda.so",
+      "sha256": "58b4d8c52e77807951a4a5fdfa1f7db9436b697f68b4cb8fa027a24f8d2fc677"
+    },
+    {
+      "bytes": 75737216,
+      "path": "llama.cpp-featcache-speech-batch-26802/build/bin/libggml-cuda.so.0",
+      "sha256": "58b4d8c52e77807951a4a5fdfa1f7db9436b697f68b4cb8fa027a24f8d2fc677"
+    },
+    {
+      "bytes": 75737216,
+      "path": "llama.cpp-featcache-speech-batch-26802/build/bin/libggml-cuda.so.0.15.2",
+      "sha256": "58b4d8c52e77807951a4a5fdfa1f7db9436b697f68b4cb8fa027a24f8d2fc677"
+    },
+    {
+      "bytes": 56016,
+      "path": "llama.cpp-featcache-speech-batch-26802/build/bin/libggml.so",
+      "sha256": "ce17fda96ed25fdd7e683c0dffcccfc67c5636d74a4d8dd9c13c615ff2af8a99"
+    },
+    {
+      "bytes": 56016,
+      "path": "llama.cpp-featcache-speech-batch-26802/build/bin/libggml.so.0",
+      "sha256": "ce17fda96ed25fdd7e683c0dffcccfc67c5636d74a4d8dd9c13c615ff2af8a99"
+    },
+    {
+      "bytes": 56016,
+      "path": "llama.cpp-featcache-speech-batch-26802/build/bin/libggml.so.0.15.2",
+      "sha256": "ce17fda96ed25fdd7e683c0dffcccfc67c5636d74a4d8dd9c13c615ff2af8a99"
+    },
+    {
+      "bytes": 5715912,
+      "path": "llama.cpp-featcache-speech-batch-26802/build/bin/libllama-common.so",
+      "sha256": "788420dffc98749185bc4914085620318edeee3397361ba4ce86153d9b7a1dc6"
+    },
+    {
+      "bytes": 5715912,
+      "path": "llama.cpp-featcache-speech-batch-26802/build/bin/libllama-common.so.0",
+      "sha256": "788420dffc98749185bc4914085620318edeee3397361ba4ce86153d9b7a1dc6"
+    },
+    {
+      "bytes": 5715912,
+      "path": "llama.cpp-featcache-speech-batch-26802/build/bin/libllama-common.so.0.0.10",
+      "sha256": "788420dffc98749185bc4914085620318edeee3397361ba4ce86153d9b7a1dc6"
+    },
+    {
+      "bytes": 5715912,
+      "path": "llama.cpp-featcache-speech-batch-26802/build/bin/libllama-common.so.0.0.9",
+      "sha256": "cea0080b8cb87751fbb90de2c2063764108a1e5b94ddb98e1db9f5b3898a4790"
+    },
+    {
+      "bytes": 4196448,
+      "path": "llama.cpp-featcache-speech-batch-26802/build/bin/libllama-server-impl.so",
+      "sha256": "ff1ddcc0449d84ca35f73dccf57d8e0bf721d9e9f2ad641e66fbb5e21b9a5771"
+    },
+    {
+      "bytes": 3871904,
+      "path": "llama.cpp-featcache-speech-batch-26802/build/bin/libllama.so",
+      "sha256": "f5fc3073b52fccb6bebad0ed8f147d57c7bf3dc59e4d6b99b381d70fe484b4c9"
+    },
+    {
+      "bytes": 3871904,
+      "path": "llama.cpp-featcache-speech-batch-26802/build/bin/libllama.so.0",
+      "sha256": "f5fc3073b52fccb6bebad0ed8f147d57c7bf3dc59e4d6b99b381d70fe484b4c9"
+    },
+    {
+      "bytes": 3871904,
+      "path": "llama.cpp-featcache-speech-batch-26802/build/bin/libllama.so.0.0.10",
+      "sha256": "f5fc3073b52fccb6bebad0ed8f147d57c7bf3dc59e4d6b99b381d70fe484b4c9"
+    },
+    {
+      "bytes": 3871904,
+      "path": "llama.cpp-featcache-speech-batch-26802/build/bin/libllama.so.0.0.9",
+      "sha256": "f5fc3073b52fccb6bebad0ed8f147d57c7bf3dc59e4d6b99b381d70fe484b4c9"
+    },
+    {
+      "bytes": 1429096,
+      "path": "llama.cpp-featcache-speech-batch-26802/build/bin/libmtmd.so",
+      "sha256": "467a23bede6007ce42f6de8f7a0ffc7f8c157317464c9975c6e0c3189c928160"
+    },
+    {
+      "bytes": 1429096,
+      "path": "llama.cpp-featcache-speech-batch-26802/build/bin/libmtmd.so.0",
+      "sha256": "467a23bede6007ce42f6de8f7a0ffc7f8c157317464c9975c6e0c3189c928160"
+    },
+    {
+      "bytes": 1429096,
+      "path": "llama.cpp-featcache-speech-batch-26802/build/bin/libmtmd.so.0.0.10",
+      "sha256": "467a23bede6007ce42f6de8f7a0ffc7f8c157317464c9975c6e0c3189c928160"
+    },
+    {
+      "bytes": 1429096,
+      "path": "llama.cpp-featcache-speech-batch-26802/build/bin/libmtmd.so.0.0.9",
+      "sha256": "467a23bede6007ce42f6de8f7a0ffc7f8c157317464c9975c6e0c3189c928160"
+    },
+    {
+      "bytes": 1057728,
+      "path": "llama.cpp-featcache-speech-batch-26802/build/bin/test-backend-ops",
+      "sha256": "38e5e4ed9fc4e0f314ed469fef8f0f7ddfc0f29b923b072310d1107702e2be82"
+    },
+    {
+      "bytes": 628648,
+      "path": "llama.cpp-featcache-speech-batch-26802/build/bin/test-server-tokens",
+      "sha256": "8956bb9538e4178df88c0caa229ffe7c03932efca5f101cb3dae80cebccdbb2e"
+    }
+  ],
+  "schema": "saea-runtime-receipt-v3",
+  "study": "speech-aware-evidence-acquisition"
+}

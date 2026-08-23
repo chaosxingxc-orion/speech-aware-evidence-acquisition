@@ -10392,13 +10392,17 @@ def _audit_cuda_graph_moe_compatibility(
     mmq_source_text: str,
     cmake_cache_text: str,
     cuda_source_text: str,
+    server_context_text: str,
+    server_common_header_text: str,
+    server_common_source_text: str,
 ) -> dict[str, object]:
     """Bind the current MoE decode width to llama.cpp's CUDA-graph guard.
 
     This is a static, model-free audit. It deliberately does not infer that a
     live workload used a particular batch width; native slot events remain the
     authority for that dynamic fact. The audit only proves whether a full-slot
-    decode batch can use the pinned source's quantized MoE CUDA-graph path.
+    decode batch can use the pinned source's quantized MoE CUDA-graph path and
+    whether decoder-ready speech chunks enter that path as a cross-slot batch.
     """
 
     if runtime_receipt.get("schema") != "saea-runtime-receipt-v3":
@@ -10614,8 +10618,56 @@ def _audit_cuda_graph_moe_compatibility(
         slot_count if sync_free_mmq else legacy_effective_limit
     )
     exceeds_limit = not full_slot_graph_eligible
+
+    cross_slot_context_contract = all(
+        marker in server_context_text
+        for marker in (
+            "std::vector<pending_speech_feature> pending_speech_features",
+            "pack_server_speech_feature_batch(batch_items)",
+            "llama_decode(ctx_tgt, speech_batch_view)",
+            "decoded cross-slot speech feature batch",
+        )
+    )
+    cross_slot_header_contract = all(
+        marker in server_common_header_text
+        for marker in (
+            "struct server_speech_feature_batch_item",
+            "struct server_speech_feature_batch",
+            "pack_server_speech_feature_batch",
+        )
+    )
+    cross_slot_packer_patterns = (
+        r"packed\.positions\[static_cast<size_t>\(axis\)\s*\*\s*"
+        r"packed\.n_tokens\s*\+\s*token_offset\s*\+\s*i\]",
+        r"packed\.seq_id_values\[token_offset\s*\+\s*i\]\s*=\s*"
+        r"item\.id_slot",
+        r"packed\.seq_ids\[i\]\s*=\s*&packed\.seq_id_values\[i\]",
+    )
+    cross_slot_packer_contract = all(
+        re.search(pattern, server_common_source_text)
+        for pattern in cross_slot_packer_patterns
+    )
+    cross_slot_speech_batch = (
+        cross_slot_context_contract
+        and cross_slot_header_contract
+        and cross_slot_packer_contract
+    )
+    per_slot_immediate_decode = (
+        "llama_decode(ctx_tgt, batch)" in server_context_text
+        and "decoded mmproj-free speech feature chunk" in server_context_text
+    )
+    if not cross_slot_speech_batch and not per_slot_immediate_decode:
+        raise SpeechNativeProfileError(
+            "speech feature decode transport is missing or changed"
+        )
+
+    engine_candidate_static_admissible = (
+        sync_aware_guard
+        and full_slot_graph_eligible
+        and cross_slot_speech_batch
+    )
     return {
-        "schema": "saea-speech-native-engine-compatibility-audit-v2",
+        "schema": "saea-speech-native-engine-compatibility-audit-v3",
         "runtime": {
             "build_commit": runtime_commit,
             "binary_sha256": runtime_binary_sha256,
@@ -10649,25 +10701,43 @@ def _audit_cuda_graph_moe_compatibility(
             "mmq_forced_off": mmq_forced_off,
             "blackwell_mmq_dispatch_present": blackwell_mmq_dispatch,
             "sync_free_mmq_expert_tensor_types": list(mmq_types),
+            "speech_feature_transport_policy": (
+                "cross-slot-embedding-batch-v1"
+                if cross_slot_speech_batch
+                else "per-slot-immediate-decode-v1"
+            ),
+            "speech_feature_axis_major_mrope_pack_present": (
+                cross_slot_packer_contract
+            ),
+            "speech_feature_sequence_ownership_pack_present": (
+                cross_slot_packer_contract
+            ),
         },
         "profile": {
             "slot_count": slot_count,
             "full_slot_decode_exceeds_graph_limit": exceeds_limit,
             "full_slot_decode_graph_eligible_static": full_slot_graph_eligible,
+            "speech_feature_cross_slot_batch_static": cross_slot_speech_batch,
         },
         "decision": {
-            "current_binary_profile_search_closed": exceeds_limit,
+            "current_binary_profile_search_closed": (
+                exceeds_limit or not cross_slot_speech_batch
+            ),
             "engine_candidate_static_admissible": (
-                sync_aware_guard and full_slot_graph_eligible
+                engine_candidate_static_admissible
             ),
             "live_contact_authorized": False,
             "required_change": (
-                "dynamic shape-stability and live GPU admission evidence"
-                if sync_aware_guard and full_slot_graph_eligible
+                "cross-slot speech-feature embedding batch"
+                if not cross_slot_speech_batch
                 else (
-                    "receipt-bound engine equivalence improvement"
-                    if exceeds_limit
-                    else "dynamic shape-stability evidence"
+                    "dynamic shape-stability and live GPU admission evidence"
+                    if sync_aware_guard and full_slot_graph_eligible
+                    else (
+                        "receipt-bound engine equivalence improvement"
+                        if exceeds_limit
+                        else "dynamic shape-stability evidence"
+                    )
                 )
             ),
         },
@@ -10794,6 +10864,9 @@ def _cli_speech_native_engine_audit(args: argparse.Namespace) -> int:
         "mmq_source": source_root / "ggml/src/ggml-cuda/mmq.cu",
         "mmvq_source": source_root / "ggml/src/ggml-cuda/mmvq.cu",
         "mmvq_header": source_root / "ggml/src/ggml-cuda/mmvq.cuh",
+        "server_context": source_root / "tools/server/server-context.cpp",
+        "server_common_header": source_root / "tools/server/server-common.h",
+        "server_common_source": source_root / "tools/server/server-common.cpp",
     }
     build_paths = {
         "cmake_cache": source_root / "build/CMakeCache.txt",
@@ -10838,6 +10911,9 @@ def _cli_speech_native_engine_audit(args: argparse.Namespace) -> int:
         mmq_source_text=source_text["mmq_source"],
         cmake_cache_text=build_text["cmake_cache"],
         cuda_source_text=source_text["cuda_source"],
+        server_context_text=source_text["server_context"],
+        server_common_header_text=source_text["server_common_header"],
+        server_common_source_text=source_text["server_common_source"],
     )
     report["inputs"] = {
         "runtime_receipt_path": str(runtime_path),

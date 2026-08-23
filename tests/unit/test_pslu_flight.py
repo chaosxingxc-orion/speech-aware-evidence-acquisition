@@ -6758,17 +6758,41 @@ def _cuda_graph_engine_audit_inputs(*, slot_count=16, expert_types=("Q4_K", "Q6_
             "  }\n"
             "}\n"
         ),
+        "server_context_text": (
+            "std::vector<pending_speech_feature> pending_speech_features;\n"
+            "auto speech_feature_batch = "
+            "pack_server_speech_feature_batch(batch_items);\n"
+            "auto speech_batch_view = speech_feature_batch.as_llama_batch();\n"
+            "llama_decode(ctx_tgt, speech_batch_view);\n"
+            'SRV_INF("decoded cross-slot speech feature batch");\n'
+        ),
+        "server_common_header_text": (
+            "struct server_speech_feature_batch_item {};\n"
+            "struct server_speech_feature_batch {};\n"
+            "server_speech_feature_batch pack_server_speech_feature_batch(...);\n"
+        ),
+        "server_common_source_text": (
+            "packed.positions[static_cast<size_t>(axis) * "
+            "packed.n_tokens + token_offset + i] = item.base_pos;\n"
+            "packed.seq_id_values[token_offset + i] = item.id_slot;\n"
+            "packed.seq_ids[i] = &packed.seq_id_values[i];\n"
+        ),
     }
 
 
 def test_cuda_graph_engine_audit_closes_np16_on_blackwell_quantized_moe():
     report = _audit_cuda_graph_moe_compatibility(**_cuda_graph_engine_audit_inputs())
 
-    assert report["schema"] == "saea-speech-native-engine-compatibility-audit-v2"
+    assert report["schema"] == "saea-speech-native-engine-compatibility-audit-v3"
     assert report["hardware"]["cuda_compute_arch"] == 1200
     assert report["model"]["expert_count"] == 128
     assert report["engine"]["mmvq_moe_max_batch_size"] == 8
+    assert (
+        report["engine"]["speech_feature_transport_policy"]
+        == "cross-slot-embedding-batch-v1"
+    )
     assert report["profile"]["slot_count"] == 16
+    assert report["profile"]["speech_feature_cross_slot_batch_static"] is True
     assert report["profile"]["full_slot_decode_exceeds_graph_limit"] is True
     assert report["decision"]["current_binary_profile_search_closed"] is True
     assert report["decision"]["live_contact_authorized"] is False
@@ -6840,6 +6864,44 @@ def test_cuda_graph_engine_audit_rejects_sync_free_candidate_when_mmq_is_forced_
     assert report["decision"]["engine_candidate_static_admissible"] is False
 
 
+def test_cuda_graph_engine_audit_rejects_per_slot_speech_feature_decode():
+    inputs = _cuda_graph_engine_audit_inputs()
+    inputs["cuda_source_text"] = (
+        "static bool ggml_cuda_mul_mat_id_needs_sync(const ggml_tensor * dst, "
+        "const int cc) {\n"
+        "  const ggml_tensor * src0 = dst->src[0];\n"
+        "  const ggml_tensor * src1 = dst->src[1];\n"
+        "  if (ggml_cuda_should_use_mmq(src0->type, cc, src1->ne[2], "
+        "/*n_experts=*/src0->ne[2])) { return false; }\n"
+        "  if (ggml_cuda_should_use_mmf(src0->type, cc, WARP_SIZE, src0->ne, "
+        "src0->nb, src1->ne[2], /*mul_mat_id=*/true)) { return false; }\n"
+        "  return true;\n"
+        "}\n"
+        "if (node->op == GGML_OP_MUL_MAT_ID) {\n"
+        "  if (ggml_cuda_mul_mat_id_needs_sync(node, cc)) {\n"
+        "    use_cuda_graph = false;\n"
+        "  }\n"
+        "}\n"
+        "GGML_ASSERT(ggml_cuda_mul_mat_id_needs_sync(dst, cc));\n"
+    )
+    inputs["server_context_text"] = (
+        "const int32_t decode_result = llama_decode(ctx_tgt, batch);\n"
+        'SLT_INF(*this, "decoded mmproj-free speech feature chunk");\n'
+    )
+
+    report = _audit_cuda_graph_moe_compatibility(**inputs)
+
+    assert (
+        report["engine"]["speech_feature_transport_policy"]
+        == "per-slot-immediate-decode-v1"
+    )
+    assert report["profile"]["speech_feature_cross_slot_batch_static"] is False
+    assert report["decision"]["engine_candidate_static_admissible"] is False
+    assert report["decision"]["required_change"] == (
+        "cross-slot speech-feature embedding batch"
+    )
+
+
 def test_cuda_graph_engine_audit_does_not_claim_np8_exceeds_the_static_limit():
     report = _audit_cuda_graph_moe_compatibility(
         **_cuda_graph_engine_audit_inputs(slot_count=8)
@@ -6904,6 +6966,16 @@ def test_cuda_graph_engine_audit_cli_writes_a_receipt_bound_model_free_report(
     (source_root / "ggml/src/ggml-cuda/ggml-cuda.cu").write_text(
         inputs["cuda_source_text"], encoding="utf-8"
     )
+    (source_root / "tools/server").mkdir(parents=True)
+    (source_root / "tools/server/server-context.cpp").write_text(
+        inputs["server_context_text"], encoding="utf-8"
+    )
+    (source_root / "tools/server/server-common.h").write_text(
+        inputs["server_common_header_text"], encoding="utf-8"
+    )
+    (source_root / "tools/server/server-common.cpp").write_text(
+        inputs["server_common_source_text"], encoding="utf-8"
+    )
     (source_root / "build").mkdir()
     (source_root / "build/CMakeCache.txt").write_text(
         inputs["cmake_cache_text"], encoding="utf-8"
@@ -6943,6 +7015,9 @@ def test_cuda_graph_engine_audit_cli_writes_a_receipt_bound_model_free_report(
     )
     assert report["inputs"]["source_files"]["mmq_source"]["sha256"] == (
         hashlib.sha256(inputs["mmq_source_text"].encode()).hexdigest()
+    )
+    assert report["inputs"]["source_files"]["server_context"]["sha256"] == (
+        hashlib.sha256(inputs["server_context_text"].encode()).hexdigest()
     )
     assert report["inputs"]["build_files"]["cmake_cache"]["sha256"] == (
         hashlib.sha256(inputs["cmake_cache_text"].encode()).hexdigest()
