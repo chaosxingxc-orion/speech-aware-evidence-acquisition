@@ -886,4 +886,3 @@ def test_prefix_probe_profiles_bind_wire_order_and_exact_prompt_receipt(
     assert values["decoding_params"]["id_slot"] == "per-sample"
     assert values["speech_native_prompt_fit_receipt"] == prompt_receipt
     assert values["speech_native_prompt_fit_receipt_sha256"] == prompt_receipt_sha256
-    assert "speech_native_prompt_fit_receipt_sha256" not in values
