@@ -7,7 +7,24 @@ across small-scale explorations. This document is the running consolidation: wha
 consistently works, what consistently fails, and the current best-scheme statement. Updated
 at every consumed read. (Registration/verdict docs remain the evidence of record.)
 
-## Current best-scheme statement (v4, 2026-08-21 — register alignment measured; decoder-joint path remains open)
+## Current best-scheme statement (v5, 2026-08-23 — decoder-joint speech×text-key matching is
+## the strongest speech-native lever; controllers unvalidated; knowledge-plane baseline program adopted)
+
+**v5 headline (M-line, EFFECT-C108, read 2026-08-22):** the speech-native decoder-joint path
+that v4 named as "open" now has its first strong positive — carrying the original speech
+packet plus maintainable TRAIN-built text keys into the frozen decoder scores **K1-M1 90/108
+vs direct K0-M0 77/108 (net +13)** on a train-only discovery split; key-text shuffle collapses
+to **0/108** (the keys are load-bearing) and speech-swap drops to 75/108 (speech-sensitive).
+This is bounded discovery evidence, not validation. Five external controller generations
+(M5-v2, M6 always-refine, M7 multistate, M8 pairwise, M9 factor-graph) were all REJECTED
+against their preregistered bars on the same near-ceiling SLURP routing surface (primary
+89–95/108, oracle headroom 3–8); the 2026-08-23 owner rulings redirect controller validation
+to structurally-headroomed surfaces (Audio2Tool 152 tools; earnings/ConEC) and to a DEV
+optimization ladder — see `2026-08-23-knowledge-plane-baseline-rulings.md`, which also
+decouples the GPU 95/90 serving gate from scientific admission (it remains the
+engineering-baseline acceptance criterion). The v4 statement below stands as evidence context.
+
+## Prior best-scheme statement (v4, 2026-08-21 — register alignment measured; decoder-joint path remains open)
 
 **Two-tier architecture on the frozen core:**
 - **Routing tier (high-order semantics — intent, tool, QA candidate):** whole-utterance
@@ -73,7 +90,23 @@ at every consumed read. (Registration/verdict docs remain the evidence of record
 | Router-confidence targeting | 🔜 P-TARGET **descoped to the routing tier** (2026-08-20 design analysis over consumed artifacts): the A2T gate simulation is NEGATIVE — no threshold on any measured decode-path signal (chars AUC 0.765, completion-tokens AUC 0.794, args) yields a positive net over the 217; best sweep result = supply nothing (net 0); blind supply = −28, reproducing V4. The 8 conversions sit inside the regression-densest length band — length separates regressors from non-regressors but NOT converters from regressors. Only positive rule is tier1-structural (+5): post-hoc, benchmark-label, non-deployable. Routing-tier signal is real (two-arm in-session disagreement precision 0.50, lift 2.73 re-confirmed) but structurally blind to the concentrated `play` cluster (flags 1 of 6; 5 errors are prompt-unanimous) → P-TARGET-P1 = closed-set routing + logprobs (60 calls; llama-server logprob usability unverified — feasibility check first; prior 0/17 earnings negative disclosed) | design dossier 2026-08-20; pemb2 synthesis §5.3 |
 | Corrective supply (percept-keyed) | ✅ **CORRECTIVE-PERCEPT 1/1 (P-CORR-F, consumed 2026-08-20)** — the filling tier's first TARGETING-FREE positive lever with a dose-matched control. Δ₁ = SLU-F1(W1 self) − SLU-F1(W2 cross) = **+0.0508**, 90% CI **[+0.0098, +0.0968]** on the registered full 60, and **+0.0753**, CI **[+0.0179, +0.1411]** on the 40 mechanism-usable samples (20/60 fly K=0 with **byte-identical W1/W2 prompts, verified 20/20**, so the mechanism denominator is 40 not 60). Arm SLU-F1 W1 **0.6588** / W2 0.6080 / W3 0.4336 / W4 0.6366. **THE PERCEPT GATE IS BINARY AND NEAR-TOTAL**: capture of supplied corrective entries = **96.7% self-percept vs 0.0% cross-percept** at identical dose and roster base, 100% for W3, and **95.1% keyed vs 11.9% retrieval-widened inside a single W4 prompt** — P-TRAP with the sign flipped exactly as pre-declared, isolated by three independent contrasts. **But the gate does not inspect correctness**: 12 of W1's 14 non-gold entries were emitted (**85.7%**), and the marginal effect over the dose-matched control is **+7 gold slots recovered against +12 spurious values emitted** (dual measurement W1 53/12, W2 46/0, W3 27/14, W4 48/18). F1 still rises because a type repair converts a simultaneous FP+FN into a TP (slot_f1_exact +0.0824). **Supply precision is therefore the entire safety margin** — W4's widening to 41% value precision gives back 0.0222. Q-2 **DOSE-INSUFFICIENT** (Δ₂ = −0.1625 vs pinned A3 0.5961) but only through the 33% zero-supply blind spot: restricted to K>0, Δ₂ = **−0.0380**, i.e. 1.5 entries/sample buys ~94% of a 100-entry roster where it acts. The roster's value is COVERAGE, not per-sample strength → keyed layer + coverage layer, not either. Guardrails clean (parse 1.0000, copy 0.0000 all arms). Carries a disclosure: **the byte-identical-resend floor is NOT 0.0000 on this stack** — 6 of 20 identical-prompt pairs diverged at temperature 0 / `-np 4` (aggregate 0.0072) | `2026-08-20-pcorrf-verdict.md` |
 
-## Design queue (small probes, each ≤0.5 GPU-h, registered one at a time)
+| Speech-native decoder-joint matching (speech packet × TRAIN-built text keys, in-decoder) | ✅ **WORKS AS DISCOVERY EVIDENCE 2/2 (GATE18 embedded K1-M1 16/18 vs direct 15/18; EFFECT-C108 K1-M1 90/108 vs K0-M0 77/108, net +13)** — key-text shuffle collapses to 0/108, speech-swap 75/108 (below matched but above the frozen 24-gap mechanism bar, so speech sensitivity is established at the weaker tier); mmproj-free serving; every contact carries the original packet. Train-only discovery; no validation claim | `2026-08-21-speech-native-agent-loop-training-free-rl-plan.md` (EFFECT-C108 replacement read sha256 `6f7017fb…f40a`) |
+| External AgentLoop controllers over the joint matcher | ❌ **REJECTED 5/5 (M5-v2, M6 always-refine −1 vs primary with 4 helpful/5 harmful, M7 multistate, M8 pairwise, M9 factor-graph)** — every generation missed its preregistered bar on a near-ceiling surface (primary 89–95/108; oracle 94–100/108; action-variable 14–31/108); episodic/OOF policies (A1b, A1d) selected retain-primary 108/108. Diagnosis (2026-08-23 rulings): saturated surface + sparse action support, partly a sample-size artifact; controller validation moves to structurally-headroomed surfaces + the T500/DEV ladders | same plan doc, sections A1–A1g |
+| GPU serving gate (saturated median/P10 ≥95/90) | ⚠️ **UNMET after 7+ engineering cells (np32, q128, global-branch, n-gram 63% acceptance, MoE CUDA-graph, cross-slot batching, hot-prefix line)** — mean occupancy 94–96% throughout; every remedy class formally closed; **2026-08-23 owner ruling: decoupled from scientific admission; retained as the engineering-baseline acceptance criterion** (next admissible idea: tail work-stealing across slot-affine trajectories) | plan doc "GPU execution requirement" + `2026-08-23-knowledge-plane-baseline-rulings.md` §2.1 |
+
+## Design queue — SUPERSEDED 2026-08-23
+
+The owner's knowledge-plane baseline program (`2026-08-23-knowledge-plane-baseline-rulings.md`)
+supersedes this queue: items 4–6 below (P-CORR-R, P-TARGET-P1, P-STRIP-AUG) are formally
+PARKED, never having been registered; the A2T cascade successor candidate is absorbed into the
+Audio2Tool surface work. The active program is: C4 contract scale fixes → C2 DEV-ladder
+receipts + split gate → C1 train-scale KB-BUILD (datastore-size axis, coverage,
+decontamination) → C3 first cross-task policy (multi-dim recall → rank fusion → percept-keyed
+supply filter → α-blend consumption) → E108 under the decoupled gate → Audio2Tool cell →
+DEV-100/500/1000 optimization → baseline freeze. The historical queue is preserved below as
+the record of what was and was not registered.
+
+## Historical design queue (small probes, each ≤0.5 GPU-h, registered one at a time)
 
 1. **P-FEW** (registered, machinery in build) — routing few-shot gain + bias.
 2. **P-EMB-1** (SLURP scenario routing) + **P-EMB-2** (A2T tool routing, headline = recovery
