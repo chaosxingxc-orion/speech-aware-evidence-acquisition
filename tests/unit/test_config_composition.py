@@ -823,4 +823,10 @@ def test_slot_affine_cache_profile_binds_hot_hbm_policy_and_parallel_build():
         "slot-affine-speech-prefix-v1"
     )
     assert values["decoding_params"]["id_slot"] == "per-sample"
-    assert "speech_native_prompt_fit_receipt" not in values
+    assert values["speech_native_prompt_fit_receipt"] == (
+        "docs/checks/speech-aware-evidence-acquisition/"
+        "2026-08-23-m11-hot-prefix-prompt-fit/prompt-fit.json"
+    )
+    assert values["speech_native_prompt_fit_receipt_sha256"] == (
+        "b1e795879ca929496b2cbaee5e1d5ac0ca27054e9683c48d33e103d6cf776230"
+    )
