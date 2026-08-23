@@ -792,3 +792,35 @@ def test_cross_slot_prompt_bound_m11_profile_preserves_the_frozen_workload():
         "07e51acc91b91636ae0451f5b9b2ebe719464140427b024701028621ccdeb6fb"
     )
     assert values["matcher_policy_id"] == "M11"
+
+
+def test_slot_affine_cache_profile_binds_hot_hbm_policy_and_parallel_build():
+    from speech_aware_evidence_acquisition.e0.artifacts import REPO_ROOT
+
+    composed = compose(
+        REPO_ROOT,
+        "q4km-mmproj-free-speech-native-np16-singleton-zero-copy-cache-hot-max64",
+        "slurp-speech-native-opt-a36",
+        "speech-native-engineering-adaptive-m11-k3-v4-task-affine-speech-prefix",
+        "speech-native-engineering-adaptive-m11-data-knowledge",
+    )
+    values = composed.values
+
+    assert values["runtime_receipt"] == (
+        "receipts/runtime-q4km-mmproj-free-speech-batch-26802-"
+        "singleton-zero-copy.json"
+    )
+    assert values["server_args"][-6:] == [
+        "--cache-prompt",
+        "--cache-ram",
+        "0",
+        "--no-cache-idle-slots",
+        "--slot-prompt-similarity",
+        "0",
+    ]
+    assert values["speech_native_dispatch_granularity"] == "task"
+    assert values["speech_native_request_layout_id"] == (
+        "slot-affine-speech-prefix-v1"
+    )
+    assert values["decoding_params"]["id_slot"] == "per-sample"
+    assert "speech_native_prompt_fit_receipt" not in values
