@@ -23,15 +23,23 @@ from speech_aware_evidence_acquisition.rails import (
     ConsumptionTrace,
     EvidenceItem,
     EvidenceSet,
+    FusionDecision,
+    KeyFacet,
+    KnowledgeSnapshot,
     ObsPacket,
     RailsError,
     RetrievalKeyKind,
     RetrievalParams,
+    QueryState,
+    RankedFacet,
+    RankResult,
     SpanRef,
     SupplyDose,
     SupplyForm,
     SupplyItem,
     SupplyPacket,
+    ValueBundle,
+    assert_knowledge_use_binding,
     build_consumption_trace,
     classify_outcome,
     default_obs_packet,
@@ -39,9 +47,12 @@ from speech_aware_evidence_acquisition.rails import (
 
 _SHA_A = "a" * 64
 _SHA_B = "b" * 64
+_SHA_C = "c" * 64
 
 
-def test_legacy_featcache_batch_promotion_is_parallel_and_ordered(tmp_path, monkeypatch):
+def test_legacy_featcache_batch_promotion_is_parallel_and_ordered(
+    tmp_path, monkeypatch
+):
     from speech_aware_evidence_acquisition.core.model import speech_features
 
     legacy = tmp_path / "legacy-cache"
@@ -114,7 +125,9 @@ def test_legacy_featcache_batch_promotion_refuses_duplicates_before_work(tmp_pat
         )
 
 
-def test_legacy_featcache_batch_promotion_preflights_all_caches_before_writing(tmp_path):
+def test_legacy_featcache_batch_promotion_preflights_all_caches_before_writing(
+    tmp_path,
+):
     legacy = tmp_path / "legacy-cache"
     legacy.mkdir()
     valid_audio = tmp_path / "valid.flac"
@@ -217,7 +230,9 @@ def test_default_obs_packet_builds_one_whole_file_span():
         audio_seconds = 3.25
 
     packet = default_obs_packet(_Sample())
-    assert packet.spans == (SpanRef(span_id="full", start_seconds=0.0, end_seconds=3.25),)
+    assert packet.spans == (
+        SpanRef(span_id="full", start_seconds=0.0, end_seconds=3.25),
+    )
     assert packet.first_pass is None
 
 
@@ -228,7 +243,10 @@ def test_default_obs_packet_builds_one_whole_file_span():
 
 def test_evidence_item_round_trips_and_hash_is_stable():
     item = EvidenceItem(
-        evidence_id="e1", content="Acme Corp", source_ref="conec:4000001", legality_tier="legal"
+        evidence_id="e1",
+        content="Acme Corp",
+        source_ref="conec:4000001",
+        legality_tier="legal",
     )
     rebuilt = EvidenceItem.from_json(item.as_json())
     assert rebuilt == item
@@ -240,7 +258,9 @@ def test_evidence_set_round_trips_and_hash_is_stable():
         EvidenceItem(evidence_id="e2", content="Beta Inc", source_ref="conec:4000001"),
     )
     params = RetrievalParams(tau=0.5, k=2, key_kind=RetrievalKeyKind.TASK_CONTEXT.value)
-    evidence_set = EvidenceSet(items=items, query_ref="query:4000001", retrieval_params=params)
+    evidence_set = EvidenceSet(
+        items=items, query_ref="query:4000001", retrieval_params=params
+    )
     rebuilt = EvidenceSet.from_json(evidence_set.as_json())
     assert rebuilt == evidence_set
     assert rebuilt.content_hash() == evidence_set.content_hash()
@@ -259,7 +279,9 @@ def test_evidence_set_rejects_duplicate_evidence_ids():
         EvidenceItem(evidence_id="e1", content="b", source_ref="r"),
     )
     evidence_set = EvidenceSet(
-        items=items, query_ref="q", retrieval_params=RetrievalParams(tau=0.1, k=1, key_kind="task-context")
+        items=items,
+        query_ref="q",
+        retrieval_params=RetrievalParams(tau=0.1, k=1, key_kind="task-context"),
     )
     with pytest.raises(RailsError, match="duplicate evidence_id"):
         evidence_set.validate()
@@ -335,7 +357,9 @@ def test_legality_gate_warns_on_an_undeclared_evidence_item(tmp_path):
     """Grandfathering (core.legality's own doctrine): an item declaring
     NONE of the three fields only warns, it is never refused."""
 
-    item = EvidenceItem(evidence_id="e1", content="Acme Corp", source_ref="conec:4000001")
+    item = EvidenceItem(
+        evidence_id="e1", content="Acme Corp", source_ref="conec:4000001"
+    )
     declaration = item.resolve_legality(tmp_path)
     assert declaration.declaration_warning is not None
     assert "GRANDFATHERED" in declaration.declaration_warning
@@ -343,7 +367,9 @@ def test_legality_gate_warns_on_an_undeclared_evidence_item(tmp_path):
 
 def test_evidence_set_assert_legal_for_deployment_propagates_the_refusal(tmp_path):
     items = (
-        EvidenceItem(evidence_id="e1", content="a", source_ref="r", legality_tier="legal"),
+        EvidenceItem(
+            evidence_id="e1", content="a", source_ref="r", legality_tier="legal"
+        ),
         EvidenceItem(
             evidence_id="e2",
             content="b",
@@ -353,10 +379,256 @@ def test_evidence_set_assert_legal_for_deployment_propagates_the_refusal(tmp_pat
         ),
     )
     evidence_set = EvidenceSet(
-        items=items, query_ref="q", retrieval_params=RetrievalParams(tau=0.5, k=2, key_kind="task-context")
+        items=items,
+        query_ref="q",
+        retrieval_params=RetrievalParams(tau=0.5, k=2, key_kind="task-context"),
     )
     with pytest.raises(LegalityError):
         evidence_set.assert_legal_for_deployment(tmp_path)
+
+
+# ---------------------------------------------------------------------------
+# Knowledge BUILD -> frozen snapshot -> DEV USE/OPTIMIZE contracts
+# ---------------------------------------------------------------------------
+
+
+def _knowledge_snapshot() -> KnowledgeSnapshot:
+    return KnowledgeSnapshot(
+        snapshot_id="slurp-train-kb-v1",
+        source_split_identity_hash=_SHA_A,
+        source_sample_ids=("slurp/train/t1", "slurp/train/t2"),
+        builder_policy_id="multifacet-train-build-v1",
+        facets=(
+            KeyFacet(
+                facet_id="domain:iot",
+                dimension="domain",
+                representation_kind="text",
+                representation="connected-device control",
+                source_sample_ids=("slurp/train/t1", "slurp/train/t2"),
+            ),
+            KeyFacet(
+                facet_id="operation:decrease",
+                dimension="operation",
+                representation_kind="text",
+                representation="reduce the current level",
+                source_sample_ids=("slurp/train/t1",),
+                parent_facet_ids=("domain:iot",),
+            ),
+        ),
+        values=(
+            ValueBundle(
+                value_id="value:dim-light",
+                content="Choose the dim-light route when the requested operation reduces brightness.",
+                associated_facet_ids=("domain:iot", "operation:decrease"),
+                source_sample_ids=("slurp/train/t1",),
+                provenance_refs=("slurp/train/t1",),
+                task_target="hue_lightdim",
+                prior_score=0.25,
+            ),
+        ),
+    )
+
+
+def _query_state(**overrides) -> QueryState:
+    values = dict(
+        query_id="query:dev:d1:step0",
+        query_sample_id="slurp/dev/d1",
+        speech_packet_id="slurp/devel/d1",
+        speech_packet_sha256=_SHA_B,
+        use_split_identity_hash=_SHA_C,
+    )
+    values.update(overrides)
+    return QueryState(**values)
+
+
+def _rank_and_fusion(snapshot: KnowledgeSnapshot, query: QueryState):
+    rank = RankResult(
+        snapshot_sha256=snapshot.content_hash(),
+        query_state_sha256=query.content_hash(),
+        ranking_policy_id="speech-facet-ranker-v1",
+        candidates=(
+            RankedFacet(facet_id="operation:decrease", score=0.9),
+            RankedFacet(facet_id="domain:iot", score=0.8),
+        ),
+    )
+    fusion = FusionDecision(
+        snapshot_sha256=snapshot.content_hash(),
+        query_state_sha256=query.content_hash(),
+        rank_result_sha256=rank.content_hash(),
+        fusion_policy_id="late-facet-fusion-v1",
+        supporting_facet_ids=("operation:decrease", "domain:iot"),
+        selected_value_ids=("value:dim-light",),
+    )
+    return rank, fusion
+
+
+def test_knowledge_snapshot_freezes_and_round_trips_with_a_self_hash():
+    snapshot = _knowledge_snapshot().validate()
+    frozen = snapshot.frozen_json()
+    assert frozen["source_partition_role"] == "train"
+    assert frozen["snapshot_sha256"] == snapshot.content_hash()
+    assert KnowledgeSnapshot.from_frozen_json(frozen) == snapshot
+
+
+def test_knowledge_snapshot_refuses_dev_as_a_build_source():
+    snapshot = _knowledge_snapshot()
+    with pytest.raises(RailsError, match="must be 'train'"):
+        KnowledgeSnapshot(
+            snapshot_id=snapshot.snapshot_id,
+            source_split_identity_hash=snapshot.source_split_identity_hash,
+            source_sample_ids=snapshot.source_sample_ids,
+            builder_policy_id=snapshot.builder_policy_id,
+            facets=snapshot.facets,
+            values=snapshot.values,
+            source_partition_role="dev",
+        ).validate()
+
+
+def test_knowledge_snapshot_refuses_hash_tampering():
+    frozen = _knowledge_snapshot().frozen_json()
+    frozen["builder_policy_id"] = "tampered-policy"
+    with pytest.raises(RailsError, match="hash mismatch"):
+        KnowledgeSnapshot.from_frozen_json(frozen)
+
+
+def test_knowledge_snapshot_has_no_task_label_roster_cap():
+    source_ids = tuple(f"train/sample-{index:03d}" for index in range(101))
+    root = KeyFacet(
+        facet_id="domain:root",
+        dimension="domain",
+        representation_kind="text",
+        representation="task-independent root",
+        source_sample_ids=source_ids,
+    )
+    leaves = tuple(
+        KeyFacet(
+            facet_id=f"route:{index:03d}",
+            dimension="route",
+            representation_kind="text",
+            representation=f"maintainable route {index:03d}",
+            source_sample_ids=(source_id,),
+            parent_facet_ids=(root.facet_id,),
+        )
+        for index, source_id in enumerate(source_ids)
+    )
+    values = tuple(
+        ValueBundle(
+            value_id=f"value:{index:03d}",
+            content=f"Training-derived evidence for route {index:03d}.",
+            associated_facet_ids=(leaf.facet_id,),
+            source_sample_ids=(source_id,),
+            provenance_refs=(source_id,),
+            task_target=f"target-{index:03d}",
+        )
+        for index, (source_id, leaf) in enumerate(zip(source_ids, leaves, strict=True))
+    )
+    snapshot = KnowledgeSnapshot(
+        snapshot_id="large-roster-kb-v1",
+        source_split_identity_hash=_SHA_A,
+        source_sample_ids=source_ids,
+        builder_policy_id="hierarchical-multifacet-build-v1",
+        facets=(root, *leaves),
+        values=values,
+    ).validate()
+    assert len(snapshot.facets) == 102
+    assert len(snapshot.values) == 101
+
+
+def test_query_state_keeps_original_speech_when_agent_state_is_added():
+    query = _query_state(
+        loop_step=2,
+        agent_state_ids=("state:domain:iot",),
+        retrieved_value_ids=("value:dim-light",),
+    ).validate()
+    assert query.speech_packet_sha256 == _SHA_B
+    assert query.speech_packet_id == "slurp/devel/d1"
+    assert query.query_source == "speech_features"
+    assert query.use_partition_role == "dev"
+    assert QueryState.from_json(query.as_json()) == query
+
+
+def test_query_state_refuses_a_text_only_or_non_dev_query():
+    with pytest.raises(RailsError, match="speech_packet_sha256"):
+        _query_state(speech_packet_sha256="").validate()
+    with pytest.raises(RailsError, match="must be 'dev'"):
+        _query_state(use_partition_role="train").validate()
+    with pytest.raises(RailsError, match="cannot replace the original speech query"):
+        _query_state(query_source="generated_text").validate()
+
+
+def test_knowledge_use_binding_accepts_disjoint_train_build_and_dev_use():
+    snapshot = _knowledge_snapshot()
+    query = _query_state()
+    rank, fusion = _rank_and_fusion(snapshot, query)
+    assert_knowledge_use_binding(
+        snapshot=snapshot,
+        query_state=query,
+        rank_result=rank,
+        fusion_decision=fusion,
+    )
+
+
+def test_knowledge_use_binding_refuses_self_retrieval():
+    snapshot = _knowledge_snapshot()
+    query = _query_state(query_sample_id="slurp/train/t1")
+    rank, fusion = _rank_and_fusion(snapshot, query)
+    with pytest.raises(RailsError, match="overlaps the TRAIN"):
+        assert_knowledge_use_binding(
+            snapshot=snapshot,
+            query_state=query,
+            rank_result=rank,
+            fusion_decision=fusion,
+        )
+
+
+def test_knowledge_use_binding_refuses_unassociated_value_fusion():
+    snapshot = _knowledge_snapshot()
+    query = _query_state()
+    rank = RankResult(
+        snapshot_sha256=snapshot.content_hash(),
+        query_state_sha256=query.content_hash(),
+        ranking_policy_id="speech-facet-ranker-v1",
+        candidates=(RankedFacet(facet_id="domain:iot", score=1.0),),
+    )
+    # Build a valid snapshot value that is associated only with operation,
+    # then try to justify it with the independently ranked domain facet.
+    operation_only_value = ValueBundle(
+        value_id="value:dim-light",
+        content=snapshot.values[0].content,
+        associated_facet_ids=("operation:decrease",),
+        source_sample_ids=("slurp/train/t1",),
+        provenance_refs=("slurp/train/t1",),
+        task_target="hue_lightdim",
+    )
+    snapshot = KnowledgeSnapshot(
+        snapshot_id=snapshot.snapshot_id,
+        source_split_identity_hash=snapshot.source_split_identity_hash,
+        source_sample_ids=snapshot.source_sample_ids,
+        builder_policy_id=snapshot.builder_policy_id,
+        facets=snapshot.facets,
+        values=(operation_only_value,),
+    )
+    rank = RankResult(
+        snapshot_sha256=snapshot.content_hash(),
+        query_state_sha256=query.content_hash(),
+        ranking_policy_id="speech-facet-ranker-v1",
+        candidates=(RankedFacet(facet_id="domain:iot", score=1.0),),
+    )
+    fusion = FusionDecision(
+        snapshot_sha256=snapshot.content_hash(),
+        query_state_sha256=query.content_hash(),
+        rank_result_sha256=rank.content_hash(),
+        fusion_policy_id="late-facet-fusion-v1",
+        supporting_facet_ids=("domain:iot",),
+        selected_value_ids=("value:dim-light",),
+    )
+    with pytest.raises(RailsError, match="has no association"):
+        assert_knowledge_use_binding(
+            snapshot=snapshot,
+            query_state=query,
+            rank_result=rank,
+            fusion_decision=fusion,
+        )
 
 
 # ---------------------------------------------------------------------------
@@ -416,14 +688,21 @@ def test_supply_packet_rejects_duplicate_item_ids():
 
 def test_classify_outcome_copy_use_ignore():
     response_tokens = "i will use the roster entry acme corp and mention beta but ignore other names".split()
-    assert classify_outcome(response_tokens, ["acme", "corp"]) == ConsumptionOutcome.COPY
+    assert (
+        classify_outcome(response_tokens, ["acme", "corp"]) == ConsumptionOutcome.COPY
+    )
     assert classify_outcome(response_tokens, ["beta", "corp"]) == ConsumptionOutcome.USE
-    assert classify_outcome(response_tokens, ["zulu", "foxtrot"]) == ConsumptionOutcome.IGNORE
+    assert (
+        classify_outcome(response_tokens, ["zulu", "foxtrot"])
+        == ConsumptionOutcome.IGNORE
+    )
     assert classify_outcome(response_tokens, []) == ConsumptionOutcome.IGNORE
 
 
 def test_build_consumption_trace_with_no_supply_is_empty():
-    trace = build_consumption_trace(span_id="full", supply=None, response_text="anything")
+    trace = build_consumption_trace(
+        span_id="full", supply=None, response_text="anything"
+    )
     assert trace == ConsumptionTrace(records=(), copy_rate=0.0, dose_realized=0)
 
 
@@ -439,8 +718,12 @@ def test_build_consumption_trace_computes_copy_rate_and_dose_realized():
             SupplyItem(item_id="i3", text="Zulu Foxtrot"),
         ),
     )
-    response = "I will use the roster entry acme corp and mention beta but ignore other names"
-    trace = build_consumption_trace(span_id="full", supply=supply, response_text=response)
+    response = (
+        "I will use the roster entry acme corp and mention beta but ignore other names"
+    )
+    trace = build_consumption_trace(
+        span_id="full", supply=supply, response_text=response
+    )
     outcomes = {record.supplied_item_id: record.outcome for record in trace.records}
     assert outcomes == {
         "i1": ConsumptionOutcome.COPY,
@@ -456,7 +739,10 @@ def test_consumption_trace_round_trips_and_hash_is_stable():
     trace = ConsumptionTrace(
         records=(
             ConsumptionRecord(
-                span_id="full", supplied_item_id="i1", outcome=ConsumptionOutcome.COPY, evidence="Acme Corp"
+                span_id="full",
+                supplied_item_id="i1",
+                outcome=ConsumptionOutcome.COPY,
+                evidence="Acme Corp",
             ),
         ),
         copy_rate=1.0,

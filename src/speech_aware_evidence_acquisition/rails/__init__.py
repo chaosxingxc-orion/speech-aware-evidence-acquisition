@@ -1,7 +1,10 @@
-"""Rails (B0): typed, versioned, hashable pipeline contracts (ObsPacket /
-EvidenceSet / SupplyPacket / ConsumptionTrace) plus the unified TaskAdapter
-interface and a zero-model-contact runner skeleton every future experiment
-composes on top of, instead of ad-hoc per-experiment scripts.
+"""Rails: typed, versioned, hashable pipeline contracts.
+
+The shared layer carries ObsPacket / EvidenceSet / SupplyPacket /
+ConsumptionTrace plus the TRAIN-build KnowledgeSnapshot and DEV-use
+QueryState / RankResult / FusionDecision seam.  The unified TaskAdapter and
+zero-model-contact runner skeleton let experiments compose these contracts
+instead of adding ad-hoc per-experiment scripts.
 
 Scope note (owner ruling, 2026-08-17): multi-view speech embeddings are OUT
 of this study's scope (deferred to a future memory-focused study) -- see
@@ -38,6 +41,16 @@ from .core_client import (
 )
 from .errors import RailsError
 from .evidence import EvidenceItem, EvidenceSet, RetrievalKeyKind, RetrievalParams
+from .knowledge import (
+    FusionDecision,
+    KeyFacet,
+    KnowledgeSnapshot,
+    QueryState,
+    RankedFacet,
+    RankResult,
+    ValueBundle,
+    assert_knowledge_use_binding,
+)
 from .obs import AudioRef, ObsPacket, SpanRef, default_obs_packet
 from .runner import ArmResult, RailsRunnerError, RunSummary, run_rails_experiment
 from .supply import SupplyDose, SupplyForm, SupplyItem, SupplyPacket
@@ -55,10 +68,16 @@ __all__ = [
     "EvidenceSet",
     "FrozenCoreClient",
     "FrozenCoreClientError",
+    "FusionDecision",
+    "KeyFacet",
+    "KnowledgeSnapshot",
     "MockCoreClient",
     "ObsPacket",
     "RailsError",
     "RailsRunnerError",
+    "QueryState",
+    "RankedFacet",
+    "RankResult",
     "RequestTiming",
     "RetrievalKeyKind",
     "RetrievalParams",
@@ -70,6 +89,8 @@ __all__ = [
     "SupplyPacket",
     "TaskAdapter",
     "TaskSample",
+    "ValueBundle",
+    "assert_knowledge_use_binding",
     "build_consumption_trace",
     "build_payload_binding",
     "build_slice_registry",
