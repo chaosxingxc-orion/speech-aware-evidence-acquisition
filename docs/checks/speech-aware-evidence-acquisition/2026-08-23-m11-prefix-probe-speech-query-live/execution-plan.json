@@ -1,0 +1,14 @@
+{
+  "run_id": "SAEA-SN-ENG-ENG-GATE8-M11-SPEECH-QUERY-PREFIX-V2",
+  "execution_profile": "bounded-discovery-probe",
+  "carrier_lock_key": "slurp",
+  "split_role": "discovery",
+  "split_identity_hash": "571e35a64ab523856533a004d5c01d8643eda01498bca88550026f6b453dd7d8",
+  "planned_model_calls": 80,
+  "planned_gpu_hours": 0.25,
+  "planned_speech_audio_seconds": 214,
+  "protocol_hash": "7f56110d666dc6fc2ece8f05c040927b43e67681a64333b62c57c191bc6e6fd4",
+  "attempt_id": "attempt-20260823T125000Z-12w013",
+  "schema": "saea-execution-plan-v1",
+  "study": "speech-aware-evidence-acquisition"
+}
