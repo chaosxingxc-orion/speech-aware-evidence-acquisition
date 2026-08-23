@@ -99,6 +99,10 @@ _RUNAWAY_MARKERS = ("truncated = 1", "context shift", "slot context shift")
 _PROMPT_EVAL_TIMING = re.compile(
     r"prompt eval time\s*=\s*[0-9.]+\s*ms\s*/\s*(\d+)\s+tokens"
 )
+_SPEECH_FEATURE_BATCH = re.compile(
+    r"decoded cross-slot speech feature batch,\s*"
+    r"n_slots\s*=\s*(\d+),\s*n_tokens\s*=\s*(\d+)"
+)
 _SPECULATIVE_DRAFT_TIMING = re.compile(
     r"draft acceptance\s*=\s*([0-9]+(?:\.[0-9]+)?)\s*"
     r"\(\s*(\d+)\s+accepted\s*/\s*(\d+)\s+generated\s*\),\s*"
@@ -110,6 +114,9 @@ _SERVER_SLOT_LAUNCH = re.compile(
 )
 _SERVER_SLOT_RELEASE = re.compile(
     rb"\bslot\s+release: id\s+(\d+) \| task\s+(-?\d+)"
+)
+_PREFIX_REUSE_PROMPT_ORDERS = frozenset(
+    {"speech-query-prefix-v2", "knowledge-speech-state-v2"}
 )
 _SPEECH_NATIVE_KEY_IDS = frozenset(f"K{index:03d}" for index in range(1, 19))
 _M6_SCHEMA_V2_POLICY_ID = "knowledge-grounded-semantic-refinement-schema-v2"
@@ -7506,6 +7513,112 @@ def profile_gpu_eligibility(
     }
 
 
+def profile_prompt_work_policy(prompt_order: str) -> str:
+    """Name the prompt-work gate without changing historical cold profiles."""
+
+    if not isinstance(prompt_order, str) or not prompt_order:
+        raise SpeechNativeProfileError("prompt_order must be a non-empty string")
+    if prompt_order in _PREFIX_REUSE_PROMPT_ORDERS:
+        return "prefix-reuse-v1"
+    return "cold-evaluation-v1"
+
+
+def profile_agent_kv_policy(
+    server_args: Sequence[str],
+    *,
+    prompt_order: str,
+) -> dict[str, object]:
+    """Bind prefix probes to the only currently safe AgentLoop KV policy."""
+
+    policy = profile_prompt_work_policy(prompt_order)
+    if not isinstance(server_args, Sequence) or isinstance(
+        server_args, (str, bytes)
+    ):
+        raise SpeechNativeProfileError("server_args must be a string sequence")
+    args = list(server_args)
+    if not all(isinstance(item, str) for item in args):
+        raise SpeechNativeProfileError("server_args must contain only strings")
+    if policy != "prefix-reuse-v1":
+        return {
+            "policy_id": "legacy-server-defined-v1",
+            "active_kv_residency": "server-defined",
+            "cpu_cold_tier_enabled": "server-defined",
+            "host_prompt_state_serialization": "server-defined",
+            "per_slot_hbm_cpu_migration_supported": False,
+        }
+
+    cache_ram_values: list[str] = []
+    for index, item in enumerate(args):
+        if item == "--cache-ram":
+            if index + 1 >= len(args):
+                raise SpeechNativeProfileError(
+                    "active-hbm-only prefix policy requires --cache-ram 0"
+                )
+            cache_ram_values.append(args[index + 1])
+        elif item.startswith("--cache-ram="):
+            cache_ram_values.append(item.split("=", 1)[1])
+    active_hbm_only = (
+        "--cache-prompt" in args
+        and cache_ram_values == ["0"]
+        and "--no-cache-idle-slots" in args
+        and "--no-kv-offload" not in args
+        and "-nkvo" not in args
+    )
+    if not active_hbm_only:
+        raise SpeechNativeProfileError(
+            "active-hbm-only prefix policy requires GPU KV offload, "
+            "--cache-prompt, --cache-ram 0, and --no-cache-idle-slots"
+        )
+    return {
+        "policy_id": "active-hbm-only-v1",
+        "active_kv_residency": "gpu-hbm",
+        "cpu_cold_tier_enabled": False,
+        "host_prompt_state_serialization": False,
+        "per_slot_hbm_cpu_migration_supported": False,
+    }
+
+
+def profile_prompt_work_eligibility(
+    evaluated_work: Mapping[str, object],
+    *,
+    prompt_order: str,
+) -> dict[str, bool]:
+    """Apply the ratio direction that matches the registered cache policy."""
+
+    policy = profile_prompt_work_policy(prompt_order)
+    ratio = evaluated_work.get("prompt_evaluation_ratio_pct")
+    one_token_fraction = evaluated_work.get(
+        "one_token_prompt_eval_fraction_pct"
+    )
+    ratio_is_number = (
+        isinstance(ratio, (int, float))
+        and not isinstance(ratio, bool)
+        and math.isfinite(float(ratio))
+    )
+    one_token_is_number = (
+        isinstance(one_token_fraction, (int, float))
+        and not isinstance(one_token_fraction, bool)
+        and math.isfinite(float(one_token_fraction))
+    )
+    result = {
+        "prompt_eval_records_match_contacts": (
+            evaluated_work.get("prompt_eval_record_count_matches_contacts") is True
+        )
+    }
+    if policy == "prefix-reuse-v1":
+        result["prompt_evaluation_ratio_below_90"] = (
+            ratio_is_number and float(ratio) < 90.0
+        )
+    else:
+        result["prompt_evaluation_ratio_at_least_90"] = (
+            ratio_is_number and float(ratio) >= 90.0
+        )
+    result["one_token_prompt_eval_fraction_at_most_5"] = (
+        one_token_is_number and float(one_token_fraction) <= 5.0
+    )
+    return result
+
+
 def profile_server_slot_event_gpu_metrics(
     *,
     server_log_path: Path,
@@ -10337,6 +10450,25 @@ def _scan_server_log(
     prompt_eval_tokens = [
         int(match.group(1)) for match in _PROMPT_EVAL_TIMING.finditer(text)
     ]
+    speech_feature_batches = list(_SPEECH_FEATURE_BATCH.finditer(text))
+    if text.count("decoded cross-slot speech feature batch") != len(
+        speech_feature_batches
+    ):
+        raise SpeechNativeProfileError(
+            "server log speech feature batch statistics are incomplete"
+        )
+    speech_feature_batch_slots = [
+        int(match.group(1)) for match in speech_feature_batches
+    ]
+    speech_feature_batch_tokens = [
+        int(match.group(2)) for match in speech_feature_batches
+    ]
+    if any(value <= 0 for value in speech_feature_batch_slots) or any(
+        value <= 0 for value in speech_feature_batch_tokens
+    ):
+        raise SpeechNativeProfileError(
+            "server log speech feature batch statistics must be positive"
+        )
     draft_matches = list(_SPECULATIVE_DRAFT_TIMING.finditer(text))
     if text.count("draft acceptance") != len(draft_matches):
         raise SpeechNativeProfileError(
@@ -10378,6 +10510,18 @@ def _scan_server_log(
         "runaway_marker_hits": hits(_RUNAWAY_MARKERS),
         "mmproj_free_chunk_count": text.count(
             "decoded mmproj-free speech feature chunk"
+        ),
+        "speech_feature_batch_count": len(speech_feature_batches),
+        "speech_feature_batch_slot_count_total": sum(
+            speech_feature_batch_slots
+        ),
+        "speech_feature_batch_token_count_total": sum(
+            speech_feature_batch_tokens
+        ),
+        "speech_feature_batch_mean_slots": (
+            statistics.fmean(speech_feature_batch_slots)
+            if speech_feature_batch_slots
+            else NOT_AVAILABLE
         ),
         "prompt_eval_record_count": len(prompt_eval_tokens),
         "prompt_eval_tokens_total": sum(prompt_eval_tokens),
@@ -11402,6 +11546,7 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
     )
     values = composed.values
     matcher_policy_id = _require_string(values, "matcher_policy_id")
+    transport_prompt_order = _require_string(values, "prompt_order")
     source_session_receipt = getattr(args, "session_receipt", None)
     (
         prompt_fit_path,
@@ -11654,6 +11799,10 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
     decisions_path = run_dir / "decisions.jsonl"
     runtime_root = Path(args.runtime_root)
     server_args = _server_args(values)
+    agent_kv_policy = profile_agent_kv_policy(
+        server_args,
+        prompt_order=transport_prompt_order,
+    )
     server_env = _server_env(values)
     role = runtime_receipt.get("role", "legacy")
     source_session_receipt = getattr(args, "session_receipt", None)
@@ -11758,7 +11907,7 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
             context_tokens_per_slot=geometry["context_tokens_per_slot"],
             maximum_completion_tokens=prompt_fit_maximum_completion_tokens,
             request_layout_id=request_layout_id,
-            transport_prompt_order=_require_string(values, "prompt_order"),
+            transport_prompt_order=transport_prompt_order,
         )
     client: FrozenCoreClient | None = None
     close_summary: dict[str, object] | None = None
@@ -11943,6 +12092,11 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
                 else None
             ),
             "matcher_prompt_policy_id": prompt_policy_id,
+            "transport_prompt_order": transport_prompt_order,
+            "prompt_work_policy": profile_prompt_work_policy(
+                transport_prompt_order
+            ),
+            "agent_kv_policy": agent_kv_policy,
             "request_layout_id": request_layout_id,
             "matcher_verifier_policy_id": verifier_policy_id,
             "agent_policy_id": agent_policy_id,
@@ -12082,30 +12236,9 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
                 "zero_host_spill_markers": not server_scan["host_spill_marker_hits"],
                 "zero_runaway_markers": not server_scan["runaway_marker_hits"],
                 **profile_gpu_eligibility(saturated_gpu),
-                "prompt_eval_records_match_contacts": evaluated_work[
-                    "prompt_eval_record_count_matches_contacts"
-                ],
-                "prompt_evaluation_ratio_at_least_90": (
-                    isinstance(
-                        evaluated_work["prompt_evaluation_ratio_pct"],
-                        (int, float),
-                    )
-                    and not isinstance(
-                        evaluated_work["prompt_evaluation_ratio_pct"], bool
-                    )
-                    and float(evaluated_work["prompt_evaluation_ratio_pct"])
-                    >= 90.0
-                ),
-                "one_token_prompt_eval_fraction_at_most_5": (
-                    isinstance(
-                        evaluated_work["one_token_prompt_eval_fraction_pct"],
-                        (int, float),
-                    )
-                    and not isinstance(
-                        evaluated_work["one_token_prompt_eval_fraction_pct"], bool
-                    )
-                    and float(evaluated_work["one_token_prompt_eval_fraction_pct"])
-                    <= 5.0
+                **profile_prompt_work_eligibility(
+                    evaluated_work,
+                    prompt_order=transport_prompt_order,
                 ),
             }
             eligibility = receipt["eligibility"]

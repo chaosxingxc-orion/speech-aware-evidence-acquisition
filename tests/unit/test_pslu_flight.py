@@ -53,6 +53,9 @@ from speech_aware_evidence_acquisition.core.driver.speech_native import (
     _release_speech_native_session,
     _scan_server_log,
     profile_evaluated_work_metrics,
+    profile_agent_kv_policy,
+    profile_prompt_work_eligibility,
+    profile_prompt_work_policy,
     _trace_speech_query_summary,
     SpeechNativeProfileError,
     _cli_speech_native_action_audit,
@@ -308,6 +311,7 @@ def test_server_log_scan_is_scoped_to_current_attempt_window(tmp_path):
     current = (
         "decoded mmproj-free speech feature chunk\n"
         "decoded mmproj-free speech feature chunk\n"
+        "decoded cross-slot speech feature batch, n_slots = 2, n_tokens = 91\n"
     )
     log.write_text(old + current, encoding="utf-8")
 
@@ -315,6 +319,10 @@ def test_server_log_scan_is_scoped_to_current_attempt_window(tmp_path):
 
     assert scan["oom_marker_hits"] == []
     assert scan["mmproj_free_chunk_count"] == 2
+    assert scan["speech_feature_batch_count"] == 1
+    assert scan["speech_feature_batch_slot_count_total"] == 2
+    assert scan["speech_feature_batch_token_count_total"] == 91
+    assert scan["speech_feature_batch_mean_slots"] == 2.0
     assert scan["prompt_eval_record_count"] == 0
     assert scan["prompt_eval_tokens_total"] == 0
     assert scan["one_token_prompt_eval_count"] == 0
@@ -345,6 +353,100 @@ prompt eval time = 8.00 ms / 740 tokens
     assert scan["prompt_eval_tokens_median"] == 740.0
     assert scan["one_token_prompt_eval_count"] == 1
     assert scan["prompt_cache_skip_count"] == 2
+
+
+def test_prompt_work_eligibility_keeps_the_historical_cold_work_gate():
+    work = {
+        "prompt_eval_record_count_matches_contacts": True,
+        "prompt_evaluation_ratio_pct": 96.5,
+        "one_token_prompt_eval_fraction_pct": 0.0,
+    }
+
+    assert profile_prompt_work_policy("speech-features-text-keys-v1") == (
+        "cold-evaluation-v1"
+    )
+    assert profile_prompt_work_eligibility(
+        work, prompt_order="speech-features-text-keys-v1"
+    ) == {
+        "prompt_eval_records_match_contacts": True,
+        "prompt_evaluation_ratio_at_least_90": True,
+        "one_token_prompt_eval_fraction_at_most_5": True,
+    }
+
+
+@pytest.mark.parametrize(
+    "prompt_order",
+    ("speech-query-prefix-v2", "knowledge-speech-state-v2"),
+)
+def test_prompt_work_eligibility_treats_avoided_work_as_prefix_reuse(
+    prompt_order,
+):
+    work = {
+        "prompt_eval_record_count_matches_contacts": True,
+        "prompt_evaluation_ratio_pct": 58.8,
+        "one_token_prompt_eval_fraction_pct": 0.0,
+    }
+
+    assert profile_prompt_work_policy(prompt_order) == "prefix-reuse-v1"
+    assert profile_prompt_work_eligibility(work, prompt_order=prompt_order) == {
+        "prompt_eval_records_match_contacts": True,
+        "prompt_evaluation_ratio_below_90": True,
+        "one_token_prompt_eval_fraction_at_most_5": True,
+    }
+
+
+def test_prompt_work_eligibility_rejects_malformed_mechanics():
+    work = {
+        "prompt_eval_record_count_matches_contacts": True,
+        "prompt_evaluation_ratio_pct": "NOT_AVAILABLE",
+        "one_token_prompt_eval_fraction_pct": 0.0,
+    }
+
+    assert profile_prompt_work_eligibility(
+        work, prompt_order="speech-query-prefix-v2"
+    )["prompt_evaluation_ratio_below_90"] is False
+
+
+def test_prefix_agent_kv_policy_keeps_active_trajectories_in_hbm():
+    policy = profile_agent_kv_policy(
+        [
+            "--cache-prompt",
+            "--cache-ram",
+            "0",
+            "--no-cache-idle-slots",
+        ],
+        prompt_order="speech-query-prefix-v2",
+    )
+
+    assert policy == {
+        "policy_id": "active-hbm-only-v1",
+        "active_kv_residency": "gpu-hbm",
+        "cpu_cold_tier_enabled": False,
+        "host_prompt_state_serialization": False,
+        "per_slot_hbm_cpu_migration_supported": False,
+    }
+
+
+@pytest.mark.parametrize(
+    "server_args",
+    (
+        [
+            "--cache-prompt",
+            "--cache-ram",
+            "0",
+            "--no-cache-idle-slots",
+            "--no-kv-offload",
+        ],
+        ["--cache-prompt", "--cache-ram", "8", "--no-cache-idle-slots"],
+        ["--cache-prompt", "--cache-ram", "0"],
+    ),
+)
+def test_prefix_agent_kv_policy_refuses_unsafe_cpu_state_paths(server_args):
+    with pytest.raises(SpeechNativeProfileError, match="active-hbm-only"):
+        profile_agent_kv_policy(
+            server_args,
+            prompt_order="knowledge-speech-state-v2",
+        )
 
 
 def test_server_log_scan_records_target_verified_speculative_work(tmp_path):
