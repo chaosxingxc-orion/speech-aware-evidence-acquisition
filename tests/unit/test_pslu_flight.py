@@ -7329,6 +7329,202 @@ def test_gpu_admission_accepts_a_balanced_server_event_timeline():
     assert all(eligibility.values())
 
 
+# --- 2026-08-23 E108 telemetry-defect repair -------------------------------
+# docs/readiness/2026-08-23-e108-attempt-finalization-adjudication.md S3: a
+# GPU sampler outage must degrade the flight receipt's GPU fields to
+# NOT_AVAILABLE plus an explicit defect note and let finalization complete --
+# never raise and destroy an otherwise-complete run. The 95/90 saturation
+# gate stays a hard fail for a caller that opts into
+# ``gpu_timeline_required=True`` (owner ruling
+# docs/readiness/2026-08-23-knowledge-plane-baseline-rulings.md S2.1 keeps it
+# for ENGINEERING-baseline admission).
+
+
+def _balanced_two_slot_server_log(tmp_path):
+    first_line = "0.00.050.000 I log_info: startup\n"
+    log_path = tmp_path / "server.log"
+    log_path.write_text(
+        first_line
+        + "0.01.000.000 I slot launch_slot_: id  0 | task 101 | processing task\n"
+        + "0.01.100.000 I slot launch_slot_: id  1 | task 102 | processing task\n"
+        + "0.02.000.000 I slot      release: id  0 | task 101 | stop processing\n"
+        + "0.03.000.000 I slot      release: id  1 | task 102 | stop processing\n",
+        encoding="utf-8",
+    )
+    return log_path, len(first_line.encode("utf-8"))
+
+
+def test_server_slot_event_metrics_degrade_on_sampler_start_failure(tmp_path):
+    """(a) A failed sampler poll degrades to NOT_AVAILABLE + a defect note;
+    finalization is never destroyed and the log-derived lifecycle fields
+    (proven independently of the GPU sampler) are unaffected."""
+
+    log_path, start_offset = _balanced_two_slot_server_log(tmp_path)
+    sampler_reason = (
+        "nvidia-smi sampling failed and was disabled for the rest of this "
+        "run: [Errno 2] No such file or directory: 'nvidia-smi'"
+    )
+    resource = {"request_gpu_samples": [], "gpu_sampling_reason": sampler_reason}
+
+    result = profile_server_slot_event_gpu_metrics(
+        server_log_path=log_path,
+        server_log_start_offset=start_offset,
+        session_started_at="2026-08-21T12:00:00+00:00",
+        resource_summary=resource,
+        slot_count=2,
+        expected_contact_count=2,
+    )
+
+    assert result["sample_count"] == 0
+    assert result["sample_fraction_pct"] == NOT_AVAILABLE
+    assert result["utilization_median_pct"] == NOT_AVAILABLE
+    assert result["utilization_p10_pct"] == NOT_AVAILABLE
+    assert result["server_slot_sample_count"] == 0
+    assert result["server_slot_sample_coverage_pct"] == NOT_AVAILABLE
+    assert result["server_slot_occupancy_mean_pct"] == NOT_AVAILABLE
+    assert result["gpu_telemetry_defect"] == sampler_reason
+    # log-derived slot-event lifecycle fields still prove the run itself.
+    assert result["server_slot_launch_count"] == 2
+    assert result["server_slot_release_count"] == 2
+    assert result["server_slot_event_count"] == 4
+
+    eligibility = profile_gpu_eligibility(result)
+    assert eligibility["gpu_telemetry_available"] is False
+    # every saturation threshold is an explicit "not evaluable" False, never
+    # a silent pass over missing data.
+    assert eligibility["saturated_gpu_median_at_least_95"] is False
+    assert eligibility["saturated_gpu_p10_at_least_90"] is False
+    assert eligibility["server_slot_occupancy_at_least_90"] is False
+    assert not all(eligibility.values())
+
+
+def test_server_slot_event_metrics_degrade_uses_a_generic_reason_when_sampler_is_silent(
+    tmp_path,
+):
+    """A missing/absent ``gpu_sampling_reason`` still degrades cleanly."""
+
+    log_path, start_offset = _balanced_two_slot_server_log(tmp_path)
+
+    result = profile_server_slot_event_gpu_metrics(
+        server_log_path=log_path,
+        server_log_start_offset=start_offset,
+        session_started_at="2026-08-21T12:00:00+00:00",
+        resource_summary={"request_gpu_samples": []},
+        slot_count=2,
+        expected_contact_count=2,
+    )
+
+    assert result["gpu_telemetry_defect"] == "request GPU sample timeline is unavailable"
+
+
+def test_server_slot_event_metrics_engineering_gate_fails_closed_on_missing_timeline(
+    tmp_path,
+):
+    """(b) The engineering-admission caller (``gpu_timeline_required=True``)
+    still fails closed on a missing timeline, with a clear, distinguishable
+    reason instead of the old generic error."""
+
+    log_path, start_offset = _balanced_two_slot_server_log(tmp_path)
+
+    with pytest.raises(SpeechNativeProfileError, match="telemetry unavailable"):
+        profile_server_slot_event_gpu_metrics(
+            server_log_path=log_path,
+            server_log_start_offset=start_offset,
+            session_started_at="2026-08-21T12:00:00+00:00",
+            resource_summary={
+                "request_gpu_samples": [],
+                "gpu_sampling_reason": "'nvidia-smi' not found on PATH",
+            },
+            slot_count=2,
+            expected_contact_count=2,
+            gpu_timeline_required=True,
+        )
+
+
+def test_server_slot_event_metrics_lifecycle_check_precedes_the_engineering_gate(
+    tmp_path,
+):
+    """The slot-event lifecycle checks run and fail closed on their own
+    merits before the GPU-timeline check, in both admission modes."""
+
+    first_line = "0.00.050.000 I log_info: startup\n"
+    log_path = tmp_path / "server.log"
+    log_path.write_text(
+        first_line
+        + "0.01.000.000 I slot launch_slot_: id  0 | task 101 | processing task\n",
+        encoding="utf-8",
+    )
+
+    with pytest.raises(SpeechNativeProfileError, match="unbalanced"):
+        profile_server_slot_event_gpu_metrics(
+            server_log_path=log_path,
+            server_log_start_offset=len(first_line.encode("utf-8")),
+            session_started_at="2026-08-21T12:00:00+00:00",
+            resource_summary={"request_gpu_samples": []},
+            slot_count=2,
+            expected_contact_count=1,
+            gpu_timeline_required=True,
+        )
+
+
+def test_server_slot_event_metrics_healthy_path_is_unaffected_by_the_new_parameter(
+    tmp_path,
+):
+    """(c) Regression: a healthy GPU timeline is byte-identical to the
+    pre-repair receipt shape, and ``gpu_timeline_required=True`` changes
+    nothing when the timeline is actually present."""
+
+    log_path, start_offset = _balanced_two_slot_server_log(tmp_path)
+    epoch = 1_787_313_600.0
+    resource = {
+        "request_gpu_samples": [
+            {"sampled_at_unix_seconds": epoch + 1.05, "utilization_pct": 80.0},
+            {"sampled_at_unix_seconds": epoch + 1.50, "utilization_pct": 96.0},
+            {"sampled_at_unix_seconds": epoch + 2.50, "utilization_pct": 60.0},
+        ]
+    }
+
+    lenient = profile_server_slot_event_gpu_metrics(
+        server_log_path=log_path,
+        server_log_start_offset=start_offset,
+        session_started_at="2026-08-21T12:00:00+00:00",
+        resource_summary=resource,
+        slot_count=2,
+        expected_contact_count=2,
+    )
+    strict = profile_server_slot_event_gpu_metrics(
+        server_log_path=log_path,
+        server_log_start_offset=start_offset,
+        session_started_at="2026-08-21T12:00:00+00:00",
+        resource_summary=resource,
+        slot_count=2,
+        expected_contact_count=2,
+        gpu_timeline_required=True,
+    )
+
+    assert "gpu_telemetry_defect" not in lenient
+    assert lenient == strict
+    assert lenient == {
+        "saturation_source": "llama-server-slot-events-v1",
+        "minimum_active_requests": 2,
+        "sample_count": 1,
+        "sample_fraction_pct": 100.0 / 3.0,
+        "utilization_median_pct": 96.0,
+        "utilization_p10_pct": 96.0,
+        "server_slot_sample_count": 3,
+        "server_slot_sample_coverage_pct": 100.0,
+        "server_slot_measurement_failure_count": 0,
+        "server_slot_clock_alignment_upper_bound_milliseconds": 50.0,
+        "server_slot_occupancy_mean_pct": 200.0 / 3.0,
+        "server_slot_event_count": 4,
+        "server_slot_launch_count": 2,
+        "server_slot_release_count": 2,
+    }
+
+    eligibility = profile_gpu_eligibility(lenient)
+    assert eligibility["gpu_telemetry_available"] is True
+
+
 def _cuda_graph_engine_audit_inputs(*, slot_count=16, expert_types=("Q4_K", "Q6_K")):
     binary_sha256 = "a" * 64
     decoder_sha256 = "b" * 64

@@ -7434,7 +7434,19 @@ def profile_saturated_gpu_metrics(
 def profile_gpu_eligibility(
     saturated_gpu: Mapping[str, object],
 ) -> dict[str, bool]:
-    """Apply the prospective, exact-slot GPU admission gate."""
+    """Apply the prospective, exact-slot GPU admission gate.
+
+    Every threshold below reads a missing/``NOT_AVAILABLE`` field as
+    ``False`` -- fail-closed, so a GPU sampler outage never silently passes
+    an ENGINEERING-baseline admission threshold (owner ruling
+    ``docs/readiness/2026-08-23-knowledge-plane-baseline-rulings.md`` S2.1
+    keeps the 95/90 saturated-median/P10 requirement for engineering
+    acceptance). A plain ``False`` cannot by itself distinguish "measured and
+    below threshold" from "no telemetry to measure", so
+    ``gpu_telemetry_available`` is reported explicitly alongside the
+    thresholds: when it is ``False`` the other GPU booleans here are "not
+    evaluable: telemetry unavailable", not a measured failure.
+    """
 
     def at_least(field: str, threshold: float) -> bool:
         value = saturated_gpu.get(field)
@@ -7455,6 +7467,7 @@ def profile_gpu_eligibility(
         failure_count = saturated_gpu.get("server_slot_probe_failure_count")
         maximum_clock_error = saturated_gpu.get("server_slot_gpu_skew_max_milliseconds")
     return {
+        "gpu_telemetry_available": saturated_gpu.get("gpu_telemetry_defect") is None,
         "saturation_source_is_server_slots": (
             source in {"llama-server-slots-v1", "llama-server-slot-events-v1"}
         ),
@@ -7595,7 +7608,8 @@ def profile_server_slot_event_gpu_metrics(
     slot_count: int,
     expected_contact_count: int,
     server_log_end_offset: int | None = None,
-) -> dict[str, int | float | str]:
+    gpu_timeline_required: bool = False,
+) -> dict[str, int | float | str | None]:
     """Pair GPU samples with llama-server's native slot lifecycle events.
 
     The server writes launch/release events on its own timeline while the GPU
@@ -7604,6 +7618,29 @@ def profile_server_slot_event_gpu_metrics(
     The session receipt's pre-spawn wall timestamp anchors the server's elapsed
     log clock; the first log timestamp is a conservative upper bound on that
     clock-alignment error.
+
+    The slot-event lifecycle checks below (log format, launch/release
+    balance, contact-completeness) always run and always fail closed --
+    they prove, independently of the GPU sampler, whether the run itself was
+    sound.
+
+    GPU *utilization* numbers are a different story. Owner ruling
+    ``docs/readiness/2026-08-23-knowledge-plane-baseline-rulings.md`` S2.1
+    demoted them from a scientific-admission criterion to DESCRIPTIVE
+    reporting, so by default (``gpu_timeline_required=False``) a GPU sampler
+    outage (missing ``nvidia-smi``, a failed first poll, a crashed polling
+    thread -- see ``core.resources.NvidiaSmiSampler``, which already degrades
+    to ``NOT_AVAILABLE`` plus a reason and never raises) degrades this
+    function's GPU-derived fields to ``NOT_AVAILABLE`` plus a
+    ``gpu_telemetry_defect`` reason instead of raising -- an otherwise-complete
+    run's finalization must never be destroyed by missing GPU telemetry (the
+    2026-08-23 E108 incident; ``docs/readiness/
+    2026-08-23-e108-attempt-finalization-adjudication.md`` S3).
+    ``gpu_timeline_required=True`` restores the previous fail-closed behaviour
+    for a caller that treats GPU saturation as a hard ENGINEERING admission
+    gate (owner ruling S2.1 keeps the 95/90 median/P10 requirement for
+    engineering-baseline acceptance) rather than a scientific descriptive
+    receipt field.
     """
 
     for name, value in (
@@ -7728,8 +7765,21 @@ def profile_server_slot_event_gpu_metrics(
         raise SpeechNativeProfileError("server log has no timestamped record")
 
     raw_samples = resource_summary.get("request_gpu_samples")
-    if not isinstance(raw_samples, list) or not raw_samples:
-        raise SpeechNativeProfileError("request GPU sample timeline is unavailable")
+    if raw_samples is not None and not isinstance(raw_samples, list):
+        raise SpeechNativeProfileError("request GPU sample timeline is malformed")
+    gpu_telemetry_defect: str | None = None
+    if not raw_samples:
+        if gpu_timeline_required:
+            raise SpeechNativeProfileError(
+                "GPU telemetry unavailable for the engineering admission gate"
+            )
+        reason = resource_summary.get("gpu_sampling_reason")
+        gpu_telemetry_defect = (
+            reason
+            if isinstance(reason, str) and reason.strip()
+            else "request GPU sample timeline is unavailable"
+        )
+        raw_samples = []
     minimum_active = max(1, math.ceil(slot_count * 0.90))
     saturated_utilization: list[float] = []
     slot_occupancy: list[float] = []
@@ -7761,24 +7811,31 @@ def profile_server_slot_event_gpu_metrics(
     else:
         median = NOT_AVAILABLE
         p10 = NOT_AVAILABLE
-    return {
+    result: dict[str, int | float | str | None] = {
         "saturation_source": "llama-server-slot-events-v1",
         "minimum_active_requests": minimum_active,
         "sample_count": sample_count,
-        "sample_fraction_pct": 100.0 * sample_count / len(raw_samples),
+        "sample_fraction_pct": (
+            100.0 * sample_count / len(raw_samples) if raw_samples else NOT_AVAILABLE
+        ),
         "utilization_median_pct": median,
         "utilization_p10_pct": p10,
         "server_slot_sample_count": len(raw_samples),
-        "server_slot_sample_coverage_pct": 100.0,
+        "server_slot_sample_coverage_pct": 100.0 if raw_samples else NOT_AVAILABLE,
         "server_slot_measurement_failure_count": 0,
         "server_slot_clock_alignment_upper_bound_milliseconds": (
             first_elapsed_seconds * 1000.0
         ),
-        "server_slot_occupancy_mean_pct": statistics.fmean(slot_occupancy),
+        "server_slot_occupancy_mean_pct": (
+            statistics.fmean(slot_occupancy) if slot_occupancy else NOT_AVAILABLE
+        ),
         "server_slot_event_count": len(event_times),
         "server_slot_launch_count": launch_count,
         "server_slot_release_count": release_count,
     }
+    if gpu_telemetry_defect is not None:
+        result["gpu_telemetry_defect"] = gpu_telemetry_defect
+    return result
 
 
 def _trace_usage_summary(path: Path) -> dict[str, int]:
