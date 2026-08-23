@@ -100,7 +100,40 @@ land BEFORE the first train-scale snapshot is exercised:
 - Scheduling rule: before starting any CPU batch, verify the GPU queue head is running or
   blocked on an owner decision — never blocked on the implementer.
 
-## 6. Survey grounding
+## 6. Experiment-baseline reuse ruling (owner, 2026-08-23, second directive)
+
+The owner endorses the existing speech-native experiment-configuration system as THE experiment
+baseline for its GPU efficiency, and directs that new work REUSE it and that any optimization
+be made inside its existing engineering scripts, never as a parallel harness. Concretely, the
+endorsed baseline is:
+
+- **Four-axis config composition** (`core.config.compose`: model / dataset / baseline /
+  experiment fragments, hash-bound), with the scientific contract MACHINE-READABLE inside the
+  experiment fragment (policy ids + the full preregistered reader/promotion threshold table),
+  so the config hash pins the whole contract.
+- **Serving profile**: receipt-bound always-on resident llama-server, mmproj-free decode
+  (`-c 65536 -np 16 -b 2048 -ub 512 -fa on -ngl 999 -ctk/v q8_0 --cache-prompt --cache-ram 0
+  --no-cache-idle-slots --slot-prompt-similarity 0`), per-sample slot affinity
+  (`id_slot: per-sample`), `speech-features-text-keys-v1` prompt order (stable speech prefix →
+  KV reuse), tokenizer-only prompt-fit receipts bound by sha256 before any contact.
+- **Dataset runtime views**: frozen per-sample manifests (audio sha256, packet id, split
+  identity hash, seed, split_role, label-free) as config fragments; offline packet
+  pre-materialization into the WSL feature root; CPU preprocessing sidecar so the GPU never
+  runs preprocessing.
+- **Dispatch**: bounded contact-DAG scheduler (queue depth 4×np, per-slot backpressure),
+  native-event telemetry (launch/release lifecycle from server logs) as the occupancy
+  authority.
+
+Implications adopted forward: (i) every upcoming cell — E108, the DEV-100/500/1000 flights,
+the Audio2Tool cell, KB embedding passes — is expressed as NEW FRAGMENTS composed by the
+existing driver, never as a new script family; (ii) the C2 identity receipts are the
+governance layer above flight-consumable runtime views — each DEV tier gets a runtime-view
+dataset fragment generated through the existing binding/preprocess machinery before it flies;
+(iii) approved in-place optimizations: the C4 contract scale fixes and a tail work-stealing
+mode in the existing dispatcher (relax strict slot affinity only during end-of-run drain);
+(iv) the reader-contract-in-config pattern is copied for every DEV flight.
+
+## 7. Survey grounding
 
 The 2026-08-23 cross-modal retrieval survey (29 items; text / vision-multimodal / speech) is
 recorded in `docs/readiness/2026-08-23-cross-modal-retrieval-survey.md`. Its top-ranked
