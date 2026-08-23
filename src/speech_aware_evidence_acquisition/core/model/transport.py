@@ -40,6 +40,15 @@ position-sensitive, never a stable reusable prefix). An empty bank with no
 delta candidates reduces to exactly v2's shape for the same inputs. No ops
 benchmark exists yet for v3 -- unlike v1->v2 above, this is new, unmeasured
 infrastructure.
+
+Speech-feature AgentLoops use explicit cache layouts. A speech-query prefix
+places the query packet before knowledge and mutable state so a task-affine
+slot can retain the query KV across steps. The dual-prefix knowledge-speech-
+state layout places only the frozen text/audio key index before the query and
+keeps retrieved values, Agent state, and instructions after it, allowing both
+cross-sample knowledge-prefix reuse and within-trajectory speech-prefix reuse.
+The historical
+``speech-features-text-keys-v1`` order remains unchanged for replay.
 """
 
 from __future__ import annotations
@@ -56,6 +65,55 @@ from ..session import SessionError, SessionReceipt, assert_session_alive, requir
 from . import FrozenCoreError
 from .paths import _normalized_relative_path, _resolve_confined
 from .speech_features import load_speech_feature_packets
+
+
+_SPEECH_FEATURE_PROMPT_ORDERS = frozenset(
+    {
+        "speech-features-text-keys-v1",
+        "speech-query-prefix-v2",
+        "knowledge-speech-state-v2",
+    }
+)
+
+
+def _ordered_speech_feature_content(
+    *,
+    prompt_order: str,
+    evidence_texts: list[str],
+    feature_parts: list[dict[str, object]],
+) -> list[dict[str, object]]:
+    """Build one cache-explicit speech-feature user content sequence."""
+
+    text_parts: list[dict[str, object]] = [
+        {"type": "text", "text": text} for text in evidence_texts
+    ]
+    if prompt_order == "speech-features-text-keys-v1":
+        return [*text_parts, *feature_parts]
+
+    query_parts = [
+        part
+        for part in feature_parts
+        if part["speech_features"]["role"] == "query"  # type: ignore[index]
+    ]
+    key_parts = [
+        part
+        for part in feature_parts
+        if part["speech_features"]["role"] == "key"  # type: ignore[index]
+    ]
+    if len(query_parts) != 1:
+        raise FrozenCoreError(
+            "formal speech feature request must carry exactly one query packet"
+        )
+
+    # The matcher emits stable key/index text first and the step instruction
+    # last. Keep that last, mutable item after the query under both layouts.
+    stable_text_parts = text_parts[:-1]
+    mutable_state_parts = text_parts[-1:]
+    if prompt_order == "speech-query-prefix-v2":
+        return [*query_parts, *stable_text_parts, *key_parts, *mutable_state_parts]
+    if prompt_order == "knowledge-speech-state-v2":
+        return [*text_parts[:1], *key_parts, *query_parts, *text_parts[1:]]
+    raise FrozenCoreError(f"unsupported speech feature prompt order {prompt_order!r}")
 
 
 def _default_post(timeout_seconds: float) -> Callable[[str, bytes], bytes]:
@@ -191,12 +249,13 @@ class LlamaServerTransport:
             "system-instruction-v1",
             "evidence-first-system-v2",
             "evidence-first-system-v3",
-            "speech-features-text-keys-v1",
+            *_SPEECH_FEATURE_PROMPT_ORDERS,
         ):
             raise SessionError(
                 f"unknown prompt_order {prompt_order!r}; allowed: "
                 "'system-instruction-v1', 'evidence-first-system-v2', "
-                "'evidence-first-system-v3', 'speech-features-text-keys-v1'"
+                "'evidence-first-system-v3', "
+                f"{', '.join(repr(item) for item in sorted(_SPEECH_FEATURE_PROMPT_ORDERS))}"
             )
         self._prompt_order = prompt_order
         # R0 repair T5 (I5): there is no "no session" transport, mirroring the
@@ -226,14 +285,14 @@ class LlamaServerTransport:
         self._runtime_receipt = runtime_receipt
         self._runtime_root = Path(runtime_root)
         self._feature_root = Path(feature_root) if feature_root is not None else None
-        if self._prompt_order == "speech-features-text-keys-v1":
+        if self._prompt_order in _SPEECH_FEATURE_PROMPT_ORDERS:
             if session.role != "inference":
                 raise SessionError(
-                    "speech-features-text-keys-v1 requires a decoder-only inference session"
+                    f"{self._prompt_order} requires a decoder-only inference session"
                 )
             if self._feature_root is None:
                 raise SessionError(
-                    "speech-features-text-keys-v1 requires a fixed feature_root"
+                    f"{self._prompt_order} requires a fixed feature_root"
                 )
             try:
                 self._feature_root = self._feature_root.resolve(strict=True)
@@ -289,7 +348,7 @@ class LlamaServerTransport:
         # media item below goes through, never a target-audio-only special
         # case.
         audio_part = None
-        if self._prompt_order != "speech-features-text-keys-v1":
+        if self._prompt_order not in _SPEECH_FEATURE_PROMPT_ORDERS:
             _, audio_part = _load_audio_part(
                 self._data_root, payload["media_relpath"], "transport media_relpath"
             )
@@ -302,7 +361,7 @@ class LlamaServerTransport:
         for field in ("supplied_evidence", "retrieved_evidence"):
             for item in payload.get(field, []):  # type: ignore[union-attr]
                 evidence_texts.append(f"[evidence {item['evidence_id']}] {item['content']}")
-        if self._prompt_order == "speech-features-text-keys-v1":
+        if self._prompt_order in _SPEECH_FEATURE_PROMPT_ORDERS:
             if payload.get("query_source") != "speech_features":
                 raise FrozenCoreError(
                     "speech feature request query_source must be 'speech_features'"
@@ -378,9 +437,11 @@ class LlamaServerTransport:
                 raise FrozenCoreError(
                     "speech_packet_sha256 must equal the actual query packet hash"
                 )
-            content = [
-                {"type": "text", "text": text} for text in evidence_texts
-            ] + feature_parts
+            content = _ordered_speech_feature_content(
+                prompt_order=self._prompt_order,
+                evidence_texts=evidence_texts,
+                feature_parts=feature_parts,
+            )
             messages = [
                 {"role": "system", "content": payload["task_instruction"]},
                 {"role": "user", "content": content},

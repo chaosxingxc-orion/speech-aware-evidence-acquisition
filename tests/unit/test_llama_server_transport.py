@@ -398,6 +398,165 @@ def test_speech_feature_prompt_order_sends_packet_reference_without_raw_audio(tm
     assert all(part["type"] != "input_audio" for part in parts)
 
 
+@pytest.mark.parametrize(
+    ("prompt_order", "expected_types", "expected_speech_roles"),
+    (
+        (
+            "speech-query-prefix-v2",
+            (
+                "input_speech_features",
+                "text",
+                "input_speech_features",
+                "text",
+            ),
+            ("query", "key"),
+        ),
+        (
+            "knowledge-speech-state-v2",
+            (
+                "text",
+                "input_speech_features",
+                "input_speech_features",
+                "text",
+            ),
+            ("key", "query"),
+        ),
+    ),
+)
+def test_agent_loop_prompt_orders_keep_mutable_state_after_the_query_packet(
+    tmp_path, prompt_order, expected_types, expected_speech_roles
+):
+    feature_root = tmp_path / "features"
+    query = _materialize_packet(feature_root, "slurp/train/query")
+    key = _materialize_packet(feature_root, "slurp/train/key")
+    captured = {}
+
+    def fake_post(url, body):
+        captured["body"] = json.loads(body)
+        return _canned_response()
+
+    transport = _transport(
+        _base_url(),
+        tmp_path,
+        post=fake_post,
+        session=_fake_inference_session(),
+        prompt_order=prompt_order,
+        feature_root=feature_root,
+    )
+    payload = _boundary_payload(
+        tmp_path,
+        supplied_evidence=[
+            {"evidence_id": "stable-key-catalog", "content": "Opaque key cards."},
+            {"evidence_id": "dynamic-agent-step", "content": "Choose one key now."},
+        ],
+        speech_feature_parts=[
+            {
+                "packet_id": query.packet_id,
+                "sha256": query.packet_sha256,
+                "role": "query",
+            },
+            {
+                "packet_id": key.packet_id,
+                "sha256": key.packet_sha256,
+                "role": "key",
+            },
+        ],
+        speech_packet_sha256=query.packet_sha256,
+        query_source="speech_features",
+        key_representation_id="k4-hybrid-key-v1",
+        matcher_policy_id="m11-agent-loop-v1",
+        mmproj_loaded=False,
+    )
+
+    transport(json.dumps(payload).encode())
+
+    parts = captured["body"]["messages"][1]["content"]
+    assert tuple(part["type"] for part in parts) == expected_types
+    assert tuple(
+        part["speech_features"]["role"]
+        for part in parts
+        if part["type"] == "input_speech_features"
+    ) == expected_speech_roles
+    assert parts[-1] == {
+        "type": "text",
+        "text": "[evidence dynamic-agent-step] Choose one key now.",
+    }
+    query_index = next(
+        index
+        for index, part in enumerate(parts)
+        if part["type"] == "input_speech_features"
+        and part["speech_features"]["role"] == "query"
+    )
+    assert query_index < len(parts) - 1
+    assert all(part["type"] != "input_audio" for part in parts)
+
+
+@pytest.mark.parametrize(
+    ("prompt_order", "stable_prefix_length"),
+    (
+        ("speech-query-prefix-v2", 1),
+        ("knowledge-speech-state-v2", 3),
+    ),
+)
+def test_agent_loop_wire_requests_have_an_identical_prefix_before_mutable_state(
+    tmp_path, prompt_order, stable_prefix_length
+):
+    feature_root = tmp_path / "features"
+    query = _materialize_packet(feature_root, "slurp/train/query")
+    key = _materialize_packet(feature_root, "slurp/train/key")
+    captured = []
+
+    def fake_post(url, body):
+        captured.append(json.loads(body))
+        return _canned_response()
+
+    transport = _transport(
+        _base_url(),
+        tmp_path,
+        post=fake_post,
+        session=_fake_inference_session(),
+        prompt_order=prompt_order,
+        feature_root=feature_root,
+    )
+    common = {
+        "speech_feature_parts": [
+            {
+                "packet_id": query.packet_id,
+                "sha256": query.packet_sha256,
+                "role": "query",
+            },
+            {
+                "packet_id": key.packet_id,
+                "sha256": key.packet_sha256,
+                "role": "key",
+            },
+        ],
+        "speech_packet_sha256": query.packet_sha256,
+        "query_source": "speech_features",
+        "key_representation_id": "k4-hybrid-key-v1",
+        "matcher_policy_id": "m11-agent-loop-v1",
+        "mmproj_loaded": False,
+    }
+    for evidence_id, instruction in (
+        ("agent-step-a", "Choose one key."),
+        ("agent-step-b", "Verify that key."),
+    ):
+        payload = _boundary_payload(
+            tmp_path,
+            supplied_evidence=[
+                {"evidence_id": "stable-key-catalog", "content": "Opaque key cards."},
+                {"evidence_id": evidence_id, "content": instruction},
+            ],
+            **common,
+        )
+        transport(json.dumps(payload).encode())
+
+    first = captured[0]["messages"][1]["content"]
+    second = captured[1]["messages"][1]["content"]
+    assert first[:stable_prefix_length] == second[:stable_prefix_length]
+    assert first[stable_prefix_length:] != second[stable_prefix_length:]
+
+
 def test_speech_feature_transport_batch_validates_query_and_key_packets(
     tmp_path, monkeypatch
 ):
@@ -445,13 +604,23 @@ def test_speech_feature_transport_batch_validates_query_and_key_packets(
     ]
 
 
-def test_speech_feature_prompt_order_requires_inference_session_and_fixed_root(tmp_path):
+@pytest.mark.parametrize(
+    "prompt_order",
+    (
+        "speech-features-text-keys-v1",
+        "speech-query-prefix-v2",
+        "knowledge-speech-state-v2",
+    ),
+)
+def test_speech_feature_prompt_order_requires_inference_session_and_fixed_root(
+    tmp_path, prompt_order
+):
     with pytest.raises(SessionError, match="inference session"):
         _transport(
             _base_url(),
             tmp_path,
             post=lambda u, b: _canned_response(),
-            prompt_order="speech-features-text-keys-v1",
+            prompt_order=prompt_order,
             feature_root=tmp_path / "features",
         )
     with pytest.raises(SessionError, match="feature_root"):
@@ -460,7 +629,7 @@ def test_speech_feature_prompt_order_requires_inference_session_and_fixed_root(t
             tmp_path,
             post=lambda u, b: _canned_response(),
             session=_fake_inference_session(),
-            prompt_order="speech-features-text-keys-v1",
+            prompt_order=prompt_order,
         )
 
 

@@ -39,6 +39,7 @@ from speech_aware_evidence_acquisition.core.driver.speech_native import (
     _audit_m11_prompt_fit,
     _m11_prompt_text_token_count,
     _enumerate_m11_prompt_envelopes,
+    _wire_m11_prompt_envelope,
     _m11_reader_contract_from_values,
     _load_key_cards,
     _load_m11_prompt_fit_receipt,
@@ -3322,6 +3323,99 @@ def test_m11_prompt_enumerator_reuses_the_contact_batched_runtime_path():
         rendered = json.dumps(envelope, sort_keys=True)
         assert '"value_label"' not in rendered
         assert "Candidate labels:" not in rendered
+
+
+@pytest.mark.parametrize(
+    ("prompt_order", "expected_types"),
+    (
+        ("speech-query-prefix-v2", ("input_speech_features", "text", "text")),
+        ("knowledge-speech-state-v2", ("text", "input_speech_features", "text")),
+    ),
+)
+def test_m11_wire_prompt_envelope_matches_the_transport_cache_order(
+    prompt_order, expected_types
+):
+    envelope = _enumerate_m11_prompt_envelopes(
+        key_cards=_KEY_CARDS,
+        decision_graph=_decision_graph_fixture(),
+        top_k=2,
+        key_order_ids=("canonical",),
+        request_layout_id="slot-affine-speech-prefix-v1",
+    )[0]
+
+    wire = _wire_m11_prompt_envelope(envelope, prompt_order=prompt_order)
+
+    parts = wire["messages"][1]["content"]
+    assert tuple(part["type"] for part in parts) == expected_types
+    assert parts[-1]["text"].startswith("[evidence speech-supply-01-")
+    assert wire["messages"] != envelope["messages"]
+    assert wire["response_format"] == envelope["response_format"]
+
+
+def test_m11_wire_prompt_envelope_preserves_the_historical_transport_contract():
+    envelope = _enumerate_m11_prompt_envelopes(
+        key_cards=_KEY_CARDS,
+        decision_graph=_decision_graph_fixture(),
+        top_k=2,
+        key_order_ids=("canonical",),
+    )[0]
+
+    assert _wire_m11_prompt_envelope(
+        envelope, prompt_order="speech-features-text-keys-v1"
+    ) == dict(envelope)
+
+
+def test_m11_knowledge_speech_state_layout_keeps_dynamic_evidence_after_speech():
+    envelopes = _enumerate_m11_prompt_envelopes(
+        key_cards=_KEY_CARDS,
+        decision_graph=_decision_graph_fixture(),
+        top_k=2,
+        key_order_ids=("canonical",),
+        request_layout_id="slot-affine-knowledge-speech-state-v1",
+    )
+    action = next(
+        envelope for envelope in envelopes if envelope["stage_kind"] == "action"
+    )
+
+    wire = _wire_m11_prompt_envelope(
+        action, prompt_order="knowledge-speech-state-v2"
+    )
+
+    parts = wire["messages"][1]["content"]
+    assert tuple(part["type"] for part in parts) == (
+        "text",
+        "input_speech_features",
+        "text",
+        "text",
+    )
+    assert parts[0]["text"].startswith("[evidence speech-supply-00-")
+    assert "Opaque key catalog" in parts[0]["text"]
+    assert "Linked keys:" in parts[2]["text"]
+    assert parts[3]["text"].startswith("[evidence speech-supply-02-")
+
+
+@pytest.mark.parametrize(
+    "user_content",
+    (None, [None], [{"type": "text", "text": ""}], [{"type": "input_audio"}]),
+)
+def test_m11_wire_prompt_envelope_rejects_malformed_content(user_content):
+    envelope = dict(
+        _enumerate_m11_prompt_envelopes(
+            key_cards=_KEY_CARDS,
+            decision_graph=_decision_graph_fixture(),
+            top_k=2,
+            key_order_ids=("canonical",),
+        )[0]
+    )
+    envelope["messages"] = (
+        {"role": "system", "content": "Stable policy."},
+        {"role": "user", "content": user_content},
+    )
+
+    with pytest.raises(SpeechNativeProfileError, match="M11 wire prompt"):
+        _wire_m11_prompt_envelope(
+            envelope, prompt_order="speech-query-prefix-v2"
+        )
 
 
 def test_m11_prompt_fit_audit_adds_speech_and_special_token_reserves():

@@ -812,7 +812,11 @@ class FrozenCoreClient:
         # file this text never came from.
         supplied_evidence = [
             {
-                "evidence_id": f"{request_id}-supply-{index}",
+                "evidence_id": (
+                    _speech_supply_evidence_id(index, text)
+                    if speech_feature_parts is not None
+                    else f"{request_id}-supply-{index}"
+                ),
                 "source_uri": f"rails-supply://{sample_id}",
                 "content": text,
             }
@@ -900,3 +904,13 @@ class FrozenCoreClient:
 
 def _content_sha256(text: str) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+def _speech_supply_evidence_id(index: int, text: str) -> str:
+    """Return the request-independent identifier used in speech wire prompts."""
+
+    if isinstance(index, bool) or not isinstance(index, int) or index < 0:
+        raise FrozenCoreClientError("speech supply index must be a non-negative integer")
+    if not isinstance(text, str) or not text:
+        raise FrozenCoreClientError("speech supply text must be a non-empty string")
+    return f"speech-supply-{index:02d}-{_content_sha256(text)}"

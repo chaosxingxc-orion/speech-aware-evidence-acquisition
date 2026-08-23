@@ -28,10 +28,12 @@ from pathlib import Path
 from typing import Callable, Mapping, Sequence
 
 from ...contracts import ExecutionPlan
+from ...core.model.transport import _ordered_speech_feature_content
 from ...core.model.speech_features import load_speech_feature_packets
 from ...data.lock import asset_dir, data_root, load_lock, umbrella_lock_path
 from ...e0.artifacts import REPO_ROOT
 from ...rails import FrozenCoreClient, build_payload_binding
+from ...rails.core_client import _speech_supply_evidence_id
 from ...rails.probes.pslu_flight import (
     DecisionBoundaryV1,
     DecisionFactorV1,
@@ -6557,6 +6559,69 @@ def _enumerate_m11_prompt_envelopes(
     return ordered
 
 
+def _wire_m11_prompt_envelope(
+    envelope: Mapping[str, object], *, prompt_order: str
+) -> dict[str, object]:
+    """Render one enumerated M11 envelope at the real transport boundary."""
+
+    if prompt_order == "speech-features-text-keys-v1":
+        # Historical prompt-fit receipts hashed matcher messages before the
+        # transport rebuilt them. Preserve that replay contract exactly.
+        return dict(envelope)
+    messages = envelope.get("messages")
+    if (
+        not isinstance(messages, (list, tuple))
+        or len(messages) != 2
+        or not isinstance(messages[0], Mapping)
+        or messages[0].get("role") != "system"
+        or not isinstance(messages[0].get("content"), str)
+        or not isinstance(messages[1], Mapping)
+        or messages[1].get("role") != "user"
+        or not isinstance(messages[1].get("content"), (list, tuple))
+    ):
+        raise SpeechNativeProfileError("M11 wire prompt envelope messages are malformed")
+    text_values: list[str] = []
+    feature_parts: list[dict[str, object]] = []
+    for part in messages[1]["content"]:
+        if not isinstance(part, Mapping):
+            raise SpeechNativeProfileError("M11 wire prompt content part is malformed")
+        if part.get("type") == "text":
+            value = part.get("text")
+            if not isinstance(value, str) or not value:
+                raise SpeechNativeProfileError("M11 wire prompt text part is malformed")
+            text_values.append(value)
+            continue
+        descriptor = part.get("speech_features")
+        if part.get("type") != "input_speech_features" or not isinstance(
+            descriptor, Mapping
+        ):
+            raise SpeechNativeProfileError(
+                "M11 wire prompt contains an unsupported content part"
+            )
+        feature_parts.append(
+            {
+                "type": "input_speech_features",
+                "speech_features": dict(descriptor),
+            }
+        )
+    evidence_texts = [
+        f"[evidence {_speech_supply_evidence_id(index, value)}] {value}"
+        for index, value in enumerate(text_values)
+    ]
+    wire_content = _ordered_speech_feature_content(
+        prompt_order=prompt_order,
+        evidence_texts=evidence_texts,
+        feature_parts=feature_parts,
+    )
+    return {
+        **envelope,
+        "messages": (
+            {"role": "system", "content": messages[0]["content"]},
+            {"role": "user", "content": wire_content},
+        ),
+    }
+
+
 def _audit_m11_prompt_fit(
     *,
     envelopes: Sequence[Mapping[str, object]],
@@ -6690,6 +6755,7 @@ def _load_m11_prompt_fit_receipt(
     context_tokens_per_slot: int,
     maximum_completion_tokens: int,
     expected_envelopes: Sequence[Mapping[str, object]],
+    transport_prompt_order: str = "speech-features-text-keys-v1",
 ) -> Mapping[str, object]:
     """Verify that one tokenizer-only receipt admits this exact M11 profile."""
 
@@ -6716,6 +6782,8 @@ def _load_m11_prompt_fit_receipt(
             raise SpeechNativeProfileError(f"prompt-fit {name} must be positive")
     if top_k > key_count:
         raise SpeechNativeProfileError("prompt-fit top_k exceeds key count")
+    if not isinstance(transport_prompt_order, str) or not transport_prompt_order:
+        raise SpeechNativeProfileError("prompt-fit transport_prompt_order is malformed")
     if _sha256_file(path) != expected_sha256:
         raise SpeechNativeProfileError("prompt-fit receipt SHA-256 mismatch")
     try:
@@ -6740,6 +6808,8 @@ def _load_m11_prompt_fit_receipt(
         "scope": "model-free-check",
         "new_model_contact_authorized": False,
     }
+    if transport_prompt_order != "speech-features-text-keys-v1":
+        expected_identity["transport_prompt_order"] = transport_prompt_order
     mismatches = {
         key: {"expected": expected, "observed": document.get(key)}
         for key, expected in expected_identity.items()
@@ -6926,6 +6996,7 @@ def _validate_m11_prompt_fit_for_profile(
     context_tokens_per_slot: int,
     maximum_completion_tokens: int,
     request_layout_id: str = "legacy-key-speech-v1",
+    transport_prompt_order: str = "speech-features-text-keys-v1",
 ) -> Mapping[str, object]:
     """Bind an M11 prompt-fit receipt to one formal resident profile."""
 
@@ -6937,12 +7008,18 @@ def _validate_m11_prompt_fit_for_profile(
         raise SpeechNativeProfileError(
             "M11 prompt-fit gate lacks a decoder SHA-256 binding"
         )
-    expected_envelopes = _enumerate_m11_prompt_envelopes(
-        key_cards=key_cards,
-        decision_graph=decision_graph,
-        top_k=top_k,
-        key_order_ids=key_order_ids,
-        request_layout_id=request_layout_id,
+    expected_envelopes = tuple(
+        _wire_m11_prompt_envelope(
+            envelope,
+            prompt_order=transport_prompt_order,
+        )
+        for envelope in _enumerate_m11_prompt_envelopes(
+            key_cards=key_cards,
+            decision_graph=decision_graph,
+            top_k=top_k,
+            key_order_ids=key_order_ids,
+            request_layout_id=request_layout_id,
+        )
     )
     return _load_m11_prompt_fit_receipt(
         path=path,
@@ -6961,6 +7038,7 @@ def _validate_m11_prompt_fit_for_profile(
         context_tokens_per_slot=context_tokens_per_slot,
         maximum_completion_tokens=maximum_completion_tokens,
         expected_envelopes=expected_envelopes,
+        transport_prompt_order=transport_prompt_order,
     )
 
 
@@ -11055,6 +11133,11 @@ def _cli_speech_native_prompt_audit(args: argparse.Namespace) -> int:
         raise SpeechNativeProfileError(
             f"unknown speech-native request layout {request_layout_id!r}"
         )
+    transport_prompt_order = values.get("prompt_order")
+    if not isinstance(transport_prompt_order, str) or not transport_prompt_order:
+        raise SpeechNativeProfileError(
+            "prompt audit requires a non-empty transport prompt_order"
+        )
     raw_order_ids = values.get("profile_key_order_ids")
     if (
         not isinstance(raw_order_ids, list)
@@ -11200,12 +11283,18 @@ def _cli_speech_native_prompt_audit(args: argparse.Namespace) -> int:
             "resident llama.cpp props lack media marker or chat template identity"
         )
 
-    envelopes = _enumerate_m11_prompt_envelopes(
-        key_cards=key_cards,
-        decision_graph=decision_graph,
-        top_k=top_k,
-        key_order_ids=tuple(raw_order_ids),
-        request_layout_id=request_layout_id,
+    envelopes = tuple(
+        _wire_m11_prompt_envelope(
+            envelope,
+            prompt_order=transport_prompt_order,
+        )
+        for envelope in _enumerate_m11_prompt_envelopes(
+            key_cards=key_cards,
+            decision_graph=decision_graph,
+            top_k=top_k,
+            key_order_ids=tuple(raw_order_ids),
+            request_layout_id=request_layout_id,
+        )
     )
 
     def count_one(envelope: Mapping[str, object]) -> tuple[str, int]:
@@ -11251,6 +11340,7 @@ def _cli_speech_native_prompt_audit(args: argparse.Namespace) -> int:
             "decision_graph_path": graph_path.relative_to(repo_root).as_posix(),
             "decision_graph_file_sha256": graph_sha256,
             "request_layout_id": request_layout_id,
+            "transport_prompt_order": transport_prompt_order,
             "packet_promotion_receipt_sha256": promotion_sha256,
             "validated_packet_count": len(packets),
             "maximum_speech_packet": {
@@ -11668,6 +11758,7 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
             context_tokens_per_slot=geometry["context_tokens_per_slot"],
             maximum_completion_tokens=prompt_fit_maximum_completion_tokens,
             request_layout_id=request_layout_id,
+            transport_prompt_order=_require_string(values, "prompt_order"),
         )
     client: FrozenCoreClient | None = None
     close_summary: dict[str, object] | None = None

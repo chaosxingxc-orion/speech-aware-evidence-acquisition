@@ -831,3 +831,42 @@ def test_slot_affine_cache_profile_binds_hot_hbm_policy_and_parallel_build():
     assert values["speech_native_prompt_fit_receipt_sha256"] == (
         "730354358c47258fe0d9468c9062fbf8898ecab30a6304a3affdf8e7615d46ec"
     )
+
+
+@pytest.mark.parametrize(
+    ("model", "baseline", "prompt_order", "request_layout"),
+    (
+        (
+            "q4km-mmproj-free-speech-native-np16-hot-prefix-speech-query-v2",
+            "speech-native-engineering-m11-prefix-probe-speech-query-v2",
+            "speech-query-prefix-v2",
+            "slot-affine-speech-prefix-v1",
+        ),
+        (
+            "q4km-mmproj-free-speech-native-np16-hot-prefix-dual-v2",
+            "speech-native-engineering-m11-prefix-probe-dual-v2",
+            "knowledge-speech-state-v2",
+            "slot-affine-knowledge-speech-state-v1",
+        ),
+    ),
+)
+def test_prefix_probe_profiles_bind_wire_order_without_a_stale_prompt_receipt(
+    model, baseline, prompt_order, request_layout
+):
+    from speech_aware_evidence_acquisition.e0.artifacts import REPO_ROOT
+
+    values = compose(
+        REPO_ROOT,
+        model,
+        "slurp-speech-native-eng-gate8",
+        baseline,
+        "speech-native-engineering-adaptive-m11-data-knowledge",
+    ).values
+
+    assert values["prompt_order"] == prompt_order
+    assert values["speech_native_request_layout_id"] == request_layout
+    assert values["profile_key_order_ids"] == ["canonical", "reverse"]
+    assert values["speech_native_dispatch_granularity"] == "task"
+    assert values["decoding_params"]["id_slot"] == "per-sample"
+    assert "speech_native_prompt_fit_receipt" not in values
+    assert "speech_native_prompt_fit_receipt_sha256" not in values

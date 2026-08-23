@@ -31,6 +31,9 @@ from speech_aware_evidence_acquisition.rails import (
     build_payload_binding,
     build_slice_registry,
 )
+from speech_aware_evidence_acquisition.rails.core_client import (
+    _speech_supply_evidence_id,
+)
 
 _SHA_A = "a" * 64
 
@@ -310,6 +313,49 @@ def test_speech_feature_arm_builds_audited_packet_payload_on_existing_adapter(tm
     assert payload["matcher_policy_id"] == "m1-listwise-v1"
     assert payload["mmproj_loaded"] is False
     assert payload["media_relpath"] == world.media_relpath("s1")
+
+
+def test_speech_feature_arm_uses_content_stable_evidence_ids_for_prefix_reuse(tmp_path):
+    world = _World(tmp_path)
+    feature_root, packet, bindings = _speech_feature_world(world, tmp_path)
+    client, _, transport = _client(
+        world,
+        tmp_path,
+        arm="speech-feature-query",
+        speech_feature_root=feature_root,
+        speech_packet_bindings=bindings,
+    )
+
+    for instruction in ("Choose one key.", "Verify the selected key."):
+        client.complete(
+            _speech_feature_messages(packet, "Stable opaque key catalog.", instruction),
+            speech_feature_sample_id="s1",
+            key_representation_id="k1-text-card-v1",
+            matcher_policy_id="m11-agent-loop-v1",
+        )
+
+    first, second = transport.calls
+    assert first["request_id"] != second["request_id"]
+    assert (
+        first["supplied_evidence"][0]["evidence_id"]
+        == second["supplied_evidence"][0]["evidence_id"]
+    )
+    assert (
+        first["supplied_evidence"][1]["evidence_id"]
+        != second["supplied_evidence"][1]["evidence_id"]
+    )
+    assert first["supplied_evidence"][0]["evidence_id"].startswith(
+        "speech-supply-00-"
+    )
+
+
+@pytest.mark.parametrize(
+    ("index", "text"),
+    ((-1, "valid"), (True, "valid"), (0, ""), (0, None)),
+)
+def test_speech_supply_evidence_id_rejects_unstable_inputs(index, text):
+    with pytest.raises(FrozenCoreClientError, match="speech supply"):
+        _speech_supply_evidence_id(index, text)
 
 
 def test_speech_feature_construction_uses_one_bounded_batch_validation(tmp_path, monkeypatch):

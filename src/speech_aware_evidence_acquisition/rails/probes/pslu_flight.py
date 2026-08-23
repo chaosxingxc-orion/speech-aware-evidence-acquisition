@@ -182,6 +182,7 @@ SPEECH_NATIVE_PROMPT_POLICIES = (
 SPEECH_NATIVE_REQUEST_LAYOUTS = (
     "legacy-key-speech-v1",
     "slot-affine-speech-prefix-v1",
+    "slot-affine-knowledge-speech-state-v1",
 )
 SPEECH_NATIVE_STABLE_SYSTEM_TEXT = (
     "Use the frozen speech observation and supplied knowledge to execute the final task "
@@ -1896,6 +1897,7 @@ def _speech_feature_messages(
     key_representation_id: str,
     audio_key_bindings: Mapping[str, Mapping[str, str]] | None,
     request_layout_id: str,
+    stable_knowledge_text: str | None = None,
 ) -> tuple[Mapping[str, object], ...]:
     if request_layout_id not in SPEECH_NATIVE_REQUEST_LAYOUTS:
         raise PsluFlightError(
@@ -1912,10 +1914,27 @@ def _speech_feature_messages(
         "speech_features": dict(query_descriptor),
     }
     content: list[Mapping[str, object]] = []
+    if request_layout_id == "slot-affine-knowledge-speech-state-v1":
+        if not isinstance(stable_knowledge_text, str) or not stable_knowledge_text:
+            raise PsluFlightError(
+                "knowledge-speech-state layout requires stable knowledge text"
+            )
+        content.append(
+            {
+                "type": "text",
+                "text": f"Opaque key catalog:\n{stable_knowledge_text}",
+            }
+        )
     if request_layout_id == "legacy-key-speech-v1" and key_text:
         content.append({"type": "text", "text": key_text})
     content.append(query_part)
     if request_layout_id == "slot-affine-speech-prefix-v1" and key_text:
+        content.append({"type": "text", "text": key_text})
+    if (
+        request_layout_id == "slot-affine-knowledge-speech-state-v1"
+        and key_text
+        and key_text != stable_knowledge_text
+    ):
         content.append({"type": "text", "text": key_text})
     if key_representation_id in {"K3", "K4"}:
         if audio_key_bindings is None or set(audio_key_bindings) != {
@@ -1943,7 +1962,10 @@ def _speech_feature_messages(
                     },
                 }
             )
-    if request_layout_id == "slot-affine-speech-prefix-v1":
+    if request_layout_id in {
+        "slot-affine-speech-prefix-v1",
+        "slot-affine-knowledge-speech-state-v1",
+    }:
         content.append(
             {"type": "text", "text": f"Task instruction:\n{system_text}"}
         )
@@ -1952,12 +1974,27 @@ def _speech_feature_messages(
             "role": "system",
             "content": (
                 SPEECH_NATIVE_STABLE_SYSTEM_TEXT
-                if request_layout_id == "slot-affine-speech-prefix-v1"
+                if request_layout_id
+                in {
+                    "slot-affine-speech-prefix-v1",
+                    "slot-affine-knowledge-speech-state-v1",
+                }
                 else system_text
             ),
         },
         {"role": "user", "content": content},
     )
+
+
+def _stable_knowledge_text_for_layout(
+    *,
+    request_layout_id: str,
+    key_cards: Sequence[KeyCardV1],
+    key_representation_id: str,
+) -> str | None:
+    if request_layout_id != "slot-affine-knowledge-speech-state-v1":
+        return None
+    return render_speech_native_keys(key_cards, key_representation_id)
 
 
 def run_speech_native_matcher(
@@ -2164,6 +2201,11 @@ def run_speech_native_matcher(
                 else None
             ),
             request_layout_id=request_layout_id,
+            stable_knowledge_text=_stable_knowledge_text_for_layout(
+                request_layout_id=request_layout_id,
+                key_cards=cards,
+                key_representation_id=key_representation_id,
+            ),
         )
         request_decoding_params = dict(decoding_params or {})
         if decoding_overrides is not None:
@@ -4513,6 +4555,11 @@ def run_speech_native_match_tasks(
                 key_representation_id="K1",
                 audio_key_bindings=None,
                 request_layout_id=task.request_layout_id,
+                stable_knowledge_text=_stable_knowledge_text_for_layout(
+                    request_layout_id=task.request_layout_id,
+                    key_cards=state.cards,
+                    key_representation_id="K1",
+                ),
             )
             trace_buffer = (
                 TraceBuffer(trace_run_id) if trace_run_id is not None else None
@@ -5069,6 +5116,11 @@ def run_speech_native_match_tasks(
                 key_representation_id=key_representation_id,
                 audio_key_bindings=None,
                 request_layout_id=task.request_layout_id,
+                stable_knowledge_text=_stable_knowledge_text_for_layout(
+                    request_layout_id=task.request_layout_id,
+                    key_cards=state.cards,
+                    key_representation_id=key_representation_id,
+                ),
             )
             trace_buffer = (
                 TraceBuffer(trace_run_id) if trace_run_id is not None else None
@@ -5477,6 +5529,11 @@ def run_speech_native_match_tasks(
                 key_representation_id="K1",
                 audio_key_bindings=None,
                 request_layout_id=task.request_layout_id,
+                stable_knowledge_text=_stable_knowledge_text_for_layout(
+                    request_layout_id=task.request_layout_id,
+                    key_cards=state.cards,
+                    key_representation_id="K1",
+                ),
             )
             trace_buffer = (
                 TraceBuffer(trace_run_id) if trace_run_id is not None else None
@@ -6127,6 +6184,11 @@ def run_speech_native_match_tasks(
                     else None
                 ),
                 request_layout_id=task.request_layout_id,
+                stable_knowledge_text=_stable_knowledge_text_for_layout(
+                    request_layout_id=task.request_layout_id,
+                    key_cards=state.cards,
+                    key_representation_id=task.key_representation_id,
+                ),
             )
             trace_buffer = (
                 TraceBuffer(trace_run_id) if trace_run_id is not None else None

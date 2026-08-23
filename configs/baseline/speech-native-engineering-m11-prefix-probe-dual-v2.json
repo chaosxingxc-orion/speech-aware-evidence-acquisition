@@ -1,0 +1,29 @@
+{
+  "arm": "speech-feature-query",
+  "policy": "fixed",
+  "evidence_source": "none",
+  "evidence_mismatch": false,
+  "obs_batch_samples": 1,
+  "allow_empty_speech_feature_evidence": false,
+  "speech_packet_promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/TRAIN90-promotion.json",
+  "speech_packet_promotion_receipt_sha256": "9d7fc4a3ea93fdf89d055cb055c96d7a4c3888d80ef8642b07da5d7c743b9974",
+  "speech_native_binding": "configs/probes/g0-binding/speech-native-train-binding-evidence-e108-data-knowledge.json",
+  "speech_native_binding_file_sha256": "3e2fefe9e6e9016e835560ddd61e92f8de76ae2b8c96ef483f74f36285cfd6a1",
+  "profile_key_order_ids": [
+    "canonical",
+    "reverse"
+  ],
+  "profile_queue_depth_multiplier": 4,
+  "profile_validation_workers": 16,
+  "speech_native_result_mode": "predictions",
+  "speech_native_contact_ceiling_per_task": 5,
+  "speech_native_top_k": 3,
+  "speech_native_dispatch_granularity": "task",
+  "speech_native_request_layout_id": "slot-affine-knowledge-speech-state-v1",
+  "matcher_prompt_policy_id": "speech-native-json-copy-v4",
+  "matcher_verifier_policy_id": "speech-native-compatibility-v1",
+  "scorers": [
+    "cost"
+  ],
+  "task_instruction": "Run the label-blind dual-prefix probe over two registered K1 key orders. Keep one immutable full key index before the speech query, and keep all retrieved values, candidate-local knowledge, Agent state, and step instructions after the exact original speech packet. Keep each complete trajectory on one server slot and read only cache, runtime, utilization, timing, and failure mechanics."
+}
