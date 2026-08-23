@@ -6,6 +6,8 @@
   "matcher_policy_id": "M11",
   "speech_native_decision_graph": "configs/knowledge/slurp-signature-complete-decision-graph-v5.json",
   "speech_native_decision_graph_file_sha256": "58c9457312d71a7c7a13e92e53e2a4f9fff5c45a9722eb5680d0fd465fe8a2fc",
+  "speech_native_prompt_fit_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-08-22-m11-v5-prompt-fit/prompt-fit.json",
+  "speech_native_prompt_fit_receipt_sha256": "a5931ccd3c9e02150496d0475829e926becc02ed83322d45f4121dd00ee2a289",
   "speech_native_agent_policy_id": "speech-conditioned-adaptive-evidence-gap-v2",
   "speech_native_agent_aggregator_id": "adaptive-evidence-gap-primary-control-v1",
   "speech_native_training_free_reader_policy_id": "speaker-grouped-oof-information-advantage-v1",

@@ -622,6 +622,13 @@ def test_information_complete_e108_m11_composes_on_the_resident_np16_service():
     assert values["speech_native_decision_graph_file_sha256"] == (
         "58c9457312d71a7c7a13e92e53e2a4f9fff5c45a9722eb5680d0fd465fe8a2fc"
     )
+    assert values["speech_native_prompt_fit_receipt"] == (
+        "docs/checks/speech-aware-evidence-acquisition/"
+        "2026-08-22-m11-v5-prompt-fit/prompt-fit.json"
+    )
+    assert values["speech_native_prompt_fit_receipt_sha256"] == (
+        "a5931ccd3c9e02150496d0475829e926becc02ed83322d45f4121dd00ee2a289"
+    )
     assert values["profile_key_order_ids"] == ["canonical"]
     assert values["profile_queue_depth_multiplier"] == 4
     assert values["profile_validation_workers"] == 16
@@ -663,8 +670,11 @@ def test_information_complete_e108_m11_composes_on_the_resident_np16_service():
         "promotion_requires_lower_mean_calls": True,
     }
     context_per_slot = 65536 // values["profile_slot_count"]
-    conservative_prompt_ceiling = 1873 + 169 + 294
-    assert context_per_slot - conservative_prompt_ceiling == 1760
+    exact_prompt_upper_bound = 2341
+    maximum_completion_tokens = 64
+    assert (
+        context_per_slot - exact_prompt_upper_bound - maximum_completion_tokens == 1691
+    )
 
 
 # ---------------------------------------------------------------------------

@@ -150,6 +150,14 @@ _M11_POLICY_ID = "speech-conditioned-adaptive-evidence-gap-v1"
 _M11_KEY_CONDITIONED_POLICY_ID = "speech-conditioned-adaptive-evidence-gap-v2"
 _M11_POLICY_IDS = frozenset({_M11_POLICY_ID, _M11_KEY_CONDITIONED_POLICY_ID})
 _M11_AGGREGATOR_ID = "adaptive-evidence-gap-primary-control-v1"
+_M11_DECISION_GRAPH_IDS = frozenset(
+    {
+        "slurp-data-derived-decision-graph-v2",
+        "slurp-shared-action-entity-decision-graph-v3",
+        "slurp-signature-lexical-decision-graph-v4",
+        "slurp-signature-complete-decision-graph-v5",
+    }
+)
 _M11_OOF_POLICY_ID = "speaker-grouped-oof-information-advantage-v1"
 _M11_MEMORY_HOLDOUT_EVALUATION_ID = "discovery-memory-to-speaker-unseen-holdout-v1"
 _M11_INFORMATION_FLOW_SCHEMA = "m11-information-flow-v1"
@@ -4635,8 +4643,7 @@ def read_speech_native_predictions(
                 profile_agent_policy_id not in _M11_POLICY_IDS
                 or agent_aggregator_id != _M11_AGGREGATOR_ID
                 or key_representation_id != "K1"
-                or profile.get("decision_graph_id")
-                != "slurp-data-derived-decision-graph-v2"
+                or profile.get("decision_graph_id") not in _M11_DECISION_GRAPH_IDS
             ):
                 raise SpeechNativeProfileError(
                     "M11 flight receipt has an unknown adaptive evidence-gap identity"
@@ -6654,6 +6661,340 @@ def _audit_m11_prompt_fit(
         "worst_envelope_messages_sha256": worst["messages_sha256"],
         "envelopes": rows,
     }
+
+
+def _load_m11_prompt_fit_receipt(
+    *,
+    path: Path,
+    expected_sha256: str,
+    binding_sha256: str,
+    graph_id: str,
+    graph_sha256: str,
+    packet_promotion_sha256: str,
+    session_receipt_sha256: str,
+    decoder_sha256: str,
+    key_count: int,
+    boundary_count: int,
+    key_order_count: int,
+    top_k: int,
+    packet_count: int,
+    context_tokens_per_slot: int,
+    maximum_completion_tokens: int,
+    expected_envelopes: Sequence[Mapping[str, object]],
+) -> Mapping[str, object]:
+    """Verify that one tokenizer-only receipt admits this exact M11 profile."""
+
+    for value, name in (
+        (expected_sha256, "prompt-fit receipt"),
+        (binding_sha256, "prompt-fit binding"),
+        (graph_sha256, "prompt-fit graph"),
+        (packet_promotion_sha256, "prompt-fit packet promotion"),
+        (session_receipt_sha256, "prompt-fit session receipt"),
+        (decoder_sha256, "prompt-fit decoder"),
+    ):
+        if not isinstance(value, str) or _SHA256.fullmatch(value) is None:
+            raise SpeechNativeProfileError(f"{name} SHA-256 is malformed")
+    for value, name in (
+        (key_count, "key_count"),
+        (boundary_count, "boundary_count"),
+        (key_order_count, "key_order_count"),
+        (top_k, "top_k"),
+        (packet_count, "packet_count"),
+        (context_tokens_per_slot, "context_tokens_per_slot"),
+        (maximum_completion_tokens, "maximum_completion_tokens"),
+    ):
+        if isinstance(value, bool) or not isinstance(value, int) or value <= 0:
+            raise SpeechNativeProfileError(f"prompt-fit {name} must be positive")
+    if top_k > key_count:
+        raise SpeechNativeProfileError("prompt-fit top_k exceeds key count")
+    if _sha256_file(path) != expected_sha256:
+        raise SpeechNativeProfileError("prompt-fit receipt SHA-256 mismatch")
+    try:
+        document = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as error:
+        raise SpeechNativeProfileError(
+            f"cannot read prompt-fit receipt: {error}"
+        ) from error
+    if not isinstance(document, Mapping) or document.get("schema") != (
+        "saea-speech-native-m11-prompt-fit-v1"
+    ):
+        raise SpeechNativeProfileError("prompt-fit receipt schema mismatch")
+    expected_identity = {
+        "binding_file_sha256": binding_sha256,
+        "decision_graph_id": graph_id,
+        "decision_graph_file_sha256": graph_sha256,
+        "packet_promotion_receipt_sha256": packet_promotion_sha256,
+        "validated_packet_count": packet_count,
+        "context_tokens_per_slot": context_tokens_per_slot,
+        "maximum_completion_tokens": maximum_completion_tokens,
+        "model_contact": False,
+        "scope": "model-free-check",
+        "new_model_contact_authorized": False,
+    }
+    mismatches = {
+        key: {"expected": expected, "observed": document.get(key)}
+        for key, expected in expected_identity.items()
+        if document.get(key) != expected
+    }
+    if mismatches:
+        raise SpeechNativeProfileError(
+            f"prompt-fit receipt identity mismatch: {mismatches!r}"
+        )
+    expected_stage_counts = {
+        "action": math.perm(key_count, top_k),
+        "boundary": 4 * boundary_count,
+        "primary": key_order_count,
+        "retrieval": key_order_count,
+    }
+    expected_envelope_count = sum(expected_stage_counts.values())
+    expected_prompt_rows: dict[str, Mapping[str, object]] = {}
+    for envelope in expected_envelopes:
+        envelope_id = envelope.get("envelope_id")
+        stage_kind = envelope.get("stage_kind")
+        messages = envelope.get("messages")
+        response_format = envelope.get("response_format")
+        if (
+            not isinstance(envelope_id, str)
+            or not envelope_id
+            or envelope_id in expected_prompt_rows
+            or stage_kind not in expected_stage_counts
+            or not isinstance(messages, Sequence)
+            or isinstance(messages, (str, bytes))
+            or not isinstance(response_format, Mapping)
+        ):
+            raise SpeechNativeProfileError("expected M11 prompt envelope is malformed")
+        expected_prompt_rows[envelope_id] = {
+            "stage_kind": stage_kind,
+            "messages_sha256": _canonical_sha256(messages),
+            "response_format_sha256": _canonical_sha256(response_format),
+        }
+    if len(expected_prompt_rows) != expected_envelope_count:
+        raise SpeechNativeProfileError(
+            "expected M11 prompt envelopes do not cover the action space"
+        )
+    if (
+        document.get("stage_counts") != expected_stage_counts
+        or document.get("envelope_count") != expected_envelope_count
+    ):
+        raise SpeechNativeProfileError(
+            "prompt-fit receipt stage coverage does not match the M11 action space"
+        )
+    special_reserve = document.get("special_token_reserve")
+    maximum_speech_tokens = document.get("maximum_speech_feature_tokens")
+    if (
+        isinstance(special_reserve, bool)
+        or not isinstance(special_reserve, int)
+        or special_reserve != 2
+        or isinstance(maximum_speech_tokens, bool)
+        or not isinstance(maximum_speech_tokens, int)
+        or maximum_speech_tokens <= 0
+    ):
+        raise SpeechNativeProfileError(
+            "prompt-fit receipt speech/special token reserves are malformed"
+        )
+    raw_rows = document.get("envelopes")
+    if not isinstance(raw_rows, list) or len(raw_rows) != expected_envelope_count:
+        raise SpeechNativeProfileError(
+            "prompt-fit receipt envelope rows are incomplete"
+        )
+    rows: list[Mapping[str, object]] = []
+    seen_ids: set[str] = set()
+    expected_row_keys = {
+        "envelope_id",
+        "stage_kind",
+        "messages_sha256",
+        "response_format_sha256",
+        "text_prompt_tokens",
+        "prompt_tokens_upper_bound",
+    }
+    for raw in raw_rows:
+        if not isinstance(raw, Mapping) or set(raw) != expected_row_keys:
+            raise SpeechNativeProfileError(
+                "prompt-fit receipt envelope row is malformed"
+            )
+        envelope_id = raw.get("envelope_id")
+        stage_kind = raw.get("stage_kind")
+        text_tokens = raw.get("text_prompt_tokens")
+        prompt_tokens = raw.get("prompt_tokens_upper_bound")
+        expected_prompt_row = expected_prompt_rows.get(str(envelope_id))
+        if (
+            not isinstance(envelope_id, str)
+            or not envelope_id
+            or envelope_id in seen_ids
+            or stage_kind not in expected_stage_counts
+            or not isinstance(raw.get("messages_sha256"), str)
+            or _SHA256.fullmatch(str(raw.get("messages_sha256"))) is None
+            or not isinstance(raw.get("response_format_sha256"), str)
+            or _SHA256.fullmatch(str(raw.get("response_format_sha256"))) is None
+            or isinstance(text_tokens, bool)
+            or not isinstance(text_tokens, int)
+            or text_tokens <= 0
+            or isinstance(prompt_tokens, bool)
+            or not isinstance(prompt_tokens, int)
+            or prompt_tokens != text_tokens + maximum_speech_tokens + special_reserve
+            or expected_prompt_row is None
+            or stage_kind != expected_prompt_row["stage_kind"]
+            or raw.get("messages_sha256") != expected_prompt_row["messages_sha256"]
+            or raw.get("response_format_sha256")
+            != expected_prompt_row["response_format_sha256"]
+        ):
+            raise SpeechNativeProfileError(
+                "prompt-fit receipt envelope token accounting is malformed"
+            )
+        seen_ids.add(envelope_id)
+        rows.append(raw)
+    observed_stage_counts = Counter(str(row["stage_kind"]) for row in rows)
+    if dict(sorted(observed_stage_counts.items())) != expected_stage_counts:
+        raise SpeechNativeProfileError(
+            "prompt-fit receipt envelope rows disagree with stage coverage"
+        )
+    worst = max(
+        rows,
+        key=lambda row: (
+            int(row["prompt_tokens_upper_bound"]),
+            str(row["envelope_id"]),
+        ),
+    )
+    maximum_prompt = int(worst["prompt_tokens_upper_bound"])
+    margin = context_tokens_per_slot - maximum_prompt - maximum_completion_tokens
+    if (
+        document.get("maximum_text_prompt_tokens")
+        != max(int(row["text_prompt_tokens"]) for row in rows)
+        or document.get("maximum_prompt_tokens_upper_bound") != maximum_prompt
+        or document.get("worst_envelope_id") != worst["envelope_id"]
+        or document.get("worst_envelope_messages_sha256") != worst["messages_sha256"]
+        or document.get("context_margin_tokens") != margin
+        or document.get("maximum_prompt_fits_one_slot") is not True
+        or margin < 0
+    ):
+        raise SpeechNativeProfileError(
+            "prompt-fit receipt maximum or slot margin is inconsistent"
+        )
+    runtime = document.get("runtime")
+    if (
+        not isinstance(runtime, Mapping)
+        or runtime.get("session_receipt_sha256") != session_receipt_sha256
+        or runtime.get("decoder_sha256") != decoder_sha256
+        or runtime.get("mmproj_loaded") is not False
+    ):
+        raise SpeechNativeProfileError("prompt-fit receipt runtime identity mismatch")
+    tokenizer = document.get("tokenizer")
+    expected_request_counts = {
+        "GET /props": 1,
+        "POST /apply-template": expected_envelope_count,
+        "POST /tokenize": 2 * expected_envelope_count,
+    }
+    if (
+        not isinstance(tokenizer, Mapping)
+        or tokenizer.get("request_counts") != expected_request_counts
+        or tokenizer.get("decoder_evaluations") != 0
+        or tokenizer.get("generated_tokens") != 0
+        or not isinstance(tokenizer.get("media_marker"), str)
+        or not tokenizer.get("media_marker")
+        or not isinstance(tokenizer.get("chat_template_sha256"), str)
+        or _SHA256.fullmatch(str(tokenizer.get("chat_template_sha256"))) is None
+    ):
+        raise SpeechNativeProfileError(
+            "prompt-fit receipt tokenizer accounting is malformed"
+        )
+    return document
+
+
+def _validate_m11_prompt_fit_for_profile(
+    *,
+    path: Path,
+    expected_sha256: str,
+    binding_sha256: str,
+    decision_graph: DecisionGraphV1,
+    graph_sha256: str,
+    packet_promotion_sha256: str,
+    session_receipt_sha256: str,
+    server_env: Mapping[str, str],
+    key_cards: Sequence[KeyCardV1],
+    key_order_ids: Sequence[str],
+    top_k: int,
+    packet_count: int,
+    context_tokens_per_slot: int,
+    maximum_completion_tokens: int,
+) -> Mapping[str, object]:
+    """Bind an M11 prompt-fit receipt to one formal resident profile."""
+
+    decoder_sha256 = server_env.get("LLAMA_SPEECH_DECODER_SHA256")
+    if (
+        not isinstance(decoder_sha256, str)
+        or _SHA256.fullmatch(decoder_sha256) is None
+    ):
+        raise SpeechNativeProfileError(
+            "M11 prompt-fit gate lacks a decoder SHA-256 binding"
+        )
+    expected_envelopes = _enumerate_m11_prompt_envelopes(
+        key_cards=key_cards,
+        decision_graph=decision_graph,
+        top_k=top_k,
+        key_order_ids=key_order_ids,
+    )
+    return _load_m11_prompt_fit_receipt(
+        path=path,
+        expected_sha256=expected_sha256,
+        binding_sha256=binding_sha256,
+        graph_id=decision_graph.graph_id,
+        graph_sha256=graph_sha256,
+        packet_promotion_sha256=packet_promotion_sha256,
+        session_receipt_sha256=session_receipt_sha256,
+        decoder_sha256=decoder_sha256,
+        key_count=len(key_cards),
+        boundary_count=len(decision_graph.boundaries),
+        key_order_count=len(key_order_ids),
+        top_k=top_k,
+        packet_count=packet_count,
+        context_tokens_per_slot=context_tokens_per_slot,
+        maximum_completion_tokens=maximum_completion_tokens,
+        expected_envelopes=expected_envelopes,
+    )
+
+
+def _resolve_m11_prompt_fit_config(
+    *,
+    repo_root: Path,
+    values: Mapping[str, object],
+    matcher_policy_id: str,
+    session_receipt: object,
+) -> tuple[Path | None, str | None, int | None]:
+    """Resolve the formal M11 gate before creating per-attempt artifacts."""
+
+    if matcher_policy_id != "M11":
+        return None, None, None
+    if session_receipt is None:
+        raise SpeechNativeProfileError(
+            "M11 requires a receipt-bound resident session; starting a per-attempt "
+            "server is prohibited"
+        )
+    prompt_fit_relpath = _require_string(
+        values, "speech_native_prompt_fit_receipt"
+    )
+    prompt_fit_path = (repo_root / prompt_fit_relpath).resolve()
+    if prompt_fit_path == repo_root.resolve() or not prompt_fit_path.is_relative_to(
+        repo_root.resolve()
+    ):
+        raise SpeechNativeProfileError(
+            "M11 prompt-fit receipt must stay under the repository"
+        )
+    expected_sha256 = _require_string(
+        values, "speech_native_prompt_fit_receipt_sha256"
+    )
+    decoding_params = values.get("decoding_params")
+    if not isinstance(decoding_params, Mapping):
+        raise SpeechNativeProfileError("M11 decoding_params are malformed")
+    maximum_completion_tokens = decoding_params.get("max_tokens")
+    if (
+        isinstance(maximum_completion_tokens, bool)
+        or not isinstance(maximum_completion_tokens, int)
+        or maximum_completion_tokens <= 0
+    ):
+        raise SpeechNativeProfileError(
+            "M11 prompt-fit gate requires a positive max_tokens ceiling"
+        )
+    return prompt_fit_path, expected_sha256, maximum_completion_tokens
 
 
 def _m11_prompt_text_token_count(
@@ -10717,6 +11058,18 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
         repo_root, args.model, args.dataset, args.baseline, args.experiment
     )
     values = composed.values
+    matcher_policy_id = _require_string(values, "matcher_policy_id")
+    source_session_receipt = getattr(args, "session_receipt", None)
+    (
+        prompt_fit_path,
+        prompt_fit_expected_sha256,
+        prompt_fit_maximum_completion_tokens,
+    ) = _resolve_m11_prompt_fit_config(
+        repo_root=repo_root,
+        values=values,
+        matcher_policy_id=matcher_policy_id,
+        session_receipt=source_session_receipt,
+    )
     plan = ExecutionPlan(
         **json.loads(Path(args.plan).read_text(encoding="utf-8"))
     ).validate()
@@ -10771,9 +11124,12 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
     packet_receipt_path = Path(
         _require_string(values, "speech_packet_promotion_receipt")
     )
+    packet_receipt_sha256 = _require_string(
+        values, "speech_packet_promotion_receipt_sha256"
+    )
     packet_bindings = _load_packet_bindings(
         packet_receipt_path,
-        _require_string(values, "speech_packet_promotion_receipt_sha256"),
+        packet_receipt_sha256,
         gate_view.samples,
     )
     key_representation_id = _require_string(values, "key_representation_id")
@@ -10783,7 +11139,7 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
             binding_document,
             _load_packet_index(
                 packet_receipt_path,
-                _require_string(values, "speech_packet_promotion_receipt_sha256"),
+                packet_receipt_sha256,
             ),
             key_cards,
         )
@@ -11022,6 +11378,35 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
             ) from error
         write_session_receipt(session_receipt_path, session)
         source_session_receipt_sha256 = source_hash_before
+    prompt_fit_document: Mapping[str, object] | None = None
+    if matcher_policy_id == "M11":
+        if (
+            prompt_fit_path is None
+            or prompt_fit_expected_sha256 is None
+            or prompt_fit_maximum_completion_tokens is None
+            or decision_graph is None
+            or decision_graph_file_sha256 is None
+            or source_session_receipt_sha256 is None
+        ):
+            raise SpeechNativeProfileError(
+                "M11 prompt-fit gate lacks a required runtime binding"
+            )
+        prompt_fit_document = _validate_m11_prompt_fit_for_profile(
+            path=prompt_fit_path,
+            expected_sha256=prompt_fit_expected_sha256,
+            binding_sha256=binding_sha256,
+            decision_graph=decision_graph,
+            graph_sha256=decision_graph_file_sha256,
+            packet_promotion_sha256=packet_receipt_sha256,
+            session_receipt_sha256=source_session_receipt_sha256,
+            server_env=server_env,
+            key_cards=key_cards,
+            key_order_ids=tuple(raw_order_ids),
+            top_k=top_k,
+            packet_count=len(gate_view.samples),
+            context_tokens_per_slot=geometry["context_tokens_per_slot"],
+            maximum_completion_tokens=prompt_fit_maximum_completion_tokens,
+        )
     client: FrozenCoreClient | None = None
     close_summary: dict[str, object] | None = None
     sampler = resolve_resource_sampler()
@@ -11188,6 +11573,22 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
                 else None
             ),
             "decision_graph_file_sha256": decision_graph_file_sha256,
+            "prompt_fit_receipt_path": (
+                prompt_fit_path.relative_to(repo_root.resolve()).as_posix()
+                if prompt_fit_path is not None
+                else None
+            ),
+            "prompt_fit_receipt_sha256": prompt_fit_expected_sha256,
+            "prompt_fit_maximum_prompt_tokens_upper_bound": (
+                prompt_fit_document.get("maximum_prompt_tokens_upper_bound")
+                if prompt_fit_document is not None
+                else None
+            ),
+            "prompt_fit_context_margin_tokens": (
+                prompt_fit_document.get("context_margin_tokens")
+                if prompt_fit_document is not None
+                else None
+            ),
             "matcher_prompt_policy_id": prompt_policy_id,
             "matcher_verifier_policy_id": verifier_policy_id,
             "agent_policy_id": agent_policy_id,

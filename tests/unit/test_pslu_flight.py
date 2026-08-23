@@ -40,6 +40,10 @@ from speech_aware_evidence_acquisition.core.driver.speech_native import (
     _m11_prompt_text_token_count,
     _enumerate_m11_prompt_envelopes,
     _m11_reader_contract_from_values,
+    _load_key_cards,
+    _load_m11_prompt_fit_receipt,
+    _resolve_m11_prompt_fit_config,
+    _validate_m11_prompt_fit_for_profile,
     _load_decision_graph,
     _parse_m9_factor_graph_trajectory,
     _parse_m10_candidate_evidence_trajectory,
@@ -3427,9 +3431,348 @@ def test_m11_prompt_token_counter_rejects_an_ambiguous_media_marker():
         _m11_prompt_text_token_count(
             envelope=envelope,
             media_marker="<__media__>",
-            post_json=lambda _path, _payload: {
-                "prompt": "a<__media__>b<__media__>c"
-            },
+            post_json=lambda _path, _payload: {"prompt": "a<__media__>b<__media__>c"},
+        )
+
+
+def _real_m11_v5_material():
+    binding_path = (
+        REPO_ROOT / "configs/probes/g0-binding/"
+        "speech-native-train-binding-evidence-e108-information-complete-knowledge.json"
+    )
+    graph_path = (
+        REPO_ROOT / "configs/knowledge/slurp-signature-complete-decision-graph-v5.json"
+    )
+    cards = _load_key_cards(
+        binding_path,
+        "a2ccd4b004ce2e31329bf7b69ce0ebb9cff642eec2d25cde8087ffc679203dfe",
+    )
+    graph = _load_decision_graph(
+        graph_path,
+        expected_sha256=(
+            "58c9457312d71a7c7a13e92e53e2a4f9fff5c45a9722eb5680d0fd465fe8a2fc"
+        ),
+        key_cards=cards,
+    )
+    return cards, graph
+
+
+def _real_m11_v5_prompt_envelopes():
+    cards, graph = _real_m11_v5_material()
+    return _enumerate_m11_prompt_envelopes(
+        key_cards=cards,
+        decision_graph=graph,
+        top_k=3,
+        key_order_ids=("canonical",),
+    )
+
+
+def test_real_m11_v5_prompt_fit_receipt_is_self_consistent_and_session_bound():
+    path = (
+        REPO_ROOT / "docs/checks/speech-aware-evidence-acquisition/"
+        "2026-08-22-m11-v5-prompt-fit/prompt-fit.json"
+    )
+    document = _load_m11_prompt_fit_receipt(
+        path=path,
+        expected_sha256=hashlib.sha256(path.read_bytes()).hexdigest(),
+        binding_sha256="a2ccd4b004ce2e31329bf7b69ce0ebb9cff642eec2d25cde8087ffc679203dfe",
+        graph_id="slurp-signature-complete-decision-graph-v5",
+        graph_sha256="58c9457312d71a7c7a13e92e53e2a4f9fff5c45a9722eb5680d0fd465fe8a2fc",
+        packet_promotion_sha256="4aafd75ab86734159e39d8dedfc3ec12346d75d683119984c7b1aece761c1555",
+        session_receipt_sha256="bfe06fa0df23f51094ce1ebfcec185523e406fee025a5203390b1e454e611da8",
+        decoder_sha256="0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d",
+        key_count=18,
+        boundary_count=55,
+        key_order_count=1,
+        top_k=3,
+        packet_count=108,
+        context_tokens_per_slot=4096,
+        maximum_completion_tokens=64,
+        expected_envelopes=_real_m11_v5_prompt_envelopes(),
+    )
+
+    assert document["maximum_prompt_tokens_upper_bound"] == 2341
+    assert document["context_margin_tokens"] == 1691
+    assert document["worst_envelope_id"] == "boundary:B001:K003:ba"
+
+
+def test_real_m11_v5_prompt_fit_receipt_admits_the_exact_formal_profile():
+    path = (
+        REPO_ROOT / "docs/checks/speech-aware-evidence-acquisition/"
+        "2026-08-22-m11-v5-prompt-fit/prompt-fit.json"
+    )
+    cards, graph = _real_m11_v5_material()
+
+    document = _validate_m11_prompt_fit_for_profile(
+        path=path,
+        expected_sha256=hashlib.sha256(path.read_bytes()).hexdigest(),
+        binding_sha256="a2ccd4b004ce2e31329bf7b69ce0ebb9cff642eec2d25cde8087ffc679203dfe",
+        decision_graph=graph,
+        graph_sha256="58c9457312d71a7c7a13e92e53e2a4f9fff5c45a9722eb5680d0fd465fe8a2fc",
+        packet_promotion_sha256="4aafd75ab86734159e39d8dedfc3ec12346d75d683119984c7b1aece761c1555",
+        session_receipt_sha256="bfe06fa0df23f51094ce1ebfcec185523e406fee025a5203390b1e454e611da8",
+        server_env={
+            "LLAMA_SPEECH_DECODER_SHA256": (
+                "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d"
+            )
+        },
+        key_cards=cards,
+        key_order_ids=("canonical",),
+        top_k=3,
+        packet_count=108,
+        context_tokens_per_slot=4096,
+        maximum_completion_tokens=64,
+    )
+
+    assert document["maximum_prompt_fits_one_slot"] is True
+    assert document["context_margin_tokens"] == 1691
+
+
+def test_m11_formal_prompt_fit_gate_rejects_an_unbound_decoder():
+    cards, graph = _real_m11_v5_material()
+
+    with pytest.raises(SpeechNativeProfileError, match="decoder SHA-256"):
+        _validate_m11_prompt_fit_for_profile(
+            path=Path("unused.json"),
+            expected_sha256="1" * 64,
+            binding_sha256="2" * 64,
+            decision_graph=graph,
+            graph_sha256="3" * 64,
+            packet_promotion_sha256="4" * 64,
+            session_receipt_sha256="5" * 64,
+            server_env={},
+            key_cards=cards,
+            key_order_ids=("canonical",),
+            top_k=3,
+            packet_count=108,
+            context_tokens_per_slot=4096,
+            maximum_completion_tokens=64,
+        )
+
+
+def test_m11_prompt_fit_config_requires_and_binds_a_resident_session():
+    values = {
+        "speech_native_prompt_fit_receipt": (
+            "docs/checks/speech-aware-evidence-acquisition/"
+            "2026-08-22-m11-v5-prompt-fit/prompt-fit.json"
+        ),
+        "speech_native_prompt_fit_receipt_sha256": (
+            "a5931ccd3c9e02150496d0475829e926becc02ed83322d45f4121dd00ee2a289"
+        ),
+        "decoding_params": {"max_tokens": 64},
+    }
+
+    with pytest.raises(SpeechNativeProfileError, match="resident session"):
+        _resolve_m11_prompt_fit_config(
+            repo_root=REPO_ROOT,
+            values=values,
+            matcher_policy_id="M11",
+            session_receipt=None,
+        )
+
+    path, sha256, maximum_completion_tokens = _resolve_m11_prompt_fit_config(
+        repo_root=REPO_ROOT,
+        values=values,
+        matcher_policy_id="M11",
+        session_receipt="resident-session.json",
+    )
+    assert path == (
+        REPO_ROOT
+        / "docs/checks/speech-aware-evidence-acquisition/"
+        "2026-08-22-m11-v5-prompt-fit/prompt-fit.json"
+    ).resolve()
+    assert sha256 == values["speech_native_prompt_fit_receipt_sha256"]
+    assert maximum_completion_tokens == 64
+    assert _resolve_m11_prompt_fit_config(
+        repo_root=REPO_ROOT,
+        values={},
+        matcher_policy_id="M1",
+        session_receipt=None,
+    ) == (None, None, None)
+
+
+@pytest.mark.parametrize(
+    ("overrides", "message"),
+    (
+        ({"speech_native_prompt_fit_receipt": "../outside.json"}, "repository"),
+        ({"decoding_params": "invalid"}, "decoding_params"),
+        ({"decoding_params": {"max_tokens": 0}}, "max_tokens"),
+    ),
+)
+def test_m11_prompt_fit_config_rejects_unsafe_or_malformed_values(
+    overrides, message
+):
+    values = {
+        "speech_native_prompt_fit_receipt": (
+            "docs/checks/speech-aware-evidence-acquisition/"
+            "2026-08-22-m11-v5-prompt-fit/prompt-fit.json"
+        ),
+        "speech_native_prompt_fit_receipt_sha256": "1" * 64,
+        "decoding_params": {"max_tokens": 64},
+        **overrides,
+    }
+
+    with pytest.raises(SpeechNativeProfileError, match=message):
+        _resolve_m11_prompt_fit_config(
+            repo_root=REPO_ROOT,
+            values=values,
+            matcher_policy_id="M11",
+            session_receipt="resident-session.json",
+        )
+
+
+def test_m11_prompt_fit_receipt_rejects_hash_and_session_drift():
+    path = (
+        REPO_ROOT / "docs/checks/speech-aware-evidence-acquisition/"
+        "2026-08-22-m11-v5-prompt-fit/prompt-fit.json"
+    )
+    common = {
+        "path": path,
+        "binding_sha256": (
+            "a2ccd4b004ce2e31329bf7b69ce0ebb9cff642eec2d25cde8087ffc679203dfe"
+        ),
+        "graph_id": "slurp-signature-complete-decision-graph-v5",
+        "graph_sha256": (
+            "58c9457312d71a7c7a13e92e53e2a4f9fff5c45a9722eb5680d0fd465fe8a2fc"
+        ),
+        "packet_promotion_sha256": (
+            "4aafd75ab86734159e39d8dedfc3ec12346d75d683119984c7b1aece761c1555"
+        ),
+        "decoder_sha256": (
+            "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d"
+        ),
+        "key_count": 18,
+        "boundary_count": 55,
+        "key_order_count": 1,
+        "top_k": 3,
+        "packet_count": 108,
+        "context_tokens_per_slot": 4096,
+        "maximum_completion_tokens": 64,
+        "expected_envelopes": _real_m11_v5_prompt_envelopes(),
+    }
+    with pytest.raises(SpeechNativeProfileError, match="receipt SHA-256 mismatch"):
+        _load_m11_prompt_fit_receipt(
+            **common,
+            expected_sha256="0" * 64,
+            session_receipt_sha256=(
+                "bfe06fa0df23f51094ce1ebfcec185523e406fee025a5203390b1e454e611da8"
+            ),
+        )
+    with pytest.raises(SpeechNativeProfileError, match="runtime identity"):
+        _load_m11_prompt_fit_receipt(
+            **common,
+            expected_sha256=hashlib.sha256(path.read_bytes()).hexdigest(),
+            session_receipt_sha256="9" * 64,
+        )
+
+
+@pytest.mark.parametrize(
+    ("overrides", "message"),
+    (
+        ({"expected_sha256": "invalid"}, "SHA-256 is malformed"),
+        ({"key_count": 0}, "key_count must be positive"),
+        ({"top_k": 19}, "top_k exceeds key count"),
+    ),
+)
+def test_m11_prompt_fit_receipt_rejects_malformed_contract_arguments(
+    overrides, message
+):
+    arguments = {
+        "path": Path("unused.json"),
+        "expected_sha256": "1" * 64,
+        "binding_sha256": "2" * 64,
+        "graph_id": "graph",
+        "graph_sha256": "3" * 64,
+        "packet_promotion_sha256": "4" * 64,
+        "session_receipt_sha256": "5" * 64,
+        "decoder_sha256": "6" * 64,
+        "key_count": 18,
+        "boundary_count": 55,
+        "key_order_count": 1,
+        "top_k": 3,
+        "packet_count": 108,
+        "context_tokens_per_slot": 4096,
+        "maximum_completion_tokens": 64,
+        "expected_envelopes": (),
+        **overrides,
+    }
+
+    with pytest.raises(SpeechNativeProfileError, match=message):
+        _load_m11_prompt_fit_receipt(**arguments)
+
+
+def test_m11_prompt_fit_receipt_rejects_incomplete_envelope_coverage(tmp_path):
+    source = (
+        REPO_ROOT / "docs/checks/speech-aware-evidence-acquisition/"
+        "2026-08-22-m11-v5-prompt-fit/prompt-fit.json"
+    )
+    document = json.loads(source.read_text(encoding="utf-8"))
+    document["stage_counts"]["boundary"] -= 1
+    path = tmp_path / "prompt-fit.json"
+    path.write_text(json.dumps(document), encoding="utf-8")
+
+    with pytest.raises(SpeechNativeProfileError, match="stage coverage"):
+        _load_m11_prompt_fit_receipt(
+            path=path,
+            expected_sha256=hashlib.sha256(path.read_bytes()).hexdigest(),
+            binding_sha256=document["binding_file_sha256"],
+            graph_id=document["decision_graph_id"],
+            graph_sha256=document["decision_graph_file_sha256"],
+            packet_promotion_sha256=document["packet_promotion_receipt_sha256"],
+            session_receipt_sha256=document["runtime"]["session_receipt_sha256"],
+            decoder_sha256=document["runtime"]["decoder_sha256"],
+            key_count=18,
+            boundary_count=55,
+            key_order_count=1,
+            top_k=3,
+            packet_count=108,
+            context_tokens_per_slot=4096,
+            maximum_completion_tokens=64,
+            expected_envelopes=_real_m11_v5_prompt_envelopes(),
+        )
+
+
+def test_m11_prompt_fit_receipt_rejects_prompt_constructor_drift():
+    path = (
+        REPO_ROOT / "docs/checks/speech-aware-evidence-acquisition/"
+        "2026-08-22-m11-v5-prompt-fit/prompt-fit.json"
+    )
+    envelopes = list(_real_m11_v5_prompt_envelopes())
+    drifted = dict(envelopes[0])
+    drifted["messages"] = [
+        *drifted["messages"],
+        {"role": "system", "content": "Unregistered prompt drift."},
+    ]
+    envelopes[0] = drifted
+
+    with pytest.raises(SpeechNativeProfileError, match="token accounting"):
+        _load_m11_prompt_fit_receipt(
+            path=path,
+            expected_sha256=hashlib.sha256(path.read_bytes()).hexdigest(),
+            binding_sha256=(
+                "a2ccd4b004ce2e31329bf7b69ce0ebb9cff642eec2d25cde8087ffc679203dfe"
+            ),
+            graph_id="slurp-signature-complete-decision-graph-v5",
+            graph_sha256=(
+                "58c9457312d71a7c7a13e92e53e2a4f9fff5c45a9722eb5680d0fd465fe8a2fc"
+            ),
+            packet_promotion_sha256=(
+                "4aafd75ab86734159e39d8dedfc3ec12346d75d683119984c7b1aece761c1555"
+            ),
+            session_receipt_sha256=(
+                "bfe06fa0df23f51094ce1ebfcec185523e406fee025a5203390b1e454e611da8"
+            ),
+            decoder_sha256=(
+                "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d"
+            ),
+            key_count=18,
+            boundary_count=55,
+            key_order_count=1,
+            top_k=3,
+            packet_count=108,
+            context_tokens_per_slot=4096,
+            maximum_completion_tokens=64,
+            expected_envelopes=envelopes,
         )
 
 
