@@ -1,0 +1,459 @@
+{
+  "authority": "docs/readiness/2026-08-23-knowledge-plane-baseline-rulings.md sections 2.2 and 5",
+  "carrier": "slurp",
+  "exclusions": {
+    "final60": {
+      "excluded_utterance_count": 60,
+      "receipt": "docs/receipts/probe-samples/FINAL60.json",
+      "split_identity_hash": "3c082a1a040f7d004e67ca39cf4e078ecd410a132a0d7b3f103c868da65c1b8e"
+    },
+    "historic_probe60": {
+      "excluded_utterance_count": 60,
+      "note": "exclusion is at UTTERANCE granularity (every recording of every historic-probe-60 utterance), not merely the exact recording that receipt happened to read -- see module docstring",
+      "receipt": "configs/probes/g0-binding/pslu-sample-devel-n60.json",
+      "split_identity_hash": "fc9de436eba5aba120ecf07ee112765cd4ac0609150e0aaf36f4d44c9c5b5ee5"
+    }
+  },
+  "generated_date": "2026-08-23",
+  "generator": "scripts/build_dev_ladder.py",
+  "items": [
+    {
+      "id": "slurp:devel:000090:audio-1498567209",
+      "key": "slurp:slurp:devel:000090:audio-1498567209"
+    },
+    {
+      "id": "slurp:devel:000109:audio-1497882612",
+      "key": "slurp:slurp:devel:000109:audio-1497882612"
+    },
+    {
+      "id": "slurp:devel:000392:audio-1498573434",
+      "key": "slurp:slurp:devel:000392:audio-1498573434"
+    },
+    {
+      "id": "slurp:devel:000582:audio-1502891180-headset",
+      "key": "slurp:slurp:devel:000582:audio-1502891180-headset"
+    },
+    {
+      "id": "slurp:devel:000617:audio-1501152792-headset",
+      "key": "slurp:slurp:devel:000617:audio-1501152792-headset"
+    },
+    {
+      "id": "slurp:devel:000806:audio--1506079512",
+      "key": "slurp:slurp:devel:000806:audio--1506079512"
+    },
+    {
+      "id": "slurp:devel:000896:audio-1502216983-headset",
+      "key": "slurp:slurp:devel:000896:audio-1502216983-headset"
+    },
+    {
+      "id": "slurp:devel:000921:audio-1498564374-headset",
+      "key": "slurp:slurp:devel:000921:audio-1498564374-headset"
+    },
+    {
+      "id": "slurp:devel:001038:audio--1504191120",
+      "key": "slurp:slurp:devel:001038:audio--1504191120"
+    },
+    {
+      "id": "slurp:devel:001085:audio-1490103635-headset",
+      "key": "slurp:slurp:devel:001085:audio-1490103635-headset"
+    },
+    {
+      "id": "slurp:devel:001211:audio-1490020990",
+      "key": "slurp:slurp:devel:001211:audio-1490020990"
+    },
+    {
+      "id": "slurp:devel:001227:audio-1490104218",
+      "key": "slurp:slurp:devel:001227:audio-1490104218"
+    },
+    {
+      "id": "slurp:devel:001271:audio-1502300290-headset",
+      "key": "slurp:slurp:devel:001271:audio-1502300290-headset"
+    },
+    {
+      "id": "slurp:devel:001349:audio-1490108023",
+      "key": "slurp:slurp:devel:001349:audio-1490108023"
+    },
+    {
+      "id": "slurp:devel:001558:audio-1495734409",
+      "key": "slurp:slurp:devel:001558:audio-1495734409"
+    },
+    {
+      "id": "slurp:devel:001569:audio-1490198849-headset",
+      "key": "slurp:slurp:devel:001569:audio-1490198849-headset"
+    },
+    {
+      "id": "slurp:devel:001599:audio-1434532176-headset",
+      "key": "slurp:slurp:devel:001599:audio-1434532176-headset"
+    },
+    {
+      "id": "slurp:devel:001791:audio-1502195360",
+      "key": "slurp:slurp:devel:001791:audio-1502195360"
+    },
+    {
+      "id": "slurp:devel:001901:audio-1490183906",
+      "key": "slurp:slurp:devel:001901:audio-1490183906"
+    },
+    {
+      "id": "slurp:devel:002058:audio-1494512880",
+      "key": "slurp:slurp:devel:002058:audio-1494512880"
+    },
+    {
+      "id": "slurp:devel:002161:audio-1501408523-headset",
+      "key": "slurp:slurp:devel:002161:audio-1501408523-headset"
+    },
+    {
+      "id": "slurp:devel:002417:audio-1494548204-headset",
+      "key": "slurp:slurp:devel:002417:audio-1494548204-headset"
+    },
+    {
+      "id": "slurp:devel:002814:audio-1490194699",
+      "key": "slurp:slurp:devel:002814:audio-1490194699"
+    },
+    {
+      "id": "slurp:devel:003082:audio-1490103664-headset",
+      "key": "slurp:slurp:devel:003082:audio-1490103664-headset"
+    },
+    {
+      "id": "slurp:devel:003202:audio-1495733953-headset",
+      "key": "slurp:slurp:devel:003202:audio-1495733953-headset"
+    },
+    {
+      "id": "slurp:devel:003443:audio-1501776590",
+      "key": "slurp:slurp:devel:003443:audio-1501776590"
+    },
+    {
+      "id": "slurp:devel:003464:audio-1499690370-headset",
+      "key": "slurp:slurp:devel:003464:audio-1499690370-headset"
+    },
+    {
+      "id": "slurp:devel:003613:audio-1502308872",
+      "key": "slurp:slurp:devel:003613:audio-1502308872"
+    },
+    {
+      "id": "slurp:devel:003705:audio-1490194357",
+      "key": "slurp:slurp:devel:003705:audio-1490194357"
+    },
+    {
+      "id": "slurp:devel:003895:audio-1501687710",
+      "key": "slurp:slurp:devel:003895:audio-1501687710"
+    },
+    {
+      "id": "slurp:devel:003956:audio-1501753591-headset",
+      "key": "slurp:slurp:devel:003956:audio-1501753591-headset"
+    },
+    {
+      "id": "slurp:devel:004198:audio--1504191536-headset",
+      "key": "slurp:slurp:devel:004198:audio--1504191536-headset"
+    },
+    {
+      "id": "slurp:devel:004338:audio-1494418385-headset",
+      "key": "slurp:slurp:devel:004338:audio-1494418385-headset"
+    },
+    {
+      "id": "slurp:devel:004422:audio-1498757235-headset",
+      "key": "slurp:slurp:devel:004422:audio-1498757235-headset"
+    },
+    {
+      "id": "slurp:devel:004545:audio-1497450582",
+      "key": "slurp:slurp:devel:004545:audio-1497450582"
+    },
+    {
+      "id": "slurp:devel:004579:audio-1502195536-headset",
+      "key": "slurp:slurp:devel:004579:audio-1502195536-headset"
+    },
+    {
+      "id": "slurp:devel:004899:audio-1495377050",
+      "key": "slurp:slurp:devel:004899:audio-1495377050"
+    },
+    {
+      "id": "slurp:devel:004971:audio-1502199127-headset",
+      "key": "slurp:slurp:devel:004971:audio-1502199127-headset"
+    },
+    {
+      "id": "slurp:devel:005015:audio-1501756546",
+      "key": "slurp:slurp:devel:005015:audio-1501756546"
+    },
+    {
+      "id": "slurp:devel:005100:audio-1490291520",
+      "key": "slurp:slurp:devel:005100:audio-1490291520"
+    },
+    {
+      "id": "slurp:devel:005183:audio-1498565600",
+      "key": "slurp:slurp:devel:005183:audio-1498565600"
+    },
+    {
+      "id": "slurp:devel:005386:audio-1501758493",
+      "key": "slurp:slurp:devel:005386:audio-1501758493"
+    },
+    {
+      "id": "slurp:devel:005393:audio--1505407257-headset",
+      "key": "slurp:slurp:devel:005393:audio--1505407257-headset"
+    },
+    {
+      "id": "slurp:devel:005526:audio-1490202617",
+      "key": "slurp:slurp:devel:005526:audio-1490202617"
+    },
+    {
+      "id": "slurp:devel:005565:audio-1498570308",
+      "key": "slurp:slurp:devel:005565:audio-1498570308"
+    },
+    {
+      "id": "slurp:devel:005726:audio--1504197977",
+      "key": "slurp:slurp:devel:005726:audio--1504197977"
+    },
+    {
+      "id": "slurp:devel:005792:audio-1499697954",
+      "key": "slurp:slurp:devel:005792:audio-1499697954"
+    },
+    {
+      "id": "slurp:devel:005989:audio-1497621031",
+      "key": "slurp:slurp:devel:005989:audio-1497621031"
+    },
+    {
+      "id": "slurp:devel:006170:audio-1497557093-headset",
+      "key": "slurp:slurp:devel:006170:audio-1497557093-headset"
+    },
+    {
+      "id": "slurp:devel:006176:audio-1492780408",
+      "key": "slurp:slurp:devel:006176:audio-1492780408"
+    },
+    {
+      "id": "slurp:devel:006367:audio-1490354336-headset",
+      "key": "slurp:slurp:devel:006367:audio-1490354336-headset"
+    },
+    {
+      "id": "slurp:devel:006595:audio-1497868179",
+      "key": "slurp:slurp:devel:006595:audio-1497868179"
+    },
+    {
+      "id": "slurp:devel:007066:audio-1498484428",
+      "key": "slurp:slurp:devel:007066:audio-1498484428"
+    },
+    {
+      "id": "slurp:devel:007381:audio-1501686582-headset",
+      "key": "slurp:slurp:devel:007381:audio-1501686582-headset"
+    },
+    {
+      "id": "slurp:devel:007646:audio-1488969762",
+      "key": "slurp:slurp:devel:007646:audio-1488969762"
+    },
+    {
+      "id": "slurp:devel:007732:audio-1502376806-headset",
+      "key": "slurp:slurp:devel:007732:audio-1502376806-headset"
+    },
+    {
+      "id": "slurp:devel:007738:audio-1489153308",
+      "key": "slurp:slurp:devel:007738:audio-1489153308"
+    },
+    {
+      "id": "slurp:devel:008333:audio-1502893972",
+      "key": "slurp:slurp:devel:008333:audio-1502893972"
+    },
+    {
+      "id": "slurp:devel:008788:audio-1490105823",
+      "key": "slurp:slurp:devel:008788:audio-1490105823"
+    },
+    {
+      "id": "slurp:devel:009951:audio-1500038657-headset",
+      "key": "slurp:slurp:devel:009951:audio-1500038657-headset"
+    },
+    {
+      "id": "slurp:devel:010037:audio-1500386970-headset",
+      "key": "slurp:slurp:devel:010037:audio-1500386970-headset"
+    },
+    {
+      "id": "slurp:devel:010041:audio-1497264270-headset",
+      "key": "slurp:slurp:devel:010041:audio-1497264270-headset"
+    },
+    {
+      "id": "slurp:devel:010086:audio-1502201283",
+      "key": "slurp:slurp:devel:010086:audio-1502201283"
+    },
+    {
+      "id": "slurp:devel:010138:audio-1490289156",
+      "key": "slurp:slurp:devel:010138:audio-1490289156"
+    },
+    {
+      "id": "slurp:devel:010210:audio-1501754125-headset",
+      "key": "slurp:slurp:devel:010210:audio-1501754125-headset"
+    },
+    {
+      "id": "slurp:devel:010374:audio-1501690184-headset",
+      "key": "slurp:slurp:devel:010374:audio-1501690184-headset"
+    },
+    {
+      "id": "slurp:devel:010548:audio-1499697772",
+      "key": "slurp:slurp:devel:010548:audio-1499697772"
+    },
+    {
+      "id": "slurp:devel:010557:audio-1489498911",
+      "key": "slurp:slurp:devel:010557:audio-1489498911"
+    },
+    {
+      "id": "slurp:devel:010605:audio-1490021707",
+      "key": "slurp:slurp:devel:010605:audio-1490021707"
+    },
+    {
+      "id": "slurp:devel:010730:audio-1499693684-headset",
+      "key": "slurp:slurp:devel:010730:audio-1499693684-headset"
+    },
+    {
+      "id": "slurp:devel:010806:audio-1501415533-headset",
+      "key": "slurp:slurp:devel:010806:audio-1501415533-headset"
+    },
+    {
+      "id": "slurp:devel:010830:audio-1488985252",
+      "key": "slurp:slurp:devel:010830:audio-1488985252"
+    },
+    {
+      "id": "slurp:devel:011795:audio-1494607116",
+      "key": "slurp:slurp:devel:011795:audio-1494607116"
+    },
+    {
+      "id": "slurp:devel:011819:audio--1505404383-headset",
+      "key": "slurp:slurp:devel:011819:audio--1505404383-headset"
+    },
+    {
+      "id": "slurp:devel:012045:audio-1490956582-headset",
+      "key": "slurp:slurp:devel:012045:audio-1490956582-headset"
+    },
+    {
+      "id": "slurp:devel:012055:audio-1494512213",
+      "key": "slurp:slurp:devel:012055:audio-1494512213"
+    },
+    {
+      "id": "slurp:devel:012185:audio-1499244805",
+      "key": "slurp:slurp:devel:012185:audio-1499244805"
+    },
+    {
+      "id": "slurp:devel:012575:audio-1501686449",
+      "key": "slurp:slurp:devel:012575:audio-1501686449"
+    },
+    {
+      "id": "slurp:devel:012625:audio-1494417974",
+      "key": "slurp:slurp:devel:012625:audio-1494417974"
+    },
+    {
+      "id": "slurp:devel:012712:audio-1502199981-headset",
+      "key": "slurp:slurp:devel:012712:audio-1502199981-headset"
+    },
+    {
+      "id": "slurp:devel:012904:audio-1490194983",
+      "key": "slurp:slurp:devel:012904:audio-1490194983"
+    },
+    {
+      "id": "slurp:devel:012978:audio-1490954706",
+      "key": "slurp:slurp:devel:012978:audio-1490954706"
+    },
+    {
+      "id": "slurp:devel:013465:audio-1502302305-headset",
+      "key": "slurp:slurp:devel:013465:audio-1502302305-headset"
+    },
+    {
+      "id": "slurp:devel:013522:audio-1494607289",
+      "key": "slurp:slurp:devel:013522:audio-1494607289"
+    },
+    {
+      "id": "slurp:devel:013804:audio-1434542201-headset",
+      "key": "slurp:slurp:devel:013804:audio-1434542201-headset"
+    },
+    {
+      "id": "slurp:devel:014125:audio-1500388327-headset",
+      "key": "slurp:slurp:devel:014125:audio-1500388327-headset"
+    },
+    {
+      "id": "slurp:devel:014145:audio-1492784282",
+      "key": "slurp:slurp:devel:014145:audio-1492784282"
+    },
+    {
+      "id": "slurp:devel:014203:audio-1500979762",
+      "key": "slurp:slurp:devel:014203:audio-1500979762"
+    },
+    {
+      "id": "slurp:devel:015265:audio-1499689293-headset",
+      "key": "slurp:slurp:devel:015265:audio-1499689293-headset"
+    },
+    {
+      "id": "slurp:devel:015370:audio-1501688507",
+      "key": "slurp:slurp:devel:015370:audio-1501688507"
+    },
+    {
+      "id": "slurp:devel:015397:audio-1490262948",
+      "key": "slurp:slurp:devel:015397:audio-1490262948"
+    },
+    {
+      "id": "slurp:devel:015414:audio-1499265566",
+      "key": "slurp:slurp:devel:015414:audio-1499265566"
+    },
+    {
+      "id": "slurp:devel:015516:audio-1499264883-headset",
+      "key": "slurp:slurp:devel:015516:audio-1499264883-headset"
+    },
+    {
+      "id": "slurp:devel:015630:audio-1490967842",
+      "key": "slurp:slurp:devel:015630:audio-1490967842"
+    },
+    {
+      "id": "slurp:devel:015836:audio-1434543277",
+      "key": "slurp:slurp:devel:015836:audio-1434543277"
+    },
+    {
+      "id": "slurp:devel:016303:audio-1490107552-headset",
+      "key": "slurp:slurp:devel:016303:audio-1490107552-headset"
+    },
+    {
+      "id": "slurp:devel:016448:audio-1497869742-headset",
+      "key": "slurp:slurp:devel:016448:audio-1497869742-headset"
+    },
+    {
+      "id": "slurp:devel:016463:audio-1501688583",
+      "key": "slurp:slurp:devel:016463:audio-1501688583"
+    },
+    {
+      "id": "slurp:devel:016570:audio-1490182015",
+      "key": "slurp:slurp:devel:016570:audio-1490182015"
+    },
+    {
+      "id": "slurp:devel:016699:audio-1499688493-headset",
+      "key": "slurp:slurp:devel:016699:audio-1499688493-headset"
+    }
+  ],
+  "n_items": 100,
+  "nesting": {
+    "is_exact_subset_of_parent": true,
+    "parent_receipt": "docs/receipts/probe-samples/DEV-500.json",
+    "parent_split_identity_hash": "c0f1c7531fb8972885abf1d840cc101bbfa38ae04e3929cc46e0f5b9ef35452b",
+    "parent_tier": "DEV-500"
+  },
+  "pool_size": 500,
+  "probe": "dev-ladder-dev100",
+  "run_identity_hash": "e9a7b7febcf4fe3dc228370f7487e1e75dea3d63d447a07fbfe87c1404e2d853",
+  "run_identity_hash_basis": "sha256 over the LF-joined, sorted carrier-prefixed sample ids (f'{carrier}/{id}') -- data.splits.split_identity_hash, the E0 ledger convention an ExecutionPlan/run manifest carries (reproduction.probe_split.VerifiedSplit.identity_hash)",
+  "scenario_allocation": {
+    "alarm": 6,
+    "audio": 6,
+    "calendar": 6,
+    "cooking": 6,
+    "datetime": 6,
+    "email": 6,
+    "general": 6,
+    "iot": 6,
+    "lists": 6,
+    "music": 6,
+    "news": 5,
+    "play": 5,
+    "qa": 5,
+    "recommendation": 5,
+    "social": 5,
+    "takeaway": 5,
+    "transport": 5,
+    "weather": 5
+  },
+  "schema": "saea-dev-ladder-v1",
+  "seed": 20260823,
+  "selection_rule": "Scenario-stratified over the 18 devel scenarios, as evenly as the eligible pool allows (capacity-aware water-filling apportionment: a stratum smaller than the current fair share is taken WHOLE and the shortfall is redistributed across the remaining strata; the final round splits any remainder one-each in ascending scenario-name order, since every remaining stratum's fair share is numerically identical at that point). Within a scenario, the utterances are drawn via random.Random(f'{seed}:{stage}:{scenario}').sample over the id-sorted eligible pool (mirrors reproduction.sampling.stratified_sample's own per-stratum seeding convention). One recording per selected utterance is resolved via random.Random(f'{seed}:{scenario}:{utterance_id}') over the utterance's id-sorted recordings, mirroring the historic probe-60 receipt's own selection_rule convention. DEV-500 and DEV-100 are drawn the SAME way but over DEV-1000's (respectively DEV-500's) own per-scenario selected utterance lists as the eligible pool, rather than the original devel pool, so each tier is an exact seeded SUBSET of the tier above it.",
+  "split": "devel",
+  "split_identity_hash": "d676d38b4d27b3a136ba2523b96ae3c71ba2b8b436f7712f4f0c976c3ea833e1",
+  "split_identity_hash_basis": "sha256 over the LF-joined, sorted, carrier-prefixed item 'key' strings (reproduction.sampling.split_identity_hash -- the receipt-integrity convention reproduction.probe_split.load_verified_probe_split recomputes fail-closed)",
+  "split_role": "dev"
+}
