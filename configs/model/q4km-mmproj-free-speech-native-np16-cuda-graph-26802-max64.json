@@ -30,6 +30,8 @@
     "id_slot": "per-sample"
   },
   "prompt_order": "speech-features-text-keys-v1",
+  "speech_native_prompt_fit_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-08-22-m11-v3-cuda-graph-26802-prompt-fit/prompt-fit-exact.json",
+  "speech_native_prompt_fit_receipt_sha256": "7a2b4c2b36030f763779b484ee09f73205ac51927b60163e89f2cd31295e884c",
   "profile_slot_count": 16,
   "speech_feature_root": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a",
   "server_env": {
