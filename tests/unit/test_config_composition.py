@@ -834,24 +834,40 @@ def test_slot_affine_cache_profile_binds_hot_hbm_policy_and_parallel_build():
 
 
 @pytest.mark.parametrize(
-    ("model", "baseline", "prompt_order", "request_layout"),
+    (
+        "model",
+        "baseline",
+        "prompt_order",
+        "request_layout",
+        "prompt_receipt",
+        "prompt_receipt_sha256",
+    ),
     (
         (
             "q4km-mmproj-free-speech-native-np16-hot-prefix-speech-query-v2",
             "speech-native-engineering-m11-prefix-probe-speech-query-v2",
             "speech-query-prefix-v2",
             "slot-affine-speech-prefix-v1",
+            "docs/checks/speech-aware-evidence-acquisition/2026-08-23-m11-prefix-probe-speech-query-prompt-fit/prompt-fit.json",
+            "9c48de33b518ed06b630e4d691c8fda1c4b9c78d0ab2bb14e5e5ac00be1cf9ef",
         ),
         (
             "q4km-mmproj-free-speech-native-np16-hot-prefix-dual-v2",
             "speech-native-engineering-m11-prefix-probe-dual-v2",
             "knowledge-speech-state-v2",
             "slot-affine-knowledge-speech-state-v1",
+            "docs/checks/speech-aware-evidence-acquisition/2026-08-23-m11-prefix-probe-dual-prompt-fit/prompt-fit.json",
+            "b4b86e32ece88a9ee33092c9ed6e3981ddd32145a69a616c95e307c2b5198330",
         ),
     ),
 )
-def test_prefix_probe_profiles_bind_wire_order_without_a_stale_prompt_receipt(
-    model, baseline, prompt_order, request_layout
+def test_prefix_probe_profiles_bind_wire_order_and_exact_prompt_receipt(
+    model,
+    baseline,
+    prompt_order,
+    request_layout,
+    prompt_receipt,
+    prompt_receipt_sha256,
 ):
     from speech_aware_evidence_acquisition.e0.artifacts import REPO_ROOT
 
@@ -868,5 +884,6 @@ def test_prefix_probe_profiles_bind_wire_order_without_a_stale_prompt_receipt(
     assert values["profile_key_order_ids"] == ["canonical", "reverse"]
     assert values["speech_native_dispatch_granularity"] == "task"
     assert values["decoding_params"]["id_slot"] == "per-sample"
-    assert "speech_native_prompt_fit_receipt" not in values
+    assert values["speech_native_prompt_fit_receipt"] == prompt_receipt
+    assert values["speech_native_prompt_fit_receipt_sha256"] == prompt_receipt_sha256
     assert "speech_native_prompt_fit_receipt_sha256" not in values

@@ -36,6 +36,8 @@
     "id_slot": "per-sample"
   },
   "prompt_order": "speech-query-prefix-v2",
+  "speech_native_prompt_fit_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-08-23-m11-prefix-probe-speech-query-prompt-fit/prompt-fit.json",
+  "speech_native_prompt_fit_receipt_sha256": "9c48de33b518ed06b630e4d691c8fda1c4b9c78d0ab2bb14e5e5ac00be1cf9ef",
   "profile_slot_count": 16,
   "speech_feature_root": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a",
   "server_env": {
