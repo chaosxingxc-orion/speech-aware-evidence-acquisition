@@ -7,7 +7,7 @@
   "planned_model_calls": 720,
   "planned_gpu_hours": 1.0,
   "planned_speech_audio_seconds": 2012,
-  "protocol_hash": "4f663ef6067afde463a127865e0ded81a621fe0931e7a1c8d637c4f81f58fe3f",
+  "protocol_hash": "1f54b20c986a62a50f27d592db04657814e4c5df73a9ace6299217e756fb2330",
   "attempt_id": "attempt-20260823T113000Z-12w009",
   "schema": "saea-execution-plan-v1",
   "study": "speech-aware-evidence-acquisition"
