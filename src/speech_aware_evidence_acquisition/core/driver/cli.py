@@ -52,6 +52,7 @@ from .smoke import _cli_smoke
 from .speech_native import (
     _cli_speech_native_action_audit,
     _cli_speech_native_engine_audit,
+    _cli_speech_native_prompt_audit,
     _cli_speech_native_profile,
     _cli_speech_native_read,
 )
@@ -972,6 +973,31 @@ def main(argv: list[str] | None = None) -> int:
     speech_engine_audit.add_argument("--llama-cpp-root", required=True)
     speech_engine_audit.add_argument("--output", required=True)
     speech_engine_audit.set_defaults(func=_cli_speech_native_engine_audit)
+
+    speech_prompt_audit = sub.add_parser(
+        "speech-native-prompt-audit",
+        help=(
+            "model-free exact M11 prompt-fit audit through the resident "
+            "llama.cpp template and tokenizer endpoints"
+        ),
+    )
+    speech_prompt_audit.add_argument("--model", required=True)
+    speech_prompt_audit.add_argument("--dataset", required=True)
+    speech_prompt_audit.add_argument("--baseline", required=True)
+    speech_prompt_audit.add_argument("--experiment", required=True)
+    speech_prompt_audit.add_argument("--session-receipt", required=True)
+    speech_prompt_audit.add_argument("--runtime-root", required=True)
+    speech_prompt_audit.add_argument("--host", default="127.0.0.1")
+    speech_prompt_audit.add_argument("--port", type=int, default=8080)
+    speech_prompt_audit.add_argument("--workers", type=int, default=16)
+    speech_prompt_audit.add_argument("--timeout-seconds", type=float, default=30.0)
+    speech_prompt_audit.add_argument("--output", required=True)
+    speech_prompt_audit.add_argument(
+        "--repo-root",
+        default=None,
+        help="TEST-ONLY repository-root override; real audits omit it",
+    )
+    speech_prompt_audit.set_defaults(func=_cli_speech_native_prompt_audit)
 
     speech_read = sub.add_parser(
         "speech-native-read",

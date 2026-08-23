@@ -12,18 +12,23 @@ from __future__ import annotations
 import argparse
 from bisect import bisect_right
 from collections import Counter
+from concurrent.futures import ThreadPoolExecutor
 import hashlib
+import http.client
+from itertools import permutations
 import json
 import math
 import re
 import statistics
 import subprocess
+import threading
 from dataclasses import asdict
 from datetime import datetime
 from pathlib import Path
 from typing import Callable, Mapping, Sequence
 
 from ...contracts import ExecutionPlan
+from ...core.model.speech_features import load_speech_feature_packets
 from ...data.lock import asset_dir, data_root, load_lock, umbrella_lock_path
 from ...e0.artifacts import REPO_ROOT
 from ...rails import FrozenCoreClient, build_payload_binding
@@ -6264,6 +6269,546 @@ def build_profile_tasks(
     return tuple(tasks)
 
 
+def _enumerate_m11_prompt_envelopes(
+    *,
+    key_cards: Sequence[KeyCardV1],
+    decision_graph: DecisionGraphV1,
+    top_k: int,
+    key_order_ids: Sequence[str],
+) -> tuple[dict[str, object], ...]:
+    """Exercise the real contact-batched M11 constructor without a model.
+
+    The audit enumerates every possible ranked candidate tuple for the bounded
+    top-k action contact and both endpoint orientations of every registered
+    pair boundary.  It deliberately drives :func:`run_speech_native_match_tasks`
+    instead of reimplementing prompt strings, so prompt-fit evidence cannot
+    silently drift away from the inference path it is meant to admit.
+    """
+
+    cards = tuple(card.validate() for card in key_cards)
+    if not cards or len({card.key_id for card in cards}) != len(cards):
+        raise SpeechNativeProfileError(
+            "M11 prompt enumeration requires unique validated key cards"
+        )
+    if (
+        isinstance(top_k, bool)
+        or not isinstance(top_k, int)
+        or not 2 <= top_k <= min(3, len(cards))
+    ):
+        raise SpeechNativeProfileError(
+            "M11 prompt enumeration requires top_k in [2, min(3, key count)]"
+        )
+    orders = tuple(key_order_ids)
+    if not orders or len(set(orders)) != len(orders):
+        raise SpeechNativeProfileError(
+            "M11 prompt enumeration requires unique key order ids"
+        )
+    for order_id in orders:
+        if order_id not in _ORDER_BUILDERS:
+            raise SpeechNativeProfileError(
+                f"unknown profile key order {order_id!r}"
+            )
+    try:
+        decision_graph.validate(cards)
+    except PsluFlightError as error:
+        raise SpeechNativeProfileError(
+            f"M11 prompt enumeration decision graph is invalid: {error}"
+        ) from error
+
+    factors_by_key = {
+        card.key_id: tuple(
+            factor for factor in decision_graph.factors if card.key_id in factor.key_ids
+        )
+        for card in cards
+    }
+
+    def selected_factor_ids(key_id: str) -> tuple[str, ...]:
+        factors = factors_by_key[key_id]
+        operation = next(
+            (factor for factor in factors if factor.kind == "operation"), None
+        )
+        if operation is None:
+            raise SpeechNativeProfileError(
+                f"M11 prompt enumeration key {key_id!r} lacks an operation factor"
+            )
+        return (
+            operation.factor_id,
+            *tuple(
+                factor.factor_id
+                for factor in factors
+                if factor.factor_id != operation.factor_id
+            )[:2],
+        )
+
+    key_ids = tuple(card.key_id for card in cards)
+    plans: dict[str, dict[str, object]] = {}
+    tasks: list[SpeechNativeMatchTask] = []
+    query_descriptor = {
+        "packet_id": "audit/prompt-fit/query",
+        "sha256": "0" * 64,
+        "role": "query",
+    }
+
+    def add_task(
+        *,
+        task_id: str,
+        ordered_cards: tuple[KeyCardV1, ...],
+        family: str,
+        primary_key_id: str,
+        top_key_ids: tuple[str, ...],
+        action_key_id: str,
+        factor_ids: tuple[str, ...],
+        boundary_id: str | None = None,
+    ) -> None:
+        sample = type(
+            "M11PromptAuditSample", (), {"sample_id": task_id}
+        )()
+        plans[task_id] = {
+            "family": family,
+            "primary_key_id": primary_key_id,
+            "top_key_ids": top_key_ids,
+            "action_key_id": action_key_id,
+            "factor_ids": factor_ids,
+            "boundary_id": boundary_id,
+        }
+        tasks.append(
+            SpeechNativeMatchTask(
+                task_id=task_id,
+                sample=sample,
+                query_descriptor=query_descriptor,
+                key_cards=ordered_cards,
+                key_representation_id="K1",
+                matcher_policy_id="M11",
+                prompt_policy_id="speech-native-json-copy-v4",
+                top_k=top_k,
+                decision_graph=decision_graph,
+                agent_policy_id="speech-conditioned-adaptive-evidence-gap-v2",
+                agent_aggregator_id="adaptive-evidence-gap-primary-control-v1",
+            )
+        )
+
+    for order_id in orders:
+        ordered_cards = _ORDER_BUILDERS[order_id](cards)
+        ordered_ids = tuple(card.key_id for card in ordered_cards)
+        add_task(
+            task_id=f"initial:{order_id}",
+            ordered_cards=ordered_cards,
+            family="initial",
+            primary_key_id=ordered_ids[0],
+            top_key_ids=ordered_ids[:top_k],
+            action_key_id=ordered_ids[0],
+            factor_ids=selected_factor_ids(ordered_ids[0]),
+        )
+
+    for index, ranked_ids in enumerate(permutations(key_ids, top_k)):
+        add_task(
+            task_id=f"action:{index:06d}",
+            ordered_cards=cards,
+            family="action",
+            primary_key_id=ranked_ids[0],
+            top_key_ids=ranked_ids,
+            action_key_id=ranked_ids[0],
+            factor_ids=selected_factor_ids(ranked_ids[0]),
+        )
+
+    for boundary in decision_graph.boundaries:
+        endpoints = (boundary.left_key_id, boundary.right_key_id)
+        filler_ids = tuple(key_id for key_id in key_ids if key_id not in endpoints)
+        for orientation, (primary_key_id, action_key_id) in enumerate(
+            (endpoints, tuple(reversed(endpoints)))
+        ):
+            ranked_ids = (action_key_id, primary_key_id, *filler_ids)[:top_k]
+            add_task(
+                task_id=f"boundary:{boundary.boundary_id}:{orientation}",
+                ordered_cards=cards,
+                family="boundary",
+                primary_key_id=primary_key_id,
+                top_key_ids=ranked_ids,
+                action_key_id=action_key_id,
+                factor_ids=selected_factor_ids(action_key_id),
+                boundary_id=boundary.boundary_id,
+            )
+
+    class PromptCaptureClient:
+        def __init__(self) -> None:
+            self.lock = threading.Lock()
+            self.envelopes: list[dict[str, object]] = []
+
+        def complete(self, messages, **kwargs):
+            sample_id = kwargs["speech_feature_sample_id"]
+            plan = plans[sample_id]
+            stage_id = kwargs["matcher_policy_id"]
+            family = plan["family"]
+            capture = (
+                family == "initial"
+                and (
+                    stage_id.endswith(":primary-listwise")
+                    or ":speech-retrieve-top-" in stage_id
+                )
+            ) or (
+                family == "action" and stage_id.endswith(":candidate-action-state")
+            ) or (
+                family == "boundary" and ":boundary-" in stage_id
+            )
+            if capture:
+                if family == "initial":
+                    order_id = sample_id.split(":", 1)[1]
+                    suffix = (
+                        "primary"
+                        if stage_id.endswith(":primary-listwise")
+                        else "retrieval"
+                    )
+                    envelope_id = f"initial:{order_id}:{suffix}"
+                    stage_kind = suffix
+                elif family == "action":
+                    ranked = "-".join(plan["top_key_ids"])
+                    envelope_id = f"action:{ranked}"
+                    stage_kind = "action"
+                else:
+                    suffix = "ab" if stage_id.endswith(":boundary-ab") else "ba"
+                    envelope_id = (
+                        f"boundary:{plan['boundary_id']}:"
+                        f"{plan['primary_key_id']}:{suffix}"
+                    )
+                    stage_kind = "boundary"
+                response_format = kwargs.get("decoding_params", {}).get(
+                    "response_format"
+                )
+                if not isinstance(response_format, Mapping):
+                    raise SpeechNativeProfileError(
+                        "M11 prompt enumeration contact lacks response_format"
+                    )
+                with self.lock:
+                    self.envelopes.append(
+                        {
+                            "envelope_id": envelope_id,
+                            "stage_kind": stage_kind,
+                            "stage_id": stage_id,
+                            "candidate_key_ids": tuple(plan["top_key_ids"]),
+                            "boundary_id": plan["boundary_id"],
+                            "messages": tuple(messages),
+                            "response_format": dict(response_format),
+                        }
+                    )
+            if stage_id.endswith(":primary-listwise"):
+                return json.dumps({"key_id": plan["primary_key_id"]})
+            if ":speech-retrieve-top-" in stage_id:
+                return json.dumps({"key_ids": plan["top_key_ids"]})
+            if stage_id.endswith(":candidate-action-state"):
+                return json.dumps(
+                    {
+                        "key_id": plan["action_key_id"],
+                        "factor_ids": plan["factor_ids"],
+                    }
+                )
+            if ":boundary-" in stage_id:
+                return json.dumps({"key_id": plan["action_key_id"]})
+            raise SpeechNativeProfileError(
+                f"unexpected M11 prompt enumeration stage {stage_id!r}"
+            )
+
+        def complete_many(self, requests, *, trace_parent=None):
+            del trace_parent
+            return tuple(
+                self.complete(messages, **kwargs) for messages, kwargs in requests
+            )
+
+    client = PromptCaptureClient()
+    outcomes = run_speech_native_match_tasks(
+        core_client=client,
+        tasks=tuple(tasks),
+        slot_count=min(16, len(tasks)),
+        queue_depth=max(2, min(64, len(tasks) * 2)),
+        dispatch_granularity="contact",
+    )
+    if len(outcomes) != len(tasks):
+        raise SpeechNativeProfileError(
+            "M11 prompt enumeration did not complete every synthetic task"
+        )
+    ordered = tuple(sorted(client.envelopes, key=lambda item: item["envelope_id"]))
+    if len({item["envelope_id"] for item in ordered}) != len(ordered):
+        raise SpeechNativeProfileError(
+            "M11 prompt enumeration produced duplicate envelope ids"
+        )
+    expected_count = 2 * len(orders) + math.perm(len(cards), top_k) + (
+        4 * len(decision_graph.boundaries)
+    )
+    if len(ordered) != expected_count:
+        raise SpeechNativeProfileError(
+            f"M11 prompt enumeration produced {len(ordered)} envelopes; "
+            f"expected {expected_count}"
+        )
+    return ordered
+
+
+def _audit_m11_prompt_fit(
+    *,
+    envelopes: Sequence[Mapping[str, object]],
+    token_count: Callable[[Mapping[str, object]], int],
+    maximum_speech_feature_tokens: int,
+    maximum_completion_tokens: int,
+    context_tokens_per_slot: int,
+    special_token_reserve: int = 2,
+) -> dict[str, object]:
+    """Bind exact M11 prompt construction to a conservative slot-fit result."""
+
+    for name, value in (
+        ("maximum_speech_feature_tokens", maximum_speech_feature_tokens),
+        ("maximum_completion_tokens", maximum_completion_tokens),
+        ("context_tokens_per_slot", context_tokens_per_slot),
+    ):
+        if isinstance(value, bool) or not isinstance(value, int) or value <= 0:
+            raise SpeechNativeProfileError(f"{name} must be a positive integer")
+    if (
+        isinstance(special_token_reserve, bool)
+        or not isinstance(special_token_reserve, int)
+        or not 0 <= special_token_reserve <= 2
+    ):
+        raise SpeechNativeProfileError(
+            "special_token_reserve must be an integer in [0, 2]"
+        )
+    frozen = tuple(envelopes)
+    if not frozen:
+        raise SpeechNativeProfileError("M11 prompt fit requires prompt envelopes")
+    rows: list[dict[str, object]] = []
+    seen_ids: set[str] = set()
+    for envelope in frozen:
+        envelope_id = envelope.get("envelope_id")
+        stage_kind = envelope.get("stage_kind")
+        messages = envelope.get("messages")
+        response_format = envelope.get("response_format")
+        if (
+            not isinstance(envelope_id, str)
+            or not envelope_id
+            or envelope_id in seen_ids
+            or stage_kind not in {"primary", "retrieval", "action", "boundary"}
+            or not isinstance(messages, (list, tuple))
+            or not isinstance(response_format, Mapping)
+        ):
+            raise SpeechNativeProfileError("M11 prompt envelope is malformed")
+        seen_ids.add(envelope_id)
+        query_parts = [
+            part.get("speech_features")
+            for message in messages
+            if isinstance(message, Mapping)
+            for part in (
+                message.get("content")
+                if isinstance(message.get("content"), list)
+                else []
+            )
+            if isinstance(part, Mapping)
+            and part.get("type") == "input_speech_features"
+            and isinstance(part.get("speech_features"), Mapping)
+            and part["speech_features"].get("role") == "query"
+        ]
+        if len(query_parts) != 1:
+            raise SpeechNativeProfileError(
+                "M11 prompt envelope must carry exactly one query speech packet"
+            )
+        text_tokens = token_count(envelope)
+        if (
+            isinstance(text_tokens, bool)
+            or not isinstance(text_tokens, int)
+            or text_tokens <= 0
+        ):
+            raise SpeechNativeProfileError(
+                "M11 prompt tokenizer returned a non-positive count"
+            )
+        prompt_upper_bound = (
+            text_tokens + maximum_speech_feature_tokens + special_token_reserve
+        )
+        rows.append(
+            {
+                "envelope_id": envelope_id,
+                "stage_kind": stage_kind,
+                "messages_sha256": _canonical_sha256(messages),
+                "response_format_sha256": _canonical_sha256(response_format),
+                "text_prompt_tokens": text_tokens,
+                "prompt_tokens_upper_bound": prompt_upper_bound,
+            }
+        )
+    worst = max(
+        rows,
+        key=lambda row: (
+            int(row["prompt_tokens_upper_bound"]), str(row["envelope_id"])
+        ),
+    )
+    maximum_text = max(int(row["text_prompt_tokens"]) for row in rows)
+    maximum_prompt = int(worst["prompt_tokens_upper_bound"])
+    margin = context_tokens_per_slot - maximum_prompt - maximum_completion_tokens
+    stage_counts = Counter(str(row["stage_kind"]) for row in rows)
+    return {
+        "schema": "saea-speech-native-m11-prompt-fit-v1",
+        "model_contact": False,
+        "envelope_count": len(rows),
+        "stage_counts": dict(sorted(stage_counts.items())),
+        "maximum_text_prompt_tokens": maximum_text,
+        "maximum_speech_feature_tokens": maximum_speech_feature_tokens,
+        "special_token_reserve": special_token_reserve,
+        "maximum_prompt_tokens_upper_bound": maximum_prompt,
+        "maximum_completion_tokens": maximum_completion_tokens,
+        "context_tokens_per_slot": context_tokens_per_slot,
+        "context_margin_tokens": margin,
+        "maximum_prompt_fits_one_slot": margin >= 0,
+        "worst_envelope_id": worst["envelope_id"],
+        "worst_envelope_messages_sha256": worst["messages_sha256"],
+        "envelopes": rows,
+    }
+
+
+def _m11_prompt_text_token_count(
+    *,
+    envelope: Mapping[str, object],
+    media_marker: str,
+    post_json: Callable[[str, Mapping[str, object]], Mapping[str, object]],
+) -> int:
+    """Count the exact text segments used by speech-feature prompt assembly.
+
+    The pinned server replaces its media marker with precomputed embedding
+    tokens and tokenizes the text on each side independently.  This helper
+    mirrors that boundary through the server's non-generative template and
+    tokenizer endpoints; speech-feature and possible BOS/EOS tokens are added
+    separately by :func:`_audit_m11_prompt_fit`.
+    """
+
+    messages = envelope.get("messages")
+    response_format = envelope.get("response_format")
+    if (
+        not isinstance(messages, (list, tuple))
+        or not isinstance(response_format, Mapping)
+        or not isinstance(media_marker, str)
+        or not media_marker
+    ):
+        raise SpeechNativeProfileError(
+            "M11 prompt tokenizer inputs are malformed"
+        )
+    rendered = post_json(
+        "/apply-template",
+        {
+            "messages": list(messages),
+            "response_format": response_format,
+        },
+    )
+    prompt = rendered.get("prompt") if isinstance(rendered, Mapping) else None
+    if not isinstance(prompt, str):
+        raise SpeechNativeProfileError(
+            "llama.cpp apply-template response lacks a string prompt"
+        )
+    if prompt.count(media_marker) != 1:
+        raise SpeechNativeProfileError(
+            "rendered M11 prompt must contain exactly one media marker"
+        )
+    total = 0
+    for segment in prompt.split(media_marker):
+        if not segment:
+            continue
+        response = post_json(
+            "/tokenize",
+            {
+                "content": segment,
+                "add_special": False,
+                "parse_special": True,
+            },
+        )
+        tokens = response.get("tokens") if isinstance(response, Mapping) else None
+        if (
+            not isinstance(tokens, list)
+            or any(isinstance(token, bool) or not isinstance(token, int) for token in tokens)
+        ):
+            raise SpeechNativeProfileError(
+                "llama.cpp tokenize response contains malformed tokens"
+            )
+        total += len(tokens)
+    if total <= 0:
+        raise SpeechNativeProfileError(
+            "llama.cpp rendered M11 prompt token count is not positive"
+        )
+    return total
+
+
+class _LoopbackPromptAuditClient:
+    """Thread-local keep-alive client for non-generative llama.cpp routes."""
+
+    def __init__(self, *, host: str, port: int, timeout_seconds: float) -> None:
+        if (
+            not isinstance(host, str)
+            or not host
+            or isinstance(port, bool)
+            or not isinstance(port, int)
+            or not 0 < port < 65536
+            or isinstance(timeout_seconds, bool)
+            or not isinstance(timeout_seconds, (int, float))
+            or not math.isfinite(float(timeout_seconds))
+            or float(timeout_seconds) <= 0
+        ):
+            raise SpeechNativeProfileError(
+                "prompt-audit HTTP client configuration is malformed"
+            )
+        self.host = host
+        self.port = port
+        self.timeout_seconds = float(timeout_seconds)
+        self.local = threading.local()
+        self.lock = threading.Lock()
+        self.request_counts: Counter[str] = Counter()
+
+    def _connection(self) -> http.client.HTTPConnection:
+        connection = getattr(self.local, "connection", None)
+        if connection is None:
+            connection = http.client.HTTPConnection(
+                self.host, self.port, timeout=self.timeout_seconds
+            )
+            self.local.connection = connection
+        return connection
+
+    def request_json(
+        self, method: str, path: str, payload: Mapping[str, object] | None = None
+    ) -> Mapping[str, object]:
+        if method not in {"GET", "POST"} or not path.startswith("/"):
+            raise SpeechNativeProfileError("prompt-audit HTTP request is malformed")
+        body = None
+        headers = {"Accept": "application/json"}
+        if payload is not None:
+            body = json.dumps(
+                payload, ensure_ascii=False, separators=(",", ":")
+            ).encode("utf-8")
+            headers["Content-Type"] = "application/json"
+        try:
+            connection = self._connection()
+            connection.request(method, path, body=body, headers=headers)
+            response = connection.getresponse()
+            raw = response.read()
+        except (OSError, http.client.HTTPException) as error:
+            raise SpeechNativeProfileError(
+                f"llama.cpp prompt-audit request failed: {error}"
+            ) from error
+        with self.lock:
+            self.request_counts[f"{method} {path}"] += 1
+        if response.status != 200:
+            raise SpeechNativeProfileError(
+                f"llama.cpp prompt-audit endpoint {path!r} returned HTTP "
+                f"{response.status}: {raw[:500].decode('utf-8', 'replace')}"
+            )
+        try:
+            document = json.loads(raw)
+        except (UnicodeError, json.JSONDecodeError) as error:
+            raise SpeechNativeProfileError(
+                f"llama.cpp prompt-audit endpoint {path!r} returned invalid JSON"
+            ) from error
+        if not isinstance(document, Mapping):
+            raise SpeechNativeProfileError(
+                f"llama.cpp prompt-audit endpoint {path!r} returned a non-object"
+            )
+        return document
+
+    def get_json(self, path: str) -> Mapping[str, object]:
+        return self.request_json("GET", path)
+
+    def post_json(
+        self, path: str, payload: Mapping[str, object]
+    ) -> Mapping[str, object]:
+        return self.request_json("POST", path, payload)
+
+
 def profile_timing_metrics(
     timings: Sequence[Mapping[str, object]],
     *,
@@ -9890,6 +10435,280 @@ def _cli_speech_native_engine_audit(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cli_speech_native_prompt_audit(args: argparse.Namespace) -> int:
+    """Tokenize every reachable M11 prompt without evaluating the decoder."""
+
+    repo_root = Path(args.repo_root) if args.repo_root else REPO_ROOT
+    composed = compose(
+        repo_root, args.model, args.dataset, args.baseline, args.experiment
+    )
+    values = composed.values
+    if (
+        values.get("matcher_policy_id") != "M11"
+        or values.get("key_representation_id") != "K1"
+        or values.get("matcher_prompt_policy_id") != "speech-native-json-copy-v4"
+        or values.get("speech_native_agent_policy_id")
+        != "speech-conditioned-adaptive-evidence-gap-v2"
+        or values.get("speech_native_agent_aggregator_id")
+        != "adaptive-evidence-gap-primary-control-v1"
+    ):
+        raise SpeechNativeProfileError(
+            "prompt audit requires the frozen K1/M11-v2 adaptive evidence profile"
+        )
+    workers = args.workers
+    if isinstance(workers, bool) or not isinstance(workers, int) or not 1 <= workers <= 64:
+        raise SpeechNativeProfileError(
+            "prompt-audit workers must be an integer in [1, 64]"
+        )
+    slot_count = _require_positive_int(values, "profile_slot_count")
+    geometry = _profile_geometry(values, slot_count)
+    top_k = _require_positive_int(values, "speech_native_top_k")
+    raw_order_ids = values.get("profile_key_order_ids")
+    if (
+        not isinstance(raw_order_ids, list)
+        or not raw_order_ids
+        or not all(isinstance(order_id, str) for order_id in raw_order_ids)
+    ):
+        raise SpeechNativeProfileError(
+            "prompt audit requires registered key order ids"
+        )
+    decoding_params = values.get("decoding_params")
+    if not isinstance(decoding_params, Mapping):
+        raise SpeechNativeProfileError("prompt audit decoding_params are malformed")
+    maximum_completion_tokens = decoding_params.get("max_tokens")
+    if (
+        isinstance(maximum_completion_tokens, bool)
+        or not isinstance(maximum_completion_tokens, int)
+        or maximum_completion_tokens <= 0
+    ):
+        raise SpeechNativeProfileError(
+            "prompt audit requires a positive max_tokens ceiling"
+        )
+
+    dataset_path = repo_root / "configs" / "dataset" / f"{args.dataset}.json"
+    gate_view = load_speech_native_engineering_gate(
+        dataset_path,
+        data_root=data_root(),
+        expected_count=_require_positive_int(values, "count"),
+        expected_split_name=_require_string(values, "split_name"),
+        workers=workers,
+    )
+    binding_relpath = _require_string(values, "speech_native_binding")
+    binding_path = (repo_root / binding_relpath).resolve()
+    if binding_path == repo_root.resolve() or not binding_path.is_relative_to(
+        repo_root.resolve()
+    ):
+        raise SpeechNativeProfileError(
+            "prompt-audit binding must stay under the repository"
+        )
+    binding_sha256 = _require_string(values, "speech_native_binding_file_sha256")
+    key_cards = _load_key_cards(binding_path, binding_sha256)
+    graph_relpath = _require_string(values, "speech_native_decision_graph")
+    graph_path = (repo_root / graph_relpath).resolve()
+    if graph_path == repo_root.resolve() or not graph_path.is_relative_to(
+        repo_root.resolve()
+    ):
+        raise SpeechNativeProfileError(
+            "prompt-audit decision graph must stay under the repository"
+        )
+    graph_sha256 = _require_string(
+        values, "speech_native_decision_graph_file_sha256"
+    )
+    decision_graph = _load_decision_graph(
+        graph_path, expected_sha256=graph_sha256, key_cards=key_cards
+    )
+
+    feature_root = Path(_require_string(values, "speech_feature_root"))
+    promotion_path = Path(
+        _require_string(values, "speech_packet_promotion_receipt")
+    )
+    promotion_sha256 = _require_string(
+        values, "speech_packet_promotion_receipt_sha256"
+    )
+    if promotion_path.parent.resolve() != feature_root.resolve():
+        raise SpeechNativeProfileError(
+            "prompt-audit packet promotion receipt must live at feature root"
+        )
+    packet_bindings = _load_packet_bindings(
+        promotion_path, promotion_sha256, gate_view.samples
+    )
+    server_env = _server_env(values)
+    decoder_sha256 = server_env.get("LLAMA_SPEECH_DECODER_SHA256")
+    if not isinstance(decoder_sha256, str) or _SHA256.fullmatch(decoder_sha256) is None:
+        raise SpeechNativeProfileError(
+            "prompt-audit server profile lacks a decoder SHA-256 binding"
+        )
+    packets = load_speech_feature_packets(
+        feature_root,
+        tuple(packet_bindings.values()),
+        workers=workers,
+        expected_decoder_gguf_sha256=decoder_sha256,
+    )
+    if len(packets) != len(gate_view.samples):
+        raise SpeechNativeProfileError(
+            "prompt-audit packet validation count disagrees with runtime view"
+        )
+    packet_token_counts = {
+        packet.packet_id: sum(chunk.n_tokens for chunk in packet.chunks)
+        for packet in packets
+    }
+    maximum_packet_id, maximum_speech_feature_tokens = max(
+        packet_token_counts.items(), key=lambda item: (item[1], item[0])
+    )
+    maximum_packet = next(
+        packet for packet in packets if packet.packet_id == maximum_packet_id
+    )
+
+    runtime_receipt = load_runtime_receipt(
+        resolve_runtime_receipt_path(repo_root, values)
+    )
+    runtime_root = Path(args.runtime_root)
+    session_path = Path(args.session_receipt).resolve()
+    session_hash_before = _sha256_file(session_path)
+    session = attach_session(
+        session_path,
+        runtime_receipt=runtime_receipt,
+        runtime_root=runtime_root,
+    )
+    model_root_value = model_materialization_root(values)
+    model_root = Path(model_root_value) if model_root_value is not None else None
+    model_argv = _model_file_argv(
+        data_root(),
+        _pinned_model_files(runtime_receipt),
+        role=str(runtime_receipt.get("role", "legacy")),
+        model_root=model_root,
+    )
+    _assert_reusable_session_profile(
+        session,
+        host=args.host,
+        port=args.port,
+        model_argv=model_argv,
+        server_args=_server_args(values),
+        server_env=server_env,
+    )
+    if _sha256_file(session_path) != session_hash_before:
+        raise SpeechNativeProfileError(
+            "resident session receipt changed during prompt-audit attachment"
+        )
+    client = _LoopbackPromptAuditClient(
+        host=session.host,
+        port=session.port,
+        timeout_seconds=args.timeout_seconds,
+    )
+    props = client.get_json("/props")
+    media_marker = props.get("media_marker")
+    chat_template = props.get("chat_template")
+    if (
+        not isinstance(media_marker, str)
+        or not media_marker
+        or not isinstance(chat_template, str)
+        or not chat_template
+    ):
+        raise SpeechNativeProfileError(
+            "resident llama.cpp props lack media marker or chat template identity"
+        )
+
+    envelopes = _enumerate_m11_prompt_envelopes(
+        key_cards=key_cards,
+        decision_graph=decision_graph,
+        top_k=top_k,
+        key_order_ids=tuple(raw_order_ids),
+    )
+
+    def count_one(envelope: Mapping[str, object]) -> tuple[str, int]:
+        envelope_id = envelope.get("envelope_id")
+        if not isinstance(envelope_id, str):
+            raise SpeechNativeProfileError(
+                "prompt-audit envelope id is malformed"
+            )
+        return (
+            envelope_id,
+            _m11_prompt_text_token_count(
+                envelope=envelope,
+                media_marker=media_marker,
+                post_json=client.post_json,
+            ),
+        )
+
+    with ThreadPoolExecutor(
+        max_workers=min(workers, len(envelopes)),
+        thread_name_prefix="saea-m11-prompt-tokenizer",
+    ) as pool:
+        counts = dict(pool.map(count_one, envelopes))
+    if len(counts) != len(envelopes):
+        raise SpeechNativeProfileError(
+            "prompt-audit tokenizer did not cover every envelope"
+        )
+    report = _audit_m11_prompt_fit(
+        envelopes=envelopes,
+        token_count=lambda envelope: counts[str(envelope["envelope_id"])],
+        maximum_speech_feature_tokens=maximum_speech_feature_tokens,
+        maximum_completion_tokens=maximum_completion_tokens,
+        context_tokens_per_slot=geometry["context_tokens_per_slot"],
+        special_token_reserve=2,
+    )
+    report.update(
+        {
+            "study": "speech-aware-evidence-acquisition",
+            "scope": "model-free-check",
+            "config_hash": composed.config_hash,
+            "binding_path": binding_path.relative_to(repo_root).as_posix(),
+            "binding_file_sha256": binding_sha256,
+            "decision_graph_id": decision_graph.graph_id,
+            "decision_graph_path": graph_path.relative_to(repo_root).as_posix(),
+            "decision_graph_file_sha256": graph_sha256,
+            "packet_promotion_receipt_sha256": promotion_sha256,
+            "validated_packet_count": len(packets),
+            "maximum_speech_packet": {
+                "packet_id": maximum_packet.packet_id,
+                "packet_sha256": maximum_packet.packet_sha256,
+                "feature_tokens": maximum_speech_feature_tokens,
+            },
+            "runtime": {
+                "session_receipt_path": str(session_path),
+                "session_receipt_sha256": session_hash_before,
+                "server_pid": session.pid,
+                "server_argv_sha256": _canonical_sha256(session.argv),
+                "mmproj_loaded": False,
+                "decoder_sha256": decoder_sha256,
+            },
+            "tokenizer": {
+                "media_marker": media_marker,
+                "chat_template_sha256": hashlib.sha256(
+                    chat_template.encode("utf-8")
+                ).hexdigest(),
+                "request_counts": dict(sorted(client.request_counts.items())),
+                "parallel_workers": workers,
+                "decoder_evaluations": 0,
+                "generated_tokens": 0,
+            },
+            "new_model_contact_authorized": False,
+        }
+    )
+    output = Path(args.output)
+    _write_exclusive_json(output, report)
+    print(
+        json.dumps(
+            {
+                "output": str(output),
+                "output_sha256": _sha256_file(output),
+                "envelope_count": report["envelope_count"],
+                "maximum_prompt_tokens_upper_bound": report[
+                    "maximum_prompt_tokens_upper_bound"
+                ],
+                "context_margin_tokens": report["context_margin_tokens"],
+                "maximum_prompt_fits_one_slot": report[
+                    "maximum_prompt_fits_one_slot"
+                ],
+                "model_contact": False,
+            },
+            indent=2,
+            sort_keys=True,
+        )
+    )
+    return 0
+
+
 def _cli_speech_native_profile(args: argparse.Namespace) -> int:
     repo_root = Path(args.repo_root) if args.repo_root else REPO_ROOT
     root = data_root()
@@ -10649,6 +11468,7 @@ def _cli_speech_native_action_audit(args: argparse.Namespace) -> int:
 __all__ = [
     "SpeechNativeProfileError",
     "_cli_speech_native_engine_audit",
+    "_cli_speech_native_prompt_audit",
     "_cli_speech_native_profile",
     "_cli_speech_native_read",
     "build_profile_tasks",

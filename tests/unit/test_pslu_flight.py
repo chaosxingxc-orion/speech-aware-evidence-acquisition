@@ -36,6 +36,9 @@ from speech_aware_evidence_acquisition.core.driver.speech_native import (
     _evaluate_m11_adaptive_evidence_gap,
     _evaluate_m11_memory_holdout_action_advantage_policy,
     _evaluate_m11_oof_action_advantage_policy,
+    _audit_m11_prompt_fit,
+    _m11_prompt_text_token_count,
+    _enumerate_m11_prompt_envelopes,
     _m11_reader_contract_from_values,
     _load_decision_graph,
     _parse_m9_factor_graph_trajectory,
@@ -3272,6 +3275,162 @@ def test_m11_contact_dispatch_preserves_the_v2_key_conditioned_grammar():
         ]
         assert len(query_parts) == 1
         assert query_parts[0]["packet_id"].startswith("slurp/train/m11-v2-sample-")
+
+
+def test_m11_prompt_enumerator_reuses_the_contact_batched_runtime_path():
+    envelopes = _enumerate_m11_prompt_envelopes(
+        key_cards=_KEY_CARDS,
+        decision_graph=_decision_graph_fixture(),
+        top_k=2,
+        key_order_ids=("canonical",),
+    )
+
+    by_stage = Counter(envelope["stage_kind"] for envelope in envelopes)
+    assert by_stage == {
+        "primary": 1,
+        "retrieval": 1,
+        "action": 2,
+        "boundary": 4,
+    }
+    assert len({envelope["envelope_id"] for envelope in envelopes}) == 8
+    for envelope in envelopes:
+        assert set(envelope) == {
+            "envelope_id",
+            "stage_kind",
+            "stage_id",
+            "candidate_key_ids",
+            "boundary_id",
+            "messages",
+            "response_format",
+        }
+        query_parts = [
+            part["speech_features"]
+            for part in envelope["messages"][1]["content"]
+            if part.get("type") == "input_speech_features"
+        ]
+        assert len(query_parts) == 1
+        assert query_parts[0]["role"] == "query"
+        rendered = json.dumps(envelope, sort_keys=True)
+        assert '"value_label"' not in rendered
+        assert "Candidate labels:" not in rendered
+
+
+def test_m11_prompt_fit_audit_adds_speech_and_special_token_reserves():
+    envelopes = _enumerate_m11_prompt_envelopes(
+        key_cards=_KEY_CARDS,
+        decision_graph=_decision_graph_fixture(),
+        top_k=2,
+        key_order_ids=("canonical",),
+    )
+    token_counts = {
+        envelope["envelope_id"]: 100 + index
+        for index, envelope in enumerate(envelopes)
+    }
+
+    report = _audit_m11_prompt_fit(
+        envelopes=envelopes,
+        token_count=lambda envelope: token_counts[envelope["envelope_id"]],
+        maximum_speech_feature_tokens=169,
+        maximum_completion_tokens=64,
+        context_tokens_per_slot=4096,
+        special_token_reserve=2,
+    )
+
+    expected_prompt = max(token_counts.values()) + 169 + 2
+    assert report["schema"] == "saea-speech-native-m11-prompt-fit-v1"
+    assert report["envelope_count"] == 8
+    assert report["stage_counts"] == {
+        "action": 2,
+        "boundary": 4,
+        "primary": 1,
+        "retrieval": 1,
+    }
+    assert report["maximum_text_prompt_tokens"] == max(token_counts.values())
+    assert report["maximum_prompt_tokens_upper_bound"] == expected_prompt
+    assert report["context_margin_tokens"] == 4096 - expected_prompt - 64
+    assert report["maximum_prompt_fits_one_slot"] is True
+    assert report["model_contact"] is False
+
+
+def test_m11_prompt_fit_audit_fails_closed_on_a_missing_speech_query():
+    envelopes = list(
+        _enumerate_m11_prompt_envelopes(
+            key_cards=_KEY_CARDS,
+            decision_graph=_decision_graph_fixture(),
+            top_k=2,
+            key_order_ids=("canonical",),
+        )
+    )
+    malformed = dict(envelopes[0])
+    malformed["messages"] = (
+        malformed["messages"][0],
+        {"role": "user", "content": []},
+    )
+    envelopes[0] = malformed
+
+    with pytest.raises(SpeechNativeProfileError, match="exactly one query speech"):
+        _audit_m11_prompt_fit(
+            envelopes=tuple(envelopes),
+            token_count=lambda _envelope: 10,
+            maximum_speech_feature_tokens=10,
+            maximum_completion_tokens=10,
+            context_tokens_per_slot=100,
+            special_token_reserve=2,
+        )
+
+
+def test_m11_prompt_token_counter_uses_template_then_marker_split_tokenization():
+    envelope = _enumerate_m11_prompt_envelopes(
+        key_cards=_KEY_CARDS,
+        decision_graph=_decision_graph_fixture(),
+        top_k=2,
+        key_order_ids=("canonical",),
+    )[0]
+    calls = []
+
+    def post_json(path, payload):
+        calls.append((path, payload))
+        if path == "/apply-template":
+            return {"prompt": "prefix<__media__>suffix"}
+        assert path == "/tokenize"
+        return {
+            "tokens": [1, 2] if payload["content"] == "prefix" else [3]
+        }
+
+    count = _m11_prompt_text_token_count(
+        envelope=envelope,
+        media_marker="<__media__>",
+        post_json=post_json,
+    )
+
+    assert count == 3
+    assert calls[0][0] == "/apply-template"
+    assert calls[0][1] == {
+        "messages": list(envelope["messages"]),
+        "response_format": envelope["response_format"],
+    }
+    assert [call[1] for call in calls[1:]] == [
+        {"content": "prefix", "add_special": False, "parse_special": True},
+        {"content": "suffix", "add_special": False, "parse_special": True},
+    ]
+
+
+def test_m11_prompt_token_counter_rejects_an_ambiguous_media_marker():
+    envelope = _enumerate_m11_prompt_envelopes(
+        key_cards=_KEY_CARDS,
+        decision_graph=_decision_graph_fixture(),
+        top_k=2,
+        key_order_ids=("canonical",),
+    )[0]
+
+    with pytest.raises(SpeechNativeProfileError, match="exactly one media marker"):
+        _m11_prompt_text_token_count(
+            envelope=envelope,
+            media_marker="<__media__>",
+            post_json=lambda _path, _payload: {
+                "prompt": "a<__media__>b<__media__>c"
+            },
+        )
 
 
 def _m11_decision_row(result, *, sample_id="sample-1", task_id=None):

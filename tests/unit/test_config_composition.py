@@ -617,10 +617,10 @@ def test_information_complete_e108_m11_composes_on_the_resident_np16_service():
         "a2ccd4b004ce2e31329bf7b69ce0ebb9cff642eec2d25cde8087ffc679203dfe"
     )
     assert values["speech_native_decision_graph"] == (
-        "configs/knowledge/slurp-signature-lexical-decision-graph-v4.json"
+        "configs/knowledge/slurp-signature-complete-decision-graph-v5.json"
     )
     assert values["speech_native_decision_graph_file_sha256"] == (
-        "5c858eed0f909ea75b9340646a4444aa13cf3882c35d3e79d04e394fed0d2b64"
+        "58c9457312d71a7c7a13e92e53e2a4f9fff5c45a9722eb5680d0fd465fe8a2fc"
     )
     assert values["profile_key_order_ids"] == ["canonical"]
     assert values["profile_queue_depth_multiplier"] == 4
