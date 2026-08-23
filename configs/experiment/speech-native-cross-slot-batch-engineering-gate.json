@@ -1,0 +1,5 @@
+{
+  "experiment_id": "SAEA-ENG-GATE8-CROSS-SLOT-BATCH",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "Eight-sample label-free mechanical gate for cross-slot decoder-ready speech-feature batching; engineering validation only, with no semantic result or scientific claim."
+}

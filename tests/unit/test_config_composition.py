@@ -592,6 +592,28 @@ def test_engineering_packet_equivalence_uses_parallel_packet_validation():
     assert composed.values["profile_validation_workers"] == 16
 
 
+def test_cross_slot_engineering_gate_pins_the_matching_exact_eight_receipt():
+    """The current packet root must not reuse the legacy-root receipt hashes."""
+
+    from speech_aware_evidence_acquisition.e0.artifacts import REPO_ROOT
+
+    composed = compose(
+        REPO_ROOT,
+        "q4km-mmproj-free-speech-native-np16-speech-batch-26802-eng",
+        "slurp-speech-native-eng-gate8",
+        "speech-native-packet-equivalence-04ccc72a",
+        "speech-native-cross-slot-batch-engineering-gate",
+    )
+
+    assert composed.values["speech_packet_promotion_receipt"] == (
+        "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/"
+        "ENG-GATE8-promotion.json"
+    )
+    assert composed.values["speech_packet_promotion_receipt_sha256"] == (
+        "34184bfef9a60bb28bc0bdbc7c5bf33d1dea7c5da7bd686d6f0aa3c99d3bc15b"
+    )
+
+
 def test_information_complete_e108_m11_composes_on_the_resident_np16_service():
     """The 108-query action-support successor pins only promoted speech packets,
     action-complete text keys, and the admitted residual-boundary graph."""
