@@ -1,0 +1,14 @@
+{
+  "attempt_id": "attempt-20260823T175901Z-e108zc",
+  "carrier_lock_key": "slurp",
+  "execution_profile": "bounded-discovery-probe",
+  "planned_gpu_hours": 0.8,
+  "planned_model_calls": 540,
+  "planned_speech_audio_seconds": 1500,
+  "protocol_hash": "fd27d74f42b0bc9e9aee121f83ed91bde5044f5fd981419f8d9d4821c221a0c2",
+  "run_id": "SAEA-SN-EVIDENCE-E108-K1M11-INFORMATION-COMPLETE-ACTION-SUPPORT-ZCOPY",
+  "schema": "saea-execution-plan-v1",
+  "split_identity_hash": "6887f0d348729a1828937cd92005867d096472491fb6a8598711a05a6169d568",
+  "split_role": "discovery",
+  "study": "speech-aware-evidence-acquisition"
+}

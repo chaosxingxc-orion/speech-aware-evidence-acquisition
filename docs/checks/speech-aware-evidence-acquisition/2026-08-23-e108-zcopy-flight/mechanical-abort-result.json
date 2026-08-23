@@ -1,0 +1,203 @@
+{
+  "attempt_dir": "/home/chao/runs/SAEA-SN-EVIDENCE-E108-K1M11-INFORMATION-COMPLETE-ACTION-SUPPORT-ZCOPY/attempt-20260823T175901Z-e108zc",
+  "attempt_id": "attempt-20260823T175901Z-e108zc",
+  "config_hash": "928facf7186edb423eef9dc3f67db04455dce6fc994632bbcf1f9a94015212f5",
+  "contacts": {
+    "actual_contact_count": 338,
+    "cost_records": 338,
+    "model_request_records": 338,
+    "model_response_records": 338,
+    "trace_manifest_record_total": 1014
+  },
+  "cost_accounting": {
+    "audio_seconds_registered_ceiling": 1800,
+    "audio_seconds_used": 939.881,
+    "calls_registered_ceiling": 600,
+    "calls_used": 338,
+    "completion_tokens_total": 8390,
+    "gpu_hours_note": "Unmeasured: the GPU sampler produced no samples, which is the refusal cause. Wall clock for the whole invocation was 1198 s (17:59:18Z -> 18:19:16Z), so the GPU-active basis cannot have exceeded 0.333 h even at continuous 100% occupancy.",
+    "gpu_hours_registered_ceiling": 0.8,
+    "gpu_hours_used": "NOT_AVAILABLE",
+    "latency_seconds_total": 17007.198707,
+    "prompt_tokens_total": 519914,
+    "wall_clock_seconds": 1198
+  },
+  "eligibility_note": "NOT eligible. Every label-blind execution conjunct holds -- 108/108 final decisions, exact speech carriage on all 338 contacts, mmproj-free, zero failure markers, balanced slot events, both metered budgets inside their ceilings -- but the attempt never finalized: no flight-receipt.json exists, so there is no hash-chained receipt for a reader to bind to. Eligibility for any semantic read requires a finalized attempt AND its own registered exposure row; neither exists.",
+  "eligible_for_semantic_read": false,
+  "execution_plan": {
+    "attempt_id": "attempt-20260823T175901Z-e108zc",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 0.8,
+    "planned_model_calls": 540,
+    "planned_speech_audio_seconds": 1500,
+    "protocol_hash": "fd27d74f42b0bc9e9aee121f83ed91bde5044f5fd981419f8d9d4821c221a0c2",
+    "run_id": "SAEA-SN-EVIDENCE-E108-K1M11-INFORMATION-COMPLETE-ACTION-SUPPORT-ZCOPY",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "6887f0d348729a1828937cd92005867d096472491fb6a8598711a05a6169d568",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "mechanical_conjuncts": {
+    "all_108_split_samples_contacted": true,
+    "attempt_finalized_with_flight_receipt": false,
+    "audio_within_registered_ceiling": true,
+    "balanced_native_slot_events": true,
+    "calls_within_registered_ceiling": true,
+    "every_contact_carries_exact_speech": true,
+    "every_contact_declares_mmproj_free": true,
+    "every_contact_query_source_is_speech": true,
+    "final_decision_count_is_108": true,
+    "gpu_telemetry_available": false,
+    "mmproj_never_loaded_in_process": true,
+    "request_response_cost_records_agree": true,
+    "resident_service_reused_and_intact": true,
+    "zero_host_spill_markers": true,
+    "zero_oom_markers": true,
+    "zero_runaway_markers": true
+  },
+  "mechanical_conjuncts_that_fail": [
+    "attempt_finalized_with_flight_receipt",
+    "gpu_telemetry_available"
+  ],
+  "mechanical_conjuncts_that_hold": [
+    "all_108_split_samples_contacted",
+    "audio_within_registered_ceiling",
+    "balanced_native_slot_events",
+    "calls_within_registered_ceiling",
+    "every_contact_carries_exact_speech",
+    "every_contact_declares_mmproj_free",
+    "every_contact_query_source_is_speech",
+    "final_decision_count_is_108",
+    "mmproj_never_loaded_in_process",
+    "request_response_cost_records_agree",
+    "resident_service_reused_and_intact",
+    "zero_host_spill_markers",
+    "zero_oom_markers",
+    "zero_runaway_markers"
+  ],
+  "mmproj_process_audit": {
+    "live_argv_checked": true,
+    "mmproj_hit_count": 0,
+    "mmproj_loaded": false,
+    "open_files_checked": true,
+    "pid": 607,
+    "process_maps_checked": true,
+    "receipt_argv_checked": true,
+    "role": "inference",
+    "schema": "saea-mmproj-free-process-audit-v1",
+    "session_id": "SAEA-SN-Q4KM-NP16-HOT-PREFIX-ZCOPY-20260823T111700Z"
+  },
+  "native_slot_events": {
+    "balanced": true,
+    "driver_lifecycle_balance_check": "PASSED -- profile_server_slot_event_gpu_metrics validated launch_count == release_count == actual_contact_count (338) and found no straddling active task before it refused on the missing GPU sample timeline",
+    "releases_attributable_to_this_flight": 338,
+    "service_lifetime_launches": 884,
+    "service_lifetime_releases": 884
+  },
+  "one_shot_row": true,
+  "protocol_hash": "fd27d74f42b0bc9e9aee121f83ed91bde5044f5fd981419f8d9d4821c221a0c2",
+  "refusal": {
+    "gate_relaxed": false,
+    "message": "request GPU sample timeline is unavailable",
+    "raised_by": "core.driver.speech_native.profile_server_slot_event_gpu_metrics",
+    "root_cause": "The nvidia-smi resource sampler produced zero samples for this attempt, so resource_summary['request_gpu_samples'] was empty. core.resources.GpuSampler.start() does one synchronous nvidia-smi poll and returns without starting its thread if that poll fails, after which summary() reports NOT_AVAILABLE with an empty sample list. The driver refuses to mint a flight receipt without a GPU sample timeline, so no flight-receipt.json was written.",
+    "second_attempt_made": false,
+    "stage": "post-run metrics assembly, AFTER every model contact completed",
+    "verbatim": "Traceback (most recent call last):\n  File \"/home/chao/.venvs/speechrl/bin/saea-driver\", line 10, in <module>\n    sys.exit(main())\n  File \".../core/driver/cli.py\", line 1023, in main\n    return args.func(args)\n  File \".../core/driver/speech_native.py\", line 12249, in _cli_speech_native_profile\n    saturated_gpu = profile_server_slot_event_gpu_metrics(\n  File \".../core/driver/speech_native.py\", line 7732, in profile_server_slot_event_gpu_metrics\n    raise SpeechNativeProfileError(\"request GPU sample timeline is unavailable\")\nspeech_aware_evidence_acquisition.core.driver.speech_native.SpeechNativeProfileError: request GPU sample timeline is unavailable"
+  },
+  "resident_service": {
+    "healthy_after_flight": true,
+    "mmproj_loaded": false,
+    "never_stopped_or_reloaded": true,
+    "pid": 607,
+    "session_id": "SAEA-SN-Q4KM-NP16-HOT-PREFIX-ZCOPY-20260823T111700Z",
+    "session_receipt_sha256": "33639d3d4a74db48fead435cb7c7548beb58437a79cba64f5312b100b8fe9698",
+    "session_receipt_unchanged_after_flight": true
+  },
+  "result_access": {
+    "decisions_file_read": false,
+    "mechanical_fields_only": true,
+    "model_response_channel_read": false,
+    "semantic_result_read": false
+  },
+  "retried": false,
+  "run_id": "SAEA-SN-EVIDENCE-E108-K1M11-INFORMATION-COMPLETE-ACTION-SUPPORT-ZCOPY",
+  "schema": "saea-label-blind-mechanical-abort-result-v1",
+  "server_log_markers_service_lifetime": {
+    "context_shift": 0,
+    "error_lines": 0,
+    "failed_to_allocate": 0,
+    "host_buffer_fallback": 0,
+    "note": "Counted over the whole resident-service log, a superset of this flight's window.",
+    "offloaded_to_cpu": 0,
+    "offloading_layer_to_cpu": 0,
+    "out_of_memory": 0,
+    "slot_context_shift": 0,
+    "truncated_equals_1": 0
+  },
+  "serving_descriptive": {
+    "aggregate_tokens_per_second": "NOT_AVAILABLE",
+    "note": "Descriptive only and largely UNAVAILABLE for this attempt: GPU utilization median/P10, slot occupancy, throughput, and prompt-evaluation ratio are all computed by the receipt stage that refused. Under the 2026-08-23 rulings section 2.1 these numbers do not gate scientific admission, so their absence is a telemetry loss, not a scientific one.",
+    "operator_observed_gpu_utilization_pct_during_flight": [
+      99,
+      100,
+      97,
+      99,
+      100
+    ],
+    "operator_observed_sm_clock_mhz_during_flight": [
+      1200,
+      1185,
+      1200,
+      952,
+      600
+    ],
+    "prompt_evaluation_ratio_pct": "NOT_AVAILABLE",
+    "request_gpu_utilization_median_pct": "NOT_AVAILABLE",
+    "request_gpu_utilization_p10_pct": "NOT_AVAILABLE",
+    "server_slot_occupancy_mean_pct": "NOT_AVAILABLE"
+  },
+  "source_artifact_sha256": {
+    "decisions": "4e9ebefceb07f11df858f6ccc71290beb243a2aef5198cf832fc16ce2d606f99",
+    "mmproj_audit": "fc28f20a7b4476152bb3baddbfd5903b30d10c363c2b02240fdcdb7073fb7c2b",
+    "plan_copy": "e2c6d79601ce32d557707ebbb9ba9a3d1017c158db71b383003f008cb2f462f9",
+    "prompt_fit_receipt": "c2ee949a58c368dc3e3c4b3541f64ad845158771d90ca66327b955de30c46b4f",
+    "trace": "e5659f59c4cf798c915f33f2d549438a3345aee8bcbc582cf8cc28902dae96ea",
+    "trace_manifest": "8b9ffc3263e2c783dd43a5bad6ba05d9c0410081b53fd5462d9674d547eb2999"
+  },
+  "speech_carriage": {
+    "derived_from": "MODEL_REQUEST channel only; MODEL_RESPONSE was never opened",
+    "query_parts_per_request_distribution": {
+      "1": 338
+    },
+    "query_source_values": {
+      "speech_features": 338
+    },
+    "requests_declaring_mmproj_loaded_false": 338,
+    "requests_missing_exactly_one_query": 0,
+    "requests_with_exactly_one_speech_query": 338,
+    "requests_with_speech_packet_sha256": 338,
+    "speech_feature_part_roles": {
+      "query": 338
+    }
+  },
+  "split_identity_hash": "6887f0d348729a1828937cd92005867d096472491fb6a8598711a05a6169d568",
+  "status": "ABORTED_AT_POST_RUN_METRICS",
+  "trajectories": {
+    "contact_ceiling_per_task": 5,
+    "decisions_jsonl_line_count": 108,
+    "decisions_jsonl_parsed": false,
+    "distinct_query_packet_ids": 108,
+    "distinct_sample_ids_contacted": 108,
+    "expected_task_count": 108
+  },
+  "what_completed": {
+    "attempt_finalized": false,
+    "decisions_written": true,
+    "flight_receipt_written": false,
+    "model_contacts_completed": true,
+    "trace_manifest_written": true,
+    "trace_written": true
+  }
+}
