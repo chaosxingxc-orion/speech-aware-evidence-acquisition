@@ -1,60 +1,277 @@
-# Unified agent abstraction across carriers (owner design session, 2026-08-08)
+# Unified speech-native knowledge agent abstraction across carriers
 
-Question (owner): does the obs-agent-loop design generalize to the other
-in-scope carriers/tasks, and if not, what unified abstraction is needed?
-Answer: it generalizes iff five seams are pluggable; three need additions,
-all additive to the v1 substrate (the A-family long-form case is the hardest
-OBS instantiation — the other families are degenerate or outer-loop cases).
+Date: 2026-08-08
+
+Updated: 2026-08-23
+
+Status: the task-independent TRAIN-build/DEV-use contracts are implemented in
+`rails.knowledge`; historical carrier adapters and the SLURP M11 controller have not yet
+been fully migrated onto one task-independent AgentLoop runner. No cross-task effectiveness
+claim is currently supported.
+
+## Research verdict
+
+The reusable object of study is not a better SLU prompt or a larger intent graph. It is an
+external, reward-guided control plane around one frozen speech-capable Omni core. The control
+plane separately governs:
+
+1. `OBS`: preserve and address the original speech observation;
+2. `ORG`: construct a compact, auditable state describing what is understood and what remains
+   unresolved;
+3. `SUPPLY`: acquire train-built evidence that adds a previously absent decision variable;
+4. `USE`: ask the same frozen core to solve the task from the original speech plus the selected
+   evidence; and
+5. `CONTROL`: stop, acquire, contrast, expand, verify, or backtrack under an external policy.
+
+The immutable query anchor is the original speech-feature packet. Agent-produced text may enter
+only as bounded ORG state. Every decision contact carries the same speech packet again. A
+transcript, generated intent summary, or state object alone is never a replacement query.
+
+This separation is required by both the local evidence and recent primary work. Speech-Hands
+finds that blindly combining original audio with noisy external candidates can degrade performance
+and makes source arbitration an explicit action. PlanRAG-Audio separates modality planning,
+retrieval, deterministic fusion, and final generation. SPARKLE separates retrieval decision, query
+formulation, and knowledge integration. ToolScope separates global planning, local perception, and
+answer synthesis. These systems train components that this repository forbids, but their control
+topology is directly testable outside a frozen core.
+
+## Knowledge lifecycle
+
+Knowledge construction, knowledge use, and knowledge optimization are three different processes.
+They must never be collapsed into one evaluation loop.
+
+### BUILD — TRAIN only
+
+Construct a content-addressed `KnowledgeSnapshot` from a broad, representative TRAIN partition.
+Sampling is coverage-driven rather than a fixed number of examples per label. A build must model:
+
+- the support of every task target, including long-tail targets when the label vocabulary exceeds
+  100 entries;
+- decision boundaries between confusable targets;
+- operation, entity, domain, constraint, speaker/channel, and task-defined factors when the source
+  data supports them;
+- train-derived priors, prototypes, counterexamples, and provenance; and
+- missing-factor coverage, so knowledge inadequacy is diagnosed before retrieval is blamed.
+
+The builder may use more TRAIN samples than a later optimization cohort. Build scale is determined
+by relation/factor coverage, not the 100/500/1,000 optimization ladder.
+
+### USE — disjoint DEV queries
+
+Freeze the snapshot before opening a DEV query cohort. Each `QueryState` binds one DEV speech
+packet, the snapshot identity, previous value ids, and bounded Agent state ids. Ranking and fusion
+produce separately hashed `RankResult` and `FusionDecision` records. DEV samples cannot contribute
+facets, values, examples, priors, or retrieval memory to their own decision.
+
+### OPTIMIZE — discovery trajectories, then unread DEV holdout
+
+Optimize only the external discrete controller from completed discovery trajectories. Learn action
+utility from speaker-isolated, out-of-fold `(state, action, return)` memory. Freeze the policy before
+reading an unread DEV holdout. Test remains untouched in Stage-2; a test report requires Stage-3
+promotion and a separate execution contract.
+
+## Query, key, and value
+
+### Query
+
+Use:
+
+`query_t = (speech_packet, task_contract, agent_state_refs_t, retrieved_value_refs_t)`
+
+The speech packet is mandatory and immutable across the trajectory. `agent_state_refs_t` may name
+factor hypotheses, unresolved gaps, prior candidates, or evidence sufficiency judgments, but these
+objects are auxiliary. They cannot contain gold, a reference transcript, a DEV label, future action
+outcomes, or an unbound free-form replacement query.
+
+### Key
+
+A key is a set of independently rankable `KeyFacet` objects rather than one task-specific card.
+The default representation is maintainable English text. Candidate dimensions include:
+
+- content and semantic intent;
+- operation or requested action;
+- entity and argument constraints;
+- domain and task schema;
+- speaker, channel, or acoustic condition when it has demonstrated task utility;
+- positive prototypes and contrastive boundaries; and
+- procedural/tool affordances.
+
+No dimension is admitted merely because it is available. It must resolve a named task uncertainty,
+improve candidate discrimination, or support a mechanism control. Ranking policy and cross-facet
+fusion policy remain separate, versioned decisions. This addresses the cross-modal failure observed
+in VisRet: shared embeddings can behave like bags of concepts and lose structured relations. It also
+adopts GranuRAG's lesson that fine-grained elements must be first-class retrieval units if failures
+are to be attributable rather than hidden inside a coarse record.
+
+### Value
+
+A `ValueBundle` is sample-associated task evidence, not just a label string. It may carry:
+
+- a task target or deterministic result mapping;
+- train-derived priors and prototype support;
+- contrastive evidence and exclusions;
+- entity/tool schema details;
+- a procedural action or verification rule; and
+- complete source-sample and provenance references.
+
+The value must be associated with one or more ranked facets. A label may be returned by a final
+deterministic mapping, but it must not leak into key text merely to make matching trivial.
+
+## Information-gain contract
+
+Semantic similarity is a candidate-generation signal, not the scientific objective. The objective
+is downstream evidence utility. Utility-Oriented Visual Evidence Selection formalizes this as the
+change induced in the answer distribution and shows why visually similar evidence may be useless or
+misleading. Its implementation depends on token logits and a second surrogate model, so this
+repository cannot reproduce that scorer. The transferable contract is:
+
+- every acquired item has a stable `evidence_id` and names the unresolved decision variable it can
+  resolve;
+- an action that only repeats visible speech, state, or key text contributes zero new SUPPLY;
+- a SUPPLY-producing continuation is legal only if it can introduce an evidence id absent from
+  the trajectory;
+- post-hoc discovery reward measures the actual task transition caused by the evidence, including
+  wrong-to-correct, correct-to-wrong, unchanged-wrong, and unchanged-correct outcomes; and
+- novelty, attribution, mechanism validity, contact cost, and latency are reported separately from
+  correctness rather than hidden inside one score.
+
+Generated semantic state is ORG, not knowledge SUPPLY. The model may use it to specify a missing
+factor or reformulate which facet to retrieve, but the information gain must come from a train-built
+value that was not already visible. This preserves the owner's premise: useful information must
+exist in the knowledge base; otherwise BUILD is incomplete.
+
+## Task-independent AgentLoop
+
+Use one finite action vocabulary across tasks:
+
+- `STOP`: return the current speech-conditioned result;
+- `ORGANIZE(state_schema)`: create bounded auxiliary state while retaining the speech anchor;
+- `ACQUIRE(facet_dimension)`: retrieve a new value for a named missing factor;
+- `EXPAND(k)`: widen candidate support without changing the query anchor;
+- `CONTRAST(candidate_a, candidate_b)`: retrieve a boundary that distinguishes two candidates;
+- `VERIFY(value_ids)`: re-evaluate compatibility with the original speech;
+- `BACKTRACK`: discard harmful or unsupported state and return to the last speech-grounded decision.
+
+One loop step is:
+
+1. observe the original speech packet and current task contract;
+2. organize a strict state with candidates, resolved factors, unresolved gaps, and cited evidence;
+3. choose one external action;
+4. acquire and fuse only the value ids authorized by that action;
+5. call the same frozen Omni core with speech plus the updated evidence;
+6. record the transition and either stop or continue within the frozen horizon.
+
+The runtime controller cannot inspect gold or post-action reward. The offline optimizer can inspect
+reward only after states, available actions, model predictions, and cost are sealed.
 
 ## Per-family fit
 
-| family / task shape | fit of current design | gap |
-|---|---|---|
-| A — long-form contextual ASR (earnings/conec) | native target | — |
-| B — SLU (slurp/speech-massive/minds14; 2.9–9s single utterances → intent/slots) | loop degenerates to single iteration (buffer ≥ clip); VAD trim still useful | output contract (structured JSON vs transcript) + format-repair re-ask trigger |
-| C — spoken QA (spoken-squad/heysquad/slue-sqa-5; spoken question + spoken document) | document stream fits the OBS loop | **role-typed dual channels** (question vs document) + **span-addressable observation memory** (time-range → text index built from the OBS trace's per-span records) enabling region re-listen |
-| D — tool calling (audio2tool/VAB; short commands; multi-turn tiers) | single-turn ready (P1 scorer landed); correction tier maps onto the re-ask skeleton | **session outer loop**: cross-turn ORG state (rolling state generalized from within-call to across-turns; per-turn audio in chat_history) |
-| E — meeting (AMI) | long-form fits | reuses C's span memory; speaker-change as a future VAD-tier upgrade; participant glossary is ConEC-isomorphic |
-| F — assistant omnibus (BBA/voicebench/…) | fits; unification bonus below | output contract only (MCQ letter extraction etc.) |
+| family / task shape | query anchor | knowledge facets and values | task result |
+|---|---|---|---|
+| long-form contextual ASR (`earnings21/22`, `conec`) | speech span or stream packet | entity, terminology, speaker/channel, local context, correction boundary | transcript or corrected span |
+| SLU (`slurp`) | utterance packet | domain, operation, target, entity constraints, intent boundaries | scenario/intent/slots |
+| spoken QA (`slue-sqa-5`) | role-typed question and document speech packets | entity, span, relation, answerability, provenance | answer span or free text |
+| tool calling (`audio2tool`) | utterance or session-turn packet | tool affordance, operation, argument schema, state preconditions, conflict boundary | deterministic tool call |
+| meeting understanding (`ami`) | stream packet plus span address | speaker, topic, entity, temporal relation, decision/action item | structured answer or summary |
 
-Unification bonus (F): the survey's strongest multi-carrier mechanism signal
-— cascade vs direct (BBA 66→~92, AIR-Bench 77.8→87.7, URO +20; FDB-v3
-reversal) — IS an architecture ablation of this agent: N1+N2 split = cascade,
-N1/N2 fused into one call = direct. R2/R3 probes become the fused-vs-split
-knob of the same system.
+Task-specific adapters own parsing, scoring, and deterministic result mapping. They do not own the
+AgentLoop action semantics, knowledge lifecycle, ranking/fusion trace, reward schema, or speech-query
+invariant.
 
-## The five pluggable seams
+## Training-free policy optimization
 
-1. **Observation channel types**: single utterance / long stream /
-   multi-turn session / question+document dual stream. The OBS loop is the
-   long-stream instantiation; single-shot is its degenerate case; sessions
-   add an outer loop; dual streams are role-typed channels.
-2. **Span-addressable observation memory (ORG)**: (time-span, text, hashes)
-   tuples plus derived state (glossary, confusable sets, rolling summary).
-   Enables region re-listen, cross-segment consistency detection, meeting
-   QA. The OBS trace already records per-span offsets — this is an ORG-layer
-   organization of records the substrate already emits.
-3. **Task/output contracts**: transcript | structured tool call | answer
-   span | choice | free text — each with a deterministic parser, a scorer
-   binding (registry exists), and a format-repair re-ask trigger.
-4. **Knowledge ports** (already designed): N1 boundary knowledge / N2 task
-   knowledge × source typing (external-static / external-retrieved /
-   self-generated). The R4 dose ladder and T-series analogs instantiate
-   these ports per carrier.
-5. **Re-ask skeleton × pluggable triggers**: acoustic badness / entity
-   suspicion / format failure / answerability doubt — one policy skeleton,
-   four trigger types.
+JitRL supports the usefulness of non-parametric state-action-return memory and local action
+advantage, but its direct logit intervention and model-based evaluator are unavailable here. Adopt
+only the external part:
 
-## Discipline rules
+- store compact, functionally equivalent states with discrete actions and observed returns;
+- estimate each legal action relative to the local state baseline from TRAIN/discovery memory;
+- require minimum support, explicit exploration coverage, and zero or tightly bounded observed harm
+  before selecting a non-primary action;
+- choose the action deterministically outside the model; and
+- keep model parameters, logits, prompts, retriever parameters, and decoder internals unchanged.
 
-- **Protocol arms never run through the agent.** Published-protocol
-  reproductions (R1 Audio2Tool same-model row, AIR-Bench SLURP-IC rows,
-  benchmark harness reruns) stay protocol-faithful bare prompting —
-  comparability is their whole value. The agent is always OUR contribution
-  arm, run alongside, never instead.
-- Build order stands: v1 substrate (A-family long stream, hardest case) →
-  phase-2 knowledge/re-ask arms → seams 1/2/3 as the B/C/D probes come up,
-  each with its own pre-registration.
-- Every seam configuration flows into config_hash → protocol_hash; every
-  cross-seam state transition is traced on its owning axis (OBS/ORG/SUPPLY/
-  USE), per the consolidated contract.
+Use lexicographic reward: task correctness first, then harmful transition, mechanistic validity,
+evidence novelty, parse validity, calls, tokens, wall time, and GPU time. If a scalar is needed for a
+search algorithm, preregister its coefficients and still report every component.
+
+## Engineering fit and remaining gaps
+
+Implemented and reusable:
+
+- `KnowledgeSnapshot`, multi-dimensional `KeyFacet`, sample-associated `ValueBundle`, speech-bound
+  `QueryState`, `RankResult`, `FusionDecision`, speech-bound `AgentStepTransition`, and their
+  hash/disjointness/information-delta checks;
+- the unified `TaskAdapter`, `EvidenceSet`, `SupplyPacket`, and consumption tracing seams;
+- speech-feature packets, mmproj-free llama.cpp transport, batch/contact dispatch, stable evidence
+  ids, prompt-layout auditing, and resident-session receipts;
+- the existing SLURP key builders and M11 action-support/OOF readers as a task-specific reference
+  implementation.
+
+Still required before a cross-task experiment:
+
+1. Refactor the existing runner so `QueryState` replaces the legacy free-form
+   `TaskAdapter.build_query -> str` retrieval seam without breaking historical bundle reads.
+2. Wire `AgentStepTransition` into the existing rails runner and extract policy selection from
+   SLURP-specific M11 code; retain SLURP factor parsing as an adapter plugin.
+3. Add registered builder, ranker, fuser, and controller policy seams to the existing registries;
+   do not add task-specific executable scripts.
+4. Persist each transition in the run bundle and bind its exact evidence delta to the resulting
+   task prediction, mechanism controls, and post-hoc reward.
+5. Bind knowledge snapshot, Agent policy, prefix layout, and cache policy identities into every run
+   receipt.
+
+## Inference efficiency contract
+
+Run only in WSL2. Keep one receipt-bound llama.cpp decoder service resident on the GPU across
+compatible experiments. Preprocess every speech packet before inference and never reload mmproj in
+the formal service.
+
+Use `speech -> stable text knowledge -> dynamic Agent state` as the primary prompt layout. It
+preserves feature batching while allowing the speech and stable text prefix to be reused within a
+trajectory. Keep active trajectory KV in HBM and preserve slot affinity. Current llama.cpp does not
+provide a safe per-slot HBM-to-CPU cold-tier migration interface; cold trajectories are therefore
+reconstructed from the speech packet, snapshot, and state receipt rather than serialized KV. Do not
+use the global `--no-kv-offload` switch as a substitute.
+
+Increase queue depth and parallelize independent candidate verification to saturate the existing
+small cohort. Do not enlarge the scientific sample set merely to manufacture GPU utilization.
+
+## Protocol discipline
+
+- Published-protocol reproductions remain bare, protocol-faithful baselines. The AgentLoop is an
+  additional contribution arm, never a replacement baseline.
+- Knowledge BUILD uses TRAIN only; USE and controller optimization use disjoint discovery/DEV
+  cohorts; test is outside Stage-2.
+- Every seam identity enters `config_hash -> protocol_hash`, and every transition is traced on its
+  owning OBS/ORG/SUPPLY/USE axis.
+- Speech-swap, state-shuffle, value-shuffle, drop-state, and key-order controls must demonstrate that
+  the result depends on matched speech and newly supplied knowledge rather than a text cascade.
+- Do not use generated-token log probabilities as a speech-to-key score. Reopen log probabilities
+  only if the exact receipt-bound llama.cpp API exposes a normalized conditional score for an
+  arbitrary complete key under the speech-feature prefix.
+
+## Primary sources and local boundary
+
+- [Speech-Hands](https://aclanthology.org/2026.acl-long.1997/) supports explicit arbitration among
+  original audio, external evidence, and rewrite actions; its fine-tuning and second perception
+  model are excluded.
+- [PlanRAG-Audio](https://aclanthology.org/2026.findings-acl.1304/) supports modality/factor planning
+  and structured multi-stream retrieval; its task models and general-audio streams are not adopted.
+- [ToolOmni](https://aclanthology.org/2026.acl-long.1736/) supports proactive retrieval plus grounded
+  execution; its SFT/GRPO training is excluded.
+- [SPARKLE](https://aclanthology.org/2026.acl-long.1793/) supports separate retrieval-decision, query
+  formulation, and evidence-integration roles; its learned proxy model is excluded.
+- [ToolScope](https://aclanthology.org/2026.findings-acl.11/) supports separating global planning from
+  local multimodal perception; its extra tools/models are excluded.
+- [Utility-Oriented Visual Evidence Selection](https://aclanthology.org/2026.acl-long.1620/) supports
+  downstream utility rather than semantic similarity; its surrogate model and logit scorer are
+  excluded.
+- [GranuRAG](https://aclanthology.org/2026.findings-acl.509/) supports multi-granularity keys and
+  attribution; its visual detectors are not part of this speech study.
+- [VisRet](https://aclanthology.org/2026.acl-long.1192/) documents the structural weakness of direct
+  cross-modal similarity; its text-to-image generation bridge is an analogy, not a local method.
+- [WavRAG](https://aclanthology.org/2025.acl-long.613/) supports retaining native audio through
+  retrieval; its trained audio-text alignment is excluded.
+- [JitRL](https://arxiv.org/abs/2601.18510) supports non-parametric trajectory memory and local action
+  advantage; its logit update and LLM evaluator are excluded.

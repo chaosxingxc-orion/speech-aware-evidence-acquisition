@@ -34,6 +34,20 @@ KNOWLEDGE_SNAPSHOT_VERSION = "knowledge-snapshot-v1"
 QUERY_STATE_VERSION = "knowledge-query-state-v1"
 RANK_RESULT_VERSION = "knowledge-rank-result-v1"
 FUSION_DECISION_VERSION = "knowledge-fusion-decision-v1"
+AGENT_STEP_TRANSITION_VERSION = "knowledge-agent-step-transition-v1"
+
+AGENT_ACTION_KINDS = frozenset(
+    {
+        "stop",
+        "organize",
+        "acquire",
+        "expand",
+        "contrast",
+        "verify",
+        "backtrack",
+    }
+)
+_SUPPLY_ACTION_KINDS = frozenset({"acquire", "expand", "contrast"})
 
 TRAIN_PARTITION_ROLE = "train"
 DEV_PARTITION_ROLE = "dev"
@@ -618,6 +632,262 @@ class FusionDecision:
         ).validate()
 
 
+@dataclass(frozen=True)
+class AgentStepTransition:
+    """One speech-bound external AgentLoop decision and its information delta.
+
+    The transition distinguishes new train-built values (SUPPLY), values
+    merely revisited by verification (USE), generated state references (ORG),
+    and information discarded by backtracking. It carries identities only;
+    task predictions and post-hoc reward remain outside this runtime contract.
+    """
+
+    snapshot_sha256: str
+    prior_query_state_sha256: str
+    next_query_state_sha256: str | None
+    action_kind: str
+    action_target_refs: tuple[str, ...]
+    new_value_ids: tuple[str, ...]
+    used_value_ids: tuple[str, ...]
+    dropped_value_ids: tuple[str, ...]
+    new_agent_state_ids: tuple[str, ...]
+    dropped_agent_state_ids: tuple[str, ...]
+    transition_version: str = AGENT_STEP_TRANSITION_VERSION
+
+    def validate(self) -> "AgentStepTransition":
+        _require_sha256(
+            self.snapshot_sha256,
+            field="AgentStepTransition.snapshot_sha256",
+        )
+        _require_sha256(
+            self.prior_query_state_sha256,
+            field="AgentStepTransition.prior_query_state_sha256",
+        )
+        if self.next_query_state_sha256 is not None:
+            _require_sha256(
+                self.next_query_state_sha256,
+                field="AgentStepTransition.next_query_state_sha256",
+            )
+        if self.transition_version != AGENT_STEP_TRANSITION_VERSION:
+            raise RailsError(
+                "AgentStepTransition.transition_version must be "
+                f"{AGENT_STEP_TRANSITION_VERSION!r}"
+            )
+        if self.action_kind not in AGENT_ACTION_KINDS:
+            raise RailsError(
+                "AgentStepTransition.action_kind must be one of "
+                f"{sorted(AGENT_ACTION_KINDS)}"
+            )
+        for field_name in (
+            "action_target_refs",
+            "new_value_ids",
+            "used_value_ids",
+            "dropped_value_ids",
+            "new_agent_state_ids",
+            "dropped_agent_state_ids",
+        ):
+            _require_unique_texts(
+                getattr(self, field_name),
+                field=f"AgentStepTransition.{field_name}",
+            )
+        if set(self.new_value_ids) & set(self.dropped_value_ids):
+            raise RailsError(
+                "AgentStepTransition cannot add and drop the same value"
+            )
+        if set(self.new_agent_state_ids) & set(self.dropped_agent_state_ids):
+            raise RailsError(
+                "AgentStepTransition cannot add and drop the same agent state"
+            )
+
+        if self.action_kind == "stop":
+            if self.next_query_state_sha256 is not None or any(
+                (
+                    self.action_target_refs,
+                    self.new_value_ids,
+                    self.used_value_ids,
+                    self.dropped_value_ids,
+                    self.new_agent_state_ids,
+                    self.dropped_agent_state_ids,
+                )
+            ):
+                raise RailsError(
+                    "stop must have no successor, target, or information delta"
+                )
+            return self
+
+        if self.next_query_state_sha256 is None:
+            raise RailsError(
+                "a non-stop AgentStepTransition requires a successor QueryState"
+            )
+        if not self.action_target_refs:
+            raise RailsError(
+                "a non-stop AgentStepTransition requires action_target_refs"
+            )
+        if self.action_kind in _SUPPLY_ACTION_KINDS and not self.new_value_ids:
+            raise RailsError(
+                f"{self.action_kind} must introduce at least one new value"
+            )
+        if self.action_kind == "organize" and not self.new_agent_state_ids:
+            raise RailsError("organize must introduce at least one new agent state")
+        if self.action_kind == "verify" and not self.used_value_ids:
+            raise RailsError("verify must use at least one previously supplied value")
+        if self.action_kind == "backtrack" and not (
+            self.dropped_value_ids or self.dropped_agent_state_ids
+        ):
+            raise RailsError("backtrack must drop at least one value or agent state")
+        if self.action_kind != "backtrack" and (
+            self.dropped_value_ids or self.dropped_agent_state_ids
+        ):
+            raise RailsError("only backtrack may drop values or agent states")
+        if self.action_kind not in _SUPPLY_ACTION_KINDS and self.new_value_ids:
+            raise RailsError(
+                "only acquire, expand, or contrast may claim new supplied values"
+            )
+        if self.action_kind == "backtrack" and (
+            self.new_agent_state_ids or self.used_value_ids
+        ):
+            raise RailsError(
+                "backtrack cannot create agent state or claim value use"
+            )
+        return self
+
+    def as_json(self) -> dict[str, object]:
+        self.validate()
+        return {
+            "transition_version": self.transition_version,
+            "snapshot_sha256": self.snapshot_sha256,
+            "prior_query_state_sha256": self.prior_query_state_sha256,
+            "next_query_state_sha256": self.next_query_state_sha256,
+            "action_kind": self.action_kind,
+            "action_target_refs": list(self.action_target_refs),
+            "new_value_ids": list(self.new_value_ids),
+            "used_value_ids": list(self.used_value_ids),
+            "dropped_value_ids": list(self.dropped_value_ids),
+            "new_agent_state_ids": list(self.new_agent_state_ids),
+            "dropped_agent_state_ids": list(self.dropped_agent_state_ids),
+        }
+
+    def content_hash(self) -> str:
+        return content_hash(self.as_json())
+
+    @classmethod
+    def from_json(cls, document: Mapping[str, object]) -> "AgentStepTransition":
+        return cls(
+            snapshot_sha256=document["snapshot_sha256"],
+            prior_query_state_sha256=document["prior_query_state_sha256"],
+            next_query_state_sha256=document.get("next_query_state_sha256"),
+            action_kind=document["action_kind"],
+            action_target_refs=tuple(document.get("action_target_refs", [])),
+            new_value_ids=tuple(document.get("new_value_ids", [])),
+            used_value_ids=tuple(document.get("used_value_ids", [])),
+            dropped_value_ids=tuple(document.get("dropped_value_ids", [])),
+            new_agent_state_ids=tuple(document.get("new_agent_state_ids", [])),
+            dropped_agent_state_ids=tuple(
+                document.get("dropped_agent_state_ids", [])
+            ),
+            transition_version=document.get(
+                "transition_version", AGENT_STEP_TRANSITION_VERSION
+            ),
+        ).validate()
+
+
+def assert_agent_step_binding(
+    *,
+    snapshot: KnowledgeSnapshot,
+    prior_query_state: QueryState,
+    next_query_state: QueryState | None,
+    transition: AgentStepTransition,
+) -> None:
+    """Prove one Agent step preserves speech and reports its exact delta."""
+
+    snapshot.validate()
+    prior_query_state.validate()
+    transition.validate()
+    snapshot_sha256 = snapshot.content_hash()
+    if transition.snapshot_sha256 != snapshot_sha256:
+        raise RailsError("AgentStepTransition is bound to a different snapshot")
+    if transition.prior_query_state_sha256 != prior_query_state.content_hash():
+        raise RailsError("AgentStepTransition is bound to a different prior QueryState")
+    if prior_query_state.query_sample_id in set(snapshot.source_sample_ids):
+        raise RailsError(
+            "AgentStepTransition query overlaps the TRAIN snapshot source roster"
+        )
+
+    if transition.action_kind == "stop":
+        if next_query_state is not None:
+            raise RailsError("stop cannot bind a successor QueryState")
+        return
+    if next_query_state is None:
+        raise RailsError("non-stop AgentStepTransition requires next_query_state")
+    next_query_state.validate()
+    if transition.next_query_state_sha256 != next_query_state.content_hash():
+        raise RailsError("AgentStepTransition is bound to a different next QueryState")
+    if next_query_state.query_sample_id in set(snapshot.source_sample_ids):
+        raise RailsError(
+            "AgentStepTransition successor overlaps the TRAIN snapshot source roster"
+        )
+
+    stable_query_fields = (
+        "query_sample_id",
+        "speech_packet_id",
+        "speech_packet_sha256",
+        "use_split_identity_hash",
+        "use_partition_role",
+        "query_source",
+    )
+    if any(
+        getattr(prior_query_state, field_name)
+        != getattr(next_query_state, field_name)
+        for field_name in stable_query_fields
+    ):
+        raise RailsError(
+            "AgentStepTransition must keep the same original speech packet and "
+            "DEV query binding across every step"
+        )
+    if next_query_state.loop_step != prior_query_state.loop_step + 1:
+        raise RailsError(
+            "AgentStepTransition successor loop_step must increment by exactly one"
+        )
+
+    known_value_ids = {value.value_id for value in snapshot.values}
+    referenced_value_ids = set(
+        (
+            *transition.new_value_ids,
+            *transition.used_value_ids,
+            *transition.dropped_value_ids,
+        )
+    )
+    unknown_value_ids = referenced_value_ids - known_value_ids
+    if unknown_value_ids:
+        raise RailsError(
+            "AgentStepTransition references values outside the frozen snapshot: "
+            f"{sorted(unknown_value_ids)}"
+        )
+
+    prior_values = set(prior_query_state.retrieved_value_ids)
+    next_values = set(next_query_state.retrieved_value_ids)
+    prior_states = set(prior_query_state.agent_state_ids)
+    next_states = set(next_query_state.agent_state_ids)
+    if transition.action_kind == "backtrack":
+        expected_values = prior_values - set(transition.dropped_value_ids)
+        expected_states = prior_states - set(transition.dropped_agent_state_ids)
+    else:
+        expected_values = prior_values | set(transition.new_value_ids)
+        expected_states = prior_states | set(transition.new_agent_state_ids)
+    if next_values != expected_values:
+        raise RailsError(
+            "AgentStepTransition new/dropped value ids do not match the successor QueryState"
+        )
+    if next_states != expected_states:
+        raise RailsError(
+            "AgentStepTransition new/dropped state ids do not match the successor QueryState"
+        )
+    if not set(transition.used_value_ids).issubset(next_values):
+        raise RailsError(
+            "AgentStepTransition used values must remain visible in the successor QueryState"
+        )
+
+
 def assert_knowledge_use_binding(
     *,
     snapshot: KnowledgeSnapshot,
@@ -689,6 +959,9 @@ def assert_knowledge_use_binding(
 
 
 __all__ = [
+    "AGENT_ACTION_KINDS",
+    "AGENT_STEP_TRANSITION_VERSION",
+    "AgentStepTransition",
     "DEV_PARTITION_ROLE",
     "FUSION_DECISION_VERSION",
     "FusionDecision",
@@ -702,5 +975,6 @@ __all__ = [
     "RankedFacet",
     "TRAIN_PARTITION_ROLE",
     "ValueBundle",
+    "assert_agent_step_binding",
     "assert_knowledge_use_binding",
 ]

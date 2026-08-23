@@ -2,9 +2,11 @@
 
 The shared layer carries ObsPacket / EvidenceSet / SupplyPacket /
 ConsumptionTrace plus the TRAIN-build KnowledgeSnapshot and DEV-use
-QueryState / RankResult / FusionDecision seam.  The unified TaskAdapter and
-zero-model-contact runner skeleton let experiments compose these contracts
-instead of adding ad-hoc per-experiment scripts.
+QueryState / RankResult / FusionDecision seam.  AgentStepTransition binds
+each loop action to the same speech query and to an exact evidence/state
+delta.  The unified TaskAdapter and zero-model-contact runner skeleton let
+experiments compose these contracts instead of adding ad-hoc per-experiment
+scripts.
 
 Scope note (owner ruling, 2026-08-17): multi-view speech embeddings are OUT
 of this study's scope (deferred to a future memory-focused study) -- see
@@ -42,6 +44,7 @@ from .core_client import (
 from .errors import RailsError
 from .evidence import EvidenceItem, EvidenceSet, RetrievalKeyKind, RetrievalParams
 from .knowledge import (
+    AgentStepTransition,
     FusionDecision,
     KeyFacet,
     KnowledgeSnapshot,
@@ -49,6 +52,7 @@ from .knowledge import (
     RankedFacet,
     RankResult,
     ValueBundle,
+    assert_agent_step_binding,
     assert_knowledge_use_binding,
 )
 from .obs import AudioRef, ObsPacket, SpanRef, default_obs_packet
@@ -58,6 +62,7 @@ from .task_adapter import TaskAdapter, TaskSample
 
 __all__ = [
     "ArmResult",
+    "AgentStepTransition",
     "AudioRef",
     "ConsumptionOutcome",
     "ConsumptionRecord",
@@ -90,6 +95,7 @@ __all__ = [
     "TaskAdapter",
     "TaskSample",
     "ValueBundle",
+    "assert_agent_step_binding",
     "assert_knowledge_use_binding",
     "build_consumption_trace",
     "build_payload_binding",

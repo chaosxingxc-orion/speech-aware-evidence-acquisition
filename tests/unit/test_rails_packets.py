@@ -17,6 +17,7 @@ from speech_aware_evidence_acquisition.core.model import (
     materialize_legacy_cached_speech_feature_packets,
 )
 from speech_aware_evidence_acquisition.rails import (
+    AgentStepTransition,
     AudioRef,
     ConsumptionOutcome,
     ConsumptionRecord,
@@ -39,6 +40,7 @@ from speech_aware_evidence_acquisition.rails import (
     SupplyItem,
     SupplyPacket,
     ValueBundle,
+    assert_agent_step_binding,
     assert_knowledge_use_binding,
     build_consumption_trace,
     classify_outcome,
@@ -629,6 +631,198 @@ def test_knowledge_use_binding_refuses_unassociated_value_fusion():
             rank_result=rank,
             fusion_decision=fusion,
         )
+
+
+def _agent_step(
+    snapshot: KnowledgeSnapshot,
+    prior: QueryState,
+    next_state: QueryState | None,
+    **overrides,
+) -> AgentStepTransition:
+    values = dict(
+        snapshot_sha256=snapshot.content_hash(),
+        prior_query_state_sha256=prior.content_hash(),
+        next_query_state_sha256=(
+            next_state.content_hash() if next_state is not None else None
+        ),
+        action_kind="acquire",
+        action_target_refs=("operation",),
+        new_value_ids=("value:dim-light",),
+        used_value_ids=(),
+        dropped_value_ids=(),
+        new_agent_state_ids=(),
+        dropped_agent_state_ids=(),
+    )
+    values.update(overrides)
+    return AgentStepTransition(**values)
+
+
+def test_agent_acquire_step_proves_a_new_train_built_value_enters_same_speech_query():
+    snapshot = _knowledge_snapshot()
+    prior = _query_state()
+    next_state = _query_state(
+        query_id="query:dev:d1:step1",
+        loop_step=1,
+        retrieved_value_ids=("value:dim-light",),
+    )
+    transition = _agent_step(snapshot, prior, next_state)
+    assert_agent_step_binding(
+        snapshot=snapshot,
+        prior_query_state=prior,
+        next_query_state=next_state,
+        transition=transition,
+    )
+    assert AgentStepTransition.from_json(transition.as_json()) == transition
+
+
+def test_agent_supply_action_refuses_a_restatement_with_no_new_value():
+    snapshot = _knowledge_snapshot()
+    prior = _query_state()
+    next_state = _query_state(query_id="query:dev:d1:step1", loop_step=1)
+    transition = _agent_step(
+        snapshot,
+        prior,
+        next_state,
+        new_value_ids=(),
+    )
+    with pytest.raises(RailsError, match="must introduce at least one new value"):
+        assert_agent_step_binding(
+            snapshot=snapshot,
+            prior_query_state=prior,
+            next_query_state=next_state,
+            transition=transition,
+        )
+
+
+def test_agent_verify_step_reuses_visible_value_without_claiming_new_supply():
+    snapshot = _knowledge_snapshot()
+    prior = _query_state(
+        query_id="query:dev:d1:step1",
+        loop_step=1,
+        retrieved_value_ids=("value:dim-light",),
+    )
+    next_state = _query_state(
+        query_id="query:dev:d1:step2",
+        loop_step=2,
+        retrieved_value_ids=("value:dim-light",),
+        agent_state_ids=("state:verified:dim-light",),
+    )
+    transition = _agent_step(
+        snapshot,
+        prior,
+        next_state,
+        action_kind="verify",
+        action_target_refs=("value:dim-light",),
+        new_value_ids=(),
+        used_value_ids=("value:dim-light",),
+        new_agent_state_ids=("state:verified:dim-light",),
+    )
+    assert_agent_step_binding(
+        snapshot=snapshot,
+        prior_query_state=prior,
+        next_query_state=next_state,
+        transition=transition,
+    )
+
+
+def test_agent_organize_step_adds_auxiliary_state_without_replacing_speech_query():
+    snapshot = _knowledge_snapshot()
+    prior = _query_state()
+    next_state = _query_state(
+        query_id="query:dev:d1:step1",
+        loop_step=1,
+        agent_state_ids=("state:intent-factor:operation",),
+    )
+    transition = _agent_step(
+        snapshot,
+        prior,
+        next_state,
+        action_kind="organize",
+        action_target_refs=("intent-factor-schema-v1",),
+        new_value_ids=(),
+        new_agent_state_ids=("state:intent-factor:operation",),
+    )
+
+    assert_agent_step_binding(
+        snapshot=snapshot,
+        prior_query_state=prior,
+        next_query_state=next_state,
+        transition=transition,
+    )
+    assert next_state.speech_packet_sha256 == prior.speech_packet_sha256
+    assert next_state.retrieved_value_ids == ()
+
+
+def test_agent_backtrack_can_drop_state_and_value_but_cannot_change_speech():
+    snapshot = _knowledge_snapshot()
+    prior = _query_state(
+        query_id="query:dev:d1:step2",
+        loop_step=2,
+        retrieved_value_ids=("value:dim-light",),
+        agent_state_ids=("state:unsupported",),
+    )
+    next_state = _query_state(
+        query_id="query:dev:d1:step3",
+        loop_step=3,
+    )
+    transition = _agent_step(
+        snapshot,
+        prior,
+        next_state,
+        action_kind="backtrack",
+        action_target_refs=("state:unsupported",),
+        new_value_ids=(),
+        dropped_value_ids=("value:dim-light",),
+        dropped_agent_state_ids=("state:unsupported",),
+    )
+    assert_agent_step_binding(
+        snapshot=snapshot,
+        prior_query_state=prior,
+        next_query_state=next_state,
+        transition=transition,
+    )
+
+    changed_speech = _query_state(
+        query_id="query:dev:d1:step3",
+        loop_step=3,
+        speech_packet_sha256=_SHA_C,
+    )
+    changed_transition = _agent_step(
+        snapshot,
+        prior,
+        changed_speech,
+        action_kind="backtrack",
+        action_target_refs=("state:unsupported",),
+        new_value_ids=(),
+        dropped_value_ids=("value:dim-light",),
+        dropped_agent_state_ids=("state:unsupported",),
+    )
+    with pytest.raises(RailsError, match="same original speech packet"):
+        assert_agent_step_binding(
+            snapshot=snapshot,
+            prior_query_state=prior,
+            next_query_state=changed_speech,
+            transition=changed_transition,
+        )
+
+
+def test_agent_stop_step_has_no_successor_or_information_delta():
+    snapshot = _knowledge_snapshot()
+    prior = _query_state()
+    transition = _agent_step(
+        snapshot,
+        prior,
+        None,
+        action_kind="stop",
+        action_target_refs=(),
+        new_value_ids=(),
+    )
+    assert_agent_step_binding(
+        snapshot=snapshot,
+        prior_query_state=prior,
+        next_query_state=None,
+        transition=transition,
+    )
 
 
 # ---------------------------------------------------------------------------
