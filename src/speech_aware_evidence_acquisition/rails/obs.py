@@ -143,7 +143,7 @@ class ObsPacket:
 
 def default_obs_packet(sample: "TaskSample") -> ObsPacket:
     """The default, whole-file ``ObsPacket`` any ``TaskAdapter`` can reuse
-    from its own ``build_query``, or that the rails runner builds when an
+    from its own ``build_task_contract``, or that the rails runner builds when an
     adapter has no reason to construct a custom one: one span covering the
     full sample duration, no first-pass hypothesis. ``sample`` is duck-typed
     against ``rails.task_adapter.TaskSample`` (``sample_id``/``audio_ref``/

@@ -6,7 +6,7 @@ than re-deriving it: ``data.audio2tool.load_audio2tool``/
 frozen tool-registry text, and ``reproduction.toolcall_scoring``/
 ``data.audio2tool.load_expected_calls`` for scorer-side gold -- the SAME
 scorer-side-only discipline ``reproduction.a2t_scorer`` already applies
-(gold never enters ``assemble_prompt``/``build_query``, only ``score``).
+(gold never enters ``assemble_prompt``/``build_task_contract``, only ``score``).
 
 Carrier admission: the bounded discovery-probe carrier admitted by the
 2026-08-15 owner amendment (Amendment 1, umbrella
@@ -107,9 +107,11 @@ class Audio2ToolAdapter(TaskAdapter):
         digest = hashlib.sha256(media_path.read_bytes()).hexdigest()
         return AudioRef(path=media_relpath, sha256=digest).validate()
 
-    def build_query(self, sample: Audio2ToolSample, obs: ObsPacket) -> str:
-        """Audio2Tool's task-native "query" is the full, frozen tool
-        registry the spoken command must be matched against
+    def build_task_contract(self, sample: Audio2ToolSample, obs: ObsPacket) -> str:
+        """Return the full frozen tool registry as stable task schema.
+
+        The spoken command remains the query; this contract defines the tool
+        vocabulary against which that speech observation must be interpreted
         (``data.audio2tool.render_tool_schemas``) -- never a text
         transcript of the audio itself (the command is spoken, never
         available as text before the model hears it)."""
@@ -133,7 +135,7 @@ class Audio2ToolAdapter(TaskAdapter):
 
     def score(self, sample: Audio2ToolSample, response: str) -> Mapping[str, object]:
         """Post-hoc only (module docstring): gold is read HERE, never in
-        ``assemble_prompt``/``build_query`` above."""
+        ``assemble_prompt``/``build_task_contract`` above."""
 
         expected_by_id = load_expected_calls(self._lock, self._root, repo_root=self._repo_root)
         expected = expected_by_id.get(sample.sample_id)

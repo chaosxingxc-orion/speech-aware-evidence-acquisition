@@ -2,7 +2,28 @@
 
 Date: 2026-08-21
 
-Status: bounded discovery only; M11-v2 mechanics, information-complete text knowledge, the preregistered M11 information-support/OOF reader, the discovery-memory-to-unread-holdout reader, and an identity-free cumulative-500 train-capacity audit are implemented model-free; the failed GPU-utilization gate still blocks a fresh E108 scientific contact, no new query identity is frozen, no controller is validated, and FINAL60 remains blocked
+Status: bounded discovery only; M11-v2 mechanics, information-complete text knowledge, the preregistered M11 information-support/OOF reader, the discovery-memory-to-unread-holdout reader, an identity-free cumulative-500 train-capacity audit, and the task-independent speech-bound AgentLoop runner are implemented model-free; the failed GPU-utilization gate still blocks a fresh E108 scientific contact, no new query identity is frozen, no controller is validated, and FINAL60 remains blocked
+
+### Shared-runner engineering milestone (2026-08-23)
+
+The reusable rails runner now consumes a frozen TRAIN `KnowledgeSnapshot` and disjoint DEV
+`QueryState` objects rather than treating task ontology text as the query. `TaskAdapter.build_query`
+was removed and replaced by `build_task_contract`; the original speech-feature packet is the only
+query and is reattached to every contact. The runner executes multiple trajectories concurrently,
+holds one llama.cpp slot for each active trajectory, caps queue depth and contacts, and preserves
+input order. `AgentStateArtifact` records response-bound ORG state, while `AgentStepTransition`
+proves exact new/used/dropped knowledge and state ids. Agent state plus the current control
+instruction use the existing D2 `history` field and are rendered after the speech/stable-knowledge
+prefix, rather than being mislabeled as supplied evidence. Explicit `ValueBundle.value_id` values
+remain the evidence ids on the wire.
+
+The runtime controller receives no task sample or gold-bearing metrics. All trajectories must stop
+before the adapter's scorer is invoked, leaving post-hoc rewards available to training-free policy
+optimization without making them runtime observations. Shared builder, ranker, fuser, and
+controller registries now exist, but no cross-task policy is registered yet. The next engineering
+step is to migrate the existing M11 controller and factor parser onto this runner, persist the new
+contact/state/transition records through the existing bundle machinery, and add independent branch
+scheduling. This milestone authorizes no new model contact by itself.
 
 ## Decision
 

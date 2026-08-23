@@ -1,7 +1,7 @@
 """TaskAdapter: the unified interface every carrier-specific task plugs into
 the shared rails runner through -- exactly the five methods the B0 mission
-freezes: ``load_split``, ``build_query``, ``assemble_prompt``, ``score``,
-``extract_consumption``. Nothing else is abstract; ``ObsPacket``
+freezes: ``load_split``, ``build_task_contract``, ``assemble_prompt``,
+``score``, ``extract_consumption``. Nothing else is abstract; ``ObsPacket``
 construction is a plain, reusable function
 (``rails.obs.default_obs_packet``), not a sixth interface method, so the
 shape below matches the mission text exactly.
@@ -42,11 +42,14 @@ class TaskAdapter(abc.ABC):
         deterministically."""
 
     @abc.abstractmethod
-    def build_query(self, sample: TaskSample, obs: ObsPacket) -> str:
-        """The task-native query text for ``sample`` given its
-        ``ObsPacket`` -- the string a retrieval-backed ``supply_builder``
-        keys evidence retrieval against (``rails.runner.run_rails_experiment``'s
-        ``supply_builder`` receives it directly)."""
+    def build_task_contract(self, sample: TaskSample, obs: ObsPacket) -> str:
+        """Stable task schema/ontology text available for ``sample``.
+
+        This is never the query. The query is the sample's speech observation;
+        a speech-native AgentLoop binds it separately as a ``QueryState``.
+        Retrieval may use this contract to interpret the task vocabulary, but
+        must not treat it as an audio-derived hypothesis or transcript.
+        """
 
     @abc.abstractmethod
     def assemble_prompt(

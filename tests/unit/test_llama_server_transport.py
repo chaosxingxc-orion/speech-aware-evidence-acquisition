@@ -557,6 +557,86 @@ def test_agent_loop_wire_requests_have_an_identical_prefix_before_mutable_state(
     assert first[stable_prefix_length:] != second[stable_prefix_length:]
 
 
+def test_speech_query_prefix_renders_agent_state_after_speech_and_stable_supply(
+    tmp_path,
+):
+    feature_root = tmp_path / "features"
+    query = _materialize_packet(feature_root, "slurp/train/query")
+    captured = {}
+
+    def fake_post(url, body):
+        captured["body"] = json.loads(body)
+        return _canned_response()
+
+    transport = _transport(
+        _base_url(),
+        tmp_path,
+        post=fake_post,
+        session=_fake_inference_session(),
+        prompt_order="speech-query-prefix-v2",
+        feature_root=feature_root,
+    )
+    payload = _boundary_payload(
+        tmp_path,
+        supplied_evidence=[
+            {"evidence_id": "value:dim-light", "content": "Dim-light knowledge."}
+        ],
+        history=[
+            {
+                "turn": 1,
+                "role": "agent_state",
+                "state_id": "state:operation-needed",
+                "state_kind": "intent-factor",
+                "content": "The unresolved factor is the operation.",
+                "content_sha256": hashlib.sha256(
+                    b"The unresolved factor is the operation."
+                ).hexdigest(),
+                "source_query_state_sha256": "1" * 64,
+                "source_response_sha256": "2" * 64,
+                "producer_policy_id": "organize-v1",
+                "cited_value_ids": [],
+            },
+            {
+                "turn": 2,
+                "role": "control",
+                "contact_id": "contact-2",
+                "content": "Solve the task now.",
+                "content_sha256": hashlib.sha256(
+                    b"Solve the task now."
+                ).hexdigest(),
+            },
+        ],
+        speech_feature_parts=[
+            {
+                "packet_id": query.packet_id,
+                "sha256": query.packet_sha256,
+                "role": "query",
+            }
+        ],
+        speech_packet_sha256=query.packet_sha256,
+        query_source="speech_features",
+        key_representation_id="k1-text-card-v1",
+        matcher_policy_id="agent-loop-v1",
+        mmproj_loaded=False,
+    )
+
+    transport(json.dumps(payload).encode())
+
+    parts = captured["body"]["messages"][1]["content"]
+    assert parts[0]["type"] == "input_speech_features"
+    assert parts[1] == {
+        "type": "text",
+        "text": "[evidence value:dim-light] Dim-light knowledge.",
+    }
+    assert parts[2]["text"].startswith(
+        "[agent state state:operation-needed kind=intent-factor]"
+    )
+    assert parts[3] == {
+        "type": "text",
+        "text": "[agent control contact-2] Solve the task now.",
+    }
+
+
 def test_speech_feature_transport_batch_validates_query_and_key_packets(
     tmp_path, monkeypatch
 ):

@@ -98,16 +98,16 @@ def test_load_split_train_is_real_audio_and_needs_no_flag(slurp_world):
 
 
 # ---------------------------------------------------------------------------
-# build_query -- ontology roster
+# build_task_contract -- ontology roster
 # ---------------------------------------------------------------------------
 
 
-def test_build_query_is_the_ontology_roster_from_train_split_only(slurp_world):
+def test_build_task_contract_is_the_ontology_roster_from_train_split_only(slurp_world):
     adapter = _adapter(slurp_world)
     sample = adapter.load_split("devel")[0]
     obs = default_obs_packet(sample)
-    query = adapter.build_query(sample, obs)
-    document = json.loads(query)
+    task_contract = adapter.build_task_contract(sample, obs)
+    document = json.loads(task_contract)
     assert "weather" in document["scenarios"]  # train.jsonl only
     assert "house_place" in document["entity_types"]
     assert "kitchen" in document["entity_types"]["house_place"]
@@ -342,7 +342,7 @@ def test_runner_executes_end_to_end_with_the_mock_core_client_on_slurp(slurp_wor
 
     client = MockCoreClient(responder=responder)
 
-    def supply_builder(sample, obs, query):
+    def supply_builder(sample, obs, task_contract):
         return SupplyPacket(
             form=SupplyForm.ROSTER,
             dose=SupplyDose(n_items=1, token_count=1),

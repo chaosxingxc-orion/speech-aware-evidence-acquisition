@@ -2,9 +2,10 @@
 
 Anti-fragmentation contract (owner direction 2026-08-05): every pluggable
 dimension of a Stage-2 experiment — carrier, evidence source, transport,
-policy, scorer — registers here through the same Registry class, and every
-run flows through core.driver.run_experiment(). A new experiment is config
-plus at most one newly registered component, never new wiring.
+policy, scorer, knowledge builder/ranker/fuser, and external Agent
+controller — registers here through the same Registry class. A new
+experiment is config plus at most one newly registered component, never new
+wiring.
 """
 
 from __future__ import annotations
@@ -58,6 +59,10 @@ SCORERS = Registry("scorer")
 # so registry-sized prompt material is never committed into a config
 # fragment. Same one-Registry discipline as every other seam above.
 INSTRUCTION_FILLS = Registry("instruction fill")
+KNOWLEDGE_BUILDERS = Registry("knowledge builder")
+KNOWLEDGE_RANKERS = Registry("knowledge ranker")
+KNOWLEDGE_FUSERS = Registry("knowledge fuser")
+AGENT_CONTROLLERS = Registry("Agent controller")
 
 _REQUIRED_PROVENANCE = ("lock_key", "relpath", "sha256")
 

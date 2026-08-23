@@ -941,7 +941,7 @@ def load_slurp_ontology(
 
 def render_slurp_ontology(ontology: SlurpOntology) -> str:
     """Deterministic single-line JSON rendering of ``ontology`` -- the
-    ``{tool_schemas}``-equivalent fixed text ``SlurpAdapter.build_query``
+    ``{tool_schemas}``-equivalent fixed text ``SlurpAdapter.build_task_contract``
     returns (mirrors ``data.audio2tool.render_tool_schemas``'s own
     one-canonical-document convention)."""
 

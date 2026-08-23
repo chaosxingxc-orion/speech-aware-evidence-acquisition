@@ -17,6 +17,7 @@ from speech_aware_evidence_acquisition.core.model import (
     materialize_legacy_cached_speech_feature_packets,
 )
 from speech_aware_evidence_acquisition.rails import (
+    AgentStateArtifact,
     AgentStepTransition,
     AudioRef,
     ConsumptionOutcome,
@@ -694,6 +695,30 @@ def test_agent_supply_action_refuses_a_restatement_with_no_new_value():
         )
 
 
+def test_agent_supply_action_refuses_a_value_that_was_already_visible():
+    snapshot = _knowledge_snapshot()
+    prior = _query_state(retrieved_value_ids=("value:dim-light",))
+    next_state = _query_state(
+        query_id="query:dev:d1:step1",
+        loop_step=1,
+        retrieved_value_ids=("value:dim-light",),
+    )
+    transition = _agent_step(
+        snapshot,
+        prior,
+        next_state,
+        new_value_ids=("value:dim-light",),
+    )
+
+    with pytest.raises(RailsError, match="already visible"):
+        assert_agent_step_binding(
+            snapshot=snapshot,
+            prior_query_state=prior,
+            next_query_state=next_state,
+            transition=transition,
+        )
+
+
 def test_agent_verify_step_reuses_visible_value_without_claiming_new_supply():
     snapshot = _knowledge_snapshot()
     prior = _query_state(
@@ -823,6 +848,57 @@ def test_agent_stop_step_has_no_successor_or_information_delta():
         next_query_state=None,
         transition=transition,
     )
+
+
+def test_agent_backtrack_refuses_to_claim_a_drop_that_was_not_visible():
+    snapshot = _knowledge_snapshot()
+    prior = _query_state()
+    next_state = _query_state(query_id="query:dev:d1:step1", loop_step=1)
+    transition = _agent_step(
+        snapshot,
+        prior,
+        next_state,
+        action_kind="backtrack",
+        action_target_refs=("value:dim-light",),
+        new_value_ids=(),
+        dropped_value_ids=("value:dim-light",),
+    )
+
+    with pytest.raises(RailsError, match="were not visible"):
+        assert_agent_step_binding(
+            snapshot=snapshot,
+            prior_query_state=prior,
+            next_query_state=next_state,
+            transition=transition,
+        )
+
+
+def test_agent_state_artifact_round_trips_with_response_and_value_provenance():
+    artifact = AgentStateArtifact(
+        state_id="state:operation-needed",
+        state_kind="intent-factor",
+        content="The unresolved factor is the requested operation.",
+        source_query_state_sha256=_SHA_A,
+        source_response_sha256=_SHA_B,
+        producer_policy_id="organize-v1",
+        cited_value_ids=("value:dim-light",),
+    ).validate()
+
+    assert AgentStateArtifact.from_json(artifact.as_json()) == artifact
+    assert len(artifact.content_hash()) == 64
+
+
+def test_agent_state_artifact_refuses_duplicate_value_citations():
+    with pytest.raises(RailsError, match="unique"):
+        AgentStateArtifact(
+            state_id="state:operation-needed",
+            state_kind="intent-factor",
+            content="The unresolved factor is the requested operation.",
+            source_query_state_sha256=_SHA_A,
+            source_response_sha256=_SHA_B,
+            producer_policy_id="organize-v1",
+            cited_value_ids=("value:dim-light", "value:dim-light"),
+        ).validate()
 
 
 # ---------------------------------------------------------------------------

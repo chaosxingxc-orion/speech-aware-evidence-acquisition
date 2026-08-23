@@ -122,10 +122,12 @@ class SlurpAdapter(TaskAdapter):
         digest = hashlib.sha256(media_path.read_bytes()).hexdigest()
         return AudioRef(path=media_relpath, sha256=digest).validate()
 
-    def build_query(self, sample: SlurpSample, obs: ObsPacket) -> str:
-        """SLURP's task-native "query" is the user-ontology roster (entity
-        types + example fillers, scenarios, actions) the spoken command's
-        slots must be matched against (module docstring, entity clause's own
+    def build_task_contract(self, sample: SlurpSample, obs: ObsPacket) -> str:
+        """Return the TRAIN-only ontology roster as stable task schema.
+
+        The spoken command remains the query. The entity types, example
+        fillers, scenarios, and actions define what its slots may match
+        (module docstring, entity clause's own
         "user-ontology matching" probe scope) -- mined from ``train``/
         ``train_synthetic`` only (``data.slurp.load_slurp_ontology``), never
         from ``sample``'s own gold fields."""
@@ -154,7 +156,7 @@ class SlurpAdapter(TaskAdapter):
     def score(self, sample: SlurpSample, response: str) -> Mapping[str, object]:
         """Post-hoc only (module docstring): gold (``sample.scenario``/
         ``action``/``entities``) is read HERE, never in
-        ``assemble_prompt``/``build_query`` above. See
+        ``assemble_prompt``/``build_task_contract`` above. See
         ``reproduction.slurp_scoring`` module docstring for the
         ``slot_f1_exact`` vs official ``slu_f1`` distinction -- never
         mislabeled, per this mission's own instruction."""

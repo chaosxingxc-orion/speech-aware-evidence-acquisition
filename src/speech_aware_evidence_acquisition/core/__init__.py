@@ -6,9 +6,13 @@ sources, transports, policies, scorers).
 
 from . import carriers, evidence, instructions, model, policies, scorers  # noqa: F401 (registration)
 from .base import (
+    AGENT_CONTROLLERS,
     CARRIERS,
     EVIDENCE_SOURCES,
     INSTRUCTION_FILLS,
+    KNOWLEDGE_BUILDERS,
+    KNOWLEDGE_FUSERS,
+    KNOWLEDGE_RANKERS,
     POLICIES,
     SCORERS,
     TRANSPORTS,
@@ -44,7 +48,9 @@ from .tracking import (
 )
 
 __all__ = [
-    "CARRIERS", "EVIDENCE_SOURCES", "INSTRUCTION_FILLS", "POLICIES", "SCORERS", "TRANSPORTS",
+    "AGENT_CONTROLLERS", "CARRIERS", "EVIDENCE_SOURCES", "INSTRUCTION_FILLS",
+    "KNOWLEDGE_BUILDERS", "KNOWLEDGE_FUSERS", "KNOWLEDGE_RANKERS",
+    "POLICIES", "SCORERS", "TRANSPORTS",
     "LEDGER_COLUMNS", "BundleError", "ComposedConfig", "ConfigError", "CoreError",
     "CoreResponse", "EvidenceError", "EvidenceItem", "FinalizeResult", "FrozenCoreAdapter",
     "FrozenCoreError", "LlamaServerTransport", "MlflowUnavailable", "RunResult",

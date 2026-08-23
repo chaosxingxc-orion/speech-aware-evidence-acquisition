@@ -52,15 +52,15 @@ def test_load_split_unknown_split_role_raises(audio2tool_world):
         _adapter(audio2tool_world).load_split("confirmatory")
 
 
-def test_build_query_is_the_rendered_tool_schema_registry(audio2tool_world):
+def test_build_task_contract_is_the_rendered_tool_schema_registry(audio2tool_world):
     adapter = _adapter(audio2tool_world)
     sample = adapter.load_split("discovery")[0]
-    # build_query does not actually read obs for this carrier (module
-    # docstring): the query is the tool registry, not audio-derived.
+    # The contract does not read obs for this carrier: it is stable task
+    # schema knowledge, while the query remains the speech observation.
     obs = default_obs_packet(sample)
-    query = adapter.build_query(sample, obs)
-    assert '"tool_name": "setLighting"' in query
-    assert '"tool_name": "setSecurityMode"' in query
+    task_contract = adapter.build_task_contract(sample, obs)
+    assert '"tool_name": "setLighting"' in task_contract
+    assert '"tool_name": "setSecurityMode"' in task_contract
 
 
 def test_assemble_prompt_zero_supply_has_no_text_content_part(audio2tool_world):
@@ -159,7 +159,7 @@ def test_runner_executes_end_to_end_with_the_mock_core_client_on_audio2tool(audi
     adapter = _adapter(audio2tool_world)
     client = MockCoreClient(responder=lambda messages: _SET_LIGHTING_RESPONSE)
 
-    def supply_builder(sample, obs, query):
+    def supply_builder(sample, obs, task_contract):
         return SupplyPacket(
             form=SupplyForm.ROSTER,
             dose=SupplyDose(n_items=1, token_count=1),

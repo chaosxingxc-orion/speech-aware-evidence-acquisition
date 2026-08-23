@@ -44,6 +44,7 @@ from .core_client import (
 from .errors import RailsError
 from .evidence import EvidenceItem, EvidenceSet, RetrievalKeyKind, RetrievalParams
 from .knowledge import (
+    AgentStateArtifact,
     AgentStepTransition,
     FusionDecision,
     KeyFacet,
@@ -56,13 +57,34 @@ from .knowledge import (
     assert_knowledge_use_binding,
 )
 from .obs import AudioRef, ObsPacket, SpanRef, default_obs_packet
-from .runner import ArmResult, RailsRunnerError, RunSummary, run_rails_experiment
+from .runner import (
+    AgentContactPlan,
+    AgentContactRecord,
+    AgentController,
+    AgentLoopAdvance,
+    AgentLoopResult,
+    AgentLoopSummary,
+    AgentRuntimeContext,
+    ArmResult,
+    RailsRunnerError,
+    RunSummary,
+    run_rails_experiment,
+    run_speech_native_agent_loop,
+)
 from .supply import SupplyDose, SupplyForm, SupplyItem, SupplyPacket
 from .task_adapter import TaskAdapter, TaskSample
 
 __all__ = [
     "ArmResult",
+    "AgentStateArtifact",
     "AgentStepTransition",
+    "AgentContactPlan",
+    "AgentContactRecord",
+    "AgentController",
+    "AgentLoopAdvance",
+    "AgentLoopResult",
+    "AgentLoopSummary",
+    "AgentRuntimeContext",
     "AudioRef",
     "ConsumptionOutcome",
     "ConsumptionRecord",
@@ -104,4 +126,5 @@ __all__ = [
     "default_obs_packet",
     "probe_sample_rate_hz",
     "run_rails_experiment",
+    "run_speech_native_agent_loop",
 ]

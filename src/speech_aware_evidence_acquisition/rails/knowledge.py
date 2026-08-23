@@ -35,6 +35,7 @@ QUERY_STATE_VERSION = "knowledge-query-state-v1"
 RANK_RESULT_VERSION = "knowledge-rank-result-v1"
 FUSION_DECISION_VERSION = "knowledge-fusion-decision-v1"
 AGENT_STEP_TRANSITION_VERSION = "knowledge-agent-step-transition-v1"
+AGENT_STATE_ARTIFACT_VERSION = "knowledge-agent-state-artifact-v1"
 
 AGENT_ACTION_KINDS = frozenset(
     {
@@ -633,6 +634,84 @@ class FusionDecision:
 
 
 @dataclass(frozen=True)
+class AgentStateArtifact:
+    """One bounded ORG artifact produced from a speech-conditioned contact.
+
+    Agent state is auxiliary organization, never knowledge SUPPLY. The two
+    source hashes prove which speech-bound query state and model response
+    produced it. ``cited_value_ids`` records any train-built values it
+    summarizes without reclassifying those values as newly acquired.
+    """
+
+    state_id: str
+    state_kind: str
+    content: str
+    source_query_state_sha256: str
+    source_response_sha256: str
+    producer_policy_id: str
+    cited_value_ids: tuple[str, ...]
+    state_artifact_version: str = AGENT_STATE_ARTIFACT_VERSION
+
+    def validate(self) -> "AgentStateArtifact":
+        _require_text(self.state_id, field="AgentStateArtifact.state_id")
+        _require_text(self.state_kind, field="AgentStateArtifact.state_kind")
+        _require_text(self.content, field="AgentStateArtifact.content")
+        _require_sha256(
+            self.source_query_state_sha256,
+            field="AgentStateArtifact.source_query_state_sha256",
+        )
+        _require_sha256(
+            self.source_response_sha256,
+            field="AgentStateArtifact.source_response_sha256",
+        )
+        _require_text(
+            self.producer_policy_id,
+            field="AgentStateArtifact.producer_policy_id",
+        )
+        _require_unique_texts(
+            self.cited_value_ids,
+            field="AgentStateArtifact.cited_value_ids",
+        )
+        if self.state_artifact_version != AGENT_STATE_ARTIFACT_VERSION:
+            raise RailsError(
+                "AgentStateArtifact.state_artifact_version must be "
+                f"{AGENT_STATE_ARTIFACT_VERSION!r}"
+            )
+        return self
+
+    def as_json(self) -> dict[str, object]:
+        self.validate()
+        return {
+            "state_artifact_version": self.state_artifact_version,
+            "state_id": self.state_id,
+            "state_kind": self.state_kind,
+            "content": self.content,
+            "source_query_state_sha256": self.source_query_state_sha256,
+            "source_response_sha256": self.source_response_sha256,
+            "producer_policy_id": self.producer_policy_id,
+            "cited_value_ids": list(self.cited_value_ids),
+        }
+
+    def content_hash(self) -> str:
+        return content_hash(self.as_json())
+
+    @classmethod
+    def from_json(cls, document: Mapping[str, object]) -> "AgentStateArtifact":
+        return cls(
+            state_id=document["state_id"],
+            state_kind=document["state_kind"],
+            content=document["content"],
+            source_query_state_sha256=document["source_query_state_sha256"],
+            source_response_sha256=document["source_response_sha256"],
+            producer_policy_id=document["producer_policy_id"],
+            cited_value_ids=tuple(document.get("cited_value_ids", [])),
+            state_artifact_version=document.get(
+                "state_artifact_version", AGENT_STATE_ARTIFACT_VERSION
+            ),
+        ).validate()
+
+
+@dataclass(frozen=True)
 class AgentStepTransition:
     """One speech-bound external AgentLoop decision and its information delta.
 
@@ -868,6 +947,26 @@ def assert_agent_step_binding(
     next_values = set(next_query_state.retrieved_value_ids)
     prior_states = set(prior_query_state.agent_state_ids)
     next_states = set(next_query_state.agent_state_ids)
+    repeated_values = set(transition.new_value_ids) & prior_values
+    if repeated_values:
+        raise RailsError(
+            "AgentStepTransition cannot claim already visible values as new SUPPLY: "
+            f"{sorted(repeated_values)}"
+        )
+    repeated_states = set(transition.new_agent_state_ids) & prior_states
+    if repeated_states:
+        raise RailsError(
+            "AgentStepTransition cannot claim already visible Agent states as new ORG: "
+            f"{sorted(repeated_states)}"
+        )
+    absent_dropped_values = set(transition.dropped_value_ids) - prior_values
+    absent_dropped_states = set(transition.dropped_agent_state_ids) - prior_states
+    if absent_dropped_values or absent_dropped_states:
+        raise RailsError(
+            "AgentStepTransition cannot drop values or states that were not visible: "
+            f"values={sorted(absent_dropped_values)}, "
+            f"states={sorted(absent_dropped_states)}"
+        )
     if transition.action_kind == "backtrack":
         expected_values = prior_values - set(transition.dropped_value_ids)
         expected_states = prior_states - set(transition.dropped_agent_state_ids)
@@ -960,7 +1059,9 @@ def assert_knowledge_use_binding(
 
 __all__ = [
     "AGENT_ACTION_KINDS",
+    "AGENT_STATE_ARTIFACT_VERSION",
     "AGENT_STEP_TRANSITION_VERSION",
+    "AgentStateArtifact",
     "AgentStepTransition",
     "DEV_PARTITION_ROLE",
     "FUSION_DECISION_VERSION",

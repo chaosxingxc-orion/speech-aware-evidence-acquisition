@@ -8,10 +8,10 @@ would mean this zero-model-contact engineering skeleton also has to
 construct a live ``FrozenCoreGate``, an attempt store and a verified split,
 none of which a rails-only test fixture has any business building, and B0's
 mission is explicit: engineering only, ZERO model contact. ``CoreClient`` is
-instead the MINIMAL request shape a ``TaskAdapter``'s assembled messages
-need -- a future model-touching task can implement a ``CoreClient`` that
-internally delegates to ``FrozenCoreAdapter`` without changing this
-Protocol's shape or any caller of it.
+instead the minimal request seam a ``TaskAdapter``'s assembled messages
+need. Optional formal speech-feature and Agent state/control bindings remain
+on this one protocol; callers that omit them keep the historical audio/text
+behavior.
 
 That future task is :class:`FrozenCoreClient` below (bridge mission,
 2026-08-17): it delegates every ``complete()`` call to a real
@@ -63,6 +63,7 @@ from ..core.model.slices import SliceRecord
 from ..core.tracing import DispatchingSink, TraceBuffer, TraceSink
 from ..e0.d2_leakage import ARM_VISIBLE_FIELDS
 from .errors import RailsError
+from .knowledge import AgentStateArtifact
 
 
 @runtime_checkable
@@ -81,8 +82,12 @@ class CoreClient(Protocol):
     ``input_audio`` content part -- and ``text_only_sample_id`` is how the
     caller identifies WHICH bound sample this text-only request is about
     (a text-only ``messages`` shape carries no ``media_relpath`` a client
-    could otherwise reverse-look-up). See :class:`FrozenCoreClient.complete`
-    for the real validation this gates."""
+    could otherwise reverse-look-up). ``agent_state`` plus
+    ``agent_contact_id``/``contact_instruction`` are accepted only together
+    on a formal speech-feature request. They populate D2's separate
+    ``history`` field, never ``supplied_evidence``. See
+    :class:`FrozenCoreClient.complete` for the real validation this gates.
+    """
 
     def complete(
         self,
@@ -93,6 +98,9 @@ class CoreClient(Protocol):
         speech_feature_sample_id: str | None = None,
         key_representation_id: str | None = None,
         matcher_policy_id: str | None = None,
+        agent_state: Sequence[Mapping[str, object]] | None = None,
+        agent_contact_id: str | None = None,
+        contact_instruction: str | None = None,
     ) -> str: ...
 
 
@@ -120,6 +128,9 @@ class MockCoreClient:
         speech_feature_sample_id: str | None = None,
         key_representation_id: str | None = None,
         matcher_policy_id: str | None = None,
+        agent_state: Sequence[Mapping[str, object]] | None = None,
+        agent_contact_id: str | None = None,
+        contact_instruction: str | None = None,
     ) -> str:
         # text_only_sample_id is accepted (never validated -- this is a mock,
         # zero real invariants live here by design, module docstring) purely
@@ -391,7 +402,7 @@ def _parse_rails_messages(
 
 def _parse_speech_feature_messages(
     messages: Sequence[Mapping[str, object]],
-) -> tuple[str, list[str], list[dict[str, str]]]:
+) -> tuple[str, list[dict[str, str | None]], list[dict[str, str]]]:
     """Parse the formal packet-reference content extension.
 
     Exactly one query packet is mandatory. Any additional packet is an
@@ -414,7 +425,7 @@ def _parse_speech_feature_messages(
     content = user_message.get("content")
     if not isinstance(content, Sequence) or isinstance(content, (str, bytes)):
         raise FrozenCoreClientError("user message content must be a list of content parts")
-    supply_texts: list[str] = []
+    supply_parts: list[dict[str, str | None]] = []
     descriptors: list[dict[str, str]] = []
     for index, part in enumerate(content):
         if not isinstance(part, Mapping) or "type" not in part:
@@ -431,7 +442,27 @@ def _parse_speech_feature_messages(
             text = part.get("text")
             if not isinstance(text, str) or not text:
                 raise FrozenCoreClientError("text content part must carry non-empty text")
-            supply_texts.append(text)
+            evidence_id = part.get("evidence_id")
+            if evidence_id is not None and (
+                not isinstance(evidence_id, str) or not evidence_id
+            ):
+                raise FrozenCoreClientError(
+                    "text content part evidence_id must be a non-empty string or absent"
+                )
+            source_uri = part.get("source_uri")
+            if source_uri is not None and (
+                not isinstance(source_uri, str) or not source_uri
+            ):
+                raise FrozenCoreClientError(
+                    "text content part source_uri must be a non-empty string or absent"
+                )
+            supply_parts.append(
+                {
+                    "text": text,
+                    "evidence_id": evidence_id,
+                    "source_uri": source_uri,
+                }
+            )
             continue
         if part_type != "input_speech_features":
             raise FrozenCoreClientError(f"unsupported content part type {part_type!r}")
@@ -453,7 +484,73 @@ def _parse_speech_feature_messages(
         raise FrozenCoreClientError(
             "speech-feature request must carry exactly one query packet"
         )
-    return task_instruction, supply_texts, descriptors
+    return task_instruction, supply_parts, descriptors
+
+
+def _agent_history(
+    *,
+    agent_state: Sequence[Mapping[str, object]] | None,
+    agent_contact_id: str | None,
+    contact_instruction: str | None,
+) -> list[dict[str, object]]:
+    """Build the D2-visible ORG/CONTROL history for one Agent contact."""
+
+    if (
+        agent_state is None
+        and agent_contact_id is None
+        and contact_instruction is None
+    ):
+        return []
+    if not isinstance(agent_state, Sequence) or isinstance(
+        agent_state, (str, bytes)
+    ):
+        raise FrozenCoreClientError(
+            "agent_state must be a sequence of AgentStateArtifact documents"
+        )
+    if not isinstance(agent_contact_id, str) or not agent_contact_id:
+        raise FrozenCoreClientError(
+            "agent_contact_id must be a non-empty string for an Agent contact"
+        )
+    if not isinstance(contact_instruction, str) or not contact_instruction:
+        raise FrozenCoreClientError(
+            "contact_instruction must be a non-empty string for an Agent contact"
+        )
+    try:
+        artifacts = tuple(
+            AgentStateArtifact.from_json(document) for document in agent_state
+        )
+    except (KeyError, RailsError, TypeError) as error:
+        raise FrozenCoreClientError(
+            f"malformed Agent state artifact: {error}"
+        ) from error
+    ids = [artifact.state_id for artifact in artifacts]
+    if len(set(ids)) != len(ids):
+        raise FrozenCoreClientError("agent_state contains duplicate state ids")
+    history: list[dict[str, object]] = [
+        {
+            "turn": index,
+            "role": "agent_state",
+            "state_id": artifact.state_id,
+            "state_kind": artifact.state_kind,
+            "content": artifact.content,
+            "content_sha256": _content_sha256(artifact.content),
+            "source_query_state_sha256": artifact.source_query_state_sha256,
+            "source_response_sha256": artifact.source_response_sha256,
+            "producer_policy_id": artifact.producer_policy_id,
+            "cited_value_ids": list(artifact.cited_value_ids),
+        }
+        for index, artifact in enumerate(artifacts, start=1)
+    ]
+    history.append(
+        {
+            "turn": len(history) + 1,
+            "role": "control",
+            "contact_id": agent_contact_id,
+            "content": contact_instruction,
+            "content_sha256": _content_sha256(contact_instruction),
+        }
+    )
+    return history
 
 
 class FrozenCoreClient:
@@ -683,6 +780,9 @@ class FrozenCoreClient:
         speech_feature_sample_id: str | None = None,
         key_representation_id: str | None = None,
         matcher_policy_id: str | None = None,
+        agent_state: Sequence[Mapping[str, object]] | None = None,
+        agent_contact_id: str | None = None,
+        contact_instruction: str | None = None,
     ) -> str:
         """The abort's own root cause, repaired (attempt-1 accounting,
         docs/readiness/2026-08-18-pkey-preregistration-REGISTERED.md section
@@ -711,11 +811,26 @@ class FrozenCoreClient:
         invariant is preserved byte-for-byte for every existing caller: a
         message carrying zero or two-or-more ``input_audio`` parts still
         refuses exactly as before.
+
+        AgentLoop calls may additionally provide validated
+        ``AgentStateArtifact`` documents and one contact id/instruction.
+        Those records remain ORG/CONTROL history in the audited payload;
+        only text parts carrying evidence ids become SUPPLY.
         """
 
         if self._closed:
             raise FrozenCoreClientError("complete() called after close()")
         speech_feature_parts: list[dict[str, str]] | None = None
+        speech_supply_parts: list[dict[str, str | None]] | None = None
+        history = _agent_history(
+            agent_state=agent_state,
+            agent_contact_id=agent_contact_id,
+            contact_instruction=contact_instruction,
+        )
+        if history and speech_feature_sample_id is None:
+            raise FrozenCoreClientError(
+                "Agent state/control is only valid on a speech-feature decision call"
+            )
         if speech_feature_sample_id is not None:
             if text_only_sample_id is not None:
                 raise FrozenCoreClientError(
@@ -733,9 +848,10 @@ class FrozenCoreClient:
                 raise FrozenCoreClientError("key_representation_id must be a non-empty string")
             if not isinstance(matcher_policy_id, str) or not matcher_policy_id:
                 raise FrozenCoreClientError("matcher_policy_id must be a non-empty string")
-            task_instruction, supply_texts, speech_feature_parts = (
+            task_instruction, speech_supply_parts, speech_feature_parts = (
                 _parse_speech_feature_messages(messages)
             )
+            supply_texts = [part["text"] for part in speech_supply_parts]
             sample_id = speech_feature_sample_id
             expected_query = self._speech_packet_bindings.get(sample_id)
             if expected_query is None:
@@ -813,11 +929,19 @@ class FrozenCoreClient:
         supplied_evidence = [
             {
                 "evidence_id": (
-                    _speech_supply_evidence_id(index, text)
-                    if speech_feature_parts is not None
+                    (
+                        speech_supply_parts[index]["evidence_id"]
+                        or _speech_supply_evidence_id(index, text)
+                    )
+                    if speech_supply_parts is not None
                     else f"{request_id}-supply-{index}"
                 ),
-                "source_uri": f"rails-supply://{sample_id}",
+                "source_uri": (
+                    speech_supply_parts[index]["source_uri"]
+                    if speech_supply_parts is not None
+                    and speech_supply_parts[index]["source_uri"] is not None
+                    else f"rails-supply://{sample_id}"
+                ),
                 "content": text,
             }
             for index, text in enumerate(supply_texts)
@@ -839,7 +963,7 @@ class FrozenCoreClient:
             "audio_seconds": audio_seconds,
             "sample_rate_hz": sample_rate_hz,
             "task_instruction": task_instruction,
-            "history": [],
+            "history": history,
             "decoding_params": dict(decoding_params) if decoding_params else {},
             "supplied_evidence": supplied_evidence,
             "evidence_provenance": evidence_provenance,

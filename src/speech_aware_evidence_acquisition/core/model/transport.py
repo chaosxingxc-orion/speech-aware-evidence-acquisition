@@ -54,11 +54,12 @@ The historical
 from __future__ import annotations
 
 import base64
+import hashlib
 import json
 import urllib.error
 import urllib.request
 from pathlib import Path
-from typing import Callable, Mapping
+from typing import Callable, Mapping, Sequence
 
 from ..base import TRANSPORTS
 from ..session import SessionError, SessionReceipt, assert_session_alive, require_loopback
@@ -81,14 +82,18 @@ def _ordered_speech_feature_content(
     prompt_order: str,
     evidence_texts: list[str],
     feature_parts: list[dict[str, object]],
+    state_texts: Sequence[str] = (),
 ) -> list[dict[str, object]]:
     """Build one cache-explicit speech-feature user content sequence."""
 
     text_parts: list[dict[str, object]] = [
         {"type": "text", "text": text} for text in evidence_texts
     ]
+    state_parts: list[dict[str, object]] = [
+        {"type": "text", "text": text} for text in state_texts
+    ]
     if prompt_order == "speech-features-text-keys-v1":
-        return [*text_parts, *feature_parts]
+        return [*text_parts, *feature_parts, *state_parts]
 
     query_parts = [
         part
@@ -105,15 +110,94 @@ def _ordered_speech_feature_content(
             "formal speech feature request must carry exactly one query packet"
         )
 
-    # The matcher emits stable key/index text first and the step instruction
-    # last. Keep that last, mutable item after the query under both layouts.
-    stable_text_parts = text_parts[:-1]
-    mutable_state_parts = text_parts[-1:]
+    # Historical matcher calls encode the mutable step instruction as their
+    # final evidence item. New AgentLoop calls use D2's separate ``history``
+    # field, so every evidence item remains SUPPLY and all ORG/CONTROL state
+    # is appended after the stable speech/knowledge prefix.
+    if state_parts:
+        stable_text_parts = text_parts
+        mutable_state_parts = state_parts
+    else:
+        stable_text_parts = text_parts[:-1]
+        mutable_state_parts = text_parts[-1:]
     if prompt_order == "speech-query-prefix-v2":
         return [*query_parts, *stable_text_parts, *key_parts, *mutable_state_parts]
     if prompt_order == "knowledge-speech-state-v2":
         return [*text_parts[:1], *key_parts, *query_parts, *text_parts[1:]]
     raise FrozenCoreError(f"unsupported speech feature prompt order {prompt_order!r}")
+
+
+def _speech_history_texts(history: object) -> list[str]:
+    """Validate and render speech-native ORG/CONTROL history."""
+
+    if not isinstance(history, list):
+        raise FrozenCoreError("speech feature payload history must be a list")
+    rendered: list[str] = []
+    for index, item in enumerate(history):
+        if not isinstance(item, Mapping):
+            raise FrozenCoreError(f"history[{index}] must be a mapping")
+        role = item.get("role")
+        content = item.get("content")
+        content_sha256 = item.get("content_sha256")
+        if not isinstance(content, str) or not content:
+            raise FrozenCoreError(f"history[{index}] content must be non-empty text")
+        if (
+            not isinstance(content_sha256, str)
+            or hashlib.sha256(content.encode("utf-8")).hexdigest() != content_sha256
+        ):
+            raise FrozenCoreError(f"history[{index}] content hash mismatch")
+        if role == "agent_state":
+            state_id = item.get("state_id")
+            state_kind = item.get("state_kind")
+            if not isinstance(state_id, str) or not state_id:
+                raise FrozenCoreError(
+                    f"history[{index}] agent_state requires state_id"
+                )
+            if not isinstance(state_kind, str) or not state_kind:
+                raise FrozenCoreError(
+                    f"history[{index}] agent_state requires state_kind"
+                )
+            for field in (
+                "source_query_state_sha256",
+                "source_response_sha256",
+            ):
+                value = item.get(field)
+                if (
+                    not isinstance(value, str)
+                    or len(value) != 64
+                    or any(character not in "0123456789abcdef" for character in value)
+                ):
+                    raise FrozenCoreError(
+                        f"history[{index}] agent_state requires lowercase 64-hex {field}"
+                    )
+            producer = item.get("producer_policy_id")
+            cited = item.get("cited_value_ids")
+            if not isinstance(producer, str) or not producer:
+                raise FrozenCoreError(
+                    f"history[{index}] agent_state requires producer_policy_id"
+                )
+            if not isinstance(cited, list) or not all(
+                isinstance(value_id, str) and value_id for value_id in cited
+            ):
+                raise FrozenCoreError(
+                    f"history[{index}] agent_state cited_value_ids must be a string list"
+                )
+            rendered.append(
+                f"[agent state {state_id} kind={state_kind}] {content}"
+            )
+            continue
+        if role == "control":
+            contact_id = item.get("contact_id")
+            if not isinstance(contact_id, str) or not contact_id:
+                raise FrozenCoreError(
+                    f"history[{index}] control requires contact_id"
+                )
+            rendered.append(f"[agent control {contact_id}] {content}")
+            continue
+        raise FrozenCoreError(
+            f"history[{index}] role must be 'agent_state' or 'control'"
+        )
+    return rendered
 
 
 def _default_post(timeout_seconds: float) -> Callable[[str, bytes], bytes]:
@@ -437,10 +521,12 @@ class LlamaServerTransport:
                 raise FrozenCoreError(
                     "speech_packet_sha256 must equal the actual query packet hash"
                 )
+            state_texts = _speech_history_texts(payload.get("history", []))
             content = _ordered_speech_feature_content(
                 prompt_order=self._prompt_order,
                 evidence_texts=evidence_texts,
                 feature_parts=feature_parts,
+                state_texts=state_texts,
             )
             messages = [
                 {"role": "system", "content": payload["task_instruction"]},

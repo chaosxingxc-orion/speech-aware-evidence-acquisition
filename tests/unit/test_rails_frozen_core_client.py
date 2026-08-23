@@ -25,6 +25,7 @@ from speech_aware_evidence_acquisition.core.model import (
 )
 from speech_aware_evidence_acquisition.rails import (
     DEFAULT_RAILS_ARM,
+    AgentStateArtifact,
     AudioRef,
     FrozenCoreClient,
     FrozenCoreClientError,
@@ -347,6 +348,98 @@ def test_speech_feature_arm_uses_content_stable_evidence_ids_for_prefix_reuse(tm
     assert first["supplied_evidence"][0]["evidence_id"].startswith(
         "speech-supply-00-"
     )
+
+
+def test_speech_feature_arm_traces_agent_state_and_control_separately_from_supply(
+    tmp_path,
+):
+    world = _World(tmp_path)
+    feature_root, packet, bindings = _speech_feature_world(world, tmp_path)
+    client, _, transport = _client(
+        world,
+        tmp_path,
+        arm="speech-feature-query",
+        speech_feature_root=feature_root,
+        speech_packet_bindings=bindings,
+    )
+    messages = _speech_feature_messages(packet)
+    messages[1]["content"].insert(
+        0,
+        {
+            "type": "text",
+            "text": "Use the dim-light operation.",
+            "evidence_id": "value:dim-light",
+            "source_uri": "knowledge-snapshot://abc/value:dim-light",
+        },
+    )
+    state = AgentStateArtifact(
+        state_id="state:operation-needed",
+        state_kind="intent-factor",
+        content="The unresolved factor is the requested operation.",
+        source_query_state_sha256="1" * 64,
+        source_response_sha256="2" * 64,
+        producer_policy_id="organize-v1",
+        cited_value_ids=(),
+    )
+
+    client.complete(
+        messages,
+        speech_feature_sample_id="s1",
+        key_representation_id="k1-text-card-v1",
+        matcher_policy_id="agent-loop-v1",
+        agent_state=(state.as_json(),),
+        agent_contact_id="contact-2",
+        contact_instruction="Solve the task using speech and visible evidence.",
+    )
+
+    payload = transport.calls[0]
+    assert payload["supplied_evidence"] == [
+        {
+            "evidence_id": "value:dim-light",
+            "source_uri": "knowledge-snapshot://abc/value:dim-light",
+            "content": "Use the dim-light operation.",
+        }
+    ]
+    assert [item["role"] for item in payload["history"]] == [
+        "agent_state",
+        "control",
+    ]
+    assert payload["history"][0]["state_id"] == "state:operation-needed"
+    assert payload["history"][1]["content"] == (
+        "Solve the task using speech and visible evidence."
+    )
+
+
+def test_speech_feature_arm_normalizes_malformed_agent_state_to_client_error(tmp_path):
+    world = _World(tmp_path)
+    feature_root, packet, bindings = _speech_feature_world(world, tmp_path)
+    client, _, _ = _client(
+        world,
+        tmp_path,
+        arm="speech-feature-query",
+        speech_feature_root=feature_root,
+        speech_packet_bindings=bindings,
+    )
+    malformed = {
+        "state_id": "state:bad",
+        "state_kind": "intent-factor",
+        "content": "Malformed source binding.",
+        "source_query_state_sha256": "not-a-hash",
+        "source_response_sha256": "2" * 64,
+        "producer_policy_id": "organize-v1",
+        "cited_value_ids": [],
+    }
+
+    with pytest.raises(FrozenCoreClientError, match="malformed Agent state"):
+        client.complete(
+            _speech_feature_messages(packet),
+            speech_feature_sample_id="s1",
+            key_representation_id="k1-text-card-v1",
+            matcher_policy_id="agent-loop-v1",
+            agent_state=(malformed,),
+            agent_contact_id="contact-1",
+            contact_instruction="Organize the evidence.",
+        )
 
 
 @pytest.mark.parametrize(

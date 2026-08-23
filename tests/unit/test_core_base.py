@@ -4,9 +4,13 @@ import pytest
 
 from speech_aware_evidence_acquisition.contracts import BoundaryViolation
 from speech_aware_evidence_acquisition.core.base import (
+    AGENT_CONTROLLERS,
     CoreError,
     EvidenceError,
     EvidenceItem,
+    KNOWLEDGE_BUILDERS,
+    KNOWLEDGE_FUSERS,
+    KNOWLEDGE_RANKERS,
     Registry,
 )
 
@@ -22,6 +26,18 @@ def test_registry_registers_resolves_and_fails_closed():
         registry.register("", 3)
     with pytest.raises(CoreError, match="unknown widget 'zz'"):
         registry.resolve("zz")
+
+
+def test_knowledge_agent_seams_reuse_the_single_registry_mechanism():
+    registries = (
+        KNOWLEDGE_BUILDERS,
+        KNOWLEDGE_RANKERS,
+        KNOWLEDGE_FUSERS,
+        AGENT_CONTROLLERS,
+    )
+
+    assert all(isinstance(registry, Registry) for registry in registries)
+    assert len({id(registry) for registry in registries}) == len(registries)
 
 
 def _item(provenance=None):
