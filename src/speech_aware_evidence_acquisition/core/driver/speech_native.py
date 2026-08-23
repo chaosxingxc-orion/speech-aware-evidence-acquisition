@@ -10666,6 +10666,65 @@ def _audit_cuda_graph_moe_compatibility(
         and full_slot_graph_eligible
         and cross_slot_speech_batch
     )
+    batch_event_matches = tuple(
+        re.finditer(
+            r"decoded cross-slot speech feature batch,\s*"
+            r"n_slots\s*=\s*(\d+),\s*n_tokens\s*=\s*(\d+)",
+            server_log_text,
+        )
+    )
+    chunk_success_matches = tuple(
+        re.finditer(
+            r"decoded mmproj-free speech feature chunk in cross-slot batch,\s*"
+            r"n_tokens\s*=\s*(\d+)",
+            server_log_text,
+        )
+    )
+    if server_log_text.count("decoded cross-slot speech feature batch") != len(
+        batch_event_matches
+    ):
+        raise SpeechNativeProfileError(
+            "server log contains malformed cross-slot speech batch evidence"
+        )
+    if server_log_text.count(
+        "decoded mmproj-free speech feature chunk in cross-slot batch"
+    ) != len(chunk_success_matches):
+        raise SpeechNativeProfileError(
+            "server log contains malformed cross-slot speech chunk evidence"
+        )
+    batch_slot_counts = tuple(
+        int(match.group(1)) for match in batch_event_matches
+    )
+    batch_token_counts = tuple(
+        int(match.group(2)) for match in batch_event_matches
+    )
+    chunk_token_counts = tuple(
+        int(match.group(1)) for match in chunk_success_matches
+    )
+    if any(value <= 0 for value in (*batch_slot_counts, *batch_token_counts)):
+        raise SpeechNativeProfileError(
+            "server log cross-slot speech batch counts must be positive"
+        )
+    if any(value <= 0 for value in chunk_token_counts):
+        raise SpeechNativeProfileError(
+            "server log cross-slot speech chunk token counts must be positive"
+        )
+    batch_slot_total = sum(batch_slot_counts)
+    batch_token_total = sum(batch_token_counts)
+    chunk_token_total = sum(chunk_token_counts)
+    runtime_evidence = {
+        "speech_feature_batch_event_count": len(batch_event_matches),
+        "speech_feature_batch_slot_total": batch_slot_total,
+        "speech_feature_batch_token_total": batch_token_total,
+        "speech_feature_batch_max_slots": max(batch_slot_counts, default=0),
+        "speech_feature_chunk_success_count": len(chunk_success_matches),
+        "speech_feature_chunk_token_total": chunk_token_total,
+        "batch_chunk_count_matches": batch_slot_total == len(chunk_success_matches),
+        "batch_chunk_tokens_match": batch_token_total == chunk_token_total,
+        "cross_slot_batch_observed": any(
+            count >= 2 for count in batch_slot_counts
+        ),
+    }
     return {
         "schema": "saea-speech-native-engine-compatibility-audit-v3",
         "runtime": {
@@ -10719,6 +10778,7 @@ def _audit_cuda_graph_moe_compatibility(
             "full_slot_decode_graph_eligible_static": full_slot_graph_eligible,
             "speech_feature_cross_slot_batch_static": cross_slot_speech_batch,
         },
+        "runtime_evidence": runtime_evidence,
         "decision": {
             "current_binary_profile_search_closed": (
                 exceeds_limit or not cross_slot_speech_batch

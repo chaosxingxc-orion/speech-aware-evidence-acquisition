@@ -6832,6 +6832,64 @@ def test_cuda_graph_engine_audit_admits_sync_free_mmq_candidate_at_np16():
     assert report["decision"]["live_contact_authorized"] is False
 
 
+def test_cuda_graph_engine_audit_reports_zero_dynamic_batch_events_before_contact():
+    report = _audit_cuda_graph_moe_compatibility(
+        **_cuda_graph_engine_audit_inputs()
+    )
+
+    assert report["runtime_evidence"] == {
+        "speech_feature_batch_event_count": 0,
+        "speech_feature_batch_slot_total": 0,
+        "speech_feature_batch_token_total": 0,
+        "speech_feature_batch_max_slots": 0,
+        "speech_feature_chunk_success_count": 0,
+        "speech_feature_chunk_token_total": 0,
+        "batch_chunk_count_matches": True,
+        "batch_chunk_tokens_match": True,
+        "cross_slot_batch_observed": False,
+    }
+
+
+def test_cuda_graph_engine_audit_counts_dynamic_cross_slot_batch_evidence():
+    inputs = _cuda_graph_engine_audit_inputs()
+    inputs["server_log_text"] += (
+        "slot decoded mmproj-free speech feature chunk in cross-slot batch, "
+        "n_tokens = 39\n"
+        "slot decoded mmproj-free speech feature chunk in cross-slot batch, "
+        "n_tokens = 26\n"
+        "slot decoded mmproj-free speech feature chunk in cross-slot batch, "
+        "n_tokens = 39\n"
+        "server decoded cross-slot speech feature batch, n_slots = 3, "
+        "n_tokens = 104\n"
+        "slot decoded mmproj-free speech feature chunk in cross-slot batch, "
+        "n_tokens = 26\n"
+        "slot decoded mmproj-free speech feature chunk in cross-slot batch, "
+        "n_tokens = 52\n"
+        "slot decoded mmproj-free speech feature chunk in cross-slot batch, "
+        "n_tokens = 65\n"
+        "slot decoded mmproj-free speech feature chunk in cross-slot batch, "
+        "n_tokens = 52\n"
+        "slot decoded mmproj-free speech feature chunk in cross-slot batch, "
+        "n_tokens = 39\n"
+        "server decoded cross-slot speech feature batch, n_slots = 5, "
+        "n_tokens = 234\n"
+    )
+
+    report = _audit_cuda_graph_moe_compatibility(**inputs)
+
+    assert report["runtime_evidence"] == {
+        "speech_feature_batch_event_count": 2,
+        "speech_feature_batch_slot_total": 8,
+        "speech_feature_batch_token_total": 338,
+        "speech_feature_batch_max_slots": 5,
+        "speech_feature_chunk_success_count": 8,
+        "speech_feature_chunk_token_total": 338,
+        "batch_chunk_count_matches": True,
+        "batch_chunk_tokens_match": True,
+        "cross_slot_batch_observed": True,
+    }
+
+
 def test_cuda_graph_engine_audit_rejects_sync_free_candidate_when_mmq_is_forced_off():
     inputs = _cuda_graph_engine_audit_inputs()
     inputs["cuda_source_text"] = (
