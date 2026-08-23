@@ -25,8 +25,11 @@ states and Agent state on ORG, initial/acquired/final value ids on SUPPLY, and c
 on USE; post-hoc metrics and consumption bind to the gold-free runtime record by SHA-256. Shared
 builder, ranker, fuser, and controller registries exist, but no cross-task policy is registered yet.
 The next engineering step is to migrate the existing M11 controller and factor parser onto this
-runner and extract its independent contact-DAG scheduling without duplicating the already working
-SLURP implementation. This milestone authorizes no new model contact by itself.
+runner. The reusable bounded contact-DAG scheduler has now been extracted from M11, and the
+historical M11 flight calls it while retaining identical task-specific parsing and aggregation.
+The remaining migration is to add contact batches to the shared `AgentController` protocol and
+express M11's primary/retrieval and AB/BA comparison waves through that protocol. This milestone
+authorizes no new model contact by itself.
 
 ## Decision
 

@@ -66,11 +66,14 @@ from .runner import (
     AgentLoopSummary,
     AgentRuntimeContext,
     AgentTraceSink,
+    ContactDAGAdvance,
+    ContactDAGCompletion,
     ArmResult,
     RailsRunnerError,
     RunSummary,
     run_rails_experiment,
     run_speech_native_agent_loop,
+    run_bounded_contact_dag,
 )
 from .supply import SupplyDose, SupplyForm, SupplyItem, SupplyPacket
 from .task_adapter import TaskAdapter, TaskSample
@@ -87,6 +90,8 @@ __all__ = [
     "AgentLoopSummary",
     "AgentRuntimeContext",
     "AgentTraceSink",
+    "ContactDAGAdvance",
+    "ContactDAGCompletion",
     "AudioRef",
     "ConsumptionOutcome",
     "ConsumptionRecord",
@@ -129,4 +134,5 @@ __all__ = [
     "probe_sample_rate_hz",
     "run_rails_experiment",
     "run_speech_native_agent_loop",
+    "run_bounded_contact_dag",
 ]

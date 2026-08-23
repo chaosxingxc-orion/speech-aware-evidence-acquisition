@@ -210,6 +210,9 @@ Implemented and reusable:
   append-only ORG/SUPPLY/USE trajectory records. The runtime trace is emitted before scoring; a
   separate post-hoc USE record binds metrics and consumption back to that runtime hash without
   exposing reward to the controller;
+- a shared bounded contact-DAG scheduler with one-shot node identities, causal front-priority,
+  deterministic same-wave recovery, and explicit in-flight/queue bounds. The historical M11 path
+  now reuses this scheduler instead of owning a private ready/pending loop;
 - shared `Registry` instances for builders, rankers, fusers, and external controllers; task
   contracts are now named separately from the speech query;
 - speech-feature packets, mmproj-free llama.cpp transport, batch/contact dispatch, stable evidence
@@ -225,9 +228,9 @@ Still required before a cross-task experiment:
    the common registries now exist, but an empty registry is not an implemented policy.
 3. Bind knowledge snapshot, Agent policy, prefix layout, and cache policy identities into every run
    receipt.
-4. Add branch-level scheduling for independent candidate verification. The shared runner currently
-   batches whole trajectories with slot affinity; it does not yet expose the M11 contact DAG's
-   independent verifier branches.
+4. Lift contact batches into the shared `AgentController` protocol so registered controllers can
+   declare independent branches directly. The scheduler is shared and M11 already consumes it, but
+   the high-level runner still exposes only one contact at a time per controller transition.
 
 ## Inference efficiency contract
 

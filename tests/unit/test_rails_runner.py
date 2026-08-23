@@ -12,6 +12,7 @@ from __future__ import annotations
 import json
 import hashlib
 import threading
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -24,6 +25,7 @@ from speech_aware_evidence_acquisition.core.flight_lock import FLIGHT_LOCK_RELPA
 from speech_aware_evidence_acquisition.core.tracing import DispatchingSink, TraceBuffer
 from speech_aware_evidence_acquisition.rails import (
     AgentContactPlan,
+    ContactDAGAdvance,
     AgentLoopAdvance,
     AgentStateArtifact,
     AgentStepTransition,
@@ -42,6 +44,7 @@ from speech_aware_evidence_acquisition.rails import (
     build_consumption_trace,
     run_rails_experiment,
     run_speech_native_agent_loop,
+    run_bounded_contact_dag,
 )
 from speech_aware_evidence_acquisition.rails.runner import RAILS_ARMS, RailsRunnerError
 
@@ -839,3 +842,59 @@ def test_speech_native_agent_loop_refuses_unknown_bootstrap_value_before_contact
         )
 
     assert client.calls == []
+
+
+@dataclass(frozen=True)
+class _DAGNode:
+    node_id: str
+    trajectory_id: str
+    stage_index: int
+
+
+def test_shared_contact_dag_prioritizes_new_evidence_over_root_backlog():
+    execution_order = []
+    root_zero = _DAGNode("root-0", "sample-0", 0)
+    root_one = _DAGNode("root-1", "sample-1", 0)
+    evidence = _DAGNode("evidence-0", "sample-0", 1)
+
+    with ThreadPoolExecutor(max_workers=1) as pool:
+        completions = run_bounded_contact_dag(
+            initial_nodes=(root_zero, root_one),
+            max_in_flight=1,
+            queue_depth=2,
+            node_key=lambda node: node.node_id,
+            sort_key=lambda node: (node.trajectory_id, node.stage_index),
+            is_runnable=lambda _node: True,
+            submit=lambda node: pool.submit(
+                lambda: execution_order.append(node.node_id) or node.node_id
+            ),
+            on_result=lambda node, _response: (
+                ContactDAGAdvance(ready_front=(evidence,))
+                if node is root_zero
+                else ContactDAGAdvance()
+            ),
+            on_error=lambda _node, error: (_ for _ in ()).throw(error),
+        )
+
+    assert execution_order == ["root-0", "evidence-0", "root-1"]
+    assert [completion.node.node_id for completion in completions] == execution_order
+
+
+def test_shared_contact_dag_never_resubmits_a_duplicate_node():
+    root = _DAGNode("root", "sample-0", 0)
+
+    with ThreadPoolExecutor(max_workers=1) as pool:
+        with pytest.raises(RailsRunnerError, match="duplicate contact DAG node"):
+            run_bounded_contact_dag(
+                initial_nodes=(root,),
+                max_in_flight=1,
+                queue_depth=1,
+                node_key=lambda node: node.node_id,
+                sort_key=lambda node: (node.stage_index,),
+                is_runnable=lambda _node: True,
+                submit=lambda node: pool.submit(lambda: node.node_id),
+                on_result=lambda _node, _response: ContactDAGAdvance(
+                    ready_front=(root,)
+                ),
+                on_error=lambda _node, error: (_ for _ in ()).throw(error),
+            )

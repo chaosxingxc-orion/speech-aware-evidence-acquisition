@@ -78,6 +78,7 @@ from ..adapters.slurp import SlurpAdapter, SlurpSample
 from ..consumption import ConsumptionTrace
 from ..knowledge import KeyFacet, KnowledgeSnapshot, ValueBundle
 from ..obs import AudioRef
+from ..runner import ContactDAGAdvance, run_bounded_contact_dag
 from ..supply import SupplyDose, SupplyForm, SupplyItem, SupplyPacket
 
 PSLU_PHASE1_ARM = "A0"
@@ -4799,198 +4800,189 @@ def run_speech_native_match_tasks(
                 )
             return tuple(nodes)  # type: ignore[return-value]
 
-        ready: deque[M11Contact] = deque(
-            node for state in states for node in m11_initial_nodes(state)
-        )
-        pending: dict[Future, M11Contact] = {}
-        try:
-            while ready or pending:
-                while ready and len(pending) < slot_count:
-                    node = ready.popleft()
-                    state = states[node.task_index]
-                    if state.error is not None or state.decision is not None:
-                        continue
-                    future = contact_client._submit(
-                        node.messages, dict(node.kwargs), node.trace_buffer
-                    )
-                    pending[future] = node
-                if not pending:
-                    if ready:
-                        continue
-                    break
-                done, _not_done = wait(tuple(pending), return_when=FIRST_COMPLETED)
-                for future in sorted(done, key=lambda item: pending[item].sort_key):
-                    node = pending.pop(future)
-                    state = states[node.task_index]
-                    try:
-                        response = future.result()
-                    except BaseException as error:
-                        if state.error is None:
-                            state.error = error
-                        continue
-                    if state.error is not None or state.decision is not None:
-                        continue
-                    state.responses[node.stage_index] = response
-                    task = ordered_tasks[state.task_index]
-                    allowed = {card.key_id for card in state.cards}
-                    if node.stage_kind in {"primary", "retrieval"}:
-                        if not {0, 1}.issubset(state.responses):
-                            continue
-                        state.primary_key_id = _selected_key_id(
-                            state.responses[0], allowed
-                        )
-                        state.top_ids = _selected_top_keys(
-                            state.responses[1], allowed, task.top_k
-                        )
-                        if (
-                            state.primary_key_id is None
-                            or len(state.top_ids) != task.top_k
-                        ):
-                            finish_m11(
-                                state,
-                                actions=(
-                                    "match:speech-only-primary",
-                                    "retrieve:speech-only",
-                                    "backtrack:invalid-initial-adaptive-state",
-                                ),
-                                votes=(state.primary_key_id,),
-                                steps=m11_initial_steps(state),
-                                escalated=True,
-                            )
-                        else:
-                            ready.appendleft(m11_action_node(state))
-                        continue
-                    if node.stage_kind == "action":
-                        state.action_state = parse_candidate_action_state(
-                            response,
-                            graph=state.graph,
-                            candidate_key_ids=state.top_ids,
-                        )
-                        action_step = m11_action_step(state)
-                        base_actions = (
+        def m11_is_runnable(node: M11Contact) -> bool:
+            state = states[node.task_index]
+            return state.error is None and state.decision is None
+
+        def m11_submit(node: M11Contact) -> Future[str]:
+            return contact_client._submit(
+                node.messages, dict(node.kwargs), node.trace_buffer
+            )
+
+        def m11_error(node: M11Contact, error: BaseException) -> None:
+            state = states[node.task_index]
+            if state.error is None:
+                state.error = error
+
+        def m11_advance(
+            node: M11Contact, response: str
+        ) -> ContactDAGAdvance[M11Contact]:
+            state = states[node.task_index]
+            state.responses[node.stage_index] = response
+            task = ordered_tasks[state.task_index]
+            allowed = {card.key_id for card in state.cards}
+            if node.stage_kind in {"primary", "retrieval"}:
+                if not {0, 1}.issubset(state.responses):
+                    return ContactDAGAdvance()
+                state.primary_key_id = _selected_key_id(state.responses[0], allowed)
+                state.top_ids = _selected_top_keys(
+                    state.responses[1], allowed, task.top_k
+                )
+                if (
+                    state.primary_key_id is None
+                    or len(state.top_ids) != task.top_k
+                ):
+                    finish_m11(
+                        state,
+                        actions=(
                             "match:speech-only-primary",
                             "retrieve:speech-only",
-                            "link:candidate-action-state",
-                        )
-                        if state.action_state is None:
-                            finish_m11(
-                                state,
-                                actions=(
-                                    *base_actions,
-                                    "backtrack:invalid-candidate-action-state",
-                                ),
-                                votes=(state.primary_key_id, state.top_ids[0]),
-                                steps=(*m11_initial_steps(state), action_step),
-                                escalated=True,
-                            )
-                            continue
-                        assert state.primary_key_id is not None
-                        base_votes = (
-                            state.primary_key_id,
-                            state.top_ids[0],
-                            state.action_state.key_id,
-                        )
-                        if len(set(base_votes)) == 1:
-                            finish_m11(
-                                state,
-                                actions=(
-                                    *base_actions,
-                                    "stop:complete-consistent-state",
-                                ),
-                                votes=base_votes,
-                                steps=(*m11_initial_steps(state), action_step),
-                                escalated=False,
-                            )
-                            continue
-                        state.challenger_key_id = (
-                            state.action_state.key_id
-                            if state.action_state.key_id != state.primary_key_id
-                            else state.top_ids[0]
-                        )
-                        state.boundary = _decision_boundary_for_pair(
-                            graph=state.graph,
-                            left_key_id=state.primary_key_id,
-                            right_key_id=state.challenger_key_id,
-                        )
-                        if state.boundary is None:
-                            finish_m11(
-                                state,
-                                actions=(
-                                    *base_actions,
-                                    "stop:no-registered-pair-boundary",
-                                ),
-                                votes=base_votes,
-                                steps=(*m11_initial_steps(state), action_step),
-                                escalated=False,
-                            )
-                            continue
-                        boundary_nodes = m11_boundary_nodes(state)
-                        for boundary_node in reversed(boundary_nodes):
-                            ready.appendleft(boundary_node)
-                        continue
-                    if node.stage_kind == "boundary":
-                        assert node.order_id is not None
-                        assert state.primary_key_id is not None
-                        assert state.challenger_key_id is not None
-                        state.boundary_votes[node.order_id] = _selected_key_id(
-                            response,
-                            {state.primary_key_id, state.challenger_key_id},
-                        )
-                        if set(state.boundary_votes) != {"ab", "ba"}:
-                            continue
-                        assert state.action_state is not None
-                        assert state.boundary is not None
-                        ab_key_id = state.boundary_votes["ab"]
-                        ba_key_id = state.boundary_votes["ba"]
-                        comparison_failed = ab_key_id is None or ba_key_id is None
-                        base_votes = (
-                            state.primary_key_id,
-                            state.top_ids[0],
-                            state.action_state.key_id,
-                        )
-                        boundary_step: Mapping[str, object] = {
-                            "action_id": (
-                                f"retrieve:pair-boundary:{state.boundary.boundary_id}"
-                            ),
-                            "boundary_id": state.boundary.boundary_id,
-                            "primary_key_id": state.primary_key_id,
-                            "challenger_key_id": state.challenger_key_id,
-                            "information_gap": "candidate-disagreement",
-                            "ab_key_id": ab_key_id,
-                            "ba_key_id": ba_key_id,
-                            "calls": 2,
-                            "parse_failure": comparison_failed,
-                            "new_knowledge_ids": [state.boundary.boundary_id],
-                            "causal_parent_ids": ["link:candidate-action-state"],
-                        }
-                        finish_m11(
-                            state,
-                            actions=(
-                                "match:speech-only-primary",
-                                "retrieve:speech-only",
-                                "link:candidate-action-state",
-                                (
-                                    "retrieve:pair-boundary:"
-                                    f"{state.boundary.boundary_id}"
-                                ),
-                                "compare:boundary-ab",
-                                "compare:boundary-ba",
-                                (
-                                    "backtrack:invalid-pair-boundary-comparison"
-                                    if comparison_failed
-                                    else "select:retain-primary-for-support"
-                                ),
-                            ),
-                            votes=(*base_votes, ab_key_id, ba_key_id),
-                            steps=(
-                                *m11_initial_steps(state),
-                                m11_action_step(state),
-                                boundary_step,
-                            ),
-                            escalated=True,
-                        )
-                        continue
-                    raise PsluFlightError(f"unknown M11 DAG stage {node.stage_kind!r}")
+                            "backtrack:invalid-initial-adaptive-state",
+                        ),
+                        votes=(state.primary_key_id,),
+                        steps=m11_initial_steps(state),
+                        escalated=True,
+                    )
+                    return ContactDAGAdvance()
+                return ContactDAGAdvance(
+                    ready_front=(m11_action_node(state),)
+                )
+            if node.stage_kind == "action":
+                state.action_state = parse_candidate_action_state(
+                    response,
+                    graph=state.graph,
+                    candidate_key_ids=state.top_ids,
+                )
+                action_step = m11_action_step(state)
+                base_actions = (
+                    "match:speech-only-primary",
+                    "retrieve:speech-only",
+                    "link:candidate-action-state",
+                )
+                if state.action_state is None:
+                    finish_m11(
+                        state,
+                        actions=(
+                            *base_actions,
+                            "backtrack:invalid-candidate-action-state",
+                        ),
+                        votes=(state.primary_key_id, state.top_ids[0]),
+                        steps=(*m11_initial_steps(state), action_step),
+                        escalated=True,
+                    )
+                    return ContactDAGAdvance()
+                assert state.primary_key_id is not None
+                base_votes = (
+                    state.primary_key_id,
+                    state.top_ids[0],
+                    state.action_state.key_id,
+                )
+                if len(set(base_votes)) == 1:
+                    finish_m11(
+                        state,
+                        actions=(*base_actions, "stop:complete-consistent-state"),
+                        votes=base_votes,
+                        steps=(*m11_initial_steps(state), action_step),
+                        escalated=False,
+                    )
+                    return ContactDAGAdvance()
+                state.challenger_key_id = (
+                    state.action_state.key_id
+                    if state.action_state.key_id != state.primary_key_id
+                    else state.top_ids[0]
+                )
+                state.boundary = _decision_boundary_for_pair(
+                    graph=state.graph,
+                    left_key_id=state.primary_key_id,
+                    right_key_id=state.challenger_key_id,
+                )
+                if state.boundary is None:
+                    finish_m11(
+                        state,
+                        actions=(*base_actions, "stop:no-registered-pair-boundary"),
+                        votes=base_votes,
+                        steps=(*m11_initial_steps(state), action_step),
+                        escalated=False,
+                    )
+                    return ContactDAGAdvance()
+                return ContactDAGAdvance(
+                    ready_front=m11_boundary_nodes(state)
+                )
+            if node.stage_kind == "boundary":
+                assert node.order_id is not None
+                assert state.primary_key_id is not None
+                assert state.challenger_key_id is not None
+                state.boundary_votes[node.order_id] = _selected_key_id(
+                    response,
+                    {state.primary_key_id, state.challenger_key_id},
+                )
+                if set(state.boundary_votes) != {"ab", "ba"}:
+                    return ContactDAGAdvance()
+                assert state.action_state is not None
+                assert state.boundary is not None
+                ab_key_id = state.boundary_votes["ab"]
+                ba_key_id = state.boundary_votes["ba"]
+                comparison_failed = ab_key_id is None or ba_key_id is None
+                base_votes = (
+                    state.primary_key_id,
+                    state.top_ids[0],
+                    state.action_state.key_id,
+                )
+                boundary_step: Mapping[str, object] = {
+                    "action_id": (
+                        f"retrieve:pair-boundary:{state.boundary.boundary_id}"
+                    ),
+                    "boundary_id": state.boundary.boundary_id,
+                    "primary_key_id": state.primary_key_id,
+                    "challenger_key_id": state.challenger_key_id,
+                    "information_gap": "candidate-disagreement",
+                    "ab_key_id": ab_key_id,
+                    "ba_key_id": ba_key_id,
+                    "calls": 2,
+                    "parse_failure": comparison_failed,
+                    "new_knowledge_ids": [state.boundary.boundary_id],
+                    "causal_parent_ids": ["link:candidate-action-state"],
+                }
+                finish_m11(
+                    state,
+                    actions=(
+                        "match:speech-only-primary",
+                        "retrieve:speech-only",
+                        "link:candidate-action-state",
+                        f"retrieve:pair-boundary:{state.boundary.boundary_id}",
+                        "compare:boundary-ab",
+                        "compare:boundary-ba",
+                        (
+                            "backtrack:invalid-pair-boundary-comparison"
+                            if comparison_failed
+                            else "select:retain-primary-for-support"
+                        ),
+                    ),
+                    votes=(*base_votes, ab_key_id, ba_key_id),
+                    steps=(
+                        *m11_initial_steps(state),
+                        m11_action_step(state),
+                        boundary_step,
+                    ),
+                    escalated=True,
+                )
+                return ContactDAGAdvance()
+            raise PsluFlightError(f"unknown M11 DAG stage {node.stage_kind!r}")
+
+        try:
+            run_bounded_contact_dag(
+                initial_nodes=tuple(
+                    node for state in states for node in m11_initial_nodes(state)
+                ),
+                max_in_flight=slot_count,
+                queue_depth=queue_depth,
+                node_key=lambda node: (node.task_index, node.stage_index),
+                sort_key=lambda node: node.sort_key,
+                is_runnable=m11_is_runnable,
+                submit=m11_submit,
+                on_result=m11_advance,
+                on_error=m11_error,
+            )
         finally:
             assert contact_pool is not None
             contact_pool.shutdown(wait=True)

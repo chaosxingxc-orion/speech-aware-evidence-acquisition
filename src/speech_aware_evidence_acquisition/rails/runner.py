@@ -15,11 +15,12 @@ receipt-bound resident llama.cpp service; unit tests use in-process clients.
 from __future__ import annotations
 
 import hashlib
+from collections import deque
 from concurrent.futures import FIRST_COMPLETED, Future, ThreadPoolExecutor, wait
 from dataclasses import dataclass
 from pathlib import Path
 from queue import Queue
-from typing import Callable, Mapping, Protocol, Sequence
+from typing import Callable, Generic, Hashable, Mapping, Protocol, Sequence, TypeVar
 
 from ..contracts import ExecutionPlan, assert_execution_scope
 from ..core.base import AGENT_CONTROLLERS, CoreError, Registry
@@ -183,6 +184,118 @@ class AgentTraceSink(Protocol):
     def emit(
         self, channel: str, record_id: str, payload: Mapping[str, object]
     ) -> str: ...
+
+
+_ContactNodeT = TypeVar("_ContactNodeT")
+_ContactResponseT = TypeVar("_ContactResponseT")
+
+
+@dataclass(frozen=True)
+class ContactDAGAdvance(Generic[_ContactNodeT]):
+    """Newly ready nodes after one contact settles.
+
+    ``ready_front`` is for evidence unlocked by the completed contact and is
+    scheduled before older root backlog. ``ready_back`` is ordinary work that
+    does not have that causal priority.
+    """
+
+    ready_front: tuple[_ContactNodeT, ...] = ()
+    ready_back: tuple[_ContactNodeT, ...] = ()
+
+
+@dataclass(frozen=True)
+class ContactDAGCompletion(Generic[_ContactNodeT, _ContactResponseT]):
+    node: _ContactNodeT
+    response: _ContactResponseT
+
+
+def run_bounded_contact_dag(
+    *,
+    initial_nodes: Sequence[_ContactNodeT],
+    max_in_flight: int,
+    queue_depth: int,
+    node_key: Callable[[_ContactNodeT], Hashable],
+    sort_key: Callable[[_ContactNodeT], tuple[object, ...]],
+    is_runnable: Callable[[_ContactNodeT], bool],
+    submit: Callable[[_ContactNodeT], Future[_ContactResponseT]],
+    on_result: Callable[
+        [_ContactNodeT, _ContactResponseT], ContactDAGAdvance[_ContactNodeT]
+    ],
+    on_error: Callable[[_ContactNodeT, BaseException], None],
+) -> tuple[ContactDAGCompletion[_ContactNodeT, _ContactResponseT], ...]:
+    """Run one bounded dynamic contact DAG without retries.
+
+    The caller owns the executor and the domain state machine. This shared
+    scheduler owns only readiness, causal front-priority, in-flight bounds,
+    deterministic same-wave completion order, and one-shot node identity.
+    That boundary lets existing task-specific policies retain their parsing
+    semantics while reusing one concurrency implementation.
+    """
+
+    max_in_flight = _positive_int(max_in_flight, field="max_in_flight")
+    queue_depth = _positive_int(queue_depth, field="queue_depth")
+    if queue_depth < max_in_flight:
+        raise RailsRunnerError("queue_depth must be at least max_in_flight")
+    ready = deque(initial_nodes)
+    pending: dict[Future[_ContactResponseT], _ContactNodeT] = {}
+    scheduled: set[Hashable] = set()
+    completions: list[
+        ContactDAGCompletion[_ContactNodeT, _ContactResponseT]
+    ] = []
+
+    while ready or pending:
+        while ready and len(pending) < max_in_flight:
+            node = ready.popleft()
+            if not is_runnable(node):
+                continue
+            key = node_key(node)
+            try:
+                hash(key)
+            except TypeError as error:
+                raise RailsRunnerError(
+                    "contact DAG node_key must return a hashable identity"
+                ) from error
+            if key in scheduled:
+                raise RailsRunnerError(f"duplicate contact DAG node {key!r}")
+            scheduled.add(key)
+            try:
+                future = submit(node)
+            except BaseException as error:
+                on_error(node, error)
+                continue
+            if not isinstance(future, Future):
+                raise RailsRunnerError("contact DAG submit must return a Future")
+            pending[future] = node
+
+        if not pending:
+            continue
+        done, _ = wait(tuple(pending), return_when=FIRST_COMPLETED)
+        for future in sorted(done, key=lambda item: sort_key(pending[item])):
+            node = pending.pop(future)
+            try:
+                response = future.result()
+            except BaseException as error:
+                on_error(node, error)
+                continue
+            if not is_runnable(node):
+                continue
+            completions.append(ContactDAGCompletion(node=node, response=response))
+            advance = on_result(node, response)
+            if not isinstance(advance, ContactDAGAdvance):
+                raise RailsRunnerError(
+                    "contact DAG on_result must return ContactDAGAdvance"
+                )
+            if not isinstance(advance.ready_front, tuple) or not isinstance(
+                advance.ready_back, tuple
+            ):
+                raise RailsRunnerError(
+                    "ContactDAGAdvance ready collections must be tuples"
+                )
+            for child in reversed(advance.ready_front):
+                ready.appendleft(child)
+            ready.extend(advance.ready_back)
+
+    return tuple(completions)
 
 
 @dataclass(frozen=True)
