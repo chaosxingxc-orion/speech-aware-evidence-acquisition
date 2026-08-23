@@ -977,6 +977,12 @@ class TestRuntimeReceiptGenerator:
         monkeypatch.setenv("SPEECHRL_DATA_DIR", str(synthetic_world.data_root))
         runtime_root = self._llama_checkout(tmp_path)
         (runtime_root / "llama.cpp").rename(runtime_root / "llama.cpp-featcache")
+        (runtime_root / "llama.cpp-featcache" / "build").rename(
+            runtime_root / "llama.cpp-featcache" / "build-candidate"
+        )
+        (
+            runtime_root / "llama.cpp-featcache" / ".git" / "info" / "exclude"
+        ).write_text("build-candidate/\n", encoding="utf-8")
         self._with_models(synthetic_world)
         out_path = tmp_path / "runtime-inference.json"
         exit_code = generate_main(
@@ -985,6 +991,7 @@ class TestRuntimeReceiptGenerator:
                 "--lock", str(synthetic_world.lock_path),
                 "--runtime-root", str(runtime_root),
                 "--llama-dir-name", "llama.cpp-featcache",
+                "--binary-relpath", "build-candidate/bin/llama-server",
                 "--role", "inference",
                 "--out", str(out_path),
             ]
@@ -992,4 +999,29 @@ class TestRuntimeReceiptGenerator:
         assert exit_code == 0
         receipt = json.loads(out_path.read_text(encoding="utf-8"))
         assert receipt["role"] == "inference"
-        assert receipt["llama_cpp"]["binary_path"].startswith("llama.cpp-featcache/")
+        assert receipt["llama_cpp"]["binary_path"] == (
+            "llama.cpp-featcache/build-candidate/bin/llama-server"
+        )
+
+    def test_cli_runtime_command_rejects_binary_path_escape(
+        self, synthetic_world, tmp_path, monkeypatch
+    ):
+        from speech_aware_evidence_acquisition.e0.generate import main as generate_main
+
+        monkeypatch.setenv("SPEECHRL_DATA_DIR", str(synthetic_world.data_root))
+        runtime_root = self._llama_checkout(tmp_path)
+        self._with_models(synthetic_world)
+        out_path = tmp_path / "escaped-runtime.json"
+
+        exit_code = generate_main(
+            [
+                "runtime",
+                "--lock", str(synthetic_world.lock_path),
+                "--runtime-root", str(runtime_root),
+                "--binary-relpath", "../foreign/llama-server",
+                "--out", str(out_path),
+            ]
+        )
+
+        assert exit_code == 1
+        assert not out_path.exists()

@@ -101,6 +101,7 @@ def _runtime(
     *,
     model_lock_key: str = MODEL_LOCK_KEY,
     llama_dir_name: str = "llama.cpp",
+    binary_relpath: str = "build/bin/llama-server",
     out: Path | None = None,
     role: str | None = None,
     model_root: Path | None = None,
@@ -113,11 +114,21 @@ def _runtime(
     qwen3-omni-30b-a3b-instruct-gguf-q4km --out docs/receipts/runtime-q4km.json``)
     without ever touching the default Q8_0 receipt."""
 
+    binary_path = Path(binary_relpath)
+    if (
+        binary_path.is_absolute()
+        or binary_path == Path(".")
+        or ".." in binary_path.parts
+    ):
+        raise ArtifactError(
+            "runtime binary path must be a non-empty checkout-relative path"
+        )
     receipt = build_runtime_receipt(
         lock_path,
         root,
         runtime_root,
         llama_dir_name=llama_dir_name,
+        binary_relpath=binary_relpath,
         model_lock_key=model_lock_key,
         role=role,
         model_root=model_root,
@@ -211,6 +222,15 @@ def main(argv: list[str] | None = None) -> int:
         help=(
             "checkout directory directly under --runtime-root (runtime command only); "
             "use the existing named featcache checkout without a symlink or copied build"
+        ),
+    )
+    parser.add_argument(
+        "--binary-relpath",
+        default="build/bin/llama-server",
+        help=(
+            "checkout-relative llama-server path (runtime command only); use an "
+            "existing parallel build directory without copying or replacing the "
+            "resident binary"
         ),
     )
     parser.add_argument(
@@ -499,6 +519,7 @@ def main(argv: list[str] | None = None) -> int:
                     runtime_root,
                     model_lock_key=arguments.model_lock_key,
                     llama_dir_name=arguments.llama_dir_name,
+                    binary_relpath=arguments.binary_relpath,
                     out=arguments.out,
                     role=arguments.role,
                     model_root=(
