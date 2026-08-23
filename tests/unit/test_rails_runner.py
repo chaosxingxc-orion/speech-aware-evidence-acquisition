@@ -21,6 +21,7 @@ from speech_aware_evidence_acquisition.contracts import ExecutionPlan, Execution
 from speech_aware_evidence_acquisition.core.base import Registry
 from speech_aware_evidence_acquisition.core.config import protocol_hash
 from speech_aware_evidence_acquisition.core.flight_lock import FLIGHT_LOCK_RELPATH
+from speech_aware_evidence_acquisition.core.tracing import DispatchingSink, TraceBuffer
 from speech_aware_evidence_acquisition.rails import (
     AgentContactPlan,
     AgentLoopAdvance,
@@ -293,6 +294,10 @@ def _controller_registry(policy_id, factory):
     return registry
 
 
+def _agent_trace() -> TraceBuffer:
+    return TraceBuffer(_plan().run_id)
+
+
 class _OrganizeAcquireStopController:
     def __init__(self, events):
         self.events = events
@@ -422,6 +427,7 @@ def test_speech_native_agent_loop_keeps_speech_primary_and_separates_state_from_
         max_contacts=3,
         slot_count=1,
         queue_depth=2,
+        trace_sink=_agent_trace(),
     )
 
     assert len(summary.results) == 1
@@ -522,6 +528,32 @@ class _BarrierAgentClient(_RecordingAgentClient):
                 self.active -= 1
 
 
+class _OutOfOrderTracingClient(_RecordingAgentClient):
+    def __init__(self, sink):
+        super().__init__()
+        self.sink = DispatchingSink(sink)
+        self.second_finished = threading.Event()
+
+    def complete(self, messages, **options):
+        sample_id = options["speech_feature_sample_id"]
+        self.sink.emit(
+            "MODEL_REQUEST",
+            f"{sample_id}/fake-request",
+            {"sample_id": sample_id},
+        )
+        if sample_id == "s0":
+            assert self.second_finished.wait(timeout=2)
+        response = super().complete(messages, **options)
+        self.sink.emit(
+            "MODEL_RESPONSE",
+            f"{sample_id}/fake-response",
+            {"sample_id": sample_id, "text": response},
+        )
+        if sample_id == "s1":
+            self.second_finished.set()
+        return response
+
+
 def test_speech_native_agent_loop_batches_trajectories_and_keeps_slot_affinity(
     tmp_path: Path,
 ):
@@ -558,6 +590,7 @@ def test_speech_native_agent_loop_batches_trajectories_and_keeps_slot_affinity(
         max_contacts=1,
         slot_count=2,
         queue_depth=4,
+        trace_sink=_agent_trace(),
     )
 
     assert [result.sample_id for result in summary.results] == ["s0", "s1"]
@@ -566,6 +599,61 @@ def test_speech_native_agent_loop_batches_trajectories_and_keeps_slot_affinity(
         0,
         1,
     }
+
+
+def test_speech_native_agent_loop_flushes_concurrent_model_traces_in_split_order(
+    tmp_path: Path,
+):
+    samples = tuple(
+        _FakeSample(
+            sample_id=f"s{index}",
+            audio_ref=AudioRef(path=f"a-{index}.wav", sha256=_SHA_A),
+            audio_seconds=2.0,
+        )
+        for index in range(2)
+    )
+    trace = _agent_trace()
+    client = _OutOfOrderTracingClient(trace)
+
+    run_speech_native_agent_loop(
+        data_root=tmp_path,
+        plan=_plan(),
+        adapter=_FakeAdapter(samples=samples),
+        core_client=client,
+        split_id="all",
+        knowledge_snapshot=_knowledge_snapshot(),
+        speech_packet_bindings={
+            sample.sample_id: {
+                "packet_id": f"fake/dev/{sample.sample_id}",
+                "sha256": _SHA_C,
+            }
+            for sample in samples
+        },
+        controller_policy_id="immediate-stop-test-v1",
+        controller_registry=_controller_registry(
+            "immediate-stop-test-v1",
+            lambda _sample_id: _ImmediateStopController(),
+        ),
+        max_contacts=1,
+        slot_count=2,
+        queue_depth=4,
+        trace_sink=trace,
+    )
+
+    assert [record_id for _, record_id, _ in trace.records] == [
+        "s0/fake-request",
+        "s0/fake-response",
+        "s0/agent-loop/org",
+        "s0/agent-loop/supply",
+        "s0/agent-loop/runtime-use",
+        "s1/fake-request",
+        "s1/fake-response",
+        "s1/agent-loop/org",
+        "s1/agent-loop/supply",
+        "s1/agent-loop/runtime-use",
+        "s0/agent-loop/posthoc-use",
+        "s1/agent-loop/posthoc-use",
+    ]
 
 
 def test_speech_native_agent_loop_refuses_incomplete_packet_materialization_before_contact(
@@ -591,6 +679,7 @@ def test_speech_native_agent_loop_refuses_incomplete_packet_materialization_befo
             max_contacts=1,
             slot_count=1,
             queue_depth=2,
+            trace_sink=_agent_trace(),
         )
 
     assert client.calls == []
@@ -660,4 +749,93 @@ def test_speech_native_agent_loop_refuses_a_controller_that_exceeds_contact_ceil
             max_contacts=1,
             slot_count=1,
             queue_depth=2,
+            trace_sink=_agent_trace(),
         )
+
+
+def test_speech_native_agent_loop_bootstrap_supply_is_visible_and_persisted(
+    tmp_path: Path,
+):
+    adapter = _one_sample_adapter()
+    client = _RecordingAgentClient()
+    trace = _agent_trace()
+
+    summary = run_speech_native_agent_loop(
+        data_root=tmp_path,
+        plan=_plan(),
+        adapter=adapter,
+        core_client=client,
+        split_id="all",
+        knowledge_snapshot=_knowledge_snapshot(),
+        speech_packet_bindings={
+            "s1": {"packet_id": "fake/dev/s1", "sha256": _SHA_C}
+        },
+        controller_policy_id="immediate-stop-test-v1",
+        controller_registry=_controller_registry(
+            "immediate-stop-test-v1",
+            lambda _sample_id: _ImmediateStopController(),
+        ),
+        bootstrap_value_ids=("value:dim-light",),
+        max_contacts=1,
+        slot_count=1,
+        queue_depth=2,
+        trace_sink=trace,
+    )
+
+    result = summary.results[0]
+    assert result.initial_query_state.retrieved_value_ids == ("value:dim-light",)
+    assert result.final_query_state.retrieved_value_ids == ("value:dim-light",)
+    text_parts = [
+        part for part in client.calls[0][0][1]["content"] if part["type"] == "text"
+    ]
+    assert [part["evidence_id"] for part in text_parts] == ["value:dim-light"]
+    assert [channel for channel, _, _ in trace.records] == [
+        "ORG",
+        "SUPPLY",
+        "USE",
+        "USE",
+    ]
+    assert trace.records[1][2]["supply_bootstrap_value_ids"] == [
+        "value:dim-light"
+    ]
+    runtime_payload = trace.records[2][2]
+    assert runtime_payload["use_speech_packet_sha256"] == _SHA_C
+    assert runtime_payload["use_contacts"][0]["slot_id"] == 0
+    assert runtime_payload["use_transitions"][0]["action_kind"] == "stop"
+    posthoc_payload = trace.records[3][2]
+    assert posthoc_payload["use_runtime_trace_sha256"] == runtime_payload[
+        "use_runtime_trace_sha256"
+    ]
+    assert posthoc_payload["use_metrics"] == {"response_length": 16}
+    json.dumps(summary.as_json(), sort_keys=True)
+
+
+def test_speech_native_agent_loop_refuses_unknown_bootstrap_value_before_contact(
+    tmp_path: Path,
+):
+    client = _RecordingAgentClient()
+
+    with pytest.raises(RailsRunnerError, match="bootstrap_value_ids.*outside"):
+        run_speech_native_agent_loop(
+            data_root=tmp_path,
+            plan=_plan(),
+            adapter=_one_sample_adapter(),
+            core_client=client,
+            split_id="all",
+            knowledge_snapshot=_knowledge_snapshot(),
+            speech_packet_bindings={
+                "s1": {"packet_id": "fake/dev/s1", "sha256": _SHA_C}
+            },
+            controller_policy_id="immediate-stop-test-v1",
+            controller_registry=_controller_registry(
+                "immediate-stop-test-v1",
+                lambda _sample_id: _ImmediateStopController(),
+            ),
+            bootstrap_value_ids=("value:unknown",),
+            max_contacts=1,
+            slot_count=1,
+            queue_depth=2,
+            trace_sink=_agent_trace(),
+        )
+
+    assert client.calls == []

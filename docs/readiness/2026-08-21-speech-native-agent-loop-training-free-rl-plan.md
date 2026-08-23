@@ -19,11 +19,14 @@ remain the evidence ids on the wire.
 
 The runtime controller receives no task sample or gold-bearing metrics. All trajectories must stop
 before the adapter's scorer is invoked, leaving post-hoc rewards available to training-free policy
-optimization without making them runtime observations. Shared builder, ranker, fuser, and
-controller registries now exist, but no cross-task policy is registered yet. The next engineering
-step is to migrate the existing M11 controller and factor parser onto this runner, persist the new
-contact/state/transition records through the existing bundle machinery, and add independent branch
-scheduling. This milestone authorizes no new model contact by itself.
+optimization without making them runtime observations. Every run now declares the exact TRAIN-built
+value ids visible on its first contact. The existing append-only trace stores initial/final query
+states and Agent state on ORG, initial/acquired/final value ids on SUPPLY, and contacts/transitions
+on USE; post-hoc metrics and consumption bind to the gold-free runtime record by SHA-256. Shared
+builder, ranker, fuser, and controller registries exist, but no cross-task policy is registered yet.
+The next engineering step is to migrate the existing M11 controller and factor parser onto this
+runner and extract its independent contact-DAG scheduling without duplicating the already working
+SLURP implementation. This milestone authorizes no new model contact by itself.
 
 ## Decision
 

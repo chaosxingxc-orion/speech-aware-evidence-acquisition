@@ -24,9 +24,11 @@ from typing import Callable, Mapping, Protocol, Sequence
 from ..contracts import ExecutionPlan, assert_execution_scope
 from ..core.base import AGENT_CONTROLLERS, CoreError, Registry
 from ..core.flight_lock import read_flight_lock
+from ..core.tracing import TraceBuffer, set_current_trace_buffer
 from .consumption import ConsumptionTrace
 from .core_client import CoreClient
 from .errors import RailsError
+from .hashing import content_hash
 from .knowledge import (
     AgentStateArtifact,
     AgentStepTransition,
@@ -122,6 +124,18 @@ class AgentContactPlan:
             )
         return self
 
+    def as_json(self) -> dict[str, object]:
+        self.validate()
+        return {
+            "contact_id": self.contact_id,
+            "query_state_sha256": self.query_state_sha256,
+            "purpose": self.purpose,
+            "instruction": self.instruction,
+            "key_representation_id": self.key_representation_id,
+            "matcher_policy_id": self.matcher_policy_id,
+            "decoding_params": dict(self.decoding_params),
+        }
+
 
 @dataclass(frozen=True)
 class AgentLoopAdvance:
@@ -160,6 +174,17 @@ class AgentController(Protocol):
 AgentControllerFactory = Callable[[str], AgentController]
 
 
+class AgentTraceSink(Protocol):
+    """Existing append-only trace seam used by AgentLoop runtime records."""
+
+    @property
+    def run_id(self) -> str: ...
+
+    def emit(
+        self, channel: str, record_id: str, payload: Mapping[str, object]
+    ) -> str: ...
+
+
 @dataclass(frozen=True)
 class AgentContactRecord:
     plan: AgentContactPlan
@@ -168,10 +193,20 @@ class AgentContactRecord:
     slot_id: int
     response_sha256: str
 
+    def as_json(self) -> dict[str, object]:
+        return {
+            "plan": self.plan.as_json(),
+            "query_state_sha256": self.query_state_sha256,
+            "speech_packet_sha256": self.speech_packet_sha256,
+            "slot_id": self.slot_id,
+            "response_sha256": self.response_sha256,
+        }
+
 
 @dataclass(frozen=True)
 class AgentLoopResult:
     sample_id: str
+    initial_query_state: QueryState
     final_query_state: QueryState
     final_response_text: str
     contacts: tuple[AgentContactRecord, ...]
@@ -179,6 +214,22 @@ class AgentLoopResult:
     agent_states: tuple[AgentStateArtifact, ...]
     metrics: Mapping[str, object]
     consumption: ConsumptionTrace
+
+    def as_json(self) -> dict[str, object]:
+        return {
+            "sample_id": self.sample_id,
+            "initial_query_state": self.initial_query_state.as_json(),
+            "final_query_state": self.final_query_state.as_json(),
+            "final_response_text": self.final_response_text,
+            "final_response_sha256": hashlib.sha256(
+                self.final_response_text.encode("utf-8")
+            ).hexdigest(),
+            "contacts": [contact.as_json() for contact in self.contacts],
+            "transitions": [transition.as_json() for transition in self.transitions],
+            "agent_states": [artifact.as_json() for artifact in self.agent_states],
+            "metrics": dict(self.metrics),
+            "consumption": self.consumption.as_json(),
+        }
 
 
 @dataclass(frozen=True)
@@ -189,6 +240,18 @@ class AgentLoopSummary:
     knowledge_snapshot_sha256: str
     results: tuple[AgentLoopResult, ...]
     flight_lock: Mapping[str, object] | None
+
+    def as_json(self) -> dict[str, object]:
+        return {
+            "run_id": self.run_id,
+            "protocol_hash": self.protocol_hash,
+            "controller_policy_id": self.controller_policy_id,
+            "knowledge_snapshot_sha256": self.knowledge_snapshot_sha256,
+            "results": [result.as_json() for result in self.results],
+            "flight_lock": (
+                dict(self.flight_lock) if self.flight_lock is not None else None
+            ),
+        }
 
 
 @dataclass(frozen=True)
@@ -208,6 +271,7 @@ class _AgentRuntimeOutcome:
     transitions: tuple[AgentStepTransition, ...]
     agent_states: tuple[AgentStateArtifact, ...]
     final_supply: SupplyPacket | None
+    trace_buffer: TraceBuffer
 
 
 def _run_one_arm(
@@ -323,6 +387,7 @@ def _initial_query_state(
     plan: ExecutionPlan,
     sample: TaskSample,
     descriptor: Mapping[str, object],
+    bootstrap_value_ids: tuple[str, ...],
 ) -> QueryState:
     if not isinstance(descriptor, Mapping) or set(descriptor) != {
         "packet_id",
@@ -338,7 +403,31 @@ def _initial_query_state(
         speech_packet_id=descriptor["packet_id"],
         speech_packet_sha256=descriptor["sha256"],
         use_split_identity_hash=plan.split_identity_hash,
+        retrieved_value_ids=bootstrap_value_ids,
     ).validate()
+
+
+def _validated_bootstrap_value_ids(
+    snapshot: KnowledgeSnapshot,
+    values: Sequence[str],
+) -> tuple[str, ...]:
+    if isinstance(values, (str, bytes)) or not isinstance(values, Sequence):
+        raise RailsRunnerError("bootstrap_value_ids must be a sequence of value ids")
+    value_ids = tuple(values)
+    if any(not isinstance(value_id, str) or not value_id for value_id in value_ids):
+        raise RailsRunnerError(
+            "bootstrap_value_ids must contain only non-empty strings"
+        )
+    if len(set(value_ids)) != len(value_ids):
+        raise RailsRunnerError("bootstrap_value_ids must be unique")
+    known = {value.value_id for value in snapshot.values}
+    unknown = set(value_ids) - known
+    if unknown:
+        raise RailsRunnerError(
+            "bootstrap_value_ids reference values outside the frozen knowledge "
+            f"snapshot: {sorted(unknown)}"
+        )
+    return value_ids
 
 
 def _visible_values(
@@ -518,6 +607,7 @@ def _run_agent_trajectory(
     max_contacts: int,
     slot_id: int,
     base_decoding_params: Mapping[str, object] | None,
+    trace_buffer: TraceBuffer,
 ) -> _AgentRuntimeOutcome:
     controller = controller_factory(prepared.sample.sample_id)
     if not callable(getattr(controller, "initial_contact", None)) or not callable(
@@ -624,6 +714,7 @@ def _run_agent_trajectory(
                     state_store[state_id] for state_id in query_state.agent_state_ids
                 ),
                 final_supply=_supply_for_state(snapshot, query_state),
+                trace_buffer=trace_buffer,
             )
 
         if advance.next_query_state is None or advance.next_contact is None:
@@ -654,6 +745,102 @@ def _run_agent_trajectory(
     raise RailsRunnerError(f"Agent trajectory exceeded its {max_contacts}-contact ceiling")
 
 
+def _emit_agent_runtime_trace(
+    *,
+    sink: AgentTraceSink,
+    controller_policy_id: str,
+    snapshot_sha256: str,
+    outcome: _AgentRuntimeOutcome,
+) -> str:
+    """Persist gold-free Agent state, supply, and use records in split order."""
+
+    sample_id = outcome.prepared.sample.sample_id
+    record_base = f"{sample_id}/agent-loop"
+    sink.emit(
+        "ORG",
+        f"{record_base}/org",
+        {
+            "org_controller_policy_id": controller_policy_id,
+            "org_knowledge_snapshot_sha256": snapshot_sha256,
+            "org_initial_query_state": outcome.prepared.initial_query_state.as_json(),
+            "org_final_query_state": outcome.final_query_state.as_json(),
+            "org_agent_states": [
+                artifact.as_json() for artifact in outcome.agent_states
+            ],
+        },
+    )
+    sink.emit(
+        "SUPPLY",
+        f"{record_base}/supply",
+        {
+            "supply_bootstrap_value_ids": list(
+                outcome.prepared.initial_query_state.retrieved_value_ids
+            ),
+            "supply_acquired_value_ids_by_transition": [
+                list(transition.new_value_ids)
+                for transition in outcome.transitions
+                if transition.new_value_ids
+            ],
+            "supply_final_visible_value_ids": list(
+                outcome.final_query_state.retrieved_value_ids
+            ),
+        },
+    )
+    runtime_document: dict[str, object] = {
+        "controller_policy_id": controller_policy_id,
+        "knowledge_snapshot_sha256": snapshot_sha256,
+        "initial_query_state_sha256": outcome.prepared.initial_query_state.content_hash(),
+        "final_query_state_sha256": outcome.final_query_state.content_hash(),
+        "speech_packet_sha256": outcome.final_query_state.speech_packet_sha256,
+        "contacts": [contact.as_json() for contact in outcome.contacts],
+        "transitions": [transition.as_json() for transition in outcome.transitions],
+        "final_response_sha256": hashlib.sha256(
+            outcome.final_response_text.encode("utf-8")
+        ).hexdigest(),
+    }
+    runtime_trace_sha256 = content_hash(runtime_document)
+    sink.emit(
+        "USE",
+        f"{record_base}/runtime-use",
+        {
+            "use_controller_policy_id": controller_policy_id,
+            "use_knowledge_snapshot_sha256": snapshot_sha256,
+            "use_initial_query_state_sha256": runtime_document[
+                "initial_query_state_sha256"
+            ],
+            "use_final_query_state_sha256": runtime_document[
+                "final_query_state_sha256"
+            ],
+            "use_speech_packet_sha256": runtime_document["speech_packet_sha256"],
+            "use_contacts": runtime_document["contacts"],
+            "use_transitions": runtime_document["transitions"],
+            "use_final_response_sha256": runtime_document["final_response_sha256"],
+            "use_runtime_trace_sha256": runtime_trace_sha256,
+        },
+    )
+    return runtime_trace_sha256
+
+
+def _emit_agent_posthoc_trace(
+    *,
+    sink: AgentTraceSink,
+    result: AgentLoopResult,
+    runtime_trace_sha256: str,
+) -> None:
+    sink.emit(
+        "USE",
+        f"{result.sample_id}/agent-loop/posthoc-use",
+        {
+            "use_runtime_trace_sha256": runtime_trace_sha256,
+            "use_final_response_sha256": hashlib.sha256(
+                result.final_response_text.encode("utf-8")
+            ).hexdigest(),
+            "use_metrics": dict(result.metrics),
+            "use_consumption": result.consumption.as_json(),
+        },
+    )
+
+
 def run_speech_native_agent_loop(
     *,
     data_root: Path,
@@ -664,9 +851,11 @@ def run_speech_native_agent_loop(
     knowledge_snapshot: KnowledgeSnapshot,
     speech_packet_bindings: Mapping[str, Mapping[str, object]],
     controller_policy_id: str,
+    bootstrap_value_ids: Sequence[str] = (),
     max_contacts: int,
     slot_count: int,
     queue_depth: int,
+    trace_sink: AgentTraceSink,
     decoding_params: Mapping[str, object] | None = None,
     controller_registry: Registry = AGENT_CONTROLLERS,
 ) -> AgentLoopSummary:
@@ -683,6 +872,16 @@ def run_speech_native_agent_loop(
     assert_execution_scope(plan.execution_profile)
     knowledge_snapshot.validate()
     snapshot_sha256 = knowledge_snapshot.content_hash()
+    bootstrap_ids = _validated_bootstrap_value_ids(
+        knowledge_snapshot, bootstrap_value_ids
+    )
+    if (
+        not callable(getattr(trace_sink, "emit", None))
+        or getattr(trace_sink, "run_id", None) != plan.run_id
+    ):
+        raise RailsRunnerError(
+            "trace_sink must be an append-only trace sink bound to ExecutionPlan.run_id"
+        )
     if not isinstance(controller_policy_id, str) or not controller_policy_id:
         raise RailsRunnerError("controller_policy_id must be a non-empty string")
     if not isinstance(controller_registry, Registry):
@@ -746,6 +945,7 @@ def run_speech_native_agent_loop(
             plan=plan,
             sample=sample,
             descriptor=speech_packet_bindings[sample.sample_id],
+            bootstrap_value_ids=bootstrap_ids,
         )
         prepared_tasks.append(
             _PreparedAgentTask(
@@ -763,6 +963,8 @@ def run_speech_native_agent_loop(
 
     def execute(prepared: _PreparedAgentTask) -> _AgentRuntimeOutcome:
         slot_id = slots.get()
+        trace_buffer = TraceBuffer(plan.run_id)
+        set_current_trace_buffer(trace_buffer)
         try:
             return _run_agent_trajectory(
                 prepared=prepared,
@@ -775,8 +977,10 @@ def run_speech_native_agent_loop(
                 max_contacts=max_contacts,
                 slot_id=slot_id,
                 base_decoding_params=decoding_params,
+                trace_buffer=trace_buffer,
             )
         finally:
+            set_current_trace_buffer(None)
             slots.put(slot_id)
 
     outcomes: list[_AgentRuntimeOutcome | None] = [None] * len(prepared_tasks)
@@ -804,9 +1008,25 @@ def run_speech_native_agent_loop(
         raise RailsRunnerError("AgentLoop lost a trajectory result")
 
     # Gold-bearing adapter methods begin only after the whole runtime window
-    # is sealed. Controllers never receive these metrics or full samples.
-    results: list[AgentLoopResult] = []
+    # is sealed. Persist the runtime trajectory before scoring so no post-hoc
+    # value can become a controller observation.
+    runtime_trace_sha256s: list[str] = []
     for outcome in outcomes:
+        assert outcome is not None
+        runtime_trace_sha256s.append(
+            _emit_agent_runtime_trace(
+                sink=outcome.trace_buffer,
+                controller_policy_id=controller_policy_id,
+                snapshot_sha256=snapshot_sha256,
+                outcome=outcome,
+            )
+        )
+        outcome.trace_buffer.flush_into(trace_sink)
+
+    results: list[AgentLoopResult] = []
+    for outcome, runtime_trace_sha256 in zip(
+        outcomes, runtime_trace_sha256s, strict=True
+    ):
         assert outcome is not None
         metrics = adapter.score(
             outcome.prepared.sample,
@@ -820,6 +1040,7 @@ def run_speech_native_agent_loop(
         results.append(
             AgentLoopResult(
                 sample_id=outcome.prepared.sample.sample_id,
+                initial_query_state=outcome.prepared.initial_query_state,
                 final_query_state=outcome.final_query_state,
                 final_response_text=outcome.final_response_text,
                 contacts=outcome.contacts,
@@ -828,6 +1049,11 @@ def run_speech_native_agent_loop(
                 metrics=metrics,
                 consumption=consumption,
             )
+        )
+        _emit_agent_posthoc_trace(
+            sink=trace_sink,
+            result=results[-1],
+            runtime_trace_sha256=runtime_trace_sha256,
         )
 
     return AgentLoopSummary(

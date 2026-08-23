@@ -206,6 +206,10 @@ Implemented and reusable:
 - the shared batched AgentLoop runner: TRAIN snapshot/DEV query separation, trajectory-affine slot
   reuse, mandatory packet carriage on every contact, exact ORG/SUPPLY deltas, and scoring only after
   the complete runtime window is sealed;
+- an explicit, hash-bound bootstrap value roster for first-contact knowledge visibility and
+  append-only ORG/SUPPLY/USE trajectory records. The runtime trace is emitted before scoring; a
+  separate post-hoc USE record binds metrics and consumption back to that runtime hash without
+  exposing reward to the controller;
 - shared `Registry` instances for builders, rankers, fusers, and external controllers; task
   contracts are now named separately from the speech query;
 - speech-feature packets, mmproj-free llama.cpp transport, batch/contact dispatch, stable evidence
@@ -219,11 +223,9 @@ Still required before a cross-task experiment:
    and shared runner; retain SLURP parsing only inside the adapter/controller component.
 2. Register concrete coverage-driven builder, multidimensional ranker, and fuser implementations;
    the common registries now exist, but an empty registry is not an implemented policy.
-3. Persist every `AgentStateArtifact`, contact, and transition in the existing run bundle and bind
-   its exact evidence delta to the task prediction, mechanism controls, and post-hoc reward.
-4. Bind knowledge snapshot, Agent policy, prefix layout, and cache policy identities into every run
+3. Bind knowledge snapshot, Agent policy, prefix layout, and cache policy identities into every run
    receipt.
-5. Add branch-level scheduling for independent candidate verification. The shared runner currently
+4. Add branch-level scheduling for independent candidate verification. The shared runner currently
    batches whole trajectories with slot affinity; it does not yet expose the M11 contact DAG's
    independent verifier branches.
 
