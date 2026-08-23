@@ -1,0 +1,137 @@
+{
+  "gguf_files": [
+    {
+      "bytes": 18557053952,
+      "path": "models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+      "sha256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d"
+    }
+  ],
+  "llama_cpp": {
+    "binary_bytes": 17920,
+    "binary_path": "llama.cpp-featcache-speech-batch-26802/build-singleton-zero-copy/bin/llama-server",
+    "binary_sha256": "b33e6b72b560cdc9810e73f962361a1e1a821964920d76df7e7985c395e86508",
+    "build_commit": "8e381e39c5f59727e607b4d908504c0e714f35de",
+    "reported_build": "version: 11 (8e381e39c)"
+  },
+  "model_lock_key": "qwen3-omni-30b-a3b-instruct-gguf-q4km",
+  "role": "inference",
+  "runtime_libraries": [
+    {
+      "bytes": 913472,
+      "path": "llama.cpp-featcache-speech-batch-26802/build-singleton-zero-copy/bin/libggml-base.so",
+      "sha256": "9824633b548b9f648a52cb9b67f1bd595b76736300b32b5eb71c60dd04939bf1"
+    },
+    {
+      "bytes": 913472,
+      "path": "llama.cpp-featcache-speech-batch-26802/build-singleton-zero-copy/bin/libggml-base.so.0",
+      "sha256": "9824633b548b9f648a52cb9b67f1bd595b76736300b32b5eb71c60dd04939bf1"
+    },
+    {
+      "bytes": 913472,
+      "path": "llama.cpp-featcache-speech-batch-26802/build-singleton-zero-copy/bin/libggml-base.so.0.15.2",
+      "sha256": "9824633b548b9f648a52cb9b67f1bd595b76736300b32b5eb71c60dd04939bf1"
+    },
+    {
+      "bytes": 1114656,
+      "path": "llama.cpp-featcache-speech-batch-26802/build-singleton-zero-copy/bin/libggml-cpu.so",
+      "sha256": "cb31447ce5f015d5b758796c816726ab11be2828b51bb4a2b4eae3c0e8482c99"
+    },
+    {
+      "bytes": 1114656,
+      "path": "llama.cpp-featcache-speech-batch-26802/build-singleton-zero-copy/bin/libggml-cpu.so.0",
+      "sha256": "cb31447ce5f015d5b758796c816726ab11be2828b51bb4a2b4eae3c0e8482c99"
+    },
+    {
+      "bytes": 1114656,
+      "path": "llama.cpp-featcache-speech-batch-26802/build-singleton-zero-copy/bin/libggml-cpu.so.0.15.2",
+      "sha256": "cb31447ce5f015d5b758796c816726ab11be2828b51bb4a2b4eae3c0e8482c99"
+    },
+    {
+      "bytes": 75737216,
+      "path": "llama.cpp-featcache-speech-batch-26802/build-singleton-zero-copy/bin/libggml-cuda.so",
+      "sha256": "66a5cec7d27c73c32c195a9e8ec930b06e93f98fe1049034e4462868ba211162"
+    },
+    {
+      "bytes": 75737216,
+      "path": "llama.cpp-featcache-speech-batch-26802/build-singleton-zero-copy/bin/libggml-cuda.so.0",
+      "sha256": "66a5cec7d27c73c32c195a9e8ec930b06e93f98fe1049034e4462868ba211162"
+    },
+    {
+      "bytes": 75737216,
+      "path": "llama.cpp-featcache-speech-batch-26802/build-singleton-zero-copy/bin/libggml-cuda.so.0.15.2",
+      "sha256": "66a5cec7d27c73c32c195a9e8ec930b06e93f98fe1049034e4462868ba211162"
+    },
+    {
+      "bytes": 56016,
+      "path": "llama.cpp-featcache-speech-batch-26802/build-singleton-zero-copy/bin/libggml.so",
+      "sha256": "52c11b4f147113283f162b9eba9912c0b021ca403bced5522f01e8bcc936b070"
+    },
+    {
+      "bytes": 56016,
+      "path": "llama.cpp-featcache-speech-batch-26802/build-singleton-zero-copy/bin/libggml.so.0",
+      "sha256": "52c11b4f147113283f162b9eba9912c0b021ca403bced5522f01e8bcc936b070"
+    },
+    {
+      "bytes": 56016,
+      "path": "llama.cpp-featcache-speech-batch-26802/build-singleton-zero-copy/bin/libggml.so.0.15.2",
+      "sha256": "52c11b4f147113283f162b9eba9912c0b021ca403bced5522f01e8bcc936b070"
+    },
+    {
+      "bytes": 5715912,
+      "path": "llama.cpp-featcache-speech-batch-26802/build-singleton-zero-copy/bin/libllama-common.so",
+      "sha256": "6df8e2136c93c9eaea2187495f02335acd339caa2ca582483ea69d5ad0bca72a"
+    },
+    {
+      "bytes": 5715912,
+      "path": "llama.cpp-featcache-speech-batch-26802/build-singleton-zero-copy/bin/libllama-common.so.0",
+      "sha256": "6df8e2136c93c9eaea2187495f02335acd339caa2ca582483ea69d5ad0bca72a"
+    },
+    {
+      "bytes": 5715912,
+      "path": "llama.cpp-featcache-speech-batch-26802/build-singleton-zero-copy/bin/libllama-common.so.0.0.11",
+      "sha256": "6df8e2136c93c9eaea2187495f02335acd339caa2ca582483ea69d5ad0bca72a"
+    },
+    {
+      "bytes": 4196600,
+      "path": "llama.cpp-featcache-speech-batch-26802/build-singleton-zero-copy/bin/libllama-server-impl.so",
+      "sha256": "aeedeecb41d83ae83acc1876550c56af19e889acbee65410b05af0f1c942bb0d"
+    },
+    {
+      "bytes": 3871904,
+      "path": "llama.cpp-featcache-speech-batch-26802/build-singleton-zero-copy/bin/libllama.so",
+      "sha256": "f2ef51051adea84b58359dd05e939c7e833e2081fb3259e5ed0af0391444e50b"
+    },
+    {
+      "bytes": 3871904,
+      "path": "llama.cpp-featcache-speech-batch-26802/build-singleton-zero-copy/bin/libllama.so.0",
+      "sha256": "f2ef51051adea84b58359dd05e939c7e833e2081fb3259e5ed0af0391444e50b"
+    },
+    {
+      "bytes": 3871904,
+      "path": "llama.cpp-featcache-speech-batch-26802/build-singleton-zero-copy/bin/libllama.so.0.0.11",
+      "sha256": "f2ef51051adea84b58359dd05e939c7e833e2081fb3259e5ed0af0391444e50b"
+    },
+    {
+      "bytes": 1429096,
+      "path": "llama.cpp-featcache-speech-batch-26802/build-singleton-zero-copy/bin/libmtmd.so",
+      "sha256": "357c5fd6fb21a50a4be85165e39418d77fefa04b4b051dbfaf840c1d1d9a19f2"
+    },
+    {
+      "bytes": 1429096,
+      "path": "llama.cpp-featcache-speech-batch-26802/build-singleton-zero-copy/bin/libmtmd.so.0",
+      "sha256": "357c5fd6fb21a50a4be85165e39418d77fefa04b4b051dbfaf840c1d1d9a19f2"
+    },
+    {
+      "bytes": 1429096,
+      "path": "llama.cpp-featcache-speech-batch-26802/build-singleton-zero-copy/bin/libmtmd.so.0.0.11",
+      "sha256": "357c5fd6fb21a50a4be85165e39418d77fefa04b4b051dbfaf840c1d1d9a19f2"
+    },
+    {
+      "bytes": 628608,
+      "path": "llama.cpp-featcache-speech-batch-26802/build-singleton-zero-copy/bin/test-server-tokens",
+      "sha256": "5696a72be665c6b305e7b8046c06bc30b19c84d0635259a9dbf6e52e54d1a471"
+    }
+  ],
+  "schema": "saea-runtime-receipt-v3",
+  "study": "speech-aware-evidence-acquisition"
+}
