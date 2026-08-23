@@ -822,6 +822,7 @@ def test_slot_affine_cache_profile_binds_hot_hbm_policy_and_parallel_build():
     assert values["speech_native_request_layout_id"] == (
         "slot-affine-speech-prefix-v1"
     )
+    assert values["prompt_order"] == "speech-features-text-keys-v1"
     assert values["decoding_params"]["id_slot"] == "per-sample"
     assert values["speech_native_prompt_fit_receipt"] == (
         "docs/checks/speech-aware-evidence-acquisition/"

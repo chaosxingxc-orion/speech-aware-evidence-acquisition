@@ -35,7 +35,7 @@
     "max_tokens": 64,
     "id_slot": "per-sample"
   },
-  "prompt_order": "speech-features-text-keys-slot-affine-v1",
+  "prompt_order": "speech-features-text-keys-v1",
   "speech_native_prompt_fit_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-08-23-m11-hot-prefix-prompt-fit/prompt-fit-exact.json",
   "speech_native_prompt_fit_receipt_sha256": "730354358c47258fe0d9468c9062fbf8898ecab30a6304a3affdf8e7615d46ec",
   "profile_slot_count": 16,

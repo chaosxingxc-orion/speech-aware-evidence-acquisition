@@ -1,0 +1,14 @@
+{
+  "run_id": "SAEA-SN-ENG-OPTA36-K1M11-HOT-PREFIX-CACHE-ADMISSION-R3",
+  "execution_profile": "bounded-discovery-probe",
+  "carrier_lock_key": "slurp",
+  "split_role": "discovery",
+  "split_identity_hash": "4bd76b3040fe382d9aaad32afe0e99b206ddfafffa0f6b9be7837b7c11010beb",
+  "planned_model_calls": 720,
+  "planned_gpu_hours": 1.0,
+  "planned_speech_audio_seconds": 2012,
+  "protocol_hash": "29cbe4ac13b6bd377cae1a84ae6779c276a12f75800c55a3a03b3f7723c1fbea",
+  "attempt_id": "attempt-20260823T114000Z-12w011",
+  "schema": "saea-execution-plan-v1",
+  "study": "speech-aware-evidence-acquisition"
+}
