@@ -18,7 +18,10 @@ from types import SimpleNamespace
 
 import pytest
 
-from speech_aware_evidence_acquisition.core.model import FrozenCoreAdapter, SliceRegistry
+from speech_aware_evidence_acquisition.core.model import (
+    FrozenCoreAdapter,
+    SliceRegistry,
+)
 from speech_aware_evidence_acquisition.core.resources import NOT_AVAILABLE
 from speech_aware_evidence_acquisition.core.driver.speech_native import (
     audit_speech_native_action_support,
@@ -71,7 +74,8 @@ from speech_aware_evidence_acquisition.core.driver import (
     cli as driver_cli_module,
     speech_native as speech_native_module,
 )
-from speech_aware_evidence_acquisition.contracts import STUDY_SLUG
+from speech_aware_evidence_acquisition.contracts import ExecutionPlan, STUDY_SLUG
+from speech_aware_evidence_acquisition.core.config import protocol_hash
 from speech_aware_evidence_acquisition.core.session import (
     SESSION_RECEIPT_SCHEMA_V2,
     ModelFileRef,
@@ -85,7 +89,14 @@ from speech_aware_evidence_acquisition.data.slurp import (
     SlurpTrainMaterial,
     SlurpTrainRecording,
 )
-from speech_aware_evidence_acquisition.rails import FrozenCoreClient, MockCoreClient
+from speech_aware_evidence_acquisition.rails import (
+    AudioRef,
+    FrozenCoreClient,
+    KeyFacet,
+    KnowledgeSnapshot,
+    MockCoreClient,
+    ValueBundle,
+)
 from speech_aware_evidence_acquisition.rails.adapters.slurp import SlurpAdapter
 from speech_aware_evidence_acquisition.rails.probes.pslu_flight import (
     CandidateCounterevidenceStateV1,
@@ -122,18 +133,22 @@ from speech_aware_evidence_acquisition.rails.probes.pslu_flight import (
     parse_candidate_counterevidence_state,
     parse_candidate_support_state,
     parse_factor_link_state,
+    partition_speech_native_train_knowledge,
     render_decision_graph_neighborhood,
     render_factor_link_state,
     render_roster_entries,
     render_speech_native_keys,
     render_type_vocabulary,
+    run_openjiuwen_speech_native_match_tasks,
     run_pslu_flight,
     select_pslu_samples,
     run_speech_native_matcher,
     SpeechNativeMatchTask,
     run_speech_native_match_tasks,
+    SpeechNativeEngineeringSample,
 )
 from speech_aware_evidence_acquisition.rails.probes import pslu_flight as pslu_module
+from speech_aware_evidence_acquisition.reproduction.ojw import openjiuwen_available
 from speech_aware_evidence_acquisition.rails.silence_swap import (
     build_silence_swap_slice,
 )
@@ -402,9 +417,12 @@ def test_prompt_work_eligibility_rejects_malformed_mechanics():
         "one_token_prompt_eval_fraction_pct": 0.0,
     }
 
-    assert profile_prompt_work_eligibility(
-        work, prompt_order="speech-query-prefix-v2"
-    )["prompt_evaluation_ratio_below_90"] is False
+    assert (
+        profile_prompt_work_eligibility(work, prompt_order="speech-query-prefix-v2")[
+            "prompt_evaluation_ratio_below_90"
+        ]
+        is False
+    )
 
 
 def test_prefix_agent_kv_policy_keeps_active_trajectories_in_hbm():
@@ -482,15 +500,11 @@ draft acceptance = 1.00000 (    6 accepted /     6 generated), mean acceptance l
         "mean acceptance length =  2.33\n",
     ),
 )
-def test_server_log_scan_rejects_untrustworthy_speculative_statistics(
-    tmp_path, line
-):
+def test_server_log_scan_rejects_untrustworthy_speculative_statistics(tmp_path, line):
     log = tmp_path / "resident-server.log"
     log.write_text(line, encoding="utf-8")
 
-    with pytest.raises(
-        SpeechNativeProfileError, match="speculative draft statistics"
-    ):
+    with pytest.raises(SpeechNativeProfileError, match="speculative draft statistics"):
         _scan_server_log(log)
 
 
@@ -1933,6 +1947,390 @@ _QUERY_DESCRIPTOR = {
 }
 
 
+def _openjiuwen_m1_plan(
+    sample_count: int = 1,
+    contacts_per_sample: int = 1,
+) -> ExecutionPlan:
+    return ExecutionPlan(
+        run_id="SAEA-E-TEST-speech-native-openjiuwen-m1",
+        execution_profile="bounded-discovery-probe",
+        carrier_lock_key="slurp",
+        split_role="discovery",
+        split_identity_hash="a" * 64,
+        planned_model_calls=sample_count * contacts_per_sample,
+        planned_gpu_hours=1.0,
+        planned_speech_audio_seconds=60,
+        protocol_hash=protocol_hash("f" * 64, "speech-feature-query", "a" * 64),
+        attempt_id="attempt-speech-native-openjiuwen-m1-0001",
+    ).validate()
+
+
+def _openjiuwen_m1_snapshot(
+    source_ids: tuple[str, ...] = (
+        "slurp:train:knowledge-1",
+        "slurp:train:knowledge-2",
+    ),
+) -> KnowledgeSnapshot:
+    facets = tuple(
+        KeyFacet(
+            facet_id=f"facet:K{index:03d}",
+            dimension="scenario",
+            representation_kind="text",
+            representation=(
+                f"Definition: {card.definition}\n"
+                f"Positive examples: {' | '.join(card.positive_examples)}\n"
+                f"Contrastive boundary: {card.contrastive_boundary}"
+            ),
+            source_sample_ids=(source_id,),
+        ).validate()
+        for index, (card, source_id) in enumerate(
+            zip(_KEY_CARDS, source_ids, strict=True), start=1
+        )
+    )
+    values = tuple(
+        ValueBundle(
+            value_id=f"value:{card.key_id}",
+            content=(
+                f"Definition: {card.definition}\n"
+                f"Positive examples: {' | '.join(card.positive_examples)}\n"
+                f"Contrastive boundary: {card.contrastive_boundary}"
+            ),
+            associated_facet_ids=(facet.facet_id,),
+            source_sample_ids=(source_id,),
+            provenance_refs=(f"sample:{source_id}",),
+            task_target=card.value_label,
+        ).validate()
+        for card, facet, source_id in zip(_KEY_CARDS, facets, source_ids, strict=True)
+    )
+    return KnowledgeSnapshot(
+        snapshot_id="slurp-train-knowledge-test-v1",
+        source_split_identity_hash="b" * 64,
+        source_sample_ids=source_ids,
+        builder_policy_id="test-train-builder-v1",
+        facets=facets,
+        values=values,
+    ).validate()
+
+
+def _openjiuwen_m1_sample() -> SpeechNativeEngineeringSample:
+    return SpeechNativeEngineeringSample(
+        sample_id="slurp:dev:000001:audio-query",
+        audio_ref=AudioRef(path="query.flac", sha256="c" * 64).validate(),
+        audio_seconds=2.5,
+        media_relpath="query.flac",
+        sample_rate_hz=16000,
+        packet_id="slurp/dev/000001/audio-query",
+    )
+
+
+def _openjiuwen_m1_task(
+    *, matcher_policy_id: str = "M1", key_representation_id: str = "K2"
+) -> SpeechNativeMatchTask:
+    sample = _openjiuwen_m1_sample()
+    return SpeechNativeMatchTask(
+        task_id=f"canonical:{sample.sample_id}",
+        sample=sample,
+        query_descriptor={
+            "packet_id": sample.packet_id,
+            "sha256": "d" * 64,
+            "role": "query",
+        },
+        key_cards=_KEY_CARDS,
+        key_representation_id=key_representation_id,
+        matcher_policy_id=matcher_policy_id,
+        request_layout_id="slot-affine-speech-prefix-v1",
+        decoding_params={"temperature": 0.0, "id_slot": 99},
+    )
+
+
+@pytest.mark.skipif(not openjiuwen_available(), reason="openJiuwen is optional")
+def test_openjiuwen_m1_profile_uses_formal_agent_loop_and_original_speech(tmp_path):
+    class RecordingCoreClient:
+        def __init__(self):
+            self.calls = []
+
+        def complete(self, messages, **kwargs):
+            self.calls.append((messages, kwargs))
+            return '{"key_id":"K001"}'
+
+    client = RecordingCoreClient()
+    trace_records = []
+    task = _openjiuwen_m1_task()
+    outcomes = run_openjiuwen_speech_native_match_tasks(
+        data_root=tmp_path,
+        plan=_openjiuwen_m1_plan(),
+        core_client=client,
+        tasks=(task,),
+        knowledge_snapshot=_openjiuwen_m1_snapshot(),
+        slot_count=1,
+        queue_depth=2,
+        trace_flusher=lambda buffer: trace_records.extend(buffer.records),
+    )
+
+    assert len(outcomes) == 1
+    assert outcomes[0].decision.key_id == "K001"
+    assert outcomes[0].decision.value_label == "alarm"
+    assert outcomes[0].decision.calls == 1
+    assert outcomes[0].decision.raw_responses == ('{"key_id":"K001"}',)
+    assert len(client.calls) == 1
+    messages, kwargs = client.calls[0]
+    content = messages[1]["content"]
+    query_parts = [
+        part for part in content if part.get("type") == "input_speech_features"
+    ]
+    assert query_parts == [
+        {
+            "type": "input_speech_features",
+            "speech_features": task.query_descriptor,
+        }
+    ]
+    key_parts = [part for part in content if part.get("type") == "text"]
+    assert key_parts
+    assert all(part["knowledge_role"] == "key" for part in key_parts)
+    assert all(part["evidence_id"].startswith("key:facet:") for part in key_parts)
+    assert all("value:" not in part["evidence_id"] for part in key_parts)
+    assert all(part.get("type") != "input_audio" for part in content)
+    assert kwargs["speech_feature_sample_id"] == task.sample.sample_id
+    assert kwargs["agent_contact_id"].endswith(":listwise")
+    assert "speech signal" in kwargs["contact_instruction"]
+    assert kwargs["decoding_params"]["id_slot"] == 0
+    assert kwargs["matcher_policy_id"] == "M1:openjiuwen-listwise-v1"
+    runtime_records = [
+        payload
+        for channel, record_id, payload in trace_records
+        if channel == "USE" and record_id.endswith("/runtime-use")
+    ]
+    assert len(runtime_records) == 1
+    assert runtime_records[0]["use_agent_executor_id"] == "openjiuwen-workflow-v1"
+    assert runtime_records[0]["use_speech_packet_sha256"] == "d" * 64
+    supply_records = [
+        payload
+        for channel, record_id, payload in trace_records
+        if channel == "SUPPLY" and record_id.endswith("/supply")
+    ]
+    assert supply_records[0]["supply_bootstrap_facet_ids"]
+    assert supply_records[0]["supply_bootstrap_value_ids"] == []
+
+
+@pytest.mark.skipif(not openjiuwen_available(), reason="openJiuwen is optional")
+def test_openjiuwen_m2_adds_semantic_state_but_keeps_speech_on_both_contacts(
+    tmp_path,
+):
+    semantic_response = json.dumps(
+        {
+            "intent_summary": "The speaker wants an alarm action.",
+            "discriminative_cues": ["wake time", "alarm"],
+        }
+    )
+
+    class RecordingCoreClient:
+        def __init__(self):
+            self.calls = []
+
+        def complete(self, messages, **kwargs):
+            self.calls.append((messages, kwargs))
+            if kwargs["agent_contact_id"].endswith(":semantic-state"):
+                return semantic_response
+            return '{"key_id":"K001"}'
+
+    client = RecordingCoreClient()
+    task = _openjiuwen_m1_task(matcher_policy_id="M2")
+    outcomes = run_openjiuwen_speech_native_match_tasks(
+        data_root=tmp_path,
+        plan=_openjiuwen_m1_plan(contacts_per_sample=2),
+        core_client=client,
+        tasks=(task,),
+        knowledge_snapshot=_openjiuwen_m1_snapshot(),
+        slot_count=2,
+        queue_depth=4,
+    )
+
+    assert len(client.calls) == 2
+    assert outcomes[0].decision.key_id == "K001"
+    assert outcomes[0].decision.calls == 2
+    assert outcomes[0].decision.raw_responses == (
+        semantic_response,
+        '{"key_id":"K001"}',
+    )
+    assert {kwargs["decoding_params"]["id_slot"] for _, kwargs in client.calls} == {0}
+    for messages, _kwargs in client.calls:
+        query_parts = [
+            part
+            for part in messages[1]["content"]
+            if part.get("type") == "input_speech_features"
+            and part["speech_features"]["role"] == "query"
+        ]
+        assert len(query_parts) == 1
+    first_text_parts = [
+        part for part in client.calls[0][0][1]["content"] if part.get("type") == "text"
+    ]
+    second_text_parts = [
+        part for part in client.calls[1][0][1]["content"] if part.get("type") == "text"
+    ]
+    assert first_text_parts == []
+    assert second_text_parts
+    assert all(part["knowledge_role"] == "key" for part in second_text_parts)
+    assert client.calls[0][1]["agent_state"] == ()
+    assert client.calls[1][1]["agent_state"][0]["content"] == semantic_response
+
+
+@pytest.mark.skipif(not openjiuwen_available(), reason="openJiuwen is optional")
+def test_openjiuwen_m1_profile_batches_existing_tasks_across_slots(tmp_path):
+    first = _openjiuwen_m1_task()
+    second_sample = replace(
+        first.sample,
+        sample_id="slurp:dev:000002:audio-query",
+        packet_id="slurp/dev/000002/audio-query",
+    )
+    second = replace(
+        first,
+        task_id=f"canonical:{second_sample.sample_id}",
+        sample=second_sample,
+        query_descriptor={
+            "packet_id": second_sample.packet_id,
+            "sha256": "e" * 64,
+            "role": "query",
+        },
+    )
+
+    class ConcurrentCoreClient:
+        def __init__(self):
+            self.lock = threading.Lock()
+            self.active = 0
+            self.max_active = 0
+            self.sample_ids = []
+
+        def complete(self, messages, **kwargs):
+            del messages
+            with self.lock:
+                self.active += 1
+                self.max_active = max(self.max_active, self.active)
+                self.sample_ids.append(kwargs["speech_feature_sample_id"])
+            try:
+                time.sleep(0.02)
+                return '{"key_id":"K001"}'
+            finally:
+                with self.lock:
+                    self.active -= 1
+
+    client = ConcurrentCoreClient()
+    outcomes = run_openjiuwen_speech_native_match_tasks(
+        data_root=tmp_path,
+        plan=_openjiuwen_m1_plan(sample_count=2),
+        core_client=client,
+        tasks=(first, second),
+        knowledge_snapshot=_openjiuwen_m1_snapshot(),
+        slot_count=2,
+        queue_depth=4,
+    )
+
+    assert [outcome.task_id for outcome in outcomes] == [
+        first.task_id,
+        second.task_id,
+    ]
+    assert client.max_active == 2
+    assert set(client.sample_ids) == {first.sample.sample_id, second.sample.sample_id}
+    assert {outcome.slot_id for outcome in outcomes} == {0, 1}
+
+
+def test_openjiuwen_profile_refuses_unsupported_policy_before_core_contact(tmp_path):
+    class RefusingCoreClient:
+        def complete(self, *args, **kwargs):
+            raise AssertionError("unsupported policy must fail before model contact")
+
+    with pytest.raises(PsluFlightError, match="only supports M1/M2 with K2 text keys"):
+        run_openjiuwen_speech_native_match_tasks(
+            data_root=tmp_path,
+            plan=_openjiuwen_m1_plan(),
+            core_client=RefusingCoreClient(),
+            tasks=(_openjiuwen_m1_task(matcher_policy_id="M11"),),
+            knowledge_snapshot=_openjiuwen_m1_snapshot(),
+            slot_count=1,
+            queue_depth=2,
+        )
+
+
+def test_openjiuwen_profile_refuses_train_use_overlap_before_core_contact(tmp_path):
+    class RefusingCoreClient:
+        def complete(self, *args, **kwargs):
+            raise AssertionError("overlap must fail before model contact")
+
+    task = _openjiuwen_m1_task()
+    overlapping_snapshot = _openjiuwen_m1_snapshot(
+        (task.sample.sample_id, "slurp:train:knowledge-2")
+    )
+    with pytest.raises(PsluFlightError, match="overlap the TRAIN knowledge source"):
+        run_openjiuwen_speech_native_match_tasks(
+            data_root=tmp_path,
+            plan=_openjiuwen_m1_plan(),
+            core_client=RefusingCoreClient(),
+            tasks=(task,),
+            knowledge_snapshot=overlapping_snapshot,
+            slot_count=1,
+            queue_depth=2,
+        )
+
+
+def test_train_knowledge_partition_removes_use_utterance_speaker_and_sentence_groups():
+    query = SlurpTrainMaterial(
+        utterance_id="use-utterance",
+        scenario="alarm",
+        action="set",
+        sentence="set an alarm for six",
+        recordings=(
+            SlurpTrainRecording(
+                sample_id="slurp:train:000001:audio-use",
+                media_relpath="datasets/slurp/slurp_real/audio-use.flac",
+                speaker_id="speaker-use",
+            ),
+        ),
+    )
+    same_speaker = replace(
+        query,
+        utterance_id="train-same-speaker",
+        sentence="set a different alarm",
+        recordings=(
+            replace(
+                query.recordings[0],
+                sample_id="slurp:train:000002:audio-same-speaker",
+                media_relpath="datasets/slurp/slurp_real/audio-same-speaker.flac",
+            ),
+        ),
+    )
+    same_sentence = replace(
+        query,
+        utterance_id="train-same-sentence",
+        recordings=(
+            replace(
+                query.recordings[0],
+                sample_id="slurp:train:000003:audio-same-sentence",
+                media_relpath="datasets/slurp/slurp_real/audio-same-sentence.flac",
+                speaker_id="speaker-train-3",
+            ),
+        ),
+    )
+    retained = replace(
+        query,
+        utterance_id="train-retained",
+        sentence="cancel the morning alarm",
+        recordings=(
+            replace(
+                query.recordings[0],
+                sample_id="slurp:train:000004:audio-retained",
+                media_relpath="datasets/slurp/slurp_real/audio-retained.flac",
+                speaker_id="speaker-train-4",
+            ),
+        ),
+    )
+
+    partition = partition_speech_native_train_knowledge(
+        (query, same_speaker, same_sentence, retained),
+        use_sample_ids=(query.recordings[0].sample_id,),
+    )
+
+    assert partition == (retained,)
+
+
 def _assert_every_call_carries_query(client):
     for messages, kwargs in client.calls:
         parts = messages[1]["content"]
@@ -3134,8 +3532,7 @@ def test_m11_key_conditioned_action_schema_binds_operation_factors_to_each_key()
     schema = response_format["json_schema"]["schema"]
     assert "oneOf" in schema
     branches = {
-        branch["properties"]["key_id"]["const"]: branch
-        for branch in schema["oneOf"]
+        branch["properties"]["key_id"]["const"]: branch for branch in schema["oneOf"]
     }
     assert set(branches) == {"K001", "K002"}
     assert branches["K001"]["properties"]["factor_ids"]["prefixItems"] == [
@@ -3177,9 +3574,7 @@ def test_m11_v2_pushes_key_factor_binding_into_the_llama_cpp_grammar():
         "schema"
     ]
     assert "oneOf" in schema
-    assert "first factor id must be an operation" in json.dumps(
-        action_messages
-    ).lower()
+    assert "first factor id must be an operation" in json.dumps(action_messages).lower()
     assert result.calls == 3
     assert result.agent_policy_id == "speech-conditioned-adaptive-evidence-gap-v2"
     _assert_every_call_carries_query(client)
@@ -3479,9 +3874,7 @@ def test_m11_knowledge_speech_state_layout_keeps_dynamic_evidence_after_speech()
         envelope for envelope in envelopes if envelope["stage_kind"] == "action"
     )
 
-    wire = _wire_m11_prompt_envelope(
-        action, prompt_order="knowledge-speech-state-v2"
-    )
+    wire = _wire_m11_prompt_envelope(action, prompt_order="knowledge-speech-state-v2")
 
     parts = wire["messages"][1]["content"]
     assert tuple(part["type"] for part in parts) == (
@@ -3515,9 +3908,7 @@ def test_m11_wire_prompt_envelope_rejects_malformed_content(user_content):
     )
 
     with pytest.raises(SpeechNativeProfileError, match="M11 wire prompt"):
-        _wire_m11_prompt_envelope(
-            envelope, prompt_order="speech-query-prefix-v2"
-        )
+        _wire_m11_prompt_envelope(envelope, prompt_order="speech-query-prefix-v2")
 
 
 def test_m11_prompt_fit_audit_adds_speech_and_special_token_reserves():
@@ -3528,8 +3919,7 @@ def test_m11_prompt_fit_audit_adds_speech_and_special_token_reserves():
         key_order_ids=("canonical",),
     )
     token_counts = {
-        envelope["envelope_id"]: 100 + index
-        for index, envelope in enumerate(envelopes)
+        envelope["envelope_id"]: 100 + index for index, envelope in enumerate(envelopes)
     }
 
     report = _audit_m11_prompt_fit(
@@ -3598,9 +3988,7 @@ def test_m11_prompt_token_counter_uses_template_then_marker_split_tokenization()
         if path == "/apply-template":
             return {"prompt": "prefix<__media__>suffix"}
         assert path == "/tokenize"
-        return {
-            "tokens": [1, 2] if payload["content"] == "prefix" else [3]
-        }
+        return {"tokens": [1, 2] if payload["content"] == "prefix" else [3]}
 
     count = _m11_prompt_text_token_count(
         envelope=envelope,
@@ -3777,11 +4165,13 @@ def test_m11_prompt_fit_config_requires_and_binds_a_resident_session():
         matcher_policy_id="M11",
         session_receipt="resident-session.json",
     )
-    assert path == (
-        REPO_ROOT
-        / "docs/checks/speech-aware-evidence-acquisition/"
-        "2026-08-22-m11-v5-prompt-fit/prompt-fit.json"
-    ).resolve()
+    assert (
+        path
+        == (
+            REPO_ROOT / "docs/checks/speech-aware-evidence-acquisition/"
+            "2026-08-22-m11-v5-prompt-fit/prompt-fit.json"
+        ).resolve()
+    )
     assert sha256 == values["speech_native_prompt_fit_receipt_sha256"]
     assert maximum_completion_tokens == 64
     assert _resolve_m11_prompt_fit_config(
@@ -3800,9 +4190,7 @@ def test_m11_prompt_fit_config_requires_and_binds_a_resident_session():
         ({"decoding_params": {"max_tokens": 0}}, "max_tokens"),
     ),
 )
-def test_m11_prompt_fit_config_rejects_unsafe_or_malformed_values(
-    overrides, message
-):
+def test_m11_prompt_fit_config_rejects_unsafe_or_malformed_values(overrides, message):
     values = {
         "speech_native_prompt_fit_receipt": (
             "docs/checks/speech-aware-evidence-acquisition/"
@@ -4193,7 +4581,9 @@ def test_m11_information_gate_freezes_support_before_oof_policy_selection():
     assert controller["policy_id"] == "speaker-grouped-oof-information-advantage-v1"
     assert controller["wrong_to_correct_vs_primary"] == 12
     assert controller["correct_to_wrong_vs_primary"] == 0
-    assert controller["mean_estimated_calls"] < controller["full_acquisition_mean_calls"]
+    assert (
+        controller["mean_estimated_calls"] < controller["full_acquisition_mean_calls"]
+    )
     assert controller["promotion_checks"]["mean_calls_below_full_acquisition"] is True
     assert controller["promotion_gate_passed"] is True
 
@@ -4349,9 +4739,7 @@ def test_m11_oof_policy_never_uses_held_out_fold_rewards_to_choose_its_actions()
         {
             **row,
             "gold_key_id": (
-                "K003"
-                if audit["fold_id"] == held_out_fold
-                else row["gold_key_id"]
+                "K003" if audit["fold_id"] == held_out_fold else row["gold_key_id"]
             ),
         }
         for row, audit in zip(rows, first["action_audit"], strict=True)
@@ -7091,9 +7479,7 @@ def test_cuda_graph_engine_audit_admits_sync_free_mmq_candidate_at_np16():
 
 
 def test_cuda_graph_engine_audit_reports_zero_dynamic_batch_events_before_contact():
-    report = _audit_cuda_graph_moe_compatibility(
-        **_cuda_graph_engine_audit_inputs()
-    )
+    report = _audit_cuda_graph_moe_compatibility(**_cuda_graph_engine_audit_inputs())
 
     assert report["runtime_evidence"] == {
         "speech_feature_batch_event_count": 0,
@@ -9251,9 +9637,10 @@ def test_action_complete_knowledge_policy_adds_one_example_for_every_train_actio
     assert len(iot_key["selected_source_sample_ids"]) == 9
     assert successor["knowledge_revision"]["minimum_examples_per_key"] == 5
     assert successor["knowledge_revision"]["maximum_examples_per_key"] == 9
-    assert sorted(
-        successor["knowledge_revision"]["example_count_by_key"].values()
-    ) == [5, 9]
+    assert sorted(successor["knowledge_revision"]["example_count_by_key"].values()) == [
+        5,
+        9,
+    ]
     assert "examples_per_key" not in successor["knowledge_revision"]
 
 
@@ -9371,15 +9758,11 @@ def test_shared_action_entity_graph_covers_the_actual_ambiguity_and_entity_signa
         boundary.provenance_ids
     )
     assert any(
-        provenance.startswith(
-            "slurp-train-entity-rate:alarm:email:alarm:time:"
-        )
+        provenance.startswith("slurp-train-entity-rate:alarm:email:alarm:time:")
         for provenance in boundary.provenance_ids
     )
     assert any(
-        provenance.startswith(
-            "slurp-train-entity-rate:alarm:email:email:email_folder:"
-        )
+        provenance.startswith("slurp-train-entity-rate:alarm:email:email:email_folder:")
         for provenance in boundary.provenance_ids
     )
     assert "at least 5x more prevalent" in boundary.left_exclusion
@@ -9441,9 +9824,7 @@ def test_signature_lexical_graph_adds_new_pair_specific_train_prototypes():
     assert len(graph.boundaries) == 1
     boundary = graph.boundaries[0]
     assert any(
-        item.startswith(
-            "slurp-train-signature-lexical:alarm:email:query:none:support-"
-        )
+        item.startswith("slurp-train-signature-lexical:alarm:email:query:none:support-")
         for item in boundary.provenance_ids
     )
     assert "Train-derived prototype supporting K002" in boundary.left_exclusion
@@ -9519,9 +9900,7 @@ def test_information_audit_blocks_pair_complete_but_relation_incomplete_supply()
         "required": 2,
     }
     assert audit["admission"]["status"] == "blocked"
-    assert "residual_signature_lexical_supply" in audit["admission"][
-        "failed_checks"
-    ]
+    assert "residual_signature_lexical_supply" in audit["admission"]["failed_checks"]
 
 
 def test_complete_signature_policy_supplies_every_relation_inside_one_boundary():
@@ -9658,16 +10037,18 @@ def test_information_audit_blocks_lexical_relations_without_heldout_signal():
     assert heldout["crossfit_cue_signal_relation_count"] < 2
     assert audit["checks"]["residual_signature_lexical_heldout_signal"] is False
     assert audit["checks"]["residual_signature_discriminative_supply"] is False
-    assert audit["diagnostics"][
-        "residual_signature_lexical_crossfit_cue_signal"
-    ] is False
+    assert (
+        audit["diagnostics"]["residual_signature_lexical_crossfit_cue_signal"] is False
+    )
     assert audit["admission"]["status"] == "blocked"
-    assert "residual_signature_lexical_heldout_signal" in audit["admission"][
-        "failed_checks"
-    ]
-    assert "residual_signature_discriminative_supply" in audit["admission"][
-        "failed_checks"
-    ]
+    assert (
+        "residual_signature_lexical_heldout_signal"
+        in audit["admission"]["failed_checks"]
+    )
+    assert (
+        "residual_signature_discriminative_supply"
+        in audit["admission"]["failed_checks"]
+    )
 
 
 def test_dataset_semantic_boundary_supply_is_bilateral_and_source_bound():
@@ -9799,8 +10180,9 @@ def test_information_audit_blocks_entity_only_knowledge_with_residual_ambiguity(
     assert audit["source"]["query_isolated_train_utterance_count"] > 0
     assert audit["label_space"]["scenario_count"] == 2
     layers = audit["information_layers"]
-    assert layers["action_plus_entity_signature"]["majority_oracle_accuracy"] >= (
-        layers["action"]["majority_oracle_accuracy"]
+    assert (
+        layers["action_plus_entity_signature"]["majority_oracle_accuracy"]
+        >= (layers["action"]["majority_oracle_accuracy"])
     )
     assert audit["residual_ambiguity"]["stable_shared_action_pair_count"] == 1
     assert audit["knowledge_supply"]["entity_boundary_pair_coverage"] == {
@@ -9812,9 +10194,7 @@ def test_information_audit_blocks_entity_only_knowledge_with_residual_ambiguity(
         "required": 1,
     }
     assert audit["admission"]["status"] == "blocked"
-    assert "residual_signature_lexical_supply" in audit["admission"][
-        "failed_checks"
-    ]
+    assert "residual_signature_lexical_supply" in audit["admission"]["failed_checks"]
 
 
 def test_information_audit_rejects_provenance_without_actual_lexical_supply():
@@ -9870,9 +10250,7 @@ def test_information_audit_rejects_provenance_without_actual_lexical_supply():
         "required": 1,
     }
     assert audit["admission"]["status"] == "blocked"
-    assert "residual_signature_lexical_supply" in audit["admission"][
-        "failed_checks"
-    ]
+    assert "residual_signature_lexical_supply" in audit["admission"]["failed_checks"]
 
 
 def test_speech_native_successor_binding_preserves_keys_and_adds_isolated_split():
@@ -9965,25 +10343,36 @@ def test_speech_native_scale_capacity_audit_accounts_for_cumulative_memory_and_h
     assert audit["isolation"]["query_key_speaker_overlap_count"] == 0
     assert audit["study_wide_speaker_unseen_holdout"]["feasible"] is True
     assert audit["isolation"]["holdout_historical_nonmemory_speaker_overlap_count"] == 0
-    assert audit["information_interpretation"][
-        "cumulative_memory_action_coverage_rate"
-    ] == 1.0
-    assert audit["information_interpretation"][
-        "cumulative_memory_scenario_action_coverage_rate"
-    ] == 1.0
+    assert (
+        audit["information_interpretation"]["cumulative_memory_action_coverage_rate"]
+        == 1.0
+    )
+    assert (
+        audit["information_interpretation"][
+            "cumulative_memory_scenario_action_coverage_rate"
+        ]
+        == 1.0
+    )
     assert audit["checks"]["cumulative_memory_action_complete"] is True
     assert audit["checks"]["cumulative_memory_scenario_action_complete"] is True
     assert audit["agentloop_actionability"]["stable_action_pair_count"] == 1
     assert audit["agentloop_actionability"]["residual_signature_pair_count"] == 1
-    assert audit["allocations"]["cumulative_memory"][
-        "stable_shared_action_query_count"
-    ] == 6
-    assert audit["allocations"]["cumulative_memory"][
-        "residual_shared_signature_query_count"
-    ] == 6
-    assert audit["allocations"]["cumulative_memory"][
-        "entity_free_stable_action_query_count"
-    ] == 6
+    assert (
+        audit["allocations"]["cumulative_memory"]["stable_shared_action_query_count"]
+        == 6
+    )
+    assert (
+        audit["allocations"]["cumulative_memory"][
+            "residual_shared_signature_query_count"
+        ]
+        == 6
+    )
+    assert (
+        audit["allocations"]["cumulative_memory"][
+            "entity_free_stable_action_query_count"
+        ]
+        == 6
+    )
     assert audit["allocations"]["cumulative_memory"][
         "stable_action_pair_bilateral_coverage"
     ] == {"covered": 1, "required": 1}
@@ -9999,21 +10388,21 @@ def test_speech_native_scale_capacity_audit_accounts_for_cumulative_memory_and_h
         "pairs_at_least_5": 0,
         "required": 1,
     }
-    assert audit["allocation_policy"][
-        "new_memory_prioritizes_residual_pair_completion"
-    ] is True
+    assert (
+        audit["allocation_policy"]["new_memory_prioritizes_residual_pair_completion"]
+        is True
+    )
     assert audit["allocation_policy"]["id"] == (
         "speaker-unseen-holdout-residual-support-memory-v4"
     )
-    assert audit["allocation_policy"][
-        "new_memory_prioritizes_residual_pair_minimum_support"
-    ] is True
-    assert audit["checks"][
-        "cumulative_memory_stable_action_pair_complete"
-    ] is True
-    assert audit["checks"][
-        "cumulative_memory_residual_signature_pair_complete"
-    ] is True
+    assert (
+        audit["allocation_policy"][
+            "new_memory_prioritizes_residual_pair_minimum_support"
+        ]
+        is True
+    )
+    assert audit["checks"]["cumulative_memory_stable_action_pair_complete"] is True
+    assert audit["checks"]["cumulative_memory_residual_signature_pair_complete"] is True
     assert audit["admission"]["status"] == "feasible"
     assert audit["admission"]["new_model_contact_authorized"] is False
     serialized = json.dumps(audit, sort_keys=True)
@@ -10136,9 +10525,7 @@ def test_speech_native_scale_capacity_audit_separates_stage_and_study_speakers()
     assert audit["admission"]["status"] == "feasible"
     assert audit["study_wide_speaker_unseen_holdout"]["feasible"] is False
     assert audit["isolation"]["memory_holdout_speaker_overlap_count"] == 0
-    assert audit["isolation"][
-        "holdout_historical_nonmemory_speaker_overlap_count"
-    ] > 0
+    assert audit["isolation"]["holdout_historical_nonmemory_speaker_overlap_count"] > 0
 
 
 def test_speech_native_scale_capacity_audit_rejects_inconsistent_targets():

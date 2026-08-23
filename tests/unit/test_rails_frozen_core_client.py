@@ -16,7 +16,10 @@ from pathlib import Path
 
 import pytest
 
-from speech_aware_evidence_acquisition.contracts import ExecutionPlan, ExecutionScopeError
+from speech_aware_evidence_acquisition.contracts import (
+    ExecutionPlan,
+    ExecutionScopeError,
+)
 from speech_aware_evidence_acquisition.core.config import protocol_hash
 from speech_aware_evidence_acquisition.core.model.slices import SliceRecord
 from speech_aware_evidence_acquisition.core.model import (
@@ -67,7 +70,9 @@ class _CapturingTransport:
         ).encode("utf-8")
 
 
-def _write_wav(path: Path, *, sample_rate_hz: int = 16000, seconds: float = 1.0) -> None:
+def _write_wav(
+    path: Path, *, sample_rate_hz: int = 16000, seconds: float = 1.0
+) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     n_frames = int(sample_rate_hz * seconds)
     with wave.open(str(path), "wb") as handle:
@@ -102,7 +107,9 @@ class _World:
             self.samples.append(
                 _FakeSample(
                     sample_id=sample_id,
-                    audio_ref=AudioRef(path=relpath, sha256=_sha256_file(path)).validate(),
+                    audio_ref=AudioRef(
+                        path=relpath, sha256=_sha256_file(path)
+                    ).validate(),
                     audio_seconds=seconds,
                 )
             )
@@ -137,7 +144,9 @@ def _binding(world: _World):
     )
 
 
-def _client(world, tmp_path, *, gate=None, transport=None, plan=None, **kwargs) -> tuple[FrozenCoreClient, _OpenGate, _CapturingTransport]:
+def _client(
+    world, tmp_path, *, gate=None, transport=None, plan=None, **kwargs
+) -> tuple[FrozenCoreClient, _OpenGate, _CapturingTransport]:
     gate = gate or _OpenGate()
     transport = transport or _CapturingTransport()
     client = FrozenCoreClient(
@@ -154,7 +163,10 @@ def _client(world, tmp_path, *, gate=None, transport=None, plan=None, **kwargs) 
 def _zero_supply_messages(media_relpath: str):
     return (
         {"role": "system", "content": "Transcribe the speech verbatim."},
-        {"role": "user", "content": [{"type": "input_audio", "media_relpath": media_relpath}]},
+        {
+            "role": "user",
+            "content": [{"type": "input_audio", "media_relpath": media_relpath}],
+        },
     )
 
 
@@ -267,7 +279,9 @@ def test_construction_checks_the_gate_exactly_once(tmp_path):
 def test_construction_rejects_a_paper_scale_profile(tmp_path):
     world = _World(tmp_path)
     with pytest.raises(ExecutionScopeError, match="paper-scale"):
-        _client(world, tmp_path, plan=_plan(execution_profile="paper-scale-confirmatory"))
+        _client(
+            world, tmp_path, plan=_plan(execution_profile="paper-scale-confirmatory")
+        )
 
 
 def test_construction_rejects_an_arm_with_a_different_field_set(tmp_path):
@@ -298,8 +312,31 @@ def test_speech_feature_arm_builds_audited_packet_payload_on_existing_adapter(tm
         speech_feature_root=feature_root,
         speech_packet_bindings=bindings,
     )
+    messages = (
+        {"role": "system", "content": "Choose exactly one opaque key id."},
+        {
+            "role": "user",
+            "content": [
+                {
+                    "type": "text",
+                    "text": "key-001: turn a light on",
+                    "evidence_id": "key:facet:K001",
+                    "source_uri": "knowledge-snapshot://snapshot/facet:K001",
+                    "knowledge_role": "key",
+                },
+                {
+                    "type": "input_speech_features",
+                    "speech_features": {
+                        "packet_id": packet.packet_id,
+                        "sha256": packet.packet_sha256,
+                        "role": "query",
+                    },
+                },
+            ],
+        },
+    )
     text = client.complete(
-        _speech_feature_messages(packet, "key-001: turn a light on"),
+        messages,
         speech_feature_sample_id="s1",
         key_representation_id="k1-text-card-v1",
         matcher_policy_id="m1-listwise-v1",
@@ -314,6 +351,7 @@ def test_speech_feature_arm_builds_audited_packet_payload_on_existing_adapter(tm
     assert payload["matcher_policy_id"] == "m1-listwise-v1"
     assert payload["mmproj_loaded"] is False
     assert payload["media_relpath"] == world.media_relpath("s1")
+    assert payload["supplied_evidence"][0]["knowledge_role"] == "key"
 
 
 def test_speech_feature_arm_uses_content_stable_evidence_ids_for_prefix_reuse(tmp_path):
@@ -345,9 +383,7 @@ def test_speech_feature_arm_uses_content_stable_evidence_ids_for_prefix_reuse(tm
         first["supplied_evidence"][1]["evidence_id"]
         != second["supplied_evidence"][1]["evidence_id"]
     )
-    assert first["supplied_evidence"][0]["evidence_id"].startswith(
-        "speech-supply-00-"
-    )
+    assert first["supplied_evidence"][0]["evidence_id"].startswith("speech-supply-00-")
 
 
 def test_speech_feature_arm_traces_agent_state_and_control_separately_from_supply(
@@ -451,7 +487,9 @@ def test_speech_supply_evidence_id_rejects_unstable_inputs(index, text):
         _speech_supply_evidence_id(index, text)
 
 
-def test_speech_feature_construction_uses_one_bounded_batch_validation(tmp_path, monkeypatch):
+def test_speech_feature_construction_uses_one_bounded_batch_validation(
+    tmp_path, monkeypatch
+):
     from speech_aware_evidence_acquisition.rails import core_client as client_module
 
     world = _World(tmp_path)
@@ -546,9 +584,18 @@ def test_complete_zero_supply_sends_the_full_d2_field_set_and_returns_text(tmp_p
     assert len(transport.calls) == 1
     payload = transport.calls[0]
     assert set(payload) == {
-        "request_id", "carrier_lock_key", "sample_id", "speech_ref", "media_relpath",
-        "audio_seconds", "sample_rate_hz", "task_instruction", "history",
-        "decoding_params", "supplied_evidence", "evidence_provenance",
+        "request_id",
+        "carrier_lock_key",
+        "sample_id",
+        "speech_ref",
+        "media_relpath",
+        "audio_seconds",
+        "sample_rate_hz",
+        "task_instruction",
+        "history",
+        "decoding_params",
+        "supplied_evidence",
+        "evidence_provenance",
     }
     assert payload["sample_id"] == "s1"
     assert payload["carrier_lock_key"] == "fake-carrier"
@@ -593,13 +640,20 @@ def test_complete_supplied_builds_one_evidence_item_per_text_part(tmp_path):
     def responder(payload):
         return f"saw {len(payload['supplied_evidence'])} evidence items"
 
-    client, _, transport = _client(world, tmp_path, transport=_CapturingTransport(responder))
-    text = client.complete(_supplied_messages(world.media_relpath("s1"), "roster: kitchen", "roster: email"))
+    client, _, transport = _client(
+        world, tmp_path, transport=_CapturingTransport(responder)
+    )
+    text = client.complete(
+        _supplied_messages(
+            world.media_relpath("s1"), "roster: kitchen", "roster: email"
+        )
+    )
 
     assert text == "saw 2 evidence items"
     payload = transport.calls[0]
     assert [item["content"] for item in payload["supplied_evidence"]] == [
-        "roster: kitchen", "roster: email",
+        "roster: kitchen",
+        "roster: email",
     ]
     assert len({item["evidence_id"] for item in payload["supplied_evidence"]}) == 2
     assert len(payload["evidence_provenance"]) == 2
@@ -626,7 +680,10 @@ def test_complete_rejects_a_missing_input_audio_part(tmp_path):
         client.complete(
             (
                 {"role": "system", "content": "x"},
-                {"role": "user", "content": [{"type": "text", "text": "no audio here"}]},
+                {
+                    "role": "user",
+                    "content": [{"type": "text", "text": "no audio here"}],
+                },
             )
         )
 
@@ -666,7 +723,9 @@ def test_complete_rejects_an_unresolvable_media_relpath(tmp_path):
     world = _World(tmp_path)
     client, _, _ = _client(world, tmp_path)
     with pytest.raises(FrozenCoreClientError, match="not bound to any sample"):
-        client.complete(_zero_supply_messages("datasets/fake-carrier/media/unknown.wav"))
+        client.complete(
+            _zero_supply_messages("datasets/fake-carrier/media/unknown.wav")
+        )
 
 
 # ---------------------------------------------------------------------------
@@ -703,9 +762,18 @@ def test_complete_text_only_sample_id_sends_the_bound_samples_own_media_facts(tm
     # SAME full D2 field set an audio request sends -- text-only mode changes
     # nothing about the payload SHAPE, only how it is resolved.
     assert set(payload) == {
-        "request_id", "carrier_lock_key", "sample_id", "speech_ref", "media_relpath",
-        "audio_seconds", "sample_rate_hz", "task_instruction", "history",
-        "decoding_params", "supplied_evidence", "evidence_provenance",
+        "request_id",
+        "carrier_lock_key",
+        "sample_id",
+        "speech_ref",
+        "media_relpath",
+        "audio_seconds",
+        "sample_rate_hz",
+        "task_instruction",
+        "history",
+        "decoding_params",
+        "supplied_evidence",
+        "evidence_provenance",
     }
     assert payload["sample_id"] == "s1"
     assert payload["media_relpath"] == world.media_relpath("s1")
@@ -724,7 +792,9 @@ def test_complete_text_only_sample_id_rejects_a_message_carrying_audio(tmp_path)
 
     world = _World(tmp_path)
     client, _, _ = _client(world, tmp_path)
-    with pytest.raises(FrozenCoreClientError, match="must not carry an input_audio content part"):
+    with pytest.raises(
+        FrozenCoreClientError, match="must not carry an input_audio content part"
+    ):
         client.complete(
             _supplied_messages(world.media_relpath("s1"), "some text"),
             text_only_sample_id="s1",
@@ -735,7 +805,9 @@ def test_complete_text_only_sample_id_rejects_an_unknown_sample(tmp_path):
     world = _World(tmp_path)
     client, _, _ = _client(world, tmp_path)
     with pytest.raises(FrozenCoreClientError, match="not bound to any sample"):
-        client.complete(_text_only_messages("hello"), text_only_sample_id="not-a-real-sample")
+        client.complete(
+            _text_only_messages("hello"), text_only_sample_id="not-a-real-sample"
+        )
 
 
 def test_complete_text_only_sample_id_rejects_an_empty_string(tmp_path):
@@ -745,7 +817,9 @@ def test_complete_text_only_sample_id_rejects_an_empty_string(tmp_path):
         client.complete(_text_only_messages("hello"), text_only_sample_id="")
 
 
-def test_complete_default_mode_still_refuses_zero_audio_parts_when_text_only_is_not_named(tmp_path):
+def test_complete_default_mode_still_refuses_zero_audio_parts_when_text_only_is_not_named(
+    tmp_path,
+):
     """The DEFAULT AUDIO invariant is untouched: a caller that never opts
     into text_only_sample_id still gets the pre-2026-08-19 refusal -- this is
     exactly the invariant the attempt-1 abort's own error message quoted."""
@@ -776,7 +850,9 @@ def test_complete_default_mode_still_refuses_two_audio_parts(tmp_path):
         )
 
 
-def test_complete_text_only_mode_produces_a_distinct_request_id_sequence_alongside_audio_calls(tmp_path):
+def test_complete_text_only_mode_produces_a_distinct_request_id_sequence_alongside_audio_calls(
+    tmp_path,
+):
     """text-only and audio requests share the SAME request_id counter/
     transport path -- no parallel accounting."""
 
@@ -804,7 +880,9 @@ def test_flight_lock_is_threaded_through_when_present(tmp_path):
     world = _World(tmp_path)
     lock_path = world.data_root / "locks" / "flight.lock"
     lock_path.parent.mkdir(parents=True, exist_ok=True)
-    lock_path.write_text(json.dumps({"study_head": "deadbeef", "pid": 123}), encoding="utf-8")
+    lock_path.write_text(
+        json.dumps({"study_head": "deadbeef", "pid": 123}), encoding="utf-8"
+    )
     client, _, _ = _client(world, tmp_path)
     assert client.flight_lock == {"study_head": "deadbeef", "pid": 123}
 
@@ -823,7 +901,10 @@ def test_close_returns_manifest_hash_cost_and_timings(tmp_path):
 
     assert summary["run_id"] == "SAEA-E-TEST-frozen-core-client"
     assert summary["arm"] == "fixed-legal-context"
-    assert isinstance(summary["trace_manifest_hash"], str) and summary["trace_manifest_hash"]
+    assert (
+        isinstance(summary["trace_manifest_hash"], str)
+        and summary["trace_manifest_hash"]
+    )
     assert summary["cost"]["calls_used"] == 1
     assert summary["request_count"] == 1
     assert len(summary["timings"]) == 1
@@ -858,7 +939,9 @@ def test_complete_after_close_raises(tmp_path):
 def test_register_slice_resolves_a_derived_media_relpath_to_its_parent_sample(tmp_path):
     world = _World(tmp_path)
     plan = _plan()
-    registry = build_slice_registry(data_root=world.data_root, run_id=plan.run_id, samples=world.samples)
+    registry = build_slice_registry(
+        data_root=world.data_root, run_id=plan.run_id, samples=world.samples
+    )
     client, _, transport = _client(world, tmp_path, plan=plan, slice_registry=registry)
 
     parent_relpath = world.media_relpath("s1")

@@ -31,6 +31,7 @@ from ...contracts import ExecutionPlan
 from ...core.model.transport import _ordered_speech_feature_content
 from ...core.model.speech_features import load_speech_feature_packets
 from ...data.lock import asset_dir, data_root, load_lock, umbrella_lock_path
+from ...data.slurp import load_slurp_train_material
 from ...e0.artifacts import REPO_ROOT
 from ...rails import FrozenCoreClient, build_payload_binding
 from ...rails.core_client import _speech_supply_evidence_id
@@ -41,14 +42,19 @@ from ...rails.probes.pslu_flight import (
     FactorLinkStateV1,
     KeyCardV1,
     PsluFlightError,
+    SPEECH_NATIVE_KNOWLEDGE_POLICY_ID,
     SPEECH_NATIVE_REQUEST_LAYOUTS,
     SpeechNativeMatchTask,
+    build_speech_native_knowledge_snapshot,
     load_speech_native_engineering_gate,
     decision_boundary_path,
     expand_decision_graph_candidates,
     expand_decision_graph_neighborhood,
     parse_grounded_query_state,
+    partition_speech_native_train_knowledge,
+    run_openjiuwen_speech_native_match_tasks,
     run_speech_native_match_tasks,
+    validate_openjiuwen_speech_native_match_tasks,
 )
 from ..attempts import AttemptStore
 from ..base import TRANSPORTS
@@ -112,9 +118,7 @@ _SERVER_LOG_CLOCK = re.compile(rb"^(\d+)\.(\d+)\.(\d+)\.(\d+) ")
 _SERVER_SLOT_LAUNCH = re.compile(
     rb"\bslot\s+launch_slot_: id\s+(\d+) \| task\s+(-?\d+)"
 )
-_SERVER_SLOT_RELEASE = re.compile(
-    rb"\bslot\s+release: id\s+(\d+) \| task\s+(-?\d+)"
-)
+_SERVER_SLOT_RELEASE = re.compile(rb"\bslot\s+release: id\s+(\d+) \| task\s+(-?\d+)")
 _PREFIX_REUSE_PROMPT_ORDERS = frozenset(
     {"speech-query-prefix-v2", "knowledge-speech-state-v2"}
 )
@@ -3418,9 +3422,7 @@ def _parse_m11_adaptive_evidence_gap_trajectory(
     }
 
 
-def _m11_action_prediction(
-    trajectory: Mapping[str, object], action_id: str
-) -> str:
+def _m11_action_prediction(trajectory: Mapping[str, object], action_id: str) -> str:
     primary = str(trajectory["primary_key_id"])
     field_by_action = {
         "retain-primary": "primary_key_id",
@@ -3437,9 +3439,7 @@ def _m11_action_prediction(
     return str(value) if value is not None else primary
 
 
-def _m11_action_available(
-    trajectory: Mapping[str, object], action_id: str
-) -> bool:
+def _m11_action_available(trajectory: Mapping[str, object], action_id: str) -> bool:
     if bool(trajectory["mechanism_failure"]):
         return action_id == "retain-primary"
     if action_id == "acquire-boundary-stable":
@@ -3478,7 +3478,9 @@ def _m11_preboundary_state(
     )
     if not exact:
         return state
-    factor_ids = tuple(sorted(str(factor_id) for factor_id in trajectory["new_factor_ids"]))
+    factor_ids = tuple(
+        sorted(str(factor_id) for factor_id in trajectory["new_factor_ids"])
+    )
     return (
         *state,
         f"factor-ids:{','.join(factor_ids) or 'none'}",
@@ -3926,9 +3928,7 @@ def _validated_m11_information_flow(
             or not all(isinstance(value, str) and value for value in raw)
             or len(set(raw)) != len(raw)
         ):
-            raise SpeechNativeProfileError(
-                f"M11 information-flow {field} is malformed"
-            )
+            raise SpeechNativeProfileError(f"M11 information-flow {field} is malformed")
         return tuple(raw)
 
     supplied = identifiers("candidate_factor_supply_ids", allow_empty=False)
@@ -3986,20 +3986,20 @@ def _m11_marginal_transition_metrics(
     helpful = [
         str(trajectory["sample_id"])
         for trajectory, before, after in eligible
-        if before != trajectory["gold_key_id"]
-        and after == trajectory["gold_key_id"]
+        if before != trajectory["gold_key_id"] and after == trajectory["gold_key_id"]
     ]
     harmful = [
         str(trajectory["sample_id"])
         for trajectory, before, after in eligible
-        if before == trajectory["gold_key_id"]
-        and after != trajectory["gold_key_id"]
+        if before == trajectory["gold_key_id"] and after != trajectory["gold_key_id"]
     ]
     return {
         "attribution_scope": attribution_scope,
         "eligible_count": len(eligible),
         "unresolved_count": unresolved_count,
-        "changed_prediction_count": sum(before != after for _, before, after in eligible),
+        "changed_prediction_count": sum(
+            before != after for _, before, after in eligible
+        ),
         "helpful_transition_count": len(helpful),
         "harmful_transition_count": len(harmful),
         "neutral_transition_count": len(eligible) - len(helpful) - len(harmful),
@@ -4027,9 +4027,7 @@ def _evaluate_m11_adaptive_evidence_gap(
             "M11 adaptive evidence-gap read mixes policy identities"
         )
     policy_id = next(iter(policy_ids))
-    information_flows = tuple(
-        _validated_m11_information_flow(item) for item in frozen
-    )
+    information_flows = tuple(_validated_m11_information_flow(item) for item in frozen)
     primary_correct = sum(
         item["primary_key_id"] == item["gold_key_id"] for item in frozen
     )
@@ -4114,28 +4112,22 @@ def _evaluate_m11_adaptive_evidence_gap(
     information_flow = {
         "schema": _M11_INFORMATION_FLOW_SCHEMA,
         "factor_supply_query_count": sum(
-            bool(flow["candidate_factor_supply_ids"])
-            for flow in information_flows
+            bool(flow["candidate_factor_supply_ids"]) for flow in information_flows
         ),
         "factor_supply_id_reference_count": sum(
-            len(flow["candidate_factor_supply_ids"])
-            for flow in information_flows
+            len(flow["candidate_factor_supply_ids"]) for flow in information_flows
         ),
         "factor_selection_query_count": sum(
-            bool(flow["model_selected_factor_ids"])
-            for flow in information_flows
+            bool(flow["model_selected_factor_ids"]) for flow in information_flows
         ),
         "factor_selection_id_reference_count": sum(
-            len(flow["model_selected_factor_ids"])
-            for flow in information_flows
+            len(flow["model_selected_factor_ids"]) for flow in information_flows
         ),
         "boundary_supply_query_count": sum(
-            bool(flow["incremental_boundary_supply_ids"])
-            for flow in information_flows
+            bool(flow["incremental_boundary_supply_ids"]) for flow in information_flows
         ),
         "boundary_supply_id_reference_count": sum(
-            len(flow["incremental_boundary_supply_ids"])
-            for flow in information_flows
+            len(flow["incremental_boundary_supply_ids"]) for flow in information_flows
         ),
         "generated_state_external_supply_count": sum(
             bool(flow["model_selected_state_is_external_supply"])
@@ -4172,21 +4164,15 @@ def _evaluate_m11_adaptive_evidence_gap(
         ),
         "adaptive_boundary_query_count_at_least_18": (
             adaptive_boundary_query_count
-            >= _M11_READER_CONTRACT_V1[
-                "support_minimum_adaptive_boundary_queries"
-            ]
+            >= _M11_READER_CONTRACT_V1["support_minimum_adaptive_boundary_queries"]
         ),
         "boundary_stable_non_primary_action_count_at_least_12": (
             boundary_stable_non_primary_action_count
-            >= _M11_READER_CONTRACT_V1[
-                "support_minimum_boundary_non_primary_actions"
-            ]
+            >= _M11_READER_CONTRACT_V1["support_minimum_boundary_non_primary_actions"]
         ),
         "boundary_incremental_helpful_action_count_at_least_3": (
             boundary_incremental_helpful_action_count
-            >= _M11_READER_CONTRACT_V1[
-                "support_minimum_incremental_boundary_repairs"
-            ]
+            >= _M11_READER_CONTRACT_V1["support_minimum_incremental_boundary_repairs"]
         ),
         "oracle_gain_vs_primary_at_least_6": (
             oracle_correct - primary_correct
@@ -6329,9 +6315,7 @@ def _enumerate_m11_prompt_envelopes(
         )
     for order_id in orders:
         if order_id not in _ORDER_BUILDERS:
-            raise SpeechNativeProfileError(
-                f"unknown profile key order {order_id!r}"
-            )
+            raise SpeechNativeProfileError(f"unknown profile key order {order_id!r}")
     try:
         decision_graph.validate(cards)
     except PsluFlightError as error:
@@ -6384,9 +6368,7 @@ def _enumerate_m11_prompt_envelopes(
         factor_ids: tuple[str, ...],
         boundary_id: str | None = None,
     ) -> None:
-        sample = type(
-            "M11PromptAuditSample", (), {"sample_id": task_id}
-        )()
+        sample = type("M11PromptAuditSample", (), {"sample_id": task_id})()
         plans[task_id] = {
             "family": family,
             "primary_key_id": primary_key_id,
@@ -6465,15 +6447,15 @@ def _enumerate_m11_prompt_envelopes(
             stage_id = kwargs["matcher_policy_id"]
             family = plan["family"]
             capture = (
-                family == "initial"
-                and (
-                    stage_id.endswith(":primary-listwise")
-                    or ":speech-retrieve-top-" in stage_id
+                (
+                    family == "initial"
+                    and (
+                        stage_id.endswith(":primary-listwise")
+                        or ":speech-retrieve-top-" in stage_id
+                    )
                 )
-            ) or (
-                family == "action" and stage_id.endswith(":candidate-action-state")
-            ) or (
-                family == "boundary" and ":boundary-" in stage_id
+                or (family == "action" and stage_id.endswith(":candidate-action-state"))
+                or (family == "boundary" and ":boundary-" in stage_id)
             )
             if capture:
                 if family == "initial":
@@ -6555,8 +6537,10 @@ def _enumerate_m11_prompt_envelopes(
         raise SpeechNativeProfileError(
             "M11 prompt enumeration produced duplicate envelope ids"
         )
-    expected_count = 2 * len(orders) + math.perm(len(cards), top_k) + (
-        4 * len(decision_graph.boundaries)
+    expected_count = (
+        2 * len(orders)
+        + math.perm(len(cards), top_k)
+        + (4 * len(decision_graph.boundaries))
     )
     if len(ordered) != expected_count:
         raise SpeechNativeProfileError(
@@ -6586,7 +6570,9 @@ def _wire_m11_prompt_envelope(
         or messages[1].get("role") != "user"
         or not isinstance(messages[1].get("content"), (list, tuple))
     ):
-        raise SpeechNativeProfileError("M11 wire prompt envelope messages are malformed")
+        raise SpeechNativeProfileError(
+            "M11 wire prompt envelope messages are malformed"
+        )
     text_values: list[str] = []
     feature_parts: list[dict[str, object]] = []
     for part in messages[1]["content"]:
@@ -6718,7 +6704,8 @@ def _audit_m11_prompt_fit(
     worst = max(
         rows,
         key=lambda row: (
-            int(row["prompt_tokens_upper_bound"]), str(row["envelope_id"])
+            int(row["prompt_tokens_upper_bound"]),
+            str(row["envelope_id"]),
         ),
     )
     maximum_text = max(int(row["text_prompt_tokens"]) for row in rows)
@@ -7008,10 +6995,7 @@ def _validate_m11_prompt_fit_for_profile(
     """Bind an M11 prompt-fit receipt to one formal resident profile."""
 
     decoder_sha256 = server_env.get("LLAMA_SPEECH_DECODER_SHA256")
-    if (
-        not isinstance(decoder_sha256, str)
-        or _SHA256.fullmatch(decoder_sha256) is None
-    ):
+    if not isinstance(decoder_sha256, str) or _SHA256.fullmatch(decoder_sha256) is None:
         raise SpeechNativeProfileError(
             "M11 prompt-fit gate lacks a decoder SHA-256 binding"
         )
@@ -7065,9 +7049,7 @@ def _resolve_m11_prompt_fit_config(
             "M11 requires a receipt-bound resident session; starting a per-attempt "
             "server is prohibited"
         )
-    prompt_fit_relpath = _require_string(
-        values, "speech_native_prompt_fit_receipt"
-    )
+    prompt_fit_relpath = _require_string(values, "speech_native_prompt_fit_receipt")
     prompt_fit_path = (repo_root / prompt_fit_relpath).resolve()
     if prompt_fit_path == repo_root.resolve() or not prompt_fit_path.is_relative_to(
         repo_root.resolve()
@@ -7075,9 +7057,7 @@ def _resolve_m11_prompt_fit_config(
         raise SpeechNativeProfileError(
             "M11 prompt-fit receipt must stay under the repository"
         )
-    expected_sha256 = _require_string(
-        values, "speech_native_prompt_fit_receipt_sha256"
-    )
+    expected_sha256 = _require_string(values, "speech_native_prompt_fit_receipt_sha256")
     decoding_params = values.get("decoding_params")
     if not isinstance(decoding_params, Mapping):
         raise SpeechNativeProfileError("M11 decoding_params are malformed")
@@ -7116,9 +7096,7 @@ def _m11_prompt_text_token_count(
         or not isinstance(media_marker, str)
         or not media_marker
     ):
-        raise SpeechNativeProfileError(
-            "M11 prompt tokenizer inputs are malformed"
-        )
+        raise SpeechNativeProfileError("M11 prompt tokenizer inputs are malformed")
     rendered = post_json(
         "/apply-template",
         {
@@ -7148,9 +7126,8 @@ def _m11_prompt_text_token_count(
             },
         )
         tokens = response.get("tokens") if isinstance(response, Mapping) else None
-        if (
-            not isinstance(tokens, list)
-            or any(isinstance(token, bool) or not isinstance(token, int) for token in tokens)
+        if not isinstance(tokens, list) or any(
+            isinstance(token, bool) or not isinstance(token, int) for token in tokens
         ):
             raise SpeechNativeProfileError(
                 "llama.cpp tokenize response contains malformed tokens"
@@ -7299,7 +7276,11 @@ def profile_saturated_gpu_metrics(
     :func:`profile_gpu_eligibility` never admits that proxy for a new run.
     """
 
-    if isinstance(slot_count, bool) or not isinstance(slot_count, int) or slot_count <= 0:
+    if (
+        isinstance(slot_count, bool)
+        or not isinstance(slot_count, int)
+        or slot_count <= 0
+    ):
         raise SpeechNativeProfileError("slot_count must be a positive integer")
     raw_samples = resource_summary.get("request_gpu_samples")
     if not isinstance(raw_samples, list):
@@ -7378,7 +7359,9 @@ def profile_saturated_gpu_metrics(
                 or float(skew) < 0
             ):
                 raise SpeechNativeProfileError("server slot sample is malformed")
-            reconstructed_skew = abs(float(slot_sampled_at) - float(sampled_at)) * 1000.0
+            reconstructed_skew = (
+                abs(float(slot_sampled_at) - float(sampled_at)) * 1000.0
+            )
             if not math.isclose(
                 reconstructed_skew,
                 float(skew),
@@ -7401,9 +7384,7 @@ def profile_saturated_gpu_metrics(
             if active >= minimum_active:
                 saturated_utilization.append(float(utilization))
     sample_count = len(saturated_utilization)
-    sample_fraction = (
-        100.0 * sample_count / len(raw_samples) if raw_samples else 0.0
-    )
+    sample_fraction = 100.0 * sample_count / len(raw_samples) if raw_samples else 0.0
     if not saturated_utilization:
         median: float | str = NOT_AVAILABLE
         p10: float | str = NOT_AVAILABLE
@@ -7413,9 +7394,7 @@ def profile_saturated_gpu_metrics(
         p10 = float(ordered[max(0, math.ceil(0.10 * len(ordered)) - 1)])
     result: dict[str, int | float | str] = {
         "saturation_source": (
-            "llama-server-slots-v1"
-            if use_server_slots
-            else "client-http-intervals-v1"
+            "llama-server-slots-v1" if use_server_slots else "client-http-intervals-v1"
         ),
         "minimum_active_requests": minimum_active,
         "sample_count": sample_count,
@@ -7436,9 +7415,7 @@ def profile_saturated_gpu_metrics(
             {
                 "server_slot_sample_count": slot_sample_count,
                 "server_slot_sample_coverage_pct": (
-                    100.0 * slot_sample_count / len(raw_samples)
-                    if raw_samples
-                    else 0.0
+                    100.0 * slot_sample_count / len(raw_samples) if raw_samples else 0.0
                 ),
                 "server_slot_probe_failure_count": raw_failures,
                 "server_slot_gpu_skew_max_milliseconds": (
@@ -7476,9 +7453,7 @@ def profile_gpu_eligibility(
         )
     else:
         failure_count = saturated_gpu.get("server_slot_probe_failure_count")
-        maximum_clock_error = saturated_gpu.get(
-            "server_slot_gpu_skew_max_milliseconds"
-        )
+        maximum_clock_error = saturated_gpu.get("server_slot_gpu_skew_max_milliseconds")
     return {
         "saturation_source_is_server_slots": (
             source in {"llama-server-slots-v1", "llama-server-slot-events-v1"}
@@ -7501,12 +7476,8 @@ def profile_gpu_eligibility(
         "saturated_gpu_sample_fraction_at_least_60": at_least(
             "sample_fraction_pct", 60.0
         ),
-        "saturated_gpu_median_at_least_95": at_least(
-            "utilization_median_pct", 95.0
-        ),
-        "saturated_gpu_p10_at_least_90": at_least(
-            "utilization_p10_pct", 90.0
-        ),
+        "saturated_gpu_median_at_least_95": at_least("utilization_median_pct", 95.0),
+        "saturated_gpu_p10_at_least_90": at_least("utilization_p10_pct", 90.0),
         "server_slot_occupancy_at_least_90": at_least(
             "server_slot_occupancy_mean_pct", 90.0
         ),
@@ -7531,9 +7502,7 @@ def profile_agent_kv_policy(
     """Bind prefix probes to the only currently safe AgentLoop KV policy."""
 
     policy = profile_prompt_work_policy(prompt_order)
-    if not isinstance(server_args, Sequence) or isinstance(
-        server_args, (str, bytes)
-    ):
+    if not isinstance(server_args, Sequence) or isinstance(server_args, (str, bytes)):
         raise SpeechNativeProfileError("server_args must be a string sequence")
     args = list(server_args)
     if not all(isinstance(item, str) for item in args):
@@ -7587,9 +7556,7 @@ def profile_prompt_work_eligibility(
 
     policy = profile_prompt_work_policy(prompt_order)
     ratio = evaluated_work.get("prompt_evaluation_ratio_pct")
-    one_token_fraction = evaluated_work.get(
-        "one_token_prompt_eval_fraction_pct"
-    )
+    one_token_fraction = evaluated_work.get("one_token_prompt_eval_fraction_pct")
     ratio_is_number = (
         isinstance(ratio, (int, float))
         and not isinstance(ratio, bool)
@@ -7790,9 +7757,7 @@ def profile_server_slot_event_gpu_metrics(
     if saturated_utilization:
         ordered = sorted(saturated_utilization)
         median: float | str = float(statistics.median(ordered))
-        p10: float | str = float(
-            ordered[max(0, math.ceil(0.10 * len(ordered)) - 1)]
-        )
+        p10: float | str = float(ordered[max(0, math.ceil(0.10 * len(ordered)) - 1)])
     else:
         median = NOT_AVAILABLE
         p10 = NOT_AVAILABLE
@@ -9836,8 +9801,7 @@ def _audit_m11_adaptive_evidence_gap(
             "M11 action-audit completion defects: " + "; ".join(completion_issues)
         )
     engineering_gate_passed = (
-        mechanism_failure_count == 0
-        and generated_state_external_supply_count == 0
+        mechanism_failure_count == 0 and generated_state_external_supply_count == 0
     )
     return {
         "schema": "saea-speech-native-adaptive-evidence-gap-audit-v1",
@@ -10512,12 +10476,8 @@ def _scan_server_log(
             "decoded mmproj-free speech feature chunk"
         ),
         "speech_feature_batch_count": len(speech_feature_batches),
-        "speech_feature_batch_slot_count_total": sum(
-            speech_feature_batch_slots
-        ),
-        "speech_feature_batch_token_count_total": sum(
-            speech_feature_batch_tokens
-        ),
+        "speech_feature_batch_slot_count_total": sum(speech_feature_batch_slots),
+        "speech_feature_batch_token_count_total": sum(speech_feature_batch_tokens),
         "speech_feature_batch_mean_slots": (
             statistics.fmean(speech_feature_batch_slots)
             if speech_feature_batch_slots
@@ -10793,8 +10753,7 @@ def _audit_cuda_graph_moe_compatibility(
         re.search(pattern, cuda_source_text) for pattern in legacy_guard_patterns
     )
     sync_aware_guard = all(
-        re.search(pattern, cuda_source_text)
-        for pattern in sync_aware_guard_patterns
+        re.search(pattern, cuda_source_text) for pattern in sync_aware_guard_patterns
     )
     if not legacy_guard and not sync_aware_guard:
         raise SpeechNativeProfileError(
@@ -10843,13 +10802,9 @@ def _audit_cuda_graph_moe_compatibility(
     )
     legacy_effective_limit = 0 if unquantized_types else mmvq_max_batch
     full_slot_graph_eligible = (
-        sync_free_mmq
-        if sync_aware_guard
-        else slot_count <= legacy_effective_limit
+        sync_free_mmq if sync_aware_guard else slot_count <= legacy_effective_limit
     )
-    effective_limit = (
-        slot_count if sync_free_mmq else legacy_effective_limit
-    )
+    effective_limit = slot_count if sync_free_mmq else legacy_effective_limit
     exceeds_limit = not full_slot_graph_eligible
 
     cross_slot_context_contract = all(
@@ -10895,9 +10850,7 @@ def _audit_cuda_graph_moe_compatibility(
         )
 
     engine_candidate_static_admissible = (
-        sync_aware_guard
-        and full_slot_graph_eligible
-        and cross_slot_speech_batch
+        sync_aware_guard and full_slot_graph_eligible and cross_slot_speech_batch
     )
     batch_event_matches = tuple(
         re.finditer(
@@ -10925,15 +10878,9 @@ def _audit_cuda_graph_moe_compatibility(
         raise SpeechNativeProfileError(
             "server log contains malformed cross-slot speech chunk evidence"
         )
-    batch_slot_counts = tuple(
-        int(match.group(1)) for match in batch_event_matches
-    )
-    batch_token_counts = tuple(
-        int(match.group(2)) for match in batch_event_matches
-    )
-    chunk_token_counts = tuple(
-        int(match.group(1)) for match in chunk_success_matches
-    )
+    batch_slot_counts = tuple(int(match.group(1)) for match in batch_event_matches)
+    batch_token_counts = tuple(int(match.group(2)) for match in batch_event_matches)
+    chunk_token_counts = tuple(int(match.group(1)) for match in chunk_success_matches)
     if any(value <= 0 for value in (*batch_slot_counts, *batch_token_counts)):
         raise SpeechNativeProfileError(
             "server log cross-slot speech batch counts must be positive"
@@ -10954,9 +10901,7 @@ def _audit_cuda_graph_moe_compatibility(
         "speech_feature_chunk_token_total": chunk_token_total,
         "batch_chunk_count_matches": batch_slot_total == len(chunk_success_matches),
         "batch_chunk_tokens_match": batch_token_total == chunk_token_total,
-        "cross_slot_batch_observed": any(
-            count >= 2 for count in batch_slot_counts
-        ),
+        "cross_slot_batch_observed": any(count >= 2 for count in batch_slot_counts),
     }
     return {
         "schema": "saea-speech-native-engine-compatibility-audit-v3",
@@ -11016,9 +10961,7 @@ def _audit_cuda_graph_moe_compatibility(
             "current_binary_profile_search_closed": (
                 exceeds_limit or not cross_slot_speech_batch
             ),
-            "engine_candidate_static_admissible": (
-                engine_candidate_static_admissible
-            ),
+            "engine_candidate_static_admissible": (engine_candidate_static_admissible),
             "live_contact_authorized": False,
             "required_change": (
                 "cross-slot speech-feature embedding batch"
@@ -11263,7 +11206,11 @@ def _cli_speech_native_prompt_audit(args: argparse.Namespace) -> int:
             "prompt audit requires the frozen K1/M11-v2 adaptive evidence profile"
         )
     workers = args.workers
-    if isinstance(workers, bool) or not isinstance(workers, int) or not 1 <= workers <= 64:
+    if (
+        isinstance(workers, bool)
+        or not isinstance(workers, int)
+        or not 1 <= workers <= 64
+    ):
         raise SpeechNativeProfileError(
             "prompt-audit workers must be an integer in [1, 64]"
         )
@@ -11288,9 +11235,7 @@ def _cli_speech_native_prompt_audit(args: argparse.Namespace) -> int:
         or not raw_order_ids
         or not all(isinstance(order_id, str) for order_id in raw_order_ids)
     ):
-        raise SpeechNativeProfileError(
-            "prompt audit requires registered key order ids"
-        )
+        raise SpeechNativeProfileError("prompt audit requires registered key order ids")
     decoding_params = values.get("decoding_params")
     if not isinstance(decoding_params, Mapping):
         raise SpeechNativeProfileError("prompt audit decoding_params are malformed")
@@ -11330,20 +11275,14 @@ def _cli_speech_native_prompt_audit(args: argparse.Namespace) -> int:
         raise SpeechNativeProfileError(
             "prompt-audit decision graph must stay under the repository"
         )
-    graph_sha256 = _require_string(
-        values, "speech_native_decision_graph_file_sha256"
-    )
+    graph_sha256 = _require_string(values, "speech_native_decision_graph_file_sha256")
     decision_graph = _load_decision_graph(
         graph_path, expected_sha256=graph_sha256, key_cards=key_cards
     )
 
     feature_root = Path(_require_string(values, "speech_feature_root"))
-    promotion_path = Path(
-        _require_string(values, "speech_packet_promotion_receipt")
-    )
-    promotion_sha256 = _require_string(
-        values, "speech_packet_promotion_receipt_sha256"
-    )
+    promotion_path = Path(_require_string(values, "speech_packet_promotion_receipt"))
+    promotion_sha256 = _require_string(values, "speech_packet_promotion_receipt_sha256")
     if promotion_path.parent.resolve() != feature_root.resolve():
         raise SpeechNativeProfileError(
             "prompt-audit packet promotion receipt must live at feature root"
@@ -11444,9 +11383,7 @@ def _cli_speech_native_prompt_audit(args: argparse.Namespace) -> int:
     def count_one(envelope: Mapping[str, object]) -> tuple[str, int]:
         envelope_id = envelope.get("envelope_id")
         if not isinstance(envelope_id, str):
-            raise SpeechNativeProfileError(
-                "prompt-audit envelope id is malformed"
-            )
+            raise SpeechNativeProfileError("prompt-audit envelope id is malformed")
         return (
             envelope_id,
             _m11_prompt_text_token_count(
@@ -11525,9 +11462,7 @@ def _cli_speech_native_prompt_audit(args: argparse.Namespace) -> int:
                     "maximum_prompt_tokens_upper_bound"
                 ],
                 "context_margin_tokens": report["context_margin_tokens"],
-                "maximum_prompt_fits_one_slot": report[
-                    "maximum_prompt_fits_one_slot"
-                ],
+                "maximum_prompt_fits_one_slot": report["maximum_prompt_fits_one_slot"],
                 "model_contact": False,
             },
             indent=2,
@@ -11749,6 +11684,17 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
         "key-text-shuffle-v1",
     }:
         raise SpeechNativeProfileError("unknown speech-native mechanism control")
+    agent_executor_id = values.get(
+        "speech_native_agent_executor_id", "legacy-contact-dag-v1"
+    )
+    if agent_executor_id not in {
+        "legacy-contact-dag-v1",
+        "openjiuwen-workflow-v1",
+    }:
+        raise SpeechNativeProfileError(
+            "speech_native_agent_executor_id must be 'legacy-contact-dag-v1' "
+            "or 'openjiuwen-workflow-v1'"
+        )
     tasks = build_profile_tasks(
         samples=gate_view.samples,
         packet_bindings=packet_bindings,
@@ -11773,6 +11719,69 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
             f"profile expands to a {planned_contact_ceiling}-contact ceiling but plan registers "
             f"{plan.planned_model_calls}"
         )
+
+    knowledge_snapshot = None
+    if agent_executor_id == "openjiuwen-workflow-v1":
+        if result_mode != "predictions":
+            raise SpeechNativeProfileError(
+                "openJiuwen speech-native matching requires predictions result mode"
+            )
+        openjiuwen_contact_ceiling = {"M1": 1, "M2": 2}.get(matcher_policy_id)
+        if openjiuwen_contact_ceiling is None or (
+            contact_ceiling != openjiuwen_contact_ceiling
+        ):
+            raise SpeechNativeProfileError(
+                "the current openJiuwen M1/M2 vertical slice requires its registered "
+                "one/two-contact ceiling"
+            )
+        knowledge_revision = binding_document.get("knowledge_revision")
+        if knowledge_revision is not None and not isinstance(
+            knowledge_revision, Mapping
+        ):
+            raise SpeechNativeProfileError(
+                "speech-native binding knowledge_revision must be an object"
+            )
+        knowledge_seed = (
+            knowledge_revision.get("seed")
+            if isinstance(knowledge_revision, Mapping)
+            else binding_document.get("seed")
+        )
+        knowledge_policy_id = (
+            knowledge_revision.get("policy_id")
+            if isinstance(knowledge_revision, Mapping)
+            else SPEECH_NATIVE_KNOWLEDGE_POLICY_ID
+        )
+        if isinstance(knowledge_seed, bool) or not isinstance(knowledge_seed, int):
+            raise SpeechNativeProfileError(
+                "speech-native binding must provide an integer TRAIN knowledge seed"
+            )
+        if not isinstance(knowledge_policy_id, str) or not knowledge_policy_id:
+            raise SpeechNativeProfileError(
+                "speech-native binding must provide a TRAIN knowledge policy id"
+            )
+        query_sample_ids = tuple(task.sample.sample_id for task in tasks)
+        if len(set(query_sample_ids)) != len(query_sample_ids):
+            raise SpeechNativeProfileError(
+                "the current openJiuwen M1 vertical slice requires one key order per query"
+            )
+        train_material = load_slurp_train_material(
+            lock,
+            root,
+            media_validation_workers=_require_positive_int(
+                values, "profile_validation_workers"
+            ),
+        )
+        construction_material = partition_speech_native_train_knowledge(
+            train_material,
+            use_sample_ids=query_sample_ids,
+        )
+        knowledge_snapshot = build_speech_native_knowledge_snapshot(
+            construction_material,
+            seed=knowledge_seed,
+            policy_id=knowledge_policy_id,
+            expected_scenarios=tuple(card.value_label for card in key_cards),
+        )
+        validate_openjiuwen_speech_native_match_tasks(tasks, knowledge_snapshot)
 
     runtime_receipt = load_runtime_receipt(
         resolve_runtime_receipt_path(repo_root, values)
@@ -11946,15 +11955,28 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
         sampler.start()
         sampler.begin_request_window()
         request_started = True
-        outcomes = run_speech_native_match_tasks(
-            core_client=client,
-            tasks=tasks,
-            slot_count=slot_count,
-            queue_depth=slot_count * queue_multiplier,
-            dispatch_granularity=dispatch_granularity,
-            trace_run_id=plan.run_id,
-            trace_flusher=client.flush_trace_buffer,
-        )
+        if agent_executor_id == "openjiuwen-workflow-v1":
+            assert knowledge_snapshot is not None
+            outcomes = run_openjiuwen_speech_native_match_tasks(
+                data_root=root,
+                plan=plan,
+                core_client=client,
+                tasks=tasks,
+                knowledge_snapshot=knowledge_snapshot,
+                slot_count=slot_count,
+                queue_depth=slot_count * queue_multiplier,
+                trace_flusher=client.flush_trace_buffer,
+            )
+        else:
+            outcomes = run_speech_native_match_tasks(
+                core_client=client,
+                tasks=tasks,
+                slot_count=slot_count,
+                queue_depth=slot_count * queue_multiplier,
+                dispatch_granularity=dispatch_granularity,
+                trace_run_id=plan.run_id,
+                trace_flusher=client.flush_trace_buffer,
+            )
     except BaseException as error:  # one-shot: record, stop, abort, re-raise
         failure = error
     finally:
@@ -12093,14 +12115,23 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
             ),
             "matcher_prompt_policy_id": prompt_policy_id,
             "transport_prompt_order": transport_prompt_order,
-            "prompt_work_policy": profile_prompt_work_policy(
-                transport_prompt_order
-            ),
+            "prompt_work_policy": profile_prompt_work_policy(transport_prompt_order),
             "agent_kv_policy": agent_kv_policy,
             "request_layout_id": request_layout_id,
             "matcher_verifier_policy_id": verifier_policy_id,
             "agent_policy_id": agent_policy_id,
             "agent_aggregator_id": agent_aggregator_id,
+            "agent_executor_id": agent_executor_id,
+            "knowledge_snapshot_sha256": (
+                knowledge_snapshot.content_hash()
+                if knowledge_snapshot is not None
+                else None
+            ),
+            "knowledge_source_sample_count": (
+                len(knowledge_snapshot.source_sample_ids)
+                if knowledge_snapshot is not None
+                else None
+            ),
             "speech_native_training_free_reader_policy_id": reader_policy_id,
             "speech_native_training_free_reader_contract": reader_contract,
             "dispatch_granularity": dispatch_granularity,

@@ -50,6 +50,7 @@ from __future__ import annotations
 
 import asyncio
 import hashlib
+from collections.abc import Awaitable, Callable, Mapping
 
 from openjiuwen.core.context_engine import ModelContext
 from openjiuwen.core.graph.executable import Input, Output
@@ -66,6 +67,7 @@ from ..obs_audio import (
     write_wav_bytes,
 )
 from ..obs_loop import OBS_TAIL_FRAME_V1, ObsLoopError, request_slice_with_retry
+from . import OpenJiuwenExecutorError
 from .state import ObsSampleState
 
 # Session global-state keys for the loop-carried text state (single writer:
@@ -119,7 +121,9 @@ class FeedBuffer(WorkflowComponent):
         super().__init__()
         self._state = state
 
-    async def invoke(self, inputs: Input, session: Session, context: ModelContext) -> Output:
+    async def invoke(
+        self, inputs: Input, session: Session, context: ModelContext
+    ) -> Output:
         state = self._state
         cfg = state.cfg
         start_frame, end_frame = state.window_frames()
@@ -197,7 +201,9 @@ class FrozenCoreASR(WorkflowComponent):
         self._adapter_request = adapter_request
         self._state = state
 
-    async def invoke(self, inputs: Input, session: Session, context: ModelContext) -> Output:
+    async def invoke(
+        self, inputs: Input, session: Session, context: ModelContext
+    ) -> Output:
         state = self._state
         cfg = state.cfg
         slice_spec = inputs["slice_spec"]
@@ -222,7 +228,9 @@ class FrozenCoreASR(WorkflowComponent):
             audio_seconds=slice_spec["slice_seconds"],
             sample_rate_hz=state.rate,
         )
-        base_request_id = f"{sample_view['request_id_base']}-i{slice_spec['iteration']:04d}"
+        base_request_id = (
+            f"{sample_view['request_id_base']}-i{slice_spec['iteration']:04d}"
+        )
         # Deferred import (same reason as the plain policy): core.policies
         # registers the ojw policy, so importing build_arm_payload at module
         # level here would be circular; by run time both are always loaded.
@@ -243,7 +251,11 @@ class FrozenCoreASR(WorkflowComponent):
         # cap from the SAME composed decoding_params every slice payload
         # above actually carries -- identical seam and identical source of
         # truth to the plain policy, never a second reimplementation.
-        max_tokens = decoding_params.get("max_tokens") if isinstance(decoding_params, dict) else None
+        max_tokens = (
+            decoding_params.get("max_tokens")
+            if isinstance(decoding_params, dict)
+            else None
+        )
         # Bounded per-slice retry: the SAME shared helper the plain policy
         # calls (obs_loop.request_slice_with_retry), so the two executors can
         # never diverge in retry, saturation OR exhausted-slice-skip
@@ -284,7 +296,9 @@ class FrozenCoreASR(WorkflowComponent):
         # (fail-closed caution), a saturation is a detected, bounded
         # degeneracy whose cost is one fallback-advance hole.
         return {
-            "text": "" if saturated else (response.text if response is not None else ""),
+            "text": ""
+            if saturated
+            else (response.text if response is not None else ""),
             "usage": dict(getattr(response, "usage", None) or {}),
             "request_id": request_id,
             "request_sha256": response.request_sha256 if response is not None else "",
@@ -304,7 +318,9 @@ class BoundaryResolve(WorkflowComponent):
         super().__init__()
         self._state = state
 
-    async def invoke(self, inputs: Input, session: Session, context: ModelContext) -> Output:
+    async def invoke(
+        self, inputs: Input, session: Session, context: ModelContext
+    ) -> Output:
         state = self._state
         cfg = state.cfg
         slice_spec = inputs["slice_spec"]
@@ -353,7 +369,9 @@ class BoundaryResolve(WorkflowComponent):
             )
             advance = min(float(resolution["advance"]), slice_seconds)
             resolution["advance"] = advance
-            accepted, dropped = accept_up_to_boundary(transcript, advance / slice_seconds)
+            accepted, dropped = accept_up_to_boundary(
+                transcript, advance / slice_seconds
+            )
         return {"accepted": accepted, "dropped": dropped, "resolution": resolution}
 
 
@@ -366,7 +384,9 @@ class AcceptAdvance(WorkflowComponent):
         super().__init__()
         self._state = state
 
-    async def invoke(self, inputs: Input, session: Session, context: ModelContext) -> Output:
+    async def invoke(
+        self, inputs: Input, session: Session, context: ModelContext
+    ) -> Output:
         state = self._state
         cfg = state.cfg
         slice_spec = inputs["slice_spec"]
@@ -453,3 +473,95 @@ class AcceptAdvance(WorkflowComponent):
         state.cursor = float(slice_spec["start_seconds"]) + float(resolution["advance"])
         state.iteration += 1
         return {"accepted_spans_count": len(spans)}
+
+
+class PrepareAgentWave(WorkflowComponent):
+    """Expose one controller-authored contact wave to the workflow graph."""
+
+    def __init__(
+        self,
+        prepare_wave: Callable[[Session], int],
+        branch_count: int,
+    ) -> None:
+        super().__init__()
+        self._prepare_wave = prepare_wave
+        self._branch_count = branch_count
+
+    async def invoke(
+        self, inputs: Input, session: Session, context: ModelContext
+    ) -> Output:
+        active_count = self._prepare_wave(session)
+        if (
+            isinstance(active_count, bool)
+            or not isinstance(active_count, int)
+            or not 1 <= active_count <= self._branch_count
+        ):
+            raise OpenJiuwenExecutorError(
+                "openJiuwen Agent wave must activate between one and "
+                f"{self._branch_count} contacts"
+            )
+        return {"active_count": active_count}
+
+
+class ExecuteAgentContact(WorkflowComponent):
+    """Run one active contact branch through the injected frozen-core door."""
+
+    def __init__(
+        self,
+        branch_index: int,
+        invoke_contact: Callable[[int], Awaitable[Mapping[str, object]]],
+    ) -> None:
+        super().__init__()
+        self._branch_index = branch_index
+        self._invoke_contact = invoke_contact
+
+    async def invoke(
+        self, inputs: Input, session: Session, context: ModelContext
+    ) -> Output:
+        active_count = inputs["active_count"]
+        if self._branch_index >= active_count:
+            return {
+                "active": False,
+                "response_text": "",
+                "slot_id": -1,
+                "response_sha256": "",
+            }
+        result = await self._invoke_contact(self._branch_index)
+        required = {
+            "response_text",
+            "slot_id",
+            "response_sha256",
+        }
+        if not isinstance(result, Mapping) or set(result) != required:
+            raise OpenJiuwenExecutorError(
+                "openJiuwen Agent contact callback returned a malformed result"
+            )
+        return {"active": True, **dict(result)}
+
+
+class AggregateAgentWave(WorkflowComponent):
+    """Join an ordered contact wave and advance the controller exactly once."""
+
+    def __init__(
+        self,
+        branch_count: int,
+        aggregate_wave: Callable[[tuple[Mapping[str, object], ...], Session], None],
+    ) -> None:
+        super().__init__()
+        self._branch_count = branch_count
+        self._aggregate_wave = aggregate_wave
+
+    async def invoke(
+        self, inputs: Input, session: Session, context: ModelContext
+    ) -> Output:
+        active_count = inputs["active_count"]
+        ordered = tuple(
+            inputs[f"branch_{index}"] for index in range(self._branch_count)
+        )
+        active = tuple(branch for branch in ordered if branch["active"])
+        if len(active) != active_count:
+            raise OpenJiuwenExecutorError(
+                "openJiuwen Agent fan-in did not receive every active contact"
+            )
+        self._aggregate_wave(active, session)
+        return {"active_count": active_count}

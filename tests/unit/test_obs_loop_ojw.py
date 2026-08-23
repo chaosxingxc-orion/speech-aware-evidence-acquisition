@@ -26,10 +26,12 @@ Requires openjiuwen (skip marker otherwise — D2 gate: the suite must pass
 with openjiuwen absent; see ``test_obs_loop_ojw_absent.py``).
 """
 
+import asyncio
 import dataclasses
 import hashlib
 import json
 import threading
+import time
 from pathlib import Path
 
 import pytest
@@ -811,3 +813,263 @@ class TestWorkflowTimeout:
         world.adapter.request = slow_request
         with pytest.raises(ObsLoopError, match="ojw_workflow_timeout_seconds"):
             POLICIES.resolve(OJW_POLICY_NAME).run_sample(world.ctx)
+
+
+def _agent_contact_result(slot_id):
+    return {
+        "response_text": "ok",
+        "slot_id": slot_id,
+        "response_sha256": "0" * 64,
+    }
+
+
+def _patch_agent_workflow_builder(monkeypatch, invoke_flow):
+    """Replace only the framework graph shell; keep the real batch scheduler."""
+
+    from speech_aware_evidence_acquisition.reproduction.ojw import runner
+
+    build_count = 0
+
+    def build_speech_agent_workflow(**kwargs):
+        nonlocal build_count
+        workflow_index = build_count
+        build_count += 1
+
+        class FakeFlow:
+            async def invoke(self, inputs, session):
+                return await invoke_flow(workflow_index, kwargs["invoke_contact"])
+
+        return FakeFlow()
+
+    monkeypatch.setattr(
+        runner, "build_speech_agent_workflow", build_speech_agent_workflow
+    )
+    monkeypatch.setattr(
+        runner, "create_workflow_session", lambda **_kwargs: object()
+    )
+    return runner
+
+
+def _execute_fake_agent_workflows(runner, states, invoke_contact, *, queue_depth=2):
+    return runner.execute_speech_agent_workflows(
+        states,
+        prepare_wave=lambda _state, _session: 1,
+        invoke_contact=invoke_contact,
+        aggregate_wave=lambda _state, _responses, _session: None,
+        should_continue=lambda _state: False,
+        branch_count=2,
+        slot_count=2,
+        queue_depth=queue_depth,
+        workflow_timeout_seconds=10.0,
+    )
+
+
+class TestSpeechAgentWorkflowScheduling:
+    def test_sibling_failure_does_not_recycle_a_running_worker_slot(
+        self, monkeypatch
+    ):
+        blocker_active = threading.Event()
+        blocker_slot = []
+        later_contacts = []
+        states = [object(), object()]
+
+        async def invoke_flow(workflow_index, invoke_contact):
+            if workflow_index == 0:
+                blocking = asyncio.create_task(invoke_contact(0))
+                while not blocker_active.is_set():
+                    await asyncio.sleep(0)
+                blocking.cancel()
+                with pytest.raises(asyncio.CancelledError):
+                    await blocking
+                raise RuntimeError("planned sibling failure")
+            while not blocker_active.is_set():
+                await asyncio.sleep(0)
+            await invoke_contact(0)
+
+        runner = _patch_agent_workflow_builder(monkeypatch, invoke_flow)
+
+        def invoke_contact(state, branch_index, slot_id):
+            if state is states[0]:
+                assert branch_index == 0
+                blocker_slot.append(slot_id)
+                blocker_active.set()
+                time.sleep(0.15)
+                blocker_active.clear()
+                return _agent_contact_result(slot_id)
+            later_contacts.append((slot_id, blocker_active.is_set()))
+            return _agent_contact_result(slot_id)
+
+        with pytest.raises(RuntimeError, match="planned sibling failure"):
+            runner.execute_speech_agent_workflows(
+                states,
+                prepare_wave=lambda _state, _session: 1,
+                invoke_contact=invoke_contact,
+                aggregate_wave=lambda _state, _responses, _session: None,
+                should_continue=lambda _state: False,
+                branch_count=1,
+                slot_count=1,
+                queue_depth=2,
+                workflow_timeout_seconds=10.0,
+            )
+
+        assert blocker_slot
+        assert later_contacts == [(blocker_slot[0], False)]
+
+    def test_timeout_does_not_recycle_a_running_worker_slot(self, monkeypatch):
+        blocker_active = threading.Event()
+        later_contact_observed_blocker = []
+        states = [object(), object()]
+
+        async def invoke_flow(workflow_index, invoke_contact):
+            if workflow_index == 0:
+                await asyncio.wait_for(invoke_contact(0), timeout=0.02)
+                return
+            while not blocker_active.is_set():
+                await asyncio.sleep(0)
+            await invoke_contact(0)
+
+        runner = _patch_agent_workflow_builder(monkeypatch, invoke_flow)
+
+        def invoke_contact(state, _branch_index, slot_id):
+            if state is states[0]:
+                blocker_active.set()
+                time.sleep(0.10)
+                blocker_active.clear()
+            else:
+                later_contact_observed_blocker.append(blocker_active.is_set())
+            return _agent_contact_result(slot_id)
+
+        with pytest.raises(TimeoutError):
+            runner.execute_speech_agent_workflows(
+                states,
+                prepare_wave=lambda _state, _session: 1,
+                invoke_contact=invoke_contact,
+                aggregate_wave=lambda _state, _responses, _session: None,
+                should_continue=lambda _state: False,
+                branch_count=1,
+                slot_count=1,
+                queue_depth=2,
+                workflow_timeout_seconds=10.0,
+            )
+
+        assert later_contact_observed_blocker == [False]
+
+    def test_framework_timeout_waits_for_the_contact_worker_to_settle(self):
+        from speech_aware_evidence_acquisition.reproduction.ojw import (
+            OpenJiuwenExecutorError,
+        )
+        from speech_aware_evidence_acquisition.reproduction.ojw import runner
+
+        state = {"done": False}
+
+        def invoke_contact(_state, _branch_index, slot_id):
+            time.sleep(0.10)
+            return _agent_contact_result(slot_id)
+
+        started = time.monotonic()
+        with pytest.raises(OpenJiuwenExecutorError, match="workflow at the"):
+            runner.execute_speech_agent_workflows(
+                [state],
+                prepare_wave=lambda _state, _session: 1,
+                invoke_contact=invoke_contact,
+                aggregate_wave=lambda current, _responses, _session: current.update(
+                    done=True
+                ),
+                should_continue=lambda current: not current["done"],
+                branch_count=1,
+                slot_count=1,
+                queue_depth=1,
+                workflow_timeout_seconds=0.02,
+            )
+
+        assert time.monotonic() - started >= 0.10
+
+    def test_three_waves_keep_one_primary_slot_per_trajectory(self, monkeypatch):
+        states = [object()]
+        calls = {state: [] for state in states}
+
+        async def invoke_flow(_workflow_index, invoke_contact):
+            for _wave_index in range(3):
+                await invoke_contact(0)
+
+        runner = _patch_agent_workflow_builder(monkeypatch, invoke_flow)
+
+        def invoke_contact(state, _branch_index, slot_id):
+            calls[state].append(slot_id)
+            return _agent_contact_result(slot_id)
+
+        results = _execute_fake_agent_workflows(runner, states, invoke_contact)
+
+        assert results == states
+        assert all(len(set(slots)) == 1 for slots in calls.values())
+
+    def test_cross_sample_trajectories_remain_parallel(self, monkeypatch):
+        states = [object(), object()]
+        slots_by_state = {}
+        simultaneous_contacts = threading.Barrier(2)
+
+        async def invoke_flow(_workflow_index, invoke_contact):
+            await invoke_contact(0)
+
+        runner = _patch_agent_workflow_builder(monkeypatch, invoke_flow)
+
+        def invoke_contact(state, _branch_index, slot_id):
+            slots_by_state[state] = slot_id
+            simultaneous_contacts.wait(timeout=1.0)
+            return _agent_contact_result(slot_id)
+
+        results = _execute_fake_agent_workflows(runner, states, invoke_contact)
+
+        assert results == states
+        assert len(set(slots_by_state.values())) == 2
+
+    def test_one_hundred_workflows_respect_bounded_admission(self, monkeypatch):
+        active = 0
+        peak_active = 0
+
+        async def invoke_flow(_workflow_index, _invoke_contact):
+            nonlocal active, peak_active
+            active += 1
+            peak_active = max(peak_active, active)
+            try:
+                await asyncio.sleep(0.005)
+            finally:
+                active -= 1
+
+        runner = _patch_agent_workflow_builder(monkeypatch, invoke_flow)
+        states = list(range(100))
+        results = _execute_fake_agent_workflows(
+            runner,
+            states,
+            lambda _state, _branch, slot_id: _agent_contact_result(slot_id),
+            queue_depth=4,
+        )
+
+        assert results == states
+        assert peak_active == 4
+
+    def test_first_fatal_failure_stops_new_workflow_admission(self, monkeypatch):
+        admitted = []
+        failure_started = asyncio.Event()
+
+        async def invoke_flow(workflow_index, _invoke_contact):
+            admitted.append(workflow_index)
+            while len(admitted) < 4:
+                await asyncio.sleep(0)
+            if workflow_index == 0:
+                failure_started.set()
+                raise RuntimeError("fatal workflow failure")
+            await failure_started.wait()
+            await asyncio.sleep(0.02)
+
+        runner = _patch_agent_workflow_builder(monkeypatch, invoke_flow)
+
+        with pytest.raises(RuntimeError, match="fatal workflow failure"):
+            _execute_fake_agent_workflows(
+                runner,
+                list(range(100)),
+                lambda _state, _branch, slot_id: _agent_contact_result(slot_id),
+                queue_depth=4,
+            )
+
+        assert admitted == [0, 1, 2, 3]

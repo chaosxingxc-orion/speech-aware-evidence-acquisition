@@ -207,10 +207,14 @@ def _probe_sample_rate_hz(path: Path) -> int:
     try:
         info = soundfile.info(str(path))
     except Exception as error:  # soundfile raises its own libsndfile error types
-        raise FrozenCoreClientError(f"cannot read audio header of {path}: {error}") from error
+        raise FrozenCoreClientError(
+            f"cannot read audio header of {path}: {error}"
+        ) from error
     rate = info.samplerate
     if isinstance(rate, bool) or not isinstance(rate, int) or rate <= 0:
-        raise FrozenCoreClientError(f"audio header of {path} reports sample rate {rate!r}")
+        raise FrozenCoreClientError(
+            f"audio header of {path} reports sample rate {rate!r}"
+        )
     return rate
 
 
@@ -247,14 +251,18 @@ def build_payload_binding(
     rest of ``rails``) never needs its own lock coupling."""
 
     if not samples:
-        raise FrozenCoreClientError("build_payload_binding requires at least one sample")
+        raise FrozenCoreClientError(
+            "build_payload_binding requires at least one sample"
+        )
     allowed_sample_ids: set[str] = set()
     sample_facts: dict[str, tuple[float, int]] = {}
     media_relpaths: dict[str, str] = {}
     for sample in samples:
         sample_id = sample.sample_id
         if not isinstance(sample_id, str) or not sample_id:
-            raise FrozenCoreClientError(f"sample_id must be a non-empty string, got {sample_id!r}")
+            raise FrozenCoreClientError(
+                f"sample_id must be a non-empty string, got {sample_id!r}"
+            )
         if sample_id in allowed_sample_ids:
             raise FrozenCoreClientError(f"duplicate sample_id {sample_id!r} in samples")
         allowed_sample_ids.add(sample_id)
@@ -272,7 +280,9 @@ def build_payload_binding(
     ).validate()
 
 
-def build_slice_registry(*, data_root: Path, run_id: str, samples: Sequence[object]) -> SliceRegistry:
+def build_slice_registry(
+    *, data_root: Path, run_id: str, samples: Sequence[object]
+) -> SliceRegistry:
     """A ready-to-register :class:`~core.model.SliceRegistry` for ``samples``
     -- the same ``parent_facts`` shape (``sample_id -> (media_relpath,
     audio_seconds)``) ``core.driver.run_experiment`` builds for its own
@@ -284,9 +294,12 @@ def build_slice_registry(*, data_root: Path, run_id: str, samples: Sequence[obje
     ``slice_registry`` parameter defaults to ``None``)."""
 
     parent_facts = {
-        sample.sample_id: (sample.audio_ref.path, float(sample.audio_seconds)) for sample in samples
+        sample.sample_id: (sample.audio_ref.path, float(sample.audio_seconds))
+        for sample in samples
     }
-    return SliceRegistry(data_root=Path(data_root), run_id=run_id, parent_facts=parent_facts)
+    return SliceRegistry(
+        data_root=Path(data_root), run_id=run_id, parent_facts=parent_facts
+    )
 
 
 def _iso(epoch_seconds: float) -> str:
@@ -351,7 +364,10 @@ def _parse_rails_messages(
             f"FrozenCoreClient expects exactly 2 messages (system, user), got {len(messages)}"
         )
     system_message, user_message = messages
-    if not isinstance(system_message, Mapping) or system_message.get("role") != "system":
+    if (
+        not isinstance(system_message, Mapping)
+        or system_message.get("role") != "system"
+    ):
         raise FrozenCoreClientError("messages[0] must be a mapping with role 'system'")
     task_instruction = system_message.get("content")
     if not isinstance(task_instruction, str) or not task_instruction:
@@ -360,7 +376,9 @@ def _parse_rails_messages(
         raise FrozenCoreClientError("messages[1] must be a mapping with role 'user'")
     content = user_message.get("content")
     if not isinstance(content, Sequence) or isinstance(content, (str, bytes)):
-        raise FrozenCoreClientError("user message content must be a list of content parts")
+        raise FrozenCoreClientError(
+            "user message content must be a list of content parts"
+        )
     media_relpath: str | None = None
     supply_texts: list[str] = []
     for index, part in enumerate(content):
@@ -389,7 +407,9 @@ def _parse_rails_messages(
         elif part_type == "text":
             text = part.get("text")
             if not isinstance(text, str) or not text:
-                raise FrozenCoreClientError("text content part must carry non-empty text")
+                raise FrozenCoreClientError(
+                    "text content part must carry non-empty text"
+                )
             supply_texts.append(text)
         else:
             raise FrozenCoreClientError(f"unsupported content part type {part_type!r}")
@@ -415,7 +435,10 @@ def _parse_speech_feature_messages(
             f"FrozenCoreClient expects exactly 2 messages (system, user), got {len(messages)}"
         )
     system_message, user_message = messages
-    if not isinstance(system_message, Mapping) or system_message.get("role") != "system":
+    if (
+        not isinstance(system_message, Mapping)
+        or system_message.get("role") != "system"
+    ):
         raise FrozenCoreClientError("messages[0] must be a mapping with role 'system'")
     task_instruction = system_message.get("content")
     if not isinstance(task_instruction, str) or not task_instruction:
@@ -424,7 +447,9 @@ def _parse_speech_feature_messages(
         raise FrozenCoreClientError("messages[1] must be a mapping with role 'user'")
     content = user_message.get("content")
     if not isinstance(content, Sequence) or isinstance(content, (str, bytes)):
-        raise FrozenCoreClientError("user message content must be a list of content parts")
+        raise FrozenCoreClientError(
+            "user message content must be a list of content parts"
+        )
     supply_parts: list[dict[str, str | None]] = []
     descriptors: list[dict[str, str]] = []
     for index, part in enumerate(content):
@@ -441,7 +466,9 @@ def _parse_speech_feature_messages(
         if part_type == "text":
             text = part.get("text")
             if not isinstance(text, str) or not text:
-                raise FrozenCoreClientError("text content part must carry non-empty text")
+                raise FrozenCoreClientError(
+                    "text content part must carry non-empty text"
+                )
             evidence_id = part.get("evidence_id")
             if evidence_id is not None and (
                 not isinstance(evidence_id, str) or not evidence_id
@@ -456,11 +483,17 @@ def _parse_speech_feature_messages(
                 raise FrozenCoreClientError(
                     "text content part source_uri must be a non-empty string or absent"
                 )
+            knowledge_role = part.get("knowledge_role")
+            if knowledge_role is not None and knowledge_role not in {"key", "value"}:
+                raise FrozenCoreClientError(
+                    "text content part knowledge_role must be 'key', 'value', or absent"
+                )
             supply_parts.append(
                 {
                     "text": text,
                     "evidence_id": evidence_id,
                     "source_uri": source_uri,
+                    "knowledge_role": knowledge_role,
                 }
             )
             continue
@@ -478,7 +511,9 @@ def _parse_speech_feature_messages(
             isinstance(speech_features[field], str) and speech_features[field]
             for field in required
         ):
-            raise FrozenCoreClientError("speech feature descriptor values must be non-empty strings")
+            raise FrozenCoreClientError(
+                "speech feature descriptor values must be non-empty strings"
+            )
         descriptors.append(dict(speech_features))
     if sum(part["role"] == "query" for part in descriptors) != 1:
         raise FrozenCoreClientError(
@@ -495,15 +530,9 @@ def _agent_history(
 ) -> list[dict[str, object]]:
     """Build the D2-visible ORG/CONTROL history for one Agent contact."""
 
-    if (
-        agent_state is None
-        and agent_contact_id is None
-        and contact_instruction is None
-    ):
+    if agent_state is None and agent_contact_id is None and contact_instruction is None:
         return []
-    if not isinstance(agent_state, Sequence) or isinstance(
-        agent_state, (str, bytes)
-    ):
+    if not isinstance(agent_state, Sequence) or isinstance(agent_state, (str, bytes)):
         raise FrozenCoreClientError(
             "agent_state must be a sequence of AgentStateArtifact documents"
         )
@@ -708,9 +737,7 @@ class FrozenCoreClient:
                     "sha256": packet.packet_sha256,
                 }
             decoder_hashes = {packet.decoder_gguf_sha256 for packet in packets}
-            dimensions = {
-                chunk.n_embd for packet in packets for chunk in packet.chunks
-            }
+            dimensions = {chunk.n_embd for packet in packets for chunk in packet.chunks}
             if len(decoder_hashes) != 1 or len(dimensions) != 1:
                 raise FrozenCoreClientError(
                     "speech packet bindings must share one decoder identity and dimension"
@@ -751,7 +778,9 @@ class FrozenCoreClient:
             )
         with self._state_lock:
             if self._closed:
-                raise FrozenCoreClientError("trace buffer cannot be flushed after close()")
+                raise FrozenCoreClientError(
+                    "trace buffer cannot be flushed after close()"
+                )
             buffer.flush_into(self._sink)
 
     def register_slice(self, record: SliceRecord) -> None:
@@ -769,7 +798,10 @@ class FrozenCoreClient:
             )
         self._slice_registry.register(record)
         self._reverse_media_index[record.media_relpath] = record.sample_id
-        self._slice_facts[record.media_relpath] = (record.audio_seconds, record.sample_rate_hz)
+        self._slice_facts[record.media_relpath] = (
+            record.audio_seconds,
+            record.sample_rate_hz,
+        )
 
     def complete(
         self,
@@ -840,14 +872,21 @@ class FrozenCoreClient:
                 raise FrozenCoreClientError(
                     "speech_feature_sample_id requires the speech-feature-query arm"
                 )
-            if not isinstance(speech_feature_sample_id, str) or not speech_feature_sample_id:
+            if (
+                not isinstance(speech_feature_sample_id, str)
+                or not speech_feature_sample_id
+            ):
                 raise FrozenCoreClientError(
                     "speech_feature_sample_id must be a non-empty string"
                 )
             if not isinstance(key_representation_id, str) or not key_representation_id:
-                raise FrozenCoreClientError("key_representation_id must be a non-empty string")
+                raise FrozenCoreClientError(
+                    "key_representation_id must be a non-empty string"
+                )
             if not isinstance(matcher_policy_id, str) or not matcher_policy_id:
-                raise FrozenCoreClientError("matcher_policy_id must be a non-empty string")
+                raise FrozenCoreClientError(
+                    "matcher_policy_id must be a non-empty string"
+                )
             task_instruction, speech_supply_parts, speech_feature_parts = (
                 _parse_speech_feature_messages(messages)
             )
@@ -886,8 +925,12 @@ class FrozenCoreClient:
             audio_seconds, sample_rate_hz = self._binding.sample_facts[sample_id]
         elif text_only_sample_id is not None:
             if not isinstance(text_only_sample_id, str) or not text_only_sample_id:
-                raise FrozenCoreClientError("text_only_sample_id must be a non-empty string")
-            task_instruction, _, supply_texts = _parse_rails_messages(messages, text_only=True)
+                raise FrozenCoreClientError(
+                    "text_only_sample_id must be a non-empty string"
+                )
+            task_instruction, _, supply_texts = _parse_rails_messages(
+                messages, text_only=True
+            )
             sample_id = text_only_sample_id
             if sample_id not in self._binding.allowed_sample_ids:
                 raise FrozenCoreClientError(
@@ -902,7 +945,9 @@ class FrozenCoreClient:
                     "speech-feature-query requires speech_feature_sample_id and a query "
                     "packet on every decision call"
                 )
-            task_instruction, media_relpath, supply_texts = _parse_rails_messages(messages)
+            task_instruction, media_relpath, supply_texts = _parse_rails_messages(
+                messages
+            )
             sample_id = self._reverse_media_index.get(media_relpath)
             if sample_id is None:
                 raise FrozenCoreClientError(
@@ -943,6 +988,12 @@ class FrozenCoreClient:
                     else f"rails-supply://{sample_id}"
                 ),
                 "content": text,
+                **(
+                    {"knowledge_role": speech_supply_parts[index]["knowledge_role"]}
+                    if speech_supply_parts is not None
+                    and speech_supply_parts[index].get("knowledge_role") is not None
+                    else {}
+                ),
             }
             for index, text in enumerate(supply_texts)
         ]
@@ -1034,7 +1085,9 @@ def _speech_supply_evidence_id(index: int, text: str) -> str:
     """Return the request-independent identifier used in speech wire prompts."""
 
     if isinstance(index, bool) or not isinstance(index, int) or index < 0:
-        raise FrozenCoreClientError("speech supply index must be a non-negative integer")
+        raise FrozenCoreClientError(
+            "speech supply index must be a non-negative integer"
+        )
     if not isinstance(text, str) or not text:
         raise FrozenCoreClientError("speech supply text must be a non-empty string")
     return f"speech-supply-{index:02d}-{_content_sha256(text)}"

@@ -50,3 +50,59 @@ tests. Runs (segmented SAEA-E-001, R4 mini arms) execute on the openJiuwen
 executor after equivalence passes. Eval-agent runtime report (install
 footprint, determinism run, telemetry audit, version pin) appends here when
 it lands.
+
+## Speech-native knowledge AgentLoop continuation (2026-08-23)
+
+The shared speech-native knowledge runner now requires an explicit executor
+identity. Formal AgentLoop execution uses `openjiuwen-workflow-v1`; the
+dependency-free `reference-trajectory-v1` remains only as a semantic
+equivalence oracle and cannot execute parallel contact batches.
+
+The pinned openJiuwen runtime carries the control flow as a native graph:
+
+```text
+AdvancedLoopComponent(FuncCondition)
+  -> PrepareAgentWave
+  -> [ExecuteAgentContact_0 ... ExecuteAgentContact_N]  # logical fan-out
+  -> AggregateAgentWave                                # ordered fan-in
+  -> next loop condition
+```
+
+The graph is built from the existing `Workflow`, `LoopGroup`, and
+`AdvancedLoopComponent` seam in `reproduction/ojw/`; no new experiment
+script or framework model client is introduced. Each active contact calls
+the constructor-injected repository `CoreClient`, so ExecutionPlan gating,
+the receipt-bound resident llama.cpp service, pre-materialized speech
+packets, and repository tracing remain the only model-contact door.
+
+Every branch and every subsequent loop wave rebuilds the request from the
+same original speech packet. Agent-produced text/state is carried in
+openJiuwen structured session state as auxiliary context and never replaces
+the speech query. The framework owns loop execution, component concurrency,
+and fan-in barriers; the repository owns scientific transition validation,
+knowledge BUILD/USE separation, contact budgets, deterministic branch
+ordering, slot assignment, and post-runtime scoring.
+
+The admitted runtime is exactly `openjiuwen==0.1.16.post2`; an absent or
+different version fails before workflow construction. Each trajectory leases
+one primary llama.cpp slot through every wave. Same-trajectory branches are
+serialized on that slot so speech-prefix KV remains reusable, while different
+samples run concurrently across slots. Cancellation waits for the underlying
+synchronous contact to settle before returning a slot. Workflow admission is
+bounded by `queue_depth`, and the first fatal error stops new admission.
+
+The formal production vertical slice reuses the existing P-SLU profile driver.
+M1 exposes complete TRAIN-built `KeyFacet` material and performs one listwise
+speech-to-key decision. M2 first performs one speech-only semantic analysis,
+then exposes the same key material and invokes a second decision with both the
+original speech packet and the generated `AgentStateArtifact`. Key facets are
+transported as `knowledge_role=key`; `ValueBundle` content is not used as key
+text and task-target mapping remains deterministic metadata. Dynamic value or
+facet acquisition must carry a hash-bound `RankResult` and `FusionDecision`.
+
+The admission tests require cross-sample parallel overlap, same-trajectory slot
+affinity, deterministic ordered aggregation, exact reference-trajectory
+semantic equivalence, multi-wave state transitions, aggregate response binding
+for AgentState artifacts, cancellation settlement, bounded 100-sample
+admission, and pre-contact refusal of oversized waves. The openJiuwen-absent
+suite remains valid through the existing lazy import and skip/refusal boundary.

@@ -13,18 +13,22 @@ import json
 import hashlib
 import threading
 from concurrent.futures import ThreadPoolExecutor
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from pathlib import Path
 
 import pytest
 
-from speech_aware_evidence_acquisition.contracts import ExecutionPlan, ExecutionScopeError
+from speech_aware_evidence_acquisition.contracts import (
+    ExecutionPlan,
+    ExecutionScopeError,
+)
 from speech_aware_evidence_acquisition.core.base import Registry
 from speech_aware_evidence_acquisition.core.config import protocol_hash
 from speech_aware_evidence_acquisition.core.flight_lock import FLIGHT_LOCK_RELPATH
 from speech_aware_evidence_acquisition.core.tracing import DispatchingSink, TraceBuffer
 from speech_aware_evidence_acquisition.rails import (
     AgentContactPlan,
+    AgentContactBatch,
     ContactDAGAdvance,
     AgentLoopAdvance,
     AgentStateArtifact,
@@ -35,18 +39,23 @@ from speech_aware_evidence_acquisition.rails import (
     MockCoreClient,
     ObsPacket,
     QueryState,
+    RankedFacet,
+    RankResult,
+    FusionDecision,
     SupplyDose,
     SupplyForm,
     SupplyItem,
     SupplyPacket,
     TaskAdapter,
     ValueBundle,
+    agent_response_sha256,
     build_consumption_trace,
     run_rails_experiment,
     run_speech_native_agent_loop,
     run_bounded_contact_dag,
 )
 from speech_aware_evidence_acquisition.rails.runner import RAILS_ARMS, RailsRunnerError
+from speech_aware_evidence_acquisition.reproduction.ojw import openjiuwen_available
 
 _SHA_A = "a" * 64
 _SHA_B = "b" * 64
@@ -107,12 +116,20 @@ class _FakeAdapter(TaskAdapter):
         return {"response_length": len(response)}
 
     def extract_consumption(self, sample, supply, response):
-        return build_consumption_trace(span_id="full", supply=supply, response_text=response)
+        return build_consumption_trace(
+            span_id="full", supply=supply, response_text=response
+        )
 
 
 def _one_sample_adapter() -> _FakeAdapter:
     return _FakeAdapter(
-        samples=(_FakeSample(sample_id="s1", audio_ref=AudioRef(path="a.wav", sha256=_SHA_A), audio_seconds=2.0),)
+        samples=(
+            _FakeSample(
+                sample_id="s1",
+                audio_ref=AudioRef(path="a.wav", sha256=_SHA_A),
+                audio_seconds=2.0,
+            ),
+        )
     )
 
 
@@ -219,7 +236,9 @@ def test_runner_flight_lock_is_none_when_absent(tmp_path: Path):
 def test_runner_threads_the_flight_lock_through_when_present(tmp_path: Path):
     lock_path = tmp_path / FLIGHT_LOCK_RELPATH
     lock_path.parent.mkdir(parents=True, exist_ok=True)
-    lock_path.write_text(json.dumps({"study_head": "deadbeef", "pid": 123}), encoding="utf-8")
+    lock_path.write_text(
+        json.dumps({"study_head": "deadbeef", "pid": 123}), encoding="utf-8"
+    )
 
     adapter = _one_sample_adapter()
     summary = run_rails_experiment(
@@ -268,12 +287,13 @@ def _knowledge_snapshot() -> KnowledgeSnapshot:
 def _query_state(context, *, loop_step, state_ids=(), value_ids=()) -> QueryState:
     prior = context.query_state
     return QueryState(
-        query_id=f"{prior.query_id}:step{loop_step}",
+        query_id=prior.query_id,
         query_sample_id=prior.query_sample_id,
         speech_packet_id=prior.speech_packet_id,
         speech_packet_sha256=prior.speech_packet_sha256,
         use_split_identity_hash=prior.use_split_identity_hash,
         loop_step=loop_step,
+        visible_facet_ids=prior.visible_facet_ids,
         agent_state_ids=state_ids,
         retrieved_value_ids=value_ids,
     ).validate()
@@ -307,6 +327,10 @@ class _OrganizeAcquireStopController:
 
     def initial_contact(self, context):
         assert not hasattr(context, "sample")
+        assert not hasattr(context, "knowledge_snapshot")
+        assert context.knowledge_snapshot_sha256 == _knowledge_snapshot().content_hash()
+        assert context.catalog_facet_ids == ("operation:dim",)
+        assert context.catalog_value_ids == ("value:dim-light",)
         assert context.query_state.query_source == "speech_features"
         return _contact(context.query_state, 0, "primary")
 
@@ -330,7 +354,7 @@ class _OrganizeAcquireStopController:
                 state_ids=(state.state_id,),
             )
             transition = AgentStepTransition(
-                snapshot_sha256=context.knowledge_snapshot.content_hash(),
+                snapshot_sha256=context.knowledge_snapshot_sha256,
                 prior_query_state_sha256=context.query_state.content_hash(),
                 next_query_state_sha256=next_state.content_hash(),
                 action_kind="organize",
@@ -348,6 +372,20 @@ class _OrganizeAcquireStopController:
                 next_contact=_contact(next_state, 1, "retrieve"),
             )
         if step == 1:
+            rank_result = RankResult(
+                snapshot_sha256=context.knowledge_snapshot_sha256,
+                query_state_sha256=context.query_state.content_hash(),
+                ranking_policy_id="speech-agent-rank-test-v1",
+                candidates=(RankedFacet("operation:dim", 1.0),),
+            ).validate()
+            fusion_decision = FusionDecision(
+                snapshot_sha256=context.knowledge_snapshot_sha256,
+                query_state_sha256=context.query_state.content_hash(),
+                rank_result_sha256=rank_result.content_hash(),
+                fusion_policy_id="speech-agent-fusion-test-v1",
+                supporting_facet_ids=("operation:dim",),
+                selected_value_ids=("value:dim-light",),
+            ).validate()
             next_state = _query_state(
                 context,
                 loop_step=2,
@@ -355,7 +393,7 @@ class _OrganizeAcquireStopController:
                 value_ids=("value:dim-light",),
             )
             transition = AgentStepTransition(
-                snapshot_sha256=context.knowledge_snapshot.content_hash(),
+                snapshot_sha256=context.knowledge_snapshot_sha256,
                 prior_query_state_sha256=context.query_state.content_hash(),
                 next_query_state_sha256=next_state.content_hash(),
                 action_kind="acquire",
@@ -371,9 +409,11 @@ class _OrganizeAcquireStopController:
                 next_query_state=next_state,
                 new_agent_states=(),
                 next_contact=_contact(next_state, 2, "solve"),
+                rank_result=rank_result,
+                fusion_decision=fusion_decision,
             )
         transition = AgentStepTransition(
-            snapshot_sha256=context.knowledge_snapshot.content_hash(),
+            snapshot_sha256=context.knowledge_snapshot_sha256,
             prior_query_state_sha256=context.query_state.content_hash(),
             next_query_state_sha256=None,
             action_kind="stop",
@@ -414,14 +454,12 @@ def test_speech_native_agent_loop_keeps_speech_primary_and_separates_state_from_
 
     summary = run_speech_native_agent_loop(
         data_root=tmp_path,
-        plan=_plan(),
+        plan=_plan(execution_profile="model-free-check"),
         adapter=adapter,
         core_client=client,
         split_id="all",
         knowledge_snapshot=_knowledge_snapshot(),
-        speech_packet_bindings={
-            "s1": {"packet_id": "fake/dev/s1", "sha256": _SHA_C}
-        },
+        speech_packet_bindings={"s1": {"packet_id": "fake/dev/s1", "sha256": _SHA_C}},
         controller_policy_id="organize-acquire-stop-test-v1",
         controller_registry=_controller_registry(
             "organize-acquire-stop-test-v1",
@@ -431,9 +469,11 @@ def test_speech_native_agent_loop_keeps_speech_primary_and_separates_state_from_
         slot_count=1,
         queue_depth=2,
         trace_sink=_agent_trace(),
+        agent_executor_id="reference-trajectory-v1",
     )
 
     assert len(summary.results) == 1
+    assert summary.agent_executor_version == "repository-reference-v1"
     result = summary.results[0]
     assert result.final_query_state.loop_step == 2
     assert result.final_query_state.retrieved_value_ids == ("value:dim-light",)
@@ -484,6 +524,7 @@ def test_speech_native_agent_loop_keeps_speech_primary_and_separates_state_from_
                 f"knowledge-snapshot://{_knowledge_snapshot().content_hash()}/"
                 "value:dim-light"
             ),
+            "knowledge_role": "value",
         }
     ]
 
@@ -495,7 +536,7 @@ class _ImmediateStopController:
     def advance(self, context, contact, response_text):
         return AgentLoopAdvance(
             transition=AgentStepTransition(
-                snapshot_sha256=context.knowledge_snapshot.content_hash(),
+                snapshot_sha256=context.knowledge_snapshot_sha256,
                 prior_query_state_sha256=context.query_state.content_hash(),
                 next_query_state_sha256=None,
                 action_kind="stop",
@@ -573,7 +614,7 @@ def test_speech_native_agent_loop_batches_trajectories_and_keeps_slot_affinity(
 
     summary = run_speech_native_agent_loop(
         data_root=tmp_path,
-        plan=_plan(),
+        plan=_plan(execution_profile="model-free-check"),
         adapter=adapter,
         core_client=client,
         split_id="all",
@@ -594,6 +635,7 @@ def test_speech_native_agent_loop_batches_trajectories_and_keeps_slot_affinity(
         slot_count=2,
         queue_depth=4,
         trace_sink=_agent_trace(),
+        agent_executor_id="reference-trajectory-v1",
     )
 
     assert [result.sample_id for result in summary.results] == ["s0", "s1"]
@@ -620,7 +662,7 @@ def test_speech_native_agent_loop_flushes_concurrent_model_traces_in_split_order
 
     run_speech_native_agent_loop(
         data_root=tmp_path,
-        plan=_plan(),
+        plan=_plan(execution_profile="model-free-check"),
         adapter=_FakeAdapter(samples=samples),
         core_client=client,
         split_id="all",
@@ -641,6 +683,7 @@ def test_speech_native_agent_loop_flushes_concurrent_model_traces_in_split_order
         slot_count=2,
         queue_depth=4,
         trace_sink=trace,
+        agent_executor_id="reference-trajectory-v1",
     )
 
     assert [record_id for _, record_id, _ in trace.records] == [
@@ -668,7 +711,7 @@ def test_speech_native_agent_loop_refuses_incomplete_packet_materialization_befo
     with pytest.raises(RailsRunnerError, match="materialize every query sample"):
         run_speech_native_agent_loop(
             data_root=tmp_path,
-            plan=_plan(),
+            plan=_plan(execution_profile="model-free-check"),
             adapter=adapter,
             core_client=client,
             split_id="all",
@@ -683,6 +726,78 @@ def test_speech_native_agent_loop_refuses_incomplete_packet_materialization_befo
             slot_count=1,
             queue_depth=2,
             trace_sink=_agent_trace(),
+            agent_executor_id="reference-trajectory-v1",
+        )
+
+    assert client.calls == []
+
+
+def test_reference_agent_executor_is_model_free_only(tmp_path: Path):
+    client = _RecordingAgentClient()
+
+    with pytest.raises(RailsRunnerError, match="restricted to model-free-check"):
+        run_speech_native_agent_loop(
+            data_root=tmp_path,
+            plan=_plan(),
+            adapter=_one_sample_adapter(),
+            core_client=client,
+            split_id="all",
+            knowledge_snapshot=_knowledge_snapshot(),
+            speech_packet_bindings={
+                "s1": {"packet_id": "fake/dev/s1", "sha256": _SHA_C}
+            },
+            controller_policy_id="immediate-stop-test-v1",
+            controller_registry=_controller_registry(
+                "immediate-stop-test-v1",
+                lambda _sample_id: _ImmediateStopController(),
+            ),
+            max_contacts=1,
+            slot_count=1,
+            queue_depth=2,
+            trace_sink=_agent_trace(),
+            agent_executor_id="reference-trajectory-v1",
+        )
+
+    assert client.calls == []
+
+
+class _KnowledgeLeakingController(_ImmediateStopController):
+    def initial_contact(self, context):
+        return AgentContactPlan(
+            contact_id="contact-leak",
+            query_state_sha256=context.query_state.content_hash(),
+            purpose="leak",
+            instruction=("Use the dim-light operation when brightness must decrease."),
+            key_representation_id="K1",
+            matcher_policy_id="agent-test:leak",
+            decoding_params={"temperature": 0},
+        )
+
+
+def test_agent_control_cannot_embed_unacquired_knowledge_payload(tmp_path: Path):
+    client = _RecordingAgentClient()
+
+    with pytest.raises(RailsRunnerError, match="cannot embed frozen knowledge"):
+        run_speech_native_agent_loop(
+            data_root=tmp_path,
+            plan=_plan(execution_profile="model-free-check"),
+            adapter=_one_sample_adapter(),
+            core_client=client,
+            split_id="all",
+            knowledge_snapshot=_knowledge_snapshot(),
+            speech_packet_bindings={
+                "s1": {"packet_id": "fake/dev/s1", "sha256": _SHA_C}
+            },
+            controller_policy_id="knowledge-leak-test-v1",
+            controller_registry=_controller_registry(
+                "knowledge-leak-test-v1",
+                lambda _sample_id: _KnowledgeLeakingController(),
+            ),
+            max_contacts=1,
+            slot_count=1,
+            queue_depth=2,
+            trace_sink=_agent_trace(),
+            agent_executor_id="reference-trajectory-v1",
         )
 
     assert client.calls == []
@@ -710,7 +825,7 @@ class _NeverStopController(_ImmediateStopController):
         )
         return AgentLoopAdvance(
             transition=AgentStepTransition(
-                snapshot_sha256=context.knowledge_snapshot.content_hash(),
+                snapshot_sha256=context.knowledge_snapshot_sha256,
                 prior_query_state_sha256=context.query_state.content_hash(),
                 next_query_state_sha256=next_state.content_hash(),
                 action_kind="organize",
@@ -727,6 +842,46 @@ class _NeverStopController(_ImmediateStopController):
         )
 
 
+class _UnboundAcquireController(_OrganizeAcquireStopController):
+    def advance(self, context, contact, response_text):
+        advance = super().advance(context, contact, response_text)
+        if advance.transition.action_kind == "acquire":
+            return replace(advance, rank_result=None, fusion_decision=None)
+        return advance
+
+
+def test_agent_acquisition_requires_rank_and_fusion_binding(tmp_path: Path):
+    client = _RecordingAgentClient()
+
+    with pytest.raises(
+        RailsRunnerError,
+        match="requires RankResult and FusionDecision",
+    ):
+        run_speech_native_agent_loop(
+            data_root=tmp_path,
+            plan=_plan(execution_profile="model-free-check"),
+            adapter=_one_sample_adapter(),
+            core_client=client,
+            split_id="all",
+            knowledge_snapshot=_knowledge_snapshot(),
+            speech_packet_bindings={
+                "s1": {"packet_id": "fake/dev/s1", "sha256": _SHA_C}
+            },
+            controller_policy_id="unbound-acquire-test-v1",
+            controller_registry=_controller_registry(
+                "unbound-acquire-test-v1",
+                lambda _sample_id: _UnboundAcquireController([]),
+            ),
+            max_contacts=3,
+            slot_count=1,
+            queue_depth=2,
+            trace_sink=_agent_trace(),
+            agent_executor_id="reference-trajectory-v1",
+        )
+
+    assert len(client.calls) == 2
+
+
 def test_speech_native_agent_loop_refuses_a_controller_that_exceeds_contact_ceiling(
     tmp_path: Path,
 ):
@@ -736,7 +891,7 @@ def test_speech_native_agent_loop_refuses_a_controller_that_exceeds_contact_ceil
     with pytest.raises(RailsRunnerError, match="contact ceiling"):
         run_speech_native_agent_loop(
             data_root=tmp_path,
-            plan=_plan(),
+            plan=_plan(execution_profile="model-free-check"),
             adapter=adapter,
             core_client=client,
             split_id="all",
@@ -753,6 +908,7 @@ def test_speech_native_agent_loop_refuses_a_controller_that_exceeds_contact_ceil
             slot_count=1,
             queue_depth=2,
             trace_sink=_agent_trace(),
+            agent_executor_id="reference-trajectory-v1",
         )
 
 
@@ -765,14 +921,12 @@ def test_speech_native_agent_loop_bootstrap_supply_is_visible_and_persisted(
 
     summary = run_speech_native_agent_loop(
         data_root=tmp_path,
-        plan=_plan(),
+        plan=_plan(execution_profile="model-free-check"),
         adapter=adapter,
         core_client=client,
         split_id="all",
         knowledge_snapshot=_knowledge_snapshot(),
-        speech_packet_bindings={
-            "s1": {"packet_id": "fake/dev/s1", "sha256": _SHA_C}
-        },
+        speech_packet_bindings={"s1": {"packet_id": "fake/dev/s1", "sha256": _SHA_C}},
         controller_policy_id="immediate-stop-test-v1",
         controller_registry=_controller_registry(
             "immediate-stop-test-v1",
@@ -783,6 +937,7 @@ def test_speech_native_agent_loop_bootstrap_supply_is_visible_and_persisted(
         slot_count=1,
         queue_depth=2,
         trace_sink=trace,
+        agent_executor_id="reference-trajectory-v1",
     )
 
     result = summary.results[0]
@@ -798,19 +953,72 @@ def test_speech_native_agent_loop_bootstrap_supply_is_visible_and_persisted(
         "USE",
         "USE",
     ]
-    assert trace.records[1][2]["supply_bootstrap_value_ids"] == [
-        "value:dim-light"
-    ]
+    assert trace.records[1][2]["supply_bootstrap_value_ids"] == ["value:dim-light"]
     runtime_payload = trace.records[2][2]
     assert runtime_payload["use_speech_packet_sha256"] == _SHA_C
     assert runtime_payload["use_contacts"][0]["slot_id"] == 0
+    assert runtime_payload["use_waves"][0]["fanout_semantics"] == "single"
+    assert runtime_payload["use_waves"][0]["termination_reason"] == ("controller-stop")
     assert runtime_payload["use_transitions"][0]["action_kind"] == "stop"
     posthoc_payload = trace.records[3][2]
-    assert posthoc_payload["use_runtime_trace_sha256"] == runtime_payload[
-        "use_runtime_trace_sha256"
-    ]
+    assert (
+        posthoc_payload["use_runtime_trace_sha256"]
+        == runtime_payload["use_runtime_trace_sha256"]
+    )
     assert posthoc_payload["use_metrics"] == {"response_length": 16}
     json.dumps(summary.as_json(), sort_keys=True)
+
+
+def test_speech_native_agent_loop_keeps_key_facets_separate_from_values(
+    tmp_path: Path,
+):
+    client = _RecordingAgentClient()
+    trace = _agent_trace()
+
+    summary = run_speech_native_agent_loop(
+        data_root=tmp_path,
+        plan=_plan(execution_profile="model-free-check"),
+        adapter=_one_sample_adapter(),
+        core_client=client,
+        split_id="all",
+        knowledge_snapshot=_knowledge_snapshot(),
+        speech_packet_bindings={"s1": {"packet_id": "fake/dev/s1", "sha256": _SHA_C}},
+        controller_policy_id="immediate-stop-test-v1",
+        controller_registry=_controller_registry(
+            "immediate-stop-test-v1",
+            lambda _sample_id: _ImmediateStopController(),
+        ),
+        bootstrap_facet_ids=("operation:dim",),
+        max_contacts=1,
+        slot_count=1,
+        queue_depth=2,
+        trace_sink=trace,
+        agent_executor_id="reference-trajectory-v1",
+    )
+
+    result = summary.results[0]
+    assert result.initial_query_state.visible_facet_ids == ("operation:dim",)
+    assert result.initial_query_state.retrieved_value_ids == ()
+    text_parts = [
+        part for part in client.calls[0][0][1]["content"] if part["type"] == "text"
+    ]
+    assert text_parts == [
+        {
+            "type": "text",
+            "text": "Decrease the brightness of a light.",
+            "evidence_id": "key:operation:dim",
+            "source_uri": (
+                f"knowledge-snapshot://{_knowledge_snapshot().content_hash()}/"
+                "operation:dim"
+            ),
+            "knowledge_role": "key",
+        }
+    ]
+    supply_payload = next(
+        payload for channel, _, payload in trace.records if channel == "SUPPLY"
+    )
+    assert supply_payload["supply_bootstrap_facet_ids"] == ["operation:dim"]
+    assert supply_payload["supply_bootstrap_value_ids"] == []
 
 
 def test_speech_native_agent_loop_refuses_unknown_bootstrap_value_before_contact(
@@ -821,7 +1029,7 @@ def test_speech_native_agent_loop_refuses_unknown_bootstrap_value_before_contact
     with pytest.raises(RailsRunnerError, match="bootstrap_value_ids.*outside"):
         run_speech_native_agent_loop(
             data_root=tmp_path,
-            plan=_plan(),
+            plan=_plan(execution_profile="model-free-check"),
             adapter=_one_sample_adapter(),
             core_client=client,
             split_id="all",
@@ -839,6 +1047,7 @@ def test_speech_native_agent_loop_refuses_unknown_bootstrap_value_before_contact
             slot_count=1,
             queue_depth=2,
             trace_sink=_agent_trace(),
+            agent_executor_id="reference-trajectory-v1",
         )
 
     assert client.calls == []
@@ -898,3 +1107,400 @@ def test_shared_contact_dag_never_resubmits_a_duplicate_node():
                 ),
                 on_error=lambda _node, error: (_ for _ in ()).throw(error),
             )
+
+
+class _ParallelBatchStopController:
+    def __init__(self):
+        self.observed = None
+
+    def initial_contact(self, context):
+        return AgentContactBatch(
+            batch_id="initial-primary-retrieval",
+            query_state_sha256=context.query_state.content_hash(),
+            contacts=(
+                _contact(context.query_state, 0, "primary"),
+                _contact(context.query_state, 1, "retrieve"),
+            ),
+        )
+
+    def advance(self, context, contact, response_text):
+        self.observed = (contact, response_text)
+        return AgentLoopAdvance(
+            transition=AgentStepTransition(
+                snapshot_sha256=context.knowledge_snapshot_sha256,
+                prior_query_state_sha256=context.query_state.content_hash(),
+                next_query_state_sha256=None,
+                action_kind="stop",
+                action_target_refs=(),
+                new_value_ids=(),
+                used_value_ids=(),
+                dropped_value_ids=(),
+                new_agent_state_ids=(),
+                dropped_agent_state_ids=(),
+            ),
+            next_query_state=None,
+            new_agent_states=(),
+            next_contact=None,
+            final_response_contact_id="contact-0",
+        )
+
+
+class _ParallelBatchClient(_RecordingAgentClient):
+    def __init__(self):
+        super().__init__()
+        self.active = 0
+        self.peak = 0
+
+    def complete(self, messages, **options):
+        with self._lock:
+            self.active += 1
+            self.peak = max(self.peak, self.active)
+        try:
+            super().complete(messages, **options)
+            return f"response:{options['agent_contact_id']}"
+        finally:
+            with self._lock:
+                self.active -= 1
+
+
+@pytest.mark.skipif(
+    not openjiuwen_available(),
+    reason="openjiuwen is absent; the reference executor remains dependency-free",
+)
+def test_openjiuwen_agent_batch_serializes_on_one_slot_and_aggregates_in_order(
+    tmp_path: Path,
+):
+    controller = _ParallelBatchStopController()
+    client = _ParallelBatchClient()
+
+    summary = run_speech_native_agent_loop(
+        data_root=tmp_path,
+        plan=_plan(),
+        adapter=_one_sample_adapter(),
+        core_client=client,
+        split_id="all",
+        knowledge_snapshot=_knowledge_snapshot(),
+        speech_packet_bindings={"s1": {"packet_id": "fake/dev/s1", "sha256": _SHA_C}},
+        controller_policy_id="parallel-batch-stop-test-v1",
+        controller_registry=_controller_registry(
+            "parallel-batch-stop-test-v1", lambda _sample_id: controller
+        ),
+        max_contacts=2,
+        slot_count=2,
+        queue_depth=4,
+        trace_sink=_agent_trace(),
+        agent_executor_id="openjiuwen-workflow-v1",
+    )
+
+    assert client.peak == 1
+    assert summary.agent_executor_id == "openjiuwen-workflow-v1"
+    assert summary.agent_executor_version == "0.1.16.post2"
+    assert isinstance(controller.observed[0], AgentContactBatch)
+    assert controller.observed[1] == (
+        "response:contact-0",
+        "response:contact-1",
+    )
+    result = summary.results[0]
+    assert [record.plan.contact_id for record in result.contacts] == [
+        "contact-0",
+        "contact-1",
+    ]
+    assert {record.slot_id for record in result.contacts} == {0}
+    assert result.final_response_text == "response:contact-0"
+    assert len(result.waves) == 1
+    wave = result.waves[0]
+    assert wave.batch_id == "initial-primary-retrieval"
+    assert wave.fanout_semantics == "evidence_parallel"
+    assert wave.slot_ids == (0, 0)
+    assert wave.selected_final_contact_id == "contact-0"
+    assert wave.response_envelope_sha256 == agent_response_sha256(
+        controller.observed[0], controller.observed[1]
+    )
+    for messages, _options in client.calls:
+        query_parts = [
+            part
+            for part in messages[1]["content"]
+            if part["type"] == "input_speech_features"
+        ]
+        assert len(query_parts) == 1
+        assert query_parts[0]["speech_features"]["sha256"] == _SHA_C
+
+
+@pytest.mark.skipif(
+    not openjiuwen_available(),
+    reason="openjiuwen is absent; the reference executor remains dependency-free",
+)
+def test_openjiuwen_agent_advances_multiple_causal_waves(tmp_path: Path):
+    events = []
+    client = _RecordingAgentClient()
+
+    summary = run_speech_native_agent_loop(
+        data_root=tmp_path,
+        plan=_plan(),
+        adapter=_one_sample_adapter(),
+        core_client=client,
+        split_id="all",
+        knowledge_snapshot=_knowledge_snapshot(),
+        speech_packet_bindings={"s1": {"packet_id": "fake/dev/s1", "sha256": _SHA_C}},
+        controller_policy_id="contact-causal-waves-test-v1",
+        controller_registry=_controller_registry(
+            "contact-causal-waves-test-v1",
+            lambda _sample_id: _OrganizeAcquireStopController(events),
+        ),
+        max_contacts=3,
+        slot_count=2,
+        queue_depth=4,
+        trace_sink=_agent_trace(),
+        agent_executor_id="openjiuwen-workflow-v1",
+    )
+
+    result = summary.results[0]
+    assert len(result.contacts) == 3
+    assert [transition.action_kind for transition in result.transitions] == [
+        "organize",
+        "acquire",
+        "stop",
+    ]
+    assert len({record.slot_id for record in result.contacts}) == 1
+    assert result.final_query_state.retrieved_value_ids == ("value:dim-light",)
+    assert events == ["advance:s1:0", "advance:s1:1", "advance:s1:2"]
+
+
+@pytest.mark.skipif(
+    not openjiuwen_available(),
+    reason="openjiuwen is absent; the reference executor remains dependency-free",
+)
+def test_openjiuwen_agent_parallelizes_across_trajectory_affine_samples(
+    tmp_path: Path,
+):
+    samples = tuple(
+        _FakeSample(
+            sample_id=f"s{index}",
+            audio_ref=AudioRef(path=f"a-{index}.wav", sha256=_SHA_A),
+            audio_seconds=2.0,
+        )
+        for index in range(2)
+    )
+    client = _BarrierAgentClient()
+
+    summary = run_speech_native_agent_loop(
+        data_root=tmp_path,
+        plan=_plan(),
+        adapter=_FakeAdapter(samples=samples),
+        core_client=client,
+        split_id="all",
+        knowledge_snapshot=_knowledge_snapshot(),
+        speech_packet_bindings={
+            sample.sample_id: {
+                "packet_id": f"fake/dev/{sample.sample_id}",
+                "sha256": _SHA_C,
+            }
+            for sample in samples
+        },
+        controller_policy_id="openjiuwen-parallel-samples-test-v1",
+        controller_registry=_controller_registry(
+            "openjiuwen-parallel-samples-test-v1",
+            lambda _sample_id: _ImmediateStopController(),
+        ),
+        max_contacts=1,
+        slot_count=2,
+        queue_depth=2,
+        trace_sink=_agent_trace(),
+        agent_executor_id="openjiuwen-workflow-v1",
+    )
+
+    assert client.peak == 2
+    assert {result.contacts[0].slot_id for result in summary.results} == {0, 1}
+
+
+@pytest.mark.skipif(
+    not openjiuwen_available(),
+    reason="openjiuwen is absent; the reference executor remains dependency-free",
+)
+def test_openjiuwen_agent_matches_the_reference_trajectory_semantics(
+    tmp_path: Path,
+):
+    summaries = []
+    for executor_id in (
+        "reference-trajectory-v1",
+        "openjiuwen-workflow-v1",
+    ):
+        events = []
+        summaries.append(
+            run_speech_native_agent_loop(
+                data_root=tmp_path / executor_id,
+                plan=_plan(
+                    execution_profile=(
+                        "model-free-check"
+                        if executor_id == "reference-trajectory-v1"
+                        else "bounded-discovery-probe"
+                    )
+                ),
+                adapter=_one_sample_adapter(),
+                core_client=_RecordingAgentClient(),
+                split_id="all",
+                knowledge_snapshot=_knowledge_snapshot(),
+                speech_packet_bindings={
+                    "s1": {"packet_id": "fake/dev/s1", "sha256": _SHA_C}
+                },
+                controller_policy_id=f"equivalence-{executor_id}",
+                controller_registry=_controller_registry(
+                    f"equivalence-{executor_id}",
+                    lambda _sample_id, events=events: _OrganizeAcquireStopController(
+                        events
+                    ),
+                ),
+                max_contacts=3,
+                slot_count=1,
+                queue_depth=2,
+                trace_sink=_agent_trace(),
+                agent_executor_id=executor_id,
+            )
+        )
+
+    assert summaries[0].results[0].as_json() == summaries[1].results[0].as_json()
+
+
+class _BatchOrganizeStopController:
+    def __init__(self):
+        self.batch_response = None
+
+    def initial_contact(self, context):
+        return AgentContactBatch(
+            batch_id="parallel-factors",
+            query_state_sha256=context.query_state.content_hash(),
+            contacts=(
+                _contact(context.query_state, 0, "content-factor"),
+                _contact(context.query_state, 1, "boundary-factor"),
+            ),
+        )
+
+    def advance(self, context, contact, response_text):
+        if context.query_state.loop_step == 0:
+            self.batch_response = response_text
+            response_sha256 = agent_response_sha256(contact, response_text)
+            state = AgentStateArtifact(
+                state_id="state:parallel-factors",
+                state_kind="intent-factors",
+                content="The content and boundary factors were analyzed in parallel.",
+                source_query_state_sha256=context.query_state.content_hash(),
+                source_response_sha256=response_sha256,
+                producer_policy_id="batch-organize-stop-test-v1",
+                cited_value_ids=(),
+            )
+            next_state = _query_state(
+                context,
+                loop_step=1,
+                state_ids=(state.state_id,),
+            )
+            return AgentLoopAdvance(
+                transition=AgentStepTransition(
+                    snapshot_sha256=context.knowledge_snapshot_sha256,
+                    prior_query_state_sha256=context.query_state.content_hash(),
+                    next_query_state_sha256=next_state.content_hash(),
+                    action_kind="organize",
+                    action_target_refs=("parallel-factors",),
+                    new_value_ids=(),
+                    used_value_ids=(),
+                    dropped_value_ids=(),
+                    new_agent_state_ids=(state.state_id,),
+                    dropped_agent_state_ids=(),
+                ),
+                next_query_state=next_state,
+                new_agent_states=(state,),
+                next_contact=_contact(next_state, 2, "solve"),
+            )
+        return AgentLoopAdvance(
+            transition=AgentStepTransition(
+                snapshot_sha256=context.knowledge_snapshot_sha256,
+                prior_query_state_sha256=context.query_state.content_hash(),
+                next_query_state_sha256=None,
+                action_kind="stop",
+                action_target_refs=(),
+                new_value_ids=(),
+                used_value_ids=(),
+                dropped_value_ids=(),
+                new_agent_state_ids=(),
+                dropped_agent_state_ids=(),
+            ),
+            next_query_state=None,
+            new_agent_states=(),
+            next_contact=None,
+        )
+
+
+@pytest.mark.skipif(
+    not openjiuwen_available(),
+    reason="openjiuwen is absent; the reference executor remains dependency-free",
+)
+def test_openjiuwen_batch_response_can_materialize_next_wave_agent_state(
+    tmp_path: Path,
+):
+    controller = _BatchOrganizeStopController()
+    summary = run_speech_native_agent_loop(
+        data_root=tmp_path,
+        plan=_plan(),
+        adapter=_one_sample_adapter(),
+        core_client=_RecordingAgentClient(),
+        split_id="all",
+        knowledge_snapshot=_knowledge_snapshot(),
+        speech_packet_bindings={"s1": {"packet_id": "fake/dev/s1", "sha256": _SHA_C}},
+        controller_policy_id="batch-organize-stop-test-v1",
+        controller_registry=_controller_registry(
+            "batch-organize-stop-test-v1",
+            lambda _sample_id: controller,
+        ),
+        max_contacts=3,
+        slot_count=2,
+        queue_depth=4,
+        trace_sink=_agent_trace(),
+        agent_executor_id="openjiuwen-workflow-v1",
+    )
+
+    result = summary.results[0]
+    assert len(result.contacts) == 3
+    assert result.final_query_state.agent_state_ids == ("state:parallel-factors",)
+    assert result.agent_states[0].source_response_sha256 == agent_response_sha256(
+        AgentContactBatch(
+            batch_id="parallel-factors",
+            query_state_sha256=result.initial_query_state.content_hash(),
+            contacts=tuple(record.plan for record in result.contacts[:2]),
+        ),
+        controller.batch_response,
+    )
+
+
+@pytest.mark.skipif(
+    not openjiuwen_available(),
+    reason="openjiuwen is absent; the reference executor remains dependency-free",
+)
+def test_openjiuwen_agent_refuses_an_oversized_batch_before_model_contact(
+    tmp_path: Path,
+):
+    controller = _ParallelBatchStopController()
+    client = _RecordingAgentClient()
+
+    with pytest.raises(RailsRunnerError, match="contact ceiling"):
+        run_speech_native_agent_loop(
+            data_root=tmp_path,
+            plan=_plan(),
+            adapter=_one_sample_adapter(),
+            core_client=client,
+            split_id="all",
+            knowledge_snapshot=_knowledge_snapshot(),
+            speech_packet_bindings={
+                "s1": {"packet_id": "fake/dev/s1", "sha256": _SHA_C}
+            },
+            controller_policy_id="oversized-contact-batch-test-v1",
+            controller_registry=_controller_registry(
+                "oversized-contact-batch-test-v1",
+                lambda _sample_id: controller,
+            ),
+            max_contacts=1,
+            slot_count=1,
+            queue_depth=2,
+            trace_sink=_agent_trace(),
+            agent_executor_id="openjiuwen-workflow-v1",
+        )
+
+    assert client.calls == []

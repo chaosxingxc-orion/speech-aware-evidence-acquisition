@@ -193,7 +193,10 @@ def _spawn_live_matching_process(tmp_path_factory):
 
 def _fake_runtime_receipt():
     return {
-        "llama_cpp": {"binary_path": _BINARY_PATH, "binary_sha256": _live["binary_sha256"]},
+        "llama_cpp": {
+            "binary_path": _BINARY_PATH,
+            "binary_sha256": _live["binary_sha256"],
+        },
         "gguf_files": [{"path": f.path, "sha256": f.sha256} for f in _MODEL_FILES],
     }
 
@@ -255,7 +258,14 @@ def _fake_inference_session(*, host="127.0.0.1", port=None):
 
 
 def _transport(
-    base_url, data_root, *, post, session=None, runtime_receipt=None, runtime_root=None, **kwargs
+    base_url,
+    data_root,
+    *,
+    post,
+    session=None,
+    runtime_receipt=None,
+    runtime_root=None,
+    **kwargs,
 ):
     return LlamaServerTransport(
         base_url,
@@ -368,9 +378,7 @@ def test_speech_feature_prompt_order_sends_packet_reference_without_raw_audio(tm
     payload = _boundary_payload(
         tmp_path,
         task_instruction="Choose exactly one opaque key id.",
-        supplied_evidence=[
-            {"evidence_id": "key-001", "content": "Turn a light on."}
-        ],
+        supplied_evidence=[{"evidence_id": "key-001", "content": "Turn a light on."}],
         speech_feature_parts=[
             {
                 "packet_id": "slurp/train/s1",
@@ -472,11 +480,14 @@ def test_agent_loop_prompt_orders_keep_mutable_state_after_the_query_packet(
 
     parts = captured["body"]["messages"][1]["content"]
     assert tuple(part["type"] for part in parts) == expected_types
-    assert tuple(
-        part["speech_features"]["role"]
-        for part in parts
-        if part["type"] == "input_speech_features"
-    ) == expected_speech_roles
+    assert (
+        tuple(
+            part["speech_features"]["role"]
+            for part in parts
+            if part["type"] == "input_speech_features"
+        )
+        == expected_speech_roles
+    )
     assert parts[-1] == {
         "type": "text",
         "text": "[evidence dynamic-agent-step] Choose one key now.",
@@ -557,8 +568,37 @@ def test_agent_loop_wire_requests_have_an_identical_prefix_before_mutable_state(
     assert first[stable_prefix_length:] != second[stable_prefix_length:]
 
 
-def test_speech_query_prefix_renders_agent_state_after_speech_and_stable_supply(
-    tmp_path,
+@pytest.mark.parametrize(
+    ("prompt_order", "expected_order"),
+    (
+        (
+            "speech-query-prefix-v2",
+            (
+                "speech:query",
+                "[evidence stable-key-a] Opaque key A.",
+                "[evidence stable-key-b] Opaque key B.",
+                "[evidence retrieved-value] Train-derived value.",
+                "[agent state state:operation-needed kind=intent-factor] "
+                "The unresolved factor is the operation.",
+                "[agent control contact-2] Solve the task now.",
+            ),
+        ),
+        (
+            "knowledge-speech-state-v2",
+            (
+                "[evidence stable-key-a] Opaque key A.",
+                "[evidence stable-key-b] Opaque key B.",
+                "speech:query",
+                "[evidence retrieved-value] Train-derived value.",
+                "[agent state state:operation-needed kind=intent-factor] "
+                "The unresolved factor is the operation.",
+                "[agent control contact-2] Solve the task now.",
+            ),
+        ),
+    ),
+)
+def test_registered_v2_prompt_orders_preserve_agent_history_as_an_ordered_suffix(
+    tmp_path, prompt_order, expected_order
 ):
     feature_root = tmp_path / "features"
     query = _materialize_packet(feature_root, "slurp/train/query")
@@ -573,13 +613,27 @@ def test_speech_query_prefix_renders_agent_state_after_speech_and_stable_supply(
         tmp_path,
         post=fake_post,
         session=_fake_inference_session(),
-        prompt_order="speech-query-prefix-v2",
+        prompt_order=prompt_order,
         feature_root=feature_root,
     )
     payload = _boundary_payload(
         tmp_path,
         supplied_evidence=[
-            {"evidence_id": "value:dim-light", "content": "Dim-light knowledge."}
+            {
+                "evidence_id": "stable-key-a",
+                "content": "Opaque key A.",
+                "knowledge_role": "key",
+            },
+            {
+                "evidence_id": "stable-key-b",
+                "content": "Opaque key B.",
+                "knowledge_role": "key",
+            },
+            {
+                "evidence_id": "retrieved-value",
+                "content": "Train-derived value.",
+                "knowledge_role": "value",
+            },
         ],
         history=[
             {
@@ -601,9 +655,7 @@ def test_speech_query_prefix_renders_agent_state_after_speech_and_stable_supply(
                 "role": "control",
                 "contact_id": "contact-2",
                 "content": "Solve the task now.",
-                "content_sha256": hashlib.sha256(
-                    b"Solve the task now."
-                ).hexdigest(),
+                "content_sha256": hashlib.sha256(b"Solve the task now.").hexdigest(),
             },
         ],
         speech_feature_parts=[
@@ -623,24 +675,90 @@ def test_speech_query_prefix_renders_agent_state_after_speech_and_stable_supply(
     transport(json.dumps(payload).encode())
 
     parts = captured["body"]["messages"][1]["content"]
-    assert parts[0]["type"] == "input_speech_features"
-    assert parts[1] == {
-        "type": "text",
-        "text": "[evidence value:dim-light] Dim-light knowledge.",
-    }
-    assert parts[2]["text"].startswith(
-        "[agent state state:operation-needed kind=intent-factor]"
+    observed_order = tuple(
+        (
+            f"speech:{part['speech_features']['role']}"
+            if part["type"] == "input_speech_features"
+            else part["text"]
+        )
+        for part in parts
     )
-    assert parts[3] == {
-        "type": "text",
-        "text": "[agent control contact-2] Solve the task now.",
-    }
+    assert observed_order == expected_order
+
+
+def test_agent_history_retention_fails_closed_before_transport_contact(
+    tmp_path, monkeypatch
+):
+    from speech_aware_evidence_acquisition.core.model import (
+        transport as transport_module,
+    )
+
+    feature_root = tmp_path / "features"
+    query = _materialize_packet(feature_root, "slurp/train/query")
+    contacts = []
+
+    def fake_post(url, body):
+        contacts.append(json.loads(body))
+        return _canned_response()
+
+    original_ordering = transport_module._ordered_speech_feature_content
+
+    def drop_agent_history(**kwargs):
+        ordered = original_ordering(**kwargs)
+        state_count = len(kwargs["state_texts"])
+        return ordered[:-state_count] if state_count else ordered
+
+    monkeypatch.setattr(
+        transport_module,
+        "_ordered_speech_feature_content",
+        drop_agent_history,
+    )
+    transport = _transport(
+        _base_url(),
+        tmp_path,
+        post=fake_post,
+        session=_fake_inference_session(),
+        prompt_order="knowledge-speech-state-v2",
+        feature_root=feature_root,
+    )
+    control_text = "Solve the task using the original speech query."
+    payload = _boundary_payload(
+        tmp_path,
+        history=[
+            {
+                "turn": 1,
+                "role": "control",
+                "contact_id": "contact-1",
+                "content": control_text,
+                "content_sha256": hashlib.sha256(control_text.encode()).hexdigest(),
+            }
+        ],
+        speech_feature_parts=[
+            {
+                "packet_id": query.packet_id,
+                "sha256": query.packet_sha256,
+                "role": "query",
+            }
+        ],
+        speech_packet_sha256=query.packet_sha256,
+        query_source="speech_features",
+        key_representation_id="k1-text-card-v1",
+        matcher_policy_id="agent-loop-v1",
+        mmproj_loaded=False,
+    )
+
+    with pytest.raises(FrozenCoreError, match="preserve Agent state/control"):
+        transport(json.dumps(payload).encode())
+
+    assert contacts == []
 
 
 def test_speech_feature_transport_batch_validates_query_and_key_packets(
     tmp_path, monkeypatch
 ):
-    from speech_aware_evidence_acquisition.core.model import transport as transport_module
+    from speech_aware_evidence_acquisition.core.model import (
+        transport as transport_module,
+    )
 
     feature_root = tmp_path / "features"
     query = _materialize_packet(feature_root, "slurp/train/query")
@@ -664,7 +782,11 @@ def test_speech_feature_transport_batch_validates_query_and_key_packets(
     payload = _boundary_payload(
         tmp_path,
         speech_feature_parts=[
-            {"packet_id": query.packet_id, "sha256": query.packet_sha256, "role": "query"},
+            {
+                "packet_id": query.packet_id,
+                "sha256": query.packet_sha256,
+                "role": "query",
+            },
             {"packet_id": key.packet_id, "sha256": key.packet_sha256, "role": "key"},
         ],
         speech_packet_sha256=query.packet_sha256,
@@ -713,7 +835,9 @@ def test_speech_feature_prompt_order_requires_inference_session_and_fixed_root(
         )
 
 
-def test_speech_feature_transport_fails_closed_on_corruption_and_inline_arrays(tmp_path):
+def test_speech_feature_transport_fails_closed_on_corruption_and_inline_arrays(
+    tmp_path,
+):
     feature_root = tmp_path / "features"
     packet = _materialize_packet(feature_root)
     transport = _transport(
@@ -756,7 +880,9 @@ def test_speech_feature_transport_fails_closed_on_corruption_and_inline_arrays(t
         transport(json.dumps(payload).encode())
 
 
-def test_speech_feature_packet_loader_rejects_escape_model_and_dimension_mismatch(tmp_path):
+def test_speech_feature_packet_loader_rejects_escape_model_and_dimension_mismatch(
+    tmp_path,
+):
     feature_root = tmp_path / "features"
     packet = _materialize_packet(feature_root)
     with pytest.raises(FrozenCoreError, match="traversal"):
@@ -775,13 +901,14 @@ def test_speech_feature_packet_loader_rejects_escape_model_and_dimension_mismatc
         )
 
 
-def test_speech_feature_packet_batch_validation_is_parallel_and_ordered(tmp_path, monkeypatch):
+def test_speech_feature_packet_batch_validation_is_parallel_and_ordered(
+    tmp_path, monkeypatch
+):
     from speech_aware_evidence_acquisition.core.model import speech_features
 
     feature_root = tmp_path / "features"
     packets = tuple(
-        _materialize_packet(feature_root, f"slurp/train/s{index}")
-        for index in range(6)
+        _materialize_packet(feature_root, f"slurp/train/s{index}") for index in range(6)
     )
     original = speech_features.load_speech_feature_packet
     lock = threading.Lock()
@@ -818,7 +945,9 @@ def test_speech_feature_packet_batch_validation_is_parallel_and_ordered(tmp_path
     assert 2 <= peak <= 3
 
 
-def test_speech_feature_packet_materialization_is_idempotent_but_never_overwrites(tmp_path):
+def test_speech_feature_packet_materialization_is_idempotent_but_never_overwrites(
+    tmp_path,
+):
     feature_root = tmp_path / "features"
     packet = _materialize_packet(feature_root)
     assert _materialize_packet(feature_root).packet_sha256 == packet.packet_sha256
@@ -918,7 +1047,9 @@ def test_prompt_order_v2_moves_evidence_into_system_ahead_of_instruction(tmp_pat
         return _canned_response()
 
     transport = _transport(
-        _base_url(), tmp_path, post=fake_post,
+        _base_url(),
+        tmp_path,
+        post=fake_post,
         prompt_order="evidence-first-system-v2",
     )
     payload = _boundary_payload(
@@ -948,9 +1079,13 @@ def test_prompt_order_v2_without_evidence_is_byte_identical_to_v1(tmp_path):
         def fake_post(url, body):
             bodies[key] = body
             return _canned_response()
+
         return fake_post
 
-    for key, order in (("v1", "system-instruction-v1"), ("v2", "evidence-first-system-v2")):
+    for key, order in (
+        ("v1", "system-instruction-v1"),
+        ("v2", "evidence-first-system-v2"),
+    ):
         transport = _transport(
             _base_url(), tmp_path, post=make_post(key), prompt_order=order
         )
@@ -961,7 +1096,9 @@ def test_prompt_order_v2_without_evidence_is_byte_identical_to_v1(tmp_path):
 def test_unknown_prompt_order_refused_at_construction(tmp_path):
     with pytest.raises(Exception, match="prompt_order"):
         _transport(
-            _base_url(), tmp_path, post=lambda u, b: _canned_response(),
+            _base_url(),
+            tmp_path,
+            post=lambda u, b: _canned_response(),
             prompt_order="evidence-last",
         )
 
@@ -980,7 +1117,10 @@ def test_usage_with_nested_detail_objects_keeps_scalar_counters_only(tmp_path):
                     "prompt_tokens": 56032,
                     "completion_tokens": 800,
                     "total_tokens": 56832,
-                    "prompt_tokens_details": {"cached_tokens": 0, "audio_tokens": 55000},
+                    "prompt_tokens_details": {
+                        "cached_tokens": 0,
+                        "audio_tokens": 55000,
+                    },
                 },
             }
         ).encode()
@@ -1016,7 +1156,9 @@ def test_http_error_surfaces_status_and_server_body(tmp_path):
         )
 
     transport = _transport(_base_url(), tmp_path, post=fake_post)
-    with pytest.raises(FrozenCoreError, match="HTTP 400.*exceeds the available context"):
+    with pytest.raises(
+        FrozenCoreError, match="HTTP 400.*exceeds the available context"
+    ):
         transport(json.dumps(_boundary_payload(tmp_path)).encode())
 
 
@@ -1034,7 +1176,11 @@ def test_evidence_items_become_text_parts(tmp_path):
     payload = _boundary_payload(
         tmp_path,
         supplied_evidence=[
-            {"evidence_id": "ev-1", "source_uri": "conec://x", "content": "context text"}
+            {
+                "evidence_id": "ev-1",
+                "source_uri": "conec://x",
+                "content": "context text",
+            }
         ],
         evidence_provenance=[{"lock_key": "conec", "relpath": "x", "sha256": "0" * 64}],
     )
@@ -1063,7 +1209,11 @@ def test_content_order_is_evidence_then_audio_when_evidence_present(tmp_path):
     payload = _boundary_payload(
         tmp_path,
         supplied_evidence=[
-            {"evidence_id": "ev-1", "source_uri": "conec://x", "content": "context text"}
+            {
+                "evidence_id": "ev-1",
+                "source_uri": "conec://x",
+                "content": "context text",
+            }
         ],
         evidence_provenance=[{"lock_key": "conec", "relpath": "x", "sha256": "0" * 64}],
     )
@@ -1092,7 +1242,12 @@ def test_content_order_preserves_multi_evidence_order_before_audio(tmp_path):
 
     def fake_post(url, body):
         parts = json.loads(body)["messages"][1]["content"]
-        assert [part["type"] for part in parts] == ["text", "text", "text", "input_audio"]
+        assert [part["type"] for part in parts] == [
+            "text",
+            "text",
+            "text",
+            "input_audio",
+        ]
         assert parts[0] == {"type": "text", "text": "[evidence sup-1] supplied one"}
         assert parts[1] == {"type": "text", "text": "[evidence sup-2] supplied two"}
         assert parts[2] == {"type": "text", "text": "[evidence ret-1] retrieved one"}
@@ -1102,11 +1257,23 @@ def test_content_order_preserves_multi_evidence_order_before_audio(tmp_path):
     payload = _boundary_payload(
         tmp_path,
         supplied_evidence=[
-            {"evidence_id": "sup-1", "source_uri": "conec://a", "content": "supplied one"},
-            {"evidence_id": "sup-2", "source_uri": "conec://b", "content": "supplied two"},
+            {
+                "evidence_id": "sup-1",
+                "source_uri": "conec://a",
+                "content": "supplied one",
+            },
+            {
+                "evidence_id": "sup-2",
+                "source_uri": "conec://b",
+                "content": "supplied two",
+            },
         ],
         retrieved_evidence=[
-            {"evidence_id": "ret-1", "source_uri": "conec://c", "content": "retrieved one"},
+            {
+                "evidence_id": "ret-1",
+                "source_uri": "conec://c",
+                "content": "retrieved one",
+            },
         ],
         evidence_provenance=[
             {"lock_key": "conec", "relpath": "a", "sha256": "0" * 64},
@@ -1118,9 +1285,7 @@ def test_content_order_preserves_multi_evidence_order_before_audio(tmp_path):
 
 
 def test_missing_media_fails_closed(tmp_path):
-    transport = _transport(
-        _base_url(), tmp_path, post=lambda u, b: _canned_response()
-    )
+    transport = _transport(_base_url(), tmp_path, post=lambda u, b: _canned_response())
     payload = _boundary_payload(tmp_path, media_relpath="media/absent.mp3")
     with pytest.raises(FileNotFoundError):
         transport(json.dumps(payload).encode())
@@ -1131,9 +1296,7 @@ def test_decoding_params_cannot_override_constructed_messages(tmp_path):
     must never silently replace the constructed message list (which would drop
     audio while the adapter still meters it as delivered)."""
 
-    transport = _transport(
-        _base_url(), tmp_path, post=lambda u, b: _canned_response()
-    )
+    transport = _transport(_base_url(), tmp_path, post=lambda u, b: _canned_response())
     payload = _boundary_payload(tmp_path, decoding_params={"messages": []})
     with pytest.raises(FrozenCoreError, match="messages"):
         transport(json.dumps(payload).encode())
@@ -1175,9 +1338,7 @@ def test_malformed_usage_value_raises_frozen_core_error(tmp_path):
             "usage": {"prompt_tokens": "NaN-ish-string", "completion_tokens": 2},
         }
     ).encode()
-    transport = _transport(
-        _base_url(), tmp_path, post=lambda u, b: response
-    )
+    transport = _transport(_base_url(), tmp_path, post=lambda u, b: response)
     with pytest.raises(FrozenCoreError, match="malformed"):
         transport(json.dumps(_boundary_payload(tmp_path)).encode())
 
@@ -1217,27 +1378,21 @@ def test_absolute_media_relpath_outside_data_root_is_refused_not_read(tmp_path):
 
 
 def test_drive_letter_media_relpath_refused_at_transport(tmp_path):
-    transport = _transport(
-        _base_url(), tmp_path, post=lambda u, b: _canned_response()
-    )
+    transport = _transport(_base_url(), tmp_path, post=lambda u, b: _canned_response())
     payload = _boundary_payload(tmp_path, media_relpath="C:/secret.txt")
     with pytest.raises(FrozenCoreError, match="media_relpath"):
         transport(json.dumps(payload).encode())
 
 
 def test_backslash_media_relpath_refused_at_transport(tmp_path):
-    transport = _transport(
-        _base_url(), tmp_path, post=lambda u, b: _canned_response()
-    )
+    transport = _transport(_base_url(), tmp_path, post=lambda u, b: _canned_response())
     payload = _boundary_payload(tmp_path, media_relpath="media\\5000001.mp3")
     with pytest.raises(FrozenCoreError, match="media_relpath"):
         transport(json.dumps(payload).encode())
 
 
 def test_traversal_media_relpath_refused_at_transport(tmp_path):
-    transport = _transport(
-        _base_url(), tmp_path, post=lambda u, b: _canned_response()
-    )
+    transport = _transport(_base_url(), tmp_path, post=lambda u, b: _canned_response())
     payload = _boundary_payload(tmp_path, media_relpath="../outside/secret.mp3")
     with pytest.raises(FrozenCoreError, match="media_relpath"):
         transport(json.dumps(payload).encode())
@@ -1247,9 +1402,7 @@ def test_missing_media_still_raises_file_not_found_after_confinement_check(tmp_p
     """The confinement check must not change the existing missing-media
     behavior for a syntactically clean, in-root relative path."""
 
-    transport = _transport(
-        _base_url(), tmp_path, post=lambda u, b: _canned_response()
-    )
+    transport = _transport(_base_url(), tmp_path, post=lambda u, b: _canned_response())
     payload = _boundary_payload(tmp_path, media_relpath="media/absent.mp3")
     with pytest.raises(FileNotFoundError):
         transport(json.dumps(payload).encode())
@@ -1264,9 +1417,7 @@ def test_media_relpath_symlink_escape_refused_at_transport(tmp_path):
     (outside / "leaked.mp3").write_bytes(b"leaked-bytes")
     (data_root / "media_link").symlink_to(outside, target_is_directory=True)
 
-    transport = _transport(
-        _base_url(), data_root, post=lambda u, b: _canned_response()
-    )
+    transport = _transport(_base_url(), data_root, post=lambda u, b: _canned_response())
     payload = _boundary_payload(data_root, media_relpath="media_link/leaked.mp3")
     with pytest.raises(FrozenCoreError, match="media_relpath"):
         transport(json.dumps(payload).encode())
@@ -1297,9 +1448,7 @@ def test_media_relpath_windows_junction_escape_refused_at_transport(tmp_path):
             f"(rc={result.returncode}): {result.stderr or result.stdout}"
         )
 
-    transport = _transport(
-        _base_url(), data_root, post=lambda u, b: _canned_response()
-    )
+    transport = _transport(_base_url(), data_root, post=lambda u, b: _canned_response())
     payload = _boundary_payload(data_root, media_relpath="media_link/leaked.mp3")
     with pytest.raises(FrozenCoreError, match="escapes"):
         transport(json.dumps(payload).encode())
@@ -1337,7 +1486,9 @@ def test_existing_style_request_produces_byte_identical_wire_payload(tmp_path):
                     {
                         "type": "input_audio",
                         "input_audio": {
-                            "data": base64.b64encode(media.read_bytes()).decode("ascii"),
+                            "data": base64.b64encode(media.read_bytes()).decode(
+                                "ascii"
+                            ),
                             "format": "mp3",
                         },
                     }
@@ -1398,7 +1549,9 @@ def test_v3_text_only_delta_candidate_produces_single_text_part(tmp_path):
     transport = _transport(
         _base_url(), tmp_path, post=fake_post, prompt_order="evidence-first-system-v3"
     )
-    payload = _boundary_payload(tmp_path, delta_candidates=[{"text": "a text-only guess"}])
+    payload = _boundary_payload(
+        tmp_path, delta_candidates=[{"text": "a text-only guess"}]
+    )
     transport(json.dumps(payload).encode())
 
 
@@ -1453,6 +1606,7 @@ def test_v3_exemplar_bank_canonical_serialization_is_order_independent(tmp_path)
         def fake_post(url, body):
             bodies[key] = body
             return _canned_response()
+
         return fake_post
 
     for key, bank in (
@@ -1460,7 +1614,10 @@ def test_v3_exemplar_bank_canonical_serialization_is_order_independent(tmp_path)
         ("reversed", [entry_two, entry_one]),
     ):
         transport = _transport(
-            _base_url(), tmp_path, post=make_post(key), prompt_order="evidence-first-system-v3"
+            _base_url(),
+            tmp_path,
+            post=make_post(key),
+            prompt_order="evidence-first-system-v3",
         )
         payload = _boundary_payload(tmp_path, exemplar_bank=bank)
         transport(json.dumps(payload).encode())
@@ -1479,6 +1636,7 @@ def test_v3_empty_bank_and_no_deltas_matches_v2_shape(tmp_path):
         def fake_post(url, body):
             bodies[key] = body
             return _canned_response()
+
         return fake_post
 
     payload_kwargs = dict(
@@ -1487,8 +1645,13 @@ def test_v3_empty_bank_and_no_deltas_matches_v2_shape(tmp_path):
         ],
         evidence_provenance=[{"lock_key": "conec", "relpath": "x", "sha256": "0" * 64}],
     )
-    for key, order in (("v2", "evidence-first-system-v2"), ("v3", "evidence-first-system-v3")):
-        transport = _transport(_base_url(), tmp_path, post=make_post(key), prompt_order=order)
+    for key, order in (
+        ("v2", "evidence-first-system-v2"),
+        ("v3", "evidence-first-system-v3"),
+    ):
+        transport = _transport(
+            _base_url(), tmp_path, post=make_post(key), prompt_order=order
+        )
         payload = _boundary_payload(tmp_path, **payload_kwargs)
         transport(json.dumps(payload).encode())
     assert bodies["v2"] == bodies["v3"]
@@ -1496,7 +1659,9 @@ def test_v3_empty_bank_and_no_deltas_matches_v2_shape(tmp_path):
 
 def test_v3_bank_entry_missing_label_fails_closed(tmp_path):
     transport = _transport(
-        _base_url(), tmp_path, post=lambda u, b: _canned_response(),
+        _base_url(),
+        tmp_path,
+        post=lambda u, b: _canned_response(),
         prompt_order="evidence-first-system-v3",
     )
     payload = _boundary_payload(
@@ -1508,7 +1673,9 @@ def test_v3_bank_entry_missing_label_fails_closed(tmp_path):
 
 def test_v3_bank_entry_nonexistent_media_fails_closed(tmp_path):
     transport = _transport(
-        _base_url(), tmp_path, post=lambda u, b: _canned_response(),
+        _base_url(),
+        tmp_path,
+        post=lambda u, b: _canned_response(),
         prompt_order="evidence-first-system-v3",
     )
     payload = _boundary_payload(
@@ -1520,7 +1687,9 @@ def test_v3_bank_entry_nonexistent_media_fails_closed(tmp_path):
 
 def test_v3_bank_entry_wrong_type_fails_closed(tmp_path):
     transport = _transport(
-        _base_url(), tmp_path, post=lambda u, b: _canned_response(),
+        _base_url(),
+        tmp_path,
+        post=lambda u, b: _canned_response(),
         prompt_order="evidence-first-system-v3",
     )
     payload = _boundary_payload(
@@ -1532,7 +1701,9 @@ def test_v3_bank_entry_wrong_type_fails_closed(tmp_path):
 
 def test_v3_bank_entry_not_a_mapping_fails_closed(tmp_path):
     transport = _transport(
-        _base_url(), tmp_path, post=lambda u, b: _canned_response(),
+        _base_url(),
+        tmp_path,
+        post=lambda u, b: _canned_response(),
         prompt_order="evidence-first-system-v3",
     )
     payload = _boundary_payload(tmp_path, exemplar_bank=["not-a-mapping"])
@@ -1542,7 +1713,9 @@ def test_v3_bank_entry_not_a_mapping_fails_closed(tmp_path):
 
 def test_v3_bank_not_a_list_fails_closed(tmp_path):
     transport = _transport(
-        _base_url(), tmp_path, post=lambda u, b: _canned_response(),
+        _base_url(),
+        tmp_path,
+        post=lambda u, b: _canned_response(),
         prompt_order="evidence-first-system-v3",
     )
     payload = _boundary_payload(tmp_path, exemplar_bank={"label": "x"})
@@ -1556,7 +1729,9 @@ def test_v3_bank_media_relpath_traversal_refused_at_transport(tmp_path):
     just because the item is one of several."""
 
     transport = _transport(
-        _base_url(), tmp_path, post=lambda u, b: _canned_response(),
+        _base_url(),
+        tmp_path,
+        post=lambda u, b: _canned_response(),
         prompt_order="evidence-first-system-v3",
     )
     payload = _boundary_payload(
@@ -1569,7 +1744,9 @@ def test_v3_bank_media_relpath_traversal_refused_at_transport(tmp_path):
 
 def test_v3_delta_candidate_both_text_and_media_fails_closed(tmp_path):
     transport = _transport(
-        _base_url(), tmp_path, post=lambda u, b: _canned_response(),
+        _base_url(),
+        tmp_path,
+        post=lambda u, b: _canned_response(),
         prompt_order="evidence-first-system-v3",
     )
     payload = _boundary_payload(
@@ -1584,7 +1761,9 @@ def test_v3_delta_candidate_both_text_and_media_fails_closed(tmp_path):
 
 def test_v3_delta_candidate_neither_text_nor_media_fails_closed(tmp_path):
     transport = _transport(
-        _base_url(), tmp_path, post=lambda u, b: _canned_response(),
+        _base_url(),
+        tmp_path,
+        post=lambda u, b: _canned_response(),
         prompt_order="evidence-first-system-v3",
     )
     payload = _boundary_payload(tmp_path, delta_candidates=[{"label": "x"}])
@@ -1594,7 +1773,9 @@ def test_v3_delta_candidate_neither_text_nor_media_fails_closed(tmp_path):
 
 def test_v3_more_than_two_delta_candidates_fails_closed(tmp_path):
     transport = _transport(
-        _base_url(), tmp_path, post=lambda u, b: _canned_response(),
+        _base_url(),
+        tmp_path,
+        post=lambda u, b: _canned_response(),
         prompt_order="evidence-first-system-v3",
     )
     payload = _boundary_payload(
@@ -1606,7 +1787,9 @@ def test_v3_more_than_two_delta_candidates_fails_closed(tmp_path):
 
 def test_v3_delta_candidates_not_a_list_fails_closed(tmp_path):
     transport = _transport(
-        _base_url(), tmp_path, post=lambda u, b: _canned_response(),
+        _base_url(),
+        tmp_path,
+        post=lambda u, b: _canned_response(),
         prompt_order="evidence-first-system-v3",
     )
     payload = _boundary_payload(tmp_path, delta_candidates={"text": "x"})
@@ -1682,7 +1865,8 @@ def test_exemplar_context_arm_payload_produces_correct_v3_tiers_on_the_wire(tmp_
         user_content = parsed["messages"][1]["content"]
         assert len(user_content) == 1
         assert (
-            base64.b64decode(user_content[0]["input_audio"]["data"]) == b"target-audio-bytes"
+            base64.b64decode(user_content[0]["input_audio"]["data"])
+            == b"target-audio-bytes"
         )
         return _canned_response()
 
@@ -1700,27 +1884,21 @@ def test_exemplar_context_arm_payload_produces_correct_v3_tiers_on_the_wire(tmp_
 
 
 def test_media_relpath_trailing_dot_segment_refused_at_transport(tmp_path):
-    transport = _transport(
-        _base_url(), tmp_path, post=lambda u, b: _canned_response()
-    )
+    transport = _transport(_base_url(), tmp_path, post=lambda u, b: _canned_response())
     payload = _boundary_payload(tmp_path, media_relpath="media/5000001.mp3.")
     with pytest.raises(FrozenCoreError, match="media_relpath"):
         transport(json.dumps(payload).encode())
 
 
 def test_media_relpath_trailing_space_segment_refused_at_transport(tmp_path):
-    transport = _transport(
-        _base_url(), tmp_path, post=lambda u, b: _canned_response()
-    )
+    transport = _transport(_base_url(), tmp_path, post=lambda u, b: _canned_response())
     payload = _boundary_payload(tmp_path, media_relpath="media/5000001.mp3 ")
     with pytest.raises(FrozenCoreError, match="media_relpath"):
         transport(json.dumps(payload).encode())
 
 
 def test_media_relpath_colon_in_segment_refused_at_transport(tmp_path):
-    transport = _transport(
-        _base_url(), tmp_path, post=lambda u, b: _canned_response()
-    )
+    transport = _transport(_base_url(), tmp_path, post=lambda u, b: _canned_response())
     payload = _boundary_payload(tmp_path, media_relpath="media/5000001.mp3:hidden")
     with pytest.raises(FrozenCoreError, match="media_relpath"):
         transport(json.dumps(payload).encode())

@@ -388,6 +388,7 @@ class QueryState:
     speech_packet_sha256: str
     use_split_identity_hash: str
     loop_step: int = 0
+    visible_facet_ids: tuple[str, ...] = ()
     agent_state_ids: tuple[str, ...] = ()
     retrieved_value_ids: tuple[str, ...] = ()
     use_partition_role: str = DEV_PARTITION_ROLE
@@ -426,6 +427,9 @@ class QueryState:
             raise RailsError("QueryState.loop_step must be a non-negative integer")
         _require_unique_texts(self.agent_state_ids, field="QueryState.agent_state_ids")
         _require_unique_texts(
+            self.visible_facet_ids, field="QueryState.visible_facet_ids"
+        )
+        _require_unique_texts(
             self.retrieved_value_ids, field="QueryState.retrieved_value_ids"
         )
         return self
@@ -442,6 +446,7 @@ class QueryState:
             "use_partition_role": self.use_partition_role,
             "use_split_identity_hash": self.use_split_identity_hash,
             "loop_step": self.loop_step,
+            "visible_facet_ids": list(self.visible_facet_ids),
             "agent_state_ids": list(self.agent_state_ids),
             "retrieved_value_ids": list(self.retrieved_value_ids),
         }
@@ -460,6 +465,7 @@ class QueryState:
             use_partition_role=document.get("use_partition_role", DEV_PARTITION_ROLE),
             use_split_identity_hash=document["use_split_identity_hash"],
             loop_step=document.get("loop_step", 0),
+            visible_facet_ids=tuple(document.get("visible_facet_ids", [])),
             agent_state_ids=tuple(document.get("agent_state_ids", [])),
             retrieved_value_ids=tuple(document.get("retrieved_value_ids", [])),
             query_state_version=document.get(
@@ -731,6 +737,9 @@ class AgentStepTransition:
     dropped_value_ids: tuple[str, ...]
     new_agent_state_ids: tuple[str, ...]
     dropped_agent_state_ids: tuple[str, ...]
+    new_facet_ids: tuple[str, ...] = ()
+    used_facet_ids: tuple[str, ...] = ()
+    dropped_facet_ids: tuple[str, ...] = ()
     transition_version: str = AGENT_STEP_TRANSITION_VERSION
 
     def validate(self) -> "AgentStepTransition":
@@ -764,19 +773,22 @@ class AgentStepTransition:
             "dropped_value_ids",
             "new_agent_state_ids",
             "dropped_agent_state_ids",
+            "new_facet_ids",
+            "used_facet_ids",
+            "dropped_facet_ids",
         ):
             _require_unique_texts(
                 getattr(self, field_name),
                 field=f"AgentStepTransition.{field_name}",
             )
         if set(self.new_value_ids) & set(self.dropped_value_ids):
-            raise RailsError(
-                "AgentStepTransition cannot add and drop the same value"
-            )
+            raise RailsError("AgentStepTransition cannot add and drop the same value")
         if set(self.new_agent_state_ids) & set(self.dropped_agent_state_ids):
             raise RailsError(
                 "AgentStepTransition cannot add and drop the same agent state"
             )
+        if set(self.new_facet_ids) & set(self.dropped_facet_ids):
+            raise RailsError("AgentStepTransition cannot add and drop the same facet")
 
         if self.action_kind == "stop":
             if self.next_query_state_sha256 is not None or any(
@@ -787,6 +799,9 @@ class AgentStepTransition:
                     self.dropped_value_ids,
                     self.new_agent_state_ids,
                     self.dropped_agent_state_ids,
+                    self.new_facet_ids,
+                    self.used_facet_ids,
+                    self.dropped_facet_ids,
                 )
             ):
                 raise RailsError(
@@ -802,31 +817,42 @@ class AgentStepTransition:
             raise RailsError(
                 "a non-stop AgentStepTransition requires action_target_refs"
             )
-        if self.action_kind in _SUPPLY_ACTION_KINDS and not self.new_value_ids:
+        if self.action_kind in _SUPPLY_ACTION_KINDS and not (
+            self.new_value_ids or self.new_facet_ids
+        ):
             raise RailsError(
-                f"{self.action_kind} must introduce at least one new value"
+                f"{self.action_kind} must introduce at least one new value or facet"
             )
         if self.action_kind == "organize" and not self.new_agent_state_ids:
             raise RailsError("organize must introduce at least one new agent state")
         if self.action_kind == "verify" and not self.used_value_ids:
             raise RailsError("verify must use at least one previously supplied value")
         if self.action_kind == "backtrack" and not (
-            self.dropped_value_ids or self.dropped_agent_state_ids
+            self.dropped_value_ids
+            or self.dropped_agent_state_ids
+            or self.dropped_facet_ids
         ):
-            raise RailsError("backtrack must drop at least one value or agent state")
+            raise RailsError("backtrack must drop at least one value, facet, or state")
         if self.action_kind != "backtrack" and (
-            self.dropped_value_ids or self.dropped_agent_state_ids
+            self.dropped_value_ids
+            or self.dropped_agent_state_ids
+            or self.dropped_facet_ids
         ):
-            raise RailsError("only backtrack may drop values or agent states")
-        if self.action_kind not in _SUPPLY_ACTION_KINDS and self.new_value_ids:
+            raise RailsError("only backtrack may drop values, facets, or agent states")
+        if self.action_kind not in _SUPPLY_ACTION_KINDS and (
+            self.new_value_ids or self.new_facet_ids
+        ):
             raise RailsError(
-                "only acquire, expand, or contrast may claim new supplied values"
+                "only acquire, expand, or contrast may claim new supplied knowledge"
             )
         if self.action_kind == "backtrack" and (
-            self.new_agent_state_ids or self.used_value_ids
+            self.new_agent_state_ids
+            or self.used_value_ids
+            or self.new_facet_ids
+            or self.used_facet_ids
         ):
             raise RailsError(
-                "backtrack cannot create agent state or claim value use"
+                "backtrack cannot create agent state or claim knowledge use"
             )
         return self
 
@@ -844,6 +870,9 @@ class AgentStepTransition:
             "dropped_value_ids": list(self.dropped_value_ids),
             "new_agent_state_ids": list(self.new_agent_state_ids),
             "dropped_agent_state_ids": list(self.dropped_agent_state_ids),
+            "new_facet_ids": list(self.new_facet_ids),
+            "used_facet_ids": list(self.used_facet_ids),
+            "dropped_facet_ids": list(self.dropped_facet_ids),
         }
 
     def content_hash(self) -> str:
@@ -861,9 +890,10 @@ class AgentStepTransition:
             used_value_ids=tuple(document.get("used_value_ids", [])),
             dropped_value_ids=tuple(document.get("dropped_value_ids", [])),
             new_agent_state_ids=tuple(document.get("new_agent_state_ids", [])),
-            dropped_agent_state_ids=tuple(
-                document.get("dropped_agent_state_ids", [])
-            ),
+            dropped_agent_state_ids=tuple(document.get("dropped_agent_state_ids", [])),
+            new_facet_ids=tuple(document.get("new_facet_ids", [])),
+            used_facet_ids=tuple(document.get("used_facet_ids", [])),
+            dropped_facet_ids=tuple(document.get("dropped_facet_ids", [])),
             transition_version=document.get(
                 "transition_version", AGENT_STEP_TRANSITION_VERSION
             ),
@@ -915,8 +945,7 @@ def assert_agent_step_binding(
         "query_source",
     )
     if any(
-        getattr(prior_query_state, field_name)
-        != getattr(next_query_state, field_name)
+        getattr(prior_query_state, field_name) != getattr(next_query_state, field_name)
         for field_name in stable_query_fields
     ):
         raise RailsError(
@@ -942,9 +971,25 @@ def assert_agent_step_binding(
             "AgentStepTransition references values outside the frozen snapshot: "
             f"{sorted(unknown_value_ids)}"
         )
+    known_facet_ids = {facet.facet_id for facet in snapshot.facets}
+    referenced_facet_ids = set(
+        (
+            *transition.new_facet_ids,
+            *transition.used_facet_ids,
+            *transition.dropped_facet_ids,
+        )
+    )
+    unknown_facet_ids = referenced_facet_ids - known_facet_ids
+    if unknown_facet_ids:
+        raise RailsError(
+            "AgentStepTransition references facets outside the frozen snapshot: "
+            f"{sorted(unknown_facet_ids)}"
+        )
 
     prior_values = set(prior_query_state.retrieved_value_ids)
     next_values = set(next_query_state.retrieved_value_ids)
+    prior_facets = set(prior_query_state.visible_facet_ids)
+    next_facets = set(next_query_state.visible_facet_ids)
     prior_states = set(prior_query_state.agent_state_ids)
     next_states = set(next_query_state.agent_state_ids)
     repeated_values = set(transition.new_value_ids) & prior_values
@@ -959,19 +1004,29 @@ def assert_agent_step_binding(
             "AgentStepTransition cannot claim already visible Agent states as new ORG: "
             f"{sorted(repeated_states)}"
         )
+    repeated_facets = set(transition.new_facet_ids) & prior_facets
+    if repeated_facets:
+        raise RailsError(
+            "AgentStepTransition cannot claim already visible facets as new SUPPLY: "
+            f"{sorted(repeated_facets)}"
+        )
     absent_dropped_values = set(transition.dropped_value_ids) - prior_values
     absent_dropped_states = set(transition.dropped_agent_state_ids) - prior_states
-    if absent_dropped_values or absent_dropped_states:
+    absent_dropped_facets = set(transition.dropped_facet_ids) - prior_facets
+    if absent_dropped_values or absent_dropped_states or absent_dropped_facets:
         raise RailsError(
-            "AgentStepTransition cannot drop values or states that were not visible: "
+            "AgentStepTransition cannot drop knowledge or states that were not visible: "
             f"values={sorted(absent_dropped_values)}, "
+            f"facets={sorted(absent_dropped_facets)}, "
             f"states={sorted(absent_dropped_states)}"
         )
     if transition.action_kind == "backtrack":
         expected_values = prior_values - set(transition.dropped_value_ids)
+        expected_facets = prior_facets - set(transition.dropped_facet_ids)
         expected_states = prior_states - set(transition.dropped_agent_state_ids)
     else:
         expected_values = prior_values | set(transition.new_value_ids)
+        expected_facets = prior_facets | set(transition.new_facet_ids)
         expected_states = prior_states | set(transition.new_agent_state_ids)
     if next_values != expected_values:
         raise RailsError(
@@ -981,9 +1036,17 @@ def assert_agent_step_binding(
         raise RailsError(
             "AgentStepTransition new/dropped state ids do not match the successor QueryState"
         )
+    if next_facets != expected_facets:
+        raise RailsError(
+            "AgentStepTransition new/dropped facet ids do not match the successor QueryState"
+        )
     if not set(transition.used_value_ids).issubset(next_values):
         raise RailsError(
             "AgentStepTransition used values must remain visible in the successor QueryState"
+        )
+    if not set(transition.used_facet_ids).issubset(next_facets):
+        raise RailsError(
+            "AgentStepTransition used facets must remain visible in the successor QueryState"
         )
 
 
@@ -1031,6 +1094,12 @@ def assert_knowledge_use_binding(
             f"{sorted(unknown_previous_values)}"
         )
     facet_ids = {facet.facet_id for facet in snapshot.facets}
+    unknown_previous_facets = set(query_state.visible_facet_ids) - facet_ids
+    if unknown_previous_facets:
+        raise RailsError(
+            "QueryState references facets outside the frozen snapshot: "
+            f"{sorted(unknown_previous_facets)}"
+        )
     ranked_facet_ids = {candidate.facet_id for candidate in rank_result.candidates}
     unknown_ranked_facets = ranked_facet_ids - facet_ids
     if unknown_ranked_facets:

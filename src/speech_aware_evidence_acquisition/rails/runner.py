@@ -17,7 +17,7 @@ from __future__ import annotations
 import hashlib
 from collections import deque
 from concurrent.futures import FIRST_COMPLETED, Future, ThreadPoolExecutor, wait
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from queue import Queue
 from typing import Callable, Generic, Hashable, Mapping, Protocol, Sequence, TypeVar
@@ -27,16 +27,20 @@ from ..core.base import AGENT_CONTROLLERS, CoreError, Registry
 from ..core.flight_lock import read_flight_lock
 from ..core.tracing import TraceBuffer, set_current_trace_buffer
 from .consumption import ConsumptionTrace
-from .core_client import CoreClient
+from .core_client import CoreClient, FrozenCoreClient
 from .errors import RailsError
 from .hashing import content_hash
 from .knowledge import (
     AgentStateArtifact,
     AgentStepTransition,
+    FusionDecision,
+    KeyFacet,
     KnowledgeSnapshot,
     QueryState,
+    RankResult,
     ValueBundle,
     assert_agent_step_binding,
+    assert_knowledge_use_binding,
 )
 from .obs import ObsPacket, default_obs_packet
 from .supply import SupplyDose, SupplyForm, SupplyItem, SupplyPacket
@@ -116,9 +120,7 @@ class AgentContactPlan:
                 "AgentContactPlan.query_state_sha256 must be lowercase 64-hex"
             )
         if not isinstance(self.decoding_params, Mapping):
-            raise RailsRunnerError(
-                "AgentContactPlan.decoding_params must be a mapping"
-            )
+            raise RailsRunnerError("AgentContactPlan.decoding_params must be a mapping")
         if "id_slot" in self.decoding_params:
             raise RailsRunnerError(
                 "AgentContactPlan cannot choose id_slot; the runner owns slot affinity"
@@ -139,13 +141,74 @@ class AgentContactPlan:
 
 
 @dataclass(frozen=True)
+class AgentContactBatch:
+    """One causally independent contact wave over the same QueryState."""
+
+    batch_id: str
+    query_state_sha256: str
+    contacts: tuple[AgentContactPlan, ...]
+    fanout_semantics: str = "evidence_parallel"
+
+    def validate(self) -> "AgentContactBatch":
+        if not isinstance(self.batch_id, str) or not self.batch_id.strip():
+            raise RailsRunnerError(
+                "AgentContactBatch.batch_id must be a non-empty string"
+            )
+        if not isinstance(self.contacts, tuple) or not self.contacts:
+            raise RailsRunnerError(
+                "AgentContactBatch.contacts must be a non-empty tuple"
+            )
+        if self.fanout_semantics not in {
+            "evidence_parallel",
+            "action_alternatives",
+        }:
+            raise RailsRunnerError(
+                "AgentContactBatch.fanout_semantics must be "
+                "'evidence_parallel' or 'action_alternatives'"
+            )
+        contact_ids: list[str] = []
+        for contact in self.contacts:
+            if not isinstance(contact, AgentContactPlan):
+                raise RailsRunnerError(
+                    "AgentContactBatch.contacts entries must be AgentContactPlan"
+                )
+            contact.validate()
+            if contact.query_state_sha256 != self.query_state_sha256:
+                raise RailsRunnerError(
+                    "AgentContactBatch contacts must bind the batch QueryState"
+                )
+            contact_ids.append(contact.contact_id)
+        if len(set(contact_ids)) != len(contact_ids):
+            raise RailsRunnerError(
+                "AgentContactBatch contacts must have unique contact ids"
+            )
+        return self
+
+    def as_json(self) -> dict[str, object]:
+        self.validate()
+        return {
+            "batch_id": self.batch_id,
+            "query_state_sha256": self.query_state_sha256,
+            "fanout_semantics": self.fanout_semantics,
+            "contacts": [contact.as_json() for contact in self.contacts],
+        }
+
+
+AgentContact = AgentContactPlan | AgentContactBatch
+AgentResponse = str | tuple[str, ...]
+
+
+@dataclass(frozen=True)
 class AgentLoopAdvance:
     """The external controller's exact state/evidence delta after a contact."""
 
     transition: AgentStepTransition
     next_query_state: QueryState | None
     new_agent_states: tuple[AgentStateArtifact, ...]
-    next_contact: AgentContactPlan | None
+    next_contact: AgentContact | None
+    final_response_contact_id: str | None = None
+    rank_result: RankResult | None = None
+    fusion_decision: FusionDecision | None = None
 
 
 @dataclass(frozen=True)
@@ -153,7 +216,9 @@ class AgentRuntimeContext:
     """Gold-free controller view; deliberately carries no task sample object."""
 
     sample_id: str
-    knowledge_snapshot: KnowledgeSnapshot
+    knowledge_snapshot_sha256: str
+    catalog_facet_ids: tuple[str, ...]
+    catalog_value_ids: tuple[str, ...]
     query_state: QueryState
     task_contract: str
     agent_states: tuple[AgentStateArtifact, ...]
@@ -162,17 +227,229 @@ class AgentRuntimeContext:
 
 
 class AgentController(Protocol):
-    def initial_contact(self, context: AgentRuntimeContext) -> AgentContactPlan: ...
+    def initial_contact(self, context: AgentRuntimeContext) -> AgentContact: ...
 
     def advance(
         self,
         context: AgentRuntimeContext,
-        contact: AgentContactPlan,
-        response_text: str,
+        contact: AgentContact,
+        response_text: AgentResponse,
     ) -> AgentLoopAdvance: ...
 
 
 AgentControllerFactory = Callable[[str], AgentController]
+
+
+def agent_response_sha256(
+    contact: AgentContact,
+    response: AgentResponse,
+) -> str:
+    """Bind controller artifacts to one response or one ordered batch."""
+
+    if isinstance(contact, AgentContactPlan):
+        contact.validate()
+        if not isinstance(response, str):
+            raise RailsRunnerError(
+                "a single AgentContactPlan requires one string response"
+            )
+        return hashlib.sha256(response.encode("utf-8")).hexdigest()
+    if isinstance(contact, AgentContactBatch):
+        contact.validate()
+        if (
+            not isinstance(response, tuple)
+            or len(response) != len(contact.contacts)
+            or any(not isinstance(item, str) for item in response)
+        ):
+            raise RailsRunnerError(
+                "an AgentContactBatch requires one ordered string response per contact"
+            )
+        return content_hash(
+            {
+                "schema_version": "AgentResponseEnvelopeV1",
+                "contact_batch": contact.as_json(),
+                "ordered_responses": [
+                    {
+                        "contact_id": plan.contact_id,
+                        "response_sha256": hashlib.sha256(
+                            response_text.encode("utf-8")
+                        ).hexdigest(),
+                    }
+                    for plan, response_text in zip(
+                        contact.contacts, response, strict=True
+                    )
+                ],
+            }
+        )
+    raise RailsRunnerError(
+        "Agent controller contact must be AgentContactPlan or AgentContactBatch"
+    )
+
+
+def _resolve_final_agent_response(
+    contact: AgentContact,
+    response: AgentResponse,
+    final_response_contact_id: str | None,
+) -> str:
+    """Keep final-answer authority inside an actual frozen-core response."""
+
+    if isinstance(contact, AgentContactPlan):
+        if not isinstance(response, str):
+            raise RailsRunnerError(
+                "a single AgentContactPlan requires one string response"
+            )
+        if final_response_contact_id not in {None, contact.contact_id}:
+            raise RailsRunnerError(
+                "final_response_contact_id must select the stopped contact"
+            )
+        if not response:
+            raise RailsRunnerError("stop must select a non-empty model response")
+        return response
+    if isinstance(contact, AgentContactBatch):
+        if not isinstance(response, tuple) or len(response) != len(contact.contacts):
+            raise RailsRunnerError(
+                "a stopped AgentContactBatch requires its ordered responses"
+            )
+        if (
+            not isinstance(final_response_contact_id, str)
+            or not final_response_contact_id
+        ):
+            raise RailsRunnerError(
+                "a stopped AgentContactBatch requires final_response_contact_id"
+            )
+        for plan, response_text in zip(contact.contacts, response, strict=True):
+            if plan.contact_id == final_response_contact_id:
+                if not response_text:
+                    raise RailsRunnerError(
+                        "stop must select a non-empty model response"
+                    )
+                return response_text
+        raise RailsRunnerError(
+            "final_response_contact_id must select a contact in the stopped batch"
+        )
+    raise RailsRunnerError(
+        "Agent controller contact must be AgentContactPlan or AgentContactBatch"
+    )
+
+
+def _assert_agent_control_excludes_knowledge_payloads(
+    contact: AgentContact,
+    snapshot: KnowledgeSnapshot,
+) -> None:
+    """Prevent CONTROL text from bypassing traced key/value supply."""
+
+    plans = (contact,) if isinstance(contact, AgentContactPlan) else contact.contacts
+    protected_material = tuple(
+        material.strip().casefold()
+        for material in (
+            *(facet.representation for facet in snapshot.facets),
+            *(value.content for value in snapshot.values),
+        )
+        if len(material.strip()) >= 8
+    )
+    for plan in plans:
+        instruction = plan.instruction.casefold()
+        if any(material in instruction for material in protected_material):
+            raise RailsRunnerError(
+                "Agent contact instruction cannot embed frozen knowledge key/value "
+                "payloads; acquire them through traced knowledge supply"
+            )
+
+
+def _agent_wave_record(
+    *,
+    wave_index: int,
+    contact: AgentContact,
+    response: AgentResponse,
+    slot_ids: tuple[int, ...],
+    query_state: QueryState,
+    advance: AgentLoopAdvance,
+) -> AgentWaveRecord:
+    plans = (contact,) if isinstance(contact, AgentContactPlan) else contact.contacts
+    response_texts = (response,) if isinstance(response, str) else response
+    if len(plans) != len(response_texts) or len(plans) != len(slot_ids):
+        raise RailsRunnerError("Agent wave provenance cardinality mismatch")
+    return AgentWaveRecord(
+        wave_index=wave_index,
+        batch_id=(
+            contact.contact_id
+            if isinstance(contact, AgentContactPlan)
+            else contact.batch_id
+        ),
+        fanout_semantics=(
+            "single"
+            if isinstance(contact, AgentContactPlan)
+            else contact.fanout_semantics
+        ),
+        query_state_sha256=query_state.content_hash(),
+        speech_packet_sha256=query_state.speech_packet_sha256,
+        contact_plans=plans,
+        slot_ids=slot_ids,
+        response_sha256s=tuple(
+            hashlib.sha256(text.encode("utf-8")).hexdigest() for text in response_texts
+        ),
+        response_envelope_sha256=agent_response_sha256(contact, response),
+        transition=advance.transition,
+        rank_result=advance.rank_result,
+        fusion_decision=advance.fusion_decision,
+        selected_final_contact_id=advance.final_response_contact_id,
+        next_query_state_sha256=(
+            None
+            if advance.next_query_state is None
+            else advance.next_query_state.content_hash()
+        ),
+        termination_reason=(
+            "controller-stop" if advance.transition.action_kind == "stop" else None
+        ),
+    )
+
+
+def _validate_agent_knowledge_decision(
+    *,
+    snapshot: KnowledgeSnapshot,
+    query_state: QueryState,
+    advance: AgentLoopAdvance,
+) -> None:
+    supply_action = advance.transition.action_kind in {
+        "acquire",
+        "expand",
+        "contrast",
+    }
+    if not supply_action:
+        if advance.rank_result is not None or advance.fusion_decision is not None:
+            raise RailsRunnerError(
+                "only acquire, expand, or contrast may carry a retrieval decision"
+            )
+        return
+    if advance.rank_result is None or advance.fusion_decision is None:
+        raise RailsRunnerError(
+            "knowledge acquisition requires RankResult and FusionDecision"
+        )
+    assert_knowledge_use_binding(
+        snapshot=snapshot,
+        query_state=query_state,
+        rank_result=advance.rank_result,
+        fusion_decision=advance.fusion_decision,
+    )
+    if advance.fusion_decision.selected_value_ids != advance.transition.new_value_ids:
+        raise RailsRunnerError(
+            "FusionDecision selected values must exactly match transition.new_value_ids"
+        )
+    newly_supporting_facets = tuple(
+        facet_id
+        for facet_id in advance.fusion_decision.supporting_facet_ids
+        if facet_id not in query_state.visible_facet_ids
+    )
+    if not set(advance.transition.new_facet_ids).issubset(newly_supporting_facets):
+        raise RailsRunnerError(
+            "transition.new_facet_ids must be newly supporting FusionDecision facets"
+        )
+    if (
+        not advance.fusion_decision.selected_value_ids
+        and newly_supporting_facets != advance.transition.new_facet_ids
+    ):
+        raise RailsRunnerError(
+            "facet-only acquisition must expose every newly supporting facet"
+        )
 
 
 class AgentTraceSink(Protocol):
@@ -239,9 +516,7 @@ def run_bounded_contact_dag(
     ready = deque(initial_nodes)
     pending: dict[Future[_ContactResponseT], _ContactNodeT] = {}
     scheduled: set[Hashable] = set()
-    completions: list[
-        ContactDAGCompletion[_ContactNodeT, _ContactResponseT]
-    ] = []
+    completions: list[ContactDAGCompletion[_ContactNodeT, _ContactResponseT]] = []
 
     while ready or pending:
         while ready and len(pending) < max_in_flight:
@@ -317,12 +592,57 @@ class AgentContactRecord:
 
 
 @dataclass(frozen=True)
+class AgentWaveRecord:
+    """Reconstructible fan-out/fan-in provenance for one Agent loop wave."""
+
+    wave_index: int
+    batch_id: str
+    fanout_semantics: str
+    query_state_sha256: str
+    speech_packet_sha256: str
+    contact_plans: tuple[AgentContactPlan, ...]
+    slot_ids: tuple[int, ...]
+    response_sha256s: tuple[str, ...]
+    response_envelope_sha256: str
+    transition: AgentStepTransition
+    rank_result: RankResult | None
+    fusion_decision: FusionDecision | None
+    selected_final_contact_id: str | None
+    next_query_state_sha256: str | None
+    termination_reason: str | None
+
+    def as_json(self) -> dict[str, object]:
+        return {
+            "wave_index": self.wave_index,
+            "batch_id": self.batch_id,
+            "fanout_semantics": self.fanout_semantics,
+            "query_state_sha256": self.query_state_sha256,
+            "speech_packet_sha256": self.speech_packet_sha256,
+            "contact_plans": [plan.as_json() for plan in self.contact_plans],
+            "slot_ids": list(self.slot_ids),
+            "response_sha256s": list(self.response_sha256s),
+            "response_envelope_sha256": self.response_envelope_sha256,
+            "transition": self.transition.as_json(),
+            "rank_result": (
+                None if self.rank_result is None else self.rank_result.as_json()
+            ),
+            "fusion_decision": (
+                None if self.fusion_decision is None else self.fusion_decision.as_json()
+            ),
+            "selected_final_contact_id": self.selected_final_contact_id,
+            "next_query_state_sha256": self.next_query_state_sha256,
+            "termination_reason": self.termination_reason,
+        }
+
+
+@dataclass(frozen=True)
 class AgentLoopResult:
     sample_id: str
     initial_query_state: QueryState
     final_query_state: QueryState
     final_response_text: str
     contacts: tuple[AgentContactRecord, ...]
+    waves: tuple[AgentWaveRecord, ...]
     transitions: tuple[AgentStepTransition, ...]
     agent_states: tuple[AgentStateArtifact, ...]
     metrics: Mapping[str, object]
@@ -338,6 +658,7 @@ class AgentLoopResult:
                 self.final_response_text.encode("utf-8")
             ).hexdigest(),
             "contacts": [contact.as_json() for contact in self.contacts],
+            "waves": [wave.as_json() for wave in self.waves],
             "transitions": [transition.as_json() for transition in self.transitions],
             "agent_states": [artifact.as_json() for artifact in self.agent_states],
             "metrics": dict(self.metrics),
@@ -350,6 +671,8 @@ class AgentLoopSummary:
     run_id: str
     protocol_hash: str
     controller_policy_id: str
+    agent_executor_id: str
+    agent_executor_version: str
     knowledge_snapshot_sha256: str
     results: tuple[AgentLoopResult, ...]
     flight_lock: Mapping[str, object] | None
@@ -359,6 +682,8 @@ class AgentLoopSummary:
             "run_id": self.run_id,
             "protocol_hash": self.protocol_hash,
             "controller_policy_id": self.controller_policy_id,
+            "agent_executor_id": self.agent_executor_id,
+            "agent_executor_version": self.agent_executor_version,
             "knowledge_snapshot_sha256": self.knowledge_snapshot_sha256,
             "results": [result.as_json() for result in self.results],
             "flight_lock": (
@@ -381,10 +706,55 @@ class _AgentRuntimeOutcome:
     final_query_state: QueryState
     final_response_text: str
     contacts: tuple[AgentContactRecord, ...]
+    waves: tuple[AgentWaveRecord, ...]
     transitions: tuple[AgentStepTransition, ...]
     agent_states: tuple[AgentStateArtifact, ...]
     final_supply: SupplyPacket | None
     trace_buffer: TraceBuffer
+
+
+@dataclass
+class _ContactAgentState:
+    prepared: _PreparedAgentTask
+    controller: AgentController
+    query_state: QueryState
+    state_store: dict[str, AgentStateArtifact] = field(default_factory=dict)
+    response_sha256s: list[str] = field(default_factory=list)
+    contacts: list[AgentContactRecord] = field(default_factory=list)
+    waves: list[AgentWaveRecord] = field(default_factory=list)
+    transitions: list[AgentStepTransition] = field(default_factory=list)
+    trace_buffers: dict[tuple[int, int], TraceBuffer] = field(default_factory=dict)
+    seen_contact_ids: set[str] = field(default_factory=set)
+    wave_index: int = 0
+    scheduled_contacts: int = 0
+    current_contact: AgentContact | None = None
+    current_context: AgentRuntimeContext | None = None
+    current_nodes: tuple[_AgentContactNode, ...] = ()
+    final_outcome: _AgentRuntimeOutcome | None = None
+
+
+@dataclass(frozen=True)
+class _AgentContactNode:
+    task_index: int
+    wave_index: int
+    branch_index: int
+    contact: AgentContactPlan
+    messages: tuple[Mapping[str, object], ...]
+    context: AgentRuntimeContext
+    trace_buffer: TraceBuffer
+
+    @property
+    def node_key(self) -> tuple[int, int, int, str]:
+        return (
+            self.task_index,
+            self.wave_index,
+            self.branch_index,
+            self.contact.contact_id,
+        )
+
+    @property
+    def sort_key(self) -> tuple[int, int, int]:
+        return self.task_index, self.wave_index, self.branch_index
 
 
 def _run_one_arm(
@@ -448,9 +818,13 @@ def run_rails_experiment(
     assert_execution_scope(plan.execution_profile)
     for arm in arms:
         if arm not in RAILS_ARMS:
-            raise RailsRunnerError(f"unknown rails arm {arm!r}; known arms are {RAILS_ARMS}")
+            raise RailsRunnerError(
+                f"unknown rails arm {arm!r}; known arms are {RAILS_ARMS}"
+            )
     if SUPPLIED_ARM in arms and supply_builder is None:
-        raise RailsRunnerError(f"arm {SUPPLIED_ARM!r} requires a supply_builder; none was given")
+        raise RailsRunnerError(
+            f"arm {SUPPLIED_ARM!r} requires a supply_builder; none was given"
+        )
 
     flight_lock = read_flight_lock(Path(data_root))
     samples = adapter.load_split(split_id)
@@ -500,6 +874,7 @@ def _initial_query_state(
     plan: ExecutionPlan,
     sample: TaskSample,
     descriptor: Mapping[str, object],
+    bootstrap_facet_ids: tuple[str, ...],
     bootstrap_value_ids: tuple[str, ...],
 ) -> QueryState:
     if not isinstance(descriptor, Mapping) or set(descriptor) != {
@@ -516,6 +891,7 @@ def _initial_query_state(
         speech_packet_id=descriptor["packet_id"],
         speech_packet_sha256=descriptor["sha256"],
         use_split_identity_hash=plan.split_identity_hash,
+        visible_facet_ids=bootstrap_facet_ids,
         retrieved_value_ids=bootstrap_value_ids,
     ).validate()
 
@@ -541,6 +917,43 @@ def _validated_bootstrap_value_ids(
             f"snapshot: {sorted(unknown)}"
         )
     return value_ids
+
+
+def _validated_bootstrap_facet_ids(
+    snapshot: KnowledgeSnapshot,
+    facets: Sequence[str],
+) -> tuple[str, ...]:
+    if isinstance(facets, (str, bytes)) or not isinstance(facets, Sequence):
+        raise RailsRunnerError("bootstrap_facet_ids must be a sequence of facet ids")
+    facet_ids = tuple(facets)
+    if any(not isinstance(facet_id, str) or not facet_id for facet_id in facet_ids):
+        raise RailsRunnerError(
+            "bootstrap_facet_ids must contain only non-empty strings"
+        )
+    if len(set(facet_ids)) != len(facet_ids):
+        raise RailsRunnerError("bootstrap_facet_ids must be unique")
+    known = {facet.facet_id for facet in snapshot.facets}
+    unknown = set(facet_ids) - known
+    if unknown:
+        raise RailsRunnerError(
+            "bootstrap_facet_ids reference facets outside the frozen knowledge "
+            f"snapshot: {sorted(unknown)}"
+        )
+    return facet_ids
+
+
+def _visible_facets(
+    snapshot: KnowledgeSnapshot,
+    query_state: QueryState,
+) -> tuple[KeyFacet, ...]:
+    by_id = {facet.facet_id: facet for facet in snapshot.facets}
+    unknown = set(query_state.visible_facet_ids) - set(by_id)
+    if unknown:
+        raise RailsRunnerError(
+            "QueryState references facets outside the frozen knowledge snapshot: "
+            f"{sorted(unknown)}"
+        )
+    return tuple(by_id[facet_id] for facet_id in query_state.visible_facet_ids)
 
 
 def _visible_values(
@@ -622,11 +1035,20 @@ def _agent_messages(
     content.extend(
         {
             "type": "text",
+            "text": facet.representation,
+            "evidence_id": f"key:{facet.facet_id}",
+            "source_uri": (f"knowledge-snapshot://{snapshot_sha256}/{facet.facet_id}"),
+            "knowledge_role": "key",
+        }
+        for facet in _visible_facets(snapshot, query_state)
+    )
+    content.extend(
+        {
+            "type": "text",
             "text": value.content,
             "evidence_id": value.value_id,
-            "source_uri": (
-                f"knowledge-snapshot://{snapshot_sha256}/{value.value_id}"
-            ),
+            "source_uri": (f"knowledge-snapshot://{snapshot_sha256}/{value.value_id}"),
+            "knowledge_role": "value",
         }
         for value in _visible_values(snapshot, query_state)
     )
@@ -655,7 +1077,9 @@ def _runtime_context(
         ) from None
     return AgentRuntimeContext(
         sample_id=prepared.sample.sample_id,
-        knowledge_snapshot=snapshot,
+        knowledge_snapshot_sha256=snapshot.content_hash(),
+        catalog_facet_ids=tuple(facet.facet_id for facet in snapshot.facets),
+        catalog_value_ids=tuple(value.value_id for value in snapshot.values),
         query_state=query_state,
         task_contract=prepared.task_contract,
         agent_states=ordered_states,
@@ -734,6 +1158,7 @@ def _run_agent_trajectory(
     state_store: dict[str, AgentStateArtifact] = {}
     response_sha256s: list[str] = []
     contacts: list[AgentContactRecord] = []
+    waves: list[AgentWaveRecord] = []
     transitions: list[AgentStepTransition] = []
     context = _runtime_context(
         prepared=prepared,
@@ -748,9 +1173,11 @@ def _run_agent_trajectory(
     for contact_index in range(max_contacts):
         if not isinstance(contact, AgentContactPlan):
             raise RailsRunnerError(
-                "Agent controller must return AgentContactPlan for every contact"
+                "trajectory dispatch requires AgentContactPlan; "
+                "AgentContactBatch requires contact dispatch"
             )
         contact.validate()
+        _assert_agent_control_excludes_knowledge_payloads(contact, snapshot)
         if contact.query_state_sha256 != query_state.content_hash():
             raise RailsRunnerError(
                 "AgentContactPlan is bound to a different QueryState"
@@ -784,7 +1211,7 @@ def _run_agent_trajectory(
             agent_contact_id=contact.contact_id,
             contact_instruction=contact.instruction,
         )
-        response_sha256 = hashlib.sha256(response_text.encode("utf-8")).hexdigest()
+        response_sha256 = agent_response_sha256(contact, response_text)
         response_sha256s.append(response_sha256)
         contacts.append(
             AgentContactRecord(
@@ -797,7 +1224,14 @@ def _run_agent_trajectory(
         )
         advance = controller.advance(context, contact, response_text)
         if not isinstance(advance, AgentLoopAdvance):
-            raise RailsRunnerError("Agent controller.advance must return AgentLoopAdvance")
+            raise RailsRunnerError(
+                "Agent controller.advance must return AgentLoopAdvance"
+            )
+        _validate_agent_knowledge_decision(
+            snapshot=snapshot,
+            query_state=query_state,
+            advance=advance,
+        )
         assert_agent_step_binding(
             snapshot=snapshot,
             prior_query_state=query_state,
@@ -812,16 +1246,32 @@ def _run_agent_trajectory(
             snapshot=snapshot,
             existing_state_ids=set(state_store),
         )
+        waves.append(
+            _agent_wave_record(
+                wave_index=contact_index,
+                contact=contact,
+                response=response_text,
+                slot_ids=(slot_id,),
+                query_state=query_state,
+                advance=advance,
+            )
+        )
         transitions.append(advance.transition)
 
         if advance.transition.action_kind == "stop":
             if advance.next_contact is not None:
                 raise RailsRunnerError("stop cannot schedule another Agent contact")
+            final_response_text = _resolve_final_agent_response(
+                contact,
+                response_text,
+                advance.final_response_contact_id,
+            )
             return _AgentRuntimeOutcome(
                 prepared=prepared,
                 final_query_state=query_state,
-                final_response_text=response_text,
+                final_response_text=final_response_text,
                 contacts=tuple(contacts),
+                waves=tuple(waves),
                 transitions=tuple(transitions),
                 agent_states=tuple(
                     state_store[state_id] for state_id in query_state.agent_state_ids
@@ -833,6 +1283,10 @@ def _run_agent_trajectory(
         if advance.next_query_state is None or advance.next_contact is None:
             raise RailsRunnerError(
                 "non-stop Agent transition requires next QueryState and contact"
+            )
+        if advance.final_response_contact_id is not None:
+            raise RailsRunnerError(
+                "non-stop Agent transition cannot select a final response"
             )
         if advance.transition.action_kind == "backtrack":
             for state_id in advance.transition.dropped_agent_state_ids:
@@ -855,13 +1309,387 @@ def _run_agent_trajectory(
         query_state = advance.next_query_state
         contact = advance.next_contact
 
-    raise RailsRunnerError(f"Agent trajectory exceeded its {max_contacts}-contact ceiling")
+    raise RailsRunnerError(
+        f"Agent trajectory exceeded its {max_contacts}-contact ceiling"
+    )
+
+
+def _run_agent_openjiuwen(
+    *,
+    prepared_tasks: Sequence[_PreparedAgentTask],
+    snapshot: KnowledgeSnapshot,
+    snapshot_sha256: str,
+    adapter: TaskAdapter,
+    controller_factory: AgentControllerFactory,
+    controller_policy_id: str,
+    core_client: CoreClient,
+    max_contacts: int,
+    slot_count: int,
+    queue_depth: int,
+    base_decoding_params: Mapping[str, object] | None,
+    trace_sink: AgentTraceSink,
+    run_id: str,
+) -> tuple[_AgentRuntimeOutcome, ...]:
+    """Run the speech AgentLoop on the pinned openJiuwen workflow engine."""
+
+    from ..reproduction.ojw import (  # noqa: PLC0415
+        DEFAULT_WORKFLOW_TIMEOUT_SECONDS,
+        OJW_INSTALL_HINT,
+        openjiuwen_available,
+    )
+
+    if not openjiuwen_available():
+        raise RailsRunnerError(OJW_INSTALL_HINT)
+    from ..reproduction.ojw.runner import (  # noqa: PLC0415
+        execute_speech_agent_workflows,
+    )
+
+    states: list[_ContactAgentState] = []
+
+    def contacts_for(contact: AgentContact) -> tuple[AgentContactPlan, ...]:
+        if isinstance(contact, AgentContactPlan):
+            contact.validate()
+            return (contact,)
+        if isinstance(contact, AgentContactBatch):
+            contact.validate()
+            return contact.contacts
+        raise RailsRunnerError(
+            "Agent controller contact must be AgentContactPlan or AgentContactBatch"
+        )
+
+    def schedule_wave(state: _ContactAgentState, contact: AgentContact) -> None:
+        plans = contacts_for(contact)
+        _assert_agent_control_excludes_knowledge_payloads(contact, snapshot)
+        query_state_sha256 = state.query_state.content_hash()
+        if contact.query_state_sha256 != query_state_sha256:
+            raise RailsRunnerError(
+                "Agent contact wave is bound to a different QueryState"
+            )
+        if state.scheduled_contacts + len(plans) > max_contacts:
+            raise RailsRunnerError(
+                f"Agent trajectory exceeded its {max_contacts}-contact ceiling"
+            )
+        contact_ids = {plan.contact_id for plan in plans}
+        duplicate_ids = contact_ids & state.seen_contact_ids
+        if duplicate_ids:
+            raise RailsRunnerError(
+                f"Agent trajectory cannot reuse contact ids: {sorted(duplicate_ids)}"
+            )
+        context = _runtime_context(
+            prepared=state.prepared,
+            snapshot=snapshot,
+            query_state=state.query_state,
+            state_store=state.state_store,
+            response_sha256s=state.response_sha256s,
+            contact_index=state.scheduled_contacts,
+        )
+        messages = _agent_messages(
+            adapter=adapter,
+            sample=state.prepared.sample,
+            task_contract=state.prepared.task_contract,
+            snapshot=snapshot,
+            snapshot_sha256=snapshot_sha256,
+            query_state=state.query_state,
+        )
+        nodes: list[_AgentContactNode] = []
+        for branch_index, plan in enumerate(plans):
+            trace_buffer = TraceBuffer(run_id)
+            state.trace_buffers[(state.wave_index, branch_index)] = trace_buffer
+            nodes.append(
+                _AgentContactNode(
+                    task_index=state.prepared.index,
+                    wave_index=state.wave_index,
+                    branch_index=branch_index,
+                    contact=plan,
+                    messages=messages,
+                    context=context,
+                    trace_buffer=trace_buffer,
+                )
+            )
+        state.current_contact = contact
+        state.current_context = context
+        state.current_nodes = tuple(nodes)
+        state.seen_contact_ids.update(contact_ids)
+        state.scheduled_contacts += len(plans)
+
+    for prepared in prepared_tasks:
+        controller = controller_factory(prepared.sample.sample_id)
+        if not callable(getattr(controller, "initial_contact", None)) or not callable(
+            getattr(controller, "advance", None)
+        ):
+            raise RailsRunnerError(
+                f"controller factory for {controller_policy_id!r} returned an invalid controller"
+            )
+        state = _ContactAgentState(
+            prepared=prepared,
+            controller=controller,
+            query_state=prepared.initial_query_state,
+        )
+        initial_context = _runtime_context(
+            prepared=prepared,
+            snapshot=snapshot,
+            query_state=state.query_state,
+            state_store=state.state_store,
+            response_sha256s=state.response_sha256s,
+            contact_index=0,
+        )
+        schedule_wave(state, controller.initial_contact(initial_context))
+        states.append(state)
+
+    def publish_workflow_state(
+        state: _ContactAgentState,
+        session: object,
+    ) -> None:
+        update_global_state = getattr(session, "update_global_state", None)
+        if not callable(update_global_state):
+            raise RailsRunnerError(
+                "openJiuwen Agent workflow session lacks structured state"
+            )
+        current_contact = state.current_contact
+        update_global_state(
+            {
+                "speech_agent_query_state": state.query_state.as_json(),
+                "speech_agent_contact_wave": (
+                    current_contact.as_json() if current_contact is not None else {}
+                ),
+                "speech_agent_visible_state_ids": list(
+                    state.query_state.agent_state_ids
+                ),
+                "speech_agent_wave_index": state.wave_index,
+                "speech_agent_stopped": state.final_outcome is not None,
+            }
+        )
+
+    def prepare_workflow_wave(state_object: object, session: object) -> int:
+        if not isinstance(state_object, _ContactAgentState):
+            raise RailsRunnerError("openJiuwen received an invalid Agent state")
+        publish_workflow_state(state_object, session)
+        return len(state_object.current_nodes)
+
+    def invoke_contact(
+        state_object: object,
+        branch_index: int,
+        slot_id: int,
+    ) -> Mapping[str, object]:
+        if not isinstance(state_object, _ContactAgentState):
+            raise RailsRunnerError("openJiuwen received an invalid Agent state")
+        state = state_object
+        node = state.current_nodes[branch_index]
+        decoding_params = dict(base_decoding_params or {})
+        decoding_params.update(dict(node.contact.decoding_params))
+        decoding_params["id_slot"] = slot_id
+        set_current_trace_buffer(node.trace_buffer)
+        try:
+            response_text = core_client.complete(
+                node.messages,
+                decoding_params=decoding_params,
+                speech_feature_sample_id=node.context.sample_id,
+                key_representation_id=node.contact.key_representation_id,
+                matcher_policy_id=node.contact.matcher_policy_id,
+                agent_state=tuple(
+                    artifact.as_json() for artifact in node.context.agent_states
+                ),
+                agent_contact_id=node.contact.contact_id,
+                contact_instruction=node.contact.instruction,
+            )
+        finally:
+            set_current_trace_buffer(None)
+        if not isinstance(response_text, str):
+            raise RailsRunnerError("frozen core response must be a string")
+        return {
+            "response_text": response_text,
+            "slot_id": slot_id,
+            "response_sha256": agent_response_sha256(node.contact, response_text),
+        }
+
+    def combine_trace_buffers(state: _ContactAgentState) -> TraceBuffer:
+        combined = TraceBuffer(run_id)
+        for key in sorted(state.trace_buffers):
+            combined.extend_from(state.trace_buffers[key])
+        return combined
+
+    def aggregate_wave(
+        state_object: object,
+        responses: tuple[Mapping[str, object], ...],
+        session: object,
+    ) -> None:
+        if not isinstance(state_object, _ContactAgentState):
+            raise RailsRunnerError("openJiuwen received an invalid Agent state")
+        state = state_object
+        current_contact = state.current_contact
+        context = state.current_context
+        if current_contact is None or context is None:
+            raise RailsRunnerError("Agent contact wave lost its controller context")
+        plans = contacts_for(current_contact)
+        if len(responses) != len(plans):
+            raise RailsRunnerError("openJiuwen Agent fan-in changed the contact count")
+        response_texts: list[str] = []
+        slot_ids: list[int] = []
+        for plan, response in zip(plans, responses, strict=True):
+            response_text = response["response_text"]
+            slot_id = response["slot_id"]
+            response_sha256 = response["response_sha256"]
+            if (
+                not isinstance(response_text, str)
+                or isinstance(slot_id, bool)
+                or not isinstance(slot_id, int)
+                or not isinstance(response_sha256, str)
+            ):
+                raise RailsRunnerError(
+                    "openJiuwen Agent fan-in returned malformed contact data"
+                )
+            expected_response_sha256 = hashlib.sha256(
+                response_text.encode("utf-8")
+            ).hexdigest()
+            if response_sha256 != expected_response_sha256:
+                raise RailsRunnerError("openJiuwen Agent fan-in response hash mismatch")
+            response_texts.append(response_text)
+            slot_ids.append(slot_id)
+            state.contacts.append(
+                AgentContactRecord(
+                    plan=plan,
+                    query_state_sha256=state.query_state.content_hash(),
+                    speech_packet_sha256=state.query_state.speech_packet_sha256,
+                    slot_id=slot_id,
+                    response_sha256=response_sha256,
+                )
+            )
+        controller_response: AgentResponse
+        if isinstance(current_contact, AgentContactPlan):
+            controller_response = response_texts[0]
+        else:
+            controller_response = tuple(response_texts)
+        response_sha256 = agent_response_sha256(
+            current_contact,
+            controller_response,
+        )
+        state.response_sha256s.append(response_sha256)
+        advance = state.controller.advance(
+            context,
+            current_contact,
+            controller_response,
+        )
+        if not isinstance(advance, AgentLoopAdvance):
+            raise RailsRunnerError(
+                "Agent controller.advance must return AgentLoopAdvance"
+            )
+        _validate_agent_knowledge_decision(
+            snapshot=snapshot,
+            query_state=state.query_state,
+            advance=advance,
+        )
+        assert_agent_step_binding(
+            snapshot=snapshot,
+            prior_query_state=state.query_state,
+            next_query_state=advance.next_query_state,
+            transition=advance.transition,
+        )
+        _validate_new_agent_states(
+            artifacts=advance.new_agent_states,
+            transition=advance.transition,
+            prior_query_state=state.query_state,
+            response_sha256=response_sha256,
+            snapshot=snapshot,
+            existing_state_ids=set(state.state_store),
+        )
+        state.waves.append(
+            _agent_wave_record(
+                wave_index=state.wave_index,
+                contact=current_contact,
+                response=controller_response,
+                slot_ids=tuple(slot_ids),
+                query_state=state.query_state,
+                advance=advance,
+            )
+        )
+        state.transitions.append(advance.transition)
+        if advance.transition.action_kind == "stop":
+            if advance.next_contact is not None:
+                raise RailsRunnerError("stop cannot schedule another Agent contact")
+            final_response_text = _resolve_final_agent_response(
+                current_contact,
+                controller_response,
+                advance.final_response_contact_id,
+            )
+            state.final_outcome = _AgentRuntimeOutcome(
+                prepared=state.prepared,
+                final_query_state=state.query_state,
+                final_response_text=final_response_text,
+                contacts=tuple(state.contacts),
+                waves=tuple(state.waves),
+                transitions=tuple(state.transitions),
+                agent_states=tuple(
+                    state.state_store[state_id]
+                    for state_id in state.query_state.agent_state_ids
+                ),
+                final_supply=_supply_for_state(snapshot, state.query_state),
+                trace_buffer=combine_trace_buffers(state),
+            )
+            publish_workflow_state(state, session)
+            return
+        if advance.next_query_state is None or advance.next_contact is None:
+            raise RailsRunnerError(
+                "non-stop Agent transition requires next QueryState and contact"
+            )
+        if advance.final_response_contact_id is not None:
+            raise RailsRunnerError(
+                "non-stop Agent transition cannot select a final response"
+            )
+        if advance.transition.action_kind == "backtrack":
+            for state_id in advance.transition.dropped_agent_state_ids:
+                if state_id not in state.state_store:
+                    raise RailsRunnerError(
+                        f"backtrack cannot drop unknown Agent state {state_id!r}"
+                    )
+                state.state_store.pop(state_id)
+        else:
+            for artifact in advance.new_agent_states:
+                state.state_store[artifact.state_id] = artifact
+        if set(advance.next_query_state.agent_state_ids) != set(state.state_store):
+            raise RailsRunnerError(
+                "successor QueryState Agent state ids do not match materialized state"
+            )
+        state.query_state = advance.next_query_state
+        state.wave_index += 1
+        schedule_wave(state, advance.next_contact)
+        publish_workflow_state(state, session)
+
+    def flush_partial_traces() -> None:
+        for state in states:
+            if state.final_outcome is not None:
+                state.final_outcome.trace_buffer.flush_into(trace_sink)
+                continue
+            for key in sorted(state.trace_buffers):
+                state.trace_buffers[key].flush_into(trace_sink)
+
+    try:
+        execute_speech_agent_workflows(
+            states,
+            prepare_wave=prepare_workflow_wave,
+            invoke_contact=invoke_contact,
+            aggregate_wave=aggregate_wave,
+            should_continue=lambda state: state.final_outcome is None,
+            branch_count=max_contacts,
+            slot_count=slot_count,
+            queue_depth=queue_depth,
+            workflow_timeout_seconds=DEFAULT_WORKFLOW_TIMEOUT_SECONDS,
+        )
+        if any(state.final_outcome is None for state in states):
+            raise RailsRunnerError("openJiuwen AgentLoop lost a trajectory result")
+    except BaseException:
+        flush_partial_traces()
+        raise
+    return tuple(
+        state.final_outcome for state in states if state.final_outcome is not None
+    )
 
 
 def _emit_agent_runtime_trace(
     *,
     sink: AgentTraceSink,
     controller_policy_id: str,
+    agent_executor_id: str,
+    agent_executor_version: str,
     snapshot_sha256: str,
     outcome: _AgentRuntimeOutcome,
 ) -> str:
@@ -874,6 +1702,8 @@ def _emit_agent_runtime_trace(
         f"{record_base}/org",
         {
             "org_controller_policy_id": controller_policy_id,
+            "org_agent_executor_id": agent_executor_id,
+            "org_agent_executor_version": agent_executor_version,
             "org_knowledge_snapshot_sha256": snapshot_sha256,
             "org_initial_query_state": outcome.prepared.initial_query_state.as_json(),
             "org_final_query_state": outcome.final_query_state.as_json(),
@@ -886,6 +1716,9 @@ def _emit_agent_runtime_trace(
         "SUPPLY",
         f"{record_base}/supply",
         {
+            "supply_bootstrap_facet_ids": list(
+                outcome.prepared.initial_query_state.visible_facet_ids
+            ),
             "supply_bootstrap_value_ids": list(
                 outcome.prepared.initial_query_state.retrieved_value_ids
             ),
@@ -894,6 +1727,14 @@ def _emit_agent_runtime_trace(
                 for transition in outcome.transitions
                 if transition.new_value_ids
             ],
+            "supply_acquired_facet_ids_by_transition": [
+                list(transition.new_facet_ids)
+                for transition in outcome.transitions
+                if transition.new_facet_ids
+            ],
+            "supply_final_visible_facet_ids": list(
+                outcome.final_query_state.visible_facet_ids
+            ),
             "supply_final_visible_value_ids": list(
                 outcome.final_query_state.retrieved_value_ids
             ),
@@ -901,11 +1742,14 @@ def _emit_agent_runtime_trace(
     )
     runtime_document: dict[str, object] = {
         "controller_policy_id": controller_policy_id,
+        "agent_executor_id": agent_executor_id,
+        "agent_executor_version": agent_executor_version,
         "knowledge_snapshot_sha256": snapshot_sha256,
         "initial_query_state_sha256": outcome.prepared.initial_query_state.content_hash(),
         "final_query_state_sha256": outcome.final_query_state.content_hash(),
         "speech_packet_sha256": outcome.final_query_state.speech_packet_sha256,
         "contacts": [contact.as_json() for contact in outcome.contacts],
+        "waves": [wave.as_json() for wave in outcome.waves],
         "transitions": [transition.as_json() for transition in outcome.transitions],
         "final_response_sha256": hashlib.sha256(
             outcome.final_response_text.encode("utf-8")
@@ -917,6 +1761,8 @@ def _emit_agent_runtime_trace(
         f"{record_base}/runtime-use",
         {
             "use_controller_policy_id": controller_policy_id,
+            "use_agent_executor_id": agent_executor_id,
+            "use_agent_executor_version": agent_executor_version,
             "use_knowledge_snapshot_sha256": snapshot_sha256,
             "use_initial_query_state_sha256": runtime_document[
                 "initial_query_state_sha256"
@@ -926,6 +1772,7 @@ def _emit_agent_runtime_trace(
             ],
             "use_speech_packet_sha256": runtime_document["speech_packet_sha256"],
             "use_contacts": runtime_document["contacts"],
+            "use_waves": runtime_document["waves"],
             "use_transitions": runtime_document["transitions"],
             "use_final_response_sha256": runtime_document["final_response_sha256"],
             "use_runtime_trace_sha256": runtime_trace_sha256,
@@ -964,18 +1811,23 @@ def run_speech_native_agent_loop(
     knowledge_snapshot: KnowledgeSnapshot,
     speech_packet_bindings: Mapping[str, Mapping[str, object]],
     controller_policy_id: str,
+    bootstrap_facet_ids: Sequence[str] = (),
     bootstrap_value_ids: Sequence[str] = (),
     max_contacts: int,
     slot_count: int,
     queue_depth: int,
     trace_sink: AgentTraceSink,
+    agent_executor_id: str,
     decoding_params: Mapping[str, object] | None = None,
     controller_registry: Registry = AGENT_CONTROLLERS,
 ) -> AgentLoopSummary:
     """Run a bounded, batched, speech-native AgentLoop over one DEV split.
 
     BUILD is outside this function: ``knowledge_snapshot`` must already be a
-    frozen TRAIN artifact. Runtime controllers receive only
+    frozen TRAIN artifact. Formal AgentLoop runs use
+    ``openjiuwen-workflow-v1``; ``reference-trajectory-v1`` is retained only
+    as the dependency-free equivalence oracle.
+    Runtime controllers receive only
     :class:`AgentRuntimeContext`, which deliberately excludes the adapter's
     gold-bearing sample object. All trajectories complete before ``score`` or
     ``extract_consumption`` is called.
@@ -985,6 +1837,9 @@ def run_speech_native_agent_loop(
     assert_execution_scope(plan.execution_profile)
     knowledge_snapshot.validate()
     snapshot_sha256 = knowledge_snapshot.content_hash()
+    bootstrap_facets = _validated_bootstrap_facet_ids(
+        knowledge_snapshot, bootstrap_facet_ids
+    )
     bootstrap_ids = _validated_bootstrap_value_ids(
         knowledge_snapshot, bootstrap_value_ids
     )
@@ -1012,6 +1867,34 @@ def run_speech_native_agent_loop(
     queue_depth = _positive_int(queue_depth, field="queue_depth")
     if queue_depth < slot_count:
         raise RailsRunnerError("queue_depth must be at least slot_count")
+    if agent_executor_id not in {
+        "reference-trajectory-v1",
+        "openjiuwen-workflow-v1",
+    }:
+        raise RailsRunnerError(
+            "agent_executor_id must be 'reference-trajectory-v1' or "
+            "'openjiuwen-workflow-v1'"
+        )
+    if agent_executor_id == "reference-trajectory-v1":
+        if plan.execution_profile != "model-free-check":
+            raise RailsRunnerError(
+                "reference-trajectory-v1 is restricted to model-free-check"
+            )
+        if isinstance(core_client, FrozenCoreClient):
+            raise RailsRunnerError(
+                "reference-trajectory-v1 cannot use the real frozen-core client"
+            )
+        agent_executor_version = "repository-reference-v1"
+    else:
+        from ..reproduction.ojw import (  # noqa: PLC0415
+            OpenJiuwenExecutorError,
+            openjiuwen_runtime_version,
+        )
+
+        try:
+            agent_executor_version = openjiuwen_runtime_version()
+        except OpenJiuwenExecutorError as error:
+            raise RailsRunnerError(str(error)) from error
     if decoding_params is not None and not isinstance(decoding_params, Mapping):
         raise RailsRunnerError("decoding_params must be a mapping or None")
     if decoding_params and "id_slot" in decoding_params:
@@ -1058,6 +1941,7 @@ def run_speech_native_agent_loop(
             plan=plan,
             sample=sample,
             descriptor=speech_packet_bindings[sample.sample_id],
+            bootstrap_facet_ids=bootstrap_facets,
             bootstrap_value_ids=bootstrap_ids,
         )
         prepared_tasks.append(
@@ -1070,17 +1954,11 @@ def run_speech_native_agent_loop(
         )
 
     flight_lock = read_flight_lock(Path(data_root))
-    slots: Queue[int] = Queue(maxsize=slot_count)
-    for slot_id in range(slot_count):
-        slots.put(slot_id)
-
-    def execute(prepared: _PreparedAgentTask) -> _AgentRuntimeOutcome:
-        slot_id = slots.get()
-        trace_buffer = TraceBuffer(plan.run_id)
-        set_current_trace_buffer(trace_buffer)
-        try:
-            return _run_agent_trajectory(
-                prepared=prepared,
+    outcomes: list[_AgentRuntimeOutcome | None]
+    if agent_executor_id == "openjiuwen-workflow-v1":
+        outcomes = list(
+            _run_agent_openjiuwen(
+                prepared_tasks=prepared_tasks,
                 snapshot=knowledge_snapshot,
                 snapshot_sha256=snapshot_sha256,
                 adapter=adapter,
@@ -1088,37 +1966,63 @@ def run_speech_native_agent_loop(
                 controller_policy_id=controller_policy_id,
                 core_client=core_client,
                 max_contacts=max_contacts,
-                slot_id=slot_id,
+                slot_count=slot_count,
+                queue_depth=queue_depth,
                 base_decoding_params=decoding_params,
-                trace_buffer=trace_buffer,
+                trace_sink=trace_sink,
+                run_id=plan.run_id,
             )
-        finally:
-            set_current_trace_buffer(None)
+        )
+    else:
+        slots: Queue[int] = Queue(maxsize=slot_count)
+        for slot_id in range(slot_count):
             slots.put(slot_id)
 
-    outcomes: list[_AgentRuntimeOutcome | None] = [None] * len(prepared_tasks)
-    with ThreadPoolExecutor(
-        max_workers=min(slot_count, len(prepared_tasks)),
-        thread_name_prefix="saea-agent-trajectory",
-    ) as pool:
-        pending: dict[Future[_AgentRuntimeOutcome], int] = {}
-        next_index = 0
-        while next_index < len(prepared_tasks) and len(pending) < queue_depth:
-            future = pool.submit(execute, prepared_tasks[next_index])
-            pending[future] = next_index
-            next_index += 1
-        while pending:
-            completed, _ = wait(tuple(pending), return_when=FIRST_COMPLETED)
-            for future in completed:
-                index = pending.pop(future)
-                outcomes[index] = future.result()
-                if next_index < len(prepared_tasks):
-                    next_future = pool.submit(execute, prepared_tasks[next_index])
-                    pending[next_future] = next_index
-                    next_index += 1
+        def execute(prepared: _PreparedAgentTask) -> _AgentRuntimeOutcome:
+            slot_id = slots.get()
+            trace_buffer = TraceBuffer(plan.run_id)
+            set_current_trace_buffer(trace_buffer)
+            try:
+                return _run_agent_trajectory(
+                    prepared=prepared,
+                    snapshot=knowledge_snapshot,
+                    snapshot_sha256=snapshot_sha256,
+                    adapter=adapter,
+                    controller_factory=controller_factory,
+                    controller_policy_id=controller_policy_id,
+                    core_client=core_client,
+                    max_contacts=max_contacts,
+                    slot_id=slot_id,
+                    base_decoding_params=decoding_params,
+                    trace_buffer=trace_buffer,
+                )
+            finally:
+                set_current_trace_buffer(None)
+                slots.put(slot_id)
 
-    if any(outcome is None for outcome in outcomes):
-        raise RailsRunnerError("AgentLoop lost a trajectory result")
+        outcomes = [None] * len(prepared_tasks)
+        with ThreadPoolExecutor(
+            max_workers=min(slot_count, len(prepared_tasks)),
+            thread_name_prefix="saea-agent-trajectory",
+        ) as pool:
+            pending: dict[Future[_AgentRuntimeOutcome], int] = {}
+            next_index = 0
+            while next_index < len(prepared_tasks) and len(pending) < queue_depth:
+                future = pool.submit(execute, prepared_tasks[next_index])
+                pending[future] = next_index
+                next_index += 1
+            while pending:
+                completed, _ = wait(tuple(pending), return_when=FIRST_COMPLETED)
+                for future in completed:
+                    index = pending.pop(future)
+                    outcomes[index] = future.result()
+                    if next_index < len(prepared_tasks):
+                        next_future = pool.submit(execute, prepared_tasks[next_index])
+                        pending[next_future] = next_index
+                        next_index += 1
+
+        if any(outcome is None for outcome in outcomes):
+            raise RailsRunnerError("AgentLoop lost a trajectory result")
 
     # Gold-bearing adapter methods begin only after the whole runtime window
     # is sealed. Persist the runtime trajectory before scoring so no post-hoc
@@ -1130,6 +2034,8 @@ def run_speech_native_agent_loop(
             _emit_agent_runtime_trace(
                 sink=outcome.trace_buffer,
                 controller_policy_id=controller_policy_id,
+                agent_executor_id=agent_executor_id,
+                agent_executor_version=agent_executor_version,
                 snapshot_sha256=snapshot_sha256,
                 outcome=outcome,
             )
@@ -1157,6 +2063,7 @@ def run_speech_native_agent_loop(
                 final_query_state=outcome.final_query_state,
                 final_response_text=outcome.final_response_text,
                 contacts=outcome.contacts,
+                waves=outcome.waves,
                 transitions=outcome.transitions,
                 agent_states=outcome.agent_states,
                 metrics=metrics,
@@ -1173,6 +2080,8 @@ def run_speech_native_agent_loop(
         run_id=plan.run_id,
         protocol_hash=plan.protocol_hash,
         controller_policy_id=controller_policy_id,
+        agent_executor_id=agent_executor_id,
+        agent_executor_version=agent_executor_version,
         knowledge_snapshot_sha256=snapshot_sha256,
         results=tuple(results),
         flight_lock=flight_lock,

@@ -58,13 +58,15 @@ import re
 from collections import Counter, defaultdict, deque
 from copy import deepcopy
 from concurrent.futures import FIRST_COMPLETED, Future, ThreadPoolExecutor, wait
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from pathlib import Path
 from queue import Queue
 from threading import BoundedSemaphore
 from types import MappingProxyType
 from typing import Callable, Mapping, Sequence
 
+from ...contracts import ExecutionPlan
+from ...core.base import Registry
 from ...data.loader import LoaderError
 from ...data.slurp import (
     SlurpTrainMaterial,
@@ -75,11 +77,29 @@ from ...data.slurp import (
 from ...reproduction.slurp_scoring import parse_slu_response
 from ...core.tracing import TraceBuffer, set_current_trace_buffer
 from ..adapters.slurp import SlurpAdapter, SlurpSample
-from ..consumption import ConsumptionTrace
-from ..knowledge import KeyFacet, KnowledgeSnapshot, ValueBundle
-from ..obs import AudioRef
-from ..runner import ContactDAGAdvance, run_bounded_contact_dag
+from ..consumption import ConsumptionTrace, build_consumption_trace
+from ..knowledge import (
+    AgentStateArtifact,
+    AgentStepTransition,
+    FusionDecision,
+    KeyFacet,
+    KnowledgeSnapshot,
+    QueryState,
+    RankedFacet,
+    RankResult,
+    ValueBundle,
+)
+from ..obs import AudioRef, ObsPacket
+from ..runner import (
+    AgentContactPlan,
+    AgentLoopAdvance,
+    AgentRuntimeContext,
+    ContactDAGAdvance,
+    run_bounded_contact_dag,
+    run_speech_native_agent_loop,
+)
 from ..supply import SupplyDose, SupplyForm, SupplyItem, SupplyPacket
+from ..task_adapter import TaskAdapter
 
 PSLU_PHASE1_ARM = "A0"
 PSLU_PHASE2_ARMS: tuple[str, ...] = ("A1", "A1p", "A2", "A3", "A4")
@@ -1967,9 +1987,7 @@ def _speech_feature_messages(
         "slot-affine-speech-prefix-v1",
         "slot-affine-knowledge-speech-state-v1",
     }:
-        content.append(
-            {"type": "text", "text": f"Task instruction:\n{system_text}"}
-        )
+        content.append({"type": "text", "text": f"Task instruction:\n{system_text}"})
     return (
         {
             "role": "system",
@@ -3208,8 +3226,7 @@ def run_speech_native_matcher(
             + (
                 "The first factor id must be an operation factor registered to the "
                 "selected key. "
-                if agent_policy_id
-                == "speech-conditioned-adaptive-evidence-gap-v2"
+                if agent_policy_id == "speech-conditioned-adaptive-evidence-gap-v2"
                 else ""
             )
             + "Return no rationale, summary, or free-form text.",
@@ -3225,8 +3242,7 @@ def run_speech_native_matcher(
                     graph=decision_graph,
                     candidate_key_ids=initial_top_ids,
                     key_conditioned=(
-                        agent_policy_id
-                        == "speech-conditioned-adaptive-evidence-gap-v2"
+                        agent_policy_id == "speech-conditioned-adaptive-evidence-gap-v2"
                     ),
                 )
             },
@@ -4828,10 +4844,7 @@ def run_speech_native_match_tasks(
                 state.top_ids = _selected_top_keys(
                     state.responses[1], allowed, task.top_k
                 )
-                if (
-                    state.primary_key_id is None
-                    or len(state.top_ids) != task.top_k
-                ):
+                if state.primary_key_id is None or len(state.top_ids) != task.top_k:
                     finish_m11(
                         state,
                         actions=(
@@ -4844,9 +4857,7 @@ def run_speech_native_match_tasks(
                         escalated=True,
                     )
                     return ContactDAGAdvance()
-                return ContactDAGAdvance(
-                    ready_front=(m11_action_node(state),)
-                )
+                return ContactDAGAdvance(ready_front=(m11_action_node(state),))
             if node.stage_kind == "action":
                 state.action_state = parse_candidate_action_state(
                     response,
@@ -4905,9 +4916,7 @@ def run_speech_native_match_tasks(
                         escalated=False,
                     )
                     return ContactDAGAdvance()
-                return ContactDAGAdvance(
-                    ready_front=m11_boundary_nodes(state)
-                )
+                return ContactDAGAdvance(ready_front=m11_boundary_nodes(state))
             if node.stage_kind == "boundary":
                 assert node.order_id is not None
                 assert state.primary_key_id is not None
@@ -6689,6 +6698,433 @@ def run_speech_native_match_tasks(
     return tuple(outcome for outcome in outcomes if outcome is not None)
 
 
+_OPENJIUWEN_M1_CONTROLLER_POLICY_ID = "speech-native-m1-openjiuwen-v1"
+_OPENJIUWEN_M1_SPLIT_ID = "speech-native-profile-use"
+
+
+@dataclass
+class _SpeechNativeM1TaskAdapter(TaskAdapter):
+    """Adapt the existing M1 profile task to the generic speech AgentLoop."""
+
+    tasks: tuple[SpeechNativeMatchTask, ...]
+
+    def __post_init__(self) -> None:
+        self._task_by_sample_id = {task.sample.sample_id: task for task in self.tasks}
+
+    def load_split(self, split_id: str) -> Sequence[object]:
+        if split_id != _OPENJIUWEN_M1_SPLIT_ID:
+            return ()
+        return tuple(task.sample for task in self.tasks)
+
+    def build_task_contract(self, sample: object, obs: ObsPacket) -> str:
+        del obs
+        if sample.sample_id not in self._task_by_sample_id:
+            raise PsluFlightError(
+                "speech-native Agent adapter received an unknown sample"
+            )
+        return (
+            "Match the primary speech observation against the supplied TRAIN-built "
+            "opaque scenario-key catalog and choose exactly one opaque key id. The "
+            "catalog is task knowledge, never a replacement for the speech query."
+        )
+
+    def assemble_prompt(
+        self, sample: object, supply: SupplyPacket | None
+    ) -> Sequence[Mapping[str, object]]:
+        if sample.sample_id not in self._task_by_sample_id:
+            raise PsluFlightError(
+                "speech-native Agent adapter received an unknown sample"
+            )
+        if supply is not None:
+            raise PsluFlightError(
+                "speech-native Agent prompt assembly receives knowledge through QueryState"
+            )
+        return (
+            {"role": "system", "content": SPEECH_NATIVE_STABLE_SYSTEM_TEXT},
+            {"role": "user", "content": ()},
+        )
+
+    def score(self, sample: object, response: str) -> Mapping[str, object]:
+        task = self._task_by_sample_id[sample.sample_id]
+        allowed = {card.key_id for card in task.key_cards}
+        selected = _selected_key_id(response, allowed)
+        return {
+            "response_parsed": selected is not None,
+            "selected_key_id": selected,
+            "gold_observed": False,
+        }
+
+    def extract_consumption(
+        self,
+        sample: object,
+        supply: SupplyPacket | None,
+        response: str,
+    ) -> ConsumptionTrace:
+        return build_consumption_trace(
+            span_id=f"{sample.sample_id}:openjiuwen-m1",
+            supply=supply,
+            response_text=response,
+        )
+
+
+@dataclass(frozen=True)
+class _SpeechNativeM1AgentController:
+    """M1 listwise and M2 semantic-first policies on the shared AgentLoop."""
+
+    task: SpeechNativeMatchTask
+
+    def _selection_contact(self, context: AgentRuntimeContext) -> AgentContactPlan:
+        decoding_params = dict(self.task.decoding_params)
+        decoding_params.pop("id_slot", None)
+        decoding_params["response_format"] = _key_choice_response_format(
+            name="speech_native_openjiuwen_key_choice",
+            key_ids=tuple(card.key_id for card in self.task.key_cards),
+        )
+        return AgentContactPlan(
+            contact_id=f"{self.task.task_id}:listwise",
+            query_state_sha256=context.query_state.content_hash(),
+            purpose="speech-native-listwise-key-selection",
+            instruction=(
+                "Match the speech signal to exactly one supplied opaque key. Use the "
+                "original speech observation and the TRAIN-built key representations "
+                "jointly. Key headings contain an opaque K001 segment; return only that "
+                "K001 id as one JSON object with exactly one field named key_id. "
+                "Copy a supplied id exactly and do not invent or shorten it."
+            ),
+            key_representation_id=self.task.key_representation_id,
+            matcher_policy_id=(f"{self.task.matcher_policy_id}:openjiuwen-listwise-v1"),
+            decoding_params=decoding_params,
+        ).validate()
+
+    def initial_contact(self, context: AgentRuntimeContext) -> AgentContactPlan:
+        if context.sample_id != self.task.sample.sample_id:
+            raise PsluFlightError(
+                "speech-native Agent controller is bound to a different query sample"
+            )
+        if self.task.matcher_policy_id == "M1":
+            return self._selection_contact(context)
+        decoding_params = dict(self.task.decoding_params)
+        decoding_params.pop("id_slot", None)
+        decoding_params["response_format"] = {
+            "type": "json_schema",
+            "json_schema": {
+                "name": "speech_native_semantic_state",
+                "strict": True,
+                "schema": {
+                    "type": "object",
+                    "properties": {
+                        "intent_summary": {"type": "string"},
+                        "discriminative_cues": {
+                            "type": "array",
+                            "items": {"type": "string"},
+                        },
+                    },
+                    "required": ["intent_summary", "discriminative_cues"],
+                    "additionalProperties": False,
+                },
+            },
+        }
+        return AgentContactPlan(
+            contact_id=f"{self.task.task_id}:semantic-state",
+            query_state_sha256=context.query_state.content_hash(),
+            purpose="speech-native-semantic-state",
+            instruction=(
+                "Analyze the original speech without transcribing it. Produce a compact "
+                "English intent summary and only the discriminative semantic cues that "
+                "would help a later key match. Do not choose a key yet."
+            ),
+            key_representation_id=self.task.key_representation_id,
+            matcher_policy_id="M2:openjiuwen-semantic-state-v1",
+            decoding_params=decoding_params,
+        ).validate()
+
+    def advance(
+        self,
+        context: AgentRuntimeContext,
+        contact: AgentContactPlan,
+        response_text: str,
+    ) -> AgentLoopAdvance:
+        if not isinstance(response_text, str):
+            raise PsluFlightError("speech-native Agent contact must return one string")
+        if self.task.matcher_policy_id == "M2" and context.query_state.loop_step == 0:
+            state_id = f"state:{self.task.task_id}:semantic"
+            state = AgentStateArtifact(
+                state_id=state_id,
+                state_kind="speech-semantic-cues",
+                content=response_text,
+                source_query_state_sha256=context.query_state.content_hash(),
+                source_response_sha256=hashlib.sha256(
+                    response_text.encode("utf-8")
+                ).hexdigest(),
+                producer_policy_id="M2:openjiuwen-semantic-state-v1",
+                cited_value_ids=(),
+            ).validate()
+            ranked_facet_ids = tuple(sorted(context.catalog_facet_ids))
+            rank_result = RankResult(
+                snapshot_sha256=context.knowledge_snapshot_sha256,
+                query_state_sha256=context.query_state.content_hash(),
+                ranking_policy_id="M2:complete-key-catalog-v1",
+                candidates=tuple(
+                    RankedFacet(facet_id=facet_id, score=0.0)
+                    for facet_id in ranked_facet_ids
+                ),
+            ).validate()
+            fusion_decision = FusionDecision(
+                snapshot_sha256=context.knowledge_snapshot_sha256,
+                query_state_sha256=context.query_state.content_hash(),
+                rank_result_sha256=rank_result.content_hash(),
+                fusion_policy_id="M2:complete-key-catalog-v1",
+                supporting_facet_ids=ranked_facet_ids,
+                selected_value_ids=(),
+            ).validate()
+            next_state = QueryState(
+                query_id=context.query_state.query_id,
+                query_sample_id=context.query_state.query_sample_id,
+                speech_packet_id=context.query_state.speech_packet_id,
+                speech_packet_sha256=context.query_state.speech_packet_sha256,
+                use_split_identity_hash=context.query_state.use_split_identity_hash,
+                loop_step=1,
+                visible_facet_ids=ranked_facet_ids,
+                agent_state_ids=(state_id,),
+            ).validate()
+            return AgentLoopAdvance(
+                transition=AgentStepTransition(
+                    snapshot_sha256=context.knowledge_snapshot_sha256,
+                    prior_query_state_sha256=context.query_state.content_hash(),
+                    next_query_state_sha256=next_state.content_hash(),
+                    action_kind="expand",
+                    action_target_refs=(
+                        f"rank-result:{rank_result.content_hash()}",
+                        f"fusion-decision:{fusion_decision.content_hash()}",
+                    ),
+                    new_value_ids=(),
+                    used_value_ids=(),
+                    dropped_value_ids=(),
+                    new_agent_state_ids=(state_id,),
+                    dropped_agent_state_ids=(),
+                    new_facet_ids=ranked_facet_ids,
+                ).validate(),
+                next_query_state=next_state,
+                new_agent_states=(state,),
+                next_contact=self._selection_contact(
+                    replace(context, query_state=next_state, contact_index=1)
+                ),
+                rank_result=rank_result,
+                fusion_decision=fusion_decision,
+            )
+        return AgentLoopAdvance(
+            transition=AgentStepTransition(
+                snapshot_sha256=context.knowledge_snapshot_sha256,
+                prior_query_state_sha256=context.query_state.content_hash(),
+                next_query_state_sha256=None,
+                action_kind="stop",
+                action_target_refs=(),
+                new_value_ids=(),
+                used_value_ids=(),
+                dropped_value_ids=(),
+                new_agent_state_ids=(),
+                dropped_agent_state_ids=(),
+            ).validate(),
+            next_query_state=None,
+            new_agent_states=(),
+            next_contact=None,
+            final_response_contact_id=contact.contact_id,
+        )
+
+
+def validate_openjiuwen_speech_native_match_tasks(
+    tasks: Sequence[SpeechNativeMatchTask],
+    knowledge_snapshot: KnowledgeSnapshot,
+) -> tuple[SpeechNativeMatchTask, ...]:
+    ordered = tuple(tasks)
+    if not ordered:
+        raise PsluFlightError(
+            "openJiuwen speech-native profile requires at least one task"
+        )
+    task_ids = tuple(task.task_id for task in ordered)
+    sample_ids = tuple(task.sample.sample_id for task in ordered)
+    if len(set(task_ids)) != len(task_ids):
+        raise PsluFlightError("openJiuwen speech-native task ids must be unique")
+    if len(set(sample_ids)) != len(sample_ids):
+        raise PsluFlightError(
+            "openJiuwen speech-native vertical slice requires one key order per query"
+        )
+    first_cards = _validated_key_cards(ordered[0].key_cards)
+    first_matcher_policy_id = ordered[0].matcher_policy_id
+    for task in ordered:
+        if task.matcher_policy_id not in {"M1", "M2"} or (
+            task.key_representation_id != "K2"
+        ):
+            raise PsluFlightError(
+                "openJiuwen speech-native vertical slice only supports M1/M2 with "
+                "K2 text keys"
+            )
+        if task.matcher_policy_id != first_matcher_policy_id:
+            raise PsluFlightError(
+                "openJiuwen speech-native tasks must share one matcher policy"
+            )
+        if task.mechanism_control_id == "key-text-shuffle-v1":
+            raise PsluFlightError(
+                "openJiuwen speech-native vertical slice does not support key-text shuffle"
+            )
+        if task.audio_key_bindings is not None or task.decision_graph is not None:
+            raise PsluFlightError(
+                "openJiuwen M1 text-key tasks cannot carry audio keys or decision graphs"
+            )
+        if _validated_key_cards(task.key_cards) != first_cards:
+            raise PsluFlightError(
+                "openJiuwen speech-native tasks must share one frozen key ordering"
+            )
+        if not hasattr(task.sample, "audio_ref") or not hasattr(
+            task.sample, "audio_seconds"
+        ):
+            raise PsluFlightError(
+                "openJiuwen speech-native samples must expose AudioRef and audio_seconds"
+            )
+        if set(task.query_descriptor) != {"packet_id", "sha256", "role"} or (
+            task.query_descriptor.get("role") != "query"
+        ):
+            raise PsluFlightError(
+                "openJiuwen speech-native query descriptor must bind one query packet"
+            )
+
+    knowledge_snapshot.validate()
+    overlap = set(sample_ids) & set(knowledge_snapshot.source_sample_ids)
+    if overlap:
+        raise PsluFlightError(
+            "openJiuwen speech-native USE samples overlap the TRAIN knowledge source: "
+            f"{sorted(overlap)}"
+        )
+    value_by_id = {value.value_id: value for value in knowledge_snapshot.values}
+    facet_by_id = {facet.facet_id: facet for facet in knowledge_snapshot.facets}
+    for card in first_cards:
+        value = value_by_id.get(f"value:{card.key_id}")
+        if value is None or value.task_target != card.value_label:
+            raise PsluFlightError(
+                f"TRAIN knowledge snapshot does not bind {card.key_id!r} to its value"
+            )
+        key_material_text = "\n".join(
+            facet_by_id[facet_id].representation
+            for facet_id in value.associated_facet_ids
+        )
+        required_key_material = (
+            card.definition,
+            *card.positive_examples,
+            card.contrastive_boundary,
+        )
+        if any(text not in key_material_text for text in required_key_material):
+            raise PsluFlightError(
+                f"TRAIN knowledge snapshot has incomplete K2 key facets for "
+                f"{card.key_id!r}"
+            )
+    return ordered
+
+
+def run_openjiuwen_speech_native_match_tasks(
+    *,
+    data_root: Path,
+    plan: ExecutionPlan,
+    core_client: object,
+    tasks: Sequence[SpeechNativeMatchTask],
+    knowledge_snapshot: KnowledgeSnapshot,
+    slot_count: int,
+    queue_depth: int,
+    trace_flusher: Callable[[TraceBuffer], None] | None = None,
+) -> tuple[SpeechNativeMatchOutcome, ...]:
+    """Run the existing M1/K2 profile cell on the formal openJiuwen AgentLoop.
+
+    This is deliberately a narrow, fail-closed vertical slice. It reuses the
+    production task, decision, frozen-core, packet, and trace contracts while
+    the generic AgentLoop grows key-order-specific retrieval and dynamic M2--M11
+    evidence acquisition. No handwritten Agent runtime remains on this path.
+    """
+
+    ordered = validate_openjiuwen_speech_native_match_tasks(tasks, knowledge_snapshot)
+    controller_by_sample_id = {
+        task.sample.sample_id: _SpeechNativeM1AgentController(task) for task in ordered
+    }
+    registry = Registry("speech-native profile Agent controller")
+    registry.register(
+        _OPENJIUWEN_M1_CONTROLLER_POLICY_ID,
+        lambda sample_id: controller_by_sample_id[sample_id],
+    )
+    trace_buffer = TraceBuffer(plan.run_id)
+    matcher_policy_id = ordered[0].matcher_policy_id
+    bootstrap_facet_ids = (
+        tuple(facet.facet_id for facet in knowledge_snapshot.facets)
+        if matcher_policy_id == "M1"
+        else ()
+    )
+    max_contacts = 1 if matcher_policy_id == "M1" else 2
+    try:
+        summary = run_speech_native_agent_loop(
+            data_root=data_root,
+            plan=plan,
+            adapter=_SpeechNativeM1TaskAdapter(ordered),
+            core_client=core_client,
+            split_id=_OPENJIUWEN_M1_SPLIT_ID,
+            knowledge_snapshot=knowledge_snapshot,
+            speech_packet_bindings={
+                task.sample.sample_id: {
+                    "packet_id": task.query_descriptor["packet_id"],
+                    "sha256": task.query_descriptor["sha256"],
+                }
+                for task in ordered
+            },
+            controller_policy_id=_OPENJIUWEN_M1_CONTROLLER_POLICY_ID,
+            bootstrap_facet_ids=bootstrap_facet_ids,
+            max_contacts=max_contacts,
+            slot_count=slot_count,
+            queue_depth=queue_depth,
+            trace_sink=trace_buffer,
+            agent_executor_id="openjiuwen-workflow-v1",
+            controller_registry=registry,
+        )
+    finally:
+        if trace_flusher is not None:
+            trace_flusher(trace_buffer)
+
+    task_by_sample_id = {task.sample.sample_id: task for task in ordered}
+    outcomes: list[SpeechNativeMatchOutcome] = []
+    for result in summary.results:
+        task = task_by_sample_id[result.sample_id]
+        allowed = {card.key_id for card in task.key_cards}
+        selected = _selected_key_id(result.final_response_text, allowed)
+        card_by_id = {card.key_id: card for card in task.key_cards}
+        if len(result.contacts) != max_contacts:
+            raise PsluFlightError(
+                f"openJiuwen {matcher_policy_id} trajectory must contain "
+                f"{max_contacts} contacts"
+            )
+        raw_responses = (
+            (result.final_response_text,)
+            if matcher_policy_id == "M1"
+            else (result.agent_states[0].content, result.final_response_text)
+        )
+        outcomes.append(
+            SpeechNativeMatchOutcome(
+                task_id=task.task_id,
+                slot_id=result.contacts[0].slot_id,
+                decision=SpeechNativeDecision(
+                    matcher_policy_id=task.matcher_policy_id,
+                    key_representation_id=task.key_representation_id,
+                    key_id=selected,
+                    value_label=(
+                        card_by_id[selected].value_label
+                        if selected in card_by_id
+                        else None
+                    ),
+                    top_key_ids=(),
+                    calls=max_contacts,
+                    raw_responses=raw_responses,
+                    verifier_scores={},
+                    parse_failure=selected is None,
+                ),
+            )
+        )
+    return tuple(outcomes)
+
+
 def _binding_rank(seed: int, purpose: str, *parts: str) -> str:
     text = "|".join((str(seed), purpose, *parts))
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
@@ -6696,6 +7132,72 @@ def _binding_rank(seed: int, purpose: str, *parts: str) -> str:
 
 def _normalized_sentence(sentence: str) -> str:
     return " ".join(sentence.casefold().split())
+
+
+def partition_speech_native_train_knowledge(
+    material: Sequence[SlurpTrainMaterial],
+    *,
+    use_sample_ids: Sequence[str],
+) -> tuple[SlurpTrainMaterial, ...]:
+    """Remove USE query identity groups from the TRAIN knowledge build.
+
+    Speech-native optimization views are currently sampled from the governed
+    natural TRAIN carrier. Treating those held-out views as DEV-role USE still
+    requires construction to remove the exact recording, its utterance/text
+    group, and its speaker group before a :class:`KnowledgeSnapshot` is built.
+    """
+
+    requested = tuple(use_sample_ids)
+    if not requested or any(
+        not isinstance(item, str) or not item for item in requested
+    ):
+        raise PsluFlightError(
+            "knowledge partition USE sample ids must be non-empty strings"
+        )
+    if len(set(requested)) != len(requested):
+        raise PsluFlightError("knowledge partition USE sample ids must be unique")
+    requested_set = set(requested)
+    found: set[str] = set()
+    blocked_utterances: set[str] = set()
+    blocked_sentences: set[str] = set()
+    blocked_speakers: set[str] = set()
+    for entry in material:
+        matching = tuple(
+            recording
+            for recording in entry.recordings
+            if recording.sample_id in requested_set
+        )
+        if not matching:
+            continue
+        found.update(recording.sample_id for recording in matching)
+        blocked_utterances.add(entry.utterance_id)
+        blocked_sentences.add(_normalized_sentence(entry.sentence))
+        blocked_speakers.update(recording.speaker_id for recording in matching)
+    missing = requested_set - found
+    if missing:
+        raise PsluFlightError(
+            "knowledge partition cannot resolve USE samples in TRAIN material: "
+            f"{sorted(missing)}"
+        )
+
+    construction: list[SlurpTrainMaterial] = []
+    for entry in material:
+        if (
+            entry.utterance_id in blocked_utterances
+            or _normalized_sentence(entry.sentence) in blocked_sentences
+        ):
+            continue
+        recordings = tuple(
+            recording
+            for recording in entry.recordings
+            if recording.sample_id not in requested_set
+            and recording.speaker_id not in blocked_speakers
+        )
+        if recordings:
+            construction.append(replace(entry, recordings=recordings))
+    if not construction:
+        raise PsluFlightError("knowledge partition removed the complete TRAIN corpus")
+    return tuple(construction)
 
 
 def _binding_sha256(document: Mapping[str, object]) -> str:
@@ -7321,11 +7823,19 @@ def build_speech_native_knowledge_snapshot(
     )
     corpus = selection["corpus"]
     key_cards = selection["key_cards"]
-    if not isinstance(corpus, tuple) or not isinstance(key_cards, list):
+    key_material = selection["key_material"]
+    if (
+        not isinstance(corpus, tuple)
+        or not isinstance(key_cards, list)
+        or not isinstance(key_material, list)
+    ):
         raise PsluFlightError("speech-native knowledge selection is malformed")
 
     card_by_key = {
         str(card["key_id"]): card for card in key_cards if isinstance(card, Mapping)
+    }
+    material_by_key = {
+        str(item["key_id"]): item for item in key_material if isinstance(item, Mapping)
     }
     rows_by_scenario_action: dict[
         tuple[str, str], list[tuple[SlurpTrainMaterial, SlurpTrainRecording]]
@@ -7423,6 +7933,40 @@ def build_speech_native_knowledge_snapshot(
             or not definition
         ):
             raise PsluFlightError(f"TRAIN snapshot card {key_id!r} is malformed")
+        material_entry = material_by_key.get(key_id)
+        raw_sources = (
+            material_entry.get("sources")
+            if isinstance(material_entry, Mapping)
+            else None
+        )
+        if not isinstance(raw_sources, list):
+            raise PsluFlightError(
+                f"TRAIN snapshot key material {key_id!r} is malformed"
+            )
+        card_source_ids = tuple(
+            str(source["sample_id"])
+            for source in raw_sources
+            if isinstance(source, Mapping) and isinstance(source.get("sample_id"), str)
+        )
+        if len(card_source_ids) != len(raw_sources) or not card_source_ids:
+            raise PsluFlightError(
+                f"TRAIN snapshot key material {key_id!r} lacks source identities"
+            )
+        card_facet_id = f"facet:{key_id}:contrastive-card"
+        facets.append(
+            KeyFacet(
+                facet_id=card_facet_id,
+                dimension="contrastive-card",
+                representation_kind="text",
+                representation=(
+                    f"Definition: {definition}\n"
+                    f"Positive examples: {' | '.join(examples)}\n"
+                    f"Contrastive boundary: {boundary}"
+                ),
+                source_sample_ids=card_source_ids,
+                parent_facet_ids=(scenario_facet_id,),
+            ).validate()
+        )
         provenance_refs = tuple(
             sorted(
                 {
@@ -7444,12 +7988,12 @@ def build_speech_native_knowledge_snapshot(
         values.append(
             ValueBundle(
                 value_id=f"value:{key_id}",
-                content=(
-                    f"Definition: {definition}\n"
-                    f"Positive examples: {' | '.join(examples)}\n"
-                    f"Contrastive boundary: {boundary}"
+                content=f"Deterministic task-target mapping for opaque key {key_id}.",
+                associated_facet_ids=(
+                    scenario_facet_id,
+                    card_facet_id,
+                    *action_facet_ids,
                 ),
-                associated_facet_ids=(scenario_facet_id, *action_facet_ids),
                 source_sample_ids=scenario_source_ids,
                 provenance_refs=provenance_refs,
                 task_target=scenario,
@@ -7692,61 +8236,61 @@ _KNOWLEDGE_STOPWORDS = frozenset(
     }
 )
 
-_DATASET_SEMANTIC_BOUNDARY_SPECS: Mapping[
-    tuple[str, str], Mapping[str, object]
-] = MappingProxyType(
-    {
-        ("calendar", "datetime"): {
-            "left_source_terms": ("calendar", "meeting", "appointment"),
-            "right_source_terms": (
-                "christmas",
-                "halloween",
-                "holiday",
-                "valentine",
-                "match",
-            ),
-            "left_exclusion": (
-                "use the other key for a general date, day, or time question about "
-                "a public or named event; use {left_key_id} only for the user's "
-                "stored or scheduled calendar item"
-            ),
-            "right_exclusion": (
-                "use the other key for the user's stored or scheduled calendar "
-                "item, meeting, or appointment; use {right_key_id} for a general "
-                "date, day, or time question about a public or named event"
-            ),
-            "supported_relations": (
-                ("query", ("event_name",)),
-                ("query", ("date", "event_name")),
-            ),
-        },
-        ("lists", "social"): {
-            "left_source_terms": ("list", "tasks", "jobs"),
-            "right_source_terms": ("likes", "status", "social media"),
-            "left_exclusion": (
-                "use the other key for social-network engagement, likes, status, "
-                "posts, or platform activity even when a date is mentioned"
-            ),
-            "right_exclusion": (
-                "use the other key for the user's tasks, jobs, or list contents; "
-                "a date mention alone is not social-network evidence"
-            ),
-            "supported_relations": (("query", ("date",)),),
-        },
-        ("news", "social"): {
-            "left_source_terms": ("news", "headline", "current events"),
-            "right_source_terms": ("likes", "status", "social media"),
-            "left_exclusion": (
-                "use the other key for social-network engagement, likes, status, "
-                "posts, or platform activity even when a date is mentioned"
-            ),
-            "right_exclusion": (
-                "use the other key for general news reports, headlines, or current "
-                "events without social-account or platform engagement"
-            ),
-            "supported_relations": (("query", ("date",)),),
-        },
-    }
+_DATASET_SEMANTIC_BOUNDARY_SPECS: Mapping[tuple[str, str], Mapping[str, object]] = (
+    MappingProxyType(
+        {
+            ("calendar", "datetime"): {
+                "left_source_terms": ("calendar", "meeting", "appointment"),
+                "right_source_terms": (
+                    "christmas",
+                    "halloween",
+                    "holiday",
+                    "valentine",
+                    "match",
+                ),
+                "left_exclusion": (
+                    "use the other key for a general date, day, or time question about "
+                    "a public or named event; use {left_key_id} only for the user's "
+                    "stored or scheduled calendar item"
+                ),
+                "right_exclusion": (
+                    "use the other key for the user's stored or scheduled calendar "
+                    "item, meeting, or appointment; use {right_key_id} for a general "
+                    "date, day, or time question about a public or named event"
+                ),
+                "supported_relations": (
+                    ("query", ("event_name",)),
+                    ("query", ("date", "event_name")),
+                ),
+            },
+            ("lists", "social"): {
+                "left_source_terms": ("list", "tasks", "jobs"),
+                "right_source_terms": ("likes", "status", "social media"),
+                "left_exclusion": (
+                    "use the other key for social-network engagement, likes, status, "
+                    "posts, or platform activity even when a date is mentioned"
+                ),
+                "right_exclusion": (
+                    "use the other key for the user's tasks, jobs, or list contents; "
+                    "a date mention alone is not social-network evidence"
+                ),
+                "supported_relations": (("query", ("date",)),),
+            },
+            ("news", "social"): {
+                "left_source_terms": ("news", "headline", "current events"),
+                "right_source_terms": ("likes", "status", "social media"),
+                "left_exclusion": (
+                    "use the other key for social-network engagement, likes, status, "
+                    "posts, or platform activity even when a date is mentioned"
+                ),
+                "right_exclusion": (
+                    "use the other key for general news reports, headlines, or current "
+                    "events without social-account or platform engagement"
+                ),
+                "supported_relations": (("query", ("date",)),),
+            },
+        }
+    )
 )
 
 
@@ -8029,9 +8573,9 @@ def build_data_derived_decision_graph(
         raise PsluFlightError(f"data-derived graph corpus lacks scenarios {missing}")
 
     action_counts: dict[str, Counter[str]] = defaultdict(Counter)
-    entity_types_by_scenario_action: dict[
-        tuple[str, str], Counter[str]
-    ] = defaultdict(Counter)
+    entity_types_by_scenario_action: dict[tuple[str, str], Counter[str]] = defaultdict(
+        Counter
+    )
     lexical_counts: dict[str, Counter[str]] = defaultdict(Counter)
     document_frequency: Counter[str] = Counter()
     for entry in corpus:
@@ -8175,12 +8719,16 @@ def build_data_derived_decision_graph(
                     ),
                     left_exclusion=(
                         "Do not choose this side when the speech instead expresses "
-                        + SPEECH_NATIVE_SCENARIO_DEFINITIONS[right].rstrip(".").casefold()
+                        + SPEECH_NATIVE_SCENARIO_DEFINITIONS[right]
+                        .rstrip(".")
+                        .casefold()
                         + "."
                     ),
                     right_exclusion=(
                         "Do not choose this side when the speech instead expresses "
-                        + SPEECH_NATIVE_SCENARIO_DEFINITIONS[left].rstrip(".").casefold()
+                        + SPEECH_NATIVE_SCENARIO_DEFINITIONS[left]
+                        .rstrip(".")
+                        .casefold()
                         + "."
                     ),
                     provenance_ids=(
@@ -8205,9 +8753,8 @@ def build_data_derived_decision_graph(
             for entity_type, count in primary_counts.items():
                 prevalence = count / primary_total
                 other_count = other_counts[entity_type]
-                rate_ratio = (
-                    ((count + 1.0) / (primary_total + 2.0))
-                    / ((other_count + 1.0) / (other_total + 2.0))
+                rate_ratio = ((count + 1.0) / (primary_total + 2.0)) / (
+                    (other_count + 1.0) / (other_total + 2.0)
                 )
                 if (
                     count < _DISCRIMINATIVE_ENTITY_MIN_SUPPORT
@@ -8477,9 +9024,7 @@ def build_data_derived_decision_graph(
                         ),
                     )
                     entity_signature_text = (
-                        ", ".join(
-                            item.replace("_", " ") for item in lexical_entities
-                        )
+                        ", ".join(item.replace("_", " ") for item in lexical_entities)
                         if lexical_entities
                         else "none"
                     )
@@ -8487,22 +9032,17 @@ def build_data_derived_decision_graph(
                         "+".join(lexical_entities) if lexical_entities else "none"
                     )
                     left_lexical_exclusions.append(
-                        f' Train-derived prototype supporting {right_card.key_id} for '
+                        f" Train-derived prototype supporting {right_card.key_id} for "
                         f"shared action {lexical_action} and entity types "
                         f'{entity_signature_text}: "{right_prototype.sentence}".'
                     )
                     right_lexical_exclusions.append(
-                        f' Train-derived prototype supporting {left_card.key_id} for '
+                        f" Train-derived prototype supporting {left_card.key_id} for "
                         f"shared action {lexical_action} and entity types "
                         f'{entity_signature_text}: "{left_prototype.sentence}".'
                     )
-                    if (
-                        boundary_policy_id
-                        == "shared-signature-complete-boundaries-v4"
-                    ):
-                        left_cues = _signature_lexical_cues(
-                            left_entries, right_entries
-                        )
+                    if boundary_policy_id == "shared-signature-complete-boundaries-v4":
+                        left_cues = _signature_lexical_cues(left_entries, right_entries)
                         right_cues = _signature_lexical_cues(
                             right_entries, left_entries
                         )
@@ -8547,10 +9087,7 @@ def build_data_derived_decision_graph(
                                 f"{right_prototype.utterance_id}",
                             )
                         )
-                if (
-                    boundary_policy_id
-                    == "shared-signature-complete-boundaries-v4"
-                ):
+                if boundary_policy_id == "shared-signature-complete-boundaries-v4":
                     semantic_supply = _dataset_semantic_boundary_supply(
                         corpus,
                         left=left,
@@ -8559,12 +9096,8 @@ def build_data_derived_decision_graph(
                         right_key_id=right_card.key_id,
                     )
                     if semantic_supply.provenance_ids:
-                        left_lexical_exclusions.append(
-                            semantic_supply.left_exclusion
-                        )
-                        right_lexical_exclusions.append(
-                            semantic_supply.right_exclusion
-                        )
+                        left_lexical_exclusions.append(semantic_supply.left_exclusion)
+                        right_lexical_exclusions.append(semantic_supply.right_exclusion)
                         lexical_provenance.extend(semantic_supply.provenance_ids)
             boundaries.append(
                 DecisionBoundaryV1(
@@ -8650,9 +9183,7 @@ def build_speech_native_information_audit(
         or not isinstance(minimum_example_action_mass, (int, float))
         or not 0.0 < float(minimum_example_action_mass) <= 1.0
     ):
-        raise PsluFlightError(
-            "minimum_example_action_mass must be a number in (0, 1]"
-        )
+        raise PsluFlightError("minimum_example_action_mass must be a number in (0, 1]")
     claimed_sha256 = knowledge_binding.get("binding_sha256")
     unsigned = dict(knowledge_binding)
     unsigned.pop("binding_sha256", None)
@@ -8669,7 +9200,9 @@ def build_speech_native_information_audit(
 
     scenarios = tuple(expected_scenarios)
     if not scenarios or len(set(scenarios)) != len(scenarios):
-        raise PsluFlightError("information-audit scenarios must be non-empty and unique")
+        raise PsluFlightError(
+            "information-audit scenarios must be non-empty and unique"
+        )
     raw_cards = knowledge_binding.get("key_cards")
     if not isinstance(raw_cards, list):
         raise PsluFlightError("knowledge binding lacks key cards")
@@ -8740,7 +9273,10 @@ def build_speech_native_information_audit(
             "information-audit corpus lacks the complete query-isolated roster"
         )
     if any(
-        any(not isinstance(entity_type, str) or not entity_type for entity_type in entry.entity_types)
+        any(
+            not isinstance(entity_type, str) or not entity_type
+            for entity_type in entry.entity_types
+        )
         for entry in corpus
     ):
         raise PsluFlightError("information-audit corpus has malformed entity types")
@@ -8749,8 +9285,7 @@ def build_speech_native_information_audit(
         total = sum(counts.values())
         return (
             -sum(
-                (count / total) * math.log2(count / total)
-                for count in counts.values()
+                (count / total) * math.log2(count / total) for count in counts.values()
             )
             if total
             else 0.0
@@ -8797,7 +9332,9 @@ def build_speech_native_information_audit(
             if count >= _STABLE_SHARED_ACTION_MIN_SUPPORT
         )
         for left_index, left in enumerate(stable):
-            stable_action_pairs.update((left, right) for right in stable[left_index + 1 :])
+            stable_action_pairs.update(
+                (left, right) for right in stable[left_index + 1 :]
+            )
 
     LexicalRelation = tuple[str, str, str, tuple[str, ...]]
     residual_pairs: set[tuple[str, str]] = set()
@@ -8846,7 +9383,11 @@ def build_speech_native_information_audit(
     def relation_parts(
         *, left: str, right: str, action: str, entity_id: str
     ) -> LexicalRelation | None:
-        if left not in cards_by_scenario or right not in cards_by_scenario or left == right:
+        if (
+            left not in cards_by_scenario
+            or right not in cards_by_scenario
+            or left == right
+        ):
             return None
         pair = (left, right) if left < right else (right, left)
         entities = () if entity_id == "none" else tuple(entity_id.split("+"))
@@ -9011,9 +9552,7 @@ def build_speech_native_information_audit(
         )
         left_cue_accuracy = left_cue_correct / len(left_entries)
         right_cue_accuracy = right_cue_correct / len(right_entries)
-        crossfit_cue_balanced_accuracy = (
-            left_cue_accuracy + right_cue_accuracy
-        ) / 2.0
+        crossfit_cue_balanced_accuracy = (left_cue_accuracy + right_cue_accuracy) / 2.0
         return {
             "left_scenario": relation[0],
             "right_scenario": relation[1],
@@ -9075,7 +9614,11 @@ def build_speech_native_information_audit(
             )
             side = fields[5]
             utterance_id = fields[6]
-            if relation is None or side not in relation[:2] or side in v4_prototypes[relation]:
+            if (
+                relation is None
+                or side not in relation[:2]
+                or side in v4_prototypes[relation]
+            ):
                 continue
             v4_prototypes[relation][side] = utterance_id
         for item in boundary.provenance_ids:
@@ -9093,8 +9636,12 @@ def build_speech_native_information_audit(
                     action=fields[3],
                     entity_id=fields[4],
                 )
-                relation_left_entries = entries_for(relation, fields[1]) if relation else ()
-                relation_right_entries = entries_for(relation, fields[2]) if relation else ()
+                relation_left_entries = (
+                    entries_for(relation, fields[1]) if relation else ()
+                )
+                relation_right_entries = (
+                    entries_for(relation, fields[2]) if relation else ()
+                )
                 prototype_payload = fields[6].removeprefix("prototypes-")
                 source_matches = [
                     (left_entry, right_entry)
@@ -9345,9 +9892,7 @@ def build_speech_native_information_audit(
         "knowledge_supply": {
             "intent_roster_count": len(cards_by_scenario),
             "action_facets_complete": action_facets_complete,
-            "minimum_positive_example_action_mass": float(
-                minimum_example_action_mass
-            ),
+            "minimum_positive_example_action_mass": float(minimum_example_action_mass),
             "positive_example_coverage": example_coverage,
             "incomplete_positive_example_labels": sorted(incomplete_labels),
             "entity_boundary_pair_coverage": {
@@ -9365,9 +9910,7 @@ def build_speech_native_information_audit(
             "signature_lexical_heldout_validation": {
                 "validated_relation_count": len(lexical_validation_by_relation),
                 "bilateral_signal_relation_count": len(lexical_signal_relations),
-                "crossfit_cue_signal_relation_count": len(
-                    lexical_cue_signal_relations
-                ),
+                "crossfit_cue_signal_relation_count": len(lexical_cue_signal_relations),
                 "required_relation_count": len(residual_relations),
                 "relations": [
                     lexical_validation_by_relation[relation]
@@ -9701,22 +10244,25 @@ def audit_speech_native_scale_capacity(
             raise PsluFlightError(f"speech-native scale {name} must be an integer")
     if seed < 0:
         raise PsluFlightError("speech-native scale seed must be non-negative")
-    if any(
-        value <= 0
-        for name, value in integer_values.items()
-        if name != "seed"
-    ):
+    if any(value <= 0 for name, value in integer_values.items() if name != "seed"):
         raise PsluFlightError("speech-native scale query targets must be positive")
     if cumulative_query_count != memory_query_count + holdout_query_count:
         raise PsluFlightError(
             "speech-native cumulative query count must equal memory plus holdout"
         )
-    if not isinstance(existing_memory_split_name, str) or not existing_memory_split_name:
-        raise PsluFlightError("speech-native existing memory split name must be non-empty")
+    if (
+        not isinstance(existing_memory_split_name, str)
+        or not existing_memory_split_name
+    ):
+        raise PsluFlightError(
+            "speech-native existing memory split name must be non-empty"
+        )
     if not isinstance(base_binding, Mapping):
         raise PsluFlightError("speech-native scale parent binding must be an object")
     claimed_sha256 = base_binding.get("binding_sha256")
-    unsigned = {key: value for key, value in base_binding.items() if key != "binding_sha256"}
+    unsigned = {
+        key: value for key, value in base_binding.items() if key != "binding_sha256"
+    }
     if claimed_sha256 != _binding_sha256(unsigned):
         raise PsluFlightError("speech-native scale parent binding self-hash mismatch")
 
@@ -9741,9 +10287,13 @@ def audit_speech_native_scale_capacity(
             "speech-native scale scenarios must match the frozen key-card order"
         )
     memory_split = raw_splits.get(existing_memory_split_name)
-    memory_items = memory_split.get("items") if isinstance(memory_split, Mapping) else None
+    memory_items = (
+        memory_split.get("items") if isinstance(memory_split, Mapping) else None
+    )
     if not isinstance(memory_items, list) or not memory_items:
-        raise PsluFlightError("speech-native existing memory split is missing or malformed")
+        raise PsluFlightError(
+            "speech-native existing memory split is missing or malformed"
+        )
     if len(memory_items) >= memory_query_count:
         raise PsluFlightError(
             "speech-native memory target must exceed the existing memory split"
@@ -9787,9 +10337,7 @@ def audit_speech_native_scale_capacity(
             key_samples.add(required_text(source, "sample_id", "key source"))
             key_utterances.add(required_text(source, "utterance_id", "key source"))
             key_speakers.add(required_text(source, "speaker_id", "key source"))
-            key_texts.add(
-                required_text(source, "normalized_sentence", "key source")
-            )
+            key_texts.add(required_text(source, "normalized_sentence", "key source"))
 
     material_by_utterance: dict[str, SlurpTrainMaterial] = {}
     for entry in material:
@@ -9877,10 +10425,7 @@ def audit_speech_native_scale_capacity(
                 key=lambda scenario: _binding_rank(seed, purpose, scenario),
             )[:remainder]
         )
-        return {
-            scenario: base + int(scenario in bonus)
-            for scenario in scenarios
-        }
+        return {scenario: base + int(scenario in bonus) for scenario in scenarios}
 
     holdout_quotas = balanced_quotas(holdout_query_count, "scale-holdout-quota")
     new_memory_count = memory_query_count - len(memory_items)
@@ -9890,9 +10435,9 @@ def audit_speech_native_scale_capacity(
         defaultdict(set)
     )
     for candidate in candidates:
-        shared_signature_scenarios[
-            (candidate.action, candidate.entity_types)
-        ].add(candidate.scenario)
+        shared_signature_scenarios[(candidate.action, candidate.entity_types)].add(
+            candidate.scenario
+        )
     shared_signatures = {
         signature
         for signature, labels in shared_signature_scenarios.items()
@@ -9908,9 +10453,9 @@ def audit_speech_native_scale_capacity(
         for candidate in candidates
     }
     action_scenario_counts: dict[str, Counter[str]] = defaultdict(Counter)
-    signature_scenario_counts: dict[
-        tuple[str, tuple[str, ...]], Counter[str]
-    ] = defaultdict(Counter)
+    signature_scenario_counts: dict[tuple[str, tuple[str, ...]], Counter[str]] = (
+        defaultdict(Counter)
+    )
     for _utterance, scenario, action, entity_types in unique_candidate_utterances:
         action_scenario_counts[action][scenario] += 1
         signature_scenario_counts[(action, entity_types)][scenario] += 1
@@ -9926,9 +10471,7 @@ def audit_speech_native_scale_capacity(
             stable_action_pairs.update(
                 (left, right, action) for right in stable_scenarios[left_index + 1 :]
             )
-    residual_signature_pairs: set[
-        tuple[str, str, str, tuple[str, ...]]
-    ] = set()
+    residual_signature_pairs: set[tuple[str, str, str, tuple[str, ...]]] = set()
     for (action, entity_types), counts in signature_scenario_counts.items():
         stable_scenarios = sorted(
             scenario
@@ -10143,9 +10686,7 @@ def audit_speech_native_scale_capacity(
         speaker_balanced=True,
     )
     holdout = (
-        strict_holdout
-        if len(strict_holdout) == holdout_query_count
-        else stage_holdout
+        strict_holdout if len(strict_holdout) == holdout_query_count else stage_holdout
     )
     holdout_speakers = {candidate.speaker for candidate in holdout}
     holdout_samples = {candidate.sample for candidate in holdout}
@@ -10181,8 +10722,7 @@ def audit_speech_native_scale_capacity(
     def summarize(observations: Sequence[Mapping[str, object]]) -> dict[str, object]:
         actions = {str(item["action"]) for item in observations}
         signatures = {
-            (str(item["action"]), tuple(item["entity_types"]))
-            for item in observations
+            (str(item["action"]), tuple(item["entity_types"])) for item in observations
         }
         per_scenario: dict[str, object] = {}
         for scenario in scenarios:
@@ -10210,8 +10750,7 @@ def audit_speech_native_scale_capacity(
             for item in observations
         }
         scenario_action_counts = Counter(
-            (str(item["scenario"]), str(item["action"]))
-            for item in observations
+            (str(item["scenario"]), str(item["action"])) for item in observations
         )
         scenario_signature_counts = Counter(
             (
@@ -10262,13 +10801,11 @@ def audit_speech_native_scale_capacity(
             "action_count": len(actions),
             "action_entity_signature_count": len(signatures),
             "shared_action_entity_query_count": sum(
-                (str(item["action"]), tuple(item["entity_types"]))
-                in shared_signatures
+                (str(item["action"]), tuple(item["entity_types"])) in shared_signatures
                 for item in observations
             ),
             "stable_shared_action_query_count": sum(
-                (str(item["scenario"]), str(item["action"]))
-                in stable_action_sides
+                (str(item["scenario"]), str(item["action"])) in stable_action_sides
                 for item in observations
             ),
             "residual_shared_signature_query_count": sum(
@@ -10282,8 +10819,7 @@ def audit_speech_native_scale_capacity(
             ),
             "entity_free_stable_action_query_count": sum(
                 not tuple(item["entity_types"])
-                and (str(item["scenario"]), str(item["action"]))
-                in stable_action_sides
+                and (str(item["scenario"]), str(item["action"])) in stable_action_sides
                 for item in observations
             ),
             "stable_action_pair_bilateral_coverage": {
@@ -10308,9 +10844,7 @@ def audit_speech_native_scale_capacity(
         }
 
     holdout_observations = tuple(candidate_observation(item) for item in holdout)
-    new_memory_observations = tuple(
-        candidate_observation(item) for item in new_memory
-    )
+    new_memory_observations = tuple(candidate_observation(item) for item in new_memory)
     cumulative_memory_observations = existing_observations + new_memory_observations
     candidate_observations = tuple(candidate_observation(item) for item in candidates)
     available_actions = {candidate.action for candidate in candidates}
@@ -10338,7 +10872,9 @@ def audit_speech_native_scale_capacity(
 
     new_memory_speakers = {candidate.speaker for candidate in new_memory}
     memory_speakers = existing_memory_speakers | new_memory_speakers
-    query_key_speaker_overlap = memory_speakers & key_speakers | holdout_speakers & key_speakers
+    query_key_speaker_overlap = (
+        memory_speakers & key_speakers | holdout_speakers & key_speakers
+    )
     stage_identity_overlap_count = len(
         (holdout_samples & {candidate.sample for candidate in new_memory})
         | (holdout_utterances & {candidate.utterance for candidate in new_memory})
@@ -10994,6 +11530,7 @@ __all__ = [
     "parse_candidate_support_state",
     "parse_factor_link_state",
     "parse_grounded_query_state",
+    "partition_speech_native_train_knowledge",
     "render_decision_graph_neighborhood",
     "render_factor_link_state",
     "render_roster_entries",
@@ -11001,9 +11538,11 @@ __all__ = [
     "render_type_vocabulary",
     "refine_speech_native_binding_knowledge",
     "run_pslu_flight",
+    "run_openjiuwen_speech_native_match_tasks",
     "run_speech_native_matcher",
     "run_speech_native_match_tasks",
     "select_pslu_samples",
+    "validate_openjiuwen_speech_native_match_tasks",
 ]
 
 

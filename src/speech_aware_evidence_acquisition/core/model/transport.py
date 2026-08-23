@@ -62,7 +62,12 @@ from pathlib import Path
 from typing import Callable, Mapping, Sequence
 
 from ..base import TRANSPORTS
-from ..session import SessionError, SessionReceipt, assert_session_alive, require_loopback
+from ..session import (
+    SessionError,
+    SessionReceipt,
+    assert_session_alive,
+    require_loopback,
+)
 from . import FrozenCoreError
 from .paths import _normalized_relative_path, _resolve_confined
 from .speech_features import load_speech_feature_packets
@@ -83,6 +88,7 @@ def _ordered_speech_feature_content(
     evidence_texts: list[str],
     feature_parts: list[dict[str, object]],
     state_texts: Sequence[str] = (),
+    knowledge_roles: Sequence[str | None] = (),
 ) -> list[dict[str, object]]:
     """Build one cache-explicit speech-feature user content sequence."""
 
@@ -92,6 +98,26 @@ def _ordered_speech_feature_content(
     state_parts: list[dict[str, object]] = [
         {"type": "text", "text": text} for text in state_texts
     ]
+    if knowledge_roles:
+        if len(knowledge_roles) != len(text_parts) or any(
+            role not in {"key", "value"} for role in knowledge_roles
+        ):
+            raise FrozenCoreError(
+                "explicit speech knowledge roles must align one-to-one as key/value"
+            )
+        key_text_parts = [
+            part
+            for part, role in zip(text_parts, knowledge_roles, strict=True)
+            if role == "key"
+        ]
+        value_text_parts = [
+            part
+            for part, role in zip(text_parts, knowledge_roles, strict=True)
+            if role == "value"
+        ]
+    else:
+        key_text_parts = []
+        value_text_parts = []
     if prompt_order == "speech-features-text-keys-v1":
         return [*text_parts, *feature_parts, *state_parts]
 
@@ -114,7 +140,10 @@ def _ordered_speech_feature_content(
     # final evidence item. New AgentLoop calls use D2's separate ``history``
     # field, so every evidence item remains SUPPLY and all ORG/CONTROL state
     # is appended after the stable speech/knowledge prefix.
-    if state_parts:
+    if knowledge_roles:
+        stable_text_parts = key_text_parts
+        mutable_state_parts = [*value_text_parts, *state_parts]
+    elif state_parts:
         stable_text_parts = text_parts
         mutable_state_parts = state_parts
     else:
@@ -123,8 +152,39 @@ def _ordered_speech_feature_content(
     if prompt_order == "speech-query-prefix-v2":
         return [*query_parts, *stable_text_parts, *key_parts, *mutable_state_parts]
     if prompt_order == "knowledge-speech-state-v2":
-        return [*text_parts[:1], *key_parts, *query_parts, *text_parts[1:]]
+        if knowledge_roles:
+            return [
+                *key_text_parts,
+                *key_parts,
+                *query_parts,
+                *value_text_parts,
+                *state_parts,
+            ]
+        return [
+            *text_parts[:1],
+            *key_parts,
+            *query_parts,
+            *text_parts[1:],
+            *state_parts,
+        ]
     raise FrozenCoreError(f"unsupported speech feature prompt order {prompt_order!r}")
+
+
+def _assert_agent_history_suffix(
+    *,
+    prompt_order: str,
+    content: Sequence[Mapping[str, object]],
+    state_texts: Sequence[str],
+) -> None:
+    """Fail closed unless every rendered Agent history part survives ordering."""
+
+    if not state_texts:
+        return
+    expected = tuple({"type": "text", "text": text} for text in state_texts)
+    if tuple(content[-len(expected) :]) != expected:
+        raise FrozenCoreError(
+            f"{prompt_order} must preserve Agent state/control as an ordered suffix"
+        )
 
 
 def _speech_history_texts(history: object) -> list[str]:
@@ -150,9 +210,7 @@ def _speech_history_texts(history: object) -> list[str]:
             state_id = item.get("state_id")
             state_kind = item.get("state_kind")
             if not isinstance(state_id, str) or not state_id:
-                raise FrozenCoreError(
-                    f"history[{index}] agent_state requires state_id"
-                )
+                raise FrozenCoreError(f"history[{index}] agent_state requires state_id")
             if not isinstance(state_kind, str) or not state_kind:
                 raise FrozenCoreError(
                     f"history[{index}] agent_state requires state_kind"
@@ -182,16 +240,12 @@ def _speech_history_texts(history: object) -> list[str]:
                 raise FrozenCoreError(
                     f"history[{index}] agent_state cited_value_ids must be a string list"
                 )
-            rendered.append(
-                f"[agent state {state_id} kind={state_kind}] {content}"
-            )
+            rendered.append(f"[agent state {state_id} kind={state_kind}] {content}")
             continue
         if role == "control":
             contact_id = item.get("contact_id")
             if not isinstance(contact_id, str) or not contact_id:
-                raise FrozenCoreError(
-                    f"history[{index}] control requires contact_id"
-                )
+                raise FrozenCoreError(f"history[{index}] control requires contact_id")
             rendered.append(f"[agent control {contact_id}] {content}")
             continue
         raise FrozenCoreError(
@@ -251,13 +305,19 @@ def _exemplar_bank_entry(
         raise FrozenCoreError(f"{field} missing required 'label'")
     label = item["label"]
     if not isinstance(label, str) or not label:
-        raise FrozenCoreError(f"{field} label must be a non-empty string, got {label!r}")
+        raise FrozenCoreError(
+            f"{field} label must be a non-empty string, got {label!r}"
+        )
     if "media_relpath" not in item:
         raise FrozenCoreError(f"{field} missing required 'media_relpath'")
     relative, audio_part = _load_audio_part(
         data_root, item["media_relpath"], f"transport {field}.media_relpath"
     )
-    return label, relative, [{"type": "text", "text": f"[exemplar {label}]"}, audio_part]
+    return (
+        label,
+        relative,
+        [{"type": "text", "text": f"[exemplar {label}]"}, audio_part],
+    )
 
 
 def _delta_candidate_entry(
@@ -282,7 +342,9 @@ def _delta_candidate_entry(
     if has_text:
         text = item["text"]
         if not isinstance(text, str) or not text:
-            raise FrozenCoreError(f"{field} text must be a non-empty string, got {text!r}")
+            raise FrozenCoreError(
+                f"{field} text must be a non-empty string, got {text!r}"
+            )
         return [{"type": "text", "text": f"[candidate] {text}"}]
     if not has_media:
         raise FrozenCoreError(f"{field} must contain either 'text' or 'media_relpath'")
@@ -290,7 +352,9 @@ def _delta_candidate_entry(
         raise FrozenCoreError(f"{field} missing required 'label'")
     label = item["label"]
     if not isinstance(label, str) or not label:
-        raise FrozenCoreError(f"{field} label must be a non-empty string, got {label!r}")
+        raise FrozenCoreError(
+            f"{field} label must be a non-empty string, got {label!r}"
+        )
     _, audio_part = _load_audio_part(
         data_root, item["media_relpath"], f"transport {field}.media_relpath"
     )
@@ -442,16 +506,30 @@ class LlamaServerTransport:
         # (supplied_evidence then retrieved_evidence) are unchanged, only
         # their position relative to the audio part moves.
         evidence_texts: list[str] = []
+        knowledge_roles: list[str | None] = []
         for field in ("supplied_evidence", "retrieved_evidence"):
             for item in payload.get(field, []):  # type: ignore[union-attr]
-                evidence_texts.append(f"[evidence {item['evidence_id']}] {item['content']}")
+                evidence_texts.append(
+                    f"[evidence {item['evidence_id']}] {item['content']}"
+                )
+                knowledge_role = item.get("knowledge_role")
+                if knowledge_role is not None and knowledge_role not in {
+                    "key",
+                    "value",
+                }:
+                    raise FrozenCoreError(
+                        "speech knowledge_role must be 'key', 'value', or absent"
+                    )
+                knowledge_roles.append(knowledge_role)
         if self._prompt_order in _SPEECH_FEATURE_PROMPT_ORDERS:
             if payload.get("query_source") != "speech_features":
                 raise FrozenCoreError(
                     "speech feature request query_source must be 'speech_features'"
                 )
             if payload.get("mmproj_loaded") is not False:
-                raise FrozenCoreError("formal speech feature request must bind mmproj_loaded=false")
+                raise FrozenCoreError(
+                    "formal speech feature request must bind mmproj_loaded=false"
+                )
             for field in ("key_representation_id", "matcher_policy_id"):
                 value = payload.get(field)
                 if not isinstance(value, str) or not value:
@@ -527,6 +605,12 @@ class LlamaServerTransport:
                 evidence_texts=evidence_texts,
                 feature_parts=feature_parts,
                 state_texts=state_texts,
+                knowledge_roles=(knowledge_roles if any(knowledge_roles) else ()),
+            )
+            _assert_agent_history_suffix(
+                prompt_order=self._prompt_order,
+                content=content,
+                state_texts=state_texts,
             )
             messages = [
                 {"role": "system", "content": payload["task_instruction"]},
@@ -536,7 +620,9 @@ class LlamaServerTransport:
             # Stable-first order: [system: evidence…, instruction(+tail at its
             # end)][user: audio]. The evidence formatting strings are
             # byte-identical to v1; only their position moves.
-            system_text = "\n\n".join([*evidence_texts, str(payload["task_instruction"])])
+            system_text = "\n\n".join(
+                [*evidence_texts, str(payload["task_instruction"])]
+            )
             messages = [
                 {"role": "system", "content": system_text},
                 {"role": "user", "content": [audio_part]},

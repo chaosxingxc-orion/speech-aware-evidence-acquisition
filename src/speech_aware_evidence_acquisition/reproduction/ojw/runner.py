@@ -37,6 +37,7 @@ This module imports openjiuwen at module level and is imported only behind
 from __future__ import annotations
 
 import asyncio
+from collections.abc import Awaitable, Callable, Mapping, Sequence
 
 from openjiuwen.core.common.exception.codes import StatusCode
 from openjiuwen.core.common.exception.errors import BaseError
@@ -58,13 +59,16 @@ from openjiuwen.core.workflow.components.flow.loop.loop_comp import (
 
 from ...core.tracing import set_current_trace_buffer
 from ..obs_loop import ObsLoopError
-from . import OJW_WORKFLOW_TIMEOUT_KEY
+from . import OJW_WORKFLOW_TIMEOUT_KEY, OpenJiuwenExecutorError
 from .components import (
     START_NODE_ID,
     AcceptAdvance,
+    AggregateAgentWave,
     BoundaryResolve,
+    ExecuteAgentContact,
     FeedBuffer,
     FrozenCoreASR,
+    PrepareAgentWave,
 )
 from .state import ObsSampleState
 
@@ -152,7 +156,9 @@ def build_obs_workflow(state: ObsSampleState, adapter_request) -> Workflow:
             "retrieval_query": "${retrieval_query}",
         },
     )
-    flow.set_end_comp(END_NODE_ID, End(), inputs_schema={"loop": "${" + LOOP_NODE_ID + "}"})
+    flow.set_end_comp(
+        END_NODE_ID, End(), inputs_schema={"loop": "${" + LOOP_NODE_ID + "}"}
+    )
     flow.add_workflow_comp(LOOP_NODE_ID, loop_node)
     flow.add_connection(START_NODE_ID, LOOP_NODE_ID)
     flow.add_connection(LOOP_NODE_ID, END_NODE_ID)
@@ -286,3 +292,203 @@ def execute_obs_batch(
         if isinstance(result, BaseException):
             raise result
     return list(results)
+
+
+def build_speech_agent_workflow(
+    *,
+    prepare_wave: Callable[[object], int],
+    invoke_contact: Callable[[int], Awaitable[Mapping[str, object]]],
+    aggregate_wave: Callable[[tuple[Mapping[str, object], ...], object], None],
+    should_continue: Callable[[], bool],
+    branch_count: int,
+) -> Workflow:
+    """Build one native openJiuwen fan-out/fan-in AgentLoop graph."""
+
+    loop_group = LoopGroup()
+    loop_group.add_workflow_comp(
+        "prepare_agent_wave",
+        PrepareAgentWave(prepare_wave, branch_count),
+    )
+    contact_node_ids: list[str] = []
+    for branch_index in range(branch_count):
+        node_id = f"agent_contact_{branch_index}"
+        contact_node_ids.append(node_id)
+        loop_group.add_workflow_comp(
+            node_id,
+            ExecuteAgentContact(branch_index, invoke_contact),
+            inputs_schema={"active_count": "${prepare_agent_wave.active_count}"},
+        )
+        loop_group.add_connection("prepare_agent_wave", node_id)
+    aggregate_inputs: dict[str, object] = {
+        "active_count": "${prepare_agent_wave.active_count}"
+    }
+    for branch_index, node_id in enumerate(contact_node_ids):
+        aggregate_inputs[f"branch_{branch_index}"] = {
+            "active": "${" + node_id + ".active}",
+            "response_text": "${" + node_id + ".response_text}",
+            "slot_id": "${" + node_id + ".slot_id}",
+            "response_sha256": "${" + node_id + ".response_sha256}",
+        }
+    loop_group.add_workflow_comp(
+        "aggregate_agent_wave",
+        AggregateAgentWave(branch_count, aggregate_wave),
+        inputs_schema=aggregate_inputs,
+    )
+    loop_group.start_nodes(["prepare_agent_wave"])
+    loop_group.end_nodes(["aggregate_agent_wave"])
+    loop_group.add_connection(contact_node_ids, "aggregate_agent_wave")
+
+    flow = Workflow()
+    flow.set_start_comp("agent_start", Start(), inputs_schema={})
+    flow.add_workflow_comp(
+        "agent_loop",
+        AdvancedLoopComponent(loop_group, FuncCondition(should_continue)),
+    )
+    flow.set_end_comp(
+        "agent_end",
+        End(),
+        inputs_schema={"agent_loop": "${agent_loop}"},
+    )
+    flow.add_connection("agent_start", "agent_loop")
+    flow.add_connection("agent_loop", "agent_end")
+    return flow
+
+
+def execute_speech_agent_workflows(
+    states: Sequence[object],
+    *,
+    prepare_wave: Callable[[object, object], int],
+    invoke_contact: Callable[[object, int, int], Mapping[str, object]],
+    aggregate_wave: Callable[[object, tuple[Mapping[str, object], ...], object], None],
+    should_continue: Callable[[object], bool],
+    branch_count: int,
+    slot_count: int,
+    queue_depth: int,
+    workflow_timeout_seconds: float,
+) -> list[object]:
+    """Run speech Agent workflows on one openJiuwen event loop.
+
+    The framework owns the loop, parallel graph execution, and fan-in
+    barrier. This wrapper admits at most ``queue_depth`` workflows, pins each
+    admitted trajectory to one llama.cpp slot from its first contact through
+    workflow completion, and serializes that trajectory's branches on the
+    pinned slot. Cross-sample workflows remain parallel. A cancelled
+    component waits for its blocking worker to settle before the slot can be
+    released. The repository's frozen-core callback remains the only model
+    door; no framework LLM client is instantiated.
+    """
+
+    ordered_states = list(states)
+
+    async def _run_all():
+        slots: asyncio.Queue[int] = asyncio.Queue(maxsize=slot_count)
+        for slot_id in range(slot_count):
+            slots.put_nowait(slot_id)
+
+        async def one(state: object):
+            primary_slot_id: int | None = None
+            slot_assignment_lock = asyncio.Lock()
+            contact_lock = asyncio.Lock()
+            worker_tasks: set[asyncio.Task[Mapping[str, object]]] = set()
+
+            async def primary_slot() -> int:
+                nonlocal primary_slot_id
+                if primary_slot_id is None:
+                    async with slot_assignment_lock:
+                        if primary_slot_id is None:
+                            primary_slot_id = await slots.get()
+                return primary_slot_id
+
+            async def invoke_branch(branch_index: int) -> Mapping[str, object]:
+                async with contact_lock:
+                    slot_id = await primary_slot()
+                    worker = asyncio.create_task(
+                        asyncio.to_thread(
+                            invoke_contact,
+                            state,
+                            branch_index,
+                            slot_id,
+                        )
+                    )
+                    worker_tasks.add(worker)
+                    try:
+                        return await asyncio.shield(worker)
+                    except asyncio.CancelledError:
+                        # Cancelling the await does not stop the synchronous
+                        # worker. Keep the trajectory lock and primary slot
+                        # until that worker has genuinely settled.
+                        await asyncio.gather(worker, return_exceptions=True)
+                        raise
+                    finally:
+                        if worker.done():
+                            worker_tasks.discard(worker)
+
+            flow = build_speech_agent_workflow(
+                prepare_wave=lambda session: prepare_wave(state, session),
+                invoke_contact=invoke_branch,
+                aggregate_wave=lambda responses, session: aggregate_wave(
+                    state, responses, session
+                ),
+                should_continue=lambda: should_continue(state),
+                branch_count=branch_count,
+            )
+            session = create_workflow_session(
+                envs={WORKFLOW_EXECUTE_TIMEOUT: float(workflow_timeout_seconds)}
+            )
+            try:
+                try:
+                    await flow.invoke(inputs={}, session=session)
+                except BaseError as error:
+                    if (
+                        getattr(error, "code", None)
+                        == StatusCode.WORKFLOW_EXECUTION_TIMEOUT.code
+                    ):
+                        raise OpenJiuwenExecutorError(
+                            "openJiuwen killed a speech Agent workflow at the "
+                            f"{workflow_timeout_seconds}-second ceiling"
+                        ) from error
+                    raise
+                return state
+            finally:
+                if worker_tasks:
+                    await asyncio.gather(*tuple(worker_tasks), return_exceptions=True)
+                if primary_slot_id is not None:
+                    slots.put_nowait(primary_slot_id)
+
+        failures: dict[int, BaseException] = {}
+        next_index = 0
+        admission_lock = asyncio.Lock()
+
+        async def next_admission() -> tuple[int, object] | None:
+            nonlocal next_index
+            async with admission_lock:
+                if failures or next_index >= len(ordered_states):
+                    return None
+                admitted = (next_index, ordered_states[next_index])
+                next_index += 1
+                return admitted
+
+        async def admission_worker() -> None:
+            while True:
+                admitted = await next_admission()
+                if admitted is None:
+                    return
+                index, state = admitted
+                try:
+                    await one(state)
+                except BaseException as error:
+                    async with admission_lock:
+                        failures[index] = error
+                    return
+
+        worker_count = min(queue_depth, len(ordered_states))
+        admission_workers = [
+            asyncio.create_task(admission_worker()) for _ in range(worker_count)
+        ]
+        await asyncio.gather(*admission_workers)
+        return failures
+
+    failures = asyncio.run(_run_all())
+    if failures:
+        raise failures[min(failures)]
+    return ordered_states

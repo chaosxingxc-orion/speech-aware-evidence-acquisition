@@ -13,6 +13,7 @@ from array import array
 import pytest
 
 import speech_aware_evidence_acquisition.core  # noqa: F401 (populate registries)
+import speech_aware_evidence_acquisition.reproduction.ojw as ojw_runtime
 from speech_aware_evidence_acquisition.core.base import POLICIES
 from speech_aware_evidence_acquisition.reproduction.obs_loop import (
     ObsLoopConfig,
@@ -37,6 +38,14 @@ RATE = 16000
 
 def test_policy_is_registered_without_openjiuwen():
     assert isinstance(POLICIES.resolve(OJW_POLICY_NAME), ObsAgentLoopOjwPolicy)
+
+
+def test_openjiuwen_runtime_version_mismatch_fails_closed(monkeypatch):
+    monkeypatch.setattr(ojw_runtime, "version", lambda _name: "0.0.0")
+
+    assert ojw_runtime.openjiuwen_available() is False
+    with pytest.raises(ojw_runtime.OpenJiuwenExecutorError, match="version mismatch"):
+        ojw_runtime.openjiuwen_runtime_version()
 
 
 @pytest.mark.skipif(
