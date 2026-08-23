@@ -754,3 +754,41 @@ def test_q4km_repo_fragment_model_lock_key_matches_its_own_receipt_selection():
         REPO_ROOT, "qwen3-omni-llamacpp", "earnings22-dev-subset10", "bare-core", "r0-smoke"
     )
     assert model_lock_key(base_composed.values) == "qwen3-omni-30b-a3b-instruct-gguf"
+
+
+def test_cross_slot_prompt_bound_m11_profile_preserves_the_frozen_workload():
+    """The cross-slot admission changes only the engine and its session receipt."""
+
+    from speech_aware_evidence_acquisition.e0.artifacts import REPO_ROOT
+
+    composed = compose(
+        REPO_ROOT,
+        "q4km-mmproj-free-speech-native-np16-speech-batch-26802-prompt-bound-max64",
+        "slurp-speech-native-opt-a36",
+        "speech-native-engineering-adaptive-m11-k3-v4-contact",
+        "speech-native-engineering-adaptive-m11-data-knowledge",
+    )
+    values = composed.values
+
+    assert values["runtime_receipt"] == (
+        "receipts/runtime-q4km-mmproj-free-speech-batch-26802.json"
+    )
+    assert values["server_args"] == [
+        "-c", "65536", "-np", "16", "-b", "2048", "-ub", "512",
+        "-fa", "on", "-ngl", "999", "-ctk", "q8_0", "-ctv", "q8_0",
+    ]
+    assert values["decoding_params"]["max_tokens"] == 64
+    assert values["speech_native_prompt_fit_receipt"] == (
+        "docs/checks/speech-aware-evidence-acquisition/"
+        "2026-08-23-m11-v3-speech-batch-26802-prompt-fit/prompt-fit.json"
+    )
+    assert values["speech_native_prompt_fit_receipt_sha256"] == (
+        "f76b817aac1b4afd260ba7727b10e171a5646f9c8b84c627ce6a07c32add3062"
+    )
+    assert values["profile_key_order_ids"] == [
+        "canonical", "reverse", "rotate-1", "rotate-7"
+    ]
+    assert values["speech_native_decision_graph_file_sha256"] == (
+        "07e51acc91b91636ae0451f5b9b2ebe719464140427b024701028621ccdeb6fb"
+    )
+    assert values["matcher_policy_id"] == "M11"
