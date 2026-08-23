@@ -715,6 +715,115 @@ def test_information_complete_e108_m11_composes_on_the_resident_np16_service():
     )
 
 
+def test_information_complete_e108_m11_composes_on_the_resident_zero_copy_service():
+    """The same 108-query action-support cell, attached to the RESIDENT
+    singleton-zero-copy service under the primary `speech-query-prefix-v2`
+    serving layout adopted by the 2026-08-23 paired prefix probe.
+
+    Two properties are load-bearing and are asserted rather than described.
+    First, the model fragment must reproduce the running service argv exactly:
+    this composition attaches to an already-resident server and never launches
+    one, so any server_args drift is an attachment refusal, not a new process.
+    Second, the scientific contract must NOT drift from the canonical-order
+    sibling above -- graph pin, policy ids, and every reader-contract threshold
+    stay byte-identical, and only the prompt-fit receipt and the experiment id
+    move, because only the transport layout changed.
+    """
+
+    from speech_aware_evidence_acquisition.e0.artifacts import REPO_ROOT
+
+    composed = compose(
+        REPO_ROOT,
+        "q4km-mmproj-free-speech-native-np16-zcopy-speech-query-prefix-max64",
+        "slurp-speech-native-evidence-e108",
+        "speech-native-evidence-e108-information-complete-m11",
+        "speech-native-evidence-e108-k1-m11-information-complete-action-support-zcopy",
+    )
+    values = composed.values
+
+    # The resident SAEA-SN-Q4KM-NP16-HOT-PREFIX-ZCOPY argv, byte for byte.
+    assert values["server_args"] == [
+        "-c", "65536", "-np", "16", "-b", "2048", "-ub", "512",
+        "-fa", "on", "-ngl", "999", "-ctk", "q8_0", "-ctv", "q8_0",
+        "--cache-prompt", "--cache-ram", "0",
+        "--no-cache-idle-slots", "--slot-prompt-similarity", "0",
+    ]
+    assert values["runtime_receipt"] == (
+        "receipts/runtime-q4km-mmproj-free-speech-batch-26802-singleton-zero-copy.json"
+    )
+    assert values["prompt_order"] == "speech-query-prefix-v2"
+    assert values["decoding_params"] == {
+        "temperature": 0,
+        "seed": 20260803,
+        "max_tokens": 64,
+        "id_slot": "per-sample",
+    }
+    assert values["server_env"] == {
+        "LLAMA_SPEECH_FEATURE_ROOT": (
+            "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a"
+        ),
+        "LLAMA_SPEECH_DECODER_SHA256": (
+            "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d"
+        ),
+    }
+
+    # The zero-copy cell pins its OWN prompt-fit receipt: the canonical-order
+    # audit does not certify the prefix layout's token geometry.
+    assert values["experiment_id"] == (
+        "SAEA-SN-EVIDENCE-E108-K1M11-INFORMATION-COMPLETE-ACTION-SUPPORT-ZCOPY"
+    )
+    assert values["speech_native_prompt_fit_receipt"] == (
+        "docs/checks/speech-aware-evidence-acquisition/"
+        "2026-08-23-e108-zcopy-prompt-fit/prompt-fit.json"
+    )
+    assert values["speech_native_prompt_fit_receipt_sha256"] == (
+        "c2ee949a58c368dc3e3c4b3541f64ad845158771d90ca66327b955de30c46b4f"
+    )
+
+    # Everything else is the canonical-order cell, unchanged.
+    canonical = compose(
+        REPO_ROOT,
+        "q4km-mmproj-free-speech-native-np16-max64",
+        "slurp-speech-native-evidence-e108",
+        "speech-native-evidence-e108-information-complete-m11",
+        "speech-native-evidence-e108-k1-m11-information-complete-action-support",
+    )
+    shared_scientific_keys = (
+        "key_representation_id",
+        "matcher_policy_id",
+        "matcher_prompt_policy_id",
+        "speech_native_decision_graph",
+        "speech_native_decision_graph_file_sha256",
+        "speech_native_binding",
+        "speech_native_binding_file_sha256",
+        "speech_native_agent_policy_id",
+        "speech_native_agent_aggregator_id",
+        "speech_native_training_free_reader_policy_id",
+        "speech_native_training_free_reader_contract",
+        "speech_packet_promotion_receipt",
+        "speech_packet_promotion_receipt_sha256",
+        "speech_native_top_k",
+        "speech_native_contact_ceiling_per_task",
+        "speech_native_dispatch_granularity",
+        "profile_key_order_ids",
+        "count",
+        "split_name",
+        "arm",
+        "purpose",
+    )
+    for key in shared_scientific_keys:
+        assert values[key] == canonical.values[key], key
+
+    # The prefix layout costs 68 tokens at the worst envelope and still leaves
+    # a large slot margin (audit c2ee949a..., worst envelope boundary:B001:K003:ba).
+    context_per_slot = 65536 // values["profile_slot_count"]
+    exact_prompt_upper_bound = 2409
+    maximum_completion_tokens = 64
+    assert (
+        context_per_slot - exact_prompt_upper_bound - maximum_completion_tokens == 1623
+    )
+
+
 # ---------------------------------------------------------------------------
 # model_lock_key: the composed config's own declaration of WHICH pinned model
 # this run is for -- the same declaration `runtime_receipt_relpath` already
