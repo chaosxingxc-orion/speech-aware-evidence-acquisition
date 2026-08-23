@@ -33,7 +33,6 @@ from .bundle import (
     verify_bundle,
 )
 from .config import ComposedConfig, ConfigError, compose, protocol_hash
-from .driver import load_split, run_experiment, run_experiment_bundled
 from .model import CoreResponse, FrozenCoreAdapter, FrozenCoreError, LlamaServerTransport
 from .split_receipt import SplitReceiptError, VerifiedSplit, load_verified_split
 from .tracing import TraceSink, TraceSinkError
@@ -60,3 +59,25 @@ __all__ = [
     "load_verified_split", "log_bundle", "log_run", "protocol_hash",
     "require_clean_study_repo", "run_experiment", "run_experiment_bundled", "verify_bundle",
 ]
+
+# The driver subpackage must resolve lazily (PEP 562): an eager
+# `from .driver import ...` here closes the import cycle
+# rails/__init__ -> rails.consumption -> core.retrieval -> core/__init__ ->
+# core.driver -> core.driver.speech_native -> rails (partially initialized).
+_LAZY_DRIVER_NAMES = frozenset(
+    {"driver", "load_split", "run_experiment", "run_experiment_bundled"}
+)
+
+
+def __getattr__(name: str) -> object:
+    if name in _LAZY_DRIVER_NAMES:
+        # importlib.import_module (not `from . import driver`): the from-import
+        # form re-enters this __getattr__ through _handle_fromlist while the
+        # submodule is still initializing and recurses without terminating.
+        import importlib
+
+        driver = importlib.import_module(".driver", __name__)
+        if name == "driver":
+            return driver
+        return getattr(driver, name)
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")

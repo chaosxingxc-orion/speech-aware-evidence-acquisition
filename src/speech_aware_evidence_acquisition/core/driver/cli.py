@@ -25,15 +25,11 @@ from ...contracts import ExecutionPlan
 from ...data.lock import data_root, load_lock, umbrella_lock_path
 from ...data.slurp import load_slurp_train_material
 from ...e0.artifacts import REPO_ROOT, write_json_artifact
-from ...rails.probes.pslu_flight import (
-    SPEECH_NATIVE_BOUNDARY_POLICY_IDS,
-    SPEECH_NATIVE_KNOWLEDGE_POLICY_IDS,
-    audit_speech_native_scale_capacity,
-    build_data_derived_decision_graph,
-    build_speech_native_information_audit,
-    extend_speech_native_binding,
-    refine_speech_native_binding_knowledge,
-)
+
+# rails.probes.pslu_flight must stay function-local in this module: a module-level
+# import closes the cycle rails/__init__ -> rails.consumption -> core.retrieval ->
+# core/__init__ -> core.driver -> this module -> rails.probes.pslu_flight ->
+# rails.adapters.slurp -> rails.consumption (partially initialized).
 from ..base import SCORERS, TRANSPORTS
 from ..bundle import finalize_bundle, verify_bundle
 from ..config import (
@@ -262,6 +258,14 @@ def _cli_promote_speech_packets(args: argparse.Namespace) -> int:
 
 def _cli_extend_speech_native_binding(args: argparse.Namespace) -> int:
     """Build a split and/or knowledge successor with the existing selector."""
+
+    from ...rails.probes.pslu_flight import (  # noqa: PLC0415 (import-cycle guard)
+        audit_speech_native_scale_capacity,
+        build_data_derived_decision_graph,
+        build_speech_native_information_audit,
+        extend_speech_native_binding,
+        refine_speech_native_binding_knowledge,
+    )
 
     parent_path = Path(args.parent_binding).resolve()
     output_path = Path(args.output).resolve() if args.output is not None else None
@@ -671,6 +675,11 @@ def _cli_finalize(args: argparse.Namespace) -> int:
 
 
 def main(argv: list[str] | None = None) -> int:
+    from ...rails.probes.pslu_flight import (  # noqa: PLC0415 (import-cycle guard)
+        SPEECH_NATIVE_BOUNDARY_POLICY_IDS,
+        SPEECH_NATIVE_KNOWLEDGE_POLICY_IDS,
+    )
+
     parser = argparse.ArgumentParser(prog="saea-driver")
     sub = parser.add_subparsers(dest="command", required=True)
     score = sub.add_parser(
