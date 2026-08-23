@@ -18,7 +18,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from speech_aware_evidence_acquisition.core.model import SliceRegistry
+from speech_aware_evidence_acquisition.core.model import FrozenCoreAdapter, SliceRegistry
 from speech_aware_evidence_acquisition.core.resources import NOT_AVAILABLE
 from speech_aware_evidence_acquisition.core.driver.speech_native import (
     audit_speech_native_action_support,
@@ -81,7 +81,7 @@ from speech_aware_evidence_acquisition.data.slurp import (
     SlurpTrainMaterial,
     SlurpTrainRecording,
 )
-from speech_aware_evidence_acquisition.rails import MockCoreClient
+from speech_aware_evidence_acquisition.rails import FrozenCoreClient, MockCoreClient
 from speech_aware_evidence_acquisition.rails.adapters.slurp import SlurpAdapter
 from speech_aware_evidence_acquisition.rails.probes.pslu_flight import (
     CandidateCounterevidenceStateV1,
@@ -100,6 +100,7 @@ from speech_aware_evidence_acquisition.rails.probes.pslu_flight import (
     build_data_derived_decision_graph,
     build_speech_native_information_audit,
     build_speech_native_binding,
+    build_speech_native_knowledge_snapshot,
     audit_speech_native_scale_capacity,
     candidate_action_state_response_format,
     candidate_counterevidence_response_format,
@@ -8718,6 +8719,7 @@ def test_speech_native_knowledge_refinement_is_data_derived_and_isolated():
 
     assert successor["splits"] == base["splits"]
     assert successor["engineering_gate"] == base["engineering_gate"]
+    assert "knowledge_snapshot" not in successor
     assert successor["knowledge_parent_binding_sha256"] == base["binding_sha256"]
     assert successor["binding_sha256"] == _binding_document_sha256(
         {key: value for key, value in successor.items() if key != "binding_sha256"}
@@ -8767,6 +8769,170 @@ def test_speech_native_knowledge_refinement_is_data_derived_and_isolated():
         key_examples_per_scenario=5,
     )
     assert json.dumps(successor, sort_keys=True) == json.dumps(repeated, sort_keys=True)
+
+
+def _standalone_knowledge_construction_partition(material, query_binding):
+    query_items = [
+        item for split in query_binding["splits"].values() for item in split["items"]
+    ]
+    query_samples = {item["sample_id"] for item in query_items}
+    query_utterances = {item["utterance_id"] for item in query_items}
+    query_sentences = {item["normalized_sentence"] for item in query_items}
+    query_speakers = {item["speaker_id"] for item in query_items}
+    construction = []
+    for entry in material:
+        if (
+            entry.utterance_id in query_utterances
+            or " ".join(entry.sentence.casefold().split()) in query_sentences
+        ):
+            continue
+        recordings = tuple(
+            recording
+            for recording in entry.recordings
+            if recording.sample_id not in query_samples
+            and recording.speaker_id not in query_speakers
+        )
+        if recordings:
+            construction.append(replace(entry, recordings=recordings))
+    return (
+        tuple(construction),
+        query_samples,
+        query_utterances,
+        query_speakers,
+    )
+
+
+def test_standalone_train_knowledge_snapshot_binds_source_and_build_identity():
+    material = _knowledge_refinement_material()
+    query_binding = build_speech_native_binding(
+        material,
+        seed=20260821,
+        expected_scenarios=("alarm", "email"),
+        opt_a_per_scenario=2,
+        opt_b_per_scenario=1,
+        gate_per_scenario=1,
+        key_examples_per_scenario=5,
+    )
+    construction, _samples, _utterances, _speakers = (
+        _standalone_knowledge_construction_partition(material, query_binding)
+    )
+    snapshot = build_speech_native_knowledge_snapshot(
+        construction,
+        seed=20260829,
+        expected_scenarios=("alarm", "email"),
+        key_examples_per_scenario=5,
+    )
+    expected_source_ids = tuple(
+        sorted(
+            recording.sample_id
+            for entry in construction
+            for recording in entry.recordings
+        )
+    )
+    expected_source_hash = hashlib.sha256(
+        "\n".join(expected_source_ids).encode("utf-8")
+    ).hexdigest()
+    build_document = {
+        "schema": "saea-speech-native-knowledge-build-v1",
+        "source_split_identity_hash": expected_source_hash,
+        "seed": 20260829,
+        "policy_id": "slurp-action-stratified-specificity-v1",
+        "scenarios": ["alarm", "email"],
+        "key_examples_per_scenario": 5,
+    }
+    build_sha256 = hashlib.sha256(
+        json.dumps(
+            build_document,
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode("utf-8")
+    ).hexdigest()
+
+    assert snapshot.source_sample_ids == expected_source_ids
+    assert snapshot.source_split_identity_hash == expected_source_hash
+    assert snapshot.snapshot_id == f"slurp-train-knowledge-{build_sha256[:16]}"
+    assert snapshot.builder_policy_id == (
+        f"slurp-action-stratified-specificity-v1@{build_sha256}"
+    )
+    assert snapshot.frozen_json()["snapshot_sha256"] == snapshot.content_hash()
+
+    reordered = build_speech_native_knowledge_snapshot(
+        tuple(reversed(construction)),
+        seed=20260829,
+        expected_scenarios=("alarm", "email"),
+        key_examples_per_scenario=5,
+    )
+    assert reordered.frozen_json() == snapshot.frozen_json()
+
+    different_build = build_speech_native_knowledge_snapshot(
+        construction,
+        seed=20260830,
+        expected_scenarios=("alarm", "email"),
+        key_examples_per_scenario=5,
+    )
+    assert different_build.builder_policy_id != snapshot.builder_policy_id
+    assert different_build.content_hash() != snapshot.content_hash()
+
+
+def test_standalone_train_snapshot_excludes_opt_dev_identity_groups():
+    material = _knowledge_refinement_material()
+    query_binding = build_speech_native_binding(
+        material,
+        seed=20260821,
+        expected_scenarios=("alarm", "email"),
+        opt_a_per_scenario=2,
+        opt_b_per_scenario=1,
+        gate_per_scenario=1,
+        key_examples_per_scenario=5,
+    )
+    construction, query_samples, query_utterances, query_speakers = (
+        _standalone_knowledge_construction_partition(material, query_binding)
+    )
+    snapshot = build_speech_native_knowledge_snapshot(
+        construction,
+        seed=20260829,
+        expected_scenarios=("alarm", "email"),
+        key_examples_per_scenario=5,
+    )
+
+    assert query_samples.isdisjoint(snapshot.source_sample_ids)
+    provenance = {
+        reference for value in snapshot.values for reference in value.provenance_refs
+    }
+    snapshot_utterances = {
+        reference.removeprefix("utterance:")
+        for reference in provenance
+        if reference.startswith("utterance:")
+    }
+    snapshot_speakers = {
+        reference.removeprefix("speaker:")
+        for reference in provenance
+        if reference.startswith("speaker:")
+    }
+    assert query_utterances.isdisjoint(snapshot_utterances)
+    assert query_speakers.isdisjoint(snapshot_speakers)
+    assert snapshot.source_partition_role == "train"
+
+
+def test_standalone_train_knowledge_build_has_no_model_contact(monkeypatch):
+    contacts = []
+
+    def refuse_contact(*args, **kwargs):
+        contacts.append((args, kwargs))
+        raise AssertionError("knowledge BUILD must not contact a model")
+
+    monkeypatch.setattr(FrozenCoreClient, "complete", refuse_contact)
+    monkeypatch.setattr(MockCoreClient, "complete", refuse_contact)
+    monkeypatch.setattr(FrozenCoreAdapter, "request", refuse_contact)
+    snapshot = build_speech_native_knowledge_snapshot(
+        _knowledge_refinement_material(),
+        seed=20260829,
+        expected_scenarios=("alarm", "email"),
+        key_examples_per_scenario=5,
+    )
+    assert snapshot.values
+    assert contacts == []
 
 
 def test_action_complete_knowledge_policy_adds_one_example_for_every_train_action():

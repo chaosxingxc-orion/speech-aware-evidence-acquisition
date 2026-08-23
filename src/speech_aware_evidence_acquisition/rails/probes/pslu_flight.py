@@ -76,6 +76,7 @@ from ...reproduction.slurp_scoring import parse_slu_response
 from ...core.tracing import TraceBuffer, set_current_trace_buffer
 from ..adapters.slurp import SlurpAdapter, SlurpSample
 from ..consumption import ConsumptionTrace
+from ..knowledge import KeyFacet, KnowledgeSnapshot, ValueBundle
 from ..obs import AudioRef
 from ..supply import SupplyDose, SupplyForm, SupplyItem, SupplyPacket
 
@@ -6885,24 +6886,14 @@ def _knowledge_features(sentence: str) -> set[str]:
     )
 
 
-def refine_speech_native_binding_knowledge(
-    base_binding: Mapping[str, object],
-    material: Sequence[SlurpTrainMaterial],
+def _validate_speech_native_knowledge_build(
     *,
     seed: int,
-    policy_id: str = SPEECH_NATIVE_KNOWLEDGE_POLICY_ID,
-    expected_scenarios: Sequence[str] = tuple(SPEECH_NATIVE_SCENARIO_DEFINITIONS),
-    key_examples_per_scenario: int = 5,
-) -> dict[str, object]:
-    """Replace only key material with a query-isolated data-derived successor.
-
-    The existing binding's split identities and engineering view remain byte
-    identical.  Every action observed in the remaining SLURP train corpus is
-    rendered as a maintainable English facet, while the bounded positive
-    examples are action-stratified and ranked by model-free class specificity.
-    No fitted classifier, model contact, held-out split, or reference transcript
-    enters this operation.
-    """
+    policy_id: str,
+    expected_scenarios: Sequence[str],
+    key_examples_per_scenario: int,
+) -> tuple[str, ...]:
+    """Validate the shared inputs of the pure build and legacy wrapper."""
 
     if isinstance(seed, bool) or not isinstance(seed, int):
         raise PsluFlightError("speech-native knowledge seed must be an integer")
@@ -6918,16 +6909,6 @@ def refine_speech_native_binding_knowledge(
         raise PsluFlightError(
             "knowledge key_examples_per_scenario must be a positive integer"
         )
-    claimed_sha256 = base_binding.get("binding_sha256")
-    unsigned_base = dict(base_binding)
-    unsigned_base.pop("binding_sha256", None)
-    if claimed_sha256 != _binding_sha256(unsigned_base):
-        raise PsluFlightError("speech-native parent binding self-hash mismatch")
-    if "knowledge_revision" in base_binding:
-        raise PsluFlightError(
-            "speech-native binding already has a knowledge revision; use its parent"
-        )
-
     scenarios = tuple(expected_scenarios)
     if not scenarios or len(set(scenarios)) != len(scenarios):
         raise PsluFlightError("knowledge scenarios must be non-empty and unique")
@@ -6936,67 +6917,45 @@ def refine_speech_native_binding_knowledge(
         raise PsluFlightError(
             f"knowledge scenarios lack canonical definitions: {sorted(unknown_scenarios)}"
         )
+    return scenarios
 
-    raw_cards = base_binding.get("key_cards")
-    if not isinstance(raw_cards, list):
-        raise PsluFlightError("speech-native parent binding lacks key cards")
-    key_id_by_scenario: dict[str, str] = {}
-    for raw_card in raw_cards:
-        if not isinstance(raw_card, Mapping):
-            raise PsluFlightError("speech-native parent key cards must be objects")
-        key_id = raw_card.get("key_id")
-        value_label = raw_card.get("value_label")
-        if (
-            not isinstance(key_id, str)
-            or not isinstance(value_label, str)
-            or value_label in key_id_by_scenario
-        ):
-            raise PsluFlightError("speech-native parent key card ids are malformed")
-        key_id_by_scenario[value_label] = key_id
+
+def _select_speech_native_knowledge(
+    material: Sequence[SlurpTrainMaterial],
+    *,
+    seed: int,
+    policy_id: str,
+    scenarios: tuple[str, ...],
+    key_examples_per_scenario: int,
+    key_id_by_scenario: Mapping[str, str],
+    excluded_sample_ids: frozenset[str] = frozenset(),
+    excluded_utterance_ids: frozenset[str] = frozenset(),
+    excluded_normalized_sentences: frozenset[str] = frozenset(),
+    excluded_speaker_ids: frozenset[str] = frozenset(),
+) -> dict[str, object]:
+    """Build train-derived key material under explicit identity exclusions.
+
+    The public pure builder below passes empty exclusions because its input is
+    already the TRAIN knowledge-construction partition.  The historical
+    combined-binding wrapper passes its embedded query identities so its
+    output remains byte-compatible with the earlier isolation behavior.
+    """
+
     if set(key_id_by_scenario) != set(scenarios):
-        raise PsluFlightError(
-            "speech-native parent key cards do not match knowledge scenarios"
-        )
-
-    raw_splits = base_binding.get("splits")
-    if not isinstance(raw_splits, Mapping) or not raw_splits:
-        raise PsluFlightError("speech-native parent binding lacks query splits")
-    query_samples: set[str] = set()
-    query_utterances: set[str] = set()
-    query_sentences: set[str] = set()
-    query_speakers: set[str] = set()
-    for raw_split in raw_splits.values():
-        if not isinstance(raw_split, Mapping) or not isinstance(
-            raw_split.get("items"), list
-        ):
-            raise PsluFlightError("speech-native parent split is malformed")
-        for raw_item in raw_split["items"]:
-            if not isinstance(raw_item, Mapping):
-                raise PsluFlightError("speech-native parent query item is malformed")
-            fields = {
-                "sample": raw_item.get("sample_id"),
-                "utterance": raw_item.get("utterance_id"),
-                "sentence": raw_item.get("normalized_sentence"),
-                "speaker": raw_item.get("speaker_id"),
-            }
-            if not all(isinstance(value, str) and value for value in fields.values()):
-                raise PsluFlightError(
-                    "speech-native parent query identity is malformed"
-                )
-            query_samples.add(fields["sample"])
-            query_utterances.add(fields["utterance"])
-            query_sentences.add(fields["sentence"])
-            query_speakers.add(fields["speaker"])
-
+        raise PsluFlightError("knowledge key ids do not match scenarios")
     ordered_material = tuple(
         sorted(material, key=lambda entry: (entry.scenario, entry.utterance_id))
     )
+    if not all(isinstance(entry, SlurpTrainMaterial) for entry in ordered_material):
+        raise PsluFlightError(
+            "speech-native knowledge material must contain SlurpTrainMaterial entries"
+        )
     corpus = tuple(
         entry
         for entry in ordered_material
         if entry.scenario in key_id_by_scenario
-        and entry.utterance_id not in query_utterances
-        and _normalized_sentence(entry.sentence) not in query_sentences
+        and entry.utterance_id not in excluded_utterance_ids
+        and _normalized_sentence(entry.sentence) not in excluded_normalized_sentences
     )
     if not corpus:
         raise PsluFlightError(
@@ -7087,8 +7046,8 @@ def refine_speech_native_binding_knowledge(
                 for recording in sorted(
                     entry.recordings, key=lambda item: item.sample_id
                 )
-                if recording.speaker_id not in query_speakers
-                and recording.sample_id not in query_samples
+                if recording.speaker_id not in excluded_speaker_ids
+                and recording.sample_id not in excluded_sample_ids
             ),
             key=lambda item: (
                 -item[2],
@@ -7212,6 +7171,334 @@ def refine_speech_native_binding_knowledge(
                 ],
             }
         )
+
+    return {
+        "corpus": corpus,
+        "corpus_count": corpus_count,
+        "key_cards": key_cards,
+        "key_material": key_material,
+        "revision_keys": revision_keys,
+        "key_samples": frozenset(key_samples),
+        "key_utterances": frozenset(key_utterances),
+        "key_sentences": frozenset(key_sentences),
+        "key_speakers": frozenset(key_speakers),
+    }
+
+
+def build_speech_native_knowledge_snapshot(
+    material: Sequence[SlurpTrainMaterial],
+    *,
+    seed: int,
+    policy_id: str = SPEECH_NATIVE_KNOWLEDGE_POLICY_ID,
+    expected_scenarios: Sequence[str] = tuple(SPEECH_NATIVE_SCENARIO_DEFINITIONS),
+    key_examples_per_scenario: int = 5,
+) -> KnowledgeSnapshot:
+    """Build one standalone, model-free TRAIN knowledge snapshot.
+
+    Unlike :func:`refine_speech_native_binding_knowledge`, this function has
+    no query binding argument and cannot observe OPT/DEV identities.  Its
+    input is the already separated TRAIN knowledge-construction partition.
+    The snapshot models the complete supplied train distribution: scenario
+    and action facets reference every natural recording, while each value
+    carries maintainable selected examples plus sample-, utterance-, and
+    speaker-group provenance and a train-derived scenario prior.
+    """
+
+    scenarios = _validate_speech_native_knowledge_build(
+        seed=seed,
+        policy_id=policy_id,
+        expected_scenarios=expected_scenarios,
+        key_examples_per_scenario=key_examples_per_scenario,
+    )
+    key_id_by_scenario = {
+        scenario: f"K{index:03d}" for index, scenario in enumerate(scenarios, start=1)
+    }
+    selection = _select_speech_native_knowledge(
+        material,
+        seed=seed,
+        policy_id=policy_id,
+        scenarios=scenarios,
+        key_examples_per_scenario=key_examples_per_scenario,
+        key_id_by_scenario=key_id_by_scenario,
+    )
+    corpus = selection["corpus"]
+    key_cards = selection["key_cards"]
+    if not isinstance(corpus, tuple) or not isinstance(key_cards, list):
+        raise PsluFlightError("speech-native knowledge selection is malformed")
+
+    card_by_key = {
+        str(card["key_id"]): card for card in key_cards if isinstance(card, Mapping)
+    }
+    rows_by_scenario_action: dict[
+        tuple[str, str], list[tuple[SlurpTrainMaterial, SlurpTrainRecording]]
+    ] = defaultdict(list)
+    sample_identity: dict[str, tuple[str, str, str]] = {}
+    for entry in corpus:
+        for recording in sorted(entry.recordings, key=lambda item: item.sample_id):
+            identity = (
+                entry.utterance_id,
+                recording.speaker_id,
+                recording.media_relpath,
+            )
+            previous = sample_identity.get(recording.sample_id)
+            if previous is not None and previous != identity:
+                raise PsluFlightError(
+                    f"train sample {recording.sample_id!r} has conflicting group identity"
+                )
+            if previous is not None:
+                raise PsluFlightError(
+                    f"train sample {recording.sample_id!r} occurs more than once"
+                )
+            sample_identity[recording.sample_id] = identity
+            rows_by_scenario_action[(entry.scenario, entry.action)].append(
+                (entry, recording)
+            )
+    if not sample_identity:
+        raise PsluFlightError(
+            "speech-native TRAIN knowledge snapshot has zero recordings"
+        )
+
+    facets: list[KeyFacet] = []
+    values: list[ValueBundle] = []
+    total_recordings = len(sample_identity)
+    for scenario in scenarios:
+        key_id = key_id_by_scenario[scenario]
+        scenario_rows = [
+            row
+            for (row_scenario, _action), rows in rows_by_scenario_action.items()
+            if row_scenario == scenario
+            for row in rows
+        ]
+        scenario_source_ids = tuple(
+            sorted(recording.sample_id for _entry, recording in scenario_rows)
+        )
+        if not scenario_source_ids:
+            raise PsluFlightError(
+                f"speech-native TRAIN snapshot lacks recordings for {scenario!r}"
+            )
+        scenario_facet_id = f"facet:{key_id}:scenario"
+        facets.append(
+            KeyFacet(
+                facet_id=scenario_facet_id,
+                dimension="scenario",
+                representation_kind="text",
+                representation=SPEECH_NATIVE_SCENARIO_DEFINITIONS[scenario],
+                source_sample_ids=scenario_source_ids,
+            ).validate()
+        )
+        action_facet_ids: list[str] = []
+        for action in sorted(
+            action
+            for row_scenario, action in rows_by_scenario_action
+            if row_scenario == scenario
+        ):
+            action_rows = rows_by_scenario_action[(scenario, action)]
+            action_facet_id = f"facet:{key_id}:action:{action}"
+            action_facet_ids.append(action_facet_id)
+            facets.append(
+                KeyFacet(
+                    facet_id=action_facet_id,
+                    dimension="action",
+                    representation_kind="text",
+                    representation=SPEECH_NATIVE_ACTION_FACET_DESCRIPTIONS[
+                        (scenario, action)
+                    ],
+                    source_sample_ids=tuple(
+                        sorted(recording.sample_id for _entry, recording in action_rows)
+                    ),
+                    parent_facet_ids=(scenario_facet_id,),
+                ).validate()
+            )
+
+        card = card_by_key.get(key_id)
+        if card is None:
+            raise PsluFlightError(f"TRAIN snapshot lacks selected card {key_id!r}")
+        examples = card.get("positive_examples")
+        boundary = card.get("contrastive_boundary")
+        definition = card.get("definition")
+        if (
+            not isinstance(examples, list)
+            or not all(isinstance(item, str) and item for item in examples)
+            or not isinstance(boundary, str)
+            or not boundary
+            or not isinstance(definition, str)
+            or not definition
+        ):
+            raise PsluFlightError(f"TRAIN snapshot card {key_id!r} is malformed")
+        provenance_refs = tuple(
+            sorted(
+                {
+                    *(
+                        f"sample:{recording.sample_id}"
+                        for _entry, recording in scenario_rows
+                    ),
+                    *(
+                        f"utterance:{entry.utterance_id}"
+                        for entry, _recording in scenario_rows
+                    ),
+                    *(
+                        f"speaker:{recording.speaker_id}"
+                        for _entry, recording in scenario_rows
+                    ),
+                }
+            )
+        )
+        values.append(
+            ValueBundle(
+                value_id=f"value:{key_id}",
+                content=(
+                    f"Definition: {definition}\n"
+                    f"Positive examples: {' | '.join(examples)}\n"
+                    f"Contrastive boundary: {boundary}"
+                ),
+                associated_facet_ids=(scenario_facet_id, *action_facet_ids),
+                source_sample_ids=scenario_source_ids,
+                provenance_refs=provenance_refs,
+                task_target=scenario,
+                prior_score=len(scenario_source_ids) / total_recordings,
+            ).validate()
+        )
+
+    source_sample_ids = tuple(sorted(sample_identity))
+    source_split_identity_hash = hashlib.sha256(
+        "\n".join(source_sample_ids).encode("utf-8")
+    ).hexdigest()
+    build_descriptor = {
+        "schema": "saea-speech-native-knowledge-build-v1",
+        "source_split_identity_hash": source_split_identity_hash,
+        "seed": seed,
+        "policy_id": policy_id,
+        "scenarios": list(scenarios),
+        "key_examples_per_scenario": key_examples_per_scenario,
+    }
+    build_sha256 = _binding_sha256(build_descriptor)
+    return KnowledgeSnapshot(
+        snapshot_id=f"slurp-train-knowledge-{build_sha256[:16]}",
+        source_split_identity_hash=source_split_identity_hash,
+        source_sample_ids=source_sample_ids,
+        builder_policy_id=f"{policy_id}@{build_sha256}",
+        facets=tuple(facets),
+        values=tuple(values),
+    ).validate()
+
+
+def refine_speech_native_binding_knowledge(
+    base_binding: Mapping[str, object],
+    material: Sequence[SlurpTrainMaterial],
+    *,
+    seed: int,
+    policy_id: str = SPEECH_NATIVE_KNOWLEDGE_POLICY_ID,
+    expected_scenarios: Sequence[str] = tuple(SPEECH_NATIVE_SCENARIO_DEFINITIONS),
+    key_examples_per_scenario: int = 5,
+) -> dict[str, object]:
+    """Compatibility wrapper for the historical combined binding artifact.
+
+    The existing binding's split identities and engineering view remain byte
+    identical while the shared pure selector replaces only key material.  New
+    BUILD/USE work must call :func:`build_speech_native_knowledge_snapshot`;
+    this wrapper remains for historical configs and receipts.  No fitted
+    classifier, model contact, held-out split, or reference transcript enters
+    either path.
+    """
+
+    scenarios = _validate_speech_native_knowledge_build(
+        seed=seed,
+        policy_id=policy_id,
+        expected_scenarios=expected_scenarios,
+        key_examples_per_scenario=key_examples_per_scenario,
+    )
+    claimed_sha256 = base_binding.get("binding_sha256")
+    unsigned_base = dict(base_binding)
+    unsigned_base.pop("binding_sha256", None)
+    if claimed_sha256 != _binding_sha256(unsigned_base):
+        raise PsluFlightError("speech-native parent binding self-hash mismatch")
+    if "knowledge_revision" in base_binding:
+        raise PsluFlightError(
+            "speech-native binding already has a knowledge revision; use its parent"
+        )
+
+    raw_cards = base_binding.get("key_cards")
+    if not isinstance(raw_cards, list):
+        raise PsluFlightError("speech-native parent binding lacks key cards")
+    key_id_by_scenario: dict[str, str] = {}
+    for raw_card in raw_cards:
+        if not isinstance(raw_card, Mapping):
+            raise PsluFlightError("speech-native parent key cards must be objects")
+        key_id = raw_card.get("key_id")
+        value_label = raw_card.get("value_label")
+        if (
+            not isinstance(key_id, str)
+            or not isinstance(value_label, str)
+            or value_label in key_id_by_scenario
+        ):
+            raise PsluFlightError("speech-native parent key card ids are malformed")
+        key_id_by_scenario[value_label] = key_id
+    if set(key_id_by_scenario) != set(scenarios):
+        raise PsluFlightError(
+            "speech-native parent key cards do not match knowledge scenarios"
+        )
+
+    raw_splits = base_binding.get("splits")
+    if not isinstance(raw_splits, Mapping) or not raw_splits:
+        raise PsluFlightError("speech-native parent binding lacks query splits")
+    query_samples: set[str] = set()
+    query_utterances: set[str] = set()
+    query_sentences: set[str] = set()
+    query_speakers: set[str] = set()
+    for raw_split in raw_splits.values():
+        if not isinstance(raw_split, Mapping) or not isinstance(
+            raw_split.get("items"), list
+        ):
+            raise PsluFlightError("speech-native parent split is malformed")
+        for raw_item in raw_split["items"]:
+            if not isinstance(raw_item, Mapping):
+                raise PsluFlightError("speech-native parent query item is malformed")
+            fields = {
+                "sample": raw_item.get("sample_id"),
+                "utterance": raw_item.get("utterance_id"),
+                "sentence": raw_item.get("normalized_sentence"),
+                "speaker": raw_item.get("speaker_id"),
+            }
+            if not all(isinstance(value, str) and value for value in fields.values()):
+                raise PsluFlightError(
+                    "speech-native parent query identity is malformed"
+                )
+            query_samples.add(fields["sample"])
+            query_utterances.add(fields["utterance"])
+            query_sentences.add(fields["sentence"])
+            query_speakers.add(fields["speaker"])
+
+    selection = _select_speech_native_knowledge(
+        material,
+        seed=seed,
+        policy_id=policy_id,
+        scenarios=scenarios,
+        key_examples_per_scenario=key_examples_per_scenario,
+        key_id_by_scenario=key_id_by_scenario,
+        excluded_sample_ids=frozenset(query_samples),
+        excluded_utterance_ids=frozenset(query_utterances),
+        excluded_normalized_sentences=frozenset(query_sentences),
+        excluded_speaker_ids=frozenset(query_speakers),
+    )
+    key_cards = selection["key_cards"]
+    key_material = selection["key_material"]
+    revision_keys = selection["revision_keys"]
+    key_samples = selection["key_samples"]
+    key_utterances = selection["key_utterances"]
+    key_sentences = selection["key_sentences"]
+    key_speakers = selection["key_speakers"]
+    corpus_count = selection["corpus_count"]
+    if (
+        not isinstance(key_cards, list)
+        or not isinstance(key_material, list)
+        or not isinstance(revision_keys, list)
+        or not isinstance(key_samples, frozenset)
+        or not isinstance(key_utterances, frozenset)
+        or not isinstance(key_sentences, frozenset)
+        or not isinstance(key_speakers, frozenset)
+        or not isinstance(corpus_count, int)
+    ):
+        raise PsluFlightError("speech-native knowledge selection is malformed")
 
     if not query_samples.isdisjoint(key_samples):
         raise PsluFlightError("refined query/key audio isolation failed")
