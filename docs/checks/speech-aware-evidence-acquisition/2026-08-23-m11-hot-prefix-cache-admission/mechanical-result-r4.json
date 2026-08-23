@@ -1,0 +1,68 @@
+{
+  "schema": "saea-label-blind-mechanical-result-v1",
+  "run_id": "SAEA-SN-ENG-OPTA36-K1M11-HOT-PREFIX-CACHE-ADMISSION-R4",
+  "attempt_id": "attempt-20260823T114500Z-12w012",
+  "execution_plan": "docs/checks/speech-aware-evidence-acquisition/2026-08-23-m11-hot-prefix-cache-admission/execution-plan-r4.json",
+  "protocol_hash": "29cbe4ac13b6bd377cae1a84ae6779c276a12f75800c55a3a03b3f7723c1fbea",
+  "source_receipts": {
+    "flight_receipt_sha256": "8ba31fb596908e06c6847eca6353f6923d1a63e83a1c026f18ce782d7b2bbdb2",
+    "trace_manifest_sha256": "05d42138616f3c36b9fa1c49e7e62f3624bb0783cca2177338797881ef3613e4",
+    "trace_sha256": "d68903f8dec238e6f74b1c49e6772be223b9b895d445e7e66babe525dd872347",
+    "resident_session_receipt_sha256": "33639d3d4a74db48fead435cb7c7548beb58437a79cba64f5312b100b8fe9698"
+  },
+  "result_access": {
+    "semantic_result_read": false,
+    "decisions_file_read": false,
+    "mechanical_fields_only": true
+  },
+  "status": "COMPLETED",
+  "eligible": false,
+  "contacts": {
+    "task_count": 144,
+    "actual_contact_count": 446,
+    "valid_speech_query_count": 446,
+    "request_failure_count": 0,
+    "completion_issue_count": 0,
+    "parse_failure_count": 0
+  },
+  "runtime": {
+    "resident_service_reused": true,
+    "mmproj_loaded": false,
+    "host_spill_marker_count": 0,
+    "oom_marker_count": 0,
+    "runaway_marker_count": 0,
+    "peak_vram_mib": 21312.0,
+    "gpu_seconds": 1258.079137336926
+  },
+  "utilization": {
+    "request_gpu_utilization_median_pct": 99.0,
+    "request_gpu_utilization_p10_pct": 86.0,
+    "slot_occupancy_pct": 93.79661620702596,
+    "saturated_slot_occupancy_mean_pct": 95.50248138957816,
+    "saturated_sample_fraction_pct": 88.75103391232423,
+    "server_slot_clock_alignment_upper_bound_milliseconds": 3159.246
+  },
+  "throughput": {
+    "request_window_seconds": 1381.3612186908722,
+    "aggregate_tokens_per_second": 497.74598468285734,
+    "actual_evaluated_tokens_per_second": 480.97846603053057,
+    "declared_prompt_tokens": 676087,
+    "evaluated_prompt_tokens": 652925,
+    "prompt_evaluation_ratio_pct": 96.57410954507334
+  },
+  "cache_mechanism": {
+    "speech_feature_chunk_count": 446,
+    "cross_slot_speech_feature_batch_count": 418,
+    "ram_prompt_state_save_count": 0,
+    "ram_prompt_state_load_count": 0,
+    "ram_prompt_state_eviction_count": 0,
+    "speech_feature_chunk_gate_maximum": 160,
+    "speech_feature_chunk_gate_passed": false
+  },
+  "failed_gates": [
+    "speech_feature_chunk_count_at_most_160",
+    "saturated_gpu_p10_at_least_90",
+    "server_slot_clock_binding_at_most_500_ms"
+  ],
+  "mechanical_conclusion": "Disabling the unproductive RAM prompt cache and using the singleton zero-copy server improved throughput, but the intended AgentLoop speech prefix was not preserved at the actual transport boundary. Every contact decoded a speech feature chunk, so this run does not establish speech-KV reuse and is not eligible for semantic result reading."
+}
