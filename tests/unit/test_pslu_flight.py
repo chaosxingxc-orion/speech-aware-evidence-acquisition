@@ -6731,6 +6731,23 @@ def _cuda_graph_engine_audit_inputs(*, slot_count=16, expert_types=("Q4_K", "Q6_
             "    return MMVQ_MAX_BATCH_SIZE;\n"
             "}\n"
         ),
+        "mmq_source_text": (
+            "bool ggml_cuda_should_use_mmq(enum ggml_type type, int cc, "
+            "int64_t ne11, int64_t n_experts) {\n"
+            "  switch (type) {\n"
+            "    case GGML_TYPE_Q4_K:\n"
+            "    case GGML_TYPE_Q6_K:\n"
+            "      mmq_supported = true;\n"
+            "  }\n"
+            "  if (turing_mma_available(cc)) { return true; }\n"
+            "}\n"
+        ),
+        "cmake_cache_text": (
+            "CMAKE_CUDA_ARCHITECTURES:UNINITIALIZED=120\n"
+            "GGML_CUDA:BOOL=ON\n"
+            "GGML_CUDA_FORCE_CUBLAS:BOOL=OFF\n"
+            "GGML_CUDA_GRAPHS:BOOL=ON\n"
+        ),
         "cuda_source_text": (
             "if (node->op == GGML_OP_MUL_MAT_ID) {\n"
             "  const int mmvq_mmid_max = get_mmvq_mmid_max_batch("
@@ -6747,7 +6764,7 @@ def _cuda_graph_engine_audit_inputs(*, slot_count=16, expert_types=("Q4_K", "Q6_
 def test_cuda_graph_engine_audit_closes_np16_on_blackwell_quantized_moe():
     report = _audit_cuda_graph_moe_compatibility(**_cuda_graph_engine_audit_inputs())
 
-    assert report["schema"] == "saea-speech-native-engine-compatibility-audit-v1"
+    assert report["schema"] == "saea-speech-native-engine-compatibility-audit-v2"
     assert report["hardware"]["cuda_compute_arch"] == 1200
     assert report["model"]["expert_count"] == 128
     assert report["engine"]["mmvq_moe_max_batch_size"] == 8
@@ -6755,6 +6772,72 @@ def test_cuda_graph_engine_audit_closes_np16_on_blackwell_quantized_moe():
     assert report["profile"]["full_slot_decode_exceeds_graph_limit"] is True
     assert report["decision"]["current_binary_profile_search_closed"] is True
     assert report["decision"]["live_contact_authorized"] is False
+
+
+def test_cuda_graph_engine_audit_admits_sync_free_mmq_candidate_at_np16():
+    inputs = _cuda_graph_engine_audit_inputs()
+    inputs["cuda_source_text"] = (
+        "static bool ggml_cuda_mul_mat_id_needs_sync(const ggml_tensor * dst, "
+        "const int cc) {\n"
+        "  const ggml_tensor * src0 = dst->src[0];\n"
+        "  const ggml_tensor * src1 = dst->src[1];\n"
+        "  if (ggml_cuda_should_use_mmq(src0->type, cc, src1->ne[2], "
+        "/*n_experts=*/src0->ne[2])) { return false; }\n"
+        "  if (ggml_cuda_should_use_mmf(src0->type, cc, WARP_SIZE, src0->ne, "
+        "src0->nb, src1->ne[2], /*mul_mat_id=*/true)) { return false; }\n"
+        "  return true;\n"
+        "}\n"
+        "if (node->op == GGML_OP_MUL_MAT_ID) {\n"
+        "  if (ggml_cuda_mul_mat_id_needs_sync(node, cc)) {\n"
+        "    use_cuda_graph = false;\n"
+        "  }\n"
+        "}\n"
+        "GGML_ASSERT(ggml_cuda_mul_mat_id_needs_sync(dst, cc));\n"
+    )
+
+    report = _audit_cuda_graph_moe_compatibility(**inputs)
+
+    assert report["engine"]["graph_guard_policy"] == "sync-aware-dispatch-mirror-v2"
+    assert report["engine"]["sync_free_mmq_expert_tensor_types"] == [
+        "Q4_K",
+        "Q6_K",
+    ]
+    assert report["profile"]["full_slot_decode_graph_eligible_static"] is True
+    assert report["decision"]["engine_candidate_static_admissible"] is True
+    assert report["decision"]["current_binary_profile_search_closed"] is False
+    assert report["decision"]["live_contact_authorized"] is False
+
+
+def test_cuda_graph_engine_audit_rejects_sync_free_candidate_when_mmq_is_forced_off():
+    inputs = _cuda_graph_engine_audit_inputs()
+    inputs["cuda_source_text"] = (
+        "static bool ggml_cuda_mul_mat_id_needs_sync(const ggml_tensor * dst, "
+        "const int cc) {\n"
+        "  const ggml_tensor * src0 = dst->src[0];\n"
+        "  const ggml_tensor * src1 = dst->src[1];\n"
+        "  if (ggml_cuda_should_use_mmq(src0->type, cc, src1->ne[2], "
+        "/*n_experts=*/src0->ne[2])) { return false; }\n"
+        "  if (ggml_cuda_should_use_mmf(src0->type, cc, WARP_SIZE, src0->ne, "
+        "src0->nb, src1->ne[2], /*mul_mat_id=*/true)) { return false; }\n"
+        "  return true;\n"
+        "}\n"
+        "if (node->op == GGML_OP_MUL_MAT_ID) {\n"
+        "  if (ggml_cuda_mul_mat_id_needs_sync(node, cc)) {\n"
+        "    use_cuda_graph = false;\n"
+        "  }\n"
+        "}\n"
+        "GGML_ASSERT(ggml_cuda_mul_mat_id_needs_sync(dst, cc));\n"
+    )
+    inputs["cmake_cache_text"] = inputs["cmake_cache_text"].replace(
+        "GGML_CUDA_FORCE_CUBLAS:BOOL=OFF",
+        "GGML_CUDA_FORCE_CUBLAS:BOOL=ON",
+    )
+
+    report = _audit_cuda_graph_moe_compatibility(**inputs)
+
+    assert report["engine"]["mmq_forced_off"] is True
+    assert report["profile"]["full_slot_decode_graph_eligible_static"] is False
+    assert report["decision"]["engine_candidate_static_admissible"] is False
 
 
 def test_cuda_graph_engine_audit_does_not_claim_np8_exceeds_the_static_limit():
@@ -6815,8 +6898,15 @@ def test_cuda_graph_engine_audit_cli_writes_a_receipt_bound_model_free_report(
     (source_root / "ggml/src/ggml-cuda/mmvq.cu").write_text(
         inputs["mmvq_source_text"], encoding="utf-8"
     )
+    (source_root / "ggml/src/ggml-cuda/mmq.cu").write_text(
+        inputs["mmq_source_text"], encoding="utf-8"
+    )
     (source_root / "ggml/src/ggml-cuda/ggml-cuda.cu").write_text(
         inputs["cuda_source_text"], encoding="utf-8"
+    )
+    (source_root / "build").mkdir()
+    (source_root / "build/CMakeCache.txt").write_text(
+        inputs["cmake_cache_text"], encoding="utf-8"
     )
     monkeypatch.setattr(
         speech_native_module,
@@ -6850,6 +6940,12 @@ def test_cuda_graph_engine_audit_cli_writes_a_receipt_bound_model_free_report(
     assert (
         report["inputs"]["session_receipt_sha256"]
         == hashlib.sha256(session_path.read_bytes()).hexdigest()
+    )
+    assert report["inputs"]["source_files"]["mmq_source"]["sha256"] == (
+        hashlib.sha256(inputs["mmq_source_text"].encode()).hexdigest()
+    )
+    assert report["inputs"]["build_files"]["cmake_cache"]["sha256"] == (
+        hashlib.sha256(inputs["cmake_cache_text"].encode()).hexdigest()
     )
 
 

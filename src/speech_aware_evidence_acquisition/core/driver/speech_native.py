@@ -10389,6 +10389,8 @@ def _audit_cuda_graph_moe_compatibility(
     expert_tensor_types: Sequence[str],
     mmvq_header_text: str,
     mmvq_source_text: str,
+    mmq_source_text: str,
+    cmake_cache_text: str,
     cuda_source_text: str,
 ) -> dict[str, object]:
     """Bind the current MoE decode width to llama.cpp's CUDA-graph guard.
@@ -10536,21 +10538,84 @@ def _audit_cuda_graph_moe_compatibility(
         or "return MMVQ_MAX_BATCH_SIZE" not in mmvq_source_text
     ):
         raise SpeechNativeProfileError("Ada/Blackwell MMVQ source branch is missing")
-    guard_patterns = (
+    legacy_guard_patterns = (
         r"node->op\s*==\s*GGML_OP_MUL_MAT_ID",
         r"!\s*ggml_is_quantized\(node->src\[0\]->type\)",
         r"node->ne\[2\]\s*>\s*mmvq_mmid_max",
         r"use_cuda_graph\s*=\s*false",
     )
-    if not all(re.search(pattern, cuda_source_text) for pattern in guard_patterns):
+    sync_aware_guard_patterns = (
+        r"static\s+bool\s+ggml_cuda_mul_mat_id_needs_sync\s*\(",
+        r"ggml_cuda_should_use_mmq\s*\(src0->type,\s*cc,\s*src1->ne\[2\],\s*/\*n_experts=\*/src0->ne\[2\]\)",
+        r"ggml_cuda_should_use_mmf\s*\(src0->type,\s*cc,\s*WARP_SIZE,\s*src0->ne,\s*src0->nb,\s*src1->ne\[2\],\s*/\*mul_mat_id=\*/true\)",
+        r"if\s*\(ggml_cuda_mul_mat_id_needs_sync\(node,\s*cc\)\)",
+        r"GGML_ASSERT\s*\(ggml_cuda_mul_mat_id_needs_sync\(dst,\s*cc\)\)",
+        r"use_cuda_graph\s*=\s*false",
+    )
+    legacy_guard = all(
+        re.search(pattern, cuda_source_text) for pattern in legacy_guard_patterns
+    )
+    sync_aware_guard = all(
+        re.search(pattern, cuda_source_text)
+        for pattern in sync_aware_guard_patterns
+    )
+    if not legacy_guard and not sync_aware_guard:
         raise SpeechNativeProfileError(
             "MUL_MAT_ID CUDA graph guard is missing or changed"
         )
 
-    effective_limit = 0 if unquantized_types else mmvq_max_batch
-    exceeds_limit = slot_count > effective_limit
+    def cmake_bool(name: str) -> bool:
+        match = re.search(
+            rf"^{re.escape(name)}:[^=\n]+=([^\n]+)$",
+            cmake_cache_text,
+            flags=re.MULTILINE,
+        )
+        if match is None or match.group(1) not in {"ON", "OFF"}:
+            raise SpeechNativeProfileError(
+                f"engine audit CMake binding {name} is missing or malformed"
+            )
+        return match.group(1) == "ON"
+
+    if not cmake_bool("GGML_CUDA") or not cmake_bool("GGML_CUDA_GRAPHS"):
+        raise SpeechNativeProfileError(
+            "engine audit build does not enable CUDA and CUDA graphs"
+        )
+    mmq_forced_off = cmake_bool("GGML_CUDA_FORCE_CUBLAS")
+    mmq_types = tuple(
+        tensor_type
+        for tensor_type in normalized_types
+        if re.search(
+            rf"case\s+GGML_TYPE_{re.escape(tensor_type)}\s*:",
+            mmq_source_text,
+        )
+    )
+    blackwell_mmq_dispatch = (
+        "bool ggml_cuda_should_use_mmq" in mmq_source_text
+        and re.search(
+            r"if\s*\(turing_mma_available\(cc\)\)\s*\{\s*return\s+true\s*;\s*\}",
+            mmq_source_text,
+        )
+        is not None
+    )
+    sync_free_mmq = (
+        sync_aware_guard
+        and not unquantized_types
+        and not mmq_forced_off
+        and tuple(mmq_types) == normalized_types
+        and blackwell_mmq_dispatch
+    )
+    legacy_effective_limit = 0 if unquantized_types else mmvq_max_batch
+    full_slot_graph_eligible = (
+        sync_free_mmq
+        if sync_aware_guard
+        else slot_count <= legacy_effective_limit
+    )
+    effective_limit = (
+        slot_count if sync_free_mmq else legacy_effective_limit
+    )
+    exceeds_limit = not full_slot_graph_eligible
     return {
-        "schema": "saea-speech-native-engine-compatibility-audit-v1",
+        "schema": "saea-speech-native-engine-compatibility-audit-v2",
         "runtime": {
             "build_commit": runtime_commit,
             "binary_sha256": runtime_binary_sha256,
@@ -10571,20 +10636,39 @@ def _audit_cuda_graph_moe_compatibility(
         "engine": {
             "mmvq_moe_max_batch_size": mmvq_max_batch,
             "effective_moe_graph_batch_limit": effective_limit,
+            "audited_graph_decode_width_lower_bound": (
+                slot_count if sync_free_mmq else effective_limit
+            ),
             "mul_mat_id_graph_guard_present": True,
+            "graph_guard_policy": (
+                "sync-aware-dispatch-mirror-v2"
+                if sync_aware_guard
+                else "legacy-mmvq-only-v1"
+            ),
             "ada_blackwell_mmvq_branch_present": True,
+            "mmq_forced_off": mmq_forced_off,
+            "blackwell_mmq_dispatch_present": blackwell_mmq_dispatch,
+            "sync_free_mmq_expert_tensor_types": list(mmq_types),
         },
         "profile": {
             "slot_count": slot_count,
             "full_slot_decode_exceeds_graph_limit": exceeds_limit,
+            "full_slot_decode_graph_eligible_static": full_slot_graph_eligible,
         },
         "decision": {
             "current_binary_profile_search_closed": exceeds_limit,
+            "engine_candidate_static_admissible": (
+                sync_aware_guard and full_slot_graph_eligible
+            ),
             "live_contact_authorized": False,
             "required_change": (
-                "receipt-bound engine equivalence improvement"
-                if exceeds_limit
-                else "dynamic shape-stability evidence"
+                "dynamic shape-stability and live GPU admission evidence"
+                if sync_aware_guard and full_slot_graph_eligible
+                else (
+                    "receipt-bound engine equivalence improvement"
+                    if exceeds_limit
+                    else "dynamic shape-stability evidence"
+                )
             ),
         },
     }
@@ -10707,12 +10791,19 @@ def _cli_speech_native_engine_audit(args: argparse.Namespace) -> int:
 
     source_paths = {
         "cuda_source": source_root / "ggml/src/ggml-cuda/ggml-cuda.cu",
+        "mmq_source": source_root / "ggml/src/ggml-cuda/mmq.cu",
         "mmvq_source": source_root / "ggml/src/ggml-cuda/mmvq.cu",
         "mmvq_header": source_root / "ggml/src/ggml-cuda/mmvq.cuh",
+    }
+    build_paths = {
+        "cmake_cache": source_root / "build/CMakeCache.txt",
     }
     try:
         source_text = {
             key: path.read_text(encoding="utf-8") for key, path in source_paths.items()
+        }
+        build_text = {
+            key: path.read_text(encoding="utf-8") for key, path in build_paths.items()
         }
         server_log_text = Path(server_log_value).read_text(
             encoding="utf-8", errors="replace"
@@ -10744,6 +10835,8 @@ def _cli_speech_native_engine_audit(args: argparse.Namespace) -> int:
         expert_tensor_types=expert_types,
         mmvq_header_text=source_text["mmvq_header"],
         mmvq_source_text=source_text["mmvq_source"],
+        mmq_source_text=source_text["mmq_source"],
+        cmake_cache_text=build_text["cmake_cache"],
         cuda_source_text=source_text["cuda_source"],
     )
     report["inputs"] = {
@@ -10757,6 +10850,10 @@ def _cli_speech_native_engine_audit(args: argparse.Namespace) -> int:
         "source_files": {
             key: {"path": str(path), "sha256": _sha256_file(path)}
             for key, path in source_paths.items()
+        },
+        "build_files": {
+            key: {"path": str(path), "sha256": _sha256_file(path)}
+            for key, path in build_paths.items()
         },
     }
     output = Path(args.output)

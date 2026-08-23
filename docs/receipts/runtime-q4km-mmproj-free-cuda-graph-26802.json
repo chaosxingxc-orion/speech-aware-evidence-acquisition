@@ -1,0 +1,132 @@
+{
+  "gguf_files": [
+    {
+      "bytes": 18557053952,
+      "path": "models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+      "sha256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d"
+    }
+  ],
+  "llama_cpp": {
+    "binary_bytes": 17920,
+    "binary_path": "llama.cpp-featcache-cuda-graph-26802/build/bin/llama-server",
+    "binary_sha256": "d424844bfa70d2e1fb68937114895ac084c66bfec289a9b8b857c1f504a597bb",
+    "build_commit": "7d7eb27bafd839e44211773d389a0d9a040e68ca",
+    "reported_build": "version: 9 (7d7eb27ba)"
+  },
+  "model_lock_key": "qwen3-omni-30b-a3b-instruct-gguf-q4km",
+  "role": "inference",
+  "runtime_libraries": [
+    {
+      "bytes": 913472,
+      "path": "llama.cpp-featcache-cuda-graph-26802/build/bin/libggml-base.so",
+      "sha256": "5f4a267bc563a4d6e01e367ad155a08915633e730b318e98c99c1a813d9bc6bb"
+    },
+    {
+      "bytes": 913472,
+      "path": "llama.cpp-featcache-cuda-graph-26802/build/bin/libggml-base.so.0",
+      "sha256": "5f4a267bc563a4d6e01e367ad155a08915633e730b318e98c99c1a813d9bc6bb"
+    },
+    {
+      "bytes": 913472,
+      "path": "llama.cpp-featcache-cuda-graph-26802/build/bin/libggml-base.so.0.15.2",
+      "sha256": "5f4a267bc563a4d6e01e367ad155a08915633e730b318e98c99c1a813d9bc6bb"
+    },
+    {
+      "bytes": 1114656,
+      "path": "llama.cpp-featcache-cuda-graph-26802/build/bin/libggml-cpu.so",
+      "sha256": "df12f26579c3ba40b679dae87eff37e745812c6abb03949c6a2d0a5c5d65e3eb"
+    },
+    {
+      "bytes": 1114656,
+      "path": "llama.cpp-featcache-cuda-graph-26802/build/bin/libggml-cpu.so.0",
+      "sha256": "df12f26579c3ba40b679dae87eff37e745812c6abb03949c6a2d0a5c5d65e3eb"
+    },
+    {
+      "bytes": 1114656,
+      "path": "llama.cpp-featcache-cuda-graph-26802/build/bin/libggml-cpu.so.0.15.2",
+      "sha256": "df12f26579c3ba40b679dae87eff37e745812c6abb03949c6a2d0a5c5d65e3eb"
+    },
+    {
+      "bytes": 75737216,
+      "path": "llama.cpp-featcache-cuda-graph-26802/build/bin/libggml-cuda.so",
+      "sha256": "592c447490ed7f69e63cb331e96f534efe4fcfc40139099ced89b873157dbfcc"
+    },
+    {
+      "bytes": 75737216,
+      "path": "llama.cpp-featcache-cuda-graph-26802/build/bin/libggml-cuda.so.0",
+      "sha256": "592c447490ed7f69e63cb331e96f534efe4fcfc40139099ced89b873157dbfcc"
+    },
+    {
+      "bytes": 75737216,
+      "path": "llama.cpp-featcache-cuda-graph-26802/build/bin/libggml-cuda.so.0.15.2",
+      "sha256": "592c447490ed7f69e63cb331e96f534efe4fcfc40139099ced89b873157dbfcc"
+    },
+    {
+      "bytes": 56016,
+      "path": "llama.cpp-featcache-cuda-graph-26802/build/bin/libggml.so",
+      "sha256": "90d80717e38bd6a0d9cf0eb9cfff75b12a5e5943b27e9a0d42a036931ef59f63"
+    },
+    {
+      "bytes": 56016,
+      "path": "llama.cpp-featcache-cuda-graph-26802/build/bin/libggml.so.0",
+      "sha256": "90d80717e38bd6a0d9cf0eb9cfff75b12a5e5943b27e9a0d42a036931ef59f63"
+    },
+    {
+      "bytes": 56016,
+      "path": "llama.cpp-featcache-cuda-graph-26802/build/bin/libggml.so.0.15.2",
+      "sha256": "90d80717e38bd6a0d9cf0eb9cfff75b12a5e5943b27e9a0d42a036931ef59f63"
+    },
+    {
+      "bytes": 5715912,
+      "path": "llama.cpp-featcache-cuda-graph-26802/build/bin/libllama-common.so",
+      "sha256": "c0e805847bf0cf91850372fc5fbf27c120018df8b0ffb60bdbf8270ee665cf1b"
+    },
+    {
+      "bytes": 5715912,
+      "path": "llama.cpp-featcache-cuda-graph-26802/build/bin/libllama-common.so.0",
+      "sha256": "c0e805847bf0cf91850372fc5fbf27c120018df8b0ffb60bdbf8270ee665cf1b"
+    },
+    {
+      "bytes": 5715912,
+      "path": "llama.cpp-featcache-cuda-graph-26802/build/bin/libllama-common.so.0.0.9",
+      "sha256": "c0e805847bf0cf91850372fc5fbf27c120018df8b0ffb60bdbf8270ee665cf1b"
+    },
+    {
+      "bytes": 4178832,
+      "path": "llama.cpp-featcache-cuda-graph-26802/build/bin/libllama-server-impl.so",
+      "sha256": "4038107b642c30ac45a9b61e1e2f39137b2cd10859f2d7901ee62a6a5dc509a0"
+    },
+    {
+      "bytes": 3871904,
+      "path": "llama.cpp-featcache-cuda-graph-26802/build/bin/libllama.so",
+      "sha256": "753393730730d5471d7b0d270c6f440b1829d202352b0a30ae76998d4ec38f29"
+    },
+    {
+      "bytes": 3871904,
+      "path": "llama.cpp-featcache-cuda-graph-26802/build/bin/libllama.so.0",
+      "sha256": "753393730730d5471d7b0d270c6f440b1829d202352b0a30ae76998d4ec38f29"
+    },
+    {
+      "bytes": 3871904,
+      "path": "llama.cpp-featcache-cuda-graph-26802/build/bin/libllama.so.0.0.9",
+      "sha256": "753393730730d5471d7b0d270c6f440b1829d202352b0a30ae76998d4ec38f29"
+    },
+    {
+      "bytes": 1429096,
+      "path": "llama.cpp-featcache-cuda-graph-26802/build/bin/libmtmd.so",
+      "sha256": "4887b9037b97f1cac27288908fd5d603ca97f08fdd3370598385f3da1f3f1be3"
+    },
+    {
+      "bytes": 1429096,
+      "path": "llama.cpp-featcache-cuda-graph-26802/build/bin/libmtmd.so.0",
+      "sha256": "4887b9037b97f1cac27288908fd5d603ca97f08fdd3370598385f3da1f3f1be3"
+    },
+    {
+      "bytes": 1429096,
+      "path": "llama.cpp-featcache-cuda-graph-26802/build/bin/libmtmd.so.0.0.9",
+      "sha256": "4887b9037b97f1cac27288908fd5d603ca97f08fdd3370598385f3da1f3f1be3"
+    }
+  ],
+  "schema": "saea-runtime-receipt-v3",
+  "study": "speech-aware-evidence-acquisition"
+}
