@@ -1,0 +1,124 @@
+{
+  "attempt_id": "attempt-20260824T111833Z-dev100r0a4",
+  "boundary": "gold never opened; no response read semantically; the round is NOT sealed and NOT scored; everything durable was flushed at the trip (partial BLEND buffer into the main sink, canary in its own sink); the resident service and keepalive are left up for the coordinator's decision",
+  "canary": {
+    "contacts": 2,
+    "generation": [
+      {
+        "ms_per_token": 7.37,
+        "tokens": 33,
+        "total_ms": 243.14
+      },
+      {
+        "ms_per_token": 7.83,
+        "tokens": 34,
+        "total_ms": 266.08
+      }
+    ],
+    "note": "responses never read semantically: sha256 + server print_timing descriptives only, per the registered canary semantics (attempt-3 registration, carried to attempt 4)",
+    "pass_threshold_ms_per_token": 300.0,
+    "passed": true,
+    "prompt_eval": [
+      {
+        "ms_per_token": 0.53,
+        "tokens": 1757,
+        "total_ms": 929.26
+      },
+      {
+        "ms_per_token": 1.22,
+        "tokens": 75,
+        "total_ms": 91.16
+      }
+    ],
+    "response_sha256_vs_attempt1_m0": {
+      "slurp:devel:000090:audio-1498567209": {
+        "byte_identical_to_attempt1": true,
+        "response_sha256": "5fe1b883601c67a10862f74c4ef2abd1e94445d25088dbc2989870e29e067a59"
+      },
+      "slurp:devel:000109:audio-1497882612": {
+        "byte_identical_to_attempt1": true,
+        "response_sha256": "7e6ccbed9d234c2ed405c1ea4169213767bcc5694af3bcd8f2b261503980a073"
+      }
+    },
+    "sample_ids": [
+      "slurp:devel:000090:audio-1498567209",
+      "slurp:devel:000109:audio-1497882612"
+    ],
+    "trace": {
+      "manifest_hash": "4cb70997c9c14628c6e9064ad0af34e91d6f3de55a0ba3034ab25c7bdfe47d22",
+      "namespace": "canary/",
+      "record_ids": 14,
+      "sink_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-DEV100-KB-ALPHA-BLEND-CAMPAIGN/attempt-20260824T111833Z-dev100r0a4/canary-trace"
+    },
+    "wall_seconds": 7.543,
+    "worst_generation_ms_per_token": 7.83
+  },
+  "durable_flush": {
+    "blend_partial_flush": {
+      "flushed_records": 195
+    },
+    "canary_sink": {
+      "manifest_hash": "4cb70997c9c14628c6e9064ad0af34e91d6f3de55a0ba3034ab25c7bdfe47d22",
+      "namespace": "canary/",
+      "record_ids": 14,
+      "sink_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-DEV100-KB-ALPHA-BLEND-CAMPAIGN/attempt-20260824T111833Z-dev100r0a4/canary-trace"
+    }
+  },
+  "generated_at": "2026-08-24T11:26:30.521384+00:00",
+  "outcome": "SENTINEL_ABORT_STOP",
+  "registered_semantics": {
+    "abort_threshold_ms_per_token": 1000.0,
+    "metric": "server print_timing generation ms/token (content-free), read per completed BLEND contact from the tracked server-log offset; rolling median, strict >",
+    "window_contacts": 8
+  },
+  "round_index": 0,
+  "run_id": "SAEA-DEV100-KB-ALPHA-BLEND-CAMPAIGN",
+  "schema": "saea-dev100-round0-sentinel-abort-v1-attempt4",
+  "sentinel": {
+    "contacts_observed": 65,
+    "ms_per_token_max": 6575.97,
+    "ms_per_token_median": 61.09,
+    "ms_per_token_min": 32.87,
+    "ms_per_token_p90": 6048.87,
+    "rates_observed": 65,
+    "threshold_ms_per_token": 1000.0,
+    "tripped": {
+      "contacts_observed": 65,
+      "rates_observed": 65,
+      "rolling_median_ms_per_token": 5876.335,
+      "threshold_ms_per_token": 1000.0,
+      "window_contacts": 8,
+      "window_ms_per_token": [
+        6210.77,
+        6210.77,
+        6198.77,
+        6048.87,
+        5703.8,
+        4255.33,
+        2720.68,
+        2139.98
+      ]
+    },
+    "window_contacts": 8
+  },
+  "spend": {
+    "attempt4_core_contacts": 2,
+    "attempt4_tool_contacts": 33,
+    "core_client": {
+      "contact_latency_seconds_total": 1852.227,
+      "cost": {
+        "audio_seconds_used": 159.62881249999998,
+        "calls_used": 67,
+        "completion_tokens_total": 1825,
+        "latency_seconds_total": 1852.226647486,
+        "prompt_tokens_total": 136769,
+        "tool_calls": 0,
+        "umbrella_lock_sha256": "9064bde89d4248fd80c9c2f93c2a9c276a454eadbb1aa7d529671118961371b1"
+      },
+      "request_count": 67,
+      "trace_manifest_hash": "68704f62ccad99f4a7c35805c47909b7559ccc331f12e3965c447ac3f89aa613"
+    }
+  },
+  "study": "speech-aware-evidence-acquisition",
+  "verbatim": "{'rolling_median_ms_per_token': 5876.335, 'window_ms_per_token': [6210.77, 6210.77, 6198.77, 6048.87, 5703.8, 4255.33, 2720.68, 2139.98], 'threshold_ms_per_token': 1000.0, 'window_contacts': 8, 'contacts_observed': 65, 'rates_observed': 65} (surfaced wrapped as: ExecutionError(\"component 'agent_contact_0' execute 'invoke' error, reason='in-flight decode-rate sentinel TRIPPED: rolling median 6210.77 ms/token over the last 8 observed generation rows exceeds the registered abort threshold 1000 ms/token; window [44.5, 6575.97, 6575.92, 6293.44, 6210.77, 6210.77, 6198.77, 6048.87]', workflow='d6eafa7c361f45d49b50f10d88c75164'\"))"
+}
