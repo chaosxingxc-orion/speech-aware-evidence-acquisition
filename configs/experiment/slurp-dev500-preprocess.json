@@ -1,0 +1,5 @@
+{
+  "experiment_id": "SAEA-SN-DEV500-PREPROCESS",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "Label-free offline feature preprocessing for the DEV-500 confirmatory runtime view (preregistration docs/readiness/2026-08-24-dev500-confirmatory-preregistration.md section 4.1; owner ladder ruling 2026-08-23 section 2.2). A model-free audit (scripts/build_dev500_preprocess_scope.py) measured exactly 400 of the 500 DEV-500 recordings absent from every legacy feature cache and packet root -- precisely the DEV-500-minus-DEV-100 set difference -- and froze that scope as the DEV-500-NEW400 derived receipt, so this run contacts ONLY the missing recordings and never re-touches the 100 already-promoted DEV-100 packets. Keep the resident decoder-only inference service on port 8080 untouched, populate only the legacy speech feature cache through a separate CPU-only sidecar on port 8081, and never inspect generated text, labels, reference transcripts, or task accuracy. The fixed one-token response is never read semantically."
+}
