@@ -11542,6 +11542,74 @@ def test_engineering_loader_accepts_generalized_runtime_view_for_named_split(tmp
     assert gate.split_identity_hash == "a" * 64
 
 
+def _rewrite_runtime_view(path, **overrides):
+    document = json.loads(path.read_text(encoding="utf-8"))
+    unsigned = {
+        key: value for key, value in document.items() if key != "runtime_view_sha256"
+    }
+    unsigned["schema"] = "saea-speech-native-runtime-view-v1"
+    unsigned.update(overrides)
+    canonical = json.dumps(
+        unsigned, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+    ).encode("utf-8")
+    path.write_text(
+        json.dumps(
+            {**unsigned, "runtime_view_sha256": hashlib.sha256(canonical).hexdigest()}
+        ),
+        encoding="utf-8",
+    )
+    return path
+
+
+def test_engineering_loader_accepts_a_dev_role_runtime_view(tmp_path):
+    """The DEV ladder (owner ruling 2026-08-23 section 2.2) is the FIRST
+    runtime view whose split role is not ``discovery``. The loader used to
+    hard-require ``discovery``, which would have forced a DEV-100 view to
+    mislabel itself as a discovery split to pass promotion. It now admits
+    exactly the two Stage-2 roles ``contracts.plan.STAGE2_SPLIT_ROLES``
+    already names."""
+
+    path = _rewrite_runtime_view(
+        _write_engineering_gate_view(tmp_path),
+        split_name="DEV-100",
+        split_role="dev",
+    )
+
+    gate = load_speech_native_engineering_gate(
+        path,
+        data_root=tmp_path,
+        expected_count=4,
+        expected_split_name="DEV-100",
+        media_probe=lambda media_path: (
+            hashlib.sha256(media_path.read_bytes()).hexdigest(),
+            1.25,
+            16000,
+        ),
+    )
+
+    assert len(gate.samples) == 4
+
+
+def test_engineering_loader_still_refuses_a_confirmatory_runtime_view(tmp_path):
+    """Widening the role check must not open the confirmatory surface: a
+    runtime view can never name a confirmatory split."""
+
+    path = _rewrite_runtime_view(
+        _write_engineering_gate_view(tmp_path),
+        split_name="DEV-100",
+        split_role="confirmatory",
+    )
+
+    with pytest.raises(PsluFlightError, match="identity mismatch"):
+        load_speech_native_engineering_gate(
+            path,
+            data_root=tmp_path,
+            expected_count=4,
+            expected_split_name="DEV-100",
+            media_probe=lambda _path: ("0" * 64, 1.25, 16000),
+        )
+
+
 def test_engineering_gate_loader_refuses_gold_fields_and_hash_drift(tmp_path):
     path = _write_engineering_gate_view(tmp_path)
     document = json.loads(path.read_text(encoding="utf-8"))

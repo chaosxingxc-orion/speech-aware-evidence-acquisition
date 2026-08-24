@@ -1,0 +1,5 @@
+{
+  "experiment_id": "SAEA-SN-DEV100-PREPROCESS",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "Label-free offline feature preprocessing for the DEV-100 optimization-ladder runtime view (owner ruling 2026-08-23 section 2.2). Devel speech has never been preprocessed: 0 of the 100 recordings are present in any legacy feature cache or packet root. Keep the resident decoder-only inference service on port 8080 untouched, populate only the legacy speech feature cache through a separate CPU-only sidecar on port 8081, and never inspect generated text, labels, reference transcripts, or task accuracy. The fixed one-token response is never read semantically."
+}

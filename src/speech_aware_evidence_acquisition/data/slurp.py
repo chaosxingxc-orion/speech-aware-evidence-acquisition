@@ -443,6 +443,18 @@ def _probe_engineering_media(path: Path) -> tuple[str, float, int]:
     return digest.hexdigest(), float(info.frames / info.samplerate), int(info.samplerate)
 
 
+# A speech-native runtime view may name either Stage-2 split role. Mirrors
+# ``contracts.plan.STAGE2_SPLIT_ROLES`` and
+# ``reproduction.probe_split._STAGE2_SPLIT_ROLES`` (duplicated as a literal
+# rather than imported: ``contracts`` imports ``data.carriers``, so importing
+# it back here would close a package cycle). ``dev`` was admitted for the
+# DEV-100/500/1000 optimization ladder (owner ruling
+# ``docs/readiness/2026-08-23-knowledge-plane-baseline-rulings.md`` section
+# 2.2); ``confirmatory`` stays refused here exactly as before -- a runtime
+# view can never name a confirmatory split.
+_RUNTIME_VIEW_SPLIT_ROLES = frozenset({"discovery", "dev"})
+
+
 def load_slurp_engineering_gate(
     path: Path,
     *,
@@ -504,7 +516,7 @@ def load_slurp_engineering_gate(
         document["study"] != "speech-aware-evidence-acquisition"
         or document["carrier_lock_key"] != SLURP_LOCK_KEY
         or document["split_name"] != expected_split_name
-        or document["split_role"] != "discovery"
+        or document["split_role"] not in _RUNTIME_VIEW_SPLIT_ROLES
     ):
         raise LoaderError("speech-native engineering gate identity mismatch")
     items = document["items"]
