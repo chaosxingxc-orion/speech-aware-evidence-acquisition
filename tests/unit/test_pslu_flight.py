@@ -10790,7 +10790,7 @@ def test_binding_extension_cli_reuses_frozen_builder(monkeypatch, tmp_path, caps
             },
         }
 
-    monkeypatch.setattr(driver_cli_module, "extend_speech_native_binding", fake_extend)
+    monkeypatch.setattr(pslu_module, "extend_speech_native_binding", fake_extend)
     exit_code = driver_cli_module.main(
         [
             "extend-speech-native-binding",
@@ -10859,7 +10859,7 @@ def test_binding_extension_cli_reuses_loader_for_scale_capacity_audit(
         }
 
     monkeypatch.setattr(
-        driver_cli_module,
+        pslu_module,
         "audit_speech_native_scale_capacity",
         fake_audit,
     )
@@ -10937,7 +10937,7 @@ def test_binding_extension_cli_reuses_selector_for_knowledge_only_successor(
         }
 
     monkeypatch.setattr(
-        driver_cli_module,
+        pslu_module,
         "refine_speech_native_binding_knowledge",
         fake_refine,
     )
@@ -10998,7 +10998,7 @@ def test_binding_extension_cli_emits_graph_from_same_knowledge_successor(
         lambda lock, root, *, media_validation_workers: material,
     )
     monkeypatch.setattr(
-        driver_cli_module,
+        pslu_module,
         "refine_speech_native_binding_knowledge",
         lambda base, loaded_material, **kwargs: knowledge,
     )
@@ -11023,7 +11023,7 @@ def test_binding_extension_cli_emits_graph_from_same_knowledge_successor(
         return FakeGraph()
 
     monkeypatch.setattr(
-        driver_cli_module,
+        pslu_module,
         "build_data_derived_decision_graph",
         fake_build,
     )
@@ -11098,7 +11098,7 @@ def test_binding_extension_cli_allows_graph_only_from_existing_knowledge(
             }
 
     monkeypatch.setattr(
-        driver_cli_module,
+        pslu_module,
         "build_data_derived_decision_graph",
         lambda successor, loaded_material, **kwargs: FakeGraph(),
     )
@@ -11156,7 +11156,7 @@ def test_binding_extension_cli_reuses_existing_loader_for_information_audit(
 
     graph = FakeGraph()
     monkeypatch.setattr(
-        driver_cli_module,
+        pslu_module,
         "build_data_derived_decision_graph",
         lambda successor, loaded_material, **kwargs: graph,
     )
@@ -11175,7 +11175,7 @@ def test_binding_extension_cli_reuses_existing_loader_for_information_audit(
         }
 
     monkeypatch.setattr(
-        driver_cli_module,
+        pslu_module,
         "build_speech_native_information_audit",
         fake_audit,
     )
