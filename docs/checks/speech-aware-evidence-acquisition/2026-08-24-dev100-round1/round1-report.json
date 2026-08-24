@@ -1,0 +1,925 @@
+{
+  "arms": {
+    "BLEND_ROUND0_FOR_REFERENCE": {
+      "accuracy_scenario_action_exact": 0.63,
+      "correct_count": 63,
+      "source": "ROUND-0 SEALED per-sample scores"
+    },
+    "BLEND_ROUND1": {
+      "accuracy_scenario_action_exact": 0.63,
+      "contacts": 200,
+      "correct_count": 63,
+      "embedding_tool_contacts": 102,
+      "evidence_contact_dispatched_samples": 100,
+      "parsed_count": 100,
+      "retain_primary_samples": 0
+    },
+    "M0": {
+      "accuracy_scenario_action_exact": 0.48,
+      "contacts": 0,
+      "correct_count": 48,
+      "source": "ROUND-0 SEALED per-sample scores (never re-flown; scores sha256 88922466d0463169547f0fcfae20bbdf98a6dd94a8ad7d89b68956a8bd343bed)"
+    }
+  },
+  "attempt_id": "attempt-20260824T144230Z-dev100r1",
+  "authority": "docs/readiness/2026-08-23-dev100-campaign-preregistration.md including amendment 5b and the owner-approved section-4 ceiling amendment (2026-08-24, commit 121bdc08: core 1,800 -> 2,500, audio-s 2,400 -> 5,500); campaign exposure row SAEA-DEV100-KB-ALPHA-BLEND-CAMPAIGN ROUND-1 registration (single-variable tau knob; run-cumulative plan 950 calls / 2,450 audio-s; sealed round-0 authorities pinned byte-wise; sentinel + micro-run trace isolation + clock sampling carried flight-proven from attempt 6)",
+  "blend_decisions": {
+    "evidence_contact_dispatched_samples": 100,
+    "retain_primary_samples": 0,
+    "retained_primary_sample_ids": [],
+    "winner_label_present_samples": 100
+  },
+  "blend_generation_rates_ms_per_token_in_observation_order": [
+    30.07,
+    29.86,
+    38.16,
+    38.2,
+    51.84,
+    37.95,
+    37.85,
+    37.76,
+    131.12,
+    45.26,
+    45.18,
+    33.74,
+    79.36,
+    78.42,
+    53.85,
+    58.83,
+    49.07,
+    57.77,
+    58.06,
+    52.06,
+    41.6,
+    28.88,
+    35.82,
+    71.71,
+    71.7,
+    71.69,
+    32.29,
+    95.01,
+    47.97,
+    51.59,
+    58.03,
+    58.02,
+    52.86,
+    58.0,
+    64.11,
+    48.02,
+    42.09,
+    90.19,
+    38.91,
+    38.92,
+    32.05,
+    80.3,
+    100.94,
+    51.25,
+    51.25,
+    47.83,
+    54.65,
+    50.81,
+    41.91,
+    103.85,
+    34.82,
+    34.84,
+    37.21,
+    56.58,
+    56.57,
+    56.59,
+    36.53,
+    81.54,
+    51.13,
+    51.69,
+    34.01,
+    44.69,
+    55.4,
+    54.61,
+    47.19,
+    41.06,
+    42.27,
+    61.05,
+    31.19,
+    87.73,
+    60.35,
+    60.36,
+    59.11,
+    58.86,
+    48.8,
+    51.2,
+    53.35,
+    51.96,
+    29.02,
+    52.45,
+    52.35,
+    52.47,
+    32.42,
+    32.36,
+    34.02,
+    67.54,
+    39.64,
+    37.21,
+    83.4,
+    39.11,
+    39.12,
+    39.11,
+    39.97,
+    39.95,
+    34.96,
+    83.18,
+    31.22,
+    31.22,
+    31.22,
+    31.2,
+    30.78,
+    26.18,
+    25.9,
+    37.61,
+    40.59,
+    40.59,
+    33.92,
+    40.8,
+    40.4,
+    66.36,
+    30.31,
+    105.02,
+    55.12,
+    33.1,
+    43.08,
+    56.14,
+    54.42,
+    42.98,
+    51.11,
+    30.08,
+    88.17,
+    36.12,
+    32.38,
+    37.79,
+    45.38,
+    44.22,
+    43.28,
+    42.98,
+    27.78,
+    34.44,
+    85.79,
+    40.9,
+    40.9,
+    31.32,
+    41.7,
+    31.44,
+    35.04,
+    34.99,
+    9.44,
+    66.23,
+    45.7,
+    45.75,
+    45.76,
+    28.5,
+    22.83,
+    22.8,
+    18.38,
+    7.31,
+    91.65,
+    54.3,
+    52.88,
+    36.5,
+    36.47,
+    36.44,
+    36.41,
+    24.83,
+    25.22,
+    42.27,
+    25.65,
+    30.69,
+    30.69,
+    32.38,
+    62.99,
+    42.16,
+    71.92,
+    56.45,
+    42.44,
+    76.53,
+    29.75,
+    29.76,
+    29.76,
+    26.29,
+    26.54,
+    26.8,
+    21.49,
+    7.31,
+    152.1,
+    80.51,
+    44.79,
+    46.89,
+    46.89,
+    47.63,
+    42.08,
+    80.92,
+    45.1,
+    9.91,
+    41.54,
+    41.54,
+    89.55,
+    33.12,
+    46.36,
+    46.36,
+    46.34,
+    43.24,
+    86.89,
+    47.25,
+    40.85,
+    40.46,
+    39.98,
+    7.69
+  ],
+  "blend_print_timing": {
+    "generation_rows": 200,
+    "ms_per_token_max": 152.1,
+    "ms_per_token_median": 42.44,
+    "ms_per_token_min": 7.31
+  },
+  "canary": {
+    "byte_identical_to_attempt1_m0": true,
+    "contacts": 2,
+    "decode_divergence": null,
+    "generation": [
+      {
+        "ms_per_token": 10.51,
+        "tokens": 33,
+        "total_ms": 346.75
+      },
+      {
+        "ms_per_token": 7.6,
+        "tokens": 34,
+        "total_ms": 258.41
+      }
+    ],
+    "note": "responses never read semantically: sha256 + server print_timing descriptives only, per the registered canary semantics (attempt-3 registration, carried to round 1; the service is the SAME BASE-build instance attempt 6 proved byte-identical to attempt-1 M0)",
+    "pass_threshold_ms_per_token": 300.0,
+    "passed": true,
+    "prompt_eval": [
+      {
+        "ms_per_token": 7046.95,
+        "tokens": 1,
+        "total_ms": 7046.95
+      },
+      {
+        "ms_per_token": 3.49,
+        "tokens": 75,
+        "total_ms": 261.82
+      }
+    ],
+    "response_sha256_vs_attempt1_m0": {
+      "slurp:devel:000090:audio-1498567209": {
+        "byte_identical_to_attempt1": true,
+        "response_sha256": "5fe1b883601c67a10862f74c4ef2abd1e94445d25088dbc2989870e29e067a59"
+      },
+      "slurp:devel:000109:audio-1497882612": {
+        "byte_identical_to_attempt1": true,
+        "response_sha256": "7e6ccbed9d234c2ed405c1ea4169213767bcc5694af3bcd8f2b261503980a073"
+      }
+    },
+    "sample_ids": [
+      "slurp:devel:000090:audio-1498567209",
+      "slurp:devel:000109:audio-1497882612"
+    ],
+    "trace": {
+      "manifest_hash": "fa779fa209110b04d7c02683791532eba4609773c60cf831294cec475e1758cb",
+      "namespace": "canary/",
+      "record_ids": 14,
+      "sink_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-DEV100-KB-ALPHA-BLEND-CAMPAIGN/attempt-20260824T144230Z-dev100r1/canary-trace"
+    },
+    "wall_seconds": 11.654,
+    "worst_generation_ms_per_token": 10.51
+  },
+  "config_hash": "7fff75d1ed8642a9e948d86e8d6c5bf9cfd669f7342d9da009167dfd62655ca5",
+  "core_client": {
+    "contact_latency_seconds_total": 455.498,
+    "cost": {
+      "audio_seconds_used": 556.3916249999999,
+      "calls_used": 203,
+      "completion_tokens_total": 5392,
+      "latency_seconds_total": 455.4976336480049,
+      "prompt_tokens_total": 421449,
+      "tool_calls": 0,
+      "umbrella_lock_sha256": "9064bde89d4248fd80c9c2f93c2a9c276a454eadbb1aa7d529671118961371b1"
+    },
+    "request_count": 203,
+    "trace_manifest_hash": "cd755cfd96b6f71ec1095ee7eb083f27e06222befb89b5b568740900cca4084d"
+  },
+  "correct_to_wrong_sample_ids": [
+    "slurp:devel:000090:audio-1498567209",
+    "slurp:devel:001227:audio-1490104218",
+    "slurp:devel:001791:audio-1502195360",
+    "slurp:devel:003202:audio-1495733953-headset",
+    "slurp:devel:003443:audio-1501776590",
+    "slurp:devel:003705:audio-1490194357",
+    "slurp:devel:007738:audio-1489153308",
+    "slurp:devel:012185:audio-1499244805",
+    "slurp:devel:012625:audio-1494417974",
+    "slurp:devel:015630:audio-1490967842",
+    "slurp:devel:016699:audio-1499688493-headset"
+  ],
+  "cross_attempt_direct_agreement": {
+    "agree_count": 79,
+    "detail": "per-sample sha256 equality between this round's BLEND direct-decode responses and attempt-1's reused M0 responses (byte-identical prompts; 8-slot concurrent serving descriptive, computed hash-to-hash; attempt-6 measured 78/100 on the same service)",
+    "disagree_sample_ids": [
+      "slurp:devel:000392:audio-1498573434",
+      "slurp:devel:001038:audio--1504191120",
+      "slurp:devel:002814:audio-1490194699",
+      "slurp:devel:003956:audio-1501753591-headset",
+      "slurp:devel:005015:audio-1501756546",
+      "slurp:devel:005386:audio-1501758493",
+      "slurp:devel:005393:audio--1505407257-headset",
+      "slurp:devel:005792:audio-1499697954",
+      "slurp:devel:006595:audio-1497868179",
+      "slurp:devel:007381:audio-1501686582-headset",
+      "slurp:devel:007732:audio-1502376806-headset",
+      "slurp:devel:008788:audio-1490105823",
+      "slurp:devel:010210:audio-1501754125-headset",
+      "slurp:devel:012045:audio-1490956582-headset",
+      "slurp:devel:012575:audio-1501686449",
+      "slurp:devel:012978:audio-1490954706",
+      "slurp:devel:013522:audio-1494607289",
+      "slurp:devel:015265:audio-1499689293-headset",
+      "slurp:devel:015370:audio-1501688507",
+      "slurp:devel:015397:audio-1490262948",
+      "slurp:devel:015516:audio-1499264883-headset"
+    ]
+  },
+  "decoder_session_receipt_sha256": "6c8bab4d67432b4a3b88679483f0d6db41e28620ab8ee973f442a97200861b10",
+  "deviations": [
+    {
+      "detail": "Arm M0 was not re-flown in round 1: its per-sample correctness comes from round-0's sealed scoring artifact (round0-scores.json, sha256 88922466d0463169547f0fcfae20bbdf98a6dd94a8ad7d89b68956a8bd343bed), cross-checked against the sealed round-0 report (26f05488bb7031d1ae85710faffd2b414644729af1adc476a1002a55612fb0b6) at the single scoring-side opening. Zero new spend for the arm; the same M0 baseline serves every round per the campaign design.",
+      "id": "m0-arm-consumed-from-round0-seal",
+      "kind": "successor semantics, registered pre-takeoff in the campaign row"
+    }
+  ],
+  "embedding_jitter_pair": {
+    "bit_identical": true,
+    "cosine": 1.0,
+    "text_sha256": "c9a64ba8de082d25de1625c3b1edee546532841b19c94d2d62096d5f75eac5fa"
+  },
+  "generated_at": "2026-08-24T14:49:43.426639+00:00",
+  "gpu_preflight": {
+    "clock_lock": {
+      "command": "nvidia-smi -lgc 1200,2500 (Windows side)",
+      "status": "REMAINS APPLIED (harmless; NOT a remedy \u2014 attempt 5 falsified the clock hypothesis, attempt 6 confirmed the pathology was build-bound; left in place and disclosed)"
+    },
+    "enforced_power_limit_w_at_preflight": 100.0,
+    "enforced_power_limit_w_in_wsl": 100.0,
+    "lenovo_smart_fan_mode": 3,
+    "measured_at": "2026-08-24 round-1 preflight (host PowerShell WMI GetSmartFanMode=3 + Windows nvidia-smi enforced 100.00 W, idle 10.07 W / 42 C / 1192 MHz / 0 % util; service /health ok with 8/8 slots idle; keepalive PID 23864 alive; session receipt re-hashed equal to the attempt-6/R6 binding)"
+  },
+  "hard_stop": "Round 1 lands and STOPS. No round-2 flight, no knob change: the coordinator reports to the owner (per-arm accuracy, W->C/C->W, delta vs round 0, spend vs the amended ceilings, proposed next-round knobs) before anything flies.",
+  "hosting": {
+    "clock_lock_note": "the Windows-side GPU clock lock nvidia-smi -lgc 1200,2500 REMAINS applied (harmless and explicitly NOT a remedy - the attempt-5 mid-flight samples falsified the clock hypothesis; the attempt-6 base-binary landing confirmed the pathology was build-bound); mid-flight Windows-side clock sampling continues into clock-samples-round1.jsonl",
+    "keepalive": "detached Windows wsl.exe client, PID 23864, started 2026-08-24T10:52:39Z (verified alive at round-1 registration; holds the VM)",
+    "linger": "enabled (loginctl enable-linger chao, 2026-08-24T08:06Z)",
+    "mode": "systemd-run --user unit saea-np8-dev100-r6-base -p KillMode=mixed (WSL Ubuntu-24.04, systemd PID 1)",
+    "prompt_fit_standing": "session-bound R6 prompt-fit row SAEA-SN-MF-DEV100-C3-PROMPT-FIT-NP8-R6 STANDS for round 1: the session receipt sha256 re-measured equal to the R6 binding at registration, and the tau knob changes only WHICH values are admitted for rendering \u2014 the worst-case evidence-decode envelope the fit measured (6,174 tokens vs 8,192, margin +1,954) is an upper bound at the unchanged fusion knobs m=5/c=2/l=3",
+    "service_inheritance": "round 1 flies on the SAME resident BASE-build service the attempt-6 round-0 landing left up (unit saea-np8-dev100-r6-base, llama-server pid 2768, port 8080, BASE build llama.cpp-featcache, 8 slots at n_ctx 8192): at round-1 registration the unit was active, /health ok, 8/8 slots idle, and the session receipt re-hashed byte-identical to the attempt-6 binding \u2014 no respawn, no restart, no binary change"
+  },
+  "mid_flight_clock_samples_windows_side": [
+    {
+      "at": "2026-08-24T14:42:14Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 10.12,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T14:42:24Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 10.16,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T14:42:34Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 10.31,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T14:42:44Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 10.31,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T14:42:54Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 10.33,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T14:43:04Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 10.36,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T14:43:14Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 10.48,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T14:43:24Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 10.49,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T14:43:34Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 10.43,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T14:43:44Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 10.46,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T14:43:55Z",
+      "clocks_sm_mhz": 1507,
+      "power_draw_w": 13.74,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T14:44:08Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 18.81,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 66
+    },
+    {
+      "at": "2026-08-24T14:44:18Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 10.61,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T14:44:28Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 10.59,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T14:44:38Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 10.62,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T14:44:48Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 10.6,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T14:44:58Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 10.62,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T14:45:08Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 13.61,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T14:45:18Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 13.67,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T14:45:29Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 13.89,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T14:45:39Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 13.97,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T14:45:49Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 14.84,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T14:45:59Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 11.89,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 20
+    },
+    {
+      "at": "2026-08-24T14:46:09Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 14.15,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T14:46:19Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 14.46,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T14:46:29Z",
+      "clocks_sm_mhz": 1267,
+      "power_draw_w": 15.19,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T14:46:39Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 14.48,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T14:46:49Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 14.41,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T14:46:59Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 15.4,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T14:47:09Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 14.49,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T14:47:19Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 16.38,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T14:47:29Z",
+      "clocks_sm_mhz": 1515,
+      "power_draw_w": 15.54,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T14:47:39Z",
+      "clocks_sm_mhz": 1597,
+      "power_draw_w": 95.02,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 79
+    },
+    {
+      "at": "2026-08-24T14:47:49Z",
+      "clocks_sm_mhz": 1717,
+      "power_draw_w": 42.04,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 98
+    },
+    {
+      "at": "2026-08-24T14:47:59Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 14.84,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T14:48:10Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 14.52,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T14:48:20Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 15.52,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T14:48:30Z",
+      "clocks_sm_mhz": 1605,
+      "power_draw_w": 93.37,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 92
+    },
+    {
+      "at": "2026-08-24T14:48:40Z",
+      "clocks_sm_mhz": 1537,
+      "power_draw_w": 12.79,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T14:48:50Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 16.47,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T14:49:00Z",
+      "clocks_sm_mhz": 1545,
+      "power_draw_w": 16.19,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T14:49:10Z",
+      "clocks_sm_mhz": 1605,
+      "power_draw_w": 74.06,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T14:49:20Z",
+      "clocks_sm_mhz": 1597,
+      "power_draw_w": 95.72,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 90
+    },
+    {
+      "at": "2026-08-24T14:49:30Z",
+      "clocks_sm_mhz": 1642,
+      "power_draw_w": 41.6,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 98
+    },
+    {
+      "at": "2026-08-24T14:49:40Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 14.51,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    }
+  ],
+  "refused_takeoffs": [],
+  "resend_pair": {
+    "byte_identical": true,
+    "flown": true,
+    "note": "byte-identical direct-decode PROMPT by construction: the SAME assembly path (rails.runner._agent_messages over the same frozen adapter/contract/packet/instruction inputs). Response A is attempt-1's recorded M0 hash (ZERO-COPY build); response B is a fresh single-slot decode on the SAME BASE-build service instance attempt 6 flew \u2014 cross-build byte-determinism was proven at the attempt-6 canary/resend, so byte identity is expected here. sha256 equality only.",
+    "response_a_sha256": "5fe1b883601c67a10862f74c4ef2abd1e94445d25088dbc2989870e29e067a59",
+    "response_b_sha256": "5fe1b883601c67a10862f74c4ef2abd1e94445d25088dbc2989870e29e067a59",
+    "sample_id": "slurp:devel:000090:audio-1498567209",
+    "server_np": 8,
+    "trace": {
+      "manifest_hash": "6997d7b0b51eaa7d039f18aa944c7c1d2929c0b04f990de8b45fba398c80f2d5",
+      "namespace": "resend/",
+      "record_ids": 7,
+      "sink_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-DEV100-KB-ALPHA-BLEND-CAMPAIGN/attempt-20260824T144230Z-dev100r1/resend-trace"
+    }
+  },
+  "round0_citation": {
+    "report_path": "docs/checks/speech-aware-evidence-acquisition/2026-08-24-dev100-round0/round0-report.json",
+    "report_sha256": "26f05488bb7031d1ae85710faffd2b414644729af1adc476a1002a55612fb0b6",
+    "scores_sha256": "88922466d0463169547f0fcfae20bbdf98a6dd94a8ad7d89b68956a8bd343bed",
+    "sealed_results": "M0 48/100; BLEND(tau .5) 63/100; W->C 26; C->W 11; evidence fired 100/100"
+  },
+  "round1_knobs": {
+    "alpha": 0.6,
+    "evidence_variant": "rank+prior+agreement",
+    "fusion": {
+      "c": 2,
+      "l": 3,
+      "m": 5
+    },
+    "knob_change_vs_round0": {
+      "rationale": "tighten percept admission to attack the round-0 damage channel (11 C->W); expected trade: retain-primary fires for the first time, some W->C repairs lost",
+      "single_variable": true,
+      "tau": {
+        "from": 0.5,
+        "to": 0.65
+      }
+    },
+    "m11_pair_boundary_stage": false,
+    "percept_admission": "facet-side",
+    "prior_source": "train",
+    "rank_weight_id": "rrf",
+    "rank_weights": {
+      "w_agree": 0.2,
+      "w_cos": 0.5,
+      "w_prior": 0.3
+    },
+    "tau": 0.65,
+    "top_k_per_dimension": 5,
+    "value_vectors": "SEALED (never loaded)"
+  },
+  "round_index": 1,
+  "run_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-DEV100-KB-ALPHA-BLEND-CAMPAIGN/attempt-20260824T144230Z-dev100r1",
+  "run_id": "SAEA-DEV100-KB-ALPHA-BLEND-CAMPAIGN",
+  "schema": "saea-dev100-round1-report-v1",
+  "sentinel": {
+    "contacts_observed": 200,
+    "ms_per_token_max": 152.1,
+    "ms_per_token_median": 42.44,
+    "ms_per_token_min": 7.31,
+    "ms_per_token_p90": 79.36,
+    "rates_observed": 200,
+    "threshold_ms_per_token": 1000.0,
+    "tripped": null,
+    "window_contacts": 8
+  },
+  "server_np": 8,
+  "serving_descriptives": {
+    "gpu_sampling_reason": "nvidia-smi sampling failed and was disabled for the rest of this run: Command '['/usr/lib/wsl/lib/nvidia-smi', '--id=0', '--query-gpu=utilization.gpu,memory.used', '--format=csv,noheader,nounits']' timed out after 5.0 seconds",
+    "gpu_seconds": "NOT_AVAILABLE",
+    "peak_vram_mib": "NOT_AVAILABLE",
+    "request_gpu_sample_count": 0,
+    "request_gpu_samples": [],
+    "request_gpu_utilization_median_pct": "NOT_AVAILABLE",
+    "request_gpu_utilization_p10_pct": "NOT_AVAILABLE",
+    "server_slot_probe_failure_count": 0,
+    "server_slot_sample_count": 0,
+    "server_slot_sampling_configured": true,
+    "server_slot_sampling_reason": null
+  },
+  "spend_vs_ceilings": {
+    "campaign_ceilings_as_amended": {
+      "amendment": "owner-approved at the round-0 sync (preregistration section 4, commit 121bdc08): audio 2,400 -> 5,500, core 1,800 -> 2,500; tool and GPU-h unchanged",
+      "core_contacts": 2500,
+      "embedding_tool_contacts": 1500,
+      "gpu_hours": 2.0,
+      "metered_audio_seconds": 5500
+    },
+    "campaign_cumulative_incl_round0": {
+      "core_contacts": 891,
+      "embedding_tool_contacts": 402,
+      "metered_audio_seconds": 2380.9121249999994,
+      "note": "round-0 durable cumulative (attempts 1-6: 688 core, 300 tool, 1,824.5204999999996 audio-s) plus this round-1 attempt"
+    },
+    "cumulative_plan_declaration": {
+      "note": "run-cumulative per core.model.adapter's enforcement across all attempts of the run id (fresh sibling read per request); covers the 688 calls / 1,824.52 audio-s durable for round 0 plus this round's worst case",
+      "planned_model_calls_run_cumulative": 950,
+      "planned_speech_audio_seconds_run_cumulative": 2450
+    },
+    "round1": {
+      "core_contacts": {
+        "attempt_ceiling": 210,
+        "used": 203
+      },
+      "embedding_tool_contacts": {
+        "attempt_ceiling": 130,
+        "used": 102
+      },
+      "gpu_active_hours_contact_basis": 0.126527,
+      "metered_audio_seconds": {
+        "used": 556.3916249999999
+      }
+    }
+  },
+  "stopping_rule_status": {
+    "beats_direct": true,
+    "best_arm_delta_vs_prior_round": 0,
+    "completed_rounds_after_this": 2,
+    "note": "evaluated by the coordinator between rounds; convergence needs TWO consecutive sub-1-sample rounds, so no trigger can fire before round 2's seal unless falsification applies",
+    "rule": "converged: best-arm delta < 1 sample across 2 consecutive rounds with zero C->W growth; falsified: no arm beats direct after 3 completed rounds; hard cap 6"
+  },
+  "study": "speech-aware-evidence-acquisition",
+  "trace_isolation": {
+    "canary_sink_records": 14,
+    "flush_order": "canary (own sink) -> BLEND (main sink FIRST) -> resend (own sink)",
+    "main_sink_records": 1000,
+    "resend_sink_records": 7,
+    "zero_record_id_overlap_asserted": true
+  },
+  "vs_round0_blend": {
+    "final_response_sha_changed_count": 12,
+    "final_response_sha_changed_sample_ids": [
+      "slurp:devel:000896:audio-1502216983-headset",
+      "slurp:devel:002417:audio-1494548204-headset",
+      "slurp:devel:003082:audio-1490103664-headset",
+      "slurp:devel:004899:audio-1495377050",
+      "slurp:devel:006595:audio-1497868179",
+      "slurp:devel:007732:audio-1502376806-headset",
+      "slurp:devel:008788:audio-1490105823",
+      "slurp:devel:010086:audio-1502201283",
+      "slurp:devel:012185:audio-1499244805",
+      "slurp:devel:012978:audio-1490954706",
+      "slurp:devel:015370:audio-1501688507",
+      "slurp:devel:015397:audio-1490262948"
+    ],
+    "net_delta_correct_samples": 0,
+    "note": "per-sample vs the round-0 sealed BLEND arm (tau .5). round0_c2w_repaired counts round-0 damage samples that are correct under tau .65; round0_w2c_lost counts round-0 repairs lost to the tighter admission",
+    "round0_c2w_repaired": [
+      "slurp:devel:015370:audio-1501688507"
+    ],
+    "round0_c2w_still_wrong": [
+      "slurp:devel:000090:audio-1498567209",
+      "slurp:devel:001227:audio-1490104218",
+      "slurp:devel:001791:audio-1502195360",
+      "slurp:devel:003202:audio-1495733953-headset",
+      "slurp:devel:003443:audio-1501776590",
+      "slurp:devel:003705:audio-1490194357",
+      "slurp:devel:007738:audio-1489153308",
+      "slurp:devel:012625:audio-1494417974",
+      "slurp:devel:015630:audio-1490967842",
+      "slurp:devel:016699:audio-1499688493-headset"
+    ],
+    "round0_correct_now_wrong": [
+      "slurp:devel:012185:audio-1499244805"
+    ],
+    "round0_w2c_lost": [],
+    "round0_w2c_retained": [
+      "slurp:devel:000109:audio-1497882612",
+      "slurp:devel:000392:audio-1498573434",
+      "slurp:devel:000806:audio--1506079512",
+      "slurp:devel:000921:audio-1498564374-headset",
+      "slurp:devel:001558:audio-1495734409",
+      "slurp:devel:001569:audio-1490198849-headset",
+      "slurp:devel:002814:audio-1490194699",
+      "slurp:devel:004579:audio-1502195536-headset",
+      "slurp:devel:005183:audio-1498565600",
+      "slurp:devel:005726:audio--1504197977",
+      "slurp:devel:005989:audio-1497621031",
+      "slurp:devel:007381:audio-1501686582-headset",
+      "slurp:devel:009951:audio-1500038657-headset",
+      "slurp:devel:010037:audio-1500386970-headset",
+      "slurp:devel:010041:audio-1497264270-headset",
+      "slurp:devel:010086:audio-1502201283",
+      "slurp:devel:010138:audio-1490289156",
+      "slurp:devel:010374:audio-1501690184-headset",
+      "slurp:devel:011819:audio--1505404383-headset",
+      "slurp:devel:012045:audio-1490956582-headset",
+      "slurp:devel:012055:audio-1494512213",
+      "slurp:devel:012712:audio-1502199981-headset",
+      "slurp:devel:013804:audio-1434542201-headset",
+      "slurp:devel:014203:audio-1500979762",
+      "slurp:devel:015397:audio-1490262948",
+      "slurp:devel:015414:audio-1499265566"
+    ],
+    "round0_wrong_now_correct": [
+      "slurp:devel:015370:audio-1501688507"
+    ]
+  },
+  "wrong_to_correct_sample_ids": [
+    "slurp:devel:000109:audio-1497882612",
+    "slurp:devel:000392:audio-1498573434",
+    "slurp:devel:000806:audio--1506079512",
+    "slurp:devel:000921:audio-1498564374-headset",
+    "slurp:devel:001558:audio-1495734409",
+    "slurp:devel:001569:audio-1490198849-headset",
+    "slurp:devel:002814:audio-1490194699",
+    "slurp:devel:004579:audio-1502195536-headset",
+    "slurp:devel:005183:audio-1498565600",
+    "slurp:devel:005726:audio--1504197977",
+    "slurp:devel:005989:audio-1497621031",
+    "slurp:devel:007381:audio-1501686582-headset",
+    "slurp:devel:009951:audio-1500038657-headset",
+    "slurp:devel:010037:audio-1500386970-headset",
+    "slurp:devel:010041:audio-1497264270-headset",
+    "slurp:devel:010086:audio-1502201283",
+    "slurp:devel:010138:audio-1490289156",
+    "slurp:devel:010374:audio-1501690184-headset",
+    "slurp:devel:011819:audio--1505404383-headset",
+    "slurp:devel:012045:audio-1490956582-headset",
+    "slurp:devel:012055:audio-1494512213",
+    "slurp:devel:012712:audio-1502199981-headset",
+    "slurp:devel:013804:audio-1434542201-headset",
+    "slurp:devel:014203:audio-1500979762",
+    "slurp:devel:015397:audio-1490262948",
+    "slurp:devel:015414:audio-1499265566"
+  ]
+}
