@@ -1,0 +1,31 @@
+{
+  "schema": "saea-kb-policy-v1-dev100-frozen",
+  "frozen_at": "2026-08-24",
+  "campaign": "SAEA-DEV100-KB-ALPHA-BLEND-CAMPAIGN",
+  "authority": "docs/readiness/2026-08-24-dev100-campaign-verdict.md",
+  "code_state": {
+    "policy_module_commits": ["bbdb9902", "72096bad", "b3d29658", "f1060078"],
+    "note": "kb_policy.py with both contract-dedup fixes and the label-identity binding repair; the flown code state is the round-4/5 launchers' pinned HEAD"
+  },
+  "knobs": {
+    "alpha": 0.45,
+    "tau": 0.65,
+    "recall_top_k_per_dimension": 5,
+    "rank_weighting": "rrf",
+    "rank_weights": { "w_cos": 0.5, "w_prior": 0.3, "w_agree": 0.2 },
+    "fusion": { "m": 5, "c": 2, "l": 3 },
+    "prior_source": "train",
+    "boundary_stage": "not-flown",
+    "percept_admission": "facet-side (value vectors sealed)"
+  },
+  "measured_at_freeze": {
+    "dev100_blend": "72/100 (rounds 4 and 5, exact replication)",
+    "dev100_direct_m0": "48/100",
+    "paired_gain_ci90_round3_basis": "[+11, +27]",
+    "conservative_floor": "+15 [+6, +24]",
+    "c_to_w": 0,
+    "retain_primary_rate": "63-67/100",
+    "core_contacts_per_round": "133-140"
+  },
+  "knob_semantics": "DEV-tuned only; frozen for the DEV-500 confirmatory one-touch read; any change reopens dev iteration and voids the confirmatory registration"
+}
