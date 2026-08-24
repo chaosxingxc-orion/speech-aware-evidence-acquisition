@@ -1,0 +1,46 @@
+{
+  "schema": "saea-dev100-round1-duplicate-attempt-abort-v1",
+  "study": "speech-aware-evidence-acquisition",
+  "run_id": "SAEA-DEV100-KB-ALPHA-BLEND-CAMPAIGN",
+  "round_index": 1,
+  "attempt_id": "attempt-20260824T145246Z-dev100r1",
+  "generated_at": "2026-08-24T15:10:00+00:00",
+  "outcome": "DUPLICATE_TAKEOFF_BUDGET_ABORT",
+  "verbatim_refusal": "audio budget exhausted: plan SAEA-DEV100-KB-ALPHA-BLEND-CAMPAIGN allows 2450 speech audio seconds (2380.9121249999994 already spent by other attempts on this run, 68.02718749999998 by this attempt)",
+  "what_happened": "The round-1 flight agent died at a host process restart AFTER its takeoff at 14:42:30Z. Its flight ran under systemd-run --user unit saea-dev100-r1-flight (journal-attested start 14:42:29Z), SURVIVED the agent's death by design, completed the full 203-contact round-1 workload, sealed, scored, and wrote round1-report.json at 14:49:43Z; on SUCCESS the transient unit was garbage-collected from the unit list. The relaunch coordinator, briefed that the predecessor died pre-takeoff at zero spend, verified a picture that was stale in exactly that blind spot (no unit visible, server log checked minutes BEFORE the predecessor's canary hit it, run dir not yet created at the check) and launched this SECOND round-1 attempt at 14:52:46Z, AFTER the real round-1 seal, so gold and scoring were never at risk. core.model.adapter's run-cumulative audio meter (fresh sibling read of durable attempt actuals per request) refused the 30th contact exactly as designed.",
+  "root_cause": "coordinator-side stale liveness picture: a transient systemd unit that COMPLETES successfully disappears from systemctl --user list-units, so unit absence is NOT death evidence. The durable attempt store attempts/<run_id>/*.json showed attempt-20260824T144230Z-dev100r1 with its true actuals and is the FIRST authority to consult before any successor takeoff.",
+  "spend_dead_never_read": {
+    "core_contacts": 29,
+    "core_contact_breakdown": "2 single-slot canary decodes + 27 BLEND direct decodes",
+    "metered_audio_seconds": 68.02718749999998,
+    "embedding_tool_contacts": 17,
+    "gpu_active_hours_contact_basis": "NOT_AVAILABLE (the abort re-raise path exits before core client close; contact latency was not totalled)"
+  },
+  "canary_before_abort": {
+    "passed": true,
+    "generation_ms_per_token": [9.14, 6.89],
+    "worst_generation_ms_per_token": 9.14,
+    "pass_threshold_ms_per_token": 300.0,
+    "byte_identical_to_attempt1_m0": true,
+    "note": "seventh cross-instance byte-determinism confirmation; hash comparison only, nothing read semantically"
+  },
+  "durable_first_flush": {
+    "partial_blend_records_flushed_to_main_sink": 81,
+    "canary_records_in_own_namespaced_sink": 14,
+    "record_id_collisions": 0,
+    "embedder_sidecar_stop": {"termination_signal": "SIGTERM", "forced": false}
+  },
+  "boundary": "gold never opened by this attempt; no response read semantically; the sealed round-1 report (attempt-20260824T144230Z-dev100r1) is the round's single scoring authority and this attempt has no scientific effect beyond its disclosed dead spend",
+  "campaign_cumulative_after_this_attempt": {
+    "core_contacts": 920,
+    "embedding_tool_contacts": 419,
+    "metered_audio_seconds": 2448.9393124999992,
+    "ceilings_as_amended": {"core_contacts": 2500, "embedding_tool_contacts": 1500, "metered_audio_seconds": 5500, "gpu_hours": 2.0},
+    "note": "attempt-store re-sum; the 950 / 2,450 run-cumulative plan is nearly exhausted and any round-2 attempt must declare a fresh successor plan"
+  },
+  "artifacts": {
+    "flight_state": "$SPEECHRL_DATA_DIR/runs/SAEA-DEV100-KB-ALPHA-BLEND-CAMPAIGN/attempt-20260824T145246Z-dev100r1/flight-state.json",
+    "flight_log": "/home/chao/runs/logs/saea-dev100-r1-flight.log",
+    "unit_journal": "systemd user journal, unit saea-dev100-r1-flight, 14:52:45Z start, status=1/FAILURE 14:55:58Z"
+  }
+}
