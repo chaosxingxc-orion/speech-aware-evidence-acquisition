@@ -162,10 +162,15 @@ def text_token_count(client, messages, media_marker, response_format):
 
 
 def main() -> int:
+    # Optional argv[2] selects the model fragment (attempt-6 base-build
+    # serving variant); the default remains the registered np8 zcopy
+    # fragment. The receipt's config_hash/config_fragments self-describe
+    # whichever composition was measured.
+    model_fragment = sys.argv[2] if len(sys.argv) > 2 else MODEL_FRAGMENT
     lock = load_lock(umbrella_lock_path())
     root = data_root()
     composed = compose(
-        REPO_ROOT, MODEL_FRAGMENT, DATASET_FRAGMENT, BASELINE_FRAGMENT, EXPERIMENT_FRAGMENT
+        REPO_ROOT, model_fragment, DATASET_FRAGMENT, BASELINE_FRAGMENT, EXPERIMENT_FRAGMENT
     )
     values = composed.values
     if values["prompt_order"] != PROMPT_ORDER:
