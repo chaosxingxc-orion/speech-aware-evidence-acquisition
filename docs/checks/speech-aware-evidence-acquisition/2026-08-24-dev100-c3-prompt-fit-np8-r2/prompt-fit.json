@@ -1,0 +1,94 @@
+{
+  "agent_state_texts": 1,
+  "config_fragments": {
+    "baseline": "slurp-dev100-kb-alpha-blend",
+    "dataset": "slurp-speech-native-dev100",
+    "experiment": "slurp-dev100-kb-alpha-blend-campaign-v1",
+    "model": "q4km-mmproj-free-speech-native-np8-zcopy-speech-query-prefix-max64"
+  },
+  "config_hash": "5397ea3ead594409b440ed9d8abc3690f6230d8b357207eb509977e411405944",
+  "context_margin_tokens": 1954,
+  "context_tokens": 65536,
+  "context_tokens_per_slot": 8192,
+  "envelopes": [
+    {
+      "envelope_id": "direct-decode",
+      "messages_sha256": "e88aa3fffc7846cce9812275d7b12cc55aee6e6def7a68546d78b804da7cfea2",
+      "prompt_tokens_upper_bound": 1819,
+      "stage_kind": "direct",
+      "text_prompt_tokens": 1700
+    },
+    {
+      "envelope_id": "evidence-decode-worst",
+      "messages_sha256": "cf960bb4111c155665abcf98094aa2435fb9e57734d4d6c191bb6c961dee5ee8",
+      "prompt_tokens_upper_bound": 6174,
+      "stage_kind": "evidence",
+      "text_prompt_tokens": 6055
+    }
+  ],
+  "exposure_run_id": "SAEA-SN-MF-DEV100-C3-PROMPT-FIT-NP8",
+  "knowledge_snapshot_sha256": "e27b274516604ffc0e21319758aea99dc027f459d480a32a74a715b023a51b57",
+  "maximum_completion_tokens": 64,
+  "maximum_prompt_fits_one_slot": true,
+  "maximum_prompt_tokens_upper_bound": 6174,
+  "maximum_speech_feature_tokens": 117,
+  "maximum_text_prompt_tokens": 6055,
+  "model_contact": false,
+  "prompt_order": "speech-query-prefix-v2",
+  "rendering_source": "rails.runner._agent_messages shapes rendered through core.model.transport._ordered_speech_feature_content and _speech_history_texts; the M11 enumerator is constructor-specific and does not describe the C3 chain. POST-fix evidence instruction (amendment 5b remedy 1, commit 72096bad): references the contract in the system message, asserted against rails.kb_policy source",
+  "schema": "saea-dev100-c3-prompt-fit-v1",
+  "scope": "model-free-check",
+  "slot_count": 8,
+  "special_token_reserve": 2,
+  "speech_packets_measured": [
+    {
+      "audio_seconds": 8.126875,
+      "feature_tokens": 117,
+      "packet_id": "slurp/devel/004545/audio-1497450582",
+      "packet_sha256": "c3650fa86ee1f719d1f0e1eda79d16176f4612dd73553dbab533a11b3e2d6794"
+    },
+    {
+      "audio_seconds": 8.896,
+      "feature_tokens": 117,
+      "packet_id": "slurp/devel/015516/audio-1499264883-headset",
+      "packet_sha256": "3b5580ea1f84e32d5404cef6969a27b653a8d5f310d25475a483033d6b689cce"
+    },
+    {
+      "audio_seconds": 7.68,
+      "feature_tokens": 104,
+      "packet_id": "slurp/devel/016699/audio-1499688493-headset",
+      "packet_sha256": "d395157413a7e60cd09b0295c58be778a0be64c7d7b3f5ee88b17ee81fb61293"
+    },
+    {
+      "audio_seconds": 5.312,
+      "feature_tokens": 78,
+      "packet_id": "slurp/devel/010730/audio-1499693684-headset",
+      "packet_sha256": "5a52a007f646145a21fc33bc7a63a876ee070301dc5ee32d3c40b226e0900040"
+    },
+    {
+      "audio_seconds": 5.632,
+      "feature_tokens": 78,
+      "packet_id": "slurp/devel/015265/audio-1499689293-headset",
+      "packet_sha256": "fe2a4e6b875548a9499db1823fab95465fce6942355dcb5d3db0a6edd5f41edd"
+    }
+  ],
+  "study": "speech-aware-evidence-acquisition",
+  "task_contract_characters": 5424,
+  "task_contract_sha256": "c7ef7f06e022c524a2743aea4dfc6a9f5ce5f99c32eda1699e3970ea986e24b1",
+  "tokenizer": {
+    "chat_template_sha256": "45777d2e798aae1d1ce6844e69edcb23fc0c710009554711c78efab9044da2c8",
+    "decoder_evaluations": 0,
+    "generated_tokens": 0,
+    "host": "127.0.0.1",
+    "media_marker": "<__media_yaOBRhQQCopdOF1f9EueKBjGQw1l9Iqq__>",
+    "port": 8080,
+    "request_counts": {
+      "GET /props": 1,
+      "POST /apply-template": 2,
+      "POST /tokenize": 4
+    }
+  },
+  "visible_key_facets": 5,
+  "visible_values": 6,
+  "worst_envelope_id": "evidence-decode-worst"
+}
