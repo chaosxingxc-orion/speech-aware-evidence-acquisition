@@ -1,0 +1,123 @@
+{
+  "agent_state_texts": 1,
+  "config_fragments": {
+    "baseline": "slurp-dev500-kb-alpha-blend",
+    "dataset": "slurp-speech-native-dev500",
+    "experiment": "slurp-dev500-confirmatory-campaign-v1",
+    "model": "q4km-mmproj-free-speech-native-np8-base-speech-query-prefix-max64"
+  },
+  "config_hash": "c1a1b915fa8dd6c4593d1f85caaad99fead3e18f0a80e06b7d5699c74793ee58",
+  "context_margin_tokens": 894,
+  "context_tokens": 65536,
+  "context_tokens_per_slot": 8192,
+  "envelopes": [
+    {
+      "arm_id": "M0",
+      "context_margin_tokens": 6296,
+      "envelope_id": "direct-decode",
+      "messages_sha256": "cf0f83c0ea98c36350bcea6aefccba41fa4f28d1577bdecc8e17d654f350c422",
+      "method": "flown construction (prompt-matched direct decode)",
+      "prompt_tokens_upper_bound": 1832,
+      "stage_kind": "direct",
+      "text_prompt_tokens": 1700
+    },
+    {
+      "arm_id": "BLEND",
+      "context_margin_tokens": 1941,
+      "envelope_id": "evidence-decode-worst",
+      "messages_sha256": "bcbbf2824c026b74c91c9de03eba1eda1e193f92f457c7626a4679ff4a3d7891",
+      "method": "flown construction (frozen knobs m=5, c*l=6; the m longest facet representations + c*l longest value contents in the pinned snapshot)",
+      "prompt_tokens_upper_bound": 6187,
+      "stage_kind": "evidence",
+      "text_prompt_tokens": 6055
+    },
+    {
+      "arm_id": "ABL-RANDRET",
+      "context_margin_tokens": 1941,
+      "envelope_id": "abl-randret-worst",
+      "messages_sha256": "bcbbf2824c026b74c91c9de03eba1eda1e193f92f457c7626a4679ff4a3d7891",
+      "method": "conservative bound via the production rendering functions: the control draws uniformly from the SAME datastore through the SAME fusion path, so any draw is bounded by the longest-draw envelope (identical construction to evidence-decode-worst); the flown renderer must stay inside this volume",
+      "prompt_tokens_upper_bound": 6187,
+      "stage_kind": "evidence",
+      "text_prompt_tokens": 6055
+    },
+    {
+      "arm_id": "ABL-RANDICL",
+      "context_margin_tokens": 894,
+      "envelope_id": "abl-randicl-worst",
+      "messages_sha256": "8b35430d05235c7aabb0ba002ad08e98dbf540ea26e27df93efc3e293914c6e5",
+      "method": "conservative bound via the production rendering functions with synthetic worst-case content: k_worst = m + c*l = 11 exemplar texts, each the single longest text in the datastore (max over all facet representations and value contents), in the evidence slot; no renderer exists in any launcher yet, and the flown ABL-RANDICL construction must stay inside this volume or this prompt-fit must be re-run",
+      "prompt_tokens_upper_bound": 7234,
+      "stage_kind": "evidence",
+      "text_prompt_tokens": 7102
+    }
+  ],
+  "exposure_run_id": "SAEA-SN-MF-DEV500-CONFIRMATORY-PROMPT-FIT-NP8",
+  "frozen_cell_policy_config": "configs/policy/kb-policy-v1-dev100.json",
+  "knowledge_snapshot_sha256": "e27b274516604ffc0e21319758aea99dc027f459d480a32a74a715b023a51b57",
+  "maximum_completion_tokens": 64,
+  "maximum_prompt_fits_one_slot": true,
+  "maximum_prompt_tokens_upper_bound": 7234,
+  "maximum_speech_feature_tokens": 130,
+  "maximum_text_prompt_tokens": 7102,
+  "model_contact": false,
+  "prompt_order": "speech-query-prefix-v2",
+  "randicl_exemplar_text_characters": 1581,
+  "randicl_k_worst": 11,
+  "rendering_source": "rails.runner._agent_messages shapes rendered through core.model.transport._ordered_speech_feature_content and _speech_history_texts (the exact machinery the executed DEV-100 C3 prompt-fit rows certified); POST-fix evidence instruction asserted against rails.kb_policy source; ABL arm bounds are conservative production-function renderings with synthetic worst-case content, methods recorded per envelope",
+  "schema": "saea-dev500-confirmatory-prompt-fit-v1",
+  "scope": "model-free-check",
+  "slot_count": 8,
+  "special_token_reserve": 2,
+  "speech_packets_measured": [
+    {
+      "audio_seconds": 9.408,
+      "feature_tokens": 130,
+      "packet_id": "slurp/devel/001189/audio-1497268505-headset",
+      "packet_sha256": "1d4713d0f6e3f9b2cf5662ee6b4f85bf846965d3f76f04a09a35783017145cd1"
+    },
+    {
+      "audio_seconds": 8.126875,
+      "feature_tokens": 117,
+      "packet_id": "slurp/devel/004545/audio-1497450582",
+      "packet_sha256": "c3650fa86ee1f719d1f0e1eda79d16176f4612dd73553dbab533a11b3e2d6794"
+    },
+    {
+      "audio_seconds": 8.896,
+      "feature_tokens": 117,
+      "packet_id": "slurp/devel/015516/audio-1499264883-headset",
+      "packet_sha256": "3b5580ea1f84e32d5404cef6969a27b653a8d5f310d25475a483033d6b689cce"
+    },
+    {
+      "audio_seconds": 7.616,
+      "feature_tokens": 104,
+      "packet_id": "slurp/devel/015921/audio-1501765147-headset",
+      "packet_sha256": "155c40b52de06b2613fe7fb7e5cf5c3a1b5e125ffc640c9ea1852c37699f70de"
+    },
+    {
+      "audio_seconds": 7.68,
+      "feature_tokens": 104,
+      "packet_id": "slurp/devel/016699/audio-1499688493-headset",
+      "packet_sha256": "d395157413a7e60cd09b0295c58be778a0be64c7d7b3f5ee88b17ee81fb61293"
+    }
+  ],
+  "study": "speech-aware-evidence-acquisition",
+  "task_contract_characters": 5424,
+  "task_contract_sha256": "c7ef7f06e022c524a2743aea4dfc6a9f5ce5f99c32eda1699e3970ea986e24b1",
+  "tokenizer": {
+    "chat_template_sha256": "45777d2e798aae1d1ce6844e69edcb23fc0c710009554711c78efab9044da2c8",
+    "decoder_evaluations": 0,
+    "generated_tokens": 0,
+    "host": "127.0.0.1",
+    "media_marker": "<__media_JdlE16JGpUHkz6XAR3r1WSJhXdlzvLId__>",
+    "port": 8080,
+    "request_counts": {
+      "GET /props": 1,
+      "POST /apply-template": 4,
+      "POST /tokenize": 8
+    }
+  },
+  "visible_key_facets": 5,
+  "visible_values": 6,
+  "worst_envelope_id": "abl-randicl-worst"
+}

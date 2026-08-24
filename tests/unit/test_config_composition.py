@@ -1617,3 +1617,88 @@ def test_dev500_confirmatory_campaign_composes_on_the_np8_base_service():
 
     # Record the composed identity so a fragment edit is a visible test move.
     assert composed.config_hash == "c1a1b915fa8dd6c4593d1f85caaad99fead3e18f0a80e06b7d5699c74793ee58"
+
+
+def test_dev500_confirmatory_prompt_fit_receipt_certifies_all_four_arms():
+    """The executed four-arm prompt-fit receipt (model-free row
+    SAEA-SN-MF-DEV500-CONFIRMATORY-PROMPT-FIT-NP8) is bound to the SAME
+    composition the previous test pins, and every arm's worst envelope fits
+    one 8,192-token slot of the np8 BASE service after the 64-token
+    completion reserve. The ABL bounds are conservative production-function
+    renderings (no launcher renderer exists yet); the flown ABL
+    constructions must stay inside these volumes or the fit is re-run --
+    this test keeps that contract from being quietly forgotten."""
+
+    from speech_aware_evidence_acquisition.e0.artifacts import REPO_ROOT
+
+    composed = compose(
+        REPO_ROOT,
+        "q4km-mmproj-free-speech-native-np8-base-speech-query-prefix-max64",
+        "slurp-speech-native-dev500",
+        "slurp-dev500-kb-alpha-blend",
+        "slurp-dev500-confirmatory-campaign-v1",
+    )
+    prompt_fit = json.loads(
+        (
+            REPO_ROOT
+            / "docs"
+            / "checks"
+            / "speech-aware-evidence-acquisition"
+            / "2026-08-24-dev500-confirmatory-prompt-fit"
+            / "prompt-fit.json"
+        ).read_text(encoding="utf-8")
+    )
+
+    assert prompt_fit["model_contact"] is False
+    assert prompt_fit["config_hash"] == composed.config_hash
+    assert prompt_fit["exposure_run_id"] == (
+        "SAEA-SN-MF-DEV500-CONFIRMATORY-PROMPT-FIT-NP8"
+    )
+    assert prompt_fit["knowledge_snapshot_sha256"] == (
+        composed.values["dev500_knowledge_snapshot"]["snapshot_sha256"]
+    )
+    assert prompt_fit["prompt_order"] == composed.values["prompt_order"]
+    # The DEV-100 campaign's certified template, byte-equal across the rows.
+    assert prompt_fit["tokenizer"]["chat_template_sha256"] == (
+        "45777d2e798aae1d1ce6844e69edcb23fc0c710009554711c78efab9044da2c8"
+    )
+
+    context_per_slot = 65536 // composed.values["profile_slot_count"]
+    assert prompt_fit["context_tokens_per_slot"] == context_per_slot == 8192
+    assert prompt_fit["maximum_completion_tokens"] == (
+        composed.values["decoding_params"]["max_tokens"]
+    )
+
+    by_envelope = {row["envelope_id"]: row for row in prompt_fit["envelopes"]}
+    arm_by_envelope = {
+        "direct-decode": "M0",
+        "evidence-decode-worst": "BLEND",
+        "abl-randret-worst": "ABL-RANDRET",
+        "abl-randicl-worst": "ABL-RANDICL",
+    }
+    assert {row["arm_id"] for row in prompt_fit["envelopes"]} == set(
+        arm_by_envelope.values()
+    )
+    for envelope_id, arm_id in arm_by_envelope.items():
+        assert by_envelope[envelope_id]["arm_id"] == arm_id
+    assert by_envelope["direct-decode"]["prompt_tokens_upper_bound"] == 1832
+    assert by_envelope["evidence-decode-worst"]["prompt_tokens_upper_bound"] == 6187
+    assert by_envelope["abl-randret-worst"]["prompt_tokens_upper_bound"] == 6187
+    assert by_envelope["abl-randicl-worst"]["prompt_tokens_upper_bound"] == 7234
+    # k_worst in the receipt equals the fragment's fusion-knob derivation.
+    assert prompt_fit["randicl_k_worst"] == 11
+    assert prompt_fit["maximum_speech_feature_tokens"] == 130
+
+    # Every arm fits one slot; the worst is the RANDICL control, and it fits.
+    assert prompt_fit["worst_envelope_id"] == "abl-randicl-worst"
+    assert prompt_fit["maximum_prompt_tokens_upper_bound"] == 7234
+    assert prompt_fit["context_margin_tokens"] == 894
+    assert prompt_fit["maximum_prompt_fits_one_slot"] is True
+    for row in prompt_fit["envelopes"]:
+        assert (
+            context_per_slot
+            - row["prompt_tokens_upper_bound"]
+            - prompt_fit["maximum_completion_tokens"]
+            == row["context_margin_tokens"]
+            >= 0
+        )
