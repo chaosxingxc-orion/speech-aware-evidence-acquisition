@@ -55,6 +55,10 @@ prerequisites land.** Profile: `bounded-discovery-probe` (campaign row) + suppor
   a campaign report with per-round tables (per-arm accuracy, wrong→correct, correct→wrong,
   contacts, worst-round disclosure). NO promotion claim: the tuned config's confirmatory
   reading happens later on DEV-500 (one-shot), per the ladder.
+- **Owner sync (standing instruction, 2026-08-23)**: after EVERY round is scored, the
+  coordinator reports to the owner before the next round flies: per-arm accuracy, W→C / C→W
+  counts, delta vs the previous round, contacts spent vs ceilings, and the proposed next-round
+  knob adjustment with its rationale; stopping-rule triggers are reported the moment they fire.
 
 ## 4. Ceilings (campaign totals, all rounds)
 
