@@ -47,6 +47,9 @@ from speech_aware_evidence_acquisition.rails import (
     classify_outcome,
     default_obs_packet,
 )
+from speech_aware_evidence_acquisition.rails.knowledge import (
+    EXTERNAL_GOVERNED_PARTITION_ROLE,
+)
 
 _SHA_A = "a" * 64
 _SHA_B = "b" * 64
@@ -899,6 +902,281 @@ def test_agent_state_artifact_refuses_duplicate_value_citations():
             producer_policy_id="organize-v1",
             cited_value_ids=("value:dim-light", "value:dim-light"),
         ).validate()
+
+
+# ---------------------------------------------------------------------------
+# C4 scale fixes (docs/readiness/2026-08-23-knowledge-plane-baseline-
+# rulings.md Sec 4, items 1-3): snapshot-hash passthrough, KnowledgeSnapshot
+# .validate() idempotence, and the new external-governed source_partition_role.
+# ---------------------------------------------------------------------------
+
+
+def test_knowledge_use_binding_accepts_a_precomputed_snapshot_hash():
+    snapshot = _knowledge_snapshot()
+    query = _query_state()
+    rank, fusion = _rank_and_fusion(snapshot, query)
+    precomputed = snapshot.content_hash()
+    # A caller-precomputed hash must behave identically to the default
+    # recompute-every-call path: same acceptance, no observable difference.
+    assert_knowledge_use_binding(
+        snapshot=snapshot,
+        query_state=query,
+        rank_result=rank,
+        fusion_decision=fusion,
+        snapshot_sha256=precomputed,
+    )
+    assert_knowledge_use_binding(
+        snapshot=snapshot,
+        query_state=query,
+        rank_result=rank,
+        fusion_decision=fusion,
+    )
+
+
+def test_knowledge_use_binding_refuses_a_malformed_precomputed_hash():
+    snapshot = _knowledge_snapshot()
+    query = _query_state()
+    rank, fusion = _rank_and_fusion(snapshot, query)
+    with pytest.raises(RailsError, match="64-hex SHA-256"):
+        assert_knowledge_use_binding(
+            snapshot=snapshot,
+            query_state=query,
+            rank_result=rank,
+            fusion_decision=fusion,
+            snapshot_sha256="not-a-hash",
+        )
+
+
+def test_knowledge_use_binding_refuses_a_precomputed_hash_that_does_not_match():
+    snapshot = _knowledge_snapshot()
+    query = _query_state()
+    rank, fusion = _rank_and_fusion(snapshot, query)
+    with pytest.raises(RailsError, match="bound to a different KnowledgeSnapshot"):
+        assert_knowledge_use_binding(
+            snapshot=snapshot,
+            query_state=query,
+            rank_result=rank,
+            fusion_decision=fusion,
+            snapshot_sha256="0" * 64,
+        )
+
+
+def test_agent_step_binding_accepts_a_precomputed_snapshot_hash():
+    snapshot = _knowledge_snapshot()
+    prior = _query_state()
+    next_state = _query_state(
+        query_id="query:dev:d1:step1",
+        loop_step=1,
+        retrieved_value_ids=("value:dim-light",),
+    )
+    transition = _agent_step(snapshot, prior, next_state)
+    precomputed = snapshot.content_hash()
+    assert_agent_step_binding(
+        snapshot=snapshot,
+        prior_query_state=prior,
+        next_query_state=next_state,
+        transition=transition,
+        snapshot_sha256=precomputed,
+    )
+    assert_agent_step_binding(
+        snapshot=snapshot,
+        prior_query_state=prior,
+        next_query_state=next_state,
+        transition=transition,
+    )
+
+
+def test_agent_step_binding_refuses_a_malformed_precomputed_hash():
+    snapshot = _knowledge_snapshot()
+    prior = _query_state()
+    next_state = _query_state(
+        query_id="query:dev:d1:step1",
+        loop_step=1,
+        retrieved_value_ids=("value:dim-light",),
+    )
+    transition = _agent_step(snapshot, prior, next_state)
+    with pytest.raises(RailsError, match="64-hex SHA-256"):
+        assert_agent_step_binding(
+            snapshot=snapshot,
+            prior_query_state=prior,
+            next_query_state=next_state,
+            transition=transition,
+            snapshot_sha256="short",
+        )
+
+
+def test_agent_step_binding_refuses_a_precomputed_hash_that_does_not_match():
+    snapshot = _knowledge_snapshot()
+    prior = _query_state()
+    next_state = _query_state(
+        query_id="query:dev:d1:step1",
+        loop_step=1,
+        retrieved_value_ids=("value:dim-light",),
+    )
+    transition = _agent_step(snapshot, prior, next_state)
+    with pytest.raises(RailsError, match="bound to a different snapshot"):
+        assert_agent_step_binding(
+            snapshot=snapshot,
+            prior_query_state=prior,
+            next_query_state=next_state,
+            transition=transition,
+            snapshot_sha256="0" * 64,
+        )
+
+
+def test_knowledge_snapshot_validate_is_idempotent_and_preserves_the_hash():
+    fresh = _knowledge_snapshot()
+    baseline_hash = fresh.content_hash()
+
+    revalidated = _knowledge_snapshot()
+    for _ in range(3):
+        assert revalidated.validate() is revalidated
+    assert revalidated.content_hash() == baseline_hash
+    assert revalidated.as_json() == fresh.as_json()
+    assert revalidated == fresh
+
+
+def test_knowledge_snapshot_validate_skips_full_revalidation_on_repeat_calls(
+    monkeypatch,
+):
+    snapshot = _knowledge_snapshot()
+    calls = []
+    original = KnowledgeSnapshot._assert_acyclic_facets
+
+    def counting_acyclic(self):
+        calls.append(1)
+        return original(self)
+
+    monkeypatch.setattr(KnowledgeSnapshot, "_assert_acyclic_facets", counting_acyclic)
+    snapshot.validate()
+    snapshot.validate()
+    snapshot.validate()
+    assert len(calls) == 1
+
+
+def test_knowledge_snapshot_historical_train_hash_is_unchanged_by_c4():
+    # Pinned regression: this exact "train"-role snapshot's content hash was
+    # confirmed identical between the pre-C4 module (git blob at the commit
+    # preceding this change) and the post-C4 module -- the C4 scale fixes
+    # (hash passthrough, validate idempotence, the new external-governed
+    # role) change no field, no key order, and no hashed byte of an
+    # existing-style frozen snapshot.
+    snapshot = _knowledge_snapshot().validate()
+    assert (
+        snapshot.content_hash()
+        == "959c1496a5eec17675bef623390b64bab89f8c1d32e18528e8f3315a14eb18a5"
+    )
+    assert snapshot.frozen_json()["snapshot_sha256"] == snapshot.content_hash()
+
+
+def _external_governed_knowledge_snapshot() -> KnowledgeSnapshot:
+    return KnowledgeSnapshot(
+        snapshot_id="conec-context-kb-v1",
+        source_split_identity_hash=_SHA_A,
+        source_sample_ids=("conec/doc/entity-001", "conec/doc/entity-002"),
+        builder_policy_id="external-governed-context-build-v1",
+        facets=(
+            KeyFacet(
+                facet_id="entity:acme-corp",
+                dimension="entity",
+                representation_kind="text",
+                representation="Acme Corp, a governed external context entity.",
+                source_sample_ids=("conec/doc/entity-001",),
+            ),
+        ),
+        values=(
+            ValueBundle(
+                value_id="value:acme-corp-context",
+                content=(
+                    "Acme Corp is referenced in the governed ConEC context "
+                    "documents."
+                ),
+                associated_facet_ids=("entity:acme-corp",),
+                source_sample_ids=("conec/doc/entity-001",),
+                provenance_refs=("conec/doc/entity-001",),
+            ),
+            ValueBundle(
+                value_id="value:entity-002-context",
+                content="A second governed context entry sharing the entity facet.",
+                associated_facet_ids=("entity:acme-corp",),
+                source_sample_ids=("conec/doc/entity-002",),
+                provenance_refs=("conec/doc/entity-002",),
+            ),
+        ),
+        source_partition_role=EXTERNAL_GOVERNED_PARTITION_ROLE,
+    )
+
+
+def test_knowledge_snapshot_accepts_external_governed_source_role():
+    snapshot = _external_governed_knowledge_snapshot().validate()
+    frozen = snapshot.frozen_json()
+    assert frozen["source_partition_role"] == "external-governed"
+    assert frozen["snapshot_sha256"] == snapshot.content_hash()
+    assert KnowledgeSnapshot.from_frozen_json(frozen) == snapshot
+
+
+def test_knowledge_snapshot_refuses_an_unknown_role_and_names_both_allowed_values():
+    snapshot = _knowledge_snapshot()
+    with pytest.raises(RailsError, match="must be 'train' or 'external-governed'"):
+        KnowledgeSnapshot(
+            snapshot_id=snapshot.snapshot_id,
+            source_split_identity_hash=snapshot.source_split_identity_hash,
+            source_sample_ids=snapshot.source_sample_ids,
+            builder_policy_id=snapshot.builder_policy_id,
+            facets=snapshot.facets,
+            values=snapshot.values,
+            source_partition_role="test",
+        ).validate()
+
+
+def test_knowledge_use_binding_refuses_self_retrieval_for_both_source_roles():
+    for snapshot in (_knowledge_snapshot(), _external_governed_knowledge_snapshot()):
+        overlapping_query = _query_state(query_sample_id=snapshot.source_sample_ids[0])
+        rank = RankResult(
+            snapshot_sha256=_SHA_A,
+            query_state_sha256=_SHA_B,
+            ranking_policy_id="dummy-ranker-v1",
+            candidates=(),
+        )
+        fusion = FusionDecision(
+            snapshot_sha256=_SHA_A,
+            query_state_sha256=_SHA_B,
+            rank_result_sha256=_SHA_C,
+            fusion_policy_id="dummy-fusion-v1",
+            supporting_facet_ids=(),
+            selected_value_ids=(),
+        )
+        with pytest.raises(RailsError, match="overlaps the TRAIN"):
+            assert_knowledge_use_binding(
+                snapshot=snapshot,
+                query_state=overlapping_query,
+                rank_result=rank,
+                fusion_decision=fusion,
+            )
+
+
+def test_agent_step_binding_refuses_self_retrieval_for_both_source_roles():
+    for snapshot in (_knowledge_snapshot(), _external_governed_knowledge_snapshot()):
+        prior = _query_state(query_sample_id=snapshot.source_sample_ids[0])
+        transition = AgentStepTransition(
+            snapshot_sha256=snapshot.content_hash(),
+            prior_query_state_sha256=prior.content_hash(),
+            next_query_state_sha256=None,
+            action_kind="stop",
+            action_target_refs=(),
+            new_value_ids=(),
+            used_value_ids=(),
+            dropped_value_ids=(),
+            new_agent_state_ids=(),
+            dropped_agent_state_ids=(),
+        )
+        with pytest.raises(RailsError, match="query overlaps the TRAIN"):
+            assert_agent_step_binding(
+                snapshot=snapshot,
+                prior_query_state=prior,
+                next_query_state=None,
+                transition=transition,
+            )
 
 
 # ---------------------------------------------------------------------------

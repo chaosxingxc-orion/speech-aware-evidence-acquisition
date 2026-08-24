@@ -51,7 +51,15 @@ AGENT_ACTION_KINDS = frozenset(
 _SUPPLY_ACTION_KINDS = frozenset({"acquire", "expand", "contrast"})
 
 TRAIN_PARTITION_ROLE = "train"
+EXTERNAL_GOVERNED_PARTITION_ROLE = "external-governed"
 DEV_PARTITION_ROLE = "dev"
+
+# BUILD-eligible source roles: task TRAIN samples, or governed external
+# documents (e.g. ConEC context docs) that are not task train samples but are
+# still frozen, provenance-tracked, and disjoint from DEV/TEST query rosters.
+_SOURCE_PARTITION_ROLES = frozenset(
+    {TRAIN_PARTITION_ROLE, EXTERNAL_GOVERNED_PARTITION_ROLE}
+)
 
 _SHA256_HEX = re.compile(r"[0-9a-f]{64}")
 
@@ -225,15 +233,26 @@ class KnowledgeSnapshot:
     snapshot_version: str = KNOWLEDGE_SNAPSHOT_VERSION
 
     def validate(self) -> "KnowledgeSnapshot":
+        # Idempotence guard: this dataclass is frozen (content-addressed and
+        # never mutated after construction), so a prior successful full
+        # validation stays valid for the instance's whole lifetime. Repeat
+        # AgentLoop waves at train scale otherwise re-walk every facet/value
+        # and the acyclicity graph on every step. The flag is a plain
+        # instance attribute (set via object.__setattr__ because the
+        # dataclass is frozen) -- it is not a declared dataclass field, so it
+        # never enters __eq__/__hash__/as_json/content_hash.
+        if getattr(self, "_validated", False):
+            return self
         _require_text(self.snapshot_id, field="KnowledgeSnapshot.snapshot_id")
         _require_sha256(
             self.source_split_identity_hash,
             field="KnowledgeSnapshot.source_split_identity_hash",
         )
-        if self.source_partition_role != TRAIN_PARTITION_ROLE:
+        if self.source_partition_role not in _SOURCE_PARTITION_ROLES:
             raise RailsError(
-                "KnowledgeSnapshot.source_partition_role must be 'train'; DEV/TEST "
-                "samples cannot construct runtime knowledge"
+                "KnowledgeSnapshot.source_partition_role must be 'train' or "
+                "'external-governed'; DEV/TEST samples cannot construct "
+                "runtime knowledge"
             )
         if self.snapshot_version != KNOWLEDGE_SNAPSHOT_VERSION:
             raise RailsError(
@@ -309,6 +328,7 @@ class KnowledgeSnapshot:
                 "KnowledgeSnapshot source roster contains samples with no facet or value "
                 f"provenance: {sorted(unused_source_ids)}"
             )
+        object.__setattr__(self, "_validated", True)
         return self
 
     def _assert_acyclic_facets(self) -> None:
@@ -906,13 +926,29 @@ def assert_agent_step_binding(
     prior_query_state: QueryState,
     next_query_state: QueryState | None,
     transition: AgentStepTransition,
+    snapshot_sha256: str | None = None,
 ) -> None:
-    """Prove one Agent step preserves speech and reports its exact delta."""
+    """Prove one Agent step preserves speech and reports its exact delta.
+
+    ``snapshot_sha256``, when given, must be the caller's own already-computed
+    ``snapshot.content_hash()`` (only format-checked here, not recomputed
+    against ``snapshot`` -- callers own the pairing, exactly as
+    ``AgentStepTransition.snapshot_sha256`` already relies on caller-supplied
+    hashes). This lets a driver that revalidates the same frozen snapshot
+    across many waves skip re-hashing the whole snapshot every time; passing
+    ``None`` keeps the original recompute-every-call behavior.
+    """
 
     snapshot.validate()
     prior_query_state.validate()
     transition.validate()
-    snapshot_sha256 = snapshot.content_hash()
+    snapshot_sha256 = (
+        snapshot.content_hash()
+        if snapshot_sha256 is None
+        else _require_sha256(
+            snapshot_sha256, field="assert_agent_step_binding.snapshot_sha256"
+        )
+    )
     if transition.snapshot_sha256 != snapshot_sha256:
         raise RailsError("AgentStepTransition is bound to a different snapshot")
     if transition.prior_query_state_sha256 != prior_query_state.content_hash():
@@ -1056,12 +1092,19 @@ def assert_knowledge_use_binding(
     query_state: QueryState,
     rank_result: RankResult,
     fusion_decision: FusionDecision,
+    snapshot_sha256: str | None = None,
 ) -> None:
     """Fail closed unless one DEV decision uses one disjoint TRAIN snapshot.
 
     This is the machine-enforced BUILD/USE boundary.  It verifies every hash
     edge, query/knowledge sample disjointness, prior-loop value references,
     ranked facet membership, and the final facet-to-value association.
+
+    ``snapshot_sha256``, when given, must be the caller's own already-computed
+    ``snapshot.content_hash()`` (only format-checked here, not recomputed
+    against ``snapshot``); see :func:`assert_agent_step_binding` for the same
+    passthrough contract. Passing ``None`` keeps the original
+    recompute-every-call behavior.
     """
 
     snapshot.validate()
@@ -1073,7 +1116,13 @@ def assert_knowledge_use_binding(
         raise RailsError(
             "knowledge USE query sample overlaps the TRAIN snapshot source roster"
         )
-    snapshot_sha256 = snapshot.content_hash()
+    snapshot_sha256 = (
+        snapshot.content_hash()
+        if snapshot_sha256 is None
+        else _require_sha256(
+            snapshot_sha256, field="assert_knowledge_use_binding.snapshot_sha256"
+        )
+    )
     query_state_sha256 = query_state.content_hash()
     if rank_result.snapshot_sha256 != snapshot_sha256:
         raise RailsError("RankResult is bound to a different KnowledgeSnapshot")
@@ -1133,6 +1182,7 @@ __all__ = [
     "AgentStateArtifact",
     "AgentStepTransition",
     "DEV_PARTITION_ROLE",
+    "EXTERNAL_GOVERNED_PARTITION_ROLE",
     "FUSION_DECISION_VERSION",
     "FusionDecision",
     "KNOWLEDGE_SNAPSHOT_VERSION",

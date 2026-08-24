@@ -331,14 +331,18 @@ def _resolve_final_agent_response(
     )
 
 
-def _assert_agent_control_excludes_knowledge_payloads(
-    contact: AgentContact,
-    snapshot: KnowledgeSnapshot,
-) -> None:
-    """Prevent CONTROL text from bypassing traced key/value supply."""
+def _protected_knowledge_material(snapshot: KnowledgeSnapshot) -> tuple[str, ...]:
+    """Build the casefolded facet/value payload tuple once per run.
 
-    plans = (contact,) if isinstance(contact, AgentContactPlan) else contact.contacts
-    protected_material = tuple(
+    ``_assert_agent_control_excludes_knowledge_payloads`` used to rebuild
+    this tuple (every facet representation + value content, casefolded) on
+    every contact wave -- O(waves x snapshot bytes) at train scale, even
+    though the frozen ``snapshot`` never changes within a run. Callers
+    compute this once (``run_speech_native_agent_loop``, after snapshot
+    validation) and pass the result down explicitly.
+    """
+
+    return tuple(
         material.strip().casefold()
         for material in (
             *(facet.representation for facet in snapshot.facets),
@@ -346,6 +350,15 @@ def _assert_agent_control_excludes_knowledge_payloads(
         )
         if len(material.strip()) >= 8
     )
+
+
+def _assert_agent_control_excludes_knowledge_payloads(
+    contact: AgentContact,
+    protected_material: tuple[str, ...],
+) -> None:
+    """Prevent CONTROL text from bypassing traced key/value supply."""
+
+    plans = (contact,) if isinstance(contact, AgentContactPlan) else contact.contacts
     for plan in plans:
         instruction = plan.instruction.casefold()
         if any(material in instruction for material in protected_material):
@@ -406,6 +419,7 @@ def _agent_wave_record(
 def _validate_agent_knowledge_decision(
     *,
     snapshot: KnowledgeSnapshot,
+    snapshot_sha256: str,
     query_state: QueryState,
     advance: AgentLoopAdvance,
 ) -> None:
@@ -429,6 +443,7 @@ def _validate_agent_knowledge_decision(
         query_state=query_state,
         rank_result=advance.rank_result,
         fusion_decision=advance.fusion_decision,
+        snapshot_sha256=snapshot_sha256,
     )
     if advance.fusion_decision.selected_value_ids != advance.transition.new_value_ids:
         raise RailsRunnerError(
@@ -1062,6 +1077,7 @@ def _runtime_context(
     *,
     prepared: _PreparedAgentTask,
     snapshot: KnowledgeSnapshot,
+    snapshot_sha256: str,
     query_state: QueryState,
     state_store: Mapping[str, AgentStateArtifact],
     response_sha256s: Sequence[str],
@@ -1077,7 +1093,7 @@ def _runtime_context(
         ) from None
     return AgentRuntimeContext(
         sample_id=prepared.sample.sample_id,
-        knowledge_snapshot_sha256=snapshot.content_hash(),
+        knowledge_snapshot_sha256=snapshot_sha256,
         catalog_facet_ids=tuple(facet.facet_id for facet in snapshot.facets),
         catalog_value_ids=tuple(value.value_id for value in snapshot.values),
         query_state=query_state,
@@ -1137,6 +1153,7 @@ def _run_agent_trajectory(
     prepared: _PreparedAgentTask,
     snapshot: KnowledgeSnapshot,
     snapshot_sha256: str,
+    protected_material: tuple[str, ...],
     adapter: TaskAdapter,
     controller_factory: AgentControllerFactory,
     controller_policy_id: str,
@@ -1163,6 +1180,7 @@ def _run_agent_trajectory(
     context = _runtime_context(
         prepared=prepared,
         snapshot=snapshot,
+        snapshot_sha256=snapshot_sha256,
         query_state=query_state,
         state_store=state_store,
         response_sha256s=response_sha256s,
@@ -1177,7 +1195,7 @@ def _run_agent_trajectory(
                 "AgentContactBatch requires contact dispatch"
             )
         contact.validate()
-        _assert_agent_control_excludes_knowledge_payloads(contact, snapshot)
+        _assert_agent_control_excludes_knowledge_payloads(contact, protected_material)
         if contact.query_state_sha256 != query_state.content_hash():
             raise RailsRunnerError(
                 "AgentContactPlan is bound to a different QueryState"
@@ -1185,6 +1203,7 @@ def _run_agent_trajectory(
         context = _runtime_context(
             prepared=prepared,
             snapshot=snapshot,
+            snapshot_sha256=snapshot_sha256,
             query_state=query_state,
             state_store=state_store,
             response_sha256s=response_sha256s,
@@ -1229,6 +1248,7 @@ def _run_agent_trajectory(
             )
         _validate_agent_knowledge_decision(
             snapshot=snapshot,
+            snapshot_sha256=snapshot_sha256,
             query_state=query_state,
             advance=advance,
         )
@@ -1237,6 +1257,7 @@ def _run_agent_trajectory(
             prior_query_state=query_state,
             next_query_state=advance.next_query_state,
             transition=advance.transition,
+            snapshot_sha256=snapshot_sha256,
         )
         _validate_new_agent_states(
             artifacts=advance.new_agent_states,
@@ -1319,6 +1340,7 @@ def _run_agent_openjiuwen(
     prepared_tasks: Sequence[_PreparedAgentTask],
     snapshot: KnowledgeSnapshot,
     snapshot_sha256: str,
+    protected_material: tuple[str, ...],
     adapter: TaskAdapter,
     controller_factory: AgentControllerFactory,
     controller_policy_id: str,
@@ -1359,7 +1381,7 @@ def _run_agent_openjiuwen(
 
     def schedule_wave(state: _ContactAgentState, contact: AgentContact) -> None:
         plans = contacts_for(contact)
-        _assert_agent_control_excludes_knowledge_payloads(contact, snapshot)
+        _assert_agent_control_excludes_knowledge_payloads(contact, protected_material)
         query_state_sha256 = state.query_state.content_hash()
         if contact.query_state_sha256 != query_state_sha256:
             raise RailsRunnerError(
@@ -1378,6 +1400,7 @@ def _run_agent_openjiuwen(
         context = _runtime_context(
             prepared=state.prepared,
             snapshot=snapshot,
+            snapshot_sha256=snapshot_sha256,
             query_state=state.query_state,
             state_store=state.state_store,
             response_sha256s=state.response_sha256s,
@@ -1428,6 +1451,7 @@ def _run_agent_openjiuwen(
         initial_context = _runtime_context(
             prepared=prepared,
             snapshot=snapshot,
+            snapshot_sha256=snapshot_sha256,
             query_state=state.query_state,
             state_store=state.state_store,
             response_sha256s=state.response_sha256s,
@@ -1575,6 +1599,7 @@ def _run_agent_openjiuwen(
             )
         _validate_agent_knowledge_decision(
             snapshot=snapshot,
+            snapshot_sha256=snapshot_sha256,
             query_state=state.query_state,
             advance=advance,
         )
@@ -1583,6 +1608,7 @@ def _run_agent_openjiuwen(
             prior_query_state=state.query_state,
             next_query_state=advance.next_query_state,
             transition=advance.transition,
+            snapshot_sha256=snapshot_sha256,
         )
         _validate_new_agent_states(
             artifacts=advance.new_agent_states,
@@ -1837,6 +1863,12 @@ def run_speech_native_agent_loop(
     assert_execution_scope(plan.execution_profile)
     knowledge_snapshot.validate()
     snapshot_sha256 = knowledge_snapshot.content_hash()
+    # Precomputed once per run and threaded down to every wave: the
+    # snapshot_sha256 passthrough into assert_agent_step_binding /
+    # assert_knowledge_use_binding, and the protected-material tuple for
+    # _assert_agent_control_excludes_knowledge_payloads. The frozen snapshot
+    # never changes within a run, so both are safe to compute exactly once.
+    protected_material = _protected_knowledge_material(knowledge_snapshot)
     bootstrap_facets = _validated_bootstrap_facet_ids(
         knowledge_snapshot, bootstrap_facet_ids
     )
@@ -1961,6 +1993,7 @@ def run_speech_native_agent_loop(
                 prepared_tasks=prepared_tasks,
                 snapshot=knowledge_snapshot,
                 snapshot_sha256=snapshot_sha256,
+                protected_material=protected_material,
                 adapter=adapter,
                 controller_factory=controller_factory,
                 controller_policy_id=controller_policy_id,
@@ -1987,6 +2020,7 @@ def run_speech_native_agent_loop(
                     prepared=prepared,
                     snapshot=knowledge_snapshot,
                     snapshot_sha256=snapshot_sha256,
+                    protected_material=protected_material,
                     adapter=adapter,
                     controller_factory=controller_factory,
                     controller_policy_id=controller_policy_id,

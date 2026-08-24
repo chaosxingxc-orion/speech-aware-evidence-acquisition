@@ -54,6 +54,7 @@ from speech_aware_evidence_acquisition.rails import (
     run_speech_native_agent_loop,
     run_bounded_contact_dag,
 )
+from speech_aware_evidence_acquisition.rails import runner as rails_runner_module
 from speech_aware_evidence_acquisition.rails.runner import RAILS_ARMS, RailsRunnerError
 from speech_aware_evidence_acquisition.reproduction.ojw import openjiuwen_available
 
@@ -801,6 +802,119 @@ def test_agent_control_cannot_embed_unacquired_knowledge_payload(tmp_path: Path)
         )
 
     assert client.calls == []
+
+
+# ---------------------------------------------------------------------------
+# C4 scale fixes (docs/readiness/2026-08-23-knowledge-plane-baseline-
+# rulings.md Sec 4, items 1-2): the payload guard's protected-material tuple
+# is precomputed once per run and threaded down, instead of being
+# re-materialized from the snapshot on every contact wave.
+# ---------------------------------------------------------------------------
+
+
+def test_protected_knowledge_material_casefolds_facets_and_values_once():
+    material = rails_runner_module._protected_knowledge_material(_knowledge_snapshot())
+    assert material == (
+        "decrease the brightness of a light.",
+        "use the dim-light operation when brightness must decrease.",
+    )
+
+
+def test_assert_agent_control_excludes_knowledge_payloads_uses_the_passed_tuple():
+    # Same refusal/acceptance behavior as before the refactor, but the
+    # function now only ever sees the precomputed tuple -- it has no
+    # `snapshot` parameter to re-derive it from any more.
+    protected_material = rails_runner_module._protected_knowledge_material(
+        _knowledge_snapshot()
+    )
+    leaking_plan = AgentContactPlan(
+        contact_id="contact-leak",
+        query_state_sha256=_SHA_A,
+        purpose="leak",
+        instruction="Use the dim-light operation when brightness must decrease.",
+        key_representation_id="K1",
+        matcher_policy_id="agent-test:leak",
+        decoding_params={"temperature": 0},
+    )
+    with pytest.raises(RailsRunnerError, match="cannot embed frozen knowledge"):
+        rails_runner_module._assert_agent_control_excludes_knowledge_payloads(
+            leaking_plan, protected_material
+        )
+
+    safe_plan = AgentContactPlan(
+        contact_id="contact-safe",
+        query_state_sha256=_SHA_A,
+        purpose="safe",
+        instruction="Ask a grounded clarification question about the speech query.",
+        key_representation_id="K1",
+        matcher_policy_id="agent-test:safe",
+        decoding_params={"temperature": 0},
+    )
+    rails_runner_module._assert_agent_control_excludes_knowledge_payloads(
+        safe_plan, protected_material
+    )
+
+
+def test_speech_native_agent_loop_builds_the_knowledge_payload_guard_once_per_run(
+    tmp_path: Path, monkeypatch
+):
+    """Perf-shaped sanity: across 2 samples x 3 contact waves each (6 waves
+    total), the protected-material tuple is built exactly once -- in
+    run_speech_native_agent_loop, after snapshot validation -- never rebuilt
+    per wave or per trajectory.
+    """
+    calls: list[object] = []
+    original = rails_runner_module._protected_knowledge_material
+
+    def counting_builder(snapshot):
+        calls.append(snapshot)
+        return original(snapshot)
+
+    monkeypatch.setattr(
+        rails_runner_module, "_protected_knowledge_material", counting_builder
+    )
+
+    samples = tuple(
+        _FakeSample(
+            sample_id=f"s{index}",
+            audio_ref=AudioRef(path=f"a-{index}.wav", sha256=_SHA_A),
+            audio_seconds=2.0,
+        )
+        for index in range(2)
+    )
+    adapter = _FakeAdapter(samples=samples)
+    events: list[str] = []
+
+    summary = run_speech_native_agent_loop(
+        data_root=tmp_path,
+        plan=_plan(execution_profile="model-free-check"),
+        adapter=adapter,
+        core_client=_RecordingAgentClient(),
+        split_id="all",
+        knowledge_snapshot=_knowledge_snapshot(),
+        speech_packet_bindings={
+            sample.sample_id: {
+                "packet_id": f"fake/dev/{sample.sample_id}",
+                "sha256": _SHA_C,
+            }
+            for sample in samples
+        },
+        controller_policy_id="organize-acquire-stop-test-v1",
+        controller_registry=_controller_registry(
+            "organize-acquire-stop-test-v1",
+            lambda _sample_id: _OrganizeAcquireStopController(events),
+        ),
+        max_contacts=3,
+        slot_count=2,
+        queue_depth=4,
+        trace_sink=_agent_trace(),
+        agent_executor_id="reference-trajectory-v1",
+    )
+
+    assert len(summary.results) == 2
+    assert sum(len(result.contacts) for result in summary.results) == 6
+    assert len(calls) == 1
+    assert calls[0] == _knowledge_snapshot()
 
 
 class _NeverStopController(_ImmediateStopController):
