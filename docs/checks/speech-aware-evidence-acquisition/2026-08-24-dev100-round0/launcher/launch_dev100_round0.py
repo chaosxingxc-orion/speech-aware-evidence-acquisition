@@ -499,7 +499,7 @@ def main() -> int:
             encoding="utf-8"
         )
     )
-    facet_block = emb_receipt["embedded"]["content_facets"]
+    facet_block = emb_receipt["vectors"]["content_facets"]
     facet_npz_path = snapshot_path.parent / facet_block["file"]
     measured_npz = sha256_file(facet_npz_path)
     if measured_npz != facet_block["sha256"]:
@@ -547,6 +547,20 @@ def main() -> int:
     if set(packet_bindings) != {s.sample_id for s in samples}:
         raise SystemExit("packet bindings do not cover the split")
     log("speech packet bindings materialized for all 100 samples")
+
+    payload_binding = build_payload_binding(
+        carrier_lock_key=SLURP_LOCK_KEY,
+        samples=samples,
+        data_root=root,
+        carrier_root=asset_dir(lock, SLURP_LOCK_KEY, root),
+    )
+    log("payload binding built (inputs complete, still pre-gate)")
+
+    if "--preflight-only" in sys.argv:
+        flight["outcome_status"] = "PREFLIGHT_ONLY_PASS"
+        save_flight()
+        log("PREFLIGHT-ONLY PASS: every input verified; zero contacts, no gate, no attach")
+        return 0
 
     # ---- execution plan + FULL frozen-core gate ---------------------------
     plan = ExecutionPlan(
@@ -597,14 +611,6 @@ def main() -> int:
     log(f"frozen-core gate PASS in {time.time() - gate_started:.1f}s (lock {lock_sha256[:12]}…)")
     flight["gate"] = {"umbrella_lock_sha256": lock_sha256, "seconds": round(time.time() - gate_started, 1)}
     save_flight()
-
-    payload_binding = build_payload_binding(
-        carrier_lock_key=SLURP_LOCK_KEY,
-        samples=samples,
-        data_root=root,
-        carrier_root=asset_dir(lock, SLURP_LOCK_KEY, root),
-    )
-    log("payload binding built")
 
     # ---- attach to the resident np8 service -------------------------------
     runtime_receipt = load_runtime_receipt(REPO / "docs" / RUNTIME_RECEIPT_RELPATH)
