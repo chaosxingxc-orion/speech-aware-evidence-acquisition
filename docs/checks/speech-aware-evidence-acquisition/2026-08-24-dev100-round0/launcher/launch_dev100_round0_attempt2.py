@@ -240,11 +240,36 @@ ROUND0_WEIGHTS = RankWeights(w_cos=0.5, w_prior=0.3, w_agree=0.2)
 # enforced fail-closed by caller-side meters (the durable attempt store records
 # but does not cap). Cumulative round-0 spend (attempt 1 + attempt 2) is
 # reported against the campaign ceilings in the round report.
+#
+# PLANNED_MODEL_CALLS is the rails-required WORST-CASE declaration, not the
+# registered ceiling: rails.runner refuses any loop whose len(samples) *
+# max_contacts exceeds plan.planned_model_calls (first takeoff of this
+# attempt, 08:38:57Z, was refused fail-closed at ZERO core spend exactly
+# because 100 * 2 = 200 > 170; 2 embedding jitter tool contacts spent, clean
+# sidecar stop receipt). The plan therefore declares 200 while the REGISTERED
+# attempt ceiling of 170 stays enforced by CoreCeilingClient, which aborts
+# the flight fail-closed at the 171st contact rather than spending past the
+# registration.
 ATTEMPT_CORE_CEILING = 170
 ATTEMPT_TOOL_CEILING = 130
-PLANNED_MODEL_CALLS = 170
+PLANNED_MODEL_CALLS = 200
 PLANNED_AUDIO_SECONDS = 600
 PLANNED_GPU_HOURS = 1.0
+REFUSED_TAKEOFFS = [
+    {
+        "takeoff_attempt_id": "attempt-20260824T083857Z-dev100r0a2",
+        "at": "2026-08-24T08:38:57Z",
+        "outcome": "ZERO-CORE-SPEND refusal by rails.runner's worst-case budget check",
+        "cause_verbatim": (
+            "AgentLoop contact ceiling 200 exceeds the ExecutionPlan budget 170"
+        ),
+        "spend": "0 core / 2 embedding tool contacts (jitter pair, cosine 0.9996190217532903, NOT bit-identical; sidecar stopped cleanly with stop receipt)",
+        "repair": (
+            "planned_model_calls raised to the rails-required worst-case 200; "
+            "the registered 170 ceiling unchanged, enforced by CoreCeilingClient"
+        ),
+    }
+]
 
 M0_POLICY_ID = "saea-direct-decode-only-m0"
 DECODING_PARAMS = {"temperature": 0, "seed": 20260803, "max_tokens": 64}
@@ -1336,6 +1361,7 @@ def main() -> int:
             "amendment 5b; campaign exposure row SAEA-DEV100-KB-ALPHA-BLEND-CAMPAIGN "
             "attempt-2 registration (successor semantics)"
         ),
+        "refused_takeoffs": REFUSED_TAKEOFFS,
         "successor_semantics": {
             "m0_arm": (
                 f"REUSED from attempt-1 ({A1_ATTEMPT_ID}) by its durable flushed "
