@@ -1,0 +1,1957 @@
+{
+  "arms": {
+    "BLEND_ROUND0_FOR_REFERENCE": {
+      "accuracy_scenario_action_exact": 0.63,
+      "correct_count": 63,
+      "source": "ROUND-0 SEALED per-sample scores"
+    },
+    "BLEND_ROUND1_FOR_REFERENCE": {
+      "accuracy_scenario_action_exact": 0.63,
+      "correct_count": 63,
+      "source": "ROUND-1 SEALED per-sample scores"
+    },
+    "BLEND_ROUND2_FOR_REFERENCE": {
+      "accuracy_scenario_action_exact": 0.65,
+      "correct_count": 65,
+      "source": "ROUND-2 SEALED per-sample scores"
+    },
+    "BLEND_ROUND3": {
+      "accuracy_scenario_action_exact": 0.67,
+      "contacts": 148,
+      "correct_count": 67,
+      "direct_label_recovered_samples": 61,
+      "embedding_tool_contacts": 102,
+      "evidence_contact_dispatched_samples": 48,
+      "parsed_count": 100,
+      "retain_primary_samples": 52
+    },
+    "M0": {
+      "accuracy_scenario_action_exact": 0.48,
+      "contacts": 0,
+      "correct_count": 48,
+      "source": "ROUND-0 SEALED per-sample scores (never re-flown; scores sha256 88922466d0463169547f0fcfae20bbdf98a6dd94a8ad7d89b68956a8bd343bed)"
+    }
+  },
+  "attempt_id": "attempt-20260824T173555Z-dev100r3",
+  "authority": "docs/readiness/2026-08-23-dev100-campaign-preregistration.md including amendment 5b and the owner-approved section-4 ceiling amendment (2026-08-24, commit 121bdc08: core 1,800 -> 2,500, audio-s 2,400 -> 5,500); campaign exposure row SAEA-DEV100-KB-ALPHA-BLEND-CAMPAIGN ROUND-3 registration (registered variable: the f1060078 label-identity binding repair, ALL knobs unchanged from round 2; the damage-channel analysis projection registered verbatim as the falsifiable prediction; FRESH run-cumulative successor plan 1,400 calls / 3,700 audio-s over the 1,123 / 3,005.33 AttemptStore-verified durable spend; sealed round-0 AND round-1 AND round-2 authorities pinned byte-wise; sentinel + micro-run trace isolation + Windows-side GPU sampling + clock sampling carried flight-proven from rounds 1-2)",
+  "blend_decisions": {
+    "direct_label_recovered_samples": 61,
+    "evidence_contact_dispatched_samples": 48,
+    "note": "winner_label is set only on trajectories that dispatched the evidence contact; a retain-primary trajectory stops at 1 contact with the direct response as final and no winner label (rails.kb_policy retain path). direct_label_recovered counts samples where the REPAIRED normalizer recovered a label facet from the flown direct answer (analysis expectation over the round-2 responses: 64/100)",
+    "retain_primary_samples": 52,
+    "retained_primary_sample_ids": [
+      "slurp:devel:000090:audio-1498567209",
+      "slurp:devel:000582:audio-1502891180-headset",
+      "slurp:devel:000896:audio-1502216983-headset",
+      "slurp:devel:001038:audio--1504191120",
+      "slurp:devel:001211:audio-1490020990",
+      "slurp:devel:001227:audio-1490104218",
+      "slurp:devel:001271:audio-1502300290-headset",
+      "slurp:devel:001349:audio-1490108023",
+      "slurp:devel:001901:audio-1490183906",
+      "slurp:devel:002058:audio-1494512880",
+      "slurp:devel:003082:audio-1490103664-headset",
+      "slurp:devel:003443:audio-1501776590",
+      "slurp:devel:003464:audio-1499690370-headset",
+      "slurp:devel:003613:audio-1502308872",
+      "slurp:devel:003705:audio-1490194357",
+      "slurp:devel:003895:audio-1501687710",
+      "slurp:devel:003956:audio-1501753591-headset",
+      "slurp:devel:004198:audio--1504191536-headset",
+      "slurp:devel:004338:audio-1494418385-headset",
+      "slurp:devel:004545:audio-1497450582",
+      "slurp:devel:004971:audio-1502199127-headset",
+      "slurp:devel:005015:audio-1501756546",
+      "slurp:devel:005100:audio-1490291520",
+      "slurp:devel:005565:audio-1498570308",
+      "slurp:devel:005792:audio-1499697954",
+      "slurp:devel:006170:audio-1497557093-headset",
+      "slurp:devel:006176:audio-1492780408",
+      "slurp:devel:007066:audio-1498484428",
+      "slurp:devel:007381:audio-1501686582-headset",
+      "slurp:devel:007646:audio-1488969762",
+      "slurp:devel:008333:audio-1502893972",
+      "slurp:devel:008788:audio-1490105823",
+      "slurp:devel:010548:audio-1499697772",
+      "slurp:devel:010557:audio-1489498911",
+      "slurp:devel:010605:audio-1490021707",
+      "slurp:devel:010730:audio-1499693684-headset",
+      "slurp:devel:010806:audio-1501415533-headset",
+      "slurp:devel:010830:audio-1488985252",
+      "slurp:devel:011795:audio-1494607116",
+      "slurp:devel:011819:audio--1505404383-headset",
+      "slurp:devel:012575:audio-1501686449",
+      "slurp:devel:012625:audio-1494417974",
+      "slurp:devel:012904:audio-1490194983",
+      "slurp:devel:014125:audio-1500388327-headset",
+      "slurp:devel:015370:audio-1501688507",
+      "slurp:devel:015516:audio-1499264883-headset",
+      "slurp:devel:015630:audio-1490967842",
+      "slurp:devel:015836:audio-1434543277",
+      "slurp:devel:016303:audio-1490107552-headset",
+      "slurp:devel:016448:audio-1497869742-headset",
+      "slurp:devel:016463:audio-1501688583",
+      "slurp:devel:016570:audio-1490182015"
+    ],
+    "winner_label_present_samples": 48
+  },
+  "blend_generation_rates_ms_per_token_in_observation_order": [
+    27.68,
+    27.65,
+    35.19,
+    35.22,
+    48.2,
+    35.16,
+    35.15,
+    35.14,
+    34.44,
+    34.85,
+    29.01,
+    35.57,
+    40.98,
+    70.12,
+    40.73,
+    32.43,
+    33.78,
+    7.52,
+    7.34,
+    51.69,
+    28.32,
+    28.3,
+    34.29,
+    34.59,
+    34.57,
+    34.57,
+    34.0,
+    72.18,
+    90.04,
+    62.31,
+    40.85,
+    61.74,
+    40.89,
+    40.89,
+    40.64,
+    26.55,
+    14.58,
+    35.74,
+    35.66,
+    35.6,
+    38.02,
+    61.18,
+    38.12,
+    34.97,
+    35.03,
+    28.76,
+    41.36,
+    41.36,
+    58.09,
+    40.97,
+    40.53,
+    46.67,
+    43.19,
+    62.75,
+    29.44,
+    33.55,
+    33.55,
+    35.11,
+    38.7,
+    38.71,
+    36.62,
+    22.8,
+    27.51,
+    29.41,
+    29.51,
+    75.92,
+    29.49,
+    33.61,
+    33.57,
+    33.13,
+    63.64,
+    30.41,
+    30.41,
+    30.4,
+    33.25,
+    35.6,
+    35.39,
+    31.27,
+    47.08,
+    47.1,
+    49.7,
+    34.09,
+    36.25,
+    36.65,
+    44.41,
+    44.29,
+    73.31,
+    28.66,
+    31.06,
+    39.88,
+    39.4,
+    39.4,
+    39.01,
+    38.01,
+    29.93,
+    27.31,
+    78.97,
+    29.19,
+    29.2,
+    29.21,
+    31.8,
+    31.8,
+    32.79,
+    32.21,
+    13.43,
+    25.17,
+    25.16,
+    47.25,
+    41.43,
+    41.18,
+    29.61,
+    22.61,
+    28.56,
+    64.57,
+    28.57,
+    30.11,
+    34.46,
+    34.46,
+    33.58,
+    26.12,
+    97.75,
+    44.72,
+    44.71,
+    34.12,
+    49.93,
+    44.23,
+    46.28,
+    45.72,
+    7.63,
+    87.31,
+    37.19,
+    37.18,
+    39.51,
+    44.21,
+    38.55,
+    40.02,
+    38.19,
+    7.35,
+    75.42,
+    29.93,
+    29.91,
+    29.91,
+    31.27,
+    31.08,
+    31.09,
+    31.18,
+    9.16,
+    7.94
+  ],
+  "blend_print_timing": {
+    "generation_rows": 148,
+    "ms_per_token_max": 97.75,
+    "ms_per_token_median": 35.14,
+    "ms_per_token_min": 7.34
+  },
+  "canary": {
+    "byte_identical_to_attempt1_m0": true,
+    "contacts": 2,
+    "decode_divergence": null,
+    "generation": [
+      {
+        "ms_per_token": 9.93,
+        "tokens": 33,
+        "total_ms": 327.74
+      },
+      {
+        "ms_per_token": 6.89,
+        "tokens": 34,
+        "total_ms": 234.24
+      }
+    ],
+    "note": "responses never read semantically: sha256 + server print_timing descriptives only, per the registered canary semantics (attempt-3 registration, carried to round 3; the service is the SAME BASE-build instance attempt 6 proved byte-identical to attempt-1 M0)",
+    "pass_threshold_ms_per_token": 300.0,
+    "passed": true,
+    "prompt_eval": [
+      {
+        "ms_per_token": 59.61,
+        "tokens": 1,
+        "total_ms": 59.61
+      },
+      {
+        "ms_per_token": 1.15,
+        "tokens": 75,
+        "total_ms": 86.43
+      }
+    ],
+    "response_sha256_vs_attempt1_m0": {
+      "slurp:devel:000090:audio-1498567209": {
+        "byte_identical_to_attempt1": true,
+        "response_sha256": "5fe1b883601c67a10862f74c4ef2abd1e94445d25088dbc2989870e29e067a59"
+      },
+      "slurp:devel:000109:audio-1497882612": {
+        "byte_identical_to_attempt1": true,
+        "response_sha256": "7e6ccbed9d234c2ed405c1ea4169213767bcc5694af3bcd8f2b261503980a073"
+      }
+    },
+    "sample_ids": [
+      "slurp:devel:000090:audio-1498567209",
+      "slurp:devel:000109:audio-1497882612"
+    ],
+    "trace": {
+      "manifest_hash": "a725cbcfc8ca62519b8df58a4269ec464d60350ffdf836bd2f7b0f2f580562ca",
+      "namespace": "canary/",
+      "record_ids": 14,
+      "sink_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-DEV100-KB-ALPHA-BLEND-CAMPAIGN/attempt-20260824T173555Z-dev100r3/canary-trace"
+    },
+    "wall_seconds": 4.143,
+    "worst_generation_ms_per_token": 9.93
+  },
+  "config_hash": "7fff75d1ed8642a9e948d86e8d6c5bf9cfd669f7342d9da009167dfd62655ca5",
+  "core_client": {
+    "contact_latency_seconds_total": 281.938,
+    "cost": {
+      "audio_seconds_used": 402.7324375000001,
+      "calls_used": 151,
+      "completion_tokens_total": 4039,
+      "latency_seconds_total": 281.93836616099,
+      "prompt_tokens_total": 298801,
+      "tool_calls": 0,
+      "umbrella_lock_sha256": "9064bde89d4248fd80c9c2f93c2a9c276a454eadbb1aa7d529671118961371b1"
+    },
+    "request_count": 151,
+    "trace_manifest_hash": "6f3b277c8ce8bfeb7ead461d702e410a977071abf8c769a567b8126182608d50"
+  },
+  "correct_to_wrong_sample_ids": [
+    "slurp:devel:001791:audio-1502195360",
+    "slurp:devel:003202:audio-1495733953-headset",
+    "slurp:devel:007738:audio-1489153308",
+    "slurp:devel:012185:audio-1499244805",
+    "slurp:devel:016699:audio-1499688493-headset"
+  ],
+  "cross_attempt_direct_agreement": {
+    "agree_count": 81,
+    "detail": "per-sample sha256 equality between this round's BLEND direct-decode responses and attempt-1's reused M0 responses (byte-identical prompts; 8-slot concurrent serving descriptive, computed hash-to-hash; r0a6 measured 78/100, r1 79/100, r2 75/100 on the same service)",
+    "disagree_sample_ids": [
+      "slurp:devel:000392:audio-1498573434",
+      "slurp:devel:001038:audio--1504191120",
+      "slurp:devel:001085:audio-1490103635-headset",
+      "slurp:devel:001901:audio-1490183906",
+      "slurp:devel:004198:audio--1504191536-headset",
+      "slurp:devel:005015:audio-1501756546",
+      "slurp:devel:005386:audio-1501758493",
+      "slurp:devel:005393:audio--1505407257-headset",
+      "slurp:devel:005792:audio-1499697954",
+      "slurp:devel:007381:audio-1501686582-headset",
+      "slurp:devel:007732:audio-1502376806-headset",
+      "slurp:devel:010210:audio-1501754125-headset",
+      "slurp:devel:010830:audio-1488985252",
+      "slurp:devel:012045:audio-1490956582-headset",
+      "slurp:devel:012575:audio-1501686449",
+      "slurp:devel:013522:audio-1494607289",
+      "slurp:devel:015370:audio-1501688507",
+      "slurp:devel:015397:audio-1490262948",
+      "slurp:devel:015516:audio-1499264883-headset"
+    ],
+    "vs_round2_agree_count": 79,
+    "vs_round2_changed_sample_ids": [
+      "slurp:devel:000617:audio-1501152792-headset",
+      "slurp:devel:001085:audio-1490103635-headset",
+      "slurp:devel:001901:audio-1490183906",
+      "slurp:devel:003956:audio-1501753591-headset",
+      "slurp:devel:004198:audio--1504191536-headset",
+      "slurp:devel:004899:audio-1495377050",
+      "slurp:devel:005565:audio-1498570308",
+      "slurp:devel:006595:audio-1497868179",
+      "slurp:devel:007732:audio-1502376806-headset",
+      "slurp:devel:008788:audio-1490105823",
+      "slurp:devel:010086:audio-1502201283",
+      "slurp:devel:010138:audio-1490289156",
+      "slurp:devel:010374:audio-1501690184-headset",
+      "slurp:devel:010830:audio-1488985252",
+      "slurp:devel:012045:audio-1490956582-headset",
+      "slurp:devel:012978:audio-1490954706",
+      "slurp:devel:013522:audio-1494607289",
+      "slurp:devel:015265:audio-1499689293-headset",
+      "slurp:devel:015370:audio-1501688507",
+      "slurp:devel:015397:audio-1490262948",
+      "slurp:devel:015516:audio-1499264883-headset"
+    ]
+  },
+  "decoder_session_receipt_sha256": "6c8bab4d67432b4a3b88679483f0d6db41e28620ab8ee973f442a97200861b10",
+  "deviations": [
+    {
+      "detail": "Arm M0 was not re-flown in round 3: its per-sample correctness comes from round-0's sealed scoring artifact (round0-scores.json, sha256 88922466d0463169547f0fcfae20bbdf98a6dd94a8ad7d89b68956a8bd343bed), cross-checked against the sealed round-0 report (26f05488bb7031d1ae85710faffd2b414644729af1adc476a1002a55612fb0b6) at the single scoring-side opening. Zero new spend for the arm; the same M0 baseline serves every round per the campaign design.",
+      "id": "m0-arm-consumed-from-round0-seal",
+      "kind": "successor semantics, registered pre-takeoff in the campaign row"
+    },
+    {
+      "detail": "The BLEND-round-2 reference arm (the projection baseline) was not re-flown: its per-sample correctness comes from round-2's sealed scoring artifact (round2-scores.json, sha256 6f9d65ac173f5304c0c58baadb1abe4b66cd5c0960e003e6acc817f3befa7191), cross-checked against the sealed round-2 report (c69cf3fef49a3bafb86818383953c9c0e37880518750073c6ba857f47e7b00f6) at the single scoring-side opening; round-1/round-0 reference aggregates likewise from their sealed artifacts. Zero new spend for these arms.",
+      "id": "blend-r2-arm-consumed-from-round2-seal",
+      "kind": "successor semantics, registered pre-takeoff in the campaign row"
+    },
+    {
+      "detail": "The in-flight GPU/VRAM sampler polls the Windows-side /mnt/c/Windows/System32/nvidia-smi.exe (5 s cadence) instead of the WSL bridge binary that timed out under decode load in round 1 and self-disabled. Round 2 proved it in flight (64 samples, zero probe failures). Fail-tolerant semantics unchanged (degrades to NOT_AVAILABLE); no science knob touched.",
+      "id": "gpu-sampler-windows-binary",
+      "kind": "telemetry plumbing fix, carried flight-proven from round 2"
+    }
+  ],
+  "embedding_jitter_pair": {
+    "bit_identical": true,
+    "cosine": 1.0,
+    "text_sha256": "c9a64ba8de082d25de1625c3b1edee546532841b19c94d2d62096d5f75eac5fa"
+  },
+  "generated_at": "2026-08-24T17:42:42.796344+00:00",
+  "gpu_preflight": {
+    "clock_lock": {
+      "command": "nvidia-smi -lgc 1200,2500 (Windows side)",
+      "status": "REMAINS APPLIED (harmless; NOT a remedy \u2014 attempt 5 falsified the clock hypothesis, attempt 6 confirmed the pathology was build-bound; left in place and disclosed)"
+    },
+    "enforced_power_limit_w_at_preflight": 100.0,
+    "enforced_power_limit_w_in_wsl": 100.0,
+    "lenovo_smart_fan_mode": 3,
+    "measured_at": "2026-08-24 round-3 preflight (host PowerShell WMI GetSmartFanMode=3 + Windows nvidia-smi enforced 100.00 W, idle 1192 MHz / 0 % util / 41 C / 21,264 MiB resident; service /health ok with 8/8 slots idle and exactly one launch in the server log (8 slot-init lines); keepalive PID 23864 alive; llama-server pid 2768 up; session receipt re-hashed equal to the attempt-6/R6 binding; durable AttemptStore re-summed to 1,123 calls / 3,005.330937499999 audio-s across 11 records with NO round-3 attempt present)"
+  },
+  "hard_stop": "Round 3 lands and STOPS. No round-4 flight, no knob change: the coordinator reconciles the projection verdict and the stopping-rule facts above (streak reset at round 2; round 3 can only BANK the first qualifying round) and reports to the owner (per-arm accuracy, W->C/C->W, per-sample deltas vs round 2, the projection HITS/MISSES with attribution, retain-primary realized rate, spend vs the amended ceilings, stopping-rule statement) before anything flies. The live-alpha re-sweep is the standing round-4 candidate.",
+  "hosting": {
+    "clock_lock_note": "the Windows-side GPU clock lock nvidia-smi -lgc 1200,2500 REMAINS applied (harmless and explicitly NOT a remedy - the attempt-5 mid-flight samples falsified the clock hypothesis; the attempt-6 base-binary landing confirmed the pathology was build-bound); mid-flight Windows-side clock sampling continues into clock-samples-round3.jsonl",
+    "keepalive": "detached Windows wsl.exe client, PID 23864, started 2026-08-24T10:52:39Z (verified alive at round-3 registration; holds the VM)",
+    "linger": "enabled (loginctl enable-linger chao, 2026-08-24T08:06Z)",
+    "mode": "systemd-run --user unit saea-np8-dev100-r6-base -p KillMode=mixed (WSL Ubuntu-24.04, systemd PID 1)",
+    "prompt_fit_standing": "session-bound R6 prompt-fit row SAEA-SN-MF-DEV100-C3-PROMPT-FIT-NP8-R6 STANDS for round 3: the session receipt sha256 re-measured equal to the R6 binding at registration, and the round-3 variable (the f1060078 label-identity binding repair) changes only post-response PARSING (which label the normalizer recovers), never a prompt shape \u2014 the worst-case evidence-decode envelope the fit measured (6,174 tokens vs 8,192, margin +1,954) is an upper bound at the unchanged fusion knobs m=5/c=2/l=3",
+    "service_inheritance": "round 3 flies on the SAME resident BASE-build service the attempt-6 round-0 landing left up and rounds 1-2 landed on (unit saea-np8-dev100-r6-base, llama-server pid 2768, port 8080, BASE build llama.cpp-featcache, 8 slots at n_ctx 8192): at round-3 registration the unit was active, /health ok, 8/8 slots idle, the server log shows exactly one launch (8 slot-init lines), and the session receipt re-hashed byte-identical to the attempt-6 binding \u2014 no respawn, no restart, no binary change"
+  },
+  "mid_flight_clock_samples_windows_side": [
+    {
+      "at": "2026-08-24T17:35:10Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 9.81,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T17:35:20Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 9.87,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T17:35:31Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 9.86,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T17:35:41Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 9.83,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T17:35:51Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 9.84,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T17:36:02Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 9.98,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T17:36:12Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 10.06,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T17:36:22Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 10.14,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T17:36:33Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 10.18,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T17:36:43Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 10.21,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T17:36:53Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 10.23,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T17:37:04Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 10.24,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T17:37:14Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 10.3,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T17:37:24Z",
+      "clocks_sm_mhz": 1507,
+      "power_draw_w": 13.53,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T17:37:35Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 13.24,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T17:37:45Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 10.45,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T17:37:55Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 10.49,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T17:38:06Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 10.49,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T17:38:16Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 10.51,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T17:38:26Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 13.44,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T17:38:37Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 12.73,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T17:38:47Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 14.83,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T17:38:57Z",
+      "clocks_sm_mhz": 2107,
+      "power_draw_w": 83.5,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 67
+    },
+    {
+      "at": "2026-08-24T17:39:07Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 13.18,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T17:39:18Z",
+      "clocks_sm_mhz": 1252,
+      "power_draw_w": 15.14,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T17:39:28Z",
+      "clocks_sm_mhz": 2002,
+      "power_draw_w": 74.23,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T17:39:38Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 13.83,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T17:39:49Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 13.92,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T17:39:59Z",
+      "clocks_sm_mhz": 1530,
+      "power_draw_w": 86.88,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 38
+    },
+    {
+      "at": "2026-08-24T17:40:09Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 13.17,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T17:40:20Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 14.91,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T17:40:30Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 14.22,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T17:40:40Z",
+      "clocks_sm_mhz": 1800,
+      "power_draw_w": 82.76,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 54
+    },
+    {
+      "at": "2026-08-24T17:40:51Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 13.3,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T17:41:01Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 14.33,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T17:41:12Z",
+      "clocks_sm_mhz": 2175,
+      "power_draw_w": 81.5,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 54
+    },
+    {
+      "at": "2026-08-24T17:41:22Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 16.58,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T17:41:32Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 12.84,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T17:41:43Z",
+      "clocks_sm_mhz": 1462,
+      "power_draw_w": 15.29,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T17:41:53Z",
+      "clocks_sm_mhz": 2317,
+      "power_draw_w": 76.76,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 6
+    },
+    {
+      "at": "2026-08-24T17:42:03Z",
+      "clocks_sm_mhz": 1477,
+      "power_draw_w": 13.84,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T17:42:13Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 14.54,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T17:42:24Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 14.59,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T17:42:34Z",
+      "clocks_sm_mhz": 2475,
+      "power_draw_w": 28.38,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 94
+    }
+  ],
+  "projection_reconciliation": {
+    "aggregate_hit": false,
+    "direct_agreement_vs_round2": {
+      "agree_count": 79,
+      "changed_sample_ids": [
+        "slurp:devel:000617:audio-1501152792-headset",
+        "slurp:devel:001085:audio-1490103635-headset",
+        "slurp:devel:001901:audio-1490183906",
+        "slurp:devel:003956:audio-1501753591-headset",
+        "slurp:devel:004198:audio--1504191536-headset",
+        "slurp:devel:004899:audio-1495377050",
+        "slurp:devel:005565:audio-1498570308",
+        "slurp:devel:006595:audio-1497868179",
+        "slurp:devel:007732:audio-1502376806-headset",
+        "slurp:devel:008788:audio-1490105823",
+        "slurp:devel:010086:audio-1502201283",
+        "slurp:devel:010138:audio-1490289156",
+        "slurp:devel:010374:audio-1501690184-headset",
+        "slurp:devel:010830:audio-1488985252",
+        "slurp:devel:012045:audio-1490956582-headset",
+        "slurp:devel:012978:audio-1490954706",
+        "slurp:devel:013522:audio-1494607289",
+        "slurp:devel:015265:audio-1499689293-headset",
+        "slurp:devel:015370:audio-1501688507",
+        "slurp:devel:015397:audio-1490262948",
+        "slurp:devel:015516:audio-1499264883-headset"
+      ]
+    },
+    "flown_correct_total": 67,
+    "mechanism_level_miss_count": 0,
+    "named_sample_outcomes": {
+      "slurp:devel:000090:audio-1498567209": {
+        "direct_changed_vs_r2": false,
+        "flown_correct": true,
+        "hit": true,
+        "projected_correct": true,
+        "projected_group": "damage_healed",
+        "retain_primary_flown": true
+      },
+      "slurp:devel:001227:audio-1490104218": {
+        "direct_changed_vs_r2": false,
+        "flown_correct": true,
+        "hit": true,
+        "projected_correct": true,
+        "projected_group": "damage_healed",
+        "retain_primary_flown": true
+      },
+      "slurp:devel:001791:audio-1502195360": {
+        "direct_changed_vs_r2": false,
+        "flown_correct": false,
+        "hit": true,
+        "projected_correct": false,
+        "projected_group": "still_damaged",
+        "retain_primary_flown": false
+      },
+      "slurp:devel:003202:audio-1495733953-headset": {
+        "direct_changed_vs_r2": false,
+        "flown_correct": false,
+        "hit": true,
+        "projected_correct": false,
+        "projected_group": "still_damaged",
+        "retain_primary_flown": false
+      },
+      "slurp:devel:003443:audio-1501776590": {
+        "direct_changed_vs_r2": false,
+        "flown_correct": true,
+        "hit": true,
+        "projected_correct": true,
+        "projected_group": "damage_healed",
+        "retain_primary_flown": true
+      },
+      "slurp:devel:003705:audio-1490194357": {
+        "direct_changed_vs_r2": false,
+        "flown_correct": true,
+        "hit": true,
+        "projected_correct": true,
+        "projected_group": "damage_healed",
+        "retain_primary_flown": true
+      },
+      "slurp:devel:007738:audio-1489153308": {
+        "direct_changed_vs_r2": false,
+        "flown_correct": false,
+        "hit": true,
+        "projected_correct": false,
+        "projected_group": "still_damaged",
+        "retain_primary_flown": false
+      },
+      "slurp:devel:011819:audio--1505404383-headset": {
+        "direct_changed_vs_r2": false,
+        "flown_correct": false,
+        "hit": true,
+        "projected_correct": false,
+        "projected_group": "repairs_lost",
+        "retain_primary_flown": true
+      },
+      "slurp:devel:012185:audio-1499244805": {
+        "direct_changed_vs_r2": false,
+        "flown_correct": false,
+        "hit": true,
+        "projected_correct": false,
+        "projected_group": "still_damaged",
+        "retain_primary_flown": false
+      },
+      "slurp:devel:012625:audio-1494417974": {
+        "direct_changed_vs_r2": false,
+        "flown_correct": true,
+        "hit": true,
+        "projected_correct": true,
+        "projected_group": "damage_healed",
+        "retain_primary_flown": true
+      },
+      "slurp:devel:015265:audio-1499689293-headset": {
+        "direct_changed_vs_r2": true,
+        "flown_correct": false,
+        "hit": false,
+        "projected_correct": true,
+        "projected_group": "gains_outside_both_groups",
+        "retain_primary_flown": false
+      },
+      "slurp:devel:015630:audio-1490967842": {
+        "direct_changed_vs_r2": false,
+        "flown_correct": true,
+        "hit": true,
+        "projected_correct": true,
+        "projected_group": "damage_healed",
+        "retain_primary_flown": true
+      },
+      "slurp:devel:016699:audio-1499688493-headset": {
+        "direct_changed_vs_r2": false,
+        "flown_correct": false,
+        "hit": true,
+        "projected_correct": false,
+        "projected_group": "still_damaged",
+        "retain_primary_flown": false
+      }
+    },
+    "per_sample_hits": 96,
+    "per_sample_misses": {
+      "slurp:devel:005565:audio-1498570308": {
+        "attribution": "direct-byte-variance channel (the flown direct decode differs byte-wise from round-2's logged direct \u2014 the projection's given input; DOCUMENTED variance source)",
+        "direct_changed_vs_r2": true,
+        "flown_correct": false,
+        "projected_correct": true,
+        "retain_primary_flown": true
+      },
+      "slurp:devel:013522:audio-1494607289": {
+        "attribution": "direct-byte-variance channel (the flown direct decode differs byte-wise from round-2's logged direct \u2014 the projection's given input; DOCUMENTED variance source)",
+        "direct_changed_vs_r2": true,
+        "flown_correct": false,
+        "projected_correct": true,
+        "retain_primary_flown": false
+      },
+      "slurp:devel:015265:audio-1499689293-headset": {
+        "attribution": "direct-byte-variance channel (the flown direct decode differs byte-wise from round-2's logged direct \u2014 the projection's given input; DOCUMENTED variance source)",
+        "direct_changed_vs_r2": true,
+        "flown_correct": false,
+        "projected_correct": true,
+        "retain_primary_flown": false
+      },
+      "slurp:devel:015397:audio-1490262948": {
+        "attribution": "direct-byte-variance channel (the flown direct decode differs byte-wise from round-2's logged direct \u2014 the projection's given input; DOCUMENTED variance source)",
+        "direct_changed_vs_r2": true,
+        "flown_correct": false,
+        "projected_correct": true,
+        "retain_primary_flown": false
+      }
+    },
+    "projected_correct_total": 71,
+    "projection_source": "docs/readiness/2026-08-24-dev100-damage-channel-analysis.md section 9 (exact offline replay over the sealed round-2 trajectories; registered verbatim in the campaign row BEFORE takeoff)",
+    "registered_projection": {
+      "damage_healed": [
+        "slurp:devel:000090:audio-1498567209",
+        "slurp:devel:001227:audio-1490104218",
+        "slurp:devel:003443:audio-1501776590",
+        "slurp:devel:003705:audio-1490194357",
+        "slurp:devel:012625:audio-1494417974",
+        "slurp:devel:015630:audio-1490967842"
+      ],
+      "expected_core_contacts_blend": "~146 (100 direct + ~46 evidence)",
+      "gains_outside_both_groups": [
+        "slurp:devel:015265:audio-1499689293-headset"
+      ],
+      "projected_correct_total": 71,
+      "repairs_lost": [
+        "slurp:devel:011819:audio--1505404383-headset"
+      ],
+      "retain_primary_projected_count": 54,
+      "still_damaged": [
+        "slurp:devel:001791:audio-1502195360",
+        "slurp:devel:003202:audio-1495733953-headset",
+        "slurp:devel:007738:audio-1489153308",
+        "slurp:devel:012185:audio-1499244805",
+        "slurp:devel:016699:audio-1499688493-headset"
+      ],
+      "variance_source": "the retain-primary finals are FRESH direct decodes carrying the documented 75-79/100 cross-attempt direct byte instability; the projection is exact only GIVEN the round-2 logged responses"
+    },
+    "retain_primary": {
+      "note": "on a sample whose flown direct response is byte-identical to round-2's, the retain decision is the exact offline replay decision (deterministic normalizer + bit-identical embedding of identical text) \u2014 so any realized-vs-projected membership deviation must live entirely inside the changed-direct set",
+      "projected_count": 54,
+      "realized_count": 52,
+      "realized_with_changed_direct": 8,
+      "realized_with_unchanged_direct": 44
+    }
+  },
+  "prompt_reuse": {
+    "by_class": {
+      "blend_direct_contact0": {
+        "declared_prompt_tokens": 177338,
+        "declared_tokens_distribution": {
+          "count": 100,
+          "max": 1848,
+          "median": 1770,
+          "min": 1757,
+          "p10": 1757,
+          "p90": 1783,
+          "sum": 177338
+        },
+        "evaluated_prompt_tokens": 7838,
+        "evaluated_tokens_distribution": {
+          "count": 100,
+          "max": 153,
+          "median": 75,
+          "min": 62,
+          "p10": 62,
+          "p90": 88,
+          "sum": 7838
+        },
+        "evaluation_ratio": 0.044198,
+        "requests": 100,
+        "reuse_ratio": 0.955802,
+        "skipped_prompt_tokens": 169500,
+        "skipped_tokens_distribution": {
+          "count": 100,
+          "max": 1695,
+          "median": 1695,
+          "min": 1695,
+          "p10": 1695,
+          "p90": 1695,
+          "sum": 169500
+        }
+      },
+      "blend_evidence_contact1": {
+        "declared_prompt_tokens": 116179,
+        "declared_tokens_distribution": {
+          "count": 48,
+          "max": 2928,
+          "median": 2386,
+          "min": 1999,
+          "p10": 2067,
+          "p90": 2832,
+          "sum": 116179
+        },
+        "evaluated_prompt_tokens": 32908,
+        "evaluated_tokens_distribution": {
+          "count": 48,
+          "max": 1194,
+          "median": 652,
+          "min": 265,
+          "p10": 335,
+          "p90": 1098,
+          "sum": 32908
+        },
+        "evaluation_ratio": 0.283253,
+        "requests": 48,
+        "reuse_ratio": 0.716747,
+        "skipped_prompt_tokens": 83271,
+        "skipped_tokens_distribution": {
+          "count": 48,
+          "max": 1799,
+          "median": 1734,
+          "min": 1721,
+          "p10": 1721,
+          "p90": 1747,
+          "sum": 83271
+        }
+      },
+      "canary_direct_single_slot": {
+        "declared_prompt_tokens": 3527,
+        "declared_tokens_distribution": {
+          "count": 2,
+          "max": 1770,
+          "median": 1770,
+          "min": 1757,
+          "p10": 1757,
+          "p90": 1770,
+          "sum": 3527
+        },
+        "evaluated_prompt_tokens": 76,
+        "evaluated_tokens_distribution": {
+          "count": 2,
+          "max": 75,
+          "median": 75,
+          "min": 1,
+          "p10": 1,
+          "p90": 75,
+          "sum": 76
+        },
+        "evaluation_ratio": 0.021548,
+        "requests": 2,
+        "reuse_ratio": 0.978452,
+        "skipped_prompt_tokens": 3451,
+        "skipped_tokens_distribution": {
+          "count": 2,
+          "max": 1756,
+          "median": 1756,
+          "min": 1695,
+          "p10": 1695,
+          "p90": 1756,
+          "sum": 3451
+        }
+      },
+      "resend_direct_single_slot": {
+        "declared_prompt_tokens": 1757,
+        "declared_tokens_distribution": {
+          "count": 1,
+          "max": 1757,
+          "median": 1757,
+          "min": 1757,
+          "p10": 1757,
+          "p90": 1757,
+          "sum": 1757
+        },
+        "evaluated_prompt_tokens": 62,
+        "evaluated_tokens_distribution": {
+          "count": 1,
+          "max": 62,
+          "median": 62,
+          "min": 62,
+          "p10": 62,
+          "p90": 62,
+          "sum": 62
+        },
+        "evaluation_ratio": 0.035287,
+        "requests": 1,
+        "reuse_ratio": 0.964713,
+        "skipped_prompt_tokens": 1695,
+        "skipped_tokens_distribution": {
+          "count": 1,
+          "max": 1695,
+          "median": 1695,
+          "min": 1695,
+          "p10": 1695,
+          "p90": 1695,
+          "sum": 1695
+        }
+      }
+    },
+    "classification_clean_by_threshold": false,
+    "declared_offset_calibration": {
+      "client_prompt_tokens_total": 298801,
+      "per_request_offset": 1,
+      "request_count_parsed": 151,
+      "sum_release_n_tokens_minus_generation": 298650
+    },
+    "directive": "owner directive at round-2 registration: prefix-cache optimality is a first-class metric; measured from durable server-log per-request records only (content-free token counts), no behavior change",
+    "method": "per request: declared = release n_tokens - generation tokens + calibrated fixed offset; evaluated = print_timing prompt-eval tokens (post-prefix-cache); skipped = declared - evaluated. Windows split by the tracked server-log offsets: canary / BLEND / resend. BLEND contact classes split at declared <= 2000 (direct envelope 1,819)",
+    "overall": {
+      "declared_prompt_tokens": 298801,
+      "declared_tokens_distribution": {
+        "count": 151,
+        "max": 2928,
+        "median": 1783,
+        "min": 1757,
+        "p10": 1757,
+        "p90": 2553,
+        "sum": 298801
+      },
+      "evaluated_prompt_tokens": 40884,
+      "evaluated_tokens_distribution": {
+        "count": 151,
+        "max": 1194,
+        "median": 88,
+        "min": 1,
+        "p10": 62,
+        "p90": 819,
+        "sum": 40884
+      },
+      "evaluation_ratio": 0.136827,
+      "requests": 151,
+      "reuse_ratio": 0.863173,
+      "skipped_prompt_tokens": 257917,
+      "skipped_tokens_distribution": {
+        "count": 151,
+        "max": 1799,
+        "median": 1695,
+        "min": 1695,
+        "p10": 1695,
+        "p90": 1734,
+        "sum": 257917
+      }
+    },
+    "verdict": "ACTIVE: the slot prompt cache is doing real work on the evidence contact class (reuse ratio >= 0.5)",
+    "within_trajectory": {
+      "evidence_contact_different_server_slot": 0,
+      "evidence_contact_same_server_slot_as_direct": 48,
+      "evidence_skipped_ge_1000_tokens": 48,
+      "evidence_skipped_ge_1700_tokens": 48,
+      "evidence_skipped_lt_100_tokens": 0,
+      "expected_common_prefix_tokens": "~1,700+ (system + task contract + speech packet + query)",
+      "note": "the slot prompt cache holds the LAST prompt per server slot, so an evidence contact reaching the slot that just served a prompt sharing its prefix (its own trajectory's direct contact, or any request sharing the system+contract prefix) skips that prefix; slot ids per contact come from the client-side contact records (the runner pins id_slot)",
+      "two_contact_trajectories": 48
+    }
+  },
+  "refused_takeoffs": [],
+  "resend_pair": {
+    "byte_identical": true,
+    "flown": true,
+    "note": "byte-identical direct-decode PROMPT by construction: the SAME assembly path (rails.runner._agent_messages over the same frozen adapter/contract/packet/instruction inputs). Response A is attempt-1's recorded M0 hash (ZERO-COPY build); response B is a fresh single-slot decode on the SAME BASE-build service instance attempt 6 flew \u2014 cross-build byte-determinism was proven at the attempt-6 canary/resend, so byte identity is expected here. sha256 equality only.",
+    "response_a_sha256": "5fe1b883601c67a10862f74c4ef2abd1e94445d25088dbc2989870e29e067a59",
+    "response_b_sha256": "5fe1b883601c67a10862f74c4ef2abd1e94445d25088dbc2989870e29e067a59",
+    "sample_id": "slurp:devel:000090:audio-1498567209",
+    "server_np": 8,
+    "trace": {
+      "manifest_hash": "7538367df08654250439df0d70875ad8deb12ce9c731d2f2a09201d6896e0df3",
+      "namespace": "resend/",
+      "record_ids": 7,
+      "sink_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-DEV100-KB-ALPHA-BLEND-CAMPAIGN/attempt-20260824T173555Z-dev100r3/resend-trace"
+    }
+  },
+  "round0_citation": {
+    "report_path": "docs/checks/speech-aware-evidence-acquisition/2026-08-24-dev100-round0/round0-report.json",
+    "report_sha256": "26f05488bb7031d1ae85710faffd2b414644729af1adc476a1002a55612fb0b6",
+    "scores_sha256": "88922466d0463169547f0fcfae20bbdf98a6dd94a8ad7d89b68956a8bd343bed",
+    "sealed_results": "M0 48/100; BLEND(alpha .60, tau .5) 63/100; W->C 26; C->W 11; evidence fired 100/100"
+  },
+  "round1_citation": {
+    "report_path": "docs/checks/speech-aware-evidence-acquisition/2026-08-24-dev100-round1/round1-report.json",
+    "report_sha256": "559559d239103f2905d8e86e643741990ceb1023070095d1d797d8e66de4cd8d",
+    "scores_sha256": "c70947e5c89203ce68eb40ca2fa62da13a3bde53ebbdf00882adee944b08ee78",
+    "sealed_results": "BLEND(alpha .60, tau .65) 63/100; W->C 26; C->W 11; evidence fired 100/100; tau proven INERT on [0.5, 0.65]; plus the disclosed duplicate-takeoff addendum (29 core / 17 tool / 68.03 audio-s dead spend, never read)"
+  },
+  "round2_citation": {
+    "query_vectors_sha256": "3b146c2fde28169bec2dce77fa37e1daf9aafd0153cab77c05884757be155c1e",
+    "report_path": "docs/checks/speech-aware-evidence-acquisition/2026-08-24-dev100-round2/round2-report.json",
+    "report_sha256": "c69cf3fef49a3bafb86818383953c9c0e37880518750073c6ba857f47e7b00f6",
+    "scores_sha256": "6f9d65ac173f5304c0c58baadb1abe4b66cd5c0960e003e6acc817f3befa7191",
+    "sealed_results": "BLEND(alpha .55, tau .65) 65/100; W->C 28; C->W 11 (byte-equal list to round 1); evidence fired 100/100; retain-primary 0 (the direct term was structurally dead pre-repair); direct byte-agreement vs attempt-1 M0 75/100"
+  },
+  "round3_knobs": {
+    "alpha": 0.55,
+    "evidence_variant": "rank+prior+agreement",
+    "fusion": {
+      "c": 2,
+      "l": 3,
+      "m": 5
+    },
+    "knob_change_vs_round2": {
+      "knobs_changed": "NONE \u2014 every knob is byte-equal to the sealed round-2 cell",
+      "rationale": "the damage-channel analysis proved all four registered dev-legal knobs INERT on this split (zero changed trajectories under exact replay) and located the mechanism-bearing defect: the direct-label term was never live. The repair's projection is exact with zero offline unknowns (it changes no supplied value), making this the registered falsifiable round-3 prediction",
+      "single_variable": true,
+      "variable": "CODE: commit f1060078 label-identity binding repair in rails/kb_policy.py \u2014 default_label_normalizer recovers the direct label from the answer's OWN parsed scenario/action (exact match against the label facets' intent identities; gold never consulted), so the alpha-blend's (1 - alpha) protect-direct term is LIVE for the first time in the campaign and retain-primary is reachable; the pre-repair prose-substring match fired on 0/100 responses in all three sealed rounds"
+    },
+    "m11_pair_boundary_stage": false,
+    "percept_admission": "facet-side",
+    "prior_source": "train",
+    "rank_weight_id": "rrf",
+    "rank_weights": {
+      "w_agree": 0.2,
+      "w_cos": 0.5,
+      "w_prior": 0.3
+    },
+    "tau": 0.65,
+    "top_k_per_dimension": 5,
+    "value_vectors": "SEALED (never loaded)"
+  },
+  "round3_variable": {
+    "behavior_probe": "PASS (identity exact-match live, swap refused)",
+    "kind": "code (rails/kb_policy.py label-identity binding repair)",
+    "knobs_changed": false,
+    "repair_commit": "f1060078c61e6d498a124f00d84ffa90415924aa",
+    "repo_head_at_flight": "a81f82836ff8ef763bba95e119e979de61198f3a"
+  },
+  "round_index": 3,
+  "run_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-DEV100-KB-ALPHA-BLEND-CAMPAIGN/attempt-20260824T173555Z-dev100r3",
+  "run_id": "SAEA-DEV100-KB-ALPHA-BLEND-CAMPAIGN",
+  "schema": "saea-dev100-round3-report-v1",
+  "sentinel": {
+    "contacts_observed": 148,
+    "ms_per_token_max": 97.75,
+    "ms_per_token_median": 35.14,
+    "ms_per_token_min": 7.34,
+    "ms_per_token_p90": 61.18,
+    "rates_observed": 148,
+    "threshold_ms_per_token": 1000.0,
+    "tripped": null,
+    "window_contacts": 8
+  },
+  "server_np": 8,
+  "serving_descriptives": {
+    "gpu_sampling_reason": null,
+    "gpu_seconds": 42.72343754408467,
+    "peak_vram_mib": 24105.0,
+    "request_gpu_sample_count": 59,
+    "request_gpu_samples": [
+      {
+        "memory_used_mib": 24069.0,
+        "sampled_at_unix_seconds": 1787593050.511563,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 1.4736652374267578,
+        "server_slot_sampled_at_unix_seconds": 1787593050.5130367,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24069.0,
+        "sampled_at_unix_seconds": 1787593055.5988743,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 1.1763572692871094,
+        "server_slot_sampled_at_unix_seconds": 1787593055.6000507,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24069.0,
+        "sampled_at_unix_seconds": 1787593060.7188735,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 28.058767318725586,
+        "server_slot_sampled_at_unix_seconds": 1787593060.7469323,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24069.0,
+        "sampled_at_unix_seconds": 1787593066.9944806,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 1.100301742553711,
+        "server_slot_sampled_at_unix_seconds": 1787593066.995581,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24069.0,
+        "sampled_at_unix_seconds": 1787593072.1558864,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 1.2030601501464844,
+        "server_slot_sampled_at_unix_seconds": 1787593072.1570895,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24069.0,
+        "sampled_at_unix_seconds": 1787593077.3206284,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 14.146804809570312,
+        "server_slot_sampled_at_unix_seconds": 1787593077.3347752,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24069.0,
+        "sampled_at_unix_seconds": 1787593082.465465,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 20.86949348449707,
+        "server_slot_sampled_at_unix_seconds": 1787593082.4863346,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24069.0,
+        "sampled_at_unix_seconds": 1787593087.5603068,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 15.880823135375977,
+        "server_slot_sampled_at_unix_seconds": 1787593087.5761876,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24069.0,
+        "sampled_at_unix_seconds": 1787593092.7747955,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 133.4846019744873,
+        "server_slot_sampled_at_unix_seconds": 1787593092.9082801,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24069.0,
+        "sampled_at_unix_seconds": 1787593098.0773394,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 19.03247833251953,
+        "server_slot_sampled_at_unix_seconds": 1787593098.096372,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24069.0,
+        "sampled_at_unix_seconds": 1787593104.411935,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 16.189098358154297,
+        "server_slot_sampled_at_unix_seconds": 1787593104.4281242,
+        "server_total_slots": 8,
+        "utilization_pct": 65.0
+      },
+      {
+        "memory_used_mib": 24069.0,
+        "sampled_at_unix_seconds": 1787593109.5298696,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 20.9805965423584,
+        "server_slot_sampled_at_unix_seconds": 1787593109.5508502,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24069.0,
+        "sampled_at_unix_seconds": 1787593114.661195,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 15.708446502685547,
+        "server_slot_sampled_at_unix_seconds": 1787593114.6769035,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24073.0,
+        "sampled_at_unix_seconds": 1787593119.7744627,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 21.25239372253418,
+        "server_slot_sampled_at_unix_seconds": 1787593119.795715,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24073.0,
+        "sampled_at_unix_seconds": 1787593124.9179435,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 1.1060237884521484,
+        "server_slot_sampled_at_unix_seconds": 1787593124.9190495,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787593129.9869153,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 21.343469619750977,
+        "server_slot_sampled_at_unix_seconds": 1787593130.0082588,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787593135.083479,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 1.4386177062988281,
+        "server_slot_sampled_at_unix_seconds": 1787593135.0849175,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787593140.1914582,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 30.83038330078125,
+        "server_slot_sampled_at_unix_seconds": 1787593140.2222886,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787593145.3314276,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 30.939340591430664,
+        "server_slot_sampled_at_unix_seconds": 1787593145.362367,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787593150.4679017,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 22.349119186401367,
+        "server_slot_sampled_at_unix_seconds": 1787593150.4902508,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787593155.6032329,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 34.04402732849121,
+        "server_slot_sampled_at_unix_seconds": 1787593155.637277,
+        "server_total_slots": 8,
+        "utilization_pct": 80.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787593160.731704,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 21.516799926757812,
+        "server_slot_sampled_at_unix_seconds": 1787593160.7532208,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787593165.8585782,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 26.828527450561523,
+        "server_slot_sampled_at_unix_seconds": 1787593165.8854067,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787593172.2566977,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 20.98536491394043,
+        "server_slot_sampled_at_unix_seconds": 1787593172.277683,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787593177.3708603,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 15.903949737548828,
+        "server_slot_sampled_at_unix_seconds": 1787593177.3867643,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787593182.4779253,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 20.919322967529297,
+        "server_slot_sampled_at_unix_seconds": 1787593182.4988446,
+        "server_total_slots": 8,
+        "utilization_pct": 59.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787593187.5908608,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 26.37624740600586,
+        "server_slot_sampled_at_unix_seconds": 1787593187.617237,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787593192.6903732,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 21.35324478149414,
+        "server_slot_sampled_at_unix_seconds": 1787593192.7117264,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787593197.7880557,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 20.715713500976562,
+        "server_slot_sampled_at_unix_seconds": 1787593197.8087714,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787593202.8894143,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 11.811017990112305,
+        "server_slot_sampled_at_unix_seconds": 1787593202.9012253,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787593209.1785104,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 1.0890960693359375,
+        "server_slot_sampled_at_unix_seconds": 1787593209.1795995,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787593214.236252,
+        "server_busy_slots": 8,
+        "server_slot_gpu_skew_milliseconds": 493.2117462158203,
+        "server_slot_sampled_at_unix_seconds": 1787593214.7294638,
+        "server_total_slots": 8,
+        "utilization_pct": 88.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787593219.837316,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 11.437654495239258,
+        "server_slot_sampled_at_unix_seconds": 1787593219.8487537,
+        "server_total_slots": 8,
+        "utilization_pct": 3.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787593224.9098618,
+        "server_busy_slots": 8,
+        "server_slot_gpu_skew_milliseconds": 16.20793342590332,
+        "server_slot_sampled_at_unix_seconds": 1787593224.9260697,
+        "server_total_slots": 8,
+        "utilization_pct": 88.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787593230.0158536,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 15.83099365234375,
+        "server_slot_sampled_at_unix_seconds": 1787593230.0316846,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787593235.1248422,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 21.720409393310547,
+        "server_slot_sampled_at_unix_seconds": 1787593235.1465626,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787593241.681718,
+        "server_busy_slots": 8,
+        "server_slot_gpu_skew_milliseconds": 6.2236785888671875,
+        "server_slot_sampled_at_unix_seconds": 1787593241.6879418,
+        "server_total_slots": 8,
+        "utilization_pct": 80.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787593246.79854,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 21.034955978393555,
+        "server_slot_sampled_at_unix_seconds": 1787593246.819575,
+        "server_total_slots": 8,
+        "utilization_pct": 5.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787593251.9149363,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 25.916337966918945,
+        "server_slot_sampled_at_unix_seconds": 1787593251.9408526,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787593257.1617227,
+        "server_busy_slots": 6,
+        "server_slot_gpu_skew_milliseconds": 12.0849609375,
+        "server_slot_sampled_at_unix_seconds": 1787593257.1738076,
+        "server_total_slots": 8,
+        "utilization_pct": 38.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787593262.2515943,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 22.643566131591797,
+        "server_slot_sampled_at_unix_seconds": 1787593262.2742379,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787593267.3707213,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 16.030073165893555,
+        "server_slot_sampled_at_unix_seconds": 1787593267.3867514,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787593272.4876015,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 16.680479049682617,
+        "server_slot_sampled_at_unix_seconds": 1787593272.504282,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787593278.8899379,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 20.760536193847656,
+        "server_slot_sampled_at_unix_seconds": 1787593278.9106984,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787593283.9956486,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 20.7822322845459,
+        "server_slot_sampled_at_unix_seconds": 1787593284.0164309,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787593289.106832,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 16.141414642333984,
+        "server_slot_sampled_at_unix_seconds": 1787593289.1229734,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787593294.2037609,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 2.6807785034179688,
+        "server_slot_sampled_at_unix_seconds": 1787593294.2064416,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787593299.291647,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 15.899181365966797,
+        "server_slot_sampled_at_unix_seconds": 1787593299.3075461,
+        "server_total_slots": 8,
+        "utilization_pct": 28.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787593304.3860886,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 12.795448303222656,
+        "server_slot_sampled_at_unix_seconds": 1787593304.398884,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787593311.2119906,
+        "server_busy_slots": 8,
+        "server_slot_gpu_skew_milliseconds": 654.1364192962646,
+        "server_slot_sampled_at_unix_seconds": 1787593311.866127,
+        "server_total_slots": 8,
+        "utilization_pct": 98.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787593316.9563065,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 6.288290023803711,
+        "server_slot_sampled_at_unix_seconds": 1787593316.9625947,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787593322.0316956,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 31.09431266784668,
+        "server_slot_sampled_at_unix_seconds": 1787593322.06279,
+        "server_total_slots": 8,
+        "utilization_pct": 16.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787593327.122631,
+        "server_busy_slots": 8,
+        "server_slot_gpu_skew_milliseconds": 95.44253349304199,
+        "server_slot_sampled_at_unix_seconds": 1787593327.2180736,
+        "server_total_slots": 8,
+        "utilization_pct": 98.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787593332.2989101,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 26.365995407104492,
+        "server_slot_sampled_at_unix_seconds": 1787593332.3252761,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787593337.3888905,
+        "server_busy_slots": 8,
+        "server_slot_gpu_skew_milliseconds": 659.4932079315186,
+        "server_slot_sampled_at_unix_seconds": 1787593338.0483837,
+        "server_total_slots": 8,
+        "utilization_pct": 91.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787593343.1565995,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 31.441688537597656,
+        "server_slot_sampled_at_unix_seconds": 1787593343.1880412,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787593348.2699766,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 20.934343338012695,
+        "server_slot_sampled_at_unix_seconds": 1787593348.290911,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787593353.3955717,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 21.164655685424805,
+        "server_slot_sampled_at_unix_seconds": 1787593353.4167364,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787593358.5105674,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 1.4638900756835938,
+        "server_slot_sampled_at_unix_seconds": 1787593358.5120313,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      }
+    ],
+    "request_gpu_utilization_median_pct": 0.0,
+    "request_gpu_utilization_p10_pct": 0.0,
+    "server_slot_probe_failure_count": 0,
+    "server_slot_sample_count": 59,
+    "server_slot_sampling_configured": true,
+    "server_slot_sampling_reason": null
+  },
+  "spend_vs_ceilings": {
+    "campaign_ceilings_as_amended": {
+      "amendment": "owner-approved at the round-0 sync (preregistration section 4, commit 121bdc08): audio 2,400 -> 5,500, core 1,800 -> 2,500; tool and GPU-h unchanged",
+      "core_contacts": 2500,
+      "embedding_tool_contacts": 1500,
+      "gpu_hours": 2.0,
+      "metered_audio_seconds": 5500
+    },
+    "campaign_cumulative_incl_prior_rounds": {
+      "core_contacts": 1274,
+      "embedding_tool_contacts": 623,
+      "metered_audio_seconds": 3408.0633749999993,
+      "note": "rounds 0-2 durable cumulative incl. the disclosed round-1 duplicate (AttemptStore re-sum: 1,123 core, 521 tool, 3,005.330937499999 audio-s) plus this round-3 attempt"
+    },
+    "cumulative_plan_declaration": {
+      "note": "FRESH successor plan (the round-2 1,200 / 3,100 plan is nearly exhausted at 1,123 / 3,005.33 durable); run-cumulative per core.model.adapter's enforcement across all attempts of the run id (fresh sibling read per request); covers the 1,123 calls / 3,005.330937499999 audio-s AttemptStore-verified durable for rounds 0-2 plus this round's worst case",
+      "planned_model_calls_run_cumulative": 1400,
+      "planned_speech_audio_seconds_run_cumulative": 3700
+    },
+    "round3": {
+      "core_contacts": {
+        "attempt_ceiling": 210,
+        "used": 151
+      },
+      "embedding_tool_contacts": {
+        "attempt_ceiling": 130,
+        "used": 102
+      },
+      "gpu_active_hours_contact_basis": 0.078316,
+      "metered_audio_seconds": {
+        "used": 402.7324375000001
+      }
+    }
+  },
+  "stopping_rule_status": {
+    "banks_first_qualifying_round": false,
+    "beats_direct": true,
+    "c2w_growth_vs_round2": -6,
+    "completed_rounds_after_this": 4,
+    "convergence_fires": false,
+    "note": "evaluated AT THIS SEAL per the flight brief: with the streak reset at round 2, a qualifying round 3 (|delta vs r2| < 1 sample AND zero C->W growth) BANKS the first of two needed qualifying rounds \u2014 CONVERGENCE CANNOT FIRE at this seal regardless; it would require round 4 to also qualify. The coordinator states the streak formally and reports to the owner; falsification cannot apply while beats_direct is true; 4 completed rounds of the hard cap 6.",
+    "round2_c2w_vs_m0": 11,
+    "round3_c2w_vs_m0": 5,
+    "round3_delta_vs_round2": 2,
+    "round3_qualifies": false,
+    "rule": "converged: best-arm delta < 1 sample across 2 consecutive rounds with zero C->W growth; falsified: no arm beats direct after 3 completed rounds; hard cap 6",
+    "streak_state_entering_round3": "RESET \u2014 round 2's +2 delta did not qualify, so round 1's banked qualifying round no longer chains; two fresh consecutive qualifying rounds are required"
+  },
+  "study": "speech-aware-evidence-acquisition",
+  "trace_isolation": {
+    "canary_sink_records": 14,
+    "flush_order": "canary (own sink) -> BLEND (main sink FIRST) -> resend (own sink)",
+    "main_sink_records": 844,
+    "resend_sink_records": 7,
+    "zero_record_id_overlap_asserted": true
+  },
+  "vs_round2_blend": {
+    "final_response_sha_changed_count": 42,
+    "final_response_sha_changed_sample_ids": [
+      "slurp:devel:000090:audio-1498567209",
+      "slurp:devel:000617:audio-1501152792-headset",
+      "slurp:devel:000896:audio-1502216983-headset",
+      "slurp:devel:001038:audio--1504191120",
+      "slurp:devel:001085:audio-1490103635-headset",
+      "slurp:devel:001211:audio-1490020990",
+      "slurp:devel:001227:audio-1490104218",
+      "slurp:devel:001901:audio-1490183906",
+      "slurp:devel:003082:audio-1490103664-headset",
+      "slurp:devel:003443:audio-1501776590",
+      "slurp:devel:003705:audio-1490194357",
+      "slurp:devel:004198:audio--1504191536-headset",
+      "slurp:devel:004338:audio-1494418385-headset",
+      "slurp:devel:004545:audio-1497450582",
+      "slurp:devel:004899:audio-1495377050",
+      "slurp:devel:004971:audio-1502199127-headset",
+      "slurp:devel:005015:audio-1501756546",
+      "slurp:devel:005100:audio-1490291520",
+      "slurp:devel:005386:audio-1501758493",
+      "slurp:devel:005565:audio-1498570308",
+      "slurp:devel:005792:audio-1499697954",
+      "slurp:devel:006170:audio-1497557093-headset",
+      "slurp:devel:006176:audio-1492780408",
+      "slurp:devel:006595:audio-1497868179",
+      "slurp:devel:007646:audio-1488969762",
+      "slurp:devel:007732:audio-1502376806-headset",
+      "slurp:devel:008788:audio-1490105823",
+      "slurp:devel:010830:audio-1488985252",
+      "slurp:devel:011795:audio-1494607116",
+      "slurp:devel:011819:audio--1505404383-headset",
+      "slurp:devel:012045:audio-1490956582-headset",
+      "slurp:devel:012575:audio-1501686449",
+      "slurp:devel:012625:audio-1494417974",
+      "slurp:devel:012904:audio-1490194983",
+      "slurp:devel:012978:audio-1490954706",
+      "slurp:devel:013522:audio-1494607289",
+      "slurp:devel:015265:audio-1499689293-headset",
+      "slurp:devel:015370:audio-1501688507",
+      "slurp:devel:015397:audio-1490262948",
+      "slurp:devel:015516:audio-1499264883-headset",
+      "slurp:devel:015630:audio-1490967842",
+      "slurp:devel:016570:audio-1490182015"
+    ],
+    "net_delta_correct_samples": 2,
+    "note": "per-sample vs the round-2 sealed BLEND arm (alpha .55, tau .65, pre-repair) \u2014 the primary round-over-round comparison and the projection's baseline. round2_c2w_repaired counts round-2 damage samples correct under the repair (projected: 6); round2_w2c_lost counts round-2 repairs lost to the live protect-direct term (projected: 1)",
+    "round2_c2w_repaired": [
+      "slurp:devel:000090:audio-1498567209",
+      "slurp:devel:001227:audio-1490104218",
+      "slurp:devel:003443:audio-1501776590",
+      "slurp:devel:003705:audio-1490194357",
+      "slurp:devel:012625:audio-1494417974",
+      "slurp:devel:015630:audio-1490967842"
+    ],
+    "round2_c2w_still_wrong": [
+      "slurp:devel:001791:audio-1502195360",
+      "slurp:devel:003202:audio-1495733953-headset",
+      "slurp:devel:007738:audio-1489153308",
+      "slurp:devel:012185:audio-1499244805",
+      "slurp:devel:016699:audio-1499688493-headset"
+    ],
+    "round2_correct_now_wrong": [
+      "slurp:devel:005565:audio-1498570308",
+      "slurp:devel:011819:audio--1505404383-headset",
+      "slurp:devel:013522:audio-1494607289",
+      "slurp:devel:015397:audio-1490262948"
+    ],
+    "round2_w2c_lost": [
+      "slurp:devel:005565:audio-1498570308",
+      "slurp:devel:011819:audio--1505404383-headset",
+      "slurp:devel:013522:audio-1494607289",
+      "slurp:devel:015397:audio-1490262948"
+    ],
+    "round2_w2c_retained": [
+      "slurp:devel:000109:audio-1497882612",
+      "slurp:devel:000392:audio-1498573434",
+      "slurp:devel:000806:audio--1506079512",
+      "slurp:devel:000921:audio-1498564374-headset",
+      "slurp:devel:001558:audio-1495734409",
+      "slurp:devel:001569:audio-1490198849-headset",
+      "slurp:devel:002814:audio-1490194699",
+      "slurp:devel:004579:audio-1502195536-headset",
+      "slurp:devel:005183:audio-1498565600",
+      "slurp:devel:005726:audio--1504197977",
+      "slurp:devel:005989:audio-1497621031",
+      "slurp:devel:007381:audio-1501686582-headset",
+      "slurp:devel:009951:audio-1500038657-headset",
+      "slurp:devel:010037:audio-1500386970-headset",
+      "slurp:devel:010041:audio-1497264270-headset",
+      "slurp:devel:010086:audio-1502201283",
+      "slurp:devel:010138:audio-1490289156",
+      "slurp:devel:010374:audio-1501690184-headset",
+      "slurp:devel:012045:audio-1490956582-headset",
+      "slurp:devel:012055:audio-1494512213",
+      "slurp:devel:012712:audio-1502199981-headset",
+      "slurp:devel:013804:audio-1434542201-headset",
+      "slurp:devel:014203:audio-1500979762",
+      "slurp:devel:015414:audio-1499265566"
+    ],
+    "round2_wrong_now_correct": [
+      "slurp:devel:000090:audio-1498567209",
+      "slurp:devel:001227:audio-1490104218",
+      "slurp:devel:003443:audio-1501776590",
+      "slurp:devel:003705:audio-1490194357",
+      "slurp:devel:012625:audio-1494417974",
+      "slurp:devel:015630:audio-1490967842"
+    ]
+  },
+  "wrong_to_correct_sample_ids": [
+    "slurp:devel:000109:audio-1497882612",
+    "slurp:devel:000392:audio-1498573434",
+    "slurp:devel:000806:audio--1506079512",
+    "slurp:devel:000921:audio-1498564374-headset",
+    "slurp:devel:001558:audio-1495734409",
+    "slurp:devel:001569:audio-1490198849-headset",
+    "slurp:devel:002814:audio-1490194699",
+    "slurp:devel:004579:audio-1502195536-headset",
+    "slurp:devel:005183:audio-1498565600",
+    "slurp:devel:005726:audio--1504197977",
+    "slurp:devel:005989:audio-1497621031",
+    "slurp:devel:007381:audio-1501686582-headset",
+    "slurp:devel:009951:audio-1500038657-headset",
+    "slurp:devel:010037:audio-1500386970-headset",
+    "slurp:devel:010041:audio-1497264270-headset",
+    "slurp:devel:010086:audio-1502201283",
+    "slurp:devel:010138:audio-1490289156",
+    "slurp:devel:010374:audio-1501690184-headset",
+    "slurp:devel:012045:audio-1490956582-headset",
+    "slurp:devel:012055:audio-1494512213",
+    "slurp:devel:012712:audio-1502199981-headset",
+    "slurp:devel:013804:audio-1434542201-headset",
+    "slurp:devel:014203:audio-1500979762",
+    "slurp:devel:015414:audio-1499265566"
+  ]
+}
