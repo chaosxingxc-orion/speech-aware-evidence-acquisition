@@ -88,3 +88,62 @@ finalize the attempt without spending the split again. That is a model-free
 repair plus a driver change (making an unavailable GPU timeline a recorded
 `NOT_AVAILABLE` rather than a hard refusal, consistent with §2.1 decoupling),
 and it needs its own authorization — it is deliberately not done here.
+
+
+## Addendum 2026-08-23 — finalized from disk (supersedes the sections above)
+
+Everything above describes the attempt as it stood before finalization and is
+kept verbatim as the abort record. The owner then decided Option B of
+`docs/readiness/2026-08-23-e108-attempt-finalization-adjudication.md` §5:
+registered model-free finalization. Under the new exposure row
+`SAEA-SN-MF-EVIDENCE-E108-ZCOPY-FINALIZE-FROM-DISK`, committed before the
+rebuild ran, the missing receipt was rebuilt from this attempt's durable records
+by `saea-driver speech-native-finalize-from-disk` with **zero service contacts
+of any kind**.
+
+| Fact | Value |
+| --- | --- |
+| `flight-receipt.json` | written; sha256 `14be9f413ae0e7c760f8c45cd39b9a0b4d1cf4989b98581c84385144288a503a` |
+| Data-derived content hash | `d5ef0aae01032d44cfbdfecfe74b86b344fa7f3558252f81e9e415609a05516c` |
+| Attempt record | `OPENED` → `FINALIZED` |
+| Final decisions | 108 / 108 |
+| Contacts | 338 (request = response = cost = 338) |
+| Exact speech carriage | 338 / 338 valid, 0 invalid |
+| Native slot events in the window | 338 launches = 338 releases, none straddling |
+| Failure markers | 0 OOM / 0 host-spill / 0 runaway / 0 request failures / 0 completion issues |
+| GPU telemetry | `NOT_AVAILABLE` with an explicit `gpu_telemetry_defect` |
+| Service contacts made by the rebuild | 0 |
+
+The rebuild is deterministic over its data-derived fields: a read-only rebuild
+run immediately beforehand produced the same content hash under two different
+rebuild timestamps, and the written receipt carries that hash. `rebuilt_at` is
+recorded in the `finalization` block and excluded from the content hash, since
+no other receipt field has ever carried a timestamp.
+
+The interrupted flight never persisted its server-log byte window, so the window
+was re-derived as the trailing span holding exactly the traced 338 slot
+launches, and then admitted by the driver's own fail-closed lifecycle checks
+rather than trusted. The window independently contains exactly 338 prompt-eval
+records, one per contact.
+
+Zero-contact proof: the resident service's log is byte-identical across the
+rebuild (1,117,739 bytes, last modified at the flight's own final slot release,
+14:19:16), and its session receipt still hashes to `33639d3d…`. PID 607 was
+never spoken to. The finalize path constructs no transport, client, session, or
+socket at all, asserted by unit tests both statically over its bytecode and at
+runtime with every contact primitive disabled.
+
+Label blindness held throughout: decision rows were counted by a byte-level
+counter that never decodes a line, and `MODEL_RESPONSE` records were counted by
+channel without their payloads being touched (token accounting came from the
+`COST` channel instead). Three live-flight fields that only in-memory decision
+outcomes could supply — `parse_failure_count`, `response_text_sha256`, and
+`profile.query_mapping_sha256` — are recorded `NOT_AVAILABLE` with a note rather
+than reconstructed by reading what this rebuild must not read.
+
+**Mechanical eligibility: PASSED.** See
+`mechanical-eligibility-after-finalization.json`. This is mechanical eligibility
+only. The frozen in-fragment reader (`m11-information-support-gate-v1` plus the
+OOF evaluator) is a separate one-shot read that needs its own registered
+exposure row after coordinator review, per adjudication §5.5. No prediction,
+label, correctness, action reward, or response meaning has been read.

@@ -1,0 +1,105 @@
+{
+  "attempt_id": "attempt-20260823T175901Z-e108zc",
+  "authorization": "docs/readiness/2026-08-23-e108-attempt-finalization-adjudication.md#5",
+  "config_hash": "928facf7186edb423eef9dc3f67db04455dce6fc994632bbcf1f9a94015212f5",
+  "descriptive_serving": {
+    "actual_evaluated_tokens_per_second": 451.31725058865374,
+    "aggregate_tokens_per_second": 454.0286828214243,
+    "note": "Descriptive only. The request window is rebuilt from native slot events rather than the client-side timings a live flight records, so it is a slightly tighter bound than the flight's 1,198 s wall clock. The 99.39 percent prompt-evaluation ratio shows the hot-prefix reuse the serving layout targets did not materialise; that is an engineering observation, not a scientific admission criterion.",
+    "prompt_evaluation_ratio_pct": 99.39316887023624,
+    "request_window_seconds": 1163.5916848182678,
+    "request_window_source": "server-slot-event-window-v1"
+  },
+  "eligibility_note": "MECHANICALLY ELIGIBLE. Every frozen label-blind conjunct holds and the attempt is now finalized with a hash-chained flight receipt for a reader to bind to. Eligibility here is mechanical only: the frozen in-fragment reader (m11-information-support-gate-v1 plus the OOF evaluator) is a SEPARATE one-shot read that requires its own registered exposure row after coordinator review, per adjudication section 5.5. This document authorizes nothing beyond that review.",
+  "eligible_for_semantic_read": true,
+  "exposure_rows": {
+    "finalization": "SAEA-SN-MF-EVIDENCE-E108-ZCOPY-FINALIZE-FROM-DISK",
+    "flight": "SAEA-SN-EVIDENCE-E108-K1M11-INFORMATION-COMPLETE-ACTION-SUPPORT-ZCOPY"
+  },
+  "finalization": {
+    "data_derived_content_sha256": "d5ef0aae01032d44cfbdfecfe74b86b344fa7f3558252f81e9e415609a05516c",
+    "determinism_proof": "A read-only rebuild run immediately before the one-shot produced the same data-derived content SHA-256 under two different rebuild timestamps; the written receipt carries that same hash.",
+    "flight_receipt_sha256": "14be9f413ae0e7c760f8c45cd39b9a0b4d1cf4989b98581c84385144288a503a",
+    "mode": "rebuilt-from-disk-v1",
+    "rebuilt_at": "2026-08-23T21:03:29.198173-04:00",
+    "server_log_window": [
+      680733,
+      1117739
+    ],
+    "server_log_window_derivation": "The interrupted flight never persisted its byte window. It was re-derived as the trailing span holding exactly the traced 338 slot launches, then admitted by the driver's own fail-closed lifecycle checks: no task straddles the start, no slot is left active, and launch = release = 338. The window independently contains exactly 338 prompt-eval records, one per contact."
+  },
+  "gpu_telemetry": {
+    "admission_note": "The 2026-08-23 owner rulings section 2.1 demoted GPU utilization from a scientific admission criterion to descriptive reporting. The receipt's own `eligible` flag stays false because it still folds in the ENGINEERING GPU thresholds, which are not evaluable without telemetry; that flag is not the scientific admission gate.",
+    "defect": "the flown attempt's GPU sampler never started, and a from-disk rebuild samples nothing",
+    "fields_not_available": [
+      "utilization_median_pct",
+      "utilization_p10_pct",
+      "sample_fraction_pct",
+      "server_slot_occupancy_mean_pct",
+      "server_slot_sample_coverage_pct",
+      "resource.gpu_seconds"
+    ],
+    "state": "NOT_AVAILABLE",
+    "wall_clock_bound_hours": 0.333
+  },
+  "label_blindness": {
+    "decisions_jsonl_line_counted_only": true,
+    "decisions_jsonl_parsed": false,
+    "model_response_channel_opened": false,
+    "note": "Decision rows were counted through a byte-level counter that never decodes a line, and response records were counted by channel without their payloads being touched. Token accounting came from the COST channel instead. No prediction, label, correctness, action reward, or response meaning was read.",
+    "semantic_result_read": false
+  },
+  "mechanical_conjuncts": {
+    "attempt_finalized_with_flight_receipt": true,
+    "audio_within_registered_ceiling": true,
+    "balanced_native_slot_events": true,
+    "calls_within_registered_ceiling": true,
+    "contacts_carried_338": true,
+    "every_contact_carries_exact_speech": true,
+    "every_contact_declares_mmproj_free": true,
+    "every_contact_query_source_is_speech": true,
+    "final_decision_count_is_108": true,
+    "gpu_telemetry_available": false,
+    "request_response_cost_records_agree": true,
+    "resident_service_untouched_by_the_rebuild": true,
+    "task_count_is_108": true,
+    "zero_completion_issues": true,
+    "zero_host_spill_markers": true,
+    "zero_oom_markers": true,
+    "zero_request_failures": true,
+    "zero_runaway_markers": true
+  },
+  "protocol_hash": "fd27d74f42b0bc9e9aee121f83ed91bde5044f5fd981419f8d9d4821c221a0c2",
+  "run_id": "SAEA-SN-EVIDENCE-E108-K1M11-INFORMATION-COMPLETE-ACTION-SUPPORT-ZCOPY",
+  "schema": "saea-label-blind-mechanical-eligibility-v1",
+  "source_artifact_sha256": {
+    "binding": "a2ccd4b004ce2e31329bf7b69ce0ebb9cff642eec2d25cde8087ffc679203dfe",
+    "decision_graph": "58c9457312d71a7c7a13e92e53e2a4f9fff5c45a9722eb5680d0fd465fe8a2fc",
+    "decisions": "4e9ebefceb07f11df858f6ccc71290beb243a2aef5198cf832fc16ce2d606f99",
+    "mmproj_audit": "fc28f20a7b4476152bb3baddbfd5903b30d10c363c2b02240fdcdb7073fb7c2b",
+    "packet_promotion_receipt": "4aafd75ab86734159e39d8dedfc3ec12346d75d683119984c7b1aece761c1555",
+    "prompt_fit_receipt": "c2ee949a58c368dc3e3c4b3541f64ad845158771d90ca66327b955de30c46b4f",
+    "session_receipt": "33639d3d4a74db48fead435cb7c7548beb58437a79cba64f5312b100b8fe9698",
+    "trace": "e5659f59c4cf798c915f33f2d549438a3345aee8bcbc582cf8cc28902dae96ea",
+    "trace_manifest": "8b9ffc3263e2c783dd43a5bad6ba05d9c0410081b53fd5462d9674d547eb2999"
+  },
+  "split_identity_hash": "6887f0d348729a1828937cd92005867d096472491fb6a8598711a05a6169d568",
+  "status": "FINALIZED_FROM_DISK",
+  "supersedes": "mechanical-abort-result.json (status ABORTED_AT_POST_RUN_METRICS)",
+  "unrecoverable_fields": [
+    "profile.query_mapping_sha256",
+    "parse_failure_count",
+    "response_text_sha256"
+  ],
+  "unrecoverable_fields_note": "These live-flight fields are derived from in-memory decision outcomes. Recovering them would require parsing decision rows or opening the MODEL_RESPONSE channel, which this label-blind rebuild refuses. The per-row hashes they summarise remain inside decisions.jsonl and the trace, both pinned here by SHA-256.",
+  "zero_service_contact_proof": {
+    "note": "The server log's byte length and modification time are unchanged across the rebuild window, and its last write is still the flight's own final slot release. A completion, /props, /tokenize, or /apply-template request would have appended to it. The finalize path also constructs no transport, client, session, or socket, which is asserted by unit tests both statically and at runtime.",
+    "resident_pid": 607,
+    "server_log_bytes_after": 1117739,
+    "server_log_bytes_before": 1117739,
+    "server_log_mtime_after": "2026-08-23 14:19:16.000041495 -0400",
+    "server_log_mtime_before": "2026-08-23 14:19:16.000041495 -0400",
+    "session_receipt_sha256_after": "33639d3d4a74db48fead435cb7c7548beb58437a79cba64f5312b100b8fe9698",
+    "session_receipt_sha256_before": "33639d3d4a74db48fead435cb7c7548beb58437a79cba64f5312b100b8fe9698"
+  }
+}
