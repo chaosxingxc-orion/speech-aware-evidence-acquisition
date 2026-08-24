@@ -1,0 +1,22 @@
+{
+  "schema": "saea-kb-policy-v1",
+  "authority": "docs/readiness/2026-08-23-knowledge-plane-baseline-rulings.md section 5 (C3: first cross-task policy in the empty knowledge registries)",
+  "knob_semantics": "Every knob in this file is DEV-tuned only: these are frozen defaults for engineering wiring at registration time, never derived from or validated against DEV/TEST outcomes by this repository. A future DEV-100/500/1000 optimization ladder pass (ruling section 2.2) may change these values through its own registered artifact; nothing in rails/kb_policy.py or its tests reads DEV/TEST gold to pick them.",
+  "rank_weights": {
+    "w_cos": 0.5,
+    "w_prior": 0.3,
+    "w_agree": 0.2
+  },
+  "recall": {
+    "top_k_per_dimension": 5
+  },
+  "fusion": {
+    "tau": 0.2,
+    "m": 5,
+    "c": 2,
+    "l": 3
+  },
+  "controller": {
+    "alpha": 0.5
+  }
+}
