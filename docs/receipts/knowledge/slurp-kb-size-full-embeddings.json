@@ -1,0 +1,182 @@
+{
+  "accounting": {
+    "embedding_tool_contacts": 23030,
+    "frozen_core_contacts": 0,
+    "gpu_hours": 0.0,
+    "gpu_hours_basis": "-ngl 0: nothing offloaded; the pass is CPU-only",
+    "http_requests_guarded": 23030,
+    "spawn_seconds": 10.062,
+    "speech_audio_seconds": 0,
+    "throughput_texts_per_second": 12.4172,
+    "total_wall_seconds": 1865.607
+  },
+  "attempt_id": "attempt-20260824T030738Z-kbtxemb",
+  "authority": "docs/readiness/2026-08-23-dev100-campaign-preregistration.md section 5.1 (prep prerequisite 1); owner rulings 2026-08-23-knowledge-plane-baseline-rulings.md section 7 revised sequence",
+  "consumption_caution": "The content-facet vectors are the K-side 'content' dimension the saea-kb-alpha-blend-v1 policy's multidim recall consumes (rails.kb_policy takes facet_vectors as facet_id -> {dimension: vector}). The VALUE vectors are produced because the DEV-100 preregistration section 5.1 names both text families, but the owner's Q-K-V ruling (2026-08-23-knowledge-plane-baseline-rulings.md section 1.3) states that V is consumed, never embedded as key material. Value vectors must therefore NOT be used as recall keys without an explicit owner decision; they are available for evidence-side work (deduplication, supply-side reranking, diagnostics) only.",
+  "embedder": {
+    "binary_path": "llama.cpp-featcache/build/bin/llama-server",
+    "binary_sha256": "d0b42ace8d8e02dc772a0e4a1e1667068b3ad799b1ca4c98c741cf89d58404f2",
+    "build_commit": "04ccc72a2207347ca76161b93fd9d846dd0a8675",
+    "cpu_only": true,
+    "dims": 1024,
+    "gguf_relpath": "models/qwen3-embedding-0.6b-gguf/Qwen3-Embedding-0.6B-Q8_0.gguf",
+    "gguf_sha256": "06507c7b42688469c4e7298b0a1e16deff06caf291cf0a5b278c308249c3e439",
+    "gpu_layers": 0,
+    "lock_key": "qwen3-embedding-0.6b-gguf",
+    "lock_revision": "370f27d7550e0def9b39c1f16d3fbaa13aa67728",
+    "port": 8082,
+    "role": "pinned TOOL-level embedder (frozen tool-level retriever clause); never the frozen core",
+    "server_argv": [
+      "/home/chao/llama.cpp-featcache/build/bin/llama-server",
+      "--host",
+      "127.0.0.1",
+      "--port",
+      "8082",
+      "-m",
+      "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/models/qwen3-embedding-0.6b-gguf/Qwen3-Embedding-0.6B-Q8_0.gguf",
+      "--embedding",
+      "--pooling",
+      "last",
+      "-ngl",
+      "0",
+      "-c",
+      "4096",
+      "-b",
+      "4096",
+      "-ub",
+      "4096",
+      "-np",
+      "1",
+      "-t",
+      "16"
+    ],
+    "server_props": {
+      "build_info": "b8-04ccc72a2",
+      "model_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/models/qwen3-embedding-0.6b-gguf/Qwen3-Embedding-0.6B-Q8_0.gguf",
+      "total_slots": 1
+    },
+    "session_id": "SAEA-SN-TOOL-KB-TEXT-EMB-PASS-attempt-20260824T030738Z-kbtxemb-qwen3-emb-cpu",
+    "session_pid": 112883
+  },
+  "encode_only_check": {
+    "guard1_import": "PASS",
+    "guard2_endpoint_strings": "PASS",
+    "guard3_client_surface": "PASS",
+    "guard4_payload_keys": "PASS on all 23030 request payloads",
+    "pinned_modules": [
+      "speech_aware_evidence_acquisition.rails.embedding_client",
+      "speech_aware_evidence_acquisition.rails.local_encoder_client",
+      "speech_aware_evidence_acquisition.rails.probes.pemb3m_flight",
+      "speech_aware_evidence_acquisition.rails.probes.pemb4r_flight"
+    ],
+    "result": "PASS",
+    "runner_source": "/mnt/c/Users/35686/AppData/Local/Temp/claude/D--chao-workspace-exploring-l4-intelligence-studies-speech-aware-evidence-acquisition/6d9f1834-68e9-41a7-bbcc-724898cf15a9/scratchpad/kbtextemb/run_kb_text_embedding_pass.py",
+    "runner_source_sha256": "f8f719cfe695c02e21184c62745a0c48bf6b55c5442f55f45bd2a7da3fda3e29"
+  },
+  "exposure_ledger_row": "SAEA-SN-TOOL-KB-TEXT-EMB-PASS",
+  "frame": "Artifact-producing prep pass (DEV-100 prep prerequisite 1). No accuracy, promotion, admission, or superiority claim follows from this receipt; its only product is the KB-side vector material the DEV-100 campaign's alpha-blend policy consumes. Vectors and the manifest live on the data root and never enter Git; this receipt carries their hashes.",
+  "generated_at": "2026-08-24T03:38:50.009755+00:00",
+  "generator": "scratchpad runner, archived at docs/checks/speech-aware-evidence-acquisition/2026-08-23-kb-text-embedding-pass/runner/run_kb_text_embedding_pass.py",
+  "jitter_pair": {
+    "bit_identical": true,
+    "cosine": 1.0,
+    "note": "the SAME text embedded at session start and at session end. E-1 Mission C measured GPU-side non-bit-exactness (cosine 0.999910) for this exact model; this pass is CPU-served, so the pair is the declared tolerance evidence.",
+    "text_sha256": "c9a64ba8de082d25de1625c3b1edee546532841b19c94d2d62096d5f75eac5fa",
+    "text_source": "content facet facet:content:1 representation"
+  },
+  "manifest": {
+    "artifact_relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-full/embeddings-manifest.json",
+    "bytes": 6037,
+    "sha256": "69f6fbc4f47152cc2b4ae316350a69ce22075c30f3d03f3d0bb50a4abe34391b"
+  },
+  "not_embedded": {
+    "dimensions": [
+      "label",
+      "prior",
+      "speaker"
+    ],
+    "facet_count": 349,
+    "reason": "label / prior / speaker facets are recalled by prior mass and exact-key agreement, never by vector similarity (DEV-100 preregistration section 5.1)"
+  },
+  "resident_decoder_untouched": {
+    "note": "the resident q4km decoder was never contacted, probed, restarted, or reconfigured by this pass; the embedder ran CPU-only (-ngl 0) in its own session on port 8082. An unchanged server-log byte length AND sha256 across the whole pass is the proof.",
+    "pid": 607,
+    "port": 8080,
+    "ps_after": "607 Sun Aug 23 08:42:03 2026    14:56:46 /home/chao/llama.cpp-featcache-speech-batch-26802/build-singleton-zero-copy/bin/llama-server --host 127.0.0.1 --port 8080 -m /home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf --no-mmproj -c 65536 -np 16 -b 2048 -ub 512 -fa on -ngl 999 -ctk q8_0 -ctv q8_0 --cache-prompt --cache-ram 0 --no-cache-idle-slots --slot-prompt-similarity 0",
+    "ps_before": "607 Sun Aug 23 08:39:59 2026    14:27:44 /home/chao/llama.cpp-featcache-speech-batch-26802/build-singleton-zero-copy/bin/llama-server --host 127.0.0.1 --port 8080 -m /home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf --no-mmproj -c 65536 -np 16 -b 2048 -ub 512 -fa on -ngl 999 -ctk q8_0 -ctv q8_0 --cache-prompt --cache-ram 0 --no-cache-idle-slots --slot-prompt-similarity 0",
+    "server_log_bytes_after": 1117739,
+    "server_log_bytes_before": 1117739,
+    "server_log_path": "/home/chao/runs/services/SAEA-SN-Q4KM-NP16-HOT-PREFIX-ZCOPY-20260823T111700Z/server.log",
+    "server_log_sha256_after": "177b972d81bcf02cf26dbcacfc8cd9f6ca81b1ae695395022923da1faa557e02",
+    "server_log_sha256_before": "177b972d81bcf02cf26dbcacfc8cd9f6ca81b1ae695395022923da1faa557e02",
+    "verdict": true
+  },
+  "run_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SN-TOOL-KB-TEXT-EMB-PASS/attempt-20260824T030738Z-kbtxemb",
+  "run_id": "SAEA-SN-TOOL-KB-TEXT-EMB-PASS",
+  "schema": "saea-kb-text-embeddings-receipt-v1",
+  "session_stop": {
+    "forced": false,
+    "pid": 112883,
+    "runtime_receipt_sha256": "997e043f5a83cd4f759d457cdd08b5416ec8a7dad9fa1585eb8a0ea580a22094",
+    "schema": "saea-session-stop-receipt-v1",
+    "session_id": "SAEA-SN-TOOL-KB-TEXT-EMB-PASS-attempt-20260824T030738Z-kbtxemb-qwen3-emb-cpu",
+    "session_receipt_sha256": "e86a71110e3a44173daabce539eaecfa99304b4991cc7d528ab2a126bd138731",
+    "session_role": "legacy",
+    "stopped_at": "2026-08-24T03:38:51.109843+00:00",
+    "study": "speech-aware-evidence-acquisition",
+    "termination_signal": "SIGTERM"
+  },
+  "snapshot": {
+    "artifact_relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-full/snapshot.json",
+    "builder_policy_id": "saea-kb-distmodel-v1",
+    "content_sha256": "e27b274516604ffc0e21319758aea99dc027f459d480a32a74a715b023a51b57",
+    "facet_count": 11863,
+    "file_sha256": "f1cb8e024aa239298c4c2fe19fa9a026a891136fcff4b45b88061043121475fc",
+    "snapshot_id": "slurp-kb-distmodel-76e61b0666162aa7",
+    "source_split_identity_hash": "6a6677e97a64063b8672b2d175bd6378bcf9b644346fa2d249cc2d80343b252c",
+    "value_count": 11514
+  },
+  "storage": {
+    "arrays": [
+      "vectors",
+      "ids",
+      "text_sha256"
+    ],
+    "dtype": "float32",
+    "normalization_applied_by_this_pass": "none",
+    "note": "vectors are stored EXACTLY as the pinned llama.cpp server returned them. That server L2-normalizes pooled embeddings by default, which the measured l2_norms confirm; this pass adds no normalization of its own, so a consumer that wants a different normalization applies it at the point of use. text_sha256[i] is SHA-256 over the UTF-8 bytes of the exact text embedded into row i, so a consumer can re-verify the pairing without the snapshot."
+  },
+  "study": "speech-aware-evidence-acquisition",
+  "vectors": {
+    "content_facets": {
+      "bytes": 50984752,
+      "count": 11514,
+      "dims": 1024,
+      "file": "vectors-content-facets.npz",
+      "l2_norms": {
+        "max": 1.0000000556199464,
+        "mean": 1.000000000101982,
+        "min": 0.9999999444384399
+      },
+      "order": "snapshot facet order (filtered to dimension == 'content'), row i <-> ids[i]",
+      "sha256": "0bcb955a3a0ab84880f0d039ae702e77d1247ed23c3b8cecb468cbb1e0221c72",
+      "source_field": "KeyFacet.representation where dimension == 'content'",
+      "wall_seconds": 488.231
+    },
+    "values": {
+      "bytes": 50616304,
+      "count": 11514,
+      "dims": 1024,
+      "file": "vectors-values.npz",
+      "l2_norms": {
+        "max": 1.0000000523654138,
+        "mean": 0.9999999997682877,
+        "min": 0.9999999482352689
+      },
+      "order": "snapshot value order, row i <-> ids[i]",
+      "sha256": "daa20244843af46a69afa6f76a46de231356c48785ff0cceed83cbc37a4b3ad3",
+      "source_field": "ValueBundle.content",
+      "wall_seconds": 1366.3
+    }
+  }
+}
