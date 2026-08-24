@@ -797,9 +797,9 @@ class KbAlphaBlendController:
             query_state_sha256=next_state.content_hash(),
             purpose="evidence-decode",
             instruction=(
-                f"{context.task_contract}\n"
-                "Answer using the speech query together with the supplied knowledge "
-                "evidence."
+                "Decide under the task contract already given above, now "
+                "considering the retrieved evidence. Answer using the speech "
+                "query together with the supplied knowledge evidence."
             ),
             key_representation_id=f"{CONTROLLER_POLICY_ID}:evidence",
             matcher_policy_id=CONTROLLER_POLICY_ID,

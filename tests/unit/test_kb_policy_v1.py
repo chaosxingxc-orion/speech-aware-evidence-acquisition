@@ -182,6 +182,60 @@ def _run_with_controller_factory(
     return summary.results[0]
 
 
+def _adapter_with_task_contract(sample_id: str, task_contract: str) -> _FakeAdapter:
+    """A one-sample ``_FakeAdapter`` whose ``build_task_contract`` returns a
+    caller-chosen string -- an instance-attribute override, not a new
+    dataclass field, so every other test that builds its own
+    ``_FakeAdapter``/``_one_sample_adapter`` is untouched."""
+
+    adapter = _one_sample_adapter(sample_id)
+    adapter.build_task_contract = lambda sample, obs: task_contract  # type: ignore[method-assign]
+    return adapter
+
+
+def _run_alpha_blend_with_task_contract(
+    tmp_path: Path,
+    *,
+    snapshot: KnowledgeSnapshot,
+    factory,
+    responder,
+    task_contract: str,
+    sample_id: str = "s1",
+    max_contacts: int = 2,
+):
+    """Like :func:`_run_with_controller_factory`, but with an explicit
+    ``task_contract`` and the ``MockCoreClient`` returned alongside the
+    result, so a test can inspect exactly what was rendered for each
+    contact (``client.calls[i]`` is the ``(messages, decoding_params)`` pair
+    sent for contact index ``i``)."""
+
+    adapter = _adapter_with_task_contract(sample_id, task_contract)
+    client = MockCoreClient(responder=responder)
+    registry = Registry("test kb-policy controller - task contract")
+    registry.register(kb_policy.CONTROLLER_POLICY_ID, factory)
+
+    summary = run_speech_native_agent_loop(
+        data_root=tmp_path,
+        plan=_plan(execution_profile="model-free-check"),
+        adapter=adapter,
+        core_client=client,
+        split_id="all",
+        knowledge_snapshot=snapshot,
+        speech_packet_bindings={
+            sample_id: {"packet_id": f"fake/dev/{sample_id}", "sha256": _SHA_C}
+        },
+        controller_policy_id=kb_policy.CONTROLLER_POLICY_ID,
+        controller_registry=registry,
+        max_contacts=max_contacts,
+        slot_count=1,
+        queue_depth=2,
+        trace_sink=TraceBuffer(_plan().run_id),
+        agent_executor_id="reference-trajectory-v1",
+    )
+    assert len(summary.results) == 1
+    return summary.results[0], client
+
+
 # ---------------------------------------------------------------------------
 # Stage 1: multidim_recall
 # ---------------------------------------------------------------------------
@@ -719,6 +773,152 @@ def test_same_policy_is_task_independent_across_label_space_size(
     assert [t.action_kind for t in result.transitions] == ["acquire", "stop"]
     assert result.final_query_state.retrieved_value_ids == (f"value:{target_label}",)
     assert result.final_response_text == f"The evidence indicates {target_label}."
+
+
+# ---------------------------------------------------------------------------
+# Prompt-fit regression (docs/checks/speech-aware-evidence-acquisition/
+# 2026-08-24-dev100-c3-prompt-fit): the evidence-decode contact's
+# instruction must reference the task contract that
+# ``rails.runner._agent_messages`` already places in the system message of
+# every contact, never re-render it a second time.
+# ---------------------------------------------------------------------------
+
+
+def test_evidence_contact_instruction_does_not_repeat_the_task_contract(tmp_path: Path):
+    """A long sentinel task contract must appear exactly once across the
+    whole rendered request for the evidence-decode contact -- in the system
+    message ``rails.runner._agent_messages`` builds for every contact --
+    never again inside the evidence contact's own control instruction. This
+    is the exact duplication the DEV-100 C3 prompt-fit receipt measured at
+    ~1,957 tokens (5,494 characters) of the worst-case 7,773-token
+    envelope."""
+
+    sentinel_contract = "SENTINEL-TASK-CONTRACT-" + ("Q" * 2000)
+    snapshot = _red_green_controller_snapshot()
+    factory = kb_policy.make_kb_alpha_blend_controller_factory(
+        snapshot=snapshot,
+        query_vectors_by_sample={"s1": _RED_GREEN_QUERY_VECTOR},
+        facet_vectors=lambda facet_id: _RED_GREEN_FACET_VECTORS.get(facet_id, {}),
+        rank_weights=kb_policy.RankWeights(w_cos=1.0, w_prior=0.0, w_agree=0.0),
+        fuse_knobs=kb_policy.FuseKnobs(tau=0.5, m=10, c=1, top_l=2),
+        alpha=1.0,
+        top_k_per_dimension=10,
+    )
+
+    result, client = _run_alpha_blend_with_task_contract(
+        tmp_path,
+        snapshot=snapshot,
+        factory=factory,
+        responder=_evidence_aware_responder(_DIRECT_TEXT, _EVIDENCE_TEXT),
+        task_contract=sentinel_contract,
+    )
+
+    assert [record.plan.contact_id for record in result.contacts] == [
+        "direct-decode",
+        "evidence-decode",
+    ]
+    evidence_instruction = result.contacts[1].plan.instruction
+    evidence_messages, _decoding_params = client.calls[1]
+    assert len(evidence_messages) == 2
+    system_message = evidence_messages[0]
+    assert system_message["role"] == "system"
+
+    # The sentinel appears in the system message every contact already
+    # carries ...
+    assert sentinel_contract in str(system_message["content"])
+    # ... and never again inside the evidence contact's own instruction ...
+    assert sentinel_contract not in evidence_instruction
+    # ... so across the whole rendered request for this contact (the
+    # message list plus the separately-carried CONTROL instruction) it
+    # appears exactly once, not twice.
+    rendered = "".join(str(message["content"]) for message in evidence_messages)
+    rendered += evidence_instruction
+    assert rendered.count(sentinel_contract) == 1
+
+
+_WORST_CASE_INSTRUCTION_CHAR_BOUND = 500  # generous vs. the ~175-char fixed instruction
+
+
+def _worst_case_fusion_snapshot(
+    *, n_targets: int, values_per_target: int, text_length: int
+) -> KnowledgeSnapshot:
+    """A synthetic snapshot shaped like the prompt-fit receipt's worst case
+    (``fusion_m=5``, ``fusion_c=2``, ``fusion_top_l=3`` -> up to 6 selected
+    values): every content facet cosine-matches the query exactly, so every
+    value across ``n_targets`` distinct task_targets clears percept
+    admission and is selected up to ``values_per_target`` each -- with
+    facet/value text as long as the receipt's own p99 lengths."""
+
+    long_facet_text = "F" * text_length
+    long_value_text = "V" * text_length
+    facets: list[KeyFacet] = []
+    values: list[ValueBundle] = []
+    for index in range(n_targets):
+        target = f"target{index}"
+        content_fid = f"facet:content:{target}"
+        label_fid = f"facet:label:{target}"
+        facets.append(
+            KeyFacet(content_fid, "content", "text", long_facet_text, (f"train:{target}",))
+        )
+        facets.append(KeyFacet(label_fid, "label", "text", target, (f"train:{target}",)))
+        for value_index in range(values_per_target):
+            values.append(
+                ValueBundle(
+                    value_id=f"value:{target}:{value_index}",
+                    content=long_value_text,
+                    associated_facet_ids=(content_fid, label_fid),
+                    source_sample_ids=(f"train:{target}",),
+                    provenance_refs=(f"sample:train:{target}",),
+                    task_target=target,
+                    prior_score=0.5,
+                )
+            )
+    return KnowledgeSnapshot(
+        snapshot_id="worst-case-fusion-v1",
+        source_split_identity_hash=_SHA_B,
+        source_sample_ids=tuple(f"train:target{index}" for index in range(n_targets)),
+        builder_policy_id="test-builder-v1",
+        facets=tuple(facets),
+        values=tuple(values),
+    ).validate()
+
+
+def test_evidence_contact_instruction_is_bounded_for_a_worst_case_fusion(tmp_path: Path):
+    """Even at the receipt's worst-case fusion shape (6 selected values,
+    long facet/value text, and a large task contract) the evidence-decode
+    instruction stays a small, fixed-size reference: it must never grow
+    with the fused evidence or with the task contract size."""
+
+    snapshot = _worst_case_fusion_snapshot(n_targets=3, values_per_target=2, text_length=1600)
+    large_task_contract = "TASK-CONTRACT-" + ("C" * 6000)  # ~ the receipt's 5,424 characters
+    factory = kb_policy.make_kb_alpha_blend_controller_factory(
+        snapshot=snapshot,
+        query_vectors_by_sample={"s1": {"content": (1.0,)}},
+        facet_vectors=lambda facet_id: {"content": (1.0,)},
+        rank_weights=kb_policy.RankWeights(w_cos=1.0, w_prior=0.0, w_agree=0.0),
+        fuse_knobs=kb_policy.FuseKnobs(tau=0.5, m=10, c=2, top_l=3),
+        alpha=1.0,
+        top_k_per_dimension=10,
+    )
+    # A direct answer that matches none of the label texts ("target0" etc.)
+    # keeps direct_label=None, so the blend always dispatches evidence-decode
+    # (never the retain-primary degenerate stop), regardless of tie shape.
+    result, _client = _run_alpha_blend_with_task_contract(
+        tmp_path,
+        snapshot=snapshot,
+        factory=factory,
+        responder=_evidence_aware_responder("I have no idea.", "The evidence settles it."),
+        task_contract=large_task_contract,
+    )
+
+    assert [t.action_kind for t in result.transitions] == ["acquire", "stop"]
+    fusion_decision = result.waves[0].fusion_decision
+    assert fusion_decision is not None
+    assert len(fusion_decision.selected_value_ids) == 6  # 3 targets x 2 values: the worst case
+
+    evidence_instruction = result.contacts[1].plan.instruction
+    assert len(evidence_instruction) < _WORST_CASE_INSTRUCTION_CHAR_BOUND
+    assert large_task_contract not in evidence_instruction
 
 
 # ---------------------------------------------------------------------------
