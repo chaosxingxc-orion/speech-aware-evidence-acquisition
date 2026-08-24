@@ -58,5 +58,26 @@ attempt's bytes.
   precedent: there the failed gate touched the speech-carriage evidence chain, here that chain
   is complete and the missing piece is telemetry the owner already demoted.
 
-Until the owner chooses, the attempt directory is quarantined (read nothing further), and no
-successor E108 registration is authored.
+## 5. Owner decision (2026-08-23): OPTION B
+
+The owner selected Option B — registered model-free finalization. Execution constraints bound
+to this authorization:
+
+1. A `model-free-check` exposure row is committed BEFORE the rebuild runs (the hot-prefix
+   tokenizer-audit order-of-operations precedent).
+2. The rebuild makes ZERO contacts of any kind against the resident service (no completion,
+   no /props, no /tokenize — disk and git only) and never opens response meaning: the
+   `MODEL_RESPONSE` trace channel and decision contents stay unread; receipt assembly consumes
+   costs, hashes, server-log offsets, and lifecycle events only.
+3. GPU-derived fields are recorded `NOT_AVAILABLE` with the `gpu_telemetry_defect` note per
+   the repaired degraded mode (`2b62a47a`); the slot-event lifecycle checks re-run on their
+   own merits and must pass.
+4. The rebuild is deterministic over its data-derived fields (a repeat rebuild produces an
+   identical content hash for those fields; the rebuild timestamp is recorded separately and
+   marked non-hashed or excluded from the content hash per the receipt schema's conventions).
+5. The finalization produces the flight receipt and mechanical-eligibility verdict ONLY. The
+   frozen in-fragment reader (`m11-information-support-gate-v1` + the OOF evaluator) runs as a
+   SEPARATE, subsequently registered one-shot read after coordinator review of mechanical
+   eligibility — this section does not authorize the semantic read.
+
+No successor E108 re-fly is registered; the first attempt's bytes are the record.
