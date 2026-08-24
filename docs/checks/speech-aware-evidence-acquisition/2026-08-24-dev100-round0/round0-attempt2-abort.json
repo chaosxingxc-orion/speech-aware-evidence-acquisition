@@ -1,0 +1,93 @@
+{
+  "schema": "saea-dev100-round0-abort-v1",
+  "study": "speech-aware-evidence-acquisition",
+  "run_id": "SAEA-DEV100-KB-ALPHA-BLEND-CAMPAIGN",
+  "round_index": 0,
+  "attempt": "ROUND-0 ATTEMPT 2 (successor semantics; campaign-row registration of 2026-08-24, commit 25ffa729)",
+  "generated_at": "2026-08-24T09:05:00Z",
+  "outcome": "SPENT-EXECUTED-ABORTED",
+  "authority": "docs/readiness/2026-08-23-dev100-campaign-preregistration.md including amendment 5b; campaign row attempt-2 registration; one-shot semantics per ROUND attempt",
+  "config_hash": "5397ea3ead594409b440ed9d8abc3690f6230d8b357207eb509977e411405944",
+  "server_np": 8,
+  "decoder_session": {
+    "session_id": "SAEA-SN-Q4KM-NP8-ZCOPY-DEV100-20260824T081551Z",
+    "pid": 654,
+    "port": 8080,
+    "receipt_sha256": "67459257133006a093c5e55dc9ef6e3f2c502296727ffb2cdd944e1c98a1ded5",
+    "hosting": {
+      "mode": "systemd-run --user unit saea-np8-dev100 (WSL Ubuntu-24.04, systemd PID 1) + detached Windows wsl.exe keepalive client PID 52908",
+      "linger": "enabled (loginctl enable-linger)",
+      "survival_evidence": "unit active 08:16:03Z through the whole attempt and beyond, including a ~14-minute window (08:18:08Z-08:31:57Z) with zero agent-side wsl clients; /health ok and unit active AFTER both takeoff deaths. The hosting fix WORKED: neither takeoff was killed by service loss.",
+      "vm_poweroff_incident_prehosting": "first spawn (session ...T080702Z) reached READY in 25.3 s then was killed 08:08:22Z by WSL VM power-off ('systemd-logind: The system will power off now!') ~14 s after the last wsl.exe client detached; systemd unit + loginctl linger alone do NOT keep the WSL VM alive; zero spend. Remedy: the detached Windows keepalive client, after which survival was proven.",
+      "status_after_abort": "SERVICE LEFT UP for the coordinator's next decision"
+    }
+  },
+  "gpu_preflight": {
+    "lenovo_smart_fan_mode": 3,
+    "enforced_power_limit_w": 100.0,
+    "verified": "host PowerShell WMI + in-WSL nvidia-smi, 08:06Z; re-verified in-script at both takeoffs"
+  },
+  "prep_landed_before_takeoff": {
+    "prompt_fit": "SAEA-SN-MF-DEV100-C3-PROMPT-FIT-NP8-R2 PASS: worst envelope 6,174 vs 8,192 slot, margin +1,954 on the post-b3d29658 rendering against THIS session; 7 tokenizer contacts; receipt a30b5ee7f8f59a243bbd32d8a6a576ebe5483be6a2102224913567a785e4d139 (commit ad1e2b24)",
+    "dry_check": "model-free rails-native dry check PASS at both takeoffs: the b3d29658 rails-rendered direct instruction is byte-identical to the attempt-1 flown harness form and clears rails.runner._assert_agent_control_excludes_knowledge_payloads against all 23,267 protected payloads of the real snapshot",
+    "preflight_only_pass": "08:36:32Z, zero contacts",
+    "launcher_commits": ["ad1e2b24 (launch_dev100_round0_attempt2.py)", "52fbb1c3 (takeoff-1 refusal repair)"]
+  },
+  "takeoff_timeline": [
+    {
+      "takeoff": 1,
+      "attempt_store_id": "attempt-20260824T083857Z-dev100r0a2",
+      "at": "2026-08-24T08:38:57Z",
+      "outcome": "ZERO-CORE-SPEND refusal by rails.runner's per-loop worst-case budget check",
+      "cause_verbatim": "RailsRunnerError: AgentLoop contact ceiling 200 exceeds the ExecutionPlan budget 170",
+      "spend": "0 core / 2 embedding tool contacts (jitter pair, cosine 0.9996190217532903, NOT bit-identical); sidecar stopped cleanly with stop receipt",
+      "repair_commit": "52fbb1c3: planned_model_calls raised 170 -> 200 (the rails per-loop worst case len(samples) x max_contacts), registered 170 attempt ceiling kept in the CoreCeilingClient meter"
+    },
+    {
+      "takeoff": 2,
+      "attempt_store_id": "attempt-20260824T084302Z-dev100r0a2",
+      "at": "2026-08-24T08:43:02Z",
+      "outcome": "SPENT-EXECUTED-ABORTED at 49 frozen-core contacts, all direct-decode, zero evidence contacts dispatched",
+      "milestones": {
+        "gate_pass": "08:44:34Z (56.3s, umbrella lock 9064bde89d42...71b1)",
+        "attached": "08:44:34Z (receipt 67459257..., pid 654, read-only attach; argv verified)",
+        "sidecar_up": "08:44:49Z (pid 2269, port 8082, CPU-only)",
+        "arm_blend": "08:44:49Z-08:53:5xZ: 49 direct-decode contacts completed and charged; 26 runtime query embeddings; the 50th contact was refused by the cumulative budget check and the flight aborted",
+        "teardown": "embedder sidecar stopped cleanly 08:54:00Z (SIGTERM, forced=false, stop receipt); jitter end pair recorded (bit-identical, cosine 1.0)"
+      },
+      "cause_verbatim": "openjiuwen.core.common.exception.errors.ExecutionError: [100054] component 'agent_contact_0' execute 'invoke' error, reason='call budget exhausted: plan SAEA-DEV100-KB-ALPHA-BLEND-CAMPAIGN allows 200 calls (151 already spent by other attempts on this run, 49 by this attempt)' (FrozenCoreError raised in core.model.adapter, propagated through the openjiuwen executor)",
+      "root_cause": "IMPLEMENTER MIS-DECLARATION, rails behaved as designed: core.model.adapter enforces plan.planned_model_calls CUMULATIVELY across every attempt of the run_id (fresh sibling read of durable attempt actuals per request; the I3-defect repair). Attempt-1's 151 durable calls count against attempt-2's plan, so planned=200 left only 49 callable contacts. The takeoff-1 repair satisfied the rails per-loop check (>=200) but missed the cumulative semantics; a correct declaration for a full BLEND + resend under the registered row (1800 calls / 2400 audio-s) would have been planned_model_calls >= 352 (151 prior + 200 loop worst case + 1 resend) and planned_speech_audio_seconds >= ~900 (399.7 prior + ~471 worst case + margin)."
+    }
+  ],
+  "spend_durable": {
+    "attempt2_frozen_core_contacts": {"used": 49, "breakdown": "49 BLEND direct-decode contacts (takeoff 2); takeoff 1 spent zero", "registered_attempt_ceiling": 170},
+    "attempt2_metered_audio_seconds": 118.5831875,
+    "attempt2_embedding_tool_contacts": {"used": 30, "breakdown": "takeoff 1: 2 (jitter pair, cosine 0.99962); takeoff 2: 28 (26 query embeddings + jitter pair bit-identical cosine 1.0)", "registered_attempt_ceiling": 130},
+    "attempt2_gpu_active_seconds_sampled": 437.82,
+    "attempt2_peak_vram_mib": 24093.0,
+    "round0_cumulative_incl_attempt1": {"frozen_core_contacts": 200, "embedding_tool_contacts": 55, "metered_audio_seconds": 518.3183125},
+    "campaign_ceilings": {"frozen_core_contacts": 1800, "embedding_tool_contacts": 1500, "metered_audio_seconds": 2400, "gpu_hours": 2.0},
+    "source": "durable AttemptStore actuals (attempt-20260824T084302Z-dev100r0a2: calls=49, audio_seconds=118.5831875) + flight-state.json + embedding-contacts.jsonl of both takeoffs"
+  },
+  "boundary_respected": {
+    "gold_opened": false,
+    "note": "Scoring never ran: NO devel gold, reference transcript, prediction, correctness, or response meaning was read in either takeoff. The 49 responses existed only in the in-memory trace buffer, which died unflushed with the abort (disclosed trace gap, same class as attempt-1 BLEND); the 26 query-vector embeddings are durable in query-vectors.jsonl (hashes + vectors, no transcripts). Attempt-1's M0 trace was verified byte-identical and structurally indexed (request/response pairing + response hashes only); its response TEXTS were never parsed.",
+    "resend_pair": "never reached",
+    "value_vectors": "SEALED (never loaded)",
+    "m11_boundary_stage": "not flown (as registered)"
+  },
+  "serving_pathology_observed": {
+    "summary": "INDEPENDENT of the abort cause: generation ran ~100x slower than attempt-1 on the same binary, model, args, feature root, and prompt bytes. Even absent the budget refusal, the flight would very likely have crossed the ~60-minute harness background-task reap (~09:42Z) before completing the evidence phase.",
+    "evidence": {
+      "attempt1_generation": "42-97 ms/token (server log of session ...T064416Z; M0 100 contacts in 66.4 s)",
+      "attempt2_generation": "~4,880-5,956 ms/token (0.17-0.20 tokens/s/slot); 49 direct contacts took ~11 minutes",
+      "prompt_eval": "~192 tokens/s (811-token direct prompt in 4.2 s) - also far below attempt-1",
+      "gpu_signature": "100% utilization with only ~45 W draw and 0% memory-controller utilization = busy-spin, not compute; WSL nvidia-smi reported clocks.sm pinned at 1200 MHz while Windows nvidia-smi simultaneously reported 2490 MHz SM / 14001 MHz mem / P0 - a GPU-paravirtualization state inconsistency",
+      "workload_facts": "all 49 completed prompt evals were <2k tokens (direct-decode); zero evidence-class (>=2k) prompts were processed; embedder sidecar (CPU-only) and launcher used ~25% of one core each - no CPU starvation; host RAM ample"
+    },
+    "candidate_cause": "degraded GPU-PV/dxg state in the fresh WSL VM instance booted after today's repeated VM power-off cycles (the VM was powered off at least twice between 08:07Z and 08:16Z). Unresolved; not manipulated mid-flight (no clock, power, or driver changes were made during the attempt).",
+    "recommendation": "before ANY further flight: wsl --shutdown with the campaign service down, fresh VM boot with the keepalive FIRST, respawn the systemd-hosted service (hot load ~25 s), then a 2-3 contact throughput canary against the M0 prompt shape (model-free tokenizer probes cannot see this; only decode speed reveals it) under an explicitly registered canary allowance"
+  },
+  "one_shot_consequence": "Attempt 2 is spent under one-shot semantics (no silent intra-round retry after real core spend). 49 of the registered 170 attempt contacts were used; the registration's science (fresh complete BLEND arm + resend) was not obtained. Whether a third round-0 attempt is authorized, with the corrected cumulative plan declaration (planned_model_calls >= 352-run-cumulative) and a serving-throughput canary, is the coordinator/owner's decision, not the implementer's. The campaign row stays open, consumed = no; nothing semantic was read; attempt-1's M0 arm remains durable, verified, and reusable by the same successor semantics.",
+  "hosting_verdict": "The attempt-1 failure mechanism is CLOSED: systemd-run --user hosting plus the detached Windows keepalive kept the decoder alive through both takeoffs, both aborts, and a 14-minute no-client window. The service remains UP after this abort."
+}
