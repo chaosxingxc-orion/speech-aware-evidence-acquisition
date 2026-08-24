@@ -32,9 +32,14 @@ byte-pinned scoring-side authority (round 1 is scored and sealed — never
 re-flown); the round-2 report adding per-sample movement vs BLEND-round-1;
 the GPU/VRAM in-flight sampler pointed at the WINDOWS-side nvidia-smi.exe
 (the round-1 WSL-bridge binary timed out under load and self-disabled;
-the Windows binary sampled reliably all flight); and the round-2 stopping
+the Windows binary sampled reliably all flight); the round-2 stopping
 rule evaluation (round 1 already banked one qualifying sub-1-sample round
-with zero C->W growth). The serving session is the SAME attempt-6
+with zero C->W growth); and the PROMPT-REUSE report section (owner
+directive at registration: prefix-cache optimality is a first-class
+metric) — evaluated vs declared prompt tokens per contact from the
+durable server log's per-request records, split by contact class, with
+the within-trajectory skipped-token distribution; measurement only, no
+behavior change. The serving session is the SAME attempt-6
 BASE-build resident service (receipt hash re-verified before attach; the
 R6 prompt-fit row binds this session and STANDS — alpha changes only the
 label-side blend arithmetic, no prompt shape, bounded by the same
@@ -672,6 +677,81 @@ def parse_print_timing(log_bytes: bytes) -> dict[str, list[dict[str, float]]]:
     return rows
 
 
+def parse_slot_requests(log_bytes: bytes) -> list[dict[str, int]]:
+    """Per-request serving records from raw llama-server log bytes —
+    content-free COUNTS only (owner directive: prompt-reuse is a first-class
+    metric). For every completed task: server slot id, task id, EVALUATED
+    prompt tokens (the print_timing prompt-eval row — tokens actually
+    processed after the slot prompt-cache prefix hit), generation tokens,
+    and the release-time ``n_tokens`` (total tokens resident in the slot =
+    declared prompt + generated, up to a fixed per-request offset that the
+    flight calibrates against the client-side declared total). Only tasks
+    with all three rows present are returned (sorted by task id)."""
+
+    import re
+
+    launch = re.compile(
+        r"slot launch_slot_: id\s+(\d+) \| task (\d+) \| processing task"
+    )
+    peval = re.compile(
+        r"slot print_timing: id\s+(\d+) \| task (\d+) \| prompt eval time =\s*"
+        r"[0-9.]+ ms /\s*(\d+) tokens"
+    )
+    geval = re.compile(
+        r"slot print_timing: id\s+(\d+) \| task (\d+) \|\s+eval time =\s*"
+        r"[0-9.]+ ms /\s*(\d+) tokens"
+    )
+    release = re.compile(
+        r"slot\s+release: id\s+(\d+) \| task (\d+) \| stop processing: "
+        r"n_tokens = (\d+)"
+    )
+    by_task: dict[int, dict[str, int]] = {}
+
+    def rec(slot: str, task: str) -> dict[str, int]:
+        return by_task.setdefault(int(task), {"slot": int(slot), "task": int(task)})
+
+    for line in log_bytes.decode("utf-8", errors="replace").splitlines():
+        match = launch.search(line)
+        if match is not None:
+            rec(match.group(1), match.group(2))
+            continue
+        match = peval.search(line)
+        if match is not None:
+            rec(match.group(1), match.group(2))["prompt_eval_tokens"] = int(match.group(3))
+            continue
+        match = geval.search(line)
+        if match is not None:
+            rec(match.group(1), match.group(2))["generation_tokens"] = int(match.group(3))
+            continue
+        match = release.search(line)
+        if match is not None:
+            rec(match.group(1), match.group(2))["release_n_tokens"] = int(match.group(3))
+    complete = [
+        row
+        for _, row in sorted(by_task.items())
+        if {"prompt_eval_tokens", "generation_tokens", "release_n_tokens"} <= set(row)
+    ]
+    return complete
+
+
+def token_count_distribution(values: Sequence[int]) -> dict[str, object]:
+    """Descriptive distribution of a token-count list (content-free)."""
+
+    if not values:
+        return {"count": 0}
+    ordered = sorted(int(v) for v in values)
+    n = len(ordered)
+    return {
+        "count": n,
+        "min": ordered[0],
+        "p10": ordered[max(0, int(0.1 * n) - (1 if int(0.1 * n) == n else 0))],
+        "median": ordered[n // 2],
+        "p90": ordered[min(n - 1, int(0.9 * n))],
+        "max": ordered[-1],
+        "sum": sum(ordered),
+    }
+
+
 class DecodeRateSentinelTrip(Exception):
     """The in-flight decode-rate sentinel tripped: flush everything durable
     immediately and stop the flight cleanly (service left up)."""
@@ -862,6 +942,34 @@ def self_test() -> int:
     if summary["rates_observed"] != 3 * SENTINEL_WINDOW_CONTACTS:
         raise SystemExit(f"self-test FAIL: unexpected observation count: {summary}")
     log(f"self-test mechanism b PASS: {summary}")
+
+    # ---- prompt-reuse parser (owner directive: prefix-cache metric) ------
+    stub_requests = (
+        "165.41.712.384 I slot launch_slot_: id  4 | task 10 | processing task, is_child = 0\n"
+        "165.41.748.510 I slot print_timing: id  4 | task 10 | prompt eval time =     233.21 ms /    75 tokens (    3.11 ms per token,   321.60 tokens per second)\n"
+        "165.41.748.517 I slot print_timing: id  4 | task 10 |        eval time =    1714.68 ms /    48 tokens (   35.72 ms per token,    27.99 tokens per second)\n"
+        "165.41.748.606 I slot      release: id  4 | task 10 | stop processing: n_tokens = 1817, truncated = 0\n"
+        "165.57.331.776 I slot launch_slot_: id  1 | task 11 | processing task, is_child = 0\n"
+        "165.58.552.171 I slot print_timing: id  1 | task 11 | prompt eval time =     634.41 ms /   529 tokens (    1.20 ms per token,   833.84 tokens per second)\n"
+        "165.58.552.178 I slot print_timing: id  1 | task 11 |        eval time =     585.96 ms /    18 tokens (   32.55 ms per token,    30.72 tokens per second)\n"
+        "165.58.552.276 I slot      release: id  1 | task 11 | stop processing: n_tokens = 2280, truncated = 0\n"
+        "165.59.000.000 I slot launch_slot_: id  2 | task 12 | processing task, is_child = 0\n"
+        "165.59.000.001 I slot print_timing: id  2 | task 12 | prompt eval time =       1.00 ms /     1 tokens (    1.00 ms per token,  1000.00 tokens per second)\n"
+    )
+    parsed_requests = parse_slot_requests(stub_requests.encode("utf-8"))
+    if len(parsed_requests) != 2:  # task 12 lacks generation + release rows
+        raise SystemExit(f"self-test FAIL: parser returned {len(parsed_requests)} complete requests")
+    first, second = parsed_requests
+    if (first["slot"], first["task"], first["prompt_eval_tokens"], first["generation_tokens"], first["release_n_tokens"]) != (4, 10, 75, 48, 1817):
+        raise SystemExit(f"self-test FAIL: parser row 1 wrong: {first}")
+    if second["release_n_tokens"] - second["generation_tokens"] != 2262:
+        raise SystemExit(f"self-test FAIL: declared arithmetic wrong: {second}")
+    dist = token_count_distribution([5, 1, 9])
+    if (dist["count"], dist["min"], dist["median"], dist["max"], dist["sum"]) != (3, 1, 5, 9, 15):
+        raise SystemExit(f"self-test FAIL: token distribution wrong: {dist}")
+    if token_count_distribution([]) != {"count": 0}:
+        raise SystemExit("self-test FAIL: empty distribution wrong")
+    log("self-test prompt-reuse parser PASS: per-request records + declared arithmetic + distribution")
 
     # ---- round-2 knob sanity: alpha is the ONLY divergence from round 1 --
     if ROUND2_ALPHA != 0.55:
@@ -1777,6 +1885,7 @@ def main() -> int:
         # is a fresh single-slot re-issue of the byte-identical prompt on the
         # SAME BASE-build service instance attempt 6 flew.
         resend_record: dict[str, object]
+        resend_log_offset = server_log_path.stat().st_size
         if contact_total + 1 <= ATTEMPT_CORE_CEILING:
             first_sample = samples[0]
             resend_registry = Registry("dev100 round2 resend controller")
@@ -2210,6 +2319,171 @@ def main() -> int:
         len(r2_correct), len(r1_blend_correct), len(r0_blend_correct)
     ) > len(m0_correct)
 
+    # ---- prompt-reuse analysis (owner directive at round-2 registration:
+    # prefix-cache optimality is a first-class metric) -----------------------
+    # Computed from the durable server log's per-request records ONLY —
+    # content-free token counts; no behavior change, no extra contact.
+    # declared prompt tokens per request = release n_tokens - generation
+    # tokens + a fixed per-request offset CALIBRATED against the client-side
+    # declared total (cost.prompt_tokens_total covers exactly this attempt's
+    # requests); evaluated prompt tokens = the print_timing prompt-eval row
+    # (tokens actually processed after the slot prompt-cache prefix hit);
+    # skipped = declared - evaluated.
+    with server_log_path.open("rb") as log_handle:
+        log_handle.seek(canary_log_offset)
+        canary_window_bytes = log_handle.read(blend_log_offset - canary_log_offset)
+        blend_window_bytes = log_handle.read(resend_log_offset - blend_log_offset)
+        resend_window_bytes = log_handle.read()
+    canary_requests = parse_slot_requests(canary_window_bytes)
+    blend_requests = parse_slot_requests(blend_window_bytes)
+    resend_requests = parse_slot_requests(resend_window_bytes)
+    all_requests = canary_requests + blend_requests + resend_requests
+    prompt_tokens_total_client = (
+        cost.get("prompt_tokens_total") if isinstance(cost, Mapping) else None
+    )
+    sum_release_minus_gen = sum(
+        row["release_n_tokens"] - row["generation_tokens"] for row in all_requests
+    )
+    per_request_offset: object = "UNDETERMINED"
+    if isinstance(prompt_tokens_total_client, int) and all_requests:
+        offset_delta = prompt_tokens_total_client - sum_release_minus_gen
+        if (
+            offset_delta % len(all_requests) == 0
+            and abs(offset_delta) <= 2 * len(all_requests)
+        ):
+            per_request_offset = offset_delta // len(all_requests)
+    offset_int = per_request_offset if isinstance(per_request_offset, int) else 0
+
+    def declared_tokens(row: Mapping[str, int]) -> int:
+        return row["release_n_tokens"] - row["generation_tokens"] + offset_int
+
+    def reuse_stats(
+        rows: Sequence[Mapping[str, int]],
+    ) -> tuple[dict[str, object], list[int]]:
+        declared = [declared_tokens(row) for row in rows]
+        evaluated = [row["prompt_eval_tokens"] for row in rows]
+        skipped = [d - e for d, e in zip(declared, evaluated)]
+        total_declared = sum(declared)
+        total_evaluated = sum(evaluated)
+        stats: dict[str, object] = {
+            "requests": len(rows),
+            "declared_prompt_tokens": total_declared,
+            "evaluated_prompt_tokens": total_evaluated,
+            "skipped_prompt_tokens": total_declared - total_evaluated,
+            "evaluation_ratio": (
+                round(total_evaluated / total_declared, 6) if total_declared else None
+            ),
+            "reuse_ratio": (
+                round(1.0 - total_evaluated / total_declared, 6)
+                if total_declared
+                else None
+            ),
+            "skipped_tokens_distribution": token_count_distribution(skipped),
+            "evaluated_tokens_distribution": token_count_distribution(evaluated),
+            "declared_tokens_distribution": token_count_distribution(declared),
+        }
+        return stats, skipped
+
+    DIRECT_CLASS_MAX_DECLARED = 2000  # direct-decode envelope is 1,819 worst case
+    blend_direct_rows = [
+        row for row in blend_requests if declared_tokens(row) <= DIRECT_CLASS_MAX_DECLARED
+    ]
+    blend_evidence_rows = [
+        row for row in blend_requests if declared_tokens(row) > DIRECT_CLASS_MAX_DECLARED
+    ]
+    classification_clean = (
+        len(blend_direct_rows) == 100 and len(blend_evidence_rows) == dispatched_count
+    )
+    if not classification_clean and len(blend_requests) == 100 + dispatched_count:
+        ordered_by_declared = sorted(blend_requests, key=declared_tokens)
+        blend_direct_rows = ordered_by_declared[:100]
+        blend_evidence_rows = ordered_by_declared[100:]
+    overall_reuse, _ = reuse_stats(all_requests)
+    blend_direct_reuse, _ = reuse_stats(blend_direct_rows)
+    blend_evidence_reuse, evidence_skipped = reuse_stats(blend_evidence_rows)
+    canary_reuse, _ = reuse_stats(canary_requests)
+    resend_reuse, _ = reuse_stats(resend_requests)
+    two_contact_results = [
+        result for result in blend_summary.results if len(result.contacts) == 2
+    ]
+    same_slot_trajectories = sum(
+        1
+        for result in two_contact_results
+        if result.contacts[0].slot_id == result.contacts[1].slot_id
+    )
+    evidence_skipped_ge_1700 = sum(1 for s in evidence_skipped if s >= 1700)
+    evidence_skipped_ge_1000 = sum(1 for s in evidence_skipped if s >= 1000)
+    evidence_skipped_lt_100 = sum(1 for s in evidence_skipped if s < 100)
+    evidence_reuse_ratio = blend_evidence_reuse.get("reuse_ratio")
+    if isinstance(evidence_reuse_ratio, float) and evidence_reuse_ratio >= 0.5:
+        reuse_verdict = (
+            "ACTIVE: the slot prompt cache is doing real work on the evidence "
+            "contact class (reuse ratio >= 0.5)"
+        )
+    elif isinstance(evidence_reuse_ratio, float) and evidence_reuse_ratio <= 0.05:
+        reuse_verdict = (
+            "NEAR-ZERO: the evidence contacts re-evaluate essentially their "
+            "full prompts — this becomes the round-3 optimization target per "
+            "the owner directive"
+        )
+    else:
+        reuse_verdict = (
+            "PARTIAL: some prefix reuse on the evidence contact class, well "
+            "short of the common-prefix ceiling"
+        )
+    prompt_reuse_section = {
+        "directive": (
+            "owner directive at round-2 registration: prefix-cache optimality "
+            "is a first-class metric; measured from durable server-log "
+            "per-request records only (content-free token counts), no "
+            "behavior change"
+        ),
+        "method": (
+            "per request: declared = release n_tokens - generation tokens + "
+            "calibrated fixed offset; evaluated = print_timing prompt-eval "
+            "tokens (post-prefix-cache); skipped = declared - evaluated. "
+            "Windows split by the tracked server-log offsets: canary / BLEND "
+            "/ resend. BLEND contact classes split at declared <= "
+            f"{DIRECT_CLASS_MAX_DECLARED} (direct envelope 1,819)"
+        ),
+        "declared_offset_calibration": {
+            "client_prompt_tokens_total": prompt_tokens_total_client,
+            "sum_release_n_tokens_minus_generation": sum_release_minus_gen,
+            "request_count_parsed": len(all_requests),
+            "per_request_offset": per_request_offset,
+        },
+        "classification_clean_by_threshold": classification_clean,
+        "overall": overall_reuse,
+        "by_class": {
+            "blend_direct_contact0": blend_direct_reuse,
+            "blend_evidence_contact1": blend_evidence_reuse,
+            "canary_direct_single_slot": canary_reuse,
+            "resend_direct_single_slot": resend_reuse,
+        },
+        "within_trajectory": {
+            "two_contact_trajectories": len(two_contact_results),
+            "evidence_contact_same_server_slot_as_direct": same_slot_trajectories,
+            "evidence_contact_different_server_slot": (
+                len(two_contact_results) - same_slot_trajectories
+            ),
+            "expected_common_prefix_tokens": (
+                "~1,700+ (system + task contract + speech packet + query)"
+            ),
+            "evidence_skipped_ge_1700_tokens": evidence_skipped_ge_1700,
+            "evidence_skipped_ge_1000_tokens": evidence_skipped_ge_1000,
+            "evidence_skipped_lt_100_tokens": evidence_skipped_lt_100,
+            "note": (
+                "the slot prompt cache holds the LAST prompt per server slot, "
+                "so an evidence contact reaching the slot that just served a "
+                "prompt sharing its prefix (its own trajectory's direct "
+                "contact, or any request sharing the system+contract prefix) "
+                "skips that prefix; slot ids per contact come from the "
+                "client-side contact records (the runner pins id_slot)"
+            ),
+        },
+        "verdict": reuse_verdict,
+    }
+
     round_report = {
         "schema": "saea-dev100-round2-report-v1",
         "study": "speech-aware-evidence-acquisition",
@@ -2491,6 +2765,7 @@ def main() -> int:
         "mid_flight_clock_samples_windows_side": read_clock_samples(root),
         "trace_isolation": flight.get("trace_isolation"),
         "resend_pair": flight["resend_pair"],
+        "prompt_reuse": prompt_reuse_section,
         "serving_descriptives": flight["serving_descriptives"],
         "embedding_jitter_pair": flight.get("embedding_jitter_pair"),
         "core_client": flight["core_client"],
@@ -2535,6 +2810,17 @@ def main() -> int:
         f"C->W growth vs r1={c2w_growth_vs_r1}, round2_qualifies="
         f"{round2_qualifies}, CONVERGENCE FIRES={convergence_fires} "
         "(coordinator declares formally)"
+    )
+    log(
+        "PROMPT REUSE: overall evaluated/declared "
+        f"{overall_reuse.get('evaluated_prompt_tokens')}/"
+        f"{overall_reuse.get('declared_prompt_tokens')} "
+        f"(reuse ratio {overall_reuse.get('reuse_ratio')}); evidence-class "
+        f"reuse ratio {blend_evidence_reuse.get('reuse_ratio')}, skipped>=1700 "
+        f"on {evidence_skipped_ge_1700}/{len(evidence_skipped)} evidence "
+        f"contacts, same-slot trajectories {same_slot_trajectories}/"
+        f"{len(two_contact_results)}; offset calibration "
+        f"{per_request_offset}; verdict: {reuse_verdict}"
     )
     log("RESIDENT DECODER LEFT UP after round 2 (never stopped by this launcher)")
     return 0
