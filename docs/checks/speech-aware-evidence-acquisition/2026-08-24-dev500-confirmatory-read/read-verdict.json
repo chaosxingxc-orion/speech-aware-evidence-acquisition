@@ -1,0 +1,2074 @@
+{
+  "arm_accuracies": {
+    "DEV-100 (100 prior-exposed)": {
+      "BLEND": {
+        "accuracy": 0.7,
+        "correct": 70
+      },
+      "M0": {
+        "accuracy": 0.49,
+        "correct": 49
+      }
+    },
+    "DEV-500 (pooled, descriptive)": {
+      "BLEND": {
+        "accuracy": 0.718,
+        "correct": 359
+      },
+      "M0": {
+        "accuracy": 0.518,
+        "correct": 259
+      }
+    },
+    "NEW400 (400 unexposed)": {
+      "ABL-RANDICL": {
+        "accuracy": 0.47,
+        "correct": 188
+      },
+      "ABL-RANDRET": {
+        "accuracy": 0.565,
+        "correct": 226
+      },
+      "BLEND": {
+        "accuracy": 0.7225,
+        "correct": 289
+      },
+      "M0": {
+        "accuracy": 0.525,
+        "correct": 210
+      }
+    }
+  },
+  "authority": {
+    "campaign_fragment": "configs/experiment/slurp-dev500-confirmatory-campaign-v1.json",
+    "preregistration": "docs/readiness/2026-08-24-dev500-confirmatory-preregistration.md",
+    "statistic_citation": "Statistic: paired per-sample BLEND - M0 over the 400; paired cluster bootstrap (N=10,000, seed 20260807) 90% and 95% CIs; McNemar exact test on the discordant pairs. Claim condition (preregistered): the 90% CI excludes zero."
+  },
+  "campaign_spend": {
+    "campaign_ceilings": {
+      "frozen_core_contacts": 3200,
+      "gpu_hours": 3.0,
+      "metered_audio_seconds": 8000,
+      "pinned_tool_embedding_contacts": 1000
+    },
+    "campaign_totals": {
+      "frozen_core_contacts": 2506,
+      "gpu_active_hours": 2.21819,
+      "metered_audio_seconds": 7122.159125,
+      "pinned_tool_embedding_contacts": 502
+    },
+    "inside_every_ceiling": true,
+    "per_arm": {
+      "ABL-RANDICL": {
+        "frozen_core_contacts": 802,
+        "gpu_active_hours": 1.232245,
+        "metered_audio_seconds": 2296.3466875000026,
+        "tool_contacts": 0
+      },
+      "ABL-RANDRET": {
+        "frozen_core_contacts": 534,
+        "gpu_active_hours": 0.336751,
+        "metered_audio_seconds": 1521.040187499998,
+        "tool_contacts": 0
+      },
+      "BLEND": {
+        "frozen_core_contacts": 668,
+        "gpu_active_hours": 0.379404,
+        "metered_audio_seconds": 1879.1069999999995,
+        "tool_contacts": 502
+      },
+      "M0": {
+        "frozen_core_contacts": 502,
+        "gpu_active_hours": 0.26979,
+        "metered_audio_seconds": 1425.6652499999993,
+        "tool_contacts": 0
+      }
+    },
+    "this_read": {
+      "audio_seconds": 0,
+      "calls": 0,
+      "gpu_hours": 0.0,
+      "tool_contacts": 0
+    }
+  },
+  "exposure_row_id": "SAEA-SN-MF-DEV500-CONFIRMATORY-READ",
+  "one_shot": {
+    "gold_opened": "ONCE, here, scoring-side, for all 500 DEV-500 samples",
+    "rule": "computed exactly once as preregistered; no threshold change, no re-computation with different parameters, no partial re-read, no re-fly, whatever the outcome",
+    "variance_prior_carried": "DEV-100 round-5 replication: plus-minus 2 per 100 at 8-slot decode"
+  },
+  "populations": {
+    "dev500_n": 500,
+    "exposed100_n": 100,
+    "new400_derivation": "deterministic set difference DEV-500 minus DEV-100, re-derived and matched to its own committed receipt",
+    "new400_n": 400,
+    "receipt_file_sha256": {
+      "DEV-100": "0cf5effe493f88128a894f7f075c21a05cd32e232eb5a7b6199eac03a23120d0",
+      "DEV-500": "adc3e4ddd20518d279dc6c3aa42821629ca67b05eaba7802e1918f0349c2f315",
+      "DEV-500-NEW400": "86c199b204002afb8706485c6778314ef907069ea386bf72bce21179d95d95fc"
+    }
+  },
+  "primary": {
+    "BLEND_accuracy": 0.7225,
+    "BLEND_correct": 289,
+    "M0_accuracy": 0.525,
+    "M0_correct": 210,
+    "baseline_arm": "M0",
+    "bootstrap": {
+      "ci90_excludes_zero": true,
+      "ci90_high_pp": 23.0,
+      "ci90_low_pp": 16.5,
+      "ci95_excludes_zero": true,
+      "ci95_high_pp": 23.75,
+      "ci95_low_pp": 15.75,
+      "n_replicates": 10000,
+      "point_estimate_pp": 19.75,
+      "replicate_share_at_or_below_zero": 0.0,
+      "replicates_at_or_below_zero": 0,
+      "resampling": "per-sample paired cluster bootstrap over the 100 DEV-100 ids; the SAME resampled multiset scores both arms, preserving the pairing",
+      "seed": 20260807,
+      "sigma_hat_pp": 2.0562578496810655
+    },
+    "claim_condition": "the 90% CI on the paired per-sample BLEND - M0 gain over the 400 unexposed samples excludes zero",
+    "claim_condition_met": true,
+    "claim_condition_outcome": "MET",
+    "concordant_pairs": 317,
+    "correct_to_wrong_count": 2,
+    "correct_to_wrong_sample_ids": [
+      "slurp:devel:002946:audio-1494512961",
+      "slurp:devel:012768:audio-1490181904"
+    ],
+    "delta_pp": 19.75,
+    "delta_samples": 79,
+    "label": "PRIMARY (preregistered): paired per-sample BLEND - M0 over the 400 UNEXPOSED samples",
+    "mcnemar": {
+      "chi_square_continuity_corrected": 73.3012048192771,
+      "chi_square_two_sided_p": 1.1129995253208533e-17,
+      "discordant_pairs": 83,
+      "exact_binomial_two_sided_p": 7.210946989931019e-22,
+      "mid_p_two_sided": 3.6923274592835773e-22,
+      "n01_wrong_to_correct": 81,
+      "n10_correct_to_wrong": 2,
+      "odds_ratio_n01_over_n10": 40.5
+    },
+    "n": 400,
+    "population": "DEV-500-NEW400 (400 unexposed)",
+    "statistic_citation": "Statistic: paired per-sample BLEND - M0 over the 400; paired cluster bootstrap (N=10,000, seed 20260807) 90% and 95% CIs; McNemar exact test on the discordant pairs. Claim condition (preregistered): the 90% CI excludes zero.",
+    "treatment_arm": "BLEND",
+    "variance_prior_carried": "DEV-100 round-5 replication: plus-minus 2 per 100 at 8-slot decode",
+    "wrong_to_correct_count": 81,
+    "wrong_to_correct_sample_ids": [
+      "slurp:devel:000188:audio--1504198223",
+      "slurp:devel:000251:audio-1490200961-headset",
+      "slurp:devel:000516:audio-1498167434",
+      "slurp:devel:000616:audio-1497450987",
+      "slurp:devel:000803:audio--1504192460",
+      "slurp:devel:001012:audio-1499266025-headset",
+      "slurp:devel:001365:audio-1490019680-headset",
+      "slurp:devel:001621:audio-1497884269-headset",
+      "slurp:devel:001680:audio-1490007753-headset",
+      "slurp:devel:001770:audio-1501763648",
+      "slurp:devel:001948:audio-1488973873",
+      "slurp:devel:002069:audio-1490006034-headset",
+      "slurp:devel:002088:audio-1501406536",
+      "slurp:devel:002196:audio-1497885887-headset",
+      "slurp:devel:002599:audio-1499696735",
+      "slurp:devel:002693:audio-1490009293-headset",
+      "slurp:devel:002790:audio-1490019160-headset",
+      "slurp:devel:003496:audio-1488970061",
+      "slurp:devel:003530:audio-1490183137",
+      "slurp:devel:003632:audio-1502377725",
+      "slurp:devel:004398:audio-1500388255",
+      "slurp:devel:004497:audio-1497880422",
+      "slurp:devel:004778:audio-1497024085",
+      "slurp:devel:004979:audio-1502201398-headset",
+      "slurp:devel:005793:audio--1506078231-headset",
+      "slurp:devel:006111:audio-1490198869-headset",
+      "slurp:devel:006389:audio-1490356484-headset",
+      "slurp:devel:006914:audio-1497887113-headset",
+      "slurp:devel:007229:audio-1490287996-headset",
+      "slurp:devel:007684:audio-1490357297-headset",
+      "slurp:devel:008192:audio-1501685478",
+      "slurp:devel:008697:audio-1499266692-headset",
+      "slurp:devel:008786:audio-1494418486",
+      "slurp:devel:009382:audio-1502894295",
+      "slurp:devel:009589:audio-1490354783-headset",
+      "slurp:devel:009756:audio--1504192167",
+      "slurp:devel:009849:audio-1501414981-headset",
+      "slurp:devel:009874:audio-1501686140",
+      "slurp:devel:009934:audio-1501756245",
+      "slurp:devel:009965:audio-1501754719",
+      "slurp:devel:009968:audio-1490182854",
+      "slurp:devel:009978:audio-1501753701",
+      "slurp:devel:009982:audio-1489671650",
+      "slurp:devel:010022:audio-1490801849",
+      "slurp:devel:010146:audio-1501156374-headset",
+      "slurp:devel:010154:audio-1502375916",
+      "slurp:devel:010238:audio-1490262469",
+      "slurp:devel:010267:audio-1490201691-headset",
+      "slurp:devel:010273:audio-1492779187-headset",
+      "slurp:devel:010412:audio-1497025321-headset",
+      "slurp:devel:010521:audio-1498484115",
+      "slurp:devel:011557:audio-1501775614-headset",
+      "slurp:devel:011611:audio-1490203470-headset",
+      "slurp:devel:011658:audio-1501774701",
+      "slurp:devel:011732:audio-1490356897-headset",
+      "slurp:devel:011785:audio-1488971006",
+      "slurp:devel:011849:audio-1502101693",
+      "slurp:devel:011883:audio-1490183460-headset",
+      "slurp:devel:012144:audio-1495369709",
+      "slurp:devel:012165:audio-1497867713",
+      "slurp:devel:012205:audio-1502098921-headset",
+      "slurp:devel:012236:audio-1499244960",
+      "slurp:devel:012674:audio--1505404754-headset",
+      "slurp:devel:012891:audio-1501751875-headset",
+      "slurp:devel:013033:audio-1501158072",
+      "slurp:devel:013071:audio-1502308991",
+      "slurp:devel:013107:audio-1490021632-headset",
+      "slurp:devel:013549:audio-1502311262-headset",
+      "slurp:devel:013844:audio-1494607953-headset",
+      "slurp:devel:014175:audio-1502377133-headset",
+      "slurp:devel:014207:audio-1498484644",
+      "slurp:devel:014343:audio-1500418101-headset",
+      "slurp:devel:014708:audio-1497437389-headset",
+      "slurp:devel:014849:audio-1499688670-headset",
+      "slurp:devel:014861:audio-1501697025-headset",
+      "slurp:devel:015017:audio-1500038945",
+      "slurp:devel:015297:audio-1497868380-headset",
+      "slurp:devel:015466:audio-1490105584",
+      "slurp:devel:015921:audio-1501765147-headset",
+      "slurp:devel:016066:audio-1498571330-headset",
+      "slurp:devel:016821:audio-1490199209-headset"
+    ]
+  },
+  "profiles": {
+    "confusion_new400": {
+      "ABL-RANDICL": {
+        "distinct_error_pairs": 160,
+        "errors_with_right_scenario_wrong_action": 70,
+        "errors_with_wrong_scenario": 142,
+        "top_confusions": [
+          {
+            "count": 7,
+            "gold_intent": "cooking_recipe",
+            "predicted_intent": "cooking_createoradd"
+          },
+          {
+            "count": 6,
+            "gold_intent": "takeaway_query",
+            "predicted_intent": "takeaway_order"
+          },
+          {
+            "count": 6,
+            "gold_intent": "qa_factoid",
+            "predicted_intent": "qa_definition"
+          },
+          {
+            "count": 5,
+            "gold_intent": "audio_volume_mute",
+            "predicted_intent": "iot_volume_mute"
+          },
+          {
+            "count": 4,
+            "gold_intent": "play_music",
+            "predicted_intent": "music_play"
+          },
+          {
+            "count": 4,
+            "gold_intent": "general_quirky",
+            "predicted_intent": "general_query"
+          },
+          {
+            "count": 3,
+            "gold_intent": "datetime_query",
+            "predicted_intent": "general_query"
+          },
+          {
+            "count": 3,
+            "gold_intent": "music_query",
+            "predicted_intent": "audio_query"
+          },
+          {
+            "count": 3,
+            "gold_intent": "calendar_set",
+            "predicted_intent": "calendar_createoradd"
+          },
+          {
+            "count": 3,
+            "gold_intent": "play_audiobook",
+            "predicted_intent": "audio_audiobook"
+          },
+          {
+            "count": 3,
+            "gold_intent": "cooking_recipe",
+            "predicted_intent": "cooking_query"
+          },
+          {
+            "count": 3,
+            "gold_intent": "social_query",
+            "predicted_intent": "social_post"
+          },
+          {
+            "count": 2,
+            "gold_intent": "music_likeness",
+            "predicted_intent": "music_play"
+          },
+          {
+            "count": 2,
+            "gold_intent": "audio_volume_mute",
+            "predicted_intent": "lists_query"
+          },
+          {
+            "count": 2,
+            "gold_intent": "music_query",
+            "predicted_intent": "qa_factoid"
+          },
+          {
+            "count": 2,
+            "gold_intent": "news_query",
+            "predicted_intent": "qa_factoid"
+          },
+          {
+            "count": 2,
+            "gold_intent": "general_quirky",
+            "predicted_intent": "lists_query"
+          },
+          {
+            "count": 2,
+            "gold_intent": "general_quirky",
+            "predicted_intent": "qa_factoid"
+          },
+          {
+            "count": 2,
+            "gold_intent": "general_quirky",
+            "predicted_intent": "general_greet"
+          },
+          {
+            "count": 2,
+            "gold_intent": "recommendation_events",
+            "predicted_intent": "news_query"
+          },
+          {
+            "count": 2,
+            "gold_intent": "calendar_set",
+            "predicted_intent": "calendar_query"
+          },
+          {
+            "count": 2,
+            "gold_intent": "play_radio",
+            "predicted_intent": "music_play"
+          },
+          {
+            "count": 2,
+            "gold_intent": "play_game",
+            "predicted_intent": "game_play"
+          },
+          {
+            "count": 2,
+            "gold_intent": "lists_query",
+            "predicted_intent": "lists_createoradd"
+          },
+          {
+            "count": 2,
+            "gold_intent": "recommendation_events",
+            "predicted_intent": "weather_query"
+          }
+        ],
+        "total_errors": 212,
+        "unparsed_responses": 3
+      },
+      "ABL-RANDRET": {
+        "distinct_error_pairs": 119,
+        "errors_with_right_scenario_wrong_action": 59,
+        "errors_with_wrong_scenario": 115,
+        "top_confusions": [
+          {
+            "count": 9,
+            "gold_intent": "cooking_recipe",
+            "predicted_intent": "cooking_query"
+          },
+          {
+            "count": 5,
+            "gold_intent": "play_music",
+            "predicted_intent": "music_play"
+          },
+          {
+            "count": 5,
+            "gold_intent": "general_quirky",
+            "predicted_intent": "general_query"
+          },
+          {
+            "count": 5,
+            "gold_intent": "cooking_recipe",
+            "predicted_intent": "cooking_createoradd"
+          },
+          {
+            "count": 4,
+            "gold_intent": "general_quirky",
+            "predicted_intent": "general_greet"
+          },
+          {
+            "count": 4,
+            "gold_intent": "recommendation_events",
+            "predicted_intent": "news_query"
+          },
+          {
+            "count": 4,
+            "gold_intent": "calendar_set",
+            "predicted_intent": "calendar_createoradd"
+          },
+          {
+            "count": 4,
+            "gold_intent": "recommendation_locations",
+            "predicted_intent": "takeaway_query"
+          },
+          {
+            "count": 4,
+            "gold_intent": "qa_factoid",
+            "predicted_intent": "qa_query"
+          },
+          {
+            "count": 3,
+            "gold_intent": "takeaway_query",
+            "predicted_intent": "takeaway_order"
+          },
+          {
+            "count": 3,
+            "gold_intent": "play_audiobook",
+            "predicted_intent": "audio_audiobook"
+          },
+          {
+            "count": 3,
+            "gold_intent": "qa_factoid",
+            "predicted_intent": "qa_definition"
+          },
+          {
+            "count": 2,
+            "gold_intent": "audio_volume_up",
+            "predicted_intent": "iot_volume_up"
+          },
+          {
+            "count": 2,
+            "gold_intent": "news_query",
+            "predicted_intent": "lists_query"
+          },
+          {
+            "count": 2,
+            "gold_intent": "datetime_convert",
+            "predicted_intent": "datetime_query"
+          },
+          {
+            "count": 2,
+            "gold_intent": "general_joke",
+            "predicted_intent": "joke_joke"
+          },
+          {
+            "count": 2,
+            "gold_intent": "iot_coffee",
+            "predicted_intent": "coffee_coffee"
+          },
+          {
+            "count": 2,
+            "gold_intent": "iot_coffee",
+            "predicted_intent": "iot_wemo_on"
+          },
+          {
+            "count": 2,
+            "gold_intent": "qa_stock",
+            "predicted_intent": "news_query"
+          },
+          {
+            "count": 2,
+            "gold_intent": "general_quirky",
+            "predicted_intent": "news_query"
+          },
+          {
+            "count": 2,
+            "gold_intent": "recommendation_events",
+            "predicted_intent": "general_query"
+          },
+          {
+            "count": 2,
+            "gold_intent": "recommendation_events",
+            "predicted_intent": "general_quirky"
+          },
+          {
+            "count": 2,
+            "gold_intent": "play_game",
+            "predicted_intent": "game_play"
+          },
+          {
+            "count": 2,
+            "gold_intent": "transport_taxi",
+            "predicted_intent": "transport_order"
+          },
+          {
+            "count": 2,
+            "gold_intent": "qa_maths",
+            "predicted_intent": "maths_maths"
+          }
+        ],
+        "total_errors": 174,
+        "unparsed_responses": 1
+      },
+      "BLEND": {
+        "distinct_error_pairs": 83,
+        "errors_with_right_scenario_wrong_action": 40,
+        "errors_with_wrong_scenario": 71,
+        "top_confusions": [
+          {
+            "count": 6,
+            "gold_intent": "cooking_recipe",
+            "predicted_intent": "cooking_query"
+          },
+          {
+            "count": 5,
+            "gold_intent": "general_quirky",
+            "predicted_intent": "general_greet"
+          },
+          {
+            "count": 4,
+            "gold_intent": "recommendation_locations",
+            "predicted_intent": "takeaway_query"
+          },
+          {
+            "count": 3,
+            "gold_intent": "takeaway_query",
+            "predicted_intent": "takeaway_order"
+          },
+          {
+            "count": 3,
+            "gold_intent": "general_quirky",
+            "predicted_intent": "news_query"
+          },
+          {
+            "count": 3,
+            "gold_intent": "recommendation_events",
+            "predicted_intent": "news_query"
+          },
+          {
+            "count": 3,
+            "gold_intent": "qa_factoid",
+            "predicted_intent": "qa_query"
+          },
+          {
+            "count": 2,
+            "gold_intent": "news_query",
+            "predicted_intent": "lists_query"
+          },
+          {
+            "count": 2,
+            "gold_intent": "datetime_convert",
+            "predicted_intent": "datetime_query"
+          },
+          {
+            "count": 2,
+            "gold_intent": "audio_volume_mute",
+            "predicted_intent": "general_greet"
+          },
+          {
+            "count": 2,
+            "gold_intent": "iot_coffee",
+            "predicted_intent": "iot_wemo_on"
+          },
+          {
+            "count": 2,
+            "gold_intent": "qa_stock",
+            "predicted_intent": "news_query"
+          },
+          {
+            "count": 2,
+            "gold_intent": "general_quirky",
+            "predicted_intent": "recommendation_events"
+          },
+          {
+            "count": 2,
+            "gold_intent": "play_radio",
+            "predicted_intent": "play_music"
+          },
+          {
+            "count": 2,
+            "gold_intent": "qa_factoid",
+            "predicted_intent": "qa_definition"
+          },
+          {
+            "count": 1,
+            "gold_intent": "iot_hue_lighton",
+            "predicted_intent": "iot_hue_lightup"
+          },
+          {
+            "count": 1,
+            "gold_intent": "audio_volume_down",
+            "predicted_intent": "recommendation_events"
+          },
+          {
+            "count": 1,
+            "gold_intent": "weather_query",
+            "predicted_intent": "qa_definition"
+          },
+          {
+            "count": 1,
+            "gold_intent": "audio_volume_down",
+            "predicted_intent": "iot_hue_lightdim"
+          },
+          {
+            "count": 1,
+            "gold_intent": "music_dislikeness",
+            "predicted_intent": "play_music"
+          },
+          {
+            "count": 1,
+            "gold_intent": "cooking_recipe",
+            "predicted_intent": "recommendation_events"
+          },
+          {
+            "count": 1,
+            "gold_intent": "alarm_query",
+            "predicted_intent": "datetime_query"
+          },
+          {
+            "count": 1,
+            "gold_intent": "music_query",
+            "predicted_intent": "play_radio"
+          },
+          {
+            "count": 1,
+            "gold_intent": "iot_cleaning",
+            "predicted_intent": "calendar_set"
+          },
+          {
+            "count": 1,
+            "gold_intent": "music_likeness",
+            "predicted_intent": "music_query"
+          }
+        ],
+        "total_errors": 111,
+        "unparsed_responses": 0
+      },
+      "M0": {
+        "distinct_error_pairs": 121,
+        "errors_with_right_scenario_wrong_action": 64,
+        "errors_with_wrong_scenario": 126,
+        "top_confusions": [
+          {
+            "count": 8,
+            "gold_intent": "cooking_recipe",
+            "predicted_intent": "cooking_createoradd"
+          },
+          {
+            "count": 7,
+            "gold_intent": "play_music",
+            "predicted_intent": "music_play"
+          },
+          {
+            "count": 6,
+            "gold_intent": "cooking_recipe",
+            "predicted_intent": "cooking_query"
+          },
+          {
+            "count": 6,
+            "gold_intent": "qa_factoid",
+            "predicted_intent": "qa_query"
+          },
+          {
+            "count": 5,
+            "gold_intent": "general_quirky",
+            "predicted_intent": "general_query"
+          },
+          {
+            "count": 5,
+            "gold_intent": "calendar_set",
+            "predicted_intent": "calendar_createoradd"
+          },
+          {
+            "count": 4,
+            "gold_intent": "general_quirky",
+            "predicted_intent": "general_greet"
+          },
+          {
+            "count": 4,
+            "gold_intent": "recommendation_events",
+            "predicted_intent": "news_query"
+          },
+          {
+            "count": 3,
+            "gold_intent": "audio_volume_up",
+            "predicted_intent": "iot_volume_up"
+          },
+          {
+            "count": 3,
+            "gold_intent": "takeaway_query",
+            "predicted_intent": "takeaway_order"
+          },
+          {
+            "count": 3,
+            "gold_intent": "general_quirky",
+            "predicted_intent": "qa_query"
+          },
+          {
+            "count": 3,
+            "gold_intent": "recommendation_events",
+            "predicted_intent": "events_query"
+          },
+          {
+            "count": 3,
+            "gold_intent": "play_radio",
+            "predicted_intent": "music_play"
+          },
+          {
+            "count": 3,
+            "gold_intent": "play_audiobook",
+            "predicted_intent": "audio_audiobook"
+          },
+          {
+            "count": 3,
+            "gold_intent": "recommendation_locations",
+            "predicted_intent": "takeaway_query"
+          },
+          {
+            "count": 3,
+            "gold_intent": "recommendation_movies",
+            "predicted_intent": "movies_query"
+          },
+          {
+            "count": 3,
+            "gold_intent": "transport_taxi",
+            "predicted_intent": "transport_order"
+          },
+          {
+            "count": 2,
+            "gold_intent": "audio_volume_mute",
+            "predicted_intent": "iot_volume_mute"
+          },
+          {
+            "count": 2,
+            "gold_intent": "datetime_convert",
+            "predicted_intent": "datetime_query"
+          },
+          {
+            "count": 2,
+            "gold_intent": "general_joke",
+            "predicted_intent": "joke_joke"
+          },
+          {
+            "count": 2,
+            "gold_intent": "audio_volume_mute",
+            "predicted_intent": "general_settings"
+          },
+          {
+            "count": 2,
+            "gold_intent": "iot_coffee",
+            "predicted_intent": "iot_wemo_on"
+          },
+          {
+            "count": 2,
+            "gold_intent": "general_quirky",
+            "predicted_intent": "news_query"
+          },
+          {
+            "count": 2,
+            "gold_intent": "recommendation_events",
+            "predicted_intent": "general_query"
+          },
+          {
+            "count": 2,
+            "gold_intent": "play_radio",
+            "predicted_intent": "radio_play"
+          }
+        ],
+        "total_errors": 190,
+        "unparsed_responses": 3
+      }
+    },
+    "field_decomposition_new400": {
+      "ABL-RANDICL": {
+        "action_exact": 224,
+        "scenario_action_exact": 188,
+        "scenario_exact": 258,
+        "slot_f1_exact_mean": 0.16029761904761905,
+        "unparsed": 3
+      },
+      "ABL-RANDRET": {
+        "action_exact": 251,
+        "scenario_action_exact": 226,
+        "scenario_exact": 285,
+        "slot_f1_exact_mean": 0.1268452380952381,
+        "unparsed": 1
+      },
+      "BLEND": {
+        "action_exact": 297,
+        "scenario_action_exact": 289,
+        "scenario_exact": 329,
+        "slot_f1_exact_mean": 0.15516666666666665,
+        "unparsed": 0
+      },
+      "M0": {
+        "action_exact": 247,
+        "scenario_action_exact": 210,
+        "scenario_exact": 274,
+        "slot_f1_exact_mean": 0.13097619047619047,
+        "unparsed": 3
+      }
+    },
+    "per_scenario_exposed100": {
+      "alarm": {
+        "BLEND_accuracy": 1.0,
+        "BLEND_correct": 6,
+        "M0_accuracy": 1.0,
+        "M0_correct": 6,
+        "n": 6
+      },
+      "audio": {
+        "BLEND_accuracy": 0.6666666666666666,
+        "BLEND_correct": 4,
+        "M0_accuracy": 0.16666666666666666,
+        "M0_correct": 1,
+        "n": 6
+      },
+      "calendar": {
+        "BLEND_accuracy": 0.8333333333333334,
+        "BLEND_correct": 5,
+        "M0_accuracy": 0.6666666666666666,
+        "M0_correct": 4,
+        "n": 6
+      },
+      "cooking": {
+        "BLEND_accuracy": 0.6666666666666666,
+        "BLEND_correct": 4,
+        "M0_accuracy": 0.0,
+        "M0_correct": 0,
+        "n": 6
+      },
+      "datetime": {
+        "BLEND_accuracy": 0.6666666666666666,
+        "BLEND_correct": 4,
+        "M0_accuracy": 0.6666666666666666,
+        "M0_correct": 4,
+        "n": 6
+      },
+      "email": {
+        "BLEND_accuracy": 0.8333333333333334,
+        "BLEND_correct": 5,
+        "M0_accuracy": 0.8333333333333334,
+        "M0_correct": 5,
+        "n": 6
+      },
+      "general": {
+        "BLEND_accuracy": 0.3333333333333333,
+        "BLEND_correct": 2,
+        "M0_accuracy": 0.0,
+        "M0_correct": 0,
+        "n": 6
+      },
+      "iot": {
+        "BLEND_accuracy": 0.5,
+        "BLEND_correct": 3,
+        "M0_accuracy": 0.3333333333333333,
+        "M0_correct": 2,
+        "n": 6
+      },
+      "lists": {
+        "BLEND_accuracy": 1.0,
+        "BLEND_correct": 6,
+        "M0_accuracy": 1.0,
+        "M0_correct": 6,
+        "n": 6
+      },
+      "music": {
+        "BLEND_accuracy": 0.3333333333333333,
+        "BLEND_correct": 2,
+        "M0_accuracy": 0.3333333333333333,
+        "M0_correct": 2,
+        "n": 6
+      },
+      "news": {
+        "BLEND_accuracy": 0.6,
+        "BLEND_correct": 3,
+        "M0_accuracy": 0.6,
+        "M0_correct": 3,
+        "n": 5
+      },
+      "play": {
+        "BLEND_accuracy": 1.0,
+        "BLEND_correct": 5,
+        "M0_accuracy": 0.0,
+        "M0_correct": 0,
+        "n": 5
+      },
+      "qa": {
+        "BLEND_accuracy": 0.4,
+        "BLEND_correct": 2,
+        "M0_accuracy": 0.0,
+        "M0_correct": 0,
+        "n": 5
+      },
+      "recommendation": {
+        "BLEND_accuracy": 0.2,
+        "BLEND_correct": 1,
+        "M0_accuracy": 0.0,
+        "M0_correct": 0,
+        "n": 5
+      },
+      "social": {
+        "BLEND_accuracy": 1.0,
+        "BLEND_correct": 5,
+        "M0_accuracy": 0.8,
+        "M0_correct": 4,
+        "n": 5
+      },
+      "takeaway": {
+        "BLEND_accuracy": 0.6,
+        "BLEND_correct": 3,
+        "M0_accuracy": 0.6,
+        "M0_correct": 3,
+        "n": 5
+      },
+      "transport": {
+        "BLEND_accuracy": 1.0,
+        "BLEND_correct": 5,
+        "M0_accuracy": 0.8,
+        "M0_correct": 4,
+        "n": 5
+      },
+      "weather": {
+        "BLEND_accuracy": 1.0,
+        "BLEND_correct": 5,
+        "M0_accuracy": 1.0,
+        "M0_correct": 5,
+        "n": 5
+      }
+    },
+    "per_scenario_new400": {
+      "alarm": {
+        "ABL-RANDICL_accuracy": 0.5909090909090909,
+        "ABL-RANDICL_correct": 13,
+        "ABL-RANDRET_accuracy": 0.8636363636363636,
+        "ABL-RANDRET_correct": 19,
+        "BLEND_accuracy": 0.8636363636363636,
+        "BLEND_correct": 19,
+        "M0_accuracy": 0.8181818181818182,
+        "M0_correct": 18,
+        "n": 22
+      },
+      "audio": {
+        "ABL-RANDICL_accuracy": 0.3181818181818182,
+        "ABL-RANDICL_correct": 7,
+        "ABL-RANDRET_accuracy": 0.3181818181818182,
+        "ABL-RANDRET_correct": 7,
+        "BLEND_accuracy": 0.6818181818181818,
+        "BLEND_correct": 15,
+        "M0_accuracy": 0.2727272727272727,
+        "M0_correct": 6,
+        "n": 22
+      },
+      "calendar": {
+        "ABL-RANDICL_accuracy": 0.45454545454545453,
+        "ABL-RANDICL_correct": 10,
+        "ABL-RANDRET_accuracy": 0.5454545454545454,
+        "ABL-RANDRET_correct": 12,
+        "BLEND_accuracy": 0.7272727272727273,
+        "BLEND_correct": 16,
+        "M0_accuracy": 0.5,
+        "M0_correct": 11,
+        "n": 22
+      },
+      "cooking": {
+        "ABL-RANDICL_accuracy": 0.4090909090909091,
+        "ABL-RANDICL_correct": 9,
+        "ABL-RANDRET_accuracy": 0.18181818181818182,
+        "ABL-RANDRET_correct": 4,
+        "BLEND_accuracy": 0.5454545454545454,
+        "BLEND_correct": 12,
+        "M0_accuracy": 0.13636363636363635,
+        "M0_correct": 3,
+        "n": 22
+      },
+      "datetime": {
+        "ABL-RANDICL_accuracy": 0.5909090909090909,
+        "ABL-RANDICL_correct": 13,
+        "ABL-RANDRET_accuracy": 0.8181818181818182,
+        "ABL-RANDRET_correct": 18,
+        "BLEND_accuracy": 0.8181818181818182,
+        "BLEND_correct": 18,
+        "M0_accuracy": 0.8181818181818182,
+        "M0_correct": 18,
+        "n": 22
+      },
+      "email": {
+        "ABL-RANDICL_accuracy": 0.7727272727272727,
+        "ABL-RANDICL_correct": 17,
+        "ABL-RANDRET_accuracy": 0.8181818181818182,
+        "ABL-RANDRET_correct": 18,
+        "BLEND_accuracy": 0.9090909090909091,
+        "BLEND_correct": 20,
+        "M0_accuracy": 0.7727272727272727,
+        "M0_correct": 17,
+        "n": 22
+      },
+      "general": {
+        "ABL-RANDICL_accuracy": 0.22727272727272727,
+        "ABL-RANDICL_correct": 5,
+        "ABL-RANDRET_accuracy": 0.045454545454545456,
+        "ABL-RANDRET_correct": 1,
+        "BLEND_accuracy": 0.18181818181818182,
+        "BLEND_correct": 4,
+        "M0_accuracy": 0.045454545454545456,
+        "M0_correct": 1,
+        "n": 22
+      },
+      "iot": {
+        "ABL-RANDICL_accuracy": 0.45454545454545453,
+        "ABL-RANDICL_correct": 10,
+        "ABL-RANDRET_accuracy": 0.5,
+        "ABL-RANDRET_correct": 11,
+        "BLEND_accuracy": 0.5454545454545454,
+        "BLEND_correct": 12,
+        "M0_accuracy": 0.5,
+        "M0_correct": 11,
+        "n": 22
+      },
+      "lists": {
+        "ABL-RANDICL_accuracy": 0.7727272727272727,
+        "ABL-RANDICL_correct": 17,
+        "ABL-RANDRET_accuracy": 0.9090909090909091,
+        "ABL-RANDRET_correct": 20,
+        "BLEND_accuracy": 0.9090909090909091,
+        "BLEND_correct": 20,
+        "M0_accuracy": 0.8636363636363636,
+        "M0_correct": 19,
+        "n": 22
+      },
+      "music": {
+        "ABL-RANDICL_accuracy": 0.18181818181818182,
+        "ABL-RANDICL_correct": 4,
+        "ABL-RANDRET_accuracy": 0.8636363636363636,
+        "ABL-RANDRET_correct": 19,
+        "BLEND_accuracy": 0.8181818181818182,
+        "BLEND_correct": 18,
+        "M0_accuracy": 0.7272727272727273,
+        "M0_correct": 16,
+        "n": 22
+      },
+      "news": {
+        "ABL-RANDICL_accuracy": 0.6956521739130435,
+        "ABL-RANDICL_correct": 16,
+        "ABL-RANDRET_accuracy": 0.8260869565217391,
+        "ABL-RANDRET_correct": 19,
+        "BLEND_accuracy": 0.8260869565217391,
+        "BLEND_correct": 19,
+        "M0_accuracy": 0.782608695652174,
+        "M0_correct": 18,
+        "n": 23
+      },
+      "play": {
+        "ABL-RANDICL_accuracy": 0.2608695652173913,
+        "ABL-RANDICL_correct": 6,
+        "ABL-RANDRET_accuracy": 0.043478260869565216,
+        "ABL-RANDRET_correct": 1,
+        "BLEND_accuracy": 0.6956521739130435,
+        "BLEND_correct": 16,
+        "M0_accuracy": 0.0,
+        "M0_correct": 0,
+        "n": 23
+      },
+      "qa": {
+        "ABL-RANDICL_accuracy": 0.30434782608695654,
+        "ABL-RANDICL_correct": 7,
+        "ABL-RANDRET_accuracy": 0.21739130434782608,
+        "ABL-RANDRET_correct": 5,
+        "BLEND_accuracy": 0.5217391304347826,
+        "BLEND_correct": 12,
+        "M0_accuracy": 0.13043478260869565,
+        "M0_correct": 3,
+        "n": 23
+      },
+      "recommendation": {
+        "ABL-RANDICL_accuracy": 0.043478260869565216,
+        "ABL-RANDICL_correct": 1,
+        "ABL-RANDRET_accuracy": 0.0,
+        "ABL-RANDRET_correct": 0,
+        "BLEND_accuracy": 0.43478260869565216,
+        "BLEND_correct": 10,
+        "M0_accuracy": 0.0,
+        "M0_correct": 0,
+        "n": 23
+      },
+      "social": {
+        "ABL-RANDICL_accuracy": 0.6363636363636364,
+        "ABL-RANDICL_correct": 14,
+        "ABL-RANDRET_accuracy": 0.8181818181818182,
+        "ABL-RANDRET_correct": 18,
+        "BLEND_accuracy": 0.9090909090909091,
+        "BLEND_correct": 20,
+        "M0_accuracy": 0.7727272727272727,
+        "M0_correct": 17,
+        "n": 22
+      },
+      "takeaway": {
+        "ABL-RANDICL_accuracy": 0.5,
+        "ABL-RANDICL_correct": 11,
+        "ABL-RANDRET_accuracy": 0.7727272727272727,
+        "ABL-RANDRET_correct": 17,
+        "BLEND_accuracy": 0.8181818181818182,
+        "BLEND_correct": 18,
+        "M0_accuracy": 0.7727272727272727,
+        "M0_correct": 17,
+        "n": 22
+      },
+      "transport": {
+        "ABL-RANDICL_accuracy": 0.4090909090909091,
+        "ABL-RANDICL_correct": 9,
+        "ABL-RANDRET_accuracy": 0.7727272727272727,
+        "ABL-RANDRET_correct": 17,
+        "BLEND_accuracy": 0.9090909090909091,
+        "BLEND_correct": 20,
+        "M0_accuracy": 0.6818181818181818,
+        "M0_correct": 15,
+        "n": 22
+      },
+      "weather": {
+        "ABL-RANDICL_accuracy": 0.8636363636363636,
+        "ABL-RANDICL_correct": 19,
+        "ABL-RANDRET_accuracy": 0.9090909090909091,
+        "ABL-RANDRET_correct": 20,
+        "BLEND_accuracy": 0.9090909090909091,
+        "BLEND_correct": 20,
+        "M0_accuracy": 0.9090909090909091,
+        "M0_correct": 20,
+        "n": 22
+      }
+    },
+    "subgroups_exposed100": {
+      "BLEND_vs_M0": {
+        "dispatched": {
+          "M0_accuracy": 0.02857142857142857,
+          "M0_correct": 1,
+          "arm_accuracy": 0.6,
+          "arm_correct": 21,
+          "c2w": 0,
+          "delta_samples": 20,
+          "n": 35,
+          "w2c": 20
+        },
+        "retain_primary": {
+          "M0_accuracy": 0.7384615384615385,
+          "M0_correct": 48,
+          "arm_accuracy": 0.7538461538461538,
+          "arm_correct": 49,
+          "c2w": 0,
+          "delta_samples": 1,
+          "n": 65,
+          "w2c": 1
+        }
+      }
+    },
+    "subgroups_new400": {
+      "ABL-RANDRET_vs_M0": {
+        "dispatched": {
+          "M0_accuracy": 0.05303030303030303,
+          "M0_correct": 7,
+          "arm_accuracy": 0.12878787878787878,
+          "arm_correct": 17,
+          "c2w": 3,
+          "delta_samples": 10,
+          "n": 132,
+          "w2c": 13
+        },
+        "retain_primary": {
+          "M0_accuracy": 0.7574626865671642,
+          "M0_correct": 203,
+          "arm_accuracy": 0.7798507462686567,
+          "arm_correct": 209,
+          "c2w": 0,
+          "delta_samples": 6,
+          "n": 268,
+          "w2c": 6
+        }
+      },
+      "BLEND_vs_M0": {
+        "dispatched": {
+          "M0_accuracy": 0.023076923076923078,
+          "M0_correct": 3,
+          "arm_accuracy": 0.6230769230769231,
+          "arm_correct": 81,
+          "c2w": 0,
+          "delta_samples": 78,
+          "n": 130,
+          "w2c": 78
+        },
+        "retain_primary": {
+          "M0_accuracy": 0.7666666666666667,
+          "M0_correct": 207,
+          "arm_accuracy": 0.7703703703703704,
+          "arm_correct": 208,
+          "c2w": 2,
+          "delta_samples": 1,
+          "n": 270,
+          "w2c": 3
+        }
+      }
+    }
+  },
+  "reachability_ceiling": {
+    "charter_disclosure": "the literature standard (RASU's GT-prompt line) requires gold-conditioned supply at runtime, which this repository's immutable charter forbids, so the oracle arm was never flown; this ceiling bounds what RETRIEVAL could have reached and is SILENT on what the frozen core would have answered given that supply",
+    "content_facet_count": 11514,
+    "content_facet_npz_sha256": "0bcb955a3a0ab84880f0d039ae702e77d1247ed23c3b8cecb468cbb1e0221c72",
+    "cosine_agreement_probes_vs_kb_policy": 3600,
+    "frozen_top_k_per_dimension": 5,
+    "gold_bearing_facet_absent_from_kb": 0,
+    "gold_bearing_facet_present": 400,
+    "gold_facet_position_max": 2023,
+    "gold_facet_position_median": 1,
+    "gold_facet_position_p10": 1,
+    "gold_facet_position_p90": 82,
+    "headline_recall_at_frozen_top_k": {
+      "count": 286,
+      "rate": 0.715
+    },
+    "n": 400,
+    "population": "DEV-500-NEW400",
+    "query_vector_source": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-DEV500-CONFIRMATORY/attempt-20260824T205527Z-dev500blend/query-vectors.jsonl",
+    "recall_at_k": {
+      "recall_at_1": {
+        "count": 235,
+        "rate": 0.5875
+      },
+      "recall_at_10": {
+        "count": 305,
+        "rate": 0.7625
+      },
+      "recall_at_128": {
+        "count": 372,
+        "rate": 0.93
+      },
+      "recall_at_16": {
+        "count": 314,
+        "rate": 0.785
+      },
+      "recall_at_2": {
+        "count": 266,
+        "rate": 0.665
+      },
+      "recall_at_3": {
+        "count": 272,
+        "rate": 0.68
+      },
+      "recall_at_32": {
+        "count": 337,
+        "rate": 0.8425
+      },
+      "recall_at_5": {
+        "count": 286,
+        "rate": 0.715
+      },
+      "recall_at_64": {
+        "count": 353,
+        "rate": 0.8825
+      },
+      "recall_at_8": {
+        "count": 297,
+        "rate": 0.7425
+      }
+    },
+    "snapshot_sha256": "e27b274516604ffc0e21319758aea99dc027f459d480a32a74a715b023a51b57",
+    "value_vectors": "SEALED (never loaded)",
+    "what_this_is": "the registered CHARTER SUBSTITUTE for the forbidden gold-conditioned oracle arm: gold-facet recall@k over the population, computed scoring-side from the flown query vectors and the landed content-facet vectors"
+  },
+  "run_id": "SAEA-DEV500-CONFIRMATORY",
+  "schema": "saea-dev500-confirmatory-read-v1",
+  "scope": {
+    "binding": "dev-tier confirmatory: NO test claim, NO generalization claim, NO controller/RL claim; FINAL60 and test remain untouched",
+    "interpretation": "this artifact reports the registered outputs only; the coordinator interprets"
+  },
+  "scoring_path": "reproduction.slurp_scoring.parse_slu_response + score_slu, correctness = scenario_action_exact -- identical to rails.adapters.slurp.SlurpAdapter.score, the call the sealed DEV-100 round launchers made post-seal",
+  "secondaries": {
+    "exposed_100_blend_vs_m0": {
+      "BLEND_accuracy": 0.7,
+      "BLEND_correct": 70,
+      "M0_accuracy": 0.49,
+      "M0_correct": 49,
+      "baseline_arm": "M0",
+      "bootstrap": {
+        "ci90_excludes_zero": true,
+        "ci90_high_pp": 28.0,
+        "ci90_low_pp": 15.0,
+        "ci95_excludes_zero": true,
+        "ci95_high_pp": 29.0,
+        "ci95_low_pp": 13.0,
+        "n_replicates": 10000,
+        "point_estimate_pp": 21.0,
+        "replicate_share_at_or_below_zero": 0.0,
+        "replicates_at_or_below_zero": 0,
+        "resampling": "per-sample paired cluster bootstrap over the 100 DEV-100 ids; the SAME resampled multiset scores both arms, preserving the pairing",
+        "seed": 20260807,
+        "sigma_hat_pp": 4.0112318793607535
+      },
+      "concordant_pairs": 79,
+      "correct_to_wrong_count": 0,
+      "correct_to_wrong_sample_ids": [],
+      "delta_pp": 21.0,
+      "delta_samples": 21,
+      "label": "SECONDARY: BLEND - M0 on the nested PRIOR-EXPOSED DEV-100 (never pooled into the claim)",
+      "mcnemar": {
+        "chi_square_continuity_corrected": 19.047619047619047,
+        "chi_square_two_sided_p": 1.2749674921097067e-05,
+        "discordant_pairs": 21,
+        "exact_binomial_two_sided_p": 9.5367431640625e-07,
+        "mid_p_two_sided": 4.76837158203125e-07,
+        "n01_wrong_to_correct": 21,
+        "n10_correct_to_wrong": 0,
+        "odds_ratio_n01_over_n10": null
+      },
+      "n": 100,
+      "population": "DEV-100 (100 prior-exposed)",
+      "treatment_arm": "BLEND",
+      "wrong_to_correct_count": 21,
+      "wrong_to_correct_sample_ids": [
+        "slurp:devel:000109:audio-1497882612",
+        "slurp:devel:000392:audio-1498573434",
+        "slurp:devel:000806:audio--1506079512",
+        "slurp:devel:000921:audio-1498564374-headset",
+        "slurp:devel:001558:audio-1495734409",
+        "slurp:devel:004579:audio-1502195536-headset",
+        "slurp:devel:005183:audio-1498565600",
+        "slurp:devel:005726:audio--1504197977",
+        "slurp:devel:005989:audio-1497621031",
+        "slurp:devel:007732:audio-1502376806-headset",
+        "slurp:devel:009951:audio-1500038657-headset",
+        "slurp:devel:010041:audio-1497264270-headset",
+        "slurp:devel:010086:audio-1502201283",
+        "slurp:devel:010138:audio-1490289156",
+        "slurp:devel:010374:audio-1501690184-headset",
+        "slurp:devel:012055:audio-1494512213",
+        "slurp:devel:012712:audio-1502199981-headset",
+        "slurp:devel:013804:audio-1434542201-headset",
+        "slurp:devel:014203:audio-1500979762",
+        "slurp:devel:015397:audio-1490262948",
+        "slurp:devel:015414:audio-1499265566"
+      ]
+    },
+    "new400_blend_vs_randicl": {
+      "ABL-RANDICL_accuracy": 0.47,
+      "ABL-RANDICL_correct": 188,
+      "BLEND_accuracy": 0.7225,
+      "BLEND_correct": 289,
+      "baseline_arm": "ABL-RANDICL",
+      "bootstrap": {
+        "ci90_excludes_zero": true,
+        "ci90_high_pp": 29.25,
+        "ci90_low_pp": 21.0,
+        "ci95_excludes_zero": true,
+        "ci95_high_pp": 30.25,
+        "ci95_low_pp": 20.25,
+        "n_replicates": 10000,
+        "point_estimate_pp": 25.25,
+        "replicate_share_at_or_below_zero": 0.0,
+        "replicates_at_or_below_zero": 0,
+        "resampling": "per-sample paired cluster bootstrap over the 100 DEV-100 ids; the SAME resampled multiset scores both arms, preserving the pairing",
+        "seed": 20260807,
+        "sigma_hat_pp": 2.5290119612212196
+      },
+      "concordant_pairs": 271,
+      "correct_to_wrong_count": 14,
+      "correct_to_wrong_sample_ids": [
+        "slurp:devel:000737:audio-1501693732-headset",
+        "slurp:devel:001268:audio-1490357091-headset",
+        "slurp:devel:002946:audio-1494512961",
+        "slurp:devel:005150:audio-1498166547",
+        "slurp:devel:005362:audio-1502890769-headset",
+        "slurp:devel:006482:audio-1495370480-headset",
+        "slurp:devel:006638:audio-1490184013",
+        "slurp:devel:006642:audio-1497886517-headset",
+        "slurp:devel:010218:audio-1502377622",
+        "slurp:devel:010242:audio-1495370816-headset",
+        "slurp:devel:012006:audio-1490193970-headset",
+        "slurp:devel:013515:audio-1502216808-headset",
+        "slurp:devel:014358:audio-1490184222-headset",
+        "slurp:devel:014458:audio-1497869193"
+      ],
+      "delta_pp": 25.25,
+      "delta_samples": 101,
+      "label": "SECONDARY: retrieval vs generic in-context conditioning -- BLEND - ABL-RANDICL on the NEW400",
+      "mcnemar": {
+        "chi_square_continuity_corrected": 77.51937984496124,
+        "chi_square_two_sided_p": 1.3142657605826919e-18,
+        "discordant_pairs": 129,
+        "exact_binomial_two_sided_p": 6.510103489453573e-21,
+        "mid_p_two_sided": 3.643733622442139e-21,
+        "n01_wrong_to_correct": 115,
+        "n10_correct_to_wrong": 14,
+        "odds_ratio_n01_over_n10": 8.214285714285714
+      },
+      "n": 400,
+      "population": "DEV-500-NEW400 (400 unexposed)",
+      "treatment_arm": "BLEND",
+      "wrong_to_correct_count": 115,
+      "wrong_to_correct_sample_ids": [
+        "slurp:devel:000053:audio-1498758443",
+        "slurp:devel:000251:audio-1490200961-headset",
+        "slurp:devel:000271:audio-1499089273",
+        "slurp:devel:000434:audio-1495370125-headset",
+        "slurp:devel:000516:audio-1498167434",
+        "slurp:devel:000803:audio--1504192460",
+        "slurp:devel:001012:audio-1499266025-headset",
+        "slurp:devel:001177:audio-1488985507",
+        "slurp:devel:001365:audio-1490019680-headset",
+        "slurp:devel:001615:audio-1501696517",
+        "slurp:devel:001621:audio-1497884269-headset",
+        "slurp:devel:001680:audio-1490007753-headset",
+        "slurp:devel:001877:audio-1500038715-headset",
+        "slurp:devel:001894:audio-1498572295-headset",
+        "slurp:devel:001948:audio-1488973873",
+        "slurp:devel:002040:audio-1488975262",
+        "slurp:devel:002069:audio-1490006034-headset",
+        "slurp:devel:002088:audio-1501406536",
+        "slurp:devel:002154:audio-1490184239-headset",
+        "slurp:devel:002583:audio-1497869176",
+        "slurp:devel:002599:audio-1499696735",
+        "slurp:devel:002622:audio-1489672890-headset",
+        "slurp:devel:002687:audio-1496265461-headset",
+        "slurp:devel:002693:audio-1490009293-headset",
+        "slurp:devel:002844:audio-1488983404",
+        "slurp:devel:002851:audio-1488974812",
+        "slurp:devel:002943:audio-1502200671-headset",
+        "slurp:devel:002949:audio-1489151823",
+        "slurp:devel:003004:audio-1490021517-headset",
+        "slurp:devel:003018:audio-1490006722-headset",
+        "slurp:devel:003149:audio--1506079570",
+        "slurp:devel:003151:audio-1497865132",
+        "slurp:devel:003183:audio-1497367888",
+        "slurp:devel:003421:audio-1488988572",
+        "slurp:devel:003530:audio-1490183137",
+        "slurp:devel:003632:audio-1502377725",
+        "slurp:devel:003704:audio-1494511949",
+        "slurp:devel:004497:audio-1497880422",
+        "slurp:devel:004664:audio-1490181974",
+        "slurp:devel:004778:audio-1497024085",
+        "slurp:devel:004810:audio-1490184154",
+        "slurp:devel:004853:audio-1502199738",
+        "slurp:devel:004979:audio-1502201398-headset",
+        "slurp:devel:005021:audio-1499697891",
+        "slurp:devel:005099:audio--1504195010",
+        "slurp:devel:005126:audio-1497861694",
+        "slurp:devel:005282:audio-1501777482",
+        "slurp:devel:005404:audio-1502199466-headset",
+        "slurp:devel:005516:audio-1502894283",
+        "slurp:devel:005609:audio--1504198034",
+        "slurp:devel:005867:audio--1505405302",
+        "slurp:devel:005957:audio--1504192994-headset",
+        "slurp:devel:006071:audio-1434533519-headset",
+        "slurp:devel:006135:audio-1497886634",
+        "slurp:devel:006389:audio-1490356484-headset",
+        "slurp:devel:006792:audio-1497438427",
+        "slurp:devel:007229:audio-1490287996-headset",
+        "slurp:devel:007684:audio-1490357297-headset",
+        "slurp:devel:008192:audio-1501685478",
+        "slurp:devel:008697:audio-1499266692-headset",
+        "slurp:devel:008786:audio-1494418486",
+        "slurp:devel:009136:audio-1498569834-headset",
+        "slurp:devel:009756:audio--1504192167",
+        "slurp:devel:009849:audio-1501414981-headset",
+        "slurp:devel:009874:audio-1501686140",
+        "slurp:devel:009965:audio-1501754719",
+        "slurp:devel:009968:audio-1490182854",
+        "slurp:devel:009978:audio-1501753701",
+        "slurp:devel:009982:audio-1489671650",
+        "slurp:devel:010020:audio-1489671616",
+        "slurp:devel:010022:audio-1490801849",
+        "slurp:devel:010267:audio-1490201691-headset",
+        "slurp:devel:010412:audio-1497025321-headset",
+        "slurp:devel:010450:audio-1500040567",
+        "slurp:devel:010539:audio-1490288006-headset",
+        "slurp:devel:010602:audio-1500036608",
+        "slurp:devel:010666:audio-1497555128-headset",
+        "slurp:devel:011557:audio-1501775614-headset",
+        "slurp:devel:011611:audio-1490203470-headset",
+        "slurp:devel:011658:audio-1501774701",
+        "slurp:devel:011732:audio-1490356897-headset",
+        "slurp:devel:011785:audio-1488971006",
+        "slurp:devel:011849:audio-1502101693",
+        "slurp:devel:011883:audio-1490183460-headset",
+        "slurp:devel:012144:audio-1495369709",
+        "slurp:devel:012165:audio-1497867713",
+        "slurp:devel:012205:audio-1502098921-headset",
+        "slurp:devel:012236:audio-1499244960",
+        "slurp:devel:012317:audio-1499088843-headset",
+        "slurp:devel:012322:audio-1492784064",
+        "slurp:devel:012470:audio-1495375881",
+        "slurp:devel:012651:audio-1497029354",
+        "slurp:devel:012674:audio--1505404754-headset",
+        "slurp:devel:012891:audio-1501751875-headset",
+        "slurp:devel:012923:audio-1502302112-headset",
+        "slurp:devel:013033:audio-1501158072",
+        "slurp:devel:013107:audio-1490021632-headset",
+        "slurp:devel:013549:audio-1502311262-headset",
+        "slurp:devel:013624:audio-1497861870-headset",
+        "slurp:devel:013844:audio-1494607953-headset",
+        "slurp:devel:014175:audio-1502377133-headset",
+        "slurp:devel:014207:audio-1498484644",
+        "slurp:devel:014343:audio-1500418101-headset",
+        "slurp:devel:014708:audio-1497437389-headset",
+        "slurp:devel:014861:audio-1501697025-headset",
+        "slurp:devel:015017:audio-1500038945",
+        "slurp:devel:015093:audio-1490369875-headset",
+        "slurp:devel:015174:audio-1490104476-headset",
+        "slurp:devel:015297:audio-1497868380-headset",
+        "slurp:devel:015301:audio-1497880903-headset",
+        "slurp:devel:015514:audio-1502376616-headset",
+        "slurp:devel:015540:audio-1501754963",
+        "slurp:devel:016479:audio-1490199179-headset",
+        "slurp:devel:016821:audio-1490199209-headset",
+        "slurp:devel:017153:audio-1497449882"
+      ]
+    },
+    "new400_blend_vs_randret": {
+      "ABL-RANDRET_accuracy": 0.565,
+      "ABL-RANDRET_correct": 226,
+      "BLEND_accuracy": 0.7225,
+      "BLEND_correct": 289,
+      "baseline_arm": "ABL-RANDRET",
+      "bootstrap": {
+        "ci90_excludes_zero": true,
+        "ci90_high_pp": 19.0,
+        "ci90_low_pp": 12.5,
+        "ci95_excludes_zero": true,
+        "ci95_high_pp": 19.5,
+        "ci95_low_pp": 12.0,
+        "n_replicates": 10000,
+        "point_estimate_pp": 15.75,
+        "replicate_share_at_or_below_zero": 0.0,
+        "replicates_at_or_below_zero": 0,
+        "resampling": "per-sample paired cluster bootstrap over the 100 DEV-100 ids; the SAME resampled multiset scores both arms, preserving the pairing",
+        "seed": 20260807,
+        "sigma_hat_pp": 1.9612323906156557
+      },
+      "concordant_pairs": 329,
+      "correct_to_wrong_count": 4,
+      "correct_to_wrong_sample_ids": [
+        "slurp:devel:001678:audio-1495369559",
+        "slurp:devel:002582:audio-1434532268-headset",
+        "slurp:devel:002946:audio-1494512961",
+        "slurp:devel:012768:audio-1490181904"
+      ],
+      "delta_pp": 15.75,
+      "delta_samples": 63,
+      "label": "SECONDARY: the RETRIEVAL-SIGNAL effect -- BLEND - ABL-RANDRET on the NEW400 (same fusion path, same admission, same rendering; only the retrieval signal is randomized)",
+      "mcnemar": {
+        "chi_square_continuity_corrected": 54.140845070422536,
+        "chi_square_two_sided_p": 1.8662134996508892e-13,
+        "discordant_pairs": 71,
+        "exact_binomial_two_sided_p": 8.735848890518809e-16,
+        "mid_p_two_sided": 4.620814601991648e-16,
+        "n01_wrong_to_correct": 67,
+        "n10_correct_to_wrong": 4,
+        "odds_ratio_n01_over_n10": 16.75
+      },
+      "n": 400,
+      "population": "DEV-500-NEW400 (400 unexposed)",
+      "treatment_arm": "BLEND",
+      "wrong_to_correct_count": 67,
+      "wrong_to_correct_sample_ids": [
+        "slurp:devel:000188:audio--1504198223",
+        "slurp:devel:000251:audio-1490200961-headset",
+        "slurp:devel:000616:audio-1497450987",
+        "slurp:devel:000803:audio--1504192460",
+        "slurp:devel:001012:audio-1499266025-headset",
+        "slurp:devel:001680:audio-1490007753-headset",
+        "slurp:devel:001770:audio-1501763648",
+        "slurp:devel:001948:audio-1488973873",
+        "slurp:devel:002088:audio-1501406536",
+        "slurp:devel:002196:audio-1497885887-headset",
+        "slurp:devel:002599:audio-1499696735",
+        "slurp:devel:002622:audio-1489672890-headset",
+        "slurp:devel:002693:audio-1490009293-headset",
+        "slurp:devel:003496:audio-1488970061",
+        "slurp:devel:003530:audio-1490183137",
+        "slurp:devel:004398:audio-1500388255",
+        "slurp:devel:004497:audio-1497880422",
+        "slurp:devel:004778:audio-1497024085",
+        "slurp:devel:005105:audio-1498567969-headset",
+        "slurp:devel:005957:audio--1504192994-headset",
+        "slurp:devel:006111:audio-1490198869-headset",
+        "slurp:devel:006389:audio-1490356484-headset",
+        "slurp:devel:006914:audio-1497887113-headset",
+        "slurp:devel:007229:audio-1490287996-headset",
+        "slurp:devel:007684:audio-1490357297-headset",
+        "slurp:devel:008192:audio-1501685478",
+        "slurp:devel:008786:audio-1494418486",
+        "slurp:devel:009382:audio-1502894295",
+        "slurp:devel:009589:audio-1490354783-headset",
+        "slurp:devel:009756:audio--1504192167",
+        "slurp:devel:009849:audio-1501414981-headset",
+        "slurp:devel:009874:audio-1501686140",
+        "slurp:devel:009934:audio-1501756245",
+        "slurp:devel:009965:audio-1501754719",
+        "slurp:devel:009968:audio-1490182854",
+        "slurp:devel:009978:audio-1501753701",
+        "slurp:devel:009982:audio-1489671650",
+        "slurp:devel:010022:audio-1490801849",
+        "slurp:devel:010146:audio-1501156374-headset",
+        "slurp:devel:010238:audio-1490262469",
+        "slurp:devel:010267:audio-1490201691-headset",
+        "slurp:devel:010273:audio-1492779187-headset",
+        "slurp:devel:010412:audio-1497025321-headset",
+        "slurp:devel:011557:audio-1501775614-headset",
+        "slurp:devel:011611:audio-1490203470-headset",
+        "slurp:devel:011658:audio-1501774701",
+        "slurp:devel:011732:audio-1490356897-headset",
+        "slurp:devel:011785:audio-1488971006",
+        "slurp:devel:011849:audio-1502101693",
+        "slurp:devel:011883:audio-1490183460-headset",
+        "slurp:devel:012144:audio-1495369709",
+        "slurp:devel:012205:audio-1502098921-headset",
+        "slurp:devel:012236:audio-1499244960",
+        "slurp:devel:012891:audio-1501751875-headset",
+        "slurp:devel:013033:audio-1501158072",
+        "slurp:devel:013071:audio-1502308991",
+        "slurp:devel:013107:audio-1490021632-headset",
+        "slurp:devel:013549:audio-1502311262-headset",
+        "slurp:devel:013844:audio-1494607953-headset",
+        "slurp:devel:014175:audio-1502377133-headset",
+        "slurp:devel:014207:audio-1498484644",
+        "slurp:devel:014343:audio-1500418101-headset",
+        "slurp:devel:014708:audio-1497437389-headset",
+        "slurp:devel:015017:audio-1500038945",
+        "slurp:devel:015297:audio-1497868380-headset",
+        "slurp:devel:016066:audio-1498571330-headset",
+        "slurp:devel:016821:audio-1490199209-headset"
+      ]
+    },
+    "new400_randicl_vs_m0": {
+      "ABL-RANDICL_accuracy": 0.47,
+      "ABL-RANDICL_correct": 188,
+      "M0_accuracy": 0.525,
+      "M0_correct": 210,
+      "baseline_arm": "M0",
+      "bootstrap": {
+        "ci90_excludes_zero": false,
+        "ci90_high_pp": -1.5,
+        "ci90_low_pp": -9.5,
+        "ci95_excludes_zero": false,
+        "ci95_high_pp": -0.75,
+        "ci95_low_pp": -10.25,
+        "n_replicates": 10000,
+        "point_estimate_pp": -5.5,
+        "replicate_share_at_or_below_zero": 0.9901,
+        "replicates_at_or_below_zero": 9901,
+        "resampling": "per-sample paired cluster bootstrap over the 100 DEV-100 ids; the SAME resampled multiset scores both arms, preserving the pairing",
+        "seed": 20260807,
+        "sigma_hat_pp": 2.404430274384142
+      },
+      "concordant_pairs": 306,
+      "correct_to_wrong_count": 58,
+      "correct_to_wrong_sample_ids": [
+        "slurp:devel:000053:audio-1498758443",
+        "slurp:devel:000271:audio-1499089273",
+        "slurp:devel:000434:audio-1495370125-headset",
+        "slurp:devel:001177:audio-1488985507",
+        "slurp:devel:001615:audio-1501696517",
+        "slurp:devel:001877:audio-1500038715-headset",
+        "slurp:devel:001894:audio-1498572295-headset",
+        "slurp:devel:002040:audio-1488975262",
+        "slurp:devel:002154:audio-1490184239-headset",
+        "slurp:devel:002583:audio-1497869176",
+        "slurp:devel:002622:audio-1489672890-headset",
+        "slurp:devel:002687:audio-1496265461-headset",
+        "slurp:devel:002844:audio-1488983404",
+        "slurp:devel:002851:audio-1488974812",
+        "slurp:devel:002943:audio-1502200671-headset",
+        "slurp:devel:002949:audio-1489151823",
+        "slurp:devel:003004:audio-1490021517-headset",
+        "slurp:devel:003018:audio-1490006722-headset",
+        "slurp:devel:003149:audio--1506079570",
+        "slurp:devel:003151:audio-1497865132",
+        "slurp:devel:003183:audio-1497367888",
+        "slurp:devel:003421:audio-1488988572",
+        "slurp:devel:003704:audio-1494511949",
+        "slurp:devel:004664:audio-1490181974",
+        "slurp:devel:004810:audio-1490184154",
+        "slurp:devel:004853:audio-1502199738",
+        "slurp:devel:005021:audio-1499697891",
+        "slurp:devel:005099:audio--1504195010",
+        "slurp:devel:005126:audio-1497861694",
+        "slurp:devel:005282:audio-1501777482",
+        "slurp:devel:005404:audio-1502199466-headset",
+        "slurp:devel:005516:audio-1502894283",
+        "slurp:devel:005609:audio--1504198034",
+        "slurp:devel:005867:audio--1505405302",
+        "slurp:devel:005957:audio--1504192994-headset",
+        "slurp:devel:006071:audio-1434533519-headset",
+        "slurp:devel:006135:audio-1497886634",
+        "slurp:devel:006792:audio-1497438427",
+        "slurp:devel:009136:audio-1498569834-headset",
+        "slurp:devel:010020:audio-1489671616",
+        "slurp:devel:010450:audio-1500040567",
+        "slurp:devel:010539:audio-1490288006-headset",
+        "slurp:devel:010602:audio-1500036608",
+        "slurp:devel:010666:audio-1497555128-headset",
+        "slurp:devel:012317:audio-1499088843-headset",
+        "slurp:devel:012322:audio-1492784064",
+        "slurp:devel:012470:audio-1495375881",
+        "slurp:devel:012651:audio-1497029354",
+        "slurp:devel:012768:audio-1490181904",
+        "slurp:devel:012923:audio-1502302112-headset",
+        "slurp:devel:013624:audio-1497861870-headset",
+        "slurp:devel:015093:audio-1490369875-headset",
+        "slurp:devel:015174:audio-1490104476-headset",
+        "slurp:devel:015301:audio-1497880903-headset",
+        "slurp:devel:015514:audio-1502376616-headset",
+        "slurp:devel:015540:audio-1501754963",
+        "slurp:devel:016479:audio-1490199179-headset",
+        "slurp:devel:017153:audio-1497449882"
+      ],
+      "delta_pp": -5.5,
+      "delta_samples": -22,
+      "label": "SECONDARY: what generic in-context conditioning alone buys -- ABL-RANDICL - M0 on the NEW400",
+      "mcnemar": {
+        "chi_square_continuity_corrected": 4.691489361702128,
+        "chi_square_two_sided_p": 0.03031236244732695,
+        "discordant_pairs": 94,
+        "exact_binomial_two_sided_p": 0.029766410087911834,
+        "mid_p_two_sided": 0.023488002836921148,
+        "n01_wrong_to_correct": 36,
+        "n10_correct_to_wrong": 58,
+        "odds_ratio_n01_over_n10": 0.6206896551724138
+      },
+      "n": 400,
+      "population": "DEV-500-NEW400 (400 unexposed)",
+      "treatment_arm": "ABL-RANDICL",
+      "wrong_to_correct_count": 36,
+      "wrong_to_correct_sample_ids": [
+        "slurp:devel:000188:audio--1504198223",
+        "slurp:devel:000616:audio-1497450987",
+        "slurp:devel:000737:audio-1501693732-headset",
+        "slurp:devel:001268:audio-1490357091-headset",
+        "slurp:devel:001770:audio-1501763648",
+        "slurp:devel:002196:audio-1497885887-headset",
+        "slurp:devel:002790:audio-1490019160-headset",
+        "slurp:devel:003496:audio-1488970061",
+        "slurp:devel:004398:audio-1500388255",
+        "slurp:devel:005150:audio-1498166547",
+        "slurp:devel:005362:audio-1502890769-headset",
+        "slurp:devel:005793:audio--1506078231-headset",
+        "slurp:devel:006111:audio-1490198869-headset",
+        "slurp:devel:006482:audio-1495370480-headset",
+        "slurp:devel:006638:audio-1490184013",
+        "slurp:devel:006642:audio-1497886517-headset",
+        "slurp:devel:006914:audio-1497887113-headset",
+        "slurp:devel:009382:audio-1502894295",
+        "slurp:devel:009589:audio-1490354783-headset",
+        "slurp:devel:009934:audio-1501756245",
+        "slurp:devel:010146:audio-1501156374-headset",
+        "slurp:devel:010154:audio-1502375916",
+        "slurp:devel:010218:audio-1502377622",
+        "slurp:devel:010238:audio-1490262469",
+        "slurp:devel:010242:audio-1495370816-headset",
+        "slurp:devel:010273:audio-1492779187-headset",
+        "slurp:devel:010521:audio-1498484115",
+        "slurp:devel:012006:audio-1490193970-headset",
+        "slurp:devel:013071:audio-1502308991",
+        "slurp:devel:013515:audio-1502216808-headset",
+        "slurp:devel:014358:audio-1490184222-headset",
+        "slurp:devel:014458:audio-1497869193",
+        "slurp:devel:014849:audio-1499688670-headset",
+        "slurp:devel:015466:audio-1490105584",
+        "slurp:devel:015921:audio-1501765147-headset",
+        "slurp:devel:016066:audio-1498571330-headset"
+      ]
+    },
+    "new400_randret_vs_m0": {
+      "ABL-RANDRET_accuracy": 0.565,
+      "ABL-RANDRET_correct": 226,
+      "M0_accuracy": 0.525,
+      "M0_correct": 210,
+      "baseline_arm": "M0",
+      "bootstrap": {
+        "ci90_excludes_zero": true,
+        "ci90_high_pp": 6.0,
+        "ci90_low_pp": 2.25,
+        "ci95_excludes_zero": true,
+        "ci95_high_pp": 6.25,
+        "ci95_low_pp": 1.75,
+        "n_replicates": 10000,
+        "point_estimate_pp": 4.0,
+        "replicate_share_at_or_below_zero": 0.0001,
+        "replicates_at_or_below_zero": 1,
+        "resampling": "per-sample paired cluster bootstrap over the 100 DEV-100 ids; the SAME resampled multiset scores both arms, preserving the pairing",
+        "seed": 20260807,
+        "sigma_hat_pp": 1.144887492016137
+      },
+      "concordant_pairs": 378,
+      "correct_to_wrong_count": 3,
+      "correct_to_wrong_sample_ids": [
+        "slurp:devel:002622:audio-1489672890-headset",
+        "slurp:devel:005105:audio-1498567969-headset",
+        "slurp:devel:005957:audio--1504192994-headset"
+      ],
+      "delta_pp": 4.0,
+      "delta_samples": 16,
+      "label": "SECONDARY (context for the two above): ABL-RANDRET - M0 on the NEW400",
+      "mcnemar": {
+        "chi_square_continuity_corrected": 10.227272727272727,
+        "chi_square_two_sided_p": 0.0013837912401647983,
+        "discordant_pairs": 22,
+        "exact_binomial_two_sided_p": 0.0008554458618164062,
+        "mid_p_two_sided": 0.00048828125,
+        "n01_wrong_to_correct": 19,
+        "n10_correct_to_wrong": 3,
+        "odds_ratio_n01_over_n10": 6.333333333333333
+      },
+      "n": 400,
+      "population": "DEV-500-NEW400 (400 unexposed)",
+      "treatment_arm": "ABL-RANDRET",
+      "wrong_to_correct_count": 19,
+      "wrong_to_correct_sample_ids": [
+        "slurp:devel:000516:audio-1498167434",
+        "slurp:devel:001365:audio-1490019680-headset",
+        "slurp:devel:001621:audio-1497884269-headset",
+        "slurp:devel:001678:audio-1495369559",
+        "slurp:devel:002069:audio-1490006034-headset",
+        "slurp:devel:002582:audio-1434532268-headset",
+        "slurp:devel:002790:audio-1490019160-headset",
+        "slurp:devel:003632:audio-1502377725",
+        "slurp:devel:004979:audio-1502201398-headset",
+        "slurp:devel:005793:audio--1506078231-headset",
+        "slurp:devel:008697:audio-1499266692-headset",
+        "slurp:devel:010154:audio-1502375916",
+        "slurp:devel:010521:audio-1498484115",
+        "slurp:devel:012165:audio-1497867713",
+        "slurp:devel:012674:audio--1505404754-headset",
+        "slurp:devel:014849:audio-1499688670-headset",
+        "slurp:devel:014861:audio-1501697025-headset",
+        "slurp:devel:015466:audio-1490105584",
+        "slurp:devel:015921:audio-1501765147-headset"
+      ]
+    },
+    "pooled_500_blend_vs_m0_descriptive": {
+      "BLEND_accuracy": 0.718,
+      "BLEND_correct": 359,
+      "M0_accuracy": 0.518,
+      "M0_correct": 259,
+      "baseline_arm": "M0",
+      "bootstrap": {
+        "ci90_excludes_zero": true,
+        "ci90_high_pp": 23.0,
+        "ci90_low_pp": 17.0,
+        "ci95_excludes_zero": true,
+        "ci95_high_pp": 23.6,
+        "ci95_low_pp": 16.4,
+        "n_replicates": 10000,
+        "point_estimate_pp": 20.0,
+        "replicate_share_at_or_below_zero": 0.0,
+        "replicates_at_or_below_zero": 0,
+        "resampling": "per-sample paired cluster bootstrap over the 100 DEV-100 ids; the SAME resampled multiset scores both arms, preserving the pairing",
+        "seed": 20260807,
+        "sigma_hat_pp": 1.829983683424527
+      },
+      "concordant_pairs": 396,
+      "correct_to_wrong_count": 2,
+      "correct_to_wrong_sample_ids": [
+        "slurp:devel:002946:audio-1494512961",
+        "slurp:devel:012768:audio-1490181904"
+      ],
+      "delta_pp": 20.0,
+      "delta_samples": 100,
+      "label": "SECONDARY (DESCRIPTIVE ONLY, explicitly NOT the claim): BLEND - M0 pooled over all 500",
+      "mcnemar": {
+        "chi_square_continuity_corrected": 94.24038461538461,
+        "chi_square_two_sided_p": 2.794408900619273e-22,
+        "discordant_pairs": 104,
+        "exact_binomial_two_sided_p": 5.384961754264932e-28,
+        "mid_p_two_sided": 2.744249874037595e-28,
+        "n01_wrong_to_correct": 102,
+        "n10_correct_to_wrong": 2,
+        "odds_ratio_n01_over_n10": 51.0
+      },
+      "n": 500,
+      "population": "DEV-500 (400 unexposed + 100 prior-exposed, pooled)",
+      "treatment_arm": "BLEND",
+      "wrong_to_correct_count": 102,
+      "wrong_to_correct_sample_ids": [
+        "slurp:devel:000109:audio-1497882612",
+        "slurp:devel:000188:audio--1504198223",
+        "slurp:devel:000251:audio-1490200961-headset",
+        "slurp:devel:000392:audio-1498573434",
+        "slurp:devel:000516:audio-1498167434",
+        "slurp:devel:000616:audio-1497450987",
+        "slurp:devel:000803:audio--1504192460",
+        "slurp:devel:000806:audio--1506079512",
+        "slurp:devel:000921:audio-1498564374-headset",
+        "slurp:devel:001012:audio-1499266025-headset",
+        "slurp:devel:001365:audio-1490019680-headset",
+        "slurp:devel:001558:audio-1495734409",
+        "slurp:devel:001621:audio-1497884269-headset",
+        "slurp:devel:001680:audio-1490007753-headset",
+        "slurp:devel:001770:audio-1501763648",
+        "slurp:devel:001948:audio-1488973873",
+        "slurp:devel:002069:audio-1490006034-headset",
+        "slurp:devel:002088:audio-1501406536",
+        "slurp:devel:002196:audio-1497885887-headset",
+        "slurp:devel:002599:audio-1499696735",
+        "slurp:devel:002693:audio-1490009293-headset",
+        "slurp:devel:002790:audio-1490019160-headset",
+        "slurp:devel:003496:audio-1488970061",
+        "slurp:devel:003530:audio-1490183137",
+        "slurp:devel:003632:audio-1502377725",
+        "slurp:devel:004398:audio-1500388255",
+        "slurp:devel:004497:audio-1497880422",
+        "slurp:devel:004579:audio-1502195536-headset",
+        "slurp:devel:004778:audio-1497024085",
+        "slurp:devel:004979:audio-1502201398-headset",
+        "slurp:devel:005183:audio-1498565600",
+        "slurp:devel:005726:audio--1504197977",
+        "slurp:devel:005793:audio--1506078231-headset",
+        "slurp:devel:005989:audio-1497621031",
+        "slurp:devel:006111:audio-1490198869-headset",
+        "slurp:devel:006389:audio-1490356484-headset",
+        "slurp:devel:006914:audio-1497887113-headset",
+        "slurp:devel:007229:audio-1490287996-headset",
+        "slurp:devel:007684:audio-1490357297-headset",
+        "slurp:devel:007732:audio-1502376806-headset",
+        "slurp:devel:008192:audio-1501685478",
+        "slurp:devel:008697:audio-1499266692-headset",
+        "slurp:devel:008786:audio-1494418486",
+        "slurp:devel:009382:audio-1502894295",
+        "slurp:devel:009589:audio-1490354783-headset",
+        "slurp:devel:009756:audio--1504192167",
+        "slurp:devel:009849:audio-1501414981-headset",
+        "slurp:devel:009874:audio-1501686140",
+        "slurp:devel:009934:audio-1501756245",
+        "slurp:devel:009951:audio-1500038657-headset",
+        "slurp:devel:009965:audio-1501754719",
+        "slurp:devel:009968:audio-1490182854",
+        "slurp:devel:009978:audio-1501753701",
+        "slurp:devel:009982:audio-1489671650",
+        "slurp:devel:010022:audio-1490801849",
+        "slurp:devel:010041:audio-1497264270-headset",
+        "slurp:devel:010086:audio-1502201283",
+        "slurp:devel:010138:audio-1490289156",
+        "slurp:devel:010146:audio-1501156374-headset",
+        "slurp:devel:010154:audio-1502375916",
+        "slurp:devel:010238:audio-1490262469",
+        "slurp:devel:010267:audio-1490201691-headset",
+        "slurp:devel:010273:audio-1492779187-headset",
+        "slurp:devel:010374:audio-1501690184-headset",
+        "slurp:devel:010412:audio-1497025321-headset",
+        "slurp:devel:010521:audio-1498484115",
+        "slurp:devel:011557:audio-1501775614-headset",
+        "slurp:devel:011611:audio-1490203470-headset",
+        "slurp:devel:011658:audio-1501774701",
+        "slurp:devel:011732:audio-1490356897-headset",
+        "slurp:devel:011785:audio-1488971006",
+        "slurp:devel:011849:audio-1502101693",
+        "slurp:devel:011883:audio-1490183460-headset",
+        "slurp:devel:012055:audio-1494512213",
+        "slurp:devel:012144:audio-1495369709",
+        "slurp:devel:012165:audio-1497867713",
+        "slurp:devel:012205:audio-1502098921-headset",
+        "slurp:devel:012236:audio-1499244960",
+        "slurp:devel:012674:audio--1505404754-headset",
+        "slurp:devel:012712:audio-1502199981-headset",
+        "slurp:devel:012891:audio-1501751875-headset",
+        "slurp:devel:013033:audio-1501158072",
+        "slurp:devel:013071:audio-1502308991",
+        "slurp:devel:013107:audio-1490021632-headset",
+        "slurp:devel:013549:audio-1502311262-headset",
+        "slurp:devel:013804:audio-1434542201-headset",
+        "slurp:devel:013844:audio-1494607953-headset",
+        "slurp:devel:014175:audio-1502377133-headset",
+        "slurp:devel:014203:audio-1500979762",
+        "slurp:devel:014207:audio-1498484644",
+        "slurp:devel:014343:audio-1500418101-headset",
+        "slurp:devel:014708:audio-1497437389-headset",
+        "slurp:devel:014849:audio-1499688670-headset",
+        "slurp:devel:014861:audio-1501697025-headset",
+        "slurp:devel:015017:audio-1500038945",
+        "slurp:devel:015297:audio-1497868380-headset",
+        "slurp:devel:015397:audio-1490262948",
+        "slurp:devel:015414:audio-1499265566",
+        "slurp:devel:015466:audio-1490105584",
+        "slurp:devel:015921:audio-1501765147-headset",
+        "slurp:devel:016066:audio-1498571330-headset",
+        "slurp:devel:016821:audio-1490199209-headset"
+      ]
+    }
+  },
+  "sources": [
+    {
+      "arm": "M0",
+      "attempt_id": "attempt-20260824T203716Z-dev500m0",
+      "committed_report": "docs/checks/speech-aware-evidence-acquisition/2026-08-24-dev500-confirmatory/arm1-m0-mechanical-report.json",
+      "committed_report_sha256": "22bd0d1a26b5f7f27200893dea67c4537e2eaad3350bfedd8e19527a22b15979",
+      "n": 500,
+      "population": "DEV-500",
+      "sealed_mechanical": "arm1-m0-mechanical.json",
+      "sealed_mechanical_sha256": "76e5dfc94b4d6de03d9fa57ebb1f9db07e47b9dc7126f42ae0baf55212d57704",
+      "sealed_outputs": "arm1-m0-outputs.jsonl",
+      "sealed_outputs_sha256": "d09fbf479a5bb48b9ff69d1499e01ed5f233bbce20b4c6196ba5bbbed787629d"
+    },
+    {
+      "arm": "BLEND",
+      "attempt_id": "attempt-20260824T205527Z-dev500blend",
+      "committed_report": "docs/checks/speech-aware-evidence-acquisition/2026-08-24-dev500-confirmatory/arm2-blend-mechanical-report.json",
+      "committed_report_sha256": "d7a6b159b94a95e5524e02ba94076b93286fa5056cf73f397743587959cbffff",
+      "n": 500,
+      "population": "DEV-500",
+      "sealed_mechanical": "arm2-blend-mechanical.json",
+      "sealed_mechanical_sha256": "164210fbaf954d36459e62c14b61c927e31c5be38273aee155b96a9ae29bb52b",
+      "sealed_outputs": "arm2-blend-outputs.jsonl",
+      "sealed_outputs_sha256": "3ae9fef0c75cbceb7d008115522df8854d0a0db473cd553c1c44f4b7200efe0b"
+    },
+    {
+      "arm": "ABL-RANDRET",
+      "attempt_id": "attempt-20260824T212928Z-dev500randret",
+      "committed_report": "docs/checks/speech-aware-evidence-acquisition/2026-08-24-dev500-confirmatory/arm3-randret-mechanical-report.json",
+      "committed_report_sha256": "8a860273d00c0a932d1dd57ad71bcc09913b28a29412bdf5deb996f4763a040d",
+      "n": 400,
+      "population": "DEV-500-NEW400",
+      "sealed_mechanical": "arm3-randret-mechanical.json",
+      "sealed_mechanical_sha256": "1fc2cfd7acb0a0cc36b42c78cbc36d45f61952a6671d339666dcd19842fe91ef",
+      "sealed_outputs": "arm3-randret-outputs.jsonl",
+      "sealed_outputs_sha256": "aa0bab8fb606da5da0ff7a8db305b0e8a3cae77e48ea96b33dbe7b3d05015890"
+    },
+    {
+      "arm": "ABL-RANDICL",
+      "attempt_id": "attempt-20260824T213948Z-dev500randicl",
+      "committed_report": "docs/checks/speech-aware-evidence-acquisition/2026-08-24-dev500-confirmatory/arm4-randicl-mechanical-report.json",
+      "committed_report_sha256": "be3d210d9d7244e6cb799c1826b928cd877a7a359d0691a193c074b20d51a155",
+      "n": 400,
+      "population": "DEV-500-NEW400",
+      "sealed_mechanical": "arm4-randicl-mechanical.json",
+      "sealed_mechanical_sha256": "d8417013c22c9ea99f7186c103c815c9ed6e8d177b4d1cd71188a79ff138f14f",
+      "sealed_outputs": "arm4-randicl-outputs.jsonl",
+      "sealed_outputs_sha256": "ffbfc92d15d58db694c528864a2120487ff22c2c621ed61917064fb2d2956248"
+    }
+  ],
+  "study": "speech-aware-evidence-acquisition",
+  "zero_contact_proof": {
+    "offline_guard": {
+      "armed_before_any_input_was_opened": true,
+      "outbound_connection_attempts": 0,
+      "targets": []
+    },
+    "registered_contacts": {
+      "frozen_core": 0,
+      "pinned_tool_embedding": 0,
+      "tokenizer": 0
+    },
+    "resident_service_log": {
+      "after": {
+        "bytes": 3317828,
+        "present": true,
+        "sha256": "231e4a34c764626edb028c2689b031037d46f90b7e1c6716ef882903d35d9b62"
+      },
+      "before": {
+        "bytes": 3317828,
+        "present": true,
+        "sha256": "231e4a34c764626edb028c2689b031037d46f90b7e1c6716ef882903d35d9b62"
+      },
+      "byte_length_identical": true,
+      "path": "/home/chao/runs/services/SAEA-SN-Q4KM-NP8-BASE-DEV100-20260824T120910Z/server.log",
+      "sha256_identical": true
+    }
+  }
+}
