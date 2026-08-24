@@ -178,8 +178,12 @@ class SlurpEngineeringGate:
 
     split_identity_hash: str
     runtime_view_sha256: str
-    d1_media_supplement: str
-    d1_media_supplement_sha256: str
+    # ``None`` when the view's media is already inside the immutable E0 D1
+    # closure and needs no additive successor -- see
+    # ``_RUNTIME_VIEW_SPLIT_ROLES``/the supplement nullability comment in
+    # ``load_slurp_engineering_gate``.
+    d1_media_supplement: str | None
+    d1_media_supplement_sha256: str | None
     samples: tuple[SlurpEngineeringSample, ...]
 
 
@@ -543,8 +547,6 @@ def load_slurp_engineering_gate(
     for field in (
         "split_identity_hash",
         "source_binding_sha256",
-        "d1_media_supplement_sha256",
-        "d1_manifest_sha256",
         "runtime_view_sha256",
     ):
         value = document[field]
@@ -554,15 +556,42 @@ def load_slurp_engineering_gate(
             or any(ch not in "0123456789abcdef" for ch in value)
         ):
             raise LoaderError(f"speech-native engineering gate {field} is malformed")
-    supplement_path = document["d1_media_supplement"]
-    if (
-        not isinstance(supplement_path, str)
-        or not supplement_path
-        or "\\" in supplement_path
-        or Path(supplement_path).is_absolute()
-        or any(part in ("", ".", "..") for part in Path(supplement_path).parts)
-    ):
-        raise LoaderError("speech-native engineering gate D1 supplement path is unsafe")
+
+    # A D1 media SUPPLEMENT is an ADDITIVE successor for a carrier slice that
+    # sits OUTSIDE the immutable E0 D1 closure, and
+    # ``contracts.gate_media_identity._d1_media_supplement_records`` refuses --
+    # correctly -- any supplement entry that duplicates a base D1 sample. The
+    # DEV ladder is drawn from SLURP devel, and base D1 already records every
+    # one of the 8,690 devel recordings, so a DEV runtime view has nothing to
+    # supplement: its three supplement fields are all null and the gate reads
+    # media identity straight from D1. All-or-nothing, exactly as
+    # ``core.config._d1_media_supplement_pair`` already requires; a partially
+    # null triple is a defect, not a shorthand.
+    supplement_fields = (
+        document["d1_media_supplement"],
+        document["d1_media_supplement_sha256"],
+        document["d1_manifest_sha256"],
+    )
+    if all(value is None for value in supplement_fields):
+        supplement_path = None
+    else:
+        for field in ("d1_media_supplement_sha256", "d1_manifest_sha256"):
+            value = document[field]
+            if (
+                not isinstance(value, str)
+                or len(value) != 64
+                or any(ch not in "0123456789abcdef" for ch in value)
+            ):
+                raise LoaderError(f"speech-native engineering gate {field} is malformed")
+        supplement_path = document["d1_media_supplement"]
+        if (
+            not isinstance(supplement_path, str)
+            or not supplement_path
+            or "\\" in supplement_path
+            or Path(supplement_path).is_absolute()
+            or any(part in ("", ".", "..") for part in Path(supplement_path).parts)
+        ):
+            raise LoaderError("speech-native engineering gate D1 supplement path is unsafe")
 
     root = Path(data_root).resolve(strict=True)
     prepared: list[tuple[Mapping[str, object], Path]] = []

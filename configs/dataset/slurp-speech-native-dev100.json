@@ -2,9 +2,9 @@
   "audio_seconds_total": 275.700125,
   "carrier_lock_key": "slurp",
   "count": 100,
-  "d1_manifest_sha256": "9469ddfb0200f969798cba50c2c4f3d20ac8e18a0b13772491b08076b803b97c",
-  "d1_media_supplement": "receipts/artifacts/d1-dev-ladder-dev100.json",
-  "d1_media_supplement_sha256": "4f07dfa658171400229e9c7699b360bbf28603e745e487d2d3da6d27ea95e9f0",
+  "d1_manifest_sha256": null,
+  "d1_media_supplement": null,
+  "d1_media_supplement_sha256": null,
   "items": [
     {
       "audio_seconds": 1.4078125,
@@ -807,7 +807,7 @@
       "sample_rate_hz": 16000
     }
   ],
-  "runtime_view_sha256": "6db8e0fcd197b615a7379fe528f717536ae59f51c9e263419c787cbf120e0e1a",
+  "runtime_view_sha256": "9c7fe959ab0a258de97094a5edeb17da88de95965a093ea076deabe7a47220f7",
   "schema": "saea-speech-native-runtime-view-v1",
   "seed": 20260823,
   "source_binding_sha256": "5d2f797dacf35bb133fafe160ef5c0bcc21904cd3a009ce6c6b17f56b1d6d405",

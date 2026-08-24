@@ -1,4 +1,4 @@
-"""Build the DEV-100 label-free runtime view and its D1 media supplement.
+"""Build the DEV-100 label-free runtime view from its probe-sample receipt.
 
 Why a separate generator (and not ``e0.d1_identity.build_speech_native_
 runtime_view``): the existing speech-native builders derive their item list
@@ -53,6 +53,21 @@ view's identity. The field name is fixed by the frozen
 substitution is recorded here and in the flight-readiness receipt rather
 than in an extra key.
 
+No D1 media supplement (measured, not assumed)
+----------------------------------------------
+A supplement is an ADDITIVE successor for a carrier slice OUTSIDE the
+immutable E0 D1 closure, and ``contracts.gate_media_identity`` refuses any
+supplement entry that duplicates a base D1 sample. The first DEV-100
+preprocessing attempt was refused by exactly that check, with zero model
+contacts: base D1's ``slurp`` media layer already records all 8,690 devel
+recordings, so all 100 DEV-100 items are inside the closure and there is
+nothing to supplement. This generator therefore verifies that coverage and
+writes ``d1_media_supplement`` / ``d1_media_supplement_sha256`` /
+``d1_manifest_sha256`` as null -- the gate reads DEV-100 media identity
+straight from D1 and re-hashes every file at model-touch time exactly as it
+would through a supplement. It refuses if any item is NOT covered, rather
+than silently emitting a supplement the gate would reject.
+
 Run in WSL2 (data root on /mnt/e):
 
     PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=<repo>/src \
@@ -76,7 +91,6 @@ from speech_aware_evidence_acquisition.data.lock import (  # noqa: E402
     umbrella_lock_path,
 )
 from speech_aware_evidence_acquisition.data.slurp import load_slurp_split  # noqa: E402
-from speech_aware_evidence_acquisition.e0.artifacts import sha256_file  # noqa: E402
 from speech_aware_evidence_acquisition.e0.d1_identity import (  # noqa: E402
     _confined_media_path,
     _probe_speech_media,
@@ -90,8 +104,6 @@ SPLIT_ROLE = "dev"
 CARRIER = "slurp"
 RECEIPT_PATH = REPO_ROOT / "docs" / "receipts" / "probe-samples" / f"{SPLIT_NAME}.json"
 PARENT_D1_PATH = REPO_ROOT / "docs" / "receipts" / "artifacts" / "d1-identity.json"
-SUPPLEMENT_RELPATH = "receipts/artifacts/d1-dev-ladder-dev100.json"
-SUPPLEMENT_PATH = REPO_ROOT / "docs" / SUPPLEMENT_RELPATH
 RUNTIME_VIEW_PATH = REPO_ROOT / "configs" / "dataset" / "slurp-speech-native-dev100.json"
 WORKERS = 8  # standing rule: <= 8 CPU workers while a GPU campaign may fly
 
@@ -107,7 +119,7 @@ def write_json(path: Path, document: object) -> str:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8", newline="\n") as handle:
         handle.write(json.dumps(document, ensure_ascii=False, indent=2, sort_keys=True) + "\n")
-    return sha256_file(path)
+    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def main() -> int:
@@ -167,24 +179,28 @@ def main() -> int:
                 "sha256": media_sha256,
                 "audio_seconds": round(float(audio_seconds), 9),
                 "sample_rate_hz": sample_rate_hz,
-                "roles": ["query"],
             }
         )
-    supplement = {
-        "schema": "saea-d1-media-supplement-v1",
-        "study": "speech-aware-evidence-acquisition",
-        "carrier_lock_key": CARRIER,
-        "parent_d1_sha256": sha256_file(PARENT_D1_PATH),
-        "source_binding_sha256": canonical_sha256(receipt),
-        "count": len(manifest),
-        "ids_sha256": hashlib.sha256(
-            "\n".join(entry["id"] for entry in manifest).encode("utf-8")
-        ).hexdigest(),
-        "manifest": manifest,
-        "manifest_sha256": canonical_sha256(manifest),
-        "total_bytes": sum(int(entry["bytes"]) for entry in manifest),
+
+    # Prove the "no supplement needed" claim against the immutable D1
+    # artifact rather than asserting it: every item must already be recorded
+    # there, with the SAME bytes this generator just re-measured.
+    d1 = json.loads(PARENT_D1_PATH.read_text(encoding="utf-8"))
+    d1_media = {
+        entry["id"]: entry
+        for entry in d1["carriers"][CARRIER]["layers"]["media"]["manifest"]
     }
-    supplement_file_sha256 = write_json(SUPPLEMENT_PATH, supplement)
+    for entry in manifest:
+        base = d1_media.get(entry["id"])
+        if base is None:
+            raise SystemExit(
+                f"DEV-100 sample {entry['id']!r} is OUTSIDE the D1 closure; this "
+                "generator only emits supplement-free views"
+            )
+        if base["sha256"] != entry["sha256"] or base["bytes"] != entry["bytes"]:
+            raise SystemExit(
+                f"DEV-100 sample {entry['id']!r} media bytes drifted from D1's record"
+            )
 
     items = [
         {
@@ -208,9 +224,11 @@ def main() -> int:
         # the load_split / ExecutionPlan convention, not the receipt-integrity one
         "split_identity_hash": verified.identity_hash,
         "source_binding_sha256": canonical_sha256(receipt),
-        "d1_media_supplement": SUPPLEMENT_RELPATH,
-        "d1_media_supplement_sha256": supplement_file_sha256,
-        "d1_manifest_sha256": supplement["manifest_sha256"],
+        # null: DEV-100's media is already inside the immutable D1 closure
+        # (verified above), so there is nothing to supplement.
+        "d1_media_supplement": None,
+        "d1_media_supplement_sha256": None,
+        "d1_manifest_sha256": None,
         "count": len(items),
         "audio_seconds_total": round(
             sum(float(item["audio_seconds"]) for item in items), 9
@@ -227,11 +245,11 @@ def main() -> int:
                 "split_identity_hash_receipt_integrity": receipt["split_identity_hash"],
                 "runtime_view_sha256": runtime_view["runtime_view_sha256"],
                 "runtime_view_file_sha256": runtime_view_file_sha256,
-                "d1_media_supplement_sha256": supplement_file_sha256,
-                "d1_manifest_sha256": supplement["manifest_sha256"],
+                "d1_media_supplement": runtime_view["d1_media_supplement"],
+                "d1_covered_items": len(manifest),
                 "count": runtime_view["count"],
                 "audio_seconds_total": runtime_view["audio_seconds_total"],
-                "total_bytes": supplement["total_bytes"],
+                "total_bytes": sum(int(entry["bytes"]) for entry in manifest),
             },
             indent=2,
         )

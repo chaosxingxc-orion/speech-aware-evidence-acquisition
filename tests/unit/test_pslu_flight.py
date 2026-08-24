@@ -11590,6 +11590,57 @@ def test_engineering_loader_accepts_a_dev_role_runtime_view(tmp_path):
     assert len(gate.samples) == 4
 
 
+def test_engineering_loader_accepts_a_supplement_free_runtime_view(tmp_path):
+    """A D1 media supplement is an ADDITIVE successor for a slice OUTSIDE the
+    immutable D1 closure, and ``contracts.gate_media_identity`` refuses any
+    supplement entry that duplicates a base D1 sample. SLURP devel is already
+    recorded in base D1 in full, so a DEV runtime view has nothing to
+    supplement and carries the whole triple as null."""
+
+    path = _rewrite_runtime_view(
+        _write_engineering_gate_view(tmp_path),
+        split_name="DEV-100",
+        split_role="dev",
+        d1_media_supplement=None,
+        d1_media_supplement_sha256=None,
+        d1_manifest_sha256=None,
+    )
+
+    gate = load_speech_native_engineering_gate(
+        path,
+        data_root=tmp_path,
+        expected_count=4,
+        expected_split_name="DEV-100",
+        media_probe=lambda media_path: (
+            hashlib.sha256(media_path.read_bytes()).hexdigest(),
+            1.25,
+            16000,
+        ),
+    )
+
+    assert gate.d1_media_supplement is None
+    assert gate.d1_media_supplement_sha256 is None
+
+
+def test_engineering_loader_refuses_a_partially_null_supplement_triple(tmp_path):
+    """All-or-nothing, mirroring ``core.config._d1_media_supplement_pair``:
+    a half-declared supplement is a defect, never a shorthand."""
+
+    path = _rewrite_runtime_view(
+        _write_engineering_gate_view(tmp_path),
+        d1_media_supplement=None,
+        d1_manifest_sha256=None,
+    )
+
+    with pytest.raises(PsluFlightError, match="d1_manifest_sha256 is malformed"):
+        load_speech_native_engineering_gate(
+            path,
+            data_root=tmp_path,
+            expected_count=4,
+            media_probe=lambda _path: ("0" * 64, 1.25, 16000),
+        )
+
+
 def test_engineering_loader_still_refuses_a_confirmatory_runtime_view(tmp_path):
     """Widening the role check must not open the confirmatory surface: a
     runtime view can never name a confirmatory split."""
