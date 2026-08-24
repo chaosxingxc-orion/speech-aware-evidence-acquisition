@@ -425,7 +425,34 @@ ATTEMPT_TOOL_CEILING = 130
 PLANNED_MODEL_CALLS = 1800
 PLANNED_AUDIO_SECONDS = 4700
 PLANNED_GPU_HOURS = 1.0
-REFUSED_TAKEOFFS: list[dict[str, object]] = []
+REFUSED_TAKEOFFS: list[dict[str, object]] = [
+    {
+        "attempt_id": "attempt-20260824T185630Z-dev100r5",
+        "at": "2026-08-24T18:57Z",
+        "outcome": (
+            "REFUSED-FAIL-CLOSED at ZERO core spend: the frozen-core gate's "
+            "exposure-preregistration check (M4) refused before any "
+            "transport contact"
+        ),
+        "verbatim_tail": (
+            "exposure ledger row [...] has 17 cells but its table header "
+            "has 15 columns [...]; refusing rather than guessing column "
+            "alignment (M4)"
+        ),
+        "cause_and_repair": (
+            "the ROUND-5 registration segment appended to the campaign row "
+            "contained two literal '|' characters (the absolute-value bars "
+            "in the stopping-rule phrase) which the ledger's Markdown table "
+            "parser counts as cell separators; repaired in Git before "
+            "relaunch by rewording to 'abs-delta vs r4 below 1 sample' "
+            "(the round-4 registration's own wording). Zero contacts, zero "
+            "audio, NO AttemptStore record created; the residue run dir "
+            "carries flight-state + execution-plan only; gold never "
+            "approached"
+        ),
+        "spend": {"core_contacts": 0, "tool_contacts": 0, "audio_seconds": 0.0},
+    }
+]
 
 # Decode-speed canary (attempt-3 registration, carried unchanged): 2 direct-
 # decode contacts on the FIRST TWO attempt-1 M0 sample ids (sorted order),
