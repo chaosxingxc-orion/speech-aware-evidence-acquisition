@@ -1203,3 +1203,113 @@ def test_dev100_kb_alpha_blend_campaign_composes_on_the_resident_zero_copy_servi
 
     # Record the composed identity so a fragment edit is a visible test move.
     assert composed.config_hash == "668a0f1c6adfc11228535dd6bcedf56284c446551077a1e137576533e8b638dd"
+
+
+def test_dev100_kb_alpha_blend_campaign_composes_on_the_np8_zcopy_service():
+    """The CAMPAIGN composition after preregistration amendment 5b: the same
+    DEV-100 campaign contract served on the np8 zero-copy variant.
+
+    Amendment 5b (docs/readiness/2026-08-23-dev100-campaign-preregistration.md)
+    adopted two remedies for the negative np16 prompt-fit verdict pinned by
+    the previous test: the contract-dedup rendering fix in rails/kb_policy.py
+    (commit 72096bad) and the `-np 8` serving variant, whose 8,192-token slots
+    admit the measured worst-case envelope (7,773 + 64 = 7,837 <= 8,192) even
+    BEFORE the rendering fix. This test pins the np8 model fragment as a
+    byte-for-byte sibling of the np16 fragment except the two slot-count
+    fields, re-asserts the full campaign contract on the new composition, and
+    records the np8 composed hash — the hash the campaign row registers.
+    """
+
+    from speech_aware_evidence_acquisition.e0.artifacts import REPO_ROOT
+
+    composed = compose(
+        REPO_ROOT,
+        "q4km-mmproj-free-speech-native-np8-zcopy-speech-query-prefix-max64",
+        "slurp-speech-native-dev100",
+        "slurp-dev100-kb-alpha-blend",
+        "slurp-dev100-kb-alpha-blend-campaign-v1",
+    )
+    values = composed.values
+
+    assert values["experiment_id"] == "SAEA-DEV100-KB-ALPHA-BLEND-CAMPAIGN"
+    assert values["execution_profile"] == "bounded-discovery-probe"
+
+    # Identical scientific surface to the np16 composition: same DEV-role
+    # split identity, same promotion receipt, same campaign contract.
+    assert values["split_name"] == "DEV-100"
+    assert values["split_role"] == "dev"
+    assert values["count"] == 100
+    assert values["split_identity_hash"] == (
+        "e9a7b7febcf4fe3dc228370f7487e1e75dea3d63d447a07fbfe87c1404e2d853"
+    )
+    assert values["kb_campaign_split"]["receipt_integrity_hash"] == (
+        "d676d38b4d27b3a136ba2523b96ae3c71ba2b8b436f7712f4f0c976c3ea833e1"
+    )
+    assert values["speech_packet_promotion_receipt_sha256"] == (
+        "8d2dc4dc9056ed604b22cbb66cd46724d3ee0246b6aca5665e6bfaf67cf0503d"
+    )
+
+    # The np8 serving variant: identical argv except `-np 8`, and the
+    # profile slot count moves with it. Everything else byte-identical to
+    # the resident zcopy profile.
+    assert values["server_args"] == [
+        "-c", "65536", "-np", "8", "-b", "2048", "-ub", "512",
+        "-fa", "on", "-ngl", "999", "-ctk", "q8_0", "-ctv", "q8_0",
+        "--cache-prompt", "--cache-ram", "0",
+        "--no-cache-idle-slots", "--slot-prompt-similarity", "0",
+    ]
+    assert values["profile_slot_count"] == 8
+    assert values["prompt_order"] == "speech-query-prefix-v2"
+    assert values["server_env"] == {
+        "LLAMA_SPEECH_FEATURE_ROOT": (
+            "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a"
+        ),
+        "LLAMA_SPEECH_DECODER_SHA256": (
+            "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d"
+        ),
+    }
+
+    # The np8 fragment is the np16 fragment except exactly the two slot
+    # fields — enforced by construction, not by prose.
+    np16 = json.loads(
+        (
+            REPO_ROOT / "configs" / "model"
+            / "q4km-mmproj-free-speech-native-np16-zcopy-speech-query-prefix-max64.json"
+        ).read_text(encoding="utf-8")
+    )
+    np8 = json.loads(
+        (
+            REPO_ROOT / "configs" / "model"
+            / "q4km-mmproj-free-speech-native-np8-zcopy-speech-query-prefix-max64.json"
+        ).read_text(encoding="utf-8")
+    )
+    np16_args = list(np16["server_args"])
+    np16_args[np16_args.index("-np") + 1] = "8"
+    assert np8["server_args"] == np16_args
+    assert np8["profile_slot_count"] == 8
+    for key in np16:
+        if key in ("server_args", "profile_slot_count"):
+            continue
+        assert np8[key] == np16[key], key
+
+    # Slot geometry: 8,192-token slots admit the measured np16 worst case
+    # (7,773 prompt + 64 completion) even before the contract-dedup fix.
+    context_per_slot = 65536 // 8
+    assert context_per_slot == 8192
+    assert context_per_slot >= 7773 + values["decoding_params"]["max_tokens"]
+
+    # Round-0 knobs and ceilings are untouched by the serving change.
+    knobs = values["kb_campaign_round0_knobs"]
+    assert knobs["alpha"] == 0.6
+    assert knobs["rank_weight_id"] == "rrf"
+    assert knobs["evidence_variant"] == "rank+prior+agreement"
+    assert knobs["tau"] == 0.5
+    assert knobs["top_k_per_dimension"] == 5
+    assert knobs["prior_source"] == "train"
+    ceilings = values["kb_campaign_ceilings"]
+    assert ceilings["frozen_core_contacts_total"] == 1800
+    assert ceilings["frozen_core_contacts_per_round"] == 300
+
+    # The campaign's registered composed identity (amendment 5b: "the
+    # campaign's composed config hash is therefore the np8 composition").
+    assert composed.config_hash == "5397ea3ead594409b440ed9d8abc3690f6230d8b357207eb509977e411405944"
