@@ -70,6 +70,7 @@ import sys
 import threading
 import time
 from collections.abc import Sequence as AbcSequence
+from dataclasses import replace as dataclass_replace
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Mapping, Sequence
@@ -305,6 +306,67 @@ class RoundAdapter(SlurpAdapter):
 # --------------------------------------------------------------------------
 # Runtime query-vector injection (the kb_policy caller-side seam).
 # --------------------------------------------------------------------------
+
+
+# --------------------------------------------------------------------------
+# Direct-contact contract dedup (third-takeoff repair, 2026-08-24, zero
+# spend). The registered chain's DIRECT contact re-renders the full task
+# contract inside its instruction; the runner's protected-knowledge guard
+# (rails.runner._assert_agent_control_excludes_knowledge_payloads) refused
+# the very first wave because 7 TRAIN content-facet representations (short
+# utterance texts such as "temperature" / "calendar" that also appear among
+# the roster's example fillers) are substrings of that roster text. This is
+# the SAME duplication class amendment 5b remedy 1 fixed for the EVIDENCE
+# contact (commit 72096bad): the system message already carries the contract
+# on every contact (rails.runner._agent_messages), so the wrapper below
+# replaces the direct instruction's contract re-render with a reference —
+# rendering fix only, applied caller-side without touching rails/; the model
+# still sees the contract exactly once. The rewrite is a PURE dedup: it fires
+# only when the instruction is byte-exactly the contract prefix + the known
+# directive, and refuses (returns the plan unchanged, so the runner's guard
+# still fail-closes) on anything else.
+# --------------------------------------------------------------------------
+
+DIRECT_DIRECTIVE = (
+    "Answer using only the speech query; no external knowledge has been "
+    "supplied yet."
+)
+DIRECT_REFERENCE_INSTRUCTION = (
+    "Decide under the task contract already given above. " + DIRECT_DIRECTIVE
+)
+EVIDENCE_REFERENCE_INSTRUCTION = (
+    "Decide under the task contract already given above, now "
+    "considering the retrieved evidence. Answer using the speech "
+    "query together with the supplied knowledge evidence."
+)
+
+
+def dedup_direct_contact(contact, task_contract: str):
+    if getattr(contact, "contact_id", None) != "direct-decode":
+        return contact
+    if contact.instruction != f"{task_contract}\n{DIRECT_DIRECTIVE}":
+        return contact
+    return dataclass_replace(contact, instruction=DIRECT_REFERENCE_INSTRUCTION)
+
+
+class DirectDedupController:
+    """Delegating wrapper applying :func:`dedup_direct_contact` to the
+    initial (direct-decode) contact. No other behaviour."""
+
+    def __init__(self, inner) -> None:
+        self._inner = inner
+
+    def initial_contact(self, context):
+        return dedup_direct_contact(
+            self._inner.initial_contact(context), context.task_contract
+        )
+
+    def advance(self, context, contact, response_text):
+        return self._inner.advance(context, contact, response_text)
+
+    @property
+    def last_winner_label(self):
+        return getattr(self._inner, "last_winner_label", None)
 
 
 class LazyQueryVector(AbcSequence):
@@ -556,6 +618,30 @@ def main() -> int:
     )
     log("payload binding built (inputs complete, still pre-gate)")
 
+    # ---- guard simulation: BOTH flown instructions vs protected material --
+    # Runs the runner's own protected-material construction offline (model-
+    # free) and refuses BEFORE takeoff if either reference-form instruction
+    # would trip the knowledge-payload guard the third takeoff died on.
+    from speech_aware_evidence_acquisition.rails.runner import (  # noqa: PLC0415
+        _protected_knowledge_material,
+    )
+
+    protected = _protected_knowledge_material(snapshot)
+    for name, text in (
+        ("direct-reference", DIRECT_REFERENCE_INSTRUCTION),
+        ("evidence-reference", EVIDENCE_REFERENCE_INSTRUCTION),
+    ):
+        hits = [m for m in protected if m in text.casefold()]
+        if hits:
+            raise SystemExit(
+                f"guard simulation: {name} instruction embeds protected knowledge "
+                f"payloads {hits[:3]!r}; refusing before takeoff"
+            )
+    log(
+        "guard simulation PASS: both reference-form instructions are free of all "
+        f"{len(protected)} protected knowledge payloads"
+    )
+
     if "--preflight-only" in sys.argv:
         flight["outcome_status"] = "PREFLIGHT_ONLY_PASS"
         save_flight()
@@ -741,15 +827,19 @@ def main() -> int:
     try:
         # ---------------- Arm M0 ----------------
         def m0_factory(sample_id: str):
-            return KbAlphaBlendController(
-                snapshot=None,
-                query_vectors={},
-                facet_vectors=lambda facet_id: {},
-                normalizer=default_label_normalizer,
-                ranker=rank_wcos_prior_agree_factory(RankWeights(w_cos=0.0, w_prior=0.0, w_agree=0.0)),
-                fuser=fuse_supplyfilter_factory(FuseKnobs(tau=1.0, m=1, c=1, top_l=1)),
-                alpha=0.5,
-                top_k_per_dimension=1,
+            return DirectDedupController(
+                KbAlphaBlendController(
+                    snapshot=None,
+                    query_vectors={},
+                    facet_vectors=lambda facet_id: {},
+                    normalizer=default_label_normalizer,
+                    ranker=rank_wcos_prior_agree_factory(
+                        RankWeights(w_cos=0.0, w_prior=0.0, w_agree=0.0)
+                    ),
+                    fuser=fuse_supplyfilter_factory(FuseKnobs(tau=1.0, m=1, c=1, top_l=1)),
+                    alpha=0.5,
+                    top_k_per_dimension=1,
+                )
             )
 
         m0_registry = Registry("dev100 round0 M0 controller")
@@ -804,7 +894,7 @@ def main() -> int:
                 embed=embed_query_text,
             )
             blend_controllers[sample_id] = controller
-            return controller
+            return DirectDedupController(controller)
 
         blend_registry = Registry("dev100 round0 BLEND controller")
         blend_registry.register(CONTROLLER_POLICY_ID, blend_factory)
@@ -1074,6 +1164,27 @@ def main() -> int:
         },
         "wrong_to_correct_sample_ids": wrong_to_correct,
         "correct_to_wrong_sample_ids": correct_to_wrong,
+        "deviations": [
+            {
+                "id": "direct-contact-contract-dedup",
+                "kind": "rendering fix only, harness-side",
+                "detail": (
+                    "The registered chain's direct-decode contact re-renders the "
+                    "full task contract inside its instruction; the runner's "
+                    "protected-knowledge guard refused the first wave because 7 "
+                    "TRAIN content-facet representations are substrings of the "
+                    "roster text (third takeoff, zero core contacts). The launcher "
+                    "replaces that instruction with a reference to the contract "
+                    "already present in the system message — the exact remedy-1 "
+                    "pattern of amendment 5b (commit 72096bad), extended to the "
+                    "direct contact caller-side without touching rails/. The model "
+                    "sees the contract exactly once either way; no knob, grammar, "
+                    "or policy-id change. A rails-side fix mirroring 72096bad is "
+                    "recommended to the coordinator for round 1."
+                ),
+                "flown_direct_instruction": DIRECT_REFERENCE_INSTRUCTION,
+            }
+        ],
         "spend_vs_ceilings": {
             "core_contacts": {"used": contact_total, "round_ceiling": ROUND_CORE_CEILING, "campaign_ceiling": 1800},
             "embedding_tool_contacts": {"used": meter.count, "round_ceiling": ROUND_TOOL_CEILING, "campaign_ceiling": 1500},
