@@ -133,7 +133,39 @@ dataset fragment generated through the existing binding/preprocess machinery bef
 mode in the existing dispatcher (relax strict slot affinity only during end-of-run drain);
 (iv) the reader-contract-in-config pattern is copied for every DEV flight.
 
-## 7. Survey grounding
+## 7. Methodology rulings (owner, 2026-08-23, third directive)
+
+1. **Baseline-form freeze**: the infrastructure layer is accepted as stable (contracts, runner,
+   openJiuwen executor, config composition — evidenced by 3,700+ tests and five defect-free
+   cells). The AGENT SCHEME layer is explicitly NOT stable: five controller generations
+   rejected and the loop's online output equals its primary. The baseline form is therefore
+   FROZEN as: two-contact knowledge-conditioned decode (direct + evidence-conditioned) with
+   out-of-core retrieval/ranking and α-blend consumption (the C3 policy). Multi-step action
+   control is demoted to a research object ON TOP of this baseline (the training-free RL
+   space), never redesigned as the baseline itself. The stable cold-start gain the baseline
+   builds on is the knowledge plane, replicated as GATE18 +1/18 and EFFECT-C108 +13/108, with
+   the E108 primary at 92/108 rising monotonically with knowledge quality.
+2. **Iteration before conclusions**: single-operating-point one-shot verdicts on NEW designs
+   are no longer acceptable. Before any conclusion: (a) sweep the design's operating-point
+   curves on ALREADY-EXPOSED discovery data (model-free re-analysis is legal and cheap — the
+   4R mean-centering precedent); (b) run multi-round knob iteration on the DEV ladder (gold
+   scoring-side between rounds only), concluding only at convergence. One-shot reads remain
+   reserved for confirmatory readings. The M6 schema v1→v3 repair chain shows in-design
+   iteration works where permitted; the never-swept scientific knobs (top-k, verifier margins,
+   boundary-firing conditions, α/τ/weights) are the gap this ruling closes.
+3. **No expansion without visible gains (hard rule)**: any sample expansion or new cell
+   requires, as a precondition, either evidence from already-exposed data or a stable gain
+   produced by small-scale iteration. The E108/T500 non-spend honoured this; it now binds
+   everything. Applied immediately: Audio2Tool (admission evidence exists from consumed data —
+   direct decode unreachable on 183/400) queues BEHIND a converged, positive DEV-100
+   iteration campaign on SLURP.
+
+Revised sequence: M11 operating-point sweep on exposed E108/C108 trajectories (model-free) →
+text-embedding pass (GPU prerequisite) → DEV-100 iterative optimization campaign (frozen
+baseline form; multi-round; converge or falsify) → DEV-500 confirmation → DEV-1000 →
+baseline-version lock → Audio2Tool generalization.
+
+## 8. Survey grounding
 
 The 2026-08-23 cross-modal retrieval survey (29 items; text / vision-multimodal / speech) is
 recorded in `docs/readiness/2026-08-23-cross-modal-retrieval-survey.md`. Its top-ranked
