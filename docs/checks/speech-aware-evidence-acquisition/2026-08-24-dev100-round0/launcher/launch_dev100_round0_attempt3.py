@@ -287,7 +287,26 @@ ATTEMPT_TOOL_CEILING = 130
 PLANNED_MODEL_CALLS = 460
 PLANNED_AUDIO_SECONDS = 1200
 PLANNED_GPU_HOURS = 1.0
-REFUSED_TAKEOFFS: list[dict[str, object]] = []
+REFUSED_TAKEOFFS: list[dict[str, object]] = [
+    {
+        "takeoff_attempt_id": "attempt-20260824T093714Z-dev100r0a3",
+        "at": "2026-08-24T09:37:14Z",
+        "outcome": (
+            "ZERO-SPEND environment refusal at the in-script GPU preflight, "
+            "before composition, gate, attach, or any contact"
+        ),
+        "cause_verbatim": (
+            "FileNotFoundError: [Errno 2] No such file or directory: 'nvidia-smi'"
+        ),
+        "diagnosis": (
+            "systemd --user units carry a minimal PATH without /usr/lib/wsl/lib "
+            "(where WSL's nvidia-smi lives); interactive shells get it from the "
+            "login PATH. First flight under systemd-run hosting, so first hit."
+        ),
+        "spend": "0 core / 0 tool / 0 audio-s",
+        "repair": "fly_attempt3.sh exports PATH=$PATH:/usr/lib/wsl/lib",
+    }
+]
 
 # Decode-speed canary (attempt-3 registration): 2 direct-decode contacts on
 # the FIRST TWO attempt-1 M0 sample ids (sorted order), single-slot, timing
