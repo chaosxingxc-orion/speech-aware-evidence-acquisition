@@ -1,0 +1,3530 @@
+{
+  "arms": {
+    "BLEND": {
+      "accuracy_scenario_action_exact": 0.63,
+      "contacts": 200,
+      "correct_count": 63,
+      "embedding_tool_contacts": 102,
+      "evidence_contact_dispatched_samples": 100,
+      "parsed_count": 100
+    },
+    "M0": {
+      "accuracy_scenario_action_exact": 0.48,
+      "contacts": 100,
+      "correct_count": 48,
+      "parsed_count": 100
+    }
+  },
+  "attempt_id": "attempt-20260824T122641Z-dev100r0a6",
+  "authority": "docs/readiness/2026-08-23-dev100-campaign-preregistration.md including amendment 5b; campaign exposure row SAEA-DEV100-KB-ALPHA-BLEND-CAMPAIGN attempt-6 registration (successor semantics; run-cumulative plan declaration; registered decode-speed canary with the cross-build amendment; micro-run trace isolation; in-flight decode-rate sentinel; BASE-BINARY mitigation with continued Windows-side mid-flight clock sampling)",
+  "base_binary_mitigation": {
+    "clock_lock_note": {
+      "command": "nvidia-smi -lgc 1200,2500 (Windows side)",
+      "status": "REMAINS APPLIED from attempt 5 (harmless; explicitly NOT the remedy \u2014 the attempt-5 mid-flight samples proved the pathology reproduces at full locked clocks 2,467-2,490 MHz in the ~44 W busy-spin band; left in place and disclosed)"
+    },
+    "evidence": "degraded on zero-copy: E108 454 tok/s, R4 hot-prefix 497 tok/s, round-0 attempts 2-5 (progressive-then-resident busy-spin at full locked clocks); healthy on base: matched base np16 1,536.27 tok/s and the Aug-22/23 M11 cells (speech packets on the base featcache build)",
+    "expectation_under_load": "the healthy 1,500 tok/s class: BLEND generation rates in the attempt-1 normal band (42-97 ms/token per request at 8 slots), no sentinel trip through the historical onset point around observed contact ~50",
+    "falsification_rule": "if the sentinel trips on the base build too, the build-attribution hypothesis is falsified - also a clean finding",
+    "mitigation": "attempt 6 flies the BASE llama.cpp build llama.cpp-featcache (receipt runtime-q4km-mmproj-free.json, binary d0b42ace..., build 04ccc72a2; all 44 receipt entries byte-verified at preflight) instead of the custom build-singleton-zero-copy binary that served every degraded flight; server_args and serving geometry unchanged (-np 8 at -c 65536)"
+  },
+  "blend_decisions": {
+    "evidence_contact_dispatched_samples": 100,
+    "retain_primary_samples": 0,
+    "winner_label_present_samples": 100
+  },
+  "blend_generation_rates_ms_per_token_in_observation_order": [
+    140.83,
+    58.49,
+    144.64,
+    76.38,
+    95.59,
+    43.44,
+    39.13,
+    35.61,
+    131.35,
+    44.94,
+    44.73,
+    33.27,
+    80.2,
+    79.16,
+    54.38,
+    58.73,
+    49.11,
+    57.12,
+    58.01,
+    50.89,
+    40.32,
+    28.14,
+    34.8,
+    71.07,
+    71.08,
+    71.07,
+    31.68,
+    94.41,
+    47.63,
+    50.64,
+    57.61,
+    57.63,
+    57.62,
+    53.26,
+    63.67,
+    47.46,
+    40.47,
+    90.93,
+    39.78,
+    32.37,
+    77.82,
+    98.39,
+    48.83,
+    48.83,
+    48.84,
+    43.57,
+    44.97,
+    36.95,
+    49.68,
+    49.68,
+    32.55,
+    36.28,
+    51.86,
+    51.48,
+    75.76,
+    41.29,
+    73.61,
+    30.85,
+    32.08,
+    33.77,
+    47.31,
+    46.99,
+    45.59,
+    45.18,
+    35.5,
+    23.78,
+    43.78,
+    44.98,
+    82.53,
+    52.02,
+    45.05,
+    51.86,
+    51.17,
+    38.51,
+    30.04,
+    31.44,
+    34.1,
+    62.3,
+    51.69,
+    51.69,
+    49.55,
+    41.08,
+    62.48,
+    62.6,
+    62.61,
+    62.61,
+    33.11,
+    107.82,
+    34.38,
+    43.86,
+    29.47,
+    29.46,
+    60.46,
+    29.45,
+    32.34,
+    34.26,
+    34.25,
+    33.87,
+    104.87,
+    54.09,
+    54.09,
+    54.09,
+    33.08,
+    52.37,
+    38.82,
+    46.27,
+    17.36,
+    84.83,
+    36.5,
+    36.48,
+    32.16,
+    39.75,
+    31.56,
+    30.77,
+    29.32,
+    7.63,
+    112.5,
+    61.86,
+    32.8,
+    33.07,
+    60.78,
+    59.39,
+    59.39,
+    45.5,
+    38.66,
+    55.68,
+    35.63,
+    47.87,
+    37.54,
+    99.81,
+    57.67,
+    57.67,
+    57.69,
+    32.44,
+    55.46,
+    40.02,
+    39.32,
+    67.81,
+    62.9,
+    42.87,
+    35.27,
+    46.19,
+    46.18,
+    39.51,
+    34.33,
+    8.07,
+    127.13,
+    43.91,
+    43.91,
+    43.69,
+    77.64,
+    76.67,
+    48.8,
+    51.82,
+    52.35,
+    58.81,
+    47.48,
+    55.91,
+    42.11,
+    49.27,
+    38.86,
+    68.6,
+    68.61,
+    30.25,
+    104.43,
+    64.24,
+    46.09,
+    77.55,
+    47.26,
+    46.88,
+    42.65,
+    44.23,
+    42.59,
+    24.31,
+    131.52,
+    89.35,
+    42.93,
+    49.28,
+    76.02,
+    48.51,
+    47.31,
+    35.36,
+    18.28,
+    99.97,
+    44.16,
+    44.17,
+    44.17,
+    46.03,
+    44.53,
+    36.31,
+    36.33,
+    8.0,
+    57.76,
+    101.99,
+    42.31,
+    52.81,
+    52.54,
+    43.63,
+    51.43,
+    7.27
+  ],
+  "blend_print_timing": {
+    "generation_rows": 200,
+    "ms_per_token_max": 144.64,
+    "ms_per_token_median": 47.31,
+    "ms_per_token_min": 7.27
+  },
+  "canary": {
+    "contacts": 2,
+    "cross_build_byte_identical_to_attempt1_m0": true,
+    "cross_build_decode_divergence": null,
+    "generation": [
+      {
+        "ms_per_token": 7.28,
+        "tokens": 33,
+        "total_ms": 240.1
+      },
+      {
+        "ms_per_token": 7.02,
+        "tokens": 34,
+        "total_ms": 238.63
+      }
+    ],
+    "note": "responses never read semantically: sha256 + server print_timing descriptives only, per the registered canary semantics (attempt-3 registration, carried to attempt 6 with the registered cross-build amendment)",
+    "pass_threshold_ms_per_token": 300.0,
+    "passed": true,
+    "prompt_eval": [
+      {
+        "ms_per_token": 0.52,
+        "tokens": 1757,
+        "total_ms": 917.84
+      },
+      {
+        "ms_per_token": 1.2,
+        "tokens": 75,
+        "total_ms": 90.22
+      }
+    ],
+    "response_sha256_vs_attempt1_m0": {
+      "slurp:devel:000090:audio-1498567209": {
+        "byte_identical_to_attempt1": true,
+        "response_sha256": "5fe1b883601c67a10862f74c4ef2abd1e94445d25088dbc2989870e29e067a59"
+      },
+      "slurp:devel:000109:audio-1497882612": {
+        "byte_identical_to_attempt1": true,
+        "response_sha256": "7e6ccbed9d234c2ed405c1ea4169213767bcc5694af3bcd8f2b261503980a073"
+      }
+    },
+    "sample_ids": [
+      "slurp:devel:000090:audio-1498567209",
+      "slurp:devel:000109:audio-1497882612"
+    ],
+    "trace": {
+      "manifest_hash": "136b6531fca64b3fe9a880bbd34ca1bc13dd3fa121b1e7b62744bc235b0685d0",
+      "namespace": "canary/",
+      "record_ids": 14,
+      "sink_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-DEV100-KB-ALPHA-BLEND-CAMPAIGN/attempt-20260824T122641Z-dev100r0a6/canary-trace"
+    },
+    "wall_seconds": 4.761,
+    "worst_generation_ms_per_token": 7.28
+  },
+  "config_hash": "7fff75d1ed8642a9e948d86e8d6c5bf9cfd669f7342d9da009167dfd62655ca5",
+  "core_client": {
+    "contact_latency_seconds_total": 496.578,
+    "cost": {
+      "audio_seconds_used": 556.3916249999997,
+      "calls_used": 203,
+      "completion_tokens_total": 5444,
+      "latency_seconds_total": 496.5782105789949,
+      "prompt_tokens_total": 423732,
+      "tool_calls": 0,
+      "umbrella_lock_sha256": "9064bde89d4248fd80c9c2f93c2a9c276a454eadbb1aa7d529671118961371b1"
+    },
+    "request_count": 203,
+    "trace_manifest_hash": "dd6230e45f2ac8be1f6463ace34c3fbecb3b541407972574c78489d992889e37"
+  },
+  "correct_to_wrong_sample_ids": [
+    "slurp:devel:000090:audio-1498567209",
+    "slurp:devel:001227:audio-1490104218",
+    "slurp:devel:001791:audio-1502195360",
+    "slurp:devel:003202:audio-1495733953-headset",
+    "slurp:devel:003443:audio-1501776590",
+    "slurp:devel:003705:audio-1490194357",
+    "slurp:devel:007738:audio-1489153308",
+    "slurp:devel:012625:audio-1494417974",
+    "slurp:devel:015370:audio-1501688507",
+    "slurp:devel:015630:audio-1490967842",
+    "slurp:devel:016699:audio-1499688493-headset"
+  ],
+  "cross_attempt_direct_agreement": {
+    "agree_count": 78,
+    "detail": "per-sample sha256 equality between this attempt's BLEND direct-decode responses and attempt-1's reused M0 responses (byte-identical prompts, fresh service instance; serving descriptive, computed hash-to-hash)",
+    "disagree_sample_ids": [
+      "slurp:devel:000392:audio-1498573434",
+      "slurp:devel:001038:audio--1504191120",
+      "slurp:devel:002417:audio-1494548204-headset",
+      "slurp:devel:002814:audio-1490194699",
+      "slurp:devel:003464:audio-1499690370-headset",
+      "slurp:devel:003956:audio-1501753591-headset",
+      "slurp:devel:004899:audio-1495377050",
+      "slurp:devel:005015:audio-1501756546",
+      "slurp:devel:005100:audio-1490291520",
+      "slurp:devel:005386:audio-1501758493",
+      "slurp:devel:005792:audio-1499697954",
+      "slurp:devel:007381:audio-1501686582-headset",
+      "slurp:devel:010041:audio-1497264270-headset",
+      "slurp:devel:010210:audio-1501754125-headset",
+      "slurp:devel:010830:audio-1488985252",
+      "slurp:devel:012045:audio-1490956582-headset",
+      "slurp:devel:012185:audio-1499244805",
+      "slurp:devel:012575:audio-1501686449",
+      "slurp:devel:013522:audio-1494607289",
+      "slurp:devel:015265:audio-1499689293-headset",
+      "slurp:devel:015370:audio-1501688507",
+      "slurp:devel:015516:audio-1499264883-headset"
+    ]
+  },
+  "cross_build_pairing_caveat": {
+    "canary_verdict_cross_build_byte_identical": true,
+    "cross_build_decode_divergence": null,
+    "detail": "arm M0 is reused from attempt 1 (ZERO-COPY build); arm BLEND flew on the BASE build; decode timing differs by design. If the canary bytes matched attempt-1 M0, cross-build byte-determinism holds and the pairing is unconditionally sound; otherwise cross-build-decode-divergence is recorded in the canary section and this report still seals and scores (iteration-tier dev; the coordinator weighs the caveat in knob decisions)"
+  },
+  "decoder_session_receipt_sha256": "6c8bab4d67432b4a3b88679483f0d6db41e28620ab8ee973f442a97200861b10",
+  "deviations": [
+    {
+      "detail": "Arm M0 was not re-flown: its 100 direct-decode responses come from attempt-1's durable flushed trace (d1f376bbacaa189f6583abe639d072567c4001fe63c52dab34e113b59ce4d8a2), verified byte-identical before takeoff and parsed only at the single scoring-side gold opening. The direct-contact rendering fix attempt 1 applied harness-side landed rails-side at b3d29658 with byte-identical wording, so the reused M0 responses and this attempt's fresh contacts share prompt bytes.",
+      "flown_direct_instruction": "Decide under the task contract already given above. Answer using only the speech query; no external knowledge has been supplied yet.",
+      "id": "m0-arm-reused-from-attempt-1",
+      "kind": "successor semantics, registered pre-takeoff in the campaign row"
+    }
+  ],
+  "embedding_jitter_pair": {
+    "bit_identical": true,
+    "cosine": 1.0,
+    "text_sha256": "c9a64ba8de082d25de1625c3b1edee546532841b19c94d2d62096d5f75eac5fa"
+  },
+  "generated_at": "2026-08-24T12:33:43.370489+00:00",
+  "gpu_preflight": {
+    "clock_lock": {
+      "command": "nvidia-smi -lgc 1200,2500 (Windows side)",
+      "status": "REMAINS APPLIED from attempt 5 (harmless; explicitly NOT the remedy \u2014 the attempt-5 mid-flight samples proved the pathology reproduces at full locked clocks 2,467-2,490 MHz in the ~44 W busy-spin band; left in place and disclosed)"
+    },
+    "enforced_power_limit_w_at_preflight": 100.0,
+    "enforced_power_limit_w_in_wsl": 100.0,
+    "lenovo_smart_fan_mode": 3,
+    "measured_at": "2026-08-24 attempt-6 preflight (host PowerShell WMI GetSmartFanMode=3 + Windows nvidia-smi enforced 100.00 W, idle 16.21 W / 41 C / 180 MHz)"
+  },
+  "hard_stop": "Round 0 lands and STOPS. No round-1 flight, no knob change: the coordinator decides round-1 knobs after the owner sync.",
+  "hosting": {
+    "base_binary_mitigation": "2026-08-24 attempt 6 (coordinator ruling, evidence-based build attribution): every degraded flight (E108 454 tok/s, R4 hot-prefix 497 tok/s, round-0 attempts 2-5 with progressive-then-resident busy-spin at full locked clocks) ran the CUSTOM llama.cpp build build-singleton-zero-copy (llama.cpp-featcache-speech-batch-26802); every healthy sustained campaign (matched base np16 1,536.27 tok/s, Aug-22/23 M11 cells) ran the BASE build llama.cpp-featcache. This attempt flies the SAME np8 serving geometry on the BASE binary (receipt runtime-q4km-mmproj-free.json, all 44 entries re-verified byte-identical on disk at preflight; all four cache flags confirmed supported via --help, server_args unchanged). If the pathology recurs on the base build the hypothesis is falsified - also a clean finding.",
+    "clock_lock_note": "the Windows-side GPU clock lock nvidia-smi -lgc 1200,2500 REMAINS applied (harmless and explicitly NOT the remedy - the attempt-5 mid-flight samples falsified the clock hypothesis at 2,467-2,490 MHz under load); mid-flight Windows-side clock sampling continues into clock-samples-attempt6.jsonl",
+    "keepalive": "detached Windows wsl.exe client, PID 23864, started 2026-08-24T10:52:39Z (kept alive across the service swap; holds the VM)",
+    "linger": "enabled (loginctl enable-linger chao, 2026-08-24T08:06Z)",
+    "mode": "systemd-run --user unit saea-np8-dev100-r6-base -p KillMode=mixed (WSL Ubuntu-24.04, systemd PID 1)",
+    "old_service_stop": "unit saea-np8-dev100-r4 stopped 2026-08-24T12:06:26Z; control-group SIGTERM race prevented the wrapper stop receipt (journal evidence retained); session ...T105900Z has a start receipt but no stop receipt, disclosed",
+    "wrapper_stop_receipt": "the r6 wrapper's SIGTERM path calls stop_session (r3 pattern) and exports PATH=$PATH:/usr/lib/wsl/lib (55eba5e2); KillMode=mixed makes that path reachable on systemctl stop"
+  },
+  "mid_flight_clock_samples_windows_side": [
+    {
+      "at": "2026-08-24T12:26:34Z",
+      "clocks_sm_mhz": 180,
+      "power_draw_w": 16.08,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T12:26:44Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 9.99,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T12:26:55Z",
+      "clocks_sm_mhz": 180,
+      "power_draw_w": 16.28,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T12:27:05Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 10.18,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T12:27:16Z",
+      "clocks_sm_mhz": 180,
+      "power_draw_w": 16.7,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T12:27:26Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 10.54,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T12:27:37Z",
+      "clocks_sm_mhz": 180,
+      "power_draw_w": 16.55,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T12:27:48Z",
+      "clocks_sm_mhz": 5865,
+      "power_draw_w": 17.05,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T12:27:58Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 10.51,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T12:28:08Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 42.68,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T12:28:19Z",
+      "clocks_sm_mhz": 472,
+      "power_draw_w": 17.14,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T12:28:29Z",
+      "clocks_sm_mhz": 3892,
+      "power_draw_w": 17.13,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T12:28:40Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 10.52,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T12:28:50Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 10.53,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T12:29:00Z",
+      "clocks_sm_mhz": 1702,
+      "power_draw_w": 94.23,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 97
+    },
+    {
+      "at": "2026-08-24T12:29:10Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 13.64,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T12:29:20Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 13.53,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T12:29:30Z",
+      "clocks_sm_mhz": 1477,
+      "power_draw_w": 14.2,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 4
+    },
+    {
+      "at": "2026-08-24T12:29:40Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 15.06,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T12:29:50Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 13.94,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T12:30:00Z",
+      "clocks_sm_mhz": 1747,
+      "power_draw_w": 27.03,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 91
+    },
+    {
+      "at": "2026-08-24T12:30:10Z",
+      "clocks_sm_mhz": 1230,
+      "power_draw_w": 14.38,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T12:30:20Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 14.07,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T12:30:30Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 14.57,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T12:30:40Z",
+      "clocks_sm_mhz": 1890,
+      "power_draw_w": 86.4,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 42
+    },
+    {
+      "at": "2026-08-24T12:30:50Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 14.22,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T12:31:00Z",
+      "clocks_sm_mhz": 1657,
+      "power_draw_w": 72.02,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 92
+    },
+    {
+      "at": "2026-08-24T12:31:10Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 15.49,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T12:31:21Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 14.23,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T12:31:31Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 14.16,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T12:31:41Z",
+      "clocks_sm_mhz": 1200,
+      "power_draw_w": 11.82,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 2
+    },
+    {
+      "at": "2026-08-24T12:31:51Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 16.17,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T12:32:01Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 13.5,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T12:32:11Z",
+      "clocks_sm_mhz": 2100,
+      "power_draw_w": 80.94,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 80
+    },
+    {
+      "at": "2026-08-24T12:32:21Z",
+      "clocks_sm_mhz": 1522,
+      "power_draw_w": 12.64,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T12:32:31Z",
+      "clocks_sm_mhz": 1852,
+      "power_draw_w": 88.17,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 82
+    },
+    {
+      "at": "2026-08-24T12:32:41Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 14.1,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T12:32:51Z",
+      "clocks_sm_mhz": 1890,
+      "power_draw_w": 89.73,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 86
+    },
+    {
+      "at": "2026-08-24T12:33:01Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 13.29,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T12:33:11Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 14.4,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T12:33:22Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 15.13,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    },
+    {
+      "at": "2026-08-24T12:33:32Z",
+      "clocks_sm_mhz": 1927,
+      "power_draw_w": 90.06,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 76
+    },
+    {
+      "at": "2026-08-24T12:33:42Z",
+      "clocks_sm_mhz": 1192,
+      "power_draw_w": 14.29,
+      "source": "windows-nvidia-smi",
+      "utilization_gpu_pct": 0
+    }
+  ],
+  "refused_takeoffs": [],
+  "resend_pair": {
+    "byte_identical": true,
+    "flown": true,
+    "note": "byte-identical direct-decode PROMPT by construction: the SAME assembly path (rails.runner._agent_messages over the same frozen adapter/contract/packet/instruction inputs; b3d29658 renders rails-side the exact bytes attempt 1 flew harness-side). Response A is attempt-1's recorded M0 hash (ZERO-COPY build); response B is a fresh single-slot decode on the attempt-6 BASE-build service instance \u2014 the pair spans a service restart, a VM reboot, a full Windows reboot, AND a BUILD SWAP, all disclosed. sha256 equality only; byte inequality here is a legitimate cross-build outcome recorded as fact (see the canary's cross-build verdict), not a determinism failure.",
+    "response_a_sha256": "5fe1b883601c67a10862f74c4ef2abd1e94445d25088dbc2989870e29e067a59",
+    "response_b_sha256": "5fe1b883601c67a10862f74c4ef2abd1e94445d25088dbc2989870e29e067a59",
+    "sample_id": "slurp:devel:000090:audio-1498567209",
+    "server_np": 8,
+    "trace": {
+      "manifest_hash": "6a378bbf3602d89f1c2f6b5790a26babdeeb452a92722b376c96b03dd1e8a61d",
+      "namespace": "resend/",
+      "record_ids": 7,
+      "sink_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-DEV100-KB-ALPHA-BLEND-CAMPAIGN/attempt-20260824T122641Z-dev100r0a6/resend-trace"
+    }
+  },
+  "round0_knobs": {
+    "alpha": 0.6,
+    "evidence_variant": "rank+prior+agreement",
+    "fusion": {
+      "c": 2,
+      "l": 3,
+      "m": 5
+    },
+    "m11_pair_boundary_stage": false,
+    "percept_admission": "facet-side",
+    "prior_source": "train",
+    "rank_weight_id": "rrf",
+    "rank_weights": {
+      "w_agree": 0.2,
+      "w_cos": 0.5,
+      "w_prior": 0.3
+    },
+    "tau": 0.5,
+    "top_k_per_dimension": 5,
+    "value_vectors": "SEALED (never loaded)"
+  },
+  "round_index": 0,
+  "run_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-DEV100-KB-ALPHA-BLEND-CAMPAIGN/attempt-20260824T122641Z-dev100r0a6",
+  "run_id": "SAEA-DEV100-KB-ALPHA-BLEND-CAMPAIGN",
+  "schema": "saea-dev100-round0-report-v6-attempt6",
+  "sentinel": {
+    "contacts_observed": 200,
+    "ms_per_token_max": 144.64,
+    "ms_per_token_median": 47.31,
+    "ms_per_token_min": 7.27,
+    "ms_per_token_p90": 80.2,
+    "rates_observed": 200,
+    "threshold_ms_per_token": 1000.0,
+    "tripped": null,
+    "window_contacts": 8
+  },
+  "server_np": 8,
+  "serving_descriptives": {
+    "gpu_sampling_reason": null,
+    "gpu_seconds": 61.8484357601101,
+    "peak_vram_mib": 24105.0,
+    "request_gpu_sample_count": 299,
+    "request_gpu_samples": [
+      {
+        "memory_used_mib": 24047.0,
+        "sampled_at_unix_seconds": 1787574484.139161,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 0.6644725799560547,
+        "server_slot_sampled_at_unix_seconds": 1787574484.1398256,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24047.0,
+        "sampled_at_unix_seconds": 1787574485.195083,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 0.7138252258300781,
+        "server_slot_sampled_at_unix_seconds": 1787574485.1957967,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24065.0,
+        "sampled_at_unix_seconds": 1787574486.257084,
+        "server_busy_slots": 1,
+        "server_slot_gpu_skew_milliseconds": 658.5772037506104,
+        "server_slot_sampled_at_unix_seconds": 1787574486.915661,
+        "server_total_slots": 8,
+        "utilization_pct": 2.0
+      },
+      {
+        "memory_used_mib": 24067.0,
+        "sampled_at_unix_seconds": 1787574487.949375,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 0.6651878356933594,
+        "server_slot_sampled_at_unix_seconds": 1787574487.95004,
+        "server_total_slots": 8,
+        "utilization_pct": 58.0
+      },
+      {
+        "memory_used_mib": 24067.0,
+        "sampled_at_unix_seconds": 1787574489.0873473,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 1.2929439544677734,
+        "server_slot_sampled_at_unix_seconds": 1787574489.0886402,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24067.0,
+        "sampled_at_unix_seconds": 1787574490.1302068,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 0.7970333099365234,
+        "server_slot_sampled_at_unix_seconds": 1787574490.1310039,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24067.0,
+        "sampled_at_unix_seconds": 1787574491.2870433,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 1.485586166381836,
+        "server_slot_sampled_at_unix_seconds": 1787574491.288529,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24067.0,
+        "sampled_at_unix_seconds": 1787574492.3329349,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 16.59083366394043,
+        "server_slot_sampled_at_unix_seconds": 1787574492.3495257,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24067.0,
+        "sampled_at_unix_seconds": 1787574493.490177,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 20.88308334350586,
+        "server_slot_sampled_at_unix_seconds": 1787574493.51106,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24067.0,
+        "sampled_at_unix_seconds": 1787574494.555527,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 37.03808784484863,
+        "server_slot_sampled_at_unix_seconds": 1787574494.592565,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24067.0,
+        "sampled_at_unix_seconds": 1787574495.6314914,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 16.83783531188965,
+        "server_slot_sampled_at_unix_seconds": 1787574495.6483293,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24067.0,
+        "sampled_at_unix_seconds": 1787574496.7509716,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 16.17574691772461,
+        "server_slot_sampled_at_unix_seconds": 1787574496.7671473,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24067.0,
+        "sampled_at_unix_seconds": 1787574497.881064,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 16.075849533081055,
+        "server_slot_sampled_at_unix_seconds": 1787574497.8971398,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24067.0,
+        "sampled_at_unix_seconds": 1787574499.0913074,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 21.362781524658203,
+        "server_slot_sampled_at_unix_seconds": 1787574499.1126702,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24067.0,
+        "sampled_at_unix_seconds": 1787574500.2358124,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 22.082805633544922,
+        "server_slot_sampled_at_unix_seconds": 1787574500.2578952,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24067.0,
+        "sampled_at_unix_seconds": 1787574501.3692904,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 15.867233276367188,
+        "server_slot_sampled_at_unix_seconds": 1787574501.3851576,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24067.0,
+        "sampled_at_unix_seconds": 1787574502.4337716,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 20.914077758789062,
+        "server_slot_sampled_at_unix_seconds": 1787574502.4546857,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24067.0,
+        "sampled_at_unix_seconds": 1787574503.5579393,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 31.30364418029785,
+        "server_slot_sampled_at_unix_seconds": 1787574503.589243,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24067.0,
+        "sampled_at_unix_seconds": 1787574504.6805851,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 1.51824951171875,
+        "server_slot_sampled_at_unix_seconds": 1787574504.6821034,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24067.0,
+        "sampled_at_unix_seconds": 1787574505.7227225,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 95.90411186218262,
+        "server_slot_sampled_at_unix_seconds": 1787574505.8186266,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24067.0,
+        "sampled_at_unix_seconds": 1787574506.8644261,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 37.33468055725098,
+        "server_slot_sampled_at_unix_seconds": 1787574506.9017608,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24067.0,
+        "sampled_at_unix_seconds": 1787574507.955825,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 31.412363052368164,
+        "server_slot_sampled_at_unix_seconds": 1787574507.9872375,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24067.0,
+        "sampled_at_unix_seconds": 1787574509.0405502,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 26.3671875,
+        "server_slot_sampled_at_unix_seconds": 1787574509.0669174,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24067.0,
+        "sampled_at_unix_seconds": 1787574510.6565895,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 0.7419586181640625,
+        "server_slot_sampled_at_unix_seconds": 1787574510.6573315,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24067.0,
+        "sampled_at_unix_seconds": 1787574511.8269079,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 95.20983695983887,
+        "server_slot_sampled_at_unix_seconds": 1787574511.9221177,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24067.0,
+        "sampled_at_unix_seconds": 1787574512.9655535,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 31.678199768066406,
+        "server_slot_sampled_at_unix_seconds": 1787574512.9972317,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24067.0,
+        "sampled_at_unix_seconds": 1787574514.109231,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 31.18753433227539,
+        "server_slot_sampled_at_unix_seconds": 1787574514.1404185,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24067.0,
+        "sampled_at_unix_seconds": 1787574515.2693496,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 117.96879768371582,
+        "server_slot_sampled_at_unix_seconds": 1787574515.3873184,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24067.0,
+        "sampled_at_unix_seconds": 1787574516.4979556,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 22.362709045410156,
+        "server_slot_sampled_at_unix_seconds": 1787574516.5203183,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24067.0,
+        "sampled_at_unix_seconds": 1787574517.6256104,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 21.234989166259766,
+        "server_slot_sampled_at_unix_seconds": 1787574517.6468453,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24067.0,
+        "sampled_at_unix_seconds": 1787574518.6922615,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 5.979061126708984,
+        "server_slot_sampled_at_unix_seconds": 1787574518.6982405,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24067.0,
+        "sampled_at_unix_seconds": 1787574519.7944,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 26.200532913208008,
+        "server_slot_sampled_at_unix_seconds": 1787574519.8206005,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24067.0,
+        "sampled_at_unix_seconds": 1787574521.41525,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 13.92507553100586,
+        "server_slot_sampled_at_unix_seconds": 1787574521.4291751,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24067.0,
+        "sampled_at_unix_seconds": 1787574522.547186,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 102.72669792175293,
+        "server_slot_sampled_at_unix_seconds": 1787574522.6499126,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24067.0,
+        "sampled_at_unix_seconds": 1787574523.7125483,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 16.33429527282715,
+        "server_slot_sampled_at_unix_seconds": 1787574523.7288826,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24067.0,
+        "sampled_at_unix_seconds": 1787574524.8343256,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 21.447181701660156,
+        "server_slot_sampled_at_unix_seconds": 1787574524.8557727,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24067.0,
+        "sampled_at_unix_seconds": 1787574525.9077125,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 21.444082260131836,
+        "server_slot_sampled_at_unix_seconds": 1787574525.9291565,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24067.0,
+        "sampled_at_unix_seconds": 1787574527.0704484,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 129.69398498535156,
+        "server_slot_sampled_at_unix_seconds": 1787574527.2001424,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24067.0,
+        "sampled_at_unix_seconds": 1787574528.2997954,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 21.28314971923828,
+        "server_slot_sampled_at_unix_seconds": 1787574528.3210785,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24067.0,
+        "sampled_at_unix_seconds": 1787574529.4697552,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 16.89004898071289,
+        "server_slot_sampled_at_unix_seconds": 1787574529.4866452,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24067.0,
+        "sampled_at_unix_seconds": 1787574530.6229432,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 20.80368995666504,
+        "server_slot_sampled_at_unix_seconds": 1787574530.6437469,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24067.0,
+        "sampled_at_unix_seconds": 1787574532.185089,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 108.52575302124023,
+        "server_slot_sampled_at_unix_seconds": 1787574532.2936149,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24067.0,
+        "sampled_at_unix_seconds": 1787574533.3440309,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 26.119232177734375,
+        "server_slot_sampled_at_unix_seconds": 1787574533.37015,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24067.0,
+        "sampled_at_unix_seconds": 1787574534.492112,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 11.629819869995117,
+        "server_slot_sampled_at_unix_seconds": 1787574534.5037417,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24067.0,
+        "sampled_at_unix_seconds": 1787574535.7056017,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 12.986421585083008,
+        "server_slot_sampled_at_unix_seconds": 1787574535.718588,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24067.0,
+        "sampled_at_unix_seconds": 1787574536.8523483,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 12.744426727294922,
+        "server_slot_sampled_at_unix_seconds": 1787574536.8650928,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24067.0,
+        "sampled_at_unix_seconds": 1787574538.0688765,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 21.9881534576416,
+        "server_slot_sampled_at_unix_seconds": 1787574538.0908647,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24067.0,
+        "sampled_at_unix_seconds": 1787574539.1316533,
+        "server_busy_slots": 1,
+        "server_slot_gpu_skew_milliseconds": 491.16015434265137,
+        "server_slot_sampled_at_unix_seconds": 1787574539.6228135,
+        "server_total_slots": 8,
+        "utilization_pct": 8.0
+      },
+      {
+        "memory_used_mib": 24069.0,
+        "sampled_at_unix_seconds": 1787574540.657306,
+        "server_busy_slots": 8,
+        "server_slot_gpu_skew_milliseconds": 446.84696197509766,
+        "server_slot_sampled_at_unix_seconds": 1787574541.104153,
+        "server_total_slots": 8,
+        "utilization_pct": 87.0
+      },
+      {
+        "memory_used_mib": 24069.0,
+        "sampled_at_unix_seconds": 1787574542.1418672,
+        "server_busy_slots": 8,
+        "server_slot_gpu_skew_milliseconds": 650.1095294952393,
+        "server_slot_sampled_at_unix_seconds": 1787574542.7919767,
+        "server_total_slots": 8,
+        "utilization_pct": 96.0
+      },
+      {
+        "memory_used_mib": 24069.0,
+        "sampled_at_unix_seconds": 1787574543.8309486,
+        "server_busy_slots": 8,
+        "server_slot_gpu_skew_milliseconds": 40.74215888977051,
+        "server_slot_sampled_at_unix_seconds": 1787574543.8716908,
+        "server_total_slots": 8,
+        "utilization_pct": 88.0
+      },
+      {
+        "memory_used_mib": 24069.0,
+        "sampled_at_unix_seconds": 1787574544.9454103,
+        "server_busy_slots": 6,
+        "server_slot_gpu_skew_milliseconds": 37.64939308166504,
+        "server_slot_sampled_at_unix_seconds": 1787574544.9830596,
+        "server_total_slots": 8,
+        "utilization_pct": 53.0
+      },
+      {
+        "memory_used_mib": 24069.0,
+        "sampled_at_unix_seconds": 1787574546.027755,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 16.855716705322266,
+        "server_slot_sampled_at_unix_seconds": 1787574546.0446107,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24069.0,
+        "sampled_at_unix_seconds": 1787574547.121799,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 21.598100662231445,
+        "server_slot_sampled_at_unix_seconds": 1787574547.143397,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24069.0,
+        "sampled_at_unix_seconds": 1787574548.2097719,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 26.066064834594727,
+        "server_slot_sampled_at_unix_seconds": 1787574548.235838,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24069.0,
+        "sampled_at_unix_seconds": 1787574549.3054848,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 20.94411849975586,
+        "server_slot_sampled_at_unix_seconds": 1787574549.326429,
+        "server_total_slots": 8,
+        "utilization_pct": 3.0
+      },
+      {
+        "memory_used_mib": 24069.0,
+        "sampled_at_unix_seconds": 1787574550.405822,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 26.257753372192383,
+        "server_slot_sampled_at_unix_seconds": 1787574550.4320798,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24069.0,
+        "sampled_at_unix_seconds": 1787574551.494768,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 11.249065399169922,
+        "server_slot_sampled_at_unix_seconds": 1787574551.506017,
+        "server_total_slots": 8,
+        "utilization_pct": 1.0
+      },
+      {
+        "memory_used_mib": 24069.0,
+        "sampled_at_unix_seconds": 1787574552.5732043,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 20.94888687133789,
+        "server_slot_sampled_at_unix_seconds": 1787574552.5941532,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24069.0,
+        "sampled_at_unix_seconds": 1787574553.6411157,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 11.509180068969727,
+        "server_slot_sampled_at_unix_seconds": 1787574553.6526248,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24069.0,
+        "sampled_at_unix_seconds": 1787574554.7050169,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 11.404275894165039,
+        "server_slot_sampled_at_unix_seconds": 1787574554.7164211,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24069.0,
+        "sampled_at_unix_seconds": 1787574555.7664232,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 25.961875915527344,
+        "server_slot_sampled_at_unix_seconds": 1787574555.792385,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24069.0,
+        "sampled_at_unix_seconds": 1787574556.8429341,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 20.66969871520996,
+        "server_slot_sampled_at_unix_seconds": 1787574556.8636038,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24073.0,
+        "sampled_at_unix_seconds": 1787574557.9382412,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 11.621713638305664,
+        "server_slot_sampled_at_unix_seconds": 1787574557.949863,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24073.0,
+        "sampled_at_unix_seconds": 1787574559.0780194,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 1.4357566833496094,
+        "server_slot_sampled_at_unix_seconds": 1787574559.0794551,
+        "server_total_slots": 8,
+        "utilization_pct": 2.0
+      },
+      {
+        "memory_used_mib": 24073.0,
+        "sampled_at_unix_seconds": 1787574560.1610625,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 21.737098693847656,
+        "server_slot_sampled_at_unix_seconds": 1787574560.1827996,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24073.0,
+        "sampled_at_unix_seconds": 1787574561.2252138,
+        "server_busy_slots": 1,
+        "server_slot_gpu_skew_milliseconds": 311.97667121887207,
+        "server_slot_sampled_at_unix_seconds": 1787574561.5371904,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24073.0,
+        "sampled_at_unix_seconds": 1787574562.5764852,
+        "server_busy_slots": 8,
+        "server_slot_gpu_skew_milliseconds": 607.119083404541,
+        "server_slot_sampled_at_unix_seconds": 1787574563.1836042,
+        "server_total_slots": 8,
+        "utilization_pct": 91.0
+      },
+      {
+        "memory_used_mib": 24073.0,
+        "sampled_at_unix_seconds": 1787574564.259132,
+        "server_busy_slots": 5,
+        "server_slot_gpu_skew_milliseconds": 16.00027084350586,
+        "server_slot_sampled_at_unix_seconds": 1787574564.2751322,
+        "server_total_slots": 8,
+        "utilization_pct": 79.0
+      },
+      {
+        "memory_used_mib": 24073.0,
+        "sampled_at_unix_seconds": 1787574565.321814,
+        "server_busy_slots": 8,
+        "server_slot_gpu_skew_milliseconds": 79.88405227661133,
+        "server_slot_sampled_at_unix_seconds": 1787574565.401698,
+        "server_total_slots": 8,
+        "utilization_pct": 83.0
+      },
+      {
+        "memory_used_mib": 24073.0,
+        "sampled_at_unix_seconds": 1787574566.4626575,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 31.20875358581543,
+        "server_slot_sampled_at_unix_seconds": 1787574566.4938662,
+        "server_total_slots": 8,
+        "utilization_pct": 27.0
+      },
+      {
+        "memory_used_mib": 24073.0,
+        "sampled_at_unix_seconds": 1787574567.5694253,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 21.019697189331055,
+        "server_slot_sampled_at_unix_seconds": 1787574567.590445,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24073.0,
+        "sampled_at_unix_seconds": 1787574568.6507318,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 20.98536491394043,
+        "server_slot_sampled_at_unix_seconds": 1787574568.6717172,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24073.0,
+        "sampled_at_unix_seconds": 1787574569.7399762,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 21.306991577148438,
+        "server_slot_sampled_at_unix_seconds": 1787574569.7612832,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24073.0,
+        "sampled_at_unix_seconds": 1787574570.8171706,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 26.12757682800293,
+        "server_slot_sampled_at_unix_seconds": 1787574570.8432982,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24073.0,
+        "sampled_at_unix_seconds": 1787574571.8917468,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 16.813278198242188,
+        "server_slot_sampled_at_unix_seconds": 1787574571.90856,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24073.0,
+        "sampled_at_unix_seconds": 1787574572.9594626,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 26.3364315032959,
+        "server_slot_sampled_at_unix_seconds": 1787574572.985799,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24073.0,
+        "sampled_at_unix_seconds": 1787574574.052584,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 26.33070945739746,
+        "server_slot_sampled_at_unix_seconds": 1787574574.0789146,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24073.0,
+        "sampled_at_unix_seconds": 1787574575.1332352,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 31.300783157348633,
+        "server_slot_sampled_at_unix_seconds": 1787574575.164536,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24073.0,
+        "sampled_at_unix_seconds": 1787574576.2273216,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 26.726484298706055,
+        "server_slot_sampled_at_unix_seconds": 1787574576.254048,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24073.0,
+        "sampled_at_unix_seconds": 1787574577.297806,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 11.863470077514648,
+        "server_slot_sampled_at_unix_seconds": 1787574577.3096695,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24073.0,
+        "sampled_at_unix_seconds": 1787574578.3531399,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 0.9543895721435547,
+        "server_slot_sampled_at_unix_seconds": 1787574578.3540943,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574579.4010923,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 11.560916900634766,
+        "server_slot_sampled_at_unix_seconds": 1787574579.4126532,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574580.472532,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 16.36028289794922,
+        "server_slot_sampled_at_unix_seconds": 1787574580.4888923,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574581.5339217,
+        "server_busy_slots": 8,
+        "server_slot_gpu_skew_milliseconds": 372.9398250579834,
+        "server_slot_sampled_at_unix_seconds": 1787574581.9068615,
+        "server_total_slots": 8,
+        "utilization_pct": 97.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574582.9381185,
+        "server_busy_slots": 8,
+        "server_slot_gpu_skew_milliseconds": 23.56266975402832,
+        "server_slot_sampled_at_unix_seconds": 1787574582.9616811,
+        "server_total_slots": 8,
+        "utilization_pct": 86.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574584.0131373,
+        "server_busy_slots": 7,
+        "server_slot_gpu_skew_milliseconds": 24.400949478149414,
+        "server_slot_sampled_at_unix_seconds": 1787574584.0375383,
+        "server_total_slots": 8,
+        "utilization_pct": 85.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574585.1602643,
+        "server_busy_slots": 3,
+        "server_slot_gpu_skew_milliseconds": 46.14758491516113,
+        "server_slot_sampled_at_unix_seconds": 1787574585.2064118,
+        "server_total_slots": 8,
+        "utilization_pct": 61.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574586.2845016,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 11.74473762512207,
+        "server_slot_sampled_at_unix_seconds": 1787574586.2962463,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574587.3643003,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 26.86476707458496,
+        "server_slot_sampled_at_unix_seconds": 1787574587.391165,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574588.4432325,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 11.398553848266602,
+        "server_slot_sampled_at_unix_seconds": 1787574588.454631,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574589.5165253,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 21.0263729095459,
+        "server_slot_sampled_at_unix_seconds": 1787574589.5375516,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574590.5791132,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 20.96390724182129,
+        "server_slot_sampled_at_unix_seconds": 1787574590.6000772,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574591.6492925,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 22.00627326965332,
+        "server_slot_sampled_at_unix_seconds": 1787574591.6712987,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574592.72856,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 17.050504684448242,
+        "server_slot_sampled_at_unix_seconds": 1787574592.7456105,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574593.797788,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 26.094436645507812,
+        "server_slot_sampled_at_unix_seconds": 1787574593.8238823,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574594.8767602,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 21.32439613342285,
+        "server_slot_sampled_at_unix_seconds": 1787574594.8980846,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574595.9608476,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 26.14307403564453,
+        "server_slot_sampled_at_unix_seconds": 1787574595.9869907,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574597.048509,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 20.925521850585938,
+        "server_slot_sampled_at_unix_seconds": 1787574597.0694344,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574598.1281393,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 26.21006965637207,
+        "server_slot_sampled_at_unix_seconds": 1787574598.1543493,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574599.2161498,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 11.911153793334961,
+        "server_slot_sampled_at_unix_seconds": 1787574599.228061,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574600.265437,
+        "server_busy_slots": 8,
+        "server_slot_gpu_skew_milliseconds": 447.5123882293701,
+        "server_slot_sampled_at_unix_seconds": 1787574600.7129493,
+        "server_total_slots": 8,
+        "utilization_pct": 98.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574601.7533274,
+        "server_busy_slots": 8,
+        "server_slot_gpu_skew_milliseconds": 96.04215621948242,
+        "server_slot_sampled_at_unix_seconds": 1787574601.8493695,
+        "server_total_slots": 8,
+        "utilization_pct": 95.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574602.9529872,
+        "server_busy_slots": 8,
+        "server_slot_gpu_skew_milliseconds": 9.331703186035156,
+        "server_slot_sampled_at_unix_seconds": 1787574602.962319,
+        "server_total_slots": 8,
+        "utilization_pct": 87.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574604.124562,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 26.940345764160156,
+        "server_slot_sampled_at_unix_seconds": 1787574604.1515024,
+        "server_total_slots": 8,
+        "utilization_pct": 54.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574605.211405,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 32.75561332702637,
+        "server_slot_sampled_at_unix_seconds": 1787574605.2441607,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574606.2945347,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 26.97157859802246,
+        "server_slot_sampled_at_unix_seconds": 1787574606.3215063,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574607.3741531,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 26.2453556060791,
+        "server_slot_sampled_at_unix_seconds": 1787574607.4003985,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574608.469302,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 21.852970123291016,
+        "server_slot_sampled_at_unix_seconds": 1787574608.491155,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574609.555446,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 15.842676162719727,
+        "server_slot_sampled_at_unix_seconds": 1787574609.5712886,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574610.6295168,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 16.945600509643555,
+        "server_slot_sampled_at_unix_seconds": 1787574610.6464624,
+        "server_total_slots": 8,
+        "utilization_pct": 3.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574611.704066,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 22.284269332885742,
+        "server_slot_sampled_at_unix_seconds": 1787574611.7263503,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574612.758341,
+        "server_busy_slots": 6,
+        "server_slot_gpu_skew_milliseconds": 665.0354862213135,
+        "server_slot_sampled_at_unix_seconds": 1787574613.4233766,
+        "server_total_slots": 8,
+        "utilization_pct": 88.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574614.59695,
+        "server_busy_slots": 4,
+        "server_slot_gpu_skew_milliseconds": 28.50341796875,
+        "server_slot_sampled_at_unix_seconds": 1787574614.6254535,
+        "server_total_slots": 8,
+        "utilization_pct": 63.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574615.6896873,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 27.691125869750977,
+        "server_slot_sampled_at_unix_seconds": 1787574615.7173784,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574616.7642355,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 21.4080810546875,
+        "server_slot_sampled_at_unix_seconds": 1787574616.7856436,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574617.8326974,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 12.207269668579102,
+        "server_slot_sampled_at_unix_seconds": 1787574617.8449047,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574618.8896945,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 21.13056182861328,
+        "server_slot_sampled_at_unix_seconds": 1787574618.910825,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574619.9740038,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 21.95596694946289,
+        "server_slot_sampled_at_unix_seconds": 1787574619.9959598,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574621.0600605,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 1.861572265625,
+        "server_slot_sampled_at_unix_seconds": 1787574621.061922,
+        "server_total_slots": 8,
+        "utilization_pct": 1.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574622.1269376,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 20.992279052734375,
+        "server_slot_sampled_at_unix_seconds": 1787574622.14793,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574623.188905,
+        "server_busy_slots": 1,
+        "server_slot_gpu_skew_milliseconds": 193.76492500305176,
+        "server_slot_sampled_at_unix_seconds": 1787574623.38267,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574624.4213479,
+        "server_busy_slots": 8,
+        "server_slot_gpu_skew_milliseconds": 31.280994415283203,
+        "server_slot_sampled_at_unix_seconds": 1787574624.4526289,
+        "server_total_slots": 8,
+        "utilization_pct": 89.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574625.5241864,
+        "server_busy_slots": 6,
+        "server_slot_gpu_skew_milliseconds": 35.33816337585449,
+        "server_slot_sampled_at_unix_seconds": 1787574625.5595245,
+        "server_total_slots": 8,
+        "utilization_pct": 75.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574626.6176317,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 17.179489135742188,
+        "server_slot_sampled_at_unix_seconds": 1787574626.6348112,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574627.6952195,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 20.978212356567383,
+        "server_slot_sampled_at_unix_seconds": 1787574627.7161977,
+        "server_total_slots": 8,
+        "utilization_pct": 1.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574628.774834,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 26.096582412719727,
+        "server_slot_sampled_at_unix_seconds": 1787574628.8009305,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574629.8628826,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 11.301279067993164,
+        "server_slot_sampled_at_unix_seconds": 1787574629.874184,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574630.933713,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 25.957584381103516,
+        "server_slot_sampled_at_unix_seconds": 1787574630.9596705,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574632.0063326,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 15.814065933227539,
+        "server_slot_sampled_at_unix_seconds": 1787574632.0221467,
+        "server_total_slots": 8,
+        "utilization_pct": 15.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574633.103313,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 17.95506477355957,
+        "server_slot_sampled_at_unix_seconds": 1787574633.121268,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574634.1921217,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 20.89667320251465,
+        "server_slot_sampled_at_unix_seconds": 1787574634.2130184,
+        "server_total_slots": 8,
+        "utilization_pct": 1.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574635.2705271,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 21.21758460998535,
+        "server_slot_sampled_at_unix_seconds": 1787574635.2917447,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574636.3434782,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 20.886898040771484,
+        "server_slot_sampled_at_unix_seconds": 1787574636.364365,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574637.4216812,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 26.122331619262695,
+        "server_slot_sampled_at_unix_seconds": 1787574637.4478035,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574638.4902527,
+        "server_busy_slots": 1,
+        "server_slot_gpu_skew_milliseconds": 13.531684875488281,
+        "server_slot_sampled_at_unix_seconds": 1787574638.5037844,
+        "server_total_slots": 8,
+        "utilization_pct": 98.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574639.5471816,
+        "server_busy_slots": 8,
+        "server_slot_gpu_skew_milliseconds": 254.35948371887207,
+        "server_slot_sampled_at_unix_seconds": 1787574639.801541,
+        "server_total_slots": 8,
+        "utilization_pct": 96.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574640.886254,
+        "server_busy_slots": 6,
+        "server_slot_gpu_skew_milliseconds": 44.96312141418457,
+        "server_slot_sampled_at_unix_seconds": 1787574640.9312172,
+        "server_total_slots": 8,
+        "utilization_pct": 56.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574641.981016,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 26.128768920898438,
+        "server_slot_sampled_at_unix_seconds": 1787574642.0071447,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574643.0714192,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 2.009868621826172,
+        "server_slot_sampled_at_unix_seconds": 1787574643.073429,
+        "server_total_slots": 8,
+        "utilization_pct": 1.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574644.1450253,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 32.074928283691406,
+        "server_slot_sampled_at_unix_seconds": 1787574644.1771002,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574645.2694519,
+        "server_busy_slots": 1,
+        "server_slot_gpu_skew_milliseconds": 158.8437557220459,
+        "server_slot_sampled_at_unix_seconds": 1787574645.4282956,
+        "server_total_slots": 8,
+        "utilization_pct": 33.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574646.472658,
+        "server_busy_slots": 8,
+        "server_slot_gpu_skew_milliseconds": 26.729583740234375,
+        "server_slot_sampled_at_unix_seconds": 1787574646.4993875,
+        "server_total_slots": 8,
+        "utilization_pct": 93.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574647.6402688,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 21.48890495300293,
+        "server_slot_sampled_at_unix_seconds": 1787574647.6617577,
+        "server_total_slots": 8,
+        "utilization_pct": 54.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574648.7231603,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 21.499156951904297,
+        "server_slot_sampled_at_unix_seconds": 1787574648.7446594,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574649.8030593,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 21.768808364868164,
+        "server_slot_sampled_at_unix_seconds": 1787574649.8248281,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574650.8985286,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 22.223711013793945,
+        "server_slot_sampled_at_unix_seconds": 1787574650.9207523,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574651.9897618,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 21.157264709472656,
+        "server_slot_sampled_at_unix_seconds": 1787574652.010919,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574653.0709963,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 32.14597702026367,
+        "server_slot_sampled_at_unix_seconds": 1787574653.1031423,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574654.1634657,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 27.05836296081543,
+        "server_slot_sampled_at_unix_seconds": 1787574654.190524,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574655.2495942,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 32.34267234802246,
+        "server_slot_sampled_at_unix_seconds": 1787574655.281937,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574656.3213842,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 21.564722061157227,
+        "server_slot_sampled_at_unix_seconds": 1787574656.342949,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574657.3858545,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 11.858224868774414,
+        "server_slot_sampled_at_unix_seconds": 1787574657.3977127,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574658.4551997,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 20.951509475708008,
+        "server_slot_sampled_at_unix_seconds": 1787574658.4761512,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574659.5404336,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 20.87545394897461,
+        "server_slot_sampled_at_unix_seconds": 1787574659.561309,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574660.602061,
+        "server_busy_slots": 8,
+        "server_slot_gpu_skew_milliseconds": 869.0509796142578,
+        "server_slot_sampled_at_unix_seconds": 1787574661.471112,
+        "server_total_slots": 8,
+        "utilization_pct": 98.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574662.5049524,
+        "server_busy_slots": 8,
+        "server_slot_gpu_skew_milliseconds": 26.663780212402344,
+        "server_slot_sampled_at_unix_seconds": 1787574662.5316162,
+        "server_total_slots": 8,
+        "utilization_pct": 93.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574663.5884447,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 31.104564666748047,
+        "server_slot_sampled_at_unix_seconds": 1787574663.6195493,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574664.674557,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 15.814065933227539,
+        "server_slot_sampled_at_unix_seconds": 1787574664.690371,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574665.7419105,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 27.05097198486328,
+        "server_slot_sampled_at_unix_seconds": 1787574665.7689614,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574666.8329043,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 26.545047760009766,
+        "server_slot_sampled_at_unix_seconds": 1787574666.8594494,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574667.8978698,
+        "server_busy_slots": 8,
+        "server_slot_gpu_skew_milliseconds": 183.93421173095703,
+        "server_slot_sampled_at_unix_seconds": 1787574668.081804,
+        "server_total_slots": 8,
+        "utilization_pct": 91.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574669.2533197,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 11.138439178466797,
+        "server_slot_sampled_at_unix_seconds": 1787574669.2644582,
+        "server_total_slots": 8,
+        "utilization_pct": 57.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574670.3146424,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 6.354808807373047,
+        "server_slot_sampled_at_unix_seconds": 1787574670.3209972,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574671.4096038,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 20.90620994567871,
+        "server_slot_sampled_at_unix_seconds": 1787574671.43051,
+        "server_total_slots": 8,
+        "utilization_pct": 1.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574672.4908772,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 26.114702224731445,
+        "server_slot_sampled_at_unix_seconds": 1787574672.5169919,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574673.5833848,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 20.998001098632812,
+        "server_slot_sampled_at_unix_seconds": 1787574673.6043828,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574674.6686587,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 20.956039428710938,
+        "server_slot_sampled_at_unix_seconds": 1787574674.6896148,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574675.7699137,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 21.004676818847656,
+        "server_slot_sampled_at_unix_seconds": 1787574675.7909184,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574676.8494983,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 12.4053955078125,
+        "server_slot_sampled_at_unix_seconds": 1787574676.8619037,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574677.9256625,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 21.535396575927734,
+        "server_slot_sampled_at_unix_seconds": 1787574677.947198,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574679.0101054,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 15.855550765991211,
+        "server_slot_sampled_at_unix_seconds": 1787574679.025961,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574680.0967052,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 21.648168563842773,
+        "server_slot_sampled_at_unix_seconds": 1787574680.1183534,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574681.209271,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 26.032447814941406,
+        "server_slot_sampled_at_unix_seconds": 1787574681.2353034,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574682.3212686,
+        "server_busy_slots": 8,
+        "server_slot_gpu_skew_milliseconds": 702.8357982635498,
+        "server_slot_sampled_at_unix_seconds": 1787574683.0241044,
+        "server_total_slots": 8,
+        "utilization_pct": 90.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574684.207783,
+        "server_busy_slots": 4,
+        "server_slot_gpu_skew_milliseconds": 156.7215919494629,
+        "server_slot_sampled_at_unix_seconds": 1787574684.3645046,
+        "server_total_slots": 8,
+        "utilization_pct": 79.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574685.419035,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 20.88189125061035,
+        "server_slot_sampled_at_unix_seconds": 1787574685.4399168,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574686.5328152,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 1.3887882232666016,
+        "server_slot_sampled_at_unix_seconds": 1787574686.534204,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574687.6036742,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 22.45783805847168,
+        "server_slot_sampled_at_unix_seconds": 1787574687.626132,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574688.7451975,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 26.087045669555664,
+        "server_slot_sampled_at_unix_seconds": 1787574688.7712846,
+        "server_total_slots": 8,
+        "utilization_pct": 3.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574689.8205242,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 21.946191787719727,
+        "server_slot_sampled_at_unix_seconds": 1787574689.8424704,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574690.8942187,
+        "server_busy_slots": 1,
+        "server_slot_gpu_skew_milliseconds": 111.16266250610352,
+        "server_slot_sampled_at_unix_seconds": 1787574691.0053813,
+        "server_total_slots": 8,
+        "utilization_pct": 38.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574692.0581334,
+        "server_busy_slots": 8,
+        "server_slot_gpu_skew_milliseconds": 29.18696403503418,
+        "server_slot_sampled_at_unix_seconds": 1787574692.0873203,
+        "server_total_slots": 8,
+        "utilization_pct": 88.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574693.129153,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 11.300802230834961,
+        "server_slot_sampled_at_unix_seconds": 1787574693.1404538,
+        "server_total_slots": 8,
+        "utilization_pct": 73.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574694.1957996,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 21.407604217529297,
+        "server_slot_sampled_at_unix_seconds": 1787574694.2172072,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574695.3077276,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 27.064085006713867,
+        "server_slot_sampled_at_unix_seconds": 1787574695.3347917,
+        "server_total_slots": 8,
+        "utilization_pct": 69.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574696.3835726,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 11.715412139892578,
+        "server_slot_sampled_at_unix_seconds": 1787574696.395288,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574697.4569337,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 16.51930809020996,
+        "server_slot_sampled_at_unix_seconds": 1787574697.473453,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574698.535521,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 26.64923667907715,
+        "server_slot_sampled_at_unix_seconds": 1787574698.5621703,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574699.6235173,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 18.475055694580078,
+        "server_slot_sampled_at_unix_seconds": 1787574699.6419923,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574700.696893,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 26.161909103393555,
+        "server_slot_sampled_at_unix_seconds": 1787574700.723055,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574701.7820473,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 21.007061004638672,
+        "server_slot_sampled_at_unix_seconds": 1787574701.8030543,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574702.8558137,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 20.99895477294922,
+        "server_slot_sampled_at_unix_seconds": 1787574702.8768127,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574703.9276597,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 26.044130325317383,
+        "server_slot_sampled_at_unix_seconds": 1787574703.9537039,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574705.0010557,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 27.001142501831055,
+        "server_slot_sampled_at_unix_seconds": 1787574705.0280569,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574706.0937116,
+        "server_busy_slots": 8,
+        "server_slot_gpu_skew_milliseconds": 676.2604713439941,
+        "server_slot_sampled_at_unix_seconds": 1787574706.769972,
+        "server_total_slots": 8,
+        "utilization_pct": 92.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574707.8111222,
+        "server_busy_slots": 8,
+        "server_slot_gpu_skew_milliseconds": 6.201505661010742,
+        "server_slot_sampled_at_unix_seconds": 1787574707.8173237,
+        "server_total_slots": 8,
+        "utilization_pct": 93.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574708.8733041,
+        "server_busy_slots": 5,
+        "server_slot_gpu_skew_milliseconds": 34.05261039733887,
+        "server_slot_sampled_at_unix_seconds": 1787574708.9073567,
+        "server_total_slots": 8,
+        "utilization_pct": 85.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574709.9881651,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 26.11851692199707,
+        "server_slot_sampled_at_unix_seconds": 1787574710.0142837,
+        "server_total_slots": 8,
+        "utilization_pct": 49.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574711.0633523,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 20.961284637451172,
+        "server_slot_sampled_at_unix_seconds": 1787574711.0843136,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574712.147343,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 21.53921127319336,
+        "server_slot_sampled_at_unix_seconds": 1787574712.1688821,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574713.216065,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 26.49521827697754,
+        "server_slot_sampled_at_unix_seconds": 1787574713.2425601,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574714.3073566,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 26.31068229675293,
+        "server_slot_sampled_at_unix_seconds": 1787574714.3336673,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574715.399587,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 0.9169578552246094,
+        "server_slot_sampled_at_unix_seconds": 1787574715.4005039,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574716.4659922,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 16.71624183654785,
+        "server_slot_sampled_at_unix_seconds": 1787574716.4827085,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574717.5535557,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 1.4111995697021484,
+        "server_slot_sampled_at_unix_seconds": 1787574717.554967,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574718.609302,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 21.40974998474121,
+        "server_slot_sampled_at_unix_seconds": 1787574718.6307118,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574719.7090287,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 21.702289581298828,
+        "server_slot_sampled_at_unix_seconds": 1787574719.730731,
+        "server_total_slots": 8,
+        "utilization_pct": 4.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574720.8169725,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 22.303342819213867,
+        "server_slot_sampled_at_unix_seconds": 1787574720.8392758,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574721.9041355,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 21.397829055786133,
+        "server_slot_sampled_at_unix_seconds": 1787574721.9255333,
+        "server_total_slots": 8,
+        "utilization_pct": 3.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574722.9710832,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 18.758773803710938,
+        "server_slot_sampled_at_unix_seconds": 1787574722.989842,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574724.0296457,
+        "server_busy_slots": 1,
+        "server_slot_gpu_skew_milliseconds": 133.2547664642334,
+        "server_slot_sampled_at_unix_seconds": 1787574724.1629004,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574725.204407,
+        "server_busy_slots": 8,
+        "server_slot_gpu_skew_milliseconds": 344.53487396240234,
+        "server_slot_sampled_at_unix_seconds": 1787574725.5489419,
+        "server_total_slots": 8,
+        "utilization_pct": 94.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574726.691252,
+        "server_busy_slots": 3,
+        "server_slot_gpu_skew_milliseconds": 19.31619644165039,
+        "server_slot_sampled_at_unix_seconds": 1787574726.7105682,
+        "server_total_slots": 8,
+        "utilization_pct": 44.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574727.7609193,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 21.036148071289062,
+        "server_slot_sampled_at_unix_seconds": 1787574727.7819555,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574728.8276303,
+        "server_busy_slots": 1,
+        "server_slot_gpu_skew_milliseconds": 118.64137649536133,
+        "server_slot_sampled_at_unix_seconds": 1787574728.9462717,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574729.9778087,
+        "server_busy_slots": 8,
+        "server_slot_gpu_skew_milliseconds": 3.919839859008789,
+        "server_slot_sampled_at_unix_seconds": 1787574729.9817286,
+        "server_total_slots": 8,
+        "utilization_pct": 87.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574731.0371757,
+        "server_busy_slots": 1,
+        "server_slot_gpu_skew_milliseconds": 36.62681579589844,
+        "server_slot_sampled_at_unix_seconds": 1787574731.0738025,
+        "server_total_slots": 8,
+        "utilization_pct": 55.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574732.1253262,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 26.778697967529297,
+        "server_slot_sampled_at_unix_seconds": 1787574732.1521049,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574733.2485044,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 21.445751190185547,
+        "server_slot_sampled_at_unix_seconds": 1787574733.2699502,
+        "server_total_slots": 8,
+        "utilization_pct": 38.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574734.339533,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 25.887012481689453,
+        "server_slot_sampled_at_unix_seconds": 1787574734.36542,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574735.4603279,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 16.45517349243164,
+        "server_slot_sampled_at_unix_seconds": 1787574735.476783,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574736.533932,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 20.845890045166016,
+        "server_slot_sampled_at_unix_seconds": 1787574736.5547779,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574737.6387756,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 20.931005477905273,
+        "server_slot_sampled_at_unix_seconds": 1787574737.6597066,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574738.7449436,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 21.83246612548828,
+        "server_slot_sampled_at_unix_seconds": 1787574738.766776,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574739.8371718,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 32.32622146606445,
+        "server_slot_sampled_at_unix_seconds": 1787574739.869498,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574740.9686022,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 2.0918846130371094,
+        "server_slot_sampled_at_unix_seconds": 1787574740.970694,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574742.0726614,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 11.555671691894531,
+        "server_slot_sampled_at_unix_seconds": 1787574742.084217,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574743.1437871,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 1.0771751403808594,
+        "server_slot_sampled_at_unix_seconds": 1787574743.1448643,
+        "server_total_slots": 8,
+        "utilization_pct": 7.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574744.1997592,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 21.966934204101562,
+        "server_slot_sampled_at_unix_seconds": 1787574744.2217262,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574745.3284943,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 2.034902572631836,
+        "server_slot_sampled_at_unix_seconds": 1787574745.3305292,
+        "server_total_slots": 8,
+        "utilization_pct": 2.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574746.396274,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 20.859718322753906,
+        "server_slot_sampled_at_unix_seconds": 1787574746.4171338,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574747.451809,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 1.0805130004882812,
+        "server_slot_sampled_at_unix_seconds": 1787574747.4528894,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574748.4939632,
+        "server_busy_slots": 8,
+        "server_slot_gpu_skew_milliseconds": 201.46536827087402,
+        "server_slot_sampled_at_unix_seconds": 1787574748.6954286,
+        "server_total_slots": 8,
+        "utilization_pct": 98.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574749.735384,
+        "server_busy_slots": 8,
+        "server_slot_gpu_skew_milliseconds": 27.920961380004883,
+        "server_slot_sampled_at_unix_seconds": 1787574749.763305,
+        "server_total_slots": 8,
+        "utilization_pct": 92.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574750.818553,
+        "server_busy_slots": 8,
+        "server_slot_gpu_skew_milliseconds": 43.599843978881836,
+        "server_slot_sampled_at_unix_seconds": 1787574750.8621528,
+        "server_total_slots": 8,
+        "utilization_pct": 80.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574752.082056,
+        "server_busy_slots": 7,
+        "server_slot_gpu_skew_milliseconds": 2.5420188903808594,
+        "server_slot_sampled_at_unix_seconds": 1787574752.084598,
+        "server_total_slots": 8,
+        "utilization_pct": 53.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574753.1469173,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 31.3262939453125,
+        "server_slot_sampled_at_unix_seconds": 1787574753.1782436,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574754.239371,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 1.0099411010742188,
+        "server_slot_sampled_at_unix_seconds": 1787574754.240381,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574755.3032546,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 26.69358253479004,
+        "server_slot_sampled_at_unix_seconds": 1787574755.3299482,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574756.4164703,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 2.5634765625,
+        "server_slot_sampled_at_unix_seconds": 1787574756.4190338,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574757.476735,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 20.832300186157227,
+        "server_slot_sampled_at_unix_seconds": 1787574757.4975674,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574758.554288,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 21.685361862182617,
+        "server_slot_sampled_at_unix_seconds": 1787574758.5759733,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574759.62876,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 16.381263732910156,
+        "server_slot_sampled_at_unix_seconds": 1787574759.6451414,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574761.2480683,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 20.884990692138672,
+        "server_slot_sampled_at_unix_seconds": 1787574761.2689533,
+        "server_total_slots": 8,
+        "utilization_pct": 2.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574762.3371508,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 21.13628387451172,
+        "server_slot_sampled_at_unix_seconds": 1787574762.358287,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574763.4383013,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 11.287212371826172,
+        "server_slot_sampled_at_unix_seconds": 1787574763.4495885,
+        "server_total_slots": 8,
+        "utilization_pct": 2.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574764.514433,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 21.657705307006836,
+        "server_slot_sampled_at_unix_seconds": 1787574764.5360906,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574765.6166365,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 26.14879608154297,
+        "server_slot_sampled_at_unix_seconds": 1787574765.6427853,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574766.70027,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 26.63111686706543,
+        "server_slot_sampled_at_unix_seconds": 1787574766.726901,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574767.7746704,
+        "server_busy_slots": 1,
+        "server_slot_gpu_skew_milliseconds": 239.70937728881836,
+        "server_slot_sampled_at_unix_seconds": 1787574768.0143797,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574769.0516295,
+        "server_busy_slots": 8,
+        "server_slot_gpu_skew_milliseconds": 399.6603488922119,
+        "server_slot_sampled_at_unix_seconds": 1787574769.45129,
+        "server_total_slots": 8,
+        "utilization_pct": 95.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574770.4850748,
+        "server_busy_slots": 8,
+        "server_slot_gpu_skew_milliseconds": 17.89379119873047,
+        "server_slot_sampled_at_unix_seconds": 1787574770.5029685,
+        "server_total_slots": 8,
+        "utilization_pct": 91.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574771.5725543,
+        "server_busy_slots": 6,
+        "server_slot_gpu_skew_milliseconds": 30.242204666137695,
+        "server_slot_sampled_at_unix_seconds": 1787574771.6027966,
+        "server_total_slots": 8,
+        "utilization_pct": 86.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574772.704327,
+        "server_busy_slots": 1,
+        "server_slot_gpu_skew_milliseconds": 36.150217056274414,
+        "server_slot_sampled_at_unix_seconds": 1787574772.7404773,
+        "server_total_slots": 8,
+        "utilization_pct": 67.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574773.8048391,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 16.552448272705078,
+        "server_slot_sampled_at_unix_seconds": 1787574773.8213916,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574774.8700292,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 15.836715698242188,
+        "server_slot_sampled_at_unix_seconds": 1787574774.885866,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574775.9308522,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 26.11684799194336,
+        "server_slot_sampled_at_unix_seconds": 1787574775.956969,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574777.0053074,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 20.735740661621094,
+        "server_slot_sampled_at_unix_seconds": 1787574777.0260432,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574778.091256,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 21.53778076171875,
+        "server_slot_sampled_at_unix_seconds": 1787574778.1127937,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574779.174146,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 16.156673431396484,
+        "server_slot_sampled_at_unix_seconds": 1787574779.1903026,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574780.2433085,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 21.53325080871582,
+        "server_slot_sampled_at_unix_seconds": 1787574780.2648418,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574781.322352,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 25.746583938598633,
+        "server_slot_sampled_at_unix_seconds": 1787574781.3480985,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574782.3940253,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 11.267423629760742,
+        "server_slot_sampled_at_unix_seconds": 1787574782.4052927,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574783.4587536,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 15.804529190063477,
+        "server_slot_sampled_at_unix_seconds": 1787574783.474558,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574784.5370514,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 27.21858024597168,
+        "server_slot_sampled_at_unix_seconds": 1787574784.56427,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574785.612313,
+        "server_busy_slots": 8,
+        "server_slot_gpu_skew_milliseconds": 248.30079078674316,
+        "server_slot_sampled_at_unix_seconds": 1787574785.8606138,
+        "server_total_slots": 8,
+        "utilization_pct": 98.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574786.8978517,
+        "server_busy_slots": 8,
+        "server_slot_gpu_skew_milliseconds": 53.82370948791504,
+        "server_slot_sampled_at_unix_seconds": 1787574786.9516754,
+        "server_total_slots": 8,
+        "utilization_pct": 97.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574788.0745995,
+        "server_busy_slots": 6,
+        "server_slot_gpu_skew_milliseconds": 55.20296096801758,
+        "server_slot_sampled_at_unix_seconds": 1787574788.1298025,
+        "server_total_slots": 8,
+        "utilization_pct": 78.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574789.205474,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 21.70538902282715,
+        "server_slot_sampled_at_unix_seconds": 1787574789.2271793,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574790.3081255,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 16.344070434570312,
+        "server_slot_sampled_at_unix_seconds": 1787574790.3244696,
+        "server_total_slots": 8,
+        "utilization_pct": 1.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574791.406249,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 21.578550338745117,
+        "server_slot_sampled_at_unix_seconds": 1787574791.4278276,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574792.5025718,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 37.14346885681152,
+        "server_slot_sampled_at_unix_seconds": 1787574792.5397153,
+        "server_total_slots": 8,
+        "utilization_pct": 3.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574793.6049514,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 26.80206298828125,
+        "server_slot_sampled_at_unix_seconds": 1787574793.6317534,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574794.6656115,
+        "server_busy_slots": 1,
+        "server_slot_gpu_skew_milliseconds": 37.638187408447266,
+        "server_slot_sampled_at_unix_seconds": 1787574794.7032497,
+        "server_total_slots": 8,
+        "utilization_pct": 98.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574795.746197,
+        "server_busy_slots": 8,
+        "server_slot_gpu_skew_milliseconds": 267.7597999572754,
+        "server_slot_sampled_at_unix_seconds": 1787574796.0139568,
+        "server_total_slots": 8,
+        "utilization_pct": 96.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574797.1130524,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 27.44460105895996,
+        "server_slot_sampled_at_unix_seconds": 1787574797.140497,
+        "server_total_slots": 8,
+        "utilization_pct": 53.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574798.229908,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 21.485567092895508,
+        "server_slot_sampled_at_unix_seconds": 1787574798.2513936,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574799.3450222,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 21.52109146118164,
+        "server_slot_sampled_at_unix_seconds": 1787574799.3665433,
+        "server_total_slots": 8,
+        "utilization_pct": 2.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574800.4573205,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 32.25874900817871,
+        "server_slot_sampled_at_unix_seconds": 1787574800.4895792,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574801.6327183,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 26.690244674682617,
+        "server_slot_sampled_at_unix_seconds": 1787574801.6594086,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574802.7430232,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 12.51220703125,
+        "server_slot_sampled_at_unix_seconds": 1787574802.7555354,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574803.873014,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 36.731719970703125,
+        "server_slot_sampled_at_unix_seconds": 1787574803.9097457,
+        "server_total_slots": 8,
+        "utilization_pct": 60.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574804.994401,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 31.819581985473633,
+        "server_slot_sampled_at_unix_seconds": 1787574805.0262206,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574806.1213448,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 16.572237014770508,
+        "server_slot_sampled_at_unix_seconds": 1787574806.137917,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574807.2368824,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 2.292633056640625,
+        "server_slot_sampled_at_unix_seconds": 1787574807.239175,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574808.3119915,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 26.09848976135254,
+        "server_slot_sampled_at_unix_seconds": 1787574808.33809,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574809.4221182,
+        "server_busy_slots": 1,
+        "server_slot_gpu_skew_milliseconds": 430.4356575012207,
+        "server_slot_sampled_at_unix_seconds": 1787574809.8525538,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574810.8962238,
+        "server_busy_slots": 7,
+        "server_slot_gpu_skew_milliseconds": 183.5007667541504,
+        "server_slot_sampled_at_unix_seconds": 1787574811.0797246,
+        "server_total_slots": 8,
+        "utilization_pct": 92.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574812.1520743,
+        "server_busy_slots": 4,
+        "server_slot_gpu_skew_milliseconds": 13.10586929321289,
+        "server_slot_sampled_at_unix_seconds": 1787574812.1651802,
+        "server_total_slots": 8,
+        "utilization_pct": 60.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574813.2187636,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 20.865440368652344,
+        "server_slot_sampled_at_unix_seconds": 1787574813.239629,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574814.2995508,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 21.114826202392578,
+        "server_slot_sampled_at_unix_seconds": 1787574814.3206656,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574815.386188,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 0.9469985961914062,
+        "server_slot_sampled_at_unix_seconds": 1787574815.387135,
+        "server_total_slots": 8,
+        "utilization_pct": 7.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574816.459608,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 1.0213851928710938,
+        "server_slot_sampled_at_unix_seconds": 1787574816.4606295,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574817.523776,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 0.9386539459228516,
+        "server_slot_sampled_at_unix_seconds": 1787574817.5247147,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574818.5751143,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 0.9608268737792969,
+        "server_slot_sampled_at_unix_seconds": 1787574818.576075,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574819.6442761,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 0.9515285491943359,
+        "server_slot_sampled_at_unix_seconds": 1787574819.6452277,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574820.6840758,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 1.1138916015625,
+        "server_slot_sampled_at_unix_seconds": 1787574820.6851897,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787574821.7200267,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 1.0559558868408203,
+        "server_slot_sampled_at_unix_seconds": 1787574821.7210827,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      }
+    ],
+    "request_gpu_utilization_median_pct": 0.0,
+    "request_gpu_utilization_p10_pct": 0.0,
+    "server_slot_probe_failure_count": 0,
+    "server_slot_sample_count": 299,
+    "server_slot_sampling_configured": true,
+    "server_slot_sampling_reason": null
+  },
+  "spend_vs_ceilings": {
+    "attempt6": {
+      "core_contacts": {
+        "attempt_ceiling": 210,
+        "used": 203
+      },
+      "embedding_tool_contacts": {
+        "attempt_ceiling": 130,
+        "used": 102
+      },
+      "gpu_active_hours_contact_basis": 0.137938,
+      "metered_audio_seconds": {
+        "used": 556.3916249999997
+      }
+    },
+    "campaign_ceilings": {
+      "core_contacts": 1800,
+      "embedding_tool_contacts": 1500,
+      "gpu_hours": 2.0,
+      "metered_audio_seconds": 2400
+    },
+    "cumulative_plan_declaration": {
+      "note": "run-cumulative per core.model.adapter's enforcement across all attempts of the run id (the attempt-2 root-cause fix; the declaration worked in attempts 3, 4, and 5)",
+      "planned_model_calls_run_cumulative": 720,
+      "planned_speech_audio_seconds_run_cumulative": 1900
+    },
+    "round0_cumulative_incl_attempts_1_2_3_4_5": {
+      "core_contacts": 688,
+      "embedding_tool_contacts": 300,
+      "metered_audio_seconds": 1824.5204999999996,
+      "note": "attempt-1 durable actuals (151 core = 100 reused M0 + 51 dead BLEND; 25 tool; 399.735125 audio-s) + attempt-2 durable actuals (49 core, all dead BLEND; 30 tool; 118.5831875 audio-s) + attempt-3 durable actuals (202 core = 2 canary + 200 dead BLEND; 102 tool; 554.9838125 audio-s) + attempt-4 durable actuals (67 core = 2 canary + 65 dead BLEND; 33 tool; 159.62881249999998 audio-s) + attempt-5 durable actuals (16 core = 2 canary + 14 dead BLEND; 8 tool; 35.1979375 audio-s) plus this attempt"
+    }
+  },
+  "study": "speech-aware-evidence-acquisition",
+  "successor_semantics": {
+    "blend_arm": "flown FRESH in this attempt under the b3d29658 rails rendering (byte-identical direct-instruction wording to attempt-1's harness-side dedup form, now native)",
+    "canary": "registered decode-speed canary flown BEFORE arm BLEND on the first two attempt-1 M0 sample ids; timing + sha256 descriptives only; see the canary section",
+    "dead_spend_disclosure": "attempt-1 arm BLEND spent 51 frozen-core contacts (+ 23 runtime query embeddings) lost to the external service kill; attempt-2 arm BLEND spent 49 frozen-core contacts (+ 26 runtime query embeddings) lost to its cumulative-budget abort; attempt-3 spent 202 frozen-core contacts (2 canary timing-only decodes + a COMPLETE 200-contact BLEND loop whose buffer died at the record-id collision: 198 responses unflushed, 2 partially flushed triples durable but never read) + 100 runtime query embeddings; attempt-4 spent 67 frozen-core contacts (2 canary timing-only decodes + 65 BLEND contacts cut down by the registered decode-rate sentinel: 195 partial trace records flushed durable-first with zero collisions but never read) + 31 runtime query embeddings; attempt-5 spent 16 frozen-core contacts (2 canary timing-only decodes ~23x degraded + 14 sentinel-bounded BLEND contacts: 42 partial trace records flushed durable-first with zero collisions but never read) + 8 embedding contacts (durable as vectors + text hashes only); all of it was NEVER read semantically and counts as dead spend in the cumulative accounting below",
+    "m0_arm": "REUSED from attempt-1 (attempt-20260824T073337Z-dev100r0) by its durable flushed trace, sha256 d1f376bbacaa189f6583abe639d072567c4001fe63c52dab34e113b59ce4d8a2; 100/100 contacts, gold never opened before this scoring; zero new spend for the arm",
+    "retained_attempt4_mechanisms": "micro-run trace isolation (canary/resend flush into their own namespaced sinks; the main BLEND arm flushes FIRST into the shared sink; zero record-id overlap asserted post-flush) and the in-flight decode-rate sentinel (rolling median over 8 contacts, abort strictly above 1000 ms/token) \u2014 both flight-proven in attempt 4 and retained unchanged"
+  },
+  "trace_isolation": {
+    "canary_sink_records": 14,
+    "flush_order": "canary (own sink) -> BLEND (main sink FIRST) -> resend (own sink)",
+    "main_sink_records": 1000,
+    "resend_sink_records": 7,
+    "zero_record_id_overlap_asserted": true
+  },
+  "wrong_to_correct_sample_ids": [
+    "slurp:devel:000109:audio-1497882612",
+    "slurp:devel:000392:audio-1498573434",
+    "slurp:devel:000806:audio--1506079512",
+    "slurp:devel:000921:audio-1498564374-headset",
+    "slurp:devel:001558:audio-1495734409",
+    "slurp:devel:001569:audio-1490198849-headset",
+    "slurp:devel:002814:audio-1490194699",
+    "slurp:devel:004579:audio-1502195536-headset",
+    "slurp:devel:005183:audio-1498565600",
+    "slurp:devel:005726:audio--1504197977",
+    "slurp:devel:005989:audio-1497621031",
+    "slurp:devel:007381:audio-1501686582-headset",
+    "slurp:devel:009951:audio-1500038657-headset",
+    "slurp:devel:010037:audio-1500386970-headset",
+    "slurp:devel:010041:audio-1497264270-headset",
+    "slurp:devel:010086:audio-1502201283",
+    "slurp:devel:010138:audio-1490289156",
+    "slurp:devel:010374:audio-1501690184-headset",
+    "slurp:devel:011819:audio--1505404383-headset",
+    "slurp:devel:012045:audio-1490956582-headset",
+    "slurp:devel:012055:audio-1494512213",
+    "slurp:devel:012712:audio-1502199981-headset",
+    "slurp:devel:013804:audio-1434542201-headset",
+    "slurp:devel:014203:audio-1500979762",
+    "slurp:devel:015397:audio-1490262948",
+    "slurp:devel:015414:audio-1499265566"
+  ]
+}
