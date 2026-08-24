@@ -558,6 +558,14 @@ def test_fuser_selects_nothing_when_nothing_clears_tau():
 
 
 def _red_green_controller_snapshot() -> KnowledgeSnapshot:
+    # task_target is shaped like a real intent identity ("{scenario}_
+    # {action}") rather than a bare "red"/"green" so that _DIRECT_TEXT /
+    # _EVIDENCE_TEXT below -- compact JSON, mirroring the real task
+    # contract's answer shape -- exercise the repaired
+    # kb_policy.default_label_normalizer for real (docs/readiness/
+    # 2026-08-24-dev100-damage-channel-analysis.md sec 4.2/9): it recovers
+    # a label facet's identity from the response's OWN parsed scenario/
+    # action, never from a facet's prose representation.
     facets = (
         KeyFacet("facet:content:red", "content", "text", "red content", ("train:red",)),
         KeyFacet("facet:content:green", "content", "text", "green content", ("train:green",)),
@@ -571,7 +579,7 @@ def _red_green_controller_snapshot() -> KnowledgeSnapshot:
             associated_facet_ids=("facet:content:red", "facet:label:red"),
             source_sample_ids=("train:red",),
             provenance_refs=("sample:train:red",),
-            task_target="red",
+            task_target="red_color",
             prior_score=0.5,
         ),
         ValueBundle(
@@ -580,7 +588,7 @@ def _red_green_controller_snapshot() -> KnowledgeSnapshot:
             associated_facet_ids=("facet:content:green", "facet:label:green"),
             source_sample_ids=("train:green",),
             provenance_refs=("sample:train:green",),
-            task_target="green",
+            task_target="green_color",
             prior_score=0.5,
         ),
     )
@@ -604,8 +612,12 @@ _RED_GREEN_FACET_VECTORS = {
 }
 _RED_GREEN_QUERY_VECTOR = {"content": (0.0, 1.0)}
 
-_DIRECT_TEXT = "I believe the color is red."
-_EVIDENCE_TEXT = "Considering the evidence, the color is green."
+# Compact JSON, exactly the task contract's real answer shape -- the
+# repaired kb_policy.default_label_normalizer parses these fields directly
+# (identity "red_color" / "green_color") rather than substring-matching a
+# label facet's prose representation.
+_DIRECT_TEXT = '{"scenario": "red", "action": "color", "entities": []}'
+_EVIDENCE_TEXT = '{"scenario": "green", "action": "color", "entities": []}'
 
 
 def _run_red_green(tmp_path: Path, *, alpha: float, query_vectors_by_sample=None):
@@ -630,6 +642,10 @@ def _run_red_green(tmp_path: Path, *, alpha: float, query_vectors_by_sample=None
 
 
 def test_alpha_zero_retains_the_direct_decode_response(tmp_path: Path):
+    # At alpha=0.0 the fused evidence term is fully zeroed, so the direct
+    # label wins outright via kb_policy.default_label_normalizer's real
+    # parsed-scenario/action match against "red_color" -- not a substring
+    # coincidence (the prior, defective normalizer's failure mode).
     result = _run_red_green(tmp_path, alpha=0.0)
     assert [t.action_kind for t in result.transitions] == ["stop"]
     assert len(result.contacts) == 1
@@ -665,6 +681,178 @@ def test_retain_primary_default_when_nothing_clears_percept_admission(tmp_path: 
     assert [t.action_kind for t in result.transitions] == ["stop"]
     assert len(result.contacts) == 1
     assert result.final_response_text == _DIRECT_TEXT
+
+
+# ---------------------------------------------------------------------------
+# Label-identity binding repair (docs/readiness/2026-08-24-dev100-damage-
+# channel-analysis.md sec 4.2/9): default_label_normalizer recovers the
+# direct-decode label from the response's OWN parsed scenario/action
+# instead of substring-matching a label facet's prose representation.
+# ---------------------------------------------------------------------------
+
+
+def test_default_label_normalizer_recovers_facet_identity_from_parsed_scenario_action():
+    """The flown-response shape: the task contract's answers are compact
+    JSON, never a label facet's prose representation. The repaired
+    normalizer must recover the label identity from the answer's OWN
+    parsed scenario/action, matched exactly against label_targets (facet_id
+    -> intent identity, i.e. ``_label_identities``'s own output) -- never
+    via a substring match."""
+
+    label_targets = {
+        "facet:label:intent:alarm_query": "alarm_query",
+        "facet:label:intent:alarm_set": "alarm_set",
+    }
+    response = '{"scenario": "alarm", "action": "query", "entities": []}'
+    assert (
+        kb_policy.default_label_normalizer(response, label_targets)
+        == "facet:label:intent:alarm_query"
+    )
+
+
+def test_default_label_normalizer_breaks_ties_by_facet_id_ascending():
+    label_targets = {"facet:label:z": "alarm_query", "facet:label:a": "alarm_query"}
+    response = '{"scenario": "alarm", "action": "query"}'
+    assert kb_policy.default_label_normalizer(response, label_targets) == "facet:label:a"
+
+
+def test_default_label_normalizer_does_not_match_a_scenario_action_swap():
+    """Exact-identity match only. The damage-channel analysis measured that
+    a further 5/100 direct answers name a real TRAIN intent only with
+    scenario/action exchanged, but explicitly declined to endorse
+    tolerating the swap as an unambiguous repair (sec 9) -- this normalizer
+    must NOT resolve it."""
+
+    label_targets = {"facet:label:intent:alarm_query": "alarm_query"}
+    swapped_response = '{"scenario": "query", "action": "alarm", "entities": []}'
+    assert kb_policy.default_label_normalizer(swapped_response, label_targets) is None
+
+
+def test_default_label_normalizer_returns_none_when_nothing_matches():
+    """The no-label-facet / no-match case: the blend must fall back to the
+    same dead-direct behaviour it had before this repair (fused-only
+    argmax, no retain-primary) whenever the response's parsed identity
+    names no facet in label_targets, fails to parse at all, or
+    label_targets is empty."""
+
+    label_targets = {"facet:label:intent:alarm_query": "alarm_query"}
+    # a real, parseable answer naming an intent absent from label_targets
+    assert (
+        kb_policy.default_label_normalizer(
+            '{"scenario": "calendar", "action": "query"}', label_targets
+        )
+        is None
+    )
+    # unparseable / non-JSON text must fail closed to None, never raise
+    assert kb_policy.default_label_normalizer("I have no idea.", label_targets) is None
+    # no label facets registered at all
+    assert (
+        kb_policy.default_label_normalizer('{"scenario": "alarm", "action": "query"}', {})
+        is None
+    )
+
+
+def _alarm_intent_snapshot() -> KnowledgeSnapshot:
+    """A SLURP-shaped label snapshot: facet ids/representations mirror
+    ``rails.knowledge_build``'s real intent facets, and ``task_target`` is
+    the real ``"{scenario}_{action}"`` intent identity -- used to prove the
+    repaired DEFAULT normalizer makes retain-primary reachable end to end,
+    the first real test of that path (retain_primary_samples was 0 across
+    all three sealed DEV-100 rounds)."""
+
+    facets = (
+        KeyFacet(
+            "facet:content:query", "content", "text", "is my alarm set", ("train:query",)
+        ),
+        KeyFacet("facet:content:set", "content", "text", "wake me at seven", ("train:set",)),
+        KeyFacet(
+            "facet:label:intent:alarm_query",
+            "label",
+            "text",
+            "Intent 'alarm_query' (scenario='alarm', action='query'); 1 TRAIN "
+            "utterance in this snapshot.",
+            ("train:query",),
+        ),
+        KeyFacet(
+            "facet:label:intent:alarm_set",
+            "label",
+            "text",
+            "Intent 'alarm_set' (scenario='alarm', action='set'); 1 TRAIN "
+            "utterance in this snapshot.",
+            ("train:set",),
+        ),
+    )
+    values = (
+        ValueBundle(
+            value_id="value:query",
+            content="Evidence: the caller is asking about an existing alarm.",
+            associated_facet_ids=("facet:content:query", "facet:label:intent:alarm_query"),
+            source_sample_ids=("train:query",),
+            provenance_refs=("sample:train:query",),
+            task_target="alarm_query",
+            prior_score=0.5,
+        ),
+        ValueBundle(
+            value_id="value:set",
+            content="Evidence: the caller wants a new alarm set.",
+            associated_facet_ids=("facet:content:set", "facet:label:intent:alarm_set"),
+            source_sample_ids=("train:set",),
+            provenance_refs=("sample:train:set",),
+            task_target="alarm_set",
+            prior_score=0.5,
+        ),
+    )
+    return KnowledgeSnapshot(
+        snapshot_id="alarm-retain-primary-test-v1",
+        source_split_identity_hash=_SHA_B,
+        source_sample_ids=("train:query", "train:set"),
+        builder_policy_id="test-builder-v1",
+        facets=facets,
+        values=values,
+    ).validate()
+
+
+def test_repaired_default_normalizer_makes_retain_primary_reachable_end_to_end(
+    tmp_path: Path,
+):
+    """The first real test of the retain-primary path
+    (docs/readiness/2026-08-24-dev100-damage-channel-analysis.md sec
+    4.2/9): a compact JSON direct answer names ``alarm_query`` while the
+    query vector cosine-recalls and fuses only the ``alarm_set`` content
+    facet (mirroring the red/green orthogonal-vector pattern above), so the
+    pre-evidence blend genuinely competes the direct-decode indicator term
+    against a NONZERO fused mass on a different label -- at alpha=0.3 the
+    direct term (0.7) still uniquely outweighs the fused term (0.3*1.0),
+    so retain-primary fires in a single contact even though evidence was
+    available and fused. Uses the registered DEFAULT normalizer
+    (unoverridden), exactly as the campaign launchers wire it."""
+
+    snapshot = _alarm_intent_snapshot()
+    direct_text = '{"scenario": "alarm", "action": "query", "entities": []}'
+    facet_vectors = {
+        "facet:content:query": {"content": (1.0, 0.0)},
+        "facet:content:set": {"content": (0.0, 1.0)},
+    }
+    factory = kb_policy.make_kb_alpha_blend_controller_factory(
+        snapshot=snapshot,
+        query_vectors_by_sample={"s1": {"content": (0.0, 1.0)}},  # aligned with "set" only
+        facet_vectors=lambda facet_id: facet_vectors.get(facet_id, {}),
+        rank_weights=kb_policy.RankWeights(w_cos=1.0, w_prior=0.0, w_agree=0.0),
+        fuse_knobs=kb_policy.FuseKnobs(tau=0.5, m=10, c=1, top_l=2),
+        alpha=0.3,
+        top_k_per_dimension=10,
+    )
+    result = _run_with_controller_factory(
+        tmp_path,
+        snapshot=snapshot,
+        factory=factory,
+        responder=lambda messages: direct_text,
+        sample_id="s1",
+    )
+
+    assert [t.action_kind for t in result.transitions] == ["stop"]
+    assert len(result.contacts) == 1
+    assert result.final_response_text == direct_text
 
 
 def test_default_registered_controller_is_a_safe_direct_decode_only_degenerate(

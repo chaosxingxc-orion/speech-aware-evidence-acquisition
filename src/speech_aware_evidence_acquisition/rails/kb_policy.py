@@ -58,7 +58,12 @@ for a flat single-level label task every label facet qualifies directly.
 Nothing here reads a scenario/action/intent name, a slot schema, or any
 other SLURP-specific vocabulary -- the same code path is exercised by this
 module's own tests against both a 5-label and a 150-label synthetic
-snapshot.
+snapshot. The registered DEFAULT normalizer (:func:`default_label_normalizer`)
+is the one place that departs from this: it parses a SLURP-shaped compact
+JSON answer (``scenario``/``action``) to recover the identity it then
+matches against :func:`_label_identities`'s own output. A task whose
+answers are not shaped that way supplies its own ``normalizer`` -- the
+``Normalizer`` injection point (module docstring stage 4) is unchanged.
 """
 
 from __future__ import annotations
@@ -482,24 +487,68 @@ def fuse_supplyfilter_factory(
 # ---------------------------------------------------------------------------
 
 
-def default_label_normalizer(response_text: str, labels: Mapping[str, str]) -> str | None:
-    """Never gold-bearing: matches ``labels`` (facet_id -> representation
-    text, drawn only from the snapshot's own label facets) as a
-    case-insensitive substring of ``response_text``. Ties broken by longest
-    matching representation, then ``facet_id`` ascending."""
+def _parse_scenario_action(response_text: str) -> tuple[str | None, str | None]:
+    """The response's OWN parsed ``scenario``/``action`` fields -- gold is
+    never consulted, and this reads only the model's answer text. Deferred
+    import: ``rails.kb_policy`` stays import-time task-independent (module
+    docstring "Label vocabulary") -- only actually calling the DEFAULT
+    normalizer pulls in the SLU-shaped response parser, and only a task
+    whose answers are shaped that way ever exercises this path at all."""
+
+    from ..reproduction.slurp_scoring import parse_slu_response  # noqa: PLC0415
+
+    scenario, action, _entities, parsed = parse_slu_response(response_text)
+    if not parsed:
+        return None, None
+    return scenario, action
+
+
+def default_label_normalizer(
+    response_text: str, label_targets: Mapping[str, str]
+) -> str | None:
+    """Recovers a label facet's identity from the response's OWN parsed
+    ``scenario``/``action`` fields -- never from gold, and never from a
+    label facet's prose text. ``label_targets`` is a facet_id -> intent-
+    identity mapping (:func:`_label_identities`'s own output, e.g. facet_id
+    -> ``"alarm_query"``), not representation text: the parsed
+    ``scenario``/``action`` are joined as ``f"{scenario}_{action}"`` and
+    matched EXACTLY against ``label_targets``'s values. Ties (more than one
+    facet_id sharing the same identity) are broken by ``facet_id``
+    ascending.
+
+    Repairs the label-identity binding defect the damage-channel analysis
+    found (``docs/readiness/2026-08-24-dev100-damage-channel-analysis.md``
+    sections 4.2 and 9): the previous implementation matched a label
+    facet's prose ``representation`` (e.g. "Intent 'alarm_query'
+    (scenario='alarm', action='query'); 130 TRAIN utterances...") as a
+    substring of the response, but the task contract's answers are compact
+    JSON, which never contains that prose -- the match fired on 0/100
+    flown responses, so the alpha-blend's ``(1 - alpha)`` protect-direct
+    term was never live and retain-primary could never fire. Matching the
+    answer's own parsed identity instead recovers a label facet on 64/100
+    flown direct answers (measured).
+
+    Known, intentionally unaddressed residual (same sections): of the
+    remaining 36/100, 5 name a real TRAIN intent only with ``scenario``
+    and ``action`` exchanged, and 31 name a pair that is not a TRAIN
+    intent in either order. This normalizer does NOT special-case the
+    swap: the analysis measured the swap count but explicitly declined to
+    endorse it as an unambiguous repair, leaving "widen the label
+    vocabulary, tolerate the field swap, or tighten the answer format" as
+    a separate, later design question. Those 36 samples stay dead-direct
+    (this function returns ``None``) exactly as they did before this
+    repair."""
 
     if not isinstance(response_text, str):
         return None
-    haystack = response_text.casefold()
-    matches = [
-        (facet_id, len(representation.strip()))
-        for facet_id, representation in labels.items()
-        if representation.strip() and representation.strip().casefold() in haystack
-    ]
-    if not matches:
+    scenario, action = _parse_scenario_action(response_text)
+    if scenario is None or action is None:
         return None
-    matches.sort(key=lambda item: (-item[1], item[0]))
-    return matches[0][0]
+    identity = f"{scenario}_{action}"
+    matches = sorted(
+        facet_id for facet_id, target in label_targets.items() if target == identity
+    )
+    return matches[0] if matches else None
 
 
 def _label_identities(snapshot: KnowledgeSnapshot) -> dict[str, str]:
@@ -625,15 +674,6 @@ class KbAlphaBlendController:
         self._label_targets: dict[str, str] = (
             {} if snapshot is None else _label_identities(snapshot)
         )
-        self._label_texts: dict[str, str] = (
-            {}
-            if snapshot is None
-            else {
-                facet.facet_id: facet.representation
-                for facet in snapshot.facets
-                if facet.facet_id in self._label_targets
-            }
-        )
         self._direct_label: str | None = None
         self._pending_best_labels: tuple[str, ...] = ()
         # Test/provenance observability only -- never consulted by the
@@ -708,7 +748,7 @@ class KbAlphaBlendController:
         contact: AgentContactPlan,
         response_text: str,
     ) -> AgentLoopAdvance:
-        self._direct_label = self._normalizer(response_text, self._label_texts)
+        self._direct_label = self._normalizer(response_text, self._label_targets)
 
         if self._snapshot is None or not self._label_targets:
             return self._stop(context, contact)
@@ -820,7 +860,7 @@ class KbAlphaBlendController:
         contact: AgentContactPlan,
         response_text: str,
     ) -> AgentLoopAdvance:
-        evidence_label = self._normalizer(response_text, self._label_texts)
+        evidence_label = self._normalizer(response_text, self._label_targets)
         best_labels = self._pending_best_labels
         if evidence_label in best_labels:
             self.last_winner_label = evidence_label
