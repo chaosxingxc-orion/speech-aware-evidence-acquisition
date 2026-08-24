@@ -1,0 +1,976 @@
+{
+  "exposure_row": "SAEA-SN-MF-DEV100-REVIEWER-AUDIT",
+  "m0_arm_identity": {
+    "caveat": "flown ONCE (round-0 attempt 1, zero-copy build); every later round reuses those responses, so the paired contrast spans a build and a concurrency change",
+    "source": "attempt-1 durable trace (d1f376bbacaa\u2026)"
+  },
+  "offline_guard": {
+    "armed": true,
+    "attempted_targets": [],
+    "connect_attempts": 0,
+    "note": "socket.socket.connect / connect_ex / socket.create_connection were replaced by raisers before any input was opened"
+  },
+  "primary_round": 3,
+  "q1_uncertainty": {
+    "round0": {
+      "blend_correct": 63,
+      "bootstrap": {
+        "ci90_excludes_zero": true,
+        "ci90_high_pp": 24.0,
+        "ci90_low_pp": 5.0,
+        "ci95_excludes_zero": true,
+        "ci95_high_pp": 26.0,
+        "ci95_low_pp": 3.0,
+        "n_replicates": 10000,
+        "point_estimate_pp": 15.0,
+        "replicate_share_at_or_below_zero": 0.0058,
+        "replicates_at_or_below_zero": 58,
+        "resampling": "per-sample paired cluster bootstrap over the 100 DEV-100 ids; the SAME resampled multiset scores both arms, preserving the pairing",
+        "seed": 20260807,
+        "sigma_hat_pp": 5.821323849434938
+      },
+      "gain_samples": 15,
+      "m0_correct": 48,
+      "mcnemar": {
+        "chi_square_continuity_corrected": 5.297297297297297,
+        "chi_square_two_sided_p": 0.02135854043383465,
+        "discordant_pairs": 37,
+        "exact_binomial_two_sided_p": 0.020073851919732988,
+        "mid_p_two_sided": 0.013852965261321515,
+        "n01_wrong_to_correct": 26,
+        "n10_correct_to_wrong": 11,
+        "odds_ratio_n01_over_n10": 2.3636363636363638
+      }
+    },
+    "round1": {
+      "blend_correct": 63,
+      "bootstrap": {
+        "ci90_excludes_zero": true,
+        "ci90_high_pp": 24.0,
+        "ci90_low_pp": 5.0,
+        "ci95_excludes_zero": true,
+        "ci95_high_pp": 26.0,
+        "ci95_low_pp": 4.0,
+        "n_replicates": 10000,
+        "point_estimate_pp": 15.0,
+        "replicate_share_at_or_below_zero": 0.0059,
+        "replicates_at_or_below_zero": 59,
+        "resampling": "per-sample paired cluster bootstrap over the 100 DEV-100 ids; the SAME resampled multiset scores both arms, preserving the pairing",
+        "seed": 20260807,
+        "sigma_hat_pp": 5.813153963211365
+      },
+      "gain_samples": 15,
+      "m0_correct": 48,
+      "mcnemar": {
+        "chi_square_continuity_corrected": 5.297297297297297,
+        "chi_square_two_sided_p": 0.02135854043383465,
+        "discordant_pairs": 37,
+        "exact_binomial_two_sided_p": 0.020073851919732988,
+        "mid_p_two_sided": 0.013852965261321515,
+        "n01_wrong_to_correct": 26,
+        "n10_correct_to_wrong": 11,
+        "odds_ratio_n01_over_n10": 2.3636363636363638
+      }
+    },
+    "round2": {
+      "blend_correct": 65,
+      "bootstrap": {
+        "ci90_excludes_zero": true,
+        "ci90_high_pp": 27.0,
+        "ci90_low_pp": 7.0,
+        "ci95_excludes_zero": true,
+        "ci95_high_pp": 29.0,
+        "ci95_low_pp": 5.0,
+        "n_replicates": 10000,
+        "point_estimate_pp": 17.0,
+        "replicate_share_at_or_below_zero": 0.0028,
+        "replicates_at_or_below_zero": 28,
+        "resampling": "per-sample paired cluster bootstrap over the 100 DEV-100 ids; the SAME resampled multiset scores both arms, preserving the pairing",
+        "seed": 20260807,
+        "sigma_hat_pp": 5.941718363402964
+      },
+      "gain_samples": 17,
+      "m0_correct": 48,
+      "mcnemar": {
+        "chi_square_continuity_corrected": 6.564102564102564,
+        "chi_square_two_sided_p": 0.01040561986887359,
+        "discordant_pairs": 39,
+        "exact_binomial_two_sided_p": 0.009475304279476404,
+        "mid_p_two_sided": 0.006426576095691416,
+        "n01_wrong_to_correct": 28,
+        "n10_correct_to_wrong": 11,
+        "odds_ratio_n01_over_n10": 2.5454545454545454
+      }
+    },
+    "round3": {
+      "blend_correct": 67,
+      "bootstrap": {
+        "ci90_excludes_zero": true,
+        "ci90_high_pp": 27.0,
+        "ci90_low_pp": 11.0,
+        "ci95_excludes_zero": true,
+        "ci95_high_pp": 29.0,
+        "ci95_low_pp": 9.0,
+        "n_replicates": 10000,
+        "point_estimate_pp": 19.0,
+        "replicate_share_at_or_below_zero": 0.0,
+        "replicates_at_or_below_zero": 0,
+        "resampling": "per-sample paired cluster bootstrap over the 100 DEV-100 ids; the SAME resampled multiset scores both arms, preserving the pairing",
+        "seed": 20260807,
+        "sigma_hat_pp": 5.004275256218427
+      },
+      "gain_samples": 19,
+      "m0_correct": 48,
+      "mcnemar": {
+        "chi_square_continuity_corrected": 11.172413793103448,
+        "chi_square_two_sided_p": 0.0008302254277448871,
+        "discordant_pairs": 29,
+        "exact_binomial_two_sided_p": 0.0005461126565933228,
+        "mid_p_two_sided": 0.00032491423189640045,
+        "n01_wrong_to_correct": 24,
+        "n10_correct_to_wrong": 5,
+        "odds_ratio_n01_over_n10": 4.8
+      }
+    }
+  },
+  "q2_variance_channel": {
+    "cross_round_flipped_sample_ids": [
+      "slurp:devel:000090:audio-1498567209",
+      "slurp:devel:001227:audio-1490104218",
+      "slurp:devel:003443:audio-1501776590",
+      "slurp:devel:003705:audio-1490194357",
+      "slurp:devel:005565:audio-1498570308",
+      "slurp:devel:011819:audio--1505404383-headset",
+      "slurp:devel:012185:audio-1499244805",
+      "slurp:devel:012625:audio-1494417974",
+      "slurp:devel:013522:audio-1494607289",
+      "slurp:devel:015370:audio-1501688507",
+      "slurp:devel:015397:audio-1490262948",
+      "slurp:devel:015630:audio-1490967842"
+    ],
+    "floors": {
+      "adversarial_all_unstable": {
+        "charged_sample_ids": [
+          "slurp:devel:000392:audio-1498573434",
+          "slurp:devel:000617:audio-1501152792-headset",
+          "slurp:devel:001038:audio--1504191120",
+          "slurp:devel:001085:audio-1490103635-headset",
+          "slurp:devel:001901:audio-1490183906",
+          "slurp:devel:002417:audio-1494548204-headset",
+          "slurp:devel:002814:audio-1490194699",
+          "slurp:devel:003464:audio-1499690370-headset",
+          "slurp:devel:003956:audio-1501753591-headset",
+          "slurp:devel:004198:audio--1504191536-headset",
+          "slurp:devel:004899:audio-1495377050",
+          "slurp:devel:005015:audio-1501756546",
+          "slurp:devel:005100:audio-1490291520",
+          "slurp:devel:005386:audio-1501758493",
+          "slurp:devel:005393:audio--1505407257-headset",
+          "slurp:devel:005565:audio-1498570308",
+          "slurp:devel:005792:audio-1499697954",
+          "slurp:devel:006595:audio-1497868179",
+          "slurp:devel:007381:audio-1501686582-headset",
+          "slurp:devel:007732:audio-1502376806-headset",
+          "slurp:devel:008788:audio-1490105823",
+          "slurp:devel:010041:audio-1497264270-headset",
+          "slurp:devel:010086:audio-1502201283",
+          "slurp:devel:010138:audio-1490289156",
+          "slurp:devel:010210:audio-1501754125-headset",
+          "slurp:devel:010374:audio-1501690184-headset",
+          "slurp:devel:010830:audio-1488985252",
+          "slurp:devel:012045:audio-1490956582-headset",
+          "slurp:devel:012185:audio-1499244805",
+          "slurp:devel:012575:audio-1501686449",
+          "slurp:devel:012978:audio-1490954706",
+          "slurp:devel:013522:audio-1494607289",
+          "slurp:devel:015265:audio-1499689293-headset",
+          "slurp:devel:015370:audio-1501688507",
+          "slurp:devel:015397:audio-1490262948",
+          "slurp:devel:015516:audio-1499264883-headset"
+        ],
+        "correct_to_wrong": 40,
+        "floor_name": "every byte-unstable sample scored against the claim",
+        "gain_pp": -24.0,
+        "gain_samples": -24,
+        "samples_charged": 36,
+        "wrong_to_correct": 16
+      },
+      "adversarial_flipped": {
+        "charged_sample_ids": [
+          "slurp:devel:005565:audio-1498570308",
+          "slurp:devel:012185:audio-1499244805",
+          "slurp:devel:013522:audio-1494607289",
+          "slurp:devel:015370:audio-1501688507",
+          "slurp:devel:015397:audio-1490262948"
+        ],
+        "correct_to_wrong": 9,
+        "floor_name": "byte-unstable AND cross-round-flipped samples scored against the claim",
+        "gain_pp": 15.0,
+        "gain_samples": 15,
+        "samples_charged": 5,
+        "wrong_to_correct": 24
+      },
+      "adversarial_flipped_bootstrap": {
+        "ci90_excludes_zero": true,
+        "ci90_high_pp": 24.0,
+        "ci90_low_pp": 6.0,
+        "ci95_excludes_zero": true,
+        "ci95_high_pp": 26.0,
+        "ci95_low_pp": 4.0,
+        "n_replicates": 10000,
+        "point_estimate_pp": 15.0,
+        "replicate_share_at_or_below_zero": 0.004,
+        "replicates_at_or_below_zero": 40,
+        "resampling": "per-sample paired cluster bootstrap over the 100 DEV-100 ids; the SAME resampled multiset scores both arms, preserving the pairing",
+        "seed": 20260807,
+        "sigma_hat_pp": 5.529989913191524
+      },
+      "discordant_pairs_in_the_variance_channel": {
+        "correct_to_wrong_byte_unstable": [
+          "slurp:devel:012185:audio-1499244805"
+        ],
+        "primary_round": 3,
+        "wrong_to_correct_byte_unstable": [
+          "slurp:devel:000392:audio-1498573434",
+          "slurp:devel:002814:audio-1490194699",
+          "slurp:devel:007381:audio-1501686582-headset",
+          "slurp:devel:010041:audio-1497264270-headset",
+          "slurp:devel:010086:audio-1502201283",
+          "slurp:devel:010138:audio-1490289156",
+          "slurp:devel:010374:audio-1501690184-headset",
+          "slurp:devel:012045:audio-1490956582-headset"
+        ]
+      },
+      "headline": {
+        "charged_sample_ids": [],
+        "correct_to_wrong": 5,
+        "floor_name": "round-3 as sealed",
+        "gain_pp": 19.0,
+        "gain_samples": 19,
+        "samples_charged": 0,
+        "wrong_to_correct": 24
+      },
+      "observed_worst": {
+        "charged_sample_ids": [],
+        "correct_to_wrong": 12,
+        "floor_name": "per-sample worst paired outcome across all sealed rounds",
+        "gain_pp": 12.0,
+        "gain_samples": 12,
+        "samples_charged": 0,
+        "wrong_to_correct": 24
+      },
+      "observed_worst_bootstrap": {
+        "ci90_excludes_zero": true,
+        "ci90_high_pp": 22.0,
+        "ci90_low_pp": 2.0,
+        "ci95_excludes_zero": true,
+        "ci95_high_pp": 23.0,
+        "ci95_low_pp": 1.0,
+        "n_replicates": 10000,
+        "point_estimate_pp": 12.0,
+        "replicate_share_at_or_below_zero": 0.024,
+        "replicates_at_or_below_zero": 240,
+        "resampling": "per-sample paired cluster bootstrap over the 100 DEV-100 ids; the SAME resampled multiset scores both arms, preserving the pairing",
+        "seed": 20260807,
+        "sigma_hat_pp": 5.831549529070297
+      }
+    },
+    "per_round_byte_disagreement_counts": {
+      "0": 22,
+      "1": 21,
+      "2": 25,
+      "3": 19
+    },
+    "unstable_and_flipped_sample_ids": [
+      "slurp:devel:005565:audio-1498570308",
+      "slurp:devel:012185:audio-1499244805",
+      "slurp:devel:013522:audio-1494607289",
+      "slurp:devel:015370:audio-1501688507",
+      "slurp:devel:015397:audio-1490262948"
+    ],
+    "unstable_in_every_round_count": 11,
+    "unstable_union_count": 36,
+    "unstable_union_sample_ids": [
+      "slurp:devel:000392:audio-1498573434",
+      "slurp:devel:000617:audio-1501152792-headset",
+      "slurp:devel:001038:audio--1504191120",
+      "slurp:devel:001085:audio-1490103635-headset",
+      "slurp:devel:001901:audio-1490183906",
+      "slurp:devel:002417:audio-1494548204-headset",
+      "slurp:devel:002814:audio-1490194699",
+      "slurp:devel:003464:audio-1499690370-headset",
+      "slurp:devel:003956:audio-1501753591-headset",
+      "slurp:devel:004198:audio--1504191536-headset",
+      "slurp:devel:004899:audio-1495377050",
+      "slurp:devel:005015:audio-1501756546",
+      "slurp:devel:005100:audio-1490291520",
+      "slurp:devel:005386:audio-1501758493",
+      "slurp:devel:005393:audio--1505407257-headset",
+      "slurp:devel:005565:audio-1498570308",
+      "slurp:devel:005792:audio-1499697954",
+      "slurp:devel:006595:audio-1497868179",
+      "slurp:devel:007381:audio-1501686582-headset",
+      "slurp:devel:007732:audio-1502376806-headset",
+      "slurp:devel:008788:audio-1490105823",
+      "slurp:devel:010041:audio-1497264270-headset",
+      "slurp:devel:010086:audio-1502201283",
+      "slurp:devel:010138:audio-1490289156",
+      "slurp:devel:010210:audio-1501754125-headset",
+      "slurp:devel:010374:audio-1501690184-headset",
+      "slurp:devel:010830:audio-1488985252",
+      "slurp:devel:012045:audio-1490956582-headset",
+      "slurp:devel:012185:audio-1499244805",
+      "slurp:devel:012575:audio-1501686449",
+      "slurp:devel:012978:audio-1490954706",
+      "slurp:devel:013522:audio-1494607289",
+      "slurp:devel:015265:audio-1499689293-headset",
+      "slurp:devel:015370:audio-1501688507",
+      "slurp:devel:015397:audio-1490262948",
+      "slurp:devel:015516:audio-1499264883-headset"
+    ]
+  },
+  "q3_baseline_fairness": {
+    "e108_consistency": {
+      "dev100_m0_accuracy": 0.48,
+      "e108_accuracy": 0.7129629629629629,
+      "e108_k0m0_correct": 77,
+      "e108_n": 108,
+      "gap_pp": 23.296296296296294,
+      "limitation": "NOT decomposable from sealed DEV-100 bytes. The two numbers differ in split side (train vs devel), selection rule (a discovery-split eligibility filter vs a scenario-stratified draw), serving stack (zero-copy np16 M-line vs the np8 campaign service) and prompt lineage. Attributing the gap needs a matched same-protocol train-side direct-decode control, which is roughly 100 contacts and is NOT authorised by this row",
+      "source": "docs/readiness/2026-08-21-speech-native-agent-loop-training-free-rl-plan.md (EFFECT-C108 replacement read, sha256 6f7017fb...f40a); restated in docs/readiness/2026-08-19-scheme-scoreboard.md",
+      "what_the_sealed_data_does_show": "the per-scenario and per-channel M0 profile below, i.e. WHERE on DEV-100 the direct baseline loses"
+    },
+    "field_profile": {
+      "blend": {
+        "action_exact": 72,
+        "both": 67,
+        "scenario_exact": 74,
+        "scenario_right_action_wrong": 7,
+        "scenario_wrong_action_right": 5
+      },
+      "m0": {
+        "action_exact": 59,
+        "both": 48,
+        "scenario_exact": 67,
+        "scenario_right_action_wrong": 19,
+        "scenario_wrong_action_right": 11
+      },
+      "primary_round": 3,
+      "reading": "the gain the campaign reports is a gain on the conjunction; this table says how much of it is a scenario gain and how much is an action gain"
+    },
+    "inflight_direct_comparator": {
+      "round0": {
+        "direct_answers_outside_train_intent_inventory": 35,
+        "gain_of_blend_over_inflight_direct_samples": 12,
+        "inflight_direct_accuracy": 0.51,
+        "inflight_direct_correct": 51,
+        "parsed": 100,
+        "registered_m0_correct": 48,
+        "scored_outcome_agrees_with_m0_samples": 97,
+        "wrong_answers_recoverable_by_field_swap": 5
+      },
+      "round1": {
+        "direct_answers_outside_train_intent_inventory": 37,
+        "gain_of_blend_over_inflight_direct_samples": 14,
+        "inflight_direct_accuracy": 0.49,
+        "inflight_direct_correct": 49,
+        "parsed": 100,
+        "registered_m0_correct": 48,
+        "scored_outcome_agrees_with_m0_samples": 95,
+        "wrong_answers_recoverable_by_field_swap": 5
+      },
+      "round2": {
+        "direct_answers_outside_train_intent_inventory": 36,
+        "gain_of_blend_over_inflight_direct_samples": 15,
+        "inflight_direct_accuracy": 0.5,
+        "inflight_direct_correct": 50,
+        "parsed": 100,
+        "registered_m0_correct": 48,
+        "scored_outcome_agrees_with_m0_samples": 94,
+        "wrong_answers_recoverable_by_field_swap": 4
+      },
+      "round3": {
+        "direct_answers_outside_train_intent_inventory": 39,
+        "gain_of_blend_over_inflight_direct_samples": 20,
+        "inflight_direct_accuracy": 0.47,
+        "inflight_direct_correct": 47,
+        "parsed": 100,
+        "registered_m0_correct": 48,
+        "scored_outcome_agrees_with_m0_samples": 97,
+        "wrong_answers_recoverable_by_field_swap": 5
+      }
+    },
+    "majority_class": {
+      "distinct_gold_intents": 42,
+      "distinct_gold_scenarios": 18,
+      "intent_histogram": {
+        "alarm_query": 1,
+        "alarm_remove": 4,
+        "alarm_set": 1,
+        "audio_volume_down": 1,
+        "audio_volume_mute": 2,
+        "audio_volume_up": 3,
+        "calendar_query": 3,
+        "calendar_remove": 2,
+        "calendar_set": 1,
+        "cooking_recipe": 6,
+        "datetime_convert": 1,
+        "datetime_query": 5,
+        "email_query": 3,
+        "email_sendemail": 3,
+        "general_joke": 1,
+        "general_quirky": 5,
+        "iot_cleaning": 1,
+        "iot_coffee": 3,
+        "iot_hue_lighton": 1,
+        "iot_hue_lightup": 1,
+        "lists_createoradd": 1,
+        "lists_query": 5,
+        "music_likeness": 1,
+        "music_query": 3,
+        "music_settings": 2,
+        "news_query": 5,
+        "play_game": 1,
+        "play_music": 4,
+        "qa_currency": 1,
+        "qa_factoid": 2,
+        "qa_maths": 1,
+        "qa_stock": 1,
+        "recommendation_events": 2,
+        "recommendation_locations": 3,
+        "social_post": 3,
+        "social_query": 2,
+        "takeaway_order": 3,
+        "takeaway_query": 2,
+        "transport_query": 2,
+        "transport_taxi": 2,
+        "transport_ticket": 1,
+        "weather_query": 5
+      },
+      "majority_class_accuracy": 0.06,
+      "majority_class_correct": 6,
+      "majority_class_intent": "cooking_recipe",
+      "majority_scenario": "datetime",
+      "majority_scenario_count": 6,
+      "scenario_oracle_majority_action_correct": 67,
+      "scenario_oracle_note": "NOT a baseline -- it consumes a gold scenario label at inference time. Reported only to show how much of the 60-way problem is the action decision inside a known scenario",
+      "uniform_chance_over_60_intents": 0.016666666666666666
+    },
+    "per_scenario": {
+      "best_three_scenarios_for_m0": [
+        "alarm",
+        "lists",
+        "weather"
+      ],
+      "by_recording_channel": {
+        "close-talk": {
+          "blend_accuracy": 0.6896551724137931,
+          "blend_correct": 40,
+          "m0_accuracy": 0.5172413793103449,
+          "m0_correct": 30,
+          "n": 58
+        },
+        "headset": {
+          "blend_accuracy": 0.6428571428571429,
+          "blend_correct": 27,
+          "m0_accuracy": 0.42857142857142855,
+          "m0_correct": 18,
+          "n": 42
+        }
+      },
+      "by_scenario": {
+        "alarm": {
+          "blend_accuracy": 1.0,
+          "blend_correct": 6,
+          "c2w": 0,
+          "delta_samples": 0,
+          "m0_accuracy": 1.0,
+          "m0_correct": 6,
+          "n": 6,
+          "w2c": 0
+        },
+        "audio": {
+          "blend_accuracy": 0.6666666666666666,
+          "blend_correct": 4,
+          "c2w": 0,
+          "delta_samples": 3,
+          "m0_accuracy": 0.16666666666666666,
+          "m0_correct": 1,
+          "n": 6,
+          "w2c": 3
+        },
+        "calendar": {
+          "blend_accuracy": 0.6666666666666666,
+          "blend_correct": 4,
+          "c2w": 1,
+          "delta_samples": 0,
+          "m0_accuracy": 0.6666666666666666,
+          "m0_correct": 4,
+          "n": 6,
+          "w2c": 1
+        },
+        "cooking": {
+          "blend_accuracy": 0.8333333333333334,
+          "blend_correct": 5,
+          "c2w": 0,
+          "delta_samples": 5,
+          "m0_accuracy": 0.0,
+          "m0_correct": 0,
+          "n": 6,
+          "w2c": 5
+        },
+        "datetime": {
+          "blend_accuracy": 0.6666666666666666,
+          "blend_correct": 4,
+          "c2w": 0,
+          "delta_samples": 0,
+          "m0_accuracy": 0.6666666666666666,
+          "m0_correct": 4,
+          "n": 6,
+          "w2c": 0
+        },
+        "email": {
+          "blend_accuracy": 0.6666666666666666,
+          "blend_correct": 4,
+          "c2w": 1,
+          "delta_samples": -1,
+          "m0_accuracy": 0.8333333333333334,
+          "m0_correct": 5,
+          "n": 6,
+          "w2c": 0
+        },
+        "general": {
+          "blend_accuracy": 0.3333333333333333,
+          "blend_correct": 2,
+          "c2w": 0,
+          "delta_samples": 2,
+          "m0_accuracy": 0.0,
+          "m0_correct": 0,
+          "n": 6,
+          "w2c": 2
+        },
+        "iot": {
+          "blend_accuracy": 0.8333333333333334,
+          "blend_correct": 5,
+          "c2w": 0,
+          "delta_samples": 3,
+          "m0_accuracy": 0.3333333333333333,
+          "m0_correct": 2,
+          "n": 6,
+          "w2c": 3
+        },
+        "lists": {
+          "blend_accuracy": 1.0,
+          "blend_correct": 6,
+          "c2w": 0,
+          "delta_samples": 0,
+          "m0_accuracy": 1.0,
+          "m0_correct": 6,
+          "n": 6,
+          "w2c": 0
+        },
+        "music": {
+          "blend_accuracy": 0.0,
+          "blend_correct": 0,
+          "c2w": 2,
+          "delta_samples": -2,
+          "m0_accuracy": 0.3333333333333333,
+          "m0_correct": 2,
+          "n": 6,
+          "w2c": 0
+        },
+        "news": {
+          "blend_accuracy": 0.6,
+          "blend_correct": 3,
+          "c2w": 0,
+          "delta_samples": 0,
+          "m0_accuracy": 0.6,
+          "m0_correct": 3,
+          "n": 5,
+          "w2c": 0
+        },
+        "play": {
+          "blend_accuracy": 1.0,
+          "blend_correct": 5,
+          "c2w": 0,
+          "delta_samples": 5,
+          "m0_accuracy": 0.0,
+          "m0_correct": 0,
+          "n": 5,
+          "w2c": 5
+        },
+        "qa": {
+          "blend_accuracy": 0.4,
+          "blend_correct": 2,
+          "c2w": 0,
+          "delta_samples": 2,
+          "m0_accuracy": 0.0,
+          "m0_correct": 0,
+          "n": 5,
+          "w2c": 2
+        },
+        "recommendation": {
+          "blend_accuracy": 0.4,
+          "blend_correct": 2,
+          "c2w": 0,
+          "delta_samples": 2,
+          "m0_accuracy": 0.0,
+          "m0_correct": 0,
+          "n": 5,
+          "w2c": 2
+        },
+        "social": {
+          "blend_accuracy": 0.6,
+          "blend_correct": 3,
+          "c2w": 0,
+          "delta_samples": 0,
+          "m0_accuracy": 0.6,
+          "m0_correct": 3,
+          "n": 5,
+          "w2c": 0
+        },
+        "takeaway": {
+          "blend_accuracy": 0.6,
+          "blend_correct": 3,
+          "c2w": 0,
+          "delta_samples": 0,
+          "m0_accuracy": 0.6,
+          "m0_correct": 3,
+          "n": 5,
+          "w2c": 0
+        },
+        "transport": {
+          "blend_accuracy": 0.8,
+          "blend_correct": 4,
+          "c2w": 1,
+          "delta_samples": 0,
+          "m0_accuracy": 0.8,
+          "m0_correct": 4,
+          "n": 5,
+          "w2c": 1
+        },
+        "weather": {
+          "blend_accuracy": 1.0,
+          "blend_correct": 5,
+          "c2w": 0,
+          "delta_samples": 0,
+          "m0_accuracy": 1.0,
+          "m0_correct": 5,
+          "n": 5,
+          "w2c": 0
+        }
+      },
+      "primary_round": 3,
+      "scenarios_where_blend_is_flat": [
+        "alarm",
+        "calendar",
+        "datetime",
+        "lists",
+        "news",
+        "social",
+        "takeaway",
+        "transport",
+        "weather"
+      ],
+      "scenarios_where_blend_loses": [
+        "email",
+        "music"
+      ],
+      "worst_three_scenarios_for_m0": [
+        "cooking",
+        "general",
+        "play"
+      ]
+    },
+    "prior_only_baseline": {
+      "contacts_required": 0,
+      "majority_action_by_scenario": {
+        "alarm": "set",
+        "audio": "volume_up",
+        "calendar": "set",
+        "cooking": "recipe",
+        "datetime": "query",
+        "email": "query",
+        "general": "quirky",
+        "iot": "hue_lightoff",
+        "lists": "query",
+        "music": "query",
+        "news": "query",
+        "play": "music",
+        "qa": "factoid",
+        "recommendation": "events",
+        "social": "post",
+        "takeaway": "order",
+        "transport": "query",
+        "weather": "query"
+      },
+      "round0": {
+        "blend_correct": 63,
+        "blend_minus_prior_only_samples": 22,
+        "direct_scenario_not_a_slurp_scenario": 5,
+        "per_sample_agreement_with_blend": 54,
+        "prior_only_accuracy": 0.41,
+        "prior_only_correct": 41
+      },
+      "round1": {
+        "blend_correct": 63,
+        "blend_minus_prior_only_samples": 24,
+        "direct_scenario_not_a_slurp_scenario": 6,
+        "per_sample_agreement_with_blend": 56,
+        "prior_only_accuracy": 0.39,
+        "prior_only_correct": 39
+      },
+      "round2": {
+        "blend_correct": 65,
+        "blend_minus_prior_only_samples": 25,
+        "direct_scenario_not_a_slurp_scenario": 6,
+        "per_sample_agreement_with_blend": 53,
+        "prior_only_accuracy": 0.4,
+        "prior_only_correct": 40
+      },
+      "round3": {
+        "blend_correct": 67,
+        "blend_minus_prior_only_samples": 28,
+        "direct_scenario_not_a_slurp_scenario": 6,
+        "per_sample_agreement_with_blend": 58,
+        "prior_only_accuracy": 0.39,
+        "prior_only_correct": 39
+      },
+      "rule": "predicted scenario from the arm's own direct answer + argmax_action p_TRAIN(action | scenario) from the pinned knowledge snapshot's own value counts"
+    },
+    "what_m0_contains": [
+      "the full task contract in the system message (output schema, field names, the instruction to answer from the speech query alone)",
+      "the original speech packet on the single contact -- no transcript-only query",
+      "JSON-shaped constrained decoding, so parse failures are 0/100 in every round",
+      "one frozen-core contact per sample, temperature-0 sampling settings"
+    ],
+    "what_m0_does_not_contain": [
+      "the SLURP label inventory: the contract never enumerates the 60 legal (scenario, action) pairs, so the arm is free to invent a label",
+      "any retrieved evidence, any in-context example, any prior over intents",
+      "a second contact, so it cannot revise"
+    ]
+  },
+  "q4_hygiene": {
+    "confirmatory_tier_contamination": {
+      "finding": "DEV-100 is an EXACT SUBSET of DEV-500 (the split receipt's own nesting block). A DEV-500 confirmatory reading therefore re-reads the 100 samples four rounds of knob and code selection were made against: 20% of the confirmatory denominator is already exposed",
+      "is_exact_subset_of_parent": true,
+      "parent_tier": "DEV-500",
+      "receipt": "docs/receipts/probe-samples/DEV-100.json",
+      "remedy_a": "pre-register the DEV-500 read to publish the 400-sample unexposed remainder as the primary number and the full 500 as secondary",
+      "remedy_b": "accept the 20% exposure explicitly and price it in the claim",
+      "status": "OPEN -- neither remedy is registered as of this audit",
+      "unexposed_remainder": 400
+    },
+    "decontamination": {
+      "checked_sample_count": 50628,
+      "forbidden_roster_receipts": [
+        "docs/receipts/knowledge/slurp-split-identity.json",
+        "docs/receipts/probe-samples/FINAL60.json",
+        "docs/receipts/probe-samples/DEV-100.json",
+        "docs/receipts/probe-samples/DEV-500.json",
+        "docs/receipts/probe-samples/DEV-1000.json"
+      ],
+      "reads": "the knowledge snapshot is built from TRAIN utterances only (11514 of them) and was checked against the frozen devel/test identity roster plus every DEV/FINAL probe roster",
+      "receipt": "docs/receipts/knowledge/slurp-kb-size-full.json",
+      "snapshot_sha256": "e27b274516604ffc0e21319758aea99dc027f459d480a32a74a715b023a51b57",
+      "verdict": "clean"
+    },
+    "dev_tier_framing": {
+      "confirmatory_answer": "a one-shot DEV-500 reading, blocked until the campaign converges positive; FINAL60 and test stay unread",
+      "rule": "DEV-100 is the agent-space OPTIMIZATION tier. Its numbers are iteration numbers on data that has now been read four times; they are not a held-out claim and no promotion follows from them",
+      "source": "docs/readiness/2026-08-23-dev100-campaign-preregistration.md sections 1 and 3 (owner ladder ruling 2.2)"
+    },
+    "final60_and_probe60_exclusion": {
+      "exclusions": {
+        "final60": {
+          "excluded_utterance_count": 60,
+          "receipt": "docs/receipts/probe-samples/FINAL60.json"
+        },
+        "historic_probe60": {
+          "excluded_utterance_count": 60,
+          "receipt": "configs/probes/g0-binding/pslu-sample-devel-n60.json"
+        }
+      },
+      "nesting": {
+        "is_exact_subset_of_parent": true,
+        "parent_receipt": "docs/receipts/probe-samples/DEV-500.json",
+        "parent_split_identity_hash": "c0f1c7531fb8972885abf1d840cc101bbfa38ae04e3929cc46e0f5b9ef35452b",
+        "parent_tier": "DEV-500"
+      },
+      "receipt": "docs/receipts/probe-samples/DEV-100.json",
+      "split_identity_hash": "d676d38b4d27b3a136ba2523b96ae3c71ba2b8b436f7712f4f0c976c3ea833e1"
+    },
+    "gold_opening_discipline": {
+      "per_round_evidence": {
+        "0": {
+          "authority": "docs/readiness/2026-08-23-dev100-campaign-preregistration.md including amendment 5b; campaign exposure row SAEA-DEV100-KB-ALPHA-BLEND-CAMPAIGN attempt-6 registration (successor semantics; run-cumulative plan declaration; registered decode-speed canary with the cross-build amendment; micro-run trace isolation; in-flight decode-rate sentinel; BASE-BINARY mitigation with continued Windows-side mid-flight clock sampling)",
+          "split_role_in_runtime": "dev (QueryState.use_partition_role)"
+        },
+        "1": {
+          "authority": "docs/readiness/2026-08-23-dev100-campaign-preregistration.md including amendment 5b and the owner-approved section-4 ceiling amendment (2026-08-24, commit 121bdc08: core 1,800 -> 2,500, audio-s 2,400 -> 5,500); campaign exposure row SAEA-DEV100-KB-ALPHA-BLEND-CAMPAIGN ROUND-1 registration (single-variable tau knob; run-cumulative plan 950 calls / 2,450 audio-s; sealed round-0 authorities pinned byte-wise; sentinel + micro-run trace isolation + clock sampling carried flight-proven from attempt 6)",
+          "split_role_in_runtime": "dev (QueryState.use_partition_role)"
+        },
+        "2": {
+          "authority": "docs/readiness/2026-08-23-dev100-campaign-preregistration.md including amendment 5b and the owner-approved section-4 ceiling amendment (2026-08-24, commit 121bdc08: core 1,800 -> 2,500, audio-s 2,400 -> 5,500); campaign exposure row SAEA-DEV100-KB-ALPHA-BLEND-CAMPAIGN ROUND-2 registration (single-variable alpha knob 0.60 -> 0.55; FRESH run-cumulative successor plan 1,200 calls / 3,100 audio-s over the 920 / 2,448.94 AttemptStore-verified durable spend; sealed round-0 AND round-1 authorities pinned byte-wise; sentinel + micro-run trace isolation + clock sampling carried flight-proven from attempt 6 and round 1)",
+          "split_role_in_runtime": "dev (QueryState.use_partition_role)"
+        },
+        "3": {
+          "authority": "docs/readiness/2026-08-23-dev100-campaign-preregistration.md including amendment 5b and the owner-approved section-4 ceiling amendment (2026-08-24, commit 121bdc08: core 1,800 -> 2,500, audio-s 2,400 -> 5,500); campaign exposure row SAEA-DEV100-KB-ALPHA-BLEND-CAMPAIGN ROUND-3 registration (registered variable: the f1060078 label-identity binding repair, ALL knobs unchanged from round 2; the damage-channel analysis projection registered verbatim as the falsifiable prediction; FRESH run-cumulative successor plan 1,400 calls / 3,700 audio-s over the 1,123 / 3,005.33 AttemptStore-verified durable spend; sealed round-0 AND round-1 AND round-2 authorities pinned byte-wise; sentinel + micro-run trace isolation + Windows-side GPU sampling + clock sampling carried flight-proven from rounds 1-2)",
+          "split_role_in_runtime": "dev (QueryState.use_partition_role)"
+        }
+      },
+      "rule": "gold opens SCORING-SIDE ONLY, after all of a round's arms have sealed; devel gold moves between rounds, never into runtime",
+      "source": "docs/readiness/2026-08-23-dev100-campaign-preregistration.md sections 3 and 6"
+    },
+    "split_identity": {
+      "devel_count": 8690,
+      "devel_identity_hash": "4d81811982449815392eb087806ddac84bd6f424a6a086558845edd984e69143",
+      "note": "Identity-only enumeration (slurp_id + recordings[].file); scenario, action, entities, tokens and sentence are never read (see slurp_split_sample_ids docstring). build_knowledge_snapshot's decontamination check reads ONLY this frozen receipt -- the live devel/test governed jsonl is read exactly once, here, to produce it.",
+      "receipt": "docs/receipts/knowledge/slurp-split-identity.json"
+    },
+    "what_a_reviewer_may_conclude": [
+      "The knowledge snapshot contains no devel, test, FINAL60 or DEV-tier utterance (cited receipt, clean verdict over 50,628 checked samples).",
+      "The 100 scored utterances exclude FINAL60 and the historic probe-60 at UTTERANCE granularity, so the reserved tiers are untouched by this campaign.",
+      "Gold never entered runtime; every arm's decisions were sealed before scoring."
+    ],
+    "what_a_reviewer_may_not_conclude": [
+      "That any DEV-100 number generalises. Four rounds of knob and code selection were made against these 100 samples; the split is exposed by construction.",
+      "That the gain is a held-out effect size. Only a one-shot confirmatory tier can produce that, and none has been read.",
+      "That decontamination has been re-verified here. It is CITED from a landed receipt; this row opened no roster.",
+      "That a DEV-500 reading would be a clean held-out confirmation as currently framed: DEV-100 nests inside it, so 100 of its 500 samples are already exposed."
+    ]
+  },
+  "q5_attribution": {
+    "damage_present_in_every_sealed_round": [
+      "slurp:devel:001791:audio-1502195360",
+      "slurp:devel:003202:audio-1495733953-headset",
+      "slurp:devel:007738:audio-1489153308",
+      "slurp:devel:016699:audio-1499688493-headset"
+    ],
+    "damage_present_in_every_sealed_round_count": 4,
+    "inert_knob_finding": {
+      "claim": "the rank weights, top_k and alpha are provably inert on this split (0 changed trajectories on exact replay), and tau never bound; rounds 1 and 2 therefore carried no live mechanism variable",
+      "consequence": "the round-1 delta of 0 is a mechanism NULL, and the round-2 delta of +2 cannot be an alpha effect -- it is the variance channel",
+      "source": "docs/readiness/2026-08-24-dev100-damage-channel-analysis.md"
+    },
+    "per_step": [
+      {
+        "delta_samples": 0,
+        "from_round": 0,
+        "moved_samples_in_the_byte_variance_channel": [
+          "slurp:devel:012185:audio-1499244805",
+          "slurp:devel:015370:audio-1501688507"
+        ],
+        "moved_samples_outside_the_variance_channel": [],
+        "newly_correct_sample_ids": [
+          "slurp:devel:015370:audio-1501688507"
+        ],
+        "newly_wrong_sample_ids": [
+          "slurp:devel:012185:audio-1499244805"
+        ],
+        "to_round": 1
+      },
+      {
+        "delta_samples": 2,
+        "from_round": 1,
+        "moved_samples_in_the_byte_variance_channel": [
+          "slurp:devel:005565:audio-1498570308",
+          "slurp:devel:013522:audio-1494607289"
+        ],
+        "moved_samples_outside_the_variance_channel": [],
+        "newly_correct_sample_ids": [
+          "slurp:devel:005565:audio-1498570308",
+          "slurp:devel:013522:audio-1494607289"
+        ],
+        "newly_wrong_sample_ids": [],
+        "to_round": 2
+      },
+      {
+        "delta_samples": 2,
+        "from_round": 2,
+        "moved_samples_in_the_byte_variance_channel": [
+          "slurp:devel:005565:audio-1498570308",
+          "slurp:devel:013522:audio-1494607289",
+          "slurp:devel:015397:audio-1490262948"
+        ],
+        "moved_samples_outside_the_variance_channel": [
+          "slurp:devel:000090:audio-1498567209",
+          "slurp:devel:001227:audio-1490104218",
+          "slurp:devel:003443:audio-1501776590",
+          "slurp:devel:003705:audio-1490194357",
+          "slurp:devel:011819:audio--1505404383-headset",
+          "slurp:devel:012625:audio-1494417974",
+          "slurp:devel:015630:audio-1490967842"
+        ],
+        "newly_correct_sample_ids": [
+          "slurp:devel:000090:audio-1498567209",
+          "slurp:devel:001227:audio-1490104218",
+          "slurp:devel:003443:audio-1501776590",
+          "slurp:devel:003705:audio-1490194357",
+          "slurp:devel:012625:audio-1494417974",
+          "slurp:devel:015630:audio-1490967842"
+        ],
+        "newly_wrong_sample_ids": [
+          "slurp:devel:005565:audio-1498570308",
+          "slurp:devel:011819:audio--1505404383-headset",
+          "slurp:devel:013522:audio-1494607289",
+          "slurp:devel:015397:audio-1490262948"
+        ],
+        "to_round": 3
+      }
+    ],
+    "reading": "attribution is per-step and per-sample; no round's delta is asserted as mechanism unless its samples sit outside the byte-variance channel",
+    "repairs_present_in_every_sealed_round": [
+      "slurp:devel:000109:audio-1497882612",
+      "slurp:devel:000392:audio-1498573434",
+      "slurp:devel:000806:audio--1506079512",
+      "slurp:devel:000921:audio-1498564374-headset",
+      "slurp:devel:001558:audio-1495734409",
+      "slurp:devel:001569:audio-1490198849-headset",
+      "slurp:devel:002814:audio-1490194699",
+      "slurp:devel:004579:audio-1502195536-headset",
+      "slurp:devel:005183:audio-1498565600",
+      "slurp:devel:005726:audio--1504197977",
+      "slurp:devel:005989:audio-1497621031",
+      "slurp:devel:007381:audio-1501686582-headset",
+      "slurp:devel:009951:audio-1500038657-headset",
+      "slurp:devel:010037:audio-1500386970-headset",
+      "slurp:devel:010041:audio-1497264270-headset",
+      "slurp:devel:010086:audio-1502201283",
+      "slurp:devel:010138:audio-1490289156",
+      "slurp:devel:010374:audio-1501690184-headset",
+      "slurp:devel:012045:audio-1490956582-headset",
+      "slurp:devel:012055:audio-1494512213",
+      "slurp:devel:012712:audio-1502199981-headset",
+      "slurp:devel:013804:audio-1434542201-headset",
+      "slurp:devel:014203:audio-1500979762",
+      "slurp:devel:015414:audio-1499265566"
+    ],
+    "repairs_present_in_every_sealed_round_count": 24,
+    "stable_core_and_variance_channel_overlap": [
+      "slurp:devel:000392:audio-1498573434",
+      "slurp:devel:002814:audio-1490194699",
+      "slurp:devel:007381:audio-1501686582-headset",
+      "slurp:devel:010041:audio-1497264270-headset",
+      "slurp:devel:010086:audio-1502201283",
+      "slurp:devel:010138:audio-1490289156",
+      "slurp:devel:010374:audio-1501690184-headset",
+      "slurp:devel:012045:audio-1490956582-headset"
+    ],
+    "stable_core_gain_samples": 20
+  },
+  "schema": "saea-dev100-reviewer-audit-v1",
+  "sealed_rounds_audited": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "split": {
+    "n": 100,
+    "receipt": "docs/receipts/probe-samples/DEV-100.json",
+    "role": "dev"
+  },
+  "study": "speech-aware-evidence-acquisition",
+  "tier": "iteration-tier adversarial read over exposed dev data; design input, not a verdict"
+}
