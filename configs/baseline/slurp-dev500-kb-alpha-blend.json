@@ -1,0 +1,20 @@
+{
+  "arm": "speech-feature-query",
+  "policy": "fixed",
+  "evidence_source": "none",
+  "evidence_mismatch": false,
+  "obs_batch_samples": 1,
+  "allow_empty_speech_feature_evidence": true,
+  "speech_packet_promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/DEV-500-promotion.json",
+  "speech_packet_promotion_receipt_sha256": "c6d17fdf2f46f655d55661e4e8163818b1100a0a839a873121ab84fa0524ed8c",
+  "profile_queue_depth_multiplier": 4,
+  "profile_validation_workers": 16,
+  "speech_native_result_mode": "predictions",
+  "speech_native_contact_ceiling_per_task": 2,
+  "speech_native_dispatch_granularity": "contact",
+  "speech_native_agent_executor_id": "openjiuwen-workflow-v1",
+  "scorers": [
+    "cost"
+  ],
+  "task_instruction": "Answer the spoken command from the speech query alone. When knowledge evidence is supplied it is auxiliary support for the same speech query, never a replacement for it; gold labels and reference transcripts are unavailable at runtime."
+}

@@ -1,0 +1,157 @@
+{
+  "experiment_id": "SAEA-DEV500-CONFIRMATORY",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "DEV-500 confirmatory one-touch read of the FROZEN DEV-100 cell (preregistration docs/readiness/2026-08-24-dev500-confirmatory-preregistration.md; campaign verdict docs/readiness/2026-08-24-dev100-campaign-verdict.md). Dev-tier confirmatory: all four arms fly at the byte-frozen knob table configs/policy/kb-policy-v1-dev100.json, seal, then ONE registered read of everything together. The confirmatory statistic is computed ONLY over the 400 unexposed samples (DEV-500 minus the nested DEV-100); the exposed 100 are scored and reported separately, never pooled into the claim. No knob change, no re-fly, no partial read, regardless of outcome. This fragment is the machine-readable contract: frozen cell, four arms, section-1 statistic, section-3 ceilings. It makes NO test claim, NO generalization claim, and NO controller/RL claim.",
+  "dev500_confirmatory_authority": {
+    "preregistration": "docs/readiness/2026-08-24-dev500-confirmatory-preregistration.md",
+    "campaign_verdict": "docs/readiness/2026-08-24-dev100-campaign-verdict.md",
+    "owner_rulings": "docs/readiness/2026-08-23-knowledge-plane-baseline-rulings.md",
+    "ruling_sections": ["2.2"],
+    "reviewer_standards": [
+      "docs/readiness/2026-08-24-dev100-literature-consistency.md",
+      "docs/readiness/2026-08-24-dev100-reviewer-audit.md"
+    ]
+  },
+  "dev500_dataset_fragment": "slurp-speech-native-dev500",
+  "dev500_split": {
+    "split_name": "DEV-500",
+    "split_role": "dev",
+    "use_partition_role": "dev",
+    "receipt": "docs/receipts/probe-samples/DEV-500.json",
+    "split_identity_hash": "a00f8c8615ea9508a812f93117b9838f2a1a84ec2b3f06c07edc28b04da6acf4",
+    "receipt_integrity_hash": "c0f1c7531fb8972885abf1d840cc101bbfa38ae04e3929cc46e0f5b9ef35452b",
+    "count": 500,
+    "audio_seconds_total": 1422.0816875,
+    "nested_exposed_subset": {
+      "split_name": "DEV-100",
+      "receipt": "docs/receipts/probe-samples/DEV-100.json",
+      "split_identity_hash": "e9a7b7febcf4fe3dc228370f7487e1e75dea3d63d447a07fbfe87c1404e2d853",
+      "receipt_integrity_hash": "d676d38b4d27b3a136ba2523b96ae3c71ba2b8b436f7712f4f0c976c3ea833e1",
+      "count": 100,
+      "exposure": "prior-exposed by the sealed DEV-100 campaign (rounds 0-5); scored and reported separately, never pooled into the confirmatory statistic"
+    },
+    "unexposed_statistic_population": {
+      "derivation": "DEV-500 minus DEV-100 (deterministic set difference of the two frozen receipts)",
+      "receipt": "docs/receipts/probe-samples/DEV-500-NEW400.json",
+      "split_identity_hash": "e1cf6fc512a16ec2f1d439655f40b1602ff5e295ec2736cecaf136402a4d036c",
+      "receipt_integrity_hash": "36c778dafb418d8f0fb80ad53fb11f2608f3ebcd4ad9f5fa3d964ff16b54898b",
+      "count": 400,
+      "audio_seconds_total": 1146.3815625
+    }
+  },
+  "dev500_frozen_cell": {
+    "policy_config": "configs/policy/kb-policy-v1-dev100.json",
+    "frozen_at": "2026-08-24",
+    "knobs": {
+      "alpha": 0.45,
+      "tau": 0.65,
+      "recall_top_k_per_dimension": 5,
+      "rank_weighting": "rrf",
+      "rank_weights": { "w_cos": 0.5, "w_prior": 0.3, "w_agree": 0.2 },
+      "fusion": { "m": 5, "c": 2, "l": 3 },
+      "prior_source": "train",
+      "boundary_stage": "not-flown",
+      "percept_admission": "facet-side (value vectors sealed)"
+    },
+    "knob_semantics": "byte-frozen for this one-touch read; any change reopens dev iteration and voids this confirmatory registration"
+  },
+  "dev500_policy_chain": {
+    "controller_policy_id": "saea-kb-alpha-blend-v1",
+    "ranker_policy_id": "saea-rank-wcos-prior-agree-v1",
+    "fuser_policy_id": "saea-fuse-supplyfilter-v1",
+    "agent_executor_id": "openjiuwen-workflow-v1",
+    "policy_config_baseline": "configs/policy/kb-policy-v1.json"
+  },
+  "dev500_knowledge_snapshot": {
+    "snapshot_id": "slurp-kb-distmodel-76e61b0666162aa7",
+    "builder_policy_id": "saea-kb-distmodel-v1",
+    "receipt": "docs/receipts/knowledge/slurp-kb-size-full.json",
+    "snapshot_artifact_relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-full/snapshot.json",
+    "snapshot_sha256": "e27b274516604ffc0e21319758aea99dc027f459d480a32a74a715b023a51b57",
+    "source_split": "train",
+    "source_split_identity_hash": "6a6677e97a64063b8672b2d175bd6378bcf9b644346fa2d249cc2d80343b252c",
+    "facet_count": 11863,
+    "value_count": 11514
+  },
+  "dev500_arms": [
+    {
+      "arm_id": "M0",
+      "description": "direct decode, prompt-matched, in-session (removes the cross-build confound); one contact per sample, no knowledge",
+      "contacts_per_sample": 1,
+      "worst_case_frozen_core_contacts": 400
+    },
+    {
+      "arm_id": "BLEND",
+      "description": "the frozen alpha-0.45 chain, unchanged: direct decode, then acquire, then evidence-conditioned decode; every contact carries the original speech packet",
+      "contacts_per_sample": 2,
+      "tool_contacts_per_sample": 1,
+      "worst_case_frozen_core_contacts": 800,
+      "expected_frozen_core_contacts": "~550 at ~62 percent retain-primary"
+    },
+    {
+      "arm_id": "ABL-RANDRET",
+      "description": "random-retrieval control: uniformly random facets/values drawn from the SAME datastore, delivered through the SAME fusion path (seeded); isolates content-selection from evidence-slot form",
+      "contacts_per_sample": 2,
+      "tool_contacts_per_sample": 0,
+      "worst_case_frozen_core_contacts": 800,
+      "seeded": true
+    },
+    {
+      "arm_id": "ABL-RANDICL",
+      "description": "random-exemplar ICL control: k random train exemplars (no retrieval, no gold conditioning) in the evidence slot; isolates retrieval from generic in-context conditioning",
+      "contacts_per_sample": 2,
+      "tool_contacts_per_sample": 0,
+      "worst_case_frozen_core_contacts": 800,
+      "seeded": true,
+      "k_worst_case": 11,
+      "k_worst_case_derivation": "the frozen fusion knobs bound the BLEND evidence slot at m=5 facet texts plus c*l=6 value texts = 11 evidence texts; the exemplar count k is capped at that same 11-text evidence-slot cardinality so the control never carries MORE conditioning volume than the treated arm"
+    }
+  ],
+  "dev500_oracle_substitution": {
+    "literature_standard": "oracle/GT-prompt retrieval ceiling (e.g. RASU's GT-prompt line) requires gold-conditioned supply at runtime",
+    "charter_constraint": "this repository's immutable charter forbids gold labels in runtime, so the oracle arm is NOT flown",
+    "registered_substitute": "analytic retrieval-reachability ceiling: gold-facet recall at k over the 400, computed scoring-side at the single registered read, plus the DEV-100 damage-channel anatomy",
+    "disclosure": "the limitation is stated wherever the ceiling is cited"
+  },
+  "dev500_one_touch": {
+    "rule": "all arms fly and seal, then ONE registered read of everything together; no knob change, no re-fly, no partial read, regardless of outcome; gold opens once, scoring-side, at that single read",
+    "variance_prior": "DEV-100 round-5 replication: plus-minus 2 per 100 at 8-slot decode (carried as the registered variance prior)"
+  },
+  "dev500_confirmatory_statistic": {
+    "population": "the 400 unexposed samples only (DEV-500 minus DEV-100)",
+    "statistic": "paired per-sample BLEND minus M0",
+    "bootstrap": {
+      "kind": "paired cluster bootstrap",
+      "n_replicates": 10000,
+      "seed": 20260807,
+      "confidence_levels": [0.9, 0.95]
+    },
+    "claim_condition": "the 90 percent CI excludes zero",
+    "mcnemar_exact_on_discordant_pairs": true,
+    "reported_alongside": [
+      "wrong-to-correct and correct-to-wrong counts, whatever they show",
+      "per-scenario confusion",
+      "the exposed-100 scores, separately, never pooled"
+    ]
+  },
+  "dev500_ceilings": {
+    "frozen_core_contacts_total": 3200,
+    "pinned_tool_embedding_contacts_total": 1000,
+    "metered_audio_seconds_total": 8000,
+    "gpu_hours_total": 3.0,
+    "one_shot_semantics": "per ARM attempt; no silent intra-arm retry; run-cumulative plan semantics across all attempts of the campaign row",
+    "mandatory_rails": [
+      "decode-rate sentinel: 1000 ms/token rolling median",
+      "canary: under 300 ms/token plus byte-compare against the recorded M0 hashes",
+      "GPU preflight: SmartFanMode == 3, enforced power limit >= 95 W, clock-lock check",
+      "AttemptStore pre-takeoff inspection (durable actuals first, unit lists never)",
+      "trace-sink isolation (main sink flushed first; canary/resend namespaced)",
+      "two-leg hosting recipe (systemd unit plus Windows keepalive client)"
+    ]
+  },
+  "dev500_scope": {
+    "positive_read": "supports 'the frozen knowledge-conditioned form beats direct decode on held-out dev data' and authorizes DEV-1000 plus the Audio2Tool surface per the owner ladder",
+    "negative_read": "falsifies the dev-transfer of the frozen cell and returns the program to knowledge-construction (the dead-direct set and recall-limited retrieval agenda) without touching test",
+    "never": "no test claim, no generalization claim, no controller/RL claim; FINAL60 and test remain untouched"
+  }
+}

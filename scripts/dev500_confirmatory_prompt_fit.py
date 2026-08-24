@@ -1,0 +1,488 @@
+"""Tokenizer-only prompt-fit bound for ALL FOUR DEV-500 confirmatory arms.
+
+Sibling of ``scripts/dev100_c3_prompt_fit.py`` (same bound machinery, same
+rendering path, same session discipline), extended to the DEV-500
+preregistration's four-arm surface (``docs/readiness/2026-08-24-dev500-
+confirmatory-preregistration.md`` section 2):
+
+* ``direct-decode`` — the M0 arm's single contact (prompt-matched direct
+  decode; no knowledge, no agent state).
+* ``evidence-decode-worst`` — the BLEND arm's worst evidence-conditioned
+  contact at the FROZEN knob table (``configs/policy/kb-policy-v1-dev100.
+  json``: fusion m=5, c=2, l=3, so at most 5 facet texts and at most 6
+  value texts are visible), rendered exactly as the flown campaign
+  rounds rendered it (post-fix contract-dedup instruction, asserted
+  against the live ``rails.kb_policy`` source).
+* ``abl-randret-worst`` — the ABL-RANDRET control. Its renderer reuses
+  the SAME fusion path and evidence-slot wire assembly as BLEND with
+  content drawn uniformly from the SAME datastore, so its worst case is
+  bounded by the same construction: the m longest facet representations
+  and c*l longest value contents in the pinned TRAIN snapshot (any random
+  draw is <= the longest draw). Rendered separately so the receipt carries
+  its own envelope row.
+* ``abl-randicl-worst`` — the ABL-RANDICL control: k exemplar texts in
+  the evidence slot, no retrieval. k's worst case derives from the frozen
+  fusion knobs: the BLEND evidence slot is bounded at m + c*l = 5 + 6 =
+  11 texts, and the preregistered control never carries more conditioning
+  volume than the treated arm, so k_worst = 11. The control's exemplar
+  renderer does not exist in any launcher yet, so this bound is computed
+  CONSERVATIVELY through the production rendering functions with
+  synthetic worst-case content: 11 copies of the single LONGEST text in
+  the datastore (max over every facet representation and value content),
+  which dominates any admissible exemplar draw from the same store. The
+  flown ABL-RANDICL construction must stay inside this volume or this
+  prompt-fit must be re-run — recorded in the receipt.
+
+Everything else is the DEV-100 machinery unchanged: prompts are rendered
+through the REAL ``rails.runner._agent_messages`` shapes via
+``core.model.transport._ordered_speech_feature_content`` /
+``_speech_history_texts``, tokenized only through the resident session's
+``/props`` + ``/apply-template`` + ``/tokenize`` routes. Zero decode, zero
+generated tokens. Speech-feature tokens are the maximum over the 5 longest
+DEV-500 promoted packets, read from the packets themselves.
+
+Run in WSL2::
+
+    PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=<repo>/src \
+      python scripts/dev500_confirmatory_prompt_fit.py <output.json> [model-fragment]
+"""
+
+from __future__ import annotations
+
+import hashlib
+import json
+import sys
+from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+if str(REPO_ROOT / "src") not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT / "src"))
+
+from speech_aware_evidence_acquisition.core.config import compose  # noqa: E402
+from speech_aware_evidence_acquisition.core.driver.speech_native import (  # noqa: E402
+    _LoopbackPromptAuditClient,
+)
+from speech_aware_evidence_acquisition.core.model.speech_features import (  # noqa: E402
+    load_speech_feature_packet,
+)
+from speech_aware_evidence_acquisition.core.model.transport import (  # noqa: E402
+    _ordered_speech_feature_content,
+    _speech_history_texts,
+)
+from speech_aware_evidence_acquisition.data.lock import (  # noqa: E402
+    data_root,
+    load_lock,
+    umbrella_lock_path,
+)
+from speech_aware_evidence_acquisition.rails.adapters.slurp import SlurpAdapter  # noqa: E402
+
+MODEL_FRAGMENT = "q4km-mmproj-free-speech-native-np8-base-speech-query-prefix-max64"
+DATASET_FRAGMENT = "slurp-speech-native-dev500"
+BASELINE_FRAGMENT = "slurp-dev500-kb-alpha-blend"
+EXPERIMENT_FRAGMENT = "slurp-dev500-confirmatory-campaign-v1"
+PROMPT_ORDER = "speech-query-prefix-v2"
+FEATURE_ROOT = Path("/home/chao/feat-cache/slurp-q4km-packets-04ccc72a")
+SNAPSHOT_PATH = Path(
+    "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/knowledge/slurp/"
+    "saea-kb-distmodel-v1/size-full/snapshot.json"
+)
+SNAPSHOT_SHA256 = "e27b274516604ffc0e21319758aea99dc027f459d480a32a74a715b023a51b57"
+CONTROL_CONTACT_ID = "evidence-decode"
+LONGEST_SAMPLE_COUNT = 5
+FUSION_M = 5
+FUSION_VALUE_CEILING = 6  # fusion_c 2 * fusion_top_l 3
+RANDICL_K_WORST = FUSION_M + FUSION_VALUE_CEILING  # 11
+
+
+def canonical_sha256(document: object) -> str:
+    payload = json.dumps(
+        document, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+    ).encode("utf-8")
+    return hashlib.sha256(payload).hexdigest()
+
+
+def evidence_id(index: int, knowledge_role: str, identifier: str) -> str:
+    return f"{index:03d}:{knowledge_role}:{identifier}"
+
+
+def build_messages(*, system_text, key_texts, value_texts, state_texts, packet):
+    """Exactly the transport's own wire assembly for one C3 contact."""
+
+    feature_parts = [
+        {
+            "type": "input_speech_features",
+            "speech_features": {
+                "packet_id": packet["packet_id"],
+                "sha256": packet["packet_sha256"],
+                "role": "query",
+            },
+        }
+    ]
+    evidence_texts = []
+    knowledge_roles = []
+    for index, text in enumerate(key_texts):
+        evidence_texts.append(f"[evidence {evidence_id(index, 'key', 'facet')}] {text}")
+        knowledge_roles.append("key")
+    for offset, text in enumerate(value_texts):
+        index = len(key_texts) + offset
+        evidence_texts.append(f"[evidence {evidence_id(index, 'value', 'value')}] {text}")
+        knowledge_roles.append("value")
+    content = _ordered_speech_feature_content(
+        prompt_order=PROMPT_ORDER,
+        evidence_texts=evidence_texts,
+        feature_parts=feature_parts,
+        state_texts=state_texts,
+        knowledge_roles=knowledge_roles if any(knowledge_roles) else (),
+    )
+    return [
+        {"role": "system", "content": system_text},
+        {"role": "user", "content": content},
+    ]
+
+
+def text_token_count(client, messages, media_marker, response_format):
+    body = {"messages": list(messages)}
+    if response_format is not None:
+        body["response_format"] = response_format
+    rendered = client.post_json("/apply-template", body)
+    prompt = rendered.get("prompt")
+    if not isinstance(prompt, str):
+        raise SystemExit("apply-template returned no prompt")
+    if prompt.count(media_marker) != 1:
+        raise SystemExit(
+            f"rendered prompt carries {prompt.count(media_marker)} media markers, expected 1"
+        )
+    total = 0
+    segments = 0
+    for segment in prompt.split(media_marker):
+        if not segment:
+            continue
+        response = client.post_json(
+            "/tokenize",
+            {"content": segment, "add_special": False, "parse_special": True},
+        )
+        tokens = response.get("tokens")
+        if not isinstance(tokens, list):
+            raise SystemExit("tokenize returned no token list")
+        total += len(tokens)
+        segments += 1
+    return total, segments
+
+
+def main() -> int:
+    model_fragment = sys.argv[2] if len(sys.argv) > 2 else MODEL_FRAGMENT
+    lock = load_lock(umbrella_lock_path())
+    root = data_root()
+    composed = compose(
+        REPO_ROOT, model_fragment, DATASET_FRAGMENT, BASELINE_FRAGMENT, EXPERIMENT_FRAGMENT
+    )
+    values = composed.values
+    if values["prompt_order"] != PROMPT_ORDER:
+        raise SystemExit(f"composed prompt_order is {values['prompt_order']!r}")
+    frozen = values["dev500_frozen_cell"]["knobs"]
+    if (
+        frozen["fusion"] != {"m": FUSION_M, "c": 2, "l": 3}
+        or frozen["recall_top_k_per_dimension"] != 5
+    ):
+        raise SystemExit("frozen fusion knobs moved; re-derive this script's ceilings")
+    randicl_arm = next(
+        arm for arm in values["dev500_arms"] if arm["arm_id"] == "ABL-RANDICL"
+    )
+    if randicl_arm["k_worst_case"] != RANDICL_K_WORST:
+        raise SystemExit("ABL-RANDICL k_worst_case disagrees with the fusion-knob derivation")
+    server_args = values["server_args"]
+    context_tokens = int(server_args[server_args.index("-c") + 1])
+    slot_count = int(server_args[server_args.index("-np") + 1])
+    context_per_slot = context_tokens // slot_count
+    maximum_completion_tokens = int(values["decoding_params"]["max_tokens"])
+
+    # --- worst-case text material ------------------------------------------
+    adapter = SlurpAdapter(lock, root, repo_root=REPO_ROOT)
+    view = json.loads(
+        (REPO_ROOT / "configs" / "dataset" / f"{DATASET_FRAGMENT}.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    items = sorted(view["items"], key=lambda item: -float(item["audio_seconds"]))
+    longest = items[:LONGEST_SAMPLE_COUNT]
+
+    class _Sample:
+        def __init__(self, item):
+            self.sample_id = item["sample_id"]
+            self.media_relpath = item["media_relpath"]
+
+    sample = _Sample(longest[0])
+    task_contract = adapter.build_task_contract(sample, None)
+    base = tuple(adapter.assemble_prompt(sample, None))
+    system_text = base[0]["content"]
+    if task_contract not in system_text:
+        system_text = f"{system_text}\n\nTask contract:\n{task_contract}"
+
+    receipt = json.loads(
+        (REPO_ROOT / "docs" / "receipts" / "knowledge" / "slurp-kb-size-full.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    if receipt.get("snapshot_sha256") != SNAPSHOT_SHA256:
+        raise SystemExit("KB receipt snapshot sha256 does not match the pin")
+    snapshot = json.loads(SNAPSHOT_PATH.read_text(encoding="utf-8"))
+    if snapshot.get("snapshot_sha256") != SNAPSHOT_SHA256:
+        raise SystemExit("KB snapshot self-declared sha256 does not match the pin")
+    if snapshot.get("source_partition_role") != "train":
+        raise SystemExit("KB snapshot is not TRAIN-sourced")
+    key_texts = [
+        str(facet["representation"])
+        for facet in sorted(
+            snapshot["facets"], key=lambda f: -len(str(f.get("representation", "")))
+        )[:FUSION_M]
+    ]
+    value_texts = [
+        str(value["content"])
+        for value in sorted(
+            snapshot["values"], key=lambda v: -len(str(v.get("content", "")))
+        )[:FUSION_VALUE_CEILING]
+    ]
+    longest_datastore_text = max(
+        (str(facet.get("representation", "")) for facet in snapshot["facets"]),
+        key=len,
+    )
+    longest_value_text = max(
+        (str(value.get("content", "")) for value in snapshot["values"]), key=len
+    )
+    if len(longest_value_text) > len(longest_datastore_text):
+        longest_datastore_text = longest_value_text
+    randicl_exemplar_texts = [longest_datastore_text] * RANDICL_K_WORST
+
+    control_instruction = (
+        "Decide under the task contract already given above, now "
+        "considering the retrieved evidence. Answer using the speech "
+        "query together with the supplied knowledge evidence."
+    )
+    import inspect
+
+    from speech_aware_evidence_acquisition.rails import kb_policy as _kb_policy
+
+    _kb_source = inspect.getsource(_kb_policy)
+    if '"Decide under the task contract already given above, now "' not in _kb_source:
+        raise SystemExit(
+            "rails.kb_policy no longer renders the post-fix evidence "
+            "instruction this script emulates; re-derive the worst case"
+        )
+    if task_contract in control_instruction:
+        raise SystemExit("post-fix instruction must not re-render the task contract")
+    history = [
+        {
+            "turn": 1,
+            "role": "control",
+            "contact_id": CONTROL_CONTACT_ID,
+            "content": control_instruction,
+            "content_sha256": hashlib.sha256(
+                control_instruction.encode("utf-8")
+            ).hexdigest(),
+        }
+    ]
+    state_texts = _speech_history_texts(history)
+
+    # --- speech feature tokens over the longest DEV-500 packets ------------
+    packet_rows = []
+    for item in longest:
+        packet = load_speech_feature_packet(FEATURE_ROOT, item["packet_id"])
+        tokens = sum(chunk.n_tokens for chunk in packet.chunks)
+        packet_rows.append(
+            {
+                "packet_id": packet.packet_id,
+                "packet_sha256": packet.packet_sha256,
+                "audio_seconds": item["audio_seconds"],
+                "feature_tokens": tokens,
+            }
+        )
+    packet_rows.sort(key=lambda row: (-row["feature_tokens"], row["packet_id"]))
+    maximum_speech_feature_tokens = packet_rows[0]["feature_tokens"]
+
+    # --- the four arms' envelopes ------------------------------------------
+    envelopes = [
+        {
+            "envelope_id": "direct-decode",
+            "arm_id": "M0",
+            "stage_kind": "direct",
+            "method": "flown construction (prompt-matched direct decode)",
+            "messages": build_messages(
+                system_text=system_text,
+                key_texts=[],
+                value_texts=[],
+                state_texts=[],
+                packet=packet_rows[0],
+            ),
+        },
+        {
+            "envelope_id": "evidence-decode-worst",
+            "arm_id": "BLEND",
+            "stage_kind": "evidence",
+            "method": (
+                "flown construction (frozen knobs m=5, c*l=6; the m longest facet "
+                "representations + c*l longest value contents in the pinned snapshot)"
+            ),
+            "messages": build_messages(
+                system_text=system_text,
+                key_texts=key_texts,
+                value_texts=value_texts,
+                state_texts=state_texts,
+                packet=packet_rows[0],
+            ),
+        },
+        {
+            "envelope_id": "abl-randret-worst",
+            "arm_id": "ABL-RANDRET",
+            "stage_kind": "evidence",
+            "method": (
+                "conservative bound via the production rendering functions: the "
+                "control draws uniformly from the SAME datastore through the SAME "
+                "fusion path, so any draw is bounded by the longest-draw envelope "
+                "(identical construction to evidence-decode-worst); the flown "
+                "renderer must stay inside this volume"
+            ),
+            "messages": build_messages(
+                system_text=system_text,
+                key_texts=key_texts,
+                value_texts=value_texts,
+                state_texts=state_texts,
+                packet=packet_rows[0],
+            ),
+        },
+        {
+            "envelope_id": "abl-randicl-worst",
+            "arm_id": "ABL-RANDICL",
+            "stage_kind": "evidence",
+            "method": (
+                "conservative bound via the production rendering functions with "
+                "synthetic worst-case content: k_worst = m + c*l = 11 exemplar "
+                "texts, each the single longest text in the datastore (max over "
+                "all facet representations and value contents), in the evidence "
+                "slot; no renderer exists in any launcher yet, and the flown "
+                "ABL-RANDICL construction must stay inside this volume or this "
+                "prompt-fit must be re-run"
+            ),
+            "messages": build_messages(
+                system_text=system_text,
+                key_texts=[],
+                value_texts=randicl_exemplar_texts,
+                state_texts=state_texts,
+                packet=packet_rows[0],
+            ),
+        },
+    ]
+
+    client = _LoopbackPromptAuditClient(host="127.0.0.1", port=8080, timeout_seconds=120.0)
+    props = client.get_json("/props")
+    media_marker = props.get("media_marker")
+    chat_template = props.get("chat_template")
+    if not isinstance(media_marker, str) or not media_marker:
+        raise SystemExit("resident props lack a media marker")
+    request_counts = {"GET /props": 1, "POST /apply-template": 0, "POST /tokenize": 0}
+
+    rows = []
+    for envelope in envelopes:
+        tokens, segments = text_token_count(
+            client, envelope["messages"], media_marker, None
+        )
+        request_counts["POST /apply-template"] += 1
+        request_counts["POST /tokenize"] += segments
+        upper = tokens + maximum_speech_feature_tokens + 2
+        rows.append(
+            {
+                "envelope_id": envelope["envelope_id"],
+                "arm_id": envelope["arm_id"],
+                "stage_kind": envelope["stage_kind"],
+                "method": envelope["method"],
+                "messages_sha256": canonical_sha256(envelope["messages"]),
+                "text_prompt_tokens": tokens,
+                "prompt_tokens_upper_bound": upper,
+                "context_margin_tokens": (
+                    context_per_slot - upper - maximum_completion_tokens
+                ),
+            }
+        )
+
+    worst = max(rows, key=lambda row: (row["prompt_tokens_upper_bound"], row["envelope_id"]))
+    maximum_prompt = worst["prompt_tokens_upper_bound"]
+    margin = context_per_slot - maximum_prompt - maximum_completion_tokens
+
+    report = {
+        "schema": "saea-dev500-confirmatory-prompt-fit-v1",
+        "study": "speech-aware-evidence-acquisition",
+        "scope": "model-free-check",
+        "model_contact": False,
+        "exposure_run_id": "SAEA-SN-MF-DEV500-CONFIRMATORY-PROMPT-FIT-NP8",
+        "rendering_source": (
+            "rails.runner._agent_messages shapes rendered through "
+            "core.model.transport._ordered_speech_feature_content and "
+            "_speech_history_texts (the exact machinery the executed DEV-100 "
+            "C3 prompt-fit rows certified); POST-fix evidence instruction "
+            "asserted against rails.kb_policy source; ABL arm bounds are "
+            "conservative production-function renderings with synthetic "
+            "worst-case content, methods recorded per envelope"
+        ),
+        "config_hash": composed.config_hash,
+        "config_fragments": composed.fragments,
+        "prompt_order": PROMPT_ORDER,
+        "knowledge_snapshot_sha256": SNAPSHOT_SHA256,
+        "frozen_cell_policy_config": "configs/policy/kb-policy-v1-dev100.json",
+        "task_contract_characters": len(task_contract),
+        "task_contract_sha256": hashlib.sha256(
+            task_contract.encode("utf-8")
+        ).hexdigest(),
+        "visible_key_facets": len(key_texts),
+        "visible_values": len(value_texts),
+        "randicl_k_worst": RANDICL_K_WORST,
+        "randicl_exemplar_text_characters": len(longest_datastore_text),
+        "agent_state_texts": len(state_texts),
+        "speech_packets_measured": packet_rows,
+        "maximum_speech_feature_tokens": maximum_speech_feature_tokens,
+        "special_token_reserve": 2,
+        "maximum_text_prompt_tokens": max(row["text_prompt_tokens"] for row in rows),
+        "maximum_prompt_tokens_upper_bound": maximum_prompt,
+        "maximum_completion_tokens": maximum_completion_tokens,
+        "context_tokens": context_tokens,
+        "slot_count": slot_count,
+        "context_tokens_per_slot": context_per_slot,
+        "context_margin_tokens": margin,
+        "maximum_prompt_fits_one_slot": margin >= 0,
+        "worst_envelope_id": worst["envelope_id"],
+        "envelopes": rows,
+        "tokenizer": {
+            "request_counts": request_counts,
+            "decoder_evaluations": 0,
+            "generated_tokens": 0,
+            "media_marker": media_marker,
+            "chat_template_sha256": hashlib.sha256(
+                chat_template.encode("utf-8")
+            ).hexdigest(),
+            "host": "127.0.0.1",
+            "port": 8080,
+        },
+    }
+    output = Path(sys.argv[1])
+    output.parent.mkdir(parents=True, exist_ok=True)
+    with output.open("w", encoding="utf-8", newline="\n") as handle:
+        handle.write(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True) + "\n")
+    print(json.dumps({k: report[k] for k in (
+        "maximum_text_prompt_tokens",
+        "maximum_speech_feature_tokens",
+        "maximum_prompt_tokens_upper_bound",
+        "context_tokens_per_slot",
+        "maximum_completion_tokens",
+        "context_margin_tokens",
+        "maximum_prompt_fits_one_slot",
+        "worst_envelope_id",
+    )}, indent=2))
+    print(json.dumps({row["envelope_id"]: {
+        "prompt_tokens_upper_bound": row["prompt_tokens_upper_bound"],
+        "context_margin_tokens": row["context_margin_tokens"],
+    } for row in rows}, indent=2))
+    print("receipt:", output)
+    print("receipt_sha256:", hashlib.sha256(output.read_bytes()).hexdigest())
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

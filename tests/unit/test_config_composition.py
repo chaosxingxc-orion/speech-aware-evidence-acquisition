@@ -1414,3 +1414,206 @@ def test_dev100_kb_alpha_blend_campaign_composes_on_the_np8_base_service():
     # The attempt-6 composed identity (differs from the zcopy composition
     # ONLY through the runtime_receipt declaration).
     assert composed.config_hash == "7fff75d1ed8642a9e948d86e8d6c5bf9cfd669f7342d9da009167dfd62655ca5"
+
+
+def test_dev500_confirmatory_campaign_composes_on_the_np8_base_service():
+    """The DEV-500 CONFIRMATORY composition (preregistration
+    docs/readiness/2026-08-24-dev500-confirmatory-preregistration.md): the
+    frozen DEV-100 cell served on the BASE-build np8 profile over the
+    DEV-500 runtime view.
+
+    Four properties are load-bearing and asserted rather than described.
+
+    First, the DEV-role split identity: the dataset fragment embeds the
+    SLASH-prefixed run identity ``load_split``/``ExecutionPlan``/
+    ``protocol_hash`` use, and the experiment fragment additionally pins the
+    receipt-integrity values of DEV-500, the nested exposed DEV-100, and the
+    unexposed-400 statistic population, so the one-touch read can never
+    silently move to a different sample population.
+
+    Second, the serving surface is the BASE build (campaign verdict section
+    4: the zero-copy build is quarantined) at np8 -- the model fragment must
+    reproduce the resident service argv exactly, because the campaign
+    attaches to an already-resident server and never launches one.
+
+    Third, the scientific contract -- the byte-frozen knob table, the four
+    preregistered arms (M0 / BLEND / ABL-RANDRET / ABL-RANDICL), the
+    section-1 confirmatory statistic, and the section-3 ceilings -- is
+    machine-readable here, pinned against the frozen policy file, so a later
+    edit cannot quietly move a knob, an arm, a seed, or a ceiling without
+    this test moving with it.
+
+    Fourth, the promotion receipt: the baseline fragment pins the DEV-500
+    promotion receipt (500 packets: 400 newly materialized by
+    SAEA-SN-DEV500-PREPROCESS + the 100 DEV-100 packets re-verified
+    byte-identical) by absolute path and file hash.
+    """
+
+    from speech_aware_evidence_acquisition.e0.artifacts import REPO_ROOT
+
+    composed = compose(
+        REPO_ROOT,
+        "q4km-mmproj-free-speech-native-np8-base-speech-query-prefix-max64",
+        "slurp-speech-native-dev500",
+        "slurp-dev500-kb-alpha-blend",
+        "slurp-dev500-confirmatory-campaign-v1",
+    )
+    values = composed.values
+
+    assert values["experiment_id"] == "SAEA-DEV500-CONFIRMATORY"
+    assert values["execution_profile"] == "bounded-discovery-probe"
+
+    # DEV-role split identity, load_split convention, plus the nested and
+    # unexposed populations by BOTH hash conventions.
+    assert values["split_name"] == "DEV-500"
+    assert values["split_role"] == "dev"
+    assert values["count"] == 500
+    assert values["audio_seconds_total"] == 1422.0816875
+    assert values["split_identity_hash"] == (
+        "a00f8c8615ea9508a812f93117b9838f2a1a84ec2b3f06c07edc28b04da6acf4"
+    )
+    split_block = values["dev500_split"]
+    assert split_block["receipt_integrity_hash"] == (
+        "c0f1c7531fb8972885abf1d840cc101bbfa38ae04e3929cc46e0f5b9ef35452b"
+    )
+    nested = split_block["nested_exposed_subset"]
+    assert nested["count"] == 100
+    assert nested["split_identity_hash"] == (
+        "e9a7b7febcf4fe3dc228370f7487e1e75dea3d63d447a07fbfe87c1404e2d853"
+    )
+    assert nested["receipt_integrity_hash"] == (
+        "d676d38b4d27b3a136ba2523b96ae3c71ba2b8b436f7712f4f0c976c3ea833e1"
+    )
+    unexposed = split_block["unexposed_statistic_population"]
+    assert unexposed["count"] == 400
+    assert unexposed["split_identity_hash"] == (
+        "e1cf6fc512a16ec2f1d439655f40b1602ff5e295ec2736cecaf136402a4d036c"
+    )
+    assert unexposed["receipt_integrity_hash"] == (
+        "36c778dafb418d8f0fb80ad53fb11f2608f3ebcd4ad9f5fa3d964ff16b54898b"
+    )
+    assert unexposed["audio_seconds_total"] == 1146.3815625
+    assert values["dev500_dataset_fragment"] == "slurp-speech-native-dev500"
+    # DEV media is inside the immutable D1 closure: no supplement.
+    assert values["d1_media_supplement"] is None
+    assert values["d1_media_supplement_sha256"] is None
+
+    # The BASE-build np8 serving surface (campaign verdict section 4).
+    assert values["runtime_receipt"] == "receipts/runtime-q4km-mmproj-free.json"
+    assert values["profile_slot_count"] == 8
+    assert values["prompt_order"] == "speech-query-prefix-v2"
+    assert values["server_args"] == [
+        "-c", "65536", "-np", "8", "-b", "2048", "-ub", "512",
+        "-fa", "on", "-ngl", "999", "-ctk", "q8_0", "-ctv", "q8_0",
+        "--cache-prompt", "--cache-ram", "0",
+        "--no-cache-idle-slots", "--slot-prompt-similarity", "0",
+    ]
+    assert values["server_env"] == {
+        "LLAMA_SPEECH_FEATURE_ROOT": (
+            "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a"
+        ),
+        "LLAMA_SPEECH_DECODER_SHA256": (
+            "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d"
+        ),
+    }
+
+    # The DEV-500 promotion receipt: 500 packets, pinned by path and hash.
+    assert values["speech_packet_promotion_receipt"].endswith("/DEV-500-promotion.json")
+    assert values["speech_packet_promotion_receipt_sha256"] == (
+        "c6d17fdf2f46f655d55661e4e8163818b1100a0a839a873121ab84fa0524ed8c"
+    )
+
+    # The byte-frozen knob table, asserted EQUAL to the frozen policy file
+    # rather than restated -- a knob move in either place breaks this test.
+    frozen_policy = json.loads(
+        (REPO_ROOT / "configs" / "policy" / "kb-policy-v1-dev100.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    assert values["dev500_frozen_cell"]["knobs"] == frozen_policy["knobs"]
+    assert values["dev500_frozen_cell"]["policy_config"] == (
+        "configs/policy/kb-policy-v1-dev100.json"
+    )
+    knobs = values["dev500_frozen_cell"]["knobs"]
+    assert knobs["alpha"] == 0.45
+    assert knobs["tau"] == 0.65
+    assert knobs["fusion"] == {"m": 5, "c": 2, "l": 3}
+    assert knobs["prior_source"] == "train"
+
+    # The C3 policy chain, unchanged from the campaign.
+    from speech_aware_evidence_acquisition.rails import kb_policy
+
+    chain = values["dev500_policy_chain"]
+    assert chain["controller_policy_id"] == kb_policy.CONTROLLER_POLICY_ID
+    assert chain["ranker_policy_id"] == kb_policy.RANK_POLICY_ID
+    assert chain["fuser_policy_id"] == kb_policy.FUSE_POLICY_ID
+    assert chain["agent_executor_id"] == "openjiuwen-workflow-v1"
+
+    # The pinned TRAIN snapshot, exactly the KB-BUILD receipt's own hash.
+    kb_receipt = json.loads(
+        (REPO_ROOT / "docs" / "receipts" / "knowledge" / "slurp-kb-size-full.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    assert values["dev500_knowledge_snapshot"]["snapshot_sha256"] == (
+        kb_receipt["snapshot_sha256"]
+    )
+    assert values["dev500_knowledge_snapshot"]["source_split"] == "train"
+
+    # The four preregistered arms (section 2), machine-readable.
+    arms = {arm["arm_id"]: arm for arm in values["dev500_arms"]}
+    assert list(arms) == ["M0", "BLEND", "ABL-RANDRET", "ABL-RANDICL"]
+    assert arms["M0"]["contacts_per_sample"] == 1
+    assert arms["M0"]["worst_case_frozen_core_contacts"] == 400
+    assert arms["BLEND"]["contacts_per_sample"] == 2
+    assert arms["BLEND"]["tool_contacts_per_sample"] == 1
+    assert arms["BLEND"]["worst_case_frozen_core_contacts"] == 800
+    assert arms["ABL-RANDRET"]["worst_case_frozen_core_contacts"] == 800
+    assert arms["ABL-RANDRET"]["seeded"] is True
+    assert arms["ABL-RANDICL"]["worst_case_frozen_core_contacts"] == 800
+    # k's worst case is DERIVED from the frozen fusion knobs: m + c*l.
+    fusion = knobs["fusion"]
+    assert arms["ABL-RANDICL"]["k_worst_case"] == (
+        fusion["m"] + fusion["c"] * fusion["l"]
+    ) == 11
+
+    # The charter-constrained oracle substitution (section 2), disclosed.
+    oracle = values["dev500_oracle_substitution"]
+    assert "retrieval-reachability ceiling" in oracle["registered_substitute"]
+    assert "forbids gold labels in runtime" in oracle["charter_constraint"]
+
+    # The section-1 confirmatory statistic, frozen in advance.
+    statistic = values["dev500_confirmatory_statistic"]
+    assert statistic["population"] == (
+        "the 400 unexposed samples only (DEV-500 minus DEV-100)"
+    )
+    assert statistic["statistic"] == "paired per-sample BLEND minus M0"
+    assert statistic["bootstrap"] == {
+        "kind": "paired cluster bootstrap",
+        "n_replicates": 10000,
+        "seed": 20260807,
+        "confidence_levels": [0.9, 0.95],
+    }
+    assert statistic["claim_condition"] == "the 90 percent CI excludes zero"
+    assert statistic["mcnemar_exact_on_discordant_pairs"] is True
+
+    # One-touch discipline and the registered variance prior.
+    assert "ONE registered read" in values["dev500_one_touch"]["rule"]
+    assert "round-5" in values["dev500_one_touch"]["variance_prior"]
+
+    # The section-3 ceilings.
+    ceilings = values["dev500_ceilings"]
+    assert ceilings["frozen_core_contacts_total"] == 3200
+    assert ceilings["pinned_tool_embedding_contacts_total"] == 1000
+    assert ceilings["metered_audio_seconds_total"] == 8000
+    assert ceilings["gpu_hours_total"] == 3.0
+    assert len(ceilings["mandatory_rails"]) == 6
+
+    # Slot geometry: the np8 base service's 8,192-token slots admit the
+    # DEV-100-measured worst case; the DEV-500 bound is certified by its own
+    # prompt-fit receipt (registered separately, model-free).
+    context_per_slot = 65536 // values["profile_slot_count"]
+    assert context_per_slot == 8192
+
+    # Record the composed identity so a fragment edit is a visible test move.
+    assert composed.config_hash == "c1a1b915fa8dd6c4593d1f85caaad99fead3e18f0a80e06b7d5699c74793ee58"
