@@ -1,0 +1,378 @@
+{
+  "attempt_id": "attempt-20260824T114704Z-dev100r0a5",
+  "boundary": "gold never opened; no response read semantically; the round is NOT sealed and NOT scored; everything durable was flushed at the trip (partial BLEND buffer into the main sink, canary in its own sink); the resident service and keepalive are left up for the coordinator's decision",
+  "canary": {
+    "contacts": 2,
+    "generation": [
+      {
+        "ms_per_token": 169.92,
+        "tokens": 33,
+        "total_ms": 5607.39
+      },
+      {
+        "ms_per_token": 177.97,
+        "tokens": 34,
+        "total_ms": 6050.98
+      }
+    ],
+    "note": "responses never read semantically: sha256 + server print_timing descriptives only, per the registered canary semantics (attempt-3 registration, carried to attempt 5)",
+    "pass_threshold_ms_per_token": 300.0,
+    "passed": true,
+    "prompt_eval": [
+      {
+        "ms_per_token": 3.71,
+        "tokens": 62,
+        "total_ms": 229.99
+      },
+      {
+        "ms_per_token": 1.25,
+        "tokens": 75,
+        "total_ms": 93.87
+      }
+    ],
+    "response_sha256_vs_attempt1_m0": {
+      "slurp:devel:000090:audio-1498567209": {
+        "byte_identical_to_attempt1": true,
+        "response_sha256": "5fe1b883601c67a10862f74c4ef2abd1e94445d25088dbc2989870e29e067a59"
+      },
+      "slurp:devel:000109:audio-1497882612": {
+        "byte_identical_to_attempt1": true,
+        "response_sha256": "7e6ccbed9d234c2ed405c1ea4169213767bcc5694af3bcd8f2b261503980a073"
+      }
+    },
+    "sample_ids": [
+      "slurp:devel:000090:audio-1498567209",
+      "slurp:devel:000109:audio-1497882612"
+    ],
+    "trace": {
+      "manifest_hash": "bee883b29b1ffe2c16f8e79f87fbeecea26b25701cc53217cda85899213d039f",
+      "namespace": "canary/",
+      "record_ids": 14,
+      "sink_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-DEV100-KB-ALPHA-BLEND-CAMPAIGN/attempt-20260824T114704Z-dev100r0a5/canary-trace"
+    },
+    "wall_seconds": 15.221,
+    "worst_generation_ms_per_token": 177.97
+  },
+  "durable_flush": {
+    "blend_partial_flush": {
+      "flushed_records": 42
+    },
+    "canary_sink": {
+      "manifest_hash": "bee883b29b1ffe2c16f8e79f87fbeecea26b25701cc53217cda85899213d039f",
+      "namespace": "canary/",
+      "record_ids": 14,
+      "sink_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-DEV100-KB-ALPHA-BLEND-CAMPAIGN/attempt-20260824T114704Z-dev100r0a5/canary-trace"
+    }
+  },
+  "generated_at": "2026-08-24T11:54:09.160931+00:00",
+  "mid_flight_clock_samples_windows_side": [
+    {
+      "at": "2026-08-24T11:46:59Z",
+      "clocks_sm_mhz": 180,
+      "power_w": 16.15,
+      "util_pct": 0
+    },
+    {
+      "at": "2026-08-24T11:47:09Z",
+      "clocks_sm_mhz": 6120,
+      "power_w": 16.59,
+      "util_pct": 0
+    },
+    {
+      "at": "2026-08-24T11:47:19Z",
+      "clocks_sm_mhz": 1192,
+      "power_w": 10.41,
+      "util_pct": 0
+    },
+    {
+      "at": "2026-08-24T11:47:30Z",
+      "clocks_sm_mhz": 0,
+      "power_w": 16.53,
+      "util_pct": 0
+    },
+    {
+      "at": "2026-08-24T11:47:41Z",
+      "clocks_sm_mhz": 2032,
+      "power_w": 16.92,
+      "util_pct": 0
+    },
+    {
+      "at": "2026-08-24T11:47:51Z",
+      "clocks_sm_mhz": 1192,
+      "power_w": 10.42,
+      "util_pct": 0
+    },
+    {
+      "at": "2026-08-24T11:48:02Z",
+      "clocks_sm_mhz": 180,
+      "power_w": 16.72,
+      "util_pct": 0
+    },
+    {
+      "at": "2026-08-24T11:48:12Z",
+      "clocks_sm_mhz": 1192,
+      "power_w": 10.51,
+      "util_pct": 0
+    },
+    {
+      "at": "2026-08-24T11:48:23Z",
+      "clocks_sm_mhz": 1507,
+      "power_w": 15.31,
+      "util_pct": 0
+    },
+    {
+      "at": "2026-08-24T11:48:33Z",
+      "clocks_sm_mhz": 2482,
+      "power_w": 44.15,
+      "util_pct": 100
+    },
+    {
+      "at": "2026-08-24T11:48:43Z",
+      "clocks_sm_mhz": 1192,
+      "power_w": 14.27,
+      "util_pct": 0
+    },
+    {
+      "at": "2026-08-24T11:48:53Z",
+      "clocks_sm_mhz": 1192,
+      "power_w": 10.89,
+      "util_pct": 0
+    },
+    {
+      "at": "2026-08-24T11:49:03Z",
+      "clocks_sm_mhz": 1192,
+      "power_w": 15.58,
+      "util_pct": 0
+    },
+    {
+      "at": "2026-08-24T11:49:13Z",
+      "clocks_sm_mhz": 1192,
+      "power_w": 15.86,
+      "util_pct": 0
+    },
+    {
+      "at": "2026-08-24T11:49:24Z",
+      "clocks_sm_mhz": 525,
+      "power_w": 17.31,
+      "util_pct": 0
+    },
+    {
+      "at": "2026-08-24T11:49:34Z",
+      "clocks_sm_mhz": 2490,
+      "power_w": 41.84,
+      "util_pct": 100
+    },
+    {
+      "at": "2026-08-24T11:49:44Z",
+      "clocks_sm_mhz": 2490,
+      "power_w": 42.32,
+      "util_pct": 100
+    },
+    {
+      "at": "2026-08-24T11:49:55Z",
+      "clocks_sm_mhz": 2490,
+      "power_w": 42.84,
+      "util_pct": 100
+    },
+    {
+      "at": "2026-08-24T11:50:06Z",
+      "clocks_sm_mhz": 2490,
+      "power_w": 43.29,
+      "util_pct": 100
+    },
+    {
+      "at": "2026-08-24T11:50:17Z",
+      "clocks_sm_mhz": 2490,
+      "power_w": 43.28,
+      "util_pct": 100
+    },
+    {
+      "at": "2026-08-24T11:50:28Z",
+      "clocks_sm_mhz": 2490,
+      "power_w": 43.93,
+      "util_pct": 100
+    },
+    {
+      "at": "2026-08-24T11:50:39Z",
+      "clocks_sm_mhz": 2490,
+      "power_w": 44.2,
+      "util_pct": 100
+    },
+    {
+      "at": "2026-08-24T11:50:49Z",
+      "clocks_sm_mhz": 2490,
+      "power_w": 44.42,
+      "util_pct": 100
+    },
+    {
+      "at": "2026-08-24T11:51:00Z",
+      "clocks_sm_mhz": 2490,
+      "power_w": 44.62,
+      "util_pct": 100
+    },
+    {
+      "at": "2026-08-24T11:51:12Z",
+      "clocks_sm_mhz": 2490,
+      "power_w": 44.86,
+      "util_pct": 100
+    },
+    {
+      "at": "2026-08-24T11:51:22Z",
+      "clocks_sm_mhz": 2490,
+      "power_w": 44.99,
+      "util_pct": 100
+    },
+    {
+      "at": "2026-08-24T11:51:32Z",
+      "clocks_sm_mhz": 2482,
+      "power_w": 45.61,
+      "util_pct": 100
+    },
+    {
+      "at": "2026-08-24T11:51:43Z",
+      "clocks_sm_mhz": 2490,
+      "power_w": 44.92,
+      "util_pct": 100
+    },
+    {
+      "at": "2026-08-24T11:51:54Z",
+      "clocks_sm_mhz": 2490,
+      "power_w": 44.37,
+      "util_pct": 100
+    },
+    {
+      "at": "2026-08-24T11:52:04Z",
+      "clocks_sm_mhz": 2490,
+      "power_w": 44.03,
+      "util_pct": 100
+    },
+    {
+      "at": "2026-08-24T11:52:15Z",
+      "clocks_sm_mhz": 2490,
+      "power_w": 43.74,
+      "util_pct": 100
+    },
+    {
+      "at": "2026-08-24T11:52:25Z",
+      "clocks_sm_mhz": 2490,
+      "power_w": 43.53,
+      "util_pct": 100
+    },
+    {
+      "at": "2026-08-24T11:52:35Z",
+      "clocks_sm_mhz": 2490,
+      "power_w": 43.53,
+      "util_pct": 100
+    },
+    {
+      "at": "2026-08-24T11:52:46Z",
+      "clocks_sm_mhz": 2490,
+      "power_w": 43.5,
+      "util_pct": 100
+    },
+    {
+      "at": "2026-08-24T11:52:56Z",
+      "clocks_sm_mhz": 2467,
+      "power_w": 44.07,
+      "util_pct": 100
+    },
+    {
+      "at": "2026-08-24T11:53:06Z",
+      "clocks_sm_mhz": 2490,
+      "power_w": 44.04,
+      "util_pct": 100
+    },
+    {
+      "at": "2026-08-24T11:53:16Z",
+      "clocks_sm_mhz": 2490,
+      "power_w": 43.99,
+      "util_pct": 100
+    },
+    {
+      "at": "2026-08-24T11:53:26Z",
+      "clocks_sm_mhz": 2482,
+      "power_w": 44.36,
+      "util_pct": 97
+    },
+    {
+      "at": "2026-08-24T11:53:37Z",
+      "clocks_sm_mhz": 2490,
+      "power_w": 44.63,
+      "util_pct": 100
+    },
+    {
+      "at": "2026-08-24T11:53:47Z",
+      "clocks_sm_mhz": 2490,
+      "power_w": 43.81,
+      "util_pct": 100
+    },
+    {
+      "at": "2026-08-24T11:53:57Z",
+      "clocks_sm_mhz": 2482,
+      "power_w": 43.76,
+      "util_pct": 98
+    },
+    {
+      "at": "2026-08-24T11:54:08Z",
+      "clocks_sm_mhz": 2490,
+      "power_w": 43.74,
+      "util_pct": 100
+    }
+  ],
+  "outcome": "SENTINEL_ABORT_STOP",
+  "registered_semantics": {
+    "abort_threshold_ms_per_token": 1000.0,
+    "metric": "server print_timing generation ms/token (content-free), read per completed BLEND contact from the tracked server-log offset; rolling median, strict >",
+    "window_contacts": 8
+  },
+  "round_index": 0,
+  "run_id": "SAEA-DEV100-KB-ALPHA-BLEND-CAMPAIGN",
+  "schema": "saea-dev100-round0-sentinel-abort-v2-attempt5",
+  "sentinel": {
+    "contacts_observed": 14,
+    "ms_per_token_max": 6242.55,
+    "ms_per_token_median": 5998.91,
+    "ms_per_token_min": 1802.75,
+    "ms_per_token_p90": 6242.54,
+    "rates_observed": 14,
+    "threshold_ms_per_token": 1000.0,
+    "tripped": {
+      "contacts_observed": 14,
+      "rates_observed": 14,
+      "rolling_median_ms_per_token": 3176.9,
+      "threshold_ms_per_token": 1000.0,
+      "window_contacts": 8,
+      "window_ms_per_token": [
+        5998.92,
+        5998.91,
+        5186.45,
+        4007.67,
+        2346.13,
+        2346.06,
+        1853.76,
+        1802.75
+      ]
+    },
+    "window_contacts": 8
+  },
+  "spend": {
+    "attempt5_core_contacts": 2,
+    "attempt5_tool_contacts": 8,
+    "core_client": {
+      "contact_latency_seconds_total": 1891.438,
+      "cost": {
+        "audio_seconds_used": 35.1979375,
+        "calls_used": 16,
+        "completion_tokens_total": 449,
+        "latency_seconds_total": 1891.4378572590008,
+        "prompt_tokens_total": 32759,
+        "tool_calls": 0,
+        "umbrella_lock_sha256": "9064bde89d4248fd80c9c2f93c2a9c276a454eadbb1aa7d529671118961371b1"
+      },
+      "request_count": 16,
+      "trace_manifest_hash": "ed02cc2695548437117c97719c3b19c2a8aefd80acfccc7b17b7b0e4f288eb21"
+    }
+  },
+  "study": "speech-aware-evidence-acquisition",
+  "verbatim": "{'rolling_median_ms_per_token': 3176.9, 'window_ms_per_token': [5998.92, 5998.91, 5186.45, 4007.67, 2346.13, 2346.06, 1853.76, 1802.75], 'threshold_ms_per_token': 1000.0, 'window_contacts': 8, 'contacts_observed': 14, 'rates_observed': 14} (surfaced wrapped as: ExecutionError(\"component 'agent_contact_0' execute 'invoke' error, reason='in-flight decode-rate sentinel TRIPPED: rolling median 3176.90 ms/token over the last 8 observed generation rows exceeds the registered abort threshold 1000 ms/token; window [5998.92, 5998.91, 5186.45, 4007.67, 2346.13, 2346.06, 1853.76, 1802.75]', workflow='5a55ac1ee1c0497ab08d780c1faf9910'\"))"
+}

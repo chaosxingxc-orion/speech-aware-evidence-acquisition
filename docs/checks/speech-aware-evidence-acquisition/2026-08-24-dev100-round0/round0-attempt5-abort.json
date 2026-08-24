@@ -1,0 +1,141 @@
+{
+  "schema": "saea-dev100-round0-abort-v1",
+  "study": "speech-aware-evidence-acquisition",
+  "run_id": "SAEA-DEV100-KB-ALPHA-BLEND-CAMPAIGN",
+  "round_index": 0,
+  "attempt": "ROUND-0 ATTEMPT 5 (successor semantics; campaign-row registration of 2026-08-24, commit 0d2b0d39)",
+  "generated_at": "2026-08-24T12:05:00Z",
+  "outcome": "SPENT-EXECUTED-ABORTED (SENTINEL_ABORT_STOP - the REGISTERED in-flight decode-rate sentinel fired exactly as designed; the registered clock-lock mitigation was CONFIRMED IN PLACE and the pathology recurred anyway - the clock-lock hypothesis is FALSIFIED)",
+  "authority": "docs/readiness/2026-08-23-dev100-campaign-preregistration.md including amendment 5b; campaign row attempt-5 registration (run-cumulative plan declaration; registered decode-speed canary; micro-run trace isolation; in-flight decode-rate sentinel; Windows-side GPU clock-lock mitigation with registered mid-flight confirmation semantics); one-shot semantics per ROUND attempt",
+  "config_hash": "5397ea3ead594409b440ed9d8abc3690f6230d8b357207eb509977e411405944",
+  "server_np": 8,
+  "decoder_session": {
+    "session_id": "SAEA-SN-Q4KM-NP8-ZCOPY-DEV100-20260824T105900Z",
+    "pid": 756,
+    "port": 8080,
+    "receipt_sha256": "cdad2f6817711face285e4ecc4c68ba198f548cd1b4f3c9d9547e5b06515d3ba",
+    "hosting": {
+      "mode": "systemd-run --user unit saea-np8-dev100-r4 (WSL Ubuntu-24.04, systemd PID 1) + detached Windows wsl.exe keepalive client PID 23864 (started 2026-08-24T10:52:39Z; keepalive-first recipe)",
+      "session_continuity": "SAME session that served attempt 4 (no restart between attempts 4 and 5; the attempt-4 sentinel abort left it up and idle-healthy) - this continuity turned out to be scientifically informative, see serving_pathology_fourth_recurrence.new_observation",
+      "survival_evidence": "decoder unit active and /health ok through the whole flight and after the abort; the flight ran under its own systemd-run unit saea-dev100-r0a5-flight (exit status 5, the registered sentinel-abort code; ExecMainStart 11:47:03Z, ExecMainExit 11:54:09Z)",
+      "status_after_abort": "SERVICE LEFT UP (unit saea-np8-dev100-r4 active, /health ok, pid 756, keepalive PID 23864 alive); GPU idle-healthy post-trip (0 % util, 16 W, 180 MHz, 41 C from both WSL and Windows nvidia-smi)"
+    }
+  },
+  "gpu_preflight": {
+    "lenovo_smart_fan_mode": 3,
+    "enforced_power_limit_w": 100.0,
+    "clock_lock": {
+      "command": "nvidia-smi -lgc 1200,2500 (Windows side; coordinator-applied before the attempt-5 mission, re-confirmed by this flight)",
+      "preflight_receipt_verbatim": "GPU clocks set to \"(gpuClkMin 1200, gpuClkMax 2500)\" for GPU 00000000:02:00.0 / All done. (idempotent re-issue at preflight; the driver exposes no readable lock field)",
+      "idle_note": "idle clocks.sm read 180 MHz to 1,192 MHz between preflight and takeoff (deep idle still gates below the floor; instantaneous 1,192 MHz readings at idle are themselves lock-floor evidence)"
+    },
+    "verified": "host PowerShell WMI GetSmartFanMode=3 + Windows nvidia-smi enforced 100.00 W (idle 16.3 W / 41 C) at attempt-5 preflight; re-verified in-script at takeoff via in-WSL nvidia-smi (100.0 W)"
+  },
+  "prep_landed_before_takeoff": {
+    "prompt_fit": "SESSION-BOUND R4 ROW STANDS, no re-measurement: SAEA-SN-MF-DEV100-C3-PROMPT-FIT-NP8-R4 was taken against THIS exact session (its registration binds session ...T105900Z receipt cdad2f68...d3ba); the live session receipt re-hashed byte-identical at attempt-5 preflight and the R4 receipt file re-hashed to its registered 29489a2c1ee23bc02da804bfde7b952dfa60ba32bba8393f97aa11152a48ff00; margin +1,954; no R5 MF row was needed or created",
+    "self_test": "launcher --self-test PASS 11:43:37Z (both retained attempt-4 mechanisms, stubbed timings, zero contacts)",
+    "preflight_only_pass": "11:44:11Z, zero contacts, attempt-1 M0 trace verified byte-identical (d1f376bb...) for reuse; rails dry check PASS against all 23,267 protected payloads",
+    "launcher_commits": ["16e80e4b (launch_dev100_round0_attempt5.py, ruff-clean)", "0d2b0d39 (attempt-5 campaign-row registration, pushed pre-takeoff)"]
+  },
+  "takeoff_timeline": [
+    {
+      "takeoff": 1,
+      "attempt_store_id": "attempt-20260824T114704Z-dev100r0a5",
+      "at": "2026-08-24T11:47:04Z",
+      "outcome": "SPENT-EXECUTED-ABORTED by the REGISTERED in-flight decode-rate sentinel: canary PASSED the 300 ms/token gate (but at 169.92/177.97 ms/token - roughly 23x slower than attempt 4's 7.37/7.83 on this SAME session, itself a finding), arm BLEND was degraded from its FIRST observed contact (no healthy first wave this time), the sentinel tripped at 14 observed contacts, everything durable was flushed with ZERO trace-record-id collisions, and the flight stopped cleanly with exit code 5",
+      "milestones": {
+        "gate_pass": "11:48:0xZ (full q4km GGUF attestation; page cache warm)",
+        "attached": "read-only attach to receipt cdad2f68..., pid 756; argv verified against the np8 composition",
+        "sidecar_up": "CPU-only qwen3-embedding on 8082, own session receipt",
+        "canary": "CANARY PASS at 11:48:41Z - generation 169.92 / 177.97 ms/token (worst 177.97 vs threshold 300), prompt-eval 3.71 / 1.25; both responses byte-identical to attempt-1's recorded M0 hashes (FOURTH cross-instance decode-determinism confirmation, and the first on an already-degraded serving state); canary trace flushed into its OWN sink (14 records, namespace canary/, manifest bee883b29b1ffe2c16f8e79f87fbeecea26b25701cc53217cda85899213d039f)",
+        "arm_blend": "8-slot BLEND launched 11:48:41Z; 14 contacts completed and observed by the sentinel; 6 runtime query embeddings completed (CPU sidecar healthy, 5.04 s total)",
+        "sentinel_trip": "11:53:44Z first trip (rolling median 5,592.21 over window [6070.63, 5997.97, 5998.92, 5998.91, 5186.45, 4007.67, 2346.13, 2346.06]); recorded trip rolling median 3,176.90 over [5998.92, 5998.91, 5186.45, 4007.67, 2346.13, 2346.06, 1853.76, 1802.75]; surfaced wrapped in the executor's ExecutionError and caught by the registered wrapped-trip detection path",
+        "durable_flush": "11:54:08Z: 42 partial BLEND trace records flushed into the main sink with ZERO collisions (main-sink trace manifest ed02cc2695548437117c97719c3b19c2a8aefd80acfccc7b17b7b0e4f288eb21); canary records sit in their own namespaced sink",
+        "teardown": "embedder sidecar stopped cleanly (SIGTERM, forced=false, stop receipt); jitter end pair bit-identical (cosine 1.0); sentinel abort record with the embedded Windows-side clock samples written 11:54:09Z; flight unit exited status 5; wall 343.8 s"
+      },
+      "cause_verbatim": "in-flight decode-rate sentinel TRIPPED: rolling median 3176.90 ms/token over the last 8 observed generation rows exceeds the registered abort threshold 1000 ms/token; window [5998.92, 5998.91, 5186.45, 4007.67, 2346.13, 2346.06, 1853.76, 1802.75]",
+      "root_cause": "RECURRING SERVING PATHOLOGY, fourth consecutive reproduction (attempts 2, 3, 4, 5) - and the first reproduction under a VERIFIED-HELD GPU clock lock, which falsifies the clock-collapse hypothesis. NOT a harness defect: every registered mechanism (canary, sentinel, trace isolation, durable-first flush, clock-sample embedding) behaved exactly as registered."
+    }
+  ],
+  "canary": {
+    "registered_semantics": "2 single-slot direct-decode contacts on the FIRST TWO attempt-1 M0 sample ids in sorted order; responses never read semantically - sha256 + server print_timing descriptives only; PASS < 300 ms/token generation",
+    "sample_ids": ["slurp:devel:000090:audio-1498567209", "slurp:devel:000109:audio-1497882612"],
+    "generation_ms_per_token": [169.92, 177.97],
+    "worst_generation_ms_per_token": 177.97,
+    "prompt_eval_ms_per_token": [3.71, 1.25],
+    "passed": true,
+    "canary_band_history_same_measurement": {
+      "attempt_3_fresh_session": [6.74, 7.26],
+      "attempt_4_fresh_session_post_windows_reboot": [7.37, 7.83],
+      "attempt_5_reused_session_that_had_previously_degraded": [169.92, 177.97],
+      "note": "the 300 ms/token gate passed honestly, but the ~23x single-slot slowdown vs the SAME session 35 minutes earlier is the first evidence that the degraded state is (at least partly) RESIDENT IN THE SERVICE PROCESS and survives idle recovery - GPU-side telemetry looked idle-healthy right before takeoff"
+    },
+    "response_byte_identity_vs_attempt1_m0": {
+      "slurp:devel:000090:audio-1498567209": {"response_sha256": "5fe1b883601c67a10862f74c4ef2abd1e94445d25088dbc2989870e29e067a59", "byte_identical_to_attempt1": true},
+      "slurp:devel:000109:audio-1497882612": {"response_sha256": "7e6ccbed9d234c2ed405c1ea4169213767bcc5694af3bcd8f2b261503980a073", "byte_identical_to_attempt1": true},
+      "note": "hash-to-hash comparison only; byte-identical direct decodes are now confirmed across a service restart, a VM reboot, a full Windows reboot, AND a degraded serving state (decode SPEED collapses; decode BYTES stay deterministic)"
+    }
+  },
+  "sentinel": {
+    "registered_semantics": "after every completed BLEND contact, read the server's new content-free print_timing generation rows from the tracked server-log offset; rolling median over the last 8 observed contacts strictly above 1,000 ms/token flushes everything durable immediately and stops cleanly with the service left up",
+    "contacts_observed": 14,
+    "rates_observed": 14,
+    "distribution_ms_per_token": {"min": 1802.75, "median": 5998.91, "p90": 6242.54, "max": 6242.55},
+    "onset_shape": "IMMEDIATE - no healthy first wave: every observed BLEND generation row was already in the pathology band (min 1,802.75), unlike attempt 4 (healthy median 61.09 with escalation around contact ~50) and attempt 3 (healthy 32 ms/token first wave); combined with the slow canary this dates the degraded state to BEFORE this flight's sustained load",
+    "first_trip_window_ms_per_token": [6070.63, 5997.97, 5998.92, 5998.91, 5186.45, 4007.67, 2346.13, 2346.06],
+    "first_trip_rolling_median": 5592.21,
+    "recorded_trip": {"rolling_median_ms_per_token": 3176.9, "window_ms_per_token": [5998.92, 5998.91, 5186.45, 4007.67, 2346.13, 2346.06, 1853.76, 1802.75], "note": "several workers evaluated the window concurrently at the trip; the first raise aborted the loop and the launcher's wrapped-trip detection caught it"},
+    "loss_bounded": "the sentinel bounded attempt 5 to 16 core contacts and 343.8 s wall (vs attempt 3's 202 contacts and ~52 minutes inside the same pathology)"
+  },
+  "clock_lock_falsification": {
+    "hypothesis_under_test": "the progressive multi-slot decode degradation is the documented Aug-14 P-state-collapse pathology, and the historical Windows-side clock lock nvidia-smi -lgc 1200,2500 (present during all healthy 1,522-1,536 tok/s Aug-22 campaigns, absent since the Windows reboot) prevents it",
+    "mitigation_confirmed_in_place": "preflight idempotent re-issue receipt (verbatim in gpu_preflight.clock_lock) + idle instants reading 1,192 MHz (the lock floor) + mid-flight samples showing 2,482-2,490 MHz (the lock ceiling region) under load",
+    "mid_flight_windows_side_samples": "embedded in round0-attempt5-sentinel-abort.json (mid_flight_clock_samples_windows_side, 42 samples at ~10 s cadence, 11:46:59Z-11:54:08Z): the ENTIRE BLEND window 11:49:34Z-11:54:08Z reads clocks.sm 2,467-2,490 MHz at 97-100 % utilization and 41.84-45.61 W; the registered before-onset and after-onset sampling points are both covered (the whole window was degraded)",
+    "verdict": "FALSIFIED. The degradation reproduced with SM clocks pinned and VERIFIED at ~2,490 MHz throughout - there was no clock collapse to prevent. The failure signature is now sharper: full clocks, 100 % utilization, ~44 W power draw (the busy-spin band), ~6,000 ms/token decode. The GPU is spinning at full clock without doing proportional work - consistent with a pipeline stall (memory/paravirtualization/synchronization), not with P-state or clock management. The expectation registered for a HEALTHY confirmed flight (power well above 45 W during active decode) was never met: power sat AT the ~44 W busy-spin band the whole window.",
+    "distinction_from_aug_14": "the memorized Aug-14 pathology presented as clocks STUCK LOW (232 MHz, SW Power Cap, cool) and was fixed live by the lock; today's pathology presents at FULL locked clocks - these are different failure modes that share only the symptom of slow decode"
+  },
+  "trace_isolation": {
+    "worked": true,
+    "canary_sink": "canary-trace/ subdir, 14 records under the canary/ namespace, manifest bee883b29b1ffe2c16f8e79f87fbeecea26b25701cc53217cda85899213d039f, flushed and closed BEFORE arm BLEND",
+    "main_sink": "42 partial BLEND records flushed durable-first at the trip (the FIRST and only flush into the shared client sink), manifest ed02cc2695548437117c97719c3b19c2a8aefd80acfccc7b17b7b0e4f288eb21",
+    "resend_sink": "never reached (sentinel abort precedes the resend)",
+    "collisions": "ZERO"
+  },
+  "spend_durable": {
+    "attempt5_frozen_core_contacts": {"used": 16, "breakdown": "2 canary direct decodes + 14 BLEND contacts observed by the sentinel; resend never reached", "registered_attempt_ceiling": 210},
+    "attempt5_metered_audio_seconds": 35.1979375,
+    "attempt5_embedding_tool_contacts": {"used": 8, "breakdown": "6 runtime query embeddings + jitter pair (bit-identical, cosine 1.0); latency total 5.04 s", "registered_attempt_ceiling": 130},
+    "attempt5_prompt_tokens_total": 32759,
+    "attempt5_completion_tokens_total": 449,
+    "attempt5_contact_latency_seconds_total": 1891.438,
+    "attempt5_gpu_seconds_sampler_window": 281.92,
+    "attempt5_peak_vram_mib": 24057.0,
+    "attempt5_wall_seconds": 343.8,
+    "round0_cumulative_incl_attempts_1_2_3_4": {"frozen_core_contacts": 485, "embedding_tool_contacts": 198, "metered_audio_seconds": 1268.128875, "gpu_seconds_sampled_sum_across_attempts": 4413.76},
+    "campaign_ceilings": {"frozen_core_contacts": 1800, "embedding_tool_contacts": 1500, "metered_audio_seconds": 2400, "gpu_hours": 2.0},
+    "plan_declaration_verdict": "the run-cumulative declaration (700 calls / 1,850 audio-s) held: 485 cumulative calls and 1,268.13 cumulative audio-s; no budget refusal anywhere in this attempt",
+    "source": "adapter cost actuals recorded in the launcher-written sentinel abort record (calls_used=16, audio_seconds_used=35.1979375) + flight-state.json (serving descriptives, embedding accounting) + the Windows-side clock-sample file"
+  },
+  "boundary_respected": {
+    "gold_opened": false,
+    "round_sealed": false,
+    "note": "GOLD WAS NEVER OPENED and the round was NOT sealed or scored: the sentinel stopped the flight inside arm BLEND, before the resend and before the seal-before-score step. NO devel gold, reference transcript, prediction, correctness, or response meaning was read in this attempt. Durable and never read: the canary's records in their own sink, 42 partial BLEND trace records in the main sink, and 6 query embeddings (vectors + text hashes only). Attempt-1's M0 arm remains durable, verified, and reusable.",
+    "resend_pair": "never reached",
+    "value_vectors": "SEALED (never loaded)",
+    "m11_boundary_stage": "not flown (as registered)"
+  },
+  "serving_pathology_fourth_recurrence": {
+    "summary": "FOURTH consecutive reproduction, and the most informative: the pathology recurred (a) under a verified-held clock lock - falsifying the clock hypothesis - and (b) WITHOUT a healthy first wave, on a service instance that had already entered the pathology once (attempt 4) and then sat idle for ~20 minutes looking healthy. Single-slot canary decode on that instance was ~23x slower than the same canary on the same instance when fresh.",
+    "new_observation": "the degraded state appears to be RESIDENT (at least partly) in the llama-server process / CUDA context and to survive idle recovery: fresh instances (attempts 3, 4) gave 6.7-7.8 ms/token canaries and degraded only minutes into sustained 8-slot load; the once-degraded instance (attempt 5) was already ~170 ms/token single-slot and ~6,000 ms/token multi-slot from the first wave, while all GPU-side telemetry (idle power, clocks, temperature, VRAM) looked normal before takeoff",
+    "evidence": {
+      "canary_single_slot_same_session": "attempt 4 fresh: 7.37/7.83; attempt 5 after one degradation episode: 169.92/177.97",
+      "blend_all_observed": {"n": 14, "min": 1802.75, "median": 5998.91, "p90": 6242.54, "max": 6242.55},
+      "clock_lock_held": "2,467-2,490 MHz at 97-100 % util, 41.84-45.61 W, entire BLEND window (Windows-side authority)",
+      "not_the_embedder": "6 query embeddings totaled 5.04 s on the CPU sidecar",
+      "gpu_after_abort": "idle-healthy from both sides (0 %, 16 W, 180 MHz, 41 C) - as before every degraded flight"
+    },
+    "recommendation": "the coordinator/owner should pick the next mitigation with the clock hypothesis eliminated; candidates in evidence order: (1) FRESH SERVICE INSTANCE PER FLIGHT combined with REDUCED SLOT CONCURRENCY (-np 4 or -np 2) - fresh instances demonstrably restore the healthy band, and the degradation has only ever appeared under sustained 8-slot mixed decode; (2) llama.cpp build/driver-level investigation of the busy-spin (full clocks, ~44 W, ~6,000 ms/token; candidate areas: CUDA graph reuse, KV/prompt-cache growth, GPU-PV paravirtualization stalls under sustained concurrency); (3) periodic service restarts between arms as a stopgap. The clock lock is harmless and may stay, but it is NOT the remedy. The sentinel stays armed in ALL future attempts regardless."
+  },
+  "one_shot_consequence": "Attempt 5 is spent under one-shot semantics (no silent intra-round retry after real core spend). 16 of the registered 210 attempt contacts were used; the registration's science (fresh complete BLEND arm + resend, sealed and scored against reused M0) was NOT obtained: the sentinel stopped the flight inside arm BLEND, exactly as registered, and the registered mitigation-confirmation semantics produced the falsification finding instead. Whether a sixth round-0 attempt is authorized - with a serving mitigation chosen by the coordinator/owner from the updated evidence (fresh instance + reduced -np is now the leading candidate), both retained mechanisms kept, and the cumulative plan arithmetic extended (cumulative base is now 485 calls / 1,268.13 audio-s) - is the coordinator/owner's decision, not the implementer's. The campaign row stays open, consumed = no; nothing semantic was read; attempt-1's M0 arm remains durable and reusable.",
+  "mechanisms_verdict": "ALL REGISTERED MECHANISMS WORKED: (a) micro-run trace isolation - zero collisions across sinks for the second consecutive flight; (b) the in-flight decode-rate sentinel - bounded the loss to 343.8 s and 14 BLEND contacts, the cheapest abort of the campaign; (c) the NEW mid-flight Windows-side clock sampling - 42 samples captured and embedded into the sentinel abort record by the launcher exactly as registered, delivering the falsification evidence this attempt was flown to obtain. The hosting recipe survived its fourth flight untouched."
+}
