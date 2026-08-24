@@ -1,0 +1,115 @@
+{
+  "experiment_id": "SAEA-DEV100-KB-ALPHA-BLEND-CAMPAIGN",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "Multi-round DEV-100 agent-space optimization of the FROZEN baseline form (owner rulings 2026-08-23 section 7.1: two-contact knowledge-conditioned decode with out-of-core retrieval/ranking and alpha-blend consumption -- the C3 policy chain). Preregistration docs/readiness/2026-08-23-dev100-campaign-preregistration.md. Round 0 starts from the M11 operating-point sweep's recommended cell and each later round adjusts knobs from the PRIOR round's scored results; gold opens scoring-side only after a round's arms complete, never in runtime. This fragment is the machine-readable campaign contract: knob table, arms, stopping rule, ceilings, and the pinned knowledge snapshot. It carries no promotion claim -- the tuned config's confirmatory reading happens later on DEV-500, one-shot, per the ladder.",
+  "kb_campaign_authority": {
+    "preregistration": "docs/readiness/2026-08-23-dev100-campaign-preregistration.md",
+    "owner_rulings": "docs/readiness/2026-08-23-knowledge-plane-baseline-rulings.md",
+    "ruling_sections": ["2.2", "7.1", "7.2", "7.3"],
+    "expansion_gate_evidence": "docs/readiness/2026-08-23-m11-operating-point-sweep.md",
+    "expansion_gate_row": "SAEA-SN-MF-M11-OPERATING-POINT-SWEEP"
+  },
+  "kb_campaign_dataset_fragment": "slurp-speech-native-dev100",
+  "kb_campaign_split": {
+    "split_name": "DEV-100",
+    "split_role": "dev",
+    "use_partition_role": "dev",
+    "receipt": "docs/receipts/probe-samples/DEV-100.json",
+    "split_identity_hash": "e9a7b7febcf4fe3dc228370f7487e1e75dea3d63d447a07fbfe87c1404e2d853",
+    "receipt_integrity_hash": "d676d38b4d27b3a136ba2523b96ae3c71ba2b8b436f7712f4f0c976c3ea833e1",
+    "count": 100,
+    "audio_seconds_total": 275.700125
+  },
+  "kb_campaign_policy_chain": {
+    "controller_policy_id": "saea-kb-alpha-blend-v1",
+    "ranker_policy_id": "saea-rank-wcos-prior-agree-v1",
+    "fuser_policy_id": "saea-fuse-supplyfilter-v1",
+    "agent_executor_id": "openjiuwen-workflow-v1",
+    "policy_config_baseline": "configs/policy/kb-policy-v1.json",
+    "m11_pair_boundary_stage": false,
+    "m11_pair_boundary_rationale": "M11 operating-point sweep verdict: zero repairs as flown; its two missed repairs are captured by the blend layer at zero additional contacts."
+  },
+  "kb_campaign_knowledge_snapshot": {
+    "snapshot_id": "slurp-kb-distmodel-76e61b0666162aa7",
+    "builder_policy_id": "saea-kb-distmodel-v1",
+    "receipt": "docs/receipts/knowledge/slurp-kb-size-full.json",
+    "snapshot_artifact_relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-full/snapshot.json",
+    "snapshot_sha256": "e27b274516604ffc0e21319758aea99dc027f459d480a32a74a715b023a51b57",
+    "source_split": "train",
+    "source_split_identity_hash": "6a6677e97a64063b8672b2d175bd6378bcf9b644346fa2d249cc2d80343b252c",
+    "facet_count": 11863,
+    "value_count": 11514
+  },
+  "kb_campaign_round0_knobs": {
+    "alpha": 0.6,
+    "rank_weight_id": "rrf",
+    "evidence_variant": "rank+prior+agreement",
+    "tau": 0.5,
+    "top_k_per_dimension": 5,
+    "fusion_m": 5,
+    "fusion_c": 2,
+    "fusion_top_l": 3,
+    "rank_weights": {"w_cos": 0.5, "w_prior": 0.3, "w_agree": 0.2},
+    "prior_source": "train",
+    "derivation": "M11 operating-point sweep recommended cell: +2/+1 over primary on BOTH exposed splits with zero correct-to-wrong on either; contiguous positive plateau alpha in [0.54, 0.65], so 0.60 sits mid-plateau rather than on a knife edge."
+  },
+  "kb_campaign_tunable_knobs": [
+    "alpha",
+    "rank_weight_id",
+    "evidence_variant",
+    "tau",
+    "top_k_per_dimension",
+    "fusion_m",
+    "fusion_c",
+    "fusion_top_l",
+    "rank_weights",
+    "prior_source"
+  ],
+  "kb_campaign_arms": [
+    {
+      "arm_id": "M0",
+      "description": "direct decode, one contact per sample, no knowledge",
+      "contacts_per_sample": 1
+    },
+    {
+      "arm_id": "BLEND",
+      "description": "C3 alpha-blend: direct decode, then acquire, then evidence-conditioned decode; every contact carries the original speech packet",
+      "contacts_per_sample": 2,
+      "tool_contacts_per_sample": 1
+    }
+  ],
+  "kb_campaign_stopping_rule": {
+    "converged": {
+      "metric": "best_arm_correct_sample_count",
+      "maximum_absolute_delta_samples": 1,
+      "consecutive_rounds": 2,
+      "maximum_correct_to_wrong_growth": 0
+    },
+    "falsified": {
+      "condition": "no_arm_beats_direct_decode",
+      "after_completed_rounds": 3
+    },
+    "hard_cap_rounds": 6,
+    "evaluation_moment": "between rounds only, after every arm of a round has completed (runner seal-before-score); gold never enters runtime"
+  },
+  "kb_campaign_ceilings": {
+    "frozen_core_contacts_total": 1800,
+    "frozen_core_contacts_per_round": 300,
+    "pinned_tool_embedding_contacts_total": 1500,
+    "metered_audio_seconds_total": 2400,
+    "gpu_hours_total": 2.0,
+    "one_shot_semantics": "per ROUND attempt; no silent intra-round retry. The campaign exposure row stays open across rounds with per-round accounting appended until the stopping rule fires."
+  },
+  "kb_campaign_per_round_discipline": {
+    "record_server_np": true,
+    "record_identical_prompt_resend_pair": true,
+    "resend_rationale": "the pcorrf divergence lesson: each round records the server -np and one byte-identical prompt resend pair.",
+    "outputs": [
+      "per-arm accuracy",
+      "wrong-to-correct count",
+      "correct-to-wrong count",
+      "contacts used",
+      "worst-round disclosure"
+    ]
+  }
+}

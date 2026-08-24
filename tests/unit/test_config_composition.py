@@ -995,3 +995,156 @@ def test_prefix_probe_profiles_bind_wire_order_and_exact_prompt_receipt(
     assert values["decoding_params"]["id_slot"] == "per-sample"
     assert values["speech_native_prompt_fit_receipt"] == prompt_receipt
     assert values["speech_native_prompt_fit_receipt_sha256"] == prompt_receipt_sha256
+
+
+def test_dev100_kb_alpha_blend_campaign_composes_on_the_resident_zero_copy_service():
+    """The DEV-100 optimization campaign attaches to the SAME resident
+    zero-copy service the E108 cell flew on, over the DEV-100 runtime view.
+
+    Three properties are load-bearing and asserted rather than described.
+
+    First, the campaign is a DEV-role composition: the dataset fragment's
+    embedded ``split_identity_hash`` is the SLASH-prefixed run identity
+    ``load_split``/``ExecutionPlan``/``protocol_hash`` use, not the DEV-100
+    receipt's colon-keyed receipt-integrity value -- binding the two by
+    construction is what closes the defect class that refused the 2026-08-22
+    E108 current-binding plan.
+
+    Second, the model fragment must reproduce the running service argv
+    exactly: this composition attaches to an already-resident server and
+    never launches one, so any server_args drift is an attachment refusal.
+
+    Third, the campaign's scientific contract -- the C3 policy chain, the
+    round-0 knob table, the pinned TRAIN snapshot, the preregistered stopping
+    rule, and the section-4 ceilings -- is machine-readable and pinned here,
+    so a later round cannot quietly move a knob or a stopping condition
+    without this test changing with it.
+    """
+
+    from speech_aware_evidence_acquisition.e0.artifacts import REPO_ROOT
+    from speech_aware_evidence_acquisition.rails import kb_policy
+
+    composed = compose(
+        REPO_ROOT,
+        "q4km-mmproj-free-speech-native-np16-zcopy-speech-query-prefix-max64",
+        "slurp-speech-native-dev100",
+        "slurp-dev100-kb-alpha-blend",
+        "slurp-dev100-kb-alpha-blend-campaign-v1",
+    )
+    values = composed.values
+
+    assert values["experiment_id"] == "SAEA-DEV100-KB-ALPHA-BLEND-CAMPAIGN"
+    assert values["execution_profile"] == "bounded-discovery-probe"
+
+    # DEV-role split identity, load_split convention.
+    assert values["split_name"] == "DEV-100"
+    assert values["split_role"] == "dev"
+    assert values["count"] == 100
+    assert values["audio_seconds_total"] == 275.700125
+    assert values["split_identity_hash"] == (
+        "e9a7b7febcf4fe3dc228370f7487e1e75dea3d63d447a07fbfe87c1404e2d853"
+    )
+    assert values["kb_campaign_split"]["receipt_integrity_hash"] == (
+        "d676d38b4d27b3a136ba2523b96ae3c71ba2b8b436f7712f4f0c976c3ea833e1"
+    )
+    assert values["kb_campaign_dataset_fragment"] == "slurp-speech-native-dev100"
+    # DEV media is already inside the immutable D1 closure, so the view
+    # declares no supplement at all.
+    assert values["d1_media_supplement"] is None
+    assert values["d1_media_supplement_sha256"] is None
+
+    # The resident SAEA-SN-Q4KM-NP16-HOT-PREFIX-ZCOPY argv, byte for byte.
+    assert values["server_args"] == [
+        "-c", "65536", "-np", "16", "-b", "2048", "-ub", "512",
+        "-fa", "on", "-ngl", "999", "-ctk", "q8_0", "-ctv", "q8_0",
+        "--cache-prompt", "--cache-ram", "0",
+        "--no-cache-idle-slots", "--slot-prompt-similarity", "0",
+    ]
+    assert values["prompt_order"] == "speech-query-prefix-v2"
+    assert values["server_env"] == {
+        "LLAMA_SPEECH_FEATURE_ROOT": (
+            "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a"
+        ),
+        "LLAMA_SPEECH_DECODER_SHA256": (
+            "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d"
+        ),
+    }
+    assert values["speech_packet_promotion_receipt"].endswith("/DEV-100-promotion.json")
+    assert values["speech_packet_promotion_receipt_sha256"] == (
+        "8d2dc4dc9056ed604b22cbb66cd46724d3ee0246b6aca5665e6bfaf67cf0503d"
+    )
+
+    # The frozen baseline form (owner ruling 2026-08-23 section 7.1).
+    assert values["kb_campaign_policy_chain"] == {
+        "controller_policy_id": "saea-kb-alpha-blend-v1",
+        "ranker_policy_id": "saea-rank-wcos-prior-agree-v1",
+        "fuser_policy_id": "saea-fuse-supplyfilter-v1",
+        "agent_executor_id": "openjiuwen-workflow-v1",
+        "policy_config_baseline": "configs/policy/kb-policy-v1.json",
+        "m11_pair_boundary_stage": False,
+        "m11_pair_boundary_rationale": (
+            "M11 operating-point sweep verdict: zero repairs as flown; its two "
+            "missed repairs are captured by the blend layer at zero additional "
+            "contacts."
+        ),
+    }
+    assert values["kb_campaign_policy_chain"]["controller_policy_id"] == (
+        kb_policy.CONTROLLER_POLICY_ID
+    )
+    assert values["kb_campaign_policy_chain"]["ranker_policy_id"] == (
+        kb_policy.RANK_POLICY_ID
+    )
+    assert values["kb_campaign_policy_chain"]["fuser_policy_id"] == (
+        kb_policy.FUSE_POLICY_ID
+    )
+
+    # Round-0 knobs: the sweep-recommended cell, mid-plateau on alpha.
+    knobs = values["kb_campaign_round0_knobs"]
+    assert knobs["alpha"] == 0.6
+    assert knobs["rank_weight_id"] == "rrf"
+    assert knobs["evidence_variant"] == "rank+prior+agreement"
+    assert knobs["tau"] == 0.5
+    assert knobs["top_k_per_dimension"] == 5
+    assert knobs["prior_source"] == "train"
+    assert knobs["rank_weights"] == {"w_cos": 0.5, "w_prior": 0.3, "w_agree": 0.2}
+
+    # The pinned TRAIN snapshot, exactly the KB-BUILD receipt's own hash.
+    kb_receipt = json.loads(
+        (REPO_ROOT / "docs" / "receipts" / "knowledge" / "slurp-kb-size-full.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    assert values["kb_campaign_knowledge_snapshot"]["snapshot_sha256"] == (
+        kb_receipt["snapshot_sha256"]
+    )
+    assert values["kb_campaign_knowledge_snapshot"]["source_split"] == "train"
+
+    # The preregistered stopping rule, machine-readable.
+    assert values["kb_campaign_stopping_rule"] == {
+        "converged": {
+            "metric": "best_arm_correct_sample_count",
+            "maximum_absolute_delta_samples": 1,
+            "consecutive_rounds": 2,
+            "maximum_correct_to_wrong_growth": 0,
+        },
+        "falsified": {
+            "condition": "no_arm_beats_direct_decode",
+            "after_completed_rounds": 3,
+        },
+        "hard_cap_rounds": 6,
+        "evaluation_moment": (
+            "between rounds only, after every arm of a round has completed "
+            "(runner seal-before-score); gold never enters runtime"
+        ),
+    }
+
+    # Preregistration section 4 ceilings.
+    ceilings = values["kb_campaign_ceilings"]
+    assert ceilings["frozen_core_contacts_total"] == 1800
+    assert ceilings["frozen_core_contacts_per_round"] == 300
+    assert ceilings["pinned_tool_embedding_contacts_total"] == 1500
+    assert ceilings["metered_audio_seconds_total"] == 2400
+    assert ceilings["gpu_hours_total"] == 2.0
+
+    # Record the composed identity so a fragment edit is a visible test move.
+    assert composed.config_hash == "668a0f1c6adfc11228535dd6bcedf56284c446551077a1e137576533e8b638dd"
