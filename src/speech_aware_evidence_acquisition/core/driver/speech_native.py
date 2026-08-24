@@ -7599,48 +7599,28 @@ def profile_prompt_work_eligibility(
     return result
 
 
-def profile_server_slot_event_gpu_metrics(
+def _scan_server_slot_events(
     *,
     server_log_path: Path,
     server_log_start_offset: int,
     session_started_at: str,
-    resource_summary: Mapping[str, object],
     slot_count: int,
     expected_contact_count: int,
     server_log_end_offset: int | None = None,
-    gpu_timeline_required: bool = False,
-) -> dict[str, int | float | str | None]:
-    """Pair GPU samples with llama-server's native slot lifecycle events.
+) -> dict[str, object]:
+    """Replay llama-server's native slot launch/release events over one window.
 
-    The server writes launch/release events on its own timeline while the GPU
-    sampler runs independently. Replaying those events removes the blocking
-    ``nvidia-smi -> GET /slots`` dependency and its load-dependent HTTP skew.
-    The session receipt's pre-spawn wall timestamp anchors the server's elapsed
-    log clock; the first log timestamp is a conservative upper bound on that
-    clock-alignment error.
+    Extracted verbatim from :func:`profile_server_slot_event_gpu_metrics`
+    (pure move, no behaviour change) so the same fail-closed lifecycle proof
+    can be replayed by a caller that needs the raw event timeline rather than
+    the GPU pairing -- notably the model-free finalize-from-disk path, which
+    has no GPU sample timeline to pair against but must still prove the run's
+    own soundness.
 
-    The slot-event lifecycle checks below (log format, launch/release
-    balance, contact-completeness) always run and always fail closed --
-    they prove, independently of the GPU sampler, whether the run itself was
-    sound.
-
-    GPU *utilization* numbers are a different story. Owner ruling
-    ``docs/readiness/2026-08-23-knowledge-plane-baseline-rulings.md`` S2.1
-    demoted them from a scientific-admission criterion to DESCRIPTIVE
-    reporting, so by default (``gpu_timeline_required=False``) a GPU sampler
-    outage (missing ``nvidia-smi``, a failed first poll, a crashed polling
-    thread -- see ``core.resources.NvidiaSmiSampler``, which already degrades
-    to ``NOT_AVAILABLE`` plus a reason and never raises) degrades this
-    function's GPU-derived fields to ``NOT_AVAILABLE`` plus a
-    ``gpu_telemetry_defect`` reason instead of raising -- an otherwise-complete
-    run's finalization must never be destroyed by missing GPU telemetry (the
-    2026-08-23 E108 incident; ``docs/readiness/
-    2026-08-23-e108-attempt-finalization-adjudication.md`` S3).
-    ``gpu_timeline_required=True`` restores the previous fail-closed behaviour
-    for a caller that treats GPU saturation as a hard ENGINEERING admission
-    gate (owner ruling S2.1 keeps the 95/90 median/P10 requirement for
-    engineering-baseline acceptance) rather than a scientific descriptive
-    receipt field.
+    Every check here fails closed and is entirely independent of the GPU
+    sampler: log clock format, monotonicity, per-slot launch/release balance,
+    no task straddling the window boundary, and launch/release counts equal to
+    ``expected_contact_count``.
     """
 
     for name, value in (
@@ -7763,6 +7743,75 @@ def profile_server_slot_event_gpu_metrics(
         )
     if first_elapsed_seconds is None:
         raise SpeechNativeProfileError("server log has no timestamped record")
+    return {
+        "event_times": event_times,
+        "event_active_counts": event_active_counts,
+        "launch_count": launch_count,
+        "release_count": release_count,
+        "first_elapsed_seconds": first_elapsed_seconds,
+    }
+
+
+def profile_server_slot_event_gpu_metrics(
+    *,
+    server_log_path: Path,
+    server_log_start_offset: int,
+    session_started_at: str,
+    resource_summary: Mapping[str, object],
+    slot_count: int,
+    expected_contact_count: int,
+    server_log_end_offset: int | None = None,
+    gpu_timeline_required: bool = False,
+) -> dict[str, int | float | str | None]:
+    """Pair GPU samples with llama-server's native slot lifecycle events.
+
+    The server writes launch/release events on its own timeline while the GPU
+    sampler runs independently. Replaying those events removes the blocking
+    ``nvidia-smi -> GET /slots`` dependency and its load-dependent HTTP skew.
+    The session receipt's pre-spawn wall timestamp anchors the server's elapsed
+    log clock; the first log timestamp is a conservative upper bound on that
+    clock-alignment error.
+
+    The slot-event lifecycle checks below (log format, launch/release
+    balance, contact-completeness) always run and always fail closed --
+    they prove, independently of the GPU sampler, whether the run itself was
+    sound.
+
+    GPU *utilization* numbers are a different story. Owner ruling
+    ``docs/readiness/2026-08-23-knowledge-plane-baseline-rulings.md`` S2.1
+    demoted them from a scientific-admission criterion to DESCRIPTIVE
+    reporting, so by default (``gpu_timeline_required=False``) a GPU sampler
+    outage (missing ``nvidia-smi``, a failed first poll, a crashed polling
+    thread -- see ``core.resources.NvidiaSmiSampler``, which already degrades
+    to ``NOT_AVAILABLE`` plus a reason and never raises) degrades this
+    function's GPU-derived fields to ``NOT_AVAILABLE`` plus a
+    ``gpu_telemetry_defect`` reason instead of raising -- an otherwise-complete
+    run's finalization must never be destroyed by missing GPU telemetry (the
+    2026-08-23 E108 incident; ``docs/readiness/
+    2026-08-23-e108-attempt-finalization-adjudication.md`` S3).
+    ``gpu_timeline_required=True`` restores the previous fail-closed behaviour
+    for a caller that treats GPU saturation as a hard ENGINEERING admission
+    gate (owner ruling S2.1 keeps the 95/90 median/P10 requirement for
+    engineering-baseline acceptance) rather than a scientific descriptive
+    receipt field.
+    """
+
+    lifecycle = _scan_server_slot_events(
+        server_log_path=server_log_path,
+        server_log_start_offset=server_log_start_offset,
+        session_started_at=session_started_at,
+        slot_count=slot_count,
+        expected_contact_count=expected_contact_count,
+        server_log_end_offset=server_log_end_offset,
+    )
+    event_times = lifecycle["event_times"]
+    event_active_counts = lifecycle["event_active_counts"]
+    launch_count = lifecycle["launch_count"]
+    release_count = lifecycle["release_count"]
+    first_elapsed_seconds = lifecycle["first_elapsed_seconds"]
+    assert isinstance(event_times, list)
+    assert isinstance(event_active_counts, list)
+    assert isinstance(first_elapsed_seconds, float)
 
     raw_samples = resource_summary.get("request_gpu_samples")
     if raw_samples is not None and not isinstance(raw_samples, list):
@@ -12372,6 +12421,920 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
                 "attempt_id": plan.attempt_id,
                 "flight_receipt": str(flight_receipt_path),
                 "status": "FINALIZED",
+            },
+            indent=2,
+            sort_keys=True,
+        )
+    )
+    return 0
+
+
+FINALIZE_FROM_DISK_MODE_ID = "rebuilt-from-disk-v1"
+_FINALIZE_FROM_DISK_UNREAD_CHANNELS = ("MODEL_RESPONSE", "decisions.jsonl rows")
+_FINALIZE_FROM_DISK_PROFILE_IDENTITY_KEYS = (
+    "agent_aggregator_id",
+    "agent_policy_id",
+    "context_tokens_per_slot",
+    "context_tokens_total",
+    "key_order_ids",
+    "key_representation_id",
+    "matcher_policy_id",
+    "mechanism_control_id",
+    "queue_depth",
+    "slot_count",
+    "top_k",
+)
+
+
+def _count_jsonl_lines(path: Path) -> int:
+    """Count rows of a JSONL file WITHOUT decoding or parsing any row.
+
+    Label blindness is structural here, not a convention: the bytes of each
+    line are never decoded to text and never handed to ``json.loads``, so no
+    prediction, label, correctness, reward, or response meaning can leak into
+    the caller through this function.
+    """
+
+    count = 0
+    try:
+        with Path(path).open("rb") as handle:
+            for raw_line in handle:
+                if raw_line.strip():
+                    count += 1
+    except OSError as error:
+        raise SpeechNativeProfileError(
+            f"cannot count decision rows: {error}"
+        ) from error
+    return count
+
+
+def derive_server_log_window_for_contacts(
+    *,
+    server_log_path: Path,
+    expected_contact_count: int,
+    server_log_end_offset: int | None = None,
+) -> tuple[int, int]:
+    """Locate the trailing log window holding exactly N slot launches.
+
+    A live flight records its own ``[start, end)`` byte window while it runs.
+    An attempt that died before minting its receipt never persisted those
+    offsets, so a from-disk rebuild has to re-derive them. The derivation is
+    deliberately a *hypothesis*: take the byte offset of the line carrying the
+    ``expected_contact_count``-th launch counted back from the window end. It
+    is then handed to :func:`_scan_server_slot_events`, whose independent
+    fail-closed checks -- no task straddling the start boundary, no slot left
+    active at the end, and launch/release counts both equal to
+    ``expected_contact_count`` -- are what actually admit or reject it. A
+    window that does not correspond to exactly one quiescent flight cannot
+    survive those checks.
+    """
+
+    if (
+        isinstance(expected_contact_count, bool)
+        or not isinstance(expected_contact_count, int)
+        or expected_contact_count <= 0
+    ):
+        raise SpeechNativeProfileError(
+            "expected_contact_count must be a positive integer"
+        )
+    try:
+        log_bytes = Path(server_log_path).read_bytes()
+    except OSError as error:
+        raise SpeechNativeProfileError(
+            f"cannot read profile server log: {error}"
+        ) from error
+    if server_log_end_offset is None:
+        server_log_end_offset = len(log_bytes)
+    if (
+        isinstance(server_log_end_offset, bool)
+        or not isinstance(server_log_end_offset, int)
+        or server_log_end_offset < 0
+        or server_log_end_offset > len(log_bytes)
+    ):
+        raise SpeechNativeProfileError("server log end offset is outside the log")
+    launch_offsets: list[int] = []
+    byte_offset = 0
+    for raw_line in log_bytes[:server_log_end_offset].splitlines(keepends=True):
+        if _SERVER_SLOT_LAUNCH.search(raw_line) is not None:
+            launch_offsets.append(byte_offset)
+        byte_offset += len(raw_line)
+    if len(launch_offsets) < expected_contact_count:
+        raise SpeechNativeProfileError(
+            f"server log holds {len(launch_offsets)} slot launches before the window "
+            f"end but {expected_contact_count} contacts were recorded"
+        )
+    return launch_offsets[-expected_contact_count], server_log_end_offset
+
+
+def read_attempt_trace_facts(path: Path) -> dict[str, object]:
+    """Summarise one attempt trace without ever opening ``MODEL_RESPONSE``.
+
+    The live receipt takes its token maxima from each response record's
+    ``usage`` block. This function refuses to touch a response record's
+    payload at all -- it counts the record and moves on -- and takes the same
+    per-contact token accounting from the ``COST`` channel, which carries the
+    identical metered figures. Only structural carriage fields are read from
+    ``MODEL_REQUEST``: never the prompt, the messages, or any generated text.
+    """
+
+    request_count = 0
+    response_count = 0
+    cost_count = 0
+    calls_total = 0
+    prompt_tokens_total = 0
+    completion_tokens_total = 0
+    audio_seconds_total = 0.0
+    latency_seconds_total = 0.0
+    max_prompt_tokens = 0
+    max_completion_tokens = 0
+    counts = Counter(
+        {
+            "model_request_count": 0,
+            "valid_speech_query_count": 0,
+            "invalid_speech_query_count": 0,
+            "unknown_sample_id_count": 0,
+            "query_source_failure_count": 0,
+            "mmproj_flag_failure_count": 0,
+            "packet_binding_failure_count": 0,
+        }
+    )
+    sample_ids: set[str] = set()
+    packet_ids: set[str] = set()
+    try:
+        with Path(path).open("r", encoding="utf-8") as handle:
+            for line in handle:
+                record = json.loads(line)
+                channel = record.get("channel")
+                if channel == "MODEL_RESPONSE":
+                    # Counted, never opened: the payload is not touched here.
+                    response_count += 1
+                    continue
+                if channel == "COST":
+                    cost_count += 1
+                    payload = record.get("payload")
+                    if not isinstance(payload, Mapping):
+                        raise SpeechNativeProfileError("trace cost record is malformed")
+                    calls = payload.get("calls")
+                    prompt_tokens = payload.get("prompt_tokens")
+                    completion_tokens = payload.get("completion_tokens")
+                    audio_seconds = payload.get("audio_seconds")
+                    latency_seconds = payload.get("latency_seconds")
+                    for name, value in (
+                        ("calls", calls),
+                        ("prompt_tokens", prompt_tokens),
+                        ("completion_tokens", completion_tokens),
+                    ):
+                        if (
+                            isinstance(value, bool)
+                            or not isinstance(value, int)
+                            or value < 0
+                        ):
+                            raise SpeechNativeProfileError(
+                                f"trace cost record {name} is malformed"
+                            )
+                    for name, value in (
+                        ("audio_seconds", audio_seconds),
+                        ("latency_seconds", latency_seconds),
+                    ):
+                        if (
+                            isinstance(value, bool)
+                            or not isinstance(value, (int, float))
+                            or not math.isfinite(float(value))
+                            or float(value) < 0
+                        ):
+                            raise SpeechNativeProfileError(
+                                f"trace cost record {name} is malformed"
+                            )
+                    assert isinstance(calls, int)
+                    assert isinstance(prompt_tokens, int)
+                    assert isinstance(completion_tokens, int)
+                    calls_total += calls
+                    prompt_tokens_total += prompt_tokens
+                    completion_tokens_total += completion_tokens
+                    audio_seconds_total += float(audio_seconds)  # type: ignore[arg-type]
+                    latency_seconds_total += float(latency_seconds)  # type: ignore[arg-type]
+                    max_prompt_tokens = max(max_prompt_tokens, prompt_tokens)
+                    max_completion_tokens = max(
+                        max_completion_tokens, completion_tokens
+                    )
+                    continue
+                if channel != "MODEL_REQUEST":
+                    continue
+                request_count += 1
+                counts["model_request_count"] += 1
+                envelope = record.get("payload")
+                payload = (
+                    envelope.get("payload") if isinstance(envelope, Mapping) else None
+                )
+                if not isinstance(payload, Mapping):
+                    payload = {}
+                sample_id = payload.get("sample_id")
+                if isinstance(sample_id, str) and sample_id:
+                    sample_ids.add(sample_id)
+                else:
+                    counts["unknown_sample_id_count"] += 1
+                source_valid = payload.get("query_source") == "speech_features"
+                mmproj_valid = payload.get("mmproj_loaded") is False
+                if not source_valid:
+                    counts["query_source_failure_count"] += 1
+                if not mmproj_valid:
+                    counts["mmproj_flag_failure_count"] += 1
+                parts = payload.get("speech_feature_parts")
+                query_parts = (
+                    [
+                        dict(part)
+                        for part in parts
+                        if isinstance(part, Mapping) and part.get("role") == "query"
+                    ]
+                    if isinstance(parts, list)
+                    else []
+                )
+                packet_sha256 = payload.get("speech_packet_sha256")
+                binding_valid = (
+                    len(query_parts) == 1
+                    and isinstance(packet_sha256, str)
+                    and _SHA256.fullmatch(packet_sha256) is not None
+                    and query_parts[0].get("sha256") == packet_sha256
+                    and isinstance(query_parts[0].get("packet_id"), str)
+                    and bool(query_parts[0].get("packet_id"))
+                )
+                if binding_valid:
+                    packet_ids.add(str(query_parts[0]["packet_id"]))
+                else:
+                    counts["packet_binding_failure_count"] += 1
+                if source_valid and mmproj_valid and binding_valid:
+                    counts["valid_speech_query_count"] += 1
+                else:
+                    counts["invalid_speech_query_count"] += 1
+    except (
+        OSError,
+        UnicodeError,
+        json.JSONDecodeError,
+        TypeError,
+        ValueError,
+    ) as error:
+        raise SpeechNativeProfileError(
+            f"cannot verify profile trace from disk: {error}"
+        ) from error
+    return {
+        "trace_usage": {
+            "model_request_count": request_count,
+            "model_response_count": response_count,
+            "cost_record_count": cost_count,
+            "max_prompt_tokens": max_prompt_tokens,
+            "max_completion_tokens": max_completion_tokens,
+        },
+        "trace_usage_source": "cost-channel-token-accounting-v1",
+        "cost": {
+            "calls_used": calls_total,
+            "prompt_tokens_total": prompt_tokens_total,
+            "completion_tokens_total": completion_tokens_total,
+            "audio_seconds_used": audio_seconds_total,
+            "latency_seconds_total": latency_seconds_total,
+        },
+        "speech_query": dict(counts),
+        "distinct_query_sample_id_count": len(sample_ids),
+        "distinct_query_packet_id_count": len(packet_ids),
+    }
+
+
+def build_flight_receipt_from_disk(
+    *,
+    attempt_dir: Path,
+    plan: ExecutionPlan,
+    config_hash: str,
+    profile_identity: Mapping[str, object],
+    contact_ceiling_per_task: int,
+    expected_task_count: int,
+    result_mode: str,
+    transport_prompt_order: str,
+    binding_path: Path,
+    packet_receipt_path: Path,
+    server_log_path: Path,
+    server_log_start_offset: int,
+    server_log_end_offset: int,
+    session_started_at: str,
+    source_session_receipt_sha256: str,
+    authorization: str,
+    exposure_row: str,
+    rebuilt_at: str,
+) -> dict[str, object]:
+    """Rebuild one interrupted attempt's flight receipt from durable records.
+
+    A pure function of its inputs: every value it returns is derived from the
+    bytes named by its arguments, so two rebuilds of the same attempt produce
+    byte-identical data-derived fields. ``rebuilt_at`` is the single
+    wall-clock input; it is carried in ``finalization.rebuilt_at`` and is
+    excluded from ``finalization.content_sha256`` (as is the content hash
+    itself), which is the receipt schema's convention -- no other receipt
+    field has ever recorded a timestamp.
+
+    It contacts nothing. It constructs no transport, no client, and no socket:
+    the resident service's session receipt and log are read as bytes, and the
+    frozen core is not spoken to in any form. It is also label blind:
+    ``decisions.jsonl`` is line-counted through :func:`_count_jsonl_lines`
+    without decoding a row, and the trace's ``MODEL_RESPONSE`` channel is
+    counted but never opened (:func:`read_attempt_trace_facts`).
+
+    GPU-derived fields degrade to ``NOT_AVAILABLE`` with a
+    ``gpu_telemetry_defect`` reason (the repaired mode of
+    :func:`profile_server_slot_event_gpu_metrics`), while the slot-event
+    lifecycle checks re-run on their own merits and still fail closed.
+    """
+
+    attempt_dir = Path(attempt_dir)
+    flight_receipt_path = attempt_dir / "flight-receipt.json"
+    if flight_receipt_path.exists():
+        raise SpeechNativeProfileError(
+            f"attempt is already finalized: {flight_receipt_path} exists; "
+            "a rebuilt receipt must never overwrite a minted one"
+        )
+    for name in _FINALIZE_FROM_DISK_PROFILE_IDENTITY_KEYS:
+        if name not in profile_identity:
+            raise SpeechNativeProfileError(
+                f"finalize-from-disk profile identity lacks {name!r}"
+            )
+    if (
+        isinstance(contact_ceiling_per_task, bool)
+        or not isinstance(contact_ceiling_per_task, int)
+        or contact_ceiling_per_task <= 0
+    ):
+        raise SpeechNativeProfileError(
+            "contact_ceiling_per_task must be a positive integer"
+        )
+    if result_mode != "predictions":
+        raise SpeechNativeProfileError(
+            "finalize-from-disk applies only to a predictions-mode attempt"
+        )
+    slot_count = profile_identity["slot_count"]
+    context_tokens_per_slot = profile_identity["context_tokens_per_slot"]
+    if (
+        isinstance(slot_count, bool)
+        or not isinstance(slot_count, int)
+        or slot_count <= 0
+        or isinstance(context_tokens_per_slot, bool)
+        or not isinstance(context_tokens_per_slot, int)
+        or context_tokens_per_slot <= 0
+    ):
+        raise SpeechNativeProfileError(
+            "finalize-from-disk profile geometry is malformed"
+        )
+
+    plan_copy_path = attempt_dir / f"{plan.run_id}.plan.json"
+    session_receipt_path = attempt_dir / f"{plan.run_id}.session-receipt.json"
+    stop_receipt_path = attempt_dir / f"{plan.run_id}.session-stop-receipt.json"
+    audit_path = attempt_dir / f"{plan.run_id}.mmproj-audit.json"
+    trace_path = attempt_dir / f"{plan.run_id}.trace.jsonl"
+    trace_manifest_path = attempt_dir / f"{plan.run_id}.trace-manifest.json"
+    decisions_path = attempt_dir / "decisions.jsonl"
+    for required in (
+        plan_copy_path,
+        session_receipt_path,
+        audit_path,
+        trace_path,
+        trace_manifest_path,
+        decisions_path,
+    ):
+        if not required.is_file():
+            raise SpeechNativeProfileError(
+                f"finalize-from-disk requires a durable {required.name}; it is missing"
+            )
+    try:
+        plan_copy = json.loads(plan_copy_path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as error:
+        raise SpeechNativeProfileError(
+            f"cannot read the attempt-local plan copy: {error}"
+        ) from error
+    if plan_copy != asdict(plan):
+        raise SpeechNativeProfileError(
+            "the attempt-local plan copy does not match the supplied execution plan"
+        )
+
+    # decisions.jsonl exists only when the flight's own try/except recorded no
+    # failure (``result_mode == "predictions" and failure is None``), so its
+    # presence is the on-disk proof that no request failed.
+    task_count = _count_jsonl_lines(decisions_path)
+    if task_count <= 0 or task_count != expected_task_count:
+        raise SpeechNativeProfileError(
+            f"decision rows ({task_count}) do not match the registered task count "
+            f"({expected_task_count})"
+        )
+    planned_contact_ceiling = task_count * contact_ceiling_per_task
+    if planned_contact_ceiling != plan.planned_model_calls:
+        raise SpeechNativeProfileError(
+            f"attempt expands to a {planned_contact_ceiling}-contact ceiling but the "
+            f"plan registers {plan.planned_model_calls}"
+        )
+
+    trace_facts = read_attempt_trace_facts(trace_path)
+    trace_usage = trace_facts["trace_usage"]
+    cost = trace_facts["cost"]
+    trace_speech_query = trace_facts["speech_query"]
+    assert isinstance(trace_usage, Mapping)
+    assert isinstance(cost, Mapping)
+    assert isinstance(trace_speech_query, Mapping)
+    actual_contact_count = int(cost["calls_used"])
+    if actual_contact_count <= 0:
+        raise SpeechNativeProfileError("the attempt trace records no contact")
+    if trace_facts["distinct_query_sample_id_count"] != task_count:
+        raise SpeechNativeProfileError(
+            "traced query sample identities do not cover the decision rows"
+        )
+
+    audit_document = _load_json_object(audit_path, artifact_name="mmproj process audit")
+    if (
+        audit_document.get("mmproj_loaded") is not False
+        or audit_document.get("mmproj_hit_count") != 0
+    ):
+        raise SpeechNativeProfileError(
+            "the attempt's process audit does not prove an mmproj-free service"
+        )
+    session_document = _load_json_object(
+        session_receipt_path, artifact_name="attempt session receipt"
+    )
+    if session_document.get("started_at") != session_started_at:
+        raise SpeechNativeProfileError(
+            "session_started_at does not match the attempt's own session receipt"
+        )
+
+    resource_summary: dict[str, object] = {
+        "source": FINALIZE_FROM_DISK_MODE_ID,
+        "request_gpu_samples": [],
+        "gpu_seconds": NOT_AVAILABLE,
+        "gpu_sampling_reason": (
+            "the flown attempt's GPU sampler never started, and a from-disk "
+            "rebuild samples nothing"
+        ),
+    }
+    lifecycle = _scan_server_slot_events(
+        server_log_path=server_log_path,
+        server_log_start_offset=server_log_start_offset,
+        server_log_end_offset=server_log_end_offset,
+        session_started_at=session_started_at,
+        slot_count=slot_count,
+        expected_contact_count=actual_contact_count,
+    )
+    saturated_gpu = profile_server_slot_event_gpu_metrics(
+        server_log_path=server_log_path,
+        server_log_start_offset=server_log_start_offset,
+        server_log_end_offset=server_log_end_offset,
+        session_started_at=session_started_at,
+        resource_summary=resource_summary,
+        slot_count=slot_count,
+        expected_contact_count=actual_contact_count,
+    )
+    if saturated_gpu.get("gpu_telemetry_defect") is None:
+        raise SpeechNativeProfileError(
+            "finalize-from-disk must record an explicit GPU telemetry defect"
+        )
+    server_scan = _scan_server_log(
+        Path(server_log_path),
+        start_offset=server_log_start_offset,
+        end_offset=server_log_end_offset,
+    )
+
+    event_times = lifecycle["event_times"]
+    assert isinstance(event_times, list)
+    request_window_seconds = float(event_times[-1]) - float(event_times[0])
+    if request_window_seconds <= 0:
+        raise SpeechNativeProfileError("the rebuilt request window is not positive")
+    prompt_tokens_total = int(cost["prompt_tokens_total"])
+    completion_tokens_total = int(cost["completion_tokens_total"])
+    timing = {
+        "request_window_seconds": request_window_seconds,
+        "slot_occupancy_pct": min(
+            100.0,
+            100.0
+            * float(cost["latency_seconds_total"])
+            / (slot_count * request_window_seconds),
+        ),
+        "aggregate_tokens_per_second": (
+            (prompt_tokens_total + completion_tokens_total) / request_window_seconds
+        ),
+        "source": "server-slot-event-window-v1",
+    }
+    evaluated_work = profile_evaluated_work_metrics(
+        server_scan=server_scan,
+        declared_prompt_tokens=prompt_tokens_total,
+        completion_tokens=completion_tokens_total,
+        wall_seconds=request_window_seconds,
+        contact_count=actual_contact_count,
+    )
+
+    profile: dict[str, object] = dict(profile_identity)
+    profile.update(
+        {
+            "task_count": task_count,
+            "semantic_result_read": False,
+            "result_mode": result_mode,
+            "contact_ceiling_per_task": contact_ceiling_per_task,
+            "planned_contact_ceiling": planned_contact_ceiling,
+            "actual_contact_count": actual_contact_count,
+            "transport_prompt_order": transport_prompt_order,
+            "prompt_work_policy": profile_prompt_work_policy(transport_prompt_order),
+        }
+    )
+    receipt: dict[str, object] = {
+        "schema": "saea-speech-native-profile-receipt-v1",
+        "study": "speech-aware-evidence-acquisition",
+        "status": "COMPLETED",
+        "run_id": plan.run_id,
+        "attempt_id": plan.attempt_id,
+        "config_hash": config_hash,
+        "protocol_hash": plan.protocol_hash,
+        "split_identity_hash": plan.split_identity_hash,
+        "profile": profile,
+        "resource": dict(resource_summary),
+        "server_log_scan": server_scan,
+        "process_audit_sha256": _sha256_file(audit_path),
+        "session_receipt_sha256": _sha256_file(session_receipt_path),
+        "session_stop_receipt_sha256": (
+            _sha256_file(stop_receipt_path) if stop_receipt_path.is_file() else None
+        ),
+        "session_lifecycle": {
+            "mode": "resident-attached",
+            "resident_reused": True,
+            "source_session_receipt_sha256": source_session_receipt_sha256,
+            "server_log_path": str(server_log_path),
+            "server_log_start_offset": server_log_start_offset,
+            "server_log_end_offset": server_log_end_offset,
+        },
+        "packet_promotion_receipt_sha256": _sha256_file(packet_receipt_path),
+        "binding_file_sha256": _sha256_file(binding_path),
+        "response_text_sha256": NOT_AVAILABLE,
+        "parse_failure_count": NOT_AVAILABLE,
+        "request_failures": [],
+        "close": {"cost": dict(cost), "source": FINALIZE_FROM_DISK_MODE_ID},
+        "decisions": {
+            "path": decisions_path.name,
+            "sha256": _sha256_file(decisions_path),
+            "count": task_count,
+            "contains_gold_labels": False,
+        },
+        "trace_usage": dict(trace_usage),
+        "trace_usage_source": trace_facts["trace_usage_source"],
+        "trace_speech_query": dict(trace_speech_query),
+        "trace_sha256": _sha256_file(trace_path),
+        "trace_manifest_sha256": _sha256_file(trace_manifest_path),
+        "timing": timing,
+        "evaluated_work": evaluated_work,
+        "saturated_gpu": saturated_gpu,
+    }
+    receipt["eligibility"] = {
+        "maximum_prompt_fits_one_slot": (
+            int(trace_usage["max_prompt_tokens"])
+            + int(trace_usage["max_completion_tokens"])
+            <= context_tokens_per_slot
+        ),
+        "zero_request_failures": True,
+        "zero_oom_markers": not server_scan["oom_marker_hits"],
+        "zero_host_spill_markers": not server_scan["host_spill_marker_hits"],
+        "zero_runaway_markers": not server_scan["runaway_marker_hits"],
+        **profile_gpu_eligibility(saturated_gpu),
+        **profile_prompt_work_eligibility(
+            evaluated_work, prompt_order=transport_prompt_order
+        ),
+    }
+    eligibility = receipt["eligibility"]
+    assert isinstance(eligibility, Mapping)
+    receipt["eligible"] = all(bool(value) for value in eligibility.values())
+    receipt["completion_issues"] = list(
+        _profile_completion_issues(
+            calls_used=actual_contact_count,
+            actual_contact_count=actual_contact_count,
+            task_count=task_count,
+            planned_contact_ceiling=planned_contact_ceiling,
+            request_failure_count=0,
+            server_scan=server_scan,
+            trace_usage=trace_usage,
+            trace_speech_query=trace_speech_query,
+        )
+    )
+    finalization: dict[str, object] = {
+        "mode": FINALIZE_FROM_DISK_MODE_ID,
+        "authorization": authorization,
+        "exposure_row": exposure_row,
+        "service_contact_count": 0,
+        "unread_channels": list(_FINALIZE_FROM_DISK_UNREAD_CHANNELS),
+        "unrecoverable_fields": [
+            "profile.query_mapping_sha256",
+            "parse_failure_count",
+            "response_text_sha256",
+        ],
+        "unrecoverable_fields_note": (
+            "These live-flight fields are derived from in-memory decision "
+            "outcomes. Recovering them would require parsing decision rows or "
+            "opening the MODEL_RESPONSE channel, which this label-blind rebuild "
+            "refuses. The per-row hashes they summarise remain inside "
+            "decisions.jsonl and the trace, both pinned here by SHA-256."
+        ),
+        "rebuilt_at": rebuilt_at,
+    }
+    hashed = dict(receipt)
+    hashed["finalization"] = {
+        key: value
+        for key, value in finalization.items()
+        if key not in {"rebuilt_at", "content_sha256"}
+    }
+    finalization["content_sha256"] = _canonical_sha256(hashed)
+    receipt["finalization"] = finalization
+    return receipt
+
+
+def _load_json_object(path: Path, *, artifact_name: str) -> dict[str, object]:
+    try:
+        document = json.loads(Path(path).read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as error:
+        raise SpeechNativeProfileError(
+            f"cannot read {artifact_name}: {error}"
+        ) from error
+    if not isinstance(document, dict):
+        raise SpeechNativeProfileError(f"{artifact_name} must be a JSON object")
+    return document
+
+
+def _finalize_from_disk_profile_identity(
+    *,
+    repo_root: Path,
+    values: Mapping[str, object],
+) -> dict[str, object]:
+    """Rebuild the receipt's config-derived profile identity, file reads only."""
+
+    matcher_policy_id = _require_string(values, "matcher_policy_id")
+    key_representation_id = _require_string(values, "key_representation_id")
+    slot_count = _require_positive_int(values, "profile_slot_count")
+    geometry = _profile_geometry(values, slot_count)
+    queue_multiplier = _require_positive_int(values, "profile_queue_depth_multiplier")
+    transport_prompt_order = _require_string(values, "prompt_order")
+    raw_order_ids = values.get("profile_key_order_ids")
+    if (
+        not isinstance(raw_order_ids, list)
+        or not raw_order_ids
+        or not all(isinstance(item, str) for item in raw_order_ids)
+    ):
+        raise SpeechNativeProfileError(
+            "profile_key_order_ids must be a non-empty string list"
+        )
+    top_k = values.get("speech_native_top_k", 3)
+    if isinstance(top_k, bool) or not isinstance(top_k, int) or top_k <= 0:
+        raise SpeechNativeProfileError("speech_native_top_k must be a positive integer")
+    mechanism_control_id = values.get("speech_native_mechanism_control_id", "matched")
+    if mechanism_control_id != "matched":
+        raise SpeechNativeProfileError(
+            "finalize-from-disk supports only the matched mechanism control; a "
+            "swap or shuffle control's task mapping cannot be rebuilt label-blind"
+        )
+    agent_executor_id = values.get(
+        "speech_native_agent_executor_id", "legacy-contact-dag-v1"
+    )
+    if agent_executor_id != "legacy-contact-dag-v1":
+        raise SpeechNativeProfileError(
+            "finalize-from-disk supports only the legacy contact-DAG executor"
+        )
+    binding_relpath = _require_string(values, "speech_native_binding")
+    binding_path = (repo_root / binding_relpath).resolve()
+    binding_sha256 = _require_string(values, "speech_native_binding_file_sha256")
+    key_cards = _load_key_cards(binding_path, binding_sha256)
+    decision_graph_id: str | None = None
+    decision_graph_relpath: str | None = None
+    decision_graph_file_sha256: str | None = None
+    if matcher_policy_id in {"M9", "M10", "M11"}:
+        graph_relpath = _require_string(values, "speech_native_decision_graph")
+        graph_path = (repo_root / graph_relpath).resolve()
+        decision_graph_file_sha256 = _require_string(
+            values, "speech_native_decision_graph_file_sha256"
+        )
+        decision_graph_id = _load_decision_graph(
+            graph_path,
+            expected_sha256=decision_graph_file_sha256,
+            key_cards=key_cards,
+        ).graph_id
+        decision_graph_relpath = graph_path.relative_to(repo_root.resolve()).as_posix()
+    prompt_fit_relpath: str | None = None
+    prompt_fit_sha256: str | None = None
+    prompt_fit_upper_bound: object = None
+    prompt_fit_margin: object = None
+    if matcher_policy_id == "M11":
+        prompt_fit_relpath = _require_string(values, "speech_native_prompt_fit_receipt")
+        prompt_fit_sha256 = _require_string(
+            values, "speech_native_prompt_fit_receipt_sha256"
+        )
+        prompt_fit_document = _load_pinned_json_object(
+            (repo_root / prompt_fit_relpath).resolve(),
+            expected_sha256=prompt_fit_sha256,
+            artifact_name="M11 prompt-fit receipt",
+        )
+        prompt_fit_upper_bound = prompt_fit_document.get(
+            "maximum_prompt_tokens_upper_bound"
+        )
+        prompt_fit_margin = prompt_fit_document.get("context_margin_tokens")
+    reader_policy_id, reader_contract = _m11_reader_contract_from_values(
+        values, matcher_policy_id
+    )
+    return {
+        "slot_count": slot_count,
+        "queue_depth": slot_count * queue_multiplier,
+        "key_card_count": len(key_cards),
+        "key_order_ids": list(raw_order_ids),
+        "key_representation_id": key_representation_id,
+        "matcher_policy_id": matcher_policy_id,
+        "decision_graph_id": decision_graph_id,
+        "decision_graph_path": decision_graph_relpath,
+        "decision_graph_file_sha256": decision_graph_file_sha256,
+        "prompt_fit_receipt_path": prompt_fit_relpath,
+        "prompt_fit_receipt_sha256": prompt_fit_sha256,
+        "prompt_fit_maximum_prompt_tokens_upper_bound": prompt_fit_upper_bound,
+        "prompt_fit_context_margin_tokens": prompt_fit_margin,
+        "matcher_prompt_policy_id": values.get(
+            "matcher_prompt_policy_id", "speech-native-json-copy-v2"
+        ),
+        "agent_kv_policy": profile_agent_kv_policy(
+            _server_args(values), prompt_order=transport_prompt_order
+        ),
+        "request_layout_id": values.get(
+            "speech_native_request_layout_id", "legacy-key-speech-v1"
+        ),
+        "matcher_verifier_policy_id": values.get(
+            "matcher_verifier_policy_id", "speech-native-compatibility-v1"
+        ),
+        "agent_policy_id": values.get(
+            "speech_native_agent_policy_id", "m1-m3-disagreement-escalation-v1"
+        ),
+        "agent_aggregator_id": values.get(
+            "speech_native_agent_aggregator_id", "m3-majority-canonical-tie-v1"
+        ),
+        "agent_executor_id": agent_executor_id,
+        "knowledge_snapshot_sha256": None,
+        "knowledge_source_sample_count": None,
+        "speech_native_training_free_reader_policy_id": reader_policy_id,
+        "speech_native_training_free_reader_contract": reader_contract,
+        "dispatch_granularity": values.get(
+            "speech_native_dispatch_granularity", "task"
+        ),
+        "mechanism_control_id": mechanism_control_id,
+        "query_mapping_sha256": NOT_AVAILABLE,
+        "key_text_mapping_sha256": None,
+        "top_k": top_k,
+        **geometry,
+    }
+
+
+def _cli_speech_native_finalize_from_disk(args: argparse.Namespace) -> int:
+    """Finalize an already-flown attempt from its durable records alone.
+
+    This entry point is physically incapable of contacting the frozen core: it
+    never constructs a transport, a ``FrozenCoreClient``, an HTTP connection,
+    or a session handle, and it never starts, stops, attaches to, or probes a
+    server. Its only inputs are the repository's frozen configuration and the
+    attempt's own bytes; the resident service's session receipt and log are
+    read as files.
+
+    It exists for the failure mode the 2026-08-23 E108 flight hit: every model
+    contact completed, every durable record landed, and post-run metrics
+    assembly then raised, so no receipt was minted and the attempt could not
+    be finalized. Re-flying would re-spend the split on byte-identical inputs;
+    rebuilding costs nothing and reads nothing new.
+    """
+
+    repo_root = Path(args.repo_root) if args.repo_root else REPO_ROOT
+    root = data_root()
+    lock = load_lock(umbrella_lock_path())
+    composed = compose(
+        repo_root, args.model, args.dataset, args.baseline, args.experiment
+    )
+    values = composed.values
+    plan = ExecutionPlan(
+        **json.loads(Path(args.plan).read_text(encoding="utf-8"))
+    ).validate()
+    split_ids, split_hash, split_role = load_split(
+        repo_root, _require_string(values, "split_name"), lock, root
+    )
+    expected_protocol = protocol_hash(
+        composed.config_hash, str(values["arm"]), split_hash
+    )
+    if (
+        plan.split_identity_hash != split_hash
+        or plan.split_role != split_role
+        or plan.protocol_hash != expected_protocol
+        or plan.carrier_lock_key != values.get("carrier_lock_key")
+    ):
+        raise SpeechNativeProfileError(
+            "execution plan does not match the composed profile"
+        )
+    attempt_dir = Path(args.attempt_dir).resolve()
+    if attempt_dir.name != plan.attempt_id or not attempt_dir.is_dir():
+        raise SpeechNativeProfileError(
+            "attempt-dir basename must equal plan.attempt_id and must exist"
+        )
+    session_receipt_path = Path(args.session_receipt).resolve()
+    source_session_receipt_sha256 = _sha256_file(session_receipt_path)
+    if source_session_receipt_sha256 != args.session_receipt_sha256:
+        raise SpeechNativeProfileError(
+            "the resident session receipt changed since the attempt was flown; "
+            f"expected {args.session_receipt_sha256}, found "
+            f"{source_session_receipt_sha256}"
+        )
+    session_document = _load_json_object(
+        session_receipt_path, artifact_name="resident session receipt"
+    )
+    server_log_value = session_document.get("server_log_path")
+    if not isinstance(server_log_value, str) or not server_log_value:
+        raise SpeechNativeProfileError(
+            "the resident session receipt does not name a server log"
+        )
+    server_log_path = Path(server_log_value)
+    session_started_at = session_document.get("started_at")
+    if not isinstance(session_started_at, str) or not session_started_at:
+        raise SpeechNativeProfileError(
+            "the resident session receipt does not carry a start timestamp"
+        )
+
+    contact_ceiling = values.get("speech_native_contact_ceiling_per_task", 1)
+    if (
+        isinstance(contact_ceiling, bool)
+        or not isinstance(contact_ceiling, int)
+        or contact_ceiling <= 0
+    ):
+        raise SpeechNativeProfileError(
+            "speech_native_contact_ceiling_per_task must be a positive integer"
+        )
+    profile_identity = _finalize_from_disk_profile_identity(
+        repo_root=repo_root, values=values
+    )
+    trace_facts = read_attempt_trace_facts(attempt_dir / f"{plan.run_id}.trace.jsonl")
+    cost = trace_facts["cost"]
+    assert isinstance(cost, Mapping)
+    actual_contact_count = int(cost["calls_used"])
+    if args.server_log_start_offset is None or args.server_log_end_offset is None:
+        server_log_start_offset, server_log_end_offset = (
+            derive_server_log_window_for_contacts(
+                server_log_path=server_log_path,
+                expected_contact_count=actual_contact_count,
+            )
+        )
+    else:
+        server_log_start_offset = int(args.server_log_start_offset)
+        server_log_end_offset = int(args.server_log_end_offset)
+
+    receipt = build_flight_receipt_from_disk(
+        attempt_dir=attempt_dir,
+        plan=plan,
+        config_hash=composed.config_hash,
+        profile_identity=profile_identity,
+        contact_ceiling_per_task=contact_ceiling,
+        expected_task_count=len(split_ids),
+        result_mode=str(values.get("speech_native_result_mode", "hash-only")),
+        transport_prompt_order=_require_string(values, "prompt_order"),
+        binding_path=(
+            repo_root / _require_string(values, "speech_native_binding")
+        ).resolve(),
+        packet_receipt_path=Path(
+            _require_string(values, "speech_packet_promotion_receipt")
+        ),
+        server_log_path=server_log_path,
+        server_log_start_offset=server_log_start_offset,
+        server_log_end_offset=server_log_end_offset,
+        session_started_at=session_started_at,
+        source_session_receipt_sha256=source_session_receipt_sha256,
+        authorization=args.authorization,
+        exposure_row=args.exposure_row,
+        rebuilt_at=datetime.now().astimezone().isoformat(),
+    )
+    completion_issues = receipt["completion_issues"]
+    assert isinstance(completion_issues, list)
+    if completion_issues:
+        raise SpeechNativeProfileError(
+            f"rebuilt attempt fails its completion checks: {completion_issues}"
+        )
+    flight_receipt_path = attempt_dir / "flight-receipt.json"
+    _write_exclusive_json(flight_receipt_path, receipt)
+    attempt = AttemptStore(Path(root) / "attempts").handle(
+        plan.run_id, str(plan.attempt_id)
+    )
+    if not attempt.path.is_file():
+        raise SpeechNativeProfileError(
+            "the attempt has no durable accounting record to finalize"
+        )
+    attempt.mark_finalized()
+    finalization = receipt["finalization"]
+    assert isinstance(finalization, Mapping)
+    profile = receipt["profile"]
+    assert isinstance(profile, Mapping)
+    print(
+        json.dumps(
+            {
+                "run_id": plan.run_id,
+                "attempt_id": plan.attempt_id,
+                "flight_receipt": str(flight_receipt_path),
+                "flight_receipt_sha256": _sha256_file(flight_receipt_path),
+                "content_sha256": finalization["content_sha256"],
+                "rebuilt_at": finalization["rebuilt_at"],
+                "decision_count": profile["task_count"],
+                "actual_contact_count": profile["actual_contact_count"],
+                "server_log_start_offset": server_log_start_offset,
+                "server_log_end_offset": server_log_end_offset,
+                "service_contact_count": 0,
+                "status": "FINALIZED_FROM_DISK",
             },
             indent=2,
             sort_keys=True,

@@ -48,6 +48,7 @@ from .smoke import _cli_smoke
 from .speech_native import (
     _cli_speech_native_action_audit,
     _cli_speech_native_engine_audit,
+    _cli_speech_native_finalize_from_disk,
     _cli_speech_native_prompt_audit,
     _cli_speech_native_profile,
     _cli_speech_native_read,
@@ -953,6 +954,69 @@ def main(argv: list[str] | None = None) -> int:
         help="TEST-ONLY repository-root override; real flights omit it",
     )
     speech_profile.set_defaults(func=_cli_speech_native_profile)
+
+    speech_finalize = sub.add_parser(
+        "speech-native-finalize-from-disk",
+        help=(
+            "model-free finalization of an attempt whose contacts all completed "
+            "but whose post-run receipt assembly was interrupted; rebuilds the "
+            "flight receipt from the attempt's durable records with zero service "
+            "contact of any kind"
+        ),
+    )
+    speech_finalize.add_argument("--model", required=True)
+    speech_finalize.add_argument("--dataset", required=True)
+    speech_finalize.add_argument("--baseline", required=True)
+    speech_finalize.add_argument("--experiment", required=True)
+    speech_finalize.add_argument("--plan", required=True)
+    speech_finalize.add_argument("--attempt-dir", required=True)
+    speech_finalize.add_argument(
+        "--session-receipt",
+        required=True,
+        help=(
+            "path to the resident session receipt the attempt attached to; it is "
+            "read as bytes only and the service is never contacted"
+        ),
+    )
+    speech_finalize.add_argument(
+        "--session-receipt-sha256",
+        required=True,
+        help=(
+            "the receipt SHA-256 recorded for the flight; a mismatch means the "
+            "service was restarted or mutated and the rebuild fails closed"
+        ),
+    )
+    speech_finalize.add_argument(
+        "--exposure-row",
+        required=True,
+        help="the registered model-free exposure row authorizing this rebuild",
+    )
+    speech_finalize.add_argument(
+        "--authorization",
+        required=True,
+        help="the owner decision record that authorizes this finalization",
+    )
+    speech_finalize.add_argument(
+        "--server-log-start-offset",
+        type=int,
+        default=None,
+        help=(
+            "explicit attempt window start; omit to derive the trailing window "
+            "that holds exactly the traced contact count"
+        ),
+    )
+    speech_finalize.add_argument(
+        "--server-log-end-offset",
+        type=int,
+        default=None,
+        help="explicit attempt window end; omit to use the current log size",
+    )
+    speech_finalize.add_argument(
+        "--repo-root",
+        default=None,
+        help="TEST-ONLY repository-root override; real finalizations omit it",
+    )
+    speech_finalize.set_defaults(func=_cli_speech_native_finalize_from_disk)
 
     speech_action_audit = sub.add_parser(
         "speech-native-action-audit",
