@@ -1313,3 +1313,104 @@ def test_dev100_kb_alpha_blend_campaign_composes_on_the_np8_zcopy_service():
     # The campaign's registered composed identity (amendment 5b: "the
     # campaign's composed config hash is therefore the np8 composition").
     assert composed.config_hash == "5397ea3ead594409b440ed9d8abc3690f6230d8b357207eb509977e411405944"
+
+
+def test_dev100_kb_alpha_blend_campaign_composes_on_the_np8_base_service():
+    """The ROUND-0 ATTEMPT-6 composition: the same DEV-100 campaign contract
+    served on the BASE llama.cpp build (build-attribution mitigation).
+
+    Round-0 attempts 2-5 reproduced a progressive multi-slot decode pathology
+    four consecutive times on the CUSTOM ``build-singleton-zero-copy`` binary
+    (llama.cpp-featcache-speech-batch-26802); the reboot hypothesis (attempt
+    4) and the clock-lock hypothesis (attempt 5) are both falsified. Every
+    healthy sustained campaign (Aug-22/23 M11 cells, matched base np16
+    1,536.27 tok/s) ran the BASE build ``llama.cpp-featcache`` pinned by
+    ``docs/receipts/runtime-q4km-mmproj-free.json``. Attempt 6 therefore
+    flies the SAME np8 serving geometry on the base binary: the model
+    fragment is a byte-for-byte sibling of the np8 zcopy fragment except
+    exactly the ``runtime_receipt`` key — enforced here by construction. The
+    base build supports all four cache-discipline flags (upstream flags;
+    verified against ``--help`` at attempt-6 preflight), so ``server_args``
+    are unchanged.
+    """
+
+    from speech_aware_evidence_acquisition.e0.artifacts import REPO_ROOT
+
+    composed = compose(
+        REPO_ROOT,
+        "q4km-mmproj-free-speech-native-np8-base-speech-query-prefix-max64",
+        "slurp-speech-native-dev100",
+        "slurp-dev100-kb-alpha-blend",
+        "slurp-dev100-kb-alpha-blend-campaign-v1",
+    )
+    values = composed.values
+
+    # Identical scientific surface to the registered np8 zcopy composition.
+    assert values["experiment_id"] == "SAEA-DEV100-KB-ALPHA-BLEND-CAMPAIGN"
+    assert values["execution_profile"] == "bounded-discovery-probe"
+    assert values["split_name"] == "DEV-100"
+    assert values["split_role"] == "dev"
+    assert values["count"] == 100
+    assert values["split_identity_hash"] == (
+        "e9a7b7febcf4fe3dc228370f7487e1e75dea3d63d447a07fbfe87c1404e2d853"
+    )
+    assert values["speech_packet_promotion_receipt_sha256"] == (
+        "8d2dc4dc9056ed604b22cbb66cd46724d3ee0246b6aca5665e6bfaf67cf0503d"
+    )
+
+    # The serving swap: the BASE build's receipt, everything else unchanged.
+    assert values["runtime_receipt"] == "receipts/runtime-q4km-mmproj-free.json"
+    assert values["profile_slot_count"] == 8
+    assert values["prompt_order"] == "speech-query-prefix-v2"
+
+    # The base fragment is the np8 zcopy fragment except exactly the
+    # runtime_receipt key — enforced by construction, not by prose.
+    zcopy = json.loads(
+        (
+            REPO_ROOT / "configs" / "model"
+            / "q4km-mmproj-free-speech-native-np8-zcopy-speech-query-prefix-max64.json"
+        ).read_text(encoding="utf-8")
+    )
+    base = json.loads(
+        (
+            REPO_ROOT / "configs" / "model"
+            / "q4km-mmproj-free-speech-native-np8-base-speech-query-prefix-max64.json"
+        ).read_text(encoding="utf-8")
+    )
+    assert set(base) == set(zcopy)
+    assert base["runtime_receipt"] == "receipts/runtime-q4km-mmproj-free.json"
+    assert zcopy["runtime_receipt"] == (
+        "receipts/runtime-q4km-mmproj-free-speech-batch-26802-singleton-zero-copy.json"
+    )
+    for key in zcopy:
+        if key == "runtime_receipt":
+            continue
+        assert base[key] == zcopy[key], key
+
+    # The base receipt pins the base build, not the zero-copy build.
+    receipt = json.loads(
+        (REPO_ROOT / "docs" / "receipts" / "runtime-q4km-mmproj-free.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    assert receipt["llama_cpp"]["binary_path"] == (
+        "llama.cpp-featcache/build/bin/llama-server"
+    )
+    assert receipt["llama_cpp"]["build_commit"] == (
+        "04ccc72a2207347ca76161b93fd9d846dd0a8675"
+    )
+    assert receipt["llama_cpp"]["binary_sha256"] == (
+        "d0b42ace8d8e02dc772a0e4a1e1667068b3ad799b1ca4c98c741cf89d58404f2"
+    )
+
+    # Round-0 knobs and ceilings are untouched by the serving change.
+    knobs = values["kb_campaign_round0_knobs"]
+    assert knobs["alpha"] == 0.6
+    assert knobs["rank_weight_id"] == "rrf"
+    assert knobs["evidence_variant"] == "rank+prior+agreement"
+    ceilings = values["kb_campaign_ceilings"]
+    assert ceilings["frozen_core_contacts_total"] == 1800
+
+    # The attempt-6 composed identity (differs from the zcopy composition
+    # ONLY through the runtime_receipt declaration).
+    assert composed.config_hash == "7fff75d1ed8642a9e948d86e8d6c5bf9cfd669f7342d9da009167dfd62655ca5"
