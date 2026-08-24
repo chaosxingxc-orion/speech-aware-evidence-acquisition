@@ -1,0 +1,90 @@
+{
+  "schema": "saea-dev100-round0-abort-v1",
+  "study": "speech-aware-evidence-acquisition",
+  "run_id": "SAEA-DEV100-KB-ALPHA-BLEND-CAMPAIGN",
+  "round_index": 0,
+  "attempt_id": "attempt-20260824T073337Z-dev100r0",
+  "generated_at": "2026-08-24T07:55:00Z",
+  "outcome": "SPENT-EXECUTED-ABORTED",
+  "authority": "docs/readiness/2026-08-23-dev100-campaign-preregistration.md including amendment 5b; campaign exposure row SAEA-DEV100-KB-ALPHA-BLEND-CAMPAIGN; one-shot semantics per ROUND attempt",
+  "config_hash": "5397ea3ead594409b440ed9d8abc3690f6230d8b357207eb509977e411405944",
+  "server_np": 8,
+  "decoder_session": {
+    "session_id": "SAEA-SN-Q4KM-NP8-ZCOPY-DEV100-20260824T064416Z",
+    "pid": 609,
+    "receipt_sha256": "555d69a9800ceb5f79c75c7cfd1dd3c64493264ab6bb8f2e18e7b8eb82a08b1b",
+    "started_at": "2026-08-24T06:45:15.309371+00:00",
+    "died_at": "2026-08-24T07:44:50.819Z (server.log last write)",
+    "death_evidence": "The service's live-wrapper background task was stopped externally (harness task notification: 'Background command was stopped'; wrapper output ends in [killed]); llama-server died with its wrapper mid-decode. server.log ends on a normal pre_decode line with ZERO error/OOM/CUDA/context lines in all 159,287 bytes; dmesg shows no OOM kill; host RAM 51 of 54 GB free at inspection; VRAM 0 MiB and no llama-server process afterward. Same silent-external-termination signature as the predecessor session 33639d3d (2026-08-24 03:50:39Z-04:32Z incident on the campaign row).",
+    "mechanism_identified": "Resident services run as agent-session background tasks die when the harness stops the task (session lifecycle events), independent of the science. Two occurrences now. Recommendation: the resident decoder should be started OUTSIDE agent sessions (owner-managed tmux/systemd-run --user) so no agent-session event can reap it."
+  },
+  "takeoff_timeline": [
+    {
+      "takeoff": 1,
+      "at": "2026-08-24T07:18:44Z",
+      "outcome": "ZERO-SPEND refusal at preflight",
+      "cause": "KeyError 'embedded': the committed embeddings receipt nests npz identity under vectors.content_facets",
+      "spend": "0 core / 0 tool",
+      "repair_commit": "b4fd12b2 (with takeoff 2's repair)"
+    },
+    {
+      "takeoff": 2,
+      "at": "2026-08-24T07:21:08Z",
+      "outcome": "ZERO-SPEND refusal by the frozen-core gate's ledger parser",
+      "cause": "GateClosed: the campaign row's notes cell contained the literal pipe in 'p(intent|scenario)', splitting the row into 16 cells against the 15-column header",
+      "spend": "0 core / 0 tool",
+      "repair_commit": "b4fd12b2"
+    },
+    {
+      "takeoff": 3,
+      "at": "2026-08-24T07:23:46Z",
+      "outcome": "ZERO-CORE-SPEND refusal by the runner's protected-knowledge guard at FIRST-wave scheduling",
+      "cause_verbatim": "speech_aware_evidence_acquisition.rails.runner.RailsRunnerError: Agent contact instruction cannot embed frozen knowledge key/value payloads; acquire them through traced knowledge supply",
+      "diagnosis": "The registered chain's DIRECT contact re-renders the full TRAIN ontology roster inside its instruction; exactly 7 TRAIN content-facet representations ('learning games', 'fast and the furious', 'change song', 'temperature', 'calendar', 'freezing', 'evaporated') are >=8-char substrings of that roster text, so the guard refuses every direct contact on the real snapshot. Same duplication class amendment 5b remedy 1 fixed for the EVIDENCE contact (72096bad); the direct contact had never flown live before.",
+      "spend": "0 core / 1 embedding tool contact (jitter:start; sidecar stopped cleanly with stop receipt)",
+      "repair_commit": "fa48b1e8 (harness-side DirectDedupController: reference-form direct instruction, rails/ untouched; preflight guard simulation over all 23,267 protected payloads PASS)"
+    },
+    {
+      "takeoff": 4,
+      "at": "2026-08-24T07:33:37Z",
+      "outcome": "SPENT-EXECUTED-ABORTED: arm M0 COMPLETE, arm BLEND partial, aborted by the external decoder-service kill",
+      "milestones": {
+        "gate_pass": "07:35:04Z (55.1s, umbrella lock 9064bde89d42...71b1)",
+        "attached": "07:35:04Z (receipt 555d69a9800c..., pid 609)",
+        "sidecar_up": "07:35:13Z (pid 3498, port 8082, CPU-only)",
+        "arm_m0": "07:35:13Z-07:36:19Z, DONE, 100/100 contacts in 66.4s, agent trace flushed (SAEA-DEV100-KB-ALPHA-BLEND-CAMPAIGN.trace.jsonl, 1,450,280 bytes)",
+        "arm_blend": "started 07:36:19Z; 51 core contacts and 23 runtime query embeddings completed before the service died at 07:44:50.819Z",
+        "abort_verbatim": "http.client.RemoteDisconnected: Remote end closed connection without response (raised inside rails.runner invoke_contact -> FrozenCoreClient.complete -> transport POST, the direct consequence of the service kill)",
+        "teardown": "embedder sidecar stopped cleanly 07:45:01Z (SIGTERM, forced=false, stop receipt on the run dir)"
+      }
+    }
+  ],
+  "spend_durable": {
+    "frozen_core_contacts": {"used": 151, "breakdown": "100 arm M0 (complete) + 51 arm BLEND (partial)", "round_ceiling": 300, "campaign_ceiling": 1800},
+    "metered_audio_seconds": {"used": 399.735125, "campaign_ceiling": 2400},
+    "embedding_tool_contacts": {"used": 25, "breakdown": "23 runtime query embeddings + 2 jitter probes (bit-identical pair, cosine 1.0)", "round_ceiling": 150, "campaign_ceiling": 1500},
+    "gpu_active_seconds_sampled": 432.86,
+    "peak_vram_mib": 24093.0,
+    "request_gpu_sample_count": 227,
+    "source": "durable AttemptStore actuals (calls=151, audio_seconds=399.735125) + flight-state.json of the attempt; the NOT_AVAILABLE-tolerant telemetry captured real samples"
+  },
+  "boundary_respected": {
+    "gold_opened": false,
+    "note": "Scoring was deferred past the whole round by design and never ran: NO devel gold, reference transcript, prediction, correctness, or response meaning was read. The M0 responses exist only inside the flushed trace and were never parsed or scored. BLEND's 51 contacts are durable in the attempt store and visible in the server log; their per-request trace buffers died unflushed with the crash (disclosed trace gap).",
+    "resend_pair": "never reached",
+    "value_vectors": "SEALED (never loaded); percept admission facet-side",
+    "m11_boundary_stage": "not flown (as registered)"
+  },
+  "deviation_flown": {
+    "id": "direct-contact-contract-dedup",
+    "kind": "rendering fix only, harness-side (rails/ untouched)",
+    "flown_direct_instruction": "Decide under the task contract already given above. Answer using only the speech query; no external knowledge has been supplied yet.",
+    "rationale": "mirrors amendment 5b remedy 1 (72096bad): the system message already carries the contract on every contact, so the model sees it exactly once either way; no knob, grammar, or policy-id change. A rails-side fix mirroring 72096bad is recommended before any further flight."
+  },
+  "one_shot_consequence": "The round-0 attempt is spent under one-shot semantics (no silent intra-round retry). Whether a second round-0 attempt is authorized, and on what serving arrangement, is the coordinator/owner's decision, not the implementer's. The campaign row stays open, consumed = no; nothing semantic was read.",
+  "gpu_preflight": {
+    "lenovo_smart_fan_mode": 3,
+    "enforced_power_limit_w": 100.0,
+    "verified": "host PowerShell 06:43Z and in-WSL nvidia-smi at takeoff"
+  }
+}
