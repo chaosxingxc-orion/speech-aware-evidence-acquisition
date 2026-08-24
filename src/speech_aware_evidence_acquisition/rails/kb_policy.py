@@ -652,8 +652,8 @@ class KbAlphaBlendController:
             query_state_sha256=context.query_state.content_hash(),
             purpose="direct-decode",
             instruction=(
-                f"{context.task_contract}\n"
-                "Answer using only the speech query; no external knowledge has been "
+                "Decide under the task contract already given above. Answer "
+                "using only the speech query; no external knowledge has been "
                 "supplied yet."
             ),
             key_representation_id=f"{CONTROLLER_POLICY_ID}:direct",

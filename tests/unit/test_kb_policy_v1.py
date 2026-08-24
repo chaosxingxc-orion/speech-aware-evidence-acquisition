@@ -16,7 +16,7 @@ label space); and registry idempotence.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 
 import pytest
@@ -39,7 +39,12 @@ from speech_aware_evidence_acquisition.rails.knowledge import (
     ValueBundle,
 )
 from speech_aware_evidence_acquisition.rails.obs import AudioRef, ObsPacket
-from speech_aware_evidence_acquisition.rails.runner import run_speech_native_agent_loop
+from speech_aware_evidence_acquisition.rails.runner import (
+    AgentRuntimeContext,
+    _assert_agent_control_excludes_knowledge_payloads,
+    _protected_knowledge_material,
+    run_speech_native_agent_loop,
+)
 from speech_aware_evidence_acquisition.rails.task_adapter import TaskAdapter
 from speech_aware_evidence_acquisition.rails.consumption import build_consumption_trace
 
@@ -919,6 +924,164 @@ def test_evidence_contact_instruction_is_bounded_for_a_worst_case_fusion(tmp_pat
     evidence_instruction = result.contacts[1].plan.instruction
     assert len(evidence_instruction) < _WORST_CASE_INSTRUCTION_CHAR_BOUND
     assert large_task_contract not in evidence_instruction
+
+
+# ---------------------------------------------------------------------------
+# DEV-100 round-0 guard-trip regression (docs/checks/speech-aware-evidence-
+# acquisition/2026-08-24-dev100-round0/round0-attempt1-abort.json, takeoff
+# 3): the DIRECT contact's instruction re-rendered the same task contract
+# ``rails.runner._agent_messages`` already places in the system message of
+# every contact, and TRAIN content-facet representations that are >=8-char
+# substrings of the real SLURP roster tripped
+# ``rails.runner._assert_agent_control_excludes_knowledge_payloads`` on the
+# very first wave. This is the same duplication class amendment 5b remedy 1
+# fixed for the EVIDENCE contact (commit 72096bad), now applied to DIRECT.
+# ---------------------------------------------------------------------------
+
+_DIRECT_INSTRUCTION_CHAR_BOUND = 300  # generous vs. the ~135-char fixed instruction
+
+
+def test_direct_contact_instruction_does_not_repeat_the_task_contract(tmp_path: Path):
+    """A long sentinel task contract must appear exactly once across the
+    whole rendered request for the direct-decode contact -- in the system
+    message ``rails.runner._agent_messages`` builds for every contact --
+    never again inside the direct contact's own control instruction; the
+    instruction itself must also stay a small, fixed-size reference
+    regardless of contract size (mirrors
+    ``test_evidence_contact_instruction_does_not_repeat_the_task_contract``
+    for the DIRECT contact)."""
+
+    sentinel_contract = "SENTINEL-TASK-CONTRACT-" + ("Q" * 2000)
+    snapshot = _red_green_controller_snapshot()
+    factory = kb_policy.make_kb_alpha_blend_controller_factory(
+        snapshot=snapshot,
+        query_vectors_by_sample={"s1": _RED_GREEN_QUERY_VECTOR},
+        facet_vectors=lambda facet_id: _RED_GREEN_FACET_VECTORS.get(facet_id, {}),
+        rank_weights=kb_policy.RankWeights(w_cos=1.0, w_prior=0.0, w_agree=0.0),
+        fuse_knobs=kb_policy.FuseKnobs(tau=0.5, m=10, c=1, top_l=2),
+        alpha=1.0,
+        top_k_per_dimension=10,
+    )
+
+    result, client = _run_alpha_blend_with_task_contract(
+        tmp_path,
+        snapshot=snapshot,
+        factory=factory,
+        responder=_evidence_aware_responder(_DIRECT_TEXT, _EVIDENCE_TEXT),
+        task_contract=sentinel_contract,
+    )
+
+    assert result.contacts[0].plan.contact_id == "direct-decode"
+    direct_instruction = result.contacts[0].plan.instruction
+    direct_messages, _decoding_params = client.calls[0]
+    assert len(direct_messages) == 2
+    system_message = direct_messages[0]
+    assert system_message["role"] == "system"
+
+    # The sentinel appears in the system message every contact already
+    # carries ...
+    assert sentinel_contract in str(system_message["content"])
+    # ... and never again inside the direct contact's own instruction ...
+    assert sentinel_contract not in direct_instruction
+    # ... so across the whole rendered request for this contact (the
+    # message list plus the separately-carried CONTROL instruction) it
+    # appears exactly once, not twice.
+    rendered = "".join(str(message["content"]) for message in direct_messages)
+    rendered += direct_instruction
+    assert rendered.count(sentinel_contract) == 1
+
+    # The instruction itself never grows with the contract size.
+    assert len(direct_instruction) < _DIRECT_INSTRUCTION_CHAR_BOUND
+
+
+def test_direct_contact_instruction_passes_the_protected_knowledge_guard_reproducing_round0(
+    tmp_path: Path,
+):
+    """Reproduce the round-0 takeoff-3 trip shape: a synthetic snapshot
+    whose content-facet representation ("temperature") is a >=8-char
+    substring of the task contract, exactly like the real SLURP roster's
+    content-facet texts were substrings of the registered chain's
+    re-rendered contract. The OLD-style instruction (task contract
+    re-rendered verbatim, the pre-fix construction) trips
+    ``rails.runner._assert_agent_control_excludes_knowledge_payloads``; the
+    FIXED reference-only instruction this module now builds clears the same
+    guard call on contact 0."""
+
+    task_contract = (
+        "Classify the caller's intent. Roster fillers include temperature, "
+        "calendar, and freezing, drawn from the SLURP ontology roster."
+    )
+    snapshot = KnowledgeSnapshot(
+        snapshot_id="round0-guard-repro-v1",
+        source_split_identity_hash=_SHA_B,
+        source_sample_ids=("train:temp",),
+        builder_policy_id="test-builder-v1",
+        facets=(
+            KeyFacet(
+                "facet:content:temp", "content", "text", "temperature", ("train:temp",)
+            ),
+        ),
+        values=(
+            ValueBundle(
+                value_id="value:temp",
+                content="Evidence: the reading is temperature-related.",
+                associated_facet_ids=("facet:content:temp",),
+                source_sample_ids=("train:temp",),
+                provenance_refs=("sample:train:temp",),
+                task_target="temp",
+                prior_score=0.5,
+            ),
+        ),
+    ).validate()
+    protected = _protected_knowledge_material(snapshot)
+    # Precondition reproducing the round-0 trip: the facet representation
+    # really is a substring of the task contract text.
+    assert any(material in task_contract.casefold() for material in protected)
+
+    controller = kb_policy.KbAlphaBlendController(
+        snapshot=snapshot,
+        query_vectors={},
+        facet_vectors=lambda facet_id: {},
+        normalizer=kb_policy.default_label_normalizer,
+        ranker=kb_policy.rank_wcos_prior_agree_factory(
+            kb_policy.RankWeights(w_cos=0.0, w_prior=0.0, w_agree=0.0)
+        ),
+        fuser=kb_policy.fuse_supplyfilter_factory(
+            kb_policy.FuseKnobs(tau=1.0, m=1, c=1, top_l=1)
+        ),
+        alpha=0.5,
+        top_k_per_dimension=1,
+    )
+    context = AgentRuntimeContext(
+        sample_id="dev:round0-guard-repro",
+        knowledge_snapshot_sha256=snapshot.content_hash(),
+        catalog_facet_ids=tuple(facet.facet_id for facet in snapshot.facets),
+        catalog_value_ids=(),
+        query_state=_query_state("dev:round0-guard-repro"),
+        task_contract=task_contract,
+        agent_states=(),
+        prior_response_sha256s=(),
+        contact_index=0,
+    )
+
+    # The OLD (pre-fix) construction -- task_contract re-rendered verbatim
+    # into the instruction -- reproduces the exact takeoff-3 trip.
+    old_style_plan = replace(
+        controller.initial_contact(context),
+        instruction=(
+            f"{task_contract}\n"
+            "Answer using only the speech query; no external knowledge has "
+            "been supplied yet."
+        ),
+    )
+    with pytest.raises(Exception, match="frozen knowledge key/value payloads"):
+        _assert_agent_control_excludes_knowledge_payloads(old_style_plan, protected)
+
+    # The FIXED instruction -- this module's real initial_contact -- is a
+    # pure reference and clears the same guard call cleanly.
+    fixed_plan = controller.initial_contact(context)
+    assert task_contract not in fixed_plan.instruction
+    _assert_agent_control_excludes_knowledge_payloads(fixed_plan, protected)  # must not raise
 
 
 # ---------------------------------------------------------------------------
