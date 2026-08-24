@@ -1,0 +1,115 @@
+{
+  "schema": "saea-dev100-round0-abort-v1",
+  "study": "speech-aware-evidence-acquisition",
+  "run_id": "SAEA-DEV100-KB-ALPHA-BLEND-CAMPAIGN",
+  "round_index": 0,
+  "attempt": "ROUND-0 ATTEMPT 3 (successor semantics; campaign-row registration of 2026-08-24, commit a6447ad3)",
+  "generated_at": "2026-08-24T10:55:00Z",
+  "outcome": "SPENT-EXECUTED-ABORTED",
+  "authority": "docs/readiness/2026-08-23-dev100-campaign-preregistration.md including amendment 5b; campaign row attempt-3 registration (run-cumulative plan declaration, registered decode-speed canary); one-shot semantics per ROUND attempt",
+  "config_hash": "5397ea3ead594409b440ed9d8abc3690f6230d8b357207eb509977e411405944",
+  "server_np": 8,
+  "decoder_session": {
+    "session_id": "SAEA-SN-Q4KM-NP8-ZCOPY-DEV100-20260824T092100Z",
+    "pid": 790,
+    "port": 8080,
+    "receipt_sha256": "4b4d8bcf7f20356064080ab5cfd38fa28a0f457fab42a6b79f394fd56c39fbc5",
+    "hosting": {
+      "mode": "systemd-run --user unit saea-np8-dev100-r3 (WSL Ubuntu-24.04, systemd PID 1) + detached Windows wsl.exe keepalive client PID 67812 (started 2026-08-24T09:19:20Z, BEFORE the service - keepalive-first recipe)",
+      "vm_remediation_flown": "attempt-2 session ...T081551Z stopped cleanly 09:14:54Z (external stop_session SIGTERM delivered, exit observed, stop receipt via the ALREADY_EXITED path after the systemd unit reaped the zombie; unit saea-np8-dev100 stopped, verified inactive); keepalives 52908+69068 killed; wsl --shutdown; fresh VM instance verified booted; q4km GGUF set page-cache pre-warmed (20.7 GB in 9 s); fresh session READY in 17.9 s; verified 8 slots at n_ctx 8192, health ok, unit active from a separate client; wrapper SIGTERM path writes a stop receipt (the a2b wrapper lacked this)",
+      "survival_evidence": "decoder unit active and /health ok through both flight takeoffs, the whole 54-minute flight, and after the abort; the flight itself ALSO ran under systemd-run (unit saea-dev100-r0a3-flight), so no agent-session event could reap it - and none did: the flight died on its own exception",
+      "status_after_abort": "SERVICE LEFT UP (unit saea-np8-dev100-r3 active, /health ok, pid 790); flight unit left in systemd 'failed' state as the death record"
+    }
+  },
+  "gpu_preflight": {
+    "lenovo_smart_fan_mode": 3,
+    "enforced_power_limit_w": 100.0,
+    "verified": "host PowerShell WMI + Windows nvidia-smi 09:12Z (40 C idle); re-verified in-script at both takeoffs via in-WSL nvidia-smi"
+  },
+  "prep_landed_before_takeoff": {
+    "prompt_fit": "SAEA-SN-MF-DEV100-C3-PROMPT-FIT-NP8-R3 PASS: worst envelope 6,174 vs 8,192 slot, margin +1,954 on the post-b3d29658 rendering against THIS session; 7 tokenizer contacts; receipt 72fa10218c281ddabefda96079a037a6c40a0d28cec58836c69b660adc2215bb (commit cbf1bfa8)",
+    "dry_check": "model-free rails-native dry check PASS at preflight-only (09:36:54Z, zero contacts) and at both takeoffs: the b3d29658 rails-rendered direct instruction is byte-identical to the attempt-1 flown form and clears rails.runner._assert_agent_control_excludes_knowledge_payloads against all 23,267 protected payloads of the real snapshot",
+    "preflight_only_pass": "09:36:54Z, zero contacts, attempt-1 M0 trace verified byte-identical (d1f376bb...) for reuse",
+    "launcher_commits": ["cbf1bfa8 (launch_dev100_round0_attempt3.py)", "55eba5e2 (takeoff-1 PATH refusal repair)"]
+  },
+  "takeoff_timeline": [
+    {
+      "takeoff": 1,
+      "attempt_store_id": "attempt-20260824T093714Z-dev100r0a3 (flight-state only; no store entry, no gate)",
+      "at": "2026-08-24T09:37:14Z",
+      "outcome": "ZERO-SPEND environment refusal at the in-script GPU preflight, before composition, gate, attach, or any contact",
+      "cause_verbatim": "FileNotFoundError: [Errno 2] No such file or directory: 'nvidia-smi'",
+      "diagnosis": "systemd --user units carry a minimal PATH without /usr/lib/wsl/lib; first flight ever hosted under systemd-run, so first hit",
+      "spend": "0 core / 0 tool / 0 audio-s",
+      "repair_commit": "55eba5e2: fly_attempt3.sh exports PATH=$PATH:/usr/lib/wsl/lib; refusal recorded in REFUSED_TAKEOFFS"
+    },
+    {
+      "takeoff": 2,
+      "attempt_store_id": "attempt-20260824T093833Z-dev100r0a3",
+      "at": "2026-08-24T09:38:33Z",
+      "outcome": "SPENT-EXECUTED-ABORTED at the post-loop trace flush: canary PASSED, arm BLEND ran to LOOP COMPLETION (202 frozen-core contacts total), then the BLEND trace-buffer flush was refused and the flight died before the resend, before sealing, and before any scoring",
+      "milestones": {
+        "gate_pass": "09:39:5xZ (full q4km GGUF attestation; page cache warm)",
+        "attached": "read-only attach to receipt 4b4d8bcf..., pid 790; argv verified against the np8 composition",
+        "sidecar_up": "09:40:0xZ (CPU-only qwen3-embedding on 8082, own session receipt)",
+        "canary": "09:40:14Z CANARY PASS - see canary section",
+        "arm_blend": "09:40:14Z-10:32:3xZ: 200 BLEND contacts completed (100 direct-decode + 100 evidence-decode; the evidence contact FIRED ON ALL 100 SAMPLES at the round-0 knobs) and charged durably; 100 runtime query embeddings completed",
+        "abort": "10:32:5xZ at client.flush_trace_buffer(blend_buffer)",
+        "teardown": "embedder sidecar stopped cleanly 10:32:58Z (SIGTERM, forced=false, stop receipt); jitter end pair recorded (bit-identical, cosine 1.0); resource sampler window closed and serving descriptives saved"
+      },
+      "cause_verbatim": "speech_aware_evidence_acquisition.core.tracing.TraceSinkError: duplicate trace record id 'slurp:devel:000090:audio-1498567209/agent-loop/org'",
+      "root_cause": "IMPLEMENTER HARNESS DEFECT (attempt-3 author), rails behaved as designed: run_speech_native_agent_loop derives ORG/SUPPLY/USE trace record ids from sample_id + '/agent-loop/...' with NO arm or micro-run discriminator, and TraceSink.emit refuses duplicate ids by design. The canary micro-run flushed agent-loop records for samples 000090 and 000109 into the attempt's single shared trace sink; the BLEND loop over the full split regenerated those ids for the same two samples, so the BLEND buffer's flush collided on its first 000090 record and raised, discarding the un-emitted remainder of the buffer. The SAME latent collision exists in the attempt-2 launcher's never-reached resend flush (resend re-runs sample 000090 through the loop after BLEND's flush): attempt 2 would have hit it at the resend. The attempt-3 canary moved the collision AHEAD of the BLEND flush, which upgraded the would-be loss (resend record only) into the full BLEND response loss. Correct fix for any future attempt: flush every micro-run (canary, resend) into its OWN trace file via a dedicated sink, never into the shared client sink; and flush the main arm FIRST."
+    }
+  ],
+  "canary": {
+    "registered_semantics": "2 single-slot direct-decode contacts on the FIRST TWO attempt-1 M0 sample ids in sorted order; responses never read semantically - sha256 + server print_timing descriptives only; PASS < 300 ms/token generation",
+    "sample_ids": ["slurp:devel:000090:audio-1498567209", "slurp:devel:000109:audio-1497882612"],
+    "generation_ms_per_token": [6.74, 7.26],
+    "worst_generation_ms_per_token": 7.26,
+    "prompt_eval_ms_per_token": [0.54, 1.14],
+    "passed": true,
+    "response_byte_identity_vs_attempt1_m0": {
+      "slurp:devel:000090:audio-1498567209": {"response_sha256": "5fe1b883601c67a10862f74c4ef2abd1e94445d25088dbc2989870e29e067a59", "byte_identical_to_attempt1": true},
+      "slurp:devel:000109:audio-1497882612": {"response_sha256": "7e6ccbed9d234c2ed405c1ea4169213767bcc5694af3bcd8f2b261503980a073", "byte_identical_to_attempt1": true},
+      "note": "hash-to-hash comparison only; byte-identical direct decodes across a VM reboot AND a service restart - cross-instance decode determinism held on both canary samples"
+    }
+  },
+  "spend_durable": {
+    "attempt3_frozen_core_contacts": {"used": 202, "breakdown": "2 canary direct decodes + 100 BLEND direct decodes + 100 BLEND evidence decodes; resend never reached", "registered_attempt_ceiling": 204},
+    "attempt3_metered_audio_seconds": 554.9838125,
+    "attempt3_embedding_tool_contacts": {"used": 102, "breakdown": "100 runtime query embeddings + jitter pair (bit-identical, cosine 1.0); latency total 88.982 s (~0.87 s/query - the CPU sidecar was NOT the bottleneck)", "registered_attempt_ceiling": 130},
+    "attempt3_gpu_seconds_sampler_window": 3014.93,
+    "attempt3_peak_vram_mib": 24093.0,
+    "attempt3_request_gpu_sample_count": 743,
+    "round0_cumulative_incl_attempts_1_2": {"frozen_core_contacts": 402, "embedding_tool_contacts": 157, "metered_audio_seconds": 1073.302125, "gpu_seconds_sampled_sum_across_attempts": 3885.61},
+    "campaign_ceilings": {"frozen_core_contacts": 1800, "embedding_tool_contacts": 1500, "metered_audio_seconds": 2400, "gpu_hours": 2.0},
+    "plan_declaration_verdict": "the run-cumulative declaration WORKED: 402 cumulative calls and 1,073.30 cumulative audio-s stayed inside the declared 460 / 1,200 with the resend margin unspent; no budget refusal occurred anywhere in this attempt",
+    "source": "durable AttemptStore actuals (attempt-20260824T093833Z-dev100r0a3: calls=202, audio_seconds=554.9838125, state OPENED - finalize never ran) + flight-state.json + embedding-contacts.jsonl + the service's own server.log (202 slot launches). NOTE: flight-state.json's core_contacts_total field reads 2 - that counter was last saved before the crash incremented it; the AttemptStore actual (202) is the accounting authority"
+  },
+  "boundary_respected": {
+    "gold_opened": false,
+    "round_sealed": false,
+    "note": "GOLD WAS NEVER OPENED and the round was NOT sealed or scored: the flight died at the trace flush, before the seal-before-score step. NO devel gold, reference transcript, prediction, correctness, or response meaning was read in this attempt. Durable response material: the canary's 2 MODEL_RESPONSE records plus exactly 2 partially-flushed BLEND contact records (request ids dev100r0-0003 and dev100r0-0012: MODEL_REQUEST/MODEL_RESPONSE/COST triples emitted before the collision) are on disk and were never parsed; the remaining 198 BLEND responses died with the unflushed buffer (trace gap, third occurrence, this time harness-caused rather than serving-caused). The 100 query embeddings are durable as vectors + text hashes only (no transcripts). Attempt-1's M0 arm remains durable, verified, and reusable.",
+    "resend_pair": "never reached",
+    "value_vectors": "SEALED (never loaded)",
+    "m11_boundary_stage": "not flown (as registered)"
+  },
+  "serving_pathology_recurrence": {
+    "summary": "THE PROGRESSIVE SERVING PATHOLOGY RECURRED ON THE FRESH VM: the canary and the first BLEND wave decoded healthily, then generation collapsed to the attempt-2 signature during sustained 8-slot mixed load. The VM-reboot remediation is therefore INSUFFICIENT as a durable fix; the canary correctly bounded only the start state (exactly as the registered pathology addendum anticipated).",
+    "evidence": {
+      "canary_single_slot": "6.74 / 7.26 ms/token (healthiest decode measured in the whole campaign)",
+      "blend_generation_ms_per_token": {"n": 200, "min": 32.29, "median": 5136.84, "p90": 5737.35, "max": 6373.79},
+      "blend_prompt_eval_ms_per_token": {"n": 200, "min": 0.45, "median": 8.95, "p90": 125.59, "max": 171.3},
+      "blend_prompt_tokens_max": 1783,
+      "blend_generated_tokens_total": 5307,
+      "onset": "external probes saw ~50 ms/token at 09:47Z (first ~40 contacts) and steady-state ~3.4 contacts/min thereafter; the 200-contact BLEND took ~52 minutes wall against a healthy-rate expectation of well under 10",
+      "gpu_signature_mid_flight": "100% utilization at ~43 W (busy-spin class), WSL-reported clocks.sm 1200 MHz - same class as attempt 2",
+      "not_the_embedder": "100 query embeddings totaled 88.98 s on the CPU sidecar; the decoder was the bottleneck"
+    },
+    "evidence_prompt_size_finding": "the worst-case 6,174-token bound never materialized in flight: real evidence prompts peaked at 1,783 text tokens because typical SLURP facet representations and values are tiny compared to the 5-longest worst case; direct and evidence prompts are size-indistinguishable at these knobs",
+    "candidate_cause_updated": "NOT uniquely a degraded-GPU-PV-after-poweroff state (a fresh VM reproduced it); consistent with progressive degradation under sustained multi-slot decode on this driver/GPU-PV stack (onset minutes into load in attempts 2 and 3; single-slot decode healthy immediately before). Attempt-1 flew 100 M0 contacts at 8 slots in 66 s healthily, so short bursts are fine; long mixed campaigns degrade.",
+    "recommendation": "before any attempt 4, the coordinator/owner should decide a serving mitigation: candidates are periodic in-flight decode-rate checks with a registered pause/fail rule, reduced slot concurrency, GPU clock pinning from Windows (nvidia-smi -lgc, the known P-state remedy), or a llama.cpp/driver-level investigation. The trace-collision fix (micro-run sinks) is mandatory regardless."
+  },
+  "one_shot_consequence": "Attempt 3 is spent under one-shot semantics (no silent intra-round retry after real core spend). 202 of the registered 204 attempt contacts were used; the registration's science (fresh complete BLEND arm + resend, sealed and scored against reused M0) was NOT obtained: the BLEND responses died unflushed at the collision. Whether a fourth round-0 attempt is authorized - with (a) the micro-run trace-sink fix, (b) a serving mitigation for the recurring pathology, and (c) the same run-cumulative plan arithmetic extended for the new spend (cumulative base is now 402 calls / 1,073.30 audio-s) - is the coordinator/owner's decision, not the implementer's. The campaign row stays open, consumed = no; nothing semantic was read; attempt-1's M0 arm remains durable and reusable.",
+  "hosting_verdict": "HOSTING IS FULLY SOLVED: the keepalive-first + systemd-run recipe (service AND flight) survived a VM shutdown cycle, a 54-minute flight, and the abort; nothing was externally killed in attempt 3 - the flight died on its own harness exception. The decoder service is LEFT UP for the coordinator (unit saea-np8-dev100-r3, pid 790, receipt 4b4d8bcf..., /health ok after the abort)."
+}
