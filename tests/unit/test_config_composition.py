@@ -1146,5 +1146,60 @@ def test_dev100_kb_alpha_blend_campaign_composes_on_the_resident_zero_copy_servi
     assert ceilings["metered_audio_seconds_total"] == 2400
     assert ceilings["gpu_hours_total"] == 2.0
 
+    # Prompt geometry: the C3 bound is NEGATIVE on this service and the test
+    # says so. The registered receipt measured the worst reachable
+    # evidence-decode envelope at 7,773 prompt tokens against the 4,096
+    # tokens one slot of the resident `-np 16` service provides, so round 0
+    # cannot fly as composed. This assertion exists to keep that fact from
+    # being quietly forgotten: it fails the moment someone "fixes" the
+    # receipt without re-measuring, and it fails just as loudly if the
+    # geometry is repaired without moving the campaign onto a service whose
+    # slot actually holds the prompt.
+    prompt_fit = json.loads(
+        (
+            REPO_ROOT
+            / "docs"
+            / "checks"
+            / "speech-aware-evidence-acquisition"
+            / "2026-08-24-dev100-c3-prompt-fit"
+            / "prompt-fit.json"
+        ).read_text(encoding="utf-8")
+    )
+    assert prompt_fit["model_contact"] is False
+    assert prompt_fit["config_hash"] == composed.config_hash
+    assert prompt_fit["knowledge_snapshot_sha256"] == (
+        values["kb_campaign_knowledge_snapshot"]["snapshot_sha256"]
+    )
+    assert prompt_fit["prompt_order"] == values["prompt_order"]
+
+    context_per_slot = 65536 // 16
+    assert prompt_fit["context_tokens_per_slot"] == context_per_slot
+    assert prompt_fit["maximum_completion_tokens"] == values["decoding_params"]["max_tokens"]
+    assert (
+        context_per_slot
+        - prompt_fit["maximum_prompt_tokens_upper_bound"]
+        - prompt_fit["maximum_completion_tokens"]
+        == prompt_fit["context_margin_tokens"]
+    )
+
+    by_envelope = {row["envelope_id"]: row for row in prompt_fit["envelopes"]}
+    # The direct-decode contact fits with room to spare; the
+    # evidence-conditioned one does not fit at all.
+    assert by_envelope["direct-decode"]["prompt_tokens_upper_bound"] == 1819
+    assert by_envelope["evidence-decode-worst"]["prompt_tokens_upper_bound"] == 7773
+    assert prompt_fit["worst_envelope_id"] == "evidence-decode-worst"
+    assert prompt_fit["context_margin_tokens"] == -3741
+    assert prompt_fit["maximum_prompt_fits_one_slot"] is False
+
+    # The largest slot count that DOES admit the measured worst case, which
+    # is what a future campaign fragment has to serve on.
+    required = (
+        prompt_fit["maximum_prompt_tokens_upper_bound"]
+        + prompt_fit["maximum_completion_tokens"]
+    )
+    assert required == 7837
+    assert 65536 // 8 >= required
+    assert 65536 // 16 < required
+
     # Record the composed identity so a fragment edit is a visible test move.
     assert composed.config_hash == "668a0f1c6adfc11228535dd6bcedf56284c446551077a1e137576533e8b638dd"
