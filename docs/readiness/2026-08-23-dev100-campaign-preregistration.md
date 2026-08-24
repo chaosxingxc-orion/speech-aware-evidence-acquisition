@@ -83,6 +83,33 @@ retry); the campaign row itself stays open across rounds until the stopping rule
 4. GPU preflight: Lenovo SmartFanMode == 3 AND enforced power limit ≥ 95 W (the 2026-08-23
    35 W quiet-mode incident), plus the standing runtime-integrity checks.
 
+## 5b. Pre-registration amendment (coordinator, 2026-08-24, BEFORE the campaign row was
+## registered and at zero campaign spend)
+
+The round-0 launch attempt fail-closed at the session-bound prompt-fit: the C3 evidence
+contact measured 7,773 worst-case tokens against the np16 profile's 4,096-token slot
+(margin −3,741; receipt under `2026-08-24-dev100-c3-prompt-fit/`). Two remedies adopted,
+both pre-registration:
+
+1. **Contract-rendering fix** in `rails/kb_policy.py`: the evidence contact's instruction
+   REFERENCES the task contract already present in the system message instead of
+   re-rendering it (~1,957 duplicated tokens removed). Rendering fix only; no knob, grammar,
+   or policy-id change.
+2. **np8 serving variant** for this campaign: model fragment
+   `q4km-mmproj-free-speech-native-np8-zcopy-speech-query-prefix-max64` (`-np 8` at
+   `-c 65536` → 8,192-token slots; all other server args identical to the resident zcopy
+   profile). Measured-sufficient alone (+355 margin); combined with remedy 1 the expected
+   worst-case margin is ≈ +2,300. Halved slot concurrency is accepted for 100-sample rounds.
+   The campaign's composed config hash is therefore the np8 composition; a fresh
+   session-bound prompt-fit against the np8 service must show nonnegative margin on the
+   POST-fix rendering before the campaign row is registered.
+
+Also recorded: the predecessor resident session (`33639d3d…`) died uncleanly in the window
+2026-08-24 03:50:39Z–04:32Z (no stop receipt; no error lines; silent external termination;
+zero scientific loss), and the first C3 prompt-fit MF row WAS executed (7 tokenizer
+contacts) — its ledger row carries the facts. Value vectors remain SEALED; percept
+admission is facet-side (verified against the implementation).
+
 ## 6. Discipline
 
 Gold never in runtime; devel gold opens scoring-side between rounds only. SLURP CC BY-NC 4.0
