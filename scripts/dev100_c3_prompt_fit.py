@@ -18,9 +18,10 @@ What is rendered (worst case, not typical):
   content` builds under the resident service's `speech-query-prefix-v2`
   layout, with each text part wrapped exactly as the transport wraps it
   (`[evidence <id>] <text>` / `[agent control <contact_id>] <content>`).
-* the evidence-decode contact's control instruction repeats the whole task
-  contract (kb_policy's `_advance_after_recall` builds it that way), so the
-  ontology roster is counted TWICE in the worst envelope.
+* the evidence-decode contact's control instruction REFERENCES the task
+  contract already present in the system message (post-fix rendering,
+  amendment 5b remedy 1, commit 72096bad) -- the roster is counted ONCE,
+  and this script asserts the real kb_policy source still renders that way.
 * the m = 5 longest fused values and the 5 longest key facets in the pinned
   snapshot are used as the visible knowledge, which upper-bounds any real
   fusion decision at these knobs (fusion_m 5, fusion_c 2, fusion_top_l 3
@@ -68,7 +69,7 @@ from speech_aware_evidence_acquisition.data.lock import (  # noqa: E402
 )
 from speech_aware_evidence_acquisition.rails.adapters.slurp import SlurpAdapter  # noqa: E402
 
-MODEL_FRAGMENT = "q4km-mmproj-free-speech-native-np16-zcopy-speech-query-prefix-max64"
+MODEL_FRAGMENT = "q4km-mmproj-free-speech-native-np8-zcopy-speech-query-prefix-max64"
 DATASET_FRAGMENT = "slurp-speech-native-dev100"
 BASELINE_FRAGMENT = "slurp-dev100-kb-alpha-blend"
 EXPERIMENT_FRAGMENT = "slurp-dev100-kb-alpha-blend-campaign-v1"
@@ -224,10 +225,29 @@ def main() -> int:
         )[:FUSION_VALUE_CEILING]
     ]
 
+    # POST-fix rendering (amendment 5b remedy 1, commit 72096bad): the
+    # evidence contact's instruction REFERENCES the contract already present
+    # in the system message instead of re-rendering it. This emulation is
+    # bound to the real controller source below so a later kb_policy wording
+    # change breaks this script loudly instead of silently certifying a
+    # prompt the campaign no longer sends.
     control_instruction = (
-        f"{task_contract}\n"
-        "Answer using the speech query together with the supplied knowledge evidence."
+        "Decide under the task contract already given above, now "
+        "considering the retrieved evidence. Answer using the speech "
+        "query together with the supplied knowledge evidence."
     )
+    import inspect
+
+    from speech_aware_evidence_acquisition.rails import kb_policy as _kb_policy
+
+    _kb_source = inspect.getsource(_kb_policy)
+    if '"Decide under the task contract already given above, now "' not in _kb_source:
+        raise SystemExit(
+            "rails.kb_policy no longer renders the post-fix evidence "
+            "instruction this script emulates; re-derive the worst case"
+        )
+    if task_contract in control_instruction:
+        raise SystemExit("post-fix instruction must not re-render the task contract")
     history = [
         {
             "turn": 1,
@@ -318,12 +338,14 @@ def main() -> int:
         "study": "speech-aware-evidence-acquisition",
         "scope": "model-free-check",
         "model_contact": False,
-        "exposure_run_id": "SAEA-SN-MF-DEV100-C3-PROMPT-FIT",
+        "exposure_run_id": "SAEA-SN-MF-DEV100-C3-PROMPT-FIT-NP8",
         "rendering_source": (
             "rails.runner._agent_messages shapes rendered through "
             "core.model.transport._ordered_speech_feature_content and "
             "_speech_history_texts; the M11 enumerator is constructor-specific "
-            "and does not describe the C3 chain"
+            "and does not describe the C3 chain. POST-fix evidence instruction "
+            "(amendment 5b remedy 1, commit 72096bad): references the contract "
+            "in the system message, asserted against rails.kb_policy source"
         ),
         "config_hash": composed.config_hash,
         "config_fragments": composed.fragments,
