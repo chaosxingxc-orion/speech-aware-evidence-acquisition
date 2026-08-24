@@ -1,0 +1,197 @@
+{
+  "accuracy_cost_candidates": [],
+  "accuracy_cost_frontier": [],
+  "adaptive_policies": [],
+  "aggregates": [
+    {
+      "accuracy": 0.8518518518518519,
+      "actual_contact_count": 338,
+      "agent_loop_metrics": {
+        "action_families": {
+          "boundary-stable": {
+            "action_query_count": 0,
+            "correct": 92,
+            "harmful_action_count": 0,
+            "harmful_sample_ids": [],
+            "helpful_action_count": 0,
+            "helpful_sample_ids": []
+          },
+          "candidate-action-state": {
+            "action_query_count": 11,
+            "correct": 90,
+            "harmful_action_count": 4,
+            "harmful_sample_ids": [
+              "slurp:train:015403:audio-1497869121",
+              "slurp:train:015642:audio-1501777794-headset",
+              "slurp:train:015710:audio-1434531846-headset",
+              "slurp:train:012648:audio-1499088435"
+            ],
+            "helpful_action_count": 2,
+            "helpful_sample_ids": [
+              "slurp:train:007273:audio-1489497810-headset",
+              "slurp:train:008226:audio-1501763644"
+            ]
+          },
+          "retrieval-top1": {
+            "action_query_count": 14,
+            "correct": 88,
+            "harmful_action_count": 6,
+            "harmful_sample_ids": [
+              "slurp:train:011401:audio-1498568111",
+              "slurp:train:015403:audio-1497869121",
+              "slurp:train:015642:audio-1501777794-headset",
+              "slurp:train:015710:audio-1434531846-headset",
+              "slurp:train:003383:audio-1499088392-headset",
+              "slurp:train:012648:audio-1499088435"
+            ],
+            "helpful_action_count": 2,
+            "helpful_sample_ids": [
+              "slurp:train:007273:audio-1489497810-headset",
+              "slurp:train:008226:audio-1501763644"
+            ]
+          }
+        },
+        "action_state_correct": 90,
+        "action_variable_query_count": 14,
+        "adaptive_boundary_query_count": 7,
+        "aggregator_id": "adaptive-evidence-gap-primary-control-v1",
+        "boundary_incremental_helpful_action_count": 0,
+        "boundary_stable_correct": 92,
+        "boundary_stable_non_primary_action_count": 0,
+        "calls_distribution": {
+          "3": 101,
+          "5": 7
+        },
+        "final_minus_primary_correct": 0,
+        "information_flow": {
+          "boundary_supply_id_reference_count": 7,
+          "boundary_supply_query_count": 7,
+          "boundary_supply_transition": {
+            "attribution_scope": "boundary-supply-plus-pairwise-comparison",
+            "changed_prediction_count": 4,
+            "eligible_count": 4,
+            "estimated_net_gain": 4,
+            "harmful_sample_ids": [],
+            "harmful_transition_count": 0,
+            "helpful_sample_ids": [
+              "slurp:train:015403:audio-1497869121",
+              "slurp:train:015642:audio-1501777794-headset",
+              "slurp:train:015710:audio-1434531846-headset",
+              "slurp:train:012648:audio-1499088435"
+            ],
+            "helpful_transition_count": 4,
+            "neutral_transition_count": 0,
+            "unresolved_count": 3
+          },
+          "factor_selection_id_reference_count": 168,
+          "factor_selection_query_count": 108,
+          "factor_supply_id_reference_count": 1425,
+          "factor_supply_query_count": 108,
+          "factor_supply_transition": {
+            "attribution_scope": "factor-supply-plus-speech-reobservation",
+            "changed_prediction_count": 5,
+            "eligible_count": 108,
+            "estimated_net_gain": 2,
+            "harmful_sample_ids": [],
+            "harmful_transition_count": 0,
+            "helpful_sample_ids": [
+              "slurp:train:011401:audio-1498568111",
+              "slurp:train:003383:audio-1499088392-headset"
+            ],
+            "helpful_transition_count": 2,
+            "neutral_transition_count": 106,
+            "unresolved_count": 0
+          },
+          "generated_state_external_supply_count": 0,
+          "schema": "m11-information-flow-v1"
+        },
+        "initial_top_k_reachable_count": 96,
+        "mechanism_failure_count": 0,
+        "new_knowledge_query_count": 108,
+        "oracle_correct": 94,
+        "oracle_gain_vs_primary": 2,
+        "oracle_status": "diagnostic-only-not-an-admissible-controller",
+        "policy_id": "speech-conditioned-adaptive-evidence-gap-v2",
+        "primary_accuracy": 0.8518518518518519,
+        "primary_correct": 92,
+        "query_count": 108,
+        "reader_contract": {
+          "oof_fold_count": 3,
+          "oof_maximum_harmful_transitions": 0,
+          "oof_minimum_changed_prediction_support": 3,
+          "oof_minimum_estimated_net_gain": 2,
+          "oof_minimum_helpful_transitions": 2,
+          "oof_minimum_state_support": 5,
+          "promotion_maximum_action_rate": 0.5,
+          "promotion_maximum_harmful_transitions": 1,
+          "promotion_minimum_action_rate": 0.05,
+          "promotion_minimum_net_gain": 3,
+          "promotion_minimum_positive_folds": 2,
+          "promotion_minimum_worst_fold_delta": 0,
+          "promotion_requires_lower_mean_calls": true,
+          "support_maximum_mechanism_failures": 0,
+          "support_minimum_action_variable_queries": 24,
+          "support_minimum_adaptive_boundary_queries": 18,
+          "support_minimum_boundary_non_primary_actions": 12,
+          "support_minimum_incremental_boundary_repairs": 3,
+          "support_minimum_oracle_gain": 6,
+          "support_minimum_query_count": 100,
+          "support_minimum_top_k_reachable": 100
+        },
+        "retrieval_top1_correct": 88,
+        "support_checks": {
+          "action_variable_query_count_at_least_24": false,
+          "adaptive_boundary_query_count_at_least_18": false,
+          "boundary_incremental_helpful_action_count_at_least_3": false,
+          "boundary_stable_non_primary_action_count_at_least_12": false,
+          "initial_top_k_reachable_count_at_least_100": false,
+          "mechanism_failure_count_zero": true,
+          "oracle_gain_vs_primary_at_least_6": false,
+          "query_count_at_least_100": true
+        },
+        "support_gate_id": "m11-information-support-gate-v1",
+        "support_gate_passed": false,
+        "training_free_controller": {
+          "policy_id": "speaker-grouped-oof-information-advantage-v1",
+          "status": "deferred-support-gate-failed"
+        },
+        "unique_boundary_id_count": 6
+      },
+      "aggregate_tokens_per_second": 454.0286828214243,
+      "cell_id": "K1-M11-k3-v4-adaptive-evidence-gap-v2",
+      "correct": 92,
+      "correct_to_wrong_vs_baseline": 0,
+      "count": 108,
+      "parse_failure_count": 0,
+      "top_k_reachability": 0.8888888888888888,
+      "top_k_reachable_count": 96,
+      "wrong_to_correct_vs_baseline": 0
+    }
+  ],
+  "baseline_cell_id": "K1-M11-k3-v4-adaptive-evidence-gap-v2",
+  "binding_file_sha256": "a2ccd4b004ce2e31329bf7b69ce0ebb9cff642eec2d25cde8087ffc679203dfe",
+  "cell_pairwise": [],
+  "mechanism_controls": [],
+  "pairwise": [
+    {
+      "baseline_cell_id": "K1-M11-k3-v4-adaptive-evidence-gap-v2",
+      "cell_id": "K1-M11-k3-v4-adaptive-evidence-gap-v2",
+      "correct_to_wrong": 0,
+      "net_change": 0,
+      "prediction_disagreement_count": 0,
+      "wrong_to_correct": 0
+    }
+  ],
+  "schema": "saea-speech-native-read-v1",
+  "selected_cell_id": "K1-M11-k3-v4-adaptive-evidence-gap-v2",
+  "selection_policy_id": "accuracy-regression-parse-order-cost-v1",
+  "source_receipts": [
+    {
+      "decisions_sha256": "4e9ebefceb07f11df858f6ccc71290beb243a2aef5198cf832fc16ce2d606f99",
+      "flight_receipt_sha256": "14be9f413ae0e7c760f8c45cd39b9a0b4d1cf4989b98581c84385144288a503a",
+      "run_id": "SAEA-SN-EVIDENCE-E108-K1M11-INFORMATION-COMPLETE-ACTION-SUPPORT-ZCOPY"
+    }
+  ],
+  "split_name": "EVIDENCE-E108",
+  "study": "speech-aware-evidence-acquisition"
+}
