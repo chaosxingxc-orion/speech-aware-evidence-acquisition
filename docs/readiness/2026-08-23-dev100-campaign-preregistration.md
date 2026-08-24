@@ -67,6 +67,17 @@ pinned-tool embedding contacts; ≤ **2,400** metered audio-seconds; ≤ **2.0**
 (GPU-active basis). One-shot semantics apply per ROUND attempt (no silent intra-round
 retry); the campaign row itself stays open across rounds until the stopping rule fires.
 
+**Owner-approved ceiling amendment (2026-08-24, after the round-0 sync):** round-0's five
+aborted attempts (all serving/harness pathologies, zero scientific loss, fully documented in
+the attempt records) consumed audio budget the original cells sized for clean rounds. With
+round-0 sealed at cumulative 688 core / 300 tool / 1,824.52 audio-s, the owner approved at
+the round-0 sync: **metered audio-seconds 2,400 → 5,500** and **frozen-core contacts
+1,800 → 2,500** (supports up to 5 further iteration rounds at ~560 audio-s / ~210 contacts
+each). Tool and GPU-h cells unchanged. The serving-pathology attribution (build-bound to
+`build-singleton-zero-copy`; decode inner loop, NOT preprocessing — prompt-eval stayed
+healthy and the featcache warmup is offline/CPU-side by design) is recorded in the round-0
+attempt records; scientific flights use the base `llama.cpp-featcache` binary.
+
 ## 5. Prep prerequisites (each its own registered artifact, before round 0)
 
 1. Text-embedding pass over the full snapshot's content-facet and value texts
