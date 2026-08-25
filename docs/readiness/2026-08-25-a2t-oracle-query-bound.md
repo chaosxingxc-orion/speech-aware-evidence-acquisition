@@ -5,7 +5,18 @@ Date: 2026-08-25. Status: **BOUNDING RUNG — computed, ZERO CONTACTS, all gates
 Row `SAEA-SN-MF-A2T-ORACLE-QUERY-BOUND` (registered `fed9a79c`, **before any computation**).
 Module `src/speech_aware_evidence_acquisition/analysis/a2t_oracle_query_bound.py`.
 Receipt `docs/checks/speech-aware-evidence-acquisition/2026-08-25-a2t-oracle-query-bound/oracle-query-bound-report.json`
-(sha256 `8fc0641b415dbd96006a97972f160cd75c830b244d68a4a79d8ed2fe653075f2`).
+(sha256 `b564362b64bb41df4d9055518bcd0cd88753e2796b3583ed0b95f626a2ece723`).
+
+> **SELF-CORRECTION, landed in the same session as the first version of this document
+> (`5020adce`), recorded here rather than hidden.** §2.1 originally asserted, from the builder's
+> source alone, that "**no evaluation utterance is a KB entry, by construction and fail-closed**."
+> That was an over-claim: the fail-closed check guarantees no evaluation **UNIT** is in the
+> construction pool, and says nothing about two different `query_idx` blocks carrying the same
+> invocation string. Measured (`utterance_leak_check`), **0 of 104** evaluation units are in the
+> KB and **6 of 104** evaluation utterance TEXTS do appear verbatim as a KB content facet — all
+> six in `tier8_intent_blending`, and **0 of them among the 15 dispatched trajectories this row
+> measures**. No number in this document changes; the sentence is corrected below and the
+> measurement now lands in the receipt instead of being inferred from source.
 
 > ## THIS IS AN ORACLE. READ THIS BEFORE ANY NUMBER BELOW.
 >
@@ -45,7 +56,7 @@ band of 0.565332–0.635625 to **0.7209–0.8587** and clears τ on **15 of 15**
 148–150 targets clear τ simultaneously and the gold target lands at rank 11–99. **Clearing τ is
 not the lever.** The oracle converts only because it already encodes the tool identity, and the
 substitution it makes — a *different* utterance that invokes the same tool, standing in for the
-trajectory's own utterance, whose embedding does not exist on disk — is most generous exactly
+trajectory's own utterance, whose embedding is on disk for none of these 15 (measured, §2.1) — is most generous exactly
 where the subgroup is hardest: **8 of the 11 are `tier4_implicit` or `tier7_multiturn`**, tiers
 whose utterances are by construction *not* direct tool invocations. The honest reading is
 therefore: the direction survives this rung on the registered quantity, and surviving
@@ -122,10 +133,23 @@ The natural oracle query is the embedding of the trajectory's **own invocation u
 vector does not exist and this row may take no embedding contact, for two reasons that are both
 properties of the landed system rather than choices made here:
 
-1. **The KB cannot contain it.** `rails.knowledge_build_a2t.propose_partition` reserves every
-   evaluation item's whole `query_idx` **BLOCK** out of the construction pool (and reserves every
-   block touched by the frozen exposed 400 out of *both* sides). No evaluation utterance is a KB
-   entry, by construction and fail-closed.
+1. **The KB does not contain it — MEASURED, not inferred** (`utterance_leak_check`, over all
+   16,838 pool units and all 104 evaluation samples):
+
+   | | value |
+   |---|---|
+   | evaluation **UNITS** present in the KB | **0 of 104** — the block decontamination in `rails.knowledge_build_a2t.propose_partition` holds exactly |
+   | evaluation **utterance TEXTS** matching a KB content facet verbatim | **6 of 104** |
+   | …of those, in the **15 dispatched** trajectories this row measures | **0** |
+
+   The second row is the correction: `propose_partition` reserves every evaluation item's whole
+   `query_idx` **BLOCK** (and every block touched by the frozen exposed 400, out of *both* sides),
+   which forbids unit overlap but not two different blocks carrying the same invocation string.
+   Six `tier8_intent_blending` evaluation utterances do have a verbatim KB twin, so for those six
+   the utterance embedding *is* on disk under another facet id. **None of the 15 dispatched
+   trajectories is one of them** — the dispatched set is tier1/2/3/4/5/7 and contains no tier8
+   sample — so nothing in this row's oracle framing is affected, and the fact is recorded rather
+   than glossed.
 2. **The flight never embedded utterances.** The landed `query-vectors.jsonl` carries exactly one
    vector per sample and it is the embedding of the model's **contact-0 answer text** — which is
    the whole pathology the gold-absence diagnosis identified.
@@ -403,9 +427,12 @@ contact was taken. The two statements are compatible and neither is weakened.
 ## 9. Declared unverified rather than estimated
 
 1. **Whether the trajectory's OWN utterance embedding would land inside its gold tool's
-   neighbourhood.** That vector does not exist on disk (§2.1) and producing it is an embedding
-   contact this row may not take. This is the single quantity that would turn the oracle into a
-   projection, and it is **not** estimated here.
+   neighbourhood.** For all 15 dispatched trajectories that vector is not on disk — measured, not
+   inferred (§2.1) — and producing it is an embedding contact this row may not take. This is the
+   single quantity that would turn the oracle into a projection, and it is **not** estimated here.
+   (The six `tier8_intent_blending` samples whose utterance text *does* have a verbatim KB twin
+   would permit the question to be asked of them at zero contacts; none of them is dispatched, so
+   none is in this row's population, and no such measurement is made or estimated here.)
 2. **Whether any legal contact-0 construction can produce a tool-identifying query.** That needs a
    model contact.
 3. **The correctness consequence.** Gold-bearing supply is not a correct answer; the landed

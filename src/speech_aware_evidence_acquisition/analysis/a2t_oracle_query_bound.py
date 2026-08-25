@@ -31,9 +31,13 @@ WHY THE ORACLE IS BUILT FROM KB VECTORS RATHER THAN THE UTTERANCE. The natural
 oracle query is the embedding of the trajectory's OWN invocation utterance. That
 vector does not exist on disk and this row may take no embedding contact:
 ``rails.knowledge_build_a2t.propose_partition`` reserves every evaluation item's
-whole ``query_idx`` BLOCK out of the construction pool, so no evaluation
-utterance is a KB entry, and the flight embedded contact-0 ANSWERS, never
-utterances. The oracle is therefore built from the gold tool's own landed
+whole ``query_idx`` BLOCK out of the construction pool, and the flight embedded
+contact-0 ANSWERS, never utterances. :func:`utterance_leak_check` MEASURES the
+first clause rather than trusting it: 0 of 104 evaluation UNITS are in the KB,
+and the 6 of 104 evaluation utterance TEXTS that do carry a verbatim KB twin
+(two different ``query_idx`` blocks with the same string, which the block check
+does not forbid) are all ``tier8_intent_blending`` and none of them is among the
+15 dispatched trajectories this row measures. The oracle is therefore built from the gold tool's own landed
 content-facet vectors -- embeddings of OTHER utterances that invoke the same
 gold tool -- and that substitution is stated wherever a number is cited.
 
@@ -45,8 +49,9 @@ THE FOUR ORACLE QUERIES, all from already-landed vectors:
   cosine 1.0. Reported as a leaky ceiling; it is NOT the bound.
 * **O2 ORACLE-LOO, the HONEST bound.** The same query with that facet WITHHELD
   from the retrievable pool. This is the faithful simulation of the real
-  decontaminated condition: a legal query can never match itself, because the
-  utterance it embeds is not in the KB.
+  decontaminated condition: on all 15 dispatched trajectories a legal query
+  cannot match itself, because the utterance it would embed is not in the KB
+  (measured, see above).
 * **O3 ORACLE-BEST-LOO, the SUPREMUM over same-tool utterance queries, and THE
   HEADLINE.** For EVERY vectored content facet whose value's ``task_target`` is
   the gold tool, replay O2's construction with that facet as the query and
@@ -765,10 +770,13 @@ def oracle_bound(
         "identity_leak_note": (
             "O1's query IS a KB entry and therefore retrieves ITSELF at cosine "
             "1.0. O2, O3 and O4 are the self-excluded constructions and O3 is "
-            "the honest bound. The real trajectories can never self-match: "
-            "rails.knowledge_build_a2t.propose_partition reserves every "
-            "evaluation item's whole query_idx BLOCK out of the construction "
-            "pool, so no evaluation utterance is a KB entry"
+            "the honest bound. None of the 15 dispatched trajectories this row "
+            "measures can self-match, and that is MEASURED in "
+            "utterance_leak_check rather than inferred: 0 of 104 evaluation "
+            "UNITS are in the KB (the block decontamination in "
+            "rails.knowledge_build_a2t.propose_partition), and the 6 of 104 "
+            "evaluation utterance TEXTS that do have a verbatim KB twin are "
+            "all tier8_intent_blending, 0 of them dispatched"
         ),
         "twin_stratification_note": (
             "POST-REGISTRATION AND LABELLED AS SUCH. O3's self-exclusion "
@@ -995,6 +1003,87 @@ def mixing_self_check(
 # ---------------------------------------------------------------------------
 
 
+def utterance_leak_check(
+    carrier: ccd.A2TAttempt4,
+    *,
+    repo_root: Path,
+    data_root: Path,
+    dispatched: Sequence[str],
+) -> dict[str, object]:
+    """Is any evaluation utterance itself a KB entry? MEASURED, not inferred.
+
+    The oracle's whole framing rests on the claim that the trajectory's own
+    utterance is not in the KB, so a legal query could never self-match. The
+    BLOCK decontamination in ``rails.knowledge_build_a2t.propose_partition``
+    guarantees that no evaluation UNIT is in the construction pool, but it says
+    nothing about two DIFFERENT ``query_idx`` blocks carrying the same text.
+    This function measures both, because the first was asserted from source and
+    the second was not, and an unmeasured leak would understate the oracle."""
+
+    from ..data.lock import load_lock, umbrella_lock_path
+    from ..rails import knowledge_build_a2t as builder
+
+    rows, _report = builder.a2t_pool_rows(
+        load_lock(umbrella_lock_path(repo_root)), Path(data_root)
+    )
+    row_by_sample = {}
+    for row in rows:
+        for sample_id in row.sample_ids:
+            row_by_sample[sample_id] = row
+
+    kb_units: set[str] = set()
+    kb_text_facets: dict[str, list[str]] = {}
+    for facet in carrier.bundle.snapshot.facets:
+        if facet.dimension != "content":
+            continue
+        kb_units.add(facet.facet_id.split("facet:content:", 1)[1])
+        kb_text_facets.setdefault(facet.representation, []).append(facet.facet_id)
+
+    unit_overlap: list[str] = []
+    text_overlap: list[dict[str, object]] = []
+    unresolved: list[str] = []
+    for sample_id in carrier.sample_ids:
+        row = row_by_sample.get(sample_id)
+        if row is None:
+            unresolved.append(sample_id)
+            continue
+        if row.unit_id in kb_units:
+            unit_overlap.append(sample_id)
+        hits = kb_text_facets.get(row.text)
+        if hits:
+            text_overlap.append(
+                {
+                    "sample_id": sample_id,
+                    "eval_unit_id": row.unit_id,
+                    "kb_facet_ids": sorted(hits),
+                    "dispatched": sample_id in set(dispatched),
+                }
+            )
+
+    dispatched_leaks = [
+        item for item in text_overlap if item["dispatched"]
+    ]
+    return {
+        "pool_units_read": len(rows),
+        "population": len(carrier.sample_ids),
+        "samples_with_no_pool_row": unresolved,
+        "eval_UNITS_present_in_the_kb": len(unit_overlap),
+        "eval_UNITS_present_in_the_kb_ids": unit_overlap,
+        "eval_UTTERANCE_TEXTS_matching_a_kb_content_facet": len(text_overlap),
+        "eval_UTTERANCE_TEXT_matches": text_overlap,
+        "text_matches_among_the_dispatched_15": len(dispatched_leaks),
+        "semantics": (
+            "eval_UNITS_present_in_the_kb must be 0 -- that is the BLOCK "
+            "decontamination `propose_partition` enforces fail-closed. A TEXT "
+            "match is a WEAKER and separate condition: two different query_idx "
+            "blocks may carry the same invocation string, in which case that "
+            "evaluation utterance's embedding IS on disk under another facet "
+            "id. Only a text match on a DISPATCHED trajectory would touch this "
+            "row's oracle framing, so that count is reported separately"
+        ),
+    }
+
+
 def landed_reproduction_gate(
     coverage: Mapping[str, object],
     geometry: Mapping[str, diag.SampleGeometry],
@@ -1084,6 +1173,9 @@ def run(*, repo_root: Path, data_root: Path, out_path: Path) -> dict[str, object
             + json.dumps(reproduction)
         )
 
+    leak = utterance_leak_check(
+        carrier, repo_root=repo_root, data_root=data_root, dispatched=dispatched
+    )
     oracle = oracle_bound(carrier, geometry, dispatched, gold_absent)
     lower = lower_constructions(carrier, geometry, dispatched, gold_absent)
     self_check = mixing_self_check(carrier, lower)
@@ -1158,6 +1250,7 @@ def run(*, repo_root: Path, data_root: Path, out_path: Path) -> dict[str, object
         "fidelity_gate": gate,
         "landed_reproduction_gate": reproduction,
         "recall_fidelity": probe_report,
+        "utterance_leak_check": leak,
         "population": {
             "dispatched_ids": sorted(dispatched),
             "gold_absent_ids": sorted(gold_absent),
@@ -1201,6 +1294,10 @@ def main(argv: Sequence[str] | None = None) -> int:
         out_path=Path(args.out),
     )
     print(json.dumps(report["landed_reproduction_gate"], indent=1))
+    leak = dict(report["utterance_leak_check"])  # type: ignore[arg-type]
+    leak.pop("eval_UTTERANCE_TEXT_matches", None)
+    leak.pop("semantics", None)
+    print(json.dumps(leak, indent=1))
     print(json.dumps(report["oracle_bound"]["summary"], indent=1))
     print(json.dumps(report["lower_constructions"]["summary"], indent=1))
     print(json.dumps(report["decision_rule"], indent=1))

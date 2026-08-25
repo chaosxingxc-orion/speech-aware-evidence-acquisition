@@ -98,7 +98,7 @@
    "w_prior": 0.3
   }
  },
- "generated_at": "2026-08-25T18:18:14+00:00",
+ "generated_at": "2026-08-25T18:47:37+00:00",
  "hard_stop": "BOUNDING RUNG ONLY. No knob is changed, no flight is authorized, no G2 is opened, no test contact is taken, and no generality or superiority claim follows from this artifact. A ceiling on a direction is never a measurement of a method",
  "kb_shape": {
   "content_facets_with_a_task_target": 12903,
@@ -2343,7 +2343,7 @@
  },
  "oracle_bound": {
   "gold_value_criterion": "a trajectory is GOLD-SUPPLIED when some selected value's task_target is its gold PRIMARY tool -- the same criterion cross_carrier_ceiling_decomposition.gold_coverage uses. The trajectory's OWN gold value does not exist in the KB by decontamination, so a value-id criterion would be vacuous",
-  "identity_leak_note": "O1's query IS a KB entry and therefore retrieves ITSELF at cosine 1.0. O2, O3 and O4 are the self-excluded constructions and O3 is the honest bound. The real trajectories can never self-match: rails.knowledge_build_a2t.propose_partition reserves every evaluation item's whole query_idx BLOCK out of the construction pool, so no evaluation utterance is a KB entry",
+  "identity_leak_note": "O1's query IS a KB entry and therefore retrieves ITSELF at cosine 1.0. O2, O3 and O4 are the self-excluded constructions and O3 is the honest bound. None of the 15 dispatched trajectories this row measures can self-match, and that is MEASURED in utterance_leak_check rather than inferred: 0 of 104 evaluation UNITS are in the KB (the block decontamination in rails.knowledge_build_a2t.propose_partition), and the 6 of 104 evaluation utterance TEXTS that do have a verbatim KB twin are all tier8_intent_blending, 0 of them dispatched",
   "oracle_warning": "EVERY QUERY IN THIS BLOCK IS AN ORACLE. It is built from the trajectory's own GOLD TOOL identity, which no runtime query could legally have, so every count here BOUNDS THE DIRECTION FROM ABOVE and is not a proposal, a method or an achievable accuracy",
   "per_sample": [
    {
@@ -4729,5 +4729,67 @@
  },
  "schema": "saea-a2t-oracle-query-bound-v1",
  "study": "speech-aware-evidence-acquisition",
- "wall_seconds": 285.84
+ "utterance_leak_check": {
+  "eval_UNITS_present_in_the_kb": 0,
+  "eval_UNITS_present_in_the_kb_ids": [],
+  "eval_UTTERANCE_TEXTS_matching_a_kb_content_facet": 6,
+  "eval_UTTERANCE_TEXT_matches": [
+   {
+    "dispatched": false,
+    "eval_unit_id": "tier8_intent_blending:000582",
+    "kb_facet_ids": [
+     "facet:content:tier8_intent_blending:000427"
+    ],
+    "sample_id": "tier8_intent_blending:000249"
+   },
+   {
+    "dispatched": false,
+    "eval_unit_id": "tier8_intent_blending:000705",
+    "kb_facet_ids": [
+     "facet:content:tier8_intent_blending:000979"
+    ],
+    "sample_id": "tier8_intent_blending:000372"
+   },
+   {
+    "dispatched": false,
+    "eval_unit_id": "tier8_intent_blending:000756",
+    "kb_facet_ids": [
+     "facet:content:tier8_intent_blending:000701",
+     "facet:content:tier8_intent_blending:000703"
+    ],
+    "sample_id": "tier8_intent_blending:000423"
+   },
+   {
+    "dispatched": false,
+    "eval_unit_id": "tier8_intent_blending:000774",
+    "kb_facet_ids": [
+     "facet:content:tier8_intent_blending:000982"
+    ],
+    "sample_id": "tier8_intent_blending:000441"
+   },
+   {
+    "dispatched": false,
+    "eval_unit_id": "tier8_intent_blending:000827",
+    "kb_facet_ids": [
+     "facet:content:tier8_intent_blending:000732",
+     "facet:content:tier8_intent_blending:000749"
+    ],
+    "sample_id": "tier8_intent_blending:000494"
+   },
+   {
+    "dispatched": false,
+    "eval_unit_id": "tier8_intent_blending:000018",
+    "kb_facet_ids": [
+     "facet:content:tier8_intent_blending:000266"
+    ],
+    "sample_id": "tier8_intent_blending:000673"
+   }
+  ],
+  "pool_units_read": 16838,
+  "population": 104,
+  "samples_with_no_pool_row": [],
+  "semantics": "eval_UNITS_present_in_the_kb must be 0 -- that is the BLOCK decontamination `propose_partition` enforces fail-closed. A TEXT match is a WEAKER and separate condition: two different query_idx blocks may carry the same invocation string, in which case that evaluation utterance's embedding IS on disk under another facet id. Only a text match on a DISPATCHED trajectory would touch this row's oracle framing, so that count is reported separately",
+  "text_matches_among_the_dispatched_15": 0
+ },
+ "wall_seconds": 285.838
 }
