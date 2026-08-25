@@ -1,0 +1,440 @@
+{
+ "a2t_pool_inventory": {
+  "construction_units": 12601,
+  "eval_sample_ids": 400,
+  "pool_items": 30733,
+  "pool_units": 16843,
+  "usable_units": 16838
+ },
+ "a2t_prior_before_after": {
+  "conditional_distribution_property": {
+   "cells": 30,
+   "holds": true,
+   "statement": "over the tools present in one (domain, category) cell the post-repair priors sum to 1; the pre-repair ones could not, which is the arithmetic form of the defect",
+   "worst_absolute_error_from_1": 0.0
+  },
+  "construction_pool_rows": 12601,
+  "delta_when_moved": {
+   "distinct_values": 150,
+   "max": -0.010309278350515455,
+   "mean": -0.07888635094726201,
+   "median": -0.032564450474898254,
+   "min": -4.05,
+   "n": 12237,
+   "p05": -0.26324786324786326,
+   "p25": -0.04854368932038833,
+   "p75": -0.025367156208277702,
+   "p95": -0.019841269841269854,
+   "values_above_1": 0,
+   "values_equal_to_1": 0
+  },
+  "fidelity_gate": {
+   "method": "the construction pool and the selection are reconstructed from the same manifests, the same partition seed (20260807) and the same build seed (20260825) the landed build script used, then the PRE-repair ratio is recomputed and compared to the pinned snapshot's own prior_score on every value",
+   "recomputed_pre_repair_reproduces_the_pinned_snapshot": true,
+   "value_mismatches": 0,
+   "values_compared": 12601
+  },
+  "largest_decreases": [
+   {
+    "post_repair": 0.05,
+    "pre_repair": 4.1,
+    "value_id": "value:tier1_direct:001931"
+   },
+   {
+    "post_repair": 0.05,
+    "pre_repair": 4.1,
+    "value_id": "value:tier5_needle:001922"
+   },
+   {
+    "post_repair": 0.13580246913580246,
+    "pre_repair": 2.493827160493827,
+    "value_id": "value:tier1_direct:001580"
+   },
+   {
+    "post_repair": 0.13580246913580246,
+    "pre_repair": 2.493827160493827,
+    "value_id": "value:tier3_multi_intent:001561"
+   },
+   {
+    "post_repair": 0.13580246913580246,
+    "pre_repair": 2.493827160493827,
+    "value_id": "value:tier3_multi_intent:001567"
+   },
+   {
+    "post_repair": 0.13580246913580246,
+    "pre_repair": 2.493827160493827,
+    "value_id": "value:tier4_implicit:001577"
+   },
+   {
+    "post_repair": 0.13580246913580246,
+    "pre_repair": 2.493827160493827,
+    "value_id": "value:tier4_implicit:001580"
+   },
+   {
+    "post_repair": 0.13580246913580246,
+    "pre_repair": 2.493827160493827,
+    "value_id": "value:tier5_needle:001565"
+   },
+   {
+    "post_repair": 0.13580246913580246,
+    "pre_repair": 2.493827160493827,
+    "value_id": "value:tier5_needle:001567"
+   },
+   {
+    "post_repair": 0.13580246913580246,
+    "pre_repair": 2.493827160493827,
+    "value_id": "value:tier6_correction:001571"
+   }
+  ],
+  "post_repair": {
+   "distinct_values": 145,
+   "max": 1.0,
+   "mean": 0.19376242134380683,
+   "median": 0.1865079365079365,
+   "min": 0.0034482758620689655,
+   "n": 12601,
+   "p05": 0.019469026548672566,
+   "p25": 0.14258373205741626,
+   "p75": 0.2496124031007752,
+   "p95": 0.34368932038834954,
+   "values_above_1": 0,
+   "values_equal_to_1": 144
+  },
+  "pre_repair": {
+   "distinct_values": 182,
+   "max": 4.1,
+   "mean": 0.2703700141175268,
+   "median": 0.24102564102564103,
+   "min": 0.02197802197802198,
+   "n": 12601,
+   "p05": 0.12654867256637167,
+   "p25": 0.17703349282296652,
+   "p75": 0.29569377990430623,
+   "p95": 0.5282051282051282,
+   "values_above_1": 193,
+   "values_equal_to_1": 0
+  },
+  "selected_values": 12601,
+  "share_moved": 0.9711134036981192,
+  "values_moved": 12237,
+  "values_unchanged": 364
+ },
+ "contacts": {
+  "audio_seconds": 0.0,
+  "embedding_tool": 0,
+  "frozen_core": 0,
+  "gold_opened": "SCORING-SIDE ONLY, over the EXPOSED A2T-G1-104 whose seal the landed G1 read already broke; never on a runtime path",
+  "gpu_hours": 0.0,
+  "outbound_connection_attempts": 0,
+  "outbound_targets": [],
+  "tokenizer": 0
+ },
+ "corrected_prior_supply_replay": {
+  "as_flown_replay_matches_the_flight_on_dispatched": true,
+  "consequence": "the corrected prior leaves the supply byte-identical on every one of the 104, so no landed A2T ranking, supply, dispatch or correctness number is revised by this repair -- measured, not inferred from the bracket",
+  "prior_dimension_recall": {
+   "as_flown_facets": 10,
+   "as_flown_score_supremum": 4.1,
+   "as_flown_scores_above_1": 10,
+   "corrected_facets": 10,
+   "corrected_score_supremum": 1.0,
+   "corrected_scores_above_1": 0,
+   "facet_set_identical": false,
+   "facets_only_as_flown": [
+    "facet:label:tool:controlPlayback",
+    "facet:label:tool:getLockState",
+    "facet:label:tool:setLockState",
+    "facet:label:tool:setVolume",
+    "facet:prior:controlPlayback",
+    "facet:prior:getLockState",
+    "facet:prior:setLockState",
+    "facet:prior:setVolume"
+   ],
+   "facets_only_corrected": [
+    "facet:label:tool:getEnergyUsage",
+    "facet:label:tool:setClimate",
+    "facet:label:tool:setHapticStrength",
+    "facet:label:tool:setMirrorAngle",
+    "facet:prior:getEnergyUsage",
+    "facet:prior:setClimate",
+    "facet:prior:setHapticStrength",
+    "facet:prior:setMirrorAngle"
+   ],
+   "note": "recall is REDONE under the corrected values, so a changed recalled SET is visible here; the landed bracket rescaled scores after recall and could not see it"
+  },
+  "prior_mass_facets_inside_the_locked_top_m_window_under_the_corrected_prior": {
+   "max_over_trajectories": 0,
+   "total_over_trajectories": 0,
+   "trajectories_with_at_least_one": 0
+  },
+  "supply_changed_sample_ids": [],
+  "supply_changed_trajectories": 0,
+  "supply_identical_on_all_trajectories": true,
+  "trajectories": 104
+ },
+ "execution_profile": "model-free-check",
+ "exposure_row_id": "SAEA-SN-MF-PRIOR-SCORE-SEMANTICS-REPAIR",
+ "generated_at": "2026-08-25T20:41:16+00:00",
+ "hard_stop": "CORRECTNESS REPAIR ONLY. No knob is changed, nothing is written under configs/, no pinned snapshot is displaced, no flight is authorized, no test contact is taken, and no generality or superiority claim follows from this artifact.",
+ "landed_fidelity_gate": {
+  "direct_label_mismatch_ids": [],
+  "direct_label_recovery_reproduced": 104,
+  "dispatch_decision_reproduced": 104,
+  "dispatch_mismatch_ids": [],
+  "gate_passed": true,
+  "population": 104,
+  "semantics": "the flight records fusion_selected_value_ids only for a trajectory it dispatched; a retained trajectory carries null. The dispatched set is compared value-id for value-id and the retained set is asserted null.",
+  "supply_mismatch_ids": [],
+  "supply_reproduced": 104,
+  "trajectories_with_empty_recall": 0,
+  "trajectories_with_empty_supply": 0
+ },
+ "pinned_artifacts": {
+  "all_unchanged": true,
+  "artifacts": [
+   {
+    "artifact": "a2t_snapshot",
+    "expected_sha256": "ec2f9ec454d3f16957ac08e4d7686a6f3941f22c600ff2b1b2b97ff43baf9fb2",
+    "measured_sha256": "ec2f9ec454d3f16957ac08e4d7686a6f3941f22c600ff2b1b2b97ff43baf9fb2",
+    "mode": "content_hash",
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/knowledge/audio2tool/saea-kb-a2t-toolshaped-v1/size-full/snapshot.json",
+    "unchanged": true
+   },
+   {
+    "artifact": "slurp_snapshot",
+    "expected_sha256": "e27b274516604ffc0e21319758aea99dc027f459d480a32a74a715b023a51b57",
+    "measured_sha256": "e27b274516604ffc0e21319758aea99dc027f459d480a32a74a715b023a51b57",
+    "mode": "content_hash",
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/knowledge/slurp/saea-kb-distmodel-v1/size-full/snapshot.json",
+    "unchanged": true
+   },
+   {
+    "artifact": "locked_policy_config",
+    "expected_sha256": "d68afd2cfb6e12d9cbd9d3fbcf0daf3f81f6ed8be9b2a75c4f8ffb234011a919",
+    "measured_sha256": "d68afd2cfb6e12d9cbd9d3fbcf0daf3f81f6ed8be9b2a75c4f8ffb234011a919",
+    "mode": "file_sha256",
+    "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/configs/policy/kb-policy-v1-dev100.json",
+    "unchanged": true
+   },
+   {
+    "artifact": "a2t_g1_104_receipt",
+    "expected_sha256": "b42f0953a0d168955ba5ddfc77f2c300aacb54e48dce902d1b3d4a109c1996db",
+    "measured_sha256": "b42f0953a0d168955ba5ddfc77f2c300aacb54e48dce902d1b3d4a109c1996db",
+    "mode": "file_sha256",
+    "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/receipts/a2t/A2T-G1-104.json",
+    "unchanged": true
+   }
+  ],
+  "statement": "the pinned Audio2Tool snapshot and the pinned SLURP snapshot are byte-identical on disk and remain the record of what actually flew; the rebuilt snapshot is a NEW artifact at a NEW path and displaces nothing"
+ },
+ "range_contract_on_the_pinned_snapshot": {
+  "declared_range": [
+   0.0,
+   1.0
+  ],
+  "load_succeeded": true,
+  "re_freeze_refused_with": "RailsError: KnowledgeSnapshot.frozen_json[a2t-kb-toolshaped-9eb5f4bf186a0285]: prior_score must be a probability in [0.0, 1.0] -- 193 of 12601 values are outside it (value:tier1_direct:001010=1.956043956043956, value:tier1_direct:001013=1.956043956043956, value:tier1_direct:001063=1.5274725274725274, value:tier1_direct:001066=1.5274725274725274, value:tier1_direct:001580=2.493827160493827, +188 more). A ratio whose numerator is not restricted to its denominator's conditioning event is not a conditional probability; restrict the numerator rather than rescaling the result.",
+  "recorded_violations": 193,
+  "statement": "the pinned snapshot LOADS, its violations are recorded rather than silently tolerated, and it cannot be re-frozen: bytes carrying a violation may come IN and be labelled; none may go OUT",
+  "values": 12601,
+  "violation_supremum": 4.1
+ },
+ "rebuild_diff_against_the_pinned_snapshot": {
+  "embedding_implication": "NO EMBEDDING PASS IS IMPLIED: no facet representation and no value content string changed, so every landed vector remains the vector of the text it was computed from. prior_score is a numeric ValueBundle field and is never embedded.",
+  "facet_ids_only_on_one_side": 0,
+  "facet_ids_only_on_one_side_preview": [],
+  "facets_whose_fields_changed": 0,
+  "facets_whose_fields_changed_preview": [],
+  "only_prior_score_moved": true,
+  "snapshot_header_fields_that_changed": [],
+  "value_fields_that_changed": {
+   "prior_score": 12237
+  },
+  "value_ids_only_on_one_side": 0,
+  "value_ids_only_on_one_side_preview": [],
+  "values_changed_in_prior_score_only": 12237
+ },
+ "rebuilt_snapshot": {
+  "file_sha256": "4af3d41f17d4beca4e3c7fab2ede7e6cb56809b09edc9a6630f71547c6dc9b01",
+  "pinned_snapshot_sha256": "ec2f9ec454d3f16957ac08e4d7686a6f3941f22c600ff2b1b2b97ff43baf9fb2",
+  "relpath": "knowledge/audio2tool/saea-kb-a2t-toolshaped-v1/size-full/snapshot-prior-repaired.json",
+  "snapshot_sha256": "ad4e0bbff31e46a66a9281fbc1deb893546c53d68debfe4b479c4658435c8e76",
+  "statement": "a NEW artifact at a NEW path. The pinned snapshot ec2f9ec454d3f16957ac08e4d7686a6f3941f22c600ff2b1b2b97ff43baf9fb2 remains the record of what actually flew and is not displaced, overwritten or re-hashed. Nothing consumes the rebuilt snapshot except this row's own replay."
+ },
+ "recall_fidelity": {
+  "cosine_probes_against_kb_policy_cosine": 72,
+  "recall_fidelity_probes": 8,
+  "semantics": "the vectorised full-KB cosine sweep is not trusted until kb.multidim_recall admits the same facet set with the same scores on the probed samples and kb_policy._cosine reproduces each probed cosine to 1e-9"
+ },
+ "schema": "saea-prior-score-semantics-repair-v1",
+ "slurp_nesting_identity": {
+  "argument": "intent is built as f'{scenario}_{action}', so an intent determines its scenario and the restricted numerator's row SET is the same SET as the unrestricted one. The repair is therefore an exact identity on SLURP -- which is why SLURP never exposed the defect, and equally why the SLURP code was never correct BY CONSTRUCTION.",
+  "finding_if_it_had_failed": "a single intent appearing under two scenarios would mean the SLURP prior was wrong in flight exactly as the A2T one was; the counts above are the check, not a restatement of the argument",
+  "identity_holds": true,
+  "intent_nesting_violations": [],
+  "intents": 60,
+  "intents_compared": 60,
+  "intents_whose_restricted_row_set_differs_from_the_unrestricted_one": 0,
+  "label_scheme": "intent = f\"{scenario}_{action}\"",
+  "post_repair_prior_supremum": 1.0,
+  "post_repair_prior_values_above_1": 0,
+  "prior_changes": [],
+  "rows": 11514,
+  "rows_violating_the_label_scheme": 0,
+  "rows_violating_the_label_scheme_ids": [],
+  "rows_whose_prior_changed": 0,
+  "scenarios": 18
+ },
+ "source_verification": {
+  "defect_a2t": "rails/knowledge_build_a2t.py:1085-1087 set prior_score = tool_total / category_total, where tool_total = len(rows_by_tool_full[tool]) is accumulated at line 853 over the WHOLE construction pool and category_total = len(rows_by_category_full[(domain, category)]) is accumulated at line 854 over one (domain, category). The numerator's row set is NOT a subset of the denominator's, so the ratio is not p(tool | domain, category) and has no reason to be <= 1.",
+  "defect_slurp": "rails/knowledge_build.py:696-698 set prior_score = intent_total_in_scenario / scenario_total, where intent_total_in_scenario = len(rows_by_intent_full[intent]) is accumulated at line 504 over the WHOLE row set, NOT over the scenario. It is the identical expression shape. The local's NAME asserted a restriction the code did not perform. SLURP is safe only because intent = f'{scenario}_{action}' (line 202) makes an intent determine its scenario -- an accident of the label vocabulary, not a property of the expression.",
+  "live_tree_after_repair": {
+   "finding_as_landed_at_3f131afd": "BOTH builders compute prior_score as count(key_N over ALL rows) / count(key_D over ALL rows) with key_N != key_D and no restriction of the numerator to the denominator's key. SLURP's ratio is a conditional probability only because intent = f'{scenario}_{action}' nests intent inside scenario in the LABEL VOCABULARY; the local name 'intent_total_in_scenario' asserts a restriction the expression does not perform. The SLURP builder therefore carries the identical latent defect and would break exactly as the A2T builder did under a non-nesting label scheme.",
+   "finding_now": "REPAIRED. Both builders now restrict the numerator to the conditioning event -- SLURP count(intent AND scenario) / count(scenario), Audio2Tool count(tool AND (domain, category)) / count((domain, category)) -- and both call knowledge.assert_prior_scores_are_probabilities on the values they assemble, so a non-probability prior_score can no longer be built. The SLURP repair is an EXACT IDENTITY because intent determines scenario; the Audio2Tool repair is not, and its before/after distribution is published in docs/readiness/2026-08-25-prior-score-semantics-repair.md. The landed synthesis document and its receipt are NOT rewritten: the pre-repair lines stay published above as the historical record.",
+   "forbidden_source_claims": [
+    {
+     "absent": true,
+     "forbidden_substring": "intent_total_in_scenario = len(rows_by_intent_full.get(row.intent, ()))",
+     "relpath": "src/speech_aware_evidence_acquisition/rails/knowledge_build.py"
+    },
+    {
+     "absent": true,
+     "forbidden_substring": "tool_total = len(rows_by_tool_full.get(row.tool_name, ()))",
+     "relpath": "src/speech_aware_evidence_acquisition/rails/knowledge_build_a2t.py"
+    },
+    {
+     "absent": true,
+     "forbidden_substring": "prior_score = tool_total / category_total",
+     "relpath": "src/speech_aware_evidence_acquisition/rails/knowledge_build_a2t.py"
+    }
+   ],
+   "forbidden_source_claims_verified": 3,
+   "source_claims": [
+    {
+     "expected_substring": "rows_by_intent_in_scenario_full[(row.scenario, row.intent)] += 1",
+     "present": true,
+     "relpath": "src/speech_aware_evidence_acquisition/rails/knowledge_build.py"
+    },
+    {
+     "expected_substring": "intent_total_in_scenario = rows_by_intent_in_scenario_full.get(",
+     "present": true,
+     "relpath": "src/speech_aware_evidence_acquisition/rails/knowledge_build.py"
+    },
+    {
+     "expected_substring": "prior_score = intent_total_in_scenario / scenario_total",
+     "present": true,
+     "relpath": "src/speech_aware_evidence_acquisition/rails/knowledge_build.py"
+    },
+    {
+     "expected_substring": "intent=f\"{entry.scenario}_{entry.action}\"",
+     "present": true,
+     "relpath": "src/speech_aware_evidence_acquisition/rails/knowledge_build.py"
+    },
+    {
+     "expected_substring": "rows_by_tool_in_category_full[(row.domain, row.category, row.tool_name)] += 1",
+     "present": true,
+     "relpath": "src/speech_aware_evidence_acquisition/rails/knowledge_build_a2t.py"
+    },
+    {
+     "expected_substring": "tool_total_in_category = rows_by_tool_in_category_full.get(",
+     "present": true,
+     "relpath": "src/speech_aware_evidence_acquisition/rails/knowledge_build_a2t.py"
+    },
+    {
+     "expected_substring": "prior_score = tool_total_in_category / category_total",
+     "present": true,
+     "relpath": "src/speech_aware_evidence_acquisition/rails/knowledge_build_a2t.py"
+    },
+    {
+     "expected_substring": "assert_prior_scores_are_probabilities(values, builder=\"KB-BUILD\")",
+     "present": true,
+     "relpath": "src/speech_aware_evidence_acquisition/rails/knowledge_build.py"
+    },
+    {
+     "expected_substring": "assert_prior_scores_are_probabilities(values, builder=\"KB-BUILD-A2T\")",
+     "present": true,
+     "relpath": "src/speech_aware_evidence_acquisition/rails/knowledge_build_a2t.py"
+    }
+   ],
+   "source_claims_at_3f131afd": [
+    {
+     "line": 696,
+     "relpath": "src/speech_aware_evidence_acquisition/rails/knowledge_build.py",
+     "substring": "scenario_total = len(rows_by_scenario_full.get(row.scenario, ()))"
+    },
+    {
+     "line": 697,
+     "relpath": "src/speech_aware_evidence_acquisition/rails/knowledge_build.py",
+     "substring": "intent_total_in_scenario = len(rows_by_intent_full.get(row.intent, ()))"
+    },
+    {
+     "line": 698,
+     "relpath": "src/speech_aware_evidence_acquisition/rails/knowledge_build.py",
+     "substring": "prior_score = intent_total_in_scenario / scenario_total"
+    },
+    {
+     "line": 1085,
+     "relpath": "src/speech_aware_evidence_acquisition/rails/knowledge_build_a2t.py",
+     "substring": "category_total = len(rows_by_category_full.get((row.domain, row.category), ()))"
+    },
+    {
+     "line": 1086,
+     "relpath": "src/speech_aware_evidence_acquisition/rails/knowledge_build_a2t.py",
+     "substring": "tool_total = len(rows_by_tool_full.get(row.tool_name, ()))"
+    },
+    {
+     "line": 1087,
+     "relpath": "src/speech_aware_evidence_acquisition/rails/knowledge_build_a2t.py",
+     "substring": "prior_score = tool_total / category_total"
+    }
+   ],
+   "source_claims_verified": 9
+  },
+  "pre_repair_commit": "3f131afd",
+  "pre_repair_evidence": {
+   "claims": [
+    {
+     "expression": "scenario_total = len(rows_by_scenario_full.get(row.scenario, ()))",
+     "line_at_pre_repair_commit": 696,
+     "machine_checked_present_at_pre_repair_commit": true,
+     "relpath": "src/speech_aware_evidence_acquisition/rails/knowledge_build.py"
+    },
+    {
+     "expression": "intent_total_in_scenario = len(rows_by_intent_full.get(row.intent, ()))",
+     "line_at_pre_repair_commit": 697,
+     "machine_checked_present_at_pre_repair_commit": true,
+     "relpath": "src/speech_aware_evidence_acquisition/rails/knowledge_build.py"
+    },
+    {
+     "expression": "prior_score = intent_total_in_scenario / scenario_total",
+     "line_at_pre_repair_commit": 698,
+     "machine_checked_present_at_pre_repair_commit": true,
+     "relpath": "src/speech_aware_evidence_acquisition/rails/knowledge_build.py"
+    },
+    {
+     "expression": "category_total = len(rows_by_category_full.get((row.domain, row.category), ()))",
+     "line_at_pre_repair_commit": 1085,
+     "machine_checked_present_at_pre_repair_commit": true,
+     "relpath": "src/speech_aware_evidence_acquisition/rails/knowledge_build_a2t.py"
+    },
+    {
+     "expression": "tool_total = len(rows_by_tool_full.get(row.tool_name, ()))",
+     "line_at_pre_repair_commit": 1086,
+     "machine_checked_present_at_pre_repair_commit": true,
+     "relpath": "src/speech_aware_evidence_acquisition/rails/knowledge_build_a2t.py"
+    },
+    {
+     "expression": "prior_score = tool_total / category_total",
+     "line_at_pre_repair_commit": 1087,
+     "machine_checked_present_at_pre_repair_commit": true,
+     "relpath": "src/speech_aware_evidence_acquisition/rails/knowledge_build_a2t.py"
+    }
+   ],
+   "method": "the landed Stage-2A synthesis module opened each builder and asserted the exact substring at the exact line; this row re-hashes that receipt and reads its recorded result rather than re-reading bytes that no longer exist in the tree",
+   "receipt_relpath": "docs/checks/speech-aware-evidence-acquisition/2026-08-25-stage2a-synthesis/verification-report.json",
+   "receipt_sha256": "561a6c020d1c58a77097e88f30e2e7d597730fa570dbeb2e15200e321d45d9a0"
+  }
+ },
+ "study": "speech-aware-evidence-acquisition",
+ "wall_seconds": 277.85
+}
