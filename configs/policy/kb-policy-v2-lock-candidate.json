@@ -1,0 +1,39 @@
+{
+  "schema": "saea-kb-policy-v2-lock-candidate",
+  "frozen_at": "2026-08-25",
+  "supersedes": "configs/policy/kb-policy-v1-dev100.json",
+  "authority": "docs/readiness/2026-08-25-lock-candidate-selection.md",
+  "code_state": {
+    "policy_module_commits": ["bbdb9902", "72096bad", "b3d29658", "f1060078"],
+    "override_implementation": "launcher-side dispatch rule (A4), flown at 890adefc; rails/ and core/ untouched"
+  },
+  "knobs": {
+    "alpha": 0.45,
+    "tau": 0.65,
+    "recall_top_k_per_dimension": 5,
+    "rank_weighting": "rrf",
+    "rank_weights": { "w_cos": 0.5, "w_prior": 0.3, "w_agree": 0.2 },
+    "fusion": { "m": 5, "c": 2, "l": 3 },
+    "prior_source": "train",
+    "boundary_stage": "not-flown",
+    "percept_admission": "facet-side (value vectors sealed)",
+    "retain_override": {
+      "signal": "delta = cos_top1 - cos_direct (retrieval-preference margin; runtime-legal, gold-free, computed by multidim_recall at no extra cost)",
+      "bar": 0.14,
+      "effect": "dispatch (override retain-primary) when delta >= bar, in addition to the standing dead-direct dispatch predicate"
+    }
+  },
+  "measured_at_selection": {
+    "dev100_v1_frozen": "72/100 (rounds 4 and 5, exact replication)",
+    "dev100_v2_candidate": "74/100 (A4), W to C 26, C to W 0",
+    "override_mechanism_gain": "+3 attributable (3/3 named recoveries, 0 disturbances, +3 contacts)",
+    "aggregate_delta_vs_v1": "+2 (inside the documented +/-2 byte-variance channel; the mechanism channel is the claim, not the aggregate)",
+    "dev500_v1_held_out": "unexposed-400 72.25% vs M0 52.50%, +19.75 pp, 90% CI [+16.5,+23.0]"
+  },
+  "levers_closed_by_evidence": {
+    "retrieval_width": "K-WIDEN K1 flown: supply changed on 32/100 trajectories, 0 width-attributable flips",
+    "supply_budget": "projection: 0 new gold-supplied errors at any variant incl. unlimited budget; min(c*top_l, k) means the recall window binds",
+    "alpha_tau_rank_weights": "inert or exhausted (DEV-100 rounds 1-2 and the damage-channel counterfactuals)"
+  },
+  "knob_semantics": "DEV-fit; the delta bar was FIT on exposed data (DEV-100 r4/r5 + DEV-500 NEW400) and is frozen here. Its out-of-sample validation IS the DEV-1000 unexposed-500 lock read, which therefore validates the bar and confirms the cell in one touch. Any post-freeze change voids the lock registration."
+}
