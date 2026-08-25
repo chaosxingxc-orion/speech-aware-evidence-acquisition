@@ -154,8 +154,11 @@ defect the owner ruling named, and not a property of Audio2Tool.
 2. **The +0.96 pp population delta is not separated from zero by its own interval.** Tool
    accuracy 62 → 63 of 104, **+1 sample = +0.9615 pp**, 90 % CI **[−2.88, +4.81]**, 95 % CI
    [−2.88, +4.81], σ̂ 2.15 pp, McNemar mid-p 0.6875, 41.56 % of replicates at or below zero
-   (`paired_tool_accuracy`). This is a **first signal on an EXPOSED tier**, below the campaign
-   plan's own n ≥ 400 unexposed power floor. It is not a result.
+   (`paired_tool_accuracy`). *(The 90 % and 95 % bounds coincide because at n = 104 the
+   bootstrap's support is 1/104 = 0.96 pp per sample and the interval is only a few atoms
+   wide — a discreteness artifact, reported as it landed rather than smoothed.)* This is a
+   **first signal on an EXPOSED tier**, below the campaign plan's own n ≥ 400 unexposed power
+   floor. It is not a result.
 3. **The empty-call collapse is a DIFFERENT metric and must not be substituted for an accuracy
    claim.** M0 14 / 104 = 13.46 % → BLEND 3 / 104 = 2.88 %, recomputed here through the frozen
    `analysis.a2t_read.is_empty_tool_call` (whose predicate is `len(predicted) == 0`, so it
@@ -274,12 +277,17 @@ This reproduces the admission-scale sweep's pre-flight projection exactly (4 / 2
 sweep's "rank 2–3" bucket is entirely rank 2. **The projection was made before the flight and
 the flight matched it to the sample.**
 
-**The α veto and the coverage ceiling are independent, and the second is much the larger.** If
-the α gate did not exist, **68 of 104** trajectories would carry gold-bearing supply — 4 inside
-the dispatched set and **64** inside the retained set. The retained 64 are not a missed
-opportunity in any simple sense (they are retained because the direct answer already named a
-tool, and 60 of the 89 retained are already correct), but they do bound what any α change could
-possibly reach.
+**The two ceilings compound; neither dominates.** The α veto removes 89 of 104 (85.58 %); within
+the 15 that survive it, the coverage ceiling removes a further 11 of 15 (73.33 %). Only **4 of
+104 = 3.85 %** of trajectories are both reachable AND gold-supplied — the intersection is where
+the method's best case actually lives on this carrier.
+
+**And the α ceiling is not free money either.** If the α gate did not exist, **68 of 104**
+trajectories would carry gold-bearing supply — 4 inside the dispatched set and **64** inside the
+retained set. The retained 64 are not a missed opportunity in any simple sense (they are
+retained because the direct answer already named a tool, and 60 of the 89 retained are already
+correct, so a widened dispatch would be putting evidence in front of mostly-correct answers),
+but the 68 does bound what any α change could possibly reach.
 
 ### 3.3 Conditional conversion — a MECHANISM reading, never an effect size
 
@@ -394,9 +402,12 @@ anything.**
 
 ### L1 — KB gold coverage and key construction for label-free trajectories. **Rank 1.**
 
-**Why first: it does not touch the locked cell at all.** Ceiling B is the larger of the two on
-both carriers (11 of 15 dispatched A2T trajectories got no gold at all; on SLURP the residual is
-68–73 % recall-limited with the gold facet at rank 6–2,023). This is the priority-2 key agenda's
+**Why first: it does not touch the locked cell at all, and it is binding on both carriers.** Of
+the 15 A2T trajectories that survive the α veto, 11 got no gold at all; on SLURP the residual is
+68–73 % recall-limited with the gold facet sitting at rank 6–2,023. It is ranked above L2 not
+because it is the bigger ceiling — §3.2 shows the two compound rather than one dominating — but
+because it is the one that can be moved **without changing the locked cell**, and because every
+item in it is gated offline before it costs a contact. This is the priority-2 key agenda's
 territory (`docs/readiness/2026-08-25-key-construction-agenda-plan.md`).
 
 **Honest prior: modest, and one item is already closed.** K1 (same-text lexical/BM25 fusion) ran
