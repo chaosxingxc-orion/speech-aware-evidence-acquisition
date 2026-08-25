@@ -1,0 +1,3444 @@
+{
+  "accounting_only": "ACCOUNTING ONLY. This module does not propose or evaluate a field-selection policy and changes no rendering. A design step is a separate, separately-registered row.",
+  "artifact_hashes": {
+    "a2t:arm1-m0-outputs.jsonl": "dea60ff1e63fd2ef11c93edf8808217062fea3f0565ed5b60f136264bc6a9467",
+    "a2t:arm2-blend-mechanical-report-attempt4.json": "641c4b5ae82cdda1b2d8508bb95e52035fe1b3d119ea170f10906779df459436",
+    "a2t:arm2-blend-mechanical.json": "59458c491368a117721041e4ba1538549f3e1e28bdb342e4927703ad5892644e",
+    "a2t:arm2-blend-outputs.jsonl": "24a7864263226f4918076571aee359d40ee76838f9cea1da2bbae38f6b6bdd18",
+    "a2t:content-facet-npz": "00a7ebe9b8325ffc2c7b8e45ac4f0c8475b2d3e76994cc0f539f7b5ad5740f45",
+    "a2t:g1-read-attempt4.json": "cb5e56584a6d572f7b41b39542201ddb1b361755042eac66c3a70c55fd086f89",
+    "a2t:kb_policy.py": "2a1c3d75e747db10f723044b05c08d232e1edf47f125d0889c1d2565ba1019af",
+    "a2t:pass-a-direct-outputs.jsonl": "73e28511f419cd67b1721d829438f8c102e725e01243c9a9f000e00d92aadc9c",
+    "a2t:query-vectors.jsonl": "2915aa0e4c690fc612777f28c88949956b2cfb108582c4e40eaca36e6a184be7",
+    "a2t:snapshot": "ec2f9ec454d3f16957ac08e4d7686a6f3941f22c600ff2b1b2b97ff43baf9fb2",
+    "a2t_snapshot": "ec2f9ec454d3f16957ac08e4d7686a6f3941f22c600ff2b1b2b97ff43baf9fb2",
+    "rails/knowledge_build.py": "94f3b7ef84ad5bcf393871f7c5e3cafca99a9b47ec87a802eb90226f3a47cd48",
+    "rails/knowledge_build_a2t.py": "b0aae99763423bba673cbb72c1c702fdd5d42c55cd46fc46222c74b79ffe88d2",
+    "rails/runner.py": "9f9f7ee683fd96eb54f0399846c1ca7aa28d01a5bba787f53b566c76cefd17b6",
+    "slurp-pin:arm2-blend-mechanical-report.json": "c3ed01699a43087e719b917c751d1ce96d6b0992107d58437fc048fd12ba5930",
+    "slurp-pin:arm2-blend-mechanical.json": "e55b6632d85a0037fb928d565fb2ef1b40c987c915dd98a9f2599d78113c828e",
+    "slurp-pin:arm2-blend-outputs.jsonl": "542a029adca8fb8daf3618e8a049aecdba1b04aba30eafedb67099fb6e08cf14",
+    "slurp:SAEA-DEV1000-BASELINE-LOCK.trace.jsonl": "598780deb9ddb98842e503871206ef4afc33619c49162ae626f2858fa356d6df",
+    "slurp:arm2-blend-outputs.jsonl": "542a029adca8fb8daf3618e8a049aecdba1b04aba30eafedb67099fb6e08cf14",
+    "slurp:query-vectors.jsonl": "efcf948918e1b4f6c695998da21311d1fa766de57dbd84feedce5ae5ade11702",
+    "slurp_snapshot": "e27b274516604ffc0e21319758aea99dc027f459d480a32a74a715b023a51b57"
+  },
+  "channel_cost": {
+    "audio2tool": {
+      "two_rate": {
+        "bands_sum_check": {
+          "closes": true,
+          "strict_plus_matching_plus_form_characters": 39861,
+          "supply_block_characters_total": 39861
+        },
+        "delivery": {
+          "contacts_that_received_supply": 15,
+          "delivery_rate": 0.144231,
+          "population_size": 104,
+          "semantics": "a RETAINED trajectory stops at contact 0 and is handed no evidence at all; only a DISPATCHED trajectory receives supply"
+        },
+        "extraction_broad": {
+          "character_fraction_of_supply_block": 0.585635,
+          "characters": 23344,
+          "estimated_tokens_amortized_over_the_whole_population": 94.48,
+          "estimated_tokens_per_delivered_contact": 655.07,
+          "estimated_tokens_total": 9826.0,
+          "field_groups": [
+            "A2T-ARG-DEFAULTS",
+            "A2T-ARG-CONSTRAINTS",
+            "A2T-POOL-VALUES",
+            "A2T-PRIOR-TABLE",
+            "A2T-REGISTRY-SIGNATURE"
+          ],
+          "token_fraction_of_supply_block": 0.781147
+        },
+        "extraction_strict": {
+          "character_fraction_of_supply_block": 0.521337,
+          "characters": 20781,
+          "estimated_tokens_amortized_over_the_whole_population": 90.37,
+          "estimated_tokens_per_delivered_contact": 626.59,
+          "estimated_tokens_total": 9398.9,
+          "field_groups": [
+            "A2T-ARG-DEFAULTS",
+            "A2T-ARG-CONSTRAINTS",
+            "A2T-POOL-VALUES",
+            "A2T-PRIOR-TABLE"
+          ],
+          "token_fraction_of_supply_block": 0.747187
+        },
+        "form_oriented": {
+          "character_fraction_of_supply_block": 0.279521,
+          "characters": 11142,
+          "estimated_tokens_amortized_over_the_whole_population": 17.86,
+          "estimated_tokens_per_delivered_contact": 123.8,
+          "estimated_tokens_total": 1857.1,
+          "field_groups": [
+            "A2T-CALL-RENDER",
+            "A2T-REGISTRY-SIGNATURE",
+            "A2T-OWN-PATTERN",
+            "A2T-OTHER-PATTERNS",
+            "A2T-EXTRA-CALLS"
+          ],
+          "token_fraction_of_supply_block": 0.147631
+        },
+        "lower_bound_disclosure": "the list-like groups A2T-ARG-DEFAULTS, A2T-ARG-CONSTRAINTS, A2T-POOL-VALUES, A2T-OTHER-PATTERNS are priced at the PROSE rate, which under-prices them, so the extraction share below is a LOWER bound",
+        "matching_oriented": {
+          "character_fraction_of_supply_block": 0.199142,
+          "characters": 7938,
+          "estimated_tokens_amortized_over_the_whole_population": 12.72,
+          "estimated_tokens_per_delivered_contact": 88.2,
+          "estimated_tokens_total": 1323.0,
+          "field_groups": [
+            "A2T-EXEMPLAR-UTTERANCE",
+            "A2T-TOOL-IDENTITY",
+            "A2T-DESCRIPTION"
+          ],
+          "token_fraction_of_supply_block": 0.105178
+        },
+        "reading": "cost per channel, against delivery. The extraction channel is NOT dead weight: conditioned on dispatch it works (SLURP dispatched n=163, official SLU-F1 +13.7570 pts CI90 [+8.8840, +18.6695]; A2T dispatched n=15, slot micro-F1 +12.1212 pts). What the accounting shows is how much of the injected token budget each channel consumes and how often that budget is actually delivered",
+        "superseded_premise": "this block was registered as a DEAD-WEIGHT computation on the premise that the extraction channel had been measured at zero effect. That premise is superseded by docs/readiness/2026-08-25-extraction-conditioned-on-dispatch.md (commit 6c6ec719, receipt sha256 7662fbc381e6994f3c71422154a0facfc86c0e99b656cf91670577036a337525). Nothing here is written off",
+        "token_model": "DENSE/PROSE"
+      },
+      "uniform": {
+        "bands_sum_check": {
+          "closes": true,
+          "strict_plus_matching_plus_form_characters": 39861,
+          "supply_block_characters_total": 39861
+        },
+        "delivery": {
+          "contacts_that_received_supply": 15,
+          "delivery_rate": 0.144231,
+          "population_size": 104,
+          "semantics": "a RETAINED trajectory stops at contact 0 and is handed no evidence at all; only a DISPATCHED trajectory receives supply"
+        },
+        "extraction_broad": {
+          "character_fraction_of_supply_block": 0.585635,
+          "characters": 23344,
+          "estimated_tokens_amortized_over_the_whole_population": 64.48,
+          "estimated_tokens_per_delivered_contact": 447.03,
+          "estimated_tokens_total": 6705.4,
+          "field_groups": [
+            "A2T-ARG-DEFAULTS",
+            "A2T-ARG-CONSTRAINTS",
+            "A2T-POOL-VALUES",
+            "A2T-PRIOR-TABLE",
+            "A2T-REGISTRY-SIGNATURE"
+          ],
+          "token_fraction_of_supply_block": 0.585633
+        },
+        "extraction_strict": {
+          "character_fraction_of_supply_block": 0.521337,
+          "characters": 20781,
+          "estimated_tokens_amortized_over_the_whole_population": 57.4,
+          "estimated_tokens_per_delivered_contact": 397.95,
+          "estimated_tokens_total": 5969.2,
+          "field_groups": [
+            "A2T-ARG-DEFAULTS",
+            "A2T-ARG-CONSTRAINTS",
+            "A2T-POOL-VALUES",
+            "A2T-PRIOR-TABLE"
+          ],
+          "token_fraction_of_supply_block": 0.521335
+        },
+        "form_oriented": {
+          "character_fraction_of_supply_block": 0.279521,
+          "characters": 11142,
+          "estimated_tokens_amortized_over_the_whole_population": 30.77,
+          "estimated_tokens_per_delivered_contact": 213.37,
+          "estimated_tokens_total": 3200.5,
+          "field_groups": [
+            "A2T-CALL-RENDER",
+            "A2T-REGISTRY-SIGNATURE",
+            "A2T-OWN-PATTERN",
+            "A2T-OTHER-PATTERNS",
+            "A2T-EXTRA-CALLS"
+          ],
+          "token_fraction_of_supply_block": 0.279521
+        },
+        "lower_bound_disclosure": "the list-like groups A2T-ARG-DEFAULTS, A2T-ARG-CONSTRAINTS, A2T-POOL-VALUES, A2T-OTHER-PATTERNS are priced at the PROSE rate, which under-prices them, so the extraction share below is a LOWER bound",
+        "matching_oriented": {
+          "character_fraction_of_supply_block": 0.199142,
+          "characters": 7938,
+          "estimated_tokens_amortized_over_the_whole_population": 21.92,
+          "estimated_tokens_per_delivered_contact": 152.01,
+          "estimated_tokens_total": 2280.1,
+          "field_groups": [
+            "A2T-EXEMPLAR-UTTERANCE",
+            "A2T-TOOL-IDENTITY",
+            "A2T-DESCRIPTION"
+          ],
+          "token_fraction_of_supply_block": 0.199141
+        },
+        "reading": "cost per channel, against delivery. The extraction channel is NOT dead weight: conditioned on dispatch it works (SLURP dispatched n=163, official SLU-F1 +13.7570 pts CI90 [+8.8840, +18.6695]; A2T dispatched n=15, slot micro-F1 +12.1212 pts). What the accounting shows is how much of the injected token budget each channel consumes and how often that budget is actually delivered",
+        "superseded_premise": "this block was registered as a DEAD-WEIGHT computation on the premise that the extraction channel had been measured at zero effect. That premise is superseded by docs/readiness/2026-08-25-extraction-conditioned-on-dispatch.md (commit 6c6ec719, receipt sha256 7662fbc381e6994f3c71422154a0facfc86c0e99b656cf91670577036a337525). Nothing here is written off",
+        "token_model": "UNIFORM"
+      }
+    },
+    "slurp": {
+      "DEV-1000 (BOTH HALVES)": {
+        "two_rate": {
+          "bands_sum_check": {
+            "closes": true,
+            "strict_plus_matching_plus_form_characters": 590820,
+            "supply_block_characters_total": 590820
+          },
+          "delivery": {
+            "contacts_that_received_supply": 340,
+            "delivery_rate": 0.34,
+            "population_size": 1000,
+            "semantics": "a RETAINED trajectory stops at contact 0 and is handed no evidence at all; only a DISPATCHED trajectory receives supply"
+          },
+          "extraction_broad": {
+            "character_fraction_of_supply_block": 0.819773,
+            "characters": 484338,
+            "estimated_tokens_amortized_over_the_whole_population": 226.15,
+            "estimated_tokens_per_delivered_contact": 665.13,
+            "estimated_tokens_total": 226145.4,
+            "field_groups": [
+              "SLURP-SLOT-PAIRS",
+              "SLURP-NORMALIZATION",
+              "SLURP-PRIOR-TABLE"
+            ],
+            "token_fraction_of_supply_block": 0.926312
+          },
+          "extraction_strict": {
+            "character_fraction_of_supply_block": 0.819773,
+            "characters": 484338,
+            "estimated_tokens_amortized_over_the_whole_population": 226.15,
+            "estimated_tokens_per_delivered_contact": 665.13,
+            "estimated_tokens_total": 226145.4,
+            "field_groups": [
+              "SLURP-SLOT-PAIRS",
+              "SLURP-NORMALIZATION",
+              "SLURP-PRIOR-TABLE"
+            ],
+            "token_fraction_of_supply_block": 0.926312
+          },
+          "form_oriented": {
+            "character_fraction_of_supply_block": 0.0,
+            "characters": 0,
+            "estimated_tokens_amortized_over_the_whole_population": 0.0,
+            "estimated_tokens_per_delivered_contact": 0.0,
+            "estimated_tokens_total": 0,
+            "field_groups": [],
+            "token_fraction_of_supply_block": 0.0
+          },
+          "lower_bound_disclosure": "no list-like group on this carrier is priced below its own rate",
+          "matching_oriented": {
+            "character_fraction_of_supply_block": 0.180227,
+            "characters": 106482,
+            "estimated_tokens_amortized_over_the_whole_population": 17.99,
+            "estimated_tokens_per_delivered_contact": 52.91,
+            "estimated_tokens_total": 17989.7,
+            "field_groups": [
+              "SLURP-EXEMPLAR-SENTENCE",
+              "SLURP-INTENT-LABEL"
+            ],
+            "token_fraction_of_supply_block": 0.073688
+          },
+          "reading": "cost per channel, against delivery. The extraction channel is NOT dead weight: conditioned on dispatch it works (SLURP dispatched n=163, official SLU-F1 +13.7570 pts CI90 [+8.8840, +18.6695]; A2T dispatched n=15, slot micro-F1 +12.1212 pts). What the accounting shows is how much of the injected token budget each channel consumes and how often that budget is actually delivered",
+          "superseded_premise": "this block was registered as a DEAD-WEIGHT computation on the premise that the extraction channel had been measured at zero effect. That premise is superseded by docs/readiness/2026-08-25-extraction-conditioned-on-dispatch.md (commit 6c6ec719, receipt sha256 7662fbc381e6994f3c71422154a0facfc86c0e99b656cf91670577036a337525). Nothing here is written off",
+          "token_model": "DENSE/PROSE"
+        },
+        "uniform": {
+          "bands_sum_check": {
+            "closes": true,
+            "strict_plus_matching_plus_form_characters": 590820,
+            "supply_block_characters_total": 590820
+          },
+          "delivery": {
+            "contacts_that_received_supply": 340,
+            "delivery_rate": 0.34,
+            "population_size": 1000,
+            "semantics": "a RETAINED trajectory stops at contact 0 and is handed no evidence at all; only a DISPATCHED trajectory receives supply"
+          },
+          "extraction_broad": {
+            "character_fraction_of_supply_block": 0.819773,
+            "characters": 484338,
+            "estimated_tokens_amortized_over_the_whole_population": 207.12,
+            "estimated_tokens_per_delivered_contact": 609.16,
+            "estimated_tokens_total": 207115.3,
+            "field_groups": [
+              "SLURP-SLOT-PAIRS",
+              "SLURP-NORMALIZATION",
+              "SLURP-PRIOR-TABLE"
+            ],
+            "token_fraction_of_supply_block": 0.819772
+          },
+          "extraction_strict": {
+            "character_fraction_of_supply_block": 0.819773,
+            "characters": 484338,
+            "estimated_tokens_amortized_over_the_whole_population": 207.12,
+            "estimated_tokens_per_delivered_contact": 609.16,
+            "estimated_tokens_total": 207115.3,
+            "field_groups": [
+              "SLURP-SLOT-PAIRS",
+              "SLURP-NORMALIZATION",
+              "SLURP-PRIOR-TABLE"
+            ],
+            "token_fraction_of_supply_block": 0.819772
+          },
+          "form_oriented": {
+            "character_fraction_of_supply_block": 0.0,
+            "characters": 0,
+            "estimated_tokens_amortized_over_the_whole_population": 0.0,
+            "estimated_tokens_per_delivered_contact": 0.0,
+            "estimated_tokens_total": 0,
+            "field_groups": [],
+            "token_fraction_of_supply_block": 0.0
+          },
+          "lower_bound_disclosure": "no list-like group on this carrier is priced below its own rate",
+          "matching_oriented": {
+            "character_fraction_of_supply_block": 0.180227,
+            "characters": 106482,
+            "estimated_tokens_amortized_over_the_whole_population": 45.53,
+            "estimated_tokens_per_delivered_contact": 133.92,
+            "estimated_tokens_total": 45534.4,
+            "field_groups": [
+              "SLURP-EXEMPLAR-SENTENCE",
+              "SLURP-INTENT-LABEL"
+            ],
+            "token_fraction_of_supply_block": 0.180227
+          },
+          "reading": "cost per channel, against delivery. The extraction channel is NOT dead weight: conditioned on dispatch it works (SLURP dispatched n=163, official SLU-F1 +13.7570 pts CI90 [+8.8840, +18.6695]; A2T dispatched n=15, slot micro-F1 +12.1212 pts). What the accounting shows is how much of the injected token budget each channel consumes and how often that budget is actually delivered",
+          "superseded_premise": "this block was registered as a DEAD-WEIGHT computation on the premise that the extraction channel had been measured at zero effect. That premise is superseded by docs/readiness/2026-08-25-extraction-conditioned-on-dispatch.md (commit 6c6ec719, receipt sha256 7662fbc381e6994f3c71422154a0facfc86c0e99b656cf91670577036a337525). Nothing here is written off",
+          "token_model": "UNIFORM"
+        }
+      },
+      "DEV-1000-NEW500 (UNEXPOSED)": {
+        "two_rate": {
+          "bands_sum_check": {
+            "closes": true,
+            "strict_plus_matching_plus_form_characters": 288870,
+            "supply_block_characters_total": 288870
+          },
+          "delivery": {
+            "contacts_that_received_supply": 163,
+            "delivery_rate": 0.326,
+            "population_size": 500,
+            "semantics": "a RETAINED trajectory stops at contact 0 and is handed no evidence at all; only a DISPATCHED trajectory receives supply"
+          },
+          "extraction_broad": {
+            "character_fraction_of_supply_block": 0.820663,
+            "characters": 237065,
+            "estimated_tokens_amortized_over_the_whole_population": 221.78,
+            "estimated_tokens_per_delivered_contact": 680.31,
+            "estimated_tokens_total": 110890.4,
+            "field_groups": [
+              "SLURP-SLOT-PAIRS",
+              "SLURP-NORMALIZATION",
+              "SLURP-PRIOR-TABLE"
+            ],
+            "token_fraction_of_supply_block": 0.926847
+          },
+          "extraction_strict": {
+            "character_fraction_of_supply_block": 0.820663,
+            "characters": 237065,
+            "estimated_tokens_amortized_over_the_whole_population": 221.78,
+            "estimated_tokens_per_delivered_contact": 680.31,
+            "estimated_tokens_total": 110890.4,
+            "field_groups": [
+              "SLURP-SLOT-PAIRS",
+              "SLURP-NORMALIZATION",
+              "SLURP-PRIOR-TABLE"
+            ],
+            "token_fraction_of_supply_block": 0.926847
+          },
+          "form_oriented": {
+            "character_fraction_of_supply_block": 0.0,
+            "characters": 0,
+            "estimated_tokens_amortized_over_the_whole_population": 0.0,
+            "estimated_tokens_per_delivered_contact": 0.0,
+            "estimated_tokens_total": 0,
+            "field_groups": [],
+            "token_fraction_of_supply_block": 0.0
+          },
+          "lower_bound_disclosure": "no list-like group on this carrier is priced below its own rate",
+          "matching_oriented": {
+            "character_fraction_of_supply_block": 0.179337,
+            "characters": 51805,
+            "estimated_tokens_amortized_over_the_whole_population": 17.5,
+            "estimated_tokens_per_delivered_contact": 53.69,
+            "estimated_tokens_total": 8752.3,
+            "field_groups": [
+              "SLURP-EXEMPLAR-SENTENCE",
+              "SLURP-INTENT-LABEL"
+            ],
+            "token_fraction_of_supply_block": 0.073153
+          },
+          "reading": "cost per channel, against delivery. The extraction channel is NOT dead weight: conditioned on dispatch it works (SLURP dispatched n=163, official SLU-F1 +13.7570 pts CI90 [+8.8840, +18.6695]; A2T dispatched n=15, slot micro-F1 +12.1212 pts). What the accounting shows is how much of the injected token budget each channel consumes and how often that budget is actually delivered",
+          "superseded_premise": "this block was registered as a DEAD-WEIGHT computation on the premise that the extraction channel had been measured at zero effect. That premise is superseded by docs/readiness/2026-08-25-extraction-conditioned-on-dispatch.md (commit 6c6ec719, receipt sha256 7662fbc381e6994f3c71422154a0facfc86c0e99b656cf91670577036a337525). Nothing here is written off",
+          "token_model": "DENSE/PROSE"
+        },
+        "uniform": {
+          "bands_sum_check": {
+            "closes": true,
+            "strict_plus_matching_plus_form_characters": 288870,
+            "supply_block_characters_total": 288870
+          },
+          "delivery": {
+            "contacts_that_received_supply": 163,
+            "delivery_rate": 0.326,
+            "population_size": 500,
+            "semantics": "a RETAINED trajectory stops at contact 0 and is handed no evidence at all; only a DISPATCHED trajectory receives supply"
+          },
+          "extraction_broad": {
+            "character_fraction_of_supply_block": 0.820663,
+            "characters": 237065,
+            "estimated_tokens_amortized_over_the_whole_population": 202.75,
+            "estimated_tokens_per_delivered_contact": 621.93,
+            "estimated_tokens_total": 101375.1,
+            "field_groups": [
+              "SLURP-SLOT-PAIRS",
+              "SLURP-NORMALIZATION",
+              "SLURP-PRIOR-TABLE"
+            ],
+            "token_fraction_of_supply_block": 0.820663
+          },
+          "extraction_strict": {
+            "character_fraction_of_supply_block": 0.820663,
+            "characters": 237065,
+            "estimated_tokens_amortized_over_the_whole_population": 202.75,
+            "estimated_tokens_per_delivered_contact": 621.93,
+            "estimated_tokens_total": 101375.1,
+            "field_groups": [
+              "SLURP-SLOT-PAIRS",
+              "SLURP-NORMALIZATION",
+              "SLURP-PRIOR-TABLE"
+            ],
+            "token_fraction_of_supply_block": 0.820663
+          },
+          "form_oriented": {
+            "character_fraction_of_supply_block": 0.0,
+            "characters": 0,
+            "estimated_tokens_amortized_over_the_whole_population": 0.0,
+            "estimated_tokens_per_delivered_contact": 0.0,
+            "estimated_tokens_total": 0,
+            "field_groups": [],
+            "token_fraction_of_supply_block": 0.0
+          },
+          "lower_bound_disclosure": "no list-like group on this carrier is priced below its own rate",
+          "matching_oriented": {
+            "character_fraction_of_supply_block": 0.179337,
+            "characters": 51805,
+            "estimated_tokens_amortized_over_the_whole_population": 44.31,
+            "estimated_tokens_per_delivered_contact": 135.91,
+            "estimated_tokens_total": 22153.1,
+            "field_groups": [
+              "SLURP-EXEMPLAR-SENTENCE",
+              "SLURP-INTENT-LABEL"
+            ],
+            "token_fraction_of_supply_block": 0.179337
+          },
+          "reading": "cost per channel, against delivery. The extraction channel is NOT dead weight: conditioned on dispatch it works (SLURP dispatched n=163, official SLU-F1 +13.7570 pts CI90 [+8.8840, +18.6695]; A2T dispatched n=15, slot micro-F1 +12.1212 pts). What the accounting shows is how much of the injected token budget each channel consumes and how often that budget is actually delivered",
+          "superseded_premise": "this block was registered as a DEAD-WEIGHT computation on the premise that the extraction channel had been measured at zero effect. That premise is superseded by docs/readiness/2026-08-25-extraction-conditioned-on-dispatch.md (commit 6c6ec719, receipt sha256 7662fbc381e6994f3c71422154a0facfc86c0e99b656cf91670577036a337525). Nothing here is written off",
+          "token_model": "UNIFORM"
+        }
+      },
+      "DEV-500 (PRIOR-EXPOSED)": {
+        "two_rate": {
+          "bands_sum_check": {
+            "closes": true,
+            "strict_plus_matching_plus_form_characters": 301950,
+            "supply_block_characters_total": 301950
+          },
+          "delivery": {
+            "contacts_that_received_supply": 177,
+            "delivery_rate": 0.354,
+            "population_size": 500,
+            "semantics": "a RETAINED trajectory stops at contact 0 and is handed no evidence at all; only a DISPATCHED trajectory receives supply"
+          },
+          "extraction_broad": {
+            "character_fraction_of_supply_block": 0.81892,
+            "characters": 247273,
+            "estimated_tokens_amortized_over_the_whole_population": 230.51,
+            "estimated_tokens_per_delivered_contact": 651.16,
+            "estimated_tokens_total": 115255.0,
+            "field_groups": [
+              "SLURP-SLOT-PAIRS",
+              "SLURP-NORMALIZATION",
+              "SLURP-PRIOR-TABLE"
+            ],
+            "token_fraction_of_supply_block": 0.925799
+          },
+          "extraction_strict": {
+            "character_fraction_of_supply_block": 0.81892,
+            "characters": 247273,
+            "estimated_tokens_amortized_over_the_whole_population": 230.51,
+            "estimated_tokens_per_delivered_contact": 651.16,
+            "estimated_tokens_total": 115255.0,
+            "field_groups": [
+              "SLURP-SLOT-PAIRS",
+              "SLURP-NORMALIZATION",
+              "SLURP-PRIOR-TABLE"
+            ],
+            "token_fraction_of_supply_block": 0.925799
+          },
+          "form_oriented": {
+            "character_fraction_of_supply_block": 0.0,
+            "characters": 0,
+            "estimated_tokens_amortized_over_the_whole_population": 0.0,
+            "estimated_tokens_per_delivered_contact": 0.0,
+            "estimated_tokens_total": 0,
+            "field_groups": [],
+            "token_fraction_of_supply_block": 0.0
+          },
+          "lower_bound_disclosure": "no list-like group on this carrier is priced below its own rate",
+          "matching_oriented": {
+            "character_fraction_of_supply_block": 0.18108,
+            "characters": 54677,
+            "estimated_tokens_amortized_over_the_whole_population": 18.47,
+            "estimated_tokens_per_delivered_contact": 52.19,
+            "estimated_tokens_total": 9237.5,
+            "field_groups": [
+              "SLURP-EXEMPLAR-SENTENCE",
+              "SLURP-INTENT-LABEL"
+            ],
+            "token_fraction_of_supply_block": 0.074201
+          },
+          "reading": "cost per channel, against delivery. The extraction channel is NOT dead weight: conditioned on dispatch it works (SLURP dispatched n=163, official SLU-F1 +13.7570 pts CI90 [+8.8840, +18.6695]; A2T dispatched n=15, slot micro-F1 +12.1212 pts). What the accounting shows is how much of the injected token budget each channel consumes and how often that budget is actually delivered",
+          "superseded_premise": "this block was registered as a DEAD-WEIGHT computation on the premise that the extraction channel had been measured at zero effect. That premise is superseded by docs/readiness/2026-08-25-extraction-conditioned-on-dispatch.md (commit 6c6ec719, receipt sha256 7662fbc381e6994f3c71422154a0facfc86c0e99b656cf91670577036a337525). Nothing here is written off",
+          "token_model": "DENSE/PROSE"
+        },
+        "uniform": {
+          "bands_sum_check": {
+            "closes": true,
+            "strict_plus_matching_plus_form_characters": 301950,
+            "supply_block_characters_total": 301950
+          },
+          "delivery": {
+            "contacts_that_received_supply": 177,
+            "delivery_rate": 0.354,
+            "population_size": 500,
+            "semantics": "a RETAINED trajectory stops at contact 0 and is handed no evidence at all; only a DISPATCHED trajectory receives supply"
+          },
+          "extraction_broad": {
+            "character_fraction_of_supply_block": 0.81892,
+            "characters": 247273,
+            "estimated_tokens_amortized_over_the_whole_population": 211.48,
+            "estimated_tokens_per_delivered_contact": 597.4,
+            "estimated_tokens_total": 105740.3,
+            "field_groups": [
+              "SLURP-SLOT-PAIRS",
+              "SLURP-NORMALIZATION",
+              "SLURP-PRIOR-TABLE"
+            ],
+            "token_fraction_of_supply_block": 0.81892
+          },
+          "extraction_strict": {
+            "character_fraction_of_supply_block": 0.81892,
+            "characters": 247273,
+            "estimated_tokens_amortized_over_the_whole_population": 211.48,
+            "estimated_tokens_per_delivered_contact": 597.4,
+            "estimated_tokens_total": 105740.3,
+            "field_groups": [
+              "SLURP-SLOT-PAIRS",
+              "SLURP-NORMALIZATION",
+              "SLURP-PRIOR-TABLE"
+            ],
+            "token_fraction_of_supply_block": 0.81892
+          },
+          "form_oriented": {
+            "character_fraction_of_supply_block": 0.0,
+            "characters": 0,
+            "estimated_tokens_amortized_over_the_whole_population": 0.0,
+            "estimated_tokens_per_delivered_contact": 0.0,
+            "estimated_tokens_total": 0,
+            "field_groups": [],
+            "token_fraction_of_supply_block": 0.0
+          },
+          "lower_bound_disclosure": "no list-like group on this carrier is priced below its own rate",
+          "matching_oriented": {
+            "character_fraction_of_supply_block": 0.18108,
+            "characters": 54677,
+            "estimated_tokens_amortized_over_the_whole_population": 46.76,
+            "estimated_tokens_per_delivered_contact": 132.1,
+            "estimated_tokens_total": 23381.3,
+            "field_groups": [
+              "SLURP-EXEMPLAR-SENTENCE",
+              "SLURP-INTENT-LABEL"
+            ],
+            "token_fraction_of_supply_block": 0.18108
+          },
+          "reading": "cost per channel, against delivery. The extraction channel is NOT dead weight: conditioned on dispatch it works (SLURP dispatched n=163, official SLU-F1 +13.7570 pts CI90 [+8.8840, +18.6695]; A2T dispatched n=15, slot micro-F1 +12.1212 pts). What the accounting shows is how much of the injected token budget each channel consumes and how often that budget is actually delivered",
+          "superseded_premise": "this block was registered as a DEAD-WEIGHT computation on the premise that the extraction channel had been measured at zero effect. That premise is superseded by docs/readiness/2026-08-25-extraction-conditioned-on-dispatch.md (commit 6c6ec719, receipt sha256 7662fbc381e6994f3c71422154a0facfc86c0e99b656cf91670577036a337525). Nothing here is written off",
+          "token_model": "UNIFORM"
+        }
+      }
+    }
+  },
+  "dispatch_cross_check": {
+    "a2t_dispatched": 15,
+    "a2t_trajectories_with_non_empty_supply": 15,
+    "passed": true,
+    "slurp_committed_report_dispatched": 340,
+    "slurp_trajectories_with_non_empty_supply": 340,
+    "slurp_two_contact_trajectories": 340
+  },
+  "exposure_row_id": "SAEA-SN-MF-FIELD-LEVEL-SUPPLY-ACCOUNTING",
+  "field_enumeration": {
+    "audio2tool": [
+      {
+        "builder_line": "Invocation exemplar: \"{row.text}\"",
+        "field_group": "A2T-EXEMPLAR-UTTERANCE",
+        "optional": false,
+        "orientation": "MATCHING",
+        "orientation_justification": "a natural-language utterance carrying no call syntax and no argument value schema; its only usable content is the lexical bridge from what was said to which tool it names. It is also the material the content facet embeds, i.e. the retrieval key itself",
+        "placeholder_literal": null,
+        "what_it_carries": "the construction-pool utterance this value was built from"
+      },
+      {
+        "builder_line": "-> tool call: {row.call_render}.",
+        "field_group": "A2T-CALL-RENDER",
+        "optional": false,
+        "orientation": "FORM",
+        "orientation_justification": "a literal, syntactically complete tool call. It demonstrates the SHAPE of a legal answer; its argument values belong to another utterance and cannot be copied into this one",
+        "placeholder_literal": null,
+        "what_it_carries": "a rendered, well-formed tool call for that utterance"
+      },
+      {
+        "builder_line": "Tool '{row.tool_name}' (domain={row.domain}, category={row.category});",
+        "field_group": "A2T-TOOL-IDENTITY",
+        "optional": false,
+        "orientation": "MATCHING",
+        "orientation_justification": "names the candidate and places it in a domain/category taxonomy; carries no argument schema and no answer syntax",
+        "placeholder_literal": null,
+        "what_it_carries": "the tool name and its taxonomy position"
+      },
+      {
+        "builder_line": "registry signature {signature or 'unavailable'};",
+        "field_group": "A2T-REGISTRY-SIGNATURE",
+        "optional": false,
+        "orientation": "FORM",
+        "orientation_justification": "the canonical declaration of the callable form. Classified FORM because that is its primary content, but it is the one MIXED group on this carrier: everything it adds beyond the tool name (already carried by A2T-TOOL-IDENTITY) is the argument list, which is extraction material. It is therefore reported in the BROAD extraction band as well as in the FORM class",
+        "placeholder_literal": "unavailable",
+        "what_it_carries": "the callable signature with argument names and types"
+      },
+      {
+        "builder_line": "{description or 'no registry description'}",
+        "field_group": "A2T-DESCRIPTION",
+        "optional": false,
+        "orientation": "MATCHING",
+        "orientation_justification": "prose about what the tool does; it discriminates between candidate tools and says nothing about answer syntax or argument values",
+        "placeholder_literal": "no registry description",
+        "what_it_carries": "the registry's prose description of the tool"
+      },
+      {
+        "builder_line": "Argument defaults: {defaults or 'none'}.",
+        "field_group": "A2T-ARG-DEFAULTS",
+        "optional": false,
+        "orientation": "EXTRACTION",
+        "orientation_justification": "argument VALUES and nothing else. It cannot help pick the tool (it is only read once the tool is already named) and it is not answer syntax",
+        "placeholder_literal": "none",
+        "what_it_carries": "default values for the tool's arguments"
+      },
+      {
+        "builder_line": "Argument constraints: {constraints or 'none'}.",
+        "field_group": "A2T-ARG-CONSTRAINTS",
+        "optional": false,
+        "orientation": "EXTRACTION",
+        "orientation_justification": "the value domain of each argument. Pure fill-the-slot material, read only after the tool is chosen",
+        "placeholder_literal": "none",
+        "what_it_carries": "the admissible ranges/enumerations for each argument"
+      },
+      {
+        "builder_line": "This exemplar's argument pattern: {own_pattern}.",
+        "field_group": "A2T-OWN-PATTERN",
+        "optional": false,
+        "orientation": "FORM",
+        "orientation_justification": "the argument shape of a concrete legal call. Its VALUES are another utterance's and are not transferable, so what survives transfer is the pattern, i.e. the form. One of the two form-repair candidates the mission names",
+        "placeholder_literal": "no arguments",
+        "what_it_carries": "the key=value pairs the exemplar's own call used"
+      },
+      {
+        "builder_line": "Other argument patterns for this tool: {other_text}.",
+        "field_group": "A2T-OTHER-PATTERNS",
+        "optional": false,
+        "orientation": "FORM",
+        "orientation_justification": "key signatures with no values attached -- e.g. '(temperature, zone)'. It is a menu of legal call shapes, not of legal values. The second form-repair candidate the mission names",
+        "placeholder_literal": "no other argument pattern observed for this tool",
+        "what_it_carries": "up to five other argument-key signatures seen for this tool"
+      },
+      {
+        "builder_line": "Argument values observed for this tool in the construction pool: {filler_text}.",
+        "field_group": "A2T-POOL-VALUES",
+        "optional": false,
+        "orientation": "EXTRACTION",
+        "orientation_justification": "a value inventory per argument key. Its entire purpose is to supply candidate fillers; it carries no syntax and no tool discrimination",
+        "placeholder_literal": "no argument values observed",
+        "what_it_carries": "up to five observed filler values per argument key"
+      },
+      {
+        "builder_line": "Further calls in this exemplar: {', '.join(row.extra_call_names)}.",
+        "field_group": "A2T-EXTRA-CALLS",
+        "optional": true,
+        "orientation": "FORM",
+        "orientation_justification": "it says that a legal answer may contain MORE THAN ONE call, and names which. That is a statement about answer structure, not about which tool this utterance wants or what values to put in it",
+        "placeholder_literal": null,
+        "what_it_carries": "the other tool names the exemplar's answer also called"
+      },
+      {
+        "builder_line": "{prior_representation[row.tool_name]}",
+        "field_group": "A2T-PRIOR-TABLE",
+        "optional": true,
+        "orientation": "EXTRACTION",
+        "orientation_justification": "a distribution over ARGUMENT KEYS conditioned on a tool that is already assumed. It cannot discriminate between tools (it is keyed by the tool) and it is not answer syntax; it exists to tell the core which arguments to populate",
+        "placeholder_literal": "no argument patterns observed",
+        "what_it_carries": "p(argument pattern | tool) and p(argument key | tool) as numeric frequency tables over the full construction pool"
+      }
+    ],
+    "slurp": [
+      {
+        "builder_line": "Exemplar sentence: \"{row.content}\"",
+        "field_group": "SLURP-EXEMPLAR-SENTENCE",
+        "optional": false,
+        "orientation": "MATCHING",
+        "orientation_justification": "a natural-language sentence. Its usable content is the lexical bridge from what was said to which intent it belongs to; it is also the material the content facet embeds, i.e. the retrieval key itself",
+        "placeholder_literal": null,
+        "what_it_carries": "the TRAIN utterance this value was built from"
+      },
+      {
+        "builder_line": "-> intent {row.intent} (scenario={row.scenario}, action={row.action}).",
+        "field_group": "SLURP-INTENT-LABEL",
+        "optional": false,
+        "orientation": "MATCHING",
+        "orientation_justification": "the label the matching metric scores. It is the answer to the matching question and carries no slot content",
+        "placeholder_literal": null,
+        "what_it_carries": "the exemplar's gold intent and its scenario/action decomposition"
+      },
+      {
+        "builder_line": "Slot type=filler pairs: {slot_text}.",
+        "field_group": "SLURP-SLOT-PAIRS",
+        "optional": false,
+        "orientation": "EXTRACTION",
+        "orientation_justification": "the exemplar's own slot fillers -- exactly the object the extraction metric scores. Its fillers belong to another utterance and are not transferable; what it demonstrates is which slot types to pull",
+        "placeholder_literal": "no slot entities",
+        "what_it_carries": "the exemplar's own type=filler entity pairs"
+      },
+      {
+        "builder_line": "{normalization_text}.",
+        "field_group": "SLURP-NORMALIZATION",
+        "optional": false,
+        "orientation": "EXTRACTION",
+        "orientation_justification": "a surface-form inventory per entity type. It exists solely to help normalise a filler; it discriminates no intent and imposes no answer syntax",
+        "placeholder_literal": "no additional surface-form variants observed for this utterance's entity types",
+        "what_it_carries": "up to five surface-form variants seen elsewhere in TRAIN for each of this exemplar's entity types"
+      },
+      {
+        "builder_line": "{prior_representation_by_intent[row.intent]}",
+        "field_group": "SLURP-PRIOR-TABLE",
+        "optional": true,
+        "orientation": "EXTRACTION",
+        "orientation_justification": "a distribution over ENTITY TYPES conditioned on an intent that is already assumed. It cannot discriminate between intents (it is keyed by the intent); it exists to tell the core which slots to fill",
+        "placeholder_literal": "no entity types observed",
+        "what_it_carries": "p(entity type | intent) as a numeric frequency table over full TRAIN"
+      }
+    ]
+  },
+  "form_channel_evidence": {
+    "blend_final_form_classes": {
+      "empty": 3,
+      "well-formed-non-empty": 12
+    },
+    "candidate_field_groups": [
+      "A2T-CALL-RENDER",
+      "A2T-OWN-PATTERN",
+      "A2T-OTHER-PATTERNS",
+      "A2T-REGISTRY-SIGNATURE",
+      "A2T-EXTRA-CALLS"
+    ],
+    "caveat": "MECHANISM READING AT SMALL n, never an effect size. The n is published beside every figure for exactly that reason.",
+    "contact0_form_classes": {
+      "empty": 11,
+      "unparsed": 3,
+      "well-formed-non-empty": 1
+    },
+    "dispatched_n": 15,
+    "eligible_but_not_repaired_n": 3,
+    "eligible_but_not_repaired_sample_ids": [
+      "tier1_direct:000167",
+      "tier1_direct:001631",
+      "tier4_implicit:001389"
+    ],
+    "exposed_population_caveat": "SECONDARY READING on an EXPOSED population; free to read, never a campaign claim.",
+    "form_repaired_n": 11,
+    "form_repaired_sample_ids": [
+      "tier2_parametric:004826",
+      "tier3_multi_intent:000879",
+      "tier4_implicit:000655",
+      "tier4_implicit:000900",
+      "tier4_implicit:001148",
+      "tier4_implicit:001409",
+      "tier4_implicit:001513",
+      "tier4_implicit:003312",
+      "tier5_needle:000061",
+      "tier7_multiturn:000214",
+      "tier7_multiturn:001516"
+    ],
+    "not_repaired": {
+      "n": 3,
+      "per_field_group": {
+        "A2T-ARG-CONSTRAINTS": {
+          "fraction_of_trajectories": 1.0,
+          "mean_characters_per_trajectory": 104.0,
+          "non_placeholder_occurrences_over_supplied_values": 0.6667,
+          "occurrences_over_supplied_values": 1.0,
+          "trajectories_receiving_it_at_least_once": 3
+        },
+        "A2T-ARG-DEFAULTS": {
+          "fraction_of_trajectories": 1.0,
+          "mean_characters_per_trajectory": 104.0,
+          "non_placeholder_occurrences_over_supplied_values": 0.6667,
+          "occurrences_over_supplied_values": 1.0,
+          "trajectories_receiving_it_at_least_once": 3
+        },
+        "A2T-CALL-RENDER": {
+          "fraction_of_trajectories": 1.0,
+          "mean_characters_per_trajectory": 138.0,
+          "non_placeholder_occurrences_over_supplied_values": 1.0,
+          "occurrences_over_supplied_values": 1.0,
+          "trajectories_receiving_it_at_least_once": 3
+        },
+        "A2T-DESCRIPTION": {
+          "fraction_of_trajectories": 1.0,
+          "mean_characters_per_trajectory": 149.0,
+          "non_placeholder_occurrences_over_supplied_values": 1.0,
+          "occurrences_over_supplied_values": 1.0,
+          "trajectories_receiving_it_at_least_once": 3
+        },
+        "A2T-EXEMPLAR-UTTERANCE": {
+          "fraction_of_trajectories": 1.0,
+          "mean_characters_per_trajectory": 81.0,
+          "non_placeholder_occurrences_over_supplied_values": 1.0,
+          "occurrences_over_supplied_values": 1.0,
+          "trajectories_receiving_it_at_least_once": 3
+        },
+        "A2T-EXTRA-CALLS": {
+          "fraction_of_trajectories": 0.0,
+          "mean_characters_per_trajectory": 0.0,
+          "non_placeholder_occurrences_over_supplied_values": 0.0,
+          "occurrences_over_supplied_values": 0.0,
+          "trajectories_receiving_it_at_least_once": 0
+        },
+        "A2T-OTHER-PATTERNS": {
+          "fraction_of_trajectories": 1.0,
+          "mean_characters_per_trajectory": 208.0,
+          "non_placeholder_occurrences_over_supplied_values": 0.6667,
+          "occurrences_over_supplied_values": 1.0,
+          "trajectories_receiving_it_at_least_once": 3
+        },
+        "A2T-OWN-PATTERN": {
+          "fraction_of_trajectories": 1.0,
+          "mean_characters_per_trajectory": 152.0,
+          "non_placeholder_occurrences_over_supplied_values": 0.6667,
+          "occurrences_over_supplied_values": 1.0,
+          "trajectories_receiving_it_at_least_once": 3
+        },
+        "A2T-POOL-VALUES": {
+          "fraction_of_trajectories": 1.0,
+          "mean_characters_per_trajectory": 350.0,
+          "non_placeholder_occurrences_over_supplied_values": 0.6667,
+          "occurrences_over_supplied_values": 1.0,
+          "trajectories_receiving_it_at_least_once": 3
+        },
+        "A2T-PRIOR-TABLE": {
+          "fraction_of_trajectories": 1.0,
+          "mean_characters_per_trajectory": 677.0,
+          "non_placeholder_occurrences_over_supplied_values": 1.0,
+          "occurrences_over_supplied_values": 1.0,
+          "trajectories_receiving_it_at_least_once": 3
+        },
+        "A2T-REGISTRY-SIGNATURE": {
+          "fraction_of_trajectories": 1.0,
+          "mean_characters_per_trajectory": 155.0,
+          "non_placeholder_occurrences_over_supplied_values": 1.0,
+          "occurrences_over_supplied_values": 1.0,
+          "trajectories_receiving_it_at_least_once": 3
+        },
+        "A2T-TOOL-IDENTITY": {
+          "fraction_of_trajectories": 1.0,
+          "mean_characters_per_trajectory": 212.0,
+          "non_placeholder_occurrences_over_supplied_values": 1.0,
+          "occurrences_over_supplied_values": 1.0,
+          "trajectories_receiving_it_at_least_once": 3
+        }
+      },
+      "sample_ids": [
+        "tier1_direct:000167",
+        "tier1_direct:001631",
+        "tier4_implicit:001389"
+      ],
+      "supplied_values": {
+        "max": 3,
+        "mean": 3.0,
+        "min": 3
+      },
+      "supply_block_characters": {
+        "max": 2330,
+        "mean": 2330.0,
+        "min": 2330
+      }
+    },
+    "per_trajectory": {
+      "tier1_direct:000167": {
+        "blend_final_form": "empty",
+        "contact0_form": "empty",
+        "field_group_characters": {
+          "A2T-ARG-CONSTRAINTS": 104,
+          "A2T-ARG-DEFAULTS": 104,
+          "A2T-CALL-RENDER": 138,
+          "A2T-DESCRIPTION": 149,
+          "A2T-EXEMPLAR-UTTERANCE": 81,
+          "A2T-EXTRA-CALLS": 0,
+          "A2T-OTHER-PATTERNS": 208,
+          "A2T-OWN-PATTERN": 152,
+          "A2T-POOL-VALUES": 350,
+          "A2T-PRIOR-TABLE": 677,
+          "A2T-REGISTRY-SIGNATURE": 155,
+          "A2T-TOOL-IDENTITY": 212
+        },
+        "field_group_non_placeholder_occurrences": {
+          "A2T-ARG-CONSTRAINTS": 2,
+          "A2T-ARG-DEFAULTS": 2,
+          "A2T-CALL-RENDER": 3,
+          "A2T-DESCRIPTION": 3,
+          "A2T-EXEMPLAR-UTTERANCE": 3,
+          "A2T-EXTRA-CALLS": 0,
+          "A2T-OTHER-PATTERNS": 2,
+          "A2T-OWN-PATTERN": 2,
+          "A2T-POOL-VALUES": 2,
+          "A2T-PRIOR-TABLE": 3,
+          "A2T-REGISTRY-SIGNATURE": 3,
+          "A2T-TOOL-IDENTITY": 3
+        },
+        "field_group_occurrences": {
+          "A2T-ARG-CONSTRAINTS": 3,
+          "A2T-ARG-DEFAULTS": 3,
+          "A2T-CALL-RENDER": 3,
+          "A2T-DESCRIPTION": 3,
+          "A2T-EXEMPLAR-UTTERANCE": 3,
+          "A2T-EXTRA-CALLS": 0,
+          "A2T-OTHER-PATTERNS": 3,
+          "A2T-OWN-PATTERN": 3,
+          "A2T-POOL-VALUES": 3,
+          "A2T-PRIOR-TABLE": 3,
+          "A2T-REGISTRY-SIGNATURE": 3,
+          "A2T-TOOL-IDENTITY": 3
+        },
+        "form_repaired": false,
+        "supplied_value_ids": [
+          "value:tier4_implicit:001275",
+          "value:tier7_multiturn:002853",
+          "value:tier7_multiturn:003760"
+        ],
+        "supplied_values": 3,
+        "supply_block_characters": 2330
+      },
+      "tier1_direct:001631": {
+        "blend_final_form": "empty",
+        "contact0_form": "empty",
+        "field_group_characters": {
+          "A2T-ARG-CONSTRAINTS": 104,
+          "A2T-ARG-DEFAULTS": 104,
+          "A2T-CALL-RENDER": 138,
+          "A2T-DESCRIPTION": 149,
+          "A2T-EXEMPLAR-UTTERANCE": 81,
+          "A2T-EXTRA-CALLS": 0,
+          "A2T-OTHER-PATTERNS": 208,
+          "A2T-OWN-PATTERN": 152,
+          "A2T-POOL-VALUES": 350,
+          "A2T-PRIOR-TABLE": 677,
+          "A2T-REGISTRY-SIGNATURE": 155,
+          "A2T-TOOL-IDENTITY": 212
+        },
+        "field_group_non_placeholder_occurrences": {
+          "A2T-ARG-CONSTRAINTS": 2,
+          "A2T-ARG-DEFAULTS": 2,
+          "A2T-CALL-RENDER": 3,
+          "A2T-DESCRIPTION": 3,
+          "A2T-EXEMPLAR-UTTERANCE": 3,
+          "A2T-EXTRA-CALLS": 0,
+          "A2T-OTHER-PATTERNS": 2,
+          "A2T-OWN-PATTERN": 2,
+          "A2T-POOL-VALUES": 2,
+          "A2T-PRIOR-TABLE": 3,
+          "A2T-REGISTRY-SIGNATURE": 3,
+          "A2T-TOOL-IDENTITY": 3
+        },
+        "field_group_occurrences": {
+          "A2T-ARG-CONSTRAINTS": 3,
+          "A2T-ARG-DEFAULTS": 3,
+          "A2T-CALL-RENDER": 3,
+          "A2T-DESCRIPTION": 3,
+          "A2T-EXEMPLAR-UTTERANCE": 3,
+          "A2T-EXTRA-CALLS": 0,
+          "A2T-OTHER-PATTERNS": 3,
+          "A2T-OWN-PATTERN": 3,
+          "A2T-POOL-VALUES": 3,
+          "A2T-PRIOR-TABLE": 3,
+          "A2T-REGISTRY-SIGNATURE": 3,
+          "A2T-TOOL-IDENTITY": 3
+        },
+        "form_repaired": false,
+        "supplied_value_ids": [
+          "value:tier4_implicit:001275",
+          "value:tier7_multiturn:002853",
+          "value:tier7_multiturn:003760"
+        ],
+        "supplied_values": 3,
+        "supply_block_characters": 2330
+      },
+      "tier1_direct:004159": {
+        "blend_final_form": "well-formed-non-empty",
+        "contact0_form": "well-formed-non-empty",
+        "field_group_characters": {
+          "A2T-ARG-CONSTRAINTS": 56,
+          "A2T-ARG-DEFAULTS": 84,
+          "A2T-CALL-RENDER": 81,
+          "A2T-DESCRIPTION": 146,
+          "A2T-EXEMPLAR-UTTERANCE": 103,
+          "A2T-EXTRA-CALLS": 0,
+          "A2T-OTHER-PATTERNS": 106,
+          "A2T-OWN-PATTERN": 103,
+          "A2T-POOL-VALUES": 290,
+          "A2T-PRIOR-TABLE": 432,
+          "A2T-REGISTRY-SIGNATURE": 102,
+          "A2T-TOOL-IDENTITY": 116
+        },
+        "field_group_non_placeholder_occurrences": {
+          "A2T-ARG-CONSTRAINTS": 0,
+          "A2T-ARG-DEFAULTS": 2,
+          "A2T-CALL-RENDER": 2,
+          "A2T-DESCRIPTION": 2,
+          "A2T-EXEMPLAR-UTTERANCE": 2,
+          "A2T-EXTRA-CALLS": 0,
+          "A2T-OTHER-PATTERNS": 2,
+          "A2T-OWN-PATTERN": 1,
+          "A2T-POOL-VALUES": 2,
+          "A2T-PRIOR-TABLE": 2,
+          "A2T-REGISTRY-SIGNATURE": 2,
+          "A2T-TOOL-IDENTITY": 2
+        },
+        "field_group_occurrences": {
+          "A2T-ARG-CONSTRAINTS": 2,
+          "A2T-ARG-DEFAULTS": 2,
+          "A2T-CALL-RENDER": 2,
+          "A2T-DESCRIPTION": 2,
+          "A2T-EXEMPLAR-UTTERANCE": 2,
+          "A2T-EXTRA-CALLS": 0,
+          "A2T-OTHER-PATTERNS": 2,
+          "A2T-OWN-PATTERN": 2,
+          "A2T-POOL-VALUES": 2,
+          "A2T-PRIOR-TABLE": 2,
+          "A2T-REGISTRY-SIGNATURE": 2,
+          "A2T-TOOL-IDENTITY": 2
+        },
+        "form_repaired": false,
+        "supplied_value_ids": [
+          "value:tier1_direct:003167",
+          "value:tier2_parametric:003893"
+        ],
+        "supplied_values": 2,
+        "supply_block_characters": 1619
+      },
+      "tier2_parametric:004826": {
+        "blend_final_form": "well-formed-non-empty",
+        "contact0_form": "unparsed",
+        "field_group_characters": {
+          "A2T-ARG-CONSTRAINTS": 150,
+          "A2T-ARG-DEFAULTS": 176,
+          "A2T-CALL-RENDER": 225,
+          "A2T-DESCRIPTION": 243,
+          "A2T-EXEMPLAR-UTTERANCE": 296,
+          "A2T-EXTRA-CALLS": 94,
+          "A2T-OTHER-PATTERNS": 246,
+          "A2T-OWN-PATTERN": 224,
+          "A2T-POOL-VALUES": 617,
+          "A2T-PRIOR-TABLE": 1040,
+          "A2T-REGISTRY-SIGNATURE": 239,
+          "A2T-TOOL-IDENTITY": 266
+        },
+        "field_group_non_placeholder_occurrences": {
+          "A2T-ARG-CONSTRAINTS": 3,
+          "A2T-ARG-DEFAULTS": 3,
+          "A2T-CALL-RENDER": 4,
+          "A2T-DESCRIPTION": 4,
+          "A2T-EXEMPLAR-UTTERANCE": 4,
+          "A2T-EXTRA-CALLS": 2,
+          "A2T-OTHER-PATTERNS": 4,
+          "A2T-OWN-PATTERN": 2,
+          "A2T-POOL-VALUES": 4,
+          "A2T-PRIOR-TABLE": 4,
+          "A2T-REGISTRY-SIGNATURE": 4,
+          "A2T-TOOL-IDENTITY": 4
+        },
+        "field_group_occurrences": {
+          "A2T-ARG-CONSTRAINTS": 4,
+          "A2T-ARG-DEFAULTS": 4,
+          "A2T-CALL-RENDER": 4,
+          "A2T-DESCRIPTION": 4,
+          "A2T-EXEMPLAR-UTTERANCE": 4,
+          "A2T-EXTRA-CALLS": 2,
+          "A2T-OTHER-PATTERNS": 4,
+          "A2T-OWN-PATTERN": 4,
+          "A2T-POOL-VALUES": 4,
+          "A2T-PRIOR-TABLE": 4,
+          "A2T-REGISTRY-SIGNATURE": 4,
+          "A2T-TOOL-IDENTITY": 4
+        },
+        "form_repaired": true,
+        "supplied_value_ids": [
+          "value:tier1_direct:002156",
+          "value:tier3_multi_intent:003846",
+          "value:tier7_multiturn:002150",
+          "value:tier8_intent_blending:000484"
+        ],
+        "supplied_values": 4,
+        "supply_block_characters": 3816
+      },
+      "tier3_multi_intent:000879": {
+        "blend_final_form": "well-formed-non-empty",
+        "contact0_form": "unparsed",
+        "field_group_characters": {
+          "A2T-ARG-CONSTRAINTS": 288,
+          "A2T-ARG-DEFAULTS": 259,
+          "A2T-CALL-RENDER": 473,
+          "A2T-DESCRIPTION": 339,
+          "A2T-EXEMPLAR-UTTERANCE": 547,
+          "A2T-EXTRA-CALLS": 262,
+          "A2T-OTHER-PATTERNS": 363,
+          "A2T-OWN-PATTERN": 303,
+          "A2T-POOL-VALUES": 831,
+          "A2T-PRIOR-TABLE": 1403,
+          "A2T-REGISTRY-SIGNATURE": 331,
+          "A2T-TOOL-IDENTITY": 316
+        },
+        "field_group_non_placeholder_occurrences": {
+          "A2T-ARG-CONSTRAINTS": 4,
+          "A2T-ARG-DEFAULTS": 4,
+          "A2T-CALL-RENDER": 5,
+          "A2T-DESCRIPTION": 5,
+          "A2T-EXEMPLAR-UTTERANCE": 5,
+          "A2T-EXTRA-CALLS": 5,
+          "A2T-OTHER-PATTERNS": 5,
+          "A2T-OWN-PATTERN": 4,
+          "A2T-POOL-VALUES": 5,
+          "A2T-PRIOR-TABLE": 5,
+          "A2T-REGISTRY-SIGNATURE": 5,
+          "A2T-TOOL-IDENTITY": 5
+        },
+        "field_group_occurrences": {
+          "A2T-ARG-CONSTRAINTS": 5,
+          "A2T-ARG-DEFAULTS": 5,
+          "A2T-CALL-RENDER": 5,
+          "A2T-DESCRIPTION": 5,
+          "A2T-EXEMPLAR-UTTERANCE": 5,
+          "A2T-EXTRA-CALLS": 5,
+          "A2T-OTHER-PATTERNS": 5,
+          "A2T-OWN-PATTERN": 5,
+          "A2T-POOL-VALUES": 5,
+          "A2T-PRIOR-TABLE": 5,
+          "A2T-REGISTRY-SIGNATURE": 5,
+          "A2T-TOOL-IDENTITY": 5
+        },
+        "form_repaired": true,
+        "supplied_value_ids": [
+          "value:tier3_multi_intent:002491",
+          "value:tier3_multi_intent:002496",
+          "value:tier3_multi_intent:002521",
+          "value:tier3_multi_intent:002528",
+          "value:tier3_multi_intent:003848"
+        ],
+        "supplied_values": 5,
+        "supply_block_characters": 5715
+      },
+      "tier4_implicit:000655": {
+        "blend_final_form": "well-formed-non-empty",
+        "contact0_form": "empty",
+        "field_group_characters": {
+          "A2T-ARG-CONSTRAINTS": 104,
+          "A2T-ARG-DEFAULTS": 104,
+          "A2T-CALL-RENDER": 138,
+          "A2T-DESCRIPTION": 149,
+          "A2T-EXEMPLAR-UTTERANCE": 81,
+          "A2T-EXTRA-CALLS": 0,
+          "A2T-OTHER-PATTERNS": 208,
+          "A2T-OWN-PATTERN": 152,
+          "A2T-POOL-VALUES": 350,
+          "A2T-PRIOR-TABLE": 677,
+          "A2T-REGISTRY-SIGNATURE": 155,
+          "A2T-TOOL-IDENTITY": 212
+        },
+        "field_group_non_placeholder_occurrences": {
+          "A2T-ARG-CONSTRAINTS": 2,
+          "A2T-ARG-DEFAULTS": 2,
+          "A2T-CALL-RENDER": 3,
+          "A2T-DESCRIPTION": 3,
+          "A2T-EXEMPLAR-UTTERANCE": 3,
+          "A2T-EXTRA-CALLS": 0,
+          "A2T-OTHER-PATTERNS": 2,
+          "A2T-OWN-PATTERN": 2,
+          "A2T-POOL-VALUES": 2,
+          "A2T-PRIOR-TABLE": 3,
+          "A2T-REGISTRY-SIGNATURE": 3,
+          "A2T-TOOL-IDENTITY": 3
+        },
+        "field_group_occurrences": {
+          "A2T-ARG-CONSTRAINTS": 3,
+          "A2T-ARG-DEFAULTS": 3,
+          "A2T-CALL-RENDER": 3,
+          "A2T-DESCRIPTION": 3,
+          "A2T-EXEMPLAR-UTTERANCE": 3,
+          "A2T-EXTRA-CALLS": 0,
+          "A2T-OTHER-PATTERNS": 3,
+          "A2T-OWN-PATTERN": 3,
+          "A2T-POOL-VALUES": 3,
+          "A2T-PRIOR-TABLE": 3,
+          "A2T-REGISTRY-SIGNATURE": 3,
+          "A2T-TOOL-IDENTITY": 3
+        },
+        "form_repaired": true,
+        "supplied_value_ids": [
+          "value:tier4_implicit:001275",
+          "value:tier7_multiturn:002853",
+          "value:tier7_multiturn:003760"
+        ],
+        "supplied_values": 3,
+        "supply_block_characters": 2330
+      },
+      "tier4_implicit:000900": {
+        "blend_final_form": "well-formed-non-empty",
+        "contact0_form": "empty",
+        "field_group_characters": {
+          "A2T-ARG-CONSTRAINTS": 104,
+          "A2T-ARG-DEFAULTS": 104,
+          "A2T-CALL-RENDER": 138,
+          "A2T-DESCRIPTION": 149,
+          "A2T-EXEMPLAR-UTTERANCE": 81,
+          "A2T-EXTRA-CALLS": 0,
+          "A2T-OTHER-PATTERNS": 208,
+          "A2T-OWN-PATTERN": 152,
+          "A2T-POOL-VALUES": 350,
+          "A2T-PRIOR-TABLE": 677,
+          "A2T-REGISTRY-SIGNATURE": 155,
+          "A2T-TOOL-IDENTITY": 212
+        },
+        "field_group_non_placeholder_occurrences": {
+          "A2T-ARG-CONSTRAINTS": 2,
+          "A2T-ARG-DEFAULTS": 2,
+          "A2T-CALL-RENDER": 3,
+          "A2T-DESCRIPTION": 3,
+          "A2T-EXEMPLAR-UTTERANCE": 3,
+          "A2T-EXTRA-CALLS": 0,
+          "A2T-OTHER-PATTERNS": 2,
+          "A2T-OWN-PATTERN": 2,
+          "A2T-POOL-VALUES": 2,
+          "A2T-PRIOR-TABLE": 3,
+          "A2T-REGISTRY-SIGNATURE": 3,
+          "A2T-TOOL-IDENTITY": 3
+        },
+        "field_group_occurrences": {
+          "A2T-ARG-CONSTRAINTS": 3,
+          "A2T-ARG-DEFAULTS": 3,
+          "A2T-CALL-RENDER": 3,
+          "A2T-DESCRIPTION": 3,
+          "A2T-EXEMPLAR-UTTERANCE": 3,
+          "A2T-EXTRA-CALLS": 0,
+          "A2T-OTHER-PATTERNS": 3,
+          "A2T-OWN-PATTERN": 3,
+          "A2T-POOL-VALUES": 3,
+          "A2T-PRIOR-TABLE": 3,
+          "A2T-REGISTRY-SIGNATURE": 3,
+          "A2T-TOOL-IDENTITY": 3
+        },
+        "form_repaired": true,
+        "supplied_value_ids": [
+          "value:tier4_implicit:001275",
+          "value:tier7_multiturn:002853",
+          "value:tier7_multiturn:003760"
+        ],
+        "supplied_values": 3,
+        "supply_block_characters": 2330
+      },
+      "tier4_implicit:001148": {
+        "blend_final_form": "well-formed-non-empty",
+        "contact0_form": "empty",
+        "field_group_characters": {
+          "A2T-ARG-CONSTRAINTS": 104,
+          "A2T-ARG-DEFAULTS": 104,
+          "A2T-CALL-RENDER": 138,
+          "A2T-DESCRIPTION": 149,
+          "A2T-EXEMPLAR-UTTERANCE": 81,
+          "A2T-EXTRA-CALLS": 0,
+          "A2T-OTHER-PATTERNS": 208,
+          "A2T-OWN-PATTERN": 152,
+          "A2T-POOL-VALUES": 350,
+          "A2T-PRIOR-TABLE": 677,
+          "A2T-REGISTRY-SIGNATURE": 155,
+          "A2T-TOOL-IDENTITY": 212
+        },
+        "field_group_non_placeholder_occurrences": {
+          "A2T-ARG-CONSTRAINTS": 2,
+          "A2T-ARG-DEFAULTS": 2,
+          "A2T-CALL-RENDER": 3,
+          "A2T-DESCRIPTION": 3,
+          "A2T-EXEMPLAR-UTTERANCE": 3,
+          "A2T-EXTRA-CALLS": 0,
+          "A2T-OTHER-PATTERNS": 2,
+          "A2T-OWN-PATTERN": 2,
+          "A2T-POOL-VALUES": 2,
+          "A2T-PRIOR-TABLE": 3,
+          "A2T-REGISTRY-SIGNATURE": 3,
+          "A2T-TOOL-IDENTITY": 3
+        },
+        "field_group_occurrences": {
+          "A2T-ARG-CONSTRAINTS": 3,
+          "A2T-ARG-DEFAULTS": 3,
+          "A2T-CALL-RENDER": 3,
+          "A2T-DESCRIPTION": 3,
+          "A2T-EXEMPLAR-UTTERANCE": 3,
+          "A2T-EXTRA-CALLS": 0,
+          "A2T-OTHER-PATTERNS": 3,
+          "A2T-OWN-PATTERN": 3,
+          "A2T-POOL-VALUES": 3,
+          "A2T-PRIOR-TABLE": 3,
+          "A2T-REGISTRY-SIGNATURE": 3,
+          "A2T-TOOL-IDENTITY": 3
+        },
+        "form_repaired": true,
+        "supplied_value_ids": [
+          "value:tier4_implicit:001275",
+          "value:tier7_multiturn:002853",
+          "value:tier7_multiturn:003760"
+        ],
+        "supplied_values": 3,
+        "supply_block_characters": 2330
+      },
+      "tier4_implicit:001389": {
+        "blend_final_form": "empty",
+        "contact0_form": "empty",
+        "field_group_characters": {
+          "A2T-ARG-CONSTRAINTS": 104,
+          "A2T-ARG-DEFAULTS": 104,
+          "A2T-CALL-RENDER": 138,
+          "A2T-DESCRIPTION": 149,
+          "A2T-EXEMPLAR-UTTERANCE": 81,
+          "A2T-EXTRA-CALLS": 0,
+          "A2T-OTHER-PATTERNS": 208,
+          "A2T-OWN-PATTERN": 152,
+          "A2T-POOL-VALUES": 350,
+          "A2T-PRIOR-TABLE": 677,
+          "A2T-REGISTRY-SIGNATURE": 155,
+          "A2T-TOOL-IDENTITY": 212
+        },
+        "field_group_non_placeholder_occurrences": {
+          "A2T-ARG-CONSTRAINTS": 2,
+          "A2T-ARG-DEFAULTS": 2,
+          "A2T-CALL-RENDER": 3,
+          "A2T-DESCRIPTION": 3,
+          "A2T-EXEMPLAR-UTTERANCE": 3,
+          "A2T-EXTRA-CALLS": 0,
+          "A2T-OTHER-PATTERNS": 2,
+          "A2T-OWN-PATTERN": 2,
+          "A2T-POOL-VALUES": 2,
+          "A2T-PRIOR-TABLE": 3,
+          "A2T-REGISTRY-SIGNATURE": 3,
+          "A2T-TOOL-IDENTITY": 3
+        },
+        "field_group_occurrences": {
+          "A2T-ARG-CONSTRAINTS": 3,
+          "A2T-ARG-DEFAULTS": 3,
+          "A2T-CALL-RENDER": 3,
+          "A2T-DESCRIPTION": 3,
+          "A2T-EXEMPLAR-UTTERANCE": 3,
+          "A2T-EXTRA-CALLS": 0,
+          "A2T-OTHER-PATTERNS": 3,
+          "A2T-OWN-PATTERN": 3,
+          "A2T-POOL-VALUES": 3,
+          "A2T-PRIOR-TABLE": 3,
+          "A2T-REGISTRY-SIGNATURE": 3,
+          "A2T-TOOL-IDENTITY": 3
+        },
+        "form_repaired": false,
+        "supplied_value_ids": [
+          "value:tier4_implicit:001275",
+          "value:tier7_multiturn:002853",
+          "value:tier7_multiturn:003760"
+        ],
+        "supplied_values": 3,
+        "supply_block_characters": 2330
+      },
+      "tier4_implicit:001409": {
+        "blend_final_form": "well-formed-non-empty",
+        "contact0_form": "empty",
+        "field_group_characters": {
+          "A2T-ARG-CONSTRAINTS": 104,
+          "A2T-ARG-DEFAULTS": 104,
+          "A2T-CALL-RENDER": 138,
+          "A2T-DESCRIPTION": 149,
+          "A2T-EXEMPLAR-UTTERANCE": 81,
+          "A2T-EXTRA-CALLS": 0,
+          "A2T-OTHER-PATTERNS": 208,
+          "A2T-OWN-PATTERN": 152,
+          "A2T-POOL-VALUES": 350,
+          "A2T-PRIOR-TABLE": 677,
+          "A2T-REGISTRY-SIGNATURE": 155,
+          "A2T-TOOL-IDENTITY": 212
+        },
+        "field_group_non_placeholder_occurrences": {
+          "A2T-ARG-CONSTRAINTS": 2,
+          "A2T-ARG-DEFAULTS": 2,
+          "A2T-CALL-RENDER": 3,
+          "A2T-DESCRIPTION": 3,
+          "A2T-EXEMPLAR-UTTERANCE": 3,
+          "A2T-EXTRA-CALLS": 0,
+          "A2T-OTHER-PATTERNS": 2,
+          "A2T-OWN-PATTERN": 2,
+          "A2T-POOL-VALUES": 2,
+          "A2T-PRIOR-TABLE": 3,
+          "A2T-REGISTRY-SIGNATURE": 3,
+          "A2T-TOOL-IDENTITY": 3
+        },
+        "field_group_occurrences": {
+          "A2T-ARG-CONSTRAINTS": 3,
+          "A2T-ARG-DEFAULTS": 3,
+          "A2T-CALL-RENDER": 3,
+          "A2T-DESCRIPTION": 3,
+          "A2T-EXEMPLAR-UTTERANCE": 3,
+          "A2T-EXTRA-CALLS": 0,
+          "A2T-OTHER-PATTERNS": 3,
+          "A2T-OWN-PATTERN": 3,
+          "A2T-POOL-VALUES": 3,
+          "A2T-PRIOR-TABLE": 3,
+          "A2T-REGISTRY-SIGNATURE": 3,
+          "A2T-TOOL-IDENTITY": 3
+        },
+        "form_repaired": true,
+        "supplied_value_ids": [
+          "value:tier4_implicit:001275",
+          "value:tier7_multiturn:002853",
+          "value:tier7_multiturn:003760"
+        ],
+        "supplied_values": 3,
+        "supply_block_characters": 2330
+      },
+      "tier4_implicit:001513": {
+        "blend_final_form": "well-formed-non-empty",
+        "contact0_form": "empty",
+        "field_group_characters": {
+          "A2T-ARG-CONSTRAINTS": 104,
+          "A2T-ARG-DEFAULTS": 104,
+          "A2T-CALL-RENDER": 138,
+          "A2T-DESCRIPTION": 149,
+          "A2T-EXEMPLAR-UTTERANCE": 81,
+          "A2T-EXTRA-CALLS": 0,
+          "A2T-OTHER-PATTERNS": 208,
+          "A2T-OWN-PATTERN": 152,
+          "A2T-POOL-VALUES": 350,
+          "A2T-PRIOR-TABLE": 677,
+          "A2T-REGISTRY-SIGNATURE": 155,
+          "A2T-TOOL-IDENTITY": 212
+        },
+        "field_group_non_placeholder_occurrences": {
+          "A2T-ARG-CONSTRAINTS": 2,
+          "A2T-ARG-DEFAULTS": 2,
+          "A2T-CALL-RENDER": 3,
+          "A2T-DESCRIPTION": 3,
+          "A2T-EXEMPLAR-UTTERANCE": 3,
+          "A2T-EXTRA-CALLS": 0,
+          "A2T-OTHER-PATTERNS": 2,
+          "A2T-OWN-PATTERN": 2,
+          "A2T-POOL-VALUES": 2,
+          "A2T-PRIOR-TABLE": 3,
+          "A2T-REGISTRY-SIGNATURE": 3,
+          "A2T-TOOL-IDENTITY": 3
+        },
+        "field_group_occurrences": {
+          "A2T-ARG-CONSTRAINTS": 3,
+          "A2T-ARG-DEFAULTS": 3,
+          "A2T-CALL-RENDER": 3,
+          "A2T-DESCRIPTION": 3,
+          "A2T-EXEMPLAR-UTTERANCE": 3,
+          "A2T-EXTRA-CALLS": 0,
+          "A2T-OTHER-PATTERNS": 3,
+          "A2T-OWN-PATTERN": 3,
+          "A2T-POOL-VALUES": 3,
+          "A2T-PRIOR-TABLE": 3,
+          "A2T-REGISTRY-SIGNATURE": 3,
+          "A2T-TOOL-IDENTITY": 3
+        },
+        "form_repaired": true,
+        "supplied_value_ids": [
+          "value:tier4_implicit:001275",
+          "value:tier7_multiturn:002853",
+          "value:tier7_multiturn:003760"
+        ],
+        "supplied_values": 3,
+        "supply_block_characters": 2330
+      },
+      "tier4_implicit:003312": {
+        "blend_final_form": "well-formed-non-empty",
+        "contact0_form": "empty",
+        "field_group_characters": {
+          "A2T-ARG-CONSTRAINTS": 104,
+          "A2T-ARG-DEFAULTS": 104,
+          "A2T-CALL-RENDER": 138,
+          "A2T-DESCRIPTION": 149,
+          "A2T-EXEMPLAR-UTTERANCE": 81,
+          "A2T-EXTRA-CALLS": 0,
+          "A2T-OTHER-PATTERNS": 208,
+          "A2T-OWN-PATTERN": 152,
+          "A2T-POOL-VALUES": 350,
+          "A2T-PRIOR-TABLE": 677,
+          "A2T-REGISTRY-SIGNATURE": 155,
+          "A2T-TOOL-IDENTITY": 212
+        },
+        "field_group_non_placeholder_occurrences": {
+          "A2T-ARG-CONSTRAINTS": 2,
+          "A2T-ARG-DEFAULTS": 2,
+          "A2T-CALL-RENDER": 3,
+          "A2T-DESCRIPTION": 3,
+          "A2T-EXEMPLAR-UTTERANCE": 3,
+          "A2T-EXTRA-CALLS": 0,
+          "A2T-OTHER-PATTERNS": 2,
+          "A2T-OWN-PATTERN": 2,
+          "A2T-POOL-VALUES": 2,
+          "A2T-PRIOR-TABLE": 3,
+          "A2T-REGISTRY-SIGNATURE": 3,
+          "A2T-TOOL-IDENTITY": 3
+        },
+        "field_group_occurrences": {
+          "A2T-ARG-CONSTRAINTS": 3,
+          "A2T-ARG-DEFAULTS": 3,
+          "A2T-CALL-RENDER": 3,
+          "A2T-DESCRIPTION": 3,
+          "A2T-EXEMPLAR-UTTERANCE": 3,
+          "A2T-EXTRA-CALLS": 0,
+          "A2T-OTHER-PATTERNS": 3,
+          "A2T-OWN-PATTERN": 3,
+          "A2T-POOL-VALUES": 3,
+          "A2T-PRIOR-TABLE": 3,
+          "A2T-REGISTRY-SIGNATURE": 3,
+          "A2T-TOOL-IDENTITY": 3
+        },
+        "form_repaired": true,
+        "supplied_value_ids": [
+          "value:tier4_implicit:001275",
+          "value:tier7_multiturn:002853",
+          "value:tier7_multiturn:003760"
+        ],
+        "supplied_values": 3,
+        "supply_block_characters": 2330
+      },
+      "tier5_needle:000061": {
+        "blend_final_form": "well-formed-non-empty",
+        "contact0_form": "unparsed",
+        "field_group_characters": {
+          "A2T-ARG-CONSTRAINTS": 110,
+          "A2T-ARG-DEFAULTS": 146,
+          "A2T-CALL-RENDER": 190,
+          "A2T-DESCRIPTION": 172,
+          "A2T-EXEMPLAR-UTTERANCE": 343,
+          "A2T-EXTRA-CALLS": 47,
+          "A2T-OTHER-PATTERNS": 193,
+          "A2T-OWN-PATTERN": 191,
+          "A2T-POOL-VALUES": 493,
+          "A2T-PRIOR-TABLE": 821,
+          "A2T-REGISTRY-SIGNATURE": 186,
+          "A2T-TOOL-IDENTITY": 189
+        },
+        "field_group_non_placeholder_occurrences": {
+          "A2T-ARG-CONSTRAINTS": 2,
+          "A2T-ARG-DEFAULTS": 2,
+          "A2T-CALL-RENDER": 3,
+          "A2T-DESCRIPTION": 3,
+          "A2T-EXEMPLAR-UTTERANCE": 3,
+          "A2T-EXTRA-CALLS": 1,
+          "A2T-OTHER-PATTERNS": 3,
+          "A2T-OWN-PATTERN": 2,
+          "A2T-POOL-VALUES": 3,
+          "A2T-PRIOR-TABLE": 3,
+          "A2T-REGISTRY-SIGNATURE": 3,
+          "A2T-TOOL-IDENTITY": 3
+        },
+        "field_group_occurrences": {
+          "A2T-ARG-CONSTRAINTS": 3,
+          "A2T-ARG-DEFAULTS": 3,
+          "A2T-CALL-RENDER": 3,
+          "A2T-DESCRIPTION": 3,
+          "A2T-EXEMPLAR-UTTERANCE": 3,
+          "A2T-EXTRA-CALLS": 1,
+          "A2T-OTHER-PATTERNS": 3,
+          "A2T-OWN-PATTERN": 3,
+          "A2T-POOL-VALUES": 3,
+          "A2T-PRIOR-TABLE": 3,
+          "A2T-REGISTRY-SIGNATURE": 3,
+          "A2T-TOOL-IDENTITY": 3
+        },
+        "form_repaired": true,
+        "supplied_value_ids": [
+          "value:tier3_multi_intent:003846",
+          "value:tier6_correction:002132",
+          "value:tier6_correction:002268"
+        ],
+        "supplied_values": 3,
+        "supply_block_characters": 3081
+      },
+      "tier7_multiturn:000214": {
+        "blend_final_form": "well-formed-non-empty",
+        "contact0_form": "empty",
+        "field_group_characters": {
+          "A2T-ARG-CONSTRAINTS": 104,
+          "A2T-ARG-DEFAULTS": 104,
+          "A2T-CALL-RENDER": 138,
+          "A2T-DESCRIPTION": 149,
+          "A2T-EXEMPLAR-UTTERANCE": 81,
+          "A2T-EXTRA-CALLS": 0,
+          "A2T-OTHER-PATTERNS": 208,
+          "A2T-OWN-PATTERN": 152,
+          "A2T-POOL-VALUES": 350,
+          "A2T-PRIOR-TABLE": 677,
+          "A2T-REGISTRY-SIGNATURE": 155,
+          "A2T-TOOL-IDENTITY": 212
+        },
+        "field_group_non_placeholder_occurrences": {
+          "A2T-ARG-CONSTRAINTS": 2,
+          "A2T-ARG-DEFAULTS": 2,
+          "A2T-CALL-RENDER": 3,
+          "A2T-DESCRIPTION": 3,
+          "A2T-EXEMPLAR-UTTERANCE": 3,
+          "A2T-EXTRA-CALLS": 0,
+          "A2T-OTHER-PATTERNS": 2,
+          "A2T-OWN-PATTERN": 2,
+          "A2T-POOL-VALUES": 2,
+          "A2T-PRIOR-TABLE": 3,
+          "A2T-REGISTRY-SIGNATURE": 3,
+          "A2T-TOOL-IDENTITY": 3
+        },
+        "field_group_occurrences": {
+          "A2T-ARG-CONSTRAINTS": 3,
+          "A2T-ARG-DEFAULTS": 3,
+          "A2T-CALL-RENDER": 3,
+          "A2T-DESCRIPTION": 3,
+          "A2T-EXEMPLAR-UTTERANCE": 3,
+          "A2T-EXTRA-CALLS": 0,
+          "A2T-OTHER-PATTERNS": 3,
+          "A2T-OWN-PATTERN": 3,
+          "A2T-POOL-VALUES": 3,
+          "A2T-PRIOR-TABLE": 3,
+          "A2T-REGISTRY-SIGNATURE": 3,
+          "A2T-TOOL-IDENTITY": 3
+        },
+        "form_repaired": true,
+        "supplied_value_ids": [
+          "value:tier4_implicit:001275",
+          "value:tier7_multiturn:002853",
+          "value:tier7_multiturn:003760"
+        ],
+        "supplied_values": 3,
+        "supply_block_characters": 2330
+      },
+      "tier7_multiturn:001516": {
+        "blend_final_form": "well-formed-non-empty",
+        "contact0_form": "empty",
+        "field_group_characters": {
+          "A2T-ARG-CONSTRAINTS": 104,
+          "A2T-ARG-DEFAULTS": 104,
+          "A2T-CALL-RENDER": 138,
+          "A2T-DESCRIPTION": 149,
+          "A2T-EXEMPLAR-UTTERANCE": 81,
+          "A2T-EXTRA-CALLS": 0,
+          "A2T-OTHER-PATTERNS": 208,
+          "A2T-OWN-PATTERN": 152,
+          "A2T-POOL-VALUES": 350,
+          "A2T-PRIOR-TABLE": 677,
+          "A2T-REGISTRY-SIGNATURE": 155,
+          "A2T-TOOL-IDENTITY": 212
+        },
+        "field_group_non_placeholder_occurrences": {
+          "A2T-ARG-CONSTRAINTS": 2,
+          "A2T-ARG-DEFAULTS": 2,
+          "A2T-CALL-RENDER": 3,
+          "A2T-DESCRIPTION": 3,
+          "A2T-EXEMPLAR-UTTERANCE": 3,
+          "A2T-EXTRA-CALLS": 0,
+          "A2T-OTHER-PATTERNS": 2,
+          "A2T-OWN-PATTERN": 2,
+          "A2T-POOL-VALUES": 2,
+          "A2T-PRIOR-TABLE": 3,
+          "A2T-REGISTRY-SIGNATURE": 3,
+          "A2T-TOOL-IDENTITY": 3
+        },
+        "field_group_occurrences": {
+          "A2T-ARG-CONSTRAINTS": 3,
+          "A2T-ARG-DEFAULTS": 3,
+          "A2T-CALL-RENDER": 3,
+          "A2T-DESCRIPTION": 3,
+          "A2T-EXEMPLAR-UTTERANCE": 3,
+          "A2T-EXTRA-CALLS": 0,
+          "A2T-OTHER-PATTERNS": 3,
+          "A2T-OWN-PATTERN": 3,
+          "A2T-POOL-VALUES": 3,
+          "A2T-PRIOR-TABLE": 3,
+          "A2T-REGISTRY-SIGNATURE": 3,
+          "A2T-TOOL-IDENTITY": 3
+        },
+        "form_repaired": true,
+        "supplied_value_ids": [
+          "value:tier4_implicit:001275",
+          "value:tier7_multiturn:002853",
+          "value:tier7_multiturn:003760"
+        ],
+        "supplied_values": 3,
+        "supply_block_characters": 2330
+      }
+    },
+    "repaired": {
+      "n": 11,
+      "per_field_group": {
+        "A2T-ARG-CONSTRAINTS": {
+          "fraction_of_trajectories": 1.0,
+          "mean_characters_per_trajectory": 125.45,
+          "non_placeholder_occurrences_over_supplied_values": 0.6944,
+          "occurrences_over_supplied_values": 1.0,
+          "trajectories_receiving_it_at_least_once": 11
+        },
+        "A2T-ARG-DEFAULTS": {
+          "fraction_of_trajectories": 1.0,
+          "mean_characters_per_trajectory": 128.45,
+          "non_placeholder_occurrences_over_supplied_values": 0.6944,
+          "occurrences_over_supplied_values": 1.0,
+          "trajectories_receiving_it_at_least_once": 11
+        },
+        "A2T-CALL-RENDER": {
+          "fraction_of_trajectories": 1.0,
+          "mean_characters_per_trajectory": 181.09,
+          "non_placeholder_occurrences_over_supplied_values": 1.0,
+          "occurrences_over_supplied_values": 1.0,
+          "trajectories_receiving_it_at_least_once": 11
+        },
+        "A2T-DESCRIPTION": {
+          "fraction_of_trajectories": 1.0,
+          "mean_characters_per_trajectory": 176.91,
+          "non_placeholder_occurrences_over_supplied_values": 1.0,
+          "occurrences_over_supplied_values": 1.0,
+          "trajectories_receiving_it_at_least_once": 11
+        },
+        "A2T-EXEMPLAR-UTTERANCE": {
+          "fraction_of_trajectories": 1.0,
+          "mean_characters_per_trajectory": 166.73,
+          "non_placeholder_occurrences_over_supplied_values": 1.0,
+          "occurrences_over_supplied_values": 1.0,
+          "trajectories_receiving_it_at_least_once": 11
+        },
+        "A2T-EXTRA-CALLS": {
+          "fraction_of_trajectories": 0.2727,
+          "mean_characters_per_trajectory": 36.64,
+          "non_placeholder_occurrences_over_supplied_values": 0.2222,
+          "occurrences_over_supplied_values": 0.2222,
+          "trajectories_receiving_it_at_least_once": 3
+        },
+        "A2T-OTHER-PATTERNS": {
+          "fraction_of_trajectories": 1.0,
+          "mean_characters_per_trajectory": 224.18,
+          "non_placeholder_occurrences_over_supplied_values": 0.7778,
+          "occurrences_over_supplied_values": 1.0,
+          "trajectories_receiving_it_at_least_once": 11
+        },
+        "A2T-OWN-PATTERN": {
+          "fraction_of_trajectories": 1.0,
+          "mean_characters_per_trajectory": 175.82,
+          "non_placeholder_occurrences_over_supplied_values": 0.6667,
+          "occurrences_over_supplied_values": 1.0,
+          "trajectories_receiving_it_at_least_once": 11
+        },
+        "A2T-POOL-VALUES": {
+          "fraction_of_trajectories": 1.0,
+          "mean_characters_per_trajectory": 431.0,
+          "non_placeholder_occurrences_over_supplied_values": 0.7778,
+          "occurrences_over_supplied_values": 1.0,
+          "trajectories_receiving_it_at_least_once": 11
+        },
+        "A2T-PRIOR-TABLE": {
+          "fraction_of_trajectories": 1.0,
+          "mean_characters_per_trajectory": 789.09,
+          "non_placeholder_occurrences_over_supplied_values": 1.0,
+          "occurrences_over_supplied_values": 1.0,
+          "trajectories_receiving_it_at_least_once": 11
+        },
+        "A2T-REGISTRY-SIGNATURE": {
+          "fraction_of_trajectories": 1.0,
+          "mean_characters_per_trajectory": 181.45,
+          "non_placeholder_occurrences_over_supplied_values": 1.0,
+          "occurrences_over_supplied_values": 1.0,
+          "trajectories_receiving_it_at_least_once": 11
+        },
+        "A2T-TOOL-IDENTITY": {
+          "fraction_of_trajectories": 1.0,
+          "mean_characters_per_trajectory": 224.27,
+          "non_placeholder_occurrences_over_supplied_values": 1.0,
+          "occurrences_over_supplied_values": 1.0,
+          "trajectories_receiving_it_at_least_once": 11
+        }
+      },
+      "sample_ids": [
+        "tier2_parametric:004826",
+        "tier3_multi_intent:000879",
+        "tier4_implicit:000655",
+        "tier4_implicit:000900",
+        "tier4_implicit:001148",
+        "tier4_implicit:001409",
+        "tier4_implicit:001513",
+        "tier4_implicit:003312",
+        "tier5_needle:000061",
+        "tier7_multiturn:000214",
+        "tier7_multiturn:001516"
+      ],
+      "supplied_values": {
+        "max": 5,
+        "mean": 3.2727,
+        "min": 3
+      },
+      "supply_block_characters": {
+        "max": 5715,
+        "mean": 2841.09,
+        "min": 2330
+      }
+    },
+    "scope": "DISPATCHED TRAJECTORIES ONLY (n=15). Retained trajectories received no evidence at all, so any arm-to-arm difference among them is decode variance -- measured at 10.11 percent divergent response text on the A2T retained set and 14.84 / 16.72 percent on the two SLURP retained sets by docs/readiness/2026-08-25-extraction-conditioned-on-dispatch.md section 9. Nothing in this block touches a retained trajectory",
+    "supply_set_identity": {
+      "not_repaired": {
+        "distinct_supply_sets": 1,
+        "distinct_supply_sets_list": [
+          [
+            "value:tier4_implicit:001275",
+            "value:tier7_multiturn:002853",
+            "value:tier7_multiturn:003760"
+          ]
+        ],
+        "n": 3
+      },
+      "reading": "when a supply set appears in BOTH subgroups, the supply is held constant across the outcome, so no field of it can be what distinguishes the two -- the difference has to come from somewhere else",
+      "repaired": {
+        "distinct_supply_sets": 4,
+        "distinct_supply_sets_list": [
+          [
+            "value:tier1_direct:002156",
+            "value:tier3_multi_intent:003846",
+            "value:tier7_multiturn:002150",
+            "value:tier8_intent_blending:000484"
+          ],
+          [
+            "value:tier3_multi_intent:002491",
+            "value:tier3_multi_intent:002496",
+            "value:tier3_multi_intent:002521",
+            "value:tier3_multi_intent:002528",
+            "value:tier3_multi_intent:003848"
+          ],
+          [
+            "value:tier3_multi_intent:003846",
+            "value:tier6_correction:002132",
+            "value:tier6_correction:002268"
+          ],
+          [
+            "value:tier4_implicit:001275",
+            "value:tier7_multiturn:002853",
+            "value:tier7_multiturn:003760"
+          ]
+        ],
+        "n": 11
+      },
+      "supply_sets_shared_by_BOTH_subgroups": [
+        [
+          "value:tier4_implicit:001275",
+          "value:tier7_multiturn:002853",
+          "value:tier7_multiturn:003760"
+        ]
+      ],
+      "trajectories_in_a_shared_set": {
+        "not_repaired": [
+          "tier1_direct:000167",
+          "tier1_direct:001631",
+          "tier4_implicit:001389"
+        ],
+        "repaired": [
+          "tier4_implicit:000655",
+          "tier4_implicit:000900",
+          "tier4_implicit:001148",
+          "tier4_implicit:001409",
+          "tier4_implicit:001513",
+          "tier4_implicit:003312",
+          "tier7_multiturn:000214",
+          "tier7_multiturn:001516"
+        ]
+      }
+    },
+    "what_this_can_and_cannot_show": "presence of a field group cannot discriminate two subgroups when the builder emits it on EVERY value. Where that is the case this block says so and reports the quantities that DO vary -- how many values were supplied, how many characters of each group arrived, and how often the group was a placeholder rather than real content"
+  },
+  "generated_at": "2026-08-25T18:00:46.297544+00:00",
+  "governance": {
+    "accounting_only": "ACCOUNTING ONLY. This module does not propose or evaluate a field-selection policy and changes no rendering. A design step is a separate, separately-registered row.",
+    "exposed_populations": "SECONDARY READING on an EXPOSED population; free to read, never a campaign claim.",
+    "slurp_unexposed_500": "SECONDARY READING on the LOCKED baseline's own population (SLURP DEV-1000-NEW500, UNEXPOSED). Descriptive only: it MUST NOT be used to revise, re-tune or restate the DEV-1000 LOCK.",
+    "small_n": "MECHANISM READING AT SMALL n, never an effect size. The n is published beside every figure for exactly that reason."
+  },
+  "ledger_commit": "834c36dd",
+  "measured_supply_block_tokens": {
+    "audio2tool": {
+      "max": 1622,
+      "mean": 788.64,
+      "median": 679,
+      "min": 455,
+      "n": 11,
+      "total": 8675
+    },
+    "estimate_versus_measurement": {
+      "audio2tool": {
+        "measured_total_prompt_token_delta": 8675,
+        "note": "the measured delta also contains the fixed control instruction, so a small positive gap between measurement and estimate is expected",
+        "paired_contacts": 11,
+        "two_rate": {
+          "difference_tokens": -706.3,
+          "estimated_supply_block_tokens_total": 9381.3,
+          "relative_difference": -0.081418
+        },
+        "uniform": {
+          "difference_tokens": 118.0,
+          "estimated_supply_block_tokens_total": 8557.0,
+          "relative_difference": 0.013599
+        }
+      },
+      "slurp": {
+        "measured_total_prompt_token_delta": 242286,
+        "note": "the measured delta also contains the fixed control instruction, so a small positive gap between measurement and estimate is expected",
+        "paired_contacts": 340,
+        "two_rate": {
+          "difference_tokens": -1849.1,
+          "estimated_supply_block_tokens_total": 244135.1,
+          "relative_difference": -0.007632
+        },
+        "uniform": {
+          "difference_tokens": -10363.8,
+          "estimated_supply_block_tokens_total": 252649.8,
+          "relative_difference": -0.042775
+        }
+      }
+    },
+    "semantics": "MEASURED, not estimated: prompt_tokens(evidence-decode) - prompt_tokens(direct-decode) from the sealed COST channel, i.e. the control instruction plus the whole injected supply block through the real tokenizer",
+    "slurp": {
+      "max": 1452,
+      "mean": 712.61,
+      "median": 733,
+      "min": 204,
+      "n": 340,
+      "total": 242286
+    }
+  },
+  "parse_fidelity_gate": {
+    "audio2tool": {
+      "carrier": "audio2tool",
+      "failure_rows": [],
+      "failures": 0,
+      "passed": true,
+      "reassembled_byte_equal": 12601,
+      "segmented": 12601,
+      "semantics": "every value is split on anchors read off the builder, every anchor is asserted to occur exactly once, the exemplar / registry-block / prior boundaries are recovered by EXACT identity against the snapshot's own facet representations rather than parsed, and the segments are reassembled and asserted byte-equal to the original content",
+      "snapshot_values": 12601
+    },
+    "slurp": {
+      "carrier": "slurp",
+      "failure_rows": [],
+      "failures": 0,
+      "passed": true,
+      "reassembled_byte_equal": 11514,
+      "segmented": 11514,
+      "semantics": "every value is split on anchors read off the builder, every anchor is asserted to occur exactly once, the exemplar / registry-block / prior boundaries are recovered by EXACT identity against the snapshot's own facet representations rather than parsed, and the segments are reassembled and asserted byte-equal to the original content",
+      "snapshot_values": 11514
+    }
+  },
+  "prior_table_decomposition": {
+    "audio2tool": {
+      "A2T-G1-104 (EXPOSED)": {
+        "field_group": "A2T-PRIOR-TABLE",
+        "header_fraction_of_group": 0.44952,
+        "identifying_header_characters": 5009,
+        "numeric_body_characters": 6134,
+        "occurrences": 47,
+        "reading": "the header is the only matching-redundant part of the group (it names the intent or tool the table is keyed by); everything else is the numeric distribution over slot types / argument keys"
+      }
+    },
+    "slurp": {
+      "DEV-1000 (BOTH HALVES)": {
+        "field_group": "SLURP-PRIOR-TABLE",
+        "header_fraction_of_group": 0.254688,
+        "identifying_header_characters": 86864,
+        "numeric_body_characters": 254197,
+        "occurrences": 968,
+        "reading": "the header is the only matching-redundant part of the group (it names the intent or tool the table is keyed by); everything else is the numeric distribution over slot types / argument keys"
+      },
+      "DEV-1000-NEW500 (UNEXPOSED)": {
+        "field_group": "SLURP-PRIOR-TABLE",
+        "header_fraction_of_group": 0.249476,
+        "identifying_header_characters": 41765,
+        "numeric_body_characters": 125646,
+        "occurrences": 464,
+        "reading": "the header is the only matching-redundant part of the group (it names the intent or tool the table is keyed by); everything else is the numeric distribution over slot types / argument keys"
+      },
+      "DEV-500 (PRIOR-EXPOSED)": {
+        "field_group": "SLURP-PRIOR-TABLE",
+        "header_fraction_of_group": 0.259712,
+        "identifying_header_characters": 45099,
+        "numeric_body_characters": 128551,
+        "occurrences": 504,
+        "reading": "the header is the only matching-redundant part of the group (it names the intent or tool the table is keyed by); everything else is the numeric distribution over slot types / argument keys"
+      }
+    }
+  },
+  "prior_table_header_sensitivity": {
+    "audio2tool": {
+      "question": "the PRIOR-TABLE group opens with an identifying header naming the intent or tool it is keyed by. That header repeats a matching cue already carried by other groups, so it is framing overhead of an extraction field rather than new matching content. This block reports what the extraction share becomes if the header is reassigned away from EXTRACTION anyway -- the conservative bound",
+      "two_rate": {
+        "extraction_strict_token_fraction_as_reported": 0.747187,
+        "extraction_strict_token_fraction_without_the_header": 0.468719,
+        "prior_table_header_characters": 5009,
+        "prior_table_header_estimated_tokens": 3502.9,
+        "prior_table_header_fraction_of_group": 0.44952
+      },
+      "uniform": {
+        "extraction_strict_token_fraction_as_reported": 0.521335,
+        "extraction_strict_token_fraction_without_the_header": 0.395671,
+        "prior_table_header_characters": 5009,
+        "prior_table_header_estimated_tokens": 1438.8,
+        "prior_table_header_fraction_of_group": 0.44952
+      }
+    },
+    "slurp": {
+      "DEV-1000 (BOTH HALVES)": {
+        "question": "the PRIOR-TABLE group opens with an identifying header naming the intent or tool it is keyed by. That header repeats a matching cue already carried by other groups, so it is framing overhead of an extraction field rather than new matching content. This block reports what the extraction share becomes if the header is reassigned away from EXTRACTION anyway -- the conservative bound",
+        "two_rate": {
+          "extraction_strict_token_fraction_as_reported": 0.926312,
+          "extraction_strict_token_fraction_without_the_header": 0.715645,
+          "prior_table_header_characters": 86864,
+          "prior_table_header_estimated_tokens": 51431.4,
+          "prior_table_header_fraction_of_group": 0.254688
+        },
+        "uniform": {
+          "extraction_strict_token_fraction_as_reported": 0.819772,
+          "extraction_strict_token_fraction_without_the_header": 0.67275,
+          "prior_table_header_characters": 86864,
+          "prior_table_header_estimated_tokens": 37145.3,
+          "prior_table_header_fraction_of_group": 0.254688
+        }
+      },
+      "DEV-1000-NEW500 (UNEXPOSED)": {
+        "question": "the PRIOR-TABLE group opens with an identifying header naming the intent or tool it is keyed by. That header repeats a matching cue already carried by other groups, so it is framing overhead of an extraction field rather than new matching content. This block reports what the extraction share becomes if the header is reassigned away from EXTRACTION anyway -- the conservative bound",
+        "two_rate": {
+          "extraction_strict_token_fraction_as_reported": 0.926847,
+          "extraction_strict_token_fraction_without_the_header": 0.720159,
+          "prior_table_header_characters": 41765,
+          "prior_table_header_estimated_tokens": 24728.7,
+          "prior_table_header_fraction_of_group": 0.249476
+        },
+        "uniform": {
+          "extraction_strict_token_fraction_as_reported": 0.820663,
+          "extraction_strict_token_fraction_without_the_header": 0.676083,
+          "prior_table_header_characters": 41765,
+          "prior_table_header_estimated_tokens": 17859.8,
+          "prior_table_header_fraction_of_group": 0.249476
+        }
+      },
+      "DEV-500 (PRIOR-EXPOSED)": {
+        "question": "the PRIOR-TABLE group opens with an identifying header naming the intent or tool it is keyed by. That header repeats a matching cue already carried by other groups, so it is framing overhead of an extraction field rather than new matching content. This block reports what the extraction share becomes if the header is reassigned away from EXTRACTION anyway -- the conservative bound",
+        "two_rate": {
+          "extraction_strict_token_fraction_as_reported": 0.925799,
+          "extraction_strict_token_fraction_without_the_header": 0.711306,
+          "prior_table_header_characters": 45099,
+          "prior_table_header_estimated_tokens": 26702.7,
+          "prior_table_header_fraction_of_group": 0.259712
+        },
+        "uniform": {
+          "extraction_strict_token_fraction_as_reported": 0.81892,
+          "extraction_strict_token_fraction_without_the_header": 0.669561,
+          "prior_table_header_characters": 45099,
+          "prior_table_header_estimated_tokens": 19285.5,
+          "prior_table_header_fraction_of_group": 0.259712
+        }
+      }
+    }
+  },
+  "schema": "saea-field-level-supply-accounting-v1",
+  "spend": {
+    "audio_seconds": 0,
+    "embedding_tool_contacts": 0,
+    "frozen_core_contacts": 0,
+    "gpu_hours": 0.0,
+    "http_or_socket_requests": 0,
+    "new_dependencies": 0,
+    "outbound_connection_attempts": 0,
+    "outbound_connection_targets": [],
+    "tokenizer_contacts": 0
+  },
+  "superseded_premise_correction": {
+    "consequence_for_this_row": "question (4) is answered as COST PER CHANNEL against delivery, not as dead weight. No extraction-oriented field is written off. The ledger row is append-only and is left exactly as registered; this correction travels with the verdict document and this receipt",
+    "the_corrected_effect": "where the supply IS delivered the extraction channel works: SLURP dispatched n=163 official SLU-F1 +13.7570 pts CI90 [+8.8840, +18.6695] and macro slot-F1 +9.4391 pts CI90 [+4.3558, +14.5194]; A2T dispatched n=15 slot micro-F1 +12.1212 pts. Where it was not delivered A2T is -3.0250 pts with a CI90 excluding zero, which is decode variance on unsupplied trajectories",
+    "the_successor": "docs/readiness/2026-08-25-extraction-conditioned-on-dispatch.md, commit 6c6ec719, receipt sha256 7662fbc381e6994f3c71422154a0facfc86c0e99b656cf91670577036a337525",
+    "what_was_superseded": "the exposure row SAEA-SN-MF-FIELD-LEVEL-SUPPLY-ACCOUNTING (ledger commit 834c36dd) registers, in its question (4), the premise that the extraction-oriented fields are 'currently paying for a channel the landed read measured at ZERO effect'. That premise came from docs/readiness/2026-08-25-matching-vs-extraction-read.md and is FALSE",
+    "why": "the earlier read conditioned on MATCHING but never on whether the trajectory RECEIVED SUPPLY. A retained trajectory stops at contact 0 and is handed no evidence at all. Its SLURP unexposed 'both matched' cell holds 273 samples of which only 3 were dispatched (98.90 percent unsupplied); its A2T 'both matched' cell holds 60 of which 0 were dispatched"
+  },
+  "token_model": {
+    "audio2tool_models": {
+      "per_group_REFUSED": {
+        "coefficients_tokens_per_character": {
+          "A2T-ARG-CONSTRAINTS": -0.123948,
+          "A2T-ARG-DEFAULTS": -0.039018,
+          "A2T-CALL-RENDER": -0.226787,
+          "A2T-DESCRIPTION": -0.435454,
+          "A2T-EXEMPLAR-UTTERANCE": 0.432259,
+          "A2T-EXTRA-CALLS": 0.374334,
+          "A2T-OTHER-PATTERNS": -0.141128,
+          "A2T-OWN-PATTERN": 0.029633,
+          "A2T-POOL-VALUES": 0.275247,
+          "A2T-PRIOR-TABLE": 0.927469,
+          "A2T-REGISTRY-SIGNATURE": 0.144004,
+          "A2T-TOOL-IDENTITY": 0.167073
+        },
+        "intercept_tokens": -0.008,
+        "max_absolute_residual_tokens": 0.0,
+        "model": "one tokens-per-character rate per field group",
+        "negative_coefficients": {
+          "A2T-ARG-CONSTRAINTS": -0.123948,
+          "A2T-ARG-DEFAULTS": -0.039018,
+          "A2T-CALL-RENDER": -0.226787,
+          "A2T-DESCRIPTION": -0.435454,
+          "A2T-OTHER-PATTERNS": -0.141128
+        },
+        "r_squared": 1.0,
+        "reason": "the per-group character counts are COLLINEAR -- a value's label segment length is determined by the same task target that determines its prior table -- so the fit drives at least one coefficient negative. A negative tokens-per-character is not a quantity, so this model is measured, published and NOT used",
+        "refused": true
+      },
+      "two_rate": {
+        "dense_characters_per_token": 1.43,
+        "dense_groups": [
+          "A2T-PRIOR-TABLE"
+        ],
+        "dense_tokens_per_character": 0.699317,
+        "holdout": {
+          "folds": 5,
+          "max_absolute_error_tokens": 179.1,
+          "mean_absolute_error_tokens": 35.986,
+          "seed": 20260807
+        },
+        "independent_confirmation": "dev100_supply_budget_projection.token_model measured 1.93 characters per token on three of these same dense prior tables from the two landed prompt-fit receipts, by a completely different route (a tokenizer-only receipt difference). This regression lands nearby, which is the cross-check",
+        "intercept_tokens": -64.209,
+        "max_absolute_residual_tokens": 40.24,
+        "model": "the same paired within-sample regression with TWO predictors: the dense numeric prior table separated from every other character of value text",
+        "paired_contacts": 11,
+        "prose_characters_per_token": 5.9998,
+        "prose_tokens_per_character": 0.166671,
+        "r_squared": 0.997665,
+        "rmse_tokens": 14.89,
+        "usable": true
+      },
+      "uniform": {
+        "characters_per_token": 3.4814,
+        "consequence": "because it is linear in characters, a field group's TOKEN share under this model equals its CHARACTER share exactly",
+        "holdout": {
+          "folds": 5,
+          "max_absolute_error_tokens": 158.4,
+          "mean_absolute_error_tokens": 25.41,
+          "seed": 20260807
+        },
+        "intercept_tokens": 10.72,
+        "max_absolute_residual_tokens": 59.15,
+        "model": "the REGISTERED estimator: dev100_supply_budget_projection.flown_value_token_rate, one tokens-per-character rate for every character of value text",
+        "paired_contacts": 11,
+        "r_squared": 0.995348,
+        "tokens_per_character": 0.287245
+      }
+    },
+    "audio2tool_paired_regression": {
+      "_intercept": 10.724993957171478,
+      "_slope": 0.2872448830638172,
+      "characters_per_token_of_value_text": 3.4814,
+      "constant_instruction_cost_tokens": 10.72,
+      "max_absolute_residual_tokens": 59.15,
+      "method": "the established paired within-sample method of dev100_supply_budget_projection.flown_value_token_rate, executed across the three sealed A2T attempt traces because attempt 4 carries only the evidence contacts while their Pass-A direct partners landed in attempts 1 and 2. A trajectory is paired only when the direct contact's response re-hashes to the sealed Pass-A digest",
+      "note_on_the_prompt_difference": "the evidence request's history carries ONLY the control instruction (no assistant turn), verified on the landed MODEL_REQUEST payloads, so prompt_tokens(evidence) - prompt_tokens(direct) is exactly the control instruction plus the supplied value block and the regression intercept is a genuine constant",
+      "paired_contacts": 11,
+      "r_squared": 0.995348,
+      "supplied_value_character_range": [
+        1619,
+        5715
+      ],
+      "tokens_per_character_of_value_text": 0.287245,
+      "unpaired_evidence_contacts": [
+        "tier4_implicit:001513",
+        "tier5_needle:000061",
+        "tier7_multiturn:000214",
+        "tier7_multiturn:001516"
+      ]
+    },
+    "audio2tool_receipt_calibration_cross_check": {
+      "basis": "the ALREADY-LANDED prompt-fit-np2.json receipt, whose two envelopes were measured by the resident tokenizer at a registered contact. NOTHING is tokenized here",
+      "characters_per_token": 3.288418516606436,
+      "conservatism": "the landed worst case also counted FIVE key facets, which rails.runner._agent_messages never renders for this controller because the controller leaves visible_facet_ids empty; the constant is therefore derived from a block LARGER than any variant can emit",
+      "control_instruction_characters": 168,
+      "measured_direct_envelope_text_tokens": 13236,
+      "measured_evidence_block_tokens": 5811,
+      "measured_worst_evidence_envelope_text_tokens": 19047,
+      "output_ceiling_tokens": 1024,
+      "reconstructed_worst_evidence_block_characters": 19109,
+      "slot_tokens": 32768,
+      "special_token_reserve": 2,
+      "speech_worst_tokens": 364
+    },
+    "control_instruction": {
+      "a2t_estimated_tokens_from_regression_intercept": 10.72,
+      "characters": 168,
+      "sha256": "ac8a0debc9dc79cdd5acd04b2cdb408c52f5f6f24173e4ce4ee1bcccd1dfda28",
+      "slurp_estimated_tokens_from_regression_intercept": -30.48,
+      "text": "Decide under the task contract already given above, now considering the retrieved evidence. Answer using the speech query together with the supplied knowledge evidence."
+    },
+    "known_density_caveat": "dev100_supply_budget_projection.token_model records that the dense numeric prior tables tokenize at about 1.93 characters per token against roughly twice that for exemplar prose. That is why the DENSE/PROSE model exists; the regression here confirms it independently. Every remaining list-like extraction group is still priced at the prose rate, so every extraction figure is a LOWER bound",
+    "linearity_disclosure": "the UNIFORM model is linear in characters, so under it a field group's TOKEN share equals its CHARACTER share exactly. The DENSE/PROSE model separates the two and is the better fit; both are published and every headline is given under both",
+    "slurp_models": {
+      "per_group_REFUSED": {
+        "coefficients_tokens_per_character": {
+          "SLURP-EXEMPLAR-SENTENCE": 0.299017,
+          "SLURP-INTENT-LABEL": -0.08503,
+          "SLURP-NORMALIZATION": 0.199136,
+          "SLURP-PRIOR-TABLE": 0.602139,
+          "SLURP-SLOT-PAIRS": 0.159327
+        },
+        "intercept_tokens": 1.361,
+        "max_absolute_residual_tokens": 51.62,
+        "model": "one tokens-per-character rate per field group",
+        "negative_coefficients": {
+          "SLURP-INTENT-LABEL": -0.08503
+        },
+        "r_squared": 0.998044,
+        "reason": "the per-group character counts are COLLINEAR -- a value's label segment length is determined by the same task target that determines its prior table -- so the fit drives at least one coefficient negative. A negative tokens-per-character is not a quantity, so this model is measured, published and NOT used",
+        "refused": true
+      },
+      "two_rate": {
+        "dense_characters_per_token": 1.6889,
+        "dense_groups": [
+          "SLURP-PRIOR-TABLE"
+        ],
+        "dense_tokens_per_character": 0.592091,
+        "holdout": {
+          "folds": 5,
+          "max_absolute_error_tokens": 49.87,
+          "mean_absolute_error_tokens": 11.076,
+          "seed": 20260807
+        },
+        "independent_confirmation": "dev100_supply_budget_projection.token_model measured 1.93 characters per token on three of these same dense prior tables from the two landed prompt-fit receipts, by a completely different route (a tokenizer-only receipt difference). This regression lands nearby, which is the cross-check",
+        "intercept_tokens": -5.439,
+        "max_absolute_residual_tokens": 47.28,
+        "model": "the same paired within-sample regression with TWO predictors: the dense numeric prior table separated from every other character of value text",
+        "paired_contacts": 340,
+        "prose_characters_per_token": 5.919,
+        "prose_tokens_per_character": 0.168946,
+        "r_squared": 0.997153,
+        "rmse_tokens": 14.46,
+        "usable": true
+      },
+      "uniform": {
+        "characters_per_token": 2.3385,
+        "consequence": "because it is linear in characters, a field group's TOKEN share under this model equals its CHARACTER share exactly",
+        "holdout": {
+          "folds": 5,
+          "max_absolute_error_tokens": 158.79,
+          "mean_absolute_error_tokens": 32.494,
+          "seed": 20260807
+        },
+        "intercept_tokens": -30.48,
+        "max_absolute_residual_tokens": 159.57,
+        "model": "the REGISTERED estimator: dev100_supply_budget_projection.flown_value_token_rate, one tokens-per-character rate for every character of value text",
+        "paired_contacts": 340,
+        "r_squared": 0.974456,
+        "tokens_per_character": 0.427626
+      }
+    },
+    "slurp_paired_regression": {
+      "_intercept": -30.481669416643967,
+      "_slope": 0.4276256179575149,
+      "characters_per_token_of_value_text": 2.3385,
+      "constant_instruction_cost_tokens": -30.48,
+      "imported_call": {
+        "characters_per_token_of_value_text": 2.4241,
+        "constant_instruction_cost_tokens": -35.96,
+        "flown_evidence_prompt_tokens": {
+          "max": 3222,
+          "median": 2495,
+          "min": 1971,
+          "n": 340
+        },
+        "max_absolute_residual_tokens": 156.94,
+        "method": "paired within-sample regression on the sealed stores: prompt_tokens(evidence-decode) - prompt_tokens(direct-decode) against the supplied value block's own character count. The speech-feature packet, the task contract and the system prompt are byte-identical between the two contacts of a sample, so they cancel exactly",
+        "paired_contacts": 340,
+        "r_squared": 0.97272,
+        "supplied_value_character_range": [
+          756,
+          3609
+        ],
+        "tokens_per_character_of_value_text": 0.41253
+      },
+      "max_absolute_residual_tokens": 159.57,
+      "method": "dev100_supply_budget_projection.flown_value_token_rate, called on the DEV-1000 BLEND flight itself; restated against RAW value characters because the flown runner renders no '[evidence NNN:value:value] ' prefix",
+      "paired_contacts": 340,
+      "r_squared": 0.974456,
+      "supplied_value_character_range": [
+        702,
+        3474
+      ],
+      "tokens_per_character_of_value_text": 0.427626
+    },
+    "why_no_tokenizer": "the campaign's prompt-fit receipts were measured through the resident llama-server /props + /apply-template + /tokenize routes, which is an HTTP contact this row may not take. No offline copy of that tokenizer exists in this repository, so the campaign's own established OFFLINE estimators are used and named"
+  },
+  "token_tables": {
+    "audio2tool": {
+      "two_rate": {
+        "contacts_with_supply": 15,
+        "label": "SECONDARY READING on an EXPOSED population; free to read, never a campaign claim.",
+        "mean_values_per_contact": 3.1333,
+        "placeholder_estimated_tokens_total": 596.5,
+        "population": "A2T-G1-104 (EXPOSED)",
+        "rows": [
+          {
+            "character_share_of_supply_block": 0.05469,
+            "characters": 2180,
+            "estimated_tokens": 363.3,
+            "estimated_tokens_per_contact": 24.22,
+            "estimated_tokens_per_occurrence": 7.73,
+            "field_group": "A2T-EXEMPLAR-UTTERANCE",
+            "mean_characters_per_occurrence": 46.38,
+            "orientation": "MATCHING",
+            "placeholder_characters": 0,
+            "placeholder_estimated_tokens": 0.0,
+            "placeholder_fraction_of_occurrences": 0.0,
+            "placeholder_occurrences": 0,
+            "present_fraction_of_supplied_values": 1.0,
+            "present_in_values": 47,
+            "token_share_of_supply_block": 0.028885,
+            "tokens_per_character_used": 0.166671
+          },
+          {
+            "character_share_of_supply_block": 0.062392,
+            "characters": 2487,
+            "estimated_tokens": 414.5,
+            "estimated_tokens_per_contact": 27.63,
+            "estimated_tokens_per_occurrence": 8.82,
+            "field_group": "A2T-CALL-RENDER",
+            "mean_characters_per_occurrence": 52.91,
+            "orientation": "FORM",
+            "placeholder_characters": 0,
+            "placeholder_estimated_tokens": 0.0,
+            "placeholder_fraction_of_occurrences": 0.0,
+            "placeholder_occurrences": 0,
+            "present_fraction_of_supplied_values": 1.0,
+            "present_in_values": 47,
+            "token_share_of_supply_block": 0.032953,
+            "tokens_per_character_used": 0.166671
+          },
+          {
+            "character_share_of_supply_block": 0.080756,
+            "characters": 3219,
+            "estimated_tokens": 536.5,
+            "estimated_tokens_per_contact": 35.77,
+            "estimated_tokens_per_occurrence": 11.42,
+            "field_group": "A2T-TOOL-IDENTITY",
+            "mean_characters_per_occurrence": 68.49,
+            "orientation": "MATCHING",
+            "placeholder_characters": 0,
+            "placeholder_estimated_tokens": 0.0,
+            "placeholder_fraction_of_occurrences": 0.0,
+            "placeholder_occurrences": 0,
+            "present_fraction_of_supplied_values": 1.0,
+            "present_in_values": 47,
+            "token_share_of_supply_block": 0.042652,
+            "tokens_per_character_used": 0.166671
+          },
+          {
+            "character_share_of_supply_block": 0.064298,
+            "characters": 2563,
+            "estimated_tokens": 427.2,
+            "estimated_tokens_per_contact": 28.48,
+            "estimated_tokens_per_occurrence": 9.09,
+            "field_group": "A2T-REGISTRY-SIGNATURE",
+            "mean_characters_per_occurrence": 54.53,
+            "orientation": "FORM",
+            "placeholder_characters": 0,
+            "placeholder_estimated_tokens": 0.0,
+            "placeholder_fraction_of_occurrences": 0.0,
+            "placeholder_occurrences": 0,
+            "present_fraction_of_supplied_values": 1.0,
+            "present_in_values": 47,
+            "token_share_of_supply_block": 0.03396,
+            "tokens_per_character_used": 0.166671
+          },
+          {
+            "character_share_of_supply_block": 0.063696,
+            "characters": 2539,
+            "estimated_tokens": 423.2,
+            "estimated_tokens_per_contact": 28.21,
+            "estimated_tokens_per_occurrence": 9.0,
+            "field_group": "A2T-DESCRIPTION",
+            "mean_characters_per_occurrence": 54.02,
+            "orientation": "MATCHING",
+            "placeholder_characters": 0,
+            "placeholder_estimated_tokens": 0.0,
+            "placeholder_fraction_of_occurrences": 0.0,
+            "placeholder_occurrences": 0,
+            "present_fraction_of_supplied_values": 1.0,
+            "present_in_values": 47,
+            "token_share_of_supply_block": 0.033642,
+            "tokens_per_character_used": 0.166671
+          },
+          {
+            "character_share_of_supply_block": 0.045383,
+            "characters": 1809,
+            "estimated_tokens": 301.5,
+            "estimated_tokens_per_contact": 20.1,
+            "estimated_tokens_per_occurrence": 6.42,
+            "field_group": "A2T-ARG-DEFAULTS",
+            "mean_characters_per_occurrence": 38.49,
+            "orientation": "EXTRACTION",
+            "placeholder_characters": 350,
+            "placeholder_estimated_tokens": 58.3,
+            "placeholder_fraction_of_occurrences": 0.297872,
+            "placeholder_occurrences": 14,
+            "present_fraction_of_supplied_values": 1.0,
+            "present_in_values": 47,
+            "token_share_of_supply_block": 0.023969,
+            "tokens_per_character_used": 0.166671
+          },
+          {
+            "character_share_of_supply_block": 0.043852,
+            "characters": 1748,
+            "estimated_tokens": 291.3,
+            "estimated_tokens_per_contact": 19.42,
+            "estimated_tokens_per_occurrence": 6.2,
+            "field_group": "A2T-ARG-CONSTRAINTS",
+            "mean_characters_per_occurrence": 37.19,
+            "orientation": "EXTRACTION",
+            "placeholder_characters": 448,
+            "placeholder_estimated_tokens": 74.7,
+            "placeholder_fraction_of_occurrences": 0.340426,
+            "placeholder_occurrences": 16,
+            "present_fraction_of_supplied_values": 1.0,
+            "present_in_values": 47,
+            "token_share_of_supply_block": 0.023161,
+            "tokens_per_character_used": 0.166671
+          },
+          {
+            "character_share_of_supply_block": 0.062542,
+            "characters": 2493,
+            "estimated_tokens": 415.5,
+            "estimated_tokens_per_contact": 27.7,
+            "estimated_tokens_per_occurrence": 8.84,
+            "field_group": "A2T-OWN-PATTERN",
+            "mean_characters_per_occurrence": 53.04,
+            "orientation": "FORM",
+            "placeholder_characters": 768,
+            "placeholder_estimated_tokens": 128.0,
+            "placeholder_fraction_of_occurrences": 0.340426,
+            "placeholder_occurrences": 16,
+            "present_fraction_of_supplied_values": 1.0,
+            "present_in_values": 47,
+            "token_share_of_supply_block": 0.033032,
+            "tokens_per_character_used": 0.166671
+          },
+          {
+            "character_share_of_supply_block": 0.080179,
+            "characters": 3196,
+            "estimated_tokens": 532.7,
+            "estimated_tokens_per_contact": 35.51,
+            "estimated_tokens_per_occurrence": 11.33,
+            "field_group": "A2T-OTHER-PATTERNS",
+            "mean_characters_per_occurrence": 68.0,
+            "orientation": "FORM",
+            "placeholder_characters": 979,
+            "placeholder_estimated_tokens": 163.2,
+            "placeholder_fraction_of_occurrences": 0.234043,
+            "placeholder_occurrences": 11,
+            "present_fraction_of_supplied_values": 1.0,
+            "present_in_values": 47,
+            "token_share_of_supply_block": 0.042347,
+            "tokens_per_character_used": 0.166671
+          },
+          {
+            "character_share_of_supply_block": 0.152555,
+            "characters": 6081,
+            "estimated_tokens": 1013.5,
+            "estimated_tokens_per_contact": 67.57,
+            "estimated_tokens_per_occurrence": 21.56,
+            "field_group": "A2T-POOL-VALUES",
+            "mean_characters_per_occurrence": 129.38,
+            "orientation": "EXTRACTION",
+            "placeholder_characters": 1034,
+            "placeholder_estimated_tokens": 172.3,
+            "placeholder_fraction_of_occurrences": 0.234043,
+            "placeholder_occurrences": 11,
+            "present_fraction_of_supplied_values": 1.0,
+            "present_in_values": 47,
+            "token_share_of_supply_block": 0.080573,
+            "tokens_per_character_used": 0.166671
+          },
+          {
+            "character_share_of_supply_block": 0.01011,
+            "characters": 403,
+            "estimated_tokens": 67.2,
+            "estimated_tokens_per_contact": 4.48,
+            "estimated_tokens_per_occurrence": 8.4,
+            "field_group": "A2T-EXTRA-CALLS",
+            "mean_characters_per_occurrence": 50.38,
+            "orientation": "FORM",
+            "placeholder_characters": 0,
+            "placeholder_estimated_tokens": 0.0,
+            "placeholder_fraction_of_occurrences": 0.0,
+            "placeholder_occurrences": 0,
+            "present_fraction_of_supplied_values": 0.170213,
+            "present_in_values": 8,
+            "token_share_of_supply_block": 0.00534,
+            "tokens_per_character_used": 0.166671
+          },
+          {
+            "character_share_of_supply_block": 0.279546,
+            "characters": 11143,
+            "estimated_tokens": 7792.5,
+            "estimated_tokens_per_contact": 519.5,
+            "estimated_tokens_per_occurrence": 165.8,
+            "field_group": "A2T-PRIOR-TABLE",
+            "mean_characters_per_occurrence": 237.09,
+            "orientation": "EXTRACTION",
+            "placeholder_characters": 0,
+            "placeholder_estimated_tokens": 0.0,
+            "placeholder_fraction_of_occurrences": 0.0,
+            "placeholder_occurrences": 0,
+            "present_fraction_of_supplied_values": 1.0,
+            "present_in_values": 47,
+            "token_share_of_supply_block": 0.619486,
+            "tokens_per_character_used": 0.699317
+          }
+        ],
+        "supply_block_characters_per_contact": {
+          "max": 5715,
+          "mean": 2657.4,
+          "median": 2330,
+          "min": 1619
+        },
+        "supply_block_characters_total": 39861,
+        "supply_block_estimated_tokens_per_contact": 838.6,
+        "supply_block_estimated_tokens_total": 12579.0,
+        "token_model": "DENSE/PROSE",
+        "values_supplied_total": 47
+      },
+      "uniform": {
+        "contacts_with_supply": 15,
+        "label": "SECONDARY READING on an EXPOSED population; free to read, never a campaign claim.",
+        "mean_values_per_contact": 3.1333,
+        "placeholder_estimated_tokens_total": 1028.0,
+        "population": "A2T-G1-104 (EXPOSED)",
+        "rows": [
+          {
+            "character_share_of_supply_block": 0.05469,
+            "characters": 2180,
+            "estimated_tokens": 626.2,
+            "estimated_tokens_per_contact": 41.75,
+            "estimated_tokens_per_occurrence": 13.32,
+            "field_group": "A2T-EXEMPLAR-UTTERANCE",
+            "mean_characters_per_occurrence": 46.38,
+            "orientation": "MATCHING",
+            "placeholder_characters": 0,
+            "placeholder_estimated_tokens": 0.0,
+            "placeholder_fraction_of_occurrences": 0.0,
+            "placeholder_occurrences": 0,
+            "present_fraction_of_supplied_values": 1.0,
+            "present_in_values": 47,
+            "token_share_of_supply_block": 0.05469,
+            "tokens_per_character_used": 0.287245
+          },
+          {
+            "character_share_of_supply_block": 0.062392,
+            "characters": 2487,
+            "estimated_tokens": 714.4,
+            "estimated_tokens_per_contact": 47.63,
+            "estimated_tokens_per_occurrence": 15.2,
+            "field_group": "A2T-CALL-RENDER",
+            "mean_characters_per_occurrence": 52.91,
+            "orientation": "FORM",
+            "placeholder_characters": 0,
+            "placeholder_estimated_tokens": 0.0,
+            "placeholder_fraction_of_occurrences": 0.0,
+            "placeholder_occurrences": 0,
+            "present_fraction_of_supplied_values": 1.0,
+            "present_in_values": 47,
+            "token_share_of_supply_block": 0.062392,
+            "tokens_per_character_used": 0.287245
+          },
+          {
+            "character_share_of_supply_block": 0.080756,
+            "characters": 3219,
+            "estimated_tokens": 924.6,
+            "estimated_tokens_per_contact": 61.64,
+            "estimated_tokens_per_occurrence": 19.67,
+            "field_group": "A2T-TOOL-IDENTITY",
+            "mean_characters_per_occurrence": 68.49,
+            "orientation": "MATCHING",
+            "placeholder_characters": 0,
+            "placeholder_estimated_tokens": 0.0,
+            "placeholder_fraction_of_occurrences": 0.0,
+            "placeholder_occurrences": 0,
+            "present_fraction_of_supplied_values": 1.0,
+            "present_in_values": 47,
+            "token_share_of_supply_block": 0.080756,
+            "tokens_per_character_used": 0.287245
+          },
+          {
+            "character_share_of_supply_block": 0.064298,
+            "characters": 2563,
+            "estimated_tokens": 736.2,
+            "estimated_tokens_per_contact": 49.08,
+            "estimated_tokens_per_occurrence": 15.66,
+            "field_group": "A2T-REGISTRY-SIGNATURE",
+            "mean_characters_per_occurrence": 54.53,
+            "orientation": "FORM",
+            "placeholder_characters": 0,
+            "placeholder_estimated_tokens": 0.0,
+            "placeholder_fraction_of_occurrences": 0.0,
+            "placeholder_occurrences": 0,
+            "present_fraction_of_supplied_values": 1.0,
+            "present_in_values": 47,
+            "token_share_of_supply_block": 0.064298,
+            "tokens_per_character_used": 0.287245
+          },
+          {
+            "character_share_of_supply_block": 0.063696,
+            "characters": 2539,
+            "estimated_tokens": 729.3,
+            "estimated_tokens_per_contact": 48.62,
+            "estimated_tokens_per_occurrence": 15.52,
+            "field_group": "A2T-DESCRIPTION",
+            "mean_characters_per_occurrence": 54.02,
+            "orientation": "MATCHING",
+            "placeholder_characters": 0,
+            "placeholder_estimated_tokens": 0.0,
+            "placeholder_fraction_of_occurrences": 0.0,
+            "placeholder_occurrences": 0,
+            "present_fraction_of_supplied_values": 1.0,
+            "present_in_values": 47,
+            "token_share_of_supply_block": 0.063696,
+            "tokens_per_character_used": 0.287245
+          },
+          {
+            "character_share_of_supply_block": 0.045383,
+            "characters": 1809,
+            "estimated_tokens": 519.6,
+            "estimated_tokens_per_contact": 34.64,
+            "estimated_tokens_per_occurrence": 11.06,
+            "field_group": "A2T-ARG-DEFAULTS",
+            "mean_characters_per_occurrence": 38.49,
+            "orientation": "EXTRACTION",
+            "placeholder_characters": 350,
+            "placeholder_estimated_tokens": 100.5,
+            "placeholder_fraction_of_occurrences": 0.297872,
+            "placeholder_occurrences": 14,
+            "present_fraction_of_supplied_values": 1.0,
+            "present_in_values": 47,
+            "token_share_of_supply_block": 0.045383,
+            "tokens_per_character_used": 0.287245
+          },
+          {
+            "character_share_of_supply_block": 0.043852,
+            "characters": 1748,
+            "estimated_tokens": 502.1,
+            "estimated_tokens_per_contact": 33.47,
+            "estimated_tokens_per_occurrence": 10.68,
+            "field_group": "A2T-ARG-CONSTRAINTS",
+            "mean_characters_per_occurrence": 37.19,
+            "orientation": "EXTRACTION",
+            "placeholder_characters": 448,
+            "placeholder_estimated_tokens": 128.7,
+            "placeholder_fraction_of_occurrences": 0.340426,
+            "placeholder_occurrences": 16,
+            "present_fraction_of_supplied_values": 1.0,
+            "present_in_values": 47,
+            "token_share_of_supply_block": 0.043852,
+            "tokens_per_character_used": 0.287245
+          },
+          {
+            "character_share_of_supply_block": 0.062542,
+            "characters": 2493,
+            "estimated_tokens": 716.1,
+            "estimated_tokens_per_contact": 47.74,
+            "estimated_tokens_per_occurrence": 15.24,
+            "field_group": "A2T-OWN-PATTERN",
+            "mean_characters_per_occurrence": 53.04,
+            "orientation": "FORM",
+            "placeholder_characters": 768,
+            "placeholder_estimated_tokens": 220.6,
+            "placeholder_fraction_of_occurrences": 0.340426,
+            "placeholder_occurrences": 16,
+            "present_fraction_of_supplied_values": 1.0,
+            "present_in_values": 47,
+            "token_share_of_supply_block": 0.062542,
+            "tokens_per_character_used": 0.287245
+          },
+          {
+            "character_share_of_supply_block": 0.080179,
+            "characters": 3196,
+            "estimated_tokens": 918.0,
+            "estimated_tokens_per_contact": 61.2,
+            "estimated_tokens_per_occurrence": 19.53,
+            "field_group": "A2T-OTHER-PATTERNS",
+            "mean_characters_per_occurrence": 68.0,
+            "orientation": "FORM",
+            "placeholder_characters": 979,
+            "placeholder_estimated_tokens": 281.2,
+            "placeholder_fraction_of_occurrences": 0.234043,
+            "placeholder_occurrences": 11,
+            "present_fraction_of_supplied_values": 1.0,
+            "present_in_values": 47,
+            "token_share_of_supply_block": 0.080179,
+            "tokens_per_character_used": 0.287245
+          },
+          {
+            "character_share_of_supply_block": 0.152555,
+            "characters": 6081,
+            "estimated_tokens": 1746.7,
+            "estimated_tokens_per_contact": 116.45,
+            "estimated_tokens_per_occurrence": 37.16,
+            "field_group": "A2T-POOL-VALUES",
+            "mean_characters_per_occurrence": 129.38,
+            "orientation": "EXTRACTION",
+            "placeholder_characters": 1034,
+            "placeholder_estimated_tokens": 297.0,
+            "placeholder_fraction_of_occurrences": 0.234043,
+            "placeholder_occurrences": 11,
+            "present_fraction_of_supplied_values": 1.0,
+            "present_in_values": 47,
+            "token_share_of_supply_block": 0.152555,
+            "tokens_per_character_used": 0.287245
+          },
+          {
+            "character_share_of_supply_block": 0.01011,
+            "characters": 403,
+            "estimated_tokens": 115.8,
+            "estimated_tokens_per_contact": 7.72,
+            "estimated_tokens_per_occurrence": 14.47,
+            "field_group": "A2T-EXTRA-CALLS",
+            "mean_characters_per_occurrence": 50.38,
+            "orientation": "FORM",
+            "placeholder_characters": 0,
+            "placeholder_estimated_tokens": 0.0,
+            "placeholder_fraction_of_occurrences": 0.0,
+            "placeholder_occurrences": 0,
+            "present_fraction_of_supplied_values": 0.170213,
+            "present_in_values": 8,
+            "token_share_of_supply_block": 0.01011,
+            "tokens_per_character_used": 0.287245
+          },
+          {
+            "character_share_of_supply_block": 0.279546,
+            "characters": 11143,
+            "estimated_tokens": 3200.8,
+            "estimated_tokens_per_contact": 213.38,
+            "estimated_tokens_per_occurrence": 68.1,
+            "field_group": "A2T-PRIOR-TABLE",
+            "mean_characters_per_occurrence": 237.09,
+            "orientation": "EXTRACTION",
+            "placeholder_characters": 0,
+            "placeholder_estimated_tokens": 0.0,
+            "placeholder_fraction_of_occurrences": 0.0,
+            "placeholder_occurrences": 0,
+            "present_fraction_of_supplied_values": 1.0,
+            "present_in_values": 47,
+            "token_share_of_supply_block": 0.279546,
+            "tokens_per_character_used": 0.287245
+          }
+        ],
+        "supply_block_characters_per_contact": {
+          "max": 5715,
+          "mean": 2657.4,
+          "median": 2330,
+          "min": 1619
+        },
+        "supply_block_characters_total": 39861,
+        "supply_block_estimated_tokens_per_contact": 763.32,
+        "supply_block_estimated_tokens_total": 11449.9,
+        "token_model": "UNIFORM",
+        "values_supplied_total": 47
+      }
+    },
+    "slurp": {
+      "DEV-1000 (BOTH HALVES)": {
+        "two_rate": {
+          "contacts_with_supply": 340,
+          "label": "SECONDARY READING on the LOCKED baseline's own population (SLURP DEV-1000-NEW500, UNEXPOSED). Descriptive only: it MUST NOT be used to revise, re-tune or restate the DEV-1000 LOCK. (this row pools the locked half)",
+          "mean_values_per_contact": 2.8471,
+          "placeholder_estimated_tokens_total": 12923.4,
+          "population": "DEV-1000 (BOTH HALVES)",
+          "rows": [
+            {
+              "character_share_of_supply_block": 0.082492,
+              "characters": 48738,
+              "estimated_tokens": 8234.1,
+              "estimated_tokens_per_contact": 24.22,
+              "estimated_tokens_per_occurrence": 8.51,
+              "field_group": "SLURP-EXEMPLAR-SENTENCE",
+              "mean_characters_per_occurrence": 50.35,
+              "orientation": "MATCHING",
+              "placeholder_characters": 0,
+              "placeholder_estimated_tokens": 0.0,
+              "placeholder_fraction_of_occurrences": 0.0,
+              "placeholder_occurrences": 0,
+              "present_fraction_of_supplied_values": 1.0,
+              "present_in_values": 968,
+              "token_share_of_supply_block": 0.033728,
+              "tokens_per_character_used": 0.168946
+            },
+            {
+              "character_share_of_supply_block": 0.097735,
+              "characters": 57744,
+              "estimated_tokens": 9755.6,
+              "estimated_tokens_per_contact": 28.69,
+              "estimated_tokens_per_occurrence": 10.08,
+              "field_group": "SLURP-INTENT-LABEL",
+              "mean_characters_per_occurrence": 59.65,
+              "orientation": "MATCHING",
+              "placeholder_characters": 0,
+              "placeholder_estimated_tokens": 0.0,
+              "placeholder_fraction_of_occurrences": 0.0,
+              "placeholder_occurrences": 0,
+              "present_fraction_of_supplied_values": 1.0,
+              "present_in_values": 968,
+              "token_share_of_supply_block": 0.03996,
+              "tokens_per_character_used": 0.168946
+            },
+            {
+              "character_share_of_supply_block": 0.073889,
+              "characters": 43655,
+              "estimated_tokens": 7375.3,
+              "estimated_tokens_per_contact": 21.69,
+              "estimated_tokens_per_occurrence": 7.62,
+              "field_group": "SLURP-SLOT-PAIRS",
+              "mean_characters_per_occurrence": 45.1,
+              "orientation": "EXTRACTION",
+              "placeholder_characters": 26334,
+              "placeholder_estimated_tokens": 4449.0,
+              "placeholder_fraction_of_occurrences": 0.647727,
+              "placeholder_occurrences": 627,
+              "present_fraction_of_supplied_values": 1.0,
+              "present_in_values": 968,
+              "token_share_of_supply_block": 0.03021,
+              "tokens_per_character_used": 0.168946
+            },
+            {
+              "character_share_of_supply_block": 0.168616,
+              "characters": 99622,
+              "estimated_tokens": 16830.7,
+              "estimated_tokens_per_contact": 49.5,
+              "estimated_tokens_per_occurrence": 17.39,
+              "field_group": "SLURP-NORMALIZATION",
+              "mean_characters_per_occurrence": 102.92,
+              "orientation": "EXTRACTION",
+              "placeholder_characters": 50160,
+              "placeholder_estimated_tokens": 8474.3,
+              "placeholder_fraction_of_occurrences": 0.647727,
+              "placeholder_occurrences": 627,
+              "present_fraction_of_supplied_values": 1.0,
+              "present_in_values": 968,
+              "token_share_of_supply_block": 0.06894,
+              "tokens_per_character_used": 0.168946
+            },
+            {
+              "character_share_of_supply_block": 0.577267,
+              "characters": 341061,
+              "estimated_tokens": 201939.3,
+              "estimated_tokens_per_contact": 593.94,
+              "estimated_tokens_per_occurrence": 208.61,
+              "field_group": "SLURP-PRIOR-TABLE",
+              "mean_characters_per_occurrence": 352.34,
+              "orientation": "EXTRACTION",
+              "placeholder_characters": 0,
+              "placeholder_estimated_tokens": 0.0,
+              "placeholder_fraction_of_occurrences": 0.0,
+              "placeholder_occurrences": 0,
+              "present_fraction_of_supplied_values": 1.0,
+              "present_in_values": 968,
+              "token_share_of_supply_block": 0.827162,
+              "tokens_per_character_used": 0.592091
+            }
+          ],
+          "supply_block_characters_per_contact": {
+            "max": 3474,
+            "mean": 1737.71,
+            "median": 1777,
+            "min": 702
+          },
+          "supply_block_characters_total": 590820,
+          "supply_block_estimated_tokens_per_contact": 718.04,
+          "supply_block_estimated_tokens_total": 244135.1,
+          "token_model": "DENSE/PROSE",
+          "values_supplied_total": 968
+        },
+        "uniform": {
+          "contacts_with_supply": 340,
+          "label": "SECONDARY READING on the LOCKED baseline's own population (SLURP DEV-1000-NEW500, UNEXPOSED). Descriptive only: it MUST NOT be used to revise, re-tune or restate the DEV-1000 LOCK. (this row pools the locked half)",
+          "mean_values_per_contact": 2.8471,
+          "placeholder_estimated_tokens_total": 32710.8,
+          "population": "DEV-1000 (BOTH HALVES)",
+          "rows": [
+            {
+              "character_share_of_supply_block": 0.082492,
+              "characters": 48738,
+              "estimated_tokens": 20841.6,
+              "estimated_tokens_per_contact": 61.3,
+              "estimated_tokens_per_occurrence": 21.53,
+              "field_group": "SLURP-EXEMPLAR-SENTENCE",
+              "mean_characters_per_occurrence": 50.35,
+              "orientation": "MATCHING",
+              "placeholder_characters": 0,
+              "placeholder_estimated_tokens": 0.0,
+              "placeholder_fraction_of_occurrences": 0.0,
+              "placeholder_occurrences": 0,
+              "present_fraction_of_supplied_values": 1.0,
+              "present_in_values": 968,
+              "token_share_of_supply_block": 0.082492,
+              "tokens_per_character_used": 0.427626
+            },
+            {
+              "character_share_of_supply_block": 0.097735,
+              "characters": 57744,
+              "estimated_tokens": 24692.8,
+              "estimated_tokens_per_contact": 72.63,
+              "estimated_tokens_per_occurrence": 25.51,
+              "field_group": "SLURP-INTENT-LABEL",
+              "mean_characters_per_occurrence": 59.65,
+              "orientation": "MATCHING",
+              "placeholder_characters": 0,
+              "placeholder_estimated_tokens": 0.0,
+              "placeholder_fraction_of_occurrences": 0.0,
+              "placeholder_occurrences": 0,
+              "present_fraction_of_supplied_values": 1.0,
+              "present_in_values": 968,
+              "token_share_of_supply_block": 0.097735,
+              "tokens_per_character_used": 0.427626
+            },
+            {
+              "character_share_of_supply_block": 0.073889,
+              "characters": 43655,
+              "estimated_tokens": 18668.0,
+              "estimated_tokens_per_contact": 54.91,
+              "estimated_tokens_per_occurrence": 19.29,
+              "field_group": "SLURP-SLOT-PAIRS",
+              "mean_characters_per_occurrence": 45.1,
+              "orientation": "EXTRACTION",
+              "placeholder_characters": 26334,
+              "placeholder_estimated_tokens": 11261.1,
+              "placeholder_fraction_of_occurrences": 0.647727,
+              "placeholder_occurrences": 627,
+              "present_fraction_of_supplied_values": 1.0,
+              "present_in_values": 968,
+              "token_share_of_supply_block": 0.073889,
+              "tokens_per_character_used": 0.427626
+            },
+            {
+              "character_share_of_supply_block": 0.168616,
+              "characters": 99622,
+              "estimated_tokens": 42600.9,
+              "estimated_tokens_per_contact": 125.3,
+              "estimated_tokens_per_occurrence": 44.01,
+              "field_group": "SLURP-NORMALIZATION",
+              "mean_characters_per_occurrence": 102.92,
+              "orientation": "EXTRACTION",
+              "placeholder_characters": 50160,
+              "placeholder_estimated_tokens": 21449.7,
+              "placeholder_fraction_of_occurrences": 0.647727,
+              "placeholder_occurrences": 627,
+              "present_fraction_of_supplied_values": 1.0,
+              "present_in_values": 968,
+              "token_share_of_supply_block": 0.168616,
+              "tokens_per_character_used": 0.427626
+            },
+            {
+              "character_share_of_supply_block": 0.577267,
+              "characters": 341061,
+              "estimated_tokens": 145846.4,
+              "estimated_tokens_per_contact": 428.96,
+              "estimated_tokens_per_occurrence": 150.67,
+              "field_group": "SLURP-PRIOR-TABLE",
+              "mean_characters_per_occurrence": 352.34,
+              "orientation": "EXTRACTION",
+              "placeholder_characters": 0,
+              "placeholder_estimated_tokens": 0.0,
+              "placeholder_fraction_of_occurrences": 0.0,
+              "placeholder_occurrences": 0,
+              "present_fraction_of_supplied_values": 1.0,
+              "present_in_values": 968,
+              "token_share_of_supply_block": 0.577267,
+              "tokens_per_character_used": 0.427626
+            }
+          ],
+          "supply_block_characters_per_contact": {
+            "max": 3474,
+            "mean": 1737.71,
+            "median": 1777,
+            "min": 702
+          },
+          "supply_block_characters_total": 590820,
+          "supply_block_estimated_tokens_per_contact": 743.09,
+          "supply_block_estimated_tokens_total": 252649.8,
+          "token_model": "UNIFORM",
+          "values_supplied_total": 968
+        }
+      },
+      "DEV-1000-NEW500 (UNEXPOSED)": {
+        "two_rate": {
+          "contacts_with_supply": 163,
+          "label": "SECONDARY READING on the LOCKED baseline's own population (SLURP DEV-1000-NEW500, UNEXPOSED). Descriptive only: it MUST NOT be used to revise, re-tune or restate the DEV-1000 LOCK.",
+          "mean_values_per_contact": 2.8466,
+          "placeholder_estimated_tokens_total": 5853.6,
+          "population": "DEV-1000-NEW500 (UNEXPOSED)",
+          "rows": [
+            {
+              "character_share_of_supply_block": 0.08265,
+              "characters": 23875,
+              "estimated_tokens": 4033.6,
+              "estimated_tokens_per_contact": 24.75,
+              "estimated_tokens_per_occurrence": 8.69,
+              "field_group": "SLURP-EXEMPLAR-SENTENCE",
+              "mean_characters_per_occurrence": 51.45,
+              "orientation": "MATCHING",
+              "placeholder_characters": 0,
+              "placeholder_estimated_tokens": 0.0,
+              "placeholder_fraction_of_occurrences": 0.0,
+              "placeholder_occurrences": 0,
+              "present_fraction_of_supplied_values": 1.0,
+              "present_in_values": 464,
+              "token_share_of_supply_block": 0.033714,
+              "tokens_per_character_used": 0.168946
+            },
+            {
+              "character_share_of_supply_block": 0.096687,
+              "characters": 27930,
+              "estimated_tokens": 4718.7,
+              "estimated_tokens_per_contact": 28.95,
+              "estimated_tokens_per_occurrence": 10.17,
+              "field_group": "SLURP-INTENT-LABEL",
+              "mean_characters_per_occurrence": 60.19,
+              "orientation": "MATCHING",
+              "placeholder_characters": 0,
+              "placeholder_estimated_tokens": 0.0,
+              "placeholder_fraction_of_occurrences": 0.0,
+              "placeholder_occurrences": 0,
+              "present_fraction_of_supplied_values": 1.0,
+              "present_in_values": 464,
+              "token_share_of_supply_block": 0.03944,
+              "tokens_per_character_used": 0.168946
+            },
+            {
+              "character_share_of_supply_block": 0.072656,
+              "characters": 20988,
+              "estimated_tokens": 3545.8,
+              "estimated_tokens_per_contact": 21.75,
+              "estimated_tokens_per_occurrence": 7.64,
+              "field_group": "SLURP-SLOT-PAIRS",
+              "mean_characters_per_occurrence": 45.23,
+              "orientation": "EXTRACTION",
+              "placeholder_characters": 11928,
+              "placeholder_estimated_tokens": 2015.2,
+              "placeholder_fraction_of_occurrences": 0.612069,
+              "placeholder_occurrences": 284,
+              "present_fraction_of_supplied_values": 1.0,
+              "present_in_values": 464,
+              "token_share_of_supply_block": 0.029637,
+              "tokens_per_character_used": 0.168946
+            },
+            {
+              "character_share_of_supply_block": 0.16847,
+              "characters": 48666,
+              "estimated_tokens": 8221.9,
+              "estimated_tokens_per_contact": 50.44,
+              "estimated_tokens_per_occurrence": 17.72,
+              "field_group": "SLURP-NORMALIZATION",
+              "mean_characters_per_occurrence": 104.88,
+              "orientation": "EXTRACTION",
+              "placeholder_characters": 22720,
+              "placeholder_estimated_tokens": 3838.5,
+              "placeholder_fraction_of_occurrences": 0.612069,
+              "placeholder_occurrences": 284,
+              "present_fraction_of_supplied_values": 1.0,
+              "present_in_values": 464,
+              "token_share_of_supply_block": 0.068721,
+              "tokens_per_character_used": 0.168946
+            },
+            {
+              "character_share_of_supply_block": 0.579538,
+              "characters": 167411,
+              "estimated_tokens": 99122.6,
+              "estimated_tokens_per_contact": 608.11,
+              "estimated_tokens_per_occurrence": 213.63,
+              "field_group": "SLURP-PRIOR-TABLE",
+              "mean_characters_per_occurrence": 360.8,
+              "orientation": "EXTRACTION",
+              "placeholder_characters": 0,
+              "placeholder_estimated_tokens": 0.0,
+              "placeholder_fraction_of_occurrences": 0.0,
+              "placeholder_occurrences": 0,
+              "present_fraction_of_supplied_values": 1.0,
+              "present_in_values": 464,
+              "token_share_of_supply_block": 0.828489,
+              "tokens_per_character_used": 0.592091
+            }
+          ],
+          "supply_block_characters_per_contact": {
+            "max": 3169,
+            "mean": 1772.21,
+            "median": 1777,
+            "min": 702
+          },
+          "supply_block_characters_total": 288870,
+          "supply_block_estimated_tokens_per_contact": 734.0,
+          "supply_block_estimated_tokens_total": 119642.6,
+          "token_model": "DENSE/PROSE",
+          "values_supplied_total": 464
+        },
+        "uniform": {
+          "contacts_with_supply": 163,
+          "label": "SECONDARY READING on the LOCKED baseline's own population (SLURP DEV-1000-NEW500, UNEXPOSED). Descriptive only: it MUST NOT be used to revise, re-tune or restate the DEV-1000 LOCK.",
+          "mean_values_per_contact": 2.8466,
+          "placeholder_estimated_tokens_total": 14816.4,
+          "population": "DEV-1000-NEW500 (UNEXPOSED)",
+          "rows": [
+            {
+              "character_share_of_supply_block": 0.08265,
+              "characters": 23875,
+              "estimated_tokens": 10209.6,
+              "estimated_tokens_per_contact": 62.64,
+              "estimated_tokens_per_occurrence": 22.0,
+              "field_group": "SLURP-EXEMPLAR-SENTENCE",
+              "mean_characters_per_occurrence": 51.45,
+              "orientation": "MATCHING",
+              "placeholder_characters": 0,
+              "placeholder_estimated_tokens": 0.0,
+              "placeholder_fraction_of_occurrences": 0.0,
+              "placeholder_occurrences": 0,
+              "present_fraction_of_supplied_values": 1.0,
+              "present_in_values": 464,
+              "token_share_of_supply_block": 0.08265,
+              "tokens_per_character_used": 0.427626
+            },
+            {
+              "character_share_of_supply_block": 0.096687,
+              "characters": 27930,
+              "estimated_tokens": 11943.6,
+              "estimated_tokens_per_contact": 73.27,
+              "estimated_tokens_per_occurrence": 25.74,
+              "field_group": "SLURP-INTENT-LABEL",
+              "mean_characters_per_occurrence": 60.19,
+              "orientation": "MATCHING",
+              "placeholder_characters": 0,
+              "placeholder_estimated_tokens": 0.0,
+              "placeholder_fraction_of_occurrences": 0.0,
+              "placeholder_occurrences": 0,
+              "present_fraction_of_supplied_values": 1.0,
+              "present_in_values": 464,
+              "token_share_of_supply_block": 0.096687,
+              "tokens_per_character_used": 0.427626
+            },
+            {
+              "character_share_of_supply_block": 0.072656,
+              "characters": 20988,
+              "estimated_tokens": 8975.0,
+              "estimated_tokens_per_contact": 55.06,
+              "estimated_tokens_per_occurrence": 19.34,
+              "field_group": "SLURP-SLOT-PAIRS",
+              "mean_characters_per_occurrence": 45.23,
+              "orientation": "EXTRACTION",
+              "placeholder_characters": 11928,
+              "placeholder_estimated_tokens": 5100.7,
+              "placeholder_fraction_of_occurrences": 0.612069,
+              "placeholder_occurrences": 284,
+              "present_fraction_of_supplied_values": 1.0,
+              "present_in_values": 464,
+              "token_share_of_supply_block": 0.072656,
+              "tokens_per_character_used": 0.427626
+            },
+            {
+              "character_share_of_supply_block": 0.16847,
+              "characters": 48666,
+              "estimated_tokens": 20810.8,
+              "estimated_tokens_per_contact": 127.67,
+              "estimated_tokens_per_occurrence": 44.85,
+              "field_group": "SLURP-NORMALIZATION",
+              "mean_characters_per_occurrence": 104.88,
+              "orientation": "EXTRACTION",
+              "placeholder_characters": 22720,
+              "placeholder_estimated_tokens": 9715.7,
+              "placeholder_fraction_of_occurrences": 0.612069,
+              "placeholder_occurrences": 284,
+              "present_fraction_of_supplied_values": 1.0,
+              "present_in_values": 464,
+              "token_share_of_supply_block": 0.16847,
+              "tokens_per_character_used": 0.427626
+            },
+            {
+              "character_share_of_supply_block": 0.579538,
+              "characters": 167411,
+              "estimated_tokens": 71589.2,
+              "estimated_tokens_per_contact": 439.2,
+              "estimated_tokens_per_occurrence": 154.29,
+              "field_group": "SLURP-PRIOR-TABLE",
+              "mean_characters_per_occurrence": 360.8,
+              "orientation": "EXTRACTION",
+              "placeholder_characters": 0,
+              "placeholder_estimated_tokens": 0.0,
+              "placeholder_fraction_of_occurrences": 0.0,
+              "placeholder_occurrences": 0,
+              "present_fraction_of_supplied_values": 1.0,
+              "present_in_values": 464,
+              "token_share_of_supply_block": 0.579538,
+              "tokens_per_character_used": 0.427626
+            }
+          ],
+          "supply_block_characters_per_contact": {
+            "max": 3169,
+            "mean": 1772.21,
+            "median": 1777,
+            "min": 702
+          },
+          "supply_block_characters_total": 288870,
+          "supply_block_estimated_tokens_per_contact": 757.84,
+          "supply_block_estimated_tokens_total": 123528.2,
+          "token_model": "UNIFORM",
+          "values_supplied_total": 464
+        }
+      },
+      "DEV-500 (PRIOR-EXPOSED)": {
+        "two_rate": {
+          "contacts_with_supply": 177,
+          "label": "SECONDARY READING on an EXPOSED population; free to read, never a campaign claim.",
+          "mean_values_per_contact": 2.8475,
+          "placeholder_estimated_tokens_total": 7069.7,
+          "population": "DEV-500 (PRIOR-EXPOSED)",
+          "rows": [
+            {
+              "character_share_of_supply_block": 0.082341,
+              "characters": 24863,
+              "estimated_tokens": 4200.5,
+              "estimated_tokens_per_contact": 23.73,
+              "estimated_tokens_per_occurrence": 8.33,
+              "field_group": "SLURP-EXEMPLAR-SENTENCE",
+              "mean_characters_per_occurrence": 49.33,
+              "orientation": "MATCHING",
+              "placeholder_characters": 0,
+              "placeholder_estimated_tokens": 0.0,
+              "placeholder_fraction_of_occurrences": 0.0,
+              "placeholder_occurrences": 0,
+              "present_fraction_of_supplied_values": 1.0,
+              "present_in_values": 504,
+              "token_share_of_supply_block": 0.033741,
+              "tokens_per_character_used": 0.168946
+            },
+            {
+              "character_share_of_supply_block": 0.098738,
+              "characters": 29814,
+              "estimated_tokens": 5037.0,
+              "estimated_tokens_per_contact": 28.46,
+              "estimated_tokens_per_occurrence": 9.99,
+              "field_group": "SLURP-INTENT-LABEL",
+              "mean_characters_per_occurrence": 59.15,
+              "orientation": "MATCHING",
+              "placeholder_characters": 0,
+              "placeholder_estimated_tokens": 0.0,
+              "placeholder_fraction_of_occurrences": 0.0,
+              "placeholder_occurrences": 0,
+              "present_fraction_of_supplied_values": 1.0,
+              "present_in_values": 504,
+              "token_share_of_supply_block": 0.04046,
+              "tokens_per_character_used": 0.168946
+            },
+            {
+              "character_share_of_supply_block": 0.075069,
+              "characters": 22667,
+              "estimated_tokens": 3829.5,
+              "estimated_tokens_per_contact": 21.64,
+              "estimated_tokens_per_occurrence": 7.6,
+              "field_group": "SLURP-SLOT-PAIRS",
+              "mean_characters_per_occurrence": 44.97,
+              "orientation": "EXTRACTION",
+              "placeholder_characters": 14406,
+              "placeholder_estimated_tokens": 2433.8,
+              "placeholder_fraction_of_occurrences": 0.680556,
+              "placeholder_occurrences": 343,
+              "present_fraction_of_supplied_values": 1.0,
+              "present_in_values": 504,
+              "token_share_of_supply_block": 0.030761,
+              "tokens_per_character_used": 0.168946
+            },
+            {
+              "character_share_of_supply_block": 0.168756,
+              "characters": 50956,
+              "estimated_tokens": 8608.8,
+              "estimated_tokens_per_contact": 48.64,
+              "estimated_tokens_per_occurrence": 17.08,
+              "field_group": "SLURP-NORMALIZATION",
+              "mean_characters_per_occurrence": 101.1,
+              "orientation": "EXTRACTION",
+              "placeholder_characters": 27440,
+              "placeholder_estimated_tokens": 4635.9,
+              "placeholder_fraction_of_occurrences": 0.680556,
+              "placeholder_occurrences": 343,
+              "present_fraction_of_supplied_values": 1.0,
+              "present_in_values": 504,
+              "token_share_of_supply_block": 0.069151,
+              "tokens_per_character_used": 0.168946
+            },
+            {
+              "character_share_of_supply_block": 0.575095,
+              "characters": 173650,
+              "estimated_tokens": 102816.7,
+              "estimated_tokens_per_contact": 580.89,
+              "estimated_tokens_per_occurrence": 204.0,
+              "field_group": "SLURP-PRIOR-TABLE",
+              "mean_characters_per_occurrence": 344.54,
+              "orientation": "EXTRACTION",
+              "placeholder_characters": 0,
+              "placeholder_estimated_tokens": 0.0,
+              "placeholder_fraction_of_occurrences": 0.0,
+              "placeholder_occurrences": 0,
+              "present_fraction_of_supplied_values": 1.0,
+              "present_in_values": 504,
+              "token_share_of_supply_block": 0.825887,
+              "tokens_per_character_used": 0.592091
+            }
+          ],
+          "supply_block_characters_per_contact": {
+            "max": 3474,
+            "mean": 1705.93,
+            "median": 1777,
+            "min": 746
+          },
+          "supply_block_characters_total": 301950,
+          "supply_block_estimated_tokens_per_contact": 703.35,
+          "supply_block_estimated_tokens_total": 124492.5,
+          "token_model": "DENSE/PROSE",
+          "values_supplied_total": 504
+        },
+        "uniform": {
+          "contacts_with_supply": 177,
+          "label": "SECONDARY READING on an EXPOSED population; free to read, never a campaign claim.",
+          "mean_values_per_contact": 2.8475,
+          "placeholder_estimated_tokens_total": 17894.4,
+          "population": "DEV-500 (PRIOR-EXPOSED)",
+          "rows": [
+            {
+              "character_share_of_supply_block": 0.082341,
+              "characters": 24863,
+              "estimated_tokens": 10632.1,
+              "estimated_tokens_per_contact": 60.07,
+              "estimated_tokens_per_occurrence": 21.1,
+              "field_group": "SLURP-EXEMPLAR-SENTENCE",
+              "mean_characters_per_occurrence": 49.33,
+              "orientation": "MATCHING",
+              "placeholder_characters": 0,
+              "placeholder_estimated_tokens": 0.0,
+              "placeholder_fraction_of_occurrences": 0.0,
+              "placeholder_occurrences": 0,
+              "present_fraction_of_supplied_values": 1.0,
+              "present_in_values": 504,
+              "token_share_of_supply_block": 0.082341,
+              "tokens_per_character_used": 0.427626
+            },
+            {
+              "character_share_of_supply_block": 0.098738,
+              "characters": 29814,
+              "estimated_tokens": 12749.2,
+              "estimated_tokens_per_contact": 72.03,
+              "estimated_tokens_per_occurrence": 25.3,
+              "field_group": "SLURP-INTENT-LABEL",
+              "mean_characters_per_occurrence": 59.15,
+              "orientation": "MATCHING",
+              "placeholder_characters": 0,
+              "placeholder_estimated_tokens": 0.0,
+              "placeholder_fraction_of_occurrences": 0.0,
+              "placeholder_occurrences": 0,
+              "present_fraction_of_supplied_values": 1.0,
+              "present_in_values": 504,
+              "token_share_of_supply_block": 0.098738,
+              "tokens_per_character_used": 0.427626
+            },
+            {
+              "character_share_of_supply_block": 0.075069,
+              "characters": 22667,
+              "estimated_tokens": 9693.0,
+              "estimated_tokens_per_contact": 54.76,
+              "estimated_tokens_per_occurrence": 19.23,
+              "field_group": "SLURP-SLOT-PAIRS",
+              "mean_characters_per_occurrence": 44.97,
+              "orientation": "EXTRACTION",
+              "placeholder_characters": 14406,
+              "placeholder_estimated_tokens": 6160.4,
+              "placeholder_fraction_of_occurrences": 0.680556,
+              "placeholder_occurrences": 343,
+              "present_fraction_of_supplied_values": 1.0,
+              "present_in_values": 504,
+              "token_share_of_supply_block": 0.075069,
+              "tokens_per_character_used": 0.427626
+            },
+            {
+              "character_share_of_supply_block": 0.168756,
+              "characters": 50956,
+              "estimated_tokens": 21790.1,
+              "estimated_tokens_per_contact": 123.11,
+              "estimated_tokens_per_occurrence": 43.23,
+              "field_group": "SLURP-NORMALIZATION",
+              "mean_characters_per_occurrence": 101.1,
+              "orientation": "EXTRACTION",
+              "placeholder_characters": 27440,
+              "placeholder_estimated_tokens": 11734.0,
+              "placeholder_fraction_of_occurrences": 0.680556,
+              "placeholder_occurrences": 343,
+              "present_fraction_of_supplied_values": 1.0,
+              "present_in_values": 504,
+              "token_share_of_supply_block": 0.168756,
+              "tokens_per_character_used": 0.427626
+            },
+            {
+              "character_share_of_supply_block": 0.575095,
+              "characters": 173650,
+              "estimated_tokens": 74257.2,
+              "estimated_tokens_per_contact": 419.53,
+              "estimated_tokens_per_occurrence": 147.34,
+              "field_group": "SLURP-PRIOR-TABLE",
+              "mean_characters_per_occurrence": 344.54,
+              "orientation": "EXTRACTION",
+              "placeholder_characters": 0,
+              "placeholder_estimated_tokens": 0.0,
+              "placeholder_fraction_of_occurrences": 0.0,
+              "placeholder_occurrences": 0,
+              "present_fraction_of_supplied_values": 1.0,
+              "present_in_values": 504,
+              "token_share_of_supply_block": 0.575095,
+              "tokens_per_character_used": 0.427626
+            }
+          ],
+          "supply_block_characters_per_contact": {
+            "max": 3474,
+            "mean": 1705.93,
+            "median": 1777,
+            "min": 746
+          },
+          "supply_block_characters_total": 301950,
+          "supply_block_estimated_tokens_per_contact": 729.5,
+          "supply_block_estimated_tokens_total": 129121.6,
+          "token_model": "UNIFORM",
+          "values_supplied_total": 504
+        }
+      }
+    }
+  },
+  "wall_seconds": 163.285
+}
