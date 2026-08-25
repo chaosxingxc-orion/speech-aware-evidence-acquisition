@@ -190,3 +190,54 @@ it claims the policy cell transfers unchanged under carrier-forced serving geome
 signal on the exposed tier), and only then does G2 fly on the unexposed tier with four arms.
 The G0 gate result, the split governance in section 3.3, the statistics in section 3.5, and the
 reviewer answers in section 4 are otherwise unchanged.
+
+## 8. Amendment 2 (2026-08-25, owner ruling) — serving geometry is a FUNCTION OF THE TASK, not
+## an exception to the transfer claim
+
+The owner's ruling supersedes Amendment 1's defensive framing: *different tasks require
+different input and output lengths, so a task's model-serving configuration is expected to
+differ.* Amendment 1 treated the np/max_tokens change as a carrier-forced EXCEPTION that had to
+be disclosed against a "transfers unchanged" ideal. That framing was wrong in the direction of
+timidity. The correct architectural statement is:
+
+**Serving geometry is derived from the task contract; it is not a degree of freedom of the
+method.** Holding slot width and output ceiling fixed across carriers is not neutrality — it
+forces two tasks into one ill-fitting shape and contaminates the comparison with the shape's
+own effects. SLURP's 60-label contract implies 8,192/64; A2T's 151-tool registry implies
+32,768/1024. Both are consequences of the same rule applied to different contracts.
+
+### 8.1 The derivation rule (registered once, applied to every carrier)
+
+For any admitted carrier, before its first flight:
+
+1. Measure, with the resident tokenizer, the **task contract** envelope (M0) and the **worst-case
+   evidence** envelope (BLEND at the locked fusion budget) — the G1 prompt-fit procedure.
+2. **Output ceiling** = the task's output-shape upper bound (a single label → 64; a JSON call
+   list → 1024, the value A0 registered for this carrier), never a performance choice.
+3. **Slot width** = smallest `-c / -np` combination whose per-slot context exceeds
+   (worst-case envelope + speech tokens + output ceiling) with a stated margin; `-c` stays at
+   the profile's value, so this reduces to the smallest `-np` that clears the requirement.
+4. All arms of that carrier fly under the identical derived geometry, and the derivation is
+   recorded in the campaign row with its measured inputs.
+
+The rule is mechanical, pre-registered, and identical across carriers — which is exactly what
+makes the cross-carrier comparison fair. A reviewer's legitimate question is not "did the
+numbers stay the same?" but "was the geometry derived by a fixed rule from the task, applied
+uniformly to every arm, and fixed before results were seen?" — and the answer to all three is
+yes.
+
+### 8.2 What this does to the claim
+
+The campaign's scientific claim is now stated without hedging: **the locked POLICY CELL
+transfers byte-identical across carriers; serving geometry is derived per carrier by the §8.1
+rule.** There is no "exception" to disclose, only a rule to state. Amendment 1's three concrete
+values for A2T (`-np 8 → 2`, `max_tokens 64 → 1024`, packet materialization) stand unchanged —
+what changes is their status: they are the §8.1 derivation's OUTPUT for this carrier, not a
+deviation from a baseline.
+
+### 8.3 Retrospective consistency
+
+The SLURP geometry (8,192-token slots via `-c 65536 -np 8`, `max_tokens 64`) satisfies the same
+rule: measured worst-case evidence envelope 6,187 + speech + a 64-token reserve inside 8,192,
+margin +1,954. The locked baseline is therefore not "the 8,192 configuration" — it is the
+policy cell under a contract-derived geometry, which is the form that generalizes.
