@@ -1,0 +1,1769 @@
+{
+  "docstring_claim_under_test": {
+    "claim": "SLURP train: 91 intents, 55 entity types",
+    "file": "src/speech_aware_evidence_acquisition/rails/knowledge_build.py",
+    "measured_train_entity_types": 55,
+    "measured_train_intents_intent_field": 91,
+    "measured_train_intents_scenario_action": 60
+  },
+  "exposure_row_id": "SAEA-SN-MF-SLURP-INTENT-COVERAGE-CHECK",
+  "generated_at": "2026-08-25T21:08:12.822462+00:00",
+  "inputs": {
+    "contract_relpath": "docs/readiness/2026-08-08-unified-agent-abstraction.md",
+    "contract_sha256": "122595cd9be3bb4aaded031de4d92eaa8f77612dca223c684ebb35c40b34c7f3",
+    "governed_metadata_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/datasets/slurp/metadata",
+    "kb_build_receipt_relpath": "docs/receipts/knowledge/slurp-kb-size-full.json",
+    "kb_build_receipt_sha256": "09e3b5bbe3ea57580d5ffc371dcd6e71297c0f6895efe385cf604a224c33a710",
+    "snapshot_file_sha256": "f1cb8e024aa239298c4c2fe19fa9a026a891136fcff4b45b88061043121475fc",
+    "snapshot_measured_content_hash": "e27b274516604ffc0e21319758aea99dc027f459d480a32a74a715b023a51b57",
+    "snapshot_pinned_sha256": "e27b274516604ffc0e21319758aea99dc027f459d480a32a74a715b023a51b57",
+    "snapshot_relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-full/snapshot.json"
+  },
+  "ledger_registration_commit": "8c1aa59e",
+  "q1_label_space": {
+    "official_ontology": {
+      "available_offline": false,
+      "note": "No file in the governed label side or the pinned upstream checkout enumerates the SLURP intent vocabulary; the corpus ships the label only per utterance. The official published intent count is therefore UNVERIFIABLE from the governed bytes and is not quoted here.",
+      "ontology_files_found": [],
+      "searched_roots": [
+        "repos/slurp",
+        "datasets/slurp/metadata"
+      ]
+    },
+    "per_split": {
+      "devel": {
+        "action_inventory": [
+          "addcontact",
+          "audiobook",
+          "cleaning",
+          "coffee",
+          "convert",
+          "createoradd",
+          "currency",
+          "definition",
+          "dislikeness",
+          "events",
+          "factoid",
+          "game",
+          "greet",
+          "hue_lightchange",
+          "hue_lightdim",
+          "hue_lightoff",
+          "hue_lighton",
+          "hue_lightup",
+          "joke",
+          "likeness",
+          "locations",
+          "maths",
+          "movies",
+          "music",
+          "order",
+          "podcasts",
+          "post",
+          "query",
+          "querycontact",
+          "quirky",
+          "radio",
+          "recipe",
+          "remove",
+          "sendemail",
+          "set",
+          "settings",
+          "stock",
+          "taxi",
+          "ticket",
+          "traffic",
+          "volume_down",
+          "volume_mute",
+          "volume_up",
+          "wemo_off",
+          "wemo_on"
+        ],
+        "distinct_actions": 45,
+        "distinct_intent_field": 71,
+        "distinct_scenario_action": 59,
+        "distinct_scenarios": 18,
+        "file": "devel.jsonl",
+        "file_sha256": "00d346b183ecc2d160853cd3dc20e8ccd207d9e1809cf6e2c05182076bd0ecc9",
+        "intent_field_equals_scenario_action_on_every_row": false,
+        "intent_field_inventory": [
+          "alarm_query",
+          "alarm_remove",
+          "alarm_set",
+          "audio_volume_down",
+          "audio_volume_mute",
+          "audio_volume_up",
+          "calendar_query",
+          "calendar_remove",
+          "calendar_set",
+          "cleaning",
+          "cooking_query",
+          "cooking_recipe",
+          "datetime_convert",
+          "datetime_query",
+          "email_addcontact",
+          "email_query",
+          "email_querycontact",
+          "email_sendemail",
+          "factoid",
+          "general_greet",
+          "general_joke",
+          "general_quirky",
+          "greet",
+          "hue_lightoff",
+          "hue_lightup",
+          "iot_cleaning",
+          "iot_coffee",
+          "iot_hue_lightchange",
+          "iot_hue_lightdim",
+          "iot_hue_lightoff",
+          "iot_hue_lighton",
+          "iot_hue_lightup",
+          "iot_wemo_off",
+          "iot_wemo_on",
+          "likeness",
+          "lists_createoradd",
+          "lists_query",
+          "lists_remove",
+          "music",
+          "music_dislikeness",
+          "music_likeness",
+          "music_query",
+          "music_settings",
+          "news_query",
+          "play_audiobook",
+          "play_game",
+          "play_music",
+          "play_podcasts",
+          "play_radio",
+          "podcasts",
+          "post",
+          "qa_currency",
+          "qa_definition",
+          "qa_factoid",
+          "qa_maths",
+          "qa_stock",
+          "query",
+          "quirky",
+          "recommendation_events",
+          "recommendation_locations",
+          "recommendation_movies",
+          "set",
+          "social_post",
+          "social_query",
+          "takeaway_order",
+          "takeaway_query",
+          "transport_query",
+          "transport_taxi",
+          "transport_ticket",
+          "transport_traffic",
+          "weather_query"
+        ],
+        "intent_field_structure": {
+          "ambiguous_intent_values": {
+            "query": [
+              "calendar_query",
+              "datetime_query",
+              "email_query",
+              "lists_query",
+              "weather_query"
+            ],
+            "set": [
+              "alarm_set",
+              "calendar_set"
+            ]
+          },
+          "ambiguous_pairs": {
+            "alarm_set": [
+              "alarm_set",
+              "set"
+            ],
+            "calendar_query": [
+              "calendar_query",
+              "query"
+            ],
+            "calendar_set": [
+              "calendar_set",
+              "set"
+            ],
+            "datetime_query": [
+              "datetime_query",
+              "query"
+            ],
+            "email_query": [
+              "email_query",
+              "query"
+            ],
+            "general_greet": [
+              "general_greet",
+              "greet"
+            ],
+            "general_quirky": [
+              "general_quirky",
+              "quirky"
+            ],
+            "iot_cleaning": [
+              "cleaning",
+              "iot_cleaning"
+            ],
+            "iot_hue_lightoff": [
+              "hue_lightoff",
+              "iot_hue_lightoff"
+            ],
+            "iot_hue_lightup": [
+              "hue_lightup",
+              "iot_hue_lightup"
+            ],
+            "lists_query": [
+              "lists_query",
+              "query"
+            ],
+            "music_likeness": [
+              "likeness",
+              "music_likeness"
+            ],
+            "play_music": [
+              "music",
+              "play_music"
+            ],
+            "play_podcasts": [
+              "play_podcasts",
+              "podcasts"
+            ],
+            "qa_factoid": [
+              "factoid",
+              "qa_factoid"
+            ],
+            "social_post": [
+              "post",
+              "social_post"
+            ],
+            "weather_query": [
+              "query",
+              "weather_query"
+            ]
+          },
+          "intent_field_is_a_function_of_scenario_action": false,
+          "intent_field_values_spanning_more_than_one_scenario_action": 2,
+          "row_form_histogram": {
+            "equals_action_only": 30,
+            "equals_scenario_action": 2003
+          },
+          "scenario_action_is_a_function_of_intent_field": false,
+          "scenario_action_pairs_with_more_than_one_intent_field_value": 17
+        },
+        "mismatch_examples": [
+          {
+            "intent_field": "music",
+            "line": 27,
+            "scenario_action": "play_music",
+            "slurp_id": 2993
+          },
+          {
+            "intent_field": "podcasts",
+            "line": 55,
+            "scenario_action": "play_podcasts",
+            "slurp_id": 11358
+          },
+          {
+            "intent_field": "query",
+            "line": 85,
+            "scenario_action": "weather_query",
+            "slurp_id": 1197
+          },
+          {
+            "intent_field": "post",
+            "line": 117,
+            "scenario_action": "social_post",
+            "slurp_id": 15581
+          },
+          {
+            "intent_field": "cleaning",
+            "line": 202,
+            "scenario_action": "iot_cleaning",
+            "slurp_id": 1702
+          },
+          {
+            "intent_field": "query",
+            "line": 256,
+            "scenario_action": "calendar_query",
+            "slurp_id": 6723
+          },
+          {
+            "intent_field": "hue_lightup",
+            "line": 291,
+            "scenario_action": "iot_hue_lightup",
+            "slurp_id": 5471
+          },
+          {
+            "intent_field": "quirky",
+            "line": 327,
+            "scenario_action": "general_quirky",
+            "slurp_id": 10554
+          },
+          {
+            "intent_field": "query",
+            "line": 367,
+            "scenario_action": "email_query",
+            "slurp_id": 16298
+          },
+          {
+            "intent_field": "query",
+            "line": 384,
+            "scenario_action": "lists_query",
+            "slurp_id": 10506
+          },
+          {
+            "intent_field": "music",
+            "line": 496,
+            "scenario_action": "play_music",
+            "slurp_id": 2115
+          },
+          {
+            "intent_field": "music",
+            "line": 505,
+            "scenario_action": "play_music",
+            "slurp_id": 3637
+          },
+          {
+            "intent_field": "hue_lightoff",
+            "line": 580,
+            "scenario_action": "iot_hue_lightoff",
+            "slurp_id": 11
+          },
+          {
+            "intent_field": "music",
+            "line": 673,
+            "scenario_action": "play_music",
+            "slurp_id": 2701
+          },
+          {
+            "intent_field": "query",
+            "line": 690,
+            "scenario_action": "weather_query",
+            "slurp_id": 217
+          },
+          {
+            "intent_field": "query",
+            "line": 720,
+            "scenario_action": "calendar_query",
+            "slurp_id": 7907
+          },
+          {
+            "intent_field": "factoid",
+            "line": 943,
+            "scenario_action": "qa_factoid",
+            "slurp_id": 12947
+          },
+          {
+            "intent_field": "music",
+            "line": 969,
+            "scenario_action": "play_music",
+            "slurp_id": 517
+          },
+          {
+            "intent_field": "set",
+            "line": 1023,
+            "scenario_action": "calendar_set",
+            "slurp_id": 8089
+          },
+          {
+            "intent_field": "query",
+            "line": 1033,
+            "scenario_action": "lists_query",
+            "slurp_id": 10518
+          }
+        ],
+        "rows": 2033,
+        "scenario_action_inventory": [
+          "alarm_query",
+          "alarm_remove",
+          "alarm_set",
+          "audio_volume_down",
+          "audio_volume_mute",
+          "audio_volume_up",
+          "calendar_query",
+          "calendar_remove",
+          "calendar_set",
+          "cooking_query",
+          "cooking_recipe",
+          "datetime_convert",
+          "datetime_query",
+          "email_addcontact",
+          "email_query",
+          "email_querycontact",
+          "email_sendemail",
+          "general_greet",
+          "general_joke",
+          "general_quirky",
+          "iot_cleaning",
+          "iot_coffee",
+          "iot_hue_lightchange",
+          "iot_hue_lightdim",
+          "iot_hue_lightoff",
+          "iot_hue_lighton",
+          "iot_hue_lightup",
+          "iot_wemo_off",
+          "iot_wemo_on",
+          "lists_createoradd",
+          "lists_query",
+          "lists_remove",
+          "music_dislikeness",
+          "music_likeness",
+          "music_query",
+          "music_settings",
+          "news_query",
+          "play_audiobook",
+          "play_game",
+          "play_music",
+          "play_podcasts",
+          "play_radio",
+          "qa_currency",
+          "qa_definition",
+          "qa_factoid",
+          "qa_maths",
+          "qa_stock",
+          "recommendation_events",
+          "recommendation_locations",
+          "recommendation_movies",
+          "social_post",
+          "social_query",
+          "takeaway_order",
+          "takeaway_query",
+          "transport_query",
+          "transport_taxi",
+          "transport_ticket",
+          "transport_traffic",
+          "weather_query"
+        ],
+        "scenario_inventory": [
+          "alarm",
+          "audio",
+          "calendar",
+          "cooking",
+          "datetime",
+          "email",
+          "general",
+          "iot",
+          "lists",
+          "music",
+          "news",
+          "play",
+          "qa",
+          "recommendation",
+          "social",
+          "takeaway",
+          "transport",
+          "weather"
+        ]
+      },
+      "train": {
+        "action_inventory": [
+          "addcontact",
+          "audiobook",
+          "cleaning",
+          "coffee",
+          "convert",
+          "createoradd",
+          "currency",
+          "definition",
+          "dislikeness",
+          "events",
+          "factoid",
+          "game",
+          "greet",
+          "hue_lightchange",
+          "hue_lightdim",
+          "hue_lightoff",
+          "hue_lighton",
+          "hue_lightup",
+          "joke",
+          "likeness",
+          "locations",
+          "maths",
+          "movies",
+          "music",
+          "order",
+          "podcasts",
+          "post",
+          "query",
+          "querycontact",
+          "quirky",
+          "radio",
+          "recipe",
+          "remove",
+          "sendemail",
+          "set",
+          "settings",
+          "stock",
+          "taxi",
+          "ticket",
+          "traffic",
+          "volume_down",
+          "volume_mute",
+          "volume_other",
+          "volume_up",
+          "wemo_off",
+          "wemo_on"
+        ],
+        "distinct_actions": 46,
+        "distinct_intent_field": 91,
+        "distinct_scenario_action": 60,
+        "distinct_scenarios": 18,
+        "file": "train.jsonl",
+        "file_sha256": "4a05a3de6c7f028aff298c4a90196e6a3fecd1938d96fb1c125d6fd10d5e301e",
+        "intent_field_equals_scenario_action_on_every_row": false,
+        "intent_field_inventory": [
+          "addcontact",
+          "alarm_query",
+          "alarm_remove",
+          "alarm_set",
+          "audio_volume_down",
+          "audio_volume_mute",
+          "audio_volume_other",
+          "audio_volume_up",
+          "calendar_query",
+          "calendar_remove",
+          "calendar_set",
+          "cleaning",
+          "coffee",
+          "convert",
+          "cooking_query",
+          "cooking_recipe",
+          "createoradd",
+          "currency",
+          "datetime_convert",
+          "datetime_query",
+          "definition",
+          "email_addcontact",
+          "email_query",
+          "email_querycontact",
+          "email_sendemail",
+          "events",
+          "factoid",
+          "game",
+          "general_greet",
+          "general_joke",
+          "general_quirky",
+          "greet",
+          "hue_lightdim",
+          "hue_lightoff",
+          "hue_lightup",
+          "iot_cleaning",
+          "iot_coffee",
+          "iot_hue_lightchange",
+          "iot_hue_lightdim",
+          "iot_hue_lightoff",
+          "iot_hue_lighton",
+          "iot_hue_lightup",
+          "iot_wemo_off",
+          "iot_wemo_on",
+          "joke",
+          "lists_createoradd",
+          "lists_query",
+          "lists_remove",
+          "music",
+          "music_dislikeness",
+          "music_likeness",
+          "music_query",
+          "music_settings",
+          "news_query",
+          "play_audiobook",
+          "play_game",
+          "play_music",
+          "play_podcasts",
+          "play_radio",
+          "podcasts",
+          "post",
+          "qa_currency",
+          "qa_definition",
+          "qa_factoid",
+          "qa_maths",
+          "qa_stock",
+          "query",
+          "querycontact",
+          "quirky",
+          "radio",
+          "recommendation_events",
+          "recommendation_locations",
+          "recommendation_movies",
+          "remove",
+          "sendemail",
+          "set",
+          "settings",
+          "social_post",
+          "social_query",
+          "takeaway_order",
+          "takeaway_query",
+          "ticket",
+          "traffic",
+          "transport_query",
+          "transport_taxi",
+          "transport_ticket",
+          "transport_traffic",
+          "volume_other",
+          "weather_query",
+          "wemo_off",
+          "wemo_on"
+        ],
+        "intent_field_structure": {
+          "ambiguous_intent_values": {
+            "query": [
+              "calendar_query",
+              "datetime_query",
+              "email_query",
+              "lists_query",
+              "music_query",
+              "news_query",
+              "social_query",
+              "takeaway_query",
+              "weather_query"
+            ],
+            "remove": [
+              "calendar_remove",
+              "lists_remove"
+            ]
+          },
+          "ambiguous_pairs": {
+            "audio_volume_other": [
+              "audio_volume_other",
+              "volume_other"
+            ],
+            "calendar_query": [
+              "calendar_query",
+              "query"
+            ],
+            "calendar_remove": [
+              "calendar_remove",
+              "remove"
+            ],
+            "calendar_set": [
+              "calendar_set",
+              "set"
+            ],
+            "datetime_convert": [
+              "convert",
+              "datetime_convert"
+            ],
+            "datetime_query": [
+              "datetime_query",
+              "query"
+            ],
+            "email_addcontact": [
+              "addcontact",
+              "email_addcontact"
+            ],
+            "email_query": [
+              "email_query",
+              "query"
+            ],
+            "email_querycontact": [
+              "email_querycontact",
+              "querycontact"
+            ],
+            "email_sendemail": [
+              "email_sendemail",
+              "sendemail"
+            ],
+            "general_greet": [
+              "general_greet",
+              "greet"
+            ],
+            "general_joke": [
+              "general_joke",
+              "joke"
+            ],
+            "general_quirky": [
+              "general_quirky",
+              "quirky"
+            ],
+            "iot_cleaning": [
+              "cleaning",
+              "iot_cleaning"
+            ],
+            "iot_coffee": [
+              "coffee",
+              "iot_coffee"
+            ],
+            "iot_hue_lightdim": [
+              "hue_lightdim",
+              "iot_hue_lightdim"
+            ],
+            "iot_hue_lightoff": [
+              "hue_lightoff",
+              "iot_hue_lightoff"
+            ],
+            "iot_hue_lightup": [
+              "hue_lightup",
+              "iot_hue_lightup"
+            ],
+            "iot_wemo_off": [
+              "iot_wemo_off",
+              "wemo_off"
+            ],
+            "iot_wemo_on": [
+              "iot_wemo_on",
+              "wemo_on"
+            ],
+            "lists_createoradd": [
+              "createoradd",
+              "lists_createoradd"
+            ],
+            "lists_query": [
+              "lists_query",
+              "query"
+            ],
+            "lists_remove": [
+              "lists_remove",
+              "remove"
+            ],
+            "music_query": [
+              "music_query",
+              "query"
+            ],
+            "music_settings": [
+              "music_settings",
+              "settings"
+            ],
+            "news_query": [
+              "news_query",
+              "query"
+            ],
+            "play_game": [
+              "game",
+              "play_game"
+            ],
+            "play_music": [
+              "music",
+              "play_music"
+            ],
+            "play_podcasts": [
+              "play_podcasts",
+              "podcasts"
+            ],
+            "play_radio": [
+              "play_radio",
+              "radio"
+            ],
+            "qa_currency": [
+              "currency",
+              "qa_currency"
+            ],
+            "qa_definition": [
+              "definition",
+              "qa_definition"
+            ],
+            "qa_factoid": [
+              "factoid",
+              "qa_factoid"
+            ],
+            "recommendation_events": [
+              "events",
+              "recommendation_events"
+            ],
+            "social_post": [
+              "post",
+              "social_post"
+            ],
+            "social_query": [
+              "query",
+              "social_query"
+            ],
+            "takeaway_query": [
+              "query",
+              "takeaway_query"
+            ],
+            "transport_ticket": [
+              "ticket",
+              "transport_ticket"
+            ],
+            "transport_traffic": [
+              "traffic",
+              "transport_traffic"
+            ],
+            "weather_query": [
+              "query",
+              "weather_query"
+            ]
+          },
+          "intent_field_is_a_function_of_scenario_action": false,
+          "intent_field_values_spanning_more_than_one_scenario_action": 2,
+          "row_form_histogram": {
+            "equals_action_only": 162,
+            "equals_scenario_action": 11352
+          },
+          "scenario_action_is_a_function_of_intent_field": false,
+          "scenario_action_pairs_with_more_than_one_intent_field_value": 40
+        },
+        "mismatch_examples": [
+          {
+            "intent_field": "sendemail",
+            "line": 277,
+            "scenario_action": "email_sendemail",
+            "slurp_id": 16403
+          },
+          {
+            "intent_field": "music",
+            "line": 333,
+            "scenario_action": "play_music",
+            "slurp_id": 2700
+          },
+          {
+            "intent_field": "query",
+            "line": 385,
+            "scenario_action": "weather_query",
+            "slurp_id": 1455
+          },
+          {
+            "intent_field": "query",
+            "line": 567,
+            "scenario_action": "weather_query",
+            "slurp_id": 4469
+          },
+          {
+            "intent_field": "createoradd",
+            "line": 589,
+            "scenario_action": "lists_createoradd",
+            "slurp_id": 11028
+          },
+          {
+            "intent_field": "podcasts",
+            "line": 707,
+            "scenario_action": "play_podcasts",
+            "slurp_id": 11311
+          },
+          {
+            "intent_field": "joke",
+            "line": 874,
+            "scenario_action": "general_joke",
+            "slurp_id": 125
+          },
+          {
+            "intent_field": "music",
+            "line": 886,
+            "scenario_action": "play_music",
+            "slurp_id": 1672
+          },
+          {
+            "intent_field": "set",
+            "line": 896,
+            "scenario_action": "calendar_set",
+            "slurp_id": 8819
+          },
+          {
+            "intent_field": "query",
+            "line": 985,
+            "scenario_action": "calendar_query",
+            "slurp_id": 7973
+          },
+          {
+            "intent_field": "query",
+            "line": 1054,
+            "scenario_action": "datetime_query",
+            "slurp_id": 2913
+          },
+          {
+            "intent_field": "hue_lightup",
+            "line": 1176,
+            "scenario_action": "iot_hue_lightup",
+            "slurp_id": 1755
+          },
+          {
+            "intent_field": "factoid",
+            "line": 1198,
+            "scenario_action": "qa_factoid",
+            "slurp_id": 14694
+          },
+          {
+            "intent_field": "music",
+            "line": 1374,
+            "scenario_action": "play_music",
+            "slurp_id": 4002
+          },
+          {
+            "intent_field": "hue_lightoff",
+            "line": 1382,
+            "scenario_action": "iot_hue_lightoff",
+            "slurp_id": 470
+          },
+          {
+            "intent_field": "query",
+            "line": 1426,
+            "scenario_action": "datetime_query",
+            "slurp_id": 2409
+          },
+          {
+            "intent_field": "music",
+            "line": 1429,
+            "scenario_action": "play_music",
+            "slurp_id": 3981
+          },
+          {
+            "intent_field": "quirky",
+            "line": 1478,
+            "scenario_action": "general_quirky",
+            "slurp_id": 6358
+          },
+          {
+            "intent_field": "querycontact",
+            "line": 1603,
+            "scenario_action": "email_querycontact",
+            "slurp_id": 16862
+          },
+          {
+            "intent_field": "query",
+            "line": 1715,
+            "scenario_action": "music_query",
+            "slurp_id": 1837
+          }
+        ],
+        "rows": 11514,
+        "scenario_action_inventory": [
+          "alarm_query",
+          "alarm_remove",
+          "alarm_set",
+          "audio_volume_down",
+          "audio_volume_mute",
+          "audio_volume_other",
+          "audio_volume_up",
+          "calendar_query",
+          "calendar_remove",
+          "calendar_set",
+          "cooking_query",
+          "cooking_recipe",
+          "datetime_convert",
+          "datetime_query",
+          "email_addcontact",
+          "email_query",
+          "email_querycontact",
+          "email_sendemail",
+          "general_greet",
+          "general_joke",
+          "general_quirky",
+          "iot_cleaning",
+          "iot_coffee",
+          "iot_hue_lightchange",
+          "iot_hue_lightdim",
+          "iot_hue_lightoff",
+          "iot_hue_lighton",
+          "iot_hue_lightup",
+          "iot_wemo_off",
+          "iot_wemo_on",
+          "lists_createoradd",
+          "lists_query",
+          "lists_remove",
+          "music_dislikeness",
+          "music_likeness",
+          "music_query",
+          "music_settings",
+          "news_query",
+          "play_audiobook",
+          "play_game",
+          "play_music",
+          "play_podcasts",
+          "play_radio",
+          "qa_currency",
+          "qa_definition",
+          "qa_factoid",
+          "qa_maths",
+          "qa_stock",
+          "recommendation_events",
+          "recommendation_locations",
+          "recommendation_movies",
+          "social_post",
+          "social_query",
+          "takeaway_order",
+          "takeaway_query",
+          "transport_query",
+          "transport_taxi",
+          "transport_ticket",
+          "transport_traffic",
+          "weather_query"
+        ],
+        "scenario_inventory": [
+          "alarm",
+          "audio",
+          "calendar",
+          "cooking",
+          "datetime",
+          "email",
+          "general",
+          "iot",
+          "lists",
+          "music",
+          "news",
+          "play",
+          "qa",
+          "recommendation",
+          "social",
+          "takeaway",
+          "transport",
+          "weather"
+        ]
+      },
+      "train_synthetic": {
+        "action_inventory": [
+          "addcontact",
+          "affirm",
+          "audiobook",
+          "cleaning",
+          "coffee",
+          "commandstop",
+          "confirm",
+          "convert",
+          "createoradd",
+          "currency",
+          "definition",
+          "dislikeness",
+          "dontcare",
+          "events",
+          "explain",
+          "factoid",
+          "game",
+          "greet",
+          "hue_lightchange",
+          "hue_lightdim",
+          "hue_lightoff",
+          "hue_lighton",
+          "hue_lightup",
+          "joke",
+          "likeness",
+          "locations",
+          "maths",
+          "movies",
+          "music",
+          "negate",
+          "order",
+          "podcasts",
+          "post",
+          "praise",
+          "query",
+          "querycontact",
+          "quirky",
+          "radio",
+          "recipe",
+          "remove",
+          "repeat",
+          "sendemail",
+          "set",
+          "settings",
+          "stock",
+          "taxi",
+          "ticket",
+          "traffic",
+          "volume_down",
+          "volume_mute",
+          "volume_other",
+          "volume_up",
+          "wemo_off",
+          "wemo_on"
+        ],
+        "distinct_actions": 54,
+        "distinct_intent_field": 98,
+        "distinct_scenario_action": 69,
+        "distinct_scenarios": 18,
+        "file": "train_synthetic.jsonl",
+        "file_sha256": "8394ac2573e1d72b3b736ceff8b342e7a6569243db84295aa568766aef0035db",
+        "intent_field_equals_scenario_action_on_every_row": false,
+        "intent_field_inventory": [
+          "addcontact",
+          "alarm_query",
+          "alarm_remove",
+          "alarm_set",
+          "audio_volume_down",
+          "audio_volume_mute",
+          "audio_volume_other",
+          "audio_volume_up",
+          "calendar_query",
+          "calendar_remove",
+          "calendar_set",
+          "coffee",
+          "convert",
+          "cooking_query",
+          "cooking_recipe",
+          "createoradd",
+          "currency",
+          "datetime_convert",
+          "datetime_query",
+          "definition",
+          "email_addcontact",
+          "email_query",
+          "email_querycontact",
+          "email_sendemail",
+          "events",
+          "factoid",
+          "game",
+          "general_affirm",
+          "general_commandstop",
+          "general_confirm",
+          "general_dontcare",
+          "general_explain",
+          "general_greet",
+          "general_joke",
+          "general_negate",
+          "general_praise",
+          "general_quirky",
+          "general_repeat",
+          "greet",
+          "hue_lightdim",
+          "hue_lightoff",
+          "hue_lightup",
+          "iot_cleaning",
+          "iot_coffee",
+          "iot_hue_lightchange",
+          "iot_hue_lightdim",
+          "iot_hue_lightoff",
+          "iot_hue_lighton",
+          "iot_hue_lightup",
+          "iot_wemo_off",
+          "iot_wemo_on",
+          "joke",
+          "likeness",
+          "lists_createoradd",
+          "lists_query",
+          "lists_remove",
+          "locations",
+          "music",
+          "music_dislikeness",
+          "music_likeness",
+          "music_query",
+          "music_settings",
+          "news_query",
+          "play_audiobook",
+          "play_game",
+          "play_music",
+          "play_podcasts",
+          "play_radio",
+          "podcasts",
+          "post",
+          "qa_currency",
+          "qa_definition",
+          "qa_factoid",
+          "qa_maths",
+          "qa_stock",
+          "query",
+          "querycontact",
+          "quirky",
+          "radio",
+          "recommendation_events",
+          "recommendation_locations",
+          "recommendation_movies",
+          "remove",
+          "sendemail",
+          "set",
+          "settings",
+          "social_post",
+          "social_query",
+          "takeaway_order",
+          "takeaway_query",
+          "traffic",
+          "transport_query",
+          "transport_taxi",
+          "transport_ticket",
+          "transport_traffic",
+          "weather_query",
+          "wemo_off",
+          "wemo_on"
+        ],
+        "intent_field_structure": {
+          "ambiguous_intent_values": {
+            "qa_factoid": [
+              "qa_factoid",
+              "qa_query"
+            ],
+            "query": [
+              "calendar_query",
+              "datetime_query",
+              "email_query",
+              "lists_query",
+              "music_query",
+              "news_query",
+              "social_query",
+              "takeaway_query",
+              "weather_query"
+            ],
+            "remove": [
+              "calendar_remove",
+              "lists_remove"
+            ],
+            "set": [
+              "alarm_set",
+              "calendar_set"
+            ]
+          },
+          "ambiguous_pairs": {
+            "alarm_set": [
+              "alarm_set",
+              "set"
+            ],
+            "calendar_query": [
+              "calendar_query",
+              "query"
+            ],
+            "calendar_remove": [
+              "calendar_remove",
+              "remove"
+            ],
+            "calendar_set": [
+              "calendar_set",
+              "set"
+            ],
+            "datetime_convert": [
+              "convert",
+              "datetime_convert"
+            ],
+            "datetime_query": [
+              "datetime_query",
+              "query"
+            ],
+            "email_addcontact": [
+              "addcontact",
+              "email_addcontact"
+            ],
+            "email_query": [
+              "email_query",
+              "query"
+            ],
+            "email_querycontact": [
+              "email_querycontact",
+              "querycontact"
+            ],
+            "email_sendemail": [
+              "email_sendemail",
+              "sendemail"
+            ],
+            "general_greet": [
+              "general_greet",
+              "greet"
+            ],
+            "general_joke": [
+              "general_joke",
+              "joke"
+            ],
+            "general_quirky": [
+              "general_quirky",
+              "quirky"
+            ],
+            "iot_coffee": [
+              "coffee",
+              "iot_coffee"
+            ],
+            "iot_hue_lightdim": [
+              "hue_lightdim",
+              "iot_hue_lightdim"
+            ],
+            "iot_hue_lightoff": [
+              "hue_lightoff",
+              "iot_hue_lightoff"
+            ],
+            "iot_hue_lightup": [
+              "hue_lightup",
+              "iot_hue_lightup"
+            ],
+            "iot_wemo_off": [
+              "iot_wemo_off",
+              "wemo_off"
+            ],
+            "iot_wemo_on": [
+              "iot_wemo_on",
+              "wemo_on"
+            ],
+            "lists_createoradd": [
+              "createoradd",
+              "lists_createoradd"
+            ],
+            "lists_query": [
+              "lists_query",
+              "query"
+            ],
+            "lists_remove": [
+              "lists_remove",
+              "remove"
+            ],
+            "music_likeness": [
+              "likeness",
+              "music_likeness"
+            ],
+            "music_query": [
+              "music_query",
+              "query"
+            ],
+            "music_settings": [
+              "music_settings",
+              "settings"
+            ],
+            "news_query": [
+              "news_query",
+              "query"
+            ],
+            "play_game": [
+              "game",
+              "play_game"
+            ],
+            "play_music": [
+              "music",
+              "play_music"
+            ],
+            "play_podcasts": [
+              "play_podcasts",
+              "podcasts"
+            ],
+            "play_radio": [
+              "play_radio",
+              "radio"
+            ],
+            "qa_currency": [
+              "currency",
+              "qa_currency"
+            ],
+            "qa_definition": [
+              "definition",
+              "qa_definition"
+            ],
+            "qa_factoid": [
+              "factoid",
+              "qa_factoid"
+            ],
+            "recommendation_events": [
+              "events",
+              "recommendation_events"
+            ],
+            "recommendation_locations": [
+              "locations",
+              "recommendation_locations"
+            ],
+            "social_post": [
+              "post",
+              "social_post"
+            ],
+            "social_query": [
+              "query",
+              "social_query"
+            ],
+            "takeaway_query": [
+              "query",
+              "takeaway_query"
+            ],
+            "transport_traffic": [
+              "traffic",
+              "transport_traffic"
+            ],
+            "weather_query": [
+              "query",
+              "weather_query"
+            ]
+          },
+          "intent_field_is_a_function_of_scenario_action": false,
+          "intent_field_values_spanning_more_than_one_scenario_action": 4,
+          "row_form_histogram": {
+            "equals_action_only": 128,
+            "equals_scenario_action": 19582,
+            "neither_form": 1
+          },
+          "scenario_action_is_a_function_of_intent_field": false,
+          "scenario_action_pairs_with_more_than_one_intent_field_value": 40
+        },
+        "mismatch_examples": [
+          {
+            "intent_field": "hue_lightoff",
+            "line": 1,
+            "scenario_action": "iot_hue_lightoff",
+            "slurp_id": 13
+          },
+          {
+            "intent_field": "settings",
+            "line": 41,
+            "scenario_action": "music_settings",
+            "slurp_id": 114
+          },
+          {
+            "intent_field": "joke",
+            "line": 48,
+            "scenario_action": "general_joke",
+            "slurp_id": 124
+          },
+          {
+            "intent_field": "joke",
+            "line": 49,
+            "scenario_action": "general_joke",
+            "slurp_id": 125
+          },
+          {
+            "intent_field": "query",
+            "line": 59,
+            "scenario_action": "takeaway_query",
+            "slurp_id": 171
+          },
+          {
+            "intent_field": "query",
+            "line": 65,
+            "scenario_action": "weather_query",
+            "slurp_id": 218
+          },
+          {
+            "intent_field": "coffee",
+            "line": 192,
+            "scenario_action": "iot_coffee",
+            "slurp_id": 450
+          },
+          {
+            "intent_field": "hue_lightoff",
+            "line": 200,
+            "scenario_action": "iot_hue_lightoff",
+            "slurp_id": 470
+          },
+          {
+            "intent_field": "query",
+            "line": 250,
+            "scenario_action": "weather_query",
+            "slurp_id": 566
+          },
+          {
+            "intent_field": "music",
+            "line": 271,
+            "scenario_action": "play_music",
+            "slurp_id": 615
+          },
+          {
+            "intent_field": "music",
+            "line": 272,
+            "scenario_action": "play_music",
+            "slurp_id": 616
+          },
+          {
+            "intent_field": "hue_lightup",
+            "line": 473,
+            "scenario_action": "iot_hue_lightup",
+            "slurp_id": 962
+          },
+          {
+            "intent_field": "greet",
+            "line": 549,
+            "scenario_action": "general_greet",
+            "slurp_id": 1101
+          },
+          {
+            "intent_field": "greet",
+            "line": 550,
+            "scenario_action": "general_greet",
+            "slurp_id": 1102
+          },
+          {
+            "intent_field": "query",
+            "line": 576,
+            "scenario_action": "datetime_query",
+            "slurp_id": 1149
+          },
+          {
+            "intent_field": "coffee",
+            "line": 590,
+            "scenario_action": "iot_coffee",
+            "slurp_id": 1169
+          },
+          {
+            "intent_field": "coffee",
+            "line": 591,
+            "scenario_action": "iot_coffee",
+            "slurp_id": 1170
+          },
+          {
+            "intent_field": "query",
+            "line": 610,
+            "scenario_action": "weather_query",
+            "slurp_id": 1203
+          },
+          {
+            "intent_field": "greet",
+            "line": 652,
+            "scenario_action": "general_greet",
+            "slurp_id": 1277
+          },
+          {
+            "intent_field": "greet",
+            "line": 653,
+            "scenario_action": "general_greet",
+            "slurp_id": 1278
+          }
+        ],
+        "rows": 19711,
+        "scenario_action_inventory": [
+          "alarm_query",
+          "alarm_remove",
+          "alarm_set",
+          "audio_volume_down",
+          "audio_volume_mute",
+          "audio_volume_other",
+          "audio_volume_up",
+          "calendar_query",
+          "calendar_remove",
+          "calendar_set",
+          "cooking_query",
+          "cooking_recipe",
+          "datetime_convert",
+          "datetime_query",
+          "email_addcontact",
+          "email_query",
+          "email_querycontact",
+          "email_sendemail",
+          "general_affirm",
+          "general_commandstop",
+          "general_confirm",
+          "general_dontcare",
+          "general_explain",
+          "general_greet",
+          "general_joke",
+          "general_negate",
+          "general_praise",
+          "general_quirky",
+          "general_repeat",
+          "iot_cleaning",
+          "iot_coffee",
+          "iot_hue_lightchange",
+          "iot_hue_lightdim",
+          "iot_hue_lightoff",
+          "iot_hue_lighton",
+          "iot_hue_lightup",
+          "iot_wemo_off",
+          "iot_wemo_on",
+          "lists_createoradd",
+          "lists_query",
+          "lists_remove",
+          "music_dislikeness",
+          "music_likeness",
+          "music_query",
+          "music_settings",
+          "news_query",
+          "play_audiobook",
+          "play_game",
+          "play_music",
+          "play_podcasts",
+          "play_radio",
+          "qa_currency",
+          "qa_definition",
+          "qa_factoid",
+          "qa_maths",
+          "qa_query",
+          "qa_stock",
+          "recommendation_events",
+          "recommendation_locations",
+          "recommendation_movies",
+          "social_post",
+          "social_query",
+          "takeaway_order",
+          "takeaway_query",
+          "transport_query",
+          "transport_taxi",
+          "transport_ticket",
+          "transport_traffic",
+          "weather_query"
+        ],
+        "scenario_inventory": [
+          "alarm",
+          "audio",
+          "calendar",
+          "cooking",
+          "datetime",
+          "email",
+          "general",
+          "iot",
+          "lists",
+          "music",
+          "news",
+          "play",
+          "qa",
+          "recommendation",
+          "social",
+          "takeaway",
+          "transport",
+          "weather"
+        ]
+      }
+    },
+    "union": {
+      "devel_intent_field_absent_from_train": [
+        "likeness"
+      ],
+      "devel_scenario_action_absent_from_train": [],
+      "test_split": "NOT OPENED, NOT LOADED, NOT ENUMERATED (held out)",
+      "train_synthetic_scenario_action_absent_from_train": [
+        "general_affirm",
+        "general_commandstop",
+        "general_confirm",
+        "general_dontcare",
+        "general_explain",
+        "general_negate",
+        "general_praise",
+        "general_repeat",
+        "qa_query"
+      ],
+      "train_synthetic_union_train_scenario_action": 69,
+      "train_union_devel_intent_field": 92,
+      "train_union_devel_scenario_action": 60
+    }
+  },
+  "q2_snapshot_models": {
+    "distinct_task_targets": 60,
+    "facet_count_total": 11863,
+    "label_action_facets": 60,
+    "label_intent_facets": 60,
+    "label_scenario_facets": 18,
+    "modeled_intent_inventory": [
+      "alarm_query",
+      "alarm_remove",
+      "alarm_set",
+      "audio_volume_down",
+      "audio_volume_mute",
+      "audio_volume_other",
+      "audio_volume_up",
+      "calendar_query",
+      "calendar_remove",
+      "calendar_set",
+      "cooking_query",
+      "cooking_recipe",
+      "datetime_convert",
+      "datetime_query",
+      "email_addcontact",
+      "email_query",
+      "email_querycontact",
+      "email_sendemail",
+      "general_greet",
+      "general_joke",
+      "general_quirky",
+      "iot_cleaning",
+      "iot_coffee",
+      "iot_hue_lightchange",
+      "iot_hue_lightdim",
+      "iot_hue_lightoff",
+      "iot_hue_lighton",
+      "iot_hue_lightup",
+      "iot_wemo_off",
+      "iot_wemo_on",
+      "lists_createoradd",
+      "lists_query",
+      "lists_remove",
+      "music_dislikeness",
+      "music_likeness",
+      "music_query",
+      "music_settings",
+      "news_query",
+      "play_audiobook",
+      "play_game",
+      "play_music",
+      "play_podcasts",
+      "play_radio",
+      "qa_currency",
+      "qa_definition",
+      "qa_factoid",
+      "qa_maths",
+      "qa_stock",
+      "recommendation_events",
+      "recommendation_locations",
+      "recommendation_movies",
+      "social_post",
+      "social_query",
+      "takeaway_order",
+      "takeaway_query",
+      "transport_query",
+      "transport_taxi",
+      "transport_ticket",
+      "transport_traffic",
+      "weather_query"
+    ],
+    "prior_facets": 60,
+    "three_counts_agree": true,
+    "value_count_total": 11514,
+    "values_without_task_target": 0
+  },
+  "q3_stage_boundaries": {
+    "any_intent_lost_inside_the_builder": false,
+    "stage_1_row_loading": {
+      "distinct_intents": 60,
+      "function": "data.slurp.load_slurp_train_material -> rails.knowledge_build.slurp_kb_rows",
+      "utterances": 11514
+    },
+    "stage_2_distribution_sample": {
+      "distinct_intents": 60,
+      "function": "rails.knowledge_build.distribution_sample(rows, size=None, seed=20260823)",
+      "intents_lost_here": [],
+      "utterances": 11514
+    },
+    "stage_3_facet_emission": {
+      "distinct_intents": 60,
+      "function": "rails.knowledge_build._build_facets_and_values (pinned snapshot, read from disk)",
+      "intents_lost_here": []
+    }
+  },
+  "q4_coverage_denominator": {
+    "coverage_pct_source": "    def _coverage_pct(train_counts: Mapping[object, int], selected_counts: Mapping[object, int]) -> float:\n        if not train_counts:\n            return 1.0\n        covered = sum(1 for key in train_counts if selected_counts.get(key, 0) > 0)\n        return covered / len(train_counts)",
+    "denominator": "len(train_intent_counts) -- the number of DISTINCT INTENTS PRESENT IN THE TRAIN ROWS the builder loaded. It is NOT the task's intent vocabulary, and no devel, test or ontology inventory is ever consulted by coverage_report.",
+    "denominator_equals_task_vocabulary": true,
+    "full_tier_selected_equals_train_rows": true,
+    "intent_coverage_expression": "\"intent_coverage\": _coverage_pct(train_intent_counts, selected_intent_counts)",
+    "landed_intent_coverage": 1.0,
+    "measured_denominator": 60,
+    "recomputed_intent_coverage": 1.0,
+    "reproduces_the_landed_receipt": true,
+    "source_file": "src/speech_aware_evidence_acquisition/rails/knowledge_build.py",
+    "source_file_sha256": "259d39ae1388e24ea20b4bd2f1be9a1c77699c3e9980247dd9068f7253a97c4a",
+    "task_intent_vocabulary_train_union_devel": 60,
+    "train_intent_counts_definition": "train_intent_counts = Counter(row.intent for row in rows) -- ``rows`` is the TRAIN row population the CALLER passes in, i.e. exactly what rails.knowledge_build.slurp_kb_rows returned"
+  },
+  "q5_consequence": {
+    "arm_pins": {
+      "BLEND": {
+        "attempt_id": "attempt-20260825T054707Z-dev1000blend",
+        "mechanical_sha256": "e55b6632d85a0037fb928d565fb2ef1b40c987c915dd98a9f2599d78113c828e",
+        "outputs_sha256": "542a029adca8fb8daf3618e8a049aecdba1b04aba30eafedb67099fb6e08cf14"
+      },
+      "M0": {
+        "attempt_id": "attempt-20260825T053342Z-dev1000m0",
+        "mechanical_sha256": "814532760a712888d943c4a781f358cff426001ac0394ee29814cf4ee0335d16",
+        "outputs_sha256": "ea7045d3cfd3d1652f568911a0c47c16d66b879e824d314a6cb5061d7f07decc"
+      }
+    },
+    "dev1000_distinct_gold_intents": 59,
+    "dev1000_gold_intents_not_modeled_by_the_kb": [],
+    "dev1000_samples_carrying_an_unmodeled_intent": 0,
+    "fidelity_gate": {
+      "landed_pooled_blend_correct": 757,
+      "landed_pooled_m0_correct": 536,
+      "landed_read_verdict_sha256": "2f8e295852e1c09d737467a62123586f097f938ec353dcbe58d258dadc1ea581",
+      "recomputed_pooled_blend_correct": 757,
+      "recomputed_pooled_m0_correct": 536,
+      "reproduces_the_sealed_lock_read": true
+    },
+    "modeled_slice": {
+      "blend_correct": 757,
+      "blend_dispatched": 340,
+      "m0_correct": 536,
+      "n": 1000
+    },
+    "secondary_reading_caveat": "The SLURP unexposed 500 inside DEV-1000 is the LOCKED baseline's own population. Every number this receipt reports over DEV-1000 or any subset of it is a SECONDARY READING, descriptive over already-sealed records; it must NOT be used to revise, re-tune or restate the 2026-08-25 baseline lock.",
+    "unexposed_500_unmodeled_samples": 0,
+    "unmodeled_intent_histogram": {},
+    "unmodeled_slice": {
+      "blend_correct": 0,
+      "blend_dispatched": 0,
+      "m0_correct": 0,
+      "n": 0
+    },
+    "whole_dev1000": {
+      "blend_correct": 757,
+      "blend_dispatched": 340,
+      "m0_correct": 536,
+      "n": 1000
+    }
+  },
+  "schema": "saea-slurp-intent-coverage-check-v1",
+  "secondary_reading_caveat": "The SLURP unexposed 500 inside DEV-1000 is the LOCKED baseline's own population. Every number this receipt reports over DEV-1000 or any subset of it is a SECONDARY READING, descriptive over already-sealed records; it must NOT be used to revise, re-tune or restate the 2026-08-25 baseline lock.",
+  "study": "speech-aware-evidence-acquisition",
+  "timing_seconds": 48.939,
+  "zero_contact_proof": {
+    "offline_guard": {
+      "armed_before_first_input": true,
+      "outbound_connection_attempts": 0,
+      "targets": []
+    },
+    "resident_service_untouched": "llama-server pid 38623 on port 8090 was not contacted, probed, reconfigured or stopped"
+  }
+}
