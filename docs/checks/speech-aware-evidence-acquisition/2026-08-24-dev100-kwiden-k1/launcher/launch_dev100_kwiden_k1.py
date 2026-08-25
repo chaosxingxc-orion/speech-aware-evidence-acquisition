@@ -1339,7 +1339,14 @@ def main() -> int:
 
     # ---- attempt-1 durable M0 trace: byte identity + HASH INDEX ONLY ------
     a1_run_dir = root / "runs" / BASE_RUN_ID / A1_ATTEMPT_ID
-    a1_trace_path = a1_run_dir / f"{RUN_ID}.trace.jsonl"
+    # K1 REPAIR (pre-takeoff, zero spend): the durable trace file inside a run
+    # dir is named after the run id that WROTE it, which for every sealed
+    # authority this round consumes is BASE_RUN_ID — not this round's fresh
+    # RUN_ID. The round-5 launcher this file was reused from had
+    # RUN_ID == BASE_RUN_ID, so the f-string was correct there and the rename
+    # to SAEA-DEV100-KWIDEN silently broke it. Caught by --preflight-only
+    # before the gate: no attempt was opened and no contact was made.
+    a1_trace_path = a1_run_dir / f"{BASE_RUN_ID}.trace.jsonl"
     measured_a1_trace = sha256_file(a1_trace_path)
     if measured_a1_trace != A1_TRACE_SHA256:
         raise SystemExit(
