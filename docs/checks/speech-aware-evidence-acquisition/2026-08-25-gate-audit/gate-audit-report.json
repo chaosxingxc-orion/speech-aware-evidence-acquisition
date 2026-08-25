@@ -1,0 +1,1956 @@
+{
+ "document": "docs/readiness/2026-08-25-gate-audit-can-it-fail.md",
+ "exposure_row": "SAEA-SN-MF-GATE-AUDIT-CAN-IT-FAIL",
+ "generator": "thirteen offline mutation batteries (A A2 B C D E F G H I J K L); ten persisted a results file, and the three that crashed before writing (F G H) were re-run into K and I. Every battery armed analysis.dev100_reviewer_audit.arm_offline_guard() before its first input.",
+ "measurements": {
+  "batchA.json": {
+   "outbound_attempts": 0,
+   "targets": []
+  },
+  "batchA2.json": {
+   "outbound_attempts": 0,
+   "targets": []
+  },
+  "batchB.json": {
+   "forbidden_id_examples": [
+    "slurp:devel:000011:audio-1488537928",
+    "slurp:devel:000011:audio-1488552532",
+    "slurp:devel:000011:audio-1497266596"
+   ],
+   "forbidden_roster": 21768,
+   "full_coverage": {
+    "action_coverage": 1.0,
+    "cluster_coverage_proxy": 1.0,
+    "entity_type_coverage": 1.0,
+    "intent_coverage": 1.0,
+    "kl_selected_given_train_over_intent": 0.0,
+    "long_tail_coverage": {
+     "entity_type": {
+      "coverage": 1.0,
+      "covered_count": 2,
+      "threshold": 5,
+      "train_long_tail_count": 2
+     },
+     "intent": {
+      "coverage": 1.0,
+      "covered_count": 1,
+      "threshold": 5,
+      "train_long_tail_count": 1
+     }
+    },
+    "scenario_coverage": 1.0
+   },
+   "full_rows": 11514,
+   "full_selected": 11514,
+   "full_selected_is_train": true,
+   "outbound_attempts": 0,
+   "reduced_size_sweep": {
+    "size=100,seed=1": {
+     "cluster_coverage_proxy": 0.023480888598497222,
+     "entity_type_coverage": 1.0,
+     "intent_coverage": 1.0,
+     "long_tail_intent": 1.0,
+     "scenario_coverage": 1.0,
+     "selected": 100
+    },
+    "size=100,seed=20260823": {
+     "cluster_coverage_proxy": 0.021030708918654033,
+     "entity_type_coverage": 1.0,
+     "intent_coverage": 1.0,
+     "long_tail_intent": 1.0,
+     "scenario_coverage": 1.0,
+     "selected": 100
+    },
+    "size=100,seed=7": {
+     "cluster_coverage_proxy": 0.02180659915060438,
+     "entity_type_coverage": 1.0,
+     "intent_coverage": 1.0,
+     "long_tail_intent": 1.0,
+     "scenario_coverage": 1.0,
+     "selected": 100
+    },
+    "size=1000,seed=1": {
+     "cluster_coverage_proxy": 0.1624469127736034,
+     "entity_type_coverage": 1.0,
+     "intent_coverage": 1.0,
+     "long_tail_intent": 1.0,
+     "scenario_coverage": 1.0,
+     "selected": 1000
+    },
+    "size=1000,seed=20260823": {
+     "cluster_coverage_proxy": 0.1585266252858543,
+     "entity_type_coverage": 1.0,
+     "intent_coverage": 1.0,
+     "long_tail_intent": 1.0,
+     "scenario_coverage": 1.0,
+     "selected": 1000
+    },
+    "size=1000,seed=7": {
+     "cluster_coverage_proxy": 0.15991506043776543,
+     "entity_type_coverage": 1.0,
+     "intent_coverage": 1.0,
+     "long_tail_intent": 1.0,
+     "scenario_coverage": 1.0,
+     "selected": 1000
+    },
+    "size=60,seed=1": {
+     "cluster_coverage_proxy": 0.020704018294674942,
+     "entity_type_coverage": 1.0,
+     "intent_coverage": 1.0,
+     "long_tail_intent": 1.0,
+     "scenario_coverage": 1.0,
+     "selected": 90
+    },
+    "size=60,seed=20260823": {
+     "cluster_coverage_proxy": 0.01947892845475335,
+     "entity_type_coverage": 1.0,
+     "intent_coverage": 1.0,
+     "long_tail_intent": 1.0,
+     "scenario_coverage": 1.0,
+     "selected": 90
+    },
+    "size=60,seed=7": {
+     "cluster_coverage_proxy": 0.020173146030708917,
+     "entity_type_coverage": 1.0,
+     "intent_coverage": 1.0,
+     "long_tail_intent": 1.0,
+     "scenario_coverage": 1.0,
+     "selected": 91
+    }
+   },
+   "size1": {
+    "entity_type_coverage": 1.0,
+    "intent_coverage": 1.0,
+    "selected": 90
+   },
+   "train_id_examples": [
+    "slurp:train:000001:audio--1504192678",
+    "slurp:train:000001:audio--1504192678-headset",
+    "slurp:train:000001:audio--1504195529"
+   ],
+   "train_intents_measured": 60,
+   "train_universe": 50628,
+   "universe_overlap": 0
+  },
+  "batchC.json": {
+   "a2t_coverage_full": {
+    "argument_key_coverage": 1.0,
+    "argument_pattern_family_coverage": 1.0,
+    "category_coverage": 1.0,
+    "counts": {
+     "pool_argument_keys": 85,
+     "pool_argument_pattern_families": 354,
+     "pool_tools": 151,
+     "pool_units": 12601,
+     "registry_tools": 152,
+     "selected_argument_keys": 85,
+     "selected_argument_pattern_families": 354,
+     "selected_multi_call_units": 2250,
+     "selected_tools": 151,
+     "selected_units": 12601
+    },
+    "datastore_size_actual": 12601,
+    "kl_selected_given_pool_over_tier": 0.0,
+    "kl_selected_given_pool_over_tool": 0.0,
+    "long_tail_coverage": {
+     "argument_pattern_family": {
+      "coverage": 1.0,
+      "covered_count": 100,
+      "pool_long_tail_count": 100,
+      "threshold": 5
+     },
+     "tool": {
+      "coverage": 1.0,
+      "covered_count": 4,
+      "pool_long_tail_count": 4,
+      "threshold": 5
+     }
+    },
+    "tier_coverage": 1.0,
+    "tool_coverage": 1.0
+   },
+   "a2t_reduced_sweep": {
+    "100": {
+     "argument_key_coverage": 1.0,
+     "argument_pattern_family_coverage": 1.0,
+     "category_coverage": 0.9666666666666667,
+     "cluster_coverage_proxy": 0.048616666976761494,
+     "long_tail_coverage": {
+      "argument_pattern_family": {
+       "coverage": 1.0,
+       "covered_count": 100,
+       "pool_long_tail_count": 100,
+       "threshold": 5
+      },
+      "tool": {
+       "coverage": 1.0,
+       "covered_count": 4,
+       "pool_long_tail_count": 4,
+       "threshold": 5
+      }
+     },
+     "selected_units": 354,
+     "tier_coverage": 1.0,
+     "tool_coverage": 1.0
+    },
+    "1000": {
+     "argument_key_coverage": 1.0,
+     "argument_pattern_family_coverage": 1.0,
+     "category_coverage": 1.0,
+     "cluster_coverage_proxy": 0.1370867211193183,
+     "long_tail_coverage": {
+      "argument_pattern_family": {
+       "coverage": 1.0,
+       "covered_count": 100,
+       "pool_long_tail_count": 100,
+       "threshold": 5
+      },
+      "tool": {
+       "coverage": 1.0,
+       "covered_count": 4,
+       "pool_long_tail_count": 4,
+       "threshold": 5
+      }
+     },
+     "selected_units": 1000,
+     "tier_coverage": 1.0,
+     "tool_coverage": 1.0
+    },
+    "5000": {
+     "argument_key_coverage": 1.0,
+     "argument_pattern_family_coverage": 1.0,
+     "category_coverage": 1.0,
+     "cluster_coverage_proxy": 0.6269187117420507,
+     "long_tail_coverage": {
+      "argument_pattern_family": {
+       "coverage": 1.0,
+       "covered_count": 100,
+       "pool_long_tail_count": 100,
+       "threshold": 5
+      },
+      "tool": {
+       "coverage": 1.0,
+       "covered_count": 4,
+       "pool_long_tail_count": 4,
+       "threshold": 5
+      }
+     },
+     "selected_units": 5000,
+     "tier_coverage": 1.0,
+     "tool_coverage": 1.0
+    }
+   },
+   "a2t_selected_is_pool": true,
+   "a2t_tool_denominator": {
+    "pool_tools": 151,
+    "registry_tools": 152,
+    "tool_coverage": 1.0
+   },
+   "construction_ids": 22951,
+   "eval_ids": 400,
+   "exposed": 400,
+   "forbidden": 800,
+   "outbound_attempts": 0,
+   "universe_overlap": 0
+  },
+  "batchD.json": {
+   "a4_reachability": {
+    "disjoint sets (what A4 actually produced)": {
+     "a4_line_fires": false,
+     "a4_line_reached": false,
+     "subset_check_fires": true
+    },
+    "empty dev500": {
+     "a4_line_fires": true,
+     "a4_line_reached": true,
+     "subset_check_fires": false
+    },
+    "nested non-empty (the landed shape)": {
+     "a4_line_fires": false,
+     "a4_line_reached": true,
+     "subset_check_fires": false
+    }
+   },
+   "control": {
+    "blend": 379,
+    "ci90_high": 23.4,
+    "ci90_low": 17.2,
+    "delta_pp": 20.2,
+    "m0": 278,
+    "met": true,
+    "n": 500,
+    "outcome": "LOCKED"
+   },
+   "outbound_attempts": 0
+  },
+  "batchE.json": {
+   "canary_divergence_branch": "or row in generation_rows]} ms/token \"\n            f\"(worst {worst_rate})\"\n        )\n\n        first_run_sha = {\n            result.sample_id: sha256_text(result.final_response_text)\n            for result in canary_summary.results\n        }\n        same_build_identical = all(\n            row[\"byte_identical_to_attempt1\"]\n            for row in canary_record[\"response_sha256_vs_attempt1_m0\"].values()\n        )\n        canary_record[\"byte_identical_to_attempt1_m0\"] = same_build_identical\n        if same_build_identical:\n            canary_record[\"decode_divergence\"] = None\n            log(\"canary bytes MATCH attempt-1 M0 (continuity confirmed)\")\n        else:\n            log(\n                \"canary bytes DIFFER from attempt-1 M0 (UNEXPECTED on this build): \"\n                \"re-running the pair once \u2014 within-build determinism is REQUIRED\"\n            )\n            rerun_buffer = TraceBuffer(plan.run_id)\n            rerun_registry = Registry(f\"dev1000 {slug} canary rerun controller\")\n            rerun_registry.register(M0_POLICY_ID, m0_factory)\n            rerun_log_offset = server_log",
+   "consumed_rows": [
+    "SAEA-P2-r0bias",
+    "SAEA-P2-r1verify",
+    "SAEA-P2-r2draft",
+    "SAEA-P2-r0wrong",
+    "SAEA-P2-r1wrong",
+    "SAEA-TOOL-lexicon-v3-backlog",
+    "SAEA-PROBE-pslu-n60",
+    "SAEA-BASE-a2t-a0-400",
+    "SAEA-PROBE-a2t-s2-120",
+    "SAEA-PROBE-a2t-s2b-120",
+    "SAEA-PROBE-a2t-s2c-120",
+    "SAEA-PROBE-pslu-s2-183",
+    "SAEA-CHECK-a2t-loss-decomp",
+    "SAEA-CHECK-pphon-decomp",
+    "SAEA-PROBE-pkey2-338",
+    "SAEA-PROBE-a2t-pop-194",
+    "SAEA-PROBE-a2t-abst-44",
+    "SAEA-PROBE-pfew-180",
+    "SAEA-PROBE-pemb1-78",
+    "SAEA-PROBE-pemb2-552",
+    "SAEA-PROBE-pemb3l-234",
+    "SAEA-PROBE-ptrap-120",
+    "SAEA-PROBE-pemb3m-388",
+    "SAEA-PROBE-pcorrf-240",
+    "SAEA-PROBE-pemb4r-4100",
+    "SAEA-SN-GATE-C36-PREPROCESS",
+    "SAEA-SN-EFFECT-C108-PREPROCESS",
+    "SAEA-SN-EVIDENCE-E108-K1M11-INFORMATION-COMPLETE-ACTION-SUPPORT-ZCOPY",
+    "SAEA-SN-MF-EVIDENCE-E108-ZCOPY-READ",
+    "SAEA-DEV500-CONFIRMATORY",
+    "SAEA-SN-MF-DEV500-CONFIRMATORY-READ",
+    "SAEA-DEV1000-BASELINE-LOCK",
+    "SAEA-SN-MF-DEV1000-LOCK-READ"
+   ],
+   "dev1000_row": {
+    "audio": "9000",
+    "calls": "3400",
+    "consumed": "yes",
+    "gpu": "3.0",
+    "profile": "bounded-discovery-probe",
+    "split_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84",
+    "split_role": "dev"
+   },
+   "outbound_attempts": 0,
+   "port_reachable_source": "a2t._port_reachable = lambda host, port, timeout=1.0: PROBE[\"reachable\"]\n",
+   "sentinel_summary": {
+    "contacts_observed": 17,
+    "ms_per_token_max": 5137.0,
+    "ms_per_token_median": 1000.0,
+    "ms_per_token_min": 30.0,
+    "ms_per_token_p90": 5137.0,
+    "rates_observed": 24,
+    "threshold_ms_per_token": 1000.0,
+    "tripped": {
+     "contacts_observed": 17,
+     "rates_observed": 24,
+     "rolling_median_ms_per_token": 5137.0,
+     "threshold_ms_per_token": 1000.0,
+     "window_contacts": 8,
+     "window_ms_per_token": [
+      5137.0,
+      5137.0,
+      5137.0,
+      5137.0,
+      5137.0,
+      5137.0,
+      5137.0,
+      5137.0
+     ]
+    },
+    "window_contacts": 8
+   }
+  },
+  "batchI.json": {
+   "a2t_tool_spaces": {
+    "pool": 151,
+    "registry": 152,
+    "registry_not_in_pool": [
+     "getLockStatus"
+    ]
+   },
+   "outbound_attempts": 0,
+   "slurp_intent_spaces": {
+    "devel": 59,
+    "devel_not_in_train": [],
+    "train": 60,
+    "train_not_in_devel": [
+     "audio_volume_other"
+    ]
+   }
+  },
+  "batchJ.json": {
+   "ccd_gate": {
+    "control": true,
+    "dispatch": false,
+    "label": false,
+    "retained_nonnull": false,
+    "supply": false
+   },
+   "damage_fidelity": {
+    "samples": 100,
+    "supply_exact_matches": 100,
+    "supply_gate_passed": true,
+    "winner_gate_passed": true,
+    "winner_label_matches": 100
+   },
+   "outbound_attempts": 0
+  },
+  "batchK.json": {
+   "budget_probe_row": {
+    "audio": 900,
+    "calls": 300,
+    "gpu": 0.4,
+    "run_id": "SAEA-DEV100-RETAIN-OVERRIDE"
+   },
+   "canary_byte_branch": "         row[\"byte_identical_to_attempt1\"]\n            for row in canary_record[\"response_sha256_vs_attempt1_m0\"].values()\n        )\n        canary_record[\"byte_identical_to_attempt1_m0\"] = same_build_identical\n        if same_build_identical:\n            canary_record[\"decode_divergence\"] = None\n            log(\"canary bytes MATCH attempt-1 M0 (continuity confirmed)\")\n        else:\n            log(\n                \"canary bytes DIFFER from attempt-1 M0 (UNEXPECTED on this build): \"\n                \"re-running the pair once \u2014 within-build determinism is REQUIRED\"\n            )\n            rerun_buffer = TraceBuffer(plan.run_id)\n            rerun_registry = Registry(f\"dev1",
+   "coresidency_windows": {
+    "armed_leg1": true,
+    "armed_leg2": true,
+    "disarmed": false,
+    "unarmed": false
+   },
+   "leg2_fail_open": false,
+   "load_side": {
+    "prior_score": 4.1,
+    "recorded": [
+     [
+      "v1",
+      4.1
+     ]
+    ],
+    "warnings": [
+     "KnowledgeSnapshot 'gate-audit' (sha256 ee3c2cd658a140b02e584da51bbcc38f16596882f2dd4833e4e50868c7444a20) carries 1 of 1 prior_score values outside [0."
+    ]
+   },
+   "outbound_attempts": 0,
+   "port_reachable_source": "def _port_reachable(host: str, port: int, timeout: float = 1.0) -> bool:\n    try:\n        with socket.create_connection((host, port), timeout=timeout):\n            return True\n    except OSError:\n        return False\n\n\n# ---------",
+   "sentinel_summary": {
+    "contacts_observed": 17,
+    "ms_per_token_max": 5137.0,
+    "ms_per_token_median": 1000.0,
+    "ms_per_token_min": 30.0,
+    "ms_per_token_p90": 5137.0,
+    "rates_observed": 24,
+    "threshold_ms_per_token": 1000.0,
+    "tripped": {
+     "contacts_observed": 17,
+     "rates_observed": 24,
+     "rolling_median_ms_per_token": 5137.0,
+     "threshold_ms_per_token": 1000.0,
+     "window_contacts": 8,
+     "window_ms_per_token": [
+      5137.0,
+      5137.0,
+      5137.0,
+      5137.0,
+      5137.0,
+      5137.0,
+      5137.0,
+      5137.0
+     ]
+    },
+    "window_contacts": 8
+   }
+  },
+  "batchL.json": {
+   "BLEND +20 pp over M0 (the landed direction)": {
+    "ci90_excludes_zero": true,
+    "ci90_high": 23.0,
+    "ci90_low": 17.2,
+    "delta_pp": 20.0,
+    "dev500_claim_outcome": "MET",
+    "lock_outcome": "LOCKED"
+   },
+   "BLEND -20 pp BELOW M0 (a real regression)": {
+    "ci90_excludes_zero": false,
+    "ci90_high": -17.2,
+    "ci90_low": -23.0,
+    "delta_pp": -20.0,
+    "dev500_claim_outcome": "NOT MET",
+    "lock_outcome": "NOT-CONFIRMED"
+   },
+   "BLEND -40 pp BELOW M0 (a catastrophic regression)": {
+    "ci90_excludes_zero": false,
+    "ci90_high": -36.4,
+    "ci90_low": -43.6,
+    "delta_pp": -40.0,
+    "dev500_claim_outcome": "NOT MET",
+    "lock_outcome": "NOT-CONFIRMED"
+   },
+   "BLEND EQUAL to M0": {
+    "ci90_excludes_zero": false,
+    "ci90_high": 0.0,
+    "ci90_low": 0.0,
+    "delta_pp": 0.0,
+    "dev500_claim_outcome": "NOT MET",
+    "lock_outcome": "NOT-CONFIRMED"
+   },
+   "outbound_attempts": 0
+  }
+ },
+ "mutation_tally_live": {
+  "DID-NOT-FIRE": 23,
+  "FIRES": 69,
+  "OK-CONTROL": 20
+ },
+ "mutations": [
+  {
+   "battery": "batchA.json",
+   "detail": "ExecutionScopeError: execution profile 'paper-scale-confirmatory' is paper-scale: this Stage-2 study repository never runs it; Stage-3 requires OWNER_GO_AND_PAPER_EXECUTION_CONTRACT and an in",
+   "expected": "raise",
+   "gate": "contracts.plan.assert_execution_scope",
+   "mutation": "profile='paper-scale-confirmatory'",
+   "observed": "RAISED",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchA.json",
+   "detail": "ExecutionScopeError: execution profile 'PAPER-SCALE-CONFIRMATORY' is paper-scale: this Stage-2 study repository never runs it; Stage-3 requires OWNER_GO_AND_PAPER_EXECUTION_CONTRACT and an in",
+   "expected": "raise",
+   "gate": "contracts.plan.assert_execution_scope",
+   "mutation": "profile='PAPER-SCALE-CONFIRMATORY' (upper case)",
+   "observed": "RAISED",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchA.json",
+   "detail": "ExecutionScopeError: unknown execution profile 'large-scale-evaluation'; allowed Stage-2 profiles are ('model-free-check', 'baseline-reproduction', 'bounded-discovery-probe') (fail-closed)",
+   "expected": "raise",
+   "gate": "contracts.plan.assert_execution_scope",
+   "mutation": "profile='large-scale-evaluation' (paper-scale intent, no marker word)",
+   "observed": "RAISED",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchA.json",
+   "detail": "ExecutionScopeError: execution profile must be a non-empty string",
+   "expected": "raise",
+   "gate": "contracts.plan.assert_execution_scope",
+   "mutation": "profile='' (empty)",
+   "observed": "RAISED",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchA.json",
+   "detail": "",
+   "expected": "pass",
+   "gate": "contracts.plan.assert_execution_scope",
+   "mutation": "profile='bounded-discovery-probe' (control)",
+   "observed": "NO RAISE",
+   "superseded": false,
+   "verdict": "OK-CONTROL"
+  },
+  {
+   "battery": "batchA.json",
+   "detail": "ExecutionScopeError: confirmatory execution is not a Stage-2 authority: reading confirmatory results requires OWNER_GO_AND_PAPER_EXECUTION_CONTRACT (independent paper repository) or a dated o",
+   "expected": "raise",
+   "gate": "contracts.plan.ExecutionPlan.validate",
+   "mutation": "split_role='confirmatory'",
+   "observed": "RAISED",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchA.json",
+   "detail": "ExecutionScopeError: unknown split role 'test'; Stage-2 roles are ['dev', 'discovery'] (fail-closed)",
+   "expected": "raise",
+   "gate": "contracts.plan.ExecutionPlan.validate",
+   "mutation": "split_role='test'",
+   "observed": "RAISED",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchA.json",
+   "detail": "ExecutionScopeError: execution plan run_id must match '[A-Za-z0-9][A-Za-z0-9._-]*' (no path separator, no leading dot/dash, non-empty) -- IMPORTANT 3 fix-wave3: a run_id is embedded verbatim ",
+   "expected": "raise",
+   "gate": "contracts.plan.ExecutionPlan.validate",
+   "mutation": "run_id='../escape'",
+   "observed": "RAISED",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchA.json",
+   "detail": "ExecutionScopeError: execution plan planned_model_calls must be a finite positive integer",
+   "expected": "raise",
+   "gate": "contracts.plan.ExecutionPlan.validate",
+   "mutation": "planned_model_calls=0",
+   "observed": "RAISED",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchA.json",
+   "detail": "",
+   "expected": "raise",
+   "gate": "contracts.plan.ExecutionPlan.validate",
+   "mutation": "OVER-BUDGET: planned_model_calls=1e9, gpu_hours=1e9, audio_s=1e12",
+   "observed": "NO RAISE",
+   "superseded": false,
+   "verdict": "DID-NOT-FIRE"
+  },
+  {
+   "battery": "batchA.json",
+   "detail": "",
+   "expected": "pass",
+   "gate": "contracts.plan.ExecutionPlan.validate",
+   "mutation": "legit dev plan (control)",
+   "observed": "NO RAISE",
+   "superseded": false,
+   "verdict": "OK-CONTROL"
+  },
+  {
+   "battery": "batchA.json",
+   "detail": "RailsError: knowledge USE query sample overlaps the TRAIN snapshot source roster",
+   "expected": "raise",
+   "gate": "rails.knowledge.assert_knowledge_use_binding",
+   "mutation": "query_sample_id = a TRAIN source sample id ('slurp/train/t1')",
+   "observed": "RAISED",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchA.json",
+   "detail": "RailsError: RankResult is bound to a different KnowledgeSnapshot",
+   "expected": "raise",
+   "gate": "rails.knowledge.assert_knowledge_use_binding",
+   "mutation": "RankResult.snapshot_sha256 rebound to a foreign hash",
+   "observed": "RAISED",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchA.json",
+   "detail": "RailsError: FusionDecision selects values outside the snapshot: ['value:ghost']",
+   "expected": "raise",
+   "gate": "rails.knowledge.assert_knowledge_use_binding",
+   "mutation": "FusionDecision selects a value id outside the snapshot",
+   "observed": "RAISED",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchA.json",
+   "detail": "RailsError: FusionDecision supporting facets must be present in RankResult",
+   "expected": "raise",
+   "gate": "rails.knowledge.assert_knowledge_use_binding",
+   "mutation": "FusionDecision supporting facet absent from RankResult",
+   "observed": "RAISED",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchA.json",
+   "detail": "",
+   "expected": "pass",
+   "gate": "rails.knowledge.assert_knowledge_use_binding",
+   "mutation": "legit disjoint DEV use (control)",
+   "observed": "NO RAISE",
+   "superseded": false,
+   "verdict": "OK-CONTROL"
+  },
+  {
+   "battery": "batchA.json",
+   "detail": "RailsError: RankResult is bound to a different KnowledgeSnapshot",
+   "expected": "raise",
+   "gate": "rails.knowledge.assert_knowledge_use_binding",
+   "mutation": "caller passes a well-formed but WRONG snapshot_sha256 (passthrough)",
+   "observed": "RAISED",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchA.json",
+   "detail": "",
+   "expected": "raise",
+   "gate": "rails.knowledge.assert_knowledge_use_binding",
+   "mutation": "CONSISTENT lie: caller-supplied snapshot_sha256='c'*64 everywhere, real snapshot unrelated",
+   "observed": "NO RAISE",
+   "superseded": false,
+   "verdict": "DID-NOT-FIRE"
+  },
+  {
+   "battery": "batchA.json",
+   "detail": "",
+   "expected": "pass",
+   "gate": "rails.knowledge.assert_agent_step_binding",
+   "mutation": "legit acquire step (control)",
+   "observed": "NO RAISE",
+   "superseded": false,
+   "verdict": "OK-CONTROL"
+  },
+  {
+   "battery": "batchA.json",
+   "detail": "TypeError: test_rails_packets._query_state() got multiple values for keyword argument 'loop_step'",
+   "expected": "raise",
+   "gate": "rails.knowledge.assert_agent_step_binding",
+   "mutation": "successor loop_step=5 (no +1 increment)",
+   "observed": "RAISED",
+   "superseded": true,
+   "superseded_reason": "the mutation collided with the helper's own loop_step keyword and raised TypeError, not the gate; replaced by batchA2.json's 'successor loop_step=5 instead of prior+1'",
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchA.json",
+   "detail": "RailsError: AgentStepTransition must keep the same original speech packet and DEV query binding across every step",
+   "expected": "raise",
+   "gate": "rails.knowledge.assert_agent_step_binding",
+   "mutation": "successor speech_packet_sha256 swapped (original speech not preserved)",
+   "observed": "RAISED",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchA.json",
+   "detail": "RailsError: AgentStepTransition references values outside the frozen snapshot: ['value:ghost']",
+   "expected": "raise",
+   "gate": "rails.knowledge.assert_agent_step_binding",
+   "mutation": "transition claims a value id outside the snapshot as new SUPPLY",
+   "observed": "RAISED",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchA.json",
+   "detail": "RailsError: AgentStepTransition query overlaps the TRAIN snapshot source roster",
+   "expected": "raise",
+   "gate": "rails.knowledge.assert_agent_step_binding",
+   "mutation": "prior query_sample_id overlaps the TRAIN snapshot roster",
+   "observed": "RAISED",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchA.json",
+   "detail": "TypeError: AgentContactPlan.__init__() missing 5 required positional arguments: 'query_state_sha256', 'purpose', 'key_representation_id', 'matcher_policy_id', and 'decoding_params'",
+   "expected": "raise",
+   "gate": "rails.runner CONTROL-text payload guard",
+   "mutation": "instruction embeds the FULL ValueBundle.content verbatim",
+   "observed": "RAISED",
+   "superseded": true,
+   "superseded_reason": "AgentContactPlan was constructed with five missing arguments, so every row raised TypeError from the constructor rather than exercising the guard; replaced by batchA2.json",
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchA.json",
+   "detail": "TypeError: AgentContactPlan.__init__() missing 5 required positional arguments: 'query_state_sha256', 'purpose', 'key_representation_id', 'matcher_policy_id', and 'decoding_params'",
+   "expected": "raise",
+   "gate": "rails.runner CONTROL-text payload guard",
+   "mutation": "instruction embeds the value content with ONE trailing character deleted",
+   "observed": "RAISED",
+   "superseded": true,
+   "superseded_reason": "AgentContactPlan was constructed with five missing arguments, so every row raised TypeError from the constructor rather than exercising the guard; replaced by batchA2.json",
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchA.json",
+   "detail": "TypeError: AgentContactPlan.__init__() missing 5 required positional arguments: 'query_state_sha256', 'purpose', 'key_representation_id', 'matcher_policy_id', and 'decoding_params'",
+   "expected": "raise",
+   "gate": "rails.runner CONTROL-text payload guard",
+   "mutation": "instruction embeds the value content with internal spaces doubled",
+   "observed": "RAISED",
+   "superseded": true,
+   "superseded_reason": "AgentContactPlan was constructed with five missing arguments, so every row raised TypeError from the constructor rather than exercising the guard; replaced by batchA2.json",
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchA.json",
+   "detail": "TypeError: AgentContactPlan.__init__() missing 5 required positional arguments: 'query_state_sha256', 'purpose', 'key_representation_id', 'matcher_policy_id', and 'decoding_params'",
+   "expected": "raise",
+   "gate": "rails.runner CONTROL-text payload guard",
+   "mutation": "instruction embeds the value content split by a newline at the midpoint",
+   "observed": "RAISED",
+   "superseded": true,
+   "superseded_reason": "AgentContactPlan was constructed with five missing arguments, so every row raised TypeError from the constructor rather than exercising the guard; replaced by batchA2.json",
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchA.json",
+   "detail": "TypeError: AgentContactPlan.__init__() missing 5 required positional arguments: 'query_state_sha256', 'purpose', 'key_representation_id', 'matcher_policy_id', and 'decoding_params'",
+   "expected": "raise",
+   "gate": "rails.runner CONTROL-text payload guard",
+   "mutation": "instruction embeds only the value's task_target 'hue_lightdim' (12 chars)",
+   "observed": "RAISED",
+   "superseded": true,
+   "superseded_reason": "AgentContactPlan was constructed with five missing arguments, so every row raised TypeError from the constructor rather than exercising the guard; replaced by batchA2.json",
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchA.json",
+   "detail": "TypeError: AgentContactPlan.__init__() missing 5 required positional arguments: 'query_state_sha256', 'purpose', 'key_representation_id', 'matcher_policy_id', and 'decoding_params'",
+   "expected": "raise",
+   "gate": "rails.runner CONTROL-text payload guard",
+   "mutation": "instruction embeds a facet representation verbatim",
+   "observed": "RAISED",
+   "superseded": true,
+   "superseded_reason": "AgentContactPlan was constructed with five missing arguments, so every row raised TypeError from the constructor rather than exercising the guard; replaced by batchA2.json",
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchA.json",
+   "detail": "TypeError: AgentContactPlan.__init__() missing 5 required positional arguments: 'query_state_sha256', 'purpose', 'key_representation_id', 'matcher_policy_id', and 'decoding_params'",
+   "expected": "pass",
+   "gate": "rails.runner CONTROL-text payload guard",
+   "mutation": "clean instruction (control)",
+   "observed": "RAISED",
+   "superseded": true,
+   "superseded_reason": "AgentContactPlan was constructed with five missing arguments, so every row raised TypeError from the constructor rather than exercising the guard; replaced by batchA2.json",
+   "verdict": "UNEXPECTED-RAISE"
+  },
+  {
+   "battery": "batchA.json",
+   "detail": "TypeError: AgentContactPlan.__init__() missing 5 required positional arguments: 'query_state_sha256', 'purpose', 'key_representation_id', 'matcher_policy_id', and 'decoding_params'",
+   "expected": "raise",
+   "gate": "rails.runner CONTROL-text payload guard",
+   "mutation": "value content is 'dim' (3 chars); instruction embeds it verbatim",
+   "observed": "RAISED",
+   "superseded": true,
+   "superseded_reason": "AgentContactPlan was constructed with five missing arguments, so every row raised TypeError from the constructor rather than exercising the guard; replaced by batchA2.json",
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchA.json",
+   "detail": "RailsError: GATE-AUDIT: prior_score must be a probability in [0.0, 1.0] -- 1 of 1 values are outside it (value:dim-light=4.1). A ratio whose numerator is not restricted to its denomi",
+   "expected": "raise",
+   "gate": "rails.knowledge.assert_prior_scores_are_probabilities",
+   "mutation": "construction side: one value with prior_score=4.1",
+   "observed": "RAISED",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchA.json",
+   "detail": "RailsError: GATE-AUDIT: prior_score must be a probability in [0.0, 1.0] -- 1 of 1 values are outside it (value:dim-light=-0.01). A ratio whose numerator is not restricted to its deno",
+   "expected": "raise",
+   "gate": "rails.knowledge.assert_prior_scores_are_probabilities",
+   "mutation": "construction side: prior_score=-0.01",
+   "observed": "RAISED",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchA.json",
+   "detail": "",
+   "expected": "raise",
+   "gate": "rails.knowledge.ValueBundle.validate",
+   "mutation": "LOADING side: ValueBundle(prior_score=4.1).validate()",
+   "observed": "NO RAISE",
+   "superseded": false,
+   "verdict": "DID-NOT-FIRE"
+  },
+  {
+   "battery": "batchA.json",
+   "detail": "",
+   "expected": "pass",
+   "gate": "rails.knowledge.assert_prior_scores_are_probabilities",
+   "mutation": "in-range prior_score=0.25 (control)",
+   "observed": "NO RAISE",
+   "superseded": false,
+   "verdict": "OK-CONTROL"
+  },
+  {
+   "battery": "batchA2.json",
+   "detail": "RailsError: AgentStepTransition successor loop_step must increment by exactly one",
+   "expected": "raise",
+   "gate": "rails.knowledge.assert_agent_step_binding",
+   "mutation": "successor loop_step=5 instead of prior+1",
+   "observed": "RAISED",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchA2.json",
+   "detail": "RailsError: AgentStepTransition cannot claim already visible values as new SUPPLY: ['value:dim-light']",
+   "expected": "raise",
+   "gate": "rails.knowledge.assert_agent_step_binding",
+   "mutation": "transition claims an ALREADY VISIBLE value as new SUPPLY",
+   "observed": "RAISED",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchA2.json",
+   "detail": "",
+   "expected": "pass",
+   "gate": "rails.runner CONTROL-text payload guard",
+   "mutation": "clean instruction (control)",
+   "observed": "NO RAISE",
+   "superseded": false,
+   "verdict": "OK-CONTROL"
+  },
+  {
+   "battery": "batchA2.json",
+   "detail": "RailsRunnerError: Agent contact instruction cannot embed frozen knowledge key/value payloads; acquire them through traced knowledge supply",
+   "expected": "raise",
+   "gate": "rails.runner CONTROL-text payload guard",
+   "mutation": "instruction embeds the FULL ValueBundle.content verbatim",
+   "observed": "RAISED",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchA2.json",
+   "detail": "RailsRunnerError: Agent contact instruction cannot embed frozen knowledge key/value payloads; acquire them through traced knowledge supply",
+   "expected": "raise",
+   "gate": "rails.runner CONTROL-text payload guard",
+   "mutation": "instruction embeds a facet representation verbatim",
+   "observed": "RAISED",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchA2.json",
+   "detail": "RailsRunnerError: Agent contact instruction cannot embed frozen knowledge key/value payloads; acquire them through traced knowledge supply",
+   "expected": "raise",
+   "gate": "rails.runner CONTROL-text payload guard",
+   "mutation": "instruction embeds the value content in UPPER CASE (casefold path)",
+   "observed": "RAISED",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchA2.json",
+   "detail": "",
+   "expected": "raise",
+   "gate": "rails.runner CONTROL-text payload guard",
+   "mutation": "instruction embeds the value content with ONE trailing character deleted",
+   "observed": "NO RAISE",
+   "superseded": false,
+   "verdict": "DID-NOT-FIRE"
+  },
+  {
+   "battery": "batchA2.json",
+   "detail": "",
+   "expected": "raise",
+   "gate": "rails.runner CONTROL-text payload guard",
+   "mutation": "instruction embeds the value content with internal spaces doubled",
+   "observed": "NO RAISE",
+   "superseded": false,
+   "verdict": "DID-NOT-FIRE"
+  },
+  {
+   "battery": "batchA2.json",
+   "detail": "",
+   "expected": "raise",
+   "gate": "rails.runner CONTROL-text payload guard",
+   "mutation": "instruction embeds the value content split by a newline at the midpoint",
+   "observed": "NO RAISE",
+   "superseded": false,
+   "verdict": "DID-NOT-FIRE"
+  },
+  {
+   "battery": "batchA2.json",
+   "detail": "",
+   "expected": "raise",
+   "gate": "rails.runner CONTROL-text payload guard",
+   "mutation": "instruction embeds only the value's task_target 'hue_lightdim' (12 chars)",
+   "observed": "NO RAISE",
+   "superseded": false,
+   "verdict": "DID-NOT-FIRE"
+  },
+  {
+   "battery": "batchA2.json",
+   "detail": "",
+   "expected": "raise",
+   "gate": "rails.runner CONTROL-text payload guard",
+   "mutation": "instruction embeds the value content with every space replaced by a newline",
+   "observed": "NO RAISE",
+   "superseded": false,
+   "verdict": "DID-NOT-FIRE"
+  },
+  {
+   "battery": "batchA2.json",
+   "detail": "",
+   "expected": "raise",
+   "gate": "rails.runner CONTROL-text payload guard",
+   "mutation": "value content is 'dim' (3 chars); instruction embeds it verbatim",
+   "observed": "NO RAISE",
+   "superseded": false,
+   "verdict": "DID-NOT-FIRE"
+  },
+  {
+   "battery": "batchA2.json",
+   "detail": "",
+   "expected": "raise",
+   "gate": "rails.runner CONTROL-text payload guard",
+   "mutation": "payload placed in AgentContactPlan.purpose instead of .instruction",
+   "observed": "NO RAISE",
+   "superseded": false,
+   "verdict": "DID-NOT-FIRE"
+  },
+  {
+   "battery": "batchA2.json",
+   "detail": "",
+   "expected": "raise",
+   "gate": "rails.runner CONTROL-text payload guard",
+   "mutation": "payload placed in AgentContactPlan.decoding_params instead of .instruction",
+   "observed": "NO RAISE",
+   "superseded": false,
+   "verdict": "DID-NOT-FIRE"
+  },
+  {
+   "battery": "batchA2.json",
+   "detail": "",
+   "expected": "raise",
+   "gate": "rails.runner CONTROL-text payload guard",
+   "mutation": "payload placed in AgentContactPlan.key_representation_id",
+   "observed": "NO RAISE",
+   "superseded": false,
+   "verdict": "DID-NOT-FIRE"
+  },
+  {
+   "battery": "batchB.json",
+   "detail": "returned slurp-kb-distmodel-76e61b0666162aa7",
+   "expected": "pass",
+   "gate": "rails.knowledge_build KB-BUILD decontamination gate",
+   "mutation": "LANDED CONFIGURATION, unmodified: build the full-size snapshot against the real roster",
+   "observed": "NO RAISE",
+   "superseded": false,
+   "verdict": "OK-CONTROL"
+  },
+  {
+   "battery": "batchB.json",
+   "detail": "RailsError: KB-BUILD selection intersects the frozen devel/test/FINAL60/DEV-tier decontamination roster: ['slurp:train:000001:audio--1504192678']",
+   "expected": "raise",
+   "gate": "rails.knowledge_build KB-BUILD decontamination gate",
+   "mutation": "INJECTED roster containing one real selected TRAIN id ('slurp:train:000001:audio--1504192678') - proves the mechanism is live",
+   "observed": "RAISED",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchB.json",
+   "detail": "",
+   "expected": "raise",
+   "gate": "rails.knowledge_build KB-BUILD decontamination gate",
+   "mutation": "REAL roster from disk: assert it intersects the TRAIN universe (i.e. that the gate CAN fire)",
+   "observed": "NO RAISE",
+   "superseded": false,
+   "verdict": "DID-NOT-FIRE"
+  },
+  {
+   "battery": "batchC.json",
+   "detail": "returned a2t-kb-toolshaped-961e088609b6f1bc",
+   "expected": "pass",
+   "gate": "rails.knowledge_build_a2t decontamination gate",
+   "mutation": "LANDED CONFIGURATION, unmodified: build over partition.construction with the real roster",
+   "observed": "NO RAISE",
+   "superseded": false,
+   "verdict": "OK-CONTROL"
+  },
+  {
+   "battery": "batchC.json",
+   "detail": "RailsError: KB-BUILD-A2T selection intersects the frozen exposed-400 / proposed-eval decontamination roster: ['tier1_direct:000001']",
+   "expected": "raise",
+   "gate": "rails.knowledge_build_a2t decontamination gate",
+   "mutation": "INJECTED roster containing one real construction sample id - proves the mechanism is live",
+   "observed": "RAISED",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchC.json",
+   "detail": "RailsError: build_a2t_knowledge_snapshot: refusing to build with an EMPTY decontamination roster (fail-closed)",
+   "expected": "raise",
+   "gate": "rails.knowledge_build_a2t decontamination gate",
+   "mutation": "EMPTY roster (fail-closed clause)",
+   "observed": "RAISED",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchC.json",
+   "detail": "",
+   "expected": "raise",
+   "gate": "rails.knowledge_build_a2t decontamination gate",
+   "mutation": "REAL roster: assert it intersects the construction pool (i.e. that the gate CAN fire)",
+   "observed": "NO RAISE",
+   "superseded": false,
+   "verdict": "DID-NOT-FIRE"
+  },
+  {
+   "battery": "batchD.json",
+   "detail": "outcome=LOCKED delta_pp=20.20 ci90_low=17.20",
+   "expected": "pass",
+   "gate": "analysis.dev1000_lock_read LOCK CONDITION",
+   "mutation": "unmutated re-read of the sealed stores (control)",
+   "observed": "NO RAISE",
+   "superseded": false,
+   "verdict": "OK-CONTROL"
+  },
+  {
+   "battery": "batchD.json",
+   "detail": "lock_condition_met=False (expected CONFIRMED-BUT-SHRUNKEN)",
+   "expected": "raise",
+   "gate": "analysis.dev1000_lock_read LOCK CONDITION",
+   "mutation": "live read with the PRIMARY bootstrap ci90_low forced to +5.000 pp",
+   "observed": "outcome=CONFIRMED-BUT-SHRUNKEN",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchD.json",
+   "detail": "lock_condition_met=False (expected NOT-CONFIRMED)",
+   "expected": "raise",
+   "gate": "analysis.dev1000_lock_read LOCK CONDITION",
+   "mutation": "live read with the PRIMARY bootstrap ci90_low forced to -1.000 pp",
+   "observed": "outcome=NOT-CONFIRMED",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchD.json",
+   "detail": "lock_condition_met=False (expected CONFIRMED-BUT-SHRUNKEN)",
+   "expected": "raise",
+   "gate": "analysis.dev1000_lock_read LOCK CONDITION",
+   "mutation": "live read with the PRIMARY bootstrap ci90_low forced to +9.999 pp",
+   "observed": "outcome=CONFIRMED-BUT-SHRUNKEN",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchD.json",
+   "detail": "ReadError: M0 sealed outputs: /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-DEV1000-BASELINE-LOCK/attempt-20260825T053342Z-dev1000m0/arm1-m0-outputs.jsonl hashes to ea7045d3cfd3d1652f56",
+   "expected": "raise",
+   "gate": "analysis.dev1000_lock_read sealed-outputs sha256 pin",
+   "mutation": "M0 outputs_sha256 pin replaced with 0*64 (simulates a byte change in the sealed store)",
+   "observed": "RAISED",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchD.json",
+   "detail": "ReadError: M0 committed mechanical report: /mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/checks/speech-aware-evidence-acquisition/2026-08-25-dev1000-baseline-lock",
+   "expected": "raise",
+   "gate": "analysis.dev1000_lock_read committed-report sha256 pin",
+   "mutation": "M0 report_sha256 pin replaced with 0*64",
+   "observed": "RAISED",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchD.json",
+   "detail": "ReadError: M0 sealed per-sample mechanical records: /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-DEV1000-BASELINE-LOCK/attempt-20260825T053342Z-dev1000m0/arm1-m0-mechanical.json hashes",
+   "expected": "raise",
+   "gate": "analysis.dev1000_lock_read per-sample mechanical sha256 pin",
+   "mutation": "M0 mechanical_sha256 pin replaced with 0*64",
+   "observed": "RAISED",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchD.json",
+   "detail": "ReadError: M0: sealed outputs carry 1000 samples, not 999",
+   "expected": "raise",
+   "gate": "analysis.dev1000_lock_read expected-sample-count check",
+   "mutation": "M0 expected_samples pin changed 1000 -> 999",
+   "observed": "RAISED",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchD.json",
+   "detail": "ReadError: DEV-1000 committed receipt: /mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/receipts/probe-samples/DEV-1000.json hashes to 653c7556edf88e56af2e18a2523942",
+   "expected": "raise",
+   "gate": "analysis.dev1000_lock_read split-receipt file-hash pin",
+   "mutation": "DEV-1000 receipt file sha256 pin replaced with 0*64",
+   "observed": "RAISED",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchD.json",
+   "detail": "ReadError: DEV-1000 receipt run identity hash is not the registered 0000000000000000000000000000000000000000000000000000000000000000",
+   "expected": "raise",
+   "gate": "analysis.dev1000_lock_read split-receipt run-identity pin",
+   "mutation": "DEV-1000 run_identity_hash pin replaced with 0*64",
+   "observed": "RAISED",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchD.json",
+   "detail": "ReadError: DEV-1000 receipt is not 999 distinct ids",
+   "expected": "raise",
+   "gate": "analysis.dev1000_lock_read split-receipt n_items pin",
+   "mutation": "DEV-1000 n_items pin changed 1000 -> 999",
+   "observed": "RAISED",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchD.json",
+   "detail": "returned 500",
+   "expected": "pass",
+   "gate": "analysis.dev1000_lock_read population algebra",
+   "mutation": "unmutated load_populations (control)",
+   "observed": "NO RAISE",
+   "superseded": false,
+   "verdict": "OK-CONTROL"
+  },
+  {
+   "battery": "batchD.json",
+   "detail": "the subset check on the preceding line fires first on the disjoint shape; an EMPTY dev500 passes both (0 <= X and the A4 line's `not set()` is True... measured above)",
+   "expected": "raise",
+   "gate": "analysis.dev1000_lock_read A4-lesson empty-intersection guard",
+   "mutation": "enumerate every (dev500, dev1000) shape: disjoint / empty dev500 / nested; record which line fires",
+   "observed": "the A4 line fired in 1 of 3 shapes",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchD.json",
+   "detail": "ReadError: M0 committed mechanical report: /mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/checks/speech-aware-evidence-acquisition/2026-08-24-dev500-confirmatory/a",
+   "expected": "raise",
+   "gate": "analysis.dev500_confirmatory_read.load_arm mechanical cross-check",
+   "mutation": "committed report's two_contact_trajectories_dispatched incremented by 1 in flight",
+   "observed": "RAISED",
+   "superseded": true,
+   "superseded_reason": "the mutation paired dev500_confirmatory_read.load_arm's own CHECK_DIR with a DEV-1000 pin, so the hash pin fired before the cross-check; replaced by batchE.json's analysis.dev1000_lock_read.load_arm rows",
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchE.json",
+   "detail": "GateClosed: exposure row for 'SAEA-DEV1000-BASELINE-LOCK' is already consumed; a consumed run cannot be re-executed",
+   "expected": "pass",
+   "gate": "contracts.gate_exposure._require_exposure_preregistration",
+   "mutation": "the landed DEV-1000 campaign row with a minimal plan (control)",
+   "observed": "RAISED",
+   "superseded": true,
+   "superseded_reason": "the DEV-1000 campaign row's consumed cell reads yes, so the consumed clause fired first and masked the budget clauses; replaced by batchK.json against an unconsumed row",
+   "verdict": "UNEXPECTED-RAISE"
+  },
+  {
+   "battery": "batchE.json",
+   "detail": "GateClosed: exposure row for 'SAEA-DEV1000-BASELINE-LOCK' is already consumed; a consumed run cannot be re-executed",
+   "expected": "raise",
+   "gate": "contracts.gate_exposure._require_exposure_preregistration",
+   "mutation": "OVER-REGISTERED CALLS: plan claims 10**9 model calls, row registers 3400",
+   "observed": "RAISED",
+   "superseded": true,
+   "superseded_reason": "masked by the same consumed clause; replaced by batchK.json's OVER-BUDGET rows",
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchE.json",
+   "detail": "GateClosed: exposure row for 'SAEA-DEV1000-BASELINE-LOCK' is already consumed; a consumed run cannot be re-executed",
+   "expected": "raise",
+   "gate": "contracts.gate_exposure._require_exposure_preregistration",
+   "mutation": "OVER-REGISTERED GPU HOURS: plan claims 1e6 gpu hours",
+   "observed": "RAISED",
+   "superseded": true,
+   "superseded_reason": "masked by the same consumed clause; replaced by batchK.json's OVER-BUDGET rows",
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchE.json",
+   "detail": "GateClosed: exposure row for 'SAEA-DEV1000-BASELINE-LOCK' is already consumed; a consumed run cannot be re-executed",
+   "expected": "raise",
+   "gate": "contracts.gate_exposure._require_exposure_preregistration",
+   "mutation": "OVER-REGISTERED AUDIO: plan claims 10**9 speech audio seconds",
+   "observed": "RAISED",
+   "superseded": true,
+   "superseded_reason": "masked by the same consumed clause; replaced by batchK.json's OVER-BUDGET rows",
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchE.json",
+   "detail": "GateClosed: exposure row disagrees with the execution plan on 'split identity hash': row '8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84' vs plan 'ccccccccccccccccccccccccccccccccccccccccccccccc",
+   "expected": "raise",
+   "gate": "contracts.gate_exposure._require_exposure_preregistration",
+   "mutation": "SPLIT IDENTITY MISMATCH: plan carries a foreign split identity hash",
+   "observed": "RAISED",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchE.json",
+   "detail": "GateClosed: model touch refused: run 'SAEA-NEVER-REGISTERED' has no pre-registered exposure row in /mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/exposure-ledger.md",
+   "expected": "raise",
+   "gate": "contracts.gate_exposure._require_exposure_preregistration",
+   "mutation": "UNREGISTERED RUN: plan run_id is not in the ledger at all",
+   "observed": "RAISED",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchE.json",
+   "detail": "GateClosed: exposure row column 'speech carrier + split' names carrier 'slurp', not the execution plan's carrier 'earnings21-original'; model touch refused (I2: carrier scope and exposure carrier must bind)",
+   "expected": "raise",
+   "gate": "contracts.gate_exposure._require_exposure_preregistration",
+   "mutation": "CARRIER MISMATCH: plan claims carrier earnings21-original against the slurp row",
+   "observed": "RAISED",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchE.json",
+   "detail": "GateClosed: carrier lock key 'qwen3-omni-30b-a3b-instruct-gguf' is not a dataset entry in the umbrella datasets lock (model entries and unknown keys are never a valid speech carrier); model touch refused",
+   "expected": "raise",
+   "gate": "contracts.gate_exposure._resolve_carrier_dataset_entry",
+   "mutation": "carrier lock key is the MODEL entry qwen3-omni-30b-a3b-instruct-gguf",
+   "observed": "RAISED",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchE.json",
+   "detail": "GateClosed: carrier lock key 'fsd50k' is a general-audio asset explicitly excluded from the speech-aware-evidence-acquisition study, whose scope is human speech and its linguistic content only (ASR, entities, con",
+   "expected": "raise",
+   "gate": "contracts.gate_exposure._resolve_carrier_dataset_entry",
+   "mutation": "carrier lock key is a general-audio asset (fsd50k)",
+   "observed": "RAISED",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchE.json",
+   "detail": "returned slurp",
+   "expected": "pass",
+   "gate": "contracts.gate_exposure._resolve_carrier_dataset_entry",
+   "mutation": "carrier lock key 'slurp' (control)",
+   "observed": "NO RAISE",
+   "superseded": false,
+   "verdict": "OK-CONTROL"
+  },
+  {
+   "battery": "batchE.json",
+   "detail": "GateClosed: exposure row for 'SAEA-SN-MF-DEV1000-LOCK-READ' is already consumed; a consumed run cannot be re-executed",
+   "expected": "raise",
+   "gate": "contracts.gate_exposure._require_exposure_preregistration",
+   "mutation": "CONSUMED ROW: plan re-executes 'SAEA-SN-MF-DEV1000-LOCK-READ' whose ledger cell reads consumed=yes",
+   "observed": "RAISED",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchE.json",
+   "detail": "ReadError: M0: dispatched count disagrees with the committed report",
+   "expected": "raise",
+   "gate": "analysis.dev1000_lock_read.load_arm mechanical cross-check",
+   "mutation": "committed report's two_contact_trajectories_dispatched incremented by 1 in flight",
+   "observed": "RAISED",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchE.json",
+   "detail": "ReadError: M0: retain-primary count disagrees with the committed report",
+   "expected": "raise",
+   "gate": "analysis.dev1000_lock_read.load_arm mechanical cross-check",
+   "mutation": "committed report's one_contact_trajectories_retained_primary incremented by 1 in flight",
+   "observed": "RAISED",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchE.json",
+   "detail": "returned M0",
+   "expected": "pass",
+   "gate": "analysis.dev1000_lock_read.load_arm mechanical cross-check",
+   "mutation": "unmutated load_arm (control)",
+   "observed": "NO RAISE",
+   "superseded": false,
+   "verdict": "OK-CONTROL"
+  },
+  {
+   "battery": "batchE.json",
+   "detail": "",
+   "expected": "raise",
+   "gate": "launcher SidecarCoResidencyGuard (a2t G1 attempt 4)",
+   "mutation": "UNARMED with a live sidecar handle and a reachable embedder port",
+   "observed": "NO RAISE",
+   "superseded": true,
+   "superseded_reason": "the arm/disarm rows were mis-expected and the guard's arm() itself raises when both legs are hot; replaced by batchK.json",
+   "verdict": "DID-NOT-FIRE"
+  },
+  {
+   "battery": "batchE.json",
+   "detail": "",
+   "expected": "pass",
+   "gate": "launcher SidecarCoResidencyGuard (a2t G1 attempt 4)",
+   "mutation": "ARMED, clear host (control)",
+   "observed": "NO RAISE",
+   "superseded": true,
+   "superseded_reason": "the arm/disarm rows were mis-expected and the guard's arm() itself raises when both legs are hot; replaced by batchK.json",
+   "verdict": "OK-CONTROL"
+  },
+  {
+   "battery": "batchE.json",
+   "detail": "CoResidencyViolation: CO-RESIDENCY INVARIANT VIOLATED at handle live during phase 'gate-audit': embedder sidecar handle live=True, port 8082 reachable=False. Attempt 2 measured this exact state at 24,125 MiB of 24,463 with",
+   "expected": "raise",
+   "gate": "launcher SidecarCoResidencyGuard (a2t G1 attempt 4)",
+   "mutation": "ARMED, sidecar HANDLE live (leg 1)",
+   "observed": "RAISED",
+   "superseded": true,
+   "superseded_reason": "the arm/disarm rows were mis-expected and the guard's arm() itself raises when both legs are hot; replaced by batchK.json",
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchE.json",
+   "detail": "CoResidencyViolation: CO-RESIDENCY INVARIANT VIOLATED at port live during phase 'gate-audit': embedder sidecar handle live=False, port 8082 reachable=True. Attempt 2 measured this exact state at 24,125 MiB of 24,463 with d",
+   "expected": "raise",
+   "gate": "launcher SidecarCoResidencyGuard (a2t G1 attempt 4)",
+   "mutation": "ARMED, handle dead but embedder PORT reachable (leg 2)",
+   "observed": "RAISED",
+   "superseded": true,
+   "superseded_reason": "the arm/disarm rows were mis-expected and the guard's arm() itself raises when both legs are hot; replaced by batchK.json",
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchE.json",
+   "detail": "",
+   "expected": "raise",
+   "gate": "launcher SidecarCoResidencyGuard (a2t G1 attempt 4)",
+   "mutation": "DISARMED for the offline bridge with a live sidecar AND a reachable port",
+   "observed": "NO RAISE",
+   "superseded": true,
+   "superseded_reason": "the arm/disarm rows were mis-expected and the guard's arm() itself raises when both legs are hot; replaced by batchK.json",
+   "verdict": "DID-NOT-FIRE"
+  },
+  {
+   "battery": "batchE.json",
+   "detail": "",
+   "expected": "pass",
+   "gate": "launcher DecodeRateSentinel (dev1000 lock)",
+   "mutation": "healthy rolling window: 8 contacts at 30 ms/token (control)",
+   "observed": "NO RAISE",
+   "superseded": true,
+   "superseded_reason": "the half-degraded window was mis-designed (its median crossed the bar); replaced by batchK.json's 1/2/3/4-of-8 blind-spot sweep",
+   "verdict": "OK-CONTROL"
+  },
+  {
+   "battery": "batchE.json",
+   "detail": "",
+   "expected": "pass",
+   "gate": "launcher DecodeRateSentinel (dev1000 lock)",
+   "mutation": "EXACTLY AT the abort threshold: 8 contacts at 1000 ms/token (strict >)",
+   "observed": "NO RAISE",
+   "superseded": true,
+   "superseded_reason": "the half-degraded window was mis-designed (its median crossed the bar); replaced by batchK.json's 1/2/3/4-of-8 blind-spot sweep",
+   "verdict": "OK-CONTROL"
+  },
+  {
+   "battery": "batchE.json",
+   "detail": "DecodeRateSentinelTrip: in-flight decode-rate sentinel TRIPPED: rolling median 5137.00 ms/token over the last 8 observed generation rows exceeds the registered abort threshold 1000 ms/token; window [5137.0, 5137.0, 5137.0, 5",
+   "expected": "raise",
+   "gate": "launcher DecodeRateSentinel (dev1000 lock)",
+   "mutation": "degraded: 8 contacts at 5137 ms/token",
+   "observed": "RAISED",
+   "superseded": true,
+   "superseded_reason": "the half-degraded window was mis-designed (its median crossed the bar); replaced by batchK.json's 1/2/3/4-of-8 blind-spot sweep",
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchE.json",
+   "detail": "DecodeRateSentinelTrip: in-flight decode-rate sentinel TRIPPED: rolling median 50015.00 ms/token over the last 8 observed generation rows exceeds the registered abort threshold 1000 ms/token; window [30.0, 30.0, 30.0, 30.0, ",
+   "expected": "raise",
+   "gate": "launcher DecodeRateSentinel (dev1000 lock)",
+   "mutation": "HALF-degraded window: 4 contacts at 30 ms/token then 4 at 100,000 ms/token (median stays below the bar)",
+   "observed": "RAISED",
+   "superseded": true,
+   "superseded_reason": "the half-degraded window was mis-designed (its median crossed the bar); replaced by batchK.json's 1/2/3/4-of-8 blind-spot sweep",
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchE.json",
+   "detail": "returned 45.0",
+   "expected": "pass",
+   "gate": "launcher decode-speed canary threshold (REPRODUCTION of the live clause)",
+   "mutation": "worst generation rate 45 ms/token (control)",
+   "observed": "NO RAISE",
+   "superseded": true,
+   "superseded_reason": "re-run identically and persisted in batchK.json",
+   "verdict": "OK-CONTROL"
+  },
+  {
+   "battery": "batchE.json",
+   "detail": "CanaryFail: decode-speed canary FAILED at 997.0",
+   "expected": "raise",
+   "gate": "launcher decode-speed canary threshold (REPRODUCTION of the live clause)",
+   "mutation": "worst generation rate 997 ms/token (the attempt-2 co-residency state)",
+   "observed": "RAISED",
+   "superseded": true,
+   "superseded_reason": "re-run identically and persisted in batchK.json",
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchE.json",
+   "detail": "CanaryFail: decode-speed canary FAILED at 300.0",
+   "expected": "raise",
+   "gate": "launcher decode-speed canary threshold (REPRODUCTION of the live clause)",
+   "mutation": "worst generation rate EXACTLY 300.0 ms/token (strict <)",
+   "observed": "RAISED",
+   "superseded": true,
+   "superseded_reason": "re-run identically and persisted in batchK.json",
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchE.json",
+   "detail": "CanaryFail: timing lines incomplete",
+   "expected": "raise",
+   "gate": "launcher decode-speed canary threshold (REPRODUCTION of the live clause)",
+   "mutation": "only 1 timing row for 2 contacts",
+   "observed": "RAISED",
+   "superseded": true,
+   "superseded_reason": "re-run identically and persisted in batchK.json",
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchE.json",
+   "detail": "returned ['confirmatory', 'dev', 'discovery']",
+   "expected": "pass",
+   "gate": "core.split_receipt.verify_receipt_document",
+   "mutation": "the committed splits receipt, unmodified (control)",
+   "observed": "NO RAISE",
+   "superseded": false,
+   "verdict": "OK-CONTROL"
+  },
+  {
+   "battery": "batchE.json",
+   "detail": "SplitReceiptError: splits receipt: split 'confirmatory' count 115 != len(ids) 114",
+   "expected": "raise",
+   "gate": "core.split_receipt.verify_receipt_document",
+   "mutation": "one id dropped from a split, count/identity_hash left as declared",
+   "observed": "RAISED",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchE.json",
+   "detail": "SplitReceiptError: splits receipt: split 'confirmatory' identity_hash '0000000000000000000000000000000000000000000000000000000000000000' does not match the hash recomputed from ids ('18f8e1c94bc3530afcfcc757b0d1b5b1b4c6",
+   "expected": "raise",
+   "gate": "core.split_receipt.verify_receipt_document",
+   "mutation": "a split's identity_hash replaced with 0*64",
+   "observed": "RAISED",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchE.json",
+   "detail": "SplitReceiptError: splits receipt: split 'discovery' id 'earnings22-original/4453225' is not prefixed 'earnings21-original/'",
+   "expected": "raise",
+   "gate": "core.split_receipt.verify_receipt_document",
+   "mutation": "CONTAMINATION: a dev id inserted into the discovery split, with count and identity_hash recomputed to stay internally consistent",
+   "observed": "RAISED",
+   "superseded": true,
+   "superseded_reason": "the mutation inserted a FOREIGN-carrier id, so the carrier-prefix clause fired before the disjointness clause; replaced by batchK.json's same-carrier mutation",
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchI.json",
+   "detail": "a DEVEL target absent from TRAIN cannot lower intent_coverage, because it is not in the denominator",
+   "expected": "raise",
+   "gate": "rails.knowledge_build.coverage_report intent_coverage denominator",
+   "mutation": "compare the metric's denominator (TRAIN rows' intents) with the TASK target space it is cited for (the DEVEL label space the study is evaluated on)",
+   "observed": "TRAIN=60 DEVEL=59; DEVEL targets absent from the TRAIN denominator=[]",
+   "superseded": false,
+   "verdict": "DID-NOT-FIRE"
+  },
+  {
+   "battery": "batchI.json",
+   "detail": "tool_coverage reads 1.0 while 1 registry tool(s) are modelled by no facet, because the denominator is the pool, not the target space",
+   "expected": "raise",
+   "gate": "rails.knowledge_build_a2t.coverage_report_a2t tool_coverage denominator",
+   "mutation": "compare the metric's denominator (the CONSTRUCTION POOL's tools) with the task target space it is cited for (the frozen tool REGISTRY the core may call)",
+   "observed": "registry=152 pool=151, registry tools modelled by no facet=['getLockStatus']",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchJ.json",
+   "detail": "reproduced 3/3, dispatch 3/3, labels 3/3",
+   "expected": "pass",
+   "gate": "analysis.cross_carrier_ceiling_decomposition.fidelity_gate",
+   "mutation": "faithful synthetic replay: supply, dispatch and label recovery all agree (control)",
+   "observed": "gate_passed=True",
+   "superseded": false,
+   "verdict": "OK-CONTROL"
+  },
+  {
+   "battery": "batchJ.json",
+   "detail": "",
+   "expected": "raise",
+   "gate": "analysis.cross_carrier_ceiling_decomposition.fidelity_gate",
+   "mutation": "the replayed SUPPLY for one dispatched trajectory selects a different value id",
+   "observed": "gate_passed=False mismatch_ids=['s1']",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchJ.json",
+   "detail": "",
+   "expected": "raise",
+   "gate": "analysis.cross_carrier_ceiling_decomposition.fidelity_gate",
+   "mutation": "the flown DISPATCH decision for one retained trajectory is flipped to dispatched",
+   "observed": "gate_passed=False mismatch_ids=['s2']",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchJ.json",
+   "detail": "",
+   "expected": "raise",
+   "gate": "analysis.cross_carrier_ceiling_decomposition.fidelity_gate",
+   "mutation": "the flown DIRECT-LABEL recovery flag for one trajectory is flipped",
+   "observed": "gate_passed=False mismatch_ids=['s1']",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchJ.json",
+   "detail": "",
+   "expected": "raise",
+   "gate": "analysis.cross_carrier_ceiling_decomposition.fidelity_gate",
+   "mutation": "a RETAINED trajectory carries a non-null flown supply",
+   "observed": "gate_passed=False mismatch_ids=['s2']",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchJ.json",
+   "detail": "fidelity block as published: {'supply_gate_passed': True, 'winner_gate_passed': False}",
+   "expected": "raise",
+   "gate": "analysis.dev100_damage_channel_analysis winner_gate_passed",
+   "mutation": "fidelity_report forced to report winner_gate_passed = False",
+   "observed": "analyse() COMPLETED",
+   "superseded": false,
+   "verdict": "DID-NOT-FIRE"
+  },
+  {
+   "battery": "batchJ.json",
+   "detail": "AnalysisError: supply replay does not reproduce the flown SUPPLY trace; the analysis is void",
+   "expected": "raise",
+   "gate": "analysis.dev100_damage_channel_analysis supply_gate_passed",
+   "mutation": "fidelity_report forced to report supply_gate_passed = False",
+   "observed": "RAISED",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchK.json",
+   "detail": "",
+   "expected": "pass",
+   "gate": "contracts.gate_exposure._require_exposure_preregistration",
+   "mutation": "UNCONSUMED row SAEA-DEV100-RETAIN-OVERRIDE with a minimal plan (control)",
+   "observed": "NO RAISE",
+   "superseded": false,
+   "verdict": "OK-CONTROL"
+  },
+  {
+   "battery": "batchK.json",
+   "detail": "",
+   "expected": "pass",
+   "gate": "contracts.gate_exposure._require_exposure_preregistration",
+   "mutation": "plan claims EXACTLY the registered budget (300 calls / 900 s / 0.400 gpu-h) - boundary",
+   "observed": "NO RAISE",
+   "superseded": false,
+   "verdict": "OK-CONTROL"
+  },
+  {
+   "battery": "batchK.json",
+   "detail": "GateClosed: execution plan claims 301 calls but only 300 were pre-registered; model touch refused",
+   "expected": "raise",
+   "gate": "contracts.gate_exposure._require_exposure_preregistration",
+   "mutation": "OVER-BUDGET CALLS: plan claims 301, row registers 300",
+   "observed": "RAISED",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchK.json",
+   "detail": "GateClosed: execution plan claims 901 speech audio seconds but only 900 were pre-registered; model touch refused",
+   "expected": "raise",
+   "gate": "contracts.gate_exposure._require_exposure_preregistration",
+   "mutation": "OVER-BUDGET AUDIO: plan claims 901 s, row registers 900 s",
+   "observed": "RAISED",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchK.json",
+   "detail": "GateClosed: execution plan claims 0.401 gpu hours but only 0.4 were pre-registered; model touch refused",
+   "expected": "raise",
+   "gate": "contracts.gate_exposure._require_exposure_preregistration",
+   "mutation": "OVER-BUDGET GPU: plan claims 0.401 gpu-h, row registers 0.400",
+   "observed": "RAISED",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchK.json",
+   "detail": "GateClosed: exposure row disagrees with the execution plan on 'execution profile': row 'bounded-discovery-probe' vs plan 'model-free-check'; model touch refused",
+   "expected": "raise",
+   "gate": "contracts.gate_exposure._require_exposure_preregistration",
+   "mutation": "PROFILE MISMATCH: plan declares model-free-check against a bounded-discovery-probe row",
+   "observed": "RAISED",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchK.json",
+   "detail": "`except OSError: return False` reports an UNDETERMINABLE port as CLEAR, so the TCP leg fails OPEN. Leg 1 (the launcher's own sidecar handle) is unaffected.",
+   "expected": "raise",
+   "gate": "launcher SidecarCoResidencyGuard, TCP probe leg (_port_reachable)",
+   "mutation": "socket.create_connection raises OSError(EACCES): the probe cannot determine reachability at all",
+   "observed": "returned reachable=False (no raise)",
+   "superseded": false,
+   "verdict": "DID-NOT-FIRE"
+  },
+  {
+   "battery": "batchK.json",
+   "detail": "",
+   "expected": "raise",
+   "gate": "launcher SidecarCoResidencyGuard, sidecar-handle leg",
+   "mutation": "ARMED, the launcher's own sidecar handle reports live",
+   "observed": "raised=True",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchK.json",
+   "detail": "",
+   "expected": "raise",
+   "gate": "launcher SidecarCoResidencyGuard, embedder-port leg",
+   "mutation": "ARMED, handle dead but the embedder port probes reachable",
+   "observed": "raised=True",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchK.json",
+   "detail": "declared no-op outside the armed window; the offline bridge is exactly the window in which the sidecar is supposed to be up",
+   "expected": "raise",
+   "gate": "launcher SidecarCoResidencyGuard, arm/disarm windows",
+   "mutation": "both legs hot while UNARMED, and again while DISARMED for the offline bridge",
+   "observed": "unarmed_raised=False disarmed_raised=False",
+   "superseded": false,
+   "verdict": "DID-NOT-FIRE"
+  },
+  {
+   "battery": "batchK.json",
+   "detail": "",
+   "expected": "pass",
+   "gate": "launcher DecodeRateSentinel (dev1000 lock)",
+   "mutation": "healthy window: 8 contacts at 30 ms/token (control)",
+   "observed": "NO RAISE",
+   "superseded": false,
+   "verdict": "OK-CONTROL"
+  },
+  {
+   "battery": "batchK.json",
+   "detail": "",
+   "expected": "pass",
+   "gate": "launcher DecodeRateSentinel (dev1000 lock)",
+   "mutation": "EXACTLY AT the abort threshold: 8 contacts at 1000 ms/token (strict >)",
+   "observed": "NO RAISE",
+   "superseded": false,
+   "verdict": "OK-CONTROL"
+  },
+  {
+   "battery": "batchK.json",
+   "detail": "DecodeRateSentinelTrip: in-flight decode-rate sentinel TRIPPED: rolling median 5137.00 ms/token over the last 8 observed generation rows exceeds the registered abort threshold 1000 ms/token; window [5137.0, 5137.0, 5137.0, 5",
+   "expected": "raise",
+   "gate": "launcher DecodeRateSentinel (dev1000 lock)",
+   "mutation": "degraded: 8 contacts at 5137 ms/token (the attempt-2 state)",
+   "observed": "RAISED",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchK.json",
+   "detail": "",
+   "expected": "raise",
+   "gate": "launcher DecodeRateSentinel median blind spot",
+   "mutation": "1 of 8 contacts in the window at 1,000,000 ms/token, the rest at 30 ms/token",
+   "observed": "NO RAISE",
+   "superseded": false,
+   "verdict": "DID-NOT-FIRE"
+  },
+  {
+   "battery": "batchK.json",
+   "detail": "",
+   "expected": "raise",
+   "gate": "launcher DecodeRateSentinel median blind spot",
+   "mutation": "2 of 8 contacts in the window at 1,000,000 ms/token, the rest at 30 ms/token",
+   "observed": "NO RAISE",
+   "superseded": false,
+   "verdict": "DID-NOT-FIRE"
+  },
+  {
+   "battery": "batchK.json",
+   "detail": "",
+   "expected": "raise",
+   "gate": "launcher DecodeRateSentinel median blind spot",
+   "mutation": "3 of 8 contacts in the window at 1,000,000 ms/token, the rest at 30 ms/token",
+   "observed": "NO RAISE",
+   "superseded": false,
+   "verdict": "DID-NOT-FIRE"
+  },
+  {
+   "battery": "batchK.json",
+   "detail": "DecodeRateSentinelTrip: in-flight decode-rate sentinel TRIPPED: rolling median 500015.00 ms/token over the last 8 observed generation rows exceeds the registered abort threshold 1000 ms/token; window [30.0, 30.0, 30.0, 30.0,",
+   "expected": "raise",
+   "gate": "launcher DecodeRateSentinel median blind spot",
+   "mutation": "4 of 8 contacts in the window at 1,000,000 ms/token, the rest at 30 ms/token",
+   "observed": "RAISED",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchK.json",
+   "detail": "returned 45.0",
+   "expected": "pass",
+   "gate": "launcher decode-speed canary threshold (REPRODUCTION of the live clause)",
+   "mutation": "worst generation rate 45 ms/token (control)",
+   "observed": "NO RAISE",
+   "superseded": false,
+   "verdict": "OK-CONTROL"
+  },
+  {
+   "battery": "batchK.json",
+   "detail": "CanaryFail: decode-speed canary FAILED at 997.0",
+   "expected": "raise",
+   "gate": "launcher decode-speed canary threshold (REPRODUCTION of the live clause)",
+   "mutation": "worst generation rate 997 ms/token (the attempt-2 co-residency state)",
+   "observed": "RAISED",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchK.json",
+   "detail": "CanaryFail: decode-speed canary FAILED at 300.0",
+   "expected": "raise",
+   "gate": "launcher decode-speed canary threshold (REPRODUCTION of the live clause)",
+   "mutation": "worst generation rate EXACTLY 300.0 ms/token (strict <)",
+   "observed": "RAISED",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchK.json",
+   "detail": "CanaryFail: timing lines incomplete",
+   "expected": "raise",
+   "gate": "launcher decode-speed canary threshold (REPRODUCTION of the live clause)",
+   "mutation": "only 1 timing row for 2 contacts",
+   "observed": "RAISED",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchK.json",
+   "detail": "only a WITHIN-build divergence (rerun != first run on the same binary) raises CanaryFail",
+   "expected": "raise",
+   "gate": "launcher byte-compare canary, CROSS-ATTEMPT leg",
+   "mutation": "read the live branch taken when the canary responses differ from the attempt-1 M0 hashes: is a cross-attempt byte divergence a stop condition?",
+   "observed": "NOT a stop: the branch logs, re-runs the pair once, records decode_divergence as a caveat, and flies",
+   "superseded": false,
+   "verdict": "DID-NOT-FIRE"
+  },
+  {
+   "battery": "batchK.json",
+   "detail": "returned ['confirmatory', 'dev', 'discovery']",
+   "expected": "pass",
+   "gate": "core.split_receipt.verify_receipt_document",
+   "mutation": "the committed receipt, unmodified (control)",
+   "observed": "NO RAISE",
+   "superseded": false,
+   "verdict": "OK-CONTROL"
+  },
+  {
+   "battery": "batchK.json",
+   "detail": "SplitReceiptError: splits receipt: splits 'dev' and 'confirmatory' share carrier 'earnings22-original' but are not disjoint: ['earnings22-original/4453225']",
+   "expected": "raise",
+   "gate": "core.split_receipt.verify_receipt_document same-carrier disjointness",
+   "mutation": "a DEV id inserted into the CONFIRMATORY split (both earnings22-original), with count AND identity_hash correctly recomputed so every earlier clause passes",
+   "observed": "RAISED",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchK.json",
+   "detail": "deliberate and documented: refusing historical bytes would break every landed replay",
+   "expected": "raise",
+   "gate": "rails.knowledge.KnowledgeSnapshot.from_frozen_json prior-score range (LOAD side)",
+   "mutation": "load a frozen snapshot document whose value carries prior_score=4.1",
+   "observed": "NO RAISE: accepted, RuntimeWarning emitted, violation recorded as (('v1', 4.1),)",
+   "superseded": false,
+   "verdict": "DID-NOT-FIRE"
+  },
+  {
+   "battery": "batchK.json",
+   "detail": "RailsError: KnowledgeSnapshot.frozen_json[gate-audit]: prior_score must be a probability in [0.0, 1.0] -- 1 of 1 values are outside it (v1=4.1). A ratio whose numerator is not restricted to its denominator's cond",
+   "expected": "raise",
+   "gate": "rails.knowledge.KnowledgeSnapshot.frozen_json prior-score range (WRITE side)",
+   "mutation": "re-freeze that loaded historical snapshot back into durable bytes",
+   "observed": "RAISED",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchL.json",
+   "detail": "the field is NAMED ci90_excludes_zero but computes ci_low > 0, i.e. it is one-sided POSITIVE; a CI entirely below zero reports False, which is the safe direction for the claim even though the name is not literally true",
+   "expected": "raise",
+   "gate": "analysis.dev500_confirmatory_read claim condition (ci90_excludes_zero)",
+   "mutation": "feed the rule a catastrophic REGRESSION (BLEND 40 pp below M0 on 500 paired samples)",
+   "observed": "claim_condition_outcome=NOT MET (ci90=[-43.60,-36.40])",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchL.json",
+   "detail": "",
+   "expected": "raise",
+   "gate": "analysis.dev1000_lock_read LOCK CONDITION, negative direction",
+   "mutation": "feed the LOCK rule the same catastrophic regression",
+   "observed": "lock_outcome=NOT-CONFIRMED",
+   "superseded": false,
+   "verdict": "FIRES"
+  },
+  {
+   "battery": "batchL.json",
+   "detail": "",
+   "expected": "raise",
+   "gate": "analysis.dev1000_lock_read LOCK CONDITION, null direction",
+   "mutation": "feed the LOCK rule a null effect (BLEND identical to M0)",
+   "observed": "lock_outcome=NOT-CONFIRMED delta=+0.00",
+   "superseded": false,
+   "verdict": "FIRES"
+  }
+ ],
+ "mutations_live": 112,
+ "mutations_superseded": 28,
+ "mutations_total_recorded": 140,
+ "offline_guard": {
+  "attempted_targets": [],
+  "mechanism": "socket.socket.connect / connect_ex / socket.create_connection were replaced with counting refusals before the first input was opened, in every process this row ran",
+  "outbound_connection_attempts_per_process": {
+   "batchA.json": 0,
+   "batchA2.json": 0,
+   "batchB.json": 0,
+   "batchC.json": 0,
+   "batchD.json": 0,
+   "batchE.json": 0,
+   "batchI.json": 0,
+   "batchJ.json": 0,
+   "batchK.json": 0,
+   "batchL.json": 0
+  },
+  "outbound_connection_attempts_total": 0
+ },
+ "schema": "saea-gate-audit-receipt-v1",
+ "scope": "gates, metrics, invariants and pre-registered verdicts that a LANDED CONCLUSION relies on: the two knowledge builders' coverage and decontamination figures; the fail-closed assertions campaign documents cite as protections; the fidelity gates and mechanical verdicts of the landed reads; and the landed decision rules. A sweep of every assertion in the codebase was explicitly NOT attempted.",
+ "spend": {
+  "embedding_tool_contacts": 0,
+  "frozen_core_contacts": 0,
+  "gpu_hours": 0.0,
+  "http_or_socket_requests": 0,
+  "new_dependencies": 0,
+  "speech_audio_seconds": 0,
+  "tokenizer_contacts": 0
+ }
+}
