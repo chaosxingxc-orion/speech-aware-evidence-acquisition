@@ -112,6 +112,16 @@ EXEMPLAR_N_GRID = (2, 3, 4)
 # ``kb.multidim_recall`` call before the vectorised recall is trusted.
 RECALL_FIDELITY_PROBES = 8
 
+# The operating point this pre-analysis recommends, and which its registered
+# prediction is computed at (docs/readiness/2026-08-24-contrast-fewshot-preanalysis.md
+# section 7). The trigger is the COSINE margin because the briefed fused-score
+# margin is degenerate; the scope overrides retain-primary because the
+# dispatch-only ceiling is 2 errors on DEV-100 and 4 on NEW400.
+RECOMMENDED_COS_MARGIN = 0.02
+RECOMMENDED_EXEMPLARS_PER_SIDE = 3
+RECOMMENDED_SCOPE = "all"
+RECOMMENDED_DISAGREEMENT_GATE = False
+
 
 class PreanalysisError(RuntimeError):
     """Raised when a landed input does not match its pinned identity."""
@@ -1266,11 +1276,17 @@ def registered_prediction(
     *,
     primary: Mapping[str, SampleReplay],
     replication: Mapping[str, SampleReplay],
-    margin_threshold: float,
+    cos_margin_threshold: float,
     exemplar_n: int,
     scope: str,
+    disagreement_gate: bool,
 ) -> dict[str, object]:
     """A projected ledger for a possible E-A round 1 on DEV-100.
+
+    The trigger is the COSINE margin, not the briefed fused-score margin:
+    :func:`trigger_analysis` proves the latter bimodal, so a prediction
+    computed on it would be a prediction about "how many targets were
+    supplied" rather than about confusability.
 
     The conversion band's OPTIMISTIC anchor is the sealed DEV-500 dispatched
     subgroup, where the evidence contact converted direct-decode failures at
@@ -1290,7 +1306,13 @@ def registered_prediction(
 
     def ledger(replays: Mapping[str, SampleReplay], population_size: int) -> dict[str, object]:
         members = scoped(replays)
-        triggered = [r for r in members if r.margin_top2 <= margin_threshold + 1e-9]
+        triggered = [
+            r
+            for r in members
+            if len(r.fused_ranked) >= 2
+            and r.cos_margin <= cos_margin_threshold + 1e-9
+            and (not disagreement_gate or not r.direct_agrees_with_fused_top1)
+        ]
         captured = [r for r in triggered if not r.correct]
         reachable = [
             r for r in captured if r.gold_fused_rank is not None and r.gold_fused_rank <= 2
@@ -1325,22 +1347,44 @@ def registered_prediction(
             "sealed_baseline_correct": baseline_correct,
             "sealed_baseline_accuracy": round(baseline_correct / population_size, 4),
             "triggered": len(triggered),
+            "extra_frozen_core_contacts": sum(1 for r in triggered if not r.dispatched),
             "errors_captured": len(captured),
             "theoretically_reachable_errors_gold_in_pair": len(reachable),
             "correct_samples_disturbed": len(disturbed),
             "disturbed_with_gold_outside_the_pair": len(disturbed_gold_outside),
             "conversion_bands": bands,
+            "absolute_bounds": {
+                "note": (
+                    "not a band: the arithmetic extremes, where every reachable error "
+                    "converts or every disturbed correct sample breaks"
+                ),
+                "best_case_correct_count": baseline_correct + len(reachable),
+                "worst_case_correct_count": baseline_correct - len(disturbed),
+            },
         }
 
     return {
         "status": "REGISTERED PREDICTION -- design input only; no round is authorized by it",
         "recommended_knobs": {
-            "margin_threshold": margin_threshold,
+            "trigger_signal": "cosine margin cos1 - cos2 over the pair's best admitted facets",
+            "cos_margin_threshold": cos_margin_threshold,
             "exemplars_per_side_n": exemplar_n,
             "trigger_scope": scope,
+            "disagreement_gate": disagreement_gate,
             "pair_size": 2,
             "everything_else": "byte-equal to the frozen cell",
         },
+        "why_not_the_briefed_signal": (
+            "the briefed fused-score top-2 margin is bimodal -- every threshold in "
+            "[0.10, 0.90] selects the identical set -- so it encodes how many targets were "
+            "supplied, not how confusable they are; see trigger_analysis and the "
+            "degeneracy_finding note"
+        ),
+        "evaluability_caveat": (
+            "the whole DEV-100 credible band sits inside or barely outside the documented "
+            "+/- 2 per 100 direct-decode byte-variance channel, so an E-A round cannot be "
+            "evaluated on DEV-100; a read would have to be at the 400-sample tier or larger"
+        ),
         "optimistic_anchor": (
             "the sealed DEV-500 dispatched subgroup: BLEND 62.31% vs M0 2.31%, W->C 78 / "
             "C->W 0 over n = 130 (docs/readiness/2026-08-24-dev500-confirmatory-verdict.md)"
@@ -1400,9 +1444,9 @@ def analyse(*, repo_root: Path, data_root: Path) -> dict[str, object]:
     replicate = replays["DEV-100-ROUND5"]
     new400 = replays["DEV-500-NEW400"]
 
+    # The fused-margin threshold used ONLY for the exemplar-availability and
+    # risk passes, where the widest (all multi-target) trigger set is wanted.
     recommended_threshold = 0.25
-    recommended_n = 3
-    recommended_scope = "dispatched"
 
     report: dict[str, object] = {
         "schema": SCHEMA,
@@ -1521,9 +1565,10 @@ def analyse(*, repo_root: Path, data_root: Path) -> dict[str, object]:
         "q5_registered_prediction": registered_prediction(
             primary=primary,
             replication=new400,
-            margin_threshold=recommended_threshold,
-            exemplar_n=recommended_n,
-            scope=recommended_scope,
+            cos_margin_threshold=RECOMMENDED_COS_MARGIN,
+            exemplar_n=RECOMMENDED_EXEMPLARS_PER_SIDE,
+            scope=RECOMMENDED_SCOPE,
+            disagreement_gate=RECOMMENDED_DISAGREEMENT_GATE,
         ),
     }
     report["per_sample"] = {
@@ -1586,6 +1631,10 @@ __all__ = [
     "FROZEN_TOP_K",
     "FROZEN_WEIGHTS",
     "RECALL_FIDELITY_PROBES",
+    "RECOMMENDED_COS_MARGIN",
+    "RECOMMENDED_DISAGREEMENT_GATE",
+    "RECOMMENDED_EXEMPLARS_PER_SIDE",
+    "RECOMMENDED_SCOPE",
     "SCHEMA",
     "SampleReplay",
     "analyse",
