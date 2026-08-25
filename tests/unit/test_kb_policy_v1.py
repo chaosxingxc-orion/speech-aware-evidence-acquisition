@@ -12,10 +12,24 @@ trajectory through ``rails.runner.run_speech_native_agent_loop`` with a fake
 retain-primary safety default, and a task-independence proof that reruns
 the SAME registered policy against a 5-label and a 150-label synthetic
 label space); and registry idempotence.
+
+Also covers the 2026-08-25 cross-dimension commensurability repair (owner
+ruling; authority
+``docs/checks/speech-aware-evidence-acquisition/2026-08-25-a2t-g1/README.md``
+section "CORRECTION"): that :func:`~.kb_policy._dimension_scales` is an exact
+identity wherever a dimension already respects its bound -- asserted both on
+synthetic SLURP-shaped scores and by replaying the SEALED DEV-1000 BLEND
+records through the repaired path -- and that on an Audio2Tool-shaped
+knowledge base, where prior mass is unbounded, content facets get their
+admission window back and the supply path fires.
 """
 
 from __future__ import annotations
 
+import hashlib
+import json
+import math
+import os
 from dataclasses import dataclass, replace
 from pathlib import Path
 
@@ -36,6 +50,8 @@ from speech_aware_evidence_acquisition.rails.knowledge import (
     KeyFacet,
     KnowledgeSnapshot,
     QueryState,
+    RankedFacet,
+    RankResult,
     ValueBundle,
 )
 from speech_aware_evidence_acquisition.rails.obs import AudioRef, ObsPacket
@@ -421,6 +437,523 @@ def test_ranker_agreement_term_rewards_multi_dimension_hits():
     )
     scores = {c.facet_id: c.score for c in result.candidates}
     assert scores["facet:multi-dim"] > scores["facet:single-dim"]
+
+
+# ---------------------------------------------------------------------------
+# Stage 2 (repair): cross-dimension commensurability
+#
+# The ranker used to sum a cosine bounded by 1 with an UNBOUNDED prior mass
+# inside one weighted score. ``rails.kb_policy._dimension_scales`` now divides
+# every dimension by ``max(1.0, sup_d)`` over the recalled candidate set, so
+# every term lands in the same [0, 1] range before the weights apply. These
+# tests pin the three properties the repair has to have: it is an EXACT
+# identity wherever a dimension already respects its bound (the SLURP locked
+# cell), it shrinks ONLY a dimension that has escaped it (Audio2Tool), and on
+# the escaped carrier content facets get their admission window back.
+#
+# Authority for the defect and the required proof:
+# ``docs/checks/speech-aware-evidence-acquisition/2026-08-25-a2t-g1/README.md``
+# section "CORRECTION" (owner ruling, 2026-08-25).
+# ---------------------------------------------------------------------------
+
+# The knob table the DEV-1000 baseline is LOCKED at
+# (``configs/policy/kb-policy-v1-dev100.json``), restated here so the repair's
+# guarantees are asserted at the operating point that actually flies. This is
+# a READ of the locked cell; nothing here changes it.
+_LOCKED_WEIGHTS = kb_policy.RankWeights(w_cos=0.5, w_prior=0.3, w_agree=0.2)
+_LOCKED_FUSE = kb_policy.FuseKnobs(tau=0.65, m=5, c=2, top_l=3)
+_LOCKED_TOP_K = 5
+
+# The prior masses ``multidim_recall`` actually returns on the pinned
+# Audio2Tool snapshot ``ec2f9ec4...``: its top ``top_k_per_dimension = 5``
+# facet masses per prior-mass dimension, measured rather than invented. There
+# ``prior_score = tool_total / category_total`` counts a tool's rows across
+# every domain against ONE (domain, category) denominator, so the ratio is not
+# nested, is not a probability, and 193 of the snapshot's 12,601 values exceed
+# 1. SLURP's own sup, on the pinned TRAIN snapshot ``e27b2745...``, is exactly
+# 1.0 -- which is the whole reason the defect stayed invisible.
+_A2T_PRIOR_MASSES = (
+    4.1,
+    2.493827160493827,
+    1.956043956043956,
+    1.5274725274725274,
+    1.1908396946564885,
+)
+# Best content-facet cosine per trajectory over G1's 104 flown trajectories
+# ranged 0.7594 to 0.9572 (G1 read section 10.5) -- every one of them clears
+# ``tau = 0.65``, which is why the zero-dispatch was never a recall failure.
+_A2T_CONTENT_COSINES = (0.9572, 0.9012, 0.8433, 0.7981, 0.7594)
+
+
+def _pre_repair_ranking(recall_scores, weights) -> list[tuple[str, float]]:
+    """The ranker's EXACT pre-repair expression, transcribed.
+
+    Kept verbatim (raw per-dimension scores, no normalisation) so the tests
+    below can assert bit-for-bit equality against it in the bounded regime and
+    show the eviction it produced in the unbounded one. If this ever stops
+    matching the shipped ranker in the bounded regime, the locked baseline has
+    moved and the identity claim is dead.
+    """
+
+    dims_total = len({dim for scores in recall_scores.values() for dim in scores})
+    ranked: list[tuple[str, float]] = []
+    for facet_id, dim_scores in recall_scores.items():
+        cosine_scores = [
+            score
+            for dim, score in dim_scores.items()
+            if dim not in kb_policy.PRIOR_MASS_DIMENSIONS
+        ]
+        prior_scores = [
+            score
+            for dim, score in dim_scores.items()
+            if dim in kb_policy.PRIOR_MASS_DIMENSIONS
+        ]
+        max_cosine = max(cosine_scores) if cosine_scores else 0.0
+        max_prior = max(prior_scores) if prior_scores else 0.0
+        agreement = len(dim_scores) / dims_total if dims_total else 0.0
+        ranked.append(
+            (
+                facet_id,
+                weights.w_cos * max_cosine
+                + weights.w_prior * max_prior
+                + weights.w_agree * agreement,
+            )
+        )
+    ranked.sort(key=lambda item: (-item[1], item[0]))
+    return ranked
+
+
+def _ranked(result) -> list[tuple[str, float]]:
+    return [(candidate.facet_id, candidate.score) for candidate in result.candidates]
+
+
+def test_dimension_scales_are_the_identity_when_every_dimension_respects_its_bound():
+    # SLURP's regime: cosine <= 1 as a theorem, prior mass <= 1 because the
+    # builder's ratio is genuinely nested. Every divisor is exactly 1.0.
+    recall_scores = {
+        "facet:content:a": {"content": 0.9007},
+        "facet:content:b": {"content": 0.0001},
+        "facet:label:x": {"label": 1.0},
+        "facet:prior:x": {"prior": 0.0189},
+    }
+    assert kb_policy._dimension_scales(recall_scores) == {
+        "content": 1.0,
+        "label": 1.0,
+        "prior": 1.0,
+    }
+
+
+def test_dimension_scales_shrink_only_the_dimension_that_escaped_its_bound():
+    recall_scores = {
+        "facet:content:a": {"content": 0.9572},
+        "facet:label:t0": {"label": 4.1},
+        "facet:prior:t0": {"prior": 4.1},
+        "facet:prior:t4": {"prior": 1.1908396946564885},
+    }
+    scales = kb_policy._dimension_scales(recall_scores)
+    # The bounded dimension is untouched; the two escaped ones are divided by
+    # their own observed supremum, never by a shared or a tuned constant.
+    assert scales == {"content": 1.0, "label": 4.1, "prior": 4.1}
+
+
+def test_dimension_scales_never_amplify_and_never_divide_by_zero():
+    # A degenerate recall (an all-zero or negative dimension) must not blow up
+    # or flip a sign: the floor at 1.0 makes every divisor >= 1 by
+    # construction, so the map can only ever shrink.
+    scales = kb_policy._dimension_scales(
+        {"facet:a": {"content": 0.0, "label": -3.0}}
+    )
+    assert scales == {"content": 1.0, "label": 1.0}
+
+
+def test_ranker_is_bit_identical_to_the_pre_repair_form_in_the_slurp_regime():
+    """THE LOCKED-CELL IDENTITY, on synthetic SLURP-shaped scores.
+
+    Every dimension respects its bound (the prior dimension even attains it
+    exactly, as SLURP's TRAIN snapshot does), so every divisor is 1.0, IEEE-754
+    division by 1.0 is exact, and the whole candidate list -- ordering AND
+    float scores -- must be what the pre-repair ranker produced. Equality is
+    exact ``==`` on floats, deliberately: an approximate match would not prove
+    a byte-identical baseline.
+    """
+
+    recall_scores = {
+        "facet:content:u1": {"content": 0.9007060012340951},
+        "facet:content:u2": {"content": 0.7412},
+        "facet:content:u3": {"content": 0.6501, "speaker": 0.31},
+        "facet:label:alarm_query": {"label": 1.0},
+        "facet:label:iot_hue_lightoff": {"label": 0.4517},
+        "facet:prior:alarm_query": {"prior": 1.0},
+        "facet:prior:iot_hue_lightoff": {"prior": 0.018957345971563982},
+    }
+    ranker = kb_policy.rank_wcos_prior_agree_factory(_LOCKED_WEIGHTS)
+
+    result = ranker(
+        snapshot_sha256=_SHA_B, query_state=_query_state(), recall_scores=recall_scores
+    )
+
+    assert _ranked(result) == _pre_repair_ranking(recall_scores, _LOCKED_WEIGHTS)
+    result.validate()
+
+
+@pytest.mark.parametrize(
+    "weights",
+    [
+        _LOCKED_WEIGHTS,
+        kb_policy.RankWeights(w_cos=1.0, w_prior=0.0, w_agree=0.0),
+        kb_policy.RankWeights(w_cos=0.0, w_prior=1.0, w_agree=0.0),
+        kb_policy.RankWeights(w_cos=0.2, w_prior=0.7, w_agree=0.1),
+    ],
+)
+def test_ranker_identity_in_the_bounded_regime_holds_for_any_weighting(weights):
+    # The identity is a property of the normalisation, not of one weight
+    # vector: with every divisor at 1.0 the repair cannot move a score
+    # whatever the weights are.
+    recall_scores = {
+        "facet:content:a": {"content": 0.88, "speaker": 0.5},
+        "facet:content:b": {"content": 1.0},
+        "facet:label:x": {"label": 1.0},
+        "facet:prior:x": {"prior": 0.25},
+        "facet:prior:y": {"prior": 0.75},
+    }
+    ranker = kb_policy.rank_wcos_prior_agree_factory(weights)
+
+    result = ranker(
+        snapshot_sha256=_SHA_B, query_state=_query_state(), recall_scores=recall_scores
+    )
+
+    assert _ranked(result) == _pre_repair_ranking(recall_scores, weights)
+
+
+def _a2t_shaped_snapshot() -> KnowledgeSnapshot:
+    """Audio2Tool's KB SHAPE: one content/label/prior facet triple per tool.
+
+    Mirrors ``rails.knowledge_build_a2t``: each value is associated with its
+    tool's content facet AND its label and prior facets, so the label/prior
+    facets recall by that value's ``prior_score`` -- which on this carrier is
+    an unbounded ratio, here the five masses actually measured on the pinned
+    snapshot.
+    """
+
+    facets: list[KeyFacet] = []
+    values: list[ValueBundle] = []
+    for index, mass in enumerate(_A2T_PRIOR_MASSES):
+        sample_id = f"train:t{index}"
+        facets.extend(
+            (
+                KeyFacet(f"facet:content:t{index}", "content", "text", f"exemplar {index}", (sample_id,)),
+                KeyFacet(f"facet:label:t{index}", "label", "text", f"tool_{index}", (sample_id,)),
+                KeyFacet(f"facet:prior:t{index}", "prior", "text", f"prior tool_{index}", (sample_id,)),
+            )
+        )
+        values.append(
+            ValueBundle(
+                value_id=f"value:t{index}",
+                content=f"tool_{index} invocation exemplar",
+                associated_facet_ids=(
+                    f"facet:content:t{index}",
+                    f"facet:label:t{index}",
+                    f"facet:prior:t{index}",
+                ),
+                source_sample_ids=(sample_id,),
+                provenance_refs=(f"sample:{sample_id}",),
+                task_target=f"tool_{index}",
+                prior_score=mass,
+            )
+        )
+    return KnowledgeSnapshot(
+        snapshot_id="a2t-shaped-v1",
+        source_split_identity_hash=_SHA_B,
+        source_sample_ids=tuple(f"train:t{i}" for i in range(len(_A2T_PRIOR_MASSES))),
+        builder_policy_id="test-builder-a2t-shaped-v1",
+        facets=tuple(facets),
+        values=tuple(values),
+    ).validate()
+
+
+def _a2t_shaped_recall(snapshot: KnowledgeSnapshot):
+    """Real ``multidim_recall`` over the A2T-shaped snapshot.
+
+    The content query vector is the unit x axis and each content facet's
+    vector is ``(c, sqrt(1 - c^2))``, so its cosine is the intended ``c``. The
+    prior-mass side is NOT injected: it is derived by ``multidim_recall``
+    itself from the snapshot's own ``prior_score`` values, which is the whole
+    point -- the unbounded numbers arrive through the production path.
+    """
+
+    query_vector = (1.0, 0.0)
+    vectors = {
+        f"facet:content:t{index}": {
+            "content": (cosine, math.sqrt(max(0.0, 1.0 - cosine * cosine)))
+        }
+        for index, cosine in enumerate(_A2T_CONTENT_COSINES)
+    }
+    return kb_policy.multidim_recall(
+        snapshot,
+        {"content": query_vector},
+        lambda facet_id: vectors.get(facet_id, {}),
+        _LOCKED_TOP_K,
+    )
+
+
+def test_unbounded_prior_mass_no_longer_evicts_content_from_the_admission_window():
+    """THE A2T REGRESSION: the top-``m`` window is content's again.
+
+    Pre-repair this is the measured G1 outcome -- ``w_prior * 4.1 = 1.23``
+    against a best ``w_cos * 0.9572 = 0.4786``, so the ten prior-mass facets
+    filled the whole ``m = 5`` window and ZERO content facets were admitted on
+    any of 104 trajectories. Both halves are asserted here: that the pre-repair
+    expression really does evict (so this test would fail if the defect came
+    back), and that the shipped ranker does not.
+    """
+
+    snapshot = _a2t_shaped_snapshot()
+    recall_scores = _a2t_shaped_recall(snapshot)
+    content_ids = {f"facet:content:t{i}" for i in range(len(_A2T_CONTENT_COSINES))}
+    # Recall itself was never the problem: every dimension recalled its five.
+    assert len(recall_scores) == 3 * len(_A2T_CONTENT_COSINES)
+    assert all(
+        max(recall_scores[facet_id].values()) >= _LOCKED_FUSE.tau
+        for facet_id in content_ids
+    )
+
+    pre_repair = _pre_repair_ranking(recall_scores, _LOCKED_WEIGHTS)
+    evicted = [facet_id for facet_id, _score in pre_repair[: _LOCKED_FUSE.m]]
+    assert not (set(evicted) & content_ids), "the defect this test guards is gone from the fixture"
+
+    ranker = kb_policy.rank_wcos_prior_agree_factory(_LOCKED_WEIGHTS)
+    result = ranker(
+        snapshot_sha256=_SHA_B, query_state=_query_state(), recall_scores=recall_scores
+    )
+    window = [candidate.facet_id for candidate in result.candidates[: _LOCKED_FUSE.m]]
+
+    # Every content facet is now inside the window, and in cosine order.
+    assert window == [f"facet:content:t{i}" for i in range(len(_A2T_CONTENT_COSINES))]
+    result.validate()
+
+
+def test_dispatch_becomes_possible_on_an_a2t_shaped_knowledge_base():
+    """End to end recall -> rank -> fuse: supply is non-empty where it was empty.
+
+    The fuser's percept-admission gate reads only non-prior-mass dimensions, so
+    a window full of label/prior facets admits nothing and the controller can
+    only retain. Same snapshot, same locked knobs, same recalled set -- only
+    the ranking differs -- and the supply path fires.
+    """
+
+    snapshot = _a2t_shaped_snapshot()
+    recall_scores = _a2t_shaped_recall(snapshot)
+    query_state = _query_state()
+    fuser = kb_policy.fuse_supplyfilter_factory(_LOCKED_FUSE)
+
+    # Pre-repair ranking, reconstructed as a contract-valid RankResult so the
+    # fuser sees exactly what it saw on the 104 G1 trajectories.
+    pre_repair = RankResult(
+        snapshot_sha256=_SHA_B,
+        query_state_sha256=query_state.content_hash(),
+        ranking_policy_id=kb_policy.RANK_POLICY_ID,
+        candidates=tuple(
+            RankedFacet(facet_id=facet_id, score=score)
+            for facet_id, score in _pre_repair_ranking(recall_scores, _LOCKED_WEIGHTS)
+        ),
+    ).validate()
+    before = fuser(
+        snapshot=snapshot,
+        snapshot_sha256=_SHA_B,
+        query_state=query_state,
+        rank_result=pre_repair,
+        recall_scores=recall_scores,
+    )
+    assert before.selected_value_ids == ()
+    assert before.supporting_facet_ids == ()
+
+    ranker = kb_policy.rank_wcos_prior_agree_factory(_LOCKED_WEIGHTS)
+    after = fuser(
+        snapshot=snapshot,
+        snapshot_sha256=_SHA_B,
+        query_state=query_state,
+        rank_result=ranker(
+            snapshot_sha256=_SHA_B,
+            query_state=query_state,
+            recall_scores=recall_scores,
+        ),
+        recall_scores=recall_scores,
+    )
+
+    # top_l = 3 distinct task_targets, c = 2 values each, one value per tool
+    # here -> the three best-scoring tools are supplied.
+    assert after.selected_value_ids == ("value:t0", "value:t1", "value:t2")
+    assert set(after.supporting_facet_ids) == {
+        "facet:content:t0",
+        "facet:content:t1",
+        "facet:content:t2",
+    }
+    after.validate()
+
+
+def test_locked_knobs_put_every_admissible_content_facet_above_every_prior_facet():
+    """The property the repair restores, stated as an inequality.
+
+    A recalled facet carries entries only for the dimensions that admitted it,
+    so on a single-dimension recall the agreement term is equal for every
+    candidate and cancels. What is left is ``w_cos * cos`` against
+    ``w_prior * normalised_prior``, and the normalised prior can no longer
+    exceed 1. Under the locked knobs that makes the comparison decidable in
+    closed form for ANY carrier -- no measurement required.
+    """
+
+    prior_ceiling = _LOCKED_WEIGHTS.w_prior * kb_policy._DIMENSION_SCORE_BOUND
+    admissible_floor = _LOCKED_WEIGHTS.w_cos * _LOCKED_FUSE.tau
+    assert prior_ceiling < admissible_floor
+    assert admissible_floor - prior_ceiling == pytest.approx(0.025)
+
+
+# ---------------------------------------------------------------------------
+# Stage 2 (repair): the locked-cell regression against SEALED DEV-1000 records
+# ---------------------------------------------------------------------------
+
+_SEALED_RUN_ID = "SAEA-DEV1000-BASELINE-LOCK"
+_SEALED_ATTEMPT_ID = "attempt-20260825T054707Z-dev1000blend"
+_SEALED_MECHANICAL_SHA256 = "e55b6632d85a0037fb928d565fb2ef1b40c987c915dd98a9f2599d78113c828e"
+_SEALED_SNAPSHOT_SHA256 = "e27b274516604ffc0e21319758aea99dc027f459d480a32a74a715b023a51b57"
+_SEALED_SNAPSHOT_RELPATH = "knowledge/slurp/saea-kb-distmodel-v1/size-full"
+
+
+def _sealed_data_root() -> Path | None:
+    raw = os.environ.get("SPEECHRL_DATA_DIR")
+    if not raw:
+        return None
+    root = Path(raw)
+    needed = (
+        root / "runs" / _SEALED_RUN_ID / _SEALED_ATTEMPT_ID / "arm2-blend-mechanical.json",
+        root / "runs" / _SEALED_RUN_ID / _SEALED_ATTEMPT_ID / "query-vectors.jsonl",
+        root / _SEALED_SNAPSHOT_RELPATH / "snapshot.json",
+        root / _SEALED_SNAPSHOT_RELPATH / "vectors-content-facets.npz",
+    )
+    return root if all(path.exists() for path in needed) else None
+
+
+def _sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1 << 20), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+@pytest.mark.skipif(
+    _sealed_data_root() is None,
+    reason="the sealed DEV-1000 BLEND attempt store is not present under SPEECHRL_DATA_DIR",
+)
+def test_sealed_dev1000_blend_records_replay_byte_identically_after_the_repair():
+    """THE HARD REQUIREMENT, against real landed bytes rather than a fixture.
+
+    Replays sealed DEV-1000 BLEND trajectories through the REPAIRED
+    recall -> rank -> fuse path, on their OWN landed query vectors and the
+    pinned TRAIN snapshot, and requires two things at once:
+
+    1. the fused ``selected_value_ids`` equal the ``replay_selected_value_ids``
+       the sealed per-sample mechanical record already carries -- the same
+       branch-only replay the lock campaign landed, re-derived by the new code;
+    2. the ranker's whole candidate list, ordering and float scores, is
+       bit-identical to :func:`_pre_repair_ranking` on the same recalled set.
+
+    Every input is pinned by hash and a mismatch fails the test rather than
+    warning, so this cannot silently replay the wrong bytes. Model-free: zero
+    frozen-core contacts, zero embedding-tool contacts, no gold read.
+
+    Cost: the recall step is a pure-Python cosine over 11,514 content facets,
+    about a second per trajectory, so a deterministic even stride of
+    ``_SEALED_REPLAY_LIMIT`` trajectories is replayed by default. Set
+    ``SAEA_KB_POLICY_SEALED_REPLAY_LIMIT=0`` to replay all 1,000.
+    """
+
+    import numpy as np
+
+    data_root = _sealed_data_root()
+    assert data_root is not None
+    run_dir = data_root / "runs" / _SEALED_RUN_ID / _SEALED_ATTEMPT_ID
+    snapshot_dir = data_root / _SEALED_SNAPSHOT_RELPATH
+
+    mechanical_path = run_dir / "arm2-blend-mechanical.json"
+    assert _sha256_file(mechanical_path) == _SEALED_MECHANICAL_SHA256, (
+        "the DEV-1000 BLEND mechanical record is not the sealed bytes the lock read pinned"
+    )
+    records = json.loads(mechanical_path.read_text(encoding="utf-8"))
+    assert len(records) == 1000
+
+    snapshot = KnowledgeSnapshot.from_frozen_json(
+        json.loads((snapshot_dir / "snapshot.json").read_text(encoding="utf-8"))
+    )
+    assert snapshot.content_hash() == _SEALED_SNAPSHOT_SHA256
+
+    npz = np.load(snapshot_dir / "vectors-content-facets.npz")
+    facet_ids = [str(value) for value in npz["ids"]]
+    matrix = npz["vectors"]
+    vector_table = {
+        facet_id: {"content": tuple(matrix[index].tolist())}
+        for index, facet_id in enumerate(facet_ids)
+    }
+
+    query_vectors: dict[str, tuple[float, ...]] = {}
+    with (run_dir / "query-vectors.jsonl").open(encoding="utf-8") as handle:
+        for line in handle:
+            record = json.loads(line)
+            contact_id = str(record["contact_id"])
+            if contact_id.startswith("query:"):
+                query_vectors[contact_id[len("query:") :]] = tuple(record["values"])
+
+    replayable = sorted(
+        sample_id
+        for sample_id, record in records.items()
+        if record.get("replay_selected_value_ids") is not None
+        and sample_id in query_vectors
+    )
+    assert replayable, "no sealed trajectory carries a landed branch-only replay decision"
+    limit = int(os.environ.get("SAEA_KB_POLICY_SEALED_REPLAY_LIMIT", "8"))
+    if limit:
+        stride = max(1, len(replayable) // limit)
+        replayable = replayable[::stride][:limit]
+
+    ranker = kb_policy.rank_wcos_prior_agree_factory(_LOCKED_WEIGHTS)
+    fuser = kb_policy.fuse_supplyfilter_factory(_LOCKED_FUSE)
+    query_state = _query_state()
+    non_empty = 0
+
+    for sample_id in replayable:
+        recall_scores = kb_policy.multidim_recall(
+            snapshot,
+            {"content": query_vectors[sample_id]},
+            lambda facet_id: vector_table.get(facet_id, {}),
+            _LOCKED_TOP_K,
+        )
+        rank_result = ranker(
+            snapshot_sha256=_SEALED_SNAPSHOT_SHA256,
+            query_state=query_state,
+            recall_scores=recall_scores,
+        )
+        # (2) the ranker is the pre-repair ranker on these bytes, exactly.
+        assert _ranked(rank_result) == _pre_repair_ranking(recall_scores, _LOCKED_WEIGHTS), (
+            f"{sample_id}: the repair moved a locked-cell score"
+        )
+        # ... which is a consequence of every divisor being exactly 1.0 here.
+        assert set(kb_policy._dimension_scales(recall_scores).values()) == {1.0}
+
+        decision = fuser(
+            snapshot=snapshot,
+            snapshot_sha256=_SEALED_SNAPSHOT_SHA256,
+            query_state=query_state,
+            rank_result=rank_result,
+            recall_scores=recall_scores,
+        )
+        landed = tuple(records[sample_id]["replay_selected_value_ids"])
+        # (1) the supplied value ids are the landed ones, id for id.
+        assert tuple(decision.selected_value_ids) == landed, (
+            f"{sample_id}: supply diverged from the sealed lock-campaign replay"
+        )
+        non_empty += 1 if landed else 0
+
+    assert non_empty, "every replayed trajectory supplied nothing -- the regression proves nothing"
 
 
 # ---------------------------------------------------------------------------

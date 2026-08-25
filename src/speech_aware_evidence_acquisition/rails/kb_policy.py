@@ -18,8 +18,13 @@ four independently testable, task-independent stages:
    describes (content/speaker are embeddable; label/prior are TRAIN-derived
    statistics, "V ... carries priors and is modeled against the TRAIN set").
 2. The ranker registered under :data:`RANK_POLICY_ID` -- a weighted sum of
-   max cosine, max prior mass, and cross-dimension agreement, emitting a
-   contract-valid, hash-bound :class:`~.knowledge.RankResult`.
+   max cosine, max prior mass, and cross-dimension agreement, each term first
+   brought onto one common scale by :func:`_dimension_scales` so the sum
+   compares like with like, emitting a contract-valid, hash-bound
+   :class:`~.knowledge.RankResult`. That normalisation is an exact identity
+   on any dimension already inside its own bound, which is why it leaves the
+   locked SLURP cell byte-unchanged; read :func:`_dimension_scales` for the
+   defect it repairs and the proof.
 3. The fuser registered under :data:`FUSE_POLICY_ID` -- percept admission
    (a cosine floor) over the top-``m`` ranked facets, then a coverage floor
    (every one of the top-``l`` distinct ``task_target``s gets >=1 value) and
@@ -310,6 +315,149 @@ def multidim_recall(
 # Stage 2: weighted-cosine/prior/agreement ranker
 # ---------------------------------------------------------------------------
 
+# The scale every ranker dimension is expressed in. Cosine similarity is
+# bounded by 1 as a theorem; the agreement term is a fraction of the recalled
+# dimensions and is bounded by 1 by construction; a prior mass is INTENDED to
+# be a conditional probability and so is bounded by 1 by construction too --
+# whenever the KB builder that produced it actually nests its numerator inside
+# its denominator. :func:`_dimension_scales` treats this number as the common
+# scale, never as a knob.
+_DIMENSION_SCORE_BOUND = 1.0
+
+
+def _dimension_scales(
+    recall_scores: Mapping[str, Mapping[str, float]],
+) -> dict[str, float]:
+    """The per-dimension divisor that makes cross-dimension scores commensurable.
+
+    THE DEFECT THIS REPAIRS (owner ruling 2026-08-25; authority
+    ``docs/checks/speech-aware-evidence-acquisition/2026-08-25-a2t-g1/README.md``
+    section "CORRECTION"). :func:`_rank_weighted_cosine_prior_agreement` sums
+    ``w_cos * max_cosine + w_prior * max_prior + w_agree * agreement`` into ONE
+    score. ``max_cosine`` and ``agreement`` cannot exceed 1, but ``max_prior``
+    is whatever the KB builder's ratio happens to be, and the two builders in
+    this repository do not agree about that:
+
+    * ``rails.knowledge_build`` (SLURP) sets ``prior_score =
+      intent_total_in_scenario / scenario_total`` and an intent is nested
+      strictly inside its scenario, so the ratio is a genuine conditional
+      probability -- measured sup over the pinned TRAIN snapshot
+      ``e27b2745...`` is exactly **1.0**;
+    * ``rails.knowledge_build_a2t`` (Audio2Tool) sets ``prior_score =
+      tool_total / category_total`` where a tool's rows are counted across
+      every domain while the denominator counts one (domain, category) only,
+      so the ratio is NOT nested and NOT a probability -- measured sup over
+      the pinned snapshot ``ec2f9ec4...`` is **4.1**, with 193 values above 1.
+
+    Summing an unbounded quantity with a bounded one compares incommensurable
+    things. On Audio2Tool the consequence was total: ``w_prior * 4.1 = 1.23``
+    against a best ``w_cos * cos = 0.48``, so the ten prior-mass facets
+    ``recall`` returns monopolised the fuser's ``top-m = 5`` window, the
+    percept-admission gate (which reads only non-prior-mass dimensions) found
+    nothing admissible, and NO content facet was admitted on any of 104 G1
+    trajectories -- independently corroborated on 86 more. SLURP never
+    exposed it because its sup is exactly at the bound.
+
+    THE FIX. Every dimension is divided by ``max(1.0, sup_d)``, where ``sup_d``
+    is that dimension's largest score over the recalled candidate set. After
+    the division every dimension lands in the same ``[0, 1]`` range that
+    cosine and agreement already occupied, so the weighted sum compares like
+    with like. The rule is uniform -- prior-mass dimensions are not special
+    cased -- deterministic given the recalled set, and parameter-free: the
+    only constant is :data:`_DIMENSION_SCORE_BOUND`, which is the theoretical
+    bound of the dimensions the weights were chosen against, not a tuned
+    value.
+
+    QUERY INDEPENDENCE, which is the property that disqualifies the other
+    candidates. A divisor read off "whatever this query happened to recall"
+    would give the same facet a different score from one trajectory to the
+    next -- not cacheable, not auditable, not replayable. This one does not,
+    and the argument is structural rather than empirical:
+
+    * for a cosine dimension the divisor is the constant 1.0, because
+      ``sup_d <= 1`` is a theorem and the floor takes over;
+    * for a prior-mass dimension :func:`multidim_recall` reads no vector at
+      all, so its candidate set and its scores are the same for every query
+      against a given snapshot; and its truncation is score-descending, so
+      the dimension's maximum can never be truncated away. The recalled
+      supremum is therefore exactly the snapshot's own supremum for that
+      dimension -- a per-snapshot constant.
+
+    Reading the supremum off ``recall_scores`` rather than the snapshot is
+    also the only option available at this boundary: the registered
+    ``KNOWLEDGE_RANKERS`` signature hands the ranker a snapshot HASH, not a
+    snapshot, and widening it would be a contract change.
+
+    WHY THE FLOOR AT 1.0 RATHER THAN PLAIN MIN-MAX OR PLAIN MAX-NORMALISATION.
+    Plain min-max over the recalled set would rescale a dimension that is
+    already on the common scale, which (a) destroys the meaning of ``tau`` for
+    the cosine dimension the fuser still thresholds on raw cosines, (b) maps
+    the empirical minimum to 0 and so erases the difference between "a weak
+    hit" and "no hit at all" -- a distinction this ranker relies on, since a
+    facet recalled on one dimension carries no entry for the others -- and
+    (c) is undefined when a dimension recalls a single candidate. Flooring the
+    divisor at the bound keeps a well-behaved dimension untouched and only
+    ever shrinks one that has escaped its own declared range. It also makes
+    the divisor >= 1 by construction, so this function cannot divide by zero
+    and cannot amplify a score. Plain max-normalisation (no floor) happens to
+    behave identically on the two snapshots this repository has, only because
+    SLURP's supremum sits exactly ON the bound; the floor makes that an
+    invariant instead of a coincidence.
+
+    The independent, zero-contact admission-scale sweep
+    (``docs/checks/speech-aware-evidence-acquisition/2026-08-25-a2t-admission-scale-sweep/sweep-report.json``)
+    reached the same conclusion from the other direction: of the variants it
+    graded, per-dimension supremum normalisation is the one it marks
+    "PRINCIPLED FIX -- bounded, order-preserving, query-independent, one
+    change", and it rejects query-dependent min-max, z-scoring, rank-based
+    combination, and every ``m``-widening variant.
+
+    CONSIDERED ALTERNATIVE: rank-based fusion (per-dimension rank, then
+    reciprocal-rank combination, ``sum_d 1/(k + rank_d)``). It is the other
+    principled answer to incommensurability and it is genuinely scale-free.
+    It was rejected here for three reasons. It discards magnitude, so a
+    cosine of 0.96 and one of 0.66 become indistinguishable whenever they are
+    adjacent in rank, and this policy's whole downstream contract -- the
+    fuser's ``tau`` admission, the controller's ``delta = cos_top1 -
+    cos_direct`` signal -- is built on cosine MAGNITUDE. It introduces a new
+    constant ``k`` that is not in the frozen knob table. And it cannot be an
+    identity on the locked cell, which the repair below is required to be.
+
+    THE IDENTITY PROPERTY (proof obligation of the repair). If every recalled
+    dimension satisfies ``sup_d <= 1``, then every divisor is ``max(1.0,
+    sup_d) == 1.0`` exactly, and IEEE-754 division by 1.0 is exact for every
+    finite value: each candidate's per-dimension score, its ``max_cosine``,
+    its ``max_prior`` and therefore its total score are bit-for-bit what the
+    pre-repair ranker computed. The ordering, the :class:`RankResult` and its
+    content hash, the :class:`FusionDecision` and the supplied value ids are
+    consequently unchanged. This is exactly the SLURP regime -- cosine <= 1 is
+    a theorem and the pinned TRAIN snapshot's prior sup is exactly 1.0 -- so
+    the DEV-1000 locked baseline transfers untouched. See
+    ``tests/unit/test_kb_policy_v1.py``'s replay of the sealed DEV-1000
+    BLEND records for the empirical half of the same claim.
+
+    AND THE PROPERTY IT RESTORES. Because a recalled facet carries entries
+    only for the dimensions that admitted it, the agreement term is equal for
+    every candidate whenever each is single-dimension, and cancels. Under the
+    locked knob table (``configs/policy/kb-policy-v1-dev100.json``: ``w_cos``
+    0.5, ``w_prior`` 0.3, ``tau`` 0.65) the post-repair supremum of the prior
+    contribution is ``w_prior * 1.0 = 0.300``, strictly below ``w_cos * tau =
+    0.325``. Every percept-admissible content facet therefore outranks every
+    prior-mass facet, on ANY carrier, by construction rather than by luck.
+    """
+
+    sups: dict[str, float] = {}
+    for dim_scores in recall_scores.values():
+        for dimension, score in dim_scores.items():
+            value = float(score)
+            current = sups.get(dimension)
+            if current is None or value > current:
+                sups[dimension] = value
+    return {
+        dimension: (sup if sup > _DIMENSION_SCORE_BOUND else _DIMENSION_SCORE_BOUND)
+        for dimension, sup in sups.items()
+    }
+
 
 def _rank_weighted_cosine_prior_agreement(
     weights: RankWeights,
@@ -323,13 +471,21 @@ def _rank_weighted_cosine_prior_agreement(
         raise RailsError("rank: recall_scores must be a mapping")
 
     dims_total = len({dim for scores in recall_scores.values() for dim in scores})
+    # Cross-dimension commensurability (see :func:`_dimension_scales`): an
+    # identity transform on every dimension that already respects its own
+    # bound, which is why the locked SLURP cell is byte-unchanged.
+    scales = _dimension_scales(recall_scores)
     candidates: list[RankedFacet] = []
     for facet_id, dim_scores in recall_scores.items():
         cosine_scores = [
-            score for dim, score in dim_scores.items() if dim not in PRIOR_MASS_DIMENSIONS
+            float(score) / scales[dim]
+            for dim, score in dim_scores.items()
+            if dim not in PRIOR_MASS_DIMENSIONS
         ]
         prior_scores = [
-            score for dim, score in dim_scores.items() if dim in PRIOR_MASS_DIMENSIONS
+            float(score) / scales[dim]
+            for dim, score in dim_scores.items()
+            if dim in PRIOR_MASS_DIMENSIONS
         ]
         max_cosine = max(cosine_scores) if cosine_scores else 0.0
         max_prior = max(prior_scores) if prior_scores else 0.0
