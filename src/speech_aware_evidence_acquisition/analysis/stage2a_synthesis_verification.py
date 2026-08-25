@@ -44,6 +44,18 @@ only because the SLURP label vocabulary happens to nest intent inside scenario,
 never because the expression restricts anything. The claim was checked here
 against source rather than carried over from the landed sweep's prose.
 
+THAT DEFECT WAS SUBSEQUENTLY REPAIRED, AND THIS MODULE RECORDS THE REPAIR
+RATHER THAN PRETENDING THE FINDING NEVER HELD. Row
+``SAEA-SN-MF-PRIOR-SCORE-SEMANTICS-REPAIR``
+(``docs/readiness/2026-08-25-prior-score-semantics-repair.md``) restricted both
+numerators to their conditioning event, so the lines the synthesis cited are no
+longer in the tree. The synthesis document and its landed receipt are NOT
+rewritten. :func:`verify_source_claims` therefore now publishes the pre-repair
+lines as a frozen historical block (:data:`SOURCE_CLAIMS_AT_3F131AFD`, anchored
+at the last commit carrying them) and asserts against the LIVE tree that the
+repaired expressions are present and the defective ones are gone. The finding
+was true when it was made; the code it was made about has changed.
+
 FAIL-CLOSED. Every mismatch raises :class:`SynthesisVerificationError`. A
 verification module that returns a report saying "3 of 214 failed" invites the
 reader to skip the three.
@@ -828,9 +840,17 @@ def verify_derived_claims(documents: Mapping[str, Any]) -> dict[str, Any]:
     }
 
 
-#: The two builder expressions the epistemic record turns on, with the exact
-#: lines the synthesis cites. Each entry is (relpath, line-number, substring).
-SOURCE_CLAIMS: tuple[tuple[str, int, str], ...] = (
+#: THE HISTORICAL RECORD, FROZEN AND NO LONGER CHECKED AGAINST THE TREE.
+#:
+#: These are the exact lines the synthesis cited, as they stood at commit
+#: ``3f131afd`` -- the last commit carrying the defect and the commit at which
+#: the synthesis document was landed. The finding was true then and the
+#: document that carries it is not rewritten. They are kept as DATA, published
+#: into the receipt, because deleting them would erase the evidence that the
+#: defect was real; they are not asserted against the working tree, because
+#: they are no longer true of it. Each entry is
+#: (relpath, line-number-at-3f131afd, substring).
+SOURCE_CLAIMS_AT_3F131AFD: tuple[tuple[str, int, str], ...] = (
     (
         "src/speech_aware_evidence_acquisition/rails/knowledge_build.py",
         696,
@@ -847,21 +867,6 @@ SOURCE_CLAIMS: tuple[tuple[str, int, str], ...] = (
         "prior_score = intent_total_in_scenario / scenario_total",
     ),
     (
-        "src/speech_aware_evidence_acquisition/rails/knowledge_build.py",
-        504,
-        "rows_by_intent_full[row.intent].append(row)",
-    ),
-    (
-        "src/speech_aware_evidence_acquisition/rails/knowledge_build.py",
-        505,
-        "rows_by_scenario_full[row.scenario].append(row)",
-    ),
-    (
-        "src/speech_aware_evidence_acquisition/rails/knowledge_build.py",
-        202,
-        'intent=f"{entry.scenario}_{entry.action}"',
-    ),
-    (
         "src/speech_aware_evidence_acquisition/rails/knowledge_build_a2t.py",
         1085,
         "category_total = len(rows_by_category_full.get((row.domain, row.category), ()))",
@@ -876,15 +881,79 @@ SOURCE_CLAIMS: tuple[tuple[str, int, str], ...] = (
         1087,
         "prior_score = tool_total / category_total",
     ),
+)
+
+#: THE ENGLISH SUCCESSOR, CHECKED AGAINST THE LIVE TREE. Each entry is
+#: (relpath, substring) and the substring must be PRESENT somewhere in the
+#: file. Line anchors are dropped deliberately: a line number is not part of
+#: the claim, and pinning one made the check fail for the wrong reason the
+#: moment the defect was repaired.
+#:
+#: Repair authority:
+#: ``docs/readiness/2026-08-25-prior-score-semantics-repair.md``, exposure row
+#: ``SAEA-SN-MF-PRIOR-SCORE-SEMANTICS-REPAIR``.
+SOURCE_CLAIMS: tuple[tuple[str, str], ...] = (
+    # SLURP: the numerator is now restricted to the conditioning event, and
+    # the local's name finally describes what the expression computes.
+    (
+        "src/speech_aware_evidence_acquisition/rails/knowledge_build.py",
+        "rows_by_intent_in_scenario_full[(row.scenario, row.intent)] += 1",
+    ),
+    (
+        "src/speech_aware_evidence_acquisition/rails/knowledge_build.py",
+        "intent_total_in_scenario = rows_by_intent_in_scenario_full.get(",
+    ),
+    (
+        "src/speech_aware_evidence_acquisition/rails/knowledge_build.py",
+        "prior_score = intent_total_in_scenario / scenario_total",
+    ),
+    # The label-vocabulary fact the SLURP repair is an IDENTITY because of --
+    # unchanged by the repair and still the reason the defect stayed hidden.
+    (
+        "src/speech_aware_evidence_acquisition/rails/knowledge_build.py",
+        'intent=f"{entry.scenario}_{entry.action}"',
+    ),
+    # Audio2Tool: the same restriction, on (domain, category).
     (
         "src/speech_aware_evidence_acquisition/rails/knowledge_build_a2t.py",
-        853,
-        "rows_by_tool_full[row.tool_name].append(row)",
+        "rows_by_tool_in_category_full[(row.domain, row.category, row.tool_name)] += 1",
     ),
     (
         "src/speech_aware_evidence_acquisition/rails/knowledge_build_a2t.py",
-        854,
-        "rows_by_category_full[(row.domain, row.category)].append(row)",
+        "tool_total_in_category = rows_by_tool_in_category_full.get(",
+    ),
+    (
+        "src/speech_aware_evidence_acquisition/rails/knowledge_build_a2t.py",
+        "prior_score = tool_total_in_category / category_total",
+    ),
+    # The range contract whose absence let the same wrong ratio be written
+    # twice, with both of its sides.
+    (
+        "src/speech_aware_evidence_acquisition/rails/knowledge_build.py",
+        'assert_prior_scores_are_probabilities(values, builder="KB-BUILD")',
+    ),
+    (
+        "src/speech_aware_evidence_acquisition/rails/knowledge_build_a2t.py",
+        'assert_prior_scores_are_probabilities(values, builder="KB-BUILD-A2T")',
+    ),
+)
+
+#: The expressions the repair REMOVED. Asserting their absence is what makes
+#: the check a repair proof rather than a spelling test: a re-introduced
+#: unconditioned ratio fails here even if the corrected one is also present
+#: somewhere in the file.
+SOURCE_CLAIMS_MUST_BE_ABSENT: tuple[tuple[str, str], ...] = (
+    (
+        "src/speech_aware_evidence_acquisition/rails/knowledge_build.py",
+        "intent_total_in_scenario = len(rows_by_intent_full.get(row.intent, ()))",
+    ),
+    (
+        "src/speech_aware_evidence_acquisition/rails/knowledge_build_a2t.py",
+        "tool_total = len(rows_by_tool_full.get(row.tool_name, ()))",
+    ),
+    (
+        "src/speech_aware_evidence_acquisition/rails/knowledge_build_a2t.py",
+        "prior_score = tool_total / category_total",
     ),
 )
 
@@ -930,45 +999,72 @@ def verify_file_digests(repo_root: Path) -> dict[str, Any]:
 
 
 def verify_source_claims(repo_root: Path) -> dict[str, Any]:
-    """Assert, from source, that the two builders share ONE expression shape.
+    """Assert, from source, that BOTH builders now condition their prior.
 
-    Both accumulate two independent counters over the WHOLE row set, keyed
-    differently, and then divide one by the other. Neither expression restricts
-    the numerator to the denominator's key. On SLURP the numerator's row set is
-    nevertheless contained in the denominator's, but only because
-    ``intent = f"{scenario}_{action}"`` makes intent nest inside scenario in the
-    LABEL VOCABULARY -- and the local name ``intent_total_in_scenario`` asserts a
-    restriction the code never performs. That is the whole content of the
-    withdrawn claim "SLURP's prior code was correct"."""
+    WHAT THE SYNTHESIS FOUND, AND IT WAS TRUE WHEN IT FOUND IT. At commit
+    ``3f131afd`` both builders accumulated two independent counters over the
+    WHOLE row set, keyed differently, and divided one by the other. Neither
+    expression restricted the numerator to the denominator's key. On SLURP the
+    numerator's row set was nevertheless contained in the denominator's, but
+    only because ``intent = f"{scenario}_{action}"`` makes intent nest inside
+    scenario in the LABEL VOCABULARY -- and the local name
+    ``intent_total_in_scenario`` asserted a restriction the code never
+    performed. That was the whole content of the withdrawn claim "SLURP's
+    prior code was correct".
+
+    WHAT IS TRUE NOW. Row ``SAEA-SN-MF-PRIOR-SCORE-SEMANTICS-REPAIR`` restricted
+    both numerators to their conditioning event and added a fail-closed range
+    contract on ``ValueBundle.prior_score``. So this function is an ENGLISH
+    SUCCESSOR to the landed check, not a rewrite of it: the pre-repair lines
+    stay published as :data:`SOURCE_CLAIMS_AT_3F131AFD`, and the live tree is
+    asserted to carry the repaired expressions
+    (:data:`SOURCE_CLAIMS`) and NOT to carry the defective ones
+    (:data:`SOURCE_CLAIMS_MUST_BE_ABSENT`). The landed synthesis document and
+    the landed receipt are untouched."""
+
+    cache: dict[str, str] = {}
+
+    def _text(relpath: str) -> str:
+        if relpath not in cache:
+            cache[relpath] = (repo_root / relpath).read_text(encoding="utf-8")
+        return cache[relpath]
 
     rows: list[dict[str, Any]] = []
     failures: list[str] = []
-    cache: dict[str, list[str]] = {}
-    for relpath, lineno, needle in SOURCE_CLAIMS:
-        if relpath not in cache:
-            with (repo_root / relpath).open(encoding="utf-8") as handle:
-                cache[relpath] = handle.read().splitlines()
-        lines = cache[relpath]
-        present = 1 <= lineno <= len(lines) and needle in lines[lineno - 1]
+    for relpath, needle in SOURCE_CLAIMS:
+        present = needle in _text(relpath)
         if not present:
-            actual = lines[lineno - 1] if 1 <= lineno <= len(lines) else "<out of range>"
-            failures.append(f"{relpath}:{lineno} does not contain {needle!r} (holds {actual!r})")
+            failures.append(f"{relpath} does not contain {needle!r}")
         rows.append(
-            {
-                "relpath": relpath,
-                "line": lineno,
-                "expected_substring": needle,
-                "present": present,
-            }
+            {"relpath": relpath, "expected_substring": needle, "present": present}
         )
+
+    absent_rows: list[dict[str, Any]] = []
+    for relpath, needle in SOURCE_CLAIMS_MUST_BE_ABSENT:
+        absent = needle not in _text(relpath)
+        if not absent:
+            failures.append(
+                f"{relpath} still contains the REPAIRED-AWAY expression {needle!r}"
+            )
+        absent_rows.append(
+            {"relpath": relpath, "forbidden_substring": needle, "absent": absent}
+        )
+
     if failures:
         raise SynthesisVerificationError(
-            "a source claim the synthesis makes is not true of the source:\n  " + "\n  ".join(failures)
+            "a source claim the synthesis makes is not true of the source:\n  "
+            + "\n  ".join(failures)
         )
     return {
         "source_claims": rows,
         "source_claims_verified": len(rows),
-        "finding": (
+        "forbidden_source_claims": absent_rows,
+        "forbidden_source_claims_verified": len(absent_rows),
+        "source_claims_at_3f131afd": [
+            {"relpath": relpath, "line": lineno, "substring": needle}
+            for relpath, lineno, needle in SOURCE_CLAIMS_AT_3F131AFD
+        ],
+        "finding_as_landed_at_3f131afd": (
             "BOTH builders compute prior_score as count(key_N over ALL rows) / "
             "count(key_D over ALL rows) with key_N != key_D and no restriction of the "
             "numerator to the denominator's key. SLURP's ratio is a conditional "
@@ -978,6 +1074,20 @@ def verify_source_claims(repo_root: Path) -> dict[str, Any]:
             "perform. The SLURP builder therefore carries the identical latent defect "
             "and would break exactly as the A2T builder did under a non-nesting label "
             "scheme."
+        ),
+        "finding_now": (
+            "REPAIRED. Both builders now restrict the numerator to the "
+            "conditioning event -- SLURP count(intent AND scenario) / "
+            "count(scenario), Audio2Tool count(tool AND (domain, category)) / "
+            "count((domain, category)) -- and both call "
+            "knowledge.assert_prior_scores_are_probabilities on the values they "
+            "assemble, so a non-probability prior_score can no longer be built. "
+            "The SLURP repair is an EXACT IDENTITY because intent determines "
+            "scenario; the Audio2Tool repair is not, and its before/after "
+            "distribution is published in "
+            "docs/readiness/2026-08-25-prior-score-semantics-repair.md. The "
+            "landed synthesis document and its receipt are NOT rewritten: the "
+            "pre-repair lines stay published above as the historical record."
         ),
     }
 

@@ -165,7 +165,22 @@ class TestAgainstTheCommittedReceipts:
         assert block["file_digests_verified"] == len(sv.FILE_DIGESTS)
         assert all(row["matches"] for row in block["file_digests"])
 
-    def test_the_two_builders_share_one_prior_score_expression_shape(self) -> None:
+    def test_both_builders_now_condition_their_prior_on_the_conditioning_event(
+        self,
+    ) -> None:
+        """The English successor to the landed claim that both builders shared
+        one unconditioned expression shape. That was true at ``3f131afd``; row
+        ``SAEA-SN-MF-PRIOR-SCORE-SEMANTICS-REPAIR`` repaired it. The live tree
+        must carry the repaired expressions and must NOT carry the defective
+        ones; the pre-repair lines stay published as the historical record."""
+
         block = sv.verify_source_claims(REPO_ROOT)
         assert block["source_claims_verified"] == len(sv.SOURCE_CLAIMS)
         assert all(row["present"] for row in block["source_claims"])
+        assert block["forbidden_source_claims_verified"] == len(
+            sv.SOURCE_CLAIMS_MUST_BE_ABSENT
+        )
+        assert all(row["absent"] for row in block["forbidden_source_claims"])
+        assert len(block["source_claims_at_3f131afd"]) == len(
+            sv.SOURCE_CLAIMS_AT_3F131AFD
+        )

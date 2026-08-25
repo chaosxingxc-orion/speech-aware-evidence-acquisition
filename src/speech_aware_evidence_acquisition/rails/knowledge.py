@@ -24,8 +24,9 @@ from __future__ import annotations
 
 import math
 import re
+import warnings
 from dataclasses import dataclass
-from typing import Mapping
+from typing import Mapping, Sequence
 
 from .errors import RailsError
 from .hashing import content_hash
@@ -62,6 +63,87 @@ _SOURCE_PARTITION_ROLES = frozenset(
 )
 
 _SHA256_HEX = re.compile(r"[0-9a-f]{64}")
+
+# ---------------------------------------------------------------------------
+# The ``prior_score`` range contract
+# ---------------------------------------------------------------------------
+#
+# ``ValueBundle.prior_score`` models a train-derived PRIOR: the probability of
+# the value's own label given the conditioning event its builder chose. A
+# probability lives in [0, 1]. Until 2026-08-25 that range was nowhere
+# declared, and the omission had a measured cost: two independent builders
+# wrote the SAME wrong ratio -- a numerator counted over the whole
+# construction pool divided by a denominator counted over one conditioning
+# cell -- and nothing refused it. On Audio2Tool the supremum reached 4.1, with
+# 193 of 12,601 values above 1, which then monopolised the ranker's admission
+# window. See ``docs/readiness/2026-08-25-prior-score-semantics-repair.md``.
+#
+# THE RANGE IS A CONTRACT, NEVER A KNOB. It is not configurable, not widened
+# per carrier, and not softened by a tolerance: a number outside [0, 1] is not
+# a probability, and calling it one is the defect.
+PRIOR_SCORE_MIN = 0.0
+PRIOR_SCORE_MAX = 1.0
+
+
+def prior_score_range_violation(prior_score: object) -> float | None:
+    """The out-of-range ``prior_score``, or ``None`` when it respects the range.
+
+    Pure and total: it classifies, it never raises and it never mutates. The
+    two sides of the contract -- fail-closed refusal at construction,
+    explicit recording at historical load -- are both expressed in terms of
+    this one predicate, so they can never drift apart. ``None`` and
+    non-numeric inputs are not this function's business (``ValueBundle.validate``
+    already refuses a non-finite ``prior_score``); they classify as no
+    violation."""
+
+    if prior_score is None or isinstance(prior_score, bool):
+        return None
+    if not isinstance(prior_score, (int, float)):
+        return None
+    value = float(prior_score)
+    if not math.isfinite(value):
+        return None
+    if PRIOR_SCORE_MIN <= value <= PRIOR_SCORE_MAX:
+        return None
+    return value
+
+
+def assert_prior_scores_are_probabilities(
+    values: "Sequence[ValueBundle]", *, builder: str
+) -> None:
+    """FAIL-CLOSED, CONSTRUCTION SIDE. Refuse a value set carrying a
+    non-probability ``prior_score``.
+
+    This is the gate every NEW snapshot passes: both knowledge builders call
+    it on the values they just assembled, and
+    :meth:`KnowledgeSnapshot.frozen_json` calls it again at the exact moment a
+    snapshot becomes durable bytes. It raises rather than reporting, because a
+    builder that emits a non-probability has computed the wrong quantity and
+    every downstream ranking statement made from it is unsound.
+
+    It is deliberately NOT called from :meth:`ValueBundle.validate`. See
+    :meth:`KnowledgeSnapshot.from_frozen_json` for the other side of the
+    boundary and why it has to be somewhere else."""
+
+    offenders = [
+        (value.value_id, violation)
+        for value in values
+        if (violation := prior_score_range_violation(value.prior_score)) is not None
+    ]
+    if not offenders:
+        return
+    preview = ", ".join(
+        f"{value_id}={score!r}" for value_id, score in sorted(offenders)[:5]
+    )
+    raise RailsError(
+        f"{builder}: prior_score must be a probability in "
+        f"[{PRIOR_SCORE_MIN}, {PRIOR_SCORE_MAX}] -- {len(offenders)} of "
+        f"{len(values)} values are outside it ({preview}"
+        + (f", +{len(offenders) - 5} more" if len(offenders) > 5 else "")
+        + "). A ratio whose numerator is not restricted to its denominator's "
+        "conditioning event is not a conditional probability; restrict the "
+        "numerator rather than rescaling the result."
+    )
 
 
 def _require_text(value: object, *, field: str) -> str:
@@ -153,6 +235,13 @@ class ValueBundle:
     metadata: they model train-derived associations and priors but are not key
     text.  This keeps key matching separate from the result/evidence carried by
     the value.
+
+    ``prior_score`` is a PROBABILITY and its declared range is
+    ``[PRIOR_SCORE_MIN, PRIOR_SCORE_MAX]``. :meth:`validate` deliberately does
+    NOT enforce that range -- see
+    :meth:`KnowledgeSnapshot.from_frozen_json` for why a historical snapshot
+    must stay loadable, and :func:`assert_prior_scores_are_probabilities` for
+    the construction-side gate that refuses a new one fail-closed.
     """
 
     value_id: str
@@ -193,6 +282,14 @@ class ValueBundle:
         ):
             raise RailsError("ValueBundle.prior_score must be finite or None")
         return self
+
+    def prior_score_range_violation(self) -> float | None:
+        """This value's out-of-range ``prior_score``, or ``None``.
+
+        Pure; the classifier both sides of the contract are written in terms
+        of."""
+
+        return prior_score_range_violation(self.prior_score)
 
     def as_json(self) -> dict[str, object]:
         self.validate()
@@ -366,12 +463,69 @@ class KnowledgeSnapshot:
     def content_hash(self) -> str:
         return content_hash(self.as_json())
 
+    def prior_score_range_violations(self) -> tuple[tuple[str, float], ...]:
+        """Every ``(value_id, prior_score)`` outside the declared range.
+
+        Pure: it reports, it never raises. Sorted by ``value_id`` so the tuple
+        is stable enough to put in a receipt."""
+
+        return tuple(
+            sorted(
+                (value.value_id, violation)
+                for value in self.values
+                if (violation := value.prior_score_range_violation()) is not None
+            )
+        )
+
+    @property
+    def historical_prior_score_range_violations(self) -> tuple[tuple[str, float], ...]:
+        """What :meth:`from_frozen_json` RECORDED when it loaded this snapshot.
+
+        Empty for a snapshot that was constructed rather than loaded, and
+        empty for a loaded snapshot that respects the range. A non-empty tuple
+        means: these bytes are historical evidence produced before the range
+        contract existed, they are readable on purpose, and every ranking
+        statement derived from them inherits the defect. Non-empty is never a
+        licence to write such a snapshot -- :meth:`frozen_json` refuses that
+        outright."""
+
+        return getattr(self, "_historical_prior_score_range_violations", ())
+
     def frozen_json(self) -> dict[str, object]:
+        """THE CONSTRUCTION SIDE OF THE RANGE CONTRACT, FAIL-CLOSED.
+
+        This method is the ONLY point at which a snapshot becomes durable,
+        content-addressed bytes: both build scripts write what it returns and
+        nothing on the load path calls it. So this is where a non-probability
+        ``prior_score`` is refused, and refused hard -- a snapshot carrying one
+        never reaches disk, never acquires a hash, and never becomes something
+        a later round has to keep readable."""
+
+        assert_prior_scores_are_probabilities(
+            self.values, builder=f"KnowledgeSnapshot.frozen_json[{self.snapshot_id}]"
+        )
         document = self.as_json()
         return {**document, "snapshot_sha256": content_hash(document)}
 
     @classmethod
     def from_frozen_json(cls, document: Mapping[str, object]) -> "KnowledgeSnapshot":
+        """THE LOAD SIDE OF THE RANGE CONTRACT: ACCEPT, AND RECORD.
+
+        Snapshots frozen before the range contract existed carry
+        ``prior_score`` values above 1 -- the pinned Audio2Tool snapshot
+        ``ec2f9ec4...9fb2`` reaches 4.1 on 193 of its 12,601 values. Those
+        bytes are the record of what actually flew. Refusing to load them
+        would break every landed replay and make the flights unauditable,
+        which is a worse failure than the defect being audited. So loading
+        never raises on range; instead the violations are RECORDED on the
+        loaded instance, reachable through
+        :attr:`historical_prior_score_range_violations`, and a
+        :class:`RuntimeWarning` is emitted so the acceptance is never silent.
+
+        The boundary is therefore explicit and one-directional: bytes may come
+        IN carrying a violation and be labelled; no violation may go OUT
+        through :meth:`frozen_json`."""
+
         claimed_hash = _require_sha256(
             document.get("snapshot_sha256"), field="KnowledgeSnapshot.snapshot_sha256"
         )
@@ -394,6 +548,28 @@ class KnowledgeSnapshot:
         if snapshot.content_hash() != claimed_hash:
             raise RailsError(
                 "KnowledgeSnapshot contains unsupported or non-canonical fields"
+            )
+        violations = snapshot.prior_score_range_violations()
+        # Frozen dataclass; recorded exactly the way ``_validated`` is, as a
+        # plain instance attribute that is not a declared field, so it never
+        # enters __eq__/__hash__/as_json/content_hash and cannot perturb the
+        # snapshot's identity.
+        object.__setattr__(
+            snapshot, "_historical_prior_score_range_violations", violations
+        )
+        if violations:
+            worst = max(score for _value_id, score in violations)
+            warnings.warn(
+                f"KnowledgeSnapshot {snapshot.snapshot_id!r} (sha256 "
+                f"{claimed_hash}) carries {len(violations)} of "
+                f"{len(snapshot.values)} prior_score values outside "
+                f"[{PRIOR_SCORE_MIN}, {PRIOR_SCORE_MAX}] (supremum {worst}). "
+                "It is HISTORICAL evidence and is loaded on purpose; it may "
+                "not be re-frozen, and every ranking statement derived from "
+                "it inherits the defect. See "
+                "docs/readiness/2026-08-25-prior-score-semantics-repair.md",
+                RuntimeWarning,
+                stacklevel=2,
             )
         return snapshot
 

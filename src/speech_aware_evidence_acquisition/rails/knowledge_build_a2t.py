@@ -93,7 +93,12 @@ from ..reproduction.toolcall_gold import GoldParseError, expected_tool_calls_for
 from ..reproduction.toolcall_scoring import ToolCall
 from .errors import RailsError
 from .hashing import content_hash
-from .knowledge import KeyFacet, KnowledgeSnapshot, ValueBundle
+from .knowledge import (
+    KeyFacet,
+    KnowledgeSnapshot,
+    ValueBundle,
+    assert_prior_scores_are_probabilities,
+)
 
 A2T_KB_BUILD_POLICY_ID = "saea-kb-a2t-toolshaped-v1"
 A2T_PARTITION_POLICY_ID = "saea-a2t-block-partition-v1"
@@ -847,11 +852,17 @@ def _build_facets_and_values(
 
     rows_by_tool_full: dict[str, list[A2tKbRow]] = defaultdict(list)
     rows_by_category_full: dict[tuple[str, str], list[A2tKbRow]] = defaultdict(list)
+    # The JOINT count -- rows carrying this tool AND this (domain, category).
+    # It exists so the value-side prior can condition on the category instead
+    # of dividing two independently-keyed global counts; see the prior_score
+    # comment below.
+    rows_by_tool_in_category_full: Counter[tuple[str, str, str]] = Counter()
     patterns_by_tool_full: dict[str, Counter[tuple[str, ...]]] = defaultdict(Counter)
     pairs_by_tool_full: dict[str, dict[str, set[str]]] = defaultdict(lambda: defaultdict(set))
     for row in rows:
         rows_by_tool_full[row.tool_name].append(row)
         rows_by_category_full[(row.domain, row.category)].append(row)
+        rows_by_tool_in_category_full[(row.domain, row.category, row.tool_name)] += 1
         patterns_by_tool_full[row.tool_name][row.arg_signature] += 1
         for key, value in row.arg_pairs:
             pairs_by_tool_full[row.tool_name][key].add(value)
@@ -1082,9 +1093,23 @@ def _build_facets_and_values(
         if row.tool_name in prior_representation:
             content_text += f" {prior_representation[row.tool_name]}"
 
+        # p(tool | domain, category). BOTH counts range over the SAME
+        # population -- the rows of this one (domain, category) -- because
+        # that is what conditioning on the category MEANS. Before
+        # 2026-08-25 the numerator was ``len(rows_by_tool_full[tool])``, this
+        # tool's rows over the WHOLE construction pool, against a denominator
+        # counting one (domain, category) only. The numerator was then not a
+        # subset of the denominator, the ratio was not a conditional
+        # probability, and it reached 4.1 on the pinned snapshot
+        # ``ec2f9ec4...9fb2`` with 193 of 12,601 values above 1 -- which the
+        # ranker then read as prior MASS and let monopolise its admission
+        # window. Repair record:
+        # ``docs/readiness/2026-08-25-prior-score-semantics-repair.md``.
         category_total = len(rows_by_category_full.get((row.domain, row.category), ()))
-        tool_total = len(rows_by_tool_full.get(row.tool_name, ()))
-        prior_score = tool_total / category_total if category_total else 0.0
+        tool_total_in_category = rows_by_tool_in_category_full.get(
+            (row.domain, row.category, row.tool_name), 0
+        )
+        prior_score = tool_total_in_category / category_total if category_total else 0.0
 
         associated: list[str] = []
         if row.tool_name in tool_facet_id:
@@ -1178,6 +1203,12 @@ def build_a2t_knowledge_snapshot(
         registry,
         governed_relpath_by_tier=dict(governed_relpath_by_tier or {}),
     )
+    # The prior-score range contract, construction side (see
+    # ``knowledge.assert_prior_scores_are_probabilities``): a builder that
+    # emits a non-probability has computed the wrong quantity, so it is
+    # refused here, at the earliest point the values exist, rather than
+    # later at freeze time.
+    assert_prior_scores_are_probabilities(values, builder="KB-BUILD-A2T")
 
     source_sample_ids = tuple(sorted(selected_sample_ids))
     source_split_identity_hash = hashlib.sha256(

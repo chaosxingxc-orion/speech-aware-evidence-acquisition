@@ -81,7 +81,12 @@ from ..data.slurp import (
 )
 from .errors import RailsError
 from .hashing import content_hash
-from .knowledge import KeyFacet, KnowledgeSnapshot, ValueBundle
+from .knowledge import (
+    KeyFacet,
+    KnowledgeSnapshot,
+    ValueBundle,
+    assert_prior_scores_are_probabilities,
+)
 
 KB_BUILD_POLICY_ID = "saea-kb-distmodel-v1"
 _ALLOWED_DIMENSIONS = frozenset({"content", "label", "speaker", "prior"})
@@ -499,10 +504,16 @@ def _build_facets_and_values(
 
     rows_by_intent_full: dict[str, list[KbRow]] = defaultdict(list)
     rows_by_scenario_full: dict[str, list[KbRow]] = defaultdict(list)
+    # The JOINT count -- rows carrying this intent AND this scenario. It
+    # exists so the value-side prior can condition on the scenario instead of
+    # dividing two independently-keyed global counts; see the prior_score
+    # comment below.
+    rows_by_intent_in_scenario_full: Counter[tuple[str, str]] = Counter()
     entity_fillers_all: dict[str, set[str]] = defaultdict(set)
     for row in rows:
         rows_by_intent_full[row.intent].append(row)
         rows_by_scenario_full[row.scenario].append(row)
+        rows_by_intent_in_scenario_full[(row.scenario, row.intent)] += 1
         for entity_type, fillers in row.entity_fillers.items():
             entity_fillers_all[entity_type].update(fillers)
 
@@ -693,8 +704,30 @@ def _build_facets_and_values(
         if row.intent in prior_representation_by_intent:
             content_text += f" {prior_representation_by_intent[row.intent]}"
 
+        # p(intent | scenario). BOTH counts range over the SAME population --
+        # the rows of this one scenario -- because that is what conditioning
+        # on the scenario MEANS. Before 2026-08-25 the numerator was
+        # ``len(rows_by_intent_full[intent])``, this intent's rows over ALL
+        # scenarios, while the local was already NAMED
+        # ``intent_total_in_scenario``: the name asserted a restriction the
+        # expression did not perform. The sibling Audio2Tool builder wrote the
+        # same shape and it broke there (supremum 4.1, 193 values above 1).
+        #
+        # THIS REPAIR IS AN EXACT IDENTITY ON SLURP, and here is why. ``intent``
+        # is built as ``f"{entry.scenario}_{entry.action}"`` (see
+        # :func:`slurp_kb_rows`), so a row's intent DETERMINES its scenario:
+        # every row with this intent necessarily has this scenario. The
+        # restricted row set is therefore the SAME SET as the unrestricted
+        # one, not merely the same size, and the numerator is unchanged on
+        # every intent. The old expression was right by accident of the label
+        # vocabulary, never by construction -- swap in a label scheme that does
+        # not nest and it breaks exactly as A2T's did. Measured over the real
+        # TRAIN rows in
+        # ``docs/readiness/2026-08-25-prior-score-semantics-repair.md``.
         scenario_total = len(rows_by_scenario_full.get(row.scenario, ()))
-        intent_total_in_scenario = len(rows_by_intent_full.get(row.intent, ()))
+        intent_total_in_scenario = rows_by_intent_in_scenario_full.get(
+            (row.scenario, row.intent), 0
+        )
         prior_score = intent_total_in_scenario / scenario_total if scenario_total else 0.0
 
         associated: list[str] = []
@@ -923,6 +956,12 @@ def build_knowledge_snapshot(
     facets, values = _build_facets_and_values(
         selected, rows, spec, governed_train_relpath=governed_relpath
     )
+    # The prior-score range contract, construction side (see
+    # ``knowledge.assert_prior_scores_are_probabilities``): a builder that
+    # emits a non-probability has computed the wrong quantity, so it is
+    # refused here, at the earliest point the values exist, rather than
+    # later at freeze time.
+    assert_prior_scores_are_probabilities(values, builder="KB-BUILD")
 
     source_sample_ids = tuple(sorted(selected_sample_ids))
     source_split_identity_hash = hashlib.sha256(
