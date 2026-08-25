@@ -3136,90 +3136,96 @@ def main() -> int:
     }
 
     round_report = {
-        "schema": "saea-dev100-round5-report-v1",
+        "schema": "saea-dev100-kwiden-k1-report-v1",
         "study": "speech-aware-evidence-acquisition",
         "run_id": RUN_ID,
         "round_index": ROUND_INDEX,
         "attempt_id": attempt_id,
         "generated_at": iso_now(),
         "authority": (
-            "docs/readiness/2026-08-23-dev100-campaign-preregistration.md including "
-            "amendment 5b and the owner-approved section-4 ceiling amendment "
-            "(2026-08-24, commit 121bdc08: core 1,800 -> 2,500, audio-s 2,400 -> "
-            "5,500); campaign exposure row SAEA-DEV100-KB-ALPHA-BLEND-CAMPAIGN "
-            "ROUND-5 registration (registered variable: NONE — an EXACT "
-            "REPLICATION of the sealed round-4 cell at zero knob changes, a "
-            "repeated-decode variance estimate at the frozen operating point "
-            "alpha 0.45 / tau 0.65 / top-k 5 / rrf / train priors / f1060078 "
-            "repair, supplying the reviewer-audit's credibility condition #2 "
-            "(run-to-run variance at fixed configuration) and a direct "
-            "stability measurement of the freeze candidate; the registered "
-            "falsifiable expectation is BLEND-r5 within +/-2 of round-4's 72 "
-            "(credible band 70-74), the per-sample r5-vs-r4 diff IS the "
-            "deliverable; FRESH run-cumulative successor plan 1,800 calls / "
-            "4,700 audio-s over the 1,414 / 3,775.60 AttemptStore-verified "
-            "durable spend; sealed round-0 through round-4 authorities "
-            "pinned byte-wise; sentinel + micro-run trace isolation + "
-            "Windows-side GPU sampling + clock sampling carried "
-            "flight-proven from rounds 1-4)"
+            "docs/readiness/2026-08-24-dev500-confirmatory-verdict.md section "
+            "4.1 (the gate that opens k-widening 8-32 for dev iteration on "
+            "DEV-100/500 BEFORE the DEV-1000 touch); owner "
+            "iterate-before-concluding rulings "
+            "docs/readiness/2026-08-23-knowledge-plane-baseline-rulings.md "
+            "sections 2.2 and 7.1-7.3; queue authority "
+            "docs/readiness/2026-08-24-kwiden-and-next-experiments-queue.md "
+            "sections 2, 3b and 4 (K-WIDEN promoted to FIRST because the E-A "
+            "pre-analysis proved recall-limitation owns 68 percent of the "
+            "DEV-100 residual and 73 percent of NEW400); machine-readable "
+            "mini-campaign contract "
+            "configs/experiment/slurp-dev100-kwiden-campaign-v1.json; "
+            "campaign exposure row SAEA-DEV100-KWIDEN ROUND-K1 registration "
+            "(registered variable: ONE coupled variable named RETRIEVAL "
+            "WIDTH — recall_top_k_per_dimension 5 -> 8 AND fusion_m 5 -> 8 "
+            "moved TOGETHER, every other knob byte-frozen from "
+            "configs/policy/kb-policy-v1-dev100.json; the registered "
+            "falsifiable expectation is BLEND-K1 inside the credible band "
+            "68-76 with NO confident direction, and the paired per-sample "
+            "diff vs the sealed round-4/round-5 base WITH width-5 "
+            "supply-change attribution IS the deliverable; FRESH "
+            "run-cumulative plan 250 calls / 700 audio-s over ZERO durable "
+            "prior under this run id, AttemptStore verified ABSENT at "
+            "registration; sealed round-0/round-4/round-5 authorities pinned "
+            "byte-wise; sentinel + micro-run trace isolation + Windows-side "
+            "GPU sampling + clock sampling carried flight-proven from the "
+            "sealed DEV-100 campaign and the DEV-500 confirmatory campaign)"
         ),
         "refused_takeoffs": REFUSED_TAKEOFFS,
-        "round5_variable": flight.get("round5_variable"),
+        "kwiden_k1_variable": flight.get("kwiden_k1_variable"),
+        "prompt_fit_precondition": {
+            "exposure_run_id": "SAEA-SN-MF-DEV100-KWIDEN-PROMPT-FIT-M8",
+            "receipt_relpath": (
+                "docs/checks/speech-aware-evidence-acquisition/"
+                "2026-08-24-dev100-kwiden-k1/prompt-fit-m8.json"
+            ),
+            "verdict": "PASS",
+            "maximum_prompt_tokens_upper_bound": 6856,
+            "context_tokens_per_slot": 8192,
+            "context_margin_tokens": 1272,
+            "chat_template_sha256_equals_r6": True,
+            "note": (
+                "measured on THIS resident session at the strictly "
+                "over-bounding m=8 worst case (8 longest facet "
+                "representations + 6 longest values). The FLOWN K1 prompt "
+                "renders ZERO facet representations (visible_facet_ids stays "
+                "empty through the registered C3 chain) and admits at most "
+                "fusion_c 2 * fusion_top_l 3 = 6 values regardless of m, so "
+                "the flown evidence prompt is m-INVARIANT in shape and the "
+                "sealed round-5 declared distribution (median 2,404, max "
+                "2,928) remains the realistic operating point"
+            ),
+        },
         "round0_citation": {
             "report_path": ROUND0_REPORT_RELPATH,
             "report_sha256": ROUND0_REPORT_SHA256,
             "scores_sha256": ROUND0_SCORES_SHA256,
             "sealed_results": "M0 48/100; BLEND(alpha .60, tau .5) 63/100; W->C 26; C->W 11; evidence fired 100/100",
         },
-        "round1_citation": {
-            "report_path": ROUND1_REPORT_RELPATH,
-            "report_sha256": ROUND1_REPORT_SHA256,
-            "scores_sha256": ROUND1_SCORES_SHA256,
-            "sealed_results": (
-                "BLEND(alpha .60, tau .65) 63/100; W->C 26; C->W 11; evidence "
-                "fired 100/100; tau proven INERT on [0.5, 0.65]; plus the "
-                "disclosed duplicate-takeoff addendum (29 core / 17 tool / "
-                "68.03 audio-s dead spend, never read)"
-            ),
-        },
-        "round2_citation": {
-            "report_path": ROUND2_REPORT_RELPATH,
-            "report_sha256": ROUND2_REPORT_SHA256,
-            "scores_sha256": ROUND2_SCORES_SHA256,
-            "query_vectors_sha256": ROUND2_QUERY_VECTORS_SHA256,
-            "sealed_results": (
-                "BLEND(alpha .55, tau .65) 65/100; W->C 28; C->W 11 "
-                "(byte-equal list to round 1); evidence fired 100/100; "
-                "retain-primary 0 (the direct term was structurally dead "
-                "pre-repair); direct byte-agreement vs attempt-1 M0 75/100"
-            ),
-        },
-        "round3_citation": {
-            "report_path": ROUND3_REPORT_RELPATH,
-            "report_sha256": ROUND3_REPORT_SHA256,
-            "scores_sha256": ROUND3_SCORES_SHA256,
-            "sealed_results": (
-                "BLEND(alpha .55, tau .65, f1060078 repair) 67/100; W->C 24; "
-                "C->W 5 (collapsed from 11); retain-primary 52/100 (first "
-                "nonzero); direct-label recovered 61/100; projection "
-                "reconciliation 96/100 per-sample hits, all 4 misses in the "
-                "direct-byte-variance channel; direct byte-agreement vs "
-                "attempt-1 M0 81/100, vs round-2 79/100"
-            ),
-        },
         "round4_citation": {
             "report_path": ROUND4_REPORT_RELPATH,
             "report_sha256": ROUND4_REPORT_SHA256,
             "scores_sha256": ROUND4_SCORES_SHA256,
-            "query_vectors_sha256": ROUND4_QUERY_VECTORS_SHA256,
             "sealed_results": (
-                "BLEND(alpha .45, tau .65, f1060078 repair) 72/100 — the "
-                "REPLICATION BASE and freeze candidate; W->C 24; C->W 0 "
-                "(collapsed from 5); retain-primary 63/100; direct-label "
-                "recovered 63/100; evidence dispatched 37/100; projection "
-                "reconciliation 98/100 per-sample hits, both misses in the "
-                "direct-byte-variance channel; direct byte-agreement vs "
-                "attempt-1 M0 77/100, vs round-2 82/100, vs round-3 87/100"
+                "BLEND(alpha .45, tau .65, top-k 5, fusion m 5, f1060078 "
+                "repair) 72/100 — one half of the WIDTH-5 PAIRED BASE; W->C "
+                "24; C->W 0; retain-primary 63/100; direct-label recovered "
+                "63/100; evidence dispatched 37/100"
+            ),
+        },
+        "round5_citation": {
+            "report_path": ROUND5_REPORT_RELPATH,
+            "report_sha256": ROUND5_REPORT_SHA256,
+            "scores_sha256": ROUND5_SCORES_SHA256,
+            "sealed_results": (
+                "BLEND(alpha .45, tau .65, top-k 5, fusion m 5, f1060078 "
+                "repair) 72/100 — the EXACT REPLICATION of round 4 and the "
+                "other half of the WIDTH-5 PAIRED BASE; W->C 24; C->W 0; "
+                "retain-primary 67/100; direct-label recovered 67/100; "
+                "evidence dispatched 33/100. The two sealed base rounds agree "
+                "at 72/100 with C->W 0, which is what makes them a usable "
+                "paired baseline and what defines the +/-2-sample "
+                "byte-variance channel this round must be read against"
             ),
         },
         "hosting": dict(HOSTING),
@@ -3227,7 +3233,7 @@ def main() -> int:
         "server_np": server_np,
         "decoder_session_receipt_sha256": measured_receipt,
         "gpu_preflight": flight["gpu_preflight"],
-        "round5_knobs": {
+        "kwiden_k1_knobs": {
             "alpha": K1_ALPHA,
             "rank_weight_id": "rrf",
             "evidence_variant": "rank+prior+agreement",
@@ -3239,24 +3245,44 @@ def main() -> int:
             "m11_pair_boundary_stage": False,
             "value_vectors": "SEALED (never loaded)",
             "percept_admission": "facet-side",
-            "knob_change_vs_round4": {
-                "single_variable": False,
-                "knobs_changed": "NONE: every knob is byte-equal to the sealed round-4 cell and the f1060078 repair is asserted as an invariant — round 5 is an exact replication",
-                "variable": (
-                    "NONE — a repeated-decode variance estimate at the "
-                    "frozen operating point (alpha 0.45, tau 0.65, top-k 5, "
-                    "rrf, train priors, f1060078 repair): the measurement "
-                    "is the run-to-run variance of the flown result at "
-                    "fixed configuration, not the effect of any knob"
+            "width_5_base_cell_for_replay": {
+                "top_k_per_dimension": BASE_TOP_K,
+                "fusion": {"m": BASE_FUSE.m, "c": BASE_FUSE.c, "l": BASE_FUSE.top_l},
+            },
+            "knob_change_vs_width5_base": {
+                "single_variable": True,
+                "knobs_changed": (
+                    "EXACTLY TWO NUMBERS, moved together as ONE registered "
+                    "coupled variable named RETRIEVAL WIDTH: "
+                    "recall_top_k_per_dimension 5 -> 8 AND fusion_m 5 -> 8. "
+                    "alpha, tau, fusion_c, fusion_top_l, the rrf rank "
+                    "weights, the prior source, the boundary stage, the "
+                    "sealed value vectors and the facet-side admission are "
+                    "all byte-equal to configs/policy/kb-policy-v1-dev100.json"
+                ),
+                "why_coupled": (
+                    "the DEV-100 damage-channel analysis proved raising k "
+                    "ALONE is a no-op: the fuser's top_m re-truncates the "
+                    "wider candidate pool before admission, changing 0 of "
+                    "100 trajectories. k=8 with m=8 changed the supply on 34 "
+                    "of 100 round-2-basis trajectories, with outcomes "
+                    "unknowable offline"
                 ),
                 "rationale": (
-                    "supplies the reviewer-audit's credibility condition #2 "
-                    "(run-to-run variance at fixed configuration) and a "
-                    "direct stability measurement of the freeze candidate "
-                    "before the campaign freezes at the hard cap; expected "
-                    "BLEND-r5 within +/-2 of round-4's 72 (the documented "
-                    "byte-variance channel), and the per-sample r5-vs-r4 "
-                    "diff is itself the deliverable"
+                    "the DEV-500 retrieval-reachability curve at the frozen "
+                    "cell — gold-facet recall 71.50 percent at k=5, 74.25 "
+                    "percent at k=8, 84.25 percent at k=32 — shows the "
+                    "frozen BLEND cell operates AT the k=5 ceiling, making "
+                    "wider recall the only quantified headroom outside key "
+                    "construction. The k=5 -> k=8 reachability delta is only "
+                    "+2.75 pp of ceiling, so the credible flown band is "
+                    "small and any movement inside the documented "
+                    "+/-2-sample byte-variance channel is NOT a win"
+                ),
+                "supplied_value_ceiling_is_m_invariant": (
+                    "fusion_c 2 * fusion_top_l 3 = 6 supplied values "
+                    "regardless of m, so the width move changes WHICH values "
+                    "are admitted, never HOW MANY"
                 ),
             },
         },
@@ -3270,83 +3296,82 @@ def main() -> int:
                     f"scores sha256 {ROUND0_SCORES_SHA256})"
                 ),
             },
-            "BLEND_ROUND5": {
-                "accuracy_scenario_action_exact": len(r5_correct) / 100.0,
-                "correct_count": len(r5_correct),
+            "BLEND_K1": {
+                "accuracy_scenario_action_exact": len(k1_correct) / 100.0,
+                "correct_count": len(k1_correct),
                 "contacts": sum(row["contacts"] for row in blend_scores.values()),
                 "evidence_contact_dispatched_samples": dispatched_count,
                 "retain_primary_samples": len(retained_primary_ids),
                 "direct_label_recovered_samples": direct_label_recovered_count,
                 "parsed_count": sum(1 for row in blend_scores.values() if row["parsed"]),
                 "embedding_tool_contacts": flight["embedding_accounting"].get("tool_contacts"),
+                "cell": "alpha .45, tau .65, top-k 8, fusion m 8 / c 2 / l 3, rrf, train priors, f1060078 repair",
             },
             "BLEND_ROUND4_FOR_REFERENCE": {
                 "accuracy_scenario_action_exact": len(r4_blend_correct) / 100.0,
                 "correct_count": len(r4_blend_correct),
-                "source": "ROUND-4 SEALED per-sample scores (the replication base)",
+                "source": "ROUND-4 SEALED per-sample scores (width-5 paired base, half 1 of 2)",
             },
-            "BLEND_ROUND3_FOR_REFERENCE": {
-                "accuracy_scenario_action_exact": len(r3_blend_correct) / 100.0,
-                "correct_count": len(r3_blend_correct),
-                "source": "ROUND-3 SEALED per-sample scores",
-            },
-            "BLEND_ROUND2_FOR_REFERENCE": {
-                "accuracy_scenario_action_exact": len(r2_blend_correct) / 100.0,
-                "correct_count": len(r2_blend_correct),
-                "source": "ROUND-2 SEALED per-sample scores",
-            },
-            "BLEND_ROUND1_FOR_REFERENCE": {
-                "accuracy_scenario_action_exact": len(r1_blend_correct) / 100.0,
-                "correct_count": len(r1_blend_correct),
-                "source": "ROUND-1 SEALED per-sample scores",
-            },
-            "BLEND_ROUND0_FOR_REFERENCE": {
-                "accuracy_scenario_action_exact": len(r0_blend_correct) / 100.0,
-                "correct_count": len(r0_blend_correct),
-                "source": "ROUND-0 SEALED per-sample scores",
+            "BLEND_ROUND5_FOR_REFERENCE": {
+                "accuracy_scenario_action_exact": len(r5_blend_correct) / 100.0,
+                "correct_count": len(r5_blend_correct),
+                "source": "ROUND-5 SEALED per-sample scores (width-5 paired base, half 2 of 2)",
             },
         },
         "wrong_to_correct_sample_ids": wrong_to_correct,
         "correct_to_wrong_sample_ids": correct_to_wrong,
         "vs_round4_blend": {
-            "net_delta_correct_samples": delta_r5_vs_r4,
-            "round4_correct_now_wrong": sorted(r4_blend_correct - r5_correct),
-            "round4_wrong_now_correct": sorted(r5_correct - r4_blend_correct),
-            "round4_w2c_retained": sorted(r4_w2c & r5_correct),
-            "round4_w2c_lost": sorted(r4_w2c - r5_correct),
-            "round4_c2w_repaired": sorted(r4_c2w & r5_correct),
-            "round4_c2w_still_wrong": sorted(r4_c2w - r5_correct),
+            "net_delta_correct_samples": len(k1_correct) - len(r4_blend_correct),
+            "round4_correct_now_wrong": sorted(r4_blend_correct - k1_correct),
+            "round4_wrong_now_correct": sorted(k1_correct - r4_blend_correct),
+            "round4_w2c_retained": sorted(r4_w2c & k1_correct),
+            "round4_w2c_lost": sorted(r4_w2c - k1_correct),
+            "round4_c2w_repaired": sorted(r4_c2w & k1_correct),
+            "round4_c2w_still_wrong": sorted(r4_c2w - k1_correct),
             "final_response_sha_changed_sample_ids": response_changed_vs_r4,
             "final_response_sha_changed_count": len(response_changed_vs_r4),
             "note": (
-                "per-sample vs the round-4 sealed BLEND arm (the SAME "
-                "configuration — round 5 is its exact replication) — the "
-                "PRIMARY comparison, the stopping-rule baseline AND the "
-                "CENTERPIECE deliverable: every difference here is pure "
-                "run-to-run decode variance at fixed config, attributed "
-                "per-sample in replication_reconciliation. round-4's C->W "
-                "list vs M0 is EMPTY, so round4_c2w_repaired/_still_wrong "
-                "are structurally empty"
+                "per-sample vs the round-4 sealed BLEND arm (the WIDTH-5 "
+                "base cell, half 1 of the paired base) — one half of the "
+                "PRIMARY comparison. round-4's C->W list vs M0 is EMPTY, so "
+                "round4_c2w_repaired/_still_wrong are structurally empty"
             ),
         },
-        "vs_round3_blend": {
-            "net_delta_correct_samples": len(r5_correct) - len(r3_blend_correct),
-            "round3_correct_now_wrong": sorted(r3_blend_correct - r5_correct),
-            "round3_wrong_now_correct": sorted(r5_correct - r3_blend_correct),
-            "round3_w2c_retained": sorted(r3_w2c & r5_correct),
-            "round3_w2c_lost": sorted(r3_w2c - r5_correct),
-            "round3_c2w_repaired": sorted(r3_c2w & r5_correct),
-            "round3_c2w_still_wrong": sorted(r3_c2w - r5_correct),
-            "final_response_sha_changed_sample_ids": response_changed_vs_r3,
-            "final_response_sha_changed_count": len(response_changed_vs_r3),
+        "vs_round5_blend": {
+            "net_delta_correct_samples": delta_k1_vs_base,
+            "round5_correct_now_wrong": sorted(r5_blend_correct - k1_correct),
+            "round5_wrong_now_correct": sorted(k1_correct - r5_blend_correct),
+            "round5_w2c_retained": sorted(r5_w2c & k1_correct),
+            "round5_w2c_lost": sorted(r5_w2c - k1_correct),
+            "round5_c2w_repaired": sorted(r5_c2w & k1_correct),
+            "round5_c2w_still_wrong": sorted(r5_c2w - k1_correct),
+            "final_response_sha_changed_sample_ids": response_changed_vs_r5,
+            "final_response_sha_changed_count": len(response_changed_vs_r5),
             "note": (
-                "per-sample vs the round-3 sealed BLEND arm (alpha .55, tau "
-                ".65, repair live) — secondary reference only; round 5 "
-                "replicates round 4, so this is the alpha-.45 effect (round "
-                "4's variable) re-measured on fresh decodes"
+                "per-sample vs the round-5 sealed BLEND arm (the WIDTH-5 "
+                "base cell, half 2 of the paired base) — the STOPPING-RULE "
+                "baseline. Every difference here is either the retrieval-"
+                "width effect or run-to-run decode variance, and "
+                "kwiden_reconciliation attributes each flip to one channel "
+                "using the offline width-5 supply replay"
             ),
         },
-        "replication_reconciliation": replication_reconciliation,
+        "kwiden_reconciliation": kwiden_reconciliation,
+        "width_supply_replay": {
+            "method": (
+                "the WIDTH-5 fuse is REPLAYED OFFLINE on THIS round's own "
+                "logged query vectors through the pure rails.kb_policy "
+                "functions at ZERO contacts, so every dispatched sample is "
+                "labelled supply-changed or supply-identical under the width "
+                "move. A flip on a supply-CHANGED sample is "
+                "width-attributable; a flip elsewhere is byte-variance"
+            ),
+            "replay_fidelity_failures": replay_fidelity_failures,
+            "supply_changed_sample_ids": sorted(supply_changed_ids),
+            "supply_changed_count": len(supply_changed_ids),
+            "supply_changed_dispatched_count": len(supply_changed_dispatched),
+            "width_attributable_flip_count": width_flip_count,
+        },
         "blend_decisions": {
             "evidence_contact_dispatched_samples": dispatched_count,
             "retain_primary_samples": len(retained_primary_ids),
@@ -3381,12 +3406,10 @@ def main() -> int:
             "disagree_sample_ids": sorted(
                 sample_id for sample_id, same in direct_agreement.items() if not same
             ),
-            "vs_round2_agree_count": direct_agree_vs_r2_count,
-            "vs_round2_changed_sample_ids": direct_changed_vs_r2,
-            "vs_round3_agree_count": direct_agree_vs_r3_count,
-            "vs_round3_changed_sample_ids": direct_changed_vs_r3,
             "vs_round4_agree_count": direct_agree_vs_r4_count,
             "vs_round4_changed_sample_ids": direct_changed_vs_r4,
+            "vs_round5_agree_count": direct_agree_vs_r5_count,
+            "vs_round5_changed_sample_ids": direct_changed_vs_r5,
         },
         "deviations": [
             {
@@ -3403,22 +3426,59 @@ def main() -> int:
                 ),
             },
             {
-                "id": "blend-r4-and-r3-arms-consumed-from-their-seals",
+                "id": "blend-r4-and-r5-width5-base-consumed-from-their-seals",
                 "kind": "successor semantics, registered pre-takeoff in the campaign row",
                 "detail": (
-                    "The BLEND-round-4 reference arm (the REPLICATION BASE, "
-                    "the primary comparison and the stopping-rule baseline) "
-                    "was not re-flown: its per-sample correctness comes "
-                    "from round-4's sealed scoring artifact "
-                    "(round4-scores.json, sha256 "
-                    f"{ROUND4_SCORES_SHA256}), cross-checked against the "
-                    f"sealed round-4 report ({ROUND4_REPORT_SHA256}) at the "
-                    "single scoring-side opening; the BLEND-round-3 "
-                    "reference arm likewise from round-3's sealed artifacts "
-                    f"(scores {ROUND3_SCORES_SHA256}, report "
-                    f"{ROUND3_REPORT_SHA256}); round-2/round-1/round-0 reference "
-                    "aggregates likewise from their sealed artifacts. Zero "
-                    "new spend for these arms."
+                    "The WIDTH-5 PAIRED BASE was not re-flown. Its "
+                    "per-sample correctness comes from round-4's sealed "
+                    f"scoring artifact (round4-scores.json, sha256 "
+                    f"{ROUND4_SCORES_SHA256}, cross-checked against report "
+                    f"{ROUND4_REPORT_SHA256}) and round-5's sealed scoring "
+                    f"artifact (round5-scores.json, sha256 "
+                    f"{ROUND5_SCORES_SHA256}, cross-checked against report "
+                    f"{ROUND5_REPORT_SHA256}), both opened at the single "
+                    "scoring-side opening after this round's arms sealed. "
+                    "Both sealed rounds flew the identical width-5 cell and "
+                    "both landed 72/100 with C->W 0. Zero new spend for "
+                    "these arms."
+                ),
+            },
+            {
+                "id": "launcher-a1-trace-path-repair-pre-takeoff",
+                "kind": "pre-takeoff repair of a round-5-reuse defect, zero spend",
+                "detail": (
+                    "This launcher was reused from the round-5 launcher, in "
+                    "which RUN_ID equalled the sealed-authority run id. The "
+                    "rename to SAEA-DEV100-KWIDEN broke the attempt-1 M0 "
+                    "hash-authority path (a durable trace file is named "
+                    "after the run id that WROTE it, so the correct name is "
+                    "<BASE_RUN_ID>.trace.jsonl). Caught by --preflight-only "
+                    "BEFORE the execution plan, the frozen-core gate and any "
+                    "attach: no AttemptStore record was opened and zero "
+                    "contacts were made. An exhaustive scan confirmed it was "
+                    "the only instance of the class."
+                ),
+            },
+            {
+                "id": "launcher-landing-block-repair-pre-takeoff",
+                "kind": "pre-takeoff repair of a round-5-reuse defect, zero spend",
+                "detail": (
+                    "The report-assembly block was still the round-5 "
+                    "original and read 73 names that this launcher never "
+                    "binds (ROUND1/2/3 pins, r5_correct, r3/r2/r1/r0 "
+                    "aggregates, replication_reconciliation, "
+                    "round5_qualifies, convergence_fires, "
+                    "campaign_complete_at_cap). It would have raised "
+                    "NameError at the landing step AFTER every frozen-core "
+                    "and embedding contact of the round was already spent, "
+                    "destroying the round with no report and no seal. Caught "
+                    "pre-takeoff by a static undefined-name scan of main(); "
+                    "the block was rewritten against the K1 scoring "
+                    "section's real variables (k1_correct, delta_k1_vs_base, "
+                    "kwiden_reconciliation, the width-5 supply replay) and "
+                    "the output artifacts renamed from round5-* to "
+                    "kwiden-k1-*. Zero spend was involved in the discovery "
+                    "or the repair."
                 ),
             },
             {
@@ -3436,7 +3496,7 @@ def main() -> int:
             },
         ],
         "spend_vs_ceilings": {
-            "round5": {
+            "round_k1": {
                 "core_contacts": {"used": contact_total, "attempt_ceiling": ATTEMPT_CORE_CEILING},
                 "embedding_tool_contacts": {"used": meter.count, "attempt_ceiling": ATTEMPT_TOOL_CEILING},
                 "metered_audio_seconds": {"used": audio_seconds_metered},
@@ -3446,13 +3506,17 @@ def main() -> int:
                 "planned_model_calls_run_cumulative": PLANNED_MODEL_CALLS,
                 "planned_speech_audio_seconds_run_cumulative": PLANNED_AUDIO_SECONDS,
                 "note": (
-                    "FRESH successor plan (the round-4 1,600 / 4,300 plan is "
-                    "nearly exhausted at 1,414 / 3,775.60 durable); "
-                    "run-cumulative per core.model.adapter's enforcement "
+                    "FRESH run id with ZERO durable prior: the AttemptStore "
+                    "directory attempts/SAEA-DEV100-KWIDEN and the run dir "
+                    "runs/SAEA-DEV100-KWIDEN were BOTH verified ABSENT at "
+                    "registration, so this plan covers the K1 worst case "
+                    "alone (210 attempt ceiling + 40 margin = 250 calls; "
+                    "about 575 worst-case audio-s + about 125 margin = 700). "
+                    "Run-cumulative per core.model.adapter's enforcement "
                     "across all attempts of the run id (fresh sibling read "
-                    "per request); covers the 1,414 calls / "
-                    "3,775.5976249999994 audio-s AttemptStore-verified "
-                    "durable for rounds 0-4 plus this round's worst case"
+                    "of durable attempt actuals per request); every "
+                    "successor round must re-size its plan to cover prior "
+                    "durable spend plus its own worst case"
                 ),
             },
             "campaign_cumulative_incl_prior_rounds": {
@@ -3464,57 +3528,71 @@ def main() -> int:
                     else None
                 ),
                 "note": (
-                    "rounds 0-4 durable cumulative incl. the disclosed "
-                    "round-1 duplicate (AttemptStore re-sum: 1,414 core, 725 "
-                    "tool, 3,775.5976249999994 audio-s) plus this round-5 "
-                    "attempt"
+                    "K1 is the FIRST round under the SAEA-DEV100-KWIDEN row, "
+                    "so prior durable spend under this row is exactly zero "
+                    "and the campaign cumulative equals this attempt. The "
+                    "sealed predecessor campaign "
+                    "SAEA-DEV100-KB-ALPHA-BLEND-CAMPAIGN closed at its own "
+                    "hard cap and does NOT count against these ceilings"
                 ),
             },
-            "campaign_ceilings_as_amended": {
+            "campaign_ceilings": {
                 "core_contacts": CAMPAIGN_CEILING_CORE,
                 "embedding_tool_contacts": CAMPAIGN_CEILING_TOOL,
                 "metered_audio_seconds": CAMPAIGN_CEILING_AUDIO,
                 "gpu_hours": CAMPAIGN_CEILING_GPU_HOURS,
-                "amendment": (
-                    "owner-approved at the round-0 sync (preregistration "
-                    "section 4, commit 121bdc08): audio 2,400 -> 5,500, core "
-                    "1,800 -> 2,500; tool and GPU-h unchanged"
+                "scope": (
+                    "the WHOLE K-WIDEN mini-campaign, rounds K1 through K3 "
+                    "(hard cap 3 rounds)"
                 ),
             },
         },
         "stopping_rule_status": {
             "rule": (
-                "converged: best-arm delta < 1 sample across 2 consecutive "
-                "rounds with zero C->W growth; falsified: no arm beats direct "
-                "after 3 completed rounds; hard cap 6"
+                "WIDENED: net paired gain vs the round-4/5 width-5 base "
+                "(delta correct samples > 0) with C->W vs M0 not exceeding "
+                "the base's 0 by more than the gain — the coordinator may "
+                "then register the next ladder width (16, then 32). "
+                "CONVERGED OR FALSIFIED: delta vs the base <= 0, or losses "
+                "on previously-correct dispatched samples offset the "
+                "reachability gains — widening is declared exhausted at this "
+                "tier, the mini-campaign ENDS, and the report recommends "
+                "key-construction work instead. Hard cap 3 rounds; K1 is "
+                "round 1. Evaluated between rounds only, after every arm of "
+                "a round has sealed"
             ),
-            "completed_rounds_after_this": 6,
-            "campaign_complete_at_cap": campaign_complete_at_cap,
-            "streak_state_entering_round5": (
-                "EMPTY — round 4's +5 delta did not qualify, so no qualifying "
-                "round is banked; two fresh consecutive qualifying rounds "
-                "would be required and no round 6 exists"
-            ),
-            "round5_delta_vs_round4": delta_r5_vs_r4,
-            "round5_c2w_vs_m0": len(correct_to_wrong),
-            "round4_c2w_vs_m0": len(r4_c2w),
-            "c2w_growth_vs_round4": c2w_growth_vs_r4,
-            "round5_qualifies": round5_qualifies,
-            "banks_one_qualifying_round": round5_qualifies,
-            "convergence_fires": convergence_fires,
+            "completed_rounds_after_this": 1,
+            "hard_cap_rounds": 3,
+            "width_ladder_remaining": [
+                "K2 at top_k 16 / fusion m 16",
+                "K3 at top_k 32 / fusion m 32",
+            ],
+            "base_correct_total": base_correct_total,
+            "k1_correct_total": len(k1_correct),
+            "delta_k1_vs_base": delta_k1_vs_base,
+            "k1_c2w_vs_m0": len(correct_to_wrong),
+            "base_c2w_vs_m0": len(r5_c2w),
+            "c2w_growth_vs_base": c2w_growth_vs_base,
+            "width_widened_signal": width_widened_signal,
+            "credible_band": [band_low, band_high],
+            "inside_credible_band": band_low <= len(k1_correct) <= band_high,
+            "byte_variance_channel_samples": 2,
+            "delta_inside_byte_variance_channel": abs(delta_k1_vs_base) <= 2,
+            "width_attributable_flip_count": width_flip_count,
             "beats_direct": beats_direct,
             "note": (
-                "evaluated AT THIS SEAL per the flight brief: with the "
-                "streak EMPTY entering round 5, a qualifying round 5 (|delta "
-                "vs r4| < 1 sample AND zero C->W growth) BANKS one "
-                "qualifying round — COSMETIC AT THE CAP: round 5 is the 6th "
-                "of the hard cap 6, so THE CAMPAIGN IS COMPLETE AT THIS "
-                "SEAL REGARDLESS of the stopping-rule outcome; convergence "
-                "structurally cannot fire (two consecutive qualifying "
-                "rounds would be needed and no round 6 exists); "
-                "falsification cannot apply while beats_direct is true. The "
-                "coordinator states the outcome formally, freezes the "
-                "operating point, and reports to the owner."
+                "evaluated AT THIS SEAL. The arithmetic here is the "
+                "launcher's; the FORMAL stopping statement belongs to the "
+                "coordinator and the owner. HONESTY CONSTRAINT registered "
+                "BEFORE takeoff: the k=5 -> k=8 reachability delta is only "
+                "+2.75 pp of ceiling, so a delta whose absolute value is at "
+                "most 2 samples sits INSIDE the documented direct-decode "
+                "byte-variance channel and MUST NOT be reported as a win "
+                "even when width_widened_signal is True. "
+                "width_attributable_flip_count is the honest discriminator: "
+                "it counts outcome flips on samples whose supply actually "
+                "CHANGED under the width move, per the offline width-5 "
+                "replay on this round's own logged query vectors."
             ),
         },
         "canary": flight.get("canary"),
@@ -3532,72 +3610,79 @@ def main() -> int:
         "core_client": flight["core_client"],
         "run_dir": str(run_dir),
         "hard_stop": (
-            "Round 5 lands and STOPS — THE CAMPAIGN IS COMPLETE AT THE HARD "
-            "CAP (6 of 6 rounds). Nothing flies under this campaign row "
-            "again regardless of the stopping-rule outcome: the coordinator "
-            "freezes the operating point (the alpha-.45 cell, the "
-            "campaign-best flown cell) and reports to the owner (per-arm "
-            "accuracy, W->C/C->W, the r5-vs-r4 per-sample variance "
-            "distribution with per-flip byte-channel attribution, "
-            "retain-primary stability vs round-4's 63, spend vs the amended "
-            "ceilings, the stopping-rule statement, and the stability "
-            "verdict on the freeze candidate). The coordinator decides "
-            "service/keepalive teardown after the freeze."
+            "Round K1 lands and STOPS. This launcher does not decide round "
+            "K2: the ladder's next width (16, then 32) is registered by the "
+            "coordinator and the owner only if the stopping rule reads "
+            "WIDENED on evidence that survives the byte-variance channel. "
+            "The coordinator reports per-arm accuracy, W->C/C->W vs M0, the "
+            "per-sample movement vs the sealed width-5 base with per-flip "
+            "width-vs-variance attribution from the offline replay, "
+            "retain-primary rate and its equality with "
+            "direct-label-recovered, the supply-size distribution actually "
+            "admitted at m=8, prompt-reuse, decode rates and spend vs the "
+            "mini-campaign ceilings. The resident service and keepalive are "
+            "LEFT UP."
         ),
     }
     OUT_CHECK_DIR.mkdir(parents=True, exist_ok=True)
-    report_path = OUT_CHECK_DIR / "round5-report.json"
+    report_path = OUT_CHECK_DIR / "kwiden-k1-report.json"
     report_path.write_text(
         json.dumps(round_report, indent=2, sort_keys=True, default=str) + "\n",
         encoding="utf-8",
         newline="\n",
     )
-    (run_dir / "round5-scores.json").write_text(
+    (run_dir / "kwiden-k1-scores.json").write_text(
         json.dumps(scores, indent=1, sort_keys=True) + "\n", encoding="utf-8", newline="\n"
     )
-    flight["outcome_status"] = "ROUND5_LANDED"
+    flight["outcome_status"] = "KWIDEN_K1_LANDED"
     flight["report_path"] = str(report_path)
     save_flight()
-    log(f"round-5 report written: {report_path}")
+    log(f"round-K1 report written: {report_path}")
     log(f"report sha256: {sha256_file(report_path)}")
     log(
-        f"SUMMARY: M0 {len(m0_correct)}/100 (sealed), BLEND-r5(alpha "
-        f"{K1_ALPHA}, tau {K1_TAU}, f1060078 repair — REPLICATION) "
-        f"{len(r5_correct)}/100 (expected 72, credible band 70-74; r4 was "
-        f"{len(r4_blend_correct)}, r3 {len(r3_blend_correct)}, r2 "
-        f"{len(r2_blend_correct)}, r1 {len(r1_blend_correct)}, r0 "
-        f"{len(r0_blend_correct)}), W->C {len(wrong_to_correct)} (r4 24), "
-        f"C->W {len(correct_to_wrong)} (r4 0), evidence dispatched "
+        f"SUMMARY: M0 {len(m0_correct)}/100 (sealed), BLEND-K1(alpha "
+        f"{K1_ALPHA}, tau {K1_TAU}, top-k {K1_TOP_K}, fusion m {K1_FUSE.m}, "
+        f"f1060078 repair — RETRIEVAL WIDTH) "
+        f"{len(k1_correct)}/100 (credible band {band_low}-{band_high}; the "
+        f"sealed width-5 base was r4 {len(r4_blend_correct)} and r5 "
+        f"{len(r5_blend_correct)}), W->C {len(wrong_to_correct)} (base 24), "
+        f"C->W {len(correct_to_wrong)} (base 0), evidence dispatched "
         f"{dispatched_count}/100, retain-primary "
-        f"{len(retained_primary_ids)} (r4 63), direct-label recovered "
+        f"{len(retained_primary_ids)} (r4 63, r5 67), direct-label recovered "
         f"{direct_label_recovered_count}/100, core contacts {contact_total}/"
         f"{ATTEMPT_CORE_CEILING} (attempt), tool {meter.count}/{ATTEMPT_TOOL_CEILING}, "
-        f"direct byte-agreement vs a1-M0 {direct_agree_count}/100, vs r2 "
-        f"{direct_agree_vs_r2_count}/100, vs r3 {direct_agree_vs_r3_count}"
-        f"/100, vs r4 {direct_agree_vs_r4_count}/100"
+        f"direct byte-agreement vs a1-M0 {direct_agree_count}/100, vs r4 "
+        f"{direct_agree_vs_r4_count}/100, vs r5 {direct_agree_vs_r5_count}/100"
     )
     log(
-        "REPLICATION RECONCILIATION (r5 vs r4, the centerpiece): "
-        f"{'WITHIN' if replication_reconciliation['within_credible_band'] else 'OUTSIDE'} "
-        f"the credible band ({len(r5_correct)} vs expected "
-        f"{len(expected_correct)}, delta {delta_r5_vs_r4:+d}); per-sample "
-        f"repeats {replication_reconciliation['per_sample_repeats']}/100, "
+        "KWIDEN RECONCILIATION (K1 vs the sealed width-5 base, the "
+        "centerpiece): "
+        f"{'WITHIN' if kwiden_reconciliation['within_credible_band'] else 'OUTSIDE'} "
+        f"the credible band ({len(k1_correct)} vs the base "
+        f"{len(expected_correct)}, delta {delta_k1_vs_base:+d}); per-sample "
+        f"repeats {kwiden_reconciliation['per_sample_repeats_vs_round5']}/100, "
         f"outcome flips {len(flips)} (gained {len(flips_gained)}, lost "
         f"{len(flips_lost)}; on changed directs "
-        f"{replication_reconciliation['variance_channel_distribution']['outcome_flips_on_changed_direct']}), "
-        f"direct decodes changed {len(direct_changed_vs_r4)}/100, finals "
-        f"changed {len(response_changed_vs_r4)}/100, retain-decision flips "
+        f"{kwiden_reconciliation['variance_channel_distribution']['outcome_flips_on_changed_direct']}), "
+        f"WIDTH-ATTRIBUTABLE flips {width_flip_count}, supply changed by the "
+        f"width move on {len(supply_changed_ids)}/100 trajectories "
+        f"({len(supply_changed_dispatched)} dispatched), direct decodes "
+        f"changed {len(direct_changed_vs_r5)}/100, finals changed "
+        f"{len(response_changed_vs_r5)}/100, retain-decision flips "
         f"{len(decision_flips)} (unchanged-direct anomalies "
         f"{decision_flips_unchanged_direct}), mechanism-level anomalies "
-        f"{mechanism_miss_count}"
+        f"{mechanism_miss_count}, retain==label-recovered "
+        f"{retain_equals_label_recovered}"
     )
     log(
-        f"STOPPING RULE AT SEAL: round5_delta_vs_round4={delta_r5_vs_r4}, "
-        f"C->W growth vs r4={c2w_growth_vs_r4}, round5_qualifies="
-        f"{round5_qualifies} (banks one qualifying round if true — cosmetic "
-        f"at the cap), CONVERGENCE FIRES={convergence_fires} (structurally "
-        "False); 6 of hard cap 6 rounds complete — THE CAMPAIGN IS COMPLETE "
-        "AT THE CAP"
+        f"STOPPING RULE AT SEAL: delta_k1_vs_base={delta_k1_vs_base:+d}, "
+        f"C->W growth vs base={c2w_growth_vs_base:+d}, "
+        f"width_widened_signal={width_widened_signal}, "
+        f"width_attributable_flips={width_flip_count}, "
+        f"delta_inside_byte_variance_channel={abs(delta_k1_vs_base) <= 2} "
+        "(a delta of at most 2 samples is INSIDE the documented channel and "
+        "is NOT a win); 1 of hard cap 3 K-WIDEN rounds complete — the K2 "
+        "decision belongs to the coordinator and the owner"
     )
     log(
         "PROMPT REUSE: overall evaluated/declared "
@@ -3610,7 +3695,7 @@ def main() -> int:
         f"{len(two_contact_results)}; offset calibration "
         f"{per_request_offset}; verdict: {reuse_verdict}"
     )
-    log("RESIDENT DECODER LEFT UP after round 5 (never stopped by this launcher)")
+    log("RESIDENT DECODER LEFT UP after round K1 (never stopped by this launcher)")
     return 0
 
 
