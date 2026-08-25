@@ -1,0 +1,218 @@
+{
+ "arm_id": "BLEND",
+ "artifacts": {
+  "abort_record_attempt_1_preserved": "arm2-blend-sentinel-abort.json",
+  "abort_record_attempt_2": "arm2-blend-sentinel-abort-attempt2.json",
+  "clock_samples_jsonl": "$SPEECHRL_DATA_DIR/runs/SAEA-A2T-G1/clock-samples-blend.jsonl (never committed; all 161 samples are embedded verbatim in the abort record)",
+  "gpu_preflight": "gpu-preflight-blend-attempt2.json",
+  "launcher": "launcher/launch_a2t_g1_blend_attempt2.py",
+  "run_dir": "$SPEECHRL_DATA_DIR/runs/SAEA-A2T-G1/attempt-20260825T114856Z-a2tg1blend (never committed)"
+ },
+ "attempt_id": "attempt-20260825T114856Z-a2tg1blend",
+ "boundary": "Gold was never opened. No response was read semantically. The arm is NOT mechanically landed. The 180 flushed partial records and 60 partial decodes are dead spend, durable, disclosed and never re-read as results. Nothing here licenses a generality claim, a superiority claim, test contact, a knob change or Stage-3 activity.",
+ "campaign_cumulative_after_this_attempt": {
+  "audio_ceiling": 2000,
+  "core_ceiling": 400,
+  "core_contacts": 196,
+  "embedding_tool_contacts": 126,
+  "metered_audio_seconds": 941.061,
+  "note": "prior durable 134 core / 663.884 audio-s / 27 tool, plus this attempt's 62 / 277.177 / 99. All three inside their registered cells.",
+  "tool_ceiling": 200
+ },
+ "evidence": {
+  "1_vram_step_is_exact_and_coincident": {
+   "first_high_sample_timestamp": "2026/08/25 07:52:48.143 (local, = 11:52:48Z)",
+   "main_loop_samples_above_23500_mib": 106,
+   "main_loop_samples_total": 122,
+   "memory_total_mib": 24463.0,
+   "memory_used_mib_after": 24125.0,
+   "memory_used_mib_before": 21288.0,
+   "occupancy_after_pct": 98.6,
+   "seconds_between_sidecar_ready_and_vram_step": 2.2,
+   "sidecar_2_ready_utc": "2026-08-25T11:52:45.96Z",
+   "step_mib": 2837.0
+  },
+  "2_decode_collapses_prefill_barely_moves": {
+   "boundary": "the sidecar-2 respawn, located independently in the raw server log",
+   "decode_ms_per_token_after": {
+    "max": 1572.5,
+    "median": 997.25,
+    "min": 106.75,
+    "n": 16,
+    "p90": 1313.99
+   },
+   "decode_ms_per_token_before": {
+    "max": 66.56,
+    "median": 19.54,
+    "min": 11.65,
+    "n": 46,
+    "p90": 25.27
+   },
+   "decode_slowdown_x": 51.0,
+   "prefill_ms_per_token_after": {
+    "max": 18.82,
+    "median": 3.76,
+    "min": 1.41,
+    "n": 16,
+    "p90": 12.19
+   },
+   "prefill_ms_per_token_before": {
+    "max": 82.35,
+    "median": 1.56,
+    "min": 1.18,
+    "n": 46,
+    "p90": 1.91
+   },
+   "prefill_slowdown_x": 2.4,
+   "reading": "Memory-bound decode degrades about 51x while compute-bound prefill degrades about 2.4x. A clock or power collapse would slow both roughly proportionally. Attempt 1 measured the same asymmetry (about 75x decode against about 13x prefill) without the telemetry to attribute it."
+  },
+  "3_the_gpu_was_not_throttled_while_it_stalled": {
+   "clocks_max_sm_mhz": 3090.0,
+   "clocks_sm_mhz_main_loop": {
+    "max": 2490.0,
+    "median": 2467.0,
+    "min": 1192.0
+   },
+   "clocks_sm_mhz_median_among_the_106_high_vram_samples": 2482.0,
+   "enforced_power_limit_w": 100.0,
+   "locked_clock_range_mhz": "1200-2500 (re-asserted at preflight)",
+   "power_draw_w_main_loop": {
+    "max": 97.9,
+    "median": 45.045,
+    "min": 10.44
+   },
+   "reading": "Throttling WAS observed and is disclosed: the sw_power_cap flag was active on 7 of 122 main-loop samples, at power excursions toward the 100 W cap. It does not explain the stall. Through the stalled regime the SM clock sat at 2,482 MHz median -- against the 2,500 MHz lock ceiling, i.e. NOT reduced -- with median draw 45 W of a 100 W cap, 55 C median, and no hardware or thermal flag ever active, while GPU utilization pinned at 100 percent and decode delivered about 1 token per second. Full clocks, half the power budget, cool, 100 percent busy and no throughput is the signature of a device spinning on memory transfers, not of a clock collapse.",
+   "sw_power_cap_active_of_total": "7 of 122 main-loop samples (5.7 percent)",
+   "sw_power_cap_active_sample_count": 7,
+   "temperature_c_main_loop": {
+    "max": 59.0,
+    "median": 55.0,
+    "min": 44.0
+   },
+   "throttle_flags_ever_active": {
+    "hw_slowdown": false,
+    "hw_thermal_slowdown": false,
+    "sw_power_cap": true,
+    "sw_thermal_slowdown": false
+   },
+   "utilization_gpu_pct_main_loop_median": 100.0
+  },
+  "4_the_healthy_regime_is_the_same_service_minutes_earlier": {
+   "canary_bytes_match_m0_authority": true,
+   "canary_gate_ms_per_token": 300.0,
+   "canary_ms_per_token": [
+    12.32,
+    11.65
+   ],
+   "canary_vram_mib": "0 to 710 (weights still paging in from the idle eviction)",
+   "m0_arm_landed_full_104_at": "median 21.21 ms/token, sidecar never spawned",
+   "reading": "The identical service instance, geometry and prompts ran the canary at 12 ms/token and the first 46 decode rows of this very loop at 19.54 ms/token median. Nothing about the carrier, the policy or the geometry is slow."
+  },
+  "5_preflight_vram_eviction_is_a_separate_and_benign_finding": {
+   "cost_measured": "None that matters. The weights re-paged during the canary's first prompt eval (82.35 ms/token prefill on canary sample 1 against 3.91 on sample 2) and the canary still passed at 12.32 and 11.65 ms/token generation, far inside the 300 ms/token gate. It is recorded so a future mission does not mistake an idle 0 MiB reading for a dead service.",
+   "observed": "nvidia-smi read 0 MiB used on both the Windows host and inside WSL while the np2 service was up and healthy about 68 minutes after its last request; the host had evicted the resident weights across the idle window."
+  }
+ },
+ "fix_outcomes": {
+  "fix_1_telemetry": {
+   "interval_seconds": 3.0,
+   "phase_tagged": [
+    "pre-takeoff",
+    "offline-precompute",
+    "cold-settle",
+    "canary",
+    "main-loop"
+   ],
+   "samples": 161,
+   "series_added": [
+    "clocks.sm",
+    "clocks.max.sm",
+    "clocks.mem",
+    "power.draw",
+    "pstate",
+    "clocks_throttle_reasons.active",
+    "clocks_throttle_reasons.sw_power_cap",
+    "clocks_throttle_reasons.hw_slowdown",
+    "clocks_throttle_reasons.sw_thermal_slowdown",
+    "clocks_throttle_reasons.hw_thermal_slowdown"
+   ],
+   "status": "WORKED -- this file exists because of it"
+  },
+  "fix_2_precompute": {
+   "defect": "The miss path spawns the sidecar and NEVER STOPS IT. One miss at loop contact about 12 of 208 therefore restored the exact attempt-1 VRAM condition for the whole remaining loop. The precompute removed 91 percent of the in-loop tool contacts and 0 percent of the VRAM contention, because contention is a function of whether the process is RESIDENT, not of how many contacts it serves.",
+   "hit_rate": 0.913793,
+   "hits": 53,
+   "in_loop_tool_contacts_avoided": 53,
+   "lookups": 58,
+   "miss_sample_ids": [
+    "tier1_direct:001432",
+    "tier2_parametric:004826",
+    "tier4_implicit:001513",
+    "tier4_implicit:003949",
+    "tier5_needle:000061"
+   ],
+   "misses": 5,
+   "registered_expectation": 0.85,
+   "status": "WORKED ON ITS OWN TERMS, THEN WAS UNDONE BY ITS OWN FALLBACK",
+   "the_one_line_repair": "Stop the sidecar immediately after each live embed -- the spawn costs 5.1 s and buys back 2,837 MiB. At the measured 8.6 percent miss rate that is about 9 spawn/stop cycles over 104 samples, about 46 s of added wall time, against a 51x decode collapse. Alternatively defer misses: fly the loop with the sidecar down and an inert query vector is NOT acceptable (it changes what the policy reads), so the correct deferral is a two-pass loop -- pass 1 flies all 104 direct decodes with the sidecar down, then one offline embed pass covers every miss, then pass 2 flies the evidence contacts. That costs 104 extra prompt evaluations and keeps the sidecar out of the GPU loop entirely."
+  },
+  "fix_3_cold_start": {
+   "after": {
+    "clocks_sm_mhz": 1192.0,
+    "memory_used_mib": 0.0,
+    "power_w": 10.18,
+    "temp_c": 43.0
+   },
+   "before": {
+    "clocks_sm_mhz": 1387.0,
+    "memory_used_mib": 0.0,
+    "power_w": 15.3,
+    "temp_c": 45.0
+   },
+   "reading": "The host entered the canary genuinely cold -- 10.18 W, 43 C, 0 percent utilization -- and the canary passed at 12 ms/token. Attempt 1's 'no cold start' hypothesis is therefore ELIMINATED: this attempt had one and stalled anyway, at the moment the sidecar came back up.",
+   "settle_seconds": 90.0,
+   "status": "WORKED, AND IS NOT THE MECHANISM"
+  },
+  "fix_4_same_row_fresh_attempt": {
+   "attempt_core_ceiling": 220,
+   "attempt_tool_ceiling": 170,
+   "guards_asserted_fail_closed": true,
+   "registered_before_contact_at_commit": "70dceb90",
+   "row": "SAEA-A2T-G1",
+   "status": "WORKED"
+  }
+ },
+ "generated_at_utc": "2026-08-25T12:05:00Z",
+ "question": "Attempt 1 of the BLEND arm tripped the in-flight decode-rate sentinel and left two candidate mechanisms unseparated: thermal or power THROTTLING versus a MEMORY-PATH stall under VRAM pressure. FIX 1 of the successor attempt added the missing telemetry series so a recurrence would be attributable. The recurrence happened. This file is the attribution.",
+ "run_id": "SAEA-A2T-G1",
+ "schema": "saea-a2t-g1-blend-attempt2-serving-mechanism-verdict-v1",
+ "spend_this_attempt": {
+  "canary_trace_records": 14,
+  "completion_tokens": 2030,
+  "contact_latency_seconds": 459.935,
+  "core_contacts": 62,
+  "core_contacts_breakdown": "2 canary + 60 main-loop",
+  "embedding_tool_breakdown": "92 offline precompute (incl. jitter probes) + 7 live/jitter in loop",
+  "embedding_tool_contacts": 99,
+  "gpu_seconds": 253.189,
+  "metered_audio_seconds": 277.177,
+  "partial_main_loop_trace_records_flushed": 180,
+  "peak_vram_mib": 24125.0,
+  "prompt_tokens": 826584,
+  "samples_completed_of_104": "NOT COMPLETE -- the arm is not mechanically landed",
+  "wall_seconds": 397.1
+ },
+ "study": "speech-aware-evidence-acquisition",
+ "verdict": "MEMORY-PATH STALL UNDER VRAM OVERSUBSCRIPTION. THROTTLING IS REFUTED.",
+ "verdict_is_single_variable": "The stall's onset coincides with ONE change and nothing else: the CPU embedder sidecar re-spawned on the first query-vector cache miss and, by the launcher's own lazy design, was left up for the remainder of the loop. No other input moved: same population, same prompts, same geometry, same service instance, same policy cell, same host, no CPU pass, clocks locked, power cap unchanged.",
+ "what_was_not_reached": [
+  "the paired first signal (BLEND vs the landed M0 on the same 104)",
+  "tool accuracy, exact match, gap, empty-call rate for BLEND",
+  "the per-tier table for BLEND",
+  "W-to-C and C-to-W flows",
+  "dispatch and retain rates",
+  "the dispatch decomposition invariant",
+  "the branch-only replay invariant",
+  "the retain-equals-direct-label-recovered invariant"
+ ]
+}

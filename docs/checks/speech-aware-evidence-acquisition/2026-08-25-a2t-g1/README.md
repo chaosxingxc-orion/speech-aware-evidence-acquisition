@@ -12,6 +12,12 @@ Date: 2026-08-25. Campaign row `SAEA-A2T-G1` (`docs/exposure-ledger.md`), regist
 > statistic, no comparison and no first-signal read of the paradigm exists**. Per the registered
 > rail — *a sentinel trip STOPS THE MISSION; no later arm flies on a sick GPU* — the mission
 > stopped there. Nothing was re-flown.
+>
+> **SUCCESSOR ATTEMPT (2026-08-25T11:48Z) — READ §8.** BLEND was re-flown once under the same
+> row with §6's four fixes. It **tripped the same sentinel again**, and this time the added
+> telemetry **attributed it**: the stall is a **memory-path stall under VRAM
+> oversubscription**, and **throttling is refuted**. §§1–7 below describe attempt 1 and remain
+> exactly as written. The paired first signal is still **not reached**.
 
 ## 1. The claim this campaign carries (Amendment 2 framing, no hedging)
 
@@ -255,3 +261,159 @@ Code: `launcher/launch_a2t_g1.py`, `scripts/build_a2t_g1_subset.py`,
 `scripts/a2t_g1_preprocess.py`, `scripts/a2t_kb_text_embedding_pass.py`,
 `scripts/a2t_g1_prompt_fit_np2.py`, `scripts/a2t_g1_read.py`.
 `rails/` and `core/` are untouched: `rails/kb_policy.py`'s last commit is still `f1060078`.
+
+---
+
+## 8. BLEND successor attempt (attempt 2) — **SENTINEL TRIPPED AGAIN, AND THIS TIME IT IS ATTRIBUTED**
+
+Registered under the same row `SAEA-A2T-G1` at commit `70dceb90` **before any contact of it**.
+Launcher `launcher/launch_a2t_g1_blend_attempt2.py`; attempt
+`attempt-20260825T114856Z-a2tg1blend`; stop record `arm2-blend-sentinel-abort-attempt2.json`
+(attempt 1's record is preserved unmodified as `arm2-blend-sentinel-abort.json`); attribution
+`arm2-blend-attempt2-mechanism-verdict.json`; preflight `gpu-preflight-blend-attempt2.json`.
+
+> **VERBATIM.** `in-flight decode-rate sentinel TRIPPED: rolling median 1005.76 ms/token over
+> the last 8 observed generation rows exceeds the registered abort threshold 1000 ms/token;
+> window [1024.68, 965.02, 964.32, 845.64, 986.84, 1118.13, 1187.69, 1496.65]`
+> (surfaced wrapped as an `ExecutionError` from `agent_contact_0`; the launcher's own re-read of
+> the window at the stop was `[965.02, 964.32, 845.64, 986.84, 1118.13, 1187.69, 1496.65,
+> 1230.22]`, rolling median 1052.49.)
+
+**Exact spend**: **62** frozen-core contacts (2 canary + 60 loop), **277.177** metered audio
+seconds, **99** embedding tool contacts (92 offline precompute + 7 in-loop live/jitter), 826,584
+prompt tokens, 2,030 completion tokens, 459.9 s contact latency, 397.1 s wall, 253.2 GPU-seconds,
+peak VRAM 24,125 MiB. Durable-first executed in full: 14 canary trace records into their own
+sink, **180 partial main-loop records** flushed into the main sink, sidecar #2 stopped SIGTERM
+`forced` false, core client closed with its receipt, resident decoder left up.
+
+**Campaign cumulative**: **196 / 400** core contacts, **941.061 / 2,000** audio seconds,
+**126 / 200** embedding tool contacts.
+
+### 8.1 What the four fixes did
+
+| fix | outcome |
+|---|---|
+| 1 — sampler records `clocks.sm`, `power.draw`, `clocks_throttle_reasons.*` | **WORKED.** 161 phase-tagged samples at 3 s. §8.2 exists because of it. |
+| 2 — query vectors precomputed offline from M0's landed direct texts | **HIT RATE 0.9138** (53 hits / 5 misses / 58 lookups) against the registered 0.85 expectation — 53 in-loop tool contacts avoided. **Then its own fallback undid it: see §8.3.** |
+| 3 — cold start before the canary | **WORKED, and eliminated its own hypothesis.** Host entered the canary at 10.18 W / 43 °C / 0 % util and the canary passed at 12.32 and 11.65 ms/token. Attempt 1's "no cold start" explanation is dead: this attempt had one and stalled anyway. |
+| 4 — same row, fresh attempt, run-cumulative plan | **WORKED.** Ceilings 220 core / 170 tool; all three fail-closed guards asserted at takeoff; 134 + 220 = 354 ≤ 400, 27 + 170 = 197 ≤ 200. |
+
+Every pre-takeoff gate passed again: composed hash `df6bf4d4…38f9`, v1 cell pinned at
+`d68afd2c…a919` proved key-for-key, §8.1 derivation (32,768 per slot against 20,585 required,
+margin +12,183), subset and promotion receipts, snapshot + 151 label identities, content-facet
+vectors `00a7ebe9…0f45`, packet bindings for all 104, both `f1060078` repair probes, the dry
+check against all 25,519 protected payloads, the frozen-core GGUF attestation (51.7 s), the
+AttemptStore sizing guard, trace-sink isolation, and the **canary — 12.32 / 11.65 ms/token and
+byte-identical to the M0 arm's authority on both samples**.
+
+### 8.2 The attribution — **memory-path stall, throttling refuted**
+
+The stall's onset coincides with exactly **one** change and nothing else. The CPU embedder
+sidecar re-spawned on the first query-vector cache miss (`tier1_direct:001432`, ready
+11:52:45.96Z) and, by the launcher's lazy design, **was left up for the rest of the loop**.
+
+**VRAM stepped at that instant and stayed there:**
+
+| | before sidecar #2 | after sidecar #2 |
+|---|---|---|
+| `memory.used` | 21,288 MiB | **24,125 MiB** (98.6 % of 24,463) |
+| step | — | **+2,837 MiB** |
+| main-loop samples at that level | — | **106 of 122** |
+
+**Decode collapsed; prefill barely moved** (rates split at that boundary in the raw server log):
+
+| | n | min | median | p90 | max |
+|---|---|---|---|---|---|
+| decode ms/token BEFORE | 46 | 11.65 | **19.54** | 25.27 | 66.56 |
+| decode ms/token AFTER | 16 | 106.75 | **997.25** | 1,313.99 | 1,572.50 |
+| prefill ms/token BEFORE | 46 | 1.18 | **1.56** | 1.91 | 82.35 |
+| prefill ms/token AFTER | 16 | 1.41 | **3.76** | 12.19 | 18.82 |
+
+**Decode slowed ≈51×; prefill ≈2.4×.** A clock or power collapse would slow both roughly
+proportionally. Attempt 1 measured the same asymmetry (≈75× against ≈13×) and could not
+attribute it.
+
+**The GPU was not throttled while it stalled.** Through the 106 high-VRAM main-loop samples the
+SM clock sat at a **2,482 MHz median — against the 2,500 MHz lock ceiling, i.e. not reduced at
+all** — with median draw **45.0 W of a 100 W enforced cap**, **55 °C** median (59 °C max), GPU
+utilization pinned at **100 %**, and **no hardware or thermal flag ever active**. Full clocks,
+half the power budget, cool, 100 % busy, and roughly one token per second is the signature of a
+device spinning on memory transfers.
+
+**Throttling is disclosed, not hidden:** `clocks_throttle_reasons.sw_power_cap` was active on
+**7 of 122** main-loop samples (5.7 %), at power excursions toward the cap (max 97.9 W). That is
+a real observation and it is not the mechanism.
+
+**A separate benign preflight finding, recorded so a later mission does not misread it.**
+`nvidia-smi` reported **0 MiB used** on both the Windows host and inside WSL while the np2
+service was up and healthy ~68 minutes after its last request — the host had evicted the
+resident weights across the idle window. Cost: the weights re-paged during the canary's first
+prompt evaluation (82.35 ms/token prefill on canary sample 1 against 3.91 on sample 2) and the
+canary still passed at 12 ms/token generation. **An idle 0 MiB reading is not a dead service.**
+
+### 8.3 The defect FIX 2 actually has
+
+The precompute did its job: **91.4 % hit rate**, 53 in-loop tool contacts avoided, and the five
+misses are the program's known multi-slot decode-variance channel (`tier1_direct:001432`,
+`tier2_parametric:004826`, `tier4_implicit:001513`, `tier4_implicit:003949`,
+`tier5_needle:000061`). Every spawn and stop proved bit-identical jitter numerics against the
+first spawn, so live-embedded misses are provably in the same numeric space as the precomputed
+vectors, and the policy read the embedding of the FLOWN text on every trajectory either way.
+
+**But the miss path spawns the sidecar and never stops it.** One miss at loop contact ≈12 of
+208 restored the exact attempt-1 VRAM condition for the entire remaining loop. **The precompute
+removed 91 % of the in-loop tool contacts and 0 % of the VRAM contention**, because contention
+is a function of whether the process is *resident*, not of how many contacts it serves.
+
+### 8.4 Mechanics verdict, gate by gate (successor attempt)
+
+| gate | verdict |
+|---|---|
+| composed hash / policy-cell pin / §8.1 derivation | **PASS** |
+| subset, promotion, snapshot, 151 label identities, decontamination | **PASS** |
+| content-facet vectors, packet bindings, both `f1060078` repair probes | **PASS** |
+| frozen-core GGUF attestation | **PASS** (51.7 s) |
+| AttemptStore fail-closed sizing guard | **PASS** |
+| trace-sink isolation (canary sink namespaced, zero record-id overlap) | **PASS** |
+| decode-speed canary + canary hash authority | **PASS** — 12.32 / 11.65 ms/token, byte-identical to M0 |
+| FIX 1 telemetry | **PASS** — 161 phase-tagged samples, all ten added series present |
+| FIX 2 precompute hit rate | **PASS** — 0.9138 against a registered 0.85 |
+| FIX 3 cold start | **PASS** — and the hypothesis it tested is eliminated |
+| FIX 4 registration, ceilings, run-cumulative plan | **PASS** |
+| in-flight decode-rate sentinel | **TRIPPED** at loop contact 60 — mission stopped |
+| dispatch decomposition / branch-only replay / retain == direct-label-recovered | **NOT REACHED** |
+| paired first signal | **NOT REACHED** |
+
+## 9. Recommendation for G2, revised
+
+**Still do NOT open G2**, and the reason is now narrow and mechanical rather than open.
+Attempt 1 left "why did it stall" unanswered; attempt 2 answers it. What remains is a serving
+bug with a known repair, not an unexplained instability.
+
+1. **Stop the sidecar after every live embed.** A spawn costs 5.1 s and buys back 2,837 MiB. At
+   the measured 8.6 % miss rate that is ≈9 spawn/stop cycles over 104 samples — ≈46 s of added
+   wall time against a 51× decode collapse. This is one line of lifecycle in the launcher's miss
+   path and it changes no policy.
+2. **Or better, take the sidecar out of the loop entirely with a two-pass loop.** Pass 1 flies
+   all 104 direct decodes with the sidecar down; one offline embed pass then covers every miss;
+   pass 2 flies the evidence contacts. Flying with an inert query vector is *not* an option — it
+   changes what the policy reads — so deferral, not omission, is the correct shape. Cost: 104
+   extra prompt evaluations, all of them prompt-cache hits.
+3. **Keep FIX 1 armed permanently.** It converted an unattributable abort into a one-variable
+   diagnosis in a single flight, at zero contact cost.
+4. **Then re-fly BLEND on this same exposed 104 under a fresh attempt of the same row** — and
+   note that **the budget now binds, which is the one thing a third attempt cannot discover at
+   takeoff**. Spent: **196 / 400** core, **941.061 / 2,000** audio-s, **126 / 200** tool
+   contacts. **204 core contacts remain.** A full BLEND arm's *worst case* is 2 canary + 208
+   loop + 1 resend = **211**, which exceeds 204 — so the launcher's own fail-closed sizing guard
+   would **REFUSE TAKEOFF at zero spend**, exactly as designed. Its *expected* case at a ~50 %
+   dispatch rate is ≈159 and fits comfortably. The next attempt therefore needs one of two
+   things decided **before** it is built: an owner decision raising the campaign core cell, or a
+   lower attempt ceiling registered with its basis stated (and the arm then meters against it).
+   Tool contacts are the same shape: 126 spent of 200, so a third attempt's precompute-plus-miss
+   budget must fit in 74. Only if the arm completes with the three mechanism invariants holding
+   does G2 open.
+
+Nothing in this section licenses a generality claim, a superiority claim, test contact, a knob
+change, or Stage-3 activity. Gold was never opened; the 180 flushed partial records and 60
+partial decodes are dead spend, disclosed and never re-read as results.
