@@ -150,3 +150,43 @@ families — the third pillar of a Stage-2B qualified paper candidate (the other
 gain and mechanism attribution, are already sealed on SLURP). It does NOT license a test-set
 claim on either carrier, a generalization claim beyond the two families, or any Stage-3 activity
 without the owner's paper contract.
+
+## 7. Amendment 1 (2026-08-25, coordinator) — the transfers-unchanged claim is SPLIT after the
+## G1 prompt-fit stop
+
+G1 stopped at zero spend on the binding gate: measured against the resident 8,192-token slot,
+the A2T **M0** envelope is 13,236 tokens and the BLEND worst case is 19,047 — a 2.51x deficit,
+computed with zero audio tokens and zero output reserve, so it is a LOWER bound. The decisive
+observation is that **M0 fails**: M0 carries no evidence slot at all and is the same bare direct
+decode that produced the published A0 comparator (0.5425). Therefore the failure is NOT evidence
+about the paradigm, and G0's reachability PASS is untouched. What is established is purely
+mechanical: the locked cell's SERVING GEOMETRY, not its knobs, is incompatible with a
+13,236-token task contract. Cause: A2T's bare registry is larger than SLURP's entire evidence
+prompt (2.14x on tokens); the A0 flight itself recorded dropping `-np 4` to `-np 1` for exactly
+this reason.
+
+**Ruling.** The claim in section 4.1 is split into two, and the campaign carries both explicitly:
+
+- **POLICY-CELL TRANSFERS UNCHANGED** — the locked v1 cell (alpha .45, tau .65, k/m 5, c 2,
+  top_l 3, train priors, rrf, boundary stage off, facet-side admission, the f1060078 repair) is
+  carried BYTE-IDENTICAL to A2T. This is the scientific claim and it is unweakened.
+- **SERVING GEOMETRY IS CARRIER-FORCED** — three parameters change because the carrier's
+  contract and output shape require it, not because any of them was tuned or selected for
+  performance: (1) `-np 8 -> 2` at unchanged `-c 65536` (32,768 tokens/slot, worst-case margin
+  +12,181; np3 would clear by only +1,258); total context, KV allocation and VRAM are unchanged
+  and the only cost is throughput; (2) `max_tokens 64 -> 1024`, forced by the output shape (a
+  JSON call list, not a single label) and equal to the value A0 itself registered; (3) A2T
+  speech-feature packet materialization, which does not exist yet and is label-free engineering.
+
+**Why this is defensible to a reviewer, stated plainly:** none of the three is a degree of
+freedom that could be tuned toward a better number. Slot width is set by the contract's token
+count; the output ceiling is set by the task's output shape; packets are an engineering
+prerequisite shared by every arm including M0. All four arms fly under the identical geometry,
+so the M0-vs-BLEND comparison — the entire claim — is unaffected by them. The registration must
+say all of this in the row, and the campaign must NOT claim "everything transfers unchanged";
+it claims the policy cell transfers unchanged under carrier-forced serving geometry.
+
+**Consequence for the ladder:** G1 is re-flown under the amended geometry (mechanics + first
+signal on the exposed tier), and only then does G2 fly on the unexposed tier with four arms.
+The G0 gate result, the split governance in section 3.3, the statistics in section 3.5, and the
+reviewer answers in section 4 are otherwise unchanged.
