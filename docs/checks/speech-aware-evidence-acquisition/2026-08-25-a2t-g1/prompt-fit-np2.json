@@ -1,0 +1,92 @@
+{
+  "agent_state_texts": 1,
+  "carrier_lock_key": "audio2tool",
+  "completion_tokens": 1024,
+  "context_margin_tokens": 12331,
+  "context_tokens": 65536,
+  "context_tokens_per_slot": 32768,
+  "envelopes": [
+    {
+      "envelope_id": "m0-direct-decode",
+      "messages_sha256": "7ffb41343267f6caae7fc727f631a4d7320552b84c80f308be0ddab2fdae34a0",
+      "prompt_tokens_with_measured_speech": 13602,
+      "prompt_tokens_zero_speech": 13238,
+      "stage_kind": "direct",
+      "text_prompt_tokens": 13236
+    },
+    {
+      "envelope_id": "blend-evidence-decode-worst",
+      "messages_sha256": "6c48dd66abad4e306e46b84806fbe85b74b9292b1d161ac473c9c2182b46d127",
+      "prompt_tokens_with_measured_speech": 19413,
+      "prompt_tokens_zero_speech": 19049,
+      "stage_kind": "evidence",
+      "text_prompt_tokens": 19047
+    }
+  ],
+  "exposure_run_id": "SAEA-SN-MF-A2T-G1-PROMPT-FIT-NP2",
+  "flown_subset": "A2T-G1-104",
+  "flown_subset_count": 104,
+  "flown_subset_receipt_sha256": "b42f0953a0d168955ba5ddfc77f2c300aacb54e48dce902d1b3d4a109c1996db",
+  "knowledge_snapshot_file_sha256": "bb8a666e4a9c793295678c60354ffc42af7ad97591335f5d332c5ee7172161f3",
+  "knowledge_snapshot_id": "a2t-kb-toolshaped-9eb5f4bf186a0285",
+  "knowledge_snapshot_sha256": "ec2f9ec454d3f16957ac08e4d7686a6f3941f22c600ff2b1b2b97ff43baf9fb2",
+  "longest_sample_audio_seconds": 35.714,
+  "longest_sample_id": "tier7_multiturn:001590",
+  "maximum_prompt_fits_one_slot": true,
+  "maximum_prompt_tokens_with_measured_speech": 19413,
+  "maximum_prompt_tokens_zero_speech": 19049,
+  "maximum_text_prompt_tokens": 19047,
+  "model_contact": false,
+  "model_fragment": "configs/model/q4km-mmproj-free-speech-native-np2-a2t-max1024.json",
+  "predecessor_comparison": {
+    "blend_text_tokens_now": 19047,
+    "blend_text_tokens_then": 19047,
+    "context_tokens_per_slot": 8192,
+    "m0_text_tokens_now": 13236,
+    "m0_text_tokens_then": 13236,
+    "note": "the TEXT envelopes must be unchanged: the derivation changed the SERVING geometry, never the prompt. A difference here would mean the prompt shape moved and the comparison to the predecessor is void.",
+    "receipt": "docs/checks/speech-aware-evidence-acquisition/2026-08-25-a2t-g1-prompt-fit/prompt-fit.json",
+    "text_rendering_unchanged": true
+  },
+  "prompt_order": "speech-query-prefix-v2",
+  "rendering_source": "rails.runner._agent_messages shapes rendered through core.model.transport._ordered_speech_feature_content and _speech_history_texts, with rails.adapters.audio2tool.Audio2ToolAdapter supplying build_task_contract/assemble_prompt. POST-fix evidence instruction asserted against rails.kb_policy source",
+  "required_context_per_slot": 20437,
+  "schema": "saea-a2t-g1-prompt-fit-np2-v1",
+  "scope": "model-free-check",
+  "serving_geometry_status": "DERIVED per carrier by campaign plan section 8.1 from the measured task contract; applied identically to every arm and fixed before any result was seen",
+  "slot_count": 2,
+  "special_token_reserve": 2,
+  "speech_feature_tokens_distribution": {
+    "count": 104,
+    "max": 364,
+    "median": 65,
+    "min": 26,
+    "p90": 156,
+    "sum": 8281
+  },
+  "speech_feature_tokens_measured_worst": 364,
+  "speech_feature_tokens_measured_worst_sample_id": "tier7_multiturn:000545",
+  "speech_feature_tokens_source": "MEASURED from the promoted packets under /home/chao/feat-cache/a2t-q4km-packets-04ccc72a (row SAEA-SN-A2T-G1-PREPROCESS). The predecessor receipt had to assume ZERO because no packet root existed; this receipt is exact.",
+  "split_role": "discovery",
+  "split_sample_count": 400,
+  "study": "speech-aware-evidence-acquisition",
+  "task_contract_characters": 50291,
+  "task_contract_counted_once": true,
+  "task_contract_sha256": "6823505253a741c4f70f2f21c53e0db1472bead115ad43564ee4b423cb84756c",
+  "tokenizer": {
+    "chat_template_sha256": "45777d2e798aae1d1ce6844e69edcb23fc0c710009554711c78efab9044da2c8",
+    "decoder_evaluations": 0,
+    "generated_tokens": 0,
+    "host": "127.0.0.1",
+    "media_marker": "<__media_8Qa6bYIwMUE7rJYtP46cJIgQOwltBIVY__>",
+    "port": 8090,
+    "request_counts": {
+      "GET /props": 1,
+      "POST /apply-template": 2,
+      "POST /tokenize": 4
+    }
+  },
+  "visible_key_facets": 5,
+  "visible_values": 6,
+  "worst_envelope_id": "blend-evidence-decode-worst"
+}
