@@ -20,7 +20,8 @@ contacted. Wall 322.4 s.
 **No knob changed. Nothing under `rails/`, `core/` or `configs/` was written. Nothing hash-pinned
 moved: no snapshot was rebuilt, no receipt was displaced, no arm was re-flown, no new sample was
 touched and no new gold surface was opened.** The two deliverables named in the registration, plus
-one unit-test file, are the only files this row adds.
+one unit-test file, are the only files this row adds. The full suite was re-run on the clean
+committed tree: **4,232 passed, 9 skipped, 0 failed**.
 
 > **EVERY NUMBER ON THE SLURP UNEXPOSED 500 IS A SECONDARY READING ON THE LOCKED BASELINE'S OWN
 > POPULATION.** It must not be used to revise, re-tune or restate **THE LOCK**, which stands
