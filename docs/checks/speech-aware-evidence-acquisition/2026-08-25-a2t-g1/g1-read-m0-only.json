@@ -1,0 +1,180 @@
+{
+  "a0_anchor": {
+    "a0_empty_call_rate": 0.1025,
+    "a0_exact_match": 0.2425,
+    "a0_tool_accuracy": 0.5425,
+    "exact_match_difference_pp": 3.634615384615386,
+    "g1_m0_empty_call_rate": 0.1346153846153846,
+    "g1_m0_exact_match": 0.27884615384615385,
+    "g1_m0_tool_accuracy": 0.5961538461538461,
+    "note": "the published A0 comparator was read on the PARENT 400-item split under a DIFFERENT serving geometry (-c 49152 -np 1) and a different llama.cpp build. Quoted as an anchor only; the populations differ, the comparison is NOT paired, and n=104 against n=400 means a single sample here is about 1 pp.",
+    "tool_accuracy_difference_pp": 5.365384615384617
+  },
+  "arm": {
+    "arm_id": "M0",
+    "attempt_id": "attempt-20260825T100735Z-a2tg1m0",
+    "canary_worst_ms_per_token": 11.55,
+    "config_hash": "df6bf4d4e5ac3ae5a3fe9d52dc8933b81bec70f7dbff05a2984635b8badc38f9",
+    "outputs_sha256": "dea60ff1e63fd2ef11c93edf8808217062fea3f0565ed5b60f136264bc6a9467",
+    "report_sha256": "7e5e9223c48b1bc457b2b02cb54050d208d717b376326ab5061da8847366ab37",
+    "sentinel": {
+      "contacts_observed": 104,
+      "ms_per_token_max": 158.42,
+      "ms_per_token_median": 21.21,
+      "ms_per_token_min": 9.21,
+      "ms_per_token_p90": 26.76,
+      "rates_observed": 104,
+      "threshold_ms_per_token": 1000.0,
+      "tripped": null,
+      "window_contacts": 8
+    },
+    "server_np": 2
+  },
+  "exposure_ledger_row": "SAEA-A2T-G1",
+  "generated_at": "2026-08-25T10:23:56.824521+00:00",
+  "gold_call_list_length_counts": {
+    "1": 78,
+    "2": 16,
+    "3": 7,
+    "4": 2,
+    "5": 1
+  },
+  "hard_stop": "G1 authorizes MECHANICS AND FIRST SIGNAL ONLY, and the first-signal half was not reached. No generality claim, no superiority claim, no test contact, no knob change and no Stage-3 activity follows from this report.",
+  "per_tier_m0": [
+    {
+      "m0_empty_call_rate": 0.07692307692307693,
+      "m0_exact_match": 0.07692307692307693,
+      "m0_gap": 0.6153846153846154,
+      "m0_tool_accuracy": 0.6923076923076923,
+      "n": 13,
+      "tier": "tier1_direct"
+    },
+    {
+      "m0_empty_call_rate": 0.0,
+      "m0_exact_match": 0.46153846153846156,
+      "m0_gap": 0.15384615384615385,
+      "m0_tool_accuracy": 0.6153846153846154,
+      "n": 13,
+      "tier": "tier2_parametric"
+    },
+    {
+      "m0_empty_call_rate": 0.07692307692307693,
+      "m0_exact_match": 0.0,
+      "m0_gap": 0.46153846153846156,
+      "m0_tool_accuracy": 0.46153846153846156,
+      "n": 13,
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "m0_empty_call_rate": 0.5384615384615384,
+      "m0_exact_match": 0.07692307692307693,
+      "m0_gap": 0.3076923076923077,
+      "m0_tool_accuracy": 0.38461538461538464,
+      "n": 13,
+      "tier": "tier4_implicit"
+    },
+    {
+      "m0_empty_call_rate": 0.07692307692307693,
+      "m0_exact_match": 0.38461538461538464,
+      "m0_gap": 0.5384615384615385,
+      "m0_tool_accuracy": 0.9230769230769231,
+      "n": 13,
+      "tier": "tier5_needle"
+    },
+    {
+      "m0_empty_call_rate": 0.0,
+      "m0_exact_match": 0.5384615384615384,
+      "m0_gap": 0.23076923076923084,
+      "m0_tool_accuracy": 0.7692307692307693,
+      "n": 13,
+      "tier": "tier6_correction"
+    },
+    {
+      "m0_empty_call_rate": 0.15384615384615385,
+      "m0_exact_match": 0.6153846153846154,
+      "m0_gap": 0.0,
+      "m0_tool_accuracy": 0.6153846153846154,
+      "n": 13,
+      "tier": "tier7_multiturn"
+    },
+    {
+      "m0_empty_call_rate": 0.15384615384615385,
+      "m0_exact_match": 0.07692307692307693,
+      "m0_gap": 0.23076923076923078,
+      "m0_tool_accuracy": 0.3076923076923077,
+      "n": 13,
+      "tier": "tier8_intent_blending"
+    }
+  ],
+  "pooled_m0": {
+    "empty_call_count": 14,
+    "empty_call_rate": 0.1346153846153846,
+    "exact_match": 0.27884615384615385,
+    "exact_match_count": 29,
+    "gap_tool_accuracy_minus_exact_match": 0.3173076923076923,
+    "headroom_tool_correct_not_exact": [
+      "tier1_direct:000178",
+      "tier1_direct:001432",
+      "tier1_direct:001607",
+      "tier1_direct:001631",
+      "tier1_direct:002212",
+      "tier1_direct:002609",
+      "tier1_direct:002728",
+      "tier1_direct:003713",
+      "tier2_parametric:000240",
+      "tier2_parametric:000369",
+      "tier3_multi_intent:000259",
+      "tier3_multi_intent:002553",
+      "tier3_multi_intent:002560",
+      "tier3_multi_intent:002995",
+      "tier3_multi_intent:003058",
+      "tier3_multi_intent:003153",
+      "tier4_implicit:001010",
+      "tier4_implicit:001074",
+      "tier4_implicit:003949",
+      "tier4_implicit:003979",
+      "tier5_needle:000060",
+      "tier5_needle:000241",
+      "tier5_needle:000285",
+      "tier5_needle:000976",
+      "tier5_needle:002753",
+      "tier5_needle:003841",
+      "tier5_needle:003873",
+      "tier6_correction:001764",
+      "tier6_correction:001794",
+      "tier6_correction:002630",
+      "tier8_intent_blending:000372",
+      "tier8_intent_blending:000423",
+      "tier8_intent_blending:000494"
+    ],
+    "mean_slot_f1": 0.37664835164835164,
+    "n": 104,
+    "tool_accuracy": 0.5961538461538461,
+    "tool_accuracy_count": 62,
+    "unparsed_count": 4,
+    "unparsed_ids": [
+      "tier3_multi_intent:000879",
+      "tier5_needle:000061",
+      "tier8_intent_blending:000192",
+      "tier8_intent_blending:000713"
+    ]
+  },
+  "population": {
+    "count": 104,
+    "exposure": "EXPOSED. Plan section 3.3: every number here is a SECONDARY reading and can never be the campaign claim.",
+    "receipt": "docs/receipts/a2t/A2T-G1-104.json",
+    "receipt_sha256": "b42f0953a0d168955ba5ddfc77f2c300aacb54e48dce902d1b3d4a109c1996db",
+    "run_identity_hash": "f5a030189cf80dcbc52899e2fa5f819bac03874f2ad3f9645fdc60c432a9bf3a",
+    "split_identity_hash": "516f92d9b919640969676eb10b776d9c479169fb0a387497e943c726b2191326",
+    "split_name": "A2T-G1-104"
+  },
+  "run_id": "SAEA-A2T-G1",
+  "schema": "saea-a2t-g1-read-m0-only-v1",
+  "scorer": "a2t-scorer-v1",
+  "status": "PARTIAL. The BLEND arm ABORTED on the registered in-flight decode-rate sentinel and never completed its loop, so NO paired statistic, NO comparison and NO first-signal read of the paradigm exists. This report covers the M0 arm ALONE.",
+  "study": "speech-aware-evidence-acquisition",
+  "what_this_does_and_does_not_establish": {
+    "does": "that the section 8.1 DERIVED geometry serves this carrier's bare direct decode end to end at 104 of 104 samples with no failed call, and where its baseline sits on this subset",
+    "does_not": "anything about whether the locked policy cell transfers. The BLEND arm is the arm that carries the paradigm and it did not complete."
+  }
+}

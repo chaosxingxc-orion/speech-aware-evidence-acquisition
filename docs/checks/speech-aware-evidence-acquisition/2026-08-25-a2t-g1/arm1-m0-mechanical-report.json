@@ -1,0 +1,532 @@
+{
+  "arm_construction": {
+    "controller_policy_id": "saea-direct-decode-only-m0",
+    "exposure": "EXPOSED tier -- plan section 3.3 makes these numbers SECONDARY readings, never the campaign claim",
+    "flies_full_subset": true,
+    "max_contacts": 1,
+    "sample_count": 104,
+    "split_id": "A2T-G1-104"
+  },
+  "arm_id": "M0",
+  "arm_index": 1,
+  "attempt_id": "attempt-20260825T100735Z-a2tg1m0",
+  "authority": "campaign row SAEA-A2T-G1 under docs/readiness/2026-08-25-a2t-generality-campaign-plan.md sections 3.3 to 3.6, section 7 (Amendment 1) and section 8 (owner Amendment 2); machine-readable contract configs/experiment/a2t-g1-v1.json. MECHANICAL landing only -- gold never opened here, no accuracy computed; the seal and score step runs separately under the same registered row",
+  "canary": {
+    "authority_written": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/checks/speech-aware-evidence-acquisition/2026-08-25-a2t-g1/canary-hashes.json",
+    "contacts": 2,
+    "gate_semantics": "PER-TOKEN generation rate, never wall time: the derived output ceiling is 1,024 tokens, so a healthy A2T canary decode legitimately runs far longer than a 64-token SLURP canary",
+    "generation": [
+      {
+        "ms_per_token": 11.55,
+        "tokens": 35,
+        "total_ms": 404.34
+      },
+      {
+        "ms_per_token": 11.25,
+        "tokens": 28,
+        "total_ms": 315.13
+      }
+    ],
+    "hash_authority": "ESTABLISHED BY THIS CAMPAIGN. No prior A2T flight ran this geometry, so the M0 arm records these hashes and the BLEND arm compares against them; there is nothing older to inherit.",
+    "note": "responses never read semantically: sha256 + server print_timing descriptives only",
+    "pass_threshold_ms_per_token": 300.0,
+    "passed": true,
+    "prompt_eval": [
+      {
+        "ms_per_token": 0.39,
+        "tokens": 13293,
+        "total_ms": 5220.28
+      },
+      {
+        "ms_per_token": 1.38,
+        "tokens": 75,
+        "total_ms": 103.55
+      }
+    ],
+    "response_sha256": {
+      "tier1_direct:000074": "977e4dd68f1d4a7bb134dd8fec9fe5b8fed2608daa6ab31432a7c4657937d8d0",
+      "tier1_direct:000077": "06b1002c0b43d8a8bea4c499be1153552fd7533fcf1a50fba307aded08ab8fd1"
+    },
+    "sample_ids": [
+      "tier1_direct:000074",
+      "tier1_direct:000077"
+    ],
+    "trace": {
+      "manifest_hash": "24fba88ab1d40ede4c9a96cdc50aefeaabdb61c0300feab0f692b52f1b9cd5f8",
+      "namespace": "canary/",
+      "record_ids": 14,
+      "sink_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-A2T-G1/attempt-20260825T100735Z-a2tg1m0/canary-trace"
+    },
+    "wall_seconds": 9.173,
+    "worst_generation_ms_per_token": 11.55
+  },
+  "carrier_analogue": {
+    "direct_label_recovery": "the answer's OWN parsed call list, PRIMARY tool name, matched EXACTLY against the label vocabulary, ties by facet_id ascending -- the A2T form of the SLURP scenario_action rule and of the f1060078 repair",
+    "label_vocabulary_size": 151,
+    "scorer_projection_is_different": "tool accuracy is equality of the full tool-name MULTISET; the primary-name projection governs only the dispatch branch and is never scored"
+  },
+  "claim": {
+    "policy_cell": "TRANSFERS BYTE-IDENTICAL (v1, hash-pinned)",
+    "serving_geometry": "DERIVED per carrier by the campaign plan section 8.1 rule from the measured task contract, applied identically to every arm and fixed before any result was seen"
+  },
+  "config_hash": "df6bf4d4e5ac3ae5a3fe9d52dc8933b81bec70f7dbff05a2984635b8badc38f9",
+  "core_client": {
+    "contact_latency_seconds_total": 119.057,
+    "cost": {
+      "audio_seconds_used": 590.251,
+      "calls_used": 106,
+      "completion_tokens_total": 3811,
+      "latency_seconds_total": 119.05663221994473,
+      "prompt_tokens_total": 1414648,
+      "tool_calls": 0,
+      "umbrella_lock_sha256": "9064bde89d4248fd80c9c2f93c2a9c276a454eadbb1aa7d529671118961371b1"
+    },
+    "request_count": 106,
+    "trace_manifest_hash": "1c4722dc44d32bb756aec0422a7c73a3d86c63154967d6dbc65a46d7deea2b61"
+  },
+  "decode_rate_distribution_ms_per_token": {
+    "count": 104,
+    "max": 158.42,
+    "median": 21.21,
+    "min": 9.21,
+    "p10": 17.99,
+    "p90": 26.76
+  },
+  "decoder_session_receipt_sha256": "ee9a4849a90a86b8759474a66db214037628a9872ed1d433df0165385f16c79e",
+  "embedding_accounting": {
+    "ceiling": 0,
+    "tool_contacts": 0
+  },
+  "embedding_jitter_pair": null,
+  "frozen_cell": {
+    "alpha": 0.45,
+    "fusion": {
+      "c": 2,
+      "l": 3,
+      "m": 5
+    },
+    "kb_policy_last_commit": "f1060078c61e6d498a124f00d84ffa90415924aa",
+    "policy_config": "configs/policy/kb-policy-v1-dev100.json",
+    "policy_config_sha256": "d68afd2cfb6e12d9cbd9d3fbcf0daf3f81f6ed8be9b2a75c4f8ffb234011a919",
+    "rank_weights": {
+      "w_agree": 0.2,
+      "w_cos": 0.5,
+      "w_prior": 0.3
+    },
+    "retain_override": "NOT CARRIED (v1, not the v2 lock candidate)",
+    "tau": 0.65,
+    "top_k_per_dimension": 5,
+    "value_vectors": "SEALED (never produced, never loaded)"
+  },
+  "generated_at": "2026-08-25T10:09:59.352600+00:00",
+  "gpu_preflight": {
+    "clock_lock": "nvidia-smi -lgc 1200,2500 re-asserted at 09:2xZ; SM clock read 1192-1200 MHz",
+    "decoder_service": "saea-np2-a2t-g1 (session SAEA-SN-Q4KM-NP2-BASE-A2T-G1-20260825T092000Z, pid 38623, port 8090, 2 slots at n_ctx 32768)",
+    "enforced_power_limit_w": 100,
+    "enforced_power_limit_w_in_wsl": 100.0,
+    "nvidia_smi_windows": "NVIDIA GeForce RTX 5090 Laptop GPU, 21224 MiB, 24463 MiB, 1192 MHz, 3090 MHz, 100.00 W, 45, 0 %, P5",
+    "recorded_at_utc": "2026-08-25T09:58:57.1556743Z",
+    "recorded_by": "A2T G1 flight agent",
+    "slurp_np8_service_stopped": "saea-np8-dev100-r6-base stopped SIGTERM forced=false at 2026-08-25T09:17:48Z; stop receipt sha256 15c25ca08600ff36e2a1ecff87f9c0a1f726b74729105a66f8ac79c808b19285; MUST BE RESPAWNED BY A LATER MISSION",
+    "smart_fan_mode": 3,
+    "smart_fan_mode_action": "verified already 3; not flipped",
+    "smart_fan_mode_required": 3
+  },
+  "hard_stop": "MECHANICAL LANDING ONLY: this artifact carries no accuracy, no tool accuracy, no exact match, no per-tier table and NO VERDICT. The seal and score step computes those under the same registered row. G1 authorizes MECHANICS on an EXPOSED tier; the generality claim belongs to G2 on the unexposed tier and cannot be reached from anything here.",
+  "invariants": {
+    "a2t_analogue_probe": "PASS (primary-name exact match, prose refused, unknown tool refused)",
+    "frozen_cell": "byte-frozen v1 cell (no knob change on this carrier)",
+    "kb_policy_last_commit": "f1060078c61e6d498a124f00d84ffa90415924aa",
+    "repo_head_at_flight": "4e25ac686f3d36546aa1c17b7fc2eabf2844bb4e",
+    "slurp_repair_probe": "PASS (identity exact-match live, swap refused)"
+  },
+  "knowledge": {
+    "facet_vectors_npz_loaded": false,
+    "label_identities": 151,
+    "snapshot_sha256": "ec2f9ec454d3f16957ac08e4d7686a6f3941f22c600ff2b1b2b97ff43baf9fb2",
+    "value_vectors_loaded": false
+  },
+  "main_print_timing": {
+    "generation_rows": 104,
+    "ms_per_token_max": 158.42,
+    "ms_per_token_median": 21.21,
+    "ms_per_token_min": 9.21
+  },
+  "mechanical": {
+    "branch_only_replay": {
+      "branch_only_holds": true,
+      "supply_mismatches": [],
+      "trajectories_replayed": 0
+    },
+    "dead_direct_dispatched": 0,
+    "direct_answers_empty_or_unparsed": 14,
+    "direct_label_recovered_samples": 0,
+    "dispatch_decomposition_exact": true,
+    "dispatch_rate": 0.0,
+    "loop_contacts": 104,
+    "one_contact_trajectories_retained_primary": 104,
+    "opaque_outputs": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-A2T-G1/attempt-20260825T100735Z-a2tg1m0/arm1-m0-outputs.jsonl",
+    "per_sample_records": "arm1-m0-mechanical.json (run dir)",
+    "retain_equals_direct_label_recovered": true,
+    "retain_rate": 1.0,
+    "two_contact_trajectories_dispatched": 0,
+    "winner_label_present_samples": 0
+  },
+  "mechanical_only": true,
+  "mid_flight_clock_samples_windows_side": null,
+  "packet_promotion": {
+    "build_commit": "04ccc72a2207347ca76161b93fd9d846dd0a8675",
+    "count": 104,
+    "receipt": "/home/chao/feat-cache/a2t-q4km-packets-04ccc72a/A2T-G1-104-promotion.json",
+    "sha256": "be07c69c030fc12e56e4e2e1f5e08423636a84fb823d16293fae7bf5819218bc"
+  },
+  "policy_cell": {
+    "delta_retain_override": "NOT CARRIED (v1, not the v2 lock candidate)",
+    "file_hash_note": "the DEV-1000 lock launcher pinned this file's PRE-LOCK bytes (0d36273e...). The lock commit d9fef537 added two ANNOTATION keys, STATUS and locked_at, and edited nothing inside knobs; the knob table this flight carries is proved equal key for key against the file, the composed fragment and this launcher's own constants.",
+    "prelock_sha256": "0d36273eb2a5f4411ba9ca378ad820392e97c8759222087cf562e7f19442e2b0",
+    "relpath": "configs/policy/kb-policy-v1-dev100.json",
+    "sha256": "d68afd2cfb6e12d9cbd9d3fbcf0daf3f81f6ed8be9b2a75c4f8ffb234011a919",
+    "transfer": "BYTE-IDENTICAL (campaign plan section 8.2)"
+  },
+  "prompt_reuse": {
+    "by_class": {
+      "canary_direct_single_slot": {
+        "declared_prompt_tokens": 26599,
+        "declared_tokens_distribution": {
+          "count": 2,
+          "max": 13306,
+          "median": 13306,
+          "min": 13293,
+          "p10": 13293,
+          "p90": 13306,
+          "sum": 26599
+        },
+        "evaluated_prompt_tokens": 13368,
+        "evaluated_tokens_distribution": {
+          "count": 2,
+          "max": 13293,
+          "median": 13293,
+          "min": 75,
+          "p10": 75,
+          "p90": 13293,
+          "sum": 13368
+        },
+        "evaluation_ratio": 0.502575,
+        "requests": 2,
+        "reuse_ratio": 0.497425,
+        "skipped_prompt_tokens": 13231
+      },
+      "main_direct_contact0": {
+        "declared_prompt_tokens": 1388049,
+        "declared_tokens_distribution": {
+          "count": 104,
+          "max": 13631,
+          "median": 13332,
+          "min": 13293,
+          "p10": 13293,
+          "p90": 13423,
+          "sum": 1388049
+        },
+        "evaluated_prompt_tokens": 25256,
+        "evaluated_tokens_distribution": {
+          "count": 104,
+          "max": 13306,
+          "median": 101,
+          "min": 62,
+          "p10": 62,
+          "p90": 192,
+          "sum": 25256
+        },
+        "evaluation_ratio": 0.018195,
+        "requests": 104,
+        "reuse_ratio": 0.981805,
+        "skipped_prompt_tokens": 1362793
+      },
+      "main_evidence_contact1": {
+        "declared_prompt_tokens": 0,
+        "declared_tokens_distribution": {
+          "count": 0
+        },
+        "evaluated_prompt_tokens": 0,
+        "evaluated_tokens_distribution": {
+          "count": 0
+        },
+        "evaluation_ratio": null,
+        "requests": 0,
+        "reuse_ratio": null,
+        "skipped_prompt_tokens": 0
+      },
+      "resend_direct_single_slot": {
+        "declared_prompt_tokens": 0,
+        "declared_tokens_distribution": {
+          "count": 0
+        },
+        "evaluated_prompt_tokens": 0,
+        "evaluated_tokens_distribution": {
+          "count": 0
+        },
+        "evaluation_ratio": null,
+        "requests": 0,
+        "reuse_ratio": null,
+        "skipped_prompt_tokens": 0
+      }
+    },
+    "classification_clean_by_threshold": true,
+    "declared_offset_calibration": {
+      "client_prompt_tokens_total": 1414648,
+      "per_request_offset": 1,
+      "request_count_parsed": 106,
+      "sum_release_n_tokens_minus_generation": 1414542
+    },
+    "method": "per request: declared = release n_tokens - generation tokens + calibrated fixed offset; evaluated = print_timing prompt-eval tokens (post-prefix-cache); windows split by tracked server-log offsets (canary / main / resend); main contact classes split at declared <= 15000",
+    "overall": {
+      "declared_prompt_tokens": 1414648,
+      "declared_tokens_distribution": {
+        "count": 106,
+        "max": 13631,
+        "median": 13332,
+        "min": 13293,
+        "p10": 13293,
+        "p90": 13423,
+        "sum": 1414648
+      },
+      "evaluated_prompt_tokens": 38624,
+      "evaluated_tokens_distribution": {
+        "count": 106,
+        "max": 13306,
+        "median": 101,
+        "min": 62,
+        "p10": 62,
+        "p90": 192,
+        "sum": 38624
+      },
+      "evaluation_ratio": 0.027303,
+      "requests": 106,
+      "reuse_ratio": 0.972697,
+      "skipped_prompt_tokens": 1376024
+    }
+  },
+  "resend_pair": {
+    "flown": false,
+    "reason": "not a BLEND-arm rail"
+  },
+  "run_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-A2T-G1/attempt-20260825T100735Z-a2tg1m0",
+  "run_id": "SAEA-A2T-G1",
+  "schema": "saea-a2t-g1-arm1-m0-mechanical-v1",
+  "sentinel": {
+    "contacts_observed": 104,
+    "ms_per_token_max": 158.42,
+    "ms_per_token_median": 21.21,
+    "ms_per_token_min": 9.21,
+    "ms_per_token_p90": 26.76,
+    "rates_observed": 104,
+    "threshold_ms_per_token": 1000.0,
+    "tripped": null,
+    "window_contacts": 8
+  },
+  "server_np": 2,
+  "serving_descriptives": {
+    "gpu_sampling_reason": null,
+    "gpu_seconds": 58.325901281960256,
+    "peak_vram_mib": 21288.0,
+    "request_gpu_sample_count": 15,
+    "request_gpu_samples": [
+      {
+        "memory_used_mib": 21254.0,
+        "sampled_at_unix_seconds": 1787652523.6702712,
+        "server_busy_slots": 1,
+        "server_slot_gpu_skew_milliseconds": 66.08176231384277,
+        "server_slot_sampled_at_unix_seconds": 1787652523.736353,
+        "server_total_slots": 2,
+        "utilization_pct": 99.0
+      },
+      {
+        "memory_used_mib": 21286.0,
+        "sampled_at_unix_seconds": 1787652528.816803,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 101.8221378326416,
+        "server_slot_sampled_at_unix_seconds": 1787652528.918625,
+        "server_total_slots": 2,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 21286.0,
+        "sampled_at_unix_seconds": 1787652534.000613,
+        "server_busy_slots": 2,
+        "server_slot_gpu_skew_milliseconds": 403.04040908813477,
+        "server_slot_sampled_at_unix_seconds": 1787652534.4036534,
+        "server_total_slots": 2,
+        "utilization_pct": 94.0
+      },
+      {
+        "memory_used_mib": 21286.0,
+        "sampled_at_unix_seconds": 1787652540.6767712,
+        "server_busy_slots": 2,
+        "server_slot_gpu_skew_milliseconds": 14.405965805053711,
+        "server_slot_sampled_at_unix_seconds": 1787652540.6911771,
+        "server_total_slots": 2,
+        "utilization_pct": 92.0
+      },
+      {
+        "memory_used_mib": 21288.0,
+        "sampled_at_unix_seconds": 1787652545.7669647,
+        "server_busy_slots": 2,
+        "server_slot_gpu_skew_milliseconds": 118.67570877075195,
+        "server_slot_sampled_at_unix_seconds": 1787652545.8856404,
+        "server_total_slots": 2,
+        "utilization_pct": 95.0
+      },
+      {
+        "memory_used_mib": 21288.0,
+        "sampled_at_unix_seconds": 1787652550.9882116,
+        "server_busy_slots": 1,
+        "server_slot_gpu_skew_milliseconds": 12.55941390991211,
+        "server_slot_sampled_at_unix_seconds": 1787652551.000771,
+        "server_total_slots": 2,
+        "utilization_pct": 95.0
+      },
+      {
+        "memory_used_mib": 21288.0,
+        "sampled_at_unix_seconds": 1787652556.0709932,
+        "server_busy_slots": 2,
+        "server_slot_gpu_skew_milliseconds": 20.589113235473633,
+        "server_slot_sampled_at_unix_seconds": 1787652556.0915823,
+        "server_total_slots": 2,
+        "utilization_pct": 95.0
+      },
+      {
+        "memory_used_mib": 21288.0,
+        "sampled_at_unix_seconds": 1787652561.1702952,
+        "server_busy_slots": 1,
+        "server_slot_gpu_skew_milliseconds": 27.20046043395996,
+        "server_slot_sampled_at_unix_seconds": 1787652561.1974957,
+        "server_total_slots": 2,
+        "utilization_pct": 80.0
+      },
+      {
+        "memory_used_mib": 21288.0,
+        "sampled_at_unix_seconds": 1787652566.294808,
+        "server_busy_slots": 2,
+        "server_slot_gpu_skew_milliseconds": 152.54759788513184,
+        "server_slot_sampled_at_unix_seconds": 1787652566.4473555,
+        "server_total_slots": 2,
+        "utilization_pct": 95.0
+      },
+      {
+        "memory_used_mib": 21288.0,
+        "sampled_at_unix_seconds": 1787652571.5261922,
+        "server_busy_slots": 2,
+        "server_slot_gpu_skew_milliseconds": 111.4497184753418,
+        "server_slot_sampled_at_unix_seconds": 1787652571.637642,
+        "server_total_slots": 2,
+        "utilization_pct": 84.0
+      },
+      {
+        "memory_used_mib": 21288.0,
+        "sampled_at_unix_seconds": 1787652577.515588,
+        "server_busy_slots": 2,
+        "server_slot_gpu_skew_milliseconds": 14.25933837890625,
+        "server_slot_sampled_at_unix_seconds": 1787652577.5298474,
+        "server_total_slots": 2,
+        "utilization_pct": 87.0
+      },
+      {
+        "memory_used_mib": 21288.0,
+        "sampled_at_unix_seconds": 1787652582.6178322,
+        "server_busy_slots": 2,
+        "server_slot_gpu_skew_milliseconds": 20.331382751464844,
+        "server_slot_sampled_at_unix_seconds": 1787652582.6381636,
+        "server_total_slots": 2,
+        "utilization_pct": 86.0
+      },
+      {
+        "memory_used_mib": 21288.0,
+        "sampled_at_unix_seconds": 1787652587.7196374,
+        "server_busy_slots": 2,
+        "server_slot_gpu_skew_milliseconds": 6.400823593139648,
+        "server_slot_sampled_at_unix_seconds": 1787652587.7260382,
+        "server_total_slots": 2,
+        "utilization_pct": 35.0
+      },
+      {
+        "memory_used_mib": 21288.0,
+        "sampled_at_unix_seconds": 1787652592.8070328,
+        "server_busy_slots": 2,
+        "server_slot_gpu_skew_milliseconds": 10.462045669555664,
+        "server_slot_sampled_at_unix_seconds": 1787652592.8174949,
+        "server_total_slots": 2,
+        "utilization_pct": 93.0
+      },
+      {
+        "memory_used_mib": 21288.0,
+        "sampled_at_unix_seconds": 1787652597.885014,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 1.6179084777832031,
+        "server_slot_sampled_at_unix_seconds": 1787652597.886632,
+        "server_total_slots": 2,
+        "utilization_pct": 0.0
+      }
+    ],
+    "request_gpu_utilization_median_pct": 92.0,
+    "request_gpu_utilization_p10_pct": 0.0,
+    "server_slot_probe_failure_count": 0,
+    "server_slot_sample_count": 15,
+    "server_slot_sampling_configured": true,
+    "server_slot_sampling_reason": null
+  },
+  "serving_geometry": {
+    "context_total": 65536,
+    "margin_tokens": 12183,
+    "output_ceiling": 1024,
+    "parallel_slots": 2,
+    "requirement_worst_case": 20585,
+    "rule": "campaign plan section 8.1",
+    "status": "DERIVED per carrier by the fixed rule, applied identically to every arm",
+    "tokens_per_slot": 32768
+  },
+  "spend_vs_ceilings": {
+    "campaign_ceilings": {
+      "core_contacts": 400,
+      "embedding_tool_contacts": 200,
+      "gpu_hours": 0.6,
+      "metered_audio_seconds": 2000
+    },
+    "campaign_cumulative_incl_prior_arms": {
+      "core_contacts": 106,
+      "metered_audio_seconds": 590.251,
+      "prior_durable_at_registration": {
+        "audio_seconds": 0.0,
+        "calls": 0,
+        "records": []
+      }
+    },
+    "plan_declaration_run_cumulative": {
+      "planned_gpu_hours": 0.25,
+      "planned_model_calls": 150,
+      "planned_speech_audio_seconds": 700
+    },
+    "this_attempt": {
+      "core_contacts": {
+        "attempt_ceiling": 120,
+        "used": 106
+      },
+      "embedding_tool_contacts": {
+        "attempt_ceiling": 0,
+        "used": 0
+      },
+      "gpu_active_hours_contact_basis": 0.033071,
+      "metered_audio_seconds": {
+        "used": 590.251
+      }
+    }
+  },
+  "study": "speech-aware-evidence-acquisition",
+  "trace_isolation": {
+    "canary_rerun_sink_records": 0,
+    "canary_sink_records": 14,
+    "flush_order": "canary (own sink) -> main loop (main sink FIRST) -> resend (own sink)",
+    "main_sink_records": 728,
+    "resend_sink_records": 0,
+    "zero_record_id_overlap_asserted": true
+  }
+}

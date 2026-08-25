@@ -1,0 +1,121 @@
+{
+  "arm_id": "BLEND",
+  "attempt_id": "attempt-20260825T101057Z-a2tg1blend",
+  "boundary": "gold never opened; no response read semantically; the arm is NOT mechanically landed as complete; everything durable was flushed; the resident service and its unit are left up. A sentinel trip STOPS THE MISSION -- no later arm flies on a sick GPU.",
+  "canary": {
+    "all_byte_identical_to_m0_authority": true,
+    "byte_identical_to_m0_authority": {
+      "tier1_direct:000074": true,
+      "tier1_direct:000077": true
+    },
+    "contacts": 2,
+    "gate_semantics": "PER-TOKEN generation rate, never wall time: the derived output ceiling is 1,024 tokens, so a healthy A2T canary decode legitimately runs far longer than a 64-token SLURP canary",
+    "generation": [
+      {
+        "ms_per_token": 11.85,
+        "tokens": 35,
+        "total_ms": 414.7
+      },
+      {
+        "ms_per_token": 13.26,
+        "tokens": 28,
+        "total_ms": 371.24
+      }
+    ],
+    "hash_authority": "ESTABLISHED BY THIS CAMPAIGN. No prior A2T flight ran this geometry, so the M0 arm records these hashes and the BLEND arm compares against them; there is nothing older to inherit.",
+    "note": "responses never read semantically: sha256 + server print_timing descriptives only",
+    "pass_threshold_ms_per_token": 300.0,
+    "passed": true,
+    "prompt_eval": [
+      {
+        "ms_per_token": 3.05,
+        "tokens": 62,
+        "total_ms": 189.18
+      },
+      {
+        "ms_per_token": 1.62,
+        "tokens": 75,
+        "total_ms": 121.81
+      }
+    ],
+    "response_sha256": {
+      "tier1_direct:000074": "977e4dd68f1d4a7bb134dd8fec9fe5b8fed2608daa6ab31432a7c4657937d8d0",
+      "tier1_direct:000077": "06b1002c0b43d8a8bea4c499be1153552fd7533fcf1a50fba307aded08ab8fd1"
+    },
+    "sample_ids": [
+      "tier1_direct:000074",
+      "tier1_direct:000077"
+    ],
+    "trace": {
+      "manifest_hash": "1c47b7b56a55397676cf95a44fcf109b0ee3f9cd73e0b50d9e305565f84f810d",
+      "namespace": "canary/",
+      "record_ids": 14,
+      "sink_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-A2T-G1/attempt-20260825T101057Z-a2tg1blend/canary-trace"
+    },
+    "wall_seconds": 3.992,
+    "worst_generation_ms_per_token": 13.26
+  },
+  "durable_flush": {
+    "canary_sink": {
+      "manifest_hash": "1c47b7b56a55397676cf95a44fcf109b0ee3f9cd73e0b50d9e305565f84f810d",
+      "namespace": "canary/",
+      "record_ids": 14,
+      "sink_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-A2T-G1/attempt-20260825T101057Z-a2tg1blend/canary-trace"
+    },
+    "main_partial_flush": {
+      "flushed_records": 78
+    }
+  },
+  "generated_at": "2026-08-25T10:15:33.826101+00:00",
+  "mid_flight_clock_samples_windows_side": null,
+  "outcome": "SENTINEL_ABORT_STOP",
+  "run_id": "SAEA-A2T-G1",
+  "schema": "saea-a2t-g1-arm2-blend-sentinel-abort-v1",
+  "sentinel": {
+    "contacts_observed": 26,
+    "ms_per_token_max": 1503.75,
+    "ms_per_token_median": 22.93,
+    "ms_per_token_min": 11.74,
+    "ms_per_token_p90": 1493.01,
+    "rates_observed": 26,
+    "threshold_ms_per_token": 1000.0,
+    "tripped": {
+      "contacts_observed": 26,
+      "rates_observed": 26,
+      "rolling_median_ms_per_token": 1171.24,
+      "threshold_ms_per_token": 1000.0,
+      "window_contacts": 8,
+      "window_ms_per_token": [
+        24.94,
+        18.9,
+        1503.75,
+        1025.45,
+        1494.38,
+        922.3,
+        1493.01,
+        1317.03
+      ]
+    },
+    "window_contacts": 8
+  },
+  "spend": {
+    "arm_core_contacts": 2,
+    "arm_tool_contacts": 27,
+    "core_client": {
+      "contact_latency_seconds_total": 221.513,
+      "cost": {
+        "audio_seconds_used": 73.633,
+        "calls_used": 28,
+        "completion_tokens_total": 726,
+        "latency_seconds_total": 221.51332556399575,
+        "prompt_tokens_total": 372659,
+        "tool_calls": 0,
+        "umbrella_lock_sha256": "9064bde89d4248fd80c9c2f93c2a9c276a454eadbb1aa7d529671118961371b1"
+      },
+      "request_count": 28,
+      "trace_manifest_hash": "c441ccf11776af9ac8504eb6d9c1d8a6e4c2849f2d9d247e49eb441da9d85ad3"
+    }
+  },
+  "study": "speech-aware-evidence-acquisition",
+  "verbatim": "{'rolling_median_ms_per_token': 1171.24, 'window_ms_per_token': [24.94, 18.9, 1503.75, 1025.45, 1494.38, 922.3, 1493.01, 1317.03], 'threshold_ms_per_token': 1000.0, 'window_contacts': 8, 'contacts_observed': 26, 'rates_observed': 26} (surfaced wrapped as: ExecutionError(\"component 'agent_contact_0' execute 'invoke' error, reason='in-flight decode-rate sentinel TRIPPED: rolling median 1171.24 ms/token over the last 8 observed generation rows exceeds the registered abort threshold 1000 ms/token; window [24.94, 18.9, 1503.75, 1025.45, 1494.38, 922.3, 1493.01, 1317.03]', workflow='d0c55d8cf0634319931d407b95054cc8'\"))"
+}

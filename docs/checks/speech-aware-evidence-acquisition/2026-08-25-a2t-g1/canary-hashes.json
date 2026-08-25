@@ -1,0 +1,24 @@
+{
+  "arm_id": "M0",
+  "attempt_id": "attempt-20260825T100735Z-a2tg1m0",
+  "decoding_params": {
+    "max_tokens": 1024,
+    "seed": 20260803,
+    "temperature": 0
+  },
+  "generated_at": "2026-08-25T10:08:48.786342+00:00",
+  "note": "this campaign's OWN canary hash authority. No prior Audio2Tool flight ran the section 8.1 derived geometry, so nothing older can be inherited.",
+  "response_sha256": {
+    "tier1_direct:000074": "977e4dd68f1d4a7bb134dd8fec9fe5b8fed2608daa6ab31432a7c4657937d8d0",
+    "tier1_direct:000077": "06b1002c0b43d8a8bea4c499be1153552fd7533fcf1a50fba307aded08ab8fd1"
+  },
+  "run_id": "SAEA-A2T-G1",
+  "sample_ids": [
+    "tier1_direct:000074",
+    "tier1_direct:000077"
+  ],
+  "schema": "saea-a2t-g1-canary-authority-v1",
+  "server_np": 2,
+  "session_receipt_sha256": "ee9a4849a90a86b8759474a66db214037628a9872ed1d433df0165385f16c79e",
+  "study": "speech-aware-evidence-acquisition"
+}
