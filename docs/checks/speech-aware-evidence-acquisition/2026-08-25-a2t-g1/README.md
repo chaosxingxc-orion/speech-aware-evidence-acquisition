@@ -1,4 +1,4 @@
-# Audio2Tool stage G1 — **COMPLETE: BOTH ARMS LANDED, AND THE FIRST SIGNAL IS A MECHANISM NULL**
+# Audio2Tool stage G1 — **COMPLETE: BOTH ARMS LANDED, AND AFTER THE RANKER REPAIR THE SUPPLY PATH FIRES — READ §11 FIRST**
 
 Date: 2026-08-25. Campaign row `SAEA-A2T-G1` (`docs/exposure-ledger.md`), registered at commit
 `4e25ac68` **before any flight contact**. Authority:
@@ -25,6 +25,14 @@ Date: 2026-08-25. Campaign row `SAEA-A2T-G1` (`docs/exposure-ledger.md`), regist
 > is a NULL with a mechanism: 0 of 104 trajectories dispatched, so the byte-identical v1 cell is
 > STRUCTURALLY INERT on this carrier.** §§1–9 describe attempts 1 and 2 and remain exactly as
 > written.
+
+> **CURRENT STATE, 2026-08-25 — START AT §11.** Sections 1–10 describe BLEND attempts 1–3 and
+> remain exactly as written; they are accurate for the attempts they describe. The CORRECTION
+> section that follows §10 withdraws attempt 3's "mechanism null" framing as an IMPLEMENTATION
+> DEFECT, and **§11 records the post-repair FOURTH attempt, which is the read that stands**: 15 of
+> 104 trajectories dispatched, 15 evidence contacts flew, every mechanism invariant passes, and the
+> paired signal is +0.96 pp tool accuracy with exact match identical to the sample. Any statement
+> in §§1–10 about what the policy does on this carrier is superseded by §11.
 
 ## 1. The claim this campaign carries (Amendment 2 framing, no hedging)
 
@@ -672,3 +680,260 @@ Sequence from here: fix the defect in `rails/kb_policy.py` with a regression pro
 locked cell is byte-identical (with `max_prior = 0.0` the normalisation is an identity
 transform), then re-fly A2T G1 BLEND on this same 104-item exposed subset. Only the post-fix
 flight produces a paired signal worth interpreting.
+
+---
+
+## 11. FOURTH ATTEMPT — **THE POST-REPAIR FLIGHT: THE SUPPLY PATH FIRES, AND THE FIRST SIGNAL IS A SMALL POSITIVE WHOSE EVERY GAIN IS METHOD-ATTRIBUTABLE**
+
+Registered under the same row `SAEA-A2T-G1` at commit `3e12e8c4` **before any contact of it**.
+Launcher `launcher/launch_a2t_g1_blend_attempt4.py` (git blob sha256 `517da5783513632…0f30c3`,
+commit `6bbd6e62`); attempt `attempt-20260825T144405Z-a2tg1blend`; preflight
+`gpu-preflight-blend-attempt4.json`; report `arm2-blend-mechanical-report-attempt4.json`
+(sha256 `641c4b5ae82cdda1…459436`); paired read `g1-read-attempt4.json` (sha256
+`cb5e56584a6d572f7b41b39542201ddb1b361755042eac66c3a70c55fd086f89`). Attempts 1, 2 and 3 and their records are preserved unmodified.
+
+> **OUTCOME.** Exit 0. **104 of 104 trajectories, 18 core contacts, the sentinel never tripped,
+> and the co-residency invariant held.** The CORRECTION's prediction is confirmed on flown
+> behaviour: **15 of 104 trajectories dispatched and 15 real evidence contacts flew, where the
+> defective ranker dispatched 0.** The paired signal against the landed M0 on the same 104 is
+> **+0.96 pp tool accuracy (62 → 63 of 104), exact match EXACTLY FLAT at 0.2788, and an
+> empty-call rate that collapses from 0.1346 to 0.0288 (14 → 3) with unparsed answers going 4 →
+> 0.** Neither accuracy interval separates from zero at n=104. **What is unambiguous is the
+> mechanism**: all three wrong→correct flips are on trajectories that dispatched AND whose direct
+> text was byte-identical to M0, so only the evidence contact can account for them.
+
+### 11.1 What changed since attempt 3, and what did not
+
+**One thing changed: `rails/kb_policy.py`'s ranker arithmetic** (commit `1341c2db`).
+`_dimension_scales` divides every ranker dimension by `max(1.0, sup_d)` over the recalled
+candidate set before the weights apply. **No knob changed.** The policy cell
+`configs/policy/kb-policy-v1-dev100.json` is byte-identical (`d68afd2c…a919`), proved key-for-key
+at takeoff against the cell file, the composed fragment and the launcher's own constants; the
+§8.1 derived geometry is unchanged (`-c 65536 -np 2`, 32,768 tokens per slot, margin +12,183,
+output ceiling 1,024); the composed config hash is the same `df6bf4d4…38f9`.
+
+**The rails pin moved deliberately, and the move is itself a gate.** Attempts 1–3 pinned
+`rails/kb_policy.py`'s last commit at `f1060078` to prove `rails/` was untouched. It is now pinned
+at the repair commit `1341c2db`, which proves *both* that the file has been touched by nothing
+else *and* that this flight ran the repaired ranker rather than the broken one it replaces. Drift
+in either direction refuses takeoff. The launcher additionally probes the repair's two defining
+behaviours before it opens a run directory: an out-of-bound prior dimension divides by its own
+supremum, and a bounded dimension divides by exactly 1.0.
+
+### 11.2 Pass A was REPLAYED, and that is the only reason the flight fit
+
+The campaign cell binds hard: 303 of 400 core contacts were durable, leaving **97**. A full
+two-pass re-flight's worst case is 4 canary + 104 Pass A + 104 Pass B + 1 resend = **213**, and
+the launcher's own fail-closed sizing guard would have **refused takeoff at zero spend**.
+
+Attempt 3 flew all 104 contact-0 direct decodes on this same service instance under this same
+geometry and landed each text with its own sha256 and the sha256 of the messages document that
+produced it. Attempt 4 loads them, verifies every row against its own `direct_response_sha256`
+and the file against the pin `73e28511…aadc9c` inside attempt 3's mechanical report, and spends
+**0 core contacts and 0 metered audio** where attempt 3 spent 104 and 591.3 s.
+
+**This is not a shortcut around the measurement.** Pass B's `ReplayDirectClient` admits a resumed
+contact 0 only after proving the messages document the runner just built hashes to what attempt 3
+recorded for that sample. **104 of 104 matched.** A mismatch raises fail-closed and nothing is
+substituted. The replayed texts reproduce attempt 3's own comparison exactly — **93 byte-identical
+to the landed M0 text, 11 divergent**, the same 93/11 attempt 3 measured — which is what a
+deterministic replay of a landed record must do.
+
+### 11.3 The flight, in order
+
+| stage | outcome |
+|---|---|
+| GPU preflight | SmartFanMode 3, clock lock re-asserted (SM 1,192 MHz, throttle reasons `0x0`), 21,288 MiB with no sidecar, port 8082 refused, service pid 38623 at 2 slots × n_ctx 32,768. **Enforced power limit DISCLOSED AS MARGINAL**: first read of the mission 94.74 W — *below* the 95 W gate — settling at 95.17 W and reading 100.0 W at pre-takeoff |
+| every pre-takeoff gate | PASS (composed hash `df6bf4d4`, v1 cell key-for-key, §8.1 margin +12,183, subset receipt `b42f0953`, packet receipt `be07c69c`, snapshot 12,936 facets / 12,601 values / 151 label identities, content-facet vectors `00a7ebe9` with **value vectors sealed**, 104 packet bindings, canary authority loaded, `kb_policy` last commit `1341c2db`, both repair probes, dry check over 25,519 protected payloads, AttemptStore sizing) |
+| durable query-vector table | **103 distinct vectors, 0 tool contacts, sidecar NOT spawned** |
+| canary | **PASS 16.97 / 11.58 ms/token** (gate < 300), **byte-identical to the M0 authority on both samples** |
+| PASS A | **REPLAYED: 104 texts, 0 core contacts, 0 metered audio**; 93 byte-identical to the landed M0 text, 11 divergent |
+| offline bridge | **0 embedded, sidecar NEVER SPAWNED**, port free, VRAM 21,288 MiB unchanged (ceiling 22,500) |
+| PASS B | **104 trajectories in 270.5 s; 104 contact-0s RESUMED at zero cost; 15 REAL evidence contacts flown** against a registered ceiling of 23 |
+| resend | flown, **byte-identical** to the M0 authority |
+| sentinel | 15 rates, median **11.85**, p90 19.41, max 32.92 ms/token — **no trip** |
+| trace isolation | zero record-id overlap across main (461) and the micro-run sinks |
+
+**Exact spend: 18 frozen-core contacts (2 canary + 0 Pass A + 15 evidence + 1 resend), 58.247
+metered audio seconds, 0 embedding tool contacts, 0.004626 GPU active hours, 251,364 declared
+prompt tokens against 13,145 evaluated (prompt reuse 94.77 %).** Inside the 28 core and 20 tool
+attempt cells. **Campaign cumulative: 321 / 400 core contacts, 1,590.656 / 2,000 audio seconds,
+136 / 200 embedding tool contacts.** Wall 6.3 minutes.
+
+### 11.4 The paired first signal — BLEND against the LANDED M0 on the same 104
+
+Frozen scorer `a2t-scorer-v1`, reused not reimplemented; gold opened over the sealed population.
+
+| | M0 (landed) | BLEND (attempt 4) | paired delta |
+|---|---|---|---|
+| tool accuracy | 0.5962 (62/104) | **0.6058 (63/104)** | **+0.96 pp**, CI90 [−2.88, +4.81], McNemar p 1.0 |
+| exact match | 0.2788 (29/104) | **0.2788 (29/104)** | **0.00 pp**, CI90 [−1.92, +1.92], McNemar p 1.0 |
+| gap | 0.3173 | 0.3269 | +0.96 pp |
+| **empty-call rate** | 0.1346 (14/104) | **0.0288 (3/104)** | **−10.58 pp** |
+| unparsed answers | 4 | **0** | −4 |
+| mean slot F1 | 0.3766 | 0.3738 | −0.29 pp |
+| W→C / C→W (tool) | — | — | **3 / 2** |
+| W→C / C→W (exact) | — | — | **1 / 1** |
+
+Per tier, published whole — five of eight tiers identical to the sample:
+
+| tier | n | M0 tool | BLEND tool | Δ pp | M0 EM | BLEND EM | Δ pp |
+|---|---|---|---|---|---|---|---|
+| tier1_direct | 13 | 0.6923 | 0.6923 | 0.00 | 0.0769 | 0.1538 | +7.69 |
+| tier2_parametric | 13 | 0.6154 | 0.6154 | 0.00 | 0.4615 | 0.4615 | 0.00 |
+| tier3_multi_intent | 13 | 0.4615 | 0.4615 | 0.00 | 0.0000 | 0.0000 | 0.00 |
+| tier4_implicit | 13 | 0.3846 | **0.4615** | **+7.69** | 0.0769 | 0.0769 | 0.00 |
+| tier5_needle | 13 | 0.9231 | **1.0000** | **+7.69** | 0.3846 | 0.3846 | 0.00 |
+| tier6_correction | 13 | 0.7692 | 0.7692 | 0.00 | 0.5385 | 0.5385 | 0.00 |
+| tier7_multiturn | 13 | 0.6154 | 0.6154 | 0.00 | 0.6154 | 0.6154 | 0.00 |
+| tier8_intent_blending | 13 | 0.3077 | 0.2308 | −7.69 | 0.0769 | 0.0000 | −7.69 |
+
+**THE SMUGGLING GUARD, APPLIED TO OUR OWN RESULT.** Plan §3.5, verbatim: *a tool-accuracy gain
+that leaves exact match flat is a DIFFERENT claim and must not be smuggled.* Exact match here is
+**not merely flat, it is identical to the sample** — 29 of 104 in both arms. **No accuracy claim
+of any kind follows from this read**, and the empty-call collapse, striking as it is, is a
+different metric and must not be substituted for the campaign's primary one.
+
+### 11.5 The subgroup where the method can act at all, and the per-flip attribution
+
+Dispatch is not spread over the population. It lands **exactly on the 15 trajectories from which
+the direct answer recovers no label** — 15 of 15, none outside — which is the alpha ceiling the
+admission-scale sweep pre-registered before this flight: at α 0.45 a recovered direct label scores
+at least 0.55 while every rival scores at most 0.45, so **a trajectory that recovers a direct label
+can never be overturned by evidence, however good the evidence is.**
+
+| subgroup | n | M0 tool | BLEND tool | Δ samples | M0 EM | BLEND EM | Δ samples |
+|---|---|---|---|---|---|---|---|
+| retain-primary | 89 | 0.6854 (61) | 0.6742 (60) | **−1** | 0.3258 | 0.3146 | −1 |
+| dead-direct-dispatch | 15 | 0.0667 (1) | **0.2000 (3)** | **+2** | 0.0000 | **0.0667** | **+1** |
+
+**EVERY FLIP IS ATTRIBUTED INDIVIDUALLY, NEVER BY ELIMINATION.** A dispatched trajectory received
+evidence, so the method could have moved it; a trajectory whose Pass-A text diverges from the
+landed M0 text was decoded differently by the frozen core, so decode variance could have moved it.
+
+| flip | direction | dispatched | text divergent | attribution |
+|---|---|---|---|---|
+| `tier1_direct:004159` | W→C | yes | no | **method-attributable** |
+| `tier4_implicit:003312` | W→C | yes | no | **method-attributable** |
+| `tier5_needle:000061` | W→C | yes | no | **method-attributable** |
+| `tier1_direct:001631` | C→W | yes | yes | **AMBIGUOUS** — not counted against the method |
+| `tier8_intent_blending:000441` | C→W | no | yes | **decode variance** |
+
+**All three gains are method-attributable and neither loss is cleanly so.** That is a mechanism
+reading and **not** an effect size: at n=104 the pooled difference is one sample and its own
+interval contains zero.
+
+### 11.6 The mechanism verdicts — including the two that changed status
+
+| invariant | attempt 3 | attempt 4 |
+|---|---|---|
+| dispatch decomposition closes over the population | PASS (104 + 0) | **PASS — 89 retained + 15 dispatched = 104; `dead_direct_dispatched` 15 equals `dispatched` 15** |
+| dispatch matched the pre-registered projection | PASS (0 = 0) | **PASS — projected 15, flown 15, exactly** |
+| **branch-only replay** (supply equals the flown fusion decision) | **VACUOUS** | **PASS — 15 trajectories replayed through `kb_policy`'s own pure functions, 0 supply mismatches. No longer vacuous** |
+| decision replay (the retain-or-dispatch branch re-derived offline) | PASS 104/104 | **PASS — 104 of 104, 0 branch mismatches** |
+| **retain == direct-label-recovered** | **FALSIFIED** (104 retained vs 89 recovered) | **PASS — 89 retained, 89 recovered, and the 15 dispatched are exactly the 15 label-free ids** |
+| co-residency (no sidecar while a decode is in flight) | PASS, 111 checks | **PASS — and stronger: the sidecar was never spawned at all** |
+| replayed contact 0 is byte-identically the flown contact 0 | PASS 104/104 | **PASS — 104 of 104 messages digests matched attempt 3's** |
+| decode-speed canary + canary hash authority | PASS | **PASS — 16.97 / 11.58 ms/token, byte-identical to M0** |
+| identical-prompt resend | PASS | **PASS — byte-identical** |
+| in-flight decode-rate sentinel | no trip | **NO TRIP — 15 rates, median 11.85, max 32.92** |
+
+**The two status changes are the payload.** The branch-only replay had nothing to check when
+nothing dispatched and was honestly reported as vacuous; it now checks 15 trajectories and passes.
+`retain == direct-label-recovered` was falsified on this carrier by the defective ranker and is
+**restored exactly** by the repair — which is the strongest available evidence that the
+zero-dispatch really was the implementation defect the owner ruling called it, and not a property
+of Audio2Tool.
+
+### 11.7 Where the mechanism now stands, and the ceiling it has run into
+
+The supply path fires. Over all 104 trajectories: recall returned nothing on **0**; best content
+cosine **0.7594 – 0.9572**, clearing τ 0.65 on **104 of 104**; and — the number that inverted — a
+content facet is inside the top-m=5 admission window on **104 of 104** where attempt 3 measured 0
+of 104. Fusion supplies 2–5 values per dispatched trajectory.
+
+**But the reachable population is capped at 14.4 % by the α arithmetic, not by retrieval quality.**
+`_fused_label_scores` normalizes the fused scores to sum to 1 and `_blend_scores` gives the direct
+label `α·f + (1−α)` against every rival's `α·f`; at the frozen α 0.45 the direct label scores ≥ 0.55
+and every rival ≤ 0.45, so the direct label wins uniquely **for every possible supply**. The flown
+record confirms the prediction to the sample: **dispatch = the 15 label-free trajectories, 0
+outside, 0 label-free trajectories left undispatched.** Whatever the evidence is worth, it can only
+be applied where the direct answer parsed to nothing — 14 empty calls plus 4 unparsed answers on
+this population.
+
+Within that subgroup the evidence contact does most of what it can: **11 of the 14 empty calls and
+all 4 unparsed answers become well-formed tool calls**, but only **2 of them become correct**. That
+is the honest shape of the result — the method reliably converts "said nothing" into "said
+something", and converts a minority of that into "said the right thing".
+
+### 11.8 Two reporting artifacts, disclosed rather than left to be found
+
+1. **`prompt_reuse.by_class` mislabels the 15 evidence contacts as `main_direct_contact0`.** The
+   classifier splits main-window requests at a declared-token threshold of 15,000 and expects 104
+   direct rows plus the dispatched count; with Pass A replayed, the main window contains only the
+   15 evidence contacts (declared 13,748 – 14,980), so they fall on the "direct" side and
+   `main_evidence_contact1` reads 0 requests. **The launcher flags this itself**
+   (`classification_clean_by_threshold: false`) and every authoritative counter is unaffected:
+   `pass_a_direct_contacts_flown` 0, `pass_b_evidence_contacts_flown` 15, sentinel 15 rates,
+   client 18 requests. Only the class *name* is wrong; the totals (94.77 % reuse over 18 requests)
+   are correct.
+2. **Two prose strings in `scripts/a2t_g1_read.py` were written for the zero-dispatch regime** —
+   the branch "reading" asserting that nothing is ever admitted, and the paired-delta attribution
+   asserting that no trajectory received evidence. Both would have contradicted the numbers printed
+   beside them. They were **made conditional on their own measured quantities** before the landed
+   read, and the per-flip attribution table in §11.5 was added at the same time. A first read pass
+   was produced with the stale prose (sha256 `4b5d90aa9ab98e2c…9bd552`) and is superseded by the
+   landed artifact; **every metric is identical between the two — only prose differs.**
+
+The imported `bootstrap_gain` also hard-codes a resampling label reading "over the 100 DEV-100
+ids"; the actual universe is the 104 `A2T-G1-104` ids. The module is pinned to already-sealed reads
+and is not edited, so the read carries both the returned label and its correction.
+
+### 11.9 Recommendation — **do NOT open G2 as scoped; take three cheaper decisions to the owner first**
+
+G1's charter is mechanics plus first signal on the exposed tier, and **both halves are now
+delivered**: every mechanism invariant passes, two of them having changed status from vacuous and
+falsified, and a paired signal exists that is worth interpreting because the machinery it measures
+actually ran. The reason not to proceed to G2 immediately is no longer that the policy does
+nothing — it is arithmetic and power.
+
+1. **G2 cannot fit the current cell, and raising it is an owner decision.** 321 of 400 core
+   contacts, 1,590.656 of 2,000 audio seconds and 136 of 200 tool contacts are spent. G2 as scoped
+   is four arms over an unexposed 400-item tier. **79 core contacts remain.** No implementer may
+   raise that cell.
+2. **At the measured effect size, n = 400 may still be underpowered, and the owner should see that
+   before authorizing spend.** The pooled gain is +0.96 pp (one sample) with σ̂ 2.15 pp, and it is
+   structurally capped: only 14.4 % of trajectories can dispatch, and within them the conversion
+   was 2 of 15. A confirmatory read should be powered against *that* decomposition rather than
+   against a whole-population effect the mechanism cannot produce.
+3. **The next blocking question is the α CEILING, and it is answerable offline at zero contacts.**
+   The admission repair was necessary and is now proved sufficient *for admission*; it does not
+   touch the blend arithmetic that confines dispatch to label-free trajectories. Quantifying what
+   the method could reach at other α values — over the already-landed vectors, texts and supplies —
+   costs nothing and would tell the owner whether a knob decision is even worth making. **Changing
+   α is a knob change and is NOT authorized here**; it would also break the campaign's central
+   claim that the cell transfers byte-identical, so that trade is the owner's alone.
+
+A fourth, cheap and unblocked item: **the two-pass launcher plus replay-admitted Pass A should
+become the default shape for any re-flight on a bound cell.** It carried a full 104-trajectory arm
+for 18 core contacts where the single-pass shape needed 213, and every resumed contact carried its
+own byte-identity proof.
+
+`consumed` stays `no`. Nothing in this section licenses a generality claim, a superiority claim,
+test contact, a knob change or Stage-3 activity. **The operational debt stands: the SLURP np8
+service `saea-np8-dev100-r6-base` remains DOWN and must be respawned by a later mission before any
+SLURP arm flies.**
+
+### 11.10 Artifacts
+
+| artifact | sha256 |
+|---|---|
+| `launcher/launch_a2t_g1_blend_attempt4.py` (git blob) | `517da5783513632324478ccf74b24b1f0b54a2321c6e4ab3f32d41c0ea0f30c3` |
+| `dispatch-projection-postfix.json` | `7a44ed34c3b29bbcd1a5b763f5b4e6c9b0e89f815bbb4f4ad385f874ee711478` |
+| `gpu-preflight-blend-attempt4.json` | `4ba8d95f8d4a1339bd998f119ee8158eba879829e8c85f23691aed78397ffec8` |
+| `arm2-blend-mechanical-report-attempt4.json` | `641c4b5ae82cdda1b2d8508bb95e52035fe1b3d119ea170f10906779df459436` |
+| `g1-read-attempt4.json` (the paired read) | `cb5e56584a6d572f7b41b39542201ddb1b361755042eac66c3a70c55fd086f89` |
+
+Code: `launcher/launch_a2t_g1_blend_attempt4.py`, `scripts/a2t_g1_dispatch_projection_postfix.py`,
+`scripts/a2t_g1_read.py`. **`core/` is untouched, and `rails/kb_policy.py`'s last commit is
+`1341c2db` — the ranker repair itself and nothing after it**, re-verified live at takeoff.

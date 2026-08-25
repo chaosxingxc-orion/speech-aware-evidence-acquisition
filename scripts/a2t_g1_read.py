@@ -606,14 +606,34 @@ def replay_decisions(*, blend_arm: dict, sample_ids, root) -> dict:
                 1 for c in cosines if c >= fuse.tau
             ),
             "tau": fuse.tau,
+            "trajectories_with_a_content_facet_in_top_m": (
+                len(sample_ids) - zero_content_in_top_m
+            ),
+            # The reading MUST follow the numbers beside it. Before the ranker
+            # scale repair (1341c2db) every trajectory had zero content facets
+            # in the top-m window; after it, admission works. Hard-coding
+            # either narrative would make the report describe a different
+            # flight from the one it scored.
             "reading": (
-                "content-facet RECALL is healthy -- the cosines clear the admission "
-                "threshold. What never happens is ADMISSION: the ranker's prior-mass "
-                "dimensions outscore any cosine, so the top-m window the fuser admits "
-                "over holds no content facet at all, and percept admission reads only "
-                "NON-prior-mass dimensions. Nothing is admitted, nothing is selected, "
-                "every trajectory retains. This is a property of the cell meeting this "
-                "carrier's knowledge base, not a defect of the flight."
+                (
+                    "content-facet RECALL is healthy -- the cosines clear the "
+                    "admission threshold. What never happens is ADMISSION: the "
+                    "ranker's prior-mass dimensions outscore any cosine, so the "
+                    "top-m window the fuser admits over holds no content facet at "
+                    "all, and percept admission reads only NON-prior-mass "
+                    "dimensions. Nothing is admitted, nothing is selected, every "
+                    "trajectory retains."
+                )
+                if zero_content_in_top_m == len(sample_ids)
+                else (
+                    "content-facet recall is healthy AND admission now works: a "
+                    "content facet enters the top-m window the fuser admits over on "
+                    "%d of %d trajectories, so the supply path is exercised rather "
+                    "than structurally inert. Each trajectory then retains or "
+                    "dispatches on the blend argmax, which is the decision this "
+                    "replay reproduces."
+                    % (len(sample_ids) - zero_content_in_top_m, len(sample_ids))
+                )
             ),
         },
     }
@@ -768,10 +788,35 @@ def main() -> int:
         if blend_arm["rows"][sid].get("direct_response_text")
         == m0_arm["rows"][sid].get("final_response_text")
     )
+    dispatched_set = set(dispatched)
+    divergent_set = set(divergent)
+
+    def _attribute(sid: str) -> str:
+        """Which channel can account for this flip.
+
+        A trajectory that DISPATCHED received evidence, so the method could
+        have moved it. A trajectory whose Pass-A text diverges from the landed
+        M0 text was decoded differently by the frozen core, so decode variance
+        could have moved it. Both, neither, or exactly one may apply, and the
+        honest report names which -- it never assigns a flip to the method by
+        elimination."""
+
+        d = sid in dispatched_set
+        v = sid in divergent_set
+        if d and not v:
+            return "method-attributable (dispatched, text identical to M0)"
+        if v and not d:
+            return "decode-variance (text divergent, never dispatched)"
+        if d and v:
+            return "AMBIGUOUS (dispatched AND text divergent)"
+        return "UNEXPLAINED (neither dispatched nor text-divergent)"
+
     decode_variance = {
         "question": (
-            "with zero dispatches the policy supplied nothing, so any paired delta "
-            "must come from somewhere other than the method. Where?"
+            "a paired delta can come from the METHOD (a dispatched trajectory that "
+            "received evidence) or from the frozen core's OWN multi-slot decode "
+            "variance (a trajectory whose direct text did not reproduce byte for "
+            "byte). Which flips belong to which channel?"
         ),
         "dispatched_trajectories": int(blend_report_mech["two_contact_trajectories_dispatched"]),
         "evidence_contacts_flown": int(blend_report_mech["pass_b_evidence_contacts_flown"]),
@@ -786,13 +831,33 @@ def main() -> int:
         "exact_match_flips_all_inside_divergent_set": all(
             sid in set(divergent) for sid in flipped_em
         ),
+        "tool_accuracy_flip_attribution": {
+            sid: _attribute(sid) for sid in flipped_tool
+        },
+        "exact_match_flip_attribution": {
+            sid: _attribute(sid) for sid in flipped_em
+        },
         "attribution": (
-            "every scored difference between the two arms falls inside the set of "
-            "trajectories whose direct decode did not reproduce byte for byte, and "
-            "no trajectory received any evidence. The paired delta is therefore the "
-            "frozen core's OWN multi-slot decode-variance channel, measured on this "
-            "carrier, and it is NOT an effect of the policy cell. It must not be "
-            "read as the method helping or hurting."
+            (
+                "every scored difference between the two arms falls inside the set "
+                "of trajectories whose direct decode did not reproduce byte for "
+                "byte, and no trajectory received any evidence. The paired delta is "
+                "therefore the frozen core's OWN multi-slot decode-variance channel, "
+                "measured on this carrier, and it is NOT an effect of the policy "
+                "cell. It must not be read as the method helping or hurting."
+            )
+            if not dispatched
+            else (
+                "trajectories DID dispatch here, so the two channels coexist and "
+                "each flip is attributed individually above rather than assigned to "
+                "one channel wholesale. A flip on a dispatched trajectory whose text "
+                "was byte-identical to M0 can only come from the evidence contact; a "
+                "flip on a never-dispatched trajectory can only come from decode "
+                "variance; a flip that is both is reported AMBIGUOUS and is not "
+                "counted for the method. At n=104 none of these differences is "
+                "separated from zero by its own interval, and the per-flip "
+                "attribution is a MECHANISM reading, never an effect size."
+            )
         ),
     }
 
