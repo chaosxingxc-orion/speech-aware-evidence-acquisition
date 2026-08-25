@@ -1,0 +1,2927 @@
+{
+  "authority": {
+    "lock_verdict": "docs/readiness/2026-08-25-baseline-lock-verdict.md",
+    "plan": "docs/readiness/2026-08-25-key-construction-agenda-plan.md"
+  },
+  "cost_note": {
+    "dense_cosine_seconds_per_sample_measured": 0.0009845594918879215,
+    "lexical_cost_as_fraction_of_the_reference": 4.2029947812612954e-05,
+    "lexical_index_build_terms": 5219,
+    "lexical_index_corpus_sha256": "4b971c1a0c94bd5c9b5e11642b5a82af6d803d13b87dad151885ba63827c3da1",
+    "lexical_index_postings": 78402,
+    "lexical_seconds_per_1000_trajectories": 0.09641670028213412,
+    "lexical_seconds_per_query_measured": 9.641670028213411e-05,
+    "reading": "the lexical channel is an inverted index whose per-document BM25 weights are entirely query-independent under the registered scoring form, so a query is a gather and a bincount; the index is built ONCE per snapshot and the per-query cost is measured here, not modelled",
+    "reference_measured": "multidim_recall costs 1.147 s per call over 11,514 facets and runs 2x per trajectory = 2.294 s per trajectory of pure control-plane CPU",
+    "reference_seconds_per_1000_trajectories": 2294.0,
+    "vectorization_prerequisite": "the plan's engineering note stands and is UNCHANGED by this gate: the 1.147 s/call cost belongs to the EXISTING scalar content dimension, not to the new channel, and it is what must be vectorised before a 1,000-sample flight"
+  },
+  "exposure_row_id": "SAEA-SN-MF-K1-HYBRID-RANKING-GATE",
+  "falsifier": {
+    "by_query_normalization": {
+      "Q-RAW": {
+        "baseline_recall_at_5": 0.744,
+        "best_recall_at_5": 0.762,
+        "best_rule": "RRF-60",
+        "delta_pp": 1.8000000000000016,
+        "raised": true
+      },
+      "Q-VAL": {
+        "baseline_recall_at_5": 0.744,
+        "best_recall_at_5": 0.758,
+        "best_rule": "RRF-60",
+        "delta_pp": 1.4000000000000012,
+        "raised": true
+      }
+    },
+    "evaluated_on": "DEV-1000-NEW500 (500 unexposed) -- the population the lock used",
+    "recall_at_5_raised": true,
+    "text": "if hybrid ranking does not raise recall@5, key representation is not the lever either, and the residual is task-intrinsic",
+    "verdict": "RAISED"
+  },
+  "lexical_index": {
+    "average_document_length": 6.945023449713393,
+    "build_seconds": 0.053797765998751856,
+    "corpus_sha256": "4b971c1a0c94bd5c9b5e11642b5a82af6d803d13b87dad151885ba63827c3da1",
+    "documents": 11514,
+    "postings": 78402,
+    "terms": 5219
+  },
+  "populations": {
+    "DEV-100-ROUND4": {
+      "artifact_hashes": {
+        "SAEA-DEV100-KB-ALPHA-BLEND-CAMPAIGN.trace.jsonl": "4e7dd3343bdbb1dc10b492337abada73904c8d5efee44d7db813b25e932318be",
+        "query-vectors.jsonl": "4383dd88f75e0995da7f32e3497db03a20aeaf25f54d508536c22999b37c0ded",
+        "round4-outputs.jsonl": "4c2a9a6b0ad71d3ab573f3097da12b63d76d060106008b7ab0fbeeac5ad7ccc1"
+      },
+      "by_query_normalization": {
+        "Q-RAW": {
+          "lexical_channel_alone_top1_is_gold": 36,
+          "mean_lexically_touched_facets": 631.21,
+          "mean_query_tokens": 8.73,
+          "native_second_dimension": {
+            "admitted_by_the_lexical_dimension_alone": 285,
+            "agreement": {
+              "after_dims_total_observed": [
+                4
+              ],
+              "agreement_values_now_reachable": [
+                0.25,
+                0.5
+              ],
+              "before": "every facet carries exactly ONE dimension, dims_total is 3, agreement is a constant 1/3 for every candidate, and the ranker's score is the affine map 0.5*cos + 0.0667",
+              "candidate_facets_dims_hit_2": 57,
+              "candidate_facets_dims_hit_2_rate": 0.029336078229541946,
+              "candidate_facets_total": 1943,
+              "reading": "with two content dimensions live, agreement takes two distinct values instead of one, so w_agree is no longer multiplying a constant and the rank-weight family is structurally non-degenerate; whether that BUYS anything is the separate accuracy question this gate also answers",
+              "samples": 100,
+              "samples_with_at_least_one_two_dimension_candidate": 39,
+              "score_separation_at_equal_max_signal": 0.05,
+              "top_m_candidates_dims_hit_2": 57,
+              "top_m_candidates_dims_hit_2_rate": 0.114,
+              "top_m_candidates_total": 500
+            },
+            "conversion_projection": {
+              "anchors": {
+                "absent": 0.0,
+                "fused_rank_2_or_3": 0.6956521739130435,
+                "fused_rank_4_plus_EXTRAPOLATED": 0.4928936497934608,
+                "fused_top1": 0.9818181818181818
+              },
+              "changed_priced_at_the_unanchored_rank": 0,
+              "changed_trajectories": 35,
+              "construction": "a trajectory that RETAINS under the hybrid carries its own direct decode's score EXACTLY; a dispatched trajectory whose supplied set is byte-identical to the flown one carries its sealed outcome EXACTLY; only a dispatched trajectory whose supply CHANGED is priced, at the measured anchor for wherever gold sits under the hybrid, symmetrically for currently-correct and currently-wrong trajectories",
+              "delta_pp_central": -1.8308300395256651,
+              "delta_pp_optimistic": 2.9454545454545524,
+              "delta_pp_pessimistic": -7.506686270391356,
+              "exact_outcomes_identical_supply": 2,
+              "exact_outcomes_retained_trajectories": 63,
+              "n": 100,
+              "projected_central": 70.16916996047433,
+              "projected_optimistic": 74.94545454545455,
+              "projected_pessimistic": 64.49331372960864,
+              "sealed_baseline_correct": 72,
+              "sealed_baseline_rate": 0.72,
+              "variance_prior": "DEV-100 round-5 replication: plus-minus 2 per 100 at 8-slot decode"
+            },
+            "gate": {
+              "baseline_arm_gate_passed": true,
+              "baseline_arm_supply_reproduces_imported_replay": 100,
+              "hybrid_fuse_seconds_per_sample": 0.004441172890219605,
+              "hybrid_fuse_seconds_total": 0.44411728902196046,
+              "single_dimension_degeneracy_checked": 100,
+              "single_dimension_degeneracy_confirmed": true,
+              "single_dimension_degeneracy_violations": []
+            },
+            "supply_delta": {
+              "dispatch_decision_flips_vs_flown": 0,
+              "dispatch_flip_sample_ids": [],
+              "lost_gold_supply_currently_correct": 7,
+              "lost_gold_supply_sample_ids": [
+                "slurp:devel:003895:audio-1501687710",
+                "slurp:devel:003956:audio-1501753591-headset",
+                "slurp:devel:005989:audio-1497621031",
+                "slurp:devel:007381:audio-1501686582-headset",
+                "slurp:devel:010548:audio-1499697772",
+                "slurp:devel:013522:audio-1494607289",
+                "slurp:devel:015414:audio-1499265566"
+              ],
+              "newly_gold_supplied_currently_wrong": 3,
+              "newly_gold_supplied_sample_ids": [
+                "slurp:devel:001085:audio-1490103635-headset",
+                "slurp:devel:005565:audio-1498570308",
+                "slurp:devel:006176:audio-1492780408"
+              ],
+              "supply_changed": 97,
+              "supply_unchanged": 3
+            }
+          },
+          "newly_reachable": {
+            "correct_dispatched_with_gold_inside_window": 23,
+            "dispatched_flown": 37,
+            "per_rule": {
+              "DENSE-ONLY": {
+                "correct_dispatched_pushed_out": 0,
+                "net_rank_level": 0,
+                "newly_reachable_sample_ids": [],
+                "newly_reachable_wrong_dispatched": 0,
+                "pushed_out_sample_ids": []
+              },
+              "LIN-0.25": {
+                "correct_dispatched_pushed_out": 1,
+                "net_rank_level": 0,
+                "newly_reachable_sample_ids": [
+                  "slurp:devel:001085:audio-1490103635-headset"
+                ],
+                "newly_reachable_wrong_dispatched": 1,
+                "pushed_out_sample_ids": [
+                  "slurp:devel:015414:audio-1499265566"
+                ]
+              },
+              "LIN-0.50": {
+                "correct_dispatched_pushed_out": 2,
+                "net_rank_level": -1,
+                "newly_reachable_sample_ids": [
+                  "slurp:devel:001085:audio-1490103635-headset"
+                ],
+                "newly_reachable_wrong_dispatched": 1,
+                "pushed_out_sample_ids": [
+                  "slurp:devel:012055:audio-1494512213",
+                  "slurp:devel:015414:audio-1499265566"
+                ]
+              },
+              "LIN-0.75": {
+                "correct_dispatched_pushed_out": 3,
+                "net_rank_level": -2,
+                "newly_reachable_sample_ids": [
+                  "slurp:devel:001085:audio-1490103635-headset"
+                ],
+                "newly_reachable_wrong_dispatched": 1,
+                "pushed_out_sample_ids": [
+                  "slurp:devel:005989:audio-1497621031",
+                  "slurp:devel:012055:audio-1494512213",
+                  "slurp:devel:015414:audio-1499265566"
+                ]
+              },
+              "RRF-60": {
+                "correct_dispatched_pushed_out": 2,
+                "net_rank_level": -1,
+                "newly_reachable_sample_ids": [
+                  "slurp:devel:001085:audio-1490103635-headset"
+                ],
+                "newly_reachable_wrong_dispatched": 1,
+                "pushed_out_sample_ids": [
+                  "slurp:devel:013522:audio-1494607289",
+                  "slurp:devel:015414:audio-1499265566"
+                ]
+              },
+              "TIEBREAK": {
+                "correct_dispatched_pushed_out": 0,
+                "net_rank_level": 0,
+                "newly_reachable_sample_ids": [],
+                "newly_reachable_wrong_dispatched": 0,
+                "pushed_out_sample_ids": []
+              }
+            },
+            "window": 5,
+            "wrong_dispatched_with_gold_outside_window": 12
+          },
+          "recall_table": {
+            "DENSE-ONLY": {
+              "median_position": 1,
+              "recall_at_1": {
+                "count": 62,
+                "rate": 0.62
+              },
+              "recall_at_3": {
+                "count": 69,
+                "rate": 0.69
+              },
+              "recall_at_5": {
+                "count": 71,
+                "rate": 0.71
+              },
+              "recall_at_8": {
+                "count": 74,
+                "rate": 0.74
+              }
+            },
+            "LIN-0.25": {
+              "median_position": 1,
+              "recall_at_1": {
+                "count": 57,
+                "rate": 0.57
+              },
+              "recall_at_3": {
+                "count": 67,
+                "rate": 0.67
+              },
+              "recall_at_5": {
+                "count": 71,
+                "rate": 0.71
+              },
+              "recall_at_8": {
+                "count": 75,
+                "rate": 0.75
+              }
+            },
+            "LIN-0.50": {
+              "median_position": 3,
+              "recall_at_1": {
+                "count": 46,
+                "rate": 0.46
+              },
+              "recall_at_3": {
+                "count": 57,
+                "rate": 0.57
+              },
+              "recall_at_5": {
+                "count": 64,
+                "rate": 0.64
+              },
+              "recall_at_8": {
+                "count": 70,
+                "rate": 0.7
+              }
+            },
+            "LIN-0.75": {
+              "median_position": 3,
+              "recall_at_1": {
+                "count": 39,
+                "rate": 0.39
+              },
+              "recall_at_3": {
+                "count": 53,
+                "rate": 0.53
+              },
+              "recall_at_5": {
+                "count": 56,
+                "rate": 0.56
+              },
+              "recall_at_8": {
+                "count": 64,
+                "rate": 0.64
+              }
+            },
+            "RRF-60": {
+              "median_position": 1,
+              "recall_at_1": {
+                "count": 63,
+                "rate": 0.63
+              },
+              "recall_at_3": {
+                "count": 66,
+                "rate": 0.66
+              },
+              "recall_at_5": {
+                "count": 70,
+                "rate": 0.7
+              },
+              "recall_at_8": {
+                "count": 73,
+                "rate": 0.73
+              }
+            },
+            "TIEBREAK": {
+              "median_position": 1,
+              "recall_at_1": {
+                "count": 62,
+                "rate": 0.62
+              },
+              "recall_at_3": {
+                "count": 69,
+                "rate": 0.69
+              },
+              "recall_at_5": {
+                "count": 71,
+                "rate": 0.71
+              },
+              "recall_at_8": {
+                "count": 74,
+                "rate": 0.74
+              }
+            }
+          },
+          "samples_with_any_exact_cosine_tie": 100,
+          "samples_with_empty_lexical_channel": 0,
+          "timing": {
+            "dense_cosine_seconds_per_sample": 0.0016584731302282307,
+            "dense_cosine_seconds_total": 0.16584731302282307,
+            "dense_position_agreement_with_imported_replay": 100,
+            "lexical_scoring_seconds_per_sample": 9.338646996184252e-05,
+            "lexical_scoring_seconds_total": 0.009338646996184252
+          }
+        },
+        "Q-VAL": {
+          "lexical_channel_alone_top1_is_gold": 41,
+          "mean_lexically_touched_facets": 622.64,
+          "mean_query_tokens": 4.29,
+          "native_second_dimension": {
+            "admitted_by_the_lexical_dimension_alone": 236,
+            "agreement": {
+              "after_dims_total_observed": [
+                3,
+                4
+              ],
+              "agreement_values_now_reachable": [
+                0.25,
+                0.5
+              ],
+              "before": "every facet carries exactly ONE dimension, dims_total is 3, agreement is a constant 1/3 for every candidate, and the ranker's score is the affine map 0.5*cos + 0.0667",
+              "candidate_facets_dims_hit_2": 63,
+              "candidate_facets_dims_hit_2_rate": 0.03293256664924203,
+              "candidate_facets_total": 1913,
+              "reading": "with two content dimensions live, agreement takes two distinct values instead of one, so w_agree is no longer multiplying a constant and the rank-weight family is structurally non-degenerate; whether that BUYS anything is the separate accuracy question this gate also answers",
+              "samples": 100,
+              "samples_with_at_least_one_two_dimension_candidate": 43,
+              "score_separation_at_equal_max_signal": 0.05,
+              "top_m_candidates_dims_hit_2": 63,
+              "top_m_candidates_dims_hit_2_rate": 0.126,
+              "top_m_candidates_total": 500
+            },
+            "conversion_projection": {
+              "anchors": {
+                "absent": 0.0,
+                "fused_rank_2_or_3": 0.6956521739130435,
+                "fused_rank_4_plus_EXTRAPOLATED": 0.4928936497934608,
+                "fused_top1": 0.9818181818181818
+              },
+              "changed_priced_at_the_unanchored_rank": 0,
+              "changed_trajectories": 32,
+              "construction": "a trajectory that RETAINS under the hybrid carries its own direct decode's score EXACTLY; a dispatched trajectory whose supplied set is byte-identical to the flown one carries its sealed outcome EXACTLY; only a dispatched trajectory whose supply CHANGED is priced, at the measured anchor for wherever gold sits under the hybrid, symmetrically for currently-correct and currently-wrong trajectories",
+              "delta_pp_central": -1.5446640316205276,
+              "delta_pp_optimistic": 1.9636363636363683,
+              "delta_pp_pessimistic": -6.898410698032592,
+              "exact_outcomes_identical_supply": 5,
+              "exact_outcomes_retained_trajectories": 63,
+              "n": 100,
+              "projected_central": 70.45533596837947,
+              "projected_optimistic": 73.96363636363637,
+              "projected_pessimistic": 65.10158930196741,
+              "sealed_baseline_correct": 72,
+              "sealed_baseline_rate": 0.72,
+              "variance_prior": "DEV-100 round-5 replication: plus-minus 2 per 100 at 8-slot decode"
+            },
+            "gate": {
+              "baseline_arm_gate_passed": true,
+              "baseline_arm_supply_reproduces_imported_replay": 100,
+              "hybrid_fuse_seconds_per_sample": 0.004169050550408429,
+              "hybrid_fuse_seconds_total": 0.41690505504084285,
+              "single_dimension_degeneracy_checked": 100,
+              "single_dimension_degeneracy_confirmed": true,
+              "single_dimension_degeneracy_violations": []
+            },
+            "supply_delta": {
+              "dispatch_decision_flips_vs_flown": 0,
+              "dispatch_flip_sample_ids": [],
+              "lost_gold_supply_currently_correct": 5,
+              "lost_gold_supply_sample_ids": [
+                "slurp:devel:003956:audio-1501753591-headset",
+                "slurp:devel:007381:audio-1501686582-headset",
+                "slurp:devel:010548:audio-1499697772",
+                "slurp:devel:013522:audio-1494607289",
+                "slurp:devel:015414:audio-1499265566"
+              ],
+              "newly_gold_supplied_currently_wrong": 1,
+              "newly_gold_supplied_sample_ids": [
+                "slurp:devel:006176:audio-1492780408"
+              ],
+              "supply_changed": 95,
+              "supply_unchanged": 5
+            }
+          },
+          "newly_reachable": {
+            "correct_dispatched_with_gold_inside_window": 23,
+            "dispatched_flown": 37,
+            "per_rule": {
+              "DENSE-ONLY": {
+                "correct_dispatched_pushed_out": 0,
+                "net_rank_level": 0,
+                "newly_reachable_sample_ids": [],
+                "newly_reachable_wrong_dispatched": 0,
+                "pushed_out_sample_ids": []
+              },
+              "LIN-0.25": {
+                "correct_dispatched_pushed_out": 1,
+                "net_rank_level": -1,
+                "newly_reachable_sample_ids": [],
+                "newly_reachable_wrong_dispatched": 0,
+                "pushed_out_sample_ids": [
+                  "slurp:devel:015414:audio-1499265566"
+                ]
+              },
+              "LIN-0.50": {
+                "correct_dispatched_pushed_out": 2,
+                "net_rank_level": -2,
+                "newly_reachable_sample_ids": [],
+                "newly_reachable_wrong_dispatched": 0,
+                "pushed_out_sample_ids": [
+                  "slurp:devel:013522:audio-1494607289",
+                  "slurp:devel:015414:audio-1499265566"
+                ]
+              },
+              "LIN-0.75": {
+                "correct_dispatched_pushed_out": 2,
+                "net_rank_level": -2,
+                "newly_reachable_sample_ids": [],
+                "newly_reachable_wrong_dispatched": 0,
+                "pushed_out_sample_ids": [
+                  "slurp:devel:013522:audio-1494607289",
+                  "slurp:devel:015414:audio-1499265566"
+                ]
+              },
+              "RRF-60": {
+                "correct_dispatched_pushed_out": 2,
+                "net_rank_level": -2,
+                "newly_reachable_sample_ids": [],
+                "newly_reachable_wrong_dispatched": 0,
+                "pushed_out_sample_ids": [
+                  "slurp:devel:013522:audio-1494607289",
+                  "slurp:devel:015414:audio-1499265566"
+                ]
+              },
+              "TIEBREAK": {
+                "correct_dispatched_pushed_out": 0,
+                "net_rank_level": 0,
+                "newly_reachable_sample_ids": [],
+                "newly_reachable_wrong_dispatched": 0,
+                "pushed_out_sample_ids": []
+              }
+            },
+            "window": 5,
+            "wrong_dispatched_with_gold_outside_window": 12
+          },
+          "recall_table": {
+            "DENSE-ONLY": {
+              "median_position": 1,
+              "recall_at_1": {
+                "count": 62,
+                "rate": 0.62
+              },
+              "recall_at_3": {
+                "count": 69,
+                "rate": 0.69
+              },
+              "recall_at_5": {
+                "count": 71,
+                "rate": 0.71
+              },
+              "recall_at_8": {
+                "count": 74,
+                "rate": 0.74
+              }
+            },
+            "LIN-0.25": {
+              "median_position": 1,
+              "recall_at_1": {
+                "count": 56,
+                "rate": 0.56
+              },
+              "recall_at_3": {
+                "count": 66,
+                "rate": 0.66
+              },
+              "recall_at_5": {
+                "count": 70,
+                "rate": 0.7
+              },
+              "recall_at_8": {
+                "count": 72,
+                "rate": 0.72
+              }
+            },
+            "LIN-0.50": {
+              "median_position": 2,
+              "recall_at_1": {
+                "count": 44,
+                "rate": 0.44
+              },
+              "recall_at_3": {
+                "count": 61,
+                "rate": 0.61
+              },
+              "recall_at_5": {
+                "count": 65,
+                "rate": 0.65
+              },
+              "recall_at_8": {
+                "count": 71,
+                "rate": 0.71
+              }
+            },
+            "LIN-0.75": {
+              "median_position": 3,
+              "recall_at_1": {
+                "count": 42,
+                "rate": 0.42
+              },
+              "recall_at_3": {
+                "count": 52,
+                "rate": 0.52
+              },
+              "recall_at_5": {
+                "count": 65,
+                "rate": 0.65
+              },
+              "recall_at_8": {
+                "count": 69,
+                "rate": 0.69
+              }
+            },
+            "RRF-60": {
+              "median_position": 1,
+              "recall_at_1": {
+                "count": 62,
+                "rate": 0.62
+              },
+              "recall_at_3": {
+                "count": 64,
+                "rate": 0.64
+              },
+              "recall_at_5": {
+                "count": 68,
+                "rate": 0.68
+              },
+              "recall_at_8": {
+                "count": 72,
+                "rate": 0.72
+              }
+            },
+            "TIEBREAK": {
+              "median_position": 1,
+              "recall_at_1": {
+                "count": 62,
+                "rate": 0.62
+              },
+              "recall_at_3": {
+                "count": 69,
+                "rate": 0.69
+              },
+              "recall_at_5": {
+                "count": 71,
+                "rate": 0.71
+              },
+              "recall_at_8": {
+                "count": 74,
+                "rate": 0.74
+              }
+            }
+          },
+          "samples_with_any_exact_cosine_tie": 100,
+          "samples_with_empty_lexical_channel": 1,
+          "timing": {
+            "dense_cosine_seconds_per_sample": 0.0013473566398897673,
+            "dense_cosine_seconds_total": 0.13473566398897674,
+            "dense_position_agreement_with_imported_replay": 100,
+            "lexical_scoring_seconds_per_sample": 8.228171878727153e-05,
+            "lexical_scoring_seconds_total": 0.008228171878727153
+          }
+        }
+      },
+      "flight_replay_gate": {
+        "committed_anchor_gate_passed": true,
+        "committed_correct_count": 72,
+        "committed_report_sha256": "42fa837582f5f9e129348d4ecc8324c56db62a754728048126c319666a997f1e",
+        "committed_retain_primary_samples": 63,
+        "cosine_agreement_probes_vs_kb_policy": 900,
+        "dispatched_samples": 37,
+        "population": "DEV-100-ROUND4",
+        "replayed_retain_primary_samples": 63,
+        "rescored_correct_count": 72,
+        "retain_dispatch_decision_matches": 100,
+        "retain_dispatch_decision_mismatches": [],
+        "retain_dispatch_gate_passed": true,
+        "samples": 100,
+        "supply_exact_matches": 37,
+        "supply_gate_passed": true,
+        "supply_mismatches": [],
+        "vectorised_recall_probes_vs_kb_multidim_recall": 8
+      },
+      "pin": {
+        "attempt_id": "attempt-20260824T181942Z-dev100r4",
+        "n": 100,
+        "outputs": "round4-outputs.jsonl",
+        "restrict_to": null,
+        "run_id": "SAEA-DEV100-KB-ALPHA-BLEND-CAMPAIGN"
+      },
+      "query_text_identity": {
+        "direct_text_matches_flown_query_digest": 100,
+        "passed": true,
+        "samples": 100
+      }
+    },
+    "DEV-100-ROUND5": {
+      "artifact_hashes": {
+        "SAEA-DEV100-KB-ALPHA-BLEND-CAMPAIGN.trace.jsonl": "49f4a4ce459d7aea1292c42b0155f164e7fd5e1946a586fa5cadac34bd22aefd",
+        "query-vectors.jsonl": "d6e107ae3850186754e2e55f4f55545593482d9eb641ee75457ab600d04c1ff7",
+        "round5-outputs.jsonl": "ae59981252ed78df03c5008ced927c1269928b98f33cc2e0cd7bcdecd8213c3e"
+      },
+      "by_query_normalization": {
+        "Q-RAW": {
+          "lexical_channel_alone_top1_is_gold": 38,
+          "mean_lexically_touched_facets": 563.96,
+          "mean_query_tokens": 8.5,
+          "native_second_dimension": {
+            "admitted_by_the_lexical_dimension_alone": 282,
+            "agreement": {
+              "after_dims_total_observed": [
+                4
+              ],
+              "agreement_values_now_reachable": [
+                0.25,
+                0.5
+              ],
+              "before": "every facet carries exactly ONE dimension, dims_total is 3, agreement is a constant 1/3 for every candidate, and the ranker's score is the affine map 0.5*cos + 0.0667",
+              "candidate_facets_dims_hit_2": 58,
+              "candidate_facets_dims_hit_2_rate": 0.029866117404737384,
+              "candidate_facets_total": 1942,
+              "reading": "with two content dimensions live, agreement takes two distinct values instead of one, so w_agree is no longer multiplying a constant and the rank-weight family is structurally non-degenerate; whether that BUYS anything is the separate accuracy question this gate also answers",
+              "samples": 100,
+              "samples_with_at_least_one_two_dimension_candidate": 37,
+              "score_separation_at_equal_max_signal": 0.05,
+              "top_m_candidates_dims_hit_2": 58,
+              "top_m_candidates_dims_hit_2_rate": 0.116,
+              "top_m_candidates_total": 500
+            },
+            "conversion_projection": {
+              "anchors": {
+                "absent": 0.0,
+                "fused_rank_2_or_3": 0.6956521739130435,
+                "fused_rank_4_plus_EXTRAPOLATED": 0.4928936497934608,
+                "fused_top1": 0.9818181818181818
+              },
+              "changed_priced_at_the_unanchored_rank": 0,
+              "changed_trajectories": 31,
+              "construction": "a trajectory that RETAINS under the hybrid carries its own direct decode's score EXACTLY; a dispatched trajectory whose supplied set is byte-identical to the flown one carries its sealed outcome EXACTLY; only a dispatched trajectory whose supply CHANGED is priced, at the measured anchor for wherever gold sits under the hybrid, symmetrically for currently-correct and currently-wrong trajectories",
+              "delta_pp_central": -1.4901185770750658,
+              "delta_pp_optimistic": 2.9454545454545524,
+              "delta_pp_pessimistic": -6.593642792130481,
+              "exact_outcomes_identical_supply": 2,
+              "exact_outcomes_retained_trajectories": 67,
+              "n": 100,
+              "projected_central": 70.50988142292493,
+              "projected_optimistic": 74.94545454545455,
+              "projected_pessimistic": 65.40635720786952,
+              "sealed_baseline_correct": 72,
+              "sealed_baseline_rate": 0.72,
+              "variance_prior": "DEV-100 round-5 replication: plus-minus 2 per 100 at 8-slot decode"
+            },
+            "gate": {
+              "baseline_arm_gate_passed": true,
+              "baseline_arm_supply_reproduces_imported_replay": 100,
+              "hybrid_fuse_seconds_per_sample": 0.005327673410210992,
+              "hybrid_fuse_seconds_total": 0.5327673410210991,
+              "single_dimension_degeneracy_checked": 100,
+              "single_dimension_degeneracy_confirmed": true,
+              "single_dimension_degeneracy_violations": []
+            },
+            "supply_delta": {
+              "dispatch_decision_flips_vs_flown": 0,
+              "dispatch_flip_sample_ids": [],
+              "lost_gold_supply_currently_correct": 7,
+              "lost_gold_supply_sample_ids": [
+                "slurp:devel:003895:audio-1501687710",
+                "slurp:devel:003956:audio-1501753591-headset",
+                "slurp:devel:005989:audio-1497621031",
+                "slurp:devel:007381:audio-1501686582-headset",
+                "slurp:devel:010548:audio-1499697772",
+                "slurp:devel:013522:audio-1494607289",
+                "slurp:devel:015414:audio-1499265566"
+              ],
+              "newly_gold_supplied_currently_wrong": 3,
+              "newly_gold_supplied_sample_ids": [
+                "slurp:devel:001085:audio-1490103635-headset",
+                "slurp:devel:005565:audio-1498570308",
+                "slurp:devel:006176:audio-1492780408"
+              ],
+              "supply_changed": 96,
+              "supply_unchanged": 4
+            }
+          },
+          "newly_reachable": {
+            "correct_dispatched_with_gold_inside_window": 20,
+            "dispatched_flown": 33,
+            "per_rule": {
+              "DENSE-ONLY": {
+                "correct_dispatched_pushed_out": 0,
+                "net_rank_level": 0,
+                "newly_reachable_sample_ids": [],
+                "newly_reachable_wrong_dispatched": 0,
+                "pushed_out_sample_ids": []
+              },
+              "LIN-0.25": {
+                "correct_dispatched_pushed_out": 1,
+                "net_rank_level": 0,
+                "newly_reachable_sample_ids": [
+                  "slurp:devel:001085:audio-1490103635-headset"
+                ],
+                "newly_reachable_wrong_dispatched": 1,
+                "pushed_out_sample_ids": [
+                  "slurp:devel:015414:audio-1499265566"
+                ]
+              },
+              "LIN-0.50": {
+                "correct_dispatched_pushed_out": 2,
+                "net_rank_level": -1,
+                "newly_reachable_sample_ids": [
+                  "slurp:devel:001085:audio-1490103635-headset"
+                ],
+                "newly_reachable_wrong_dispatched": 1,
+                "pushed_out_sample_ids": [
+                  "slurp:devel:012055:audio-1494512213",
+                  "slurp:devel:015414:audio-1499265566"
+                ]
+              },
+              "LIN-0.75": {
+                "correct_dispatched_pushed_out": 3,
+                "net_rank_level": -2,
+                "newly_reachable_sample_ids": [
+                  "slurp:devel:001085:audio-1490103635-headset"
+                ],
+                "newly_reachable_wrong_dispatched": 1,
+                "pushed_out_sample_ids": [
+                  "slurp:devel:005989:audio-1497621031",
+                  "slurp:devel:012055:audio-1494512213",
+                  "slurp:devel:015414:audio-1499265566"
+                ]
+              },
+              "RRF-60": {
+                "correct_dispatched_pushed_out": 2,
+                "net_rank_level": -1,
+                "newly_reachable_sample_ids": [
+                  "slurp:devel:001085:audio-1490103635-headset"
+                ],
+                "newly_reachable_wrong_dispatched": 1,
+                "pushed_out_sample_ids": [
+                  "slurp:devel:013522:audio-1494607289",
+                  "slurp:devel:015414:audio-1499265566"
+                ]
+              },
+              "TIEBREAK": {
+                "correct_dispatched_pushed_out": 0,
+                "net_rank_level": 0,
+                "newly_reachable_sample_ids": [],
+                "newly_reachable_wrong_dispatched": 0,
+                "pushed_out_sample_ids": []
+              }
+            },
+            "window": 5,
+            "wrong_dispatched_with_gold_outside_window": 11
+          },
+          "recall_table": {
+            "DENSE-ONLY": {
+              "median_position": 1,
+              "recall_at_1": {
+                "count": 63,
+                "rate": 0.63
+              },
+              "recall_at_3": {
+                "count": 68,
+                "rate": 0.68
+              },
+              "recall_at_5": {
+                "count": 70,
+                "rate": 0.7
+              },
+              "recall_at_8": {
+                "count": 73,
+                "rate": 0.73
+              }
+            },
+            "LIN-0.25": {
+              "median_position": 1,
+              "recall_at_1": {
+                "count": 58,
+                "rate": 0.58
+              },
+              "recall_at_3": {
+                "count": 68,
+                "rate": 0.68
+              },
+              "recall_at_5": {
+                "count": 71,
+                "rate": 0.71
+              },
+              "recall_at_8": {
+                "count": 75,
+                "rate": 0.75
+              }
+            },
+            "LIN-0.50": {
+              "median_position": 3,
+              "recall_at_1": {
+                "count": 47,
+                "rate": 0.47
+              },
+              "recall_at_3": {
+                "count": 57,
+                "rate": 0.57
+              },
+              "recall_at_5": {
+                "count": 64,
+                "rate": 0.64
+              },
+              "recall_at_8": {
+                "count": 70,
+                "rate": 0.7
+              }
+            },
+            "LIN-0.75": {
+              "median_position": 3,
+              "recall_at_1": {
+                "count": 40,
+                "rate": 0.4
+              },
+              "recall_at_3": {
+                "count": 53,
+                "rate": 0.53
+              },
+              "recall_at_5": {
+                "count": 56,
+                "rate": 0.56
+              },
+              "recall_at_8": {
+                "count": 64,
+                "rate": 0.64
+              }
+            },
+            "RRF-60": {
+              "median_position": 1,
+              "recall_at_1": {
+                "count": 64,
+                "rate": 0.64
+              },
+              "recall_at_3": {
+                "count": 67,
+                "rate": 0.67
+              },
+              "recall_at_5": {
+                "count": 71,
+                "rate": 0.71
+              },
+              "recall_at_8": {
+                "count": 73,
+                "rate": 0.73
+              }
+            },
+            "TIEBREAK": {
+              "median_position": 1,
+              "recall_at_1": {
+                "count": 63,
+                "rate": 0.63
+              },
+              "recall_at_3": {
+                "count": 68,
+                "rate": 0.68
+              },
+              "recall_at_5": {
+                "count": 70,
+                "rate": 0.7
+              },
+              "recall_at_8": {
+                "count": 73,
+                "rate": 0.73
+              }
+            }
+          },
+          "samples_with_any_exact_cosine_tie": 100,
+          "samples_with_empty_lexical_channel": 0,
+          "timing": {
+            "dense_cosine_seconds_per_sample": 0.0018607559196243528,
+            "dense_cosine_seconds_total": 0.18607559196243528,
+            "dense_position_agreement_with_imported_replay": 100,
+            "lexical_scoring_seconds_per_sample": 9.895935960230418e-05,
+            "lexical_scoring_seconds_total": 0.009895935960230418
+          }
+        },
+        "Q-VAL": {
+          "lexical_channel_alone_top1_is_gold": 42,
+          "mean_lexically_touched_facets": 555.43,
+          "mean_query_tokens": 4.13,
+          "native_second_dimension": {
+            "admitted_by_the_lexical_dimension_alone": 228,
+            "agreement": {
+              "after_dims_total_observed": [
+                3,
+                4
+              ],
+              "agreement_values_now_reachable": [
+                0.25,
+                0.5
+              ],
+              "before": "every facet carries exactly ONE dimension, dims_total is 3, agreement is a constant 1/3 for every candidate, and the ranker's score is the affine map 0.5*cos + 0.0667",
+              "candidate_facets_dims_hit_2": 65,
+              "candidate_facets_dims_hit_2_rate": 0.034013605442176874,
+              "candidate_facets_total": 1911,
+              "reading": "with two content dimensions live, agreement takes two distinct values instead of one, so w_agree is no longer multiplying a constant and the rank-weight family is structurally non-degenerate; whether that BUYS anything is the separate accuracy question this gate also answers",
+              "samples": 100,
+              "samples_with_at_least_one_two_dimension_candidate": 42,
+              "score_separation_at_equal_max_signal": 0.05,
+              "top_m_candidates_dims_hit_2": 65,
+              "top_m_candidates_dims_hit_2_rate": 0.13,
+              "top_m_candidates_total": 500
+            },
+            "conversion_projection": {
+              "anchors": {
+                "absent": 0.0,
+                "fused_rank_2_or_3": 0.6956521739130435,
+                "fused_rank_4_plus_EXTRAPOLATED": 0.4928936497934608,
+                "fused_top1": 0.9818181818181818
+              },
+              "changed_priced_at_the_unanchored_rank": 0,
+              "changed_trajectories": 28,
+              "construction": "a trajectory that RETAINS under the hybrid carries its own direct decode's score EXACTLY; a dispatched trajectory whose supplied set is byte-identical to the flown one carries its sealed outcome EXACTLY; only a dispatched trajectory whose supply CHANGED is priced, at the measured anchor for wherever gold sits under the hybrid, symmetrically for currently-correct and currently-wrong trajectories",
+              "delta_pp_central": -1.4901185770750658,
+              "delta_pp_optimistic": 1.9636363636363683,
+              "delta_pp_pessimistic": -5.985367219771717,
+              "exact_outcomes_identical_supply": 5,
+              "exact_outcomes_retained_trajectories": 67,
+              "n": 100,
+              "projected_central": 70.50988142292493,
+              "projected_optimistic": 73.96363636363637,
+              "projected_pessimistic": 66.01463278022828,
+              "sealed_baseline_correct": 72,
+              "sealed_baseline_rate": 0.72,
+              "variance_prior": "DEV-100 round-5 replication: plus-minus 2 per 100 at 8-slot decode"
+            },
+            "gate": {
+              "baseline_arm_gate_passed": true,
+              "baseline_arm_supply_reproduces_imported_replay": 100,
+              "hybrid_fuse_seconds_per_sample": 0.004286380029661814,
+              "hybrid_fuse_seconds_total": 0.4286380029661814,
+              "single_dimension_degeneracy_checked": 100,
+              "single_dimension_degeneracy_confirmed": true,
+              "single_dimension_degeneracy_violations": []
+            },
+            "supply_delta": {
+              "dispatch_decision_flips_vs_flown": 0,
+              "dispatch_flip_sample_ids": [],
+              "lost_gold_supply_currently_correct": 5,
+              "lost_gold_supply_sample_ids": [
+                "slurp:devel:003956:audio-1501753591-headset",
+                "slurp:devel:007381:audio-1501686582-headset",
+                "slurp:devel:010548:audio-1499697772",
+                "slurp:devel:013522:audio-1494607289",
+                "slurp:devel:015414:audio-1499265566"
+              ],
+              "newly_gold_supplied_currently_wrong": 1,
+              "newly_gold_supplied_sample_ids": [
+                "slurp:devel:006176:audio-1492780408"
+              ],
+              "supply_changed": 94,
+              "supply_unchanged": 6
+            }
+          },
+          "newly_reachable": {
+            "correct_dispatched_with_gold_inside_window": 20,
+            "dispatched_flown": 33,
+            "per_rule": {
+              "DENSE-ONLY": {
+                "correct_dispatched_pushed_out": 0,
+                "net_rank_level": 0,
+                "newly_reachable_sample_ids": [],
+                "newly_reachable_wrong_dispatched": 0,
+                "pushed_out_sample_ids": []
+              },
+              "LIN-0.25": {
+                "correct_dispatched_pushed_out": 1,
+                "net_rank_level": -1,
+                "newly_reachable_sample_ids": [],
+                "newly_reachable_wrong_dispatched": 0,
+                "pushed_out_sample_ids": [
+                  "slurp:devel:015414:audio-1499265566"
+                ]
+              },
+              "LIN-0.50": {
+                "correct_dispatched_pushed_out": 2,
+                "net_rank_level": -2,
+                "newly_reachable_sample_ids": [],
+                "newly_reachable_wrong_dispatched": 0,
+                "pushed_out_sample_ids": [
+                  "slurp:devel:013522:audio-1494607289",
+                  "slurp:devel:015414:audio-1499265566"
+                ]
+              },
+              "LIN-0.75": {
+                "correct_dispatched_pushed_out": 2,
+                "net_rank_level": -2,
+                "newly_reachable_sample_ids": [],
+                "newly_reachable_wrong_dispatched": 0,
+                "pushed_out_sample_ids": [
+                  "slurp:devel:013522:audio-1494607289",
+                  "slurp:devel:015414:audio-1499265566"
+                ]
+              },
+              "RRF-60": {
+                "correct_dispatched_pushed_out": 2,
+                "net_rank_level": -2,
+                "newly_reachable_sample_ids": [],
+                "newly_reachable_wrong_dispatched": 0,
+                "pushed_out_sample_ids": [
+                  "slurp:devel:013522:audio-1494607289",
+                  "slurp:devel:015414:audio-1499265566"
+                ]
+              },
+              "TIEBREAK": {
+                "correct_dispatched_pushed_out": 0,
+                "net_rank_level": 0,
+                "newly_reachable_sample_ids": [],
+                "newly_reachable_wrong_dispatched": 0,
+                "pushed_out_sample_ids": []
+              }
+            },
+            "window": 5,
+            "wrong_dispatched_with_gold_outside_window": 11
+          },
+          "recall_table": {
+            "DENSE-ONLY": {
+              "median_position": 1,
+              "recall_at_1": {
+                "count": 63,
+                "rate": 0.63
+              },
+              "recall_at_3": {
+                "count": 68,
+                "rate": 0.68
+              },
+              "recall_at_5": {
+                "count": 70,
+                "rate": 0.7
+              },
+              "recall_at_8": {
+                "count": 73,
+                "rate": 0.73
+              }
+            },
+            "LIN-0.25": {
+              "median_position": 1,
+              "recall_at_1": {
+                "count": 57,
+                "rate": 0.57
+              },
+              "recall_at_3": {
+                "count": 67,
+                "rate": 0.67
+              },
+              "recall_at_5": {
+                "count": 70,
+                "rate": 0.7
+              },
+              "recall_at_8": {
+                "count": 72,
+                "rate": 0.72
+              }
+            },
+            "LIN-0.50": {
+              "median_position": 2,
+              "recall_at_1": {
+                "count": 45,
+                "rate": 0.45
+              },
+              "recall_at_3": {
+                "count": 61,
+                "rate": 0.61
+              },
+              "recall_at_5": {
+                "count": 65,
+                "rate": 0.65
+              },
+              "recall_at_8": {
+                "count": 71,
+                "rate": 0.71
+              }
+            },
+            "LIN-0.75": {
+              "median_position": 3,
+              "recall_at_1": {
+                "count": 42,
+                "rate": 0.42
+              },
+              "recall_at_3": {
+                "count": 52,
+                "rate": 0.52
+              },
+              "recall_at_5": {
+                "count": 65,
+                "rate": 0.65
+              },
+              "recall_at_8": {
+                "count": 69,
+                "rate": 0.69
+              }
+            },
+            "RRF-60": {
+              "median_position": 1,
+              "recall_at_1": {
+                "count": 63,
+                "rate": 0.63
+              },
+              "recall_at_3": {
+                "count": 65,
+                "rate": 0.65
+              },
+              "recall_at_5": {
+                "count": 69,
+                "rate": 0.69
+              },
+              "recall_at_8": {
+                "count": 72,
+                "rate": 0.72
+              }
+            },
+            "TIEBREAK": {
+              "median_position": 1,
+              "recall_at_1": {
+                "count": 63,
+                "rate": 0.63
+              },
+              "recall_at_3": {
+                "count": 68,
+                "rate": 0.68
+              },
+              "recall_at_5": {
+                "count": 70,
+                "rate": 0.7
+              },
+              "recall_at_8": {
+                "count": 73,
+                "rate": 0.73
+              }
+            }
+          },
+          "samples_with_any_exact_cosine_tie": 100,
+          "samples_with_empty_lexical_channel": 1,
+          "timing": {
+            "dense_cosine_seconds_per_sample": 0.0017629484899225644,
+            "dense_cosine_seconds_total": 0.17629484899225645,
+            "dense_position_agreement_with_imported_replay": 100,
+            "lexical_scoring_seconds_per_sample": 8.679017948452383e-05,
+            "lexical_scoring_seconds_total": 0.008679017948452383
+          }
+        }
+      },
+      "flight_replay_gate": {
+        "committed_anchor_gate_passed": true,
+        "committed_correct_count": 72,
+        "committed_report_sha256": "482d33bde5fe4ff7a522f8ca5e2b4fd7f02f3a87a6113f682c6218f3256e4d71",
+        "committed_retain_primary_samples": 67,
+        "cosine_agreement_probes_vs_kb_policy": 900,
+        "dispatched_samples": 33,
+        "population": "DEV-100-ROUND5",
+        "replayed_retain_primary_samples": 67,
+        "rescored_correct_count": 72,
+        "retain_dispatch_decision_matches": 100,
+        "retain_dispatch_decision_mismatches": [],
+        "retain_dispatch_gate_passed": true,
+        "samples": 100,
+        "supply_exact_matches": 33,
+        "supply_gate_passed": true,
+        "supply_mismatches": [],
+        "vectorised_recall_probes_vs_kb_multidim_recall": 8
+      },
+      "pin": {
+        "attempt_id": "attempt-20260824T190029Z-dev100r5",
+        "n": 100,
+        "outputs": "round5-outputs.jsonl",
+        "restrict_to": null,
+        "run_id": "SAEA-DEV100-KB-ALPHA-BLEND-CAMPAIGN"
+      },
+      "query_text_identity": {
+        "direct_text_matches_flown_query_digest": 100,
+        "passed": true,
+        "samples": 100
+      }
+    },
+    "DEV-1000-NEW500": {
+      "artifact_hashes": {
+        "SAEA-DEV1000-BASELINE-LOCK.trace.jsonl": "598780deb9ddb98842e503871206ef4afc33619c49162ae626f2858fa356d6df",
+        "arm2-blend-outputs.jsonl": "542a029adca8fb8daf3618e8a049aecdba1b04aba30eafedb67099fb6e08cf14",
+        "query-vectors.jsonl": "efcf948918e1b4f6c695998da21311d1fa766de57dbd84feedce5ae5ade11702"
+      },
+      "by_query_normalization": {
+        "Q-RAW": {
+          "fidelity_gate": {
+            "gold_absent_published": 0,
+            "gold_absent_recomputed": 0,
+            "n": 500,
+            "passed": true,
+            "rows": {
+              "recall_at_1": {
+                "match": true,
+                "published_count": 318,
+                "rate": 0.636,
+                "recomputed_count": 318
+              },
+              "recall_at_10": {
+                "match": true,
+                "published_count": 396,
+                "rate": 0.792,
+                "recomputed_count": 396
+              },
+              "recall_at_128": {
+                "match": true,
+                "published_count": 470,
+                "rate": 0.94,
+                "recomputed_count": 470
+              },
+              "recall_at_16": {
+                "match": true,
+                "published_count": 408,
+                "rate": 0.816,
+                "recomputed_count": 408
+              },
+              "recall_at_2": {
+                "match": true,
+                "published_count": 352,
+                "rate": 0.704,
+                "recomputed_count": 352
+              },
+              "recall_at_3": {
+                "match": true,
+                "published_count": 362,
+                "rate": 0.724,
+                "recomputed_count": 362
+              },
+              "recall_at_32": {
+                "match": true,
+                "published_count": 433,
+                "rate": 0.866,
+                "recomputed_count": 433
+              },
+              "recall_at_5": {
+                "match": true,
+                "published_count": 372,
+                "rate": 0.744,
+                "recomputed_count": 372
+              },
+              "recall_at_64": {
+                "match": true,
+                "published_count": 443,
+                "rate": 0.886,
+                "recomputed_count": 443
+              },
+              "recall_at_8": {
+                "match": true,
+                "published_count": 389,
+                "rate": 0.778,
+                "recomputed_count": 389
+              }
+            },
+            "source": "docs/checks/speech-aware-evidence-acquisition/2026-08-25-dev1000-lock-read/read-verdict.json",
+            "source_sha256": "2f8e295852e1c09d737467a62123586f097f938ec353dcbe58d258dadc1ea581"
+          },
+          "lexical_channel_alone_top1_is_gold": 154,
+          "mean_lexically_touched_facets": 585.702,
+          "mean_query_tokens": 9.326,
+          "native_second_dimension": {
+            "admitted_by_the_lexical_dimension_alone": 1417,
+            "agreement": {
+              "after_dims_total_observed": [
+                4
+              ],
+              "agreement_values_now_reachable": [
+                0.25,
+                0.5
+              ],
+              "before": "every facet carries exactly ONE dimension, dims_total is 3, agreement is a constant 1/3 for every candidate, and the ranker's score is the affine map 0.5*cos + 0.0667",
+              "candidate_facets_dims_hit_2": 293,
+              "candidate_facets_dims_hit_2_rate": 0.030184403008138457,
+              "candidate_facets_total": 9707,
+              "reading": "with two content dimensions live, agreement takes two distinct values instead of one, so w_agree is no longer multiplying a constant and the rank-weight family is structurally non-degenerate; whether that BUYS anything is the separate accuracy question this gate also answers",
+              "samples": 500,
+              "samples_with_at_least_one_two_dimension_candidate": 181,
+              "score_separation_at_equal_max_signal": 0.05,
+              "top_m_candidates_dims_hit_2": 293,
+              "top_m_candidates_dims_hit_2_rate": 0.1172,
+              "top_m_candidates_total": 2500
+            },
+            "conversion_projection": {
+              "anchors": {
+                "absent": 0.0,
+                "fused_rank_2_or_3": 0.6956521739130435,
+                "fused_rank_4_plus_EXTRAPOLATED": 0.4928936497934608,
+                "fused_top1": 0.9818181818181818
+              },
+              "changed_priced_at_the_unanchored_rank": 0,
+              "changed_trajectories": 157,
+              "construction": "a trajectory that RETAINS under the hybrid carries its own direct decode's score EXACTLY; a dispatched trajectory whose supplied set is byte-identical to the flown one carries its sealed outcome EXACTLY; only a dispatched trajectory whose supply CHANGED is priced, at the measured anchor for wherever gold sits under the hybrid, symmetrically for currently-correct and currently-wrong trajectories",
+              "delta_pp_central": -2.696284584980242,
+              "delta_pp_optimistic": 3.5454545454545494,
+              "delta_pp_pessimistic": -6.213960652523997,
+              "exact_outcomes_identical_supply": 3,
+              "exact_outcomes_retained_trajectories": 340,
+              "n": 500,
+              "projected_central": 365.5185770750988,
+              "projected_optimistic": 396.72727272727275,
+              "projected_pessimistic": 347.93019673738,
+              "sealed_baseline_correct": 379,
+              "sealed_baseline_rate": 0.758,
+              "variance_prior": "DEV-100 round-5 replication: plus-minus 2 per 100 at 8-slot decode"
+            },
+            "gate": {
+              "baseline_arm_gate_passed": true,
+              "baseline_arm_supply_reproduces_imported_replay": 500,
+              "hybrid_fuse_seconds_per_sample": 0.004583323369821301,
+              "hybrid_fuse_seconds_total": 2.2916616849106504,
+              "single_dimension_degeneracy_checked": 500,
+              "single_dimension_degeneracy_confirmed": true,
+              "single_dimension_degeneracy_violations": []
+            },
+            "supply_delta": {
+              "dispatch_decision_flips_vs_flown": 3,
+              "dispatch_flip_sample_ids": [
+                "slurp:devel:002303:audio-1501690619-headset",
+                "slurp:devel:002955:audio-1495733256-headset",
+                "slurp:devel:014737:audio-1495376531"
+              ],
+              "lost_gold_supply_currently_correct": 40,
+              "lost_gold_supply_sample_ids": [
+                "slurp:devel:000167:audio-1500040331",
+                "slurp:devel:000536:audio--1506521123",
+                "slurp:devel:000697:audio-1490183964-headset",
+                "slurp:devel:001827:audio--1505405045",
+                "slurp:devel:001914:audio--1505406279",
+                "slurp:devel:002825:audio-1497192406-headset",
+                "slurp:devel:003242:audio-1490354415-headset",
+                "slurp:devel:003563:audio-1502218221-headset",
+                "slurp:devel:003609:audio-1502308405-headset",
+                "slurp:devel:004318:audio-1501756826",
+                "slurp:devel:004694:audio-1502200628-headset",
+                "slurp:devel:004779:audio-1497887646",
+                "slurp:devel:005546:audio-1500036710-headset",
+                "slurp:devel:005569:audio-1495734636-headset",
+                "slurp:devel:005824:audio-1501774564-headset",
+                "slurp:devel:006364:audio-1501688105-headset",
+                "slurp:devel:006827:audio-1490372159",
+                "slurp:devel:007035:audio-1488970054",
+                "slurp:devel:007969:audio-1497887183",
+                "slurp:devel:010458:audio-1501771821"
+              ],
+              "newly_gold_supplied_currently_wrong": 12,
+              "newly_gold_supplied_sample_ids": [
+                "slurp:devel:000415:audio-1502310078",
+                "slurp:devel:001058:audio-1490193456-headset",
+                "slurp:devel:002846:audio-1488987630",
+                "slurp:devel:003045:audio--1504192501-headset",
+                "slurp:devel:004551:audio-1499693621",
+                "slurp:devel:006120:audio-1502216164",
+                "slurp:devel:006821:audio-1488623318",
+                "slurp:devel:010457:audio-1488623074",
+                "slurp:devel:010775:audio-1488986119",
+                "slurp:devel:015207:audio-1495376659",
+                "slurp:devel:015581:audio-1492784542-headset",
+                "slurp:devel:015645:audio-1501698589-headset"
+              ],
+              "supply_changed": 488,
+              "supply_unchanged": 12
+            }
+          },
+          "newly_reachable": {
+            "correct_dispatched_with_gold_inside_window": 100,
+            "dispatched_flown": 163,
+            "per_rule": {
+              "DENSE-ONLY": {
+                "correct_dispatched_pushed_out": 0,
+                "net_rank_level": 0,
+                "newly_reachable_sample_ids": [],
+                "newly_reachable_wrong_dispatched": 0,
+                "pushed_out_sample_ids": []
+              },
+              "LIN-0.25": {
+                "correct_dispatched_pushed_out": 5,
+                "net_rank_level": 6,
+                "newly_reachable_sample_ids": [
+                  "slurp:devel:000710:audio-1497268159-headset",
+                  "slurp:devel:001058:audio-1490193456-headset",
+                  "slurp:devel:002846:audio-1488987630",
+                  "slurp:devel:005180:audio-1497886008",
+                  "slurp:devel:006120:audio-1502216164",
+                  "slurp:devel:008315:audio-1497361542",
+                  "slurp:devel:009778:audio-1502200615-headset",
+                  "slurp:devel:010775:audio-1488986119",
+                  "slurp:devel:015207:audio-1495376659",
+                  "slurp:devel:015581:audio-1492784542-headset",
+                  "slurp:devel:015645:audio-1501698589-headset"
+                ],
+                "newly_reachable_wrong_dispatched": 11,
+                "pushed_out_sample_ids": [
+                  "slurp:devel:007969:audio-1497887183",
+                  "slurp:devel:011212:audio-1490194476",
+                  "slurp:devel:011708:audio-1494512800",
+                  "slurp:devel:013354:audio-1502101965-headset",
+                  "slurp:devel:016290:audio-1490261125"
+                ]
+              },
+              "LIN-0.50": {
+                "correct_dispatched_pushed_out": 13,
+                "net_rank_level": -1,
+                "newly_reachable_sample_ids": [
+                  "slurp:devel:000710:audio-1497268159-headset",
+                  "slurp:devel:001058:audio-1490193456-headset",
+                  "slurp:devel:002846:audio-1488987630",
+                  "slurp:devel:003404:audio-1501173111",
+                  "slurp:devel:005180:audio-1497886008",
+                  "slurp:devel:006120:audio-1502216164",
+                  "slurp:devel:008315:audio-1497361542",
+                  "slurp:devel:009778:audio-1502200615-headset",
+                  "slurp:devel:010775:audio-1488986119",
+                  "slurp:devel:015207:audio-1495376659",
+                  "slurp:devel:015581:audio-1492784542-headset",
+                  "slurp:devel:015645:audio-1501698589-headset"
+                ],
+                "newly_reachable_wrong_dispatched": 12,
+                "pushed_out_sample_ids": [
+                  "slurp:devel:005546:audio-1500036710-headset",
+                  "slurp:devel:005569:audio-1495734636-headset",
+                  "slurp:devel:005824:audio-1501774564-headset",
+                  "slurp:devel:006364:audio-1501688105-headset",
+                  "slurp:devel:007969:audio-1497887183",
+                  "slurp:devel:011212:audio-1490194476",
+                  "slurp:devel:011708:audio-1494512800",
+                  "slurp:devel:011906:audio-1502377518-headset",
+                  "slurp:devel:012044:audio-1497860890-headset",
+                  "slurp:devel:013354:audio-1502101965-headset",
+                  "slurp:devel:014273:audio-1490183709",
+                  "slurp:devel:016290:audio-1490261125",
+                  "slurp:devel:016319:audio-1497864115-headset"
+                ]
+              },
+              "LIN-0.75": {
+                "correct_dispatched_pushed_out": 20,
+                "net_rank_level": -8,
+                "newly_reachable_sample_ids": [
+                  "slurp:devel:000710:audio-1497268159-headset",
+                  "slurp:devel:001058:audio-1490193456-headset",
+                  "slurp:devel:002846:audio-1488987630",
+                  "slurp:devel:003404:audio-1501173111",
+                  "slurp:devel:005180:audio-1497886008",
+                  "slurp:devel:006120:audio-1502216164",
+                  "slurp:devel:008315:audio-1497361542",
+                  "slurp:devel:009778:audio-1502200615-headset",
+                  "slurp:devel:010775:audio-1488986119",
+                  "slurp:devel:015207:audio-1495376659",
+                  "slurp:devel:015581:audio-1492784542-headset",
+                  "slurp:devel:015645:audio-1501698589-headset"
+                ],
+                "newly_reachable_wrong_dispatched": 12,
+                "pushed_out_sample_ids": [
+                  "slurp:devel:003563:audio-1502218221-headset",
+                  "slurp:devel:003609:audio-1502308405-headset",
+                  "slurp:devel:005546:audio-1500036710-headset",
+                  "slurp:devel:005569:audio-1495734636-headset",
+                  "slurp:devel:005824:audio-1501774564-headset",
+                  "slurp:devel:006364:audio-1501688105-headset",
+                  "slurp:devel:007035:audio-1488970054",
+                  "slurp:devel:007969:audio-1497887183",
+                  "slurp:devel:011212:audio-1490194476",
+                  "slurp:devel:011708:audio-1494512800",
+                  "slurp:devel:011906:audio-1502377518-headset",
+                  "slurp:devel:011945:audio-1497886384",
+                  "slurp:devel:011948:audio-1492784304",
+                  "slurp:devel:012044:audio-1497860890-headset",
+                  "slurp:devel:012095:audio-1490292324",
+                  "slurp:devel:013231:audio-1488987074",
+                  "slurp:devel:013354:audio-1502101965-headset",
+                  "slurp:devel:014273:audio-1490183709",
+                  "slurp:devel:016290:audio-1490261125",
+                  "slurp:devel:016319:audio-1497864115-headset"
+                ]
+              },
+              "RRF-60": {
+                "correct_dispatched_pushed_out": 2,
+                "net_rank_level": 4,
+                "newly_reachable_sample_ids": [
+                  "slurp:devel:000710:audio-1497268159-headset",
+                  "slurp:devel:001058:audio-1490193456-headset",
+                  "slurp:devel:006120:audio-1502216164",
+                  "slurp:devel:008315:audio-1497361542",
+                  "slurp:devel:010775:audio-1488986119",
+                  "slurp:devel:015645:audio-1501698589-headset"
+                ],
+                "newly_reachable_wrong_dispatched": 6,
+                "pushed_out_sample_ids": [
+                  "slurp:devel:011212:audio-1490194476",
+                  "slurp:devel:013354:audio-1502101965-headset"
+                ]
+              },
+              "TIEBREAK": {
+                "correct_dispatched_pushed_out": 0,
+                "net_rank_level": 0,
+                "newly_reachable_sample_ids": [],
+                "newly_reachable_wrong_dispatched": 0,
+                "pushed_out_sample_ids": []
+              }
+            },
+            "window": 5,
+            "wrong_dispatched_with_gold_outside_window": 51
+          },
+          "recall_table": {
+            "DENSE-ONLY": {
+              "median_position": 1,
+              "recall_at_1": {
+                "count": 318,
+                "rate": 0.636
+              },
+              "recall_at_3": {
+                "count": 362,
+                "rate": 0.724
+              },
+              "recall_at_5": {
+                "count": 372,
+                "rate": 0.744
+              },
+              "recall_at_8": {
+                "count": 389,
+                "rate": 0.778
+              }
+            },
+            "LIN-0.25": {
+              "median_position": 1,
+              "recall_at_1": {
+                "count": 284,
+                "rate": 0.568
+              },
+              "recall_at_3": {
+                "count": 338,
+                "rate": 0.676
+              },
+              "recall_at_5": {
+                "count": 373,
+                "rate": 0.746
+              },
+              "recall_at_8": {
+                "count": 390,
+                "rate": 0.78
+              }
+            },
+            "LIN-0.50": {
+              "median_position": 2,
+              "recall_at_1": {
+                "count": 224,
+                "rate": 0.448
+              },
+              "recall_at_3": {
+                "count": 291,
+                "rate": 0.582
+              },
+              "recall_at_5": {
+                "count": 337,
+                "rate": 0.674
+              },
+              "recall_at_8": {
+                "count": 377,
+                "rate": 0.754
+              }
+            },
+            "LIN-0.75": {
+              "median_position": 3,
+              "recall_at_1": {
+                "count": 192,
+                "rate": 0.384
+              },
+              "recall_at_3": {
+                "count": 263,
+                "rate": 0.526
+              },
+              "recall_at_5": {
+                "count": 297,
+                "rate": 0.594
+              },
+              "recall_at_8": {
+                "count": 336,
+                "rate": 0.672
+              }
+            },
+            "RRF-60": {
+              "median_position": 1,
+              "recall_at_1": {
+                "count": 295,
+                "rate": 0.59
+              },
+              "recall_at_3": {
+                "count": 359,
+                "rate": 0.718
+              },
+              "recall_at_5": {
+                "count": 381,
+                "rate": 0.762
+              },
+              "recall_at_8": {
+                "count": 388,
+                "rate": 0.776
+              }
+            },
+            "TIEBREAK": {
+              "median_position": 1,
+              "recall_at_1": {
+                "count": 318,
+                "rate": 0.636
+              },
+              "recall_at_3": {
+                "count": 362,
+                "rate": 0.724
+              },
+              "recall_at_5": {
+                "count": 372,
+                "rate": 0.744
+              },
+              "recall_at_8": {
+                "count": 389,
+                "rate": 0.778
+              }
+            }
+          },
+          "samples_with_any_exact_cosine_tie": 500,
+          "samples_with_empty_lexical_channel": 0,
+          "timing": {
+            "dense_cosine_seconds_per_sample": 0.0009845594918879215,
+            "dense_cosine_seconds_total": 0.49227974594396073,
+            "dense_position_agreement_with_imported_replay": 500,
+            "lexical_scoring_seconds_per_sample": 9.641670028213411e-05,
+            "lexical_scoring_seconds_total": 0.04820835014106706
+          }
+        },
+        "Q-VAL": {
+          "lexical_channel_alone_top1_is_gold": 200,
+          "mean_lexically_touched_facets": 576.67,
+          "mean_query_tokens": 4.642,
+          "native_second_dimension": {
+            "admitted_by_the_lexical_dimension_alone": 1235,
+            "agreement": {
+              "after_dims_total_observed": [
+                3,
+                4
+              ],
+              "agreement_values_now_reachable": [
+                0.25,
+                0.5
+              ],
+              "before": "every facet carries exactly ONE dimension, dims_total is 3, agreement is a constant 1/3 for every candidate, and the ranker's score is the affine map 0.5*cos + 0.0667",
+              "candidate_facets_dims_hit_2": 338,
+              "candidate_facets_dims_hit_2_rate": 0.03526711185308848,
+              "candidate_facets_total": 9584,
+              "reading": "with two content dimensions live, agreement takes two distinct values instead of one, so w_agree is no longer multiplying a constant and the rank-weight family is structurally non-degenerate; whether that BUYS anything is the separate accuracy question this gate also answers",
+              "samples": 500,
+              "samples_with_at_least_one_two_dimension_candidate": 217,
+              "score_separation_at_equal_max_signal": 0.05,
+              "top_m_candidates_dims_hit_2": 338,
+              "top_m_candidates_dims_hit_2_rate": 0.1352,
+              "top_m_candidates_total": 2500
+            },
+            "conversion_projection": {
+              "anchors": {
+                "absent": 0.0,
+                "fused_rank_2_or_3": 0.6956521739130435,
+                "fused_rank_4_plus_EXTRAPOLATED": 0.4928936497934608,
+                "fused_top1": 0.9818181818181818
+              },
+              "changed_priced_at_the_unanchored_rank": 0,
+              "changed_trajectories": 145,
+              "construction": "a trajectory that RETAINS under the hybrid carries its own direct decode's score EXACTLY; a dispatched trajectory whose supplied set is byte-identical to the flown one carries its sealed outcome EXACTLY; only a dispatched trajectory whose supply CHANGED is priced, at the measured anchor for wherever gold sits under the hybrid, symmetrically for currently-correct and currently-wrong trajectories",
+              "delta_pp_central": -0.7522529644268502,
+              "delta_pp_optimistic": 4.134545454545457,
+              "delta_pp_pessimistic": -4.527340194637008,
+              "exact_outcomes_identical_supply": 15,
+              "exact_outcomes_retained_trajectories": 340,
+              "n": 500,
+              "projected_central": 375.23873517786575,
+              "projected_optimistic": 399.6727272727273,
+              "projected_pessimistic": 356.36329902681496,
+              "sealed_baseline_correct": 379,
+              "sealed_baseline_rate": 0.758,
+              "variance_prior": "DEV-100 round-5 replication: plus-minus 2 per 100 at 8-slot decode"
+            },
+            "gate": {
+              "baseline_arm_gate_passed": true,
+              "baseline_arm_supply_reproduces_imported_replay": 500,
+              "hybrid_fuse_seconds_per_sample": 0.004215821045916527,
+              "hybrid_fuse_seconds_total": 2.1079105229582638,
+              "single_dimension_degeneracy_checked": 500,
+              "single_dimension_degeneracy_confirmed": true,
+              "single_dimension_degeneracy_violations": []
+            },
+            "supply_delta": {
+              "dispatch_decision_flips_vs_flown": 3,
+              "dispatch_flip_sample_ids": [
+                "slurp:devel:002303:audio-1501690619-headset",
+                "slurp:devel:002955:audio-1495733256-headset",
+                "slurp:devel:014737:audio-1495376531"
+              ],
+              "lost_gold_supply_currently_correct": 29,
+              "lost_gold_supply_sample_ids": [
+                "slurp:devel:000536:audio--1506521123",
+                "slurp:devel:000708:audio-1490110600",
+                "slurp:devel:001914:audio--1505406279",
+                "slurp:devel:002598:audio-1498575907",
+                "slurp:devel:002641:audio-1498568781",
+                "slurp:devel:003242:audio-1490354415-headset",
+                "slurp:devel:004318:audio-1501756826",
+                "slurp:devel:004694:audio-1502200628-headset",
+                "slurp:devel:004779:audio-1497887646",
+                "slurp:devel:005546:audio-1500036710-headset",
+                "slurp:devel:005569:audio-1495734636-headset",
+                "slurp:devel:005824:audio-1501774564-headset",
+                "slurp:devel:006364:audio-1501688105-headset",
+                "slurp:devel:007035:audio-1488970054",
+                "slurp:devel:010529:audio-1494415525",
+                "slurp:devel:011014:audio-1494548825",
+                "slurp:devel:011212:audio-1490194476",
+                "slurp:devel:011708:audio-1494512800",
+                "slurp:devel:011945:audio-1497886384",
+                "slurp:devel:012044:audio-1497860890-headset"
+              ],
+              "newly_gold_supplied_currently_wrong": 12,
+              "newly_gold_supplied_sample_ids": [
+                "slurp:devel:000415:audio-1502310078",
+                "slurp:devel:001058:audio-1490193456-headset",
+                "slurp:devel:002846:audio-1488987630",
+                "slurp:devel:003045:audio--1504192501-headset",
+                "slurp:devel:006120:audio-1502216164",
+                "slurp:devel:006821:audio-1488623318",
+                "slurp:devel:009778:audio-1502200615-headset",
+                "slurp:devel:010457:audio-1488623074",
+                "slurp:devel:010775:audio-1488986119",
+                "slurp:devel:015207:audio-1495376659",
+                "slurp:devel:015581:audio-1492784542-headset",
+                "slurp:devel:015645:audio-1501698589-headset"
+              ],
+              "supply_changed": 472,
+              "supply_unchanged": 28
+            }
+          },
+          "newly_reachable": {
+            "correct_dispatched_with_gold_inside_window": 100,
+            "dispatched_flown": 163,
+            "per_rule": {
+              "DENSE-ONLY": {
+                "correct_dispatched_pushed_out": 0,
+                "net_rank_level": 0,
+                "newly_reachable_sample_ids": [],
+                "newly_reachable_wrong_dispatched": 0,
+                "pushed_out_sample_ids": []
+              },
+              "LIN-0.25": {
+                "correct_dispatched_pushed_out": 4,
+                "net_rank_level": 6,
+                "newly_reachable_sample_ids": [
+                  "slurp:devel:000710:audio-1497268159-headset",
+                  "slurp:devel:001058:audio-1490193456-headset",
+                  "slurp:devel:005180:audio-1497886008",
+                  "slurp:devel:006120:audio-1502216164",
+                  "slurp:devel:008315:audio-1497361542",
+                  "slurp:devel:009778:audio-1502200615-headset",
+                  "slurp:devel:010775:audio-1488986119",
+                  "slurp:devel:015207:audio-1495376659",
+                  "slurp:devel:015581:audio-1492784542-headset",
+                  "slurp:devel:015645:audio-1501698589-headset"
+                ],
+                "newly_reachable_wrong_dispatched": 10,
+                "pushed_out_sample_ids": [
+                  "slurp:devel:000708:audio-1490110600",
+                  "slurp:devel:007969:audio-1497887183",
+                  "slurp:devel:011212:audio-1490194476",
+                  "slurp:devel:011708:audio-1494512800"
+                ]
+              },
+              "LIN-0.50": {
+                "correct_dispatched_pushed_out": 9,
+                "net_rank_level": 2,
+                "newly_reachable_sample_ids": [
+                  "slurp:devel:000710:audio-1497268159-headset",
+                  "slurp:devel:001058:audio-1490193456-headset",
+                  "slurp:devel:002846:audio-1488987630",
+                  "slurp:devel:005180:audio-1497886008",
+                  "slurp:devel:006120:audio-1502216164",
+                  "slurp:devel:008315:audio-1497361542",
+                  "slurp:devel:009778:audio-1502200615-headset",
+                  "slurp:devel:010775:audio-1488986119",
+                  "slurp:devel:015207:audio-1495376659",
+                  "slurp:devel:015581:audio-1492784542-headset",
+                  "slurp:devel:015645:audio-1501698589-headset"
+                ],
+                "newly_reachable_wrong_dispatched": 11,
+                "pushed_out_sample_ids": [
+                  "slurp:devel:000708:audio-1490110600",
+                  "slurp:devel:005569:audio-1495734636-headset",
+                  "slurp:devel:005824:audio-1501774564-headset",
+                  "slurp:devel:006364:audio-1501688105-headset",
+                  "slurp:devel:007969:audio-1497887183",
+                  "slurp:devel:011212:audio-1490194476",
+                  "slurp:devel:011708:audio-1494512800",
+                  "slurp:devel:014273:audio-1490183709",
+                  "slurp:devel:016319:audio-1497864115-headset"
+                ]
+              },
+              "LIN-0.75": {
+                "correct_dispatched_pushed_out": 14,
+                "net_rank_level": -3,
+                "newly_reachable_sample_ids": [
+                  "slurp:devel:000710:audio-1497268159-headset",
+                  "slurp:devel:001058:audio-1490193456-headset",
+                  "slurp:devel:002846:audio-1488987630",
+                  "slurp:devel:005180:audio-1497886008",
+                  "slurp:devel:006120:audio-1502216164",
+                  "slurp:devel:008315:audio-1497361542",
+                  "slurp:devel:009778:audio-1502200615-headset",
+                  "slurp:devel:010775:audio-1488986119",
+                  "slurp:devel:015207:audio-1495376659",
+                  "slurp:devel:015581:audio-1492784542-headset",
+                  "slurp:devel:015645:audio-1501698589-headset"
+                ],
+                "newly_reachable_wrong_dispatched": 11,
+                "pushed_out_sample_ids": [
+                  "slurp:devel:000708:audio-1490110600",
+                  "slurp:devel:005546:audio-1500036710-headset",
+                  "slurp:devel:005569:audio-1495734636-headset",
+                  "slurp:devel:005824:audio-1501774564-headset",
+                  "slurp:devel:006364:audio-1501688105-headset",
+                  "slurp:devel:007969:audio-1497887183",
+                  "slurp:devel:011212:audio-1490194476",
+                  "slurp:devel:011708:audio-1494512800",
+                  "slurp:devel:011948:audio-1492784304",
+                  "slurp:devel:012044:audio-1497860890-headset",
+                  "slurp:devel:012095:audio-1490292324",
+                  "slurp:devel:013231:audio-1488987074",
+                  "slurp:devel:014273:audio-1490183709",
+                  "slurp:devel:016319:audio-1497864115-headset"
+                ]
+              },
+              "RRF-60": {
+                "correct_dispatched_pushed_out": 2,
+                "net_rank_level": 4,
+                "newly_reachable_sample_ids": [
+                  "slurp:devel:000710:audio-1497268159-headset",
+                  "slurp:devel:001058:audio-1490193456-headset",
+                  "slurp:devel:006120:audio-1502216164",
+                  "slurp:devel:008315:audio-1497361542",
+                  "slurp:devel:010775:audio-1488986119",
+                  "slurp:devel:015645:audio-1501698589-headset"
+                ],
+                "newly_reachable_wrong_dispatched": 6,
+                "pushed_out_sample_ids": [
+                  "slurp:devel:000708:audio-1490110600",
+                  "slurp:devel:011212:audio-1490194476"
+                ]
+              },
+              "TIEBREAK": {
+                "correct_dispatched_pushed_out": 0,
+                "net_rank_level": 0,
+                "newly_reachable_sample_ids": [],
+                "newly_reachable_wrong_dispatched": 0,
+                "pushed_out_sample_ids": []
+              }
+            },
+            "window": 5,
+            "wrong_dispatched_with_gold_outside_window": 51
+          },
+          "recall_table": {
+            "DENSE-ONLY": {
+              "median_position": 1,
+              "recall_at_1": {
+                "count": 318,
+                "rate": 0.636
+              },
+              "recall_at_3": {
+                "count": 362,
+                "rate": 0.724
+              },
+              "recall_at_5": {
+                "count": 372,
+                "rate": 0.744
+              },
+              "recall_at_8": {
+                "count": 389,
+                "rate": 0.778
+              }
+            },
+            "LIN-0.25": {
+              "median_position": 1,
+              "recall_at_1": {
+                "count": 286,
+                "rate": 0.572
+              },
+              "recall_at_3": {
+                "count": 342,
+                "rate": 0.684
+              },
+              "recall_at_5": {
+                "count": 370,
+                "rate": 0.74
+              },
+              "recall_at_8": {
+                "count": 392,
+                "rate": 0.784
+              }
+            },
+            "LIN-0.50": {
+              "median_position": 2,
+              "recall_at_1": {
+                "count": 224,
+                "rate": 0.448
+              },
+              "recall_at_3": {
+                "count": 317,
+                "rate": 0.634
+              },
+              "recall_at_5": {
+                "count": 353,
+                "rate": 0.706
+              },
+              "recall_at_8": {
+                "count": 389,
+                "rate": 0.778
+              }
+            },
+            "LIN-0.75": {
+              "median_position": 2,
+              "recall_at_1": {
+                "count": 212,
+                "rate": 0.424
+              },
+              "recall_at_3": {
+                "count": 273,
+                "rate": 0.546
+              },
+              "recall_at_5": {
+                "count": 342,
+                "rate": 0.684
+              },
+              "recall_at_8": {
+                "count": 381,
+                "rate": 0.762
+              }
+            },
+            "RRF-60": {
+              "median_position": 1,
+              "recall_at_1": {
+                "count": 295,
+                "rate": 0.59
+              },
+              "recall_at_3": {
+                "count": 350,
+                "rate": 0.7
+              },
+              "recall_at_5": {
+                "count": 379,
+                "rate": 0.758
+              },
+              "recall_at_8": {
+                "count": 385,
+                "rate": 0.77
+              }
+            },
+            "TIEBREAK": {
+              "median_position": 1,
+              "recall_at_1": {
+                "count": 318,
+                "rate": 0.636
+              },
+              "recall_at_3": {
+                "count": 362,
+                "rate": 0.724
+              },
+              "recall_at_5": {
+                "count": 372,
+                "rate": 0.744
+              },
+              "recall_at_8": {
+                "count": 389,
+                "rate": 0.778
+              }
+            }
+          },
+          "samples_with_any_exact_cosine_tie": 500,
+          "samples_with_empty_lexical_channel": 1,
+          "timing": {
+            "dense_cosine_seconds_per_sample": 0.0012386534523102454,
+            "dense_cosine_seconds_total": 0.6193267261551227,
+            "dense_position_agreement_with_imported_replay": 500,
+            "lexical_scoring_seconds_per_sample": 8.854931429959833e-05,
+            "lexical_scoring_seconds_total": 0.04427465714979917
+          }
+        }
+      },
+      "flight_replay_gate": {
+        "cosine_agreement_probes_vs_kb_policy": 4500,
+        "dispatched_samples": 163,
+        "population": "DEV-1000-NEW500",
+        "retain_dispatch_decision_matches": 497,
+        "retain_dispatch_decision_mismatches": [
+          {
+            "logged_contacts": 2,
+            "replayed_contacts": 1,
+            "sample_id": "slurp:devel:002303:audio-1501690619-headset"
+          },
+          {
+            "logged_contacts": 2,
+            "replayed_contacts": 1,
+            "sample_id": "slurp:devel:002955:audio-1495733256-headset"
+          },
+          {
+            "logged_contacts": 2,
+            "replayed_contacts": 1,
+            "sample_id": "slurp:devel:014737:audio-1495376531"
+          }
+        ],
+        "retain_dispatch_gate_passed": false,
+        "samples": 500,
+        "supply_exact_matches": 163,
+        "supply_gate_passed": true,
+        "supply_mismatches": [],
+        "v2_override_deviation": {
+          "explanation": "the DEV-1000 BLEND arm flew the v2 delta>=0.14 retain-override, which the lock read FALSIFIED out of sample and which the locked v1 cell does not carry; the v1 replay therefore disagrees with the flown contact count on exactly the override fires",
+          "mismatches_all_explained_by_the_override": true,
+          "override_fires_in_population": 3,
+          "unexplained_mismatch_sample_ids": []
+        },
+        "vectorised_recall_probes_vs_kb_multidim_recall": 8
+      },
+      "pin": {
+        "attempt_id": "attempt-20260825T054707Z-dev1000blend",
+        "n": 500,
+        "outputs": "arm2-blend-outputs.jsonl",
+        "restrict_to": "new500",
+        "run_id": "SAEA-DEV1000-BASELINE-LOCK"
+      },
+      "query_text_identity": {
+        "direct_text_matches_flown_query_digest": 500,
+        "passed": true,
+        "samples": 500
+      }
+    },
+    "DEV-500-NEW400": {
+      "artifact_hashes": {
+        "SAEA-DEV500-CONFIRMATORY.trace.jsonl": "50577a2ef91d082660c8951083c17fb8719607a65c751be3050ecbbd2f0fa660",
+        "arm2-blend-outputs.jsonl": "3ae9fef0c75cbceb7d008115522df8854d0a0db473cd553c1c44f4b7200efe0b",
+        "query-vectors.jsonl": "cac3d37b4521bcb81ea8fc1c7a05692494119bc3fe23ecac85837a46c3b117bf"
+      },
+      "by_query_normalization": {
+        "Q-RAW": {
+          "fidelity_gate": {
+            "gold_absent_published": 0,
+            "gold_absent_recomputed": 0,
+            "n": 400,
+            "passed": true,
+            "rows": {
+              "recall_at_1": {
+                "match": true,
+                "published_count": 235,
+                "rate": 0.5875,
+                "recomputed_count": 235
+              },
+              "recall_at_10": {
+                "match": true,
+                "published_count": 305,
+                "rate": 0.7625,
+                "recomputed_count": 305
+              },
+              "recall_at_128": {
+                "match": true,
+                "published_count": 372,
+                "rate": 0.93,
+                "recomputed_count": 372
+              },
+              "recall_at_16": {
+                "match": true,
+                "published_count": 314,
+                "rate": 0.785,
+                "recomputed_count": 314
+              },
+              "recall_at_2": {
+                "match": true,
+                "published_count": 266,
+                "rate": 0.665,
+                "recomputed_count": 266
+              },
+              "recall_at_3": {
+                "match": true,
+                "published_count": 272,
+                "rate": 0.68,
+                "recomputed_count": 272
+              },
+              "recall_at_32": {
+                "match": true,
+                "published_count": 337,
+                "rate": 0.8425,
+                "recomputed_count": 337
+              },
+              "recall_at_5": {
+                "match": true,
+                "published_count": 286,
+                "rate": 0.715,
+                "recomputed_count": 286
+              },
+              "recall_at_64": {
+                "match": true,
+                "published_count": 353,
+                "rate": 0.8825,
+                "recomputed_count": 353
+              },
+              "recall_at_8": {
+                "match": true,
+                "published_count": 297,
+                "rate": 0.7425,
+                "recomputed_count": 297
+              }
+            },
+            "source": "docs/checks/speech-aware-evidence-acquisition/2026-08-24-dev500-confirmatory-read/read-verdict.json",
+            "source_sha256": "b3187fea6f23f637dfa8ac43718667b0286a5c034ea9304bfb03e7029bfc90a3"
+          },
+          "lexical_channel_alone_top1_is_gold": 148,
+          "mean_lexically_touched_facets": 561.595,
+          "mean_query_tokens": 9.21,
+          "native_second_dimension": {
+            "admitted_by_the_lexical_dimension_alone": 1116,
+            "agreement": {
+              "after_dims_total_observed": [
+                4
+              ],
+              "agreement_values_now_reachable": [
+                0.25,
+                0.5
+              ],
+              "before": "every facet carries exactly ONE dimension, dims_total is 3, agreement is a constant 1/3 for every candidate, and the ranker's score is the affine map 0.5*cos + 0.0667",
+              "candidate_facets_dims_hit_2": 242,
+              "candidate_facets_dims_hit_2_rate": 0.031193606599639084,
+              "candidate_facets_total": 7758,
+              "reading": "with two content dimensions live, agreement takes two distinct values instead of one, so w_agree is no longer multiplying a constant and the rank-weight family is structurally non-degenerate; whether that BUYS anything is the separate accuracy question this gate also answers",
+              "samples": 400,
+              "samples_with_at_least_one_two_dimension_candidate": 154,
+              "score_separation_at_equal_max_signal": 0.05,
+              "top_m_candidates_dims_hit_2": 242,
+              "top_m_candidates_dims_hit_2_rate": 0.121,
+              "top_m_candidates_total": 2000
+            },
+            "conversion_projection": {
+              "anchors": {
+                "absent": 0.0,
+                "fused_rank_2_or_3": 0.6956521739130435,
+                "fused_rank_4_plus_EXTRAPOLATED": 0.4928936497934608,
+                "fused_top1": 0.9818181818181818
+              },
+              "changed_priced_at_the_unanchored_rank": 0,
+              "changed_trajectories": 121,
+              "construction": "a trajectory that RETAINS under the hybrid carries its own direct decode's score EXACTLY; a dispatched trajectory whose supplied set is byte-identical to the flown one carries its sealed outcome EXACTLY; only a dispatched trajectory whose supply CHANGED is priced, at the measured anchor for wherever gold sits under the hybrid, symmetrically for currently-correct and currently-wrong trajectories",
+              "delta_pp_central": -1.8177865612649384,
+              "delta_pp_optimistic": 2.454545454545439,
+              "delta_pp_pessimistic": -6.021109010712081,
+              "exact_outcomes_identical_supply": 9,
+              "exact_outcomes_retained_trajectories": 270,
+              "n": 400,
+              "projected_central": 281.72885375494025,
+              "projected_optimistic": 298.81818181818176,
+              "projected_pessimistic": 264.9155639571517,
+              "sealed_baseline_correct": 289,
+              "sealed_baseline_rate": 0.7225,
+              "variance_prior": "DEV-100 round-5 replication: plus-minus 2 per 100 at 8-slot decode"
+            },
+            "gate": {
+              "baseline_arm_gate_passed": true,
+              "baseline_arm_supply_reproduces_imported_replay": 400,
+              "hybrid_fuse_seconds_per_sample": 0.004262547154976346,
+              "hybrid_fuse_seconds_total": 1.7050188619905384,
+              "single_dimension_degeneracy_checked": 400,
+              "single_dimension_degeneracy_confirmed": true,
+              "single_dimension_degeneracy_violations": []
+            },
+            "supply_delta": {
+              "dispatch_decision_flips_vs_flown": 0,
+              "dispatch_flip_sample_ids": [],
+              "lost_gold_supply_currently_correct": 21,
+              "lost_gold_supply_sample_ids": [
+                "slurp:devel:000885:audio-1502374975-headset",
+                "slurp:devel:001012:audio-1499266025-headset",
+                "slurp:devel:002978:audio--1506079306-headset",
+                "slurp:devel:003018:audio-1490006722-headset",
+                "slurp:devel:004094:audio--1504198522",
+                "slurp:devel:004693:audio--1504194915",
+                "slurp:devel:004850:audio--1504198708",
+                "slurp:devel:004853:audio-1502199738",
+                "slurp:devel:006389:audio-1490356484-headset",
+                "slurp:devel:008311:audio-1501152391",
+                "slurp:devel:008786:audio-1494418486",
+                "slurp:devel:009968:audio-1490182854",
+                "slurp:devel:010468:audio-1490193669",
+                "slurp:devel:010470:audio-1502309760-headset",
+                "slurp:devel:011196:audio-1502113804",
+                "slurp:devel:011732:audio-1490356897-headset",
+                "slurp:devel:011883:audio-1490183460-headset",
+                "slurp:devel:012217:audio-1501686754-headset",
+                "slurp:devel:012470:audio-1495375881",
+                "slurp:devel:012651:audio-1497029354"
+              ],
+              "newly_gold_supplied_currently_wrong": 11,
+              "newly_gold_supplied_sample_ids": [
+                "slurp:devel:001234:audio-1497883018",
+                "slurp:devel:001678:audio-1495369559",
+                "slurp:devel:001702:audio--1504190337-headset",
+                "slurp:devel:002095:audio-1498647562",
+                "slurp:devel:002740:audio-1502375547",
+                "slurp:devel:002834:audio--1504190332-headset",
+                "slurp:devel:004519:audio-1494608505-headset",
+                "slurp:devel:009228:audio-1502216594",
+                "slurp:devel:011745:audio-1501776434",
+                "slurp:devel:011899:audio-1499698236",
+                "slurp:devel:015475:audio-1502375901-headset"
+              ],
+              "supply_changed": 376,
+              "supply_unchanged": 24
+            }
+          },
+          "newly_reachable": {
+            "correct_dispatched_with_gold_inside_window": 81,
+            "dispatched_flown": 130,
+            "per_rule": {
+              "DENSE-ONLY": {
+                "correct_dispatched_pushed_out": 0,
+                "net_rank_level": 0,
+                "newly_reachable_sample_ids": [],
+                "newly_reachable_wrong_dispatched": 0,
+                "pushed_out_sample_ids": []
+              },
+              "LIN-0.25": {
+                "correct_dispatched_pushed_out": 8,
+                "net_rank_level": 1,
+                "newly_reachable_sample_ids": [
+                  "slurp:devel:001702:audio--1504190337-headset",
+                  "slurp:devel:002834:audio--1504190332-headset",
+                  "slurp:devel:004519:audio-1494608505-headset",
+                  "slurp:devel:007699:audio-1434530390-headset",
+                  "slurp:devel:008778:audio-1434542785",
+                  "slurp:devel:009040:audio-1502114639",
+                  "slurp:devel:009615:audio-1501756426",
+                  "slurp:devel:011745:audio-1501776434",
+                  "slurp:devel:011899:audio-1499698236"
+                ],
+                "newly_reachable_wrong_dispatched": 9,
+                "pushed_out_sample_ids": [
+                  "slurp:devel:008786:audio-1494418486",
+                  "slurp:devel:009968:audio-1490182854",
+                  "slurp:devel:011732:audio-1490356897-headset",
+                  "slurp:devel:011883:audio-1490183460-headset",
+                  "slurp:devel:013033:audio-1501158072",
+                  "slurp:devel:013071:audio-1502308991",
+                  "slurp:devel:013549:audio-1502311262-headset",
+                  "slurp:devel:014849:audio-1499688670-headset"
+                ]
+              },
+              "LIN-0.50": {
+                "correct_dispatched_pushed_out": 12,
+                "net_rank_level": -2,
+                "newly_reachable_sample_ids": [
+                  "slurp:devel:001678:audio-1495369559",
+                  "slurp:devel:001702:audio--1504190337-headset",
+                  "slurp:devel:002834:audio--1504190332-headset",
+                  "slurp:devel:004519:audio-1494608505-headset",
+                  "slurp:devel:009040:audio-1502114639",
+                  "slurp:devel:009228:audio-1502216594",
+                  "slurp:devel:009615:audio-1501756426",
+                  "slurp:devel:011745:audio-1501776434",
+                  "slurp:devel:011899:audio-1499698236",
+                  "slurp:devel:014014:audio-1434532598"
+                ],
+                "newly_reachable_wrong_dispatched": 10,
+                "pushed_out_sample_ids": [
+                  "slurp:devel:006389:audio-1490356484-headset",
+                  "slurp:devel:008192:audio-1501685478",
+                  "slurp:devel:008786:audio-1494418486",
+                  "slurp:devel:009968:audio-1490182854",
+                  "slurp:devel:011611:audio-1490203470-headset",
+                  "slurp:devel:011658:audio-1501774701",
+                  "slurp:devel:011732:audio-1490356897-headset",
+                  "slurp:devel:011883:audio-1490183460-headset",
+                  "slurp:devel:013033:audio-1501158072",
+                  "slurp:devel:013071:audio-1502308991",
+                  "slurp:devel:013549:audio-1502311262-headset",
+                  "slurp:devel:014849:audio-1499688670-headset"
+                ]
+              },
+              "LIN-0.75": {
+                "correct_dispatched_pushed_out": 12,
+                "net_rank_level": -2,
+                "newly_reachable_sample_ids": [
+                  "slurp:devel:001678:audio-1495369559",
+                  "slurp:devel:001702:audio--1504190337-headset",
+                  "slurp:devel:002834:audio--1504190332-headset",
+                  "slurp:devel:004339:audio-1502374840",
+                  "slurp:devel:004519:audio-1494608505-headset",
+                  "slurp:devel:009040:audio-1502114639",
+                  "slurp:devel:009228:audio-1502216594",
+                  "slurp:devel:011745:audio-1501776434",
+                  "slurp:devel:011899:audio-1499698236",
+                  "slurp:devel:014014:audio-1434532598"
+                ],
+                "newly_reachable_wrong_dispatched": 10,
+                "pushed_out_sample_ids": [
+                  "slurp:devel:006389:audio-1490356484-headset",
+                  "slurp:devel:008192:audio-1501685478",
+                  "slurp:devel:008786:audio-1494418486",
+                  "slurp:devel:009968:audio-1490182854",
+                  "slurp:devel:011611:audio-1490203470-headset",
+                  "slurp:devel:011658:audio-1501774701",
+                  "slurp:devel:011732:audio-1490356897-headset",
+                  "slurp:devel:011883:audio-1490183460-headset",
+                  "slurp:devel:013033:audio-1501158072",
+                  "slurp:devel:013071:audio-1502308991",
+                  "slurp:devel:013549:audio-1502311262-headset",
+                  "slurp:devel:014849:audio-1499688670-headset"
+                ]
+              },
+              "RRF-60": {
+                "correct_dispatched_pushed_out": 4,
+                "net_rank_level": 1,
+                "newly_reachable_sample_ids": [
+                  "slurp:devel:001268:audio-1490357091-headset",
+                  "slurp:devel:002834:audio--1504190332-headset",
+                  "slurp:devel:004519:audio-1494608505-headset",
+                  "slurp:devel:008778:audio-1434542785",
+                  "slurp:devel:009996:audio-1498758926"
+                ],
+                "newly_reachable_wrong_dispatched": 5,
+                "pushed_out_sample_ids": [
+                  "slurp:devel:013033:audio-1501158072",
+                  "slurp:devel:013071:audio-1502308991",
+                  "slurp:devel:013549:audio-1502311262-headset",
+                  "slurp:devel:014849:audio-1499688670-headset"
+                ]
+              },
+              "TIEBREAK": {
+                "correct_dispatched_pushed_out": 0,
+                "net_rank_level": 0,
+                "newly_reachable_sample_ids": [],
+                "newly_reachable_wrong_dispatched": 0,
+                "pushed_out_sample_ids": []
+              }
+            },
+            "window": 5,
+            "wrong_dispatched_with_gold_outside_window": 44
+          },
+          "recall_table": {
+            "DENSE-ONLY": {
+              "median_position": 1,
+              "recall_at_1": {
+                "count": 235,
+                "rate": 0.5875
+              },
+              "recall_at_3": {
+                "count": 272,
+                "rate": 0.68
+              },
+              "recall_at_5": {
+                "count": 286,
+                "rate": 0.715
+              },
+              "recall_at_8": {
+                "count": 297,
+                "rate": 0.7425
+              }
+            },
+            "LIN-0.25": {
+              "median_position": 1,
+              "recall_at_1": {
+                "count": 226,
+                "rate": 0.565
+              },
+              "recall_at_3": {
+                "count": 270,
+                "rate": 0.675
+              },
+              "recall_at_5": {
+                "count": 286,
+                "rate": 0.715
+              },
+              "recall_at_8": {
+                "count": 306,
+                "rate": 0.765
+              }
+            },
+            "LIN-0.50": {
+              "median_position": 2,
+              "recall_at_1": {
+                "count": 189,
+                "rate": 0.4725
+              },
+              "recall_at_3": {
+                "count": 232,
+                "rate": 0.58
+              },
+              "recall_at_5": {
+                "count": 263,
+                "rate": 0.6575
+              },
+              "recall_at_8": {
+                "count": 292,
+                "rate": 0.73
+              }
+            },
+            "LIN-0.75": {
+              "median_position": 2,
+              "recall_at_1": {
+                "count": 164,
+                "rate": 0.41
+              },
+              "recall_at_3": {
+                "count": 223,
+                "rate": 0.5575
+              },
+              "recall_at_5": {
+                "count": 242,
+                "rate": 0.605
+              },
+              "recall_at_8": {
+                "count": 268,
+                "rate": 0.67
+              }
+            },
+            "RRF-60": {
+              "median_position": 1,
+              "recall_at_1": {
+                "count": 245,
+                "rate": 0.6125
+              },
+              "recall_at_3": {
+                "count": 274,
+                "rate": 0.685
+              },
+              "recall_at_5": {
+                "count": 294,
+                "rate": 0.735
+              },
+              "recall_at_8": {
+                "count": 306,
+                "rate": 0.765
+              }
+            },
+            "TIEBREAK": {
+              "median_position": 1,
+              "recall_at_1": {
+                "count": 235,
+                "rate": 0.5875
+              },
+              "recall_at_3": {
+                "count": 272,
+                "rate": 0.68
+              },
+              "recall_at_5": {
+                "count": 286,
+                "rate": 0.715
+              },
+              "recall_at_8": {
+                "count": 297,
+                "rate": 0.7425
+              }
+            }
+          },
+          "samples_with_any_exact_cosine_tie": 400,
+          "samples_with_empty_lexical_channel": 0,
+          "timing": {
+            "dense_cosine_seconds_per_sample": 0.0010317097599909174,
+            "dense_cosine_seconds_total": 0.412683903996367,
+            "dense_position_agreement_with_imported_replay": 400,
+            "lexical_scoring_seconds_per_sample": 9.704190499178367e-05,
+            "lexical_scoring_seconds_total": 0.03881676199671347
+          }
+        },
+        "Q-VAL": {
+          "lexical_channel_alone_top1_is_gold": 166,
+          "mean_lexically_touched_facets": 552.705,
+          "mean_query_tokens": 4.56,
+          "native_second_dimension": {
+            "admitted_by_the_lexical_dimension_alone": 951,
+            "agreement": {
+              "after_dims_total_observed": [
+                3,
+                4
+              ],
+              "agreement_values_now_reachable": [
+                0.25,
+                0.5
+              ],
+              "before": "every facet carries exactly ONE dimension, dims_total is 3, agreement is a constant 1/3 for every candidate, and the ranker's score is the affine map 0.5*cos + 0.0667",
+              "candidate_facets_dims_hit_2": 286,
+              "candidate_facets_dims_hit_2_rate": 0.03746888510415302,
+              "candidate_facets_total": 7633,
+              "reading": "with two content dimensions live, agreement takes two distinct values instead of one, so w_agree is no longer multiplying a constant and the rank-weight family is structurally non-degenerate; whether that BUYS anything is the separate accuracy question this gate also answers",
+              "samples": 400,
+              "samples_with_at_least_one_two_dimension_candidate": 186,
+              "score_separation_at_equal_max_signal": 0.05,
+              "top_m_candidates_dims_hit_2": 286,
+              "top_m_candidates_dims_hit_2_rate": 0.143,
+              "top_m_candidates_total": 2000
+            },
+            "conversion_projection": {
+              "anchors": {
+                "absent": 0.0,
+                "fused_rank_2_or_3": 0.6956521739130435,
+                "fused_rank_4_plus_EXTRAPOLATED": 0.4928936497934608,
+                "fused_top1": 0.9818181818181818
+              },
+              "changed_priced_at_the_unanchored_rank": 0,
+              "changed_trajectories": 108,
+              "construction": "a trajectory that RETAINS under the hybrid carries its own direct decode's score EXACTLY; a dispatched trajectory whose supplied set is byte-identical to the flown one carries its sealed outcome EXACTLY; only a dispatched trajectory whose supply CHANGED is priced, at the measured anchor for wherever gold sits under the hybrid, symmetrically for currently-correct and currently-wrong trajectories",
+              "delta_pp_central": -0.7717391304348808,
+              "delta_pp_optimistic": 1.7181818181818045,
+              "delta_pp_pessimistic": -5.061349156339801,
+              "exact_outcomes_identical_supply": 22,
+              "exact_outcomes_retained_trajectories": 270,
+              "n": 400,
+              "projected_central": 285.9130434782605,
+              "projected_optimistic": 295.8727272727272,
+              "projected_pessimistic": 268.7546033746408,
+              "sealed_baseline_correct": 289,
+              "sealed_baseline_rate": 0.7225,
+              "variance_prior": "DEV-100 round-5 replication: plus-minus 2 per 100 at 8-slot decode"
+            },
+            "gate": {
+              "baseline_arm_gate_passed": true,
+              "baseline_arm_supply_reproduces_imported_replay": 400,
+              "hybrid_fuse_seconds_per_sample": 0.004284265922542545,
+              "hybrid_fuse_seconds_total": 1.713706369017018,
+              "single_dimension_degeneracy_checked": 400,
+              "single_dimension_degeneracy_confirmed": true,
+              "single_dimension_degeneracy_violations": []
+            },
+            "supply_delta": {
+              "dispatch_decision_flips_vs_flown": 0,
+              "dispatch_flip_sample_ids": [],
+              "lost_gold_supply_currently_correct": 13,
+              "lost_gold_supply_sample_ids": [
+                "slurp:devel:000242:audio-1502112341-headset",
+                "slurp:devel:000885:audio-1502374975-headset",
+                "slurp:devel:003018:audio-1490006722-headset",
+                "slurp:devel:004094:audio--1504198522",
+                "slurp:devel:004693:audio--1504194915",
+                "slurp:devel:004850:audio--1504198708",
+                "slurp:devel:004853:audio-1502199738",
+                "slurp:devel:006389:audio-1490356484-headset",
+                "slurp:devel:008311:audio-1501152391",
+                "slurp:devel:009968:audio-1490182854",
+                "slurp:devel:010468:audio-1490193669",
+                "slurp:devel:011785:audio-1488971006",
+                "slurp:devel:012651:audio-1497029354"
+              ],
+              "newly_gold_supplied_currently_wrong": 9,
+              "newly_gold_supplied_sample_ids": [
+                "slurp:devel:001234:audio-1497883018",
+                "slurp:devel:001702:audio--1504190337-headset",
+                "slurp:devel:002095:audio-1498647562",
+                "slurp:devel:002740:audio-1502375547",
+                "slurp:devel:002834:audio--1504190332-headset",
+                "slurp:devel:004519:audio-1494608505-headset",
+                "slurp:devel:009228:audio-1502216594",
+                "slurp:devel:014014:audio-1434532598",
+                "slurp:devel:015475:audio-1502375901-headset"
+              ],
+              "supply_changed": 361,
+              "supply_unchanged": 39
+            }
+          },
+          "newly_reachable": {
+            "correct_dispatched_with_gold_inside_window": 81,
+            "dispatched_flown": 130,
+            "per_rule": {
+              "DENSE-ONLY": {
+                "correct_dispatched_pushed_out": 0,
+                "net_rank_level": 0,
+                "newly_reachable_sample_ids": [],
+                "newly_reachable_wrong_dispatched": 0,
+                "pushed_out_sample_ids": []
+              },
+              "LIN-0.25": {
+                "correct_dispatched_pushed_out": 4,
+                "net_rank_level": 4,
+                "newly_reachable_sample_ids": [
+                  "slurp:devel:001702:audio--1504190337-headset",
+                  "slurp:devel:002834:audio--1504190332-headset",
+                  "slurp:devel:004339:audio-1502374840",
+                  "slurp:devel:004519:audio-1494608505-headset",
+                  "slurp:devel:008778:audio-1434542785",
+                  "slurp:devel:009040:audio-1502114639",
+                  "slurp:devel:009615:audio-1501756426",
+                  "slurp:devel:014014:audio-1434532598"
+                ],
+                "newly_reachable_wrong_dispatched": 8,
+                "pushed_out_sample_ids": [
+                  "slurp:devel:008786:audio-1494418486",
+                  "slurp:devel:011732:audio-1490356897-headset",
+                  "slurp:devel:013071:audio-1502308991",
+                  "slurp:devel:013549:audio-1502311262-headset"
+                ]
+              },
+              "LIN-0.50": {
+                "correct_dispatched_pushed_out": 5,
+                "net_rank_level": 3,
+                "newly_reachable_sample_ids": [
+                  "slurp:devel:001702:audio--1504190337-headset",
+                  "slurp:devel:002834:audio--1504190332-headset",
+                  "slurp:devel:004339:audio-1502374840",
+                  "slurp:devel:004519:audio-1494608505-headset",
+                  "slurp:devel:009040:audio-1502114639",
+                  "slurp:devel:009228:audio-1502216594",
+                  "slurp:devel:009615:audio-1501756426",
+                  "slurp:devel:014014:audio-1434532598"
+                ],
+                "newly_reachable_wrong_dispatched": 8,
+                "pushed_out_sample_ids": [
+                  "slurp:devel:006389:audio-1490356484-headset",
+                  "slurp:devel:008786:audio-1494418486",
+                  "slurp:devel:011732:audio-1490356897-headset",
+                  "slurp:devel:013071:audio-1502308991",
+                  "slurp:devel:013549:audio-1502311262-headset"
+                ]
+              },
+              "LIN-0.75": {
+                "correct_dispatched_pushed_out": 5,
+                "net_rank_level": 2,
+                "newly_reachable_sample_ids": [
+                  "slurp:devel:001702:audio--1504190337-headset",
+                  "slurp:devel:002834:audio--1504190332-headset",
+                  "slurp:devel:004339:audio-1502374840",
+                  "slurp:devel:004519:audio-1494608505-headset",
+                  "slurp:devel:009040:audio-1502114639",
+                  "slurp:devel:009228:audio-1502216594",
+                  "slurp:devel:014014:audio-1434532598"
+                ],
+                "newly_reachable_wrong_dispatched": 7,
+                "pushed_out_sample_ids": [
+                  "slurp:devel:006389:audio-1490356484-headset",
+                  "slurp:devel:008786:audio-1494418486",
+                  "slurp:devel:011732:audio-1490356897-headset",
+                  "slurp:devel:013071:audio-1502308991",
+                  "slurp:devel:013549:audio-1502311262-headset"
+                ]
+              },
+              "RRF-60": {
+                "correct_dispatched_pushed_out": 2,
+                "net_rank_level": 3,
+                "newly_reachable_sample_ids": [
+                  "slurp:devel:001268:audio-1490357091-headset",
+                  "slurp:devel:002834:audio--1504190332-headset",
+                  "slurp:devel:004519:audio-1494608505-headset",
+                  "slurp:devel:008778:audio-1434542785",
+                  "slurp:devel:009996:audio-1498758926"
+                ],
+                "newly_reachable_wrong_dispatched": 5,
+                "pushed_out_sample_ids": [
+                  "slurp:devel:013071:audio-1502308991",
+                  "slurp:devel:013549:audio-1502311262-headset"
+                ]
+              },
+              "TIEBREAK": {
+                "correct_dispatched_pushed_out": 0,
+                "net_rank_level": 0,
+                "newly_reachable_sample_ids": [],
+                "newly_reachable_wrong_dispatched": 0,
+                "pushed_out_sample_ids": []
+              }
+            },
+            "window": 5,
+            "wrong_dispatched_with_gold_outside_window": 44
+          },
+          "recall_table": {
+            "DENSE-ONLY": {
+              "median_position": 1,
+              "recall_at_1": {
+                "count": 235,
+                "rate": 0.5875
+              },
+              "recall_at_3": {
+                "count": 272,
+                "rate": 0.68
+              },
+              "recall_at_5": {
+                "count": 286,
+                "rate": 0.715
+              },
+              "recall_at_8": {
+                "count": 297,
+                "rate": 0.7425
+              }
+            },
+            "LIN-0.25": {
+              "median_position": 1,
+              "recall_at_1": {
+                "count": 223,
+                "rate": 0.5575
+              },
+              "recall_at_3": {
+                "count": 264,
+                "rate": 0.66
+              },
+              "recall_at_5": {
+                "count": 290,
+                "rate": 0.725
+              },
+              "recall_at_8": {
+                "count": 308,
+                "rate": 0.77
+              }
+            },
+            "LIN-0.50": {
+              "median_position": 2,
+              "recall_at_1": {
+                "count": 184,
+                "rate": 0.46
+              },
+              "recall_at_3": {
+                "count": 252,
+                "rate": 0.63
+              },
+              "recall_at_5": {
+                "count": 272,
+                "rate": 0.68
+              },
+              "recall_at_8": {
+                "count": 305,
+                "rate": 0.7625
+              }
+            },
+            "LIN-0.75": {
+              "median_position": 2,
+              "recall_at_1": {
+                "count": 171,
+                "rate": 0.4275
+              },
+              "recall_at_3": {
+                "count": 225,
+                "rate": 0.5625
+              },
+              "recall_at_5": {
+                "count": 269,
+                "rate": 0.6725
+              },
+              "recall_at_8": {
+                "count": 305,
+                "rate": 0.7625
+              }
+            },
+            "RRF-60": {
+              "median_position": 1,
+              "recall_at_1": {
+                "count": 246,
+                "rate": 0.615
+              },
+              "recall_at_3": {
+                "count": 268,
+                "rate": 0.67
+              },
+              "recall_at_5": {
+                "count": 294,
+                "rate": 0.735
+              },
+              "recall_at_8": {
+                "count": 305,
+                "rate": 0.7625
+              }
+            },
+            "TIEBREAK": {
+              "median_position": 1,
+              "recall_at_1": {
+                "count": 235,
+                "rate": 0.5875
+              },
+              "recall_at_3": {
+                "count": 272,
+                "rate": 0.68
+              },
+              "recall_at_5": {
+                "count": 286,
+                "rate": 0.715
+              },
+              "recall_at_8": {
+                "count": 297,
+                "rate": 0.7425
+              }
+            }
+          },
+          "samples_with_any_exact_cosine_tie": 400,
+          "samples_with_empty_lexical_channel": 2,
+          "timing": {
+            "dense_cosine_seconds_per_sample": 0.0012620827651699073,
+            "dense_cosine_seconds_total": 0.504833106067963,
+            "dense_position_agreement_with_imported_replay": 400,
+            "lexical_scoring_seconds_per_sample": 8.956638743256917e-05,
+            "lexical_scoring_seconds_total": 0.03582655497302767
+          }
+        }
+      },
+      "flight_replay_gate": {
+        "cosine_agreement_probes_vs_kb_policy": 3600,
+        "dispatched_samples": 130,
+        "population": "DEV-500-NEW400",
+        "retain_dispatch_decision_matches": 400,
+        "retain_dispatch_decision_mismatches": [],
+        "retain_dispatch_gate_passed": true,
+        "samples": 400,
+        "supply_exact_matches": 130,
+        "supply_gate_passed": true,
+        "supply_mismatches": [],
+        "vectorised_recall_probes_vs_kb_multidim_recall": 8
+      },
+      "pin": {
+        "attempt_id": "attempt-20260824T205527Z-dev500blend",
+        "n": 400,
+        "outputs": "arm2-blend-outputs.jsonl",
+        "restrict_to": "new400",
+        "run_id": "SAEA-DEV500-CONFIRMATORY"
+      },
+      "query_text_identity": {
+        "direct_text_matches_flown_query_digest": 400,
+        "passed": true,
+        "samples": 400
+      }
+    }
+  },
+  "registered_constants": {
+    "bm25": {
+      "b": 0.75,
+      "idf": "ln(1 + (N - df + 0.5)/(df + 0.5))",
+      "k1": 1.2
+    },
+    "frozen_cell": {
+      "alpha": 0.45,
+      "c": 2,
+      "m": 5,
+      "tau": 0.65,
+      "top_k_per_dimension": 5,
+      "top_l": 3,
+      "w_agree": 0.2,
+      "w_cos": 0.5,
+      "w_prior": 0.3
+    },
+    "fusion_rules": [
+      "DENSE-ONLY",
+      "LIN-0.25",
+      "LIN-0.50",
+      "LIN-0.75",
+      "RRF-60",
+      "TIEBREAK"
+    ],
+    "lexical_similarity": "bm25 / max_d bm25 (per query, order-preserving, bounded [0,1])",
+    "linear_weight_grid": [
+      0.25,
+      0.5,
+      0.75
+    ],
+    "query_normalizations": {
+      "Q-RAW": "the direct-decode text verbatim -- exactly what the flight embedded",
+      "Q-VAL": "the same text minus the constant schema key tokens ['action', 'entities', 'filler', 'scenario', 'type']"
+    },
+    "rrf_k": 60,
+    "tokenizer": "lowercase, then r'[a-z0-9]+'; no stemming, no stoplist, no resource"
+  },
+  "schema": "saea-k1-hybrid-ranking-gate-v1",
+  "scope": "DEV-tier ITERATION design input. This gates a flight and is not one: no knob is changed, no arm is re-flown, no new sample is touched, no new gold surface is opened, and FINAL60 and test remain untouched.",
+  "sources": {
+    "content_facet_count": 11514,
+    "content_facet_npz_sha256": "0bcb955a3a0ab84880f0d039ae702e77d1247ed23c3b8cecb468cbb1e0221c72",
+    "dev1000_byte_pins": {
+      "arm2-blend-mechanical-report.json": "c3ed01699a43087e719b917c751d1ce96d6b0992107d58437fc048fd12ba5930",
+      "arm2-blend-mechanical.json": "e55b6632d85a0037fb928d565fb2ef1b40c987c915dd98a9f2599d78113c828e",
+      "arm2-blend-outputs.jsonl": "542a029adca8fb8daf3618e8a049aecdba1b04aba30eafedb67099fb6e08cf14"
+    },
+    "receipt_populations": {
+      "DEV-100": 100,
+      "DEV-1000-NEW500": 500,
+      "DEV-500": 500,
+      "DEV-500-NEW400": 400
+    },
+    "snapshot_sha256": "e27b274516604ffc0e21319758aea99dc027f459d480a32a74a715b023a51b57",
+    "value_vectors": "SEALED (never loaded)"
+  },
+  "study": "speech-aware-evidence-acquisition",
+  "wall_seconds": 278.87932295299834,
+  "zero_contact_proof": {
+    "new_dependencies_installed": 0,
+    "offline_guard": {
+      "armed_before_any_input_was_opened": true,
+      "outbound_connection_attempts": 0,
+      "targets": []
+    },
+    "registered_contacts": {
+      "frozen_core": 0,
+      "pinned_tool_embedding": 0,
+      "tokenizer": 0
+    }
+  }
+}
