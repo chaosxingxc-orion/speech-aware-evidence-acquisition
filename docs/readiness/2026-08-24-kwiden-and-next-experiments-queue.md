@@ -48,18 +48,52 @@ registered `996dba61`) computes the trigger trade-off curve, the top-2/top-3 rea
 ceiling per error class, per-side exemplar availability, and a registered projection with
 recommended n and margin threshold — E-A flies against that projection.
 
+## 3b. E-A pre-analysis outcome (landed 2026-08-25) — the queue order changed
+
+The model-free pre-analysis (`2026-08-24-contrast-fewshot-preanalysis.md`, commits
+`996dba61`/`1d1cbe49`/`56ae63e6`/`49a7b129`) returned three decision-grade findings:
+
+1. **The briefed trigger is degenerate.** The fused top-2 margin is bimodal (DEV-100: 66
+   samples at exactly 1.0, 27 at ≤0.02, 7 in between) because the ranked score is an affine
+   map of cosine with zero prior mass and constant agreement — every threshold in
+   [0.10, 0.90] selects the identical set. The **cosine margin (cos1 − cos2)** is the
+   replacement signal (equally runtime-legal, computed pre-dispatch).
+2. **The residual is dominated by recall-limitation, not confusability**: DEV-100 28 errors =
+   19 recall-limited / 5 retain-override-loss / 4 confusable-sibling; NEW400 111 = 81 / 12 /
+   15 (+2 intrinsic, +1 admission). Gold ∈ fused top-2 on only 9 (DEV-100) / 27 (NEW400) —
+   E-A's theoretical ceiling. A NEW error class was named: **retain-override-loss** (gold is
+   the fused top-1 but retain-primary discarded it unseen) — a control-plane loss, not core
+   failure; reaching E-A's ceiling requires overriding retain-primary.
+3. **E-A cannot be evaluated on DEV-100**: its credible band (72/74/75 at 0/33/62%
+   conversion) sits INSIDE the documented ±2 byte-variance channel. Any E-A read must be at
+   the 400-sample tier or larger.
+
+**Consequences for the queue: K-WIDEN is promoted to first** (it owns 68-73% of the
+residual, exactly matching the reachability curve's headroom). E-A is retained as a
+DEV-500-tier experiment with the cosine-margin trigger (θ≤0.02, n=3/side, override ON),
+never a DEV-100 round. The retain-override-loss class becomes its own cheap candidate
+(a dispatch-rule variant), sized at 5/28 DEV-100 and 12/111 NEW400.
+
 ## 4. Queue order (each single-variable, each projected offline first)
 
-1. **K-WIDEN K1** (width 5→8; K2 at 16/32 only if K1 converts) — recall-limited class.
-2. **E-A contrast few-shot** (owner priority) — confusable class.
-3. **E-C constrained contact-0** — dead-direct class (also expected to improve the query
-   text feeding retrieval).
-4. **E-B v5 boundary injection** — confusable class, contrasted against E-A for attribution
+1. **K-WIDEN K1** (width 5→8; K2 at 16/32 only if K1 converts) — recall-limited class,
+   **now first** (owns 68-73% of the residual per §3b). Machinery committed, zero spend.
+2. **E-C constrained contact-0** — dead-direct class (also expected to improve the query
+   text feeding retrieval; the M-line schema-v4 precedent parses 108/108).
+3. **Retain-override-loss dispatch variant** — the class named by the E-A pre-analysis
+   (gold is fused top-1 but retain-primary discards it): a cheap dispatch-rule single
+   variable, 5/28 DEV-100 and 12/111 NEW400 in scope.
+4. **E-A contrast few-shot at the DEV-500 tier** (owner priority, re-scoped per §3b):
+   cosine-margin trigger θ≤0.02, n=3 per side, retain-primary override ON, disagreement gate
+   OFF — never a DEV-100 round (its band is inside the variance channel).
+5. **E-B v5 boundary injection** — confusable class, contrasted against E-A for attribution
    (the 117 pair-boundary relations are already built and validated at 0.807 balanced
    leave-one-out accuracy; this is an already-paid asset).
-5. Winner-combination freeze → **DEV-1000 baseline-lock read** (packets prepped this
-   session; the lock read touches the unexposed 500 once).
-6. **Audio2Tool** generality campaign (gate open).
+6. Winner-combination freeze → **DEV-1000 baseline-lock read** (packets PROMOTED 2026-08-25,
+   1,000/1,000; preregistration `2026-08-24-dev1000-baseline-lock-preregistration.md`; the
+   lock read touches the unexposed 500 once, lock condition = 90% CI lower bound ≥ +10 pp).
+7. **Audio2Tool** generality campaign (gate open); before it, the multi-dimensional-K form
+   upgrade (§5's agreement-inertness finding).
 
 ## 5. Knowledge-organization contribution ledger (what each KB form is worth, measured)
 
