@@ -639,3 +639,36 @@ service remains DOWN and must be respawned by a later mission before any SLURP a
 Code: `launcher/launch_a2t_g1_blend_attempt3.py`, `scripts/a2t_g1_dispatch_projection.py`,
 `scripts/a2t_g1_read.py`. **`rails/` and `core/` are untouched: `rails/kb_policy.py`'s last commit
 is still `f1060078`**, re-verified live at takeoff.
+
+## CORRECTION (2026-08-25, coordinator, after the owner's ruling)
+
+**The zero-dispatch behaviour recorded above is an IMPLEMENTATION DEFECT in the ranker, not a
+finding about Audio2Tool and not a boundary of the method.** The ranker fuses an UNBOUNDED
+prior-mass dimension (measured 1.2-4.1 on the A2T KB) with a cosine bounded by 1.0 inside one
+weighted sum. Scores from different dimensions are therefore not commensurable, prior-mass
+facets monopolise the top-m window, and no content facet is ever admitted. SLURP masked the
+defect only because its content facets carry `max_prior = 0.0`, so prior mass never competed.
+
+Consequences, stated plainly:
+
+1. **The "paired first signal" above measured a broken configuration.** BLEND made zero
+   evidence contacts on all 104 trajectories, so the -1.92 pp tool-accuracy delta is the
+   documented multi-slot decode-variance channel and nothing else. It is NOT evidence about
+   whether knowledge conditioning transfers to Audio2Tool.
+2. **No paradigm-level conclusion about Audio2Tool follows from G1.** Earlier coordinator
+   wording that framed this as "the paradigm's boundary precisely located" was wrong and is
+   withdrawn here. The correct statement is: the locked cell could not exercise its own
+   mechanism on this carrier because of a scale defect in `rails/kb_policy.py`.
+3. **The G2 recommendation above stands only in its narrow operational sense** (do not spend an
+   unexposed tier yet). Its stated reason is superseded: the blocker is a bug to fix, not a
+   knob decision for the owner.
+
+What remains valid and unaffected: the mechanics results (derived serving geometry, prompt-fit
++12,331, packets, KB vectors), the two-pass design and its co-residency invariant, the VRAM
+oversubscription diagnosis (997 -> 22 ms/token with residency as the only variable), the replay
+machinery, the M0 arm's own numbers, and every spend and rail record.
+
+Sequence from here: fix the defect in `rails/kb_policy.py` with a regression proving the SLURP
+locked cell is byte-identical (with `max_prior = 0.0` the normalisation is an identity
+transform), then re-fly A2T G1 BLEND on this same 104-item exposed subset. Only the post-fix
+flight produces a paired signal worth interpreting.
