@@ -1,0 +1,930 @@
+{
+ "a2t_control": {
+  "answer_content": {
+   "dead_direct": {
+    "answer_length_chars_median": 2,
+    "answers_with_zero_tokens_outside_the_modal_text": 11,
+    "distinct_contact0_texts": 5,
+    "distinct_tokens_per_answer_median": 0,
+    "label": "A2T dead-direct",
+    "modal_text_multiplicity": 11,
+    "n": 15,
+    "structurally_empty_answer_rate": 0.9333333333333333,
+    "structurally_empty_answers": 14,
+    "tokens_outside_the_group_modal_text_mean": 3.2,
+    "tokens_outside_the_group_modal_text_median": 0
+   },
+   "label_recovered": {
+    "answer_length_chars_median": 89,
+    "answers_with_zero_tokens_outside_the_modal_text": 3,
+    "distinct_contact0_texts": 84,
+    "distinct_tokens_per_answer_median": 8,
+    "label": "A2T label-recovered",
+    "modal_text_multiplicity": 3,
+    "n": 89,
+    "structurally_empty_answer_rate": 0.0,
+    "structurally_empty_answers": 0,
+    "tokens_outside_the_group_modal_text_mean": 5.820224719101123,
+    "tokens_outside_the_group_modal_text_median": 5
+   }
+  },
+  "artifact_hashes": {
+   "arm1-m0-outputs.jsonl": "dea60ff1e63fd2ef11c93edf8808217062fea3f0565ed5b60f136264bc6a9467",
+   "arm2-blend-mechanical-report-attempt4.json": "641c4b5ae82cdda1b2d8508bb95e52035fe1b3d119ea170f10906779df459436",
+   "arm2-blend-mechanical.json": "59458c491368a117721041e4ba1538549f3e1e28bdb342e4927703ad5892644e",
+   "arm2-blend-outputs.jsonl": "24a7864263226f4918076571aee359d40ee76838f9cea1da2bbae38f6b6bdd18",
+   "content-facet-npz": "00a7ebe9b8325ffc2c7b8e45ac4f0c8475b2d3e76994cc0f539f7b5ad5740f45",
+   "g1-read-attempt4.json": "cb5e56584a6d572f7b41b39542201ddb1b361755042eac66c3a70c55fd086f89",
+   "kb_policy.py": "2a1c3d75e747db10f723044b05c08d232e1edf47f125d0889c1d2565ba1019af",
+   "pass-a-direct-outputs.jsonl": "73e28511f419cd67b1721d829438f8c102e725e01243c9a9f000e00d92aadc9c",
+   "query-vectors.jsonl": "2915aa0e4c690fc612777f28c88949956b2cfb108582c4e40eaca36e6a184be7",
+   "snapshot": "ec2f9ec454d3f16957ac08e4d7686a6f3941f22c600ff2b1b2b97ff43baf9fb2"
+  },
+  "carrier": "audio2tool",
+  "control_reproduced": true,
+  "dead_direct_is_the_flown_dispatched_set": true,
+  "degeneracy": {
+   "dead_direct": {
+    "distinct_contact0_texts": 5,
+    "distinct_contact0_texts_per_trajectory": 0.3333333333333333,
+    "distinct_query_vectors": 5,
+    "distinct_query_vectors_minus_distinct_texts": 0,
+    "distinct_query_vectors_per_trajectory": 0.3333333333333333,
+    "distinct_supplies": 5,
+    "distinct_supplies_inside_the_largest_key_cluster": 1,
+    "distinct_supplies_per_trajectory": 0.3333333333333333,
+    "embedding_is_a_pure_function_of_the_text": true,
+    "empty_supplies": 0,
+    "label": "A2T dead-direct (dispatched)",
+    "largest_identical_query_cluster_sample_ids": [
+     "tier1_direct:000167",
+     "tier1_direct:001631",
+     "tier4_implicit:000655",
+     "tier4_implicit:000900",
+     "tier4_implicit:001148",
+     "tier4_implicit:001389",
+     "tier4_implicit:001409",
+     "tier4_implicit:001513",
+     "tier4_implicit:003312",
+     "tier7_multiturn:000214",
+     "tier7_multiturn:001516"
+    ],
+    "largest_identical_query_cluster_share": 0.7333333333333333,
+    "largest_identical_query_cluster_size": 11,
+    "largest_identical_supply_size": 11,
+    "largest_identical_text_cluster_size": 11,
+    "n": 15
+   },
+   "label_recovered": {
+    "distinct_contact0_texts": 84,
+    "distinct_contact0_texts_per_trajectory": 0.9438202247191011,
+    "distinct_query_vectors": 84,
+    "distinct_query_vectors_minus_distinct_texts": 0,
+    "distinct_query_vectors_per_trajectory": 0.9438202247191011,
+    "distinct_supplies": 1,
+    "distinct_supplies_inside_the_largest_key_cluster": 1,
+    "distinct_supplies_per_trajectory": 0.011235955056179775,
+    "embedding_is_a_pure_function_of_the_text": true,
+    "empty_supplies": 89,
+    "label": "A2T label-recovered (retained)",
+    "largest_identical_query_cluster_sample_ids": [
+     "tier1_direct:002212",
+     "tier5_needle:002215",
+     "tier6_correction:002179"
+    ],
+    "largest_identical_query_cluster_share": 0.033707865168539325,
+    "largest_identical_query_cluster_size": 3,
+    "largest_identical_supply_size": 89,
+    "largest_identical_text_cluster_size": 3,
+    "n": 89
+   }
+  },
+  "disagreements": {},
+  "fidelity_gate": {
+   "direct_label_mismatch_ids": [],
+   "direct_label_recovery_reproduced": 104,
+   "dispatch_decision_reproduced": 104,
+   "dispatch_mismatch_ids": [],
+   "gate_passed": true,
+   "population": 104,
+   "semantics": "the flight records fusion_selected_value_ids only for a trajectory it dispatched; a retained trajectory carries null. The dispatched set is compared value-id for value-id and the retained set is asserted null.",
+   "supply_mismatch_ids": [],
+   "supply_reproduced": 104,
+   "trajectories_with_empty_recall": 0,
+   "trajectories_with_empty_supply": 0
+  },
+  "landed_reference": {
+   "dead_direct_distinct_contact0_texts": 5,
+   "dead_direct_distinct_query_vectors": 5,
+   "dead_direct_largest_identical_query_cluster_size": 11,
+   "dead_direct_n": 15,
+   "label_recovered_distinct_contact0_texts": 84,
+   "label_recovered_distinct_query_vectors": 84,
+   "label_recovered_n": 89,
+   "largest_cluster_distinct_flown_supplies": 1,
+   "source_document": "docs/readiness/2026-08-25-a2t-gold-absence-diagnosis.md",
+   "source_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-08-25-a2t-gold-absence/diagnosis-report.json",
+   "source_receipt_sha256": "64327e98ff9f91a4affdf75f25e98eb5500aa4ab2eeab8befa6d3978799a3e14"
+  },
+  "population": "A2T-G1-104 (EXPOSED)",
+  "reading_tier": "EXPOSED-TIER SECONDARY READING. This half was already read at the DEV-100 and DEV-500 tiers; reading it again is free and carries no lock authority.",
+  "recall_fidelity": {
+   "cosine_probes_against_kb_policy_cosine": 72,
+   "recall_fidelity_probes": 8,
+   "semantics": "the vectorised full-KB cosine sweep is not trusted until kb.multidim_recall admits the same facet set with the same scores on the probed samples and kb_policy._cosine reproduces each probed cosine to 1e-9"
+  },
+  "recomputed": {
+   "dead_direct_distinct_contact0_texts": 5,
+   "dead_direct_distinct_query_vectors": 5,
+   "dead_direct_largest_identical_query_cluster_size": 11,
+   "dead_direct_n": 15,
+   "label_recovered_distinct_contact0_texts": 84,
+   "label_recovered_distinct_query_vectors": 84,
+   "label_recovered_n": 89,
+   "largest_cluster_distinct_flown_supplies": 1
+  },
+  "retrieval": {
+   "dead_direct": {
+    "gold_facet_cosine_mean": 0.6792224653297331,
+    "gold_facet_cosine_median": 0.6054045940896657,
+    "gold_facet_position_median": 83,
+    "gold_in_top_5": 4,
+    "gold_in_top_5_rate_over_all_members": 0.26666666666666666,
+    "gold_present_in_kb": 15,
+    "label": "A2T dead-direct",
+    "n": 15
+   },
+   "label_recovered": {
+    "gold_facet_cosine_mean": 0.8521554676893969,
+    "gold_facet_cosine_median": 0.8632068895544622,
+    "gold_facet_position_median": 1,
+    "gold_in_top_5": 64,
+    "gold_in_top_5_rate_over_all_members": 0.7191011235955056,
+    "gold_present_in_kb": 89,
+    "label": "A2T label-recovered",
+    "n": 89
+   }
+  },
+  "stop_condition": "PRE-REGISTERED: if the control does not reproduce, this row reports the discrepancy and does NOT proceed to the SLURP measurement.",
+  "supply_semantics": "the A2T blocks count the FLOWN supply, which is what the landed diagnosis counted. The A2T flight records ``fusion_selected_value_ids`` only for a trajectory it DISPATCHED, so all 89 label-recovered trajectories carry the empty tuple: the label-recovered supply columns are null BY CONSTRUCTION and must not be read as a degeneracy. Only the dead-direct supply columns are meaningful on this carrier. The SLURP blocks instead count the REPLAYED fusion decision, which the frozen fuser produces on every trajectory, and cross-check it against the flown supply on the dispatched dead-direct members.",
+  "tau_distance": {
+   "dead_direct": {
+    "below_tau_cosine_max": 0.6356254654021299,
+    "below_tau_cosine_median": 0.5842049011071593,
+    "below_tau_cosine_min": 0.56533181747632,
+    "counterfactual_disclosure": "OBSERVED DISTRIBUTION ONLY. This row measures where the gold facet sits under the query the flight ACTUALLY embedded. It does not and cannot measure where it would sit under a differently-constructed query: that needs a new embedding contact, which this row may not take. No projection of clearing tau is made.",
+    "gap_to_tau_max": 0.08466818252368002,
+    "gap_to_tau_median": 0.06579509889284074,
+    "gap_to_tau_min": 0.014374534597870081,
+    "gap_to_tau_quartiles": [
+     0.050177,
+     0.065795,
+     0.072969
+    ],
+    "gap_to_tau_within_0_05": 2,
+    "gap_to_tau_within_0_10": 9,
+    "gold_facet_at_or_above_tau": 6,
+    "gold_facet_below_tau": 9,
+    "gold_facet_below_tau_rate": 0.6,
+    "label": "A2T dead-direct",
+    "n_with_gold_facet_in_kb": 15,
+    "tau": 0.65
+   },
+   "label_recovered": {
+    "below_tau_cosine_max": 0.6142960825468773,
+    "below_tau_cosine_median": 0.6142960825468773,
+    "below_tau_cosine_min": 0.6142960825468773,
+    "counterfactual_disclosure": "OBSERVED DISTRIBUTION ONLY. This row measures where the gold facet sits under the query the flight ACTUALLY embedded. It does not and cannot measure where it would sit under a differently-constructed query: that needs a new embedding contact, which this row may not take. No projection of clearing tau is made.",
+    "gap_to_tau_max": 0.035703917453122735,
+    "gap_to_tau_median": 0.035703917453122735,
+    "gap_to_tau_min": 0.035703917453122735,
+    "gap_to_tau_quartiles": null,
+    "gap_to_tau_within_0_05": 1,
+    "gap_to_tau_within_0_10": 1,
+    "gold_facet_at_or_above_tau": 88,
+    "gold_facet_below_tau": 1,
+    "gold_facet_below_tau_rate": 0.011235955056179775,
+    "label": "A2T label-recovered",
+    "n_with_gold_facet_in_kb": 89,
+    "tau": 0.65
+   }
+  }
+ },
+ "contacts": {
+  "audio_seconds": 0.0,
+  "embedding_tool": 0,
+  "frozen_core": 0,
+  "gold_opened": "SCORING-SIDE ONLY, over populations whose seal the landed DEV-1000 lock read and the landed A2T G1 read already broke; never on a runtime path",
+  "gpu_hours": 0.0,
+  "outbound_connection_attempts": 0,
+  "outbound_targets": [],
+  "tokenizer": 0
+ },
+ "execution_profile": "model-free-check",
+ "exposure_row_id": "SAEA-SN-MF-QUERY-KEY-DEGENERACY-CROSS-CARRIER",
+ "frozen_cell": {
+  "alpha": 0.45,
+  "c": 2,
+  "m": 5,
+  "tau": 0.65,
+  "top_k": 5,
+  "top_l": 3,
+  "weights": {
+   "w_agree": 0.2,
+   "w_cos": 0.5,
+   "w_prior": 0.3
+  }
+ },
+ "generated_at": "2026-08-25T17:27:16+00:00",
+ "hard_stop": "MEASUREMENT ONLY. No knob is changed, no flight is authorized, no gate is opened, no test contact is taken, and no generality or superiority claim follows from this artifact. The SLURP unexposed NEW500 statistics are a SECONDARY READING and may not revise, re-tune or restate the lock.",
+ "q3_cross_carrier_verdict": {
+  "a2t_dead_direct_degeneracy_ratio": 0.3333333333333333,
+  "claim_under_test": "SLURP's dead-direct answer is a WRONG LABEL that still carries utterance content, so its query stays informative; A2T's is an EMPTY call that carries none.",
+  "decision_rule_fixed_in_the_registration": "the degeneracy clause the A2T diagnosis introduced -- distinct query vectors per trajectory >= 0.90 -- is the threshold. A SLURP dead-direct group at or above 0.90 does NOT degenerate; a group below it DOES, and that is the headline finding either way.",
+  "discriminant_semantics": "the pre-registered 0.90 clause is a ONE-SIDED absolute threshold and, by construction, cannot tell 'the key is shared because the answer was empty' apart from 'the key is shared because two utterances genuinely carry the same short label'. The three discriminants above were fixed in the same registration and do separate them: DIRECTION (does the alpha veto concentrate key collapse on the dispatching subset?), CONTENT (does the shared answer name any field at all?) and EXTENT (what share of the group sits inside one key?). The threshold outcome and the discriminants are both reported; neither is suppressed.",
+  "mechanism_discriminants": [
+   {
+    "alpha_veto_concentrates_key_collapse_on_the_dispatching_subset": true,
+    "dead_distinct_supplies_per_trajectory": 0.3333333333333333,
+    "dead_distinct_tokens_per_answer_median": 0,
+    "dead_largest_identical_query_cluster_share": 0.7333333333333333,
+    "dead_over_live_degeneracy_ratio": 0.35317460317460314,
+    "dead_structurally_empty_answer_rate": 0.9333333333333333,
+    "dead_tokens_outside_the_group_modal_text_median": 0,
+    "live_structurally_empty_answer_rate": 0.0,
+    "population": "audio2tool A2T-G1-104 (EXPOSED)"
+   },
+   {
+    "alpha_veto_concentrates_key_collapse_on_the_dispatching_subset": false,
+    "dead_distinct_supplies_per_trajectory": 0.78125,
+    "dead_distinct_tokens_per_answer_median": 9.0,
+    "dead_largest_identical_query_cluster_share": 0.08125,
+    "dead_over_live_degeneracy_ratio": 1.240343347639485,
+    "dead_structurally_empty_answer_rate": 0.0125,
+    "dead_tokens_outside_the_group_modal_text_median": 5.5,
+    "live_structurally_empty_answer_rate": 0.0,
+    "population": "SLURP DEV-1000 unexposed NEW500"
+   },
+   {
+    "alpha_veto_concentrates_key_collapse_on_the_dispatching_subset": false,
+    "dead_distinct_supplies_per_trajectory": 0.6746987951807228,
+    "dead_distinct_tokens_per_answer_median": 9.0,
+    "dead_largest_identical_query_cluster_share": 0.1144578313253012,
+    "dead_over_live_degeneracy_ratio": 1.0270706255986288,
+    "dead_structurally_empty_answer_rate": 0.018072289156626505,
+    "dead_tokens_outside_the_group_modal_text_median": 5.0,
+    "live_structurally_empty_answer_rate": 0.0,
+    "population": "SLURP DEV-1000 prior-exposed nested DEV-500"
+   }
+  ],
+  "pre_registered_threshold_outcome": "SLURP DEAD-DIRECT IS BELOW 0.90 ON: UNEXPOSED-NEW500, EXPOSED-DEV500",
+  "reading_rule": "PRE-REGISTERED: reported whichever way it comes out. A SLURP set that DOES degenerate is the headline finding, not a reason to re-partition the population or re-choose the statistic.",
+  "slurp_halves_below_the_pre_registered_threshold": [
+   "UNEXPOSED-NEW500",
+   "EXPOSED-DEV500"
+  ],
+  "table": [
+   {
+    "carrier": "audio2tool",
+    "distinct_query_vectors_per_trajectory": 0.3333333333333333,
+    "group": "dead-direct",
+    "largest_identical_query_cluster_size": 11,
+    "n": 15,
+    "population": "A2T-G1-104 (EXPOSED)",
+    "structurally_empty_answer_rate": 0.9333333333333333
+   },
+   {
+    "carrier": "audio2tool",
+    "distinct_query_vectors_per_trajectory": 0.9438202247191011,
+    "group": "label-recovered",
+    "largest_identical_query_cluster_size": 3,
+    "n": 89,
+    "population": "A2T-G1-104 (EXPOSED)",
+    "structurally_empty_answer_rate": 0.0
+   },
+   {
+    "carrier": "slurp",
+    "distinct_query_vectors_per_trajectory": 0.85,
+    "group": "dead-direct",
+    "largest_identical_query_cluster_size": 13,
+    "n": 160,
+    "population": "SLURP DEV-1000 unexposed NEW500",
+    "structurally_empty_answer_rate": 0.0125
+   },
+   {
+    "carrier": "slurp",
+    "distinct_query_vectors_per_trajectory": 0.6852941176470588,
+    "group": "label-recovered",
+    "largest_identical_query_cluster_size": 24,
+    "n": 340,
+    "population": "SLURP DEV-1000 unexposed NEW500",
+    "structurally_empty_answer_rate": 0.0
+   },
+   {
+    "carrier": "slurp",
+    "distinct_query_vectors_per_trajectory": 0.7349397590361446,
+    "group": "dead-direct",
+    "largest_identical_query_cluster_size": 19,
+    "n": 166,
+    "population": "SLURP DEV-1000 prior-exposed nested DEV-500",
+    "structurally_empty_answer_rate": 0.018072289156626505
+   },
+   {
+    "carrier": "slurp",
+    "distinct_query_vectors_per_trajectory": 0.7155688622754491,
+    "group": "label-recovered",
+    "largest_identical_query_cluster_size": 17,
+    "n": 334,
+    "population": "SLURP DEV-1000 prior-exposed nested DEV-500",
+    "structurally_empty_answer_rate": 0.0
+   }
+  ],
+  "threshold": 0.9
+ },
+ "schema": "saea-query-key-degeneracy-cross-carrier-v1",
+ "separated_query_falsifier": {
+  "authority": "PRE-REGISTERED ONLY. This falsifier opens no gate, authorizes no flight and is not an agenda item; SQ needs its own registration and its own owner decision.",
+  "change": "contact-0 emits a retrieval query SEPARATELY from its answer attempt -- a distinct field whose text is embedded as the content dimension's key -- so the query stays informative when the answer itself is empty or malformed.",
+  "item_id": "SQ",
+  "measured_anchors": {
+   "audio2tool_A2T_G1_104": {
+    "dead_direct_distinct_query_vectors_per_trajectory": 0.3333333333333333,
+    "label_recovered_distinct_query_vectors_per_trajectory": 0.9438202247191011
+   },
+   "slurp_EXPOSED-DEV500": {
+    "dead_direct_distinct_query_vectors_per_trajectory": 0.7349397590361446,
+    "label_recovered_distinct_query_vectors_per_trajectory": 0.7155688622754491
+   },
+   "slurp_UNEXPOSED-NEW500": {
+    "dead_direct_distinct_query_vectors_per_trajectory": 0.85,
+    "label_recovered_distinct_query_vectors_per_trajectory": 0.6852941176470588
+   }
+  },
+  "must_improve": {
+   "I1": "Gold-facet recall@1 on the dead-direct subgroup rises by >= +5.0 pp under the separated query, measured on the carrier whose dead-direct subgroup is large enough to see an effect that size. Recall@1, not recall@5: this is the K1 correction, and it is stated first because K1's own falsifier omitted it (recall@5 rose while recall@1 fell 23/500).",
+   "I2": "Median gold-facet cosine on the dead-direct subgroup rises by >= +0.03 toward the label-recovered subgroup's value on the same flight.",
+   "I3": "DEGENERACY CLAUSE, carried from the A2T gold-absence diagnosis and RE-ANCHORED here. It APPLIES ON AUDIO2TOOL as the diagnosis wrote it: distinct query vectors per dead-direct trajectory >= 0.90, against a measured 0.333 dead-direct and 0.944 label-recovered on that carrier. A separated query that emits the same skeleton on every empty answer changes the text and not the key, and would pass I1/I2 by accident on a small sample while fixing nothing. IT DOES NOT APPLY VERBATIM ON SLURP: this row measures SLURP's dead-direct subgroup at 0.850 (unexposed NEW500) and 0.735 (exposed DEV-500) against a LABEL-RECOVERED reference of 0.685 and 0.716 on the same halves -- i.e. SLURP's dead-direct keys are already MORE diverse than that carrier's own healthy reference, and an absolute 0.90 bar would demand of the dead-direct subgroup something the label-recovered subgroup does not meet either. On SLURP the clause binds as the non-degradation bound D5, measured against that carrier's own label-recovered reference.",
+   "I4": "At SUPPLY level, after the tau / top-m / top_l stages: newly gold-supplied among currently-WRONG dispatched > gold-supply LOST among currently-CORRECT. Rank-level improvement does not substitute; this is the account K1 failed (12 gained against 29-40 lost)."
+  },
+  "must_not_degrade": {
+   "D1": "DISPATCH-PRESERVATION CLAUSE, mandatory. Projected dispatch count falls by no more than 10 % relative on the gated population, measured from the flight's own landed answers through the SAME label normalizer. This is the clause that refused K3 on Audio2Tool (-13.3 % on the most conservative arm, -80.0 % on the arm that measures actual form repair). SQ expects invariance here; if the measurement says otherwise, SQ is an off-switch in disguise and is refused exactly as K3 and E-C were.",
+   "D2": "Gold-facet recall@1 on the label-recovered (retained) subgroup does not fall. SQ rewrites the query on EVERY trajectory, not only the dead-direct ones.",
+   "D3": "No currently-CORRECT retained trajectory moves into dispatch. The alpha veto's structural guarantee (retain == direct-label-recovered) is what keeps evidence away from correct answers; a change that breaks a label recovery converts a correct retain into a dispatch, which the measured anchors price at a loss.",
+   "D4": "The conversion-weighted product reach share x within-reach conversion, projected with the measured rank anchors (98.2 % at fused top-1, 69.6 % at rank 2-3, 0 % absent -- cited to ``analysis.k1_hybrid_ranking_gate.ANCHOR_TOP1 / ANCHOR_RANK23 / ANCHOR_ABSENT``), does not fall.",
+   "D5": "DEGENERACY NON-DEGRADATION, the SLURP-binding form of I3. Distinct query vectors per trajectory does not FALL on either subgroup of either carrier, measured against that carrier's OWN landed values in ``measured_anchors``, and the dead-direct subgroup does not fall below its own carrier's label-recovered reference. On SLURP this is the operative clause: the keys there repeat because short labels COLLIDE, not because answers are empty (structurally-empty dead-direct answers are 2/160 and 3/166), so the only way a separated query can hurt SLURP is by collapsing its keys toward a shared query skeleton -- which is exactly the failure mode a role-schema-shaped separated query is most likely to produce."
+  },
+  "name": "separated retrieval query at contact 0",
+  "reporting_rule": "A negative outcome is the finding and is reported as such. The query construction, the separated-field schema and the prompt text are fixed in the gating module before it runs, and none may be re-tried after the answer is seen. Any SQ flight is NEW400-tier or larger, read once, per the key-construction plan's statistical-honesty clause.",
+  "trap_category": {
+   "category": "SEPARATES the query from the answer",
+   "contrast": "K3 (field-role-constrained contact-0) improves the query by making the ANSWER better. On Audio2Tool that was measured to project dispatch 15/104 -> 3/104, -80 % relative -- worse than the rejected E-C variant -- because a better-formed contact-0 recovers a direct label and the alpha veto then suppresses dispatch. Any fix in K3's category inherits that trap.",
+   "residual_risk_named": "asking for a second field changes the decode and can perturb the answer field as a side effect; D1 and D3 are the clauses that catch that, and they must be measured on the SAME flight, not argued away.",
+   "why_SQ_may_not_inherit_it": "SQ does not touch the answer field, so ``default_label_normalizer`` / ``a2t_label_normalizer`` sees the same string it saw before and the retain/dispatch decision is expected to be invariant. That expectation is a DESIGN ARGUMENT, not a measurement, which is exactly why D1 is stated as a hard bound and not as a prediction."
+  }
+ },
+ "slurp": {
+  "artifact_hashes": {
+   "SAEA-DEV1000-BASELINE-LOCK.trace.jsonl": "598780deb9ddb98842e503871206ef4afc33619c49162ae626f2858fa356d6df",
+   "arm2-blend-outputs.jsonl": "542a029adca8fb8daf3618e8a049aecdba1b04aba30eafedb67099fb6e08cf14",
+   "query-vectors.jsonl": "efcf948918e1b4f6c695998da21311d1fa766de57dbd84feedce5ae5ade11702"
+  },
+  "blend_attempt_id": "attempt-20260825T054707Z-dev1000blend",
+  "committed_byte_pins": {
+   "arm2-blend-mechanical-report.json": "c3ed01699a43087e719b917c751d1ce96d6b0992107d58437fc048fd12ba5930",
+   "arm2-blend-mechanical.json": "e55b6632d85a0037fb928d565fb2ef1b40c987c915dd98a9f2599d78113c828e",
+   "arm2-blend-outputs.jsonl": "542a029adca8fb8daf3618e8a049aecdba1b04aba30eafedb67099fb6e08cf14"
+  },
+  "content_facet_npz_sha256": "0bcb955a3a0ab84880f0d039ae702e77d1247ed23c3b8cecb468cbb1e0221c72",
+  "flight_gate": {
+   "cosine_agreement_probes_vs_kb_policy": 9000,
+   "dispatched_samples": 340,
+   "population": "DEV-1000-ALL",
+   "retain_dispatch_decision_matches": 986,
+   "retain_dispatch_decision_mismatches": [
+    {
+     "logged_contacts": 2,
+     "replayed_contacts": 1,
+     "sample_id": "slurp:devel:002303:audio-1501690619-headset"
+    },
+    {
+     "logged_contacts": 2,
+     "replayed_contacts": 1,
+     "sample_id": "slurp:devel:002814:audio-1490194699"
+    },
+    {
+     "logged_contacts": 2,
+     "replayed_contacts": 1,
+     "sample_id": "slurp:devel:002955:audio-1495733256-headset"
+    },
+    {
+     "logged_contacts": 2,
+     "replayed_contacts": 1,
+     "sample_id": "slurp:devel:009926:audio-1501697340-headset"
+    },
+    {
+     "logged_contacts": 2,
+     "replayed_contacts": 1,
+     "sample_id": "slurp:devel:009965:audio-1501754719"
+    },
+    {
+     "logged_contacts": 2,
+     "replayed_contacts": 1,
+     "sample_id": "slurp:devel:009968:audio-1490182854"
+    },
+    {
+     "logged_contacts": 2,
+     "replayed_contacts": 1,
+     "sample_id": "slurp:devel:009978:audio-1501753701"
+    },
+    {
+     "logged_contacts": 2,
+     "replayed_contacts": 1,
+     "sample_id": "slurp:devel:009999:audio-1501778625"
+    },
+    {
+     "logged_contacts": 2,
+     "replayed_contacts": 1,
+     "sample_id": "slurp:devel:010017:audio-1490371035-headset"
+    },
+    {
+     "logged_contacts": 2,
+     "replayed_contacts": 1,
+     "sample_id": "slurp:devel:010037:audio-1500386970-headset"
+    }
+   ],
+   "retain_dispatch_gate_passed": false,
+   "samples": 1000,
+   "supply_exact_matches": 340,
+   "supply_gate_passed": true,
+   "supply_mismatches": [],
+   "v2_override_deviation": {
+    "explanation": "the DEV-1000 BLEND arm flew the v2 delta>=0.14 retain-override, which the lock read FALSIFIED out of sample and which the locked v1 cell does not carry; the v1 replay therefore disagrees with the flown contact count on exactly the override fires. The override requires a RECOVERED direct label to disagree with, so it never fires on a dead-direct trajectory and cannot move this row's partition.",
+    "mismatch_count": 10,
+    "mismatches_all_explained_by_the_override": true,
+    "override_fires_in_population": 14,
+    "unexplained_mismatch_sample_ids": []
+   },
+   "vectorised_recall_probes_vs_kb_multidim_recall": 8
+  },
+  "halves": {
+   "EXPOSED-DEV500": {
+    "answer_content": {
+     "dead_direct": {
+      "answer_length_chars_median": 99.5,
+      "answers_with_zero_tokens_outside_the_modal_text": 19,
+      "distinct_contact0_texts": 117,
+      "distinct_tokens_per_answer_median": 9.0,
+      "label": "SLURP DEV-1000 prior-exposed nested DEV-500 dead-direct",
+      "modal_text_multiplicity": 19,
+      "n": 166,
+      "structurally_empty_answer_rate": 0.018072289156626505,
+      "structurally_empty_answers": 3,
+      "tokens_outside_the_group_modal_text_mean": 4.668674698795181,
+      "tokens_outside_the_group_modal_text_median": 5.0
+     },
+     "label_recovered": {
+      "answer_length_chars_median": 99.0,
+      "answers_with_zero_tokens_outside_the_modal_text": 19,
+      "distinct_contact0_texts": 214,
+      "distinct_tokens_per_answer_median": 9.0,
+      "label": "SLURP DEV-1000 prior-exposed nested DEV-500 label-recovered",
+      "modal_text_multiplicity": 19,
+      "n": 334,
+      "structurally_empty_answer_rate": 0.0,
+      "structurally_empty_answers": 0,
+      "tokens_outside_the_group_modal_text_mean": 4.682634730538922,
+      "tokens_outside_the_group_modal_text_median": 5.0
+     }
+    },
+    "dead_direct_flown_supply_cross_check": {
+     "distinct_contact0_texts": 117,
+     "distinct_contact0_texts_per_trajectory": 0.7048192771084337,
+     "distinct_query_vectors": 122,
+     "distinct_query_vectors_minus_distinct_texts": 5,
+     "distinct_query_vectors_per_trajectory": 0.7349397590361446,
+     "distinct_supplies": 112,
+     "distinct_supplies_inside_the_largest_key_cluster": 1,
+     "distinct_supplies_per_trajectory": 0.6746987951807228,
+     "embedding_is_a_pure_function_of_the_text": false,
+     "empty_supplies": 0,
+     "label": "SLURP DEV-1000 prior-exposed nested DEV-500 dead-direct, FLOWN supply, dispatched only",
+     "largest_identical_query_cluster_sample_ids": [
+      "slurp:devel:000331:audio-1499266133",
+      "slurp:devel:001012:audio-1499266025-headset",
+      "slurp:devel:002518:audio-1490366205",
+      "slurp:devel:004339:audio-1502374840",
+      "slurp:devel:006035:audio-1502376431-headset",
+      "slurp:devel:006367:audio-1490354336-headset",
+      "slurp:devel:006595:audio-1497868179",
+      "slurp:devel:006638:audio-1490184013",
+      "slurp:devel:007699:audio-1434530390-headset",
+      "slurp:devel:008786:audio-1494418486",
+      "slurp:devel:008899:audio-1498573073-headset",
+      "slurp:devel:010475:audio-1497867695",
+      "slurp:devel:011732:audio-1490356897-headset",
+      "slurp:devel:012096:audio-1498647470-headset",
+      "slurp:devel:014014:audio-1434532598",
+      "slurp:devel:014542:audio-1492784821",
+      "slurp:devel:014950:audio-1490368196-headset",
+      "slurp:devel:015297:audio-1497868380-headset",
+      "slurp:devel:017153:audio-1497449882"
+     ],
+     "largest_identical_query_cluster_share": 0.1144578313253012,
+     "largest_identical_query_cluster_size": 19,
+     "largest_identical_supply_size": 19,
+     "largest_identical_text_cluster_size": 19,
+     "n": 166
+    },
+    "dead_direct_n": 166,
+    "dead_direct_partition": {
+     "no-fields": 3,
+     "oov-pair": 143,
+     "swap-recoverable": 20
+    },
+    "dead_direct_rate": 0.332,
+    "degeneracy": {
+     "dead_direct": {
+      "distinct_contact0_texts": 117,
+      "distinct_contact0_texts_per_trajectory": 0.7048192771084337,
+      "distinct_query_vectors": 122,
+      "distinct_query_vectors_minus_distinct_texts": 5,
+      "distinct_query_vectors_per_trajectory": 0.7349397590361446,
+      "distinct_supplies": 112,
+      "distinct_supplies_inside_the_largest_key_cluster": 1,
+      "distinct_supplies_per_trajectory": 0.6746987951807228,
+      "embedding_is_a_pure_function_of_the_text": false,
+      "empty_supplies": 0,
+      "label": "SLURP DEV-1000 prior-exposed nested DEV-500 dead-direct",
+      "largest_identical_query_cluster_sample_ids": [
+       "slurp:devel:000331:audio-1499266133",
+       "slurp:devel:001012:audio-1499266025-headset",
+       "slurp:devel:002518:audio-1490366205",
+       "slurp:devel:004339:audio-1502374840",
+       "slurp:devel:006035:audio-1502376431-headset",
+       "slurp:devel:006367:audio-1490354336-headset",
+       "slurp:devel:006595:audio-1497868179",
+       "slurp:devel:006638:audio-1490184013",
+       "slurp:devel:007699:audio-1434530390-headset",
+       "slurp:devel:008786:audio-1494418486",
+       "slurp:devel:008899:audio-1498573073-headset",
+       "slurp:devel:010475:audio-1497867695",
+       "slurp:devel:011732:audio-1490356897-headset",
+       "slurp:devel:012096:audio-1498647470-headset",
+       "slurp:devel:014014:audio-1434532598",
+       "slurp:devel:014542:audio-1492784821",
+       "slurp:devel:014950:audio-1490368196-headset",
+       "slurp:devel:015297:audio-1497868380-headset",
+       "slurp:devel:017153:audio-1497449882"
+      ],
+      "largest_identical_query_cluster_share": 0.1144578313253012,
+      "largest_identical_query_cluster_size": 19,
+      "largest_identical_supply_size": 19,
+      "largest_identical_text_cluster_size": 19,
+      "n": 166
+     },
+     "label_recovered": {
+      "distinct_contact0_texts": 214,
+      "distinct_contact0_texts_per_trajectory": 0.6407185628742516,
+      "distinct_query_vectors": 239,
+      "distinct_query_vectors_minus_distinct_texts": 25,
+      "distinct_query_vectors_per_trajectory": 0.7155688622754491,
+      "distinct_supplies": 204,
+      "distinct_supplies_inside_the_largest_key_cluster": 1,
+      "distinct_supplies_per_trajectory": 0.6107784431137725,
+      "embedding_is_a_pure_function_of_the_text": false,
+      "empty_supplies": 1,
+      "label": "SLURP DEV-1000 prior-exposed nested DEV-500 label-recovered",
+      "largest_identical_query_cluster_sample_ids": [
+       "slurp:devel:000439:audio-1490369318",
+       "slurp:devel:000582:audio-1502891180-headset",
+       "slurp:devel:001051:audio-1434531139-headset",
+       "slurp:devel:001349:audio-1490108023",
+       "slurp:devel:001726:audio-1498572808-headset",
+       "slurp:devel:002040:audio-1488975262",
+       "slurp:devel:002058:audio-1494512880",
+       "slurp:devel:002515:audio-1498566482-headset",
+       "slurp:devel:003588:audio-1498757973-headset",
+       "slurp:devel:003613:audio-1502308872",
+       "slurp:devel:004501:audio-1495378276-headset",
+       "slurp:devel:004696:audio-1502311364-headset",
+       "slurp:devel:004872:audio-1498572114-headset",
+       "slurp:devel:005113:audio-1501765613",
+       "slurp:devel:005175:audio-1434536339",
+       "slurp:devel:005782:audio-1490360358-headset",
+       "slurp:devel:008848:audio-1490181437-headset"
+      ],
+      "largest_identical_query_cluster_share": 0.05089820359281437,
+      "largest_identical_query_cluster_size": 17,
+      "largest_identical_supply_size": 18,
+      "largest_identical_text_cluster_size": 19,
+      "n": 334
+     }
+    },
+    "label": "SLURP DEV-1000 prior-exposed nested DEV-500",
+    "label_recovered_n": 334,
+    "n": 500,
+    "reading_tier": "EXPOSED-TIER SECONDARY READING. This half was already read at the DEV-100 and DEV-500 tiers; reading it again is free and carries no lock authority.",
+    "retrieval": {
+     "dead_direct": {
+      "gold_facet_cosine_mean": 0.7776281860641178,
+      "gold_facet_cosine_median": 0.7721202655165373,
+      "gold_facet_position_median": 1.0,
+      "gold_in_top_5": 116,
+      "gold_in_top_5_rate_over_all_members": 0.6987951807228916,
+      "gold_present_in_kb": 166,
+      "label": "SLURP DEV-1000 prior-exposed nested DEV-500 dead-direct",
+      "n": 166
+     },
+     "label_recovered": {
+      "gold_facet_cosine_mean": 0.816683807297274,
+      "gold_facet_cosine_median": 0.8399033952006814,
+      "gold_facet_position_median": 1.0,
+      "gold_in_top_5": 252,
+      "gold_in_top_5_rate_over_all_members": 0.7544910179640718,
+      "gold_present_in_kb": 334,
+      "label": "SLURP DEV-1000 prior-exposed nested DEV-500 label-recovered",
+      "n": 334
+     }
+    },
+    "supply_semantics": "``distinct supplies`` counts the REPLAYED fusion decision, which the frozen fuser produces on every trajectory whether or not it dispatched, so the statistic is defined identically on both groups. ``dead_direct_flown_supply_cross_check`` recounts it on the FLOWN supply over the dispatched dead-direct members, and the flight gate has already proved replayed == flown on every dispatched trajectory.",
+    "tau_distance": {
+     "dead_direct": {
+      "below_tau_cosine_max": 0.647878063767349,
+      "below_tau_cosine_median": 0.6273850297242609,
+      "below_tau_cosine_min": 0.49136697717457656,
+      "counterfactual_disclosure": "OBSERVED DISTRIBUTION ONLY. This row measures where the gold facet sits under the query the flight ACTUALLY embedded. It does not and cannot measure where it would sit under a differently-constructed query: that needs a new embedding contact, which this row may not take. No projection of clearing tau is made.",
+      "gap_to_tau_max": 0.15863302282542346,
+      "gap_to_tau_median": 0.02261497027573911,
+      "gap_to_tau_min": 0.0021219362326510005,
+      "gap_to_tau_quartiles": [
+       0.011812,
+       0.022615,
+       0.052612
+      ],
+      "gap_to_tau_within_0_05": 11,
+      "gap_to_tau_within_0_10": 13,
+      "gold_facet_at_or_above_tau": 152,
+      "gold_facet_below_tau": 14,
+      "gold_facet_below_tau_rate": 0.08433734939759036,
+      "label": "SLURP DEV-1000 prior-exposed nested DEV-500 dead-direct",
+      "n_with_gold_facet_in_kb": 166,
+      "tau": 0.65
+     },
+     "label_recovered": {
+      "below_tau_cosine_max": 0.6487108913455285,
+      "below_tau_cosine_median": 0.6034423530390292,
+      "below_tau_cosine_min": 0.5505482800235014,
+      "counterfactual_disclosure": "OBSERVED DISTRIBUTION ONLY. This row measures where the gold facet sits under the query the flight ACTUALLY embedded. It does not and cannot measure where it would sit under a differently-constructed query: that needs a new embedding contact, which this row may not take. No projection of clearing tau is made.",
+      "gap_to_tau_max": 0.0994517199764986,
+      "gap_to_tau_median": 0.046557646960970867,
+      "gap_to_tau_min": 0.0012891086544715158,
+      "gap_to_tau_quartiles": [
+       0.017385,
+       0.046558,
+       0.082516
+      ],
+      "gap_to_tau_within_0_05": 8,
+      "gap_to_tau_within_0_10": 13,
+      "gold_facet_at_or_above_tau": 321,
+      "gold_facet_below_tau": 13,
+      "gold_facet_below_tau_rate": 0.038922155688622756,
+      "label": "SLURP DEV-1000 prior-exposed nested DEV-500 label-recovered",
+      "n_with_gold_facet_in_kb": 334,
+      "tau": 0.65
+     }
+    }
+   },
+   "UNEXPOSED-NEW500": {
+    "answer_content": {
+     "dead_direct": {
+      "answer_length_chars_median": 102.0,
+      "answers_with_zero_tokens_outside_the_modal_text": 14,
+      "distinct_contact0_texts": 133,
+      "distinct_tokens_per_answer_median": 9.0,
+      "label": "SLURP DEV-1000 unexposed NEW500 dead-direct",
+      "modal_text_multiplicity": 14,
+      "n": 160,
+      "structurally_empty_answer_rate": 0.0125,
+      "structurally_empty_answers": 2,
+      "tokens_outside_the_group_modal_text_mean": 5.18125,
+      "tokens_outside_the_group_modal_text_median": 5.5
+     },
+     "label_recovered": {
+      "answer_length_chars_median": 99.0,
+      "answers_with_zero_tokens_outside_the_modal_text": 26,
+      "distinct_contact0_texts": 217,
+      "distinct_tokens_per_answer_median": 9.0,
+      "label": "SLURP DEV-1000 unexposed NEW500 label-recovered",
+      "modal_text_multiplicity": 26,
+      "n": 340,
+      "structurally_empty_answer_rate": 0.0,
+      "structurally_empty_answers": 0,
+      "tokens_outside_the_group_modal_text_mean": 4.7176470588235295,
+      "tokens_outside_the_group_modal_text_median": 5.5
+     }
+    },
+    "dead_direct_flown_supply_cross_check": {
+     "distinct_contact0_texts": 133,
+     "distinct_contact0_texts_per_trajectory": 0.83125,
+     "distinct_query_vectors": 136,
+     "distinct_query_vectors_minus_distinct_texts": 3,
+     "distinct_query_vectors_per_trajectory": 0.85,
+     "distinct_supplies": 125,
+     "distinct_supplies_inside_the_largest_key_cluster": 1,
+     "distinct_supplies_per_trajectory": 0.78125,
+     "embedding_is_a_pure_function_of_the_text": false,
+     "empty_supplies": 0,
+     "label": "SLURP DEV-1000 unexposed NEW500 dead-direct, FLOWN supply, dispatched only",
+     "largest_identical_query_cluster_sample_ids": [
+      "slurp:devel:000708:audio-1490110600",
+      "slurp:devel:002428:audio-1498646653",
+      "slurp:devel:005372:audio-1502195298",
+      "slurp:devel:006249:audio-1501764008-headset",
+      "slurp:devel:006420:audio-1501693178-headset",
+      "slurp:devel:007969:audio-1497887183",
+      "slurp:devel:012022:audio-1490356929-headset",
+      "slurp:devel:012325:audio-1490103282",
+      "slurp:devel:013198:audio-1502896584",
+      "slurp:devel:013275:audio-1498646687-headset",
+      "slurp:devel:013480:audio-1492784796",
+      "slurp:devel:014654:audio-1490182989-headset",
+      "slurp:devel:015349:audio-1490194923"
+     ],
+     "largest_identical_query_cluster_share": 0.08125,
+     "largest_identical_query_cluster_size": 13,
+     "largest_identical_supply_size": 14,
+     "largest_identical_text_cluster_size": 14,
+     "n": 160
+    },
+    "dead_direct_n": 160,
+    "dead_direct_partition": {
+     "no-fields": 2,
+     "oov-pair": 139,
+     "swap-recoverable": 19
+    },
+    "dead_direct_rate": 0.32,
+    "degeneracy": {
+     "dead_direct": {
+      "distinct_contact0_texts": 133,
+      "distinct_contact0_texts_per_trajectory": 0.83125,
+      "distinct_query_vectors": 136,
+      "distinct_query_vectors_minus_distinct_texts": 3,
+      "distinct_query_vectors_per_trajectory": 0.85,
+      "distinct_supplies": 125,
+      "distinct_supplies_inside_the_largest_key_cluster": 1,
+      "distinct_supplies_per_trajectory": 0.78125,
+      "embedding_is_a_pure_function_of_the_text": false,
+      "empty_supplies": 0,
+      "label": "SLURP DEV-1000 unexposed NEW500 dead-direct",
+      "largest_identical_query_cluster_sample_ids": [
+       "slurp:devel:000708:audio-1490110600",
+       "slurp:devel:002428:audio-1498646653",
+       "slurp:devel:005372:audio-1502195298",
+       "slurp:devel:006249:audio-1501764008-headset",
+       "slurp:devel:006420:audio-1501693178-headset",
+       "slurp:devel:007969:audio-1497887183",
+       "slurp:devel:012022:audio-1490356929-headset",
+       "slurp:devel:012325:audio-1490103282",
+       "slurp:devel:013198:audio-1502896584",
+       "slurp:devel:013275:audio-1498646687-headset",
+       "slurp:devel:013480:audio-1492784796",
+       "slurp:devel:014654:audio-1490182989-headset",
+       "slurp:devel:015349:audio-1490194923"
+      ],
+      "largest_identical_query_cluster_share": 0.08125,
+      "largest_identical_query_cluster_size": 13,
+      "largest_identical_supply_size": 14,
+      "largest_identical_text_cluster_size": 14,
+      "n": 160
+     },
+     "label_recovered": {
+      "distinct_contact0_texts": 217,
+      "distinct_contact0_texts_per_trajectory": 0.638235294117647,
+      "distinct_query_vectors": 233,
+      "distinct_query_vectors_minus_distinct_texts": 16,
+      "distinct_query_vectors_per_trajectory": 0.6852941176470588,
+      "distinct_supplies": 196,
+      "distinct_supplies_inside_the_largest_key_cluster": 1,
+      "distinct_supplies_per_trajectory": 0.5764705882352941,
+      "embedding_is_a_pure_function_of_the_text": false,
+      "empty_supplies": 2,
+      "label": "SLURP DEV-1000 unexposed NEW500 label-recovered",
+      "largest_identical_query_cluster_sample_ids": [
+       "slurp:devel:000318:audio-1490110587-headset",
+       "slurp:devel:000346:audio-1498484306",
+       "slurp:devel:000490:audio-1494418387",
+       "slurp:devel:000657:audio-1499246338-headset",
+       "slurp:devel:000763:audio-1500387942-headset",
+       "slurp:devel:001197:audio-1490703299",
+       "slurp:devel:001466:audio-1490955932",
+       "slurp:devel:002179:audio-1502376837",
+       "slurp:devel:002544:audio-1490371937-headset",
+       "slurp:devel:003402:audio-1501685936-headset",
+       "slurp:devel:004291:audio-1502197220",
+       "slurp:devel:004424:audio-1490367463-headset",
+       "slurp:devel:004623:audio-1490184287-headset",
+       "slurp:devel:004697:audio-1498565381-headset",
+       "slurp:devel:005035:audio--1504190523",
+       "slurp:devel:005189:audio-1501758318",
+       "slurp:devel:005251:audio-1501415577",
+       "slurp:devel:005290:audio-1490108000",
+       "slurp:devel:005621:audio-1434532094-headset",
+       "slurp:devel:005666:audio-1502310029-headset"
+      ],
+      "largest_identical_query_cluster_share": 0.07058823529411765,
+      "largest_identical_query_cluster_size": 24,
+      "largest_identical_supply_size": 26,
+      "largest_identical_text_cluster_size": 26,
+      "n": 340
+     }
+    },
+    "label": "SLURP DEV-1000 unexposed NEW500",
+    "label_recovered_n": 340,
+    "n": 500,
+    "reading_tier": "SECONDARY READING. This is the locked baseline's own population (SAEA-DEV1000-BASELINE-LOCK, unexposed NEW500). Every statistic here is descriptive and MUST NOT be used to revise, re-tune or restate the LOCK.",
+    "retrieval": {
+     "dead_direct": {
+      "gold_facet_cosine_mean": 0.7929394677330134,
+      "gold_facet_cosine_median": 0.800468049393736,
+      "gold_facet_position_median": 1.0,
+      "gold_in_top_5": 112,
+      "gold_in_top_5_rate_over_all_members": 0.7,
+      "gold_present_in_kb": 160,
+      "label": "SLURP DEV-1000 unexposed NEW500 dead-direct",
+      "n": 160
+     },
+     "label_recovered": {
+      "gold_facet_cosine_mean": 0.8146162299451788,
+      "gold_facet_cosine_median": 0.8348699242919356,
+      "gold_facet_position_median": 1.0,
+      "gold_in_top_5": 260,
+      "gold_in_top_5_rate_over_all_members": 0.7647058823529411,
+      "gold_present_in_kb": 340,
+      "label": "SLURP DEV-1000 unexposed NEW500 label-recovered",
+      "n": 340
+     }
+    },
+    "supply_semantics": "``distinct supplies`` counts the REPLAYED fusion decision, which the frozen fuser produces on every trajectory whether or not it dispatched, so the statistic is defined identically on both groups. ``dead_direct_flown_supply_cross_check`` recounts it on the FLOWN supply over the dispatched dead-direct members, and the flight gate has already proved replayed == flown on every dispatched trajectory.",
+    "tau_distance": {
+     "dead_direct": {
+      "below_tau_cosine_max": 0.6490004029611174,
+      "below_tau_cosine_median": 0.5992505021438153,
+      "below_tau_cosine_min": 0.5304148114787447,
+      "counterfactual_disclosure": "OBSERVED DISTRIBUTION ONLY. This row measures where the gold facet sits under the query the flight ACTUALLY embedded. It does not and cannot measure where it would sit under a differently-constructed query: that needs a new embedding contact, which this row may not take. No projection of clearing tau is made.",
+      "gap_to_tau_max": 0.11958518852125533,
+      "gap_to_tau_median": 0.050749497856184766,
+      "gap_to_tau_min": 0.000999597038882638,
+      "gap_to_tau_quartiles": [
+       0.020708,
+       0.050749,
+       0.08024
+      ],
+      "gap_to_tau_within_0_05": 5,
+      "gap_to_tau_within_0_10": 8,
+      "gold_facet_at_or_above_tau": 150,
+      "gold_facet_below_tau": 10,
+      "gold_facet_below_tau_rate": 0.0625,
+      "label": "SLURP DEV-1000 unexposed NEW500 dead-direct",
+      "n_with_gold_facet_in_kb": 160,
+      "tau": 0.65
+     },
+     "label_recovered": {
+      "below_tau_cosine_max": 0.6452175636452476,
+      "below_tau_cosine_median": 0.6240113214453298,
+      "below_tau_cosine_min": 0.42151374733294766,
+      "counterfactual_disclosure": "OBSERVED DISTRIBUTION ONLY. This row measures where the gold facet sits under the query the flight ACTUALLY embedded. It does not and cannot measure where it would sit under a differently-constructed query: that needs a new embedding contact, which this row may not take. No projection of clearing tau is made.",
+      "gap_to_tau_max": 0.22848625266705236,
+      "gap_to_tau_median": 0.025988678554670186,
+      "gap_to_tau_min": 0.004782436354752395,
+      "gap_to_tau_quartiles": [
+       0.006203,
+       0.025989,
+       0.063522
+      ],
+      "gap_to_tau_within_0_05": 9,
+      "gap_to_tau_within_0_10": 10,
+      "gold_facet_at_or_above_tau": 328,
+      "gold_facet_below_tau": 12,
+      "gold_facet_below_tau_rate": 0.03529411764705882,
+      "label": "SLURP DEV-1000 unexposed NEW500 label-recovered",
+      "n_with_gold_facet_in_kb": 340,
+      "tau": 0.65
+     }
+    }
+   }
+  },
+  "m0_arm_role": "the M0 attempt is the baseline arm and carries no retrieval query: it takes one direct contact per sample and never embeds an answer. Every query vector in this row is the BLEND arm's, which is the only arm that has one.",
+  "m0_attempt_id": "attempt-20260825T053342Z-dev1000m0",
+  "query_text_identity": {
+   "direct_text_matches_flown_query_digest": 1000,
+   "passed": true,
+   "samples": 1000
+  },
+  "query_vector_source": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-DEV1000-BASELINE-LOCK/attempt-20260825T054707Z-dev1000blend/query-vectors.jsonl",
+  "run_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-DEV1000-BASELINE-LOCK/attempt-20260825T054707Z-dev1000blend",
+  "run_id": "SAEA-DEV1000-BASELINE-LOCK",
+  "snapshot_sha256": "e27b274516604ffc0e21319758aea99dc027f459d480a32a74a715b023a51b57"
+ },
+ "study": "speech-aware-evidence-acquisition",
+ "wall_seconds": 332.213
+}
