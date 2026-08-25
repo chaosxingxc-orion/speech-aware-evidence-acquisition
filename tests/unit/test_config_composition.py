@@ -1985,3 +1985,310 @@ def test_dev100_retain_override_a4_reuses_the_standing_r6_prompt_fit_envelope():
     assert "SAEA-SN-MF-DEV100-C3-PROMPT-FIT-NP8-R6" in precondition
     assert "6,174" in precondition and "8,192" in precondition
     assert "session receipt" in precondition
+
+
+def test_dev1000_baseline_lock_composes_with_the_v2_candidate_and_the_lock_statistic():
+    """The DEV-1000 BASELINE-LOCK campaign -- the ladder's terminal dev tier --
+    composes on the resident np8 BASE service, and its scientific contract is
+    machine-readable and pinned.
+
+    Five things are locked down here so a later edit cannot move them quietly.
+
+    First, POPULATION IDENTITY by both hash conventions: DEV-1000 itself, the
+    nested EXPOSED DEV-500, and the UNEXPOSED-500 statistic population. The
+    preregistration section 2 quotes DEV-100's load-split hash for DEV-1000 by
+    copy error; the fragment records that erratum explicitly and pins the
+    correct value, so the record stays auditable rather than silently
+    corrected.
+
+    Second, the v2 LOCK CANDIDATE is pinned and asserted knob-equal to the
+    frozen candidate file, with the delta retain-override bar carried
+    machine-readably. The bar's exposed-data fit is a REGISTERED DISCLOSURE and
+    must remain present in the fragment.
+
+    Third, the two preregistered arms (M0 / BLEND) and their worst-case contact
+    budgets, plus the explicit statement that BOTH fly the full 1,000 -- the
+    lock statistic's partition belongs to the separately registered one-touch
+    read, never to flight time.
+
+    Fourth, the LOCK STATISTIC: population, paired statistic, bootstrap spec,
+    McNemar, and the preregistered lock condition, which is strictly stronger
+    than "excludes zero" (90 percent CI lower bound >= +10 pp) and carries the
+    CONFIRMED-BUT-SHRUNKEN branch that does NOT lock.
+
+    Fifth, the section-4 ceilings and the DEV-1000 promotion receipt (1,000
+    packets) by absolute path and file hash.
+    """
+
+    from speech_aware_evidence_acquisition.e0.artifacts import REPO_ROOT
+
+    composed = compose(
+        REPO_ROOT,
+        "q4km-mmproj-free-speech-native-np8-base-speech-query-prefix-max64",
+        "slurp-speech-native-dev1000",
+        "slurp-dev1000-kb-alpha-blend",
+        "slurp-dev1000-baseline-lock-v1",
+    )
+    values = composed.values
+
+    assert values["experiment_id"] == "SAEA-DEV1000-BASELINE-LOCK"
+    assert values["execution_profile"] == "bounded-discovery-probe"
+
+    # ---- 1. population identity, both conventions ------------------------
+    assert values["split_name"] == "DEV-1000"
+    assert values["split_role"] == "dev"
+    assert values["count"] == 1000
+    assert values["audio_seconds_total"] == 2884.7936875
+    assert values["split_identity_hash"] == (
+        "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84"
+    )
+    split_block = values["dev1000_split"]
+    assert split_block["receipt_integrity_hash"] == (
+        "9fb44e3384b8ad8e0d8f825b88eb0a3051c218b699975051d8a0481aabc0243b"
+    )
+    # The erratum is recorded, not silently repaired.
+    erratum = split_block["preregistration_hash_erratum"]
+    assert "e9a7b7fe" in erratum and "8580d199" in erratum
+    assert "copy error" in erratum
+    assert "moves no sample" in erratum.lower()
+
+    nested = split_block["nested_exposed_subset"]
+    assert nested["count"] == 500
+    assert nested["split_identity_hash"] == (
+        "a00f8c8615ea9508a812f93117b9838f2a1a84ec2b3f06c07edc28b04da6acf4"
+    )
+    assert "never pooled" in nested["exposure"]
+
+    unexposed = split_block["unexposed_statistic_population"]
+    assert unexposed["count"] == 500
+    assert unexposed["audio_seconds_total"] == 1462.712
+    assert unexposed["split_identity_hash"] == (
+        "48a96f6fcb9cc391dd776aededa9c27ec4e89195b06a656ae68e814948416ecd"
+    )
+    assert unexposed["receipt_integrity_hash"] == (
+        "1d6d4ba61028c36f22f03de87d48afebeda1b53bd3b32b1a001e117068ddc66d"
+    )
+    # The nested + unexposed counts must exhaust the tier.
+    assert nested["count"] + unexposed["count"] == values["count"] == 1000
+    # The id-field convention is the A4 lesson, recorded so a later reader
+    # cannot repeat the empty-intersection bug.
+    assert "id" in unexposed["id_field_convention"]
+    assert "empty intersection" in unexposed["id_field_convention"]
+    assert unexposed["flight_time_use"].startswith("NONE")
+
+    # The receipts on disk must actually carry those hashes and partition.
+    dev1000_receipt = json.loads(
+        (REPO_ROOT / "docs" / "receipts" / "probe-samples" / "DEV-1000.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    dev500_receipt = json.loads(
+        (REPO_ROOT / "docs" / "receipts" / "probe-samples" / "DEV-500.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    new500_receipt = json.loads(
+        (
+            REPO_ROOT / "docs" / "receipts" / "probe-samples" / "DEV-1000-NEW500.json"
+        ).read_text(encoding="utf-8")
+    )
+    assert dev1000_receipt["run_identity_hash"] == values["split_identity_hash"]
+    assert dev1000_receipt["split_identity_hash"] == split_block["receipt_integrity_hash"]
+    assert new500_receipt["run_identity_hash"] == unexposed["split_identity_hash"]
+    dev1000_ids = {item["id"] for item in dev1000_receipt["items"]}
+    dev500_ids = {item["id"] for item in dev500_receipt["items"]}
+    new500_ids = {item["id"] for item in new500_receipt["items"]}
+    assert len(dev1000_ids) == 1000 and len(dev500_ids) == 500 and len(new500_ids) == 500
+    assert new500_ids == dev1000_ids - dev500_ids
+    assert not (new500_ids & dev500_ids)
+    assert new500_ids | dev500_ids == dev1000_ids
+
+    # ---- 2. the v2 lock candidate ----------------------------------------
+    candidate = values["dev1000_lock_candidate"]
+    candidate_path = REPO_ROOT / "configs" / "policy" / "kb-policy-v2-lock-candidate.json"
+    assert candidate["policy_config"] == "configs/policy/kb-policy-v2-lock-candidate.json"
+    candidate_file = json.loads(candidate_path.read_text(encoding="utf-8"))
+    # The fragment restates the candidate's knobs; they must EQUAL the file.
+    assert candidate["knobs"] == candidate_file["knobs"]
+    knobs = candidate["knobs"]
+    assert knobs["alpha"] == 0.45
+    assert knobs["tau"] == 0.65
+    assert knobs["fusion"] == {"m": 5, "c": 2, "l": 3}
+    assert knobs["prior_source"] == "train"
+    assert knobs["retain_override"]["bar"] == 0.14
+    # v2 supersedes v1, and the v1 knobs are byte-carried apart from the
+    # override -- the override adds a key, it does not move a knob.
+    v1 = json.loads(
+        (REPO_ROOT / "configs" / "policy" / "kb-policy-v1-dev100.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    assert candidate["supersedes"] == "configs/policy/kb-policy-v1-dev100.json"
+    assert candidate_file["supersedes"] == "configs/policy/kb-policy-v1-dev100.json"
+    for shared in (
+        "alpha",
+        "tau",
+        "recall_top_k_per_dimension",
+        "rank_weighting",
+        "rank_weights",
+        "fusion",
+        "prior_source",
+    ):
+        assert knobs[shared] == v1["knobs"][shared], shared
+    assert set(knobs) - set(v1["knobs"]) == {"retain_override"}
+
+    # The exposed-data fit is a REGISTERED disclosure; it must not vanish.
+    disclosure = candidate["delta_bar_fit_on_exposed_data_disclosure"]
+    assert "FIT on EXPOSED data" in disclosure
+    assert "DEV-500 NEW400" in disclosure
+    assert "voids this lock registration" in disclosure
+    assert candidate["branch_only_property"].startswith("recall, rank and fuse")
+    assert "rails/" in candidate["implementation_boundary"]
+
+    # ---- 3. the two arms, both flying the full tier ----------------------
+    arms = {arm["arm_id"]: arm for arm in values["dev1000_arms"]}
+    assert list(arms) == ["M0", "BLEND"]
+    assert arms["M0"]["contacts_per_sample"] == 1
+    assert arms["M0"]["worst_case_frozen_core_contacts"] == 1000
+    assert arms["BLEND"]["contacts_per_sample"] == 2
+    assert arms["BLEND"]["tool_contacts_per_sample"] == 1
+    assert arms["BLEND"]["worst_case_frozen_core_contacts"] == 2000
+    for arm in arms.values():
+        assert arm["flown_population"] == "DEV-1000 (all 1,000)"
+    # Ablations are explicitly NOT re-run at this tier.
+    assert values["dev1000_ablations_not_rerun"]["rule"] == (
+        "ablations are NOT re-run at this tier"
+    )
+    assert "SCALE-STABILITY" in values["dev1000_ablations_not_rerun"]["rationale"]
+
+    # ---- 4. the lock statistic and its preregistered condition -----------
+    statistic = values["dev1000_lock_statistic"]
+    assert statistic["population"] == (
+        "the 500 unexposed samples only (DEV-1000 minus DEV-500)"
+    )
+    assert statistic["population_count"] == unexposed["count"] == 500
+    assert statistic["statistic"] == "paired per-sample BLEND minus M0"
+    assert statistic["bootstrap"] == {
+        "kind": "paired cluster bootstrap",
+        "n_replicates": 10000,
+        "seed": 20260807,
+        "confidence_levels": [0.9, 0.95],
+    }
+    assert statistic["mcnemar_exact_on_discordant_pairs"] is True
+    # STRICTLY STRONGER than the DEV-500 condition: not "excludes zero".
+    assert statistic["lock_condition_pp"] == 10.0
+    assert statistic["lock_condition"] == (
+        "the 90 percent CI lower bound is at least +10 pp"
+    )
+    assert "excludes zero" not in statistic["lock_condition"]
+    assert "does NOT lock" in statistic["confirmed_but_shrunken"]
+    assert "returns the program to iteration" in statistic["confirmed_but_shrunken"]
+    assert any(
+        "exposed-500" in line and "never pooled" in line
+        for line in statistic["reported_alongside"]
+    )
+
+    # One-touch discipline, and the flight row's own scope limit.
+    assert "ONE registered read" in values["dev1000_one_touch"]["rule"]
+    scope = values["dev1000_one_touch"]["flight_row_scope"]
+    assert "MECHANICAL landing ONLY" in scope
+    assert "own registered read row" in scope
+
+    # ---- 5. ceilings and the promotion receipt ---------------------------
+    ceilings = values["dev1000_ceilings"]
+    assert ceilings["frozen_core_contacts_total"] == 3400
+    assert ceilings["pinned_tool_embedding_contacts_total"] == 1200
+    assert ceilings["metered_audio_seconds_total"] == 9000
+    assert ceilings["gpu_hours_total"] == 3.0
+    assert len(ceilings["mandatory_rails"]) == 6
+    # The worst case the launcher computes must fit the cells it declares.
+    assert (
+        arms["M0"]["worst_case_frozen_core_contacts"]
+        + arms["BLEND"]["worst_case_frozen_core_contacts"]
+        <= ceilings["frozen_core_contacts_total"]
+    )
+    assert 3 * values["audio_seconds_total"] <= ceilings["metered_audio_seconds_total"]
+    assert "RUN-CUMULATIVE" in ceilings["one_shot_semantics"]
+
+    assert values["speech_packet_promotion_receipt"].endswith("/DEV-1000-promotion.json")
+    assert values["speech_packet_promotion_receipt_sha256"] == (
+        "2accbdc5a2f39fa650218928f92ab7b304717e108646c78051f8c203426a8fe6"
+    )
+
+    # ---- serving surface: the resident np8 BASE service, unchanged -------
+    assert values["runtime_receipt"] == "receipts/runtime-q4km-mmproj-free.json"
+    assert values["profile_slot_count"] == 8
+    assert 65536 // values["profile_slot_count"] == 8192
+    assert values["prompt_order"] == "speech-query-prefix-v2"
+    assert values["server_args"] == [
+        "-c", "65536", "-np", "8", "-b", "2048", "-ub", "512",
+        "-fa", "on", "-ngl", "999", "-ctk", "q8_0", "-ctv", "q8_0",
+        "--cache-prompt", "--cache-ram", "0",
+        "--no-cache-idle-slots", "--slot-prompt-similarity", "0",
+    ]
+
+    # The pinned TRAIN snapshot, exactly the KB-BUILD receipt's own hash.
+    kb_receipt = json.loads(
+        (REPO_ROOT / "docs" / "receipts" / "knowledge" / "slurp-kb-size-full.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    assert values["dev1000_knowledge_snapshot"]["snapshot_sha256"] == (
+        kb_receipt["snapshot_sha256"]
+    )
+    assert values["dev1000_knowledge_snapshot"]["source_split"] == "train"
+
+    # Record the composed identity so a fragment edit is a visible test move.
+    assert composed.config_hash == (
+        "b94f81a6140467e861885167fa4f5ff0832e79d4fe5830d3e9fa9a0eb6986ab5"
+    )
+
+
+def test_dev1000_baseline_lock_reuses_the_standing_r6_prompt_fit_envelope():
+    """The lock arms carry NO new prompt-fit measurement: the delta override
+    changes only WHICH trajectories dispatch, never the prompt SHAPE, and M0
+    carries no evidence slot at all. So the standing session-bound row
+    SAEA-SN-MF-DEV100-C3-PROMPT-FIT-NP8-R6 binds both arms, and its
+    precondition is a session-receipt hash equality asserted before takeoff.
+
+    This test keeps the fragment honest about WHY the standing fit applies:
+    the supplied-value ceiling stays c*top_l, the runner renders zero facet
+    representations, and the envelope the R6 row measured is therefore the
+    worst case BLEND(v2) can reach.
+    """
+
+    from speech_aware_evidence_acquisition.e0.artifacts import REPO_ROOT
+
+    composed = compose(
+        REPO_ROOT,
+        "q4km-mmproj-free-speech-native-np8-base-speech-query-prefix-max64",
+        "slurp-speech-native-dev1000",
+        "slurp-dev1000-kb-alpha-blend",
+        "slurp-dev1000-baseline-lock-v1",
+    )
+    values = composed.values
+
+    precondition = values["dev1000_per_arm_discipline"]["prompt_fit_precondition"]
+    assert "SAEA-SN-MF-DEV100-C3-PROMPT-FIT-NP8-R6" in precondition
+    assert "6,174" in precondition and "8,192" in precondition
+    assert "+1,954" in precondition
+    assert "session receipt" in precondition
+    # The load-bearing reason, stated: the override moves dispatch, not shape.
+    assert "never its shape" in precondition
+    assert "ZERO facet representations" in precondition
+    # And the fail-closed consequence, stated.
+    assert "MF row" in precondition and "re-measure" in precondition
+    assert "negative margin STOPS the mission" in precondition
+
+    # The envelope arithmetic the standing row measured must still close
+    # against this composition's own slot geometry and completion reserve.
+    knobs = values["dev1000_lock_candidate"]["knobs"]
+    assert knobs["fusion"]["c"] * knobs["fusion"]["l"] == 6
+    assert knobs["fusion"]["m"] == 5
+    context_per_slot = 65536 // values["profile_slot_count"]
+    assert context_per_slot - 6174 - values["decoding_params"]["max_tokens"] == 1954
+
+    # The resend/canary discipline the row inherits.
+    discipline = values["dev1000_per_arm_discipline"]
+    assert discipline["record_server_np"] is True
+    assert discipline["record_identical_prompt_resend_pair"] is True

@@ -1,0 +1,208 @@
+{
+  "experiment_id": "SAEA-DEV1000-BASELINE-LOCK",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "DEV-1000 BASELINE LOCK -- the ladder's TERMINAL DEV TIER (preregistration docs/readiness/2026-08-24-dev1000-baseline-lock-preregistration.md; candidate selection docs/readiness/2026-08-25-lock-candidate-selection.md). Two arms fly over the FULL DEV-1000 view, seal, and are then read ONCE: M0 (prompt-matched direct decode, one contact per sample) and BLEND(v2), the frozen lock candidate = the v1 cell PLUS the delta >= 0.14 retain-override on the dispatch rule. The LOCK STATISTIC is computed ONLY over the 500 samples UNEXPOSED at this tier (DEV-1000 minus DEV-500); the 500 previously-exposed samples are scored and reported SEPARATELY and are never pooled into the lock claim. The lock condition is preregistered and strictly stronger than 'excludes zero': the 90 percent CI lower bound must be at least +10 pp. A CI that excludes zero but falls below +10 is recorded as CONFIRMED-BUT-SHRUNKEN and does NOT lock. This fragment is the machine-readable contract: arms, the v2 candidate hash-pin, the statistic and its population, the lock condition, and the section-4 ceilings. This fragment authorizes the FLIGHT and its MECHANICAL landing only; the one-touch read is a separately registered row. It makes NO test claim, NO generalization claim, and NO Stage-3 claim.",
+  "dev1000_lock_authority": {
+    "preregistration": "docs/readiness/2026-08-24-dev1000-baseline-lock-preregistration.md",
+    "candidate_selection": "docs/readiness/2026-08-25-lock-candidate-selection.md",
+    "confirmatory_verdict_gate": "docs/readiness/2026-08-24-dev500-confirmatory-verdict.md section 4.1",
+    "owner_rulings": "docs/readiness/2026-08-23-knowledge-plane-baseline-rulings.md",
+    "ruling_sections": ["2.2", "7.1", "7.2", "7.3"],
+    "reviewer_standards": [
+      "docs/readiness/2026-08-24-dev100-literature-consistency.md",
+      "docs/readiness/2026-08-24-dev100-reviewer-audit.md"
+    ]
+  },
+  "dev1000_dataset_fragment": "slurp-speech-native-dev1000",
+  "dev1000_split": {
+    "split_name": "DEV-1000",
+    "split_role": "dev",
+    "use_partition_role": "dev",
+    "receipt": "docs/receipts/probe-samples/DEV-1000.json",
+    "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84",
+    "receipt_integrity_hash": "9fb44e3384b8ad8e0d8f825b88eb0a3051c218b699975051d8a0481aabc0243b",
+    "count": 1000,
+    "audio_seconds_total": 2884.7936875,
+    "preregistration_hash_erratum": "the preregistration section 2 quotes 'identity e9a7b7fe...d853 load-split' for DEV-1000. That value is DEV-100's run_identity_hash, carried over by a copy error when the preregistration was drafted. The correct DEV-1000 load-split identity is 8580d199...3c84 (docs/receipts/probe-samples/DEV-1000.json run_identity_hash, equal to the runtime view's split_identity_hash field). The preregistration's OTHER quoted value, 9fb44e33...243b receipt-integrity, is correct and unchanged. This erratum moves no sample: the flown population is the same 1,000 ids in both readings, and both hashes are asserted in-script before takeoff.",
+    "nested_exposed_subset": {
+      "split_name": "DEV-500",
+      "receipt": "docs/receipts/probe-samples/DEV-500.json",
+      "split_identity_hash": "a00f8c8615ea9508a812f93117b9838f2a1a84ec2b3f06c07edc28b04da6acf4",
+      "receipt_integrity_hash": "c0f1c7531fb8972885abf1d840cc101bbfa38ae04e3929cc46e0f5b9ef35452b",
+      "count": 500,
+      "audio_seconds_total": 1422.0816875,
+      "exposure": "prior-exposed by the sealed DEV-100 campaign (rounds 0-5, K-WIDEN K1, A4) and the sealed DEV-500 confirmatory campaign; scored and reported SEPARATELY as a secondary reading, never pooled into the lock statistic. This is the DEV-500 nesting precedent applied one tier up."
+    },
+    "unexposed_statistic_population": {
+      "derivation": "DEV-1000 minus DEV-500 (deterministic set difference of the two frozen receipts; DEV-500 is an exact seeded subset of DEV-1000 by construction)",
+      "receipt": "docs/receipts/probe-samples/DEV-1000-NEW500.json",
+      "receipt_sha256": "1feefb8c327c0234160e96906bd5344cfef25ac665ddbb4db957fab067a234a3",
+      "split_identity_hash": "48a96f6fcb9cc391dd776aededa9c27ec4e89195b06a656ae68e814948416ecd",
+      "receipt_integrity_hash": "1d6d4ba61028c36f22f03de87d48afebeda1b53bd3b32b1a001e117068ddc66d",
+      "count": 500,
+      "audio_seconds_total": 1462.712,
+      "id_field_convention": "the receipt's items carry BOTH an 'id' field (slurp:devel:NNNNNN:audio-NNNNNNNNNN -- equal to the runtime view's sample_id) and a 'key' field (carrier-prefixed, slurp:slurp:devel:...). Set comparisons against the flown population MUST use 'id'; 'key' is the receipt-integrity hash basis only. Comparing on 'key' silently yields an empty intersection.",
+      "flight_time_use": "NONE. Both arms fly the FULL DEV-1000; no sub-selection happens at flight time. This population is pinned here so the separately registered one-touch read partitions a sealed, already-flown set rather than choosing one."
+    }
+  },
+  "dev1000_lock_candidate": {
+    "candidate_id": "v2",
+    "policy_config": "configs/policy/kb-policy-v2-lock-candidate.json",
+    "policy_config_sha256": "0c34ebe7be636b8e432bffe504b0175d1a122000a74051b183e09615de69033e",
+    "supersedes": "configs/policy/kb-policy-v1-dev100.json",
+    "supersedes_sha256": "0d36273eb2a5f4411ba9ca378ad820392e97c8759222087cf562e7f19442e2b0",
+    "frozen_at": "2026-08-25",
+    "construction": "the v1 frozen cell PLUS the delta >= 0.14 retain-override on the dispatch rule. Every v1 knob is byte-identical; the override adds no knob at all -- it changes which branch of _advance_after_direct a live-direct trajectory takes.",
+    "knobs": {
+      "alpha": 0.45,
+      "tau": 0.65,
+      "recall_top_k_per_dimension": 5,
+      "rank_weighting": "rrf",
+      "rank_weights": { "w_cos": 0.5, "w_prior": 0.3, "w_agree": 0.2 },
+      "fusion": { "m": 5, "c": 2, "l": 3 },
+      "prior_source": "train",
+      "boundary_stage": "not-flown",
+      "percept_admission": "facet-side (value vectors sealed)",
+      "retain_override": {
+        "signal": "delta = cos_top1 - cos_direct (retrieval-preference margin; runtime-legal, gold-free, computed by multidim_recall at no extra cost)",
+        "bar": 0.14,
+        "effect": "dispatch (override retain-primary) when delta >= bar, in addition to the standing dead-direct dispatch predicate"
+      }
+    },
+    "disagreement_condition": "MANDATORY -- the override fires only when the direct answer's own task target is NOT the fused top-1 target",
+    "branch_only_property": "recall, rank and fuse all run BEFORE _blend_scores, so the override changes the retain/dispatch BRANCH only and never which values are supplied. The launcher proves this per sample by comparing its own pure-function replay supply against the controller's own flown FusionDecision.",
+    "implementation_boundary": "the override is implemented ENTIRELY LAUNCHER-SIDE through rails.kb_policy's own pure functions and the normalizer keyword the REGISTERED controller factory already exposes. No file under src/speech_aware_evidence_acquisition/rails/ or core/ is modified by this campaign.",
+    "delta_bar_fit_on_exposed_data_disclosure": "REGISTERED HONESTY, carried verbatim from the candidate-selection document section 3: the delta bar was FIT on EXPOSED data (DEV-100 rounds 4 and 5, and DEV-500 NEW400) and is frozen as of 2026-08-25. The DEV-1000 unexposed-500 read therefore VALIDATES THE BAR and CONFIRMS THE CELL in a single touch. This is legitimate only because the bar is frozen BEFORE the read and the fit is declared here, in the flight row, and in every report that cites the lock. Any post-freeze change to the bar voids this lock registration.",
+    "lever_exhaustion_disclosure": "the override lever is close to exhausted at the DEV-100 tier: that tier's retain-override-loss class was 5 samples, the safe bar reaches 3, and the remaining two (delta 0.1282 and 0.0039) are unreachable at any bar that preserves the zero-loss property.",
+    "measured_at_selection": {
+      "dev100_v1_frozen": "72/100 (rounds 4 and 5, exact replication)",
+      "dev100_v2_candidate": "74/100 (A4), W-to-C 26, C-to-W 0",
+      "override_mechanism_gain": "+3 attributable (3/3 named recoveries, 0 disturbances, +3 contacts)",
+      "aggregate_delta_vs_v1": "+2, INSIDE the documented plus-minus-2 byte-variance channel; the mechanism channel is the claim, not the aggregate",
+      "dev500_v1_held_out": "unexposed-400 72.25 percent vs M0 52.50 percent, +19.75 pp, 90 percent CI [+16.5, +23.0]"
+    },
+    "levers_closed_by_evidence": {
+      "retrieval_width": "K-WIDEN K1 FLOWN: supply changed on 32/100 trajectories, 0 width-attributable flips",
+      "supply_budget": "projection over 600 sealed trajectories: 0 newly gold-supplied errors at ANY variant including unlimited budget; min(c*top_l, k) means the RECALL WINDOW binds, not the budget",
+      "alpha_tau_rank_weights": "inert (tau), degenerate (rank weights -- single-dimension facets make agreement a constant), or exhausted (alpha flat across [0.30, 0.45] once the label binding was repaired)",
+      "constrained_contact_zero": "rejected before flight -- recovering a direct label on every sample forces retain-primary to 100 percent and takes evidence contacts to ZERO"
+    }
+  },
+  "dev1000_policy_chain": {
+    "controller_policy_id": "saea-kb-alpha-blend-v1",
+    "ranker_policy_id": "saea-rank-wcos-prior-agree-v1",
+    "fuser_policy_id": "saea-fuse-supplyfilter-v1",
+    "agent_executor_id": "openjiuwen-workflow-v1",
+    "policy_config_baseline": "configs/policy/kb-policy-v2-lock-candidate.json",
+    "m11_pair_boundary_stage": false,
+    "m11_pair_boundary_rationale": "carried frozen from the sealed DEV-100 campaign cell; not a lock-tier variable",
+    "label_identity_repair_commit": "f1060078"
+  },
+  "dev1000_knowledge_snapshot": {
+    "snapshot_id": "slurp-kb-distmodel-76e61b0666162aa7",
+    "builder_policy_id": "saea-kb-distmodel-v1",
+    "receipt": "docs/receipts/knowledge/slurp-kb-size-full.json",
+    "snapshot_artifact_relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-full/snapshot.json",
+    "snapshot_sha256": "e27b274516604ffc0e21319758aea99dc027f459d480a32a74a715b023a51b57",
+    "source_split": "train",
+    "source_split_identity_hash": "6a6677e97a64063b8672b2d175bd6378bcf9b644346fa2d249cc2d80343b252c",
+    "facet_count": 11863,
+    "value_count": 11514
+  },
+  "dev1000_arms": [
+    {
+      "arm_id": "M0",
+      "description": "prompt-matched direct decode, in-session (removes the cross-build confound); one contact per sample over the FULL DEV-1000, no knowledge",
+      "contacts_per_sample": 1,
+      "tool_contacts_per_sample": 0,
+      "worst_case_frozen_core_contacts": 1000,
+      "flown_population": "DEV-1000 (all 1,000)"
+    },
+    {
+      "arm_id": "BLEND",
+      "description": "the frozen v2 lock candidate over the FULL DEV-1000: direct decode, then acquire, then evidence-conditioned decode on trajectories that are either dead-direct (the v1 predicate) or delta-overridden (the v2 addition); trajectories that retain stop at one contact. Every contact carries the original speech packet. The content-dimension query vector is the trajectory's OWN direct answer, embedded by the pinned CPU sidecar on 8082.",
+      "contacts_per_sample": 2,
+      "tool_contacts_per_sample": 1,
+      "worst_case_frozen_core_contacts": 2000,
+      "expected_frozen_core_contacts": "~1,400 at the ~40 percent dispatch rate projected from the sealed DEV-100/DEV-500 bases",
+      "flown_population": "DEV-1000 (all 1,000)"
+    }
+  ],
+  "dev1000_ablations_not_rerun": {
+    "rule": "ablations are NOT re-run at this tier",
+    "rationale": "the DEV-500 confirmatory established attribution (random-retrieval +4.0, random-exemplar -5.5) on an unexposed 400 with the SAME form; the lock tier tests SCALE-STABILITY of the established effect, not attribution.",
+    "reachability_ceiling": "recomputed scoring-side over the unexposed 500 as the standing charter substitute for a gold-conditioned oracle arm; disclosed wherever cited"
+  },
+  "dev1000_oracle_substitution": {
+    "literature_standard": "oracle/GT-prompt retrieval ceiling requires gold-conditioned supply at runtime",
+    "charter_constraint": "this repository's immutable charter forbids gold labels in runtime, so the oracle arm is NOT flown",
+    "registered_substitute": "analytic retrieval-reachability ceiling: gold-facet recall at k over the unexposed 500, computed scoring-side at the single registered read",
+    "disclosure": "the limitation is stated wherever the ceiling is cited"
+  },
+  "dev1000_one_touch": {
+    "rule": "all arms fly and seal, then ONE registered read of everything together; no knob change, no re-fly, no partial read, regardless of outcome; gold opens once, scoring-side, at that single read",
+    "variance_prior": "DEV-100 round-5 replication: plus-minus 2 per 100 at 8-slot decode (carried unchanged as the registered variance prior)",
+    "flight_row_scope": "this fragment and the campaign row SAEA-DEV1000-BASELINE-LOCK authorize the FLIGHT and its MECHANICAL landing ONLY. Gold, accuracy, and the lock verdict are OUT OF SCOPE here and require their own registered read row."
+  },
+  "dev1000_lock_statistic": {
+    "population": "the 500 unexposed samples only (DEV-1000 minus DEV-500)",
+    "population_receipt": "docs/receipts/probe-samples/DEV-1000-NEW500.json",
+    "population_count": 500,
+    "statistic": "paired per-sample BLEND minus M0",
+    "bootstrap": {
+      "kind": "paired cluster bootstrap",
+      "n_replicates": 10000,
+      "seed": 20260807,
+      "confidence_levels": [0.9, 0.95]
+    },
+    "lock_condition": "the 90 percent CI lower bound is at least +10 pp",
+    "lock_condition_pp": 10.0,
+    "lock_condition_rationale": "strictly stronger than 'excludes zero': the cell must RETAIN THE BULK of the DEV-500 margin (+19.75 pp, 90 percent CI [+16.5, +23.0]) at double scale, not merely stay positive",
+    "confirmed_but_shrunken": "a 90 percent CI that excludes zero but whose lower bound falls below +10 pp is recorded as CONFIRMED-BUT-SHRUNKEN. It does NOT lock; it returns the program to iteration.",
+    "mcnemar_exact_on_discordant_pairs": true,
+    "reported_alongside": [
+      "wrong-to-correct and correct-to-wrong counts, whatever they show",
+      "per-scenario confusion",
+      "the exposed-500 scores, separately, never pooled into the lock claim",
+      "the realized delta-trigger set and the delta distribution over all retain candidates",
+      "dispatch rate split into dead-direct dispatches and delta-override dispatches",
+      "the retrieval-reachability ceiling over the unexposed 500"
+    ]
+  },
+  "dev1000_ceilings": {
+    "frozen_core_contacts_total": 3400,
+    "pinned_tool_embedding_contacts_total": 1200,
+    "metered_audio_seconds_total": 9000,
+    "gpu_hours_total": 3.0,
+    "worst_case_accounting": "M0 1,000 core / 2,884.7937 audio-s plus BLEND 2,000 core / 5,769.5874 audio-s plus per-arm canary pairs and the BLEND resend = 3,009 core and 8,675.4 audio-s at absolute worst case, inside the 3,400 and 9,000 cells. Tool contacts are BLEND-only at one query embedding per trajectory: 1,000 plus jitter and margin, inside 1,200.",
+    "one_shot_semantics": "per ARM attempt; no silent intra-arm retry. planned_model_calls and planned_speech_audio_seconds are RUN-CUMULATIVE across every attempt of the run id and are enforced by core.model.adapter against a fresh sibling read of durable attempt actuals, so the BLEND arm's plan must cover the M0 arm's durable actual plus its own worst case.",
+    "mandatory_rails": [
+      "decode-rate sentinel: 1000 ms/token rolling median",
+      "canary: under 300 ms/token plus byte-compare against the recorded M0 hashes",
+      "GPU preflight: SmartFanMode == 3, enforced power limit >= 95 W, clock-lock check",
+      "AttemptStore pre-takeoff inspection (durable actuals first, unit lists never)",
+      "trace-sink isolation (main sink flushed first; canary/resend namespaced)",
+      "two-leg hosting recipe (systemd unit plus Windows keepalive client)"
+    ]
+  },
+  "dev1000_per_arm_discipline": {
+    "record_server_np": true,
+    "record_identical_prompt_resend_pair": true,
+    "resend_rationale": "the pcorrf divergence lesson: the campaign records the server -np and one byte-identical prompt resend pair on the BLEND arm",
+    "prompt_fit_precondition": "the STANDING session-bound row SAEA-SN-MF-DEV100-C3-PROMPT-FIT-NP8-R6 (6,174 tokens against 8,192, margin +1,954, measured at m=5 material including 5 facet texts and 6 values) covers BOTH lock arms WITHOUT re-measurement. BLEND(v2) flies the v1 cell's m=5 material unchanged, the supplied-value ceiling stays fusion_c 2 * fusion_top_l 3 = 6, and the flown runner renders ZERO facet representations, so the evidence-prompt WORST CASE is byte-identical to the one that row measured. The delta override changes only WHICH trajectories reach that envelope, never its shape, and M0 carries no evidence slot at all. The takeoff precondition is that the resident session receipt still hashes to the value the R6 row bound, asserted in-script before attach; if it does not, an MF row is registered and the fit is re-measured, and a negative margin STOPS the mission.",
+    "outputs": [
+      "per-arm contacts, carriage, failures and decode rates",
+      "dispatch rate split into dead-direct and delta-override dispatches, and retain-primary rate",
+      "the per-sample delta distribution and the realized trigger set",
+      "override fidelity: the launcher-side replay supply must equal the controller's own flown FusionDecision on every sample",
+      "prompt-reuse ratios, canary and resend byte identity",
+      "evidence-prompt declared-token distribution",
+      "contacts used and spend against every ceiling cell"
+    ]
+  },
+  "dev1000_scope": {
+    "positive_read": "a LOCK records the v2 cell as THE BASELINE VERSION for large-scale experiments: its config hash, KB snapshot hash, code commits, serving profile and measured dev profile become the reference point every later comparison cites. It authorizes the Audio2Tool generality campaign to run against the same locked form and gives the training-free RL work a fixed environment to optimize a controller against.",
+    "negative_read": "a negative or materially shrunken read returns the program to knowledge construction -- key construction (multi-dimensional K activation) and the v5 pair-boundary material -- WITHOUT touching test",
+    "never": "no test contact, no superiority claim, no generalization claim, no Stage-3 activity. Those remain owner decisions under OWNER_GO_AND_PAPER_EXECUTION_CONTRACT."
+  }
+}
