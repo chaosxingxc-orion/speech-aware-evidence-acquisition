@@ -2292,3 +2292,219 @@ def test_dev1000_baseline_lock_reuses_the_standing_r6_prompt_fit_envelope():
     discipline = values["dev1000_per_arm_discipline"]
     assert discipline["record_server_np"] is True
     assert discipline["record_identical_prompt_resend_pair"] is True
+
+
+def test_a2t_g1_fragments_compose_and_carry_the_derived_serving_geometry():
+    """Audio2Tool stage G1: the four committed fragments compose, the policy
+    cell is the byte-identical locked v1 cell, and the serving geometry the
+    composition declares is the OUTPUT of the campaign plan's section 8.1
+    derivation rule -- slot width clears the measured worst-case envelope plus
+    the speech allowance plus the derived output ceiling, with the margin the
+    fragment states."""
+
+    from speech_aware_evidence_acquisition.e0.artifacts import REPO_ROOT
+
+    composed = compose(
+        REPO_ROOT,
+        "q4km-mmproj-free-speech-native-np2-a2t-max1024",
+        "audio2tool-g1-104",
+        "a2t-g1-kb-alpha-blend",
+        "a2t-g1-v1",
+    )
+    values = composed.values
+    assert values["experiment_id"] == "SAEA-A2T-G1"
+    assert values["execution_profile"] == "bounded-discovery-probe"
+    assert values["carrier_lock_key"] == "audio2tool"
+
+    # The derived geometry, and it must clear its own stated requirement.
+    args = list(values["server_args"])
+    context_total = int(args[args.index("-c") + 1])
+    parallel = int(args[args.index("-np") + 1])
+    assert (context_total, parallel) == (65536, 2)
+    assert values["profile_slot_count"] == 2
+    per_slot = context_total // parallel
+    assert per_slot == 32768
+    output_ceiling = int(values["decoding_params"]["max_tokens"])
+    assert output_ceiling == 1024
+
+    derivation = values["a2t_g1_serving_geometry_derivation"]
+    envelopes = derivation["step_1_measured_envelopes"]
+    worst = int(envelopes["blend_evidence_decode_worst_text_tokens"])
+    speech = int(envelopes["speech_allowance_tokens"])
+    assert int(envelopes["m0_direct_decode_text_tokens"]) == 13236
+    assert worst == 19047
+    slot = derivation["step_3_slot_width"]
+    assert slot["tokens_per_slot"] == per_slot
+    assert slot["parallel_slots"] == parallel
+    assert slot["context_total"] == context_total
+    # The requirement and margin the fragment states are ARITHMETIC, not prose.
+    assert slot["requirement_worst_case"] == worst + speech + output_ceiling
+    assert slot["margin_tokens"] == per_slot - slot["requirement_worst_case"]
+    assert slot["margin_tokens"] > 0
+    # np3 is the smallest that clears at all, and it clears by far less.
+    smallest = int(slot["smallest_clearing_np"])
+    assert smallest == 3
+    assert context_total // smallest > slot["requirement_worst_case"]
+    assert context_total // (smallest + 1) < slot["requirement_worst_case"]
+    assert slot["smallest_clearing_np_margin"] == (
+        context_total // smallest - slot["requirement_worst_case"]
+    )
+    assert int(derivation["step_2_output_ceiling"]["value"]) == output_ceiling
+
+    # Amendment 2 framing: derived by a rule, not a disclosed exception.
+    claim = values["a2t_g1_claim"]
+    assert "BYTE-IDENTICAL" in claim["policy_cell"]
+    assert "DERIVED PER CARRIER" in claim["serving_geometry"].upper()
+    assert "not a degree of freedom" in claim["serving_geometry"]
+
+
+def test_a2t_g1_policy_cell_is_the_byte_identical_locked_v1_cell():
+    """The G1 experiment fragment's knob table must equal the committed v1
+    policy cell's own knob table, key for key -- the transfer claim in code."""
+
+    from speech_aware_evidence_acquisition.e0.artifacts import REPO_ROOT
+
+    composed = compose(
+        REPO_ROOT,
+        "q4km-mmproj-free-speech-native-np2-a2t-max1024",
+        "audio2tool-g1-104",
+        "a2t-g1-kb-alpha-blend",
+        "a2t-g1-v1",
+    )
+    fragment_knobs = composed.values["a2t_g1_policy_cell"]["knobs"]
+    cell_path = REPO_ROOT / "configs" / "policy" / "kb-policy-v1-dev100.json"
+    cell_knobs = json.loads(cell_path.read_text(encoding="utf-8"))["knobs"]
+    assert fragment_knobs == cell_knobs
+    assert fragment_knobs["alpha"] == 0.45
+    assert fragment_knobs["tau"] == 0.65
+    assert fragment_knobs["recall_top_k_per_dimension"] == 5
+    assert fragment_knobs["fusion"] == {"m": 5, "c": 2, "l": 3}
+    assert fragment_knobs["percept_admission"] == "facet-side (value vectors sealed)"
+    # The v2 delta retain-override is explicitly NOT carried onto this carrier.
+    assert "retain_override" not in fragment_knobs
+    assert "NOT CARRIED" in composed.values["a2t_g1_policy_cell"]["delta_retain_override"]
+
+
+def test_a2t_g1_split_pins_agree_across_the_fragments_and_the_receipt():
+    """Both hash conventions, the count and the audio total must agree between
+    the dataset fragment, the experiment fragment and the committed subset
+    receipt; and the subset must be a subset of the frozen exposed 400 when
+    compared on sample_id (comparing on the receipt's carrier-prefixed key
+    field silently yields an empty intersection)."""
+
+    from speech_aware_evidence_acquisition.e0.artifacts import REPO_ROOT
+
+    composed = compose(
+        REPO_ROOT,
+        "q4km-mmproj-free-speech-native-np2-a2t-max1024",
+        "audio2tool-g1-104",
+        "a2t-g1-kb-alpha-blend",
+        "a2t-g1-v1",
+    )
+    values = composed.values
+    receipt = json.loads(
+        (REPO_ROOT / "docs" / "receipts" / "a2t" / "A2T-G1-104.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    split = values["a2t_g1_split"]
+    assert values["a2t_g1_split_identity_hash"] == receipt["split_identity_hash"]
+    assert values["a2t_g1_run_identity_hash"] == receipt["run_identity_hash"]
+    assert split["split_identity_hash"] == receipt["split_identity_hash"]
+    assert split["run_identity_hash"] == receipt["run_identity_hash"]
+    assert values["a2t_g1_count"] == receipt["count"] == 104
+    assert split["count"] == 104
+    assert abs(values["a2t_g1_audio_seconds_total"] - receipt["audio_seconds_total"]) < 1e-6
+    assert set(receipt["strata_counts"].values()) == {13}
+    assert len(receipt["strata_counts"]) == 8
+
+    parent = json.loads(
+        (
+            REPO_ROOT / "docs" / "receipts" / "probe-samples" / "r1-audio2tool-sample.json"
+        ).read_text(encoding="utf-8")
+    )
+    parent_ids = {
+        "%s:%06d" % (item["tier"], int(item["id"])) for item in parent["items"]
+    }
+    subset_ids = {item["sample_id"] for item in receipt["items"]}
+    assert len(parent_ids) == 400
+    assert subset_ids <= parent_ids
+    assert receipt["parent_split_identity_hash"] == parent["split_identity_hash"]
+    # The exposure disclosure must survive: this tier is never the claim.
+    assert "EXPOSED" in split["exposure"]
+    assert "SECONDARY" in split["exposure"]
+
+
+def test_a2t_g1_ceilings_cover_the_worst_case_flight_chain():
+    """The registered ceilings must cover the run-cumulative worst case of the
+    two-arm chain computed from the pinned subset, and the packet promotion
+    receipt the baseline pins must be the one the preprocess row landed."""
+
+    from speech_aware_evidence_acquisition.e0.artifacts import REPO_ROOT
+
+    composed = compose(
+        REPO_ROOT,
+        "q4km-mmproj-free-speech-native-np2-a2t-max1024",
+        "audio2tool-g1-104",
+        "a2t-g1-kb-alpha-blend",
+        "a2t-g1-v1",
+    )
+    values = composed.values
+    ceilings = values["a2t_g1_ceilings"]
+    count = int(values["a2t_g1_count"])
+    # canary pair, allowed one re-run, plus the loop, plus the BLEND resend
+    m0_worst = 2 * 2 + count * 1
+    blend_worst = 2 * 2 + count * 2 + 1
+    assert m0_worst + blend_worst <= ceilings["frozen_core_contacts_total"]
+    assert count + 2 <= ceilings["pinned_tool_embedding_contacts_total"]
+    audio = float(values["a2t_g1_audio_seconds_total"])
+    assert audio * 3 < ceilings["metered_audio_seconds_total"]
+    assert ceilings["gpu_hours_total"] == 0.6
+
+    # The canary gate's semantics must stay stated: per-token, not wall time.
+    rails = " ".join(ceilings["mandatory_rails"])
+    assert "PER-TOKEN rate, not wall time" in rails
+    assert "canary hash authority" in rails
+    assert "OWN" in rails
+
+    # The packet prerequisite is pinned by hash in two independent places.
+    assert values["speech_packet_promotion_receipt_sha256"] == (
+        values["a2t_g1_serving_geometry_derivation"]["step_5_packet_prerequisite"][
+            "promotion_receipt_sha256"
+        ]
+    )
+    assert values["speech_packet_promotion_receipt"].endswith(
+        "A2T-G1-104-promotion.json"
+    )
+
+
+def test_a2t_g1_preprocess_fragments_compose_and_keep_the_gpu_decoder_out():
+    """The label-free preprocessing composition must be CPU-only, must write
+    into a build-scoped legacy cache separate from the older A2T cache, and
+    must say so."""
+
+    from speech_aware_evidence_acquisition.e0.artifacts import REPO_ROOT
+
+    composed = compose(
+        REPO_ROOT,
+        "q4km-preprocess-featcache-cpu-sidecar-a2t",
+        "audio2tool-g1-104",
+        "speech-native-preprocess",
+        "a2t-g1-preprocess",
+    )
+    values = composed.values
+    assert values["experiment_id"] == "SAEA-SN-A2T-G1-PREPROCESS"
+    args = list(values["server_args"])
+    assert args[args.index("-ngl") + 1] == "0"
+    assert "--no-mmproj-offload" in args
+    assert values["base_url"].endswith(":8081")
+    assert values["runtime_receipt"] == "receipts/runtime-q4km-preprocess.json"
+    assert values["decoding_params"]["max_tokens"] == 1
+    cache = values["server_env"]["LLAMA_MTMD_FEAT_CACHE_DIR"]
+    assert cache == "/home/chao/feat-cache/audio2tool-q4km-04ccc72a"
+    assert cache != "/home/chao/feat-cache/audio2tool-q4km"
+    scope = values["a2t_g1_preprocess_scope"]
+    assert scope["legacy_cache_dir"] == cache
+    assert scope["count"] == 104
+    assert "5d9dfcb5" in values["purpose"]
+    assert "load_slurp_engineering_gate" in scope["promotion_path"]

@@ -1,0 +1,20 @@
+{
+  "arm": "speech-feature-query",
+  "policy": "fixed",
+  "evidence_source": "none",
+  "evidence_mismatch": false,
+  "obs_batch_samples": 1,
+  "allow_empty_speech_feature_evidence": true,
+  "speech_packet_promotion_receipt": "/home/chao/feat-cache/a2t-q4km-packets-04ccc72a/A2T-G1-104-promotion.json",
+  "speech_packet_promotion_receipt_sha256": "be07c69c030fc12e56e4e2e1f5e08423636a84fb823d16293fae7bf5819218bc",
+  "profile_queue_depth_multiplier": 1,
+  "profile_validation_workers": 8,
+  "speech_native_result_mode": "predictions",
+  "speech_native_contact_ceiling_per_task": 2,
+  "speech_native_dispatch_granularity": "contact",
+  "speech_native_agent_executor_id": "openjiuwen-workflow-v1",
+  "scorers": [
+    "cost"
+  ],
+  "task_instruction": "Answer the spoken command from the speech query alone, emitting only a JSON array of tool calls against the tool registry already given. When knowledge evidence is supplied it is auxiliary support for the same speech query, never a replacement for it; gold labels and reference transcripts are unavailable at runtime."
+}

@@ -1,0 +1,149 @@
+{
+  "experiment_id": "SAEA-A2T-G1",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "AUDIO2TOOL GENERALITY CAMPAIGN, STAGE G1 -- MECHANICS AND FIRST SIGNAL on the EXPOSED tier, under the serving geometry DERIVED for this carrier by the campaign plan's section 8.1 rule. Two arms fly the frozen 104-item subset A2T-G1-104 and are then sealed and read in the same registered mission: M0 (prompt-matched direct decode, the full 152-row registry in the system message, one contact per sample) and BLEND (the locked v1 policy cell, carried BYTE-IDENTICAL, over the A2T tool-shaped knowledge base, two contacts per dispatched sample). G1 authorizes MECHANICS ONLY: its population is EXPOSED, so its numbers are SECONDARY readings under plan section 3.3 and can never be the campaign claim. The generality claim belongs to G2 on the unexposed tier, with a comparator and an interval, and cannot be reached from anything measured here.",
+  "a2t_g1_authority": {
+    "campaign_plan": "docs/readiness/2026-08-25-a2t-generality-campaign-plan.md",
+    "governing_sections": ["3.3", "3.4", "3.5", "3.6", "7", "8"],
+    "amendment_1": "section 7 (2026-08-25, coordinator, commit 468a4d67) -- the transfers-unchanged claim is split after the zero-spend G1 prompt-fit stop",
+    "amendment_2": "section 8 (2026-08-25, OWNER RULING, commit bb6d22ef) -- serving geometry is a FUNCTION OF THE TASK CONTRACT, derived per carrier by the fixed section 8.1 rule, and is NOT an exception to the transfer claim. This fragment states the claim in Amendment 2's terms and uses no deviation framing.",
+    "g0_gate": "docs/readiness/2026-08-25-a2t-g0-report.md -- lexical reachability ceiling at k=5 0.7925 against the A0 tool accuracy 0.5425, PASS with +25.00 pp",
+    "prompt_fit_predecessor": "docs/checks/speech-aware-evidence-acquisition/2026-08-25-a2t-g1-prompt-fit/ -- the np8 measurement that stopped the first G1 attempt at zero spend and supplied this derivation's measured inputs",
+    "locked_cell": "docs/readiness/2026-08-25-baseline-lock-verdict.md",
+    "a0_comparator": "docs/readiness/2026-08-18-pa2t-a0-verdict.md -- tool accuracy 0.5425, exact match 0.2425 on the frozen exposed 400"
+  },
+  "a2t_g1_claim": {
+    "policy_cell": "THE LOCKED POLICY CELL TRANSFERS BYTE-IDENTICAL. alpha 0.45, tau 0.65, recall top-k 5, fusion m 5 / c 2 / top_l 3, rank weighting rrf with w_cos 0.5 / w_prior 0.3 / w_agree 0.2, TRAIN priors, boundary stage not flown, facet-side percept admission with value vectors sealed, and the f1060078 label-identity binding repair live. Not one of them is changed for this carrier.",
+    "serving_geometry": "SERVING GEOMETRY IS DERIVED PER CARRIER BY THE SECTION 8.1 RULE. It is the output of a mechanical, pre-registered derivation from the task contract, applied uniformly to every arm and fixed before any result was seen -- not a degree of freedom of the method and not a deviation from a baseline.",
+    "framing_note": "Holding slot width and output ceiling fixed across carriers is not neutrality: it forces two tasks into one ill-fitting shape and contaminates the comparison with the shape's own effects. SLURP's 60-label contract implies 8,192/64; Audio2Tool's 151-tool registry implies 32,768/1024. Both are consequences of the same rule."
+  },
+  "a2t_g1_serving_geometry_derivation": {
+    "rule": "campaign plan section 8.1, applied to this carrier before its first flight",
+    "step_1_measured_envelopes": {
+      "source": "docs/checks/speech-aware-evidence-acquisition/2026-08-25-a2t-g1-prompt-fit/prompt-fit.json sha256 fd1edfa1d7fc6aa852775d368865237a24d3033f7c56f92e6ab7752d24ea69c6",
+      "method": "exact counts from the resident service's own tokenizer, through the REAL rails.runner._agent_messages shapes with the Audio2ToolAdapter supplying build_task_contract and assemble_prompt; the 50,291-character registry is counted exactly once",
+      "m0_direct_decode_text_tokens": 13236,
+      "blend_evidence_decode_worst_text_tokens": 19047,
+      "speech_allowance_tokens": 514,
+      "speech_allowance_basis": "the landed np8 SLURP receipt's own measured rate, 117 tokens / 8.126875 s and 78 / 5.312 s, about 14.4 tokens per second, applied to this carrier's longest item tier7_multiturn:001590 at 35.714 s"
+    },
+    "step_2_output_ceiling": {
+      "value": 1024,
+      "basis": "the task's output-shape upper bound -- a JSON call list, not a single label -- and equal to the value the A0 baseline registered for this carrier in configs/model/q4km-featcache.json. Never a performance choice."
+    },
+    "step_3_slot_width": {
+      "context_total": 65536,
+      "parallel_slots": 2,
+      "tokens_per_slot": 32768,
+      "requirement_worst_case": 20585,
+      "requirement_basis": "19,047 worst evidence envelope + 514 speech allowance + 1,024 output ceiling",
+      "margin_tokens": 12183,
+      "smallest_clearing_np": 3,
+      "smallest_clearing_np_margin": 1260,
+      "chosen_np_rationale": "-np 3 is the smallest value that clears at all, by only about 1.3k tokens; -np 2 is the first setting with real headroom. -c stays at the profile's 65,536, so total context, KV allocation and VRAM are unchanged and the only cost is achievable parallelism.",
+      "measured_live": "the spawned service's own startup log records n_slots = 2 and n_ctx = 32768 per slot"
+    },
+    "step_4_uniformity": "ALL arms of this carrier fly the identical derived geometry. The M0-vs-BLEND comparison, which is the entire claim, is therefore unaffected by it.",
+    "step_5_packet_prerequisite": {
+      "why": "the derived geometry serves --no-mmproj, so the decoder cannot encode audio itself and every arm needs one audited speech-feature packet per sample",
+      "row": "SAEA-SN-A2T-G1-PREPROCESS",
+      "promotion_receipt_sha256": "be07c69c030fc12e56e4e2e1f5e08423636a84fb823d16293fae7bf5819218bc",
+      "shared_by": "every arm including M0"
+    },
+    "retrospective_consistency": "the SLURP geometry (8,192-token slots via -c 65536 -np 8, max_tokens 64) satisfies the same rule: measured worst evidence envelope 6,174 plus speech plus a 64-token reserve inside 8,192, margin +1,954. The locked baseline is the policy cell under a contract-derived geometry, which is the form that generalizes."
+  },
+  "a2t_g1_policy_cell": {
+    "policy_config": "configs/policy/kb-policy-v1-dev100.json",
+    "policy_config_sha256": "0d36273eb2a5f4411ba9ca378ad820392e97c8759222087cf562e7f19442e2b0",
+    "knobs": {
+      "alpha": 0.45,
+      "tau": 0.65,
+      "recall_top_k_per_dimension": 5,
+      "rank_weighting": "rrf",
+      "rank_weights": { "w_cos": 0.5, "w_prior": 0.3, "w_agree": 0.2 },
+      "fusion": { "m": 5, "c": 2, "l": 3 },
+      "prior_source": "train",
+      "boundary_stage": "not-flown",
+      "percept_admission": "facet-side (value vectors sealed)"
+    },
+    "delta_retain_override": "NOT CARRIED. The v2 lock candidate's delta >= 0.14 retain-override is a SLURP-fit mechanism whose bar was fit on SLURP exposed data and whose own out-of-sample read damaged 3 of 3 trajectories it touched on the unexposed 500. G1 carries v1, which is also the cell the baseline-lock verdict records as the version whose margin the falsified override did not create (+20.80 pp without it).",
+    "implementation_boundary": "the cell is constructed launcher-side through rails.kb_policy's OWN registered factories. No file under src/speech_aware_evidence_acquisition/rails/ or core/ is modified, monkeypatched or subclassed by this campaign."
+  },
+  "a2t_g1_carrier_analogues": {
+    "why_this_block_exists": "two functions in the locked cell are defined against SLURP's label shape and have to be re-expressed for a carrier whose answer is a JSON call list. They are CARRIER ANALOGUES of the same rule, not knob changes, and they are stated here so a reviewer can see exactly what was re-expressed.",
+    "label_vocabulary": "the A2T knowledge snapshot yields 151 label identities via rails.kb_policy._label_identities, all of kind tool (facet:label:tool:NAME -> NAME). Domain and category label facets carry values with more than one task target and are correctly excluded by the same rule SLURP uses.",
+    "direct_label_recovery": {
+      "slurp_form": "parse the answer's own scenario and action fields, join as scenario_action, match EXACTLY against the label vocabulary (the f1060078 repair)",
+      "a2t_form": "parse the answer's own call list with the frozen scorer's parser reproduction.toolcall_scoring.parse_tool_calls_text, take the PRIMARY tool name (the first call's name), match EXACTLY against the label vocabulary; ties broken by facet_id ascending, exactly as the SLURP function does",
+      "why_primary": "the knowledge base indexes one construction unit per value and each value's task_target is that unit's PRIMARY gold tool, so the primary name is the projection the label vocabulary is actually built on",
+      "measured_property_of_the_subset": "78 of 104 gold call lists are single-call, so for those the primary name and the tool-name multiset carry the same information; 26 are multi-call (2 to 5 calls) and every one of them names at least two DISTINCT tools, so for those the projection is lossy. All 104 gold primary names are inside the 151-tool label vocabulary.",
+      "disclosure": "the SCORER never uses this projection. Tool accuracy is equality of the full tool-name MULTISET and exact match is equality of the full name-plus-argument multiset. The projection governs only which branch of the dispatch rule a trajectory takes, exactly as the SLURP normalizer does."
+    }
+  },
+  "a2t_g1_split": {
+    "split_name": "A2T-G1-104",
+    "split_role": "discovery",
+    "receipt": "docs/receipts/a2t/A2T-G1-104.json",
+    "receipt_sha256": "b42f0953a0d168955ba5ddfc77f2c300aacb54e48dce902d1b3d4a109c1996db",
+    "split_identity_hash": "516f92d9b919640969676eb10b776d9c479169fb0a387497e943c726b2191326",
+    "run_identity_hash": "f5a030189cf80dcbc52899e2fa5f819bac03874f2ad3f9645fdc60c432a9bf3a",
+    "count": 104,
+    "audio_seconds_total": 587.017,
+    "strata": "13 items per tier over 8 tiers, seed 20260807, deterministic and pool-order independent",
+    "exposure": "EXPOSED. Drawn from the frozen 400-item discovery split already read by the A0 baseline, P-EMB-2 and the S2/S2b/S2c probes. Plan section 3.3: the exposed tier may fly but its numbers are SECONDARY readings, never the claim.",
+    "id_field_convention": "sample_id is tier:NNNNNN; the receipt's key field is audio2tool:tier:NNNNNN and is the split_identity_hash basis only. Set comparisons against a flown population MUST use sample_id; comparing on key yields a silently empty intersection."
+  },
+  "a2t_g1_knowledge": {
+    "snapshot": "knowledge/audio2tool/saea-kb-a2t-toolshaped-v1/size-full/snapshot.json",
+    "snapshot_content_sha256": "ec2f9ec454d3f16957ac08e4d7686a6f3941f22c600ff2b1b2b97ff43baf9fb2",
+    "facets": 12936,
+    "values": 12601,
+    "content_facet_vectors": "vectors-content-facets.npz beside the snapshot, produced by row SAEA-SN-TOOL-A2T-KB-TEXT-EMB-PASS; receipt docs/receipts/knowledge/a2t-kb-size-full-embeddings.json",
+    "value_vectors": "SEALED -- never loaded and never produced (the locked cell admits percepts facet-side)",
+    "decontamination": "G0 measured 0 intersection between the 22,951 construction sample ids and an 800-id forbidden roster (the exposed 400 plus the proposed unexposed evaluation 400); the runner independently refuses any overlap between the flown population and the snapshot's source roster before takeoff"
+  },
+  "a2t_g1_arms": {
+    "M0": "prompt-matched direct decode, the full 152-row registry in the system message, one contact per sample. The same bare form that produced the published A0 comparator.",
+    "BLEND": "the locked v1 cell over the A2T knowledge base. Contact 0 is the direct decode; its text is embedded once by the pinned CPU-only tool embedder into the content dimension; recall, rank and fuse run at the frozen knobs; a dispatched trajectory takes a second evidence-carrying contact.",
+    "ablations": "ABL-RANDRET and ABL-RANDICL are NOT flown at G1. Plan section 3.4 places both at the confirmatory stage."
+  },
+  "a2t_g1_ceilings": {
+    "frozen_core_contacts_total": 400,
+    "pinned_tool_embedding_contacts_total": 200,
+    "metered_audio_seconds_total": 2000,
+    "gpu_hours_total": 0.6,
+    "worst_case_accounting": "M0 = 4 canary contacts (the pair, twice, allowing one re-run) + 104 loop = 108 core and about 600 audio-s. BLEND = 4 canary + 208 loop + 1 resend = 213 core and about 1,190 audio-s. Run-cumulative worst case 321 core and about 1,790 audio-s, inside the 400 and 2,000 cells. Tool contacts are BLEND-only at one query embedding per trajectory: 104 plus a jitter pair = 106, inside 200.",
+    "one_shot_semantics": "per ARM attempt; no silent intra-arm retry. planned_model_calls and planned_speech_audio_seconds are RUN-CUMULATIVE across every attempt of the run id, so the BLEND arm's plan must cover the M0 arm's durable actual plus its own worst case.",
+    "mandatory_rails": [
+      "decode-rate sentinel: 1000 ms/token rolling median over 8 observed generation rows aborts durable-first and stops the mission",
+      "canary: under 300 ms/token per-token generation rate. NOTE the gate is the PER-TOKEN rate, not wall time: at max_tokens 1024 a canary decode legitimately runs far longer than a 64-token SLURP canary.",
+      "canary hash authority: this campaign establishes its OWN. No prior A2T attempt flew this geometry, so the M0 arm RECORDS its canary response hashes and the BLEND arm compares against them.",
+      "GPU preflight: SmartFanMode == 3, enforced power limit >= 95 W, clock-lock check",
+      "AttemptStore pre-takeoff inspection with a fail-closed prior-plus-worst-inside-plan guard",
+      "trace-sink isolation (main sink flushed first; canary and resend namespaced into their own sinks)",
+      "identical-prompt resend pair on the BLEND arm against the M0 arm's recorded canary hash"
+    ]
+  },
+  "a2t_g1_statistics": {
+    "primary_metric": "tool accuracy -- equality of the full tool-name MULTISET, the label-selection analogue of SLURP intent accuracy",
+    "always_reported_alongside": [
+      "exact match (name plus argument multiset)",
+      "the tool-accuracy minus exact-match gap",
+      "empty-call rate",
+      "the per-tier table, all 8 tiers, published whole"
+    ],
+    "smuggling_guard": "plan section 3.5, carried verbatim: a tool-accuracy gain that leaves exact match flat is a DIFFERENT claim and must not be smuggled",
+    "paired_tests": "paired cluster bootstrap N=10,000 seed 20260807 with 90 and 95 percent intervals, and McNemar exact -- the same machinery the sealed reads used, imported rather than reimplemented",
+    "power_disclosure": "n=104 on an EXPOSED tier. This is a first-signal read, not a confirmatory one; plan section 3.5 requires n >= 400 UNEXPOSED for the claim interval and that is G2's job. Any interval reported here is descriptive.",
+    "mechanism_invariants": [
+      "dispatch decomposition closes: retained-primary plus dispatched equals the flown population, and every dispatched trajectory is accounted by the dead-direct predicate",
+      "branch-only replay: the launcher-side pure-function replay's supply equals the controller's own flown FusionDecision supply on every trajectory",
+      "retain equals direct-label-recovered: a trajectory retains its primary answer exactly when the A2T primary-tool normalizer recovered a label facet from the direct decode"
+    ]
+  },
+  "a2t_g1_scope": {
+    "authorizes": "MECHANICS AND FIRST SIGNAL ONLY on an EXPOSED tier. It establishes that the locked policy cell runs end to end on a second carrier under the derived geometry, and it produces first-signal numbers that are explicitly secondary.",
+    "does_not_authorize": "no generality claim, no superiority claim, no test contact, no knob change, no Stage-3 activity. The unexposed tier, the four-arm comparison, the replication arm and the claim interval all belong to G2 under its own registration.",
+    "negative_read": "if the mechanism invariants fail, or if BLEND does not move tool accuracy on this tier, the honest outcome is stated as a mechanics or first-signal finding and G2 is not entered until the named cause is addressed."
+  }
+}

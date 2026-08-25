@@ -1,0 +1,141 @@
+{
+  "accounting": {
+    "embedding_tool_contacts": 12603,
+    "frozen_core_contacts": 0,
+    "gpu_hours": 0.0,
+    "gpu_hours_basis": "-ngl 0: nothing offloaded; the pass is CPU-only",
+    "http_requests_guarded": 12603,
+    "spawn_seconds": 5.025,
+    "speech_audio_seconds": 0,
+    "throughput_texts_per_second": 15.5379,
+    "total_wall_seconds": 816.497
+  },
+  "attempt_id": "attempt-20260825T094205Z-a2tkbemb",
+  "carrier": "audio2tool",
+  "embedder": {
+    "binary_path": "llama.cpp-featcache/build/bin/llama-server",
+    "binary_sha256": "d0b42ace8d8e02dc772a0e4a1e1667068b3ad799b1ca4c98c741cf89d58404f2",
+    "build_commit": "04ccc72a2207347ca76161b93fd9d846dd0a8675",
+    "cpu_only": true,
+    "dims": 1024,
+    "gguf_relpath": "models/qwen3-embedding-0.6b-gguf/Qwen3-Embedding-0.6B-Q8_0.gguf",
+    "gguf_sha256": "06507c7b42688469c4e7298b0a1e16deff06caf291cf0a5b278c308249c3e439",
+    "gpu_layers": 0,
+    "lock_key": "qwen3-embedding-0.6b-gguf",
+    "lock_revision": "370f27d7550e0def9b39c1f16d3fbaa13aa67728",
+    "port": 8082,
+    "role": "pinned TOOL-level embedder (frozen tool-level retriever clause); never the frozen core",
+    "server_argv": [
+      "/home/chao/llama.cpp-featcache/build/bin/llama-server",
+      "--host",
+      "127.0.0.1",
+      "--port",
+      "8082",
+      "-m",
+      "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/models/qwen3-embedding-0.6b-gguf/Qwen3-Embedding-0.6B-Q8_0.gguf",
+      "--embedding",
+      "--pooling",
+      "last",
+      "-ngl",
+      "0",
+      "-c",
+      "4096",
+      "-b",
+      "4096",
+      "-ub",
+      "4096",
+      "-np",
+      "1",
+      "-t",
+      "16"
+    ],
+    "server_props": {
+      "build_info": "b8-04ccc72a2",
+      "model_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/models/qwen3-embedding-0.6b-gguf/Qwen3-Embedding-0.6B-Q8_0.gguf",
+      "total_slots": 1
+    },
+    "session_id": "SAEA-SN-TOOL-A2T-KB-TEXT-EMB-PASS-attempt-20260825T094205Z-a2tkbemb-qwen3-emb-cpu",
+    "session_pid": 39392
+  },
+  "encode_only_check": {
+    "guard1_import": "PASS",
+    "guard2_endpoint_strings": "PASS",
+    "guard3_client_surface": "PASS",
+    "guard4_payload_keys": "PASS on all 12603 request payloads",
+    "pinned_modules": [
+      "speech_aware_evidence_acquisition.rails.embedding_client",
+      "speech_aware_evidence_acquisition.rails.local_encoder_client",
+      "speech_aware_evidence_acquisition.rails.probes.pemb3m_flight",
+      "speech_aware_evidence_acquisition.rails.probes.pemb4r_flight"
+    ],
+    "result": "PASS",
+    "runner_source": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/a2t_kb_text_embedding_pass.py",
+    "runner_source_sha256": "05b69b52a711f286ccabfb4bec6a109fa461f6ef6c483ada04aab8bdfd87fc16"
+  },
+  "exposure_ledger_row": "SAEA-SN-TOOL-A2T-KB-TEXT-EMB-PASS",
+  "generated_at": "2026-08-25T09:55:48.014289+00:00",
+  "jitter_pair": {
+    "bit_identical": true,
+    "cosine": 0.9999999999999998,
+    "text_sha256": "e9e0dfe9974cd9e8baeb0b74b46684d65a678610a8a7827d3a7edf0dfeb48ec9",
+    "text_source": "content facet facet:content:tier1_direct:000005 representation"
+  },
+  "manifest": {
+    "artifact_relpath": "knowledge/audio2tool/saea-kb-a2t-toolshaped-v1/size-full/embeddings-manifest.json",
+    "bytes": 5564,
+    "sha256": "f966e1afb8e35f16ef2b4ba78ecc63ee39881284b889e577a6e255a555dfefc7"
+  },
+  "not_embedded": {
+    "dimensions": [
+      "label",
+      "prior"
+    ],
+    "facet_count": 335,
+    "reason": "label / prior facets are recalled by prior mass and exact-key agreement, never by vector similarity",
+    "values": {
+      "count": 12601,
+      "reason": "the locked v1 cell admits percepts FACET-SIDE with VALUE VECTORS SEALED; the DEV-1000 lock flight never loads vectors-values.npz. Embedding them would spend tool contacts on material no arm may read. This is a deliberate difference from the SLURP pass, whose own preregistration named both families"
+    }
+  },
+  "run_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SN-TOOL-A2T-KB-TEXT-EMB-PASS/attempt-20260825T094205Z-a2tkbemb",
+  "run_id": "SAEA-SN-TOOL-A2T-KB-TEXT-EMB-PASS",
+  "schema": "saea-kb-text-embeddings-receipt-v1",
+  "snapshot": {
+    "artifact_relpath": "knowledge/audio2tool/saea-kb-a2t-toolshaped-v1/size-full/snapshot.json",
+    "builder_policy_id": "saea-kb-a2t-toolshaped-v1",
+    "content_sha256": "ec2f9ec454d3f16957ac08e4d7686a6f3941f22c600ff2b1b2b97ff43baf9fb2",
+    "facet_count": 12936,
+    "file_sha256": "bb8a666e4a9c793295678c60354ffc42af7ad97591335f5d332c5ee7172161f3",
+    "snapshot_id": "a2t-kb-toolshaped-9eb5f4bf186a0285",
+    "source_split_identity_hash": "b4107de2bf1f7b83dd27aa6ace58e0e74c0e9fb4f7c86a6e495d82eb90b5a4c3",
+    "value_count": 12601
+  },
+  "storage": {
+    "arrays": [
+      "vectors",
+      "ids",
+      "text_sha256"
+    ],
+    "dtype": "float32",
+    "normalization_applied_by_this_pass": "none",
+    "note": "vectors are stored EXACTLY as the pinned llama.cpp server returned them. text_sha256[i] is SHA-256 over the UTF-8 bytes of the exact text embedded into row i, so a consumer can re-verify the pairing without the snapshot."
+  },
+  "study": "speech-aware-evidence-acquisition",
+  "vectors": {
+    "content_facets": {
+      "bytes": 56957280,
+      "count": 12601,
+      "dims": 1024,
+      "file": "vectors-content-facets.npz",
+      "l2_norms": {
+        "max": 1.000000056452492,
+        "mean": 1.0000000000256553,
+        "min": 0.9999999448725692
+      },
+      "order": "snapshot facet order (filtered to dimension == 'content'), row i <-> ids[i]",
+      "sha256": "00a7ebe9b8325ffc2c7b8e45ac4f0c8475b2d3e76994cc0f539f7b5ad5740f45",
+      "source_field": "KeyFacet.representation where dimension == 'content'",
+      "wall_seconds": 810.982
+    }
+  }
+}
