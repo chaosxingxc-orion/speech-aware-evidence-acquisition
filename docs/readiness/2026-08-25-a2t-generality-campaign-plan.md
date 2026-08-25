@@ -1,0 +1,152 @@
+# Priority-1 plan — Audio2Tool generality campaign (reviewer-grade design)
+
+Date: 2026-08-25. Status: **PLAN — not registered; nothing flies until the owner approves and
+each stage lands its own registration.** Authority: the DEV-500 confirmatory verdict §4.2 gate
+(Audio2Tool admitted as the generality surface) and the baseline-lock verdict §5 (the locked
+cell is what gets carried). Discipline: the ladder that produced the lock — offline projection
+first, single variable per round, one-touch reads, unexposed statistics.
+
+## 1. The reviewer question this campaign answers
+
+The locked result is one task, one label space, one carrier: knowledge-conditioned two-contact
+decode beats direct decode on SLURP dev, +20.20 pp on 500 unexposed. A reviewer reading only
+that asks the obvious question — **is the paradigm general, or was a pipeline tuned to SLURP's
+60-way intent classification?** Audio2Tool discriminates because it differs on every axis a
+skeptic would name:
+
+| axis | SLURP | Audio2Tool |
+|---|---|---|
+| output | one label from 60 | a JSON CALL LIST: tool names plus argument dicts |
+| scoring | exact-match accuracy | tool accuracy AND exact match (name+argument multisets) |
+| label space | 60 intents, enumerable in-prompt | **152 tools**, registry about 12.7k tokens |
+| difficulty structure | scenario/action | **8 registered tiers** (direct, parametric, multi-intent, …) |
+| failure modes | wrong intent | wrong tool, right tool wrong arguments, empty call list |
+| knowledge unit | utterance exemplar + intent | tool schema + argument patterns + invocation exemplars |
+
+If the locked form transfers, the claim upgrades from "works on SLURP" to "works on a
+speech-to-structured-action family". If it fails, we learn precisely which assumption was
+SLURP-specific — also a publishable finding, and a cheap one.
+
+## 2. What already exists (no re-derivation needed)
+
+- `Audio2ToolAdapter` implements `build_task_contract` (renders the frozen 152-tool registry)
+  and reuses `data.audio2tool.load_audio2tool` / `audio2tool_receipts` / `render_tool_schemas`
+  plus `reproduction.toolcall_scoring` for scorer-side gold — the same seam SLURP uses.
+- A frozen 400-item discovery split (`docs/receipts/probe-samples/r1-audio2tool-sample.json`,
+  8 tiers × 50, seed 20260807, split identity pinned).
+- **A measured direct-decode baseline on exactly that split** (registered one-shot read,
+  `2026-08-18-pa2t-a0-verdict.md`): **tool accuracy 0.5425 (217/400), exact match 0.2425
+  (97/400)**, gap +30.0 pp, empty-call rate 0.1025, a full per-tier table, and a machine-listed
+  120-sample headroom set (tool-correct but not EM-correct).
+- Prior probe history on this carrier (P-EMB-2, the loss decomposition, S2/S2b/S2c verdicts) —
+  all consumed, all citable, none re-flyable.
+
+**Reviewer note on baseline strength:** 0.5425 tool accuracy is not a straw baseline — it is
+the frozen core with the full 152-tool registry in-prompt, the strongest zero-shot form
+available on this carrier. The exact-match figure (0.2425) is where the headroom lives.
+
+## 3. Scientific design
+
+### 3.1 Claim under test
+
+The locked knowledge-conditioned form transfers to Audio2Tool: BLEND(locked) − M0 on an
+UNEXPOSED A2T split has a 90% CI excluding zero on tool accuracy, and the mechanism profile
+(dispatch-driven gain, safe retain subgroup) replicates.
+
+### 3.2 Knowledge construction — the campaign's main scientific decision
+
+SLURP's KB unit was "utterance text → intent". The A2T unit must be tool-shaped:
+
+- **Content facets**: TRAIN invocation utterances (the spoken command text) — the analogue that
+  made SLURP work (answer-text retrieval keys; the HyDE mechanism).
+- **Label facets**: one per tool (152), carrying the registry identity — the closed-set anchor
+  the protect-direct term needs.
+- **Value bundles**: tool name + **argument-pattern exemplars** (argument dicts actually used
+  with that tool in TRAIN) + a short invocation exemplar. This is the A2T-specific bet: SLURP's
+  values were labels; here the value must carry ARGUMENT STRUCTURE, because the measured 30 pp
+  tool-acc→EM gap says argument construction, not tool selection, is the dominant loss channel.
+- **Distribution-modeled sampling** with hard floors: ≥1 exemplar per tool (all 152 — the
+  >100-label clause), ≥1 per argument-pattern family, tier-stratified.
+- **Decontamination** against the exposed 400 and any future eval tier by utterance identity,
+  fail-closed, on the same pattern the SLURP build used.
+
+### 3.3 Split governance — the reviewer's first attack surface
+
+The existing 400-item split is EXPOSED (A0 baseline, P-EMB-2, S2/S2b/S2c all read it):
+
+- **A2T-DEV-N (new, unexposed)**: a fresh tier-stratified draw, disjoint from the 400 by
+  utterance identity, frozen as its own receipt with both hash conventions.
+- The exposed 400 may fly (it hosts the A0 comparator and the 120-sample headroom list) but its
+  numbers are SECONDARY readings, never the claim — the nested-tier discipline the DEV-500 and
+  DEV-1000 reads already used.
+
+### 3.4 Arms
+
+| arm | purpose |
+|---|---|
+| M0 | prompt-matched direct decode (registry in-prompt), one contact per sample |
+| BLEND(locked) | the locked cell, unchanged, over the A2T KB |
+| ABL-RANDRET | random retrieval through the same fusion path — isolates the retrieval signal |
+| ABL-RANDICL | random TRAIN exemplars — the "any exemplars help" control (NEGATIVE on SLURP) |
+
+The two ablations fly only at the confirmatory stage, matching the DEV-500 pattern.
+
+### 3.5 Statistics and power (pre-committed)
+
+- Primary metric: **tool accuracy** (the label-selection analogue of SLURP intent accuracy).
+- Always reported alongside: **exact match**, the tool-acc−EM gap, empty-call rate, and the
+  per-tier table — a tool-accuracy gain that leaves EM flat is a DIFFERENT claim and must not
+  be smuggled.
+- Paired cluster bootstrap N=10,000 seed 20260807, 90% and 95% CIs, McNemar exact — the same
+  machinery as the sealed reads, imported rather than reimplemented.
+- **Power**: SLURP's held-out σ̂ was ~1.9–2.1 pp at n=400–500; A2T per-sample variance is higher
+  (multi-call items), so a comparable interval needs **n ≥ 400 unexposed**. Do not shrink it.
+- **The variance channel must be re-measured on this carrier** — SLURP's ±2/100 at 8-slot decode
+  does not transfer. A repeated-decode replication at fixed config is part of the confirmatory
+  stage, not an optional extra.
+
+### 3.6 Stage ladder
+
+| stage | surface | purpose | gate |
+|---|---|---|---|
+| **G0** | offline, zero contacts | A2T KB build, coverage + decontamination report, and a **reachability ceiling** (gold tool's facet rank distribution) | the ceiling must exceed the A0 tool accuracy, else the KB cannot help and the campaign STOPS before any contact |
+| **G1** | exposed 400, tier-stratified subset (~100) | mechanics and first signal; knob work if required | prompt-fit passes; mechanism invariants hold (dispatch decomposition, branch-only replay) |
+| **G2** | A2T-DEV-N (400 unexposed) | **confirmatory**: four arms plus replication | 90% CI on tool accuracy excludes zero |
+| **G3** | — | verdict and generality statement | — |
+
+**G0 is a real stop.** If the reachability ceiling sits at or below the A0 tool accuracy, the
+honest outcome is "the paradigm does not transfer to this knowledge shape", stated after zero
+contacts.
+
+## 4. Reviewer objections and the design's answers
+
+1. *"You tuned on SLURP and are reporting a second SLURP."* — The locked cell is carried
+   UNCHANGED; any A2T-specific knob change is registered as such and forfeits the
+   transfers-unchanged claim, declared up front as the stronger, preferred outcome.
+2. *"Tool accuracy is the easy metric."* — EM and the gap appear in the same table, per tier,
+   always. If EM does not move, the finding is stated as tool-selection improvement only.
+3. *"The baseline is weak."* — M0 carries the full 152-tool registry and the same frozen core;
+   the published A0 read (0.5425 / 0.2425) is the reference.
+4. *"The split is contaminated."* — The claim tier is a fresh unexposed draw; the exposed 400 is
+   reported separately; decontamination is machine-checked and receipted.
+5. *"Retrieval is doing nothing; the second contact is."* — ABL-RANDRET answers exactly this, as
+   it did on SLURP (+4.0 structural versus +19.75 full).
+6. *"Single run, no variance estimate."* — A replication arm at fixed config is registered.
+7. *"Cherry-picked tiers."* — All 8 tiers fly, the per-tier table is published whole, and the
+   headline is the pooled unexposed statistic.
+
+## 5. Cost estimate
+
+G0 offline: zero contacts. G1 (~100 samples × 2 arms): ~300 core contacts, ~30 min. G2 (400
+unexposed × 4 arms + replication): ~2,600–3,000 core contacts, ~1,000 tool contacts, 3–4 h GPU.
+Total ~3,300 core contacts — comparable to the DEV-500 confirmatory campaign. Registered
+ceilings per stage. The measured `multidim_recall` CPU cost (1.147 s/call over 11,514 facets)
+applies here too; see the priority-2 plan's engineering note.
+
+## 6. What a positive result licenses, and what it does not
+
+Positive: the claim upgrades to a PARADIGM-level statement across two speech-to-structure task
+families — the third pillar of a Stage-2B qualified paper candidate (the other two, held-out CI
+gain and mechanism attribution, are already sealed on SLURP). It does NOT license a test-set
+claim on either carrier, a generalization claim beyond the two families, or any Stage-3 activity
+without the owner's paper contract.
