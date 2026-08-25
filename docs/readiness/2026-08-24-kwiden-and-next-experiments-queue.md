@@ -21,7 +21,40 @@ Information-theoretic corroboration (M-line audit): after action + entity signat
 bits of conditional scenario entropy remain, requiring pair-specific lexical evidence —
 the same conclusion the error dissection reaches independently.
 
-## 2. K-WIDEN mini-campaign — REGISTERED-NOT-FLOWN
+## 2a. K-WIDEN K1 — FLOWN AND SEALED 2026-08-25: width is INERT, and m is not the constraint
+
+Round K1 (`recall_top_k_per_dimension` 5→8 coupled with `fusion.m` 5→8) flew on DEV-100 under row
+`SAEA-DEV100-KWIDEN`, attempt `attempt-20260825T031812Z-dev100kw1`, exit 0. Spend 139/500 core,
+102/300 tool, 365.81/1,500 audio-s, 0.083/0.6 GPU-h. Report
+`docs/checks/speech-aware-evidence-acquisition/2026-08-24-dev100-kwiden-k1/kwiden-k1-report.json`
+(sha256 `66a340da…8f9f`).
+
+| quantity | K1 (width 8) | sealed base (width 5) |
+|---|---|---|
+| correct | **71/100** | r4 72, r5 72 |
+| W→C vs M0 (48) | 23 | 24 |
+| C→W vs M0 | **0** | 0 |
+| retain-primary | 64 (= direct-label-recovered 64) | 63 / 67 |
+| dispatched | 36/100 | 37 / 33 |
+
+**Delta −1: inside the ±2 byte-variance channel and inside the registered band 68–76 — no win, no
+loss.** The offline width-5 supply replay (zero contacts, fidelity PASS) is the decisive read: the
+width move **changed the admitted supply on 32/100 trajectories (15 dispatched) and produced 0
+width-attributable outcome flips**. 12 of those 15 returned identical outcomes; the 3 flips all
+carried byte-changed direct decodes, so all 3 are confounded into the variance channel.
+
+**Why widening is inert — the structural finding.** The supplied-value distribution at m=8 is
+2 values ×13, 3 ×6, 4 ×6, 5 ×8, 6 ×3: it **never exceeds 6 and mostly sits under it**, because
+`fusion_c 2 × fusion_top_l 3 = 6` binds first and is **m-invariant**. Supporting facets track values
+exactly. Raising m only permutes which targets are admitted inside an already-unsaturated budget, so
+the k=8 reachability headroom (+2.75 pp) cannot reach the answer. Mechanism invariant held exactly
+(retain == direct-label-recovered; 0 unchanged-direct anomalies, 0 mechanism anomalies).
+
+**Stopping rule: CONVERGED-OR-FALSIFIED for width at this tier** (delta ≤ 0). **K2 at 16/32 is NOT
+recommended as a width-only move** — the binding lever is the `c`/`top_l` supply budget, and beyond
+it key construction. The ladder decision remains the coordinator's and the owner's.
+
+## 2. K-WIDEN mini-campaign — original registration (superseded by §2a for outcome)
 
 The experiment fragment `configs/experiment/slurp-dev100-kwiden-campaign-v1.json`, the
 launcher `docs/checks/.../2026-08-24-dev100-kwiden-k1/launcher/launch_dev100_kwiden_k1.py`,
