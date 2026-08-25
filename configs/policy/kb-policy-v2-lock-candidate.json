@@ -1,5 +1,6 @@
 {
   "schema": "saea-kb-policy-v2-lock-candidate",
+  "STATUS": "SUPERSEDED — NOT THE LOCKED BASELINE. The DEV-1000 one-touch read falsified this candidate's delta retain-override out of sample (14 fires: 11/11 recovered on previously-exposed data, 0 recovered and 3 DAMAGED on the unexposed 500; net -3 samples). The registered zero-loss-by-construction property did not hold out of sample. THE LOCKED BASELINE IS configs/policy/kb-policy-v1-dev100.json. See docs/readiness/2026-08-25-baseline-lock-verdict.md section 3. This file is retained as the audit record of what was tested.",
   "frozen_at": "2026-08-25",
   "supersedes": "configs/policy/kb-policy-v1-dev100.json",
   "authority": "docs/readiness/2026-08-25-lock-candidate-selection.md",

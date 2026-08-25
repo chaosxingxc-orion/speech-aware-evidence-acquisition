@@ -1,6 +1,8 @@
 {
   "schema": "saea-kb-policy-v1-dev100-frozen",
+  "STATUS": "**THE LOCKED BASELINE VERSION** for large-scale experiments, as of 2026-08-25. The DEV-1000 one-touch read on the 500 UNEXPOSED samples returned M0 55.60% vs BLEND 75.80%, +20.20 pp, 90% CI [+17.20, +23.40] (lock condition >= +10 pp MET with +7.20 pp margin), McNemar p 1.04e-25; with the falsified delta override removed the same population reads +20.80 pp. Scale-stable against DEV-500's +19.75 pp (each point inside the other's 90% CI). Authority: docs/readiness/2026-08-25-baseline-lock-verdict.md",
   "frozen_at": "2026-08-24",
+  "locked_at": "2026-08-25",
   "campaign": "SAEA-DEV100-KB-ALPHA-BLEND-CAMPAIGN",
   "authority": "docs/readiness/2026-08-24-dev100-campaign-verdict.md",
   "code_state": {
